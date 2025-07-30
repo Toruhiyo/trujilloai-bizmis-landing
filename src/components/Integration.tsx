@@ -3,99 +3,97 @@ import { ArrowRight, Zap, Settings } from "lucide-react";
 
 const Integration = () => {
   return (
-    <section className="py-24 bg-gradient-sunset relative overflow-hidden">
-      {/* Whimsical background elements */}
-      <div className="absolute top-16 right-8 w-40 h-32 bg-white/20 rounded-full blur-2xl animate-pulse opacity-60" />
-      <div className="absolute bottom-20 left-12 w-36 h-28 bg-white/15 rounded-full blur-xl animate-pulse opacity-50 delay-500" />
-      
-      {/* Floating connection lines placeholder */}
-      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent" 
-           title="Placeholder: Animated connection lines between platforms and avatars" />
+    <section className="py-20 bg-white relative overflow-hidden">
+      {/* Avatar Placeholders - Responsive */}
+      <div className="absolute top-16 left-4 lg:left-8 w-24 lg:w-28 h-14 lg:h-18 bg-gray-200 border-2 border-dashed border-gray-400 rounded-lg flex items-center justify-center">
+        <span className="text-xs text-gray-600 font-body text-center px-1 lg:px-2">Shopify Integration Avatar</span>
+      </div>
+      <div className="absolute bottom-16 right-4 lg:right-8 w-24 lg:w-28 h-14 lg:h-18 bg-gray-200 border-2 border-dashed border-gray-400 rounded-lg flex items-center justify-center">
+        <span className="text-xs text-gray-600 font-body text-center px-1 lg:px-2">Custom Website Avatar</span>
+      </div>
       
       <div className="container mx-auto px-6 relative z-10">
-        <div className="text-center mb-20">
-          <h2 className="text-4xl lg:text-6xl font-heading font-bold text-foreground mb-6">
-            Connects to
-            <span className="block text-primary">Everything You Love</span>
+        <div className="text-center mb-16">
+          <h2 className="text-4xl lg:text-5xl font-heading font-bold text-foreground mb-6">
+            Easy Integration for Every Store
           </h2>
           <p className="text-xl text-muted-foreground font-body max-w-3xl mx-auto">
-            Your AI team seamlessly integrates with your existing tools. 
-            Watch them learn from your data and become even more helpful.
+            Whether you're on Shopify or have a custom website, we've got you covered.
           </p>
         </div>
         
-        {/* Central avatar with connections */}
-        <div className="relative max-w-4xl mx-auto mb-16">
-          {/* Central illustration placeholder */}
-          <div className="bg-white/30 border-2 border-dashed border-primary/40 rounded-3xl p-12 backdrop-blur-sm text-center">
-            <div className="text-lg font-heading font-semibold text-primary mb-4">
-              Central Integration Hub
-            </div>
-            <div className="text-sm text-muted-foreground max-w-lg mx-auto mb-8">
-              Illustration showing the three AI avatars in the center, with connection lines 
-              radiating out to various platform logos floating around them
-            </div>
-            
-            {/* Avatar trio in center */}
-            <div className="flex justify-center gap-4 mb-8">
-              <div className="w-16 h-16 bg-gradient-to-br from-accent-pink to-pink-400 rounded-full border-4 border-white shadow-float" 
-                   title="Maya - Support Avatar" />
-              <div className="w-16 h-16 bg-gradient-to-br from-accent-blue to-blue-400 rounded-full border-4 border-white shadow-float" 
-                   title="Alex - Sales Avatar" />
-              <div className="w-16 h-16 bg-gradient-to-br from-accent-green to-green-400 rounded-full border-4 border-white shadow-float" 
-                   title="Sam - Analytics Avatar" />
-            </div>
-          </div>
-        </div>
-        
-        {/* Platform grid */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-5xl mx-auto">
-          {[
-            { name: "Shopify", logo: "🛍️", color: "from-green-400 to-green-500" },
-            { name: "WooCommerce", logo: "🔧", color: "from-purple-400 to-purple-500" },
-            { name: "Magento", logo: "📦", color: "from-orange-400 to-orange-500" },
-            { name: "BigCommerce", logo: "🏪", color: "from-blue-400 to-blue-500" },
-            { name: "Stripe", logo: "💳", color: "from-indigo-400 to-indigo-500" },
-            { name: "PayPal", logo: "💰", color: "from-yellow-400 to-yellow-500" },
-            { name: "Mailchimp", logo: "📧", color: "from-pink-400 to-pink-500" },
-            { name: "Zendesk", logo: "🎧", color: "from-teal-400 to-teal-500" }
-          ].map((platform, index) => (
-            <div 
-              key={index}
-              className="group relative"
-            >
-              <div className={`bg-gradient-to-r ${platform.color} rounded-2xl p-6 text-center hover:shadow-float transition-all duration-300 hover:-translate-y-2 text-white relative overflow-hidden`}>
-                {/* Floating effect */}
-                <div className="absolute inset-0 bg-white/10 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity" />
-                
-                <div className="relative z-10">
-                  <div className="text-3xl mb-3">{platform.logo}</div>
-                  <h3 className="font-heading font-semibold text-white">{platform.name}</h3>
-                  <div className="text-xs text-white/80 mt-1">Ready to connect</div>
+        <div className="grid lg:grid-cols-2 gap-12">
+          {/* Shopify Integration */}
+          <div className="bg-gradient-to-br from-green-50 to-green-100 rounded-3xl p-8 relative overflow-hidden">
+            <div className="absolute top-0 right-0 w-32 h-32 bg-green-200/50 rounded-full -translate-y-16 translate-x-16" />
+            <div className="relative z-10">
+              <div className="flex items-center gap-4 mb-6">
+                <div className="w-12 h-12 bg-green-500 rounded-xl flex items-center justify-center">
+                  <Zap className="w-6 h-6 text-white" />
+                </div>
+                <h3 className="text-2xl font-heading font-bold text-gray-900">Shopify Store</h3>
+              </div>
+              
+              <p className="text-gray-700 mb-6 text-lg leading-relaxed">
+                Install Bizmis directly from the Shopify App Store. One-click setup, no coding required.
+              </p>
+              
+              <div className="space-y-3 mb-8">
+                <div className="flex items-center text-muted-foreground">
+                  <div className="w-2 h-2 bg-green-500 rounded-full mr-3" />
+                  <span className="font-body">1-minute installation</span>
+                </div>
+                <div className="flex items-center text-muted-foreground">
+                  <div className="w-2 h-2 bg-green-500 rounded-full mr-3" />
+                  <span className="font-body">Automatic product sync</span>
+                </div>
+                <div className="flex items-center text-muted-foreground">
+                  <div className="w-2 h-2 bg-green-500 rounded-full mr-3" />
+                  <span className="font-body">Ready-to-use templates</span>
                 </div>
               </div>
               
-              {/* Connection indicator */}
-              <div className="absolute -top-2 -right-2 w-6 h-6 bg-white border-2 border-green-400 rounded-full flex items-center justify-center shadow-soft">
-                <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
+              <Button variant="warm" size="lg" className="group">
+                Install from App Store
+                <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+              </Button>
+            </div>
+          </div>
+          
+          {/* Custom Website */}
+          <div className="bg-gradient-to-br from-blue-50 to-purple-100 rounded-3xl p-8 relative overflow-hidden">
+            <div className="absolute top-0 right-0 w-32 h-32 bg-purple-200/50 rounded-full -translate-y-16 translate-x-16" />
+            <div className="relative z-10">
+              <div className="flex items-center gap-4 mb-6">
+                <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-purple-500 rounded-xl flex items-center justify-center">
+                  <Settings className="w-6 h-6 text-white" />
+                </div>
+                <h3 className="text-2xl font-heading font-bold text-gray-900">Custom Website</h3>
               </div>
-            </div>
-          ))}
-        </div>
-        
-        {/* Bottom CTA */}
-        <div className="text-center mt-16">
-          <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-8 max-w-md mx-auto shadow-float">
-            <div className="text-lg font-heading font-semibold text-foreground mb-2">
-              One-Click Setup
-            </div>
-            <div className="text-sm text-muted-foreground mb-4">
-              Connect all your tools in under 5 minutes
-            </div>
-            <div className="flex justify-center gap-2">
-              <div className="w-2 h-2 bg-primary rounded-full animate-pulse" />
-              <div className="w-2 h-2 bg-secondary rounded-full animate-pulse delay-200" />
-              <div className="w-2 h-2 bg-accent-green rounded-full animate-pulse delay-400" />
+              
+              <p className="text-gray-700 mb-6 text-lg leading-relaxed">
+                Tailored integration for your unique website. We assess and customize everything to fit perfectly.
+              </p>
+              
+              <div className="space-y-3 mb-8">
+                <div className="flex items-center text-muted-foreground">
+                  <div className="w-2 h-2 bg-purple-500 rounded-full mr-3" />
+                  <span className="font-body">Custom assessment</span>
+                </div>
+                <div className="flex items-center text-muted-foreground">
+                  <div className="w-2 h-2 bg-purple-500 rounded-full mr-3" />
+                  <span className="font-body">Personalized setup</span>
+                </div>
+                <div className="flex items-center text-muted-foreground">
+                  <div className="w-2 h-2 bg-purple-500 rounded-full mr-3" />
+                  <span className="font-body">Dedicated support</span>
+                </div>
+              </div>
+              
+              <Button variant="outline" size="lg" className="group border-purple-200 text-purple-700 hover:bg-purple-50 font-body">
+                Get Custom Quote
+                <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+              </Button>
             </div>
           </div>
         </div>
