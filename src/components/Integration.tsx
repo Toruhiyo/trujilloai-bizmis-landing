@@ -3,13 +3,21 @@ import { ArrowRight, Zap, Settings } from "lucide-react";
 
 const Integration = () => {
   return (
-    <section className="py-20 bg-white">
-      <div className="container mx-auto px-6">
+    <section className="py-20 bg-white relative overflow-hidden">
+      {/* Avatar Placeholders */}
+      <div className="absolute top-16 left-8 w-28 h-18 bg-gray-200 border-2 border-dashed border-gray-400 rounded-lg flex items-center justify-center">
+        <span className="text-xs text-gray-600 font-body text-center px-2">Shopify Integration Avatar</span>
+      </div>
+      <div className="absolute bottom-16 right-8 w-28 h-18 bg-gray-200 border-2 border-dashed border-gray-400 rounded-lg flex items-center justify-center">
+        <span className="text-xs text-gray-600 font-body text-center px-2">Custom Website Avatar</span>
+      </div>
+      
+      <div className="container mx-auto px-6 relative z-10">
         <div className="text-center mb-16">
-          <h2 className="text-4xl lg:text-5xl font-heading font-bold text-gray-900 mb-6">
+          <h2 className="text-4xl lg:text-5xl font-heading font-bold text-foreground mb-6">
             Easy Integration for Every Store
           </h2>
-          <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+          <p className="text-xl text-muted-foreground font-body max-w-3xl mx-auto">
             Whether you're on Shopify or have a custom website, we've got you covered.
           </p>
         </div>
@@ -31,17 +39,17 @@ const Integration = () => {
               </p>
               
               <div className="space-y-3 mb-8">
-                <div className="flex items-center text-gray-700">
+                <div className="flex items-center text-muted-foreground">
                   <div className="w-2 h-2 bg-green-500 rounded-full mr-3" />
-                  <span>1-minute installation</span>
+                  <span className="font-body">1-minute installation</span>
                 </div>
-                <div className="flex items-center text-gray-700">
+                <div className="flex items-center text-muted-foreground">
                   <div className="w-2 h-2 bg-green-500 rounded-full mr-3" />
-                  <span>Automatic product sync</span>
+                  <span className="font-body">Automatic product sync</span>
                 </div>
-                <div className="flex items-center text-gray-700">
+                <div className="flex items-center text-muted-foreground">
                   <div className="w-2 h-2 bg-green-500 rounded-full mr-3" />
-                  <span>Ready-to-use templates</span>
+                  <span className="font-body">Ready-to-use templates</span>
                 </div>
               </div>
               
@@ -68,21 +76,21 @@ const Integration = () => {
               </p>
               
               <div className="space-y-3 mb-8">
-                <div className="flex items-center text-gray-700">
+                <div className="flex items-center text-muted-foreground">
                   <div className="w-2 h-2 bg-purple-500 rounded-full mr-3" />
-                  <span>Custom assessment</span>
+                  <span className="font-body">Custom assessment</span>
                 </div>
-                <div className="flex items-center text-gray-700">
+                <div className="flex items-center text-muted-foreground">
                   <div className="w-2 h-2 bg-purple-500 rounded-full mr-3" />
-                  <span>Personalized setup</span>
+                  <span className="font-body">Personalized setup</span>
                 </div>
-                <div className="flex items-center text-gray-700">
+                <div className="flex items-center text-muted-foreground">
                   <div className="w-2 h-2 bg-purple-500 rounded-full mr-3" />
-                  <span>Dedicated support</span>
+                  <span className="font-body">Dedicated support</span>
                 </div>
               </div>
               
-              <Button variant="outline" size="lg" className="group border-purple-200 text-purple-700 hover:bg-purple-50">
+              <Button variant="outline" size="lg" className="group border-purple-200 text-purple-700 hover:bg-purple-50 font-body">
                 Get Custom Quote
                 <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
               </Button>

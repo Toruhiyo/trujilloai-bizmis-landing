@@ -56,17 +56,23 @@ const Hero = () => {
               </Button>
             </div>
             
-            <div className="flex flex-wrap gap-4">
-              <div className="bg-white/10 backdrop-blur-sm rounded-full px-4 py-2 border border-white/20">
-                <div className="flex items-center gap-2">
-                  <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
-                  <span className="text-sm font-medium text-white font-body">No setup required</span>
+            <div className="grid grid-cols-2 gap-6 max-w-md">
+              <div className="bg-gradient-to-r from-green-500/20 to-green-600/20 backdrop-blur-sm rounded-2xl p-4 border border-green-400/30">
+                <div className="flex items-center gap-3">
+                  <div className="w-3 h-3 bg-green-400 rounded-full animate-pulse" />
+                  <div>
+                    <div className="text-white font-heading font-semibold text-sm">Instant Setup</div>
+                    <div className="text-white/70 font-body text-xs">Ready in minutes</div>
+                  </div>
                 </div>
               </div>
-              <div className="bg-white/10 backdrop-blur-sm rounded-full px-4 py-2 border border-white/20">
-                <div className="flex items-center gap-2">
-                  <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
-                  <span className="text-sm font-medium text-white font-body">24/7 Support</span>
+              <div className="bg-gradient-to-r from-blue-500/20 to-blue-600/20 backdrop-blur-sm rounded-2xl p-4 border border-blue-400/30">
+                <div className="flex items-center gap-3">
+                  <div className="w-3 h-3 bg-blue-400 rounded-full animate-pulse" />
+                  <div>
+                    <div className="text-white font-heading font-semibold text-sm">Always Online</div>
+                    <div className="text-white/70 font-body text-xs">24/7 assistance</div>
+                  </div>
                 </div>
               </div>
             </div>

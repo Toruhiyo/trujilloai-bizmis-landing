@@ -32,8 +32,25 @@ const Features = () => {
            title="Placeholder for cute 3D avatar - Feature showcase avatar 1" />
       <div className="absolute bottom-10 right-10 w-32 h-32 bg-primary/5 rounded-full blur-2xl animate-pulse delay-500" 
            title="Placeholder for cute 3D avatar - Feature showcase avatar 2" />
-      <div className="absolute top-1/2 left-1/4 w-16 h-16 bg-primary/8 rounded-full blur-lg animate-pulse delay-1000" 
-           title="Placeholder for cute 3D avatar - Feature showcase avatar 3" />
+      
+      {/* Descriptive Avatar Placeholders */}
+      <div className="absolute top-32 right-20 w-32 h-20 bg-gray-200 border-2 border-dashed border-gray-400 rounded-lg flex items-center justify-center">
+        <span className="text-xs text-gray-600 font-body text-center px-2">Cute 3D Sales Avatar</span>
+      </div>
+      <div className="absolute bottom-32 left-20 w-32 h-20 bg-gray-200 border-2 border-dashed border-gray-400 rounded-lg flex items-center justify-center">
+        <span className="text-xs text-gray-600 font-body text-center px-2">Support Assistant Avatar</span>
+      </div>
+      
+      {/* Floating stats positioned correctly above respective sections */}
+      <div className="absolute top-[300px] left-[150px] bg-white/95 backdrop-blur-sm rounded-xl p-3 shadow-brand animate-bounce z-30">
+        <div className="text-lg font-bold text-primary font-heading">+47%</div>
+        <div className="text-xs text-gray-600 font-body">Sales Increase</div>
+      </div>
+      
+      <div className="absolute top-[300px] left-[50%] transform -translate-x-1/2 bg-white/95 backdrop-blur-sm rounded-xl p-3 shadow-brand animate-bounce delay-200 z-30">
+        <div className="text-lg font-bold text-primary font-heading">24/7</div>
+        <div className="text-xs text-gray-600 font-body">AI Support</div>
+      </div>
       
       <div className="container mx-auto px-6 relative z-10">
         <div className="text-center mb-16">
@@ -51,22 +68,11 @@ const Features = () => {
               key={index}
               className="group bg-white rounded-2xl p-8 shadow-soft hover:shadow-brand transition-all duration-300 hover:-translate-y-2 relative"
             >
-              {/* Special floating bubbles for sales and support */}
-              {index === 0 && (
-                <div className="absolute -top-4 -right-4 bg-white/95 backdrop-blur-sm rounded-xl p-3 shadow-brand animate-bounce z-20">
-                  <div className="text-lg font-bold text-primary font-heading">+47%</div>
-                  <div className="text-xs text-gray-600 font-body">Sales Increase</div>
-                </div>
-              )}
-              {index === 1 && (
-                <div className="absolute -top-4 -left-4 bg-white/95 backdrop-blur-sm rounded-xl p-3 shadow-brand animate-bounce delay-200 z-20">
-                  <div className="text-lg font-bold text-primary font-heading">24/7</div>
-                  <div className="text-xs text-gray-600 font-body">AI Support</div>
-                </div>
-              )}
+              {/* Avatar placeholder for analytics section only */}
               {index === 2 && (
-                <div className="absolute -bottom-6 -right-6 w-16 h-16 bg-primary/10 rounded-full blur-sm animate-pulse delay-700" 
-                     title="Placeholder for cute 3D avatar - Analytics character" />
+                <div className="absolute -bottom-6 -right-6 w-28 h-16 bg-gray-200 border-2 border-dashed border-gray-400 rounded-lg flex items-center justify-center">
+                  <span className="text-xs text-gray-600 font-body text-center px-2">Analytics Expert Avatar</span>
+                </div>
               )}
               
               <div className={`w-16 h-16 rounded-xl bg-gradient-to-r ${feature.color} flex items-center justify-center mb-6 group-hover:scale-110 transition-transform`}>
