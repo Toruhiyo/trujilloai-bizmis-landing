@@ -1,26 +1,26 @@
 import { Button } from "@/components/ui/button";
-import { Rocket, Code2, Smartphone, Download, Globe, CheckCircle, Clock, Users } from "lucide-react";
+import { Rocket, Code2, Download, Globe, CheckCircle, Clock, Settings } from "lucide-react";
 
 const Setup = () => {
   const setupSteps = [
     {
       number: "01",
       title: "Choose Your Platform",
-      description: "Whether it's Shopify, WooCommerce, or a custom build - we support them all.",
+      description: "Whether it's Shopify or a custom website - we'll get you set up perfectly.",
       icon: Globe,
       time: "2 mins"
     },
     {
       number: "02", 
-      title: "Customize Your Avatars",
-      description: "Pick personalities, voices, and appearance for Maya, Alex, and Sam.",
-      icon: Users,
+      title: "Customize Your AI",
+      description: "Personalize your avatar's voice, personality, and appearance to match your brand.",
+      icon: Settings,
       time: "5 mins"
     },
     {
       number: "03",
       title: "Go Live",
-      description: "One-click deployment. Your AI team is ready to serve customers instantly.",
+      description: "One-click deployment. Your AI assistant is ready to serve customers instantly.",
       icon: Rocket,
       time: "1 min"
     }
@@ -28,34 +28,26 @@ const Setup = () => {
 
   const platforms = [
     {
-      name: "Shopify",
-      description: "Install directly from the App Store with zero technical setup required.",
+      name: "Shopify Store",
+      description: "Install directly from the Shopify App Store with zero technical setup required.",
       icon: Download,
-      features: ["One-click install", "Auto product sync", "Pre-built templates"],
+      features: ["One-click install", "Auto product sync", "Pre-built templates", "Instant activation"],
       buttonText: "Install from App Store",
       buttonVariant: "default" as const,
       bgColor: "from-green-400/20 to-emerald-400/20",
-      iconColor: "text-green-600"
+      iconColor: "text-green-600",
+      highlight: true
     },
     {
       name: "Custom Website",
-      description: "Seamless integration for any platform with our flexible API and SDKs.",
+      description: "Tailored integration for any platform with our flexible API and custom implementation.",
       icon: Code2,
-      features: ["Custom integration", "Full API access", "White-label options"],
-      buttonText: "Get Integration Guide",
+      features: ["Custom integration", "Full API access", "White-label options", "Dedicated support"],
+      buttonText: "Get Custom Quote",
       buttonVariant: "outline" as const,
       bgColor: "from-blue-400/20 to-purple-400/20",
-      iconColor: "text-blue-600"
-    },
-    {
-      name: "Mobile App",
-      description: "Native mobile SDKs for iOS and Android with full avatar support.",
-      icon: Smartphone,
-      features: ["Native SDKs", "Offline fallback", "Push notifications"],
-      buttonText: "Download SDK",
-      buttonVariant: "outline" as const,
-      bgColor: "from-purple-400/20 to-pink-400/20",
-      iconColor: "text-purple-600"
+      iconColor: "text-blue-600",
+      highlight: false
     }
   ];
 
@@ -64,7 +56,7 @@ const Setup = () => {
       {/* Floating setup mockups */}
       <div className="absolute top-20 left-10 w-40 h-32 bg-white rounded-2xl shadow-xl border-2 border-dashed border-green-300 flex flex-col items-center justify-center rotate-12">
         <div className="w-8 h-8 bg-green-500 rounded-full mb-2"></div>
-        <span className="text-xs font-medium text-gray-600">Shopify Store</span>
+        <span className="text-xs font-medium text-gray-600">Shopify Integration</span>
       </div>
       <div className="absolute top-40 right-16 w-36 h-28 bg-white rounded-2xl shadow-xl border-2 border-dashed border-blue-300 flex flex-col items-center justify-center -rotate-6">
         <div className="w-6 h-6 bg-blue-500 rounded mb-1"></div>
@@ -72,7 +64,7 @@ const Setup = () => {
       </div>
       <div className="absolute bottom-32 left-16 w-32 h-24 bg-white rounded-2xl shadow-xl border-2 border-dashed border-purple-300 flex flex-col items-center justify-center rotate-3">
         <div className="w-6 h-6 bg-purple-500 rounded mb-1"></div>
-        <span className="text-xs font-medium text-gray-600">Mobile SDK</span>
+        <span className="text-xs font-medium text-gray-600">Voice Interface</span>
       </div>
       
       {/* Background decorations */}
@@ -94,7 +86,7 @@ const Setup = () => {
             </span>
           </h2>
           <p className="text-xl text-muted-foreground font-body max-w-3xl mx-auto leading-relaxed">
-            No technical expertise required. Our setup process is so simple, your grandma could do it (and probably should, because she'd love Maya, Alex, and Sam).
+            No technical expertise required. Our setup process is so simple, your grandma could do it (and she'd probably love chatting with your new AI assistant).
           </p>
         </div>
 
@@ -145,36 +137,41 @@ const Setup = () => {
           <h3 className="text-3xl font-heading font-bold text-center text-foreground mb-12">
             Choose Your Platform
           </h3>
-          <div className="grid lg:grid-cols-3 gap-8">
+          <div className="grid lg:grid-cols-2 gap-12 max-w-5xl mx-auto">
             {platforms.map((platform, index) => (
               <div key={index} className="group relative">
-                <div className={`bg-gradient-to-br ${platform.bgColor} rounded-3xl p-8 h-full transition-all duration-500 group-hover:scale-105`}>
-                  <div className="bg-white/90 backdrop-blur rounded-2xl p-6 h-full flex flex-col">
-                    <div className="flex items-center gap-3 mb-4">
-                      <div className="w-12 h-12 bg-white rounded-xl flex items-center justify-center shadow-lg">
-                        <platform.icon className={`w-6 h-6 ${platform.iconColor}`} />
+                {platform.highlight && (
+                  <div className="absolute -top-4 -right-4 bg-accent text-white px-3 py-1 rounded-full text-sm font-medium">
+                    Most Popular
+                  </div>
+                )}
+                <div className={`bg-gradient-to-br ${platform.bgColor} rounded-3xl p-8 h-full transition-all duration-500 group-hover:scale-105 ${platform.highlight ? 'ring-2 ring-accent/20' : ''}`}>
+                  <div className="bg-white/90 backdrop-blur rounded-2xl p-8 h-full flex flex-col">
+                    <div className="flex items-center gap-3 mb-6">
+                      <div className="w-14 h-14 bg-white rounded-xl flex items-center justify-center shadow-lg">
+                        <platform.icon className={`w-7 h-7 ${platform.iconColor}`} />
                       </div>
-                      <h4 className="text-xl font-heading font-bold text-foreground">
+                      <h4 className="text-2xl font-heading font-bold text-foreground">
                         {platform.name}
                       </h4>
                     </div>
                     
-                    <p className="text-muted-foreground font-body leading-relaxed mb-6 flex-grow">
+                    <p className="text-muted-foreground font-body leading-relaxed mb-8 flex-grow text-lg">
                       {platform.description}
                     </p>
                     
-                    <div className="space-y-2 mb-6">
+                    <div className="space-y-3 mb-8">
                       {platform.features.map((feature, idx) => (
-                        <div key={idx} className="flex items-center gap-2">
-                          <CheckCircle className="w-4 h-4 text-green-500" />
-                          <span className="text-sm font-medium text-muted-foreground">{feature}</span>
+                        <div key={idx} className="flex items-center gap-3">
+                          <CheckCircle className="w-5 h-5 text-green-500" />
+                          <span className="font-medium text-muted-foreground">{feature}</span>
                         </div>
                       ))}
                     </div>
                     
-                    <Button variant={platform.buttonVariant} className="w-full group">
+                    <Button variant={platform.buttonVariant} size="lg" className="w-full group">
                       {platform.buttonText}
-                      <platform.icon className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
+                      <platform.icon className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
                     </Button>
                   </div>
                 </div>
