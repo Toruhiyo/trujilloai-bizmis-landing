@@ -27,29 +27,18 @@ const Features = () => {
 
   return (
     <section className="py-20 bg-gradient-subtle relative overflow-hidden">
-      {/* Background Avatar Placeholders */}
-      <div className="absolute top-10 left-10 w-24 h-24 bg-primary/10 rounded-full blur-xl animate-pulse" 
+      {/* Background Avatar Placeholders - Responsive */}
+      <div className="absolute top-10 left-4 lg:left-10 w-20 lg:w-24 h-20 lg:h-24 bg-primary/10 rounded-full blur-xl animate-pulse" 
            title="Placeholder for cute 3D avatar - Feature showcase avatar 1" />
-      <div className="absolute bottom-10 right-10 w-32 h-32 bg-primary/5 rounded-full blur-2xl animate-pulse delay-500" 
+      <div className="absolute bottom-10 right-4 lg:right-10 w-24 lg:w-32 h-24 lg:h-32 bg-primary/5 rounded-full blur-2xl animate-pulse delay-500" 
            title="Placeholder for cute 3D avatar - Feature showcase avatar 2" />
       
-      {/* Descriptive Avatar Placeholders */}
-      <div className="absolute top-32 right-20 w-32 h-20 bg-gray-200 border-2 border-dashed border-gray-400 rounded-lg flex items-center justify-center">
-        <span className="text-xs text-gray-600 font-body text-center px-2">Cute 3D Sales Avatar</span>
+      {/* Descriptive Avatar Placeholders - Responsive */}
+      <div className="absolute top-32 right-4 lg:right-20 w-24 lg:w-32 h-16 lg:h-20 bg-gray-200 border-2 border-dashed border-gray-400 rounded-lg flex items-center justify-center">
+        <span className="text-xs text-gray-600 font-body text-center px-1 lg:px-2">Cute 3D Sales Avatar</span>
       </div>
-      <div className="absolute bottom-32 left-20 w-32 h-20 bg-gray-200 border-2 border-dashed border-gray-400 rounded-lg flex items-center justify-center">
-        <span className="text-xs text-gray-600 font-body text-center px-2">Support Assistant Avatar</span>
-      </div>
-      
-      {/* Floating stats positioned correctly above respective sections */}
-      <div className="absolute top-[300px] left-[150px] bg-white/95 backdrop-blur-sm rounded-xl p-3 shadow-brand animate-bounce z-30">
-        <div className="text-lg font-bold text-primary font-heading">+47%</div>
-        <div className="text-xs text-gray-600 font-body">Sales Increase</div>
-      </div>
-      
-      <div className="absolute top-[300px] left-[50%] transform -translate-x-1/2 bg-white/95 backdrop-blur-sm rounded-xl p-3 shadow-brand animate-bounce delay-200 z-30">
-        <div className="text-lg font-bold text-primary font-heading">24/7</div>
-        <div className="text-xs text-gray-600 font-body">AI Support</div>
+      <div className="absolute bottom-32 left-4 lg:left-20 w-24 lg:w-32 h-16 lg:h-20 bg-gray-200 border-2 border-dashed border-gray-400 rounded-lg flex items-center justify-center">
+        <span className="text-xs text-gray-600 font-body text-center px-1 lg:px-2">Support Assistant Avatar</span>
       </div>
       
       <div className="container mx-auto px-6 relative z-10">
@@ -68,10 +57,10 @@ const Features = () => {
               key={index}
               className="group bg-white rounded-2xl p-8 shadow-soft hover:shadow-brand transition-all duration-300 hover:-translate-y-2 relative"
             >
-              {/* Avatar placeholder for analytics section only */}
+              {/* Avatar placeholder for analytics section only - Responsive */}
               {index === 2 && (
-                <div className="absolute -bottom-6 -right-6 w-28 h-16 bg-gray-200 border-2 border-dashed border-gray-400 rounded-lg flex items-center justify-center">
-                  <span className="text-xs text-gray-600 font-body text-center px-2">Analytics Expert Avatar</span>
+                <div className="absolute -bottom-4 lg:-bottom-6 -right-4 lg:-right-6 w-24 lg:w-28 h-14 lg:h-16 bg-gray-200 border-2 border-dashed border-gray-400 rounded-lg flex items-center justify-center">
+                  <span className="text-xs text-gray-600 font-body text-center px-1 lg:px-2">Analytics Expert Avatar</span>
                 </div>
               )}
               

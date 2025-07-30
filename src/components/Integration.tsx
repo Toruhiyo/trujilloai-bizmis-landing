@@ -4,12 +4,12 @@ import { ArrowRight, Zap, Settings } from "lucide-react";
 const Integration = () => {
   return (
     <section className="py-20 bg-white relative overflow-hidden">
-      {/* Avatar Placeholders */}
-      <div className="absolute top-16 left-8 w-28 h-18 bg-gray-200 border-2 border-dashed border-gray-400 rounded-lg flex items-center justify-center">
-        <span className="text-xs text-gray-600 font-body text-center px-2">Shopify Integration Avatar</span>
+      {/* Avatar Placeholders - Responsive */}
+      <div className="absolute top-16 left-4 lg:left-8 w-24 lg:w-28 h-14 lg:h-18 bg-gray-200 border-2 border-dashed border-gray-400 rounded-lg flex items-center justify-center">
+        <span className="text-xs text-gray-600 font-body text-center px-1 lg:px-2">Shopify Integration Avatar</span>
       </div>
-      <div className="absolute bottom-16 right-8 w-28 h-18 bg-gray-200 border-2 border-dashed border-gray-400 rounded-lg flex items-center justify-center">
-        <span className="text-xs text-gray-600 font-body text-center px-2">Custom Website Avatar</span>
+      <div className="absolute bottom-16 right-4 lg:right-8 w-24 lg:w-28 h-14 lg:h-18 bg-gray-200 border-2 border-dashed border-gray-400 rounded-lg flex items-center justify-center">
+        <span className="text-xs text-gray-600 font-body text-center px-1 lg:px-2">Custom Website Avatar</span>
       </div>
       
       <div className="container mx-auto px-6 relative z-10">

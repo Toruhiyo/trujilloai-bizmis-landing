@@ -7,19 +7,23 @@ const Hero = () => {
       {/* Background decorative elements */}
       <div className="absolute inset-0 bg-gradient-to-br from-primary-light/20 to-primary/30" />
       
-      {/* Decorative Avatar Placeholders - Scattered throughout */}
-      <div className="absolute top-16 left-8 w-20 h-20 bg-white/20 rounded-full blur-sm animate-pulse" 
+      {/* Decorative Avatar Placeholders - Responsive */}
+      <div className="absolute top-16 left-4 lg:left-8 w-16 lg:w-20 h-16 lg:h-20 bg-white/20 rounded-full blur-sm animate-pulse" 
            title="Placeholder for cute 3D avatar - Happy Customer browsing" />
-      <div className="absolute top-40 right-16 w-16 h-16 bg-white/15 rounded-full blur-sm animate-pulse delay-200" 
+      <div className="absolute top-32 lg:top-40 right-8 lg:right-16 w-12 lg:w-16 h-12 lg:h-16 bg-white/15 rounded-full blur-sm animate-pulse delay-200" 
            title="Placeholder for cute 3D avatar - Sales Assistant helping" />
-      <div className="absolute bottom-40 left-16 w-18 h-18 bg-white/10 rounded-full blur-sm animate-pulse delay-500" 
+      <div className="absolute bottom-32 lg:bottom-40 left-8 lg:left-16 w-14 lg:w-18 h-14 lg:h-18 bg-white/10 rounded-full blur-sm animate-pulse delay-500" 
            title="Placeholder for cute 3D avatar - Support Representative" />
-      <div className="absolute bottom-24 right-24 w-14 h-14 bg-white/25 rounded-full blur-sm animate-pulse delay-700" 
+      <div className="absolute bottom-16 lg:bottom-24 right-12 lg:right-24 w-10 lg:w-14 h-10 lg:h-14 bg-white/25 rounded-full blur-sm animate-pulse delay-700" 
            title="Placeholder for cute 3D avatar - Analytics Expert" />
-      <div className="absolute top-64 left-32 w-12 h-12 bg-white/30 rounded-full blur-sm animate-pulse delay-1000" 
-           title="Placeholder for cute 3D avatar - Store Owner" />
-      <div className="absolute bottom-64 right-8 w-10 h-10 bg-white/20 rounded-full blur-sm animate-pulse delay-1200" 
-           title="Placeholder for cute 3D avatar - Satisfied Customer" />
+      
+      {/* Descriptive Avatar Placeholders - Responsive */}
+      <div className="absolute top-48 lg:top-64 left-8 lg:left-32 w-24 lg:w-32 h-14 lg:h-16 bg-white/30 border-2 border-dashed border-white/50 rounded-lg flex items-center justify-center animate-pulse delay-1000">
+        <span className="text-xs text-white font-body text-center px-1 lg:px-2">Store Owner Avatar</span>
+      </div>
+      <div className="absolute bottom-48 lg:bottom-64 right-4 lg:right-8 w-24 lg:w-28 h-14 lg:h-16 bg-white/20 border-2 border-dashed border-white/40 rounded-lg flex items-center justify-center animate-pulse delay-1200">
+        <span className="text-xs text-white font-body text-center px-1 lg:px-2">Satisfied Customer Avatar</span>
+      </div>
       
       <div className="container mx-auto px-6 relative z-10">
         <div className="grid lg:grid-cols-2 gap-16 xl:gap-20 items-center">
@@ -90,8 +94,19 @@ const Hero = () => {
             </div>
             
             {/* Floating elements - positioned to not overlap */}
-            <div className="absolute -top-6 -right-6 w-24 h-24 bg-white/20 rounded-full blur-xl animate-pulse" />
-            <div className="absolute -bottom-10 -left-10 w-32 h-32 bg-white/10 rounded-full blur-2xl animate-pulse delay-300" />
+            <div className="absolute -top-6 -right-6 w-16 lg:w-24 h-16 lg:h-24 bg-white/20 rounded-full blur-xl animate-pulse" />
+            <div className="absolute -bottom-6 lg:-bottom-10 -left-6 lg:-left-10 w-20 lg:w-32 h-20 lg:h-32 bg-white/10 rounded-full blur-2xl animate-pulse delay-300" />
+            
+            {/* Stats floating cards - positioned in hero near the image */}
+            <div className="absolute top-8 lg:top-12 -left-8 lg:-left-12 bg-white/95 backdrop-blur-sm rounded-xl p-3 shadow-brand animate-bounce z-20">
+              <div className="text-lg lg:text-2xl font-bold text-primary font-heading">+47%</div>
+              <div className="text-xs lg:text-sm text-gray-600 font-body">Sales Increase</div>
+            </div>
+            
+            <div className="absolute bottom-16 lg:bottom-20 -right-8 lg:-right-12 bg-white/95 backdrop-blur-sm rounded-xl p-3 shadow-brand animate-bounce delay-200 z-20">
+              <div className="text-lg lg:text-2xl font-bold text-primary font-heading">24/7</div>
+              <div className="text-xs lg:text-sm text-gray-600 font-body">AI Support</div>
+            </div>
             
           </div>
         </div>
