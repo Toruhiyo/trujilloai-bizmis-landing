@@ -1,0 +1,97 @@
+import { Button } from "@/components/ui/button";
+import { ArrowRight, Zap, Settings } from "lucide-react";
+
+const Integration = () => {
+  return (
+    <section className="py-20 bg-white">
+      <div className="container mx-auto px-6">
+        <div className="text-center mb-16">
+          <h2 className="text-4xl lg:text-5xl font-heading font-bold text-gray-900 mb-6">
+            Easy Integration for Every Store
+          </h2>
+          <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+            Whether you're on Shopify or have a custom website, we've got you covered.
+          </p>
+        </div>
+        
+        <div className="grid lg:grid-cols-2 gap-12">
+          {/* Shopify Integration */}
+          <div className="bg-gradient-to-br from-green-50 to-green-100 rounded-3xl p-8 relative overflow-hidden">
+            <div className="absolute top-0 right-0 w-32 h-32 bg-green-200/50 rounded-full -translate-y-16 translate-x-16" />
+            <div className="relative z-10">
+              <div className="flex items-center gap-4 mb-6">
+                <div className="w-12 h-12 bg-green-500 rounded-xl flex items-center justify-center">
+                  <Zap className="w-6 h-6 text-white" />
+                </div>
+                <h3 className="text-2xl font-heading font-bold text-gray-900">Shopify Store</h3>
+              </div>
+              
+              <p className="text-gray-700 mb-6 text-lg leading-relaxed">
+                Install Bizmis directly from the Shopify App Store. One-click setup, no coding required.
+              </p>
+              
+              <div className="space-y-3 mb-8">
+                <div className="flex items-center text-gray-700">
+                  <div className="w-2 h-2 bg-green-500 rounded-full mr-3" />
+                  <span>1-minute installation</span>
+                </div>
+                <div className="flex items-center text-gray-700">
+                  <div className="w-2 h-2 bg-green-500 rounded-full mr-3" />
+                  <span>Automatic product sync</span>
+                </div>
+                <div className="flex items-center text-gray-700">
+                  <div className="w-2 h-2 bg-green-500 rounded-full mr-3" />
+                  <span>Ready-to-use templates</span>
+                </div>
+              </div>
+              
+              <Button variant="warm" size="lg" className="group">
+                Install from App Store
+                <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+              </Button>
+            </div>
+          </div>
+          
+          {/* Custom Website */}
+          <div className="bg-gradient-to-br from-blue-50 to-purple-100 rounded-3xl p-8 relative overflow-hidden">
+            <div className="absolute top-0 right-0 w-32 h-32 bg-purple-200/50 rounded-full -translate-y-16 translate-x-16" />
+            <div className="relative z-10">
+              <div className="flex items-center gap-4 mb-6">
+                <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-purple-500 rounded-xl flex items-center justify-center">
+                  <Settings className="w-6 h-6 text-white" />
+                </div>
+                <h3 className="text-2xl font-heading font-bold text-gray-900">Custom Website</h3>
+              </div>
+              
+              <p className="text-gray-700 mb-6 text-lg leading-relaxed">
+                Tailored integration for your unique website. We assess and customize everything to fit perfectly.
+              </p>
+              
+              <div className="space-y-3 mb-8">
+                <div className="flex items-center text-gray-700">
+                  <div className="w-2 h-2 bg-purple-500 rounded-full mr-3" />
+                  <span>Custom assessment</span>
+                </div>
+                <div className="flex items-center text-gray-700">
+                  <div className="w-2 h-2 bg-purple-500 rounded-full mr-3" />
+                  <span>Personalized setup</span>
+                </div>
+                <div className="flex items-center text-gray-700">
+                  <div className="w-2 h-2 bg-purple-500 rounded-full mr-3" />
+                  <span>Dedicated support</span>
+                </div>
+              </div>
+              
+              <Button variant="outline" size="lg" className="group border-purple-200 text-purple-700 hover:bg-purple-50">
+                Get Custom Quote
+                <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+              </Button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+};
+
+export default Integration;
