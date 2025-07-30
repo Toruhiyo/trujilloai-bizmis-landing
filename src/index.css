@@ -19,39 +19,39 @@ All colors MUST be HSL.
     --popover-foreground: 35 30% 15%;
 
     /* Primary - Light Yellow-Apricot */
-    --primary: 35 95% 58%;
+    --primary: 35 100% 55%;
     --primary-foreground: 0 0% 100%;
-    --primary-light: 35 95% 72%;
-    --primary-dark: 35 95% 48%;
+    --primary-light: 35 100% 68%;
+    --primary-dark: 35 100% 42%;
 
     /* Secondary - Warm complement */
-    --secondary: 35 35% 96%;
-    --secondary-foreground: 35 40% 20%;
+    --secondary: 35 45% 95%;
+    --secondary-foreground: 35 50% 18%;
 
-    --muted: 35 30% 95%;
-    --muted-foreground: 35 25% 45%;
+    --muted: 35 40% 94%;
+    --muted-foreground: 35 35% 42%;
 
-    --accent: 35 90% 85%;
-    --accent-foreground: 35 40% 20%;
+    --accent: 35 100% 82%;
+    --accent-foreground: 35 50% 18%;
 
-    --destructive: 0 84% 60%;
+    --destructive: 0 90% 58%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 35 30% 82%;
-    --input: 35 25% 88%;
-    --ring: 35 95% 58%;
+    --border: 35 40% 78%;
+    --input: 35 35% 85%;
+    --ring: 35 100% 55%;
 
     /* Hero background to match image */
-    --hero-bg: 35 95% 72%;
-    --hero-gradient: linear-gradient(135deg, hsl(35 95% 72%), hsl(35 95% 65%), hsl(30 95% 58%));
+    --hero-bg: 35 100% 68%;
+    --hero-gradient: linear-gradient(135deg, hsl(35 100% 68%), hsl(30 100% 62%), hsl(40 100% 55%), hsl(35 100% 48%));
     
     /* Custom gradients */
-    --gradient-warm: linear-gradient(135deg, hsl(35 95% 58%), hsl(35 95% 72%), hsl(40 95% 65%));
-    --gradient-subtle: linear-gradient(180deg, hsl(35 25% 98%), hsl(35 20% 94%));
+    --gradient-warm: linear-gradient(135deg, hsl(35 100% 55%), hsl(30 100% 65%), hsl(40 100% 60%), hsl(35 100% 72%));
+    --gradient-subtle: linear-gradient(180deg, hsl(35 30% 98%), hsl(35 25% 92%), hsl(30 30% 95%));
 
     /* Shadows with brand color */
-    --shadow-brand: 0 12px 35px -8px hsl(35 95% 58% / 0.4);
-    --shadow-soft: 0 6px 25px -6px hsl(35 95% 58% / 0.25);
+    --shadow-brand: 0 15px 40px -5px hsl(35 100% 55% / 0.5);
+    --shadow-soft: 0 8px 30px -4px hsl(35 100% 55% / 0.3);
 
     --radius: 1rem;
 
