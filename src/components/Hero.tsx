@@ -1,111 +1,148 @@
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Play } from "lucide-react";
+import { ArrowRight, Play, Sparkles } from "lucide-react";
+import { useState, useEffect } from "react";
+import Scene3D from "./3d/Scene3D";
+import ParticleField from "./3d/ParticleField";
 
 const Hero = () => {
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  const [selectedAI, setSelectedAI] = useState<string | null>(null);
+
+  useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      setMousePosition({
+        x: e.clientX - window.innerWidth / 2,
+        y: e.clientY - window.innerHeight / 2,
+      });
+    };
+
+    window.addEventListener("mousemove", handleMouseMove);
+    return () => window.removeEventListener("mousemove", handleMouseMove);
+  }, []);
+
+  const handleAIClick = (type: string) => {
+    setSelectedAI(type);
+    setTimeout(() => setSelectedAI(null), 2000);
+  };
+
   return (
-    <section className="relative min-h-screen bg-hero-gradient flex items-center overflow-hidden pt-16">
-      {/* Background decorative elements */}
-      <div className="absolute inset-0 bg-gradient-to-br from-primary-light/20 to-primary/30" />
-      
-      {/* Decorative Avatar Placeholders - Responsive */}
-      <div className="absolute top-16 left-4 lg:left-8 w-16 lg:w-20 h-16 lg:h-20 bg-white/20 rounded-full blur-sm animate-pulse" 
-           title="Placeholder for cute 3D avatar - Happy Customer browsing" />
-      <div className="absolute top-32 lg:top-40 right-8 lg:right-16 w-12 lg:w-16 h-12 lg:h-16 bg-white/15 rounded-full blur-sm animate-pulse delay-200" 
-           title="Placeholder for cute 3D avatar - Sales Assistant helping" />
-      <div className="absolute bottom-32 lg:bottom-40 left-8 lg:left-16 w-14 lg:w-18 h-14 lg:h-18 bg-white/10 rounded-full blur-sm animate-pulse delay-500" 
-           title="Placeholder for cute 3D avatar - Support Representative" />
-      <div className="absolute bottom-16 lg:bottom-24 right-12 lg:right-24 w-10 lg:w-14 h-10 lg:h-14 bg-white/25 rounded-full blur-sm animate-pulse delay-700" 
-           title="Placeholder for cute 3D avatar - Analytics Expert" />
-      
-      {/* Descriptive Avatar Placeholders - Responsive */}
-      <div className="absolute top-48 lg:top-64 left-8 lg:left-32 w-24 lg:w-32 h-14 lg:h-16 bg-white/30 border-2 border-dashed border-white/50 rounded-lg flex items-center justify-center animate-pulse delay-1000">
-        <span className="text-xs text-white font-body text-center px-1 lg:px-2">Store Owner Avatar</span>
+    <section className="relative min-h-screen particle-bg flex items-center overflow-hidden">
+      {/* 3D Scene Background */}
+      <div className="absolute inset-0 z-0">
+        <Scene3D mousePosition={mousePosition} onAIClick={handleAIClick} />
       </div>
-      <div className="absolute bottom-48 lg:bottom-64 right-4 lg:right-8 w-24 lg:w-28 h-14 lg:h-16 bg-white/20 border-2 border-dashed border-white/40 rounded-lg flex items-center justify-center animate-pulse delay-1200">
-        <span className="text-xs text-white font-body text-center px-1 lg:px-2">Satisfied Customer Avatar</span>
-      </div>
+      {/* Floating AI Info Cards */}
+      {selectedAI && (
+        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-30">
+          <div className="bg-card/90 backdrop-blur-md rounded-2xl p-6 neon-border max-w-md">
+            <h3 className="text-xl font-heading font-bold text-primary glow-text mb-2">
+              {selectedAI === "sales" && "💼 Sales AI Assistant"}
+              {selectedAI === "support" && "🎧 Support AI Assistant"}
+              {selectedAI === "analytics" && "📊 Analytics AI Assistant"}
+            </h3>
+            <p className="text-muted-foreground">
+              {selectedAI === "sales" && "Boost conversions with personalized product recommendations and smart upselling."}
+              {selectedAI === "support" && "Provide 24/7 customer support with human-like conversations and instant responses."}
+              {selectedAI === "analytics" && "Deep insights into customer behavior with real-time analytics and session replays."}
+            </p>
+          </div>
+        </div>
+      )}
       
-      <div className="container mx-auto px-6 relative z-10">
+      <div className="container mx-auto px-6 relative z-20">
         <div className="grid lg:grid-cols-2 gap-16 xl:gap-20 items-center">
           {/* Left Content */}
-          <div className="space-y-8">
+          <div className="space-y-8 parallax-layer" 
+               style={{ transform: `translateX(${mousePosition.x * 0.02}px)` }}>
             <div className="space-y-4">
-              <h1 className="text-5xl lg:text-6xl xl:text-7xl font-heading font-bold text-white leading-tight">
-                Meet Your Store's
-                <span className="block text-white/90">AI Assistant</span>
+              <h1 className="text-5xl lg:text-6xl xl:text-7xl font-heading font-bold text-foreground leading-tight glow-text">
+                Experience the Future of
+                <span className="block bg-gradient-neon bg-clip-text text-transparent">AI Commerce</span>
               </h1>
-              <p className="text-xl lg:text-2xl text-white/80 font-body max-w-2xl">
-                Transform your e-commerce with cute 3D AI assistants that boost sales, 
-                provide 24/7 support, and understand your customers.
+              <p className="text-xl lg:text-2xl text-muted-foreground font-body max-w-2xl">
+                Interact with floating 3D AI assistants that transform your e-commerce 
+                with immersive experiences and intelligent automation.
               </p>
             </div>
             
             <div className="flex flex-col sm:flex-row gap-4">
               <Button 
-                variant="hero" 
                 size="xl" 
-                className="group"
+                className="group bg-primary hover:bg-primary-light text-primary-foreground shadow-neon"
               >
-                Get Started Free
-                <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                <Sparkles className="w-5 h-5 mr-2" />
+                Enter 3D Experience
+                <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
               </Button>
               
               <Button 
                 variant="outline" 
                 size="xl" 
-                className="group bg-white/10 border-white/30 text-white hover:bg-white/20"
+                className="group neon-border bg-card/10 backdrop-blur-sm text-foreground hover:bg-card/20"
               >
-                <Play className="w-5 h-5" />
+                <Play className="w-5 h-5 mr-2" />
                 Watch Demo
               </Button>
             </div>
             
             <div className="grid grid-cols-2 gap-6 max-w-md">
-              <div className="bg-gradient-to-r from-green-500/20 to-green-600/20 backdrop-blur-sm rounded-2xl p-4 border border-green-400/30">
+              <div className="bg-card/20 backdrop-blur-md rounded-2xl p-4 neon-border floating-3d">
                 <div className="flex items-center gap-3">
-                  <div className="w-3 h-3 bg-green-400 rounded-full animate-pulse" />
+                  <div className="w-3 h-3 bg-primary rounded-full animate-pulse" />
                   <div>
-                    <div className="text-white font-heading font-semibold text-sm">Instant Setup</div>
-                    <div className="text-white/70 font-body text-xs">Ready in minutes</div>
+                    <div className="text-foreground font-heading font-semibold text-sm">3D Interactive</div>
+                    <div className="text-muted-foreground font-body text-xs">Click & explore</div>
                   </div>
                 </div>
               </div>
-              <div className="bg-gradient-to-r from-blue-500/20 to-blue-600/20 backdrop-blur-sm rounded-2xl p-4 border border-blue-400/30">
+              <div className="bg-card/20 backdrop-blur-md rounded-2xl p-4 neon-border floating-3d">
                 <div className="flex items-center gap-3">
-                  <div className="w-3 h-3 bg-blue-400 rounded-full animate-pulse" />
+                  <div className="w-3 h-3 bg-secondary rounded-full animate-pulse" />
                   <div>
-                    <div className="text-white font-heading font-semibold text-sm">Always Online</div>
-                    <div className="text-white/70 font-body text-xs">24/7 assistance</div>
+                    <div className="text-foreground font-heading font-semibold text-sm">AI Powered</div>
+                    <div className="text-muted-foreground font-body text-xs">Smart automation</div>
                   </div>
                 </div>
               </div>
             </div>
           </div>
           
-          {/* Right Content - Image */}
-          <div className="relative lg:pl-8">
-            {/* Main Image - Made bigger */}
-            <div className="relative z-10">
-              <img 
-                src="/lovable-uploads/8bb3d8ae-b65a-41cb-96b6-ae21a9c0269f.png" 
-                alt="Bizmis AI Assistants - Sales, Support, and Analytics team"
-                className="w-full h-auto max-w-2xl mx-auto drop-shadow-2xl"
-              />
+          {/* Right Content - Interactive Guide */}
+          <div className="relative lg:pl-8 parallax-layer" 
+               style={{ transform: `translateX(${mousePosition.x * -0.01}px) translateY(${mousePosition.y * 0.01}px)` }}>
+            
+            {/* 3D Interaction Guide */}
+            <div className="bg-card/30 backdrop-blur-md rounded-3xl p-8 neon-border">
+              <h3 className="text-2xl font-heading font-bold text-foreground mb-6 glow-text">
+                🎯 Interactive Controls
+              </h3>
+              
+              <div className="space-y-4">
+                <div className="flex items-center gap-4 p-3 bg-card/20 rounded-xl">
+                  <div className="w-2 h-2 bg-primary rounded-full animate-pulse" />
+                  <span className="text-muted-foreground">Click 3D AI assistants to learn more</span>
+                </div>
+                <div className="flex items-center gap-4 p-3 bg-card/20 rounded-xl">
+                  <div className="w-2 h-2 bg-secondary rounded-full animate-pulse" />
+                  <span className="text-muted-foreground">Drag to rotate the 3D scene</span>
+                </div>
+                <div className="flex items-center gap-4 p-3 bg-card/20 rounded-xl">
+                  <div className="w-2 h-2 bg-accent rounded-full animate-pulse" />
+                  <span className="text-muted-foreground">Scroll to zoom in/out</span>
+                </div>
+              </div>
             </div>
             
-            {/* Floating elements - positioned to not overlap */}
-            <div className="absolute -top-6 -right-6 w-16 lg:w-24 h-16 lg:h-24 bg-white/20 rounded-full blur-xl animate-pulse" />
-            <div className="absolute -bottom-6 lg:-bottom-10 -left-6 lg:-left-10 w-20 lg:w-32 h-20 lg:h-32 bg-white/10 rounded-full blur-2xl animate-pulse delay-300" />
-            
-            {/* Stats floating cards - positioned in hero near the image */}
-            <div className="absolute top-8 lg:top-12 -left-8 lg:-left-12 bg-white/95 backdrop-blur-sm rounded-xl p-3 shadow-brand animate-bounce z-20">
-              <div className="text-lg lg:text-2xl font-bold text-primary font-heading">+47%</div>
-              <div className="text-xs lg:text-sm text-gray-600 font-body">Sales Increase</div>
-            </div>
-            
-            <div className="absolute bottom-16 lg:bottom-20 -right-8 lg:-right-12 bg-white/95 backdrop-blur-sm rounded-xl p-3 shadow-brand animate-bounce delay-200 z-20">
-              <div className="text-lg lg:text-2xl font-bold text-primary font-heading">24/7</div>
-              <div className="text-xs lg:text-sm text-gray-600 font-body">AI Support</div>
+            {/* Performance Stats */}
+            <div className="mt-8 grid grid-cols-2 gap-4">
+              <div className="bg-card/20 backdrop-blur-sm rounded-xl p-4 neon-border floating-3d">
+                <div className="text-2xl font-bold text-primary glow-text">98%</div>
+                <div className="text-sm text-muted-foreground">User Engagement</div>
+              </div>
+              <div className="bg-card/20 backdrop-blur-sm rounded-xl p-4 neon-border floating-3d">
+                <div className="text-2xl font-bold text-secondary glow-text">3D</div>
+                <div className="text-sm text-muted-foreground">AI Assistants</div>
+              </div>
             </div>
             
           </div>

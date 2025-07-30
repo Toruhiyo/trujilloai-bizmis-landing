@@ -1,53 +1,67 @@
-import { ShoppingCart, MessageCircle, TrendingUp } from "lucide-react";
+import { ShoppingCart, MessageCircle, TrendingUp, Cpu, Zap, Eye } from "lucide-react";
+import { useState, useEffect } from "react";
 
 const Features = () => {
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  const [hoveredFeature, setHoveredFeature] = useState<number | null>(null);
+
+  useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      setMousePosition({
+        x: e.clientX - window.innerWidth / 2,
+        y: e.clientY - window.innerHeight / 2,
+      });
+    };
+
+    window.addEventListener("mousemove", handleMouseMove);
+    return () => window.removeEventListener("mousemove", handleMouseMove);
+  }, []);
+
   const features = [
     {
       icon: ShoppingCart,
-      title: "Boost Sales Conversion",
-      description: "Personalized shopping experience with custom avatars that guide customers to the perfect products.",
-      benefits: ["Custom voice & appearance", "Product recommendations", "Cart optimization"],
-      color: "from-green-400 to-green-600"
+      secondaryIcon: Zap,
+      title: "3D Sales Assistant",
+      description: "Interactive 3D avatars that engage customers with personalized shopping experiences and real-time product recommendations.",
+      benefits: ["AI-powered interactions", "3D product visualization", "Smart upselling algorithms"],
+      color: "text-primary",
+      glowColor: "shadow-neon"
     },
     {
       icon: MessageCircle,
-      title: "24/7 Customer Support",
-      description: "Instant human-like assistance that never sleeps, handling queries and complaints with warmth.",
-      benefits: ["Instant responses", "Human-like conversations", "Issue resolution"],
-      color: "from-blue-400 to-blue-600"
+      secondaryIcon: Cpu,
+      title: "Immersive Support Bot",
+      description: "Floating support assistants that provide instant help through natural conversations and spatial interfaces.",
+      benefits: ["24/7 availability", "Context-aware responses", "Multi-dimensional help"],
+      color: "text-secondary",
+      glowColor: "shadow-soft"
     },
     {
       icon: TrendingUp,
-      title: "Smart Analytics",
-      description: "Deep insights into customer behavior with session replays and tagged conversations.",
-      benefits: ["Session recordings", "Conversation analytics", "Growth insights"],
-      color: "from-purple-400 to-purple-600"
+      secondaryIcon: Eye,
+      title: "Holographic Analytics",
+      description: "Visualize customer data in 3D space with interactive charts and real-time behavioral insights.",
+      benefits: ["3D data visualization", "Predictive analytics", "Spatial heat maps"],
+      color: "text-accent",
+      glowColor: "shadow-card"
     }
   ];
 
   return (
-    <section className="py-20 bg-gradient-subtle relative overflow-hidden">
-      {/* Background Avatar Placeholders - Responsive */}
-      <div className="absolute top-10 left-4 lg:left-10 w-20 lg:w-24 h-20 lg:h-24 bg-primary/10 rounded-full blur-xl animate-pulse" 
-           title="Placeholder for cute 3D avatar - Feature showcase avatar 1" />
-      <div className="absolute bottom-10 right-4 lg:right-10 w-24 lg:w-32 h-24 lg:h-32 bg-primary/5 rounded-full blur-2xl animate-pulse delay-500" 
-           title="Placeholder for cute 3D avatar - Feature showcase avatar 2" />
+    <section className="py-20 particle-bg relative overflow-hidden">
+      {/* Floating 3D Elements */}
+      <div className="absolute top-10 left-10 w-32 h-32 bg-primary/20 rounded-full blur-2xl floating-3d" />
+      <div className="absolute bottom-10 right-10 w-24 h-24 bg-secondary/20 rounded-full blur-xl floating-3d" />
+      <div className="absolute top-1/2 left-1/4 w-16 h-16 bg-accent/20 rounded-full blur-lg floating-3d" />
       
-      {/* Descriptive Avatar Placeholders - Responsive */}
-      <div className="absolute top-32 right-4 lg:right-20 w-24 lg:w-32 h-16 lg:h-20 bg-gray-200 border-2 border-dashed border-gray-400 rounded-lg flex items-center justify-center">
-        <span className="text-xs text-gray-600 font-body text-center px-1 lg:px-2">Cute 3D Sales Avatar</span>
-      </div>
-      <div className="absolute bottom-32 left-4 lg:left-20 w-24 lg:w-32 h-16 lg:h-20 bg-gray-200 border-2 border-dashed border-gray-400 rounded-lg flex items-center justify-center">
-        <span className="text-xs text-gray-600 font-body text-center px-1 lg:px-2">Support Assistant Avatar</span>
-      </div>
-      
-      <div className="container mx-auto px-6 relative z-10">
-        <div className="text-center mb-16">
-          <h2 className="text-4xl lg:text-5xl font-heading font-bold text-foreground mb-6">
-            Your AI Store Assistant Does It All
+      <div className="container mx-auto px-6 relative z-20">
+        <div className="text-center mb-16 parallax-layer" 
+             style={{ transform: `translateY(${mousePosition.y * 0.01}px)` }}>
+          <h2 className="text-4xl lg:text-5xl font-heading font-bold text-foreground mb-6 glow-text">
+            Experience the <span className="bg-gradient-neon bg-clip-text text-transparent">Future</span> of AI Commerce
           </h2>
           <p className="text-xl text-muted-foreground font-body max-w-3xl mx-auto">
-            Just like having the best sales team in your physical store, but available 24/7 for your online customers.
+            Step into a new dimension where AI assistants exist in 3D space, providing immersive and intelligent customer experiences.
           </p>
         </div>
         
@@ -55,20 +69,29 @@ const Features = () => {
           {features.map((feature, index) => (
             <div 
               key={index}
-              className="group bg-white rounded-2xl p-8 shadow-soft hover:shadow-brand transition-all duration-300 hover:-translate-y-2 relative"
+              className="group bg-card/30 backdrop-blur-md rounded-3xl p-8 neon-border transition-all duration-500 hover:scale-105 relative overflow-hidden"
+              style={{ 
+                transform: `translateX(${mousePosition.x * (index - 1) * 0.01}px) translateY(${mousePosition.y * 0.005}px)` 
+              }}
+              onMouseEnter={() => setHoveredFeature(index)}
+              onMouseLeave={() => setHoveredFeature(null)}
             >
-              {/* Avatar placeholder for analytics section only - Responsive */}
-              {index === 2 && (
-                <div className="absolute -bottom-4 lg:-bottom-6 -right-4 lg:-right-6 w-24 lg:w-28 h-14 lg:h-16 bg-gray-200 border-2 border-dashed border-gray-400 rounded-lg flex items-center justify-center">
-                  <span className="text-xs text-gray-600 font-body text-center px-1 lg:px-2">Analytics Expert Avatar</span>
-                </div>
-              )}
+              {/* Background glow effect */}
+              <div className={`absolute inset-0 bg-gradient-to-r ${feature.color.replace('text-', 'from-')}/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500`} />
               
-              <div className={`w-16 h-16 rounded-xl bg-gradient-to-r ${feature.color} flex items-center justify-center mb-6 group-hover:scale-110 transition-transform`}>
-                <feature.icon className="w-8 h-8 text-white" />
+              {/* Floating icon container */}
+              <div className="relative z-10 mb-6">
+                <div className={`w-20 h-20 rounded-2xl bg-gradient-neon flex items-center justify-center mb-4 group-hover:scale-110 transition-all duration-300 ${feature.glowColor}`}>
+                  <feature.icon className="w-10 h-10 text-background" />
+                </div>
+                
+                {/* Secondary floating icon */}
+                <div className={`absolute -top-2 -right-2 w-8 h-8 rounded-full bg-card/80 backdrop-blur-sm flex items-center justify-center ${feature.color} floating-3d`}>
+                  <feature.secondaryIcon className="w-4 h-4" />
+                </div>
               </div>
               
-              <h3 className="text-2xl font-heading font-semibold text-foreground mb-4">
+              <h3 className={`text-2xl font-heading font-bold mb-4 ${feature.color} glow-text`}>
                 {feature.title}
               </h3>
               
@@ -76,14 +99,25 @@ const Features = () => {
                 {feature.description}
               </p>
               
-              <ul className="space-y-2">
+              <ul className="space-y-3">
                 {feature.benefits.map((benefit, idx) => (
-                  <li key={idx} className="flex items-center text-muted-foreground">
-                    <div className="w-2 h-2 bg-primary rounded-full mr-3" />
+                  <li key={idx} className="flex items-center text-muted-foreground group-hover:text-foreground transition-colors">
+                    <div className={`w-2 h-2 rounded-full mr-3 ${feature.color.replace('text-', 'bg-')} animate-pulse`} />
                     <span className="text-sm font-medium font-body">{benefit}</span>
                   </li>
                 ))}
               </ul>
+              
+              {/* Interactive hover effect */}
+              {hoveredFeature === index && (
+                <div className="absolute inset-0 pointer-events-none">
+                  <div className="absolute top-4 right-4 text-6xl opacity-20 floating-3d">
+                    {index === 0 && "🛒"}
+                    {index === 1 && "🎧"}
+                    {index === 2 && "📊"}
+                  </div>
+                </div>
+              )}
             </div>
           ))}
         </div>
