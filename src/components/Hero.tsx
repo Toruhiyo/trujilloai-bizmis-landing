@@ -1,113 +1,97 @@
+import { ArrowRight, MessageCircle, Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Play } from "lucide-react";
 
 const Hero = () => {
   return (
-    <section className="relative min-h-screen bg-hero-gradient flex items-center overflow-hidden pt-16">
-      {/* Background decorative elements */}
-      <div className="absolute inset-0 bg-gradient-to-br from-primary-light/20 to-primary/30" />
-      
-      {/* Decorative Avatar Placeholders - Responsive */}
-      <div className="absolute top-16 left-4 lg:left-8 w-16 lg:w-20 h-16 lg:h-20 bg-white/20 rounded-full blur-sm animate-pulse" 
-           title="Placeholder for cute 3D avatar - Happy Customer browsing" />
-      <div className="absolute top-32 lg:top-40 right-8 lg:right-16 w-12 lg:w-16 h-12 lg:h-16 bg-white/15 rounded-full blur-sm animate-pulse delay-200" 
-           title="Placeholder for cute 3D avatar - Sales Assistant helping" />
-      <div className="absolute bottom-32 lg:bottom-40 left-8 lg:left-16 w-14 lg:w-18 h-14 lg:h-18 bg-white/10 rounded-full blur-sm animate-pulse delay-500" 
-           title="Placeholder for cute 3D avatar - Support Representative" />
-      <div className="absolute bottom-16 lg:bottom-24 right-12 lg:right-24 w-10 lg:w-14 h-10 lg:h-14 bg-white/25 rounded-full blur-sm animate-pulse delay-700" 
-           title="Placeholder for cute 3D avatar - Analytics Expert" />
-      
-      {/* Descriptive Avatar Placeholders - Responsive */}
-      <div className="absolute top-48 lg:top-64 left-8 lg:left-32 w-24 lg:w-32 h-14 lg:h-16 bg-white/30 border-2 border-dashed border-white/50 rounded-lg flex items-center justify-center animate-pulse delay-1000">
-        <span className="text-xs text-white font-body text-center px-1 lg:px-2">Store Owner Avatar</span>
-      </div>
-      <div className="absolute bottom-48 lg:bottom-64 right-4 lg:right-8 w-24 lg:w-28 h-14 lg:h-16 bg-white/20 border-2 border-dashed border-white/40 rounded-lg flex items-center justify-center animate-pulse delay-1200">
-        <span className="text-xs text-white font-body text-center px-1 lg:px-2">Satisfied Customer Avatar</span>
+    <section className="relative min-h-screen bg-gradient-subtle overflow-hidden">
+      {/* Story Chapter Title */}
+      <div className="absolute top-8 left-1/2 transform -translate-x-1/2 z-20">
+        <div className="bg-white rounded-full px-6 py-2 shadow-panel border-2 border-primary">
+          <span className="text-sm font-heading font-bold text-primary">Chapter 1: The Beginning</span>
+        </div>
       </div>
       
-      <div className="container mx-auto px-6 relative z-10">
-        <div className="grid lg:grid-cols-2 gap-16 xl:gap-20 items-center">
-          {/* Left Content */}
-          <div className="space-y-8">
-            <div className="space-y-4">
-              <h1 className="text-5xl lg:text-6xl xl:text-7xl font-heading font-bold text-white leading-tight">
-                Meet Your Store's
-                <span className="block text-white/90">AI Assistant</span>
-              </h1>
-              <p className="text-xl lg:text-2xl text-white/80 font-body max-w-2xl">
-                Transform your e-commerce with cute 3D AI assistants that boost sales, 
-                provide 24/7 support, and understand your customers.
-              </p>
-            </div>
+      <div className="container mx-auto px-6 py-20 relative z-10">
+        {/* Comic Panel Layout */}
+        <div className="max-w-6xl mx-auto">
+          {/* Opening Scene */}
+          <div className="bg-gradient-panel rounded-3xl p-8 mb-8 shadow-panel border-2 border-border relative">
+            {/* Comic panel border effect */}
+            <div className="absolute -top-2 -left-2 w-full h-full bg-primary/20 rounded-3xl -z-10" />
             
-            <div className="flex flex-col sm:flex-row gap-4">
-              <Button 
-                variant="hero" 
-                size="xl" 
-                className="group"
-              >
-                Get Started Free
-                <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-              </Button>
-              
-              <Button 
-                variant="outline" 
-                size="xl" 
-                className="group bg-white/10 border-white/30 text-white hover:bg-white/20"
-              >
-                <Play className="w-5 h-5" />
-                Watch Demo
-              </Button>
-            </div>
-            
-            <div className="grid grid-cols-2 gap-6 max-w-md">
-              <div className="bg-gradient-to-r from-green-500/20 to-green-600/20 backdrop-blur-sm rounded-2xl p-4 border border-green-400/30">
-                <div className="flex items-center gap-3">
-                  <div className="w-3 h-3 bg-green-400 rounded-full animate-pulse" />
-                  <div>
-                    <div className="text-white font-heading font-semibold text-sm">Instant Setup</div>
-                    <div className="text-white/70 font-body text-xs">Ready in minutes</div>
+            <div className="grid lg:grid-cols-2 gap-12 items-center">
+              {/* Story Text */}
+              <div className="space-y-6">
+                <div className="space-y-4">
+                  <h1 className="text-4xl lg:text-6xl font-heading font-bold text-foreground leading-tight">
+                    Meet Emma, Your
+                    <span className="block text-primary">AI Store Assistant</span>
+                  </h1>
+                  
+                  {/* Speech Bubble */}
+                  <div className="relative bg-gradient-speech rounded-2xl p-6 shadow-speech border border-primary/20">
+                    <div className="absolute -bottom-4 left-8 w-0 h-0 border-l-[20px] border-l-transparent border-r-[20px] border-r-transparent border-t-[20px] border-t-white" />
+                    <p className="text-lg text-foreground font-body italic">
+                      "Hi! I'm Emma, and I'm here to help your customers find exactly what they need. Let me show you what I can do..."
+                    </p>
                   </div>
                 </div>
+                
+                {/* Action Buttons */}
+                <div className="flex flex-col sm:flex-row gap-4 pt-4">
+                  <Button 
+                    size="lg" 
+                    className="text-lg px-8 py-6 bg-primary hover:bg-primary-dark text-primary-foreground shadow-soft transition-all duration-300 hover:scale-105"
+                  >
+                    Start Emma's Story
+                    <ArrowRight className="ml-2 w-5 h-5" />
+                  </Button>
+                  <Button 
+                    variant="outline" 
+                    size="lg" 
+                    className="text-lg px-8 py-6 border-2 border-primary text-primary hover:bg-primary hover:text-primary-foreground transition-all duration-300"
+                  >
+                    Watch Her in Action
+                  </Button>
+                </div>
               </div>
-              <div className="bg-gradient-to-r from-blue-500/20 to-blue-600/20 backdrop-blur-sm rounded-2xl p-4 border border-blue-400/30">
-                <div className="flex items-center gap-3">
-                  <div className="w-3 h-3 bg-blue-400 rounded-full animate-pulse" />
-                  <div>
-                    <div className="text-white font-heading font-semibold text-sm">Always Online</div>
-                    <div className="text-white/70 font-body text-xs">24/7 assistance</div>
+              
+              {/* Character Image */}
+              <div className="relative">
+                <div className="bg-white rounded-3xl p-6 shadow-panel">
+                  <img 
+                    src="/lovable-uploads/8bb3d8ae-b65a-41cb-96b6-ae21a9c0269f.png" 
+                    alt="Emma and her AI assistant team"
+                    className="w-full h-auto rounded-2xl"
+                  />
+                </div>
+                
+                {/* Floating dialogue bubbles */}
+                <div className="absolute -top-4 -right-4 bg-white rounded-xl p-3 shadow-speech border border-accent/30">
+                  <div className="flex items-center gap-2">
+                    <MessageCircle className="w-4 h-4 text-accent" />
+                    <span className="text-sm font-body text-foreground">Hello there!</span>
+                  </div>
+                </div>
+                
+                <div className="absolute bottom-4 -left-4 bg-white rounded-xl p-3 shadow-speech border border-primary/30">
+                  <div className="flex items-center gap-2">
+                    <Users className="w-4 h-4 text-primary" />
+                    <span className="text-sm font-body text-foreground">Ready to help!</span>
                   </div>
                 </div>
               </div>
             </div>
           </div>
           
-          {/* Right Content - Image */}
-          <div className="relative lg:pl-8">
-            {/* Main Image - Made bigger */}
-            <div className="relative z-10">
-              <img 
-                src="/lovable-uploads/8bb3d8ae-b65a-41cb-96b6-ae21a9c0269f.png" 
-                alt="Bizmis AI Assistants - Sales, Support, and Analytics team"
-                className="w-full h-auto max-w-2xl mx-auto drop-shadow-2xl"
-              />
+          {/* Story Navigation */}
+          <div className="text-center">
+            <div className="inline-flex items-center gap-4 bg-white rounded-full px-6 py-3 shadow-soft border border-border">
+              <span className="text-sm font-body text-muted-foreground">Scroll down to continue Emma's journey</span>
+              <div className="w-6 h-6 bg-primary rounded-full animate-bounce flex items-center justify-center">
+                <ArrowRight className="w-3 h-3 text-white rotate-90" />
+              </div>
             </div>
-            
-            {/* Floating elements - positioned to not overlap */}
-            <div className="absolute -top-6 -right-6 w-16 lg:w-24 h-16 lg:h-24 bg-white/20 rounded-full blur-xl animate-pulse" />
-            <div className="absolute -bottom-6 lg:-bottom-10 -left-6 lg:-left-10 w-20 lg:w-32 h-20 lg:h-32 bg-white/10 rounded-full blur-2xl animate-pulse delay-300" />
-            
-            {/* Stats floating cards - positioned in hero near the image */}
-            <div className="absolute top-8 lg:top-12 -left-8 lg:-left-12 bg-white/95 backdrop-blur-sm rounded-xl p-3 shadow-brand animate-bounce z-20">
-              <div className="text-lg lg:text-2xl font-bold text-primary font-heading">+47%</div>
-              <div className="text-xs lg:text-sm text-gray-600 font-body">Sales Increase</div>
-            </div>
-            
-            <div className="absolute bottom-16 lg:bottom-20 -right-8 lg:-right-12 bg-white/95 backdrop-blur-sm rounded-xl p-3 shadow-brand animate-bounce delay-200 z-20">
-              <div className="text-lg lg:text-2xl font-bold text-primary font-heading">24/7</div>
-              <div className="text-xs lg:text-sm text-gray-600 font-body">AI Support</div>
-            </div>
-            
           </div>
         </div>
       </div>
