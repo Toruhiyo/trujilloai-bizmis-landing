@@ -77,7 +77,7 @@ export default {
 			},
 			fontFamily: {
 				'display': ['Poppins', 'Inter', 'system-ui', 'sans-serif'],
-				'body': ['Inter', 'system-ui', 'sans-serif'],
+				'body': ['DM Sans', 'Inter', 'system-ui', 'sans-serif'],
 				'heading': ['Poppins', 'Inter', 'system-ui', 'sans-serif']
 			},
 			borderRadius: {
