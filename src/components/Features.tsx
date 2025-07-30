@@ -1,144 +1,91 @@
-import { ShoppingCart, MessageCircle, TrendingUp, Star, Clock } from "lucide-react";
+import { ShoppingCart, MessageCircle, TrendingUp } from "lucide-react";
 
 const Features = () => {
-  const storyChapters = [
+  const features = [
     {
-      chapter: "Chapter 2",
-      title: "Emma Meets Sarah (The Shopper)",
-      character: "Emma",
-      dialogue: "I noticed you're looking at winter coats! I can help you find the perfect one based on your style and budget.",
-      customerResponse: "That would be amazing! I'm looking for something warm but stylish for work.",
-      outcome: "250% increase in conversion rate",
       icon: ShoppingCart,
-      bgColor: "bg-green-50",
-      borderColor: "border-green-200"
+      title: "Boost Sales Conversion",
+      description: "Personalized shopping experience with custom avatars that guide customers to the perfect products.",
+      benefits: ["Custom voice & appearance", "Product recommendations", "Cart optimization"],
+      color: "from-green-400 to-green-600"
     },
     {
-      chapter: "Chapter 3", 
-      title: "Emma Handles a Problem",
-      character: "Emma",
-      dialogue: "I see your order is delayed. Let me check that for you right away and provide an update!",
-      customerResponse: "Thank you! I was getting worried about my delivery.",
-      outcome: "24/7 instant support resolution",
       icon: MessageCircle,
-      bgColor: "bg-blue-50",
-      borderColor: "border-blue-200"
+      title: "24/7 Customer Support",
+      description: "Instant human-like assistance that never sleeps, handling queries and complaints with warmth.",
+      benefits: ["Instant responses", "Human-like conversations", "Issue resolution"],
+      color: "from-blue-400 to-blue-600"
     },
     {
-      chapter: "Chapter 4",
-      title: "Emma Learns & Improves",
-      character: "Emma",
-      dialogue: "I've analyzed 1,000+ customer conversations and I'm getting smarter every day!",
-      customerResponse: "The insights help me understand my customers better than ever.",
-      outcome: "Deep analytics & continuous learning",
       icon: TrendingUp,
-      bgColor: "bg-purple-50",
-      borderColor: "border-purple-200"
+      title: "Smart Analytics",
+      description: "Deep insights into customer behavior with session replays and tagged conversations.",
+      benefits: ["Session recordings", "Conversation analytics", "Growth insights"],
+      color: "from-purple-400 to-purple-600"
     }
   ];
 
   return (
     <section className="py-20 bg-gradient-subtle relative overflow-hidden">
+      {/* Background Avatar Placeholders - Responsive */}
+      <div className="absolute top-10 left-4 lg:left-10 w-20 lg:w-24 h-20 lg:h-24 bg-primary/10 rounded-full blur-xl animate-pulse" 
+           title="Placeholder for cute 3D avatar - Feature showcase avatar 1" />
+      <div className="absolute bottom-10 right-4 lg:right-10 w-24 lg:w-32 h-24 lg:h-32 bg-primary/5 rounded-full blur-2xl animate-pulse delay-500" 
+           title="Placeholder for cute 3D avatar - Feature showcase avatar 2" />
+      
+      {/* Descriptive Avatar Placeholders - Responsive */}
+      <div className="absolute top-32 right-4 lg:right-20 w-24 lg:w-32 h-16 lg:h-20 bg-gray-200 border-2 border-dashed border-gray-400 rounded-lg flex items-center justify-center">
+        <span className="text-xs text-gray-600 font-body text-center px-1 lg:px-2">Cute 3D Sales Avatar</span>
+      </div>
+      <div className="absolute bottom-32 left-4 lg:left-20 w-24 lg:w-32 h-16 lg:h-20 bg-gray-200 border-2 border-dashed border-gray-400 rounded-lg flex items-center justify-center">
+        <span className="text-xs text-gray-600 font-body text-center px-1 lg:px-2">Support Assistant Avatar</span>
+      </div>
+      
       <div className="container mx-auto px-6 relative z-10">
-        {/* Story Introduction */}
         <div className="text-center mb-16">
-          <div className="inline-block bg-white rounded-full px-6 py-2 shadow-panel border border-primary mb-6">
-            <span className="text-sm font-heading font-bold text-primary">Emma's Daily Adventures</span>
-          </div>
           <h2 className="text-4xl lg:text-5xl font-heading font-bold text-foreground mb-6">
-            A Day in the Life of Your AI Assistant
+            Your AI Store Assistant Does It All
           </h2>
           <p className="text-xl text-muted-foreground font-body max-w-3xl mx-auto">
-            Follow Emma through real customer interactions and see how she transforms your store experience.
+            Just like having the best sales team in your physical store, but available 24/7 for your online customers.
           </p>
         </div>
         
-        {/* Story Chapters as Comic Panels */}
-        <div className="space-y-12">
-          {storyChapters.map((story, index) => (
+        <div className="grid md:grid-cols-3 gap-8">
+          {features.map((feature, index) => (
             <div 
               key={index}
-              className={`relative ${story.bgColor} rounded-3xl p-8 shadow-panel border-2 ${story.borderColor} overflow-hidden`}
+              className="group bg-white rounded-2xl p-8 shadow-soft hover:shadow-brand transition-all duration-300 hover:-translate-y-2 relative"
             >
-              {/* Comic panel border effect */}
-              <div className="absolute -top-2 -right-2 w-full h-full bg-primary/10 rounded-3xl -z-10" />
-              
-              {/* Chapter number */}
-              <div className="absolute top-4 left-4">
-                <div className="bg-white rounded-full w-12 h-12 flex items-center justify-center shadow-soft">
-                  <story.icon className="w-6 h-6 text-primary" />
+              {/* Avatar placeholder for analytics section only - Responsive */}
+              {index === 2 && (
+                <div className="absolute -bottom-4 lg:-bottom-6 -right-4 lg:-right-6 w-24 lg:w-28 h-14 lg:h-16 bg-gray-200 border-2 border-dashed border-gray-400 rounded-lg flex items-center justify-center">
+                  <span className="text-xs text-gray-600 font-body text-center px-1 lg:px-2">Analytics Expert Avatar</span>
                 </div>
+              )}
+              
+              <div className={`w-16 h-16 rounded-xl bg-gradient-to-r ${feature.color} flex items-center justify-center mb-6 group-hover:scale-110 transition-transform`}>
+                <feature.icon className="w-8 h-8 text-white" />
               </div>
               
-              <div className="pt-8">
-                <div className="grid lg:grid-cols-2 gap-8 items-center">
-                  {/* Story Content */}
-                  <div className="space-y-6">
-                    <div>
-                      <div className="text-sm font-heading font-bold text-primary mb-2">{story.chapter}</div>
-                      <h3 className="text-2xl lg:text-3xl font-heading font-bold text-foreground mb-4">
-                        {story.title}
-                      </h3>
-                    </div>
-                    
-                    {/* Dialogue Bubbles */}
-                    <div className="space-y-4">
-                      {/* Emma's dialogue */}
-                      <div className="relative bg-gradient-speech rounded-2xl p-4 shadow-speech border border-primary/20 max-w-md">
-                        <div className="absolute -bottom-3 left-6 w-0 h-0 border-l-[15px] border-l-transparent border-r-[15px] border-r-transparent border-t-[15px] border-t-white" />
-                        <div className="flex items-start gap-3">
-                          <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center flex-shrink-0">
-                            <span className="text-xs font-bold text-white">E</span>
-                          </div>
-                          <p className="text-sm font-body text-foreground">"{story.dialogue}"</p>
-                        </div>
-                      </div>
-                      
-                      {/* Customer response */}
-                      <div className="relative bg-white rounded-2xl p-4 shadow-soft border border-border max-w-md ml-auto">
-                        <div className="absolute -bottom-3 right-6 w-0 h-0 border-l-[15px] border-l-transparent border-r-[15px] border-r-transparent border-t-[15px] border-t-white" />
-                        <div className="flex items-start gap-3">
-                          <div className="w-8 h-8 bg-accent rounded-full flex items-center justify-center flex-shrink-0">
-                            <span className="text-xs font-bold text-white">C</span>
-                          </div>
-                          <p className="text-sm font-body text-foreground">"{story.customerResponse}"</p>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  
-                  {/* Outcome Card */}
-                  <div className="bg-white rounded-2xl p-6 shadow-panel border border-border">
-                    <div className="text-center space-y-4">
-                      <div className="flex justify-center">
-                        <div className="flex items-center gap-1">
-                          {[...Array(5)].map((_, i) => (
-                            <Star key={i} className="w-5 h-5 text-yellow-400 fill-current" />
-                          ))}
-                        </div>
-                      </div>
-                      <h4 className="font-heading font-bold text-foreground text-lg">Result:</h4>
-                      <p className="text-primary font-body font-semibold text-lg">{story.outcome}</p>
-                      <div className="flex items-center justify-center gap-2 text-sm text-muted-foreground">
-                        <Clock className="w-4 h-4" />
-                        <span>Real customer interaction</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
+              <h3 className="text-2xl font-heading font-semibold text-foreground mb-4">
+                {feature.title}
+              </h3>
+              
+              <p className="text-muted-foreground font-body mb-6 leading-relaxed">
+                {feature.description}
+              </p>
+              
+              <ul className="space-y-2">
+                {feature.benefits.map((benefit, idx) => (
+                  <li key={idx} className="flex items-center text-muted-foreground">
+                    <div className="w-2 h-2 bg-primary rounded-full mr-3" />
+                    <span className="text-sm font-medium font-body">{benefit}</span>
+                  </li>
+                ))}
+              </ul>
             </div>
           ))}
-        </div>
-        
-        {/* Story Continuation */}
-        <div className="text-center mt-16">
-          <div className="inline-flex items-center gap-4 bg-white rounded-full px-8 py-4 shadow-panel border border-border">
-            <span className="font-body text-muted-foreground">Want to see Emma in action at your store?</span>
-            <div className="w-6 h-6 bg-primary rounded-full animate-pulse flex items-center justify-center">
-              <span className="text-xs font-bold text-white">→</span>
-            </div>
-          </div>
         </div>
       </div>
     </section>

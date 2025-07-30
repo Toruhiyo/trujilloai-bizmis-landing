@@ -8,53 +8,50 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
-    /* Comic/Story Theme Colors */
-    --background: 200 50% 98%;
-    --foreground: 220 15% 15%;
+    /* Bizmis Brand Colors - Light Yellow-Apricot Theme */
+    --background: 0 0% 100%;
+    --foreground: 35 30% 15%;
 
     --card: 0 0% 100%;
-    --card-foreground: 220 15% 15%;
+    --card-foreground: 35 30% 15%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 220 15% 15%;
+    --popover-foreground: 35 30% 15%;
 
-    /* Primary - Story Blue */
-    --primary: 220 90% 56%;
+    /* Primary - Light Yellow-Apricot */
+    --primary: 35 95% 58%;
     --primary-foreground: 0 0% 100%;
-    --primary-light: 220 85% 70%;
-    --primary-dark: 220 95% 45%;
+    --primary-light: 35 95% 72%;
+    --primary-dark: 35 95% 48%;
 
-    /* Secondary - Comic accent */
-    --secondary: 200 50% 95%;
-    --secondary-foreground: 220 20% 25%;
+    /* Secondary - Warm complement */
+    --secondary: 35 35% 96%;
+    --secondary-foreground: 35 40% 20%;
 
-    --muted: 200 30% 94%;
-    --muted-foreground: 220 10% 45%;
+    --muted: 35 30% 95%;
+    --muted-foreground: 35 25% 45%;
 
-    /* Accent - Speech bubble accent */
-    --accent: 350 85% 65%;
-    --accent-foreground: 0 0% 100%;
+    --accent: 35 90% 85%;
+    --accent-foreground: 35 40% 20%;
 
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 200 25% 85%;
-    --input: 200 25% 90%;
-    --ring: 220 90% 56%;
+    --border: 35 30% 82%;
+    --input: 35 25% 88%;
+    --ring: 35 95% 58%;
 
-    /* Story/Comic gradients */
-    --hero-bg: 200 50% 98%;
-    --hero-gradient: linear-gradient(135deg, hsl(200 50% 98%), hsl(220 30% 96%));
+    /* Hero background to match image */
+    --hero-bg: 35 95% 72%;
+    --hero-gradient: linear-gradient(135deg, hsl(35 95% 72%), hsl(35 95% 65%), hsl(30 95% 58%));
     
-    /* Custom gradients for storytelling */
-    --gradient-panel: linear-gradient(145deg, hsl(0 0% 100%), hsl(200 30% 98%));
-    --gradient-speech: linear-gradient(135deg, hsl(220 90% 96%), hsl(220 80% 98%));
-    --gradient-subtle: linear-gradient(180deg, hsl(200 50% 98%), hsl(200 30% 95%));
+    /* Custom gradients */
+    --gradient-warm: linear-gradient(135deg, hsl(35 95% 58%), hsl(35 95% 72%), hsl(40 95% 65%));
+    --gradient-subtle: linear-gradient(180deg, hsl(35 25% 98%), hsl(35 20% 94%));
 
-    /* Comic-style shadows */
-    --shadow-panel: 0 8px 30px -12px hsl(220 20% 20% / 0.12);
-    --shadow-speech: 0 4px 15px -6px hsl(220 90% 56% / 0.2);
-    --shadow-soft: 0 6px 25px -6px hsl(220 20% 20% / 0.08);
+    /* Shadows with brand color */
+    --shadow-brand: 0 12px 35px -8px hsl(35 95% 58% / 0.4);
+    --shadow-soft: 0 6px 25px -6px hsl(35 95% 58% / 0.25);
 
     --radius: 1rem;
 
