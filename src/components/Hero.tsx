@@ -7,6 +7,9 @@ const Hero = () => {
       {/* Background decorative elements */}
       <div className="absolute inset-0 bg-gradient-to-br from-primary-light/20 to-primary/30" />
       
+      {/* Soft horizon shadow for depth */}
+      <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-black/10 via-black/5 to-transparent" />
+      
       {/* Decorative Avatar Placeholders - Responsive */}
       <div className="absolute top-16 left-4 lg:left-8 w-16 lg:w-20 h-16 lg:h-20 bg-white/20 rounded-full blur-sm animate-pulse" 
            title="Placeholder for cute 3D avatar - Happy Customer browsing" />
