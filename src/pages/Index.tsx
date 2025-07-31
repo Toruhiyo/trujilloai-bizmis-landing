@@ -1,7 +1,7 @@
 import Navbar from "@/components/Navbar";
 import Hero from "@/components/Hero";
 import Features from "@/components/Features";
-import Setup from "@/components/Setup";
+import Integration from "@/components/Integration";
 import CTA from "@/components/CTA";
 import Footer from "@/components/Footer";
 
@@ -11,7 +11,7 @@ const Index = () => {
       <Navbar />
       <Hero />
       <Features />
-      <Setup />
+      <Integration />
       <CTA />
       <Footer />
     </div>
