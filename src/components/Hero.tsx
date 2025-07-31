@@ -27,35 +27,35 @@ const Hero = () => {
 
             {/* App Store Style Badges */}
             <div className="flex flex-col sm:flex-row gap-4">
-              <div className="bg-white/95 backdrop-blur-sm rounded-2xl px-6 py-4 flex items-center gap-4 shadow-soft cursor-pointer hover:bg-white transition-colors">
-                <div className="w-10 h-10 bg-foreground rounded-lg flex items-center justify-center">
+              <div className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-2xl px-6 py-4 flex items-center gap-4 cursor-pointer hover:bg-white/20 transition-all duration-300 shadow-lg">
+                <div className="w-10 h-10 bg-white/20 rounded-lg flex items-center justify-center">
                   <ShoppingBag className="w-6 h-6 text-white" />
                 </div>
                 <div>
-                  <div className="text-xs text-muted-foreground font-body uppercase tracking-wide">
+                  <div className="text-xs text-white/70 font-body uppercase tracking-wide">
                     Get it on
                   </div>
-                  <div className="text-lg font-heading font-bold text-foreground">
+                  <div className="text-lg font-heading font-bold text-white">
                     Shopify App Store
                   </div>
-                  <div className="text-xs text-muted-foreground font-body">
+                  <div className="text-xs text-white/60 font-body">
                     Plug & play · Instant catalog sync
                   </div>
                 </div>
               </div>
 
-              <div className="bg-white/95 backdrop-blur-sm rounded-2xl px-6 py-4 flex items-center gap-4 shadow-soft cursor-pointer hover:bg-white transition-colors">
-                <div className="w-10 h-10 bg-foreground rounded-lg flex items-center justify-center">
+              <div className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-2xl px-6 py-4 flex items-center gap-4 cursor-pointer hover:bg-white/20 transition-all duration-300 shadow-lg">
+                <div className="w-10 h-10 bg-white/20 rounded-lg flex items-center justify-center">
                   <Globe className="w-6 h-6 text-white" />
                 </div>
                 <div>
-                  <div className="text-xs text-muted-foreground font-body uppercase tracking-wide">
+                  <div className="text-xs text-white/70 font-body uppercase tracking-wide">
                     Integrate via
                   </div>
-                  <div className="text-lg font-heading font-bold text-foreground">
+                  <div className="text-lg font-heading font-bold text-white">
                     Custom Website Setup
                   </div>
-                  <div className="text-xs text-muted-foreground font-body">
+                  <div className="text-xs text-white/60 font-body">
                     Tailored deployment · Schedule a call
                   </div>
                 </div>

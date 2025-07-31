@@ -14,22 +14,34 @@ const ValueSections = () => {
               <p className="text-xl text-muted-foreground font-body leading-relaxed">
                 Your assistant welcomes every visitor and actively guides them to the right products — just like a skilled store clerk. It offers personalized suggestions, helps compare options, and assists with cart decisions, creating the personal shopping experience that turns browsers into buyers.
               </p>
-              <div className="space-y-3">
-                <div className="flex items-center text-muted-foreground">
-                  <div className="w-2 h-2 bg-primary rounded-full mr-3" />
-                  <span className="font-body">Voice & appearance customization to match your brand</span>
+              <div className="grid sm:grid-cols-2 gap-4">
+                <div className="bg-primary/5 border border-primary/10 rounded-xl p-4 hover:bg-primary/10 transition-colors">
+                  <div className="flex items-center mb-2">
+                    <div className="w-3 h-3 bg-primary rounded-full mr-3 flex-shrink-0" />
+                    <span className="font-body font-semibold text-foreground">Voice & Appearance Customization</span>
+                  </div>
+                  <p className="text-sm text-muted-foreground ml-6">Match your brand perfectly</p>
                 </div>
-                <div className="flex items-center text-muted-foreground">
-                  <div className="w-2 h-2 bg-primary rounded-full mr-3" />
-                  <span className="font-body">Personalized product suggestions</span>
+                <div className="bg-primary/5 border border-primary/10 rounded-xl p-4 hover:bg-primary/10 transition-colors">
+                  <div className="flex items-center mb-2">
+                    <div className="w-3 h-3 bg-primary rounded-full mr-3 flex-shrink-0" />
+                    <span className="font-body font-semibold text-foreground">Personalized Product Suggestions</span>
+                  </div>
+                  <p className="text-sm text-muted-foreground ml-6">Smart recommendations based on preferences</p>
                 </div>
-                <div className="flex items-center text-muted-foreground">
-                  <div className="w-2 h-2 bg-primary rounded-full mr-3" />
-                  <span className="font-body">Product comparisons and guidance</span>
+                <div className="bg-primary/5 border border-primary/10 rounded-xl p-4 hover:bg-primary/10 transition-colors">
+                  <div className="flex items-center mb-2">
+                    <div className="w-3 h-3 bg-primary rounded-full mr-3 flex-shrink-0" />
+                    <span className="font-body font-semibold text-foreground">Product Comparisons & Guidance</span>
+                  </div>
+                  <p className="text-sm text-muted-foreground ml-6">Help customers make informed decisions</p>
                 </div>
-                <div className="flex items-center text-muted-foreground">
-                  <div className="w-2 h-2 bg-primary rounded-full mr-3" />
-                  <span className="font-body">Smart cart assistance</span>
+                <div className="bg-primary/5 border border-primary/10 rounded-xl p-4 hover:bg-primary/10 transition-colors">
+                  <div className="flex items-center mb-2">
+                    <div className="w-3 h-3 bg-primary rounded-full mr-3 flex-shrink-0" />
+                    <span className="font-body font-semibold text-foreground">Smart Cart Assistance</span>
+                  </div>
+                  <p className="text-sm text-muted-foreground ml-6">Reduce cart abandonment with guidance</p>
                 </div>
               </div>
             </div>
@@ -62,22 +74,34 @@ const ValueSections = () => {
               <p className="text-xl text-muted-foreground font-body leading-relaxed">
                 Your customers get instant, empathetic support anytime they need it. Your assistant handles product questions, provides buying guidance, and offers the kind of warm, helpful service that builds customer loyalty — even at 3 AM.
               </p>
-              <div className="space-y-3">
-                <div className="flex items-center text-muted-foreground">
-                  <div className="w-2 h-2 bg-accent-foreground rounded-full mr-3" />
-                  <span className="font-body">Instant answers day and night</span>
+              <div className="grid sm:grid-cols-2 gap-4">
+                <div className="bg-accent/5 border border-accent/20 rounded-xl p-4 hover:bg-accent/10 transition-colors">
+                  <div className="flex items-center mb-2">
+                    <div className="w-3 h-3 bg-accent-foreground rounded-full mr-3 flex-shrink-0" />
+                    <span className="font-body font-semibold text-foreground">Instant Answers Day & Night</span>
+                  </div>
+                  <p className="text-sm text-muted-foreground ml-6">24/7 availability for customer questions</p>
                 </div>
-                <div className="flex items-center text-muted-foreground">
-                  <div className="w-2 h-2 bg-accent-foreground rounded-full mr-3" />
-                  <span className="font-body">Conversational tone with empathy</span>
+                <div className="bg-accent/5 border border-accent/20 rounded-xl p-4 hover:bg-accent/10 transition-colors">
+                  <div className="flex items-center mb-2">
+                    <div className="w-3 h-3 bg-accent-foreground rounded-full mr-3 flex-shrink-0" />
+                    <span className="font-body font-semibold text-foreground">Conversational Tone with Empathy</span>
+                  </div>
+                  <p className="text-sm text-muted-foreground ml-6">Human-like interactions that build trust</p>
                 </div>
-                <div className="flex items-center text-muted-foreground">
-                  <div className="w-2 h-2 bg-accent-foreground rounded-full mr-3" />
-                  <span className="font-body">Complete product knowledge</span>
+                <div className="bg-accent/5 border border-accent/20 rounded-xl p-4 hover:bg-accent/10 transition-colors">
+                  <div className="flex items-center mb-2">
+                    <div className="w-3 h-3 bg-accent-foreground rounded-full mr-3 flex-shrink-0" />
+                    <span className="font-body font-semibold text-foreground">Complete Product Knowledge</span>
+                  </div>
+                  <p className="text-sm text-muted-foreground ml-6">Expert-level information on every item</p>
                 </div>
-                <div className="flex items-center text-muted-foreground">
-                  <div className="w-2 h-2 bg-accent-foreground rounded-full mr-3" />
-                  <span className="font-body">Support throughout the buying process</span>
+                <div className="bg-accent/5 border border-accent/20 rounded-xl p-4 hover:bg-accent/10 transition-colors">
+                  <div className="flex items-center mb-2">
+                    <div className="w-3 h-3 bg-accent-foreground rounded-full mr-3 flex-shrink-0" />
+                    <span className="font-body font-semibold text-foreground">Support Throughout Buying Process</span>
+                  </div>
+                  <p className="text-sm text-muted-foreground ml-6">From discovery to checkout completion</p>
                 </div>
               </div>
             </div>
@@ -96,22 +120,34 @@ const ValueSections = () => {
               <p className="text-xl text-muted-foreground font-body leading-relaxed">
                 See exactly how customers interact with your store. Watch session replays, review tagged conversations, and get insights that help you make smarter business decisions. Your assistant learns what works and helps you understand your customers better than ever.
               </p>
-              <div className="space-y-3">
-                <div className="flex items-center text-muted-foreground">
-                  <div className="w-2 h-2 bg-primary rounded-full mr-3" />
-                  <span className="font-body">Complete session replays</span>
+              <div className="grid sm:grid-cols-2 gap-4">
+                <div className="bg-primary/5 border border-primary/10 rounded-xl p-4 hover:bg-primary/10 transition-colors">
+                  <div className="flex items-center mb-2">
+                    <div className="w-3 h-3 bg-primary rounded-full mr-3 flex-shrink-0" />
+                    <span className="font-body font-semibold text-foreground">Complete Session Replays</span>
+                  </div>
+                  <p className="text-sm text-muted-foreground ml-6">Watch exactly how customers navigate</p>
                 </div>
-                <div className="flex items-center text-muted-foreground">
-                  <div className="w-2 h-2 bg-primary rounded-full mr-3" />
-                  <span className="font-body">Tagged conversations for analysis</span>
+                <div className="bg-primary/5 border border-primary/10 rounded-xl p-4 hover:bg-primary/10 transition-colors">
+                  <div className="flex items-center mb-2">
+                    <div className="w-3 h-3 bg-primary rounded-full mr-3 flex-shrink-0" />
+                    <span className="font-body font-semibold text-foreground">Tagged Conversations</span>
+                  </div>
+                  <p className="text-sm text-muted-foreground ml-6">Organize insights for easy analysis</p>
                 </div>
-                <div className="flex items-center text-muted-foreground">
-                  <div className="w-2 h-2 bg-primary rounded-full mr-3" />
-                  <span className="font-body">Comprehensive insights dashboard</span>
+                <div className="bg-primary/5 border border-primary/10 rounded-xl p-4 hover:bg-primary/10 transition-colors">
+                  <div className="flex items-center mb-2">
+                    <div className="w-3 h-3 bg-primary rounded-full mr-3 flex-shrink-0" />
+                    <span className="font-body font-semibold text-foreground">Comprehensive Insights Dashboard</span>
+                  </div>
+                  <p className="text-sm text-muted-foreground ml-6">All your analytics in one place</p>
                 </div>
-                <div className="flex items-center text-muted-foreground">
-                  <div className="w-2 h-2 bg-primary rounded-full mr-3" />
-                  <span className="font-body">Customer behavior analytics</span>
+                <div className="bg-primary/5 border border-primary/10 rounded-xl p-4 hover:bg-primary/10 transition-colors">
+                  <div className="flex items-center mb-2">
+                    <div className="w-3 h-3 bg-primary rounded-full mr-3 flex-shrink-0" />
+                    <span className="font-body font-semibold text-foreground">Customer Behavior Analytics</span>
+                  </div>
+                  <p className="text-sm text-muted-foreground ml-6">Understand patterns and preferences</p>
                 </div>
               </div>
             </div>
