@@ -48,18 +48,17 @@ const Hero = () => {
           <div className="space-y-8">
             <div className="space-y-4">
               <h1 className="text-5xl lg:text-6xl xl:text-7xl font-heading font-bold text-white leading-tight">
-                Meet Your Store's
-                <span className="block text-white/90">AI Assistant</span>
+                Your Store's New
+                <span className="block text-white/90">Best Salesperson</span>
               </h1>
               <p className="text-xl lg:text-2xl text-white/80 font-body max-w-2xl">
-                Transform your e-commerce with cute 3D AI assistants that boost
-                sales, provide 24/7 support, and understand your customers.
+                Bizmis welcomes visitors, helps them discover products, and guides them to purchase—just like having a skilled store clerk working 24/7.
               </p>
             </div>
 
             <div className="flex flex-col sm:flex-row gap-4">
               <Button variant="hero" size="xl" className="group">
-                Get Started Free
+                Get Bizmis on Your Store
                 <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
               </Button>
 
@@ -107,11 +106,11 @@ const Hero = () => {
           <div className="relative lg:pl-8">
             {/* Main Image - Made bigger */}
             <div className="relative z-10">
-              <img
-                src="/lovable-uploads/badd07ac-0944-4a30-937f-128b9286a875.png"
-                alt="AI Assistant team - Support, Sales, and Analytics avatars"
-                className="w-full h-auto max-w-2xl mx-auto"
-              />
+                <img
+                  src="/lovable-uploads/badd07ac-0944-4a30-937f-128b9286a875.png"
+                  alt="Bizmis digital salesperson for online stores"
+                  className="w-full h-auto max-w-2xl mx-auto"
+                />
             </div>
 
             {/* Floating elements - positioned to not overlap */}
@@ -124,7 +123,7 @@ const Hero = () => {
                 24/7
               </div>
               <div className="text-xs lg:text-sm text-gray-600 font-body">
-                AI Support
+                Always Open
               </div>
             </div>
 

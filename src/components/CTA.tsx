@@ -15,10 +15,10 @@ const CTA = () => {
         <div className="max-w-4xl mx-auto text-center">
           <div className="space-y-6 mb-10">
             <h2 className="text-4xl lg:text-5xl xl:text-6xl font-heading font-bold text-white leading-tight">
-              Ready to Transform Your Store?
+              Get your best salesperson today
             </h2>
             <p className="text-xl lg:text-2xl text-white/90 max-w-3xl mx-auto">
-              Join thousands of store owners who've boosted their sales with cute AI assistants.
+              Join store owners who've transformed their customer experience with Bizmis.
             </p>
           </div>
           
@@ -38,7 +38,7 @@ const CTA = () => {
               size="xl"
               className="group shadow-2xl"
             >
-              Start Free Trial
+              Get Bizmis on Your Store
               <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
             </Button>
             
@@ -52,7 +52,7 @@ const CTA = () => {
           </div>
           
           <p className="text-white/70 text-sm mt-6">
-            No credit card required • 14-day free trial • Cancel anytime
+            Available now on the Shopify App Store • Need a custom integration? Let's talk.
           </p>
         </div>
       </div>

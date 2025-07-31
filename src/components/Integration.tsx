@@ -15,10 +15,10 @@ const Integration = () => {
       <div className="container mx-auto px-6 relative z-10">
         <div className="text-center mb-16">
           <h2 className="text-4xl lg:text-5xl font-heading font-bold text-foreground mb-6">
-            Easy Integration for Every Store
+            Ready out of the box
           </h2>
           <p className="text-xl text-muted-foreground font-body max-w-3xl mx-auto">
-            Whether you're on Shopify or have a custom website, we've got you covered.
+            Bizmis installs from the Shopify App Store. No setup needed.
           </p>
         </div>
         
@@ -35,26 +35,26 @@ const Integration = () => {
               </div>
               
               <p className="text-gray-700 mb-6 text-lg leading-relaxed">
-                Install Bizmis directly from the Shopify App Store. One-click setup, no coding required.
+                Instantly connects to your catalog, inventory, and store policies. Starts working the moment it's installed.
               </p>
               
               <div className="space-y-3 mb-8">
                 <div className="flex items-center text-muted-foreground">
                   <div className="w-2 h-2 bg-green-500 rounded-full mr-3" />
-                  <span className="font-body">1-minute installation</span>
+                  <span className="font-body">Instant connection to your catalog</span>
                 </div>
                 <div className="flex items-center text-muted-foreground">
                   <div className="w-2 h-2 bg-green-500 rounded-full mr-3" />
-                  <span className="font-body">Automatic product sync</span>
+                  <span className="font-body">No training, no configuration</span>
                 </div>
                 <div className="flex items-center text-muted-foreground">
                   <div className="w-2 h-2 bg-green-500 rounded-full mr-3" />
-                  <span className="font-body">Ready-to-use templates</span>
+                  <span className="font-body">Just results</span>
                 </div>
               </div>
               
               <Button variant="warm" size="lg" className="group">
-                Install from App Store
+                Get Bizmis on Shopify
                 <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
               </Button>
             </div>
@@ -72,26 +72,26 @@ const Integration = () => {
               </div>
               
               <p className="text-gray-700 mb-6 text-lg leading-relaxed">
-                Tailored integration for your unique website. We assess and customize everything to fit perfectly.
+                Tailor-made solution for non-Shopify websites. Requires individual assessment.
               </p>
               
               <div className="space-y-3 mb-8">
                 <div className="flex items-center text-muted-foreground">
                   <div className="w-2 h-2 bg-purple-500 rounded-full mr-3" />
-                  <span className="font-body">Custom assessment</span>
+                  <span className="font-body">Custom assessment for your site</span>
                 </div>
                 <div className="flex items-center text-muted-foreground">
                   <div className="w-2 h-2 bg-purple-500 rounded-full mr-3" />
-                  <span className="font-body">Personalized setup</span>
+                  <span className="font-body">Personalized integration setup</span>
                 </div>
                 <div className="flex items-center text-muted-foreground">
                   <div className="w-2 h-2 bg-purple-500 rounded-full mr-3" />
-                  <span className="font-body">Dedicated support</span>
+                  <span className="font-body">Dedicated implementation support</span>
                 </div>
               </div>
               
               <Button variant="outline" size="lg" className="group border-purple-200 text-purple-700 hover:bg-purple-50 font-body">
-                Get Custom Quote
+                Schedule a Call
                 <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
               </Button>
             </div>
