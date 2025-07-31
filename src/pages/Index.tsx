@@ -1,8 +1,9 @@
 import Navbar from "@/components/Navbar";
 import Hero from "@/components/Hero";
-import Features from "@/components/Features";
-import Integration from "@/components/Integration";
-import CTA from "@/components/CTA";
+import BizmisFeatures from "@/components/BizmisFeatures";
+import BizmisIntegration from "@/components/BizmisIntegration";
+import BizmisPricing from "@/components/BizmisPricing";
+import BizmisCTA from "@/components/BizmisCTA";
 import Footer from "@/components/Footer";
 
 const Index = () => {
@@ -10,9 +11,10 @@ const Index = () => {
     <div className="min-h-screen">
       <Navbar />
       <Hero />
-      <Features />
-      <Integration />
-      <CTA />
+      <BizmisFeatures />
+      <BizmisIntegration />
+      <BizmisPricing />
+      <BizmisCTA />
       <Footer />
     </div>
   );
