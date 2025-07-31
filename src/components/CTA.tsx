@@ -15,11 +15,10 @@ const CTA = () => {
         <div className="max-w-4xl mx-auto text-center">
           <div className="space-y-6 mb-10">
             <h2 className="text-4xl lg:text-5xl xl:text-6xl font-heading font-bold text-white leading-tight">
-              Ready to Transform Your Store?
+              Ready to Give Your Store a Digital Salesperson?
             </h2>
             <p className="text-xl lg:text-2xl text-white/90 max-w-3xl mx-auto">
-              Join thousands of store owners who've boosted their sales with
-              cute AI assistants.
+              Join stores that have already transformed their customer experience. Your assistant is ready to start helping customers today.
             </p>
           </div>
 
@@ -33,7 +32,7 @@ const CTA = () => {
                 />
               ))}
             </div>
-            <span className="text-white/80 ml-2">Trusted by 1000+ stores</span>
+            <span className="text-white/80 ml-2">Trusted by stores worldwide</span>
           </div>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
