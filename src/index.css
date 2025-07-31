@@ -19,10 +19,10 @@ All colors MUST be HSL.
     --popover-foreground: 35 30% 15%;
 
     /* Primary - Soft Salmon */
-    --primary: 35 85% 55%;
+    --primary: 30 85% 55%;
     --primary-foreground: 0 0% 100%;
-    --primary-light: 35 85% 68%;
-    --primary-dark: 35 85% 45%;
+    --primary-light: 30 85% 68%;
+    --primary-dark: 30 85% 45%;
 
     /* Secondary - Warm complement */
     --secondary: 35 35% 96%;
@@ -39,52 +39,52 @@ All colors MUST be HSL.
 
     --border: 35 30% 82%;
     --input: 35 25% 88%;
-    --ring: 35 85% 55%;
+    --ring: 30 85% 55%;
 
     /* Hero background to match image */
-    --hero-bg: 35 85% 68%;
-    --hero-gradient: linear-gradient(135deg, hsl(35 90% 72%), hsl(35 85% 65%), hsl(32 85% 58%));
+    --hero-bg: 30 85% 68%;
+    --hero-gradient: linear-gradient(135deg, hsl(30 90% 72%), hsl(30 85% 65%), hsl(27 85% 58%));
 
     /* Custom gradients */
-    --gradient-warm: linear-gradient(135deg, hsl(35 85% 55%), hsl(35 85% 68%), hsl(38 85% 62%));
-    --gradient-subtle: linear-gradient(180deg, hsl(35 25% 98%), hsl(35 20% 94%));
+    --gradient-warm: linear-gradient(135deg, hsl(30 85% 55%), hsl(30 85% 68%), hsl(33 85% 62%));
+    --gradient-subtle: linear-gradient(180deg, hsl(30 25% 98%), hsl(30 20% 94%));
 
     /* 3D Studio Lighting System */
     --studio-radial-light: radial-gradient(ellipse 80% 60% at 50% 45%,
-        hsl(35 90% 78% / 0.8) 0%,
-        hsl(35 85% 70% / 0.6) 25%,
-        hsl(35 80% 62% / 0.4) 50%,
-        hsl(35 75% 55% / 0.3) 75%,
-        hsl(35 70% 48% / 0.2) 100%);
+        hsl(30 90% 78% / 0.8) 0%,
+        hsl(30 85% 70% / 0.6) 25%,
+        hsl(30 80% 62% / 0.4) 50%,
+        hsl(30 75% 55% / 0.3) 75%,
+        hsl(30 70% 48% / 0.2) 100%);
 
     --studio-floor-shadow: radial-gradient(ellipse 90% 25% at 50% 85%,
-        hsl(28 70% 52% / 0.3) 0%,
-        hsl(28 65% 58% / 0.2) 40%,
-        hsl(28 60% 64% / 0.1) 70%,
+        hsl(23 70% 52% / 0.3) 0%,
+        hsl(23 65% 58% / 0.2) 40%,
+        hsl(23 60% 64% / 0.1) 70%,
         transparent 100%);
 
     --studio-horizon-shadow: linear-gradient(to bottom,
         transparent 0%,
         transparent 55%,
-        hsl(28 65% 58% / 0.25) 58%,
-        hsl(28 60% 52% / 0.4) 62%,
-        hsl(28 55% 46% / 0.35) 68%,
-        hsl(28 60% 52% / 0.2) 80%,
+        hsl(23 65% 58% / 0.25) 58%,
+        hsl(23 60% 52% / 0.4) 62%,
+        hsl(23 55% 46% / 0.35) 68%,
+        hsl(23 60% 52% / 0.2) 80%,
         transparent 100%);
 
     --studio-horizon-meniscus-left: radial-gradient(ellipse 40% 15% at 15% 62%,
-        hsl(28 60% 52% / 0.4) 0%,
-        hsl(28 55% 46% / 0.35) 50%,
+        hsl(23 60% 52% / 0.4) 0%,
+        hsl(23 55% 46% / 0.35) 50%,
         transparent 100%);
 
     --studio-horizon-meniscus-right: radial-gradient(ellipse 40% 15% at 85% 62%,
-        hsl(28 60% 52% / 0.4) 0%,
-        hsl(28 55% 46% / 0.35) 50%,
+        hsl(23 60% 52% / 0.4) 0%,
+        hsl(23 55% 46% / 0.35) 50%,
         transparent 100%);
 
     /* Shadows with brand color */
-    --shadow-brand: 0 12px 35px -8px hsl(35 85% 55% / 0.4);
-    --shadow-soft: 0 6px 25px -6px hsl(35 85% 55% / 0.25);
+    --shadow-brand: 0 12px 35px -8px hsl(30 85% 55% / 0.4);
+    --shadow-soft: 0 6px 25px -6px hsl(30 85% 55% / 0.25);
 
     --radius: 1rem;
 
@@ -201,9 +201,9 @@ All colors MUST be HSL.
 
   .studio-ambient-overlay {
     background: linear-gradient(135deg,
-        hsl(35 90% 72% / 0.1) 0%,
-        hsl(35 85% 67% / 0.15) 25%,
-        hsl(35 80% 62% / 0.1) 50%,
-        hsl(35 75% 57% / 0.05) 100%);
+        hsl(30 90% 72% / 0.1) 0%,
+        hsl(30 85% 67% / 0.15) 25%,
+        hsl(30 80% 62% / 0.1) 50%,
+        hsl(30 75% 57% / 0.05) 100%);
   }
 }
