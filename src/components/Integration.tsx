@@ -7,10 +7,11 @@ const Integration = () => {
       <div className="container mx-auto px-6 relative z-10">
         <div className="text-center mb-16">
           <h2 className="text-4xl lg:text-5xl font-heading font-bold text-foreground mb-6">
-            Ready When You Are
+            Easy Integration for Every Store
           </h2>
           <p className="text-xl text-muted-foreground font-body max-w-3xl mx-auto">
-            Whether you're on Shopify or have a custom website, your digital salesperson is ready to start working.
+            Whether you're on Shopify or have a custom website, we've got you
+            covered.
           </p>
         </div>
 
@@ -29,22 +30,22 @@ const Integration = () => {
               </div>
 
               <p className="text-gray-700 mb-6 text-lg leading-relaxed">
-                Install from the Shopify App Store and your salesperson immediately syncs 
-                with your product catalog, policies, and store information. Active from day one.
+                Install Bizmis directly from the Shopify App Store. One-click
+                setup, no coding required.
               </p>
 
               <div className="space-y-3 mb-8">
                 <div className="flex items-center text-muted-foreground">
                   <div className="w-2 h-2 bg-green-500 rounded-full mr-3" />
-                  <span className="font-body">One-click installation</span>
+                  <span className="font-body">1-minute installation</span>
                 </div>
                 <div className="flex items-center text-muted-foreground">
                   <div className="w-2 h-2 bg-green-500 rounded-full mr-3" />
-                  <span className="font-body">Instant catalog sync</span>
+                  <span className="font-body">Automatic product sync</span>
                 </div>
                 <div className="flex items-center text-muted-foreground">
                   <div className="w-2 h-2 bg-green-500 rounded-full mr-3" />
-                  <span className="font-body">Active immediately</span>
+                  <span className="font-body">Ready-to-use templates</span>
                 </div>
               </div>
 
@@ -69,8 +70,8 @@ const Integration = () => {
               </div>
 
               <p className="text-gray-700 mb-6 text-lg leading-relaxed">
-                Custom integration designed for your unique website. We assess your setup 
-                and create a tailored solution that fits perfectly.
+                Tailored integration for your unique website. We assess and
+                customize everything to fit perfectly.
               </p>
 
               <div className="space-y-3 mb-8">

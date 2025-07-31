@@ -18,17 +18,18 @@ const Hero = () => {
           <div className="space-y-8">
             <div className="space-y-4">
               <h1 className="text-5xl lg:text-6xl xl:text-7xl font-heading font-bold text-white leading-tight">
-                Your Store's Digital
-                <span className="block text-white/90">Salesperson</span>
+                Meet Your Store's
+                <span className="block text-white/90">AI Assistant</span>
               </h1>
               <p className="text-xl lg:text-2xl text-white/80 font-body max-w-2xl">
-                Greet every visitor, guide them to the right products, and close more sales—just like the best in-store experience.
+                Transform your e-commerce with cute 3D AI assistants that boost
+                sales, provide 24/7 support, and understand your customers.
               </p>
             </div>
 
             <div className="flex flex-col sm:flex-row gap-4">
               <Button variant="hero" size="xl" className="group">
-                Try Free for 14 Days
+                Get Started Free
                 <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
               </Button>
 
@@ -42,34 +43,29 @@ const Hero = () => {
               </Button>
             </div>
 
-            {/* Integration Cards */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-lg">
-              <div className="bg-white rounded-2xl p-4 border-2 border-primary/20 hover:border-primary/40 transition-colors cursor-pointer">
+            <div className="grid grid-cols-2 gap-6 max-w-md">
+              <div className="bg-gradient-to-r from-green-500/20 to-green-600/20 backdrop-blur-sm rounded-2xl p-4 border border-green-400/30">
                 <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
-                    <div className="w-4 h-4 bg-white rounded-sm" />
-                  </div>
+                  <div className="w-3 h-3 bg-green-400 rounded-full animate-pulse" />
                   <div>
-                    <div className="text-gray-900 font-heading font-semibold text-sm">
-                      Available on Shopify App Store
+                    <div className="text-white font-heading font-semibold text-sm">
+                      Instant Setup
                     </div>
-                    <div className="text-gray-600 font-body text-xs">
-                      Plug & Play • Instantly synced with your catalog
+                    <div className="text-white/70 font-body text-xs">
+                      Ready in minutes
                     </div>
                   </div>
                 </div>
               </div>
-              <div className="bg-white rounded-2xl p-4 border-2 border-primary/20 hover:border-primary/40 transition-colors cursor-pointer">
+              <div className="bg-gradient-to-r from-blue-500/20 to-blue-600/20 backdrop-blur-sm rounded-2xl p-4 border border-blue-400/30">
                 <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
-                    <div className="w-4 h-4 bg-white rounded-sm" />
-                  </div>
+                  <div className="w-3 h-3 bg-blue-400 rounded-full animate-pulse" />
                   <div>
-                    <div className="text-gray-900 font-heading font-semibold text-sm">
-                      Custom Website Integration
+                    <div className="text-white font-heading font-semibold text-sm">
+                      Always Online
                     </div>
-                    <div className="text-gray-600 font-body text-xs">
-                      Tailored setup • Schedule a call
+                    <div className="text-white/70 font-body text-xs">
+                      24/7 assistance
                     </div>
                   </div>
                 </div>
@@ -83,7 +79,7 @@ const Hero = () => {
             <div className="relative z-10">
               <img
                 src="/lovable-uploads/badd07ac-0944-4a30-937f-128b9286a875.png"
-                alt="Digital salesperson helping customers"
+                alt="AI Assistant team - Support, Sales, and Analytics avatars"
                 className="w-full h-auto max-w-2xl mx-auto"
               />
             </div>
@@ -98,7 +94,7 @@ const Hero = () => {
                 24/7
               </div>
               <div className="text-xs lg:text-sm text-gray-600 font-body">
-                Always Available
+                AI Support
               </div>
             </div>
 
