@@ -3,27 +3,33 @@ import { ArrowRight, Play } from "lucide-react";
 
 const Hero = () => {
   return (
-    <section className="relative min-h-screen bg-hero-gradient flex items-center overflow-hidden pt-16">
-      {/* Background decorative elements */}
-      <div className="absolute inset-0 bg-gradient-to-br from-primary-light/20 to-primary/30" />
+    <section className="relative min-h-screen flex items-center overflow-hidden pt-16">
+      {/* 3D Studio Background */}
+      <div className="absolute inset-0 bg-gradient-to-b from-amber-300 via-orange-300 to-amber-400" />
       
-      {/* Warm Atmospheric Depth Effect */}
-      <div className="absolute inset-0 pointer-events-none">
-        {/* Soft warm glow from behind avatars */}
-        <div className="absolute inset-0 bg-gradient-to-b from-amber-200/10 via-transparent to-amber-300/20" />
+      {/* Studio Floor Curve Effect */}
+      <div className="absolute inset-0">
+        {/* Main curved horizon - the key to 3D studio look */}
+        <div className="absolute bottom-0 left-0 right-0 h-3/4 bg-gradient-to-t from-amber-400 via-orange-300 to-transparent" 
+             style={{
+               background: 'radial-gradient(ellipse 200% 100% at 50% 100%, rgba(251, 191, 36, 0.8) 0%, rgba(251, 146, 60, 0.6) 30%, rgba(251, 146, 60, 0.4) 50%, transparent 80%)'
+             }} />
         
-        {/* Gentle horizon mist effect */}
-        <div className="absolute top-1/2 left-0 right-0 h-32 -translate-y-1/2">
-          <div className="w-full h-full bg-gradient-to-r from-white/5 via-white/15 to-white/5 blur-3xl" />
-        </div>
+        {/* Curved floor transition */}
+        <div className="absolute bottom-0 left-0 right-0 h-1/2"
+             style={{
+               background: 'radial-gradient(ellipse 150% 80% at 50% 100%, rgba(245, 158, 11, 0.9) 0%, rgba(251, 146, 60, 0.7) 40%, transparent 80%)'
+             }} />
         
-        {/* Subtle depth shadows */}
-        <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-black/20 via-black/5 to-transparent" />
+        {/* Studio lighting highlights */}
+        <div className="absolute top-1/4 left-1/4 right-1/4 h-1/3 bg-gradient-radial from-white/20 via-white/5 to-transparent blur-3xl" />
         
-        {/* Warm ambient particles */}
-        <div className="absolute top-1/4 left-1/4 w-3 h-3 bg-amber-300/40 rounded-full blur-sm animate-pulse" />
-        <div className="absolute top-1/3 right-1/4 w-2 h-2 bg-orange-200/50 rounded-full blur-sm animate-pulse delay-700" />
-        <div className="absolute bottom-1/3 left-1/3 w-2 h-2 bg-yellow-200/40 rounded-full blur-sm animate-pulse delay-1000" />
+        {/* Soft ambient occlusion at edges */}
+        <div className="absolute inset-y-0 left-0 w-32 bg-gradient-to-r from-black/10 to-transparent" />
+        <div className="absolute inset-y-0 right-0 w-32 bg-gradient-to-l from-black/10 to-transparent" />
+        
+        {/* Top lighting */}
+        <div className="absolute top-0 left-0 right-0 h-32 bg-gradient-to-b from-white/15 to-transparent" />
       </div>
       
       {/* Decorative Avatar Placeholders - Responsive */}
