@@ -69,7 +69,8 @@ export default {
 			backgroundImage: {
 				'gradient-warm': 'var(--gradient-warm)',
 				'gradient-subtle': 'var(--gradient-subtle)',
-				'hero-gradient': 'var(--hero-gradient)'
+				'hero-gradient': 'var(--hero-gradient)',
+				'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))'
 			},
 			boxShadow: {
 				'brand': 'var(--shadow-brand)',
