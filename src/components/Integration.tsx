@@ -3,14 +3,15 @@ import { ArrowRight, Zap, Settings } from "lucide-react";
 
 const Integration = () => {
   return (
-    <section className="py-20 bg-background relative overflow-hidden">
+    <section className="py-20 bg-white relative overflow-hidden">
       <div className="container mx-auto px-6 relative z-10">
         <div className="text-center mb-16">
           <h2 className="text-4xl lg:text-5xl font-heading font-bold text-foreground mb-6">
-            Choose Your Integration Path
+            Easy Integration for Every Store
           </h2>
           <p className="text-xl text-muted-foreground font-body max-w-3xl mx-auto">
-            Whether you're on Shopify or have a custom website, your assistant is ready to start helping customers.
+            Whether you're on Shopify or have a custom website, we've got you
+            covered.
           </p>
         </div>
 
@@ -29,7 +30,8 @@ const Integration = () => {
               </div>
 
               <p className="text-gray-700 mb-6 text-lg leading-relaxed">
-                One-click install from the Shopify App Store. Your assistant instantly connects to your product catalog and starts helping customers from day one.
+                Install Bizmis directly from the Shopify App Store. One-click
+                setup, no coding required.
               </p>
 
               <div className="space-y-3 mb-8">
@@ -68,7 +70,8 @@ const Integration = () => {
               </div>
 
               <p className="text-gray-700 mb-6 text-lg leading-relaxed">
-                Custom deployment tailored to your website. We handle the technical setup so your assistant integrates seamlessly with your existing store.
+                Tailored integration for your unique website. We assess and
+                customize everything to fit perfectly.
               </p>
 
               <div className="space-y-3 mb-8">

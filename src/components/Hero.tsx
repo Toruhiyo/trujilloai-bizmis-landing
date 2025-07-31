@@ -1,4 +1,5 @@
-import { ShoppingBag, Globe } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { ArrowRight, Play } from "lucide-react";
 
 const Hero = () => {
   return (
@@ -17,46 +18,55 @@ const Hero = () => {
           <div className="space-y-8">
             <div className="space-y-4">
               <h1 className="text-5xl lg:text-6xl xl:text-7xl font-heading font-bold text-white leading-tight">
-                Your Store's New
-                <span className="block text-white/90">Digital Salesperson</span>
+                Meet Your Store's
+                <span className="block text-white/90">AI Assistant</span>
               </h1>
               <p className="text-xl lg:text-2xl text-white/80 font-body max-w-2xl">
-                Give your online store the personal touch of a real salesperson. Your assistant welcomes visitors, guides them to the right products, and helps them buy with confidence.
+                Transform your e-commerce with cute 3D AI assistants that boost
+                sales, provide 24/7 support, and understand your customers.
               </p>
             </div>
 
-            {/* App Store Style Badges */}
             <div className="flex flex-col sm:flex-row gap-4">
-              <div className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-2xl px-6 py-4 flex items-center gap-4 cursor-pointer hover:bg-white/20 transition-all duration-300 shadow-lg">
-                <div className="w-10 h-10 bg-white/20 rounded-lg flex items-center justify-center">
-                  <ShoppingBag className="w-6 h-6 text-white" />
-                </div>
-                <div>
-                  <div className="text-xs text-white/70 font-body uppercase tracking-wide">
-                    Get it on
-                  </div>
-                  <div className="text-lg font-heading font-bold text-white">
-                    Shopify App Store
-                  </div>
-                  <div className="text-xs text-white/60 font-body">
-                    Plug & play · Instant catalog sync
+              <Button variant="hero" size="xl" className="group">
+                Get Started Free
+                <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+              </Button>
+
+              <Button
+                variant="outline"
+                size="xl"
+                className="group bg-white/10 border-white/30 text-white hover:bg-white/20"
+              >
+                <Play className="w-5 h-5" />
+                Watch Demo
+              </Button>
+            </div>
+
+            <div className="grid grid-cols-2 gap-6 max-w-md">
+              <div className="bg-gradient-to-r from-green-500/20 to-green-600/20 backdrop-blur-sm rounded-2xl p-4 border border-green-400/30">
+                <div className="flex items-center gap-3">
+                  <div className="w-3 h-3 bg-green-400 rounded-full animate-pulse" />
+                  <div>
+                    <div className="text-white font-heading font-semibold text-sm">
+                      Instant Setup
+                    </div>
+                    <div className="text-white/70 font-body text-xs">
+                      Ready in minutes
+                    </div>
                   </div>
                 </div>
               </div>
-
-              <div className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-2xl px-6 py-4 flex items-center gap-4 cursor-pointer hover:bg-white/20 transition-all duration-300 shadow-lg">
-                <div className="w-10 h-10 bg-white/20 rounded-lg flex items-center justify-center">
-                  <Globe className="w-6 h-6 text-white" />
-                </div>
-                <div>
-                  <div className="text-xs text-white/70 font-body uppercase tracking-wide">
-                    Integrate via
-                  </div>
-                  <div className="text-lg font-heading font-bold text-white">
-                    Custom Website Setup
-                  </div>
-                  <div className="text-xs text-white/60 font-body">
-                    Tailored deployment · Schedule a call
+              <div className="bg-gradient-to-r from-blue-500/20 to-blue-600/20 backdrop-blur-sm rounded-2xl p-4 border border-blue-400/30">
+                <div className="flex items-center gap-3">
+                  <div className="w-3 h-3 bg-blue-400 rounded-full animate-pulse" />
+                  <div>
+                    <div className="text-white font-heading font-semibold text-sm">
+                      Always Online
+                    </div>
+                    <div className="text-white/70 font-body text-xs">
+                      24/7 assistance
+                    </div>
                   </div>
                 </div>
               </div>
