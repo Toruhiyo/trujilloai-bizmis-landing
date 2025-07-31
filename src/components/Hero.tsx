@@ -87,9 +87,9 @@ const Hero = () => {
             {/* Main Image - Made bigger */}
             <div className="relative z-10">
               <img 
-                src="/lovable-uploads/26f7c68b-757b-412b-8a90-2009ac9516c5.png" 
+                src="/lovable-uploads/badd07ac-0944-4a30-937f-128b9286a875.png" 
                 alt="AI Assistant team - Support, Sales, and Analytics avatars"
-                className="w-full h-auto max-w-2xl mx-auto drop-shadow-2xl"
+                className="w-full h-auto max-w-2xl mx-auto"
               />
             </div>
             
