@@ -18,11 +18,11 @@ All colors MUST be HSL.
     --popover: 0 0% 100%;
     --popover-foreground: 35 30% 15%;
 
-    /* Primary - Bizmis Orange */
-    --primary: 27 100% 57%;
+    /* Primary - Soft Salmon */
+    --primary: 30 85% 55%;
     --primary-foreground: 0 0% 100%;
-    --primary-light: 27 100% 68%;
-    --primary-dark: 27 100% 47%;
+    --primary-light: 30 85% 68%;
+    --primary-dark: 30 85% 45%;
 
     /* Secondary - Warm complement */
     --secondary: 35 35% 96%;
@@ -41,10 +41,13 @@ All colors MUST be HSL.
     --input: 35 25% 88%;
     --ring: 30 85% 55%;
 
-    /* Bizmis brand gradients */
-    --bizmis-gradient: linear-gradient(135deg, hsl(27 100% 57%), hsl(30 95% 62%), hsl(33 90% 67%));
-    --bizmis-soft: linear-gradient(180deg, hsl(27 100% 97%), hsl(27 95% 94%));
-    --bizmis-section: linear-gradient(135deg, hsl(27 100% 97%), hsl(33 90% 94%));
+    /* Hero background to match image */
+    --hero-bg: 30 85% 68%;
+    --hero-gradient: linear-gradient(135deg, hsl(30 90% 72%), hsl(30 85% 65%), hsl(27 85% 58%));
+
+    /* Custom gradients */
+    --gradient-warm: linear-gradient(135deg, hsl(30 85% 55%), hsl(30 85% 68%), hsl(33 85% 62%));
+    --gradient-subtle: linear-gradient(180deg, hsl(30 25% 98%), hsl(30 20% 94%));
 
     /* 3D Studio Lighting System */
     --studio-radial-light: radial-gradient(ellipse 80% 60% at 50% 45%,
