@@ -86,11 +86,15 @@ const Hero = () => {
           <div className="relative lg:pl-8">
             {/* Main Image - Made bigger */}
             <div className="relative z-10">
-              <img 
-                src="/lovable-uploads/26f7c68b-757b-412b-8a90-2009ac9516c5.png" 
-                alt="AI Assistant team - Support, Sales, and Analytics avatars"
-                className="w-full h-auto max-w-2xl mx-auto drop-shadow-2xl"
-              />
+              <div className="relative">
+                <img 
+                  src="/lovable-uploads/26f7c68b-757b-412b-8a90-2009ac9516c5.png" 
+                  alt="AI Assistant team - Support, Sales, and Analytics avatars"
+                  className="w-full h-auto max-w-2xl mx-auto relative z-10"
+                />
+                {/* Soft horizon shadow for depth */}
+                <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-3/4 h-8 bg-gradient-to-r from-transparent via-black/10 to-transparent blur-md opacity-60" />
+              </div>
             </div>
             
             {/* Floating elements - positioned to not overlap */}
