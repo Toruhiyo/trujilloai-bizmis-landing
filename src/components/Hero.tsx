@@ -7,27 +7,23 @@ const Hero = () => {
       {/* Background decorative elements */}
       <div className="absolute inset-0 bg-gradient-to-br from-primary-light/20 to-primary/30" />
       
-      {/* 3D Studio Horizon Lighting Effect - Enhanced */}
-      <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-        {/* Strong horizon shadow line */}
-        <div className="absolute w-full h-1 bg-gradient-to-r from-transparent via-white/80 to-transparent" />
-        <div className="absolute w-full h-2 bg-gradient-to-r from-transparent via-white/60 to-transparent blur-sm" />
+      {/* Warm Atmospheric Depth Effect */}
+      <div className="absolute inset-0 pointer-events-none">
+        {/* Soft warm glow from behind avatars */}
+        <div className="absolute inset-0 bg-gradient-to-b from-amber-200/10 via-transparent to-amber-300/20" />
         
-        {/* Dramatic horizon glow effect */}
-        <div className="absolute w-full h-24 bg-gradient-to-r from-transparent via-white/40 to-transparent blur-2xl" />
-        <div className="absolute w-full h-48 bg-gradient-to-r from-transparent via-white/20 to-transparent blur-3xl" />
+        {/* Gentle horizon mist effect */}
+        <div className="absolute top-1/2 left-0 right-0 h-32 -translate-y-1/2">
+          <div className="w-full h-full bg-gradient-to-r from-white/5 via-white/15 to-white/5 blur-3xl" />
+        </div>
         
-        {/* Strong radial studio lighting from center */}
-        <div className="absolute w-[800px] h-[400px] bg-gradient-radial from-white/30 via-white/10 to-transparent rounded-full blur-3xl" />
-        <div className="absolute w-[1200px] h-[600px] bg-gradient-radial from-white/15 via-white/5 to-transparent rounded-full blur-[100px]" />
+        {/* Subtle depth shadows */}
+        <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-black/20 via-black/5 to-transparent" />
         
-        {/* Floor reflection with stronger contrast */}
-        <div className="absolute top-0 w-full h-48 bg-gradient-to-b from-transparent to-white/15 blur-2xl" />
-        <div className="absolute bottom-0 w-full h-48 bg-gradient-to-t from-black/20 via-black/10 to-transparent blur-2xl" />
-        
-        {/* Additional studio lighting spots */}
-        <div className="absolute -top-12 left-1/3 w-64 h-64 bg-gradient-radial from-white/25 to-transparent rounded-full blur-3xl" />
-        <div className="absolute -bottom-12 right-1/3 w-64 h-64 bg-gradient-radial from-white/20 to-transparent rounded-full blur-3xl" />
+        {/* Warm ambient particles */}
+        <div className="absolute top-1/4 left-1/4 w-3 h-3 bg-amber-300/40 rounded-full blur-sm animate-pulse" />
+        <div className="absolute top-1/3 right-1/4 w-2 h-2 bg-orange-200/50 rounded-full blur-sm animate-pulse delay-700" />
+        <div className="absolute bottom-1/3 left-1/3 w-2 h-2 bg-yellow-200/40 rounded-full blur-sm animate-pulse delay-1000" />
       </div>
       
       {/* Decorative Avatar Placeholders - Responsive */}
