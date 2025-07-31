@@ -7,6 +7,22 @@ const Hero = () => {
       {/* Background decorative elements */}
       <div className="absolute inset-0 bg-gradient-to-br from-primary-light/20 to-primary/30" />
       
+      {/* 3D Studio Horizon Lighting Effect */}
+      <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+        {/* Main horizon shadow line */}
+        <div className="absolute w-full h-px bg-gradient-to-r from-transparent via-white/40 to-transparent blur-sm" />
+        
+        {/* Horizon glow effect */}
+        <div className="absolute w-full h-8 bg-gradient-to-r from-transparent via-white/20 to-transparent blur-2xl" />
+        <div className="absolute w-full h-16 bg-gradient-to-r from-transparent via-white/10 to-transparent blur-3xl" />
+        
+        {/* Subtle radial lighting from center */}
+        <div className="absolute w-96 h-96 bg-gradient-radial from-white/15 via-white/5 to-transparent rounded-full blur-3xl" />
+        
+        {/* Floor reflection effect */}
+        <div className="absolute top-0 w-full h-32 bg-gradient-to-b from-transparent to-white/5 blur-xl" />
+      </div>
+      
       {/* Decorative Avatar Placeholders - Responsive */}
       <div className="absolute top-16 left-4 lg:left-8 w-16 lg:w-20 h-16 lg:h-20 bg-white/20 rounded-full blur-sm animate-pulse" 
            title="Placeholder for cute 3D avatar - Happy Customer browsing" />
