@@ -3,9 +3,14 @@ import { ArrowRight, Play } from "lucide-react";
 
 const Hero = () => {
   return (
-    <section className="relative min-h-screen bg-hero-gradient flex items-center overflow-hidden pt-16">
-      {/* Background decorative elements */}
-      <div className="absolute inset-0 bg-gradient-to-br from-primary-light/20 to-primary/30" />
+    <section className="relative min-h-screen studio-lighting-base flex items-center overflow-hidden pt-16">
+      {/* 3D Studio Lighting System */}
+      <div className="absolute inset-0 studio-radial-light" />
+      <div className="absolute inset-0 studio-horizon-shadow" />
+      <div className="absolute inset-0 studio-horizon-meniscus-left" />
+      <div className="absolute inset-0 studio-horizon-meniscus-right" />
+      <div className="absolute inset-0 studio-floor-shadow" />
+      <div className="absolute inset-0 studio-ambient-overlay" />
 
       {/* Decorative Avatar Placeholders - Responsive */}
       <div
