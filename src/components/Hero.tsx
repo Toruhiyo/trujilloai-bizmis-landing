@@ -12,36 +12,6 @@ const Hero = () => {
       <div className="absolute inset-0 studio-floor-shadow" />
       <div className="absolute inset-0 studio-ambient-overlay" />
 
-      {/* Decorative Avatar Placeholders - Responsive */}
-      <div
-        className="absolute top-16 left-4 lg:left-8 w-16 lg:w-20 h-16 lg:h-20 bg-white/20 rounded-full blur-sm animate-pulse"
-        title="Placeholder for cute 3D avatar - Happy Customer browsing"
-      />
-      <div
-        className="absolute top-32 lg:top-40 right-8 lg:right-16 w-12 lg:w-16 h-12 lg:h-16 bg-white/15 rounded-full blur-sm animate-pulse delay-200"
-        title="Placeholder for cute 3D avatar - Sales Assistant helping"
-      />
-      <div
-        className="absolute bottom-32 lg:bottom-40 left-8 lg:left-16 w-14 lg:w-18 h-14 lg:h-18 bg-white/10 rounded-full blur-sm animate-pulse delay-500"
-        title="Placeholder for cute 3D avatar - Support Representative"
-      />
-      <div
-        className="absolute bottom-16 lg:bottom-24 right-12 lg:right-24 w-10 lg:w-14 h-10 lg:h-14 bg-white/25 rounded-full blur-sm animate-pulse delay-700"
-        title="Placeholder for cute 3D avatar - Analytics Expert"
-      />
-
-      {/* Descriptive Avatar Placeholders - Responsive */}
-      <div className="absolute top-48 lg:top-64 left-8 lg:left-32 w-24 lg:w-32 h-14 lg:h-16 bg-white/30 border-2 border-dashed border-white/50 rounded-lg flex items-center justify-center animate-pulse delay-1000">
-        <span className="text-xs text-white font-body text-center px-1 lg:px-2">
-          Store Owner Avatar
-        </span>
-      </div>
-      <div className="absolute bottom-48 lg:bottom-64 right-4 lg:right-8 w-24 lg:w-28 h-14 lg:h-16 bg-white/20 border-2 border-dashed border-white/40 rounded-lg flex items-center justify-center animate-pulse delay-1200">
-        <span className="text-xs text-white font-body text-center px-1 lg:px-2">
-          Satisfied Customer Avatar
-        </span>
-      </div>
-
       <div className="container mx-auto px-6 relative z-10">
         <div className="grid lg:grid-cols-2 gap-16 xl:gap-20 items-center">
           {/* Left Content */}

@@ -4,24 +4,17 @@ import { ArrowRight, Zap, Settings } from "lucide-react";
 const Integration = () => {
   return (
     <section className="py-20 bg-white relative overflow-hidden">
-      {/* Avatar Placeholders - Responsive */}
-      <div className="absolute top-16 left-4 lg:left-8 w-24 lg:w-28 h-14 lg:h-18 bg-gray-200 border-2 border-dashed border-gray-400 rounded-lg flex items-center justify-center">
-        <span className="text-xs text-gray-600 font-body text-center px-1 lg:px-2">Shopify Integration Avatar</span>
-      </div>
-      <div className="absolute bottom-16 right-4 lg:right-8 w-24 lg:w-28 h-14 lg:h-18 bg-gray-200 border-2 border-dashed border-gray-400 rounded-lg flex items-center justify-center">
-        <span className="text-xs text-gray-600 font-body text-center px-1 lg:px-2">Custom Website Avatar</span>
-      </div>
-      
       <div className="container mx-auto px-6 relative z-10">
         <div className="text-center mb-16">
           <h2 className="text-4xl lg:text-5xl font-heading font-bold text-foreground mb-6">
             Easy Integration for Every Store
           </h2>
           <p className="text-xl text-muted-foreground font-body max-w-3xl mx-auto">
-            Whether you're on Shopify or have a custom website, we've got you covered.
+            Whether you're on Shopify or have a custom website, we've got you
+            covered.
           </p>
         </div>
-        
+
         <div className="grid lg:grid-cols-2 gap-12">
           {/* Shopify Integration */}
           <div className="bg-gradient-to-br from-green-50 to-green-100 rounded-3xl p-8 relative overflow-hidden">
@@ -31,13 +24,16 @@ const Integration = () => {
                 <div className="w-12 h-12 bg-green-500 rounded-xl flex items-center justify-center">
                   <Zap className="w-6 h-6 text-white" />
                 </div>
-                <h3 className="text-2xl font-heading font-bold text-gray-900">Shopify Store</h3>
+                <h3 className="text-2xl font-heading font-bold text-gray-900">
+                  Shopify Store
+                </h3>
               </div>
-              
+
               <p className="text-gray-700 mb-6 text-lg leading-relaxed">
-                Install Bizmis directly from the Shopify App Store. One-click setup, no coding required.
+                Install Bizmis directly from the Shopify App Store. One-click
+                setup, no coding required.
               </p>
-              
+
               <div className="space-y-3 mb-8">
                 <div className="flex items-center text-muted-foreground">
                   <div className="w-2 h-2 bg-green-500 rounded-full mr-3" />
@@ -52,14 +48,14 @@ const Integration = () => {
                   <span className="font-body">Ready-to-use templates</span>
                 </div>
               </div>
-              
+
               <Button variant="warm" size="lg" className="group">
                 Install from App Store
                 <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
               </Button>
             </div>
           </div>
-          
+
           {/* Custom Website */}
           <div className="bg-gradient-to-br from-blue-50 to-purple-100 rounded-3xl p-8 relative overflow-hidden">
             <div className="absolute top-0 right-0 w-32 h-32 bg-purple-200/50 rounded-full -translate-y-16 translate-x-16" />
@@ -68,13 +64,16 @@ const Integration = () => {
                 <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-purple-500 rounded-xl flex items-center justify-center">
                   <Settings className="w-6 h-6 text-white" />
                 </div>
-                <h3 className="text-2xl font-heading font-bold text-gray-900">Custom Website</h3>
+                <h3 className="text-2xl font-heading font-bold text-gray-900">
+                  Custom Website
+                </h3>
               </div>
-              
+
               <p className="text-gray-700 mb-6 text-lg leading-relaxed">
-                Tailored integration for your unique website. We assess and customize everything to fit perfectly.
+                Tailored integration for your unique website. We assess and
+                customize everything to fit perfectly.
               </p>
-              
+
               <div className="space-y-3 mb-8">
                 <div className="flex items-center text-muted-foreground">
                   <div className="w-2 h-2 bg-purple-500 rounded-full mr-3" />
@@ -89,8 +88,12 @@ const Integration = () => {
                   <span className="font-body">Dedicated support</span>
                 </div>
               </div>
-              
-              <Button variant="outline" size="lg" className="group border-purple-200 text-purple-700 hover:bg-purple-50 font-body">
+
+              <Button
+                variant="outline"
+                size="lg"
+                className="group border-purple-200 text-purple-700 hover:bg-purple-50 font-body"
+              >
                 Get Custom Quote
                 <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
               </Button>

@@ -8,7 +8,7 @@ const Navbar = () => {
   const navItems = [
     { label: "Features", href: "#features" },
     { label: "Integration", href: "#integration" },
-    { label: "Pricing", href: "#pricing" }
+    { label: "Pricing", href: "#pricing" },
   ];
 
   return (
@@ -52,7 +52,11 @@ const Navbar = () => {
               size="icon"
               onClick={() => setIsMenuOpen(!isMenuOpen)}
             >
-              {isMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+              {isMenuOpen ? (
+                <X className="h-6 w-6" />
+              ) : (
+                <Menu className="h-6 w-6" />
+              )}
             </Button>
           </div>
         </div>
