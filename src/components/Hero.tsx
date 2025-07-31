@@ -7,20 +7,27 @@ const Hero = () => {
       {/* Background decorative elements */}
       <div className="absolute inset-0 bg-gradient-to-br from-primary-light/20 to-primary/30" />
       
-      {/* 3D Studio Horizon Lighting Effect */}
+      {/* 3D Studio Horizon Lighting Effect - Enhanced */}
       <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-        {/* Main horizon shadow line */}
-        <div className="absolute w-full h-px bg-gradient-to-r from-transparent via-white/40 to-transparent blur-sm" />
+        {/* Strong horizon shadow line */}
+        <div className="absolute w-full h-1 bg-gradient-to-r from-transparent via-white/80 to-transparent" />
+        <div className="absolute w-full h-2 bg-gradient-to-r from-transparent via-white/60 to-transparent blur-sm" />
         
-        {/* Horizon glow effect */}
-        <div className="absolute w-full h-8 bg-gradient-to-r from-transparent via-white/20 to-transparent blur-2xl" />
-        <div className="absolute w-full h-16 bg-gradient-to-r from-transparent via-white/10 to-transparent blur-3xl" />
+        {/* Dramatic horizon glow effect */}
+        <div className="absolute w-full h-24 bg-gradient-to-r from-transparent via-white/40 to-transparent blur-2xl" />
+        <div className="absolute w-full h-48 bg-gradient-to-r from-transparent via-white/20 to-transparent blur-3xl" />
         
-        {/* Subtle radial lighting from center */}
-        <div className="absolute w-96 h-96 bg-gradient-radial from-white/15 via-white/5 to-transparent rounded-full blur-3xl" />
+        {/* Strong radial studio lighting from center */}
+        <div className="absolute w-[800px] h-[400px] bg-gradient-radial from-white/30 via-white/10 to-transparent rounded-full blur-3xl" />
+        <div className="absolute w-[1200px] h-[600px] bg-gradient-radial from-white/15 via-white/5 to-transparent rounded-full blur-[100px]" />
         
-        {/* Floor reflection effect */}
-        <div className="absolute top-0 w-full h-32 bg-gradient-to-b from-transparent to-white/5 blur-xl" />
+        {/* Floor reflection with stronger contrast */}
+        <div className="absolute top-0 w-full h-48 bg-gradient-to-b from-transparent to-white/15 blur-2xl" />
+        <div className="absolute bottom-0 w-full h-48 bg-gradient-to-t from-black/20 via-black/10 to-transparent blur-2xl" />
+        
+        {/* Additional studio lighting spots */}
+        <div className="absolute -top-12 left-1/3 w-64 h-64 bg-gradient-radial from-white/25 to-transparent rounded-full blur-3xl" />
+        <div className="absolute -bottom-12 right-1/3 w-64 h-64 bg-gradient-radial from-white/20 to-transparent rounded-full blur-3xl" />
       </div>
       
       {/* Decorative Avatar Placeholders - Responsive */}
