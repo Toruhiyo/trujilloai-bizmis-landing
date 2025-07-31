@@ -4,23 +4,23 @@ const Features = () => {
   const features = [
     {
       icon: ShoppingCart,
-      title: "Turns browsing into buying",
-      description: "Bizmis welcomes visitors and helps them find what they need, fast.",
-      benefits: ["Guides users through your product catalog", "Highlights products based on needs", "Adds products to cart during chat"],
+      title: "Boost Sales Conversion",
+      description: "Personalized shopping experience with custom avatars that guide customers to the perfect products.",
+      benefits: ["Custom voice & appearance", "Product recommendations", "Cart optimization"],
       color: "from-green-400 to-green-600"
     },
     {
       icon: MessageCircle,
-      title: "Support that shows up — every time",
-      description: "Customers get instant answers with a natural, human-feeling touch.",
-      benefits: ["Handles questions and issues 24/7", "Works across product info and policies", "Builds trust through voice-based service"],
+      title: "24/7 Customer Support",
+      description: "Instant human-like assistance that never sleeps, handling queries and complaints with warmth.",
+      benefits: ["Instant responses", "Human-like conversations", "Issue resolution"],
       color: "from-blue-400 to-blue-600"
     },
     {
       icon: TrendingUp,
-      title: "Understands your store like a pro",
-      description: "Bizmis brings insights from every chat to improve your store's performance.",
-      benefits: ["Conversation tagging and session replays", "Discover what people want and what blocks them", "Actionable reports for smarter decisions"],
+      title: "Smart Analytics",
+      description: "Deep insights into customer behavior with session replays and tagged conversations.",
+      benefits: ["Session recordings", "Conversation analytics", "Growth insights"],
       color: "from-purple-400 to-purple-600"
     }
   ];
@@ -44,10 +44,10 @@ const Features = () => {
       <div className="container mx-auto px-6 relative z-10">
         <div className="text-center mb-16">
           <h2 className="text-4xl lg:text-5xl font-heading font-bold text-foreground mb-6">
-            Like having a great store clerk, but better
+            Your AI Store Assistant Does It All
           </h2>
           <p className="text-xl text-muted-foreground font-body max-w-3xl mx-auto">
-            Bizmis works like your best salesperson—welcoming customers, understanding their needs, and guiding them to purchase.
+            Just like having the best sales team in your physical store, but available 24/7 for your online customers.
           </p>
         </div>
         
