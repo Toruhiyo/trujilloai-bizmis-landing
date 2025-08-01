@@ -29,57 +29,46 @@ const Hero = () => {
             </div>
 
             <div className="flex flex-col sm:flex-row gap-4">
-              <Button variant="hero" size="xl" className="group">
-                Get Started Free
-                <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+              <Button
+                variant="hero"
+                size="xl"
+                className="group flex items-center gap-4 h-20 px-8 text-lg [&_svg]:!w-8 [&_svg]:!h-8"
+              >
+                <div className="flex-shrink-0">
+                  <FaShopify className="w-8 h-8 text-primary" />
+                </div>
+                <div className="flex-1 min-w-0 text-left">
+                  <div className="font-semibold">
+                    Get Started Free on Shopify
+                  </div>
+                  <div className="text-sm opacity-80">
+                    One-click install, ready in minutes
+                  </div>
+                </div>
+                <div className="flex-shrink-0">
+                  <ArrowRight className="w-6 h-6 group-hover:translate-x-1 transition-transform" />
+                </div>
               </Button>
 
               <Button
                 variant="outline"
                 size="xl"
-                className="group bg-white/10 border-white/30 text-white hover:bg-white/20"
+                className="group bg-white/10 border-white/30 text-white hover:bg-white/20 h-20 px-8 text-lg [&_svg]:!w-6 [&_svg]:!h-6"
               >
-                <Play className="w-5 h-5" />
+                <Play className="w-6 h-6" />
                 Watch Demo
               </Button>
             </div>
 
-            {/* App Store Style Integration Badges - Bigger & Square */}
-            <div className="flex flex-col sm:flex-row gap-4 max-w-2xl">
-              {/* Shopify App Store Badge */}
-              <div className="bg-transparent border-2 border-white/90 rounded-2xl px-6 py-5 flex items-center gap-4 hover:bg-white/5 transition-colors cursor-pointer group flex-1 min-h-[90px]">
-                <div className="flex-shrink-0">
-                  <FaShopify className="w-12 h-12 text-white" />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <div className="text-white text-sm font-light tracking-wide mb-1 opacity-90">
-                    Available on the
-                  </div>
-                  <div className="text-white font-heading font-bold text-xl leading-tight">
-                    Shopify App Store
-                  </div>
-                  <div className="text-white/80 text-xs mt-1">
-                    One-click install, ready in minutes
-                  </div>
-                </div>
-              </div>
-
-              {/* Custom Website Badge */}
-              <div className="bg-transparent border-2 border-white/90 rounded-2xl px-6 py-5 flex items-center gap-4 hover:bg-white/5 transition-colors cursor-pointer group flex-1 min-h-[90px]">
-                <div className="flex-shrink-0">
-                  <Code className="w-12 h-12 text-white stroke-2" />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <div className="text-white text-sm font-light tracking-wide mb-1 opacity-90">
-                    Get it for your
-                  </div>
-                  <div className="text-white font-heading font-bold text-xl leading-tight">
-                    Custom Website
-                  </div>
-                  <div className="text-white/80 text-xs mt-1">
-                    Tailored integration & setup
-                  </div>
-                </div>
+            {/* Custom Website - Discrete mention */}
+            <div className="max-w-2xl">
+              <div className="text-center">
+                <span className="text-white/60 text-sm">
+                  Also available for{" "}
+                  <button className="text-white/80 hover:text-white underline underline-offset-2 transition-colors">
+                    custom websites
+                  </button>
+                </span>
               </div>
             </div>
           </div>
