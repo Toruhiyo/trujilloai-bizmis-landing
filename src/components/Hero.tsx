@@ -88,7 +88,7 @@ const Hero = () => {
             <div className="absolute -bottom-6 lg:-bottom-10 -left-6 lg:-left-10 w-20 lg:w-32 h-20 lg:h-32 bg-white/10 rounded-full blur-2xl animate-pulse delay-300" />
 
             {/* Stats floating cards - positioned in hero near the image */}
-            <div className="absolute top-8 lg:top-12 -left-8 lg:-left-12 bg-white/95 backdrop-blur-sm rounded-xl p-3 shadow-brand animate-bounce z-20">
+            {/* <div className="absolute top-8 lg:top-12 -left-8 lg:-left-12 bg-white/95 backdrop-blur-sm rounded-xl p-3 shadow-brand animate-bounce z-20">
               <div className="text-lg lg:text-2xl font-bold text-primary font-heading">
                 24/7
               </div>
@@ -104,7 +104,7 @@ const Hero = () => {
               <div className="text-xs lg:text-sm text-gray-600 font-body">
                 Sales Increase
               </div>
-            </div>
+            </div> */}
           </div>
         </div>
       </div>
