@@ -19,13 +19,13 @@ const Hero = () => {
           <div className="space-y-8">
             <div className="space-y-4">
               <h1 className="text-5xl lg:text-6xl xl:text-7xl font-heading font-bold text-white leading-tight">
-                Your Store's Best
-                <span className="block text-white/90">Salesperson</span>
+                Sell Online,
+                <span className="block text-white/90">The Human Way</span>
               </h1>
               <p className="text-xl lg:text-2xl text-white/80 font-body max-w-2xl">
-                Bizmis greets customers, helps them find what they need, and
-                guides them to purchase — just like having your most helpful
-                employee working 24/7.
+                This isn't a chatbot. Bizmis speaks naturally—welcoming your
+                customers, answering their questions, and guiding them to buy
+                with confidence, just like the best in-store salesperson would.
               </p>
             </div>
 
