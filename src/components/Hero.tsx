@@ -28,26 +28,26 @@ const Hero = () => {
               </p>
             </div>
 
-            {/* Primary Shopify CTA and Secondary Video Button */}
-            <div className="flex flex-col sm:flex-row gap-4 max-w-2xl">
+            {/* Main CTA Buttons */}
+            <div className="flex flex-col sm:flex-row gap-4">
               {/* Primary Shopify App Store CTA */}
-              <div className="bg-white rounded-2xl px-8 py-6 flex items-center gap-5 hover:bg-white/95 transition-colors cursor-pointer group flex-1 min-h-[100px] shadow-xl">
+              <div className="bg-white rounded-2xl px-6 py-4 flex items-center gap-4 hover:bg-white/95 transition-colors cursor-pointer group">
                 <div className="flex-shrink-0">
-                  <FaShopify className="w-14 h-14 text-[#95BF47]" />
+                  <FaShopify className="w-8 h-8 text-[#95BF47]" />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <div className="text-gray-700 text-sm font-medium tracking-wide mb-1">
+                  <div className="text-primary text-sm font-medium">
                     Start free on
                   </div>
-                  <div className="text-gray-900 font-heading font-bold text-2xl leading-tight">
+                  <div className="text-gray-900 font-heading font-bold text-lg leading-tight">
                     Shopify App Store
                   </div>
-                  <div className="text-gray-600 text-sm mt-1 font-medium">
+                  <div className="text-gray-600 text-xs mt-0.5">
                     Install in 2 clicks • Free trial
                   </div>
                 </div>
                 <div className="flex-shrink-0">
-                  <ArrowRight className="w-6 h-6 text-gray-400 group-hover:text-gray-600 group-hover:translate-x-1 transition-all" />
+                  <ArrowRight className="w-5 h-5 text-primary group-hover:translate-x-1 transition-transform" />
                 </div>
               </div>
 
@@ -55,21 +55,20 @@ const Hero = () => {
               <Button
                 variant="outline"
                 size="xl"
-                className="group bg-white/10 border-white/30 text-white hover:bg-white/20 sm:w-auto w-full"
+                className="group bg-white/10 border-white/30 text-white hover:bg-white/20"
               >
                 <Play className="w-5 h-5" />
                 Watch Demo
               </Button>
             </div>
 
-            {/* Discrete Custom Website Option */}
-            <div className="text-center">
-              <p className="text-white/60 text-sm">
-                Need custom integration? 
-                <button className="text-white/80 hover:text-white underline underline-offset-2 ml-1 transition-colors">
-                  Contact us
-                </button>
-              </p>
+            {/* Custom Website Integration */}
+            <div className="flex items-center justify-center gap-2 text-white/70 text-sm">
+              <Code className="w-4 h-4" />
+              <span>Need custom integration?</span>
+              <button className="text-white hover:text-white/90 underline underline-offset-2 font-medium transition-colors">
+                Contact us
+              </button>
             </div>
           </div>
 
