@@ -39,7 +39,8 @@ const Hero = () => {
                 </div>
                 <div className="flex-1 min-w-0 text-left">
                   <div className="font-semibold">
-                    Get Started Free on Shopify
+                    <span className="font-black">Get Started Free</span> on
+                    Shopify
                   </div>
                   <div className="text-sm opacity-80">
                     One-click install, ready in minutes
