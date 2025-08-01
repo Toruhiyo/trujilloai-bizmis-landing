@@ -4,21 +4,13 @@ import { useState, useEffect } from "react";
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isScrolled, setIsScrolled] = useState(false);
   const [isInHero, setIsInHero] = useState(true);
 
   useEffect(() => {
     const handleScroll = () => {
-      const scrollY = window.scrollY;
       const heroHeight = window.innerHeight;
-
-      // Check if scrolled from top (even slightly)
-      const scrolled = scrollY > 10;
-      setIsScrolled(scrolled);
-
-      // Check if still in hero section
-      const inHero = scrollY < heroHeight - 100;
-      setIsInHero(inHero);
+      const scrolled = window.scrollY > heroHeight - 100;
+      setIsInHero(!scrolled);
     };
 
     window.addEventListener("scroll", handleScroll);
@@ -31,88 +23,22 @@ const Navbar = () => {
     { label: "Pricing", href: "#pricing" },
   ];
 
-  const getNavbarClasses = () => {
-    if (!isScrolled) {
-      return "bg-transparent";
-    }
-
-    if (isInHero) {
-      return "bg-white/10 backdrop-blur-md border-b border-white/20 shadow-lg";
-    }
-
-    return "bg-white/95 backdrop-blur-sm border-b border-border shadow-soft";
-  };
-
-  const getTextColor = () => {
-    if (!isScrolled) {
-      return "text-white";
-    }
-
-    if (isInHero) {
-      return "text-white";
-    }
-
-    return "text-primary";
-  };
-
-  const getLinkColor = () => {
-    if (!isScrolled) {
-      return "text-white/90 hover:text-white";
-    }
-
-    if (isInHero) {
-      return "text-white/90 hover:text-white";
-    }
-
-    return "text-foreground hover:text-primary";
-  };
-
-  const getButtonVariant = () => {
-    if (!isScrolled) {
-      return "outline";
-    }
-
-    if (isInHero) {
-      return "outline";
-    }
-
-    return "default";
-  };
-
-  const getButtonClasses = () => {
-    if (!isScrolled) {
-      return "bg-white text-foreground border-white hover:bg-white/90";
-    }
-
-    if (isInHero) {
-      return "bg-white/20 text-white border-white/30 hover:bg-white/30";
-    }
-
-    return "";
-  };
-
-  const getGhostButtonClasses = () => {
-    if (!isScrolled) {
-      return "text-white/90 hover:text-white hover:bg-white/10";
-    }
-
-    if (isInHero) {
-      return "text-white/90 hover:text-white hover:bg-white/20";
-    }
-
-    return "text-foreground hover:bg-accent";
-  };
-
   return (
     <nav
-      className={`fixed top-0 w-full z-50 transition-all duration-500 ${getNavbarClasses()}`}
+      className={`w-full z-50 transition-all duration-300 ${
+        isInHero
+          ? "absolute top-0"
+          : "fixed top-0 bg-white/95 backdrop-blur-sm border-b border-border shadow-soft"
+      }`}
     >
       <div className="container mx-auto px-6">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <div className="flex items-center">
             <span
-              className={`text-2xl font-heading font-bold transition-colors duration-300 ${getTextColor()}`}
+              className={`text-2xl font-heading font-bold transition-colors duration-300 ${
+                isInHero ? "text-white" : "text-primary"
+              }`}
             >
               Bizmis
             </span>
@@ -124,7 +50,11 @@ const Navbar = () => {
               <a
                 key={item.label}
                 href={item.href}
-                className={`font-medium transition-colors duration-300 ${getLinkColor()}`}
+                className={`font-medium transition-colors duration-300 ${
+                  isInHero
+                    ? "text-white/90 hover:text-white"
+                    : "text-foreground hover:text-primary"
+                }`}
               >
                 {item.label}
               </a>
@@ -135,13 +65,21 @@ const Navbar = () => {
           <div className="hidden md:flex items-center space-x-4">
             <Button
               variant="ghost"
-              className={`font-medium transition-colors duration-300 ${getGhostButtonClasses()}`}
+              className={`font-medium transition-colors duration-300 ${
+                isInHero
+                  ? "text-white/90 hover:text-white hover:bg-white/10"
+                  : "text-foreground hover:bg-accent"
+              }`}
             >
               Sign In
             </Button>
             <Button
-              variant={getButtonVariant()}
-              className={`font-medium transition-all duration-300 ${getButtonClasses()}`}
+              variant={isInHero ? "outline" : "default"}
+              className={`font-medium transition-all duration-300 ${
+                isInHero
+                  ? "bg-white text-foreground border-white hover:bg-white/90"
+                  : ""
+              }`}
             >
               Get Started Free
             </Button>
@@ -152,7 +90,11 @@ const Navbar = () => {
             <Button
               variant="ghost"
               size="icon"
-              className={`transition-colors duration-300 ${getGhostButtonClasses()}`}
+              className={`transition-colors duration-300 ${
+                isInHero
+                  ? "text-white hover:bg-white/10"
+                  : "text-foreground hover:bg-accent"
+              }`}
               onClick={() => setIsMenuOpen(!isMenuOpen)}
             >
               {isMenuOpen ? (
@@ -168,11 +110,9 @@ const Navbar = () => {
         {isMenuOpen && (
           <div
             className={`md:hidden absolute top-16 left-0 right-0 border-b shadow-soft transition-colors duration-300 ${
-              isScrolled
-                ? isInHero
-                  ? "bg-white/20 backdrop-blur-md border-white/20"
-                  : "bg-white border-border"
-                : "bg-white/95 backdrop-blur-sm border-white/20"
+              isInHero
+                ? "bg-white/95 backdrop-blur-sm border-white/20"
+                : "bg-white border-border"
             }`}
           >
             <div className="px-6 py-4 space-y-4">

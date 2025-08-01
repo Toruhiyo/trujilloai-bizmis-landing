@@ -1,10 +1,11 @@
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Play, Code } from "lucide-react";
 import { FaShopify } from "react-icons/fa";
+import Navbar from "./Navbar";
 
 const Hero = () => {
   return (
-    <section className="relative min-h-screen studio-lighting-base flex items-center overflow-hidden pt-16">
+    <section className="relative min-h-screen studio-lighting-base flex items-center overflow-hidden">
       {/* 3D Studio Lighting System */}
       <div className="absolute inset-0 studio-radial-light" />
       <div className="absolute inset-0 studio-horizon-shadow" />
@@ -13,7 +14,10 @@ const Hero = () => {
       <div className="absolute inset-0 studio-floor-shadow" />
       <div className="absolute inset-0 studio-ambient-overlay" />
 
-      <div className="container mx-auto px-6 relative z-10">
+      {/* Navbar positioned within hero */}
+      <Navbar />
+
+      <div className="container mx-auto px-6 relative z-10 pt-16">
         <div className="grid lg:grid-cols-2 gap-16 xl:gap-20 items-center">
           {/* Left Content */}
           <div className="space-y-8">
