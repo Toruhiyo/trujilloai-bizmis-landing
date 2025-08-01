@@ -81,7 +81,7 @@ const Hero = () => {
             {/* Main Image - Made bigger */}
             <div className="relative z-10">
               <img
-                src="/lovable-uploads/badd07ac-0944-4a30-937f-128b9286a875.png"
+                src="/images/bizmis-landing-hero-3-avatars-no-shadow.png"
                 alt="Digital sales assistant helping customers"
                 className="w-full h-auto max-w-2xl mx-auto"
               />
