@@ -18,9 +18,9 @@ const SalesConversion = () => {
                 Increase Sales Conversion
               </h2>
               <p className="text-xl text-muted-foreground font-body leading-relaxed">
-                Your assistant welcomes visitors and actively guides them to the
-                right products — just like a real salesperson would in your
-                physical store.
+                Your assistant welcomes visitors and helps them find exactly
+                what they need — like a real store clerk who knows your products
+                inside and out.
               </p>
             </div>
 
@@ -31,11 +31,11 @@ const SalesConversion = () => {
                 </div>
                 <div>
                   <h3 className="font-heading font-semibold text-foreground mb-1">
-                    Voice & Appearance Customization
+                    Voice Cloning & Visual Customization
                   </h3>
                   <p className="text-muted-foreground font-body">
-                    Clone your voice and reflect your store's personality to
-                    create genuine connections with customers.
+                    Your assistant sounds and looks like you, creating genuine
+                    connections that build trust with customers.
                   </p>
                 </div>
               </div>
@@ -49,8 +49,8 @@ const SalesConversion = () => {
                     Personalized Product Suggestions
                   </h3>
                   <p className="text-muted-foreground font-body">
-                    Smart recommendations based on customer behavior and
-                    preferences, leading them to perfect matches.
+                    Smart recommendations that feel natural, helping customers
+                    discover products they'll love.
                   </p>
                 </div>
               </div>
@@ -61,11 +61,11 @@ const SalesConversion = () => {
                 </div>
                 <div>
                   <h3 className="font-heading font-semibold text-foreground mb-1">
-                    In-Store-Style Navigation
+                    Product Comparison & Navigation
                   </h3>
                   <p className="text-muted-foreground font-body">
                     Conversational guidance through your catalog with detailed
-                    product descriptions and comparisons.
+                    descriptions and helpful comparisons.
                   </p>
                 </div>
               </div>
@@ -76,11 +76,11 @@ const SalesConversion = () => {
                 </div>
                 <div>
                   <h3 className="font-heading font-semibold text-foreground mb-1">
-                    Cart Assistance
+                    Cart Handling
                   </h3>
                   <p className="text-muted-foreground font-body">
-                    Helps customers through the entire buying process, from
-                    discovery to checkout completion.
+                    Seamlessly helps customers through the entire buying
+                    process, from discovery to checkout completion.
                   </p>
                 </div>
               </div>

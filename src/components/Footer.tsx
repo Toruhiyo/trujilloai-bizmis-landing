@@ -6,8 +6,8 @@ const Footer = () => {
           <div className="md:col-span-2">
             <h3 className="text-2xl font-heading font-bold mb-4">Bizmis</h3>
             <p className="text-gray-400 mb-6 max-w-md">
-              Transforming e-commerce with cute 3D AI assistants that boost
-              sales, provide support, and understand customers.
+              Your store's best salesperson, working 24/7 to boost sales,
+              provide support, and understand your customers.
             </p>
           </div>
 

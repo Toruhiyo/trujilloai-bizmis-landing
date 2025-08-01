@@ -7,11 +7,10 @@ const Integration = () => {
       <div className="container mx-auto px-6 relative z-10">
         <div className="text-center mb-16">
           <h2 className="text-4xl lg:text-5xl font-heading font-bold text-foreground mb-6">
-            Easy Integration for Every Store
+            Integration Options
           </h2>
           <p className="text-xl text-muted-foreground font-body max-w-3xl mx-auto">
-            Whether you're on Shopify or have a custom website, we've got you
-            covered.
+            Choose the integration that works best for your store setup.
           </p>
         </div>
 
@@ -25,7 +24,7 @@ const Integration = () => {
                   <Zap className="w-6 h-6 text-white" />
                 </div>
                 <h3 className="text-2xl font-heading font-bold text-gray-900">
-                  Shopify Store
+                  Shopify App Store
                 </h3>
               </div>
 
@@ -37,20 +36,22 @@ const Integration = () => {
               <div className="space-y-3 mb-8">
                 <div className="flex items-center text-muted-foreground">
                   <div className="w-2 h-2 bg-green-500 rounded-full mr-3" />
-                  <span className="font-body">1-minute installation</span>
+                  <span className="font-body">1-click install</span>
                 </div>
                 <div className="flex items-center text-muted-foreground">
                   <div className="w-2 h-2 bg-green-500 rounded-full mr-3" />
-                  <span className="font-body">Automatic product sync</span>
+                  <span className="font-body">
+                    Catalog and store data auto-synced
+                  </span>
                 </div>
                 <div className="flex items-center text-muted-foreground">
                   <div className="w-2 h-2 bg-green-500 rounded-full mr-3" />
-                  <span className="font-body">Ready-to-use templates</span>
+                  <span className="font-body">Ready instantly</span>
                 </div>
               </div>
 
               <Button variant="warm" size="lg" className="group">
-                Install from App Store
+                Get it on Shopify
                 <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
               </Button>
             </div>
@@ -65,7 +66,7 @@ const Integration = () => {
                   <Settings className="w-6 h-6 text-white" />
                 </div>
                 <h3 className="text-2xl font-heading font-bold text-gray-900">
-                  Custom Website
+                  Custom Website Integration
                 </h3>
               </div>
 
@@ -77,15 +78,15 @@ const Integration = () => {
               <div className="space-y-3 mb-8">
                 <div className="flex items-center text-muted-foreground">
                   <div className="w-2 h-2 bg-purple-500 rounded-full mr-3" />
+                  <span className="font-body">Tailor-made setup</span>
+                </div>
+                <div className="flex items-center text-muted-foreground">
+                  <div className="w-2 h-2 bg-purple-500 rounded-full mr-3" />
                   <span className="font-body">Custom assessment</span>
                 </div>
                 <div className="flex items-center text-muted-foreground">
                   <div className="w-2 h-2 bg-purple-500 rounded-full mr-3" />
-                  <span className="font-body">Personalized setup</span>
-                </div>
-                <div className="flex items-center text-muted-foreground">
-                  <div className="w-2 h-2 bg-purple-500 rounded-full mr-3" />
-                  <span className="font-body">Dedicated support</span>
+                  <span className="font-body">Schedule a discovery call</span>
                 </div>
               </div>
 
@@ -94,7 +95,7 @@ const Integration = () => {
                 size="lg"
                 className="group border-purple-200 text-purple-700 hover:bg-purple-50 font-body"
               >
-                Get Custom Quote
+                Schedule a Call
                 <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
               </Button>
             </div>

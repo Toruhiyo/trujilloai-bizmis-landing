@@ -15,7 +15,7 @@ const CustomerSupport = () => {
                     24/7
                   </div>
                   <div className="text-blue-600 font-body">
-                    Always Available Support
+                    Human-Feel Support
                   </div>
                 </div>
               </div>
@@ -26,12 +26,12 @@ const CustomerSupport = () => {
           <div className="space-y-8">
             <div className="space-y-4">
               <h2 className="text-4xl lg:text-5xl font-heading font-bold text-foreground">
-                24/7 Customer Support with a Human Touch
+                24/7 Human-Feel Support
               </h2>
               <p className="text-xl text-muted-foreground font-body leading-relaxed">
-                Available anytime to handle questions and product doubts in a
-                warm, helpful tone — your customers never feel like they're
-                talking to a machine.
+                Your assistant answers questions, resolves doubts, and helps
+                customers any time, with warmth and clarity that makes them feel
+                heard.
               </p>
             </div>
 
@@ -42,7 +42,7 @@ const CustomerSupport = () => {
                 </div>
                 <div>
                   <h3 className="font-heading font-semibold text-foreground mb-1">
-                    Instant Answers Day and Night
+                    Always Available
                   </h3>
                   <p className="text-muted-foreground font-body">
                     No waiting times, no business hours — your assistant is
@@ -57,7 +57,7 @@ const CustomerSupport = () => {
                 </div>
                 <div>
                   <h3 className="font-heading font-semibold text-foreground mb-1">
-                    Conversational Tone with Empathy
+                    Conversational and Human-Like Tone
                   </h3>
                   <p className="text-muted-foreground font-body">
                     Responds with genuine warmth and understanding, making
@@ -72,11 +72,11 @@ const CustomerSupport = () => {
                 </div>
                 <div>
                   <h3 className="font-heading font-semibold text-foreground mb-1">
-                    Product Knowledge and Guidance
+                    Product Understanding and Contextual Answers
                   </h3>
                   <p className="text-muted-foreground font-body">
-                    Deep understanding of your catalog to answer detailed
-                    questions and provide expert recommendations.
+                    Deep knowledge of your catalog to answer detailed questions
+                    and provide expert recommendations.
                   </p>
                 </div>
               </div>

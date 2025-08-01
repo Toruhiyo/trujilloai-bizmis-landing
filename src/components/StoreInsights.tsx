@@ -12,8 +12,9 @@ const StoreInsights = () => {
                 Understand and Improve Your Store
               </h2>
               <p className="text-xl text-muted-foreground font-body leading-relaxed">
-                See what customers say and do, and make smarter decisions based
-                on real behavior patterns and feedback from every interaction.
+                Get clear insights into what customers do and say, helping you
+                refine your store experience and make smarter business
+                decisions.
               </p>
             </div>
 
@@ -54,7 +55,7 @@ const StoreInsights = () => {
                 </div>
                 <div>
                   <h3 className="font-heading font-semibold text-foreground mb-1">
-                    Insights Dashboard
+                    Interaction Dashboard
                   </h3>
                   <p className="text-muted-foreground font-body">
                     Clear analytics showing customer behavior trends, popular

@@ -19,7 +19,7 @@ const CTA = () => {
             </h2>
             <p className="text-xl lg:text-2xl text-white/90 max-w-3xl mx-auto">
               Join thousands of store owners who've boosted their sales with
-              cute AI assistants.
+              their most helpful digital teammate.
             </p>
           </div>
 
