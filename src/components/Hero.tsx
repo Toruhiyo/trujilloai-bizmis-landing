@@ -28,11 +28,11 @@ const Hero = () => {
               </p>
             </div>
 
-            <div className="space-y-4">
+            <div className="space-y-4 w-fit">
               <Button
                 variant="hero"
                 size="xl"
-                className="group flex items-center gap-4 h-20 px-8 text-lg [&_svg]:!w-8 [&_svg]:!h-8 w-full sm:w-auto"
+                className="group flex items-center gap-4 h-20 px-8 text-lg [&_svg]:!w-8 [&_svg]:!h-8 w-full"
               >
                 <div className="flex-shrink-0">
                   <FaShopify className="w-8 h-8 text-primary" />
@@ -51,17 +51,17 @@ const Hero = () => {
                 </div>
               </Button>
 
-              <div className="flex flex-col sm:flex-row gap-4 items-center">
+              <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 items-center w-full">
                 <Button
                   variant="outline"
                   size="lg"
-                  className="group bg-white/10 border-white/30 text-white hover:bg-white/20 [&_svg]:!w-5 [&_svg]:!h-5"
+                  className="group bg-white/10 border-white/30 text-white hover:bg-white/20 [&_svg]:!w-5 [&_svg]:!h-5 flex-shrink-0"
                 >
                   <Play className="w-5 h-5" />
                   Watch Demo
                 </Button>
 
-                <span className="text-white/70 text-sm">
+                <span className="text-white/70 text-sm text-center sm:text-left flex-1 min-w-0">
                   Also available for{" "}
                   <button className="text-white/80 hover:text-white underline underline-offset-2 transition-colors">
                     custom websites
