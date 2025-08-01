@@ -28,30 +28,12 @@ const Hero = () => {
               </p>
             </div>
 
-            {/* Main CTA Buttons */}
             <div className="flex flex-col sm:flex-row gap-4">
-              {/* Primary Shopify App Store CTA */}
-              <div className="bg-white rounded-2xl px-6 py-4 flex items-center gap-4 hover:bg-white/95 transition-colors cursor-pointer group">
-                <div className="flex-shrink-0">
-                  <FaShopify className="w-8 h-8 text-[#95BF47]" />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <div className="text-primary text-sm font-medium">
-                    Start free on
-                  </div>
-                  <div className="text-gray-900 font-heading font-bold text-lg leading-tight">
-                    Shopify App Store
-                  </div>
-                  <div className="text-gray-600 text-xs mt-0.5">
-                    Install in 2 clicks • Free trial
-                  </div>
-                </div>
-                <div className="flex-shrink-0">
-                  <ArrowRight className="w-5 h-5 text-primary group-hover:translate-x-1 transition-transform" />
-                </div>
-              </div>
+              <Button variant="hero" size="xl" className="group">
+                Get Started Free
+                <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+              </Button>
 
-              {/* Secondary Video Button */}
               <Button
                 variant="outline"
                 size="xl"
@@ -62,13 +44,43 @@ const Hero = () => {
               </Button>
             </div>
 
-            {/* Custom Website Integration */}
-            <div className="flex items-center justify-center gap-2 text-white/70 text-sm">
-              <Code className="w-4 h-4" />
-              <span>Need custom integration?</span>
-              <button className="text-white hover:text-white/90 underline underline-offset-2 font-medium transition-colors">
-                Contact us
-              </button>
+            {/* App Store Style Integration Badges - Bigger & Square */}
+            <div className="flex flex-col sm:flex-row gap-4 max-w-2xl">
+              {/* Shopify App Store Badge */}
+              <div className="bg-transparent border-2 border-white/90 rounded-2xl px-6 py-5 flex items-center gap-4 hover:bg-white/5 transition-colors cursor-pointer group flex-1 min-h-[90px]">
+                <div className="flex-shrink-0">
+                  <FaShopify className="w-12 h-12 text-white" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="text-white text-sm font-light tracking-wide mb-1 opacity-90">
+                    Available on the
+                  </div>
+                  <div className="text-white font-heading font-bold text-xl leading-tight">
+                    Shopify App Store
+                  </div>
+                  <div className="text-white/80 text-xs mt-1">
+                    One-click install, ready in minutes
+                  </div>
+                </div>
+              </div>
+
+              {/* Custom Website Badge */}
+              <div className="bg-transparent border-2 border-white/90 rounded-2xl px-6 py-5 flex items-center gap-4 hover:bg-white/5 transition-colors cursor-pointer group flex-1 min-h-[90px]">
+                <div className="flex-shrink-0">
+                  <Code className="w-12 h-12 text-white stroke-2" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="text-white text-sm font-light tracking-wide mb-1 opacity-90">
+                    Get it for your
+                  </div>
+                  <div className="text-white font-heading font-bold text-xl leading-tight">
+                    Custom Website
+                  </div>
+                  <div className="text-white/80 text-xs mt-1">
+                    Tailored integration & setup
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
 
