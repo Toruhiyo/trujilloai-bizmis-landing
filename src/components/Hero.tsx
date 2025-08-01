@@ -28,11 +28,11 @@ const Hero = () => {
               </p>
             </div>
 
-            <div className="flex flex-col sm:flex-row gap-4">
+            <div className="space-y-4">
               <Button
                 variant="hero"
                 size="xl"
-                className="group flex items-center gap-4 h-20 px-8 text-lg [&_svg]:!w-8 [&_svg]:!h-8"
+                className="group flex items-center gap-4 h-20 px-8 text-lg [&_svg]:!w-8 [&_svg]:!h-8 w-full sm:w-auto"
               >
                 <div className="flex-shrink-0">
                   <FaShopify className="w-8 h-8 text-primary" />
@@ -50,20 +50,17 @@ const Hero = () => {
                 </div>
               </Button>
 
-              <Button
-                variant="outline"
-                size="xl"
-                className="group bg-white/10 border-white/30 text-white hover:bg-white/20 h-20 px-8 text-lg [&_svg]:!w-6 [&_svg]:!h-6"
-              >
-                <Play className="w-6 h-6" />
-                Watch Demo
-              </Button>
-            </div>
+              <div className="flex flex-col sm:flex-row gap-4 items-center">
+                <Button
+                  variant="outline"
+                  size="lg"
+                  className="group bg-white/10 border-white/30 text-white hover:bg-white/20 [&_svg]:!w-5 [&_svg]:!h-5"
+                >
+                  <Play className="w-5 h-5" />
+                  Watch Demo
+                </Button>
 
-            {/* Custom Website - Discrete mention */}
-            <div className="max-w-2xl">
-              <div className="text-center">
-                <span className="text-white/60 text-sm">
+                <span className="text-white/70 text-sm">
                   Also available for{" "}
                   <button className="text-white/80 hover:text-white underline underline-offset-2 transition-colors">
                     custom websites
