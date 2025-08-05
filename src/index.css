@@ -206,4 +206,21 @@ All colors MUST be HSL.
         hsl(30 80% 62% / 0.1) 50%,
         hsl(30 75% 57% / 0.05) 100%);
   }
+
+  /* Animated Sales Display */
+  .animate-fade-in {
+    animation: fadeIn 0.8s ease-in-out;
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(20px) scale(0.95) rotate(2deg);
+    }
+
+    to {
+      opacity: 1;
+      transform: translateY(0) scale(1) rotate(2deg);
+    }
+  }
 }
