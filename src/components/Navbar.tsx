@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Menu, X } from "lucide-react";
 import { useState, useEffect } from "react";
-import { scrollToTop } from "@/lib/utils/scroll";
+import { scrollToTop, scrollToSection } from "@/lib/utils/scroll";
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -19,7 +19,7 @@ const Navbar = () => {
   }, []);
 
   const navItems = [
-    { label: "Features", href: "#features" },
+    { label: "Features", href: "#benefits" },
     { label: "Integration", href: "#integration" },
     { label: "Pricing", href: "#pricing" },
   ];
@@ -49,17 +49,17 @@ const Navbar = () => {
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-8">
             {navItems.map((item) => (
-              <a
+              <button
                 key={item.label}
-                href={item.href}
-                className={`font-medium transition-colors duration-300 ${
+                onClick={() => scrollToSection(item.href)}
+                className={`font-medium transition-colors duration-300 hover:opacity-80 ${
                   isInHero
                     ? "text-white/90 hover:text-white"
                     : "text-foreground hover:text-primary"
                 }`}
               >
                 {item.label}
-              </a>
+              </button>
             ))}
           </div>
 
@@ -119,14 +119,16 @@ const Navbar = () => {
           >
             <div className="px-6 py-4 space-y-4">
               {navItems.map((item) => (
-                <a
+                <button
                   key={item.label}
-                  href={item.href}
-                  className="block text-foreground hover:text-primary font-medium transition-colors"
-                  onClick={() => setIsMenuOpen(false)}
+                  onClick={() => {
+                    scrollToSection(item.href);
+                    setIsMenuOpen(false);
+                  }}
+                  className="block text-foreground hover:text-primary font-medium transition-colors w-full text-left"
                 >
                   {item.label}
-                </a>
+                </button>
               ))}
               <div className="pt-4 space-y-2">
                 <Button variant="ghost" className="w-full font-medium">

@@ -5,7 +5,10 @@ import Navbar from "./Navbar";
 
 const Hero = () => {
   return (
-    <section className="relative min-h-screen studio-lighting-base flex items-center overflow-hidden">
+    <section
+      id="hero"
+      className="relative min-h-screen studio-lighting-base flex items-center overflow-hidden"
+    >
       {/* 3D Studio Lighting System */}
       <div className="absolute inset-0 studio-radial-light" />
       <div className="absolute inset-0 studio-horizon-shadow" />

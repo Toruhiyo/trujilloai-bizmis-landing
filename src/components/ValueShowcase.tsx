@@ -308,7 +308,10 @@ const ValueShowcase = () => {
   return (
     <div className="space-y-0 bg-gradient-to-b from-background via-primary/2 to-background">
       {/* Main Benefit: Increase Sales Conversion with Drive Sales Feature */}
-      <section className="relative py-20 bg-gradient-to-br from-primary/15 via-primary/8 to-primary/4 overflow-hidden">
+      <section
+        id="benefits"
+        className="relative py-20 bg-gradient-to-br from-primary/15 via-primary/8 to-primary/4 overflow-hidden"
+      >
         {/* Subtle Background Elements */}
         <div className="absolute inset-0 opacity-3">
           <div className="absolute top-20 left-20 w-64 h-64 bg-primary rounded-full blur-3xl"></div>
@@ -391,8 +394,11 @@ const ValueShowcase = () => {
         </div>
       </section>
 
-      {/* Feature 2: Customization - Making Users Feel Closer */}
-      <section className="relative py-24 bg-gradient-to-bl from-primary-light/4 to-primary/6 overflow-hidden mt-0">
+      {/* Benefit 1: Customization - Making Users Feel Closer */}
+      <section
+        id="benefit-1"
+        className="relative py-24 bg-gradient-to-bl from-primary-light/4 to-primary/6 overflow-hidden mt-0"
+      >
         {/* Subtle Background Pattern */}
         <div className="absolute inset-0 opacity-3">
           <div className="absolute top-10 right-10 w-48 h-48 bg-primary-light rounded-full blur-3xl"></div>
@@ -489,7 +495,10 @@ const ValueShowcase = () => {
       </section>
 
       {/* Benefit 2: Customer Support - Split Diagonal */}
-      <section className="relative py-24 bg-gradient-to-r from-primary-dark/5 to-primary/5 overflow-hidden mt-16">
+      <section
+        id="benefit-2"
+        className="relative py-24 bg-gradient-to-r from-primary-dark/5 to-primary/5 overflow-hidden mt-16"
+      >
         <div className="container mx-auto px-6 relative z-10">
           <div className="grid lg:grid-cols-2 gap-16 items-center max-w-7xl mx-auto">
             {/* Image Side */}
@@ -581,7 +590,10 @@ const ValueShowcase = () => {
       </section>
 
       {/* Benefit 3: Store Insights - Chaotic Asymmetric Layout */}
-      <section className="py-24 bg-gradient-to-tr from-primary/8 via-background to-primary-light/12 relative overflow-hidden">
+      <section
+        id="benefit-3"
+        className="py-24 bg-gradient-to-tr from-primary/8 via-background to-primary-light/12 relative overflow-hidden"
+      >
         {/* Chaotic Background Elements */}
         <div className="absolute inset-0 opacity-10">
           <div className="absolute top-20 right-20 w-64 h-64 bg-primary rounded-full blur-3xl"></div>
