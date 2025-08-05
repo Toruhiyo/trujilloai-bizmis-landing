@@ -12,10 +12,7 @@ const CustomerSupport = () => {
                 <MessageCircle className="w-24 h-24 text-blue-500 mx-auto" />
                 <div className="space-y-2">
                   <div className="text-2xl font-heading font-bold text-blue-700">
-                    24/7
-                  </div>
-                  <div className="text-blue-600 font-body">
-                    Human-Feel Support
+                    Icon of chat bubble
                   </div>
                 </div>
               </div>
@@ -29,9 +26,8 @@ const CustomerSupport = () => {
                 24/7 Human-Feel Support
               </h2>
               <p className="text-xl text-muted-foreground font-body leading-relaxed">
-                Your assistant answers questions, resolves doubts, and helps
-                customers any time, with warmth and clarity that makes them feel
-                heard.
+                Questions answered instantly, any hour, in a voice that feels
+                genuinely helpful.
               </p>
             </div>
 
@@ -42,7 +38,7 @@ const CustomerSupport = () => {
                 </div>
                 <div>
                   <h3 className="font-heading font-semibold text-foreground mb-1">
-                    Always Available
+                    Always online, never waiting
                   </h3>
                   <p className="text-muted-foreground font-body">
                     No waiting times, no business hours — your assistant is
@@ -57,7 +53,7 @@ const CustomerSupport = () => {
                 </div>
                 <div>
                   <h3 className="font-heading font-semibold text-foreground mb-1">
-                    Conversational and Human-Like Tone
+                    Warm, conversational replies
                   </h3>
                   <p className="text-muted-foreground font-body">
                     Responds with genuine warmth and understanding, making
@@ -72,7 +68,7 @@ const CustomerSupport = () => {
                 </div>
                 <div>
                   <h3 className="font-heading font-semibold text-foreground mb-1">
-                    Product Understanding and Contextual Answers
+                    Deep product know-how
                   </h3>
                   <p className="text-muted-foreground font-body">
                     Deep knowledge of your catalog to answer detailed questions
@@ -87,7 +83,7 @@ const CustomerSupport = () => {
                 </div>
                 <div>
                   <h3 className="font-heading font-semibold text-foreground mb-1">
-                    Support During the Buying Process
+                    Reassurance during checkout
                   </h3>
                   <p className="text-muted-foreground font-body">
                     Guides customers through concerns, comparisons, and

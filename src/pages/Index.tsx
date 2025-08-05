@@ -1,8 +1,5 @@
 import Hero from "@/components/Hero";
-import SalesConversion from "@/components/SalesConversion";
-import CustomerSupport from "@/components/CustomerSupport";
-import StoreInsights from "@/components/StoreInsights";
-import Integration from "@/components/Integration";
+import ValueShowcase from "@/components/ValueShowcase";
 import Pricing from "@/components/Pricing";
 import CTA from "@/components/CTA";
 import Footer from "@/components/Footer";
@@ -11,10 +8,7 @@ const Index = () => {
   return (
     <div className="min-h-screen">
       <Hero />
-      <SalesConversion />
-      <CustomerSupport />
-      <StoreInsights />
-      <Integration />
+      <ValueShowcase />
       <Pricing />
       <CTA />
       <Footer />

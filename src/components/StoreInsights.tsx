@@ -9,12 +9,11 @@ const StoreInsights = () => {
           <div className="space-y-8">
             <div className="space-y-4">
               <h2 className="text-4xl lg:text-5xl font-heading font-bold text-foreground">
-                Understand and Improve Your Store
+                Understand & Improve Your Store
               </h2>
               <p className="text-xl text-muted-foreground font-body leading-relaxed">
-                Get clear insights into what customers do and say, helping you
-                refine your store experience and make smarter business
-                decisions.
+                See what customers do, say, and need—then fine-tune your shop
+                with real insights.
               </p>
             </div>
 
@@ -25,7 +24,7 @@ const StoreInsights = () => {
                 </div>
                 <div>
                   <h3 className="font-heading font-semibold text-foreground mb-1">
-                    Session Replays
+                    Session replays
                   </h3>
                   <p className="text-muted-foreground font-body">
                     Watch how customers navigate and interact with your
@@ -40,7 +39,7 @@ const StoreInsights = () => {
                 </div>
                 <div>
                   <h3 className="font-heading font-semibold text-foreground mb-1">
-                    Tagged Conversations
+                    Auto-tagged chats
                   </h3>
                   <p className="text-muted-foreground font-body">
                     Automatically categorized customer interactions reveal
@@ -55,7 +54,7 @@ const StoreInsights = () => {
                 </div>
                 <div>
                   <h3 className="font-heading font-semibold text-foreground mb-1">
-                    Interaction Dashboard
+                    Clear interaction dashboard
                   </h3>
                   <p className="text-muted-foreground font-body">
                     Clear analytics showing customer behavior trends, popular
@@ -73,10 +72,7 @@ const StoreInsights = () => {
                 <TrendingUp className="w-24 h-24 text-purple-500 mx-auto" />
                 <div className="space-y-2">
                   <div className="text-2xl font-heading font-bold text-purple-700">
-                    Deep Insights
-                  </div>
-                  <div className="text-purple-600 font-body">
-                    Customer Behavior Analytics
+                    Icon of chart
                   </div>
                 </div>
               </div>

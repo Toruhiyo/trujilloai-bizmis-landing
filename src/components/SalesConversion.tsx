@@ -3,7 +3,7 @@ import {
   Users,
   MessageSquare,
   ShoppingBag,
-  Sparkles,
+  ArrowUp,
 } from "lucide-react";
 
 const SalesConversion = () => {
@@ -18,35 +18,34 @@ const SalesConversion = () => {
                 Increase Sales Conversion
               </h2>
               <p className="text-xl text-muted-foreground font-body leading-relaxed">
-                Your assistant welcomes visitors and helps them find exactly
-                what they need — like a real store clerk who knows your products
-                inside and out.
+                Shoppers feel personally guided—finding the right product fast
+                and checking out with confidence.
               </p>
             </div>
 
             <div className="space-y-4">
               <div className="flex items-start gap-4">
-                <div className="w-8 h-8 bg-primary/20 rounded-lg flex items-center justify-center flex-shrink-0 mt-1">
-                  <Sparkles className="w-4 h-4 text-primary" />
+                <div className="w-8 h-8 bg-green-500/20 rounded-lg flex items-center justify-center flex-shrink-0 mt-1">
+                  <Users className="w-4 h-4 text-green-500" />
                 </div>
                 <div>
                   <h3 className="font-heading font-semibold text-foreground mb-1">
-                    Voice Cloning & Visual Customization
+                    Voice & look that match you
                   </h3>
                   <p className="text-muted-foreground font-body">
                     Your assistant sounds and looks like you, creating genuine
-                    connections that build trust with customers.
+                    connections that build trust.
                   </p>
                 </div>
               </div>
 
               <div className="flex items-start gap-4">
-                <div className="w-8 h-8 bg-primary/20 rounded-lg flex items-center justify-center flex-shrink-0 mt-1">
-                  <Users className="w-4 h-4 text-primary" />
+                <div className="w-8 h-8 bg-green-500/20 rounded-lg flex items-center justify-center flex-shrink-0 mt-1">
+                  <ShoppingBag className="w-4 h-4 text-green-500" />
                 </div>
                 <div>
                   <h3 className="font-heading font-semibold text-foreground mb-1">
-                    Personalized Product Suggestions
+                    Tailored product picks
                   </h3>
                   <p className="text-muted-foreground font-body">
                     Smart recommendations that feel natural, helping customers
@@ -56,12 +55,12 @@ const SalesConversion = () => {
               </div>
 
               <div className="flex items-start gap-4">
-                <div className="w-8 h-8 bg-primary/20 rounded-lg flex items-center justify-center flex-shrink-0 mt-1">
-                  <MessageSquare className="w-4 h-4 text-primary" />
+                <div className="w-8 h-8 bg-green-500/20 rounded-lg flex items-center justify-center flex-shrink-0 mt-1">
+                  <MessageSquare className="w-4 h-4 text-green-500" />
                 </div>
                 <div>
                   <h3 className="font-heading font-semibold text-foreground mb-1">
-                    Product Comparison & Navigation
+                    Side-by-side comparisons
                   </h3>
                   <p className="text-muted-foreground font-body">
                     Conversational guidance through your catalog with detailed
@@ -71,15 +70,15 @@ const SalesConversion = () => {
               </div>
 
               <div className="flex items-start gap-4">
-                <div className="w-8 h-8 bg-primary/20 rounded-lg flex items-center justify-center flex-shrink-0 mt-1">
-                  <ShoppingBag className="w-4 h-4 text-primary" />
+                <div className="w-8 h-8 bg-green-500/20 rounded-lg flex items-center justify-center flex-shrink-0 mt-1">
+                  <ShoppingCart className="w-4 h-4 text-green-500" />
                 </div>
                 <div>
                   <h3 className="font-heading font-semibold text-foreground mb-1">
-                    Cart Handling
+                    Smooth cart help
                   </h3>
                   <p className="text-muted-foreground font-body">
-                    Seamlessly helps customers through the entire buying
+                    Seamlessly guides customers through the entire buying
                     process, from discovery to checkout completion.
                   </p>
                 </div>
@@ -91,13 +90,13 @@ const SalesConversion = () => {
           <div className="relative">
             <div className="bg-gradient-to-br from-green-50 to-green-100 rounded-3xl p-8 aspect-square flex items-center justify-center">
               <div className="text-center space-y-4">
-                <ShoppingCart className="w-24 h-24 text-green-500 mx-auto" />
+                <div className="relative">
+                  <ShoppingCart className="w-24 h-24 text-green-500 mx-auto" />
+                  <ArrowUp className="w-8 h-8 text-green-600 absolute -top-2 -right-2" />
+                </div>
                 <div className="space-y-2">
                   <div className="text-2xl font-heading font-bold text-green-700">
-                    +47%
-                  </div>
-                  <div className="text-green-600 font-body">
-                    Average Conversion Increase
+                    Icon of cart + arrow up
                   </div>
                 </div>
               </div>
