@@ -306,54 +306,57 @@ const DirectScrollSalesFlow = () => {
 
 const ValueShowcase = () => {
   return (
-    <div className="space-y-0">
-      {/* Header Section - Sales Conversion */}
-      <section className="relative py-16 bg-gradient-to-br from-primary/10 via-primary/5 to-background">
-        <div className="container mx-auto px-6">
-          <div className="text-center max-w-4xl mx-auto">
-            <BenefitBadge
-              icon={({ className }: { className: string }) => (
-                <div className="flex items-center gap-1">
-                  <ShoppingCart className={className} />
-                  <ArrowUp className="w-4 h-4 text-primary" strokeWidth={3} />
-                </div>
-              )}
-              text="Sales Conversion"
-            />
-            <h2 className="text-5xl lg:text-6xl font-heading font-bold text-foreground mb-6">
-              Increase Sales Conversion
-            </h2>
-            <p className="text-xl text-muted-foreground font-body leading-relaxed">
-              Shoppers feel personally guided—finding the right product fast and
-              checking out with confidence.
-            </p>
-          </div>
-        </div>
-      </section>
-
-      {/* Section 1: Drive Sales - Big Flow on Left, Avatar on Right */}
-      <section className="relative py-32 bg-gradient-to-br from-primary/8 to-primary-light/12 overflow-hidden">
-        {/* Background Elements */}
-        <div className="absolute inset-0 opacity-5">
-          <div className="absolute top-20 left-20 w-96 h-96 bg-primary rounded-full blur-3xl"></div>
-          <div className="absolute bottom-20 right-20 w-80 h-80 bg-primary-light rounded-full blur-3xl"></div>
+    <div className="space-y-0 bg-gradient-to-b from-background via-primary/2 to-background">
+      {/* Main Benefit: Increase Sales Conversion with Drive Sales Feature */}
+      <section className="relative py-20 bg-gradient-to-br from-primary/15 via-primary/8 to-primary/4 overflow-hidden">
+        {/* Subtle Background Elements */}
+        <div className="absolute inset-0 opacity-3">
+          <div className="absolute top-20 left-20 w-64 h-64 bg-primary rounded-full blur-3xl"></div>
+          <div className="absolute bottom-20 right-20 w-48 h-48 bg-primary-light rounded-full blur-3xl"></div>
         </div>
 
         <div className="container mx-auto px-6 relative z-10">
           <div className="max-w-7xl mx-auto">
-            {/* Section Title */}
-            <div className="text-center mb-16">
-              <div className="inline-flex items-center gap-2 bg-primary/10 rounded-full px-6 py-3 mb-6">
-                <ShoppingBag className="w-5 h-5 text-primary" />
-                <span className="text-primary font-medium">Drive Sales</span>
-              </div>
-              <h3 className="text-4xl lg:text-5xl font-heading font-bold text-foreground mb-4">
-                Convert Browsers into Buyers
-              </h3>
-              <p className="text-xl text-muted-foreground font-body max-w-3xl mx-auto">
-                Watch how our AI guide transforms casual browsing into confident
-                purchasing decisions
+            {/* Integrated Benefit Header */}
+            <div className="text-center max-w-5xl mx-auto mb-20">
+              <BenefitBadge
+                icon={({ className }: { className: string }) => (
+                  <div className="flex items-center gap-1">
+                    <ShoppingCart className={className} />
+                    <ArrowUp className="w-4 h-4 text-primary" strokeWidth={3} />
+                  </div>
+                )}
+                text="Primary Benefit"
+              />
+              <h1 className="text-5xl lg:text-7xl font-heading font-bold text-foreground mb-8">
+                Increase Sales Conversion
+              </h1>
+              <p className="text-xl text-muted-foreground font-body leading-relaxed mb-16">
+                Shoppers feel personally guided—finding the right product fast
+                and checking out with confidence.
               </p>
+            </div>
+
+            {/* Drive Sales Feature */}
+            <div className="text-left mb-16">
+              <div className="flex items-start gap-8 mb-12">
+                <div className="flex-shrink-0 mt-2">
+                  <div className="w-16 h-16 bg-white rounded-2xl flex items-center justify-center shadow-lg border-2 border-primary/20 transform rotate-3 hover:rotate-0 transition-transform duration-300">
+                    <ShoppingBag className="w-8 h-8 text-primary" />
+                  </div>
+                </div>
+                <div className="flex-1">
+                  <h3 className="text-4xl lg:text-5xl font-heading font-bold text-foreground mb-8">
+                    <span className="text-primary">Driven Sales Pipeline</span>
+                  </h3>
+                  <div className="bg-gradient-to-r from-primary/5 to-primary/10 rounded-2xl p-6 border-l-4 border-primary/30">
+                    <p className="text-xl lg:text-2xl font-semibold text-foreground leading-relaxed">
+                      With expert-level selling skills, turn every browser into
+                      a buyer
+                    </p>
+                  </div>
+                </div>
+              </div>
             </div>
 
             {/* Main Layout: Scroll-jacked Flow Left, Avatar Right */}
@@ -385,30 +388,42 @@ const ValueShowcase = () => {
         </div>
       </section>
 
-      {/* Section 2: Customization */}
-      <section className="relative py-24 bg-gradient-to-bl from-background via-primary/5 to-primary-light/10 overflow-hidden">
-        {/* Background Pattern */}
-        <div className="absolute inset-0 opacity-5">
-          <div className="absolute top-10 right-10 w-72 h-72 bg-primary-light rounded-full blur-3xl"></div>
-          <div className="absolute bottom-10 left-10 w-80 h-80 bg-primary rounded-full blur-3xl"></div>
+      {/* Feature 2: Customization - Making Users Feel Closer */}
+      <section className="relative py-24 bg-gradient-to-bl from-primary-light/4 to-primary/6 overflow-hidden mt-0">
+        {/* Subtle Background Pattern */}
+        <div className="absolute inset-0 opacity-3">
+          <div className="absolute top-10 right-10 w-48 h-48 bg-primary-light rounded-full blur-3xl"></div>
+          <div className="absolute bottom-10 left-10 w-56 h-56 bg-primary rounded-full blur-3xl"></div>
         </div>
 
         <div className="container mx-auto px-6 relative z-10">
           <div className="max-w-7xl mx-auto">
-            {/* Section Title */}
-            <div className="text-center mb-16">
-              <div className="inline-flex items-center gap-2 bg-primary/10 rounded-full px-6 py-3 mb-6">
-                <Users className="w-5 h-5 text-primary" />
-                <span className="text-primary font-medium">Customization</span>
+            {/* Customization Feature */}
+            <div className="text-left mb-16 lg:text-right">
+              <div className="flex items-start gap-8 mb-12 lg:flex-row-reverse">
+                <div className="flex-shrink-0 mt-2">
+                  <div className="w-16 h-16 bg-white rounded-2xl flex items-center justify-center shadow-lg border-2 border-primary-light/20 transform -rotate-3 hover:rotate-0 transition-transform duration-300">
+                    <Users className="w-8 h-8 text-primary-light" />
+                  </div>
+                </div>
+                <div className="flex-1">
+                  <h3 className="text-4xl lg:text-5xl font-heading font-bold text-foreground mb-8">
+                    <span className="text-primary-light">
+                      Voice & Appearance Customization
+                    </span>
+                  </h3>
+                  <div className="bg-gradient-to-r from-primary-light/5 to-primary-light/10 rounded-2xl p-6 border-l-4 border-primary-light/30">
+                    <p className="text-xl lg:text-2xl font-semibold text-foreground leading-relaxed">
+                      Make customers feel like they know you personally
+                    </p>
+                  </div>
+                </div>
               </div>
-              <h3 className="text-4xl lg:text-5xl font-heading font-bold text-foreground mb-4">
-                Voice & Look That Match You
-              </h3>
             </div>
 
             <div className="grid lg:grid-cols-2 gap-16 items-center">
-              {/* Left: Features */}
-              <div className="space-y-8">
+              {/* Right: Features */}
+              <div className="space-y-8 order-2 lg:order-2">
                 <div className="bg-white/80 backdrop-blur-sm rounded-3xl p-8 border border-primary/20 transform -rotate-1 hover:rotate-0 transition-transform duration-500">
                   <div className="space-y-6">
                     <div className="flex gap-4">
@@ -417,11 +432,11 @@ const ValueShowcase = () => {
                       </div>
                       <div>
                         <h4 className="font-heading font-semibold text-foreground mb-1">
-                          Voice & Look That Match You
+                          Personal Avatar
                         </h4>
                         <p className="text-muted-foreground font-body text-sm">
-                          Your assistant sounds and looks like you, creating
-                          genuine connections.
+                          Creating genuine connections by making your sales
+                          representative sound and look like you.
                         </p>
                       </div>
                     </div>
@@ -432,11 +447,11 @@ const ValueShowcase = () => {
                       </div>
                       <div>
                         <h4 className="font-heading font-semibold text-foreground mb-1">
-                          Voice Cloning Technology
+                          Voice Cloning
                         </h4>
                         <p className="text-muted-foreground font-body text-sm">
-                          Advanced AI replicates your unique speaking style and
-                          personality.
+                          Authentic customer interactions through replication of
+                          your unique speaking style and personality.
                         </p>
                       </div>
                     </div>
@@ -444,18 +459,17 @@ const ValueShowcase = () => {
                 </div>
               </div>
 
-              {/* Right: Customization Image */}
-              <div className="relative">
+              {/* Left: Customization Image */}
+              <div className="relative order-1 lg:order-1">
                 <div className="bg-gradient-to-br from-primary/30 to-primary-light/40 rounded-3xl aspect-[4/3] flex items-center justify-center transform rotate-1 hover:rotate-0 transition-transform duration-500 border-2 border-primary/30 shadow-2xl">
                   <div className="text-center space-y-6 p-8">
                     <Users className="w-40 h-40 text-primary mx-auto" />
                     <div className="space-y-3">
                       <div className="text-primary-dark font-heading font-bold text-2xl">
-                        Voice & Look Customization
+                        Personalization Hub
                       </div>
                       <div className="text-primary/70 text-base max-w-sm mx-auto">
-                        [Image: AI avatar customization interface with voice
-                        cloning setup and personality matching tools]
+                        [Voice & appearance personalization interface]
                       </div>
                     </div>
                   </div>
@@ -467,7 +481,7 @@ const ValueShowcase = () => {
       </section>
 
       {/* Benefit 2: Customer Support - Split Diagonal */}
-      <section className="relative py-24 bg-gradient-to-r from-primary-dark/5 to-primary/5 overflow-hidden">
+      <section className="relative py-24 bg-gradient-to-r from-primary-dark/5 to-primary/5 overflow-hidden mt-16">
         <div className="container mx-auto px-6 relative z-10">
           <div className="grid lg:grid-cols-2 gap-16 items-center max-w-7xl mx-auto">
             {/* Image Side */}

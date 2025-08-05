@@ -3,7 +3,10 @@ import { ArrowRight, Zap, Settings } from "lucide-react";
 
 const Integration = () => {
   return (
-    <section className="py-20 bg-white relative overflow-hidden">
+    <section
+      id="integration"
+      className="py-20 bg-white relative overflow-hidden"
+    >
       <div className="container mx-auto px-6 relative z-10">
         <div className="text-center mb-16">
           <h2 className="text-4xl lg:text-5xl font-heading font-bold text-foreground mb-6">
