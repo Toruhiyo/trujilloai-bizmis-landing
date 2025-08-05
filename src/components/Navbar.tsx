@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Menu, X } from "lucide-react";
 import { useState, useEffect } from "react";
+import { scrollToTop } from "@/lib/utils/scroll";
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -35,13 +36,14 @@ const Navbar = () => {
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <div className="flex items-center">
-            <span
-              className={`text-2xl font-heading font-bold transition-colors duration-300 ${
+            <button
+              onClick={() => scrollToTop()}
+              className={`text-2xl font-heading font-bold transition-colors duration-300 hover:opacity-80 cursor-pointer ${
                 isInHero ? "text-white" : "text-primary"
               }`}
             >
               Bizmis
-            </span>
+            </button>
           </div>
 
           {/* Desktop Navigation */}
