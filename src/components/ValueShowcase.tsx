@@ -349,10 +349,13 @@ const ValueShowcase = () => {
                   <h3 className="text-4xl lg:text-5xl font-heading font-bold text-foreground mb-8">
                     <span className="text-primary">Driven Sales Pipeline</span>
                   </h3>
-                  <div className="bg-gradient-to-r from-primary/5 to-primary/10 rounded-2xl p-6 border-l-4 border-primary/30">
-                    <p className="text-xl lg:text-2xl font-semibold text-foreground leading-relaxed">
-                      With expert-level selling skills, turn every browser into
-                      a buyer
+                  <div className="border-l-2 border-primary/20 pl-4 py-2">
+                    <p className="text-lg lg:text-xl text-muted-foreground leading-relaxed">
+                      <span className="font-semibold">
+                        Expert-level selling skills
+                      </span>{" "}
+                      that turn casual browsers into{" "}
+                      <span className="font-semibold">confident buyers</span>
                     </p>
                   </div>
                 </div>
@@ -412,9 +415,14 @@ const ValueShowcase = () => {
                       Voice & Appearance Customization
                     </span>
                   </h3>
-                  <div className="bg-gradient-to-r from-primary-light/5 to-primary-light/10 rounded-2xl p-6 border-l-4 border-primary-light/30">
-                    <p className="text-xl lg:text-2xl font-semibold text-foreground leading-relaxed">
-                      Make customers feel like they know you personally
+                  <div className="border-l-2 border-primary-light/20 pl-4 py-2">
+                    <p className="text-lg lg:text-xl text-muted-foreground leading-relaxed">
+                      Build{" "}
+                      <span className="font-semibold">
+                        authentic relationships
+                      </span>{" "}
+                      that drive{" "}
+                      <span className="font-semibold">customer loyalty</span>
                     </p>
                   </div>
                 </div>
