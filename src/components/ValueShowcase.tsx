@@ -322,18 +322,26 @@ const ValueShowcase = () => {
           <div className="max-w-7xl mx-auto">
             {/* Integrated Benefit Header */}
             <div className="text-center max-w-5xl mx-auto mb-20">
-              <BenefitBadge
-                icon={({ className }: { className: string }) => (
-                  <div className="flex items-center gap-1">
-                    <ShoppingCart className={className} />
-                    <ArrowUp className="w-4 h-4 text-primary" strokeWidth={3} />
-                  </div>
-                )}
-                text="Primary Benefit"
-              />
-              <h1 className="text-5xl lg:text-7xl font-heading font-bold text-foreground mb-8">
-                Increase Sales Conversion
-              </h1>
+              <div className="relative">
+                <div className="absolute -left-64  top-10 text-9xl lg:text-[12rem] font-bold text-primary/20 transform -rotate-12 select-none">
+                  #1
+                </div>
+                <BenefitBadge
+                  icon={({ className }: { className: string }) => (
+                    <div className="flex items-center gap-1">
+                      <ShoppingCart className={className} />
+                      <ArrowUp
+                        className="w-4 h-4 text-primary"
+                        strokeWidth={3}
+                      />
+                    </div>
+                  )}
+                  text="Increase Sales"
+                />
+                <h1 className="text-5xl lg:text-7xl font-heading font-bold text-foreground mb-8 relative z-10">
+                  Increase Sales Conversion
+                </h1>
+              </div>
               <p className="text-xl text-muted-foreground font-body leading-relaxed mb-16">
                 Shoppers feel personally guided—finding the right product fast
                 and checking out with confidence.
@@ -497,16 +505,19 @@ const ValueShowcase = () => {
       {/* Benefit 2: Customer Support - Split Diagonal */}
       <section
         id="benefit-2"
-        className="relative py-24 bg-gradient-to-r from-primary-dark/5 to-primary/5 overflow-hidden mt-16"
+        className="relative py-32 bg-gradient-to-r from-primary-dark/5 to-primary/5 overflow-hidden mt-16"
       >
         <div className="container mx-auto px-6 relative z-10">
-          <div className="grid lg:grid-cols-2 gap-16 items-center max-w-7xl mx-auto">
+          <div className="absolute right-0 top-0 text-8xl lg:text-9xl font-bold text-primary/15 transform rotate-12 select-none">
+            #2
+          </div>
+          <div className="grid lg:grid-cols-2 gap-20 items-center max-w-7xl mx-auto">
             {/* Image Side */}
             <div className="relative order-2 lg:order-1">
-              <div className="bg-gradient-to-br from-primary-light/30 to-primary/30 rounded-3xl aspect-square flex items-center justify-center transform rotate-3 hover:rotate-0 transition-transform duration-500">
-                <div className="text-center space-y-4 transform -rotate-3">
-                  <MessageCircle className="w-32 h-32 text-primary mx-auto" />
-                  <div className="text-primary-dark font-heading font-bold text-lg">
+              <div className="bg-gradient-to-br from-primary-light/30 to-primary/30 rounded-3xl aspect-square flex items-center justify-center transform -rotate-3 hover:rotate-0 transition-transform duration-500 scale-110">
+                <div className="text-center space-y-4 transform rotate-3">
+                  <MessageCircle className="w-40 h-40 text-primary mx-auto" />
+                  <div className="text-primary-dark font-heading font-bold text-xl">
                     24/7 Support Interface
                   </div>
                   <div className="text-primary/70 text-sm">
@@ -517,11 +528,11 @@ const ValueShowcase = () => {
               </div>
 
               {/* Floating Elements */}
-              <div className="absolute -top-4 -left-4 bg-white rounded-full p-4 shadow-lg">
-                <Clock className="w-6 h-6 text-primary" />
+              <div className="absolute -top-6 -left-6 bg-white rounded-full p-5 shadow-lg">
+                <Clock className="w-7 h-7 text-primary" />
               </div>
-              <div className="absolute -bottom-4 -right-4 bg-white rounded-full p-4 shadow-lg">
-                <Heart className="w-6 h-6 text-primary" />
+              <div className="absolute -bottom-6 -right-6 bg-white rounded-full p-5 shadow-lg">
+                <Heart className="w-7 h-7 text-primary" />
               </div>
             </div>
 
@@ -529,9 +540,11 @@ const ValueShowcase = () => {
             <div className="order-1 lg:order-2 space-y-8">
               <div className="space-y-4">
                 <BenefitBadge icon={MessageCircle} text="Customer Support" />
-                <h2 className="text-4xl lg:text-5xl font-heading font-bold text-foreground">
-                  24/7 Human-Feel Support
-                </h2>
+                <div className="relative">
+                  <h2 className="text-4xl lg:text-5xl font-heading font-bold text-foreground relative z-10">
+                    Save Hours on Support
+                  </h2>
+                </div>
                 <p className="text-xl text-muted-foreground font-body leading-relaxed">
                   Questions answered instantly, any hour, in a voice that feels
                   genuinely helpful.
@@ -592,7 +605,7 @@ const ValueShowcase = () => {
       {/* Benefit 3: Store Insights - Chaotic Asymmetric Layout */}
       <section
         id="benefit-3"
-        className="py-24 bg-gradient-to-tr from-primary/8 via-background to-primary-light/12 relative overflow-hidden"
+        className="py-32 bg-gradient-to-tr from-primary/8 via-background to-primary-light/12 relative overflow-hidden"
       >
         {/* Chaotic Background Elements */}
         <div className="absolute inset-0 opacity-10">
@@ -604,21 +617,26 @@ const ValueShowcase = () => {
         <div className="container mx-auto px-6 relative z-10">
           <div className="max-w-7xl mx-auto">
             {/* Header */}
-            <div className="text-center mb-16">
+            <div className="text-center mb-20">
               <div className="inline-flex items-center gap-2 text-primary font-medium mb-4">
                 <Activity className="w-5 h-5" />
                 Store Insights
               </div>
-              <h2 className="text-4xl lg:text-5xl font-heading font-bold text-foreground mb-6">
-                Understand & Improve Your Store
-              </h2>
+              <div className="relative">
+                <div className="absolute -left-16 -top-16 text-8xl lg:text-9xl font-bold text-primary/25 transform rotate-6 select-none">
+                  #3
+                </div>
+                <h2 className="text-4xl lg:text-5xl font-heading font-bold text-foreground mb-6 relative z-10 ml-14">
+                  Understand Customers. Sell Smarter.
+                </h2>
+              </div>
               <p className="text-xl text-muted-foreground font-body max-w-3xl mx-auto">
                 See what customers do, say, and need—then fine-tune your shop
                 with real insights.
               </p>
             </div>
 
-            <div className="grid lg:grid-cols-2 gap-16 items-center">
+            <div className="grid lg:grid-cols-2 gap-20 items-center">
               {/* Left: Features */}
               <div className="space-y-8">
                 <div className="bg-white/70 backdrop-blur-sm rounded-2xl p-6 border border-primary/10 transform rotate-1 hover:rotate-0 transition-transform duration-300">
@@ -675,9 +693,9 @@ const ValueShowcase = () => {
 
               {/* Right Image - Large Single Image */}
               <div className="relative">
-                <div className="bg-gradient-to-br from-primary/20 to-primary-light/30 rounded-3xl aspect-[4/3] flex items-center justify-center border-2 border-primary/30 transform -rotate-1 hover:rotate-0 transition-transform duration-500 shadow-2xl">
-                  <div className="text-center space-y-6 p-8">
-                    <Activity className="w-32 h-32 text-primary mx-auto" />
+                <div className="bg-gradient-to-br from-primary/20 to-primary-light/30 rounded-3xl aspect-[4/3] flex items-center justify-center border-2 border-primary/30 transform rotate-2 hover:rotate-0 transition-transform duration-500 shadow-2xl scale-110">
+                  <div className="text-center space-y-6 p-8 transform -rotate-2">
+                    <Activity className="w-40 h-40 text-primary mx-auto" />
                     <div className="space-y-3">
                       <div className="text-primary-dark font-heading font-bold text-2xl">
                         Analytics Dashboard
