@@ -308,7 +308,7 @@ const DirectScrollSalesFlow = () => {
   );
 };
 
-const ValueShowcase = () => {
+const Benefits = () => {
   return (
     <div className="space-y-0 bg-gradient-to-b from-background via-orange-50/10 to-background">
       {/* Shared Background Section: Driven Sales & Customization */}
@@ -695,4 +695,4 @@ const ValueShowcase = () => {
   );
 };
 
-export default ValueShowcase;
+export default Benefits;

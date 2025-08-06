@@ -6,7 +6,7 @@ import {
   ArrowUp,
 } from "lucide-react";
 
-const SalesConversion = () => {
+const SalesDrivingWorkflow = () => {
   return (
     <section className="py-20 bg-white relative overflow-hidden">
       <div className="container mx-auto px-6 relative z-10">
@@ -108,4 +108,4 @@ const SalesConversion = () => {
   );
 };
 
-export default SalesConversion;
+export default SalesDrivingWorkflow;
