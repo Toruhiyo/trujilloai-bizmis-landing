@@ -3,7 +3,6 @@ import {
   ShoppingCart,
   MessageCircle,
   TrendingUp,
-  Zap,
   ArrowUp,
   Clock,
   Heart,
@@ -14,13 +13,14 @@ import {
   Users,
   ShoppingBag,
   MessageSquare,
-  Headphones,
   Activity,
   Eye,
   Handshake,
   Plus,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import SectionBadge from "./SectionBadge";
+import Integration from "./Integration";
 
 // Reusable Benefit Badge Component
 const BenefitBadge = ({
@@ -30,9 +30,9 @@ const BenefitBadge = ({
   icon: React.ComponentType<{ className: string }>;
   text: string;
 }) => (
-  <div className="inline-flex items-center gap-3 bg-primary/10 rounded-full px-6 py-3 mb-6">
-    <Icon className="w-5 h-5 text-primary" />
-    <span className="text-primary font-medium">{text}</span>
+  <div className="inline-flex items-center gap-3 bg-amber-100/50 rounded-full px-6 py-3 mb-6">
+    <Icon className="w-5 h-5 text-orange-600" />
+    <span className="text-orange-600 font-medium">{text}</span>
   </div>
 );
 
@@ -197,17 +197,17 @@ const DirectScrollSalesFlow = () => {
                 })`,
               }}
             >
-              <div className="bg-white/95 backdrop-blur-xl rounded-3xl p-8 shadow-2xl border border-primary/20 text-center max-w-md">
-                <div className="w-20 h-20 bg-gradient-to-br from-primary to-primary-light rounded-2xl flex items-center justify-center mx-auto mb-6">
+              <div className="bg-white/95 backdrop-blur-xl rounded-3xl p-8 shadow-2xl border border-orange-200/50 text-center max-w-md">
+                <div className="w-20 h-20 bg-gradient-to-br from-orange-500 to-amber-500 rounded-2xl flex items-center justify-center mx-auto mb-6">
                   <ShoppingBag className="w-10 h-10 text-white" />
                 </div>
-                <h3 className="text-2xl font-bold text-primary mb-3">
+                <h3 className="text-2xl font-bold text-orange-600 mb-3">
                   Smart Discovery
                 </h3>
                 <div className="text-lg font-semibold mb-2">
                   Premium Headphones
                 </div>
-                <div className="text-primary font-medium">
+                <div className="text-orange-600 font-medium">
                   $199 → Perfect Match!
                 </div>
                 <div className="mt-4 text-sm text-muted-foreground">
@@ -226,8 +226,8 @@ const DirectScrollSalesFlow = () => {
                 }px) scale(${progress >= 0.33 && progress < 0.66 ? 1 : 0.9})`,
               }}
             >
-              <div className="bg-white/95 backdrop-blur-xl rounded-3xl p-8 shadow-2xl border border-primary/20 text-center max-w-lg">
-                <h3 className="text-2xl font-bold text-primary mb-6">
+              <div className="bg-white/95 backdrop-blur-xl rounded-3xl p-8 shadow-2xl border border-orange-200/50 text-center max-w-lg">
+                <h3 className="text-2xl font-bold text-orange-600 mb-6">
                   Smart Comparison
                 </h3>
                 <div className="grid grid-cols-2 gap-4">
@@ -235,10 +235,14 @@ const DirectScrollSalesFlow = () => {
                     <div className="font-semibold">Basic Model</div>
                     <div className="text-xl font-bold text-gray-600">$149</div>
                   </div>
-                  <div className="p-4 bg-primary/10 rounded-xl ring-2 ring-primary">
-                    <div className="font-semibold text-primary">Premium</div>
-                    <div className="text-xl font-bold text-primary">$199</div>
-                    <div className="text-xs text-primary">⭐ Recommended</div>
+                  <div className="p-4 bg-amber-100 rounded-xl ring-2 ring-orange-500">
+                    <div className="font-semibold text-orange-600">Premium</div>
+                    <div className="text-xl font-bold text-orange-600">
+                      $199
+                    </div>
+                    <div className="text-xs text-orange-600">
+                      ⭐ Recommended
+                    </div>
                   </div>
                 </div>
                 <div className="mt-4 text-sm text-muted-foreground">
@@ -257,24 +261,24 @@ const DirectScrollSalesFlow = () => {
                 })`,
               }}
             >
-              <div className="bg-white/95 backdrop-blur-xl rounded-3xl p-8 shadow-2xl border border-primary/20 text-center max-w-md relative overflow-hidden">
+              <div className="bg-white/95 backdrop-blur-xl rounded-3xl p-8 shadow-2xl border border-orange-200/50 text-center max-w-md relative overflow-hidden">
                 <div
                   className={`w-24 h-24 rounded-2xl flex items-center justify-center mx-auto mb-6 transition-all duration-500 ${
                     cartAnimation
-                      ? "bg-green-100 ring-4 ring-green-300 scale-110"
-                      : "bg-primary/20"
+                      ? "bg-amber-100 ring-4 ring-orange-300 scale-110"
+                      : "bg-amber-100"
                   }`}
                 >
                   <ShoppingCart
                     className={`w-12 h-12 transition-colors duration-500 ${
-                      cartAnimation ? "text-green-600" : "text-primary"
+                      cartAnimation ? "text-orange-600" : "text-orange-600"
                     }`}
                   />
                 </div>
-                <h3 className="text-2xl font-bold text-primary mb-3">
+                <h3 className="text-2xl font-bold text-orange-600 mb-3">
                   Purchase Complete!
                 </h3>
-                <div className="text-green-600 font-medium">
+                <div className="text-orange-600 font-medium">
                   Added to cart successfully
                 </div>
 
@@ -284,7 +288,7 @@ const DirectScrollSalesFlow = () => {
                     {Array.from({ length: 8 }).map((_, i) => (
                       <div
                         key={i}
-                        className="absolute w-2 h-2 bg-primary rounded-full animate-ping"
+                        className="absolute w-2 h-2 bg-orange-600 rounded-full animate-ping"
                         style={{
                           top: `${30 + Math.random() * 40}%`,
                           left: `${20 + Math.random() * 60}%`,
@@ -306,38 +310,36 @@ const DirectScrollSalesFlow = () => {
 
 const ValueShowcase = () => {
   return (
-    <div className="space-y-0 bg-gradient-to-b from-background via-primary/2 to-background">
-      {/* Main Benefit: Increase Sales Conversion with Drive Sales Feature */}
-      <section
-        id="benefits"
-        className="relative py-20 bg-gradient-to-br from-primary/15 via-primary/8 to-primary/4 overflow-hidden"
-      >
-        {/* Subtle Background Elements */}
-        <div className="absolute inset-0 opacity-3">
-          <div className="absolute top-20 left-20 w-64 h-64 bg-primary rounded-full blur-3xl"></div>
-          <div className="absolute bottom-20 right-20 w-48 h-48 bg-primary-light rounded-full blur-3xl"></div>
+    <div className="space-y-0 bg-gradient-to-b from-background via-orange-50/10 to-background">
+      {/* Shared Background Section: Driven Sales & Customization */}
+      <section className="relative py-20 overflow-hidden">
+        {/* Modern Shared Background Design - Single background for both sections */}
+        <div className="absolute inset-0 bg-gradient-to-br from-slate-50 via-orange-50/30 to-amber-50/20"></div>
+
+        {/* Geometric Background Elements */}
+        <div className="absolute inset-0">
+          {/* Large floating shapes */}
+          <div className="absolute top-0 left-0 w-96 h-96 bg-gradient-to-br from-orange-200/20 to-amber-200/15 rounded-full blur-3xl transform -translate-x-1/2 -translate-y-1/2"></div>
+          <div className="absolute bottom-0 right-0 w-80 h-80 bg-gradient-to-tl from-orange-300/15 to-yellow-300/10 rounded-full blur-3xl transform translate-x-1/2 translate-y-1/2"></div>
+
+          {/* Subtle grid pattern */}
+          <div className="absolute inset-0 opacity-[0.02] bg-[radial-gradient(circle_at_1px_1px,rgba(0,0,0,0.15)_1px,transparent_0)] bg-[length:20px_20px]"></div>
+
+          {/* Floating accent elements */}
+          <div className="absolute top-1/4 right-1/4 w-2 h-2 bg-orange-400/30 rounded-full animate-pulse"></div>
+          <div className="absolute bottom-1/3 left-1/3 w-1 h-1 bg-amber-500/40 rounded-full animate-pulse delay-1000"></div>
+          <div className="absolute top-2/3 left-1/4 w-1.5 h-1.5 bg-orange-300/25 rounded-full animate-pulse delay-500"></div>
         </div>
 
         <div className="container mx-auto px-6 relative z-10">
           <div className="max-w-7xl mx-auto">
-            {/* Integrated Benefit Header */}
+            {/* Section 1: Main Benefit Header */}
             <div className="text-center max-w-5xl mx-auto mb-20">
               <div className="relative">
-                <div className="absolute -left-64  top-10 text-9xl lg:text-[12rem] font-bold text-primary/20 transform -rotate-12 select-none">
+                <div className="absolute -left-64  top-10 text-9xl lg:text-[12rem] font-bold text-orange-600/20 transform -rotate-12 select-none">
                   #1
                 </div>
-                <BenefitBadge
-                  icon={({ className }: { className: string }) => (
-                    <div className="flex items-center gap-1">
-                      <ShoppingCart className={className} />
-                      <ArrowUp
-                        className="w-4 h-4 text-primary"
-                        strokeWidth={3}
-                      />
-                    </div>
-                  )}
-                  text="Increase Sales"
-                />
+                <SectionBadge icon={ShoppingCart} text="Increase Sales" />
                 <h1 className="text-5xl lg:text-7xl font-heading font-bold text-foreground mb-8 relative z-10">
                   Increase Sales Conversion
                 </h1>
@@ -348,19 +350,21 @@ const ValueShowcase = () => {
               </p>
             </div>
 
-            {/* Drive Sales Feature */}
+            {/* Section 2: Drive Sales Feature */}
             <div className="text-left mb-16">
               <div className="flex items-start gap-8 mb-12">
                 <div className="flex-shrink-0 mt-2">
-                  <div className="w-16 h-16 bg-white rounded-2xl flex items-center justify-center shadow-lg border-2 border-primary/20 transform rotate-3 hover:rotate-0 transition-transform duration-300">
-                    <ShoppingBag className="w-8 h-8 text-primary" />
+                  <div className="w-16 h-16 bg-white/80 backdrop-blur-sm rounded-2xl flex items-center justify-center shadow-lg border border-orange-200/50 transform rotate-3 hover:rotate-0 transition-transform duration-300">
+                    <ShoppingBag className="w-8 h-8 text-orange-600" />
                   </div>
                 </div>
                 <div className="flex-1">
                   <h3 className="text-4xl lg:text-5xl font-heading font-bold text-foreground mb-8">
-                    <span className="text-primary">Driven Sales Pipeline</span>
+                    <span className="text-orange-600">
+                      Driven Sales Pipeline
+                    </span>
                   </h3>
-                  <div className="border-l-2 border-primary/20 pl-4 py-2">
+                  <div className="border-l-2 border-orange-200/50 pl-4 py-2">
                     <p className="text-lg lg:text-xl text-muted-foreground leading-relaxed">
                       <span className="font-semibold">
                         Expert-level selling skills
@@ -373,8 +377,8 @@ const ValueShowcase = () => {
               </div>
             </div>
 
-            {/* Main Layout: Scroll-jacked Flow Left, Avatar Right */}
-            <div className="relative">
+            {/* Section 3: Main Layout - Scroll-jacked Flow Left, Avatar Right */}
+            <div className="relative mb-32">
               <div className="grid lg:grid-cols-2 gap-12 items-start">
                 {/* Left Side - Direct Scroll-Linked Sales Flow */}
                 <div className="w-full">
@@ -393,43 +397,27 @@ const ValueShowcase = () => {
                     </div>
 
                     {/* Connection Line to Flow */}
-                    <div className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-8 w-8 h-0.5 bg-gradient-to-l from-primary/60 to-transparent rounded-full hidden lg:block"></div>
+                    <div className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-8 w-8 h-0.5 bg-gradient-to-l from-orange-400/60 to-transparent rounded-full hidden lg:block"></div>
                   </div>
                 </div>
               </div>
             </div>
-          </div>
-        </div>
-      </section>
 
-      {/* Benefit 1: Customization - Making Users Feel Closer */}
-      <section
-        id="benefit-1"
-        className="relative py-24 bg-gradient-to-bl from-primary-light/4 to-primary/6 overflow-hidden mt-0"
-      >
-        {/* Subtle Background Pattern */}
-        <div className="absolute inset-0 opacity-3">
-          <div className="absolute top-10 right-10 w-48 h-48 bg-primary-light rounded-full blur-3xl"></div>
-          <div className="absolute bottom-10 left-10 w-56 h-56 bg-primary rounded-full blur-3xl"></div>
-        </div>
-
-        <div className="container mx-auto px-6 relative z-10">
-          <div className="max-w-7xl mx-auto">
-            {/* Customization Feature */}
+            {/* Section 4: Customization Feature */}
             <div className="text-left mb-16 lg:text-right">
               <div className="flex items-start gap-8 mb-12 lg:flex-row-reverse">
                 <div className="flex-shrink-0 mt-2">
-                  <div className="w-16 h-16 bg-white rounded-2xl flex items-center justify-center shadow-lg border-2 border-primary-light/20 transform -rotate-3 hover:rotate-0 transition-transform duration-300">
-                    <Users className="w-8 h-8 text-primary-light" />
+                  <div className="w-16 h-16 bg-white/80 backdrop-blur-sm rounded-2xl flex items-center justify-center shadow-lg border border-orange-200/50 transform -rotate-3 hover:rotate-0 transition-transform duration-300">
+                    <Users className="w-8 h-8 text-orange-600" />
                   </div>
                 </div>
                 <div className="flex-1">
                   <h3 className="text-4xl lg:text-5xl font-heading font-bold text-foreground mb-8">
-                    <span className="text-primary-light">
+                    <span className="text-orange-600">
                       Voice & Appearance Customization
                     </span>
                   </h3>
-                  <div className="border-l-2 border-primary-light/20 pl-4 py-2">
+                  <div className="border-l-2 border-orange-200/50 pl-4 py-2">
                     <p className="text-lg lg:text-xl text-muted-foreground leading-relaxed">
                       Build{" "}
                       <span className="font-semibold">
@@ -443,14 +431,15 @@ const ValueShowcase = () => {
               </div>
             </div>
 
+            {/* Section 5: Customization Layout */}
             <div className="grid lg:grid-cols-2 gap-16 items-center">
               {/* Right: Features */}
               <div className="space-y-8 order-2 lg:order-2">
-                <div className="bg-white/80 backdrop-blur-sm rounded-3xl p-8 border border-primary/20 transform -rotate-1 hover:rotate-0 transition-transform duration-500">
+                <div className="bg-white/70 backdrop-blur-md rounded-3xl p-8 border border-orange-200/30 transform -rotate-1 hover:rotate-0 transition-transform duration-500 shadow-xl">
                   <div className="space-y-6">
                     <div className="flex gap-4">
-                      <div className="w-12 h-12 bg-primary/20 rounded-xl flex items-center justify-center flex-shrink-0">
-                        <Users className="w-6 h-6 text-primary" />
+                      <div className="w-12 h-12 bg-amber-100 rounded-xl flex items-center justify-center flex-shrink-0 border border-orange-200/50">
+                        <Users className="w-6 h-6 text-orange-600" />
                       </div>
                       <div>
                         <h4 className="font-heading font-semibold text-foreground mb-1">
@@ -464,8 +453,8 @@ const ValueShowcase = () => {
                     </div>
 
                     <div className="flex gap-4">
-                      <div className="w-12 h-12 bg-primary/20 rounded-xl flex items-center justify-center flex-shrink-0">
-                        <MessageSquare className="w-6 h-6 text-primary" />
+                      <div className="w-12 h-12 bg-amber-100 rounded-xl flex items-center justify-center flex-shrink-0 border border-orange-200/50">
+                        <MessageSquare className="w-6 h-6 text-orange-600" />
                       </div>
                       <div>
                         <h4 className="font-heading font-semibold text-foreground mb-1">
@@ -483,14 +472,14 @@ const ValueShowcase = () => {
 
               {/* Left: Customization Image */}
               <div className="relative order-1 lg:order-1">
-                <div className="bg-gradient-to-br from-primary/30 to-primary-light/40 rounded-3xl aspect-[4/3] flex items-center justify-center transform rotate-1 hover:rotate-0 transition-transform duration-500 border-2 border-primary/30 shadow-2xl">
+                <div className="bg-gradient-to-br from-orange-100/80 to-amber-100/60 backdrop-blur-sm rounded-3xl aspect-[4/3] flex items-center justify-center transform rotate-1 hover:rotate-0 transition-transform duration-500 border border-orange-200/50 shadow-2xl">
                   <div className="text-center space-y-6 p-8">
-                    <Users className="w-40 h-40 text-primary mx-auto" />
+                    <Users className="w-40 h-40 text-orange-600 mx-auto" />
                     <div className="space-y-3">
-                      <div className="text-primary-dark font-heading font-bold text-2xl">
+                      <div className="text-orange-800 font-heading font-bold text-2xl">
                         Personalization Hub
                       </div>
-                      <div className="text-primary/70 text-base max-w-sm mx-auto">
+                      <div className="text-orange-600/70 text-base max-w-sm mx-auto">
                         [Voice & appearance personalization interface]
                       </div>
                     </div>
@@ -505,95 +494,85 @@ const ValueShowcase = () => {
       {/* Benefit 2: Customer Support - Split Diagonal */}
       <section
         id="benefit-2"
-        className="relative py-32 bg-gradient-to-r from-primary-dark/5 to-primary/5 overflow-hidden mt-16"
+        className="relative py-32 bg-gradient-to-r from-orange-50/20 to-amber-50/20 overflow-hidden"
       >
-        <div className="container mx-auto px-6 relative z-10">
-          <div className="absolute right-0 top-0 text-8xl lg:text-9xl font-bold text-primary/15 transform rotate-12 select-none">
-            #2
-          </div>
-          <div className="grid lg:grid-cols-2 gap-20 items-center max-w-7xl mx-auto">
-            {/* Image Side */}
-            <div className="relative order-2 lg:order-1">
-              <div className="bg-gradient-to-br from-primary-light/30 to-primary/30 rounded-3xl aspect-square flex items-center justify-center transform -rotate-3 hover:rotate-0 transition-transform duration-500 scale-110">
-                <div className="text-center space-y-4 transform rotate-3">
-                  <MessageCircle className="w-40 h-40 text-primary mx-auto" />
-                  <div className="text-primary-dark font-heading font-bold text-xl">
-                    24/7 Support Interface
-                  </div>
-                  <div className="text-primary/70 text-sm">
-                    [Image placeholder: Chat interface with customer
-                    conversations]
-                  </div>
-                </div>
-              </div>
+        {/* Background Elements */}
+        <div className="absolute inset-0">
+          <div className="absolute top-20 right-20 w-64 h-64 bg-orange-200/10 rounded-full blur-3xl"></div>
+          <div className="absolute bottom-10 left-10 w-80 h-80 bg-amber-200/10 rounded-full blur-3xl"></div>
+        </div>
 
-              {/* Floating Elements */}
-              <div className="absolute -top-6 -left-6 bg-white rounded-full p-5 shadow-lg">
-                <Clock className="w-7 h-7 text-primary" />
+        <div className="container mx-auto px-6 relative z-10">
+          <div className="max-w-7xl mx-auto">
+            {/* Header */}
+            <div className="text-center mb-20">
+              <SectionBadge icon={MessageSquare} text="Customer Support" />
+              <div className="relative">
+                <div className="absolute -left-16 -top-16 text-8xl lg:text-9xl font-bold text-orange-600/25 transform rotate-6 select-none">
+                  #2
+                </div>
+                <h2 className="text-4xl lg:text-5xl font-heading font-bold text-foreground mb-6 relative z-10 ml-14">
+                  Support That Sells
+                </h2>
               </div>
-              <div className="absolute -bottom-6 -right-6 bg-white rounded-full p-5 shadow-lg">
-                <Heart className="w-7 h-7 text-primary" />
-              </div>
+              <p className="text-xl text-muted-foreground font-body max-w-3xl mx-auto">
+                Turn support conversations into sales opportunities with
+                empathetic, knowledgeable assistance.
+              </p>
             </div>
 
-            {/* Content Side */}
-            <div className="order-1 lg:order-2 space-y-8">
-              <div className="space-y-4">
-                <BenefitBadge icon={MessageCircle} text="Customer Support" />
-                <div className="relative">
-                  <h2 className="text-4xl lg:text-5xl font-heading font-bold text-foreground relative z-10">
-                    Save Hours on Support
-                  </h2>
+            {/* Split Layout */}
+            <div className="grid lg:grid-cols-2 gap-16 items-center">
+              {/* Left: Support Features */}
+              <div className="space-y-8">
+                <div className="bg-white/80 backdrop-blur-sm rounded-3xl p-8 border border-orange-200/30 transform rotate-1 hover:rotate-0 transition-transform duration-500 shadow-xl">
+                  <div className="space-y-6">
+                    <div className="flex gap-4">
+                      <div className="w-12 h-12 bg-amber-100 rounded-xl flex items-center justify-center flex-shrink-0 border border-orange-200/50">
+                        <Heart className="w-6 h-6 text-orange-600" />
+                      </div>
+                      <div>
+                        <h4 className="font-heading font-semibold text-foreground mb-1">
+                          Warm, conversational replies
+                        </h4>
+                        <p className="text-muted-foreground font-body text-sm">
+                          Responds with genuine warmth and understanding, making
+                          customers feel heard and valued.
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="flex gap-4">
+                      <div className="w-12 h-12 bg-amber-100 rounded-xl flex items-center justify-center flex-shrink-0 border border-orange-200/50">
+                        <Shield className="w-6 h-6 text-orange-600" />
+                      </div>
+                      <div>
+                        <h4 className="font-heading font-semibold text-foreground mb-1">
+                          Reassurance during checkout
+                        </h4>
+                        <p className="text-muted-foreground font-body text-sm">
+                          Guides customers through concerns and decision-making
+                          with patience and expertise.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
                 </div>
-                <p className="text-xl text-muted-foreground font-body leading-relaxed">
-                  Questions answered instantly, any hour, in a voice that feels
-                  genuinely helpful.
-                </p>
               </div>
 
-              <div className="space-y-6">
-                <div className="flex gap-4">
-                  <div className="w-10 h-10 bg-primary/20 rounded-full flex items-center justify-center flex-shrink-0">
-                    <Clock className="w-5 h-5 text-primary" />
-                  </div>
-                  <div>
-                    <h3 className="font-heading font-semibold text-foreground mb-1">
-                      Always online, never waiting
-                    </h3>
-                    <p className="text-muted-foreground font-body">
-                      No waiting times, no business hours — your assistant is
-                      ready to help customers whenever they need it.
-                    </p>
-                  </div>
-                </div>
-
-                <div className="flex gap-4">
-                  <div className="w-10 h-10 bg-primary/20 rounded-full flex items-center justify-center flex-shrink-0">
-                    <Heart className="w-5 h-5 text-primary" />
-                  </div>
-                  <div>
-                    <h3 className="font-heading font-semibold text-foreground mb-1">
-                      Warm, conversational replies
-                    </h3>
-                    <p className="text-muted-foreground font-body">
-                      Responds with genuine warmth and understanding, making
-                      customers feel heard and valued.
-                    </p>
-                  </div>
-                </div>
-
-                <div className="flex gap-4">
-                  <div className="w-10 h-10 bg-primary/20 rounded-full flex items-center justify-center flex-shrink-0">
-                    <Shield className="w-5 h-5 text-primary" />
-                  </div>
-                  <div>
-                    <h3 className="font-heading font-semibold text-foreground mb-1">
-                      Reassurance during checkout
-                    </h3>
-                    <p className="text-muted-foreground font-body">
-                      Guides customers through concerns and decision-making with
-                      patience and expertise.
-                    </p>
+              {/* Right: Support Image */}
+              <div className="relative">
+                <div className="bg-gradient-to-br from-orange-100/60 to-amber-100/40 rounded-3xl aspect-[4/3] flex items-center justify-center transform -rotate-1 hover:rotate-0 transition-transform duration-500 border border-orange-200/30 shadow-2xl">
+                  <div className="text-center space-y-6 p-8">
+                    <MessageSquare className="w-40 h-40 text-orange-600 mx-auto" />
+                    <div className="space-y-3">
+                      <div className="text-orange-800 font-heading font-bold text-2xl">
+                        Support Hub
+                      </div>
+                      <div className="text-orange-600/70 text-base max-w-sm mx-auto">
+                        [Customer support conversation interface]
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -605,25 +584,22 @@ const ValueShowcase = () => {
       {/* Benefit 3: Store Insights - Chaotic Asymmetric Layout */}
       <section
         id="benefit-3"
-        className="py-32 bg-gradient-to-tr from-primary/8 via-background to-primary-light/12 relative overflow-hidden"
+        className="py-32 bg-gradient-to-tr from-orange-50/15 via-background to-amber-50/20 relative overflow-hidden"
       >
         {/* Chaotic Background Elements */}
         <div className="absolute inset-0 opacity-10">
-          <div className="absolute top-20 right-20 w-64 h-64 bg-primary rounded-full blur-3xl"></div>
-          <div className="absolute bottom-10 left-10 w-80 h-80 bg-primary-light rounded-full blur-3xl"></div>
-          <div className="absolute top-1/3 left-1/3 w-32 h-32 bg-primary-dark rounded-full blur-2xl"></div>
+          <div className="absolute top-20 right-20 w-64 h-64 bg-orange-300/20 rounded-full blur-3xl"></div>
+          <div className="absolute bottom-10 left-10 w-80 h-80 bg-amber-300/20 rounded-full blur-3xl"></div>
+          <div className="absolute top-1/3 left-1/3 w-32 h-32 bg-orange-400/15 rounded-full blur-2xl"></div>
         </div>
 
         <div className="container mx-auto px-6 relative z-10">
           <div className="max-w-7xl mx-auto">
             {/* Header */}
             <div className="text-center mb-20">
-              <div className="inline-flex items-center gap-2 text-primary font-medium mb-4">
-                <Activity className="w-5 h-5" />
-                Store Insights
-              </div>
+              <SectionBadge icon={Activity} text="Store Insights" />
               <div className="relative">
-                <div className="absolute -left-16 -top-16 text-8xl lg:text-9xl font-bold text-primary/25 transform rotate-6 select-none">
+                <div className="absolute -left-16 -top-16 text-8xl lg:text-9xl font-bold text-orange-600/25 transform rotate-6 select-none">
                   #3
                 </div>
                 <h2 className="text-4xl lg:text-5xl font-heading font-bold text-foreground mb-6 relative z-10 ml-14">
@@ -639,10 +615,10 @@ const ValueShowcase = () => {
             <div className="grid lg:grid-cols-2 gap-20 items-center">
               {/* Left: Features */}
               <div className="space-y-8">
-                <div className="bg-white/70 backdrop-blur-sm rounded-2xl p-6 border border-primary/10 transform rotate-1 hover:rotate-0 transition-transform duration-300">
+                <div className="bg-white/70 backdrop-blur-sm rounded-2xl p-6 border border-orange-200/30 transform rotate-1 hover:rotate-0 transition-transform duration-300">
                   <div className="flex items-start gap-4">
-                    <div className="w-12 h-12 bg-primary/20 rounded-xl flex items-center justify-center flex-shrink-0 mt-1">
-                      <Play className="w-6 h-6 text-primary" />
+                    <div className="w-12 h-12 bg-amber-100/50 rounded-xl flex items-center justify-center flex-shrink-0 mt-1">
+                      <Play className="w-6 h-6 text-orange-600" />
                     </div>
                     <div>
                       <h3 className="text-lg font-heading font-semibold text-foreground mb-2">
@@ -656,10 +632,10 @@ const ValueShowcase = () => {
                   </div>
                 </div>
 
-                <div className="bg-white/70 backdrop-blur-sm rounded-2xl p-6 border border-primary/10 transform -rotate-1 hover:rotate-0 transition-transform duration-300">
+                <div className="bg-white/70 backdrop-blur-sm rounded-2xl p-6 border border-orange-200/30 transform -rotate-1 hover:rotate-0 transition-transform duration-300">
                   <div className="flex items-start gap-4">
-                    <div className="w-12 h-12 bg-primary/20 rounded-xl flex items-center justify-center flex-shrink-0 mt-1">
-                      <Tag className="w-6 h-6 text-primary" />
+                    <div className="w-12 h-12 bg-amber-100/50 rounded-xl flex items-center justify-center flex-shrink-0 mt-1">
+                      <Tag className="w-6 h-6 text-orange-600" />
                     </div>
                     <div>
                       <h3 className="text-lg font-heading font-semibold text-foreground mb-2">
@@ -673,10 +649,10 @@ const ValueShowcase = () => {
                   </div>
                 </div>
 
-                <div className="bg-white/70 backdrop-blur-sm rounded-2xl p-6 border border-primary/10 transform rotate-2 hover:rotate-0 transition-transform duration-300">
+                <div className="bg-white/70 backdrop-blur-sm rounded-2xl p-6 border border-orange-200/30 transform rotate-2 hover:rotate-0 transition-transform duration-300">
                   <div className="flex items-start gap-4">
-                    <div className="w-12 h-12 bg-primary/20 rounded-xl flex items-center justify-center flex-shrink-0 mt-1">
-                      <BarChart3 className="w-6 h-6 text-primary" />
+                    <div className="w-12 h-12 bg-amber-100/50 rounded-xl flex items-center justify-center flex-shrink-0 mt-1">
+                      <BarChart3 className="w-6 h-6 text-orange-600" />
                     </div>
                     <div>
                       <h3 className="text-lg font-heading font-semibold text-foreground mb-2">
@@ -693,14 +669,14 @@ const ValueShowcase = () => {
 
               {/* Right Image - Large Single Image */}
               <div className="relative">
-                <div className="bg-gradient-to-br from-primary/20 to-primary-light/30 rounded-3xl aspect-[4/3] flex items-center justify-center border-2 border-primary/30 transform rotate-2 hover:rotate-0 transition-transform duration-500 shadow-2xl scale-110">
+                <div className="bg-gradient-to-br from-orange-100/40 to-amber-100/50 rounded-3xl aspect-[4/3] flex items-center justify-center border-2 border-orange-200/50 transform rotate-2 hover:rotate-0 transition-transform duration-500 shadow-2xl scale-110">
                   <div className="text-center space-y-6 p-8 transform -rotate-2">
-                    <Activity className="w-40 h-40 text-primary mx-auto" />
+                    <Activity className="w-40 h-40 text-orange-600 mx-auto" />
                     <div className="space-y-3">
-                      <div className="text-primary-dark font-heading font-bold text-2xl">
+                      <div className="text-orange-800 font-heading font-bold text-2xl">
                         Analytics Dashboard
                       </div>
-                      <div className="text-primary/70 text-base max-w-md mx-auto">
+                      <div className="text-orange-600/70 text-base max-w-md mx-auto">
                         [Image: Complete analytics dashboard showing session
                         replays, chat categorization, and interaction metrics in
                         one unified interface]
@@ -714,126 +690,7 @@ const ValueShowcase = () => {
         </div>
       </section>
 
-      {/* Benefit 4: Integration - Side-by-Side Showcase */}
-      <section className="py-24 bg-gradient-to-r from-primary/5 via-background to-primary-light/10 border-t border-primary/10">
-        <div className="container mx-auto px-6">
-          <div className="max-w-7xl mx-auto">
-            {/* Header */}
-            <div className="text-center mb-16">
-              <BenefitBadge icon={Zap} text="Integration Options" />
-              <h2 className="text-4xl lg:text-5xl font-heading font-bold text-foreground mb-6">
-                Choose Your Integration Path
-              </h2>
-              <p className="text-xl text-muted-foreground font-body max-w-3xl mx-auto">
-                Choose the integration that works best for your store setup.
-              </p>
-            </div>
-
-            <div className="grid lg:grid-cols-2 gap-12">
-              {/* Shopify Integration */}
-              <div className="relative">
-                <div className="bg-gradient-to-br from-primary/10 to-primary-light/20 rounded-3xl p-8 border-2 border-primary/20 hover:border-primary/40 transition-all duration-300 group">
-                  <div className="absolute -top-4 left-8 bg-primary text-white px-4 py-2 rounded-full text-sm font-medium">
-                    Recommended
-                  </div>
-
-                  <div className="flex items-center gap-4 mb-6">
-                    <div className="w-16 h-16 bg-primary rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform">
-                      <Zap className="w-8 h-8 text-white" />
-                    </div>
-                    <div>
-                      <h3 className="text-2xl font-heading font-bold text-foreground">
-                        Shopify App Store
-                      </h3>
-                      <p className="text-primary">One-click installation</p>
-                    </div>
-                  </div>
-
-                  <p className="text-muted-foreground mb-6 text-lg leading-relaxed">
-                    Install Bizmis directly from the Shopify App Store.
-                    One-click setup, no coding required.
-                  </p>
-
-                  <div className="space-y-3 mb-8">
-                    {[
-                      "1-click install",
-                      "Catalog and store data auto-synced",
-                      "Ready instantly",
-                    ].map((feature, index) => (
-                      <div
-                        key={index}
-                        className="flex items-center text-muted-foreground"
-                      >
-                        <div className="w-2 h-2 bg-primary rounded-full mr-3" />
-                        <span className="font-body">{feature}</span>
-                      </div>
-                    ))}
-                  </div>
-
-                  <div className="bg-primary/5 rounded-2xl p-6 mb-6">
-                    <div className="text-center text-primary/60 text-sm">
-                      [Shopify app store integration mockup]
-                    </div>
-                  </div>
-
-                  <Button className="w-full bg-primary hover:bg-primary-dark text-white">
-                    Get it on Shopify
-                  </Button>
-                </div>
-              </div>
-
-              {/* Custom Integration */}
-              <div className="bg-gradient-to-br from-primary-light/10 to-primary/10 rounded-3xl p-8 border border-primary/20 hover:border-primary/30 transition-all duration-300 group">
-                <div className="flex items-center gap-4 mb-6">
-                  <div className="w-16 h-16 bg-gradient-to-br from-primary-light to-primary rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform">
-                    <Headphones className="w-8 h-8 text-white" />
-                  </div>
-                  <div>
-                    <h3 className="text-2xl font-heading font-bold text-foreground">
-                      Custom Website
-                    </h3>
-                    <p className="text-primary">Tailored integration</p>
-                  </div>
-                </div>
-
-                <p className="text-muted-foreground mb-6 text-lg leading-relaxed">
-                  Tailored integration for your unique website. We assess and
-                  customize everything to fit perfectly.
-                </p>
-
-                <div className="space-y-3 mb-8">
-                  {[
-                    "Tailor-made setup",
-                    "Custom assessment",
-                    "Schedule a discovery call",
-                  ].map((feature, index) => (
-                    <div
-                      key={index}
-                      className="flex items-center text-muted-foreground"
-                    >
-                      <div className="w-2 h-2 bg-primary-light rounded-full mr-3" />
-                      <span className="font-body">{feature}</span>
-                    </div>
-                  ))}
-                </div>
-
-                <div className="bg-primary/5 rounded-2xl p-6 mb-6">
-                  <div className="text-center text-primary/60 text-sm">
-                    [Custom integration process diagram]
-                  </div>
-                </div>
-
-                <Button
-                  variant="outline"
-                  className="w-full border-primary text-primary hover:bg-primary hover:text-white"
-                >
-                  Schedule a Call
-                </Button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
+      <Integration />
     </div>
   );
 };

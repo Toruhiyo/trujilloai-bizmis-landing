@@ -1,105 +1,123 @@
+import React from "react";
+import { Zap, Headphones } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Zap, Settings } from "lucide-react";
+import SectionBadge from "./SectionBadge";
 
 const Integration = () => {
   return (
-    <section
-      id="integration"
-      className="py-20 bg-white relative overflow-hidden"
-    >
-      <div className="container mx-auto px-6 relative z-10">
-        <div className="text-center mb-16">
-          <h2 className="text-4xl lg:text-5xl font-heading font-bold text-foreground mb-6">
-            Integration Options
-          </h2>
-          <p className="text-xl text-muted-foreground font-body max-w-3xl mx-auto">
-            Choose the integration that works best for your store setup.
-          </p>
-        </div>
-
-        <div className="grid lg:grid-cols-2 gap-12">
-          {/* Shopify Integration */}
-          <div className="bg-gradient-to-br from-green-50 to-green-100 rounded-3xl p-8 relative overflow-hidden">
-            <div className="absolute top-0 right-0 w-32 h-32 bg-green-200/50 rounded-full -translate-y-16 translate-x-16" />
-            <div className="relative z-10">
-              <div className="flex items-center gap-4 mb-6">
-                <div className="w-12 h-12 bg-green-500 rounded-xl flex items-center justify-center">
-                  <Zap className="w-6 h-6 text-white" />
-                </div>
-                <h3 className="text-2xl font-heading font-bold text-gray-900">
-                  Shopify App Store
-                </h3>
-              </div>
-
-              <p className="text-gray-700 mb-6 text-lg leading-relaxed">
-                Install Bizmis directly from the Shopify App Store. One-click
-                setup, no coding required.
-              </p>
-
-              <div className="space-y-3 mb-8">
-                <div className="flex items-center text-muted-foreground">
-                  <div className="w-2 h-2 bg-green-500 rounded-full mr-3" />
-                  <span className="font-body">1-click install</span>
-                </div>
-                <div className="flex items-center text-muted-foreground">
-                  <div className="w-2 h-2 bg-green-500 rounded-full mr-3" />
-                  <span className="font-body">
-                    Catalog and store data auto-synced
-                  </span>
-                </div>
-                <div className="flex items-center text-muted-foreground">
-                  <div className="w-2 h-2 bg-green-500 rounded-full mr-3" />
-                  <span className="font-body">Ready instantly</span>
-                </div>
-              </div>
-
-              <Button variant="warm" size="lg" className="group">
-                Get it on Shopify
-                <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-              </Button>
-            </div>
+    <section className="py-24 bg-gradient-to-r from-orange-50/10 via-background to-amber-50/15 border-t border-orange-200/20">
+      <div className="container mx-auto px-6">
+        <div className="max-w-7xl mx-auto">
+          {/* Header */}
+          <div className="text-center mb-16">
+            <SectionBadge icon={Zap} text="Integration Options" />
+            <h2 className="text-4xl lg:text-5xl font-heading font-bold text-foreground mb-6">
+              Choose Your Integration Path
+            </h2>
+            <p className="text-xl text-muted-foreground font-body max-w-3xl mx-auto">
+              Choose the integration that works best for your store setup.
+            </p>
           </div>
 
-          {/* Custom Website */}
-          <div className="bg-gradient-to-br from-blue-50 to-purple-100 rounded-3xl p-8 relative overflow-hidden">
-            <div className="absolute top-0 right-0 w-32 h-32 bg-purple-200/50 rounded-full -translate-y-16 translate-x-16" />
-            <div className="relative z-10">
-              <div className="flex items-center gap-4 mb-6">
-                <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-purple-500 rounded-xl flex items-center justify-center">
-                  <Settings className="w-6 h-6 text-white" />
+          <div className="grid lg:grid-cols-2 gap-12">
+            {/* Shopify Integration */}
+            <div className="relative">
+              <div className="bg-gradient-to-br from-orange-100/30 to-amber-100/40 rounded-3xl p-8 border-2 border-orange-200/30 hover:border-orange-300/50 transition-all duration-300 group">
+                <div className="absolute -top-4 left-8 bg-orange-600 text-white px-4 py-2 rounded-full text-sm font-medium">
+                  Recommended
                 </div>
-                <h3 className="text-2xl font-heading font-bold text-gray-900">
-                  Custom Website Integration
-                </h3>
+
+                <div className="flex items-center gap-4 mb-6">
+                  <div className="w-16 h-16 bg-orange-600 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform">
+                    <Zap className="w-8 h-8 text-white" />
+                  </div>
+                  <div>
+                    <h3 className="text-2xl font-heading font-bold text-foreground">
+                      Shopify App Store
+                    </h3>
+                    <p className="text-orange-600">One-click installation</p>
+                  </div>
+                </div>
+
+                <p className="text-muted-foreground mb-6 text-lg leading-relaxed">
+                  Install Bizmis directly from the Shopify App Store. One-click
+                  setup, no coding required.
+                </p>
+
+                <div className="space-y-3 mb-8">
+                  {[
+                    "1-click install",
+                    "Catalog and store data auto-synced",
+                    "Ready instantly",
+                  ].map((feature, index) => (
+                    <div
+                      key={index}
+                      className="flex items-center text-muted-foreground"
+                    >
+                      <div className="w-2 h-2 bg-orange-600 rounded-full mr-3" />
+                      <span className="font-body">{feature}</span>
+                    </div>
+                  ))}
+                </div>
+
+                <div className="bg-amber-50/50 rounded-2xl p-6 mb-6">
+                  <div className="text-center text-orange-600/60 text-sm">
+                    [Shopify app store integration mockup]
+                  </div>
+                </div>
+
+                <Button className="w-full bg-orange-600 hover:bg-orange-700 text-white">
+                  Get it on Shopify
+                </Button>
+              </div>
+            </div>
+
+            {/* Custom Integration */}
+            <div className="bg-gradient-to-br from-amber-100/30 to-orange-100/30 rounded-3xl p-8 border border-orange-200/30 hover:border-orange-300/40 transition-all duration-300 group">
+              <div className="flex items-center gap-4 mb-6">
+                <div className="w-16 h-16 bg-gradient-to-br from-amber-500 to-orange-600 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform">
+                  <Headphones className="w-8 h-8 text-white" />
+                </div>
+                <div>
+                  <h3 className="text-2xl font-heading font-bold text-foreground">
+                    Custom Website
+                  </h3>
+                  <p className="text-orange-600">Tailored integration</p>
+                </div>
               </div>
 
-              <p className="text-gray-700 mb-6 text-lg leading-relaxed">
+              <p className="text-muted-foreground mb-6 text-lg leading-relaxed">
                 Tailored integration for your unique website. We assess and
                 customize everything to fit perfectly.
               </p>
 
               <div className="space-y-3 mb-8">
-                <div className="flex items-center text-muted-foreground">
-                  <div className="w-2 h-2 bg-purple-500 rounded-full mr-3" />
-                  <span className="font-body">Tailor-made setup</span>
-                </div>
-                <div className="flex items-center text-muted-foreground">
-                  <div className="w-2 h-2 bg-purple-500 rounded-full mr-3" />
-                  <span className="font-body">Custom assessment</span>
-                </div>
-                <div className="flex items-center text-muted-foreground">
-                  <div className="w-2 h-2 bg-purple-500 rounded-full mr-3" />
-                  <span className="font-body">Schedule a discovery call</span>
+                {[
+                  "Tailor-made setup",
+                  "Custom assessment",
+                  "Schedule a discovery call",
+                ].map((feature, index) => (
+                  <div
+                    key={index}
+                    className="flex items-center text-muted-foreground"
+                  >
+                    <div className="w-2 h-2 bg-amber-500 rounded-full mr-3" />
+                    <span className="font-body">{feature}</span>
+                  </div>
+                ))}
+              </div>
+
+              <div className="bg-amber-50/50 rounded-2xl p-6 mb-6">
+                <div className="text-center text-orange-600/60 text-sm">
+                  [Custom integration process diagram]
                 </div>
               </div>
 
               <Button
                 variant="outline"
-                size="lg"
-                className="group border-purple-200 text-purple-700 hover:bg-purple-50 font-body"
+                className="w-full border-orange-600 text-orange-600 hover:bg-orange-600 hover:text-white"
               >
                 Schedule a Call
-                <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
               </Button>
             </div>
           </div>

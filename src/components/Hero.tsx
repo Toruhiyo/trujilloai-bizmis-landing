@@ -43,7 +43,7 @@ const Hero = () => {
                 className="group flex items-center gap-4 h-20 px-8 text-lg [&_svg]:!w-8 [&_svg]:!h-8 w-full"
               >
                 <div className="flex-shrink-0">
-                  <FaShopify className="w-8 h-8 text-primary" />
+                  <FaShopify className="w-8 h-8 text-orange-600" />
                 </div>
                 <div className="flex-1 min-w-0 text-left">
                   <div className="font-semibold">
@@ -96,18 +96,18 @@ const Hero = () => {
 
             {/* Stats floating cards - positioned in hero near the image */}
             {/* <div className="absolute top-8 lg:top-12 -left-8 lg:-left-12 bg-white/95 backdrop-blur-sm rounded-xl p-3 shadow-brand animate-bounce z-20">
-              <div className="text-lg lg:text-2xl font-bold text-primary font-heading">
-                24/7
-              </div>
+                              <div className="text-lg lg:text-2xl font-bold text-orange-600 font-heading">
+                  24/7
+                </div>
               <div className="text-xs lg:text-sm text-gray-600 font-body">
                 Always Ready
               </div>
             </div>
 
             <div className="absolute bottom-16 lg:bottom-20 -right-8 lg:-right-12 bg-white/95 backdrop-blur-sm rounded-xl p-3 shadow-brand animate-bounce delay-200 z-20">
-              <div className="text-lg lg:text-2xl font-bold text-primary font-heading">
-                +47%
-              </div>
+                              <div className="text-lg lg:text-2xl font-bold text-orange-600 font-heading">
+                  +47%
+                </div>
               <div className="text-xs lg:text-sm text-gray-600 font-body">
                 Sales Increase
               </div>

@@ -25,8 +25,8 @@ const SalesConversion = () => {
 
             <div className="space-y-4">
               <div className="flex items-start gap-4">
-                <div className="w-8 h-8 bg-green-500/20 rounded-lg flex items-center justify-center flex-shrink-0 mt-1">
-                  <Users className="w-4 h-4 text-green-500" />
+                <div className="w-8 h-8 bg-amber-500/20 rounded-lg flex items-center justify-center flex-shrink-0 mt-1">
+                  <Users className="w-4 h-4 text-orange-600" />
                 </div>
                 <div>
                   <h3 className="font-heading font-semibold text-foreground mb-1">
@@ -40,8 +40,8 @@ const SalesConversion = () => {
               </div>
 
               <div className="flex items-start gap-4">
-                <div className="w-8 h-8 bg-green-500/20 rounded-lg flex items-center justify-center flex-shrink-0 mt-1">
-                  <ShoppingBag className="w-4 h-4 text-green-500" />
+                <div className="w-8 h-8 bg-amber-500/20 rounded-lg flex items-center justify-center flex-shrink-0 mt-1">
+                  <ShoppingBag className="w-4 h-4 text-orange-600" />
                 </div>
                 <div>
                   <h3 className="font-heading font-semibold text-foreground mb-1">
@@ -55,8 +55,8 @@ const SalesConversion = () => {
               </div>
 
               <div className="flex items-start gap-4">
-                <div className="w-8 h-8 bg-green-500/20 rounded-lg flex items-center justify-center flex-shrink-0 mt-1">
-                  <MessageSquare className="w-4 h-4 text-green-500" />
+                <div className="w-8 h-8 bg-amber-500/20 rounded-lg flex items-center justify-center flex-shrink-0 mt-1">
+                  <MessageSquare className="w-4 h-4 text-orange-600" />
                 </div>
                 <div>
                   <h3 className="font-heading font-semibold text-foreground mb-1">
@@ -70,8 +70,8 @@ const SalesConversion = () => {
               </div>
 
               <div className="flex items-start gap-4">
-                <div className="w-8 h-8 bg-green-500/20 rounded-lg flex items-center justify-center flex-shrink-0 mt-1">
-                  <ShoppingCart className="w-4 h-4 text-green-500" />
+                <div className="w-8 h-8 bg-amber-500/20 rounded-lg flex items-center justify-center flex-shrink-0 mt-1">
+                  <ShoppingCart className="w-4 h-4 text-orange-600" />
                 </div>
                 <div>
                   <h3 className="font-heading font-semibold text-foreground mb-1">
@@ -88,14 +88,14 @@ const SalesConversion = () => {
 
           {/* Right Content - Visual Placeholder */}
           <div className="relative">
-            <div className="bg-gradient-to-br from-green-50 to-green-100 rounded-3xl p-8 aspect-square flex items-center justify-center">
+            <div className="bg-gradient-to-br from-orange-50 to-amber-100 rounded-3xl p-8 aspect-square flex items-center justify-center">
               <div className="text-center space-y-4">
                 <div className="relative">
-                  <ShoppingCart className="w-24 h-24 text-green-500 mx-auto" />
-                  <ArrowUp className="w-8 h-8 text-green-600 absolute -top-2 -right-2" />
+                  <ShoppingCart className="w-24 h-24 text-orange-600 mx-auto" />
+                  <ArrowUp className="w-8 h-8 text-orange-600 absolute -top-2 -right-2" />
                 </div>
                 <div className="space-y-2">
-                  <div className="text-2xl font-heading font-bold text-green-700">
+                  <div className="text-2xl font-heading font-bold text-orange-700">
                     Icon of cart + arrow up
                   </div>
                 </div>

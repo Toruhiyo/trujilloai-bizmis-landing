@@ -39,7 +39,7 @@ const Navbar = () => {
             <button
               onClick={() => scrollToTop()}
               className={`text-2xl font-heading font-bold transition-colors duration-300 hover:opacity-80 cursor-pointer ${
-                isInHero ? "text-white" : "text-primary"
+                isInHero ? "text-white" : "text-orange-600"
               }`}
             >
               Bizmis
@@ -55,7 +55,7 @@ const Navbar = () => {
                 className={`font-medium transition-colors duration-300 hover:opacity-80 ${
                   isInHero
                     ? "text-white/90 hover:text-white"
-                    : "text-foreground hover:text-primary"
+                    : "text-foreground hover:text-orange-600"
                 }`}
               >
                 {item.label}
@@ -125,7 +125,7 @@ const Navbar = () => {
                     scrollToSection(item.href);
                     setIsMenuOpen(false);
                   }}
-                  className="block text-foreground hover:text-primary font-medium transition-colors w-full text-left"
+                  className="block text-foreground hover:text-orange-600 font-medium transition-colors w-full text-left"
                 >
                   {item.label}
                 </button>

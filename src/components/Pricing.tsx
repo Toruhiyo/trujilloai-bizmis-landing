@@ -82,12 +82,12 @@ const Pricing = () => {
             <div
               key={index}
               className={`relative bg-white rounded-3xl p-8 shadow-soft hover:shadow-brand transition-all duration-300 ${
-                plan.popular ? "ring-2 ring-primary scale-105" : ""
+                plan.popular ? "ring-2 ring-orange-600 scale-105" : ""
               }`}
             >
               {plan.popular && (
                 <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
-                  <div className="bg-primary text-primary-foreground px-4 py-2 rounded-full text-sm font-heading font-semibold flex items-center gap-2">
+                  <div className="bg-orange-600 text-white px-4 py-2 rounded-full text-sm font-heading font-semibold flex items-center gap-2">
                     <Zap className="w-4 h-4" />
                     Most Popular
                   </div>
@@ -114,8 +114,8 @@ const Pricing = () => {
               <ul className="space-y-3 mb-8">
                 {plan.features.map((feature, idx) => (
                   <li key={idx} className="flex items-center gap-3">
-                    <div className="w-5 h-5 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0">
-                      <Check className="w-3 h-3 text-green-600" />
+                    <div className="w-5 h-5 bg-amber-100 rounded-full flex items-center justify-center flex-shrink-0">
+                      <Check className="w-3 h-3 text-orange-600" />
                     </div>
                     <span className="text-muted-foreground font-body text-sm">
                       {feature}
@@ -142,15 +142,15 @@ const Pricing = () => {
           </p>
           <div className="flex items-center justify-center gap-8 text-sm text-muted-foreground">
             <div className="flex items-center gap-2">
-              <Check className="w-4 h-4 text-green-500" />
+              <Check className="w-4 h-4 text-orange-600" />
               <span>30-day money-back guarantee</span>
             </div>
             <div className="flex items-center gap-2">
-              <Check className="w-4 h-4 text-green-500" />
+              <Check className="w-4 h-4 text-orange-600" />
               <span>Cancel anytime</span>
             </div>
             <div className="flex items-center gap-2">
-              <Check className="w-4 h-4 text-green-500" />
+              <Check className="w-4 h-4 text-orange-600" />
               <span>Free setup support</span>
             </div>
           </div>
