@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Play, Code } from "lucide-react";
+import { ArrowRight, Play } from "lucide-react";
 import { FaShopify } from "react-icons/fa";
 import Navbar from "./Navbar";
 

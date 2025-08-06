@@ -1,10 +1,6 @@
 import React, { useState, useEffect } from "react";
 import {
   ShoppingCart,
-  MessageCircle,
-  TrendingUp,
-  ArrowUp,
-  Clock,
   Heart,
   Shield,
   Play,
@@ -14,27 +10,9 @@ import {
   ShoppingBag,
   MessageSquare,
   Activity,
-  Eye,
-  Handshake,
-  Plus,
 } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import SectionBadge from "./SectionBadge";
 import Integration from "./Integration";
-
-// Reusable Benefit Badge Component
-const BenefitBadge = ({
-  icon: Icon,
-  text,
-}: {
-  icon: React.ComponentType<{ className: string }>;
-  text: string;
-}) => (
-  <div className="inline-flex items-center gap-3 bg-amber-100/50 rounded-full px-6 py-3 mb-6">
-    <Icon className="w-5 h-5 text-orange-600" />
-    <span className="text-orange-600 font-medium">{text}</span>
-  </div>
-);
 
 // Direct Scroll-Linked Sales Flow - Animation Tightened to Scroll Position
 const DirectScrollSalesFlow = () => {
@@ -45,7 +23,6 @@ const DirectScrollSalesFlow = () => {
   const containerRef = React.useRef<HTMLDivElement>(null);
   const viewportRef = React.useRef<HTMLDivElement>(null);
   const currentProgress = React.useRef(0);
-  const isScrolling = React.useRef(false);
   const scrollVelocity = React.useRef(0);
 
   // Master scroll controller
@@ -163,16 +140,6 @@ const DirectScrollSalesFlow = () => {
       return () => clearInterval(interval);
     }
   }, [progress]);
-
-  const getStepProgress = (stepIndex: number) => {
-    const stepStart = stepIndex / 3;
-    const stepEnd = (stepIndex + 1) / 3;
-    const localProgress = Math.max(
-      0,
-      Math.min(1, (progress - stepStart) / (stepEnd - stepStart))
-    );
-    return localProgress;
-  };
 
   return (
     <div ref={containerRef} className="relative">
