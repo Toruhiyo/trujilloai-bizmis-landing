@@ -362,9 +362,6 @@ const Benefits = () => {
                         className="w-80 h-80 lg:w-[420px] lg:h-[420px] object-contain drop-shadow-2xl"
                       />
                     </div>
-
-                    {/* Connection Line to Flow */}
-                    <div className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-8 w-8 h-0.5 bg-gradient-to-l from-orange-400/60 to-transparent rounded-full hidden lg:block"></div>
                   </div>
                 </div>
               </div>
