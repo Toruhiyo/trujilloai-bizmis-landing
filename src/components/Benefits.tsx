@@ -279,7 +279,7 @@ const Benefits = () => {
   return (
     <div className="space-y-0 bg-gradient-to-b from-background via-orange-50/10 to-background">
       {/* Shared Background Section: Driven Sales & Customization */}
-      <section className="relative py-20 overflow-hidden">
+      <section className="relative py-12 overflow-hidden">
         {/* Modern Shared Background Design - Single background for both sections */}
         <div className="absolute inset-0 bg-gradient-to-br from-slate-50 via-orange-50/30 to-amber-50/20"></div>
 
@@ -368,8 +368,8 @@ const Benefits = () => {
             </div>
 
             {/* Section 4: Customization Feature */}
-            <div className="text-left mb-16 lg:text-right">
-              <div className="flex items-start gap-8 mb-12 lg:flex-row-reverse">
+            <div className="text-left mb-8 lg:text-right">
+              <div className="flex items-start gap-8 mb-6 lg:flex-row-reverse">
                 <div className="flex-shrink-0 mt-2">
                   <div className="w-16 h-16 bg-white/80 backdrop-blur-sm rounded-2xl flex items-center justify-center shadow-lg border border-orange-200/50 transform -rotate-3 hover:rotate-0 transition-transform duration-300">
                     <Users className="w-8 h-8 text-orange-600" />
@@ -436,17 +436,35 @@ const Benefits = () => {
 
               {/* Left: Customization Image */}
               <div className="relative order-1 lg:order-1">
-                <div className="bg-gradient-to-br from-orange-100/80 to-amber-100/60 backdrop-blur-sm rounded-3xl aspect-[4/3] flex items-center justify-center transform rotate-1 hover:rotate-0 transition-transform duration-500 border border-orange-200/50 shadow-2xl">
-                  <div className="text-center space-y-6 p-8">
-                    <Users className="w-40 h-40 text-orange-600 mx-auto" />
-                    <div className="space-y-3">
-                      <div className="text-orange-800 font-heading font-bold text-2xl">
-                        Personalization Hub
-                      </div>
-                      <div className="text-orange-600/70 text-base max-w-sm mx-auto">
-                        [Voice & appearance personalization interface]
-                      </div>
+                <div className="group">
+                  <div className="relative">
+                    {/* Concentric flower-shaped outlines - Chupa Chups style effect */}
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      {/* Orange glow background */}
+                      <div className="absolute w-full h-full bg-gradient-to-br from-orange-200/20 to-amber-200/10 rounded-full scale-0 group-hover:scale-100 transition-all duration-1000 ease-out group-hover:delay-100 delay-500 blur-sm"></div>
+
+                      {/* Outer flower outline with glow */}
+                      <div className="absolute w-full h-full border-2 border-orange-400/30 rounded-full scale-0 group-hover:scale-100 transition-all duration-700 ease-out group-hover:delay-0 delay-200 shadow-[0_0_20px_rgba(251,146,60,0.3)] group-hover:shadow-[0_0_30px_rgba(251,146,60,0.4)]"></div>
+
+                      {/* Middle flower outline with glow */}
+                      <div className="absolute w-4/5 h-4/5 border-2 border-orange-500/40 rounded-full scale-0 group-hover:scale-100 transition-all duration-700 ease-out group-hover:delay-100 delay-300 shadow-[0_0_15px_rgba(249,115,22,0.4)] group-hover:shadow-[0_0_25px_rgba(249,115,22,0.5)]"></div>
+
+                      {/* Inner flower outline with glow */}
+                      <div className="absolute w-3/5 h-3/5 border-2 border-orange-600/50 rounded-full scale-0 group-hover:scale-100 transition-all duration-700 ease-out group-hover:delay-200 delay-400 shadow-[0_0_10px_rgba(234,88,12,0.5)] group-hover:shadow-[0_0_20px_rgba(234,88,12,0.6)]"></div>
                     </div>
+
+                    {/* Default image */}
+                    <img
+                      src="/images/benefit-1-customization-orange.png"
+                      alt="Personalization Hub - Voice & Appearance Customization"
+                      className="relative z-10 w-full max-w-md mx-auto object-contain drop-shadow-2xl transition-opacity duration-500 group-hover:opacity-0"
+                    />
+                    {/* Hover image */}
+                    <img
+                      src="/images/benefit-1-customization.png"
+                      alt="Personalization Hub - Voice & Appearance Customization (Active)"
+                      className="absolute inset-0 z-10 w-full max-w-md mx-auto object-contain drop-shadow-2xl opacity-0 transition-opacity duration-500 group-hover:opacity-100"
+                    />
                   </div>
                 </div>
               </div>
