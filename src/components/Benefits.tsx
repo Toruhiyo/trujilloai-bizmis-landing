@@ -12,7 +12,7 @@ import {
   Activity,
 } from "lucide-react";
 import SectionBadge from "./SectionBadge";
-import Integration from "./Integration";
+import Setup from "./Setup";
 
 // Direct Scroll-Linked Sales Flow - Animation Tightened to Scroll Position
 const DirectScrollSalesFlow = () => {
@@ -654,7 +654,7 @@ const Benefits = () => {
         </div>
       </section>
 
-      <Integration />
+      <Setup />
     </div>
   );
 };

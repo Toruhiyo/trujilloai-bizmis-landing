@@ -1,56 +1,49 @@
 import React, { useState, useEffect } from "react";
+import { Button } from "@/components/ui/button";
+import SectionBadge from "./SectionBadge";
 import {
-  Play,
   ShoppingBag,
   Tag,
-  Users,
   Percent,
+  Users,
   Package,
-  RefreshCw,
-  Headphones,
   Puzzle,
+  RefreshCw,
   ShoppingCart,
 } from "lucide-react";
 import { SiShopify } from "react-icons/si";
-import { Button } from "@/components/ui/button";
-import SectionBadge from "./SectionBadge";
 import Xarrow from "react-xarrows";
 
-const Integration = () => {
-  // State for forcing re-renders - separate key for each connector
-  const [renderKeys, setRenderKeys] = useState([0, 0, 0, 0, 0]);
+// Constants for magic numbers
+const CONNECTOR_STROKE_WIDTH = 4;
+const CONNECTOR_CURVENESS = 0.3;
+const CONNECTOR_ANIMATION_DURATION = 1.5;
+const CONNECTOR_Z_INDEX = 10;
+const CONNECTOR_COLOR = "#ea580c";
+const SHINY_DOT_STROKE_WIDTH = 3;
+const SHINY_DOT_COLOR = "#ffffff";
+const SHINY_DOT_ANIMATION_DURATION = 2;
+const MIN_RERENDER_INTERVAL_MS = 2000;
+const MAX_RERENDER_INTERVAL_MS = 4000;
 
-  // Constants for connector styling
-  const CONNECTOR_STROKE_WIDTH = 4;
-  const CONNECTOR_CURVENESS = 0.8;
-  const CONNECTOR_ANIMATION_DURATION = 0.5;
-  const CONNECTOR_Z_INDEX = -1;
-  const CONNECTOR_COLOR = "#ea580c";
-
-  // Constants for shiny dots
-  const SHINY_DOT_STROKE_WIDTH = 3;
-  const SHINY_DOT_COLOR = "#ffffff";
-  const SHINY_DOT_ANIMATION_DURATION = 2;
-
-  // Constants for re-rendering
-  const MIN_RERENDER_INTERVAL_MS = 2000; // 2 seconds
-  const MAX_RERENDER_INTERVAL_MS = 4000; // 4 seconds
+const Setup = () => {
+  const [renderKeys, setRenderKeys] = useState<number[]>([0, 0, 0, 0, 0]);
 
   const shopifyDataCards = [
     {
       icon: ShoppingBag,
       title: "Store Website",
-      description: "Vision, mission and core values",
+      description: "Your store's vision, mission & values",
     },
     {
       icon: Tag,
       title: "Products Catalog",
-      description: "Collections, inventory, purchase orders",
+      description: "Complete product details & inventory",
     },
     {
       icon: Percent,
       title: "Discounts",
-      description: "All current promotions",
+      description: "All current promotions & offers",
     },
     {
       icon: Users,
@@ -60,39 +53,38 @@ const Integration = () => {
     {
       icon: Package,
       title: "Orders",
-      description: "Customer order history",
+      description: "Complete order history & details",
     },
   ];
 
-  // Effect to force re-renders at random intervals for each connector
+  // Force re-render of connectors with random intervals
   useEffect(() => {
-    const timeouts: NodeJS.Timeout[] = [];
+    const intervals: NodeJS.Timeout[] = [];
 
-    const scheduleNextRender = (connectorIndex: number) => {
-      const randomInterval =
-        Math.random() * (MAX_RERENDER_INTERVAL_MS - MIN_RERENDER_INTERVAL_MS) +
-        MIN_RERENDER_INTERVAL_MS;
-
-      const timeout = setTimeout(() => {
-        setRenderKeys((prev) => {
-          const newKeys = [...prev];
-          newKeys[connectorIndex] += 1;
-          return newKeys;
-        });
-        scheduleNextRender(connectorIndex); // Schedule the next render for this connector
-      }, randomInterval);
-
-      timeouts.push(timeout);
-    };
-
-    // Start independent re-rendering for each connector
     shopifyDataCards.forEach((_, index) => {
+      const scheduleNextRender = (connectorIndex: number) => {
+        const randomInterval =
+          Math.random() *
+            (MAX_RERENDER_INTERVAL_MS - MIN_RERENDER_INTERVAL_MS) +
+          MIN_RERENDER_INTERVAL_MS;
+
+        const timeout = setTimeout(() => {
+          setRenderKeys((prev) => {
+            const newKeys = [...prev];
+            newKeys[connectorIndex] = Date.now();
+            return newKeys;
+          });
+          scheduleNextRender(connectorIndex);
+        }, randomInterval);
+
+        intervals.push(timeout);
+      };
+
       scheduleNextRender(index);
     });
 
     return () => {
-      // Cleanup all timeouts
-      timeouts.forEach((timeout) => clearTimeout(timeout));
+      intervals.forEach(clearTimeout);
     };
   }, []);
 
@@ -137,8 +129,8 @@ const Integration = () => {
                   {/* Shopify Store Title Centered with Cards */}
                   <div className="text-center mb-6">
                     {/* <div className="text-sm text-muted-foreground font-body mb-2">
-                    Seamlessly Integrated with
-                  </div> */}
+                      Seamlessly Integrated with
+                    </div> */}
                     <div className="inline-flex items-center gap-2">
                       <SiShopify className="w-5 h-5 text-orange-600" />
                       <span className="text-lg font-heading font-semibold text-foreground">
@@ -387,4 +379,4 @@ const Integration = () => {
   );
 };
 
-export default Integration;
+export default Setup;

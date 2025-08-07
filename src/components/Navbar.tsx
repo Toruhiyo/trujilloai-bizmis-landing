@@ -20,7 +20,7 @@ const Navbar = () => {
 
   const navItems = [
     { label: "Features", href: "#benefits" },
-    { label: "Integration", href: "#integration" },
+    { label: "Setup", href: "#setup" },
     { label: "Pricing", href: "#pricing" },
   ];
 
@@ -38,7 +38,7 @@ const Navbar = () => {
           <div className="flex items-center">
             <button
               onClick={() => scrollToTop()}
-              className={`text-2xl font-heading font-bold transition-colors duration-300 hover:opacity-80 cursor-pointer ${
+              className={`text-2xl font-heading font-black transition-colors duration-300 hover:opacity-80 cursor-pointer ${
                 isInHero ? "text-white" : "text-orange-600"
               }`}
             >
