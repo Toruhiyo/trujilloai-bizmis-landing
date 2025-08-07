@@ -91,7 +91,7 @@ const Hero = () => {
             </div>
 
             {/* Avatar Floor Shadow - positioned at the feet of the avatar */}
-            <div className="absolute left-1/2 transform -translate-x-1/2 w-[800px] max-w-[100%] h-[80px] avatar-floor-shadow z-0 bottom-[6.5rem]" />
+            <div className="absolute left-1/2 transform -translate-x-[45%] w-[800px] max-w-[100%] h-[80px] avatar-floor-shadow z-0 bottom-[6.5rem]" />
 
             {/* Floating elements - positioned to not overlap */}
             <div className="absolute -top-6 -right-6 w-16 lg:w-24 h-16 lg:h-24 bg-white/20 rounded-full blur-xl animate-pulse" />
