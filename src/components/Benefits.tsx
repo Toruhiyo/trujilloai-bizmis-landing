@@ -6,13 +6,15 @@ import {
   Play,
   Tag,
   BarChart3,
-  Users,
   ShoppingBag,
   MessageSquare,
   Activity,
+  Brush,
 } from "lucide-react";
+import { PiWaveformBold } from "react-icons/pi";
 import SectionBadge from "./SectionBadge";
 import Setup from "./Setup";
+import AudioPlayer from "./AudioPlayer";
 
 // Direct Scroll-Linked Sales Flow - Animation Tightened to Scroll Position
 const DirectScrollSalesFlow = () => {
@@ -372,7 +374,7 @@ const Benefits = () => {
               <div className="flex items-start gap-8 mb-6 lg:flex-row-reverse">
                 <div className="flex-shrink-0 mt-2">
                   <div className="w-16 h-16 bg-white/80 backdrop-blur-sm rounded-2xl flex items-center justify-center shadow-lg border border-orange-200/50 transform -rotate-3 hover:rotate-0 transition-transform duration-300">
-                    <Users className="w-8 h-8 text-orange-600" />
+                    <Brush className="w-8 h-8 text-orange-600" />
                   </div>
                 </div>
                 <div className="flex-1">
@@ -398,12 +400,12 @@ const Benefits = () => {
             {/* Section 5: Customization Layout */}
             <div className="grid lg:grid-cols-2 gap-16 items-center">
               {/* Right: Features */}
-              <div className="space-y-8 order-2 lg:order-2">
+              <div className="space-y-32 order-2 lg:order-2">
                 <div className="bg-white/70 backdrop-blur-md rounded-3xl p-8 border border-orange-200/30 transform -rotate-1 hover:rotate-0 transition-transform duration-500 shadow-xl">
                   <div className="space-y-6">
                     <div className="flex gap-4">
                       <div className="w-12 h-12 bg-amber-100 rounded-xl flex items-center justify-center flex-shrink-0 border border-orange-200/50">
-                        <Users className="w-6 h-6 text-orange-600" />
+                        <Brush className="w-6 h-6 text-orange-600" />
                       </div>
                       <div>
                         <h4 className="font-heading font-semibold text-foreground mb-1">
@@ -418,7 +420,7 @@ const Benefits = () => {
 
                     <div className="flex gap-4">
                       <div className="w-12 h-12 bg-amber-100 rounded-xl flex items-center justify-center flex-shrink-0 border border-orange-200/50">
-                        <MessageSquare className="w-6 h-6 text-orange-600" />
+                        <PiWaveformBold className="w-6 h-6 text-orange-600" />
                       </div>
                       <div>
                         <h4 className="font-heading font-semibold text-foreground mb-1">
@@ -431,6 +433,21 @@ const Benefits = () => {
                       </div>
                     </div>
                   </div>
+                </div>
+
+                {/* Audio Player Demo */}
+                <div className="w-full flex flex-col space-y-6 transform rotate-1 hover:rotate-0 transition-transform duration-500 relative">
+                  <div className="w-fit text-sm font-bold text-orange-700 bg-gradient-to-r from-white via-orange-50 to-white backdrop-blur-sm px-4 py-2 rounded-full border-2 border-orange-300/50 shadow-lg self-center">
+                    Voice Cloning Demo
+                  </div>
+                  {/* Enhanced demo label */}
+                  {/* Enhanced background for audio player section */}
+                  <div className="absolute -inset-8 bg-gradient-to-br from-orange-100/20 via-amber-100/15 to-orange-100/10 rounded-3xl blur-2xl opacity-60"></div>
+                  {/* Audio player with maximum visual impact */}
+                  <AudioPlayer
+                    audioUrl="/audio/benefit-1-customization-voice-cloning.mp3"
+                    className="w-full relative z-10"
+                  />
                 </div>
               </div>
 
