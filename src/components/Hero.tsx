@@ -20,7 +20,7 @@ const Hero = () => {
       {/* Navbar positioned within hero */}
       <Navbar />
 
-      <div className="container mx-auto px-6 relative z-10 pt-16">
+      <div className="container mx-auto px-6 relative z-10 pt-16 overflow-visible">
         <div className="grid lg:grid-cols-2 gap-16 xl:gap-20 items-center">
           {/* Left Content */}
           <div className="space-y-8">
@@ -80,7 +80,7 @@ const Hero = () => {
           </div>
 
           {/* Right Content - Image */}
-          <div className="relative lg:pl-8">
+          <div className="relative lg:pl-8 pb-16 overflow-visible">
             {/* Main Image - Made bigger */}
             <div className="relative z-10">
               <img
@@ -89,6 +89,9 @@ const Hero = () => {
                 className="w-full h-auto max-w-2xl mx-auto"
               />
             </div>
+
+            {/* Avatar Floor Shadow - positioned at the feet of the avatar */}
+            <div className="absolute left-1/2 transform -translate-x-1/2 w-[800px] max-w-[100%] h-[80px] avatar-floor-shadow z-0 bottom-[6.5rem]" />
 
             {/* Floating elements - positioned to not overlap */}
             <div className="absolute -top-6 -right-6 w-16 lg:w-24 h-16 lg:h-24 bg-white/20 rounded-full blur-xl animate-pulse" />

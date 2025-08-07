@@ -63,6 +63,14 @@ All colors MUST be HSL.
         hsl(25 95% 64% / 0.1) 70%,
         transparent 100%);
 
+    --avatar-floor-shadow: radial-gradient(ellipse 100% 100% at 50% 50%,
+        hsl(25 95% 40% / 0.6) 0%,
+        hsl(25 95% 45% / 0.4) 20%,
+        hsl(25 95% 50% / 0.2) 40%,
+        hsl(25 95% 55% / 0.1) 60%,
+        hsl(25 95% 58% / 0.05) 80%,
+        transparent 100%);
+
     --studio-horizon-shadow: linear-gradient(to bottom,
         transparent 0%,
         transparent 55%,
@@ -185,6 +193,10 @@ All colors MUST be HSL.
 
   .studio-floor-shadow {
     background: var(--studio-floor-shadow);
+  }
+
+  .avatar-floor-shadow {
+    background: var(--avatar-floor-shadow);
   }
 
   .studio-horizon-shadow {
