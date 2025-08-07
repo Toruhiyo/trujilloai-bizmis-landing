@@ -1,3 +1,11 @@
+// Extend Window interface to include our custom property
+declare global {
+  interface Window {
+    isProgrammaticScroll?: boolean;
+    lastProgrammaticScrollTime?: number;
+  }
+}
+
 export const scrollToTop = (behavior: ScrollBehavior = "smooth"): void => {
   window.scrollTo({
     top: 0,
@@ -32,10 +40,20 @@ export const scrollToSection = (
 ): void => {
   const cleanSectionId = sectionId.replace("#", "");
 
+  // Set programmatic scroll flag and timestamp to prevent URL override during scroll
+  window.isProgrammaticScroll = true;
+  window.lastProgrammaticScrollTime = Date.now();
+
   if (updateUrl) {
     const newUrl = `${window.location.pathname}#${cleanSectionId}`;
     window.history.pushState({ section: cleanSectionId }, "", newUrl);
   }
+
+  // Clear the flag after scroll animation completes
+  const scrollDuration = behavior === "smooth" ? 2000 : 300;
+  setTimeout(() => {
+    window.isProgrammaticScroll = false;
+  }, scrollDuration);
 
   scrollToElement(cleanSectionId, behavior, offset);
 };
@@ -72,38 +90,11 @@ export const setupScrollToSectionOnLoad = (): (() => void) => {
 };
 
 export const setupScrollToUrlUpdater = (sectionIds: string[]): (() => void) => {
-  const observer = new IntersectionObserver(
-    (entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting && entry.intersectionRatio > 0.5) {
-          const sectionId = entry.target.id;
-          const currentHash = window.location.hash.replace("#", "");
+  // Completely disable automatic URL updating
+  // Only manual navigation (clicking links, typing URLs) should change the hash
 
-          if (sectionId && sectionId !== currentHash) {
-            const newUrl =
-              sectionId === "hero"
-                ? window.location.pathname
-                : `${window.location.pathname}#${sectionId}`;
-
-            window.history.replaceState({ section: sectionId }, "", newUrl);
-          }
-        }
-      });
-    },
-    {
-      threshold: [0.5],
-      rootMargin: "-20% 0px -20% 0px",
-    }
-  );
-
-  sectionIds.forEach((sectionId) => {
-    const element = document.getElementById(sectionId);
-    if (element) {
-      observer.observe(element);
-    }
-  });
-
+  // Return a no-op cleanup function
   return () => {
-    observer.disconnect();
+    // No cleanup needed since we're not setting up any observers
   };
 };

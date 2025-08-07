@@ -143,7 +143,10 @@ const Setup = () => {
 
       `}</style>
 
-      <section className="py-24 bg-gradient-to-r from-orange-50/5 via-background to-amber-50/8 border-t border-orange-200/20">
+      <section
+        id="setup"
+        className="py-24 bg-gradient-to-r from-orange-50/5 via-background to-amber-50/8 border-t border-orange-200/20"
+      >
         <div className="container mx-auto px-6">
           <div className="max-w-7xl mx-auto">
             {/* Header */}

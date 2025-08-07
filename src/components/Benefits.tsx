@@ -13,7 +13,7 @@ import {
 } from "lucide-react";
 import { PiWaveformBold } from "react-icons/pi";
 import SectionBadge from "./SectionBadge";
-import Setup from "./Setup";
+
 import AudioPlayer from "./AudioPlayer";
 
 // Direct Scroll-Linked Sales Flow - Animation Tightened to Scroll Position
@@ -688,8 +688,6 @@ const Benefits = () => {
           </div>
         </div>
       </section>
-
-      <Setup />
     </div>
   );
 };
