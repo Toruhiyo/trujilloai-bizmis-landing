@@ -1,7 +1,8 @@
 import { LucideIcon } from "lucide-react";
+import { IconType } from "react-icons";
 
 interface SectionBadgeProps {
-  icon: LucideIcon;
+  icon: LucideIcon | IconType;
   text: string;
   className?: string;
 }
