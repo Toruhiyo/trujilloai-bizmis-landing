@@ -14,53 +14,60 @@ import { Button } from "@/components/ui/button";
 import SectionBadge from "./SectionBadge";
 import Xarrow from "react-xarrows";
 
+// Constants for connector styling
+const CONNECTOR_STROKE_WIDTH = 4;
+const CONNECTOR_CURVENESS = 0.8;
+const CONNECTOR_ANIMATION_DURATION = 0.5;
+const CONNECTOR_Z_INDEX = -1;
+const CONNECTOR_COLOR = "#ea580c";
+
+// Constants for shiny dots
+const SHINY_DOT_STROKE_WIDTH = 3;
+const SHINY_DOT_COLOR = "#ffffff";
+const SHINY_DOT_ANIMATION_DURATION = 2;
+
+// Constants for re-rendering
+const MIN_RERENDER_INTERVAL_MS = 2000; // 2 seconds
+const MAX_RERENDER_INTERVAL_MS = 4000; // 4 seconds
+
+// Constants for heartbeat avatar effect
+const HEARTBEAT_PULSE_DURATION_MS = 2000; // 4s for slower heartbeat
+const HEARTBEAT_FADE_DURATION_MS = 600; // Duration of each heartbeat fade
+
+const shopifyDataCards = [
+  {
+    icon: ShoppingBag,
+    title: "Store Website",
+    description: "Vision, mission and core values",
+  },
+  {
+    icon: Tag,
+    title: "Products Catalog",
+    description: "Collections, inventory, purchase orders",
+  },
+  {
+    icon: Percent,
+    title: "Discounts",
+    description: "All current promotions",
+  },
+  {
+    icon: Users,
+    title: "Customers",
+    description: "Your Shopify customer records",
+  },
+  {
+    icon: Package,
+    title: "Orders",
+    description: "Customer order history",
+  },
+];
+
 const Setup = () => {
   // State for forcing re-renders - separate key for each connector
   const [renderKeys, setRenderKeys] = useState([0, 0, 0, 0, 0]);
 
-  // Constants for connector styling
-  const CONNECTOR_STROKE_WIDTH = 4;
-  const CONNECTOR_CURVENESS = 0.8;
-  const CONNECTOR_ANIMATION_DURATION = 0.5;
-  const CONNECTOR_Z_INDEX = -1;
-  const CONNECTOR_COLOR = "#ea580c";
-
-  // Constants for shiny dots
-  const SHINY_DOT_STROKE_WIDTH = 3;
-  const SHINY_DOT_COLOR = "#ffffff";
-  const SHINY_DOT_ANIMATION_DURATION = 2;
-
-  // Constants for re-rendering
-  const MIN_RERENDER_INTERVAL_MS = 2000; // 2 seconds
-  const MAX_RERENDER_INTERVAL_MS = 4000; // 4 seconds
-
-  const shopifyDataCards = [
-    {
-      icon: ShoppingBag,
-      title: "Store Website",
-      description: "Vision, mission and core values",
-    },
-    {
-      icon: Tag,
-      title: "Products Catalog",
-      description: "Collections, inventory, purchase orders",
-    },
-    {
-      icon: Percent,
-      title: "Discounts",
-      description: "All current promotions",
-    },
-    {
-      icon: Users,
-      title: "Customers",
-      description: "Your Shopify customer records",
-    },
-    {
-      icon: Package,
-      title: "Orders",
-      description: "Customer order history",
-    },
-  ];
+  // State for heartbeat avatar effect
+  const [avatarOpacity, setAvatarOpacity] = useState(1);
 
   // Effect to force re-renders at random intervals for each connector
   useEffect(() => {
@@ -94,6 +101,30 @@ const Setup = () => {
     };
   }, []);
 
+  // Effect for heartbeat avatar animation
+  useEffect(() => {
+    let avatarInterval: NodeJS.Timeout;
+
+    const createHeartbeatEffect = () => {
+      avatarInterval = setInterval(() => {
+        // Create single heartbeat pattern: fade to 0, then back to 1
+        setAvatarOpacity(0);
+
+        setTimeout(() => {
+          setAvatarOpacity(1);
+        }, HEARTBEAT_FADE_DURATION_MS);
+      }, HEARTBEAT_PULSE_DURATION_MS);
+    };
+
+    createHeartbeatEffect();
+
+    return () => {
+      if (avatarInterval) {
+        clearInterval(avatarInterval);
+      }
+    };
+  }, []);
+
   return (
     <>
       <style>{`
@@ -108,6 +139,8 @@ const Setup = () => {
           50% { transform: translate(var(--tx), var(--ty)) scale(1.5); opacity: 0.8; }
           100% { transform: translate(var(--tx), var(--ty)) scale(0); opacity: 0; }
         }
+
+
       `}</style>
 
       <section className="py-24 bg-gradient-to-r from-orange-50/5 via-background to-amber-50/8 border-t border-orange-200/20">
@@ -181,7 +214,10 @@ const Setup = () => {
                 </div>
 
                 {/* Avatar Image with Aura */}
-                <div className="relative flex items-center justify-center">
+                <div
+                  className="relative flex items-center justify-center"
+                  style={{ height: "48rem", width: "auto" }}
+                >
                   {/* Animated Aura/Halo - Circular */}
                   <div className="absolute w-96 h-96 bg-gradient-to-r from-orange-400/20 via-orange-500/30 to-amber-400/20 rounded-full blur-xl animate-pulse"></div>
                   <div
@@ -193,13 +229,34 @@ const Setup = () => {
                     style={{ animationDuration: "2s" }}
                   ></div>
 
-                  {/* Avatar Image */}
-                  <img
-                    id="avatar-target"
-                    src="/images/setup-avatar.png"
-                    alt="Bizmis Storemate"
-                    className="h-[48rem] w-auto relative z-10"
-                  />
+                  {/* Avatar Images with Heartbeat Effect */}
+                  <div id="avatar-target" className="relative z-10">
+                    {/* Orange avatar always visible behind */}
+                    <img
+                      src="/images/setup-avatar-orange.png"
+                      alt="Bizmis Storemate Orange"
+                      className="h-[48rem] w-auto"
+                      onError={(e) =>
+                        console.error(
+                          "Failed to load setup-avatar-orange.png:",
+                          e
+                        )
+                      }
+                    />
+                    {/* Regular avatar with heartbeat opacity effect */}
+                    <img
+                      src="/images/setup-avatar.png"
+                      alt="Bizmis Storemate"
+                      className="h-[48rem] w-auto absolute top-0 left-0"
+                      style={{
+                        opacity: avatarOpacity,
+                        transition: `opacity ${HEARTBEAT_FADE_DURATION_MS}ms ease-in-out`,
+                      }}
+                      onError={(e) =>
+                        console.error("Failed to load setup-avatar.png:", e)
+                      }
+                    />
+                  </div>
                 </div>
               </div>
 
