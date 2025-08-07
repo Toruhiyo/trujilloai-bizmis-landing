@@ -1,3 +1,5 @@
+import { getCurrentYear } from "../lib/utils/time";
+
 const Footer = () => {
   return (
     <footer className="bg-gray-900 text-white py-12">
@@ -55,7 +57,7 @@ const Footer = () => {
         </div>
 
         <div className="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400">
-          <p>&copy; 2024 Bizmis. All rights reserved.</p>
+          <p>&copy; {getCurrentYear()} Bizmis. All rights reserved.</p>
         </div>
       </div>
     </footer>
