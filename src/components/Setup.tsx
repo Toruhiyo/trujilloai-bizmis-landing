@@ -218,17 +218,17 @@ const Setup = () => {
 
                 {/* Avatar Image with Aura */}
                 <div
-                  className="relative flex items-center justify-center max-w-full"
+                  className="relative flex items-center justify-center max-w-full overflow-hidden"
                   style={{ minHeight: "48rem" }}
                 >
                   {/* Animated Aura/Halo - Circular */}
-                  <div className="absolute w-96 h-96 bg-gradient-to-r from-orange-400/20 via-orange-500/30 to-amber-400/20 rounded-full blur-xl animate-pulse"></div>
+                  <div className="absolute w-64 h-64 md:w-80 md:h-80 lg:w-96 lg:h-96 bg-gradient-to-r from-orange-400/20 via-orange-500/30 to-amber-400/20 rounded-full blur-xl animate-pulse"></div>
                   <div
-                    className="absolute w-80 h-80 bg-gradient-to-r from-orange-300/15 via-orange-400/25 to-amber-300/15 rounded-full blur-lg animate-ping"
+                    className="absolute w-56 h-56 md:w-72 md:h-72 lg:w-80 lg:h-80 bg-gradient-to-r from-orange-300/15 via-orange-400/25 to-amber-300/15 rounded-full blur-lg animate-ping"
                     style={{ animationDuration: "3s" }}
                   ></div>
                   <div
-                    className="absolute w-72 h-72 bg-gradient-to-r from-orange-200/10 via-orange-300/20 to-amber-200/10 rounded-full blur-md animate-pulse"
+                    className="absolute w-48 h-48 md:w-64 md:h-64 lg:w-72 lg:h-72 bg-gradient-to-r from-orange-200/10 via-orange-300/20 to-amber-200/10 rounded-full blur-md animate-pulse"
                     style={{ animationDuration: "2s" }}
                   ></div>
 
