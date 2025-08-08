@@ -21,16 +21,16 @@ const Hero = () => {
       <Navbar />
 
       {/* Mobile Layout - Text above image */}
-      <div className="lg:hidden flex-1 flex flex-col relative z-10 pt-24 sm:pt-16 pb-4">
+      <div className="lg:hidden flex-1 flex flex-col relative z-10 pt-24 sm:pt-32 pb-4">
         {/* Text Content - Top Section with proper spacing */}
         <div className="flex-shrink-0 px-4 sm:px-6 pb-4 sm:pb-6">
           <div className="text-center space-y-3 sm:space-y-4">
             <div className="space-y-2 sm:space-y-3">
-              <h1 className="text-4xl sm:text-4xl md:text-5xl font-heading font-bold text-white leading-tight">
+              <h1 className="text-4xl xs:text-5xl sm:text-6xl font-heading font-bold text-white ">
                 Sell Online,
                 <span className="block text-white/90">The Human Way</span>
               </h1>
-              <p className="text-sm sm:text-base text-white/80 font-body max-w-2xl mx-auto">
+              <p className="text-sm sm:text-base text-white/80 font-body max-w-xl mx-auto">
                 This isn't a chatbot. Bizmis speaks naturally—welcoming your
                 customers, answering their questions, and guiding them to buy
                 with confidence, just like the best in-store salesperson would.
@@ -107,7 +107,7 @@ const Hero = () => {
             {/* Left Content */}
             <div className="space-y-8 text-left">
               <div className="space-y-4">
-                <h1 className="text-6xl xl:text-7xl font-heading font-bold text-white leading-tight">
+                <h1 className="text-6xl xl:text-7xl font-heading font-bold text-white leading-[1.0] xl:leading-[1.0]">
                   Sell Online,
                   <span className="block text-white/90">The Human Way</span>
                 </h1>
