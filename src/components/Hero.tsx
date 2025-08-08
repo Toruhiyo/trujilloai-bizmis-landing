@@ -46,13 +46,10 @@ const Hero = () => {
                 <div className="flex-shrink-0">
                   <FaShopify className="w-5 h-5 sm:w-6 sm:h-6 text-orange-600" />
                 </div>
-                <div className="flex-1 min-w-0 text-left">
+                <div className="flex-1 min-w-0 text-center">
                   <div className="font-semibold text-xs sm:text-sm">
                     <span className="font-black">Get Started Free</span> on
                     Shopify
-                  </div>
-                  <div className="text-xs opacity-80">
-                    One-click install, ready in minutes
                   </div>
                 </div>
                 <div className="flex-shrink-0">
