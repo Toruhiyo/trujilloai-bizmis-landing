@@ -219,7 +219,7 @@ const Setup = () => {
                 {/* Avatar Image with Aura */}
                 <div
                   className="relative flex items-center justify-center max-w-full overflow-hidden"
-                  style={{ minHeight: "48rem" }}
+                  style={{ minHeight: "clamp(24rem, 50vh, 48rem)" }}
                 >
                   {/* Animated Aura/Halo - Circular */}
                   <div className="absolute w-64 h-64 md:w-80 md:h-80 lg:w-96 lg:h-96 bg-gradient-to-r from-orange-400/20 via-orange-500/30 to-amber-400/20 rounded-full blur-xl animate-pulse"></div>
@@ -238,7 +238,7 @@ const Setup = () => {
                     <img
                       src="/images/setup-avatar-orange.png"
                       alt="Bizmis Storemate Orange"
-                      className="h-[48rem] w-auto max-w-full object-contain"
+                      className="h-[clamp(24rem,50vh,48rem)] w-auto max-w-full object-contain"
                       style={{ aspectRatio: "auto" }}
                       onError={(e) =>
                         console.error(
@@ -251,7 +251,7 @@ const Setup = () => {
                     <img
                       src="/images/setup-avatar.png"
                       alt="Bizmis Storemate"
-                      className="h-[48rem] w-auto max-w-full object-contain absolute top-0 left-0"
+                      className="h-[clamp(24rem,50vh,48rem)] w-auto max-w-full object-contain absolute top-0 left-0"
                       style={{
                         opacity: avatarOpacity,
                         transition: `opacity ${HEARTBEAT_FADE_DURATION_MS}ms ease-in-out`,
@@ -302,6 +302,78 @@ const Setup = () => {
                     zIndex={CONNECTOR_Z_INDEX}
                     animateDrawing={SHINY_DOT_ANIMATION_DURATION}
                   />
+                ))}
+              </div>
+
+              {/* Mobile Connectors - Start from each side of cards and go to avatar */}
+              <div className="lg:hidden">
+                {shopifyDataCards.map((_, index) => (
+                  <div key={`mobile-connector-${renderKeys[index]}-${index}`}>
+                    {/* Left side connector */}
+                    <Xarrow
+                      start={`card-${index}`}
+                      end="avatar-target"
+                      color={CONNECTOR_COLOR}
+                      strokeWidth={CONNECTOR_STROKE_WIDTH}
+                      curveness={0.6}
+                      showHead={false}
+                      path="smooth"
+                      startAnchor="left"
+                      endAnchor="middle"
+                      animateDrawing={CONNECTOR_ANIMATION_DURATION}
+                      zIndex={CONNECTOR_Z_INDEX}
+                    />
+                    {/* Right side connector */}
+                    <Xarrow
+                      start={`card-${index}`}
+                      end="avatar-target"
+                      color={CONNECTOR_COLOR}
+                      strokeWidth={CONNECTOR_STROKE_WIDTH}
+                      curveness={0.6}
+                      showHead={false}
+                      path="smooth"
+                      startAnchor="right"
+                      endAnchor="middle"
+                      animateDrawing={CONNECTOR_ANIMATION_DURATION}
+                      zIndex={CONNECTOR_Z_INDEX}
+                    />
+                  </div>
+                ))}
+              </div>
+
+              {/* Mobile Shiny Dots */}
+              <div className="lg:hidden">
+                {shopifyDataCards.map((_, index) => (
+                  <div key={`mobile-dot-${renderKeys[index]}-${index}`}>
+                    {/* Left side shiny dot */}
+                    <Xarrow
+                      start={`card-${index}`}
+                      end="avatar-target"
+                      color={SHINY_DOT_COLOR}
+                      strokeWidth={SHINY_DOT_STROKE_WIDTH}
+                      curveness={0.6}
+                      showHead={false}
+                      path="smooth"
+                      startAnchor="left"
+                      endAnchor="middle"
+                      zIndex={CONNECTOR_Z_INDEX}
+                      animateDrawing={SHINY_DOT_ANIMATION_DURATION}
+                    />
+                    {/* Right side shiny dot */}
+                    <Xarrow
+                      start={`card-${index}`}
+                      end="avatar-target"
+                      color={SHINY_DOT_COLOR}
+                      strokeWidth={SHINY_DOT_STROKE_WIDTH}
+                      curveness={0.6}
+                      showHead={false}
+                      path="smooth"
+                      startAnchor="right"
+                      endAnchor="middle"
+                      zIndex={CONNECTOR_Z_INDEX}
+                      animateDrawing={SHINY_DOT_ANIMATION_DURATION}
+                    />
+                  </div>
                 ))}
               </div>
             </div>
