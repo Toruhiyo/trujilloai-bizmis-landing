@@ -218,8 +218,8 @@ const Setup = () => {
 
                 {/* Avatar Image with Aura */}
                 <div
-                  className="relative flex items-center justify-center"
-                  style={{ height: "48rem", width: "auto" }}
+                  className="relative flex items-center justify-center max-w-full"
+                  style={{ minHeight: "48rem" }}
                 >
                   {/* Animated Aura/Halo - Circular */}
                   <div className="absolute w-96 h-96 bg-gradient-to-r from-orange-400/20 via-orange-500/30 to-amber-400/20 rounded-full blur-xl animate-pulse"></div>
@@ -233,12 +233,13 @@ const Setup = () => {
                   ></div>
 
                   {/* Avatar Images with Heartbeat Effect */}
-                  <div id="avatar-target" className="relative z-10">
+                  <div id="avatar-target" className="relative z-10 max-w-full">
                     {/* Orange avatar always visible behind */}
                     <img
                       src="/images/setup-avatar-orange.png"
                       alt="Bizmis Storemate Orange"
-                      className="h-[48rem] w-auto"
+                      className="h-[48rem] w-auto max-w-full object-contain"
+                      style={{ aspectRatio: "auto" }}
                       onError={(e) =>
                         console.error(
                           "Failed to load setup-avatar-orange.png:",
@@ -250,10 +251,11 @@ const Setup = () => {
                     <img
                       src="/images/setup-avatar.png"
                       alt="Bizmis Storemate"
-                      className="h-[48rem] w-auto absolute top-0 left-0"
+                      className="h-[48rem] w-auto max-w-full object-contain absolute top-0 left-0"
                       style={{
                         opacity: avatarOpacity,
                         transition: `opacity ${HEARTBEAT_FADE_DURATION_MS}ms ease-in-out`,
+                        aspectRatio: "auto",
                       }}
                       onError={(e) =>
                         console.error("Failed to load setup-avatar.png:", e)
