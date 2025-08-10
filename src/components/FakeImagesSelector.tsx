@@ -181,19 +181,19 @@ const FakeImagesSelector: React.FC<FakeImagesSelectorProps> = ({
           {isVertical ? (
             <>
               <div
-                className={`absolute top-0 left-1/2 transform -translate-x-1/2 ${imageSize.width} h-20 bg-gradient-to-b from-transparent via-${fadingColor}/20 to-${fadingColor}/40 z-10`}
+                className={`absolute top-0 left-1/2 transform -translate-x-1/2 ${imageSize.width} h-20 bg-gradient-to-b from-white via-white/60 to-transparent z-10`}
               ></div>
               <div
-                className={`absolute bottom-0 left-1/2 transform -translate-x-1/2 ${imageSize.width} h-20 bg-gradient-to-t from-transparent via-${fadingColor}/20 to-${fadingColor}/40 z-10`}
+                className={`absolute bottom-0 left-1/2 transform -translate-x-1/2 ${imageSize.width} h-20 bg-gradient-to-t from-white via-white/60 to-transparent z-10`}
               ></div>
             </>
           ) : (
             <>
               <div
-                className={`absolute left-0 top-1/2 transform -translate-y-1/2 w-20 ${imageSize.height} bg-gradient-to-r from-transparent via-${fadingColor}/20 to-${fadingColor}/40 z-10`}
+                className={`absolute left-0 top-1/2 transform -translate-y-1/2 w-20 ${imageSize.height} bg-gradient-to-r from-white via-white/60 to-transparent z-10`}
               ></div>
               <div
-                className={`absolute right-0 top-1/2 transform -translate-y-1/2 w-20 ${imageSize.height} bg-gradient-to-l from-transparent via-${fadingColor}/20 to-${fadingColor}/40 z-10`}
+                className={`absolute right-0 top-1/2 transform -translate-y-1/2 w-20 ${imageSize.height} bg-gradient-to-l from-white via-white/60 to-transparent z-10`}
               ></div>
             </>
           )}
