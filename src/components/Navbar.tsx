@@ -37,7 +37,11 @@ const Navbar = () => {
           {/* Logo */}
           <div className="flex items-center">
             <button
-              onClick={() => scrollToTop()}
+              onClick={() => {
+                scrollToTop();
+                // Clear the URL hash to remove section paths like /#setup
+                window.history.pushState({}, "", window.location.pathname);
+              }}
               className={`text-xl sm:text-2xl font-heading font-black transition-colors duration-300 hover:opacity-80 cursor-pointer ${
                 isInHero ? "text-white" : "text-orange-600"
               }`}
