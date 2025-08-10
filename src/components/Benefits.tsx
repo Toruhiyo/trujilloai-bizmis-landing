@@ -85,27 +85,9 @@ const Benefits = () => {
               </div>
             </div>
 
-            {/* Section 3: Main Layout - Scroll-jacked Flow Left, Avatar Right */}
+            {/* Section 3: Main Layout - Direct Scroll-Linked Sales Flow */}
             <div className="relative mb-32">
-              <div className="grid lg:grid-cols-2 gap-12 items-start">
-                {/* Left Side - Direct Scroll-Linked Sales Flow */}
-                <div className="w-full">
-                  <DirectScrollSalesFlow />
-                </div>
-
-                {/* Right Side - Bigger Avatar */}
-                <div className="flex justify-center lg:justify-start items-center">
-                  <div className="sticky top-32">
-                    <div className="relative transform hover:scale-105 transition-transform duration-500">
-                      <img
-                        src="/images/benefit-increase-sales-driven-sales-1.png"
-                        alt="Sales Assistant Avatar"
-                        className="w-80 h-80 lg:w-[420px] lg:h-[420px] object-contain drop-shadow-2xl"
-                      />
-                    </div>
-                  </div>
-                </div>
-              </div>
+              <DirectScrollSalesFlow />
             </div>
 
             {/* Section 4: Customization Feature */}
