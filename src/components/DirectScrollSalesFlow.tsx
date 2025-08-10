@@ -490,7 +490,7 @@ const DirectScrollSalesFlow = () => {
                       Turn interest into a successful purchase
                     </p>
                   </div>
-                  <div className="bg-white/95 backdrop-blur-xl rounded-2xl p-3 shadow-2xl border border-orange-200/50 max-w-2xl w-full">
+                  <div className="bg-white/95 backdrop-blur-xl rounded-2xl p-3 shadow-2xl border border-orange-200/50 max-w-md w-full">
                     <div className="text-center mb-3">
                       <div className="w-12 h-12 bg-gradient-to-br from-green-500 to-green-600 rounded-full flex items-center justify-center mx-auto mb-2">
                         <div className="text-white text-lg">✓</div>
