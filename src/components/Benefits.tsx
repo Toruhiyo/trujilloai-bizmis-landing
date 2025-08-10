@@ -56,6 +56,9 @@ const Benefits = () => {
     React.useState<string>("selected");
   const [selectedHaircutId, setSelectedHaircutId] =
     React.useState<string>("haircut-1");
+  const [selectedVoice, setSelectedVoice] = React.useState<
+    "original" | "cloned"
+  >("original");
 
   // State to control carousel visibility on avatar hover
   const [isAvatarHovered, setIsAvatarHovered] = React.useState(false);
@@ -196,9 +199,9 @@ const Benefits = () => {
             </div>
 
             {/* Section 5: Customization Layout */}
-            <div className="grid lg:grid-cols-2 gap-16 items-center">
+            <div className="grid lg:grid-cols-2 gap-8 md:gap-12 lg:gap-16 items-center">
               {/* Right: Features */}
-              <div className="space-y-32 order-2 lg:order-2">
+              <div className="space-y-6 md:space-y-12 lg:space-y-16 order-2 lg:order-2">
                 <div className="bg-white/70 backdrop-blur-md rounded-3xl p-8 border border-orange-200/30 transform -rotate-1 hover:rotate-0 transition-transform duration-500 shadow-xl">
                   <div className="space-y-6">
                     <div className="flex gap-4">
@@ -238,15 +241,47 @@ const Benefits = () => {
                 </div>
 
                 {/* Voice Cloning Demo */}
-                <div className="relative">
-                  {/* Enhanced demo label */}
+                <div className="relative space-y-3">
                   {/* Enhanced background for audio player section */}
                   <div className="absolute -inset-8 bg-gradient-to-br from-orange-100/20 via-amber-100/15 to-orange-100/10 rounded-3xl blur-2xl opacity-60"></div>
-                  {/* Audio player with maximum visual impact */}
-                  <AudioPlayer
-                    audioUrl="/audio/benefit-1-customization-voice-cloning.mp3"
-                    className="w-full relative z-10"
-                  />
+
+                  {/* Voice Toggle Selector */}
+                  <div className="relative z-10">
+                    <div className="flex bg-white/80 backdrop-blur-sm rounded-xl p-1 border border-orange-200/50 shadow-sm">
+                      <button
+                        onClick={() => setSelectedVoice("original")}
+                        className={`flex-1 px-4 py-2 text-sm font-medium rounded-lg transition-all duration-200 ${
+                          selectedVoice === "original"
+                            ? "bg-orange-500 text-white shadow-md"
+                            : "text-orange-700 hover:bg-orange-50"
+                        }`}
+                      >
+                        Original Voice
+                      </button>
+                      <button
+                        onClick={() => setSelectedVoice("cloned")}
+                        className={`flex-1 px-4 py-2 text-sm font-medium rounded-lg transition-all duration-200 ${
+                          selectedVoice === "cloned"
+                            ? "bg-amber-500 text-white shadow-md"
+                            : "text-amber-700 hover:bg-amber-50"
+                        }`}
+                      >
+                        Cloned Voice
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Single Audio Player */}
+                  <div className="relative z-10">
+                    <AudioPlayer
+                      audioUrl={
+                        selectedVoice === "original"
+                          ? "/audio/benefit-1-customization-voice-cloning-original.mp3"
+                          : "/audio/benefit-1-customization-voice-cloning-cloned.mp3"
+                      }
+                      className="w-full"
+                    />
+                  </div>
                 </div>
               </div>
 
