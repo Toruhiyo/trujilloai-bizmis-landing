@@ -15,8 +15,46 @@ import { PiWaveformBold } from "react-icons/pi";
 import SectionBadge from "./SectionBadge";
 import AudioPlayer from "./AudioPlayer";
 import DirectScrollSalesFlow from "./DirectScrollSalesFlow";
+import FakeImagesSelector, { type ImageOption } from "./FakeImagesSelector";
 
 const Benefits = () => {
+  // Clothing images for the carousel
+  const clothingImages: ImageOption[] = [
+    {
+      id: "1",
+      title: "Casual Outfit",
+      url: "/images/benefit-1-customization-selector-clothing-1.png",
+      alt: "Casual clothing option",
+    },
+    {
+      id: "2",
+      title: "Professional Outfit",
+      url: "/images/benefit-1-customization-selector-clothing-2.png",
+      alt: "Professional clothing option",
+    },
+    {
+      id: "selected",
+      title: "Selected Outfit",
+      url: "/images/benefit-1-customization-selector-clothing-selected.png",
+      alt: "Selected clothing option",
+    },
+    {
+      id: "kimono",
+      title: "Kimono Style",
+      url: "/images/benefit-1-customization-selector-clothing-kimono.png",
+      alt: "Kimono style clothing option",
+    },
+    {
+      id: "florist",
+      title: "Florist Outfit",
+      url: "/images/benefit-1-customization-selector-clothing-florist.png",
+      alt: "Florist clothing option",
+    },
+  ];
+
+  const [selectedClothingId, setSelectedClothingId] =
+    React.useState<string>("selected");
+
   return (
     <div className="space-y-0 bg-gradient-to-b from-background via-orange-50/10 to-background">
       {/* Shared Background Section: Driven Sales & Customization */}
@@ -31,7 +69,7 @@ const Benefits = () => {
           <div className="absolute bottom-0 right-0 w-80 h-80 bg-gradient-to-tl from-orange-300/15 to-yellow-300/10 rounded-full blur-3xl transform translate-x-1/2 translate-y-1/2"></div>
 
           {/* Subtle grid pattern */}
-          <div className="absolute inset-0 opacity-[0.02] bg-[radial-gradient(circle_at_1px_1px,rgba(0,0,0,0.15)_1px,transparent_0)] bg-[length:20px_20px]"></div>
+          <div className="absolute inset-0 opacity-[0.02] bg-gray-100/5"></div>
 
           {/* Floating accent elements */}
           <div className="absolute top-1/4 right-1/4 w-2 h-2 bg-orange-400/30 rounded-full animate-pulse"></div>
@@ -129,25 +167,29 @@ const Benefits = () => {
                         <Brush className="w-6 h-6 text-orange-600" />
                       </div>
                       <div>
-                        <h4 className="font-heading font-semibold text-foreground mb-1">
+                        <h3 className="text-xl font-heading font-bold text-foreground">
                           Personal Avatar
-                        </h4>
-                        <p className="text-muted-foreground font-body text-sm">
+                        </h3>
+                        <p className="text-muted-foreground font-body">
                           Creating genuine connections by making your sales
                           representative sound and look like you.
                         </p>
                       </div>
                     </div>
+                  </div>
+                </div>
 
+                <div className="bg-white/70 backdrop-blur-md rounded-3xl p-8 border border-orange-200/30 transform rotate-1 hover:rotate-0 transition-transform duration-500 shadow-xl">
+                  <div className="space-y-6">
                     <div className="flex gap-4">
                       <div className="w-12 h-12 bg-amber-100 rounded-xl flex items-center justify-center flex-shrink-0 border border-orange-200/50">
                         <PiWaveformBold className="w-6 h-6 text-orange-600" />
                       </div>
                       <div>
-                        <h4 className="font-heading font-semibold text-foreground mb-1">
+                        <h3 className="text-xl font-heading font-bold text-foreground">
                           Voice Cloning
-                        </h4>
-                        <p className="text-muted-foreground font-body text-sm">
+                        </h3>
+                        <p className="text-muted-foreground font-body">
                           Authentic customer interactions through replication of
                           your unique speaking style and personality.
                         </p>
@@ -156,11 +198,8 @@ const Benefits = () => {
                   </div>
                 </div>
 
-                {/* Audio Player Demo */}
-                <div className="w-full flex flex-col space-y-6 transform rotate-1 hover:rotate-0 transition-transform duration-500 relative">
-                  <div className="w-fit text-sm font-bold text-orange-700 bg-gradient-to-r from-white via-orange-50 to-white backdrop-blur-sm px-4 py-2 rounded-full border-2 border-orange-300/50 shadow-lg self-center">
-                    Voice Cloning Demo
-                  </div>
+                {/* Voice Cloning Demo */}
+                <div className="relative">
                   {/* Enhanced demo label */}
                   {/* Enhanced background for audio player section */}
                   <div className="absolute -inset-8 bg-gradient-to-br from-orange-100/20 via-amber-100/15 to-orange-100/10 rounded-3xl blur-2xl opacity-60"></div>
@@ -174,6 +213,23 @@ const Benefits = () => {
 
               {/* Left: Customization Image */}
               <div className="relative order-1 lg:order-1">
+                {/* Auto-Rotating Vertical Clothing Carousel */}
+                <div className="absolute -left-48 top-1/2 transform -translate-y-1/2 z-20">
+                  <FakeImagesSelector
+                    images={clothingImages}
+                    selectedId={selectedClothingId}
+                    direction="vertical"
+                    numberOfDuplicates={5}
+                    autoRotateInterval={4000}
+                    onImageSelect={setSelectedClothingId}
+                    showFading={true}
+                    fadingColor="white"
+                    draggable={true}
+                    showArrows={false}
+                    selectable={false}
+                  />
+                </div>
+
                 <div className="group">
                   <div className="relative">
                     {/* Concentric flower-shaped outlines - Chupa Chups style effect */}
@@ -188,7 +244,7 @@ const Benefits = () => {
                       <div className="absolute w-4/5 h-4/5 border-2 border-orange-500/40 rounded-full scale-0 group-hover:scale-100 transition-all duration-700 ease-out group-hover:delay-100 delay-300 shadow-[0_0_15px_rgba(249,115,22,0.4)] group-hover:shadow-[0_0_25px_rgba(249,115,22,0.5)]"></div>
 
                       {/* Inner flower outline with glow */}
-                      <div className="absolute w-3/5 h-3/5 border-2 border-orange-600/50 rounded-full scale-0 group-hover:scale-100 transition-all duration-700 ease-out group-hover:delay-200 delay-400 shadow-[0_0_10px_rgba(234,88,12,0.5)] group-hover:shadow-[0_0_20px_rgba(234,88,12,0.6)]"></div>
+                      <div className="absolute w-3/5 h-3/5 border-2 border-orange-600/50 rounded-full scale-0 group-hover:scale-100 transition-all duration-700 ease-out group-hover:delay-200 delay-400 shadow-[0_0_10px_rgba(234,88,12,0.5)] group-hover:shadow-[0_0_25px_rgba(234,88,12,0.6)]"></div>
                     </div>
 
                     {/* Default image */}
@@ -252,27 +308,50 @@ const Benefits = () => {
                         <Heart className="w-6 h-6 text-orange-600" />
                       </div>
                       <div>
-                        <h4 className="font-heading font-semibold text-foreground mb-1">
-                          Warm, conversational replies
-                        </h4>
+                        <h3 className="text-lg font-heading font-semibold text-foreground mb-2">
+                          Empathetic Support
+                        </h3>
                         <p className="text-muted-foreground font-body text-sm">
-                          Responds with genuine warmth and understanding, making
-                          customers feel heard and valued.
+                          AI that understands customer emotions and responds
+                          with genuine care and understanding.
                         </p>
                       </div>
                     </div>
+                  </div>
+                </div>
 
+                <div className="bg-white/80 backdrop-blur-sm rounded-3xl p-8 border border-orange-200/30 transform -rotate-1 hover:rotate-0 transition-transform duration-500 shadow-xl">
+                  <div className="space-y-6">
                     <div className="flex gap-4">
                       <div className="w-12 h-12 bg-amber-100 rounded-xl flex items-center justify-center flex-shrink-0 border border-orange-200/50">
                         <Shield className="w-6 h-6 text-orange-600" />
                       </div>
                       <div>
-                        <h4 className="font-heading font-semibold text-foreground mb-1">
-                          Reassurance during checkout
-                        </h4>
+                        <h3 className="text-lg font-heading font-semibold text-foreground mb-2">
+                          Problem Resolution
+                        </h3>
                         <p className="text-muted-foreground font-body text-sm">
-                          Guides customers through concerns and decision-making
-                          with patience and expertise.
+                          Quick, accurate solutions that turn frustrated
+                          customers into satisfied advocates.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="bg-white/80 backdrop-blur-sm rounded-3xl p-8 border border-orange-200/30 transform rotate-2 hover:rotate-0 transition-transform duration-500 shadow-xl">
+                  <div className="space-y-6">
+                    <div className="flex gap-4">
+                      <div className="w-12 h-12 bg-amber-100 rounded-xl flex items-center justify-center flex-shrink-0 border border-orange-200/50">
+                        <Tag className="w-6 h-6 text-orange-600" />
+                      </div>
+                      <div>
+                        <h3 className="text-lg font-heading font-semibold text-foreground mb-2">
+                          Sales Opportunities
+                        </h3>
+                        <p className="text-muted-foreground font-body text-sm">
+                          Seamlessly identify and capitalize on upsell and
+                          cross-sell opportunities during support interactions.
                         </p>
                       </div>
                     </div>
@@ -282,15 +361,17 @@ const Benefits = () => {
 
               {/* Right: Support Image */}
               <div className="relative">
-                <div className="bg-gradient-to-br from-orange-100/60 to-amber-100/40 rounded-3xl aspect-[4/3] flex items-center justify-center transform -rotate-1 hover:rotate-0 transition-transform duration-500 border border-orange-200/30 shadow-2xl">
-                  <div className="text-center space-y-6 p-8">
+                <div className="bg-gradient-to-br from-orange-100/40 to-amber-100/50 rounded-3xl aspect-[4/3] flex items-center justify-center border-2 border-orange-200/50 transform rotate-2 hover:rotate-0 transition-transform duration-500 shadow-2xl scale-110">
+                  <div className="text-center space-y-6 p-8 transform -rotate-2">
                     <MessageSquare className="w-40 h-40 text-orange-600 mx-auto" />
                     <div className="space-y-3">
                       <div className="text-orange-800 font-heading font-bold text-2xl">
-                        Support Hub
+                        Support Dashboard
                       </div>
-                      <div className="text-orange-600/70 text-base max-w-sm mx-auto">
-                        [Customer support conversation interface]
+                      <div className="text-orange-600/70 text-base max-w-md mx-auto">
+                        [Image: Customer support interface showing chat
+                        conversations, customer satisfaction metrics, and sales
+                        opportunity alerts]
                       </div>
                     </div>
                   </div>
@@ -301,16 +382,15 @@ const Benefits = () => {
         </div>
       </section>
 
-      {/* Benefit 3: Store Insights - Chaotic Asymmetric Layout */}
+      {/* Benefit 3: Store Insights */}
       <section
         id="benefit-3"
-        className="py-32 bg-gradient-to-tr from-orange-50/15 via-background to-amber-50/20 relative overflow-hidden"
+        className="relative py-32 bg-gradient-to-r from-amber-50/20 to-orange-50/20 overflow-hidden"
       >
-        {/* Chaotic Background Elements */}
-        <div className="absolute inset-0 opacity-10">
-          <div className="absolute top-20 right-20 w-64 h-64 bg-orange-300/20 rounded-full blur-3xl"></div>
-          <div className="absolute bottom-10 left-10 w-80 h-80 bg-amber-300/20 rounded-full blur-3xl"></div>
-          <div className="absolute top-1/3 left-1/3 w-32 h-32 bg-orange-400/15 rounded-full blur-2xl"></div>
+        {/* Background Elements */}
+        <div className="absolute inset-0">
+          <div className="absolute top-20 left-20 w-64 h-64 bg-amber-200/10 rounded-full blur-3xl"></div>
+          <div className="absolute bottom-10 right-10 w-80 h-80 bg-orange-200/10 rounded-full blur-3xl"></div>
         </div>
 
         <div className="container mx-auto px-6 relative z-10">
