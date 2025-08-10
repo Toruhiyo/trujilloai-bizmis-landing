@@ -54,6 +54,45 @@ const Benefits = () => {
 
   const [selectedClothingId, setSelectedClothingId] =
     React.useState<string>("selected");
+  const [selectedHaircutId, setSelectedHaircutId] =
+    React.useState<string>("haircut-1");
+
+  // State to control carousel visibility on avatar hover
+  const [isAvatarHovered, setIsAvatarHovered] = React.useState(false);
+
+  // Haircut images for the horizontal carousel
+  const haircutImages: ImageOption[] = [
+    {
+      id: "haircut-1",
+      title: "Haircut Style 1",
+      url: "/images/benefit-1-customization-selector-haircut-1.png",
+      alt: "Haircut style option 1",
+    },
+    {
+      id: "haircut-2",
+      title: "Haircut Style 2",
+      url: "/images/benefit-1-customization-selector-haircut-2.png",
+      alt: "Haircut style option 2",
+    },
+    {
+      id: "haircut-3",
+      title: "Haircut Style 3",
+      url: "/images/benefit-1-customization-selector-haircut-3.png",
+      alt: "Haircut style option 3",
+    },
+    {
+      id: "haircut-4",
+      title: "Haircut Style 4",
+      url: "/images/benefit-1-customization-selector-haircut-4.png",
+      alt: "Haircut style option 4",
+    },
+    {
+      id: "haircut-5",
+      title: "Haircut Style 5",
+      url: "/images/benefit-1-customization-selector-haircut-5.png",
+      alt: "Haircut style option 5",
+    },
+  ];
 
   return (
     <div className="space-y-0 bg-gradient-to-b from-background via-orange-50/10 to-background">
@@ -214,23 +253,50 @@ const Benefits = () => {
               {/* Left: Customization Image */}
               <div className="relative order-1 lg:order-1">
                 {/* Auto-Rotating Vertical Clothing Carousel */}
-                <div className="absolute -left-48 top-1/2 transform -translate-y-1/2 z-20">
-                  <FakeImagesSelector
-                    images={clothingImages}
-                    selectedId={selectedClothingId}
-                    direction="vertical"
-                    numberOfDuplicates={5}
-                    autoRotateInterval={4000}
-                    onImageSelect={setSelectedClothingId}
-                    showFading={true}
-                    fadingColor="white"
-                    draggable={true}
-                    showArrows={false}
-                    selectable={false}
-                  />
-                </div>
+                {!isAvatarHovered && (
+                  <div className="absolute -left-32 top-1/2 transform -translate-y-1/2 z-20">
+                    <FakeImagesSelector
+                      images={clothingImages}
+                      selectedId={selectedClothingId}
+                      orientation="vertical"
+                      direction="forward"
+                      numberOfDuplicates={10}
+                      autoRotateInterval={4000}
+                      onImageSelect={setSelectedClothingId}
+                      showFading={true}
+                      fadingColor="white"
+                      draggable={false}
+                      showArrows={false}
+                      selectable={false}
+                    />
+                  </div>
+                )}
 
-                <div className="group">
+                {/* Auto-Rotating Vertical Haircut Carousel */}
+                {!isAvatarHovered && (
+                  <div className="absolute -right-32 top-1/2 transform -translate-y-1/2 z-20">
+                    <FakeImagesSelector
+                      images={haircutImages}
+                      selectedId={selectedHaircutId}
+                      orientation="vertical"
+                      direction="reverse"
+                      numberOfDuplicates={10}
+                      autoRotateInterval={4000}
+                      onImageSelect={setSelectedHaircutId}
+                      showFading={true}
+                      fadingColor="white"
+                      draggable={false}
+                      showArrows={false}
+                      selectable={false}
+                    />
+                  </div>
+                )}
+
+                <div
+                  className="group"
+                  onMouseEnter={() => setIsAvatarHovered(true)}
+                  onMouseLeave={() => setIsAvatarHovered(false)}
+                >
                   <div className="relative">
                     {/* Concentric flower-shaped outlines - Chupa Chups style effect */}
                     <div className="absolute inset-0 flex items-center justify-center">
@@ -251,13 +317,13 @@ const Benefits = () => {
                     <img
                       src="/images/benefit-1-customization-1.png"
                       alt="Personalization Hub - Voice & Appearance Customization"
-                      className="relative z-10 w-full max-w-md mx-auto object-contain drop-shadow-2xl transition-opacity duration-500 group-hover:opacity-0"
+                      className="relative z-30 w-full max-w-md mx-auto object-contain drop-shadow-2xl transition-opacity duration-500 group-hover:opacity-0"
                     />
                     {/* Hover image */}
                     <img
                       src="/images/benefit-1-customization-2.png"
                       alt="Personalization Hub - Voice & Appearance Customization (Active)"
-                      className="absolute inset-0 z-10 w-full max-w-md mx-auto object-contain drop-shadow-2xl opacity-0 transition-opacity duration-500 group-hover:opacity-100"
+                      className="absolute inset-0 z-30 w-full max-w-md mx-auto object-contain drop-shadow-2xl opacity-0 transition-opacity duration-500 group-hover:opacity-100"
                     />
                   </div>
                 </div>

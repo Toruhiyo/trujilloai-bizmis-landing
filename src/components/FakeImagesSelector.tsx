@@ -16,7 +16,8 @@ export interface ImageOption {
 export interface FakeImagesSelectorProps {
   images: ImageOption[];
   selectedId?: string;
-  direction?: "vertical" | "horizontal";
+  orientation?: "vertical" | "horizontal";
+  direction?: "forward" | "reverse";
   numberOfDuplicates?: number;
   autoRotateInterval?: number;
   containerSize?: {
@@ -40,16 +41,17 @@ export interface FakeImagesSelectorProps {
 const FakeImagesSelector: React.FC<FakeImagesSelectorProps> = ({
   images,
   selectedId,
-  direction = "vertical",
+  orientation = "vertical",
+  direction = "forward",
   numberOfDuplicates = 10,
   autoRotateInterval = 4000,
   containerSize = {
     width: "w-[28rem]",
-    height: "h-[28rem]",
+    height: "h-[36rem]",
   },
   imageSize = {
-    width: "w-32",
-    height: "h-32",
+    width: "w-28",
+    height: "h-28",
   },
   containerClasses = "",
   imageClasses = "",
@@ -67,34 +69,51 @@ const FakeImagesSelector: React.FC<FakeImagesSelectorProps> = ({
   const [currentSlide, setCurrentSlide] = React.useState(images.length); // Start from middle copy
   const [isDragging, setIsDragging] = React.useState(false);
 
+  const isVertical = orientation === "vertical";
+  const isReverse = direction === "reverse";
+
   React.useEffect(() => {
     if (isDragging || autoRotateInterval <= 0) return; // Don't auto-rotate while dragging or if disabled
 
     const interval = setInterval(() => {
-      setCurrentSlide((prev) => prev + 1);
+      setCurrentSlide((prev) => (isReverse ? prev - 1 : prev + 1));
     }, autoRotateInterval);
 
     return () => clearInterval(interval);
-  }, [isDragging, autoRotateInterval]);
+  }, [isDragging, autoRotateInterval, isReverse]);
 
   // Seamless reset for infinite loop
   React.useEffect(() => {
-    // When we reach the end of the second copy, reset to the beginning of the second copy
-    if (currentSlide >= images.length * 2) {
-      setTimeout(() => {
-        setCurrentSlide(images.length);
-      }, 0);
+    if (isReverse) {
+      // Reverse direction: when we go below the second copy, reset to the end of the second copy
+      if (currentSlide < images.length) {
+        setTimeout(() => {
+          setCurrentSlide(images.length * 2 - 1);
+        }, 0);
+      }
+      // When we reach the end of the second copy, reset to the beginning of the second copy
+      if (currentSlide >= images.length * 2) {
+        setTimeout(() => {
+          setCurrentSlide(images.length);
+        }, 0);
+      }
+    } else {
+      // Forward direction: when we reach the end of the second copy, reset to the beginning of the second copy
+      if (currentSlide >= images.length * 2) {
+        setTimeout(() => {
+          setCurrentSlide(images.length);
+        }, 0);
+      }
+      // If we go below the second copy, reset to the end of the second copy
+      if (currentSlide < images.length) {
+        setTimeout(() => {
+          setCurrentSlide(images.length * 2 - 1);
+        }, 0);
+      }
     }
-    // If we go below the second copy, reset to the end of the second copy
-    if (currentSlide < images.length) {
-      setTimeout(() => {
-        setCurrentSlide(images.length * 2 - 1);
-      }, 0);
-    }
-  }, [currentSlide, images.length]);
+  }, [currentSlide, images.length, isReverse]);
 
-  const isVertical = direction === "vertical";
-  const slideSize = isVertical ? 144 : 144; // Size in pixels for each slide (32 * 4 + spacing = 144px)
+  const slideSize = isVertical ? 144 : 144; // Size in pixels for each slide (36 * 4 + spacing = 144px)
 
   const handleMouseDown = (e: React.MouseEvent) => {
     if (!draggable) return;
@@ -138,7 +157,7 @@ const FakeImagesSelector: React.FC<FakeImagesSelectorProps> = ({
   const getImageClasses = (image: ImageOption) => {
     const isSelected = selectedId === image.id;
     const sizeClasses = isSelected
-      ? "w-36 h-36" // Bigger size for selected image
+      ? "w-32 h-32" // Bigger size for selected image
       : `${imageSize.width} ${imageSize.height}`;
 
     const baseClasses = `${sizeClasses} bg-white/90 rounded-xl shadow-lg border flex items-center justify-center transition-all duration-300 ${
@@ -162,19 +181,19 @@ const FakeImagesSelector: React.FC<FakeImagesSelectorProps> = ({
           {isVertical ? (
             <>
               <div
-                className={`absolute top-0 left-1/2 transform -translate-x-1/2 ${imageSize.width} h-16 bg-gradient-to-b from-${fadingColor}/80 to-transparent z-10`}
+                className={`absolute top-0 left-1/2 transform -translate-x-1/2 ${imageSize.width} h-20 bg-gradient-to-b from-transparent via-${fadingColor}/20 to-${fadingColor}/40 z-10`}
               ></div>
               <div
-                className={`absolute bottom-0 left-1/2 transform -translate-x-1/2 ${imageSize.width} h-16 bg-gradient-to-t from-${fadingColor}/80 to-transparent z-10`}
+                className={`absolute bottom-0 left-1/2 transform -translate-x-1/2 ${imageSize.width} h-20 bg-gradient-to-t from-transparent via-${fadingColor}/20 to-${fadingColor}/40 z-10`}
               ></div>
             </>
           ) : (
             <>
               <div
-                className={`absolute left-0 top-1/2 transform -translate-y-1/2 w-16 ${imageSize.height} bg-gradient-to-r from-${fadingColor}/80 to-transparent z-10`}
+                className={`absolute left-0 top-1/2 transform -translate-y-1/2 w-20 ${imageSize.height} bg-gradient-to-r from-transparent via-${fadingColor}/20 to-${fadingColor}/40 z-10`}
               ></div>
               <div
-                className={`absolute right-0 top-1/2 transform -translate-y-1/2 w-16 ${imageSize.height} bg-gradient-to-l from-${fadingColor}/80 to-transparent z-10`}
+                className={`absolute right-0 top-1/2 transform -translate-y-1/2 w-20 ${imageSize.height} bg-gradient-to-l from-transparent via-${fadingColor}/20 to-${fadingColor}/40 z-10`}
               ></div>
             </>
           )}
@@ -244,7 +263,7 @@ const FakeImagesSelector: React.FC<FakeImagesSelectorProps> = ({
                 src={image.url}
                 alt={image.alt || image.title}
                 className={`object-contain ${
-                  selectedId === image.id ? "w-32 h-32" : "w-28 h-28"
+                  selectedId === image.id ? "w-28 h-28" : "w-24 h-24"
                 }`}
               />
             </div>
