@@ -7,24 +7,15 @@ const Hero = () => {
   return (
     <section
       id="hero"
-      className="relative min-h-screen studio-lighting-base flex flex-col"
+      className="relative min-h-screen studio-lighting-base flex flex-col overflow-hidden"
     >
-      {/* 3D Studio Lighting System - Allowing overflow */}
-      <div className="absolute inset-0 studio-radial-light scale-125"></div>
-      <div className="absolute inset-0 studio-horizon-shadow scale-125"></div>
-      <div className="absolute inset-0 studio-horizon-meniscus-left scale-125"></div>
-      <div className="absolute inset-0 studio-horizon-meniscus-right scale-125"></div>
-      <div className="absolute inset-0 studio-floor-shadow scale-125"></div>
-      <div className="absolute inset-0 studio-ambient-overlay scale-125"></div>
-
-      {/* Additional overflow energy elements */}
-      <div className="absolute inset-0 pointer-events-none">
-        {/* Extended floating elements beyond container */}
-        <div className="absolute -top-16 -right-20 w-32 h-32 bg-white/15 rounded-full blur-3xl animate-pulse"></div>
-        <div className="absolute -bottom-20 -left-24 w-40 h-40 bg-white/10 rounded-full blur-3xl animate-pulse delay-500"></div>
-        <div className="absolute top-1/3 -left-16 w-24 h-24 bg-orange-200/20 rounded-full blur-2xl animate-pulse delay-300"></div>
-        <div className="absolute bottom-1/3 -right-12 w-20 h-20 bg-amber-200/15 rounded-full blur-2xl animate-pulse delay-700"></div>
-      </div>
+      {/* 3D Studio Lighting System */}
+      <div className="absolute inset-0 studio-radial-light" />
+      <div className="absolute inset-0 studio-horizon-shadow" />
+      <div className="absolute inset-0 studio-horizon-meniscus-left" />
+      <div className="absolute inset-0 studio-horizon-meniscus-right" />
+      <div className="absolute inset-0 studio-floor-shadow" />
+      <div className="absolute inset-0 studio-ambient-overlay" />
 
       {/* Navbar positioned within hero */}
       <Navbar />

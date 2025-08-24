@@ -145,16 +145,8 @@ const Setup = () => {
 
       <section
         id="setup"
-        className="py-24 bg-gradient-to-r from-orange-50/5 via-background to-amber-50/8 border-t border-orange-200/20 relative"
+        className="py-24 bg-gradient-to-r from-orange-50/5 via-background to-amber-50/8 border-t border-orange-200/20"
       >
-        {/* Background energy elements - Allowing overflow */}
-        <div className="absolute inset-0 pointer-events-none">
-          <div className="absolute top-1/4 -left-16 w-28 h-28 bg-gradient-to-br from-orange-200/20 to-amber-200/15 rounded-full blur-2xl"></div>
-          <div className="absolute bottom-1/3 -right-20 w-32 h-32 bg-gradient-to-tl from-yellow-200/18 to-orange-200/12 rounded-full blur-2xl"></div>
-          <div className="absolute top-2/3 -left-12 w-24 h-24 bg-gradient-to-br from-amber-200/15 to-orange-200/10 rounded-full blur-xl"></div>
-          <div className="absolute bottom-1/4 -right-16 w-20 h-20 bg-gradient-to-tl from-orange-200/12 to-yellow-200/8 rounded-full blur-xl"></div>
-        </div>
-
         <div className="container mx-auto px-6">
           <div className="max-w-7xl mx-auto">
             {/* Header */}
@@ -172,7 +164,7 @@ const Setup = () => {
             </div>
 
             {/* Data Flow Visualization */}
-            <div className="relative mb-16 lg:overflow-visible">
+            <div className="relative mb-16 overflow-hidden lg:overflow-visible">
               <div className="flex flex-col lg:flex-row items-center justify-between gap-16 lg:gap-24">
                 {/* Shopify Data Cards - Stacked Vertically */}
                 <div className="flex-1 max-w-md">
@@ -194,7 +186,7 @@ const Setup = () => {
                       <div
                         key={index}
                         id={`card-${index}`}
-                        className="relative bg-gradient-to-br from-orange-100/30 to-amber-100/40 backdrop-blur-sm rounded-2xl p-6 border border-orange-200/30 hover:scale-105 transition-all duration-300 group"
+                        className="relative bg-gradient-to-br from-orange-100/30 to-amber-100/40 backdrop-blur-sm rounded-2xl p-6 border border-orange-200/30 hover:scale-105 transition-all duration-300 group overflow-hidden"
                         style={{
                           boxShadow: "0 8px 32px rgba(0, 0, 0, 0.1)",
                           backdropFilter: "blur(10px)",
@@ -226,7 +218,7 @@ const Setup = () => {
 
                 {/* Avatar Image with Aura */}
                 <div
-                  className="relative flex items-center justify-center max-w-full"
+                  className="relative flex items-center justify-center max-w-full overflow-hidden"
                   style={{ minHeight: "clamp(24rem, 50vh, 48rem)" }}
                 >
                   {/* Animated Aura/Halo - Circular */}
@@ -407,7 +399,7 @@ const Setup = () => {
               ].map((card, index) => (
                 <div key={index} className="group">
                   <div
-                    className="relative bg-gradient-to-br from-orange-100/40 to-amber-100/30 backdrop-blur-sm rounded-3xl p-8 border border-orange-200/30 hover:border-orange-300/50 transition-all duration-500 hover:scale-105 shadow-lg hover:shadow-xl"
+                    className="relative bg-gradient-to-br from-orange-100/40 to-amber-100/30 backdrop-blur-sm rounded-3xl p-8 border border-orange-200/30 hover:border-orange-300/50 transition-all duration-500 hover:scale-105 shadow-lg hover:shadow-xl overflow-hidden"
                     style={{
                       animationDelay: `${index * 200}ms`,
                     }}

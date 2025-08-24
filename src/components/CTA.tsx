@@ -3,17 +3,12 @@ import { ArrowRight, Star } from "lucide-react";
 
 const CTA = () => {
   return (
-    <section className="py-20 bg-gradient-warm relative">
-      {/* Background decorations - Allowing overflow */}
-      <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute top-10 -left-16 w-20 h-20 bg-white/10 rounded-full blur-xl"></div>
-        <div className="absolute bottom-20 -right-20 w-32 h-32 bg-white/10 rounded-full blur-2xl"></div>
-        <div className="absolute top-1/2 -left-12 w-16 h-16 bg-white/5 rounded-full blur-lg"></div>
-
-        {/* Additional overflow elements */}
-        <div className="absolute top-1/4 -right-16 w-24 h-24 bg-white/8 rounded-full blur-xl"></div>
-        <div className="absolute bottom-1/3 -left-8 w-28 h-28 bg-white/6 rounded-full blur-2xl"></div>
-        <div className="absolute top-2/3 -right-12 w-20 h-20 bg-white/7 rounded-full blur-lg"></div>
+    <section className="py-20 bg-gradient-warm relative overflow-hidden">
+      {/* Background decorations */}
+      <div className="absolute inset-0">
+        <div className="absolute top-10 left-10 w-20 h-20 bg-white/10 rounded-full blur-xl" />
+        <div className="absolute bottom-20 right-20 w-32 h-32 bg-white/10 rounded-full blur-2xl" />
+        <div className="absolute top-1/2 left-1/4 w-16 h-16 bg-white/5 rounded-full blur-lg" />
       </div>
 
       <div className="container mx-auto px-6 relative z-10">
