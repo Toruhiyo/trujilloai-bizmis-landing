@@ -231,7 +231,7 @@ const Setup = () => {
                 >
                   {/* Animated Aura/Halo - Circular - Positioned absolutely outside container */}
                   <div
-                    className="absolute w-40 h-40 sm:w-56 h-56 md:w-72 h-72 lg:w-80 h-80 bg-gradient-to-r from-orange-400/20 via-orange-500/30 to-amber-400/20 rounded-full blur-xl animate-pulse pointer-events-none"
+                    className="absolute w-40 h-40 sm:w-56 h-56 md:w-72 h-72 lg:w-80 h-80 bg-gradient-to-r from-orange-300/40 via-orange-400/60 to-amber-300/50 rounded-full blur-xl animate-pulse pointer-events-none"
                     style={{
                       zIndex: 1,
                       left: "50%",
@@ -239,10 +239,14 @@ const Setup = () => {
                       transform: "translate(-50%, -50%)",
                       margin: "0",
                       position: "absolute",
+                      boxShadow:
+                        "0 0 40px rgba(251, 146, 60, 0.3), 0 0 80px rgba(251, 146, 60, 0.2), inset 0 0 20px rgba(255, 255, 255, 0.1)",
+                      opacity: avatarOpacity,
+                      transition: `opacity ${HEARTBEAT_FADE_DURATION_MS}ms ease-in-out`,
                     }}
                   ></div>
                   <div
-                    className="absolute w-32 h-32 sm:w-48 h-48 md:w-64 h-64 lg:w-72 h-72 bg-gradient-to-r from-orange-300/15 via-orange-400/25 to-amber-300/15 rounded-full blur-lg animate-ping pointer-events-none"
+                    className="absolute w-32 h-32 sm:w-48 h-48 md:w-64 h-64 lg:w-72 h-72 bg-gradient-to-r from-orange-200/35 via-orange-300/55 to-amber-200/45 rounded-full blur-lg animate-ping pointer-events-none"
                     style={{
                       animationDuration: "3s",
                       zIndex: 1,
@@ -251,10 +255,14 @@ const Setup = () => {
                       transform: "translate(-50%, -50%)",
                       margin: "0",
                       position: "absolute",
+                      boxShadow:
+                        "0 0 30px rgba(251, 146, 60, 0.4), 0 0 60px rgba(251, 146, 60, 0.25), inset 0 0 15px rgba(255, 255, 255, 0.15)",
+                      opacity: avatarOpacity,
+                      transition: `opacity ${HEARTBEAT_FADE_DURATION_MS}ms ease-in-out`,
                     }}
                   ></div>
                   <div
-                    className="absolute w-24 h-24 sm:w-40 h-40 md:w-56 h-56 lg:w-64 h-64 bg-gradient-to-r from-orange-200/10 via-orange-300/20 to-amber-200/10 rounded-full blur-md animate-pulse pointer-events-none"
+                    className="absolute w-24 h-24 sm:w-40 h-40 md:w-56 h-56 lg:w-64 h-64 bg-gradient-to-r from-orange-100/30 via-orange-200/50 to-amber-100/40 rounded-full blur-md animate-pulse pointer-events-none"
                     style={{
                       animationDuration: "2s",
                       zIndex: 1,
@@ -263,6 +271,10 @@ const Setup = () => {
                       transform: "translate(-50%, -50%)",
                       margin: "0",
                       position: "absolute",
+                      boxShadow:
+                        "0 0 20px rgba(251, 146, 60, 0.5), 0 0 40px rgba(251, 146, 60, 0.3), inset 0 0 10px rgba(255, 255, 255, 0.2)",
+                      opacity: avatarOpacity,
+                      transition: `opacity ${HEARTBEAT_FADE_DURATION_MS}ms ease-in-out`,
                     }}
                   ></div>
 
