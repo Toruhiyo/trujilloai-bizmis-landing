@@ -390,10 +390,10 @@ const Benefits = () => {
             <div className="text-center mb-20">
               <SectionBadge icon={MessageSquare} text="Customer Support" />
               <div className="relative">
-                <div className="absolute -left-16 -top-16 text-8xl lg:text-9xl font-bold text-orange-600/25 transform rotate-6 select-none">
+                <div className="absolute -right-16 -top-16 text-8xl lg:text-9xl font-bold text-orange-600/25 transform rotate-12 select-none">
                   #2
                 </div>
-                <h2 className="text-4xl lg:text-5xl font-heading font-bold text-foreground mb-6 relative z-10 ml-14">
+                <h2 className="text-4xl lg:text-5xl font-heading font-bold text-foreground mb-6 relative z-10 mr-14">
                   Support That Sells
                 </h2>
               </div>
