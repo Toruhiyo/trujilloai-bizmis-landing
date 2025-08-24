@@ -462,21 +462,11 @@ const Benefits = () => {
 
               {/* Right: Support Image */}
               <div className="relative">
-                <div className="bg-gradient-to-br from-orange-100/40 to-amber-100/50 rounded-3xl aspect-[4/3] flex items-center justify-center border-2 border-orange-200/50 transform rotate-2 hover:rotate-0 transition-transform duration-500 shadow-2xl scale-110">
-                  <div className="text-center space-y-6 p-8 transform -rotate-2">
-                    <MessageSquare className="w-40 h-40 text-orange-600 mx-auto" />
-                    <div className="space-y-3">
-                      <div className="text-orange-800 font-heading font-bold text-2xl">
-                        Support Dashboard
-                      </div>
-                      <div className="text-orange-600/70 text-base max-w-md mx-auto">
-                        [Image: Customer support interface showing chat
-                        conversations, customer satisfaction metrics, and sales
-                        opportunity alerts]
-                      </div>
-                    </div>
-                  </div>
-                </div>
+                <img
+                  src="/images/benefit-2-customer-support.png"
+                  alt="Customer support interface showing chat conversations, customer satisfaction metrics, and sales opportunity alerts"
+                  className="w-full max-w-lg mx-auto object-contain drop-shadow-2xl"
+                />
               </div>
             </div>
           </div>
