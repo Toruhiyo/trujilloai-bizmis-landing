@@ -16,6 +16,7 @@ import SectionBadge from "./SectionBadge";
 import AudioPlayer from "./AudioPlayer";
 import DirectScrollSalesFlow from "./DirectScrollSalesFlow";
 import FakeImagesSelector, { type ImageOption } from "./FakeImagesSelector";
+import ReviewSatisfactionDashboard from "./ReviewSatisfactionDashboard";
 
 const Benefits = () => {
   // Clothing images for the carousel
@@ -368,21 +369,26 @@ const Benefits = () => {
         </div>
       </section>
 
-      {/* Benefit 2: Customer Support - Split Diagonal */}
+      {/* Benefit 2: Customer Support - Enhanced Layout */}
       <section
         id="benefit-2"
-        className="relative py-32 bg-gradient-to-r from-orange-50/20 to-amber-50/20 overflow-hidden"
+        className="relative py-32 bg-gradient-to-r from-orange-50/20 to-amber-50/20 overflow-visible"
       >
-        {/* Background Elements */}
+        {/* Background Elements - Enhanced for Dashboard */}
         <div className="absolute inset-0">
-          <div className="absolute top-20 right-20 w-64 h-64 bg-orange-200/10 rounded-full blur-3xl"></div>
-          <div className="absolute bottom-10 left-10 w-80 h-80 bg-amber-200/10 rounded-full blur-3xl"></div>
+          <div className="absolute top-20 right-20 w-64 h-64 bg-orange-200/10 rounded-full blur-3xl animate-pulse"></div>
+          <div className="absolute bottom-10 left-10 w-80 h-80 bg-amber-200/10 rounded-full blur-3xl animate-pulse"></div>
+          {/* Success celebration ambient lighting */}
+          <div className="absolute top-1/2 left-1/2 w-[600px] h-[600px] bg-gradient-to-r from-orange-100/10 to-amber-100/10 rounded-full blur-3xl transform -translate-x-1/2 -translate-y-1/2 animate-pulse"></div>
+          {/* Flowing light streams */}
+          <div className="absolute top-1/4 left-0 w-96 h-2 bg-gradient-to-r from-transparent via-orange-200/20 to-transparent blur-sm animate-pulse"></div>
+          <div className="absolute bottom-1/4 right-0 w-96 h-2 bg-gradient-to-l from-transparent via-amber-200/20 to-transparent blur-sm animate-pulse"></div>
         </div>
 
-        <div className="container mx-auto px-6 relative z-10">
-          <div className="max-w-7xl mx-auto">
+        <div className="container mx-auto px-8 relative z-10">
+          <div className="max-w-8xl mx-auto">
             {/* Header */}
-            <div className="text-center mb-20">
+            <div className="text-center mb-8">
               <SectionBadge icon={MessageSquare} text="Customer Support" />
               <div className="relative">
                 <div className="absolute -right-16 -top-16 text-8xl lg:text-9xl font-bold text-orange-600/25 transform rotate-12 select-none">
@@ -395,15 +401,15 @@ const Benefits = () => {
                 </h2>
               </div>
               <p className="text-xl text-muted-foreground font-body max-w-3xl mx-auto">
-                Bizmis handles orders, policies, and updates
-                automatically—24/7—so you can focus on growth.
+                Watch real-time satisfaction metrics and live customer reviews
+                flowing in—proof that Bizmis delivers exceptional support 24/7.
               </p>
             </div>
 
-            {/* Split Layout */}
-            <div className="grid lg:grid-cols-2 gap-16 items-center">
+            {/* Enhanced Split Layout for Comment Cards */}
+            <div className="grid lg:grid-cols-5 gap-20 items-center">
               {/* Left: Support Features */}
-              <div className="space-y-8">
+              <div className="lg:col-span-2 space-y-8">
                 <div className="bg-white/80 backdrop-blur-sm rounded-3xl p-8 border border-orange-200/30 transform rotate-1 hover:rotate-0 transition-transform duration-500 shadow-xl">
                   <div className="space-y-6">
                     <div className="flex gap-4">
@@ -462,13 +468,22 @@ const Benefits = () => {
                 </div>
               </div>
 
-              {/* Right: Support Image */}
-              <div className="relative">
-                <img
-                  src="/images/benefit-2-customer-support.png"
-                  alt="Customer support interface showing chat conversations, customer satisfaction metrics, and sales opportunity alerts"
-                  className="w-full max-w-lg mx-auto object-contain drop-shadow-2xl"
-                />
+              {/* Right: Central Avatar with Floating Reviews */}
+              <div className="lg:col-span-3 relative overflow-visible flex justify-center items-center min-h-[700px] px-20 py-20">
+                {/* Central Avatar Container */}
+                <div className="relative w-full h-full">
+                  {/* Live Review Flow Around Avatar */}
+                  <ReviewSatisfactionDashboard />
+
+                  {/* Central Avatar Image */}
+                  <div className="absolute inset-0 flex items-center justify-center z-30 pointer-events-none">
+                    <img
+                      src="/images/benefit-2-customer-support.png"
+                      alt="Customer support interface showing chat conversations, customer satisfaction metrics, and sales opportunity alerts"
+                      className="w-full max-w-sm object-contain drop-shadow-2xl"
+                    />
+                  </div>
+                </div>
               </div>
             </div>
           </div>
