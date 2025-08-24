@@ -140,15 +140,23 @@ const Setup = () => {
           100% { transform: translate(var(--tx), var(--ty)) scale(0); opacity: 0; }
         }
 
-
+        /* Ensure aura elements can extend beyond container boundaries */
+        #setup .relative {
+          overflow: visible !important;
+        }
+        
+        /* Allow aura elements to render outside their containers */
+        #setup .absolute {
+          overflow: visible !important;
+        }
       `}</style>
 
       <section
         id="setup"
-        className="py-24 bg-gradient-to-r from-orange-50/5 via-background to-amber-50/8 border-t border-orange-200/20"
+        className="py-24 bg-gradient-to-r from-orange-50/5 via-background to-amber-50/8 border-t border-orange-200/20 relative overflow-visible"
       >
-        <div className="container mx-auto px-6">
-          <div className="max-w-7xl mx-auto">
+        <div className="container mx-auto px-6 overflow-visible">
+          <div className="max-w-7xl mx-auto overflow-visible">
             {/* Header */}
             <div className="text-center mb-16">
               <SectionBadge icon={SiShopify} text="Plug and Play" />
@@ -164,7 +172,7 @@ const Setup = () => {
             </div>
 
             {/* Data Flow Visualization */}
-            <div className="relative mb-16 overflow-hidden lg:overflow-visible">
+            <div className="relative mb-16">
               <div className="flex flex-col lg:flex-row items-center justify-between gap-16 lg:gap-24">
                 {/* Shopify Data Cards - Stacked Vertically */}
                 <div className="flex-1 max-w-md">
@@ -218,18 +226,44 @@ const Setup = () => {
 
                 {/* Avatar Image with Aura */}
                 <div
-                  className="relative flex items-center justify-center max-w-full overflow-hidden"
+                  className="relative flex items-center justify-center max-w-full"
                   style={{ minHeight: "clamp(24rem, 50vh, 48rem)" }}
                 >
-                  {/* Animated Aura/Halo - Circular */}
-                  <div className="absolute w-48 h-48 sm:w-64 sm:h-64 md:w-80 md:h-80 lg:w-96 lg:h-96 bg-gradient-to-r from-orange-400/20 via-orange-500/30 to-amber-400/20 rounded-full blur-xl animate-pulse"></div>
+                  {/* Animated Aura/Halo - Circular - Positioned absolutely outside container */}
                   <div
-                    className="absolute w-40 h-40 sm:w-56 sm:h-56 md:w-72 md:h-72 lg:w-80 lg:h-80 bg-gradient-to-r from-orange-300/15 via-orange-400/25 to-amber-300/15 rounded-full blur-lg animate-ping"
-                    style={{ animationDuration: "3s" }}
+                    className="absolute w-40 h-40 sm:w-56 h-56 md:w-72 h-72 lg:w-80 h-80 bg-gradient-to-r from-orange-400/20 via-orange-500/30 to-amber-400/20 rounded-full blur-xl animate-pulse pointer-events-none"
+                    style={{
+                      zIndex: 1,
+                      left: "50%",
+                      top: "50%",
+                      transform: "translate(-50%, -50%)",
+                      margin: "0",
+                      position: "absolute",
+                    }}
                   ></div>
                   <div
-                    className="absolute w-32 h-32 sm:w-48 sm:h-48 md:w-64 md:h-64 lg:w-72 lg:h-72 bg-gradient-to-r from-orange-200/10 via-orange-300/20 to-amber-200/10 rounded-full blur-md animate-pulse"
-                    style={{ animationDuration: "2s" }}
+                    className="absolute w-32 h-32 sm:w-48 h-48 md:w-64 h-64 lg:w-72 h-72 bg-gradient-to-r from-orange-300/15 via-orange-400/25 to-amber-300/15 rounded-full blur-lg animate-ping pointer-events-none"
+                    style={{
+                      animationDuration: "3s",
+                      zIndex: 1,
+                      left: "50%",
+                      top: "50%",
+                      transform: "translate(-50%, -50%)",
+                      margin: "0",
+                      position: "absolute",
+                    }}
+                  ></div>
+                  <div
+                    className="absolute w-24 h-24 sm:w-40 h-40 md:w-56 h-56 lg:w-64 h-64 bg-gradient-to-r from-orange-200/10 via-orange-300/20 to-amber-200/10 rounded-full blur-md animate-pulse pointer-events-none"
+                    style={{
+                      animationDuration: "2s",
+                      zIndex: 1,
+                      left: "50%",
+                      top: "50%",
+                      transform: "translate(-50%, -50%)",
+                      margin: "0",
+                      position: "absolute",
+                    }}
                   ></div>
 
                   {/* Avatar Images with Heartbeat Effect */}
