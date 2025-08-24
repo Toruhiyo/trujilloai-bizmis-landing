@@ -61,10 +61,15 @@ const Pricing = () => {
   ];
 
   return (
-    <section
-      id="pricing"
-      className="py-20 bg-gradient-subtle relative overflow-hidden"
-    >
+    <section id="pricing" className="py-20 bg-gradient-subtle relative">
+      {/* Background energy elements - Allowing overflow */}
+      <div className="absolute inset-0 pointer-events-none">
+        <div className="absolute top-1/4 -left-20 w-32 h-32 bg-gradient-to-br from-orange-200/15 to-amber-200/10 rounded-full blur-2xl"></div>
+        <div className="absolute bottom-1/3 -right-16 w-28 h-28 bg-gradient-to-tl from-yellow-200/12 to-orange-200/8 rounded-full blur-2xl"></div>
+        <div className="absolute top-2/3 -left-12 w-24 h-24 bg-gradient-to-br from-amber-200/10 to-orange-200/6 rounded-full blur-xl"></div>
+        <div className="absolute bottom-1/4 -right-8 w-20 h-20 bg-gradient-to-tl from-orange-200/8 to-yellow-200/5 rounded-full blur-xl"></div>
+      </div>
+
       <div className="container mx-auto px-6 relative z-10">
         <div className="text-center mb-16">
           <h2 className="text-4xl lg:text-5xl font-heading font-bold text-foreground mb-6">

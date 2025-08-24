@@ -98,26 +98,31 @@ const Benefits = () => {
   ];
 
   return (
-    <div className="space-y-0 bg-gradient-to-b from-background via-orange-50/10 to-background">
+    <div className="space-y-0 bg-gradient-to-b from-background via-orange-50/10 to-background relative">
+      {/* Global Background Elements - Allowing overflow */}
+      <div className="absolute inset-0 pointer-events-none">
+        {/* Large floating shapes - extending beyond container */}
+        <div className="absolute top-0 -left-48 w-[32rem] h-[32rem] bg-gradient-to-br from-orange-200/20 to-amber-200/15 rounded-full blur-3xl transform -translate-x-1/2 -translate-y-1/2"></div>
+        <div className="absolute bottom-0 -right-40 w-[28rem] h-[28rem] bg-gradient-to-tl from-orange-300/15 to-yellow-300/10 rounded-full blur-3xl transform translate-x-1/2 translate-y-1/2"></div>
+
+        {/* Additional overflow elements */}
+        <div className="absolute top-1/4 -right-32 w-24 h-24 bg-gradient-to-br from-orange-300/25 to-amber-300/20 rounded-full blur-2xl"></div>
+        <div className="absolute bottom-1/4 -left-24 w-20 h-20 bg-gradient-to-tl from-yellow-300/20 to-orange-300/15 rounded-full blur-2xl"></div>
+
+        {/* Subtle grid pattern - extending beyond */}
+        <div className="absolute inset-0 opacity-[0.02] bg-gray-100/5 scale-150"></div>
+
+        {/* Floating accent elements - positioned to overflow */}
+        <div className="absolute top-1/4 -right-16 w-2 h-2 bg-orange-400/30 rounded-full animate-pulse"></div>
+        <div className="absolute bottom-1/3 -left-12 w-1 h-1 bg-amber-500/40 rounded-full animate-pulse delay-1000"></div>
+        <div className="absolute top-2/3 -left-8 w-1.5 h-1.5 bg-orange-300/25 rounded-full animate-pulse delay-500"></div>
+        <div className="absolute top-1/2 -right-20 w-1 h-1 bg-yellow-400/35 rounded-full animate-pulse delay-700"></div>
+      </div>
+
       {/* Shared Background Section: Driven Sales & Customization */}
-      <section className="relative py-12 overflow-hidden">
-        {/* Modern Shared Background Design - Single background for both sections */}
-        <div className="absolute inset-0 bg-gradient-to-br from-slate-50 via-orange-50/30 to-amber-50/20"></div>
-
-        {/* Geometric Background Elements */}
-        <div className="absolute inset-0">
-          {/* Large floating shapes */}
-          <div className="absolute top-0 left-0 w-96 h-96 bg-gradient-to-br from-orange-200/20 to-amber-200/15 rounded-full blur-3xl transform -translate-x-1/2 -translate-y-1/2"></div>
-          <div className="absolute bottom-0 right-0 w-80 h-80 bg-gradient-to-tl from-orange-300/15 to-yellow-300/10 rounded-full blur-3xl transform translate-x-1/2 translate-y-1/2"></div>
-
-          {/* Subtle grid pattern */}
-          <div className="absolute inset-0 opacity-[0.02] bg-gray-100/5"></div>
-
-          {/* Floating accent elements */}
-          <div className="absolute top-1/4 right-1/4 w-2 h-2 bg-orange-400/30 rounded-full animate-pulse"></div>
-          <div className="absolute bottom-1/3 left-1/3 w-1 h-1 bg-amber-500/40 rounded-full animate-pulse delay-1000"></div>
-          <div className="absolute top-2/3 left-1/4 w-1.5 h-1.5 bg-orange-300/25 rounded-full animate-pulse delay-500"></div>
-        </div>
+      <section className="relative py-12">
+        {/* Section-specific background - allowing overflow */}
+        <div className="absolute inset-0 bg-gradient-to-br from-slate-50 via-orange-50/30 to-amber-50/20 scale-125"></div>
 
         <div className="container mx-auto px-6 relative z-10">
           <div className="max-w-7xl mx-auto">
