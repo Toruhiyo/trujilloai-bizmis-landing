@@ -202,8 +202,8 @@ const Setup = () => {
                         }}
                       >
                         {/* Shopify Icon Watermark */}
-                        <div className="absolute bottom-0 right-0 opacity-5 group-hover:opacity-10 transition-opacity duration-300">
-                          <SiShopify className="w-32 h-32 text-orange-600 transform translate-x-8 translate-y-8" />
+                        <div className="absolute bottom-[calc(50%-2.5rem)] right-0 opacity-5 group-hover:opacity-10 transition-opacity duration-300">
+                          <SiShopify className="w-20 h-20 text-orange-600" />
                         </div>
 
                         <div className="flex items-center gap-4 relative z-10">
