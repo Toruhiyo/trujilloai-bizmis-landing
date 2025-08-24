@@ -1,5 +1,22 @@
 import React, { useState, useEffect } from "react";
-import { ShoppingCart, ShoppingBag } from "lucide-react";
+import {
+  ShoppingCart,
+  ShoppingBag,
+  Star,
+  Check,
+  X,
+  Package,
+  Truck,
+  Shield,
+  Zap,
+  Users,
+  Award,
+  Search,
+  GitCompare,
+  Handshake,
+  Weight,
+  Ruler,
+} from "lucide-react";
 
 const PROGRESS_THRESHOLD_STEP_2 = 0.33;
 const PROGRESS_THRESHOLD_STEP_3 = 0.66;
@@ -134,23 +151,23 @@ const DirectScrollSalesFlow = () => {
 
     if (isStep1) {
       return progress < PROGRESS_THRESHOLD_STEP_2
-        ? "bg-orange-600 border-orange-600 text-white"
-        : "bg-white/80 border-orange-300 text-orange-600";
+        ? "bg-primary border-primary text-primary-foreground"
+        : "bg-background border-primary text-primary";
     }
 
     if (isStep2) {
       return progress >= PROGRESS_THRESHOLD_STEP_2 &&
         progress < PROGRESS_THRESHOLD_STEP_3
-        ? "bg-orange-600 border-orange-600 text-white"
+        ? "bg-primary border-primary text-primary-foreground"
         : progress >= PROGRESS_THRESHOLD_STEP_3
-        ? "bg-white/80 border-orange-600 text-orange-600"
-        : "bg-white/80 border-orange-300 text-orange-300";
+        ? "bg-background border-primary text-primary"
+        : "bg-background border-primary text-primary";
     }
 
     if (isStep3) {
       return progress >= PROGRESS_THRESHOLD_STEP_3
-        ? "bg-orange-600 border-orange-600 text-white"
-        : "bg-white/80 border-orange-300 text-orange-300";
+        ? "bg-primary border-primary text-primary-foreground"
+        : "bg-background border-primary text-primary";
     }
 
     return "";
@@ -158,14 +175,10 @@ const DirectScrollSalesFlow = () => {
 
   const getProgressLineStyles = (lineIndex: number) => {
     if (lineIndex === 1) {
-      return progress >= PROGRESS_THRESHOLD_STEP_2
-        ? "bg-orange-600"
-        : "bg-orange-200";
+      return progress >= PROGRESS_THRESHOLD_STEP_2 ? "bg-primary" : "bg-muted";
     }
     if (lineIndex === 2) {
-      return progress >= PROGRESS_THRESHOLD_STEP_3
-        ? "bg-orange-600"
-        : "bg-orange-200";
+      return progress >= PROGRESS_THRESHOLD_STEP_3 ? "bg-primary" : "bg-muted";
     }
     return "";
   };
@@ -292,75 +305,128 @@ const DirectScrollSalesFlow = () => {
                     transform: getStepTransform(1),
                   }}
                 >
-                  <div className="text-center mb-8">
-                    <h2 className="text-4xl font-bold text-white mb-3 bg-orange-600 px-8 py-4 rounded-2xl inline-block">
-                      Understand & Recommend
-                    </h2>
-                    <p className="text-lg text-orange-500 font-medium">
-                      Uncover their needs and guide them to the perfect match
-                    </p>
+                  {/* Floating Header Card */}
+                  <div className="absolute top-4 left-1/2 transform -translate-x-1/2 z-20">
+                    <div className="bg-gradient-to-r from-primary via-primary-light to-primary rounded-2xl p-4 shadow-2xl border-2 border-primary-foreground transform -rotate-1 hover:rotate-0 transition-transform duration-300">
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 bg-primary-foreground/20 rounded-xl flex items-center justify-center">
+                          <Search className="w-5 h-5 text-primary-foreground" />
+                        </div>
+                        <div>
+                          <h2 className="text-xl font-black text-primary-foreground tracking-tight leading-none">
+                            DISCOVER & RECOMMEND
+                          </h2>
+                          <p className="text-sm text-primary-foreground/80 font-medium mt-1">
+                            Find the perfect match
+                          </p>
+                        </div>
+                      </div>
+                    </div>
                   </div>
-                  <div className="bg-white/95 backdrop-blur-xl rounded-3xl p-8 shadow-2xl border border-orange-200/50 max-w-5xl w-full">
+                  <div className="bg-background/95 backdrop-blur-xl rounded-3xl p-6 pt-20 shadow-2xl border border-muted max-w-5xl w-full mt-8">
                     <div className="grid grid-cols-3 gap-6">
-                      {/* Product 1 */}
-                      <div className="bg-gray-50 rounded-xl p-6 border border-gray-200 hover:shadow-lg transition-shadow">
-                        <div className="w-20 h-20 bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg flex items-center justify-center mx-auto mb-4">
-                          <div className="w-8 h-8 bg-white rounded"></div>
+                      {/* Product A */}
+                      <div className="bg-muted/50 rounded-2xl p-5 border border-border hover:shadow-lg transition-all duration-300 hover:scale-105">
+                        <div className="relative mb-4">
+                          <div className="w-20 h-20 bg-gradient-to-br from-muted-foreground/20 to-muted-foreground/40 rounded-2xl flex items-center justify-center mx-auto shadow-lg">
+                            <Package className="w-10 h-10 text-muted-foreground" />
+                          </div>
+                          <div className="absolute -top-2 -right-2 bg-muted text-muted-foreground text-xs font-bold px-2 py-1 rounded-full">
+                            A
+                          </div>
                         </div>
-                        <h4 className="font-bold text-lg mb-2">
-                          Wireless Earbuds
+                        <h4 className="font-bold text-lg mb-2 text-center">
+                          Product A
                         </h4>
-                        <div className="text-2xl font-bold text-blue-600 mb-2">
-                          $89
+                        <div className="text-2xl font-bold text-muted-foreground mb-3 text-center">
+                          $129
                         </div>
-                        <div className="text-sm text-gray-600 mb-3">
-                          ★★★★☆ (127 reviews)
+                        <div className="flex items-center justify-center mb-3">
+                          {[...Array(3)].map((_, i) => (
+                            <Star
+                              key={i}
+                              className="w-4 h-4 text-primary fill-current"
+                            />
+                          ))}
+                          {[...Array(2)].map((_, i) => (
+                            <Star key={i} className="w-4 h-4 text-muted" />
+                          ))}
+                          <span className="ml-2 text-xs text-muted-foreground">
+                            (127)
+                          </span>
                         </div>
-                        <div className="text-xs text-gray-500 leading-relaxed">
-                          Lorem ipsum dolor sit amet, consectetur adipiscing
-                          elit. Sed do eiusmod tempor incididunt ut labore et
-                          dolore magna aliqua.
+                        <div className="text-sm text-muted-foreground text-center leading-relaxed">
+                          Standard solution for everyday needs
                         </div>
                       </div>
 
-                      {/* Product 2 */}
-                      <div className="bg-orange-50 rounded-xl p-6 border-2 border-orange-300 hover:shadow-lg transition-shadow">
-                        <div className="w-20 h-20 bg-gradient-to-br from-orange-500 to-amber-500 rounded-lg flex items-center justify-center mx-auto mb-4">
-                          <div className="w-8 h-8 bg-white rounded"></div>
+                      {/* Product B - Recommended */}
+                      <div className="bg-accent/70 rounded-2xl p-5 border-2 border-primary hover:shadow-xl transition-all duration-300 hover:scale-105 relative">
+                        <div className="absolute -top-3 left-1/2 transform -translate-x-1/2 bg-primary text-primary-foreground text-xs font-bold px-3 py-1 rounded-full">
+                          RECOMMENDED
                         </div>
-                        <h4 className="font-bold text-lg mb-2">
-                          Premium Headphones
+                        <div className="relative mb-4 mt-2">
+                          <div className="w-20 h-20 bg-gradient-to-br from-primary/20 to-primary/40 rounded-2xl flex items-center justify-center mx-auto shadow-lg">
+                            <Zap className="w-10 h-10 text-primary" />
+                          </div>
+                          <div className="absolute -top-2 -right-2 bg-primary text-primary-foreground text-xs font-bold px-2 py-1 rounded-full">
+                            B
+                          </div>
+                        </div>
+                        <h4 className="font-bold text-lg mb-2 text-center">
+                          Product B
                         </h4>
-                        <div className="text-2xl font-bold text-orange-600 mb-2">
-                          $199
+                        <div className="text-2xl font-bold text-primary mb-3 text-center">
+                          $249
                         </div>
-                        <div className="text-sm text-orange-600 mb-3">
-                          ★★★★★ (89 reviews)
+                        <div className="flex items-center justify-center mb-3">
+                          {[...Array(5)].map((_, i) => (
+                            <Star
+                              key={i}
+                              className="w-4 h-4 text-primary fill-current"
+                            />
+                          ))}
+                          <span className="ml-2 text-xs text-primary">
+                            (89)
+                          </span>
                         </div>
-                        <div className="text-xs text-gray-500 leading-relaxed">
-                          Ut enim ad minim veniam, quis nostrud exercitation
-                          ullamco laboris nisi ut aliquip ex ea commodo
-                          consequat.
+                        <div className="text-sm text-primary/80 text-center leading-relaxed font-medium">
+                          Optimized performance and features
                         </div>
                       </div>
 
-                      {/* Product 3 */}
-                      <div className="bg-gray-50 rounded-xl p-6 border border-gray-200 hover:shadow-lg transition-shadow">
-                        <div className="w-20 h-20 bg-gradient-to-br from-green-500 to-green-600 rounded-lg flex items-center justify-center mx-auto mb-4">
-                          <div className="w-8 h-8 bg-white rounded"></div>
+                      {/* Product C */}
+                      <div className="bg-muted/50 rounded-2xl p-5 border border-border hover:shadow-lg transition-all duration-300 hover:scale-105">
+                        <div className="relative mb-4">
+                          <div className="w-20 h-20 bg-gradient-to-br from-secondary-foreground/20 to-secondary-foreground/40 rounded-2xl flex items-center justify-center mx-auto shadow-lg">
+                            <Award className="w-10 h-10 text-secondary-foreground" />
+                          </div>
+                          <div className="absolute -top-2 -right-2 bg-muted text-muted-foreground text-xs font-bold px-2 py-1 rounded-full">
+                            C
+                          </div>
                         </div>
-                        <h4 className="font-bold text-lg mb-2">
-                          Smart Speaker
+                        <h4 className="font-bold text-lg mb-2 text-center">
+                          Product C
                         </h4>
-                        <div className="text-2xl font-bold text-green-600 mb-2">
-                          $149
+                        <div className="text-2xl font-bold text-secondary-foreground mb-3 text-center">
+                          $399
                         </div>
-                        <div className="text-sm text-gray-600 mb-3">
-                          ★★★★☆ (203 reviews)
+                        <div className="flex items-center justify-center mb-3">
+                          {[...Array(4)].map((_, i) => (
+                            <Star
+                              key={i}
+                              className="w-4 h-4 text-primary fill-current"
+                            />
+                          ))}
+                          {[...Array(1)].map((_, i) => (
+                            <Star key={i} className="w-4 h-4 text-muted" />
+                          ))}
+                          <span className="ml-2 text-xs text-muted-foreground">
+                            (203)
+                          </span>
                         </div>
-                        <div className="text-xs text-gray-500 leading-relaxed">
-                          Duis aute irure dolor in reprehenderit in voluptate
-                          velit esse cillum dolore eu fugiat nulla pariatur.
+                        <div className="text-sm text-muted-foreground text-center leading-relaxed">
+                          Enterprise-grade with premium support
                         </div>
                       </div>
                     </div>
@@ -375,100 +441,169 @@ const DirectScrollSalesFlow = () => {
                     transform: getStepTransform(2),
                   }}
                 >
-                  <div className="text-center mb-8">
-                    <h2 className="text-4xl font-bold text-white mb-3 bg-orange-600 px-8 py-4 rounded-2xl inline-block">
-                      Show the Difference
-                    </h2>
-                    <p className="text-lg text-orange-500 font-medium">
-                      Highlight key benefits and make the choice clear
-                    </p>
-                  </div>
-                  <div className="bg-white/95 backdrop-blur-xl rounded-3xl p-8 shadow-2xl border border-orange-200/50 max-w-6xl w-full">
-                    <div className="overflow-x-auto">
-                      <table className="w-full border-collapse">
-                        <thead>
-                          <tr className="border-b-2 border-gray-200">
-                            <th className="text-left p-4 font-bold text-lg">
-                              Features
-                            </th>
-                            <th className="text-center p-4 font-bold text-lg text-blue-600">
-                              Basic Model
-                            </th>
-                            <th className="text-center p-4 font-bold text-lg text-orange-600 border-l-2 border-r-2 border-orange-300">
-                              Premium
-                            </th>
-                            <th className="text-center p-4 font-bold text-lg text-green-600">
-                              Pro Version
-                            </th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          <tr className="border-b border-gray-100">
-                            <td className="p-4 font-semibold">Price</td>
-                            <td className="p-4 text-center text-2xl font-bold text-blue-600">
-                              $89
-                            </td>
-                            <td className="p-4 text-center text-2xl font-bold text-orange-600 border-l-2 border-r-2 border-orange-300">
-                              $199
-                            </td>
-                            <td className="p-4 text-center text-2xl font-bold text-green-600">
-                              $299
-                            </td>
-                          </tr>
-                          <tr className="border-b border-gray-100">
-                            <td className="p-4 font-semibold">Battery Life</td>
-                            <td className="p-4 text-center">6 hours</td>
-                            <td className="p-4 text-center border-l-2 border-r-2 border-orange-300">
-                              12 hours
-                            </td>
-                            <td className="p-4 text-center">24 hours</td>
-                          </tr>
-                          <tr className="border-b border-gray-100">
-                            <td className="p-4 font-semibold">
-                              Noise Cancellation
-                            </td>
-                            <td className="p-4 text-center">❌</td>
-                            <td className="p-4 text-center border-l-2 border-r-2 border-orange-300">
-                              ✅
-                            </td>
-                            <td className="p-4 text-center">✅</td>
-                          </tr>
-                          <tr className="border-b border-gray-100">
-                            <td className="p-4 font-semibold">
-                              Water Resistance
-                            </td>
-                            <td className="p-4 text-center">IPX4</td>
-                            <td className="p-4 text-center border-l-2 border-r-2 border-orange-300">
-                              IPX7
-                            </td>
-                            <td className="p-4 text-center">IPX8</td>
-                          </tr>
-                          <tr className="border-b border-gray-100">
-                            <td className="p-4 font-semibold">Warranty</td>
-                            <td className="p-4 text-center">1 year</td>
-                            <td className="p-4 text-center border-l-2 border-r-2 border-orange-300">
-                              2 years
-                            </td>
-                            <td className="p-4 text-center">3 years</td>
-                          </tr>
-                          <tr className="bg-orange-50">
-                            <td className="p-4 font-semibold">AI Features</td>
-                            <td className="p-4 text-center text-sm text-gray-500">
-                              Lorem ipsum dolor sit amet
-                            </td>
-                            <td className="p-4 text-center text-sm text-orange-600 font-semibold border-l-2 border-r-2 border-orange-300">
-                              Smart recommendations
-                            </td>
-                            <td className="p-4 text-center text-sm text-gray-500">
-                              Ut enim ad minim veniam
-                            </td>
-                          </tr>
-                        </tbody>
-                      </table>
+                  {/* Floating Header Card */}
+                  <div className="absolute top-4 left-1/2 transform -translate-x-1/2 z-20">
+                    <div className="bg-gradient-to-r from-primary via-primary-light to-primary rounded-2xl p-4 shadow-2xl border-2 border-primary-foreground transform rotate-1 hover:rotate-0 transition-transform duration-300">
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 bg-primary-foreground/20 rounded-xl flex items-center justify-center">
+                          <GitCompare className="w-5 h-5 text-primary-foreground" />
+                        </div>
+                        <div>
+                          <h2 className="text-xl font-black text-primary-foreground tracking-tight leading-none">
+                            COMPARE OPTIONS
+                          </h2>
+                          <p className="text-sm text-primary-foreground/80 font-medium mt-1">
+                            See the clear differences
+                          </p>
+                        </div>
+                      </div>
                     </div>
-                    <div className="mt-6 text-center">
-                      <div className="inline-block bg-orange-100 text-orange-800 px-4 py-2 rounded-lg font-semibold">
-                        ⭐ Premium Recommended - Best Value
+                  </div>
+                  <div className="bg-background/95 backdrop-blur-xl rounded-2xl p-6 pt-20 shadow-2xl border border-muted max-w-4xl w-full mt-8">
+                    <div className="grid grid-cols-4 gap-4">
+                      {/* Feature Column */}
+                      <div>
+                        <div className="h-12 flex items-center justify-center mb-3">
+                          <h3 className="font-bold text-base text-foreground">
+                            Features
+                          </h3>
+                        </div>
+
+                        <div className="space-y-3">
+                          <div className="h-12 flex items-center gap-2 p-2 rounded-lg">
+                            <span className="text-lg font-bold text-primary">
+                              $
+                            </span>
+                            <span className="font-medium text-sm">Price</span>
+                          </div>
+
+                          <div className="h-12 flex items-center gap-2 p-2 rounded-lg">
+                            <Star className="w-4 h-4 text-primary" />
+                            <span className="font-medium text-sm">Quality</span>
+                          </div>
+
+                          <div className="h-12 flex items-center gap-2 p-2 rounded-lg">
+                            <Zap className="w-4 h-4 text-primary" />
+                            <span className="font-medium text-sm">
+                              Features
+                            </span>
+                          </div>
+
+                          <div className="h-12 flex items-center gap-2 p-2 rounded-lg">
+                            <Shield className="w-4 h-4 text-primary" />
+                            <span className="font-medium text-sm">
+                              Durability
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Product A Column */}
+                      <div>
+                        <div className="h-12 bg-muted/50 rounded-xl flex items-center justify-center border border-border mb-3">
+                          <span className="font-bold text-muted-foreground text-sm">
+                            Product A
+                          </span>
+                        </div>
+
+                        <div className="space-y-3">
+                          <div className="h-12 flex items-center justify-center p-2">
+                            <div className="text-xl font-bold text-muted-foreground">
+                              $89
+                            </div>
+                          </div>
+
+                          <div className="h-12 flex items-center justify-center p-2">
+                            <div className="text-sm font-medium text-muted-foreground">
+                              Standard
+                            </div>
+                          </div>
+
+                          <div className="h-12 flex items-center justify-center p-2">
+                            <div className="text-sm text-muted-foreground">
+                              Basic
+                            </div>
+                          </div>
+
+                          <div className="h-12 flex items-center justify-center p-2">
+                            <div className="text-xs text-muted-foreground">
+                              Good
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Product B Column - Recommended */}
+                      <div className="relative">
+                        <div className="absolute -top-2 left-1/2 transform -translate-x-1/2 bg-primary text-primary-foreground text-xs font-bold px-2 py-1 rounded-full z-10">
+                          BEST
+                        </div>
+                        <div className="h-12 bg-accent/70 rounded-xl flex items-center justify-center border-2 border-primary mb-3">
+                          <span className="font-bold text-primary text-sm">
+                            Product B
+                          </span>
+                        </div>
+
+                        <div className="space-y-3">
+                          <div className="h-12 flex items-center justify-center p-2 bg-primary/10 rounded-lg">
+                            <div className="text-xl font-bold text-primary">
+                              $199
+                            </div>
+                          </div>
+
+                          <div className="h-12 flex items-center justify-center p-2 bg-primary/10 rounded-lg">
+                            <div className="text-sm font-medium text-primary">
+                              Premium
+                            </div>
+                          </div>
+
+                          <div className="h-12 flex items-center justify-center p-2 bg-primary/10 rounded-lg">
+                            <div className="text-sm text-primary font-medium">
+                              Advanced
+                            </div>
+                          </div>
+
+                          <div className="h-12 flex items-center justify-center p-2 bg-primary/10 rounded-lg">
+                            <div className="text-xs text-primary font-medium">
+                              Excellent
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Product C Column */}
+                      <div>
+                        <div className="h-12 bg-muted/50 rounded-xl flex items-center justify-center border border-border mb-3">
+                          <span className="font-bold text-secondary-foreground text-sm">
+                            Product C
+                          </span>
+                        </div>
+
+                        <div className="space-y-3">
+                          <div className="h-12 flex items-center justify-center p-2">
+                            <div className="text-xl font-bold text-secondary-foreground">
+                              $349
+                            </div>
+                          </div>
+
+                          <div className="h-12 flex items-center justify-center p-2">
+                            <div className="text-sm font-medium text-secondary-foreground">
+                              Professional
+                            </div>
+                          </div>
+
+                          <div className="h-12 flex items-center justify-center p-2">
+                            <div className="text-sm text-secondary-foreground">
+                              Premium
+                            </div>
+                          </div>
+
+                          <div className="h-12 flex items-center justify-center p-2">
+                            <div className="text-xs text-secondary-foreground">
+                              Superior
+                            </div>
+                          </div>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -482,91 +617,80 @@ const DirectScrollSalesFlow = () => {
                     transform: getStepTransform(3),
                   }}
                 >
-                  <div className="text-center mb-8">
-                    <h2 className="text-4xl font-bold text-white mb-3 bg-orange-600 px-8 py-4 rounded-2xl inline-block">
-                      Close with Confidence
-                    </h2>
-                    <p className="text-lg text-orange-500 font-medium">
-                      Turn interest into a successful purchase
-                    </p>
-                  </div>
-                  <div className="bg-white/95 backdrop-blur-xl rounded-2xl p-3 shadow-2xl border border-orange-200/50 max-w-md w-full">
-                    <div className="text-center mb-3">
-                      <div className="w-12 h-12 bg-gradient-to-br from-green-500 to-green-600 rounded-full flex items-center justify-center mx-auto mb-2">
-                        <div className="text-white text-lg">✓</div>
+                  {/* Floating Header Card */}
+                  <div className="absolute -top-2 left-1/2 transform -translate-x-1/2 z-20">
+                    <div className="bg-gradient-to-r from-primary via-primary-light to-primary rounded-2xl p-4 shadow-2xl border-2 border-primary-foreground transform -rotate-1 hover:rotate-0 transition-transform duration-300">
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 bg-primary-foreground/20 rounded-xl flex items-center justify-center">
+                          <Handshake className="w-5 h-5 text-primary-foreground" />
+                        </div>
+                        <div>
+                          <h2 className="text-xl font-black text-primary-foreground tracking-tight leading-none">
+                            SEAL THE DEAL
+                          </h2>
+                          <p className="text-sm text-primary-foreground/80 font-medium mt-1">
+                            Complete with confidence
+                          </p>
+                        </div>
                       </div>
-                      <h3 className="text-xl font-bold text-green-600 mb-1">
+                    </div>
+                  </div>
+                  <div className="bg-background/95 backdrop-blur-xl rounded-2xl p-4 pt-20 shadow-2xl border border-muted max-w-sm w-full mt-8">
+                    <div className="text-center mb-4">
+                      <div className="w-12 h-12 bg-gradient-to-br from-primary to-primary-dark rounded-full flex items-center justify-center mx-auto mb-2">
+                        <Check className="w-6 h-6 text-primary-foreground" />
+                      </div>
+                      <h3 className="text-xl font-bold text-primary mb-1">
                         Order Confirmed!
                       </h3>
-                      <p className="text-xs text-gray-600">
+                      <p className="text-xs text-muted-foreground">
                         Thank you for your purchase
                       </p>
                     </div>
 
-                    <div className="bg-gray-50 rounded-lg p-3 mb-3">
+                    <div className="bg-muted rounded-lg p-3 mb-4">
                       <h4 className="font-bold text-base mb-2 text-center">
                         Order Summary
                       </h4>
                       <div className="space-y-1">
-                        <div className="flex justify-between items-center py-1 border-b border-gray-200">
-                          <span className="font-medium text-xs">
-                            Premium Headphones
-                          </span>
-                          <span className="font-bold text-orange-600 text-sm">
+                        <div className="flex justify-between items-center py-1 border-b border-border">
+                          <span className="font-medium text-xs">Product B</span>
+                          <span className="font-bold text-primary text-sm">
                             $199.00
                           </span>
                         </div>
-                        <div className="flex justify-between items-center py-1 border-b border-gray-200">
+                        <div className="flex justify-between items-center py-1 border-b border-border">
                           <span className="font-medium text-xs">Shipping</span>
-                          <span className="font-bold text-green-600 text-sm">
+                          <span className="font-bold text-primary text-sm">
                             FREE
                           </span>
                         </div>
-                        <div className="flex justify-between items-center py-1 border-b border-gray-200">
+                        <div className="flex justify-between items-center py-1 border-b border-border">
                           <span className="font-medium text-xs">Tax</span>
-                          <span className="font-bold text-sm">$16.92</span>
+                          <span className="font-bold text-sm">$15.93</span>
                         </div>
                         <div className="flex justify-between items-center py-1 pt-1">
                           <span className="font-bold text-base">Total</span>
-                          <span className="font-bold text-lg text-orange-600">
-                            $215.92
+                          <span className="font-bold text-lg text-primary">
+                            $214.93
                           </span>
                         </div>
                       </div>
                     </div>
 
-                    <div className="grid grid-cols-1 gap-3 mb-3">
-                      <div className="bg-blue-50 rounded-md p-2 border border-blue-200">
-                        <h5 className="font-semibold text-blue-800 mb-1 text-xs">
-                          Shipping Address
+                    <div className="grid grid-cols-1 gap-3 mb-4">
+                      <div className="bg-accent rounded-md p-2 border border-primary">
+                        <h5 className="font-semibold text-primary mb-1 text-xs">
+                          Delivery Information
                         </h5>
-                        <div className="text-xs text-gray-700 leading-tight">
-                          <div>John Doe</div>
+                        <div className="text-xs text-muted-foreground leading-tight">
+                          <div>Customer Name</div>
                           <div>123 Main Street</div>
-                          <div>Apt 4B</div>
                           <div>New York, NY 10001</div>
-                        </div>
-                      </div>
-
-                      <div className="bg-green-50 rounded-md p-2 border border-green-200">
-                        <h5 className="font-semibold text-green-800 mb-1 text-xs">
-                          Estimated Delivery
-                        </h5>
-                        <div className="text-xs text-gray-700 leading-tight">
-                          <div className="font-semibold text-green-600">
+                          <div className="font-semibold text-primary mt-1">
                             2-3 Business Days
                           </div>
-                          <div className="text-xs text-gray-500">
-                            Lorem ipsum dolor sit amet, consectetur adipiscing
-                            elit. Sed do eiusmod tempor incididunt ut labore.
-                          </div>
                         </div>
-                      </div>
-                    </div>
-
-                    <div className="text-center">
-                      <div className="inline-block bg-orange-100 text-orange-800 px-3 py-1 rounded-md font-semibold text-xs">
-                        🎉 You're all set! Check your email for confirmation.
                       </div>
                     </div>
                   </div>
