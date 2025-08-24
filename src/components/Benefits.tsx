@@ -389,12 +389,14 @@ const Benefits = () => {
                   #2
                 </div>
                 <h2 className="text-4xl lg:text-5xl font-heading font-bold text-foreground mb-6 relative z-10 mr-14">
-                  Support That Sells
+                  Save hours on support.
+                  <br />
+                  Earn loyal customers.
                 </h2>
               </div>
               <p className="text-xl text-muted-foreground font-body max-w-3xl mx-auto">
-                Turn support conversations into sales opportunities with
-                empathetic, knowledgeable assistance.
+                Bizmis handles orders, policies, and updates
+                automatically—24/7—so you can focus on growth.
               </p>
             </div>
 
