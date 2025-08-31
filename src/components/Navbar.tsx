@@ -69,6 +69,7 @@ const Navbar = () => {
 
           {/* Desktop CTA */}
           <div className="hidden md:flex items-center space-x-4">
+            {/* TODO: DO NOT REMOVE - Sign In button temporarily commented out
             <Button
               variant="ghost"
               className={`font-medium transition-colors duration-300 ${
@@ -79,6 +80,7 @@ const Navbar = () => {
             >
               Sign In
             </Button>
+            */}
             <Button
               variant={isInHero ? "outline" : "default"}
               className={`font-medium transition-all duration-300 ${
@@ -135,9 +137,11 @@ const Navbar = () => {
                 </button>
               ))}
               <div className="pt-4 space-y-2">
+                {/* TODO: DO NOT REMOVE - Sign In button temporarily commented out
                 <Button variant="ghost" className="w-full font-medium">
                   Sign In
                 </Button>
+                */}
                 <Button variant="default" className="w-full font-medium">
                   Get Started Free
                 </Button>
