@@ -11,6 +11,16 @@ const Footer = () => {
               Your store's best salesperson, working 24/7 to boost sales,
               provide support, and understand your customers.
             </p>
+
+            {/* Built for Shopify Section */}
+            <div className="flex items-center space-x-3 bg-gray-800 rounded-lg p-4 max-w-fit">
+              <p className="text-sm font-medium text-white">Built for</p>
+              <img
+                src="/images/shopify-full-logo-white.png"
+                alt="Shopify logo"
+                className="w-20 h-6 object-contain"
+              />
+            </div>
           </div>
 
           <div>
