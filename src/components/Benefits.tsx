@@ -511,12 +511,13 @@ const Benefits = () => {
                   #3
                 </div>
                 <h2 className="text-4xl lg:text-5xl font-heading font-bold text-foreground mb-6 relative z-10 ml-14">
-                  Understand Customers. Sell Smarter.
+                  Understand Customers. Tune the funnel. Grow revenue.
                 </h2>
               </div>
               <p className="text-xl text-muted-foreground font-body max-w-3xl mx-auto">
-                See what customers do, say, and need—then fine-tune your shop
-                with real insights.
+                See where buyers hesitate, what they ask, and which paths
+                convert—so you fix less, save hours, and invest where revenue
+                grows.
               </p>
             </div>
 
@@ -533,8 +534,9 @@ const Benefits = () => {
                         Session Replays
                       </h3>
                       <p className="text-muted-foreground font-body text-sm">
-                        Watch how customers navigate and interact with your
-                        assistant to identify improvement opportunities.
+                        Jump straight to drop-offs and hesitation points. Fix
+                        once, prevent abandoned carts, and recover at-risk
+                        sales.
                       </p>
                     </div>
                   </div>
@@ -550,8 +552,8 @@ const Benefits = () => {
                         Auto-Tagged Chats
                       </h3>
                       <p className="text-muted-foreground font-body text-sm">
-                        Automatically categorized customer interactions reveal
-                        common questions and pain points.
+                        Conversations auto-group by topic and intent. Update one
+                        FAQ/policy, cut repeat tickets, and reduce support load.
                       </p>
                     </div>
                   </div>
@@ -564,11 +566,11 @@ const Benefits = () => {
                     </div>
                     <div>
                       <h3 className="text-lg font-heading font-semibold text-foreground mb-2">
-                        Interaction Dashboard
+                        Funnel Insights
                       </h3>
                       <p className="text-muted-foreground font-body text-sm">
-                        Clear analytics showing customer behavior trends,
-                        popular products, and conversion patterns.
+                        See conversion paths, drop-offs, and product impact at a
+                        glance. Prioritize high-ROI fixes and back the winners.
                       </p>
                     </div>
                   </div>
