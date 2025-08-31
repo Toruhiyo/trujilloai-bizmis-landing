@@ -236,3 +236,22 @@ All colors MUST be HSL.
     }
   }
 }
+
+/* Custom orange scrollbar for conversation UI */
+.conversation-scrollbar::-webkit-scrollbar {
+  width: 4px;
+}
+
+.conversation-scrollbar::-webkit-scrollbar-track {
+  background: hsl(var(--muted) / 0.3);
+  border-radius: 2px;
+}
+
+.conversation-scrollbar::-webkit-scrollbar-thumb {
+  background: hsl(var(--primary));
+  border-radius: 2px;
+}
+
+.conversation-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--primary-dark));
+}
