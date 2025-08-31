@@ -99,12 +99,9 @@ const Benefits = () => {
   ];
 
   return (
-    <div className="space-y-0 bg-gradient-to-b from-background via-orange-50/10 to-background">
+    <div className="space-y-0">
       {/* Shared Background Section: Driven Sales & Customization */}
-      <section className="relative py-12 overflow-hidden">
-        {/* Modern Shared Background Design - Single background for both sections */}
-        <div className="absolute inset-0 bg-gradient-to-br from-slate-50 via-orange-50/30 to-amber-50/20"></div>
-
+      <section className="relative py-16 bg-gradient-to-br from-[hsl(35_35%_96%)] to-[hsl(35_90%_85%)] overflow-hidden">
         {/* Geometric Background Elements */}
         <div className="absolute inset-0">
           {/* Large floating shapes */}
@@ -129,11 +126,11 @@ const Benefits = () => {
                   #1
                 </div>
                 <SectionBadge icon={ShoppingCart} text="Increase Sales" />
-                <h1 className="text-5xl lg:text-7xl font-heading font-bold text-foreground mb-8 relative z-10">
+                <h1 className="text-5xl lg:text-7xl font-heading font-bold text-[hsl(35_30%_15%)] mb-8 relative z-10">
                   Increase Sales Conversion
                 </h1>
               </div>
-              <p className="text-xl text-muted-foreground font-body leading-relaxed mb-16">
+              <p className="text-xl text-[hsl(35_40%_20%)] font-body leading-relaxed mb-16">
                 Shoppers feel personally guided—finding the right product fast
                 and checking out with confidence.
               </p>
@@ -148,13 +145,13 @@ const Benefits = () => {
                   </div>
                 </div>
                 <div className="flex-1">
-                  <h3 className="text-4xl lg:text-5xl font-heading font-bold text-foreground mb-8">
+                  <h3 className="text-4xl lg:text-5xl font-heading font-bold text-[hsl(35_30%_15%)] mb-8">
                     <span className="text-orange-600">
                       Driven Sales Pipeline
                     </span>
                   </h3>
                   <div className="border-l-2 border-orange-200/50 pl-4 py-2">
-                    <p className="text-lg lg:text-xl text-muted-foreground leading-relaxed">
+                    <p className="text-lg lg:text-xl text-[hsl(35_40%_20%)] leading-relaxed">
                       <span className="font-semibold">
                         Expert-level selling skills
                       </span>{" "}
@@ -180,13 +177,13 @@ const Benefits = () => {
                   </div>
                 </div>
                 <div className="flex-1">
-                  <h3 className="text-4xl lg:text-5xl font-heading font-bold text-foreground mb-8">
+                  <h3 className="text-4xl lg:text-5xl font-heading font-bold text-[hsl(35_30%_15%)] mb-8">
                     <span className="text-orange-600">
                       Voice & Appearance Customization
                     </span>
                   </h3>
                   <div className="border-l-2 border-orange-200/50 pl-4 py-2">
-                    <p className="text-lg lg:text-xl text-muted-foreground leading-relaxed">
+                    <p className="text-lg lg:text-xl text-[hsl(35_40%_20%)] leading-relaxed">
                       Build{" "}
                       <span className="font-semibold">
                         authentic relationships
@@ -203,17 +200,17 @@ const Benefits = () => {
             <div className="grid lg:grid-cols-2 gap-8 md:gap-12 lg:gap-16 items-center">
               {/* Right: Features */}
               <div className="space-y-6 md:space-y-12 lg:space-y-16 order-2 lg:order-2">
-                <div className="bg-white/70 backdrop-blur-md rounded-3xl p-8 border border-orange-200/30 transform -rotate-1 hover:rotate-0 transition-transform duration-500 shadow-xl">
+                <div className="bg-white/70 backdrop-blur-md rounded-3xl p-8 border border-[hsl(35_30%_82%)] transform -rotate-1 hover:rotate-0 transition-transform duration-500 shadow-xl">
                   <div className="space-y-6">
                     <div className="flex gap-4">
                       <div className="w-12 h-12 bg-amber-100 rounded-xl flex items-center justify-center flex-shrink-0 border border-orange-200/50">
                         <Brush className="w-6 h-6 text-orange-600" />
                       </div>
                       <div>
-                        <h3 className="text-xl font-heading font-bold text-foreground">
+                        <h3 className="text-xl font-heading font-bold text-[hsl(35_30%_15%)]">
                           Personal Avatar
                         </h3>
-                        <p className="text-muted-foreground font-body">
+                        <p className="text-[hsl(35_40%_20%)] font-body">
                           Creating genuine connections by making your sales
                           representative sound and look like you.
                         </p>
@@ -222,17 +219,17 @@ const Benefits = () => {
                   </div>
                 </div>
 
-                <div className="bg-white/70 backdrop-blur-md rounded-3xl p-8 border border-orange-200/30 transform rotate-1 hover:rotate-0 transition-transform duration-500 shadow-xl">
+                <div className="bg-white/70 backdrop-blur-md rounded-3xl p-8 border border-[hsl(35_30%_82%)] transform rotate-1 hover:rotate-0 transition-transform duration-500 shadow-xl">
                   <div className="space-y-6">
                     <div className="flex gap-4">
                       <div className="w-12 h-12 bg-amber-100 rounded-xl flex items-center justify-center flex-shrink-0 border border-orange-200/50">
                         <PiWaveformBold className="w-6 h-6 text-orange-600" />
                       </div>
                       <div>
-                        <h3 className="text-xl font-heading font-bold text-foreground">
+                        <h3 className="text-xl font-heading font-bold text-[hsl(35_30%_15%)]">
                           Voice Cloning
                         </h3>
-                        <p className="text-muted-foreground font-body">
+                        <p className="text-[hsl(35_40%_20%)] font-body">
                           Authentic customer interactions through replication of
                           your unique speaking style and personality.
                         </p>
@@ -372,7 +369,7 @@ const Benefits = () => {
       {/* Benefit 2: Customer Support - Enhanced Layout */}
       <section
         id="benefit-2"
-        className="relative py-32 bg-gradient-to-r from-orange-50/20 to-amber-50/20 overflow-visible"
+        className="relative py-16 bg-gradient-to-br from-[hsl(35_35%_96%)] to-[hsl(35_90%_85%)] overflow-visible"
       >
         {/* Background Elements - Enhanced for Dashboard */}
         <div className="absolute inset-0">
@@ -394,13 +391,13 @@ const Benefits = () => {
                 <div className="absolute -right-16 -top-16 text-8xl lg:text-9xl font-bold text-orange-600/25 transform rotate-12 select-none">
                   #2
                 </div>
-                <h2 className="text-4xl lg:text-5xl font-heading font-bold text-foreground mb-6 relative z-10 mr-14">
+                <h2 className="text-4xl lg:text-5xl font-heading font-bold text-[hsl(35_30%_15%)] mb-6 relative z-10 mr-14">
                   Save hours on support.
                   <br />
                   Earn loyal customers.
                 </h2>
               </div>
-              <p className="text-xl text-muted-foreground font-body max-w-3xl mx-auto">
+              <p className="text-xl text-[hsl(35_40%_20%)] font-body max-w-3xl mx-auto">
                 Watch real-time satisfaction metrics and live customer reviews
                 flowing in—proof that Bizmis delivers exceptional support 24/7.
               </p>
@@ -410,17 +407,17 @@ const Benefits = () => {
             <div className="grid lg:grid-cols-5 gap-20 items-center">
               {/* Left: Support Features */}
               <div className="lg:col-span-2 space-y-8">
-                <div className="bg-white/80 backdrop-blur-sm rounded-3xl p-8 border border-orange-200/30 transform rotate-1 hover:rotate-0 transition-transform duration-500 shadow-xl">
+                <div className="bg-white/80 backdrop-blur-sm rounded-3xl p-8 border border-[hsl(35_30%_82%)] transform rotate-1 hover:rotate-0 transition-transform duration-500 shadow-xl">
                   <div className="space-y-6">
                     <div className="flex gap-4">
                       <div className="w-12 h-12 bg-amber-100 rounded-xl flex items-center justify-center flex-shrink-0 border border-orange-200/50">
                         <Heart className="w-6 h-6 text-orange-600" />
                       </div>
                       <div>
-                        <h3 className="text-lg font-heading font-semibold text-foreground mb-2">
+                        <h3 className="text-lg font-heading font-semibold text-[hsl(35_30%_15%)] mb-2">
                           Empathetic Support
                         </h3>
-                        <p className="text-muted-foreground font-body text-sm">
+                        <p className="text-[hsl(35_40%_20%)] font-body text-sm">
                           AI that understands customer emotions and responds
                           with genuine care and understanding.
                         </p>
@@ -429,17 +426,17 @@ const Benefits = () => {
                   </div>
                 </div>
 
-                <div className="bg-white/80 backdrop-blur-sm rounded-3xl p-8 border border-orange-200/30 transform -rotate-1 hover:rotate-0 transition-transform duration-500 shadow-xl">
+                <div className="bg-white/80 backdrop-blur-sm rounded-3xl p-8 border border-[hsl(35_30%_82%)] transform -rotate-1 hover:rotate-0 transition-transform duration-500 shadow-xl">
                   <div className="space-y-6">
                     <div className="flex gap-4">
                       <div className="w-12 h-12 bg-amber-100 rounded-xl flex items-center justify-center flex-shrink-0 border border-orange-200/50">
                         <Shield className="w-6 h-6 text-orange-600" />
                       </div>
                       <div>
-                        <h3 className="text-lg font-heading font-semibold text-foreground mb-2">
+                        <h3 className="text-lg font-heading font-semibold text-[hsl(35_30%_15%)] mb-2">
                           Problem Resolution
                         </h3>
-                        <p className="text-muted-foreground font-body text-sm">
+                        <p className="text-[hsl(35_40%_20%)] font-body text-sm">
                           Quick, accurate solutions that turn frustrated
                           customers into satisfied advocates.
                         </p>
@@ -448,17 +445,17 @@ const Benefits = () => {
                   </div>
                 </div>
 
-                <div className="bg-white/80 backdrop-blur-sm rounded-3xl p-8 border border-orange-200/30 transform rotate-2 hover:rotate-0 transition-transform duration-500 shadow-xl">
+                <div className="bg-white/80 backdrop-blur-sm rounded-3xl p-8 border border-[hsl(35_30%_82%)] transform rotate-2 hover:rotate-0 transition-transform duration-500 shadow-xl">
                   <div className="space-y-6">
                     <div className="flex gap-4">
                       <div className="w-12 h-12 bg-amber-100 rounded-xl flex items-center justify-center flex-shrink-0 border border-orange-200/50">
                         <Tag className="w-6 h-6 text-orange-600" />
                       </div>
                       <div>
-                        <h3 className="text-lg font-heading font-semibold text-foreground mb-2">
+                        <h3 className="text-lg font-heading font-semibold text-[hsl(35_30%_15%)] mb-2">
                           Sales Opportunities
                         </h3>
-                        <p className="text-muted-foreground font-body text-sm">
+                        <p className="text-[hsl(35_40%_20%)] font-body text-sm">
                           Seamlessly identify and capitalize on upsell and
                           cross-sell opportunities during support interactions.
                         </p>
@@ -493,7 +490,7 @@ const Benefits = () => {
       {/* Benefit 3: Store Insights */}
       <section
         id="benefit-3"
-        className="relative py-32 bg-gradient-to-r from-amber-50/20 to-orange-50/20 overflow-hidden"
+        className="relative py-16 bg-gradient-to-br from-[hsl(35_35%_96%)] to-[hsl(35_90%_85%)] overflow-hidden"
       >
         {/* Background Elements */}
         <div className="absolute inset-0">
@@ -510,11 +507,11 @@ const Benefits = () => {
                 <div className="absolute -left-16 -top-16 text-8xl lg:text-9xl font-bold text-orange-600/25 transform rotate-6 select-none">
                   #3
                 </div>
-                <h2 className="text-4xl lg:text-5xl font-heading font-bold text-foreground mb-6 relative z-10 ml-14">
+                <h2 className="text-4xl lg:text-5xl font-heading font-bold text-[hsl(35_30%_15%)] mb-6 relative z-10 ml-14">
                   Understand Customers. Tune the funnel. Grow revenue.
                 </h2>
               </div>
-              <p className="text-xl text-muted-foreground font-body max-w-3xl mx-auto">
+              <p className="text-xl text-[hsl(35_40%_20%)] font-body max-w-3xl mx-auto">
                 See where buyers hesitate, what they ask, and which paths
                 convert—so you fix less, save hours, and invest where revenue
                 grows.
@@ -524,16 +521,16 @@ const Benefits = () => {
             <div className="grid lg:grid-cols-2 gap-20 items-center">
               {/* Left: Features */}
               <div className="space-y-8">
-                <div className="bg-white/70 backdrop-blur-sm rounded-2xl p-6 border border-orange-200/30 transform rotate-1 hover:rotate-0 transition-transform duration-300">
+                <div className="bg-white/70 backdrop-blur-sm rounded-2xl p-6 border border-[hsl(35_30%_82%)] transform rotate-1 hover:rotate-0 transition-transform duration-300">
                   <div className="flex items-start gap-4">
                     <div className="w-12 h-12 bg-amber-100/50 rounded-xl flex items-center justify-center flex-shrink-0 mt-1">
                       <Play className="w-6 h-6 text-orange-600" />
                     </div>
                     <div>
-                      <h3 className="text-lg font-heading font-semibold text-foreground mb-2">
+                      <h3 className="text-lg font-heading font-semibold text-[hsl(35_30%_15%)] mb-2">
                         Session Replays
                       </h3>
-                      <p className="text-muted-foreground font-body text-sm">
+                      <p className="text-[hsl(35_40%_20%)] font-body text-sm">
                         Jump straight to drop-offs and hesitation points. Fix
                         once, prevent abandoned carts, and recover at-risk
                         sales.
@@ -542,16 +539,16 @@ const Benefits = () => {
                   </div>
                 </div>
 
-                <div className="bg-white/70 backdrop-blur-sm rounded-2xl p-6 border border-orange-200/30 transform -rotate-1 hover:rotate-0 transition-transform duration-300">
+                <div className="bg-white/70 backdrop-blur-sm rounded-2xl p-6 border border-[hsl(35_30%_82%)] transform -rotate-1 hover:rotate-0 transition-transform duration-300">
                   <div className="flex items-start gap-4">
                     <div className="w-12 h-12 bg-amber-100/50 rounded-xl flex items-center justify-center flex-shrink-0 mt-1">
                       <Tag className="w-6 h-6 text-orange-600" />
                     </div>
                     <div>
-                      <h3 className="text-lg font-heading font-semibold text-foreground mb-2">
+                      <h3 className="text-lg font-heading font-semibold text-[hsl(35_30%_15%)] mb-2">
                         Auto-Tagged Chats
                       </h3>
-                      <p className="text-muted-foreground font-body text-sm">
+                      <p className="text-[hsl(35_40%_20%)] font-body text-sm">
                         Conversations auto-group by topic and intent. Update one
                         FAQ/policy, cut repeat tickets, and reduce support load.
                       </p>
@@ -559,16 +556,16 @@ const Benefits = () => {
                   </div>
                 </div>
 
-                <div className="bg-white/70 backdrop-blur-sm rounded-2xl p-6 border border-orange-200/30 transform rotate-2 hover:rotate-0 transition-transform duration-300">
+                <div className="bg-white/70 backdrop-blur-sm rounded-2xl p-6 border border-[hsl(35_30%_82%)] transform rotate-2 hover:rotate-0 transition-transform duration-300">
                   <div className="flex items-start gap-4">
                     <div className="w-12 h-12 bg-amber-100/50 rounded-xl flex items-center justify-center flex-shrink-0 mt-1">
                       <BarChart3 className="w-6 h-6 text-orange-600" />
                     </div>
                     <div>
-                      <h3 className="text-lg font-heading font-semibold text-foreground mb-2">
+                      <h3 className="text-lg font-heading font-semibold text-[hsl(35_30%_15%)] mb-2">
                         Funnel Insights
                       </h3>
-                      <p className="text-muted-foreground font-body text-sm">
+                      <p className="text-[hsl(35_40%_20%)] font-body text-sm">
                         See conversion paths, drop-offs, and product impact at a
                         glance. Prioritize high-ROI fixes and back the winners.
                       </p>

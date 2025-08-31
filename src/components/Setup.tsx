@@ -153,17 +153,17 @@ const Setup = () => {
 
       <section
         id="setup"
-        className="py-24 bg-gradient-to-r from-orange-50/5 via-background to-amber-50/8 border-t border-orange-200/20 relative overflow-visible"
+        className="py-16 bg-gradient-to-br from-[hsl(35_35%_96%)] to-[hsl(35_90%_85%)] relative overflow-visible"
       >
         <div className="container mx-auto px-6 overflow-visible">
           <div className="max-w-7xl mx-auto overflow-visible">
             {/* Header */}
             <div className="text-center mb-16">
               <SectionBadge icon={SiShopify} text="Plug and Play" />
-              <h2 className="text-4xl lg:text-5xl font-heading font-bold text-foreground mb-6">
+              <h2 className="text-4xl lg:text-5xl font-heading font-bold text-[hsl(35_30%_15%)] mb-6">
                 One-Click Setup, Instant Selling
               </h2>
-              <p className="text-xl text-muted-foreground font-body max-w-3xl mx-auto">
+              <p className="text-xl text-[hsl(35_40%_20%)] font-body max-w-3xl mx-auto">
                 Install the Bizmis Shopify app and start selling and supporting
                 customers immediately. Zero manual setup required - Bizmis
                 automatically syncs with your store data and begins generating
@@ -183,7 +183,7 @@ const Setup = () => {
                   </div> */}
                     <div className="inline-flex items-center gap-2">
                       <SiShopify className="w-5 h-5 text-orange-600" />
-                      <span className="text-lg font-heading font-semibold text-foreground">
+                      <span className="text-lg font-heading font-semibold text-[hsl(35_30%_15%)]">
                         Your Shopify Store Data
                       </span>
                     </div>
@@ -194,7 +194,7 @@ const Setup = () => {
                       <div
                         key={index}
                         id={`card-${index}`}
-                        className="relative bg-gradient-to-br from-orange-100/30 to-amber-100/40 backdrop-blur-sm rounded-2xl p-6 border border-orange-200/30 hover:scale-105 transition-all duration-300 group overflow-hidden"
+                        className="relative bg-gradient-to-br from-orange-100/30 to-amber-100/40 backdrop-blur-sm rounded-2xl p-6 border border-[hsl(35_30%_82%)] hover:scale-105 transition-all duration-300 group overflow-hidden"
                         style={{
                           boxShadow: "0 8px 32px rgba(0, 0, 0, 0.1)",
                           backdropFilter: "blur(10px)",
@@ -211,10 +211,10 @@ const Setup = () => {
                             <card.icon className="w-6 h-6" />
                           </div>
                           <div className="flex-1">
-                            <h3 className="font-heading font-semibold text-foreground text-lg mb-1">
+                            <h3 className="font-heading font-semibold text-[hsl(35_30%_15%)] text-lg mb-1">
                               {card.title}
                             </h3>
-                            <p className="text-sm text-muted-foreground font-body">
+                            <p className="text-sm text-[hsl(35_40%_20%)] font-body">
                               {card.description}
                             </p>
                           </div>
@@ -445,7 +445,7 @@ const Setup = () => {
               ].map((card, index) => (
                 <div key={index} className="group">
                   <div
-                    className="relative bg-gradient-to-br from-orange-100/40 to-amber-100/30 backdrop-blur-sm rounded-3xl p-8 border border-orange-200/30 hover:border-orange-300/50 transition-all duration-500 hover:scale-105 shadow-lg hover:shadow-xl overflow-hidden"
+                    className="relative bg-gradient-to-br from-orange-100/40 to-amber-100/30 backdrop-blur-sm rounded-3xl p-8 border border-[hsl(35_30%_82%)] hover:border-orange-300/50 transition-all duration-500 hover:scale-105 shadow-lg hover:shadow-xl overflow-hidden"
                     style={{
                       animationDelay: `${index * 200}ms`,
                     }}
@@ -535,10 +535,10 @@ const Setup = () => {
                     </div>
 
                     {/* Text with staggered animations */}
-                    <h4 className="font-heading font-bold text-foreground text-2xl mb-2 group-hover:text-orange-700 transition-colors duration-300">
+                    <h4 className="font-heading font-bold text-[hsl(35_30%_15%)] text-2xl mb-2 group-hover:text-orange-700 transition-colors duration-300">
                       {card.title}
                     </h4>
-                    <p className="text-muted-foreground font-body text-lg group-hover:text-orange-600 transition-colors duration-300">
+                    <p className="text-[hsl(35_40%_20%)] font-body text-lg group-hover:text-orange-600 transition-colors duration-300">
                       {card.subtitle}
                     </p>
 
@@ -554,7 +554,7 @@ const Setup = () => {
               <Button className="bg-orange-600 hover:bg-orange-700 text-white px-8 py-3 text-lg">
                 Install Bizmis App
               </Button>
-              <p className="text-sm text-muted-foreground mt-3 font-body">
+              <p className="text-sm text-[hsl(35_40%_20%)] mt-3 font-body">
                 Available on Shopify App Store • One-click installation
               </p>
             </div>

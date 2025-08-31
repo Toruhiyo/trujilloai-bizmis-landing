@@ -63,14 +63,14 @@ const Pricing = () => {
   return (
     <section
       id="pricing"
-      className="py-20 bg-gradient-subtle relative overflow-hidden"
+      className="py-16 bg-gradient-to-br from-[hsl(35_35%_96%)] to-[hsl(35_90%_85%)] relative overflow-hidden"
     >
       <div className="container mx-auto px-6 relative z-10">
         <div className="text-center mb-16">
-          <h2 className="text-4xl lg:text-5xl font-heading font-bold text-foreground mb-6">
+          <h2 className="text-4xl lg:text-5xl font-heading font-bold text-[hsl(35_30%_15%)] mb-6">
             Simple Pricing for Shopify Stores
           </h2>
-          <p className="text-xl text-muted-foreground font-body max-w-3xl mx-auto">
+          <p className="text-xl text-[hsl(35_40%_20%)] font-body max-w-3xl mx-auto">
             Start with a free trial, then choose the plan that grows with your
             business. All plans include full Shopify integration and setup
             support.
@@ -81,7 +81,7 @@ const Pricing = () => {
           {plans.map((plan, index) => (
             <div
               key={index}
-              className={`relative bg-white rounded-3xl p-8 shadow-soft hover:shadow-brand transition-all duration-300 ${
+              className={`relative bg-white rounded-3xl p-8 shadow-soft hover:shadow-brand transition-all duration-300 border border-[hsl(35_30%_82%)] ${
                 plan.popular ? "ring-2 ring-orange-600 scale-105" : ""
               }`}
             >
@@ -95,18 +95,18 @@ const Pricing = () => {
               )}
 
               <div className="text-center mb-8">
-                <h3 className="text-2xl font-heading font-bold text-foreground mb-2">
+                <h3 className="text-2xl font-heading font-bold text-[hsl(35_30%_15%)] mb-2">
                   {plan.name}
                 </h3>
                 <div className="flex items-baseline justify-center gap-1 mb-4">
-                  <span className="text-4xl font-heading font-bold text-foreground">
+                  <span className="text-4xl font-heading font-bold text-[hsl(35_30%_15%)]">
                     ${plan.price}
                   </span>
-                  <span className="text-muted-foreground font-body">
+                  <span className="text-[hsl(35_40%_20%)] font-body">
                     /{plan.period}
                   </span>
                 </div>
-                <p className="text-muted-foreground font-body text-sm">
+                <p className="text-[hsl(35_40%_20%)] font-body text-sm">
                   {plan.description}
                 </p>
               </div>
@@ -117,7 +117,7 @@ const Pricing = () => {
                     <div className="w-5 h-5 bg-amber-100 rounded-full flex items-center justify-center flex-shrink-0">
                       <Check className="w-3 h-3 text-orange-600" />
                     </div>
-                    <span className="text-muted-foreground font-body text-sm">
+                    <span className="text-[hsl(35_40%_20%)] font-body text-sm">
                       {feature}
                     </span>
                   </li>
@@ -137,10 +137,10 @@ const Pricing = () => {
         </div>
 
         <div className="text-center mt-12">
-          <p className="text-muted-foreground font-body mb-4">
+          <p className="text-[hsl(35_40%_20%)] font-body mb-4">
             All plans include a 14-day free trial. No credit card required.
           </p>
-          <div className="flex items-center justify-center gap-8 text-sm text-muted-foreground">
+          <div className="flex items-center justify-center gap-8 text-sm text-[hsl(35_40%_20%)]">
             <div className="flex items-center gap-2">
               <Check className="w-4 h-4 text-orange-600" />
               <span>30-day money-back guarantee</span>
