@@ -269,33 +269,27 @@ const ReviewSatisfactionDashboard: React.FC = () => {
           }
         }
       `}</style>
-      {/* Floating Metrics Indicators - Positioned Lower */}
-      <div className="absolute top-20 left-8 z-20">
-        <div className="bg-white/98 backdrop-blur-xl rounded-3xl p-6 shadow-2xl border-2 border-orange-200/60 min-w-[220px]">
-          <div className="flex items-center gap-3 mb-3">
-            <Heart className="w-7 h-7 text-orange-600" />
-            <span className="text-sm font-semibold text-muted-foreground">
-              Satisfaction Rate
-            </span>
-          </div>
-          <div className="text-4xl font-bold text-foreground">
-            {metrics.satisfaction.toFixed(1)}%
-            <TrendingUp className="inline w-6 h-6 text-green-500 ml-2" />
+      {/* Customer Loyalty Focused Cards */}
+      <div className="absolute top-14 left-10 z-20">
+        <div className="bg-gradient-to-br from-orange-500 via-orange-600 to-amber-600 rounded-2xl p-5 shadow-2xl w-[220px] transform hover:scale-105 transition-all duration-300">
+          <div className="text-center text-white">
+            <Heart className="w-12 h-12 mx-auto mb-3 opacity-90" />
+            <div className="text-xl font-bold mb-1">
+              Earn Loyalty on Auto-Pilot
+            </div>
+            <div className="text-sm opacity-90">
+              Exceptional support = lifelong customers
+            </div>
           </div>
         </div>
       </div>
 
-      <div className="absolute top-20 right-8 z-20">
-        <div className="bg-white/98 backdrop-blur-xl rounded-3xl p-6 shadow-2xl border-2 border-amber-200/60 min-w-[220px]">
-          <div className="flex items-center gap-3 mb-3">
-            <Zap className="w-7 h-7 text-amber-600" />
-            <span className="text-sm font-semibold text-muted-foreground">
-              Avg Resolution Time
-            </span>
-          </div>
-          <div className="text-4xl font-bold text-foreground">
-            {metrics.avgResolution.toFixed(1)}s
-            <TrendingUp className="inline w-6 h-6 text-green-500 ml-2 rotate-180" />
+      <div className="absolute top-14 right-10 z-20">
+        <div className="bg-gradient-to-br from-amber-500 via-yellow-500 to-orange-500 rounded-2xl p-5 shadow-2xl w-[220px] transform hover:scale-105 transition-all duration-300">
+          <div className="text-center text-white">
+            <Clock className="w-12 h-12 mx-auto mb-3 opacity-90" />
+            <div className="text-xl font-bold mb-1">Save Time & Money</div>
+            <div className="text-sm opacity-90">No more support headaches</div>
           </div>
         </div>
       </div>

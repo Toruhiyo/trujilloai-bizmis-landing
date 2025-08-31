@@ -469,7 +469,7 @@ const Benefits = () => {
               </div>
 
               {/* Right: Central Avatar with Floating Reviews */}
-              <div className="lg:col-span-3 relative overflow-visible flex justify-center items-center min-h-[700px] px-20 py-20">
+              <div className="lg:col-span-3 relative overflow-visible flex justify-center items-center min-h-[700px]">
                 {/* Central Avatar Container */}
                 <div className="relative w-full h-full">
                   {/* Live Review Flow Around Avatar */}
