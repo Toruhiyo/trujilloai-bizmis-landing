@@ -58,6 +58,25 @@ const Pricing = () => {
       buttonText: "Contact Sales",
       buttonVariant: "outline" as const,
     },
+    {
+      name: "Enterprise",
+      price: "Custom",
+      period: "",
+      description: "For large enterprises requiring custom solutions",
+      features: [
+        "Unlimited conversations & users",
+        "Custom AI model training",
+        "Advanced security & compliance",
+        "Multi-store management",
+        "Custom workflow automation",
+        "Dedicated support team",
+        "SLA guarantees",
+        "On-premise deployment options",
+      ],
+      popular: false,
+      buttonText: "Contact Sales",
+      buttonVariant: "outline" as const,
+    },
   ];
 
   return (
@@ -77,7 +96,7 @@ const Pricing = () => {
           </p>
         </div>
 
-        <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+        <div className="grid md:grid-cols-4 gap-8 max-w-7xl mx-auto">
           {plans.map((plan, index) => (
             <div
               key={index}
@@ -100,11 +119,13 @@ const Pricing = () => {
                 </h3>
                 <div className="flex items-baseline justify-center gap-1 mb-4">
                   <span className="text-4xl font-heading font-bold text-foreground">
-                    ${plan.price}
+                    {plan.price === "Custom" ? plan.price : `$${plan.price}`}
                   </span>
-                  <span className="text-muted-foreground font-body">
-                    /{plan.period}
-                  </span>
+                  {plan.period && (
+                    <span className="text-muted-foreground font-body">
+                      /{plan.period}
+                    </span>
+                  )}
                 </div>
                 <p className="text-muted-foreground font-body text-sm">
                   {plan.description}
