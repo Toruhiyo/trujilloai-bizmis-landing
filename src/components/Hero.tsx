@@ -58,15 +58,6 @@ const Hero = () => {
               </Button>
 
               <div className="flex flex-col gap-2 items-center w-full">
-                <Button
-                  variant="outline"
-                  size="lg"
-                  className="group bg-white/10 border-white/30 text-white hover:bg-white/20 [&_svg]:!w-4 [&_svg]:!h-4 w-full justify-center h-10 sm:h-12"
-                >
-                  <Play className="w-4 h-4" />
-                  Watch Demo
-                </Button>
-
                 <span className="text-white/70 text-xs text-center">
                   Also available for{" "}
                   <button className="text-white/80 hover:text-white underline underline-offset-2 transition-colors">
@@ -140,15 +131,6 @@ const Hero = () => {
                 </Button>
 
                 <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 items-center w-full">
-                  <Button
-                    variant="outline"
-                    size="lg"
-                    className="group bg-white/10 border-white/30 text-white hover:bg-white/20 [&_svg]:!w-5 [&_svg]:!h-5 flex-shrink-0"
-                  >
-                    <Play className="w-5 h-5" />
-                    Watch Demo
-                  </Button>
-
                   <span className="text-white/70 text-sm text-center sm:text-left flex-1 min-w-0">
                     Also available for{" "}
                     <button className="text-white/80 hover:text-white underline underline-offset-2 transition-colors">
