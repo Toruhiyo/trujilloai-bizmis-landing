@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Menu, X } from "lucide-react";
 import { useState, useEffect } from "react";
 import { scrollToTop, scrollToSection } from "@/lib/utils/scroll";
+import Logo from "./Logo";
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -36,18 +37,15 @@ const Navbar = () => {
         <div className="flex items-center justify-between h-12 sm:h-16">
           {/* Logo */}
           <div className="flex items-center">
-            <button
+            <Logo
+              variant={isInHero ? "white" : "default"}
+              showText={true}
               onClick={() => {
                 scrollToTop();
                 // Clear the URL hash to remove section paths like /#setup
                 window.history.pushState({}, "", window.location.pathname);
               }}
-              className={`text-xl sm:text-2xl font-heading font-black transition-colors duration-300 hover:opacity-80 cursor-pointer ${
-                isInHero ? "text-white" : "text-orange-600"
-              }`}
-            >
-              Bizmis
-            </button>
+            />
           </div>
 
           {/* Desktop Navigation */}
