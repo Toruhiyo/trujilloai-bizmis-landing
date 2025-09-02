@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
-import { Play, Pause, Search, ShoppingCart, MessageCircle } from "lucide-react";
+import { Play, Pause, Search, ShoppingCart } from "lucide-react";
 
 interface ConversationMark {
   time: number; // seconds
@@ -87,22 +87,23 @@ const ConversationAudioPlayer: React.FC<ConversationAudioPlayerProps> = ({
   };
 
   const getMarkerIcon = (type: ConversationMark["type"], label?: string) => {
-    switch (type) {
-      case "customer":
-        return <MessageCircle className="w-3 h-3 text-background" />;
-      case "agent":
-        return <MessageCircle className="w-3 h-3 text-background" />;
-      case "event":
-        // Use label to determine specific event icon
-        if (label?.toLowerCase().includes("search")) {
-          return <Search className="w-3 h-3 text-background" />;
-        } else if (label?.toLowerCase().includes("cart") || label?.toLowerCase().includes("added")) {
-          return <ShoppingCart className="w-3 h-3 text-background" />;
-        }
+    // Only handle event markers now
+    if (type === "event" && label) {
+      const lowerLabel = label.toLowerCase();
+
+      // Magnifying glass for search events
+      if (lowerLabel.includes("search")) {
+        return <Search className="w-3 h-3 text-background" />;
+      }
+
+      // Shopping cart for cart/add events
+      if (lowerLabel.includes("cart") || lowerLabel.includes("added")) {
         return <ShoppingCart className="w-3 h-3 text-background" />;
-      default:
-        return <MessageCircle className="w-3 h-3 text-background" />;
+      }
     }
+
+    // Default fallback
+    return <ShoppingCart className="w-3 h-3 text-background" />;
   };
 
   return (
@@ -150,32 +151,34 @@ const ConversationAudioPlayer: React.FC<ConversationAudioPlayerProps> = ({
             </div>
           </div>
 
-          {/* Timeline Markers - EXACT copy */}
-          {conversationMarks.map((mark, index) => (
-            <div
-              key={index}
-              className={`absolute top-0 h-full w-0.5 ${getMarkerColor(
-                mark.type
-              )} transition-all duration-500 ${
-                isVisible
-                  ? "opacity-100 translate-y-0"
-                  : "opacity-0 translate-y-2"
-              }`}
-              style={{
-                left: `${(mark.time / duration) * 100}%`,
-                transitionDelay: `${index * 200 + 800}ms`,
-              }}
-            >
-              {/* Marker Dot with Icon - EXACT copy */}
+          {/* Timeline Markers - Only Events (🔍 Product search @ 6s + 🛒 Added to cart @ 17s) */}
+          {conversationMarks
+            .filter((mark) => mark.type === "event")
+            .map((mark, index) => (
               <div
-                className={`absolute -top-1 -left-3 w-6 h-6 rounded-full ${getMarkerColor(
+                key={index}
+                className={`absolute top-0 h-full w-0.5 ${getMarkerColor(
                   mark.type
-                )} border-2 border-card flex items-center justify-center`}
+                )} transition-all duration-500 ${
+                  isVisible
+                    ? "opacity-100 translate-y-0"
+                    : "opacity-0 translate-y-2"
+                }`}
+                style={{
+                  left: `${(mark.time / duration) * 100}%`,
+                  transitionDelay: `${index * 200 + 800}ms`,
+                }}
               >
-                {getMarkerIcon(mark.type, mark.label)}
+                {/* Marker Dot with Icon - Only Events */}
+                <div
+                  className={`absolute -top-1 -left-3 w-6 h-6 rounded-full ${getMarkerColor(
+                    mark.type
+                  )} border-2 border-card flex items-center justify-center`}
+                >
+                  {getMarkerIcon(mark.type, mark.label)}
+                </div>
               </div>
-            </div>
-          ))}
+            ))}
 
           {/* Playhead - Simplified */}
           <div

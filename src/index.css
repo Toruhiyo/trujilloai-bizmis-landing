@@ -255,3 +255,312 @@ All colors MUST be HSL.
 .conversation-scrollbar::-webkit-scrollbar-thumb:hover {
   background: hsl(var(--primary-dark));
 }
+
+/* Simple test animation */
+@keyframes simple-test {
+  0% {
+    transform: translateX(0px);
+    background: red;
+  }
+
+  50% {
+    transform: translateX(50px);
+    background: blue;
+  }
+
+  100% {
+    transform: translateX(0px);
+    background: red;
+  }
+}
+
+/* Confetti explosion animations from center */
+@keyframes confetti-explode-up-left {
+  0% {
+    transform: translate(-50%, -50%) translateY(0%) translateX(0%) scale(1) rotate(0deg);
+    opacity: 1;
+  }
+
+  100% {
+    transform: translate(-50%, -50%) translateY(-120%) translateX(-80%) scale(0.2) rotate(720deg);
+    opacity: 0;
+  }
+}
+
+@keyframes confetti-explode-up-right {
+  0% {
+    transform: translate(-50%, -50%) translateY(0%) translateX(0%) scale(1) rotate(0deg);
+    opacity: 1;
+  }
+
+  100% {
+    transform: translate(-50%, -50%) translateY(-120%) translateX(80%) scale(0.2) rotate(-720deg);
+    opacity: 0;
+  }
+}
+
+@keyframes confetti-explode-down-left {
+  0% {
+    transform: translate(-50%, -50%) translateY(0%) translateX(0%) scale(1) rotate(0deg);
+    opacity: 1;
+  }
+
+  100% {
+    transform: translate(-50%, -50%) translateY(120%) translateX(-80%) scale(0.2) rotate(720deg);
+    opacity: 0;
+  }
+}
+
+@keyframes confetti-explode-down-right {
+  0% {
+    transform: translate(-50%, -50%) translateY(0%) translateX(0%) scale(1) rotate(0deg);
+    opacity: 1;
+  }
+
+  100% {
+    transform: translate(-50%, -50%) translateY(120%) translateX(80%) scale(0.2) rotate(-720deg);
+    opacity: 0;
+  }
+}
+
+@keyframes confetti-explode-left {
+  0% {
+    transform: translate(-50%, -50%) translateY(0%) translateX(0%) scale(1) rotate(0deg);
+    opacity: 1;
+  }
+
+  100% {
+    transform: translate(-50%, -50%) translateY(10%) translateX(-120%) scale(0.2) rotate(900deg);
+    opacity: 0;
+  }
+}
+
+@keyframes confetti-explode-right {
+  0% {
+    transform: translate(-50%, -50%) translateY(0%) translateX(0%) scale(1) rotate(0deg);
+    opacity: 1;
+  }
+
+  100% {
+    transform: translate(-50%, -50%) translateY(10%) translateX(120%) scale(0.2) rotate(-900deg);
+    opacity: 0;
+  }
+}
+
+/* Working confetti explosion animations */
+@keyframes explode-up-left {
+  0% {
+    transform: translateX(0px) translateY(0px) rotate(0deg) scale(1.4);
+    opacity: 1;
+  }
+
+  100% {
+    transform: translateX(-250px) translateY(-250px) rotate(1440deg) scale(0.05);
+    opacity: 0;
+  }
+}
+
+@keyframes explode-up-right {
+  0% {
+    transform: translateX(0px) translateY(0px) rotate(0deg) scale(1.4);
+    opacity: 1;
+  }
+
+  100% {
+    transform: translateX(250px) translateY(-250px) rotate(-1440deg) scale(0.05);
+    opacity: 0;
+  }
+}
+
+@keyframes explode-down-left {
+  0% {
+    transform: translateX(0px) translateY(0px) rotate(0deg) scale(1.4);
+    opacity: 1;
+  }
+
+  100% {
+    transform: translateX(-250px) translateY(250px) rotate(1440deg) scale(0.05);
+    opacity: 0;
+  }
+}
+
+@keyframes explode-down-right {
+  0% {
+    transform: translateX(0px) translateY(0px) rotate(0deg) scale(1.4);
+    opacity: 1;
+  }
+
+  100% {
+    transform: translateX(250px) translateY(250px) rotate(-1440deg) scale(0.05);
+    opacity: 0;
+  }
+}
+
+@keyframes explode-left {
+  0% {
+    transform: translateX(0px) translateY(0px) rotate(0deg) scale(1.3);
+    opacity: 1;
+  }
+
+  100% {
+    transform: translateX(-320px) translateY(-40px) rotate(1800deg) scale(0.05);
+    opacity: 0;
+  }
+}
+
+@keyframes explode-right {
+  0% {
+    transform: translateX(0px) translateY(0px) rotate(0deg) scale(1.3);
+    opacity: 1;
+  }
+
+  100% {
+    transform: translateX(320px) translateY(40px) rotate(-1800deg) scale(0.05);
+    opacity: 0;
+  }
+}
+
+@keyframes explode-up {
+  0% {
+    transform: translateX(0px) translateY(0px) rotate(0deg) scale(1.3);
+    opacity: 1;
+  }
+
+  100% {
+    transform: translateX(20px) translateY(-300px) rotate(1080deg) scale(0.05);
+    opacity: 0;
+  }
+}
+
+@keyframes explode-down {
+  0% {
+    transform: translateX(0px) translateY(0px) rotate(0deg) scale(1.3);
+    opacity: 1;
+  }
+
+  100% {
+    transform: translateX(-20px) translateY(300px) rotate(-1080deg) scale(0.05);
+    opacity: 0;
+  }
+}
+
+@keyframes explode-far-left {
+  0% {
+    transform: translateX(0px) translateY(0px) rotate(0deg) scale(1.4);
+    opacity: 1;
+  }
+
+  100% {
+    transform: translateX(-400px) translateY(80px) rotate(2160deg) scale(0.05);
+    opacity: 0;
+  }
+}
+
+@keyframes explode-far-right {
+  0% {
+    transform: translateX(0px) translateY(0px) rotate(0deg) scale(1.4);
+    opacity: 1;
+  }
+
+  100% {
+    transform: translateX(400px) translateY(-80px) rotate(-2160deg) scale(0.05);
+    opacity: 0;
+  }
+}
+
+/* ULTRA EXPLOSIVE NEW ANIMATIONS */
+@keyframes explode-mega-up-left {
+  0% {
+    transform: translateX(0px) translateY(0px) rotate(0deg) scale(1.5);
+    opacity: 1;
+  }
+
+  100% {
+    transform: translateX(-380px) translateY(-380px) rotate(2520deg) scale(0.03);
+    opacity: 0;
+  }
+}
+
+@keyframes explode-mega-up-right {
+  0% {
+    transform: translateX(0px) translateY(0px) rotate(0deg) scale(1.5);
+    opacity: 1;
+  }
+
+  100% {
+    transform: translateX(380px) translateY(-380px) rotate(-2520deg) scale(0.03);
+    opacity: 0;
+  }
+}
+
+@keyframes explode-mega-down-left {
+  0% {
+    transform: translateX(0px) translateY(0px) rotate(0deg) scale(1.5);
+    opacity: 1;
+  }
+
+  100% {
+    transform: translateX(-380px) translateY(380px) rotate(2520deg) scale(0.03);
+    opacity: 0;
+  }
+}
+
+@keyframes explode-mega-down-right {
+  0% {
+    transform: translateX(0px) translateY(0px) rotate(0deg) scale(1.5);
+    opacity: 1;
+  }
+
+  100% {
+    transform: translateX(380px) translateY(380px) rotate(-2520deg) scale(0.03);
+    opacity: 0;
+  }
+}
+
+@keyframes explode-extreme-left {
+  0% {
+    transform: translateX(0px) translateY(0px) rotate(0deg) scale(1.6);
+    opacity: 1;
+  }
+
+  100% {
+    transform: translateX(-500px) translateY(-100px) rotate(3600deg) scale(0.02);
+    opacity: 0;
+  }
+}
+
+@keyframes explode-extreme-right {
+  0% {
+    transform: translateX(0px) translateY(0px) rotate(0deg) scale(1.6);
+    opacity: 1;
+  }
+
+  100% {
+    transform: translateX(500px) translateY(100px) rotate(-3600deg) scale(0.02);
+    opacity: 0;
+  }
+}
+
+@keyframes explode-extreme-up {
+  0% {
+    transform: translateX(0px) translateY(0px) rotate(0deg) scale(1.7);
+    opacity: 1;
+  }
+
+  100% {
+    transform: translateX(50px) translateY(-450px) rotate(2700deg) scale(0.02);
+    opacity: 0;
+  }
+}
+
+@keyframes explode-extreme-down {
+  0% {
+    transform: translateX(0px) translateY(0px) rotate(0deg) scale(1.7);
+    opacity: 1;
+  }
+
+  100% {
+    transform: translateX(-50px) translateY(450px) rotate(-2700deg) scale(0.02);
+    opacity: 0;
+  }
+}

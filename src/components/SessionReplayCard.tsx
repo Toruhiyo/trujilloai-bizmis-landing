@@ -5,9 +5,11 @@ import {
   ShoppingCart,
   User,
   MessageCircle,
-  Globe,
+  DollarSign,
 } from "lucide-react";
 import ConversationAudioPlayer from "./ConversationAudioPlayer";
+import SectionBadge from "./SectionBadge";
+import ConfettiExplosion from "./ConfettiExplosion";
 
 interface ConversationBubble {
   id: string;
@@ -30,7 +32,7 @@ interface TimelineMarker {
   type: "chat" | "search" | "cart" | "checkout";
 }
 
-const TOTAL_DURATION_SECONDS = 78; // 1:18 = 78 seconds
+const TOTAL_DURATION_SECONDS = 20; // 0:20 = 20 seconds (actual audio duration)
 const PLAYHEAD_POSITION = 100; // At the end (1:18)
 
 const SessionReplayCard = () => {
@@ -38,33 +40,33 @@ const SessionReplayCard = () => {
   const [animatePlayhead, setAnimatePlayhead] = useState(false);
   const [visibleBubbles, setVisibleBubbles] = useState<Set<string>>(new Set());
 
-  // Conversation marks for audio player
+  // Conversation marks for audio player (adjusted for 20-second audio)
   const conversationMarks: ConversationMark[] = [
-    { time: 5, type: "customer", label: "Customer need" },
-    { time: 8, type: "agent", label: "Agent response" },
-    { time: 12, type: "event", label: "Product search" },
-    { time: 35, type: "customer", label: "Comparison request" },
-    { time: 40, type: "agent", label: "Recommendation" },
-    { time: 55, type: "customer", label: "Agreement" },
-    { time: 62, type: "event", label: "Added to cart" },
-    { time: 75, type: "customer", label: "Thanks" },
-    { time: 78, type: "agent", label: "Goodbye" },
+    { time: 2, type: "customer", label: "Customer need" },
+    { time: 4, type: "agent", label: "Agent response" },
+    { time: 6, type: "event", label: "Product search" },
+    { time: 10, type: "customer", label: "Comparison request" },
+    { time: 12, type: "agent", label: "Recommendation" },
+    { time: 15, type: "customer", label: "Agreement" },
+    { time: 17, type: "event", label: "Added to cart" },
+    { time: 19, type: "customer", label: "Thanks" },
+    { time: 20, type: "agent", label: "Goodbye" },
   ];
 
   const conversations: ConversationBubble[] = useMemo(
     () => [
       {
         id: "1",
-        time: "0:05",
-        position: (5 / TOTAL_DURATION_SECONDS) * 100,
+        time: "0:02",
+        position: (2 / TOTAL_DURATION_SECONDS) * 100,
         type: "customer",
         content: "Hi! I need a workspace solution for my home office.",
         delay: 800,
       },
       {
         id: "2",
-        time: "0:08",
-        position: (8 / TOTAL_DURATION_SECONDS) * 100,
+        time: "0:04",
+        position: (4 / TOTAL_DURATION_SECONDS) * 100,
         type: "agent",
         content:
           "I'd be happy to help! Let me show you our top workspace solutions.",
@@ -72,24 +74,24 @@ const SessionReplayCard = () => {
       },
       {
         id: "3",
-        time: "0:12",
-        position: (12 / TOTAL_DURATION_SECONDS) * 100,
+        time: "0:06",
+        position: (6 / TOTAL_DURATION_SECONDS) * 100,
         type: "event",
         content: "Product Search",
         delay: 1200,
       },
       {
         id: "4",
-        time: "0:35",
-        position: (35 / TOTAL_DURATION_SECONDS) * 100,
+        time: "0:10",
+        position: (10 / TOTAL_DURATION_SECONDS) * 100,
         type: "customer",
         content: "Could you compare these options for a small space?",
         delay: 1400,
       },
       {
         id: "5",
-        time: "0:40",
-        position: (40 / TOTAL_DURATION_SECONDS) * 100,
+        time: "0:12",
+        position: (12 / TOTAL_DURATION_SECONDS) * 100,
         type: "agent",
         content:
           "For small spaces, I'd recommend Product B - it's compact yet functional with great storage.",
@@ -97,32 +99,32 @@ const SessionReplayCard = () => {
       },
       {
         id: "6",
-        time: "0:55",
-        position: (55 / TOTAL_DURATION_SECONDS) * 100,
+        time: "0:15",
+        position: (15 / TOTAL_DURATION_SECONDS) * 100,
         type: "customer",
         content: "That sounds perfect! I'll take it.",
         delay: 1800,
       },
       {
         id: "7",
-        time: "1:02",
-        position: (62 / TOTAL_DURATION_SECONDS) * 100,
+        time: "0:17",
+        position: (17 / TOTAL_DURATION_SECONDS) * 100,
         type: "event",
         content: "Added 1 Item",
         delay: 2000,
       },
       {
         id: "8",
-        time: "1:15",
-        position: (75 / TOTAL_DURATION_SECONDS) * 100,
+        time: "0:19",
+        position: (19 / TOTAL_DURATION_SECONDS) * 100,
         type: "customer",
         content: "Thanks for your help!",
         delay: 2200,
       },
       {
         id: "9",
-        time: "1:18",
-        position: (78 / TOTAL_DURATION_SECONDS) * 100,
+        time: "0:20",
+        position: (20 / TOTAL_DURATION_SECONDS) * 100,
         type: "agent",
         content:
           "My pleasure! Feel free to reach out anytime. We're here whenever you need us!",
@@ -131,29 +133,6 @@ const SessionReplayCard = () => {
     ],
     []
   );
-
-  const markers: TimelineMarker[] = [
-    {
-      time: "0:12",
-      position: (12 / TOTAL_DURATION_SECONDS) * 100,
-      type: "search",
-    },
-    {
-      time: "0:40",
-      position: (40 / TOTAL_DURATION_SECONDS) * 100,
-      type: "chat",
-    },
-    {
-      time: "1:02",
-      position: (62 / TOTAL_DURATION_SECONDS) * 100,
-      type: "cart",
-    },
-    {
-      time: "1:18",
-      position: (78 / TOTAL_DURATION_SECONDS) * 100,
-      type: "checkout",
-    },
-  ];
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -212,30 +191,21 @@ const SessionReplayCard = () => {
         {/* Conversation Details Header */}
         <div className="flex items-center justify-between mb-8 pb-6 border-b border-border/30">
           <div className="flex items-center gap-3">
-            <div className="w-8 h-8 bg-accent rounded-full flex items-center justify-center flex-shrink-0 overflow-hidden">
-              <img
-                src="/images/benefit-3-session-replay-avatar-thumbnail.png"
-                alt="Session Avatar"
-                className="w-6 h-6 object-cover rounded-full"
-              />
+            <div className="w-8 h-8 bg-primary/10 rounded-full flex items-center justify-center flex-shrink-0">
+              <User className="w-4 h-4 text-primary" />
             </div>
             <div>
               <h3 className="font-heading font-semibold text-foreground">
                 Customer
               </h3>
               <div className="flex items-center gap-4 text-sm text-muted-foreground">
-                <div className="flex items-center gap-1">
-                  <div className="w-3 h-3 bg-primary rounded-full flex items-center justify-center">
-                    <Globe className="w-2 h-2 text-background" />
-                  </div>
-                  <span>English</span>
-                </div>
+                <span>English</span>
                 <span>1:18</span>
                 <span>9 messages</span>
               </div>
             </div>
           </div>
-          <div className="text-sm text-muted-foreground">Session Replay</div>
+          <SectionBadge icon={DollarSign} text="Closed sale" className="mb-0" />
         </div>
 
         {/* Audio Player with Conversation Marks */}
@@ -327,38 +297,57 @@ const SessionReplayCard = () => {
                   )}
 
                   {bubble.content === "Added 1 Item" && (
-                    <div className="bg-muted/30 rounded-lg p-4 border border-border/30">
-                      <div className="flex items-center gap-2 mb-3">
-                        <ShoppingCart className="w-4 h-4 text-primary" />
-                        <span className="text-sm font-medium text-foreground">
-                          Added 1 Item
-                        </span>
-                        <span className="text-xs text-muted-foreground ml-auto">
-                          {bubble.time}
+                    <div className="relative bg-gradient-to-r from-primary/10 via-primary/5 to-primary/10 rounded-lg p-4 border-2 border-primary/20 shadow-lg overflow-hidden">
+                      {/* EXPLOSIVE Confetti Animation */}
+                      <ConfettiExplosion className="z-5" />
+
+                      {/* Success Header */}
+                      <div className="flex items-center justify-between mb-3 relative z-10">
+                        <div className="flex items-center gap-2">
+                          <div className="w-8 h-8 bg-gradient-to-r from-primary to-primary-dark rounded-full flex items-center justify-center shadow-lg">
+                            <ShoppingCart className="w-4 h-4 text-background" />
+                          </div>
+                          <div>
+                            <h3 className="text-sm font-bold text-primary">
+                              ITEM ADDED TO CART
+                            </h3>
+                          </div>
+                        </div>
+
+                        <span className="text-xs font-semibold text-primary bg-primary/10 px-3 py-1 rounded-full border border-primary/20">
+                          Success
                         </span>
                       </div>
 
+                      {/* Product Showcase */}
                       <div className="flex justify-center">
-                        <div className="bg-card rounded-lg p-3 border border-border/50 relative">
-                          <div className="w-16 h-16 bg-accent rounded-lg flex items-center justify-center mb-2">
-                            <span className="text-2xl font-bold text-accent-foreground">
+                        <div className="bg-background rounded-lg p-3 border border-primary/30 shadow-lg relative z-10">
+                          <div className="w-16 h-16 bg-gradient-to-br from-accent to-accent/80 rounded-lg flex items-center justify-center mb-2 shadow-lg">
+                            <span className="text-2xl font-black text-accent-foreground">
                               B
                             </span>
                           </div>
-                          <h4 className="text-xs font-medium text-foreground text-center mb-1">
+                          <h4 className="text-xs font-bold text-foreground text-center mb-1">
                             Product B
                           </h4>
                           <p className="text-xs text-muted-foreground text-center">
                             Space Saver
                           </p>
 
-                          {/* Quantity Badge */}
-                          <div className="absolute -top-2 -right-2 w-6 h-6 bg-primary rounded-full flex items-center justify-center">
-                            <span className="text-xs font-bold text-background">
+                          {/* Success Badge */}
+                          <div className="absolute -top-2 -right-2 w-6 h-6 bg-gradient-to-r from-primary to-primary-dark rounded-full flex items-center justify-center shadow-lg">
+                            <span className="text-xs font-black text-background">
                               +1
                             </span>
                           </div>
                         </div>
+                      </div>
+
+                      {/* Timestamp */}
+                      <div className="mt-3 relative z-10">
+                        <span className="text-xs opacity-70 text-muted-foreground">
+                          {bubble.time}
+                        </span>
                       </div>
                     </div>
                   )}
