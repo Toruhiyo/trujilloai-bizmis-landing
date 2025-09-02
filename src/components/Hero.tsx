@@ -46,7 +46,7 @@ const Hero = () => {
                 className="group flex items-center gap-3 h-12 sm:h-14 px-4 sm:px-6 text-sm sm:text-base [&_svg]:!w-5 [&_svg]:!h-5 sm:[&_svg]:!w-6 sm:[&_svg]:!h-6 w-full"
               >
                 <div className="flex-shrink-0">
-                  <FaShopify className="w-5 h-5 sm:w-6 sm:h-6 text-orange-600" />
+                  <FaShopify className="w-6 h-6 sm:w-7 sm:h-7 text-orange-600" />
                 </div>
                 <div className="flex-1 min-w-0 text-center">
                   <div className="font-semibold text-xs sm:text-sm">
@@ -118,7 +118,7 @@ const Hero = () => {
                   className="group flex items-center gap-4 h-20 px-8 text-lg [&_svg]:!w-8 [&_svg]:!h-8 w-full"
                 >
                   <div className="flex-shrink-0">
-                    <FaShopify className="w-8 h-8 text-orange-600" />
+                    <FaShopify className="w-9 h-9 text-orange-600" />
                   </div>
                   <div className="flex-1 min-w-0 text-left">
                     <div className="font-semibold">
