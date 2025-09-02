@@ -536,7 +536,7 @@ const DirectScrollSalesFlow = () => {
                       {/* Product B Column - Recommended */}
                       <div className="relative">
                         <div className="absolute -top-2 left-1/2 transform -translate-x-1/2 bg-primary text-primary-foreground text-xs font-bold px-2 py-1 rounded-full z-10">
-                          BEST
+                          Recommended
                         </div>
                         <div className="h-12 bg-accent/70 rounded-xl flex items-center justify-center border-2 border-primary mb-3">
                           <span className="font-bold text-primary text-sm">
