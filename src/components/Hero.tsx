@@ -27,8 +27,10 @@ const Hero = () => {
           <div className="text-center space-y-3 sm:space-y-4">
             <div className="space-y-2 sm:space-y-3">
               <h1 className="text-4xl xs:text-5xl sm:text-6xl font-heading font-bold text-white ">
-                Sell Online,
-                <span className="block text-white/90">The Human Way</span>
+                Boost Profits,
+                <span className="block text-white/90">
+                  Selling The Human Way
+                </span>
               </h1>
               <p className="text-sm sm:text-base text-white/80 font-body max-w-xl mx-auto">
                 This isn't a chatbot. Bizmis speaks naturally—welcoming your
@@ -96,8 +98,10 @@ const Hero = () => {
             <div className="space-y-8 text-left">
               <div className="space-y-4">
                 <h1 className="text-6xl xl:text-7xl font-heading font-bold text-white leading-[1.0] xl:leading-[1.0]">
-                  Sell Online,
-                  <span className="block text-white/90">The Human Way</span>
+                  Boost Profits,
+                  <span className="block text-white/90">
+                    Selling The Human Way
+                  </span>
                 </h1>
                 <p className="text-xl lg:text-2xl text-white/80 font-body max-w-2xl">
                   This isn't a chatbot. Bizmis speaks naturally—welcoming your
