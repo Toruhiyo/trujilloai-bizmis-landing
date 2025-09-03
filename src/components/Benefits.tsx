@@ -17,7 +17,7 @@ import AudioPlayer from "./AudioPlayer";
 import DirectScrollSalesFlow from "./DirectScrollSalesFlow";
 import FakeImagesSelector, { type ImageOption } from "./FakeImagesSelector";
 import ReviewSatisfactionDashboard from "./ReviewSatisfactionDashboard";
-import SessionReplayCard from "./SessionReplayCard";
+import TabbedSessionReplay from "./TabbedSessionReplay";
 
 const Benefits = () => {
   // Clothing images for the carousel
@@ -579,9 +579,9 @@ const Benefits = () => {
                 </div>
               </div>
 
-              {/* Right Side - Session Replay Card */}
+              {/* Right Side - Tabbed Session Replay */}
               <div className="relative flex justify-center items-start">
-                <SessionReplayCard />
+                <TabbedSessionReplay />
               </div>
             </div>
           </div>

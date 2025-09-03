@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, useCallback } from "react";
 import { Play, Pause, Search, ShoppingCart } from "lucide-react";
 
 interface ConversationMark {
@@ -11,12 +11,14 @@ interface ConversationAudioPlayerProps {
   audioUrl: string;
   conversationMarks: ConversationMark[];
   className?: string;
+  onTimeUpdate?: (currentTime: number, isPlaying: boolean) => void;
 }
 
 const ConversationAudioPlayer: React.FC<ConversationAudioPlayerProps> = ({
   audioUrl,
   conversationMarks,
   className = "",
+  onTimeUpdate,
 }) => {
   const audioRef = useRef<HTMLAudioElement>(null);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -25,23 +27,28 @@ const ConversationAudioPlayer: React.FC<ConversationAudioPlayerProps> = ({
   const [audioProgress, setAudioProgress] = useState(0);
   const [isVisible, setIsVisible] = useState(true);
 
+  const handleTimeUpdate = useCallback(() => {
+    const audio = audioRef.current;
+    if (!audio) return;
+    setCurrentTime(audio.currentTime);
+    setAudioProgress(audio.currentTime / audio.duration);
+    // Use audio element's paused property directly for more accurate state
+    const actualIsPlaying = !audio.paused;
+    onTimeUpdate?.(audio.currentTime, actualIsPlaying);
+  }, [onTimeUpdate]);
+
+  const handleEnded = useCallback(() => {
+    setIsPlaying(false);
+    setCurrentTime(0);
+    setAudioProgress(0);
+  }, []);
+
   useEffect(() => {
     const audio = audioRef.current;
     if (!audio) return;
 
     const handleLoadedMetadata = () => {
       setDuration(audio.duration);
-    };
-
-    const handleTimeUpdate = () => {
-      setCurrentTime(audio.currentTime);
-      setAudioProgress(audio.currentTime / audio.duration);
-    };
-
-    const handleEnded = () => {
-      setIsPlaying(false);
-      setCurrentTime(0);
-      setAudioProgress(0);
     };
 
     audio.addEventListener("loadedmetadata", handleLoadedMetadata);
@@ -53,7 +60,7 @@ const ConversationAudioPlayer: React.FC<ConversationAudioPlayerProps> = ({
       audio.removeEventListener("timeupdate", handleTimeUpdate);
       audio.removeEventListener("ended", handleEnded);
     };
-  }, [audioUrl]);
+  }, [audioUrl, handleTimeUpdate, handleEnded]);
 
   const togglePlayPause = () => {
     const audio = audioRef.current;
@@ -64,13 +71,36 @@ const ConversationAudioPlayer: React.FC<ConversationAudioPlayerProps> = ({
     } else {
       audio.play();
     }
-    setIsPlaying(!isPlaying);
+    const newPlayingState = !isPlaying;
+    setIsPlaying(newPlayingState);
+    onTimeUpdate?.(currentTime, newPlayingState);
   };
 
   const formatTime = (time: number): string => {
     const minutes = Math.floor(time / 60);
     const seconds = Math.floor(time % 60);
     return `${minutes}:${seconds.toString().padStart(2, "0")}`;
+  };
+
+  const handleWaveformClick = (event: React.MouseEvent<HTMLDivElement>) => {
+    const audio = audioRef.current;
+    if (!audio) return;
+
+    const waveformRect = event.currentTarget.getBoundingClientRect();
+    const clickX = event.clientX - waveformRect.left;
+    const waveformWidth = waveformRect.width;
+
+    // Calculate the time based on click position
+    const clickRatio = clickX / waveformWidth;
+    const targetTime = clickRatio * duration;
+
+    // Set audio to that time
+    audio.currentTime = targetTime;
+    setCurrentTime(targetTime);
+    setAudioProgress(targetTime / duration);
+
+    // Trigger the callback immediately for instant focus update
+    onTimeUpdate?.(targetTime, !audio.paused);
   };
 
   const getMarkerColor = (type: ConversationMark["type"]) => {
@@ -125,10 +155,13 @@ const ConversationAudioPlayer: React.FC<ConversationAudioPlayerProps> = ({
           )}
         </button>
 
-        {/* Waveform Background - EXACT copy from SessionReplayCard */}
-        <div className="flex-1 h-16 bg-muted/30 rounded-lg relative overflow-hidden">
+        {/* Waveform Background - CLICKABLE for time jumping */}
+        <div
+          className="flex-1 h-16 bg-muted/30 rounded-lg relative overflow-hidden cursor-pointer hover:bg-muted/40 transition-colors"
+          onClick={handleWaveformClick}
+        >
           {/* Waveform Bars - Fixed Heights */}
-          <div className="absolute inset-0 flex items-center justify-center px-3">
+          <div className="absolute inset-0 flex items-center justify-center px-3 pointer-events-none">
             <div className="flex items-end gap-1 w-full h-10">
               {Array.from({ length: 40 }, (_, i) => {
                 // Create fixed heights pattern that looks like realistic audio
@@ -159,7 +192,7 @@ const ConversationAudioPlayer: React.FC<ConversationAudioPlayerProps> = ({
                 key={index}
                 className={`absolute top-0 h-full w-0.5 ${getMarkerColor(
                   mark.type
-                )} transition-all duration-500 ${
+                )} transition-all duration-500 pointer-events-none ${
                   isVisible
                     ? "opacity-100 translate-y-0"
                     : "opacity-0 translate-y-2"
@@ -173,7 +206,7 @@ const ConversationAudioPlayer: React.FC<ConversationAudioPlayerProps> = ({
                 <div
                   className={`absolute -top-1 -left-3 w-6 h-6 rounded-full ${getMarkerColor(
                     mark.type
-                  )} border-2 border-card flex items-center justify-center`}
+                  )} border-2 border-card flex items-center justify-center pointer-events-none`}
                 >
                   {getMarkerIcon(mark.type, mark.label)}
                 </div>
@@ -182,7 +215,7 @@ const ConversationAudioPlayer: React.FC<ConversationAudioPlayerProps> = ({
 
           {/* Playhead - Simplified */}
           <div
-            className="absolute top-0 h-full w-0.5 bg-primary transition-all duration-200"
+            className="absolute top-0 h-full w-0.5 bg-primary transition-all duration-200 pointer-events-none"
             style={{ left: `${audioProgress * 100}%` }}
           />
         </div>

@@ -1,4 +1,10 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, {
+  useState,
+  useEffect,
+  useMemo,
+  useRef,
+  useCallback,
+} from "react";
 import {
   Clock,
   Search,
@@ -6,24 +12,27 @@ import {
   User,
   MessageCircle,
   DollarSign,
+  Flame,
+  Coffee,
+  Gift,
+  Leaf,
+  LucideIcon,
+  FileSearch,
+  Shield,
+  Globe,
 } from "lucide-react";
 import ConversationAudioPlayer from "./ConversationAudioPlayer";
 import SectionBadge from "./SectionBadge";
 import ConfettiExplosion from "./ConfettiExplosion";
+import {
+  SessionReplayData,
+  ConversationBubble,
+  ConversationMark,
+} from "../data/benefit-3-sessionreplay-1-conversation";
 
-interface ConversationBubble {
-  id: string;
-  time: string;
-  position: number;
-  type: "customer" | "agent" | "event";
-  content: string;
-  delay: number;
-}
-
-interface ConversationMark {
-  time: number; // seconds
-  type: "customer" | "agent" | "event";
-  label: string;
+interface SessionReplayCardProps {
+  sessionData: SessionReplayData;
+  className?: string;
 }
 
 interface TimelineMarker {
@@ -32,106 +41,129 @@ interface TimelineMarker {
   type: "chat" | "search" | "cart" | "checkout";
 }
 
-const TOTAL_DURATION_SECONDS = 20; // 0:20 = 20 seconds (actual audio duration)
-const PLAYHEAD_POSITION = 100; // At the end (1:18)
+// Icon mapping for dynamic icon resolution
+const iconMap: Record<string, LucideIcon> = {
+  DollarSign,
+  Gift,
+  ShoppingCart,
+  Search,
+  Flame,
+  Coffee,
+  Leaf,
+  Clock,
+  User,
+  MessageCircle,
+  FileSearch,
+  Shield,
+  Globe,
+};
 
-const SessionReplayCard = () => {
+const SessionReplayCard: React.FC<SessionReplayCardProps> = ({
+  sessionData,
+  className = "",
+}) => {
   const [isVisible, setIsVisible] = useState(false);
   const [animatePlayhead, setAnimatePlayhead] = useState(false);
   const [visibleBubbles, setVisibleBubbles] = useState<Set<string>>(new Set());
+  const [currentFocusedMessage, setCurrentFocusedMessage] = useState<
+    string | null
+  >(null);
+  const [isAudioPlaying, setIsAudioPlaying] = useState(false);
 
-  // Conversation marks for audio player (adjusted for 20-second audio)
-  const conversationMarks: ConversationMark[] = [
-    { time: 2, type: "customer", label: "Customer need" },
-    { time: 4, type: "agent", label: "Agent response" },
-    { time: 6, type: "event", label: "Product search" },
-    { time: 10, type: "customer", label: "Comparison request" },
-    { time: 12, type: "agent", label: "Recommendation" },
-    { time: 15, type: "customer", label: "Agreement" },
-    { time: 17, type: "event", label: "Added to cart" },
-    { time: 19, type: "customer", label: "Thanks" },
-    { time: 20, type: "agent", label: "Goodbye" },
-  ];
+  // Refs for message elements to enable scrolling
+  const messageRefs = useRef<{ [key: string]: HTMLDivElement | null }>({});
+  const conversationContainerRef = useRef<HTMLDivElement>(null);
 
-  const conversations: ConversationBubble[] = useMemo(
-    () => [
-      {
-        id: "1",
-        time: "0:02",
-        position: (2 / TOTAL_DURATION_SECONDS) * 100,
-        type: "customer",
-        content: "Hi! I need a workspace solution for my home office.",
-        delay: 800,
-      },
-      {
-        id: "2",
-        time: "0:04",
-        position: (4 / TOTAL_DURATION_SECONDS) * 100,
-        type: "agent",
-        content:
-          "I'd be happy to help! Let me show you our top workspace solutions.",
-        delay: 1000,
-      },
-      {
-        id: "3",
-        time: "0:06",
-        position: (6 / TOTAL_DURATION_SECONDS) * 100,
-        type: "event",
-        content: "Product Search",
-        delay: 1200,
-      },
-      {
-        id: "4",
-        time: "0:10",
-        position: (10 / TOTAL_DURATION_SECONDS) * 100,
-        type: "customer",
-        content: "Could you compare these options for a small space?",
-        delay: 1400,
-      },
-      {
-        id: "5",
-        time: "0:12",
-        position: (12 / TOTAL_DURATION_SECONDS) * 100,
-        type: "agent",
-        content:
-          "For small spaces, I'd recommend Product B - it's compact yet functional with great storage.",
-        delay: 1600,
-      },
-      {
-        id: "6",
-        time: "0:15",
-        position: (15 / TOTAL_DURATION_SECONDS) * 100,
-        type: "customer",
-        content: "That sounds perfect! I'll take it.",
-        delay: 1800,
-      },
-      {
-        id: "7",
-        time: "0:17",
-        position: (17 / TOTAL_DURATION_SECONDS) * 100,
-        type: "event",
-        content: "Added 1 Item",
-        delay: 2000,
-      },
-      {
-        id: "8",
-        time: "0:19",
-        position: (19 / TOTAL_DURATION_SECONDS) * 100,
-        type: "customer",
-        content: "Thanks for your help!",
-        delay: 2200,
-      },
-      {
-        id: "9",
-        time: "0:20",
-        position: (20 / TOTAL_DURATION_SECONDS) * 100,
-        type: "agent",
-        content:
-          "My pleasure! Feel free to reach out anytime. We're here whenever you need us!",
-        delay: 2400,
-      },
-    ],
-    []
+  // Helper function to convert time string (e.g., "0:17") to seconds
+  const timeStringToSeconds = useCallback((timeStr: string): number => {
+    const [minutes, seconds] = timeStr.split(":").map(Number);
+    return minutes * 60 + seconds;
+  }, []);
+
+  // Extract data from props
+  const {
+    audioUrl,
+    totalDurationSeconds,
+    language,
+    duration,
+    messageCount,
+    title,
+    category,
+    success,
+    conversationMarks,
+    conversations,
+  } = sessionData;
+
+  // Generate tag display based on category and success
+  const getTagIcon = () => {
+    if (category === "Sale") {
+      return success ? DollarSign : ShoppingCart;
+    } else {
+      return success ? MessageCircle : User;
+    }
+  };
+
+  const getTagText = () => {
+    const status = success ? "Success" : "Failed";
+    return `${category} ${status}`;
+  };
+
+  const TagIcon = getTagIcon();
+
+  // Function to determine which message should be focused based on current audio time
+  const getFocusedMessageId = useCallback(
+    (currentTime: number) => {
+      // Find the message that should be active at the current time
+      // We want the message that was sent at or before the current time
+      // but hasn't been superseded by a later message
+      let focusedMessage = null;
+
+      for (const conversation of conversations) {
+        const messageTime = timeStringToSeconds(conversation.time);
+        if (messageTime <= currentTime) {
+          focusedMessage = conversation.id;
+        } else {
+          break; // We've found the first message after current time, so stop
+        }
+      }
+      return focusedMessage;
+    },
+    [conversations, timeStringToSeconds]
+  );
+
+  // Smooth scroll to focused message
+  const scrollToMessage = useCallback((messageId: string) => {
+    const messageElement = messageRefs.current[messageId];
+
+    if (messageElement) {
+      messageElement.scrollIntoView({
+        behavior: "smooth",
+        block: "center",
+        inline: "nearest",
+      });
+    }
+  }, []);
+
+  // Handle audio time updates
+  const handleAudioTimeUpdate = useCallback(
+    (currentTime: number, isPlaying: boolean) => {
+      setIsAudioPlaying(isPlaying);
+
+      if (isPlaying) {
+        const newFocusedMessage = getFocusedMessageId(currentTime);
+
+        if (newFocusedMessage && newFocusedMessage !== currentFocusedMessage) {
+          setCurrentFocusedMessage(newFocusedMessage);
+          // Immediate scroll for audio start, small delay for ongoing playback
+          const delay = currentTime < 0.5 ? 0 : 100;
+          setTimeout(() => scrollToMessage(newFocusedMessage), delay);
+        }
+      } else {
+        // Clear focus when audio stops
+        setCurrentFocusedMessage(null);
+      }
+    },
+    [currentFocusedMessage, getFocusedMessageId, scrollToMessage]
   );
 
   useEffect(() => {
@@ -181,7 +213,7 @@ const SessionReplayCard = () => {
   };
 
   return (
-    <div className="w-full max-w-2xl">
+    <div className={`w-full max-w-2xl ${className}`}>
       {/* Integrated Session Replay Card */}
       <div
         className={`bg-card backdrop-blur-sm rounded-2xl p-8 border border-orange-200/50 shadow-brand transform rotate-2 hover:rotate-1 transition-all duration-500 ${
@@ -199,26 +231,31 @@ const SessionReplayCard = () => {
                 Customer
               </h3>
               <div className="flex items-center gap-4 text-sm text-muted-foreground">
-                <span>English</span>
-                <span>1:18</span>
-                <span>9 messages</span>
+                <span>{language}</span>
+                <span>{duration}</span>
+                <span>{messageCount}</span>
               </div>
             </div>
           </div>
-          <SectionBadge icon={DollarSign} text="Closed sale" className="mb-0" />
+          <SectionBadge icon={TagIcon} text={getTagText()} className="mb-0" />
         </div>
 
         {/* Audio Player with Conversation Marks */}
         <ConversationAudioPlayer
-          audioUrl="/audio/benefit-1-customization-voice-cloning-original.mp3"
+          audioUrl={audioUrl}
           conversationMarks={conversationMarks}
+          onTimeUpdate={handleAudioTimeUpdate}
         />
 
         {/* Conversation Area */}
-        <div className="space-y-4 mb-8 max-h-80 overflow-y-auto conversation-scrollbar">
+        <div
+          ref={conversationContainerRef}
+          className="space-y-4 mb-8 max-h-80 overflow-y-auto conversation-scrollbar"
+        >
           {conversations.map((bubble, index) => (
             <div
               key={bubble.id}
+              ref={(el) => (messageRefs.current[bubble.id] = el)}
               className={`transition-all duration-500 ${
                 visibleBubbles.has(bubble.id)
                   ? "opacity-100 translate-y-0"
@@ -229,14 +266,20 @@ const SessionReplayCard = () => {
                 // Event within conversation
                 <div className="py-2">
                   {bubble.content === "Product Search" && (
-                    <div className="bg-muted/30 rounded-lg p-4 border border-border/30">
+                    <div
+                      className={`bg-muted/30 rounded-lg p-4 border border-border/30 transition-all duration-500 ${
+                        currentFocusedMessage === bubble.id && isAudioPlaying
+                          ? "scale-105 ring-2 ring-orange-400/50 bg-orange-50 shadow-lg shadow-orange-400/20 transform-gpu"
+                          : ""
+                      }`}
+                    >
                       <div className="flex items-center gap-2 mb-3">
                         <Search className="w-4 h-4 text-primary" />
                         <span className="text-sm font-medium text-foreground">
                           Product Search
                         </span>
                         <span className="text-xs text-muted-foreground">
-                          "workspace"
+                          "gift search"
                         </span>
                         <span className="text-xs text-muted-foreground ml-auto">
                           {bubble.time}
@@ -244,60 +287,115 @@ const SessionReplayCard = () => {
                       </div>
 
                       <div className="grid grid-cols-3 gap-2">
-                        {/* Product A */}
+                        {/* Cozy Candle Set */}
                         <div className="bg-card rounded-lg p-2 border border-border/50">
-                          <div className="w-full h-12 bg-secondary rounded-lg flex items-center justify-center mb-2">
-                            <span className="text-lg font-bold text-secondary-foreground">
-                              A
-                            </span>
+                          <div className="w-full h-12 bg-primary/10 rounded-lg flex items-center justify-center mb-2">
+                            <Flame className="w-6 h-6 text-primary" />
                           </div>
                           <h4 className="text-xs font-medium text-foreground mb-1">
-                            Product A
+                            Cozy Candle Set
                           </h4>
                           <p className="text-xs text-muted-foreground">
-                            Compact Desk
+                            Clean Scents • €35
                           </p>
                         </div>
 
-                        {/* Product B */}
+                        {/* Insulated Mug */}
                         <div className="bg-card rounded-lg p-2 border border-border/50">
                           <div className="w-full h-12 bg-accent rounded-lg flex items-center justify-center mb-2">
-                            <span className="text-lg font-bold text-accent-foreground">
-                              B
-                            </span>
+                            <Coffee className="w-6 h-6 text-accent-foreground" />
                           </div>
                           <h4 className="text-xs font-medium text-foreground mb-1">
-                            Product B
+                            Insulated Mug
                           </h4>
                           <p className="text-xs text-muted-foreground">
-                            Space Saver
+                            Travel Ready • €28
                           </p>
                         </div>
 
-                        {/* Product C */}
+                        {/* Plant Gift Set */}
                         <div className="bg-card rounded-lg p-2 border border-border/50">
                           <div className="w-full h-12 bg-primary/20 rounded-lg flex items-center justify-center mb-2">
-                            <span className="text-lg font-bold text-primary">
-                              C
-                            </span>
+                            <Leaf className="w-6 h-6 text-primary" />
                           </div>
                           <h4 className="text-xs font-medium text-foreground mb-1">
-                            Product C
+                            Plant Gift Set
                           </h4>
                           <p className="text-xs text-muted-foreground">
-                            Full Station
+                            Low Maintenance • €42
                           </p>
                         </div>
                       </div>
 
                       <div className="text-center text-xs text-muted-foreground mt-2">
-                        3 products found
+                        3 results found
                       </div>
                     </div>
                   )}
 
-                  {bubble.content === "Added 1 Item" && (
-                    <div className="relative bg-gradient-to-r from-primary/10 via-primary/5 to-primary/10 rounded-lg p-4 border-2 border-primary/20 shadow-lg overflow-hidden">
+                  {bubble.content === "Policy Lookup" && (
+                    <div
+                      className={`bg-muted/30 rounded-lg p-4 border border-border/30 transition-all duration-500 ${
+                        currentFocusedMessage === bubble.id && isAudioPlaying
+                          ? "scale-105 ring-2 ring-orange-400/50 bg-orange-50 shadow-lg shadow-orange-400/20 transform-gpu"
+                          : ""
+                      }`}
+                    >
+                      <div className="flex items-center gap-2 mb-3">
+                        <FileSearch className="w-4 h-4 text-primary" />
+                        <span className="text-sm font-medium text-foreground">
+                          Policy Lookup
+                        </span>
+                        <span className="text-xs text-muted-foreground">
+                          "international shipping"
+                        </span>
+                        <span className="text-xs text-muted-foreground ml-auto">
+                          {bubble.time}
+                        </span>
+                      </div>
+
+                      <div className="grid grid-cols-2 gap-3">
+                        {/* Shipping Policy */}
+                        <div className="bg-card rounded-lg p-3 border border-border/50">
+                          <div className="w-full h-12 bg-primary/10 rounded-lg flex items-center justify-center mb-2">
+                            <Globe className="w-6 h-6 text-primary" />
+                          </div>
+                          <h4 className="text-xs font-medium text-foreground mb-1">
+                            International Shipping
+                          </h4>
+                          <p className="text-xs text-muted-foreground">
+                            Canada: 5-7 days • $12 or Free $75+
+                          </p>
+                        </div>
+
+                        {/* Customs Policy */}
+                        <div className="bg-card rounded-lg p-3 border border-border/50">
+                          <div className="w-full h-12 bg-accent rounded-lg flex items-center justify-center mb-2">
+                            <Shield className="w-6 h-6 text-accent-foreground" />
+                          </div>
+                          <h4 className="text-xs font-medium text-foreground mb-1">
+                            Customs & Duties
+                          </h4>
+                          <p className="text-xs text-muted-foreground">
+                            Forms handled • Local rates may apply
+                          </p>
+                        </div>
+                      </div>
+
+                      <div className="text-center text-xs text-muted-foreground mt-3">
+                        ✓ Policy terms retrieved
+                      </div>
+                    </div>
+                  )}
+
+                  {bubble.content === "Add to Cart" && (
+                    <div
+                      className={`relative bg-gradient-to-r from-primary/10 via-primary/5 to-primary/10 rounded-lg p-4 border-2 border-primary/20 shadow-lg overflow-hidden transition-all duration-500 ${
+                        currentFocusedMessage === bubble.id && isAudioPlaying
+                          ? "scale-105 ring-2 ring-orange-400/50 shadow-xl shadow-orange-400/20 transform-gpu"
+                          : ""
+                      }`}
+                    >
                       {/* EXPLOSIVE Confetti Animation */}
                       <ConfettiExplosion className="z-5" />
 
@@ -322,16 +420,14 @@ const SessionReplayCard = () => {
                       {/* Product Showcase */}
                       <div className="flex justify-center">
                         <div className="bg-background rounded-lg p-3 border border-primary/30 shadow-lg relative z-10">
-                          <div className="w-16 h-16 bg-gradient-to-br from-accent to-accent/80 rounded-lg flex items-center justify-center mb-2 shadow-lg">
-                            <span className="text-2xl font-black text-accent-foreground">
-                              B
-                            </span>
+                          <div className="w-16 h-16 bg-gradient-to-br from-primary/20 to-primary/10 rounded-lg flex items-center justify-center mb-2 shadow-lg">
+                            <Flame className="text-2xl text-primary w-8 h-8" />
                           </div>
                           <h4 className="text-xs font-bold text-foreground text-center mb-1">
-                            Product B
+                            Cozy Candle Set
                           </h4>
                           <p className="text-xs text-muted-foreground text-center">
-                            Space Saver
+                            Clean Scents • €35
                           </p>
 
                           {/* Success Badge */}
@@ -369,10 +465,14 @@ const SessionReplayCard = () => {
                     </div>
                   )}
                   <div
-                    className={`max-w-[70%] px-3 py-2 rounded-lg ${
+                    className={`max-w-[70%] px-3 py-2 rounded-lg transition-all duration-500 ${
                       bubble.type === "customer"
                         ? "bg-primary text-background"
                         : "bg-muted text-foreground"
+                    } ${
+                      currentFocusedMessage === bubble.id && isAudioPlaying
+                        ? "scale-105 ring-2 ring-orange-400/50 shadow-lg shadow-orange-400/20 transform-gpu"
+                        : ""
                     }`}
                   >
                     <p className="text-sm">{bubble.content}</p>
@@ -389,6 +489,33 @@ const SessionReplayCard = () => {
               )}
             </div>
           ))}
+
+          {/* End of Call Indicator */}
+          <div className="flex flex-col items-center py-8 text-center">
+            <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mb-4 border-2 border-primary/20">
+              <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center">
+                <svg
+                  className="w-4 h-4 text-primary-foreground"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21L6.16 11.37c-.532.3-.532 1.127.035 1.462C7.34 13.664 8.536 14.86 9.368 16.005c.337.567 1.164.567 1.462.035l1.983-4.064a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.948V17a2 2 0 01-2 2h-1C9.716 19 4 13.284 4 6V5z"
+                  />
+                </svg>
+              </div>
+            </div>
+            <h4 className="text-sm font-medium text-foreground mb-1">
+              Call Ended
+            </h4>
+            <p className="text-xs text-muted-foreground">
+              Session completed successfully • Duration: {duration}
+            </p>
+          </div>
         </div>
       </div>
     </div>
