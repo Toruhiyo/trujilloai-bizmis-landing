@@ -20,20 +20,20 @@ export const saleLoyalCustomerSessionReplayData: SessionReplayData = {
   },
 
   // Example information
-  title: "Returning Customer Reorder",
+  title: "Coffee Subscription Renewal",
   category: "Sale",
   success: true,
 
   // Conversation marks for audio player (adjusted for 20-second audio)
   conversationMarks: [
-    { time: 2, type: "customer", label: "Reorder need" },
+    { time: 2, type: "customer", label: "Coffee subscription" },
     { time: 4, type: "agent", label: "Personal recognition" },
-    { time: 7, type: "customer", label: "Product feedback" },
-    { time: 9, type: "agent", label: "Personalized suggestion" },
+    { time: 7, type: "customer", label: "Equipment interest" },
+    { time: 9, type: "agent", label: "Remembered preference" },
     { time: 12, type: "event", label: "Product Search" },
-    { time: 15, type: "customer", label: "Additional request" },
+    { time: 15, type: "customer", label: "Accessory request" },
     { time: 17, type: "event", label: "Add to Cart" },
-    { time: 19, type: "agent", label: "Address confirmation" },
+    { time: 19, type: "agent", label: "Delivery confirmation" },
     { time: 20, type: "customer", label: "Appreciation" },
   ],
 
@@ -44,7 +44,8 @@ export const saleLoyalCustomerSessionReplayData: SessionReplayData = {
       time: "0:02",
       position: (2 / 20) * 100,
       type: "customer",
-      content: "I need to reorder my skincare routine—I'm almost out!",
+      content:
+        "Hi! Time for my monthly coffee subscription renewal—and I'm running low!",
       delay: 800,
     },
     {
@@ -53,7 +54,7 @@ export const saleLoyalCustomerSessionReplayData: SessionReplayData = {
       position: (4 / 20) * 100,
       type: "agent",
       content:
-        "Hi Jane! Perfect timing—I was just thinking about you. How's that vitamin C serum working out? Your usual Glow Kit reorder?",
+        "Jane! Great to see you back. How are those Ethiopian beans working out? Ready for your usual Premium Roast subscription?",
       delay: 1000,
     },
     {
@@ -62,7 +63,7 @@ export const saleLoyalCustomerSessionReplayData: SessionReplayData = {
       position: (7 / 20) * 100,
       type: "customer",
       content:
-        "The serum is incredible! Yes, the full kit again, but I'd love to try that new moisturizer you mentioned last time.",
+        "They're amazing! Yes, definitely the subscription again, but I've been eyeing that French press you mentioned last month.",
       delay: 1200,
     },
     {
@@ -71,7 +72,7 @@ export const saleLoyalCustomerSessionReplayData: SessionReplayData = {
       position: (9 / 20) * 100,
       type: "agent",
       content:
-        "Ah yes! The Hydrating Complex—I saved it to your wishlist. It's perfect for your skin type. Let me bundle that with your usual order.",
+        "Perfect! The Borosilicate French Press—I added it to your favorites. It'll pair beautifully with your Ethiopian beans. Let me bundle everything.",
       delay: 1400,
     },
     {
@@ -88,7 +89,7 @@ export const saleLoyalCustomerSessionReplayData: SessionReplayData = {
       position: (15 / 20) * 100,
       type: "customer",
       content:
-        "Perfect! And maybe add that eye cream you recommended for my late work nights?",
+        "Excellent! Could we also add that insulated travel mug? My morning commute coffee keeps getting cold.",
       delay: 1800,
     },
     {
@@ -105,7 +106,7 @@ export const saleLoyalCustomerSessionReplayData: SessionReplayData = {
       position: (19 / 20) * 100,
       type: "agent",
       content:
-        "All set! Glow Kit plus Hydrating Complex and Revitalizing Eye Cream. Same delivery address on Oak Street?",
+        "Done! Premium Coffee Subscription, French Press, and Copper Travel Mug. Same address on Oak Street?",
       delay: 2200,
     },
     {
@@ -114,7 +115,7 @@ export const saleLoyalCustomerSessionReplayData: SessionReplayData = {
       position: (20 / 20) * 100,
       type: "customer",
       content:
-        "Yes, exactly! You remember everything. Thanks for keeping track of my skincare journey!",
+        "Perfect! You always remember my preferences. Thanks for keeping my coffee ritual going strong!",
       delay: 2400,
     },
     {
@@ -123,7 +124,7 @@ export const saleLoyalCustomerSessionReplayData: SessionReplayData = {
       position: (21 / 20) * 100, // slightly beyond to show completion
       type: "agent",
       content:
-        "That's what I'm here for! Your order ships today and arrives Wednesday. Your skin will thank you!",
+        "That's what I'm here for! Your subscription renews today, equipment ships Wednesday. Enjoy your perfect morning brew!",
       delay: 2600,
     },
   ],

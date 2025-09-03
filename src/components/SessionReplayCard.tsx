@@ -15,6 +15,8 @@ import {
   Flame,
   Coffee,
   Gift,
+  Package,
+  Container,
   Leaf,
   LucideIcon,
   FileSearch,
@@ -184,7 +186,7 @@ const SessionReplayCard: React.FC<SessionReplayCardProps> = ({
                   success ? "text-primary" : "text-muted-foreground"
                 }`}
               >
-                {success ? "✓ Resolved Successfully" : "⚠ Unresolved Issue"}
+                {success ? "✓ Sucessful" : "⚠ UnResolved"}
               </div>
             </div>
 
@@ -302,12 +304,18 @@ const SessionReplayCard: React.FC<SessionReplayCardProps> = ({
                       }`}
                     >
                       <div className="flex items-center gap-2 mb-3">
-                        <Search className="w-4 h-4 text-primary" />
+                        {sessionData.title.includes("Coffee") ? (
+                          <Coffee className="w-4 h-4 text-primary" />
+                        ) : (
+                          <Search className="w-4 h-4 text-primary" />
+                        )}
                         <span className="text-sm font-medium text-foreground">
-                          Product Search
+                          {bubble.content}
                         </span>
                         <span className="text-xs text-muted-foreground">
-                          "gift search"
+                          {sessionData.title.includes("Coffee")
+                            ? '"coffee equipment"'
+                            : '"gift search"'}
                         </span>
                         <span className="text-xs text-muted-foreground ml-auto">
                           {bubble.time}
@@ -315,44 +323,89 @@ const SessionReplayCard: React.FC<SessionReplayCardProps> = ({
                       </div>
 
                       <div className="grid grid-cols-3 gap-2">
-                        {/* Cozy Candle Set */}
-                        <div className="bg-card rounded-lg p-2 border border-border/50">
-                          <div className="w-full h-12 bg-primary/10 rounded-lg flex items-center justify-center mb-2">
-                            <Flame className="w-6 h-6 text-primary" />
-                          </div>
-                          <h4 className="text-xs font-medium text-foreground mb-1">
-                            Cozy Candle Set
-                          </h4>
-                          <p className="text-xs text-muted-foreground">
-                            Clean Scents • €35
-                          </p>
-                        </div>
+                        {sessionData.title.includes("Coffee") ? (
+                          <>
+                            {/* French Press */}
+                            <div className="bg-card rounded-lg p-2 border border-border/50">
+                              <div className="w-full h-12 bg-primary/10 rounded-lg flex items-center justify-center mb-2">
+                                <Coffee className="w-6 h-6 text-primary" />
+                              </div>
+                              <h4 className="text-xs font-medium text-foreground mb-1">
+                                French Press
+                              </h4>
+                              <p className="text-xs text-muted-foreground">
+                                Borosilicate • €45
+                              </p>
+                            </div>
 
-                        {/* Insulated Mug */}
-                        <div className="bg-card rounded-lg p-2 border border-border/50">
-                          <div className="w-full h-12 bg-accent rounded-lg flex items-center justify-center mb-2">
-                            <Coffee className="w-6 h-6 text-accent-foreground" />
-                          </div>
-                          <h4 className="text-xs font-medium text-foreground mb-1">
-                            Insulated Mug
-                          </h4>
-                          <p className="text-xs text-muted-foreground">
-                            Travel Ready • €28
-                          </p>
-                        </div>
+                            {/* Travel Mug */}
+                            <div className="bg-card rounded-lg p-2 border border-border/50">
+                              <div className="w-full h-12 bg-accent rounded-lg flex items-center justify-center mb-2">
+                                <Container className="w-6 h-6 text-accent-foreground" />
+                              </div>
+                              <h4 className="text-xs font-medium text-foreground mb-1">
+                                Copper Travel Mug
+                              </h4>
+                              <p className="text-xs text-muted-foreground">
+                                Insulated • €32
+                              </p>
+                            </div>
 
-                        {/* Plant Gift Set */}
-                        <div className="bg-card rounded-lg p-2 border border-border/50">
-                          <div className="w-full h-12 bg-primary/20 rounded-lg flex items-center justify-center mb-2">
-                            <Leaf className="w-6 h-6 text-primary" />
-                          </div>
-                          <h4 className="text-xs font-medium text-foreground mb-1">
-                            Plant Gift Set
-                          </h4>
-                          <p className="text-xs text-muted-foreground">
-                            Low Maintenance • €42
-                          </p>
-                        </div>
+                            {/* Coffee Storage */}
+                            <div className="bg-card rounded-lg p-2 border border-border/50">
+                              <div className="w-full h-12 bg-muted rounded-lg flex items-center justify-center mb-2">
+                                <Package className="w-6 h-6 text-muted-foreground" />
+                              </div>
+                              <h4 className="text-xs font-medium text-foreground mb-1">
+                                Airtight Container
+                              </h4>
+                              <p className="text-xs text-muted-foreground">
+                                Bean Storage • €28
+                              </p>
+                            </div>
+                          </>
+                        ) : (
+                          <>
+                            {/* Cozy Candle Set */}
+                            <div className="bg-card rounded-lg p-2 border border-border/50">
+                              <div className="w-full h-12 bg-primary/10 rounded-lg flex items-center justify-center mb-2">
+                                <Flame className="w-6 h-6 text-primary" />
+                              </div>
+                              <h4 className="text-xs font-medium text-foreground mb-1">
+                                Cozy Candle Set
+                              </h4>
+                              <p className="text-xs text-muted-foreground">
+                                Clean Scents • €35
+                              </p>
+                            </div>
+
+                            {/* Insulated Mug */}
+                            <div className="bg-card rounded-lg p-2 border border-border/50">
+                              <div className="w-full h-12 bg-accent rounded-lg flex items-center justify-center mb-2">
+                                <Coffee className="w-6 h-6 text-accent-foreground" />
+                              </div>
+                              <h4 className="text-xs font-medium text-foreground mb-1">
+                                Insulated Mug
+                              </h4>
+                              <p className="text-xs text-muted-foreground">
+                                Travel Ready • €28
+                              </p>
+                            </div>
+
+                            {/* Plant Gift Set */}
+                            <div className="bg-card rounded-lg p-2 border border-border/50">
+                              <div className="w-full h-12 bg-primary/20 rounded-lg flex items-center justify-center mb-2">
+                                <Leaf className="w-6 h-6 text-primary" />
+                              </div>
+                              <h4 className="text-xs font-medium text-foreground mb-1">
+                                Plant Gift Set
+                              </h4>
+                              <p className="text-xs text-muted-foreground">
+                                Low Maintenance • €42
+                              </p>
+                            </div>
+                          </>
+                        )}
                       </div>
 
                       <div className="text-center text-xs text-muted-foreground mt-2">
@@ -449,13 +502,13 @@ const SessionReplayCard: React.FC<SessionReplayCardProps> = ({
                       <div className="flex justify-center">
                         <div className="bg-background rounded-lg p-3 border border-primary/30 shadow-lg relative z-10">
                           <div className="w-16 h-16 bg-gradient-to-br from-primary/20 to-primary/10 rounded-lg flex items-center justify-center mb-2 shadow-lg">
-                            <Flame className="text-2xl text-primary w-8 h-8" />
+                            <Coffee className="text-2xl text-primary w-8 h-8" />
                           </div>
                           <h4 className="text-xs font-bold text-foreground text-center mb-1">
-                            Cozy Candle Set
+                            French Press Set
                           </h4>
                           <p className="text-xs text-muted-foreground text-center">
-                            Clean Scents • €35
+                            Borosilicate • €45
                           </p>
 
                           {/* Success Badge */}
