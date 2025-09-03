@@ -1,15 +1,15 @@
 import { SessionReplayData } from "./index";
 
-// Customer support scenario - International shipping policy inquiry
-export const supportPolicyQuestionSessionReplayData: SessionReplayData = {
+// Customer support scenario - Shipping restriction issue
+export const supportFailedRequestSessionReplayData: SessionReplayData = {
   // Audio configuration
   audioUrl: "/audio/benefit-1-customization-voice-cloning-original.mp3",
   totalDurationSeconds: 20, // 0:20 = 20 seconds (actual audio duration)
 
   // Session metadata
-  date: new Date(2025, 11, 13), // Dec 13, 2025 (month is 0-indexed)
+  date: new Date(2025, 11, 12), // Dec 12, 2025 (month is 0-indexed)
   language: "English",
-  durationSeconds: 52, // 0:52 = 52 seconds
+  durationSeconds: 58, // 0:58 = 58 seconds
   messageCount: 7,
 
   // Customer information
@@ -19,19 +19,19 @@ export const supportPolicyQuestionSessionReplayData: SessionReplayData = {
   },
 
   // Example information
-  title: "International Shipping Inquiry",
+  title: "Shipping Restriction Issue",
   category: "Support",
-  success: true,
+  success: false,
 
   // Conversation marks for audio player (adjusted for 20-second audio)
   conversationMarks: [
     { time: 2, type: "customer", label: "Shipping inquiry" },
-    { time: 4, type: "agent", label: "Initial response" },
+    { time: 4, type: "agent", label: "Initial check" },
     { time: 7, type: "event", label: "Policy Lookup" },
-    { time: 11, type: "agent", label: "Policy explanation" },
-    { time: 15, type: "customer", label: "Follow-up question" },
-    { time: 17, type: "agent", label: "Additional help" },
-    { time: 19, type: "customer", label: "Thanks" },
+    { time: 11, type: "agent", label: "Restriction found" },
+    { time: 15, type: "customer", label: "Frustration" },
+    { time: 18, type: "agent", label: "No alternatives" },
+    { time: 19, type: "customer", label: "Disappointment" },
   ],
 
   // Conversation bubbles
@@ -42,7 +42,7 @@ export const supportPolicyQuestionSessionReplayData: SessionReplayData = {
       position: (2 / 20) * 100,
       type: "customer",
       content:
-        "Hi! Do you ship internationally? I'm in Canada and want to order.",
+        "Hi! I want to order candles as a gift to my friend in rural Alaska. Can you ship there?",
       delay: 800,
     },
     {
@@ -50,8 +50,7 @@ export const supportPolicyQuestionSessionReplayData: SessionReplayData = {
       time: "0:04",
       position: (4 / 20) * 100,
       type: "agent",
-      content:
-        "Absolutely! Let me check our international shipping details for you.",
+      content: "Let me check our shipping coverage for that area right away.",
       delay: 1000,
     },
     {
@@ -68,7 +67,7 @@ export const supportPolicyQuestionSessionReplayData: SessionReplayData = {
       position: (11 / 20) * 100,
       type: "agent",
       content:
-        "Great news! We ship to Canada in 5-7 business days. Free shipping over $75, otherwise $12.",
+        "I'm sorry, but we don't currently ship to remote areas in Alaska due to logistics constraints. Only major cities are covered.",
       delay: 1400,
     },
     {
@@ -76,16 +75,17 @@ export const supportPolicyQuestionSessionReplayData: SessionReplayData = {
       time: "0:15",
       position: (15 / 20) * 100,
       type: "customer",
-      content: "Perfect! What about customs or duties?",
+      content:
+        "Seriously? It's still the US! Isn't there any way to make this work?",
       delay: 1600,
     },
     {
       id: "6",
-      time: "0:17",
-      position: (17 / 20) * 100,
+      time: "0:18",
+      position: (18 / 20) * 100,
       type: "agent",
       content:
-        "All customs forms are handled by us. Duties may apply based on local Canadian rates.",
+        "I understand your frustration, but our carriers don't service remote Alaskan locations. There's no override option available.",
       delay: 1800,
     },
     {
@@ -93,7 +93,8 @@ export const supportPolicyQuestionSessionReplayData: SessionReplayData = {
       time: "0:19",
       position: (19 / 20) * 100,
       type: "customer",
-      content: "Excellent! Thank you for the quick help!",
+      content:
+        "This is so disappointing. I guess I'll have to find another company.",
       delay: 2000,
     },
   ],

@@ -7,9 +7,16 @@ export const saleGiftSessionReplayData: SessionReplayData = {
   totalDurationSeconds: 20, // 0:20 = 20 seconds (actual audio duration)
 
   // Session metadata
+  date: new Date(2025, 11, 15), // Dec 15, 2025 (month is 0-indexed)
   language: "English",
-  duration: "1:18",
-  messageCount: "9 messages",
+  durationSeconds: 78, // 1:18 = 78 seconds
+  messageCount: 9,
+
+  // Customer information
+  customer: {
+    name: null, // Anonymous customer
+    isLoyal: false,
+  },
 
   // Example information
   title: "Birthday Gift Purchase",
@@ -109,4 +116,3 @@ export const saleGiftSessionReplayData: SessionReplayData = {
     },
   ],
 };
-

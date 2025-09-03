@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef, useCallback } from "react";
-import { Play, Pause, Search, ShoppingCart } from "lucide-react";
+import { Play, Pause, Search, ShoppingCart, FileSearch } from "lucide-react";
 
 interface ConversationMark {
   time: number; // seconds
@@ -120,6 +120,11 @@ const ConversationAudioPlayer: React.FC<ConversationAudioPlayerProps> = ({
     // Only handle event markers now
     if (type === "event" && label) {
       const lowerLabel = label.toLowerCase();
+
+      // FileSearch icon for policy lookup events
+      if (lowerLabel.includes("policy")) {
+        return <FileSearch className="w-3 h-3 text-background" />;
+      }
 
       // Magnifying glass for search events
       if (lowerLabel.includes("search")) {

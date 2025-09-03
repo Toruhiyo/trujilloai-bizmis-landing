@@ -24,40 +24,13 @@ import {
 import ConversationAudioPlayer from "./ConversationAudioPlayer";
 import SectionBadge from "./SectionBadge";
 import ConfettiExplosion from "./ConfettiExplosion";
-import {
-  SessionReplayData,
-  ConversationBubble,
-  ConversationMark,
-} from "../data/benefit-3-sessionreplay-1-conversation";
+import { SessionReplayData } from "../data/session-replays";
+import { formatDuration, timeStringToSeconds } from "../lib/utils/time";
 
 interface SessionReplayCardProps {
   sessionData: SessionReplayData;
   className?: string;
 }
-
-interface TimelineMarker {
-  time: string;
-  position: number;
-  type: "chat" | "search" | "cart" | "checkout";
-}
-
-// Icon mapping for dynamic icon resolution
-const iconMap: Record<string, LucideIcon> = {
-  DollarSign,
-  Gift,
-  ShoppingCart,
-  Search,
-  Flame,
-  Coffee,
-  Leaf,
-  Clock,
-  User,
-  MessageCircle,
-  FileSearch,
-  Shield,
-  Globe,
-};
-
 const SessionReplayCard: React.FC<SessionReplayCardProps> = ({
   sessionData,
   className = "",
@@ -74,19 +47,14 @@ const SessionReplayCard: React.FC<SessionReplayCardProps> = ({
   const messageRefs = useRef<{ [key: string]: HTMLDivElement | null }>({});
   const conversationContainerRef = useRef<HTMLDivElement>(null);
 
-  // Helper function to convert time string (e.g., "0:17") to seconds
-  const timeStringToSeconds = useCallback((timeStr: string): number => {
-    const [minutes, seconds] = timeStr.split(":").map(Number);
-    return minutes * 60 + seconds;
-  }, []);
-
   // Extract data from props
   const {
     audioUrl,
-    totalDurationSeconds,
+    date,
     language,
-    duration,
+    durationSeconds,
     messageCount,
+    customer,
     title,
     category,
     success,
@@ -94,18 +62,22 @@ const SessionReplayCard: React.FC<SessionReplayCardProps> = ({
     conversations,
   } = sessionData;
 
-  // Generate tag display based on category and success
+  // Helper functions to format the new data types
+  const formatDate = (date: Date): string => {
+    return date.toLocaleDateString("en-US", {
+      month: "short",
+      day: "numeric",
+      year: "numeric",
+    });
+  };
+
+  // Generate tag display based on category
   const getTagIcon = () => {
-    if (category === "Sale") {
-      return success ? DollarSign : ShoppingCart;
-    } else {
-      return success ? MessageCircle : User;
-    }
+    return category === "Sale" ? DollarSign : MessageCircle;
   };
 
   const getTagText = () => {
-    const status = success ? "Success" : "Failed";
-    return `${category} ${status}`;
+    return category;
   };
 
   const TagIcon = getTagIcon();
@@ -128,7 +100,7 @@ const SessionReplayCard: React.FC<SessionReplayCardProps> = ({
       }
       return focusedMessage;
     },
-    [conversations, timeStringToSeconds]
+    [conversations]
   );
 
   // Smooth scroll to focused message
@@ -182,36 +154,6 @@ const SessionReplayCard: React.FC<SessionReplayCardProps> = ({
     return () => clearTimeout(timer);
   }, [conversations]);
 
-  const getMarkerColor = (type: TimelineMarker["type"]) => {
-    switch (type) {
-      case "search":
-        return "bg-primary-light";
-      case "chat":
-        return "bg-accent";
-      case "cart":
-        return "bg-primary";
-      case "checkout":
-        return "bg-primary-dark";
-      default:
-        return "bg-primary";
-    }
-  };
-
-  const getMarkerIcon = (type: TimelineMarker["type"]) => {
-    switch (type) {
-      case "search":
-        return <Search className="w-3 h-3 text-background" />;
-      case "chat":
-        return <MessageCircle className="w-3 h-3 text-background" />;
-      case "cart":
-        return <ShoppingCart className="w-3 h-3 text-background" />;
-      case "checkout":
-        return <ShoppingCart className="w-3 h-3 text-background" />;
-      default:
-        return <MessageCircle className="w-3 h-3 text-background" />;
-    }
-  };
-
   return (
     <div className={`w-full max-w-2xl ${className}`}>
       {/* Integrated Session Replay Card */}
@@ -221,26 +163,112 @@ const SessionReplayCard: React.FC<SessionReplayCardProps> = ({
         }`}
       >
         {/* Conversation Details Header */}
-        <div className="flex items-center justify-between mb-8 pb-6 border-b border-border/30">
-          <div className="flex items-center gap-3">
-            <div className="w-8 h-8 bg-primary/10 rounded-full flex items-center justify-center flex-shrink-0">
-              <User className="w-4 h-4 text-primary" />
-            </div>
+        <div className="mb-8">
+          {/* Status Strip */}
+          <div
+            className={`w-full h-1 rounded-full mb-6 ${
+              success
+                ? "bg-gradient-to-r from-primary via-primary/80 to-primary/40"
+                : "bg-gradient-to-r from-muted-foreground/40 via-muted-foreground/20 to-muted-foreground/10"
+            }`}
+          />
+
+          {/* Conversation Context */}
+          <div className="flex items-start justify-between">
             <div>
-              <h3 className="font-heading font-semibold text-foreground">
-                Customer
+              <h3 className="font-heading font-semibold text-foreground text-lg mb-2">
+                {title}
               </h3>
-              <div className="flex items-center gap-4 text-sm text-muted-foreground">
-                <span>{language}</span>
-                <span>{duration}</span>
-                <span>{messageCount}</span>
+              <div
+                className={`text-sm font-bold uppercase tracking-wider ${
+                  success ? "text-primary" : "text-muted-foreground"
+                }`}
+              >
+                {success ? "✓ Resolved Successfully" : "⚠ Unresolved Issue"}
               </div>
             </div>
+
+            <SectionBadge icon={TagIcon} text={getTagText()} className="mb-0" />
           </div>
-          <SectionBadge icon={TagIcon} text={getTagText()} className="mb-0" />
         </div>
 
         {/* Audio Player with Conversation Marks */}
+        {/* Session Details - Above Audio Player */}
+        <div className="mb-4 pb-6 border-b border-border/30">
+          {/* All Session Info - Spread with Dots */}
+          <div className="flex items-center justify-between text-xs text-muted-foreground">
+            {/* Customer Info */}
+            <div className="flex items-center gap-2">
+              <div
+                className={`w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 ${
+                  customer.isLoyal
+                    ? "bg-gradient-to-br from-primary/20 to-primary/10 border border-primary/30"
+                    : "bg-muted"
+                }`}
+              >
+                {customer.avatar ? (
+                  <img
+                    src={customer.avatar}
+                    alt={customer.name || "Customer"}
+                    className="w-5 h-5 rounded-full object-cover"
+                  />
+                ) : (
+                  <User
+                    className={`w-2.5 h-2.5 ${
+                      customer.isLoyal
+                        ? "text-primary"
+                        : "text-muted-foreground"
+                    }`}
+                  />
+                )}
+              </div>
+              <span
+                className={`text-xs font-medium ${
+                  customer.name ? "text-foreground" : "text-muted-foreground/70"
+                }`}
+              >
+                {customer.name || "Anonymous Customer"}
+                {customer.isLoyal && (
+                  <span className="ml-1.5 text-xs text-primary font-medium bg-primary/10 px-1.5 py-0.5 rounded-full">
+                    VIP
+                  </span>
+                )}
+              </span>
+            </div>
+
+            <div className="w-1 h-1 bg-muted-foreground/40 rounded-full" />
+
+            {/* Language */}
+            <div className="flex items-center gap-1.5">
+              <Globe className="w-3 h-3" />
+              <span>{language}</span>
+            </div>
+
+            <div className="w-1 h-1 bg-muted-foreground/40 rounded-full" />
+
+            {/* Duration */}
+            <div className="flex items-center gap-1.5">
+              <Clock className="w-3 h-3" />
+              <span>{formatDuration(durationSeconds)}</span>
+            </div>
+
+            <div className="w-1 h-1 bg-muted-foreground/40 rounded-full" />
+
+            {/* Messages */}
+            <div className="flex items-center gap-1.5">
+              <MessageCircle className="w-3 h-3" />
+              <span>{messageCount}</span>
+            </div>
+
+            <div className="w-1 h-1 bg-muted-foreground/40 rounded-full" />
+
+            {/* Date */}
+            <div className="flex items-center gap-1.5">
+              <span>{formatDate(date)}</span>
+            </div>
+          </div>
+        </div>
+
         <ConversationAudioPlayer
           audioUrl={audioUrl}
           conversationMarks={conversationMarks}
@@ -347,7 +375,7 @@ const SessionReplayCard: React.FC<SessionReplayCardProps> = ({
                           Policy Lookup
                         </span>
                         <span className="text-xs text-muted-foreground">
-                          "international shipping"
+                          "shipping coverage"
                         </span>
                         <span className="text-xs text-muted-foreground ml-auto">
                           {bubble.time}
@@ -355,35 +383,35 @@ const SessionReplayCard: React.FC<SessionReplayCardProps> = ({
                       </div>
 
                       <div className="grid grid-cols-2 gap-3">
-                        {/* Shipping Policy */}
+                        {/* Shipping Coverage */}
                         <div className="bg-card rounded-lg p-3 border border-border/50">
                           <div className="w-full h-12 bg-primary/10 rounded-lg flex items-center justify-center mb-2">
                             <Globe className="w-6 h-6 text-primary" />
                           </div>
                           <h4 className="text-xs font-medium text-foreground mb-1">
-                            International Shipping
+                            Alaska Coverage
                           </h4>
                           <p className="text-xs text-muted-foreground">
-                            Canada: 5-7 days • $12 or Free $75+
+                            Major cities only • Remote areas excluded
                           </p>
                         </div>
 
-                        {/* Customs Policy */}
+                        {/* Location Check */}
                         <div className="bg-card rounded-lg p-3 border border-border/50">
                           <div className="w-full h-12 bg-accent rounded-lg flex items-center justify-center mb-2">
                             <Shield className="w-6 h-6 text-accent-foreground" />
                           </div>
                           <h4 className="text-xs font-medium text-foreground mb-1">
-                            Customs & Duties
+                            Requested Location
                           </h4>
                           <p className="text-xs text-muted-foreground">
-                            Forms handled • Local rates may apply
+                            Rural Alaska • Not serviceable
                           </p>
                         </div>
                       </div>
 
                       <div className="text-center text-xs text-muted-foreground mt-3">
-                        ✓ Policy terms retrieved
+                        ⚠ Shipping restriction applies
                       </div>
                     </div>
                   )}
@@ -481,8 +509,16 @@ const SessionReplayCard: React.FC<SessionReplayCardProps> = ({
                     </span>
                   </div>
                   {bubble.type === "customer" && (
-                    <div className="w-6 h-6 bg-primary/10 rounded-full flex items-center justify-center flex-shrink-0">
-                      <User className="w-3 h-3 text-primary" />
+                    <div className="w-6 h-6 bg-primary/10 rounded-full flex items-center justify-center flex-shrink-0 overflow-hidden">
+                      {customer.avatar ? (
+                        <img
+                          src={customer.avatar}
+                          alt={customer.name || "Customer"}
+                          className="w-6 h-6 rounded-full object-cover"
+                        />
+                      ) : (
+                        <User className="w-3 h-3 text-primary" />
+                      )}
                     </div>
                   )}
                 </div>
@@ -513,7 +549,8 @@ const SessionReplayCard: React.FC<SessionReplayCardProps> = ({
               Call Ended
             </h4>
             <p className="text-xs text-muted-foreground">
-              Session completed successfully • Duration: {duration}
+              Session completed successfully • Duration:{" "}
+              {formatDuration(durationSeconds)}
             </p>
           </div>
         </div>

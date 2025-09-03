@@ -14,21 +14,31 @@ export interface ConversationMark {
   label: string;
 }
 
+export interface CustomerInfo {
+  name: string | null; // null for anonymous
+  avatar?: string; // optional custom avatar path
+  isLoyal?: boolean; // indicates if this is a loyal customer
+}
+
 export interface SessionReplayData {
   // Audio configuration
   audioUrl: string;
   totalDurationSeconds: number;
-  
+
   // Session metadata
+  date: Date;
   language: string;
-  duration: string;
-  messageCount: string;
-  
+  durationSeconds: number; // duration in seconds instead of string
+  messageCount: number; // actual count instead of string
+
+  // Customer information
+  customer: CustomerInfo;
+
   // Example information
   title: string;
   category: "Sale" | "Support";
   success: boolean;
-  
+
   // Conversation data
   conversationMarks: ConversationMark[];
   conversations: ConversationBubble[];
@@ -36,5 +46,6 @@ export interface SessionReplayData {
 
 // Export all session replay data
 export { saleGiftSessionReplayData } from "./sale-gift";
+export { saleLoyalCustomerSessionReplayData } from "./sale-loyal-customer";
 export { supportPolicyQuestionSessionReplayData } from "./support-policy-question";
-
+export { supportFailedRequestSessionReplayData } from "./support-failed-request";

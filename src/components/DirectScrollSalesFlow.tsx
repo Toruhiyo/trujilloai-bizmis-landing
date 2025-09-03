@@ -271,7 +271,10 @@ const DirectScrollSalesFlow = () => {
                   (_, index) => {
                     const stepNumber = index + 1;
                     return (
-                      <React.Fragment key={stepNumber}>
+                      <div
+                        key={stepNumber}
+                        className="flex flex-col items-center"
+                      >
                         <div
                           className={`flex items-center justify-center w-12 h-12 rounded-full border-2 transition-all duration-500 cursor-pointer hover:scale-110 ${getStepTrackerStyles(
                             stepNumber
@@ -289,7 +292,7 @@ const DirectScrollSalesFlow = () => {
                             )}`}
                           ></div>
                         )}
-                      </React.Fragment>
+                      </div>
                     );
                   }
                 )}
