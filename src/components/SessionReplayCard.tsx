@@ -12,12 +12,7 @@ import {
   User,
   MessageCircle,
   DollarSign,
-  Flame,
   Coffee,
-  Gift,
-  Package,
-  Container,
-  Leaf,
   LucideIcon,
   FileSearch,
   Shield,
@@ -83,6 +78,158 @@ const SessionReplayCard: React.FC<SessionReplayCardProps> = ({
   };
 
   const TagIcon = getTagIcon();
+
+  // Function to get product image based on conversation content
+  const getProductImageFromContent = useCallback(() => {
+    const allContent = conversations
+      .map((c) => c.content.toLowerCase())
+      .join(" ");
+
+    // Check for specific products mentioned in conversations
+    if (
+      allContent.includes("cozy candle set") ||
+      (allContent.includes("candle") && allContent.includes("set"))
+    ) {
+      return {
+        src: "/images/benefit-3-session-replay-cozy-candle-set.png",
+        name: "Cozy Candle Set",
+        description: "Scented • €35",
+      };
+    }
+    if (allContent.includes("french press")) {
+      return {
+        src: "/images/benefit-3-session-replay-french-press.png",
+        name: "French Press Set",
+        description: "Borosilicate • €45",
+      };
+    }
+    if (
+      allContent.includes("ethiopian beans") ||
+      (allContent.includes("ethiopian") && allContent.includes("beans"))
+    ) {
+      return {
+        src: "/images/benefit-3-session-replay-ethiopian-beans.png",
+        name: "Ethiopian Beans",
+        description: "Premium Roast • €25",
+      };
+    }
+    if (
+      allContent.includes("insulated travel mug") ||
+      allContent.includes("travel mug")
+    ) {
+      return {
+        src: "/images/benefit-3-session-replay-insulated-travel-mug.png",
+        name: "Insulated Travel Mug",
+        description: "Copper • €22",
+      };
+    }
+    if (allContent.includes("insulated mug")) {
+      return {
+        src: "/images/benefit-3-session-replay-insulated-mug.png",
+        name: "Insulated Mug",
+        description: "Ceramic • €18",
+      };
+    }
+    if (
+      allContent.includes("premium roast subscription") ||
+      (allContent.includes("subscription") && allContent.includes("coffee"))
+    ) {
+      return {
+        src: "/images/benefit-3-session-replay-premium-rost-subscription.png",
+        name: "Premium Coffee Subscription",
+        description: "Monthly • €29",
+      };
+    }
+    if (allContent.includes("candles") || allContent.includes("candle")) {
+      return {
+        src: "/images/benefit-3-session-replay-candles.png",
+        name: "Artisan Candles",
+        description: "Natural Wax • €28",
+      };
+    }
+
+    // Default fallback to French Press
+    return {
+      src: "/images/benefit-3-session-replay-french-press.png",
+      name: "French Press Set",
+      description: "Borosilicate • €45",
+    };
+  }, [conversations]);
+
+  const productInfo = useMemo(
+    () => getProductImageFromContent(),
+    [getProductImageFromContent]
+  );
+
+  // Function to get product search results based on conversation content
+  const getProductSearchResults = useCallback(() => {
+    const allContent = conversations
+      .map((c) => c.content.toLowerCase())
+      .join(" ");
+
+    // Coffee equipment search results
+    if (
+      allContent.includes("coffee") ||
+      allContent.includes("french press") ||
+      allContent.includes("subscription") ||
+      allContent.includes("beans")
+    ) {
+      return [
+        {
+          name: "French Press",
+          description: "Borosilicate • €45",
+          image: "/images/benefit-3-session-replay-french-press.png",
+        },
+        {
+          name: "Copper Travel Mug",
+          description: "Insulated • €32",
+          image: "/images/benefit-3-session-replay-insulated-travel-mug.png",
+        },
+        {
+          name: "Ethiopian Beans",
+          description: "Premium Roast • €25",
+          image: "/images/benefit-3-session-replay-ethiopian-beans.png",
+        },
+      ];
+    }
+
+    // Gift search results (candles, etc.)
+    return [
+      {
+        name: "Cozy Candle Set",
+        description: "Scented • €35",
+        image: "/images/benefit-3-session-replay-cozy-candle-set.png",
+      },
+      {
+        name: "Artisan Candles",
+        description: "Natural Wax • €28",
+        image: "/images/benefit-3-session-replay-candles.png",
+      },
+      {
+        name: "Insulated Mug",
+        description: "Ceramic • €18",
+        image: "/images/benefit-3-session-replay-insulated-mug.png",
+      },
+    ];
+  }, [conversations]);
+
+  const productSearchResults = useMemo(
+    () => getProductSearchResults(),
+    [getProductSearchResults]
+  );
+
+  // Helper to check if conversation is about coffee/equipment
+  const isCoffeeConversation = useMemo(() => {
+    const allContent = conversations
+      .map((c) => c.content.toLowerCase())
+      .join(" ");
+    return (
+      allContent.includes("coffee") ||
+      allContent.includes("french press") ||
+      allContent.includes("subscription") ||
+      allContent.includes("beans")
+    );
+  }, [conversations]);
 
   // Function to determine which message should be focused based on current audio time
   const getFocusedMessageId = useCallback(
@@ -304,7 +451,7 @@ const SessionReplayCard: React.FC<SessionReplayCardProps> = ({
                       }`}
                     >
                       <div className="flex items-center gap-2 mb-3">
-                        {sessionData.title.includes("Coffee") ? (
+                        {isCoffeeConversation ? (
                           <Coffee className="w-4 h-4 text-primary" />
                         ) : (
                           <Search className="w-4 h-4 text-primary" />
@@ -313,7 +460,7 @@ const SessionReplayCard: React.FC<SessionReplayCardProps> = ({
                           {bubble.content}
                         </span>
                         <span className="text-xs text-muted-foreground">
-                          {sessionData.title.includes("Coffee")
+                          {isCoffeeConversation
                             ? '"coffee equipment"'
                             : '"gift search"'}
                         </span>
@@ -323,89 +470,26 @@ const SessionReplayCard: React.FC<SessionReplayCardProps> = ({
                       </div>
 
                       <div className="grid grid-cols-3 gap-2">
-                        {sessionData.title.includes("Coffee") ? (
-                          <>
-                            {/* French Press */}
-                            <div className="bg-card rounded-lg p-2 border border-border/50">
-                              <div className="w-full h-12 bg-primary/10 rounded-lg flex items-center justify-center mb-2">
-                                <Coffee className="w-6 h-6 text-primary" />
-                              </div>
-                              <h4 className="text-xs font-medium text-foreground mb-1">
-                                French Press
-                              </h4>
-                              <p className="text-xs text-muted-foreground">
-                                Borosilicate • €45
-                              </p>
+                        {productSearchResults.map((product, index) => (
+                          <div
+                            key={product.name}
+                            className="bg-card rounded-lg p-3 border border-border/50"
+                          >
+                            <div className="w-full h-20 rounded-lg flex items-center justify-center mb-3 overflow-hidden aspect-[3/4]">
+                              <img
+                                src={product.image}
+                                alt={product.name}
+                                className="w-full h-full object-cover rounded-lg"
+                              />
                             </div>
-
-                            {/* Travel Mug */}
-                            <div className="bg-card rounded-lg p-2 border border-border/50">
-                              <div className="w-full h-12 bg-accent rounded-lg flex items-center justify-center mb-2">
-                                <Container className="w-6 h-6 text-accent-foreground" />
-                              </div>
-                              <h4 className="text-xs font-medium text-foreground mb-1">
-                                Copper Travel Mug
-                              </h4>
-                              <p className="text-xs text-muted-foreground">
-                                Insulated • €32
-                              </p>
-                            </div>
-
-                            {/* Coffee Storage */}
-                            <div className="bg-card rounded-lg p-2 border border-border/50">
-                              <div className="w-full h-12 bg-muted rounded-lg flex items-center justify-center mb-2">
-                                <Package className="w-6 h-6 text-muted-foreground" />
-                              </div>
-                              <h4 className="text-xs font-medium text-foreground mb-1">
-                                Airtight Container
-                              </h4>
-                              <p className="text-xs text-muted-foreground">
-                                Bean Storage • €28
-                              </p>
-                            </div>
-                          </>
-                        ) : (
-                          <>
-                            {/* Cozy Candle Set */}
-                            <div className="bg-card rounded-lg p-2 border border-border/50">
-                              <div className="w-full h-12 bg-primary/10 rounded-lg flex items-center justify-center mb-2">
-                                <Flame className="w-6 h-6 text-primary" />
-                              </div>
-                              <h4 className="text-xs font-medium text-foreground mb-1">
-                                Cozy Candle Set
-                              </h4>
-                              <p className="text-xs text-muted-foreground">
-                                Clean Scents • €35
-                              </p>
-                            </div>
-
-                            {/* Insulated Mug */}
-                            <div className="bg-card rounded-lg p-2 border border-border/50">
-                              <div className="w-full h-12 bg-accent rounded-lg flex items-center justify-center mb-2">
-                                <Coffee className="w-6 h-6 text-accent-foreground" />
-                              </div>
-                              <h4 className="text-xs font-medium text-foreground mb-1">
-                                Insulated Mug
-                              </h4>
-                              <p className="text-xs text-muted-foreground">
-                                Travel Ready • €28
-                              </p>
-                            </div>
-
-                            {/* Plant Gift Set */}
-                            <div className="bg-card rounded-lg p-2 border border-border/50">
-                              <div className="w-full h-12 bg-primary/20 rounded-lg flex items-center justify-center mb-2">
-                                <Leaf className="w-6 h-6 text-primary" />
-                              </div>
-                              <h4 className="text-xs font-medium text-foreground mb-1">
-                                Plant Gift Set
-                              </h4>
-                              <p className="text-xs text-muted-foreground">
-                                Low Maintenance • €42
-                              </p>
-                            </div>
-                          </>
-                        )}
+                            <h4 className="text-xs font-medium text-foreground mb-1">
+                              {product.name}
+                            </h4>
+                            <p className="text-xs text-muted-foreground">
+                              {product.description}
+                            </p>
+                          </div>
+                        ))}
                       </div>
 
                       <div className="text-center text-xs text-muted-foreground mt-2">
@@ -501,14 +585,18 @@ const SessionReplayCard: React.FC<SessionReplayCardProps> = ({
                       {/* Product Showcase */}
                       <div className="flex justify-center">
                         <div className="bg-background rounded-lg p-3 border border-primary/30 shadow-lg relative z-10">
-                          <div className="w-16 h-16 bg-gradient-to-br from-primary/20 to-primary/10 rounded-lg flex items-center justify-center mb-2 shadow-lg">
-                            <Coffee className="text-2xl text-primary w-8 h-8" />
+                          <div className="w-16 h-16 rounded-lg flex items-center justify-center mb-2 shadow-lg overflow-hidden">
+                            <img
+                              src={productInfo.src}
+                              alt={productInfo.name}
+                              className="w-full h-full object-cover rounded-lg"
+                            />
                           </div>
                           <h4 className="text-xs font-bold text-foreground text-center mb-1">
-                            French Press Set
+                            {productInfo.name}
                           </h4>
                           <p className="text-xs text-muted-foreground text-center">
-                            Borosilicate • €45
+                            {productInfo.description}
                           </p>
 
                           {/* Success Badge */}
