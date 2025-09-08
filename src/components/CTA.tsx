@@ -28,7 +28,7 @@ const FinalCTA = () => {
   };
 
   const handleFAQClick = () => {
-    scrollToSection("conversations-faq");
+    window.location.href = "/faqs";
   };
 
   return (
