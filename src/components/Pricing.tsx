@@ -228,7 +228,7 @@ const Pricing = () => {
 
         <div className="text-center mt-12">
           <p className="text-muted-foreground font-body mb-4">
-            All plans include a 14-day free trial. No credit card required.
+            All plans include a 14-day free trial.
           </p>
           <div className="flex items-center justify-center gap-8 text-sm text-muted-foreground">
             <div className="flex items-center gap-2">
