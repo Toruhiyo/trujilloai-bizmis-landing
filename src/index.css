@@ -1,3 +1,6 @@
+/* Import animated metrics styles */
+@import './styles/animated-metrics.css';
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;

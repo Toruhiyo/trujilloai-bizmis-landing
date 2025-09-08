@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import Hero from "@/components/Hero";
 import Benefits from "@/components/Benefits";
 import Setup from "@/components/Setup";
+import Customization from "@/components/Customization";
 import Pricing from "@/components/Pricing";
 import CTA from "@/components/CTA";
 import Footer from "@/components/Footer";
@@ -19,6 +20,7 @@ const Index = () => {
       "benefit-2",
       "benefit-3",
       "setup",
+      "customization",
       "pricing",
     ];
 
@@ -36,6 +38,7 @@ const Index = () => {
       <Hero />
       <Benefits />
       <Setup />
+      <Customization />
       <Pricing />
       <CTA />
       <Footer />

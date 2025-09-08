@@ -1,0 +1,71 @@
+/* Enhanced Animated Metrics Styles */
+
+@keyframes metricGlow {
+    0% {
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    }
+
+    50% {
+        box-shadow: 0 12px 40px rgba(251, 146, 60, 0.2), 0 0 20px rgba(251, 146, 60, 0.1);
+    }
+
+    100% {
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    }
+}
+
+@keyframes sparkleFloat {
+
+    0%,
+    100% {
+        transform: translateY(0) scale(0.8);
+        opacity: 0.7;
+    }
+
+    50% {
+        transform: translateY(-8px) scale(1.2);
+        opacity: 1;
+    }
+}
+
+@keyframes numberPulse {
+    0% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.05);
+    }
+
+    100% {
+        transform: scale(1);
+    }
+}
+
+/* Metric card enhanced animations */
+.metric-card-glow:hover {
+    animation: metricGlow 2s ease-in-out infinite;
+}
+
+.metric-sparkle {
+    animation: sparkleFloat 2s ease-in-out infinite;
+}
+
+.metric-icon-pulse:hover {
+    animation: numberPulse 1s ease-in-out infinite;
+}
+
+/* Enhanced backdrop blur effects */
+.enhanced-backdrop {
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+}
+
+/* Smooth counter font improvements */
+.counter-font {
+    font-feature-settings: 'tnum' 1;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.025em;
+}
+
+

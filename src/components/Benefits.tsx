@@ -9,96 +9,18 @@ import {
   ShoppingBag,
   MessageSquare,
   Activity,
-  Brush,
+  TrendingUp,
+  Handshake,
+  DollarSign,
+  Users,
+  Repeat,
 } from "lucide-react";
-import { PiWaveformBold } from "react-icons/pi";
 import SectionBadge from "./SectionBadge";
-import AudioPlayer from "./AudioPlayer";
 import DirectScrollSalesFlow from "./DirectScrollSalesFlow";
-import FakeImagesSelector, { type ImageOption } from "./FakeImagesSelector";
 import ReviewSatisfactionDashboard from "./ReviewSatisfactionDashboard";
 import TabbedSessionReplay from "./TabbedSessionReplay";
 
 const Benefits = () => {
-  // Clothing images for the carousel
-  const clothingImages: ImageOption[] = [
-    {
-      id: "1",
-      title: "Casual Outfit",
-      url: "/images/benefit-1-customization-selector-clothing-1.png",
-      alt: "Casual clothing option",
-    },
-    {
-      id: "2",
-      title: "Professional Outfit",
-      url: "/images/benefit-1-customization-selector-clothing-2.png",
-      alt: "Professional clothing option",
-    },
-    {
-      id: "selected",
-      title: "Selected Outfit",
-      url: "/images/benefit-1-customization-selector-clothing-selected.png",
-      alt: "Selected clothing option",
-    },
-    {
-      id: "kimono",
-      title: "Kimono Style",
-      url: "/images/benefit-1-customization-selector-clothing-kimono.png",
-      alt: "Kimono style clothing option",
-    },
-    {
-      id: "florist",
-      title: "Florist Outfit",
-      url: "/images/benefit-1-customization-selector-clothing-florist.png",
-      alt: "Florist clothing option",
-    },
-  ];
-
-  const [selectedClothingId, setSelectedClothingId] =
-    React.useState<string>("selected");
-  const [selectedHaircutId, setSelectedHaircutId] =
-    React.useState<string>("haircut-1");
-  const [selectedVoice, setSelectedVoice] = React.useState<
-    "original" | "cloned"
-  >("original");
-
-  // State to control carousel visibility on avatar hover
-  const [isAvatarHovered, setIsAvatarHovered] = React.useState(false);
-
-  // Haircut images for the horizontal carousel
-  const haircutImages: ImageOption[] = [
-    {
-      id: "haircut-1",
-      title: "Haircut Style 1",
-      url: "/images/benefit-1-customization-selector-haircut-1.png",
-      alt: "Haircut style option 1",
-    },
-    {
-      id: "haircut-2",
-      title: "Haircut Style 2",
-      url: "/images/benefit-1-customization-selector-haircut-2.png",
-      alt: "Haircut style option 2",
-    },
-    {
-      id: "haircut-3",
-      title: "Haircut Style 3",
-      url: "/images/benefit-1-customization-selector-haircut-3.png",
-      alt: "Haircut style option 3",
-    },
-    {
-      id: "haircut-4",
-      title: "Haircut Style 4",
-      url: "/images/benefit-1-customization-selector-haircut-4.png",
-      alt: "Haircut style option 4",
-    },
-    {
-      id: "haircut-5",
-      title: "Haircut Style 5",
-      url: "/images/benefit-1-customization-selector-haircut-5.png",
-      alt: "Haircut style option 5",
-    },
-  ];
-
   return (
     <div className="space-y-0 bg-gradient-to-b from-background via-orange-50/10 to-background">
       {/* Shared Background Section: Driven Sales & Customization */}
@@ -123,46 +45,225 @@ const Benefits = () => {
 
         <div className="container mx-auto px-6 relative z-10">
           <div className="max-w-7xl mx-auto">
-            {/* Section 1: Main Benefit Header */}
+            {/* Section 1: Core Value Proposition */}
             <div className="text-center max-w-5xl mx-auto mb-20">
               <div className="relative">
                 <div className="absolute -left-64  top-10 text-9xl lg:text-[12rem] font-bold text-orange-600/20 transform -rotate-12 select-none">
                   #1
                 </div>
-                <SectionBadge icon={ShoppingCart} text="Increase Sales" />
+                <SectionBadge icon={ShoppingCart} text="Make More Money" />
                 <h1 className="text-5xl lg:text-7xl font-heading font-bold text-foreground mb-8 relative z-10">
-                  Increase Sales Conversion
+                  Sell More. Earn More.
                 </h1>
               </div>
-              <p className="text-xl text-muted-foreground font-body leading-relaxed mb-16">
-                Shoppers feel personally guided—finding the right product fast
-                and checking out with confidence.
+              <p className="text-xl text-muted-foreground font-body leading-relaxed mb-12">
+                Transform your online store into a revenue-generating
+                powerhouse. Your customers get expert guidance, you get
+                measurable results.
               </p>
-            </div>
 
-            {/* Section 2: Drive Sales Feature */}
-            <div className="text-left mb-16">
-              <div className="flex items-start gap-8 mb-12">
-                <div className="flex-shrink-0 mt-2">
-                  <div className="w-16 h-16 bg-white/80 backdrop-blur-sm rounded-2xl flex items-center justify-center shadow-lg border border-orange-200/50 transform rotate-3 hover:rotate-0 transition-transform duration-300">
-                    <ShoppingBag className="w-8 h-8 text-orange-600" />
+              {/* Power Impact Metrics - CLEAN CONTAINER */}
+              <div className="max-w-6xl mx-auto mb-16">
+                {/* Uniform Power Grid */}
+                <div className="relative z-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 items-stretch">
+                  {/* HIGHER CONVERSION - MAGNETIC POWER FIELD */}
+                  <div className="group relative h-full">
+                    {/* Outer Magnetic Field */}
+                    <div className="absolute -inset-1 bg-gradient-to-r from-orange-400/40 via-amber-400/50 to-orange-500/40 rounded-2xl blur-sm opacity-0 group-hover:opacity-100 transition-all duration-500 group-hover:animate-pulse"></div>
+
+                    <div className="relative h-full bg-gradient-to-br from-white via-orange-50/40 to-white backdrop-blur-sm rounded-xl p-8 border-2 border-orange-400/30 hover:border-orange-400/80 shadow-2xl hover:shadow-orange-500/40 transition-all duration-500 hover:-translate-y-4 hover:scale-105 hover:rotate-1 hover:z-20 overflow-hidden">
+                      {/* Dynamic Energy Field */}
+                      <div className="absolute inset-0 bg-gradient-to-br from-orange-500/10 via-transparent to-amber-400/15 opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-xl"></div>
+
+                      {/* Pulsing Energy Core */}
+                      <div className="absolute top-1/2 left-1/2 w-32 h-32 bg-gradient-to-r from-orange-400/20 to-amber-500/20 rounded-full blur-xl opacity-0 group-hover:opacity-100 transform -translate-x-1/2 -translate-y-1/2 group-hover:animate-ping transition-all duration-500"></div>
+
+                      {/* Magnetic Field Lines */}
+                      <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700">
+                        <div className="absolute top-2 left-2 right-2 h-px bg-gradient-to-r from-transparent via-orange-400/60 to-transparent animate-pulse"></div>
+                        <div className="absolute bottom-2 left-2 right-2 h-px bg-gradient-to-r from-transparent via-amber-400/60 to-transparent animate-pulse delay-300"></div>
+                        <div className="absolute top-2 bottom-2 left-2 w-px bg-gradient-to-b from-transparent via-orange-400/60 to-transparent animate-pulse delay-150"></div>
+                        <div className="absolute top-2 bottom-2 right-2 w-px bg-gradient-to-b from-transparent via-amber-400/60 to-transparent animate-pulse delay-450"></div>
+                      </div>
+
+                      {/* Glowing Icon Container */}
+                      <div className="relative z-10 flex items-center justify-center mb-6">
+                        <div className="w-20 h-20 bg-gradient-to-br from-orange-500 to-orange-600 rounded-xl flex items-center justify-center shadow-2xl group-hover:shadow-orange-500/60 group-hover:scale-125 group-hover:-translate-y-1 transition-all duration-500 border-2 border-orange-400/50 group-hover:border-orange-300/80">
+                          <Handshake className="w-10 h-10 text-white group-hover:animate-pulse" />
+                          {/* Icon Glow */}
+                          <div className="absolute inset-0 bg-orange-400/20 rounded-xl opacity-0 group-hover:opacity-100 group-hover:animate-ping transition-all duration-500"></div>
+                        </div>
+                      </div>
+
+                      {/* Power Statement with Glow */}
+                      <div className="relative z-10 text-center">
+                        <div className="text-xl lg:text-2xl font-bold text-slate-900 group-hover:text-orange-600 transition-colors duration-500 leading-tight drop-shadow-lg">
+                          Higher Conversion
+                        </div>
+                        <div className="absolute inset-0 text-xl lg:text-2xl font-bold text-orange-400 opacity-0 group-hover:opacity-20 transition-opacity duration-500 leading-tight blur-sm">
+                          Higher Conversion
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* HIGHER ORDER VALUE - MAGNETIC POWER FIELD */}
+                  <div className="group relative h-full">
+                    {/* Outer Magnetic Field */}
+                    <div className="absolute -inset-1 bg-gradient-to-r from-amber-400/40 via-orange-400/50 to-amber-500/40 rounded-2xl blur-sm opacity-0 group-hover:opacity-100 transition-all duration-500 group-hover:animate-pulse"></div>
+
+                    <div className="relative h-full bg-gradient-to-br from-white via-amber-50/40 to-white backdrop-blur-sm rounded-xl p-8 border-2 border-amber-400/30 hover:border-amber-400/80 shadow-2xl hover:shadow-amber-500/40 transition-all duration-500 hover:-translate-y-4 hover:scale-105 hover:-rotate-1 hover:z-20 overflow-hidden">
+                      {/* Dynamic Energy Field */}
+                      <div className="absolute inset-0 bg-gradient-to-br from-amber-500/10 via-transparent to-orange-400/15 opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-xl"></div>
+
+                      {/* Pulsing Energy Core */}
+                      <div className="absolute top-1/2 left-1/2 w-32 h-32 bg-gradient-to-r from-amber-400/20 to-orange-500/20 rounded-full blur-xl opacity-0 group-hover:opacity-100 transform -translate-x-1/2 -translate-y-1/2 group-hover:animate-ping transition-all duration-500"></div>
+
+                      {/* Magnetic Field Lines */}
+                      <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700">
+                        <div className="absolute top-2 left-2 right-2 h-px bg-gradient-to-r from-transparent via-amber-400/60 to-transparent animate-pulse"></div>
+                        <div className="absolute bottom-2 left-2 right-2 h-px bg-gradient-to-r from-transparent via-orange-400/60 to-transparent animate-pulse delay-300"></div>
+                        <div className="absolute top-2 bottom-2 left-2 w-px bg-gradient-to-b from-transparent via-amber-400/60 to-transparent animate-pulse delay-150"></div>
+                        <div className="absolute top-2 bottom-2 right-2 w-px bg-gradient-to-b from-transparent via-orange-400/60 to-transparent animate-pulse delay-450"></div>
+                      </div>
+
+                      {/* Glowing Icon Container */}
+                      <div className="relative z-10 flex items-center justify-center mb-6">
+                        <div className="w-20 h-20 bg-gradient-to-br from-amber-500 to-orange-500 rounded-xl flex items-center justify-center shadow-2xl group-hover:shadow-amber-500/60 group-hover:scale-125 group-hover:-translate-y-1 transition-all duration-500 border-2 border-amber-400/50 group-hover:border-amber-300/80">
+                          <DollarSign className="w-10 h-10 text-white group-hover:animate-pulse" />
+                          {/* Icon Glow */}
+                          <div className="absolute inset-0 bg-amber-400/20 rounded-xl opacity-0 group-hover:opacity-100 group-hover:animate-ping transition-all duration-500"></div>
+                        </div>
+                      </div>
+
+                      {/* Power Statement with Glow */}
+                      <div className="relative z-10 text-center">
+                        <div className="text-xl lg:text-2xl font-bold text-slate-900 group-hover:text-amber-600 transition-colors duration-500 leading-tight drop-shadow-lg">
+                          Higher Order Value
+                        </div>
+                        <div className="absolute inset-0 text-xl lg:text-2xl font-bold text-amber-400 opacity-0 group-hover:opacity-20 transition-opacity duration-500 leading-tight blur-sm">
+                          Higher Order Value
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* MORE ITEMS PER SALE - MAGNETIC POWER FIELD */}
+                  <div className="group relative h-full">
+                    {/* Outer Magnetic Field */}
+                    <div className="absolute -inset-1 bg-gradient-to-r from-orange-400/40 via-amber-400/50 to-orange-500/40 rounded-2xl blur-sm opacity-0 group-hover:opacity-100 transition-all duration-500 group-hover:animate-pulse"></div>
+
+                    <div className="relative h-full bg-gradient-to-br from-white via-orange-50/40 to-white backdrop-blur-sm rounded-xl p-8 border-2 border-orange-400/30 hover:border-orange-400/80 shadow-2xl hover:shadow-orange-500/40 transition-all duration-500 hover:-translate-y-4 hover:scale-105 hover:rotate-1 hover:z-20 overflow-hidden">
+                      {/* Dynamic Energy Field */}
+                      <div className="absolute inset-0 bg-gradient-to-br from-orange-500/10 via-transparent to-amber-400/15 opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-xl"></div>
+
+                      {/* Pulsing Energy Core */}
+                      <div className="absolute top-1/2 left-1/2 w-32 h-32 bg-gradient-to-r from-orange-400/20 to-amber-500/20 rounded-full blur-xl opacity-0 group-hover:opacity-100 transform -translate-x-1/2 -translate-y-1/2 group-hover:animate-ping transition-all duration-500"></div>
+
+                      {/* Magnetic Field Lines */}
+                      <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700">
+                        <div className="absolute top-2 left-2 right-2 h-px bg-gradient-to-r from-transparent via-orange-400/60 to-transparent animate-pulse"></div>
+                        <div className="absolute bottom-2 left-2 right-2 h-px bg-gradient-to-r from-transparent via-amber-400/60 to-transparent animate-pulse delay-300"></div>
+                        <div className="absolute top-2 bottom-2 left-2 w-px bg-gradient-to-b from-transparent via-orange-400/60 to-transparent animate-pulse delay-150"></div>
+                        <div className="absolute top-2 bottom-2 right-2 w-px bg-gradient-to-b from-transparent via-amber-400/60 to-transparent animate-pulse delay-450"></div>
+                      </div>
+
+                      {/* Glowing Icon Container */}
+                      <div className="relative z-10 flex items-center justify-center mb-6">
+                        <div className="w-20 h-20 bg-gradient-to-br from-orange-500 to-amber-600 rounded-xl flex items-center justify-center shadow-2xl group-hover:shadow-orange-500/60 group-hover:scale-125 group-hover:-translate-y-1 transition-all duration-500 border-2 border-orange-400/50 group-hover:border-orange-300/80">
+                          <ShoppingBag className="w-10 h-10 text-white group-hover:animate-pulse" />
+                          {/* Icon Glow */}
+                          <div className="absolute inset-0 bg-orange-400/20 rounded-xl opacity-0 group-hover:opacity-100 group-hover:animate-ping transition-all duration-500"></div>
+                        </div>
+                      </div>
+
+                      {/* Power Statement with Glow */}
+                      <div className="relative z-10 text-center">
+                        <div className="text-xl lg:text-2xl font-bold text-slate-900 group-hover:text-orange-600 transition-colors duration-500 leading-tight drop-shadow-lg">
+                          More Items Per Sale
+                        </div>
+                        <div className="absolute inset-0 text-xl lg:text-2xl font-bold text-orange-400 opacity-0 group-hover:opacity-20 transition-opacity duration-500 leading-tight blur-sm">
+                          More Items Per Sale
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* MORE REPEAT PURCHASES - MAGNETIC POWER FIELD */}
+                  <div className="group relative h-full">
+                    {/* Outer Magnetic Field */}
+                    <div className="absolute -inset-1 bg-gradient-to-r from-amber-400/40 via-orange-400/50 to-amber-500/40 rounded-2xl blur-sm opacity-0 group-hover:opacity-100 transition-all duration-500 group-hover:animate-pulse"></div>
+
+                    <div className="relative h-full bg-gradient-to-br from-white via-amber-50/40 to-white backdrop-blur-sm rounded-xl p-8 border-2 border-amber-400/30 hover:border-amber-400/80 shadow-2xl hover:shadow-amber-500/40 transition-all duration-500 hover:-translate-y-4 hover:scale-105 hover:-rotate-1 hover:z-20 overflow-hidden">
+                      {/* Dynamic Energy Field */}
+                      <div className="absolute inset-0 bg-gradient-to-br from-amber-500/10 via-transparent to-orange-400/15 opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-xl"></div>
+
+                      {/* Pulsing Energy Core */}
+                      <div className="absolute top-1/2 left-1/2 w-32 h-32 bg-gradient-to-r from-amber-400/20 to-orange-500/20 rounded-full blur-xl opacity-0 group-hover:opacity-100 transform -translate-x-1/2 -translate-y-1/2 group-hover:animate-ping transition-all duration-500"></div>
+
+                      {/* Magnetic Field Lines */}
+                      <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700">
+                        <div className="absolute top-2 left-2 right-2 h-px bg-gradient-to-r from-transparent via-amber-400/60 to-transparent animate-pulse"></div>
+                        <div className="absolute bottom-2 left-2 right-2 h-px bg-gradient-to-r from-transparent via-orange-400/60 to-transparent animate-pulse delay-300"></div>
+                        <div className="absolute top-2 bottom-2 left-2 w-px bg-gradient-to-b from-transparent via-amber-400/60 to-transparent animate-pulse delay-150"></div>
+                        <div className="absolute top-2 bottom-2 right-2 w-px bg-gradient-to-b from-transparent via-orange-400/60 to-transparent animate-pulse delay-450"></div>
+                      </div>
+
+                      {/* Glowing Icon Container */}
+                      <div className="relative z-10 flex items-center justify-center mb-6">
+                        <div className="w-20 h-20 bg-gradient-to-br from-amber-500 to-orange-500 rounded-xl flex items-center justify-center shadow-2xl group-hover:shadow-amber-500/60 group-hover:scale-125 group-hover:-translate-y-1 transition-all duration-500 border-2 border-amber-400/50 group-hover:border-amber-300/80">
+                          <Repeat className="w-10 h-10 text-white group-hover:animate-pulse" />
+                          {/* Icon Glow */}
+                          <div className="absolute inset-0 bg-amber-400/20 rounded-xl opacity-0 group-hover:opacity-100 group-hover:animate-ping transition-all duration-500"></div>
+                        </div>
+                      </div>
+
+                      {/* Power Statement with Glow */}
+                      <div className="relative z-10 text-center">
+                        <div className="text-xl lg:text-2xl font-bold text-slate-900 group-hover:text-amber-600 transition-colors duration-500 leading-tight drop-shadow-lg">
+                          More Repeat Purchases
+                        </div>
+                        <div className="absolute inset-0 text-xl lg:text-2xl font-bold text-amber-400 opacity-0 group-hover:opacity-20 transition-opacity duration-500 leading-tight blur-sm">
+                          More Repeat Purchases
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </div>
-                <div className="flex-1">
-                  <h3 className="text-4xl lg:text-5xl font-heading font-bold text-foreground mb-8">
-                    <span className="text-orange-600">
-                      Driven Sales Pipeline
-                    </span>
-                  </h3>
-                  <div className="border-l-2 border-orange-200/50 pl-4 py-2">
-                    <p className="text-lg lg:text-xl text-muted-foreground leading-relaxed">
-                      <span className="font-semibold">
-                        Expert-level selling skills
-                      </span>{" "}
-                      that turn casual browsers into{" "}
-                      <span className="font-semibold">confident buyers</span>
-                    </p>
+              </div>
+            </div>
+
+            {/* Section 2: Drive Sales Feature - Compact */}
+            <div className="text-center mb-12">
+              <div className="relative max-w-4xl mx-auto">
+                {/* Compact inline design */}
+                <div className="flex items-center justify-center gap-4 mb-6">
+                  {/* Compact Icon */}
+                  <div className="w-14 h-14 bg-gradient-to-br from-orange-500 to-orange-600 rounded-2xl flex items-center justify-center shadow-lg">
+                    <ShoppingBag className="w-7 h-7 text-white" />
                   </div>
+
+                  {/* Compact Title */}
+                  <div className="flex flex-col items-start">
+                    <h3 className="text-3xl lg:text-4xl font-black text-slate-900 leading-none">
+                      Driven Sales{" "}
+                      <span className="text-transparent bg-gradient-to-r from-orange-500 to-orange-600 bg-clip-text">
+                        Pipeline
+                      </span>
+                    </h3>
+                    {/* Small accent line */}
+                    <div className="w-16 h-0.5 bg-gradient-to-r from-orange-400 to-amber-400 rounded-full mt-1"></div>
+                  </div>
+                </div>
+
+                {/* Compact Subtitle */}
+                <div className="max-w-3xl mx-auto">
+                  <p className="text-lg text-slate-600 leading-relaxed">
+                    Transform casual browsers into confident buyers with{" "}
+                    <span className="font-semibold text-orange-600">
+                      expert-level selling skills
+                    </span>
+                  </p>
                 </div>
               </div>
             </div>
@@ -170,201 +271,6 @@ const Benefits = () => {
             {/* Section 3: Main Layout - Direct Scroll-Linked Sales Flow */}
             <div className="relative mb-32">
               <DirectScrollSalesFlow />
-            </div>
-
-            {/* Section 4: Customization Feature */}
-            <div className="text-left mb-8 lg:text-right">
-              <div className="flex items-start gap-8 mb-6 lg:flex-row-reverse">
-                <div className="flex-shrink-0 mt-2">
-                  <div className="w-16 h-16 bg-white/80 backdrop-blur-sm rounded-2xl flex items-center justify-center shadow-lg border border-orange-200/50 transform -rotate-3 hover:rotate-0 transition-transform duration-300">
-                    <Brush className="w-8 h-8 text-orange-600" />
-                  </div>
-                </div>
-                <div className="flex-1">
-                  <h3 className="text-4xl lg:text-5xl font-heading font-bold text-foreground mb-8">
-                    <span className="text-orange-600">
-                      Voice & Appearance Customization
-                    </span>
-                  </h3>
-                  <div className="border-l-2 border-orange-200/50 pl-4 py-2">
-                    <p className="text-lg lg:text-xl text-muted-foreground leading-relaxed">
-                      Build{" "}
-                      <span className="font-semibold">
-                        authentic relationships
-                      </span>{" "}
-                      that drive{" "}
-                      <span className="font-semibold">customer loyalty</span>
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Section 5: Customization Layout */}
-            <div className="grid lg:grid-cols-2 gap-8 md:gap-12 lg:gap-16 items-center">
-              {/* Right: Features */}
-              <div className="space-y-6 md:space-y-12 lg:space-y-16 order-2 lg:order-2">
-                <div className="bg-white/70 backdrop-blur-md rounded-3xl p-8 border border-orange-200/30 transform -rotate-1 hover:rotate-0 transition-transform duration-500 shadow-xl">
-                  <div className="space-y-6">
-                    <div className="flex gap-4">
-                      <div className="w-12 h-12 bg-amber-100 rounded-xl flex items-center justify-center flex-shrink-0 border border-orange-200/50">
-                        <Brush className="w-6 h-6 text-orange-600" />
-                      </div>
-                      <div>
-                        <h3 className="text-xl font-heading font-bold text-foreground">
-                          Personal Avatar
-                        </h3>
-                        <p className="text-muted-foreground font-body">
-                          Creating genuine connections by making your sales
-                          representative sound and look like you.
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="bg-white/70 backdrop-blur-md rounded-3xl p-8 border border-orange-200/30 transform rotate-1 hover:rotate-0 transition-transform duration-500 shadow-xl">
-                  <div className="space-y-6">
-                    <div className="flex gap-4">
-                      <div className="w-12 h-12 bg-amber-100 rounded-xl flex items-center justify-center flex-shrink-0 border border-orange-200/50">
-                        <PiWaveformBold className="w-6 h-6 text-orange-600" />
-                      </div>
-                      <div>
-                        <h3 className="text-xl font-heading font-bold text-foreground">
-                          Voice Cloning
-                        </h3>
-                        <p className="text-muted-foreground font-body">
-                          Authentic customer interactions through replication of
-                          your unique speaking style and personality.
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Voice Cloning Demo */}
-                <div className="relative space-y-3">
-                  {/* Enhanced background for audio player section */}
-                  <div className="absolute -inset-8 bg-gradient-to-br from-orange-100/20 via-amber-100/15 to-orange-100/10 rounded-3xl blur-2xl opacity-60"></div>
-
-                  {/* Voice Toggle Selector */}
-                  <div className="relative z-10">
-                    <div className="flex bg-white/80 backdrop-blur-sm rounded-xl p-1 border border-orange-200/50 shadow-sm">
-                      <button
-                        onClick={() => setSelectedVoice("original")}
-                        className={`flex-1 px-4 py-2 text-sm font-medium rounded-lg transition-all duration-200 ${
-                          selectedVoice === "original"
-                            ? "bg-orange-500 text-white shadow-md"
-                            : "text-orange-700 hover:bg-orange-50"
-                        }`}
-                      >
-                        Original Voice
-                      </button>
-                      <button
-                        onClick={() => setSelectedVoice("cloned")}
-                        className={`flex-1 px-4 py-2 text-sm font-medium rounded-lg transition-all duration-200 ${
-                          selectedVoice === "cloned"
-                            ? "bg-amber-500 text-white shadow-md"
-                            : "text-amber-700 hover:bg-amber-50"
-                        }`}
-                      >
-                        Cloned Voice
-                      </button>
-                    </div>
-                  </div>
-
-                  {/* Single Audio Player */}
-                  <div className="relative z-10">
-                    <AudioPlayer
-                      audioUrl={
-                        selectedVoice === "original"
-                          ? "/audio/benefit-1-customization-voice-cloning-original.mp3"
-                          : "/audio/benefit-1-customization-voice-cloning-cloned.mp3"
-                      }
-                      className="w-full"
-                    />
-                  </div>
-                </div>
-              </div>
-
-              {/* Left: Customization Image */}
-              <div className="relative order-1 lg:order-1">
-                {/* Auto-Rotating Vertical Clothing Carousel */}
-                {!isAvatarHovered && (
-                  <div className="absolute -left-32 top-1/2 transform -translate-y-1/2 z-20">
-                    <FakeImagesSelector
-                      images={clothingImages}
-                      selectedId={selectedClothingId}
-                      orientation="vertical"
-                      direction="forward"
-                      numberOfDuplicates={10}
-                      autoRotateInterval={4000}
-                      onImageSelect={setSelectedClothingId}
-                      showFading={true}
-                      fadingColor="white"
-                      draggable={false}
-                      showArrows={false}
-                      selectable={false}
-                    />
-                  </div>
-                )}
-
-                {/* Auto-Rotating Vertical Haircut Carousel */}
-                {!isAvatarHovered && (
-                  <div className="absolute -right-32 top-1/2 transform -translate-y-1/2 z-20">
-                    <FakeImagesSelector
-                      images={haircutImages}
-                      selectedId={selectedHaircutId}
-                      orientation="vertical"
-                      direction="reverse"
-                      numberOfDuplicates={10}
-                      autoRotateInterval={4000}
-                      onImageSelect={setSelectedHaircutId}
-                      showFading={true}
-                      fadingColor="white"
-                      draggable={false}
-                      showArrows={false}
-                      selectable={false}
-                    />
-                  </div>
-                )}
-
-                <div
-                  className="group"
-                  onMouseEnter={() => setIsAvatarHovered(true)}
-                  onMouseLeave={() => setIsAvatarHovered(false)}
-                >
-                  <div className="relative">
-                    {/* Concentric flower-shaped outlines - Chupa Chups style effect */}
-                    <div className="absolute inset-0 flex items-center justify-center">
-                      {/* Orange glow background */}
-                      <div className="absolute w-full h-full bg-gradient-to-br from-orange-200/20 to-amber-200/10 rounded-full scale-0 group-hover:scale-100 transition-all duration-1000 ease-out group-hover:delay-100 delay-500 blur-sm"></div>
-
-                      {/* Outer flower outline with glow */}
-                      <div className="absolute w-full h-full border-2 border-orange-400/30 rounded-full scale-0 group-hover:scale-100 transition-all duration-700 ease-out group-hover:delay-0 delay-200 shadow-[0_0_20px_rgba(251,146,60,0.3)] group-hover:shadow-[0_0_30px_rgba(251,146,60,0.4)]"></div>
-
-                      {/* Middle flower outline with glow */}
-                      <div className="absolute w-4/5 h-4/5 border-2 border-orange-500/40 rounded-full scale-0 group-hover:scale-100 transition-all duration-700 ease-out group-hover:delay-100 delay-300 shadow-[0_0_15px_rgba(249,115,22,0.4)] group-hover:shadow-[0_0_25px_rgba(249,115,22,0.5)]"></div>
-
-                      {/* Inner flower outline with glow */}
-                      <div className="absolute w-3/5 h-3/5 border-2 border-orange-600/50 rounded-full scale-0 group-hover:scale-100 transition-all duration-700 ease-out group-hover:delay-200 delay-400 shadow-[0_0_10px_rgba(234,88,12,0.5)] group-hover:shadow-[0_0_25px_rgba(234,88,12,0.6)]"></div>
-                    </div>
-
-                    {/* Default image */}
-                    <img
-                      src="/images/benefit-1-customization-1.png"
-                      alt="Personalization Hub - Voice & Appearance Customization"
-                      className="relative z-30 w-full max-w-md mx-auto object-contain drop-shadow-2xl transition-opacity duration-500 group-hover:opacity-0"
-                    />
-                    {/* Hover image */}
-                    <img
-                      src="/images/benefit-1-customization-2.png"
-                      alt="Personalization Hub - Voice & Appearance Customization (Active)"
-                      className="absolute inset-0 z-30 w-full max-w-md mx-auto object-contain drop-shadow-2xl opacity-0 transition-opacity duration-500 group-hover:opacity-100"
-                    />
-                  </div>
-                </div>
-              </div>
             </div>
           </div>
         </div>
@@ -395,7 +301,7 @@ const Benefits = () => {
                 <div className="absolute -right-16 -top-16 text-8xl lg:text-9xl font-bold text-orange-600/25 transform rotate-12 select-none">
                   #2
                 </div>
-                <h2 className="text-4xl lg:text-5xl font-heading font-bold text-foreground mb-6 relative z-10 mr-14">
+                <h2 className="text-5xl lg:text-6xl font-heading font-bold text-foreground mb-6 relative z-10 mr-14">
                   Save hours on support.
                   <br />
                   Earn loyal customers.
@@ -511,7 +417,7 @@ const Benefits = () => {
                 <div className="absolute -left-16 -top-16 text-8xl lg:text-9xl font-bold text-orange-600/25 transform rotate-6 select-none">
                   #3
                 </div>
-                <h2 className="text-4xl lg:text-5xl font-heading font-bold text-foreground mb-6 relative z-10 ml-14">
+                <h2 className="text-5xl lg:text-6xl font-heading font-bold text-foreground mb-6 relative z-10 ml-14">
                   {/* Understand Customers. Tune the funnel. Grow revenue. */}
                   Learn. Tune. Grow.
                 </h2>
