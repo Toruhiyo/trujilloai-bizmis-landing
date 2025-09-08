@@ -162,6 +162,13 @@ export const faqCategories: FAQCategory[] = [
         answer: "Yes—Pro includes a dedicated manager.",
         category: "pricing",
       },
+      {
+        id: "what-counts-as-conversation",
+        question: "What counts as conversation?",
+        answer:
+          "A conversation is any interaction where a customer engages with Bizmis. This includes voice interactions, text exchanges, product inquiries, support questions, or any back-and-forth dialogue. Simple page views or browsing without interaction don't count toward your conversation limit.",
+        category: "pricing",
+      },
     ],
   },
   {

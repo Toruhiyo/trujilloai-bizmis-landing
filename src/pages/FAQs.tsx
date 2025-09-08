@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { ChevronDown, Search, ArrowLeft } from "lucide-react";
 import { faqCategories, allFAQs, type FAQ } from "@/data/faqs";
 
@@ -6,6 +6,36 @@ const FAQsPage = () => {
   const [openItems, setOpenItems] = useState<string[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
+
+  // Handle URL hash navigation to specific FAQ
+  useEffect(() => {
+    const hash = window.location.hash.replace("#", "");
+    if (hash) {
+      // Find the FAQ with this ID
+      const targetFaq = allFAQs.find((faq) => faq.id === hash);
+      if (targetFaq) {
+        // Open the FAQ
+        setOpenItems((prev) => [...prev, hash]);
+        // Set the category if not "all"
+        setSelectedCategory(targetFaq.category);
+        // Scroll to the FAQ after a brief delay to ensure rendering
+        setTimeout(() => {
+          const element = document.getElementById(`faq-${hash}`);
+          if (element) {
+            element.scrollIntoView({
+              behavior: "smooth",
+              block: "center",
+            });
+            // Focus the FAQ button for accessibility
+            const button = element.querySelector("button");
+            if (button) {
+              button.focus();
+            }
+          }
+        }, 100);
+      }
+    }
+  }, []);
 
   const toggleItem = (id: string) => {
     setOpenItems((prev) =>
@@ -148,6 +178,7 @@ const FAQsPage = () => {
                   return (
                     <div
                       key={faq.id}
+                      id={`faq-${faq.id}`}
                       className="bg-white rounded-lg border border-border overflow-hidden shadow-sm hover:shadow-md transition-shadow"
                     >
                       <button

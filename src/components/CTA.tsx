@@ -28,7 +28,7 @@ const FinalCTA = () => {
   };
 
   const handleFAQClick = () => {
-    window.location.href = "/faqs";
+    window.location.href = "/faqs#what-counts-as-conversation";
   };
 
   return (
