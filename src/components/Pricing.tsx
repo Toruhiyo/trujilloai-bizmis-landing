@@ -318,7 +318,7 @@ const Pricing = () => {
                 <p className="text-center text-amber-900 mt-2">
                   <span className="font-semibold">Be one of our first 50 merchants and help shape Bizmis.</span>{" "}
                   <span className="text-amber-800">
-                    Shape Bizmis roadmap to suit your needs. Plus, enjoy <span className="font-semibold">50% off your first 3 months</span> or <span className="font-semibold">33% off yearly</span>.
+                    Your needs and feedback will drive the roadmap. Plus, enjoy <span className="font-semibold">50% off your first 3 months</span> or <span className="font-semibold">33% off yearly</span>.
                   </span>
                 </p>
               </div>
