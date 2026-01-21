@@ -116,6 +116,8 @@ const formatExactPrice = (price: number): string => {
 
 const EARLY_BIRD_TOOLTIP = "First 50 merchants get exclusive launch pricing";
 
+const SHOW_CONCURRENT_CONVERSATIONS_LIMIT = false;
+
 const Pricing = () => {
   const [isYearly, setIsYearly] = useState(true);
   const [showEarlyBird, setShowEarlyBird] = useState(true);
@@ -409,17 +411,19 @@ const Pricing = () => {
                       </p>
                     )}
                     <ul className="space-y-3">
-                      {plan.features.map((feature, idx) => (
-                        <li key={idx} className="flex items-start gap-3">
-                          <div className="w-5 h-5 bg-gradient-to-br from-amber-100 to-primary-light/30 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
-                            <Check className="w-3 h-3 text-primary" />
-                          </div>
-                          <span className="text-muted-foreground font-body text-sm leading-relaxed flex items-center">
-                            {feature}
-                            {COMING_SOON_FEATURES.includes(feature) && <PricingPlanFeatureSoon />}
-                          </span>
-                        </li>
-                      ))}
+                      {plan.features
+                        .filter(feature => SHOW_CONCURRENT_CONVERSATIONS_LIMIT || !feature.includes("Concurrent Conversations"))
+                        .map((feature, idx) => (
+                          <li key={idx} className="flex items-start gap-3">
+                            <div className="w-5 h-5 bg-gradient-to-br from-amber-100 to-primary-light/30 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                              <Check className="w-3 h-3 text-primary" />
+                            </div>
+                            <span className="text-muted-foreground font-body text-sm leading-relaxed flex items-center">
+                              {feature}
+                              {COMING_SOON_FEATURES.includes(feature) && <PricingPlanFeatureSoon />}
+                            </span>
+                          </li>
+                        ))}
                     </ul>
                   </div>
 
@@ -464,17 +468,19 @@ const Pricing = () => {
                 Everything in Pro plus:
               </p>
               <ul className="space-y-3">
-                {ENTERPRISE_FEATURES.map((feature, idx) => (
-                  <li key={idx} className="flex items-start gap-3">
-                    <div className="w-5 h-5 bg-white/10 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
-                      <Check className="w-3 h-3 text-white" />
-                    </div>
-                    <span className="text-gray-300 font-body text-sm leading-relaxed flex items-center">
-                      {feature}
-                      {COMING_SOON_FEATURES.includes(feature) && <PricingPlanFeatureSoon />}
-                    </span>
-                  </li>
-                ))}
+                {ENTERPRISE_FEATURES
+                  .filter(feature => SHOW_CONCURRENT_CONVERSATIONS_LIMIT || !feature.includes("Concurrent Conversations"))
+                  .map((feature, idx) => (
+                    <li key={idx} className="flex items-start gap-3">
+                      <div className="w-5 h-5 bg-white/10 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                        <Check className="w-3 h-3 text-white" />
+                      </div>
+                      <span className="text-gray-300 font-body text-sm leading-relaxed flex items-center">
+                        {feature}
+                        {COMING_SOON_FEATURES.includes(feature) && <PricingPlanFeatureSoon />}
+                      </span>
+                    </li>
+                  ))}
               </ul>
             </div>
 
