@@ -67,7 +67,7 @@ const FinalCTA = () => {
                 <li className="flex items-start gap-3 text-white/90">
                   <div className="w-2 h-2 bg-white rounded-full mt-2 flex-shrink-0"></div>
                   <span className="text-lg">
-                    Explains differences & recommends
+                    Compares products & recommends
                   </span>
                 </li>
                 <li className="flex items-start gap-3 text-white/90">
