@@ -201,13 +201,6 @@ const Pricing = () => {
     return Math.round(((standardPrice - currentPrice) / standardPrice) * 100);
   };
 
-  const getGlobalMicrocopy = (): string => {
-    if (showEarlyBird) {
-      return "Early Bird pricing: 50% off monthly or 30% off yearly for the first 50 merchants.";
-    }
-    return "Save 20% with yearly billing.";
-  };
-
   const showUpgradeCreditNote = !isYearly && showEarlyBird;
 
   return (
@@ -306,10 +299,31 @@ const Pricing = () => {
             </label>
           </div>
 
-          {/* Global Microcopy */}
-          <p className="text-sm text-muted-foreground mt-4 max-w-xl mx-auto">
-            {getGlobalMicrocopy()}
-          </p>
+          {/* Global Microcopy - Only show when Early Bird is OFF */}
+          {!showEarlyBird && (
+            <p className="text-sm text-muted-foreground mt-4 max-w-xl mx-auto">
+              Save 20% with yearly billing.
+            </p>
+          )}
+
+          {/* Early Bird Special Message */}
+          {showEarlyBird && (
+            <div className="mt-6 max-w-2xl mx-auto">
+              <div className="relative bg-gradient-to-r from-amber-50 via-orange-50 to-amber-50 border border-orange-200/60 rounded-2xl px-6 py-5 shadow-sm">
+                <div className="absolute -top-3 left-1/2 -translate-x-1/2">
+                  <span className="bg-gradient-warm text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider shadow-md">
+                    🐣 Early Bird
+                  </span>
+                </div>
+                <p className="text-center text-amber-900 mt-2">
+                  <span className="font-semibold">Be one of our first 50 merchants and help shape Bizmis.</span>{" "}
+                  <span className="text-amber-800">
+                    Shape Bizmis roadmap to suit your needs. Plus, enjoy <span className="font-semibold">50% off your first 3 months</span> or <span className="font-semibold">33% off yearly</span>.
+                  </span>
+                </p>
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Pricing Cards - 4 columns */}
