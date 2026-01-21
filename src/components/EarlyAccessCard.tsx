@@ -1,4 +1,4 @@
-import { Users, Gift, ArrowRight, Crown, Star } from "lucide-react";
+import { Map, Gift, ArrowRight, Crown, Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 interface EarlyAccessCardProps {
@@ -48,13 +48,13 @@ const EarlyAccessCard: React.FC<EarlyAccessCardProps> = ({ className = "" }) => 
             </div>
             <div>
               <h4 className="font-bold text-gray-900 text-sm">50% Off First 3 Months</h4>
-              <p className="text-xs text-gray-500 mt-0.5">Lock in our lowest launch pricing forever.</p>
+              <p className="text-xs text-gray-500 mt-0.5">Lock in our lowest launch pricing.</p>
             </div>
           </div>
 
           <div className="flex items-start gap-4 group/item">
             <div className="w-10 h-10 rounded-2xl bg-orange-50 border border-orange-100 flex items-center justify-center flex-shrink-0 shadow-sm group-hover/item:scale-105 transition-transform">
-              <Users className="w-5 h-5 text-orange-600" />
+              <Map className="w-5 h-5 text-orange-600" />
             </div>
             <div>
               <h4 className="font-bold text-gray-900 text-sm">Direct Roadmap Influence</h4>
@@ -68,7 +68,7 @@ const EarlyAccessCard: React.FC<EarlyAccessCardProps> = ({ className = "" }) => 
             </div>
             <div>
               <h4 className="font-bold text-gray-900 text-sm">VIP Onboarding</h4>
-              <p className="text-xs text-gray-500 mt-0.5">Personal setup & strategy session included.</p>
+              <p className="text-xs text-gray-500 mt-0.5">Personal setup & Onboarding session included.</p>
             </div>
           </div>
         </div>
@@ -80,8 +80,8 @@ const EarlyAccessCard: React.FC<EarlyAccessCardProps> = ({ className = "" }) => 
               Limited spots available
             </span>
           </div>
-          
-          <Button 
+
+          <Button
             onClick={handleClaimClick}
             className="w-full bg-gray-900 hover:bg-gray-800 text-white font-medium h-12 rounded-xl transition-all shadow-lg hover:shadow-xl hover:-translate-y-0.5 flex items-center justify-center gap-2 group"
           >
