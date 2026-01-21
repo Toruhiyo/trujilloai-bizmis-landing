@@ -87,6 +87,48 @@ export const faqCategories: FAQCategory[] = [
     ],
   },
   {
+    id: "billing",
+    name: "Billing",
+    faqs: [
+      {
+        id: "how-billing-works",
+        question: "How does the billing work?",
+        answer: "Billing operates on monthly cycles. Your included minutes reset every month with no rollover. The monthly commitment is charged upfront at the start of each month.",
+        category: "billing",
+      },
+      {
+        id: "after-included-minutes",
+        question: "What happens after I use my included minutes?",
+        answer: "After your included minutes are used, additional minutes are billed at your plan's extra minutes rate. Usage is tracked in real-time in your dashboard.",
+        category: "billing",
+      },
+      {
+        id: "yearly-billing",
+        question: "How does yearly billing work?",
+        answer: "Yearly billing gives you ~20% off (up to 33% with Early Bird). Minutes still operate in monthly cycles, resetting each month. The yearly commitment is charged upfront.",
+        category: "billing",
+      },
+      {
+        id: "early-bird-offer",
+        question: "What is the Early Bird offer?",
+        answer: "The first 50 merchants receive special pricing: 50% off monthly plans for the first 3 months, or special yearly rates (up to 33% off). Extra minutes remain at standard rates.",
+        category: "billing",
+      },
+      {
+        id: "refund-policy",
+        question: "What's your refund policy?",
+        answer: "Yearly plans include a 60-day money-back guarantee, no questions asked (commitment fee only). Monthly plans can be cancelled anytime.",
+        category: "billing",
+      },
+      {
+        id: "upgrade-monthly-to-yearly",
+        question: "Can I upgrade from monthly to yearly?",
+        answer: "Yes! Upgrade to yearly within your first 90 days and we'll credit what you already paid toward your yearly plan. Credit applies to commit charges only; on-demand usage charges are excluded.",
+        category: "billing",
+      },
+    ],
+  },
+  {
     id: "shopify-integration",
     name: "Shopify Integration",
     faqs: [
@@ -135,39 +177,6 @@ export const faqCategories: FAQCategory[] = [
         answer:
           "Behavioral A/B testing and white-labeling are included in the Pro plan.",
         category: "customization",
-      },
-    ],
-  },
-  {
-    id: "pricing",
-    name: "Pricing & Plans",
-    faqs: [
-      {
-        id: "conversations-per-plan",
-        question: "How many conversations are included per plan?",
-        answer:
-          "**Starter ($29/mo):** 500 monthly conversations\n\n**Growth ($79/mo):** 2,500 monthly conversations\n\n**Pro ($179/mo):** Unlimited conversations",
-        category: "pricing",
-      },
-      {
-        id: "plan-features",
-        question: "What else is included in each plan?",
-        answer:
-          "**Starter:** Product recommendations, basic voice customization, 24/7 support, basic analytics\n\n**Growth (Most Popular):** Advanced voice cloning, custom avatar design, session replays, tagged insights, cart abandonment recovery\n\n**Pro:** Full personalization, behavioral A/B testing, white-labeling, dedicated manager, multi-language support",
-        category: "pricing",
-      },
-      {
-        id: "dedicated-manager",
-        question: "Is there a dedicated manager option?",
-        answer: "Yes—Pro includes a dedicated manager.",
-        category: "pricing",
-      },
-      {
-        id: "what-counts-as-conversation",
-        question: "What counts as conversation?",
-        answer:
-          "A conversation is any interaction where a customer engages with Bizmis. This includes voice interactions, text exchanges, product inquiries, support questions, or any back-and-forth dialogue. Simple page views or browsing without interaction don't count toward your conversation limit.",
-        category: "pricing",
       },
     ],
   },

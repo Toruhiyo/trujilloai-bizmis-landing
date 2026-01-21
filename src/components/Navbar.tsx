@@ -2,11 +2,14 @@ import { Button } from "@/components/ui/button";
 import { Menu, X } from "lucide-react";
 import { useState, useEffect } from "react";
 import { scrollToTop, scrollToSection } from "@/lib/utils/scroll";
+import { useNavigate, useLocation } from "react-router-dom";
 import Logo from "./Logo";
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isInHero, setIsInHero] = useState(true);
+  const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -23,7 +26,22 @@ const Navbar = () => {
     { label: "Features", href: "#benefits" },
     { label: "Setup", href: "#setup" },
     { label: "Pricing", href: "#pricing" },
+    { label: "FAQs", href: "/faqs" },
   ];
+
+  const handleNavigation = (href: string) => {
+    if (href.startsWith("#")) {
+      if (location.pathname !== "/") {
+        navigate("/" + href);
+      } else {
+        scrollToSection(href);
+      }
+    } else {
+      navigate(href);
+      window.scrollTo(0, 0);
+    }
+    setIsMenuOpen(false);
+  };
 
   return (
     <nav
@@ -41,9 +59,13 @@ const Navbar = () => {
               variant={isInHero ? "white" : "default"}
               showText={true}
               onClick={() => {
-                scrollToTop();
-                // Clear the URL hash to remove section paths like /#setup
-                window.history.pushState({}, "", window.location.pathname);
+                if (location.pathname !== "/") {
+                  navigate("/");
+                } else {
+                  scrollToTop();
+                  // Clear the URL hash to remove section paths like /#setup
+                  window.history.pushState({}, "", window.location.pathname);
+                }
               }}
             />
           </div>
@@ -53,7 +75,7 @@ const Navbar = () => {
             {navItems.map((item) => (
               <button
                 key={item.label}
-                onClick={() => scrollToSection(item.href)}
+                onClick={() => handleNavigation(item.href)}
                 className={`font-medium transition-colors duration-300 hover:opacity-80 ${
                   isInHero
                     ? "text-white/90 hover:text-white"
@@ -125,10 +147,7 @@ const Navbar = () => {
               {navItems.map((item) => (
                 <button
                   key={item.label}
-                  onClick={() => {
-                    scrollToSection(item.href);
-                    setIsMenuOpen(false);
-                  }}
+                  onClick={() => handleNavigation(item.href)}
                   className="block text-foreground hover:text-orange-600 font-medium transition-colors w-full text-left"
                 >
                   {item.label}
