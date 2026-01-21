@@ -50,8 +50,7 @@ const Hero = () => {
                 </div>
                 <div className="flex-1 min-w-0 text-center">
                   <div className="font-semibold text-xs sm:text-sm">
-                    <span className="font-black">Get Started Free</span> on
-                    Shopify
+                    <span className="font-black">Get Started</span> on Shopify
                   </div>
                 </div>
                 <div className="flex-shrink-0">
@@ -122,8 +121,7 @@ const Hero = () => {
                   </div>
                   <div className="flex-1 min-w-0 text-left">
                     <div className="font-semibold">
-                      <span className="font-black">Get Started Free</span> on
-                      Shopify
+                      <span className="font-black">Get Started</span> on Shopify
                     </div>
                     <div className="text-sm opacity-80">
                       One-click install, ready in minutes

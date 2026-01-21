@@ -109,7 +109,7 @@ const Navbar = () => {
                   : ""
               }`}
             >
-              Get Started Free
+              Get Started
             </Button>
           </div>
 
@@ -160,7 +160,7 @@ const Navbar = () => {
                 </Button>
                 */}
                 <Button variant="default" className="w-full font-medium">
-                  Get Started Free
+                  Get Started
                 </Button>
               </div>
             </div>

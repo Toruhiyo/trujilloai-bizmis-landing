@@ -1,34 +1,18 @@
 import { Button } from "@/components/ui/button";
-import { Play, MessageCircle } from "lucide-react";
+import { MessageCircle } from "lucide-react";
 import { FaShopify } from "react-icons/fa";
-import { scrollToSection } from "@/lib/utils/scroll";
-import TestimonialCarousel from "./TestimonialCarousel";
+import EarlyAccessCard from "./EarlyAccessCard";
 
 // Shopify App Store URL - replace with actual URL when available
 const SHOPIFY_APP_STORE_URL = "https://apps.shopify.com/bizmis";
 
 const FinalCTA = () => {
-  const handleDemoClick = () => {
-    // First try to scroll to demo section
-    const demoElement = document.getElementById("demo");
-    if (demoElement) {
-      scrollToSection("demo");
-    } else {
-      // Fallback: could open demo modal or navigate to demo page
-      console.log("Demo section not found - implement modal fallback");
-    }
-  };
-
   const handleShopifyInstall = () => {
     window.open(SHOPIFY_APP_STORE_URL, "_self");
   };
 
   const handleTalkToSales = () => {
     window.location.href = "/contact";
-  };
-
-  const handleFAQClick = () => {
-    window.location.href = "/faqs#what-counts-as-conversation";
   };
 
   return (
@@ -82,7 +66,7 @@ const FinalCTA = () => {
               <div className="flex flex-col sm:flex-row gap-4 mb-6">
                 <Button
                   onClick={handleShopifyInstall}
-                  aria-label="Install Bizmis on Shopify — Free for 14 days"
+                  aria-label="Install Bizmis on Shopify"
                   className="bg-white text-orange-600 hover:bg-white/95 hover:shadow-lg focus:ring-2 focus:ring-orange-300 focus:ring-offset-2 focus:ring-offset-orange-600 text-lg px-8 py-4 h-auto group transition-all duration-200"
                   size="xl"
                 >
@@ -90,19 +74,10 @@ const FinalCTA = () => {
                     className="w-6 h-6 mr-3 text-orange-600"
                     aria-hidden="true"
                   />
-                  Install on Shopify — Free for 14 days
+                  Install on Shopify
                 </Button>
 
                 <div className="flex flex-col sm:flex-row gap-4">
-                  <Button
-                    onClick={handleDemoClick}
-                    aria-label="Watch 60-second demo video"
-                    className="bg-transparent border-2 border-white/30 text-white hover:bg-white/20 hover:border-white/50 focus:ring-2 focus:ring-white/50 focus:ring-offset-2 focus:ring-offset-orange-600 px-6 py-3 h-auto transition-all duration-200 flex items-center justify-center"
-                  >
-                    <Play className="w-5 h-5 mr-2" aria-hidden="true" />
-                    Watch 60-sec demo
-                  </Button>
-
                   <Button
                     onClick={handleTalkToSales}
                     aria-label="Talk to sales team"
@@ -121,19 +96,11 @@ const FinalCTA = () => {
               <p className="text-white/70 text-sm mb-4 leading-relaxed">
                 Cancel anytime • GDPR-ready • Built for Shopify
               </p>
-
-              {/* FAQ Link */}
-              <button
-                onClick={handleFAQClick}
-                className="text-white/80 hover:text-white underline decoration-white/50 hover:decoration-white text-sm transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-white/50 focus:ring-offset-2 focus:ring-offset-orange-600 rounded px-1"
-              >
-                What counts as a conversation?
-              </button>
             </div>
 
             {/* Right Column: Proof Card */}
             <div className="lg:order-2 order-1 flex justify-center lg:justify-end">
-              <TestimonialCarousel />
+              <EarlyAccessCard />
             </div>
           </div>
         </div>
