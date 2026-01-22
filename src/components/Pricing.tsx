@@ -124,7 +124,7 @@ const Pricing = () => {
   const navigate = useNavigate();
   const posthog = usePostHog();
   const [isYearly, setIsYearly] = useState(true);
-  const [showEarlyBird, setShowEarlyBird] = useState(true);
+  const [showEarlyBird, setShowEarlyBird] = useState(false);
   const [showUpgradeCreditDetails, setShowUpgradeCreditDetails] = useState(false);
   const earlyBirdRef = useRef<HTMLLabelElement>(null);
 
