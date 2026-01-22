@@ -1,9 +1,15 @@
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Play } from "lucide-react";
 import { FaShopify } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
 import Navbar from "./Navbar";
 
 const Hero = () => {
+  const navigate = useNavigate();
+
+  const handleCustomWebsitesClick = () => {
+    navigate("/contact?subject=Bizmis%20Website%20Integration");
+  };
   return (
     <section
       id="hero"
@@ -61,7 +67,10 @@ const Hero = () => {
               <div className="flex flex-col gap-2 items-center w-full">
                 <span className="text-white/70 text-xs text-center">
                   Also available for{" "}
-                  <button className="text-white/80 hover:text-white underline underline-offset-2 transition-colors">
+                  <button
+                    onClick={handleCustomWebsitesClick}
+                    className="text-white/80 hover:text-white underline underline-offset-2 transition-colors"
+                  >
                     custom websites
                   </button>
                 </span>
@@ -135,7 +144,10 @@ const Hero = () => {
                 <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 items-center w-full">
                   <span className="text-white/70 text-sm text-center sm:text-left flex-1 min-w-0">
                     Also available for{" "}
-                    <button className="text-white/80 hover:text-white underline underline-offset-2 transition-colors">
+                    <button
+                      onClick={handleCustomWebsitesClick}
+                      className="text-white/80 hover:text-white underline underline-offset-2 transition-colors"
+                    >
                       custom websites
                     </button>
                   </span>
