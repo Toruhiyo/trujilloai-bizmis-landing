@@ -82,7 +82,7 @@ const JoinWaitlist = () => {
     setFormStatus("sending");
 
     const planParam = searchParams.get("plan");
-    
+
     // Trim input values
     const cleanedData = {
       name: formData.name.trim(),
@@ -105,7 +105,7 @@ const JoinWaitlist = () => {
         EMAILJS_PUBLIC_KEY
       );
       setFormStatus("success");
-      
+
       // Fire confetti
       const duration = 3000;
       const animationEnd = Date.now() + duration;
@@ -116,7 +116,7 @@ const JoinWaitlist = () => {
         return Math.random() * (max - min) + min;
       }
 
-      const interval: any = setInterval(function() {
+      const interval: any = setInterval(function () {
         const timeLeft = animationEnd - Date.now();
 
         if (timeLeft <= 0) {
@@ -124,7 +124,7 @@ const JoinWaitlist = () => {
         }
 
         const particleCount = 50 * (timeLeft / duration);
-        
+
         confetti({
           ...defaults,
           particleCount,
@@ -162,13 +162,13 @@ const JoinWaitlist = () => {
           <div className="inline-flex items-center justify-center w-24 h-24 bg-gradient-warm rounded-full mb-8 shadow-lg shadow-orange-200">
             <PartyPopper className="w-12 h-12 text-white" />
           </div>
-          
+
           <h2 className="text-4xl md:text-5xl font-heading font-bold text-foreground mb-6">
             You're on the list!
           </h2>
-          
+
           <p className="text-xl text-muted-foreground mb-8 leading-relaxed">
-            Welcome to the Bizmis Early Bird program.<br/>
+            Welcome to the Bizmis Early Bird program.<br />
             We'll notify you as soon as we launch in <span className="font-semibold text-foreground">{LAUNCH_DATE}</span>.
           </p>
 
@@ -183,16 +183,16 @@ const JoinWaitlist = () => {
           </div>
 
           <div className="space-y-4">
-            <Button 
-              onClick={() => navigate('/')} 
+            <Button
+              onClick={() => navigate('/')}
               className="bg-gray-900 hover:bg-gray-800 text-white h-12 px-8 rounded-xl text-lg w-full sm:w-auto"
             >
               Back to Home
             </Button>
             <div>
-              <Button 
-                onClick={resetForm} 
-                variant="ghost" 
+              <Button
+                onClick={resetForm}
+                variant="ghost"
                 className="text-muted-foreground hover:text-foreground"
               >
                 Add Another Store
@@ -349,130 +349,130 @@ const JoinWaitlist = () => {
                       </div>
                     )}
 
-                      <div className="space-y-2">
-                        <label
-                          htmlFor="name"
-                          className="block text-sm font-medium text-foreground"
-                        >
-                          Your Name
-                        </label>
-                        <Input
-                          id="name"
-                          name="name"
-                          type="text"
-                          placeholder="John Doe"
-                          value={formData.name}
-                          onChange={handleInputChange}
-                          required
-                          className="h-12"
-                        />
-                      </div>
-
-                      <div className="space-y-2">
-                        <label
-                          htmlFor="email"
-                          className="block text-sm font-medium text-foreground"
-                        >
-                          Email Address
-                        </label>
-                        <Input
-                          id="email"
-                          name="email"
-                          type="email"
-                          placeholder="john@example.com"
-                          value={formData.email}
-                          onChange={handleInputChange}
-                          required
-                          className="h-12"
-                        />
-                      </div>
-
-                      <div className="space-y-2">
-                        <label
-                          htmlFor="storeName"
-                          className="block text-sm font-medium text-foreground"
-                        >
-                          Store Name
-                        </label>
-                        <Input
-                          id="storeName"
-                          name="storeName"
-                          type="text"
-                          placeholder="My Awesome Store"
-                          value={formData.storeName}
-                          onChange={handleInputChange}
-                          required
-                          className="h-12"
-                        />
-                      </div>
-
-                      <div className="space-y-2">
-                        <label
-                          htmlFor="storeUrl"
-                          className="block text-sm font-medium text-foreground"
-                        >
-                          Shopify Store URL
-                        </label>
-                        <Input
-                          id="storeUrl"
-                          name="storeUrl"
-                          type="url"
-                          placeholder="https://mystore.myshopify.com"
-                          value={formData.storeUrl}
-                          onChange={handleInputChange}
-                          onBlur={handleStoreUrlBlur}
-                          required
-                          className="h-12"
-                        />
-                        <p className="text-xs text-muted-foreground">
-                          Enter your .myshopify.com URL or custom domain
-                        </p>
-                      </div>
-
-                      <Button
-                        type="submit"
-                        className="w-full h-14 text-lg bg-gradient-warm hover:opacity-90 transition-opacity"
-                        disabled={formStatus === "sending" || !isFormValid}
+                    <div className="space-y-2">
+                      <label
+                        htmlFor="name"
+                        className="block text-sm font-medium text-foreground"
                       >
-                        {formStatus === "sending" ? (
-                          <>
-                            <span className="animate-spin mr-2">
-                              <svg
-                                className="w-5 h-5"
-                                fill="none"
-                                viewBox="0 0 24 24"
-                              >
-                                <circle
-                                  className="opacity-25"
-                                  cx="12"
-                                  cy="12"
-                                  r="10"
-                                  stroke="currentColor"
-                                  strokeWidth="4"
-                                />
-                                <path
-                                  className="opacity-75"
-                                  fill="currentColor"
-                                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                                />
-                              </svg>
-                            </span>
-                            Reserving your spot...
-                          </>
-                        ) : (
-                          <>
-                            <Rocket className="w-5 h-5 mr-2" />
-                            Join the Waitlist
-                          </>
-                        )}
-                      </Button>
+                        Your Name
+                      </label>
+                      <Input
+                        id="name"
+                        name="name"
+                        type="text"
+                        placeholder="John Doe"
+                        value={formData.name}
+                        onChange={handleInputChange}
+                        required
+                        className="h-12"
+                      />
+                    </div>
 
-                      <p className="text-xs text-center text-muted-foreground pt-2">
-                        By joining, you agree to receive updates about Bizmis.
-                        <br />
-                        We respect your privacy and will never spam you.
+                    <div className="space-y-2">
+                      <label
+                        htmlFor="email"
+                        className="block text-sm font-medium text-foreground"
+                      >
+                        Email Address
+                      </label>
+                      <Input
+                        id="email"
+                        name="email"
+                        type="email"
+                        placeholder="john@example.com"
+                        value={formData.email}
+                        onChange={handleInputChange}
+                        required
+                        className="h-12"
+                      />
+                    </div>
+
+                    <div className="space-y-2">
+                      <label
+                        htmlFor="storeName"
+                        className="block text-sm font-medium text-foreground"
+                      >
+                        Store Name
+                      </label>
+                      <Input
+                        id="storeName"
+                        name="storeName"
+                        type="text"
+                        placeholder="My Awesome Store"
+                        value={formData.storeName}
+                        onChange={handleInputChange}
+                        required
+                        className="h-12"
+                      />
+                    </div>
+
+                    <div className="space-y-2">
+                      <label
+                        htmlFor="storeUrl"
+                        className="block text-sm font-medium text-foreground"
+                      >
+                        Shopify Store URL
+                      </label>
+                      <Input
+                        id="storeUrl"
+                        name="storeUrl"
+                        type="url"
+                        placeholder="https://mystore.myshopify.com"
+                        value={formData.storeUrl}
+                        onChange={handleInputChange}
+                        onBlur={handleStoreUrlBlur}
+                        required
+                        className="h-12"
+                      />
+                      <p className="text-xs text-muted-foreground">
+                        Enter your .myshopify.com URL or custom domain
                       </p>
-                    </form>
+                    </div>
+
+                    <Button
+                      type="submit"
+                      className="w-full h-14 text-lg bg-gradient-warm hover:opacity-90 transition-opacity"
+                      disabled={formStatus === "sending" || !isFormValid}
+                    >
+                      {formStatus === "sending" ? (
+                        <>
+                          <span className="animate-spin mr-2">
+                            <svg
+                              className="w-5 h-5"
+                              fill="none"
+                              viewBox="0 0 24 24"
+                            >
+                              <circle
+                                className="opacity-25"
+                                cx="12"
+                                cy="12"
+                                r="10"
+                                stroke="currentColor"
+                                strokeWidth="4"
+                              />
+                              <path
+                                className="opacity-75"
+                                fill="currentColor"
+                                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                              />
+                            </svg>
+                          </span>
+                          Reserving your spot...
+                        </>
+                      ) : (
+                        <>
+                          <Rocket className="w-5 h-5 mr-2" />
+                          Join the Waitlist
+                        </>
+                      )}
+                    </Button>
+
+                    <p className="text-xs text-center text-muted-foreground pt-2">
+                      By joining, you agree to receive updates about Bizmis.
+                      <br />
+                      We respect your privacy and will never spam you.
+                    </p>
+                  </form>
                 </div>
 
                 {/* Social Proof */}
