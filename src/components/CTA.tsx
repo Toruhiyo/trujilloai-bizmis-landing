@@ -2,17 +2,27 @@ import { Button } from "@/components/ui/button";
 import { MessageCircle } from "lucide-react";
 import { FaShopify } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
+import { usePostHog } from "posthog-js/react";
 import { scrollToSection } from "@/lib/utils/scroll";
 import EarlyAccessCard from "./EarlyAccessCard";
 
 const FinalCTA = () => {
   const navigate = useNavigate();
+  const posthog = usePostHog();
 
   const handleJoinWaitlist = () => {
+    posthog.capture("cta_clicked", {
+      cta_type: "join_waitlist",
+      location: "final_cta",
+    });
     scrollToSection("#pricing-cards");
   };
 
   const handleTalkToSales = () => {
+    posthog.capture("cta_clicked", {
+      cta_type: "talk_to_sales",
+      location: "final_cta",
+    });
     navigate("/contact");
   };
 

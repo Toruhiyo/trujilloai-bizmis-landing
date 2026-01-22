@@ -2,18 +2,28 @@ import { Button } from "@/components/ui/button";
 import { ArrowRight, Play } from "lucide-react";
 import { FaShopify } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
+import { usePostHog } from "posthog-js/react";
 import Navbar from "./Navbar";
 
 import { scrollToSection } from "@/lib/utils/scroll";
 
 const Hero = () => {
   const navigate = useNavigate();
+  const posthog = usePostHog();
 
   const handleCustomWebsitesClick = () => {
+    posthog.capture("cta_clicked", {
+      cta_type: "custom_websites",
+      location: "hero",
+    });
     navigate("/contact?subject=Bizmis%20Website%20Integration");
   };
 
   const handleGetStartedClick = () => {
+    posthog.capture("cta_clicked", {
+      cta_type: "get_started",
+      location: "hero",
+    });
     scrollToSection("#pricing-cards");
   };
   return (

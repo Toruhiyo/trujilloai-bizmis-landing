@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Check, ArrowRight, Zap, HelpCircle, ChevronDown, Clock } from "lucide-react";
 import { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
+import { usePostHog } from "posthog-js/react";
 import confetti from "canvas-confetti";
 import { PricingPlanFeatureSoon } from "./PricingPlanFeatureSoon";
 
@@ -121,21 +122,44 @@ const SHOW_CONCURRENT_CONVERSATIONS_LIMIT = false;
 
 const Pricing = () => {
   const navigate = useNavigate();
+  const posthog = usePostHog();
   const [isYearly, setIsYearly] = useState(true);
   const [showEarlyBird, setShowEarlyBird] = useState(true);
   const [showUpgradeCreditDetails, setShowUpgradeCreditDetails] = useState(false);
   const earlyBirdRef = useRef<HTMLLabelElement>(null);
 
   const handlePlanClick = (planName: string) => {
+    posthog.capture("pricing_plan_clicked", {
+      plan: planName.toLowerCase(),
+      billing_period: isYearly ? "yearly" : "monthly",
+      early_bird_enabled: showEarlyBird,
+    });
     navigate(`/join-waitlist?plan=${planName.toLowerCase()}`);
   };
 
   const handleContactSales = () => {
+    posthog.capture("pricing_plan_clicked", {
+      plan: "enterprise",
+      billing_period: isYearly ? "yearly" : "monthly",
+      early_bird_enabled: showEarlyBird,
+    });
     navigate("/contact?subject=Enterprise%20Plan%20Inquiry");
+  };
+
+  const handleBillingToggle = (yearly: boolean) => {
+    posthog.capture("billing_period_toggled", {
+      billing_period: yearly ? "yearly" : "monthly",
+      early_bird_enabled: showEarlyBird,
+    });
+    setIsYearly(yearly);
   };
 
   const handleEarlyBirdChange = () => {
     const newValue = !showEarlyBird;
+    posthog.capture("early_bird_toggled", {
+      early_bird_enabled: newValue,
+      billing_period: isYearly ? "yearly" : "monthly",
+    });
     setShowEarlyBird(newValue);
     if (newValue) {
       // Calculate origin based on button position if possible
@@ -239,7 +263,7 @@ const Pricing = () => {
                 Monthly
               </span>
               <button
-                onClick={() => setIsYearly(!isYearly)}
+                onClick={() => handleBillingToggle(!isYearly)}
                 className={`relative inline-flex h-7 w-12 items-center rounded-full transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 ${isYearly
                   ? "bg-gradient-to-r from-primary to-primary-dark"
                   : "bg-gray-200"

@@ -1,6 +1,7 @@
 import { useState, useRef, FormEvent, useEffect } from "react";
 import { ArrowLeft, Send, Mail, CheckCircle, AlertCircle } from "lucide-react";
 import { useSearchParams } from "react-router-dom";
+import { usePostHog } from "posthog-js/react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -21,6 +22,7 @@ interface FormData {
 
 const Contact = () => {
   const [searchParams] = useSearchParams();
+  const posthog = usePostHog();
   const formRef = useRef<HTMLFormElement>(null);
   const [formStatus, setFormStatus] = useState<FormStatus>("idle");
   const [formData, setFormData] = useState<FormData>({
@@ -33,9 +35,12 @@ const Contact = () => {
   useEffect(() => {
     const subjectParam = searchParams.get("subject");
     if (subjectParam) {
+      posthog.capture("contact_page_viewed", {
+        prefilled_subject: subjectParam,
+      });
       setFormData((prev) => ({ ...prev, subject: subjectParam }));
     }
-  }, [searchParams]);
+  }, [searchParams, posthog]);
 
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -73,6 +78,9 @@ const Contact = () => {
         EMAILJS_PUBLIC_KEY
       );
       setFormStatus("success");
+      posthog.capture("contact_form_submitted", {
+        subject: formData.subject,
+      });
     } catch (error) {
       console.error("Failed to send email:", error);
       setFormStatus("error");

@@ -13,6 +13,7 @@ import {
   PartyPopper,
 } from "lucide-react";
 import { useSearchParams, useNavigate } from "react-router-dom";
+import { usePostHog } from "posthog-js/react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import emailjs from "@emailjs/browser";
@@ -36,6 +37,7 @@ interface FormData {
 
 const JoinWaitlist = () => {
   const navigate = useNavigate();
+  const posthog = usePostHog();
   const [searchParams] = useSearchParams();
   const [formStatus, setFormStatus] = useState<FormStatus>("idle");
   const [formData, setFormData] = useState<FormData>({
@@ -48,10 +50,11 @@ const JoinWaitlist = () => {
   useEffect(() => {
     const planParam = searchParams.get("plan");
     if (planParam) {
-      // Could be used for analytics or pre-selecting a plan
-      console.log("Selected plan:", planParam);
+      posthog.capture("waitlist_page_viewed", {
+        selected_plan: planParam,
+      });
     }
-  }, [searchParams]);
+  }, [searchParams, posthog]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -105,6 +108,11 @@ const JoinWaitlist = () => {
         EMAILJS_PUBLIC_KEY
       );
       setFormStatus("success");
+
+      posthog.capture("waitlist_signup_completed", {
+        selected_plan: planParam || "not_selected",
+        store_domain: cleanedData.storeUrl,
+      });
 
       // Fire confetti
       const duration = 3000;
