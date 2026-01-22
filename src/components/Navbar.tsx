@@ -103,6 +103,7 @@ const Navbar = () => {
             */}
             <Button
               variant={isInHero ? "outline" : "default"}
+              onClick={() => handleNavigation("#pricing-cards")}
               className={`font-medium transition-all duration-300 ${
                 isInHero
                   ? "bg-white text-foreground border-white hover:bg-white/90"
@@ -159,7 +160,11 @@ const Navbar = () => {
                   Sign In
                 </Button>
                 */}
-                <Button variant="default" className="w-full font-medium">
+                <Button
+                  variant="default"
+                  onClick={() => handleNavigation("#pricing-cards")}
+                  className="w-full font-medium"
+                >
                   Get Started
                 </Button>
               </div>

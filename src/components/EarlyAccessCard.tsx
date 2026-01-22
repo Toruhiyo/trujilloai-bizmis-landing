@@ -1,14 +1,17 @@
 import { Map, Gift, ArrowRight, Crown, Star } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
+import { scrollToSection } from "@/lib/utils/scroll";
 
 interface EarlyAccessCardProps {
   className?: string;
 }
 
 const EarlyAccessCard: React.FC<EarlyAccessCardProps> = ({ className = "" }) => {
-  // Use the same install URL as the main CTA
+  const navigate = useNavigate();
+
   const handleClaimClick = () => {
-    window.open("https://apps.shopify.com/bizmis", "_self");
+    scrollToSection("#pricing-cards");
   };
 
   return (

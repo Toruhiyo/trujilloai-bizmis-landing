@@ -4,11 +4,17 @@ import { FaShopify } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import Navbar from "./Navbar";
 
+import { scrollToSection } from "@/lib/utils/scroll";
+
 const Hero = () => {
   const navigate = useNavigate();
 
   const handleCustomWebsitesClick = () => {
     navigate("/contact?subject=Bizmis%20Website%20Integration");
+  };
+
+  const handleGetStartedClick = () => {
+    scrollToSection("#pricing-cards");
   };
   return (
     <section
@@ -49,6 +55,7 @@ const Hero = () => {
               <Button
                 variant="hero"
                 size="xl"
+                onClick={handleGetStartedClick}
                 className="group flex items-center gap-3 h-12 sm:h-14 px-4 sm:px-6 text-sm sm:text-base [&_svg]:!w-5 [&_svg]:!h-5 sm:[&_svg]:!w-6 sm:[&_svg]:!h-6 w-full"
               >
                 <div className="flex-shrink-0">
@@ -123,6 +130,7 @@ const Hero = () => {
                 <Button
                   variant="hero"
                   size="xl"
+                  onClick={handleGetStartedClick}
                   className="group flex items-center gap-4 h-20 px-8 text-lg [&_svg]:!w-8 [&_svg]:!h-8 w-full"
                 >
                   <div className="flex-shrink-0">

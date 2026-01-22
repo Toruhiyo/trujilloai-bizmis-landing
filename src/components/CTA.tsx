@@ -1,18 +1,19 @@
 import { Button } from "@/components/ui/button";
 import { MessageCircle } from "lucide-react";
 import { FaShopify } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
+import { scrollToSection } from "@/lib/utils/scroll";
 import EarlyAccessCard from "./EarlyAccessCard";
 
-// Shopify App Store URL - replace with actual URL when available
-const SHOPIFY_APP_STORE_URL = "https://apps.shopify.com/bizmis";
-
 const FinalCTA = () => {
-  const handleShopifyInstall = () => {
-    window.open(SHOPIFY_APP_STORE_URL, "_self");
+  const navigate = useNavigate();
+
+  const handleJoinWaitlist = () => {
+    scrollToSection("#pricing-cards");
   };
 
   const handleTalkToSales = () => {
-    window.location.href = "/contact";
+    navigate("/contact");
   };
 
   return (
@@ -65,8 +66,8 @@ const FinalCTA = () => {
               {/* CTA Buttons */}
               <div className="flex flex-col sm:flex-row gap-4 mb-6">
                 <Button
-                  onClick={handleShopifyInstall}
-                  aria-label="Install Bizmis on Shopify"
+                  onClick={handleJoinWaitlist}
+                  aria-label="Join Bizmis Waitlist"
                   className="bg-white text-orange-600 hover:bg-white/95 hover:shadow-lg focus:ring-2 focus:ring-orange-300 focus:ring-offset-2 focus:ring-offset-orange-600 text-lg px-8 py-4 h-auto group transition-all duration-200"
                   size="xl"
                 >
@@ -74,7 +75,7 @@ const FinalCTA = () => {
                     className="w-6 h-6 mr-3 text-orange-600"
                     aria-hidden="true"
                   />
-                  Install on Shopify
+                  Join the Waitlist
                 </Button>
 
                 <div className="flex flex-col sm:flex-row gap-4">

@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Check, ArrowRight, Zap, HelpCircle, ChevronDown, Clock } from "lucide-react";
 import { useState, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 import confetti from "canvas-confetti";
 import { PricingPlanFeatureSoon } from "./PricingPlanFeatureSoon";
 
@@ -119,10 +120,19 @@ const EARLY_BIRD_TOOLTIP = "First 50 merchants get exclusive launch pricing";
 const SHOW_CONCURRENT_CONVERSATIONS_LIMIT = false;
 
 const Pricing = () => {
+  const navigate = useNavigate();
   const [isYearly, setIsYearly] = useState(true);
   const [showEarlyBird, setShowEarlyBird] = useState(true);
   const [showUpgradeCreditDetails, setShowUpgradeCreditDetails] = useState(false);
   const earlyBirdRef = useRef<HTMLLabelElement>(null);
+
+  const handlePlanClick = (planName: string) => {
+    navigate(`/join-waitlist?plan=${planName.toLowerCase()}`);
+  };
+
+  const handleContactSales = () => {
+    navigate("/contact?subject=Enterprise%20Plan%20Inquiry");
+  };
 
   const handleEarlyBirdChange = () => {
     const newValue = !showEarlyBird;
@@ -327,7 +337,7 @@ const Pricing = () => {
         </div>
 
         {/* Pricing Cards - 4 columns */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-4 gap-6 xl:gap-6 max-w-7xl mx-auto">
+        <div id="pricing-cards" className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-4 gap-6 xl:gap-6 max-w-7xl mx-auto">
           {PLANS.map((plan, index) => {
             const displayPrice = getDisplayPrice(plan);
             const discountPercent = getDiscountPercent(plan);
@@ -445,6 +455,7 @@ const Pricing = () => {
                     <Button
                       variant={plan.buttonVariant}
                       size="lg"
+                      onClick={() => handlePlanClick(plan.name)}
                       className={`w-full group relative overflow-hidden transition-all duration-300 ${plan.buttonVariant === "outline"
                         ? "hover:bg-primary hover:text-white hover:border-primary"
                         : "hover:opacity-90 hover:shadow-lg"
@@ -502,6 +513,7 @@ const Pricing = () => {
               <Button
                 variant="outline"
                 size="lg"
+                onClick={handleContactSales}
                 className="w-full bg-white text-gray-900 hover:bg-gray-100 hover:text-gray-900 border-0 transition-all duration-300 group"
               >
                 <span>Contact Sales</span>
