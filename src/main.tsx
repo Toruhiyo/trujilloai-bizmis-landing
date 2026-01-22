@@ -13,8 +13,15 @@ root.render(
       options={{
         api_host: import.meta.env.VITE_PUBLIC_POSTHOG_HOST,
         defaults: '2025-05-24',
-        capture_exceptions: true, // This enables capturing exceptions using Error Tracking
+        capture_exceptions: true,
         debug: import.meta.env.MODE === 'development',
+        disable_session_recording: false,
+        session_recording: {
+          maskAllInputs: false,
+          maskInputOptions: {
+            password: true,
+          },
+        },
       }}
     >
       <App />
