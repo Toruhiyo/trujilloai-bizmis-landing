@@ -1,13 +1,14 @@
 import { Map, Gift, ArrowRight, Crown, Star } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import { usePostHog } from "posthog-js/react";
 import { Button } from "@/components/ui/button";
-import { scrollToSection } from "@/lib/utils/scroll";
 
 interface EarlyAccessCardProps {
   className?: string;
 }
 
 const EarlyAccessCard: React.FC<EarlyAccessCardProps> = ({ className = "" }) => {
+  const navigate = useNavigate();
   const posthog = usePostHog();
 
   const handleClaimClick = () => {
@@ -15,7 +16,7 @@ const EarlyAccessCard: React.FC<EarlyAccessCardProps> = ({ className = "" }) => 
       cta_type: "claim_early_bird",
       location: "early_access_card",
     });
-    scrollToSection("#pricing-cards");
+    navigate("/pricing");
   };
 
   return (

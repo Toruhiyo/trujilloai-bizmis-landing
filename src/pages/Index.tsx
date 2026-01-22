@@ -3,7 +3,6 @@ import Hero from "@/components/Hero";
 import Benefits from "@/components/Benefits";
 import Setup from "@/components/Setup";
 import Customization from "@/components/Customization";
-import Pricing from "@/components/Pricing";
 import CTA from "@/components/CTA";
 import Footer from "@/components/Footer";
 import {
@@ -21,7 +20,6 @@ const Index = () => {
       "benefit-3",
       "setup",
       "customization",
-      "pricing",
     ];
 
     const cleanupScrollToSection = setupScrollToSectionOnLoad();
@@ -39,7 +37,6 @@ const Index = () => {
       <Benefits />
       <Setup />
       <Customization />
-      <Pricing />
       <CTA />
       <Footer />
     </div>

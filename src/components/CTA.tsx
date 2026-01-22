@@ -3,7 +3,6 @@ import { MessageCircle } from "lucide-react";
 import { FaShopify } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { usePostHog } from "posthog-js/react";
-import { scrollToSection } from "@/lib/utils/scroll";
 import EarlyAccessCard from "./EarlyAccessCard";
 
 const FinalCTA = () => {
@@ -15,7 +14,7 @@ const FinalCTA = () => {
       cta_type: "join_waitlist",
       location: "final_cta",
     });
-    scrollToSection("#pricing-cards");
+    navigate("/pricing");
   };
 
   const handleTalkToSales = () => {

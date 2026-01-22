@@ -25,7 +25,7 @@ const Navbar = () => {
   const navItems = [
     { label: "Features", href: "#benefits" },
     { label: "Setup", href: "#setup" },
-    { label: "Pricing", href: "#pricing" },
+    { label: "Pricing", href: "/pricing" },
     { label: "FAQs", href: "/faqs" },
   ];
 
@@ -103,7 +103,7 @@ const Navbar = () => {
             */}
             <Button
               variant={isInHero ? "outline" : "default"}
-              onClick={() => handleNavigation("#pricing-cards")}
+              onClick={() => handleNavigation("/pricing")}
               className={`font-medium transition-all duration-300 ${
                 isInHero
                   ? "bg-white text-foreground border-white hover:bg-white/90"
@@ -162,7 +162,7 @@ const Navbar = () => {
                 */}
                 <Button
                   variant="default"
-                  onClick={() => handleNavigation("#pricing-cards")}
+                  onClick={() => handleNavigation("/pricing")}
                   className="w-full font-medium"
                 >
                   Get Started

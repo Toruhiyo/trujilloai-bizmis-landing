@@ -5,8 +5,6 @@ import { useNavigate } from "react-router-dom";
 import { usePostHog } from "posthog-js/react";
 import Navbar from "./Navbar";
 
-import { scrollToSection } from "@/lib/utils/scroll";
-
 const Hero = () => {
   const navigate = useNavigate();
   const posthog = usePostHog();
@@ -24,7 +22,7 @@ const Hero = () => {
       cta_type: "get_started",
       location: "hero",
     });
-    scrollToSection("#pricing-cards");
+    navigate("/pricing");
   };
   return (
     <section
