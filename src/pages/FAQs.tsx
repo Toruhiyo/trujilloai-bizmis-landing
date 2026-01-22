@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { ChevronDown, Search, ArrowLeft } from "lucide-react";
 import { faqCategories, allFAQs, type FAQ } from "@/data/faqs";
+import Footer from "@/components/Footer";
 
 const FAQsPage = () => {
   const [openItems, setOpenItems] = useState<string[]>([]);
@@ -87,7 +88,7 @@ const FAQsPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-background to-orange-50/20">
+    <div className="min-h-screen bg-gradient-to-br from-orange-50 via-white to-amber-50/30">
       {/* Header with navigation */}
       <div className="bg-white border-b border-border">
         <div className="container mx-auto px-6 py-4">
@@ -233,6 +234,8 @@ const FAQsPage = () => {
           </div>
         </div>
       </div>
+
+      <Footer />
     </div>
   );
 };

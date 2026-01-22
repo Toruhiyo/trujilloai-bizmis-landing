@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import emailjs from "@emailjs/browser";
+import Footer from "@/components/Footer";
 
 const EMAILJS_SERVICE_ID = import.meta.env.VITE_EMAILJS_SERVICE_ID;
 const EMAILJS_CONTACT_TEMPLATE_ID = import.meta.env.VITE_EMAILJS_CONTACT_TEMPLATE_ID;
@@ -94,7 +95,7 @@ const Contact = () => {
     formData.message.trim();
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-background to-orange-50/20">
+    <div className="min-h-screen bg-gradient-to-br from-orange-50 via-white to-amber-50/30">
       <div className="bg-white border-b border-border">
         <div className="container mx-auto px-6 py-4">
           <div className="flex items-center gap-4">
@@ -299,6 +300,8 @@ const Contact = () => {
           </div>
         </div>
       </div>
+
+      <Footer />
     </div>
   );
 };

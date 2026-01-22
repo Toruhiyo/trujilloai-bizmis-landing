@@ -7,7 +7,7 @@ const Pricing = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-background to-orange-50/20">
+    <div className="min-h-screen bg-gradient-to-br from-orange-50 via-white to-amber-50/30">
       <div className="bg-white border-b border-border">
         <div className="container mx-auto px-6 py-4">
           <div className="flex items-center gap-4">

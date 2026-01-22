@@ -240,9 +240,8 @@ const Pricing = () => {
   return (
     <section
       id="pricing"
-      className="py-16 lg:py-24 bg-gradient-to-br from-gray-50 via-white to-gray-50 relative overflow-hidden"
+      className="py-16 lg:py-24 relative overflow-hidden"
     >
-      <div className="absolute inset-0 bg-grid-gray-100/25 bg-grid-16"></div>
       <div className="container mx-auto px-4 lg:px-6 relative z-10">
         <div className="text-center mb-12">
           <h2 className="text-4xl lg:text-5xl font-heading font-bold text-foreground mb-6">
