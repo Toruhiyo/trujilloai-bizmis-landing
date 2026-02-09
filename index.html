@@ -63,11 +63,6 @@
     href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@400;500;600;700;800&family=DM+Sans:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@700;800&display=swap"
     rel="stylesheet">
 
-  <!--
-    JS-based hiding: content is visible by default (for non-JS readers/crawlers).
-    When JS runs, the 'js' class is added to <html> BEFORE first paint, hiding
-    the pre-render content instantly. React then replaces #root children on mount.
-  -->
   <script>document.documentElement.classList.add('js');</script>
   <style>
     .js #prerender-content { display: none; }
@@ -76,7 +71,6 @@
 
 <body>
   <div id="root">
-    <!-- Pre-render content: visible to crawlers/readers that don't execute JS -->
     <div id="prerender-content">
       <header>
         <nav aria-label="Main navigation">
@@ -144,7 +138,6 @@
     </div>
   </div>
 
-  <!-- Minimal styling for no-JS users who visit the page directly -->
   <noscript>
     <style>
       #prerender-content {
