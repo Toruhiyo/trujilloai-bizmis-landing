@@ -8,6 +8,8 @@ import FAQs from "./pages/FAQs";
 import Contact from "./pages/Contact";
 import JoinWaitlist from "./pages/JoinWaitlist";
 import Pricing from "./pages/Pricing";
+import PrivacyPolicy from "./pages/PrivacyPolicy";
+import Terms from "./pages/Terms";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -24,6 +26,8 @@ const App = () => (
           <Route path="/contact" element={<Contact />} />
           <Route path="/join-waitlist" element={<JoinWaitlist />} />
           <Route path="/pricing" element={<Pricing />} />
+          <Route path="/privacy" element={<PrivacyPolicy />} />
+          <Route path="/terms" element={<Terms />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>

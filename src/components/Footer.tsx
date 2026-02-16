@@ -4,7 +4,7 @@ const Footer = () => {
   return (
     <footer className="bg-gray-900 text-white py-12">
       <div className="container mx-auto px-6">
-        <div className="grid md:grid-cols-4 gap-8">
+        <div className="grid md:grid-cols-5 gap-8">
           <div className="md:col-span-2">
             <h3 className="text-2xl font-heading font-bold mb-4">Bizmis</h3>
             <p className="text-gray-400 mb-6 max-w-md">
@@ -58,6 +58,28 @@ const Footer = () => {
               <li>
                 <a href="/faqs" className="hover:text-white transition-colors">
                   FAQs
+                </a>
+              </li>
+            </ul>
+          </div>
+
+          <div>
+            <h4 className="font-semibold mb-4">Legal</h4>
+            <ul className="space-y-2 text-gray-400">
+              <li>
+                <a
+                  href="/privacy"
+                  className="hover:text-white transition-colors"
+                >
+                  Privacy Policy
+                </a>
+              </li>
+              <li>
+                <a
+                  href="/terms"
+                  className="hover:text-white transition-colors"
+                >
+                  Terms of Service
                 </a>
               </li>
             </ul>

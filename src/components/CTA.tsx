@@ -104,7 +104,11 @@ const FinalCTA = () => {
 
               {/* Microline */}
               <p className="text-white/70 text-sm mb-4 leading-relaxed">
-                Cancel anytime • GDPR-ready • Built for Shopify
+                Cancel anytime •{" "}
+                <a href="/privacy" className="underline hover:text-white transition-colors">
+                  GDPR-ready
+                </a>{" "}
+                • Built for Shopify
               </p>
             </div>
 
