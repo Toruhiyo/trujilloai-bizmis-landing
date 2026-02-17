@@ -117,7 +117,7 @@ export const faqCategories: FAQCategory[] = [
       {
         id: "refund-policy",
         question: "What's your refund policy?",
-        answer: "Yearly plans include a 60-day money-back guarantee, no questions asked (commitment fee only). Monthly plans can be cancelled anytime.",
+        answer: "Yearly plans include a 30-day money-back guarantee, no questions asked (commitment fee only). Monthly plans can be cancelled anytime.",
         category: "billing",
       },
       {

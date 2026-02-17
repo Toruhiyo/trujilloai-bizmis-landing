@@ -577,7 +577,7 @@ const Pricing = () => {
             </div>
             <div className="flex items-center gap-2">
               <Check className="w-4 h-4 text-primary" />
-              <span>60-day money-back guarantee (yearly plans)</span>
+              <span>30-day money-back guarantee (yearly plans)</span>
             </div>
           </div>
         </div>
