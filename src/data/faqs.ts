@@ -126,6 +126,18 @@ export const faqCategories: FAQCategory[] = [
         answer: "Yes! Upgrade to yearly within your first 90 days and we'll credit what you already paid toward your yearly plan. Credit applies to commit charges only; on-demand usage charges are excluded.",
         category: "billing",
       },
+      {
+        id: "what-happens-upgrade",
+        question: "What happens when I upgrade my plan?",
+        answer: "Upgrades take effect immediately. You're charged the prorated difference for the remaining time in your billing period, and your billing date stays the same. New features and higher limits are available right away.",
+        category: "billing",
+      },
+      {
+        id: "what-happens-downgrade",
+        question: "What happens when I downgrade my plan?",
+        answer: "Downgrades take effect at your next renewal date — you keep your current plan and all its features until then. Your billing cycle and usage counters are not reset.",
+        category: "billing",
+      },
     ],
   },
   {

@@ -140,7 +140,27 @@ const Terms = () => {
             </p>
           </Section>
 
-          <Section title="10. Termination">
+          <Section title="10. Plan Changes &amp; Billing Adjustments">
+            <p>
+              <strong>Upgrades</strong> (moving to a higher-tier plan or from
+              monthly to yearly billing) take effect immediately. You are charged
+              the prorated difference for the remaining time in your current
+              billing period. Your billing date does not change.
+            </p>
+            <p>
+              <strong>Downgrades</strong> (moving to a lower-tier plan or from
+              yearly to monthly billing) take effect at your next renewal date.
+              You retain full access to your current plan until then.
+            </p>
+            <p>
+              Plan changes do not reset your billing cycle or usage counters.
+              Entitlements (features, assistant limits, analytics) update
+              immediately on upgrade. Overage rates remain at the standard rate
+              for the active plan.
+            </p>
+          </Section>
+
+          <Section title="11. Termination">
             <p>
               Merchants may terminate their use of Bizmis at any time by
               uninstalling the app from their Shopify store. Upon termination,
@@ -149,7 +169,7 @@ const Terms = () => {
             </p>
           </Section>
 
-          <Section title="11. Changes to These Terms">
+          <Section title="12. Changes to These Terms">
             <p>
               We may update these Terms of Service from time to time. We will
               notify merchants of material changes through the Bizmis app admin
@@ -158,7 +178,7 @@ const Terms = () => {
             </p>
           </Section>
 
-          <Section title="12. Governing Law">
+          <Section title="13. Governing Law">
             <p>
               These terms shall be governed by and construed in accordance with
               the laws of Spain. Any disputes arising from these terms shall be
@@ -167,7 +187,7 @@ const Terms = () => {
             </p>
           </Section>
 
-          <Section title="13. Contact">
+          <Section title="14. Contact">
             <p>
               For questions about these Terms of Service, contact us at:{" "}
               <a href={`mailto:${CONTACT_EMAIL}`} className="text-blue-600 hover:underline">
