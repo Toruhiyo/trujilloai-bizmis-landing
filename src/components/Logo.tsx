@@ -57,12 +57,13 @@ const Logo = ({
           className={cn(
             "font-extrabold tracking-tight select-none font-heading",
             TEXT_SIZE_CLASSES[size],
-            variant === "white" ? "text-white" : "text-orange-600"
+            variant === "white" ? "text-white" : ""
           )}
           style={{
             fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif",
             fontWeight: 800,
             letterSpacing: "-0.02em",
+            ...(variant !== "white" && { color: "#FD912A" }),
           }}
         >
           bizmis
