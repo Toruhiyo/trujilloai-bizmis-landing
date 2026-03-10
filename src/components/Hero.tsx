@@ -74,7 +74,8 @@ const Hero = () => {
                 </span>
               </h1>
               <p className="text-sm sm:text-base text-white/80 font-body max-w-xl mx-auto">
-                This isn't a chatbot. Bizmis speaks naturally—welcoming your
+                <span className="font-semibold">This isn't a chatbot.</span>{" "}
+                Bizmis speaks naturally—welcoming your
                 customers, answering their questions, and guiding them to buy
                 with confidence, just like the best in-store salesperson would.
               </p>
@@ -148,7 +149,8 @@ const Hero = () => {
                   </span>
                 </h1>
                 <p className="text-[clamp(1.125rem,2.2vh,1.5rem)] text-white/80 font-body max-w-2xl">
-                  This isn't a chatbot. Bizmis speaks naturally—welcoming your
+                  <span className="font-semibold">This isn't a chatbot.</span>{" "}
+                  Bizmis speaks naturally—welcoming your
                   customers, answering their questions, and guiding them to buy
                   with confidence, just like the best in-store salesperson
                   would.
