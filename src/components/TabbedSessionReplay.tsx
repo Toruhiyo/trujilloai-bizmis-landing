@@ -52,40 +52,47 @@ const TabbedSessionReplay: React.FC<TabbedSessionReplayProps> = ({
   return (
     <div className={`w-full max-w-2xl ${className}`}>
       {/* Tab Navigation */}
-      <div className="flex space-x-1 mb-6 p-1 bg-muted/30 rounded-xl">
+      <div className="flex flex-wrap gap-2 mb-6">
         {tabs.map((tab) => {
           const IconComponent = getCategoryIcon(tab.data.category);
+          const isActive = activeTab === tab.id;
           return (
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
-              className={`relative flex-1 flex items-center justify-center gap-2 px-3 py-2.5 text-sm font-medium rounded-lg transition-all duration-200 ${
-                activeTab === tab.id
-                  ? "bg-background text-primary shadow-sm border border-border/50"
-                  : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
+              className={`relative flex items-center justify-center gap-2 px-5 py-2.5 text-sm font-medium rounded-full transition-all duration-200 ${
+                isActive
+                  ? "bg-transparent text-[#FD912A]"
+                  : "bg-transparent text-muted-foreground hover:text-foreground"
               }`}
+              style={
+                isActive
+                  ? {
+                      boxShadow:
+                        "0 0 0 1px rgba(253, 145, 42, 0.3), 0 0 20px rgba(253, 145, 42, 0.2), 0 0 40px rgba(253, 145, 42, 0.12)",
+                    }
+                  : undefined
+              }
             >
               {/* Logged-in customer badge overlay */}
               {tab.data.customer.name && (
                 <div
                   className={`absolute -top-1 -right-1 w-6 h-6 rounded-full border-2 border-background flex items-center justify-center ${
-                    activeTab === tab.id
-                      ? "bg-primary text-background"
-                      : "bg-muted-foreground text-background"
+                    isActive
+                      ? "bg-[#FD912A] text-white"
+                      : "bg-muted-foreground/60 text-white"
                   }`}
                 >
                   <User className="w-3 h-3" />
                 </div>
               )}
 
-              <IconComponent className="w-4 h-4" />
+              <IconComponent className="w-4 h-4 shrink-0" />
               <span>{tab.data.category}</span>
 
               {tab.data.success ? (
                 <svg
-                  className={`w-3 h-3 ${
-                    activeTab === tab.id ? "text-primary" : "text-primary/70"
-                  }`}
+                  className={`w-3 h-3 shrink-0 ${isActive ? "text-[#FD912A]" : "text-muted-foreground"}`}
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -99,11 +106,7 @@ const TabbedSessionReplay: React.FC<TabbedSessionReplayProps> = ({
                 </svg>
               ) : (
                 <svg
-                  className={`w-3 h-3 ${
-                    activeTab === tab.id
-                      ? "text-muted-foreground"
-                      : "text-muted-foreground/50"
-                  }`}
+                  className={`w-3 h-3 shrink-0 ${isActive ? "text-muted-foreground" : "text-muted-foreground/60"}`}
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
