@@ -29,11 +29,35 @@ const FinalCTA = () => {
     <section
       id="final-cta"
       aria-labelledby="final-cta-title"
-      className="py-20 lg:py-24 relative overflow-hidden"
-      style={{
-        background: "linear-gradient(135deg, #FD912A, #c47020)",
-      }}
+      className="py-20 lg:py-24 relative overflow-hidden studio-lighting-base flex flex-col"
     >
+      <div className="absolute inset-0 studio-radial-light" />
+      <div className="absolute inset-0 studio-horizon-shadow" />
+      <div className="absolute inset-0 studio-horizon-meniscus-left" />
+      <div className="absolute inset-0 studio-horizon-meniscus-right" />
+      <div className="absolute inset-0 studio-floor-shadow" />
+      <div className="absolute inset-0 studio-ambient-overlay" />
+
+      <svg
+        className="absolute inset-0 w-full h-full pointer-events-none z-[1] mix-blend-overlay"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <filter id="cta-noise">
+          <feTurbulence
+            type="fractalNoise"
+            baseFrequency="0.50"
+            numOctaves="3"
+            stitchTiles="stitch"
+          />
+        </filter>
+        <rect
+          width="100%"
+          height="100%"
+          filter="url(#cta-noise)"
+          opacity="0.40"
+        />
+      </svg>
+
       <div className="container mx-auto px-6 relative z-10">
         <div className="max-w-7xl mx-auto">
           <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
@@ -77,11 +101,11 @@ const FinalCTA = () => {
                 <Button
                   onClick={handleJoinWaitlist}
                   aria-label="Join Bizmis Waitlist"
-                  className="bg-white text-[#FD912A] hover:bg-white/95 hover:shadow-lg focus:ring-2 focus:ring-[#FD912A]/30 focus:ring-offset-2 focus:ring-offset-[#FD912A] text-lg px-8 py-4 h-auto group transition-all duration-200"
+                  className="bg-white text-[#FD912A] hover:bg-white/95 hover:shadow-lg focus:ring-2 focus:ring-[#FD912A]/30 focus:ring-offset-2 focus:ring-offset-[#FD912A] text-lg px-8 py-4 h-auto group transition-all duration-200 [&>svg]:!w-6 [&>svg]:!h-6 [&>svg]:!mr-3"
                   size="xl"
                 >
                   <FaShopify
-                    className="w-6 h-6 mr-3 text-[#FD912A]"
+                    className="text-[#FD912A]"
                     aria-hidden="true"
                   />
                   Join the Waitlist
