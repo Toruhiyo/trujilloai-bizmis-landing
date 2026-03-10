@@ -1,23 +1,40 @@
 import { cn } from "@/lib/utils";
 
+type LogoSize = "sm" | "md" | "lg";
+type LogoVariant = "default" | "white";
+
 interface LogoProps {
-  variant?: "default" | "white";
+  variant?: LogoVariant;
+  size?: LogoSize;
   showText?: boolean;
   className?: string;
   onClick?: () => void;
 }
 
+const IMAGE_SIZE_CLASSES: Record<LogoSize, string> = {
+  sm: "h-6 w-auto sm:h-7",
+  md: "h-8 w-auto sm:h-10",
+  lg: "h-10 w-auto sm:h-12",
+};
+
+const TEXT_SIZE_CLASSES: Record<LogoSize, string> = {
+  sm: "text-lg sm:text-xl",
+  md: "text-xl sm:text-2xl",
+  lg: "text-2xl sm:text-3xl",
+};
+
+const LOGO_SRC: Record<LogoVariant, string> = {
+  white: "/images/bizmis-logo-white-transparent.png",
+  default: "/images/bizmis-logo-orange-transparent.png",
+};
+
 const Logo = ({
   variant = "default",
+  size = "md",
   showText = false,
   className,
   onClick,
 }: LogoProps) => {
-  const logoSrc =
-    variant === "white"
-      ? "/images/bizmis-logo-white-transparent.png"
-      : "/images/bizmis-logo-orange-transparent.png";
-
   const Component = onClick ? "button" : "div";
 
   return (
@@ -30,19 +47,16 @@ const Logo = ({
       )}
     >
       <img
-        src={logoSrc}
+        src={LOGO_SRC[variant]}
         alt="Bizmis Logo"
-        className="h-8 w-auto sm:h-10 object-contain"
+        className={cn(IMAGE_SIZE_CLASSES[size], "object-contain")}
       />
 
       {showText && (
         <span
           className={cn(
-            "font-extrabold text-xl sm:text-2xl tracking-tight select-none",
-            // Plus Jakarta Sans with custom styling for modern look
-            "font-heading",
-            // Clean, soft styling with custom i-dots
-            "[&:nth-child(2)]:rounded-full [&:nth-child(5)]:rounded-full",
+            "font-extrabold tracking-tight select-none font-heading",
+            TEXT_SIZE_CLASSES[size],
             variant === "white" ? "text-white" : "text-orange-600"
           )}
           style={{

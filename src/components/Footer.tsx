@@ -1,4 +1,5 @@
 import { getCurrentYear } from "../lib/utils/time";
+import Logo from "./Logo";
 
 const Footer = () => {
   return (
@@ -6,7 +7,7 @@ const Footer = () => {
       <div className="container mx-auto px-6">
         <div className="grid md:grid-cols-5 gap-8">
           <div className="md:col-span-2">
-            <h3 className="text-2xl font-heading font-bold mb-4">Bizmis</h3>
+            <Logo variant="white" size="md" showText className="mb-4" />
             <p className="text-gray-400 mb-6 max-w-md">
               Your store's best salesperson, working 24/7 to boost sales,
               provide support, and understand your customers.
