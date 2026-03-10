@@ -1,15 +1,15 @@
 import { useState, useEffect } from "react";
 import {
-  ShoppingBag,
-  Tag,
-  Users,
-  Percent,
-  Package,
-  RefreshCw,
-  Puzzle,
-  ShoppingCart,
-} from "lucide-react";
-import { SiShopify } from "react-icons/si";
+  FaShoppingBag,
+  FaTag,
+  FaUsers,
+  FaPercent,
+  FaBox,
+  FaSync,
+  FaPuzzlePiece,
+  FaShoppingCart,
+  FaShopify,
+} from "react-icons/fa";
 import { Button } from "@/components/ui/button";
 import SectionBadge from "./SectionBadge";
 import Xarrow from "react-xarrows";
@@ -36,27 +36,27 @@ const HEARTBEAT_FADE_DURATION_MS = 600; // Duration of each heartbeat fade
 
 const shopifyDataCards = [
   {
-    icon: ShoppingBag,
+    icon: FaShoppingBag,
     title: "Store Website",
     description: "Vision, mission and core values",
   },
   {
-    icon: Tag,
+    icon: FaTag,
     title: "Products Catalog",
     description: "Collections, inventory, purchase orders",
   },
   {
-    icon: Percent,
+    icon: FaPercent,
     title: "Discounts",
     description: "All current promotions",
   },
   {
-    icon: Users,
+    icon: FaUsers,
     title: "Customers",
     description: "Your Shopify customer records",
   },
   {
-    icon: Package,
+    icon: FaBox,
     title: "Orders",
     description: "Customer order history",
   },
@@ -184,7 +184,7 @@ const Setup = () => {
           <div className="max-w-7xl mx-auto overflow-visible">
             {/* Header */}
             <div className="text-center mb-16">
-              <SectionBadge icon={SiShopify} text="Plug and Play" />
+              <SectionBadge icon={FaShopify} text="Plug and Play" />
               <h2 className="text-4xl lg:text-5xl font-heading font-bold text-foreground mb-6">
                 One-Click Setup, Instant Selling
               </h2>
@@ -207,7 +207,7 @@ const Setup = () => {
                     Seamlessly Integrated with
                   </div> */}
                     <div className="inline-flex items-center gap-2">
-                      <SiShopify className="w-5 h-5 text-[#FD912A]" />
+                      <FaShopify className="w-5 h-5 text-[#FD912A]" />
                       <span className="text-lg font-heading font-semibold text-foreground">
                         Your Shopify Store Data
                       </span>
@@ -228,12 +228,12 @@ const Setup = () => {
                       >
                         {/* Shopify Icon Watermark */}
                         <div className="absolute bottom-[calc(50%-2.5rem)] right-0 opacity-5 group-hover:opacity-10 transition-opacity duration-300">
-                          <SiShopify className="w-20 h-20 text-[#FD912A]" />
+                          <FaShopify className="w-20 h-20 text-[#FD912A]" />
                         </div>
 
                         <div className="flex items-center gap-4 relative z-10">
-                          <div className="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center text-[#FD912A]">
-                            <card.icon className="w-6 h-6" />
+                          <div className="w-12 h-12 bg-transparent rounded-xl flex items-center justify-center">
+                            <card.icon className="w-5 h-5 text-[#FD912A]" />
                           </div>
                           <div className="flex-1">
                             <h3 className="font-heading font-semibold text-foreground text-lg mb-1">
@@ -453,17 +453,17 @@ const Setup = () => {
             <div className="grid md:grid-cols-3 gap-6 mb-12">
               {[
                 {
-                  icon: Puzzle,
+                  icon: FaPuzzlePiece,
                   title: "Zero Configuration",
                   subtitle: "Works instantly",
                 },
                 {
-                  icon: RefreshCw,
+                  icon: FaSync,
                   title: "Always Synced",
                   subtitle: "Real-time data",
                 },
                 {
-                  icon: ShoppingCart,
+                  icon: FaShoppingCart,
                   title: "Ready to Sell",
                   subtitle: "Start immediately",
                 },

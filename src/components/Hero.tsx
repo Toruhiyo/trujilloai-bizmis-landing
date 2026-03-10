@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Play } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { FaShopify } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { usePostHog } from "posthog-js/react";

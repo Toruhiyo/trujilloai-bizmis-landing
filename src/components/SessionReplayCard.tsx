@@ -8,16 +8,15 @@ import React, {
 import {
   Clock,
   Search,
-  ShoppingCart,
   User,
   MessageCircle,
-  DollarSign,
   Coffee,
   LucideIcon,
   FileSearch,
   Shield,
   Globe,
 } from "lucide-react";
+import { FaShoppingCart, FaDollarSign, FaComments } from "react-icons/fa";
 import ConversationAudioPlayer from "./ConversationAudioPlayer";
 import SectionBadge from "./SectionBadge";
 import ConfettiExplosion from "./ConfettiExplosion";
@@ -70,7 +69,7 @@ const SessionReplayCard: React.FC<SessionReplayCardProps> = ({
 
   // Generate tag display based on category
   const getTagIcon = () => {
-    return category === "Sale" ? DollarSign : MessageCircle;
+    return category === "Sale" ? FaDollarSign : FaComments;
   };
 
   const getTagText = () => {
@@ -567,8 +566,8 @@ const SessionReplayCard: React.FC<SessionReplayCardProps> = ({
                       {/* Success Header */}
                       <div className="flex items-center justify-between mb-3 relative z-10">
                         <div className="flex items-center gap-2">
-                          <div className="w-8 h-8 bg-gradient-to-r from-primary to-primary-dark rounded-full flex items-center justify-center shadow-lg">
-                            <ShoppingCart className="w-4 h-4 text-background" />
+                          <div className="w-8 h-8 bg-[#FD912A] rounded-full flex items-center justify-center shadow-lg">
+                            <FaShoppingCart className="w-3 h-3 text-white" />
                           </div>
                           <div>
                             <h3 className="text-sm font-bold text-primary">

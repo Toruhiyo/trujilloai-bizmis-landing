@@ -1,4 +1,5 @@
-import { Map, Gift, ArrowRight, Crown, Star } from "lucide-react";
+import { ArrowRight, Crown } from "lucide-react";
+import { FaGift, FaMapMarkedAlt, FaStar } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { usePostHog } from "posthog-js/react";
 import { Button } from "@/components/ui/button";
@@ -49,8 +50,8 @@ const EarlyAccessCard: React.FC<EarlyAccessCardProps> = ({ className = "" }) => 
         {/* Benefits List */}
         <div className="space-y-5 mb-8 flex-1">
           <div className="flex items-start gap-4 group/item">
-            <div className="w-10 h-10 rounded-2xl bg-[#FD912A] flex items-center justify-center flex-shrink-0 shadow-sm group-hover/item:scale-105 transition-transform">
-              <Gift className="w-5 h-5 text-white" />
+            <div className="w-10 h-10 rounded-2xl bg-[#FD912A]/90 flex items-center justify-center flex-shrink-0 shadow-sm group-hover/item:scale-105 transition-transform">
+              <FaGift className="w-4 h-4 text-white" />
             </div>
             <div>
               <h4 className="font-bold text-gray-900 text-sm">50% Off First 3 Months</h4>
@@ -59,8 +60,8 @@ const EarlyAccessCard: React.FC<EarlyAccessCardProps> = ({ className = "" }) => 
           </div>
 
           <div className="flex items-start gap-4 group/item">
-            <div className="w-10 h-10 rounded-2xl bg-[#FD912A] flex items-center justify-center flex-shrink-0 shadow-sm group-hover/item:scale-105 transition-transform">
-              <Map className="w-5 h-5 text-white" />
+            <div className="w-10 h-10 rounded-2xl bg-[#FD912A]/90 flex items-center justify-center flex-shrink-0 shadow-sm group-hover/item:scale-105 transition-transform">
+              <FaMapMarkedAlt className="w-4 h-4 text-white" />
             </div>
             <div>
               <h4 className="font-bold text-gray-900 text-sm">Direct Roadmap Influence</h4>
@@ -69,8 +70,8 @@ const EarlyAccessCard: React.FC<EarlyAccessCardProps> = ({ className = "" }) => 
           </div>
 
           <div className="flex items-start gap-4 group/item">
-            <div className="w-10 h-10 rounded-2xl bg-[#FD912A] flex items-center justify-center flex-shrink-0 shadow-sm group-hover/item:scale-105 transition-transform">
-              <Star className="w-5 h-5 text-white" />
+            <div className="w-10 h-10 rounded-2xl bg-[#FD912A]/90 flex items-center justify-center flex-shrink-0 shadow-sm group-hover/item:scale-105 transition-transform">
+              <FaStar className="w-4 h-4 text-white" />
             </div>
             <div>
               <h4 className="font-bold text-gray-900 text-sm">VIP Onboarding</h4>

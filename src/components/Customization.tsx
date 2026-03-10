@@ -1,6 +1,5 @@
 import React from "react";
-import { Brush } from "lucide-react";
-import { PiWaveformBold } from "react-icons/pi";
+import { FaPaintBrush, FaMicrophone } from "react-icons/fa";
 import SectionBadge from "./SectionBadge";
 import AudioPlayer from "./AudioPlayer";
 import FakeImagesSelector, { type ImageOption } from "./FakeImagesSelector";
@@ -109,7 +108,7 @@ const Customization = () => {
         <div className="max-w-7xl mx-auto">
           {/* Header */}
           <div className="text-center mb-16">
-            <SectionBadge icon={Brush} text="Personalization" />
+            <SectionBadge icon={FaPaintBrush} text="Personalization" />
             <h2 className="text-4xl lg:text-5xl font-heading font-bold text-foreground mb-6">
               Make It <span className="text-[#FD912A]">Truly Yours</span>
             </h2>
@@ -123,12 +122,10 @@ const Customization = () => {
           <div className="grid lg:grid-cols-2 gap-8 md:gap-12 lg:gap-16 items-center">
             {/* Right: Features */}
             <div className="space-y-6 md:space-y-12 lg:space-y-16 order-2 lg:order-2">
-              <div className="bg-white/70 backdrop-blur-md rounded-3xl p-8 border border-[#FD912A]/30 transform -rotate-1 hover:rotate-0 transition-transform duration-500 shadow-xl">
+              <div className="group bg-[#FD912A]/10 backdrop-blur-md rounded-3xl p-8 border border-[#FD912A]/20 hover:border-[#FD912A]/30 transform -rotate-1 hover:rotate-0 transition-all duration-500 shadow-xl">
                 <div className="space-y-6">
                   <div className="flex gap-4">
-                    <div className="w-12 h-12 bg-[#FDF7E2] rounded-xl flex items-center justify-center flex-shrink-0 border border-[#FD912A]/50">
-                      <Brush className="w-6 h-6 text-[#FD912A]" />
-                    </div>
+                    <FaPaintBrush className="w-5 h-5 text-[#FD912A]/40 group-hover:text-[#FD912A]/70 transition-colors duration-300 flex-shrink-0 mt-0.5" />
                     <div>
                       <h3 className="text-xl font-heading font-bold text-foreground">
                         Personal Avatar
@@ -142,12 +139,10 @@ const Customization = () => {
                 </div>
               </div>
 
-              <div className="bg-white/70 backdrop-blur-md rounded-3xl p-8 border border-[#FD912A]/30 transform rotate-1 hover:rotate-0 transition-transform duration-500 shadow-xl">
+              <div className="group bg-[#FD912A]/10 backdrop-blur-md rounded-3xl p-8 border border-[#FD912A]/20 hover:border-[#FD912A]/30 transform rotate-1 hover:rotate-0 transition-all duration-500 shadow-xl">
                 <div className="space-y-6">
                   <div className="flex gap-4">
-                    <div className="w-12 h-12 bg-[#FDF7E2] rounded-xl flex items-center justify-center flex-shrink-0 border border-[#FD912A]/50">
-                      <PiWaveformBold className="w-6 h-6 text-[#FD912A]" />
-                    </div>
+                    <FaMicrophone className="w-5 h-5 text-[#FD912A]/40 group-hover:text-[#FD912A]/70 transition-colors duration-300 flex-shrink-0 mt-0.5" />
                     <div>
                       <h3 className="text-xl font-heading font-bold text-foreground">
                         Voice Cloning

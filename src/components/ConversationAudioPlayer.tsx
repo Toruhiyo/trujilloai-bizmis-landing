@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useRef, useCallback } from "react";
-import { Play, Pause, Search, ShoppingCart, FileSearch } from "lucide-react";
+import { Search, ShoppingCart, FileSearch } from "lucide-react";
+import { FaPlay, FaPause } from "react-icons/fa";
 
 interface ConversationMark {
   time: number; // seconds
@@ -154,9 +155,9 @@ const ConversationAudioPlayer: React.FC<ConversationAudioPlayerProps> = ({
           className="w-8 h-8 bg-primary rounded-full flex items-center justify-center hover:bg-primary-dark transition-colors"
         >
           {isPlaying ? (
-            <Pause className="w-4 h-4 text-background" />
+            <FaPause className="w-3 h-3 text-background" />
           ) : (
-            <Play className="w-4 h-4 text-background ml-0.5" />
+            <FaPlay className="w-3 h-3 text-background ml-0.5" />
           )}
         </button>
 

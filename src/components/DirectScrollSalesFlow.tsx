@@ -3,20 +3,23 @@ import {
   ShoppingCart,
   ShoppingBag,
   Star,
-  Check,
   X,
-  Package,
   Truck,
   Shield,
   Zap,
   Users,
-  Award,
-  Search,
-  GitCompare,
-  Handshake,
   Weight,
   Ruler,
 } from "lucide-react";
+import {
+  FaSearch,
+  FaCodeBranch,
+  FaHandshake,
+  FaCheck,
+  FaBox,
+  FaBolt,
+  FaAward,
+} from "react-icons/fa";
 
 const PROGRESS_THRESHOLD_STEP_2 = 0.33;
 const PROGRESS_THRESHOLD_STEP_3 = 0.66;
@@ -152,7 +155,7 @@ const DirectScrollSalesFlow = () => {
     if (isStep1) {
       return progress < PROGRESS_THRESHOLD_STEP_2
         ? "bg-primary border-primary text-primary-foreground"
-        : "bg-background border-primary text-primary";
+        : "bg-transparent border-primary text-primary";
     }
 
     if (isStep2) {
@@ -160,14 +163,14 @@ const DirectScrollSalesFlow = () => {
         progress < PROGRESS_THRESHOLD_STEP_3
         ? "bg-primary border-primary text-primary-foreground"
         : progress >= PROGRESS_THRESHOLD_STEP_3
-        ? "bg-background border-primary text-primary"
-        : "bg-background border-primary text-primary";
+        ? "bg-transparent border-primary text-primary"
+        : "bg-transparent border-primary text-primary";
     }
 
     if (isStep3) {
       return progress >= PROGRESS_THRESHOLD_STEP_3
         ? "bg-primary border-primary text-primary-foreground"
-        : "bg-background border-primary text-primary";
+        : "bg-transparent border-primary text-primary";
     }
 
     return "";
@@ -312,8 +315,8 @@ const DirectScrollSalesFlow = () => {
                   <div className="absolute top-4 left-1/2 transform -translate-x-1/2 z-20">
                     <div className="bg-gradient-to-r from-primary via-primary-light to-primary rounded-2xl p-4 shadow-2xl border-2 border-primary-foreground transform -rotate-1 hover:rotate-0 transition-transform duration-300">
                       <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 bg-primary-foreground/20 rounded-xl flex items-center justify-center">
-                          <Search className="w-5 h-5 text-primary-foreground" />
+                        <div className="w-10 h-10 bg-[#FD912A] rounded-xl flex items-center justify-center">
+                          <FaSearch className="w-4 h-4 text-white" />
                         </div>
                         <div>
                           <h2 className="text-xl font-black text-primary-foreground tracking-tight leading-none">
@@ -329,10 +332,10 @@ const DirectScrollSalesFlow = () => {
                   <div className="bg-background/95 backdrop-blur-xl rounded-3xl p-6 pt-20 shadow-2xl border border-muted max-w-5xl w-full mt-8">
                     <div className="grid grid-cols-3 gap-6">
                       {/* Product A */}
-                      <div className="bg-muted/50 rounded-2xl p-5 border border-border hover:shadow-lg transition-all duration-300 hover:scale-105">
+                      <div className="bg-muted/50 rounded-2xl p-5 border border-border hover:shadow-lg transition-all duration-300 hover:scale-105 grayscale">
                         <div className="relative mb-4">
-                          <div className="w-20 h-20 bg-gradient-to-br from-muted-foreground/20 to-muted-foreground/40 rounded-2xl flex items-center justify-center mx-auto shadow-lg">
-                            <Package className="w-10 h-10 text-muted-foreground" />
+                          <div className="w-20 h-20 bg-[#FD912A] rounded-2xl flex items-center justify-center mx-auto shadow-lg">
+                            <FaBox className="w-9 h-9 text-white" />
                           </div>
                           <div className="absolute -top-2 -right-2 bg-muted text-muted-foreground text-xs font-bold px-2 py-1 rounded-full">
                             A
@@ -369,8 +372,8 @@ const DirectScrollSalesFlow = () => {
                           RECOMMENDED
                         </div>
                         <div className="relative mb-4 mt-2">
-                          <div className="w-20 h-20 bg-gradient-to-br from-primary/20 to-primary/40 rounded-2xl flex items-center justify-center mx-auto shadow-lg">
-                            <Zap className="w-10 h-10 text-primary" />
+                          <div className="w-20 h-20 bg-[#FD912A] rounded-2xl flex items-center justify-center mx-auto shadow-lg">
+                            <FaBolt className="w-9 h-9 text-white" />
                           </div>
                           <div className="absolute -top-2 -right-2 bg-primary text-primary-foreground text-xs font-bold px-2 py-1 rounded-full">
                             B
@@ -399,10 +402,10 @@ const DirectScrollSalesFlow = () => {
                       </div>
 
                       {/* Product C */}
-                      <div className="bg-muted/50 rounded-2xl p-5 border border-border hover:shadow-lg transition-all duration-300 hover:scale-105">
+                      <div className="bg-muted/50 rounded-2xl p-5 border border-border hover:shadow-lg transition-all duration-300 hover:scale-105 grayscale">
                         <div className="relative mb-4">
-                          <div className="w-20 h-20 bg-gradient-to-br from-secondary-foreground/20 to-secondary-foreground/40 rounded-2xl flex items-center justify-center mx-auto shadow-lg">
-                            <Award className="w-10 h-10 text-secondary-foreground" />
+                          <div className="w-20 h-20 bg-[#FD912A] rounded-2xl flex items-center justify-center mx-auto shadow-lg">
+                            <FaAward className="w-9 h-9 text-white" />
                           </div>
                           <div className="absolute -top-2 -right-2 bg-muted text-muted-foreground text-xs font-bold px-2 py-1 rounded-full">
                             C
@@ -448,8 +451,8 @@ const DirectScrollSalesFlow = () => {
                   <div className="absolute top-4 left-1/2 transform -translate-x-1/2 z-20">
                     <div className="bg-gradient-to-r from-primary via-primary-light to-primary rounded-2xl p-4 shadow-2xl border-2 border-primary-foreground transform rotate-1 hover:rotate-0 transition-transform duration-300">
                       <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 bg-primary-foreground/20 rounded-xl flex items-center justify-center">
-                          <GitCompare className="w-5 h-5 text-primary-foreground" />
+                        <div className="w-10 h-10 bg-[#FD912A] rounded-xl flex items-center justify-center">
+                          <FaCodeBranch className="w-4 h-4 text-white" />
                         </div>
                         <div>
                           <h2 className="text-xl font-black text-primary-foreground tracking-tight leading-none">
@@ -624,8 +627,8 @@ const DirectScrollSalesFlow = () => {
                   <div className="absolute -top-2 left-1/2 transform -translate-x-1/2 z-20">
                     <div className="bg-gradient-to-r from-primary via-primary-light to-primary rounded-2xl p-4 shadow-2xl border-2 border-primary-foreground transform -rotate-1 hover:rotate-0 transition-transform duration-300">
                       <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 bg-primary-foreground/20 rounded-xl flex items-center justify-center">
-                          <Handshake className="w-5 h-5 text-primary-foreground" />
+                        <div className="w-10 h-10 bg-[#FD912A] rounded-xl flex items-center justify-center">
+                          <FaHandshake className="w-4 h-4 text-white" />
                         </div>
                         <div>
                           <h2 className="text-xl font-black text-primary-foreground tracking-tight leading-none">
@@ -640,8 +643,8 @@ const DirectScrollSalesFlow = () => {
                   </div>
                   <div className="bg-background/95 backdrop-blur-xl rounded-2xl p-4 pt-20 shadow-2xl border border-muted max-w-sm w-full mt-8">
                     <div className="text-center mb-4">
-                      <div className="w-12 h-12 bg-gradient-to-br from-primary to-primary-dark rounded-full flex items-center justify-center mx-auto mb-2">
-                        <Check className="w-6 h-6 text-primary-foreground" />
+                      <div className="w-12 h-12 bg-[#FD912A] rounded-full flex items-center justify-center mx-auto mb-2">
+                        <FaCheck className="w-4 h-4 text-white" />
                       </div>
                       <h3 className="text-xl font-bold text-primary mb-1">
                         Order Confirmed!

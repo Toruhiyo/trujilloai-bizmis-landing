@@ -1,14 +1,13 @@
 import {
-  ShoppingCart,
-  Heart,
-  Shield,
-  Play,
-  Tag,
-  BarChart3,
-  MessageSquare,
-  Activity,
-  DollarSign,
-} from "lucide-react";
+  FaHeart,
+  FaShieldAlt,
+  FaTag,
+  FaPlay,
+  FaChartBar,
+  FaShoppingCart,
+  FaComments,
+  FaChartLine,
+} from "react-icons/fa";
 import SectionBadge from "./SectionBadge";
 import DirectScrollSalesFlow from "./DirectScrollSalesFlow";
 import ReviewSatisfactionDashboard from "./ReviewSatisfactionDashboard";
@@ -55,7 +54,7 @@ const Benefits = () => {
                 <div className="absolute -left-64  top-10 text-9xl lg:text-[12rem] font-bold text-[#FD912A]/20 transform -rotate-12 select-none">
                   #1
                 </div>
-                <SectionBadge icon={ShoppingCart} text="Boost Sales" />
+                <SectionBadge icon={FaShoppingCart} text="Boost Sales" />
                 <h1 className="text-5xl lg:text-7xl font-heading font-bold text-foreground mb-8 relative z-10">
                   Convert. Upsell. Return.
                 </h1>
@@ -167,7 +166,7 @@ const Benefits = () => {
           <div className="max-w-8xl mx-auto">
             {/* Header */}
             <div className="text-center mb-8">
-              <SectionBadge icon={MessageSquare} text="Customer Support" />
+              <SectionBadge icon={FaComments} text="Customer Support" />
               <div className="relative">
                 <div className="absolute -right-16 -top-16 text-8xl lg:text-9xl font-bold text-[#FD912A]/25 transform rotate-12 select-none">
                   #2
@@ -188,12 +187,10 @@ const Benefits = () => {
             <div className="grid lg:grid-cols-5 gap-20 items-center">
               {/* Left: Support Features */}
               <div className="lg:col-span-2 space-y-8">
-                <div className="bg-white/80 backdrop-blur-sm rounded-3xl p-8 border border-[#FD912A]/30 transform rotate-1 hover:rotate-0 transition-transform duration-500 shadow-xl">
+                <div className="group bg-[#FD912A]/10 backdrop-blur-sm rounded-3xl p-8 border border-[#FD912A]/20 hover:border-[#FD912A]/30 transform rotate-1 hover:rotate-0 transition-all duration-500 shadow-xl">
                   <div className="space-y-6">
                     <div className="flex gap-4">
-                      <div className="w-12 h-12 bg-[#FDF7E2] rounded-xl flex items-center justify-center flex-shrink-0 border border-[#FD912A]/50">
-                        <Heart className="w-6 h-6 text-[#FD912A]" />
-                      </div>
+                      <FaHeart className="w-5 h-5 text-[#FD912A]/40 group-hover:text-[#FD912A]/70 transition-colors duration-300 flex-shrink-0 mt-0.5" />
                       <div>
                         <h3 className="text-lg font-heading font-semibold text-foreground mb-2">
                           Empathetic Support
@@ -207,12 +204,10 @@ const Benefits = () => {
                   </div>
                 </div>
 
-                <div className="bg-white/80 backdrop-blur-sm rounded-3xl p-8 border border-[#FD912A]/30 transform -rotate-1 hover:rotate-0 transition-transform duration-500 shadow-xl">
+                <div className="group bg-[#FD912A]/10 backdrop-blur-sm rounded-3xl p-8 border border-[#FD912A]/20 hover:border-[#FD912A]/30 transform -rotate-1 hover:rotate-0 transition-all duration-500 shadow-xl">
                   <div className="space-y-6">
                     <div className="flex gap-4">
-                      <div className="w-12 h-12 bg-[#FDF7E2] rounded-xl flex items-center justify-center flex-shrink-0 border border-[#FD912A]/50">
-                        <Shield className="w-6 h-6 text-[#FD912A]" />
-                      </div>
+                      <FaShieldAlt className="w-5 h-5 text-[#FD912A]/40 group-hover:text-[#FD912A]/70 transition-colors duration-300 flex-shrink-0 mt-0.5" />
                       <div>
                         <h3 className="text-lg font-heading font-semibold text-foreground mb-2">
                           Problem Resolution
@@ -226,12 +221,10 @@ const Benefits = () => {
                   </div>
                 </div>
 
-                <div className="bg-white/80 backdrop-blur-sm rounded-3xl p-8 border border-[#FD912A]/30 transform rotate-2 hover:rotate-0 transition-transform duration-500 shadow-xl">
+                <div className="group bg-[#FD912A]/10 backdrop-blur-sm rounded-3xl p-8 border border-[#FD912A]/20 hover:border-[#FD912A]/30 transform rotate-2 hover:rotate-0 transition-all duration-500 shadow-xl">
                   <div className="space-y-6">
                     <div className="flex gap-4">
-                      <div className="w-12 h-12 bg-[#FDF7E2] rounded-xl flex items-center justify-center flex-shrink-0 border border-[#FD912A]/50">
-                        <Tag className="w-6 h-6 text-[#FD912A]" />
-                      </div>
+                      <FaTag className="w-5 h-5 text-[#FD912A]/40 group-hover:text-[#FD912A]/70 transition-colors duration-300 flex-shrink-0 mt-0.5" />
                       <div>
                         <h3 className="text-lg font-heading font-semibold text-foreground mb-2">
                           Sales Opportunities
@@ -283,7 +276,7 @@ const Benefits = () => {
           <div className="max-w-7xl mx-auto">
             {/* Header */}
             <div className="text-center mb-20">
-              <SectionBadge icon={Activity} text="Store Insights" />
+              <SectionBadge icon={FaChartLine} text="Store Insights" />
               <div className="relative">
                 <div className="absolute -left-16 -top-16 text-8xl lg:text-9xl font-bold text-[#FD912A]/25 transform rotate-6 select-none">
                   #3
@@ -303,11 +296,9 @@ const Benefits = () => {
             <div className="grid lg:grid-cols-2 gap-20 items-center">
               {/* Left: Features */}
               <div className="space-y-8">
-                <div className="bg-white/70 backdrop-blur-sm rounded-2xl p-6 border border-[#FD912A]/30 transform rotate-1 hover:rotate-0 transition-transform duration-300">
+                <div className="group bg-[#FD912A]/10 backdrop-blur-sm rounded-2xl p-6 border border-[#FD912A]/20 hover:border-[#FD912A]/30 transform rotate-1 hover:rotate-0 transition-all duration-300">
                   <div className="flex items-start gap-4">
-                    <div className="w-12 h-12 bg-[#FDF7E2]/50 rounded-xl flex items-center justify-center flex-shrink-0 mt-1">
-                      <Play className="w-6 h-6 text-[#FD912A]" />
-                    </div>
+                    <FaPlay className="w-5 h-5 text-[#FD912A]/40 group-hover:text-[#FD912A]/70 transition-colors duration-300 flex-shrink-0 mt-1" />
                     <div>
                       <h3 className="text-lg font-heading font-semibold text-foreground mb-2">
                         Session Replays
@@ -321,11 +312,9 @@ const Benefits = () => {
                   </div>
                 </div>
 
-                <div className="bg-white/70 backdrop-blur-sm rounded-2xl p-6 border border-[#FD912A]/30 transform -rotate-1 hover:rotate-0 transition-transform duration-300">
+                <div className="group bg-[#FD912A]/10 backdrop-blur-sm rounded-2xl p-6 border border-[#FD912A]/20 hover:border-[#FD912A]/30 transform -rotate-1 hover:rotate-0 transition-transform duration-300">
                   <div className="flex items-start gap-4">
-                    <div className="w-12 h-12 bg-[#FDF7E2]/50 rounded-xl flex items-center justify-center flex-shrink-0 mt-1">
-                      <Tag className="w-6 h-6 text-[#FD912A]" />
-                    </div>
+                    <FaTag className="w-5 h-5 text-[#FD912A]/40 group-hover:text-[#FD912A]/70 transition-colors duration-300 flex-shrink-0 mt-1" />
                     <div>
                       <h3 className="text-lg font-heading font-semibold text-foreground mb-2">
                         Auto-Tagged Chats
@@ -338,11 +327,9 @@ const Benefits = () => {
                   </div>
                 </div>
 
-                <div className="bg-white/70 backdrop-blur-sm rounded-2xl p-6 border border-[#FD912A]/30 transform rotate-2 hover:rotate-0 transition-transform duration-300">
+                <div className="group bg-[#FD912A]/10 backdrop-blur-sm rounded-2xl p-6 border border-[#FD912A]/20 hover:border-[#FD912A]/30 transform rotate-2 hover:rotate-0 transition-transform duration-300">
                   <div className="flex items-start gap-4">
-                    <div className="w-12 h-12 bg-[#FDF7E2]/50 rounded-xl flex items-center justify-center flex-shrink-0 mt-1">
-                      <BarChart3 className="w-6 h-6 text-[#FD912A]" />
-                    </div>
+                    <FaChartBar className="w-5 h-5 text-[#FD912A]/40 group-hover:text-[#FD912A]/70 transition-colors duration-300 flex-shrink-0 mt-1" />
                     <div>
                       <h3 className="text-lg font-heading font-semibold text-foreground mb-2">
                         Funnel Insights

@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Play, Pause } from "lucide-react";
+import { FaPlay, FaPause } from "react-icons/fa";
 import WaveSurfer from "wavesurfer.js";
 
 interface AudioPlayerProps {
@@ -94,9 +94,9 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({
             aria-label={isPlaying ? "Pause audio" : "Play audio"}
           >
             {isPlaying ? (
-              <Pause className="w-5 h-5" />
+              <FaPause className="w-4 h-4" />
             ) : (
-              <Play className="w-5 h-5 ml-0.5" />
+              <FaPlay className="w-4 h-4 ml-0.5" />
             )}
           </button>
 
