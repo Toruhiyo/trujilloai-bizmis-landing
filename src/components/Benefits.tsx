@@ -51,7 +51,7 @@ const Benefits = () => {
                 <div className="absolute -left-64  top-10 text-9xl lg:text-[12rem] font-bold text-orange-600/20 transform -rotate-12 select-none">
                   #1
                 </div>
-                <SectionBadge icon={ShoppingCart} text="Make More Money" />
+                <SectionBadge icon={ShoppingCart} text="Boost Sales" />
                 <h1 className="text-5xl lg:text-7xl font-heading font-bold text-foreground mb-8 relative z-10">
                   Sell More. Earn More.
                 </h1>
