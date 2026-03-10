@@ -89,15 +89,20 @@ const Benefits = () => {
                         <img
                           src={watermark}
                           alt=""
-                          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-[55%] w-32 h-32 object-contain opacity-30"
+                          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-[55%] w-32 h-32 object-contain opacity-[0.25]"
                         />
-                        <h3 className="relative z-10 text-lg lg:text-xl font-heading font-bold text-foreground/80 text-center leading-tight px-4">
+                        <h3 className="relative z-10 text-lg lg:text-xl font-heading font-bold text-foreground text-center leading-tight px-4">
                           {title}
                         </h3>
                       </div>
 
                       {/* Back */}
-                      <div className="absolute inset-0 [backface-visibility:hidden] [transform:rotateY(180deg)] bg-[#FD912A] rounded-2xl shadow-md overflow-hidden flex flex-col justify-center px-6 py-6 text-white">
+                      <div className="absolute inset-0 [backface-visibility:hidden] [transform:rotateY(180deg)] bg-[#FD912A] rounded-2xl shadow-md overflow-hidden flex flex-col justify-start px-6 py-6 text-white">
+                        <img
+                          src={watermark}
+                          alt=""
+                          className="w-8 h-8 object-contain brightness-0 invert opacity-60 mb-3"
+                        />
                         <h4 className="text-base font-heading font-bold mb-2">
                           {subtitle}
                         </h4>
