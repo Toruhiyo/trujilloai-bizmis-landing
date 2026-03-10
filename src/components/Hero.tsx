@@ -37,6 +37,27 @@ const Hero = () => {
       <div className="absolute inset-0 studio-floor-shadow" />
       <div className="absolute inset-0 studio-ambient-overlay" />
 
+      {/* Noise grain overlay */}
+      <svg
+        className="absolute inset-0 w-full h-full pointer-events-none z-[1] mix-blend-overlay"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <filter id="hero-noise">
+          <feTurbulence
+            type="fractalNoise"
+            baseFrequency="0.50"
+            numOctaves="3"
+            stitchTiles="stitch"
+          />
+        </filter>
+        <rect
+          width="100%"
+          height="100%"
+          filter="url(#hero-noise)"
+          opacity="0.40"
+        />
+      </svg>
+
       {/* Navbar positioned within hero */}
       <Navbar />
 
