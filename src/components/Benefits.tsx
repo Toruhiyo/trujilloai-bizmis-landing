@@ -7,6 +7,7 @@ import {
   FaShoppingCart,
   FaComments,
   FaChartLine,
+  FaPlus,
 } from "react-icons/fa";
 import SectionBadge from "./SectionBadge";
 import DirectScrollSalesFlow from "./DirectScrollSalesFlow";
@@ -94,6 +95,7 @@ const Benefits = () => {
                     <div className="relative w-full h-full transition-transform duration-500 [transform-style:preserve-3d] group-hover:[transform:rotateY(180deg)]">
                       {/* Front */}
                       <div className="absolute inset-0 [backface-visibility:hidden] bg-[#FD912A]/10 rounded-2xl border border-[#FD912A]/20 shadow-sm overflow-hidden flex flex-col items-center justify-end pb-6">
+                        <FaPlus className="absolute top-3 right-3 w-4 h-4 text-[#FD912A]/60" aria-hidden />
                         <img
                           src={watermark}
                           alt=""
