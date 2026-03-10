@@ -1,4 +1,3 @@
-import React from "react";
 import {
   ShoppingCart,
   Heart,
@@ -9,11 +8,7 @@ import {
   ShoppingBag,
   MessageSquare,
   Activity,
-  TrendingUp,
-  Handshake,
   DollarSign,
-  Users,
-  Repeat,
 } from "lucide-react";
 import SectionBadge from "./SectionBadge";
 import DirectScrollSalesFlow from "./DirectScrollSalesFlow";
@@ -53,183 +48,66 @@ const Benefits = () => {
                 </div>
                 <SectionBadge icon={ShoppingCart} text="Boost Sales" />
                 <h1 className="text-5xl lg:text-7xl font-heading font-bold text-foreground mb-8 relative z-10">
-                  Sell More. Earn More.
+                  Convert. Upsell. Return.
                 </h1>
               </div>
               <p className="text-xl text-muted-foreground font-body leading-relaxed mb-12">
-                Transform your online store into a revenue-generating
-                powerhouse. Your customers get expert guidance, you get
-                measurable results.
+                Bizmis acts like a great in-store associate — guiding shoppers,
+                increasing cart value, and creating the kind of personal, warm experience that
+                brings customers back.
               </p>
 
-              {/* Power Impact Metrics - CLEAN CONTAINER */}
-              <div className="max-w-6xl mx-auto mb-16">
-                {/* Uniform Power Grid */}
-                <div className="relative z-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 items-stretch">
-                  {/* HIGHER CONVERSION - MAGNETIC POWER FIELD */}
-                  <div className="group relative h-full">
-                    {/* Outer Magnetic Field */}
-                    <div className="absolute -inset-1 bg-[#FD912A]/40 rounded-2xl blur-sm opacity-0 group-hover:opacity-100 transition-all duration-500 group-hover:animate-pulse"></div>
-
-                    <div className="relative h-full bg-gradient-to-br from-white via-[#FDF7E2]/40 to-white backdrop-blur-sm rounded-xl p-8 border-2 border-[#FD912A]/30 hover:border-[#FD912A]/80 shadow-2xl hover:shadow-[#FD912A]/40 transition-all duration-500 hover:-translate-y-4 hover:scale-105 hover:rotate-1 hover:z-20 overflow-hidden">
-                      {/* Dynamic Energy Field */}
-                      <div className="absolute inset-0 bg-[#FD912A]/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-xl"></div>
-
-                      {/* Pulsing Energy Core */}
-                      <div className="absolute top-1/2 left-1/2 w-32 h-32 bg-[#FD912A]/20 rounded-full blur-xl opacity-0 group-hover:opacity-100 transform -translate-x-1/2 -translate-y-1/2 group-hover:animate-ping transition-all duration-500"></div>
-
-                      {/* Magnetic Field Lines */}
-                      <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700">
-                        <div className="absolute top-2 left-2 right-2 h-px bg-gradient-to-r from-transparent via-[#FD912A]/60 to-transparent animate-pulse"></div>
-                        <div className="absolute bottom-2 left-2 right-2 h-px bg-gradient-to-r from-transparent via-[#FD912A]/60 to-transparent animate-pulse delay-300"></div>
-                        <div className="absolute top-2 bottom-2 left-2 w-px bg-gradient-to-b from-transparent via-[#FD912A]/60 to-transparent animate-pulse delay-150"></div>
-                        <div className="absolute top-2 bottom-2 right-2 w-px bg-gradient-to-b from-transparent via-[#FD912A]/60 to-transparent animate-pulse delay-450"></div>
+              {/* Impact Pillars — Flip Cards */}
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 lg:gap-6 max-w-5xl mx-auto mb-16">
+                {[
+                  {
+                    title: "Convert More Visitors",
+                    subtitle: "Remove Buying Hesitation",
+                    body: "Bizmis answers questions instantly and guides shoppers to the right product — so more visitors feel confident enough to buy.",
+                    watermark: "/images/benefit-1-pillar-1.png",
+                  },
+                  {
+                    title: "Increase Order Value",
+                    subtitle: "Increase Order Value",
+                    body: "Smart recommendations, upgrades, and complementary products appear naturally during the conversation.",
+                    watermark: "/images/benefit-1-pillar-2.png",
+                  },
+                  {
+                    title: "Build Customer Loyalty",
+                    subtitle: "Build Customer Loyalty",
+                    body: "A warm, personal shopping experience customers remember — and come back for.",
+                    watermark: "/images/benefit-1-pillar-3.png",
+                  },
+                ].map(({ title, subtitle, body, watermark }) => (
+                  <div
+                    key={title}
+                    className="group [perspective:800px] h-56"
+                  >
+                    <div className="relative w-full h-full transition-transform duration-500 [transform-style:preserve-3d] group-hover:[transform:rotateY(180deg)]">
+                      {/* Front */}
+                      <div className="absolute inset-0 [backface-visibility:hidden] bg-[#FD912A]/10 rounded-2xl border border-[#FD912A]/20 shadow-sm overflow-hidden flex flex-col items-center justify-end pb-6">
+                        <img
+                          src={watermark}
+                          alt=""
+                          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-[55%] w-32 h-32 object-contain opacity-30"
+                        />
+                        <h3 className="relative z-10 text-lg lg:text-xl font-heading font-bold text-foreground/80 text-center leading-tight px-4">
+                          {title}
+                        </h3>
                       </div>
 
-                      {/* Glowing Icon Container */}
-                      <div className="relative z-10 flex items-center justify-center mb-6">
-                        <div className="w-20 h-20 bg-[#FD912A] rounded-xl flex items-center justify-center shadow-2xl group-hover:shadow-[#FD912A]/60 group-hover:scale-125 group-hover:-translate-y-1 transition-all duration-500 border-2 border-[#FD912A]/50 group-hover:border-[#FD912A]/80">
-                          <Handshake className="w-10 h-10 text-white group-hover:animate-pulse" />
-                          {/* Icon Glow */}
-                          <div className="absolute inset-0 bg-[#FD912A]/20 rounded-xl opacity-0 group-hover:opacity-100 group-hover:animate-ping transition-all duration-500"></div>
-                        </div>
-                      </div>
-
-                      {/* Power Statement with Glow */}
-                      <div className="relative z-10 text-center">
-                        <div className="text-xl lg:text-2xl font-bold text-slate-900 group-hover:text-[#FD912A] transition-colors duration-500 leading-tight drop-shadow-lg">
-                          Higher Conversion
-                        </div>
-                        <div className="absolute inset-0 text-xl lg:text-2xl font-bold text-[#FD912A] opacity-0 group-hover:opacity-20 transition-opacity duration-500 leading-tight blur-sm">
-                          Higher Conversion
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* HIGHER ORDER VALUE - MAGNETIC POWER FIELD */}
-                  <div className="group relative h-full">
-                    {/* Outer Magnetic Field */}
-                    <div className="absolute -inset-1 bg-[#FD912A]/40 rounded-2xl blur-sm opacity-0 group-hover:opacity-100 transition-all duration-500 group-hover:animate-pulse"></div>
-
-                    <div className="relative h-full bg-gradient-to-br from-white via-[#FDF7E2]/40 to-white backdrop-blur-sm rounded-xl p-8 border-2 border-[#FD912A]/30 hover:border-[#FD912A]/80 shadow-2xl hover:shadow-[#FD912A]/40 transition-all duration-500 hover:-translate-y-4 hover:scale-105 hover:-rotate-1 hover:z-20 overflow-hidden">
-                      {/* Dynamic Energy Field */}
-                      <div className="absolute inset-0 bg-[#FD912A]/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-xl"></div>
-
-                      {/* Pulsing Energy Core */}
-                      <div className="absolute top-1/2 left-1/2 w-32 h-32 bg-[#FD912A]/20 rounded-full blur-xl opacity-0 group-hover:opacity-100 transform -translate-x-1/2 -translate-y-1/2 group-hover:animate-ping transition-all duration-500"></div>
-
-                      {/* Magnetic Field Lines */}
-                      <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700">
-                        <div className="absolute top-2 left-2 right-2 h-px bg-gradient-to-r from-transparent via-[#FD912A]/60 to-transparent animate-pulse"></div>
-                        <div className="absolute bottom-2 left-2 right-2 h-px bg-gradient-to-r from-transparent via-[#FD912A]/60 to-transparent animate-pulse delay-300"></div>
-                        <div className="absolute top-2 bottom-2 left-2 w-px bg-gradient-to-b from-transparent via-[#FD912A]/60 to-transparent animate-pulse delay-150"></div>
-                        <div className="absolute top-2 bottom-2 right-2 w-px bg-gradient-to-b from-transparent via-[#FD912A]/60 to-transparent animate-pulse delay-450"></div>
-                      </div>
-
-                      {/* Glowing Icon Container */}
-                      <div className="relative z-10 flex items-center justify-center mb-6">
-                        <div className="w-20 h-20 bg-[#FD912A] rounded-xl flex items-center justify-center shadow-2xl group-hover:shadow-[#FD912A]/60 group-hover:scale-125 group-hover:-translate-y-1 transition-all duration-500 border-2 border-[#FD912A]/50 group-hover:border-[#FD912A]/80">
-                          <DollarSign className="w-10 h-10 text-white group-hover:animate-pulse" />
-                          {/* Icon Glow */}
-                          <div className="absolute inset-0 bg-[#FD912A]/20 rounded-xl opacity-0 group-hover:opacity-100 group-hover:animate-ping transition-all duration-500"></div>
-                        </div>
-                      </div>
-
-                      {/* Power Statement with Glow */}
-                      <div className="relative z-10 text-center">
-                        <div className="text-xl lg:text-2xl font-bold text-slate-900 group-hover:text-[#FD912A] transition-colors duration-500 leading-tight drop-shadow-lg">
-                          Higher Order Value
-                        </div>
-                        <div className="absolute inset-0 text-xl lg:text-2xl font-bold text-[#FD912A] opacity-0 group-hover:opacity-20 transition-opacity duration-500 leading-tight blur-sm">
-                          Higher Order Value
-                        </div>
+                      {/* Back */}
+                      <div className="absolute inset-0 [backface-visibility:hidden] [transform:rotateY(180deg)] bg-[#FD912A] rounded-2xl shadow-md overflow-hidden flex flex-col justify-center px-6 py-6 text-white">
+                        <h4 className="text-base font-heading font-bold mb-2">
+                          {subtitle}
+                        </h4>
+                        <p className="text-sm leading-relaxed text-white/90">
+                          {body}
+                        </p>
                       </div>
                     </div>
                   </div>
-
-                  {/* MORE ITEMS PER SALE - MAGNETIC POWER FIELD */}
-                  <div className="group relative h-full">
-                    {/* Outer Magnetic Field */}
-                    <div className="absolute -inset-1 bg-[#FD912A]/40 rounded-2xl blur-sm opacity-0 group-hover:opacity-100 transition-all duration-500 group-hover:animate-pulse"></div>
-
-                    <div className="relative h-full bg-gradient-to-br from-white via-[#FDF7E2]/40 to-white backdrop-blur-sm rounded-xl p-8 border-2 border-[#FD912A]/30 hover:border-[#FD912A]/80 shadow-2xl hover:shadow-[#FD912A]/40 transition-all duration-500 hover:-translate-y-4 hover:scale-105 hover:rotate-1 hover:z-20 overflow-hidden">
-                      {/* Dynamic Energy Field */}
-                      <div className="absolute inset-0 bg-[#FD912A]/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-xl"></div>
-
-                      {/* Pulsing Energy Core */}
-                      <div className="absolute top-1/2 left-1/2 w-32 h-32 bg-[#FD912A]/20 rounded-full blur-xl opacity-0 group-hover:opacity-100 transform -translate-x-1/2 -translate-y-1/2 group-hover:animate-ping transition-all duration-500"></div>
-
-                      {/* Magnetic Field Lines */}
-                      <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700">
-                        <div className="absolute top-2 left-2 right-2 h-px bg-gradient-to-r from-transparent via-[#FD912A]/60 to-transparent animate-pulse"></div>
-                        <div className="absolute bottom-2 left-2 right-2 h-px bg-gradient-to-r from-transparent via-[#FD912A]/60 to-transparent animate-pulse delay-300"></div>
-                        <div className="absolute top-2 bottom-2 left-2 w-px bg-gradient-to-b from-transparent via-[#FD912A]/60 to-transparent animate-pulse delay-150"></div>
-                        <div className="absolute top-2 bottom-2 right-2 w-px bg-gradient-to-b from-transparent via-[#FD912A]/60 to-transparent animate-pulse delay-450"></div>
-                      </div>
-
-                      {/* Glowing Icon Container */}
-                      <div className="relative z-10 flex items-center justify-center mb-6">
-                        <div className="w-20 h-20 bg-[#FD912A] rounded-xl flex items-center justify-center shadow-2xl group-hover:shadow-[#FD912A]/60 group-hover:scale-125 group-hover:-translate-y-1 transition-all duration-500 border-2 border-[#FD912A]/50 group-hover:border-[#FD912A]/80">
-                          <ShoppingBag className="w-10 h-10 text-white group-hover:animate-pulse" />
-                          {/* Icon Glow */}
-                          <div className="absolute inset-0 bg-[#FD912A]/20 rounded-xl opacity-0 group-hover:opacity-100 group-hover:animate-ping transition-all duration-500"></div>
-                        </div>
-                      </div>
-
-                      {/* Power Statement with Glow */}
-                      <div className="relative z-10 text-center">
-                        <div className="text-xl lg:text-2xl font-bold text-slate-900 group-hover:text-[#FD912A] transition-colors duration-500 leading-tight drop-shadow-lg">
-                          More Items Per Sale
-                        </div>
-                        <div className="absolute inset-0 text-xl lg:text-2xl font-bold text-[#FD912A] opacity-0 group-hover:opacity-20 transition-opacity duration-500 leading-tight blur-sm">
-                          More Items Per Sale
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* MORE REPEAT PURCHASES - MAGNETIC POWER FIELD */}
-                  <div className="group relative h-full">
-                    {/* Outer Magnetic Field */}
-                    <div className="absolute -inset-1 bg-[#FD912A]/40 rounded-2xl blur-sm opacity-0 group-hover:opacity-100 transition-all duration-500 group-hover:animate-pulse"></div>
-
-                    <div className="relative h-full bg-gradient-to-br from-white via-[#FDF7E2]/40 to-white backdrop-blur-sm rounded-xl p-8 border-2 border-[#FD912A]/30 hover:border-[#FD912A]/80 shadow-2xl hover:shadow-[#FD912A]/40 transition-all duration-500 hover:-translate-y-4 hover:scale-105 hover:-rotate-1 hover:z-20 overflow-hidden">
-                      {/* Dynamic Energy Field */}
-                      <div className="absolute inset-0 bg-[#FD912A]/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-xl"></div>
-
-                      {/* Pulsing Energy Core */}
-                      <div className="absolute top-1/2 left-1/2 w-32 h-32 bg-[#FD912A]/20 rounded-full blur-xl opacity-0 group-hover:opacity-100 transform -translate-x-1/2 -translate-y-1/2 group-hover:animate-ping transition-all duration-500"></div>
-
-                      {/* Magnetic Field Lines */}
-                      <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700">
-                        <div className="absolute top-2 left-2 right-2 h-px bg-gradient-to-r from-transparent via-[#FD912A]/60 to-transparent animate-pulse"></div>
-                        <div className="absolute bottom-2 left-2 right-2 h-px bg-gradient-to-r from-transparent via-[#FD912A]/60 to-transparent animate-pulse delay-300"></div>
-                        <div className="absolute top-2 bottom-2 left-2 w-px bg-gradient-to-b from-transparent via-[#FD912A]/60 to-transparent animate-pulse delay-150"></div>
-                        <div className="absolute top-2 bottom-2 right-2 w-px bg-gradient-to-b from-transparent via-[#FD912A]/60 to-transparent animate-pulse delay-450"></div>
-                      </div>
-
-                      {/* Glowing Icon Container */}
-                      <div className="relative z-10 flex items-center justify-center mb-6">
-                        <div className="w-20 h-20 bg-[#FD912A] rounded-xl flex items-center justify-center shadow-2xl group-hover:shadow-[#FD912A]/60 group-hover:scale-125 group-hover:-translate-y-1 transition-all duration-500 border-2 border-[#FD912A]/50 group-hover:border-[#FD912A]/80">
-                          <Repeat className="w-10 h-10 text-white group-hover:animate-pulse" />
-                          {/* Icon Glow */}
-                          <div className="absolute inset-0 bg-[#FD912A]/20 rounded-xl opacity-0 group-hover:opacity-100 group-hover:animate-ping transition-all duration-500"></div>
-                        </div>
-                      </div>
-
-                      {/* Power Statement with Glow */}
-                      <div className="relative z-10 text-center">
-                        <div className="text-xl lg:text-2xl font-bold text-slate-900 group-hover:text-[#FD912A] transition-colors duration-500 leading-tight drop-shadow-lg">
-                          More Repeat Purchases
-                        </div>
-                        <div className="absolute inset-0 text-xl lg:text-2xl font-bold text-[#FD912A] opacity-0 group-hover:opacity-20 transition-opacity duration-500 leading-tight blur-sm">
-                          More Repeat Purchases
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
+                ))}
               </div>
             </div>
 
