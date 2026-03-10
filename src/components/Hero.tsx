@@ -27,7 +27,7 @@ const Hero = () => {
   return (
     <section
       id="hero"
-      className="relative min-h-screen studio-lighting-base flex flex-col overflow-hidden"
+      className="relative min-h-screen lg:h-screen studio-lighting-base flex flex-col overflow-hidden"
     >
       {/* 3D Studio Lighting System */}
       <div className="absolute inset-0 studio-radial-light" />
@@ -139,15 +139,15 @@ const Hero = () => {
         <div className="container mx-auto px-4 sm:px-6 overflow-visible">
           <div className="grid lg:grid-cols-2 gap-16 xl:gap-20 items-center">
             {/* Left Content */}
-            <div className="space-y-8 text-left">
-              <div className="space-y-4">
-                <h1 className="text-6xl xl:text-7xl font-heading font-bold text-white leading-[1.0] xl:leading-[1.0]">
+            <div className="space-y-[clamp(1.5rem,3vh,2rem)] text-left">
+              <div className="space-y-[clamp(0.75rem,1.5vh,1rem)]">
+                <h1 className="text-[clamp(3rem,6.7vh,4.5rem)] font-heading font-bold text-white leading-[1.0]">
                   Boost Profits,
                   <span className="block text-white/90">
                     Selling The Human Way
                   </span>
                 </h1>
-                <p className="text-xl lg:text-2xl text-white/80 font-body max-w-2xl">
+                <p className="text-[clamp(1.125rem,2.2vh,1.5rem)] text-white/80 font-body max-w-2xl">
                   This isn't a chatbot. Bizmis speaks naturally—welcoming your
                   customers, answering their questions, and guiding them to buy
                   with confidence, just like the best in-store salesperson
@@ -199,7 +199,7 @@ const Hero = () => {
                 <img
                   src="/images/hero-avatar-1.png"
                   alt="Digital sales assistant helping customers"
-                  className="w-full h-auto max-w-2xl mx-auto z-10"
+                  className="w-auto h-auto max-w-full max-h-[calc(100vh-10rem)] mx-auto z-10"
                 />
               </div>
 
