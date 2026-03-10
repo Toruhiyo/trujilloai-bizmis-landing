@@ -5,7 +5,6 @@ import {
   Play,
   Tag,
   BarChart3,
-  ShoppingBag,
   MessageSquare,
   Activity,
   DollarSign,
@@ -19,7 +18,7 @@ const Benefits = () => {
   return (
     <div className="space-y-0 bg-gradient-to-b from-background via-[#FDF7E2]/10 to-background">
       {/* Shared Background Section: Driven Sales & Customization */}
-      <section className="relative py-12 overflow-hidden">
+      <section className="relative py-12 overflow-visible">
         {/* Modern Shared Background Design - Single background for both sections */}
         <div className="absolute inset-0 bg-gradient-to-br from-slate-50 via-[#FDF7E2]/30 to-[#FDF7E2]/20"></div>
 
@@ -36,12 +35,22 @@ const Benefits = () => {
           <div className="absolute top-1/4 right-1/4 w-2 h-2 bg-[#FD912A]/30 rounded-full animate-pulse"></div>
           <div className="absolute bottom-1/3 left-1/3 w-1 h-1 bg-[#FD912A]/40 rounded-full animate-pulse delay-1000"></div>
           <div className="absolute top-2/3 left-1/4 w-1.5 h-1.5 bg-[#FD912A]/25 rounded-full animate-pulse delay-500"></div>
+
+          {/* Bridging stains — visually connect cards to sales flow */}
+          <div className="absolute top-[40%] left-1/2 -translate-x-1/2 w-[600px] h-[400px] bg-[#FD912A]/[0.035] rounded-full blur-[100px]"></div>
+          <div className="absolute top-[55%] -left-20 w-[350px] h-[300px] bg-[#FDF7E2]/35 rounded-full blur-[80px]"></div>
+          <div className="absolute top-[50%] -right-10 w-[300px] h-[250px] bg-[#FD912A]/[0.045] rounded-full blur-[90px]"></div>
+
+          {/* Bottom edge warm band — curved section separator */}
+          <div className="absolute -bottom-40 -left-[5%] w-[45%] h-72 bg-[#FD912A]/[0.14] rounded-[50%] blur-[80px]"></div>
+          <div className="absolute -bottom-32 -right-[5%] w-[40%] h-64 bg-[#FD912A]/[0.10] rounded-[50%] blur-[70px]"></div>
+          <div className="absolute -bottom-20 left-1/2 -translate-x-1/2 w-[35%] h-52 bg-[#FDF7E2]/80 rounded-[50%] blur-[60px]"></div>
         </div>
 
         <div className="container mx-auto px-6 relative z-10">
           <div className="max-w-7xl mx-auto">
             {/* Section 1: Core Value Proposition */}
-            <div className="text-center max-w-5xl mx-auto mb-20">
+            <div className="text-center max-w-5xl mx-auto mb-10">
               <div className="relative">
                 <div className="absolute -left-64  top-10 text-9xl lg:text-[12rem] font-bold text-[#FD912A]/20 transform -rotate-12 select-none">
                   #1
@@ -58,7 +67,7 @@ const Benefits = () => {
               </p>
 
               {/* Impact Pillars — Flip Cards */}
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 lg:gap-6 max-w-5xl mx-auto mb-16">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 lg:gap-6 max-w-5xl mx-auto mb-10">
                 {[
                   {
                     title: "Convert More Visitors",
@@ -116,39 +125,13 @@ const Benefits = () => {
               </div>
             </div>
 
-            {/* Section 2: Drive Sales Feature - Compact */}
-            <div className="text-center mb-12">
-              <div className="relative max-w-4xl mx-auto">
-                {/* Compact inline design */}
-                <div className="flex items-center justify-center gap-4 mb-6">
-                  {/* Compact Icon */}
-                  <div className="w-14 h-14 bg-[#FD912A] rounded-2xl flex items-center justify-center shadow-lg">
-                    <ShoppingBag className="w-7 h-7 text-white" />
-                  </div>
-
-                  {/* Compact Title */}
-                  <div className="flex flex-col items-start">
-                    <h3 className="text-3xl lg:text-4xl font-black text-slate-900 leading-none">
-                      Driven Sales{" "}
-                      <span className="text-[#FD912A]">
-                        Pipeline
-                      </span>
-                    </h3>
-                    {/* Small accent line */}
-                    <div className="w-16 h-0.5 bg-[#FD912A] rounded-full mt-1"></div>
-                  </div>
-                </div>
-
-                {/* Compact Subtitle */}
-                <div className="max-w-3xl mx-auto">
-                  <p className="text-lg text-slate-600 leading-relaxed">
-                    Transform casual browsers into confident buyers with{" "}
-                    <span className="font-semibold text-[#FD912A]">
-                      expert-level selling skills
-                    </span>
-                  </p>
-                </div>
-              </div>
+            {/* How it works — connector */}
+            <div className="flex items-center gap-4 max-w-md mx-auto mb-10">
+              <div className="flex-1 h-px bg-[#FD912A]/20"></div>
+              <span className="text-xs font-semibold uppercase tracking-widest text-[#FD912A]/60 whitespace-nowrap">
+                How it works
+              </span>
+              <div className="flex-1 h-px bg-[#FD912A]/20"></div>
             </div>
 
             {/* Section 3: Main Layout - Direct Scroll-Linked Sales Flow */}
@@ -166,6 +149,11 @@ const Benefits = () => {
       >
         {/* Background Elements - Enhanced for Dashboard */}
         <div className="absolute inset-0">
+          {/* Top edge warm band — curved section separator */}
+          <div className="absolute -top-40 -right-[5%] w-[45%] h-96 bg-[#FD912A]/[0.14] rounded-[50%] blur-[80px]"></div>
+          <div className="absolute -top-32 -left-[5%] w-[40%] h-72 bg-[#FD912A]/[0.10] rounded-[50%] blur-[70px]"></div>
+          <div className="absolute -top-20 left-1/2 -translate-x-1/2 w-[35%] h-64 bg-[#FDF7E2]/80 rounded-[50%] blur-[60px]"></div>
+
           <div className="absolute top-20 right-20 w-64 h-64 bg-[#FD912A]/10 rounded-full blur-3xl animate-pulse"></div>
           <div className="absolute bottom-10 left-10 w-80 h-80 bg-[#FD912A]/10 rounded-full blur-3xl animate-pulse"></div>
           {/* Success celebration ambient lighting */}
