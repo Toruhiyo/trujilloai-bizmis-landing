@@ -155,6 +155,31 @@ const Setup = () => {
         id="setup"
         className="py-24 bg-gradient-to-r from-[#FDF7E2]/5 via-background to-[#FDF7E2]/8 border-t border-[#FD912A]/20 relative overflow-visible"
       >
+        {/* Perimeter glow — strongest at outer edge, fading inward */}
+        <div className="absolute inset-0 pointer-events-none" aria-hidden="true">
+          {/* Top edge */}
+          <div className="absolute -top-56 left-[3%] w-[50%] h-64 bg-[#FD912A]/30 rounded-[50%] blur-[70px]"></div>
+          <div className="absolute -top-56 right-[3%] w-[50%] h-64 bg-[#FD912A]/25 rounded-[50%] blur-[70px]"></div>
+
+          {/* Bottom edge */}
+          <div className="absolute -bottom-56 left-[3%] w-[50%] h-64 bg-[#FD912A]/30 rounded-[50%] blur-[70px]"></div>
+          <div className="absolute -bottom-56 right-[3%] w-[50%] h-64 bg-[#FD912A]/25 rounded-[50%] blur-[70px]"></div>
+
+          {/* Left edge */}
+          <div className="absolute top-[5%] -left-64 w-96 h-[38%] bg-[#FD912A]/30 rounded-[50%] blur-[70px]"></div>
+          <div className="absolute bottom-[5%] -left-64 w-96 h-[38%] bg-[#FD912A]/25 rounded-[50%] blur-[70px]"></div>
+
+          {/* Right edge */}
+          <div className="absolute top-[5%] -right-64 w-96 h-[38%] bg-[#FD912A]/30 rounded-[50%] blur-[70px]"></div>
+          <div className="absolute bottom-[5%] -right-64 w-96 h-[38%] bg-[#FD912A]/25 rounded-[50%] blur-[70px]"></div>
+
+          {/* Corner reinforcements */}
+          <div className="absolute -top-48 -left-48 w-[28rem] h-72 bg-[#FD912A]/[0.28] rounded-[50%] blur-[60px]"></div>
+          <div className="absolute -top-48 -right-48 w-[28rem] h-72 bg-[#FD912A]/[0.28] rounded-[50%] blur-[60px]"></div>
+          <div className="absolute -bottom-48 -left-48 w-[28rem] h-72 bg-[#FD912A]/[0.28] rounded-[50%] blur-[60px]"></div>
+          <div className="absolute -bottom-48 -right-48 w-[28rem] h-72 bg-[#FD912A]/[0.28] rounded-[50%] blur-[60px]"></div>
+        </div>
+
         <div className="container mx-auto px-6 overflow-visible">
           <div className="max-w-7xl mx-auto overflow-visible">
             {/* Header */}
