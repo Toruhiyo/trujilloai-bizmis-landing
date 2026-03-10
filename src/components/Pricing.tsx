@@ -290,7 +290,7 @@ const Pricing = () => {
             <label
               ref={earlyBirdRef}
               className={`relative flex items-center gap-3 cursor-pointer group px-4 py-2.5 rounded-xl transition-all duration-300 select-none ${showEarlyBird
-                ? "bg-gradient-to-r from-orange-50 via-amber-50 to-orange-50 border-2 border-orange-200 shadow-md scale-105"
+                ? "bg-[#FDF7E2] border-2 border-[#FD912A]/20 shadow-md scale-105"
                 : "bg-gray-50 border-2 border-transparent hover:bg-gray-100"
                 }`}
             >
@@ -311,19 +311,19 @@ const Pricing = () => {
                 </div>
               </div>
               <div className="flex items-center gap-2">
-                <span className={`text-sm font-bold transition-colors ${showEarlyBird ? "text-orange-700" : "text-foreground"
+                <span className={`text-sm font-bold transition-colors ${showEarlyBird ? "text-[#FD912A]" : "text-foreground"
                   }`}>
                   Early Bird
                 </span>
                 <span className={`text-xs px-2 py-0.5 rounded-full font-bold uppercase tracking-wide ${showEarlyBird
-                  ? "bg-orange-100 text-orange-700 border border-orange-200"
+                  ? "bg-[#FDF7E2] text-[#FD912A] border border-[#FD912A]/20"
                   : "bg-gray-200 text-muted-foreground"
                   }`}>
                   50 seats
                 </span>
               </div>
               <div className="relative ml-1 group/tooltip">
-                <HelpCircle className="w-4 h-4 text-amber-700 cursor-help" />
+                <HelpCircle className="w-4 h-4 text-[#FD912A] cursor-help" />
                 <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-3 py-2 bg-gray-900 text-white text-xs rounded-lg opacity-0 invisible group-hover/tooltip:opacity-100 group-hover/tooltip:visible transition-all whitespace-nowrap z-50">
                   {EARLY_BIRD_TOOLTIP}
                   <div className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-gray-900"></div>
@@ -342,15 +342,15 @@ const Pricing = () => {
           {/* Early Bird Special Message */}
           {showEarlyBird && (
             <div className="mt-6 max-w-2xl mx-auto">
-              <div className="relative bg-gradient-to-r from-amber-50 via-orange-50 to-amber-50 border border-orange-200/60 rounded-2xl px-6 py-5 shadow-sm">
+              <div className="relative bg-[#FDF7E2] border border-[#FD912A]/20 rounded-2xl px-6 py-5 shadow-sm">
                 <div className="absolute -top-3 left-1/2 -translate-x-1/2">
                   <span className="bg-gradient-warm text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider shadow-md">
                     🐣 Early Bird
                   </span>
                 </div>
-                <p className="text-center text-amber-900 mt-2">
+                <p className="text-center text-foreground mt-2">
                   <span className="font-semibold">Be one of our first 50 merchants and help shape Bizmis.</span>{" "}
-                  <span className="text-amber-800">
+                  <span className="text-muted-foreground">
                     Your needs and feedback will drive the roadmap. Plus, enjoy <span className="font-semibold">50% off your first 3 months</span> or <span className="font-semibold">33% off yearly</span>.
                   </span>
                 </p>
@@ -462,7 +462,7 @@ const Pricing = () => {
                         .filter(feature => SHOW_CONCURRENT_CONVERSATIONS_LIMIT || !feature.includes("Concurrent Conversations"))
                         .map((feature, idx) => (
                           <li key={idx} className="flex items-start gap-3">
-                            <div className="w-5 h-5 bg-gradient-to-br from-amber-100 to-primary-light/30 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                            <div className="w-5 h-5 bg-gradient-to-br from-[#FDF7E2] to-primary/20 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
                               <Check className="w-3 h-3 text-primary" />
                             </div>
                             <span className="text-muted-foreground font-body text-sm leading-relaxed flex items-center">
@@ -549,18 +549,18 @@ const Pricing = () => {
         {/* Upgrade Credit Note - Only when Monthly + Early Bird ON */}
         {showUpgradeCreditNote && (
           <div className="max-w-3xl mx-auto mt-8">
-            <div className="bg-amber-50 border border-amber-200 rounded-xl px-6 py-4">
-              <p className="text-sm text-amber-900">
+            <div className="bg-[#FDF7E2] border border-[#FD912A]/20 rounded-xl px-6 py-4">
+              <p className="text-sm text-foreground">
                 <span className="font-medium">Upgrade to yearly within 90 days</span> and we'll credit what you already paid toward your yearly plan (commitment charges only).{" "}
                 <button
                   onClick={() => setShowUpgradeCreditDetails(!showUpgradeCreditDetails)}
-                  className="text-amber-700 underline underline-offset-2 hover:text-amber-900 transition-colors"
+                  className="text-[#FD912A] underline underline-offset-2 hover:text-foreground transition-colors"
                 >
                   {showUpgradeCreditDetails ? "Hide details" : "Learn more"}
                 </button>
               </p>
               {showUpgradeCreditDetails && (
-                <p className="text-xs text-amber-800 mt-2 pt-2 border-t border-amber-200">
+                <p className="text-xs text-muted-foreground mt-2 pt-2 border-t border-[#FD912A]/20">
                   Credit applies to commitment charges only. On-demand usage charges (extra minutes) are excluded from the credit.
                 </p>
               )}

@@ -88,7 +88,7 @@ const FAQsPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-orange-50 via-white to-amber-50/30">
+    <div className="min-h-screen bg-gradient-to-br from-[#FDF7E2] via-white to-[#FDF7E2]/30">
       {/* Header with navigation */}
       <div className="bg-white border-b border-border">
         <div className="container mx-auto px-6 py-4">
@@ -217,7 +217,7 @@ const FAQsPage = () => {
             </div>
 
             {/* Contact CTA */}
-            <div className="text-center mt-12 p-8 bg-orange-50/50 rounded-2xl border border-orange-200/30">
+            <div className="text-center mt-12 p-8 bg-[#FDF7E2]/50 rounded-2xl border border-[#FD912A]/20">
               <h3 className="text-xl font-heading font-semibold text-foreground mb-3">
                 Still have questions?
               </h3>

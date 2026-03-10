@@ -19,7 +19,7 @@ const CONNECTOR_STROKE_WIDTH = 4;
 const CONNECTOR_CURVENESS = 0.8;
 const CONNECTOR_ANIMATION_DURATION = 0.5;
 const CONNECTOR_Z_INDEX = -1;
-const CONNECTOR_COLOR = "#ea580c";
+const CONNECTOR_COLOR = "#FD912A";
 
 // Constants for shiny dots
 const SHINY_DOT_STROKE_WIDTH = 3;
@@ -153,7 +153,7 @@ const Setup = () => {
 
       <section
         id="setup"
-        className="py-24 bg-gradient-to-r from-orange-50/5 via-background to-amber-50/8 border-t border-orange-200/20 relative overflow-visible"
+        className="py-24 bg-gradient-to-r from-[#FDF7E2]/5 via-background to-[#FDF7E2]/8 border-t border-[#FD912A]/20 relative overflow-visible"
       >
         <div className="container mx-auto px-6 overflow-visible">
           <div className="max-w-7xl mx-auto overflow-visible">
@@ -182,7 +182,7 @@ const Setup = () => {
                     Seamlessly Integrated with
                   </div> */}
                     <div className="inline-flex items-center gap-2">
-                      <SiShopify className="w-5 h-5 text-orange-600" />
+                      <SiShopify className="w-5 h-5 text-[#FD912A]" />
                       <span className="text-lg font-heading font-semibold text-foreground">
                         Your Shopify Store Data
                       </span>
@@ -194,7 +194,7 @@ const Setup = () => {
                       <div
                         key={index}
                         id={`card-${index}`}
-                        className="relative bg-gradient-to-br from-orange-100/30 to-amber-100/40 backdrop-blur-sm rounded-2xl p-6 border border-orange-200/30 hover:scale-105 transition-all duration-300 group overflow-hidden"
+                        className="relative bg-[#FDF7E2]/40 backdrop-blur-sm rounded-2xl p-6 border border-[#FD912A]/30 hover:scale-105 transition-all duration-300 group overflow-hidden"
                         style={{
                           boxShadow: "0 8px 32px rgba(0, 0, 0, 0.1)",
                           backdropFilter: "blur(10px)",
@@ -203,11 +203,11 @@ const Setup = () => {
                       >
                         {/* Shopify Icon Watermark */}
                         <div className="absolute bottom-[calc(50%-2.5rem)] right-0 opacity-5 group-hover:opacity-10 transition-opacity duration-300">
-                          <SiShopify className="w-20 h-20 text-orange-600" />
+                          <SiShopify className="w-20 h-20 text-[#FD912A]" />
                         </div>
 
                         <div className="flex items-center gap-4 relative z-10">
-                          <div className="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center text-orange-600">
+                          <div className="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center text-[#FD912A]">
                             <card.icon className="w-6 h-6" />
                           </div>
                           <div className="flex-1">
@@ -231,7 +231,7 @@ const Setup = () => {
                 >
                   {/* Animated Aura/Halo - Circular - Positioned absolutely outside container */}
                   <div
-                    className="absolute w-40 h-40 sm:w-56 h-56 md:w-72 h-72 lg:w-80 h-80 bg-gradient-to-r from-orange-300/40 via-orange-400/60 to-amber-300/50 rounded-full blur-xl animate-pulse pointer-events-none"
+                    className="absolute w-40 h-40 sm:w-56 h-56 md:w-72 h-72 lg:w-80 h-80 bg-[#FD912A]/50 rounded-full blur-xl animate-pulse pointer-events-none"
                     style={{
                       zIndex: 1,
                       left: "50%",
@@ -240,13 +240,13 @@ const Setup = () => {
                       margin: "0",
                       position: "absolute",
                       boxShadow:
-                        "0 0 40px rgba(251, 146, 60, 0.3), 0 0 80px rgba(251, 146, 60, 0.2), inset 0 0 20px rgba(255, 255, 255, 0.1)",
+                        "0 0 40px rgba(253, 145, 42, 0.3), 0 0 80px rgba(253, 145, 42, 0.2), inset 0 0 20px rgba(255, 255, 255, 0.1)",
                       opacity: avatarOpacity,
                       transition: `opacity ${HEARTBEAT_FADE_DURATION_MS}ms ease-in-out`,
                     }}
                   ></div>
                   <div
-                    className="absolute w-32 h-32 sm:w-48 h-48 md:w-64 h-64 lg:w-72 h-72 bg-gradient-to-r from-orange-200/35 via-orange-300/55 to-amber-200/45 rounded-full blur-lg animate-ping pointer-events-none"
+                    className="absolute w-32 h-32 sm:w-48 h-48 md:w-64 h-64 lg:w-72 h-72 bg-[#FD912A]/45 rounded-full blur-lg animate-ping pointer-events-none"
                     style={{
                       animationDuration: "3s",
                       zIndex: 1,
@@ -256,13 +256,13 @@ const Setup = () => {
                       margin: "0",
                       position: "absolute",
                       boxShadow:
-                        "0 0 30px rgba(251, 146, 60, 0.4), 0 0 60px rgba(251, 146, 60, 0.25), inset 0 0 15px rgba(255, 255, 255, 0.15)",
+                        "0 0 30px rgba(253, 145, 42, 0.4), 0 0 60px rgba(253, 145, 42, 0.25), inset 0 0 15px rgba(255, 255, 255, 0.15)",
                       opacity: avatarOpacity,
                       transition: `opacity ${HEARTBEAT_FADE_DURATION_MS}ms ease-in-out`,
                     }}
                   ></div>
                   <div
-                    className="absolute w-24 h-24 sm:w-40 h-40 md:w-56 h-56 lg:w-64 h-64 bg-gradient-to-r from-orange-100/30 via-orange-200/50 to-amber-100/40 rounded-full blur-md animate-pulse pointer-events-none"
+                    className="absolute w-24 h-24 sm:w-40 h-40 md:w-56 h-56 lg:w-64 h-64 bg-[#FD912A]/40 rounded-full blur-md animate-pulse pointer-events-none"
                     style={{
                       animationDuration: "2s",
                       zIndex: 1,
@@ -272,7 +272,7 @@ const Setup = () => {
                       margin: "0",
                       position: "absolute",
                       boxShadow:
-                        "0 0 20px rgba(251, 146, 60, 0.5), 0 0 40px rgba(251, 146, 60, 0.3), inset 0 0 10px rgba(255, 255, 255, 0.2)",
+                        "0 0 20px rgba(253, 145, 42, 0.5), 0 0 40px rgba(253, 145, 42, 0.3), inset 0 0 10px rgba(255, 255, 255, 0.2)",
                       opacity: avatarOpacity,
                       transition: `opacity ${HEARTBEAT_FADE_DURATION_MS}ms ease-in-out`,
                     }}
@@ -445,17 +445,17 @@ const Setup = () => {
               ].map((card, index) => (
                 <div key={index} className="group">
                   <div
-                    className="relative bg-gradient-to-br from-orange-100/40 to-amber-100/30 backdrop-blur-sm rounded-3xl p-8 border border-orange-200/30 hover:border-orange-300/50 transition-all duration-500 hover:scale-105 shadow-lg hover:shadow-xl overflow-hidden"
+                    className="relative bg-[#FDF7E2]/40 backdrop-blur-sm rounded-3xl p-8 border border-[#FD912A]/30 hover:border-[#FD912A]/50 transition-all duration-500 hover:scale-105 shadow-lg hover:shadow-xl overflow-hidden"
                     style={{
                       animationDelay: `${index * 200}ms`,
                     }}
                   >
                     {/* Animated background gradient */}
-                    <div className="absolute inset-0 bg-gradient-to-br from-orange-400/5 via-transparent to-amber-400/5 opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
+                    <div className="absolute inset-0 bg-[#FD912A]/5 opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
 
                     {/* Icon container with enhanced animations */}
                     <div className="relative">
-                      <div className="w-20 h-20 bg-gradient-to-br from-orange-600 to-amber-500 rounded-2xl flex items-center justify-center mb-6 shadow-md group-hover:shadow-lg transition-all duration-500 group-hover:scale-110 group-hover:rotate-3">
+                      <div className="w-20 h-20 bg-[#FD912A] rounded-2xl flex items-center justify-center mb-6 shadow-md group-hover:shadow-lg transition-all duration-500 group-hover:scale-110 group-hover:rotate-3">
                         {/* Particles for shopping cart */}
                         {index === 2 && (
                           /* Shopping cart with energetic explosion from icon center */
@@ -518,7 +518,7 @@ const Setup = () => {
                           </div>
                         )}
                         {/* Icon glow effect */}
-                        <div className="absolute inset-0 bg-gradient-to-br from-orange-600 to-amber-500 rounded-2xl blur-lg opacity-0 group-hover:opacity-30 transition-opacity duration-500"></div>
+                        <div className="absolute inset-0 bg-[#FD912A] rounded-2xl blur-lg opacity-0 group-hover:opacity-30 transition-opacity duration-500"></div>
                         <card.icon
                           className={`w-10 h-10 text-white relative z-10 transition-all duration-500 ${
                             index === 0
@@ -535,15 +535,15 @@ const Setup = () => {
                     </div>
 
                     {/* Text with staggered animations */}
-                    <h4 className="font-heading font-bold text-foreground text-2xl mb-2 group-hover:text-orange-700 transition-colors duration-300">
+                    <h4 className="font-heading font-bold text-foreground text-2xl mb-2 group-hover:text-[#FD912A] transition-colors duration-300">
                       {card.title}
                     </h4>
-                    <p className="text-muted-foreground font-body text-lg group-hover:text-orange-600 transition-colors duration-300">
+                    <p className="text-muted-foreground font-body text-lg group-hover:text-[#FD912A] transition-colors duration-300">
                       {card.subtitle}
                     </p>
 
                     {/* Bottom glow line */}
-                    <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-orange-400/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                    <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-[#FD912A]/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
                   </div>
                 </div>
               ))}
@@ -551,7 +551,7 @@ const Setup = () => {
 
             {/* CTA */}
             <div className="text-center">
-              <Button className="bg-orange-600 hover:bg-orange-700 text-white px-8 py-3 text-lg">
+              <Button className="bg-[#FD912A] hover:bg-[#FD912A]/85 text-white px-8 py-3 text-lg">
                 Install Bizmis App
               </Button>
               <p className="text-sm text-muted-foreground mt-3 font-body">

@@ -14,7 +14,7 @@ const SectionBadge = ({
 }: SectionBadgeProps) => {
   return (
     <div
-      className={`inline-flex items-center gap-2 bg-amber-100/50 rounded-full px-6 py-3 text-orange-600 font-medium mb-4 ${className}`}
+      className={`inline-flex items-center gap-2 bg-[#FDF7E2] rounded-full px-6 py-3 text-[#FD912A] font-medium mb-4 ${className}`}
     >
       <Icon className="w-5 h-5" />
       {text}

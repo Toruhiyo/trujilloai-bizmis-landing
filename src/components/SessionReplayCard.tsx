@@ -307,7 +307,7 @@ const SessionReplayCard: React.FC<SessionReplayCardProps> = ({
     <div className={`w-full max-w-2xl ${className}`}>
       {/* Integrated Session Replay Card */}
       <div
-        className={`bg-card backdrop-blur-sm rounded-2xl p-8 border border-orange-200/50 shadow-brand transform rotate-2 hover:rotate-1 transition-all duration-500 ${
+        className={`bg-card backdrop-blur-sm rounded-2xl p-8 border border-[#FD912A]/20 shadow-brand transform rotate-2 hover:rotate-1 transition-all duration-500 ${
           isVisible ? "opacity-100 scale-100" : "opacity-0 scale-95"
         }`}
       >
@@ -446,7 +446,7 @@ const SessionReplayCard: React.FC<SessionReplayCardProps> = ({
                     <div
                       className={`bg-muted/30 rounded-lg p-4 border border-border/30 transition-all duration-500 ${
                         currentFocusedMessage === bubble.id && isAudioPlaying
-                          ? "scale-105 ring-2 ring-orange-400/50 bg-orange-50 shadow-lg shadow-orange-400/20 transform-gpu"
+                          ? "scale-105 ring-2 ring-[#FD912A]/50 bg-[#FDF7E2] shadow-lg shadow-[#FD912A]/20 transform-gpu"
                           : ""
                       }`}
                     >
@@ -502,7 +502,7 @@ const SessionReplayCard: React.FC<SessionReplayCardProps> = ({
                     <div
                       className={`bg-muted/30 rounded-lg p-4 border border-border/30 transition-all duration-500 ${
                         currentFocusedMessage === bubble.id && isAudioPlaying
-                          ? "scale-105 ring-2 ring-orange-400/50 bg-orange-50 shadow-lg shadow-orange-400/20 transform-gpu"
+                          ? "scale-105 ring-2 ring-[#FD912A]/50 bg-[#FDF7E2] shadow-lg shadow-[#FD912A]/20 transform-gpu"
                           : ""
                       }`}
                     >
@@ -557,7 +557,7 @@ const SessionReplayCard: React.FC<SessionReplayCardProps> = ({
                     <div
                       className={`relative bg-gradient-to-r from-primary/10 via-primary/5 to-primary/10 rounded-lg p-4 border-2 border-primary/20 shadow-lg overflow-hidden transition-all duration-500 ${
                         currentFocusedMessage === bubble.id && isAudioPlaying
-                          ? "scale-105 ring-2 ring-orange-400/50 shadow-xl shadow-orange-400/20 transform-gpu"
+                          ? "scale-105 ring-2 ring-[#FD912A]/50 shadow-xl shadow-[#FD912A]/20 transform-gpu"
                           : ""
                       }`}
                     >
@@ -640,7 +640,7 @@ const SessionReplayCard: React.FC<SessionReplayCardProps> = ({
                         : "bg-muted text-foreground"
                     } ${
                       currentFocusedMessage === bubble.id && isAudioPlaying
-                        ? "scale-105 ring-2 ring-orange-400/50 shadow-lg shadow-orange-400/20 transform-gpu"
+                        ? "scale-105 ring-2 ring-[#FD912A]/50 shadow-lg shadow-[#FD912A]/20 transform-gpu"
                         : ""
                     }`}
                   >

@@ -23,8 +23,8 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({
     const wavesurfer = WaveSurfer.create({
       container: waveformRef.current,
       waveColor: "hsl(35 30% 82%)", // border color from project
-      progressColor: "hsl(25 95% 53%)", // primary orange
-      cursorColor: "hsl(25 95% 53%)", // primary orange
+      progressColor: "#FD912A",
+      cursorColor: "#FD912A",
       barWidth: 3,
       barGap: 2,
       barRadius: 3,
@@ -75,22 +75,22 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({
   return (
     <div className="relative group">
       {/* Subtle glow effect on hover */}
-      <div className="absolute -inset-2 bg-gradient-to-r from-orange-500/20 via-amber-500/20 to-orange-500/20 rounded-2xl blur-lg opacity-0 group-hover:opacity-100 transition-all duration-500"></div>
+      <div className="absolute -inset-2 bg-[#FD912A]/20 rounded-2xl blur-lg opacity-0 group-hover:opacity-100 transition-all duration-500"></div>
 
       {/* Main container with sober styling */}
       <div
-        className={`relative bg-white rounded-xl p-4 shadow-lg border border-orange-200 hover:border-orange-300 hover:shadow-xl transition-all duration-300 hover:scale-102 transform-gpu ${className}`}
+        className={`relative bg-white rounded-xl p-4 shadow-lg border border-[#FD912A]/20 hover:border-[#FD912A]/30 hover:shadow-xl transition-all duration-300 hover:scale-102 transform-gpu ${className}`}
       >
         {/* Simple pulse ring around play button when playing */}
         {isPlaying && (
-          <div className="absolute top-2 left-2 w-12 h-12 rounded-full border border-orange-400/30 animate-ping"></div>
+          <div className="absolute top-2 left-2 w-12 h-12 rounded-full border border-[#FD912A]/30 animate-ping"></div>
         )}
 
         <div className="relative flex items-center gap-4">
           {/* Play/Pause Button */}
           <button
             onClick={togglePlayPause}
-            className="relative w-12 h-12 bg-orange-500 hover:bg-orange-600 text-white rounded-full flex items-center justify-center transition-all duration-300 hover:scale-110 focus:outline-none focus:ring-2 focus:ring-orange-500/50 shadow-md hover:shadow-lg transform-gpu"
+            className="relative w-12 h-12 bg-[#FD912A] hover:bg-[#FD912A]/85 text-white rounded-full flex items-center justify-center transition-all duration-300 hover:scale-110 focus:outline-none focus:ring-2 focus:ring-[#FD912A]/50 shadow-md hover:shadow-lg transform-gpu"
             aria-label={isPlaying ? "Pause audio" : "Play audio"}
           >
             {isPlaying ? (
@@ -102,14 +102,14 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({
 
           {/* Waveform Container */}
           <div className="flex-1 min-h-[50px] flex items-center relative">
-            <div className="absolute inset-0 bg-orange-50/50 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+            <div className="absolute inset-0 bg-[#FDF7E2]/50 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
             <div ref={waveformRef} className="w-full relative z-10" />
           </div>
 
           {/* Time Display */}
-          <div className="text-sm font-medium text-orange-700 min-w-[70px] text-right font-mono">
-            <div className="bg-orange-50/80 rounded-lg px-3 py-2 border border-orange-200/50">
-              <div className="text-xs text-orange-600/70 mb-0.5">Duration</div>
+          <div className="text-sm font-medium text-[#FD912A] min-w-[70px] text-right font-mono">
+            <div className="bg-[#FDF7E2]/80 rounded-lg px-3 py-2 border border-[#FD912A]/20">
+              <div className="text-xs text-[#FD912A]/70 mb-0.5">Duration</div>
               <div className="font-semibold">
                 {formatTime(currentTime)} / {formatTime(duration)}
               </div>

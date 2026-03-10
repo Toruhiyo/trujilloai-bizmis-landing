@@ -22,25 +22,25 @@ const EarlyAccessCard: React.FC<EarlyAccessCardProps> = ({ className = "" }) => 
   return (
     <div className={`relative group max-w-sm w-full mx-auto lg:ml-auto lg:mr-0 ${className}`}>
       {/* Glow effect behind the card */}
-      <div className="absolute -inset-0.5 bg-gradient-to-r from-orange-400/50 to-amber-300/50 rounded-3xl blur opacity-60 group-hover:opacity-80 transition duration-1000 group-hover:duration-200 animate-pulse"></div>
+      <div className="absolute -inset-0.5 bg-[#FD912A]/50 rounded-3xl blur opacity-60 group-hover:opacity-80 transition duration-1000 group-hover:duration-200 animate-pulse"></div>
 
-      <div className="relative bg-white rounded-3xl p-6 sm:p-8 shadow-2xl border border-orange-100 h-full flex flex-col overflow-hidden">
+      <div className="relative bg-white rounded-3xl p-6 sm:p-8 shadow-2xl border border-[#FD912A]/10 h-full flex flex-col overflow-hidden">
         {/* Decorative background elements */}
-        <div className="absolute top-0 right-0 w-40 h-40 bg-gradient-to-br from-orange-50 to-amber-50 rounded-bl-[100px] -z-10 opacity-60"></div>
-        <div className="absolute bottom-0 left-0 w-24 h-24 bg-orange-50 rounded-tr-[80px] -z-10 opacity-40"></div>
+        <div className="absolute top-0 right-0 w-40 h-40 bg-[#FDF7E2] rounded-bl-[100px] -z-10 opacity-60"></div>
+        <div className="absolute bottom-0 left-0 w-24 h-24 bg-[#FDF7E2] rounded-tr-[80px] -z-10 opacity-40"></div>
 
         {/* Header Section */}
         <div className="flex flex-col gap-4 mb-6">
-          <div className="inline-flex items-center gap-1.5 self-start bg-orange-50 border border-orange-100 rounded-full pl-2 pr-3 py-1 shadow-sm">
+          <div className="inline-flex items-center gap-1.5 self-start bg-[#FDF7E2] border border-[#FD912A]/10 rounded-full pl-2 pr-3 py-1 shadow-sm">
             <div className="bg-gradient-warm p-1 rounded-full">
               <Crown className="w-3 h-3 text-white fill-white" />
             </div>
-            <span className="text-xs font-bold text-orange-800 uppercase tracking-wide">Early Bird</span>
+            <span className="text-xs font-bold text-[#FD912A] uppercase tracking-wide">Early Bird</span>
           </div>
 
           <div>
             <h3 className="text-2xl sm:text-3xl font-heading font-bold text-gray-900 leading-tight">
-              Be First. <span className="bg-gradient-to-r from-orange-600 to-amber-600 bg-clip-text text-transparent">Sell More.</span>
+              Be First. <span className="text-[#FD912A]">Sell More.</span>
             </h3>
             <p className="text-gray-500 mt-2 text-sm leading-relaxed">
               Join the exclusive group of first 50 merchants shaping the future of conversational commerce.
@@ -51,8 +51,8 @@ const EarlyAccessCard: React.FC<EarlyAccessCardProps> = ({ className = "" }) => 
         {/* Benefits List */}
         <div className="space-y-5 mb-8 flex-1">
           <div className="flex items-start gap-4 group/item">
-            <div className="w-10 h-10 rounded-2xl bg-orange-50 border border-orange-100 flex items-center justify-center flex-shrink-0 shadow-sm group-hover/item:scale-105 transition-transform">
-              <Gift className="w-5 h-5 text-orange-600" />
+            <div className="w-10 h-10 rounded-2xl bg-[#FDF7E2] border border-[#FD912A]/10 flex items-center justify-center flex-shrink-0 shadow-sm group-hover/item:scale-105 transition-transform">
+              <Gift className="w-5 h-5 text-[#FD912A]" />
             </div>
             <div>
               <h4 className="font-bold text-gray-900 text-sm">50% Off First 3 Months</h4>
@@ -61,8 +61,8 @@ const EarlyAccessCard: React.FC<EarlyAccessCardProps> = ({ className = "" }) => 
           </div>
 
           <div className="flex items-start gap-4 group/item">
-            <div className="w-10 h-10 rounded-2xl bg-orange-50 border border-orange-100 flex items-center justify-center flex-shrink-0 shadow-sm group-hover/item:scale-105 transition-transform">
-              <Map className="w-5 h-5 text-orange-600" />
+            <div className="w-10 h-10 rounded-2xl bg-[#FDF7E2] border border-[#FD912A]/10 flex items-center justify-center flex-shrink-0 shadow-sm group-hover/item:scale-105 transition-transform">
+              <Map className="w-5 h-5 text-[#FD912A]" />
             </div>
             <div>
               <h4 className="font-bold text-gray-900 text-sm">Direct Roadmap Influence</h4>
@@ -71,8 +71,8 @@ const EarlyAccessCard: React.FC<EarlyAccessCardProps> = ({ className = "" }) => 
           </div>
 
           <div className="flex items-start gap-4 group/item">
-            <div className="w-10 h-10 rounded-2xl bg-orange-50 border border-orange-100 flex items-center justify-center flex-shrink-0 shadow-sm group-hover/item:scale-105 transition-transform">
-              <Star className="w-5 h-5 text-orange-600" />
+            <div className="w-10 h-10 rounded-2xl bg-[#FDF7E2] border border-[#FD912A]/10 flex items-center justify-center flex-shrink-0 shadow-sm group-hover/item:scale-105 transition-transform">
+              <Star className="w-5 h-5 text-[#FD912A]" />
             </div>
             <div>
               <h4 className="font-bold text-gray-900 text-sm">VIP Onboarding</h4>
@@ -84,7 +84,7 @@ const EarlyAccessCard: React.FC<EarlyAccessCardProps> = ({ className = "" }) => 
         {/* Footer / CTA */}
         <div className="pt-6 border-t border-gray-100 mt-auto">
           <div className="flex justify-center mb-4">
-            <span className="text-xs font-semibold text-orange-600 bg-orange-50 px-3 py-1 rounded-full border border-orange-100">
+            <span className="text-xs font-semibold text-[#FD912A] bg-[#FDF7E2] px-3 py-1 rounded-full border border-[#FD912A]/10">
               Limited spots available
             </span>
           </div>

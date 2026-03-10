@@ -88,21 +88,21 @@ const Customization = () => {
   return (
     <section
       id="customization"
-      className="relative py-24 bg-gradient-to-r from-orange-50/20 to-amber-50/20 overflow-hidden"
+      className="relative py-24 bg-[#FDF7E2]/20 overflow-hidden"
     >
       {/* Background Elements */}
       <div className="absolute inset-0">
         {/* Large floating shapes */}
-        <div className="absolute top-0 left-0 w-96 h-96 bg-gradient-to-br from-orange-200/20 to-amber-200/15 rounded-full blur-3xl transform -translate-x-1/2 -translate-y-1/2"></div>
-        <div className="absolute bottom-0 right-0 w-80 h-80 bg-gradient-to-tl from-orange-300/15 to-yellow-300/10 rounded-full blur-3xl transform translate-x-1/2 translate-y-1/2"></div>
+        <div className="absolute top-0 left-0 w-96 h-96 bg-[#FD912A]/15 rounded-full blur-3xl transform -translate-x-1/2 -translate-y-1/2"></div>
+        <div className="absolute bottom-0 right-0 w-80 h-80 bg-[#FD912A]/15 rounded-full blur-3xl transform translate-x-1/2 translate-y-1/2"></div>
 
         {/* Subtle grid pattern */}
         <div className="absolute inset-0 opacity-[0.02] bg-gray-100/5"></div>
 
         {/* Floating accent elements */}
-        <div className="absolute top-1/4 right-1/4 w-2 h-2 bg-orange-400/30 rounded-full animate-pulse"></div>
-        <div className="absolute bottom-1/3 left-1/3 w-1 h-1 bg-amber-500/40 rounded-full animate-pulse delay-1000"></div>
-        <div className="absolute top-2/3 left-1/4 w-1.5 h-1.5 bg-orange-300/25 rounded-full animate-pulse delay-500"></div>
+        <div className="absolute top-1/4 right-1/4 w-2 h-2 bg-[#FD912A]/30 rounded-full animate-pulse"></div>
+        <div className="absolute bottom-1/3 left-1/3 w-1 h-1 bg-[#FD912A]/40 rounded-full animate-pulse delay-1000"></div>
+        <div className="absolute top-2/3 left-1/4 w-1.5 h-1.5 bg-[#FD912A]/25 rounded-full animate-pulse delay-500"></div>
       </div>
 
       <div className="container mx-auto px-6 relative z-10">
@@ -111,7 +111,7 @@ const Customization = () => {
           <div className="text-center mb-16">
             <SectionBadge icon={Brush} text="Personalization" />
             <h2 className="text-4xl lg:text-5xl font-heading font-bold text-foreground mb-6">
-              Make It <span className="text-orange-600">Truly Yours</span>
+              Make It <span className="text-[#FD912A]">Truly Yours</span>
             </h2>
             <p className="text-xl text-muted-foreground font-body max-w-3xl mx-auto">
               Build authentic relationships that drive customer loyalty through
@@ -123,11 +123,11 @@ const Customization = () => {
           <div className="grid lg:grid-cols-2 gap-8 md:gap-12 lg:gap-16 items-center">
             {/* Right: Features */}
             <div className="space-y-6 md:space-y-12 lg:space-y-16 order-2 lg:order-2">
-              <div className="bg-white/70 backdrop-blur-md rounded-3xl p-8 border border-orange-200/30 transform -rotate-1 hover:rotate-0 transition-transform duration-500 shadow-xl">
+              <div className="bg-white/70 backdrop-blur-md rounded-3xl p-8 border border-[#FD912A]/30 transform -rotate-1 hover:rotate-0 transition-transform duration-500 shadow-xl">
                 <div className="space-y-6">
                   <div className="flex gap-4">
-                    <div className="w-12 h-12 bg-amber-100 rounded-xl flex items-center justify-center flex-shrink-0 border border-orange-200/50">
-                      <Brush className="w-6 h-6 text-orange-600" />
+                    <div className="w-12 h-12 bg-[#FDF7E2] rounded-xl flex items-center justify-center flex-shrink-0 border border-[#FD912A]/50">
+                      <Brush className="w-6 h-6 text-[#FD912A]" />
                     </div>
                     <div>
                       <h3 className="text-xl font-heading font-bold text-foreground">
@@ -142,11 +142,11 @@ const Customization = () => {
                 </div>
               </div>
 
-              <div className="bg-white/70 backdrop-blur-md rounded-3xl p-8 border border-orange-200/30 transform rotate-1 hover:rotate-0 transition-transform duration-500 shadow-xl">
+              <div className="bg-white/70 backdrop-blur-md rounded-3xl p-8 border border-[#FD912A]/30 transform rotate-1 hover:rotate-0 transition-transform duration-500 shadow-xl">
                 <div className="space-y-6">
                   <div className="flex gap-4">
-                    <div className="w-12 h-12 bg-amber-100 rounded-xl flex items-center justify-center flex-shrink-0 border border-orange-200/50">
-                      <PiWaveformBold className="w-6 h-6 text-orange-600" />
+                    <div className="w-12 h-12 bg-[#FDF7E2] rounded-xl flex items-center justify-center flex-shrink-0 border border-[#FD912A]/50">
+                      <PiWaveformBold className="w-6 h-6 text-[#FD912A]" />
                     </div>
                     <div>
                       <h3 className="text-xl font-heading font-bold text-foreground">
@@ -164,17 +164,17 @@ const Customization = () => {
               {/* Voice Cloning Demo */}
               <div className="relative space-y-3">
                 {/* Enhanced background for audio player section */}
-                <div className="absolute -inset-8 bg-gradient-to-br from-orange-100/20 via-amber-100/15 to-orange-100/10 rounded-3xl blur-2xl opacity-60"></div>
+                <div className="absolute -inset-8 bg-[#FD912A]/15 rounded-3xl blur-2xl opacity-60"></div>
 
                 {/* Voice Toggle Selector */}
                 <div className="relative z-10">
-                  <div className="flex bg-white/80 backdrop-blur-sm rounded-xl p-1 border border-orange-200/50 shadow-sm">
+                  <div className="flex bg-white/80 backdrop-blur-sm rounded-xl p-1 border border-[#FD912A]/50 shadow-sm">
                     <button
                       onClick={() => setSelectedVoice("original")}
                       className={`flex-1 px-4 py-2 text-sm font-medium rounded-lg transition-all duration-200 ${
                         selectedVoice === "original"
-                          ? "bg-orange-500 text-white shadow-md"
-                          : "text-orange-700 hover:bg-orange-50"
+                          ? "bg-[#FD912A] text-white shadow-md"
+                          : "text-[#FD912A] hover:bg-[#FDF7E2]"
                       }`}
                     >
                       Original Voice
@@ -183,8 +183,8 @@ const Customization = () => {
                       onClick={() => setSelectedVoice("cloned")}
                       className={`flex-1 px-4 py-2 text-sm font-medium rounded-lg transition-all duration-200 ${
                         selectedVoice === "cloned"
-                          ? "bg-amber-500 text-white shadow-md"
-                          : "text-amber-700 hover:bg-amber-50"
+                          ? "bg-[#FD912A] text-white shadow-md"
+                          : "text-[#FD912A] hover:bg-[#FDF7E2]"
                       }`}
                     >
                       Cloned Voice
@@ -257,16 +257,16 @@ const Customization = () => {
                   {/* Concentric flower-shaped outlines - Chupa Chups style effect */}
                   <div className="absolute inset-0 flex items-center justify-center">
                     {/* Orange glow background */}
-                    <div className="absolute w-full h-full bg-gradient-to-br from-orange-200/20 to-amber-200/10 rounded-full scale-0 group-hover:scale-100 transition-all duration-1000 ease-out group-hover:delay-100 delay-500 blur-sm"></div>
+                    <div className="absolute w-full h-full bg-[#FD912A]/15 rounded-full scale-0 group-hover:scale-100 transition-all duration-1000 ease-out group-hover:delay-100 delay-500 blur-sm"></div>
 
                     {/* Outer flower outline with glow */}
-                    <div className="absolute w-full h-full border-2 border-orange-400/30 rounded-full scale-0 group-hover:scale-100 transition-all duration-700 ease-out group-hover:delay-0 delay-200 shadow-[0_0_20px_rgba(251,146,60,0.3)] group-hover:shadow-[0_0_30px_rgba(251,146,60,0.4)]"></div>
+                    <div className="absolute w-full h-full border-2 border-[#FD912A]/30 rounded-full scale-0 group-hover:scale-100 transition-all duration-700 ease-out group-hover:delay-0 delay-200 shadow-[0_0_20px_rgba(253,145,42,0.3)] group-hover:shadow-[0_0_30px_rgba(253,145,42,0.4)]"></div>
 
                     {/* Middle flower outline with glow */}
-                    <div className="absolute w-4/5 h-4/5 border-2 border-orange-500/40 rounded-full scale-0 group-hover:scale-100 transition-all duration-700 ease-out group-hover:delay-100 delay-300 shadow-[0_0_15px_rgba(249,115,22,0.4)] group-hover:shadow-[0_0_25px_rgba(249,115,22,0.5)]"></div>
+                    <div className="absolute w-4/5 h-4/5 border-2 border-[#FD912A]/40 rounded-full scale-0 group-hover:scale-100 transition-all duration-700 ease-out group-hover:delay-100 delay-300 shadow-[0_0_15px_rgba(253,145,42,0.4)] group-hover:shadow-[0_0_25px_rgba(253,145,42,0.5)]"></div>
 
                     {/* Inner flower outline with glow */}
-                    <div className="absolute w-3/5 h-3/5 border-2 border-orange-600/50 rounded-full scale-0 group-hover:scale-100 transition-all duration-700 ease-out group-hover:delay-200 delay-400 shadow-[0_0_10px_rgba(234,88,12,0.5)] group-hover:shadow-[0_0_25px_rgba(234,88,12,0.6)]"></div>
+                    <div className="absolute w-3/5 h-3/5 border-2 border-[#FD912A]/50 rounded-full scale-0 group-hover:scale-100 transition-all duration-700 ease-out group-hover:delay-200 delay-400 shadow-[0_0_10px_rgba(253,145,42,0.5)] group-hover:shadow-[0_0_25px_rgba(253,145,42,0.6)]"></div>
                   </div>
 
                   {/* Default image */}
@@ -292,5 +292,3 @@ const Customization = () => {
 };
 
 export default Customization;
-
-

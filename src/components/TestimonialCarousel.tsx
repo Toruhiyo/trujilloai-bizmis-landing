@@ -38,14 +38,14 @@ const TestimonialCarousel: React.FC<TestimonialCarouselProps> = ({
 
   return (
     <div
-      className={`bg-white rounded-2xl p-8 shadow-2xl border border-orange-100/20 max-w-sm w-full ${className}`}
+      className={`bg-white rounded-2xl p-8 shadow-2xl border border-[#FD912A]/10 max-w-sm w-full ${className}`}
     >
       {/* Stars */}
       <div className="flex gap-1 mb-4">
         {[...Array(5)].map((_, i) => (
           <Star
             key={i}
-            className="w-6 h-6 text-orange-500 fill-current"
+            className="w-6 h-6 text-[#FD912A] fill-current"
             aria-hidden="true"
           />
         ))}
@@ -74,7 +74,7 @@ const TestimonialCarousel: React.FC<TestimonialCarouselProps> = ({
       </div>
 
       {/* Trust line */}
-      <p className="text-muted-foreground text-sm pt-6 border-t border-orange-100">
+      <p className="text-muted-foreground text-sm pt-6 border-t border-[#FD912A]/10">
         Trusted by 1,000+ stores
       </p>
 
@@ -92,8 +92,8 @@ const TestimonialCarousel: React.FC<TestimonialCarouselProps> = ({
             }}
             className={`w-2 h-2 rounded-full transition-all duration-200 ${
               index === currentIndex
-                ? "bg-orange-500 w-6"
-                : "bg-orange-200 hover:bg-orange-300"
+                ? "bg-[#FD912A] w-6"
+                : "bg-[#FD912A]/20 hover:bg-[#FD912A]/30"
             }`}
             aria-label={`View testimonial ${index + 1}`}
           />

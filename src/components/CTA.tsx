@@ -31,7 +31,7 @@ const FinalCTA = () => {
       aria-labelledby="final-cta-title"
       className="py-20 lg:py-24 relative overflow-hidden"
       style={{
-        background: "linear-gradient(135deg, hsl(25 95% 53%), hsl(25 95% 40%))",
+        background: "linear-gradient(135deg, #FD912A, #c47020)",
       }}
     >
       <div className="container mx-auto px-6 relative z-10">
@@ -77,11 +77,11 @@ const FinalCTA = () => {
                 <Button
                   onClick={handleJoinWaitlist}
                   aria-label="Join Bizmis Waitlist"
-                  className="bg-white text-orange-600 hover:bg-white/95 hover:shadow-lg focus:ring-2 focus:ring-orange-300 focus:ring-offset-2 focus:ring-offset-orange-600 text-lg px-8 py-4 h-auto group transition-all duration-200"
+                  className="bg-white text-[#FD912A] hover:bg-white/95 hover:shadow-lg focus:ring-2 focus:ring-[#FD912A]/30 focus:ring-offset-2 focus:ring-offset-[#FD912A] text-lg px-8 py-4 h-auto group transition-all duration-200"
                   size="xl"
                 >
                   <FaShopify
-                    className="w-6 h-6 mr-3 text-orange-600"
+                    className="w-6 h-6 mr-3 text-[#FD912A]"
                     aria-hidden="true"
                   />
                   Join the Waitlist
@@ -91,7 +91,7 @@ const FinalCTA = () => {
                   <Button
                     onClick={handleTalkToSales}
                     aria-label="Talk to sales team"
-                    className="bg-transparent border-2 border-white/30 text-white hover:bg-white/20 hover:border-white/50 focus:ring-2 focus:ring-white/50 focus:ring-offset-2 focus:ring-offset-orange-600 px-6 py-3 h-auto transition-all duration-200 hidden md:flex items-center justify-center"
+                    className="bg-transparent border-2 border-white/30 text-white hover:bg-white/20 hover:border-white/50 focus:ring-2 focus:ring-white/50 focus:ring-offset-2 focus:ring-offset-[#FD912A] px-6 py-3 h-auto transition-all duration-200 hidden md:flex items-center justify-center"
                   >
                     <MessageCircle
                       className="w-5 h-5 mr-2"
