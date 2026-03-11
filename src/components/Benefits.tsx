@@ -57,7 +57,7 @@ const Benefits = () => {
                 </div>
                 <SectionBadge icon={FaShoppingCart} text="Boost Sales" />
                 <h1 className="text-5xl lg:text-7xl font-heading font-bold text-foreground mb-8 relative z-10">
-                  Convert. Upsell. Return.
+                  Convert. Upsell. Retain.
                 </h1>
               </div>
               <p className="text-xl text-muted-foreground font-body leading-relaxed mb-12">
