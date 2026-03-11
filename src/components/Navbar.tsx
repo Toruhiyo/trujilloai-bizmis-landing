@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Menu, X } from "lucide-react";
+import { FaShopify } from "react-icons/fa";
 import { useState, useEffect } from "react";
 import { scrollToTop, scrollToSection } from "@/lib/utils/scroll";
 import { useNavigate, useLocation } from "react-router-dom";
@@ -104,13 +105,14 @@ const Navbar = () => {
             <Button
               variant={isInHero ? "outline" : "default"}
               onClick={() => handleNavigation("/pricing")}
-              className={`font-medium transition-all duration-300 ${
+              className={`font-medium transition-all duration-300 inline-flex items-center gap-2 ${
                 isInHero
                   ? "bg-white text-foreground border-white hover:bg-white/90"
                   : ""
               }`}
             >
-              Get Started
+              <FaShopify className="h-4 w-4" />
+              Install Now
             </Button>
           </div>
 
@@ -163,9 +165,10 @@ const Navbar = () => {
                 <Button
                   variant="default"
                   onClick={() => handleNavigation("/pricing")}
-                  className="w-full font-medium"
+                  className="w-full font-medium inline-flex items-center justify-center gap-2"
                 >
-                  Get Started
+                  <FaShopify className="h-4 w-4" />
+                  Install Now
                 </Button>
               </div>
             </div>
