@@ -105,13 +105,13 @@ const Navbar = () => {
             <Button
               variant={isInHero ? "outline" : "default"}
               onClick={() => handleNavigation("/pricing")}
-              className={`font-medium transition-all duration-300 inline-flex items-center gap-2 ${
+              className={`font-medium text-base transition-all duration-300 inline-flex items-center gap-2 ${
                 isInHero
                   ? "bg-transparent text-white border border-white hover:bg-white/10 [&_svg]:text-white"
                   : ""
               }`}
             >
-              <FaShopify className="h-4 w-4" />
+              <FaShopify className="h-5 w-5" />
               Install Now
             </Button>
           </div>
@@ -165,9 +165,9 @@ const Navbar = () => {
                 <Button
                   variant="default"
                   onClick={() => handleNavigation("/pricing")}
-                  className="w-full font-medium inline-flex items-center justify-center gap-2"
+                  className="w-full font-medium text-base inline-flex items-center justify-center gap-2"
                 >
-                  <FaShopify className="h-4 w-4" />
+                  <FaShopify className="h-5 w-5" />
                   Install Now
                 </Button>
               </div>
