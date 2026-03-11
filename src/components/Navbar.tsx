@@ -107,7 +107,7 @@ const Navbar = () => {
               onClick={() => handleNavigation("/pricing")}
               className={`font-medium transition-all duration-300 inline-flex items-center gap-2 ${
                 isInHero
-                  ? "bg-white text-foreground border-white hover:bg-white/90"
+                  ? "bg-transparent text-white border border-white hover:bg-white/10 [&_svg]:text-white"
                   : ""
               }`}
             >
