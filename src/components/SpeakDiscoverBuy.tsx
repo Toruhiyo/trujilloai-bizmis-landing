@@ -1,13 +1,12 @@
 import { useEffect, useRef, useState } from "react";
 import {
-  FaMicrophone,
   FaCheck,
   FaStar,
   FaShoppingBag,
   FaChevronRight,
 } from "react-icons/fa";
+import CustomerVoiceCard from "./CustomerVoiceCard";
 
-const WAVEFORM_BARS = 24;
 const ANIMATION_STAGGER_MS = 150;
 const INTERSECTION_THRESHOLD = 0.3;
 const ENTRANCE_DURATION_MS = 1400;
@@ -88,58 +87,13 @@ const SpeakDiscoverBuy = () => {
       <div className="relative flex flex-col lg:flex-row items-center justify-center gap-4 lg:gap-6">
         {/* Column 1: customer card */}
         <div className="relative z-10 flex-1 flex flex-col items-center w-full max-w-[14rem]">
-          <div
-            className={`w-full transition-all ease-out ${
-              isVisible
-                ? "opacity-100 translate-y-0"
-                : "opacity-0 translate-y-8"
-            }`}
-            style={{
-              transitionDelay: isVisible ? `${ENTRANCE_CUSTOMER_MS}ms` : "0ms",
-              transitionDuration: `${ENTRANCE_DURATION_MS}ms`,
-            }}
-          >
-            <div
-              className="relative overflow-hidden rounded-3xl border border-[#FD912A]/15 shadow-lg w-full aspect-[3/4] mx-auto bg-cover bg-center bg-no-repeat"
-              style={{ backgroundImage: "url('/images/benefit-1-driven-sales-pipeline-customer.png')" }}
-            >
-              <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent" />
-              <div className="relative z-10 p-6 flex flex-col justify-end h-full">
-                {/* Mic (small) + waveform in one row */}
-                <div className="flex items-center gap-3 mb-4">
-                  <div className="relative flex-shrink-0">
-                    <div className="absolute inset-0 rounded-full bg-[#FD912A]/20 animate-ping [animation-duration:2s]" />
-                    <div className="relative w-9 h-9 bg-gradient-to-br from-[#FD912A] to-[#FD912A]/80 rounded-full flex items-center justify-center shadow-md">
-                      <FaMicrophone className="w-3.5 h-3.5 text-white" />
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-[2px] h-8 flex-1 min-w-0">
-                    {Array.from({ length: WAVEFORM_BARS }).map((_, i) => {
-                      const baseHeight = [
-                        28, 42, 55, 38, 62, 48, 70, 30, 58, 45, 65, 35,
-                        50, 68, 40, 55, 32, 60, 44, 72, 36, 52, 46, 64,
-                      ][i % WAVEFORM_BARS];
-                      return (
-                        <div
-                          key={i}
-                          className="flex-1 min-w-[2px] max-w-[3px] rounded-full bg-[#FD912A]/80"
-                          style={{
-                            height: `${baseHeight}%`,
-                            animation: isVisible
-                              ? `waveform-pulse 1.2s ease-in-out ${i * 0.05}s infinite alternate`
-                              : "none",
-                          }}
-                        />
-                      );
-                    })}
-                  </div>
-                </div>
-                <p className="text-sm text-white/90 italic font-body drop-shadow-sm">
-                  "Looking for a birthday gift."
-                </p>
-              </div>
-            </div>
-          </div>
+          <CustomerVoiceCard
+            imageUrl="/images/benefit-1-driven-sales-pipeline-customer.png"
+            quote='"Looking for a birthday gift."'
+            isVisible={isVisible}
+            transitionDelayMs={ENTRANCE_CUSTOMER_MS}
+            transitionDurationMs={ENTRANCE_DURATION_MS}
+          />
         </div>
 
         {/* Column 2: recommendation scene */}

@@ -11,7 +11,7 @@ import {
 } from "react-icons/fa";
 import SectionBadge from "./SectionBadge";
 import SpeakDiscoverBuy from "./SpeakDiscoverBuy";
-import ReviewSatisfactionDashboard from "./ReviewSatisfactionDashboard";
+import VoiceSupportScene from "./VoiceSupportScene";
 import TabbedSessionReplay from "./TabbedSessionReplay";
 
 const Benefits = () => {
@@ -241,22 +241,9 @@ const Benefits = () => {
                 </div>
               </div>
 
-              {/* Right: Central Avatar with Floating Reviews */}
-              <div className="lg:col-span-3 relative overflow-visible flex justify-center items-center min-h-[700px]">
-                {/* Central Avatar Container */}
-                <div className="relative w-full h-full">
-                  {/* Live Review Flow Around Avatar */}
-                  <ReviewSatisfactionDashboard />
-
-                  {/* Central Avatar Image */}
-                  <div className="absolute inset-0 flex items-center justify-center z-30 pointer-events-none">
-                    <img
-                      src="/images/benefit-2-customer-support.png"
-                      alt="Customer support interface showing chat conversations, customer satisfaction metrics, and sales opportunity alerts"
-                      className="w-full max-w-sm object-contain drop-shadow-2xl"
-                    />
-                  </div>
-                </div>
+              {/* Right: Voice support interaction scene */}
+              <div className="lg:col-span-3 relative overflow-visible flex justify-center items-center">
+                <VoiceSupportScene />
               </div>
             </div>
           </div>
