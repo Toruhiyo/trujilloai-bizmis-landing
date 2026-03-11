@@ -143,9 +143,9 @@ const SpeakDiscoverBuy = () => {
         </div>
 
         {/* Column 2: recommendation scene */}
-        <div className="relative z-10 flex-[1.4] flex flex-col items-center w-full max-w-full">
+        <div className="relative z-10 flex-[1.4] flex flex-col items-center w-full max-w-full overflow-visible">
           <div
-            className={`relative w-full flex flex-col items-center transition-all ease-out min-h-[340px] sm:min-h-[400px] ${
+            className={`relative w-full flex flex-col items-center transition-all ease-out min-h-[380px] sm:min-h-[460px] overflow-visible ${
               isVisible
                 ? "opacity-100 translate-y-0"
                 : "opacity-0 translate-y-8"
@@ -155,7 +155,7 @@ const SpeakDiscoverBuy = () => {
               transitionDuration: `${ENTRANCE_DURATION_MS}ms`,
             }}
           >
-          {/* Avatar behind cards — bigger, upper body above cards */}
+          {/* Avatar behind cards — z-0 so cards can sit in front */}
           <div className="absolute inset-0 flex items-start justify-center pt-0 pointer-events-none z-0">
             <div className="absolute top-0 left-1/2 -translate-x-1/2 flex flex-col items-center">
               <div className="absolute -inset-10 rounded-full bg-[#FD912A]/10 blur-2xl animate-pulse" />
@@ -164,23 +164,23 @@ const SpeakDiscoverBuy = () => {
             <img
               src="/images/benefit-1-driven-sales-pipeline-2.png"
               alt="Bizmis assistant"
-              className="relative w-[22rem] h-[22rem] sm:w-[26rem] sm:h-[26rem] lg:w-[28rem] lg:h-[28rem] object-contain object-top drop-shadow-2xl opacity-95"
+              className="relative w-[26rem] h-[26rem] sm:w-[30rem] sm:h-[30rem] lg:w-[34rem] lg:h-[34rem] object-contain object-top drop-shadow-2xl opacity-90"
             />
           </div>
 
-          {/* Recommendation cards — lower, sit in Bizmis' hands */}
-          <div className="relative z-10 flex flex-col sm:flex-row items-center sm:items-end gap-4 w-full justify-center pt-44 sm:pt-48 lg:pt-64">
+          {/* Recommendation cards — z-20 so they sit clearly in front of avatar */}
+          <div className="relative z-20 flex flex-col sm:flex-row items-center sm:items-end gap-4 w-full justify-center pt-52 sm:pt-56 lg:pt-72 overflow-visible">
             {PRODUCTS.map((product, idx) => (
               <div
                 key={product.name}
-                className={`transition-all duration-700 ease-out ${
+                className={`relative transition-all duration-700 ease-out ${
                   isVisible
                     ? "opacity-100 translate-y-0 scale-100"
                     : "opacity-0 translate-y-6 scale-95"
                 } ${
                   product.highlighted
-                    ? "sm:-mt-4 z-20"
-                    : "z-10"
+                    ? "sm:-mt-4"
+                    : ""
                 }`}
                 style={{
                   transitionDelay: isVisible ? `${ENTRANCE_CENTER_MS + ENTRANCE_PRODUCT_OFFSET_MS + idx * ENTRANCE_PRODUCT_STAGGER_MS}ms` : "0ms",
@@ -188,15 +188,15 @@ const SpeakDiscoverBuy = () => {
                 }}
               >
                 <div
-                  className={`rounded-2xl overflow-hidden shadow-lg border transition-all duration-300 hover:scale-105 ${
+                  className={`relative rounded-2xl border transition-all duration-300 hover:scale-105 ${
                     product.highlighted
-                      ? "bg-white border-[#FD912A]/40 shadow-[0_8px_30px_-8px_rgba(253,145,42,0.3)] w-44 sm:w-48"
-                      : "bg-white/70 border-[#FD912A]/10 w-36 sm:w-40"
+                      ? "bg-white border-[#FD912A]/40 shadow-[0_16px_48px_-8px_rgba(253,145,42,0.55),0_40px_80px_-20px_rgba(0,0,0,0.35)] w-44 sm:w-48"
+                      : "bg-white/95 border-[#FD912A]/25 shadow-[0_12px_36px_-4px_rgba(0,0,0,0.28),0_32px_64px_-12px_rgba(253,145,42,0.28)] w-36 sm:w-40"
                   }`}
                 >
                   {/* Product image */}
                   <div
-                    className={`relative overflow-hidden ${
+                    className={`relative overflow-hidden rounded-t-2xl ${
                       product.highlighted ? "h-32" : "h-24"
                     } bg-[#FDF7E2]/50`}
                   >
