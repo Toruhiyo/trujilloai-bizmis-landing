@@ -7,6 +7,7 @@ import {
   FaShoppingCart,
   FaComments,
   FaChartLine,
+  FaClock,
   FaPlus,
 } from "react-icons/fa";
 import SectionBadge from "./SectionBadge";
@@ -192,6 +193,24 @@ const Benefits = () => {
                 <div className="group bg-[#FD912A]/10 backdrop-blur-sm rounded-3xl p-8 border border-[#FD912A]/20 hover:border-[#FD912A]/30 transform rotate-1 hover:rotate-0 transition-all duration-500 shadow-xl">
                   <div className="space-y-6">
                     <div className="flex gap-4">
+                      <FaClock className="w-5 h-5 text-[#FD912A]/40 group-hover:text-[#FD912A]/70 transition-colors duration-300 flex-shrink-0 mt-0.5" />
+                      <div>
+                        <h3 className="text-lg font-heading font-semibold text-foreground mb-2">
+                          24/7 Instant Support
+                        </h3>
+                        <p className="text-muted-foreground font-body text-sm">
+                          Customers get help the moment they need it — no
+                          waiting, no frustration, no bad reviews from
+                          unanswered questions.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="group bg-[#FD912A]/10 backdrop-blur-sm rounded-3xl p-8 border border-[#FD912A]/20 hover:border-[#FD912A]/30 transform -rotate-1 hover:rotate-0 transition-all duration-500 shadow-xl">
+                  <div className="space-y-6">
+                    <div className="flex gap-4">
                       <FaHeart className="w-5 h-5 text-[#FD912A]/40 group-hover:text-[#FD912A]/70 transition-colors duration-300 flex-shrink-0 mt-0.5" />
                       <div>
                         <h3 className="text-lg font-heading font-semibold text-foreground mb-2">
@@ -206,7 +225,7 @@ const Benefits = () => {
                   </div>
                 </div>
 
-                <div className="group bg-[#FD912A]/10 backdrop-blur-sm rounded-3xl p-8 border border-[#FD912A]/20 hover:border-[#FD912A]/30 transform -rotate-1 hover:rotate-0 transition-all duration-500 shadow-xl">
+                <div className="group bg-[#FD912A]/10 backdrop-blur-sm rounded-3xl p-8 border border-[#FD912A]/20 hover:border-[#FD912A]/30 transform rotate-2 hover:rotate-0 transition-all duration-500 shadow-xl">
                   <div className="space-y-6">
                     <div className="flex gap-4">
                       <FaShieldAlt className="w-5 h-5 text-[#FD912A]/40 group-hover:text-[#FD912A]/70 transition-colors duration-300 flex-shrink-0 mt-0.5" />
@@ -217,23 +236,6 @@ const Benefits = () => {
                         <p className="text-muted-foreground font-body text-sm">
                           Quick, accurate solutions that turn frustrated
                           customers into satisfied advocates.
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="group bg-[#FD912A]/10 backdrop-blur-sm rounded-3xl p-8 border border-[#FD912A]/20 hover:border-[#FD912A]/30 transform rotate-2 hover:rotate-0 transition-all duration-500 shadow-xl">
-                  <div className="space-y-6">
-                    <div className="flex gap-4">
-                      <FaTag className="w-5 h-5 text-[#FD912A]/40 group-hover:text-[#FD912A]/70 transition-colors duration-300 flex-shrink-0 mt-0.5" />
-                      <div>
-                        <h3 className="text-lg font-heading font-semibold text-foreground mb-2">
-                          Sales Opportunities
-                        </h3>
-                        <p className="text-muted-foreground font-body text-sm">
-                          Seamlessly identify and capitalize on upsell and
-                          cross-sell opportunities during support interactions.
                         </p>
                       </div>
                     </div>
