@@ -175,7 +175,7 @@ const PrivacyPolicy = () => {
             </p>
             <p>
               <strong>Merchants:</strong> you can contact us directly at{" "}
-              <a href={`mailto:${CONTACT_EMAIL}`} className="text-blue-600 hover:underline">
+              <a href={`mailto:${CONTACT_EMAIL}`} className="text-primary hover:text-primary-dark hover:underline">
                 {CONTACT_EMAIL}
               </a>{" "}
               to exercise your data rights.
@@ -215,7 +215,7 @@ const PrivacyPolicy = () => {
             <p>
               For questions about this Privacy Policy or our data practices,
               contact us at:{" "}
-              <a href={`mailto:${CONTACT_EMAIL}`} className="text-blue-600 hover:underline">
+              <a href={`mailto:${CONTACT_EMAIL}`} className="text-primary hover:text-primary-dark hover:underline">
                 {CONTACT_EMAIL}
               </a>
             </p>

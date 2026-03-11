@@ -67,7 +67,7 @@ const Terms = () => {
             <p>
               All data collected through the Bizmis voice assistant is processed
               in accordance with our{" "}
-              <a href="/privacy" className="text-blue-600 hover:underline">
+              <a href="/privacy" className="text-primary hover:text-primary-dark hover:underline">
                 Privacy Policy
               </a>
               . By using the service, you consent to the data practices
@@ -190,7 +190,7 @@ const Terms = () => {
           <Section title="14. Contact">
             <p>
               For questions about these Terms of Service, contact us at:{" "}
-              <a href={`mailto:${CONTACT_EMAIL}`} className="text-blue-600 hover:underline">
+              <a href={`mailto:${CONTACT_EMAIL}`} className="text-primary hover:text-primary-dark hover:underline">
                 {CONTACT_EMAIL}
               </a>
             </p>
