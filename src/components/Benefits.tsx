@@ -10,7 +10,7 @@ import {
   FaPlus,
 } from "react-icons/fa";
 import SectionBadge from "./SectionBadge";
-import DirectScrollSalesFlow from "./DirectScrollSalesFlow";
+import SpeakDiscoverBuy from "./SpeakDiscoverBuy";
 import ReviewSatisfactionDashboard from "./ReviewSatisfactionDashboard";
 import TabbedSessionReplay from "./TabbedSessionReplay";
 
@@ -135,9 +135,9 @@ const Benefits = () => {
               <div className="flex-1 h-px bg-[#FD912A]/20"></div>
             </div>
 
-            {/* Section 3: Main Layout - Direct Scroll-Linked Sales Flow */}
+            {/* Speak → Discover → Buy visual */}
             <div className="relative mb-32">
-              <DirectScrollSalesFlow />
+              <SpeakDiscoverBuy />
             </div>
           </div>
         </div>

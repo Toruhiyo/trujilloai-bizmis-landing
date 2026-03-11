@@ -240,6 +240,17 @@ All colors MUST be HSL.
   }
 }
 
+/* Waveform bar pulse for SpeakDiscoverBuy */
+@keyframes waveform-pulse {
+  0% {
+    transform: scaleY(0.6);
+  }
+
+  100% {
+    transform: scaleY(1);
+  }
+}
+
 /* Custom orange scrollbar for conversation UI */
 .conversation-scrollbar::-webkit-scrollbar {
   width: 4px;
