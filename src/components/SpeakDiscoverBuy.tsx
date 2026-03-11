@@ -10,6 +10,12 @@ import {
 const WAVEFORM_BARS = 24;
 const ANIMATION_STAGGER_MS = 150;
 const INTERSECTION_THRESHOLD = 0.3;
+const ENTRANCE_DURATION_MS = 1400;
+const ENTRANCE_CUSTOMER_MS = 0;
+const ENTRANCE_CENTER_MS = 650;
+const ENTRANCE_PRODUCT_OFFSET_MS = 450;
+const ENTRANCE_PRODUCT_STAGGER_MS = 320;
+const ENTRANCE_RECEIPT_AFTER_LAST_PRODUCT_MS = 320;
 
 const STEPS = [
   { num: 1, label: "Discover & Recommend" },
@@ -83,11 +89,15 @@ const SpeakDiscoverBuy = () => {
         {/* Column 1: customer card */}
         <div className="relative z-10 flex-1 flex flex-col items-center w-full max-w-[14rem]">
           <div
-            className={`w-full transition-all duration-700 ease-out ${
+            className={`w-full transition-all ease-out ${
               isVisible
                 ? "opacity-100 translate-y-0"
                 : "opacity-0 translate-y-8"
             }`}
+            style={{
+              transitionDelay: isVisible ? `${ENTRANCE_CUSTOMER_MS}ms` : "0ms",
+              transitionDuration: `${ENTRANCE_DURATION_MS}ms`,
+            }}
           >
             <div
               className="relative overflow-hidden rounded-3xl border border-[#FD912A]/15 shadow-lg w-full aspect-[3/4] mx-auto bg-cover bg-center bg-no-repeat"
@@ -135,12 +145,15 @@ const SpeakDiscoverBuy = () => {
         {/* Column 2: recommendation scene */}
         <div className="relative z-10 flex-[1.4] flex flex-col items-center w-full max-w-full">
           <div
-            className={`relative w-full flex flex-col items-center transition-all duration-700 ease-out min-h-[340px] sm:min-h-[400px] ${
+            className={`relative w-full flex flex-col items-center transition-all ease-out min-h-[340px] sm:min-h-[400px] ${
               isVisible
                 ? "opacity-100 translate-y-0"
                 : "opacity-0 translate-y-8"
             }`}
-            style={{ transitionDelay: `${ANIMATION_STAGGER_MS * 2}ms` }}
+            style={{
+              transitionDelay: isVisible ? `${ENTRANCE_CENTER_MS}ms` : "0ms",
+              transitionDuration: `${ENTRANCE_DURATION_MS}ms`,
+            }}
           >
           {/* Avatar behind cards — bigger, upper body above cards */}
           <div className="absolute inset-0 flex items-start justify-center pt-0 pointer-events-none z-0">
@@ -170,7 +183,8 @@ const SpeakDiscoverBuy = () => {
                     : "z-10"
                 }`}
                 style={{
-                  transitionDelay: `${ANIMATION_STAGGER_MS * (3 + idx)}ms`,
+                  transitionDelay: isVisible ? `${ENTRANCE_CENTER_MS + ENTRANCE_PRODUCT_OFFSET_MS + idx * ENTRANCE_PRODUCT_STAGGER_MS}ms` : "0ms",
+                  transitionDuration: `${ENTRANCE_DURATION_MS}ms`,
                 }}
               >
                 <div
@@ -246,12 +260,15 @@ const SpeakDiscoverBuy = () => {
         {/* Column 3: success card */}
         <div className="relative z-10 flex-1 flex flex-col items-center w-full max-w-[14rem]">
           <div
-            className={`w-full transition-all duration-700 ease-out lg:mt-[-1.5rem] ${
+            className={`w-full transition-all ease-out lg:mt-[-1.5rem] ${
               isVisible
                 ? "opacity-100 translate-y-0"
                 : "opacity-0 translate-y-8"
             }`}
-            style={{ transitionDelay: `${ANIMATION_STAGGER_MS * 6}ms` }}
+            style={{
+              transitionDelay: isVisible ? `${ENTRANCE_CENTER_MS + ENTRANCE_PRODUCT_OFFSET_MS + (PRODUCTS.length - 1) * ENTRANCE_PRODUCT_STAGGER_MS + ENTRANCE_RECEIPT_AFTER_LAST_PRODUCT_MS}ms` : "0ms",
+              transitionDuration: `${ENTRANCE_DURATION_MS}ms`,
+            }}
           >
             <div className="bg-white/80 backdrop-blur-sm rounded-3xl border border-[#FD912A]/15 shadow-lg p-5 w-full text-center aspect-[3/4] flex flex-col justify-center min-h-0">
             {/* Success icon */}
