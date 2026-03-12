@@ -154,31 +154,31 @@ const Setup = () => {
 
       <section
         id="setup"
-        className="py-24 bg-gradient-to-r from-[#FDF7E2]/[0.05] via-background/40 to-[#FDF7E2]/[0.08] border-t border-[#FD912A]/20 relative overflow-visible"
+        className="py-24 bg-gradient-to-r from-[#FDF7E2]/[0.05] via-background/40 to-[#FDF7E2]/[0.08] border-t border-primary/20 relative overflow-visible"
       >
         {/* Perimeter glow — strongest at outer edge, fading inward */}
         <div className="absolute inset-0 pointer-events-none" aria-hidden="true">
           {/* Top edge */}
-          <div className="absolute -top-56 left-[3%] w-[50%] h-64 bg-[#FD912A]/30 rounded-[50%] blur-[70px]"></div>
-          <div className="absolute -top-56 right-[3%] w-[50%] h-64 bg-[#FD912A]/25 rounded-[50%] blur-[70px]"></div>
+          <div className="absolute -top-56 left-[3%] w-[50%] h-64 bg-primary/30 rounded-[50%] blur-[70px]"></div>
+          <div className="absolute -top-56 right-[3%] w-[50%] h-64 bg-primary/25 rounded-[50%] blur-[70px]"></div>
 
           {/* Bottom edge */}
-          <div className="absolute -bottom-56 left-[3%] w-[50%] h-64 bg-[#FD912A]/30 rounded-[50%] blur-[70px]"></div>
-          <div className="absolute -bottom-56 right-[3%] w-[50%] h-64 bg-[#FD912A]/25 rounded-[50%] blur-[70px]"></div>
+          <div className="absolute -bottom-56 left-[3%] w-[50%] h-64 bg-primary/30 rounded-[50%] blur-[70px]"></div>
+          <div className="absolute -bottom-56 right-[3%] w-[50%] h-64 bg-primary/25 rounded-[50%] blur-[70px]"></div>
 
           {/* Left edge */}
-          <div className="absolute top-[5%] -left-64 w-96 h-[38%] bg-[#FD912A]/30 rounded-[50%] blur-[70px]"></div>
-          <div className="absolute bottom-[5%] -left-64 w-96 h-[38%] bg-[#FD912A]/25 rounded-[50%] blur-[70px]"></div>
+          <div className="absolute top-[5%] -left-64 w-96 h-[38%] bg-primary/30 rounded-[50%] blur-[70px]"></div>
+          <div className="absolute bottom-[5%] -left-64 w-96 h-[38%] bg-primary/25 rounded-[50%] blur-[70px]"></div>
 
           {/* Right edge */}
-          <div className="absolute top-[5%] -right-64 w-96 h-[38%] bg-[#FD912A]/30 rounded-[50%] blur-[70px]"></div>
-          <div className="absolute bottom-[5%] -right-64 w-96 h-[38%] bg-[#FD912A]/25 rounded-[50%] blur-[70px]"></div>
+          <div className="absolute top-[5%] -right-64 w-96 h-[38%] bg-primary/30 rounded-[50%] blur-[70px]"></div>
+          <div className="absolute bottom-[5%] -right-64 w-96 h-[38%] bg-primary/25 rounded-[50%] blur-[70px]"></div>
 
           {/* Corner reinforcements */}
-          <div className="absolute -top-48 -left-48 w-[28rem] h-72 bg-[#FD912A]/[0.28] rounded-[50%] blur-[60px]"></div>
-          <div className="absolute -top-48 -right-48 w-[28rem] h-72 bg-[#FD912A]/[0.28] rounded-[50%] blur-[60px]"></div>
-          <div className="absolute -bottom-48 -left-48 w-[28rem] h-72 bg-[#FD912A]/[0.28] rounded-[50%] blur-[60px]"></div>
-          <div className="absolute -bottom-48 -right-48 w-[28rem] h-72 bg-[#FD912A]/[0.28] rounded-[50%] blur-[60px]"></div>
+          <div className="absolute -top-48 -left-48 w-[28rem] h-72 bg-primary/[0.28] rounded-[50%] blur-[60px]"></div>
+          <div className="absolute -top-48 -right-48 w-[28rem] h-72 bg-primary/[0.28] rounded-[50%] blur-[60px]"></div>
+          <div className="absolute -bottom-48 -left-48 w-[28rem] h-72 bg-primary/[0.28] rounded-[50%] blur-[60px]"></div>
+          <div className="absolute -bottom-48 -right-48 w-[28rem] h-72 bg-primary/[0.28] rounded-[50%] blur-[60px]"></div>
         </div>
 
         <div className="container mx-auto px-6 overflow-visible">
@@ -200,9 +200,9 @@ const Setup = () => {
               <div className="flex flex-col lg:flex-row items-center justify-between gap-16 lg:gap-24">
                 {/* Shopify Data Cards - Stacked Vertically */}
                 <div className="flex-1 max-w-md">
-                  <div className="rounded-2xl border border-[#FD912A]/20 p-6">
+                  <div className="rounded-2xl border border-primary/20 p-6">
                     <div className="text-center mb-6">
-                      <div className="inline-flex items-center gap-2 text-[#FD912A]/60">
+                      <div className="inline-flex items-center gap-2 text-primary/60">
                         <FaShopify className="w-5 h-5" />
                         <span className="text-lg font-heading font-semibold">
                           Your Shopify Store Data
@@ -215,16 +215,16 @@ const Setup = () => {
                       <div
                         key={index}
                         id={`card-${index}`}
-                        className="group relative bg-[#FD912A]/10 backdrop-blur-sm rounded-2xl p-6 shadow-[0_4px_20px_-2px_rgba(0,0,0,0.06),0_2px_8px_-2px_rgba(253,145,42,0.06)] hover:scale-[1.02] transition-all duration-300 overflow-hidden"
+                        className="group relative bg-primary/10 backdrop-blur-sm rounded-2xl p-6 shadow-[0_4px_20px_-2px_rgba(0,0,0,0.06),0_2px_8px_-2px_rgba(253,145,42,0.06)] hover:scale-[1.02] transition-all duration-300 overflow-hidden"
                       >
                         {/* Shopify Icon Watermark */}
                         <div className="absolute bottom-[calc(50%-2.5rem)] right-0 opacity-10 group-hover:opacity-15 transition-opacity duration-300">
-                          <FaShopify className="w-20 h-20 text-[#FD912A]" />
+                          <FaShopify className="w-20 h-20 text-primary" />
                         </div>
 
                         <div className="flex items-center gap-4 relative z-10">
                           <div className="w-14 h-14 bg-transparent rounded-xl flex items-center justify-center shrink-0">
-                            <card.icon className="w-6 h-6 text-[#FD912A]/40 group-hover:text-[#FD912A]/70 transition-colors duration-300" />
+                            <card.icon className="w-6 h-6 text-primary/40 group-hover:text-primary/70 transition-colors duration-300" />
                           </div>
                           <div className="flex-1">
                             <h3 className="font-heading font-semibold text-foreground text-lg mb-1">

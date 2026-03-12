@@ -101,11 +101,11 @@ const FinalCTA = () => {
                 <Button
                   onClick={handleJoinWaitlist}
                   aria-label="Join Bizmis Waitlist"
-                  className="bg-white text-[#FD912A] hover:bg-white/95 hover:shadow-lg focus:ring-2 focus:ring-[#FD912A]/30 focus:ring-offset-2 focus:ring-offset-[#FD912A] text-lg px-8 py-4 h-auto group transition-all duration-200 [&>svg]:!w-6 [&>svg]:!h-6 [&>svg]:!mr-3"
+                  className="bg-white text-primary hover:bg-white/95 hover:shadow-lg focus:ring-2 focus:ring-primary/30 focus:ring-offset-2 focus:ring-offset-primary text-lg px-8 py-4 h-auto group transition-all duration-200 [&>svg]:!w-6 [&>svg]:!h-6 [&>svg]:!mr-3"
                   size="xl"
                 >
                   <FaShopify
-                    className="text-[#FD912A]"
+                    className="text-primary"
                     aria-hidden="true"
                   />
                   Join the Waitlist
@@ -115,7 +115,7 @@ const FinalCTA = () => {
                   <Button
                     onClick={handleTalkToSales}
                     aria-label="Talk to sales team"
-                    className="bg-transparent border-2 border-white/30 text-white hover:bg-white/20 hover:border-white/50 focus:ring-2 focus:ring-white/50 focus:ring-offset-2 focus:ring-offset-[#FD912A] px-6 py-3 h-auto transition-all duration-200 hidden md:flex items-center justify-center"
+                    className="bg-transparent border-2 border-white/30 text-white hover:bg-white/20 hover:border-white/50 focus:ring-2 focus:ring-white/50 focus:ring-offset-2 focus:ring-offset-primary px-6 py-3 h-auto transition-all duration-200 hidden md:flex items-center justify-center"
                   >
                     <MessageCircle
                       className="w-5 h-5 mr-2"

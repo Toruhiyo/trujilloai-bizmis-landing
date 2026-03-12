@@ -165,8 +165,8 @@ const FakeImagesSelector: React.FC<FakeImagesSelectorProps> = ({
     }`;
 
     const selectedClasses = isSelected
-      ? "border-[#FD912A] bg-[#FDF7E2]/90 shadow-[#FD912A]/20 ring-2 ring-[#FD912A]/30 scale-105"
-      : `border-gray-200 ${selectable ? "hover:border-[#FD912A]/30" : ""}`;
+      ? "border-primary bg-[#FDF7E2]/90 shadow-primary/20 ring-2 ring-primary/30 scale-105"
+      : `border-gray-200 ${selectable ? "hover:border-primary/30" : ""}`;
 
     return `${baseClasses} ${selectedClasses} ${imageClasses}`;
   };
@@ -209,7 +209,7 @@ const FakeImagesSelector: React.FC<FakeImagesSelectorProps> = ({
               isVertical
                 ? "left-1/2 transform -translate-x-1/2"
                 : "top-1/2 transform -translate-y-1/2"
-            } z-20 bg-white/80 hover:bg-white border border-[#FD912A]/20 text-[#FD912A] rounded-full p-2 shadow-lg transition-all duration-200 hover:scale-110`}
+            } z-20 bg-white/80 hover:bg-white border border-primary/20 text-primary rounded-full p-2 shadow-lg transition-all duration-200 hover:scale-110`}
           >
             {isVertical ? <ChevronUp size={16} /> : <ChevronLeft size={16} />}
           </button>
@@ -219,7 +219,7 @@ const FakeImagesSelector: React.FC<FakeImagesSelectorProps> = ({
               isVertical
                 ? "left-1/2 transform -translate-x-1/2"
                 : "top-1/2 transform -translate-y-1/2"
-            } z-20 bg-white/80 hover:bg-white border border-[#FD912A]/20 text-[#FD912A] rounded-full p-2 shadow-lg transition-all duration-200 hover:scale-110`}
+            } z-20 bg-white/80 hover:bg-white border border-primary/20 text-primary rounded-full p-2 shadow-lg transition-all duration-200 hover:scale-110`}
           >
             {isVertical ? (
               <ChevronDown size={16} />

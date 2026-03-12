@@ -62,7 +62,7 @@ const TabbedSessionReplay: React.FC<TabbedSessionReplayProps> = ({
               onClick={() => setActiveTab(tab.id)}
               className={`relative flex items-center justify-center gap-2 px-5 py-2.5 text-sm font-medium rounded-full transition-all duration-200 ${
                 isActive
-                  ? "bg-transparent text-[#FD912A]"
+                  ? "bg-transparent text-primary"
                   : "bg-transparent text-muted-foreground hover:text-foreground"
               }`}
               style={
@@ -79,7 +79,7 @@ const TabbedSessionReplay: React.FC<TabbedSessionReplayProps> = ({
                 <div
                   className={`absolute -top-1 -right-1 w-6 h-6 rounded-full border-2 border-background flex items-center justify-center ${
                     isActive
-                      ? "bg-[#FD912A] text-white"
+                      ? "bg-primary text-white"
                       : "bg-muted-foreground/60 text-white"
                   }`}
                 >
@@ -92,7 +92,7 @@ const TabbedSessionReplay: React.FC<TabbedSessionReplayProps> = ({
 
               {tab.data.success ? (
                 <svg
-                  className={`w-3 h-3 shrink-0 ${isActive ? "text-[#FD912A]" : "text-muted-foreground"}`}
+                  className={`w-3 h-3 shrink-0 ${isActive ? "text-primary" : "text-muted-foreground"}`}
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"

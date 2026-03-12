@@ -218,7 +218,7 @@ const VoiceSupportScene = () => {
             {Array.from({ length: WAVEFORM_BARS }).map((_, i) => (
               <div
                 key={i}
-                className="flex-1 min-w-[1px] rounded-full bg-[#FD912A]/60"
+                className="flex-1 min-w-[1px] rounded-full bg-primary/60"
                 style={{
                   height: waveAnimating
                     ? `${WAVEFORM_HEIGHTS[i % WAVEFORM_BARS]}%`
@@ -262,9 +262,9 @@ const VoiceSupportScene = () => {
                   }}
                 >
                   {actionCompleted ? (
-                    <FaCheck className="w-2.5 h-2.5 text-[#FD912A]" />
+                    <FaCheck className="w-2.5 h-2.5 text-primary" />
                   ) : (
-                    <currentCase.resolutionIcon className="w-3 h-3 text-[#FD912A]" />
+                    <currentCase.resolutionIcon className="w-3 h-3 text-primary" />
                   )}
                 </div>
                 <div className="flex flex-col">
@@ -272,9 +272,9 @@ const VoiceSupportScene = () => {
                     {currentCase.resolutionAction}
                   </span>
                   {actionCompleted ? (
-                    <span className="text-[10px] text-[#FD912A] font-semibold">Done</span>
+                    <span className="text-[10px] text-primary font-semibold">Done</span>
                   ) : (
-                    <span className="flex items-center gap-0.5 text-[10px] text-[#FD912A] font-medium">
+                    <span className="flex items-center gap-0.5 text-[10px] text-primary font-medium">
                       Processing
                       {[0, 1, 2].map((i) => (
                         <span
@@ -336,7 +336,7 @@ const VoiceSupportScene = () => {
                 />
               ))}
               <div
-                className="absolute rounded-full border-2 border-[#FD912A]/30"
+                className="absolute rounded-full border-2 border-primary/30"
                 style={{ animation: "solved-ring 1s ease-out forwards", left: "50%", top: "50%", translate: "-50% -50%" }}
               />
               <svg
@@ -376,7 +376,7 @@ const VoiceSupportScene = () => {
           }}
         >
           <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-            <div className="absolute -inset-8 rounded-full bg-[#FD912A]/8 blur-2xl animate-pulse" />
+            <div className="absolute -inset-8 rounded-full bg-primary/8 blur-2xl animate-pulse" />
           </div>
           <img
             src="/images/benefit-2-customer-support.png"

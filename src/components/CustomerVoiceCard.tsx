@@ -64,17 +64,17 @@ const CustomerVoiceCard = ({
       }}
     >
       <div
-        className={`relative overflow-hidden ${s.card} border border-[#FD912A]/15 shadow-lg w-full aspect-[3/4] mx-auto bg-cover bg-center bg-no-repeat`}
+        className={`relative overflow-hidden ${s.card} border border-primary/15 shadow-lg w-full aspect-[3/4] mx-auto bg-cover bg-center bg-no-repeat`}
         style={{ backgroundImage: `url('${imageUrl}')` }}
       >
-        <div className="absolute inset-0 bg-gradient-to-t from-[#FD912A]/50 via-[#FD912A]/20 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-primary/50 via-primary/20 to-transparent" />
 
         {showOverlay ? (
           <div className={`relative z-10 ${s.padding} flex flex-col justify-end h-full`}>
             <div className={`flex items-center ${s.gap}`}>
               <div className="relative flex-shrink-0">
-                <div className="absolute inset-0 rounded-full bg-[#FD912A]/20 animate-ping [animation-duration:2s]" />
-                <div className={`relative ${s.mic} bg-gradient-to-br from-[#FD912A] to-[#FD912A]/80 rounded-full flex items-center justify-center shadow-md`}>
+                <div className="absolute inset-0 rounded-full bg-primary/20 animate-ping [animation-duration:2s]" />
+                <div className={`relative ${s.mic} bg-gradient-to-br from-primary to-primary/80 rounded-full flex items-center justify-center shadow-md`}>
                   <FaMicrophone className={`${s.micIcon} text-white`} />
                 </div>
               </div>
@@ -82,7 +82,7 @@ const CustomerVoiceCard = ({
                 {Array.from({ length: WAVEFORM_BARS }).map((_, i) => (
                   <div
                     key={i}
-                    className="flex-1 min-w-[2px] max-w-[3px] rounded-full bg-[#FD912A]/80"
+                    className="flex-1 min-w-[2px] max-w-[3px] rounded-full bg-primary/80"
                     style={{
                       height: `${WAVEFORM_HEIGHTS[i % WAVEFORM_BARS]}%`,
                       animation: isVisible

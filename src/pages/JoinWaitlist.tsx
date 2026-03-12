@@ -166,8 +166,8 @@ const JoinWaitlist = () => {
         <div className="absolute top-1/4 left-1/4 w-64 h-64 bg-[#FDF7E2]/50 rounded-full blur-3xl pointer-events-none animate-pulse"></div>
         <div className="absolute bottom-1/4 right-1/4 w-64 h-64 bg-[#FDF7E2]/50 rounded-full blur-3xl pointer-events-none animate-pulse delay-700"></div>
 
-        <div className="relative max-w-2xl w-full bg-white rounded-3xl shadow-2xl border border-[#FD912A]/10 p-8 md:p-12 text-center animate-in fade-in zoom-in duration-500 slide-in-from-bottom-4">
-          <div className="inline-flex items-center justify-center w-24 h-24 bg-gradient-warm rounded-full mb-8 shadow-lg shadow-[#FD912A]/20">
+        <div className="relative max-w-2xl w-full bg-white rounded-3xl shadow-2xl border border-primary/10 p-8 md:p-12 text-center animate-in fade-in zoom-in duration-500 slide-in-from-bottom-4">
+          <div className="inline-flex items-center justify-center w-24 h-24 bg-gradient-warm rounded-full mb-8 shadow-lg shadow-primary/20">
             <PartyPopper className="w-12 h-12 text-white" />
           </div>
 
@@ -180,9 +180,9 @@ const JoinWaitlist = () => {
             We'll notify you as soon as we launch in <span className="font-semibold text-foreground">{LAUNCH_DATE}</span>.
           </p>
 
-          <div className="bg-[#FDF7E2] rounded-2xl p-6 mb-8 border border-[#FD912A]/10 max-w-md mx-auto">
+          <div className="bg-[#FDF7E2] rounded-2xl p-6 mb-8 border border-primary/10 max-w-md mx-auto">
             <p className="text-foreground font-medium flex items-center justify-center gap-2">
-              <Gift className="w-5 h-5 text-[#FD912A]" />
+              <Gift className="w-5 h-5 text-primary" />
               Check your inbox!
             </p>
             <p className="text-sm text-muted-foreground mt-2">
@@ -245,7 +245,7 @@ const JoinWaitlist = () => {
 
                 <h2 className="text-4xl lg:text-5xl font-heading font-bold text-foreground mb-6 leading-tight">
                   Be Among the First{" "}
-                  <span className="text-[#FD912A]">
+                  <span className="text-primary">
                     {EARLY_BIRD_SPOTS} Merchants
                   </span>
                 </h2>
@@ -256,10 +256,10 @@ const JoinWaitlist = () => {
                 </p>
 
                 {/* Launch Date Banner */}
-                <div className="bg-white rounded-2xl border border-[#FD912A]/20 p-6 mb-8 shadow-lg">
+                <div className="bg-white rounded-2xl border border-primary/20 p-6 mb-8 shadow-lg">
                   <div className="flex items-center gap-4">
                     <div className="w-14 h-14 bg-[#FDF7E2] rounded-2xl flex items-center justify-center">
-                      <Calendar className="w-7 h-7 text-[#FD912A]" />
+                      <Calendar className="w-7 h-7 text-primary" />
                     </div>
                     <div>
                       <p className="text-sm text-muted-foreground font-medium">
@@ -275,14 +275,14 @@ const JoinWaitlist = () => {
                 {/* Benefits */}
                 <div className="space-y-5">
                   <h3 className="text-lg font-heading font-semibold text-foreground flex items-center gap-2">
-                    <Sparkles className="w-5 h-5 text-[#FD912A]" />
+                    <Sparkles className="w-5 h-5 text-primary" />
                     Early Bird Benefits
                   </h3>
 
                   <div className="space-y-4">
                     <div className="flex items-start gap-4 bg-white rounded-xl p-4 border border-gray-100 shadow-sm">
                       <div className="w-10 h-10 rounded-xl bg-[#FDF7E2] flex items-center justify-center flex-shrink-0">
-                        <Gift className="w-5 h-5 text-[#FD912A]" />
+                        <Gift className="w-5 h-5 text-primary" />
                       </div>
                       <div>
                         <h4 className="font-semibold text-foreground">
@@ -296,7 +296,7 @@ const JoinWaitlist = () => {
 
                     <div className="flex items-start gap-4 bg-white rounded-xl p-4 border border-gray-100 shadow-sm">
                       <div className="w-10 h-10 rounded-xl bg-[#FDF7E2] flex items-center justify-center flex-shrink-0">
-                        <Map className="w-5 h-5 text-[#FD912A]" />
+                        <Map className="w-5 h-5 text-primary" />
                       </div>
                       <div>
                         <h4 className="font-semibold text-foreground">
@@ -310,7 +310,7 @@ const JoinWaitlist = () => {
 
                     <div className="flex items-start gap-4 bg-white rounded-xl p-4 border border-gray-100 shadow-sm">
                       <div className="w-10 h-10 rounded-xl bg-[#FDF7E2] flex items-center justify-center flex-shrink-0">
-                        <Star className="w-5 h-5 text-[#FD912A]" />
+                        <Star className="w-5 h-5 text-primary" />
                       </div>
                       <div>
                         <h4 className="font-semibold text-foreground">
@@ -331,7 +331,7 @@ const JoinWaitlist = () => {
                 <div className="bg-white rounded-2xl border border-border shadow-xl p-8">
                   <div className="text-center mb-8">
                     <div className="inline-flex items-center justify-center w-16 h-16 bg-[#FDF7E2] rounded-full mb-4">
-                      <Rocket className="w-8 h-8 text-[#FD912A]" />
+                      <Rocket className="w-8 h-8 text-primary" />
                     </div>
                     <h3 className="text-2xl font-heading font-bold text-foreground mb-2">
                       Reserve Your Spot

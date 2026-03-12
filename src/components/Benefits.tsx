@@ -29,25 +29,25 @@ const Benefits = () => {
         {/* Geometric Background Elements */}
         <div className="absolute inset-0">
           {/* Large floating shapes */}
-          <div className="absolute top-0 left-0 w-96 h-96 bg-[#FD912A]/20 rounded-full blur-3xl transform -translate-x-1/2 -translate-y-1/2"></div>
-          <div className="absolute bottom-0 right-0 w-80 h-80 bg-[#FD912A]/15 rounded-full blur-3xl transform translate-x-1/2 translate-y-1/2"></div>
+          <div className="absolute top-0 left-0 w-96 h-96 bg-primary/20 rounded-full blur-3xl transform -translate-x-1/2 -translate-y-1/2"></div>
+          <div className="absolute bottom-0 right-0 w-80 h-80 bg-primary/15 rounded-full blur-3xl transform translate-x-1/2 translate-y-1/2"></div>
 
           {/* Subtle grid pattern */}
           <div className="absolute inset-0 opacity-[0.02] bg-gray-100/5"></div>
 
           {/* Floating accent elements */}
-          <div className="absolute top-1/4 right-1/4 w-2 h-2 bg-[#FD912A]/30 rounded-full animate-pulse"></div>
-          <div className="absolute bottom-1/3 left-1/3 w-1 h-1 bg-[#FD912A]/40 rounded-full animate-pulse delay-1000"></div>
-          <div className="absolute top-2/3 left-1/4 w-1.5 h-1.5 bg-[#FD912A]/25 rounded-full animate-pulse delay-500"></div>
+          <div className="absolute top-1/4 right-1/4 w-2 h-2 bg-primary/30 rounded-full animate-pulse"></div>
+          <div className="absolute bottom-1/3 left-1/3 w-1 h-1 bg-primary/40 rounded-full animate-pulse delay-1000"></div>
+          <div className="absolute top-2/3 left-1/4 w-1.5 h-1.5 bg-primary/25 rounded-full animate-pulse delay-500"></div>
 
           {/* Bridging stains — visually connect cards to sales flow */}
-          <div className="absolute top-[40%] left-1/2 -translate-x-1/2 w-[600px] h-[400px] bg-[#FD912A]/[0.035] rounded-full blur-[100px]"></div>
+          <div className="absolute top-[40%] left-1/2 -translate-x-1/2 w-[600px] h-[400px] bg-primary/[0.035] rounded-full blur-[100px]"></div>
           <div className="absolute top-[55%] -left-20 w-[350px] h-[300px] bg-[#FDF7E2]/35 rounded-full blur-[80px]"></div>
-          <div className="absolute top-[50%] -right-10 w-[300px] h-[250px] bg-[#FD912A]/[0.045] rounded-full blur-[90px]"></div>
+          <div className="absolute top-[50%] -right-10 w-[300px] h-[250px] bg-primary/[0.045] rounded-full blur-[90px]"></div>
 
           {/* Bottom edge warm band — curved section separator */}
-          <div className="absolute -bottom-40 -left-[5%] w-[45%] h-72 bg-[#FD912A]/[0.14] rounded-[50%] blur-[80px]"></div>
-          <div className="absolute -bottom-32 -right-[5%] w-[40%] h-64 bg-[#FD912A]/[0.10] rounded-[50%] blur-[70px]"></div>
+          <div className="absolute -bottom-40 -left-[5%] w-[45%] h-72 bg-primary/[0.14] rounded-[50%] blur-[80px]"></div>
+          <div className="absolute -bottom-32 -right-[5%] w-[40%] h-64 bg-primary/[0.10] rounded-[50%] blur-[70px]"></div>
           <div className="absolute -bottom-20 left-1/2 -translate-x-1/2 w-[35%] h-52 bg-[#FDF7E2]/80 rounded-[50%] blur-[60px]"></div>
         </div>
 
@@ -56,7 +56,7 @@ const Benefits = () => {
             {/* Section 1: Core Value Proposition */}
             <div className="text-center max-w-5xl mx-auto mb-10">
               <div className="relative">
-                <div className="absolute -left-64  top-10 text-9xl lg:text-[12rem] font-bold text-[#FD912A]/20 transform -rotate-12 select-none">
+                <div className="absolute -left-64  top-10 text-9xl lg:text-[12rem] font-bold text-primary/20 transform -rotate-12 select-none">
                   #1
                 </div>
                 <SectionBadge icon={FaShoppingCart} text="Boost Sales" />
@@ -98,8 +98,8 @@ const Benefits = () => {
                   >
                     <div className="relative w-full h-full transition-transform duration-500 [transform-style:preserve-3d] group-hover:[transform:rotateY(180deg)]">
                       {/* Front */}
-                      <div className="absolute inset-0 [backface-visibility:hidden] bg-[#FD912A]/10 rounded-2xl border border-[#FD912A]/20 shadow-sm overflow-hidden flex flex-col items-center justify-end pb-6">
-                        <FaPlus className="absolute top-3 right-3 w-4 h-4 text-[#FD912A]/60" aria-hidden />
+                      <div className="absolute inset-0 [backface-visibility:hidden] bg-primary/10 rounded-2xl border border-primary/20 shadow-sm overflow-hidden flex flex-col items-center justify-end pb-6">
+                        <FaPlus className="absolute top-3 right-3 w-4 h-4 text-primary/60" aria-hidden />
                         <img
                           src={watermark}
                           alt=""
@@ -111,7 +111,7 @@ const Benefits = () => {
                       </div>
 
                       {/* Back */}
-                      <div className="absolute inset-0 [backface-visibility:hidden] [transform:rotateY(180deg)] bg-[#FD912A] rounded-2xl shadow-md overflow-hidden flex flex-col justify-start px-6 py-6 text-white">
+                      <div className="absolute inset-0 [backface-visibility:hidden] [transform:rotateY(180deg)] bg-primary rounded-2xl shadow-md overflow-hidden flex flex-col justify-start px-6 py-6 text-white">
                         <img
                           src={watermark}
                           alt=""
@@ -146,17 +146,17 @@ const Benefits = () => {
         {/* Background Elements - Enhanced for Dashboard */}
         <div className="absolute inset-0">
           {/* Top edge warm band — curved section separator */}
-          <div className="absolute -top-40 -right-[5%] w-[45%] h-96 bg-[#FD912A]/[0.14] rounded-[50%] blur-[80px]"></div>
-          <div className="absolute -top-32 -left-[5%] w-[40%] h-72 bg-[#FD912A]/[0.10] rounded-[50%] blur-[70px]"></div>
+          <div className="absolute -top-40 -right-[5%] w-[45%] h-96 bg-primary/[0.14] rounded-[50%] blur-[80px]"></div>
+          <div className="absolute -top-32 -left-[5%] w-[40%] h-72 bg-primary/[0.10] rounded-[50%] blur-[70px]"></div>
           <div className="absolute -top-20 left-1/2 -translate-x-1/2 w-[35%] h-64 bg-[#FDF7E2]/80 rounded-[50%] blur-[60px]"></div>
 
-          <div className="absolute top-20 right-20 w-64 h-64 bg-[#FD912A]/10 rounded-full blur-3xl animate-pulse"></div>
-          <div className="absolute bottom-10 left-10 w-80 h-80 bg-[#FD912A]/10 rounded-full blur-3xl animate-pulse"></div>
+          <div className="absolute top-20 right-20 w-64 h-64 bg-primary/10 rounded-full blur-3xl animate-pulse"></div>
+          <div className="absolute bottom-10 left-10 w-80 h-80 bg-primary/10 rounded-full blur-3xl animate-pulse"></div>
           {/* Success celebration ambient lighting */}
-          <div className="absolute top-1/2 left-1/2 w-[600px] h-[600px] bg-[#FD912A]/10 rounded-full blur-3xl transform -translate-x-1/2 -translate-y-1/2 animate-pulse"></div>
+          <div className="absolute top-1/2 left-1/2 w-[600px] h-[600px] bg-primary/10 rounded-full blur-3xl transform -translate-x-1/2 -translate-y-1/2 animate-pulse"></div>
           {/* Flowing light streams */}
-          <div className="absolute top-1/4 left-0 w-96 h-2 bg-gradient-to-r from-transparent via-[#FD912A]/20 to-transparent blur-sm animate-pulse"></div>
-          <div className="absolute bottom-1/4 right-0 w-96 h-2 bg-gradient-to-l from-transparent via-[#FD912A]/20 to-transparent blur-sm animate-pulse"></div>
+          <div className="absolute top-1/4 left-0 w-96 h-2 bg-gradient-to-r from-transparent via-primary/20 to-transparent blur-sm animate-pulse"></div>
+          <div className="absolute bottom-1/4 right-0 w-96 h-2 bg-gradient-to-l from-transparent via-primary/20 to-transparent blur-sm animate-pulse"></div>
         </div>
 
         <div className="container mx-auto px-8 relative z-10">
@@ -165,7 +165,7 @@ const Benefits = () => {
             <div className="text-center mb-8">
               <SectionBadge icon={FaComments} text="Customer Support" />
               <div className="relative">
-                <div className="absolute -right-16 -top-16 text-8xl lg:text-9xl font-bold text-[#FD912A]/25 transform rotate-12 select-none">
+                <div className="absolute -right-16 -top-16 text-8xl lg:text-9xl font-bold text-primary/25 transform rotate-12 select-none">
                   #2
                 </div>
                 <h2 className="text-5xl lg:text-6xl font-heading font-bold text-foreground mb-6 relative z-10 mr-14">
@@ -204,10 +204,10 @@ const Benefits = () => {
 
               {/* Enabling capabilities */}
               <div className="grid grid-cols-1 md:grid-cols-3 gap-5 w-full max-w-5xl">
-                <div className="group bg-[#FD912A]/6 backdrop-blur-sm rounded-2xl p-6 border border-[#FD912A]/15 hover:border-[#FD912A]/25 transition-all duration-300 shadow-lg">
+                <div className="group bg-primary/6 backdrop-blur-sm rounded-2xl p-6 border border-primary/15 hover:border-primary/25 transition-all duration-300 shadow-lg">
                   <div className="space-y-4">
                     <div className="flex gap-3">
-                      <FaBolt className="w-4 h-4 text-[#FD912A]/35 group-hover:text-[#FD912A]/60 transition-colors duration-300 flex-shrink-0 mt-0.5" />
+                      <FaBolt className="w-4 h-4 text-primary/35 group-hover:text-primary/60 transition-colors duration-300 flex-shrink-0 mt-0.5" />
                       <div>
                         <h3 className="text-sm font-heading font-medium text-foreground mb-1.5">
                           24/7 Instant Support
@@ -222,10 +222,10 @@ const Benefits = () => {
                   </div>
                 </div>
 
-                <div className="group bg-[#FD912A]/6 backdrop-blur-sm rounded-2xl p-6 border border-[#FD912A]/15 hover:border-[#FD912A]/25 transition-all duration-300 shadow-lg">
+                <div className="group bg-primary/6 backdrop-blur-sm rounded-2xl p-6 border border-primary/15 hover:border-primary/25 transition-all duration-300 shadow-lg">
                   <div className="space-y-4">
                     <div className="flex gap-3">
-                      <FaShieldAlt className="w-4 h-4 text-[#FD912A]/35 group-hover:text-[#FD912A]/60 transition-colors duration-300 flex-shrink-0 mt-0.5" />
+                      <FaShieldAlt className="w-4 h-4 text-primary/35 group-hover:text-primary/60 transition-colors duration-300 flex-shrink-0 mt-0.5" />
                       <div>
                         <h3 className="text-sm font-heading font-medium text-foreground mb-1.5">
                           Problem Resolution
@@ -239,10 +239,10 @@ const Benefits = () => {
                   </div>
                 </div>
 
-                <div className="group bg-[#FD912A]/6 backdrop-blur-sm rounded-2xl p-6 border border-[#FD912A]/15 hover:border-[#FD912A]/25 transition-all duration-300 shadow-lg">
+                <div className="group bg-primary/6 backdrop-blur-sm rounded-2xl p-6 border border-primary/15 hover:border-primary/25 transition-all duration-300 shadow-lg">
                   <div className="space-y-4">
                     <div className="flex gap-3">
-                      <FaHeart className="w-4 h-4 text-[#FD912A]/35 group-hover:text-[#FD912A]/60 transition-colors duration-300 flex-shrink-0 mt-0.5" />
+                      <FaHeart className="w-4 h-4 text-primary/35 group-hover:text-primary/60 transition-colors duration-300 flex-shrink-0 mt-0.5" />
                       <div>
                         <h3 className="text-sm font-heading font-medium text-foreground mb-1.5">
                           Empathetic Support
@@ -268,8 +268,8 @@ const Benefits = () => {
       >
         {/* Background Elements */}
         <div className="absolute inset-0">
-          <div className="absolute top-20 left-20 w-64 h-64 bg-[#FD912A]/10 rounded-full blur-3xl"></div>
-          <div className="absolute bottom-10 right-10 w-80 h-80 bg-[#FD912A]/10 rounded-full blur-3xl"></div>
+          <div className="absolute top-20 left-20 w-64 h-64 bg-primary/10 rounded-full blur-3xl"></div>
+          <div className="absolute bottom-10 right-10 w-80 h-80 bg-primary/10 rounded-full blur-3xl"></div>
         </div>
 
         <div className="container mx-auto px-6 relative z-10">
@@ -278,7 +278,7 @@ const Benefits = () => {
             <div className="text-center mb-20">
               <SectionBadge icon={FaChartLine} text="Store Insights" />
               <div className="relative">
-                <div className="absolute -left-16 -top-16 text-8xl lg:text-9xl font-bold text-[#FD912A]/25 transform rotate-6 select-none">
+                <div className="absolute -left-16 -top-16 text-8xl lg:text-9xl font-bold text-primary/25 transform rotate-6 select-none">
                   #3
                 </div>
                 <h2 className="text-5xl lg:text-6xl font-heading font-bold text-foreground mb-6 relative z-10 ml-14">
@@ -301,10 +301,10 @@ const Benefits = () => {
 
               {/* Right: Features */}
               <div className="space-y-8 order-1 lg:order-2">
-                <div className="group bg-[#FD912A]/10 backdrop-blur-sm rounded-3xl p-8 border border-[#FD912A]/20 hover:border-[#FD912A]/30 transform rotate-1 hover:rotate-0 transition-all duration-500 shadow-xl">
+                <div className="group bg-primary/10 backdrop-blur-sm rounded-3xl p-8 border border-primary/20 hover:border-primary/30 transform rotate-1 hover:rotate-0 transition-all duration-500 shadow-xl">
                   <div className="space-y-6">
                     <div className="flex gap-4">
-                      <FaPlay className="w-5 h-5 text-[#FD912A]/40 group-hover:text-[#FD912A]/70 transition-colors duration-300 flex-shrink-0 mt-0.5" />
+                      <FaPlay className="w-5 h-5 text-primary/40 group-hover:text-primary/70 transition-colors duration-300 flex-shrink-0 mt-0.5" />
                       <div>
                         <h3 className="text-lg font-heading font-semibold text-foreground mb-2">
                           Session Replays
@@ -319,10 +319,10 @@ const Benefits = () => {
                   </div>
                 </div>
 
-                <div className="group bg-[#FD912A]/10 backdrop-blur-sm rounded-3xl p-8 border border-[#FD912A]/20 hover:border-[#FD912A]/30 transform -rotate-1 hover:rotate-0 transition-all duration-500 shadow-xl">
+                <div className="group bg-primary/10 backdrop-blur-sm rounded-3xl p-8 border border-primary/20 hover:border-primary/30 transform -rotate-1 hover:rotate-0 transition-all duration-500 shadow-xl">
                   <div className="space-y-6">
                     <div className="flex gap-4">
-                      <FaTag className="w-5 h-5 text-[#FD912A]/40 group-hover:text-[#FD912A]/70 transition-colors duration-300 flex-shrink-0 mt-0.5" />
+                      <FaTag className="w-5 h-5 text-primary/40 group-hover:text-primary/70 transition-colors duration-300 flex-shrink-0 mt-0.5" />
                       <div>
                         <h3 className="text-lg font-heading font-semibold text-foreground mb-2">
                           Auto-Tagged Chats
@@ -336,10 +336,10 @@ const Benefits = () => {
                   </div>
                 </div>
 
-                <div className="group bg-[#FD912A]/10 backdrop-blur-sm rounded-3xl p-8 border border-[#FD912A]/20 hover:border-[#FD912A]/30 transform rotate-2 hover:rotate-0 transition-all duration-500 shadow-xl">
+                <div className="group bg-primary/10 backdrop-blur-sm rounded-3xl p-8 border border-primary/20 hover:border-primary/30 transform rotate-2 hover:rotate-0 transition-all duration-500 shadow-xl">
                   <div className="space-y-6">
                     <div className="flex gap-4">
-                      <FaChartBar className="w-5 h-5 text-[#FD912A]/40 group-hover:text-[#FD912A]/70 transition-colors duration-300 flex-shrink-0 mt-0.5" />
+                      <FaChartBar className="w-5 h-5 text-primary/40 group-hover:text-primary/70 transition-colors duration-300 flex-shrink-0 mt-0.5" />
                       <div>
                         <h3 className="text-lg font-heading font-semibold text-foreground mb-2">
                           Funnel Insights

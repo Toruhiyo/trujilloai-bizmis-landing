@@ -224,30 +224,30 @@ const ReviewSatisfactionDashboard: React.FC = () => {
   const getTypeIcon = (type: string) => {
     switch (type) {
       case "satisfaction":
-        return <Heart className="w-6 h-6 text-[#FD912A]" />;
+        return <Heart className="w-6 h-6 text-primary" />;
       case "speed":
-        return <Zap className="w-6 h-6 text-[#FD912A]" />;
+        return <Zap className="w-6 h-6 text-primary" />;
       case "resolution":
-        return <Shield className="w-6 h-6 text-[#FD912A]" />;
+        return <Shield className="w-6 h-6 text-primary" />;
       case "empathy":
-        return <MessageSquare className="w-6 h-6 text-[#FD912A]" />;
+        return <MessageSquare className="w-6 h-6 text-primary" />;
       default:
-        return <ThumbsUp className="w-6 h-6 text-[#FD912A]" />;
+        return <ThumbsUp className="w-6 h-6 text-primary" />;
     }
   };
 
   const getTypeColor = (type: string) => {
     switch (type) {
       case "satisfaction":
-        return "border-[#FD912A]/60 bg-[#FDF7E2]/95";
+        return "border-primary/60 bg-[#FDF7E2]/95";
       case "speed":
-        return "border-[#FD912A]/60 bg-[#FDF7E2]/95";
+        return "border-primary/60 bg-[#FDF7E2]/95";
       case "resolution":
-        return "border-[#FD912A]/70 bg-[#FDF7E2]/95";
+        return "border-primary/70 bg-[#FDF7E2]/95";
       case "empathy":
-        return "border-[#FD912A]/70 bg-[#FDF7E2]/95";
+        return "border-primary/70 bg-[#FDF7E2]/95";
       default:
-        return "border-[#FD912A]/50 bg-[#FDF7E2]/95";
+        return "border-primary/50 bg-[#FDF7E2]/95";
     }
   };
 
@@ -271,7 +271,7 @@ const ReviewSatisfactionDashboard: React.FC = () => {
       `}</style>
       {/* Customer Loyalty Focused Cards */}
       <div className="absolute top-14 left-10 z-20">
-        <div className="bg-[#FD912A] rounded-2xl p-5 shadow-2xl w-[220px] transform hover:scale-105 transition-all duration-300">
+        <div className="bg-primary rounded-2xl p-5 shadow-2xl w-[220px] transform hover:scale-105 transition-all duration-300">
           <div className="text-center text-white">
             <Heart className="w-12 h-12 mx-auto mb-3 opacity-90" />
             <div className="text-xl font-bold mb-1">
@@ -285,7 +285,7 @@ const ReviewSatisfactionDashboard: React.FC = () => {
       </div>
 
       <div className="absolute top-14 right-10 z-20">
-        <div className="bg-[#FD912A] rounded-2xl p-5 shadow-2xl w-[220px] transform hover:scale-105 transition-all duration-300">
+        <div className="bg-primary rounded-2xl p-5 shadow-2xl w-[220px] transform hover:scale-105 transition-all duration-300">
           <div className="text-center text-white">
             <Clock className="w-12 h-12 mx-auto mb-3 opacity-90" />
             <div className="text-xl font-bold mb-1">Save Time & Money</div>
@@ -345,12 +345,12 @@ const ReviewSatisfactionDashboard: React.FC = () => {
                       {Array.from({ length: review.rating }).map((_, i) => (
                         <Star
                           key={i}
-                          className="w-4 h-4 fill-[#FD912A] text-[#FD912A]"
+                          className="w-4 h-4 fill-primary text-primary"
                         />
                       ))}
                     </div>
                   </div>
-                  <span className="text-sm text-[#FD912A] font-bold">
+                  <span className="text-sm text-primary font-bold">
                     {review.timestamp}
                   </span>
                 </div>
@@ -366,7 +366,7 @@ const ReviewSatisfactionDashboard: React.FC = () => {
           {Array.from({ length: 12 }).map((_, i) => (
             <div
               key={i}
-              className="absolute w-2 h-2 bg-[#FD912A] rounded-full animate-ping"
+              className="absolute w-2 h-2 bg-primary rounded-full animate-ping"
               style={{
                 top: `${20 + Math.random() * 60}%`,
                 left: `${20 + Math.random() * 60}%`,

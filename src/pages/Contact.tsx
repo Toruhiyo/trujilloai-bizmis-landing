@@ -119,7 +119,7 @@ const Contact = () => {
           <div className="max-w-2xl mx-auto">
             <div className="text-center mb-12">
               <div className="inline-flex items-center justify-center w-16 h-16 bg-[#FDF7E2] rounded-full mb-6">
-                <Mail className="w-8 h-8 text-[#FD912A]" />
+                <Mail className="w-8 h-8 text-primary" />
               </div>
               <h2 className="text-4xl lg:text-5xl font-heading font-bold text-foreground mb-6">
                 Get in Touch
@@ -133,7 +133,7 @@ const Contact = () => {
             {formStatus === "success" ? (
               <div className="bg-white rounded-2xl border border-border shadow-soft p-8 text-center">
                 <div className="inline-flex items-center justify-center w-16 h-16 bg-[#FDF7E2] rounded-full mb-6">
-                  <CheckCircle className="w-8 h-8 text-[#FD912A]" />
+                  <CheckCircle className="w-8 h-8 text-primary" />
                 </div>
                 <h3 className="text-2xl font-heading font-semibold text-foreground mb-3">
                   Message Sent!

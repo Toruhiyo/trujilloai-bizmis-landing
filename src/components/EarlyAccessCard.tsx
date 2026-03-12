@@ -23,23 +23,23 @@ const EarlyAccessCard: React.FC<EarlyAccessCardProps> = ({ className = "" }) => 
   return (
     <div className={`relative group max-w-sm w-full mx-auto lg:ml-auto lg:mr-0 ${className}`}>
       {/* Glow effect behind the card */}
-      <div className="absolute -inset-0.5 bg-[#FD912A]/50 rounded-3xl blur opacity-60 group-hover:opacity-80 transition duration-1000 group-hover:duration-200 animate-pulse"></div>
+      <div className="absolute -inset-0.5 bg-primary/50 rounded-3xl blur opacity-60 group-hover:opacity-80 transition duration-1000 group-hover:duration-200 animate-pulse"></div>
 
-      <div className="relative bg-white rounded-3xl p-6 sm:p-8 shadow-2xl border border-[#FD912A]/10 h-full flex flex-col overflow-hidden">
+      <div className="relative bg-white rounded-3xl p-6 sm:p-8 shadow-2xl border border-primary/10 h-full flex flex-col overflow-hidden">
         {/* Decorative background elements */}
         <div className="absolute top-0 right-0 w-40 h-40 bg-[#FDF7E2] rounded-bl-[100px] -z-10 opacity-60"></div>
         <div className="absolute bottom-0 left-0 w-24 h-24 bg-[#FDF7E2] rounded-tr-[80px] -z-10 opacity-40"></div>
 
         {/* Header Section */}
         <div className="flex flex-col gap-4 mb-6">
-          <div className="inline-flex items-center gap-1.5 self-start bg-transparent border-2 border-[#FD912A] rounded-full pl-2 pr-3 py-1">
-            <Crown className="w-3 h-3 text-[#FD912A] fill-[#FD912A]" />
-            <span className="text-xs font-bold text-[#FD912A] uppercase tracking-wide">Early Bird</span>
+          <div className="inline-flex items-center gap-1.5 self-start bg-transparent border-2 border-primary rounded-full pl-2 pr-3 py-1">
+            <Crown className="w-3 h-3 text-primary fill-primary" />
+            <span className="text-xs font-bold text-primary uppercase tracking-wide">Early Bird</span>
           </div>
 
           <div>
             <h3 className="text-2xl sm:text-3xl font-heading font-bold text-gray-900 leading-tight">
-              Be First. <span className="text-[#FD912A]">Sell More.</span>
+              Be First. <span className="text-primary">Sell More.</span>
             </h3>
             <p className="text-gray-500 mt-2 text-sm leading-relaxed">
               Join the exclusive group of first 50 merchants shaping the future of conversational commerce.
@@ -50,7 +50,7 @@ const EarlyAccessCard: React.FC<EarlyAccessCardProps> = ({ className = "" }) => 
         {/* Benefits List */}
         <div className="space-y-5 mb-8 flex-1">
           <div className="flex items-start gap-4 group/item">
-            <div className="w-10 h-10 rounded-2xl bg-[#FD912A]/90 flex items-center justify-center flex-shrink-0 shadow-sm group-hover/item:scale-105 transition-transform">
+            <div className="w-10 h-10 rounded-2xl bg-primary/90 flex items-center justify-center flex-shrink-0 shadow-sm group-hover/item:scale-105 transition-transform">
               <FaGift className="w-4 h-4 text-white" />
             </div>
             <div>
@@ -60,7 +60,7 @@ const EarlyAccessCard: React.FC<EarlyAccessCardProps> = ({ className = "" }) => 
           </div>
 
           <div className="flex items-start gap-4 group/item">
-            <div className="w-10 h-10 rounded-2xl bg-[#FD912A]/90 flex items-center justify-center flex-shrink-0 shadow-sm group-hover/item:scale-105 transition-transform">
+            <div className="w-10 h-10 rounded-2xl bg-primary/90 flex items-center justify-center flex-shrink-0 shadow-sm group-hover/item:scale-105 transition-transform">
               <FaMapMarkedAlt className="w-4 h-4 text-white" />
             </div>
             <div>
@@ -70,7 +70,7 @@ const EarlyAccessCard: React.FC<EarlyAccessCardProps> = ({ className = "" }) => 
           </div>
 
           <div className="flex items-start gap-4 group/item">
-            <div className="w-10 h-10 rounded-2xl bg-[#FD912A]/90 flex items-center justify-center flex-shrink-0 shadow-sm group-hover/item:scale-105 transition-transform">
+            <div className="w-10 h-10 rounded-2xl bg-primary/90 flex items-center justify-center flex-shrink-0 shadow-sm group-hover/item:scale-105 transition-transform">
               <FaStar className="w-4 h-4 text-white" />
             </div>
             <div>
@@ -83,7 +83,7 @@ const EarlyAccessCard: React.FC<EarlyAccessCardProps> = ({ className = "" }) => 
         {/* Footer / CTA */}
         <div className="pt-6 border-t border-gray-100 mt-auto">
           <div className="flex justify-center mb-4">
-            <span className="text-xs font-semibold text-[#FD912A]">
+            <span className="text-xs font-semibold text-primary">
               Limited spots available
             </span>
           </div>

@@ -217,7 +217,7 @@ const FAQsPage = () => {
             </div>
 
             {/* Contact CTA */}
-            <div className="text-center mt-12 p-8 bg-[#FDF7E2]/50 rounded-2xl border border-[#FD912A]/20">
+            <div className="text-center mt-12 p-8 bg-[#FDF7E2]/50 rounded-2xl border border-primary/20">
               <h3 className="text-xl font-heading font-semibold text-foreground mb-3">
                 Still have questions?
               </h3>

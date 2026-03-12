@@ -80,7 +80,7 @@ const Navbar = () => {
                 className={`font-medium transition-colors duration-300 hover:opacity-80 ${
                   isInHero
                     ? "text-white/90 hover:text-white"
-                    : "text-foreground hover:text-[#FD912A]"
+                    : "text-foreground hover:text-primary"
                 }`}
               >
                 {item.label}
@@ -151,7 +151,7 @@ const Navbar = () => {
                 <button
                   key={item.label}
                   onClick={() => handleNavigation(item.href)}
-                  className="block text-foreground hover:text-[#FD912A] font-medium transition-colors w-full text-left"
+                  className="block text-foreground hover:text-primary font-medium transition-colors w-full text-left"
                 >
                   {item.label}
                 </button>

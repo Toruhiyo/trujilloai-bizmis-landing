@@ -4,11 +4,17 @@ import {
   FaStar,
   FaShoppingBag,
   FaChevronRight,
+  FaMicrophone,
 } from "react-icons/fa";
 import CustomerVoiceCard from "./CustomerVoiceCard";
 
-const ANIMATION_STAGGER_MS = 150;
 const INTERSECTION_THRESHOLD = 0.3;
+const WAVEFORM_BARS = 32;
+const WAVEFORM_HEIGHTS = [
+  32, 52, 68, 42, 72, 48, 62, 36, 56, 74, 40, 60, 44, 70,
+  50, 64, 34, 58, 46, 68, 38, 54, 48, 66, 30, 56, 42, 72,
+  46, 62, 36, 58,
+];
 const ENTRANCE_DURATION_MS = 1400;
 const ENTRANCE_CUSTOMER_MS = 0;
 const ENTRANCE_CENTER_MS = 650;
@@ -69,15 +75,15 @@ const SpeakDiscoverBuy = () => {
     <div ref={sectionRef} className="w-full max-w-6xl mx-auto px-4">
       {/* Minimal step flow: 1 → 2 → 3 */}
       <div className="w-full mb-6 flex items-center justify-center">
-        <div className="flex items-center gap-2 sm:gap-4 text-[#FD912A]/65 text-xs sm:text-sm font-medium">
+        <div className="flex items-center gap-2 sm:gap-4 text-primary/65 text-xs sm:text-sm font-medium">
           {STEPS.map((step, idx) => (
             <span key={step.num} className="flex items-center gap-1.5 sm:gap-2">
-              <span className="flex-shrink-0 w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-[#FD912A]/65 text-white text-[10px] sm:text-xs font-semibold flex items-center justify-center">
+              <span className="flex-shrink-0 w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-primary/65 text-white text-[10px] sm:text-xs font-semibold flex items-center justify-center">
                 {step.num}
               </span>
               <span>{step.label}</span>
               {idx < STEPS.length - 1 && (
-                <FaChevronRight className="w-2.5 h-2.5 sm:w-3 sm:h-3 text-[#FD912A]/60 ml-0.5" aria-hidden />
+                <FaChevronRight className="w-2.5 h-2.5 sm:w-3 sm:h-3 text-primary/60 ml-0.5" aria-hidden />
               )}
             </span>
           ))}
@@ -112,14 +118,47 @@ const SpeakDiscoverBuy = () => {
           {/* Avatar behind cards — z-0 so cards can sit in front */}
           <div className="absolute inset-0 flex items-start justify-center pt-0 pointer-events-none z-0">
             <div className="absolute top-0 left-1/2 -translate-x-1/2 flex flex-col items-center">
-              <div className="absolute -inset-10 rounded-full bg-[#FD912A]/10 blur-2xl animate-pulse" />
-              <div className="absolute -inset-20 rounded-full bg-[#FD912A]/5 blur-3xl animate-pulse [animation-delay:0.5s]" />
+              <div className="absolute -inset-10 rounded-full bg-primary/10 blur-2xl animate-pulse" />
+              <div className="absolute -inset-20 rounded-full bg-primary/5 blur-3xl animate-pulse [animation-delay:0.5s]" />
             </div>
             <img
               src="/images/benefit-1-driven-sales-pipeline-2.png"
               alt="Bizmis assistant"
               className="relative w-[26rem] h-[26rem] sm:w-[30rem] sm:h-[30rem] lg:w-[34rem] lg:h-[34rem] object-contain object-top drop-shadow-2xl opacity-90"
             />
+
+            {/* Voice waveform — overlapping avatar, matches Benefit 2 language */}
+            <div
+              className="absolute bottom-[4.5rem] sm:bottom-[5.5rem] lg:bottom-[7rem] left-1/2 -translate-x-1/2 z-30 pointer-events-none"
+              style={{
+                opacity: isVisible ? 1 : 0,
+                transition: `opacity 800ms ease-in-out`,
+                transitionDelay: isVisible ? `${ENTRANCE_CENTER_MS + 400}ms` : "0ms",
+              }}
+            >
+              <div className="bg-white/70 backdrop-blur-md rounded-full px-4 py-2 shadow-lg border border-primary/15 flex items-center gap-2 min-w-[11rem] sm:min-w-[13rem] lg:min-w-[15rem]">
+                <div className="relative flex-shrink-0">
+                  <div className="absolute inset-0 rounded-full bg-primary/20 animate-ping [animation-duration:2s]" />
+                  <div className="relative w-6 h-6 bg-gradient-to-br from-primary to-primary/80 rounded-full flex items-center justify-center shadow-sm">
+                    <FaMicrophone className="w-2.5 h-2.5 text-white" />
+                  </div>
+                </div>
+                <div className="flex items-center gap-[1.5px] h-7 flex-1 min-w-0">
+                  {Array.from({ length: WAVEFORM_BARS }).map((_, i) => (
+                    <div
+                      key={i}
+                      className="flex-1 min-w-[1.5px] rounded-full bg-primary/70"
+                      style={{
+                        height: `${WAVEFORM_HEIGHTS[i % WAVEFORM_BARS]}%`,
+                        animation: isVisible
+                          ? `waveform-pulse 1.2s ease-in-out ${i * 0.04}s infinite alternate`
+                          : "none",
+                      }}
+                    />
+                  ))}
+                </div>
+              </div>
+            </div>
           </div>
 
           {/* Recommendation cards — z-20 so they sit clearly in front of avatar */}
@@ -144,8 +183,8 @@ const SpeakDiscoverBuy = () => {
                 <div
                   className={`relative rounded-2xl border transition-all duration-300 hover:scale-105 ${
                     product.highlighted
-                      ? "bg-white border-[#FD912A]/40 shadow-[0_16px_48px_-8px_rgba(253,145,42,0.55),0_40px_80px_-20px_rgba(0,0,0,0.35)] w-44 sm:w-48"
-                      : "bg-white/95 border-[#FD912A]/25 shadow-[0_12px_36px_-4px_rgba(0,0,0,0.28),0_32px_64px_-12px_rgba(253,145,42,0.28)] w-36 sm:w-40"
+                      ? "bg-white border-primary/40 shadow-[0_16px_48px_-8px_rgba(253,145,42,0.55),0_40px_80px_-20px_rgba(0,0,0,0.35)] w-44 sm:w-48"
+                      : "bg-white/95 border-primary/25 shadow-[0_12px_36px_-4px_rgba(0,0,0,0.28),0_32px_64px_-12px_rgba(253,145,42,0.28)] w-36 sm:w-40"
                   }`}
                 >
                   {/* Product image */}
@@ -163,8 +202,8 @@ const SpeakDiscoverBuy = () => {
                     <div
                       className={`absolute top-2 left-2 text-[10px] font-semibold px-2 py-0.5 rounded-full ${
                         product.highlighted
-                          ? "bg-[#FD912A] text-white"
-                          : "bg-white/80 text-[#FD912A] border border-[#FD912A]/20"
+                          ? "bg-primary text-white"
+                          : "bg-white/80 text-primary border border-primary/20"
                       }`}
                     >
                       {product.label}
@@ -186,7 +225,7 @@ const SpeakDiscoverBuy = () => {
                       <span
                         className={`font-bold text-base ${
                           product.highlighted
-                            ? "text-[#FD912A]"
+                            ? "text-primary"
                             : "text-foreground/60"
                         }`}
                       >
@@ -197,7 +236,7 @@ const SpeakDiscoverBuy = () => {
                           {[...Array(5)].map((_, i) => (
                             <FaStar
                               key={i}
-                              className="w-2.5 h-2.5 text-[#FD912A]"
+                              className="w-2.5 h-2.5 text-primary"
                             />
                           ))}
                         </div>
@@ -224,11 +263,11 @@ const SpeakDiscoverBuy = () => {
               transitionDuration: `${ENTRANCE_DURATION_MS}ms`,
             }}
           >
-            <div className="bg-white/80 backdrop-blur-sm rounded-3xl border border-[#FD912A]/15 shadow-lg p-5 w-full text-center aspect-[3/4] flex flex-col justify-center min-h-0">
+            <div className="bg-white/80 backdrop-blur-sm rounded-3xl border border-primary/15 shadow-lg p-5 w-full text-center aspect-[3/4] flex flex-col justify-center min-h-0">
             {/* Success icon */}
             <div className="relative w-12 h-12 mx-auto mb-3">
-              <div className="absolute -inset-2 rounded-full bg-[#FD912A]/10 animate-pulse [animation-duration:2.5s]" />
-              <div className="relative w-12 h-12 bg-gradient-to-br from-[#FD912A] to-[#FD912A]/80 rounded-full flex items-center justify-center shadow-md">
+              <div className="absolute -inset-2 rounded-full bg-primary/10 animate-pulse [animation-duration:2.5s]" />
+              <div className="relative w-12 h-12 bg-gradient-to-br from-primary to-primary/80 rounded-full flex items-center justify-center shadow-md">
                 <FaCheck className="w-5 h-5 text-white" />
               </div>
             </div>
@@ -242,7 +281,7 @@ const SpeakDiscoverBuy = () => {
             </p>
 
             {/* Mini receipt */}
-            <div className="bg-[#FDF7E2]/60 rounded-xl p-2.5 mb-3 border border-[#FD912A]/10">
+            <div className="bg-[#FDF7E2]/60 rounded-xl p-2.5 mb-3 border border-primary/10">
               <div className="flex items-center justify-between text-[10px] mb-1.5">
                 <span className="text-muted-foreground">Subtotal</span>
                 <span className="font-medium">$89.00</span>
@@ -251,16 +290,16 @@ const SpeakDiscoverBuy = () => {
                 <span className="text-muted-foreground">Shipping</span>
                 <span className="font-medium text-muted-foreground">Free</span>
               </div>
-              <div className="h-px bg-[#FD912A]/10 my-1.5" />
+              <div className="h-px bg-primary/10 my-1.5" />
               <div className="flex items-center justify-between text-xs">
                 <span className="font-semibold">Total</span>
-                <span className="font-bold text-[#FD912A]">$89.00</span>
+                <span className="font-bold text-primary">$89.00</span>
               </div>
             </div>
 
             {/* Delivery estimate */}
             <div className="flex items-center justify-center gap-1.5 text-[10px] text-muted-foreground">
-              <FaShoppingBag className="w-2.5 h-2.5 text-[#FD912A]" />
+              <FaShoppingBag className="w-2.5 h-2.5 text-primary" />
               <span>Delivery in 2–3 days</span>
             </div>
             </div>
