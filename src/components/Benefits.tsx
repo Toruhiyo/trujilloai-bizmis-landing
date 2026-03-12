@@ -78,13 +78,13 @@ const Benefits = () => {
                   },
                   {
                     title: "Increase Order Value",
-                    subtitle: "Increase Order Value",
+                    subtitle: "Smart Upsells & Add-Ons",
                     body: "Smart recommendations, upgrades, and complementary products appear naturally during the conversation.",
                     watermark: "/images/benefit-1-pillar-2.png",
                   },
                   {
                     title: "Build Customer Loyalty",
-                    subtitle: "Build Customer Loyalty",
+                    subtitle: "Personal Shopping Experience",
                     body: "A warm, personal shopping experience customers remember — and come back for.",
                     watermark: "/images/benefit-1-pillar-3.png",
                   },
@@ -127,17 +127,8 @@ const Benefits = () => {
               </div>
             </div>
 
-            {/* How it works — connector */}
-            <div className="flex items-center gap-4 max-w-md mx-auto mb-10">
-              <div className="flex-1 h-px bg-[#FD912A]/20"></div>
-              <span className="text-xs font-semibold uppercase tracking-widest text-[#FD912A]/60 whitespace-nowrap">
-                How it works
-              </span>
-              <div className="flex-1 h-px bg-[#FD912A]/20"></div>
-            </div>
-
             {/* Speak → Discover → Buy visual */}
-            <div className="relative mb-32">
+            <div className="relative mb-32 mt-4">
               <SpeakDiscoverBuy />
             </div>
           </div>
@@ -285,58 +276,64 @@ const Benefits = () => {
             </div>
 
             <div className="grid lg:grid-cols-2 gap-20 items-center">
-              {/* Left: Features */}
-              <div className="space-y-8">
-                <div className="group bg-[#FD912A]/10 backdrop-blur-sm rounded-2xl p-6 border border-[#FD912A]/20 hover:border-[#FD912A]/30 transform rotate-1 hover:rotate-0 transition-all duration-300">
-                  <div className="flex items-start gap-4">
-                    <FaPlay className="w-5 h-5 text-[#FD912A]/40 group-hover:text-[#FD912A]/70 transition-colors duration-300 flex-shrink-0 mt-1" />
-                    <div>
-                      <h3 className="text-lg font-heading font-semibold text-foreground mb-2">
-                        Session Replays
-                      </h3>
-                      <p className="text-muted-foreground font-body text-sm">
-                        Jump straight to drop-offs and hesitation points. Fix
-                        once, prevent abandoned carts, and recover at-risk
-                        sales.
-                      </p>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="group bg-[#FD912A]/10 backdrop-blur-sm rounded-2xl p-6 border border-[#FD912A]/20 hover:border-[#FD912A]/30 transform -rotate-1 hover:rotate-0 transition-transform duration-300">
-                  <div className="flex items-start gap-4">
-                    <FaTag className="w-5 h-5 text-[#FD912A]/40 group-hover:text-[#FD912A]/70 transition-colors duration-300 flex-shrink-0 mt-1" />
-                    <div>
-                      <h3 className="text-lg font-heading font-semibold text-foreground mb-2">
-                        Auto-Tagged Chats
-                      </h3>
-                      <p className="text-muted-foreground font-body text-sm">
-                        Conversations auto-group by topic and intent. Update one
-                        FAQ/policy, cut repeat tickets, and reduce support load.
-                      </p>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="group bg-[#FD912A]/10 backdrop-blur-sm rounded-2xl p-6 border border-[#FD912A]/20 hover:border-[#FD912A]/30 transform rotate-2 hover:rotate-0 transition-transform duration-300">
-                  <div className="flex items-start gap-4">
-                    <FaChartBar className="w-5 h-5 text-[#FD912A]/40 group-hover:text-[#FD912A]/70 transition-colors duration-300 flex-shrink-0 mt-1" />
-                    <div>
-                      <h3 className="text-lg font-heading font-semibold text-foreground mb-2">
-                        Funnel Insights
-                      </h3>
-                      <p className="text-muted-foreground font-body text-sm">
-                        See conversion paths, drop-offs, and product impact at a
-                        glance. Prioritize high-ROI fixes and back the winners.
-                      </p>
-                    </div>
-                  </div>
-                </div>
+              {/* Left: Tabbed Session Replay */}
+              <div className="relative flex justify-center items-start order-2 lg:order-1">
+                <TabbedSessionReplay />
               </div>
 
-              {/* Right Side - Tabbed Session Replay */}
-              <div className="relative flex justify-center items-start">
-                <TabbedSessionReplay />
+              {/* Right: Features */}
+              <div className="space-y-8 order-1 lg:order-2">
+                <div className="group bg-[#FD912A]/10 backdrop-blur-sm rounded-3xl p-8 border border-[#FD912A]/20 hover:border-[#FD912A]/30 transform rotate-1 hover:rotate-0 transition-all duration-500 shadow-xl">
+                  <div className="space-y-6">
+                    <div className="flex gap-4">
+                      <FaPlay className="w-5 h-5 text-[#FD912A]/40 group-hover:text-[#FD912A]/70 transition-colors duration-300 flex-shrink-0 mt-0.5" />
+                      <div>
+                        <h3 className="text-lg font-heading font-semibold text-foreground mb-2">
+                          Session Replays
+                        </h3>
+                        <p className="text-muted-foreground font-body text-sm">
+                          Jump straight to drop-offs and hesitation points. Fix
+                          once, prevent abandoned carts, and recover at-risk
+                          sales.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="group bg-[#FD912A]/10 backdrop-blur-sm rounded-3xl p-8 border border-[#FD912A]/20 hover:border-[#FD912A]/30 transform -rotate-1 hover:rotate-0 transition-all duration-500 shadow-xl">
+                  <div className="space-y-6">
+                    <div className="flex gap-4">
+                      <FaTag className="w-5 h-5 text-[#FD912A]/40 group-hover:text-[#FD912A]/70 transition-colors duration-300 flex-shrink-0 mt-0.5" />
+                      <div>
+                        <h3 className="text-lg font-heading font-semibold text-foreground mb-2">
+                          Auto-Tagged Chats
+                        </h3>
+                        <p className="text-muted-foreground font-body text-sm">
+                          Conversations auto-group by topic and intent. Update one
+                          FAQ/policy, cut repeat tickets, and reduce support load.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="group bg-[#FD912A]/10 backdrop-blur-sm rounded-3xl p-8 border border-[#FD912A]/20 hover:border-[#FD912A]/30 transform rotate-2 hover:rotate-0 transition-all duration-500 shadow-xl">
+                  <div className="space-y-6">
+                    <div className="flex gap-4">
+                      <FaChartBar className="w-5 h-5 text-[#FD912A]/40 group-hover:text-[#FD912A]/70 transition-colors duration-300 flex-shrink-0 mt-0.5" />
+                      <div>
+                        <h3 className="text-lg font-heading font-semibold text-foreground mb-2">
+                          Funnel Insights
+                        </h3>
+                        <p className="text-muted-foreground font-body text-sm">
+                          See conversion paths, drop-offs, and product impact at a
+                          glance. Prioritize high-ROI fixes and back the winners.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
