@@ -6,6 +6,10 @@ import { SUPPORT_CASES, SupportCase } from "@/data/support-cases";
 const INTERSECTION_THRESHOLD = 0.3;
 const TRANSITION_MS = 500;
 const CUSTOMER_TEXT_DELAY_MS = 400;
+const RESOLUTION_TEXT_DELAY_MS = 200;
+const ACTION_DONE_LINGER_MS = 1200;
+const RESOLUTION_SLOT_MIN_HEIGHT = "5rem";
+const SOLVED_DURATION_MS = 1800;
 const WAVEFORM_BARS = 40;
 const WAVEFORM_HEIGHTS = [
   32, 52, 68, 42, 72, 48, 62, 36, 56, 74, 40, 60, 44, 70,
@@ -21,7 +25,8 @@ type Phase =
   | "agent-speaking"
   | "done"
   | "hold"
-  | "fade-out";
+  | "fade-out"
+  | "solved";
 
 const PHASE_DURATIONS: Record<Phase, number> = {
   idle: 600,
@@ -32,6 +37,7 @@ const PHASE_DURATIONS: Record<Phase, number> = {
   done: 500,
   hold: 500,
   "fade-out": 600,
+  solved: SOLVED_DURATION_MS,
 };
 
 const PHASE_ORDER: Phase[] = [
@@ -42,7 +48,19 @@ const PHASE_ORDER: Phase[] = [
   "agent-speaking",
   "done",
   "hold",
+  "solved",
   "fade-out",
+];
+
+const SOLVED_PARTICLES = [
+  { x: -28, y: -32, size: 6, delay: 0, color: "#FD912A" },
+  { x: 30, y: -26, size: 5, delay: 40, color: "#FDB34A" },
+  { x: -20, y: 28, size: 5, delay: 80, color: "#FD912A" },
+  { x: 26, y: 30, size: 4, delay: 60, color: "#FDB34A" },
+  { x: -36, y: 4, size: 4, delay: 100, color: "#FDC97A" },
+  { x: 38, y: -4, size: 5, delay: 20, color: "#FD912A" },
+  { x: 0, y: -38, size: 4, delay: 70, color: "#FDB34A" },
+  { x: 0, y: 36, size: 3, delay: 110, color: "#FDC97A" },
 ];
 
 const VoiceSupportScene = () => {
@@ -50,6 +68,8 @@ const VoiceSupportScene = () => {
   const [isVisible, setIsVisible] = useState(false);
   const [caseIndex, setCaseIndex] = useState(0);
   const [phase, setPhase] = useState<Phase>("idle");
+  const [actionDismissed, setActionDismissed] = useState(false);
+  const [resolutionRevealed, setResolutionRevealed] = useState(false);
 
   const currentCase: SupportCase = SUPPORT_CASES[caseIndex];
 
@@ -70,16 +90,18 @@ const VoiceSupportScene = () => {
   const advanceToNext = useCallback(() => {
     setCaseIndex((prev) => (prev + 1) % SUPPORT_CASES.length);
     setPhase("idle");
+    setActionDismissed(false);
+    setResolutionRevealed(false);
   }, []);
 
   useEffect(() => {
     if (!isVisible) return;
 
-    const currentIndex = PHASE_ORDER.indexOf(phase);
     if (phase === "fade-out") {
       const timeout = setTimeout(advanceToNext, PHASE_DURATIONS["fade-out"]);
       return () => clearTimeout(timeout);
     }
+    const currentIndex = PHASE_ORDER.indexOf(phase);
     if (currentIndex < PHASE_ORDER.length - 1) {
       const nextPhase = PHASE_ORDER[currentIndex + 1];
       const timeout = setTimeout(() => setPhase(nextPhase), PHASE_DURATIONS[phase]);
@@ -87,7 +109,37 @@ const VoiceSupportScene = () => {
     }
   }, [isVisible, phase, advanceToNext]);
 
+  const actionCompleted =
+    phase === "agent-speaking" ||
+    phase === "done" ||
+    phase === "hold";
+
+  useEffect(() => {
+    if (!actionCompleted || actionDismissed) return;
+    const timeout = setTimeout(() => setActionDismissed(true), ACTION_DONE_LINGER_MS);
+    return () => clearTimeout(timeout);
+  }, [actionCompleted, actionDismissed]);
+
   const fadingOut = phase === "fade-out";
+
+  const actionBadgeVisible =
+    (phase === "pause" ||
+    phase === "agent-speaking" ||
+    phase === "done" ||
+    phase === "hold") && !actionDismissed;
+
+  const resolutionVisible = actionDismissed && !fadingOut;
+
+  useEffect(() => {
+    if (!resolutionVisible) {
+      setResolutionRevealed(false);
+      return;
+    }
+    const frame = requestAnimationFrame(() => {
+      requestAnimationFrame(() => setResolutionRevealed(true));
+    });
+    return () => cancelAnimationFrame(frame);
+  }, [resolutionVisible]);
 
   const customerVisible = phase !== "idle";
 
@@ -96,7 +148,8 @@ const VoiceSupportScene = () => {
     phase === "pause" ||
     phase === "agent-speaking" ||
     phase === "done" ||
-    phase === "hold";
+    phase === "hold" ||
+    phase === "solved";
 
   const waveAnimating =
     phase === "customer-speaking" || phase === "agent-speaking";
@@ -106,48 +159,41 @@ const VoiceSupportScene = () => {
     phase === "pause" ||
     phase === "agent-speaking" ||
     phase === "done" ||
-    phase === "hold";
+    phase === "hold" ||
+    phase === "solved";
 
-  const actionBadgeVisible =
-    phase === "pause" ||
-    phase === "agent-speaking" ||
-    phase === "done" ||
-    phase === "hold";
-
-  const actionCompleted =
-    phase === "agent-speaking" ||
-    phase === "done" ||
-    phase === "hold";
-
-  const resolutionVisible =
-    phase === "agent-speaking" ||
-    phase === "done" ||
-    phase === "hold";
-
+  const solvedVisible = phase === "solved";
 
   return (
     <div
       ref={ref}
-      className="relative flex flex-row items-center justify-center w-full min-h-[420px] sm:min-h-[520px]"
+      className="relative grid w-full min-h-[420px] sm:min-h-[520px] items-center"
+      style={{ gridTemplateColumns: "1fr auto 1fr" }}
     >
-      {/* Customer voice card — left (image only, no overlay) */}
-      <div
-        className="relative z-20 flex-shrink-0 w-full max-w-[10rem] -mr-12 sm:-mr-16 lg:-mr-20"
-        style={{
-          opacity: customerVisible && !fadingOut ? 1 : 0,
-          transform: customerVisible && !fadingOut ? "translateX(0)" : "translateX(-1.5rem)",
-          transition: `opacity ${TRANSITION_MS}ms ease-in-out, transform ${TRANSITION_MS}ms ease-in-out`,
-        }}
-      >
-        <CustomerVoiceCard
-          imageUrl={currentCase.customerImage}
-          size="small"
-          showOverlay={false}
-          isVisible={customerVisible && !fadingOut}
-        />
-        {/* Customer request text — overlay on card bottom */}
+      {/* Left cell — customer card pushed to the right edge */}
+      <div className="justify-self-end min-w-0 flex justify-end">
         <div
-          className="absolute bottom-0 left-0 right-0 z-30 px-2 pb-3"
+          className="relative z-10 w-[12rem] flex-shrink-0"
+          style={{
+            opacity: customerVisible && !fadingOut ? 1 : 0,
+            transform: customerVisible && !fadingOut ? "translateX(0)" : "translateX(-1.5rem)",
+            transition: `opacity ${TRANSITION_MS}ms ease-in-out, transform ${TRANSITION_MS}ms ease-in-out`,
+          }}
+        >
+          <CustomerVoiceCard
+            imageUrl={currentCase.customerImage}
+            size="small"
+            showOverlay={false}
+            isVisible={customerVisible && !fadingOut}
+            className="max-w-[12rem]"
+          />
+        </div>
+      </div>
+
+      {/* Center cell — text, waveform, action + resolution */}
+      <div className="relative z-20 flex flex-col items-stretch gap-2 w-[22rem] sm:w-[28rem] px-8 sm:px-10">
+        {/* Customer request text */}
+        <div
           style={{
             opacity: customerTextVisible && !fadingOut ? 1 : 0,
             transform: customerTextVisible && !fadingOut ? "translateY(0)" : "translateY(0.5rem)",
@@ -155,137 +201,191 @@ const VoiceSupportScene = () => {
             transitionDelay: customerTextVisible && !fadingOut ? `${CUSTOMER_TEXT_DELAY_MS}ms` : "0ms",
           }}
         >
-          <p className="text-sm sm:text-base font-semibold italic text-white leading-snug">
+          <p className="text-sm sm:text-base font-semibold italic text-foreground/70 leading-snug text-left">
             {currentCase.customerQuote}
           </p>
         </div>
-      </div>
 
-      {/* Bizmis avatar — center */}
-      <div
-        className={`relative z-10 flex-shrink-0 transition-all ease-out ${
-          isVisible ? "opacity-100 scale-100" : "opacity-0 scale-90"
-        }`}
-        style={{
-          transitionDelay: isVisible ? "200ms" : "0ms",
-          transitionDuration: "1200ms",
-        }}
-      >
-        <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-          <div className="absolute -inset-8 rounded-full bg-[#FD912A]/8 blur-2xl animate-pulse" />
-        </div>
-        <img
-          src="/images/benefit-2-customer-support.png"
-          alt="Bizmis support assistant"
-          className="relative w-80 h-80 sm:w-96 sm:h-96 lg:w-[28rem] lg:h-[28rem] object-contain drop-shadow-2xl"
-        />
-
-        {/* Voice waveform — overlapping avatar bottom */}
+        {/* Audio waveform */}
         <div
-          className="absolute bottom-6 left-1/2 -translate-x-1/2 z-30"
+          className="w-full py-1"
           style={{
             opacity: waveVisible ? 1 : 0,
             transition: `opacity ${TRANSITION_MS}ms ease-in-out`,
           }}
         >
-          <div className="bg-white/70 backdrop-blur-md rounded-full px-5 py-2.5 shadow-lg border border-[#FD912A]/15 flex items-center min-w-[14rem] sm:min-w-[17rem] lg:min-w-[20rem]">
-            <div className="flex items-center gap-[1.5px] h-9 flex-1 min-w-0">
-              {Array.from({ length: WAVEFORM_BARS }).map((_, i) => (
+          <div className="flex items-center gap-[1.5px] h-8 w-full">
+            {Array.from({ length: WAVEFORM_BARS }).map((_, i) => (
+              <div
+                key={i}
+                className="flex-1 min-w-[1px] rounded-full bg-[#FD912A]/60"
+                style={{
+                  height: waveAnimating
+                    ? `${WAVEFORM_HEIGHTS[i % WAVEFORM_BARS]}%`
+                    : "20%",
+                  animation: waveAnimating
+                    ? `waveform-pulse 1.2s ease-in-out ${i * 0.04}s infinite alternate`
+                    : "none",
+                  transition: "height 300ms ease-in-out",
+                }}
+              />
+            ))}
+          </div>
+        </div>
+
+        {/* Single slot: action badge or resolution message (fixed height to avoid layout shift) */}
+        <div
+          className="flex flex-col items-end justify-start"
+          style={{ minHeight: RESOLUTION_SLOT_MIN_HEIGHT }}
+        >
+          {actionBadgeVisible ? (
+            <div
+              style={{
+                opacity: 1,
+                animation: "action-badge-in 500ms ease-out forwards",
+                pointerEvents: "none",
+              }}
+            >
+              <div
+                className="backdrop-blur-md rounded-xl px-3.5 py-2 shadow-md flex items-center gap-2 transition-all duration-300"
+                style={{
+                  background: actionCompleted ? "rgba(253,145,42,0.12)" : "rgba(255,255,255,0.9)",
+                  borderWidth: 1,
+                  borderStyle: "solid",
+                  borderColor: actionCompleted ? "rgba(253,145,42,0.3)" : "rgba(253,145,42,0.15)",
+                }}
+              >
+                <div
+                  className="w-6 h-6 rounded-full flex items-center justify-center shrink-0 transition-colors duration-300"
+                  style={{
+                    background: actionCompleted ? "rgba(253,145,42,0.2)" : "rgba(253,145,42,0.1)",
+                  }}
+                >
+                  {actionCompleted ? (
+                    <FaCheck className="w-2.5 h-2.5 text-[#FD912A]" />
+                  ) : (
+                    <currentCase.resolutionIcon className="w-3 h-3 text-[#FD912A]" />
+                  )}
+                </div>
+                <div className="flex flex-col">
+                  <span className="text-[11px] font-semibold text-foreground/80 whitespace-nowrap">
+                    {currentCase.resolutionAction}
+                  </span>
+                  {actionCompleted ? (
+                    <span className="text-[10px] text-[#FD912A] font-semibold">Done</span>
+                  ) : (
+                    <span className="flex items-center gap-0.5 text-[10px] text-[#FD912A] font-medium">
+                      Processing
+                      {[0, 1, 2].map((i) => (
+                        <span
+                          key={i}
+                          style={{
+                            animation: `action-dots 1.2s ease-in-out ${i * 0.2}s infinite`,
+                          }}
+                        >
+                          .
+                        </span>
+                      ))}
+                    </span>
+                  )}
+                </div>
+              </div>
+            </div>
+          ) : resolutionVisible ? (
+            <div
+              style={{
+                opacity: resolutionRevealed ? 1 : 0,
+                transform: resolutionRevealed ? "translateY(0)" : "translateY(0.75rem)",
+                transition: `opacity ${TRANSITION_MS}ms ease-in-out, transform ${TRANSITION_MS}ms ease-in-out`,
+                transitionDelay: resolutionRevealed ? "0ms" : `${RESOLUTION_TEXT_DELAY_MS}ms`,
+              }}
+            >
+              <p className="text-sm text-foreground/70 italic leading-relaxed text-right">
+                {currentCase.response}
+              </p>
+            </div>
+          ) : null}
+        </div>
+
+        {/* Solved checkmark — below content, no layout displacement */}
+        <div
+          className="absolute left-0 right-0 bottom-0 flex justify-center pointer-events-none"
+          style={{
+            opacity: solvedVisible ? 1 : 0,
+            transition: `opacity ${TRANSITION_MS}ms ease-in-out`,
+            transform: "translateY(100%)",
+          }}
+        >
+          {solvedVisible && (
+            <>
+              {SOLVED_PARTICLES.map((p, i) => (
                 <div
                   key={i}
-                  className="flex-1 min-w-[2px] rounded-full bg-[#FD912A]/70"
+                  className="absolute rounded-full"
                   style={{
-                    height: waveAnimating
-                      ? `${WAVEFORM_HEIGHTS[i % WAVEFORM_BARS]}%`
-                      : "20%",
-                    animation: waveAnimating
-                      ? `waveform-pulse 1.2s ease-in-out ${i * 0.04}s infinite alternate`
-                      : "none",
-                    transition: "height 300ms ease-in-out",
+                    width: p.size,
+                    height: p.size,
+                    background: p.color,
+                    animation: `solved-particle 800ms ease-out ${p.delay}ms forwards`,
+                    left: "50%",
+                    top: "50%",
+                    transform: "translate(-50%, -50%)",
+                    ["--px" as string]: `${p.x}px`,
+                    ["--py" as string]: `${p.y}px`,
                   }}
                 />
               ))}
-            </div>
-          </div>
-        </div>
-
-      </div>
-
-      {/* Right column — action badge + resolution card */}
-      <div className="relative z-20 flex-shrink-0 w-full max-w-[14rem] -ml-12 sm:-ml-16 lg:-ml-20 flex flex-col items-start gap-2.5">
-        {/* Action badge — processing → done */}
-        <div
-          style={{
-            opacity: actionBadgeVisible && !fadingOut ? 1 : 0,
-            animation: actionBadgeVisible && !fadingOut ? "action-badge-in 500ms ease-out forwards" : "none",
-            transition: fadingOut ? `opacity ${TRANSITION_MS}ms ease-in-out` : undefined,
-            pointerEvents: "none",
-          }}
-        >
-          <div
-            className="backdrop-blur-md rounded-xl px-3.5 py-2 shadow-md flex items-center gap-2 transition-all duration-300"
-            style={{
-              background: actionCompleted ? "rgba(253,145,42,0.12)" : "rgba(255,255,255,0.9)",
-              borderWidth: 1,
-              borderStyle: "solid",
-              borderColor: actionCompleted ? "rgba(253,145,42,0.3)" : "rgba(253,145,42,0.15)",
-            }}
-          >
-            <div
-              className="w-6 h-6 rounded-full flex items-center justify-center shrink-0 transition-colors duration-300"
-              style={{
-                background: actionCompleted ? "rgba(253,145,42,0.2)" : "rgba(253,145,42,0.1)",
-              }}
-            >
-              {actionCompleted ? (
-                <FaCheck className="w-2.5 h-2.5 text-[#FD912A]" />
-              ) : (
-                <currentCase.resolutionIcon className="w-3 h-3 text-[#FD912A]" />
-              )}
-            </div>
-            <div className="flex flex-col">
-              <span className="text-[11px] font-semibold text-foreground/80 whitespace-nowrap">
-                {currentCase.resolutionAction}
-              </span>
-              {actionCompleted ? (
-                <span className="text-[10px] text-[#FD912A] font-semibold">Done</span>
-              ) : (
-                <span className="flex items-center gap-0.5 text-[10px] text-[#FD912A] font-medium">
-                  Processing
-                  {[0, 1, 2].map((i) => (
-                    <span
-                      key={i}
-                      style={{
-                        animation: actionBadgeVisible
-                          ? `action-dots 1.2s ease-in-out ${i * 0.2}s infinite`
-                          : "none",
-                      }}
-                    >
-                      .
-                    </span>
-                  ))}
-                </span>
-              )}
-            </div>
-          </div>
-        </div>
-
-        {/* Resolution card */}
-        <div
-          className="w-full"
-          style={{
-            opacity: resolutionVisible && !fadingOut ? 1 : 0,
-            transform: resolutionVisible && !fadingOut ? "translateY(0)" : "translateY(0.75rem)",
-            transition: `opacity ${TRANSITION_MS}ms ease-in-out, transform ${TRANSITION_MS}ms ease-in-out`,
-          }}
-        >
-          <div className="bg-white/90 backdrop-blur-sm rounded-2xl border border-[#FD912A]/20 shadow-lg p-4">
-            <p className="text-sm text-foreground italic leading-relaxed">
-              {currentCase.response}
-            </p>
-          </div>
+              <div
+                className="absolute rounded-full border-2 border-[#FD912A]/30"
+                style={{ animation: "solved-ring 1s ease-out forwards", left: "50%", top: "50%", translate: "-50% -50%" }}
+              />
+              <svg
+                width="64"
+                height="64"
+                viewBox="0 0 56 56"
+                fill="none"
+                style={{ animation: "solved-badge 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards" }}
+              >
+                <circle
+                  cx="28" cy="28" r="26"
+                  stroke="#FD912A" strokeWidth="2.5" strokeLinecap="round"
+                  fill="none" opacity="0.25"
+                  style={{ strokeDasharray: 163, strokeDashoffset: 163, animation: "solved-circle-draw 0.6s ease-out 0.1s forwards" }}
+                />
+                <path
+                  d="M17 28.5L24.5 36L39 21"
+                  stroke="#FD912A" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round"
+                  fill="none"
+                  style={{ strokeDasharray: 36, strokeDashoffset: 36, animation: "solved-check-draw 0.5s ease-out 0.5s forwards" }}
+                />
+              </svg>
+            </>
+          )}
         </div>
       </div>
+
+      {/* Right cell — avatar pushed to the left edge */}
+      <div className="justify-self-start">
+        <div
+          className={`relative z-10 transition-all ease-out ${
+            isVisible ? "opacity-100 scale-100" : "opacity-0 scale-90"
+          }`}
+          style={{
+            transitionDelay: isVisible ? "200ms" : "0ms",
+            transitionDuration: "1200ms",
+          }}
+        >
+          <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+            <div className="absolute -inset-8 rounded-full bg-[#FD912A]/8 blur-2xl animate-pulse" />
+          </div>
+          <img
+            src="/images/benefit-2-customer-support.png"
+            alt="Bizmis support assistant"
+            className="relative h-80 sm:h-96 lg:h-[28rem] object-contain drop-shadow-2xl"
+          />
+        </div>
+      </div>
+
     </div>
   );
 };

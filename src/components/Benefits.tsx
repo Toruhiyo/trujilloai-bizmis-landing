@@ -177,10 +177,13 @@ const Benefits = () => {
               </p>
             </div>
 
-            {/* Enhanced Split Layout for Comment Cards */}
-            <div className="grid lg:grid-cols-5 gap-20 items-center">
-              {/* Left: Support Features */}
-              <div className="lg:col-span-2 space-y-8">
+            {/* Scene centered, cards in a row below */}
+            <div className="flex flex-col items-center gap-16">
+              <div className="w-full flex justify-center">
+                <VoiceSupportScene />
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full max-w-5xl">
                 <div className="group bg-[#FD912A]/10 backdrop-blur-sm rounded-3xl p-8 border border-[#FD912A]/20 hover:border-[#FD912A]/30 transform rotate-1 hover:rotate-0 transition-all duration-500 shadow-xl">
                   <div className="space-y-6">
                     <div className="flex gap-4">
@@ -232,11 +235,6 @@ const Benefits = () => {
                     </div>
                   </div>
                 </div>
-              </div>
-
-              {/* Right: Voice support interaction scene */}
-              <div className="lg:col-span-3 relative overflow-visible flex justify-center items-center">
-                <VoiceSupportScene />
               </div>
             </div>
           </div>

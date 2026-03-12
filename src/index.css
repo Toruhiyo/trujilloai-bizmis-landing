@@ -287,6 +287,54 @@ All colors MUST be HSL.
   }
 }
 
+/* Solved celebration animations */
+@keyframes solved-badge {
+  0% {
+    opacity: 0;
+    transform: scale(0.5);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes solved-circle-draw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes solved-check-draw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes solved-ring {
+  0% {
+    width: 0;
+    height: 0;
+    opacity: 0.8;
+  }
+  100% {
+    width: 120px;
+    height: 120px;
+    opacity: 0;
+  }
+}
+
+@keyframes solved-particle {
+  0% {
+    opacity: 1;
+    transform: translate(-50%, -50%) translateX(0) translateY(0) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -50%) translateX(var(--px)) translateY(var(--py)) scale(0);
+  }
+}
+
 /* Waveform bar pulse for SpeakDiscoverBuy */
 @keyframes waveform-pulse {
   0% {
