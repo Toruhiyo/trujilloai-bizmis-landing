@@ -202,7 +202,7 @@ const Setup = () => {
                 <div className="flex-1 max-w-md">
                   <div className="rounded-2xl border border-primary/20 p-6">
                     <div className="text-center mb-6">
-                      <div className="inline-flex items-center gap-2 text-primary/60">
+                      <div className="inline-flex items-center gap-2 text-primary/85">
                         <FaShopify className="w-5 h-5" />
                         <span className="text-lg font-heading font-semibold">
                           Your Shopify Store Data
@@ -224,7 +224,7 @@ const Setup = () => {
 
                         <div className="flex items-center gap-4 relative z-10">
                           <div className="w-14 h-14 bg-transparent rounded-xl flex items-center justify-center shrink-0">
-                            <card.icon className="w-6 h-6 text-primary/40 group-hover:text-primary/70 transition-colors duration-300" />
+                            <card.icon className="w-6 h-6 text-primary/60 group-hover:text-primary/85 transition-colors duration-300" />
                           </div>
                           <div className="flex-1">
                             <h3 className="font-heading font-semibold text-foreground text-lg mb-1">

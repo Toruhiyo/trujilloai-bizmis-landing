@@ -63,7 +63,7 @@ const Logo = ({
             fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif",
             fontWeight: 800,
             letterSpacing: "-0.02em",
-            ...(variant !== "white" && { color: "#FD912A" }),
+            ...(variant !== "white" && { color: "hsl(var(--primary))" }),
           }}
         >
           bizmis

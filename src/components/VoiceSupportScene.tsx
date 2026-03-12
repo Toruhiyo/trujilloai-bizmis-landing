@@ -218,7 +218,7 @@ const VoiceSupportScene = () => {
             {Array.from({ length: WAVEFORM_BARS }).map((_, i) => (
               <div
                 key={i}
-                className="flex-1 min-w-[1px] rounded-full bg-primary/60"
+                className="flex-1 min-w-[1px] rounded-full bg-primary-light"
                 style={{
                   height: waveAnimating
                     ? `${WAVEFORM_HEIGHTS[i % WAVEFORM_BARS]}%`

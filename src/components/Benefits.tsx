@@ -37,7 +37,7 @@ const Benefits = () => {
 
           {/* Floating accent elements */}
           <div className="absolute top-1/4 right-1/4 w-2 h-2 bg-primary/30 rounded-full animate-pulse"></div>
-          <div className="absolute bottom-1/3 left-1/3 w-1 h-1 bg-primary/40 rounded-full animate-pulse delay-1000"></div>
+          <div className="absolute bottom-1/3 left-1/3 w-1 h-1 bg-primary/60 rounded-full animate-pulse delay-1000"></div>
           <div className="absolute top-2/3 left-1/4 w-1.5 h-1.5 bg-primary/25 rounded-full animate-pulse delay-500"></div>
 
           {/* Bridging stains — visually connect cards to sales flow */}
@@ -304,7 +304,7 @@ const Benefits = () => {
                 <div className="group bg-primary/10 backdrop-blur-sm rounded-3xl p-8 border border-primary/20 hover:border-primary/30 transform rotate-1 hover:rotate-0 transition-all duration-500 shadow-xl">
                   <div className="space-y-6">
                     <div className="flex gap-4">
-                      <FaPlay className="w-5 h-5 text-primary/40 group-hover:text-primary/70 transition-colors duration-300 flex-shrink-0 mt-0.5" />
+                      <FaPlay className="w-5 h-5 text-primary/60 group-hover:text-primary/90 transition-colors duration-300 flex-shrink-0 mt-0.5" />
                       <div>
                         <h3 className="text-lg font-heading font-semibold text-foreground mb-2">
                           Session Replays
@@ -322,7 +322,7 @@ const Benefits = () => {
                 <div className="group bg-primary/10 backdrop-blur-sm rounded-3xl p-8 border border-primary/20 hover:border-primary/30 transform -rotate-1 hover:rotate-0 transition-all duration-500 shadow-xl">
                   <div className="space-y-6">
                     <div className="flex gap-4">
-                      <FaTag className="w-5 h-5 text-primary/40 group-hover:text-primary/70 transition-colors duration-300 flex-shrink-0 mt-0.5" />
+                      <FaTag className="w-5 h-5 text-primary/60 group-hover:text-primary/90 transition-colors duration-300 flex-shrink-0 mt-0.5" />
                       <div>
                         <h3 className="text-lg font-heading font-semibold text-foreground mb-2">
                           Auto-Tagged Chats
@@ -339,7 +339,7 @@ const Benefits = () => {
                 <div className="group bg-primary/10 backdrop-blur-sm rounded-3xl p-8 border border-primary/20 hover:border-primary/30 transform rotate-2 hover:rotate-0 transition-all duration-500 shadow-xl">
                   <div className="space-y-6">
                     <div className="flex gap-4">
-                      <FaChartBar className="w-5 h-5 text-primary/40 group-hover:text-primary/70 transition-colors duration-300 flex-shrink-0 mt-0.5" />
+                      <FaChartBar className="w-5 h-5 text-primary/60 group-hover:text-primary/90 transition-colors duration-300 flex-shrink-0 mt-0.5" />
                       <div>
                         <h3 className="text-lg font-heading font-semibold text-foreground mb-2">
                           Funnel Insights

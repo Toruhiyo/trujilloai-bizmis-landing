@@ -125,7 +125,7 @@ const Customization = () => {
               <div className="group bg-primary/10 backdrop-blur-md rounded-3xl p-8 border border-primary/20 hover:border-primary/30 transform -rotate-1 hover:rotate-0 transition-all duration-500 shadow-xl">
                 <div className="space-y-6">
                   <div className="flex gap-4">
-                    <FaPaintBrush className="w-5 h-5 text-primary/40 group-hover:text-primary/70 transition-colors duration-300 flex-shrink-0 mt-0.5" />
+                    <FaPaintBrush className="w-5 h-5 text-primary/60 group-hover:text-primary/90 transition-colors duration-300 flex-shrink-0 mt-0.5" />
                     <div>
                       <h3 className="text-xl font-heading font-bold text-foreground">
                         Personal Avatar
@@ -142,7 +142,7 @@ const Customization = () => {
               <div className="group bg-primary/10 backdrop-blur-md rounded-3xl p-8 border border-primary/20 hover:border-primary/30 transform rotate-1 hover:rotate-0 transition-all duration-500 shadow-xl">
                 <div className="space-y-6">
                   <div className="flex gap-4">
-                    <FaMicrophone className="w-5 h-5 text-primary/40 group-hover:text-primary/70 transition-colors duration-300 flex-shrink-0 mt-0.5" />
+                    <FaMicrophone className="w-5 h-5 text-primary/60 group-hover:text-primary/90 transition-colors duration-300 flex-shrink-0 mt-0.5" />
                     <div>
                       <h3 className="text-xl font-heading font-bold text-foreground">
                         Voice Cloning

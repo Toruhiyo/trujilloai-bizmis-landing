@@ -75,10 +75,10 @@ const SpeakDiscoverBuy = () => {
     <div ref={sectionRef} className="w-full max-w-6xl mx-auto px-4">
       {/* Minimal step flow: 1 → 2 → 3 */}
       <div className="w-full mb-6 flex items-center justify-center">
-        <div className="flex items-center gap-2 sm:gap-4 text-primary/65 text-xs sm:text-sm font-medium">
+        <div className="flex items-center gap-2 sm:gap-4 text-primary text-xs sm:text-sm font-medium">
           {STEPS.map((step, idx) => (
             <span key={step.num} className="flex items-center gap-1.5 sm:gap-2">
-              <span className="flex-shrink-0 w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-primary/65 text-white text-[10px] sm:text-xs font-semibold flex items-center justify-center">
+              <span className="flex-shrink-0 w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-primary-light text-white text-[10px] sm:text-xs font-semibold flex items-center justify-center">
                 {step.num}
               </span>
               <span>{step.label}</span>
@@ -147,7 +147,7 @@ const SpeakDiscoverBuy = () => {
                   {Array.from({ length: WAVEFORM_BARS }).map((_, i) => (
                     <div
                       key={i}
-                      className="flex-1 min-w-[1.5px] rounded-full bg-primary/70"
+                      className="flex-1 min-w-[1.5px] rounded-full bg-primary/90"
                       style={{
                         height: `${WAVEFORM_HEIGHTS[i % WAVEFORM_BARS]}%`,
                         animation: isVisible

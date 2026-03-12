@@ -22,10 +22,10 @@ All colors MUST be HSL.
     --popover-foreground: 35 30% 15%;
 
     /* Primary - #FD912A */
-    --primary: 29 98% 58%;
+    --primary: 29 93% 65%;
     --primary-foreground: 0 0% 100%;
-    --primary-light: 33 97% 65%;
-    --primary-dark: 25 98% 45%;
+    --primary-light: 29 93% 75%;
+    --primary-dark: 29 93% 48%;
 
     /* Secondary - Warm complement */
     --secondary: 35 35% 96%;
