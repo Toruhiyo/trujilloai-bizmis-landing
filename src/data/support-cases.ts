@@ -75,7 +75,7 @@ export const SUPPORT_CASES: SupportCase[] = [
   },
   {
     id: "start-return",
-    customerImage: "/images/benefit-2-customer-1.png",
+    customerImage: "/images/benefit-2-customer-7.png",
     customerQuote: '"I want to return this."',
     resolutionIcon: FaUndoAlt,
     resolutionAction: "Return started",
