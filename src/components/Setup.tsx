@@ -201,9 +201,9 @@ const Setup = () => {
                 <div className="flex-1 max-w-md">
                   <div className="rounded-2xl  border-2 border-[#FD912A]/30 p-6">
                     <div className="text-center mb-6">
-                      <div className="inline-flex items-center gap-2">
-                        <FaShopify className="w-5 h-5 text-[#FD912A]" />
-                        <span className="text-lg font-heading font-semibold text-foreground">
+                      <div className="inline-flex items-center gap-2 text-[#FD912A]/60">
+                        <FaShopify className="w-5 h-5" />
+                        <span className="text-lg font-heading font-semibold">
                           Your Shopify Store Data
                         </span>
                       </div>
