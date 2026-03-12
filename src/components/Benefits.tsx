@@ -8,7 +8,10 @@ import {
   FaComments,
   FaChartLine,
   FaClock,
+  FaBolt,
   FaPlus,
+  FaStar,
+  FaRedoAlt,
 } from "react-icons/fa";
 import SectionBadge from "./SectionBadge";
 import SpeakDiscoverBuy from "./SpeakDiscoverBuy";
@@ -177,22 +180,39 @@ const Benefits = () => {
               </p>
             </div>
 
-            {/* Scene centered, cards in a row below */}
-            <div className="flex flex-col items-center gap-16">
+            {/* Hierarchy: demo scene → business outcomes (KPI strip) → enabling capabilities (cards) */}
+            <div className="flex flex-col items-center gap-14">
               <div className="w-full flex justify-center">
                 <VoiceSupportScene />
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full max-w-5xl">
-                <div className="group bg-[#FD912A]/10 backdrop-blur-sm rounded-3xl p-8 border border-[#FD912A]/20 hover:border-[#FD912A]/30 transform rotate-1 hover:rotate-0 transition-all duration-500 shadow-xl">
-                  <div className="space-y-6">
-                    <div className="flex gap-4">
-                      <FaClock className="w-5 h-5 text-[#FD912A]/40 group-hover:text-[#FD912A]/70 transition-colors duration-300 flex-shrink-0 mt-0.5" />
+              {/* Business outcomes — compact KPI strip, narrower than cards, not aligned to columns */}
+              <div className="flex flex-wrap justify-center gap-3 sm:gap-4 w-full max-w-2xl">
+                <div className="inline-flex items-center gap-1.5 rounded-full border-2 border-muted-foreground/70 bg-transparent px-3.5 py-1.5">
+                  <FaClock className="w-3.5 h-3.5 text-muted-foreground shrink-0" />
+                  <span className="text-sm font-medium text-muted-foreground">Save support hours</span>
+                </div>
+                <div className="inline-flex items-center gap-1.5 rounded-full border-2 border-muted-foreground/70 bg-transparent px-3.5 py-1.5">
+                  <FaStar className="w-3.5 h-3.5 text-muted-foreground shrink-0" />
+                  <span className="text-sm font-medium text-muted-foreground">Earn better reviews</span>
+                </div>
+                <div className="inline-flex items-center gap-1.5 rounded-full border-2 border-muted-foreground/70 bg-transparent px-3.5 py-1.5">
+                  <FaRedoAlt className="w-3.5 h-3.5 text-muted-foreground shrink-0" />
+                  <span className="text-sm font-medium text-muted-foreground">Grow repeat sales</span>
+                </div>
+              </div>
+
+              {/* Enabling capabilities */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-5 w-full max-w-5xl">
+                <div className="group bg-[#FD912A]/6 backdrop-blur-sm rounded-2xl p-6 border border-[#FD912A]/15 hover:border-[#FD912A]/25 transition-all duration-300 shadow-lg">
+                  <div className="space-y-4">
+                    <div className="flex gap-3">
+                      <FaBolt className="w-4 h-4 text-[#FD912A]/35 group-hover:text-[#FD912A]/60 transition-colors duration-300 flex-shrink-0 mt-0.5" />
                       <div>
-                        <h3 className="text-lg font-heading font-semibold text-foreground mb-2">
+                        <h3 className="text-sm font-heading font-medium text-foreground mb-1.5">
                           24/7 Instant Support
                         </h3>
-                        <p className="text-muted-foreground font-body text-sm">
+                        <p className="text-muted-foreground font-body text-sm leading-relaxed">
                           Customers get help the moment they need it — no
                           waiting, no frustration, no bad reviews from
                           unanswered questions.
@@ -202,34 +222,34 @@ const Benefits = () => {
                   </div>
                 </div>
 
-                <div className="group bg-[#FD912A]/10 backdrop-blur-sm rounded-3xl p-8 border border-[#FD912A]/20 hover:border-[#FD912A]/30 transform -rotate-1 hover:rotate-0 transition-all duration-500 shadow-xl">
-                  <div className="space-y-6">
-                    <div className="flex gap-4">
-                      <FaHeart className="w-5 h-5 text-[#FD912A]/40 group-hover:text-[#FD912A]/70 transition-colors duration-300 flex-shrink-0 mt-0.5" />
+                <div className="group bg-[#FD912A]/6 backdrop-blur-sm rounded-2xl p-6 border border-[#FD912A]/15 hover:border-[#FD912A]/25 transition-all duration-300 shadow-lg">
+                  <div className="space-y-4">
+                    <div className="flex gap-3">
+                      <FaShieldAlt className="w-4 h-4 text-[#FD912A]/35 group-hover:text-[#FD912A]/60 transition-colors duration-300 flex-shrink-0 mt-0.5" />
                       <div>
-                        <h3 className="text-lg font-heading font-semibold text-foreground mb-2">
-                          Empathetic Support
+                        <h3 className="text-sm font-heading font-medium text-foreground mb-1.5">
+                          Problem Resolution
                         </h3>
-                        <p className="text-muted-foreground font-body text-sm">
-                          AI that understands customer emotions and responds
-                          with genuine care and understanding.
+                        <p className="text-muted-foreground font-body text-sm leading-relaxed">
+                          Quick, accurate solutions that turn frustrated
+                          customers into satisfied advocates.
                         </p>
                       </div>
                     </div>
                   </div>
                 </div>
 
-                <div className="group bg-[#FD912A]/10 backdrop-blur-sm rounded-3xl p-8 border border-[#FD912A]/20 hover:border-[#FD912A]/30 transform rotate-2 hover:rotate-0 transition-all duration-500 shadow-xl">
-                  <div className="space-y-6">
-                    <div className="flex gap-4">
-                      <FaShieldAlt className="w-5 h-5 text-[#FD912A]/40 group-hover:text-[#FD912A]/70 transition-colors duration-300 flex-shrink-0 mt-0.5" />
+                <div className="group bg-[#FD912A]/6 backdrop-blur-sm rounded-2xl p-6 border border-[#FD912A]/15 hover:border-[#FD912A]/25 transition-all duration-300 shadow-lg">
+                  <div className="space-y-4">
+                    <div className="flex gap-3">
+                      <FaHeart className="w-4 h-4 text-[#FD912A]/35 group-hover:text-[#FD912A]/60 transition-colors duration-300 flex-shrink-0 mt-0.5" />
                       <div>
-                        <h3 className="text-lg font-heading font-semibold text-foreground mb-2">
-                          Problem Resolution
+                        <h3 className="text-sm font-heading font-medium text-foreground mb-1.5">
+                          Empathetic Support
                         </h3>
-                        <p className="text-muted-foreground font-body text-sm">
-                          Quick, accurate solutions that turn frustrated
-                          customers into satisfied advocates.
+                        <p className="text-muted-foreground font-body text-sm leading-relaxed">
+                          AI that understands customer emotions and responds
+                          with genuine care and understanding.
                         </p>
                       </div>
                     </div>
