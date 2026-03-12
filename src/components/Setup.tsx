@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import {
-  FaShoppingBag,
+  FaGlobe,
   FaTag,
   FaUsers,
   FaPercent,
@@ -37,7 +37,7 @@ const HEARTBEAT_FADE_DURATION_MS = 600; // Duration of each heartbeat fade
 
 const shopifyDataCards = [
   {
-    icon: FaShoppingBag,
+    icon: FaGlobe,
     title: "Store Website",
     description: "Vision, mission and core values",
   },
@@ -54,7 +54,7 @@ const shopifyDataCards = [
   {
     icon: FaUsers,
     title: "Customers",
-    description: "Customer records for personalized support and sales",
+    description: "Customer sales and support records",
   },
   {
     icon: FaBox,
@@ -200,7 +200,7 @@ const Setup = () => {
               <div className="flex flex-col lg:flex-row items-center justify-between gap-16 lg:gap-24">
                 {/* Shopify Data Cards - Stacked Vertically */}
                 <div className="flex-1 max-w-md">
-                  <div className="rounded-2xl  border-2 border-[#FD912A]/30 p-6">
+                  <div className="rounded-2xl border border-[#FD912A]/20 p-6">
                     <div className="text-center mb-6">
                       <div className="inline-flex items-center gap-2 text-[#FD912A]/60">
                         <FaShopify className="w-5 h-5" />
@@ -215,12 +215,7 @@ const Setup = () => {
                       <div
                         key={index}
                         id={`card-${index}`}
-                        className="relative bg-[#FDF7E2]/40 backdrop-blur-sm rounded-2xl p-6 border border-[#FD912A]/30 hover:scale-105 transition-all duration-300 group overflow-hidden"
-                        style={{
-                          boxShadow: "0 8px 32px rgba(0, 0, 0, 0.1)",
-                          backdropFilter: "blur(10px)",
-                          border: "1px solid rgba(255, 255, 255, 0.2)",
-                        }}
+                        className="group relative bg-[#FD912A]/10 backdrop-blur-sm rounded-2xl p-6 shadow-[0_4px_20px_-2px_rgba(0,0,0,0.06),0_2px_8px_-2px_rgba(253,145,42,0.06)] hover:scale-[1.02] transition-all duration-300 overflow-hidden"
                       >
                         {/* Shopify Icon Watermark */}
                         <div className="absolute bottom-[calc(50%-2.5rem)] right-0 opacity-10 group-hover:opacity-15 transition-opacity duration-300">
@@ -228,8 +223,8 @@ const Setup = () => {
                         </div>
 
                         <div className="flex items-center gap-4 relative z-10">
-                          <div className="w-12 h-12 bg-transparent rounded-xl flex items-center justify-center">
-                            <card.icon className="w-5 h-5 text-[#FD912A]/70" />
+                          <div className="w-14 h-14 bg-transparent rounded-xl flex items-center justify-center shrink-0">
+                            <card.icon className="w-6 h-6 text-[#FD912A]/40 group-hover:text-[#FD912A]/70 transition-colors duration-300" />
                           </div>
                           <div className="flex-1">
                             <h3 className="font-heading font-semibold text-foreground text-lg mb-1">
