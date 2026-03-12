@@ -16,10 +16,11 @@ import Xarrow from "react-xarrows";
 
 // Constants for connector styling
 const CONNECTOR_STROKE_WIDTH = 4;
-const CONNECTOR_CURVENESS = 0.8;
+const CONNECTOR_CURVENESS = 0.4;
 const CONNECTOR_ANIMATION_DURATION = 0.5;
 const CONNECTOR_Z_INDEX = -1;
 const CONNECTOR_COLOR = "rgba(253, 145, 42, 0.25)";
+const CONNECTOR_INFLECTION_OFFSET_X = 100;
 
 // Constants for shiny dots
 const SHINY_DOT_STROKE_WIDTH = 3;
@@ -289,13 +290,13 @@ const Setup = () => {
                     );
                   })()}
 
-                  {/* Avatar Images with Heartbeat Effect — scaled down ~10% for breathing room */}
-                  <div id="avatar-target" className="relative z-10 max-w-full scale-90">
+                  {/* Avatar Images with Heartbeat Effect — scale-90 below lg; full size at lg+ */}
+                  <div id="avatar-target" className="relative z-10 max-w-full scale-90 lg:scale-100">
                     {/* Orange avatar always visible behind */}
                     <img
                       src="/images/setup-avatar-orange.png"
                       alt="Bizmis Storemate Orange"
-                      className="h-[clamp(21.6rem,45vh,43.2rem)] w-auto max-w-full object-contain"
+                      className="h-[36rem] w-auto max-w-full object-contain"
                       style={{ aspectRatio: "auto" }}
                       onError={(e) =>
                         console.error(
@@ -308,7 +309,7 @@ const Setup = () => {
                     <img
                       src="/images/setup-avatar.png"
                       alt="Bizmis Storemate"
-                      className="h-[clamp(21.6rem,45vh,43.2rem)] w-auto max-w-full object-contain absolute top-0 left-0"
+                      className="h-[36rem] w-auto max-w-full object-contain absolute top-0 left-0"
                       style={{
                         opacity: avatarOpacity,
                         transition: `opacity ${HEARTBEAT_FADE_DURATION_MS}ms ease-in-out`,
@@ -338,6 +339,7 @@ const Setup = () => {
                     endAnchor="middle"
                     animateDrawing={CONNECTOR_ANIMATION_DURATION}
                     zIndex={CONNECTOR_Z_INDEX}
+                    _cpx1Offset={CONNECTOR_INFLECTION_OFFSET_X}
                   />
                 ))}
               </div>
@@ -358,6 +360,7 @@ const Setup = () => {
                     endAnchor="middle"
                     zIndex={CONNECTOR_Z_INDEX}
                     animateDrawing={SHINY_DOT_ANIMATION_DURATION}
+                    _cpx1Offset={CONNECTOR_INFLECTION_OFFSET_X}
                   />
                 ))}
               </div>
