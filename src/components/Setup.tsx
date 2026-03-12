@@ -439,7 +439,7 @@ const Setup = () => {
             </div>
 
             {/* Trust badges — lightweight reassurance, footnotes of the diagram */}
-            <div className="flex flex-wrap justify-center items-center gap-4 md:gap-6 py-4 mb-8">
+            <div className="flex flex-wrap justify-center items-center gap-4 md:gap-6 py-4 mb-8 opacity-60">
               {[
                 { icon: FaBolt, label: "One-click setup" },
                 { icon: FaSync, label: "Always synced" },
@@ -448,12 +448,12 @@ const Setup = () => {
                 <div key={i} className="flex items-center gap-4 md:gap-6">
                   {i > 0 && (
                     <span
-                      className="w-1.5 h-1.5 rounded-full bg-[#FD912A]/40 shrink-0"
+                      className="w-1.5 h-1.5 rounded-full bg-muted-foreground/85 shrink-0"
                       aria-hidden
                     />
                   )}
-                  <div className="flex items-center gap-2 text-muted-foreground">
-                    <badge.icon className="h-4 w-4 shrink-0 text-[#FD912A]" />
+                  <div className="flex items-center gap-2 text-muted-foreground/85">
+                    <badge.icon className="h-4 w-4 shrink-0 text-muted-foreground/85" />
                     <span className="text-sm font-medium">{badge.label}</span>
                   </div>
                 </div>
@@ -462,11 +462,11 @@ const Setup = () => {
 
             {/* CTA */}
             <div className="text-center">
-              <Button className="bg-[#FD912A] hover:bg-[#FD912A]/85 text-white px-8 py-3 text-lg inline-flex items-center gap-2">
+              <Button className="bg-foreground hover:bg-foreground/90 text-white px-8 py-3 text-lg inline-flex items-center gap-2">
                 <FaShopify className="h-5 w-5" />
                 Install Bizmis on Shopify
               </Button>
-              <p className="text-sm text-muted-foreground mt-3 font-body">
+              <p className="text-sm text-muted-foreground mt-3 font-body opacity-60">
                 Start selling and supporting customers now.
               </p>
             </div>
