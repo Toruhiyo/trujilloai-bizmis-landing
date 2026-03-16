@@ -55,24 +55,31 @@ const ProductDiscoverySlide = () => {
           />
         ))}
       </div>
-      {/* Flow diagram — right-aligned, lowered and larger */}
-      <div className="absolute top-20 left-0 right-0 z-20 flex items-center justify-end">
-        <div className="flex items-center gap-0 text-lg font-semibold rounded-2xl px-6 py-3 border-2 border-primary-dark/30 text-primary-dark">
-          <span className="inline-flex items-center gap-2">
-            <FaBrain className="w-5 h-5 text-primary-dark/80" />
-            Understand intent
-          </span>
-          <span className="text-primary/60 mx-2 text-xl">→</span>
-          <span className="inline-flex items-center gap-2">
-            <FaSearch className="w-5 h-5 text-primary-dark/80" />
-            Search catalog
-          </span>
-          <span className="text-primary/60 mx-2 text-xl">→</span>
-          <span className="inline-flex items-center gap-2">
-            <FaComments className="w-5 h-5 text-primary-dark/80" />
-            Refine with follow-up
-          </span>
-          <FaSync className="w-6 h-6 text-primary/80 ml-4 shrink-0" />
+      {/* Flow diagram — loop icon in badge at top-right */}
+      <div className="absolute top-8 left-0 right-0 z-20 flex items-center justify-end">
+        <div className="relative">
+          <div className="flex items-center gap-0 text-lg font-semibold text-primary border-2 border-primary/50 rounded-xl px-7 py-3.5 w-fit">
+            <span className="inline-flex items-center gap-2">
+              <FaBrain className="w-6 h-6 text-primary/80" />
+              Understand intent
+            </span>
+            <span className="text-primary/40 mx-2.5 text-xl">→</span>
+            <span className="inline-flex items-center gap-2">
+              <FaSearch className="w-6 h-6 text-primary/80" />
+              Search catalog
+            </span>
+            <span className="text-primary/40 mx-2.5 text-xl">→</span>
+            <span className="inline-flex items-center gap-2">
+              <FaComments className="w-6 h-6 text-primary/80" />
+              Refine with follow-up
+            </span>
+          </div>
+          <div
+            className="absolute -top-1.5 -right-1.5 w-9 h-9 rounded-full bg-primary flex items-center justify-center text-primary-foreground shadow-md"
+            aria-hidden
+          >
+            <FaSync className="w-4 h-4" />
+          </div>
         </div>
       </div>
 
