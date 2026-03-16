@@ -1,0 +1,173 @@
+import { useState, useCallback } from "react";
+import { FaShoppingCart, FaBalanceScale, FaCheckCircle, FaCartPlus, FaSearch } from "react-icons/fa";
+const SCREENSHOT_SRC = "/images/slides/shopify-listing/shopify-product-comparison-and-checkout-screenshot.png";
+
+const BROWSER_CHROME_HEIGHT = 28;
+
+const HALF_WAVE_BAR_COUNT = 80;
+const HALF_WAVE_HEIGHTS_TOP = [
+  32, 58, 88, 48, 72, 38, 82, 52, 68, 92, 42, 78, 55, 85, 35, 65, 95, 45, 62,
+  75, 28, 70, 50, 90, 58, 40, 78, 68, 48, 82, 55, 72, 38, 88, 62, 45, 75, 52,
+];
+const HALF_WAVE_HEIGHTS_BOTTOM = [
+  68, 42, 85, 55, 38, 78, 48, 92, 62, 35, 72, 88, 52, 65, 45, 82, 58, 28, 75,
+  50, 90, 48, 70, 42, 68, 95, 55, 78, 40, 62, 72, 45, 88, 58, 32, 82, 65, 48,
+];
+
+const ProductComparisonSlide = () => {
+  const [aspectRatio, setAspectRatio] = useState<number | null>(null);
+
+  const onImageLoad = useCallback((e: React.SyntheticEvent<HTMLImageElement>) => {
+    const img = e.currentTarget;
+    if (img.naturalWidth && img.naturalHeight) {
+      setAspectRatio(img.naturalWidth / img.naturalHeight);
+    }
+  }, []);
+
+  return (
+    <div className="relative flex flex-col h-full w-full overflow-visible">
+      <div className="relative z-10 flex flex-col flex-1 min-h-0 overflow-visible">
+        {/* Grid: col 1 = title + process (row 1), conversation (row 2); col 2 = screenshot spanning full height */}
+        <div className="flex-1 grid grid-cols-[1.1fr_1.25fr] grid-rows-[auto_1fr] gap-x-10 gap-y-0 min-h-0 relative overflow-visible">
+          {/* Row 1 col 1: Title block + process bar */}
+          <div className="flex flex-col gap-3 mb-2 min-w-0">
+            <div className="flex flex-col gap-1.5">
+              <div className="inline-flex items-center gap-2">
+                <FaShoppingCart className="w-4 h-4 text-primary" />
+                <span className="text-sm font-body font-semibold text-primary uppercase tracking-widest">
+                  Assisted Sales
+                </span>
+              </div>
+              <h2 className="text-5xl font-heading font-bold text-foreground leading-tight">
+                Product Comparison & Checkout
+              </h2>
+              <p className="text-lg text-muted-foreground font-body leading-relaxed">
+                Bizmis compares the best-fit options, answers final buying questions, and guides the customer straight to checkout.
+              </p>
+            </div>
+            {/* Process bar — single line, compact spacing */}
+            <div className="flex items-center flex-nowrap gap-0 text-base font-semibold text-primary border-2 border-primary/50 rounded-xl px-4 py-3 w-fit whitespace-nowrap">
+              <span className="inline-flex items-center gap-1.5 shrink-0">
+                <FaBalanceScale className="w-5 h-5 text-primary/80 shrink-0" />
+                Compare options
+              </span>
+              <span className="text-primary/40 mx-1.5 text-lg shrink-0">→</span>
+              <span className="inline-flex items-center gap-1.5 shrink-0">
+                <FaCheckCircle className="w-5 h-5 text-primary/80 shrink-0" />
+                Confirm best fit
+              </span>
+              <span className="text-primary/40 mx-1.5 text-lg shrink-0">→</span>
+              <span className="inline-flex items-center gap-1.5 shrink-0">
+                <FaCartPlus className="w-5 h-5 text-primary/80 shrink-0" />
+                Add to cart & checkout
+              </span>
+            </div>
+          </div>
+
+          {/* Row 2 col 1: Conversation — two small half waves conceal top/bottom */}
+          <div className="relative flex flex-col flex-1 min-h-0 min-w-0 overflow-visible pt-2">
+            <div
+              className="absolute top-0 left-0 right-0 flex gap-[2px] h-14 items-end pointer-events-none z-10 bg-transparent"
+              aria-hidden
+            >
+              {Array.from({ length: HALF_WAVE_BAR_COUNT }).map((_, i) => (
+                <div
+                  key={`top-${i}`}
+                  className="flex-1 min-w-[2px] max-w-[6px] rounded-full bg-primary/10"
+                  style={{ height: `${HALF_WAVE_HEIGHTS_TOP[i % HALF_WAVE_HEIGHTS_TOP.length]}%` }}
+                />
+              ))}
+            </div>
+            <div
+              className="absolute bottom-0 left-0 right-0 flex gap-[2px] h-14 items-end pointer-events-none z-10 scale-y-[-1] bg-transparent"
+              aria-hidden
+            >
+              {Array.from({ length: HALF_WAVE_BAR_COUNT }).map((_, i) => (
+                <div
+                  key={`bottom-${i}`}
+                  className="flex-1 min-w-[2px] max-w-[6px] rounded-full bg-primary/10"
+                  style={{ height: `${HALF_WAVE_HEIGHTS_BOTTOM[i % HALF_WAVE_HEIGHTS_BOTTOM.length]}%` }}
+                />
+              ))}
+            </div>
+            <div
+              className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[90%] h-[70%] min-w-[200px] min-h-[180px] rounded-full bg-primary/[0.15] blur-[60px] pointer-events-none z-0"
+              aria-hidden
+            />
+            <div className="relative z-10 flex flex-1 flex-col justify-evenly min-h-0 gap-5">
+              <div className="flex flex-col gap-5">
+                <p className="text-xl text-foreground/70 font-body leading-snug text-left self-start max-w-[82%]">
+                  Which would you say is <strong className="font-semibold text-foreground">better for travel</strong>?
+                </p>
+                <div className="self-end text-right max-w-[82%]">
+                  <p className="text-[1.4rem] text-foreground/75 font-heading font-bold leading-snug">
+                    The <strong className="font-extrabold text-primary-dark/90">LG gram</strong>—lighter and longer battery.
+                  </p>
+                </div>
+                <p className="text-xl text-foreground/70 font-body leading-snug text-left self-start max-w-[82%]">
+                  Let&apos;s go with <strong className="font-semibold text-foreground">that one</strong>. How long is <strong className="font-semibold text-foreground">shipping</strong>?
+                </p>
+                <div className="self-end text-right max-w-[82%]">
+                  <p className="text-[1.4rem] text-foreground/75 font-heading font-bold leading-snug">
+                    <strong className="font-extrabold text-primary-dark/90">2–3 business days</strong>. Add to cart and checkout?
+                  </p>
+                </div>
+                <div className="self-end flex flex-wrap gap-2">
+                  <span className="inline-flex items-center gap-1.5 rounded-full bg-primary/15 backdrop-blur-md border border-primary/25 px-4 py-2 text-sm font-heading font-semibold text-primary-dark">
+                    <FaCartPlus className="w-3.5 h-3.5 text-primary/80" />
+                    Add to cart
+                  </span>
+                  <span className="inline-flex items-center gap-1.5 rounded-full bg-primary/15 backdrop-blur-md border border-primary/25 px-4 py-2 text-sm font-heading font-semibold text-primary-dark">
+                    <FaSearch className="w-3.5 h-3.5 text-primary/80" />
+                    Redirect to checkout
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Col 2: Screenshot spanning full height (same vertical area as title + conversation on left) */}
+          <div className="col-start-2 row-start-1 row-span-2 flex flex-col flex-1 min-h-0 items-center justify-center min-w-0">
+            <div className="relative flex flex-col flex-1 min-h-0 w-full max-w-full rounded-xl overflow-hidden shadow-[0_8px_40px_-8px_rgba(0,0,0,0.12)] border border-black/[0.06]">
+              <div
+                className="bg-[#f1f1f1] flex items-center px-3 gap-1.5 border-b border-black/5 shrink-0"
+                style={{ height: BROWSER_CHROME_HEIGHT }}
+              >
+                <div className="w-2.5 h-2.5 rounded-full bg-primary-dark" />
+                <div className="w-2.5 h-2.5 rounded-full bg-primary" />
+                <div className="w-2.5 h-2.5 rounded-full bg-primary-light" />
+                <div className="flex-1 mx-8 min-w-0">
+                  <div className="bg-white rounded-md h-4 flex items-center px-2">
+                    <span className="text-[8px] text-gray-400 truncate">
+                      your-shopify-store.com
+                    </span>
+                  </div>
+                </div>
+              </div>
+              <div
+                className="relative flex-1 min-h-0 w-full bg-white overflow-hidden"
+                style={
+                  aspectRatio != null
+                    ? {
+                        aspectRatio: aspectRatio,
+                        maxWidth: "100%",
+                      }
+                    : undefined
+                }
+              >
+                <img
+                  src={SCREENSHOT_SRC}
+                  alt="Bizmis helping customer compare products and add to cart on a Shopify store."
+                  onLoad={onImageLoad}
+                  className="block w-full h-full object-contain object-center"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default ProductComparisonSlide;

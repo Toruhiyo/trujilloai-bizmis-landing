@@ -2,6 +2,7 @@ import SlideDeck from "@/components/slides/SlideDeck";
 import { SLIDES } from "@/components/slides/registry";
 import Logo from "@/components/Logo";
 import ProductDiscoverySlide from "@/components/slides/ProductDiscoverySlide";
+import ProductComparisonSlide from "@/components/slides/ProductComparisonSlide";
 
 const COVER_SIDE_MARGIN_PX = 80;
 const WAVEFORM_BAR_COUNT = 60;
@@ -102,7 +103,11 @@ const SHOPIFY_SLIDES = [
     label: "2️⃣ Sales assistance > Product discovery",
     content: <ProductDiscoverySlide />,
   },
-  { ...SLIDES.benefit3, label: "3️⃣ Sales assistance > Comparison → checkout" },
+  {
+    ...SLIDES.benefit1,
+    label: "3️⃣ Sales assistance > Comparison → checkout",
+    content: <ProductComparisonSlide />,
+  },
   { ...SLIDES.setup, label: "4️⃣ Customer Support > Post-purchase support" },
   { ...SLIDES.benefit3, label: "5️⃣ Analytics > Merchant insights" },
 ];
