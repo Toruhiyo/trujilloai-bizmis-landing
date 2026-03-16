@@ -75,7 +75,7 @@ const ProductDiscoverySlide = () => {
             </span>
           </div>
           <div
-            className="absolute -top-1.5 -right-1.5 w-9 h-9 rounded-full bg-primary flex items-center justify-center text-primary-foreground shadow-md"
+            className="absolute -top-3 -right-3 w-9 h-9 rounded-full bg-primary flex items-center justify-center text-primary-foreground shadow-md"
             aria-hidden
           >
             <FaSync className="w-4 h-4" />
