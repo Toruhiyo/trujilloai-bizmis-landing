@@ -135,8 +135,12 @@ const ProductDiscoverySlide = () => {
       </div>
 
       {/* Row 2 col 2: Conversation — same row as image */}
-      <div className="flex flex-col flex-1 min-h-0 min-w-0 overflow-visible pt-2">
-        <div className="flex flex-1 flex-col justify-evenly min-h-0">
+      <div className="relative flex flex-col flex-1 min-h-0 min-w-0 overflow-visible pt-2">
+        <div
+          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[140%] h-[120%] min-w-[320px] min-h-[320px] rounded-full bg-primary/[0.08] blur-[80px] pointer-events-none z-0"
+          aria-hidden
+        />
+        <div className="relative z-10 flex flex-1 flex-col justify-evenly min-h-0">
           <p className="text-xl text-foreground/70 font-body leading-snug text-right self-end max-w-[95%]">
             I’m looking for a <strong className="font-semibold text-foreground">lightweight laptop</strong>, something around <strong className="font-semibold text-foreground">$1,500</strong>.
           </p>
