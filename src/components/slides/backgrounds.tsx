@@ -41,9 +41,6 @@ export const Benefit1Background = () => (
     <div className="absolute top-[40%] left-1/2 -translate-x-1/2 w-[600px] h-[400px] bg-primary/[0.035] rounded-full blur-[100px]" />
     <div className="absolute top-[55%] -left-20 w-[350px] h-[300px] bg-[#FDF7E2]/35 rounded-full blur-[80px]" />
     <div className="absolute top-[50%] -right-10 w-[300px] h-[250px] bg-primary/[0.045] rounded-full blur-[90px]" />
-    <div className="absolute top-1/4 right-1/4 w-2 h-2 bg-primary/30 rounded-full" />
-    <div className="absolute bottom-1/3 left-1/3 w-1 h-1 bg-primary/60 rounded-full" />
-    <div className="absolute top-2/3 left-1/4 w-1.5 h-1.5 bg-primary/25 rounded-full" />
   </>
 );
 
@@ -98,9 +95,6 @@ export const CustomizationBackground = () => (
     <div className="absolute inset-0 bg-[#FDF7E2]/20" />
     <div className="absolute top-0 left-0 w-96 h-96 bg-primary/15 rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2" />
     <div className="absolute bottom-0 right-0 w-80 h-80 bg-primary/15 rounded-full blur-3xl translate-x-1/2 translate-y-1/2" />
-    <div className="absolute top-1/4 right-1/4 w-2 h-2 bg-primary/30 rounded-full" />
-    <div className="absolute bottom-1/3 left-1/3 w-1 h-1 bg-primary/40 rounded-full" />
-    <div className="absolute top-2/3 left-1/4 w-1.5 h-1.5 bg-primary/25 rounded-full" />
   </>
 );
 
