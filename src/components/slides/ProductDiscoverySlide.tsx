@@ -6,11 +6,11 @@ const SCREENSHOT_SRC = "/images/slides/shopify-listing/shopify-product-discovery
 
 const BROWSER_CHROME_HEIGHT = 28;
 
-const TOOL_CHIP_FIRST = "Show products";
+const TOOL_CHIP_FIRST = "Shown products";
 const TOOL_CHIP_SECOND = "Update shown products";
 
 const MEMORY_AFTER_FIRST_RESPONSE = ["~$1,500", "Portable", "Everyday work"];
-const MEMORY_AFTER_SECOND_RESPONSE = ["Battery life"];
+const MEMORY_AFTER_SECOND_RESPONSE = ["Long battery"];
 
 const COVER_WAVEFORM_BAR_COUNT = 200;
 const COVER_WAVEFORM_HEIGHTS = [
@@ -34,25 +34,9 @@ const ProductDiscoverySlide = () => {
   return (
   <div className="relative flex flex-col h-full w-full overflow-visible">
     <div className="relative z-10 flex flex-col flex-1 min-h-0 overflow-visible">
-      {/* TOP: Eyebrow + Headline + Subtitle */}
-      <div className="flex flex-col gap-1.5 mb-4">
-        <div className="inline-flex items-center gap-2">
-          <FaShoppingCart className="w-3 h-3 text-primary" />
-          <span className="text-xs font-body font-semibold text-primary uppercase tracking-widest">
-            Boost Sales
-          </span>
-        </div>
-        <h2 className="text-5xl font-heading font-bold text-foreground leading-tight">
-          Guided Product Discovery
-        </h2>
-        <p className="text-base text-muted-foreground font-body leading-relaxed">
-          Customers speak naturally, and Bizmis guides them to the products that best fit their needs — just like a real store clerk would.
-        </p>
-      </div>
-
-      {/* BOTTOM: Screenshot + right column, with flow diagram overlapping */}
-      <div className="flex-1 flex gap-10 min-h-0 relative overflow-visible">
-      {/* Audio wave watermark — center line at 50% of image row height */}
+      {/* Grid: row 1 = title (col 1) + spacer (col 2); row 2 = image (col 1) + conversation (col 2) */}
+      <div className="flex-1 grid grid-cols-[1.35fr_1fr] grid-rows-[auto_1fr] gap-x-10 gap-y-0 min-h-0 relative overflow-visible">
+      {/* Audio wave watermark — center line at 50% of row 2 */}
       <div
         className="absolute top-1/2 -translate-y-1/2 left-0 right-0 flex items-center justify-center gap-[2px] h-44 pointer-events-none z-0"
         style={{
@@ -71,29 +55,48 @@ const ProductDiscoverySlide = () => {
           />
         ))}
       </div>
-      {/* Flow diagram — right-aligned so its right edge matches content right limit */}
-      <div className="absolute top-0 left-0 right-0 z-20 flex items-center justify-end">
-        <div className="flex items-center gap-0 text-xl font-semibold bg-primary/20 backdrop-blur-md rounded-3xl px-8 py-4 shadow-md border border-primary/20">
-          <span className="inline-flex items-center gap-2.5 text-foreground/90">
-            <FaBrain className="w-5 h-5 text-primary/70" />
+      {/* Flow diagram — right-aligned, lowered and larger */}
+      <div className="absolute top-20 left-0 right-0 z-20 flex items-center justify-end">
+        <div className="flex items-center gap-0 text-lg font-semibold rounded-2xl px-6 py-3 border-2 border-primary-dark/30 text-primary-dark">
+          <span className="inline-flex items-center gap-2">
+            <FaBrain className="w-5 h-5 text-primary-dark/80" />
             Understand intent
           </span>
-          <span className="text-primary/50 mx-3 text-2xl">→</span>
-          <span className="inline-flex items-center gap-2.5 text-foreground/90">
-            <FaSearch className="w-5 h-5 text-primary/70" />
+          <span className="text-primary/60 mx-2 text-xl">→</span>
+          <span className="inline-flex items-center gap-2">
+            <FaSearch className="w-5 h-5 text-primary-dark/80" />
             Search catalog
           </span>
-          <span className="text-primary/50 mx-3 text-2xl">→</span>
-          <span className="inline-flex items-center gap-2.5 text-foreground/90">
-            <FaComments className="w-5 h-5 text-primary/70" />
+          <span className="text-primary/60 mx-2 text-xl">→</span>
+          <span className="inline-flex items-center gap-2">
+            <FaComments className="w-5 h-5 text-primary-dark/80" />
             Refine with follow-up
           </span>
-          <FaSync className="w-7 h-7 text-primary/60 ml-3 shrink-0" />
+          <FaSync className="w-6 h-6 text-primary/80 ml-4 shrink-0" />
         </div>
       </div>
 
-      {/* Screenshot */}
-      <div className="flex-[1.35] flex flex-col min-w-0 min-h-0 items-center pt-6">
+      {/* Row 1 col 1: Title block */}
+      <div className="flex flex-col gap-1.5 mb-4 min-w-0">
+        <div className="inline-flex items-center gap-2">
+          <FaShoppingCart className="w-4 h-4 text-primary" />
+          <span className="text-sm font-body font-semibold text-primary uppercase tracking-widest">
+            Assisted Sales
+          </span>
+        </div>
+        <h2 className="text-5xl font-heading font-bold text-foreground leading-tight">
+          Guided Product Discovery
+        </h2>
+        <p className="text-lg text-muted-foreground font-body leading-relaxed">
+          Customers speak naturally, and Bizmis guides them to the best-fit products.<br />
+          Just like a real store clerk would.
+        </p>
+      </div>
+      {/* Row 1 col 2: Spacer so row 1 height matches title */}
+      <div className="min-w-0" aria-hidden />
+
+      {/* Row 2 col 1: Screenshot */}
+      <div className="flex flex-col flex-1 min-h-0 items-center pt-2 min-w-0">
         <div className="relative flex flex-col flex-1 min-h-0 w-full max-w-full rounded-xl overflow-hidden shadow-[0_8px_40px_-8px_rgba(0,0,0,0.15)] border border-black/[0.06]">
           <div
             className="bg-[#f1f1f1] flex items-center px-3 gap-1.5 border-b border-black/5 shrink-0"
@@ -131,8 +134,8 @@ const ProductDiscoverySlide = () => {
         </div>
       </div>
 
-      {/* Right column: conversation — voice captions only, no chat UI */}
-      <div className="flex-1 flex flex-col min-h-0 min-w-0 pt-20 overflow-visible">
+      {/* Row 2 col 2: Conversation — same row as image */}
+      <div className="flex flex-col flex-1 min-h-0 min-w-0 overflow-visible pt-2">
         <div className="flex flex-1 flex-col justify-evenly min-h-0">
           <p className="text-xl text-foreground/70 font-body leading-snug text-right self-end max-w-[95%]">
             I’m looking for a <strong className="font-semibold text-foreground">lightweight laptop</strong>, something around <strong className="font-semibold text-foreground">$1,500</strong>.
