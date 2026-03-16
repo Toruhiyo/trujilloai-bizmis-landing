@@ -96,15 +96,15 @@ const SHOPIFY_SLIDES = [
     label: "Cover",
     content: <ShopifyHeroContent />,
   },
-  SLIDES.benefit1,
+  { ...SLIDES.benefit1, label: "1️⃣ Greeting & General Overview" },
   {
     ...SLIDES.benefit1,
-    label: "Product Discovery",
+    label: "2️⃣ Sales assistance > Product discovery",
     content: <ProductDiscoverySlide />,
   },
-  SLIDES.benefit3,
-  SLIDES.setup,
-  SLIDES.benefit3,
+  { ...SLIDES.benefit3, label: "3️⃣ Sales assistance > Comparison → checkout" },
+  { ...SLIDES.setup, label: "4️⃣ Customer Support > Post-purchase support" },
+  { ...SLIDES.benefit3, label: "5️⃣ Analytics > Merchant insights" },
 ];
 
 const ShopifyDeck = () => (
