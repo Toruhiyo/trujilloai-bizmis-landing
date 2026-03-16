@@ -107,7 +107,7 @@ const SlideDeck = ({ slides, filenamePrefix = "bizmis-slide" }: SlideDeckProps) 
             ref={(el) => {
               slideRefs.current[i] = el;
             }}
-            className={`relative w-[1600px] h-[900px] overflow-visible rounded-lg shadow-2xl ${
+            className={`relative w-[1600px] h-[900px] overflow-visible shadow-2xl ${
               slide.isStudio ? "studio-lighting-base" : ""
             }`}
           >
