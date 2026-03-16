@@ -1,6 +1,7 @@
 import SlideDeck from "@/components/slides/SlideDeck";
 import { SLIDES } from "@/components/slides/registry";
 import Logo from "@/components/Logo";
+import ProductDiscoverySlide from "@/components/slides/ProductDiscoverySlide";
 
 const COVER_SIDE_MARGIN_PX = 80;
 const WAVEFORM_BAR_COUNT = 60;
@@ -96,6 +97,11 @@ const SHOPIFY_SLIDES = [
     content: <ShopifyHeroContent />,
   },
   SLIDES.benefit1,
+  {
+    ...SLIDES.benefit1,
+    label: "Product Discovery",
+    content: <ProductDiscoverySlide />,
+  },
   SLIDES.benefit3,
   SLIDES.setup,
   SLIDES.benefit3,

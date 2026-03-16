@@ -2,6 +2,7 @@ import { useRef, useCallback, useState, type ReactNode } from "react";
 import { toPng } from "html-to-image";
 import { FaDownload, FaBorderAll } from "react-icons/fa";
 
+/** Distance in px from slide canvas (1600×900) edges to content safe zone and guides */
 export const CONTENT_INSET_PX = 100;
 
 const SLIDE_BASE_WIDTH = 1600;
@@ -106,7 +107,7 @@ const SlideDeck = ({ slides, filenamePrefix = "bizmis-slide" }: SlideDeckProps) 
             ref={(el) => {
               slideRefs.current[i] = el;
             }}
-            className={`relative w-[1600px] h-[900px] overflow-hidden rounded-lg shadow-2xl ${
+            className={`relative w-[1600px] h-[900px] overflow-visible rounded-lg shadow-2xl ${
               slide.isStudio ? "studio-lighting-base" : ""
             }`}
           >
@@ -115,13 +116,23 @@ const SlideDeck = ({ slides, filenamePrefix = "bizmis-slide" }: SlideDeckProps) 
               <div
                 data-guide
                 className="absolute z-50 border-2 border-dashed border-black/20 pointer-events-none"
-                style={{ inset: CONTENT_INSET_PX }}
+                style={{
+                  top: CONTENT_INSET_PX,
+                  right: CONTENT_INSET_PX,
+                  bottom: CONTENT_INSET_PX,
+                  left: CONTENT_INSET_PX,
+                }}
               />
             )}
             {slide.content && (
               <div
-                className="absolute"
-                style={{ inset: CONTENT_INSET_PX }}
+                className="absolute overflow-visible min-w-0 min-h-0"
+                style={{
+                  top: CONTENT_INSET_PX,
+                  right: CONTENT_INSET_PX,
+                  bottom: CONTENT_INSET_PX,
+                  left: CONTENT_INSET_PX,
+                }}
               >
                 {slide.content}
               </div>
