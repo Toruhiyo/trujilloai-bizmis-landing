@@ -1,6 +1,5 @@
 import { useState, useCallback } from "react";
 import { FaShoppingCart, FaSearch, FaSync, FaBrain, FaComments } from "react-icons/fa";
-import { CONTENT_INSET_PX } from "./SlideDeck";
 
 const SCREENSHOT_SRC = "/images/slides/shopify-listing/shopify-product-discovery-screenshot.png";
 
@@ -12,13 +11,14 @@ const TOOL_CHIP_SECOND = "Update shown products";
 const MEMORY_AFTER_FIRST_RESPONSE = ["~$1,500", "Portable", "Everyday work"];
 const MEMORY_AFTER_SECOND_RESPONSE = ["Long battery"];
 
-const COVER_WAVEFORM_BAR_COUNT = 200;
-const COVER_WAVEFORM_HEIGHTS = [
-  28, 42, 58, 75, 62, 45, 55, 70, 80, 52, 38, 65, 48, 58, 82, 65, 42, 55, 70,
-  85, 92, 78, 62, 48, 65, 72, 58, 80, 68, 45, 52, 75, 88, 60, 42, 55, 70, 65, 48,
-  58, 45, 50, 46, 42, 38, 44, 54, 50, 65, 78, 55, 42, 68, 85, 72, 58, 45, 62,
-  38, 52, 70, 82, 60, 48, 55, 75, 90, 68, 42, 58, 80, 65, 45, 52, 72, 88, 55, 38,
-  62, 48, 70, 85, 58, 42, 65, 78, 50, 35, 55, 68, 45, 60, 72, 52, 38, 82, 65, 48,
+const HALF_WAVE_BAR_COUNT = 80;
+const HALF_WAVE_HEIGHTS_TOP = [
+  32, 58, 88, 48, 72, 38, 82, 52, 68, 92, 42, 78, 55, 85, 35, 65, 95, 45, 62,
+  75, 28, 70, 50, 90, 58, 40, 78, 68, 48, 82, 55, 72, 38, 88, 62, 45, 75, 52,
+];
+const HALF_WAVE_HEIGHTS_BOTTOM = [
+  68, 42, 85, 55, 38, 78, 48, 92, 62, 35, 72, 88, 52, 65, 45, 82, 58, 28, 75,
+  50, 90, 48, 70, 42, 68, 95, 55, 78, 40, 62, 72, 45, 88, 58, 32, 82, 65, 48,
 ];
 
 const ProductDiscoverySlide = () => {
@@ -36,25 +36,6 @@ const ProductDiscoverySlide = () => {
     <div className="relative z-10 flex flex-col flex-1 min-h-0 overflow-visible">
       {/* Grid: row 1 = title (col 1) + spacer (col 2); row 2 = image (col 1) + conversation (col 2) */}
       <div className="flex-1 grid grid-cols-[1.35fr_1fr] grid-rows-[auto_1fr] gap-x-10 gap-y-0 min-h-0 relative overflow-visible">
-      {/* Audio wave watermark — center line at 50% of row 2 */}
-      <div
-        className="absolute top-1/2 -translate-y-1/2 left-0 right-0 flex items-center justify-center gap-[2px] h-44 pointer-events-none z-0"
-        style={{
-          left: -CONTENT_INSET_PX,
-          right: -CONTENT_INSET_PX,
-          maskImage: "linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%)",
-          WebkitMaskImage: "linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%)",
-        }}
-        aria-hidden
-      >
-        {Array.from({ length: COVER_WAVEFORM_BAR_COUNT }).map((_, i) => (
-          <div
-            key={i}
-            className="flex-1 min-w-[2px] max-w-[8px] rounded-full bg-primary/10"
-            style={{ height: `${COVER_WAVEFORM_HEIGHTS[i % COVER_WAVEFORM_HEIGHTS.length]}%` }}
-          />
-        ))}
-      </div>
       {/* Flow diagram — loop icon in badge at top-right */}
       <div className="absolute top-8 left-0 right-0 z-20 flex items-center justify-end">
         <div className="relative">
@@ -141,13 +122,26 @@ const ProductDiscoverySlide = () => {
         </div>
       </div>
 
-      {/* Row 2 col 2: Conversation — same row as image */}
+      {/* Row 2 col 2: Conversation — two half waves in flow (top + bottom) */}
       <div className="relative flex flex-col flex-1 min-h-0 min-w-0 overflow-visible pt-2">
         <div
-          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[140%] h-[120%] min-w-[320px] min-h-[320px] rounded-full bg-primary/[0.08] blur-[80px] pointer-events-none z-0"
+          className="flex w-full gap-[2px] h-14 items-end pointer-events-none shrink-0 bg-transparent"
           aria-hidden
-        />
-        <div className="relative z-10 flex flex-1 flex-col justify-evenly min-h-0">
+        >
+          {Array.from({ length: HALF_WAVE_BAR_COUNT }).map((_, i) => (
+            <div
+              key={`top-${i}`}
+              className="flex-1 min-w-[2px] max-w-[6px] rounded-full bg-primary/10"
+              style={{ height: `${HALF_WAVE_HEIGHTS_TOP[i % HALF_WAVE_HEIGHTS_TOP.length]}%` }}
+            />
+          ))}
+        </div>
+        <div className="relative flex flex-1 flex-col justify-evenly min-h-0">
+          <div
+            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[90%] h-[70%] min-w-[200px] min-h-[180px] rounded-full bg-primary/[0.07] blur-[60px] pointer-events-none z-0"
+            aria-hidden
+          />
+          <div className="relative z-10 flex flex-1 flex-col justify-evenly min-h-0">
           <p className="text-xl text-foreground/70 font-body leading-snug text-right self-end max-w-[82%]">
             I’m looking for a <strong className="font-semibold text-foreground">lightweight laptop</strong>, something around <strong className="font-semibold text-foreground">$1,500</strong>.
           </p>
@@ -174,13 +168,7 @@ const ProductDiscoverySlide = () => {
               ))}
             </span>
           </div>
-          <div
-            className="flex flex-col gap-5 max-w-[82%] w-full"
-            style={{
-              maskImage: "linear-gradient(to bottom, black 0%, transparent 100%)",
-              WebkitMaskImage: "linear-gradient(to bottom, black 0%, transparent 100%)",
-            }}
-          >
+          <div className="flex flex-col gap-5 max-w-[82%] w-full">
             <p className="text-[1.4rem] text-foreground/75 font-heading font-bold leading-snug self-start max-w-[82%]">
               Would longer <strong className="font-extrabold text-primary-dark/85">battery life</strong> be more important than extra screen space?
             </p>
@@ -204,12 +192,20 @@ const ProductDiscoverySlide = () => {
                 ))}
               </span>
             </div>
-            <div className="self-start flex items-center gap-1.5">
-              <span className="w-1.5 h-1.5 rounded-full bg-primary/30" />
-              <span className="w-1.5 h-1.5 rounded-full bg-primary/20" />
-              <span className="w-1.5 h-1.5 rounded-full bg-primary/10" />
-            </div>
           </div>
+        </div>
+        </div>
+        <div
+          className="flex w-full gap-[2px] h-14 items-end pointer-events-none shrink-0 scale-y-[-1] bg-transparent"
+          aria-hidden
+        >
+          {Array.from({ length: HALF_WAVE_BAR_COUNT }).map((_, i) => (
+            <div
+              key={`bottom-${i}`}
+              className="flex-1 min-w-[2px] max-w-[6px] rounded-full bg-primary/10"
+              style={{ height: `${HALF_WAVE_HEIGHTS_BOTTOM[i % HALF_WAVE_HEIGHTS_BOTTOM.length]}%` }}
+            />
+          ))}
         </div>
       </div>
     </div>
