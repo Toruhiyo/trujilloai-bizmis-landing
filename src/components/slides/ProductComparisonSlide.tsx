@@ -1,5 +1,5 @@
 import { useState, useCallback } from "react";
-import { FaShoppingCart, FaBalanceScale, FaCheckCircle, FaCartPlus, FaSearch } from "react-icons/fa";
+import { FaShoppingCart, FaBalanceScale, FaCheckCircle, FaCartPlus, FaTag } from "react-icons/fa";
 const SCREENSHOT_SRC = "/images/slides/shopify-listing/shopify-product-comparison-and-checkout-screenshot.png";
 
 const BROWSER_CHROME_HEIGHT = 28;
@@ -39,10 +39,10 @@ const ProductComparisonSlide = () => {
                 </span>
               </div>
               <h2 className="text-5xl font-heading font-bold text-foreground leading-tight">
-                Product Comparison & Checkout
+                Product Comparison & Cross-sell
               </h2>
               <p className="text-lg text-muted-foreground font-body leading-relaxed">
-                Bizmis compares the best-fit options, answers final buying questions, and guides the customer straight to checkout.
+                Bizmis compares the best-fit options, answers buying questions, and can cross-sell related items (e.g. laptop case, sleeve) before checkout.
               </p>
             </div>
             {/* Process bar — single line, compact spacing */}
@@ -58,16 +58,16 @@ const ProductComparisonSlide = () => {
               </span>
               <span className="text-primary/40 mx-1.5 text-lg shrink-0">→</span>
               <span className="inline-flex items-center gap-1.5 shrink-0">
-                <FaCartPlus className="w-5 h-5 text-primary/80 shrink-0" />
-                Add to cart & checkout
+                <FaTag className="w-5 h-5 text-primary/80 shrink-0" />
+                Cross-sell add-ons
               </span>
             </div>
           </div>
 
-          {/* Row 2 col 1: Conversation — two small half waves conceal top/bottom */}
+          {/* Row 2 col 1: Conversation — two half waves in flow (top + bottom) */}
           <div className="relative flex flex-col flex-1 min-h-0 min-w-0 overflow-visible pt-2">
             <div
-              className="absolute top-0 left-0 right-0 flex gap-[2px] h-14 items-end pointer-events-none z-10 bg-transparent"
+              className="flex w-full gap-[2px] h-14 items-end pointer-events-none shrink-0 bg-transparent"
               aria-hidden
             >
               {Array.from({ length: HALF_WAVE_BAR_COUNT }).map((_, i) => (
@@ -78,24 +78,12 @@ const ProductComparisonSlide = () => {
                 />
               ))}
             </div>
-            <div
-              className="absolute bottom-0 left-0 right-0 flex gap-[2px] h-14 items-end pointer-events-none z-10 scale-y-[-1] bg-transparent"
-              aria-hidden
-            >
-              {Array.from({ length: HALF_WAVE_BAR_COUNT }).map((_, i) => (
-                <div
-                  key={`bottom-${i}`}
-                  className="flex-1 min-w-[2px] max-w-[6px] rounded-full bg-primary/10"
-                  style={{ height: `${HALF_WAVE_HEIGHTS_BOTTOM[i % HALF_WAVE_HEIGHTS_BOTTOM.length]}%` }}
-                />
-              ))}
-            </div>
-            <div
-              className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[90%] h-[70%] min-w-[200px] min-h-[180px] rounded-full bg-primary/[0.15] blur-[60px] pointer-events-none z-0"
-              aria-hidden
-            />
-            <div className="relative z-10 flex flex-1 flex-col justify-evenly min-h-0 gap-5">
-              <div className="flex flex-col gap-5">
+            <div className="relative flex flex-1 flex-col justify-evenly min-h-0 gap-5">
+              <div
+                className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[90%] h-[70%] min-w-[200px] min-h-[180px] rounded-full bg-primary/[0.15] blur-[60px] pointer-events-none z-0"
+                aria-hidden
+              />
+              <div className="relative z-10 flex flex-col gap-5">
                 <p className="text-xl text-foreground/70 font-body leading-snug text-left self-start max-w-[82%]">
                   Which would you say is <strong className="font-semibold text-foreground">better for travel</strong>?
                 </p>
@@ -109,20 +97,32 @@ const ProductComparisonSlide = () => {
                 </p>
                 <div className="self-end text-right max-w-[82%]">
                   <p className="text-[1.4rem] text-foreground/75 font-heading font-bold leading-snug">
-                    <strong className="font-extrabold text-primary-dark/90">2–3 business days</strong>. Add to cart and checkout?
+                    <strong className="font-extrabold text-primary-dark/90">2–3 business days</strong>. Want a <strong className="font-extrabold text-primary-dark/90">laptop case</strong> or <strong className="font-extrabold text-primary-dark/90">sleeve</strong> to go with it? I can add the laptop to your cart.
                   </p>
                 </div>
-                <div className="self-end flex flex-wrap gap-2">
-                  <span className="inline-flex items-center gap-1.5 rounded-full bg-primary/15 backdrop-blur-md border border-primary/25 px-4 py-2 text-sm font-heading font-semibold text-primary-dark">
-                    <FaCartPlus className="w-3.5 h-3.5 text-primary/80" />
+                <div className="self-end flex flex-nowrap items-center gap-2">
+                  <span className="inline-flex items-center gap-1.5 shrink-0 whitespace-nowrap rounded-full bg-primary/15 backdrop-blur-md border border-primary/25 px-4 py-2 text-sm font-heading font-semibold text-primary-dark">
+                    <FaCartPlus className="w-3.5 h-3.5 shrink-0 text-primary/80" />
                     Add to cart
                   </span>
-                  <span className="inline-flex items-center gap-1.5 rounded-full bg-primary/15 backdrop-blur-md border border-primary/25 px-4 py-2 text-sm font-heading font-semibold text-primary-dark">
-                    <FaSearch className="w-3.5 h-3.5 text-primary/80" />
-                    Redirect to checkout
+                  <span className="inline-flex items-center gap-1.5 shrink-0 whitespace-nowrap rounded-full bg-primary/15 backdrop-blur-md border border-primary/25 px-4 py-2 text-sm font-heading font-semibold text-primary-dark">
+                    <FaTag className="w-3.5 h-3.5 shrink-0 text-primary/80" />
+                    Cross-sell related items
                   </span>
                 </div>
-              </div>
+            </div>
+            </div>
+            <div
+              className="flex w-full gap-[2px] h-14 items-end pointer-events-none shrink-0 scale-y-[-1] bg-transparent"
+              aria-hidden
+            >
+              {Array.from({ length: HALF_WAVE_BAR_COUNT }).map((_, i) => (
+                <div
+                  key={`bottom-${i}`}
+                  className="flex-1 min-w-[2px] max-w-[6px] rounded-full bg-primary/10"
+                  style={{ height: `${HALF_WAVE_HEIGHTS_BOTTOM[i % HALF_WAVE_HEIGHTS_BOTTOM.length]}%` }}
+                />
+              ))}
             </div>
           </div>
 
