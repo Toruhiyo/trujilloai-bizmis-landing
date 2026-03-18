@@ -4,6 +4,7 @@ import Logo from "@/components/Logo";
 import ProductDiscoverySlide from "@/components/slides/ProductDiscoverySlide";
 import ProductComparisonSlide from "@/components/slides/ProductComparisonSlide";
 import CustomerSupportSlide from "@/components/slides/CustomerSupportSlide";
+import MerchantInsightsSlide from "@/components/slides/MerchantInsightsSlide";
 
 const COVER_SIDE_MARGIN_PX = 80;
 const WAVEFORM_BAR_COUNT = 60;
@@ -114,7 +115,11 @@ const SHOPIFY_SLIDES = [
     label: "4️⃣ Customer Support > Post-purchase support",
     content: <CustomerSupportSlide />,
   },
-  { ...SLIDES.benefit3, label: "5️⃣ Analytics > Merchant insights" },
+  {
+    ...SLIDES.benefit3,
+    label: "5️⃣ Analytics > Conversation Analytics",
+    content: <MerchantInsightsSlide />,
+  },
 ];
 
 const ShopifyDeck = () => (

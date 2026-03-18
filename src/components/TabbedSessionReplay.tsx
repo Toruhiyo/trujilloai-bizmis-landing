@@ -9,6 +9,13 @@ import {
   SessionReplayData,
 } from "../data/session-replays";
 
+const TAB_TOOLTIPS: Record<string, string> = {
+  sale: "Anonymous user sale session — gift search leading to purchase",
+  "sale-loyal": "Logged-in user sale session — returning customer purchase",
+  "support-success": "Support session — policy question resolved successfully",
+  "support-failed": "Support session — request not completed",
+};
+
 interface TabOption {
   id: string;
   data: SessionReplayData;
@@ -59,6 +66,8 @@ const TabbedSessionReplay: React.FC<TabbedSessionReplayProps> = ({
           return (
             <button
               key={tab.id}
+              type="button"
+              title={TAB_TOOLTIPS[tab.id] ?? ""}
               onClick={() => setActiveTab(tab.id)}
               className={`relative flex items-center justify-center gap-2 px-5 py-2.5 text-sm font-medium rounded-full transition-all duration-200 ${
                 isActive

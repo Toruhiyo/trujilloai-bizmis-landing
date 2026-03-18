@@ -443,7 +443,7 @@ const SessionReplayCard: React.FC<SessionReplayCardProps> = ({
                 <div className="py-2">
                   {bubble.content === "Product Search" && (
                     <div
-                      className={`bg-muted/30 rounded-lg p-4 border border-border/30 transition-all duration-500 ${
+                      className={`bg-primary/[0.05] rounded-lg p-4 border border-primary/15 transition-all duration-500 ${
                         currentFocusedMessage === bubble.id && isAudioPlaying
                           ? "scale-105 ring-2 ring-primary/50 bg-[#FDF7E2] shadow-lg shadow-primary/20 transform-gpu"
                           : ""
@@ -499,7 +499,7 @@ const SessionReplayCard: React.FC<SessionReplayCardProps> = ({
 
                   {bubble.content === "Policy Lookup" && (
                     <div
-                      className={`bg-muted/30 rounded-lg p-4 border border-border/30 transition-all duration-500 ${
+                      className={`bg-primary/[0.05] rounded-lg p-4 border border-primary/15 transition-all duration-500 ${
                         currentFocusedMessage === bubble.id && isAudioPlaying
                           ? "scale-105 ring-2 ring-primary/50 bg-[#FDF7E2] shadow-lg shadow-primary/20 transform-gpu"
                           : ""
@@ -634,7 +634,7 @@ const SessionReplayCard: React.FC<SessionReplayCardProps> = ({
                   )}
                   <div
                     className={`max-w-[70%] px-3 py-2 rounded-lg transition-all duration-500 ${
-                      bubble.type === "customer"
+                      bubble.type === "agent"
                         ? "bg-primary text-background"
                         : "bg-muted text-foreground"
                     } ${
