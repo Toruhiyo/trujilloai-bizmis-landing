@@ -138,7 +138,7 @@ const ProductDiscoverySlide = () => {
         </div>
         <div className="relative flex flex-1 flex-col justify-evenly min-h-0">
           <div
-            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[90%] h-[70%] min-w-[200px] min-h-[180px] rounded-full bg-primary/[0.07] blur-[60px] pointer-events-none z-0"
+            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-[95%] min-w-[280px] min-h-[260px] rounded-full bg-primary/[0.16] blur-[60px] pointer-events-none z-0"
             aria-hidden
           />
           <div className="relative z-10 flex flex-1 flex-col justify-evenly min-h-0">
