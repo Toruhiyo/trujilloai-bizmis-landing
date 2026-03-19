@@ -76,7 +76,7 @@ const GreetingOverviewSlide = () => (
                 <p className="max-w-[92%] self-end text-right font-heading text-[1.35rem] font-bold leading-relaxed text-foreground/80">
                   Welcome back,{" "}
                   <strong className="font-extrabold text-primary-dark/85">Alex</strong>
-                  {" "}— still looking for something light for work and travel?
+                  {" "}— still looking for a light laptop for work and travel?
                 </p>
                 <p className="mt-8 max-w-[85%] self-start text-left font-body text-xl leading-snug text-foreground/55">
                   Yes — ideally around{" "}
