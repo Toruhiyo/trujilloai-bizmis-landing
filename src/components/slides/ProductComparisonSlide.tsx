@@ -84,20 +84,20 @@ const ProductComparisonSlide = () => {
                 aria-hidden
               />
               <div className="relative z-10 flex flex-col gap-5">
-                <p className="text-xl text-foreground/70 font-body leading-snug text-left self-start max-w-[82%]">
+                <p className="max-w-[82%] self-start text-left font-body text-xl leading-snug text-foreground/55">
                   Which would you say is <strong className="font-semibold text-foreground">better for travel</strong>?
                 </p>
-                <div className="self-end text-right max-w-[82%]">
-                  <p className="text-[1.4rem] text-foreground/75 font-heading font-bold leading-snug">
-                    The <strong className="font-extrabold text-primary-dark/90">LG gram</strong>—lighter and longer battery.
+                <div className="self-end max-w-[82%] text-right">
+                  <p className="font-heading text-[1.35rem] font-bold leading-relaxed text-foreground/80">
+                    The <strong className="font-extrabold text-primary-dark/85">LG gram</strong>—lighter and longer battery.
                   </p>
                 </div>
-                <p className="text-xl text-foreground/70 font-body leading-snug text-left self-start max-w-[82%]">
+                <p className="max-w-[82%] self-start text-left font-body text-xl leading-snug text-foreground/55">
                   Let&apos;s go with <strong className="font-semibold text-foreground">that one</strong>. How long is <strong className="font-semibold text-foreground">shipping</strong>?
                 </p>
-                <div className="self-end text-right max-w-[82%]">
-                  <p className="text-[1.4rem] text-foreground/75 font-heading font-bold leading-snug">
-                    <strong className="font-extrabold text-primary-dark/90">2–3 business days</strong>. Want a <strong className="font-extrabold text-primary-dark/90">laptop case</strong> or <strong className="font-extrabold text-primary-dark/90">sleeve</strong> to go with it? I can add the laptop to your cart.
+                <div className="self-end max-w-[82%] text-right">
+                  <p className="font-heading text-[1.35rem] font-bold leading-relaxed text-foreground/80">
+                    <strong className="font-extrabold text-primary-dark/85">2–3 business days</strong>. Want a <strong className="font-extrabold text-primary-dark/85">laptop case</strong> or <strong className="font-extrabold text-primary-dark/85">sleeve</strong> to go with it? I can add the laptop to your cart.
                   </p>
                 </div>
                 <div className="self-end flex flex-nowrap items-center gap-2">

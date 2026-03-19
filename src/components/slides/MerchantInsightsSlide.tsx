@@ -56,10 +56,10 @@ const MerchantInsightsSlide = () => (
                   <Icon className="h-4 w-4 text-primary-dark/80" />
                 </div>
                 <div className="min-w-0">
-                  <h3 className="text-sm font-heading font-semibold text-foreground">
+                  <h3 className="text-base font-heading font-semibold text-foreground">
                     {title}
                   </h3>
-                  <p className="text-sm text-muted-foreground font-body leading-snug mt-0.5">
+                  <p className="text-base text-muted-foreground font-body leading-snug mt-0.5">
                     {description}
                   </p>
                 </div>

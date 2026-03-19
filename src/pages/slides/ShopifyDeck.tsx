@@ -5,6 +5,7 @@ import ProductDiscoverySlide from "@/components/slides/ProductDiscoverySlide";
 import ProductComparisonSlide from "@/components/slides/ProductComparisonSlide";
 import CustomerSupportSlide from "@/components/slides/CustomerSupportSlide";
 import MerchantInsightsSlide from "@/components/slides/MerchantInsightsSlide";
+import GreetingOverviewSlide from "@/components/slides/GreetingOverviewSlide";
 
 const COVER_SIDE_MARGIN_PX = 80;
 const WAVEFORM_BAR_COUNT = 60;
@@ -99,7 +100,11 @@ const SHOPIFY_SLIDES = [
     label: "Cover",
     content: <ShopifyHeroContent />,
   },
-  { ...SLIDES.benefit1, label: "1️⃣ Greeting & General Overview" },
+  {
+    ...SLIDES.benefit1,
+    label: "1️⃣ Greeting & General Overview",
+    content: <GreetingOverviewSlide />,
+  },
   {
     ...SLIDES.benefit1,
     label: "2️⃣ Sales assistance > Product discovery",

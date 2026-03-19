@@ -180,7 +180,7 @@ const CustomerSupportSlide = () => {
               />
               <div className="relative z-10 flex flex-col gap-6">
                 {/* Customer question */}
-                <p className="text-xl text-foreground/70 font-body leading-snug text-right self-end max-w-[82%]">
+                <p className="max-w-[82%] self-end text-right font-body text-xl leading-snug text-foreground/55">
                   Can I still <strong className="font-semibold text-foreground">return it</strong> if I&apos;ve opened the box?
                 </p>
                 {/* Tool call before reply */}
@@ -200,7 +200,7 @@ const CustomerSupportSlide = () => {
                   ))}
                 </div>
                 {/* Bizmis answer */}
-                <p className="text-[1.4rem] text-foreground/75 font-heading font-bold leading-snug self-start max-w-[88%]">
+                <p className="max-w-[88%] self-start font-heading text-[1.35rem] font-bold leading-relaxed text-foreground/80">
                   Yes — if it&apos;s in <strong className="font-extrabold text-primary-dark/85">original condition</strong> with the box and accessories, you can return it within <strong className="font-extrabold text-primary-dark/85">30 days</strong>. Return shipping applies unless it&apos;s faulty.
                 </p>
               </div>

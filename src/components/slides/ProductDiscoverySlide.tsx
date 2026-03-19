@@ -8,7 +8,7 @@ const BROWSER_CHROME_HEIGHT = 28;
 const TOOL_CHIP_FIRST = "Shown products";
 const TOOL_CHIP_SECOND = "Update shown products";
 
-const MEMORY_AFTER_FIRST_RESPONSE = ["~$1,500", "Portable", "Everyday work"];
+const MEMORY_AFTER_FIRST_RESPONSE = ["~$1,500", "Light", "Everyday work"];
 const MEMORY_AFTER_SECOND_RESPONSE = ["Long battery"];
 
 const HALF_WAVE_BAR_COUNT = 80;
@@ -142,13 +142,13 @@ const ProductDiscoverySlide = () => {
             aria-hidden
           />
           <div className="relative z-10 flex flex-1 flex-col justify-evenly min-h-0">
-          <p className="text-xl text-foreground/70 font-body leading-snug text-right self-end max-w-[82%]">
-            I’m looking for a <strong className="font-semibold text-foreground">lightweight laptop</strong>, something around <strong className="font-semibold text-foreground">$1,500</strong>.
+          <p className="max-w-[82%] self-end text-right font-body text-xl leading-snug text-foreground/55">
+            I&apos;d love something light — ideally around $1,500.
           </p>
-          <p className="text-[1.4rem] text-foreground/75 font-heading font-bold leading-snug self-start max-w-[82%]">
+          <p className="max-w-[82%] self-start font-heading text-[1.35rem] font-bold leading-relaxed text-foreground/80">
             What kind of <strong className="font-extrabold text-primary-dark/85">day-to-day use</strong> do you have in mind?
           </p>
-          <p className="text-xl text-foreground/70 font-body leading-snug text-right self-end max-w-[82%]">
+          <p className="max-w-[82%] self-end text-right font-body text-xl leading-snug text-foreground/55">
             Mostly <strong className="font-semibold text-foreground">work, travel, and browsing</strong>.
           </p>
           <div className="self-start flex flex-wrap items-center gap-2">
@@ -169,10 +169,10 @@ const ProductDiscoverySlide = () => {
             </span>
           </div>
           <div className="flex flex-col gap-5 max-w-[82%] w-full">
-            <p className="text-[1.4rem] text-foreground/75 font-heading font-bold leading-snug self-start max-w-[82%]">
+            <p className="max-w-[82%] self-start font-heading text-[1.35rem] font-bold leading-relaxed text-foreground/80">
               Would longer <strong className="font-extrabold text-primary-dark/85">battery life</strong> be more important than extra screen space?
             </p>
-            <p className="text-xl text-foreground/70 font-body leading-snug text-right self-end max-w-[82%]">
+            <p className="max-w-[82%] self-end text-right font-body text-xl leading-snug text-foreground/55">
               Yeah, <strong className="font-semibold text-foreground">battery life</strong> for sure.
             </p>
             <div className="self-start flex flex-wrap items-center gap-2">
