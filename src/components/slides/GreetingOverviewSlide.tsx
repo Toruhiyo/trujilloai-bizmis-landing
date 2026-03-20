@@ -1,9 +1,9 @@
 import type { IconType } from "react-icons";
-import { FaHandSparkles, FaHistory } from "react-icons/fa";
+import { FaBullseye, FaHandSparkles, FaHistory } from "react-icons/fa";
 import { MdGraphicEq } from "react-icons/md";
 import SmartphoneFrame from "./SmartphoneFrame";
 
-const GREETING_BADGE_ICON_CLASS = "h-3.5 w-3.5 shrink-0 text-primary-dark/80";
+const BADGE_ICON_CLASS = "h-3.5 w-3.5 shrink-0 text-primary-dark/80";
 
 const BROWSER_CHROME_HEIGHT = 28;
 
@@ -24,39 +24,25 @@ const HALF_WAVE_HEIGHTS_BOTTOM = [
   50, 90, 48, 70, 42, 68, 95, 55, 78, 40, 62, 72, 45, 88, 58, 32, 82, 65, 48,
 ];
 
-type GreetingFeatureCue =
-  | { id: string; kind: "icons"; label: string; icons: readonly IconType[] }
-  | { id: string; kind: "eyebrowWave"; label: string };
-
-const GREETING_FEATURE_CUES: readonly GreetingFeatureCue[] = [
-  { id: "personalized", kind: "icons", label: "Personalized greeting", icons: [FaHandSparkles] },
-  { id: "remembers", kind: "icons", label: "Remembers activity", icons: [FaHistory] },
-  { id: "voice", kind: "eyebrowWave", label: "Voice-first" },
+const GREETING_OVERVIEW_CHIPS: readonly {
+  id: string;
+  label: string;
+  Icon: IconType;
+}[] = [
+  { id: "activity", label: "Remembers activity", Icon: FaHistory },
+  { id: "greeting", label: "Personalized greeting", Icon: FaHandSparkles },
+  { id: "intent", label: "Understands intent", Icon: FaBullseye },
 ];
 
 const GreetingFeatureBadges = () => (
   <div className="flex flex-wrap gap-2">
-    {GREETING_FEATURE_CUES.map((cue) => (
+    {GREETING_OVERVIEW_CHIPS.map(({ id, label, Icon }) => (
       <span
-        key={cue.id}
+        key={id}
         className="inline-flex items-center gap-1.5 rounded-full bg-primary/15 backdrop-blur-md border border-primary/25 px-4 py-2 text-sm font-heading font-semibold text-primary-dark"
       >
-        {cue.kind === "icons" && (
-          <>
-            <span className="inline-flex items-center gap-1" aria-hidden>
-              {cue.icons.map((IconComponent, iconIndex) => (
-                <IconComponent key={iconIndex} className={GREETING_BADGE_ICON_CLASS} />
-              ))}
-            </span>
-            {cue.label}
-          </>
-        )}
-        {cue.kind === "eyebrowWave" && (
-          <>
-            <MdGraphicEq className="h-3.5 w-3.5 shrink-0 text-primary" aria-hidden />
-            {cue.label}
-          </>
-        )}
+        <Icon className={BADGE_ICON_CLASS} aria-hidden />
+        {label}
       </span>
     ))}
   </div>
@@ -65,21 +51,23 @@ const GreetingFeatureBadges = () => (
 const GreetingOverviewSlide = () => (
   <div className="relative flex h-full w-full min-h-0 min-w-0 flex-col overflow-visible">
     <div className="relative z-10 flex min-h-0 min-w-0 flex-1 flex-col overflow-visible">
-      <div className="grid min-h-0 min-w-0 flex-1 grid-cols-[0.88fr_1.32fr] grid-rows-1 gap-x-12 items-stretch overflow-visible">
-        {/* Left: headline, badges, transcript — gap-10 = equal space subtitle↔badges and badges↔upper wave */}
+      <div className="grid min-h-0 min-w-0 flex-1 grid-cols-[0.98fr_1.22fr] grid-rows-1 gap-x-12 items-stretch overflow-visible">
+        {/* Left: proof-oriented headline (not cover); chips match welcome / intent / guidance; transcript unchanged */}
         <div className="flex min-h-0 min-w-0 flex-col justify-center gap-10 overflow-visible py-2 pr-1">
           <div className="flex flex-col gap-4">
             <div className="inline-flex items-center gap-2.5">
               <MdGraphicEq className="h-5 w-5 shrink-0 text-primary" aria-hidden />
               <span className="text-sm font-body font-semibold text-primary uppercase tracking-widest">
-                Voice-First Storefront
+                Shopper engagement
               </span>
             </div>
             <h2 className="text-4xl font-heading font-bold !leading-[1.15] text-foreground xl:text-5xl">
-              The Voice Store Clerk on Your Storefront
+              In-Store Guidance
+              <br />
+              From the First Hello
             </h2>
-            <p className="max-w-[46ch] text-base font-body leading-[1.65] text-muted-foreground">
-              Bizmis greets shoppers, remembers returning customers, and helps them shop naturally by voice — across desktop and mobile.
+            <p className="max-w-[54ch] text-base font-body leading-[1.65] text-muted-foreground">
+              Bizmis welcomes shoppers, understands what they need, and starts guiding them naturally — just like a helpful in-store clerk would.
             </p>
           </div>
 
