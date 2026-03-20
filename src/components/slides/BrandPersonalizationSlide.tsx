@@ -44,7 +44,7 @@ const COLLAGE_SCREENSHOT_BOX_SHADOW =
 const BrandPersonalizationSlide = () => (
   <div className="relative flex h-full w-full min-h-0 min-w-0 flex-col overflow-visible">
     <div className="relative z-10 flex min-h-0 min-w-0 flex-1 flex-col overflow-visible">
-      <div className="grid min-h-0 min-w-0 flex-1 grid-cols-[1.22fr_1fr] grid-rows-1 items-stretch gap-x-12 overflow-visible">
+      <div className="grid min-h-0 min-w-0 flex-1 grid-cols-[1.22fr_1fr] grid-rows-1 items-stretch gap-x-20 overflow-visible">
         {/* Left: collage — portrait 13:16; Pink & Apricot 1:1 */}
         <div className="relative flex min-h-0 min-w-0 flex-col justify-start overflow-visible pt-0">
           <div className="relative z-10 flex min-h-0 w-full flex-1 flex-col justify-start">
@@ -156,7 +156,10 @@ const BrandPersonalizationSlide = () => (
               </span>
             </div>
             <h2 className="text-5xl font-heading font-bold leading-tight text-foreground">
-              Make Bizmis Feel Like Your Store
+              Bizmis Feels Like
+              <br />
+              
+                Your Store
             </h2>
             <p className="max-w-[46ch] text-lg font-body leading-relaxed text-muted-foreground">
               Customize Bizmis&apos;s avatar, voice, and tone so every interaction feels more like your brand — and less
