@@ -46,7 +46,7 @@ const BrandPersonalizationSlide = () => (
     <div className="relative z-10 flex min-h-0 min-w-0 flex-1 flex-col overflow-visible">
       <div className="grid min-h-0 min-w-0 flex-1 grid-cols-[1.22fr_1fr] grid-rows-1 items-stretch gap-x-20 overflow-visible">
         {/* Left: collage — portrait 13:16; Pink & Apricot 1:1 */}
-        <div className="relative flex min-h-0 min-w-0 flex-col justify-start overflow-visible pt-0">
+        <div className="relative flex min-h-0 min-w-0 flex-col justify-start overflow-visible py-3">
           <div className="relative z-10 flex min-h-0 w-full flex-1 flex-col justify-start">
             <div className="relative min-h-[min(64vh,38rem)] w-full flex-1">
               {/* Pine — top-right corner (outer: shadow; inner: clip — avoids overflow-hidden clipping the shadow) */}
@@ -147,31 +147,30 @@ const BrandPersonalizationSlide = () => (
         </div>
 
         {/* Right: title + analytics-style feature cards */}
-        <div className="flex min-h-0 min-w-0 flex-col justify-center gap-6 overflow-visible py-2 pl-1">
-          <div className="flex min-w-0 flex-col gap-1.5">
+        <div className="flex min-h-0 min-w-0 flex-col justify-center gap-10 overflow-visible py-4 pl-1">
+          <div className="flex min-w-0 flex-col gap-3 sm:gap-4">
             <div className="inline-flex items-center gap-2">
               <FaPalette className="h-4 w-4 shrink-0 text-primary" aria-hidden />
               <span className="text-sm font-body font-semibold text-primary uppercase tracking-widest">
                 Brand Personalization
               </span>
             </div>
-            <h2 className="text-5xl font-heading font-bold leading-tight text-foreground">
+            <h2 className="text-5xl font-heading font-bold !leading-[1.2] text-foreground">
               Bizmis Feels Like
               <br />
-              
-                Your Store
+              Your Store
             </h2>
-            <p className="max-w-[46ch] text-lg font-body leading-relaxed text-muted-foreground">
+            <p className="max-w-[46ch] text-lg font-body leading-[1.65] text-muted-foreground">
               Customize Bizmis&apos;s avatar, voice, and tone so every interaction feels more like your brand — and less
               like a generic assistant.
             </p>
           </div>
 
-          <div className="flex flex-col gap-3">
+          <div className="flex flex-col gap-4 sm:gap-5">
             {PERSONALIZATION_FEATURE_CARDS.map(({ icon: Icon, title, description, titleBadge }) => (
               <div
                 key={title}
-                className="flex items-start gap-4 rounded-xl border border-border/50 bg-background/60 px-4 py-3.5"
+                className="flex items-start gap-4 rounded-xl border border-border/50 bg-background/60 px-5 py-4 sm:py-[1.125rem]"
               >
                 <div className="mt-0.5 shrink-0 rounded-lg bg-primary/10 p-2">
                   <Icon className="h-4 w-4 text-primary-dark/80" aria-hidden />
@@ -185,7 +184,7 @@ const BrandPersonalizationSlide = () => (
                       </span>
                     ) : null}
                   </div>
-                  <p className="mt-0.5 text-base font-body leading-snug text-muted-foreground">{description}</p>
+                  <p className="mt-1.5 text-base font-body leading-relaxed text-muted-foreground">{description}</p>
                 </div>
               </div>
             ))}

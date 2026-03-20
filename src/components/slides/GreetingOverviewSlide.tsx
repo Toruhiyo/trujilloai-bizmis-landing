@@ -1,11 +1,15 @@
 import type { IconType } from "react-icons";
-import { FaDesktop, FaHandSparkles, FaHistory, FaMobileAlt } from "react-icons/fa";
+import { FaHandSparkles, FaHistory } from "react-icons/fa";
 import { MdGraphicEq } from "react-icons/md";
 import SmartphoneFrame from "./SmartphoneFrame";
 
-const GREETING_CUE_ICON_CLASS = "h-3.5 w-3.5 shrink-0 text-primary/70";
+const GREETING_BADGE_ICON_CLASS = "h-3.5 w-3.5 shrink-0 text-primary-dark/80";
 
 const BROWSER_CHROME_HEIGHT = 28;
+
+/** Same Tailwind step: desktop margin-top and phone bottom offset. Margin (not row padding) avoids clipping h-[65%]. */
+const MOCKUP_DESKTOP_TOP_MARGIN_CLASS = "mt-20";
+const MOCKUP_PHONE_BOTTOM_CLASS = "bottom-20";
 
 const DESKTOP_SRC = "/images/slides/shopify-listing/shopify-greeting-desktop.png";
 const MOBILE_SRC = "/images/slides/shopify-listing/shopify-greeting-mobile.png";
@@ -22,39 +26,67 @@ const HALF_WAVE_HEIGHTS_BOTTOM = [
 
 type GreetingFeatureCue =
   | { id: string; kind: "icons"; label: string; icons: readonly IconType[] }
-  | { id: string; kind: "eyebrowWave"; label: string }
-  | { id: string; kind: "desktopMobile" };
+  | { id: string; kind: "eyebrowWave"; label: string };
 
 const GREETING_FEATURE_CUES: readonly GreetingFeatureCue[] = [
   { id: "personalized", kind: "icons", label: "Personalized greeting", icons: [FaHandSparkles] },
   { id: "remembers", kind: "icons", label: "Remembers activity", icons: [FaHistory] },
   { id: "voice", kind: "eyebrowWave", label: "Voice-first" },
-  { id: "devices", kind: "desktopMobile" },
 ];
+
+const GreetingFeatureBadges = () => (
+  <div className="flex flex-wrap gap-2">
+    {GREETING_FEATURE_CUES.map((cue) => (
+      <span
+        key={cue.id}
+        className="inline-flex items-center gap-1.5 rounded-full bg-primary/15 backdrop-blur-md border border-primary/25 px-4 py-2 text-sm font-heading font-semibold text-primary-dark"
+      >
+        {cue.kind === "icons" && (
+          <>
+            <span className="inline-flex items-center gap-1" aria-hidden>
+              {cue.icons.map((IconComponent, iconIndex) => (
+                <IconComponent key={iconIndex} className={GREETING_BADGE_ICON_CLASS} />
+              ))}
+            </span>
+            {cue.label}
+          </>
+        )}
+        {cue.kind === "eyebrowWave" && (
+          <>
+            <MdGraphicEq className="h-3.5 w-3.5 shrink-0 text-primary" aria-hidden />
+            {cue.label}
+          </>
+        )}
+      </span>
+    ))}
+  </div>
+);
 
 const GreetingOverviewSlide = () => (
   <div className="relative flex h-full w-full min-h-0 min-w-0 flex-col overflow-visible">
     <div className="relative z-10 flex min-h-0 min-w-0 flex-1 flex-col overflow-visible">
       <div className="grid min-h-0 min-w-0 flex-1 grid-cols-[0.88fr_1.32fr] grid-rows-1 gap-x-12 items-stretch overflow-visible">
-        {/* Left: Eyebrow, title, subtitle, greeting exchange */}
-        <div className="flex min-h-0 min-w-0 flex-col justify-center gap-6 overflow-visible py-2 pr-1">
-          <div className="flex flex-col gap-1.5">
+        {/* Left: headline, badges, transcript — gap-10 = equal space subtitle↔badges and badges↔upper wave */}
+        <div className="flex min-h-0 min-w-0 flex-col justify-center gap-10 overflow-visible py-2 pr-1">
+          <div className="flex flex-col gap-4">
             <div className="inline-flex items-center gap-2.5">
               <MdGraphicEq className="h-5 w-5 shrink-0 text-primary" aria-hidden />
               <span className="text-sm font-body font-semibold text-primary uppercase tracking-widest">
                 Voice-First Storefront
               </span>
             </div>
-            <h2 className="text-4xl font-heading font-bold leading-tight text-foreground xl:text-5xl">
+            <h2 className="text-4xl font-heading font-bold !leading-[1.15] text-foreground xl:text-5xl">
               The Voice Store Clerk on Your Storefront
             </h2>
-            <p className="max-w-[46ch] text-base font-body leading-relaxed text-muted-foreground">
+            <p className="max-w-[46ch] text-base font-body leading-[1.65] text-muted-foreground">
               Bizmis greets shoppers, remembers returning customers, and helps them shop naturally by voice — across desktop and mobile.
             </p>
           </div>
 
+          <GreetingFeatureBadges />
+
           {/* Greeting exchange — upper + lower half-wave bands (matches other deck slides) */}
-          <div className="relative flex w-full min-w-0 flex-col overflow-visible pt-2">
+          <div className="relative flex w-full min-w-0 flex-col overflow-visible">
             <div
               className="flex h-14 w-full shrink-0 items-end gap-[2px] bg-transparent pointer-events-none"
               aria-hidden
@@ -67,18 +99,18 @@ const GreetingOverviewSlide = () => (
                 />
               ))}
             </div>
-            <div className="relative flex min-h-0 flex-col justify-center py-6">
+            <div className="relative flex min-h-0 flex-col justify-center py-8">
               <div
                 className="pointer-events-none absolute left-1/2 top-1/2 z-0 h-[95%] min-h-[140px] w-[120%] min-w-[220px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary/[0.16] blur-[60px]"
                 aria-hidden
               />
               <div className="relative z-10 flex flex-col gap-0 pl-1">
-                <p className="max-w-[92%] self-end text-right font-heading text-[1.35rem] font-bold leading-relaxed text-foreground/80">
+                <p className="max-w-[92%] self-end text-right font-heading text-[1.35rem] font-bold leading-[1.45] text-foreground/80">
                   Welcome back,{" "}
                   <strong className="font-extrabold text-primary-dark/85">Alex</strong>
                   {" "}— still looking for a light laptop for work and travel?
                 </p>
-                <p className="mt-8 max-w-[85%] self-start text-left font-body text-xl leading-snug text-foreground/55">
+                <p className="mt-12 max-w-[85%] self-start text-left font-body text-xl leading-[1.5] text-foreground/55">
                   Yes — ideally around{" "}
                   <strong className="font-semibold text-foreground">$1,500</strong>.
                 </p>
@@ -115,11 +147,13 @@ const GreetingOverviewSlide = () => (
             aria-hidden
           />
 
-          {/* Images + greeting feature cues — desktop top-right; phone overlapping */}
+          {/* Desktop top-right; phone overlapping */}
           <div className="relative z-10 flex h-full min-h-0 w-full flex-1 flex-col overflow-visible">
-            <div className="relative flex min-h-0 flex-1 w-full items-start justify-end overflow-visible pt-0 pr-0">
-              {/* Desktop frame */}
-              <div className="relative flex h-[84%] max-h-[84%] w-full max-w-[100%] flex-col overflow-hidden rounded-xl shadow-[0_8px_40px_-8px_rgba(0,0,0,0.15)] border border-black/[0.06]">
+            <div className="relative flex min-h-0 flex-1 w-full items-start justify-end overflow-visible pr-0">
+              {/* Desktop frame — smaller % + width so the change reads at 1600×900 export */}
+              <div
+                className={`relative ml-auto flex h-[65%] max-h-[65%] w-[86%] max-w-[86%] flex-col overflow-hidden rounded-xl border border-black/[0.06] shadow-[0_8px_40px_-8px_rgba(0,0,0,0.15)] ${MOCKUP_DESKTOP_TOP_MARGIN_CLASS}`}
+              >
                 <div
                   className="flex shrink-0 items-center gap-1.5 border-b border-black/5 bg-[#f1f1f1] px-3"
                   style={{ height: BROWSER_CHROME_HEIGHT }}
@@ -144,8 +178,10 @@ const GreetingOverviewSlide = () => (
                 </div>
               </div>
 
-              {/* SmartphoneFrame — left side, lifted toward vertical center */}
-              <div className="absolute bottom-0 -left-2 z-20 origin-bottom-left scale-[0.93]">
+              {/* SmartphoneFrame — left side; bottom inset matches MOCKUP_DESKTOP_TOP_MARGIN */}
+              <div
+                className={`absolute -left-2 z-20 origin-bottom-left scale-[0.97] ${MOCKUP_PHONE_BOTTOM_CLASS}`}
+              >
                 <SmartphoneFrame className="relative z-10 shadow-[0_12px_48px_-8px_rgba(0,0,0,0.18)]">
                   <img
                     src={MOBILE_SRC}
@@ -154,46 +190,6 @@ const GreetingOverviewSlide = () => (
                   />
                 </SmartphoneFrame>
               </div>
-            </div>
-
-            <div className="flex shrink-0 flex-wrap items-center justify-end gap-x-5 gap-y-2.5 pr-0 pt-5">
-              {GREETING_FEATURE_CUES.map((cue, index) => (
-                <span
-                  key={cue.id}
-                  className="inline-flex items-center gap-2 text-sm font-body text-primary-dark/65"
-                >
-                  {index > 0 && (
-                    <span className="hidden sm:inline text-primary/25 select-none" aria-hidden>
-                      ·
-                    </span>
-                  )}
-                  {cue.kind === "icons" && (
-                    <>
-                      <span className="inline-flex items-center gap-1" aria-hidden>
-                        {cue.icons.map((IconComponent, iconIndex) => (
-                          <IconComponent key={iconIndex} className={GREETING_CUE_ICON_CLASS} />
-                        ))}
-                      </span>
-                      {cue.label}
-                    </>
-                  )}
-                  {cue.kind === "eyebrowWave" && (
-                    <>
-                      <MdGraphicEq className="h-5 w-5 shrink-0 text-primary" aria-hidden />
-                      {cue.label}
-                    </>
-                  )}
-                  {cue.kind === "desktopMobile" && (
-                    <>
-                      <FaDesktop className={GREETING_CUE_ICON_CLASS} aria-hidden />
-                      <span className="inline-flex items-center gap-1.5">
-                        Desktop &amp; mobile
-                        <FaMobileAlt className={GREETING_CUE_ICON_CLASS} aria-hidden />
-                      </span>
-                    </>
-                  )}
-                </span>
-              ))}
             </div>
           </div>
         </div>
