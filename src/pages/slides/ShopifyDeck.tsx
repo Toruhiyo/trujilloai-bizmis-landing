@@ -6,6 +6,7 @@ import ProductComparisonSlide from "@/components/slides/ProductComparisonSlide";
 import CustomerSupportSlide from "@/components/slides/CustomerSupportSlide";
 import MerchantInsightsSlide from "@/components/slides/MerchantInsightsSlide";
 import GreetingOverviewSlide from "@/components/slides/GreetingOverviewSlide";
+import BrandPersonalizationSlide from "@/components/slides/BrandPersonalizationSlide";
 
 const COVER_SIDE_MARGIN_PX = 80;
 const WAVEFORM_BAR_COUNT = 60;
@@ -124,6 +125,11 @@ const SHOPIFY_SLIDES = [
     ...SLIDES.benefit3,
     label: "5️⃣ Analytics > Conversation Analytics",
     content: <MerchantInsightsSlide />,
+  },
+  {
+    ...SLIDES.benefit1,
+    label: "6️⃣ Brand Personalization > Avatar, Voice & Tone",
+    content: <BrandPersonalizationSlide />,
   },
 ];
 
