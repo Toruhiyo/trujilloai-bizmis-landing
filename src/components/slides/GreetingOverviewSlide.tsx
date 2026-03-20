@@ -111,7 +111,7 @@ const GreetingOverviewSlide = () => (
                   {" "}— still looking for a light laptop for work and travel?
                 </p>
                 <p className="mt-12 max-w-[85%] self-start text-left font-body text-xl leading-[1.5] text-foreground/55">
-                  Yes — ideally around{" "}
+                  Yes! I'd love a light laptop, ideally around{" "}
                   <strong className="font-semibold text-foreground">$1,500</strong>.
                 </p>
               </div>

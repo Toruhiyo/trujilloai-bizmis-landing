@@ -143,7 +143,7 @@ const ProductDiscoverySlide = () => {
           />
           <div className="relative z-10 flex flex-1 flex-col justify-evenly min-h-0">
           <p className="max-w-[82%] self-end text-right font-body text-xl leading-snug text-foreground/55">
-            I&apos;d love something light — ideally around $1,500.
+            I'd love a light laptop, ideally around $1,500.
           </p>
           <p className="max-w-[82%] self-start font-heading text-[1.35rem] font-bold leading-relaxed text-foreground/80">
             What kind of <strong className="font-extrabold text-primary-dark/85">day-to-day use</strong> do you have in mind?
