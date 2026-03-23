@@ -176,10 +176,10 @@ const BrandPersonalizationSlide = () => (
                   <Icon className="h-4 w-4 text-primary-dark/80" aria-hidden />
                 </div>
                 <div className="min-w-0 flex-1">
-                  <div className="flex flex-wrap items-center gap-2">
-                    <h3 className="text-base font-heading font-semibold text-foreground">{title}</h3>
+                  <div className="flex flex-wrap items-center gap-x-2 gap-y-1.5">
+                    <h3 className="min-w-0 text-base font-heading font-semibold text-foreground">{title}</h3>
                     {titleBadge ? (
-                      <span className="inline-flex rounded-full border border-primary/25 bg-primary/10 px-2 py-0.5 text-[10px] font-body font-semibold uppercase tracking-wide text-primary-dark">
+                      <span className="inline-flex shrink-0 items-center justify-center whitespace-nowrap rounded-full border border-primary/25 bg-primary/10 px-2.5 py-1 text-[10px] font-body font-semibold uppercase leading-none tracking-wide text-primary-dark">
                         {titleBadge}
                       </span>
                     ) : null}
