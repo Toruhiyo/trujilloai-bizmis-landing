@@ -13,15 +13,21 @@ const Navbar = () => {
   const location = useLocation();
 
   useEffect(() => {
+    if (location.pathname !== "/") {
+      setIsInHero(false);
+      return;
+    }
+
     const handleScroll = () => {
       const heroHeight = window.innerHeight;
       const scrolled = window.scrollY > heroHeight - 100;
       setIsInHero(!scrolled);
     };
 
+    handleScroll();
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+  }, [location.pathname]);
 
   const navItems = [
     { label: "Features", href: "#benefits" },

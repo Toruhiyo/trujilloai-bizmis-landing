@@ -1,10 +1,14 @@
 import { Button } from "@/components/ui/button";
-import { Check, ArrowRight, Zap, HelpCircle, Clock } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Check, ArrowRight, Clock, Badge as BadgeIcon } from "lucide-react";
+import { FaTag } from "react-icons/fa";
 import { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
+import SectionBadge from "./SectionBadge";
 import { usePostHog } from "posthog-js/react";
 import confetti from "canvas-confetti";
 import { PricingPlanFeatureSoon } from "./PricingPlanFeatureSoon";
+import { cn } from "@/lib/utils";
 
 interface PricingTier {
   monthlyStandard: number;
@@ -38,12 +42,9 @@ const PLANS: Plan[] = [
       yearlyEarlyBirdMonthlyEquivalent: 99,
     },
     includedMinutes: 250,
-    extraMinuteRate: 0.60,
+    extraMinuteRate: 0.6,
     maxConcurrency: 20,
-    features: [
-      "1 Bizmis Store Clerk",
-      "Support: Email (48h)",
-    ],
+    features: ["1 Bizmis Store Clerk", "Support: Email (48h)"],
     popular: false,
     buttonText: "Get Started",
     buttonVariant: "outline",
@@ -79,7 +80,7 @@ const PLANS: Plan[] = [
       yearlyEarlyBirdMonthlyEquivalent: 999,
     },
     includedMinutes: 3000,
-    extraMinuteRate: 0.50,
+    extraMinuteRate: 0.5,
     maxConcurrency: 100,
     features: [
       "Unlimited Bizmis Store Clerks",
@@ -107,18 +108,155 @@ const formatExactPrice = (price: number): string => {
   if (Number.isInteger(price)) {
     return price.toLocaleString("en-US");
   }
-  return price.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  return price.toLocaleString("en-US", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  });
 };
 
-const EARLY_BIRD_TOOLTIP = "First 50 merchants get exclusive launch pricing";
+const CARD_HOVER_MS = "duration-500";
+const CARD_HOVER_EASE = `${CARD_HOVER_MS} ease-out`;
+
+const PricingFootnoteStar = ({ className }: { className?: string }) => (
+  <span
+    className={cn("font-semibold leading-none text-primary", className)}
+    aria-hidden
+  >
+    *
+  </span>
+);
+
+/** Resolves `29 93% 65%`-style values from `:root` for canvas / gradients. */
+const hslFromCssVar = (name: string): string => {
+  if (typeof document === "undefined") {
+    return "hsl(29 93% 65%)";
+  }
+  const value = getComputedStyle(document.documentElement)
+    .getPropertyValue(name)
+    .trim();
+  if (!value) {
+    return "hsl(29 93% 65%)";
+  }
+  return `hsl(${value})`;
+};
+
+/** Miniaturized hero studio stack — fades in under the veil on card hover. */
+const PricingCardHeroBackdrop = ({ noiseId }: { noiseId: string }) => (
+  <div
+    className={`pointer-events-none absolute inset-0 z-0 overflow-hidden rounded-2xl opacity-0 transition-opacity ${CARD_HOVER_EASE} group-hover:opacity-100`}
+    aria-hidden
+  >
+    <div className="absolute inset-0 studio-lighting-base" />
+    <div className="absolute inset-0 studio-radial-light" />
+    <div className="absolute inset-0 studio-horizon-shadow" />
+    <div className="absolute inset-0 studio-horizon-meniscus-left" />
+    <div className="absolute inset-0 studio-horizon-meniscus-right" />
+    <div className="absolute inset-0 studio-floor-shadow" />
+    <div className="absolute inset-0 studio-ambient-overlay" />
+    <svg
+      className="pointer-events-none absolute inset-0 h-full w-full mix-blend-overlay opacity-[0.72]"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <filter id={`pricing-noise-${noiseId}`}>
+        <feTurbulence
+          type="fractalNoise"
+          baseFrequency="0.78"
+          numOctaves="3"
+          stitchTiles="stitch"
+        />
+      </filter>
+      <rect
+        width="100%"
+        height="100%"
+        filter={`url(#pricing-noise-${noiseId})`}
+        opacity="0.85"
+      />
+    </svg>
+  </div>
+);
+
+/** Only valid early-bird coupon for now (case-insensitive). */
+const EARLY_BIRD_COUPON_CODE = "EARLY_BIRD_50";
+const EARLY_BIRD_SEAT_CAP = 50;
+
+const normalizeCouponInput = (value: string): string =>
+  value.trim().toUpperCase();
+
+const fireEarlyBirdConfetti = (
+  originElement: HTMLElement | null | undefined
+) => {
+  let originX = 0.5;
+  let originY = 0.5;
+  if (originElement) {
+    const rect = originElement.getBoundingClientRect();
+    originX = (rect.left + rect.width / 2) / window.innerWidth;
+    originY = (rect.top + rect.height / 2) / window.innerHeight;
+  }
+
+  const count = 200;
+  const defaults = {
+    origin: { x: originX, y: originY },
+    zIndex: 100,
+  };
+
+  const fire = (particleRatio: number, opts: object) => {
+    confetti({
+      ...defaults,
+      ...opts,
+      particleCount: Math.floor(count * particleRatio),
+    });
+  };
+
+  const primary = hslFromCssVar("--primary");
+  const primaryDark = hslFromCssVar("--primary-dark");
+  const primaryLight = hslFromCssVar("--primary-light");
+  const background = hslFromCssVar("--background");
+  const accent = hslFromCssVar("--accent");
+  const secondary = hslFromCssVar("--secondary");
+
+  fire(0.25, {
+    spread: 26,
+    startVelocity: 55,
+    colors: [primary, primaryDark],
+  });
+
+  fire(0.2, {
+    spread: 60,
+    colors: [primaryLight, background],
+  });
+
+  fire(0.35, {
+    spread: 100,
+    decay: 0.91,
+    scalar: 0.8,
+    colors: [primary, primaryDark, primaryLight, background, accent],
+  });
+
+  fire(0.1, {
+    spread: 120,
+    startVelocity: 25,
+    decay: 0.92,
+    scalar: 1.2,
+    colors: [primary, primaryDark],
+  });
+
+  fire(0.1, {
+    spread: 120,
+    startVelocity: 45,
+    colors: [primaryLight, background, secondary],
+  });
+};
 
 const Pricing = () => {
   const navigate = useNavigate();
   const posthog = usePostHog();
   const [isYearly, setIsYearly] = useState(true);
   const [showEarlyBird, setShowEarlyBird] = useState(false);
-  const [showUpgradeCreditDetails, setShowUpgradeCreditDetails] = useState(false);
-  const earlyBirdRef = useRef<HTMLLabelElement>(null);
+  const [couponValue, setCouponValue] = useState(EARLY_BIRD_COUPON_CODE);
+  const [couponError, setCouponError] = useState<string | null>(null);
+  const [showUpgradeCreditDetails, setShowUpgradeCreditDetails] =
+    useState(false);
+  const couponInputRef = useRef<HTMLInputElement>(null);
 
   const handlePlanClick = (planName: string) => {
     posthog.capture("pricing_plan_clicked", {
@@ -146,75 +284,42 @@ const Pricing = () => {
     setIsYearly(yearly);
   };
 
-  const handleEarlyBirdChange = () => {
-    const newValue = !showEarlyBird;
-    posthog.capture("early_bird_toggled", {
-      early_bird_enabled: newValue,
+  const tryApplyEarlyBirdCoupon = () => {
+    if (showEarlyBird) {
+      return;
+    }
+
+    const entered = normalizeCouponInput(couponValue);
+    if (entered !== EARLY_BIRD_COUPON_CODE) {
+      setCouponError("That code isn’t valid.");
+      return;
+    }
+
+    setCouponError(null);
+    setShowEarlyBird(true);
+    posthog.capture("pricing_coupon_applied", {
+      coupon: EARLY_BIRD_COUPON_CODE,
       billing_period: isYearly ? "yearly" : "monthly",
     });
-    setShowEarlyBird(newValue);
-    if (newValue) {
-      // Calculate origin based on button position if possible
-      let originX = 0.5;
-      let originY = 0.5;
 
-      if (earlyBirdRef.current) {
-        const rect = earlyBirdRef.current.getBoundingClientRect();
-        originX = (rect.left + rect.width / 2) / window.innerWidth;
-        originY = (rect.top + rect.height / 2) / window.innerHeight;
-      }
+    fireEarlyBirdConfetti(couponInputRef.current);
+  };
 
-      // Single big explosion centered at the button
-      const count = 200;
-      const defaults = {
-        origin: { x: originX, y: originY },
-        zIndex: 100, // Ensure it's on top
-      };
-
-      function fire(particleRatio: number, opts: any) {
-        confetti({
-          ...defaults,
-          ...opts,
-          particleCount: Math.floor(count * particleRatio)
-        });
-      }
-
-      fire(0.25, {
-        spread: 26,
-        startVelocity: 55,
-        colors: ['#FF8F00', '#F59E0B']
-      });
-
-      fire(0.2, {
-        spread: 60,
-        colors: ['#FCD34D', '#FFFFFF']
-      });
-
-      fire(0.35, {
-        spread: 100,
-        decay: 0.91,
-        scalar: 0.8,
-        colors: ['#FF8F00', '#F59E0B', '#FCD34D', '#FFFFFF', '#FFF7ED']
-      });
-
-      fire(0.1, {
-        spread: 120,
-        startVelocity: 25,
-        decay: 0.92,
-        scalar: 1.2,
-        colors: ['#FF8F00', '#F59E0B']
-      });
-
-      fire(0.1, {
-        spread: 120,
-        startVelocity: 45,
-        colors: ['#FCD34D', '#FFFFFF', '#FFF7ED']
-      });
+  const removeAppliedCoupon = () => {
+    if (!showEarlyBird) {
+      return;
     }
+    setShowEarlyBird(false);
+    setCouponError(null);
+    posthog.capture("pricing_coupon_removed", {
+      coupon: EARLY_BIRD_COUPON_CODE,
+      billing_period: isYearly ? "yearly" : "monthly",
+    });
   };
 
   const getDisplayPrice = (plan: Plan): number => {
-    if (isYearly && showEarlyBird) return plan.pricing.yearlyEarlyBirdMonthlyEquivalent;
+    if (isYearly && showEarlyBird)
+      return plan.pricing.yearlyEarlyBirdMonthlyEquivalent;
     if (isYearly) return plan.pricing.yearlyStandardMonthlyEquivalent;
     if (showEarlyBird) return plan.pricing.monthlyEarlyBird;
     return plan.pricing.monthlyStandard;
@@ -230,129 +335,77 @@ const Pricing = () => {
   const showUpgradeCreditNote = !isYearly && showEarlyBird;
 
   return (
-    <section
-      id="pricing"
-      className="py-16 lg:py-24 relative overflow-hidden"
-    >
-      <div className="container mx-auto px-4 lg:px-6 relative z-10">
-        <div className="text-center mb-12">
-          <h2 className="text-4xl lg:text-5xl font-heading font-bold text-foreground mb-6">
+    <section id="pricing" className="relative overflow-hidden py-16 lg:py-24">
+      <div
+        className="pointer-events-none absolute inset-0 bg-gradient-to-br from-muted/90 via-accent/25 to-background"
+        aria-hidden
+      />
+      <div className="pointer-events-none absolute inset-0" aria-hidden>
+        <div className="absolute left-0 top-0 h-96 w-96 -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary/15 blur-3xl" />
+        <div className="absolute bottom-0 right-0 h-80 w-80 translate-x-1/2 translate-y-1/2 rounded-full bg-primary/10 blur-3xl" />
+        <div className="absolute left-1/2 top-[36%] h-72 w-[min(44rem,92%)] -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary/5 blur-[100px]" />
+      </div>
+
+      <div className="container relative z-10 mx-auto px-4 lg:px-6">
+        <div className="mb-12 text-center">
+          <div className="mb-6 flex justify-center">
+            <SectionBadge icon={FaTag} text="Pricing" />
+          </div>
+          <h2 className="mb-6 font-heading text-4xl font-bold text-foreground lg:text-5xl xl:text-6xl">
             Simple, Transparent Pricing
           </h2>
-          <p className="text-xl text-muted-foreground font-body max-w-3xl mx-auto mb-8">
-            Choose the plan that fits your business. All plans include full Shopify integration.
+          <p className="mx-auto mb-8 max-w-3xl font-body text-lg leading-relaxed text-muted-foreground sm:text-xl">
+            Choose the plan that fits your business. All plans include full
+            Shopify integration.
           </p>
 
-          {/* Controls Row - Single Row */}
-          <div className="inline-flex flex-wrap items-center justify-center gap-6 bg-white rounded-2xl px-6 py-4 shadow-lg border border-gray-100">
-            {/* Billing Toggle */}
+          {/* Billing period only */}
+          <div className="inline-flex flex-wrap items-center justify-center gap-6 rounded-2xl border border-border/60 bg-background/75 px-6 py-4 shadow-soft backdrop-blur-md">
             <div className="flex items-center gap-3">
               <span
-                className={`text-sm font-medium transition-colors ${!isYearly ? "text-foreground" : "text-muted-foreground"
-                  }`}
+                className={`text-sm font-medium transition-colors ${
+                  !isYearly ? "text-foreground" : "text-muted-foreground"
+                }`}
               >
                 Monthly
               </span>
               <button
+                type="button"
                 onClick={() => handleBillingToggle(!isYearly)}
-                className={`relative inline-flex h-7 w-12 items-center rounded-full transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 ${isYearly
-                  ? "bg-gradient-to-r from-primary to-primary-dark"
-                  : "bg-gray-200"
-                  }`}
+                className={`relative inline-flex h-7 w-12 items-center rounded-full transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 ${
+                  isYearly
+                    ? "bg-gradient-to-r from-primary to-primary-dark"
+                    : "bg-muted"
+                }`}
               >
                 <span
-                  className={`inline-block h-5 w-5 transform rounded-full bg-white transition-all duration-300 shadow-lg ${isYearly ? "translate-x-6" : "translate-x-1"
-                    }`}
+                  className={`inline-block h-5 w-5 transform rounded-full bg-primary-foreground transition-all duration-300 shadow-lg ${
+                    isYearly ? "translate-x-6" : "translate-x-1"
+                  }`}
                 />
               </button>
-              <div className="flex flex-col items-start">
-                <span
-                  className={`text-sm font-medium transition-colors ${isYearly ? "text-foreground" : "text-muted-foreground"
-                    }`}
-                >
-                  Yearly
-                </span>
-              </div>
-            </div>
-
-            {/* Separator */}
-            <div className="h-8 w-px bg-gray-200 hidden sm:block" />
-
-            {/* Early Bird Checkbox - Fancier Design */}
-            <label
-              ref={earlyBirdRef}
-              className={`relative flex items-center gap-3 cursor-pointer group px-4 py-2.5 rounded-xl transition-all duration-300 select-none ${showEarlyBird
-                ? "bg-[#FDF7E2] border-2 border-primary/20 shadow-md scale-105"
-                : "bg-gray-50 border-2 border-transparent hover:bg-gray-100"
+              <span
+                className={`text-sm font-medium transition-colors ${
+                  isYearly ? "text-foreground" : "text-muted-foreground"
                 }`}
-            >
-              <div className="relative">
-                <input
-                  type="checkbox"
-                  checked={showEarlyBird}
-                  onChange={handleEarlyBirdChange}
-                  className="sr-only peer"
-                />
-                <div className={`w-5 h-5 rounded-md transition-all flex items-center justify-center ${showEarlyBird
-                  ? "bg-gradient-warm shadow-md"
-                  : "border-2 border-gray-300"
-                  }`}>
-                  {showEarlyBird && (
-                    <Check className="w-3.5 h-3.5 text-white" strokeWidth={3} />
-                  )}
-                </div>
-              </div>
-              <div className="flex items-center gap-2">
-                <span className={`text-sm font-bold transition-colors ${showEarlyBird ? "text-primary" : "text-foreground"
-                  }`}>
-                  Early Bird
-                </span>
-                <span className={`text-xs px-2 py-0.5 rounded-full font-bold uppercase tracking-wide ${showEarlyBird
-                  ? "bg-[#FDF7E2] text-primary border border-primary/20"
-                  : "bg-gray-200 text-muted-foreground"
-                  }`}>
-                  50 seats
-                </span>
-              </div>
-              <div className="relative ml-1 group/tooltip">
-                <HelpCircle className="w-4 h-4 text-primary cursor-help" />
-                <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-3 py-2 bg-gray-900 text-white text-xs rounded-lg opacity-0 invisible group-hover/tooltip:opacity-100 group-hover/tooltip:visible transition-all whitespace-nowrap z-50">
-                  {EARLY_BIRD_TOOLTIP}
-                  <div className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-gray-900"></div>
-                </div>
-              </div>
-            </label>
+              >
+                Yearly
+              </span>
+            </div>
           </div>
 
-          {/* Global Microcopy - Only show when Early Bird is OFF */}
           {!showEarlyBird && (
-            <p className="text-sm text-muted-foreground mt-4 max-w-xl mx-auto">
+            <p className="mx-auto mt-4 max-w-xl text-sm text-muted-foreground">
               Save 20% with yearly billing.
             </p>
-          )}
-
-          {/* Early Bird Special Message */}
-          {showEarlyBird && (
-            <div className="mt-6 max-w-2xl mx-auto">
-              <div className="relative bg-[#FDF7E2] border border-primary/20 rounded-2xl px-6 py-5 shadow-sm">
-                <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-                  <span className="bg-gradient-warm text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider shadow-md">
-                    🐣 Early Bird
-                  </span>
-                </div>
-                <p className="text-center text-foreground mt-2">
-                  <span className="font-semibold">Be one of our first 50 merchants and help shape Bizmis.</span>{" "}
-                  <span className="text-muted-foreground">
-                    Your needs and feedback will drive the roadmap. Plus, enjoy <span className="font-semibold">50% off your first 3 months</span> or <span className="font-semibold">33% off yearly</span>.
-                  </span>
-                </p>
-              </div>
-            </div>
           )}
         </div>
 
         {/* Pricing Cards - 4 columns */}
-        <div id="pricing-cards" className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-4 gap-6 xl:gap-6 max-w-7xl mx-auto">
+        <div
+          id="pricing-cards"
+          className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-4 gap-6 xl:gap-6 max-w-7xl mx-auto"
+        >
           {PLANS.map((plan, index) => {
             const displayPrice = getDisplayPrice(plan);
             const discountPercent = getDiscountPercent(plan);
@@ -361,113 +414,161 @@ const Pricing = () => {
             return (
               <div
                 key={index}
-                className={`relative flex flex-col transition-all duration-500 ${plan.popular
-                  ? "scale-[1.02] xl:scale-105"
-                  : "hover:scale-[1.02]"
-                  }`}
+                className={`group relative flex flex-col transition-all duration-500 ${
+                  plan.popular
+                    ? "scale-[1.02] xl:scale-105"
+                    : "hover:scale-[1.02]"
+                }`}
               >
-                {/* Badge outside overflow-hidden */}
                 {plan.popular && (
-                  <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 z-30 w-full flex justify-center">
-                    <div className="bg-gradient-warm text-white px-4 py-1.5 rounded-full text-sm font-heading font-semibold flex items-center gap-2 shadow-lg border-2 border-white whitespace-nowrap">
-                      <Zap className="w-3.5 h-3.5" />
-                      Most Popular
+                  <div className="absolute -top-4 left-1/2 z-30 flex w-full -translate-x-1/2 transform justify-center">
+                    <div className="whitespace-nowrap rounded-full border border-primary bg-primary-light/25 px-4 py-1.5 font-heading text-sm font-semibold text-primary backdrop-blur-md transition-colors group-hover:border-primary-foreground/85 group-hover:text-primary-foreground">
+                      Popular
                     </div>
                   </div>
                 )}
-
-                <div className={`relative bg-white rounded-2xl p-6 lg:p-7 shadow-lg hover:shadow-xl flex flex-col overflow-hidden h-full ${plan.popular
-                  ? "ring-2 ring-primary bg-gradient-to-br from-white to-primary-light/10"
-                  : "border border-gray-100"
-                  }`}>
-                  {/* Discount Ribbon - Orange/Warm Palette */}
+                <div
+                  className={`relative flex h-full flex-col overflow-hidden rounded-2xl border p-6 shadow-soft backdrop-blur-sm transition-shadow hover:shadow-lg lg:p-7 ${
+                    plan.popular
+                      ? "border-primary"
+                      : "border-border/60"
+                  }`}
+                >
+                  <PricingCardHeroBackdrop noiseId={`plan-${index}`} />
+                  <div
+                    className={`pointer-events-none absolute inset-0 z-[1] rounded-2xl backdrop-blur-[2px] transition-opacity ${CARD_HOVER_EASE} group-hover:opacity-0 ${
+                      plan.popular
+                        ? "bg-gradient-to-br from-card/96 via-card/92 to-primary-light/18"
+                        : "bg-card/95"
+                    }`}
+                    aria-hidden
+                  />
+                  {/* Discount — filled scalloped seal badge */}
                   {hasDiscount && (
-                    <div className="absolute -right-12 top-6 rotate-45 bg-gradient-warm text-white py-1.5 w-44 text-sm font-bold shadow-lg z-20 flex items-center justify-center gap-1">
-                      {!isYearly && showEarlyBird && <Clock className="w-3.5 h-3.5" />}
-                      {discountPercent}% OFF
+                    <div
+                      className="pointer-events-none absolute right-3 top-3 z-20 flex h-16 w-16 items-center justify-center text-center"
+                      title={
+                        !isYearly && showEarlyBird
+                          ? "Discounted intro period"
+                          : `${discountPercent}% off vs. list price`
+                      }
+                    >
+                      <BadgeIcon
+                        className="absolute inset-0 h-full w-full fill-primary stroke-none transition-colors group-hover:fill-primary-foreground/25"
+                        strokeWidth={0}
+                        aria-hidden
+                      />
+                      <div className="relative z-10 flex flex-col items-center gap-0.5">
+                        {!isYearly && showEarlyBird && (
+                          <Clock
+                            className="h-2.5 w-2.5 shrink-0 text-primary-foreground/90"
+                            aria-hidden
+                          />
+                        )}
+                        <span className="font-heading text-xl font-extrabold leading-none text-primary-foreground tabular-nums">
+                          {discountPercent}%
+                        </span>
+                        <span className="font-heading text-[0.65rem] font-bold uppercase leading-none tracking-wide text-primary-foreground/90">
+                          off
+                        </span>
+                      </div>
                     </div>
                   )}
 
-                  <div className="text-center mb-6 pt-2">
-                    <h3 className="text-xl lg:text-2xl font-heading font-bold text-foreground mb-3">
+                  <div className="relative z-10 flex min-h-0 flex-1 flex-col">
+                  <div className="mb-6 pt-2 text-center">
+                    <h3 className="mb-3 font-heading text-xl font-bold text-foreground transition-colors lg:text-2xl group-hover:text-primary-foreground">
                       {plan.name}
                     </h3>
 
                     {/* Price Block */}
                     <div className="space-y-2">
-                      {/* Strikethrough original price when discounted */}
-                      {hasDiscount && (
-                        <div className="text-lg text-muted-foreground line-through">
-                          ${formatPrice(plan.pricing.monthlyStandard)} / month
-                        </div>
-                      )}
-
-                      {/* Primary Price - No color, just bold */}
-                      <div className="flex items-baseline justify-center gap-1">
-                        <span className="text-3xl lg:text-4xl font-heading font-bold text-foreground">
+                      <div
+                        className={`flex flex-wrap items-baseline justify-center ${hasDiscount ? "gap-2" : "gap-1"}`}
+                      >
+                        {hasDiscount && (
+                          <span className="font-heading text-lg font-light tabular-nums text-foreground/60 line-through decoration-foreground/45 transition-colors group-hover:text-primary-foreground/75 group-hover:decoration-primary-foreground/50">
+                            ${formatPrice(plan.pricing.monthlyStandard)}
+                          </span>
+                        )}
+                        <span className="font-heading text-3xl font-bold tabular-nums text-foreground transition-colors group-hover:text-primary-foreground lg:text-4xl">
                           ${formatExactPrice(displayPrice)}
                         </span>
-                        <span className="text-muted-foreground font-body text-sm">
-                          / month
+                        <span className="font-body text-sm text-foreground/70 transition-colors group-hover:text-primary-foreground/80">
+                          /mo
                         </span>
                       </div>
 
                       {/* Secondary info based on state */}
                       {isYearly && (
-                        <p className="text-sm text-muted-foreground">
-                          billed yearly
+                        <p className="flex justify-center pt-0.5">
+                          <span className="font-heading text-[0.625rem] font-semibold uppercase leading-none tracking-widest text-muted-foreground/55 transition-colors group-hover:text-primary-foreground/75">
+                            billed yearly
+                          </span>
                         </p>
                       )}
 
                       {!isYearly && showEarlyBird && (
-                        <p className="text-sm text-muted-foreground flex items-center justify-center gap-1">
-                          <Clock className="w-3.5 h-3.5" />
-                          first 3 months, then ${formatPrice(plan.pricing.monthlyStandard)}/month
+                        <p className="flex items-center justify-center gap-1 text-sm text-foreground/70 transition-colors group-hover:text-primary-foreground/85">
+                          <Clock className="h-3.5 w-3.5" />
+                          first 3 months, then $
+                          {formatPrice(plan.pricing.monthlyStandard)}/mo
                         </p>
                       )}
                     </div>
                   </div>
 
-                  <div className="mb-4 pb-4 border-b border-gray-100">
-                    <div className="flex items-center gap-3 mb-2">
-                      <span className="text-sm text-foreground">
-                        <span className="font-semibold">{plan.includedMinutes.toLocaleString()}</span> minutes included
+                  <div className="mb-4 space-y-2 border-b border-border/70 pb-4 transition-colors group-hover:border-primary-foreground/30">
+                    <div className="flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
+                      <span className="font-heading text-base font-semibold tabular-nums text-foreground/80 transition-colors group-hover:text-primary-foreground sm:text-lg">
+                        {plan.includedMinutes.toLocaleString()}
+                      </span>
+                      <span className="text-xs text-foreground/65 transition-colors group-hover:text-primary-foreground/85">
+                        min included
                       </span>
                     </div>
-                    <div className="flex items-center gap-3 mb-2">
-                      <span className="text-sm text-muted-foreground">
-                        Extra minutes at <span className="font-semibold text-foreground">${plan.extraMinuteRate.toFixed(2)}/min</span>
+                    <div className="flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
+                      <span className="inline-flex items-baseline gap-0.5">
+                        <span className="font-heading text-base font-semibold tabular-nums text-foreground/80 transition-colors group-hover:text-primary-foreground sm:text-lg">
+                          ${plan.extraMinuteRate.toFixed(2)}/min
+                        </span>
+                        <PricingFootnoteStar className="text-sm transition-colors group-hover:text-primary-foreground sm:text-base" />
+                      </span>
+                      <span className="text-xs leading-snug text-foreground/65 transition-colors group-hover:text-primary-foreground/85">
+                        beyond included
                       </span>
                     </div>
-                    <div className="flex items-center gap-3">
-                      <span className="text-sm text-muted-foreground">
-                        Up to <span className="font-semibold text-foreground">{plan.maxConcurrency}</span> concurrent voice conversations
+                    <div className="flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
+                      <span className="font-heading text-base font-semibold tabular-nums text-foreground/80 transition-colors group-hover:text-primary-foreground sm:text-lg">
+                        {plan.maxConcurrency}
+                      </span>
+                      <span className="text-xs text-foreground/65 transition-colors group-hover:text-primary-foreground/85">
+                        concurrent voice conversations
                       </span>
                     </div>
-                    <p className="text-xs text-muted-foreground mt-1.5">
-                      Voice is billed in minutes. You can set a spend hard limit.
-                    </p>
                   </div>
 
                   {/* Features List */}
                   <div className="mb-8 flex-grow">
                     {plan.everythingIn && (
-                      <p className="text-sm font-medium text-muted-foreground mb-3">
+                      <p className="mb-3 text-sm font-medium text-foreground/75 transition-colors group-hover:text-primary-foreground/90">
                         Everything in {plan.everythingIn} plus:
                       </p>
                     )}
                     <ul className="space-y-3">
                       {plan.features.map((feature, idx) => (
-                          <li key={idx} className="flex items-start gap-3">
-                            <div className="w-5 h-5 bg-gradient-to-br from-[#FDF7E2] to-primary/20 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
-                              <Check className="w-3 h-3 text-primary" />
-                            </div>
-                            <span className="text-muted-foreground font-body text-sm leading-relaxed flex items-center">
-                              {feature}
-                              {COMING_SOON_FEATURES.includes(feature) && <PricingPlanFeatureSoon />}
-                            </span>
-                          </li>
-                        ))}
+                        <li key={idx} className="flex items-start gap-3">
+                          <div className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-primary/15 to-primary/30 ring-1 ring-primary/25 transition-colors group-hover:bg-primary-foreground/20 group-hover:ring-primary-foreground/40">
+                            <Check className="h-3 w-3 text-primary-dark transition-colors group-hover:text-primary-foreground" />
+                          </div>
+                          <span className="flex items-center font-body text-sm leading-relaxed text-foreground/85 transition-colors group-hover:text-primary-foreground/95">
+                            {feature}
+                            {COMING_SOON_FEATURES.includes(feature) && (
+                              <PricingPlanFeatureSoon />
+                            )}
+                          </span>
+                        </li>
+                      ))}
                     </ul>
                   </div>
 
@@ -476,14 +577,16 @@ const Pricing = () => {
                       variant={plan.buttonVariant}
                       size="lg"
                       onClick={() => handlePlanClick(plan.name)}
-                      className={`w-full group relative overflow-hidden transition-all duration-300 ${plan.buttonVariant === "outline"
-                        ? "hover:bg-primary hover:text-white hover:border-primary"
-                        : "hover:opacity-90 hover:shadow-lg"
-                        }`}
+                      className={`w-full font-semibold transition-all duration-300 group/btn relative overflow-hidden ${
+                        plan.buttonVariant === "outline"
+                          ? "border-2 border-primary/55 bg-background text-primary-dark shadow-sm hover:border-primary hover:bg-primary/10 hover:text-primary-dark group-hover:border-primary-foreground group-hover:bg-primary-foreground/15 group-hover:text-primary-foreground hover:group-hover:!border-primary-foreground hover:group-hover:!bg-primary-foreground/25"
+                          : "group-hover:bg-primary-foreground group-hover:text-primary-dark group-hover:shadow-lg hover:!bg-primary-foreground/95"
+                      }`}
                     >
                       <span className="relative z-10">{plan.buttonText}</span>
-                      <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform relative z-10" />
+                      <ArrowRight className="relative z-10 ml-2 h-4 w-4 transition-transform group-hover/btn:translate-x-1" />
                     </Button>
+                  </div>
                   </div>
                 </div>
               </div>
@@ -491,39 +594,48 @@ const Pricing = () => {
           })}
 
           {/* Enterprise Card */}
-          <div className="relative bg-gradient-to-br from-gray-900 to-gray-800 rounded-2xl p-6 lg:p-7 shadow-lg hover:shadow-xl transition-all duration-500 flex flex-col text-white hover:scale-[1.02]">
-            <div className="text-center mb-6 pt-2">
-              <h3 className="text-xl lg:text-2xl font-heading font-bold mb-3">
+          <div className="group relative flex flex-col overflow-hidden rounded-2xl p-6 text-primary-foreground shadow-soft transition-all duration-500 hover:scale-[1.02] hover:shadow-lg lg:p-7">
+            <PricingCardHeroBackdrop noiseId="enterprise" />
+            <div
+              className={`pointer-events-none absolute inset-0 z-[1] rounded-2xl bg-gradient-to-br from-foreground via-foreground to-primary-dark/75 transition-opacity ${CARD_HOVER_EASE} group-hover:opacity-0`}
+              aria-hidden
+            />
+            <div className="relative z-10 flex flex-1 flex-col">
+            <div className="mb-6 pt-2 text-center">
+              <h3 className="mb-3 font-heading text-xl font-bold lg:text-2xl">
                 Enterprise
               </h3>
               <div className="mb-3">
                 <div className="flex items-baseline justify-center gap-1">
-                  <span className="text-3xl lg:text-4xl font-heading font-bold">
+                  <span className="font-heading text-3xl font-bold lg:text-4xl">
                     Custom
                   </span>
                 </div>
               </div>
-              <p className="text-gray-300 text-sm">
-                Tailored solutions for large-scale operations with custom volume and requirements.
+              <p className="text-sm text-primary-foreground/75 transition-colors group-hover:text-primary-foreground/90">
+                Tailored solutions for large-scale operations with custom volume
+                and requirements.
               </p>
             </div>
 
             <div className="mb-8 flex-grow">
-              <p className="text-sm font-medium text-gray-300 mb-3">
+              <p className="mb-3 text-sm font-medium text-primary-foreground/75 transition-colors group-hover:text-primary-foreground/90">
                 Everything in Pro plus:
               </p>
               <ul className="space-y-3">
                 {ENTERPRISE_FEATURES.map((feature, idx) => (
-                    <li key={idx} className="flex items-start gap-3">
-                      <div className="w-5 h-5 bg-white/10 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
-                        <Check className="w-3 h-3 text-white" />
-                      </div>
-                      <span className="text-gray-300 font-body text-sm leading-relaxed flex items-center">
-                        {feature}
-                        {COMING_SOON_FEATURES.includes(feature) && <PricingPlanFeatureSoon />}
-                      </span>
-                    </li>
-                  ))}
+                  <li key={idx} className="flex items-start gap-3">
+                    <div className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-primary-foreground/10 transition-colors group-hover:bg-primary-foreground/20">
+                      <Check className="h-3 w-3 text-primary-foreground" />
+                    </div>
+                    <span className="flex items-center font-body text-sm leading-relaxed text-primary-foreground/80 transition-colors group-hover:text-primary-foreground">
+                      {feature}
+                      {COMING_SOON_FEATURES.includes(feature) && (
+                        <PricingPlanFeatureSoon />
+                      )}
+                    </span>
+                  </li>
+                ))}
               </ul>
             </div>
 
@@ -532,11 +644,12 @@ const Pricing = () => {
                 variant="outline"
                 size="lg"
                 onClick={handleContactSales}
-                className="w-full bg-white text-gray-900 hover:bg-gray-100 hover:text-gray-900 border-0 transition-all duration-300 group"
+                className="group/ent w-full border-0 bg-background text-foreground transition-all duration-300 hover:bg-background/95 hover:text-foreground group-hover:border group-hover:border-primary-foreground/30 group-hover:bg-background/95 group-hover:text-primary-dark"
               >
                 <span>Contact Sales</span>
-                <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
+                <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover/ent:translate-x-1" />
               </Button>
+            </div>
             </div>
           </div>
         </div>
@@ -544,11 +657,17 @@ const Pricing = () => {
         {/* Upgrade Credit Note - Only when Monthly + Early Bird ON */}
         {showUpgradeCreditNote && (
           <div className="max-w-3xl mx-auto mt-8">
-            <div className="bg-[#FDF7E2] border border-primary/20 rounded-xl px-6 py-4">
+            <div className="rounded-xl border border-primary/20 bg-accent/35 px-6 py-4">
               <p className="text-sm text-foreground">
-                <span className="font-medium">Upgrade to yearly within 90 days</span> and we'll credit what you already paid toward your yearly plan (commitment charges only).{" "}
+                <span className="font-medium">
+                  Upgrade to yearly within 90 days
+                </span>{" "}
+                and we'll credit what you already paid toward your yearly plan
+                (commitment charges only).{" "}
                 <button
-                  onClick={() => setShowUpgradeCreditDetails(!showUpgradeCreditDetails)}
+                  onClick={() =>
+                    setShowUpgradeCreditDetails(!showUpgradeCreditDetails)
+                  }
                   className="text-primary underline underline-offset-2 hover:text-foreground transition-colors"
                 >
                   {showUpgradeCreditDetails ? "Hide details" : "Learn more"}
@@ -556,7 +675,8 @@ const Pricing = () => {
               </p>
               {showUpgradeCreditDetails && (
                 <p className="text-xs text-muted-foreground mt-2 pt-2 border-t border-primary/20">
-                  Credit applies to commitment charges only. On-demand usage charges (extra minutes) are excluded from the credit.
+                  Credit applies to commitment charges only. On-demand usage
+                  charges (extra minutes) are excluded from the credit.
                 </p>
               )}
             </div>
@@ -564,22 +684,120 @@ const Pricing = () => {
         )}
 
         {/* Billing Summary */}
-        <div className="text-center mt-12 mb-16">
-          <div className="flex flex-wrap items-center justify-center gap-6 lg:gap-8 text-sm text-muted-foreground">
+        <div className="mt-12 text-center">
+          <div className="mb-10 flex flex-wrap items-center justify-center gap-x-6 gap-y-3 text-sm text-foreground/75 lg:gap-x-8">
+            <div
+              className="flex items-center gap-2"
+              aria-label="Voice is billed per minute. You choose your maximum spend limit and can change it anytime."
+            >
+              <PricingFootnoteStar />
+              <span>You choose your spend limit</span>
+            </div>
             <div className="flex items-center gap-2">
-              <Check className="w-4 h-4 text-primary" />
+              <Check className="h-4 w-4 text-primary" />
               <span>Cancel anytime</span>
             </div>
             <div className="flex items-center gap-2">
-              <Check className="w-4 h-4 text-primary" />
+              <Check className="h-4 w-4 text-primary" />
               <span>30-day money-back guarantee (yearly plans)</span>
             </div>
           </div>
         </div>
 
-        <div className="text-center mt-8">
-          <a href="/faqs#billing" className="text-primary hover:text-primary-dark font-medium text-sm inline-flex items-center gap-1 transition-colors">
-            View all frequently asked questions <ArrowRight className="w-4 h-4" />
+        {/* Discount coupon — below plan grid, above FAQs (early bird copy only after valid apply) */}
+        <div className="mx-auto mb-10 max-w-xl px-2">
+          {!showEarlyBird ? (
+            <p className="mb-4 text-center text-sm text-muted-foreground">
+              Have a discount code? Enter it and press Enter or Apply to update
+              the prices above.
+            </p>
+          ) : null}
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-stretch">
+            <Input
+              ref={couponInputRef}
+              value={couponValue}
+              onChange={(e) => {
+                setCouponValue(e.target.value);
+                setCouponError(null);
+              }}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" && !showEarlyBird) {
+                  e.preventDefault();
+                  tryApplyEarlyBirdCoupon();
+                }
+              }}
+              disabled={showEarlyBird}
+              className="h-12 font-mono text-sm uppercase tracking-wide sm:min-w-0 sm:flex-1"
+              placeholder="Discount code"
+              autoComplete="off"
+              spellCheck={false}
+              aria-label="Discount coupon code"
+            />
+            {showEarlyBird ? (
+              <Button
+                type="button"
+                variant="outline"
+                className="shrink-0 border-primary/40 font-semibold text-primary-dark sm:min-w-[8.5rem]"
+                onClick={removeAppliedCoupon}
+              >
+                Remove coupon
+              </Button>
+            ) : (
+              <Button
+                type="button"
+                variant="default"
+                className="shrink-0 sm:w-32"
+                onClick={tryApplyEarlyBirdCoupon}
+              >
+                Apply
+              </Button>
+            )}
+          </div>
+          {couponError ? (
+            <p
+              className="mt-3 text-center text-sm text-destructive"
+              role="alert"
+            >
+              {couponError}
+            </p>
+          ) : null}
+
+          {showEarlyBird ? (
+            <div className="relative mt-8 rounded-2xl border border-primary/25 bg-accent/35 px-5 py-6 shadow-sm sm:px-6 sm:py-7">
+              <div className="absolute -top-3 left-1/2 -translate-x-1/2">
+                <span className="rounded-full bg-primary px-3 py-1 text-xs font-bold uppercase tracking-wider text-primary-foreground shadow-md">
+                  Early bird active
+                </span>
+              </div>
+              <p className="mt-2 text-center text-foreground">
+                <span className="font-semibold">
+                  You&apos;re viewing early bird pricing — reserved for our first{" "}
+                  {EARLY_BIRD_SEAT_CAP} merchants only.
+                </span>{" "}
+                <span className="text-foreground/85">
+                  Help shape the product with your feedback on the roadmap. Your
+                  plan prices above include{" "}
+                  <span className="font-semibold text-foreground">
+                    50% off your first 3 months
+                  </span>{" "}
+                  on monthly billing, or{" "}
+                  <span className="font-semibold text-foreground">
+                    33% off yearly
+                  </span>{" "}
+                  when yearly is selected.
+                </span>
+              </p>
+            </div>
+          ) : null}
+        </div>
+
+        <div className="mt-2 text-center">
+          <a
+            href="/faqs#billing"
+            className="inline-flex items-center gap-1 text-sm font-medium text-primary transition-colors hover:text-primary-dark"
+          >
+            View all frequently asked questions{" "}
+            <ArrowRight className="h-4 w-4" />
           </a>
         </div>
       </div>
