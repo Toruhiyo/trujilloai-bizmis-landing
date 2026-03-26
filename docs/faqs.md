@@ -56,15 +56,15 @@ Yes. You can view session replays and see auto-tagged chat themes to uncover com
 
 ### How does the billing work?
 
-Billing operates on monthly cycles. Your included minutes reset every month with no rollover. The monthly commitment is charged upfront at the start of each month.
+Billing operates on monthly cycles. Your included minutes reset every month with no rollover. Voice usage is billed in minutes. The monthly commitment is charged upfront at the start of each month.
 
 ### What happens after I use my included minutes?
 
-After your included minutes are used, additional minutes are billed at your plan's extra minutes rate. Usage is tracked in real-time in your dashboard.
+After your included minutes are used, additional minutes are billed at your plan's extra per-minute rate. You can set a spend hard limit. Usage is tracked in real time in your dashboard.
 
 ### How does yearly billing work?
 
-Yearly billing gives you ~20% off (up to 33% with Early Bird). Minutes still operate in monthly cycles, resetting each month. The yearly commitment is charged upfront.
+Yearly billing gives you ~20% off (up to 33% with Early Bird). Included minutes still reset every month. The yearly commitment is charged upfront.
 
 ### What is the Early Bird offer?
 
@@ -76,7 +76,7 @@ Yearly plans include a 30-day money-back guarantee, no questions asked (commitme
 
 ### Can I upgrade from monthly to yearly?
 
-Yes! Upgrade to yearly within your first 90 days and we'll credit what you already paid toward your yearly plan. Credit applies to commit charges only; on-demand usage charges are excluded.
+Yes! Upgrade to yearly within your first 90 days and we'll credit what you already paid toward your yearly plan. That credit applies to commit charges only; on-demand usage (extra minutes) is excluded.
 
 ### What happens when I upgrade my plan?
 

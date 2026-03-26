@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { Check, ArrowRight, Zap, HelpCircle, ChevronDown, Clock } from "lucide-react";
+import { Check, ArrowRight, Zap, HelpCircle, Clock } from "lucide-react";
 import { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { usePostHog } from "posthog-js/react";
@@ -17,7 +17,8 @@ interface Plan {
   name: string;
   pricing: PricingTier;
   includedMinutes: number;
-  extraMinutesCost: number;
+  extraMinuteRate: number;
+  maxConcurrency: number;
   features: string[];
   popular: boolean;
   buttonText: string;
@@ -25,12 +26,7 @@ interface Plan {
   everythingIn?: string;
 }
 
-const COMING_SOON_FEATURES = [
-  "Avatar customization",
-  "Professional Voice Cloning",
-  "Advanced Analytics + Exports",
-  "Webhooks",
-];
+const COMING_SOON_FEATURES: string[] = [];
 
 const PLANS: Plan[] = [
   {
@@ -42,10 +38,10 @@ const PLANS: Plan[] = [
       yearlyEarlyBirdMonthlyEquivalent: 99,
     },
     includedMinutes: 250,
-    extraMinutesCost: 0.60,
+    extraMinuteRate: 0.60,
+    maxConcurrency: 20,
     features: [
-      "1 Bizmis Store Assistant",
-      "5 Concurrent Conversations",
+      "1 Bizmis Store Clerk",
       "Support: Email (48h)",
     ],
     popular: false,
@@ -61,14 +57,13 @@ const PLANS: Plan[] = [
       yearlyEarlyBirdMonthlyEquivalent: 333,
     },
     includedMinutes: 900,
-    extraMinutesCost: 0.55,
+    extraMinuteRate: 0.55,
+    maxConcurrency: 40,
     features: [
-      "Up to 5 Bizmis Store Assistants",
-      "15 Concurrent Conversations",
-      "Professional Voice Cloning",
+      "Up to 5 Bizmis Store Clerks",
+      "History, transcripts, and replays",
       "Avatar customization",
-      "Basic Conversation History",
-      "Support: Email + chat (24h)",
+      "Support: Email (24h) and scheduled call",
     ],
     popular: true,
     buttonText: "Get Started",
@@ -84,13 +79,13 @@ const PLANS: Plan[] = [
       yearlyEarlyBirdMonthlyEquivalent: 999,
     },
     includedMinutes: 3000,
-    extraMinutesCost: 0.50,
+    extraMinuteRate: 0.50,
+    maxConcurrency: 100,
     features: [
-      "Unlimited Bizmis Store Assistants",
-      "30 Concurrent Conversations",
-      "Advanced Analytics + Exports",
-      "Webhooks",
-      "Support: Priority (8h), 99.5% SLA",
+      "Unlimited Bizmis Store Clerks",
+      "Advanced Analytics, Auto-Tags, Exports",
+      "Custom voice cloning",
+      "Priority support and live onboarding",
     ],
     popular: false,
     buttonText: "Get Started",
@@ -100,8 +95,7 @@ const PLANS: Plan[] = [
 ];
 
 const ENTERPRISE_FEATURES = [
-  "Custom minutes & pricing",
-  "Custom Concurrent Conversations",
+  "Custom minutes, concurrency & pricing",
   "Support: Dedicated CSM, 99.9%+ SLA",
 ];
 
@@ -117,8 +111,6 @@ const formatExactPrice = (price: number): string => {
 };
 
 const EARLY_BIRD_TOOLTIP = "First 50 merchants get exclusive launch pricing";
-
-const SHOW_CONCURRENT_CONVERSATIONS_LIMIT = false;
 
 const Pricing = () => {
   const navigate = useNavigate();
@@ -436,18 +428,25 @@ const Pricing = () => {
                     </div>
                   </div>
 
-                  {/* Minutes Section - Clean, no spark icons */}
                   <div className="mb-4 pb-4 border-b border-gray-100">
                     <div className="flex items-center gap-3 mb-2">
                       <span className="text-sm text-foreground">
                         <span className="font-semibold">{plan.includedMinutes.toLocaleString()}</span> minutes included
                       </span>
                     </div>
-                    <div className="flex items-center gap-3">
+                    <div className="flex items-center gap-3 mb-2">
                       <span className="text-sm text-muted-foreground">
-                        Extra minutes at <span className="font-semibold text-foreground">${plan.extraMinutesCost.toFixed(2)}/min</span>
+                        Extra minutes at <span className="font-semibold text-foreground">${plan.extraMinuteRate.toFixed(2)}/min</span>
                       </span>
                     </div>
+                    <div className="flex items-center gap-3">
+                      <span className="text-sm text-muted-foreground">
+                        Up to <span className="font-semibold text-foreground">{plan.maxConcurrency}</span> concurrent voice conversations
+                      </span>
+                    </div>
+                    <p className="text-xs text-muted-foreground mt-1.5">
+                      Voice is billed in minutes. You can set a spend hard limit.
+                    </p>
                   </div>
 
                   {/* Features List */}
@@ -458,9 +457,7 @@ const Pricing = () => {
                       </p>
                     )}
                     <ul className="space-y-3">
-                      {plan.features
-                        .filter(feature => SHOW_CONCURRENT_CONVERSATIONS_LIMIT || !feature.includes("Concurrent Conversations"))
-                        .map((feature, idx) => (
+                      {plan.features.map((feature, idx) => (
                           <li key={idx} className="flex items-start gap-3">
                             <div className="w-5 h-5 bg-gradient-to-br from-[#FDF7E2] to-primary/20 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
                               <Check className="w-3 h-3 text-primary" />
@@ -516,9 +513,7 @@ const Pricing = () => {
                 Everything in Pro plus:
               </p>
               <ul className="space-y-3">
-                {ENTERPRISE_FEATURES
-                  .filter(feature => SHOW_CONCURRENT_CONVERSATIONS_LIMIT || !feature.includes("Concurrent Conversations"))
-                  .map((feature, idx) => (
+                {ENTERPRISE_FEATURES.map((feature, idx) => (
                     <li key={idx} className="flex items-start gap-3">
                       <div className="w-5 h-5 bg-white/10 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
                         <Check className="w-3 h-3 text-white" />

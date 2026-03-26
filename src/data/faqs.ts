@@ -67,7 +67,7 @@ export const faqCategories: FAQCategory[] = [
       {
         id: "cart-abandonment",
         question: "Does Bizmis help with cart abandonment?",
-        answer: "Cart abandonment recovery is included in the Growth plan.",
+        answer: "Cart abandonment recovery is included in the Plus plan.",
         category: "features",
       },
       {
@@ -93,25 +93,29 @@ export const faqCategories: FAQCategory[] = [
       {
         id: "how-billing-works",
         question: "How does the billing work?",
-        answer: "Billing operates on monthly cycles. Your included minutes reset every month with no rollover. The monthly commitment is charged upfront at the start of each month.",
+        answer:
+          "Billing operates on monthly cycles. Your included minutes reset every month with no rollover. Voice usage is billed in minutes. The monthly commitment is charged upfront at the start of each month.",
         category: "billing",
       },
       {
         id: "after-included-minutes",
         question: "What happens after I use my included minutes?",
-        answer: "After your included minutes are used, additional minutes are billed at your plan's extra minutes rate. Usage is tracked in real-time in your dashboard.",
+        answer:
+          "After your included minutes are used, additional minutes are billed at your plan's extra per-minute rate. You can set a spend hard limit. Usage is tracked in real time in your dashboard.",
         category: "billing",
       },
       {
         id: "yearly-billing",
         question: "How does yearly billing work?",
-        answer: "Yearly billing gives you ~20% off (up to 33% with Early Bird). Minutes still operate in monthly cycles, resetting each month. The yearly commitment is charged upfront.",
+        answer:
+          "Yearly billing gives you ~20% off (up to 33% with Early Bird). Included minutes still reset every month. The yearly commitment is charged upfront.",
         category: "billing",
       },
       {
         id: "early-bird-offer",
         question: "What is the Early Bird offer?",
-        answer: "The first 50 merchants receive special pricing: 50% off monthly plans for the first 3 months, or special yearly rates (up to 33% off). Extra minutes remain at standard rates.",
+        answer:
+          "The first 50 merchants receive special pricing: 50% off monthly plans for the first 3 months, or special yearly rates (up to 33% off). Extra minutes remain at standard rates.",
         category: "billing",
       },
       {
@@ -123,7 +127,8 @@ export const faqCategories: FAQCategory[] = [
       {
         id: "upgrade-monthly-to-yearly",
         question: "Can I upgrade from monthly to yearly?",
-        answer: "Yes! Upgrade to yearly within your first 90 days and we'll credit what you already paid toward your yearly plan. Credit applies to commit charges only; on-demand usage charges are excluded.",
+        answer:
+          "Yes! Upgrade to yearly within your first 90 days and we'll credit what you already paid toward your yearly plan. That credit applies to commit charges only; on-demand usage (extra minutes) is excluded.",
         category: "billing",
       },
       {
