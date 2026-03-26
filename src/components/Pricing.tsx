@@ -140,6 +140,37 @@ const hslFromCssVar = (name: string): string => {
   return `hsl(${value})`;
 };
 
+/** Dark noisy backdrop for the enterprise card — always visible, glows drift on hover. */
+const EnterpriseCardBackdrop = () => (
+  <div
+    className="pointer-events-none absolute inset-0 z-0 overflow-hidden rounded-2xl"
+    aria-hidden
+  >
+    <div className="absolute inset-0 enterprise-base" />
+    <div className="absolute inset-0 enterprise-radial-glow transition-transform duration-700 ease-out group-hover:translate-x-2 group-hover:-translate-y-1.5" />
+    <div className="absolute inset-0 enterprise-floor-glow transition-transform duration-700 ease-out group-hover:-translate-x-2 group-hover:translate-y-1" />
+    <svg
+      className="pointer-events-none absolute inset-0 h-full w-full mix-blend-soft-light opacity-[0.5]"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <filter id="enterprise-noise">
+        <feTurbulence
+          type="fractalNoise"
+          baseFrequency="0.85"
+          numOctaves="4"
+          stitchTiles="stitch"
+        />
+      </filter>
+      <rect
+        width="100%"
+        height="100%"
+        filter="url(#enterprise-noise)"
+        opacity="0.9"
+      />
+    </svg>
+  </div>
+);
+
 /** Miniaturized hero studio stack — fades in under the veil on card hover. */
 const PricingCardHeroBackdrop = ({ noiseId }: { noiseId: string }) => (
   <div
@@ -588,11 +619,7 @@ const Pricing = () => {
 
           {/* Enterprise Card */}
           <div className="group relative flex flex-col overflow-hidden rounded-2xl p-6 text-primary-foreground shadow-soft transition-all duration-500 hover:scale-[1.02] hover:shadow-lg lg:p-7">
-            <PricingCardHeroBackdrop noiseId="enterprise" />
-            <div
-              className={`pointer-events-none absolute inset-0 z-[1] rounded-2xl bg-gradient-to-br from-foreground via-foreground to-primary-dark/75 transition-opacity ${CARD_HOVER_EASE} group-hover:opacity-0`}
-              aria-hidden
-            />
+            <EnterpriseCardBackdrop />
             <div className="relative z-10 flex flex-1 flex-col">
             <div className="mb-6 pt-2 text-center">
               <h3 className="mb-3 font-heading text-xl font-bold lg:text-2xl">
