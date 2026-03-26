@@ -518,7 +518,7 @@ const Pricing = () => {
                         className={`flex flex-wrap items-baseline justify-center ${hasDiscount ? "gap-2" : "gap-1"}`}
                       >
                         {hasDiscount && (
-                          <span className="font-heading text-lg font-light tabular-nums text-foreground/60 line-through decoration-foreground/45 transition-colors group-hover:text-primary-foreground/75 group-hover:decoration-primary-foreground/50">
+                          <span className="font-heading text-lg font-extralight tabular-nums text-foreground/50 line-through decoration-foreground/35 transition-colors group-hover:text-primary-foreground/65 group-hover:decoration-primary-foreground/40">
                             ${formatPrice(plan.pricing.monthlyStandard)}
                           </span>
                         )}
@@ -603,8 +603,8 @@ const Pricing = () => {
                       onClick={() => handlePlanClick(plan.name)}
                       className={`w-full font-semibold transition-all duration-300 group/btn relative overflow-hidden ${
                         plan.buttonVariant === "outline"
-                          ? "border border-primary/40 bg-primary/5 text-primary-dark shadow-sm hover:border-primary hover:bg-primary/10 hover:text-primary-dark group-hover:border-primary-foreground/60 group-hover:bg-primary-foreground/15 group-hover:text-primary-foreground hover:group-hover:!border-primary-foreground hover:group-hover:!bg-primary-foreground/25"
-                          : "group-hover:bg-primary-foreground group-hover:text-primary-dark group-hover:shadow-lg hover:!bg-primary-foreground/95"
+                          ? "border border-primary/40 bg-transparent text-primary hover:border-primary hover:bg-primary/10 hover:text-primary group-hover:border-primary-foreground/60 group-hover:bg-primary-foreground/15 group-hover:text-primary-foreground hover:group-hover:!border-primary-foreground hover:group-hover:!bg-primary-foreground/25"
+                          : "group-hover:bg-primary-foreground group-hover:text-primary group-hover:shadow-lg hover:!bg-primary-foreground/95"
                       }`}
                     >
                       <span className="relative z-10">{plan.buttonText}</span>
@@ -664,7 +664,7 @@ const Pricing = () => {
                 variant="outline"
                 size="lg"
                 onClick={handleContactSales}
-                className="group/ent w-full border-0 bg-background text-foreground shadow-sm ring-1 ring-black/5 transition-all duration-300 hover:bg-background/95 hover:shadow-md hover:text-foreground group-hover:border group-hover:border-primary-foreground/30 group-hover:bg-background/95 group-hover:text-primary-dark"
+                className="group/ent w-full border border-primary-foreground/50 bg-transparent text-primary-foreground transition-all duration-300 hover:border-primary-foreground hover:bg-primary-foreground/10 hover:text-primary-foreground"
               >
                 <span>Contact Sales</span>
                 <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover/ent:translate-x-1" />
@@ -757,7 +757,7 @@ const Pricing = () => {
               <Button
                 type="button"
                 variant="outline"
-                className="shrink-0 border-primary/40 font-semibold text-primary-dark sm:min-w-[8.5rem]"
+                className="shrink-0 border-primary/40 font-semibold text-primary sm:min-w-[8.5rem]"
                 onClick={removeAppliedCoupon}
               >
                 Remove coupon
@@ -814,7 +814,7 @@ const Pricing = () => {
         <div className="mt-2 text-center">
           <a
             href="/faqs#billing"
-            className="inline-flex items-center gap-1 text-sm font-medium text-primary transition-colors hover:text-primary-dark"
+            className="inline-flex items-center gap-1 text-sm font-medium text-primary transition-colors hover:text-primary/90"
           >
             View all frequently asked questions{" "}
             <ArrowRight className="h-4 w-4" />
