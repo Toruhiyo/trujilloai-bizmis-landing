@@ -86,7 +86,7 @@ const PLANS: Plan[] = [
       "Unlimited Bizmis Store Clerks",
       "Auto-Tagged conversations",
       // "Advanced Analytics, Auto-Tags, Exports", // TODO: Add this back in when we have it
-      "Custom voice cloning",
+      // "Custom voice cloning", // TODO: Add this back in when we have it
       "Priority support and Live onboarding",
     ],
     popular: false,
