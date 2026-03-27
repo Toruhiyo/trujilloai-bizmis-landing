@@ -1,6 +1,7 @@
 import React from "react";
 import { FaPaintBrush, FaMicrophone } from "react-icons/fa";
 import SectionBadge from "./SectionBadge";
+import { PricingPlanFeatureSoon } from "./PricingPlanFeatureSoon";
 import AudioPlayer from "./AudioPlayer";
 import FakeImagesSelector, { type ImageOption } from "./FakeImagesSelector";
 
@@ -144,9 +145,12 @@ const Customization = () => {
                   <div className="flex gap-4">
                     <FaMicrophone className="w-5 h-5 text-primary/60 group-hover:text-primary/90 transition-colors duration-300 flex-shrink-0 mt-0.5" />
                     <div>
-                      <h3 className="text-xl font-heading font-bold text-foreground">
-                        Voice Cloning
-                      </h3>
+                      <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
+                        <h3 className="text-xl font-heading font-bold text-foreground">
+                          Voice Cloning
+                        </h3>
+                        <PricingPlanFeatureSoon className="ml-0 shrink-0" />
+                      </div>
                       <p className="text-muted-foreground font-body">
                         Authentic customer interactions through replication of
                         your unique speaking style and personality.
