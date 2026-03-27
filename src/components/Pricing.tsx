@@ -83,6 +83,7 @@ const PLANS: Plan[] = [
     extraMinuteRate: 0.5,
     maxConcurrency: 100,
     features: [
+      "Best rates per minute",
       "Unlimited Bizmis Store Clerks",
       "Auto-Tagged conversations",
       // "Advanced Analytics, Auto-Tags, Exports", // TODO: Add this back in when we have it
