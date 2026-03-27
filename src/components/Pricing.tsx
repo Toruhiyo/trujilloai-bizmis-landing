@@ -84,7 +84,8 @@ const PLANS: Plan[] = [
     maxConcurrency: 100,
     features: [
       "Unlimited Bizmis Store Clerks",
-      "Advanced Analytics, Auto-Tags, Exports",
+      "Auto-Tagged Conversations",
+      // "Advanced Analytics, Auto-Tags, Exports", // TODO: Add this back in when we have it
       "Custom voice cloning",
       "Priority support and live onboarding",
     ],
