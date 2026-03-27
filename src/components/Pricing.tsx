@@ -450,7 +450,7 @@ const Pricing = () => {
               >
                 {plan.popular && (
                   <div className="absolute -top-4 left-1/2 z-30 flex w-full -translate-x-1/2 transform justify-center">
-                    <div className="whitespace-nowrap rounded-full border border-primary bg-primary-light/25 px-4 py-1.5 font-heading text-sm font-semibold text-primary backdrop-blur-md transition-colors group-hover:border-primary-foreground/85 group-hover:text-primary-foreground">
+                    <div className="whitespace-nowrap rounded-full border-2 border-primary bg-background/25 px-4 py-1.5 font-heading text-sm font-semibold text-primary backdrop-blur-md transition-colors group-hover:border-primary-foreground/85 group-hover:text-primary-foreground group-hover:bg-primary-light/85">
                       Popular
                     </div>
                   </div>
@@ -458,7 +458,7 @@ const Pricing = () => {
                 <div
                   className={`relative flex h-full flex-col overflow-hidden rounded-2xl border p-6 shadow-soft backdrop-blur-sm transition-[box-shadow,border-color] hover:shadow-lg lg:p-7 ${
                     plan.popular
-                      ? "border-primary group-hover:border-primary-foreground/30"
+                      ? "border-2 border-primary group-hover:border-primary-foreground/30"
                       : "border-border/60"
                   }`}
                 >
