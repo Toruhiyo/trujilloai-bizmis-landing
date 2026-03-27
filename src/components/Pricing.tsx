@@ -426,12 +426,6 @@ const Pricing = () => {
               </span>
             </div>
           </div>
-
-          {!showEarlyBird && (
-            <p className="mx-auto mt-4 max-w-xl text-sm text-muted-foreground">
-              Save 20% with yearly billing.
-            </p>
-          )}
         </div>
 
         {/* Pricing Cards - 4 columns */}
