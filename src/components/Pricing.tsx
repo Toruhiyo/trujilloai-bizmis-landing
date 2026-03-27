@@ -62,9 +62,9 @@ const PLANS: Plan[] = [
     maxConcurrency: 40,
     features: [
       "Up to 5 Bizmis Store Clerks",
-      "History, transcripts, and replays",
+      "Session history and Replays",
       "Avatar customization",
-      "Support: Email (24h) and scheduled call",
+      "Support: Email (24h) and Scheduled calls",
     ],
     popular: true,
     buttonText: "Get Started",
@@ -84,10 +84,10 @@ const PLANS: Plan[] = [
     maxConcurrency: 100,
     features: [
       "Unlimited Bizmis Store Clerks",
-      "Auto-Tagged Conversations",
+      "Auto-Tagged conversations",
       // "Advanced Analytics, Auto-Tags, Exports", // TODO: Add this back in when we have it
       "Custom voice cloning",
-      "Priority support and live onboarding",
+      "Priority support and Live onboarding",
     ],
     popular: false,
     buttonText: "Get Started",
