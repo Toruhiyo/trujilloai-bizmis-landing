@@ -140,17 +140,19 @@ const hslFromCssVar = (name: string): string => {
   return `hsl(${value})`;
 };
 
-/** Dark noisy backdrop for the enterprise card — always visible, glows drift on hover. */
+/** Dark noisy backdrop for the enterprise card — always visible. */
 const EnterpriseCardBackdrop = () => (
   <div
     className="pointer-events-none absolute inset-0 z-0 overflow-hidden rounded-2xl"
     aria-hidden
   >
     <div className="absolute inset-0 enterprise-base" />
-    <div className="absolute inset-0 enterprise-radial-glow transition-transform duration-700 ease-out group-hover:translate-x-2 group-hover:-translate-y-1.5" />
-    <div className="absolute inset-0 enterprise-floor-glow transition-transform duration-700 ease-out group-hover:-translate-x-2 group-hover:translate-y-1" />
+    <div className="absolute inset-0 enterprise-radial-glow" />
+    <div className="absolute inset-0 enterprise-floor-glow" />
+    <div className="absolute inset-0 enterprise-edge-light" />
+    <div className="absolute inset-0 enterprise-ambient" />
     <svg
-      className="pointer-events-none absolute inset-0 h-full w-full mix-blend-soft-light opacity-[0.5]"
+      className="pointer-events-none absolute inset-0 h-full w-full mix-blend-soft-light opacity-[0.55]"
       xmlns="http://www.w3.org/2000/svg"
     >
       <filter id="enterprise-noise">
@@ -214,7 +216,7 @@ const normalizeCouponInput = (value: string): string =>
   value.trim().toUpperCase();
 
 const fireEarlyBirdConfetti = (
-  originElement: HTMLElement | null | undefined
+  originElement: HTMLElement | null | undefined,
 ) => {
   let originX = 0.5;
   let originY = 0.5;
@@ -507,110 +509,110 @@ const Pricing = () => {
                   )}
 
                   <div className="relative z-10 flex min-h-0 flex-1 flex-col">
-                  <div className="mb-6 pt-4 text-center">
-                    <h3 className="mb-3 font-heading text-lg font-bold text-foreground transition-colors lg:text-xl group-hover:text-primary-foreground">
-                      {plan.name}
-                    </h3>
+                    <div className="mb-6 pt-4 text-center">
+                      <h3 className="mb-3 font-heading text-lg font-bold text-foreground transition-colors lg:text-xl group-hover:text-primary-foreground">
+                        {plan.name}
+                      </h3>
 
-                    {/* Price Block */}
-                    <div className="space-y-2">
-                      <div
-                        className={`flex flex-wrap items-baseline justify-center ${hasDiscount ? "gap-2" : "gap-1"}`}
-                      >
-                        {hasDiscount && (
-                          <span className="font-heading text-lg font-extralight tabular-nums text-foreground/50 line-through decoration-foreground/35 transition-colors group-hover:text-primary-foreground/65 group-hover:decoration-primary-foreground/40">
-                            ${formatPrice(plan.pricing.monthlyStandard)}
+                      {/* Price Block */}
+                      <div className="space-y-2">
+                        <div
+                          className={`flex flex-wrap items-baseline justify-center ${hasDiscount ? "gap-2" : "gap-1"}`}
+                        >
+                          {hasDiscount && (
+                            <span className="font-heading text-lg font-light tabular-nums text-foreground/60 line-through decoration-foreground/45 transition-colors group-hover:text-primary-foreground/75 group-hover:decoration-primary-foreground/50">
+                              ${formatPrice(plan.pricing.monthlyStandard)}
+                            </span>
+                          )}
+                          <span className="font-heading text-3xl font-bold tabular-nums text-foreground transition-colors group-hover:text-primary-foreground lg:text-4xl">
+                            ${formatExactPrice(displayPrice)}
                           </span>
+                          <span className="font-body text-sm text-foreground/70 transition-colors group-hover:text-primary-foreground/80">
+                            /mo
+                          </span>
+                        </div>
+
+                        {/* Secondary info based on state */}
+                        {isYearly && (
+                          <p className="flex justify-center pt-0.5">
+                            <span className="font-heading text-[0.625rem] font-semibold uppercase leading-none tracking-widest text-muted-foreground/55 transition-colors group-hover:text-primary-foreground/75">
+                              billed yearly
+                            </span>
+                          </p>
                         )}
-                        <span className="font-heading text-3xl font-bold tabular-nums text-foreground transition-colors group-hover:text-primary-foreground lg:text-4xl">
-                          ${formatExactPrice(displayPrice)}
+
+                        {!isYearly && showEarlyBird && (
+                          <p className="flex items-center justify-center gap-1 text-sm text-foreground/70 transition-colors group-hover:text-primary-foreground/85">
+                            <Clock className="h-3.5 w-3.5" />
+                            first 3 months, then $
+                            {formatPrice(plan.pricing.monthlyStandard)}/mo
+                          </p>
+                        )}
+                      </div>
+                    </div>
+
+                    <div className="mb-4 space-y-1.5 border-b border-border/70 pb-4 transition-colors group-hover:border-primary-foreground/30">
+                      <div className="flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
+                        <span className="font-heading text-base font-bold tabular-nums text-foreground/80 transition-colors group-hover:text-primary-foreground sm:text-lg">
+                          {plan.includedMinutes.toLocaleString()}
                         </span>
-                        <span className="font-body text-sm text-foreground/70 transition-colors group-hover:text-primary-foreground/80">
-                          /mo
+                        <span className="text-xs font-medium text-foreground/65 transition-colors group-hover:text-primary-foreground/85">
+                          min included
                         </span>
                       </div>
-
-                      {/* Secondary info based on state */}
-                      {isYearly && (
-                        <p className="flex justify-center pt-0.5">
-                          <span className="font-heading text-[0.625rem] font-semibold uppercase leading-none tracking-widest text-muted-foreground/55 transition-colors group-hover:text-primary-foreground/75">
-                            billed yearly
+                      <div className="flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
+                        <span className="inline-flex items-baseline gap-0.5">
+                          <span className="font-heading text-base font-bold tabular-nums text-foreground/80 transition-colors group-hover:text-primary-foreground sm:text-lg">
+                            ${plan.extraMinuteRate.toFixed(2)}/min
                           </span>
-                        </p>
-                      )}
-
-                      {!isYearly && showEarlyBird && (
-                        <p className="flex items-center justify-center gap-1 text-sm text-foreground/70 transition-colors group-hover:text-primary-foreground/85">
-                          <Clock className="h-3.5 w-3.5" />
-                          first 3 months, then $
-                          {formatPrice(plan.pricing.monthlyStandard)}/mo
-                        </p>
-                      )}
-                    </div>
-                  </div>
-
-                  <div className="mb-4 space-y-1.5 border-b border-border/70 pb-4 transition-colors group-hover:border-primary-foreground/30">
-                    <div className="flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
-                      <span className="font-heading text-base font-bold tabular-nums text-foreground/80 transition-colors group-hover:text-primary-foreground sm:text-lg">
-                        {plan.includedMinutes.toLocaleString()}
-                      </span>
-                      <span className="text-xs font-medium text-foreground/65 transition-colors group-hover:text-primary-foreground/85">
-                        min included
-                      </span>
-                    </div>
-                    <div className="flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
-                      <span className="inline-flex items-baseline gap-0.5">
-                        <span className="font-heading text-base font-bold tabular-nums text-foreground/80 transition-colors group-hover:text-primary-foreground sm:text-lg">
-                          ${plan.extraMinuteRate.toFixed(2)}/min
+                          <PricingFootnoteStar className="text-sm transition-colors group-hover:text-primary-foreground sm:text-base" />
                         </span>
-                        <PricingFootnoteStar className="text-sm transition-colors group-hover:text-primary-foreground sm:text-base" />
-                      </span>
-                      <span className="text-xs font-medium leading-snug text-foreground/65 transition-colors group-hover:text-primary-foreground/85">
-                        beyond included
-                      </span>
+                        <span className="text-xs font-medium leading-snug text-foreground/65 transition-colors group-hover:text-primary-foreground/85">
+                          beyond included
+                        </span>
+                      </div>
+                      <div className="flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
+                        <span className="font-heading text-base font-bold tabular-nums text-foreground/80 transition-colors group-hover:text-primary-foreground sm:text-lg">
+                          {plan.maxConcurrency}
+                        </span>
+                        <span className="text-xs font-medium text-foreground/65 transition-colors group-hover:text-primary-foreground/85">
+                          concurrent voice conversations
+                        </span>
+                      </div>
                     </div>
-                    <div className="flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
-                      <span className="font-heading text-base font-bold tabular-nums text-foreground/80 transition-colors group-hover:text-primary-foreground sm:text-lg">
-                        {plan.maxConcurrency}
-                      </span>
-                      <span className="text-xs font-medium text-foreground/65 transition-colors group-hover:text-primary-foreground/85">
-                        concurrent voice conversations
-                      </span>
+
+                    {/* Features List */}
+                    <div className="mb-6 flex-grow">
+                      <ul className="space-y-2.5">
+                        {plan.features.map((feature, idx) => (
+                          <li key={idx} className="flex items-start gap-2.5">
+                            <Check className="mt-0.5 h-4 w-4 shrink-0 text-primary transition-colors group-hover:text-primary-foreground" />
+                            <span className="flex items-center font-body text-sm leading-relaxed text-foreground/85 transition-colors group-hover:text-primary-foreground/95">
+                              {feature}
+                              {COMING_SOON_FEATURES.includes(feature) && (
+                                <PricingPlanFeatureSoon />
+                              )}
+                            </span>
+                          </li>
+                        ))}
+                      </ul>
                     </div>
-                  </div>
 
-                  {/* Features List */}
-                  <div className="mb-6 flex-grow">
-                    <ul className="space-y-2.5">
-                      {plan.features.map((feature, idx) => (
-                        <li key={idx} className="flex items-start gap-2.5">
-                          <Check className="mt-0.5 h-4 w-4 shrink-0 text-primary transition-colors group-hover:text-primary-foreground" />
-                          <span className="flex items-center font-body text-sm leading-relaxed text-foreground/85 transition-colors group-hover:text-primary-foreground/95">
-                            {feature}
-                            {COMING_SOON_FEATURES.includes(feature) && (
-                              <PricingPlanFeatureSoon />
-                            )}
-                          </span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-
-                  <div className="mt-auto">
-                    <Button
-                      variant={plan.buttonVariant}
-                      size="lg"
-                      onClick={() => handlePlanClick(plan.name)}
-                      className={`w-full font-semibold transition-all duration-300 group/btn relative overflow-hidden ${
-                        plan.buttonVariant === "outline"
-                          ? "border border-primary/40 bg-transparent text-primary hover:border-primary hover:bg-primary/10 hover:text-primary group-hover:border-primary-foreground/60 group-hover:bg-primary-foreground/15 group-hover:text-primary-foreground hover:group-hover:!border-primary-foreground hover:group-hover:!bg-primary-foreground/25"
-                          : "group-hover:bg-primary-foreground group-hover:text-primary group-hover:shadow-lg hover:!bg-primary-foreground/95"
-                      }`}
-                    >
-                      <span className="relative z-10">{plan.buttonText}</span>
-                      <ArrowRight className="relative z-10 ml-2 h-4 w-4 transition-transform group-hover/btn:translate-x-1" />
-                    </Button>
-                  </div>
+                    <div className="mt-auto">
+                      <Button
+                        variant={plan.buttonVariant}
+                        size="lg"
+                        onClick={() => handlePlanClick(plan.name)}
+                        className={`w-full font-semibold transition-all duration-300 group/btn relative overflow-hidden ${
+                          plan.buttonVariant === "outline"
+                            ? "border border-primary/40 bg-primary/5 text-primary-dark shadow-sm hover:border-primary hover:bg-primary/10 hover:text-primary-dark group-hover:border-primary-foreground/60 group-hover:bg-primary-foreground/15 group-hover:text-primary-foreground hover:group-hover:!border-primary-foreground hover:group-hover:!bg-primary-foreground/25"
+                            : "group-hover:bg-primary-foreground group-hover:text-primary-dark group-hover:shadow-lg hover:!bg-primary-foreground/95"
+                        }`}
+                      >
+                        <span className="relative z-10">{plan.buttonText}</span>
+                        <ArrowRight className="relative z-10 ml-2 h-4 w-4 transition-transform group-hover/btn:translate-x-1" />
+                      </Button>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -621,55 +623,55 @@ const Pricing = () => {
           <div className="group relative flex flex-col overflow-hidden rounded-2xl p-6 text-primary-foreground shadow-soft transition-all duration-500 hover:scale-[1.02] hover:shadow-lg lg:p-7">
             <EnterpriseCardBackdrop />
             <div className="relative z-10 flex flex-1 flex-col">
-            <div className="mb-6 pt-2 text-center">
-              <h3 className="mb-3 font-heading text-xl font-bold lg:text-2xl">
-                Enterprise
-              </h3>
-              <div className="mb-3">
-                <div className="flex items-baseline justify-center gap-1">
-                  <span className="font-heading text-3xl font-bold lg:text-4xl">
-                    Custom
-                  </span>
-                </div>
-              </div>
-              <p className="text-sm text-primary-foreground/75 transition-colors group-hover:text-primary-foreground/90">
-                Tailored solutions for large-scale operations with custom volume
-                and requirements.
-              </p>
-            </div>
-
-            <div className="mb-8 flex-grow">
-              <p className="mb-3 text-sm font-medium text-primary-foreground/75 transition-colors group-hover:text-primary-foreground/90">
-                Everything in Pro plus:
-              </p>
-              <ul className="space-y-3">
-                {ENTERPRISE_FEATURES.map((feature, idx) => (
-                  <li key={idx} className="flex items-start gap-3">
-                    <div className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-primary-foreground/10 transition-colors group-hover:bg-primary-foreground/20">
-                      <Check className="h-3 w-3 text-primary-foreground" />
-                    </div>
-                    <span className="flex items-center font-body text-sm leading-relaxed text-primary-foreground/80 transition-colors group-hover:text-primary-foreground">
-                      {feature}
-                      {COMING_SOON_FEATURES.includes(feature) && (
-                        <PricingPlanFeatureSoon />
-                      )}
+              <div className="mb-6 pt-2 text-center">
+                <h3 className="mb-3 font-heading text-xl font-bold lg:text-2xl">
+                  Enterprise
+                </h3>
+                <div className="mb-3">
+                  <div className="flex items-baseline justify-center gap-1">
+                    <span className="font-heading text-3xl font-bold lg:text-4xl">
+                      Custom
                     </span>
-                  </li>
-                ))}
-              </ul>
-            </div>
+                  </div>
+                </div>
+                <p className="text-sm text-primary-foreground/75 transition-colors group-hover:text-primary-foreground/90">
+                  Tailored solutions for large-scale operations with custom
+                  volume and requirements.
+                </p>
+              </div>
 
-            <div className="mt-auto">
-              <Button
-                variant="outline"
-                size="lg"
-                onClick={handleContactSales}
-                className="group/ent w-full border border-primary-foreground/50 bg-transparent text-primary-foreground transition-all duration-300 hover:border-primary-foreground hover:bg-primary-foreground/10 hover:text-primary-foreground"
-              >
-                <span>Contact Sales</span>
-                <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover/ent:translate-x-1" />
-              </Button>
-            </div>
+              <div className="mb-8 flex-grow">
+                <p className="mb-3 text-sm font-medium text-primary-foreground/75 transition-colors group-hover:text-primary-foreground/90">
+                  Everything in Pro plus:
+                </p>
+                <ul className="space-y-3">
+                  {ENTERPRISE_FEATURES.map((feature, idx) => (
+                    <li key={idx} className="flex items-start gap-3">
+                      <div className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-primary-foreground/10 transition-colors group-hover:bg-primary-foreground/20">
+                        <Check className="h-3 w-3 text-primary-foreground" />
+                      </div>
+                      <span className="flex items-center font-body text-sm leading-relaxed text-primary-foreground/80 transition-colors group-hover:text-primary-foreground">
+                        {feature}
+                        {COMING_SOON_FEATURES.includes(feature) && (
+                          <PricingPlanFeatureSoon />
+                        )}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              <div className="mt-auto">
+                <Button
+                  variant="outline"
+                  size="lg"
+                  onClick={handleContactSales}
+                  className="group/ent w-full border-0 bg-background text-foreground shadow-sm ring-1 ring-black/5 transition-all duration-300 hover:bg-background/95 hover:shadow-md hover:text-foreground group-hover:border group-hover:border-primary-foreground/30 group-hover:bg-background/95 group-hover:text-primary-dark"
+                >
+                  <span>Contact Sales</span>
+                  <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover/ent:translate-x-1" />
+                </Button>
+              </div>
             </div>
           </div>
         </div>
@@ -757,7 +759,7 @@ const Pricing = () => {
               <Button
                 type="button"
                 variant="outline"
-                className="shrink-0 border-primary/40 font-semibold text-primary sm:min-w-[8.5rem]"
+                className="shrink-0 border-primary/40 font-semibold text-primary-dark sm:min-w-[8.5rem]"
                 onClick={removeAppliedCoupon}
               >
                 Remove coupon
@@ -791,8 +793,8 @@ const Pricing = () => {
               </div>
               <p className="mt-2 text-center text-foreground">
                 <span className="font-semibold">
-                  You&apos;re viewing early bird pricing — reserved for our first{" "}
-                  {EARLY_BIRD_SEAT_CAP} merchants only.
+                  You&apos;re viewing early bird pricing — reserved for our
+                  first {EARLY_BIRD_SEAT_CAP} merchants only.
                 </span>{" "}
                 <span className="text-foreground/85">
                   Help shape the product with your feedback on the roadmap. Your
@@ -814,7 +816,7 @@ const Pricing = () => {
         <div className="mt-2 text-center">
           <a
             href="/faqs#billing"
-            className="inline-flex items-center gap-1 text-sm font-medium text-primary transition-colors hover:text-primary/90"
+            className="inline-flex items-center gap-1 text-sm font-medium text-primary transition-colors hover:text-primary-dark"
           >
             View all frequently asked questions{" "}
             <ArrowRight className="h-4 w-4" />
