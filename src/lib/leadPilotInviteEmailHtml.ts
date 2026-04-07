@@ -1,4 +1,9 @@
-import { type LeadPilotInviteData, PILOT_INVITE_TERMS } from "@/data/leadPilotInviteTypes";
+import {
+  type LeadPilotInviteData,
+  PILOT_INVITE_TERMS,
+  resolveLogoColorOverlay,
+  resolveStoreNameTextColor,
+} from "@/data/leadPilotInviteTypes";
 
 const BIZMIS_LOGO_WHITE = "/images/bizmis-logo-white-transparent.png";
 const HERO_AVATAR = "/images/hero-avatar-1.png";
@@ -27,6 +32,26 @@ function secondaryColor(lead: LeadPilotInviteData): string {
   return lead.secondaryColor ?? lead.primaryColor;
 }
 
+/** Email clients often ignore SVG in img/mask; prefer a .png sibling when the lead uses .svg. */
+function logoPublicPathForEmail(logoImagePath: string): string {
+  if (logoImagePath.toLowerCase().endsWith(".svg")) {
+    return logoImagePath.replace(/\.svg$/i, ".png");
+  }
+  return logoImagePath;
+}
+
+function storeLogoEmailMarkup(lead: LeadPilotInviteData): string {
+  const store = escapeHtml(lead.storeName);
+  const logoUrl = absImg(logoPublicPathForEmail(lead.logoImagePath));
+  const overlay = resolveLogoColorOverlay(lead);
+  if (!overlay) {
+    return `<img src="${logoUrl}" alt="${store}" width="120" height="auto" style="display:block;max-width:120px;height:auto;border:0;" />`;
+  }
+  const safeOverlay = escapeHtml(overlay);
+  const urlEsc = logoUrl.replace(/'/g, "\\'");
+  return `<div role="presentation" aria-label="${store}" style="display:inline-block;width:120px;height:40px;background-color:${safeOverlay};-webkit-mask-image:url('${urlEsc}');mask-image:url('${urlEsc}');-webkit-mask-size:contain;mask-size:contain;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;-webkit-mask-position:left center;mask-position:left center;"></div>`;
+}
+
 /* ------------------------------------------------------------------ */
 /*  Font stacks — matching card preview                               */
 /* ------------------------------------------------------------------ */
@@ -51,11 +76,12 @@ export function buildLeadPilotInviteEmailHtml(
   lead: LeadPilotInviteData,
 ): { html: string; plainText: string } {
   const pri = lead.primaryColor;
+  const storeNameColor = escapeHtml(resolveStoreNameTextColor(lead));
   const sec = secondaryColor(lead);
   const store = escapeHtml(lead.storeName);
   const { pilotDays, shopperCap, storeCap, shopifyAppUrl } = PILOT_INVITE_TERMS;
 
-  const logoUrl = absImg(lead.logoImagePath);
+  const storeLogoHtml = storeLogoEmailMarkup(lead);
   const pA = absImg(lead.productAImagePath);
   const pB = absImg(lead.productBImagePath);
   const pC = absImg(lead.productCImagePath);
@@ -97,9 +123,11 @@ export function buildLeadPilotInviteEmailHtml(
             <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%">
               <tr>
                 <td width="46%" style="background-color:${pri};padding:24px 16px 24px 28px;vertical-align:middle;">
-                  <img src="${logoUrl}" alt="${store}" width="120" height="auto" style="display:block;max-width:120px;height:auto;border:0;" />
+                  ${storeLogoHtml}
                 </td>
-                <td width="8%" style="background-color:${pri};background:linear-gradient(to bottom right,${pri} 50%,${BIZMIS_ORANGE} 50%);"></td>
+                <td width="8%" style="background-color:${pri};background:linear-gradient(to bottom right,${pri} 50%,${BIZMIS_ORANGE} 50%);text-align:center;vertical-align:middle;padding:0 2px;">
+                  <span style="${HEADING}font-size:38px;font-weight:900;color:#ffffff;line-height:1;text-shadow:0 1px 6px rgba(0,0,0,0.22),0 0 10px rgba(0,0,0,0.1);">&#x2716;</span>
+                </td>
                 <td width="46%" style="background-color:${BIZMIS_ORANGE};padding:20px 28px 20px 16px;vertical-align:middle;text-align:right;">
                   <a href="${BIZMIS_URL}" target="_blank" style="text-decoration:none;">
                     <table role="presentation" cellpadding="0" cellspacing="0" border="0" align="right">
@@ -119,24 +147,11 @@ export function buildLeadPilotInviteEmailHtml(
           </td>
         </tr>
 
-        <!-- Centered X at the intersection (no background) -->
-        <tr>
-          <td align="center" style="padding:0;line-height:0;font-size:0;">
-            <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin-top:-22px;">
-              <tr>
-                <td style="text-align:center;vertical-align:middle;">
-                  <span style="${HEADING}font-size:26px;font-weight:900;color:#ffffff;text-shadow:0 2px 8px rgba(0,0,0,0.5),0 0 20px rgba(0,0,0,0.25);line-height:1;">&#x2716;</span>
-                </td>
-              </tr>
-            </table>
-          </td>
-        </tr>
-
         <!-- Headline -->
         <tr>
           <td style="padding:12px 28px 10px 28px;">
             <p style="margin:0;${HEADING}font-size:23px;font-weight:800;line-height:1.2;color:#1a1a1a;">
-              Team <span style="color:${BIZMIS_ORANGE};">${store}</span>, you&rsquo;re invited to a
+              Team <span style="color:${storeNameColor};">${store}</span>, you&rsquo;re invited to a
               <span style="text-decoration:underline;text-decoration-color:${BIZMIS_ORANGE};text-underline-offset:3px;">free</span> exclusive Bizmis pilot.
             </p>
           </td>
@@ -311,7 +326,7 @@ function defaultBodyCopyHtml(lead: LeadPilotInviteData): string {
     </p>
     <p style="margin:0 0 10px 0;${BODY}font-size:14px;font-weight:600;line-height:1.55;color:#1a1a1a;">
       As a founding pilot store, you&rsquo;ll directly shape our product roadmap.
-      Build the voice commerce tool that fits <span style="color:${BIZMIS_ORANGE};">${store}</span>&rsquo;s customers and brand.
+      Build the voice commerce tool that fits <span style="color:${escapeHtml(resolveStoreNameTextColor(lead))};">${store}</span>&rsquo;s customers and brand.
     </p>
     <p style="margin:0;${BODY}font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:${BIZMIS_ORANGE_DEEP};">
       Only ${storeCap} spots available &mdash; first come, first served.

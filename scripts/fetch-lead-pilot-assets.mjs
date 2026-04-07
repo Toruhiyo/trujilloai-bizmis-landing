@@ -7,8 +7,10 @@
  * Shopify products.json for product images on Shopify stores.
  *
  * Run: node scripts/fetch-lead-pilot-assets.mjs
+ * Finishes by running sync-lead-product-manifest.mjs (extension-agnostic product URLs).
  */
-import { mkdir, writeFile } from "node:fs/promises";
+import { execSync } from "node:child_process";
+import { mkdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import sharp from "sharp";
@@ -29,6 +31,7 @@ const gstatic = (domain) =>
 /**
  * Each lead specifies:
  * - logoUrls: ordered list of candidate URLs for the logo (first success wins)
+ * - logoSvg: optional filename in the lead folder (e.g. logo.svg) to rasterize to logo.png
  * - productUrls: explicit product image URLs (null = auto-detect via Shopify products.json)
  */
 const leads = [
@@ -44,6 +47,7 @@ const leads = [
   {
     id: "glowforge",
     domain: "glowforge.com",
+    logoSvg: "logo.svg",
     logoUrls: [
       gstatic("glowforge.com"),
     ],
@@ -56,6 +60,7 @@ const leads = [
   {
     id: "sennheiser",
     domain: "sennheiser.com",
+    logoSvg: "logo.svg",
     logoUrls: [
       "https://www.sennheiser.com//og/SennheiserDefaultOg.jpg",
       gstatic("sennheiser.com"),
@@ -78,6 +83,7 @@ const leads = [
   {
     id: "peakdesign",
     domain: "peakdesign.com",
+    logoSvg: "logo.svg",
     logoUrls: [
       "https://cdn.shopify.com/oxygen-v2/32489/26104/54312/3270263/assets/favicon-FcJqlOB-.png",
       gstatic("peakdesign.com"),
@@ -87,6 +93,7 @@ const leads = [
   {
     id: "hodinkee",
     domain: "hodinkee.com",
+    logoSvg: "logo.svg",
     logoUrls: [
       gstatic("hodinkee.com"),
     ],
@@ -99,9 +106,8 @@ const leads = [
   {
     id: "sixpenny",
     domain: "sixpenny.com",
-    logoUrls: [
-      gstatic("sixpenny.com"),
-    ],
+    logoSvg: "logo.svg",
+    logoUrls: [gstatic("sixpenny.com")],
     productUrls: null,
   },
   {
@@ -128,9 +134,8 @@ const leads = [
   {
     id: "theproscloset",
     domain: "theproscloset.com",
-    logoUrls: [
-      gstatic("theproscloset.com"),
-    ],
+    logoSvg: "logo.svg",
+    logoUrls: [gstatic("theproscloset.com")],
     productUrls: null,
   },
 ];
@@ -197,7 +202,7 @@ async function fetchShopifyProducts(domain) {
 
 async function main() {
   for (const lead of leads) {
-    const { id, domain, logoUrls, productUrls: manualProducts } = lead;
+    const { id, domain, logoUrls, logoSvg, productUrls: manualProducts } = lead;
     const dir = path.join(PUBLIC_LEADS, id);
     await mkdir(dir, { recursive: true });
 
@@ -205,7 +210,18 @@ async function main() {
 
     // --- Logo ---
     let logoOk = false;
+    if (logoSvg) {
+      try {
+        const svgBuf = await readFile(path.join(dir, logoSvg));
+        await toLogoPng(svgBuf, path.join(dir, "logo.png"));
+        console.log(`  logo: ${logoSvg} (rasterized)`);
+        logoOk = true;
+      } catch (e) {
+        console.warn("  logoSvg skip:", logoSvg, e.message);
+      }
+    }
     for (const url of logoUrls) {
+      if (logoOk) break;
       try {
         const buf = await fetchBuffer(url);
         await toLogoPng(buf, path.join(dir, "logo.png"));
@@ -249,6 +265,14 @@ async function main() {
   }
 
   console.log("\nDone.");
+  try {
+    execSync("node scripts/sync-lead-product-manifest.mjs", {
+      cwd: ROOT,
+      stdio: "inherit",
+    });
+  } catch (e) {
+    console.warn("sync-lead-product-manifest failed:", e?.message ?? e);
+  }
 }
 
 main().catch((e) => {

@@ -5,9 +5,11 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "prebuild": "node scripts/sync-lead-product-manifest.mjs",
     "build": "vite build",
-    "build:dev": "vite build --mode development",
+    "build:dev": "npm run sync:lead-product-manifest && vite build --mode development",
     "fetch:lead-pilot-assets": "node scripts/fetch-lead-pilot-assets.mjs",
+    "sync:lead-product-manifest": "node scripts/sync-lead-product-manifest.mjs",
     "lint": "eslint .",
     "preview": "vite preview"
   },

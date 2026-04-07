@@ -2,7 +2,11 @@ import { useId, type CSSProperties } from "react";
 import { ArrowRight, TrendingUp, ShoppingCart, Clock } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { LeadPilotInviteData } from "@/data/leadPilotInviteTypes";
-import { PILOT_INVITE_TERMS } from "@/data/leadPilotInviteTypes";
+import {
+  PILOT_INVITE_TERMS,
+  resolveLogoColorOverlay,
+  resolveStoreNameTextColor,
+} from "@/data/leadPilotInviteTypes";
 
 const HERO_AVATAR = "/images/hero-avatar-1.png";
 const BIZMIS_LOGO_WHITE = "/images/bizmis-logo-white-transparent.png";
@@ -46,6 +50,45 @@ function BoldCross({ size = 40, className, style }: { size?: number; className?:
     >
       <path d={`M${half},0 h${t} v${half} h${half} v${t} h-${half} v${half} h-${t} v-${half} h-${half} v-${t} h${half}z`} />
     </svg>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/*  Store logo — optional solid-color overlay (mask) for contrast       */
+/* ------------------------------------------------------------------ */
+
+function StoreHeaderLogo({ lead }: { lead: LeadPilotInviteData }) {
+  const overlay = resolveLogoColorOverlay(lead);
+  const src = lead.logoImagePath;
+  const boxClass =
+    "absolute left-5 top-5 z-10 max-w-[min(9rem,36vw)] drop-shadow-[0_2px_8px_rgba(0,0,0,0.5)] md:left-7 md:top-6";
+
+  if (!overlay) {
+    return (
+      <img
+        src={src}
+        alt=""
+        className={cn(boxClass, "h-10 object-contain object-left md:h-12")}
+      />
+    );
+  }
+
+  return (
+    <div
+      className={cn(boxClass, "h-10 w-[min(9rem,36vw)] md:h-12")}
+      style={{
+        backgroundColor: overlay,
+        WebkitMaskImage: `url(${src})`,
+        maskImage: `url(${src})`,
+        WebkitMaskSize: "contain",
+        maskSize: "contain",
+        WebkitMaskRepeat: "no-repeat",
+        maskRepeat: "no-repeat",
+        WebkitMaskPosition: "left center",
+        maskPosition: "left center",
+      }}
+      aria-hidden
+    />
   );
 }
 
@@ -219,7 +262,7 @@ function DefaultInviteBody({ lead }: { lead: LeadPilotInviteData }) {
       <p className="font-body text-[0.82rem] font-semibold leading-relaxed text-foreground">
         As a founding pilot store, you&apos;ll directly shape our product roadmap.
         Build the voice commerce tool that fits{" "}
-        <span className="text-primary">{lead.storeName}</span>&apos;s customers and brand.
+        <span style={{ color: resolveStoreNameTextColor(lead) }}>{lead.storeName}</span>&apos;s customers and brand.
       </p>
       <p className="font-body text-[0.75rem] font-bold uppercase tracking-wide text-primary-dark">
         Only {storeCap} spots available &mdash; first come, first served.
@@ -249,11 +292,7 @@ const LeadPilotInviteCard = ({ lead, className }: LeadPilotInviteCardProps) => {
       <div className="relative h-[13.5rem] overflow-hidden md:h-[14.5rem]">
         <PaintClash lead={lead} />
 
-        <img
-          src={lead.logoImagePath}
-          alt=""
-          className="absolute left-5 top-5 z-10 h-10 max-w-[min(9rem,36vw)] object-contain object-left drop-shadow-[0_2px_8px_rgba(0,0,0,0.5)] md:left-7 md:top-6 md:h-12"
-        />
+        <StoreHeaderLogo lead={lead} />
 
         <a
           href="https://bizmis.ai"
@@ -275,10 +314,10 @@ const LeadPilotInviteCard = ({ lead, className }: LeadPilotInviteCardProps) => {
         </a>
 
         <BoldCross
-          size={44}
-          className="absolute left-1/2 top-[52%] z-20 -translate-x-1/2 -translate-y-1/2 text-white md:top-[50%]"
+          size={58}
+          className="absolute left-1/2 top-1/2 z-20 -translate-x-1/2 -translate-y-1/2 text-white"
           style={{
-            filter: "drop-shadow(0 3px 14px rgba(0,0,0,0.55)) drop-shadow(0 0 28px rgba(0,0,0,0.25))",
+            filter: "drop-shadow(0 2px 8px rgba(0,0,0,0.22)) drop-shadow(0 1px 3px rgba(0,0,0,0.12))",
           }}
         />
       </div>
@@ -291,7 +330,7 @@ const LeadPilotInviteCard = ({ lead, className }: LeadPilotInviteCardProps) => {
         <div className="relative z-10">
           <h2 className="font-heading text-[1.35rem] font-extrabold leading-[1.15] tracking-tight text-foreground md:text-[1.55rem]">
             Team{" "}
-            <span className="text-primary">{lead.storeName}</span>
+            <span style={{ color: resolveStoreNameTextColor(lead) }}>{lead.storeName}</span>
             , you&apos;re invited to a{" "}
             <span className="whitespace-nowrap">
               <span className="underline decoration-primary decoration-2 underline-offset-2">free</span> exclusive
