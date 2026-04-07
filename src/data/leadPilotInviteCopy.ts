@@ -16,7 +16,7 @@ export const PILOT_INVITE_EMAIL_COPY = {
   outcomes: ["Sell more", "Support faster", "Learn from sessions"] as const,
   /** Uses U+2019 (right single quotation) for “you’ll”. */
   proofLine: "As an early-access store, you\u2019ll get direct access to us and help shape the roadmap.",
-  footerLine: "Questions? Just reply to this email.",
+  contactEmail: "hello@bizmis.ai",
   visitUsPrefix: "Visit us:",
   emailDocumentTitle: "Bizmis Pilot Invite",
   preheaderClosingPhrase: "Bizmis voice-first store clerks",
@@ -44,4 +44,9 @@ export function buildPilotInviteChips(
 
 export function buildPilotInvitePlainTextEyebrow(storeName: string): string {
   return `${PILOT_INVITE_EMAIL_COPY.eyebrowPrefix} ${storeName}`.toUpperCase();
+}
+
+export function buildPilotInviteFooterPlainText(): string {
+  const { contactEmail } = PILOT_INVITE_EMAIL_COPY;
+  return `Questions? Just reply to this email (${contactEmail}).`;
 }
