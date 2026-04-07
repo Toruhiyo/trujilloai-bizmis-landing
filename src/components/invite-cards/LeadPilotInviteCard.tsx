@@ -98,12 +98,12 @@ function PaintClash({ lead }: { lead: LeadPilotInviteData }) {
 function PilotTermsPills({ className }: { className?: string }) {
   const { pilotDays, shopperCap, storeCap } = PILOT_INVITE_TERMS;
   const pill =
-    "inline-flex items-center rounded-full bg-gradient-to-r from-primary via-primary to-[hsl(25_90%_48%)] px-3 py-1.5 font-body text-[0.6rem] font-bold uppercase tracking-[0.1em] text-primary-foreground shadow-[0_2px_10px_hsl(29_93%_45%_/_0.3)]";
+    "inline-flex items-center rounded-full bg-primary px-3 py-1.5 font-body text-[0.6rem] font-bold uppercase tracking-[0.1em] text-primary-foreground shadow-[0_2px_10px_hsl(29_93%_45%_/_0.3)]";
   return (
     <div className={cn("flex flex-wrap gap-1.5", className)}>
       <span className={pill}>100% free for {pilotDays} days</span>
       <span className={pill}>{shopperCap.toLocaleString()} shoppers</span>
-      <span className={cn(pill, "!from-[hsl(25_90%_38%)] !via-[hsl(25_90%_38%)] !to-[hsl(25_85%_30%)] shadow-[0_2px_10px_hsl(25_85%_30%_/_0.4)]")}>
+      <span className={cn(pill, "!bg-[hsl(25_90%_38%)] shadow-[0_2px_10px_hsl(25_85%_30%_/_0.4)]")}>
         only {storeCap} spots
       </span>
     </div>
@@ -182,8 +182,8 @@ function ValuePropBlock() {
 function CouponTicket({ code, className }: { code: string; className?: string }) {
   return (
     <div className={cn("relative overflow-hidden rounded-xl border border-primary/20 bg-[#FFF7ED]", className)}>
-      <div className="absolute inset-y-0 left-0 w-2 bg-gradient-to-b from-primary via-primary to-[hsl(25_90%_48%)]" />
-      <div className="absolute inset-y-0 right-0 w-2 bg-gradient-to-b from-primary via-primary to-[hsl(25_90%_48%)]" />
+      <div className="absolute inset-y-0 left-0 w-2 bg-primary" />
+      <div className="absolute inset-y-0 right-0 w-2 bg-primary" />
       <div className="absolute inset-x-3 top-0 h-px border-t-2 border-dashed border-primary/30" />
       <div className="absolute inset-x-3 bottom-0 h-px border-b-2 border-dashed border-primary/30" />
       <div className="absolute -left-2.5 top-1/2 h-5 w-5 -translate-y-1/2 rounded-full bg-card" />
@@ -255,7 +255,12 @@ const LeadPilotInviteCard = ({ lead, className }: LeadPilotInviteCardProps) => {
           className="absolute left-5 top-5 z-10 h-10 max-w-[min(9rem,36vw)] object-contain object-left drop-shadow-[0_2px_8px_rgba(0,0,0,0.5)] md:left-7 md:top-6 md:h-12"
         />
 
-        <div className="absolute right-4 top-4 z-10 flex items-center gap-2 md:right-6 md:top-5">
+        <a
+          href="https://bizmis.ai"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="absolute right-4 top-4 z-10 flex items-center gap-2 md:right-6 md:top-5"
+        >
           <img
             src={BIZMIS_LOGO_WHITE}
             alt=""
@@ -267,7 +272,7 @@ const LeadPilotInviteCard = ({ lead, className }: LeadPilotInviteCardProps) => {
           >
             bizmis
           </span>
-        </div>
+        </a>
 
         <BoldCross
           size={44}
@@ -325,16 +330,26 @@ const LeadPilotInviteCard = ({ lead, className }: LeadPilotInviteCardProps) => {
             href={PILOT_INVITE_TERMS.shopifyAppUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 rounded-lg bg-gradient-to-r from-primary via-primary to-[hsl(25_90%_48%)] px-8 py-3.5 font-body text-sm font-bold text-primary-foreground shadow-[0_4px_16px_hsl(29_93%_45%_/_0.35)] transition-all hover:shadow-[0_6px_24px_hsl(29_93%_45%_/_0.45)]"
+            className="inline-flex items-center gap-2 rounded-lg bg-primary px-8 py-3.5 font-body text-sm font-bold text-primary-foreground shadow-[0_4px_16px_hsl(29_93%_45%_/_0.35)] transition-all hover:shadow-[0_6px_24px_hsl(29_93%_45%_/_0.45)]"
           >
             Claim Your Free Pilot
             <ArrowRight className="h-4 w-4" />
           </a>
         </div>
 
-        <p className="relative z-10 text-center font-body text-xs text-muted-foreground">
-          Questions? Just reply to this email.
-        </p>
+        <div className="relative z-10 space-y-1 text-center">
+          <p className="font-body text-xs text-muted-foreground">
+            Questions? Just reply to this email.
+          </p>
+          <a
+            href="https://bizmis.ai"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="font-body text-xs font-semibold text-primary hover:underline"
+          >
+            bizmis.ai
+          </a>
+        </div>
       </div>
     </article>
   );
