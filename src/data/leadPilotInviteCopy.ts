@@ -25,12 +25,15 @@ export function buildPilotInvitePreheader(storeName: string, storeCap: number): 
   return `Early access invite for ${storeName}. First ${storeCap} stores only — ${PILOT_INVITE_EMAIL_COPY.preheaderClosingPhrase}.`;
 }
 
-export function buildPilotInviteChipLabels(storeCap: number): readonly [string, string, string] {
+/** Two intentional lines per chip (no natural wrap). Third chip uses `storeCap`. */
+export function buildPilotInviteChips(
+  storeCap: number,
+): readonly [readonly [string, string], readonly [string, string], readonly [string, string]] {
   return [
-    "30 days on us · no commitment",
-    "Your feedback shapes the roadmap",
-    `Limited offer · First ${storeCap} stores only`,
-  ];
+    ["30 days on us", "No commitment"],
+    ["Shape the roadmap", "With feedback"],
+    ["Limited to", `${storeCap} stores only`],
+  ] as const;
 }
 
 export function buildPilotInvitePlainTextEyebrow(storeName: string): string {

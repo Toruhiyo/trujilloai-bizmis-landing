@@ -1,5 +1,5 @@
 import {
-  buildPilotInviteChipLabels,
+  buildPilotInviteChips,
   buildPilotInvitePlainTextEyebrow,
   buildPilotInvitePreheader,
   PILOT_INVITE_EMAIL_COPY,
@@ -133,14 +133,30 @@ function buildProductCardsHtml(lead: LeadPilotInviteData): string {
 /*  Build email-safe HTML                                             */
 /* ------------------------------------------------------------------ */
 
+function pilotInviteChipTwoLineHtml(line1: string, line2: string): string {
+  const l1 = escapeHtml(line1);
+  const l2 = escapeHtml(line2);
+  const cell = `padding:0;margin:0;line-height:1.25;white-space:nowrap;text-align:center;vertical-align:middle;`;
+  return `<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" align="center" style="border-collapse:collapse;margin:0;padding:0;width:100%;">
+              <tr><td style="${cell}">${l1}</td></tr>
+              <tr><td style="${cell}">${l2}</td></tr>
+            </table>`;
+}
+
 function buildPilotInviteChipRowHtml(chipBadgeStyle: string, storeCap: number): string {
+  const chipTd =
+    (sidePad: string) =>
+    `width="33.33%" style="width:33.33%;vertical-align:top;padding:${sidePad};text-align:center;"`;
   const chipColAttrs: [string, string, string] = [
-    `width="33%" style="width:33%;vertical-align:top;padding:0 4px 0 0;text-align:center;"`,
-    `width="34%" style="width:34%;vertical-align:top;padding:0 4px;text-align:center;"`,
-    `width="33%" style="width:33%;vertical-align:top;padding:0 0 0 4px;text-align:center;"`,
+    chipTd("0 5px 0 0"),
+    chipTd("0 5px"),
+    chipTd("0 0 0 5px"),
   ];
-  return buildPilotInviteChipLabels(storeCap)
-    .map((text, i) => `<td ${chipColAttrs[i]}><span style="${chipBadgeStyle}">${escapeHtml(text)}</span></td>`)
+  return buildPilotInviteChips(storeCap)
+    .map(
+      ([a, b], i) =>
+        `<td ${chipColAttrs[i]}><span style="${chipBadgeStyle}">${pilotInviteChipTwoLineHtml(a, b)}</span></td>`,
+    )
     .join("\n                ");
 }
 
@@ -190,7 +206,7 @@ export function buildLeadPilotInviteEmailHtml(
 
   const preheader = buildPilotInvitePreheader(lead.storeName, storeCap);
 
-  const CHIP_BADGE_STYLE = `display:inline-block;margin:0;padding:6px 10px;border-radius:9999px;border:1px solid ${BIZMIS_BORDER_HEX};${BODY}font-size:10px;line-height:1.35;color:#555;text-align:center;`;
+  const CHIP_BADGE_STYLE = `display:block;margin:0;padding:8px 10px;border-radius:9999px;border:1px solid ${BIZMIS_BORDER_HEX};${BODY}font-size:10px;line-height:1.25;color:#555;text-align:center;vertical-align:middle;width:100%;max-width:100%;box-sizing:border-box;`;
 
   const chipRowHtml = buildPilotInviteChipRowHtml(CHIP_BADGE_STYLE, storeCap);
   const outcomeStripInnerHtml = buildPilotInviteOutcomeStripHtml(outcomeIconUrls);
@@ -425,7 +441,7 @@ export function buildLeadPilotInviteEmailHtml(
 </body>
 </html>`;
 
-  const chipLines = buildPilotInviteChipLabels(storeCap);
+  const chipPlainLines = buildPilotInviteChips(storeCap).flatMap(([line1, line2]) => [line1, line2]);
   const plainText = [
     buildPilotInvitePlainTextEyebrow(lead.storeName),
     "",
@@ -433,7 +449,7 @@ export function buildLeadPilotInviteEmailHtml(
     "",
     copy.subline,
     "",
-    ...chipLines,
+    ...chipPlainLines,
     "",
     `${copy.ctaLabel}: ${shopifyAppUrl}`,
     "",
