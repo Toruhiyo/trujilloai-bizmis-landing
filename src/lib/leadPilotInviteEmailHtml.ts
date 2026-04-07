@@ -455,7 +455,7 @@ export function buildLeadPilotInviteEmailHtml(
         <tr>
           <td style="padding:18px 28px 22px 28px;text-align:center;">
             <p style="margin:0 0 4px 0;${BODY}font-size:11px;color:${BIZMIS_MUTED_LIGHT_HEX};">
-              Questions? Just reply to this email (<a href="mailto:${escapeHtml(copy.contactEmail)}" style="${BODY}font-size:11px;font-weight:600;color:${BIZMIS_PRIMARY_HEX};text-decoration:none;">${escapeHtml(copy.contactEmail)}</a>).
+              Questions? Just reply to this email (<a href="mailto:${escapeHtml(copy.contactEmail)}" style="${BODY}font-size:11px;font-weight:400;color:${BIZMIS_PRIMARY_HEX};text-decoration:none;">${escapeHtml(copy.contactEmail)}</a>).
             </p>
             <a href="${BIZMIS_URL}" target="_blank" style="${BODY}font-size:11px;font-weight:600;color:${BIZMIS_PRIMARY_HEX};text-decoration:none;">
               bizmis.ai
