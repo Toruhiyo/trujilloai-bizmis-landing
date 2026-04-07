@@ -34,11 +34,6 @@ const BIZMIS_PRIMARY_TINT_008 = "#FFF6EE";
 const BIZMIS_PRIMARY_TINT_006 = "#FFF8F1";
 /** Approx rgba(BIZMIS_PRIMARY, 0.10) on white */
 const BIZMIS_PRIMARY_TINT_010 = "#FFF3E8";
-/** Approx rgba(BIZMIS_PRIMARY, 0.15) on white — chip fill (matches deck bg-primary/15) */
-const BIZMIS_PRIMARY_TINT_015 = "#FEF1E5";
-/** Approx rgba(BIZMIS_PRIMARY, 0.25) on white — chip border (matches deck border-primary/25) */
-const BIZMIS_PRIMARY_TINT_025 = "#FDE0BC";
-
 /** --foreground HSL(35,30%,15%) pre-baked — warm dark brown */
 const BIZMIS_FOREGROUND_HEX = "#32281B";
 /** Lighter muted for de-emphasized text (footer, captions) */
@@ -221,7 +216,7 @@ export function buildLeadPilotInviteEmailHtml(
 
   const preheader = buildPilotInvitePreheader(lead.storeName, storeCap);
 
-  const CHIP_BADGE_STYLE = `display:block;margin:0;padding:8px 12px;border-radius:9999px;background-color:${BIZMIS_PRIMARY_TINT_015};border:1px solid ${BIZMIS_PRIMARY_TINT_025};${HEADING}font-size:10px;font-weight:600;line-height:1.25;color:${BIZMIS_PRIMARY_DARK_HEX};text-align:center;vertical-align:middle;width:100%;max-width:100%;box-sizing:border-box;`;
+  const CHIP_BADGE_STYLE = `display:block;margin:0;padding:8px 12px;border-radius:9999px;background-color:transparent;border:1px solid ${BIZMIS_BORDER_HEX};${BODY}font-size:10px;font-weight:600;line-height:1.25;color:#555;text-align:center;vertical-align:middle;width:100%;max-width:100%;box-sizing:border-box;`;
 
   const chipRowHtml = buildPilotInviteChipRowHtml(CHIP_BADGE_STYLE, storeCap);
   const outcomeStripInnerHtml = buildPilotInviteOutcomeStripHtml(outcomeIconUrls);
