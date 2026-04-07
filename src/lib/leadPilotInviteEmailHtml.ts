@@ -44,6 +44,10 @@ const BIZMIS_MUTED_LIGHT_HEX = "#B5A48E";
 const BIZMIS_WARM_SURFACE_HEX = "#FAF7F4";
 /** Warm shadow matching landing --shadow-soft (orange-tinted) */
 const BIZMIS_SHADOW_SOFT = "0 6px 25px -6px rgba(249,163,83,0.18)";
+/** Softer dashed border for coupon pill (lighter than BIZMIS_BORDER_HEX) */
+const COUPON_PILL_BORDER_HEX = "#E8DFD4";
+/** Near-white surface so coupon reads lighter than the warm CTA block */
+const COUPON_PILL_BG_HEX = "#FDFCFB";
 
 function escapeHtml(s: string): string {
   return s
@@ -117,21 +121,24 @@ const WIDGET_BARS = [3, 6, 9, 5, 7];
 /*  Build product cards HTML for the storefront demo                  */
 /* ------------------------------------------------------------------ */
 
+const MOCKUP_PRODUCT_COUNT = 2;
+
 function buildProductCardsHtml(lead: LeadPilotInviteData): string {
   const productImages = [lead.productAImagePath, lead.productBImagePath, lead.productCImagePath];
+  const products = lead.demoProducts.slice(0, MOCKUP_PRODUCT_COUNT);
 
-  return lead.demoProducts
+  return products
     .map((product, i) => {
       const imgUrl = absImg(productImages[i]);
-      const mb = i < 2 ? "margin-bottom:8px;" : "";
+      const mb = i < products.length - 1 ? "margin-bottom:6px;" : "";
       return `<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="border:1px solid ${BIZMIS_BORDER_HEX};border-radius:12px;${mb}">
             <tr>
-              <td width="56" style="padding:10px;">
-                <img src="${imgUrl}" alt="" width="48" style="display:block;max-width:48px;height:auto;border:0;border-radius:8px;" />
+              <td width="50" style="padding:8px;">
+                <img src="${imgUrl}" alt="" width="42" style="display:block;max-width:42px;height:auto;border:0;border-radius:8px;" />
               </td>
-              <td style="padding:10px 12px 10px 0;vertical-align:middle;">
+              <td style="padding:8px 10px 8px 0;vertical-align:middle;">
                 <p style="margin:0;${BODY}font-size:11px;font-weight:600;color:${BIZMIS_FOREGROUND_HEX};">${escapeHtml(product.title)}</p>
-                <p style="margin:3px 0 4px;${BODY}font-size:11px;color:${BIZMIS_MUTED_FG_HEX};">${escapeHtml(product.price)}</p>
+                <p style="margin:2px 0 3px;${BODY}font-size:11px;color:${BIZMIS_MUTED_FG_HEX};">${escapeHtml(product.price)}</p>
                 <span style="display:inline-block;background-color:${BIZMIS_PRIMARY_TINT_008};border-radius:9999px;padding:2px 8px;${BODY}font-size:9px;font-weight:500;color:${BIZMIS_PRIMARY_HEX};">${escapeHtml(product.tag)}</span>
               </td>
             </tr>
@@ -145,11 +152,11 @@ function buildProductCardsHtml(lead: LeadPilotInviteData): string {
 /* ------------------------------------------------------------------ */
 
 function buildPilotInviteChipStripHtml(storeCap: number): string {
-  const dotStyle = `display:inline-block;width:4px;height:4px;border-radius:50%;background-color:${BIZMIS_BORDER_HEX};vertical-align:middle;margin:0 10px;`;
-  const textStyle = `${BODY}font-size:12px;font-weight:500;color:${BIZMIS_MUTED_FG_HEX};vertical-align:middle;white-space:nowrap;`;
+  const sepDotStyle = `display:inline-block;width:4px;height:4px;border-radius:50%;background-color:${BIZMIS_BORDER_HEX};vertical-align:middle;margin:0 8px;`;
+  const textStyle = `${BODY}font-size:11px;font-weight:500;color:${BIZMIS_MUTED_FG_HEX};vertical-align:middle;`;
   return buildPilotInviteChips(storeCap)
     .map((phrase) => `<span style="${textStyle}">${escapeHtml(phrase)}</span>`)
-    .join(`<span style="${dotStyle}"></span>`);
+    .join(`<span style="${sepDotStyle}"></span>`);
 }
 
 function buildPilotInviteOutcomeStripHtml(
@@ -200,9 +207,9 @@ export function buildLeadPilotInviteEmailHtml(
   const preheader = buildPilotInvitePreheader(lead.storeName, storeCap);
 
   const chipStripHtml = buildPilotInviteChipStripHtml(storeCap);
+  const bizmisProductNameEsc = escapeHtml(BIZMIS_PRODUCT_NAME);
   const outcomeStripInnerHtml = buildPilotInviteOutcomeStripHtml(outcomeIconUrls);
 
-  const bizmisProductNameEsc = escapeHtml(BIZMIS_PRODUCT_NAME);
   const couponCodeEsc = escapeHtml(lead.couponCode.trim());
 
   const html = `<!DOCTYPE html>
@@ -281,43 +288,60 @@ export function buildLeadPilotInviteEmailHtml(
           </td>
         </tr>
 
-        <!-- Primary CTA -->
+        <!-- CTA block: coupon above button, value chips below -->
         <tr>
-          <td style="padding:24px 32px 0 32px;" align="center">
-            <table role="presentation" cellpadding="0" cellspacing="0" border="0">
+          <td style="padding:20px 32px 0 32px;" align="center">
+            <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="background-color:${BIZMIS_WARM_SURFACE_HEX};border-radius:16px;">
               <tr>
-                <td style="background-color:${BIZMIS_FOREGROUND_HEX};padding:13px 32px;border-radius:12px;text-align:center;box-shadow:0 4px 14px -2px rgba(50,40,27,0.2);">
-                  <a href="${shopifyAppUrl}" target="_blank" style="display:inline-block;text-decoration:none;color:#ffffff;">
-                    <table role="presentation" cellpadding="0" cellspacing="0" border="0" align="center" style="margin:0 auto;">
-                      <tr>
-                        <td style="vertical-align:middle;padding-right:10px;">
-                          <img src="${shopifyMarkUrl}" alt="Shopify" width="22" height="22" style="display:block;width:22px;height:22px;border:0;" />
-                        </td>
-                        <td style="vertical-align:middle;${HEADING}font-size:14px;font-weight:600;color:#ffffff;">
-                          ${escapeHtml(copy.ctaLabel)}
-                        </td>
-                      </tr>
-                    </table>
-                  </a>
+                <td style="padding:18px 20px 12px 20px;" align="center">
+                  <table role="presentation" cellpadding="0" cellspacing="0" border="0">
+                    <tr>
+                      <td style="background-color:${COUPON_PILL_BG_HEX};border:1px dashed ${COUPON_PILL_BORDER_HEX};border-radius:6px;padding:6px 12px;text-align:center;line-height:1.4;">
+                        <span style="${BODY}font-size:9px;color:${BIZMIS_MUTED_LIGHT_HEX};vertical-align:middle;">${escapeHtml(copy.couponLabel)}</span> <span style="${BODY}font-size:11px;font-weight:500;color:${BIZMIS_MUTED_FG_HEX};letter-spacing:0.04em;vertical-align:middle;">${couponCodeEsc}</span>
+                      </td>
+                    </tr>
+                  </table>
+                </td>
+              </tr>
+              <tr>
+                <td style="padding:0 20px 12px 20px;" align="center">
+                  <table role="presentation" cellpadding="0" cellspacing="0" border="0">
+                    <tr>
+                      <td style="background-color:${BIZMIS_FOREGROUND_HEX};padding:13px 32px;border-radius:12px;text-align:center;box-shadow:0 4px 14px -2px rgba(50,40,27,0.2);">
+                        <a href="${shopifyAppUrl}" target="_blank" style="display:inline-block;text-decoration:none;color:#ffffff;">
+                          <table role="presentation" cellpadding="0" cellspacing="0" border="0" align="center" style="margin:0 auto;">
+                            <tr>
+                              <td style="vertical-align:middle;padding-right:10px;">
+                                <img src="${shopifyMarkUrl}" alt="Shopify" width="22" height="22" style="display:block;width:22px;height:22px;border:0;" />
+                              </td>
+                              <td style="vertical-align:middle;${HEADING}font-size:14px;font-weight:600;color:#ffffff;">
+                                ${escapeHtml(copy.ctaLabel)}
+                              </td>
+                            </tr>
+                          </table>
+                        </a>
+                      </td>
+                    </tr>
+                  </table>
+                </td>
+              </tr>
+              <tr>
+                <td style="padding:0 16px 18px 16px;text-align:center;line-height:1.5;">
+                  ${chipStripHtml}
                 </td>
               </tr>
             </table>
           </td>
         </tr>
 
-        <!-- Early access coupon -->
+        <!-- Outcome strip -->
         <tr>
-          <td style="padding:12px 32px 0 32px;text-align:center;">
-            <p style="margin:0;${BODY}font-size:12px;line-height:1.5;color:${BIZMIS_MUTED_FG_HEX};">
-              ${escapeHtml(copy.couponLabel)} <span style="${BODY}font-size:13px;font-weight:600;color:${BIZMIS_MUTED_FG_HEX};letter-spacing:0.06em;">${couponCodeEsc}</span>
-            </p>
-          </td>
-        </tr>
-
-        <!-- Chip strip -->
-        <tr>
-          <td style="padding:16px 32px 0 32px;text-align:center;">
-            ${chipStripHtml}
+          <td style="padding:18px 32px 0 32px;text-align:center;">
+            <table role="presentation" cellpadding="0" cellspacing="0" border="0" align="center" style="margin:0 auto;">
+              <tr>
+                ${outcomeStripInnerHtml}
+              </tr>
+            </table>
           </td>
         </tr>
 
@@ -351,7 +375,7 @@ export function buildLeadPilotInviteEmailHtml(
                   <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%">
                     <tr>
                       <!-- Left: voice interaction -->
-                      <td width="48%" style="vertical-align:top;padding:14px 8px 14px 14px;">
+                      <td width="48%" style="vertical-align:top;padding:10px 6px 10px 12px;">
                         <!-- Shopper prompt -->
                         <div style="background-color:${BIZMIS_WARM_SURFACE_HEX};border-radius:10px;padding:10px 12px;margin-bottom:10px;">
                           <p style="margin:0;${BODY}font-size:11px;line-height:1.5;color:${BIZMIS_MUTED_FG_HEX};">
@@ -375,7 +399,7 @@ export function buildLeadPilotInviteEmailHtml(
                       </td>
 
                       <!-- Right: product recommendations -->
-                      <td width="52%" style="vertical-align:top;padding:14px 14px 14px 8px;">
+                      <td width="52%" style="vertical-align:top;padding:10px 12px 10px 6px;">
                         ${productCardsHtml}
                       </td>
                     </tr>
@@ -408,29 +432,12 @@ export function buildLeadPilotInviteEmailHtml(
           </td>
         </tr>
 
-        <!-- Outcome strip -->
-        <tr>
-          <td style="padding:26px 32px 0 32px;text-align:center;">
-            <table role="presentation" cellpadding="0" cellspacing="0" border="0" align="center" style="margin:0 auto;">
-              <tr>
-                ${outcomeStripInnerHtml}
-              </tr>
-            </table>
-          </td>
-        </tr>
-
-        <!-- Micro copy -->
-        <tr>
-          <td style="padding:22px 32px 0 32px;text-align:center;">
-            <p style="margin:0;${BODY}font-size:13px;line-height:1.6;color:${BIZMIS_MUTED_FG_HEX};">
-              ${escapeHtml(copy.proofLine)}
-            </p>
-          </td>
-        </tr>
-
-        <!-- Footer -->
+        <!-- Footer (proof + contact + link) -->
         <tr>
           <td style="padding:24px 32px 32px 32px;text-align:center;">
+            <p style="margin:0 0 6px 0;${BODY}font-size:12px;line-height:1.55;color:${BIZMIS_MUTED_FG_HEX};">
+              ${escapeHtml(copy.proofLine)}
+            </p>
             <p style="margin:0 0 4px 0;${BODY}font-size:11px;color:${BIZMIS_MUTED_LIGHT_HEX};">
               Questions? Just reply to this email (<a href="mailto:${escapeHtml(copy.contactEmail)}" style="${BODY}font-size:11px;font-weight:400;color:${BIZMIS_PRIMARY_HEX};text-decoration:none;">${escapeHtml(copy.contactEmail)}</a>).
             </p>
@@ -457,8 +464,8 @@ export function buildLeadPilotInviteEmailHtml(
     "",
     copy.subline,
     "",
+    `${copy.couponLabel} ${lead.couponCode.trim()}`,
     `${copy.ctaLabel}: ${shopifyAppUrl}`,
-    `${copy.couponLabel}: ${lead.couponCode.trim()}`,
     "",
     ...chipPlainLines,
     "",
