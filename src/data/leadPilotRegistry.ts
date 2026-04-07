@@ -254,7 +254,7 @@ export const LEAD_PILOT_INVITES: LeadPilotInviteData[] = [
     secondaryColor: null,
     pitchLine: "Help riders choose the right bike by terrain, fit, and budget.",
     demoShopperPrompt: "I'm looking for a road bike for long climbs under $4,000.",
-    demoBizmisReply: "Got it — lighter climbing setup or more all-day comfort?",
+    demoBizmisReply: "Got it — are you optimizing more for climbing or all-day comfort?",
     demoProducts: [
       { title: "Tarmac SL6", price: "$3,199", tag: "Climbing" },
       { title: "Roubaix Sport", price: "$3,499", tag: "Endurance" },

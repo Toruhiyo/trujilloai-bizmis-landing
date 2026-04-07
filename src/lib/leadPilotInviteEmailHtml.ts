@@ -146,7 +146,7 @@ export function buildLeadPilotInviteEmailHtml(
   const listeningBarsHtml = emailWaveformBars(BIZMIS_PRIMARY_HEX, LISTENING_BARS);
   const widgetBarsHtml = emailWaveformBars("#ffffff", WIDGET_BARS);
 
-  const preheader = `Private pilot invite for ${lead.storeName} — a voice-first store clerk for your Shopify store. ${storeCap} spots only.`;
+  const preheader = `Founding pilot invite for ${lead.storeName}. Bizmis voice-first store clerks — ${storeCap} spots only.`;
 
   const BADGE_STYLE = `display:inline-block;margin:0 8px 0 0;padding:5px 12px;border-radius:9999px;border:1px solid ${BIZMIS_BORDER_HEX};${BODY}font-size:11px;color:#555;`;
 
@@ -203,7 +203,7 @@ export function buildLeadPilotInviteEmailHtml(
         <tr>
           <td style="padding:20px 28px 0 28px;">
             <p style="margin:0;${BODY}font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.12em;color:${BIZMIS_MUTED_FG_HEX};">
-              Private pilot invite for <span style="color:${storeNameColor};">${store}</span>
+              Founding pilot invite for <span style="color:${storeNameColor};">${store}</span>
             </p>
           </td>
         </tr>
@@ -212,7 +212,7 @@ export function buildLeadPilotInviteEmailHtml(
         <tr>
           <td style="padding:10px 28px 0 28px;">
             <p style="margin:0;${HEADING}font-size:22px;font-weight:700;line-height:1.25;color:#1a1a1a;">
-              Bring a voice-first store clerk to your Shopify store.
+              Bring in-store-style Selling and Support to your storefront with Bizmis voice-first store clerks.
             </p>
           </td>
         </tr>
@@ -221,7 +221,7 @@ export function buildLeadPilotInviteEmailHtml(
         <tr>
           <td style="padding:10px 28px 0 28px;">
             <p style="margin:0;${BODY}font-size:14px;line-height:1.5;color:${BIZMIS_MUTED_FG_HEX};">
-              Greets shoppers, recommends products, answers support questions, and helps more shoppers buy with confidence.
+              Greets shoppers, recommends the right products, answers support questions, and helps more visitors buy with confidence.
             </p>
           </td>
         </tr>
@@ -267,7 +267,7 @@ export function buildLeadPilotInviteEmailHtml(
                         <span style="${BODY}font-size:10px;color:#999;">${domain}</span>
                       </td>
                       <td style="vertical-align:middle;text-align:right;">
-                        <span style="${BODY}font-size:10px;font-weight:600;color:${BIZMIS_MUTED_FG_HEX};">Voice shopping assistant</span>
+                        <span style="${BODY}font-size:10px;font-weight:600;color:${BIZMIS_MUTED_FG_HEX};">Bizmis voice-first store clerk</span>
                       </td>
                     </tr>
                   </table>
@@ -381,7 +381,7 @@ export function buildLeadPilotInviteEmailHtml(
         <tr>
           <td style="padding:16px 28px 0 28px;text-align:center;">
             <p style="margin:0;${BODY}font-size:13px;line-height:1.5;color:${BIZMIS_MUTED_FG_HEX};">
-              Founding pilot stores get direct access to us and real roadmap input.
+              Founding pilot stores get direct access to us and help shape the roadmap.
             </p>
           </td>
         </tr>
@@ -408,17 +408,17 @@ export function buildLeadPilotInviteEmailHtml(
 </html>`;
 
   const plainText = [
-    `Private pilot invite for ${lead.storeName}`,
+    `FOUNDING PILOT INVITE FOR ${lead.storeName.toUpperCase()}`,
     "",
-    "Bring a voice-first store clerk to your Shopify store.",
+    "Bring in-store-style Selling and Support to your storefront with Bizmis voice-first store clerks.",
     "",
-    "Greets shoppers, recommends products, answers support questions, and helps more shoppers buy with confidence.",
+    "Greets shoppers, recommends the right products, answers support questions, and helps more visitors buy with confidence.",
     "",
     `${pilotDays}-day founding pilot · No commitment · ${storeCap} stores only`,
     "",
-    `Reserve your pilot spot: ${shopifyAppUrl}`,
+    `Reserve pilot spot: ${shopifyAppUrl}`,
     "",
-    "Founding pilot stores get direct access to us and real roadmap input.",
+    "Founding pilot stores get direct access to us and help shape the roadmap.",
     "",
     "Questions? Just reply to this email.",
     `Visit us: ${BIZMIS_URL}`,
