@@ -14,6 +14,8 @@ export const PILOT_INVITE_EMAIL_COPY = {
   subline:
     "Try Bizmis at no cost for 30 days on your Shopify store and shape the product around your team\u2019s and customers\u2019 needs by sharing feedback as you go.",
   ctaLabel: "Install Bizmis with early access",
+  /** Shown with the per-lead `couponCode` from the registry. */
+  couponLabel: "Your early access code:",
   mockupClerkLabel: "Bizmis voice-first store clerk",
   voiceListeningLabel: "Listening",
   voiceWidgetCta: "Ask by voice",

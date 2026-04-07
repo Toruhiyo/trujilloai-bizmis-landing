@@ -9,7 +9,7 @@ const base = (id: string) => ({
 });
 
 function coupon(id: string): string {
-  return `BIZMIS-FREE-${id.toUpperCase()}`;
+  return `BIZMIS-EARLY-ACCESS-${id.toUpperCase()}`;
 }
 
 export const LEAD_PILOT_INVITES: LeadPilotInviteData[] = [

@@ -203,6 +203,7 @@ export function buildLeadPilotInviteEmailHtml(
   const outcomeStripInnerHtml = buildPilotInviteOutcomeStripHtml(outcomeIconUrls);
 
   const bizmisProductNameEsc = escapeHtml(BIZMIS_PRODUCT_NAME);
+  const couponCodeEsc = escapeHtml(lead.couponCode.trim());
 
   const html = `<!DOCTYPE html>
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml">
@@ -301,6 +302,15 @@ export function buildLeadPilotInviteEmailHtml(
                 </td>
               </tr>
             </table>
+          </td>
+        </tr>
+
+        <!-- Early access coupon -->
+        <tr>
+          <td style="padding:12px 32px 0 32px;text-align:center;">
+            <p style="margin:0;${BODY}font-size:12px;line-height:1.5;color:${BIZMIS_MUTED_FG_HEX};">
+              ${escapeHtml(copy.couponLabel)} <span style="${BODY}font-size:13px;font-weight:600;color:${BIZMIS_MUTED_FG_HEX};letter-spacing:0.06em;">${couponCodeEsc}</span>
+            </p>
           </td>
         </tr>
 
@@ -447,9 +457,10 @@ export function buildLeadPilotInviteEmailHtml(
     "",
     copy.subline,
     "",
-    ...chipPlainLines,
-    "",
     `${copy.ctaLabel}: ${shopifyAppUrl}`,
+    `${copy.couponLabel}: ${lead.couponCode.trim()}`,
+    "",
+    ...chipPlainLines,
     "",
     copy.proofLine,
     "",
