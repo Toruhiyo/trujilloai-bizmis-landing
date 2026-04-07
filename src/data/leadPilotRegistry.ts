@@ -20,6 +20,7 @@ export const LEAD_PILOT_INVITES: LeadPilotInviteData[] = [
     content: "",
     primaryColor: "#108849",
     secondaryColor: null,
+    logoColorOverlay: "#ffffff",
     couponCode: coupon("molekule"),
     batch: 1,
     wave: "Wave 1 (low burn)",

@@ -1,5 +1,6 @@
 import { useId, type CSSProperties } from "react";
-import { ArrowRight, TrendingUp, ShoppingCart, Clock } from "lucide-react";
+import { TrendingUp, ShoppingCart, Clock } from "lucide-react";
+import { FaShopify } from "react-icons/fa";
 import { cn } from "@/lib/utils";
 import type { LeadPilotInviteData } from "@/data/leadPilotInviteTypes";
 import {
@@ -61,21 +62,21 @@ function StoreHeaderLogo({ lead }: { lead: LeadPilotInviteData }) {
   const overlay = resolveLogoColorOverlay(lead);
   const src = lead.logoImagePath;
   const boxClass =
-    "absolute left-5 top-5 z-10 max-w-[min(9rem,36vw)] drop-shadow-[0_2px_8px_rgba(0,0,0,0.5)] md:left-7 md:top-6";
+    "absolute left-5 top-5 z-10 max-w-[min(12rem,44vw)] drop-shadow-[0_2px_8px_rgba(0,0,0,0.5)] md:left-7 md:top-6";
 
   if (!overlay) {
     return (
       <img
         src={src}
         alt=""
-        className={cn(boxClass, "h-10 object-contain object-left md:h-12")}
+        className={cn(boxClass, "h-14 object-contain object-left md:h-16")}
       />
     );
   }
 
   return (
     <div
-      className={cn(boxClass, "h-10 w-[min(9rem,36vw)] md:h-12")}
+      className={cn(boxClass, "h-14 w-[min(12rem,44vw)] md:h-16")}
       style={{
         backgroundColor: overlay,
         WebkitMaskImage: `url(${src})`,
@@ -112,9 +113,9 @@ function PaintClash({ lead }: { lead: LeadPilotInviteData }) {
       >
         <defs>
           <linearGradient id="bizmis-paint" x1="1" y1="0" x2="0.3" y2="1">
-            <stop offset="0%" stopColor="hsl(35 95% 72%)" />
-            <stop offset="40%" stopColor="hsl(29 93% 58%)" />
-            <stop offset="100%" stopColor="hsl(25 90% 46%)" />
+            <stop offset="0%" stopColor="hsl(var(--primary-light))" />
+            <stop offset="50%" stopColor="hsl(var(--primary))" />
+            <stop offset="100%" stopColor="hsl(var(--primary-dark))" />
           </linearGradient>
         </defs>
         <path
@@ -141,12 +142,12 @@ function PaintClash({ lead }: { lead: LeadPilotInviteData }) {
 function PilotTermsPills({ className }: { className?: string }) {
   const { pilotDays, shopperCap, storeCap } = PILOT_INVITE_TERMS;
   const pill =
-    "inline-flex items-center rounded-full bg-primary px-3 py-1.5 font-body text-[0.6rem] font-bold uppercase tracking-[0.1em] text-primary-foreground shadow-[0_2px_10px_hsl(29_93%_45%_/_0.3)]";
+    "inline-flex items-center rounded-full bg-primary px-3 py-1.5 font-body text-[0.6rem] font-bold uppercase tracking-[0.1em] text-primary-foreground shadow-sm";
   return (
     <div className={cn("flex flex-wrap gap-1.5", className)}>
       <span className={pill}>100% free for {pilotDays} days</span>
       <span className={pill}>{shopperCap.toLocaleString()} shoppers</span>
-      <span className={cn(pill, "!bg-[hsl(25_90%_38%)] shadow-[0_2px_10px_hsl(25_85%_30%_/_0.4)]")}>
+      <span className={cn(pill, "bg-primary-dark shadow-sm")}>
         only {storeCap} spots
       </span>
     </div>
@@ -208,8 +209,8 @@ function ValuePropBlock() {
       </p>
       <div className="space-y-1.5">
         {VALUE_BENEFITS.map(({ Icon, text }) => (
-          <div key={text} className="flex items-start gap-2.5">
-            <Icon className="mt-0.5 h-3.5 w-3.5 shrink-0 text-primary" />
+          <div key={text} className="flex items-start gap-3">
+            <Icon className="mt-0.5 h-4 w-4 shrink-0 text-primary" strokeWidth={2} aria-hidden />
             <span className="font-body text-[0.8rem] leading-snug text-muted-foreground">{text}</span>
           </div>
         ))}
@@ -223,26 +224,22 @@ function ValuePropBlock() {
 /* ------------------------------------------------------------------ */
 
 function CouponTicket({ code, className }: { code: string; className?: string }) {
+  const { pilotDays } = PILOT_INVITE_TERMS;
   return (
-    <div className={cn("relative overflow-hidden rounded-xl border border-primary/20 bg-[#FFF7ED]", className)}>
-      <div className="absolute inset-y-0 left-0 w-2 bg-primary" />
-      <div className="absolute inset-y-0 right-0 w-2 bg-primary" />
-      <div className="absolute inset-x-3 top-0 h-px border-t-2 border-dashed border-primary/30" />
-      <div className="absolute inset-x-3 bottom-0 h-px border-b-2 border-dashed border-primary/30" />
-      <div className="absolute -left-2.5 top-1/2 h-5 w-5 -translate-y-1/2 rounded-full bg-card" />
-      <div className="absolute -right-2.5 top-1/2 h-5 w-5 -translate-y-1/2 rounded-full bg-card" />
-
-      <div className="px-8 py-5 text-center">
-        <p className="font-body text-[0.6rem] font-bold uppercase tracking-[0.15em] text-primary-dark">
-          Your exclusive free pilot code
-        </p>
-        <p className="mt-1.5 font-heading text-[1.4rem] font-extrabold tracking-[0.06em] text-foreground md:text-[1.6rem]">
-          {code}
-        </p>
-        <p className="mt-1 font-body text-[0.65rem] font-semibold uppercase tracking-[0.1em] text-primary">
-          100% free &mdash; no credit card required
-        </p>
-      </div>
+    <div
+      className={cn(
+        "rounded-xl border border-border bg-secondary/40 px-5 py-4 text-center shadow-none",
+        className,
+      )}
+    >
+      <div className="mx-auto mb-3 h-0.5 w-12 rounded-full bg-primary" aria-hidden />
+      <p className="font-body text-xs font-medium text-muted-foreground">Your pilot code</p>
+      <p className="mt-1 font-heading text-xl font-bold tabular-nums tracking-wide text-foreground md:text-2xl">
+        {code}
+      </p>
+      <p className="mt-1.5 font-body text-xs text-muted-foreground">
+        {pilotDays} days free &middot; No credit card
+      </p>
     </div>
   );
 }
@@ -264,8 +261,8 @@ function DefaultInviteBody({ lead }: { lead: LeadPilotInviteData }) {
         Build the voice commerce tool that fits{" "}
         <span style={{ color: resolveStoreNameTextColor(lead) }}>{lead.storeName}</span>&apos;s customers and brand.
       </p>
-      <p className="font-body text-[0.75rem] font-bold uppercase tracking-wide text-primary-dark">
-        Only {storeCap} spots available &mdash; first come, first served.
+      <p className="font-body text-xs leading-relaxed text-muted-foreground">
+        Pilot seats are limited ({storeCap} stores in this wave)&mdash;we&apos;ll confirm yours in order of signup.
       </p>
     </div>
   );
@@ -289,7 +286,7 @@ const LeadPilotInviteCard = ({ lead, className }: LeadPilotInviteCardProps) => {
       )}
     >
       {/* ---- PAINT-CLASH HEADER ---- */}
-      <div className="relative h-[13.5rem] overflow-hidden md:h-[14.5rem]">
+      <div className="relative h-[14.5rem] overflow-hidden md:h-[15.5rem]">
         <PaintClash lead={lead} />
 
         <StoreHeaderLogo lead={lead} />
@@ -303,10 +300,10 @@ const LeadPilotInviteCard = ({ lead, className }: LeadPilotInviteCardProps) => {
           <img
             src={BIZMIS_LOGO_WHITE}
             alt=""
-            className="h-8 w-auto drop-shadow-[0_2px_10px_rgba(0,0,0,0.4)] md:h-10"
+            className="h-11 w-auto drop-shadow-[0_2px_10px_rgba(0,0,0,0.4)] md:h-[3.25rem]"
           />
           <span
-            className="font-heading text-xl font-extrabold text-white drop-shadow-[0_2px_10px_rgba(0,0,0,0.4)] md:text-2xl"
+            className="font-heading text-2xl font-extrabold text-white drop-shadow-[0_2px_10px_rgba(0,0,0,0.4)] md:text-3xl"
             style={{ letterSpacing: "-0.02em" }}
           >
             bizmis
@@ -364,16 +361,17 @@ const LeadPilotInviteCard = ({ lead, className }: LeadPilotInviteCardProps) => {
           <CouponTicket code={lead.couponCode} />
         </div>
 
-        <div className="relative z-10 text-center">
+        <div className="relative z-10 space-y-2 text-center">
           <a
             href={PILOT_INVITE_TERMS.shopifyAppUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 rounded-lg bg-primary px-8 py-3.5 font-body text-sm font-bold text-primary-foreground shadow-[0_4px_16px_hsl(29_93%_45%_/_0.35)] transition-all hover:shadow-[0_6px_24px_hsl(29_93%_45%_/_0.45)]"
+            className="inline-flex items-center gap-2.5 rounded-full bg-primary px-7 py-3 font-body text-sm font-semibold text-primary-foreground shadow-sm transition-colors hover:bg-primary/95"
           >
-            Claim Your Free Pilot
-            <ArrowRight className="h-4 w-4" />
+            <FaShopify className="h-5 w-5 shrink-0 text-primary-foreground" aria-hidden />
+            Install on Shopify
           </a>
+          <p className="font-body text-xs text-muted-foreground">Opens the Bizmis listing in the Shopify App Store.</p>
         </div>
 
         <div className="relative z-10 space-y-1 text-center">
