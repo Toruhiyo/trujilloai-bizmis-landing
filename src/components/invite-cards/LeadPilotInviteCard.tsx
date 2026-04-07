@@ -1,29 +1,19 @@
-import { useId, type CSSProperties } from "react";
-import { TrendingUp, ShoppingCart, Clock } from "lucide-react";
-import { FaShopify } from "react-icons/fa";
+import { useId } from "react";
+import { TrendingUp, Headphones, BarChart3, ArrowRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { LeadPilotInviteData } from "@/data/leadPilotInviteTypes";
-import {
-  PILOT_INVITE_TERMS,
-  resolveLogoColorOverlay,
-  resolveStoreNameTextColor,
-} from "@/data/leadPilotInviteTypes";
+import { PILOT_INVITE_TERMS, resolveLogoColorOverlay, resolveStoreNameTextColor } from "@/data/leadPilotInviteTypes";
 
-const HERO_AVATAR = "/images/hero-avatar-1.png";
 const BIZMIS_LOGO_WHITE = "/images/bizmis-logo-white-transparent.png";
 
 /* ------------------------------------------------------------------ */
-/*  Noise grain (reusable SVG filter, Bizmis brand texture)           */
+/*  Subtle grain overlay                                              */
 /* ------------------------------------------------------------------ */
 
 function Grain({ opacity = 0.38, className }: { opacity?: number; className?: string }) {
   const id = useId().replace(/:/g, "");
   return (
-    <svg
-      className={cn("pointer-events-none absolute inset-0 h-full w-full mix-blend-overlay", className)}
-      xmlns="http://www.w3.org/2000/svg"
-      aria-hidden
-    >
+    <svg className={cn("pointer-events-none absolute inset-0 h-full w-full mix-blend-overlay", className)} xmlns="http://www.w3.org/2000/svg" aria-hidden>
       <filter id={`g-${id}`}>
         <feTurbulence type="fractalNoise" baseFrequency="0.5" numOctaves="3" stitchTiles="stitch" />
       </filter>
@@ -33,50 +23,20 @@ function Grain({ opacity = 0.38, className }: { opacity?: number; className?: st
 }
 
 /* ------------------------------------------------------------------ */
-/*  Bold cross SVG – thick, edgy, no rounding                         */
+/*  Store logo — optional solid-color overlay (mask) for contrast     */
 /* ------------------------------------------------------------------ */
 
-function BoldCross({ size = 40, className, style }: { size?: number; className?: string; style?: CSSProperties }) {
-  const t = size * 0.28;
-  const half = (size - t) / 2;
-  return (
-    <svg
-      width={size}
-      height={size}
-      viewBox={`0 0 ${size} ${size}`}
-      fill="currentColor"
-      className={className}
-      style={style}
-      aria-hidden
-    >
-      <path d={`M${half},0 h${t} v${half} h${half} v${t} h-${half} v${half} h-${t} v-${half} h-${half} v-${t} h${half}z`} />
-    </svg>
-  );
-}
-
-/* ------------------------------------------------------------------ */
-/*  Store logo — optional solid-color overlay (mask) for contrast       */
-/* ------------------------------------------------------------------ */
-
-function StoreHeaderLogo({ lead }: { lead: LeadPilotInviteData }) {
+function StoreLogo({ lead, className }: { lead: LeadPilotInviteData; className?: string }) {
   const overlay = resolveLogoColorOverlay(lead);
   const src = lead.logoImagePath;
-  const boxClass =
-    "absolute left-5 top-5 z-10 max-w-[min(12rem,44vw)] drop-shadow-[0_2px_8px_rgba(0,0,0,0.5)] md:left-7 md:top-6";
 
   if (!overlay) {
-    return (
-      <img
-        src={src}
-        alt=""
-        className={cn(boxClass, "h-14 object-contain object-left md:h-16")}
-      />
-    );
+    return <img src={src} alt="" className={cn("h-10 max-w-[11rem] object-contain object-left md:h-12", className)} />;
   }
 
   return (
     <div
-      className={cn(boxClass, "h-14 w-[min(12rem,44vw)] md:h-16")}
+      className={cn("h-10 w-[11rem] md:h-12", className)}
       style={{
         backgroundColor: overlay,
         WebkitMaskImage: `url(${src})`,
@@ -94,176 +54,196 @@ function StoreHeaderLogo({ lead }: { lead: LeadPilotInviteData }) {
 }
 
 /* ------------------------------------------------------------------ */
-/*  Paint-clash header background with SVG wave boundary              */
+/*  Split co-branded banner: store left | diagonal | bizmis right     */
 /* ------------------------------------------------------------------ */
 
-function PaintClash({ lead }: { lead: LeadPilotInviteData }) {
+function SplitBanner({ lead }: { lead: LeadPilotInviteData }) {
   const sec = lead.secondaryColor ?? lead.primaryColor;
-  const storeGradient = `linear-gradient(135deg, ${sec} 0%, ${lead.primaryColor} 50%, ${lead.primaryColor} 100%)`;
+  const storeGradient = `linear-gradient(135deg, ${sec} 0%, ${lead.primaryColor} 100%)`;
 
   return (
-    <>
+    <div className="relative h-20 overflow-hidden md:h-24">
+      {/* Store half */}
       <div className="absolute inset-0" style={{ background: storeGradient }} />
 
-      <svg
-        className="absolute inset-0 h-full w-full"
-        viewBox="0 0 600 220"
-        preserveAspectRatio="none"
-        aria-hidden
-      >
+      {/* Bizmis half with diagonal cut */}
+      <svg className="absolute inset-0 h-full w-full" viewBox="0 0 600 100" preserveAspectRatio="none" aria-hidden>
         <defs>
-          <linearGradient id="bizmis-paint" x1="1" y1="0" x2="0.3" y2="1">
+          <linearGradient id="bizmis-banner" x1="1" y1="0" x2="0.4" y2="1">
             <stop offset="0%" stopColor="hsl(var(--primary-light))" />
             <stop offset="50%" stopColor="hsl(var(--primary))" />
             <stop offset="100%" stopColor="hsl(var(--primary-dark))" />
           </linearGradient>
         </defs>
-        <path
-          d="M340,0 C310,40 290,80 310,120 C330,160 300,200 280,220 L600,220 L600,0 Z"
-          fill="url(#bizmis-paint)"
-        />
-        <path
-          d="M360,0 C330,50 320,90 335,130 C350,165 325,195 310,220 L600,220 L600,0 Z"
-          fill="url(#bizmis-paint)"
-          opacity="0.5"
-        />
+        <path d="M340,0 L300,100 L600,100 L600,0 Z" fill="url(#bizmis-banner)" />
       </svg>
 
-      <Grain opacity={0.45} className="z-[2]" />
-      <div className="pointer-events-none absolute inset-0 z-[3] bg-gradient-to-b from-black/5 via-transparent to-black/15" />
-    </>
-  );
-}
+      <Grain opacity={0.3} className="z-[2]" />
 
-/* ------------------------------------------------------------------ */
-/*  Pilot term pills — Bizmis-branded, urgency-driven                 */
-/* ------------------------------------------------------------------ */
+      {/* Store logo */}
+      <div className="absolute left-5 top-1/2 z-10 -translate-y-1/2 md:left-7">
+        <StoreLogo lead={lead} className="drop-shadow-[0_1px_6px_rgba(0,0,0,0.4)]" />
+      </div>
 
-function PilotTermsPills({ className }: { className?: string }) {
-  const { pilotDays, shopperCap, storeCap } = PILOT_INVITE_TERMS;
-  const pill =
-    "inline-flex items-center rounded-full bg-primary px-3 py-1.5 font-body text-[0.6rem] font-bold uppercase tracking-[0.1em] text-primary-foreground shadow-sm";
-  return (
-    <div className={cn("flex flex-wrap gap-1.5", className)}>
-      <span className={pill}>100% free for {pilotDays} days</span>
-      <span className={pill}>{shopperCap.toLocaleString()} shoppers</span>
-      <span className={cn(pill, "bg-primary-dark shadow-sm")}>
-        only {storeCap} spots
-      </span>
+      {/* × icon at the diagonal seam */}
+      <div
+        className="absolute left-1/2 top-1/2 z-20 -translate-x-1/2 -translate-y-1/2 font-heading text-2xl font-black leading-none text-white md:text-3xl"
+        style={{ filter: "drop-shadow(0 1px 4px rgba(0,0,0,0.25))" }}
+        aria-hidden
+      >
+        &#x2716;
+      </div>
+
+      {/* Bizmis lockup */}
+      <a
+        href="https://bizmis.ai"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="absolute right-5 top-1/2 z-10 flex -translate-y-1/2 items-center gap-2 md:right-7"
+      >
+        <img src={BIZMIS_LOGO_WHITE} alt="" className="h-8 w-auto drop-shadow-[0_1px_6px_rgba(0,0,0,0.3)] md:h-9" />
+        <span
+          className="font-heading text-lg font-extrabold text-white drop-shadow-[0_1px_6px_rgba(0,0,0,0.3)] md:text-xl"
+          style={{ letterSpacing: "-0.02em" }}
+        >
+          bizmis
+        </span>
+      </a>
     </div>
   );
 }
 
 /* ------------------------------------------------------------------ */
-/*  Product + Avatar montage — avatar dominates                       */
+/*  Animated waveform for the storefront demo                         */
 /* ------------------------------------------------------------------ */
 
-function ProductAvatarMontage({ lead }: { lead: LeadPilotInviteData }) {
-  const products = [lead.productAImagePath, lead.productBImagePath, lead.productCImagePath];
+const WAVEFORM_DELAYS = [0, 0.12, 0.24, 0.1, 0.2];
 
-  const tileBg = (idx: number): CSSProperties => ({
-    background: `linear-gradient(180deg, white 0%, color-mix(in srgb, ${lead.primaryColor} ${5 + idx * 2}%, white) 100%)`,
-  });
-
+function DemoWaveform({ light = false, className }: { light?: boolean; className?: string }) {
   return (
-    <div className="relative flex items-end gap-3">
-      <div className="flex flex-col gap-2">
-        {products.map((src, i) => (
-          <div
-            key={i}
-            className="flex h-[4.2rem] w-[4.2rem] items-center justify-center overflow-hidden rounded-xl shadow-[0_6px_20px_-4px_rgba(0,0,0,0.12)] ring-1 ring-black/[0.04] sm:h-[4.8rem] sm:w-[4.8rem]"
-            style={tileBg(i)}
-          >
-            <img src={src} alt="" className="h-full w-full object-contain p-1.5" />
-          </div>
-        ))}
-      </div>
-
-      <div className="relative -mb-1 flex-1">
-        <img
-          src={HERO_AVATAR}
-          alt=""
-          className="mx-auto h-[16rem] w-auto object-contain object-bottom drop-shadow-[0_20px_50px_rgba(0,0,0,0.25)] sm:h-[18rem] md:h-[20rem]"
+    <div className={cn("flex items-center gap-[2px]", className)} aria-hidden>
+      {WAVEFORM_DELAYS.map((delay, i) => (
+        <div
+          key={i}
+          className={cn("w-[2px] rounded-full", light ? "bg-white/70" : "bg-primary")}
+          style={{
+            height: "10px",
+            animation: "invite-waveform-bar 0.8s ease-in-out infinite",
+            animationDelay: `${delay}s`,
+            transformOrigin: "center",
+          }}
         />
-        <div className="absolute bottom-0 left-1/2 h-[14px] w-[55%] -translate-x-1/2 rounded-[50%] bg-black/10 blur-md" />
+      ))}
+    </div>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/*  Storefront demo mockup — the hero visual                          */
+/* ------------------------------------------------------------------ */
+
+function StorefrontDemo({ lead }: { lead: LeadPilotInviteData }) {
+  const productImages = [lead.productAImagePath, lead.productBImagePath, lead.productCImagePath];
+
+  return (
+    <div className="overflow-hidden rounded-xl border border-border/50 shadow-[0_2px_12px_-4px_rgba(0,0,0,0.08)]">
+      {/* Browser chrome */}
+      <div className="flex items-center justify-between border-b border-border/30 bg-[#f8f8f8] px-3 py-1.5">
+        <div className="flex items-center gap-2.5">
+          <div className="flex gap-1" aria-hidden>
+            <div className="h-[7px] w-[7px] rounded-full bg-[#FF5F57]" />
+            <div className="h-[7px] w-[7px] rounded-full bg-[#FEBC2E]" />
+            <div className="h-[7px] w-[7px] rounded-full bg-[#28C840]" />
+          </div>
+          <span className="font-body text-[0.6rem] text-foreground/50">{lead.storeDomain}</span>
+        </div>
+        <span className="font-body text-[0.55rem] font-medium text-primary/80">Voice shopping assistant</span>
+      </div>
+
+      {/* Two-column content */}
+      <div className="grid grid-cols-2 gap-3 p-3 md:gap-4 md:p-4">
+        {/* Left: voice interaction */}
+        <div className="flex flex-col gap-2.5">
+          {/* Shopper prompt bubble */}
+          <div className="rounded-lg rounded-bl-sm bg-foreground/[0.04] px-2.5 py-2">
+            <p className="font-body text-[0.65rem] leading-relaxed text-foreground/70">
+              {lead.demoShopperPrompt}
+            </p>
+          </div>
+
+          {/* Voice state pill with waveform */}
+          <div className="flex">
+            <div className="inline-flex items-center gap-1.5 rounded-full bg-primary/10 px-2 py-0.5">
+              <div className="h-1.5 w-1.5 animate-pulse rounded-full bg-primary" />
+              <span className="font-body text-[0.55rem] font-semibold text-primary">Listening</span>
+              <DemoWaveform />
+            </div>
+          </div>
+
+          {/* Bizmis reply bubble */}
+          <div className="rounded-lg rounded-tl-sm bg-primary/[0.06] px-2.5 py-2 ring-1 ring-primary/10">
+            <p className="mb-0.5 font-heading text-[0.5rem] font-bold text-primary">bizmis</p>
+            <p className="font-body text-[0.65rem] leading-relaxed text-foreground/70">
+              {lead.demoBizmisReply}
+            </p>
+          </div>
+        </div>
+
+        {/* Right: product recommendations */}
+        <div className="flex flex-col gap-2">
+          {lead.demoProducts.map((product, i) => (
+            <div key={i} className="flex items-center gap-2 rounded-lg p-1.5 ring-1 ring-border/40">
+              <div className="flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-md bg-white p-1">
+                <img src={productImages[i]} alt="" className="h-full w-full object-contain" />
+              </div>
+              <div className="min-w-0 flex-1">
+                <p className="truncate font-body text-[0.6rem] font-semibold text-foreground/80">{product.title}</p>
+                <p className="font-body text-[0.55rem] text-foreground/50">{product.price}</p>
+                <span className="mt-0.5 inline-block rounded-full bg-primary/[0.08] px-1.5 py-px font-body text-[0.5rem] font-medium text-primary">
+                  {product.tag}
+                </span>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Footer with Bizmis widget anchor */}
+      <div className="flex items-center justify-between border-t border-border/20 bg-[#fafafa] px-3 py-2">
+        {lead.demoFooterLine ? (
+          <p className="font-body text-[0.55rem] italic text-foreground/40">{lead.demoFooterLine}</p>
+        ) : (
+          <div />
+        )}
+        <div className="flex items-center gap-1.5 rounded-full bg-foreground px-2.5 py-1 shadow-sm">
+          <img src={BIZMIS_LOGO_WHITE} alt="" className="h-3 w-3 object-contain" />
+          <DemoWaveform light />
+          <span className="font-body text-[0.5rem] font-medium text-white">Ask by voice</span>
+        </div>
       </div>
     </div>
   );
 }
 
 /* ------------------------------------------------------------------ */
-/*  Value proposition block                                           */
+/*  Outcome strip: Sell more · Support faster · Learn from sessions   */
 /* ------------------------------------------------------------------ */
 
-const VALUE_BENEFITS = [
-  { Icon: TrendingUp, text: "Convert more browsers into confident buyers" },
-  { Icon: ShoppingCart, text: "Increase average order value with smart upsells" },
-  { Icon: Clock, text: "Save hours on support while earning loyal customers" },
+const OUTCOMES = [
+  { Icon: TrendingUp, label: "Sell more" },
+  { Icon: Headphones, label: "Support faster" },
+  { Icon: BarChart3, label: "Learn from sessions" },
 ] as const;
 
-function ValuePropBlock() {
+function OutcomeStrip({ className }: { className?: string }) {
   return (
-    <div className="space-y-2.5">
-      <p className="font-heading text-sm font-bold text-foreground">
-        Boost profits, selling the human way.
-      </p>
-      <div className="space-y-1.5">
-        {VALUE_BENEFITS.map(({ Icon, text }) => (
-          <div key={text} className="flex items-start gap-3">
-            <Icon className="mt-0.5 h-4 w-4 shrink-0 text-primary" strokeWidth={2} aria-hidden />
-            <span className="font-body text-[0.8rem] leading-snug text-muted-foreground">{text}</span>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-}
-
-/* ------------------------------------------------------------------ */
-/*  Physical coupon ticket                                            */
-/* ------------------------------------------------------------------ */
-
-function CouponTicket({ code, className }: { code: string; className?: string }) {
-  const { pilotDays } = PILOT_INVITE_TERMS;
-  return (
-    <div
-      className={cn(
-        "rounded-xl border border-border bg-secondary/40 px-5 py-4 text-center shadow-none",
-        className,
-      )}
-    >
-      <div className="mx-auto mb-3 h-0.5 w-12 rounded-full bg-primary" aria-hidden />
-      <p className="font-body text-xs font-medium text-muted-foreground">Your pilot code</p>
-      <p className="mt-1 font-heading text-xl font-bold tabular-nums tracking-wide text-foreground md:text-2xl">
-        {code}
-      </p>
-      <p className="mt-1.5 font-body text-xs text-muted-foreground">
-        {pilotDays} days free &middot; No credit card
-      </p>
-    </div>
-  );
-}
-
-/* ------------------------------------------------------------------ */
-/*  Default invite body copy — urgency + roadmap influence            */
-/* ------------------------------------------------------------------ */
-
-function DefaultInviteBody({ lead }: { lead: LeadPilotInviteData }) {
-  const { storeCap } = PILOT_INVITE_TERMS;
-  return (
-    <div className="space-y-3">
-      <p className="font-body text-[0.82rem] leading-relaxed text-muted-foreground">
-        Bizmis is a voice-powered sales clerk that knows your catalog inside out. Not a chatbot &mdash;
-        a natural, human-like shopping assistant that converts browsers into confident buyers.
-      </p>
-      <p className="font-body text-[0.82rem] font-semibold leading-relaxed text-foreground">
-        As a founding pilot store, you&apos;ll directly shape our product roadmap.
-        Build the voice commerce tool that fits{" "}
-        <span style={{ color: resolveStoreNameTextColor(lead) }}>{lead.storeName}</span>&apos;s customers and brand.
-      </p>
-      <p className="font-body text-xs leading-relaxed text-muted-foreground">
-        Pilot seats are limited ({storeCap} stores in this wave)&mdash;we&apos;ll confirm yours in order of signup.
-      </p>
+    <div className={cn("flex flex-wrap justify-center gap-x-5 gap-y-1", className)}>
+      {OUTCOMES.map(({ Icon, label }) => (
+        <div key={label} className="flex items-center gap-1.5">
+          <Icon className="h-3.5 w-3.5 text-primary" strokeWidth={2} aria-hidden />
+          <span className="font-body text-xs font-medium text-foreground/70">{label}</span>
+        </div>
+      ))}
     </div>
   );
 }
@@ -278,111 +258,87 @@ export interface LeadPilotInviteCardProps {
 }
 
 const LeadPilotInviteCard = ({ lead, className }: LeadPilotInviteCardProps) => {
+  const { pilotDays, storeCap, shopifyAppUrl } = PILOT_INVITE_TERMS;
+  const storeTextColor = resolveStoreNameTextColor(lead);
+
   return (
     <article
       className={cn(
-        "w-full max-w-[36rem] overflow-hidden rounded-2xl border border-border/70 bg-card shadow-[0_28px_70px_-16px_rgba(0,0,0,0.2)]",
+        "w-full max-w-[34rem] overflow-hidden rounded-2xl border border-border/60 bg-white shadow-[0_24px_60px_-16px_rgba(0,0,0,0.12)]",
         className,
       )}
     >
-      {/* ---- PAINT-CLASH HEADER ---- */}
-      <div className="relative h-[14.5rem] overflow-hidden md:h-[15.5rem]">
-        <PaintClash lead={lead} />
-
-        <StoreHeaderLogo lead={lead} />
-
-        <a
-          href="https://bizmis.ai"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="absolute right-4 top-4 z-10 flex items-center gap-2 md:right-6 md:top-5"
-        >
-          <img
-            src={BIZMIS_LOGO_WHITE}
-            alt=""
-            className="h-11 w-auto drop-shadow-[0_2px_10px_rgba(0,0,0,0.4)] md:h-[3.25rem]"
-          />
-          <span
-            className="font-heading text-2xl font-extrabold text-white drop-shadow-[0_2px_10px_rgba(0,0,0,0.4)] md:text-3xl"
-            style={{ letterSpacing: "-0.02em" }}
-          >
-            bizmis
-          </span>
-        </a>
-
-        <BoldCross
-          size={58}
-          className="absolute left-1/2 top-1/2 z-20 -translate-x-1/2 -translate-y-1/2 text-white"
-          style={{
-            filter: "drop-shadow(0 2px 8px rgba(0,0,0,0.22)) drop-shadow(0 1px 3px rgba(0,0,0,0.12))",
-          }}
-        />
-      </div>
+      {/* ---- SPLIT BANNER ---- */}
+      <SplitBanner lead={lead} />
 
       {/* ---- BODY ---- */}
-      <div className="relative space-y-5 px-6 pb-7 pt-5 md:px-8 md:pb-8 md:pt-6">
-        <Grain opacity={0.12} className="z-0" />
+      <div className="space-y-4 px-6 pb-6 pt-5 md:px-8">
+        {/* Eyebrow */}
+        <p className="font-body text-xs font-semibold uppercase tracking-[0.12em] text-muted-foreground">
+          Private pilot invite for{" "}
+          <span style={{ color: storeTextColor }}>{lead.storeName}</span>
+        </p>
 
         {/* Headline */}
-        <div className="relative z-10">
-          <h2 className="font-heading text-[1.35rem] font-extrabold leading-[1.15] tracking-tight text-foreground md:text-[1.55rem]">
-            Team{" "}
-            <span style={{ color: resolveStoreNameTextColor(lead) }}>{lead.storeName}</span>
-            , you&apos;re invited to a{" "}
-            <span className="whitespace-nowrap">
-              <span className="underline decoration-primary decoration-2 underline-offset-2">free</span> exclusive
-            </span>{" "}
-            Bizmis pilot.
-          </h2>
+        <h2 className="font-heading text-xl font-bold leading-snug tracking-tight text-foreground md:text-[1.4rem]">
+          Bring a voice-first store clerk to your Shopify store.
+        </h2>
+
+        {/* Subline */}
+        <p className="font-body text-[0.82rem] leading-relaxed text-muted-foreground">
+          Greets shoppers, recommends products, answers support questions, and helps more visitors buy.
+        </p>
+
+        {/* Micro-badges */}
+        <div className="flex flex-wrap gap-2">
+          {[
+            `${pilotDays}-day founding pilot`,
+            "No commitment",
+            `${storeCap} stores only`,
+          ].map((text) => (
+            <span
+              key={text}
+              className="inline-flex rounded-full border border-border px-3 py-1 font-body text-[0.65rem] font-medium text-foreground/70"
+            >
+              {text}
+            </span>
+          ))}
         </div>
 
-        <PilotTermsPills className="relative z-10" />
-
-        <div className="relative z-10">
-          <ProductAvatarMontage lead={lead} />
-        </div>
-
-        <div className="relative z-10">
-          <ValuePropBlock />
-        </div>
-
-        <div className="relative z-10">
-          {lead.content.trim().length > 0 ? (
-            <div
-              className="font-body text-sm leading-relaxed text-foreground [&_a]:text-primary [&_p]:my-2 [&_ul]:my-2 [&_ul]:list-disc [&_ul]:pl-5"
-              dangerouslySetInnerHTML={{ __html: lead.content }}
-            />
-          ) : (
-            <DefaultInviteBody lead={lead} />
-          )}
-        </div>
-
-        <div className="relative z-10">
-          <CouponTicket code={lead.couponCode} />
-        </div>
-
-        <div className="relative z-10 space-y-2 text-center">
+        {/* Primary CTA */}
+        <div className="text-center">
           <a
-            href={PILOT_INVITE_TERMS.shopifyAppUrl}
+            href={shopifyAppUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-2.5 rounded-full bg-primary px-7 py-3 font-body text-sm font-semibold text-primary-foreground shadow-sm transition-colors hover:bg-primary/95"
+            className="inline-flex items-center gap-2 rounded-full bg-foreground px-6 py-2.5 font-body text-sm font-semibold text-white shadow-sm transition-colors hover:bg-foreground/90"
           >
-            <FaShopify className="h-5 w-5 shrink-0 text-primary-foreground" aria-hidden />
-            Install on Shopify
+            Reserve pilot spot
+            <ArrowRight className="h-4 w-4" strokeWidth={2} aria-hidden />
           </a>
-          <p className="font-body text-xs text-muted-foreground">Opens the Bizmis listing in the Shopify App Store.</p>
         </div>
 
-        <div className="relative z-10 space-y-1 text-center">
-          <p className="font-body text-xs text-muted-foreground">
+        {/* Storefront demo mockup */}
+        <StorefrontDemo lead={lead} />
+
+        {/* Outcome strip */}
+        <OutcomeStrip />
+
+        {/* Micro-copy */}
+        <p className="text-center font-body text-xs leading-relaxed text-muted-foreground">
+          Founding pilot stores get direct access to us and real roadmap input.
+        </p>
+
+        {/* Footer */}
+        <div className="space-y-0.5 pt-1 text-center">
+          <p className="font-body text-[0.7rem] text-muted-foreground/60">
             Questions? Just reply to this email.
           </p>
           <a
             href="https://bizmis.ai"
             target="_blank"
             rel="noopener noreferrer"
-            className="font-body text-xs font-semibold text-primary hover:underline"
+            className="font-body text-[0.6rem] text-muted-foreground/40 hover:underline"
           >
             bizmis.ai
           </a>

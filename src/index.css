@@ -359,6 +359,12 @@ All colors MUST be HSL.
   }
 }
 
+/* Waveform bar animation for invite card storefront demo */
+@keyframes invite-waveform-bar {
+  0%, 100% { transform: scaleY(0.35); }
+  50% { transform: scaleY(1); }
+}
+
 /* Waveform bar pulse for SpeakDiscoverBuy */
 @keyframes waveform-pulse {
   0% {

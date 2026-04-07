@@ -1,3 +1,9 @@
+export type DemoProductCard = {
+  title: string;
+  price: string;
+  tag: string;
+};
+
 export type LeadPilotInviteData = {
   id: string;
   storeName: string;
@@ -22,6 +28,16 @@ export type LeadPilotInviteData = {
    * Use e.g. #ffffff when the asset matches the banner and would disappear.
    */
   logoColorOverlay?: string | null;
+  /** One sentence explaining how Bizmis helps *this* store's shoppers. */
+  pitchLine: string;
+  /** Shopper voice prompt shown in storefront demo mockup. */
+  demoShopperPrompt: string;
+  /** Bizmis conversational reply in storefront demo mockup. */
+  demoBizmisReply: string;
+  /** Three product recommendations shown in storefront demo mockup. */
+  demoProducts: [DemoProductCard, DemoProductCard, DemoProductCard];
+  /** Optional explanatory footer line inside the storefront demo mockup. */
+  demoFooterLine?: string;
   /** Unique per-store Shopify discount code for the pilot */
   couponCode: string;
   batch: number;
