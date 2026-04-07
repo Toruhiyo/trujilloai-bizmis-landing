@@ -28,8 +28,7 @@ const AdminProtectedRoute = () => {
     return (
       <div className="flex min-h-screen items-center justify-center bg-background p-8">
         <p className="max-w-md text-center text-sm text-muted-foreground">
-          Admin routes are disabled: set <code className="rounded bg-muted px-1 py-0.5">VITE_ADMIN_PASSWORD</code>{" "}
-          in your environment.
+          This area is not available.
         </p>
       </div>
     );
