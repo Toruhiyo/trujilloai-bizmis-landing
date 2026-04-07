@@ -16,6 +16,10 @@ import {
 const BIZMIS_LOGO_WHITE = "/images/bizmis-logo-white-transparent.png";
 const BIZMIS_URL = "https://bizmis.ai";
 
+const OUTCOME_ICON_TREND = "/images/pilot-invite-outcome-trend.svg";
+const OUTCOME_ICON_HEADPHONES = "/images/pilot-invite-outcome-headphones.svg";
+const OUTCOME_ICON_CHART = "/images/pilot-invite-outcome-chart.svg";
+
 /** Approx rgba(BIZMIS_PRIMARY, 0.08) on white */
 const BIZMIS_PRIMARY_TINT_008 = "#FFF6EE";
 /** Approx rgba(BIZMIS_PRIMARY, 0.06) on white */
@@ -104,7 +108,7 @@ function buildProductCardsHtml(lead: LeadPilotInviteData): string {
               <td style="padding:10px 12px 10px 0;vertical-align:middle;">
                 <p style="margin:0;${BODY}font-size:11px;font-weight:600;color:#333;">${escapeHtml(product.title)}</p>
                 <p style="margin:3px 0 4px;${BODY}font-size:11px;color:#888;">${escapeHtml(product.price)}</p>
-                <span style="display:inline-block;border:1px solid ${BIZMIS_BORDER_HEX};border-radius:9999px;padding:1px 8px;${BODY}font-size:9px;font-weight:500;color:#777;">${escapeHtml(product.tag)}</span>
+                <span style="display:inline-block;background-color:${BIZMIS_PRIMARY_TINT_008};border-radius:9999px;padding:2px 8px;${BODY}font-size:9px;font-weight:500;color:${BIZMIS_PRIMARY_HEX};">${escapeHtml(product.tag)}</span>
               </td>
             </tr>
           </table>`;
@@ -128,6 +132,9 @@ export function buildLeadPilotInviteEmailHtml(
   const storeLogoHtml = storeLogoEmailMarkup(lead);
   const bizmisLogoUrl = absImg(BIZMIS_LOGO_WHITE);
   const productCardsHtml = buildProductCardsHtml(lead);
+  const outcomeIconTrendUrl = absImg(OUTCOME_ICON_TREND);
+  const outcomeIconHeadphonesUrl = absImg(OUTCOME_ICON_HEADPHONES);
+  const outcomeIconChartUrl = absImg(OUTCOME_ICON_CHART);
 
   const listeningBarsHtml = emailWaveformBars(BIZMIS_PRIMARY_HEX, LISTENING_BARS);
   const widgetBarsHtml = emailWaveformBars("#ffffff", WIDGET_BARS);
@@ -247,9 +254,9 @@ export function buildLeadPilotInviteEmailHtml(
                   <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%">
                     <tr>
                       <td style="vertical-align:middle;">
-                        <span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#FF5F57;margin-right:4px;"></span>
-                        <span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#FEBC2E;margin-right:4px;"></span>
-                        <span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#28C840;margin-right:8px;"></span>
+                        <span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:${BIZMIS_PRIMARY_DARK_HEX};margin-right:4px;"></span>
+                        <span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:${BIZMIS_PRIMARY_HEX};margin-right:4px;"></span>
+                        <span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:${BIZMIS_PRIMARY_LIGHT_HEX};margin-right:8px;"></span>
                         <span style="${BODY}font-size:10px;color:#999;">${domain}</span>
                       </td>
                       <td style="vertical-align:middle;text-align:right;">
@@ -326,11 +333,40 @@ export function buildLeadPilotInviteEmailHtml(
         <!-- Outcome strip -->
         <tr>
           <td style="padding:18px 28px 0 28px;text-align:center;">
-            <span style="${BODY}font-size:12px;font-weight:500;color:#555;">
-              <span style="color:${BIZMIS_PRIMARY_HEX};font-size:8px;vertical-align:middle;">&#x25CF;</span> Sell more&ensp;&middot;&ensp;
-              <span style="color:${BIZMIS_PRIMARY_HEX};font-size:8px;vertical-align:middle;">&#x25CF;</span> Support faster&ensp;&middot;&ensp;
-              <span style="color:${BIZMIS_PRIMARY_HEX};font-size:8px;vertical-align:middle;">&#x25CF;</span> Learn from sessions
-            </span>
+            <table role="presentation" cellpadding="0" cellspacing="0" border="0" align="center" style="margin:0 auto;">
+              <tr>
+                <td style="padding:0 16px 0 0;vertical-align:middle;">
+                  <table role="presentation" cellpadding="0" cellspacing="0" border="0">
+                    <tr>
+                      <td style="vertical-align:middle;padding-right:6px;">
+                        <img src="${outcomeIconTrendUrl}" alt="" width="16" height="16" style="display:block;width:16px;height:16px;border:0;" />
+                      </td>
+                      <td style="vertical-align:middle;${BODY}font-size:12px;font-weight:500;color:#555;">Sell more</td>
+                    </tr>
+                  </table>
+                </td>
+                <td style="padding:0 16px 0 0;vertical-align:middle;">
+                  <table role="presentation" cellpadding="0" cellspacing="0" border="0">
+                    <tr>
+                      <td style="vertical-align:middle;padding-right:6px;">
+                        <img src="${outcomeIconHeadphonesUrl}" alt="" width="16" height="16" style="display:block;width:16px;height:16px;border:0;" />
+                      </td>
+                      <td style="vertical-align:middle;${BODY}font-size:12px;font-weight:500;color:#555;">Support faster</td>
+                    </tr>
+                  </table>
+                </td>
+                <td style="padding:0;vertical-align:middle;">
+                  <table role="presentation" cellpadding="0" cellspacing="0" border="0">
+                    <tr>
+                      <td style="vertical-align:middle;padding-right:6px;">
+                        <img src="${outcomeIconChartUrl}" alt="" width="16" height="16" style="display:block;width:16px;height:16px;border:0;" />
+                      </td>
+                      <td style="vertical-align:middle;${BODY}font-size:12px;font-weight:500;color:#555;">Learn from sessions</td>
+                    </tr>
+                  </table>
+                </td>
+              </tr>
+            </table>
           </td>
         </tr>
 
@@ -346,9 +382,12 @@ export function buildLeadPilotInviteEmailHtml(
         <!-- Footer -->
         <tr>
           <td style="padding:18px 28px 22px 28px;text-align:center;">
-            <p style="margin:0;${BODY}font-size:11px;color:#999;">
+            <p style="margin:0 0 4px 0;${BODY}font-size:11px;color:#999;">
               Questions? Just reply to this email.
             </p>
+            <a href="${BIZMIS_URL}" target="_blank" style="${BODY}font-size:11px;font-weight:600;color:${BIZMIS_PRIMARY_HEX};text-decoration:none;">
+              bizmis.ai
+            </a>
           </td>
         </tr>
 
