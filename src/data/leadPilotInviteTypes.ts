@@ -28,6 +28,11 @@ export type LeadPilotInviteData = {
    * Use e.g. #ffffff when the asset matches the banner and would disappear.
    */
   logoColorOverlay?: string | null;
+  /**
+   * Scale factor for the store logo in the invite header (email split banner).
+   * Omitted or invalid values behave as 1.0.
+   */
+  leadLogoScale?: number;
   /** One sentence explaining how Bizmis helps *this* store's shoppers. */
   pitchLine: string;
   /** Shopper voice prompt shown in storefront demo mockup. */
@@ -62,6 +67,13 @@ export function resolveLogoColorOverlay(lead: Pick<LeadPilotInviteData, "logoCol
   const v = lead.logoColorOverlay?.trim();
   if (!v) return null;
   return HEX_OVERLAY.test(v) ? v : null;
+}
+
+/** Effective logo scale for the invite header; defaults to 1.0 when omitted or invalid. */
+export function resolveLeadLogoScale(lead: Pick<LeadPilotInviteData, "leadLogoScale">): number {
+  const s = lead.leadLogoScale;
+  if (typeof s !== "number" || !Number.isFinite(s) || s <= 0) return 1;
+  return s;
 }
 
 /** Color for highlighted store name; invalid textColor falls back to primaryColor. */

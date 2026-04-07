@@ -1,6 +1,7 @@
 import {
   type LeadPilotInviteData,
   PILOT_INVITE_TERMS,
+  resolveLeadLogoScale,
   resolveLogoColorOverlay,
   resolveStoreNameTextColor,
 } from "@/data/leadPilotInviteTypes";
@@ -54,16 +55,22 @@ function logoPublicPathForEmail(logoImagePath: string): string {
   return logoImagePath;
 }
 
+const EMAIL_HEADER_LOGO_BASE_WIDTH_PX = 120;
+const EMAIL_HEADER_LOGO_BASE_MASK_HEIGHT_PX = 32;
+
 function storeLogoEmailMarkup(lead: LeadPilotInviteData): string {
   const store = escapeHtml(lead.storeName);
   const logoUrl = absImg(logoPublicPathForEmail(lead.logoImagePath));
   const overlay = resolveLogoColorOverlay(lead);
+  const scale = resolveLeadLogoScale(lead);
+  const logoW = Math.round(EMAIL_HEADER_LOGO_BASE_WIDTH_PX * scale);
+  const maskH = Math.round(EMAIL_HEADER_LOGO_BASE_MASK_HEIGHT_PX * scale);
   if (!overlay) {
-    return `<img src="${logoUrl}" alt="${store}" width="120" height="auto" style="display:block;max-width:120px;height:auto;border:0;" />`;
+    return `<img src="${logoUrl}" alt="${store}" width="${logoW}" height="auto" style="display:block;max-width:${logoW}px;height:auto;border:0;" />`;
   }
   const safeOverlay = escapeHtml(overlay);
   const urlEsc = logoUrl.replace(/'/g, "\\'");
-  return `<div role="presentation" aria-label="${store}" style="display:inline-block;width:120px;height:32px;background-color:${safeOverlay};-webkit-mask-image:url('${urlEsc}');mask-image:url('${urlEsc}');-webkit-mask-size:contain;mask-size:contain;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;-webkit-mask-position:left center;mask-position:left center;"></div>`;
+  return `<div role="presentation" aria-label="${store}" style="display:inline-block;width:${logoW}px;height:${maskH}px;background-color:${safeOverlay};-webkit-mask-image:url('${urlEsc}');mask-image:url('${urlEsc}');-webkit-mask-size:contain;mask-size:contain;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;-webkit-mask-position:left center;mask-position:left center;"></div>`;
 }
 
 /* ------------------------------------------------------------------ */

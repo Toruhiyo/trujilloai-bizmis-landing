@@ -21,6 +21,7 @@ export const LEAD_PILOT_INVITES: LeadPilotInviteData[] = [
     primaryColor: "#108849",
     secondaryColor: null,
     logoColorOverlay: "#ffffff",
+    leadLogoScale: 1.8,
     pitchLine: "Help shoppers choose the right purifier by room size, allergy needs, and budget.",
     demoShopperPrompt: "I need a purifier for a 600 sq ft bedroom — allergies are bad this season.",
     demoBizmisReply: "Got it — HEPA filtration only or the deeper PECO oxidation layer?",
