@@ -1,5 +1,6 @@
 import {
   buildPilotInviteChips,
+  buildPilotInviteInviteLine,
   buildPilotInvitePlainTextEyebrow,
   buildPilotInvitePreheader,
   PILOT_INVITE_EMAIL_COPY,
@@ -220,6 +221,7 @@ export function buildLeadPilotInviteEmailHtml(
 
   const chipRowHtml = buildPilotInviteChipRowHtml(CHIP_BADGE_STYLE, storeCap);
   const outcomeStripInnerHtml = buildPilotInviteOutcomeStripHtml(outcomeIconUrls);
+  const inviteLineHtml = buildPilotInviteInviteLine(store);
 
   const html = `<!DOCTYPE html>
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml">
@@ -279,9 +281,18 @@ export function buildLeadPilotInviteEmailHtml(
           </td>
         </tr>
 
-        <!-- Headline -->
+        <!-- Invite line -->
         <tr>
           <td style="padding:10px 28px 0 28px;">
+            <p style="margin:0;${BODY}font-size:15px;font-weight:500;line-height:1.5;color:${BIZMIS_FOREGROUND_HEX};">
+              ${inviteLineHtml}
+            </p>
+          </td>
+        </tr>
+
+        <!-- Headline -->
+        <tr>
+          <td style="padding:8px 28px 0 28px;">
             <p style="margin:0;${HEADING}font-size:22px;font-weight:700;line-height:1.25;color:${BIZMIS_FOREGROUND_HEX};">
               ${escapeHtml(copy.headline)}
             </p>
@@ -463,6 +474,8 @@ export function buildLeadPilotInviteEmailHtml(
   const chipPlainLines = buildPilotInviteChips(storeCap).flatMap(([line1, line2]) => [line1, line2]);
   const plainText = [
     buildPilotInvitePlainTextEyebrow(lead.storeName),
+    "",
+    buildPilotInviteInviteLine(lead.storeName),
     "",
     copy.headline,
     "",

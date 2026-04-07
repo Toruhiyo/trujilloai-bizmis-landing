@@ -5,9 +5,10 @@
 
 export const PILOT_INVITE_EMAIL_COPY = {
   eyebrowPrefix: "Early access invite for",
-  headline: "Drive sales and cut support load with Bizmis voice-first store clerks.",
+  headline:
+    "Join Bizmis early to drive sales and cut support load with voice-first store clerks.",
   subline:
-    "Greets shoppers, recommends the right products, answers support questions, and helps more visitors buy with confidence.",
+    "Try Bizmis at no cost for 30 days on your Shopify store and shape the product around your team\u2019s and customers\u2019 needs by sharing feedback as you go.",
   ctaLabel: "Install Bizmis with early access",
   mockupClerkLabel: "Bizmis voice-first store clerk",
   voiceListeningLabel: "Listening",
@@ -25,7 +26,12 @@ export function buildPilotInvitePreheader(storeName: string, storeCap: number): 
   return `Early access invite for ${storeName}. First ${storeCap} stores only — ${PILOT_INVITE_EMAIL_COPY.preheaderClosingPhrase}.`;
 }
 
-/** Two intentional lines per chip (no natural wrap). Third chip uses `storeCap`. */
+/** Invitation line; pass HTML-escaped store name for email body, or raw for plain text. */
+export function buildPilotInviteInviteLine(storeName: string): string {
+  return `We\u2019d love to invite ${storeName} to join Bizmis early access.`;
+}
+
+/** Two fixed lines per chip (`white-space:nowrap` in email); third line uses `storeCap`. */
 export function buildPilotInviteChips(
   storeCap: number,
 ): readonly [readonly [string, string], readonly [string, string], readonly [string, string]] {
