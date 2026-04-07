@@ -134,7 +134,7 @@ export function buildLeadPilotInviteEmailHtml(
   const storeNameColor = escapeHtml(resolveStoreNameTextColor(lead));
   const store = escapeHtml(lead.storeName);
   const domain = escapeHtml(lead.storeDomain);
-  const { pilotDays, storeCap, shopifyAppUrl } = PILOT_INVITE_TERMS;
+  const { storeCap, shopifyAppUrl } = PILOT_INVITE_TERMS;
 
   const storeLogoHtml = storeLogoEmailMarkup(lead);
   const bizmisLogoUrl = absImg(BIZMIS_LOGO_WHITE);
@@ -146,9 +146,9 @@ export function buildLeadPilotInviteEmailHtml(
   const listeningBarsHtml = emailWaveformBars(BIZMIS_PRIMARY_HEX, LISTENING_BARS);
   const widgetBarsHtml = emailWaveformBars("#ffffff", WIDGET_BARS);
 
-  const preheader = `Founding pilot invite for ${lead.storeName}. Bizmis voice-first store clerks — ${storeCap} spots only.`;
+  const preheader = `Early access invite for ${lead.storeName}. First ${storeCap} stores only — Bizmis voice-first store clerks.`;
 
-  const BADGE_STYLE = `display:inline-block;margin:0 8px 0 0;padding:5px 12px;border-radius:9999px;border:1px solid ${BIZMIS_BORDER_HEX};${BODY}font-size:11px;color:#555;`;
+  const CHIP_BADGE_STYLE = `display:inline-block;margin:0;padding:6px 10px;border-radius:9999px;border:1px solid ${BIZMIS_BORDER_HEX};${BODY}font-size:10px;line-height:1.35;color:#555;text-align:center;`;
 
   const html = `<!DOCTYPE html>
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml">
@@ -203,7 +203,7 @@ export function buildLeadPilotInviteEmailHtml(
         <tr>
           <td style="padding:20px 28px 0 28px;">
             <p style="margin:0;${BODY}font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.12em;color:${BIZMIS_MUTED_FG_HEX};">
-              Founding pilot invite for <span style="color:${storeNameColor};">${store}</span>
+              Early access invite for <span style="color:${storeNameColor};">${store}</span>
             </p>
           </td>
         </tr>
@@ -212,7 +212,7 @@ export function buildLeadPilotInviteEmailHtml(
         <tr>
           <td style="padding:10px 28px 0 28px;">
             <p style="margin:0;${HEADING}font-size:22px;font-weight:700;line-height:1.25;color:#1a1a1a;">
-              Add in-store-style selling and support to your storefront with Bizmis voice-first store clerks.
+              Drive sales and cut support load with Bizmis voice-first store clerks.
             </p>
           </td>
         </tr>
@@ -226,12 +226,22 @@ export function buildLeadPilotInviteEmailHtml(
           </td>
         </tr>
 
-        <!-- Badges -->
+        <!-- Chips — equal columns so none wrap alone -->
         <tr>
-          <td style="padding:14px 28px 0 28px;">
-            <span style="${BADGE_STYLE}">${pilotDays}-day founding pilot</span>
-            <span style="${BADGE_STYLE}">No commitment</span>
-            <span style="${BADGE_STYLE}">${storeCap} stores only</span>
+          <td style="padding:14px 24px 0 24px;">
+            <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="width:100%;">
+              <tr>
+                <td width="33%" style="width:33%;vertical-align:top;padding:0 4px 0 0;text-align:center;">
+                  <span style="${CHIP_BADGE_STYLE}">30 days on us &middot; no commitment</span>
+                </td>
+                <td width="34%" style="width:34%;vertical-align:top;padding:0 4px;text-align:center;">
+                  <span style="${CHIP_BADGE_STYLE}">Your feedback shapes the roadmap</span>
+                </td>
+                <td width="33%" style="width:33%;vertical-align:top;padding:0 0 0 4px;text-align:center;">
+                  <span style="${CHIP_BADGE_STYLE}">Limited offer · First ${storeCap} stores only</span>
+                </td>
+              </tr>
+            </table>
           </td>
         </tr>
 
@@ -240,9 +250,9 @@ export function buildLeadPilotInviteEmailHtml(
           <td style="padding:18px 28px 0 28px;" align="center">
             <table role="presentation" cellpadding="0" cellspacing="0" border="0">
               <tr>
-                <td style="background-color:#1a1a1a;padding:11px 28px;border-radius:9999px;text-align:center;">
+                <td style="background-color:#1a1a1a;padding:11px 24px;border-radius:9999px;text-align:center;">
                   <a href="${shopifyAppUrl}" target="_blank" style="display:inline-block;${BODY}font-size:14px;font-weight:600;color:#ffffff;text-decoration:none;">
-                    Reserve pilot spot
+                    Install Bizmis with early access
                   </a>
                 </td>
               </tr>
@@ -381,7 +391,7 @@ export function buildLeadPilotInviteEmailHtml(
         <tr>
           <td style="padding:16px 28px 0 28px;text-align:center;">
             <p style="margin:0;${BODY}font-size:13px;line-height:1.5;color:${BIZMIS_MUTED_FG_HEX};">
-              Founding pilot stores get direct access to us and help shape the roadmap.
+              As an early-access store, you&rsquo;ll get direct access to us and help shape the roadmap.
             </p>
           </td>
         </tr>
@@ -408,17 +418,19 @@ export function buildLeadPilotInviteEmailHtml(
 </html>`;
 
   const plainText = [
-    `FOUNDING PILOT INVITE FOR ${lead.storeName.toUpperCase()}`,
+    `EARLY ACCESS INVITE FOR ${lead.storeName.toUpperCase()}`,
     "",
-    "Add in-store-style selling and support to your storefront with Bizmis voice-first store clerks.",
+    "Drive sales and cut support load with Bizmis voice-first store clerks.",
     "",
     "Greets shoppers, recommends the right products, answers support questions, and helps more visitors buy with confidence.",
     "",
-    `${pilotDays}-day founding pilot · No commitment · ${storeCap} stores only`,
+    "30 days on us · no commitment",
+    "Your feedback shapes the roadmap",
+    `Limited offer · First ${storeCap} stores only`,
     "",
-    `Reserve pilot spot: ${shopifyAppUrl}`,
+    `Install Bizmis with early access: ${shopifyAppUrl}`,
     "",
-    "Founding pilot stores get direct access to us and help shape the roadmap.",
+    "As an early-access store, you'll get direct access to us and help shape the roadmap.",
     "",
     "Questions? Just reply to this email.",
     `Visit us: ${BIZMIS_URL}`,
