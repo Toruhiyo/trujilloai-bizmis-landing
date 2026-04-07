@@ -1,5 +1,6 @@
 import { FormEvent, useState } from "react";
-import { Outlet } from "react-router-dom";
+import { NavLink, Outlet } from "react-router-dom";
+import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -54,7 +55,7 @@ const AdminProtectedRoute = () => {
           className="w-full max-w-sm space-y-4 rounded-lg border border-border bg-card p-6 shadow-sm"
         >
           <h1 className="font-heading text-xl font-semibold text-foreground">Admin</h1>
-          <p className="text-sm text-muted-foreground">Password required to view slides.</p>
+          <p className="text-sm text-muted-foreground">Password required for admin tools.</p>
           {showError && (
             <p className="text-sm text-destructive" role="alert">
               Incorrect password.
@@ -87,7 +88,29 @@ const AdminProtectedRoute = () => {
 
   return (
     <div className="relative min-h-screen">
-      <div className="fixed right-3 top-3 z-[200]">
+      <div className="fixed right-3 top-3 z-[200] flex flex-wrap items-center justify-end gap-2">
+        <NavLink
+          to="/admin/slides"
+          className={({ isActive }) =>
+            cn(
+              "rounded-md px-2.5 py-1.5 font-body text-xs font-medium transition-colors",
+              isActive ? "bg-primary/15 text-primary" : "text-muted-foreground hover:text-foreground",
+            )
+          }
+        >
+          Slides
+        </NavLink>
+        <NavLink
+          to="/admin/invite-cards"
+          className={({ isActive }) =>
+            cn(
+              "rounded-md px-2.5 py-1.5 font-body text-xs font-medium transition-colors",
+              isActive ? "bg-primary/15 text-primary" : "text-muted-foreground hover:text-foreground",
+            )
+          }
+        >
+          Invite cards
+        </NavLink>
         <Button type="button" variant="outline" size="sm" onClick={signOut}>
           Sign out
         </Button>
