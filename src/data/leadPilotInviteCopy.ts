@@ -3,8 +3,12 @@
  * Per-store demo lines stay on LeadPilotInviteData (registry).
  */
 
+export const BIZMIS_PRODUCT_NAME = "Bizmis \u2014 Voice Store Clerk";
+
 export const PILOT_INVITE_EMAIL_COPY = {
-  eyebrowPrefix: "Early access invite for",
+  invitePrefix: "We\u2019d love to invite",
+  inviteJoiner: "to join",
+  inviteSuffix: "early access.",
   headline:
     "Join Bizmis early to drive sales and cut support load with voice-first store clerks.",
   subline:
@@ -26,25 +30,20 @@ export function buildPilotInvitePreheader(storeName: string, storeCap: number): 
   return `Early access invite for ${storeName}. First ${storeCap} stores only — ${PILOT_INVITE_EMAIL_COPY.preheaderClosingPhrase}.`;
 }
 
-/** Invitation line; pass HTML-escaped store name for email body, or raw for plain text. */
-export function buildPilotInviteInviteLine(storeName: string): string {
-  return `We\u2019d love to invite ${storeName} to join Bizmis early access.`;
+export function buildPilotInviteGreetingPlainText(storeName: string): string {
+  const c = PILOT_INVITE_EMAIL_COPY;
+  return `${c.invitePrefix} ${storeName} ${c.inviteJoiner} ${BIZMIS_PRODUCT_NAME} ${c.inviteSuffix}`;
 }
 
-/** Two fixed lines per chip (`white-space:nowrap` in email); third line uses `storeCap`. */
-export function buildPilotInviteChips(
-  storeCap: number,
-): readonly [readonly [string, string], readonly [string, string], readonly [string, string]] {
+/** Three single-line pilot value phrases; third uses `storeCap`. */
+export function buildPilotInviteChips(storeCap: number): readonly [string, string, string] {
   return [
-    ["30 days on us", "No commitment"],
-    ["Shape the roadmap", "With feedback"],
-    ["Limited to", `${storeCap} stores only`],
+    "30 days on us. No commitment",
+    "Shape the roadmap",
+    `Limited to ${storeCap} stores only`,
   ] as const;
 }
 
-export function buildPilotInvitePlainTextEyebrow(storeName: string): string {
-  return `${PILOT_INVITE_EMAIL_COPY.eyebrowPrefix} ${storeName}`.toUpperCase();
-}
 
 export function buildPilotInviteFooterPlainText(): string {
   const { contactEmail } = PILOT_INVITE_EMAIL_COPY;
