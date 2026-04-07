@@ -1,8 +1,7 @@
 import { useCallback, useMemo, useRef, useState } from "react";
 import { Link, useParams } from "react-router-dom";
-import { ExternalLink, Copy, Check, Eye, Code } from "lucide-react";
+import { ExternalLink, Copy, Check } from "lucide-react";
 import { toast } from "sonner";
-import LeadPilotInviteCard from "@/components/invite-cards/LeadPilotInviteCard";
 import { Button } from "@/components/ui/button";
 import { getLeadPilotById } from "@/data/leadPilotRegistry";
 import { buildLeadPilotInviteEmailHtml, copyLeadPilotHtmlSource } from "@/lib/leadPilotInviteEmailHtml";
@@ -17,14 +16,11 @@ function formatBytes(bytes: number): string {
   return `${(bytes / 1024).toFixed(1)} KB`;
 }
 
-type Tab = "preview" | "email";
-
 const PilotInviteCardPage = () => {
   const { leadId } = useParams<{ leadId: string }>();
   const lead = leadId ? getLeadPilotById(leadId) : undefined;
   const [copying, setCopying] = useState(false);
   const [copied, setCopied] = useState(false);
-  const [tab, setTab] = useState<Tab>("preview");
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const [iframeHeight, setIframeHeight] = useState(0);
 
@@ -72,7 +68,7 @@ const PilotInviteCardPage = () => {
     <div className="min-h-screen bg-muted/40 px-4 py-10 md:px-8">
       <div className="mx-auto flex max-w-4xl flex-col items-center gap-6">
         {/* Header */}
-        <div className="w-full max-w-[36rem]">
+        <div className="w-full max-w-[38rem]">
           <p className="mb-3 font-body text-sm text-muted-foreground">
             <Link to="/admin/invite-cards" className="text-primary hover:underline">
               ← All invite cards
@@ -122,34 +118,11 @@ const PilotInviteCardPage = () => {
               </Button>
             </div>
           </div>
-        </div>
 
-        {/* Tab switcher */}
-        <div className="flex items-center gap-4">
-          <button
-            type="button"
-            onClick={() => setTab("preview")}
-            className={`inline-flex items-center gap-1.5 border-b-2 px-1 pb-1 font-body text-sm font-medium transition-colors ${
-              tab === "preview"
-                ? "border-primary text-primary"
-                : "border-transparent text-muted-foreground hover:text-foreground"
-            }`}
-          >
-            <Eye className="h-3.5 w-3.5" />
-            Card preview
-          </button>
-          <button
-            type="button"
-            onClick={() => setTab("email")}
-            className={`inline-flex items-center gap-1.5 border-b-2 px-1 pb-1 font-body text-sm font-medium transition-colors ${
-              tab === "email"
-                ? "border-primary text-primary"
-                : "border-transparent text-muted-foreground hover:text-foreground"
-            }`}
-          >
-            <Code className="h-3.5 w-3.5" />
-            Email HTML
-            <span className={`ml-1 rounded px-1.5 py-0.5 text-[0.6rem] font-bold ${
+          {/* Size indicator */}
+          <p className="mt-3 font-body text-xs text-muted-foreground">
+            Email HTML size:{" "}
+            <span className={`rounded px-1.5 py-0.5 text-[0.65rem] font-bold ${
               htmlSizeBytes > 100_000
                 ? "bg-destructive/10 text-destructive"
                 : htmlSizeBytes > 50_000
@@ -158,30 +131,26 @@ const PilotInviteCardPage = () => {
             }`}>
               {formatBytes(htmlSizeBytes)}
             </span>
-          </button>
+          </p>
         </div>
 
-        {/* Content */}
-        {tab === "preview" ? (
-          <LeadPilotInviteCard lead={lead} />
-        ) : (
-          <div className="w-full max-w-[38rem]">
-            <div className="overflow-hidden rounded-xl border border-border bg-white shadow-sm">
-              <iframe
-                ref={iframeRef}
-                title="Email HTML preview"
-                srcDoc={emailData?.html}
-                onLoad={onIframeLoad}
-                style={iframeHeight > 0 ? { height: `${iframeHeight}px` } : { height: "100vh" }}
-                className="w-full border-0"
-                sandbox="allow-same-origin"
-              />
-            </div>
-            <p className="mt-2 text-center font-body text-xs text-muted-foreground">
-              Rendered preview of the email-safe HTML (tables, inline CSS, hosted images).
-            </p>
+        {/* Email HTML preview */}
+        <div className="w-full max-w-[38rem]">
+          <div className="overflow-hidden rounded-xl border border-border bg-white shadow-sm">
+            <iframe
+              ref={iframeRef}
+              title="Email HTML preview"
+              srcDoc={emailData?.html}
+              onLoad={onIframeLoad}
+              style={iframeHeight > 0 ? { height: `${iframeHeight}px` } : { height: "100vh" }}
+              className="w-full border-0"
+              sandbox="allow-same-origin"
+            />
           </div>
-        )}
+          <p className="mt-2 text-center font-body text-xs text-muted-foreground">
+            Rendered preview of the email-safe HTML (tables, inline CSS, hosted images).
+          </p>
+        </div>
       </div>
     </div>
   );
