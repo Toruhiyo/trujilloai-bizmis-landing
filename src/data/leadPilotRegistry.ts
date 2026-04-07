@@ -253,7 +253,7 @@ export const LEAD_PILOT_INVITES: LeadPilotInviteData[] = [
     primaryColor: "#B8F986",
     secondaryColor: null,
     pitchLine: "Help riders choose the right bike by terrain, fit, and budget.",
-    demoShopperPrompt: "I'm looking for a road bike for long climbs under $4,000.",
+    demoShopperPrompt: "I\u2019m looking for a road bike for long climbs under $4,000.",
     demoBizmisReply: "Got it — are you optimizing more for climbing or all-day comfort?",
     demoProducts: [
       { title: "Tarmac SL6", price: "$3,199", tag: "Climbing" },

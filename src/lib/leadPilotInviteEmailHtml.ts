@@ -212,15 +212,15 @@ export function buildLeadPilotInviteEmailHtml(
         <tr>
           <td style="padding:10px 28px 0 28px;">
             <p style="margin:0;${HEADING}font-size:22px;font-weight:700;line-height:1.25;color:#1a1a1a;">
-              Bring in-store-style Selling and Support to your storefront with Bizmis voice-first store clerks.
+              Add in-store-style selling and support to your storefront with Bizmis voice-first store clerks.
             </p>
           </td>
         </tr>
 
         <!-- Subline -->
         <tr>
-          <td style="padding:10px 28px 0 28px;">
-            <p style="margin:0;${BODY}font-size:14px;line-height:1.5;color:${BIZMIS_MUTED_FG_HEX};">
+          <td style="padding:10px 28px 0 28px;background-color:#ffffff;">
+            <p style="margin:0;background-color:#ffffff;${BODY}font-size:14px;line-height:1.5;color:${BIZMIS_MUTED_FG_HEX};">
               Greets shoppers, recommends the right products, answers support questions, and helps more visitors buy with confidence.
             </p>
           </td>
@@ -242,7 +242,7 @@ export function buildLeadPilotInviteEmailHtml(
               <tr>
                 <td style="background-color:#1a1a1a;padding:11px 28px;border-radius:9999px;text-align:center;">
                   <a href="${shopifyAppUrl}" target="_blank" style="display:inline-block;${BODY}font-size:14px;font-weight:600;color:#ffffff;text-decoration:none;">
-                    Reserve pilot spot &rarr;
+                    Reserve pilot spot
                   </a>
                 </td>
               </tr>
@@ -410,7 +410,7 @@ export function buildLeadPilotInviteEmailHtml(
   const plainText = [
     `FOUNDING PILOT INVITE FOR ${lead.storeName.toUpperCase()}`,
     "",
-    "Bring in-store-style Selling and Support to your storefront with Bizmis voice-first store clerks.",
+    "Add in-store-style selling and support to your storefront with Bizmis voice-first store clerks.",
     "",
     "Greets shoppers, recommends the right products, answers support questions, and helps more visitors buy with confidence.",
     "",
