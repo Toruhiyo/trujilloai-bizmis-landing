@@ -70,6 +70,22 @@ const HEADING = "font-family:'Plus Jakarta Sans',-apple-system,BlinkMacSystemFon
 const BODY = "font-family:'Plus Jakarta Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-serif;";
 
 /* ------------------------------------------------------------------ */
+/*  Email-safe waveform bars                                          */
+/* ------------------------------------------------------------------ */
+
+function emailWaveformBars(color: string, heights: number[]): string {
+  return heights
+    .map(
+      (h) =>
+        `<span style="display:inline-block;width:2px;height:${h}px;background-color:${color};border-radius:1px;margin:0 1px;vertical-align:middle;"></span>`,
+    )
+    .join("");
+}
+
+const LISTENING_BARS = [5, 9, 12, 7, 10];
+const WIDGET_BARS = [3, 6, 9, 5, 7];
+
+/* ------------------------------------------------------------------ */
 /*  Build product cards HTML for the storefront demo                  */
 /* ------------------------------------------------------------------ */
 
@@ -82,13 +98,13 @@ function buildProductCardsHtml(lead: LeadPilotInviteData): string {
       const mb = i < 2 ? "margin-bottom:8px;" : "";
       return `<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="border:1px solid ${BIZMIS_BORDER_HEX};border-radius:8px;${mb}">
             <tr>
-              <td width="48" style="padding:8px;">
-                <img src="${imgUrl}" alt="" width="40" style="display:block;max-width:40px;height:auto;border:0;" />
+              <td width="56" style="padding:10px;">
+                <img src="${imgUrl}" alt="" width="48" style="display:block;max-width:48px;height:auto;border:0;" />
               </td>
-              <td style="padding:8px 8px 8px 0;vertical-align:middle;">
-                <p style="margin:0;${BODY}font-size:10px;font-weight:600;color:#333;">${escapeHtml(product.title)}</p>
-                <p style="margin:2px 0;${BODY}font-size:10px;color:#888;">${escapeHtml(product.price)}</p>
-                <span style="display:inline-block;background-color:${BIZMIS_PRIMARY_TINT_008};border-radius:9999px;padding:1px 8px;${BODY}font-size:9px;font-weight:500;color:${BIZMIS_PRIMARY_HEX};">${escapeHtml(product.tag)}</span>
+              <td style="padding:10px 12px 10px 0;vertical-align:middle;">
+                <p style="margin:0;${BODY}font-size:11px;font-weight:600;color:#333;">${escapeHtml(product.title)}</p>
+                <p style="margin:3px 0 4px;${BODY}font-size:11px;color:#888;">${escapeHtml(product.price)}</p>
+                <span style="display:inline-block;border:1px solid ${BIZMIS_BORDER_HEX};border-radius:9999px;padding:1px 8px;${BODY}font-size:9px;font-weight:500;color:#777;">${escapeHtml(product.tag)}</span>
               </td>
             </tr>
           </table>`;
@@ -113,13 +129,12 @@ export function buildLeadPilotInviteEmailHtml(
   const bizmisLogoUrl = absImg(BIZMIS_LOGO_WHITE);
   const productCardsHtml = buildProductCardsHtml(lead);
 
+  const listeningBarsHtml = emailWaveformBars(BIZMIS_PRIMARY_HEX, LISTENING_BARS);
+  const widgetBarsHtml = emailWaveformBars("#ffffff", WIDGET_BARS);
+
   const preheader = `Private pilot invite for ${lead.storeName} — a voice-first store clerk for your Shopify store. ${storeCap} spots only.`;
 
   const BADGE_STYLE = `display:inline-block;margin:0 8px 0 0;padding:5px 12px;border-radius:9999px;border:1px solid ${BIZMIS_BORDER_HEX};${BODY}font-size:11px;color:#555;`;
-
-  const demoFooterHtml = lead.demoFooterLine
-    ? `<p style="margin:0;${BODY}font-size:10px;font-style:italic;color:#bbb;">${escapeHtml(lead.demoFooterLine)}</p>`
-    : "";
 
   const html = `<!DOCTYPE html>
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml">
@@ -192,7 +207,7 @@ export function buildLeadPilotInviteEmailHtml(
         <tr>
           <td style="padding:10px 28px 0 28px;">
             <p style="margin:0;${BODY}font-size:14px;line-height:1.5;color:${BIZMIS_MUTED_FG_HEX};">
-              Greets shoppers, recommends products, answers support questions, and helps more visitors buy.
+              Greets shoppers, recommends products, answers support questions, and helps more shoppers buy with confidence.
             </p>
           </td>
         </tr>
@@ -238,7 +253,7 @@ export function buildLeadPilotInviteEmailHtml(
                         <span style="${BODY}font-size:10px;color:#999;">${domain}</span>
                       </td>
                       <td style="vertical-align:middle;text-align:right;">
-                        <span style="${BODY}font-size:10px;font-weight:600;color:${BIZMIS_PRIMARY_HEX};">Voice shopping assistant</span>
+                        <span style="${BODY}font-size:10px;font-weight:600;color:${BIZMIS_MUTED_FG_HEX};">Voice shopping assistant</span>
                       </td>
                     </tr>
                   </table>
@@ -259,9 +274,10 @@ export function buildLeadPilotInviteEmailHtml(
                           </p>
                         </div>
 
-                        <!-- Voice state pill -->
-                        <div style="display:inline-block;background-color:${BIZMIS_PRIMARY_TINT_010};border-radius:9999px;padding:3px 10px;margin-bottom:10px;">
-                          <span style="${BODY}font-size:10px;font-weight:600;color:${BIZMIS_PRIMARY_HEX};">&#x1F50A; Listening</span>
+                        <!-- Voice state pill with waveform bars -->
+                        <div style="display:inline-block;background-color:${BIZMIS_PRIMARY_TINT_008};border-radius:9999px;padding:4px 12px;margin-bottom:10px;">
+                          ${listeningBarsHtml}
+                          <span style="${BODY}font-size:10px;font-weight:600;color:${BIZMIS_PRIMARY_HEX};vertical-align:middle;margin-left:5px;">Listening</span>
                         </div>
 
                         <!-- Bizmis reply -->
@@ -284,28 +300,22 @@ export function buildLeadPilotInviteEmailHtml(
 
               <!-- Widget footer -->
               <tr>
-                <td style="border-top:1px solid ${BIZMIS_BORDER_HEX};background-color:#fafafa;padding:10px 14px;">
-                  <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%">
-                    <tr>
-                      <td style="vertical-align:middle;">
-                        ${demoFooterHtml}
-                      </td>
-                      <td style="text-align:right;vertical-align:middle;">
-                        <div style="display:inline-block;background-color:#1a1a1a;border-radius:9999px;padding:5px 12px;">
-                          <table role="presentation" cellpadding="0" cellspacing="0" border="0">
-                            <tr>
-                              <td style="vertical-align:middle;padding-right:4px;">
-                                <img src="${bizmisLogoUrl}" alt="" width="12" height="12" style="display:block;width:12px;height:12px;border:0;" />
-                              </td>
-                              <td style="vertical-align:middle;">
-                                <span style="${BODY}font-size:9px;font-weight:500;color:#ffffff;">Ask by voice</span>
-                              </td>
-                            </tr>
-                          </table>
-                        </div>
-                      </td>
-                    </tr>
-                  </table>
+                <td style="border-top:1px solid ${BIZMIS_BORDER_HEX};background-color:#fafafa;padding:10px 14px;text-align:right;">
+                  <div style="display:inline-block;background-color:#1a1a1a;border-radius:9999px;padding:5px 12px;">
+                    <table role="presentation" cellpadding="0" cellspacing="0" border="0">
+                      <tr>
+                        <td style="vertical-align:middle;padding-right:5px;">
+                          <img src="${bizmisLogoUrl}" alt="" width="12" height="12" style="display:block;width:12px;height:12px;border:0;" />
+                        </td>
+                        <td style="vertical-align:middle;padding-right:6px;">
+                          ${widgetBarsHtml}
+                        </td>
+                        <td style="vertical-align:middle;">
+                          <span style="${BODY}font-size:9px;font-weight:500;color:#ffffff;">Ask by voice</span>
+                        </td>
+                      </tr>
+                    </table>
+                  </div>
                 </td>
               </tr>
 
@@ -317,9 +327,9 @@ export function buildLeadPilotInviteEmailHtml(
         <tr>
           <td style="padding:18px 28px 0 28px;text-align:center;">
             <span style="${BODY}font-size:12px;font-weight:500;color:#555;">
-              <span style="color:${BIZMIS_PRIMARY_HEX};font-weight:700;">&#x2197;</span> Sell more&ensp;&middot;&ensp;
-              <span style="color:${BIZMIS_PRIMARY_HEX};font-weight:700;">&#x1F3A7;</span> Support faster&ensp;&middot;&ensp;
-              <span style="color:${BIZMIS_PRIMARY_HEX};font-weight:700;">&#x1F4CA;</span> Learn from sessions
+              <span style="color:${BIZMIS_PRIMARY_HEX};font-size:8px;vertical-align:middle;">&#x25CF;</span> Sell more&ensp;&middot;&ensp;
+              <span style="color:${BIZMIS_PRIMARY_HEX};font-size:8px;vertical-align:middle;">&#x25CF;</span> Support faster&ensp;&middot;&ensp;
+              <span style="color:${BIZMIS_PRIMARY_HEX};font-size:8px;vertical-align:middle;">&#x25CF;</span> Learn from sessions
             </span>
           </td>
         </tr>
@@ -336,12 +346,9 @@ export function buildLeadPilotInviteEmailHtml(
         <!-- Footer -->
         <tr>
           <td style="padding:18px 28px 22px 28px;text-align:center;">
-            <p style="margin:0 0 4px 0;${BODY}font-size:11px;color:#bbb;">
+            <p style="margin:0;${BODY}font-size:11px;color:#999;">
               Questions? Just reply to this email.
             </p>
-            <a href="${BIZMIS_URL}" target="_blank" style="${BODY}font-size:10px;color:#ccc;text-decoration:none;">
-              bizmis.ai
-            </a>
           </td>
         </tr>
 
@@ -359,7 +366,7 @@ export function buildLeadPilotInviteEmailHtml(
     "",
     "Bring a voice-first store clerk to your Shopify store.",
     "",
-    "Greets shoppers, recommends products, answers support questions, and helps more visitors buy.",
+    "Greets shoppers, recommends products, answers support questions, and helps more shoppers buy with confidence.",
     "",
     `${pilotDays}-day founding pilot · No commitment · ${storeCap} stores only`,
     "",
