@@ -1,4 +1,10 @@
 import {
+  buildPilotInviteChipLabels,
+  buildPilotInvitePlainTextEyebrow,
+  buildPilotInvitePreheader,
+  PILOT_INVITE_EMAIL_COPY,
+} from "@/data/leadPilotInviteCopy";
+import {
   type LeadPilotInviteData,
   PILOT_INVITE_TERMS,
   resolveLeadLogoScale,
@@ -127,6 +133,39 @@ function buildProductCardsHtml(lead: LeadPilotInviteData): string {
 /*  Build email-safe HTML                                             */
 /* ------------------------------------------------------------------ */
 
+function buildPilotInviteChipRowHtml(chipBadgeStyle: string, storeCap: number): string {
+  const chipColAttrs: [string, string, string] = [
+    `width="33%" style="width:33%;vertical-align:top;padding:0 4px 0 0;text-align:center;"`,
+    `width="34%" style="width:34%;vertical-align:top;padding:0 4px;text-align:center;"`,
+    `width="33%" style="width:33%;vertical-align:top;padding:0 0 0 4px;text-align:center;"`,
+  ];
+  return buildPilotInviteChipLabels(storeCap)
+    .map((text, i) => `<td ${chipColAttrs[i]}><span style="${chipBadgeStyle}">${escapeHtml(text)}</span></td>`)
+    .join("\n                ");
+}
+
+function buildPilotInviteOutcomeStripHtml(
+  outcomeIconUrls: readonly [string, string, string],
+): string {
+  const paddings = ["padding:0 16px 0 0;", "padding:0 16px 0 0;", "padding:0;"] as const;
+  return PILOT_INVITE_EMAIL_COPY.outcomes
+    .map((label, i) => {
+      const url = outcomeIconUrls[i];
+      const labelEsc = escapeHtml(label);
+      return `<td style="${paddings[i]}vertical-align:middle;">
+                  <table role="presentation" cellpadding="0" cellspacing="0" border="0">
+                    <tr>
+                      <td style="vertical-align:middle;padding-right:6px;">
+                        <img src="${url}" alt="" width="16" height="16" style="display:block;width:16px;height:16px;border:0;" />
+                      </td>
+                      <td style="vertical-align:middle;${BODY}font-size:12px;font-weight:500;color:#555;">${labelEsc}</td>
+                    </tr>
+                  </table>
+                </td>`;
+    })
+    .join("\n                ");
+}
+
 export function buildLeadPilotInviteEmailHtml(
   lead: LeadPilotInviteData,
 ): { html: string; plainText: string } {
@@ -135,20 +174,26 @@ export function buildLeadPilotInviteEmailHtml(
   const store = escapeHtml(lead.storeName);
   const domain = escapeHtml(lead.storeDomain);
   const { storeCap, shopifyAppUrl } = PILOT_INVITE_TERMS;
+  const copy = PILOT_INVITE_EMAIL_COPY;
 
   const storeLogoHtml = storeLogoEmailMarkup(lead);
   const bizmisLogoUrl = absImg(BIZMIS_LOGO_WHITE);
   const productCardsHtml = buildProductCardsHtml(lead);
-  const outcomeIconTrendUrl = absImg(OUTCOME_ICON_TREND);
-  const outcomeIconHeadphonesUrl = absImg(OUTCOME_ICON_HEADPHONES);
-  const outcomeIconChartUrl = absImg(OUTCOME_ICON_CHART);
+  const outcomeIconUrls = [
+    absImg(OUTCOME_ICON_TREND),
+    absImg(OUTCOME_ICON_HEADPHONES),
+    absImg(OUTCOME_ICON_CHART),
+  ] as const;
 
   const listeningBarsHtml = emailWaveformBars(BIZMIS_PRIMARY_HEX, LISTENING_BARS);
   const widgetBarsHtml = emailWaveformBars("#ffffff", WIDGET_BARS);
 
-  const preheader = `Early access invite for ${lead.storeName}. First ${storeCap} stores only — Bizmis voice-first store clerks.`;
+  const preheader = buildPilotInvitePreheader(lead.storeName, storeCap);
 
   const CHIP_BADGE_STYLE = `display:inline-block;margin:0;padding:6px 10px;border-radius:9999px;border:1px solid ${BIZMIS_BORDER_HEX};${BODY}font-size:10px;line-height:1.35;color:#555;text-align:center;`;
+
+  const chipRowHtml = buildPilotInviteChipRowHtml(CHIP_BADGE_STYLE, storeCap);
+  const outcomeStripInnerHtml = buildPilotInviteOutcomeStripHtml(outcomeIconUrls);
 
   const html = `<!DOCTYPE html>
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml">
@@ -156,7 +201,7 @@ export function buildLeadPilotInviteEmailHtml(
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>Bizmis Pilot Invite</title>
+  <title>${escapeHtml(copy.emailDocumentTitle)}</title>
 </head>
 <body style="margin:0;padding:0;background-color:${BIZMIS_WARM_BG_HEX};-webkit-text-size-adjust:100%;-ms-text-size-adjust:100%;">
 <!-- Preheader (hidden) -->
@@ -203,7 +248,7 @@ export function buildLeadPilotInviteEmailHtml(
         <tr>
           <td style="padding:20px 28px 0 28px;">
             <p style="margin:0;${BODY}font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.12em;color:${BIZMIS_MUTED_FG_HEX};">
-              Early access invite for <span style="color:${storeNameColor};">${store}</span>
+              ${escapeHtml(copy.eyebrowPrefix)} <span style="color:${storeNameColor};">${store}</span>
             </p>
           </td>
         </tr>
@@ -212,7 +257,7 @@ export function buildLeadPilotInviteEmailHtml(
         <tr>
           <td style="padding:10px 28px 0 28px;">
             <p style="margin:0;${HEADING}font-size:22px;font-weight:700;line-height:1.25;color:#1a1a1a;">
-              Drive sales and cut support load with Bizmis voice-first store clerks.
+              ${escapeHtml(copy.headline)}
             </p>
           </td>
         </tr>
@@ -221,7 +266,7 @@ export function buildLeadPilotInviteEmailHtml(
         <tr>
           <td style="padding:10px 28px 0 28px;background-color:#ffffff;">
             <p style="margin:0;background-color:#ffffff;${BODY}font-size:14px;line-height:1.5;color:${BIZMIS_MUTED_FG_HEX};">
-              Greets shoppers, recommends the right products, answers support questions, and helps more visitors buy with confidence.
+              ${escapeHtml(copy.subline)}
             </p>
           </td>
         </tr>
@@ -231,15 +276,7 @@ export function buildLeadPilotInviteEmailHtml(
           <td style="padding:14px 24px 0 24px;">
             <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="width:100%;">
               <tr>
-                <td width="33%" style="width:33%;vertical-align:top;padding:0 4px 0 0;text-align:center;">
-                  <span style="${CHIP_BADGE_STYLE}">30 days on us &middot; no commitment</span>
-                </td>
-                <td width="34%" style="width:34%;vertical-align:top;padding:0 4px;text-align:center;">
-                  <span style="${CHIP_BADGE_STYLE}">Your feedback shapes the roadmap</span>
-                </td>
-                <td width="33%" style="width:33%;vertical-align:top;padding:0 0 0 4px;text-align:center;">
-                  <span style="${CHIP_BADGE_STYLE}">Limited offer · First ${storeCap} stores only</span>
-                </td>
+                ${chipRowHtml}
               </tr>
             </table>
           </td>
@@ -252,7 +289,7 @@ export function buildLeadPilotInviteEmailHtml(
               <tr>
                 <td style="background-color:#1a1a1a;padding:11px 24px;border-radius:9999px;text-align:center;">
                   <a href="${shopifyAppUrl}" target="_blank" style="display:inline-block;${BODY}font-size:14px;font-weight:600;color:#ffffff;text-decoration:none;">
-                    Install Bizmis with early access
+                    ${escapeHtml(copy.ctaLabel)}
                   </a>
                 </td>
               </tr>
@@ -277,7 +314,7 @@ export function buildLeadPilotInviteEmailHtml(
                         <span style="${BODY}font-size:10px;color:#999;">${domain}</span>
                       </td>
                       <td style="vertical-align:middle;text-align:right;">
-                        <span style="${BODY}font-size:10px;font-weight:600;color:${BIZMIS_MUTED_FG_HEX};">Bizmis voice-first store clerk</span>
+                        <span style="${BODY}font-size:10px;font-weight:600;color:${BIZMIS_MUTED_FG_HEX};">${escapeHtml(copy.mockupClerkLabel)}</span>
                       </td>
                     </tr>
                   </table>
@@ -301,7 +338,7 @@ export function buildLeadPilotInviteEmailHtml(
                         <!-- Voice state pill with waveform bars -->
                         <div style="display:inline-block;background-color:${BIZMIS_PRIMARY_TINT_008};border-radius:9999px;padding:4px 12px;margin-bottom:10px;">
                           ${listeningBarsHtml}
-                          <span style="${BODY}font-size:10px;font-weight:600;color:${BIZMIS_PRIMARY_HEX};vertical-align:middle;margin-left:5px;">Listening</span>
+                          <span style="${BODY}font-size:10px;font-weight:600;color:${BIZMIS_PRIMARY_HEX};vertical-align:middle;margin-left:5px;">${escapeHtml(copy.voiceListeningLabel)}</span>
                         </div>
 
                         <!-- Bizmis reply -->
@@ -335,7 +372,7 @@ export function buildLeadPilotInviteEmailHtml(
                           ${widgetBarsHtml}
                         </td>
                         <td style="vertical-align:middle;">
-                          <span style="${BODY}font-size:9px;font-weight:500;color:#ffffff;">Ask by voice</span>
+                          <span style="${BODY}font-size:9px;font-weight:500;color:#ffffff;">${escapeHtml(copy.voiceWidgetCta)}</span>
                         </td>
                       </tr>
                     </table>
@@ -352,36 +389,7 @@ export function buildLeadPilotInviteEmailHtml(
           <td style="padding:18px 28px 0 28px;text-align:center;">
             <table role="presentation" cellpadding="0" cellspacing="0" border="0" align="center" style="margin:0 auto;">
               <tr>
-                <td style="padding:0 16px 0 0;vertical-align:middle;">
-                  <table role="presentation" cellpadding="0" cellspacing="0" border="0">
-                    <tr>
-                      <td style="vertical-align:middle;padding-right:6px;">
-                        <img src="${outcomeIconTrendUrl}" alt="" width="16" height="16" style="display:block;width:16px;height:16px;border:0;" />
-                      </td>
-                      <td style="vertical-align:middle;${BODY}font-size:12px;font-weight:500;color:#555;">Sell more</td>
-                    </tr>
-                  </table>
-                </td>
-                <td style="padding:0 16px 0 0;vertical-align:middle;">
-                  <table role="presentation" cellpadding="0" cellspacing="0" border="0">
-                    <tr>
-                      <td style="vertical-align:middle;padding-right:6px;">
-                        <img src="${outcomeIconHeadphonesUrl}" alt="" width="16" height="16" style="display:block;width:16px;height:16px;border:0;" />
-                      </td>
-                      <td style="vertical-align:middle;${BODY}font-size:12px;font-weight:500;color:#555;">Support faster</td>
-                    </tr>
-                  </table>
-                </td>
-                <td style="padding:0;vertical-align:middle;">
-                  <table role="presentation" cellpadding="0" cellspacing="0" border="0">
-                    <tr>
-                      <td style="vertical-align:middle;padding-right:6px;">
-                        <img src="${outcomeIconChartUrl}" alt="" width="16" height="16" style="display:block;width:16px;height:16px;border:0;" />
-                      </td>
-                      <td style="vertical-align:middle;${BODY}font-size:12px;font-weight:500;color:#555;">Learn from sessions</td>
-                    </tr>
-                  </table>
-                </td>
+                ${outcomeStripInnerHtml}
               </tr>
             </table>
           </td>
@@ -391,7 +399,7 @@ export function buildLeadPilotInviteEmailHtml(
         <tr>
           <td style="padding:16px 28px 0 28px;text-align:center;">
             <p style="margin:0;${BODY}font-size:13px;line-height:1.5;color:${BIZMIS_MUTED_FG_HEX};">
-              As an early-access store, you&rsquo;ll get direct access to us and help shape the roadmap.
+              ${escapeHtml(copy.proofLine)}
             </p>
           </td>
         </tr>
@@ -400,7 +408,7 @@ export function buildLeadPilotInviteEmailHtml(
         <tr>
           <td style="padding:18px 28px 22px 28px;text-align:center;">
             <p style="margin:0 0 4px 0;${BODY}font-size:11px;color:#999;">
-              Questions? Just reply to this email.
+              ${escapeHtml(copy.footerLine)}
             </p>
             <a href="${BIZMIS_URL}" target="_blank" style="${BODY}font-size:11px;font-weight:600;color:${BIZMIS_PRIMARY_HEX};text-decoration:none;">
               bizmis.ai
@@ -417,23 +425,22 @@ export function buildLeadPilotInviteEmailHtml(
 </body>
 </html>`;
 
+  const chipLines = buildPilotInviteChipLabels(storeCap);
   const plainText = [
-    `EARLY ACCESS INVITE FOR ${lead.storeName.toUpperCase()}`,
+    buildPilotInvitePlainTextEyebrow(lead.storeName),
     "",
-    "Drive sales and cut support load with Bizmis voice-first store clerks.",
+    copy.headline,
     "",
-    "Greets shoppers, recommends the right products, answers support questions, and helps more visitors buy with confidence.",
+    copy.subline,
     "",
-    "30 days on us · no commitment",
-    "Your feedback shapes the roadmap",
-    `Limited offer · First ${storeCap} stores only`,
+    ...chipLines,
     "",
-    `Install Bizmis with early access: ${shopifyAppUrl}`,
+    `${copy.ctaLabel}: ${shopifyAppUrl}`,
     "",
-    "As an early-access store, you'll get direct access to us and help shape the roadmap.",
+    copy.proofLine,
     "",
-    "Questions? Just reply to this email.",
-    `Visit us: ${BIZMIS_URL}`,
+    copy.footerLine,
+    `${copy.visitUsPrefix} ${BIZMIS_URL}`,
   ].join("\n");
 
   return { html, plainText };
