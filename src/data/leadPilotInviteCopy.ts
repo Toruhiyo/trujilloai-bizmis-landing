@@ -5,6 +5,12 @@
 
 export const BIZMIS_PRODUCT_NAME = "Bizmis \u2014 Voice Store Clerk";
 
+/**
+ * Included usage cap in minutes for the 30-day pilot (referenced by the * on the first offer chip).
+ * Set to the real product limit before production sends.
+ */
+export const PILOT_INVITE_TRIAL_USAGE_MINUTES_LIMIT = 120;
+
 export const PILOT_INVITE_EMAIL_COPY = {
   /** Salutation: \u201cDear\u201d + [first name] + comma */
   greetingDear: "Dear",
@@ -76,13 +82,18 @@ export function buildPilotInviteValueSentencePlainText(
   return `${beforeBizmis}${c.inviteSentenceBizmisWord}${c.inviteSentenceAfterFirstBizmis}${storeName}${c.inviteSentenceAfterStore}`;
 }
 
-/** Three single-line pilot value phrases; third uses `storeCap`. */
+/** Three single-line pilot value phrases; third uses `storeCap`. First line carries * for trial usage footnote. */
 export function buildPilotInviteChips(storeCap: number): readonly [string, string, string] {
   return [
-    "30 days on us. No commitment",
+    "30 days on us*. No commitment",
     "Shape the roadmap",
     `Limited to ${storeCap} stores only`,
   ] as const;
+}
+
+/** Plain footnote for the asterisk on the first chip (`PILOT_INVITE_TRIAL_USAGE_MINUTES_LIMIT`). */
+export function buildPilotInviteTrialUsageFootnotePlainText(): string {
+  return `* Up to ${PILOT_INVITE_TRIAL_USAGE_MINUTES_LIMIT} minutes of included usage.`;
 }
 
 export function buildPilotInviteFooterPlainText(): string {

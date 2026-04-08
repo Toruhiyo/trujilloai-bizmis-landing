@@ -3,6 +3,7 @@ import {
   buildPilotInviteFooterPlainText,
   buildPilotInvitePreheader,
   buildPilotInviteSalutationPlainText,
+  buildPilotInviteTrialUsageFootnotePlainText,
   buildPilotInviteValueSentencePlainText,
   pilotInviteGreetingFirstName,
   PILOT_INVITE_EMAIL_COPY,
@@ -65,8 +66,9 @@ const BIZMIS_MUTED_LIGHT_HEX = "#B5A48E";
 const BIZMIS_SHADOW_SOFT = "0 6px 25px -6px rgba(249,163,83,0.18)";
 /** Softer dashed border for coupon pill — utility, low contrast */
 const COUPON_PILL_BORDER_HEX = "#EBE6DF";
-/** Dashed stroke width for CTA coupon-cutout frame */
-const CTA_COUPON_CUTOUT_BORDER_PX = 2;
+/** Dashed stroke for CTA coupon-cutout frame — low-contrast (dash weight follows border width) */
+const CTA_COUPON_CUTOUT_BORDER_PX = 1.5;
+const CTA_COUPON_CUTOUT_DASH = "rgba(50, 40, 27, 0.1)";
 /** Coupon sits on block surface; minimal separation from CTA area */
 const COUPON_PILL_BG_HEX = "#F7F5F2";
 
@@ -228,6 +230,7 @@ export function buildLeadPilotInviteEmailHtml(
   const preheader = buildPilotInvitePreheader(lead.storeName, storeCap);
 
   const chipStripHtml = buildPilotInviteChipStripHtml(storeCap);
+  const chipTrialFootnoteEsc = escapeHtml(buildPilotInviteTrialUsageFootnotePlainText());
   const outcomeStripInnerHtml = buildPilotInviteOutcomeStripHtml(outcomeIconUrls);
 
   const couponCodeEsc = escapeHtml(lead.couponCode.trim());
@@ -452,7 +455,7 @@ export function buildLeadPilotInviteEmailHtml(
         <!-- CTA block: coupon, button, offer chips -->
         <tr>
           <td style="padding:28px 32px 0 32px;" align="center">
-            <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="background-color:transparent;border:${CTA_COUPON_CUTOUT_BORDER_PX}px dashed ${COUPON_PILL_BORDER_HEX};border-radius:14px;">
+            <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="background-color:transparent;border:${CTA_COUPON_CUTOUT_BORDER_PX}px dashed ${CTA_COUPON_CUTOUT_DASH};border-radius:14px;">
               <tr>
                 <td style="padding:24px 28px 14px 28px;" align="center">
                   <table role="presentation" cellpadding="0" cellspacing="0" border="0">
@@ -492,6 +495,7 @@ export function buildLeadPilotInviteEmailHtml(
                 </td>
               </tr>
             </table>
+            <p style="margin:10px 0 0 0;${BODY}font-size:8px;line-height:1.4;color:${BIZMIS_MUTED_LIGHT_HEX};text-align:center;">${chipTrialFootnoteEsc}</p>
           </td>
         </tr>
 
@@ -540,6 +544,8 @@ export function buildLeadPilotInviteEmailHtml(
     `${copy.ctaLabel}: ${shopifyAppUrl}`,
     "",
     ...chipPlainLines,
+    "",
+    buildPilotInviteTrialUsageFootnotePlainText(),
     "",
     copy.proofLine,
     "",
