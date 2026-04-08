@@ -388,14 +388,15 @@ export function buildLeadPilotInviteEmailHtml(
                       </td>
                     </tr>
                     <tr>
-                      <td colspan="2" style="padding:12px 0 14px 0;text-align:center;position:relative;">
+                      <td colspan="2" style="padding:10px 0 8px 0;text-align:center;position:relative;">
                         <!--[if !mso]><!-->
                         <div style="position:relative;display:block;margin:0 auto;max-width:100%;">
                           <div style="text-align:center;line-height:0;font-size:0;padding:0;height:42px;overflow:hidden;">
                             ${montageWatermarkWaveformHtml}
                           </div>
                           <div style="position:absolute;top:0;left:0;right:0;bottom:0;display:flex;align-items:center;justify-content:center;">
-                            <p style="margin:0;${BODY}font-size:11px;font-weight:500;line-height:1;color:${BIZMIS_PRIMARY_DARK_HEX};">
+                            <div style="position:absolute;width:70%;height:100%;top:0;left:15%;background:radial-gradient(ellipse 100% 100% at 50% 50%,rgba(255,255,255,0.92) 0%,rgba(255,255,255,0.45) 30%,transparent 68%);"></div>
+                            <p style="margin:0;position:relative;${BODY}font-size:11px;font-weight:500;line-height:1;color:${BIZMIS_PRIMARY_DARK_HEX};">
                               ${montageClerkCueEsc}
                             </p>
                           </div>
