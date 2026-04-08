@@ -20,8 +20,8 @@ const BAR_W = 3;
 const PAD_X = 1;
 /** Heights were authored for a 36px track; scale into TRACK_H */
 const HEIGHT_SOURCE_TRACK = 36;
-/** rgba(249,163,83,0.14) composited on #ffffff */
-const BAR_FILL_HEX = "#FEF2E7";
+/** Slightly stronger than 0.14 — rgba(249,163,83,~0.17) composited on #ffffff */
+const BAR_FILL_HEX = "#FEEFE2";
 
 const BASE_HEIGHTS_PX = [
   22, 14, 27, 18, 12, 25, 15, 29, 17, 14, 23, 28, 11, 20, 14, 26, 19, 9, 24, 16, 30, 15, 22, 13, 20, 31, 18, 25, 12, 17, 23, 14, 28, 19, 10, 26, 20, 15, 27, 16, 29, 14, 22, 12, 25, 18, 21, 17,
