@@ -29,7 +29,7 @@ export const PILOT_INVITE_EMAIL_COPY = {
   mockupClerkLabel: "Bizmis voice-first store clerk",
   voiceListeningLabel: "Listening",
   voiceWidgetCta: "Ask by voice",
-  outcomes: ["Sell more", "Support faster", "Learn from sessions"] as const,
+  outcomes: ["Sell more", "Support faster", "Learn from replays"] as const,
   /** Uses U+2019 (right single quotation) for “you’ll”. */
   proofLine: "As an early-access store, you\u2019ll get direct influence on the Bizmis roadmap.",
   contactEmail: "hello@bizmis.ai",

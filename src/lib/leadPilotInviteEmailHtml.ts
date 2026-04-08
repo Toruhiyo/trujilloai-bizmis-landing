@@ -292,7 +292,7 @@ export function buildLeadPilotInviteEmailHtml(
 
         <!-- Invitation sentence (dominant, softened — not hero weight) -->
         <tr>
-          <td style="padding:24px 32px 0 32px;">
+          <td style="padding:20px 32px 0 32px;">
             <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="max-width:${inviteTopLeadMeasurePx}px;">
               <tr>
                 <td style="padding:0;">
@@ -305,81 +305,9 @@ export function buildLeadPilotInviteEmailHtml(
           </td>
         </tr>
 
-        <!-- Supporting subline (secondary body, slightly narrower) -->
+        <!-- Storefront demo mockup (after invite — product proof before offer) -->
         <tr>
-          <td style="padding:14px 32px 0 32px;">
-            <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="max-width:${inviteTopSupportMeasurePx}px;">
-              <tr>
-                <td style="padding:0;">
-                  <p style="margin:0;${inviteTopSupportStyle}">
-                    ${escapeHtml(copy.subline)}
-                  </p>
-                </td>
-              </tr>
-            </table>
-          </td>
-        </tr>
-
-        <!-- CTA block: coupon above button, value chips below -->
-        <tr>
-          <td style="padding:20px 32px 0 32px;" align="center">
-            <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="background-color:${BIZMIS_WARM_SURFACE_HEX};border-radius:16px;">
-              <tr>
-                <td style="padding:18px 20px 12px 20px;" align="center">
-                  <table role="presentation" cellpadding="0" cellspacing="0" border="0">
-                    <tr>
-                      <td style="background-color:${COUPON_PILL_BG_HEX};border:1px dashed ${COUPON_PILL_BORDER_HEX};border-radius:6px;padding:6px 12px;text-align:center;line-height:1.4;">
-                        <span style="${BODY}font-size:9px;color:${BIZMIS_MUTED_LIGHT_HEX};vertical-align:middle;">${escapeHtml(copy.couponLabel)}</span> <span style="${BODY}font-size:11px;font-weight:500;color:${BIZMIS_MUTED_FG_HEX};letter-spacing:0.04em;vertical-align:middle;">${couponCodeEsc}</span>
-                      </td>
-                    </tr>
-                  </table>
-                </td>
-              </tr>
-              <tr>
-                <td style="padding:0 20px 12px 20px;" align="center">
-                  <table role="presentation" cellpadding="0" cellspacing="0" border="0">
-                    <tr>
-                      <td style="background-color:${BIZMIS_FOREGROUND_HEX};padding:13px 32px;border-radius:12px;text-align:center;box-shadow:0 4px 14px -2px rgba(50,40,27,0.2);">
-                        <a href="${shopifyAppUrl}" target="_blank" style="display:inline-block;text-decoration:none;color:#ffffff;">
-                          <table role="presentation" cellpadding="0" cellspacing="0" border="0" align="center" style="margin:0 auto;">
-                            <tr>
-                              <td style="vertical-align:middle;padding-right:10px;">
-                                <img src="${shopifyMarkUrl}" alt="Shopify" width="22" height="22" style="display:block;width:22px;height:22px;border:0;" />
-                              </td>
-                              <td style="vertical-align:middle;${HEADING}font-size:14px;font-weight:600;color:#ffffff;">
-                                ${escapeHtml(copy.ctaLabel)}
-                              </td>
-                            </tr>
-                          </table>
-                        </a>
-                      </td>
-                    </tr>
-                  </table>
-                </td>
-              </tr>
-              <tr>
-                <td style="padding:0 16px 18px 16px;text-align:center;line-height:1.5;">
-                  ${chipStripHtml}
-                </td>
-              </tr>
-            </table>
-          </td>
-        </tr>
-
-        <!-- Outcome strip -->
-        <tr>
-          <td style="padding:18px 32px 0 32px;text-align:center;">
-            <table role="presentation" cellpadding="0" cellspacing="0" border="0" align="center" style="margin:0 auto;">
-              <tr>
-                ${outcomeStripInnerHtml}
-              </tr>
-            </table>
-          </td>
-        </tr>
-
-        <!-- Storefront demo mockup -->
-        <tr>
-          <td style="padding:24px 28px 0 28px;">
+          <td style="padding:22px 28px 0 28px;">
             <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="border:1px solid ${BIZMIS_BORDER_HEX};border-radius:16px;overflow:hidden;box-shadow:0 4px 20px -4px rgba(0,0,0,0.06);">
 
               <!-- Browser chrome -->
@@ -464,6 +392,78 @@ export function buildLeadPilotInviteEmailHtml(
           </td>
         </tr>
 
+        <!-- Value strip (reinforcement after demo, before subline + CTA) -->
+        <tr>
+          <td style="padding:20px 32px 0 32px;text-align:center;">
+            <table role="presentation" cellpadding="0" cellspacing="0" border="0" align="center" style="margin:0 auto;">
+              <tr>
+                ${outcomeStripInnerHtml}
+              </tr>
+            </table>
+          </td>
+        </tr>
+
+        <!-- Supporting sentence (subtitle) -->
+        <tr>
+          <td style="padding:18px 32px 0 32px;">
+            <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="max-width:${inviteTopSupportMeasurePx}px;">
+              <tr>
+                <td style="padding:0;">
+                  <p style="margin:0;${inviteTopSupportStyle}">
+                    ${escapeHtml(copy.subline)}
+                  </p>
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+
+        <!-- CTA block: coupon, button, offer chips -->
+        <tr>
+          <td style="padding:20px 32px 0 32px;" align="center">
+            <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="background-color:${BIZMIS_WARM_SURFACE_HEX};border-radius:16px;">
+              <tr>
+                <td style="padding:18px 20px 12px 20px;" align="center">
+                  <table role="presentation" cellpadding="0" cellspacing="0" border="0">
+                    <tr>
+                      <td style="background-color:${COUPON_PILL_BG_HEX};border:1px dashed ${COUPON_PILL_BORDER_HEX};border-radius:6px;padding:6px 12px;text-align:center;line-height:1.4;">
+                        <span style="${BODY}font-size:9px;color:${BIZMIS_MUTED_LIGHT_HEX};vertical-align:middle;">${escapeHtml(copy.couponLabel)}</span> <span style="${BODY}font-size:11px;font-weight:500;color:${BIZMIS_MUTED_FG_HEX};letter-spacing:0.04em;vertical-align:middle;">${couponCodeEsc}</span>
+                      </td>
+                    </tr>
+                  </table>
+                </td>
+              </tr>
+              <tr>
+                <td style="padding:0 20px 12px 20px;" align="center">
+                  <table role="presentation" cellpadding="0" cellspacing="0" border="0">
+                    <tr>
+                      <td style="background-color:${BIZMIS_FOREGROUND_HEX};padding:13px 32px;border-radius:12px;text-align:center;box-shadow:0 4px 14px -2px rgba(50,40,27,0.2);">
+                        <a href="${shopifyAppUrl}" target="_blank" style="display:inline-block;text-decoration:none;color:#ffffff;">
+                          <table role="presentation" cellpadding="0" cellspacing="0" border="0" align="center" style="margin:0 auto;">
+                            <tr>
+                              <td style="vertical-align:middle;padding-right:10px;">
+                                <img src="${shopifyMarkUrl}" alt="Shopify" width="22" height="22" style="display:block;width:22px;height:22px;border:0;" />
+                              </td>
+                              <td style="vertical-align:middle;${HEADING}font-size:14px;font-weight:600;color:#ffffff;">
+                                ${escapeHtml(copy.ctaLabel)}
+                              </td>
+                            </tr>
+                          </table>
+                        </a>
+                      </td>
+                    </tr>
+                  </table>
+                </td>
+              </tr>
+              <tr>
+                <td style="padding:0 16px 18px 16px;text-align:center;line-height:1.5;">
+                  ${chipStripHtml}
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+
         <!-- Footer (proof + contact + link) -->
         <tr>
           <td style="padding:24px 32px 32px 32px;text-align:center;">
@@ -493,6 +493,8 @@ export function buildLeadPilotInviteEmailHtml(
     buildPilotInviteSalutationPlainText(lead.storeName, lead.leadContactName),
     "",
     buildPilotInviteValueSentencePlainText(lead.storeName, lead.leadContactName),
+    "",
+    ...copy.outcomes,
     "",
     copy.subline,
     "",
