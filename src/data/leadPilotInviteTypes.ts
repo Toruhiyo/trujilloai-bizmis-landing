@@ -50,6 +50,8 @@ export type LeadPilotInviteData = {
   demoProducts: [DemoProductCard, DemoProductCard, DemoProductCard];
   /** Optional explanatory footer line inside the storefront demo mockup. */
   demoFooterLine?: string;
+  /** Optional short cue beside the montage avatar; falls back to `PILOT_INVITE_EMAIL_COPY.montageClerkCueDefault`. */
+  montageClerkCue?: string | null;
   /** Unique per-store Shopify discount code for the pilot */
   couponCode: string;
   batch: number;

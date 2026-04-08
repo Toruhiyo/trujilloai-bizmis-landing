@@ -37,6 +37,20 @@ const BIZMIS_CLERK_AVATAR =
 
 /** Approx rgba(BIZMIS_PRIMARY, 0.06) on white — product tag pills in montage */
 const BIZMIS_PRIMARY_TINT_006 = "#FFF8F1";
+/** Primary-tint card edge on white montage canvas */
+const MONTAGE_CARD_BORDER_HEX = "#F0E0D0";
+/** ProductDiscoverySlide-style browser chrome bar */
+const MONTAGE_CHROME_BG_HEX = "#F1F1F1";
+/** URL field text — slides `text-gray-400` */
+const MONTAGE_CHROME_URL_HEX = "#A3A3A3";
+/** Bar color ≈ hsl(var(--primary) / 0.10) on white */
+const MONTAGE_WAVE_BAR_RGBA = "rgba(249,163,83,0.14)";
+/**
+ * Pixel heights for watermark bars — scaled from ProductDiscoverySlide `HALF_WAVE_HEIGHTS_BOTTOM`.
+ */
+const MONTAGE_WATERMARK_BAR_HEIGHTS_PX = [
+  22, 14, 27, 18, 12, 25, 15, 29, 17, 14, 23, 28, 11, 20, 14, 26, 19, 9, 24, 16, 30, 15, 22, 13, 20, 31, 18, 25, 12, 17, 23, 14, 28, 19, 10, 26, 20, 15, 27, 16, 29, 14, 22, 12, 25, 18, 21, 17,
+] as const;
 /** --foreground HSL(35,30%,15%) pre-baked — warm dark brown */
 const BIZMIS_FOREGROUND_HEX = "#32281B";
 /** Lighter muted for de-emphasized text (footer, captions) */
@@ -102,6 +116,13 @@ function storeLogoEmailMarkup(lead: LeadPilotInviteData): string {
 const HEADING = "font-family:'Plus Jakarta Sans','Poppins',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-serif;";
 const BODY = "font-family:'DM Sans','Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-serif;";
 
+function emailMontageWatermarkBarsHtml(): string {
+  return MONTAGE_WATERMARK_BAR_HEIGHTS_PX.map(
+    (h) =>
+      `<span style="display:inline-block;width:2px;height:${h}px;background-color:${MONTAGE_WAVE_BAR_RGBA};border-radius:9999px;margin:0 1px;vertical-align:bottom;"></span>`,
+  ).join("");
+}
+
 /* ------------------------------------------------------------------ */
 /*  Build product cards HTML for the avatar montage                   */
 /* ------------------------------------------------------------------ */
@@ -115,12 +136,12 @@ function buildMontageProductCardHtml(lead: LeadPilotInviteData, index: number): 
   return `<table role="presentation" cellpadding="0" cellspacing="0" border="0" align="center" style="max-width:168px;margin:0 auto;">
               <tr>
                 <td align="center" style="padding:0 0 2px 0;line-height:1;">
-                  <span style="display:inline-block;background-color:${BIZMIS_PRIMARY_TINT_006};border:1px solid ${COUPON_PILL_BORDER_HEX};border-radius:9999px;padding:2px 8px;${BODY}font-size:7px;font-weight:600;color:${BIZMIS_PRIMARY_DARK_HEX};letter-spacing:0.02em;">${tagEsc}</span>
+                  <span style="display:inline-block;background-color:${BIZMIS_PRIMARY_TINT_006};border:1px solid ${MONTAGE_CARD_BORDER_HEX};border-radius:9999px;padding:2px 8px;${BODY}font-size:7px;font-weight:600;color:${BIZMIS_PRIMARY_DARK_HEX};letter-spacing:0.02em;">${tagEsc}</span>
                 </td>
               </tr>
               <tr>
                 <td style="padding:0;">
-                  <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="border:1px solid ${COUPON_PILL_BORDER_HEX};border-radius:10px;margin-top:-6px;">
+                  <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="border:1px solid ${MONTAGE_CARD_BORDER_HEX};border-radius:10px;margin-top:-6px;">
                     <tr>
                       <td width="44" style="padding:6px 4px 6px 8px;vertical-align:middle;">
                         <img src="${imgUrl}" alt="" width="36" style="display:block;max-width:36px;height:auto;border:0;border-radius:6px;" />
@@ -176,6 +197,7 @@ export function buildLeadPilotInviteEmailHtml(
   const pri = lead.primaryColor;
   const storeNameColor = escapeHtml(resolveStoreNameTextColor(lead));
   const store = escapeHtml(lead.storeName);
+  const domain = escapeHtml(lead.storeDomain);
   const { storeCap, shopifyAppUrl } = PILOT_INVITE_TERMS;
   const copy = PILOT_INVITE_EMAIL_COPY;
 
@@ -188,6 +210,9 @@ export function buildLeadPilotInviteEmailHtml(
     buildMontageProductCardHtml(lead, 1),
     buildMontageProductCardHtml(lead, 2),
   ];
+  const montageClerkCueRaw = lead.montageClerkCue?.trim() || copy.montageClerkCueDefault;
+  const montageClerkCueEsc = escapeHtml(montageClerkCueRaw);
+  const montageWatermarkBarsHtml = emailMontageWatermarkBarsHtml();
   const outcomeIconUrls = [
     absImg(OUTCOME_ICON_TREND),
     absImg(OUTCOME_ICON_HEADPHONES),
@@ -312,30 +337,79 @@ export function buildLeadPilotInviteEmailHtml(
           </td>
         </tr>
 
-        <!-- Clerk avatar montage: 2+1 product triangle left, avatar right -->
+        <!-- Desktop frame: slides-style chrome + single white scene with watermark -->
         <tr>
-          <td style="padding:28px 20px 0 20px;">
-            <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%">
+          <td style="padding:26px 20px 0 20px;">
+            <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="border:1px solid rgba(0,0,0,0.06);border-radius:12px;overflow:hidden;box-shadow:0 8px 40px -8px rgba(0,0,0,0.12);">
               <tr>
-                <td width="56%" style="vertical-align:middle;padding:0 12px 0 0;">
+                <td style="background-color:${MONTAGE_CHROME_BG_HEX};border-bottom:1px solid rgba(0,0,0,0.05);padding:5px 10px;">
                   <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%">
                     <tr>
-                      <td width="50%" style="vertical-align:top;text-align:center;padding:0 4px 0 0;">
-                        ${montageCards[0]}
+                      <td style="vertical-align:middle;white-space:nowrap;padding-right:8px;">
+                        <span style="display:inline-block;width:7px;height:7px;border-radius:50%;background-color:${BIZMIS_PRIMARY_DARK_HEX};margin-right:3px;vertical-align:middle;"></span>
+                        <span style="display:inline-block;width:7px;height:7px;border-radius:50%;background-color:${BIZMIS_PRIMARY_HEX};margin-right:3px;vertical-align:middle;"></span>
+                        <span style="display:inline-block;width:7px;height:7px;border-radius:50%;background-color:${BIZMIS_PRIMARY_LIGHT_HEX};vertical-align:middle;"></span>
                       </td>
-                      <td width="50%" style="vertical-align:top;text-align:center;padding:0 0 0 4px;">
-                        ${montageCards[1]}
-                      </td>
-                    </tr>
-                    <tr>
-                      <td colspan="2" style="vertical-align:top;text-align:center;padding:10px 0 0 0;">
-                        ${montageCards[2]}
+                      <td style="vertical-align:middle;width:99%;padding:0;">
+                        <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="background-color:#ffffff;border-radius:9999px;">
+                          <tr>
+                            <td style="padding:2px 10px;">
+                              <span style="${BODY}font-size:8px;color:${MONTAGE_CHROME_URL_HEX};line-height:1.2;">${domain}</span>
+                            </td>
+                          </tr>
+                        </table>
                       </td>
                     </tr>
                   </table>
                 </td>
-                <td width="44%" style="vertical-align:middle;text-align:center;padding:0;">
-                  <img src="${clerkAvatarUrl}" alt="Bizmis store clerk" width="150" style="display:block;margin:0 auto;max-width:150px;height:auto;border:0;border-radius:12px;" />
+              </tr>
+              <tr>
+                <td bgcolor="#ffffff" style="background-color:#ffffff;padding:14px 16px 0 16px;">
+                  <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%">
+                    <tr>
+                      <td width="56%" style="vertical-align:middle;padding:0 10px 0 0;">
+                        <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" align="center" style="margin:0 auto;">
+                          <tr>
+                            <td width="50%" style="vertical-align:top;text-align:center;padding:0 2px 0 0;">
+                              ${montageCards[0]}
+                            </td>
+                            <td width="50%" style="vertical-align:top;text-align:center;padding:0 0 0 2px;">
+                              ${montageCards[1]}
+                            </td>
+                          </tr>
+                          <tr>
+                            <td colspan="2" style="vertical-align:top;text-align:center;padding:5px 0 0 0;">
+                              ${montageCards[2]}
+                            </td>
+                          </tr>
+                        </table>
+                      </td>
+                      <td width="44%" style="vertical-align:middle;padding:0;text-align:center;">
+                        <img src="${clerkAvatarUrl}" alt="Bizmis store clerk" width="150" style="display:block;margin:0 auto;max-width:150px;height:auto;border:0;border-radius:12px;" />
+                      </td>
+                    </tr>
+                    <tr>
+                      <td colspan="2" style="padding:12px 0 14px 0;text-align:center;position:relative;">
+                        <!--[if !mso]><!-->
+                        <div style="position:relative;display:block;margin:0 auto;max-width:100%;">
+                          <div style="text-align:center;line-height:0;font-size:0;padding:0;height:36px;overflow:hidden;">
+                            ${montageWatermarkBarsHtml}
+                          </div>
+                          <div style="position:absolute;top:0;left:0;right:0;bottom:0;display:flex;align-items:center;justify-content:center;">
+                            <p style="margin:0;${BODY}font-size:11px;font-weight:500;line-height:1;color:${BIZMIS_PRIMARY_DARK_HEX};">
+                              ${montageClerkCueEsc}
+                            </p>
+                          </div>
+                        </div>
+                        <!--<![endif]-->
+                        <!--[if mso]>
+                        <p style="margin:0;${BODY}font-size:11px;font-weight:500;line-height:1.5;color:${BIZMIS_PRIMARY_DARK_HEX};">
+                          ${montageClerkCueEsc}
+                        </p>
+                        <![endif]-->
+                      </td>
+                    </tr>
+                  </table>
                 </td>
               </tr>
             </table>
