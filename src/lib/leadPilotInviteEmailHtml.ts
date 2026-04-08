@@ -61,12 +61,12 @@ const PILOT_INVITE_MONTAGE_WAVEFORM_IMG_H_PX = 42;
 const BIZMIS_FOREGROUND_HEX = "#32281B";
 /** Lighter muted for de-emphasized text (footer, captions) */
 const BIZMIS_MUTED_LIGHT_HEX = "#B5A48E";
-/** Warm neutral replacing cold #f8f8f8 / #f5f5f5 */
-const BIZMIS_WARM_SURFACE_HEX = "#FAF7F4";
 /** Warm shadow matching landing --shadow-soft (orange-tinted) */
 const BIZMIS_SHADOW_SOFT = "0 6px 25px -6px rgba(249,163,83,0.18)";
 /** Softer dashed border for coupon pill — utility, low contrast */
 const COUPON_PILL_BORDER_HEX = "#EBE6DF";
+/** Dashed stroke width for CTA coupon-cutout frame */
+const CTA_COUPON_CUTOUT_BORDER_PX = 2;
 /** Coupon sits on block surface; minimal separation from CTA area */
 const COUPON_PILL_BG_HEX = "#F7F5F2";
 
@@ -452,7 +452,7 @@ export function buildLeadPilotInviteEmailHtml(
         <!-- CTA block: coupon, button, offer chips -->
         <tr>
           <td style="padding:28px 32px 0 32px;" align="center">
-            <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="background-color:${BIZMIS_WARM_SURFACE_HEX};border-radius:14px;">
+            <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="background-color:transparent;border:${CTA_COUPON_CUTOUT_BORDER_PX}px dashed ${COUPON_PILL_BORDER_HEX};border-radius:14px;">
               <tr>
                 <td style="padding:24px 28px 14px 28px;" align="center">
                   <table role="presentation" cellpadding="0" cellspacing="0" border="0">
