@@ -20,7 +20,6 @@ import {
   BIZMIS_PRIMARY_DARK_HEX,
   BIZMIS_PRIMARY_HEX,
   BIZMIS_PRIMARY_LIGHT_HEX,
-  BIZMIS_SECONDARY_SURFACE_HEX,
   BIZMIS_WARM_BG_HEX,
 } from "@/lib/bizmisBrandColors";
 
@@ -32,12 +31,12 @@ const OUTCOME_ICON_TREND = "/images/pilot-invite-outcome-trend.svg";
 const OUTCOME_ICON_HEADPHONES = "/images/pilot-invite-outcome-headphones.svg";
 const OUTCOME_ICON_CHART = "/images/pilot-invite-outcome-chart.svg";
 
-/** Approx rgba(BIZMIS_PRIMARY, 0.08) on white */
-const BIZMIS_PRIMARY_TINT_008 = "#FFF6EE";
-/** Approx rgba(BIZMIS_PRIMARY, 0.06) on white */
+/** Placeholder — will be replaced with a clean Bizmis clerk avatar asset. */
+const BIZMIS_CLERK_AVATAR =
+  "/images/slides/shopify-listing/shopify-personalization-screenshot-outfitters-tablet.png";
+
+/** Approx rgba(BIZMIS_PRIMARY, 0.06) on white — product tag pills in montage */
 const BIZMIS_PRIMARY_TINT_006 = "#FFF8F1";
-/** Approx rgba(BIZMIS_PRIMARY, 0.10) on white */
-const BIZMIS_PRIMARY_TINT_010 = "#FFF3E8";
 /** --foreground HSL(35,30%,15%) pre-baked — warm dark brown */
 const BIZMIS_FOREGROUND_HEX = "#32281B";
 /** Lighter muted for de-emphasized text (footer, captions) */
@@ -50,10 +49,6 @@ const BIZMIS_SHADOW_SOFT = "0 6px 25px -6px rgba(249,163,83,0.18)";
 const COUPON_PILL_BORDER_HEX = "#EBE6DF";
 /** Coupon sits on block surface; minimal separation from CTA area */
 const COUPON_PILL_BG_HEX = "#F7F5F2";
-/** Mockup frame — slightly stronger than card border for product-proof clarity */
-const MOCKUP_FRAME_BORDER_HEX = "#C9BDB0";
-/** Subordinate mockup widget CTA vs main install button */
-const MOCKUP_WIDGET_CTA_BG_HEX = "#6B5E4F";
 
 function escapeHtml(s: string): string {
   return s
@@ -108,49 +103,37 @@ const HEADING = "font-family:'Plus Jakarta Sans','Poppins',-apple-system,BlinkMa
 const BODY = "font-family:'DM Sans','Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-serif;";
 
 /* ------------------------------------------------------------------ */
-/*  Email-safe waveform bars                                          */
+/*  Build product cards HTML for the avatar montage                   */
 /* ------------------------------------------------------------------ */
 
-function emailWaveformBars(color: string, heights: number[]): string {
-  return heights
-    .map(
-      (h) =>
-        `<span style="display:inline-block;width:2px;height:${h}px;background-color:${color};border-radius:1px;margin:0 1px;vertical-align:middle;"></span>`,
-    )
-    .join("");
-}
-
-const LISTENING_BARS = [5, 9, 12, 7, 10];
-const WIDGET_BARS = [3, 6, 9, 5, 7];
-
-/* ------------------------------------------------------------------ */
-/*  Build product cards HTML for the storefront demo                  */
-/* ------------------------------------------------------------------ */
-
-const MOCKUP_PRODUCT_COUNT = 2;
-
-function buildProductCardsHtml(lead: LeadPilotInviteData): string {
+function buildMontageProductCardHtml(lead: LeadPilotInviteData, index: number): string {
   const productImages = [lead.productAImagePath, lead.productBImagePath, lead.productCImagePath];
-  const products = lead.demoProducts.slice(0, MOCKUP_PRODUCT_COUNT);
-
-  return products
-    .map((product, i) => {
-      const imgUrl = absImg(productImages[i]);
-      const mb = i < products.length - 1 ? "margin-bottom:8px;" : "";
-      return `<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="border:1px solid ${COUPON_PILL_BORDER_HEX};border-radius:10px;${mb}">
-            <tr>
-              <td width="48" style="padding:10px 8px 10px 10px;">
-                <img src="${imgUrl}" alt="" width="40" style="display:block;max-width:40px;height:auto;border:0;border-radius:8px;" />
-              </td>
-              <td style="padding:10px 12px 10px 2px;vertical-align:middle;">
-                <p style="margin:0;${BODY}font-size:11px;font-weight:600;color:${BIZMIS_FOREGROUND_HEX};line-height:1.3;">${escapeHtml(product.title)}</p>
-                <p style="margin:3px 0 4px;${BODY}font-size:10px;color:${BIZMIS_MUTED_LIGHT_HEX};">${escapeHtml(product.price)}</p>
-                <span style="display:inline-block;background-color:${BIZMIS_PRIMARY_TINT_006};border-radius:9999px;padding:2px 7px;${BODY}font-size:8px;font-weight:500;color:${BIZMIS_PRIMARY_DARK_HEX};">${escapeHtml(product.tag)}</span>
-              </td>
-            </tr>
-          </table>`;
-    })
-    .join("\n");
+  const product = lead.demoProducts[index];
+  if (!product) return "";
+  const imgUrl = absImg(productImages[index]);
+  const tagEsc = escapeHtml(product.tag);
+  return `<table role="presentation" cellpadding="0" cellspacing="0" border="0" align="center" style="max-width:168px;margin:0 auto;">
+              <tr>
+                <td align="center" style="padding:0 0 2px 0;line-height:1;">
+                  <span style="display:inline-block;background-color:${BIZMIS_PRIMARY_TINT_006};border:1px solid ${COUPON_PILL_BORDER_HEX};border-radius:9999px;padding:2px 8px;${BODY}font-size:7px;font-weight:600;color:${BIZMIS_PRIMARY_DARK_HEX};letter-spacing:0.02em;">${tagEsc}</span>
+                </td>
+              </tr>
+              <tr>
+                <td style="padding:0;">
+                  <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="border:1px solid ${COUPON_PILL_BORDER_HEX};border-radius:10px;margin-top:-6px;">
+                    <tr>
+                      <td width="44" style="padding:6px 4px 6px 8px;vertical-align:middle;">
+                        <img src="${imgUrl}" alt="" width="36" style="display:block;max-width:36px;height:auto;border:0;border-radius:6px;" />
+                      </td>
+                      <td style="padding:6px 8px 6px 2px;vertical-align:middle;">
+                        <p style="margin:0;${BODY}font-size:9px;font-weight:600;color:${BIZMIS_FOREGROUND_HEX};line-height:1.25;">${escapeHtml(product.title)}</p>
+                        <p style="margin:1px 0 0;${BODY}font-size:8px;color:${BIZMIS_MUTED_LIGHT_HEX};">${escapeHtml(product.price)}</p>
+                      </td>
+                    </tr>
+                  </table>
+                </td>
+              </tr>
+            </table>`;
 }
 
 /* ------------------------------------------------------------------ */
@@ -193,22 +176,23 @@ export function buildLeadPilotInviteEmailHtml(
   const pri = lead.primaryColor;
   const storeNameColor = escapeHtml(resolveStoreNameTextColor(lead));
   const store = escapeHtml(lead.storeName);
-  const domain = escapeHtml(lead.storeDomain);
   const { storeCap, shopifyAppUrl } = PILOT_INVITE_TERMS;
   const copy = PILOT_INVITE_EMAIL_COPY;
 
   const storeLogoHtml = storeLogoEmailMarkup(lead);
   const bizmisLogoUrl = absImg(BIZMIS_LOGO_WHITE);
   const shopifyMarkUrl = absImg(SHOPIFY_MARK_WHITE);
-  const productCardsHtml = buildProductCardsHtml(lead);
+  const clerkAvatarUrl = absImg(BIZMIS_CLERK_AVATAR);
+  const montageCards = [
+    buildMontageProductCardHtml(lead, 0),
+    buildMontageProductCardHtml(lead, 1),
+    buildMontageProductCardHtml(lead, 2),
+  ];
   const outcomeIconUrls = [
     absImg(OUTCOME_ICON_TREND),
     absImg(OUTCOME_ICON_HEADPHONES),
     absImg(OUTCOME_ICON_CHART),
   ] as const;
-
-  const listeningBarsHtml = emailWaveformBars(BIZMIS_PRIMARY_HEX, LISTENING_BARS);
-  const widgetBarsHtml = emailWaveformBars("#ffffff", WIDGET_BARS);
 
   const preheader = buildPilotInvitePreheader(lead.storeName, storeCap);
 
@@ -328,89 +312,32 @@ export function buildLeadPilotInviteEmailHtml(
           </td>
         </tr>
 
-        <!-- Storefront demo mockup (after invite — product proof before offer) -->
+        <!-- Clerk avatar montage: 2+1 product triangle left, avatar right -->
         <tr>
-          <td style="padding:26px 28px 0 28px;">
-            <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="border:1px solid ${BIZMIS_BORDER_HEX};border-radius:12px;overflow:hidden;box-shadow:0 2px 10px -3px rgba(50,40,27,0.06);">
-
-              <!-- Browser chrome -->
+          <td style="padding:28px 20px 0 20px;">
+            <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%">
               <tr>
-                <td style="background-color:${BIZMIS_WARM_SURFACE_HEX};border-bottom:1px solid ${COUPON_PILL_BORDER_HEX};padding:7px 14px;">
+                <td width="56%" style="vertical-align:middle;padding:0 12px 0 0;">
                   <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%">
                     <tr>
-                      <td style="vertical-align:middle;">
-                        <span style="display:inline-block;width:5px;height:5px;border-radius:50%;background:${BIZMIS_MUTED_LIGHT_HEX};opacity:0.7;margin-right:3px;"></span>
-                        <span style="display:inline-block;width:5px;height:5px;border-radius:50%;background:${BIZMIS_MUTED_LIGHT_HEX};opacity:0.5;margin-right:3px;"></span>
-                        <span style="display:inline-block;width:5px;height:5px;border-radius:50%;background:${BIZMIS_MUTED_LIGHT_HEX};opacity:0.35;margin-right:8px;"></span>
-                        <span style="${BODY}font-size:9px;color:${BIZMIS_MUTED_LIGHT_HEX};">${domain}</span>
+                      <td width="50%" style="vertical-align:top;text-align:center;padding:0 4px 0 0;">
+                        ${montageCards[0]}
                       </td>
-                      <td style="vertical-align:middle;text-align:right;">
-                        <span style="${BODY}font-size:9px;font-weight:500;color:${BIZMIS_MUTED_LIGHT_HEX};">${escapeHtml(copy.mockupClerkLabel)}</span>
+                      <td width="50%" style="vertical-align:top;text-align:center;padding:0 0 0 4px;">
+                        ${montageCards[1]}
+                      </td>
+                    </tr>
+                    <tr>
+                      <td colspan="2" style="vertical-align:top;text-align:center;padding:10px 0 0 0;">
+                        ${montageCards[2]}
                       </td>
                     </tr>
                   </table>
                 </td>
-              </tr>
-
-              <!-- Two-column content -->
-              <tr>
-                <td style="padding:0;">
-                  <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%">
-                    <tr>
-                      <!-- Left: voice interaction -->
-                      <td width="48%" style="vertical-align:top;padding:14px 8px 14px 14px;">
-                        <!-- Shopper prompt -->
-                        <div style="background-color:${BIZMIS_WARM_SURFACE_HEX};border-radius:10px;padding:10px 12px;margin-bottom:10px;">
-                          <p style="margin:0;${BODY}font-size:10px;line-height:1.55;color:${BIZMIS_MUTED_FG_HEX};">
-                            ${escapeHtml(lead.demoShopperPrompt)}
-                          </p>
-                        </div>
-
-                        <!-- Voice state pill with waveform bars -->
-                        <div style="display:inline-block;background-color:${BIZMIS_PRIMARY_TINT_006};border-radius:9999px;padding:4px 10px;margin-bottom:10px;">
-                          ${listeningBarsHtml}
-                          <span style="${BODY}font-size:9px;font-weight:500;color:${BIZMIS_PRIMARY_HEX};vertical-align:middle;margin-left:4px;">${escapeHtml(copy.voiceListeningLabel)}</span>
-                        </div>
-
-                        <!-- Bizmis reply -->
-                        <div style="background-color:${BIZMIS_PRIMARY_TINT_006};border-radius:10px;padding:10px 12px;border:1px solid ${BIZMIS_PRIMARY_TINT_008};">
-                          <p style="margin:0 0 2px 0;${HEADING}font-size:8px;font-weight:600;color:${BIZMIS_PRIMARY_HEX};letter-spacing:0.03em;">bizmis</p>
-                          <p style="margin:0;${BODY}font-size:10px;line-height:1.55;color:${BIZMIS_MUTED_FG_HEX};">
-                            ${escapeHtml(lead.demoBizmisReply)}
-                          </p>
-                        </div>
-                      </td>
-
-                      <!-- Right: product recommendations -->
-                      <td width="52%" style="vertical-align:top;padding:14px 14px 14px 8px;">
-                        ${productCardsHtml}
-                      </td>
-                    </tr>
-                  </table>
+                <td width="44%" style="vertical-align:middle;text-align:center;padding:0;">
+                  <img src="${clerkAvatarUrl}" alt="Bizmis store clerk" width="150" style="display:block;margin:0 auto;max-width:150px;height:auto;border:0;border-radius:12px;" />
                 </td>
               </tr>
-
-              <!-- Widget footer -->
-              <tr>
-                <td style="border-top:1px solid ${COUPON_PILL_BORDER_HEX};background-color:${BIZMIS_WARM_SURFACE_HEX};padding:8px 14px;text-align:right;">
-                  <div style="display:inline-block;background-color:${MOCKUP_WIDGET_CTA_BG_HEX};border-radius:9999px;padding:4px 10px;">
-                    <table role="presentation" cellpadding="0" cellspacing="0" border="0">
-                      <tr>
-                        <td style="vertical-align:middle;padding-right:4px;">
-                          <img src="${bizmisLogoUrl}" alt="" width="11" height="11" style="display:block;width:11px;height:11px;border:0;opacity:0.95;" />
-                        </td>
-                        <td style="vertical-align:middle;padding-right:5px;">
-                          ${widgetBarsHtml}
-                        </td>
-                        <td style="vertical-align:middle;">
-                          <span style="${BODY}font-size:8px;font-weight:500;color:rgba(255,255,255,0.92);">${escapeHtml(copy.voiceWidgetCta)}</span>
-                        </td>
-                      </tr>
-                    </table>
-                  </div>
-                </td>
-              </tr>
-
             </table>
           </td>
         </tr>
