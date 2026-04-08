@@ -10,6 +10,7 @@
     "build:dev": "npm run sync:lead-product-manifest && vite build --mode development",
     "fetch:lead-pilot-assets": "node scripts/fetch-lead-pilot-assets.mjs",
     "sync:lead-product-manifest": "node scripts/sync-lead-product-manifest.mjs",
+    "generate:montage-waveform": "node scripts/generate-montage-waveform-png.mjs",
     "lint": "eslint .",
     "preview": "vite preview"
   },
