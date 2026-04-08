@@ -268,7 +268,7 @@ export function buildLeadPilotInviteEmailHtml(
                   ${storeLogoHtml}
                 </td>
                 <td width="6%" style="background-color:${pri};background:linear-gradient(to bottom right,${pri} 50%,${BIZMIS_PRIMARY_HEX} 50%);text-align:center;vertical-align:middle;padding:0;">
-                  <span style="${HEADING}font-size:15px;font-weight:400;color:rgba(255,255,255,0.7);line-height:1;">&#x00D7;</span>
+                  <span style="${HEADING}font-size:28px;font-weight:900;color:#ffffff;line-height:1;text-shadow:0 1px 4px rgba(0,0,0,0.25);">&#x2716;</span>
                 </td>
                 <td width="44%" style="background:linear-gradient(145deg,${BIZMIS_PRIMARY_LIGHT_HEX} 0%,${BIZMIS_PRIMARY_HEX} 52%,${BIZMIS_PRIMARY_DARK_HEX} 100%);padding:14px 24px 14px 14px;vertical-align:middle;text-align:right;">
                   <a href="${BIZMIS_URL}" target="_blank" style="text-decoration:none;">
