@@ -20,6 +20,7 @@ import {
   BIZMIS_PRIMARY_DARK_HEX,
   BIZMIS_PRIMARY_HEX,
   BIZMIS_PRIMARY_LIGHT_HEX,
+  BIZMIS_SECONDARY_SURFACE_HEX,
   BIZMIS_WARM_BG_HEX,
 } from "@/lib/bizmisBrandColors";
 
@@ -45,10 +46,14 @@ const BIZMIS_MUTED_LIGHT_HEX = "#B5A48E";
 const BIZMIS_WARM_SURFACE_HEX = "#FAF7F4";
 /** Warm shadow matching landing --shadow-soft (orange-tinted) */
 const BIZMIS_SHADOW_SOFT = "0 6px 25px -6px rgba(249,163,83,0.18)";
-/** Softer dashed border for coupon pill (lighter than BIZMIS_BORDER_HEX) */
-const COUPON_PILL_BORDER_HEX = "#E8DFD4";
-/** Near-white surface so coupon reads lighter than the warm CTA block */
-const COUPON_PILL_BG_HEX = "#FDFCFB";
+/** Softer dashed border for coupon pill — utility, low contrast */
+const COUPON_PILL_BORDER_HEX = "#EBE6DF";
+/** Coupon sits on block surface; minimal separation from CTA area */
+const COUPON_PILL_BG_HEX = "#F7F5F2";
+/** Mockup frame — slightly stronger than card border for product-proof clarity */
+const MOCKUP_FRAME_BORDER_HEX = "#C9BDB0";
+/** Subordinate mockup widget CTA vs main install button */
+const MOCKUP_WIDGET_CTA_BG_HEX = "#6B5E4F";
 
 function escapeHtml(s: string): string {
   return s
@@ -153,8 +158,8 @@ function buildProductCardsHtml(lead: LeadPilotInviteData): string {
 /* ------------------------------------------------------------------ */
 
 function buildPilotInviteChipStripHtml(storeCap: number): string {
-  const sepDotStyle = `display:inline-block;width:4px;height:4px;border-radius:50%;background-color:${BIZMIS_BORDER_HEX};vertical-align:middle;margin:0 8px;`;
-  const textStyle = `${BODY}font-size:11px;font-weight:500;color:${BIZMIS_MUTED_FG_HEX};vertical-align:middle;`;
+  const sepDotStyle = `display:inline-block;width:3px;height:3px;border-radius:50%;background-color:${BIZMIS_MUTED_LIGHT_HEX};vertical-align:middle;margin:0 11px;`;
+  const textStyle = `${BODY}font-size:10px;font-weight:500;color:${BIZMIS_MUTED_FG_HEX};vertical-align:middle;letter-spacing:0.01em;`;
   return buildPilotInviteChips(storeCap)
     .map((phrase) => `<span style="${textStyle}">${escapeHtml(phrase)}</span>`)
     .join(`<span style="${sepDotStyle}"></span>`);
@@ -163,7 +168,7 @@ function buildPilotInviteChipStripHtml(storeCap: number): string {
 function buildPilotInviteOutcomeStripHtml(
   outcomeIconUrls: readonly [string, string, string],
 ): string {
-  const paddings = ["padding:0 16px 0 0;", "padding:0 16px 0 0;", "padding:0;"] as const;
+  const paddings = ["padding:0 22px 0 0;", "padding:0 22px 0 0;", "padding:0;"] as const;
   return PILOT_INVITE_EMAIL_COPY.outcomes
     .map((label, i) => {
       const url = outcomeIconUrls[i];
@@ -171,10 +176,10 @@ function buildPilotInviteOutcomeStripHtml(
       return `<td style="${paddings[i]}vertical-align:middle;">
                   <table role="presentation" cellpadding="0" cellspacing="0" border="0">
                     <tr>
-                      <td style="vertical-align:middle;padding-right:6px;">
-                        <img src="${url}" alt="" width="16" height="16" style="display:block;width:16px;height:16px;border:0;" />
+                      <td style="vertical-align:middle;padding-right:7px;width:18px;">
+                        <img src="${url}" alt="" width="15" height="15" style="display:block;width:15px;height:15px;border:0;opacity:0.92;" />
                       </td>
-                      <td style="vertical-align:middle;${BODY}font-size:12px;font-weight:600;color:${BIZMIS_MUTED_FG_HEX};">${labelEsc}</td>
+                      <td style="vertical-align:middle;${BODY}font-size:11px;font-weight:500;color:${BIZMIS_MUTED_FG_HEX};letter-spacing:0.01em;">${labelEsc}</td>
                     </tr>
                   </table>
                 </td>`;
@@ -214,8 +219,9 @@ export function buildLeadPilotInviteEmailHtml(
 
   const contactFirstName = pilotInviteGreetingFirstName(lead.leadContactName);
   const contactFirstEsc = contactFirstName ? escapeHtml(contactFirstName) : "";
-  const accentInviteSemibold = "font-weight:600;";
-  const salutationEmphasisStyle = `color:${BIZMIS_MUTED_FG_HEX};font-weight:600;`;
+  const accentInviteBizmis = `font-weight:600;color:${BIZMIS_PRIMARY_DARK_HEX};`;
+  const accentInviteStore = `color:${storeNameColor};font-weight:600;`;
+  const salutationEmphasisStyle = `color:${BIZMIS_MUTED_FG_HEX};font-weight:500;`;
   const salutationParagraphInnerHtml = contactFirstName
     ? `${escapeHtml(copy.greetingDear)} <span style="${salutationEmphasisStyle}">${contactFirstEsc}</span>,`
     : `${escapeHtml(copy.greetingDear)} <span style="${salutationEmphasisStyle}">${store}</span> <span style="${salutationEmphasisStyle}">team</span>,`;
@@ -223,14 +229,17 @@ export function buildLeadPilotInviteEmailHtml(
     ? copy.inviteSentenceLeadNamedBeforeBizmis
     : copy.inviteSentenceLeadNoContactBeforeBizmis;
   const bizmisWordEsc = escapeHtml(copy.inviteSentenceBizmisWord);
-  const inviteLeadParagraphInnerHtml = `${escapeHtml(beforeBizmis)}<span style="color:${BIZMIS_PRIMARY_HEX};${accentInviteSemibold}">${bizmisWordEsc}</span>${escapeHtml(copy.inviteSentenceAfterFirstBizmis)}<span style="color:${storeNameColor};${accentInviteSemibold}">${store}</span>${escapeHtml(copy.inviteSentenceAfterStore)}`;
+  const inviteLeadParagraphInnerHtml = `${escapeHtml(beforeBizmis)}<span style="${accentInviteBizmis}">${bizmisWordEsc}</span>${escapeHtml(copy.inviteSentenceAfterFirstBizmis)}<span style="${accentInviteStore}">${store}</span>${escapeHtml(copy.inviteSentenceAfterStore)}`;
 
-  const inviteTopGreetingStyle = `${BODY}font-size:12px;font-weight:400;line-height:1.55;color:${BIZMIS_MUTED_FG_HEX};`;
-  const inviteTopLeadStyle = `${BODY}font-size:17px;font-weight:500;line-height:1.55;color:${BIZMIS_FOREGROUND_HEX};`;
-  const inviteTopSupportStyle = `${BODY}font-size:12px;font-weight:400;line-height:1.65;color:${BIZMIS_MUTED_LIGHT_HEX};`;
+  const inviteTopGreetingStyle = `${BODY}font-size:11px;font-weight:400;line-height:1.6;color:${BIZMIS_MUTED_LIGHT_HEX};`;
+  const inviteTopLeadStyle = `${BODY}font-size:16px;font-weight:500;line-height:1.62;color:${BIZMIS_FOREGROUND_HEX};`;
+  const inviteTopSupportStyle = `${BODY}font-size:11px;font-weight:400;line-height:1.68;color:${BIZMIS_MUTED_LIGHT_HEX};`;
 
-  const inviteTopLeadMeasurePx = 480;
-  const inviteTopSupportMeasurePx = 420;
+  const inviteTopLeadMeasurePx = 432;
+  const inviteTopSupportMeasurePx = 392;
+
+  const softCtaAboveMockupBase = `${BODY}font-size:12px;line-height:1.68;`;
+  const softCtaAboveMockupHtml = `<span style="${softCtaAboveMockupBase}color:${BIZMIS_MUTED_FG_HEX};font-weight:400;"><a href="${shopifyAppUrl}" target="_blank" style="${softCtaAboveMockupBase}color:${BIZMIS_PRIMARY_LIGHT_HEX};font-weight:500;text-decoration:none;">${escapeHtml(copy.softCtaAboveMockupLinkPhrase)}</a>${escapeHtml(copy.softCtaAboveMockupAfterLink)}<span style="font-weight:500;color:${BIZMIS_MUTED_FG_HEX};">${escapeHtml(copy.softCtaAboveMockupEmphasis)}</span></span>`;
 
   const html = `<!DOCTYPE html>
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml">
@@ -256,20 +265,20 @@ export function buildLeadPilotInviteEmailHtml(
           <td style="padding:0;">
             <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%">
               <tr>
-                <td width="50%" style="background-color:${pri};padding:20px 16px 20px 28px;vertical-align:middle;">
+                <td width="50%" style="background-color:${pri};padding:14px 14px 14px 24px;vertical-align:middle;">
                   ${storeLogoHtml}
                 </td>
                 <td width="6%" style="background-color:${pri};background:linear-gradient(to bottom right,${pri} 50%,${BIZMIS_PRIMARY_HEX} 50%);text-align:center;vertical-align:middle;padding:0;">
-                  <span style="${HEADING}font-size:28px;font-weight:900;color:#ffffff;line-height:1;text-shadow:0 1px 4px rgba(0,0,0,0.25);">&#x2716;</span>
+                  <span style="${HEADING}font-size:20px;font-weight:600;color:rgba(255,255,255,0.88);line-height:1;text-shadow:0 1px 2px rgba(0,0,0,0.12);">&#x2716;</span>
                 </td>
-                <td width="44%" style="background:linear-gradient(145deg,${BIZMIS_PRIMARY_LIGHT_HEX} 0%,${BIZMIS_PRIMARY_HEX} 50%,${BIZMIS_PRIMARY_DARK_HEX} 100%);padding:20px 28px 20px 16px;vertical-align:middle;text-align:right;">
+                <td width="44%" style="background:linear-gradient(145deg,${BIZMIS_PRIMARY_LIGHT_HEX} 0%,${BIZMIS_PRIMARY_HEX} 52%,${BIZMIS_PRIMARY_DARK_HEX} 100%);padding:14px 24px 14px 14px;vertical-align:middle;text-align:right;">
                   <a href="${BIZMIS_URL}" target="_blank" style="text-decoration:none;">
                     <table role="presentation" cellpadding="0" cellspacing="0" border="0" align="right">
                       <tr>
                         <td style="vertical-align:middle;">
-                          <img src="${bizmisLogoUrl}" alt="Bizmis" width="36" height="36" style="display:block;width:36px;height:auto;border:0;" />
+                          <img src="${bizmisLogoUrl}" alt="Bizmis" width="32" height="32" style="display:block;width:32px;height:auto;border:0;" />
                         </td>
-                        <td style="vertical-align:middle;padding-left:8px;${HEADING}font-size:20px;font-weight:800;color:#ffffff;letter-spacing:-0.02em;">
+                        <td style="vertical-align:middle;padding-left:7px;${HEADING}font-size:17px;font-weight:700;color:#ffffff;letter-spacing:-0.02em;">
                           bizmis
                         </td>
                       </tr>
@@ -283,7 +292,7 @@ export function buildLeadPilotInviteEmailHtml(
 
         <!-- Salutation (small) -->
         <tr>
-          <td style="padding:28px 32px 0 32px;">
+          <td style="padding:26px 32px 0 32px;">
             <p style="margin:0;${inviteTopGreetingStyle}">
               ${salutationParagraphInnerHtml}
             </p>
@@ -292,7 +301,7 @@ export function buildLeadPilotInviteEmailHtml(
 
         <!-- Invitation sentence (dominant, softened — not hero weight) -->
         <tr>
-          <td style="padding:20px 32px 0 32px;">
+          <td style="padding:30px 32px 0 32px;">
             <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="max-width:${inviteTopLeadMeasurePx}px;">
               <tr>
                 <td style="padding:0;">
@@ -305,24 +314,39 @@ export function buildLeadPilotInviteEmailHtml(
           </td>
         </tr>
 
+        <!-- Soft editorial CTA (above mockup; same URL as install button) -->
+        <tr>
+          <td style="padding:14px 32px 0 32px;">
+            <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="max-width:${inviteTopLeadMeasurePx}px;">
+              <tr>
+                <td style="padding:0;">
+                  <p style="margin:0;">
+                    ${softCtaAboveMockupHtml}
+                  </p>
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+
         <!-- Storefront demo mockup (after invite — product proof before offer) -->
         <tr>
-          <td style="padding:22px 28px 0 28px;">
-            <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="border:1px solid ${BIZMIS_BORDER_HEX};border-radius:16px;overflow:hidden;box-shadow:0 4px 20px -4px rgba(0,0,0,0.06);">
+          <td style="padding:26px 28px 0 28px;">
+            <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="border:1px solid ${MOCKUP_FRAME_BORDER_HEX};border-radius:14px;overflow:hidden;box-shadow:0 2px 14px -3px rgba(50,40,27,0.08),0 0 0 1px rgba(50,40,27,0.04);">
 
               <!-- Browser chrome -->
               <tr>
-                <td style="background-color:${BIZMIS_WARM_SURFACE_HEX};border-bottom:1px solid ${BIZMIS_BORDER_HEX};padding:8px 14px;">
+                <td style="background-color:${BIZMIS_SECONDARY_SURFACE_HEX};border-bottom:1px solid ${BIZMIS_BORDER_HEX};padding:6px 12px;">
                   <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%">
                     <tr>
                       <td style="vertical-align:middle;">
-                        <span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:${BIZMIS_PRIMARY_DARK_HEX};margin-right:4px;"></span>
-                        <span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:${BIZMIS_PRIMARY_HEX};margin-right:4px;"></span>
-                        <span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:${BIZMIS_PRIMARY_LIGHT_HEX};margin-right:8px;"></span>
-                        <span style="${BODY}font-size:10px;color:${BIZMIS_MUTED_LIGHT_HEX};">${domain}</span>
+                        <span style="display:inline-block;width:6px;height:6px;border-radius:50%;background:${BIZMIS_PRIMARY_DARK_HEX};opacity:0.65;margin-right:3px;"></span>
+                        <span style="display:inline-block;width:6px;height:6px;border-radius:50%;background:${BIZMIS_PRIMARY_HEX};opacity:0.55;margin-right:3px;"></span>
+                        <span style="display:inline-block;width:6px;height:6px;border-radius:50%;background:${BIZMIS_PRIMARY_LIGHT_HEX};opacity:0.5;margin-right:7px;"></span>
+                        <span style="${BODY}font-size:9px;color:${BIZMIS_MUTED_LIGHT_HEX};">${domain}</span>
                       </td>
                       <td style="vertical-align:middle;text-align:right;">
-                        <span style="${BODY}font-size:10px;font-weight:600;color:${BIZMIS_MUTED_FG_HEX};">${escapeHtml(copy.mockupClerkLabel)}</span>
+                        <span style="${BODY}font-size:9px;font-weight:500;color:${BIZMIS_MUTED_LIGHT_HEX};">${escapeHtml(copy.mockupClerkLabel)}</span>
                       </td>
                     </tr>
                   </table>
@@ -335,31 +359,31 @@ export function buildLeadPilotInviteEmailHtml(
                   <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%">
                     <tr>
                       <!-- Left: voice interaction -->
-                      <td width="48%" style="vertical-align:top;padding:10px 6px 10px 12px;">
+                      <td width="48%" style="vertical-align:top;padding:12px 8px 12px 14px;">
                         <!-- Shopper prompt -->
-                        <div style="background-color:${BIZMIS_WARM_SURFACE_HEX};border-radius:10px;padding:10px 12px;margin-bottom:10px;">
-                          <p style="margin:0;${BODY}font-size:11px;line-height:1.5;color:${BIZMIS_MUTED_FG_HEX};">
+                        <div style="background-color:${BIZMIS_WARM_SURFACE_HEX};border-radius:10px;padding:11px 13px;margin-bottom:11px;">
+                          <p style="margin:0;${BODY}font-size:11px;line-height:1.52;color:${BIZMIS_MUTED_FG_HEX};">
                             ${escapeHtml(lead.demoShopperPrompt)}
                           </p>
                         </div>
 
                         <!-- Voice state pill with waveform bars -->
-                        <div style="display:inline-block;background-color:${BIZMIS_PRIMARY_TINT_008};border-radius:9999px;padding:4px 12px;margin-bottom:10px;">
+                        <div style="display:inline-block;background-color:${BIZMIS_PRIMARY_TINT_008};border-radius:9999px;padding:5px 12px;margin-bottom:11px;">
                           ${listeningBarsHtml}
-                          <span style="${BODY}font-size:10px;font-weight:600;color:${BIZMIS_PRIMARY_HEX};vertical-align:middle;margin-left:5px;">${escapeHtml(copy.voiceListeningLabel)}</span>
+                          <span style="${BODY}font-size:10px;font-weight:500;color:${BIZMIS_PRIMARY_DARK_HEX};vertical-align:middle;margin-left:5px;">${escapeHtml(copy.voiceListeningLabel)}</span>
                         </div>
 
                         <!-- Bizmis reply -->
-                        <div style="background-color:${BIZMIS_PRIMARY_TINT_006};border-radius:10px;padding:10px 12px;border:1px solid ${BIZMIS_PRIMARY_TINT_010};">
-                          <p style="margin:0 0 2px 0;${HEADING}font-size:9px;font-weight:700;color:${BIZMIS_PRIMARY_HEX};">bizmis</p>
-                          <p style="margin:0;${BODY}font-size:11px;line-height:1.5;color:${BIZMIS_MUTED_FG_HEX};">
+                        <div style="background-color:${BIZMIS_PRIMARY_TINT_006};border-radius:10px;padding:11px 13px;border:1px solid ${BIZMIS_PRIMARY_TINT_010};">
+                          <p style="margin:0 0 3px 0;${HEADING}font-size:8px;font-weight:700;color:${BIZMIS_PRIMARY_DARK_HEX};letter-spacing:0.04em;">bizmis</p>
+                          <p style="margin:0;${BODY}font-size:11px;line-height:1.52;color:${BIZMIS_MUTED_FG_HEX};">
                             ${escapeHtml(lead.demoBizmisReply)}
                           </p>
                         </div>
                       </td>
 
                       <!-- Right: product recommendations -->
-                      <td width="52%" style="vertical-align:top;padding:10px 12px 10px 6px;">
+                      <td width="52%" style="vertical-align:top;padding:12px 14px 12px 8px;">
                         ${productCardsHtml}
                       </td>
                     </tr>
@@ -369,18 +393,18 @@ export function buildLeadPilotInviteEmailHtml(
 
               <!-- Widget footer -->
               <tr>
-                <td style="border-top:1px solid ${BIZMIS_BORDER_HEX};background-color:${BIZMIS_WARM_SURFACE_HEX};padding:10px 14px;text-align:right;">
-                  <div style="display:inline-block;background-color:${BIZMIS_FOREGROUND_HEX};border-radius:9999px;padding:5px 12px;">
+                <td style="border-top:1px solid ${BIZMIS_BORDER_HEX};background-color:${BIZMIS_SECONDARY_SURFACE_HEX};padding:9px 14px;text-align:right;">
+                  <div style="display:inline-block;background-color:${MOCKUP_WIDGET_CTA_BG_HEX};border-radius:9999px;padding:4px 10px;">
                     <table role="presentation" cellpadding="0" cellspacing="0" border="0">
                       <tr>
-                        <td style="vertical-align:middle;padding-right:5px;">
-                          <img src="${bizmisLogoUrl}" alt="" width="12" height="12" style="display:block;width:12px;height:12px;border:0;" />
+                        <td style="vertical-align:middle;padding-right:4px;">
+                          <img src="${bizmisLogoUrl}" alt="" width="11" height="11" style="display:block;width:11px;height:11px;border:0;opacity:0.95;" />
                         </td>
-                        <td style="vertical-align:middle;padding-right:6px;">
+                        <td style="vertical-align:middle;padding-right:5px;">
                           ${widgetBarsHtml}
                         </td>
                         <td style="vertical-align:middle;">
-                          <span style="${BODY}font-size:9px;font-weight:500;color:#ffffff;">${escapeHtml(copy.voiceWidgetCta)}</span>
+                          <span style="${BODY}font-size:8px;font-weight:500;color:rgba(255,255,255,0.92);">${escapeHtml(copy.voiceWidgetCta)}</span>
                         </td>
                       </tr>
                     </table>
@@ -394,7 +418,7 @@ export function buildLeadPilotInviteEmailHtml(
 
         <!-- Value strip (reinforcement after demo, before subline + CTA) -->
         <tr>
-          <td style="padding:20px 32px 0 32px;text-align:center;">
+          <td style="padding:28px 32px 0 32px;text-align:center;">
             <table role="presentation" cellpadding="0" cellspacing="0" border="0" align="center" style="margin:0 auto;">
               <tr>
                 ${outcomeStripInnerHtml}
@@ -405,7 +429,7 @@ export function buildLeadPilotInviteEmailHtml(
 
         <!-- Supporting sentence (subtitle) -->
         <tr>
-          <td style="padding:18px 32px 0 32px;">
+          <td style="padding:30px 32px 0 32px;">
             <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="max-width:${inviteTopSupportMeasurePx}px;">
               <tr>
                 <td style="padding:0;">
@@ -420,24 +444,24 @@ export function buildLeadPilotInviteEmailHtml(
 
         <!-- CTA block: coupon, button, offer chips -->
         <tr>
-          <td style="padding:20px 32px 0 32px;" align="center">
-            <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="background-color:${BIZMIS_WARM_SURFACE_HEX};border-radius:16px;">
+          <td style="padding:28px 32px 0 32px;" align="center">
+            <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="background-color:${BIZMIS_SECONDARY_SURFACE_HEX};border:1px solid ${COUPON_PILL_BORDER_HEX};border-radius:14px;">
               <tr>
-                <td style="padding:18px 20px 12px 20px;" align="center">
+                <td style="padding:22px 24px 16px 24px;" align="center">
                   <table role="presentation" cellpadding="0" cellspacing="0" border="0">
                     <tr>
-                      <td style="background-color:${COUPON_PILL_BG_HEX};border:1px dashed ${COUPON_PILL_BORDER_HEX};border-radius:6px;padding:6px 12px;text-align:center;line-height:1.4;">
-                        <span style="${BODY}font-size:9px;color:${BIZMIS_MUTED_LIGHT_HEX};vertical-align:middle;">${escapeHtml(copy.couponLabel)}</span> <span style="${BODY}font-size:11px;font-weight:500;color:${BIZMIS_MUTED_FG_HEX};letter-spacing:0.04em;vertical-align:middle;">${couponCodeEsc}</span>
+                      <td style="background-color:${COUPON_PILL_BG_HEX};border:1px dashed ${COUPON_PILL_BORDER_HEX};border-radius:8px;padding:8px 14px;text-align:center;line-height:1.45;">
+                        <span style="${BODY}font-size:8px;font-weight:500;color:${BIZMIS_MUTED_LIGHT_HEX};letter-spacing:0.04em;vertical-align:middle;">${escapeHtml(copy.couponLabel)}</span> <span style="${BODY}font-size:10px;font-weight:500;color:${BIZMIS_MUTED_FG_HEX};letter-spacing:0.05em;vertical-align:middle;">${couponCodeEsc}</span>
                       </td>
                     </tr>
                   </table>
                 </td>
               </tr>
               <tr>
-                <td style="padding:0 20px 12px 20px;" align="center">
+                <td style="padding:0 24px 18px 24px;" align="center">
                   <table role="presentation" cellpadding="0" cellspacing="0" border="0">
                     <tr>
-                      <td style="background-color:${BIZMIS_FOREGROUND_HEX};padding:13px 32px;border-radius:12px;text-align:center;box-shadow:0 4px 14px -2px rgba(50,40,27,0.2);">
+                      <td style="background-color:${BIZMIS_FOREGROUND_HEX};padding:14px 34px;border-radius:12px;text-align:center;box-shadow:0 3px 12px -2px rgba(50,40,27,0.16);">
                         <a href="${shopifyAppUrl}" target="_blank" style="display:inline-block;text-decoration:none;color:#ffffff;">
                           <table role="presentation" cellpadding="0" cellspacing="0" border="0" align="center" style="margin:0 auto;">
                             <tr>
@@ -456,7 +480,7 @@ export function buildLeadPilotInviteEmailHtml(
                 </td>
               </tr>
               <tr>
-                <td style="padding:0 16px 18px 16px;text-align:center;line-height:1.5;">
+                <td style="padding:0 20px 22px 20px;text-align:center;line-height:1.65;">
                   ${chipStripHtml}
                 </td>
               </tr>
@@ -466,14 +490,14 @@ export function buildLeadPilotInviteEmailHtml(
 
         <!-- Footer (proof + contact + link) -->
         <tr>
-          <td style="padding:24px 32px 32px 32px;text-align:center;">
-            <p style="margin:0 0 6px 0;${BODY}font-size:12px;line-height:1.55;color:${BIZMIS_MUTED_FG_HEX};">
+          <td style="padding:26px 32px 30px 32px;text-align:center;">
+            <p style="margin:0 0 8px 0;${BODY}font-size:11px;line-height:1.6;color:${BIZMIS_MUTED_LIGHT_HEX};">
               ${escapeHtml(copy.proofLine)}
             </p>
-            <p style="margin:0 0 4px 0;${BODY}font-size:11px;color:${BIZMIS_MUTED_LIGHT_HEX};">
-              Questions? Just reply to this email (<a href="mailto:${escapeHtml(copy.contactEmail)}" style="${BODY}font-size:11px;font-weight:400;color:${BIZMIS_PRIMARY_HEX};text-decoration:none;">${escapeHtml(copy.contactEmail)}</a>).
+            <p style="margin:0 0 5px 0;${BODY}font-size:10px;line-height:1.55;color:${BIZMIS_MUTED_LIGHT_HEX};">
+              Questions? Just reply to this email (<a href="mailto:${escapeHtml(copy.contactEmail)}" style="${BODY}font-size:10px;font-weight:400;color:${BIZMIS_MUTED_FG_HEX};text-decoration:none;">${escapeHtml(copy.contactEmail)}</a>).
             </p>
-            <a href="${BIZMIS_URL}" target="_blank" style="${BODY}font-size:11px;font-weight:600;color:${BIZMIS_PRIMARY_HEX};text-decoration:none;">
+            <a href="${BIZMIS_URL}" target="_blank" style="${BODY}font-size:10px;font-weight:500;color:${BIZMIS_MUTED_FG_HEX};text-decoration:none;">
               bizmis.ai
             </a>
           </td>
@@ -493,6 +517,8 @@ export function buildLeadPilotInviteEmailHtml(
     buildPilotInviteSalutationPlainText(lead.storeName, lead.leadContactName),
     "",
     buildPilotInviteValueSentencePlainText(lead.storeName, lead.leadContactName),
+    "",
+    `${copy.softCtaAboveMockupLinkPhrase} ${shopifyAppUrl}${copy.softCtaAboveMockupAfterLink}${copy.softCtaAboveMockupEmphasis}`,
     "",
     ...copy.outcomes,
     "",
