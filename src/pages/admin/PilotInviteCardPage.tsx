@@ -78,6 +78,12 @@ const PilotInviteCardPage = () => {
           <div className="flex flex-wrap items-start justify-between gap-3">
             <div className="min-w-0 flex-1">
               <h1 className="font-heading text-2xl font-bold text-foreground md:text-3xl">{lead.storeName}</h1>
+              {lead.leadContactName?.trim() ? (
+                <p className="mt-1 font-body text-sm text-muted-foreground">
+                  Invite contact:{" "}
+                  <span className="font-medium text-foreground">{lead.leadContactName.trim()}</span>
+                </p>
+              ) : null}
               <div className="mt-2 flex flex-wrap gap-1.5">
                 <span className="rounded-md bg-muted px-2 py-0.5 font-body text-xs font-medium text-muted-foreground">
                   {lead.country}

@@ -1,9 +1,10 @@
 import {
-  BIZMIS_PRODUCT_NAME,
   buildPilotInviteChips,
   buildPilotInviteFooterPlainText,
-  buildPilotInviteGreetingPlainText,
   buildPilotInvitePreheader,
+  buildPilotInviteSalutationPlainText,
+  buildPilotInviteValueSentencePlainText,
+  pilotInviteGreetingFirstName,
   PILOT_INVITE_EMAIL_COPY,
 } from "@/data/leadPilotInviteCopy";
 import {
@@ -207,10 +208,29 @@ export function buildLeadPilotInviteEmailHtml(
   const preheader = buildPilotInvitePreheader(lead.storeName, storeCap);
 
   const chipStripHtml = buildPilotInviteChipStripHtml(storeCap);
-  const bizmisProductNameEsc = escapeHtml(BIZMIS_PRODUCT_NAME);
   const outcomeStripInnerHtml = buildPilotInviteOutcomeStripHtml(outcomeIconUrls);
 
   const couponCodeEsc = escapeHtml(lead.couponCode.trim());
+
+  const contactFirstName = pilotInviteGreetingFirstName(lead.leadContactName);
+  const contactFirstEsc = contactFirstName ? escapeHtml(contactFirstName) : "";
+  const accentInviteSemibold = "font-weight:600;";
+  const salutationEmphasisStyle = `color:${BIZMIS_MUTED_FG_HEX};font-weight:600;`;
+  const salutationParagraphInnerHtml = contactFirstName
+    ? `${escapeHtml(copy.greetingDear)} <span style="${salutationEmphasisStyle}">${contactFirstEsc}</span>,`
+    : `${escapeHtml(copy.greetingDear)} <span style="${salutationEmphasisStyle}">${store}</span> <span style="${salutationEmphasisStyle}">team</span>,`;
+  const beforeBizmis = contactFirstName
+    ? copy.inviteSentenceLeadNamedBeforeBizmis
+    : copy.inviteSentenceLeadNoContactBeforeBizmis;
+  const bizmisWordEsc = escapeHtml(copy.inviteSentenceBizmisWord);
+  const inviteLeadParagraphInnerHtml = `${escapeHtml(beforeBizmis)}<span style="color:${BIZMIS_PRIMARY_HEX};${accentInviteSemibold}">${bizmisWordEsc}</span>${escapeHtml(copy.inviteSentenceAfterFirstBizmis)}<span style="color:${storeNameColor};${accentInviteSemibold}">${store}</span>${escapeHtml(copy.inviteSentenceAfterStore)}`;
+
+  const inviteTopGreetingStyle = `${BODY}font-size:12px;font-weight:400;line-height:1.55;color:${BIZMIS_MUTED_FG_HEX};`;
+  const inviteTopLeadStyle = `${BODY}font-size:17px;font-weight:500;line-height:1.55;color:${BIZMIS_FOREGROUND_HEX};`;
+  const inviteTopSupportStyle = `${BODY}font-size:12px;font-weight:400;line-height:1.65;color:${BIZMIS_MUTED_LIGHT_HEX};`;
+
+  const inviteTopLeadMeasurePx = 480;
+  const inviteTopSupportMeasurePx = 420;
 
   const html = `<!DOCTYPE html>
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml">
@@ -261,30 +281,42 @@ export function buildLeadPilotInviteEmailHtml(
           </td>
         </tr>
 
-        <!-- Greeting -->
+        <!-- Salutation (small) -->
         <tr>
           <td style="padding:28px 32px 0 32px;">
-            <p style="margin:0;${BODY}font-size:15px;font-weight:500;line-height:1.55;color:${BIZMIS_FOREGROUND_HEX};">
-              ${escapeHtml(copy.invitePrefix)} <span style="color:${storeNameColor};font-weight:700;">${store}</span> ${escapeHtml(copy.inviteJoiner)} <a href="${shopifyAppUrl}" target="_blank" style="${BODY}font-weight:700;color:${BIZMIS_PRIMARY_HEX};text-decoration:none;">${bizmisProductNameEsc}</a> ${escapeHtml(copy.inviteSuffix)}
+            <p style="margin:0;${inviteTopGreetingStyle}">
+              ${salutationParagraphInnerHtml}
             </p>
           </td>
         </tr>
 
-        <!-- Headline -->
+        <!-- Invitation sentence (dominant, softened — not hero weight) -->
         <tr>
-          <td style="padding:16px 32px 0 32px;">
-            <p style="margin:0;${HEADING}font-size:22px;font-weight:700;line-height:1.3;color:${BIZMIS_FOREGROUND_HEX};">
-              ${escapeHtml(copy.headline)}
-            </p>
+          <td style="padding:24px 32px 0 32px;">
+            <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="max-width:${inviteTopLeadMeasurePx}px;">
+              <tr>
+                <td style="padding:0;">
+                  <p style="margin:0;${inviteTopLeadStyle}">
+                    ${inviteLeadParagraphInnerHtml}
+                  </p>
+                </td>
+              </tr>
+            </table>
           </td>
         </tr>
 
-        <!-- Subline -->
+        <!-- Supporting subline (secondary body, slightly narrower) -->
         <tr>
           <td style="padding:14px 32px 0 32px;">
-            <p style="margin:0;${BODY}font-size:14px;line-height:1.65;color:${BIZMIS_MUTED_FG_HEX};">
-              ${escapeHtml(copy.subline)}
-            </p>
+            <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="max-width:${inviteTopSupportMeasurePx}px;">
+              <tr>
+                <td style="padding:0;">
+                  <p style="margin:0;${inviteTopSupportStyle}">
+                    ${escapeHtml(copy.subline)}
+                  </p>
+                </td>
+              </tr>
+            </table>
           </td>
         </tr>
 
@@ -458,9 +490,9 @@ export function buildLeadPilotInviteEmailHtml(
 
   const chipPlainLines = buildPilotInviteChips(storeCap);
   const plainText = [
-    buildPilotInviteGreetingPlainText(lead.storeName),
+    buildPilotInviteSalutationPlainText(lead.storeName, lead.leadContactName),
     "",
-    copy.headline,
+    buildPilotInviteValueSentencePlainText(lead.storeName, lead.leadContactName),
     "",
     copy.subline,
     "",

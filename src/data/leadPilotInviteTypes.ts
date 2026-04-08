@@ -8,6 +8,13 @@ export type LeadPilotInviteData = {
   id: string;
   storeName: string;
   storeDomain: string;
+  /**
+   * When non-empty after trim, the invite greeting addresses this person and
+   * explains the invite is to make Bizmis available on the store.
+   */
+  leadContactName: string | null;
+  /** Reserved for future copy; greeting uses `leadContactName` only for now. */
+  leadContactLastName: string | null;
   /** Custom HTML or plain message; empty uses built-in pilot invite template */
   content: string;
   logoImagePath: string;
