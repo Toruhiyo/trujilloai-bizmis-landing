@@ -2,6 +2,17 @@
 
 Onboard a new lead (or update an existing one) from a store name and URL. The process is split into **automated extraction** (Python) and **cognitive curation** (LLM), following an iterative workflow: extract → review → curate → save → verify.
 
+## Philosophy — Continuous improvement
+
+This pipeline follows a strict iterative improvement cycle:
+
+1. **Manually solve the problem** — analyse the store, look for patterns, identify what can be automated and what requires judgement.
+2. **Automate** what's repetitive to save cognitive load (human or LLM).
+3. **Manually review** every automated output to detect edge cases and errors.
+4. **Improve the automation** with learnings from manual corrections when a pattern emerges. Accept that true edge cases will always need manual fixes — do not over-engineer for marginal gain.
+
+Every time a manual fix is applied, ask: "Could this have been caught by the automation?" If yes and the fix is straightforward, update the extraction code. If not, document it in the "Common edge cases" table below.
+
 ## When to use
 
 Use this skill when the user asks to:
@@ -34,20 +45,28 @@ print(data.summary())
 Review the output summary. It contains:
 - Store name (from OG tags / `<title>`)
 - Theme color and CSS variable colour candidates
-- Logo candidates ranked by score (inline SVGs in header/nav score highest)
+- Logo candidates ranked by score (header images score 50+, favicons score 20–30)
 - Product catalog (title, price, type, image URL)
+
+**Important**: The scraper's best guess may still be wrong. Always visually inspect the store's navbar to verify the logo and colours match. If the scraper only found favicons, find the header logo manually (see Step 2).
 
 ### Step 2 — Curate brand (cognitive — LLM)
 
-Based on the extraction summary, decide:
+**The #1 rule: replicate the store's top navbar.** Open the store in a browser. The invite-card banner and avatar shirt should look like the store's navigation bar — same background colour, same logo in its native colours. If the navbar has a white background with a coloured logo, that's what we reproduce.
+
+Based on the extraction summary **and visual inspection of the store's navbar**, decide:
 
 | Field | Decision criteria |
 |-------|------------------|
-| `primaryColor` | Pick from theme-color, CSS vars, or the dominant brand colour visible on the site. Must be a hex string. |
-| `textColor` | Set to a dark hex (e.g. `#222222`) when primaryColor is very light (white, pastel). Leave `null` otherwise. |
-| `logoColorOverlay` | Set to `#ffffff` when the logo would disappear on the brand colour (e.g. dark logo on dark shirt). Leave `null` to use native logo colours. Match the invite-card header logic. |
-| `leadLogoScale` | Default 1.0. Increase for narrow/small logos (e.g. 1.8 for wide wordmarks). |
+| `primaryColor` | The **navbar background colour**, not the brand's accent colour. Many stores have a white navbar (`#FFFFFF`). This becomes the invite-card banner bg AND the avatar shirt colour. |
+| `textColor` | The store name text colour in the banner. Pick a colour that matches the navbar text or the brand's secondary. Use a dark hex for white/light `primaryColor`. Use the brand accent colour if it provides good readability. |
+| `logoColorOverlay` | Set to `null` (native logo colours) by default. Only tint to `#ffffff` when the native logo colours would be invisible against `primaryColor` (e.g. white logo on white shirt). **Match what the store's navbar actually shows.** |
+| `leadLogoScale` | Default 1.0. Increase for wide horizontal wordmarks (e.g. 1.6–1.8). |
 | `secondaryColor` | Usually `null`. Set only if the brand has a clear secondary colour. |
+
+**Logo selection**: ALWAYS use the full logo as it appears in the store's header/navbar. This is typically a wordmark (icon + text), NOT a favicon. The extraction's `header_img` candidates scored 50+ are preferred. If the scraper only found favicons, manually locate the header logo from the store's HTML or Shopify CDN (`/cdn/shop/files/`). Common patterns:
+- Shopify stores: look for `<img>` in `<header>` → often at `//domain/cdn/shop/files/logo*.svg`
+- Check both the main domain and any shop subdomain (e.g. `us-shop.nanoleaf.me`)
 
 ### Step 3 — Curate products (cognitive — LLM)
 
@@ -56,6 +75,8 @@ From the product list, pick **3 products** that:
 - Are mid-to-high price tier (avoid the cheapest accessories)
 - Represent the store's core offering
 - Would make a compelling recommendation comparison
+
+**CRITICAL: NEVER guess prices.** Every price MUST come from the extraction's product catalog (Step 1) or from the store's Shopify `products.json` API. If the product list is empty (non-Shopify store), browse the store manually and copy-paste exact prices from product pages.
 
 Write each as:
 ```json
@@ -170,18 +191,23 @@ storeDomain        string       Domain without protocol
 leadContactName    string|null  Contact first+last or null
 leadContactLastName string|null Reserved
 content            string       Custom HTML message (usually empty)
-primaryColor       string       Hex colour for brand
+primaryColor       string       Hex — navbar background colour (often #FFFFFF)
 secondaryColor     string|null  Secondary hex or null
 pitchLine          string       One-sentence value prop
 demoShopperPrompt  string       Shopper question for demo
 demoBizmisReply    string       Bizmis follow-up for demo
-demoProducts       array[3]     [{title, price, tag}, ...]
+demoProducts       array[3]     [{title, price, tag}, ...] — prices MUST be exact
 country            string       Market label
 vertical           string       Industry vertical (snake_case)
 subNiche           string       Sub-niche (snake_case, can be empty)
 ```
 
-Optional fields: `textColor`, `logoColorOverlay`, `leadLogoScale`, `demoFooterLine`, `montageClerkCue`.
+Optional fields:
+- `textColor`: store name text colour in banner. Set for white/light `primaryColor`.
+- `logoColorOverlay`: hex to tint the logo. `null` = use native colours. Only set when native colours have poor contrast on `primaryColor`.
+- `leadLogoScale`: logo size multiplier. Default 1.0, increase for wide wordmarks (1.6–1.8).
+- `demoFooterLine`: caption-style rephrase of pitchLine.
+- `montageClerkCue`: custom text for the montage clerk cue.
 
 Derived by the TS loader (NOT stored in JSON):
 - `couponCode`: auto-generated as `BIZMIS-EARLY-ACCESS-<ID_UPPERCASE>`
@@ -217,17 +243,19 @@ scripts/lead_onboarding/
 
 | Issue | Solution |
 |-------|----------|
-| Non-Shopify store (no products.json) | Products list will be empty. Browse the store manually and fill `demoProducts` by hand. |
+| Non-Shopify store (no products.json) | Products list will be empty. Browse the store manually and copy exact prices. NEVER fabricate prices. |
 | Logo is AVIF disguised as PNG | The `early_access_avatars._logo._ensure_real_png` re-encodes on avatar generation. |
-| SVG logo not in header | Increase search scope or download from page source manually. |
-| Very light primaryColor | Set `textColor` to a dark value for readability. |
-| Logo disappears on brand colour | Set `logoColorOverlay` to `#ffffff`. |
+| Scraper only finds favicons, not header logo | Browse the store, inspect the `<header>` / `<nav>` HTML manually. Check shop subdomains (e.g. `us-shop.domain.me`). Shopify logos are usually at `/cdn/shop/files/logo*.svg`. |
+| SVG logo needs PNG conversion | Use `early_access_avatars._logo.svg_to_png(svg_path, png_path, width=400)`. |
+| White navbar = white primaryColor | Set `textColor` to a dark or brand-accent colour. Use `logoColorOverlay: null` so native logo colours show on the white shirt/banner. |
+| Dark navbar = dark primaryColor | Usually the logo is white/light — set `logoColorOverlay: "#ffffff"` if the native logo colours are dark. |
+| Avatar shirt + banner don't match the store | Re-check: `primaryColor` must be the navbar BG, not the brand accent. Logo must be the navbar wordmark. |
+| Product image URLs return 404 | Try the store's shop subdomain CDN. Check that full paths (not truncated) are used. Some stores use different CDN hosts. |
 
-## Iterative improvement process
+## Lessons learned (update as new patterns emerge)
 
-1. Run automated extraction
-2. LLM reviews and curates (cognitive tasks)
-3. Save and generate assets
-4. Visually verify in admin UI
-5. Fix edge cases manually
-6. If a pattern emerges across multiple leads, improve the extraction code
+- **Navbar = brand identity**: The store's top navigation bar is the source of truth for `primaryColor` (its background) and the logo. Many DTC brands have white navbars with coloured logos — do not default to using the brand accent as `primaryColor`.
+- **Favicons ≠ logos**: Favicons are often simplified icons (leaf, monogram). The invite card and avatar need the **full wordmark** as it appears in the navbar.
+- **Prices must be exact**: Even rounding from `$179.99` to `$180` is wrong. Use the exact price string from the API. If uncertain, use the `products.json` price field.
+- **JS-rendered sites**: Static HTTP parsing may miss header images on JS-heavy sites. Always try the Shopify shop subdomain as a fallback — Shopify themes render logos server-side.
+- **Logo colour overlay is about contrast**: If native logo colours are visible on the shirt/banner colour, leave `logoColorOverlay: null`. Only override when contrast is poor.

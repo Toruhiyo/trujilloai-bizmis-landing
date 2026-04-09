@@ -28,9 +28,8 @@ class _LogoExtractor(HTMLParser):
         self._in_header = False
         self._in_nav = False
         self._in_svg = False
-        self._svg_depth = 0
+        self._svg_nesting = 0
         self._svg_parts: list[str] = []
-        self._current_svg_attrs: str = ""
 
     # Public:
 
@@ -44,12 +43,11 @@ class _LogoExtractor(HTMLParser):
 
         if tag == "svg":
             self._in_svg = True
-            self._svg_depth = 1
+            self._svg_nesting += 1
             self._svg_parts = [self._rebuild_tag("svg", attrs)]
             return
 
         if self._in_svg:
-            self._svg_depth += 1
             self._svg_parts.append(self._rebuild_tag(tag, attrs))
             return
 
@@ -57,17 +55,19 @@ class _LogoExtractor(HTMLParser):
             self._handle_link(attr_map)
         elif tag == "meta":
             self._handle_meta(attr_map)
-        elif tag == "img" and (self._in_header or self._in_nav):
-            self._handle_header_img(attr_map)
+        elif tag == "img":
+            self._handle_img(attr_map)
 
     def handle_endtag(self, tag: str) -> None:
         if self._in_svg:
             self._svg_parts.append(f"</{tag}>")
             if tag == "svg":
-                self._svg_depth -= 1
-                if self._svg_depth <= 0:
+                self._svg_nesting -= 1
+                if self._svg_nesting <= 0:
                     self._in_svg = False
                     svg_source = "".join(self._svg_parts)
+                    if _is_ui_icon_svg(svg_source):
+                        return
                     score = 80 if (self._in_header or self._in_nav) else 30
                     self.candidates.append(
                         LogoCandidate(source="inline_svg", url=None, svg_source=svg_source, score=score)
@@ -107,14 +107,27 @@ class _LogoExtractor(HTMLParser):
                 LogoCandidate(source="og_image", url=self._abs(content), svg_source=None, score=10)
             )
 
-    def _handle_header_img(self, attrs: dict[str, str]) -> None:
+    def _handle_img(self, attrs: dict[str, str]) -> None:
         src = attrs.get("src", "")
         if not src:
             return
+
+        in_header_nav = self._in_header or self._in_nav
         alt = attrs.get("alt", "").lower()
-        score = 70 if any(kw in alt for kw in ("logo", "brand", "home")) else 50
+        src_lower = src.lower()
+        has_logo_signal = any(kw in alt for kw in ("logo", "brand", "home")) or "logo" in src_lower
+
+        if in_header_nav:
+            score = 70 if has_logo_signal else 50
+            source = "header_img"
+        elif has_logo_signal:
+            score = 40
+            source = "logo_img"
+        else:
+            return
+
         self.candidates.append(
-            LogoCandidate(source="header_img", url=self._abs(src), svg_source=None, score=score)
+            LogoCandidate(source=source, url=self._abs(src), svg_source=None, score=score)
         )
 
     def _abs(self, href: str) -> str:
@@ -156,7 +169,22 @@ def extract_logos(store_url: str) -> list[LogoCandidate]:
 
 # Private:
 
+_VIEWBOX_RE = re.compile(r'viewBox=["\'](\d+)\s+(\d+)\s+(\d+)\s+(\d+)["\']')
+_UI_ICON_CLASSES = re.compile(r'class="[^"]*\b(icon|menu|search|cart|hamburger|close|arrow)\b', re.IGNORECASE)
+_MIN_LOGO_VIEWBOX_AREA = 1000
 _SIZE_RE = re.compile(r"(\d+)x(\d+)")
+
+
+def _is_ui_icon_svg(svg_source: str) -> bool:
+    """Filter out tiny UI SVGs (search icons, hamburger menus, etc.)."""
+    if _UI_ICON_CLASSES.search(svg_source):
+        return True
+    match = _VIEWBOX_RE.search(svg_source)
+    if match:
+        w, h = int(match.group(3)) - int(match.group(1)), int(match.group(4)) - int(match.group(2))
+        if w * h < _MIN_LOGO_VIEWBOX_AREA:
+            return True
+    return False
 
 
 def _parse_icon_size(sizes_attr: str) -> int:

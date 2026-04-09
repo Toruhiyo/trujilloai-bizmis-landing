@@ -62,7 +62,8 @@ class StoreData:
         lines = [
             f"Store URL: {self.store_url}",
             f"Store name: {self.brand.get('store_name', '?')}",
-            f"Theme color: {self.brand.get('theme_color', 'none')}",
+            f"Theme color (meta): {self.brand.get('theme_color', 'none')}",
+            f"Navbar BG color (inline style): {self.brand.get('navbar_bg_color', 'none — check visually')}",
             f"CSS color candidates: {self.brand.get('css_color_candidates', [])}",
             f"Logo candidates: {len(self.logos)}",
         ]

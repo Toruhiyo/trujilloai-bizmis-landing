@@ -3,10 +3,12 @@
 export type LeadProductSlot = "a" | "b" | "c";
 
 export const LEAD_PRODUCT_URLS: Record<string, Partial<Record<LeadProductSlot, string>>> = {
+  "bluetti": { a: "/invite-cards/leads/bluetti/product-a.webp", b: "/invite-cards/leads/bluetti/product-b.png", c: "/invite-cards/leads/bluetti/product-c.png" },
   "glossier": { a: "/invite-cards/leads/glossier/product-a.jpg", b: "/invite-cards/leads/glossier/product-b.jpg", c: "/invite-cards/leads/glossier/product-c.jpg" },
   "glowforge": { a: "/invite-cards/leads/glowforge/product-a.webp", b: "/invite-cards/leads/glowforge/product-b.webp", c: "/invite-cards/leads/glowforge/product-c.webp" },
   "hodinkee": { a: "/invite-cards/leads/hodinkee/product-a.webp", b: "/invite-cards/leads/hodinkee/product-b.webp", c: "/invite-cards/leads/hodinkee/product-c.webp" },
   "molekule": { a: "/invite-cards/leads/molekule/product-a.webp", b: "/invite-cards/leads/molekule/product-b.webp", c: "/invite-cards/leads/molekule/product-c.webp" },
+  "nanoleaf": { a: "/invite-cards/leads/nanoleaf/product-a.jpg", b: "/invite-cards/leads/nanoleaf/product-b.jpg", c: "/invite-cards/leads/nanoleaf/product-c.png" },
   "peakdesign": { a: "/invite-cards/leads/peakdesign/product-a.webp", b: "/invite-cards/leads/peakdesign/product-b.webp", c: "/invite-cards/leads/peakdesign/product-c.webp" },
   "sennheiser": { a: "/invite-cards/leads/sennheiser/product-a.png", b: "/invite-cards/leads/sennheiser/product-b.png", c: "/invite-cards/leads/sennheiser/product-c.png" },
   "shapermint": { a: "/invite-cards/leads/shapermint/product-a.webp", b: "/invite-cards/leads/shapermint/product-b.webp", c: "/invite-cards/leads/shapermint/product-c.webp" },

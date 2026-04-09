@@ -14,6 +14,7 @@ logger = logging.getLogger(__name__)
 class BrandData(TypedDict, total=False):
     store_name: str | None
     theme_color: str | None
+    navbar_bg_color: str | None
     og_title: str | None
     og_image: str | None
     favicon_url: str | None
@@ -32,6 +33,7 @@ class _MetaExtractor(HTMLParser):
         self.favicon_url: str | None = None
         self.page_title: str | None = None
         self.css_color_candidates: list[str] = []
+        self.navbar_bg_color: str | None = None
         self._in_title = False
         self._title_parts: list[str] = []
         self._in_style = False
@@ -46,6 +48,8 @@ class _MetaExtractor(HTMLParser):
             self._handle_meta(attr_map)
         elif tag == "link":
             self._handle_link(attr_map)
+        elif tag in ("header", "nav") and not self.navbar_bg_color:
+            self._extract_navbar_bg(attr_map)
         elif tag == "title":
             self._in_title = True
             self._title_parts = []
@@ -89,6 +93,16 @@ class _MetaExtractor(HTMLParser):
         if rel in ("icon", "shortcut icon", "apple-touch-icon") and href:
             self.favicon_url = href.strip()
 
+    _BG_COLOR_RE = re.compile(r"background(?:-color)?\s*:\s*(#[0-9a-fA-F]{3,8})")
+
+    def _extract_navbar_bg(self, attrs: dict[str, str]) -> None:
+        style = attrs.get("style", "")
+        if not style:
+            return
+        match = self._BG_COLOR_RE.search(style)
+        if match:
+            self.navbar_bg_color = match.group(1)
+
     _CSS_VAR_PATTERN = re.compile(
         r"--(primary|brand|accent|theme|main)[a-z0-9-]*\s*:\s*(#[0-9a-fA-F]{3,8})",
     )
@@ -117,6 +131,7 @@ def extract_brand(store_url: str) -> BrandData:
     return BrandData(
         store_name=store_name,
         theme_color=parser.theme_color,
+        navbar_bg_color=parser.navbar_bg_color,
         og_title=parser.og_title,
         og_image=parser.og_image,
         favicon_url=parser.favicon_url,

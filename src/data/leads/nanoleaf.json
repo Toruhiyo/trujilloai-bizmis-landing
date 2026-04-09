@@ -1,0 +1,25 @@
+{
+  "id": "nanoleaf",
+  "storeName": "Nanoleaf",
+  "storeDomain": "nanoleaf.me",
+  "leadContactName": null,
+  "leadContactLastName": null,
+  "content": "",
+  "primaryColor": "#FFFFFF",
+  "secondaryColor": null,
+  "textColor": "#3FAE29",
+  "leadLogoScale": 1.8,
+  "pitchLine": "Guide shoppers to the right light panels by room, setup style, and smart-home needs.",
+  "demoShopperPrompt": "I want to set up a gaming wall behind my desk — something modular and colorful.",
+  "demoBizmisReply": "Got it — geometric panels for a mosaic look or sleek backlit lines?",
+  "demoProducts": [
+    { "title": "Shapes Triangles Kit", "price": "$130.00", "tag": "Wall panels" },
+    { "title": "Lines 60° Kit", "price": "$119.99", "tag": "Linear" },
+    { "title": "Blocks Squares Kit", "price": "$179.99", "tag": "Modular" }
+  ],
+  "demoFooterLine": "Guides shoppers by room, style, and smart-home setup.",
+  "montageClerkCue": null,
+  "country": "Canada/USA (global)",
+  "vertical": "consumer_electronics_appliances",
+  "subNiche": "smart_home_lighting"
+}

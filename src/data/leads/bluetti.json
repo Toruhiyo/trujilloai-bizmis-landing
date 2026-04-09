@@ -1,0 +1,25 @@
+{
+  "id": "bluetti",
+  "storeName": "BLUETTI",
+  "storeDomain": "bluettipower.com",
+  "leadContactName": null,
+  "leadContactLastName": null,
+  "content": "",
+  "primaryColor": "#FFFFFF",
+  "secondaryColor": null,
+  "textColor": "#232f3f",
+  "leadLogoScale": 1.6,
+  "pitchLine": "Help shoppers choose the right power station by use case, capacity, and portability.",
+  "demoShopperPrompt": "I need backup power for my home that can also run during outages.",
+  "demoBizmisReply": "Got it — whole-home panel integration or a portable unit you can move around?",
+  "demoProducts": [
+    { "title": "Apex 300", "price": "$1,499", "tag": "Home" },
+    { "title": "AC200L", "price": "$1,099", "tag": "Portable" },
+    { "title": "Elite 300", "price": "$1,199", "tag": "Versatile" }
+  ],
+  "demoFooterLine": "Guides shoppers by use case, capacity, and portability.",
+  "montageClerkCue": null,
+  "country": "US/EU (global)",
+  "vertical": "home_furniture_decor",
+  "subNiche": "portable_power"
+}

@@ -11,6 +11,8 @@ import sixpenny from "./sixpenny.json";
 import shapermint from "./shapermint.json";
 import glossier from "./glossier.json";
 import theproscloset from "./theproscloset.json";
+import nanoleaf from "./nanoleaf.json";
+import bluetti from "./bluetti.json";
 
 const RAW_LEADS: LeadEarlyAccessJson[] = [
   molekule,
@@ -23,6 +25,8 @@ const RAW_LEADS: LeadEarlyAccessJson[] = [
   shapermint,
   glossier,
   theproscloset,
+  nanoleaf,
+  bluetti,
 ];
 
 function couponCode(id: string): string {
