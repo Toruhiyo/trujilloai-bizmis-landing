@@ -13,6 +13,8 @@ import glossier from "./glossier.json";
 import theproscloset from "./theproscloset.json";
 import nanoleaf from "./nanoleaf.json";
 import bluetti from "./bluetti.json";
+import jackery from "./jackery.json";
+import mactools from "./mactools.json";
 
 const RAW_LEADS: LeadEarlyAccessJson[] = [
   molekule,
@@ -27,6 +29,8 @@ const RAW_LEADS: LeadEarlyAccessJson[] = [
   theproscloset,
   nanoleaf,
   bluetti,
+  jackery,
+  mactools,
 ];
 
 function couponCode(id: string): string {

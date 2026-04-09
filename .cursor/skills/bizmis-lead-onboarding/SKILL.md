@@ -52,15 +52,25 @@ Review the output summary. It contains:
 
 ### Step 2 — Curate brand (cognitive — LLM)
 
-**The #1 rule: replicate the store's top navbar.** Open the store in a browser. The invite-card banner and avatar shirt should look like the store's navigation bar — same background colour, same logo in its native colours. If the navbar has a white background with a coloured logo, that's what we reproduce.
+Open the store in a browser and inspect the top navigation bar. The invite-card banner and avatar shirt must look like the store's brand identity. Apply one of two rules:
+
+**Rule A (default) — Navbar has colour.** The navbar itself is coloured (red, dark navy, green…) OR the navbar is white/neutral but the logo displayed on it is colourful (e.g. Nanoleaf's green leaf wordmark, Jackery's orange wordmark). Replicate exactly: `primaryColor` = navbar bg, `logoColorOverlay` = `null` (native colours).
+
+**Rule B (accent exception) — Navbar is colourless but the brand has a clear accent.** The navbar is white/light AND the logo on it is also colourless (plain black/white/grey wordmark), BUT the brand has a strong, distinctive accent colour visible elsewhere on the site (buttons, CTAs, section backgrounds). In this case, use the brand accent as `primaryColor` and tint the logo to contrast against it (`logoColorOverlay: "#ffffff"` for dark accents).
+
+Examples:
+- **Nanoleaf** → Rule A: white navbar + colourful green logo → `primaryColor: #FFFFFF`, `logoColorOverlay: null`
+- **Mac Tools** → Rule A: red navbar + white logo → `primaryColor: #e31837`, `logoColorOverlay: null`
+- **Molekule** → Rule B: white navbar + plain black wordmark, green accent (#108849) → `primaryColor: #108849`, `logoColorOverlay: #ffffff`
+- **Hodinkee** → Rule A: white navbar + black logo, no clear accent → `primaryColor: #FFFFFF`, `logoColorOverlay: null`
 
 Based on the extraction summary **and visual inspection of the store's navbar**, decide:
 
 | Field | Decision criteria |
 |-------|------------------|
-| `primaryColor` | The **navbar background colour**, not the brand's accent colour. Many stores have a white navbar (`#FFFFFF`). This becomes the invite-card banner bg AND the avatar shirt colour. |
-| `textColor` | The store name text colour in the banner. Pick a colour that matches the navbar text or the brand's secondary. Use a dark hex for white/light `primaryColor`. Use the brand accent colour if it provides good readability. |
-| `logoColorOverlay` | Set to `null` (native logo colours) by default. Only tint to `#ffffff` when the native logo colours would be invisible against `primaryColor` (e.g. white logo on white shirt). **Match what the store's navbar actually shows.** |
+| `primaryColor` | **Rule A**: navbar background colour. **Rule B**: brand accent colour. This becomes the invite-card banner bg AND the avatar shirt colour. |
+| `textColor` | Store name text colour in the banner. For white/light `primaryColor`, use the brand accent or a dark colour. For dark `primaryColor`, leave `null` (defaults to white). |
+| `logoColorOverlay` | **Rule A**: `null` (native colours). **Rule B**: `#ffffff` (or whatever contrasts with `primaryColor`). |
 | `leadLogoScale` | Default 1.0. Increase for wide horizontal wordmarks (e.g. 1.6–1.8). |
 | `secondaryColor` | Usually `null`. Set only if the brand has a clear secondary colour. |
 
@@ -247,15 +257,17 @@ scripts/lead_onboarding/
 | Logo is AVIF disguised as PNG | The `early_access_avatars._logo._ensure_real_png` re-encodes on avatar generation. |
 | Scraper only finds favicons, not header logo | Browse the store, inspect the `<header>` / `<nav>` HTML manually. Check shop subdomains (e.g. `us-shop.domain.me`). Shopify logos are usually at `/cdn/shop/files/logo*.svg`. |
 | SVG logo needs PNG conversion | Use `early_access_avatars._logo.svg_to_png(svg_path, png_path, width=400)`. |
-| White navbar = white primaryColor | Set `textColor` to a dark or brand-accent colour. Use `logoColorOverlay: null` so native logo colours show on the white shirt/banner. |
-| Dark navbar = dark primaryColor | Usually the logo is white/light — set `logoColorOverlay: "#ffffff"` if the native logo colours are dark. |
-| Avatar shirt + banner don't match the store | Re-check: `primaryColor` must be the navbar BG, not the brand accent. Logo must be the navbar wordmark. |
+| White navbar + colourful logo | Rule A: `primaryColor: #FFFFFF`, `logoColorOverlay: null`. Set `textColor` to brand accent or dark colour. |
+| White navbar + colourless logo + brand accent | Rule B: `primaryColor` = accent colour, `logoColorOverlay: #ffffff`. |
+| White navbar + colourless logo + no accent | Rule A: `primaryColor: #FFFFFF`, `logoColorOverlay: null`. |
+| Dark/coloured navbar | Rule A: `primaryColor` = navbar bg. Logo is usually white — set `logoColorOverlay: #ffffff` only if native logo is dark. |
+| Avatar shirt + banner don't match the store | First determine Rule A vs B, then re-check all fields. |
 | Product image URLs return 404 | Try the store's shop subdomain CDN. Check that full paths (not truncated) are used. Some stores use different CDN hosts. |
 
 ## Lessons learned (update as new patterns emerge)
 
-- **Navbar = brand identity**: The store's top navigation bar is the source of truth for `primaryColor` (its background) and the logo. Many DTC brands have white navbars with coloured logos — do not default to using the brand accent as `primaryColor`.
+- **Two-rule brand composition**: Rule A (default) replicates the navbar. Rule B (accent exception) uses the brand accent when the navbar is colourless. The key discriminator is whether the logo on the navbar has distinctive colour — if yes, Rule A; if it's plain black/white/grey, check for a brand accent and use Rule B.
 - **Favicons ≠ logos**: Favicons are often simplified icons (leaf, monogram). The invite card and avatar need the **full wordmark** as it appears in the navbar.
 - **Prices must be exact**: Even rounding from `$179.99` to `$180` is wrong. Use the exact price string from the API. If uncertain, use the `products.json` price field.
-- **JS-rendered sites**: Static HTTP parsing may miss header images on JS-heavy sites. Always try the Shopify shop subdomain as a fallback — Shopify themes render logos server-side.
-- **Logo colour overlay is about contrast**: If native logo colours are visible on the shirt/banner colour, leave `logoColorOverlay: null`. Only override when contrast is poor.
+- **JS-rendered sites**: Static HTTP parsing may miss header images on JS-heavy sites. Always try the Shopify shop subdomain as a fallback — Shopify themes render logos server-side. Some logos only exist in marketing PNGs on CDN (e.g. Jackery) — crop as needed.
+- **Logo colour overlay is about contrast**: If native logo colours are visible on the shirt/banner colour, leave `logoColorOverlay: null`. Only override when contrast is poor. For Rule B leads, always set `logoColorOverlay` to a colour that contrasts with `primaryColor`.

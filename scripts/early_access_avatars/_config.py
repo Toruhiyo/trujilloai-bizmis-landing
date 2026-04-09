@@ -63,6 +63,8 @@ LEAD_REGISTRY: list[dict] = [
     {"id": "theproscloset", "primary_color": "#B8F986", "logo_color_overlay": None},
     {"id": "nanoleaf",      "primary_color": "#FFFFFF", "logo_color_overlay": None},
     {"id": "bluetti",       "primary_color": "#FFFFFF", "logo_color_overlay": None},
+    {"id": "jackery",       "primary_color": "#FFFFFF", "logo_color_overlay": None},
+    {"id": "mactools",      "primary_color": "#e31837", "logo_color_overlay": None},
 ]
 
 _LEAD_BY_ID: dict[str, dict] = {lead["id"]: lead for lead in LEAD_REGISTRY}
