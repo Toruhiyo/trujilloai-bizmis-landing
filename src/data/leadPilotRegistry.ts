@@ -3,6 +3,7 @@ import { resolveLeadProductPath } from "./leadPilotProductManifest";
 
 const base = (id: string) => ({
   logoImagePath: `/invite-cards/leads/${id}/logo.png`,
+  clerkAvatarImagePath: `/invite-cards/leads/${id}/clerk-avatar.png`,
   productAImagePath: resolveLeadProductPath(id, "a"),
   productBImagePath: resolveLeadProductPath(id, "b"),
   productCImagePath: resolveLeadProductPath(id, "c"),

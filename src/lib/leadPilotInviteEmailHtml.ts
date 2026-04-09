@@ -32,8 +32,8 @@ const OUTCOME_ICON_TREND = "/images/pilot-invite-outcome-trend.svg";
 const OUTCOME_ICON_HEADPHONES = "/images/pilot-invite-outcome-headphones.svg";
 const OUTCOME_ICON_CHART = "/images/pilot-invite-outcome-chart.svg";
 
-/** Placeholder — will be replaced with a clean Bizmis clerk avatar asset. */
-const BIZMIS_CLERK_AVATAR =
+/** Fallback clerk avatar when a lead-specific render is not yet available. */
+const BIZMIS_CLERK_AVATAR_FALLBACK =
   "/images/slides/shopify-listing/shopify-personalization-screenshot-outfitters-tablet.png";
 
 /** Approx rgba(BIZMIS_PRIMARY, 0.06) on white — product tag pills in montage */
@@ -212,7 +212,7 @@ export function buildLeadPilotInviteEmailHtml(
   const storeLogoHtml = storeLogoEmailMarkup(lead);
   const bizmisLogoUrl = absImg(BIZMIS_LOGO_WHITE);
   const shopifyMarkUrl = absImg(SHOPIFY_MARK_WHITE);
-  const clerkAvatarUrl = absImg(BIZMIS_CLERK_AVATAR);
+  const clerkAvatarUrl = absImg(lead.clerkAvatarImagePath || BIZMIS_CLERK_AVATAR_FALLBACK);
   const montageCards = [
     buildMontageProductCardHtml(lead, 0),
     buildMontageProductCardHtml(lead, 1),
