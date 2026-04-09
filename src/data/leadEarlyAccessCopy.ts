@@ -10,7 +10,7 @@ export const EARLY_ACCESS_EMAIL_COPY = {
   inviteSentenceBizmisWord: "Bizmis",
   inviteSentenceAfterFirstBizmis: " early access for ",
   inviteSentenceAfterStore:
-    " shopify store, where Bizmis voice-first store clerks can help you drive sales and ease your support workload while feeling like a natural extension of your team.",
+    " Shopify store, where Bizmis voice-first store clerks can help you drive sales and ease your support workload while feeling like a natural extension of your team.",
   softCtaAboveMockupLinkPhrase: "Join Bizmis early access",
   softCtaAboveMockupAfterLink: " at no cost and ",
   softCtaAboveMockupEmphasis: "shape the product roadmap around your store\u2019s needs.",
