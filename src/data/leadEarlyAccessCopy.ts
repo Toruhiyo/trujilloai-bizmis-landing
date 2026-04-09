@@ -9,8 +9,13 @@ export const EARLY_ACCESS_EMAIL_COPY = {
   inviteSentenceLeadNoContactBeforeBizmis: "We\u2019d love to invite you into ",
   inviteSentenceBizmisWord: "Bizmis",
   inviteSentenceAfterFirstBizmis: " early access for ",
-  inviteSentenceAfterStore:
-    " Shopify store, where Bizmis voice-first store clerks can help you drive sales and ease your support workload while feeling like a natural extension of your team.",
+  inviteSentenceAfterStorePreValue:
+    " Shopify store, where Bizmis voice-first store clerks can help you ",
+  inviteSentenceValueDriveSales: "drive sales",
+  inviteSentenceValueJoiner: " and ",
+  inviteSentenceValueEaseSupport: "ease your support workload",
+  inviteSentenceAfterStorePostValue:
+    " while feeling like a natural extension of your team.",
   softCtaAboveMockupLinkPhrase: "Join Bizmis early access",
   softCtaAboveMockupAfterLink: " at no cost and ",
   softCtaAboveMockupEmphasis: "shape the product roadmap around your store\u2019s needs.",
@@ -57,7 +62,7 @@ export function buildEarlyAccessValueSentencePlainText(
   const beforeBizmis = contactFirst
     ? c.inviteSentenceLeadNamedBeforeBizmis
     : c.inviteSentenceLeadNoContactBeforeBizmis;
-  return `${beforeBizmis}${c.inviteSentenceBizmisWord}${c.inviteSentenceAfterFirstBizmis}${storeName}${c.inviteSentenceAfterStore}`;
+  return `${beforeBizmis}${c.inviteSentenceBizmisWord}${c.inviteSentenceAfterFirstBizmis}${storeName}${c.inviteSentenceAfterStorePreValue}${c.inviteSentenceValueDriveSales}${c.inviteSentenceValueJoiner}${c.inviteSentenceValueEaseSupport}${c.inviteSentenceAfterStorePostValue}`;
 }
 
 export function buildEarlyAccessChips(storeCap: number): readonly [string, string, string] {
