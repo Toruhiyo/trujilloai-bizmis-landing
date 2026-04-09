@@ -1,0 +1,86 @@
+---
+name: bizmis-avatar-render
+description: >-
+  Renders Bizmis 3D avatar marketing images via the studio repo's Python API.
+  Covers avatar-only PNGs, branded shirt colors, logo stamps, widget composites,
+  and batch per-lead generation. Use when the user asks to generate, render, or
+  tweak avatar images, clerk mockups, marketing renders, invite card avatars,
+  or any Blender-based Bizmis visual asset.
+---
+
+# Bizmis avatar render
+
+## How it works
+
+A sibling repo (`trujilloai-bizmis-studio`) exposes a Python API that drives
+Blender headless renders. This project only **imports** from it — never write
+or create files inside the studio repo.
+
+## Before every render task
+
+1. **Read the renderer docs** (they evolve with the studio repo):
+
+   `/Users/oriol/Projects/Bizmis/trujilloai-bizmis-studio/docs/MARKETING_RENDERER.md`
+
+   This is the single source of truth for the full API signature, available
+   avatars, animations, framing presets, lighting presets, shirt stamps,
+   mesh color names, camera system, and CLI examples. **Always re-read it**
+   at the start of a render task — do not rely on memorized parameter lists.
+
+2. **Check available avatars** if the docs don't have an up-to-date table:
+
+   ```bash
+   /Users/oriol/Projects/Bizmis/trujilloai-bizmis-studio/.venv/bin/python -c \
+       "import sys; sys.path.insert(0,'/Users/oriol/Projects/Bizmis/trujilloai-bizmis-studio'); from marketing.render import list_avatars; print(list_avatars())"
+   ```
+
+## Calling the renderer
+
+- **Python API** (preferred): `from marketing.render import render_avatar`
+- **Interpreter:** always use the studio venv:
+  `/Users/oriol/Projects/Bizmis/trujilloai-bizmis-studio/.venv/bin/python`
+- **Import path:** prepend the studio root to `sys.path` at runtime.
+
+### Minimal example
+
+```python
+import sys
+from pathlib import Path
+
+sys.path.insert(0, "/Users/oriol/Projects/Bizmis/trujilloai-bizmis-studio")
+from marketing.render import render_avatar
+
+render_avatar("will", "/absolute/path/to/output.png",
+              animation="presenting_left", animation_progress=0.50,
+              framing="full_body")
+```
+
+## Output rules
+
+- All generated images go inside **this** repo (the landing repo), typically
+  under `public/images/` or a dedicated subfolder like
+  `public/images/invite-card-avatar-tests/`.
+- Render scripts themselves live in `scripts/` in this repo.
+- **Never create, edit, or delete any file** inside
+  `/Users/oriol/Projects/Bizmis/trujilloai-bizmis-studio/`.
+
+## Lead brand data
+
+The lead registry at `src/data/leadPilotRegistry.ts` has per-lead:
+
+- `primaryColor` — use as `mesh_colors.Shirt_Color`
+- logo PNGs at `public/invite-cards/leads/<id>/logo.png` — use as `shirt_stamp`
+
+## Batch renders
+
+When generating images for all leads, loop over the registry data, map each
+lead's brand color + logo to `render_avatar` params, and write outputs to a
+consistent naming scheme (e.g. `<lead-id>-clerk.png`).
+
+## Troubleshooting
+
+- If Blender is not found, check that `/Applications/Blender.app` exists or
+  pass `blender_path=` explicitly.
+- If a render fails with NLA or animation errors, re-read the "Animation
+  Evaluation" section in `MARKETING_RENDERER.md` — the studio repo may have
+  updated its workaround.
