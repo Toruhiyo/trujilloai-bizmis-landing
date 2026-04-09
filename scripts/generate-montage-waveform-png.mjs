@@ -1,5 +1,5 @@
 /**
- * Renders the pilot-invite montage waveform as a flat PNG so the email HTML
+ * Renders the early-access invite montage waveform as a flat PNG so the email HTML
  * stays small (avoids hundreds of nested table cells). Regenerate after changing
  * the bar pattern — keep in sync: 3px bars, 1px gap each side, track height below,
  * two cycles of the base pattern, horizontal edge fade via SVG mask.
@@ -59,7 +59,7 @@ const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${IMG_W}" height="${
   <g mask="url(#waveformFade)">${rects}</g>
 </svg>`;
 
-const outPath = join(ROOT, "public/images/pilot-invite-montage-waveform.png");
+const outPath = join(ROOT, "public/images/early-access-montage-waveform.png");
 const png = await sharp(Buffer.from(svg)).png({ compressionLevel: 9, effort: 10 }).toBuffer();
 writeFileSync(outPath, png);
 process.stdout.write(`Wrote ${outPath} (${png.length} bytes, ${IMG_W}×${TRACK_H})\n`);

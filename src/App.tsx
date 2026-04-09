@@ -14,7 +14,7 @@ import Slides from "./pages/Slides";
 import ShopifyDeck from "./pages/slides/ShopifyDeck";
 import AdminProtectedRoute from "./components/admin/AdminProtectedRoute";
 import InviteCardsIndex from "./pages/admin/InviteCardsIndex";
-import PilotInviteCardPage from "./pages/admin/PilotInviteCardPage";
+import EarlyAccessCardPage from "./pages/admin/EarlyAccessCardPage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -39,7 +39,7 @@ const App = () => (
             <Route path="slides/shopify" element={<ShopifyDeck />} />
             <Route path="invite-cards" element={<Outlet />}>
               <Route index element={<InviteCardsIndex />} />
-              <Route path="pilot/:leadId" element={<PilotInviteCardPage />} />
+              <Route path="early-access/:leadId" element={<EarlyAccessCardPage />} />
             </Route>
           </Route>
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}

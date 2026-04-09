@@ -1,0 +1,25 @@
+{
+  "id": "molekule",
+  "storeName": "Molekule",
+  "storeDomain": "molekule.com",
+  "leadContactName": null,
+  "leadContactLastName": null,
+  "content": "",
+  "primaryColor": "#108849",
+  "secondaryColor": null,
+  "logoColorOverlay": "#ffffff",
+  "leadLogoScale": 1.8,
+  "pitchLine": "Help shoppers choose the right purifier by room size, allergy needs, and budget.",
+  "demoShopperPrompt": "I need a purifier for a 600 sq ft bedroom — allergies are bad this season.",
+  "demoBizmisReply": "Got it — HEPA filtration only or the deeper PECO oxidation layer?",
+  "demoProducts": [
+    { "title": "Air Mini+", "price": "$499", "tag": "Allergies" },
+    { "title": "Air Pro", "price": "$799", "tag": "Large room" },
+    { "title": "Air Mini", "price": "$399", "tag": "Best value" }
+  ],
+  "demoFooterLine": "Guides shoppers by room size, allergy needs, and budget.",
+  "montageClerkCue": null,
+  "country": "USA (global)",
+  "vertical": "consumer_electronics_appliances",
+  "subNiche": "air_purifiers_subscriptions"
+}

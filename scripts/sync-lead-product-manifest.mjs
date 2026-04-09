@@ -1,13 +1,13 @@
 #!/usr/bin/env node
 /**
  * Scans public/invite-cards/leads/<id>/product-a|b|c.<ext> and writes
- * src/data/leadPilotProductManifest.ts so product image paths are extension-agnostic
- * in application code (registry uses resolveLeadProductPath only).
+ * src/data/leadEarlyAccessProductManifest.ts so product image paths are extension-agnostic
+ * in application code (loader uses resolveLeadProductPath only).
  *
  * Preference when multiple extensions exist: .webp, .jpg, .jpeg, .png
  *
  * Run: node scripts/sync-lead-product-manifest.mjs
- * (Also runs after npm run fetch:lead-pilot-assets and before vite build.)
+ * (Also runs after npm run fetch:lead-early-access-assets and before vite build.)
  */
 import fs from "node:fs";
 import path from "node:path";
@@ -16,7 +16,7 @@ import { fileURLToPath } from "node:url";
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, "..");
 const LEADS_DIR = path.join(ROOT, "public", "invite-cards", "leads");
-const OUT_FILE = path.join(ROOT, "src", "data", "leadPilotProductManifest.ts");
+const OUT_FILE = path.join(ROOT, "src", "data", "leadEarlyAccessProductManifest.ts");
 
 const EXT_ORDER = [".webp", ".jpg", ".jpeg", ".png"];
 const SLOTS = ["a", "b", "c"];

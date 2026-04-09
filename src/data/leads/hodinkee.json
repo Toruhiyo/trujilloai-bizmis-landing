@@ -1,0 +1,24 @@
+{
+  "id": "hodinkee",
+  "storeName": "Hodinkee",
+  "storeDomain": "hodinkee.com",
+  "leadContactName": null,
+  "leadContactLastName": null,
+  "content": "",
+  "primaryColor": "#FFFFFF",
+  "secondaryColor": null,
+  "textColor": "#222222",
+  "pitchLine": "Guide collectors through your catalog by brand, movement, complication, and price range.",
+  "demoShopperPrompt": "Looking for a dress watch under $5,000 — clean dial, thin case.",
+  "demoBizmisReply": "Got it — manual wind for the ritual or automatic for convenience?",
+  "demoProducts": [
+    { "title": "Nomos Tangente", "price": "$2,680", "tag": "Dress" },
+    { "title": "Max Bill Auto", "price": "$1,295", "tag": "Minimal" },
+    { "title": "De Ville", "price": "$4,200", "tag": "Classic" }
+  ],
+  "demoFooterLine": "Guides collectors by brand, movement, and price range.",
+  "montageClerkCue": null,
+  "country": "USA",
+  "vertical": "jewelry_luxury",
+  "subNiche": "watches_media_marketplace"
+}

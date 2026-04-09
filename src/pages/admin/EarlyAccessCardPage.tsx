@@ -3,8 +3,8 @@ import { Link, useParams } from "react-router-dom";
 import { ExternalLink, Copy, Check } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
-import { getLeadPilotById } from "@/data/leadPilotRegistry";
-import { buildLeadPilotInviteEmailHtml, copyLeadPilotHtmlSource } from "@/lib/leadPilotInviteEmailHtml";
+import { getLeadById } from "@/data/leads";
+import { buildLeadEarlyAccessEmailHtml, copyLeadEarlyAccessHtmlSource } from "@/lib/leadEarlyAccessEmailHtml";
 import NotFound from "@/pages/NotFound";
 
 function formatTag(raw: string): string {
@@ -16,9 +16,9 @@ function formatBytes(bytes: number): string {
   return `${(bytes / 1024).toFixed(1)} KB`;
 }
 
-const PilotInviteCardPage = () => {
+const EarlyAccessCardPage = () => {
   const { leadId } = useParams<{ leadId: string }>();
-  const lead = leadId ? getLeadPilotById(leadId) : undefined;
+  const lead = leadId ? getLeadById(leadId) : undefined;
   const [copying, setCopying] = useState(false);
   const [copied, setCopied] = useState(false);
   const iframeRef = useRef<HTMLIFrameElement>(null);
@@ -26,7 +26,7 @@ const PilotInviteCardPage = () => {
 
   const emailData = useMemo(() => {
     if (!lead) return null;
-    return buildLeadPilotInviteEmailHtml(lead);
+    return buildLeadEarlyAccessEmailHtml(lead);
   }, [lead]);
 
   const htmlSizeBytes = useMemo(() => {
@@ -46,7 +46,7 @@ const PilotInviteCardPage = () => {
     setCopying(true);
     setCopied(false);
     try {
-      await copyLeadPilotHtmlSource(lead);
+      await copyLeadEarlyAccessHtmlSource(lead);
       setCopied(true);
       toast.success("HTML source copied — paste into your email platform's HTML editor");
       setTimeout(() => setCopied(false), 3000);
@@ -97,7 +97,7 @@ const PilotInviteCardPage = () => {
                   </span>
                 )}
                 <span className="rounded-md bg-muted px-2 py-0.5 font-body text-xs text-muted-foreground">
-                  Batch {lead.batch} · #{lead.orderInBatch}
+                  #{lead.orderInBatch}
                 </span>
               </div>
             </div>
@@ -162,4 +162,4 @@ const PilotInviteCardPage = () => {
   );
 };
 
-export default PilotInviteCardPage;
+export default EarlyAccessCardPage;

@@ -1,13 +1,13 @@
 import { Link } from "react-router-dom";
 import { ExternalLink } from "lucide-react";
-import { LEAD_PILOT_INVITES } from "@/data/leadPilotRegistry";
+import { LEAD_EARLY_ACCESS_INVITES } from "@/data/leads";
 
 function formatTag(raw: string): string {
   return raw.replace(/_/g, " ");
 }
 
 const InviteCardsIndex = () => {
-  const sorted = [...LEAD_PILOT_INVITES].sort((a, b) => a.orderInBatch - b.orderInBatch);
+  const sorted = [...LEAD_EARLY_ACCESS_INVITES].sort((a, b) => a.orderInBatch - b.orderInBatch);
 
   return (
     <div className="min-h-screen bg-background px-4 py-10 md:px-8">
@@ -19,14 +19,14 @@ const InviteCardsIndex = () => {
         </p>
         <h1 className="mb-2 font-heading text-3xl font-bold text-foreground">Invite cards</h1>
         <p className="mb-8 font-body text-sm text-muted-foreground">
-          Pilot program lead cards — open a store to preview and copy email-safe HTML.
+          Early access program lead cards — open a store to preview and copy email-safe HTML.
         </p>
         <ul className="space-y-2">
           {sorted.map((lead) => (
             <li key={lead.id} className="group rounded-xl border border-border bg-card transition-colors hover:border-primary/40 hover:bg-muted/30">
               <div className="flex items-start justify-between gap-3 px-4 py-3">
                 <Link
-                  to={`/admin/invite-cards/pilot/${lead.id}`}
+                  to={`/admin/invite-cards/early-access/${lead.id}`}
                   className="min-w-0 flex-1"
                 >
                   <span className="font-body text-sm font-semibold text-foreground group-hover:text-primary">

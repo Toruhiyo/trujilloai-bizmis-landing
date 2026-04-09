@@ -1,0 +1,24 @@
+{
+  "id": "peakdesign",
+  "storeName": "Peak Design",
+  "storeDomain": "peakdesign.com",
+  "leadContactName": null,
+  "leadContactLastName": null,
+  "content": "",
+  "primaryColor": "#1A1A1A",
+  "secondaryColor": null,
+  "logoColorOverlay": "#ffffff",
+  "pitchLine": "Help photographers and travelers find the right bag, strap, or mount for their setup.",
+  "demoShopperPrompt": "I need a bag for my mirrorless camera that works for travel and daily.",
+  "demoBizmisReply": "Got it — sling for quick access or backpack for all-day carry?",
+  "demoProducts": [
+    { "title": "Everyday Sling", "price": "$99", "tag": "Daily" },
+    { "title": "Everyday Backpack", "price": "$289", "tag": "Travel" },
+    { "title": "Travel Backpack", "price": "$299", "tag": "Adventure" }
+  ],
+  "demoFooterLine": "Guides photographers by gear, style, and carry preference.",
+  "montageClerkCue": null,
+  "country": "USA",
+  "vertical": "photography_creator",
+  "subNiche": "photography_creator_gear"
+}

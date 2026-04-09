@@ -1,0 +1,23 @@
+{
+  "id": "sodastream",
+  "storeName": "SodaStream",
+  "storeDomain": "sodastream.com",
+  "leadContactName": null,
+  "leadContactLastName": null,
+  "content": "",
+  "primaryColor": "#00205B",
+  "secondaryColor": null,
+  "pitchLine": "Help customers pick the right sparkling-water maker, gas refills, and flavor packs.",
+  "demoShopperPrompt": "I want to stop buying bottled sparkling water — where do I start?",
+  "demoBizmisReply": "Got it — just plain sparkling or flavored drinks too?",
+  "demoProducts": [
+    { "title": "Terra", "price": "$89", "tag": "Starter" },
+    { "title": "Art", "price": "$149", "tag": "Design" },
+    { "title": "Duo", "price": "$179", "tag": "Versatile" }
+  ],
+  "demoFooterLine": "Guides customers through makers, gas refills, and flavor packs.",
+  "montageClerkCue": null,
+  "country": "Global",
+  "vertical": "consumer_electronics_appliances",
+  "subNiche": "kitchen_appliance_beverage"
+}

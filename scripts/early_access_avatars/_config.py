@@ -43,7 +43,7 @@ RENDER_DEFAULTS: dict = {
 }
 
 # ── Lead registry ────────────────────────────────────────────────────
-# Mirrors the TypeScript registry at src/data/leadPilotRegistry.ts.
+# Mirrors the per-lead JSON files at src/data/leads/<id>.json.
 #
 # • primary_color   → shirt mesh color + widget button color
 # • logo_color_overlay → when set, the logo stamp is tinted to this hex

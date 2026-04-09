@@ -1,0 +1,23 @@
+{
+  "id": "shapermint",
+  "storeName": "Shapermint",
+  "storeDomain": "shapermint.com",
+  "leadContactName": null,
+  "leadContactLastName": null,
+  "content": "",
+  "primaryColor": "#F8A08E",
+  "secondaryColor": null,
+  "pitchLine": "Guide shoppers to the right shapewear by body type, occasion, and comfort level.",
+  "demoShopperPrompt": "I need something smoothing under a fitted dress for a wedding.",
+  "demoBizmisReply": "Got it — full bodysuit or just a high-waist shaper?",
+  "demoProducts": [
+    { "title": "Empetua Bodysuit", "price": "$39", "tag": "Event" },
+    { "title": "All Day Shaper", "price": "$29", "tag": "Everyday" },
+    { "title": "High-Waist Short", "price": "$34", "tag": "Best value" }
+  ],
+  "demoFooterLine": "Guides shoppers by body type, occasion, and comfort level.",
+  "montageClerkCue": null,
+  "country": "USA",
+  "vertical": "beauty_personal_care",
+  "subNiche": "shapewear_intimates"
+}

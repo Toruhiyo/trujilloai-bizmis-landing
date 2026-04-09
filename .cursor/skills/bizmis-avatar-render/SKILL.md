@@ -95,7 +95,7 @@ lighting, expression etc. for all leads, edit this dict.
 
 ### Lead registry (`_config.py :: LEAD_REGISTRY`)
 
-Mirrors `src/data/leadPilotRegistry.ts`.  Per-lead fields:
+Mirrors the per-lead JSON files at `src/data/leads/<id>.json`.  Per-lead fields:
 
 | Field                | Purpose                                           |
 |----------------------|---------------------------------------------------|
@@ -111,9 +111,9 @@ Each lead's avatar is written to:
 public/invite-cards/leads/<id>/clerk-avatar.png
 ```
 
-Referenced by the TS field `clerkAvatarImagePath` (set in `base()` in
-`src/data/leadPilotRegistry.ts`) and consumed by the email HTML in
-`src/lib/leadPilotInviteEmailHtml.ts`.
+Referenced by the TS field `clerkAvatarImagePath` (derived by the loader in
+`src/data/leads/index.ts`) and consumed by the email HTML in
+`src/lib/leadEarlyAccessEmailHtml.ts`.
 
 ## Output rules
 

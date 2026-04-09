@@ -1,0 +1,24 @@
+{
+  "id": "sixpenny",
+  "storeName": "Sixpenny",
+  "storeDomain": "sixpenny.com",
+  "leadContactName": null,
+  "leadContactLastName": null,
+  "content": "",
+  "primaryColor": "#3C392D",
+  "secondaryColor": null,
+  "logoColorOverlay": "#ffffff",
+  "pitchLine": "Help shoppers choose the right sofa by room size, fabric, and lifestyle needs.",
+  "demoShopperPrompt": "I need a sofa for a small living room — two adults and a dog.",
+  "demoBizmisReply": "Got it — performance fabric for the pup or a luxe velvet feel?",
+  "demoProducts": [
+    { "title": "Neva Sofa", "price": "$2,895", "tag": "Compact" },
+    { "title": "Mina Sectional", "price": "$4,495", "tag": "Family" },
+    { "title": "Noah Loveseat", "price": "$2,195", "tag": "Best value" }
+  ],
+  "demoFooterLine": "Guides shoppers by room size, fabric, and lifestyle needs.",
+  "montageClerkCue": null,
+  "country": "USA",
+  "vertical": "home_furniture_decor",
+  "subNiche": "furniture_sofas"
+}

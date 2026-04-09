@@ -6,7 +6,7 @@
  * Uses explicit overrides per store for reliability. Falls back to
  * Shopify products.json for product images on Shopify stores.
  *
- * Run: node scripts/fetch-lead-pilot-assets.mjs
+ * Run: node scripts/fetch-lead-early-access-assets.mjs
  * Finishes by running sync-lead-product-manifest.mjs (extension-agnostic product URLs).
  */
 import { execSync } from "node:child_process";

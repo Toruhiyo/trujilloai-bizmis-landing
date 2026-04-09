@@ -1,0 +1,24 @@
+{
+  "id": "glowforge",
+  "storeName": "Glowforge",
+  "storeDomain": "glowforge.com",
+  "leadContactName": null,
+  "leadContactLastName": null,
+  "content": "",
+  "primaryColor": "#27B8CE",
+  "secondaryColor": null,
+  "logoColorOverlay": "#ffffff",
+  "pitchLine": "Walk makers through materials, machine options, and project ideas before they commit.",
+  "demoShopperPrompt": "I want to start a small engraving business — what machine fits?",
+  "demoBizmisReply": "Got it — mostly wood and acrylic, or do you need metal engraving too?",
+  "demoProducts": [
+    { "title": "Aura", "price": "$1,199", "tag": "Starter" },
+    { "title": "Plus", "price": "$4,995", "tag": "Popular" },
+    { "title": "Pro", "price": "$6,995", "tag": "Pro" }
+  ],
+  "demoFooterLine": "Walks makers through materials, machines, and project ideas.",
+  "montageClerkCue": null,
+  "country": "USA",
+  "vertical": "consumer_electronics_appliances",
+  "subNiche": "maker_laser_cutters"
+}

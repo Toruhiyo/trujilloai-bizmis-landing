@@ -1,0 +1,23 @@
+{
+  "id": "sennheiser",
+  "storeName": "Sennheiser",
+  "storeDomain": "sennheiser.com",
+  "leadContactName": null,
+  "leadContactLastName": null,
+  "content": "",
+  "primaryColor": "#003746",
+  "secondaryColor": null,
+  "pitchLine": "Guide listeners to the right headphones by use case, sound profile, and connectivity.",
+  "demoShopperPrompt": "I need wireless headphones for commuting with great noise cancellation.",
+  "demoBizmisReply": "Got it — over-ear for max isolation or earbuds for portability?",
+  "demoProducts": [
+    { "title": "Momentum 4", "price": "$349", "tag": "Commute" },
+    { "title": "HD 660S2", "price": "$499", "tag": "Audiophile" },
+    { "title": "MTW 4", "price": "$299", "tag": "Best value" }
+  ],
+  "demoFooterLine": "Guides listeners by use case, sound profile, and connectivity.",
+  "montageClerkCue": null,
+  "country": "Global",
+  "vertical": "consumer_electronics_appliances",
+  "subNiche": "audio_headphones"
+}
