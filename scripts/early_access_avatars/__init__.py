@@ -1,0 +1,95 @@
+"""Early-access avatar generation pipeline.
+
+Public API
+----------
+``generate_all()``
+    Render clerk-avatar images for every lead in the registry.
+
+``generate_lead(lead_id)``
+    Render a single lead's clerk avatar.
+
+Both functions are self-contained: they resolve logos (SVG→PNG, format
+fixups), apply tinting when ``logo_color_overlay`` is set, merge per-lead
+colours into the universal render defaults, invoke the studio Blender
+renderer, and write the output to the lead's invite-card folder.
+
+Run with the **studio venv**::
+
+    /Users/oriol/Projects/Bizmis/trujilloai-bizmis-studio/.venv/bin/python \\
+        scripts/generate_early_access_avatars.py
+"""
+
+import logging
+import sys
+from pathlib import Path
+
+from ._config import (
+    DEFAULT_AVATAR_ID,
+    LEAD_REGISTRY,
+    RENDER_DEFAULTS,
+    STUDIO_ROOT,
+    get_lead,
+    lead_output_path,
+)
+from ._logo import prepare_stamp
+
+sys.path.insert(0, str(STUDIO_ROOT))
+from marketing.render import render_avatar as _studio_render  # noqa: E402
+
+logger = logging.getLogger(__name__)
+
+__all__ = ["generate_all", "generate_lead"]
+
+
+# Public:
+
+def generate_all(*, avatar_id: str = DEFAULT_AVATAR_ID) -> list[Path]:
+    """Render clerk avatars for every lead in the registry.
+
+    Returns a list of output paths for successful renders.
+    """
+    results: list[Path] = []
+    total = len(LEAD_REGISTRY)
+
+    for i, lead in enumerate(LEAD_REGISTRY, 1):
+        lead_id = lead["id"]
+        logger.info("[%d/%d] Rendering %s …", i, total, lead_id)
+        try:
+            out = _render_lead(lead, avatar_id)
+            logger.info("[%d/%d] Done → %s", i, total, out)
+            results.append(out)
+        except Exception as exc:
+            logger.error("[%d/%d] FAILED %s — %s", i, total, lead_id, exc)
+
+    return results
+
+
+def generate_lead(
+    lead_id: str,
+    *,
+    avatar_id: str = DEFAULT_AVATAR_ID,
+) -> Path:
+    """Render the clerk avatar for a single *lead_id*.
+
+    Raises ``KeyError`` if the lead is not in the registry.
+    """
+    lead = get_lead(lead_id)
+    return _render_lead(lead, avatar_id)
+
+
+# Private:
+
+def _render_lead(lead: dict, avatar_id: str) -> Path:
+    stamp = prepare_stamp(lead)
+    out = lead_output_path(lead["id"])
+    primary_color = lead["primary_color"]
+
+    params = {
+        **RENDER_DEFAULTS,
+        "shirt_stamp": str(stamp),
+        "button_color": primary_color,
+        "mesh_colors": {"Shirt_Color": primary_color},
+    }
+
+    _studio_render(avatar_id, str(out), **params)
+    return out
