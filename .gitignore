@@ -29,3 +29,16 @@ dist-ssr
 .env.local
 .env.development
 .env.production
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.pyw
+*.pyz
+*.pywz
+*.pyzz
+*.pywzz
+*.pyzzz
+*.pywzzz
