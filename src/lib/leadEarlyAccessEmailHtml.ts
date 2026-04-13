@@ -111,11 +111,11 @@ function emailMontageWatermarkWaveformImgHtml(): string {
   return `<img src="${src}" alt="" role="presentation" width="${w}" height="${h}" style="display:block;margin:0 auto;border:0;width:100%;max-width:${w}px;height:${h}px;" />`;
 }
 
-const REGULAR_CARD_W = 120;
-const REGULAR_IMG_W = 72;
-const REGULAR_IMG_H = 72;
-const REC_CARD_MAX_W = 148;
-const REC_IMG_W = 108;
+const REGULAR_CARD_W = 105;
+const REGULAR_IMG_W = 62;
+const REGULAR_IMG_H = 62;
+const REC_CARD_MAX_W = 132;
+const REC_IMG_W = 94;
 
 function buildMontageProductCardHtml(
   lead: LeadEarlyAccessData,
@@ -129,7 +129,7 @@ function buildMontageProductCardHtml(
   const tagEsc = escapeHtml(product.tag);
 
   if (isRecommended) {
-    return `<div style="display:inline-block;max-width:${REC_CARD_MAX_W}px;border-radius:14px;background:rgba(255,255,255,0.72);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);border:1.5px solid ${BIZMIS_PRIMARY_HEX};box-shadow:0 0 0 3px rgba(249,163,83,0.12),0 6px 20px -4px rgba(249,163,83,0.18);overflow:hidden;">
+    return `<div style="display:inline-block;max-width:${REC_CARD_MAX_W}px;border-radius:14px;background:rgba(255,255,255,0.88);-webkit-backdrop-filter:blur(24px);backdrop-filter:blur(24px);border:1.5px solid ${BIZMIS_PRIMARY_HEX};box-shadow:0 0 0 3px rgba(249,163,83,0.12),0 6px 20px -4px rgba(249,163,83,0.18);overflow:hidden;">
               <div style="background:linear-gradient(135deg,${BIZMIS_PRIMARY_HEX},${BIZMIS_PRIMARY_DARK_HEX});padding:6px 0;text-align:center;line-height:1;display:flex;align-items:center;justify-content:center;">
                 <span style="${BODY}font-size:8px;font-weight:700;color:#ffffff;letter-spacing:0.06em;text-transform:uppercase;vertical-align:middle;">&#9733; Recommended</span>
               </div>
@@ -143,13 +143,12 @@ function buildMontageProductCardHtml(
             </div>`;
   }
 
-  return `<div style="display:inline-block;width:${REGULAR_CARD_W}px;border-radius:12px;background:rgba(255,255,255,0.55);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);border:1px solid rgba(240,224,208,0.6);overflow:hidden;">
+  return `<div style="display:inline-block;width:${REGULAR_CARD_W}px;border-radius:12px;background:rgba(255,255,255,0.82);-webkit-backdrop-filter:blur(24px);backdrop-filter:blur(24px);border:1px solid rgba(240,224,208,0.5);overflow:hidden;">
               <div style="padding:6px 6px 4px 6px;text-align:center;height:${REGULAR_IMG_H + 10}px;display:flex;align-items:center;justify-content:center;">
                 <img src="${imgUrl}" alt="" width="${REGULAR_IMG_W}" style="display:block;margin:0 auto;max-width:${REGULAR_IMG_W}px;max-height:${REGULAR_IMG_H}px;height:auto;border:0;border-radius:8px;object-fit:contain;" />
               </div>
               <div style="padding:0 8px 6px 8px;text-align:center;">
-                <span style="display:inline-block;background-color:${BIZMIS_PRIMARY_TINT_006};border:1px solid ${MONTAGE_CARD_BORDER_HEX};border-radius:9999px;padding:1px 7px;${BODY}font-size:7px;font-weight:600;color:${BIZMIS_PRIMARY_DARK_HEX};letter-spacing:0.02em;margin-bottom:3px;">${tagEsc}</span>
-                <p style="margin:2px 0 0;${BODY}font-size:8px;font-weight:600;color:${BIZMIS_FOREGROUND_HEX};line-height:1.2;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${escapeHtml(product.title)}</p>
+                <p style="margin:0;${BODY}font-size:8px;font-weight:600;color:${BIZMIS_FOREGROUND_HEX};line-height:1.2;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${escapeHtml(product.title)}</p>
                 <p style="margin:1px 0 0;${BODY}font-size:7.5px;color:${BIZMIS_MUTED_LIGHT_HEX};">${escapeHtml(product.price)}</p>
               </div>
             </div>`;
@@ -365,26 +364,32 @@ export function buildLeadEarlyAccessEmailHtml(
                 </td>
               </tr>
               <tr>
-                <td bgcolor="#ffffff" style="background-color:#ffffff;padding:16px 10px 0 10px;">
+                <td bgcolor="#ffffff" style="background-color:#ffffff;padding:6px 10px 0 10px;">
                   <!--[if !mso]><!-->
-                  <div style="position:relative;min-height:360px;overflow:visible;">
+                  <div style="position:relative;min-height:310px;overflow:visible;">
 
-                    <div style="position:absolute;top:50%;left:50%;width:70%;height:70%;transform:translate(-50%,-48%);border-radius:50%;background:radial-gradient(circle,rgba(249,163,83,0.10) 0%,rgba(249,163,83,0.03) 50%,transparent 72%);z-index:0;pointer-events:none;"></div>
+                    <div style="position:absolute;top:45%;right:10%;width:55%;height:55%;transform:translate(0,-50%);border-radius:50%;background:radial-gradient(circle,rgba(249,163,83,0.10) 0%,rgba(249,163,83,0.03) 50%,transparent 72%);z-index:0;pointer-events:none;"></div>
 
-                    <div style="text-align:center;padding-top:4px;position:relative;z-index:2;">
-                      <img src="${clerkAvatarUrl}" alt="Bizmis store clerk" width="260" style="display:inline-block;max-width:260px;width:100%;height:auto;border:0;border-radius:16px;filter:drop-shadow(0 10px 32px rgba(50,40,27,0.16));" />
+                    <div style="position:absolute;top:0;right:0;bottom:82px;z-index:2;display:flex;align-items:center;justify-content:center;">
+                      <img src="${clerkAvatarUrl}" alt="Bizmis store clerk" width="260" style="display:block;max-width:260px;width:100%;height:auto;border:0;border-radius:16px;filter:drop-shadow(0 10px 32px rgba(50,40,27,0.16));" />
                     </div>
 
-                    <div style="position:absolute;top:42%;left:4%;transform:translateY(-50%) rotate(-1.5deg);z-index:3;filter:drop-shadow(0 3px 12px rgba(50,40,27,0.12));">
-                      ${recommendedCardHtml}
-                    </div>
+                    <div style="position:absolute;top:50%;left:2%;transform:translateY(-50%);z-index:3;width:52%;">
+                      <div style="position:relative;display:flex;align-items:center;justify-content:center;min-height:220px;">
 
-                    <div style="position:absolute;top:4px;right:4%;transform:rotate(1.5deg);z-index:3;filter:drop-shadow(0 3px 10px rgba(50,40,27,0.10));">
-                      ${otherCardHtmlA}
-                    </div>
+                        <div style="position:absolute;left:-2%;top:50%;transform:translateY(-52%) rotate(-6deg) scale(0.85);z-index:1;opacity:0.82;filter:drop-shadow(0 2px 8px rgba(50,40,27,0.08));">
+                          ${otherCardHtmlA}
+                        </div>
 
-                    <div style="position:absolute;bottom:62px;right:4%;transform:rotate(1deg);z-index:3;filter:drop-shadow(0 3px 10px rgba(50,40,27,0.10));">
-                      ${otherCardHtmlB}
+                        <div style="position:relative;z-index:3;filter:drop-shadow(0 6px 20px rgba(50,40,27,0.16));">
+                          ${recommendedCardHtml}
+                        </div>
+
+                        <div style="position:absolute;right:-2%;top:50%;transform:translateY(-52%) rotate(6deg) scale(0.85);z-index:1;opacity:0.82;filter:drop-shadow(0 2px 8px rgba(50,40,27,0.08));">
+                          ${otherCardHtmlB}
+                        </div>
+
+                      </div>
                     </div>
 
                     <div style="position:absolute;bottom:0;left:0;right:0;z-index:1;pointer-events:none;">
