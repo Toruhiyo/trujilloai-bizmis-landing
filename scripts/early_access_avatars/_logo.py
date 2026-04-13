@@ -27,20 +27,21 @@ _SVG_RENDER_WIDTH = 1024
 def prepare_stamp(lead: dict) -> Path:
     """Return a render-ready stamp PNG for *lead*.
 
-    Tints the logo when ``logo_color_overlay`` is set, otherwise returns the
-    native-colour logo.  Results are cached on disk so repeat calls are free.
+    Uses avatar-specific fields (``stamp_image``, ``stamp_color_overlay``)
+    when present, falling back to the invite-card fields
+    (``logo.png``, ``logo_color_overlay``).
     """
     lead_id = lead["id"]
-    logo_png = resolve_logo_png(lead_id)
-    overlay = lead.get("logo_color_overlay")
+    stamp_png = _resolve_stamp_png(lead)
+    overlay = _resolve_stamp_overlay(lead)
 
     if overlay is None:
-        return logo_png
+        return stamp_png
 
     tint_hex = overlay.lstrip("#")
-    cached = TINTED_LOGOS_DIR / f"{lead_id}-{tint_hex}.png"
+    cached = TINTED_LOGOS_DIR / f"{lead_id}-stamp-{tint_hex}.png"
     if not cached.exists():
-        tint_logo(logo_png, overlay, cached)
+        tint_logo(stamp_png, overlay, cached)
     return cached
 
 
@@ -119,6 +120,30 @@ def svg_to_png(
 
 
 # Private:
+
+def _resolve_stamp_png(lead: dict) -> Path:
+    """Resolve the stamp image, using ``stamp_image`` override when present."""
+    lead_id = lead["id"]
+    custom = lead.get("stamp_image")
+    if custom:
+        custom_path = LEADS_DIR / lead_id / custom
+        if custom_path.suffix.lower() == ".svg":
+            converted = CONVERTED_LOGOS_DIR / f"{lead_id}-stamp.png"
+            if not converted.exists():
+                svg_to_png(custom_path, converted)
+            return converted
+        if custom_path.exists():
+            return _ensure_real_png(custom_path, f"{lead_id}-stamp")
+        raise FileNotFoundError(f"Stamp image '{custom}' not found for lead '{lead_id}'")
+    return resolve_logo_png(lead_id)
+
+
+def _resolve_stamp_overlay(lead: dict) -> str | None:
+    """Return the tint hex for the stamp, preferring avatar-specific override."""
+    if "stamp_color_overlay" in lead:
+        return lead["stamp_color_overlay"]
+    return lead.get("logo_color_overlay")
+
 
 def _ensure_real_png(path: Path, lead_id: str) -> Path:
     """Re-encode to true PNG when the on-disk file is a different format."""

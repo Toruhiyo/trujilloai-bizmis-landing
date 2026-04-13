@@ -13,7 +13,11 @@
   "demoShopperPrompt": "I want to set up a gaming wall behind my desk — something modular and colorful.",
   "demoBizmisReply": "Got it — geometric panels for a mosaic look or sleek backlit lines?",
   "demoProducts": [
-    { "title": "Shapes Triangles Kit", "price": "$130.00", "tag": "Wall panels" },
+    {
+      "title": "Shapes Triangles Kit",
+      "price": "$130.00",
+      "tag": "Wall panels"
+    },
     { "title": "Lines 60° Kit", "price": "$119.99", "tag": "Linear" },
     { "title": "Blocks Squares Kit", "price": "$179.99", "tag": "Modular" }
   ],

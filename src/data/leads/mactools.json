@@ -13,8 +13,16 @@
   "demoShopperPrompt": "I need a good flex-head ratchet for tight engine bays — what do you have?",
   "demoBizmisReply": "Got it — 3/8\" drive for precision work or 1/2\" drive for heavier torque applications?",
   "demoProducts": [
-    { "title": "Max90 3/8\" Flex Ratchet", "price": "$229.99", "tag": "Ratchet" },
-    { "title": "19-PC Ratcheting Wrench Set", "price": "$519.99", "tag": "Set" },
+    {
+      "title": "Max90 3/8\" Flex Ratchet",
+      "price": "$229.99",
+      "tag": "Ratchet"
+    },
+    {
+      "title": "19-PC Ratcheting Wrench Set",
+      "price": "$519.99",
+      "tag": "Set"
+    },
     { "title": "60-Gal Air Compressor", "price": "$2,479.99", "tag": "Power" }
   ],
   "recommendedProductIndex": 0,

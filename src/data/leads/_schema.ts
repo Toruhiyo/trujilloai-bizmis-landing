@@ -23,6 +23,12 @@ export type LeadEarlyAccessJson = {
   textColor?: string | null;
   logoColorOverlay?: string | null;
   leadLogoScale?: number;
+  /** Avatar shirt hex. Falls back to primaryColor when omitted. */
+  avatarShirtColor?: string | null;
+  /** Hex tint for the shirt stamp. null = native colours. */
+  avatarStampColorOverlay?: string | null;
+  /** Filename inside the lead folder used as shirt stamp (e.g. "icon.png"). Falls back to logo.png. */
+  avatarStampImage?: string | null;
   pitchLine: string;
   demoShopperPrompt: string;
   demoBizmisReply: string;

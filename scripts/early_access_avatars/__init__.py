@@ -28,6 +28,7 @@ from ._config import (
     LEAD_REGISTRY,
     RENDER_DEFAULTS,
     STUDIO_ROOT,
+    WAVE_COLOR_LUMINANCE_THRESHOLD,
     get_lead,
     lead_output_path,
 )
@@ -82,14 +83,28 @@ def generate_lead(
 def _render_lead(lead: dict, avatar_id: str) -> Path:
     stamp = prepare_stamp(lead)
     out = lead_output_path(lead["id"])
-    primary_color = lead["primary_color"]
+    shirt_color = lead.get("shirt_color") or lead["primary_color"]
 
     params = {
         **RENDER_DEFAULTS,
         "shirt_stamp": str(stamp),
-        "button_color": primary_color,
-        "mesh_colors": {"Shirt_Color": primary_color},
+        "button_color": shirt_color,
+        "mesh_colors": {"Shirt_Color": shirt_color},
     }
+
+    if _relative_luminance(shirt_color) < WAVE_COLOR_LUMINANCE_THRESHOLD:
+        params["wave_color"] = shirt_color
 
     _studio_render(avatar_id, str(out), **params)
     return out
+
+
+def _relative_luminance(hex_color: str) -> float:
+    """Return sRGB relative luminance (0.0 = black, 1.0 = white)."""
+    h = hex_color.lstrip("#")
+    r, g, b = (int(h[i:i + 2], 16) / 255.0 for i in (0, 2, 4))
+
+    def linearize(c: float) -> float:
+        return c / 12.92 if c <= 0.04045 else ((c + 0.055) / 1.055) ** 2.4
+
+    return 0.2126 * linearize(r) + 0.7152 * linearize(g) + 0.0722 * linearize(b)

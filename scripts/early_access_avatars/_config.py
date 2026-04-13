@@ -32,21 +32,33 @@ RENDER_DEFAULTS: dict = {
     "animation_progress": 0.50,
     "expression": "E",
     "resolution": 1024,
-    "widget_ui": False,
+    "widget_ui": True,
+    "widget_state": "listening",
     "show_wave": True,
+    "show_card": False,
+    "show_claim": False,
     "framing": "upper_body",
     "lighting_preset": "studio",
     "camera_tilt": 5,
     "shirt_stamp_scale": 1.0,
 }
 
+WAVE_COLOR_LUMINANCE_THRESHOLD = 0.85
+
 # ── Lead registry ────────────────────────────────────────────────────
 # Mirrors the per-lead JSON files at src/data/leads/<id>.json.
 #
-# • primary_color   → shirt mesh color + widget button color
-# • logo_color_overlay → when set, the logo stamp is tinted to this hex
-#   (matching the invite-card header behavior); when None the native logo
-#   colors are used as-is.
+# Invite-card top bar:
+# • primary_color       → banner background (used by the TS side)
+# • logo_color_overlay  → logo tint for the banner
+#
+# Avatar shirt (independent from the top bar):
+# • shirt_color         → shirt mesh + widget button colour.
+#                          Falls back to primary_color when None.
+# • stamp_color_overlay → tint for the shirt stamp image.
+#                          Falls back to logo_color_overlay when None.
+# • stamp_image         → filename inside the lead folder (e.g. "icon.png").
+#                          Falls back to "logo.png" when None.
 
 LEAD_REGISTRY: list[dict] = [
     {"id": "molekule", "primary_color": "#108849", "logo_color_overlay": "#ffffff"},
