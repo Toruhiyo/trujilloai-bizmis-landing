@@ -76,12 +76,14 @@ Always use the **studio venv** (it has Blender bindings, Playwright, Pillow):
 
 ### What the pipeline does (per lead)
 
-1. **Resolve logo** → finds SVG or PNG in `public/invite-cards/leads/<id>/`;
+1. **Resolve stamp** → uses `stamp_image` (e.g. `icon.svg`) if set, otherwise
+   falls back to `logo.svg` / `logo.png` in `public/invite-cards/leads/<id>/`;
    converts SVG→PNG via Playwright; re-encodes misidentified formats (AVIF, etc.)
-2. **Tint logo** (if `logo_color_overlay` is set) → flat-colours the PNG to
-   match the invite-card header style; cached to `_tinted-logos/`
-3. **Merge params** → universal `RENDER_DEFAULTS` + per-lead `primary_color`
-   for shirt mesh, widget button, and logo stamp
+2. **Tint stamp** (if `stamp_color_overlay` or `logo_color_overlay` is set) →
+   flat-colours the stamp PNG for contrast against the shirt; cached to
+   `_tinted-logos/`
+3. **Merge params** → universal `RENDER_DEFAULTS` + per-lead `shirt_color`
+   (falling back to `primary_color`) for shirt mesh, widget button, and stamp
 4. **Render** → calls `render_avatar()` from the studio repo (Blender headless
    + Playwright widget composite)
 5. **Output** → `public/invite-cards/leads/<id>/clerk-avatar.png`
@@ -97,11 +99,14 @@ lighting, expression etc. for all leads, edit this dict.
 
 Mirrors the per-lead JSON files at `src/data/leads/<id>.json`.  Per-lead fields:
 
-| Field                | Purpose                                           |
-|----------------------|---------------------------------------------------|
-| `id`                 | Lead identifier (matches TS registry and folder)  |
-| `primary_color`      | Shirt mesh colour + widget button colour          |
-| `logo_color_overlay` | When set, stamp is tinted; when `None`, raw logo  |
+| Field                  | Purpose                                                      |
+|------------------------|--------------------------------------------------------------|
+| `id`                   | Lead identifier (matches TS registry and folder)             |
+| `primary_color`        | Invite-card top bar background colour                        |
+| `logo_color_overlay`   | Top-bar logo tint; `None` = native colours                   |
+| `shirt_color`          | Avatar shirt colour. Falls back to `primary_color` if absent |
+| `stamp_color_overlay`  | Shirt stamp tint. Falls back to `logo_color_overlay` if absent |
+| `stamp_image`          | Filename in lead folder for stamp (e.g. `"icon.svg"`). Falls back to `logo.png` |
 
 ### Output path
 
