@@ -14,7 +14,7 @@
   "demoBizmisReply": "Got it — whole-home panel integration or a portable unit you can move around?",
   "demoProducts": [
     { "title": "Apex 300", "price": "$1,499", "tag": "Home" },
-    { "title": "AC200L", "price": "$1,099", "tag": "Portable" },
+    { "title": "AC200L", "price": "$899", "tag": "Portable" },
     { "title": "Elite 300", "price": "$1,199", "tag": "Versatile" }
   ],
   "recommendedProductIndex": 0,

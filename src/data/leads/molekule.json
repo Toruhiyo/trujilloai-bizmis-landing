@@ -13,9 +13,9 @@
   "demoShopperPrompt": "I need a purifier for a 600 sq ft bedroom — allergies are bad this season.",
   "demoBizmisReply": "Got it — HEPA filtration only or the deeper PECO oxidation layer?",
   "demoProducts": [
-    { "title": "Air Mini+", "price": "$499", "tag": "Allergies" },
-    { "title": "Air Pro", "price": "$799", "tag": "Large room" },
-    { "title": "Air Mini", "price": "$399", "tag": "Best value" }
+    { "title": "Air Mini+", "price": "$359.99", "tag": "Allergies" },
+    { "title": "Air Pro", "price": "$1,014.99", "tag": "Large room" },
+    { "title": "Glow Humidifier", "price": "$129", "tag": "Humidity" }
   ],
   "recommendedProductIndex": 0,
   "demoFooterLine": "Guides shoppers by room size, allergy needs, and budget.",

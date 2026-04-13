@@ -11,9 +11,9 @@
   "demoShopperPrompt": "I need wireless headphones for commuting with great noise cancellation.",
   "demoBizmisReply": "Got it — over-ear for max isolation or earbuds for portability?",
   "demoProducts": [
-    { "title": "Momentum 4", "price": "$349", "tag": "Commute" },
-    { "title": "HD 660S2", "price": "$499", "tag": "Audiophile" },
-    { "title": "MTW 4", "price": "$299", "tag": "Best value" }
+    { "title": "Momentum 4", "price": "$449.95", "tag": "Commute" },
+    { "title": "HD 660S2", "price": "$479.95", "tag": "Audiophile" },
+    { "title": "MTW 4", "price": "$299.95", "tag": "Best value" }
   ],
   "recommendedProductIndex": 0,
   "demoFooterLine": "Guides listeners by use case, sound profile, and connectivity.",

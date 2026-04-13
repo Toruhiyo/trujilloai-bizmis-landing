@@ -11,9 +11,9 @@
   "demoShopperPrompt": "I want a simple skincare routine for oily skin — minimal steps.",
   "demoBizmisReply": "Got it — just the essentials or add a light coverage base too?",
   "demoProducts": [
-    { "title": "Milky Jelly", "price": "$18", "tag": "Cleanser" },
-    { "title": "Futuredew", "price": "$26", "tag": "Glow" },
-    { "title": "Solution", "price": "$24", "tag": "Best value" }
+    { "title": "Milky Jelly", "price": "$24", "tag": "Cleanser" },
+    { "title": "Futuredew", "price": "$30", "tag": "Glow" },
+    { "title": "Solution", "price": "$30", "tag": "Exfoliant" }
   ],
   "recommendedProductIndex": 0,
   "demoFooterLine": "Guides shoppers by skin type, finish, and concern.",

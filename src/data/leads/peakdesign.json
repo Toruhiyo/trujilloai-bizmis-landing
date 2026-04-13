@@ -12,9 +12,9 @@
   "demoShopperPrompt": "I need a bag for my mirrorless camera that works for travel and daily.",
   "demoBizmisReply": "Got it — sling for quick access or backpack for all-day carry?",
   "demoProducts": [
-    { "title": "Everyday Sling", "price": "$99", "tag": "Daily" },
-    { "title": "Everyday Backpack", "price": "$289", "tag": "Travel" },
-    { "title": "Travel Backpack", "price": "$299", "tag": "Adventure" }
+    { "title": "Everyday Sling 6L", "price": "$129.95", "tag": "Daily" },
+    { "title": "Everyday Backpack 20L", "price": "$279.95", "tag": "Travel" },
+    { "title": "Travel Backpack 30L", "price": "$239.95", "tag": "Adventure" }
   ],
   "recommendedProductIndex": 1,
   "demoFooterLine": "Guides photographers by gear, style, and carry preference.",
