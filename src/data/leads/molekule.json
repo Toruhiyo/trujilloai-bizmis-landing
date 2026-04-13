@@ -17,6 +17,7 @@
     { "title": "Air Pro", "price": "$799", "tag": "Large room" },
     { "title": "Air Mini", "price": "$399", "tag": "Best value" }
   ],
+  "recommendedProductIndex": 0,
   "demoFooterLine": "Guides shoppers by room size, allergy needs, and budget.",
   "montageClerkCue": null,
   "country": "USA (global)",

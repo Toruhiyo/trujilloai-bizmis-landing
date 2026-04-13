@@ -27,6 +27,8 @@ export type LeadEarlyAccessJson = {
   demoShopperPrompt: string;
   demoBizmisReply: string;
   demoProducts: [DemoProductCard, DemoProductCard, DemoProductCard];
+  /** 0-based index into demoProducts identifying the clerk's recommended pick. */
+  recommendedProductIndex: 0 | 1 | 2;
   demoFooterLine?: string;
   montageClerkCue?: string | null;
   country: string;

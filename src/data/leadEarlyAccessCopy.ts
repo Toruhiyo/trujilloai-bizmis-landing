@@ -23,7 +23,6 @@ export const EARLY_ACCESS_EMAIL_COPY = {
     "Try Bizmis at no cost for 30 days on your Shopify store, and shape the product around your team\u2019s and customers\u2019 needs by sharing feedback as you go.",
   ctaLabel: "Install Bizmis with early access",
   couponLabel: "Your early access code:",
-  montageClerkCueDefault: "Here are 3 good matches.",
   outcomes: ["Sell more", "Support faster", "Learn from replays"] as const,
   proofLine: "As an early-access store, you\u2019ll get direct influence on the Bizmis roadmap.",
   contactEmail: "hello@bizmis.ai",
@@ -80,4 +79,14 @@ export function buildEarlyAccessTrialUsageFootnotePlainText(): string {
 export function buildEarlyAccessFooterPlainText(): string {
   const { contactEmail } = EARLY_ACCESS_EMAIL_COPY;
   return `Questions? Just reply to this email (${contactEmail}).`;
+}
+
+/** Before the recommended product name in the default montage waveform cue (body color). */
+export const MONTAGE_CLERK_CUE_BEFORE_PRODUCT_NAME = "The " as const;
+
+/** After the recommended product name in the default montage waveform cue (body color). */
+export const MONTAGE_CLERK_CUE_AFTER_PRODUCT_NAME = " sounds right for you." as const;
+
+export function buildMontageClerkCuePlainText(productTitle: string): string {
+  return `${MONTAGE_CLERK_CUE_BEFORE_PRODUCT_NAME}${productTitle}${MONTAGE_CLERK_CUE_AFTER_PRODUCT_NAME}`;
 }

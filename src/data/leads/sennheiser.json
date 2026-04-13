@@ -15,6 +15,7 @@
     { "title": "HD 660S2", "price": "$499", "tag": "Audiophile" },
     { "title": "MTW 4", "price": "$299", "tag": "Best value" }
   ],
+  "recommendedProductIndex": 0,
   "demoFooterLine": "Guides listeners by use case, sound profile, and connectivity.",
   "montageClerkCue": null,
   "country": "Global",

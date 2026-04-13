@@ -15,6 +15,7 @@
     { "title": "Futuredew", "price": "$26", "tag": "Glow" },
     { "title": "Solution", "price": "$24", "tag": "Best value" }
   ],
+  "recommendedProductIndex": 0,
   "demoFooterLine": "Guides shoppers by skin type, finish, and concern.",
   "montageClerkCue": null,
   "country": "USA",

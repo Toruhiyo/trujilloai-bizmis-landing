@@ -15,6 +15,7 @@
     { "title": "All Day Shaper", "price": "$29", "tag": "Everyday" },
     { "title": "High-Waist Short", "price": "$34", "tag": "Best value" }
   ],
+  "recommendedProductIndex": 0,
   "demoFooterLine": "Guides shoppers by body type, occasion, and comfort level.",
   "montageClerkCue": null,
   "country": "USA",

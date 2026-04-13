@@ -32,10 +32,8 @@ RENDER_DEFAULTS: dict = {
     "animation_progress": 0.50,
     "expression": "E",
     "resolution": 1024,
-    "widget_ui": True,
-    "widget_state": "speaking",
-    "theme": "light",
-    "show_claim": False,
+    "widget_ui": False,
+    "show_wave": True,
     "framing": "upper_body",
     "lighting_preset": "studio",
     "camera_tilt": 5,
@@ -51,26 +49,27 @@ RENDER_DEFAULTS: dict = {
 #   colors are used as-is.
 
 LEAD_REGISTRY: list[dict] = [
-    {"id": "molekule",      "primary_color": "#108849", "logo_color_overlay": "#ffffff"},
-    {"id": "glowforge",     "primary_color": "#27B8CE", "logo_color_overlay": "#ffffff"},
-    {"id": "sennheiser",    "primary_color": "#003746", "logo_color_overlay": None},
-    {"id": "sodastream",    "primary_color": "#00205B", "logo_color_overlay": None},
-    {"id": "peakdesign",    "primary_color": "#1A1A1A", "logo_color_overlay": "#ffffff"},
-    {"id": "hodinkee",      "primary_color": "#FFFFFF", "logo_color_overlay": None},
-    {"id": "sixpenny",      "primary_color": "#3C392D", "logo_color_overlay": "#ffffff"},
-    {"id": "shapermint",    "primary_color": "#F8A08E", "logo_color_overlay": None},
-    {"id": "glossier",      "primary_color": "#FEF116", "logo_color_overlay": None},
+    {"id": "molekule", "primary_color": "#108849", "logo_color_overlay": "#ffffff"},
+    {"id": "glowforge", "primary_color": "#27B8CE", "logo_color_overlay": "#ffffff"},
+    {"id": "sennheiser", "primary_color": "#003746", "logo_color_overlay": None},
+    {"id": "sodastream", "primary_color": "#00205B", "logo_color_overlay": None},
+    {"id": "peakdesign", "primary_color": "#1A1A1A", "logo_color_overlay": "#ffffff"},
+    {"id": "hodinkee", "primary_color": "#FFFFFF", "logo_color_overlay": None},
+    {"id": "sixpenny", "primary_color": "#3C392D", "logo_color_overlay": "#ffffff"},
+    {"id": "shapermint", "primary_color": "#F8A08E", "logo_color_overlay": None},
+    {"id": "glossier", "primary_color": "#FEF116", "logo_color_overlay": None},
     {"id": "theproscloset", "primary_color": "#B8F986", "logo_color_overlay": None},
-    {"id": "nanoleaf",      "primary_color": "#FFFFFF", "logo_color_overlay": None},
-    {"id": "bluetti",       "primary_color": "#FFFFFF", "logo_color_overlay": None},
-    {"id": "jackery",       "primary_color": "#FFFFFF", "logo_color_overlay": None},
-    {"id": "mactools",      "primary_color": "#e31837", "logo_color_overlay": None},
+    {"id": "nanoleaf", "primary_color": "#FFFFFF", "logo_color_overlay": None},
+    {"id": "bluetti", "primary_color": "#FFFFFF", "logo_color_overlay": None},
+    {"id": "jackery", "primary_color": "#FFFFFF", "logo_color_overlay": None},
+    {"id": "mactools", "primary_color": "#e31837", "logo_color_overlay": None},
 ]
 
 _LEAD_BY_ID: dict[str, dict] = {lead["id"]: lead for lead in LEAD_REGISTRY}
 
 
 # Public:
+
 
 def get_lead(lead_id: str) -> dict:
     """Return the registry entry for *lead_id*, or raise ``KeyError``."""

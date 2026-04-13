@@ -16,6 +16,7 @@
     { "title": "Max Bill Auto", "price": "$1,295", "tag": "Minimal" },
     { "title": "De Ville", "price": "$4,200", "tag": "Classic" }
   ],
+  "recommendedProductIndex": 0,
   "demoFooterLine": "Guides collectors by brand, movement, and price range.",
   "montageClerkCue": null,
   "country": "USA",

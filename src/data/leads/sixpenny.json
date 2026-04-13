@@ -16,6 +16,7 @@
     { "title": "Mina Sectional", "price": "$4,495", "tag": "Family" },
     { "title": "Noah Loveseat", "price": "$2,195", "tag": "Best value" }
   ],
+  "recommendedProductIndex": 0,
   "demoFooterLine": "Guides shoppers by room size, fabric, and lifestyle needs.",
   "montageClerkCue": null,
   "country": "USA",

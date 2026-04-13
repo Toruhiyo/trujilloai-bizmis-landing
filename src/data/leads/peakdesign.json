@@ -16,6 +16,7 @@
     { "title": "Everyday Backpack", "price": "$289", "tag": "Travel" },
     { "title": "Travel Backpack", "price": "$299", "tag": "Adventure" }
   ],
+  "recommendedProductIndex": 1,
   "demoFooterLine": "Guides photographers by gear, style, and carry preference.",
   "montageClerkCue": null,
   "country": "USA",

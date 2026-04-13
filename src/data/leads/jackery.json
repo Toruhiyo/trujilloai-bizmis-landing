@@ -17,6 +17,7 @@
     { "title": "Explorer 1500 Ultra", "price": "$999", "tag": "Mid-range" },
     { "title": "Explorer 3000 v2", "price": "$2,499", "tag": "Home" }
   ],
+  "recommendedProductIndex": 1,
   "demoFooterLine": "Guides shoppers by capacity, use case, and solar setup.",
   "montageClerkCue": null,
   "country": "USA (global)",

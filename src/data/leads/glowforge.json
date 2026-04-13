@@ -16,6 +16,7 @@
     { "title": "Plus", "price": "$4,995", "tag": "Popular" },
     { "title": "Pro", "price": "$6,995", "tag": "Pro" }
   ],
+  "recommendedProductIndex": 1,
   "demoFooterLine": "Walks makers through materials, machines, and project ideas.",
   "montageClerkCue": null,
   "country": "USA",

@@ -17,6 +17,7 @@
     { "title": "Lines 60° Kit", "price": "$119.99", "tag": "Linear" },
     { "title": "Blocks Squares Kit", "price": "$179.99", "tag": "Modular" }
   ],
+  "recommendedProductIndex": 0,
   "demoFooterLine": "Guides shoppers by room, style, and smart-home setup.",
   "montageClerkCue": null,
   "country": "Canada/USA (global)",

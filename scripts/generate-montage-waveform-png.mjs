@@ -12,15 +12,11 @@ import sharp from "sharp";
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = join(__dirname, "..");
 
-/** Taller track vs original 36px design */
-const TRACK_H = 42;
-/** 1px pad + bar + 1px pad */
+const TRACK_H = 82;
 const CELL_W = 5;
 const BAR_W = 3;
 const PAD_X = 1;
-/** Heights were authored for a 36px track; scale into TRACK_H */
 const HEIGHT_SOURCE_TRACK = 36;
-/** Slightly stronger than 0.14 — rgba(249,163,83,~0.17) composited on #ffffff */
 const BAR_FILL_HEX = "#FEEFE2";
 
 const BASE_HEIGHTS_PX = [
@@ -30,14 +26,20 @@ const BASE_HEIGHTS_PX = [
 const HEIGHTS_PX = [...BASE_HEIGHTS_PX, ...BASE_HEIGHTS_PX];
 const IMG_W = CELL_W * HEIGHTS_PX.length;
 
+const SOURCE_MEAN =
+  BASE_HEIGHTS_PX.reduce((sum, v) => sum + v, 0) / BASE_HEIGHTS_PX.length;
+/** 1 = original spread; lower = flatter bars */
+const HEIGHT_DEVIATION_DAMPING = 0.48;
+
 function scaledBarHeight(h) {
-  const scaled = Math.round((h * TRACK_H) / HEIGHT_SOURCE_TRACK);
+  const damped = SOURCE_MEAN + (h - SOURCE_MEAN) * HEIGHT_DEVIATION_DAMPING;
+  const scaled = Math.round((damped * TRACK_H) / HEIGHT_SOURCE_TRACK);
   return Math.min(Math.max(scaled, 2), TRACK_H);
 }
 
 const rects = HEIGHTS_PX.map((h, i) => {
   const barH = scaledBarHeight(h);
-  const top = (TRACK_H - barH) / 2;
+  const top = TRACK_H - barH;
   const x = i * CELL_W + PAD_X;
   const rx = Math.min(2, BAR_W / 2);
   return `<rect x="${x}" y="${top}" width="${BAR_W}" height="${barH}" rx="${rx}" fill="${BAR_FILL_HEX}"/>`;

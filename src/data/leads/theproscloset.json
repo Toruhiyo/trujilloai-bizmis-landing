@@ -15,6 +15,7 @@
     { "title": "Roubaix Sport", "price": "$3,499", "tag": "Endurance" },
     { "title": "Domane AL 5", "price": "$2,899", "tag": "Best value" }
   ],
+  "recommendedProductIndex": 0,
   "demoFooterLine": "Guides riders by terrain, fit, and budget.",
   "montageClerkCue": null,
   "country": "USA",

@@ -2,6 +2,9 @@ import {
   buildEarlyAccessChips,
   buildEarlyAccessFooterPlainText,
   buildEarlyAccessPreheader,
+  buildMontageClerkCuePlainText,
+  MONTAGE_CLERK_CUE_BEFORE_PRODUCT_NAME,
+  MONTAGE_CLERK_CUE_AFTER_PRODUCT_NAME,
   buildEarlyAccessSalutationPlainText,
   buildEarlyAccessTrialUsageFootnotePlainText,
   buildEarlyAccessValueSentencePlainText,
@@ -45,7 +48,7 @@ const MONTAGE_CHROME_URL_ROW_HEIGHT_PX = 15;
 const MONTAGE_CHROME_BAR_PADDING_Y_PX = 5;
 const EARLY_ACCESS_MONTAGE_WAVEFORM_IMG = "/images/early-access-montage-waveform.png";
 const EARLY_ACCESS_MONTAGE_WAVEFORM_IMG_W_PX = 480;
-const EARLY_ACCESS_MONTAGE_WAVEFORM_IMG_H_PX = 42;
+const EARLY_ACCESS_MONTAGE_WAVEFORM_IMG_H_PX = 82;
 const BIZMIS_FOREGROUND_HEX = "#32281B";
 const BIZMIS_MUTED_LIGHT_HEX = "#B5A48E";
 const BIZMIS_SHADOW_SOFT = "0 6px 25px -6px rgba(249,163,83,0.18)";
@@ -108,34 +111,48 @@ function emailMontageWatermarkWaveformImgHtml(): string {
   return `<img src="${src}" alt="" role="presentation" width="${w}" height="${h}" style="display:block;margin:0 auto;border:0;width:100%;max-width:${w}px;height:${h}px;" />`;
 }
 
-function buildMontageProductCardHtml(lead: LeadEarlyAccessData, index: number): string {
+const REGULAR_CARD_W = 120;
+const REGULAR_IMG_W = 72;
+const REGULAR_IMG_H = 72;
+const REC_CARD_MAX_W = 148;
+const REC_IMG_W = 108;
+
+function buildMontageProductCardHtml(
+  lead: LeadEarlyAccessData,
+  index: number,
+  isRecommended: boolean,
+): string {
   const productImages = [lead.productAImagePath, lead.productBImagePath, lead.productCImagePath];
   const product = lead.demoProducts[index];
   if (!product) return "";
   const imgUrl = absImg(productImages[index]);
   const tagEsc = escapeHtml(product.tag);
-  return `<table role="presentation" cellpadding="0" cellspacing="0" border="0" align="center" style="max-width:168px;margin:0 auto;">
-              <tr>
-                <td align="center" style="padding:0 0 2px 0;line-height:1;">
-                  <span style="display:inline-block;background-color:${BIZMIS_PRIMARY_TINT_006};border:1px solid ${MONTAGE_CARD_BORDER_HEX};border-radius:9999px;padding:2px 8px;${BODY}font-size:7px;font-weight:600;color:${BIZMIS_PRIMARY_DARK_HEX};letter-spacing:0.02em;">${tagEsc}</span>
-                </td>
-              </tr>
-              <tr>
-                <td style="padding:0;">
-                  <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="border:1px solid ${MONTAGE_CARD_BORDER_HEX};border-radius:10px;margin-top:-6px;">
-                    <tr>
-                      <td width="44" style="padding:6px 4px 6px 8px;vertical-align:middle;">
-                        <img src="${imgUrl}" alt="" width="36" style="display:block;max-width:36px;height:auto;border:0;border-radius:6px;" />
-                      </td>
-                      <td style="padding:6px 8px 6px 2px;vertical-align:middle;">
-                        <p style="margin:0;${BODY}font-size:9px;font-weight:600;color:${BIZMIS_FOREGROUND_HEX};line-height:1.25;">${escapeHtml(product.title)}</p>
-                        <p style="margin:1px 0 0;${BODY}font-size:8px;color:${BIZMIS_MUTED_LIGHT_HEX};">${escapeHtml(product.price)}</p>
-                      </td>
-                    </tr>
-                  </table>
-                </td>
-              </tr>
-            </table>`;
+
+  if (isRecommended) {
+    return `<div style="display:inline-block;max-width:${REC_CARD_MAX_W}px;border-radius:14px;background:rgba(255,255,255,0.72);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);border:1.5px solid ${BIZMIS_PRIMARY_HEX};box-shadow:0 0 0 3px rgba(249,163,83,0.12),0 6px 20px -4px rgba(249,163,83,0.18);overflow:hidden;">
+              <div style="background:linear-gradient(135deg,${BIZMIS_PRIMARY_HEX},${BIZMIS_PRIMARY_DARK_HEX});padding:6px 0;text-align:center;line-height:1;display:flex;align-items:center;justify-content:center;">
+                <span style="${BODY}font-size:8px;font-weight:700;color:#ffffff;letter-spacing:0.06em;text-transform:uppercase;vertical-align:middle;">&#9733; Recommended</span>
+              </div>
+              <div style="padding:8px 8px 6px 8px;text-align:center;">
+                <img src="${imgUrl}" alt="" width="${REC_IMG_W}" style="display:block;margin:0 auto;max-width:${REC_IMG_W}px;height:auto;border:0;border-radius:8px;" />
+              </div>
+              <div style="padding:4px 10px 10px 10px;text-align:center;">
+                <p style="margin:0;${BODY}font-size:9px;font-weight:700;color:${BIZMIS_FOREGROUND_HEX};line-height:1.3;">${escapeHtml(product.title)}</p>
+                <p style="margin:3px 0 0;${BODY}font-size:8px;font-weight:600;color:${BIZMIS_PRIMARY_DARK_HEX};">${escapeHtml(product.price)}</p>
+              </div>
+            </div>`;
+  }
+
+  return `<div style="display:inline-block;width:${REGULAR_CARD_W}px;border-radius:12px;background:rgba(255,255,255,0.55);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);border:1px solid rgba(240,224,208,0.6);overflow:hidden;">
+              <div style="padding:6px 6px 4px 6px;text-align:center;height:${REGULAR_IMG_H + 10}px;display:flex;align-items:center;justify-content:center;">
+                <img src="${imgUrl}" alt="" width="${REGULAR_IMG_W}" style="display:block;margin:0 auto;max-width:${REGULAR_IMG_W}px;max-height:${REGULAR_IMG_H}px;height:auto;border:0;border-radius:8px;object-fit:contain;" />
+              </div>
+              <div style="padding:0 8px 6px 8px;text-align:center;">
+                <span style="display:inline-block;background-color:${BIZMIS_PRIMARY_TINT_006};border:1px solid ${MONTAGE_CARD_BORDER_HEX};border-radius:9999px;padding:1px 7px;${BODY}font-size:7px;font-weight:600;color:${BIZMIS_PRIMARY_DARK_HEX};letter-spacing:0.02em;margin-bottom:3px;">${tagEsc}</span>
+                <p style="margin:2px 0 0;${BODY}font-size:8px;font-weight:600;color:${BIZMIS_FOREGROUND_HEX};line-height:1.2;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${escapeHtml(product.title)}</p>
+                <p style="margin:1px 0 0;${BODY}font-size:7.5px;color:${BIZMIS_MUTED_LIGHT_HEX};">${escapeHtml(product.price)}</p>
+              </div>
+            </div>`;
 }
 
 function buildEarlyAccessChipStripHtml(storeCap: number): string {
@@ -182,13 +199,18 @@ export function buildLeadEarlyAccessEmailHtml(
   const bizmisLogoUrl = absImg(BIZMIS_LOGO_WHITE);
   const shopifyMarkUrl = absImg(SHOPIFY_MARK_WHITE);
   const clerkAvatarUrl = absImg(lead.clerkAvatarImagePath || BIZMIS_CLERK_AVATAR_FALLBACK);
-  const montageCards = [
-    buildMontageProductCardHtml(lead, 0),
-    buildMontageProductCardHtml(lead, 1),
-    buildMontageProductCardHtml(lead, 2),
-  ];
-  const montageClerkCueRaw = lead.montageClerkCue?.trim() || copy.montageClerkCueDefault;
-  const montageClerkCueEsc = escapeHtml(montageClerkCueRaw);
+  const recIdx = lead.recommendedProductIndex;
+  const otherIndices = ([0, 1, 2] as const).filter((i) => i !== recIdx);
+  const recommendedCardHtml = buildMontageProductCardHtml(lead, recIdx, true);
+  const otherCardHtmlA = buildMontageProductCardHtml(lead, otherIndices[0], false);
+  const otherCardHtmlB = buildMontageProductCardHtml(lead, otherIndices[1], false);
+  const montageCueBody = BIZMIS_FOREGROUND_HEX;
+  const montageCueBizmisPrimary = BIZMIS_PRIMARY_HEX;
+  const customMontageCue = lead.montageClerkCue?.trim();
+  const recProductTitle = lead.demoProducts[recIdx].title;
+  const montageClerkCueInnerHtml = customMontageCue
+    ? `<span style="${BODY}font-size:11px;font-weight:500;line-height:1.35;color:${montageCueBody};">${escapeHtml(customMontageCue)}</span>`
+    : `<span style="${BODY}font-size:11px;font-weight:500;line-height:1.35;color:${montageCueBody};">${escapeHtml(MONTAGE_CLERK_CUE_BEFORE_PRODUCT_NAME)}</span><span style="${BODY}font-size:11px;font-weight:600;line-height:1.35;color:${montageCueBizmisPrimary};">${escapeHtml(recProductTitle)}</span><span style="${BODY}font-size:11px;font-weight:500;line-height:1.35;color:${montageCueBody};">${escapeHtml(MONTAGE_CLERK_CUE_AFTER_PRODUCT_NAME)}</span>`;
   const montageWatermarkWaveformHtml = emailMontageWatermarkWaveformImgHtml();
   const outcomeIconUrls = [
     absImg(OUTCOME_ICON_TREND),
@@ -343,53 +365,55 @@ export function buildLeadEarlyAccessEmailHtml(
                 </td>
               </tr>
               <tr>
-                <td bgcolor="#ffffff" style="background-color:#ffffff;padding:14px 16px 0 16px;">
-                  <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%">
-                    <tr>
-                      <td width="56%" style="vertical-align:middle;padding:0 10px 0 0;">
-                        <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" align="center" style="margin:0 auto;">
-                          <tr>
-                            <td width="50%" style="vertical-align:top;text-align:center;padding:0 2px 0 0;">
-                              ${montageCards[0]}
-                            </td>
-                            <td width="50%" style="vertical-align:top;text-align:center;padding:0 0 0 2px;">
-                              ${montageCards[1]}
-                            </td>
-                          </tr>
-                          <tr>
-                            <td colspan="2" style="vertical-align:top;text-align:center;padding:5px 0 0 0;">
-                              ${montageCards[2]}
-                            </td>
-                          </tr>
-                        </table>
-                      </td>
-                      <td width="44%" style="vertical-align:middle;padding:0;text-align:center;">
-                        <img src="${clerkAvatarUrl}" alt="Bizmis store clerk" width="150" style="display:block;margin:0 auto;max-width:150px;height:auto;border:0;border-radius:12px;" />
-                      </td>
-                    </tr>
-                    <tr>
-                      <td colspan="2" style="padding:10px 0 8px 0;text-align:center;position:relative;">
-                        <!--[if !mso]><!-->
-                        <div style="position:relative;display:block;margin:0 auto;max-width:100%;">
-                          <div style="text-align:center;line-height:0;font-size:0;padding:0;height:42px;overflow:hidden;">
-                            ${montageWatermarkWaveformHtml}
-                          </div>
-                          <div style="position:absolute;top:0;left:0;right:0;bottom:0;display:flex;align-items:center;justify-content:center;">
-                            <div style="position:absolute;width:70%;height:100%;top:0;left:15%;background:radial-gradient(ellipse 100% 100% at 50% 50%,rgba(255,255,255,0.92) 0%,rgba(255,255,255,0.45) 30%,transparent 68%);"></div>
-                            <p style="margin:0;position:relative;${BODY}font-size:11px;font-weight:500;line-height:1;color:${BIZMIS_PRIMARY_DARK_HEX};">
-                              ${montageClerkCueEsc}
+                <td bgcolor="#ffffff" style="background-color:#ffffff;padding:16px 10px 0 10px;">
+                  <!--[if !mso]><!-->
+                  <div style="position:relative;min-height:360px;overflow:visible;">
+
+                    <div style="position:absolute;top:50%;left:50%;width:70%;height:70%;transform:translate(-50%,-48%);border-radius:50%;background:radial-gradient(circle,rgba(249,163,83,0.10) 0%,rgba(249,163,83,0.03) 50%,transparent 72%);z-index:0;pointer-events:none;"></div>
+
+                    <div style="text-align:center;padding-top:4px;position:relative;z-index:2;">
+                      <img src="${clerkAvatarUrl}" alt="Bizmis store clerk" width="260" style="display:inline-block;max-width:260px;width:100%;height:auto;border:0;border-radius:16px;filter:drop-shadow(0 10px 32px rgba(50,40,27,0.16));" />
+                    </div>
+
+                    <div style="position:absolute;top:42%;left:4%;transform:translateY(-50%) rotate(-1.5deg);z-index:3;filter:drop-shadow(0 3px 12px rgba(50,40,27,0.12));">
+                      ${recommendedCardHtml}
+                    </div>
+
+                    <div style="position:absolute;top:4px;right:4%;transform:rotate(1.5deg);z-index:3;filter:drop-shadow(0 3px 10px rgba(50,40,27,0.10));">
+                      ${otherCardHtmlA}
+                    </div>
+
+                    <div style="position:absolute;bottom:62px;right:4%;transform:rotate(1deg);z-index:3;filter:drop-shadow(0 3px 10px rgba(50,40,27,0.10));">
+                      ${otherCardHtmlB}
+                    </div>
+
+                    <div style="position:absolute;bottom:0;left:0;right:0;z-index:1;pointer-events:none;">
+                      <div style="position:relative;display:block;margin:0 auto;max-width:100%;">
+                        <div style="text-align:center;line-height:0;font-size:0;padding:0;height:82px;overflow:hidden;">
+                          ${montageWatermarkWaveformHtml}
+                        </div>
+                        <div style="position:absolute;top:0;left:0;right:0;bottom:0;display:flex;align-items:center;justify-content:center;">
+                          <div style="position:relative;width:100%;display:flex;align-items:center;justify-content:center;transform:translateY(18px);">
+                            <div style="position:absolute;width:70%;height:100%;top:0;left:15%;background:radial-gradient(ellipse 100% 100% at 50% 72%,rgba(255,255,255,0.92) 0%,rgba(255,255,255,0.45) 30%,transparent 68%);"></div>
+                            <p style="margin:0;position:relative;">
+                              ${montageClerkCueInnerHtml}
                             </p>
                           </div>
                         </div>
-                        <!--<![endif]-->
-                        <!--[if mso]>
-                        <p style="margin:0;${BODY}font-size:11px;font-weight:500;line-height:1.5;color:${BIZMIS_PRIMARY_DARK_HEX};">
-                          ${montageClerkCueEsc}
-                        </p>
-                        <![endif]-->
+                      </div>
+                    </div>
+
+                  </div>
+                  <!--<![endif]-->
+                  <!--[if mso]>
+                  <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%">
+                    <tr>
+                      <td width="100%" align="center" style="padding:0;text-align:center;">
+                        <img src="${clerkAvatarUrl}" alt="Bizmis store clerk" width="240" style="display:block;margin:0 auto;max-width:240px;height:auto;border:0;" />
                       </td>
                     </tr>
                   </table>
+                  <![endif]-->
                 </td>
               </tr>
             </table>
@@ -499,12 +523,16 @@ export function buildLeadEarlyAccessEmailHtml(
 </html>`;
 
   const chipPlainLines = buildEarlyAccessChips(storeCap);
+  const montagePlainLine = customMontageCue ?? buildMontageClerkCuePlainText(recProductTitle);
+
   const plainText = [
     buildEarlyAccessSalutationPlainText(lead.storeName, lead.leadContactName),
     "",
     buildEarlyAccessValueSentencePlainText(lead.storeName, lead.leadContactName),
     "",
     `${copy.softCtaAboveMockupLinkPhrase} ${shopifyAppUrl}${copy.softCtaAboveMockupAfterLink}${copy.softCtaAboveMockupEmphasis}`,
+    "",
+    montagePlainLine,
     "",
     ...copy.outcomes,
     "",

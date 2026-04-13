@@ -17,6 +17,7 @@
     { "title": "AC200L", "price": "$1,099", "tag": "Portable" },
     { "title": "Elite 300", "price": "$1,199", "tag": "Versatile" }
   ],
+  "recommendedProductIndex": 0,
   "demoFooterLine": "Guides shoppers by use case, capacity, and portability.",
   "montageClerkCue": null,
   "country": "US/EU (global)",
