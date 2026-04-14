@@ -8,7 +8,6 @@
   "primaryColor": "#e31837",
   "secondaryColor": null,
   "textColor": null,
-  "leadLogoScale": 1.2,
   "pitchLine": "Help mechanics find the right tools by application, drive size, and professional needs.",
   "demoShopperPrompt": "I need a good flex-head ratchet for tight engine bays — what do you have?",
   "demoBizmisReply": "Got it — 3/8\" drive for precision work or 1/2\" drive for heavier torque applications?",

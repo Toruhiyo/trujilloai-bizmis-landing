@@ -44,8 +44,12 @@ __all__ = ["generate_all", "generate_lead"]
 
 # Public:
 
-def generate_all(*, avatar_id: str = DEFAULT_AVATAR_ID) -> list[Path]:
+def generate_all(*, avatar_id: str | None = None) -> list[Path]:
     """Render clerk avatars for every lead in the registry.
+
+    Each lead uses its own ``avatar_id`` from the registry.  Pass
+    *avatar_id* to force the same avatar for all leads (overrides the
+    per-lead setting).
 
     Returns a list of output paths for successful renders.
     """
@@ -54,9 +58,10 @@ def generate_all(*, avatar_id: str = DEFAULT_AVATAR_ID) -> list[Path]:
 
     for i, lead in enumerate(LEAD_REGISTRY, 1):
         lead_id = lead["id"]
-        logger.info("[%d/%d] Rendering %s …", i, total, lead_id)
+        chosen = avatar_id or lead.get("avatar_id") or DEFAULT_AVATAR_ID
+        logger.info("[%d/%d] Rendering %s (avatar=%s) …", i, total, lead_id, chosen)
         try:
-            out = _render_lead(lead, avatar_id)
+            out = _render_lead(lead, chosen)
             logger.info("[%d/%d] Done → %s", i, total, out)
             results.append(out)
         except Exception as exc:
@@ -68,14 +73,18 @@ def generate_all(*, avatar_id: str = DEFAULT_AVATAR_ID) -> list[Path]:
 def generate_lead(
     lead_id: str,
     *,
-    avatar_id: str = DEFAULT_AVATAR_ID,
+    avatar_id: str | None = None,
 ) -> Path:
     """Render the clerk avatar for a single *lead_id*.
+
+    Uses the lead's ``avatar_id`` from the registry by default.  Pass
+    *avatar_id* to override.
 
     Raises ``KeyError`` if the lead is not in the registry.
     """
     lead = get_lead(lead_id)
-    return _render_lead(lead, avatar_id)
+    chosen = avatar_id or lead.get("avatar_id") or DEFAULT_AVATAR_ID
+    return _render_lead(lead, chosen)
 
 
 # Private:

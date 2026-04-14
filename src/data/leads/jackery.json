@@ -8,7 +8,6 @@
   "primaryColor": "#FFFFFF",
   "secondaryColor": null,
   "textColor": "#FD5000",
-  "leadLogoScale": 1.6,
   "pitchLine": "Help shoppers find the right portable power station by capacity, use case, and solar setup.",
   "demoShopperPrompt": "I need a portable power station for camping that can charge from solar panels.",
   "demoBizmisReply": "Got it — compact and lightweight for weekend trips, or higher capacity for extended off-grid stays?",

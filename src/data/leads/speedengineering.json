@@ -1,0 +1,37 @@
+{
+  "id": "speedengineering",
+  "storeName": "Speed Engineering",
+  "storeDomain": "speed-engineering.com",
+  "leadContactName": null,
+  "leadContactLastName": null,
+  "content": "",
+  "primaryColor": "#000000",
+  "secondaryColor": null,
+  "logoColorOverlay": null,
+  "pitchLine": "Help builders find the right LS/LT swap parts by vehicle, engine, and build goal.",
+  "demoShopperPrompt": "I'm doing an LS swap in my '72 C10 — what headers and exhaust should I run?",
+  "demoBizmisReply": "Got it — mild street build or full-send turbo setup?",
+  "demoProducts": [
+    {
+      "title": "C10 True Dual Exhaust",
+      "price": "$399.99",
+      "tag": "Exhaust"
+    },
+    {
+      "title": "LS Swap Shorty Headers",
+      "price": "$199.99",
+      "tag": "Headers"
+    },
+    {
+      "title": "LS Swap Oil Pan",
+      "price": "$249.99",
+      "tag": "Engine"
+    }
+  ],
+  "recommendedProductIndex": 1,
+  "demoFooterLine": "Guides builders by vehicle, engine, and build goal.",
+  "montageClerkCue": null,
+  "country": "USA",
+  "vertical": "automotive_parts_accessories",
+  "subNiche": "ls_lt_engine_swap"
+}

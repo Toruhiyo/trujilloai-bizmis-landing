@@ -1,0 +1,37 @@
+{
+  "id": "thehomesecuritysuperstore",
+  "storeName": "The Home Security Superstore",
+  "storeDomain": "thehomesecuritysuperstore.com",
+  "leadContactName": null,
+  "leadContactLastName": null,
+  "content": "",
+  "primaryColor": "#1a1a1a",
+  "secondaryColor": null,
+  "logoColorOverlay": null,
+  "pitchLine": "Help customers choose the right self-defense and security products by threat level and lifestyle.",
+  "demoShopperPrompt": "I walk to my car alone at night — what's the best thing I can carry for protection?",
+  "demoBizmisReply": "Got it — something discreet for your keychain, or a more serious deterrent?",
+  "demoProducts": [
+    {
+      "title": "TASER Pulse 2",
+      "price": "$399.99",
+      "tag": "TASER"
+    },
+    {
+      "title": "Byrna LE Pepper Gun",
+      "price": "$524.99",
+      "tag": "Non-lethal"
+    },
+    {
+      "title": "Sting Ring Stun Gun",
+      "price": "$22.95",
+      "tag": "Everyday"
+    }
+  ],
+  "recommendedProductIndex": 2,
+  "demoFooterLine": "Guides customers by threat level, lifestyle, and carry preference.",
+  "montageClerkCue": null,
+  "country": "USA",
+  "vertical": "other",
+  "subNiche": "self_defense"
+}

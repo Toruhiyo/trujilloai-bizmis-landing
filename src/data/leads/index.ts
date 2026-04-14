@@ -15,6 +15,22 @@ import nanoleaf from "./nanoleaf.json";
 import bluetti from "./bluetti.json";
 import jackery from "./jackery.json";
 import mactools from "./mactools.json";
+import emotiva from "./emotiva.json";
+import magnaflow from "./magnaflow.json";
+import burrow from "./burrow.json";
+import uswatersystems from "./uswatersystems.json";
+import jdmenginezone from "./jdmenginezone.json";
+import liveu from "./liveu.json";
+import floyd from "./floyd.json";
+import bulova from "./bulova.json";
+import urotuning from "./urotuning.json";
+import positivegrid from "./positivegrid.json";
+import thehomesecuritysuperstore from "./thehomesecuritysuperstore.json";
+import pura from "./pura.json";
+import speedengineering from "./speedengineering.json";
+import gorjana from "./gorjana.json";
+import crownandcaliber from "./crownandcaliber.json";
+import schoolhouse from "./schoolhouse.json";
 
 const RAW_LEADS: LeadEarlyAccessJson[] = [
   molekule,
@@ -31,6 +47,22 @@ const RAW_LEADS: LeadEarlyAccessJson[] = [
   bluetti,
   jackery,
   mactools,
+  emotiva,
+  magnaflow,
+  burrow,
+  uswatersystems,
+  jdmenginezone,
+  liveu,
+  floyd,
+  bulova,
+  urotuning,
+  positivegrid,
+  thehomesecuritysuperstore,
+  pura,
+  speedengineering,
+  gorjana,
+  crownandcaliber,
+  schoolhouse,
 ];
 
 function couponCode(id: string): string {

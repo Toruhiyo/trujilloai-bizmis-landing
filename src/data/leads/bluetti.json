@@ -8,7 +8,6 @@
   "primaryColor": "#FFFFFF",
   "secondaryColor": null,
   "textColor": "#232f3f",
-  "leadLogoScale": 1.6,
   "pitchLine": "Help shoppers choose the right power station by use case, capacity, and portability.",
   "demoShopperPrompt": "I need backup power for my home that can also run during outages.",
   "demoBizmisReply": "Got it — whole-home panel integration or a portable unit you can move around?",

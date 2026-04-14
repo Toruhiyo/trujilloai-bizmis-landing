@@ -28,7 +28,6 @@ REQUIRED_JSON_FIELDS = [
 OPTIONAL_JSON_FIELDS = [
     "textColor",
     "logoColorOverlay",
-    "leadLogoScale",
     "demoFooterLine",
     "montageClerkCue",
 ]

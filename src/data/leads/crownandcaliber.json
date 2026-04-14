@@ -1,0 +1,37 @@
+{
+  "id": "crownandcaliber",
+  "storeName": "Crown & Caliber",
+  "storeDomain": "crownandcaliber.com",
+  "leadContactName": null,
+  "leadContactLastName": null,
+  "content": "",
+  "primaryColor": "#FFFFFF",
+  "secondaryColor": null,
+  "textColor": "#1a1a1a",
+  "pitchLine": "Guide collectors to the right pre-owned watch by brand, style, and investment value.",
+  "demoShopperPrompt": "I want my first luxury watch under $5,000 — something I can wear daily.",
+  "demoBizmisReply": "Got it — sporty tool watch or refined dress piece?",
+  "demoProducts": [
+    {
+      "title": "Tudor Black Bay",
+      "price": "$3,495",
+      "tag": "Sport"
+    },
+    {
+      "title": "Omega Speedmaster",
+      "price": "$4,795",
+      "tag": "Icon"
+    },
+    {
+      "title": "Cartier Tank Must",
+      "price": "$2,995",
+      "tag": "Dress"
+    }
+  ],
+  "recommendedProductIndex": 0,
+  "demoFooterLine": "Guides collectors by brand, style, and investment value.",
+  "montageClerkCue": null,
+  "country": "USA",
+  "vertical": "jewelry_luxury",
+  "subNiche": "watches_pre_owned"
+}

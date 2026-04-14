@@ -1,0 +1,37 @@
+{
+  "id": "urotuning",
+  "storeName": "UroTuning",
+  "storeDomain": "urotuning.com",
+  "leadContactName": null,
+  "leadContactLastName": null,
+  "content": "",
+  "primaryColor": "#003366",
+  "secondaryColor": null,
+  "logoColorOverlay": "#ffffff",
+  "pitchLine": "Help Euro car owners find the right OEM and performance parts by vehicle, mod goal, and budget.",
+  "demoShopperPrompt": "I need to replace the control arms on my E46 BMW — OEM or upgrade?",
+  "demoBizmisReply": "Got it — stock replacement for daily driving, or performance bushings for track days?",
+  "demoProducts": [
+    {
+      "title": "Engine Mount Porsche Macan",
+      "price": "$207.26",
+      "tag": "OEM"
+    },
+    {
+      "title": "Control Arm Kit E46",
+      "price": "$493.44",
+      "tag": "Suspension"
+    },
+    {
+      "title": "Belt Tensioner VR6",
+      "price": "$114.43",
+      "tag": "Engine"
+    }
+  ],
+  "recommendedProductIndex": 1,
+  "demoFooterLine": "Guides Euro car owners by vehicle, mod goal, and budget.",
+  "montageClerkCue": null,
+  "country": "USA",
+  "vertical": "automotive_parts_accessories",
+  "subNiche": "european_auto_parts"
+}

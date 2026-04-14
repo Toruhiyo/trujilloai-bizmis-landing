@@ -1,0 +1,37 @@
+{
+  "id": "emotiva",
+  "storeName": "Emotiva",
+  "storeDomain": "emotiva.com",
+  "leadContactName": null,
+  "leadContactLastName": null,
+  "content": "",
+  "primaryColor": "#3a3a3a",
+  "secondaryColor": null,
+  "logoColorOverlay": "#ffffff",
+  "pitchLine": "Help listeners match the right amplifier, processor, and speakers to their room and setup.",
+  "demoShopperPrompt": "I want to build a 5.1 home theater — where do I start with amps and speakers?",
+  "demoBizmisReply": "Got it — dedicated power amp with a processor, or an all-in-one integrated unit?",
+  "demoProducts": [
+    {
+      "title": "BasX TA1",
+      "price": "$499",
+      "tag": "Starter"
+    },
+    {
+      "title": "BasX A2+",
+      "price": "$799",
+      "tag": "Stereo"
+    },
+    {
+      "title": "XPA-2 Gen3",
+      "price": "$1,499",
+      "tag": "Audiophile"
+    }
+  ],
+  "recommendedProductIndex": 1,
+  "demoFooterLine": "Guides listeners by room size, setup, and listening goals.",
+  "montageClerkCue": null,
+  "country": "USA",
+  "vertical": "consumer_electronics_appliances",
+  "subNiche": "audio_home_theater"
+}

@@ -1,0 +1,37 @@
+{
+  "id": "jdmenginezone",
+  "storeName": "JDM Engine Zone",
+  "storeDomain": "jdmenginezone.com",
+  "leadContactName": null,
+  "leadContactLastName": null,
+  "content": "",
+  "primaryColor": "#1a1a1a",
+  "secondaryColor": null,
+  "logoColorOverlay": null,
+  "pitchLine": "Help buyers find the right crate engine by vehicle, displacement, and warranty needs.",
+  "demoShopperPrompt": "I need a replacement engine for my 2012 Honda CRV — what do you have?",
+  "demoBizmisReply": "Got it — just the bare block, or do you need a complete long block with accessories?",
+  "demoProducts": [
+    {
+      "title": "4Runner 4.0L V6 1GR-FE",
+      "price": "$4,999",
+      "tag": "V6"
+    },
+    {
+      "title": "Honda CRV 2.4L K24A1",
+      "price": "$1,999",
+      "tag": "4-Cyl"
+    },
+    {
+      "title": "Corolla 1.8L 2ZR-FE",
+      "price": "$1,699",
+      "tag": "Economy"
+    }
+  ],
+  "recommendedProductIndex": 1,
+  "demoFooterLine": "Guides buyers by vehicle, displacement, and warranty needs.",
+  "montageClerkCue": null,
+  "country": "USA",
+  "vertical": "automotive_parts_accessories",
+  "subNiche": "crate_engines"
+}

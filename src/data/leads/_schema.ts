@@ -22,7 +22,6 @@ export type LeadEarlyAccessJson = {
   secondaryColor: string | null;
   textColor?: string | null;
   logoColorOverlay?: string | null;
-  leadLogoScale?: number;
   /** Avatar shirt hex. Falls back to primaryColor when omitted. */
   avatarShirtColor?: string | null;
   /** Hex tint for the shirt stamp. null = native colours. */
@@ -69,12 +68,6 @@ export function resolveLogoColorOverlay(lead: Pick<LeadEarlyAccessData, "logoCol
   const v = lead.logoColorOverlay?.trim();
   if (!v) return null;
   return HEX_OVERLAY.test(v) ? v : null;
-}
-
-export function resolveLeadLogoScale(lead: Pick<LeadEarlyAccessData, "leadLogoScale">): number {
-  const s = lead.leadLogoScale;
-  if (typeof s !== "number" || !Number.isFinite(s) || s <= 0) return 1;
-  return s;
 }
 
 export function resolveStoreNameTextColor(

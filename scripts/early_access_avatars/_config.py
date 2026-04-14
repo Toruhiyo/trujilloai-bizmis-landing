@@ -52,6 +52,10 @@ WAVE_COLOR_LUMINANCE_THRESHOLD = 0.85
 # • primary_color       → banner background (used by the TS side)
 # • logo_color_overlay  → logo tint for the banner
 #
+# Avatar character:
+# • avatar_id           → which 3D avatar to use. Falls back to
+#                          DEFAULT_AVATAR_ID when None.
+#
 # Avatar shirt (independent from the top bar):
 # • shirt_color         → shirt mesh + widget button colour.
 #                          Falls back to primary_color when None.
@@ -61,20 +65,38 @@ WAVE_COLOR_LUMINANCE_THRESHOLD = 0.85
 #                          Falls back to "logo.png" when None.
 
 LEAD_REGISTRY: list[dict] = [
-    {"id": "molekule", "primary_color": "#108849", "logo_color_overlay": "#ffffff"},
-    {"id": "glowforge", "primary_color": "#27B8CE", "logo_color_overlay": "#ffffff"},
-    {"id": "sennheiser", "primary_color": "#003746", "logo_color_overlay": None},
-    {"id": "sodastream", "primary_color": "#00205B", "logo_color_overlay": None},
-    {"id": "peakdesign", "primary_color": "#1A1A1A", "logo_color_overlay": "#ffffff"},
-    {"id": "hodinkee", "primary_color": "#FFFFFF", "logo_color_overlay": None},
-    {"id": "sixpenny", "primary_color": "#3C392D", "logo_color_overlay": "#ffffff"},
-    {"id": "shapermint", "primary_color": "#F8A08E", "logo_color_overlay": None},
-    {"id": "glossier", "primary_color": "#FEF116", "logo_color_overlay": None},
-    {"id": "theproscloset", "primary_color": "#B8F986", "logo_color_overlay": None},
-    {"id": "nanoleaf", "primary_color": "#FFFFFF", "logo_color_overlay": None},
-    {"id": "bluetti", "primary_color": "#FFFFFF", "logo_color_overlay": None},
-    {"id": "jackery", "primary_color": "#FFFFFF", "logo_color_overlay": None},
-    {"id": "mactools", "primary_color": "#e31837", "logo_color_overlay": None},
+    # ── Batch 1 ──
+    {"id": "molekule", "primary_color": "#108849", "logo_color_overlay": "#ffffff", "avatar_id": "yusuke"},
+    {"id": "glowforge", "primary_color": "#27B8CE", "logo_color_overlay": "#ffffff", "avatar_id": "kiran"},
+    {"id": "sennheiser", "primary_color": "#003746", "logo_color_overlay": None, "avatar_id": "luca"},
+    {"id": "sodastream", "primary_color": "#00205B", "logo_color_overlay": None, "avatar_id": "will"},
+    {"id": "peakdesign", "primary_color": "#1A1A1A", "logo_color_overlay": "#ffffff", "avatar_id": "teo"},
+    {"id": "hodinkee", "primary_color": "#FFFFFF", "logo_color_overlay": None, "avatar_id": "yusuke"},
+    {"id": "sixpenny", "primary_color": "#3C392D", "logo_color_overlay": "#ffffff", "avatar_id": "amber"},
+    {"id": "shapermint", "primary_color": "#F8A08E", "logo_color_overlay": None, "avatar_id": "yue"},
+    {"id": "glossier", "primary_color": "#FEF116", "logo_color_overlay": None, "avatar_id": "amber"},
+    {"id": "theproscloset", "primary_color": "#B8F986", "logo_color_overlay": None, "avatar_id": "echo"},
+    {"id": "nanoleaf", "primary_color": "#FFFFFF", "logo_color_overlay": None, "avatar_id": "kiran"},
+    {"id": "bluetti", "primary_color": "#FFFFFF", "logo_color_overlay": None, "avatar_id": "avatar_matt"},
+    {"id": "jackery", "primary_color": "#FFFFFF", "logo_color_overlay": None, "avatar_id": "teo"},
+    {"id": "mactools", "primary_color": "#e31837", "logo_color_overlay": None, "avatar_id": "avatar_mathew"},
+    # ── Batch 2 ──
+    {"id": "emotiva", "primary_color": "#3a3a3a", "logo_color_overlay": "#ffffff", "avatar_id": "echo"},
+    {"id": "magnaflow", "primary_color": "#000000", "logo_color_overlay": None, "avatar_id": "teo"},
+    {"id": "burrow", "primary_color": "#FFFFFF", "logo_color_overlay": None, "avatar_id": "luca"},
+    {"id": "uswatersystems", "primary_color": "#0054A6", "logo_color_overlay": "#ffffff", "avatar_id": "avatar_mathew"},
+    {"id": "jdmenginezone", "primary_color": "#1a1a1a", "logo_color_overlay": None, "avatar_id": "yusuke"},
+    {"id": "liveu", "primary_color": "#f1592b", "logo_color_overlay": "#ffffff", "avatar_id": "kiran"},
+    {"id": "floyd", "primary_color": "#231e1e", "logo_color_overlay": "#ffffff", "avatar_id": "will"},
+    {"id": "bulova", "primary_color": "#000000", "logo_color_overlay": None, "avatar_id": "avatar_matt"},
+    {"id": "urotuning", "primary_color": "#003366", "logo_color_overlay": "#ffffff", "avatar_id": "luca"},
+    {"id": "positivegrid", "primary_color": "#1a1a1a", "logo_color_overlay": "#ffffff", "avatar_id": "echo"},
+    {"id": "thehomesecuritysuperstore", "primary_color": "#1a1a1a", "logo_color_overlay": None, "avatar_id": "will"},
+    {"id": "pura", "primary_color": "#FFFFFF", "logo_color_overlay": None, "avatar_id": "amber"},
+    {"id": "speedengineering", "primary_color": "#000000", "logo_color_overlay": None, "avatar_id": "teo"},
+    {"id": "gorjana", "primary_color": "#FFFFFF", "logo_color_overlay": None, "avatar_id": "yue"},
+    {"id": "crownandcaliber", "primary_color": "#FFFFFF", "logo_color_overlay": None, "avatar_id": "yusuke"},
+    {"id": "schoolhouse", "primary_color": "#FFFFFF", "logo_color_overlay": None, "avatar_id": "amber"},
 ]
 
 _LEAD_BY_ID: dict[str, dict] = {lead["id"]: lead for lead in LEAD_REGISTRY}

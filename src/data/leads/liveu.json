@@ -1,0 +1,37 @@
+{
+  "id": "liveu",
+  "storeName": "LiveU Store",
+  "storeDomain": "shop.liveu.tv",
+  "leadContactName": null,
+  "leadContactLastName": null,
+  "content": "",
+  "primaryColor": "#f1592b",
+  "secondaryColor": null,
+  "logoColorOverlay": "#ffffff",
+  "pitchLine": "Help broadcasters find the right accessories, cables, and cases for their LiveU setup.",
+  "demoShopperPrompt": "I just got an LU300 — what accessories do I need for field production?",
+  "demoBizmisReply": "Got it — indoor studio use or outdoor run-and-gun field work?",
+  "demoProducts": [
+    {
+      "title": "LU300 Pouch",
+      "price": "$145",
+      "tag": "Case"
+    },
+    {
+      "title": "LU600/LU800 Remote",
+      "price": "$145",
+      "tag": "Control"
+    },
+    {
+      "title": "LU600 Charger (USA)",
+      "price": "$140",
+      "tag": "Power"
+    }
+  ],
+  "recommendedProductIndex": 0,
+  "demoFooterLine": "Guides broadcasters by setup, use case, and field requirements.",
+  "montageClerkCue": null,
+  "country": "Global",
+  "vertical": "consumer_electronics_appliances",
+  "subNiche": "broadcast_streaming"
+}

@@ -72,7 +72,6 @@ Open the store and inspect the top navigation bar. Apply one of two rules:
 | `primaryColor` | **Rule A**: navbar background colour. **Rule B**: brand accent colour. |
 | `textColor` | Store name text colour in the banner. For white/light `primaryColor`, use the brand accent or a dark colour. For dark `primaryColor`, leave `null` (defaults to white). |
 | `logoColorOverlay` | **Rule A**: `null` (native colours). **Rule B**: `#ffffff` (or whatever contrasts with `primaryColor`). |
-| `leadLogoScale` | Default 1.0. Increase for wide horizontal wordmarks (e.g. 1.6–1.8). |
 | `secondaryColor` | Usually `null`. Set only if the brand has a clear secondary colour. |
 
 **Logo selection for top bar**: ALWAYS use the full logo as it appears in the store's header/navbar. This is typically a wordmark (icon + text), NOT a favicon.
@@ -197,23 +196,57 @@ download_lead_assets(
 
 If a custom stamp image was chosen (`avatarStampImage`), download or extract it into `public/invite-cards/leads/<id>/` with the chosen filename before generating the avatar.
 
-### Step 6 — Generate avatar (automated)
+### Step 6 — Choose avatar character and generate (cognitive + automated)
+
+#### 6a — Choose the avatar character
+
+Pick which 3D avatar best fits the brand's persona, audience, and vertical. Each lead gets its own `avatar_id` in the registry.
+
+**Available avatars:**
+
+| ID              | Persona archetype                                      |
+|-----------------|--------------------------------------------------------|
+| `amber`         | Female, warm — lifestyle brands, home/decor, beauty    |
+| `avatar_mathew` | Male, professional — expert-advice brands, B2B, trade  |
+| `avatar_matt`   | Male, classic — heritage brands, luxury, established   |
+| `echo`          | Male, hipster (beard + headphones) — audio, music, creative, cycling |
+| `kiran`         | Male, tech-savvy — electronics, SaaS, broadcast, smart home |
+| `luca`          | Male, European/design — furniture, fashion, Euro automotive |
+| `teo`           | Male, casual (baseball cap) — automotive, outdoor, blue-collar, garage |
+| `will`          | Male, authoritative — security, professional services, mid-century design |
+| `yue`           | Female, fashion-forward (glasses + dress) — jewelry, women's fashion, editorial |
+| `yusuke`        | Male, refined — Japanese culture, watches, minimalist, precision |
+
+**Selection heuristics** (apply in order until a clear winner emerges):
+
+1. **Direct trait match** — Echo for audio brands (he wears headphones), Yusuke for JDM culture, Yue for women's jewelry.
+2. **Audience gender skew** — feminine-leaning brands → Amber or Yue. Male-dominated verticals → any male avatar.
+3. **Vertical fit** — automotive/garage → Teo. Luxury/watches → Yusuke or Matt. Home/lifestyle → Amber or Luca. Tech → Kiran.
+4. **Brand tone** — playful/casual → Teo or Echo. Professional/authoritative → Will or Mathew. Refined/minimal → Yusuke or Luca.
+5. **Variety across the batch** — avoid assigning the same avatar to consecutive leads when possible. Diversity across the full invite set looks better.
+
+Duplicates are fine — different brands can share an avatar. The goal is brand fit, not uniqueness.
+
+#### 6b — Update registry and generate
 
 After assets are saved, **update the lead's entry in `scripts/early_access_avatars/_config.py :: LEAD_REGISTRY`** with the avatar-specific fields:
 
 ```python
 # Add to LEAD_REGISTRY in _config.py:
 {"id": "newlead", "primary_color": "#...", "logo_color_overlay": ...,
+ "avatar_id": "echo",
  "shirt_color": "#...", "stamp_color_overlay": "...", "stamp_image": "..."},
 # Only include shirt_color / stamp_color_overlay / stamp_image when they
 # differ from primary_color / logo_color_overlay / default "logo.png".
+# avatar_id is required — choose from the table above.
 ```
 
-Then generate the clerk avatar:
+Then generate the clerk avatar (the per-lead `avatar_id` is used automatically):
 
 ```python
 from early_access_avatars import generate_lead
 generate_lead("newlead")
+# Override for testing: generate_lead("newlead", avatar_id="will")
 ```
 
 See the [Bizmis Avatar Render skill](../../skills/bizmis-avatar-render/SKILL.md) for details and troubleshooting.
@@ -269,8 +302,6 @@ subNiche           string       Sub-niche (snake_case, can be empty)
 Optional fields — invite-card top bar:
 - `textColor`: store name text colour in banner. Set for white/light `primaryColor`.
 - `logoColorOverlay`: hex to tint the top-bar logo. `null` = use native colours.
-- `leadLogoScale`: logo size multiplier. Default 1.0, increase for wide wordmarks (1.6–1.8).
-
 Optional fields — avatar shirt (independent from top bar):
 - `avatarShirtColor`: hex for the avatar shirt. `null` = falls back to `primaryColor`.
 - `avatarStampColorOverlay`: hex tint for the shirt stamp. `null` = native colours.

@@ -8,7 +8,6 @@
   "primaryColor": "#FFFFFF",
   "secondaryColor": null,
   "textColor": "#3FAE29",
-  "leadLogoScale": 1.8,
   "pitchLine": "Guide shoppers to the right light panels by room, setup style, and smart-home needs.",
   "demoShopperPrompt": "I want to set up a gaming wall behind my desk — something modular and colorful.",
   "demoBizmisReply": "Got it — geometric panels for a mosaic look or sleek backlit lines?",

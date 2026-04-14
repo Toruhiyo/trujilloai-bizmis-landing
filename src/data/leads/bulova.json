@@ -1,0 +1,37 @@
+{
+  "id": "bulova",
+  "storeName": "Bulova",
+  "storeDomain": "bulova.com",
+  "leadContactName": null,
+  "leadContactLastName": null,
+  "content": "",
+  "primaryColor": "#000000",
+  "secondaryColor": null,
+  "logoColorOverlay": null,
+  "pitchLine": "Guide shoppers to the right watch by style, movement type, and occasion.",
+  "demoShopperPrompt": "I want a versatile everyday watch under $500 that looks good dressed up or down.",
+  "demoBizmisReply": "Got it — classic dress style or sporty with water resistance?",
+  "demoProducts": [
+    {
+      "title": "Lunar Pilot Meteorite",
+      "price": "$1,495",
+      "tag": "Limited"
+    },
+    {
+      "title": "Marine Star",
+      "price": "$695",
+      "tag": "Sport"
+    },
+    {
+      "title": "Snorkel",
+      "price": "$350",
+      "tag": "Casual"
+    }
+  ],
+  "recommendedProductIndex": 2,
+  "demoFooterLine": "Guides shoppers by style, movement, and occasion.",
+  "montageClerkCue": null,
+  "country": "USA (global)",
+  "vertical": "jewelry_luxury",
+  "subNiche": "watches"
+}

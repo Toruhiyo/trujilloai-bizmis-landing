@@ -1,0 +1,37 @@
+{
+  "id": "gorjana",
+  "storeName": "gorjana",
+  "storeDomain": "gorjana.com",
+  "leadContactName": null,
+  "leadContactLastName": null,
+  "content": "",
+  "primaryColor": "#FFFFFF",
+  "secondaryColor": null,
+  "textColor": "#C4975B",
+  "pitchLine": "Help shoppers find the right jewelry by occasion, layering style, and budget.",
+  "demoShopperPrompt": "I want to start a gold necklace stack — where do I begin?",
+  "demoBizmisReply": "Got it — delicate everyday chains or statement charm pieces?",
+  "demoProducts": [
+    {
+      "title": "Halo Charm Necklace",
+      "price": "$455",
+      "tag": "Diamond"
+    },
+    {
+      "title": "Birthstone Halo Charm",
+      "price": "$195",
+      "tag": "Gold"
+    },
+    {
+      "title": "Vintage Burst Ring",
+      "price": "$80",
+      "tag": "Ring"
+    }
+  ],
+  "recommendedProductIndex": 1,
+  "demoFooterLine": "Guides shoppers by occasion, layering style, and budget.",
+  "montageClerkCue": null,
+  "country": "USA",
+  "vertical": "jewelry_luxury",
+  "subNiche": "jewelry_gold"
+}

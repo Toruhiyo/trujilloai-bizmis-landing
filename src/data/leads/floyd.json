@@ -1,0 +1,37 @@
+{
+  "id": "floyd",
+  "storeName": "Floyd",
+  "storeDomain": "floydhome.com",
+  "leadContactName": null,
+  "leadContactLastName": null,
+  "content": "",
+  "primaryColor": "#231e1e",
+  "secondaryColor": null,
+  "logoColorOverlay": "#ffffff",
+  "pitchLine": "Help shoppers choose the right modular furniture by room, style, and how they plan to grow.",
+  "demoShopperPrompt": "I want a sofa I can reconfigure when I move — something modern and modular.",
+  "demoBizmisReply": "Got it — firm and structured, or sink-in deep-seat comfort?",
+  "demoProducts": [
+    {
+      "title": "Sofa 2.0 Three Seater",
+      "price": "$2,190",
+      "tag": "Sofa"
+    },
+    {
+      "title": "Soft Serve Ottoman",
+      "price": "$995",
+      "tag": "Modular"
+    },
+    {
+      "title": "The Block",
+      "price": "$365",
+      "tag": "Storage"
+    }
+  ],
+  "recommendedProductIndex": 0,
+  "demoFooterLine": "Guides shoppers by room, style, and growth plans.",
+  "montageClerkCue": null,
+  "country": "USA",
+  "vertical": "home_furniture_decor",
+  "subNiche": "furniture_modular"
+}

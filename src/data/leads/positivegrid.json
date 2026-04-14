@@ -1,0 +1,37 @@
+{
+  "id": "positivegrid",
+  "storeName": "Positive Grid",
+  "storeDomain": "positivegrid.com",
+  "leadContactName": null,
+  "leadContactLastName": null,
+  "content": "",
+  "primaryColor": "#1a1a1a",
+  "secondaryColor": null,
+  "logoColorOverlay": "#ffffff",
+  "pitchLine": "Help guitarists find the right smart amp by playing level, space, and tone goals.",
+  "demoShopperPrompt": "I'm a bedroom player who wants great tone without annoying my roommates.",
+  "demoBizmisReply": "Got it — headphone-only practice or do you also want to jam with a speaker?",
+  "demoProducts": [
+    {
+      "title": "Spark MINI",
+      "price": "$211",
+      "tag": "Portable"
+    },
+    {
+      "title": "Spark 2",
+      "price": "$297",
+      "tag": "Practice"
+    },
+    {
+      "title": "Spark LIVE",
+      "price": "$466",
+      "tag": "Stage"
+    }
+  ],
+  "recommendedProductIndex": 0,
+  "demoFooterLine": "Guides guitarists by playing level, space, and tone goals.",
+  "montageClerkCue": null,
+  "country": "USA (global)",
+  "vertical": "consumer_electronics_appliances",
+  "subNiche": "music_guitar_amps"
+}
