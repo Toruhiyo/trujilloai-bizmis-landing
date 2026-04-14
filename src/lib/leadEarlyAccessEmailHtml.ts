@@ -14,7 +14,6 @@ import {
 import {
   type LeadEarlyAccessData,
   EARLY_ACCESS_TERMS,
-  resolveLeadLogoScale,
   resolveLogoColorOverlay,
   resolveStoreNameTextColor,
 } from "@/data/leads/_schema";
@@ -30,6 +29,8 @@ import {
 const BIZMIS_LOGO_WHITE = "/images/bizmis-logo-white-transparent.png";
 const SHOPIFY_MARK_WHITE = "/images/shopify-mark-white.png";
 const BIZMIS_URL = "https://bizmis.ai";
+
+const EMAIL_NOISE_GRAIN_TILE = "/images/early-access-noise-grain.png";
 
 const OUTCOME_ICON_TREND = "/images/early-access-outcome-trend.svg";
 const OUTCOME_ICON_HEADPHONES = "/images/early-access-outcome-headphones.svg";
@@ -83,22 +84,21 @@ function logoPublicPathForEmail(logoImagePath: string): string {
   return logoImagePath;
 }
 
-const EMAIL_HEADER_LOGO_BASE_WIDTH_PX = 120;
-const EMAIL_HEADER_LOGO_BASE_MASK_HEIGHT_PX = 32;
+const EMAIL_HEADER_LOGO_MAX_W_PX = 160;
+const EMAIL_HEADER_LOGO_MAX_H_PX = 38;
 
 function storeLogoEmailMarkup(lead: LeadEarlyAccessData): string {
   const store = escapeHtml(lead.storeName);
   const logoUrl = absImg(logoPublicPathForEmail(lead.logoImagePath));
   const overlay = resolveLogoColorOverlay(lead);
-  const scale = resolveLeadLogoScale(lead);
-  const logoW = Math.round(EMAIL_HEADER_LOGO_BASE_WIDTH_PX * scale);
-  const maskH = Math.round(EMAIL_HEADER_LOGO_BASE_MASK_HEIGHT_PX * scale);
+  const maxW = EMAIL_HEADER_LOGO_MAX_W_PX;
+  const maxH = EMAIL_HEADER_LOGO_MAX_H_PX;
   if (!overlay) {
-    return `<img src="${logoUrl}" alt="${store}" width="${logoW}" height="auto" style="display:block;max-width:${logoW}px;height:auto;border:0;" />`;
+    return `<img src="${logoUrl}" alt="${store}" style="display:block;max-width:${maxW}px;max-height:${maxH}px;width:auto;height:auto;border:0;" />`;
   }
   const safeOverlay = escapeHtml(overlay);
   const urlEsc = logoUrl.replace(/'/g, "\\'");
-  return `<div role="presentation" aria-label="${store}" style="display:inline-block;width:${logoW}px;height:${maskH}px;background-color:${safeOverlay};-webkit-mask-image:url('${urlEsc}');mask-image:url('${urlEsc}');-webkit-mask-size:contain;mask-size:contain;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;-webkit-mask-position:left center;mask-position:left center;"></div>`;
+  return `<div role="presentation" aria-label="${store}" style="display:inline-block;width:${maxW}px;height:${maxH}px;background-color:${safeOverlay};-webkit-mask-image:url('${urlEsc}');mask-image:url('${urlEsc}');-webkit-mask-size:contain;mask-size:contain;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;-webkit-mask-position:left center;mask-position:left center;"></div>`;
 }
 
 const HEADING = "font-family:'Plus Jakarta Sans','Poppins',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-serif;";
@@ -197,6 +197,7 @@ export function buildLeadEarlyAccessEmailHtml(
   const storeLogoHtml = storeLogoEmailMarkup(lead);
   const bizmisLogoUrl = absImg(BIZMIS_LOGO_WHITE);
   const shopifyMarkUrl = absImg(SHOPIFY_MARK_WHITE);
+  const noiseGrainUrl = absImg(EMAIL_NOISE_GRAIN_TILE);
   const clerkAvatarUrl = absImg(lead.clerkAvatarImagePath || BIZMIS_CLERK_AVATAR_FALLBACK);
   const recIdx = lead.recommendedProductIndex;
   const otherIndices = ([0, 1, 2] as const).filter((i) => i !== recIdx);
@@ -273,13 +274,13 @@ export function buildLeadEarlyAccessEmailHtml(
           <td style="padding:0;">
             <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%">
               <tr>
-                <td width="50%" style="background-color:${pri};padding:14px 14px 14px 24px;vertical-align:middle;">
+                <td width="50%" background="${noiseGrainUrl}" bgcolor="${pri}" style="background-color:${pri};background-image:url('${noiseGrainUrl}');background-repeat:repeat;padding:14px 14px 14px 24px;vertical-align:middle;">
                   ${storeLogoHtml}
                 </td>
                 <td width="6%" style="background-color:${pri};background:linear-gradient(to bottom right,${pri} 50%,${BIZMIS_PRIMARY_HEX} 50%);text-align:center;vertical-align:middle;padding:0;">
                   <span style="${HEADING}font-size:28px;font-weight:900;color:#ffffff;line-height:1;text-shadow:0 1px 4px rgba(0,0,0,0.25);">&#x2716;</span>
                 </td>
-                <td width="44%" style="background:linear-gradient(145deg,${BIZMIS_PRIMARY_LIGHT_HEX} 0%,${BIZMIS_PRIMARY_HEX} 52%,${BIZMIS_PRIMARY_DARK_HEX} 100%);padding:14px 24px 14px 14px;vertical-align:middle;text-align:right;">
+                <td width="44%" background="${noiseGrainUrl}" bgcolor="${BIZMIS_PRIMARY_HEX}" style="background-color:${BIZMIS_PRIMARY_HEX};background-image:url('${noiseGrainUrl}');background-repeat:repeat;padding:14px 24px 14px 14px;vertical-align:middle;text-align:right;">
                   <a href="${BIZMIS_URL}" target="_blank" style="text-decoration:none;">
                     <table role="presentation" cellpadding="0" cellspacing="0" border="0" align="right">
                       <tr>
