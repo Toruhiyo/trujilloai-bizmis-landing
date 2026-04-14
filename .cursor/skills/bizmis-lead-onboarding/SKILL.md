@@ -16,6 +16,7 @@ Every time a manual fix is applied, ask: "Could this have been caught by the aut
 ## When to use
 
 Use this skill when the user asks to:
+
 - Add a new lead/store to the early-access program
 - Re-extract or refresh data for an existing lead
 - Onboard a batch of new leads
@@ -43,6 +44,7 @@ print(data.summary())
 ```
 
 Review the output summary. It contains:
+
 - Store name (from OG tags / `<title>`)
 - Theme color and CSS variable colour candidates
 - Logo candidates ranked by score (header images score 50+, favicons score 20–30)
@@ -67,12 +69,12 @@ Open the store and inspect the top navigation bar. Apply one of two rules:
 
 **Rule B (accent exception) — Navbar is colourless but the brand has a clear accent.** The navbar is white/light AND the logo on it is also colourless (plain black/white/grey wordmark), BUT the brand has a strong, distinctive accent colour visible elsewhere on the site (buttons, CTAs, section backgrounds). In this case, use the brand accent as `primaryColor` and tint the logo to contrast against it (`logoColorOverlay: "#ffffff"` for dark accents).
 
-| Field | Decision criteria |
-|-------|------------------|
-| `primaryColor` | **Rule A**: navbar background colour. **Rule B**: brand accent colour. |
-| `textColor` | Store name text colour in the banner. For white/light `primaryColor`, use the brand accent or a dark colour. For dark `primaryColor`, leave `null` (defaults to white). |
-| `logoColorOverlay` | **Rule A**: `null` (native colours). **Rule B**: `#ffffff` (or whatever contrasts with `primaryColor`). |
-| `secondaryColor` | Usually `null`. Set only if the brand has a clear secondary colour. |
+| Field              | Decision criteria                                                                                                                                                       |
+| ------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `primaryColor`     | **Rule A**: navbar background colour. **Rule B**: brand accent colour.                                                                                                  |
+| `textColor`        | Store name text colour in the banner. For white/light `primaryColor`, use the brand accent or a dark colour. For dark `primaryColor`, leave `null` (defaults to white). |
+| `logoColorOverlay` | **Rule A**: `null` (native colours). **Rule B**: `#ffffff` (or whatever contrasts with `primaryColor`).                                                                 |
+| `secondaryColor`   | Usually `null`. Set only if the brand has a clear secondary colour.                                                                                                     |
 
 **Logo selection for top bar**: ALWAYS use the full logo as it appears in the store's header/navbar. This is typically a wordmark (icon + text), NOT a favicon.
 
@@ -81,33 +83,36 @@ Open the store and inspect the top navigation bar. Apply one of two rules:
 Decide the shirt colour and stamp image **independently** from the top bar. The goal is to make the avatar look like a branded store clerk — not to repeat the invite-card banner.
 
 **Shirt colour rules**:
+
 1. If the store has a **clear primary / accent colour** visible in buttons, CTAs, UI widgets (not just in the logo) → use that colour as `avatarShirtColor`.
-2. If the navbar is already coloured and that colour *is* the brand primary → the shirt colour will match the top bar naturally (no need to set `avatarShirtColor`; it falls back to `primaryColor`).
+2. If the navbar is already coloured and that colour _is_ the brand primary → the shirt colour will match the top bar naturally (no need to set `avatarShirtColor`; it falls back to `primaryColor`).
 3. If no clear primary colour exists → omit `avatarShirtColor` (falls back to `primaryColor`).
 
 **Stamp image rules**:
+
 1. If a **compact brand icon** (leaf, flame, geometric mark, etc.) can be found or extracted — use it as `avatarStampImage`. Icons read better on a shirt than full wordmarks.
 2. If no compact icon exists, the full logo (`logo.png`) is used automatically. This is fine for stores whose wordmark is compact enough.
 
 **Stamp tint rules** (readability on the shirt colour):
+
 - If shirt colour is **the same as** the top bar colour and the top bar logo already has good contrast → stamp tint can match `logoColorOverlay` (or be omitted if both are `null`).
 - If shirt colour is **different from** the top bar → choose a stamp tint that contrasts against the shirt: `#ffffff` for dark/mid shirts, `#000000` or the brand primary for light shirts, or `null` if the native icon colours already contrast well.
 
-| Field | Decision criteria |
-|-------|------------------|
-| `avatarShirtColor` | Brand primary / accent hex. `null` = falls back to `primaryColor`. |
-| `avatarStampColorOverlay` | Stamp tint hex for contrast on the shirt. `null` = native colours. |
-| `avatarStampImage` | Filename in the lead folder (e.g. `"icon.svg"`). `null` = uses `logo.png`. |
+| Field                     | Decision criteria                                                          |
+| ------------------------- | -------------------------------------------------------------------------- |
+| `avatarShirtColor`        | Brand primary / accent hex. `null` = falls back to `primaryColor`.         |
+| `avatarStampColorOverlay` | Stamp tint hex for contrast on the shirt. `null` = native colours.         |
+| `avatarStampImage`        | Filename in the lead folder (e.g. `"icon.svg"`). `null` = uses `logo.png`. |
 
 #### Pattern archetypes — how top bar and shirt relate
 
-| Archetype | Top bar | Shirt | When to apply |
-|-----------|---------|-------|---------------|
-| **Coloured navbar = brand primary** | Coloured bg, white/contrasting wordmark | Same colour, same or compact icon | The navbar bg is already the brand's primary colour. Shirt naturally matches. No need to set `avatarShirtColor`. |
-| **White navbar + colourful logo + accent colour in UI** | White bg, colourful wordmark | Use the accent/primary colour (from buttons, CTAs), compact icon tinted white | The navbar is white but the brand has a clear primary used in UI widgets. A white shirt would look bland and duplicate the banner; using the accent colour makes the avatar feel like a real employee. If a compact icon (leaf, flame, monogram) exists, prefer it over the full wordmark. |
-| **White navbar + colourful logo + no separate accent** | White bg, colourful wordmark | Falls back to top bar (white shirt, native wordmark) | The logo colour is distinctive but there's no separate UI accent. Shirt matches top bar. |
-| **White navbar + colourless logo + brand accent** | Uses accent as bg (Rule B), white wordmark | Same as top bar | Rule B already used the accent for the top bar. Shirt matches naturally. |
-| **White navbar + colourless logo + no accent** | White bg, native wordmark | Falls back to top bar (white shirt, native wordmark) | No colour to use anywhere. Shirt = top bar. |
+| Archetype                                               | Top bar                                    | Shirt                                                                         | When to apply                                                                                                                                                                                                                                                                              |
+| ------------------------------------------------------- | ------------------------------------------ | ----------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **Coloured navbar = brand primary**                     | Coloured bg, white/contrasting wordmark    | Same colour, same or compact icon                                             | The navbar bg is already the brand's primary colour. Shirt naturally matches. No need to set `avatarShirtColor`.                                                                                                                                                                           |
+| **White navbar + colourful logo + accent colour in UI** | White bg, colourful wordmark               | Use the accent/primary colour (from buttons, CTAs), compact icon tinted white | The navbar is white but the brand has a clear primary used in UI widgets. A white shirt would look bland and duplicate the banner; using the accent colour makes the avatar feel like a real employee. If a compact icon (leaf, flame, monogram) exists, prefer it over the full wordmark. |
+| **White navbar + colourful logo + no separate accent**  | White bg, colourful wordmark               | Falls back to top bar (white shirt, native wordmark)                          | The logo colour is distinctive but there's no separate UI accent. Shirt matches top bar.                                                                                                                                                                                                   |
+| **White navbar + colourless logo + brand accent**       | Uses accent as bg (Rule B), white wordmark | Same as top bar                                                               | Rule B already used the accent for the top bar. Shirt matches naturally.                                                                                                                                                                                                                   |
+| **White navbar + colourless logo + no accent**          | White bg, native wordmark                  | Falls back to top bar (white shirt, native wordmark)                          | No colour to use anywhere. Shirt = top bar.                                                                                                                                                                                                                                                |
 
 **Key principle**: Browse the store's UI beyond the navbar — buttons, CTAs, section backgrounds, badges. If there's a clear primary / accent colour used consistently, that's the shirt colour. If the navbar already uses it, they match naturally. If the navbar is white/neutral and the accent is elsewhere, the shirt should use the accent to avoid redundancy with the banner.
 
@@ -119,6 +124,7 @@ Decide the shirt colour and stamp image **independently** from the top bar. The 
 ### Step 3 — Curate products (cognitive — LLM)
 
 From the product list, pick **3 products** that:
+
 - Are diverse (different categories/use cases, not colour variants of the same item)
 - Are mid-to-high price tier (avoid the cheapest accessories)
 - Represent the store's core offering
@@ -127,6 +133,7 @@ From the product list, pick **3 products** that:
 **CRITICAL: NEVER guess prices.** Every price MUST come from the extraction's product catalog (Step 1) or from the store's Shopify `products.json` API. If the product list is empty (non-Shopify store), browse the store manually and copy-paste exact prices from product pages.
 
 Write each as:
+
 ```json
 { "title": "Product Name", "price": "$XX", "tag": "One-word category" }
 ```
@@ -135,12 +142,12 @@ Write each as:
 
 Generate these fields in the store's voice and domain:
 
-| Field | Description |
-|-------|-------------|
-| `pitchLine` | One sentence: how Bizmis helps THIS store's shoppers. Pattern: "Help/Guide [audience] [action] by [criteria]." |
-| `demoShopperPrompt` | Realistic shopper question in first person. Natural voice, specific need. |
-| `demoBizmisReply` | Conversational follow-up that narrows the need. Start with "Got it —" and offer a binary choice. |
-| `demoFooterLine` | Rephrase of pitchLine as a caption. Pattern: "Guides [audience] by [criteria]." |
+| Field               | Description                                                                                                    |
+| ------------------- | -------------------------------------------------------------------------------------------------------------- |
+| `pitchLine`         | One sentence: how Bizmis helps THIS store's shoppers. Pattern: "Help/Guide [audience] [action] by [criteria]." |
+| `demoShopperPrompt` | Realistic shopper question in first person. Natural voice, specific need.                                      |
+| `demoBizmisReply`   | Conversational follow-up that narrows the need. Start with "Got it —" and offer a binary choice.               |
+| `demoFooterLine`    | Rephrase of pitchLine as a caption. Pattern: "Guides [audience] by [criteria]."                                |
 
 ### Step 5 — Save and generate assets (automated)
 
@@ -204,18 +211,18 @@ Pick which 3D avatar best fits the brand's persona, audience, and vertical. Each
 
 **Available avatars:**
 
-| ID              | Persona archetype                                      |
-|-----------------|--------------------------------------------------------|
-| `amber`         | Female, warm — lifestyle brands, home/decor, beauty    |
-| `avatar_mathew` | Male, professional — expert-advice brands, B2B, trade  |
-| `avatar_matt`   | Male, classic — heritage brands, luxury, established   |
-| `echo`          | Male, hipster (beard + headphones) — audio, music, creative, cycling |
-| `kiran`         | Male, tech-savvy — electronics, SaaS, broadcast, smart home |
-| `luca`          | Male, European/design — furniture, fashion, Euro automotive |
-| `teo`           | Male, casual (baseball cap) — automotive, outdoor, blue-collar, garage |
-| `will`          | Male, authoritative — security, professional services, mid-century design |
+| ID              | Persona archetype                                                               |
+| --------------- | ------------------------------------------------------------------------------- |
+| `amber`         | Female, warm — lifestyle brands, home/decor, beauty                             |
+| `avatar_mathew` | Male, professional — expert-advice brands, B2B, trade                           |
+| `avatar_matt`   | Male, classic — heritage brands, luxury, established                            |
+| `echo`          | Male, hipster (beard + headphones) — audio, music, creative, cycling            |
+| `kiran`         | Male, tech-savvy — electronics, SaaS, broadcast, smart home                     |
+| `luca`          | Male, European/design — furniture, fashion, Euro automotive                     |
+| `teo`           | Male, casual (baseball cap) — automotive, outdoor, blue-collar, garage          |
+| `will`          | Male, authoritative — security, professional services, mid-century design       |
 | `yue`           | Female, fashion-forward (glasses + dress) — jewelry, women's fashion, editorial |
-| `yusuke`        | Male, refined — Japanese culture, watches, minimalist, precision |
+| `yusuke`        | Male, refined — Japanese culture, watches, minimalist, precision                |
 
 **Selection heuristics** (apply in order until a clear winner emerges):
 
@@ -271,6 +278,7 @@ import newlead from "./newlead.json";
 ### Step 9 — Verify (cognitive — LLM)
 
 Open the admin UI at `/admin/invite-cards/early-access/<lead-id>` and check:
+
 - Logo visibility and contrast against the brand colour banner
 - Product images load correctly
 - Copy reads naturally
@@ -300,18 +308,21 @@ subNiche           string       Sub-niche (snake_case, can be empty)
 ```
 
 Optional fields — invite-card top bar:
+
 - `textColor`: store name text colour in banner. Set for white/light `primaryColor`.
 - `logoColorOverlay`: hex to tint the top-bar logo. `null` = use native colours.
-Optional fields — avatar shirt (independent from top bar):
+  Optional fields — avatar shirt (independent from top bar):
 - `avatarShirtColor`: hex for the avatar shirt. `null` = falls back to `primaryColor`.
 - `avatarStampColorOverlay`: hex tint for the shirt stamp. `null` = native colours.
 - `avatarStampImage`: filename in the lead folder used as shirt stamp (e.g. `"icon.svg"`). `null` = uses `logo.png`.
 
 Optional fields — email copy:
+
 - `demoFooterLine`: caption-style rephrase of pitchLine.
 - `montageClerkCue`: custom text for the montage clerk cue.
 
 Derived by the TS loader (NOT stored in JSON):
+
 - `couponCode`: auto-generated as `BIZMIS-EARLY-ACCESS-<ID_UPPERCASE>`
 - `orderInBatch`: position in the `RAW_LEADS` array (1-based)
 - `logoImagePath`: `/invite-cards/leads/<id>/logo.png`
@@ -343,20 +354,20 @@ scripts/lead_onboarding/
 
 ## Common edge cases
 
-| Issue | Solution |
-|-------|----------|
-| Non-Shopify store (no products.json) | Products list will be empty. Browse the store manually and copy exact prices. NEVER fabricate prices. |
-| Logo is AVIF disguised as PNG | The `early_access_avatars._logo._ensure_real_png` re-encodes on avatar generation. |
-| Scraper only finds favicons, not header logo | Browse the store, inspect the `<header>` / `<nav>` HTML manually. Check shop subdomains (e.g. `us-shop.domain.me`). Shopify logos are usually at `/cdn/shop/files/logo*.svg`. |
-| SVG logo needs PNG conversion | Use `early_access_avatars._logo.svg_to_png(svg_path, png_path, width=400)`. |
-| White navbar + colourful logo | Rule A: `primaryColor: #FFFFFF`, `logoColorOverlay: null`. Set `textColor` to brand accent or dark colour. |
-| White navbar + colourless logo + brand accent | Rule B: `primaryColor` = accent colour, `logoColorOverlay: #ffffff`. |
-| White navbar + colourless logo + no accent | Rule A: `primaryColor: #FFFFFF`, `logoColorOverlay: null`. |
-| Dark/coloured navbar | Rule A: `primaryColor` = navbar bg. Logo is usually white — set `logoColorOverlay: #ffffff` only if native logo is dark. |
-| Avatar shirt + banner don't match the store | Top bar and shirt are independent — re-evaluate each separately. |
-| Shirt looks same as top bar, too repetitive | Find a compact icon and/or use a different brand colour for the shirt. |
-| No compact icon for stamp | Use the full wordmark — it's fine if compact enough. Don't force-create icons. |
-| Product image URLs return 404 | Try the store's shop subdomain CDN. Check that full paths (not truncated) are used. Some stores use different CDN hosts. |
+| Issue                                         | Solution                                                                                                                                                                      |
+| --------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Non-Shopify store (no products.json)          | Products list will be empty. Browse the store manually and copy exact prices. NEVER fabricate prices.                                                                         |
+| Logo is AVIF disguised as PNG                 | The `early_access_avatars._logo._ensure_real_png` re-encodes on avatar generation.                                                                                            |
+| Scraper only finds favicons, not header logo  | Browse the store, inspect the `<header>` / `<nav>` HTML manually. Check shop subdomains (e.g. `us-shop.domain.me`). Shopify logos are usually at `/cdn/shop/files/logo*.svg`. |
+| SVG logo needs PNG conversion                 | Use `early_access_avatars._logo.svg_to_png(svg_path, png_path, width=400)`.                                                                                                   |
+| White navbar + colourful logo                 | Rule A: `primaryColor: #FFFFFF`, `logoColorOverlay: null`. Set `textColor` to brand accent or dark colour.                                                                    |
+| White navbar + colourless logo + brand accent | Rule B: `primaryColor` = accent colour, `logoColorOverlay: #ffffff`.                                                                                                          |
+| White navbar + colourless logo + no accent    | Rule A: `primaryColor: #FFFFFF`, `logoColorOverlay: null`.                                                                                                                    |
+| Dark/coloured navbar                          | Rule A: `primaryColor` = navbar bg. Logo is usually white — set `logoColorOverlay: #ffffff` only if native logo is dark.                                                      |
+| Avatar shirt + banner don't match the store   | Top bar and shirt are independent — re-evaluate each separately.                                                                                                              |
+| Shirt looks same as top bar, too repetitive   | Find a compact icon and/or use a different brand colour for the shirt.                                                                                                        |
+| No compact icon for stamp                     | Use the full wordmark — it's fine if compact enough. Don't force-create icons.                                                                                                |
+| Product image URLs return 404                 | Try the store's shop subdomain CDN. Check that full paths (not truncated) are used. Some stores use different CDN hosts.                                                      |
 
 ## Lessons learned (update as new patterns emerge)
 

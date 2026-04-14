@@ -17,7 +17,7 @@ const CELL_W = 5;
 const BAR_W = 3;
 const PAD_X = 1;
 const HEIGHT_SOURCE_TRACK = 36;
-const BAR_FILL_HEX = "#FEEFE2";
+const BAR_FILL_HEX = "#ffffff";
 
 const BASE_HEIGHTS_PX = [
   22, 14, 27, 18, 12, 25, 15, 29, 17, 14, 23, 28, 11, 20, 14, 26, 19, 9, 24, 16, 30, 15, 22, 13, 20, 31, 18, 25, 12, 17, 23, 14, 28, 19, 10, 26, 20, 15, 27, 16, 29, 14, 22, 12, 25, 18, 21, 17,
@@ -57,7 +57,6 @@ const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${IMG_W}" height="${
       <rect x="0" y="0" width="${IMG_W}" height="${TRACK_H}" fill="url(#waveEdgeFade)"/>
     </mask>
   </defs>
-  <rect width="100%" height="100%" fill="#ffffff"/>
   <g mask="url(#waveformFade)">${rects}</g>
 </svg>`;
 
