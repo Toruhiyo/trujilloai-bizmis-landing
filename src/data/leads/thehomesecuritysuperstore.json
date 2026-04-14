@@ -30,7 +30,8 @@
   ],
   "recommendedProductIndex": 2,
   "demoFooterLine": "Guides customers by threat level, lifestyle, and carry preference.",
-  "montageClerkCue": null,
+  "montageShopperCue": "I want something for personal safety but not too bulky to carry.",
+  "montageClerkCue": "The Sting Ring Stun Gun, discreet protection that fits your hand.",
   "country": "USA",
   "vertical": "other",
   "subNiche": "self_defense"

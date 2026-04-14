@@ -18,7 +18,8 @@
   ],
   "recommendedProductIndex": 0,
   "demoFooterLine": "Guides shoppers by room size, fabric, and lifestyle needs.",
-  "montageClerkCue": null,
+  "montageShopperCue": "I need a sofa for my living room but not sure which fabric suits us.",
+  "montageClerkCue": "The Neva Sofa, compact fit with premium comfort for small rooms.",
   "country": "USA",
   "vertical": "home_furniture_decor",
   "subNiche": "furniture_sofas"

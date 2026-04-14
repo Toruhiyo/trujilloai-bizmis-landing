@@ -30,7 +30,8 @@
   ],
   "recommendedProductIndex": 0,
   "demoFooterLine": "Guides collectors by brand, style, and investment value.",
-  "montageClerkCue": null,
+  "montageShopperCue": "I want my first luxury watch but not sure where to start.",
+  "montageClerkCue": "The Tudor Black Bay, a versatile sport watch that holds its value.",
   "country": "USA",
   "vertical": "jewelry_luxury",
   "subNiche": "watches_pre_owned"

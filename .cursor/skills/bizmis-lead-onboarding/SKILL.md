@@ -171,6 +171,34 @@ Generate these fields in the store's voice and domain:
 | `demoShopperPrompt` | Realistic shopper question in first person. Natural voice, specific need.                                      |
 | `demoBizmisReply`   | Conversational follow-up that narrows the need. Start with "Got it —" and offer a binary choice.               |
 | `demoFooterLine`    | Rephrase of pitchLine as a caption. Pattern: "Guides [audience] by [criteria]."                                |
+| `montageShopperCue` | Montage shopper line. Vague exploring intent, max 80 chars. See rules below.                                   |
+| `montageClerkCue`   | Montage clerk line. Full sentence with product name and reason, max 80 chars. See rules below.                 |
+
+#### Montage cue copywriting rules
+
+The invite card montage shows a mini assisted-sales story: a shopper asks for help, Bizmis recommends a product with a reason. These are different from `demoShopperPrompt`/`demoBizmisReply` (which are specific Q&A for slides/demos).
+
+**`montageShopperCue`** (appears at the top of the montage, italic, in curly quotes added by the renderer):
+- Max 80 characters (quotes are NOT stored, only the inner text)
+- Vague exploring intent: the shopper knows WHAT they want but not WHICH product
+- First person, natural voice, slightly uncertain
+- Domain-relevant to the store's niche
+- Pattern: `"I want/need [desire] but [uncertainty]."` or `"Looking for [category], not sure [dimension]."`
+- Never use em-dash characters. Use commas, periods, or "but" instead.
+
+**`montageClerkCue`** (appears below the product cards, product name auto-highlighted in bold + primaryColor):
+- Max 80 characters
+- Full sentence including the product name written naturally (no dynamic injection)
+- Confident recommendation with a short reason showing domain expertise
+- Pattern: `"The [Product Name], [short reason]."` or `"[Product Name] is perfect for [reason]."`
+- The product name MUST match `demoProducts[recommendedProductIndex].title` exactly
+- Never use em-dash characters. Use commas, periods, or natural connectors.
+- The renderer finds the product title via string match and highlights it in bold + primaryColor.
+
+Examples:
+- Guitar amps: shopper `I want great tone at home but don't know which amp.` / clerk `The Spark MINI, big tone at bedroom-friendly volume.`
+- Jewelry: shopper `I'd love to layer necklaces but not sure where to begin.` / clerk `The Birthstone Halo Charm, a perfect first layering piece.`
+- Auto parts: shopper `My E46 needs new control arms, not sure what level.` / clerk `The E46 Control Arm Kit, OEM fit with upgrade durability.`
 
 ### Step 5 — Save and generate assets (automated)
 
@@ -208,7 +236,8 @@ lead_data = {
     "demoBizmisReply": "...",
     "demoProducts": [...],
     "demoFooterLine": "...",
-    "montageClerkCue": null,
+    "montageShopperCue": "...",
+    "montageClerkCue": "...",
     "country": "USA",
     "vertical": "...",
     "subNiche": "..."
@@ -321,6 +350,8 @@ Use browser MCP tools to screenshot both the live store and the generated invite
 | Colour match        | `primaryColor` accent (product card borders, browser dots, waveform) matches the store's brand accent / dominant CTA colour.          |
 | Logo legibility     | Logo is readable on the banner (sufficient contrast with the banner background).                                                      |
 | Avatar shirt        | Shirt colour looks branded (not default/generic). Stamp is legible on the shirt. For untinted emblems, shirt must match banner background. |
+| Montage shopper cue | Shopper line relates to the store's niche and reads as a vague exploring question (not a specific product query). Max 80 chars. No em-dashes. |
+| Montage clerk cue   | Clerk line references the correct recommended product (matching `demoProducts[recommendedProductIndex].title` exactly) with a plausible domain reason. Max 80 chars. No em-dashes. Product name appears highlighted in bold + primaryColor in the rendered preview. |
 
 4. If any check fails → fix the issue (re-download logo, adjust `bannerColor`/`primaryColor`/`logoColorOverlay` in the JSON and `_config.py`, regenerate avatar) → re-screenshot the invite card → re-verify.
 
@@ -361,9 +392,11 @@ content            string       Custom HTML message (usually empty)
 primaryColor       string       Hex — navbar background colour (often #FFFFFF)
 secondaryColor     string|null  Secondary hex or null
 pitchLine          string       One-sentence value prop
-demoShopperPrompt  string       Shopper question for demo
-demoBizmisReply    string       Bizmis follow-up for demo
+demoShopperPrompt  string       Shopper question for demo (specific product need)
+demoBizmisReply    string       Bizmis follow-up for demo (binary choice)
 demoProducts       array[3]     [{title, price, tag}, ...] — prices MUST be exact
+montageShopperCue  string       Montage shopper line (vague exploring, max 80 chars)
+montageClerkCue    string       Montage clerk line (product name + reason, max 80 chars)
 country            string       Market label
 vertical           string       Industry vertical (snake_case)
 subNiche           string       Sub-niche (snake_case, can be empty)
@@ -382,7 +415,8 @@ Optional fields — invite-card top bar:
 Optional fields — email copy:
 
 - `demoFooterLine`: caption-style rephrase of pitchLine.
-- `montageClerkCue`: custom text for the montage clerk cue.
+- `montageShopperCue`: vague exploring shopper line for the montage (max 80 chars). See Step 4 rules.
+- `montageClerkCue`: full clerk recommendation for the montage with product name and reason (max 80 chars). See Step 4 rules.
 
 Derived by the TS loader (NOT stored in JSON):
 

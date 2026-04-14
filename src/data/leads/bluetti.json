@@ -18,7 +18,8 @@
   ],
   "recommendedProductIndex": 0,
   "demoFooterLine": "Guides shoppers by use case, capacity, and portability.",
-  "montageClerkCue": null,
+  "montageShopperCue": "I want backup power for outages but not sure what size I need.",
+  "montageClerkCue": "The Apex 300, whole-home capacity that runs during any outage.",
   "country": "US/EU (global)",
   "vertical": "home_furniture_decor",
   "subNiche": "portable_power"

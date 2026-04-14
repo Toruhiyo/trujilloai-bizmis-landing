@@ -30,7 +30,8 @@
   ],
   "recommendedProductIndex": 1,
   "demoFooterLine": "Guides buyers by vehicle, displacement, and warranty needs.",
-  "montageClerkCue": null,
+  "montageShopperCue": "I need a replacement engine for my CRV but not sure what to look for.",
+  "montageClerkCue": "The Honda CRV 2.4L K24A1, a tested long block with warranty.",
   "country": "USA",
   "vertical": "automotive_parts_accessories",
   "subNiche": "crate_engines"

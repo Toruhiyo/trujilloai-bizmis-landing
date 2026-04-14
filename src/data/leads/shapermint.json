@@ -17,7 +17,8 @@
   ],
   "recommendedProductIndex": 0,
   "demoFooterLine": "Guides shoppers by body type, occasion, and comfort level.",
-  "montageClerkCue": null,
+  "montageShopperCue": "I need something smoothing under a dress but not sure what type.",
+  "montageClerkCue": "The Empetua Bodysuit, full smoothing with all-day comfort.",
   "country": "USA",
   "vertical": "beauty_personal_care",
   "subNiche": "shapewear_intimates"

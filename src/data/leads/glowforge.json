@@ -18,7 +18,8 @@
   ],
   "recommendedProductIndex": 1,
   "demoFooterLine": "Walks makers through materials, machines, and project ideas.",
-  "montageClerkCue": null,
+  "montageShopperCue": "I want to start laser cutting but not sure which machine I need.",
+  "montageClerkCue": "The Plus, the sweet spot for small-business engraving and cutting.",
   "country": "USA",
   "vertical": "consumer_electronics_appliances",
   "subNiche": "maker_laser_cutters"

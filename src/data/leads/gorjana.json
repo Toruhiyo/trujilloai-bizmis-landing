@@ -30,7 +30,8 @@
   ],
   "recommendedProductIndex": 1,
   "demoFooterLine": "Guides shoppers by occasion, layering style, and budget.",
-  "montageClerkCue": null,
+  "montageShopperCue": "I'd love to start layering necklaces but not sure where to begin.",
+  "montageClerkCue": "The Birthstone Halo Charm, a perfect first layering piece.",
   "country": "USA",
   "vertical": "jewelry_luxury",
   "subNiche": "jewelry_gold"

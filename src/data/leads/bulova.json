@@ -30,7 +30,8 @@
   ],
   "recommendedProductIndex": 2,
   "demoFooterLine": "Guides shoppers by style, movement, and occasion.",
-  "montageClerkCue": null,
+  "montageShopperCue": "I want an everyday watch that looks good dressed up or casual.",
+  "montageClerkCue": "The Snorkel, a versatile retro diver for any occasion.",
   "country": "USA (global)",
   "vertical": "jewelry_luxury",
   "subNiche": "watches"

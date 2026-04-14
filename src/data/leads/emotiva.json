@@ -31,7 +31,8 @@
   ],
   "recommendedProductIndex": 1,
   "demoFooterLine": "Guides listeners by room size, setup, and listening goals.",
-  "montageClerkCue": null,
+  "montageShopperCue": "I want to upgrade my stereo setup but not sure which amp to pick.",
+  "montageClerkCue": "The BasX A2+, clean power for a real stereo foundation.",
   "country": "USA",
   "vertical": "consumer_electronics_appliances",
   "subNiche": "audio_home_theater"

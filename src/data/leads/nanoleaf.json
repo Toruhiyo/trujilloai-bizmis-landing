@@ -22,7 +22,8 @@
   ],
   "recommendedProductIndex": 0,
   "demoFooterLine": "Guides shoppers by room, style, and smart-home setup.",
-  "montageClerkCue": null,
+  "montageShopperCue": "I want a cool light wall for my desk but not sure what style to pick.",
+  "montageClerkCue": "The Shapes Triangles Kit, modular panels you can arrange any way.",
   "country": "Canada/USA (global)",
   "vertical": "consumer_electronics_appliances",
   "subNiche": "smart_home_lighting"

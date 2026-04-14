@@ -30,7 +30,8 @@
   ],
   "recommendedProductIndex": 1,
   "demoFooterLine": "Guides shoppers by space, fabric, and lifestyle.",
-  "montageClerkCue": null,
+  "montageShopperCue": "I need a sofa for a small apartment that I can expand later.",
+  "montageClerkCue": "The Range 3-Piece Sofa, modular and ready to grow with your space.",
   "country": "USA",
   "vertical": "home_furniture_decor",
   "subNiche": "furniture_modular_sofas"

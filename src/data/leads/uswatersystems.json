@@ -31,7 +31,8 @@
   ],
   "recommendedProductIndex": 2,
   "demoFooterLine": "Guides homeowners by water quality, household size, and concern.",
-  "montageClerkCue": null,
+  "montageShopperCue": "Our water tastes off but I'm not sure what kind of filter we need.",
+  "montageClerkCue": "The Magna Whole House Filter, tackles iron and sediment at the source.",
   "country": "USA",
   "vertical": "home_furniture_decor",
   "subNiche": "water_filtration"

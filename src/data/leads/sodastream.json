@@ -17,7 +17,8 @@
   ],
   "recommendedProductIndex": 0,
   "demoFooterLine": "Guides customers through makers, gas refills, and flavor packs.",
-  "montageClerkCue": null,
+  "montageShopperCue": "I want to make sparkling water at home but not sure which maker.",
+  "montageClerkCue": "The Terra, easy to use and the fastest way to ditch bottled water.",
   "country": "Global",
   "vertical": "consumer_electronics_appliances",
   "subNiche": "kitchen_appliance_beverage"

@@ -17,7 +17,9 @@ export const EARLY_ACCESS_EMAIL_COPY = {
   inviteSentenceAfterStorePostValue:
     " while feeling like a natural extension of your team.",
   softCtaAboveMockupLinkPhrase: "Join Bizmis early access",
-  softCtaAboveMockupAfterLink: " at no cost and ",
+  softCtaAboveMockupAfterLinkPrefix: " at ",
+  softCtaAboveMockupNoCostBold: "no cost",
+  softCtaAboveMockupAfterLinkSuffix: " and ",
   softCtaAboveMockupEmphasisBold: "shape the product roadmap",
   softCtaAboveMockupEmphasisTail: " around your store\u2019s needs.",
   subline:

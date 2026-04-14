@@ -30,7 +30,8 @@
   ],
   "recommendedProductIndex": 0,
   "demoFooterLine": "Guides shoppers by room, mood, and fragrance preference.",
-  "montageClerkCue": null,
+  "montageShopperCue": "I want my home to smell great but not sure which scent setup to pick.",
+  "montageClerkCue": "The Pura Plus Set, covers large rooms and swaps scents anytime.",
   "country": "USA",
   "vertical": "home_furniture_decor",
   "subNiche": "home_fragrance"

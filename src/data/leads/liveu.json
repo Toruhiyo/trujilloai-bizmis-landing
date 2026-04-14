@@ -31,7 +31,8 @@
   ],
   "recommendedProductIndex": 0,
   "demoFooterLine": "Guides broadcasters by setup, use case, and field requirements.",
-  "montageClerkCue": null,
+  "montageShopperCue": "I just got my LiveU unit but not sure which accessories I need.",
+  "montageClerkCue": "The LU300 Pouch, keeps your encoder protected in the field.",
   "country": "Global",
   "vertical": "consumer_electronics_appliances",
   "subNiche": "broadcast_streaming"

@@ -31,7 +31,8 @@
   ],
   "recommendedProductIndex": 1,
   "demoFooterLine": "Guides Euro car owners by vehicle, mod goal, and budget.",
-  "montageClerkCue": null,
+  "montageShopperCue": "My E46 needs new control arms, not sure what level to go.",
+  "montageClerkCue": "The Control Arm Kit E46, OEM fit with upgrade durability.",
   "country": "USA",
   "vertical": "automotive_parts_accessories",
   "subNiche": "european_auto_parts"

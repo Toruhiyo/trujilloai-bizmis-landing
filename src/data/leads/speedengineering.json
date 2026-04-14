@@ -30,7 +30,8 @@
   ],
   "recommendedProductIndex": 1,
   "demoFooterLine": "Guides builders by vehicle, engine, and build goal.",
-  "montageClerkCue": null,
+  "montageShopperCue": "I'm starting an LS swap but not sure which headers to go with.",
+  "montageClerkCue": "The LS Swap Shorty Headers, perfect clearance for tight engine bays.",
   "country": "USA",
   "vertical": "automotive_parts_accessories",
   "subNiche": "ls_lt_engine_swap"

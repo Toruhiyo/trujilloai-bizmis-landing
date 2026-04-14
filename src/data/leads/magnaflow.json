@@ -30,7 +30,8 @@
   ],
   "recommendedProductIndex": 0,
   "demoFooterLine": "Guides drivers by vehicle, sound preference, and performance goals.",
-  "montageClerkCue": null,
+  "montageShopperCue": "I want a deeper exhaust note on my truck but nothing too loud.",
+  "montageClerkCue": "The SPEQ Cat-Back F-150, deeper tone with a clean bolt-on install.",
   "country": "USA",
   "vertical": "automotive_parts_accessories",
   "subNiche": "exhaust_performance"

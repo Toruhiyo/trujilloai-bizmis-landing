@@ -30,7 +30,8 @@
   ],
   "recommendedProductIndex": 0,
   "demoFooterLine": "Guides guitarists by playing level, space, and tone goals.",
-  "montageClerkCue": null,
+  "montageShopperCue": "I want great guitar tone at home but don't know which amp to get.",
+  "montageClerkCue": "The Spark MINI, big tone at bedroom-friendly volume.",
   "country": "USA (global)",
   "vertical": "consumer_electronics_appliances",
   "subNiche": "music_guitar_amps"

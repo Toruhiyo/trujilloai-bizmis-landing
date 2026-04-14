@@ -17,7 +17,8 @@
   ],
   "recommendedProductIndex": 0,
   "demoFooterLine": "Guides shoppers by skin type, finish, and concern.",
-  "montageClerkCue": null,
+  "montageShopperCue": "I want a simple skincare routine but not sure where to start.",
+  "montageClerkCue": "The Milky Jelly, a gentle daily cleanser for every skin type.",
   "country": "USA",
   "vertical": "beauty_personal_care",
   "subNiche": "beauty_general"

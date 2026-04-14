@@ -26,7 +26,8 @@
   ],
   "recommendedProductIndex": 0,
   "demoFooterLine": "Guides mechanics by application, drive size, and professional needs.",
-  "montageClerkCue": null,
+  "montageShopperCue": "I need a good ratchet for tight engine bays but not sure which size.",
+  "montageClerkCue": "The Max90 3/8\" Flex Ratchet, low-profile head for the tightest spots.",
   "country": "USA",
   "vertical": "automotive_parts_accessories",
   "subNiche": "automotive_general"

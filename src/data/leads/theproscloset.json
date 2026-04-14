@@ -17,7 +17,8 @@
   ],
   "recommendedProductIndex": 0,
   "demoFooterLine": "Guides riders by terrain, fit, and budget.",
-  "montageClerkCue": null,
+  "montageShopperCue": "I want a fast road bike for climbing but not sure what fits my budget.",
+  "montageClerkCue": "The Tarmac SL6, race-proven geometry built for long climbs.",
   "country": "USA",
   "vertical": "sports_outdoors",
   "subNiche": ""

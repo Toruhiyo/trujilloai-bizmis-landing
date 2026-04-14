@@ -18,7 +18,8 @@
   ],
   "recommendedProductIndex": 0,
   "demoFooterLine": "Guides collectors by brand, movement, and price range.",
-  "montageClerkCue": null,
+  "montageShopperCue": "I want a clean dress watch but there are so many options.",
+  "montageClerkCue": "The Nomos Tangente, a Bauhaus icon with a beautifully thin case.",
   "country": "USA",
   "vertical": "jewelry_luxury",
   "subNiche": "watches_media_marketplace"

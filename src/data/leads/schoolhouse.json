@@ -30,7 +30,8 @@
   ],
   "recommendedProductIndex": 0,
   "demoFooterLine": "Guides shoppers by room, style, and finish.",
-  "montageClerkCue": null,
+  "montageShopperCue": "I need new lighting for my entryway but not sure what style fits.",
+  "montageClerkCue": "The Swell 20\" Flush Mount, warm brass for a classic welcome.",
   "country": "USA",
   "vertical": "home_furniture_decor",
   "subNiche": "lighting_home_decor"

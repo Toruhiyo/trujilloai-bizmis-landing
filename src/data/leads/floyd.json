@@ -30,7 +30,8 @@
   ],
   "recommendedProductIndex": 0,
   "demoFooterLine": "Guides shoppers by room, style, and growth plans.",
-  "montageClerkCue": null,
+  "montageShopperCue": "I want a modern sofa I can reconfigure when I move.",
+  "montageClerkCue": "The Sofa 2.0 Three Seater, modular design that grows with your space.",
   "country": "USA",
   "vertical": "home_furniture_decor",
   "subNiche": "furniture_modular"

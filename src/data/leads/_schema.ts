@@ -37,6 +37,9 @@ export type LeadEarlyAccessJson = {
   /** 0-based index into demoProducts identifying the clerk's recommended pick. */
   recommendedProductIndex: 0 | 1 | 2;
   demoFooterLine?: string;
+  /** Shopper cue for the montage. Vague exploring intent, max ~80 chars. */
+  montageShopperCue?: string | null;
+  /** Full clerk recommendation for the montage, including product name and reason. */
   montageClerkCue?: string | null;
   country: string;
   vertical: string;

@@ -18,7 +18,8 @@
   ],
   "recommendedProductIndex": 1,
   "demoFooterLine": "Guides shoppers by capacity, use case, and solar setup.",
-  "montageClerkCue": null,
+  "montageShopperCue": "I want portable power for camping but not sure what capacity I need.",
+  "montageClerkCue": "The Explorer 1500 Ultra, enough juice for a full weekend off-grid.",
   "country": "USA (global)",
   "vertical": "other",
   "subNiche": "portable_power"
