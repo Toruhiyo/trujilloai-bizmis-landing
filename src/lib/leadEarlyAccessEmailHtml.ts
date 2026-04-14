@@ -374,7 +374,7 @@ export function buildLeadEarlyAccessEmailHtml(
   const inviteTopSupportMeasurePx = 420;
 
   const softCtaAboveMockupBase = `${BODY}font-size:12px;line-height:1.72;`;
-  const softCtaAboveMockupHtml = `<span style="${softCtaAboveMockupBase}color:${BIZMIS_MUTED_LIGHT_HEX};font-weight:400;"><a href="${shopifyAppUrl}" target="_blank" style="${softCtaAboveMockupBase}color:${BIZMIS_PRIMARY_HEX};font-weight:500;text-decoration:none;">${escapeHtml(copy.softCtaAboveMockupLinkPhrase)}</a>${escapeHtml(copy.softCtaAboveMockupAfterLink)}${escapeHtml(copy.softCtaAboveMockupEmphasis)}</span>`;
+  const softCtaAboveMockupHtml = `<span style="${softCtaAboveMockupBase}color:${BIZMIS_MUTED_LIGHT_HEX};font-weight:400;"><a href="${shopifyAppUrl}" target="_blank" style="${softCtaAboveMockupBase}color:${BIZMIS_PRIMARY_HEX};font-weight:500;text-decoration:none;">${escapeHtml(copy.softCtaAboveMockupLinkPhrase)}</a>${escapeHtml(copy.softCtaAboveMockupAfterLink)}<strong style="${softCtaAboveMockupBase}font-weight:600;color:${BIZMIS_MUTED_LIGHT_HEX};">${escapeHtml(copy.softCtaAboveMockupEmphasisBold)}</strong>${escapeHtml(copy.softCtaAboveMockupEmphasisTail)}</span>`;
 
   const html = `<!DOCTYPE html>
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml">
@@ -682,7 +682,7 @@ export function buildLeadEarlyAccessEmailHtml(
     "",
     buildEarlyAccessValueSentencePlainText(lead.storeName, lead.leadContactName),
     "",
-    `${copy.softCtaAboveMockupLinkPhrase} ${shopifyAppUrl}${copy.softCtaAboveMockupAfterLink}${copy.softCtaAboveMockupEmphasis}`,
+    `${copy.softCtaAboveMockupLinkPhrase} ${shopifyAppUrl}${copy.softCtaAboveMockupAfterLink}${copy.softCtaAboveMockupEmphasisBold}${copy.softCtaAboveMockupEmphasisTail}`,
     "",
     montagePlainLine,
     "",
