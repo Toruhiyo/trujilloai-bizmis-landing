@@ -44,7 +44,7 @@ const MONTAGE_CHROME_TRAFFIC_GAP_PX = 2;
 const MONTAGE_CHROME_URL_ROW_HEIGHT_PX = 15;
 const MONTAGE_CHROME_BAR_PADDING_Y_PX = 5;
 const EARLY_ACCESS_MONTAGE_WAVEFORM_IMG = "/images/early-access-montage-waveform.png";
-const EARLY_ACCESS_MONTAGE_WAVEFORM_IMG_W_PX = 480;
+const EARLY_ACCESS_MONTAGE_WAVEFORM_IMG_W_PX = 384;
 const EARLY_ACCESS_MONTAGE_WAVEFORM_IMG_H_PX = 82;
 const BIZMIS_FOREGROUND_HEX = "#32281B";
 const BIZMIS_MUTED_LIGHT_HEX = "#B5A48E";
@@ -54,7 +54,12 @@ const CTA_COUPON_CUTOUT_BORDER_PX = 1.5;
 const CTA_COUPON_CUTOUT_DASH = "rgba(50, 40, 27, 0.1)";
 const COUPON_PILL_BG_HEX = "#F7F5F2";
 
-const MONTAGE_VERTICAL_SPREAD_PX = 36;
+const MONTAGE_VERTICAL_SPREAD_PX = 56;
+const MONTAGE_COMPOSITION_SHIFT_PX = 28;
+
+const MONTAGE_CUSTOMER_CUE_TEXT = "\u201cI\u2019m looking for something lightweight and easy to set up.\u201d";
+const MONTAGE_CUSTOMER_WAVE_GREY: [number, number, number] = [180, 180, 180];
+const MONTAGE_CUSTOMER_WAVE_OPACITY = 0.18;
 
 type MontagePalette = {
   hex: string;
@@ -211,11 +216,14 @@ function storeLogoEmailMarkup(lead: LeadEarlyAccessData): string {
 const HEADING = "font-family:'Plus Jakarta Sans','Poppins',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-serif;";
 const BODY = "font-family:'DM Sans','Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-serif;";
 
-function emailMontageWatermarkWaveformHtml(r: number, g: number, b: number, alpha: number): string {
+function emailMontageWatermarkWaveformHtml(
+  r: number, g: number, b: number, alpha: number, flipped = false,
+): string {
   const src = absImg(EARLY_ACCESS_MONTAGE_WAVEFORM_IMG).replace(/'/g, "\\'");
   const w = EARLY_ACCESS_MONTAGE_WAVEFORM_IMG_W_PX;
   const h = EARLY_ACCESS_MONTAGE_WAVEFORM_IMG_H_PX;
-  return `<div role="presentation" style="display:block;margin:0 auto;width:100%;max-width:${w}px;height:${h}px;background-color:rgba(${r},${g},${b},${alpha});-webkit-mask-image:url('${src}');mask-image:url('${src}');-webkit-mask-size:100% ${h}px;mask-size:100% ${h}px;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;-webkit-mask-position:center bottom;mask-position:center bottom;"></div>`;
+  const flip = flipped ? "transform:scaleY(-1);" : "";
+  return `<div role="presentation" style="display:block;margin:0 auto;width:100%;max-width:${w}px;height:${h}px;background-color:rgba(${r},${g},${b},${alpha});-webkit-mask-image:url('${src}');mask-image:url('${src}');-webkit-mask-size:100% ${h}px;mask-size:100% ${h}px;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;-webkit-mask-position:center bottom;mask-position:center bottom;${flip}"></div>`;
 }
 
 const REGULAR_CARD_W = 105;
@@ -296,6 +304,7 @@ export function buildLeadEarlyAccessEmailHtml(
   lead: LeadEarlyAccessData,
 ): { html: string; plainText: string } {
   const pri = lead.primaryColor;
+  const banner = lead.bannerColor?.trim() || pri;
   const storeNameColor = escapeHtml(resolveStoreNameTextColor(lead));
   const store = escapeHtml(lead.storeName);
   const domain = escapeHtml(lead.storeDomain);
@@ -324,7 +333,11 @@ export function buildLeadEarlyAccessEmailHtml(
   const montageClerkCueInnerHtml = customMontageCue
     ? `<span style="${BODY}font-size:11px;font-weight:500;line-height:1.35;color:${montageCueBody};">${escapeHtml(customMontageCue)}</span>`
     : `<span style="${BODY}font-size:11px;font-weight:500;line-height:1.35;color:${montageCueBody};">${escapeHtml(MONTAGE_CLERK_CUE_BEFORE_PRODUCT_NAME)}</span><span style="${BODY}font-size:11px;font-weight:800;line-height:1.35;letter-spacing:-0.02em;color:${montageCueAccent};">${escapeHtml(recProductTitle)}</span><span style="${BODY}font-size:11px;font-weight:500;line-height:1.35;color:${montageCueBody};">${escapeHtml(MONTAGE_CLERK_CUE_AFTER_PRODUCT_NAME)}</span>`;
-  const montageWatermarkWaveformHtml = emailMontageWatermarkWaveformHtml(...mp.rgb, mp.waveformOpacity);
+  const montageClerkWaveHtml = emailMontageWatermarkWaveformHtml(...mp.rgb, mp.waveformOpacity);
+  const montageCustomerWaveHtml = emailMontageWatermarkWaveformHtml(
+    ...MONTAGE_CUSTOMER_WAVE_GREY, MONTAGE_CUSTOMER_WAVE_OPACITY, true,
+  );
+  const montageCustomerCueHtml = `<span style="${BODY}font-size:10px;font-weight:300;font-style:italic;line-height:1.35;color:${BIZMIS_MUTED_LIGHT_HEX};">${escapeHtml(MONTAGE_CUSTOMER_CUE_TEXT)}</span>`;
   const outcomeIconUrls = [
     absImg(OUTCOME_ICON_TREND),
     absImg(OUTCOME_ICON_HEADPHONES),
@@ -387,10 +400,10 @@ export function buildLeadEarlyAccessEmailHtml(
           <td style="padding:0;">
             <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%">
               <tr>
-                <td width="50%" background="${noiseGrainUrl}" bgcolor="${pri}" style="background-color:${pri};background-image:url('${noiseGrainUrl}');background-repeat:repeat;padding:14px 14px 14px 24px;vertical-align:middle;">
+                <td width="50%" background="${noiseGrainUrl}" bgcolor="${banner}" style="background-color:${banner};background-image:url('${noiseGrainUrl}');background-repeat:repeat;padding:14px 14px 14px 24px;vertical-align:middle;">
                   ${storeLogoHtml}
                 </td>
-                <td width="6%" style="background-color:${pri};background:linear-gradient(to bottom right,${pri} 50%,${BIZMIS_PRIMARY_HEX} 50%);text-align:center;vertical-align:middle;padding:0;">
+                <td width="6%" style="background-color:${banner};background:linear-gradient(to bottom right,${banner} 50%,${BIZMIS_PRIMARY_HEX} 50%);text-align:center;vertical-align:middle;padding:0;">
                   <span style="${HEADING}font-size:28px;font-weight:900;color:#ffffff;line-height:1;text-shadow:0 1px 4px rgba(0,0,0,0.25);">&#x2716;</span>
                 </td>
                 <td width="44%" background="${noiseGrainUrl}" bgcolor="${BIZMIS_PRIMARY_HEX}" style="background-color:${BIZMIS_PRIMARY_HEX};background-image:url('${noiseGrainUrl}');background-repeat:repeat;padding:14px 24px 14px 14px;vertical-align:middle;text-align:right;">
@@ -460,9 +473,9 @@ export function buildLeadEarlyAccessEmailHtml(
                   <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%">
                     <tr>
                       <td style="vertical-align:middle;white-space:nowrap;padding-right:8px;">
-                        <span style="display:inline-block;width:${MONTAGE_CHROME_TRAFFIC_DOT_PX}px;height:${MONTAGE_CHROME_TRAFFIC_DOT_PX}px;border-radius:50%;background-color:${mp.dark};margin-right:${MONTAGE_CHROME_TRAFFIC_GAP_PX}px;vertical-align:middle;"></span>
-                        <span style="display:inline-block;width:${MONTAGE_CHROME_TRAFFIC_DOT_PX}px;height:${MONTAGE_CHROME_TRAFFIC_DOT_PX}px;border-radius:50%;background-color:${mp.hex};margin-right:${MONTAGE_CHROME_TRAFFIC_GAP_PX}px;vertical-align:middle;"></span>
-                        <span style="display:inline-block;width:${MONTAGE_CHROME_TRAFFIC_DOT_PX}px;height:${MONTAGE_CHROME_TRAFFIC_DOT_PX}px;border-radius:50%;background-color:${mp.light};vertical-align:middle;"></span>
+                        <span style="display:inline-block;width:${MONTAGE_CHROME_TRAFFIC_DOT_PX}px;height:${MONTAGE_CHROME_TRAFFIC_DOT_PX}px;border-radius:50%;background-color:#C8C8C8;margin-right:${MONTAGE_CHROME_TRAFFIC_GAP_PX}px;vertical-align:middle;"></span>
+                        <span style="display:inline-block;width:${MONTAGE_CHROME_TRAFFIC_DOT_PX}px;height:${MONTAGE_CHROME_TRAFFIC_DOT_PX}px;border-radius:50%;background-color:#E8E8E8;margin-right:${MONTAGE_CHROME_TRAFFIC_GAP_PX}px;vertical-align:middle;"></span>
+                        <span style="display:inline-block;width:${MONTAGE_CHROME_TRAFFIC_DOT_PX}px;height:${MONTAGE_CHROME_TRAFFIC_DOT_PX}px;border-radius:50%;background-color:#D8D8D8;vertical-align:middle;"></span>
                       </td>
                       <td style="vertical-align:middle;width:99%;padding:0;">
                         <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="background-color:#ffffff;border-radius:9999px;">
@@ -478,17 +491,17 @@ export function buildLeadEarlyAccessEmailHtml(
                 </td>
               </tr>
               <tr>
-                <td bgcolor="#ffffff" style="background-color:#ffffff;padding:6px 10px 0 10px;">
+                <td bgcolor="#ffffff" style="background-color:#ffffff;padding:0 10px 0 10px;">
                   <!--[if !mso]><!-->
                   <div style="position:relative;min-height:360px;overflow:visible;">
 
-                    <div style="position:absolute;left:50%;top:50%;width:162%;height:92%;transform:translate(-50%,-50%) rotate(${glowTiltDeg}deg);border-radius:50%;background:${montageRadialGlowBg};-webkit-filter:blur(20px);filter:blur(20px);z-index:0;pointer-events:none;"></div>
+                    <div style="position:absolute;left:50%;top:calc(50% + ${MONTAGE_COMPOSITION_SHIFT_PX}px);width:162%;height:92%;transform:translate(-50%,-50%) rotate(${glowTiltDeg}deg);border-radius:50%;background:${montageRadialGlowBg};-webkit-filter:blur(20px);filter:blur(20px);z-index:0;pointer-events:none;"></div>
 
-                    <div style="position:absolute;top:${MONTAGE_VERTICAL_SPREAD_PX}px;right:0;bottom:82px;z-index:2;display:flex;align-items:center;justify-content:center;">
+                    <div style="position:absolute;top:${MONTAGE_VERTICAL_SPREAD_PX + MONTAGE_COMPOSITION_SHIFT_PX}px;right:0;bottom:82px;z-index:2;display:flex;align-items:center;justify-content:center;">
                       <img src="${clerkAvatarUrl}" alt="Bizmis store clerk" width="280" style="display:block;max-width:280px;width:100%;height:auto;border:0;border-radius:16px;filter:drop-shadow(0 10px 32px rgba(50,40,27,0.16));" />
                     </div>
 
-                    <div style="position:absolute;top:calc(50% - ${MONTAGE_VERTICAL_SPREAD_PX}px);left:2%;transform:translateY(-50%);z-index:3;width:52%;">
+                    <div style="position:absolute;top:calc(50% + ${MONTAGE_COMPOSITION_SHIFT_PX - MONTAGE_VERTICAL_SPREAD_PX}px);left:2%;transform:translateY(-50%);z-index:3;width:52%;">
                       <div style="position:relative;display:flex;align-items:center;justify-content:center;min-height:220px;">
 
                         <div style="position:absolute;left:-2%;top:50%;transform:translateY(-52%) rotate(-6deg) scale(0.85);z-index:1;opacity:0.82;filter:drop-shadow(0 2px 8px rgba(50,40,27,0.08));">
@@ -506,15 +519,35 @@ export function buildLeadEarlyAccessEmailHtml(
                       </div>
                     </div>
 
-                    <div style="position:absolute;bottom:0;left:0;right:0;z-index:1;pointer-events:none;">
-                      <div style="position:relative;display:block;margin:0 auto;max-width:100%;">
-                        <div style="text-align:center;line-height:0;font-size:0;padding:0;height:82px;overflow:hidden;">
-                          ${montageWatermarkWaveformHtml}
+                    <div style="position:absolute;top:0;left:0;width:72%;z-index:1;pointer-events:none;">
+                      <div style="position:relative;height:82px;">
+                        <div style="position:absolute;top:0;left:0;right:0;bottom:0;-webkit-mask-image:linear-gradient(to right,#000 60%,transparent 100%);mask-image:linear-gradient(to right,#000 60%,transparent 100%);">
+                          <div style="text-align:left;line-height:0;font-size:0;padding:0;height:82px;overflow:hidden;">
+                            ${montageCustomerWaveHtml}
+                          </div>
                         </div>
-                        <div style="position:absolute;top:0;left:0;right:0;bottom:0;display:flex;align-items:center;justify-content:center;">
-                          <div style="position:relative;width:100%;display:flex;align-items:center;justify-content:center;transform:translateY(18px);">
-                            <div style="position:absolute;width:70%;height:100%;top:0;left:15%;background:radial-gradient(ellipse 100% 100% at 50% 72%,rgba(255,255,255,0.92) 0%,rgba(255,255,255,0.45) 30%,transparent 68%);"></div>
-                            <p style="margin:0;position:relative;">
+                        <div style="position:absolute;top:0;left:0;right:0;bottom:0;display:flex;align-items:center;justify-content:flex-start;">
+                          <div style="position:relative;display:flex;align-items:center;justify-content:flex-start;padding-left:8px;transform:translateY(-24px);">
+                            <div style="position:absolute;width:120%;height:100%;top:0;left:-10%;background:radial-gradient(ellipse 100% 100% at 30% 50%,rgba(255,255,255,0.92) 0%,rgba(255,255,255,0.45) 30%,transparent 68%);"></div>
+                            <p style="margin:0;position:relative;white-space:nowrap;">
+                              ${montageCustomerCueHtml}
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div style="position:absolute;bottom:0;right:0;width:72%;z-index:1;pointer-events:none;">
+                      <div style="position:relative;height:82px;">
+                        <div style="position:absolute;top:0;left:0;right:0;bottom:0;-webkit-mask-image:linear-gradient(to left,#000 60%,transparent 100%);mask-image:linear-gradient(to left,#000 60%,transparent 100%);">
+                          <div style="text-align:right;line-height:0;font-size:0;padding:0;height:82px;overflow:hidden;">
+                            ${montageClerkWaveHtml}
+                          </div>
+                        </div>
+                        <div style="position:absolute;top:0;left:0;right:0;bottom:0;display:flex;align-items:center;justify-content:flex-end;">
+                          <div style="position:relative;display:flex;align-items:center;justify-content:flex-end;padding-right:8px;transform:translateY(24px);">
+                            <div style="position:absolute;width:120%;height:100%;top:0;right:-10%;background:radial-gradient(ellipse 100% 100% at 70% 50%,rgba(255,255,255,0.92) 0%,rgba(255,255,255,0.45) 30%,transparent 68%);"></div>
+                            <p style="margin:0;position:relative;white-space:nowrap;">
                               ${montageClerkCueInnerHtml}
                             </p>
                           </div>

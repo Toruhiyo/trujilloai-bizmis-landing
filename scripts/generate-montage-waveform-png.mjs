@@ -1,8 +1,7 @@
 /**
- * Renders the early-access invite montage waveform as a flat PNG so the email HTML
- * stays small (avoids hundreds of nested table cells). Regenerate after changing
- * the bar pattern — keep in sync: 3px bars, 1px gap each side, track height below,
- * two cycles of the base pattern, horizontal edge fade via SVG mask.
+ * Renders the early-access invite montage waveform as a flat PNG.
+ * Heights are generated from overlapping sine waves for a smooth,
+ * audio-like envelope. Regenerate after changing bar/layout constants.
  */
 import { writeFileSync } from "fs";
 import { dirname, join } from "path";
@@ -13,32 +12,42 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = join(__dirname, "..");
 
 const TRACK_H = 82;
-const CELL_W = 5;
+const BAR_COUNT = 64;
+const CELL_W = 6;
 const BAR_W = 3;
 const PAD_X = 1;
-const HEIGHT_SOURCE_TRACK = 36;
 const BAR_FILL_HEX = "#ffffff";
+const MIN_BAR_H = 32;
+const MAX_BAR_H = TRACK_H - 32;
 
-const BASE_HEIGHTS_PX = [
-  22, 14, 27, 18, 12, 25, 15, 29, 17, 14, 23, 28, 11, 20, 14, 26, 19, 9, 24, 16, 30, 15, 22, 13, 20, 31, 18, 25, 12, 17, 23, 14, 28, 19, 10, 26, 20, 15, 27, 16, 29, 14, 22, 12, 25, 18, 21, 17,
-];
-
-const HEIGHTS_PX = [...BASE_HEIGHTS_PX, ...BASE_HEIGHTS_PX];
-const IMG_W = CELL_W * HEIGHTS_PX.length;
-
-const SOURCE_MEAN =
-  BASE_HEIGHTS_PX.reduce((sum, v) => sum + v, 0) / BASE_HEIGHTS_PX.length;
-/** 1 = original spread; lower = flatter bars */
-const HEIGHT_DEVIATION_DAMPING = 0.48;
-
-function scaledBarHeight(h) {
-  const damped = SOURCE_MEAN + (h - SOURCE_MEAN) * HEIGHT_DEVIATION_DAMPING;
-  const scaled = Math.round((damped * TRACK_H) / HEIGHT_SOURCE_TRACK);
-  return Math.min(Math.max(scaled, 2), TRACK_H);
+function generateSinusoidalHeights(n) {
+  const heights = [];
+  const seed = 42;
+  let rng = seed;
+  function noise() {
+    rng = (rng * 16807 + 0) % 2147483647;
+    return (rng / 2147483647) * 2 - 1;
+  }
+  const FADE_BARS = 6;
+  for (let i = 0; i < n; i++) {
+    const t = i / n;
+    const wave1 = Math.sin(t * Math.PI * 2 * 1.7 + 0.3) * 0.35;
+    const wave2 = Math.sin(t * Math.PI * 2 * 3.1 + 1.2) * 0.22;
+    const wave3 = Math.sin(t * Math.PI * 2 * 5.4 + 0.8) * 0.12;
+    const raw = 0.45 + wave1 + wave2 + wave3 + noise() * 0.08;
+    const fadeIn = Math.min(i / FADE_BARS, 1);
+    const fadeOut = Math.min((n - 1 - i) / FADE_BARS, 1);
+    const envelope = raw * fadeIn * fadeOut;
+    const clamped = Math.max(0, Math.min(1, envelope));
+    heights.push(Math.round(MIN_BAR_H + clamped * (MAX_BAR_H - MIN_BAR_H)));
+  }
+  return heights;
 }
 
-const rects = HEIGHTS_PX.map((h, i) => {
-  const barH = scaledBarHeight(h);
+const HEIGHTS_PX = generateSinusoidalHeights(BAR_COUNT);
+const IMG_W = CELL_W * BAR_COUNT;
+
+const rects = HEIGHTS_PX.map((barH, i) => {
   const top = TRACK_H - barH;
   const x = i * CELL_W + PAD_X;
   const rx = Math.min(2, BAR_W / 2);
@@ -46,18 +55,7 @@ const rects = HEIGHTS_PX.map((h, i) => {
 }).join("");
 
 const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${IMG_W}" height="${TRACK_H}">
-  <defs>
-    <linearGradient id="waveEdgeFade" x1="0%" y1="0%" x2="100%" y2="0%">
-      <stop offset="0%" stop-color="#000000"/>
-      <stop offset="14%" stop-color="#ffffff"/>
-      <stop offset="86%" stop-color="#ffffff"/>
-      <stop offset="100%" stop-color="#000000"/>
-    </linearGradient>
-    <mask id="waveformFade" maskUnits="userSpaceOnUse" x="0" y="0" width="${IMG_W}" height="${TRACK_H}">
-      <rect x="0" y="0" width="${IMG_W}" height="${TRACK_H}" fill="url(#waveEdgeFade)"/>
-    </mask>
-  </defs>
-  <g mask="url(#waveformFade)">${rects}</g>
+  <g>${rects}</g>
 </svg>`;
 
 const outPath = join(ROOT, "public/images/early-access-montage-waveform.png");
