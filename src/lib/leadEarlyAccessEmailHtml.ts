@@ -54,6 +54,8 @@ const CTA_COUPON_CUTOUT_BORDER_PX = 1.5;
 const CTA_COUPON_CUTOUT_DASH = "rgba(50, 40, 27, 0.1)";
 const COUPON_PILL_BG_HEX = "#F7F5F2";
 
+const MONTAGE_VERTICAL_SPREAD_PX = 36;
+
 type MontagePalette = {
   hex: string;
   dark: string;
@@ -308,6 +310,8 @@ export function buildLeadEarlyAccessEmailHtml(
   const mp = deriveMontagePalette(pri, lead.textColor);
   const [mpr, mpg, mpb] = mp.rgb;
   const montageRadialGlowBg = montageRadialGlowBackgroundCss(mpr, mpg, mpb);
+  const MONTAGE_SCENE_APPROX_W = 550;
+  const glowTiltDeg = +(Math.atan2(2 * MONTAGE_VERTICAL_SPREAD_PX, MONTAGE_SCENE_APPROX_W) * (180 / Math.PI)).toFixed(1);
   const recIdx = lead.recommendedProductIndex;
   const otherIndices = ([0, 1, 2] as const).filter((i) => i !== recIdx);
   const recommendedCardHtml = buildMontageProductCardHtml(lead, recIdx, true, mp);
@@ -478,13 +482,13 @@ export function buildLeadEarlyAccessEmailHtml(
                   <!--[if !mso]><!-->
                   <div style="position:relative;min-height:360px;overflow:visible;">
 
-                    <div style="position:absolute;left:50%;top:50%;width:162%;height:92%;transform:translate(-50%,-50%);border-radius:50%;background:${montageRadialGlowBg};-webkit-filter:blur(20px);filter:blur(20px);z-index:0;pointer-events:none;"></div>
+                    <div style="position:absolute;left:50%;top:50%;width:162%;height:92%;transform:translate(-50%,-50%) rotate(${glowTiltDeg}deg);border-radius:50%;background:${montageRadialGlowBg};-webkit-filter:blur(20px);filter:blur(20px);z-index:0;pointer-events:none;"></div>
 
-                    <div style="position:absolute;top:0;right:0;bottom:82px;z-index:2;display:flex;align-items:center;justify-content:center;">
+                    <div style="position:absolute;top:${MONTAGE_VERTICAL_SPREAD_PX}px;right:0;bottom:82px;z-index:2;display:flex;align-items:center;justify-content:center;">
                       <img src="${clerkAvatarUrl}" alt="Bizmis store clerk" width="280" style="display:block;max-width:280px;width:100%;height:auto;border:0;border-radius:16px;filter:drop-shadow(0 10px 32px rgba(50,40,27,0.16));" />
                     </div>
 
-                    <div style="position:absolute;top:50%;left:2%;transform:translateY(-50%);z-index:3;width:52%;">
+                    <div style="position:absolute;top:calc(50% - ${MONTAGE_VERTICAL_SPREAD_PX}px);left:2%;transform:translateY(-50%);z-index:3;width:52%;">
                       <div style="position:relative;display:flex;align-items:center;justify-content:center;min-height:220px;">
 
                         <div style="position:absolute;left:-2%;top:50%;transform:translateY(-52%) rotate(-6deg) scale(0.85);z-index:1;opacity:0.82;filter:drop-shadow(0 2px 8px rgba(50,40,27,0.08));">
