@@ -20,9 +20,7 @@ import {
 import {
   BIZMIS_BORDER_HEX,
   BIZMIS_MUTED_FG_HEX,
-  BIZMIS_PRIMARY_DARK_HEX,
   BIZMIS_PRIMARY_HEX,
-  BIZMIS_PRIMARY_LIGHT_HEX,
   BIZMIS_WARM_BG_HEX,
 } from "@/lib/bizmisBrandColors";
 
@@ -39,8 +37,6 @@ const OUTCOME_ICON_CHART = "/images/early-access-outcome-chart.svg";
 const BIZMIS_CLERK_AVATAR_FALLBACK =
   "/images/slides/shopify-listing/shopify-personalization-screenshot-outfitters-tablet.png";
 
-const BIZMIS_PRIMARY_TINT_006 = "#FFF8F1";
-const MONTAGE_CARD_BORDER_HEX = "#F0E0D0";
 const MONTAGE_CHROME_BG_HEX = "#F7F7F7";
 const MONTAGE_CHROME_URL_HEX = "#A3A3A3";
 const MONTAGE_CHROME_TRAFFIC_DOT_PX = 8;
@@ -57,6 +53,115 @@ const COUPON_PILL_BORDER_HEX = "#EBE6DF";
 const CTA_COUPON_CUTOUT_BORDER_PX = 1.5;
 const CTA_COUPON_CUTOUT_DASH = "rgba(50, 40, 27, 0.1)";
 const COUPON_PILL_BG_HEX = "#F7F5F2";
+
+type MontagePalette = {
+  hex: string;
+  dark: string;
+  light: string;
+  captionAccent: string;
+  rgb: [number, number, number];
+  badgeTextColor: string;
+  waveformOpacity: number;
+};
+
+function hexToRgb(hex: string): [number, number, number] {
+  const h = hex.replace("#", "");
+  return [parseInt(h.substring(0, 2), 16), parseInt(h.substring(2, 4), 16), parseInt(h.substring(4, 6), 16)];
+}
+
+function hexToHsl(hex: string): [number, number, number] {
+  const [rr, gg, bb] = hexToRgb(hex).map((c) => c / 255);
+  const max = Math.max(rr, gg, bb);
+  const min = Math.min(rr, gg, bb);
+  let h = 0;
+  let s = 0;
+  const l = (max + min) / 2;
+  if (max !== min) {
+    const d = max - min;
+    s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+    if (max === rr) h = ((gg - bb) / d + (gg < bb ? 6 : 0)) / 6;
+    else if (max === gg) h = ((bb - rr) / d + 2) / 6;
+    else h = ((rr - gg) / d + 4) / 6;
+  }
+  return [h * 360, s * 100, l * 100];
+}
+
+function hslToHex(h: number, s: number, l: number): string {
+  const sN = s / 100;
+  const lN = l / 100;
+  const a = sN * Math.min(lN, 1 - lN);
+  const f = (n: number) => {
+    const k = (n + h / 30) % 12;
+    const color = lN - a * Math.max(Math.min(k - 3, 9 - k, 1), -1);
+    return Math.round(255 * Math.max(0, Math.min(1, color)))
+      .toString(16)
+      .padStart(2, "0");
+  };
+  return `#${f(0)}${f(8)}${f(4)}`;
+}
+
+function relativeLuminance(r: number, g: number, b: number): number {
+  const [rs, gs, bs] = [r, g, b].map((c) => {
+    const s = c / 255;
+    return s <= 0.03928 ? s / 12.92 : Math.pow((s + 0.055) / 1.055, 2.4);
+  });
+  return 0.2126 * rs + 0.7152 * gs + 0.0722 * bs;
+}
+
+const MONTAGE_ACCENT_MIN_CONTRAST_RATIO = 1.8;
+
+function contrastRatioOnWhite(hex: string): number {
+  const rgb = hexToRgb(hex);
+  const lum = relativeLuminance(...rgb);
+  return (1.0 + 0.05) / (lum + 0.05);
+}
+
+function pickMontageAccent(primaryHex: string, textColor: string | null | undefined): string {
+  if (contrastRatioOnWhite(primaryHex) >= MONTAGE_ACCENT_MIN_CONTRAST_RATIO) return primaryHex;
+  if (textColor && contrastRatioOnWhite(textColor) >= MONTAGE_ACCENT_MIN_CONTRAST_RATIO) return textColor;
+  return primaryHex;
+}
+
+function deriveMontagePalette(primaryHex: string, textColor: string | null | undefined): MontagePalette {
+  const accent = pickMontageAccent(primaryHex, textColor);
+  const [h, s, l] = hexToHsl(accent);
+
+  const hex = accent;
+  const dark = hslToHex(h, Math.min(s + 5, 100), Math.max(l - 18, 10));
+  const light = hslToHex(h, Math.max(s - 10, 0), Math.min(l + 22, 92));
+
+  const contrast = contrastRatioOnWhite(accent);
+  const CAPTION_MIN_CONTRAST = 2.4;
+  let captionAccent = hex;
+  if (contrast < CAPTION_MIN_CONTRAST) {
+    const targetL = Math.min(l, 52);
+    const targetS = Math.min(s, 65);
+    captionAccent = hslToHex(h, targetS, targetL);
+  }
+
+  const rgb = hexToRgb(hex);
+  const lum = relativeLuminance(...rgb);
+  const badgeTextColor = lum > 0.42 ? "#32281B" : "#ffffff";
+  const WAVE_OPACITY_MIN = 0.06;
+  const WAVE_OPACITY_MAX = 0.18;
+  const waveformOpacity = +(WAVE_OPACITY_MIN + (WAVE_OPACITY_MAX - WAVE_OPACITY_MIN) * lum).toFixed(3);
+  return { hex, dark, light, captionAccent, rgb, badgeTextColor, waveformOpacity };
+}
+
+const MONTAGE_RADIAL_GLOW_ALPHA_PEAK = 0.24;
+
+function montageRadialGlowBackgroundCss(r: number, g: number, b: number): string {
+  const n = 22;
+  const parts: string[] = [];
+  for (let i = 0; i <= n; i += 1) {
+    const t = i / n;
+    const pct = Math.round(t * 1000) / 10;
+    const eased = 1 - t;
+    const a = MONTAGE_RADIAL_GLOW_ALPHA_PEAK * eased * eased * eased;
+    parts.push(`rgba(${r},${g},${b},${a.toFixed(4)}) ${pct}%`);
+  }
+  return `radial-gradient(ellipse,${parts.join(",")})`;
+}
 
 function escapeHtml(s: string): string {
   return s
@@ -104,11 +209,11 @@ function storeLogoEmailMarkup(lead: LeadEarlyAccessData): string {
 const HEADING = "font-family:'Plus Jakarta Sans','Poppins',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-serif;";
 const BODY = "font-family:'DM Sans','Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-serif;";
 
-function emailMontageWatermarkWaveformImgHtml(): string {
-  const src = escapeHtml(absImg(EARLY_ACCESS_MONTAGE_WAVEFORM_IMG));
+function emailMontageWatermarkWaveformHtml(r: number, g: number, b: number, alpha: number): string {
+  const src = absImg(EARLY_ACCESS_MONTAGE_WAVEFORM_IMG).replace(/'/g, "\\'");
   const w = EARLY_ACCESS_MONTAGE_WAVEFORM_IMG_W_PX;
   const h = EARLY_ACCESS_MONTAGE_WAVEFORM_IMG_H_PX;
-  return `<img src="${src}" alt="" role="presentation" width="${w}" height="${h}" style="display:block;margin:0 auto;border:0;width:100%;max-width:${w}px;height:${h}px;" />`;
+  return `<div role="presentation" style="display:block;margin:0 auto;width:100%;max-width:${w}px;height:${h}px;background-color:rgba(${r},${g},${b},${alpha});-webkit-mask-image:url('${src}');mask-image:url('${src}');-webkit-mask-size:100% ${h}px;mask-size:100% ${h}px;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;-webkit-mask-position:center bottom;mask-position:center bottom;"></div>`;
 }
 
 const REGULAR_CARD_W = 105;
@@ -121,24 +226,25 @@ function buildMontageProductCardHtml(
   lead: LeadEarlyAccessData,
   index: number,
   isRecommended: boolean,
+  palette: MontagePalette,
 ): string {
   const productImages = [lead.productAImagePath, lead.productBImagePath, lead.productCImagePath];
   const product = lead.demoProducts[index];
   if (!product) return "";
   const imgUrl = absImg(productImages[index]);
-  const tagEsc = escapeHtml(product.tag);
+  const [pr, pg, pb] = palette.rgb;
 
   if (isRecommended) {
-    return `<div style="display:inline-block;max-width:${REC_CARD_MAX_W}px;border-radius:14px;background:rgba(255,255,255,0.88);-webkit-backdrop-filter:blur(24px);backdrop-filter:blur(24px);border:1.5px solid ${BIZMIS_PRIMARY_HEX};box-shadow:0 0 0 3px rgba(249,163,83,0.12),0 6px 20px -4px rgba(249,163,83,0.18);overflow:hidden;">
-              <div style="background:linear-gradient(135deg,${BIZMIS_PRIMARY_HEX},${BIZMIS_PRIMARY_DARK_HEX});padding:6px 0;text-align:center;line-height:1;display:flex;align-items:center;justify-content:center;">
-                <span style="${BODY}font-size:8px;font-weight:700;color:#ffffff;letter-spacing:0.06em;text-transform:uppercase;vertical-align:middle;">&#9733; Recommended</span>
+    return `<div style="display:inline-block;max-width:${REC_CARD_MAX_W}px;border-radius:14px;background:rgba(255,255,255,0.88);-webkit-backdrop-filter:blur(24px);backdrop-filter:blur(24px);border:1.5px solid ${palette.hex};box-shadow:0 0 0 3px rgba(${pr},${pg},${pb},0.12),0 6px 20px -4px rgba(${pr},${pg},${pb},0.18);overflow:hidden;">
+              <div style="background-color:${palette.hex};padding:6px 0;text-align:center;line-height:1;display:flex;align-items:center;justify-content:center;">
+                <span style="${BODY}font-size:8px;font-weight:700;color:${palette.badgeTextColor};letter-spacing:0.06em;text-transform:uppercase;vertical-align:middle;">&#9733; Recommended</span>
               </div>
               <div style="padding:8px 8px 6px 8px;text-align:center;">
                 <img src="${imgUrl}" alt="" width="${REC_IMG_W}" style="display:block;margin:0 auto;max-width:${REC_IMG_W}px;height:auto;border:0;border-radius:8px;" />
               </div>
               <div style="padding:4px 10px 10px 10px;text-align:center;">
                 <p style="margin:0;${BODY}font-size:9px;font-weight:700;color:${BIZMIS_FOREGROUND_HEX};line-height:1.3;">${escapeHtml(product.title)}</p>
-                <p style="margin:3px 0 0;${BODY}font-size:8px;font-weight:600;color:${BIZMIS_PRIMARY_DARK_HEX};">${escapeHtml(product.price)}</p>
+                <p style="margin:3px 0 0;${BODY}font-size:8px;font-weight:600;color:${palette.captionAccent};">${escapeHtml(product.price)}</p>
               </div>
             </div>`;
   }
@@ -199,19 +305,22 @@ export function buildLeadEarlyAccessEmailHtml(
   const shopifyMarkUrl = absImg(SHOPIFY_MARK_WHITE);
   const noiseGrainUrl = absImg(EMAIL_NOISE_GRAIN_TILE);
   const clerkAvatarUrl = absImg(lead.clerkAvatarImagePath || BIZMIS_CLERK_AVATAR_FALLBACK);
+  const mp = deriveMontagePalette(pri, lead.textColor);
+  const [mpr, mpg, mpb] = mp.rgb;
+  const montageRadialGlowBg = montageRadialGlowBackgroundCss(mpr, mpg, mpb);
   const recIdx = lead.recommendedProductIndex;
   const otherIndices = ([0, 1, 2] as const).filter((i) => i !== recIdx);
-  const recommendedCardHtml = buildMontageProductCardHtml(lead, recIdx, true);
-  const otherCardHtmlA = buildMontageProductCardHtml(lead, otherIndices[0], false);
-  const otherCardHtmlB = buildMontageProductCardHtml(lead, otherIndices[1], false);
+  const recommendedCardHtml = buildMontageProductCardHtml(lead, recIdx, true, mp);
+  const otherCardHtmlA = buildMontageProductCardHtml(lead, otherIndices[0], false, mp);
+  const otherCardHtmlB = buildMontageProductCardHtml(lead, otherIndices[1], false, mp);
   const montageCueBody = BIZMIS_FOREGROUND_HEX;
-  const montageCueBizmisPrimary = BIZMIS_PRIMARY_HEX;
+  const montageCueAccent = mp.captionAccent;
   const customMontageCue = lead.montageClerkCue?.trim();
   const recProductTitle = lead.demoProducts[recIdx].title;
   const montageClerkCueInnerHtml = customMontageCue
     ? `<span style="${BODY}font-size:11px;font-weight:500;line-height:1.35;color:${montageCueBody};">${escapeHtml(customMontageCue)}</span>`
-    : `<span style="${BODY}font-size:11px;font-weight:500;line-height:1.35;color:${montageCueBody};">${escapeHtml(MONTAGE_CLERK_CUE_BEFORE_PRODUCT_NAME)}</span><span style="${BODY}font-size:11px;font-weight:600;line-height:1.35;color:${montageCueBizmisPrimary};">${escapeHtml(recProductTitle)}</span><span style="${BODY}font-size:11px;font-weight:500;line-height:1.35;color:${montageCueBody};">${escapeHtml(MONTAGE_CLERK_CUE_AFTER_PRODUCT_NAME)}</span>`;
-  const montageWatermarkWaveformHtml = emailMontageWatermarkWaveformImgHtml();
+    : `<span style="${BODY}font-size:11px;font-weight:500;line-height:1.35;color:${montageCueBody};">${escapeHtml(MONTAGE_CLERK_CUE_BEFORE_PRODUCT_NAME)}</span><span style="${BODY}font-size:11px;font-weight:800;line-height:1.35;letter-spacing:-0.02em;color:${montageCueAccent};">${escapeHtml(recProductTitle)}</span><span style="${BODY}font-size:11px;font-weight:500;line-height:1.35;color:${montageCueBody};">${escapeHtml(MONTAGE_CLERK_CUE_AFTER_PRODUCT_NAME)}</span>`;
+  const montageWatermarkWaveformHtml = emailMontageWatermarkWaveformHtml(...mp.rgb, mp.waveformOpacity);
   const outcomeIconUrls = [
     absImg(OUTCOME_ICON_TREND),
     absImg(OUTCOME_ICON_HEADPHONES),
@@ -347,9 +456,9 @@ export function buildLeadEarlyAccessEmailHtml(
                   <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%">
                     <tr>
                       <td style="vertical-align:middle;white-space:nowrap;padding-right:8px;">
-                        <span style="display:inline-block;width:${MONTAGE_CHROME_TRAFFIC_DOT_PX}px;height:${MONTAGE_CHROME_TRAFFIC_DOT_PX}px;border-radius:50%;background-color:${BIZMIS_PRIMARY_DARK_HEX};margin-right:${MONTAGE_CHROME_TRAFFIC_GAP_PX}px;vertical-align:middle;"></span>
-                        <span style="display:inline-block;width:${MONTAGE_CHROME_TRAFFIC_DOT_PX}px;height:${MONTAGE_CHROME_TRAFFIC_DOT_PX}px;border-radius:50%;background-color:${BIZMIS_PRIMARY_HEX};margin-right:${MONTAGE_CHROME_TRAFFIC_GAP_PX}px;vertical-align:middle;"></span>
-                        <span style="display:inline-block;width:${MONTAGE_CHROME_TRAFFIC_DOT_PX}px;height:${MONTAGE_CHROME_TRAFFIC_DOT_PX}px;border-radius:50%;background-color:${BIZMIS_PRIMARY_LIGHT_HEX};vertical-align:middle;"></span>
+                        <span style="display:inline-block;width:${MONTAGE_CHROME_TRAFFIC_DOT_PX}px;height:${MONTAGE_CHROME_TRAFFIC_DOT_PX}px;border-radius:50%;background-color:${mp.dark};margin-right:${MONTAGE_CHROME_TRAFFIC_GAP_PX}px;vertical-align:middle;"></span>
+                        <span style="display:inline-block;width:${MONTAGE_CHROME_TRAFFIC_DOT_PX}px;height:${MONTAGE_CHROME_TRAFFIC_DOT_PX}px;border-radius:50%;background-color:${mp.hex};margin-right:${MONTAGE_CHROME_TRAFFIC_GAP_PX}px;vertical-align:middle;"></span>
+                        <span style="display:inline-block;width:${MONTAGE_CHROME_TRAFFIC_DOT_PX}px;height:${MONTAGE_CHROME_TRAFFIC_DOT_PX}px;border-radius:50%;background-color:${mp.light};vertical-align:middle;"></span>
                       </td>
                       <td style="vertical-align:middle;width:99%;padding:0;">
                         <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="background-color:#ffffff;border-radius:9999px;">
@@ -367,12 +476,12 @@ export function buildLeadEarlyAccessEmailHtml(
               <tr>
                 <td bgcolor="#ffffff" style="background-color:#ffffff;padding:6px 10px 0 10px;">
                   <!--[if !mso]><!-->
-                  <div style="position:relative;min-height:310px;overflow:visible;">
+                  <div style="position:relative;min-height:360px;overflow:visible;">
 
-                    <div style="position:absolute;top:45%;right:10%;width:55%;height:55%;transform:translate(0,-50%);border-radius:50%;background:radial-gradient(circle,rgba(249,163,83,0.10) 0%,rgba(249,163,83,0.03) 50%,transparent 72%);z-index:0;pointer-events:none;"></div>
+                    <div style="position:absolute;left:50%;top:50%;width:162%;height:92%;transform:translate(-50%,-50%);border-radius:50%;background:${montageRadialGlowBg};-webkit-filter:blur(20px);filter:blur(20px);z-index:0;pointer-events:none;"></div>
 
                     <div style="position:absolute;top:0;right:0;bottom:82px;z-index:2;display:flex;align-items:center;justify-content:center;">
-                      <img src="${clerkAvatarUrl}" alt="Bizmis store clerk" width="260" style="display:block;max-width:260px;width:100%;height:auto;border:0;border-radius:16px;filter:drop-shadow(0 10px 32px rgba(50,40,27,0.16));" />
+                      <img src="${clerkAvatarUrl}" alt="Bizmis store clerk" width="280" style="display:block;max-width:280px;width:100%;height:auto;border:0;border-radius:16px;filter:drop-shadow(0 10px 32px rgba(50,40,27,0.16));" />
                     </div>
 
                     <div style="position:absolute;top:50%;left:2%;transform:translateY(-50%);z-index:3;width:52%;">
@@ -415,7 +524,7 @@ export function buildLeadEarlyAccessEmailHtml(
                   <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%">
                     <tr>
                       <td width="100%" align="center" style="padding:0;text-align:center;">
-                        <img src="${clerkAvatarUrl}" alt="Bizmis store clerk" width="240" style="display:block;margin:0 auto;max-width:240px;height:auto;border:0;" />
+                        <img src="${clerkAvatarUrl}" alt="Bizmis store clerk" width="260" style="display:block;margin:0 auto;max-width:260px;height:auto;border:0;" />
                       </td>
                     </tr>
                   </table>
