@@ -20,6 +20,8 @@ export type LeadEarlyAccessJson = {
   content: string;
   primaryColor: string;
   secondaryColor: string | null;
+  /** Banner background hex. Falls back to primaryColor when omitted. */
+  bannerColor?: string | null;
   textColor?: string | null;
   logoColorOverlay?: string | null;
   /** Avatar shirt hex. Falls back to primaryColor when omitted. */

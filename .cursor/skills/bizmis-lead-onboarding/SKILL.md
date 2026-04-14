@@ -67,16 +67,33 @@ Open the store and inspect the top navigation bar. Apply one of two rules:
 
 **Rule A (default) — Navbar has colour.** The navbar itself is coloured (red, dark navy, green…) OR the navbar is white/neutral but the logo displayed on it is colourful (e.g. a green wordmark, an orange wordmark). Replicate exactly: `primaryColor` = navbar bg, `logoColorOverlay` = `null` (native colours).
 
-**Rule B (accent exception) — Navbar is colourless but the brand has a clear accent.** The navbar is white/light AND the logo on it is also colourless (plain black/white/grey wordmark), BUT the brand has a strong, distinctive accent colour visible elsewhere on the site (buttons, CTAs, section backgrounds). In this case, use the brand accent as `primaryColor` and tint the logo to contrast against it (`logoColorOverlay: "#ffffff"` for dark accents).
+**Rule B (accent exception) — Navbar is colourless but the brand has a clear accent.** The navbar is white/light AND the logo on it is also colourless (plain black/white/grey wordmark), BUT the brand has a strong, distinctive accent colour visible elsewhere on the site (buttons, CTAs, section backgrounds). In this case, use the brand accent as `primaryColor` and tint the logo to contrast against it (`logoColorOverlay: "#ffffff"` for dark accents). **Rule B requires the logo to be a flat mark** — if the logo is a detailed emblem, use Rule C instead (dark banner + accent) so the emblem keeps native colours.
+
+**Rule C (dark navbar + separate accent) — Navbar is dark but the brand accent is a different colour.** The navbar is dark (black/charcoal) AND the brand has a strong accent colour (red, blue, etc.) used in CTAs/buttons that is NOT the navbar background. In this case, set `bannerColor` to the dark navbar colour and `primaryColor` to the brand accent. The accent drives product-card borders, browser dots, and waveform glow while the banner stays true to the navbar.
 
 | Field              | Decision criteria                                                                                                                                                       |
 | ------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `primaryColor`     | **Rule A**: navbar background colour. **Rule B**: brand accent colour.                                                                                                  |
+| `primaryColor`     | **Rule A**: navbar background colour. **Rule B**: brand accent colour. **Rule C**: brand accent colour.                                                                 |
+| `bannerColor`      | **Rule C only**: navbar background hex (e.g. `#252525`). `null`/omitted for Rules A and B (banner defaults to `primaryColor`).                                          |
 | `textColor`        | Store name text colour in the banner. For white/light `primaryColor`, use the brand accent or a dark colour. For dark `primaryColor`, leave `null` (defaults to white). |
-| `logoColorOverlay` | **Rule A**: `null` (native colours). **Rule B**: `#ffffff` (or whatever contrasts with `primaryColor`).                                                                 |
+| `logoColorOverlay` | **Rule A**: `null`. **Rule B**: `#ffffff` (flat marks only — if emblem, use Rule C instead). **Rule C**: `null`. See logo tint decision table below.                      |
 | `secondaryColor`   | Usually `null`. Set only if the brand has a clear secondary colour.                                                                                                     |
 
 **Logo selection for top bar**: ALWAYS use the full logo as it appears in the store's header/navbar. This is typically a wordmark (icon + text), NOT a favicon.
+
+#### Logo tint decision (critical — applies to both banner and shirt stamp)
+
+Before setting `logoColorOverlay` or `stamp_color_overlay`, classify the logo:
+
+| Category          | Description                                                                                         | Examples                                                    | Can tint? |
+|-------------------|-----------------------------------------------------------------------------------------------------|-------------------------------------------------------------|-----------|
+| **Flat mark**     | Simple wordmark, silhouette, or flat geometric symbol. One shape, no internal detail.               | "FLOYD" text, Nike swoosh, Apple logo, "pura" in a circle  | **Yes** — safe to recolour to a single solid colour.  |
+| **Flat wordmark + icon** | Text next to a simple icon/monogram. Both elements are flat with no internal contrast.         | gorjana "gg" + text, Nanoleaf leaf + text                   | **Yes** — safe to recolour; internal separations are just whitespace. |
+| **Detailed emblem** | Badge, crest, roundel, or seal with internal text, fine lines, contrast between foreground/background, or multiple graphic elements that rely on colour differences for legibility. | UroTuning eagle roundel, Bulova "150" anniversary mark, sports team crests, university seals | **No** — tinting destroys internal detail. Preserve native colours. |
+
+**Decision rule**: Recolour to a solid tint only when doing so preserves legibility and all internal detail. If the logo has internal separations that depend on colour contrast to be readable (text inside a circle, an icon inside a badge, fine lines within a crest), those separations will vanish under a flat tint — keep native colours instead.
+
+**When you cannot tint but need contrast**: Choose a banner/shirt colour that naturally contrasts with the logo's existing colours. For a logo with dark elements on a light internal background (like UroTuning), a dark banner provides the needed contrast without destroying detail.
 
 #### 2b — Avatar shirt composition
 
@@ -95,8 +112,12 @@ Decide the shirt colour and stamp image **independently** from the top bar. The 
 
 **Stamp tint rules** (readability on the shirt colour):
 
-- If shirt colour is **the same as** the top bar colour and the top bar logo already has good contrast → stamp tint can match `logoColorOverlay` (or be omitted if both are `null`).
-- If shirt colour is **different from** the top bar → choose a stamp tint that contrasts against the shirt: `#ffffff` for dark/mid shirts, `#000000` or the brand primary for light shirts, or `null` if the native icon colours already contrast well.
+First, classify the stamp image using the same logo tint decision table above (flat mark → can tint, detailed emblem → cannot tint). Then:
+
+- **Flat mark/wordmark on a dark/mid shirt** → tint `#ffffff` for contrast.
+- **Flat mark/wordmark on a light shirt** → tint `#000000` or the brand primary.
+- **Detailed emblem** → set `stamp_color_overlay: null` (native colours). The shirt colour **must** provide natural contrast for the emblem — use the same colour as the banner background (e.g. dark/neutral), **never** a bright accent that the emblem was not designed to sit on. If the emblem is too complex for the small stamp area, find a simpler compact icon instead.
+- If shirt colour matches top bar and the top bar logo already contrasts → stamp tint can match `logoColorOverlay`.
 
 | Field                     | Decision criteria                                                          |
 | ------------------------- | -------------------------------------------------------------------------- |
@@ -113,6 +134,8 @@ Decide the shirt colour and stamp image **independently** from the top bar. The 
 | **White navbar + colourful logo + no separate accent**  | White bg, colourful wordmark               | Falls back to top bar (white shirt, native wordmark)                          | The logo colour is distinctive but there's no separate UI accent. Shirt matches top bar.                                                                                                                                                                                                   |
 | **White navbar + colourless logo + brand accent**       | Uses accent as bg (Rule B), white wordmark | Same as top bar                                                               | Rule B already used the accent for the top bar. Shirt matches naturally.                                                                                                                                                                                                                   |
 | **White navbar + colourless logo + no accent**          | White bg, native wordmark                  | Falls back to top bar (white shirt, native wordmark)                          | No colour to use anywhere. Shirt = top bar.                                                                                                                                                                                                                                                |
+| **Dark navbar + accent colour in UI (Rule C, flat icon)** | Dark bg via `bannerColor`, native logo  | Uses accent as `primaryColor`, compact icon tinted white                      | The navbar is dark/charcoal and the logo is multi-colour but has a separable flat icon/monogram. Use `bannerColor` for the dark navbar, `primaryColor` for the accent. Tint only the flat compact icon for the stamp. |
+| **Dark navbar + accent colour in UI (Rule C, emblem)**    | Dark bg via `bannerColor`, native logo  | **Same dark colour as banner**, untinted emblem stamp                         | Same as above but the logo is a detailed emblem (no separable flat icon). The shirt must also use the banner colour so the untinted emblem stays readable. A bright accent shirt would destroy emblem legibility. `primaryColor` still drives accents (product borders, dots, price text). |
 
 **Key principle**: Browse the store's UI beyond the navbar — buttons, CTAs, section backgrounds, badges. If there's a clear primary / accent colour used consistently, that's the shirt colour. If the navbar already uses it, they match naturally. If the navbar is white/neutral and the accent is elsewhere, the shirt should use the accent to avoid redundancy with the banner.
 
@@ -174,8 +197,9 @@ lead_data = {
     "content": "",
     "primaryColor": "#...",
     "secondaryColor": null,
+    "bannerColor": null,              # Rule C only: navbar bg when ≠ primaryColor
     "textColor": null,
-    "logoColorOverlay": null,
+    "logoColorOverlay": null,         # NEVER set for multi-colour logos
     "avatarShirtColor": "#..." or null,      # null → falls back to primaryColor
     "avatarStampColorOverlay": "#..." or null, # null → falls back to logoColorOverlay
     "avatarStampImage": "icon.svg" or null,    # null → uses logo.png
@@ -275,7 +299,45 @@ import newlead from "./newlead.json";
 // ... add to RAW_LEADS array
 ```
 
-### Step 9 — Verify (cognitive — LLM)
+### Step 9 — Visual verification (browser + cognitive)
+
+Use browser MCP tools to screenshot both the live store and the generated invite card, then visually compare them to catch logo/colour mismatches before shipping.
+
+**Prerequisites**: Dev server running (`npm run dev`) so the admin preview is available at `localhost:8080`.
+
+**Per-lead process:**
+
+1. `browser_navigate` to `https://{storeDomain}` — capture the store's real header/navbar.
+2. `browser_navigate` to `http://localhost:8080/admin/invite-cards/early-access/{leadId}` — capture the generated invite card.
+3. Visually compare both screenshots against this checklist:
+
+| Check               | What to look for                                                                                                                     |
+|---------------------|--------------------------------------------------------------------------------------------------------------------------------------|
+| Banner ↔ navbar     | Banner background colour must match the store's navbar background. If navbar is dark but accent is elsewhere, `bannerColor` must be set separately from `primaryColor`. |
+| Logo match          | Invite card logo matches the store's header wordmark (shape, text). Must NOT be a product sub-brand or favicon.                       |
+| Logo tint decision  | **Classify the logo**: flat mark/wordmark → may be tinted. Detailed emblem/badge/roundel with internal text or contrast → MUST show native colours. If a detailed emblem appears as a flat single-colour blob, this is wrong — remove the tint (`logoColorOverlay: null`). |
+| Stamp tint decision | Same classification for the shirt stamp. If a detailed emblem stamp lost its internal detail, remove the tint (`stamp_color_overlay: null`). |
+| Stamp ↔ shirt legibility | If the stamp is an untinted emblem, the shirt colour **must** be a colour the emblem was designed to sit on (typically the same dark/neutral banner colour). A bright accent shirt under an untinted emblem destroys legibility — fix by setting `shirt_color` to the banner colour. |
+| Colour match        | `primaryColor` accent (product card borders, browser dots, waveform) matches the store's brand accent / dominant CTA colour.          |
+| Logo legibility     | Logo is readable on the banner (sufficient contrast with the banner background).                                                      |
+| Avatar shirt        | Shirt colour looks branded (not default/generic). Stamp is legible on the shirt. For untinted emblems, shirt must match banner background. |
+
+4. If any check fails → fix the issue (re-download logo, adjust `bannerColor`/`primaryColor`/`logoColorOverlay` in the JSON and `_config.py`, regenerate avatar) → re-screenshot the invite card → re-verify.
+
+**Common fixes:**
+
+| Symptom                                            | Fix                                                                                             |
+|----------------------------------------------------|-------------------------------------------------------------------------------------------------|
+| Banner is brand accent but navbar is dark           | Set `bannerColor` to navbar colour, keep `primaryColor` as the accent (Rule C).                 |
+| Emblem/badge logo appears as flat single-colour blob| Logo is a detailed emblem that was wrongly tinted. Set `logoColorOverlay: null` to restore native colours. Choose a banner colour with natural contrast. |
+| Shirt stamp lost internal detail (flat blob)        | Set `stamp_color_overlay: null`. If the emblem is too complex at stamp size, find a simpler compact icon (`avatarStampImage`). |
+| Untinted emblem on bright/accent shirt (unreadable) | The emblem was not designed for that background. Set `shirt_color` to the same colour as `bannerColor` (the dark/neutral colour the emblem naturally sits on). `primaryColor` still drives product accents. |
+| Product accents look wrong colour                   | `primaryColor` drives accents. Adjust it to the brand's CTA/button colour.                      |
+| Shirt matches banner but should be different        | Set `shirt_color` / `avatarShirtColor` explicitly to the brand accent. (Only valid for flat-mark stamps that can be tinted for contrast — never for untinted emblems.) |
+
+**Batching strategy**: Process ~5 leads per batch. For each batch, screenshot all store headers, then all invite cards, compare, fix issues, re-verify.
+
+### Step 10 — Final check (cognitive — LLM)
 
 Open the admin UI at `/admin/invite-cards/early-access/<lead-id>` and check:
 
@@ -309,8 +371,9 @@ subNiche           string       Sub-niche (snake_case, can be empty)
 
 Optional fields — invite-card top bar:
 
+- `bannerColor`: banner background hex when it differs from `primaryColor` (Rule C). `null`/omitted = uses `primaryColor`.
 - `textColor`: store name text colour in banner. Set for white/light `primaryColor`.
-- `logoColorOverlay`: hex to tint the top-bar logo. `null` = use native colours.
+- `logoColorOverlay`: hex to tint the top-bar logo. `null` = use native colours. NEVER set for multi-colour logos.
   Optional fields — avatar shirt (independent from top bar):
 - `avatarShirtColor`: hex for the avatar shirt. `null` = falls back to `primaryColor`.
 - `avatarStampColorOverlay`: hex tint for the shirt stamp. `null` = native colours.
@@ -364,6 +427,9 @@ scripts/lead_onboarding/
 | White navbar + colourless logo + brand accent | Rule B: `primaryColor` = accent colour, `logoColorOverlay: #ffffff`.                                                                                                          |
 | White navbar + colourless logo + no accent    | Rule A: `primaryColor: #FFFFFF`, `logoColorOverlay: null`.                                                                                                                    |
 | Dark/coloured navbar                          | Rule A: `primaryColor` = navbar bg. Logo is usually white — set `logoColorOverlay: #ffffff` only if native logo is dark.                                                      |
+| Dark navbar + brand accent ≠ navbar bg (flat icon) | Rule C: `bannerColor` = navbar bg, `primaryColor` = accent. `logoColorOverlay: null`. Set `shirt_color` to accent in `_config.py`, tint stamp white.                     |
+| Dark navbar + brand accent ≠ navbar bg (emblem)    | Rule C: `bannerColor` = navbar bg, `primaryColor` = accent. `logoColorOverlay: null`. Set `shirt_color` to **banner colour** (not accent) so emblem stays legible. `stamp_color_overlay: null`. |
+| Detailed emblem/badge tinted to one colour    | Remove `logoColorOverlay` (set to `null`). Classify first: flat marks can tint, detailed emblems/badges/roundels with internal contrast cannot. Also remove `stamp_color_overlay`. |
 | Avatar shirt + banner don't match the store   | Top bar and shirt are independent — re-evaluate each separately.                                                                                                              |
 | Shirt looks same as top bar, too repetitive   | Find a compact icon and/or use a different brand colour for the shirt.                                                                                                        |
 | No compact icon for stamp                     | Use the full wordmark — it's fine if compact enough. Don't force-create icons.                                                                                                |
@@ -376,4 +442,7 @@ scripts/lead_onboarding/
 - **Favicons vs. logos vs. icons**: The **top bar** always uses the full wordmark. The **shirt stamp** prefers a compact icon (favicon, extracted SVG element) when available; falls back to the full wordmark.
 - **Prices must be exact**: Even rounding from `$179.99` to `$180` is wrong. Use the exact price string from the API. If uncertain, use the `products.json` price field.
 - **JS-rendered sites**: Static HTTP parsing may miss header images on JS-heavy sites. Always try the Shopify shop subdomain as a fallback — Shopify themes render logos server-side. Some logos only exist in marketing PNGs on CDN — crop as needed.
-- **Tint is about contrast on the surface**: For the top bar, tint the logo for contrast against `primaryColor`. For the shirt, tint the stamp for contrast against `avatarShirtColor`. These decisions are independent.
+- **Tint is about contrast on the surface**: For the top bar, tint the logo for contrast against the banner colour. For the shirt, tint the stamp for contrast against `avatarShirtColor`. These decisions are independent.
+- **Logo tint classification is a first-class decision**: Every logo must be classified before any tint is applied. Flat marks (wordmarks, silhouettes, simple geometric symbols) can safely be recoloured to a solid tint. Detailed emblems, badges, roundels, and crests (anything with internal text, fine lines, or elements that rely on colour contrast to be legible) must keep native colours — tinting destroys internal detail and turns them into unrecognizable blobs. UroTuning's eagle roundel is the canonical example of a logo that must never be tinted. This classification must be double-checked in visual QA.
+- **Banner ≠ accent when navbar is dark**: When the store's navbar is dark (charcoal/black) and the brand accent (buttons, CTAs) is a different colour, use `bannerColor` for the dark navbar and `primaryColor` for the accent. This was the UroTuning lesson: dark navbar (#252525) with red accent (#CC0000). The banner must visually replicate the navbar, while the accent drives product cards, browser dots, and price text.
+- **Shirt colour for untinted emblems must match the banner, not the accent**: When a logo is a detailed emblem that cannot be tinted, the shirt stamp also cannot be tinted. The stamp will display in its native colours, so the shirt must use a background that the emblem was designed to sit on — typically the same dark/neutral banner colour. Placing an untinted emblem on a bright accent colour (e.g. red) destroys legibility because the emblem's internal colours clash with the background. UroTuning is the canonical example: the eagle roundel is unreadable on red, but perfectly legible on the dark #252525 banner colour. Rule of thumb: **if `stamp_color_overlay` is `null`, then `shirt_color` should equal `bannerColor` (or `primaryColor` if no banner override)**.

@@ -49,8 +49,10 @@ WAVE_COLOR_LUMINANCE_THRESHOLD = 0.85
 # Mirrors the per-lead JSON files at src/data/leads/<id>.json.
 #
 # Invite-card top bar:
-# • primary_color       → banner background (used by the TS side)
-# • logo_color_overlay  → logo tint for the banner
+# • primary_color       → accent colour (product card borders, browser dots,
+#                          waveform). Also banner background unless overridden.
+# • logo_color_overlay  → logo tint for the banner. NEVER set for
+#                          multi-colour logos.
 #
 # Avatar character:
 # • avatar_id           → which 3D avatar to use. Falls back to
@@ -153,8 +155,10 @@ LEAD_REGISTRY: list[dict] = [
     # ── Batch 2 ──
     {
         "id": "emotiva",
-        "primary_color": "#3a3a3a",
-        "logo_color_overlay": "#ffffff",
+        "primary_color": "#FFFFFF",
+        "logo_color_overlay": None,
+        "shirt_color": "#3a3a3a",
+        "stamp_color_overlay": "#ffffff",
         "avatar_id": "echo",
     },
     {
@@ -201,8 +205,10 @@ LEAD_REGISTRY: list[dict] = [
     },
     {
         "id": "urotuning",
-        "primary_color": "#CC0000",
-        "logo_color_overlay": "#ffffff",
+        "primary_color": "#252525",
+        "logo_color_overlay": None,
+        "shirt_color": "#252525",
+        "stamp_color_overlay": None,
         "avatar_id": "luca",
     },
     {

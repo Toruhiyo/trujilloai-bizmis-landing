@@ -18,7 +18,8 @@ export const EARLY_ACCESS_EMAIL_COPY = {
     " while feeling like a natural extension of your team.",
   softCtaAboveMockupLinkPhrase: "Join Bizmis early access",
   softCtaAboveMockupAfterLink: " at no cost and ",
-  softCtaAboveMockupEmphasis: "shape the product roadmap around your store\u2019s needs.",
+  softCtaAboveMockupEmphasisBold: "shape the product roadmap",
+  softCtaAboveMockupEmphasisTail: " around your store\u2019s needs.",
   subline:
     "Try Bizmis at no cost for 30 days on your Shopify store, and shape the product around your team\u2019s and customers\u2019 needs by sharing feedback as you go.",
   ctaLabel: "Install Bizmis with early access",
