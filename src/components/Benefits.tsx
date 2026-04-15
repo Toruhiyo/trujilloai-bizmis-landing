@@ -174,9 +174,11 @@ const Benefits = () => {
                   Earn loyal customers.
                 </h2>
               </div>
-              <p className="text-xl text-muted-foreground font-body max-w-3xl mx-auto">
-                Watch real-time satisfaction metrics and live customer reviews
-                flowing in—proof that Bizmis delivers exceptional support 24/7.
+              <p className="text-xl text-muted-foreground font-body max-w-4xl mx-auto">
+                Emotional intelligence and instant 24/7 support improve customer
+                satisfaction with immediate, warm, and empathetic resolutions
+                that feel like help from a great in-store clerk, while saving
+                valuable support time.
               </p>
             </div>
 
@@ -245,7 +247,7 @@ const Benefits = () => {
                       <FaHeart className="w-4 h-4 text-primary/35 group-hover:text-primary/60 transition-colors duration-300 flex-shrink-0 mt-0.5" />
                       <div>
                         <h3 className="text-sm font-heading font-medium text-foreground mb-1.5">
-                          Empathetic Support
+                          Emotional Intelligence
                         </h3>
                         <p className="text-muted-foreground font-body text-sm leading-relaxed">
                           AI that understands customer emotions and responds
