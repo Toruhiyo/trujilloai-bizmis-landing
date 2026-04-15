@@ -57,7 +57,12 @@ const PHONE_BODY_RADIUS = 25;
 const PHONE_HOME_BAR_W = 56;
 const PHONE_HOME_BAR_H = 3;
 const PHONE_SCREEN_W = PHONE_FRAME_W - PHONE_BEZEL_PX * 2;
-const PHONE_AVATAR_W = 140;
+const PHONE_AVATAR_W = 160;
+/** Diameter of the white radial glow behind the support avatar (circle, centered on the image). */
+const PHONE_AVATAR_GLOW_DIAM_PX = 300;
+const PHONE_AVATAR_GLOW_BLUR_PX = 48;
+/** Wider bright core than desktop ellipse so the phone halo reads brighter. */
+const PHONE_AVATAR_GLOW_PLATEAU_PCT = 0.62;
 
 const MONTAGE_CHROME_BG_HEX = "#F7F7F7";
 const MONTAGE_CHROME_URL_HEX = "#A3A3A3";
@@ -187,7 +192,7 @@ function deriveMontagePalette(primaryHex: string, textColor: string | null | und
 }
 
 const MONTAGE_WHITE_GLOW_ALPHA_PEAK = 1.0;
-const MONTAGE_SCENE_TINT_ALPHA = 0.12;
+const MONTAGE_SCENE_TINT_ALPHA = 0.08;
 
 function montageSceneBgHex(r: number, g: number, b: number): string {
   const a = MONTAGE_SCENE_TINT_ALPHA;
@@ -197,19 +202,29 @@ function montageSceneBgHex(r: number, g: number, b: number): string {
 
 const MONTAGE_WHITE_GLOW_PLATEAU_PCT = 0.50;
 
-function montageWhiteGlowCss(): string {
+type MontageWhiteGlowOpts = {
+  plateauPct?: number;
+  alphaPeak?: number;
+};
+
+function montageWhiteGlowCss(
+  shape: "ellipse" | "circle" = "ellipse",
+  opts?: MontageWhiteGlowOpts,
+): string {
+  const plateauPct = opts?.plateauPct ?? MONTAGE_WHITE_GLOW_PLATEAU_PCT;
+  const alphaPeak = opts?.alphaPeak ?? MONTAGE_WHITE_GLOW_ALPHA_PEAK;
   const n = 24;
   const parts: string[] = [];
   for (let i = 0; i <= n; i += 1) {
     const t = i / n;
     const pct = Math.round(t * 1000) / 10;
-    const fade = t <= MONTAGE_WHITE_GLOW_PLATEAU_PCT
+    const fade = t <= plateauPct
       ? 1
-      : 1 - ((t - MONTAGE_WHITE_GLOW_PLATEAU_PCT) / (1 - MONTAGE_WHITE_GLOW_PLATEAU_PCT));
-    const a = MONTAGE_WHITE_GLOW_ALPHA_PEAK * fade;
+      : 1 - ((t - plateauPct) / (1 - plateauPct));
+    const a = alphaPeak * fade;
     parts.push(`rgba(255,255,255,${a.toFixed(4)}) ${pct}%`);
   }
-  return `radial-gradient(ellipse,${parts.join(",")})`;
+  return `radial-gradient(${shape},${parts.join(",")})`;
 }
 
 function escapeHtml(s: string): string {
@@ -368,11 +383,14 @@ function buildSupportMockupSceneHtml(
   lead: LeadEarlyAccessData,
   palette: MontagePalette,
   montageSceneBg: string,
-  montageWhiteGlow: string,
 ): string {
   const avatarUrl = absImg(lead.supportAvatarImagePath || lead.clerkAvatarImagePath || BIZMIS_CLERK_AVATAR_FALLBACK);
   const [pr, pg, pb] = palette.rgb;
   const pw = WAVEFORM_PHONE;
+  const avatarCircleGlow = montageWhiteGlowCss("circle", {
+    plateauPct: PHONE_AVATAR_GLOW_PLATEAU_PCT,
+    alphaPeak: MONTAGE_WHITE_GLOW_ALPHA_PEAK,
+  });
 
   const customerWaveHtml = emailMontageWatermarkWaveformHtml(
     ...MONTAGE_CUSTOMER_WAVE_GREY, MONTAGE_CUSTOMER_WAVE_OPACITY, true, pw,
@@ -405,8 +423,6 @@ function buildSupportMockupSceneHtml(
 
               <div style="position:relative;border-radius:${PHONE_SCREEN_RADIUS}px;overflow:hidden;margin-top:${Math.round(PHONE_NOTCH_H * 0.25)}px;background-color:${montageSceneBg};">
 
-                <div style="position:absolute;left:50%;top:50%;width:200%;height:130%;transform:translate(-50%,-50%);border-radius:50%;background:${montageWhiteGlow};-webkit-filter:blur(40px);filter:blur(40px);z-index:0;pointer-events:none;"></div>
-
                 <div style="position:relative;z-index:1;">
 
                   <div style="position:relative;min-height:${pw.h}px;overflow:hidden;">
@@ -415,15 +431,16 @@ function buildSupportMockupSceneHtml(
                         ${customerWaveHtml}
                       </div>
                     </div>
-                    <div style="position:relative;z-index:1;padding:6px 10px 2px 10px;">
-                      <p style="margin:0;">
+                    <div style="position:relative;z-index:1;padding:6px 10px 2px 10px;width:100%;box-sizing:border-box;text-align:left;">
+                      <p style="margin:0;width:100%;text-align:left;">
                         ${shopperHtml}
                       </p>
                     </div>
                   </div>
 
-                  <div style="text-align:center;padding:10px 10px;">
-                    <img src="${avatarUrl}" alt="Bizmis support clerk" width="${PHONE_AVATAR_W}" style="display:inline-block;max-width:${PHONE_AVATAR_W}px;width:100%;height:auto;border:0;border-radius:14px;filter:drop-shadow(0 8px 24px rgba(50,40,27,0.16));" />
+                  <div style="position:relative;text-align:center;padding:10px 10px;">
+                    <div aria-hidden="true" style="position:absolute;left:50%;top:50%;width:${PHONE_AVATAR_GLOW_DIAM_PX}px;height:${PHONE_AVATAR_GLOW_DIAM_PX}px;transform:translate(-50%,-50%);border-radius:50%;background:${avatarCircleGlow};-webkit-filter:blur(${PHONE_AVATAR_GLOW_BLUR_PX}px);filter:blur(${PHONE_AVATAR_GLOW_BLUR_PX}px);z-index:0;pointer-events:none;"></div>
+                    <img src="${avatarUrl}" alt="Bizmis support clerk" width="${PHONE_AVATAR_W}" style="position:relative;z-index:1;display:inline-block;max-width:${PHONE_AVATAR_W}px;width:100%;height:auto;border:0;border-radius:14px;filter:drop-shadow(0 8px 24px rgba(50,40,27,0.16));" />
                   </div>
 
                   <div style="position:relative;min-height:${pw.h}px;overflow:hidden;display:flex;flex-direction:column;justify-content:flex-end;">
@@ -432,11 +449,11 @@ function buildSupportMockupSceneHtml(
                         ${clerkWaveHtml}
                       </div>
                     </div>
-                    <div style="position:relative;z-index:1;padding:0 10px 4px 10px;text-align:right;">
-                      <p style="margin:0 0 3px 0;">
+                    <div style="position:relative;z-index:1;padding:0 10px 4px 10px;width:100%;box-sizing:border-box;text-align:right;">
+                      <p style="margin:0 0 3px 0;width:100%;text-align:right;">
                         <span style="${toolChipStyle}">${escapeHtml(CS_TOOL_CHIP_PREFIX)}</span><span style="${toolChipBoldStyle}">${escapeHtml(policyName)}</span>
                       </p>
-                      <p style="margin:0;">
+                      <p style="margin:0;width:100%;text-align:right;">
                         ${clerkHtml}
                       </p>
                     </div>
@@ -586,7 +603,7 @@ export function buildLeadEarlyAccessEmailHtml(
   const chipStripHtml = buildEarlyAccessChipStripHtml(storeCap, chipStripIconUrls);
   const chipTrialFootnoteEsc = escapeHtml(buildEarlyAccessTrialUsageFootnotePlainText());
   const outcomeStripInnerHtml = buildEarlyAccessOutcomeStripHtml(outcomeIconUrls);
-  const supportMockupHtml = buildSupportMockupSceneHtml(lead, mp, montageSceneBg, montageWhiteGlow);
+  const supportMockupHtml = buildSupportMockupSceneHtml(lead, mp, montageSceneBg);
 
   const couponCodeEsc = escapeHtml(lead.couponCode.trim());
 
@@ -777,9 +794,9 @@ export function buildLeadEarlyAccessEmailHtml(
                           </div>
                         </div>
                         <div style="position:absolute;top:0;left:0;right:0;bottom:0;display:flex;align-items:center;justify-content:flex-start;">
-                          <div style="position:relative;display:flex;align-items:center;justify-content:flex-start;padding-left:8px;transform:translateY(-24px);">
+                          <div style="position:relative;display:flex;align-items:center;justify-content:flex-start;padding-left:8px;padding-right:8px;transform:translateY(-24px);width:100%;max-width:100%;box-sizing:border-box;">
                             <div style="position:absolute;width:120%;height:100%;top:0;left:-10%;background:radial-gradient(ellipse 100% 100% at 30% 50%,rgba(255,255,255,0.92) 0%,rgba(255,255,255,0.45) 30%,transparent 68%);"></div>
-                            <p style="margin:0;position:relative;white-space:nowrap;">
+                            <p style="margin:0;position:relative;width:100%;text-align:left;">
                               ${montageCustomerCueHtml}
                             </p>
                           </div>
@@ -795,9 +812,9 @@ export function buildLeadEarlyAccessEmailHtml(
                           </div>
                         </div>
                         <div style="position:absolute;top:0;left:0;right:0;bottom:0;display:flex;align-items:center;justify-content:flex-end;">
-                          <div style="position:relative;display:flex;align-items:center;justify-content:flex-end;padding-right:8px;transform:translateY(24px);">
+                          <div style="position:relative;display:flex;align-items:center;justify-content:flex-end;padding-left:8px;padding-right:8px;transform:translateY(24px);width:100%;max-width:100%;box-sizing:border-box;">
                             <div style="position:absolute;width:120%;height:100%;top:0;right:-10%;background:radial-gradient(ellipse 100% 100% at 70% 50%,rgba(255,255,255,0.92) 0%,rgba(255,255,255,0.45) 30%,transparent 68%);"></div>
-                            <p style="margin:0;position:relative;white-space:nowrap;">
+                            <p style="margin:0;position:relative;width:100%;text-align:right;">
                               ${montageClerkCueInnerHtml}
                             </p>
                           </div>
