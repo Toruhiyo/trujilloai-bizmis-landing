@@ -215,10 +215,20 @@ function deriveMontagePalette(primaryHex: string, textColor: string | null | und
 const MONTAGE_WHITE_GLOW_ALPHA_PEAK = 1.0;
 const MONTAGE_SCENE_TINT_ALPHA = 0.08;
 
+const MONTAGE_SCENE_GRADIENT_LIGHT_HEX = "#F6F4F1";
+
 function montageSceneBgHex(r: number, g: number, b: number): string {
   const a = MONTAGE_SCENE_TINT_ALPHA;
   const blend = (c: number) => Math.round(255 + (c - 255) * a);
   return `#${[blend(r), blend(g), blend(b)].map((v) => v.toString(16).padStart(2, "0")).join("")}`;
+}
+
+function montageSupportGradientCss(tintHex: string): string {
+  return `linear-gradient(to bottom, ${MONTAGE_SCENE_GRADIENT_LIGHT_HEX} 0%, ${tintHex} 30%)`;
+}
+
+function montageSalesGradientCss(tintHex: string): string {
+  return `linear-gradient(135deg, ${MONTAGE_SCENE_GRADIENT_LIGHT_HEX} 0%, ${tintHex} 50%, ${tintHex} 100%)`;
 }
 
 const MONTAGE_WHITE_GLOW_PLATEAU_PCT = 0.50;
@@ -407,6 +417,7 @@ function buildSupportMockupSceneHtml(
   lead: LeadEarlyAccessData,
   palette: MontagePalette,
   montageSceneBg: string,
+  supportGradient: string,
 ): string {
   const avatarUrl = absImg(lead.supportAvatarImagePath || lead.salesAvatarImagePath || BIZMIS_SALES_AVATAR_FALLBACK);
   const [pr, pg, pb] = palette.rgb;
@@ -457,7 +468,7 @@ function buildSupportMockupSceneHtml(
 
               <div style="width:${PHONE_NOTCH_W}px;height:${PHONE_NOTCH_H}px;margin:0 auto;border-radius:0 0 ${Math.round(PHONE_NOTCH_H * 0.55)}px ${Math.round(PHONE_NOTCH_H * 0.55)}px;background-color:rgba(0,0,0,0.07);"></div>
 
-              <div style="position:relative;border-radius:${PHONE_SCREEN_RADIUS}px;overflow:hidden;margin-top:4px;background-color:${montageSceneBg};">
+              <div style="position:relative;border-radius:${PHONE_SCREEN_RADIUS}px;overflow:hidden;margin-top:4px;background:${supportGradient};background-color:${montageSceneBg};">
 
                 <div style="position:relative;z-index:1;">
 
@@ -604,6 +615,8 @@ export function buildLeadEarlyAccessEmailHtml(
   const mp = deriveMontagePalette(pri, lead.textColor);
   const [mpr, mpg, mpb] = mp.rgb;
   const montageSceneBg = montageSceneBgHex(mpr, mpg, mpb);
+  const supportGradient = montageSupportGradientCss(montageSceneBg);
+  const salesGradient = montageSalesGradientCss(montageSceneBg);
   const montageWhiteGlow = montageWhiteGlowCss();
   const MONTAGE_SCENE_APPROX_W = 550;
   const glowTiltDeg = +(Math.atan2(2 * MONTAGE_VERTICAL_SPREAD_PX, MONTAGE_SCENE_APPROX_W) * (180 / Math.PI)).toFixed(1);
@@ -647,7 +660,7 @@ export function buildLeadEarlyAccessEmailHtml(
   const chipStripHtml = buildEarlyAccessChipStripHtml(storeCap, chipStripIconUrls);
   const chipTrialFootnoteEsc = escapeHtml(buildEarlyAccessTrialUsageFootnotePlainText());
   const outcomeStripInnerHtml = buildEarlyAccessOutcomeStripHtml(outcomeIconUrls);
-  const supportMockupHtml = buildSupportMockupSceneHtml(lead, mp, montageSceneBg);
+  const supportMockupHtml = buildSupportMockupSceneHtml(lead, mp, montageSceneBg, supportGradient);
 
   const couponCodeEsc = escapeHtml(lead.couponCode.trim());
 
@@ -802,7 +815,7 @@ export function buildLeadEarlyAccessEmailHtml(
                 </td>
               </tr>
               <tr>
-                <td bgcolor="${montageSceneBg}" style="background-color:${montageSceneBg};padding:0 10px 0 10px;">
+                <td bgcolor="${montageSceneBg}" style="background:${salesGradient};background-color:${montageSceneBg};padding:0 10px 0 10px;">
                   <!--[if !mso]><!-->
                   <div style="position:relative;min-height:360px;overflow:visible;">
 
