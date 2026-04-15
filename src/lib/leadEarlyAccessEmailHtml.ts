@@ -109,6 +109,22 @@ const MONTAGE_VERTICAL_SPREAD_PX = 56;
 const MONTAGE_COMPOSITION_SHIFT_PX = 28;
 
 const MONTAGE_CUSTOMER_CUE_TEXT_FALLBACK = "\u201cI\u2019m looking for something lightweight and easy to set up.\u201d";
+
+function montageSalesCueSingleLine(s: string): string {
+  return s.replace(/\s+/g, " ").trim();
+}
+
+const MONTAGE_SALES_CUE_BASE_FONT_PX = 11;
+const MONTAGE_SALES_CUE_MIN_FONT_PX = 8.5;
+const MONTAGE_SALES_CUE_CHARS_AT_BASE = 70;
+
+function montageSalesCueFontPx(text: string, basePx = MONTAGE_SALES_CUE_BASE_FONT_PX): number {
+  const len = text.length;
+  if (len <= MONTAGE_SALES_CUE_CHARS_AT_BASE) return basePx;
+  const scaled = basePx * (MONTAGE_SALES_CUE_CHARS_AT_BASE / len);
+  return Math.max(MONTAGE_SALES_CUE_MIN_FONT_PX, Math.round(scaled * 10) / 10);
+}
+
 const MONTAGE_CUSTOMER_WAVE_GREY: [number, number, number] = [180, 180, 180];
 const MONTAGE_CUSTOMER_WAVE_OPACITY = 0.18;
 
@@ -346,26 +362,32 @@ function buildMontageClerkCueInnerHtml(
   bodyColor: string,
   accentColor: string,
 ): string {
-  const bodyStyle = `${BODY}font-size:11px;font-weight:500;line-height:1.35;color:${bodyColor};`;
-  const accentStyle = `${BODY}font-size:11px;font-weight:800;line-height:1.35;letter-spacing:-0.02em;color:${accentColor};`;
+  const title = montageSalesCueSingleLine(productTitle);
+  const fullText = customCue
+    ? montageSalesCueSingleLine(customCue)
+    : `${MONTAGE_CLERK_CUE_BEFORE_PRODUCT_NAME}${title}${MONTAGE_CLERK_CUE_AFTER_PRODUCT_NAME}`;
+  const fPx = montageSalesCueFontPx(fullText, MONTAGE_SALES_CUE_BASE_FONT_PX);
+  const bodyStyle = `${BODY}font-size:${fPx}px;font-weight:500;line-height:1.35;color:${bodyColor};white-space:nowrap;`;
+  const accentStyle = `${BODY}font-size:${fPx}px;font-weight:800;line-height:1.35;letter-spacing:-0.02em;color:${accentColor};white-space:nowrap;`;
 
   if (customCue) {
-    const splitIdx = customCue.indexOf(productTitle);
+    const cue = montageSalesCueSingleLine(customCue);
+    const splitIdx = cue.indexOf(title);
     if (splitIdx >= 0) {
-      const before = customCue.slice(0, splitIdx);
-      const after = customCue.slice(splitIdx + productTitle.length);
+      const before = cue.slice(0, splitIdx);
+      const after = cue.slice(splitIdx + title.length);
       return (
         `<span style="${bodyStyle}">${escapeHtml(before)}</span>` +
-        `<span style="${accentStyle}">${escapeHtml(productTitle)}</span>` +
+        `<span style="${accentStyle}">${escapeHtml(title)}</span>` +
         `<span style="${bodyStyle}">${escapeHtml(after)}</span>`
       );
     }
-    return `<span style="${bodyStyle}">${escapeHtml(customCue)}</span>`;
+    return `<span style="${bodyStyle}">${escapeHtml(cue)}</span>`;
   }
 
   return (
     `<span style="${bodyStyle}">${escapeHtml(MONTAGE_CLERK_CUE_BEFORE_PRODUCT_NAME)}</span>` +
-    `<span style="${accentStyle}">${escapeHtml(productTitle)}</span>` +
+    `<span style="${accentStyle}">${escapeHtml(title)}</span>` +
     `<span style="${bodyStyle}">${escapeHtml(MONTAGE_CLERK_CUE_AFTER_PRODUCT_NAME)}</span>`
   );
 }
@@ -663,9 +685,10 @@ export function buildLeadEarlyAccessEmailHtml(
     ...MONTAGE_CUSTOMER_WAVE_GREY, MONTAGE_CUSTOMER_WAVE_OPACITY, true,
   );
   const montageCustomerCueText = lead.montageShopperCue?.trim()
-    ? `\u201c${lead.montageShopperCue.trim()}\u201d`
+    ? `\u201c${montageSalesCueSingleLine(lead.montageShopperCue.trim())}\u201d`
     : MONTAGE_CUSTOMER_CUE_TEXT_FALLBACK;
-  const montageCustomerCueHtml = `<span style="${BODY}font-size:10px;font-weight:300;font-style:italic;line-height:1.35;color:${BIZMIS_MUTED_LIGHT_HEX};">${escapeHtml(montageCustomerCueText)}</span>`;
+  const shopperFontPx = montageSalesCueFontPx(montageCustomerCueText, 10);
+  const montageCustomerCueHtml = `<span style="${BODY}font-size:${shopperFontPx}px;font-weight:300;font-style:italic;line-height:1.35;color:${BIZMIS_MUTED_LIGHT_HEX};white-space:nowrap;">${escapeHtml(montageCustomerCueText)}</span>`;
   const chipStripIconUrls = [
     absImg(EARLY_ACCESS_CHIP_GIFT_MUTED),
     absImg(EARLY_ACCESS_CHIP_ROUTE_MUTED),
@@ -877,10 +900,10 @@ export function buildLeadEarlyAccessEmailHtml(
                             ${montageCustomerWaveHtml}
                           </div>
                         </div>
-                        <div style="position:absolute;top:0;left:0;right:0;bottom:0;display:flex;align-items:center;justify-content:flex-start;">
-                          <div style="position:relative;display:flex;align-items:center;justify-content:flex-start;padding-left:8px;padding-right:8px;transform:translateY(-24px);width:100%;max-width:100%;box-sizing:border-box;">
+                        <div style="position:absolute;top:0;left:0;right:0;bottom:0;display:flex;align-items:center;justify-content:flex-start;overflow:visible;">
+                          <div style="position:relative;display:flex;align-items:center;justify-content:flex-start;padding-left:8px;padding-right:8px;transform:translateY(-24px);width:100%;max-width:100%;box-sizing:border-box;overflow:visible;">
                             <div style="position:absolute;width:120%;height:100%;top:0;left:-10%;background:radial-gradient(ellipse 100% 100% at 30% 50%,rgba(255,255,255,0.92) 0%,rgba(255,255,255,0.45) 30%,transparent 68%);"></div>
-                            <p style="margin:0;position:relative;width:100%;text-align:left;">
+                            <p style="margin:0;position:relative;text-align:left;white-space:nowrap;overflow:visible;text-overflow:clip;max-width:none;">
                               ${montageCustomerCueHtml}
                             </p>
                           </div>
@@ -895,10 +918,10 @@ export function buildLeadEarlyAccessEmailHtml(
                             ${montageClerkWaveHtml}
                           </div>
                         </div>
-                        <div style="position:absolute;top:0;left:0;right:0;bottom:0;display:flex;align-items:center;justify-content:flex-end;">
-                          <div style="position:relative;display:flex;align-items:center;justify-content:flex-end;padding-left:8px;padding-right:8px;transform:translateY(24px);width:100%;max-width:100%;box-sizing:border-box;">
+                        <div style="position:absolute;top:0;left:0;right:0;bottom:0;display:flex;align-items:center;justify-content:flex-end;overflow:visible;">
+                          <div style="position:relative;display:flex;align-items:center;justify-content:flex-end;padding-left:8px;padding-right:8px;transform:translateY(24px);width:100%;max-width:100%;box-sizing:border-box;overflow:visible;">
                             <div style="position:absolute;width:120%;height:100%;top:0;right:-10%;background:radial-gradient(ellipse 100% 100% at 70% 50%,rgba(255,255,255,0.92) 0%,rgba(255,255,255,0.45) 30%,transparent 68%);"></div>
-                            <p style="margin:0;position:relative;width:100%;text-align:right;">
+                            <p style="margin:0;position:relative;text-align:right;white-space:nowrap;overflow:visible;text-overflow:clip;max-width:none;">
                               ${montageSalesClerkBizmisIconHtml}${montageClerkCueInnerHtml}
                             </p>
                           </div>
@@ -1028,7 +1051,9 @@ export function buildLeadEarlyAccessEmailHtml(
 </html>`;
 
   const chipPlainLines = buildEarlyAccessChips(storeCap);
-  const montagePlainLine = lead.montageClerkCue?.trim() || buildMontageClerkCuePlainText(recProductTitle);
+  const montagePlainLine = montageSalesCueSingleLine(
+    lead.montageClerkCue?.trim() || buildMontageClerkCuePlainText(recProductTitle),
+  );
 
   const plainText = [
     buildEarlyAccessSalutationPlainText(lead.storeName, lead.leadContactName),

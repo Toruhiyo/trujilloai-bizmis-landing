@@ -144,6 +144,28 @@ def _pick_montage_accent(primary_hex: str, text_color: str | None) -> str:
     return primary_hex
 
 
+def _load_lead_json(lead_id: str) -> dict:
+    try:
+        raw = (LEAD_DATA_JSON_DIR / f"{lead_id}.json").read_text(encoding="utf-8")
+        return json.loads(raw)
+    except (OSError, json.JSONDecodeError) as exc:
+        logger.warning("Could not read lead JSON (%s): %s", lead_id, exc)
+        return {}
+
+
+def resolve_raw_montage_accent_hex(lead: dict) -> str:
+    """Pre-caption brand accent (primary vs textColor pick only).
+
+    Used for Blender widget chrome (``button_color``): must stay the raw brand
+    colour. Wave rings use ``resolve_widget_wave_color`` (contrast-corrected).
+    """
+    data = _load_lead_json(lead["id"])
+    primary = lead.get("primary_color", "#FFFFFF")
+    tc = data.get("textColor")
+    text_color = tc if isinstance(tc, str) else None
+    return _pick_montage_accent(primary, text_color)
+
+
 def _apply_caption_correction(hex_color: str) -> str:
     if _contrast_ratio_on_white(hex_color) >= _CAPTION_MIN_CONTRAST:
         return hex_color
@@ -152,23 +174,19 @@ def _apply_caption_correction(hex_color: str) -> str:
 
 
 def resolve_widget_wave_color(lead: dict) -> str:
-    """Hex for the widget wave ring — uses the same captionAccent correction
-    as the email's policy-lookup chip (see ``deriveMontagePalette`` in TS).
+    """Hex for ``--wave-color`` only (audio ring / pulse): contrast-corrected.
+
+    Matches ``deriveMontagePalette`` caption/wave path in TS (not the raw UI hex).
+    Widget chrome uses ``resolve_raw_montage_accent_hex`` → ``button_color``.
 
     1. Pick accent: primaryColor (if enough contrast) → textColor → primaryColor.
     2. Apply caption correction: if still low contrast, clamp HSL lightness/saturation.
     3. Final fallback if result is still too light.
     """
-    lead_id = lead["id"]
-    try:
-        raw = (LEAD_DATA_JSON_DIR / f"{lead_id}.json").read_text(encoding="utf-8")
-        data = json.loads(raw)
-    except (OSError, json.JSONDecodeError) as exc:
-        logger.warning("Could not read lead JSON for wave colour (%s): %s", lead_id, exc)
-        data = {}
-
+    data = _load_lead_json(lead["id"])
     primary = lead.get("primary_color", "#FFFFFF")
-    text_color = data.get("textColor")
+    tc = data.get("textColor")
+    text_color = tc if isinstance(tc, str) else None
     accent = _pick_montage_accent(primary, text_color)
     corrected = _apply_caption_correction(accent)
 
