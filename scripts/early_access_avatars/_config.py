@@ -48,6 +48,8 @@ RENDER_DEFAULTS: dict = {
 SUPPORT_RENDER_DEFAULTS: dict = {
     "animation": "idle_neutral",
     "animation_progress": 0.50,
+    # Same idle frame as avatar-pipeline thumbnails (NLA strip midpoint).
+    "pose_sampling": "thumbnail_midframe",
     "expression": "smile",
     "resolution": 1024,
     "mobile": True,
@@ -58,7 +60,9 @@ SUPPORT_RENDER_DEFAULTS: dict = {
     "show_claim": False,
     "framing": "head",
     "lighting_preset": "studio",
-    "camera_tilt": 5,
+    # Head-only: keep tilt at 0 — non-zero tilt causes strong perspective
+    # foreshortening on the face (reads as "squashed" / deformed in a circle).
+    "camera_tilt": 0,
     "shirt_stamp_scale": 1.0,
 }
 
@@ -170,7 +174,7 @@ LEAD_REGISTRY: list[dict] = [
         "id": "bluetti",
         "primary_color": "#FFFFFF",
         "logo_color_overlay": None,
-        "avatar_id": "matt",
+        "avatar_id": "kiran",
         "support_avatar_id": "yue",
     },
     {
@@ -184,7 +188,7 @@ LEAD_REGISTRY: list[dict] = [
         "id": "mactools",
         "primary_color": "#e31837",
         "logo_color_overlay": None,
-        "avatar_id": "matt",
+        "avatar_id": "teo",
         "support_avatar_id": "mia",
     },
     # ── Batch 2 ──

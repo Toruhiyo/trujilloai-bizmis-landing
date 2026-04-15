@@ -322,9 +322,10 @@ GREA
 
 1. **Sector gender fit** — feminine-leaning sectors (jewelry, beauty, fashion, shapewear, fragrance) → `amber` or `yue`. Masculine-leaning sectors (automotive, tools, security, exhaust, engine) → clearly male avatar.
 2. **Direct trait match** — Echo for audio brands (headphones), Yusuke for JDM, Yue for women's jewelry.
-3. **Vertical fit** — automotive/garage → Teo. Luxury/watches → Yusuke or Matt. Home/lifestyle → Amber or Luca. Tech → Kiran.
-4. **Brand tone** — playful/casual → Teo or Echo. Professional → Will or Mathew. Refined → Yusuke or Luca.
-5. **Variety across the batch** — avoid consecutive duplicates when possible.
+3. **Vertical fit** — automotive/garage → Teo. Luxury/watches → Yusuke or Matt. Home/lifestyle → Amber or Luca. Tech/electronics → Kiran.
+4. **Brand tone** — playful/casual → Teo or Echo. Professional/B2B → Will or Matt. Refined → Yusuke or Luca.
+5. **Matt exclusion** — Matt's tie persona does NOT fit highly technical products (power stations, electronics hardware) or blue-collar verticals (mechanic tools, automotive parts). Use Kiran, Teo, or Victor instead.
+6. **Distribution is lead-driven** — avatar selection depends entirely on brand fit, NOT on even distribution across the pool. Duplicates are fine when the persona matches.
 
 **Support avatar selection** (after sales avatar is chosen):
 
