@@ -6,6 +6,7 @@ import {
   MONTAGE_CLERK_CUE_BEFORE_PRODUCT_NAME,
   MONTAGE_CLERK_CUE_AFTER_PRODUCT_NAME,
   buildEarlyAccessSalutationPlainText,
+  buildSoftCtaPlainText,
   buildEarlyAccessTrialUsageFootnotePlainText,
   buildEarlyAccessValueSentencePlainText,
   earlyAccessGreetingFirstName,
@@ -33,8 +34,16 @@ const EMAIL_NOISE_GRAIN_TILE = "/images/early-access-noise-grain.png";
 const OUTCOME_ICON_TREND = "/images/early-access-outcome-trend.svg";
 const OUTCOME_ICON_HEADPHONES = "/images/early-access-outcome-headphones.svg";
 const OUTCOME_ICON_CHART = "/images/early-access-outcome-chart.svg";
-/** Same glyph as react-icons/fa FaRoute (Font Awesome Free) — route/path, fits "roadmap" copy. */
-const EARLY_ACCESS_SOFT_CTA_ROUTE_ICON = "/images/early-access-soft-cta-route.svg";
+/** Chip row below install button — #8F7856 to match pill label text. */
+const EARLY_ACCESS_CHIP_GIFT_MUTED = "/images/early-access-chip-gift-muted.svg";
+const EARLY_ACCESS_CHIP_ROUTE_MUTED = "/images/early-access-chip-route-muted.svg";
+const EARLY_ACCESS_CHIP_CLOCK_MUTED = "/images/early-access-chip-clock-muted.svg";
+/** Soft CTA pull-quote — #B5A48E (`BIZMIS_MUTED_LIGHT_HEX`) to match surrounding copy. */
+const EARLY_ACCESS_SOFT_CTA_INLINE_GIFT = "/images/early-access-soft-cta-inline-gift.svg";
+const EARLY_ACCESS_SOFT_CTA_INLINE_ROUTE = "/images/early-access-soft-cta-inline-route.svg";
+const EARLY_ACCESS_SOFT_CTA_INLINE_CLOCK = "/images/early-access-soft-cta-inline-clock.svg";
+
+const CHIP_ROW_ICON_PX = 11;
 
 const BIZMIS_CLERK_AVATAR_FALLBACK =
   "/images/slides/shopify-listing/shopify-personalization-screenshot-outfitters-tablet.png";
@@ -302,12 +311,44 @@ function buildMontageProductCardHtml(
             </div>`;
 }
 
-function buildEarlyAccessChipStripHtml(storeCap: number): string {
-  const sepDotStyle = `display:inline-block;width:3px;height:3px;border-radius:50%;background-color:${BIZMIS_MUTED_LIGHT_HEX};vertical-align:middle;margin:0 11px;`;
-  const textStyle = `${BODY}font-size:10px;font-weight:500;color:${BIZMIS_MUTED_FG_HEX};vertical-align:middle;letter-spacing:0.01em;`;
-  return buildEarlyAccessChips(storeCap)
-    .map((phrase) => `<span style="${textStyle}">${escapeHtml(phrase)}</span>`)
-    .join(`<span style="${sepDotStyle}"></span>`);
+function buildEarlyAccessChipStripHtml(
+  storeCap: number,
+  chipIconUrls: readonly [string, string, string],
+): string {
+  const textStyle = `${BODY}font-size:9px;font-weight:500;color:${BIZMIS_MUTED_FG_HEX};vertical-align:middle;letter-spacing:0.01em;`;
+  const imgPx = CHIP_ROW_ICON_PX;
+  const imgStyle = `display:block;width:${imgPx}px;height:${imgPx}px;border:0;`;
+  const phrases = buildEarlyAccessChips(storeCap);
+
+  const chipCell = (phrase: string, i: number) => {
+    const iconUrl = chipIconUrls[i];
+    const phraseEsc = escapeHtml(phrase);
+    return `<td valign="middle" style="vertical-align:middle;padding:0;white-space:nowrap;">
+                  <table role="presentation" cellpadding="0" cellspacing="0" border="0">
+                    <tr>
+                      <td style="vertical-align:middle;padding:0 3px 0 0;width:${imgPx + 2}px;">
+                        <img src="${iconUrl}" alt="" width="${imgPx}" height="${imgPx}" style="${imgStyle}" />
+                      </td>
+                      <td style="vertical-align:middle;padding:0;">
+                        <span style="${textStyle}">${phraseEsc}</span>
+                      </td>
+                    </tr>
+                  </table>
+                </td>`;
+  };
+
+  const sepDotInner = `<span style="display:block;width:2px;height:2px;border-radius:50%;background-color:${BIZMIS_MUTED_LIGHT_HEX};font-size:0;line-height:0;"></span>`;
+  const sepCell = `<td valign="middle" align="center" style="vertical-align:middle;padding:0 7px;line-height:0;font-size:0;">${sepDotInner}</td>`;
+
+  const rowInner = [chipCell(phrases[0], 0), sepCell, chipCell(phrases[1], 1), sepCell, chipCell(phrases[2], 2)].join(
+    "",
+  );
+
+  return `<table role="presentation" cellpadding="0" cellspacing="0" border="0" align="center" style="margin:0 auto;border-collapse:collapse;">
+            <tr>
+              ${rowInner}
+            </tr>
+          </table>`;
 }
 
 function buildEarlyAccessOutcomeStripHtml(
@@ -372,7 +413,16 @@ export function buildLeadEarlyAccessEmailHtml(
     ? `\u201c${lead.montageShopperCue.trim()}\u201d`
     : MONTAGE_CUSTOMER_CUE_TEXT_FALLBACK;
   const montageCustomerCueHtml = `<span style="${BODY}font-size:10px;font-weight:300;font-style:italic;line-height:1.35;color:${BIZMIS_MUTED_LIGHT_HEX};">${escapeHtml(montageCustomerCueText)}</span>`;
-  const softCtaRouteIconUrl = absImg(EARLY_ACCESS_SOFT_CTA_ROUTE_ICON);
+  const chipStripIconUrls = [
+    absImg(EARLY_ACCESS_CHIP_GIFT_MUTED),
+    absImg(EARLY_ACCESS_CHIP_ROUTE_MUTED),
+    absImg(EARLY_ACCESS_CHIP_CLOCK_MUTED),
+  ] as const;
+  const softCtaInlineIconUrls = [
+    absImg(EARLY_ACCESS_SOFT_CTA_INLINE_GIFT),
+    absImg(EARLY_ACCESS_SOFT_CTA_INLINE_ROUTE),
+    absImg(EARLY_ACCESS_SOFT_CTA_INLINE_CLOCK),
+  ] as const;
   const outcomeIconUrls = [
     absImg(OUTCOME_ICON_TREND),
     absImg(OUTCOME_ICON_HEADPHONES),
@@ -381,7 +431,7 @@ export function buildLeadEarlyAccessEmailHtml(
 
   const preheader = buildEarlyAccessPreheader(lead.storeName, storeCap);
 
-  const chipStripHtml = buildEarlyAccessChipStripHtml(storeCap);
+  const chipStripHtml = buildEarlyAccessChipStripHtml(storeCap, chipStripIconUrls);
   const chipTrialFootnoteEsc = escapeHtml(buildEarlyAccessTrialUsageFootnotePlainText());
   const outcomeStripInnerHtml = buildEarlyAccessOutcomeStripHtml(outcomeIconUrls);
 
@@ -410,7 +460,11 @@ export function buildLeadEarlyAccessEmailHtml(
 
   const softCtaAboveMockupBase = `${BODY}font-size:13px;line-height:1.72;`;
   const softCtaStrong = `${softCtaAboveMockupBase}font-weight:600;color:${BIZMIS_MUTED_LIGHT_HEX};`;
-  const softCtaAboveMockupHtml = `<span style="${softCtaAboveMockupBase}color:${BIZMIS_MUTED_LIGHT_HEX};font-weight:400;"><a href="${shopifyAppUrl}" target="_blank" style="${softCtaAboveMockupBase}color:${BIZMIS_PRIMARY_HEX};font-weight:500;text-decoration:none;">${escapeHtml(copy.softCtaAboveMockupLinkPhrase)}</a>${escapeHtml(copy.softCtaAboveMockupAfterLinkPrefix)}<strong style="${softCtaStrong}">${escapeHtml(copy.softCtaAboveMockupNoCostBold)}</strong>${escapeHtml(copy.softCtaAboveMockupAfterLinkSuffix)}<strong style="${softCtaStrong}">${escapeHtml(copy.softCtaAboveMockupEmphasisBold)}</strong>${escapeHtml(copy.softCtaAboveMockupEmphasisTail)}</span>`;
+  const softCtaLinkStyle = `${softCtaAboveMockupBase}color:${BIZMIS_PRIMARY_HEX};font-weight:500;text-decoration:none;`;
+  const softCtaIconPx = CHIP_ROW_ICON_PX;
+  const softCtaInlineIcon = (iconUrl: string) =>
+    `<img src="${iconUrl}" alt="" width="${softCtaIconPx}" height="${softCtaIconPx}" style="display:inline-block;vertical-align:text-bottom;width:${softCtaIconPx}px;height:${softCtaIconPx}px;margin:0 3px 0 0;border:0;" />`;
+  const softCtaAboveMockupHtml = `<span style="${softCtaAboveMockupBase}color:${BIZMIS_MUTED_LIGHT_HEX};font-weight:400;"><a href="${shopifyAppUrl}" target="_blank" style="${softCtaLinkStyle}">${escapeHtml(copy.softCtaAboveMockupLinkPhrase)}</a>${escapeHtml(copy.softCtaAboveMockupAfterLinkPrefix)}${softCtaInlineIcon(softCtaInlineIconUrls[0])}<strong style="${softCtaStrong}">${escapeHtml(copy.softCtaAboveMockupNoCostBold)}</strong>${escapeHtml(copy.softCtaAboveMockupAfterLinkSuffix)}${softCtaInlineIcon(softCtaInlineIconUrls[1])}<strong style="${softCtaStrong}">${escapeHtml(copy.softCtaAboveMockupEmphasisBold)}</strong>${escapeHtml(copy.softCtaAboveMockupEmphasisTail)} ${softCtaInlineIcon(softCtaInlineIconUrls[2])}<strong style="${softCtaStrong}">${escapeHtml(copy.softCtaClosingPhrase)}</strong></span>`;
 
   const html = `<!DOCTYPE html>
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml">
@@ -499,11 +553,7 @@ export function buildLeadEarlyAccessEmailHtml(
               <tr>
                 <td style="padding:0;">
                   <div style="border-left:3.5px solid ${BIZMIS_PRIMARY_HEX};background-color:rgba(249,163,83,0.06);padding:10px 14px;border-radius:0 6px 6px 0;">
-                    <!-- <table role="presentation" cellpadding="0" cellspacing="0" border="0"><tr>
-                      <td style="vertical-align:top;padding-right:8px;padding-top:2px;"><img src="${softCtaRouteIconUrl}" alt="" width="14" height="14" style="display:block;width:14px;height:14px;border:0;" /></td>
-                      <td style="vertical-align:top;"> -->
                     <p style="margin:0;text-align:left;">${softCtaAboveMockupHtml}</p>
-                    <!-- </td></tr></table> -->
                   </div>
                 </td>
               </tr>
@@ -662,10 +712,10 @@ export function buildLeadEarlyAccessEmailHtml(
               </tr>
               <tr>
                 <td style="padding:0 28px 20px 28px;" align="center">
-                  <table role="presentation" cellpadding="0" cellspacing="0" border="0">
+                  <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%">
                     <tr>
-                      <td style="background-color:${BIZMIS_FOREGROUND_HEX};padding:14px 36px;border-radius:12px;text-align:center;box-shadow:0 2px 8px -2px rgba(50,40,27,0.12);">
-                        <a href="${shopifyAppUrl}" target="_blank" style="display:inline-block;text-decoration:none;color:#ffffff;">
+                      <td style="padding:0;border-radius:12px;overflow:hidden;">
+                        <a href="${shopifyAppUrl}" target="_blank" rel="noopener noreferrer" style="display:block;padding:14px 36px;text-align:center;text-decoration:none;color:#ffffff;background-color:${BIZMIS_FOREGROUND_HEX};border-radius:12px;box-shadow:0 2px 8px -2px rgba(50,40,27,0.12);-webkit-text-size-adjust:none;">
                           <table role="presentation" cellpadding="0" cellspacing="0" border="0" align="center" style="margin:0 auto;">
                             <tr>
                               <td style="vertical-align:middle;padding-right:10px;">
@@ -683,7 +733,7 @@ export function buildLeadEarlyAccessEmailHtml(
                 </td>
               </tr>
               <tr>
-                <td style="padding:0 24px 24px 24px;text-align:center;line-height:1.7;">
+                <td style="padding:0 12px 20px 12px;text-align:center;line-height:1.45;">
                   ${chipStripHtml}
                 </td>
               </tr>
@@ -729,7 +779,7 @@ export function buildLeadEarlyAccessEmailHtml(
     "",
     buildEarlyAccessValueSentencePlainText(lead.storeName, lead.leadContactName),
     "",
-    `${copy.softCtaAboveMockupLinkPhrase} ${shopifyAppUrl}${copy.softCtaAboveMockupAfterLinkPrefix}${copy.softCtaAboveMockupNoCostBold}${copy.softCtaAboveMockupAfterLinkSuffix}${copy.softCtaAboveMockupEmphasisBold}${copy.softCtaAboveMockupEmphasisTail}`,
+    buildSoftCtaPlainText(shopifyAppUrl),
     "",
     montagePlainLine,
     "",
