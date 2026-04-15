@@ -117,8 +117,12 @@ type MontagePalette = {
   dark: string;
   light: string;
   captionAccent: string;
+  /** Caption/wave tint: contrast-corrected; use for waveforms, policy chip, inline caption accents. */
   rgb: [number, number, number];
-  badgeTextColor: string;
+  /** `hex` (pre-caption) as RGB — scene gradients, recommended card chrome, phone frame glow. */
+  uiRgb: [number, number, number];
+  /** Legible on solid `hex` (recommended ribbon). */
+  uiBadgeTextColor: string;
   waveformOpacity: number;
 };
 
@@ -210,11 +214,15 @@ function deriveMontagePalette(primaryHex: string, textColor: string | null | und
 
   const rgb = capRgb;
   const lum = relativeLuminance(...rgb);
-  const badgeTextColor = lum > 0.42 ? "#32281B" : "#ffffff";
   const WAVE_OPACITY_MIN = 0.06;
   const WAVE_OPACITY_MAX = 0.18;
   const waveformOpacity = +(WAVE_OPACITY_MIN + (WAVE_OPACITY_MAX - WAVE_OPACITY_MIN) * lum).toFixed(3);
-  return { hex, dark, light, captionAccent, rgb, badgeTextColor, waveformOpacity };
+
+  const uiRgb = hexToRgb(hex);
+  const uiLum = relativeLuminance(...uiRgb);
+  const uiBadgeTextColor = uiLum > 0.42 ? "#32281B" : "#ffffff";
+
+  return { hex, dark, light, captionAccent, rgb, uiRgb, uiBadgeTextColor, waveformOpacity };
 }
 
 const MONTAGE_WHITE_GLOW_ALPHA_PEAK = 1.0;
@@ -372,19 +380,19 @@ function buildMontageProductCardHtml(
   const product = lead.salesProducts[index];
   if (!product) return "";
   const imgUrl = absImg(productImages[index]);
-  const [pr, pg, pb] = palette.rgb;
+  const [uir, uig, uib] = palette.uiRgb;
 
   if (isRecommended) {
-    return `<div style="display:inline-block;max-width:${REC_CARD_MAX_W}px;border-radius:14px;background:rgba(255,255,255,0.88);-webkit-backdrop-filter:blur(24px);backdrop-filter:blur(24px);border:1.5px solid ${palette.captionAccent};box-shadow:0 0 0 3px rgba(${pr},${pg},${pb},0.12),0 6px 20px -4px rgba(${pr},${pg},${pb},0.18);overflow:hidden;">
-              <div style="background-color:${palette.captionAccent};padding:6px 0;text-align:center;line-height:1;display:flex;align-items:center;justify-content:center;">
-                <span style="${BODY}font-size:8px;font-weight:700;color:${palette.badgeTextColor};letter-spacing:0.06em;text-transform:uppercase;vertical-align:middle;">&#9733; Recommended</span>
+    return `<div style="display:inline-block;max-width:${REC_CARD_MAX_W}px;border-radius:14px;background:rgba(255,255,255,0.88);-webkit-backdrop-filter:blur(24px);backdrop-filter:blur(24px);border:1.5px solid ${palette.hex};box-shadow:0 0 0 3px rgba(${uir},${uig},${uib},0.12),0 6px 20px -4px rgba(${uir},${uig},${uib},0.18);overflow:hidden;">
+              <div style="background-color:${palette.hex};padding:6px 0;text-align:center;line-height:1;display:flex;align-items:center;justify-content:center;">
+                <span style="${BODY}font-size:8px;font-weight:700;color:${palette.uiBadgeTextColor};letter-spacing:0.06em;text-transform:uppercase;vertical-align:middle;">&#9733; Recommended</span>
               </div>
               <div style="padding:8px 8px 6px 8px;text-align:center;">
                 <img src="${imgUrl}" alt="" width="${REC_IMG_W}" style="display:block;margin:0 auto;max-width:${REC_IMG_W}px;height:auto;border:0;border-radius:8px;" />
               </div>
               <div style="padding:4px 10px 10px 10px;text-align:center;">
                 <p style="margin:0;${BODY}font-size:9px;font-weight:700;color:${BIZMIS_FOREGROUND_HEX};line-height:1.3;">${escapeHtml(product.title)}</p>
-                <p style="margin:3px 0 0;${BODY}font-size:8px;font-weight:600;color:${palette.captionAccent};">${escapeHtml(product.price)}</p>
+                <p style="margin:3px 0 0;${BODY}font-size:8px;font-weight:600;color:${palette.hex};">${escapeHtml(product.price)}</p>
               </div>
             </div>`;
   }
@@ -431,7 +439,7 @@ function buildSupportMockupSceneHtml(
   supportGradient: string,
 ): string {
   const avatarUrl = absImg(lead.supportAvatarImagePath || lead.salesAvatarImagePath || BIZMIS_SALES_AVATAR_FALLBACK);
-  const [pr, pg, pb] = palette.rgb;
+  const [pr, pg, pb] = palette.uiRgb;
   const pw = WAVEFORM_PHONE;
   const avatarCircleGlow = montageWhiteGlowCss("circle", {
     plateauPct: PHONE_AVATAR_GLOW_PLATEAU_PCT,
@@ -627,8 +635,8 @@ export function buildLeadEarlyAccessEmailHtml(
   const noiseGrainUrl = absImg(EMAIL_NOISE_GRAIN_TILE);
   const salesAvatarUrl = absImg(lead.salesAvatarImagePath || BIZMIS_SALES_AVATAR_FALLBACK);
   const mp = deriveMontagePalette(pri, lead.textColor);
-  const [mpr, mpg, mpb] = mp.rgb;
-  const montageSceneBg = montageSceneBgHex(mpr, mpg, mpb);
+  const [muiR, muiG, muiB] = mp.uiRgb;
+  const montageSceneBg = montageSceneBgHex(muiR, muiG, muiB);
   const supportGradient = montageSupportGradientCss(montageSceneBg);
   const salesGradient = montageSalesGradientCss(montageSceneBg);
   const montageWhiteGlow = montageWhiteGlowCss();
