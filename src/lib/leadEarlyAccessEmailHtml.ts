@@ -75,6 +75,10 @@ const PHONE_SUPPORT_CLERK_FONT_PX = 10;
 const PHONE_SUPPORT_SHOPPER_LINE_HEIGHT = 1.0;
 const PHONE_SUPPORT_CLERK_LINE_HEIGHT = 1.0;
 
+/** Bizmis mark inline at start of clerk captions (emoji-like) — masked white logo tinted with lead primary. */
+const MONTAGE_SALES_BIZMIS_CAPTION_ICON_PX = 16;
+const MONTAGE_PHONE_BIZMIS_CAPTION_ICON_PX = 14;
+
 const MONTAGE_CHROME_BG_HEX = "#F7F7F7";
 const MONTAGE_CHROME_URL_HEX = "#A3A3A3";
 const MONTAGE_CHROME_TRAFFIC_DOT_PX = 8;
@@ -302,6 +306,12 @@ function storeLogoEmailMarkup(lead: LeadEarlyAccessData): string {
   return `<div role="presentation" aria-label="${store}" style="display:inline-block;width:${maxW}px;height:${maxH}px;background-color:${safeOverlay};-webkit-mask-image:url('${urlEsc}');mask-image:url('${urlEsc}');-webkit-mask-size:contain;mask-size:contain;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;-webkit-mask-position:left center;mask-position:left center;"></div>`;
 }
 
+function buildBizmisCaptionIconHtml(primaryHex: string, sizePx: number): string {
+  const safe = escapeHtml(primaryHex);
+  const url = absImg(BIZMIS_LOGO_WHITE).replace(/'/g, "\\'");
+  return `<span aria-hidden="true" style="display:inline-block;vertical-align:-0.2em;margin-right:0.35em;width:${sizePx}px;height:${sizePx}px;background-color:${safe};-webkit-mask-image:url('${url}');mask-image:url('${url}');-webkit-mask-size:contain;mask-size:contain;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;-webkit-mask-position:center;mask-position:center;"></span>`;
+}
+
 const HEADING = "font-family:'Plus Jakarta Sans','Poppins',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-serif;";
 const BODY = "font-family:'DM Sans','Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-serif;";
 
@@ -461,6 +471,9 @@ function buildSupportMockupSceneHtml(
     </tr>
   </table>`;
 
+  const leadPrimaryHex = lead.primaryColor?.trim() || BIZMIS_PRIMARY_HEX;
+  const supportClerkBizmisIconHtml = buildBizmisCaptionIconHtml(leadPrimaryHex, MONTAGE_PHONE_BIZMIS_CAPTION_ICON_PX);
+
   return `<!-- Smartphone frame: customer support showcase -->
         <tr>
           <td style="padding:18px 0 0 0;" align="center">
@@ -510,7 +523,7 @@ function buildSupportMockupSceneHtml(
                         ${lookupChipHtml}
                       </div>
                       <p style="margin:0;width:100%;text-align:right;">
-                        ${clerkHtml}
+                        ${supportClerkBizmisIconHtml}${clerkHtml}
                       </p>
                     </div>
                   </div>
@@ -631,6 +644,11 @@ export function buildLeadEarlyAccessEmailHtml(
   const recProductTitle = lead.salesProducts[recIdx].title;
   const montageClerkCueInnerHtml = buildMontageClerkCueInnerHtml(
     lead.montageClerkCue?.trim() || null, recProductTitle, montageCueBody, montageCueAccent,
+  );
+  const leadPrimaryForMontageIcon = pri?.trim() || BIZMIS_PRIMARY_HEX;
+  const montageSalesClerkBizmisIconHtml = buildBizmisCaptionIconHtml(
+    leadPrimaryForMontageIcon,
+    MONTAGE_SALES_BIZMIS_CAPTION_ICON_PX,
   );
   const montageClerkWaveHtml = emailMontageWatermarkWaveformHtml(...mp.rgb, mp.waveformOpacity);
   const montageCustomerWaveHtml = emailMontageWatermarkWaveformHtml(
@@ -873,7 +891,7 @@ export function buildLeadEarlyAccessEmailHtml(
                           <div style="position:relative;display:flex;align-items:center;justify-content:flex-end;padding-left:8px;padding-right:8px;transform:translateY(24px);width:100%;max-width:100%;box-sizing:border-box;">
                             <div style="position:absolute;width:120%;height:100%;top:0;right:-10%;background:radial-gradient(ellipse 100% 100% at 70% 50%,rgba(255,255,255,0.92) 0%,rgba(255,255,255,0.45) 30%,transparent 68%);"></div>
                             <p style="margin:0;position:relative;width:100%;text-align:right;">
-                              ${montageClerkCueInnerHtml}
+                              ${montageSalesClerkBizmisIconHtml}${montageClerkCueInnerHtml}
                             </p>
                           </div>
                         </div>
