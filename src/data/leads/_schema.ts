@@ -76,7 +76,7 @@ export type LeadEarlyAccessData = LeadEarlyAccessJson & {
   couponCode: string;
   orderInBatch: number;
   logoImagePath: string;
-  clerkAvatarImagePath: string;
+  salesAvatarImagePath: string;
   supportAvatarImagePath: string;
   productAImagePath: string;
   productBImagePath: string;

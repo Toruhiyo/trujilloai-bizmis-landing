@@ -76,7 +76,7 @@ Open the store and inspect the top navigation bar. Apply one of two rules:
 | `primaryColor`     | **Rule A**: navbar background colour. **Rule B**: brand accent colour. **Rule C**: brand accent colour.                                                                 |
 | `bannerColor`      | **Rule C only**: navbar background hex (e.g. `#252525`). `null`/omitted for Rules A and B (banner defaults to `primaryColor`).                                          |
 | `textColor`        | Store name text colour in the banner. For white/light `primaryColor`, use the brand accent or a dark colour. For dark `primaryColor`, leave `null` (defaults to white). |
-| `logoColorOverlay` | **Rule A**: `null`. **Rule B**: `#ffffff` (flat marks only — if emblem, use Rule C instead). **Rule C**: `null`. See logo tint decision table below.                      |
+| `logoColorOverlay` | **Rule A**: `null`. **Rule B**: `#ffffff` (flat marks only — if emblem, use Rule C instead). **Rule C**: `null`. See logo tint decision table below.                    |
 | `secondaryColor`   | Usually `null`. Set only if the brand has a clear secondary colour.                                                                                                     |
 
 **Logo selection for top bar**: ALWAYS use the full logo as it appears in the store's header/navbar. This is typically a wordmark (icon + text), NOT a favicon.
@@ -85,11 +85,11 @@ Open the store and inspect the top navigation bar. Apply one of two rules:
 
 Before setting `logoColorOverlay` or `stamp_color_overlay`, classify the logo:
 
-| Category          | Description                                                                                         | Examples                                                    | Can tint? |
-|-------------------|-----------------------------------------------------------------------------------------------------|-------------------------------------------------------------|-----------|
-| **Flat mark**     | Simple wordmark, silhouette, or flat geometric symbol. One shape, no internal detail.               | "FLOYD" text, Nike swoosh, Apple logo, "pura" in a circle  | **Yes** — safe to recolour to a single solid colour.  |
-| **Flat wordmark + icon** | Text next to a simple icon/monogram. Both elements are flat with no internal contrast.         | gorjana "gg" + text, Nanoleaf leaf + text                   | **Yes** — safe to recolour; internal separations are just whitespace. |
-| **Detailed emblem** | Badge, crest, roundel, or seal with internal text, fine lines, contrast between foreground/background, or multiple graphic elements that rely on colour differences for legibility. | UroTuning eagle roundel, Bulova "150" anniversary mark, sports team crests, university seals | **No** — tinting destroys internal detail. Preserve native colours. |
+| Category                 | Description                                                                                                                                                                         | Examples                                                                                     | Can tint?                                                             |
+| ------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------- | --------------------------------------------------------------------- |
+| **Flat mark**            | Simple wordmark, silhouette, or flat geometric symbol. One shape, no internal detail.                                                                                               | "FLOYD" text, Nike swoosh, Apple logo, "pura" in a circle                                    | **Yes** — safe to recolour to a single solid colour.                  |
+| **Flat wordmark + icon** | Text next to a simple icon/monogram. Both elements are flat with no internal contrast.                                                                                              | gorjana "gg" + text, Nanoleaf leaf + text                                                    | **Yes** — safe to recolour; internal separations are just whitespace. |
+| **Detailed emblem**      | Badge, crest, roundel, or seal with internal text, fine lines, contrast between foreground/background, or multiple graphic elements that rely on colour differences for legibility. | UroTuning eagle roundel, Bulova "150" anniversary mark, sports team crests, university seals | **No** — tinting destroys internal detail. Preserve native colours.   |
 
 **Decision rule**: Recolour to a solid tint only when doing so preserves legibility and all internal detail. If the logo has internal separations that depend on colour contrast to be readable (text inside a circle, an icon inside a badge, fine lines within a crest), those separations will vanish under a flat tint — keep native colours instead.
 
@@ -127,15 +127,15 @@ First, classify the stamp image using the same logo tint decision table above (f
 
 #### Pattern archetypes — how top bar and shirt relate
 
-| Archetype                                               | Top bar                                    | Shirt                                                                         | When to apply                                                                                                                                                                                                                                                                              |
-| ------------------------------------------------------- | ------------------------------------------ | ----------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| **Coloured navbar = brand primary**                     | Coloured bg, white/contrasting wordmark    | Same colour, same or compact icon                                             | The navbar bg is already the brand's primary colour. Shirt naturally matches. No need to set `avatarShirtColor`.                                                                                                                                                                           |
-| **White navbar + colourful logo + accent colour in UI** | White bg, colourful wordmark               | Use the accent/primary colour (from buttons, CTAs), compact icon tinted white | The navbar is white but the brand has a clear primary used in UI widgets. A white shirt would look bland and duplicate the banner; using the accent colour makes the avatar feel like a real employee. If a compact icon (leaf, flame, monogram) exists, prefer it over the full wordmark. |
-| **White navbar + colourful logo + no separate accent**  | White bg, colourful wordmark               | Falls back to top bar (white shirt, native wordmark)                          | The logo colour is distinctive but there's no separate UI accent. Shirt matches top bar.                                                                                                                                                                                                   |
-| **White navbar + colourless logo + brand accent**       | Uses accent as bg (Rule B), white wordmark | Same as top bar                                                               | Rule B already used the accent for the top bar. Shirt matches naturally.                                                                                                                                                                                                                   |
-| **White navbar + colourless logo + no accent**          | White bg, native wordmark                  | Falls back to top bar (white shirt, native wordmark)                          | No colour to use anywhere. Shirt = top bar.                                                                                                                                                                                                                                                |
-| **Dark navbar + accent colour in UI (Rule C, flat icon)** | Dark bg via `bannerColor`, native logo  | Uses accent as `primaryColor`, compact icon tinted white                      | The navbar is dark/charcoal and the logo is multi-colour but has a separable flat icon/monogram. Use `bannerColor` for the dark navbar, `primaryColor` for the accent. Tint only the flat compact icon for the stamp. |
-| **Dark navbar + accent colour in UI (Rule C, emblem)**    | Dark bg via `bannerColor`, native logo  | **Same dark colour as banner**, untinted emblem stamp                         | Same as above but the logo is a detailed emblem (no separable flat icon). The shirt must also use the banner colour so the untinted emblem stays readable. A bright accent shirt would destroy emblem legibility. `primaryColor` still drives accents (product borders, dots, price text). |
+| Archetype                                                 | Top bar                                    | Shirt                                                                         | When to apply                                                                                                                                                                                                                                                                              |
+| --------------------------------------------------------- | ------------------------------------------ | ----------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **Coloured navbar = brand primary**                       | Coloured bg, white/contrasting wordmark    | Same colour, same or compact icon                                             | The navbar bg is already the brand's primary colour. Shirt naturally matches. No need to set `avatarShirtColor`.                                                                                                                                                                           |
+| **White navbar + colourful logo + accent colour in UI**   | White bg, colourful wordmark               | Use the accent/primary colour (from buttons, CTAs), compact icon tinted white | The navbar is white but the brand has a clear primary used in UI widgets. A white shirt would look bland and duplicate the banner; using the accent colour makes the avatar feel like a real employee. If a compact icon (leaf, flame, monogram) exists, prefer it over the full wordmark. |
+| **White navbar + colourful logo + no separate accent**    | White bg, colourful wordmark               | Falls back to top bar (white shirt, native wordmark)                          | The logo colour is distinctive but there's no separate UI accent. Shirt matches top bar.                                                                                                                                                                                                   |
+| **White navbar + colourless logo + brand accent**         | Uses accent as bg (Rule B), white wordmark | Same as top bar                                                               | Rule B already used the accent for the top bar. Shirt matches naturally.                                                                                                                                                                                                                   |
+| **White navbar + colourless logo + no accent**            | White bg, native wordmark                  | Falls back to top bar (white shirt, native wordmark)                          | No colour to use anywhere. Shirt = top bar.                                                                                                                                                                                                                                                |
+| **Dark navbar + accent colour in UI (Rule C, flat icon)** | Dark bg via `bannerColor`, native logo     | Uses accent as `primaryColor`, compact icon tinted white                      | The navbar is dark/charcoal and the logo is multi-colour but has a separable flat icon/monogram. Use `bannerColor` for the dark navbar, `primaryColor` for the accent. Tint only the flat compact icon for the stamp.                                                                      |
+| **Dark navbar + accent colour in UI (Rule C, emblem)**    | Dark bg via `bannerColor`, native logo     | **Same dark colour as banner**, untinted emblem stamp                         | Same as above but the logo is a detailed emblem (no separable flat icon). The shirt must also use the banner colour so the untinted emblem stays readable. A bright accent shirt would destroy emblem legibility. `primaryColor` still drives accents (product borders, dots, price text). |
 
 **Key principle**: Browse the store's UI beyond the navbar — buttons, CTAs, section backgrounds, badges. If there's a clear primary / accent colour used consistently, that's the shirt colour. If the navbar already uses it, they match naturally. If the navbar is white/neutral and the accent is elsewhere, the shirt should use the accent to avoid redundancy with the banner.
 
@@ -165,20 +165,21 @@ Write each as:
 
 Generate these fields in the store's voice and domain:
 
-| Field               | Description                                                                                                    |
-| ------------------- | -------------------------------------------------------------------------------------------------------------- |
-| `pitchLine`         | One sentence: how Bizmis helps THIS store's shoppers. Pattern: "Help/Guide [audience] [action] by [criteria]." |
+| Field                | Description                                                                                                    |
+| -------------------- | -------------------------------------------------------------------------------------------------------------- |
+| `pitchLine`          | One sentence: how Bizmis helps THIS store's shoppers. Pattern: "Help/Guide [audience] [action] by [criteria]." |
 | `salesShopperPrompt` | Realistic shopper question in first person. Natural voice, specific need.                                      |
 | `salesBizmisReply`   | Conversational follow-up that narrows the need. Start with "Got it —" and offer a binary choice.               |
 | `salesFooterLine`    | Rephrase of pitchLine as a caption. Pattern: "Guides [audience] by [criteria]."                                |
-| `montageShopperCue` | Montage shopper line. Vague exploring intent, max 80 chars. See rules below.                                   |
-| `montageClerkCue`   | Montage clerk line. Full sentence with product name and reason, max 80 chars. See rules below.                 |
+| `montageShopperCue`  | Montage shopper line. Vague exploring intent, max 80 chars. See rules below.                                   |
+| `montageClerkCue`    | Montage clerk line. Full sentence with product name and reason, max 80 chars. See rules below.                 |
 
 #### Montage cue copywriting rules
 
 The invite card montage shows a mini assisted-sales story: a shopper asks for help, Bizmis recommends a product with a reason. These are different from `salesShopperPrompt`/`salesBizmisReply` (which are specific Q&A for the assisted-sales demo).
 
 **`montageShopperCue`** (appears at the top of the montage, italic, in curly quotes added by the renderer):
+
 - Max 80 characters (quotes are NOT stored, only the inner text)
 - Vague exploring intent: the shopper knows WHAT they want but not WHICH product
 - First person, natural voice, slightly uncertain
@@ -187,6 +188,7 @@ The invite card montage shows a mini assisted-sales story: a shopper asks for he
 - Never use em-dash characters. Use commas, periods, or "but" instead.
 
 **`montageClerkCue`** (appears below the product cards, product name auto-highlighted in bold + primaryColor):
+
 - Max 80 characters
 - Full sentence including the product name written naturally (no dynamic injection)
 - Confident recommendation with a short reason showing domain expertise
@@ -196,6 +198,7 @@ The invite card montage shows a mini assisted-sales story: a shopper asks for he
 - The renderer finds the product title via string match and highlights it in bold + primaryColor.
 
 Examples:
+
 - Guitar amps: shopper `I want great tone at home but don't know which amp.` / clerk `The Spark MINI, big tone at bedroom-friendly volume.`
 - Jewelry: shopper `I'd love to layer necklaces but not sure where to begin.` / clerk `The Birthstone Halo Charm, a perfect first layering piece.`
 - Auto parts: shopper `My E46 needs new control arms, not sure what level.` / clerk `The E46 Control Arm Kit, OEM fit with upgrade durability.`
@@ -208,26 +211,27 @@ The invite card includes a second mockup (phone format) showing a customer suppo
 
 Fields (all max 60 characters, no em-dashes):
 
-| Field | Description |
-|---|---|
-| `supportShopperCue` | Customer's post-sale support issue mentioning a product they already own. Pattern: `"My [Product] [specific issue after delivery/use]."` |
-| `supportClerkCue` | Bizmis response resolving the issue. Pattern: `"[Positive resolution mentioning Product]."` |
-| `supportPolicyName` | The policy/guide chip: `"Troubleshooting Guide"`, `"Shipping Support"`, `"Quality Guarantee"`, `"Setup Guide"`, `"Care Guide"`, etc. |
+| Field                | Description                                                                                                                                                      |
+| -------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `supportShopperCue`  | Customer's post-sale support issue mentioning a product they already own. Pattern: `"My [Product] [specific issue after delivery/use]."`                         |
+| `supportClerkCue`    | Bizmis response resolving the issue. Pattern: `"[Positive resolution mentioning Product]."`                                                                      |
+| `supportPolicyName`  | The policy/guide chip: `"Troubleshooting Guide"`, `"Shipping Support"`, `"Quality Guarantee"`, `"Setup Guide"`, `"Care Guide"`, etc.                             |
 | `supportProductName` | The specific product name referenced in both cues. Highlighted in bold by the renderer. Can be any product the store sells (not limited to the 3 demo products). |
 
 **Closed list of policy types** (use ONLY these values for `supportPolicyName`):
 
-| Policy type | When to use | Example scenarios |
-|---|---|---|
-| `Troubleshooting Guide` | Device not working as expected, resets, error codes, firmware, pairing issues | Won't pair, display error, firmware failed, hum/noise, won't power on |
-| `Care Guide` | Cleaning, maintenance routines, material care, consumable replacement, charging | Stain removal, wash instructions, filter replacement, battery charging |
-| `Warranty Policy` | Defect after purchase, broken/cracked parts, lifetime coverage claims | Cracked tool, scratched crystal, loose clasp, stuck zipper |
-| `Installation Guide` | Physical assembly, mounting, torque specs, fitment after install, rattles/wobbles | Wobbly leg, exhaust rattle, dimmer compatibility, bolt torque |
-| `Setup Guide` | Initial WiFi pairing, first-time configuration, calibration, adjustment | WiFi setup, headset tightening, camera recalibration |
-| `Shipping Support` | Missing parts in shipment, wrong item delivered, incomplete kit | Missing bolt bag, missing intake manifold, wrong part shipped |
-| `Service Guide` | Scheduled maintenance intervals, professional service recommendations | Watch running fast (service interval), routine service schedule |
+| Policy type             | When to use                                                                       | Example scenarios                                                      |
+| ----------------------- | --------------------------------------------------------------------------------- | ---------------------------------------------------------------------- |
+| `Troubleshooting Guide` | Device not working as expected, resets, error codes, firmware, pairing issues     | Won't pair, display error, firmware failed, hum/noise, won't power on  |
+| `Care Guide`            | Cleaning, maintenance routines, material care, consumable replacement, charging   | Stain removal, wash instructions, filter replacement, battery charging |
+| `Warranty Policy`       | Defect after purchase, broken/cracked parts, lifetime coverage claims             | Cracked tool, scratched crystal, loose clasp, stuck zipper             |
+| `Installation Guide`    | Physical assembly, mounting, torque specs, fitment after install, rattles/wobbles | Wobbly leg, exhaust rattle, dimmer compatibility, bolt torque          |
+| `Setup Guide`           | Initial WiFi pairing, first-time configuration, calibration, adjustment           | WiFi setup, headset tightening, camera recalibration                   |
+| `Shipping Support`      | Missing parts in shipment, wrong item delivered, incomplete kit                   | Missing bolt bag, missing intake manifold, wrong part shipped          |
+| `Service Guide`         | Scheduled maintenance intervals, professional service recommendations             | Watch running fast (service interval), routine service schedule        |
 
 Examples:
+
 - Guitar amps: shopper `My Spark MINI firmware update failed halfway through.` / clerk `No worries, restart your Spark MINI and retry via USB.` / policy `Troubleshooting Guide`
 - Jewelry: shopper `My Birthstone Halo Charm arrived with a loose clasp.` / clerk `We'll send a replacement Birthstone Halo Charm today.` / policy `Quality Guarantee`
 - Auto parts: shopper `My Control Arm Kit E46 is missing one bolt bag.` / clerk `We'll ship the missing Control Arm Kit E46 hardware now.` / policy `Shipping Support`
@@ -303,20 +307,21 @@ Each lead gets **two** avatars: a **sales avatar** (`avatar_id`) for the assiste
 
 **Available avatars:**
 
-| ID              | Gender | Persona archetype                                                              |
-| --------------- | ------ | ------------------------------------------------------------------------------ |
-| `adrian`        | M      | Nerdy/friendly (orange glasses) — tech, education, gadgets, approachable       |
-| `amber`         | F      | Warm — lifestyle brands, home/decor, beauty                                    |
-| `echo`          | M      | Hipster (beard + headphones) — audio, music, creative, cycling                 |
-| `kiran`         | M      | Tech-savvy — electronics, SaaS, broadcast, smart home                          |
-| `luca`          | M      | European/design — furniture, fashion, Euro automotive                          |
-| `matt`          | M      | Professional/classic (tie) — heritage, luxury, B2B, trade, established brands  |
-| `mia`           | F      | Modern/cute (dark bob + bangs) — beauty, skincare, younger audience            |
-| `teo`           | M      | Casual (baseball cap) — automotive, outdoor, blue-collar, garage               |
-| `victor`        | M      | Edgy/bold (orange buzz, ear piercing) — streetwear, gaming, energy             |
-| `will`          | M      | Authoritative — security, professional services, mid-century design            |
-| `yue`           | F      | Fashion-forward (glasses + dress) — jewelry, women's fashion, editorial        |
-| `yusuke`        | M      | Refined — Japanese culture, watches, minimalist, precision                     |
+| ID       | Gender | Persona archetype                                                             |
+| -------- | ------ | ----------------------------------------------------------------------------- |
+| `adrian` | M      | Nerdy/friendly (orange glasses) — tech, education, gadgets, approachable      |
+| `amber`  | F      | Warm — lifestyle brands, home/decor, beauty                                   |
+| `echo`   | M      | Hipster (beard + headphones) — audio, music, creative, cycling                |
+| `kiran`  | M      | Tech-savvy — electronics, SaaS, broadcast, smart home                         |
+| `luca`   | M      | European/design — furniture, fashion, Euro automotive                         |
+| `matt`   | M      | Professional/classic (tie) — heritage, luxury, B2B, trade, established brands |
+| `mia`    | F      | Modern/cute (dark bob + bangs) — beauty, skincare, younger audience           |
+| `teo`    | M      | Casual (baseball cap) — automotive, outdoor, blue-collar, garage              |
+| `victor` | M      | Edgy/bold (orange buzz, ear piercing) — streetwear, gaming, energy            |
+| `will`   | M      | Authoritative — security, professional services, mid-century design           |
+| `yue`    | F      | Fashion-forward (glasses + dress) — jewelry, women's fashion, editorial       |
+| `yusuke` | M      | Refined — Japanese culture, watches, minimalist, precision                    |
+
 GREA
 **Sales avatar selection** (apply in order):
 
@@ -334,14 +339,14 @@ GREA
 
 **Render format differences:**
 
-| | Sales avatar | Support avatar |
-|---|---|---|
-| Output file | `clerk-avatar.png` | `support-avatar.png` |
+|               | Sales avatar             | Support avatar         |
+| ------------- | ------------------------ | ---------------------- |
+| Output file   | `sales-avatar.png`       | `support-avatar.png`   |
 | Widget format | Desktop (`mobile=False`) | Mobile (`mobile=True`) |
-| Framing | `upper_body` | `head` |
-| Animation | `presenting_left` | `idle_neutral` |
-| Expression | `E` | `smile` |
-| Widget state | `listening` | `speaking` |
+| Framing       | `upper_body`             | `head`                 |
+| Animation     | `presenting_left`        | `idle_neutral`         |
+| Expression    | `E`                      | `E`                    |
+| Widget state  | `listening`              | `speaking`             |
 
 #### 6b — Update registry and generate
 
@@ -367,6 +372,8 @@ generate_lead("newlead")
 generate_support_lead("newlead")
 # Override for testing: generate_lead("newlead", avatar_id="will")
 ```
+
+**Widget wave ring colour:** Python `resolve_widget_wave_color()` mirrors `deriveMontagePalette()` in `leadEarlyAccessEmailHtml.ts`: pick accent (primary if contrast on white ≥ 1.8, else `textColor` if it passes, else primary), apply caption correction (if contrast &lt; 2.4 clamp HSL lightness ≤ 52 and saturation ≤ 65), then if still extremely light (luminance &gt; 0.85) use slate `#475569`. That hex is passed as `--wave-color` to Blender so the ring matches the email (policy chip, montage product accent, waveforms).
 
 See the [Bizmis Avatar Render skill](../../skills/bizmis-avatar-render/SKILL.md) for details and troubleshooting.
 
@@ -399,35 +406,35 @@ Use browser MCP tools to screenshot both the live store and the generated invite
 2. `browser_navigate` to `http://localhost:8080/admin/invite-cards/early-access/{leadId}` — capture the generated invite card.
 3. Visually compare both screenshots against this checklist:
 
-| Check               | What to look for                                                                                                                     |
-|---------------------|--------------------------------------------------------------------------------------------------------------------------------------|
-| Banner ↔ navbar     | Banner background colour must match the store's navbar background. If navbar is dark but accent is elsewhere, `bannerColor` must be set separately from `primaryColor`. |
-| Logo match          | Invite card logo matches the store's header wordmark (shape, text). Must NOT be a product sub-brand or favicon.                       |
-| Logo tint decision  | **Classify the logo**: flat mark/wordmark → may be tinted. Detailed emblem/badge/roundel with internal text or contrast → MUST show native colours. If a detailed emblem appears as a flat single-colour blob, this is wrong — remove the tint (`logoColorOverlay: null`). |
-| Stamp tint decision | Same classification for the shirt stamp. If a detailed emblem stamp lost its internal detail, remove the tint (`stamp_color_overlay: null`). |
+| Check                    | What to look for                                                                                                                                                                                                                                                                     |
+| ------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Banner ↔ navbar          | Banner background colour must match the store's navbar background. If navbar is dark but accent is elsewhere, `bannerColor` must be set separately from `primaryColor`.                                                                                                              |
+| Logo match               | Invite card logo matches the store's header wordmark (shape, text). Must NOT be a product sub-brand or favicon.                                                                                                                                                                      |
+| Logo tint decision       | **Classify the logo**: flat mark/wordmark → may be tinted. Detailed emblem/badge/roundel with internal text or contrast → MUST show native colours. If a detailed emblem appears as a flat single-colour blob, this is wrong — remove the tint (`logoColorOverlay: null`).           |
+| Stamp tint decision      | Same classification for the shirt stamp. If a detailed emblem stamp lost its internal detail, remove the tint (`stamp_color_overlay: null`).                                                                                                                                         |
 | Stamp ↔ shirt legibility | If the stamp is an untinted emblem, the shirt colour **must** be a colour the emblem was designed to sit on (typically the same dark/neutral banner colour). A bright accent shirt under an untinted emblem destroys legibility — fix by setting `shirt_color` to the banner colour. |
-| Colour match        | `primaryColor` accent (product card borders, browser dots, waveform) matches the store's brand accent / dominant CTA colour.          |
-| Logo legibility     | Logo is readable on the banner (sufficient contrast with the banner background).                                                      |
-| Avatar shirt        | Shirt colour looks branded (not default/generic). Stamp is legible on the shirt. For untinted emblems, shirt must match banner background. |
-| Montage shopper cue | Shopper line relates to the store's niche and reads as a vague exploring question (not a specific product query). Max 80 chars. No em-dashes. |
-| Montage clerk cue   | Clerk line references the correct recommended product (matching `salesProducts[salesRecommendedIndex].title` exactly) with a plausible domain reason. Max 80 chars. No em-dashes. Product name appears highlighted in bold + primaryColor in the rendered preview. |
-| Support avatar      | Support avatar uses a different character than the sales avatar and is the opposite gender. Mobile widget format. |
-| Support shopper cue | Customer question mentions a specific product, relates to a positive policy topic (NOT returns/refunds). Max 60 chars. No em-dashes. |
-| Support clerk cue   | Bizmis response resolves the question naturally, references the same product. Max 60 chars. No em-dashes. Product name highlighted in bold + accent. |
-| Support policy chip | Tool chip reads "Answered via {policy}" with a relevant policy name (Warranty, Care Guide, Shipping, etc.). Not "Return Policy". |
+| Colour match             | `primaryColor` accent (product card borders, browser dots, waveform) matches the store's brand accent / dominant CTA colour.                                                                                                                                                         |
+| Logo legibility          | Logo is readable on the banner (sufficient contrast with the banner background).                                                                                                                                                                                                     |
+| Avatar shirt             | Shirt colour looks branded (not default/generic). Stamp is legible on the shirt. For untinted emblems, shirt must match banner background.                                                                                                                                           |
+| Montage shopper cue      | Shopper line relates to the store's niche and reads as a vague exploring question (not a specific product query). Max 80 chars. No em-dashes.                                                                                                                                        |
+| Montage clerk cue        | Clerk line references the correct recommended product (matching `salesProducts[salesRecommendedIndex].title` exactly) with a plausible domain reason. Max 80 chars. No em-dashes. Product name appears highlighted in bold + primaryColor in the rendered preview.                   |
+| Support avatar           | Support avatar uses a different character than the sales avatar and is the opposite gender. Mobile widget format.                                                                                                                                                                    |
+| Support shopper cue      | Customer question mentions a specific product, relates to a positive policy topic (NOT returns/refunds). Max 60 chars. No em-dashes.                                                                                                                                                 |
+| Support clerk cue        | Bizmis response resolves the question naturally, references the same product. Max 60 chars. No em-dashes. Product name highlighted in bold + accent.                                                                                                                                 |
+| Support policy chip      | Tool chip reads "Answered via {policy}" with a relevant policy name (Warranty, Care Guide, Shipping, etc.). Not "Return Policy".                                                                                                                                                     |
 
 4. If any check fails → fix the issue (re-download logo, adjust `bannerColor`/`primaryColor`/`logoColorOverlay` in the JSON and `_config.py`, regenerate avatar) → re-screenshot the invite card → re-verify.
 
 **Common fixes:**
 
-| Symptom                                            | Fix                                                                                             |
-|----------------------------------------------------|-------------------------------------------------------------------------------------------------|
-| Banner is brand accent but navbar is dark           | Set `bannerColor` to navbar colour, keep `primaryColor` as the accent (Rule C).                 |
-| Emblem/badge logo appears as flat single-colour blob| Logo is a detailed emblem that was wrongly tinted. Set `logoColorOverlay: null` to restore native colours. Choose a banner colour with natural contrast. |
-| Shirt stamp lost internal detail (flat blob)        | Set `stamp_color_overlay: null`. If the emblem is too complex at stamp size, find a simpler compact icon (`avatarStampImage`). |
-| Untinted emblem on bright/accent shirt (unreadable) | The emblem was not designed for that background. Set `shirt_color` to the same colour as `bannerColor` (the dark/neutral colour the emblem naturally sits on). `primaryColor` still drives product accents. |
-| Product accents look wrong colour                   | `primaryColor` drives accents. Adjust it to the brand's CTA/button colour.                      |
-| Shirt matches banner but should be different        | Set `shirt_color` / `avatarShirtColor` explicitly to the brand accent. (Only valid for flat-mark stamps that can be tinted for contrast — never for untinted emblems.) |
+| Symptom                                              | Fix                                                                                                                                                                                                         |
+| ---------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Banner is brand accent but navbar is dark            | Set `bannerColor` to navbar colour, keep `primaryColor` as the accent (Rule C).                                                                                                                             |
+| Emblem/badge logo appears as flat single-colour blob | Logo is a detailed emblem that was wrongly tinted. Set `logoColorOverlay: null` to restore native colours. Choose a banner colour with natural contrast.                                                    |
+| Shirt stamp lost internal detail (flat blob)         | Set `stamp_color_overlay: null`. If the emblem is too complex at stamp size, find a simpler compact icon (`avatarStampImage`).                                                                              |
+| Untinted emblem on bright/accent shirt (unreadable)  | The emblem was not designed for that background. Set `shirt_color` to the same colour as `bannerColor` (the dark/neutral colour the emblem naturally sits on). `primaryColor` still drives product accents. |
+| Product accents look wrong colour                    | `primaryColor` drives accents. Adjust it to the brand's CTA/button colour.                                                                                                                                  |
+| Shirt matches banner but should be different         | Set `shirt_color` / `avatarShirtColor` explicitly to the brand accent. (Only valid for flat-mark stamps that can be tinted for contrast — never for untinted emblems.)                                      |
 
 **Batching strategy**: Process ~5 leads per batch. For each batch, screenshot all store headers, then all invite cards, compare, fix issues, re-verify.
 
@@ -438,7 +445,7 @@ Open the admin UI at `/admin/invite-cards/early-access/<lead-id>` and check:
 - Logo visibility and contrast against the brand colour banner
 - Product images load correctly
 - Copy reads naturally
-- Sales clerk avatar renders with correct shirt colour and logo stamp
+- Assisted-sales avatar renders with correct shirt colour and logo stamp
 - Support avatar renders in mobile format with a different character (opposite gender)
 - Support mockup shows per-lead content (not hardcoded fallbacks)
 - Email HTML size is reasonable (< 50 KB)
@@ -493,7 +500,7 @@ Derived by the TS loader (NOT stored in JSON):
 - `couponCode`: auto-generated as `BIZMIS-EARLY-ACCESS-<ID_UPPERCASE>`
 - `orderInBatch`: position in the `RAW_LEADS` array (1-based)
 - `logoImagePath`: `/invite-cards/leads/<id>/logo.png`
-- `clerkAvatarImagePath`: `/invite-cards/leads/<id>/clerk-avatar.png`
+- `salesAvatarImagePath`: `/invite-cards/leads/<id>/sales-avatar.png`
 - `product{A,B,C}ImagePath`: from `leadEarlyAccessProductManifest.ts`
 
 ## Updating an existing lead
@@ -521,23 +528,23 @@ scripts/lead_onboarding/
 
 ## Common edge cases
 
-| Issue                                         | Solution                                                                                                                                                                      |
-| --------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Non-Shopify store (no products.json)          | Products list will be empty. Browse the store manually and copy exact prices. NEVER fabricate prices.                                                                         |
-| Logo is AVIF disguised as PNG                 | The `early_access_avatars._logo._ensure_real_png` re-encodes on avatar generation.                                                                                            |
-| Scraper only finds favicons, not header logo  | Browse the store, inspect the `<header>` / `<nav>` HTML manually. Check shop subdomains (e.g. `us-shop.domain.me`). Shopify logos are usually at `/cdn/shop/files/logo*.svg`. |
-| SVG logo needs PNG conversion                 | Use `early_access_avatars._logo.svg_to_png(svg_path, png_path, width=400)`.                                                                                                   |
-| White navbar + colourful logo                 | Rule A: `primaryColor: #FFFFFF`, `logoColorOverlay: null`. Set `textColor` to brand accent or dark colour.                                                                    |
-| White navbar + colourless logo + brand accent | Rule B: `primaryColor` = accent colour, `logoColorOverlay: #ffffff`.                                                                                                          |
-| White navbar + colourless logo + no accent    | Rule A: `primaryColor: #FFFFFF`, `logoColorOverlay: null`.                                                                                                                    |
-| Dark/coloured navbar                          | Rule A: `primaryColor` = navbar bg. Logo is usually white — set `logoColorOverlay: #ffffff` only if native logo is dark.                                                      |
-| Dark navbar + brand accent ≠ navbar bg (flat icon) | Rule C: `bannerColor` = navbar bg, `primaryColor` = accent. `logoColorOverlay: null`. Set `shirt_color` to accent in `_config.py`, tint stamp white.                     |
+| Issue                                              | Solution                                                                                                                                                                                        |
+| -------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Non-Shopify store (no products.json)               | Products list will be empty. Browse the store manually and copy exact prices. NEVER fabricate prices.                                                                                           |
+| Logo is AVIF disguised as PNG                      | The `early_access_avatars._logo._ensure_real_png` re-encodes on avatar generation.                                                                                                              |
+| Scraper only finds favicons, not header logo       | Browse the store, inspect the `<header>` / `<nav>` HTML manually. Check shop subdomains (e.g. `us-shop.domain.me`). Shopify logos are usually at `/cdn/shop/files/logo*.svg`.                   |
+| SVG logo needs PNG conversion                      | Use `early_access_avatars._logo.svg_to_png(svg_path, png_path, width=400)`.                                                                                                                     |
+| White navbar + colourful logo                      | Rule A: `primaryColor: #FFFFFF`, `logoColorOverlay: null`. Set `textColor` to brand accent or dark colour.                                                                                      |
+| White navbar + colourless logo + brand accent      | Rule B: `primaryColor` = accent colour, `logoColorOverlay: #ffffff`.                                                                                                                            |
+| White navbar + colourless logo + no accent         | Rule A: `primaryColor: #FFFFFF`, `logoColorOverlay: null`.                                                                                                                                      |
+| Dark/coloured navbar                               | Rule A: `primaryColor` = navbar bg. Logo is usually white — set `logoColorOverlay: #ffffff` only if native logo is dark.                                                                        |
+| Dark navbar + brand accent ≠ navbar bg (flat icon) | Rule C: `bannerColor` = navbar bg, `primaryColor` = accent. `logoColorOverlay: null`. Set `shirt_color` to accent in `_config.py`, tint stamp white.                                            |
 | Dark navbar + brand accent ≠ navbar bg (emblem)    | Rule C: `bannerColor` = navbar bg, `primaryColor` = accent. `logoColorOverlay: null`. Set `shirt_color` to **banner colour** (not accent) so emblem stays legible. `stamp_color_overlay: null`. |
-| Detailed emblem/badge tinted to one colour    | Remove `logoColorOverlay` (set to `null`). Classify first: flat marks can tint, detailed emblems/badges/roundels with internal contrast cannot. Also remove `stamp_color_overlay`. |
-| Avatar shirt + banner don't match the store   | Top bar and shirt are independent — re-evaluate each separately.                                                                                                              |
-| Shirt looks same as top bar, too repetitive   | Find a compact icon and/or use a different brand colour for the shirt.                                                                                                        |
-| No compact icon for stamp                     | Use the full wordmark — it's fine if compact enough. Don't force-create icons.                                                                                                |
-| Product image URLs return 404                 | Try the store's shop subdomain CDN. Check that full paths (not truncated) are used. Some stores use different CDN hosts.                                                      |
+| Detailed emblem/badge tinted to one colour         | Remove `logoColorOverlay` (set to `null`). Classify first: flat marks can tint, detailed emblems/badges/roundels with internal contrast cannot. Also remove `stamp_color_overlay`.              |
+| Avatar shirt + banner don't match the store        | Top bar and shirt are independent — re-evaluate each separately.                                                                                                                                |
+| Shirt looks same as top bar, too repetitive        | Find a compact icon and/or use a different brand colour for the shirt.                                                                                                                          |
+| No compact icon for stamp                          | Use the full wordmark — it's fine if compact enough. Don't force-create icons.                                                                                                                  |
+| Product image URLs return 404                      | Try the store's shop subdomain CDN. Check that full paths (not truncated) are used. Some stores use different CDN hosts.                                                                        |
 
 ## Lessons learned (update as new patterns emerge)
 

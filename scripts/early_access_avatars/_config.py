@@ -4,7 +4,11 @@ All file-system paths are derived from LANDING_ROOT (this repo) and STUDIO_ROOT
 (the sibling Blender repo).  The studio repo is never written to.
 """
 
+import json
+import logging
 from pathlib import Path
+
+logger = logging.getLogger(__name__)
 
 # ── Repository roots ─────────────────────────────────────────────────
 
@@ -17,7 +21,7 @@ STUDIO_VENV_PYTHON = STUDIO_ROOT / ".venv" / "bin" / "python"
 LEADS_DIR = LANDING_ROOT / "public" / "invite-cards" / "leads"
 CONVERTED_LOGOS_DIR = LEADS_DIR / "_converted-svgs"
 TINTED_LOGOS_DIR = LEADS_DIR / "_tinted-logos"
-CLERK_AVATAR_FILENAME = "clerk-avatar.png"
+SALES_AVATAR_FILENAME = "sales-avatar.png"
 SUPPORT_AVATAR_FILENAME = "support-avatar.png"
 
 # ── Default avatar ───────────────────────────────────────────────────
@@ -48,9 +52,7 @@ RENDER_DEFAULTS: dict = {
 SUPPORT_RENDER_DEFAULTS: dict = {
     "animation": "idle_neutral",
     "animation_progress": 0.50,
-    # Same idle frame as avatar-pipeline thumbnails (NLA strip midpoint).
-    "pose_sampling": "thumbnail_midframe",
-    "expression": "smile",
+    "expression": "E",
     "resolution": 1024,
     "mobile": True,
     "widget_ui": True,
@@ -66,7 +68,114 @@ SUPPORT_RENDER_DEFAULTS: dict = {
     "shirt_stamp_scale": 1.0,
 }
 
-WAVE_COLOR_LUMINANCE_THRESHOLD = 0.85
+# Per-lead JSON (accent colours when primaryColor is #FFFFFF for the card UI).
+LEAD_DATA_JSON_DIR = LANDING_ROOT / "src" / "data" / "leads"
+
+# Fallback when no dark-enough hex is found (avoids studio default green ring).
+_WIDGET_WAVE_FALLBACK_HEX = "#475569"
+
+# Contrast thresholds — mirror leadEarlyAccessEmailHtml.ts exactly.
+_MONTAGE_ACCENT_MIN_CONTRAST = 1.8
+_CAPTION_MIN_CONTRAST = 2.4
+_CAPTION_MAX_LIGHTNESS = 52.0
+_CAPTION_MAX_SATURATION = 65.0
+
+
+# ── Colour helpers ────────────────────────────────────────────────────
+
+def _hex_to_rgb(hex_color: str) -> tuple[int, int, int]:
+    h = hex_color.strip().lstrip("#")
+    if len(h) == 3:
+        h = "".join(c * 2 for c in h)
+    return int(h[0:2], 16), int(h[2:4], 16), int(h[4:6], 16)
+
+
+def _relative_luminance(hex_color: str) -> float:
+    try:
+        r, g, b = (_c / 255.0 for _c in _hex_to_rgb(hex_color))
+    except (ValueError, IndexError):
+        return 1.0
+
+    def linearize(c: float) -> float:
+        return c / 12.92 if c <= 0.04045 else ((c + 0.055) / 1.055) ** 2.4
+
+    return 0.2126 * linearize(r) + 0.7152 * linearize(g) + 0.0722 * linearize(b)
+
+
+def _contrast_ratio_on_white(hex_color: str) -> float:
+    lum = _relative_luminance(hex_color)
+    return (1.0 + 0.05) / (lum + 0.05)
+
+
+def _hex_to_hsl(hex_color: str) -> tuple[float, float, float]:
+    r, g, b = (_c / 255.0 for _c in _hex_to_rgb(hex_color))
+    mx, mn = max(r, g, b), min(r, g, b)
+    h = s = 0.0
+    l_val = (mx + mn) / 2.0
+    if mx != mn:
+        d = mx - mn
+        s = d / (2.0 - mx - mn) if l_val > 0.5 else d / (mx + mn)
+        if mx == r:
+            h = ((g - b) / d + (6.0 if g < b else 0.0)) / 6.0
+        elif mx == g:
+            h = ((b - r) / d + 2.0) / 6.0
+        else:
+            h = ((r - g) / d + 4.0) / 6.0
+    return h * 360.0, s * 100.0, l_val * 100.0
+
+
+def _hsl_to_hex(h: float, s: float, l_val: float) -> str:
+    s_n = s / 100.0
+    l_n = l_val / 100.0
+    a = s_n * min(l_n, 1.0 - l_n)
+
+    def _f(n: int) -> int:
+        k = (n + h / 30.0) % 12
+        return round(255 * max(0.0, min(1.0, l_n - a * max(min(k - 3, 9 - k, 1), -1))))
+
+    return f"#{_f(0):02x}{_f(8):02x}{_f(4):02x}"
+
+
+def _pick_montage_accent(primary_hex: str, text_color: str | None) -> str:
+    if _contrast_ratio_on_white(primary_hex) >= _MONTAGE_ACCENT_MIN_CONTRAST:
+        return primary_hex
+    if text_color and _contrast_ratio_on_white(text_color) >= _MONTAGE_ACCENT_MIN_CONTRAST:
+        return text_color
+    return primary_hex
+
+
+def _apply_caption_correction(hex_color: str) -> str:
+    if _contrast_ratio_on_white(hex_color) >= _CAPTION_MIN_CONTRAST:
+        return hex_color
+    h, s, l_val = _hex_to_hsl(hex_color)
+    return _hsl_to_hex(h, min(s, _CAPTION_MAX_SATURATION), min(l_val, _CAPTION_MAX_LIGHTNESS))
+
+
+def resolve_widget_wave_color(lead: dict) -> str:
+    """Hex for the widget wave ring — uses the same captionAccent correction
+    as the email's policy-lookup chip (see ``deriveMontagePalette`` in TS).
+
+    1. Pick accent: primaryColor (if enough contrast) → textColor → primaryColor.
+    2. Apply caption correction: if still low contrast, clamp HSL lightness/saturation.
+    3. Final fallback if result is still too light.
+    """
+    lead_id = lead["id"]
+    try:
+        raw = (LEAD_DATA_JSON_DIR / f"{lead_id}.json").read_text(encoding="utf-8")
+        data = json.loads(raw)
+    except (OSError, json.JSONDecodeError) as exc:
+        logger.warning("Could not read lead JSON for wave colour (%s): %s", lead_id, exc)
+        data = {}
+
+    primary = lead.get("primary_color", "#FFFFFF")
+    text_color = data.get("textColor")
+    accent = _pick_montage_accent(primary, text_color)
+    corrected = _apply_caption_correction(accent)
+
+    if _relative_luminance(corrected) > 0.85:
+        return _WIDGET_WAVE_FALLBACK_HEX
+    return corrected
+
 
 # ── Lead registry ────────────────────────────────────────────────────
 # Mirrors the per-lead JSON files at src/data/leads/<id>.json.
@@ -322,8 +431,8 @@ def get_lead(lead_id: str) -> dict:
 
 
 def lead_output_path(lead_id: str) -> Path:
-    """Absolute path where the clerk (sales) avatar PNG should be written."""
-    return LEADS_DIR / lead_id / CLERK_AVATAR_FILENAME
+    """Absolute path where the assisted-sales avatar PNG should be written."""
+    return LEADS_DIR / lead_id / SALES_AVATAR_FILENAME
 
 
 def support_lead_output_path(lead_id: str) -> Path:

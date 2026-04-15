@@ -3,7 +3,7 @@
 Public API
 ----------
 ``generate_all()`` / ``generate_lead(lead_id)``
-    Render clerk (sales) avatars — desktop widget format.
+    Render assisted-sales avatars — desktop widget format.
 
 ``generate_all_support()`` / ``generate_support_lead(lead_id)``
     Render support avatars — mobile widget format, opposite gender.
@@ -29,9 +29,9 @@ from ._config import (
     RENDER_DEFAULTS,
     SUPPORT_RENDER_DEFAULTS,
     STUDIO_ROOT,
-    WAVE_COLOR_LUMINANCE_THRESHOLD,
     get_lead,
     lead_output_path,
+    resolve_widget_wave_color,
     support_lead_output_path,
 )
 from ._logo import prepare_stamp
@@ -51,8 +51,9 @@ __all__ = [
 
 # Public:
 
+
 def generate_all(*, avatar_id: str | None = None) -> list[Path]:
-    """Render clerk avatars for every lead in the registry.
+    """Render assisted-sales avatars for every lead in the registry.
 
     Each lead uses its own ``avatar_id`` from the registry.  Pass
     *avatar_id* to force the same avatar for all leads (overrides the
@@ -82,7 +83,7 @@ def generate_lead(
     *,
     avatar_id: str | None = None,
 ) -> Path:
-    """Render the clerk avatar for a single *lead_id*.
+    """Render the assisted-sales avatar for a single *lead_id*.
 
     Uses the lead's ``avatar_id`` from the registry by default.  Pass
     *avatar_id* to override.
@@ -101,7 +102,9 @@ def generate_all_support(*, avatar_id: str | None = None) -> list[Path]:
     for i, lead in enumerate(LEAD_REGISTRY, 1):
         lead_id = lead["id"]
         chosen = avatar_id or lead.get("support_avatar_id") or DEFAULT_SUPPORT_AVATAR_ID
-        logger.info("[%d/%d] Rendering support %s (avatar=%s) …", i, total, lead_id, chosen)
+        logger.info(
+            "[%d/%d] Rendering support %s (avatar=%s) …", i, total, lead_id, chosen
+        )
         try:
             out = _render_support_lead(lead, chosen)
             logger.info("[%d/%d] Done → %s", i, total, out)
@@ -124,6 +127,7 @@ def generate_support_lead(
 
 # Private:
 
+
 def _render_support_lead(lead: dict, avatar_id: str) -> Path:
     stamp = prepare_stamp(lead)
     out = support_lead_output_path(lead["id"])
@@ -134,10 +138,8 @@ def _render_support_lead(lead: dict, avatar_id: str) -> Path:
         "shirt_stamp": str(stamp),
         "button_color": shirt_color,
         "mesh_colors": {"Shirt_Color": shirt_color},
+        "wave_color": resolve_widget_wave_color(lead),
     }
-
-    if _relative_luminance(shirt_color) < WAVE_COLOR_LUMINANCE_THRESHOLD:
-        params["wave_color"] = shirt_color
 
     _studio_render(avatar_id, str(out), **params)
     return out
@@ -153,21 +155,8 @@ def _render_lead(lead: dict, avatar_id: str) -> Path:
         "shirt_stamp": str(stamp),
         "button_color": shirt_color,
         "mesh_colors": {"Shirt_Color": shirt_color},
+        "wave_color": resolve_widget_wave_color(lead),
     }
-
-    if _relative_luminance(shirt_color) < WAVE_COLOR_LUMINANCE_THRESHOLD:
-        params["wave_color"] = shirt_color
 
     _studio_render(avatar_id, str(out), **params)
     return out
-
-
-def _relative_luminance(hex_color: str) -> float:
-    """Return sRGB relative luminance (0.0 = black, 1.0 = white)."""
-    h = hex_color.lstrip("#")
-    r, g, b = (int(h[i:i + 2], 16) / 255.0 for i in (0, 2, 4))
-
-    def linearize(c: float) -> float:
-        return c / 12.92 if c <= 0.04045 else ((c + 0.055) / 1.055) ** 2.4
-
-    return 0.2126 * linearize(r) + 0.7152 * linearize(g) + 0.0722 * linearize(b)

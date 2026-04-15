@@ -85,38 +85,38 @@ Always use the **studio venv** (it has Blender bindings, Playwright, Pillow):
 3. **Merge params** → universal `RENDER_DEFAULTS` + per-lead `shirt_color`
    (falling back to `primary_color`) for shirt mesh, widget button, and stamp
 4. **Render** → calls `render_avatar()` from the studio repo (Blender headless
-   + Playwright widget composite)
-5. **Output** → `public/invite-cards/leads/<id>/clerk-avatar.png`
+   - Playwright widget composite)
+5. **Output** → `public/invite-cards/leads/<id>/sales-avatar.png`
 
 ## Configuration
 
 ### Render defaults (`_config.py :: RENDER_DEFAULTS`)
 
-Universal params applied to every lead render.  To change the default pose,
+Universal params applied to every lead render. To change the default pose,
 lighting, expression etc. for all leads, edit this dict.
 
 ### Lead registry (`_config.py :: LEAD_REGISTRY`)
 
-Mirrors the per-lead JSON files at `src/data/leads/<id>.json`.  Per-lead fields:
+Mirrors the per-lead JSON files at `src/data/leads/<id>.json`. Per-lead fields:
 
-| Field                  | Purpose                                                      |
-|------------------------|--------------------------------------------------------------|
-| `id`                   | Lead identifier (matches TS registry and folder)             |
-| `primary_color`        | Invite-card top bar background colour                        |
-| `logo_color_overlay`   | Top-bar logo tint; `None` = native colours                   |
-| `shirt_color`          | Avatar shirt colour. Falls back to `primary_color` if absent |
-| `stamp_color_overlay`  | Shirt stamp tint. Falls back to `logo_color_overlay` if absent |
-| `stamp_image`          | Filename in lead folder for stamp (e.g. `"icon.svg"`). Falls back to `logo.png` |
+| Field                 | Purpose                                                                         |
+| --------------------- | ------------------------------------------------------------------------------- |
+| `id`                  | Lead identifier (matches TS registry and folder)                                |
+| `primary_color`       | Invite-card top bar background colour                                           |
+| `logo_color_overlay`  | Top-bar logo tint; `None` = native colours                                      |
+| `shirt_color`         | Avatar shirt colour. Falls back to `primary_color` if absent                    |
+| `stamp_color_overlay` | Shirt stamp tint. Falls back to `logo_color_overlay` if absent                  |
+| `stamp_image`         | Filename in lead folder for stamp (e.g. `"icon.svg"`). Falls back to `logo.png` |
 
 ### Output path
 
 Each lead's avatar is written to:
 
 ```
-public/invite-cards/leads/<id>/clerk-avatar.png
+public/invite-cards/leads/<id>/sales-avatar.png
 ```
 
-Referenced by the TS field `clerkAvatarImagePath` (derived by the loader in
+Referenced by the TS field `salesAvatarImagePath` (derived by the loader in
 `src/data/leads/index.ts`) and consumed by the email HTML in
 `src/lib/leadEarlyAccessEmailHtml.ts`.
 
