@@ -33,15 +33,15 @@ function orbitPointOnRoundedRect(angleDeg: number): { cx: number; cy: number } {
   const absSin = Math.abs(sinR) + eps;
   const t = Math.min(W / absCos, H / absSin);
   const hitVertical = W / absCos <= H / absSin;
-  const onFlat =
-    hitVertical ? t * absSin <= H - r : t * absCos <= W - r;
+  const onFlat = hitVertical ? t * absSin <= H - r : t * absCos <= W - r;
   if (onFlat) {
     return { cx: 50 + t * cosR, cy: 50 + t * sinR };
   }
   const Cx = Math.sign(cosR) * (W - r);
   const Cy = Math.sign(sinR) * (H - r);
   const dot = Cx * cosR + Cy * sinR;
-  const lambda = dot + Math.sqrt(Math.max(0, dot * dot - (Cx * Cx + Cy * Cy - r * r)));
+  const lambda =
+    dot + Math.sqrt(Math.max(0, dot * dot - (Cx * Cx + Cy * Cy - r * r)));
   const px = lambda * cosR;
   const py = lambda * sinR;
   return { cx: 50 + px, cy: 50 + py };
@@ -53,17 +53,66 @@ const ORBIT_SOURCES: Array<{
   offsetX: number;
   offsetY: number;
 }> = [
-  { icon: FaQuestionCircle, label: "FAQs", angleDeg: 0, offsetX: 5, offsetY: 0 },
-  { icon: FaTruck, label: "Shipping & tracking", angleDeg: 45, offsetX: 0, offsetY: 0 },
-  { icon: FaThList, label: "Product catalog", angleDeg: 90, offsetX: 0, offsetY: 0 },
-  { icon: FaLock, label: "Privacy Policy", angleDeg: 135, offsetX: 0, offsetY: 0 },
-  { icon: FaEnvelope, label: "Contact info", angleDeg: 180, offsetX: -5, offsetY: 0 },
-  { icon: FaCertificate, label: "Warranty policy", angleDeg: 225, offsetX: 0, offsetY: 0 },
-  { icon: FaUndo, label: "Return Policy", angleDeg: 270, offsetX: 0, offsetY: 0 },
-  { icon: FaPercent, label: "Discounts", angleDeg: 315, offsetX: 0, offsetY: 0 },
+  {
+    icon: FaQuestionCircle,
+    label: "FAQs",
+    angleDeg: 0,
+    offsetX: 5,
+    offsetY: 0,
+  },
+  {
+    icon: FaTruck,
+    label: "Shipping & tracking",
+    angleDeg: 45,
+    offsetX: 0,
+    offsetY: 0,
+  },
+  {
+    icon: FaThList,
+    label: "Product catalog",
+    angleDeg: 90,
+    offsetX: 0,
+    offsetY: 0,
+  },
+  {
+    icon: FaLock,
+    label: "Privacy Policy",
+    angleDeg: 135,
+    offsetX: 0,
+    offsetY: 0,
+  },
+  {
+    icon: FaEnvelope,
+    label: "Contact info",
+    angleDeg: 180,
+    offsetX: -5,
+    offsetY: 0,
+  },
+  {
+    icon: FaCertificate,
+    label: "Warranty policy",
+    angleDeg: 225,
+    offsetX: 0,
+    offsetY: 0,
+  },
+  {
+    icon: FaUndo,
+    label: "Return Policy",
+    angleDeg: 270,
+    offsetX: 0,
+    offsetY: 0,
+  },
+  {
+    icon: FaPercent,
+    label: "Discounts",
+    angleDeg: 315,
+    offsetX: 0,
+    offsetY: 0,
+  },
 ];
 
-const SCREENSHOT_SRC = "/images/slides/shopify-listing/shopify-customer-support-screenshot-smartphone.png";
+const SCREENSHOT_SRC =
+  "/images/slides/shopify-listing/shopify-customer-support-screenshot-smartphone.png";
 
 const HALF_WAVE_BAR_COUNT = 80;
 const HALF_WAVE_HEIGHTS_TOP = [
@@ -75,7 +124,15 @@ const HALF_WAVE_HEIGHTS_BOTTOM = [
   45, 82, 42, 65, 38, 62, 88, 50, 72, 35, 58, 68, 42, 82, 52, 30, 75, 60, 45,
 ];
 
-const COVERAGE_ITEMS = ["Returns", "Exchanges", "Warranty", "Address changes", "Policy questions", "FAQs", "More"];
+const COVERAGE_ITEMS = [
+  "Returns",
+  "Exchanges",
+  "Warranty",
+  "Address changes",
+  "Policy questions",
+  "FAQs",
+  "More",
+];
 
 const SUPPORT_CUES = [
   { icon: FaCalendarCheck, label: "Within 30 days" },
@@ -86,12 +143,15 @@ const SUPPORT_CUES = [
 const CustomerSupportSlide = () => {
   const [aspectRatio, setAspectRatio] = useState<number | null>(null);
 
-  const onImageLoad = useCallback((e: React.SyntheticEvent<HTMLImageElement>) => {
-    const img = e.currentTarget;
-    if (img.naturalWidth && img.naturalHeight) {
-      setAspectRatio(img.naturalWidth / img.naturalHeight);
-    }
-  }, []);
+  const onImageLoad = useCallback(
+    (e: React.SyntheticEvent<HTMLImageElement>) => {
+      const img = e.currentTarget;
+      if (img.naturalWidth && img.naturalHeight) {
+        setAspectRatio(img.naturalWidth / img.naturalHeight);
+      }
+    },
+    [],
+  );
 
   return (
     <div className="relative flex flex-col h-full w-full overflow-visible">
@@ -106,10 +166,12 @@ const CustomerSupportSlide = () => {
               </span>
             </div>
             <h2 className="text-5xl font-heading font-bold text-foreground leading-tight">
-              Help That Feels In Person
+              Emotionally Intelligent Support
             </h2>
             <p className="text-lg text-muted-foreground font-body leading-relaxed">
-              After checkout, Bizmis answers support questions instantly using your store&apos;s orders, shipping info, policies, and FAQs.
+              After checkout, Bizmis answers support questions instantly with
+              the warmth and thoughtfulness of a great in-store clerk, using
+              your store&apos;s orders, shipping info, policies, and FAQs.
             </p>
           </div>
 
@@ -130,7 +192,10 @@ const CustomerSupportSlide = () => {
             />
             <SmartphoneFrame className="relative z-10">
               <div className="relative w-full h-full min-h-0 overflow-hidden">
-                <div className="absolute inset-0 bg-primary/[0.03]" aria-hidden />
+                <div
+                  className="absolute inset-0 bg-primary/[0.03]"
+                  aria-hidden
+                />
                 <img
                   src={SCREENSHOT_SRC}
                   alt="Customer asking about an order while Bizmis shows shipping status and delivery timing."
@@ -139,24 +204,28 @@ const CustomerSupportSlide = () => {
                 />
               </div>
             </SmartphoneFrame>
-            {ORBIT_SOURCES.map(({ icon: Icon, label, angleDeg, offsetX, offsetY }) => {
-              const angleWithPhase = angleDeg + ORBIT_PHASE_DEG;
-              const { cx, cy } = orbitPointOnRoundedRect(angleWithPhase);
-              return (
-                <div
-                  key={label}
-                  className="absolute z-10 pointer-events-none flex flex-col items-center gap-2 text-muted-foreground/60"
-                  style={{
-                    left: `${cx + offsetX}%`,
-                    top: `${cy + offsetY}%`,
-                    transform: "translate(-50%, -50%)",
-                  }}
-                >
-                  <Icon className="h-8 w-8 shrink-0 text-primary-dark/55" />
-                  <span className="text-base font-body font-bold text-primary-dark/55 whitespace-nowrap">{label}</span>
-                </div>
-              );
-            })}
+            {ORBIT_SOURCES.map(
+              ({ icon: Icon, label, angleDeg, offsetX, offsetY }) => {
+                const angleWithPhase = angleDeg + ORBIT_PHASE_DEG;
+                const { cx, cy } = orbitPointOnRoundedRect(angleWithPhase);
+                return (
+                  <div
+                    key={label}
+                    className="absolute z-10 pointer-events-none flex flex-col items-center gap-2 text-muted-foreground/60"
+                    style={{
+                      left: `${cx + offsetX}%`,
+                      top: `${cy + offsetY}%`,
+                      transform: "translate(-50%, -50%)",
+                    }}
+                  >
+                    <Icon className="h-8 w-8 shrink-0 text-primary-dark/55" />
+                    <span className="text-base font-body font-bold text-primary-dark/55 whitespace-nowrap">
+                      {label}
+                    </span>
+                  </div>
+                );
+              },
+            )}
           </div>
 
           {/* Row 2 col 2: Wave, conversation, wave, then coverage cues below */}
@@ -169,7 +238,9 @@ const CustomerSupportSlide = () => {
                 <div
                   key={`top-${i}`}
                   className="flex-1 min-w-[2px] rounded-full bg-primary/10"
-                  style={{ height: `${HALF_WAVE_HEIGHTS_TOP[i % HALF_WAVE_HEIGHTS_TOP.length]}%` }}
+                  style={{
+                    height: `${HALF_WAVE_HEIGHTS_TOP[i % HALF_WAVE_HEIGHTS_TOP.length]}%`,
+                  }}
                 />
               ))}
             </div>
@@ -181,7 +252,11 @@ const CustomerSupportSlide = () => {
               <div className="relative z-10 flex flex-col gap-6">
                 {/* Customer question */}
                 <p className="max-w-[82%] self-end text-right font-body text-xl leading-snug text-foreground/55">
-                  Can I still <strong className="font-semibold text-foreground">return it</strong> if I&apos;ve opened the box?
+                  Can I still{" "}
+                  <strong className="font-semibold text-foreground">
+                    return it
+                  </strong>{" "}
+                  if I&apos;ve opened the box?
                 </p>
                 {/* Tool call before reply */}
                 <div className="flex flex-wrap items-center gap-3 self-start">
@@ -201,7 +276,15 @@ const CustomerSupportSlide = () => {
                 </div>
                 {/* Bizmis answer */}
                 <p className="max-w-[88%] self-start font-heading text-[1.35rem] font-bold leading-relaxed text-foreground/80">
-                  Yes — if it&apos;s in <strong className="font-extrabold text-primary-dark/85">original condition</strong> with the box and accessories, you can return it within <strong className="font-extrabold text-primary-dark/85">30 days</strong>. Return shipping applies unless it&apos;s faulty.
+                  Yes — if it&apos;s in{" "}
+                  <strong className="font-extrabold text-primary-dark/85">
+                    original condition
+                  </strong>{" "}
+                  with the box and accessories, you can return it within{" "}
+                  <strong className="font-extrabold text-primary-dark/85">
+                    30 days
+                  </strong>
+                  . Return shipping applies unless it&apos;s faulty.
                 </p>
               </div>
             </div>
@@ -213,18 +296,36 @@ const CustomerSupportSlide = () => {
                 <div
                   key={`bottom-${i}`}
                   className="flex-1 min-w-[2px] rounded-full bg-primary/10"
-                  style={{ height: `${HALF_WAVE_HEIGHTS_BOTTOM[i % HALF_WAVE_HEIGHTS_BOTTOM.length]}%` }}
+                  style={{
+                    height: `${HALF_WAVE_HEIGHTS_BOTTOM[i % HALF_WAVE_HEIGHTS_BOTTOM.length]}%`,
+                  }}
                 />
               ))}
             </div>
             <div className="flex flex-wrap items-center justify-between shrink-0 mt-20 mb-8 w-full">
               {COVERAGE_ITEMS.flatMap((item, i) =>
                 i === 0
-                  ? [<span key={item} className="text-base font-body text-primary-dark/50">{item}</span>]
-                  : [
-                      <span key={`dot-${item}`} className="w-1.5 h-1.5 rounded-full bg-primary/40 shrink-0" aria-hidden />,
-                      <span key={item} className="text-base font-body text-primary-dark/50">{item}</span>,
+                  ? [
+                      <span
+                        key={item}
+                        className="text-base font-body text-primary-dark/50"
+                      >
+                        {item}
+                      </span>,
                     ]
+                  : [
+                      <span
+                        key={`dot-${item}`}
+                        className="w-1.5 h-1.5 rounded-full bg-primary/40 shrink-0"
+                        aria-hidden
+                      />,
+                      <span
+                        key={item}
+                        className="text-base font-body text-primary-dark/50"
+                      >
+                        {item}
+                      </span>,
+                    ],
               )}
             </div>
           </div>
