@@ -32,6 +32,9 @@ export const EARLY_ACCESS_EMAIL_COPY = {
   visitUsPrefix: "Visit us:",
   emailDocumentTitle: "Bizmis Early Access Invite",
   preheaderClosingPhrase: "Bizmis voice-first store clerks",
+  bannerBadgeTitle: "Early Access Invite",
+  bannerBadgeLimitPrefix: "Limited to the first",
+  bannerBadgeLimitSuffix: "stores",
 } as const;
 
 export function buildEarlyAccessPreheader(storeName: string, storeCap: number): string {

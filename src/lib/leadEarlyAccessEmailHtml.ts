@@ -33,6 +33,8 @@ const EMAIL_NOISE_GRAIN_TILE = "/images/early-access-noise-grain.png";
 const OUTCOME_ICON_TREND = "/images/early-access-outcome-trend.svg";
 const OUTCOME_ICON_HEADPHONES = "/images/early-access-outcome-headphones.svg";
 const OUTCOME_ICON_CHART = "/images/early-access-outcome-chart.svg";
+/** Same glyph as react-icons/fa FaRoute (Font Awesome Free) — route/path, fits "roadmap" copy. */
+const EARLY_ACCESS_SOFT_CTA_ROUTE_ICON = "/images/early-access-soft-cta-route.svg";
 
 const BIZMIS_CLERK_AVATAR_FALLBACK =
   "/images/slides/shopify-listing/shopify-personalization-screenshot-outfitters-tablet.png";
@@ -57,7 +59,7 @@ const COUPON_PILL_BG_HEX = "#F7F5F2";
 const MONTAGE_VERTICAL_SPREAD_PX = 56;
 const MONTAGE_COMPOSITION_SHIFT_PX = 28;
 
-const MONTAGE_CUSTOMER_CUE_TEXT = "\u201cI\u2019m looking for something lightweight and easy to set up.\u201d";
+const MONTAGE_CUSTOMER_CUE_TEXT_FALLBACK = "\u201cI\u2019m looking for something lightweight and easy to set up.\u201d";
 const MONTAGE_CUSTOMER_WAVE_GREY: [number, number, number] = [180, 180, 180];
 const MONTAGE_CUSTOMER_WAVE_OPACITY = 0.18;
 
@@ -232,6 +234,36 @@ const REGULAR_IMG_H = 62;
 const REC_CARD_MAX_W = 132;
 const REC_IMG_W = 94;
 
+function buildMontageClerkCueInnerHtml(
+  customCue: string | null,
+  productTitle: string,
+  bodyColor: string,
+  accentColor: string,
+): string {
+  const bodyStyle = `${BODY}font-size:11px;font-weight:500;line-height:1.35;color:${bodyColor};`;
+  const accentStyle = `${BODY}font-size:11px;font-weight:800;line-height:1.35;letter-spacing:-0.02em;color:${accentColor};`;
+
+  if (customCue) {
+    const splitIdx = customCue.indexOf(productTitle);
+    if (splitIdx >= 0) {
+      const before = customCue.slice(0, splitIdx);
+      const after = customCue.slice(splitIdx + productTitle.length);
+      return (
+        `<span style="${bodyStyle}">${escapeHtml(before)}</span>` +
+        `<span style="${accentStyle}">${escapeHtml(productTitle)}</span>` +
+        `<span style="${bodyStyle}">${escapeHtml(after)}</span>`
+      );
+    }
+    return `<span style="${bodyStyle}">${escapeHtml(customCue)}</span>`;
+  }
+
+  return (
+    `<span style="${bodyStyle}">${escapeHtml(MONTAGE_CLERK_CUE_BEFORE_PRODUCT_NAME)}</span>` +
+    `<span style="${accentStyle}">${escapeHtml(productTitle)}</span>` +
+    `<span style="${bodyStyle}">${escapeHtml(MONTAGE_CLERK_CUE_AFTER_PRODUCT_NAME)}</span>`
+  );
+}
+
 function buildMontageProductCardHtml(
   lead: LeadEarlyAccessData,
   index: number,
@@ -328,16 +360,19 @@ export function buildLeadEarlyAccessEmailHtml(
   const otherCardHtmlB = buildMontageProductCardHtml(lead, otherIndices[1], false, mp);
   const montageCueBody = BIZMIS_FOREGROUND_HEX;
   const montageCueAccent = mp.captionAccent;
-  const customMontageCue = lead.montageClerkCue?.trim();
   const recProductTitle = lead.demoProducts[recIdx].title;
-  const montageClerkCueInnerHtml = customMontageCue
-    ? `<span style="${BODY}font-size:11px;font-weight:500;line-height:1.35;color:${montageCueBody};">${escapeHtml(customMontageCue)}</span>`
-    : `<span style="${BODY}font-size:11px;font-weight:500;line-height:1.35;color:${montageCueBody};">${escapeHtml(MONTAGE_CLERK_CUE_BEFORE_PRODUCT_NAME)}</span><span style="${BODY}font-size:11px;font-weight:800;line-height:1.35;letter-spacing:-0.02em;color:${montageCueAccent};">${escapeHtml(recProductTitle)}</span><span style="${BODY}font-size:11px;font-weight:500;line-height:1.35;color:${montageCueBody};">${escapeHtml(MONTAGE_CLERK_CUE_AFTER_PRODUCT_NAME)}</span>`;
+  const montageClerkCueInnerHtml = buildMontageClerkCueInnerHtml(
+    lead.montageClerkCue?.trim() || null, recProductTitle, montageCueBody, montageCueAccent,
+  );
   const montageClerkWaveHtml = emailMontageWatermarkWaveformHtml(...mp.rgb, mp.waveformOpacity);
   const montageCustomerWaveHtml = emailMontageWatermarkWaveformHtml(
     ...MONTAGE_CUSTOMER_WAVE_GREY, MONTAGE_CUSTOMER_WAVE_OPACITY, true,
   );
-  const montageCustomerCueHtml = `<span style="${BODY}font-size:10px;font-weight:300;font-style:italic;line-height:1.35;color:${BIZMIS_MUTED_LIGHT_HEX};">${escapeHtml(MONTAGE_CUSTOMER_CUE_TEXT)}</span>`;
+  const montageCustomerCueText = lead.montageShopperCue?.trim()
+    ? `\u201c${lead.montageShopperCue.trim()}\u201d`
+    : MONTAGE_CUSTOMER_CUE_TEXT_FALLBACK;
+  const montageCustomerCueHtml = `<span style="${BODY}font-size:10px;font-weight:300;font-style:italic;line-height:1.35;color:${BIZMIS_MUTED_LIGHT_HEX};">${escapeHtml(montageCustomerCueText)}</span>`;
+  const softCtaRouteIconUrl = absImg(EARLY_ACCESS_SOFT_CTA_ROUTE_ICON);
   const outcomeIconUrls = [
     absImg(OUTCOME_ICON_TREND),
     absImg(OUTCOME_ICON_HEADPHONES),
@@ -373,8 +408,9 @@ export function buildLeadEarlyAccessEmailHtml(
   const inviteTopLeadMeasurePx = 440;
   const inviteTopSupportMeasurePx = 420;
 
-  const softCtaAboveMockupBase = `${BODY}font-size:12px;line-height:1.72;`;
-  const softCtaAboveMockupHtml = `<span style="${softCtaAboveMockupBase}color:${BIZMIS_MUTED_LIGHT_HEX};font-weight:400;"><a href="${shopifyAppUrl}" target="_blank" style="${softCtaAboveMockupBase}color:${BIZMIS_PRIMARY_HEX};font-weight:500;text-decoration:none;">${escapeHtml(copy.softCtaAboveMockupLinkPhrase)}</a>${escapeHtml(copy.softCtaAboveMockupAfterLink)}<strong style="${softCtaAboveMockupBase}font-weight:600;color:${BIZMIS_MUTED_LIGHT_HEX};">${escapeHtml(copy.softCtaAboveMockupEmphasisBold)}</strong>${escapeHtml(copy.softCtaAboveMockupEmphasisTail)}</span>`;
+  const softCtaAboveMockupBase = `${BODY}font-size:13px;line-height:1.72;`;
+  const softCtaStrong = `${softCtaAboveMockupBase}font-weight:600;color:${BIZMIS_MUTED_LIGHT_HEX};`;
+  const softCtaAboveMockupHtml = `<span style="${softCtaAboveMockupBase}color:${BIZMIS_MUTED_LIGHT_HEX};font-weight:400;"><a href="${shopifyAppUrl}" target="_blank" style="${softCtaAboveMockupBase}color:${BIZMIS_PRIMARY_HEX};font-weight:500;text-decoration:none;">${escapeHtml(copy.softCtaAboveMockupLinkPhrase)}</a>${escapeHtml(copy.softCtaAboveMockupAfterLinkPrefix)}<strong style="${softCtaStrong}">${escapeHtml(copy.softCtaAboveMockupNoCostBold)}</strong>${escapeHtml(copy.softCtaAboveMockupAfterLinkSuffix)}<strong style="${softCtaStrong}">${escapeHtml(copy.softCtaAboveMockupEmphasisBold)}</strong>${escapeHtml(copy.softCtaAboveMockupEmphasisTail)}</span>`;
 
   const html = `<!DOCTYPE html>
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml">
@@ -425,6 +461,13 @@ export function buildLeadEarlyAccessEmailHtml(
           </td>
         </tr>
 
+        <!-- Early access badge strip -->
+        <tr>
+          <td style="padding:10px 24px;text-align:center;background-color:rgba(249,163,83,0.06);border-bottom:1px solid ${BIZMIS_BORDER_HEX};">
+            <p style="margin:0;${BODY}font-size:11px;line-height:1.4;color:${BIZMIS_FOREGROUND_HEX};"><span style="font-weight:700;letter-spacing:0.08em;text-transform:uppercase;">${escapeHtml(copy.bannerBadgeTitle)}</span><span style="color:${BIZMIS_MUTED_LIGHT_HEX};font-weight:400;"> &nbsp;&middot;&nbsp; ${escapeHtml(copy.bannerBadgeLimitPrefix)} ${storeCap} ${escapeHtml(copy.bannerBadgeLimitSuffix)}</span></p>
+          </td>
+        </tr>
+
         <!-- Salutation (small) -->
         <tr>
           <td style="padding:26px 32px 0 32px;">
@@ -455,9 +498,13 @@ export function buildLeadEarlyAccessEmailHtml(
             <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="max-width:${inviteTopLeadMeasurePx}px;">
               <tr>
                 <td style="padding:0;">
-                  <p style="margin:0;">
-                    ${softCtaAboveMockupHtml}
-                  </p>
+                  <div style="border-left:3.5px solid ${BIZMIS_PRIMARY_HEX};background-color:rgba(249,163,83,0.06);padding:10px 14px;border-radius:0 6px 6px 0;">
+                    <!-- <table role="presentation" cellpadding="0" cellspacing="0" border="0"><tr>
+                      <td style="vertical-align:top;padding-right:8px;padding-top:2px;"><img src="${softCtaRouteIconUrl}" alt="" width="14" height="14" style="display:block;width:14px;height:14px;border:0;" /></td>
+                      <td style="vertical-align:top;"> -->
+                    <p style="margin:0;text-align:left;">${softCtaAboveMockupHtml}</p>
+                    <!-- </td></tr></table> -->
+                  </div>
                 </td>
               </tr>
             </table>
@@ -675,14 +722,14 @@ export function buildLeadEarlyAccessEmailHtml(
 </html>`;
 
   const chipPlainLines = buildEarlyAccessChips(storeCap);
-  const montagePlainLine = customMontageCue ?? buildMontageClerkCuePlainText(recProductTitle);
+  const montagePlainLine = lead.montageClerkCue?.trim() || buildMontageClerkCuePlainText(recProductTitle);
 
   const plainText = [
     buildEarlyAccessSalutationPlainText(lead.storeName, lead.leadContactName),
     "",
     buildEarlyAccessValueSentencePlainText(lead.storeName, lead.leadContactName),
     "",
-    `${copy.softCtaAboveMockupLinkPhrase} ${shopifyAppUrl}${copy.softCtaAboveMockupAfterLink}${copy.softCtaAboveMockupEmphasisBold}${copy.softCtaAboveMockupEmphasisTail}`,
+    `${copy.softCtaAboveMockupLinkPhrase} ${shopifyAppUrl}${copy.softCtaAboveMockupAfterLinkPrefix}${copy.softCtaAboveMockupNoCostBold}${copy.softCtaAboveMockupAfterLinkSuffix}${copy.softCtaAboveMockupEmphasisBold}${copy.softCtaAboveMockupEmphasisTail}`,
     "",
     montagePlainLine,
     "",
