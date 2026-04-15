@@ -64,15 +64,16 @@ const PHONE_AVATAR_CLIP_MARGIN_LEFT_PX = Math.round(
 );
 /** Diameter of the white radial glow behind the support avatar (circle, centered on the image).
  *  Keep diam + blur contained within the avatar row so the halo doesn't bleed into waveform strips. */
-const PHONE_AVATAR_GLOW_DIAM_PX = 220;
+const PHONE_AVATAR_GLOW_DIAM_PX = 256;
 const PHONE_AVATAR_GLOW_BLUR_PX = 28;
 /** Wider bright core than desktop ellipse so the phone halo reads brighter. */
 const PHONE_AVATAR_GLOW_PLATEAU_PCT = 0.65;
 
 /** Inset for shopper + clerk caption blocks inside the support phone screen. */
 const PHONE_SUPPORT_CAPTION_INSET_PX = 12;
-const PHONE_SUPPORT_SHOPPER_LINE_HEIGHT = 1.2;
-const PHONE_SUPPORT_CLERK_LINE_HEIGHT = 1.25;
+const PHONE_SUPPORT_CLERK_FONT_PX = 10;
+const PHONE_SUPPORT_SHOPPER_LINE_HEIGHT = 1.0;
+const PHONE_SUPPORT_CLERK_LINE_HEIGHT = 1.0;
 
 const MONTAGE_CHROME_BG_HEX = "#F7F7F7";
 const MONTAGE_CHROME_URL_HEX = "#A3A3A3";
@@ -390,10 +391,10 @@ function buildMontageProductCardHtml(
 }
 
 const CS_POLICY_FALLBACK = "Warranty Policy";
-const CS_POLICY_ICON_PX = 8;
-const CS_POLICY_ICON_STROKE = 2.75;
+const CS_POLICY_ICON_PX = 9;
+const CS_POLICY_ICON_STROKE = 3;
 /** Inner row height: label line-height matches so text centers in the pill. */
-const CS_POLICY_CHIP_ROW_H = 12;
+const CS_POLICY_CHIP_ROW_H = 14;
 const CS_SHOPPER_FALLBACK = "Is my order covered under warranty?";
 const CS_CLERK_FALLBACK = "Yes, your unit has a full 1-year warranty.";
 
@@ -434,8 +435,8 @@ function buildSupportMockupSceneHtml(
 
   const customerCueStyle = `${BODY}font-size:10px;font-weight:300;font-style:italic;line-height:${PHONE_SUPPORT_SHOPPER_LINE_HEIGHT};color:${BIZMIS_MUTED_LIGHT_HEX};`;
   const customerCueBoldStyle = `${BODY}font-size:10px;font-weight:600;font-style:italic;line-height:${PHONE_SUPPORT_SHOPPER_LINE_HEIGHT};color:${BIZMIS_MUTED_LIGHT_HEX};`;
-  const clerkReplyStyle = `${BODY}font-size:9px;font-weight:400;line-height:${PHONE_SUPPORT_CLERK_LINE_HEIGHT};color:${BIZMIS_MUTED_FG_HEX};`;
-  const clerkReplyBoldStyle = `${BODY}font-size:9px;font-weight:700;line-height:${PHONE_SUPPORT_CLERK_LINE_HEIGHT};color:${palette.captionAccent};`;
+  const clerkReplyStyle = `${BODY}font-size:${PHONE_SUPPORT_CLERK_FONT_PX}px;font-weight:400;line-height:${PHONE_SUPPORT_CLERK_LINE_HEIGHT};color:${BIZMIS_MUTED_FG_HEX};`;
+  const clerkReplyBoldStyle = `${BODY}font-size:${PHONE_SUPPORT_CLERK_FONT_PX}px;font-weight:700;line-height:${PHONE_SUPPORT_CLERK_LINE_HEIGHT};color:${palette.captionAccent};`;
 
   const shopperRaw = lead.supportShopperCue?.trim() || CS_SHOPPER_FALLBACK;
   const shopperText = `\u201c${shopperRaw}\u201d`;
@@ -449,13 +450,13 @@ function buildSupportMockupSceneHtml(
   const policyChipAccent = palette.captionAccent;
   const [policyChipR, policyChipG, policyChipB] = hexToRgb(policyChipAccent);
 
-  const chipLabelStyle = `${BODY}font-size:7px;font-weight:700;letter-spacing:0.02em;line-height:${CS_POLICY_CHIP_ROW_H}px;mso-line-height-rule:exactly;color:${policyChipAccent};`;
+  const chipLabelStyle = `${BODY}font-size:8px;font-weight:700;letter-spacing:0.02em;line-height:${CS_POLICY_CHIP_ROW_H}px;mso-line-height-rule:exactly;color:${policyChipAccent};`;
   const policyIconSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="${CS_POLICY_ICON_PX}" height="${CS_POLICY_ICON_PX}" viewBox="0 0 24 24" fill="none" stroke="${policyChipAccent}" stroke-width="${CS_POLICY_ICON_STROKE}" stroke-linecap="round" stroke-linejoin="round" style="display:block;">` +
     `<path d="M6 22a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h8a2.4 2.4 0 0 1 1.704.706l3.588 3.588A2.4 2.4 0 0 1 20 8v12a2 2 0 0 1-2 2z"/>` +
     `<path d="M14 2v5a1 1 0 0 0 1 1h5"/><path d="m9 15 2 2 4-4"/></svg>`;
-  const lookupChipHtml = `<table role="presentation" cellpadding="0" cellspacing="0" border="0" style="display:inline-table;border-radius:9999px;background:rgba(${policyChipR},${policyChipG},${policyChipB},0.10);border:1px solid ${policyChipAccent};padding:2px 6px 2px 5px;">
+  const lookupChipHtml = `<table role="presentation" cellpadding="0" cellspacing="0" border="0" style="display:inline-table;border-radius:9999px;background:rgba(${policyChipR},${policyChipG},${policyChipB},0.10);border:1px solid ${policyChipAccent};padding:3px 7px 3px 6px;">
     <tr>
-      <td height="${CS_POLICY_CHIP_ROW_H}" style="height:${CS_POLICY_CHIP_ROW_H}px;vertical-align:middle;padding:0 3px 0 0;line-height:${CS_POLICY_CHIP_ROW_H}px;mso-line-height-rule:exactly;">${policyIconSvg}</td>
+      <td height="${CS_POLICY_CHIP_ROW_H}" style="height:${CS_POLICY_CHIP_ROW_H}px;vertical-align:middle;padding:0 4px 0 0;line-height:${CS_POLICY_CHIP_ROW_H}px;mso-line-height-rule:exactly;">${policyIconSvg}</td>
       <td height="${CS_POLICY_CHIP_ROW_H}" style="height:${CS_POLICY_CHIP_ROW_H}px;vertical-align:middle;padding:0;line-height:${CS_POLICY_CHIP_ROW_H}px;mso-line-height-rule:exactly;"><span style="${chipLabelStyle}">${escapeHtml(policyName)}</span></td>
     </tr>
   </table>`;
