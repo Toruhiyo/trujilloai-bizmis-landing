@@ -48,15 +48,35 @@ const CHIP_ROW_ICON_PX = 11;
 const BIZMIS_CLERK_AVATAR_FALLBACK =
   "/images/slides/shopify-listing/shopify-personalization-screenshot-outfitters-tablet.png";
 
+const PHONE_FRAME_W = 200;
+const PHONE_BEZEL_PX = 3;
+const PHONE_NOTCH_W = 48;
+const PHONE_NOTCH_H = 12;
+const PHONE_SCREEN_RADIUS = 22;
+const PHONE_BODY_RADIUS = 25;
+const PHONE_HOME_BAR_W = 56;
+const PHONE_HOME_BAR_H = 3;
+const PHONE_SCREEN_W = PHONE_FRAME_W - PHONE_BEZEL_PX * 2;
+const PHONE_AVATAR_W = 140;
+
 const MONTAGE_CHROME_BG_HEX = "#F7F7F7";
 const MONTAGE_CHROME_URL_HEX = "#A3A3A3";
 const MONTAGE_CHROME_TRAFFIC_DOT_PX = 8;
 const MONTAGE_CHROME_TRAFFIC_GAP_PX = 2;
 const MONTAGE_CHROME_URL_ROW_HEIGHT_PX = 15;
 const MONTAGE_CHROME_BAR_PADDING_Y_PX = 5;
-const EARLY_ACCESS_MONTAGE_WAVEFORM_IMG = "/images/early-access-montage-waveform.png";
-const EARLY_ACCESS_MONTAGE_WAVEFORM_IMG_W_PX = 384;
-const EARLY_ACCESS_MONTAGE_WAVEFORM_IMG_H_PX = 82;
+type WaveformDims = { img: string; w: number; h: number };
+
+const WAVEFORM_DESKTOP: WaveformDims = {
+  img: "/images/early-access-montage-waveform.png",
+  w: 384,
+  h: 82,
+};
+const WAVEFORM_PHONE: WaveformDims = {
+  img: "/images/early-access-montage-waveform-phone.png",
+  w: 192,
+  h: 96,
+};
 const BIZMIS_FOREGROUND_HEX = "#32281B";
 const BIZMIS_MUTED_LIGHT_HEX = "#B5A48E";
 const BIZMIS_SHADOW_SOFT = "0 6px 25px -6px rgba(249,163,83,0.18)";
@@ -239,11 +259,12 @@ const HEADING = "font-family:'Plus Jakarta Sans','Poppins',-apple-system,BlinkMa
 const BODY = "font-family:'DM Sans','Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-serif;";
 
 function emailMontageWatermarkWaveformHtml(
-  r: number, g: number, b: number, alpha: number, flipped = false,
+  r: number, g: number, b: number, alpha: number,
+  flipped = false,
+  dims: WaveformDims = WAVEFORM_DESKTOP,
 ): string {
-  const src = absImg(EARLY_ACCESS_MONTAGE_WAVEFORM_IMG).replace(/'/g, "\\'");
-  const w = EARLY_ACCESS_MONTAGE_WAVEFORM_IMG_W_PX;
-  const h = EARLY_ACCESS_MONTAGE_WAVEFORM_IMG_H_PX;
+  const src = absImg(dims.img).replace(/'/g, "\\'");
+  const { w, h } = dims;
   const flip = flipped ? "transform:scaleY(-1);" : "";
   return `<div role="presentation" style="display:block;margin:0 auto;width:100%;max-width:${w}px;height:${h}px;background-color:rgba(${r},${g},${b},${alpha});-webkit-mask-image:url('${src}');mask-image:url('${src}');-webkit-mask-size:100% ${h}px;mask-size:100% ${h}px;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;-webkit-mask-position:center bottom;mask-position:center bottom;${flip}"></div>`;
 }
@@ -320,6 +341,100 @@ function buildMontageProductCardHtml(
                 <p style="margin:1px 0 0;${BODY}font-size:7.5px;color:${BIZMIS_MUTED_LIGHT_HEX};">${escapeHtml(product.price)}</p>
               </div>
             </div>`;
+}
+
+const CS_CLERK_CUE_PREFIX = "Answered via ";
+const CS_CLERK_CUE_BOLD = "Return Policy";
+
+function buildSupportMockupSceneHtml(
+  lead: LeadEarlyAccessData,
+  palette: MontagePalette,
+  montageSceneBg: string,
+  montageWhiteGlow: string,
+): string {
+  const clerkAvatarUrl = absImg(lead.clerkAvatarImagePath || BIZMIS_CLERK_AVATAR_FALLBACK);
+  const [pr, pg, pb] = palette.rgb;
+  const pw = WAVEFORM_PHONE;
+
+  const customerWaveHtml = emailMontageWatermarkWaveformHtml(
+    ...MONTAGE_CUSTOMER_WAVE_GREY, MONTAGE_CUSTOMER_WAVE_OPACITY, true, pw,
+  );
+  const clerkWaveHtml = emailMontageWatermarkWaveformHtml(...palette.rgb, palette.waveformOpacity, false, pw);
+
+  const customerCueStyle = `${BODY}font-size:10px;font-weight:300;font-style:italic;line-height:1.35;color:${BIZMIS_MUTED_LIGHT_HEX};`;
+  const clerkCueStyle = `${BODY}font-size:10px;font-weight:500;line-height:1.35;color:${BIZMIS_FOREGROUND_HEX};`;
+  const clerkCueBoldStyle = `${BODY}font-size:10px;font-weight:800;line-height:1.35;letter-spacing:-0.02em;color:${palette.captionAccent};`;
+  const clerkReplyStyle = `${BODY}font-size:9px;font-weight:400;line-height:1.45;color:${BIZMIS_MUTED_FG_HEX};`;
+  const clerkReplyBoldStyle = `${BODY}font-size:9px;font-weight:700;line-height:1.45;color:${palette.captionAccent};`;
+  const customerCueText = lead.montageShopperCue?.trim()
+    ? `\u201c${lead.montageShopperCue.trim()}\u201d`
+    : MONTAGE_CUSTOMER_CUE_TEXT_FALLBACK;
+
+  return `<!-- Smartphone frame: customer support showcase -->
+        <tr>
+          <td style="padding:26px 0 0 0;" align="center">
+            <!--[if !mso]><!-->
+            <div style="display:inline-block;width:${PHONE_FRAME_W}px;border-radius:${PHONE_BODY_RADIUS}px;background-color:${MONTAGE_CHROME_BG_HEX};border:1px solid rgba(0,0,0,0.06);padding:${PHONE_BEZEL_PX}px;box-shadow:0 8px 36px -8px rgba(${pr},${pg},${pb},0.18),0 0 0 0.5px rgba(0,0,0,0.04);">
+
+              <div style="width:${PHONE_NOTCH_W}px;height:${PHONE_NOTCH_H}px;margin:0 auto;border-radius:0 0 ${Math.round(PHONE_NOTCH_H * 0.55)}px ${Math.round(PHONE_NOTCH_H * 0.55)}px;background-color:rgba(0,0,0,0.07);"></div>
+
+              <div style="position:relative;border-radius:${PHONE_SCREEN_RADIUS}px;overflow:hidden;margin-top:${Math.round(PHONE_NOTCH_H * 0.25)}px;background-color:${montageSceneBg};">
+
+                <div style="position:absolute;left:50%;top:50%;width:200%;height:130%;transform:translate(-50%,-50%);border-radius:50%;background:${montageWhiteGlow};-webkit-filter:blur(40px);filter:blur(40px);z-index:0;pointer-events:none;"></div>
+
+                <div style="position:relative;z-index:1;">
+
+                  <div style="position:relative;min-height:${pw.h}px;overflow:hidden;">
+                    <div style="position:absolute;left:0;right:0;bottom:0;height:${pw.h}px;-webkit-mask-image:linear-gradient(to right,#000 70%,transparent 100%);mask-image:linear-gradient(to right,#000 70%,transparent 100%);">
+                      <div style="text-align:left;line-height:0;font-size:0;padding:0;height:${pw.h}px;overflow:hidden;">
+                        ${customerWaveHtml}
+                      </div>
+                    </div>
+                    <div style="position:relative;z-index:1;padding:6px 10px 2px 10px;">
+                      <p style="margin:0;">
+                        <span style="${customerCueStyle}">${escapeHtml(customerCueText)}</span>
+                      </p>
+                    </div>
+                  </div>
+
+                  <div style="text-align:center;padding:10px 10px;">
+                    <img src="${clerkAvatarUrl}" alt="Bizmis store clerk" width="${PHONE_AVATAR_W}" style="display:inline-block;max-width:${PHONE_AVATAR_W}px;width:100%;height:auto;border:0;border-radius:14px;filter:drop-shadow(0 8px 24px rgba(50,40,27,0.16));" />
+                  </div>
+
+                  <div style="position:relative;min-height:${pw.h}px;overflow:hidden;display:flex;flex-direction:column;justify-content:flex-end;">
+                    <div style="position:absolute;left:0;right:0;bottom:0;height:${pw.h}px;-webkit-mask-image:linear-gradient(to left,#000 70%,transparent 100%);mask-image:linear-gradient(to left,#000 70%,transparent 100%);">
+                      <div style="text-align:right;line-height:0;font-size:0;padding:0;height:${pw.h}px;overflow:hidden;">
+                        ${clerkWaveHtml}
+                      </div>
+                    </div>
+                    <div style="position:relative;z-index:1;padding:0 10px 4px 10px;text-align:right;">
+                      <p style="margin:0 0 3px 0;">
+                        <span style="${clerkCueStyle}">${escapeHtml(CS_CLERK_CUE_PREFIX)}</span><span style="${clerkCueBoldStyle}">${escapeHtml(CS_CLERK_CUE_BOLD)}</span>
+                      </p>
+                      <p style="margin:0;">
+                        <span style="${clerkReplyStyle}">Yes \u2014 if it\u2019s in </span><span style="${clerkReplyBoldStyle}">original condition</span><span style="${clerkReplyStyle}"> with the box, return within 30\u00a0days.</span>
+                      </p>
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+
+              <div style="width:${PHONE_HOME_BAR_W}px;height:${PHONE_HOME_BAR_H}px;margin:${PHONE_BEZEL_PX + 2}px auto ${PHONE_BEZEL_PX}px auto;border-radius:${PHONE_HOME_BAR_H}px;background-color:rgba(0,0,0,0.10);"></div>
+
+            </div>
+            <!--<![endif]-->
+            <!--[if mso]>
+            <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="${PHONE_FRAME_W}" align="center">
+              <tr>
+                <td align="center" style="padding:10px;text-align:center;">
+                  <img src="${clerkAvatarUrl}" alt="Bizmis store clerk" width="160" style="display:block;margin:0 auto;max-width:160px;height:auto;border:0;" />
+                </td>
+              </tr>
+            </table>
+            <![endif]-->
+          </td>
+        </tr>`;
 }
 
 function buildEarlyAccessChipStripHtml(
@@ -446,6 +561,7 @@ export function buildLeadEarlyAccessEmailHtml(
   const chipStripHtml = buildEarlyAccessChipStripHtml(storeCap, chipStripIconUrls);
   const chipTrialFootnoteEsc = escapeHtml(buildEarlyAccessTrialUsageFootnotePlainText());
   const outcomeStripInnerHtml = buildEarlyAccessOutcomeStripHtml(outcomeIconUrls);
+  const supportMockupHtml = buildSupportMockupSceneHtml(lead, mp, montageSceneBg, montageWhiteGlow);
 
   const couponCodeEsc = escapeHtml(lead.couponCode.trim());
 
@@ -629,9 +745,9 @@ export function buildLeadEarlyAccessEmailHtml(
                     </div>
 
                     <div style="position:absolute;top:0;left:0;width:72%;z-index:1;pointer-events:none;">
-                      <div style="position:relative;height:82px;">
+                      <div style="position:relative;height:${WAVEFORM_DESKTOP.h}px;">
                         <div style="position:absolute;top:0;left:0;right:0;bottom:0;-webkit-mask-image:linear-gradient(to right,#000 60%,transparent 100%);mask-image:linear-gradient(to right,#000 60%,transparent 100%);">
-                          <div style="text-align:left;line-height:0;font-size:0;padding:0;height:82px;overflow:hidden;">
+                          <div style="text-align:left;line-height:0;font-size:0;padding:0;height:${WAVEFORM_DESKTOP.h}px;overflow:hidden;">
                             ${montageCustomerWaveHtml}
                           </div>
                         </div>
@@ -647,9 +763,9 @@ export function buildLeadEarlyAccessEmailHtml(
                     </div>
 
                     <div style="position:absolute;bottom:0;right:0;width:72%;z-index:1;pointer-events:none;">
-                      <div style="position:relative;height:82px;">
+                      <div style="position:relative;height:${WAVEFORM_DESKTOP.h}px;">
                         <div style="position:absolute;top:0;left:0;right:0;bottom:0;-webkit-mask-image:linear-gradient(to left,#000 60%,transparent 100%);mask-image:linear-gradient(to left,#000 60%,transparent 100%);">
-                          <div style="text-align:right;line-height:0;font-size:0;padding:0;height:82px;overflow:hidden;">
+                          <div style="text-align:right;line-height:0;font-size:0;padding:0;height:${WAVEFORM_DESKTOP.h}px;overflow:hidden;">
                             ${montageClerkWaveHtml}
                           </div>
                         </div>
@@ -691,6 +807,8 @@ export function buildLeadEarlyAccessEmailHtml(
             </table>
           </td>
         </tr>
+
+        ${supportMockupHtml}
 
         <!-- Supporting sentence (subtitle) -->
         <tr>
