@@ -45,10 +45,10 @@ const EARLY_ACCESS_SOFT_CTA_INLINE_CLOCK = "/images/early-access-soft-cta-inline
 
 const CHIP_ROW_ICON_PX = 11;
 
-const BIZMIS_CLERK_AVATAR_FALLBACK =
+const BIZMIS_SALES_AVATAR_FALLBACK =
   "/images/slides/shopify-listing/shopify-personalization-screenshot-outfitters-tablet.png";
 
-const PHONE_FRAME_W = 200;
+const PHONE_FRAME_W = 216;
 const PHONE_BEZEL_PX = 3;
 const PHONE_NOTCH_W = 48;
 const PHONE_NOTCH_H = 12;
@@ -57,12 +57,22 @@ const PHONE_BODY_RADIUS = 25;
 const PHONE_HOME_BAR_W = 56;
 const PHONE_HOME_BAR_H = 3;
 const PHONE_SCREEN_W = PHONE_FRAME_W - PHONE_BEZEL_PX * 2;
-const PHONE_AVATAR_W = 160;
-/** Diameter of the white radial glow behind the support avatar (circle, centered on the image). */
-const PHONE_AVATAR_GLOW_DIAM_PX = 300;
-const PHONE_AVATAR_GLOW_BLUR_PX = 48;
+const PHONE_AVATAR_W = 228;
+/** Centers a wider-than-clip img: `margin: auto` fails when the child is wider than the overflow box. */
+const PHONE_AVATAR_CLIP_MARGIN_LEFT_PX = Math.round(
+  (PHONE_SCREEN_W - PHONE_AVATAR_W) / 2,
+);
+/** Diameter of the white radial glow behind the support avatar (circle, centered on the image).
+ *  Keep diam + blur contained within the avatar row so the halo doesn't bleed into waveform strips. */
+const PHONE_AVATAR_GLOW_DIAM_PX = 220;
+const PHONE_AVATAR_GLOW_BLUR_PX = 28;
 /** Wider bright core than desktop ellipse so the phone halo reads brighter. */
-const PHONE_AVATAR_GLOW_PLATEAU_PCT = 0.62;
+const PHONE_AVATAR_GLOW_PLATEAU_PCT = 0.65;
+
+/** Inset for shopper + clerk caption blocks inside the support phone screen. */
+const PHONE_SUPPORT_CAPTION_INSET_PX = 12;
+const PHONE_SUPPORT_SHOPPER_LINE_HEIGHT = 1.2;
+const PHONE_SUPPORT_CLERK_LINE_HEIGHT = 1.25;
 
 const MONTAGE_CHROME_BG_HEX = "#F7F7F7";
 const MONTAGE_CHROME_URL_HEX = "#A3A3A3";
@@ -80,7 +90,7 @@ const WAVEFORM_DESKTOP: WaveformDims = {
 const WAVEFORM_PHONE: WaveformDims = {
   img: "/images/early-access-montage-waveform-phone.png",
   w: 192,
-  h: 96,
+  h: 74,
 };
 const BIZMIS_FOREGROUND_HEX = "#32281B";
 const BIZMIS_MUTED_LIGHT_HEX = "#B5A48E";
@@ -165,6 +175,12 @@ function pickMontageAccent(primaryHex: string, textColor: string | null | undefi
   return primaryHex;
 }
 
+const MONTAGE_CAPTION_MAX_LIGHTNESS = 52;
+const MONTAGE_CAPTION_MAX_SATURATION = 65;
+const MONTAGE_CAPTION_MIN_CONTRAST = 2.4;
+/** When corrected accent is still extremely light — matches Python `resolve_widget_wave_color` / Blender wave ring. */
+const MONTAGE_WAVE_LUMINANCE_FALLBACK_HEX = "#475569";
+
 function deriveMontagePalette(primaryHex: string, textColor: string | null | undefined): MontagePalette {
   const accent = pickMontageAccent(primaryHex, textColor);
   const [h, s, l] = hexToHsl(accent);
@@ -174,15 +190,20 @@ function deriveMontagePalette(primaryHex: string, textColor: string | null | und
   const light = hslToHex(h, Math.max(s - 10, 0), Math.min(l + 22, 92));
 
   const contrast = contrastRatioOnWhite(accent);
-  const CAPTION_MIN_CONTRAST = 2.4;
   let captionAccent = hex;
-  if (contrast < CAPTION_MIN_CONTRAST) {
-    const targetL = Math.min(l, 52);
-    const targetS = Math.min(s, 65);
+  if (contrast < MONTAGE_CAPTION_MIN_CONTRAST) {
+    const targetL = Math.min(l, MONTAGE_CAPTION_MAX_LIGHTNESS);
+    const targetS = Math.min(s, MONTAGE_CAPTION_MAX_SATURATION);
     captionAccent = hslToHex(h, targetS, targetL);
   }
 
-  const rgb = hexToRgb(hex);
+  let capRgb = hexToRgb(captionAccent);
+  if (relativeLuminance(...capRgb) > 0.85) {
+    captionAccent = MONTAGE_WAVE_LUMINANCE_FALLBACK_HEX;
+    capRgb = hexToRgb(captionAccent);
+  }
+
+  const rgb = capRgb;
   const lum = relativeLuminance(...rgb);
   const badgeTextColor = lum > 0.42 ? "#32281B" : "#ffffff";
   const WAVE_OPACITY_MIN = 0.06;
@@ -333,8 +354,8 @@ function buildMontageProductCardHtml(
   const [pr, pg, pb] = palette.rgb;
 
   if (isRecommended) {
-    return `<div style="display:inline-block;max-width:${REC_CARD_MAX_W}px;border-radius:14px;background:rgba(255,255,255,0.88);-webkit-backdrop-filter:blur(24px);backdrop-filter:blur(24px);border:1.5px solid ${palette.hex};box-shadow:0 0 0 3px rgba(${pr},${pg},${pb},0.12),0 6px 20px -4px rgba(${pr},${pg},${pb},0.18);overflow:hidden;">
-              <div style="background-color:${palette.hex};padding:6px 0;text-align:center;line-height:1;display:flex;align-items:center;justify-content:center;">
+    return `<div style="display:inline-block;max-width:${REC_CARD_MAX_W}px;border-radius:14px;background:rgba(255,255,255,0.88);-webkit-backdrop-filter:blur(24px);backdrop-filter:blur(24px);border:1.5px solid ${palette.captionAccent};box-shadow:0 0 0 3px rgba(${pr},${pg},${pb},0.12),0 6px 20px -4px rgba(${pr},${pg},${pb},0.18);overflow:hidden;">
+              <div style="background-color:${palette.captionAccent};padding:6px 0;text-align:center;line-height:1;display:flex;align-items:center;justify-content:center;">
                 <span style="${BODY}font-size:8px;font-weight:700;color:${palette.badgeTextColor};letter-spacing:0.06em;text-transform:uppercase;vertical-align:middle;">&#9733; Recommended</span>
               </div>
               <div style="padding:8px 8px 6px 8px;text-align:center;">
@@ -358,8 +379,11 @@ function buildMontageProductCardHtml(
             </div>`;
 }
 
-const CS_TOOL_CHIP_PREFIX = "Answered via ";
-const CS_POLICY_FALLBACK = "Return Policy";
+const CS_POLICY_FALLBACK = "Warranty Policy";
+const CS_POLICY_ICON_PX = 8;
+const CS_POLICY_ICON_STROKE = 2.75;
+/** Inner row height: label line-height matches so text centers in the pill. */
+const CS_POLICY_CHIP_ROW_H = 12;
 const CS_SHOPPER_FALLBACK = "Is my order covered under warranty?";
 const CS_CLERK_FALLBACK = "Yes, your unit has a full 1-year warranty.";
 
@@ -384,7 +408,7 @@ function buildSupportMockupSceneHtml(
   palette: MontagePalette,
   montageSceneBg: string,
 ): string {
-  const avatarUrl = absImg(lead.supportAvatarImagePath || lead.clerkAvatarImagePath || BIZMIS_CLERK_AVATAR_FALLBACK);
+  const avatarUrl = absImg(lead.supportAvatarImagePath || lead.salesAvatarImagePath || BIZMIS_SALES_AVATAR_FALLBACK);
   const [pr, pg, pb] = palette.rgb;
   const pw = WAVEFORM_PHONE;
   const avatarCircleGlow = montageWhiteGlowCss("circle", {
@@ -397,12 +421,10 @@ function buildSupportMockupSceneHtml(
   );
   const clerkWaveHtml = emailMontageWatermarkWaveformHtml(...palette.rgb, palette.waveformOpacity, false, pw);
 
-  const customerCueStyle = `${BODY}font-size:10px;font-weight:300;font-style:italic;line-height:1.35;color:${BIZMIS_MUTED_LIGHT_HEX};`;
-  const customerCueBoldStyle = `${BODY}font-size:10px;font-weight:600;font-style:italic;line-height:1.35;color:${BIZMIS_MUTED_LIGHT_HEX};`;
-  const toolChipStyle = `${BODY}font-size:10px;font-weight:500;line-height:1.35;color:${BIZMIS_FOREGROUND_HEX};`;
-  const toolChipBoldStyle = `${BODY}font-size:10px;font-weight:800;line-height:1.35;letter-spacing:-0.02em;color:${palette.captionAccent};`;
-  const clerkReplyStyle = `${BODY}font-size:9px;font-weight:400;line-height:1.45;color:${BIZMIS_MUTED_FG_HEX};`;
-  const clerkReplyBoldStyle = `${BODY}font-size:9px;font-weight:700;line-height:1.45;color:${palette.captionAccent};`;
+  const customerCueStyle = `${BODY}font-size:10px;font-weight:300;font-style:italic;line-height:${PHONE_SUPPORT_SHOPPER_LINE_HEIGHT};color:${BIZMIS_MUTED_LIGHT_HEX};`;
+  const customerCueBoldStyle = `${BODY}font-size:10px;font-weight:600;font-style:italic;line-height:${PHONE_SUPPORT_SHOPPER_LINE_HEIGHT};color:${BIZMIS_MUTED_LIGHT_HEX};`;
+  const clerkReplyStyle = `${BODY}font-size:9px;font-weight:400;line-height:${PHONE_SUPPORT_CLERK_LINE_HEIGHT};color:${BIZMIS_MUTED_FG_HEX};`;
+  const clerkReplyBoldStyle = `${BODY}font-size:9px;font-weight:700;line-height:${PHONE_SUPPORT_CLERK_LINE_HEIGHT};color:${palette.captionAccent};`;
 
   const shopperRaw = lead.supportShopperCue?.trim() || CS_SHOPPER_FALLBACK;
   const shopperText = `\u201c${shopperRaw}\u201d`;
@@ -413,15 +435,29 @@ function buildSupportMockupSceneHtml(
   const shopperHtml = highlightProductInHtml(shopperText, productName, customerCueStyle, customerCueBoldStyle);
   const clerkHtml = highlightProductInHtml(clerkRaw, productName, clerkReplyStyle, clerkReplyBoldStyle);
 
+  const policyChipAccent = palette.captionAccent;
+  const [policyChipR, policyChipG, policyChipB] = hexToRgb(policyChipAccent);
+
+  const chipLabelStyle = `${BODY}font-size:7px;font-weight:700;letter-spacing:0.02em;line-height:${CS_POLICY_CHIP_ROW_H}px;mso-line-height-rule:exactly;color:${policyChipAccent};`;
+  const policyIconSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="${CS_POLICY_ICON_PX}" height="${CS_POLICY_ICON_PX}" viewBox="0 0 24 24" fill="none" stroke="${policyChipAccent}" stroke-width="${CS_POLICY_ICON_STROKE}" stroke-linecap="round" stroke-linejoin="round" style="display:block;">` +
+    `<path d="M6 22a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h8a2.4 2.4 0 0 1 1.704.706l3.588 3.588A2.4 2.4 0 0 1 20 8v12a2 2 0 0 1-2 2z"/>` +
+    `<path d="M14 2v5a1 1 0 0 0 1 1h5"/><path d="m9 15 2 2 4-4"/></svg>`;
+  const lookupChipHtml = `<table role="presentation" cellpadding="0" cellspacing="0" border="0" style="display:inline-table;border-radius:9999px;background:rgba(${policyChipR},${policyChipG},${policyChipB},0.10);border:1px solid ${policyChipAccent};padding:2px 6px 2px 5px;">
+    <tr>
+      <td height="${CS_POLICY_CHIP_ROW_H}" style="height:${CS_POLICY_CHIP_ROW_H}px;vertical-align:middle;padding:0 3px 0 0;line-height:${CS_POLICY_CHIP_ROW_H}px;mso-line-height-rule:exactly;">${policyIconSvg}</td>
+      <td height="${CS_POLICY_CHIP_ROW_H}" style="height:${CS_POLICY_CHIP_ROW_H}px;vertical-align:middle;padding:0;line-height:${CS_POLICY_CHIP_ROW_H}px;mso-line-height-rule:exactly;"><span style="${chipLabelStyle}">${escapeHtml(policyName)}</span></td>
+    </tr>
+  </table>`;
+
   return `<!-- Smartphone frame: customer support showcase -->
         <tr>
-          <td style="padding:26px 0 0 0;" align="center">
+          <td style="padding:18px 0 0 0;" align="center">
             <!--[if !mso]><!-->
             <div style="display:inline-block;width:${PHONE_FRAME_W}px;border-radius:${PHONE_BODY_RADIUS}px;background-color:${MONTAGE_CHROME_BG_HEX};border:1px solid rgba(0,0,0,0.06);padding:${PHONE_BEZEL_PX}px;box-shadow:0 8px 36px -8px rgba(${pr},${pg},${pb},0.18),0 0 0 0.5px rgba(0,0,0,0.04);">
 
               <div style="width:${PHONE_NOTCH_W}px;height:${PHONE_NOTCH_H}px;margin:0 auto;border-radius:0 0 ${Math.round(PHONE_NOTCH_H * 0.55)}px ${Math.round(PHONE_NOTCH_H * 0.55)}px;background-color:rgba(0,0,0,0.07);"></div>
 
-              <div style="position:relative;border-radius:${PHONE_SCREEN_RADIUS}px;overflow:hidden;margin-top:${Math.round(PHONE_NOTCH_H * 0.25)}px;background-color:${montageSceneBg};">
+              <div style="position:relative;border-radius:${PHONE_SCREEN_RADIUS}px;overflow:hidden;margin-top:4px;background-color:${montageSceneBg};">
 
                 <div style="position:relative;z-index:1;">
 
@@ -431,16 +467,24 @@ function buildSupportMockupSceneHtml(
                         ${customerWaveHtml}
                       </div>
                     </div>
-                    <div style="position:relative;z-index:1;padding:6px 10px 2px 10px;width:100%;box-sizing:border-box;text-align:left;">
+                    <div style="position:relative;z-index:1;padding:8px ${PHONE_SUPPORT_CAPTION_INSET_PX}px 4px ${PHONE_SUPPORT_CAPTION_INSET_PX}px;width:100%;box-sizing:border-box;text-align:left;">
                       <p style="margin:0;width:100%;text-align:left;">
                         ${shopperHtml}
                       </p>
                     </div>
                   </div>
 
-                  <div style="position:relative;text-align:center;padding:10px 10px;">
-                    <div aria-hidden="true" style="position:absolute;left:50%;top:50%;width:${PHONE_AVATAR_GLOW_DIAM_PX}px;height:${PHONE_AVATAR_GLOW_DIAM_PX}px;transform:translate(-50%,-50%);border-radius:50%;background:${avatarCircleGlow};-webkit-filter:blur(${PHONE_AVATAR_GLOW_BLUR_PX}px);filter:blur(${PHONE_AVATAR_GLOW_BLUR_PX}px);z-index:0;pointer-events:none;"></div>
-                    <img src="${avatarUrl}" alt="Bizmis support clerk" width="${PHONE_AVATAR_W}" style="position:relative;z-index:1;display:inline-block;max-width:${PHONE_AVATAR_W}px;width:100%;height:auto;border:0;border-radius:14px;filter:drop-shadow(0 8px 24px rgba(50,40,27,0.16));" />
+                  <div style="position:relative;width:100%;padding:4px 0;box-sizing:border-box;">
+                    <div aria-hidden="true" style="position:absolute;left:50%;top:50%;width:${PHONE_AVATAR_GLOW_DIAM_PX}px;height:${PHONE_AVATAR_GLOW_DIAM_PX}px;margin-left:${-Math.round(PHONE_AVATAR_GLOW_DIAM_PX / 2)}px;margin-top:${-Math.round(PHONE_AVATAR_GLOW_DIAM_PX / 2)}px;border-radius:50%;background:${avatarCircleGlow};-webkit-filter:blur(${PHONE_AVATAR_GLOW_BLUR_PX}px);filter:blur(${PHONE_AVATAR_GLOW_BLUR_PX}px);z-index:0;pointer-events:none;"></div>
+                    <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="width:100%;position:relative;z-index:1;">
+                      <tr>
+                        <td align="center" width="100%" style="padding:0;margin:0;width:100%;text-align:center;">
+                          <div style="overflow:hidden;width:${PHONE_SCREEN_W}px;max-width:100%;margin:0 auto;line-height:0;font-size:0;">
+                            <img src="${avatarUrl}" alt="Bizmis support clerk" width="${PHONE_AVATAR_W}" style="display:block;margin:0;padding:0;margin-left:${PHONE_AVATAR_CLIP_MARGIN_LEFT_PX}px;margin-right:0;max-width:none;width:${PHONE_AVATAR_W}px;height:auto;border:0;border-radius:14px;filter:drop-shadow(0 8px 24px rgba(50,40,27,0.16));" />
+                          </div>
+                        </td>
+                      </tr>
+                    </table>
                   </div>
 
                   <div style="position:relative;min-height:${pw.h}px;overflow:hidden;display:flex;flex-direction:column;justify-content:flex-end;">
@@ -449,10 +493,10 @@ function buildSupportMockupSceneHtml(
                         ${clerkWaveHtml}
                       </div>
                     </div>
-                    <div style="position:relative;z-index:1;padding:0 10px 4px 10px;width:100%;box-sizing:border-box;text-align:right;">
-                      <p style="margin:0 0 3px 0;width:100%;text-align:right;">
-                        <span style="${toolChipStyle}">${escapeHtml(CS_TOOL_CHIP_PREFIX)}</span><span style="${toolChipBoldStyle}">${escapeHtml(policyName)}</span>
-                      </p>
+                    <div style="position:relative;z-index:1;padding:6px ${PHONE_SUPPORT_CAPTION_INSET_PX}px 10px ${PHONE_SUPPORT_CAPTION_INSET_PX}px;width:100%;box-sizing:border-box;text-align:right;">
+                      <div style="margin:0 0 4px 0;text-align:right;">
+                        ${lookupChipHtml}
+                      </div>
                       <p style="margin:0;width:100%;text-align:right;">
                         ${clerkHtml}
                       </p>
@@ -462,7 +506,7 @@ function buildSupportMockupSceneHtml(
                 </div>
               </div>
 
-              <div style="width:${PHONE_HOME_BAR_W}px;height:${PHONE_HOME_BAR_H}px;margin:${PHONE_BEZEL_PX + 2}px auto ${PHONE_BEZEL_PX}px auto;border-radius:${PHONE_HOME_BAR_H}px;background-color:rgba(0,0,0,0.10);"></div>
+              <div style="width:${PHONE_HOME_BAR_W}px;height:${PHONE_HOME_BAR_H}px;margin:${PHONE_BEZEL_PX + 1}px auto ${PHONE_BEZEL_PX}px auto;border-radius:${PHONE_HOME_BAR_H}px;background-color:rgba(0,0,0,0.10);"></div>
 
             </div>
             <!--<![endif]-->
@@ -470,7 +514,7 @@ function buildSupportMockupSceneHtml(
             <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="${PHONE_FRAME_W}" align="center">
               <tr>
                 <td align="center" style="padding:10px;text-align:center;">
-                  <img src="${avatarUrl}" alt="Bizmis support clerk" width="160" style="display:block;margin:0 auto;max-width:160px;height:auto;border:0;" />
+                  <img src="${avatarUrl}" alt="Bizmis support clerk" width="228" style="display:block;margin:0 auto;max-width:228px;height:auto;border:0;" />
                 </td>
               </tr>
             </table>
@@ -556,7 +600,7 @@ export function buildLeadEarlyAccessEmailHtml(
   const bizmisLogoUrl = absImg(BIZMIS_LOGO_WHITE);
   const shopifyMarkUrl = absImg(SHOPIFY_MARK_WHITE);
   const noiseGrainUrl = absImg(EMAIL_NOISE_GRAIN_TILE);
-  const clerkAvatarUrl = absImg(lead.clerkAvatarImagePath || BIZMIS_CLERK_AVATAR_FALLBACK);
+  const salesAvatarUrl = absImg(lead.salesAvatarImagePath || BIZMIS_SALES_AVATAR_FALLBACK);
   const mp = deriveMontagePalette(pri, lead.textColor);
   const [mpr, mpg, mpb] = mp.rgb;
   const montageSceneBg = montageSceneBgHex(mpr, mpg, mpb);
@@ -765,7 +809,7 @@ export function buildLeadEarlyAccessEmailHtml(
                     <div style="position:absolute;left:50%;top:calc(50% + ${MONTAGE_COMPOSITION_SHIFT_PX}px);width:160%;height:110%;transform:translate(-50%,-50%) rotate(${glowTiltDeg}deg);border-radius:50%;background:${montageWhiteGlow};-webkit-filter:blur(60px);filter:blur(60px);z-index:0;pointer-events:none;"></div>
 
                     <div style="position:absolute;top:${MONTAGE_VERTICAL_SPREAD_PX + MONTAGE_COMPOSITION_SHIFT_PX}px;right:0;bottom:82px;z-index:2;display:flex;align-items:center;justify-content:center;">
-                      <img src="${clerkAvatarUrl}" alt="Bizmis store clerk" width="280" style="display:block;max-width:280px;width:100%;height:auto;border:0;border-radius:16px;filter:drop-shadow(0 10px 32px rgba(50,40,27,0.16));" />
+                      <img src="${salesAvatarUrl}" alt="Bizmis store clerk" width="280" style="display:block;max-width:280px;width:100%;height:auto;border:0;border-radius:16px;filter:drop-shadow(0 10px 32px rgba(50,40,27,0.16));" />
                     </div>
 
                     <div style="position:absolute;top:calc(50% + ${MONTAGE_COMPOSITION_SHIFT_PX - MONTAGE_VERTICAL_SPREAD_PX}px);left:2%;transform:translateY(-50%);z-index:3;width:52%;">
@@ -828,7 +872,7 @@ export function buildLeadEarlyAccessEmailHtml(
                   <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%">
                     <tr>
                       <td width="100%" align="center" style="padding:0;text-align:center;">
-                        <img src="${clerkAvatarUrl}" alt="Bizmis store clerk" width="260" style="display:block;margin:0 auto;max-width:260px;height:auto;border:0;" />
+                        <img src="${salesAvatarUrl}" alt="Bizmis store clerk" width="260" style="display:block;margin:0 auto;max-width:260px;height:auto;border:0;" />
                       </td>
                     </tr>
                   </table>
