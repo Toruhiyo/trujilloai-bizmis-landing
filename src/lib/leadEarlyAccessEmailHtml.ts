@@ -166,17 +166,28 @@ function deriveMontagePalette(primaryHex: string, textColor: string | null | und
   return { hex, dark, light, captionAccent, rgb, badgeTextColor, waveformOpacity };
 }
 
-const MONTAGE_RADIAL_GLOW_ALPHA_PEAK = 0.24;
+const MONTAGE_WHITE_GLOW_ALPHA_PEAK = 1.0;
+const MONTAGE_SCENE_TINT_ALPHA = 0.12;
 
-function montageRadialGlowBackgroundCss(r: number, g: number, b: number): string {
-  const n = 22;
+function montageSceneBgHex(r: number, g: number, b: number): string {
+  const a = MONTAGE_SCENE_TINT_ALPHA;
+  const blend = (c: number) => Math.round(255 + (c - 255) * a);
+  return `#${[blend(r), blend(g), blend(b)].map((v) => v.toString(16).padStart(2, "0")).join("")}`;
+}
+
+const MONTAGE_WHITE_GLOW_PLATEAU_PCT = 0.50;
+
+function montageWhiteGlowCss(): string {
+  const n = 24;
   const parts: string[] = [];
   for (let i = 0; i <= n; i += 1) {
     const t = i / n;
     const pct = Math.round(t * 1000) / 10;
-    const eased = 1 - t;
-    const a = MONTAGE_RADIAL_GLOW_ALPHA_PEAK * eased * eased * eased;
-    parts.push(`rgba(${r},${g},${b},${a.toFixed(4)}) ${pct}%`);
+    const fade = t <= MONTAGE_WHITE_GLOW_PLATEAU_PCT
+      ? 1
+      : 1 - ((t - MONTAGE_WHITE_GLOW_PLATEAU_PCT) / (1 - MONTAGE_WHITE_GLOW_PLATEAU_PCT));
+    const a = MONTAGE_WHITE_GLOW_ALPHA_PEAK * fade;
+    parts.push(`rgba(255,255,255,${a.toFixed(4)}) ${pct}%`);
   }
   return `radial-gradient(ellipse,${parts.join(",")})`;
 }
@@ -391,7 +402,8 @@ export function buildLeadEarlyAccessEmailHtml(
   const clerkAvatarUrl = absImg(lead.clerkAvatarImagePath || BIZMIS_CLERK_AVATAR_FALLBACK);
   const mp = deriveMontagePalette(pri, lead.textColor);
   const [mpr, mpg, mpb] = mp.rgb;
-  const montageRadialGlowBg = montageRadialGlowBackgroundCss(mpr, mpg, mpb);
+  const montageSceneBg = montageSceneBgHex(mpr, mpg, mpb);
+  const montageWhiteGlow = montageWhiteGlowCss();
   const MONTAGE_SCENE_APPROX_W = 550;
   const glowTiltDeg = +(Math.atan2(2 * MONTAGE_VERTICAL_SPREAD_PX, MONTAGE_SCENE_APPROX_W) * (180 / Math.PI)).toFixed(1);
   const recIdx = lead.recommendedProductIndex;
@@ -588,11 +600,11 @@ export function buildLeadEarlyAccessEmailHtml(
                 </td>
               </tr>
               <tr>
-                <td bgcolor="#ffffff" style="background-color:#ffffff;padding:0 10px 0 10px;">
+                <td bgcolor="${montageSceneBg}" style="background-color:${montageSceneBg};padding:0 10px 0 10px;">
                   <!--[if !mso]><!-->
                   <div style="position:relative;min-height:360px;overflow:visible;">
 
-                    <div style="position:absolute;left:50%;top:calc(50% + ${MONTAGE_COMPOSITION_SHIFT_PX}px);width:162%;height:92%;transform:translate(-50%,-50%) rotate(${glowTiltDeg}deg);border-radius:50%;background:${montageRadialGlowBg};-webkit-filter:blur(20px);filter:blur(20px);z-index:0;pointer-events:none;"></div>
+                    <div style="position:absolute;left:50%;top:calc(50% + ${MONTAGE_COMPOSITION_SHIFT_PX}px);width:160%;height:110%;transform:translate(-50%,-50%) rotate(${glowTiltDeg}deg);border-radius:50%;background:${montageWhiteGlow};-webkit-filter:blur(60px);filter:blur(60px);z-index:0;pointer-events:none;"></div>
 
                     <div style="position:absolute;top:${MONTAGE_VERTICAL_SPREAD_PX + MONTAGE_COMPOSITION_SHIFT_PX}px;right:0;bottom:82px;z-index:2;display:flex;align-items:center;justify-content:center;">
                       <img src="${clerkAvatarUrl}" alt="Bizmis store clerk" width="280" style="display:block;max-width:280px;width:100%;height:auto;border:0;border-radius:16px;filter:drop-shadow(0 10px 32px rgba(50,40,27,0.16));" />
