@@ -10,9 +10,9 @@
   "bannerColor": "#FFFFFF",
   "logoColorOverlay": null,
   "pitchLine": "Help homeowners choose the right water treatment system by water quality, household size, and concern.",
-  "demoShopperPrompt": "I just got a well water test back and it shows high iron — what system do I need?",
-  "demoBizmisReply": "Got it — how many bathrooms does your home have, and do you also need softening?",
-  "demoProducts": [
+  "salesShopperPrompt": "I just got a well water test back and it shows high iron — what system do I need?",
+  "salesBizmisReply": "Got it — how many bathrooms does your home have, and do you also need softening?",
+  "salesProducts": [
     {
       "title": "American Made RO System",
       "price": "$599",
@@ -29,10 +29,14 @@
       "tag": "Filtration"
     }
   ],
-  "recommendedProductIndex": 2,
-  "demoFooterLine": "Guides homeowners by water quality, household size, and concern.",
+  "salesRecommendedIndex": 2,
+  "salesFooterLine": "Guides homeowners by water quality, household size, and concern.",
   "montageShopperCue": "Our water tastes off but I'm not sure what kind of filter we need.",
   "montageClerkCue": "The Magna Whole House Filter, tackles iron and sediment at the source.",
+  "supportShopperCue": "My Magna Whole House Filter flow rate has dropped.",
+  "supportClerkCue": "Replace your Magna Whole House Filter cartridge now.",
+  "supportPolicyName": "Care Guide",
+  "supportProductName": "Magna Whole House Filter",
   "country": "USA",
   "vertical": "home_furniture_decor",
   "subNiche": "water_filtration"

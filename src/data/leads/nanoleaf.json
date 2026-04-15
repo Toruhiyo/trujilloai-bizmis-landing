@@ -9,9 +9,9 @@
   "secondaryColor": null,
   "textColor": "#3FAE29",
   "pitchLine": "Guide shoppers to the right light panels by room, setup style, and smart-home needs.",
-  "demoShopperPrompt": "I want to set up a gaming wall behind my desk — something modular and colorful.",
-  "demoBizmisReply": "Got it — geometric panels for a mosaic look or sleek backlit lines?",
-  "demoProducts": [
+  "salesShopperPrompt": "I want to set up a gaming wall behind my desk — something modular and colorful.",
+  "salesBizmisReply": "Got it — geometric panels for a mosaic look or sleek backlit lines?",
+  "salesProducts": [
     {
       "title": "Shapes Triangles Kit",
       "price": "$130.00",
@@ -20,10 +20,14 @@
     { "title": "Lines 60° Kit", "price": "$119.99", "tag": "Linear" },
     { "title": "Blocks Squares Kit", "price": "$179.99", "tag": "Modular" }
   ],
-  "recommendedProductIndex": 0,
-  "demoFooterLine": "Guides shoppers by room, style, and smart-home setup.",
+  "salesRecommendedIndex": 0,
+  "salesFooterLine": "Guides shoppers by room, style, and smart-home setup.",
   "montageShopperCue": "I want a cool light wall for my desk but not sure what style to pick.",
   "montageClerkCue": "The Shapes Triangles Kit, modular panels you can arrange any way.",
+  "supportShopperCue": "One panel in my Shapes Triangles Kit won't light up.",
+  "supportClerkCue": "Re-seat that Shapes Triangles Kit panel and re-pair.",
+  "supportPolicyName": "Troubleshooting Guide",
+  "supportProductName": "Shapes Triangles Kit",
   "country": "Canada/USA (global)",
   "vertical": "consumer_electronics_appliances",
   "subNiche": "smart_home_lighting"

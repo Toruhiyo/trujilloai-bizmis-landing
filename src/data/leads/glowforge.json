@@ -9,17 +9,21 @@
   "secondaryColor": null,
   "logoColorOverlay": "#ffffff",
   "pitchLine": "Walk makers through materials, machine options, and project ideas before they commit.",
-  "demoShopperPrompt": "I want to start a small engraving business — what machine fits?",
-  "demoBizmisReply": "Got it — mostly wood and acrylic, or do you need metal engraving too?",
-  "demoProducts": [
+  "salesShopperPrompt": "I want to start a small engraving business — what machine fits?",
+  "salesBizmisReply": "Got it — mostly wood and acrylic, or do you need metal engraving too?",
+  "salesProducts": [
     { "title": "Aura", "price": "$1,199", "tag": "Starter" },
     { "title": "Plus", "price": "$4,995", "tag": "Popular" },
     { "title": "Pro", "price": "$6,995", "tag": "Pro" }
   ],
-  "recommendedProductIndex": 1,
-  "demoFooterLine": "Walks makers through materials, machines, and project ideas.",
+  "salesRecommendedIndex": 1,
+  "salesFooterLine": "Walks makers through materials, machines, and project ideas.",
   "montageShopperCue": "I want to start laser cutting but not sure which machine I need.",
   "montageClerkCue": "The Plus, the sweet spot for small-business engraving and cutting.",
+  "supportShopperCue": "The laser on my Plus seems misaligned after moving.",
+  "supportClerkCue": "Run the Plus camera recalibration from your dashboard.",
+  "supportPolicyName": "Troubleshooting Guide",
+  "supportProductName": "Plus",
   "country": "USA",
   "vertical": "consumer_electronics_appliances",
   "subNiche": "maker_laser_cutters"

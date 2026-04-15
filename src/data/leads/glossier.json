@@ -8,17 +8,21 @@
   "primaryColor": "#FEF116",
   "secondaryColor": null,
   "pitchLine": "Guide shoppers to the right routine by skin type, finish, and concern.",
-  "demoShopperPrompt": "I want a simple skincare routine for oily skin — minimal steps.",
-  "demoBizmisReply": "Got it — just the essentials or add a light coverage base too?",
-  "demoProducts": [
+  "salesShopperPrompt": "I want a simple skincare routine for oily skin — minimal steps.",
+  "salesBizmisReply": "Got it — just the essentials or add a light coverage base too?",
+  "salesProducts": [
     { "title": "Milky Jelly", "price": "$24", "tag": "Cleanser" },
     { "title": "Futuredew", "price": "$30", "tag": "Glow" },
     { "title": "Solution", "price": "$30", "tag": "Exfoliant" }
   ],
-  "recommendedProductIndex": 0,
-  "demoFooterLine": "Guides shoppers by skin type, finish, and concern.",
+  "salesRecommendedIndex": 0,
+  "salesFooterLine": "Guides shoppers by skin type, finish, and concern.",
   "montageShopperCue": "I want a simple skincare routine but not sure where to start.",
   "montageClerkCue": "The Milky Jelly, a gentle daily cleanser for every skin type.",
+  "supportShopperCue": "My Milky Jelly pump stopped dispensing product.",
+  "supportClerkCue": "Twist and rinse the Milky Jelly pump under warm water.",
+  "supportPolicyName": "Troubleshooting Guide",
+  "supportProductName": "Milky Jelly",
   "country": "USA",
   "vertical": "beauty_personal_care",
   "subNiche": "beauty_general"

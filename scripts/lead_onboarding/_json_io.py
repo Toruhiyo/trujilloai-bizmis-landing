@@ -58,16 +58,16 @@ def validate(data: dict) -> None:
     if not isinstance(data.get("primaryColor"), str):
         raise LeadValidationError("'primaryColor' must be a string")
 
-    products = data.get("demoProducts")
+    products = data.get("salesProducts")
     if not isinstance(products, list) or len(products) != 3:
-        raise LeadValidationError("'demoProducts' must be an array of exactly 3 items")
+        raise LeadValidationError("'salesProducts' must be an array of exactly 3 items")
 
     for i, p in enumerate(products):
         if not isinstance(p, dict):
-            raise LeadValidationError(f"demoProducts[{i}] must be an object")
+            raise LeadValidationError(f"salesProducts[{i}] must be an object")
         for key in ("title", "price", "tag"):
             if key not in p:
-                raise LeadValidationError(f"demoProducts[{i}] missing '{key}'")
+                raise LeadValidationError(f"salesProducts[{i}] missing '{key}'")
 
 
 # Private:

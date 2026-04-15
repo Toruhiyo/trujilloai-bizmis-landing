@@ -9,9 +9,9 @@
   "secondaryColor": null,
   "logoColorOverlay": null,
   "pitchLine": "Help drivers find the right exhaust system by vehicle, sound preference, and performance goals.",
-  "demoShopperPrompt": "I want a deeper exhaust note on my F-150 without being obnoxious — what fits?",
-  "demoBizmisReply": "Got it — cat-back for a bolt-on upgrade, or full system for maximum performance?",
-  "demoProducts": [
+  "salesShopperPrompt": "I want a deeper exhaust note on my F-150 without being obnoxious — what fits?",
+  "salesBizmisReply": "Got it — cat-back for a bolt-on upgrade, or full system for maximum performance?",
+  "salesProducts": [
     {
       "title": "SPEQ Cat-Back F-150",
       "price": "$1,200",
@@ -28,10 +28,14 @@
       "tag": "Universal"
     }
   ],
-  "recommendedProductIndex": 0,
-  "demoFooterLine": "Guides drivers by vehicle, sound preference, and performance goals.",
+  "salesRecommendedIndex": 0,
+  "salesFooterLine": "Guides drivers by vehicle, sound preference, and performance goals.",
   "montageShopperCue": "I want a deeper exhaust note on my truck but nothing too loud.",
   "montageClerkCue": "The SPEQ Cat-Back F-150, deeper tone with a clean bolt-on install.",
+  "supportShopperCue": "My SPEQ Cat-Back F-150 has a rattle at idle.",
+  "supportClerkCue": "Check the SPEQ Cat-Back F-150 hanger bolts are snug.",
+  "supportPolicyName": "Installation Guide",
+  "supportProductName": "SPEQ Cat-Back F-150",
   "country": "USA",
   "vertical": "automotive_parts_accessories",
   "subNiche": "exhaust_performance"

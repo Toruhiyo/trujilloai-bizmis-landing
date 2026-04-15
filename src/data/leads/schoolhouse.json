@@ -9,9 +9,9 @@
   "secondaryColor": null,
   "textColor": "#2C2C2C",
   "pitchLine": "Help shoppers find the right lighting and home goods by room, style, and finish.",
-  "demoShopperPrompt": "I need a flush mount for my entryway — something warm and classic.",
-  "demoBizmisReply": "Got it — brass hardware or matte black for a modern edge?",
-  "demoProducts": [
+  "salesShopperPrompt": "I need a flush mount for my entryway — something warm and classic.",
+  "salesBizmisReply": "Got it — brass hardware or matte black for a modern edge?",
+  "salesProducts": [
     {
       "title": "Swell 20\" Flush Mount",
       "price": "$799",
@@ -28,10 +28,14 @@
       "tag": "Decor"
     }
   ],
-  "recommendedProductIndex": 0,
-  "demoFooterLine": "Guides shoppers by room, style, and finish.",
+  "salesRecommendedIndex": 0,
+  "salesFooterLine": "Guides shoppers by room, style, and finish.",
   "montageShopperCue": "I need new lighting for my entryway but not sure what style fits.",
   "montageClerkCue": "The Swell 20\" Flush Mount, warm brass for a classic welcome.",
+  "supportShopperCue": "My Swell Flush Mount flickers with my dimmer switch.",
+  "supportClerkCue": "Use a compatible LED dimmer with your Swell Flush Mount.",
+  "supportPolicyName": "Installation Guide",
+  "supportProductName": "Swell Flush Mount",
   "country": "USA",
   "vertical": "home_furniture_decor",
   "subNiche": "lighting_home_decor"

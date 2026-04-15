@@ -9,9 +9,9 @@
   "secondaryColor": null,
   "textColor": null,
   "pitchLine": "Help mechanics find the right tools by application, drive size, and professional needs.",
-  "demoShopperPrompt": "I need a good flex-head ratchet for tight engine bays — what do you have?",
-  "demoBizmisReply": "Got it — 3/8\" drive for precision work or 1/2\" drive for heavier torque applications?",
-  "demoProducts": [
+  "salesShopperPrompt": "I need a good flex-head ratchet for tight engine bays — what do you have?",
+  "salesBizmisReply": "Got it — 3/8\" drive for precision work or 1/2\" drive for heavier torque applications?",
+  "salesProducts": [
     {
       "title": "Max90 3/8\" Flex Ratchet",
       "price": "$229.99",
@@ -24,10 +24,14 @@
     },
     { "title": "60-Gal Air Compressor", "price": "$2,479.99", "tag": "Power" }
   ],
-  "recommendedProductIndex": 0,
-  "demoFooterLine": "Guides mechanics by application, drive size, and professional needs.",
+  "salesRecommendedIndex": 0,
+  "salesFooterLine": "Guides mechanics by application, drive size, and professional needs.",
   "montageShopperCue": "I need a good ratchet for tight engine bays but not sure which size.",
   "montageClerkCue": "The Max90 3/8\" Flex Ratchet, low-profile head for the tightest spots.",
+  "supportShopperCue": "A wrench in my Ratcheting Wrench Set cracked on a job.",
+  "supportClerkCue": "Your Ratcheting Wrench Set has lifetime warranty coverage.",
+  "supportPolicyName": "Warranty Policy",
+  "supportProductName": "Ratcheting Wrench Set",
   "country": "USA",
   "vertical": "automotive_parts_accessories",
   "subNiche": "automotive_general"

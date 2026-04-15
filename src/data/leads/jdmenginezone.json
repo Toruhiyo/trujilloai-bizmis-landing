@@ -9,9 +9,9 @@
   "secondaryColor": null,
   "logoColorOverlay": null,
   "pitchLine": "Help buyers find the right crate engine by vehicle, displacement, and warranty needs.",
-  "demoShopperPrompt": "I need a replacement engine for my 2012 Honda CRV — what do you have?",
-  "demoBizmisReply": "Got it — just the bare block, or do you need a complete long block with accessories?",
-  "demoProducts": [
+  "salesShopperPrompt": "I need a replacement engine for my 2012 Honda CRV — what do you have?",
+  "salesBizmisReply": "Got it — just the bare block, or do you need a complete long block with accessories?",
+  "salesProducts": [
     {
       "title": "4Runner 4.0L V6 1GR-FE",
       "price": "$4,999",
@@ -28,10 +28,14 @@
       "tag": "Economy"
     }
   ],
-  "recommendedProductIndex": 1,
-  "demoFooterLine": "Guides buyers by vehicle, displacement, and warranty needs.",
+  "salesRecommendedIndex": 1,
+  "salesFooterLine": "Guides buyers by vehicle, displacement, and warranty needs.",
   "montageShopperCue": "I need a replacement engine for my CRV but not sure what to look for.",
   "montageClerkCue": "The Honda CRV 2.4L K24A1, a tested long block with warranty.",
+  "supportShopperCue": "My Honda CRV 2.4L K24A1 shipped without the intake.",
+  "supportClerkCue": "We'll send the Honda CRV 2.4L K24A1 part right away.",
+  "supportPolicyName": "Shipping Support",
+  "supportProductName": "Honda CRV 2.4L K24A1",
   "country": "USA",
   "vertical": "automotive_parts_accessories",
   "subNiche": "crate_engines"

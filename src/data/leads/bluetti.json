@@ -9,17 +9,21 @@
   "secondaryColor": null,
   "textColor": "#232f3f",
   "pitchLine": "Help shoppers choose the right power station by use case, capacity, and portability.",
-  "demoShopperPrompt": "I need backup power for my home that can also run during outages.",
-  "demoBizmisReply": "Got it — whole-home panel integration or a portable unit you can move around?",
-  "demoProducts": [
+  "salesShopperPrompt": "I need backup power for my home that can also run during outages.",
+  "salesBizmisReply": "Got it — whole-home panel integration or a portable unit you can move around?",
+  "salesProducts": [
     { "title": "Apex 300", "price": "$1,499", "tag": "Home" },
     { "title": "AC200L", "price": "$899", "tag": "Portable" },
     { "title": "Elite 300", "price": "$1,199", "tag": "Versatile" }
   ],
-  "recommendedProductIndex": 0,
-  "demoFooterLine": "Guides shoppers by use case, capacity, and portability.",
+  "salesRecommendedIndex": 0,
+  "salesFooterLine": "Guides shoppers by use case, capacity, and portability.",
   "montageShopperCue": "I want backup power for outages but not sure what size I need.",
   "montageClerkCue": "The Apex 300, whole-home capacity that runs during any outage.",
+  "supportShopperCue": "My Apex 300 won't charge past 80 percent.",
+  "supportClerkCue": "Update your Apex 300 firmware to fix the charge cap.",
+  "supportPolicyName": "Troubleshooting Guide",
+  "supportProductName": "Apex 300",
   "country": "US/EU (global)",
   "vertical": "home_furniture_decor",
   "subNiche": "portable_power"

@@ -17,9 +17,9 @@ REQUIRED_JSON_FIELDS = [
     "primaryColor",
     "secondaryColor",
     "pitchLine",
-    "demoShopperPrompt",
-    "demoBizmisReply",
-    "demoProducts",
+    "salesShopperPrompt",
+    "salesBizmisReply",
+    "salesProducts",
     "country",
     "vertical",
     "subNiche",
@@ -28,7 +28,7 @@ REQUIRED_JSON_FIELDS = [
 OPTIONAL_JSON_FIELDS = [
     "textColor",
     "logoColorOverlay",
-    "demoFooterLine",
+    "salesFooterLine",
     "montageClerkCue",
 ]
 

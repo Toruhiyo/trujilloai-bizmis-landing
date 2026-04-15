@@ -9,9 +9,9 @@
   "secondaryColor": null,
   "textColor": "#1a1a1a",
   "pitchLine": "Guide collectors to the right pre-owned watch by brand, style, and investment value.",
-  "demoShopperPrompt": "I want my first luxury watch under $5,000 — something I can wear daily.",
-  "demoBizmisReply": "Got it — sporty tool watch or refined dress piece?",
-  "demoProducts": [
+  "salesShopperPrompt": "I want my first luxury watch under $5,000 — something I can wear daily.",
+  "salesBizmisReply": "Got it — sporty tool watch or refined dress piece?",
+  "salesProducts": [
     {
       "title": "Tudor Black Bay",
       "price": "$3,495",
@@ -28,10 +28,14 @@
       "tag": "Dress"
     }
   ],
-  "recommendedProductIndex": 0,
-  "demoFooterLine": "Guides collectors by brand, style, and investment value.",
+  "salesRecommendedIndex": 0,
+  "salesFooterLine": "Guides collectors by brand, style, and investment value.",
   "montageShopperCue": "I want my first luxury watch but not sure where to start.",
   "montageClerkCue": "The Tudor Black Bay, a versatile sport watch that holds its value.",
+  "supportShopperCue": "My Tudor Black Bay is running 8 seconds fast daily.",
+  "supportClerkCue": "Your Tudor Black Bay is within spec, no service needed.",
+  "supportPolicyName": "Service Guide",
+  "supportProductName": "Tudor Black Bay",
   "country": "USA",
   "vertical": "jewelry_luxury",
   "subNiche": "watches_pre_owned"

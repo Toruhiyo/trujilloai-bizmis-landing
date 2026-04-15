@@ -1,6 +1,18 @@
 import { BIZMIS_SHOPIFY_APP_LISTING_URL } from "@/lib/bizmisUrls";
 
-export type DemoProductCard = {
+export const SUPPORT_POLICY_TYPES = [
+  "Troubleshooting Guide",
+  "Care Guide",
+  "Warranty Policy",
+  "Installation Guide",
+  "Setup Guide",
+  "Shipping Support",
+  "Service Guide",
+] as const;
+
+export type SupportPolicyType = (typeof SUPPORT_POLICY_TYPES)[number];
+
+export type SalesProductCard = {
   title: string;
   price: string;
   tag: string;
@@ -33,16 +45,24 @@ export type LeadEarlyAccessJson = {
   /** Filename inside the lead folder used as shirt stamp (e.g. "icon.png"). Falls back to logo.png. */
   avatarStampImage?: string | null;
   pitchLine: string;
-  demoShopperPrompt: string;
-  demoBizmisReply: string;
-  demoProducts: [DemoProductCard, DemoProductCard, DemoProductCard];
-  /** 0-based index into demoProducts identifying the clerk's recommended pick. */
-  recommendedProductIndex: 0 | 1 | 2;
-  demoFooterLine?: string;
+  salesShopperPrompt: string;
+  salesBizmisReply: string;
+  salesProducts: [SalesProductCard, SalesProductCard, SalesProductCard];
+  /** 0-based index into salesProducts identifying the clerk's recommended pick. */
+  salesRecommendedIndex: 0 | 1 | 2;
+  salesFooterLine?: string;
   /** Shopper cue for the montage. Vague exploring intent, max ~80 chars. */
   montageShopperCue?: string | null;
   /** Full clerk recommendation for the montage, including product name and reason. */
   montageClerkCue?: string | null;
+  /** Customer support demo: shopper question, max 60 chars. */
+  supportShopperCue?: string | null;
+  /** Customer support demo: Bizmis response, max 60 chars. Contains supportProductName. */
+  supportClerkCue?: string | null;
+  /** Policy name for the support tool chip. Must be one of SUPPORT_POLICY_TYPES. */
+  supportPolicyName?: SupportPolicyType | null;
+  /** Product name referenced in the support demo, highlighted in both cues. */
+  supportProductName?: string | null;
   country: string;
   vertical: string;
   subNiche: string;
@@ -57,6 +77,7 @@ export type LeadEarlyAccessData = LeadEarlyAccessJson & {
   orderInBatch: number;
   logoImagePath: string;
   clerkAvatarImagePath: string;
+  supportAvatarImagePath: string;
   productAImagePath: string;
   productBImagePath: string;
   productCImagePath: string;

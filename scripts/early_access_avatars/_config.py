@@ -18,10 +18,12 @@ LEADS_DIR = LANDING_ROOT / "public" / "invite-cards" / "leads"
 CONVERTED_LOGOS_DIR = LEADS_DIR / "_converted-svgs"
 TINTED_LOGOS_DIR = LEADS_DIR / "_tinted-logos"
 CLERK_AVATAR_FILENAME = "clerk-avatar.png"
+SUPPORT_AVATAR_FILENAME = "support-avatar.png"
 
 # ── Default avatar ───────────────────────────────────────────────────
 
 DEFAULT_AVATAR_ID = "yusuke"
+DEFAULT_SUPPORT_AVATAR_ID = "amber"
 
 # ── Render defaults ──────────────────────────────────────────────────
 # Universal params applied to every lead.  Per-lead values (shirt color,
@@ -43,6 +45,23 @@ RENDER_DEFAULTS: dict = {
     "shirt_stamp_scale": 1.0,
 }
 
+SUPPORT_RENDER_DEFAULTS: dict = {
+    "animation": "idle_neutral",
+    "animation_progress": 0.50,
+    "expression": "smile",
+    "resolution": 1024,
+    "mobile": True,
+    "widget_ui": True,
+    "widget_state": "speaking",
+    "show_wave": True,
+    "show_card": False,
+    "show_claim": False,
+    "framing": "head",
+    "lighting_preset": "studio",
+    "camera_tilt": 5,
+    "shirt_stamp_scale": 1.0,
+}
+
 WAVE_COLOR_LUMINANCE_THRESHOLD = 0.85
 
 # ── Lead registry ────────────────────────────────────────────────────
@@ -54,9 +73,11 @@ WAVE_COLOR_LUMINANCE_THRESHOLD = 0.85
 # • logo_color_overlay  → logo tint for the banner. NEVER set for
 #                          multi-colour logos.
 #
-# Avatar character:
-# • avatar_id           → which 3D avatar to use. Falls back to
+# Avatar characters:
+# • avatar_id           → sales demo 3D avatar. Falls back to
 #                          DEFAULT_AVATAR_ID when None.
+# • support_avatar_id   → support demo 3D avatar (opposite gender from
+#                          avatar_id). Falls back to DEFAULT_SUPPORT_AVATAR_ID.
 #
 # Avatar shirt (independent from the top bar):
 # • shirt_color         → shirt mesh + widget button colour.
@@ -72,85 +93,99 @@ LEAD_REGISTRY: list[dict] = [
         "id": "molekule",
         "primary_color": "#108849",
         "logo_color_overlay": "#ffffff",
-        "avatar_id": "yusuke",
+        "avatar_id": "kiran",
+        "support_avatar_id": "mia",
     },
     {
         "id": "glowforge",
         "primary_color": "#27B8CE",
         "logo_color_overlay": "#ffffff",
         "avatar_id": "kiran",
+        "support_avatar_id": "amber",
     },
     {
         "id": "sennheiser",
         "primary_color": "#003746",
         "logo_color_overlay": None,
-        "avatar_id": "luca",
+        "avatar_id": "echo",
+        "support_avatar_id": "yue",
     },
     {
         "id": "sodastream",
         "primary_color": "#00205B",
         "logo_color_overlay": None,
-        "avatar_id": "will",
+        "avatar_id": "adrian",
+        "support_avatar_id": "mia",
     },
     {
         "id": "peakdesign",
         "primary_color": "#1A1A1A",
         "logo_color_overlay": "#ffffff",
         "avatar_id": "teo",
+        "support_avatar_id": "amber",
     },
     {
         "id": "hodinkee",
         "primary_color": "#FFFFFF",
         "logo_color_overlay": None,
         "avatar_id": "yusuke",
+        "support_avatar_id": "yue",
     },
     {
         "id": "sixpenny",
         "primary_color": "#3C392D",
         "logo_color_overlay": "#ffffff",
         "avatar_id": "amber",
+        "support_avatar_id": "luca",
     },
     {
         "id": "shapermint",
         "primary_color": "#F8A08E",
         "logo_color_overlay": None,
         "avatar_id": "yue",
+        "support_avatar_id": "luca",
     },
     {
         "id": "glossier",
         "primary_color": "#FEF116",
         "logo_color_overlay": None,
-        "avatar_id": "amber",
+        "avatar_id": "mia",
+        "support_avatar_id": "adrian",
     },
     {
         "id": "theproscloset",
         "primary_color": "#B8F986",
         "logo_color_overlay": None,
-        "avatar_id": "echo",
+        "avatar_id": "victor",
+        "support_avatar_id": "amber",
     },
     {
         "id": "nanoleaf",
         "primary_color": "#FFFFFF",
         "logo_color_overlay": None,
-        "avatar_id": "kiran",
+        "avatar_id": "adrian",
+        "support_avatar_id": "mia",
     },
     {
         "id": "bluetti",
         "primary_color": "#FFFFFF",
         "logo_color_overlay": None,
-        "avatar_id": "avatar_matt",
+        "avatar_id": "matt",
+        "support_avatar_id": "yue",
     },
     {
         "id": "jackery",
         "primary_color": "#FFFFFF",
         "logo_color_overlay": None,
         "avatar_id": "teo",
+        "support_avatar_id": "amber",
     },
     {
         "id": "mactools",
         "primary_color": "#e31837",
         "logo_color_overlay": None,
-        "avatar_id": "avatar_mathew",
+        "avatar_id": "matt",
+        "support_avatar_id": "mia",
     },
     # ── Batch 2 ──
     {
@@ -159,49 +194,57 @@ LEAD_REGISTRY: list[dict] = [
         "logo_color_overlay": None,
         "shirt_color": "#3a3a3a",
         "stamp_color_overlay": "#ffffff",
-        "avatar_id": "echo",
+        "avatar_id": "adrian",
+        "support_avatar_id": "amber",
     },
     {
         "id": "magnaflow",
         "primary_color": "#000000",
         "logo_color_overlay": None,
-        "avatar_id": "teo",
+        "avatar_id": "victor",
+        "support_avatar_id": "yue",
     },
     {
         "id": "burrow",
         "primary_color": "#FFFFFF",
         "logo_color_overlay": None,
         "avatar_id": "luca",
+        "support_avatar_id": "mia",
     },
     {
         "id": "uswatersystems",
         "primary_color": "#0054A6",
         "logo_color_overlay": "#ffffff",
-        "avatar_id": "avatar_mathew",
+        "avatar_id": "matt",
+        "support_avatar_id": "amber",
     },
     {
         "id": "jdmenginezone",
         "primary_color": "#1a1a1a",
         "logo_color_overlay": None,
         "avatar_id": "yusuke",
+        "support_avatar_id": "yue",
     },
     {
         "id": "liveu",
         "primary_color": "#f1592b",
         "logo_color_overlay": "#ffffff",
         "avatar_id": "kiran",
+        "support_avatar_id": "amber",
     },
     {
         "id": "floyd",
         "primary_color": "#231e1e",
         "logo_color_overlay": "#ffffff",
         "avatar_id": "will",
+        "support_avatar_id": "mia",
     },
     {
         "id": "bulova",
         "primary_color": "#000000",
         "logo_color_overlay": None,
-        "avatar_id": "avatar_matt",
+        "avatar_id": "matt",
+        "support_avatar_id": "yue",
     },
     {
         "id": "urotuning",
@@ -210,48 +253,56 @@ LEAD_REGISTRY: list[dict] = [
         "shirt_color": "#252525",
         "stamp_color_overlay": None,
         "avatar_id": "luca",
+        "support_avatar_id": "amber",
     },
     {
         "id": "positivegrid",
         "primary_color": "#E02020",
         "logo_color_overlay": "#ffffff",
         "avatar_id": "echo",
+        "support_avatar_id": "mia",
     },
     {
         "id": "thehomesecuritysuperstore",
         "primary_color": "#1a1a1a",
         "logo_color_overlay": None,
         "avatar_id": "will",
+        "support_avatar_id": "yue",
     },
     {
         "id": "pura",
         "primary_color": "#FFFFFF",
         "logo_color_overlay": None,
         "avatar_id": "amber",
+        "support_avatar_id": "yusuke",
     },
     {
         "id": "speedengineering",
         "primary_color": "#000000",
         "logo_color_overlay": None,
         "avatar_id": "teo",
+        "support_avatar_id": "amber",
     },
     {
         "id": "gorjana",
         "primary_color": "#FFFFFF",
         "logo_color_overlay": None,
         "avatar_id": "yue",
+        "support_avatar_id": "luca",
     },
     {
         "id": "crownandcaliber",
         "primary_color": "#FFFFFF",
         "logo_color_overlay": None,
         "avatar_id": "yusuke",
+        "support_avatar_id": "yue",
     },
     {
         "id": "schoolhouse",
         "primary_color": "#FFFFFF",
         "logo_color_overlay": None,
         "avatar_id": "amber",
+        "support_avatar_id": "will",
     },
 ]
 
@@ -267,5 +318,10 @@ def get_lead(lead_id: str) -> dict:
 
 
 def lead_output_path(lead_id: str) -> Path:
-    """Absolute path where the clerk avatar PNG should be written."""
+    """Absolute path where the clerk (sales) avatar PNG should be written."""
     return LEADS_DIR / lead_id / CLERK_AVATAR_FILENAME
+
+
+def support_lead_output_path(lead_id: str) -> Path:
+    """Absolute path where the support avatar PNG should be written."""
+    return LEADS_DIR / lead_id / SUPPORT_AVATAR_FILENAME

@@ -8,17 +8,21 @@
   "primaryColor": "#F8A08E",
   "secondaryColor": null,
   "pitchLine": "Guide shoppers to the right shapewear by body type, occasion, and comfort level.",
-  "demoShopperPrompt": "I need something smoothing under a fitted dress for a wedding.",
-  "demoBizmisReply": "Got it — full bodysuit or just a high-waist shaper?",
-  "demoProducts": [
+  "salesShopperPrompt": "I need something smoothing under a fitted dress for a wedding.",
+  "salesBizmisReply": "Got it — full bodysuit or just a high-waist shaper?",
+  "salesProducts": [
     { "title": "Empetua Bodysuit", "price": "$39", "tag": "Event" },
     { "title": "All Day Shaper", "price": "$29", "tag": "Everyday" },
     { "title": "High-Waist Short", "price": "$34", "tag": "Best value" }
   ],
-  "recommendedProductIndex": 0,
-  "demoFooterLine": "Guides shoppers by body type, occasion, and comfort level.",
+  "salesRecommendedIndex": 0,
+  "salesFooterLine": "Guides shoppers by body type, occasion, and comfort level.",
   "montageShopperCue": "I need something smoothing under a dress but not sure what type.",
   "montageClerkCue": "The Empetua Bodysuit, full smoothing with all-day comfort.",
+  "supportShopperCue": "My Empetua Bodysuit feels snug after first wash.",
+  "supportClerkCue": "Hand-wash your Empetua Bodysuit in cold water only.",
+  "supportPolicyName": "Care Guide",
+  "supportProductName": "Empetua Bodysuit",
   "country": "USA",
   "vertical": "beauty_personal_care",
   "subNiche": "shapewear_intimates"

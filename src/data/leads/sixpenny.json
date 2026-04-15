@@ -9,17 +9,21 @@
   "secondaryColor": null,
   "logoColorOverlay": "#ffffff",
   "pitchLine": "Help shoppers choose the right sofa by room size, fabric, and lifestyle needs.",
-  "demoShopperPrompt": "I need a sofa for a small living room — two adults and a dog.",
-  "demoBizmisReply": "Got it — performance fabric for the pup or a luxe velvet feel?",
-  "demoProducts": [
+  "salesShopperPrompt": "I need a sofa for a small living room — two adults and a dog.",
+  "salesBizmisReply": "Got it — performance fabric for the pup or a luxe velvet feel?",
+  "salesProducts": [
     { "title": "Neva Sofa", "price": "$2,895", "tag": "Compact" },
     { "title": "Mina Sectional", "price": "$4,495", "tag": "Family" },
     { "title": "Noah Loveseat", "price": "$2,195", "tag": "Best value" }
   ],
-  "recommendedProductIndex": 0,
-  "demoFooterLine": "Guides shoppers by room size, fabric, and lifestyle needs.",
+  "salesRecommendedIndex": 0,
+  "salesFooterLine": "Guides shoppers by room size, fabric, and lifestyle needs.",
   "montageShopperCue": "I need a sofa for my living room but not sure which fabric suits us.",
   "montageClerkCue": "The Neva Sofa, compact fit with premium comfort for small rooms.",
+  "supportShopperCue": "I spilled coffee on my Neva Sofa slipcover.",
+  "supportClerkCue": "Your Neva Sofa slipcovers are machine-washable.",
+  "supportPolicyName": "Care Guide",
+  "supportProductName": "Neva Sofa",
   "country": "USA",
   "vertical": "home_furniture_decor",
   "subNiche": "furniture_sofas"

@@ -9,17 +9,21 @@
   "secondaryColor": null,
   "textColor": "#FD5000",
   "pitchLine": "Help shoppers find the right portable power station by capacity, use case, and solar setup.",
-  "demoShopperPrompt": "I need a portable power station for camping that can charge from solar panels.",
-  "demoBizmisReply": "Got it — compact and lightweight for weekend trips, or higher capacity for extended off-grid stays?",
-  "demoProducts": [
+  "salesShopperPrompt": "I need a portable power station for camping that can charge from solar panels.",
+  "salesBizmisReply": "Got it — compact and lightweight for weekend trips, or higher capacity for extended off-grid stays?",
+  "salesProducts": [
     { "title": "Explorer 300 v2", "price": "$269", "tag": "Compact" },
     { "title": "Explorer 1500 Ultra", "price": "$999", "tag": "Mid-range" },
     { "title": "Explorer 3000 v2", "price": "$2,499", "tag": "Home" }
   ],
-  "recommendedProductIndex": 1,
-  "demoFooterLine": "Guides shoppers by capacity, use case, and solar setup.",
+  "salesRecommendedIndex": 1,
+  "salesFooterLine": "Guides shoppers by capacity, use case, and solar setup.",
   "montageShopperCue": "I want portable power for camping but not sure what capacity I need.",
   "montageClerkCue": "The Explorer 1500 Ultra, enough juice for a full weekend off-grid.",
+  "supportShopperCue": "My Explorer 1500 Ultra display shows an error code.",
+  "supportClerkCue": "Reset your Explorer 1500 Ultra by holding power 10s.",
+  "supportPolicyName": "Troubleshooting Guide",
+  "supportProductName": "Explorer 1500 Ultra",
   "country": "USA (global)",
   "vertical": "other",
   "subNiche": "portable_power"

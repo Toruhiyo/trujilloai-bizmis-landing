@@ -9,9 +9,9 @@
   "secondaryColor": null,
   "logoColorOverlay": null,
   "pitchLine": "Guide shoppers to the right watch by style, movement type, and occasion.",
-  "demoShopperPrompt": "I want a versatile everyday watch under $500 that looks good dressed up or down.",
-  "demoBizmisReply": "Got it — classic dress style or sporty with water resistance?",
-  "demoProducts": [
+  "salesShopperPrompt": "I want a versatile everyday watch under $500 that looks good dressed up or down.",
+  "salesBizmisReply": "Got it — classic dress style or sporty with water resistance?",
+  "salesProducts": [
     {
       "title": "Lunar Pilot Meteorite",
       "price": "$1,495",
@@ -28,10 +28,14 @@
       "tag": "Casual"
     }
   ],
-  "recommendedProductIndex": 2,
-  "demoFooterLine": "Guides shoppers by style, movement, and occasion.",
+  "salesRecommendedIndex": 2,
+  "salesFooterLine": "Guides shoppers by style, movement, and occasion.",
   "montageShopperCue": "I want an everyday watch that looks good dressed up or casual.",
   "montageClerkCue": "The Snorkel, a versatile retro diver for any occasion.",
+  "supportShopperCue": "My Snorkel crystal got scratched while swimming.",
+  "supportClerkCue": "Your Snorkel has a 3-year warranty, we'll replace it.",
+  "supportPolicyName": "Warranty Policy",
+  "supportProductName": "Snorkel",
   "country": "USA (global)",
   "vertical": "jewelry_luxury",
   "subNiche": "watches"

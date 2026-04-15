@@ -312,7 +312,7 @@ function buildMontageProductCardHtml(
   palette: MontagePalette,
 ): string {
   const productImages = [lead.productAImagePath, lead.productBImagePath, lead.productCImagePath];
-  const product = lead.demoProducts[index];
+  const product = lead.salesProducts[index];
   if (!product) return "";
   const imgUrl = absImg(productImages[index]);
   const [pr, pg, pb] = palette.rgb;
@@ -343,8 +343,26 @@ function buildMontageProductCardHtml(
             </div>`;
 }
 
-const CS_CLERK_CUE_PREFIX = "Answered via ";
-const CS_CLERK_CUE_BOLD = "Return Policy";
+const CS_TOOL_CHIP_PREFIX = "Answered via ";
+const CS_POLICY_FALLBACK = "Return Policy";
+const CS_SHOPPER_FALLBACK = "Is my order covered under warranty?";
+const CS_CLERK_FALLBACK = "Yes, your unit has a full 1-year warranty.";
+
+function highlightProductInHtml(
+  text: string, productName: string | null,
+  normalStyle: string, boldStyle: string,
+): string {
+  if (!productName) return `<span style="${normalStyle}">${escapeHtml(text)}</span>`;
+  const idx = text.indexOf(productName);
+  if (idx < 0) return `<span style="${normalStyle}">${escapeHtml(text)}</span>`;
+  const before = text.slice(0, idx);
+  const after = text.slice(idx + productName.length);
+  return (
+    `<span style="${normalStyle}">${escapeHtml(before)}</span>` +
+    `<span style="${boldStyle}">${escapeHtml(productName)}</span>` +
+    `<span style="${normalStyle}">${escapeHtml(after)}</span>`
+  );
+}
 
 function buildSupportMockupSceneHtml(
   lead: LeadEarlyAccessData,
@@ -352,7 +370,7 @@ function buildSupportMockupSceneHtml(
   montageSceneBg: string,
   montageWhiteGlow: string,
 ): string {
-  const clerkAvatarUrl = absImg(lead.clerkAvatarImagePath || BIZMIS_CLERK_AVATAR_FALLBACK);
+  const avatarUrl = absImg(lead.supportAvatarImagePath || lead.clerkAvatarImagePath || BIZMIS_CLERK_AVATAR_FALLBACK);
   const [pr, pg, pb] = palette.rgb;
   const pw = WAVEFORM_PHONE;
 
@@ -362,13 +380,20 @@ function buildSupportMockupSceneHtml(
   const clerkWaveHtml = emailMontageWatermarkWaveformHtml(...palette.rgb, palette.waveformOpacity, false, pw);
 
   const customerCueStyle = `${BODY}font-size:10px;font-weight:300;font-style:italic;line-height:1.35;color:${BIZMIS_MUTED_LIGHT_HEX};`;
-  const clerkCueStyle = `${BODY}font-size:10px;font-weight:500;line-height:1.35;color:${BIZMIS_FOREGROUND_HEX};`;
-  const clerkCueBoldStyle = `${BODY}font-size:10px;font-weight:800;line-height:1.35;letter-spacing:-0.02em;color:${palette.captionAccent};`;
+  const customerCueBoldStyle = `${BODY}font-size:10px;font-weight:600;font-style:italic;line-height:1.35;color:${BIZMIS_MUTED_LIGHT_HEX};`;
+  const toolChipStyle = `${BODY}font-size:10px;font-weight:500;line-height:1.35;color:${BIZMIS_FOREGROUND_HEX};`;
+  const toolChipBoldStyle = `${BODY}font-size:10px;font-weight:800;line-height:1.35;letter-spacing:-0.02em;color:${palette.captionAccent};`;
   const clerkReplyStyle = `${BODY}font-size:9px;font-weight:400;line-height:1.45;color:${BIZMIS_MUTED_FG_HEX};`;
   const clerkReplyBoldStyle = `${BODY}font-size:9px;font-weight:700;line-height:1.45;color:${palette.captionAccent};`;
-  const customerCueText = lead.montageShopperCue?.trim()
-    ? `\u201c${lead.montageShopperCue.trim()}\u201d`
-    : MONTAGE_CUSTOMER_CUE_TEXT_FALLBACK;
+
+  const shopperRaw = lead.supportShopperCue?.trim() || CS_SHOPPER_FALLBACK;
+  const shopperText = `\u201c${shopperRaw}\u201d`;
+  const productName = lead.supportProductName?.trim() || null;
+  const policyName = lead.supportPolicyName?.trim() || CS_POLICY_FALLBACK;
+  const clerkRaw = lead.supportClerkCue?.trim() || CS_CLERK_FALLBACK;
+
+  const shopperHtml = highlightProductInHtml(shopperText, productName, customerCueStyle, customerCueBoldStyle);
+  const clerkHtml = highlightProductInHtml(clerkRaw, productName, clerkReplyStyle, clerkReplyBoldStyle);
 
   return `<!-- Smartphone frame: customer support showcase -->
         <tr>
@@ -392,13 +417,13 @@ function buildSupportMockupSceneHtml(
                     </div>
                     <div style="position:relative;z-index:1;padding:6px 10px 2px 10px;">
                       <p style="margin:0;">
-                        <span style="${customerCueStyle}">${escapeHtml(customerCueText)}</span>
+                        ${shopperHtml}
                       </p>
                     </div>
                   </div>
 
                   <div style="text-align:center;padding:10px 10px;">
-                    <img src="${clerkAvatarUrl}" alt="Bizmis store clerk" width="${PHONE_AVATAR_W}" style="display:inline-block;max-width:${PHONE_AVATAR_W}px;width:100%;height:auto;border:0;border-radius:14px;filter:drop-shadow(0 8px 24px rgba(50,40,27,0.16));" />
+                    <img src="${avatarUrl}" alt="Bizmis support clerk" width="${PHONE_AVATAR_W}" style="display:inline-block;max-width:${PHONE_AVATAR_W}px;width:100%;height:auto;border:0;border-radius:14px;filter:drop-shadow(0 8px 24px rgba(50,40,27,0.16));" />
                   </div>
 
                   <div style="position:relative;min-height:${pw.h}px;overflow:hidden;display:flex;flex-direction:column;justify-content:flex-end;">
@@ -409,10 +434,10 @@ function buildSupportMockupSceneHtml(
                     </div>
                     <div style="position:relative;z-index:1;padding:0 10px 4px 10px;text-align:right;">
                       <p style="margin:0 0 3px 0;">
-                        <span style="${clerkCueStyle}">${escapeHtml(CS_CLERK_CUE_PREFIX)}</span><span style="${clerkCueBoldStyle}">${escapeHtml(CS_CLERK_CUE_BOLD)}</span>
+                        <span style="${toolChipStyle}">${escapeHtml(CS_TOOL_CHIP_PREFIX)}</span><span style="${toolChipBoldStyle}">${escapeHtml(policyName)}</span>
                       </p>
                       <p style="margin:0;">
-                        <span style="${clerkReplyStyle}">Yes \u2014 if it\u2019s in </span><span style="${clerkReplyBoldStyle}">original condition</span><span style="${clerkReplyStyle}"> with the box, return within 30\u00a0days.</span>
+                        ${clerkHtml}
                       </p>
                     </div>
                   </div>
@@ -428,7 +453,7 @@ function buildSupportMockupSceneHtml(
             <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="${PHONE_FRAME_W}" align="center">
               <tr>
                 <td align="center" style="padding:10px;text-align:center;">
-                  <img src="${clerkAvatarUrl}" alt="Bizmis store clerk" width="160" style="display:block;margin:0 auto;max-width:160px;height:auto;border:0;" />
+                  <img src="${avatarUrl}" alt="Bizmis support clerk" width="160" style="display:block;margin:0 auto;max-width:160px;height:auto;border:0;" />
                 </td>
               </tr>
             </table>
@@ -521,14 +546,14 @@ export function buildLeadEarlyAccessEmailHtml(
   const montageWhiteGlow = montageWhiteGlowCss();
   const MONTAGE_SCENE_APPROX_W = 550;
   const glowTiltDeg = +(Math.atan2(2 * MONTAGE_VERTICAL_SPREAD_PX, MONTAGE_SCENE_APPROX_W) * (180 / Math.PI)).toFixed(1);
-  const recIdx = lead.recommendedProductIndex;
+  const recIdx = lead.salesRecommendedIndex;
   const otherIndices = ([0, 1, 2] as const).filter((i) => i !== recIdx);
   const recommendedCardHtml = buildMontageProductCardHtml(lead, recIdx, true, mp);
   const otherCardHtmlA = buildMontageProductCardHtml(lead, otherIndices[0], false, mp);
   const otherCardHtmlB = buildMontageProductCardHtml(lead, otherIndices[1], false, mp);
   const montageCueBody = BIZMIS_FOREGROUND_HEX;
   const montageCueAccent = mp.captionAccent;
-  const recProductTitle = lead.demoProducts[recIdx].title;
+  const recProductTitle = lead.salesProducts[recIdx].title;
   const montageClerkCueInnerHtml = buildMontageClerkCueInnerHtml(
     lead.montageClerkCue?.trim() || null, recProductTitle, montageCueBody, montageCueAccent,
   );

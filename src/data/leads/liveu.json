@@ -10,9 +10,9 @@
   "bannerColor": "#FFFFFF",
   "logoColorOverlay": null,
   "pitchLine": "Help broadcasters find the right accessories, cables, and cases for their LiveU setup.",
-  "demoShopperPrompt": "I just got an LU300 — what accessories do I need for field production?",
-  "demoBizmisReply": "Got it — indoor studio use or outdoor run-and-gun field work?",
-  "demoProducts": [
+  "salesShopperPrompt": "I just got an LU300 — what accessories do I need for field production?",
+  "salesBizmisReply": "Got it — indoor studio use or outdoor run-and-gun field work?",
+  "salesProducts": [
     {
       "title": "LU300 Pouch",
       "price": "$145",
@@ -29,10 +29,14 @@
       "tag": "Power"
     }
   ],
-  "recommendedProductIndex": 0,
-  "demoFooterLine": "Guides broadcasters by setup, use case, and field requirements.",
+  "salesRecommendedIndex": 0,
+  "salesFooterLine": "Guides broadcasters by setup, use case, and field requirements.",
   "montageShopperCue": "I just got my LiveU unit but not sure which accessories I need.",
   "montageClerkCue": "The LU300 Pouch, keeps your encoder protected in the field.",
+  "supportShopperCue": "My LU300 Pouch won't power on after a full charge.",
+  "supportClerkCue": "Hold the LU300 Pouch reset button for 10 seconds.",
+  "supportPolicyName": "Troubleshooting Guide",
+  "supportProductName": "LU300 Pouch",
   "country": "Global",
   "vertical": "consumer_electronics_appliances",
   "subNiche": "broadcast_streaming"

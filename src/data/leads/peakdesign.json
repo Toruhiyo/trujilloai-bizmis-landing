@@ -9,17 +9,21 @@
   "secondaryColor": null,
   "logoColorOverlay": "#ffffff",
   "pitchLine": "Help photographers and travelers find the right bag, strap, or mount for their setup.",
-  "demoShopperPrompt": "I need a bag for my mirrorless camera that works for travel and daily.",
-  "demoBizmisReply": "Got it — sling for quick access or backpack for all-day carry?",
-  "demoProducts": [
+  "salesShopperPrompt": "I need a bag for my mirrorless camera that works for travel and daily.",
+  "salesBizmisReply": "Got it — sling for quick access or backpack for all-day carry?",
+  "salesProducts": [
     { "title": "Everyday Sling 6L", "price": "$129.95", "tag": "Daily" },
     { "title": "Everyday Backpack 20L", "price": "$279.95", "tag": "Travel" },
     { "title": "Travel Backpack 30L", "price": "$239.95", "tag": "Adventure" }
   ],
-  "recommendedProductIndex": 1,
-  "demoFooterLine": "Guides photographers by gear, style, and carry preference.",
+  "salesRecommendedIndex": 1,
+  "salesFooterLine": "Guides photographers by gear, style, and carry preference.",
   "montageShopperCue": "I need a camera bag that works for travel and daily carry.",
   "montageClerkCue": "The Everyday Backpack 20L, versatile for both gear and travel.",
+  "supportShopperCue": "A zipper on my Everyday Backpack 20L is stuck.",
+  "supportClerkCue": "Your Everyday Backpack 20L has lifetime warranty coverage.",
+  "supportPolicyName": "Warranty Policy",
+  "supportProductName": "Everyday Backpack 20L",
   "country": "USA",
   "vertical": "photography_creator",
   "subNiche": "photography_creator_gear"

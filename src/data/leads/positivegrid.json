@@ -9,9 +9,9 @@
   "secondaryColor": null,
   "logoColorOverlay": "#ffffff",
   "pitchLine": "Help guitarists find the right smart amp by playing level, space, and tone goals.",
-  "demoShopperPrompt": "I'm a bedroom player who wants great tone without annoying my roommates.",
-  "demoBizmisReply": "Got it — headphone-only practice or do you also want to jam with a speaker?",
-  "demoProducts": [
+  "salesShopperPrompt": "I'm a bedroom player who wants great tone without annoying my roommates.",
+  "salesBizmisReply": "Got it — headphone-only practice or do you also want to jam with a speaker?",
+  "salesProducts": [
     {
       "title": "Spark MINI",
       "price": "$211",
@@ -28,10 +28,14 @@
       "tag": "Stage"
     }
   ],
-  "recommendedProductIndex": 0,
-  "demoFooterLine": "Guides guitarists by playing level, space, and tone goals.",
+  "salesRecommendedIndex": 0,
+  "salesFooterLine": "Guides guitarists by playing level, space, and tone goals.",
   "montageShopperCue": "I want great guitar tone at home but don't know which amp to get.",
   "montageClerkCue": "The Spark MINI, big tone at bedroom-friendly volume.",
+  "supportShopperCue": "My Spark MINI firmware update failed halfway through.",
+  "supportClerkCue": "No worries, restart your Spark MINI and retry via USB.",
+  "supportPolicyName": "Troubleshooting Guide",
+  "supportProductName": "Spark MINI",
   "country": "USA (global)",
   "vertical": "consumer_electronics_appliances",
   "subNiche": "music_guitar_amps"

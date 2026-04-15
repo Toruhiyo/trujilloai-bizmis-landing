@@ -77,6 +77,7 @@ function hydrate(raw: LeadEarlyAccessJson, index: number): LeadEarlyAccessData {
     orderInBatch: index + 1,
     logoImagePath: `/invite-cards/leads/${id}/logo.png`,
     clerkAvatarImagePath: `/invite-cards/leads/${id}/clerk-avatar.png`,
+    supportAvatarImagePath: `/invite-cards/leads/${id}/support-avatar.png`,
     productAImagePath: resolveLeadProductPath(id, "a"),
     productBImagePath: resolveLeadProductPath(id, "b"),
     productCImagePath: resolveLeadProductPath(id, "c"),

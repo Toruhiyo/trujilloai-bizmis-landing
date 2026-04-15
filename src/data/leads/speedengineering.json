@@ -9,9 +9,9 @@
   "secondaryColor": null,
   "logoColorOverlay": null,
   "pitchLine": "Help builders find the right LS/LT swap parts by vehicle, engine, and build goal.",
-  "demoShopperPrompt": "I'm doing an LS swap in my '72 C10 — what headers and exhaust should I run?",
-  "demoBizmisReply": "Got it — mild street build or full-send turbo setup?",
-  "demoProducts": [
+  "salesShopperPrompt": "I'm doing an LS swap in my '72 C10 — what headers and exhaust should I run?",
+  "salesBizmisReply": "Got it — mild street build or full-send turbo setup?",
+  "salesProducts": [
     {
       "title": "C10 True Dual Exhaust",
       "price": "$399.99",
@@ -28,10 +28,14 @@
       "tag": "Engine"
     }
   ],
-  "recommendedProductIndex": 1,
-  "demoFooterLine": "Guides builders by vehicle, engine, and build goal.",
+  "salesRecommendedIndex": 1,
+  "salesFooterLine": "Guides builders by vehicle, engine, and build goal.",
   "montageShopperCue": "I'm starting an LS swap but not sure which headers to go with.",
   "montageClerkCue": "The LS Swap Shorty Headers, perfect clearance for tight engine bays.",
+  "supportShopperCue": "My LS Swap Shorty Headers have a small exhaust leak.",
+  "supportClerkCue": "Re-torque your LS Swap Shorty Headers to 25 ft-lbs.",
+  "supportPolicyName": "Installation Guide",
+  "supportProductName": "LS Swap Shorty Headers",
   "country": "USA",
   "vertical": "automotive_parts_accessories",
   "subNiche": "ls_lt_engine_swap"

@@ -168,15 +168,15 @@ Generate these fields in the store's voice and domain:
 | Field               | Description                                                                                                    |
 | ------------------- | -------------------------------------------------------------------------------------------------------------- |
 | `pitchLine`         | One sentence: how Bizmis helps THIS store's shoppers. Pattern: "Help/Guide [audience] [action] by [criteria]." |
-| `demoShopperPrompt` | Realistic shopper question in first person. Natural voice, specific need.                                      |
-| `demoBizmisReply`   | Conversational follow-up that narrows the need. Start with "Got it —" and offer a binary choice.               |
-| `demoFooterLine`    | Rephrase of pitchLine as a caption. Pattern: "Guides [audience] by [criteria]."                                |
+| `salesShopperPrompt` | Realistic shopper question in first person. Natural voice, specific need.                                      |
+| `salesBizmisReply`   | Conversational follow-up that narrows the need. Start with "Got it —" and offer a binary choice.               |
+| `salesFooterLine`    | Rephrase of pitchLine as a caption. Pattern: "Guides [audience] by [criteria]."                                |
 | `montageShopperCue` | Montage shopper line. Vague exploring intent, max 80 chars. See rules below.                                   |
 | `montageClerkCue`   | Montage clerk line. Full sentence with product name and reason, max 80 chars. See rules below.                 |
 
 #### Montage cue copywriting rules
 
-The invite card montage shows a mini assisted-sales story: a shopper asks for help, Bizmis recommends a product with a reason. These are different from `demoShopperPrompt`/`demoBizmisReply` (which are specific Q&A for slides/demos).
+The invite card montage shows a mini assisted-sales story: a shopper asks for help, Bizmis recommends a product with a reason. These are different from `salesShopperPrompt`/`salesBizmisReply` (which are specific Q&A for the assisted-sales demo).
 
 **`montageShopperCue`** (appears at the top of the montage, italic, in curly quotes added by the renderer):
 - Max 80 characters (quotes are NOT stored, only the inner text)
@@ -191,7 +191,7 @@ The invite card montage shows a mini assisted-sales story: a shopper asks for he
 - Full sentence including the product name written naturally (no dynamic injection)
 - Confident recommendation with a short reason showing domain expertise
 - Pattern: `"The [Product Name], [short reason]."` or `"[Product Name] is perfect for [reason]."`
-- The product name MUST match `demoProducts[recommendedProductIndex].title` exactly
+- The product name MUST match `salesProducts[salesRecommendedIndex].title` exactly
 - Never use em-dash characters. Use commas, periods, or natural connectors.
 - The renderer finds the product title via string match and highlights it in bold + primaryColor.
 
@@ -199,6 +199,38 @@ Examples:
 - Guitar amps: shopper `I want great tone at home but don't know which amp.` / clerk `The Spark MINI, big tone at bedroom-friendly volume.`
 - Jewelry: shopper `I'd love to layer necklaces but not sure where to begin.` / clerk `The Birthstone Halo Charm, a perfect first layering piece.`
 - Auto parts: shopper `My E46 needs new control arms, not sure what level.` / clerk `The E46 Control Arm Kit, OEM fit with upgrade durability.`
+
+#### Customer support demo copywriting rules
+
+The invite card includes a second mockup (phone format) showing a customer support interaction. This demonstrates that Bizmis handles post-sale support using the store's policies.
+
+**Key constraint: scenarios must be genuinely post-sale** (the customer already purchased and received the product). NEVER use pre-sale questions (fitment checks, warranty inquiries, product comparisons). NEVER use negative/drama scenarios (returns, refunds, complaints). Good post-sale topics: setup/pairing help, missing hardware, firmware issues, care after use, order tracking, quality guarantee claims. Choose the most natural scenario per store's vertical.
+
+Fields (all max 60 characters, no em-dashes):
+
+| Field | Description |
+|---|---|
+| `supportShopperCue` | Customer's post-sale support issue mentioning a product they already own. Pattern: `"My [Product] [specific issue after delivery/use]."` |
+| `supportClerkCue` | Bizmis response resolving the issue. Pattern: `"[Positive resolution mentioning Product]."` |
+| `supportPolicyName` | The policy/guide chip: `"Troubleshooting Guide"`, `"Shipping Support"`, `"Quality Guarantee"`, `"Setup Guide"`, `"Care Guide"`, etc. |
+| `supportProductName` | The specific product name referenced in both cues. Highlighted in bold by the renderer. Can be any product the store sells (not limited to the 3 demo products). |
+
+**Closed list of policy types** (use ONLY these values for `supportPolicyName`):
+
+| Policy type | When to use | Example scenarios |
+|---|---|---|
+| `Troubleshooting Guide` | Device not working as expected, resets, error codes, firmware, pairing issues | Won't pair, display error, firmware failed, hum/noise, won't power on |
+| `Care Guide` | Cleaning, maintenance routines, material care, consumable replacement, charging | Stain removal, wash instructions, filter replacement, battery charging |
+| `Warranty Policy` | Defect after purchase, broken/cracked parts, lifetime coverage claims | Cracked tool, scratched crystal, loose clasp, stuck zipper |
+| `Installation Guide` | Physical assembly, mounting, torque specs, fitment after install, rattles/wobbles | Wobbly leg, exhaust rattle, dimmer compatibility, bolt torque |
+| `Setup Guide` | Initial WiFi pairing, first-time configuration, calibration, adjustment | WiFi setup, headset tightening, camera recalibration |
+| `Shipping Support` | Missing parts in shipment, wrong item delivered, incomplete kit | Missing bolt bag, missing intake manifold, wrong part shipped |
+| `Service Guide` | Scheduled maintenance intervals, professional service recommendations | Watch running fast (service interval), routine service schedule |
+
+Examples:
+- Guitar amps: shopper `My Spark MINI firmware update failed halfway through.` / clerk `No worries, restart your Spark MINI and retry via USB.` / policy `Troubleshooting Guide`
+- Jewelry: shopper `My Birthstone Halo Charm arrived with a loose clasp.` / clerk `We'll send a replacement Birthstone Halo Charm today.` / policy `Quality Guarantee`
+- Auto parts: shopper `My Control Arm Kit E46 is missing one bolt bag.` / clerk `We'll ship the missing Control Arm Kit E46 hardware now.` / policy `Shipping Support`
 
 ### Step 5 — Save and generate assets (automated)
 
@@ -232,12 +264,17 @@ lead_data = {
     "avatarStampColorOverlay": "#..." or null, # null → falls back to logoColorOverlay
     "avatarStampImage": "icon.svg" or null,    # null → uses logo.png
     "pitchLine": "...",
-    "demoShopperPrompt": "...",
-    "demoBizmisReply": "...",
-    "demoProducts": [...],
-    "demoFooterLine": "...",
+    "salesShopperPrompt": "...",
+    "salesBizmisReply": "...",
+    "salesProducts": [...],
+    "salesRecommendedIndex": 0,
+    "salesFooterLine": "...",
     "montageShopperCue": "...",
     "montageClerkCue": "...",
+    "supportShopperCue": "...",
+    "supportClerkCue": "...",
+    "supportPolicyName": "...",
+    "supportProductName": "...",
     "country": "USA",
     "vertical": "...",
     "subNiche": "..."
@@ -258,34 +295,52 @@ If a custom stamp image was chosen (`avatarStampImage`), download or extract it 
 
 ### Step 6 — Choose avatar character and generate (cognitive + automated)
 
-#### 6a — Choose the avatar character
+#### 6a — Choose the avatar characters (sales + support)
 
-Pick which 3D avatar best fits the brand's persona, audience, and vertical. Each lead gets its own `avatar_id` in the registry.
+Each lead gets **two** avatars: a **sales avatar** (`avatar_id`) for the assisted-sales montage and a **support avatar** (`support_avatar_id`) for the customer support phone mockup.
+
+**Critical rule: the support avatar MUST be the opposite gender from the sales avatar.** This is non-negotiable.
 
 **Available avatars:**
 
-| ID              | Persona archetype                                                               |
-| --------------- | ------------------------------------------------------------------------------- |
-| `amber`         | Female, warm — lifestyle brands, home/decor, beauty                             |
-| `avatar_mathew` | Male, professional — expert-advice brands, B2B, trade                           |
-| `avatar_matt`   | Male, classic — heritage brands, luxury, established                            |
-| `echo`          | Male, hipster (beard + headphones) — audio, music, creative, cycling            |
-| `kiran`         | Male, tech-savvy — electronics, SaaS, broadcast, smart home                     |
-| `luca`          | Male, European/design — furniture, fashion, Euro automotive                     |
-| `teo`           | Male, casual (baseball cap) — automotive, outdoor, blue-collar, garage          |
-| `will`          | Male, authoritative — security, professional services, mid-century design       |
-| `yue`           | Female, fashion-forward (glasses + dress) — jewelry, women's fashion, editorial |
-| `yusuke`        | Male, refined — Japanese culture, watches, minimalist, precision                |
+| ID              | Gender | Persona archetype                                                              |
+| --------------- | ------ | ------------------------------------------------------------------------------ |
+| `adrian`        | M      | Nerdy/friendly (orange glasses) — tech, education, gadgets, approachable       |
+| `amber`         | F      | Warm — lifestyle brands, home/decor, beauty                                    |
+| `echo`          | M      | Hipster (beard + headphones) — audio, music, creative, cycling                 |
+| `kiran`         | M      | Tech-savvy — electronics, SaaS, broadcast, smart home                          |
+| `luca`          | M      | European/design — furniture, fashion, Euro automotive                          |
+| `matt`          | M      | Professional/classic (tie) — heritage, luxury, B2B, trade, established brands  |
+| `mia`           | F      | Modern/cute (dark bob + bangs) — beauty, skincare, younger audience            |
+| `teo`           | M      | Casual (baseball cap) — automotive, outdoor, blue-collar, garage               |
+| `victor`        | M      | Edgy/bold (orange buzz, ear piercing) — streetwear, gaming, energy             |
+| `will`          | M      | Authoritative — security, professional services, mid-century design            |
+| `yue`           | F      | Fashion-forward (glasses + dress) — jewelry, women's fashion, editorial        |
+| `yusuke`        | M      | Refined — Japanese culture, watches, minimalist, precision                     |
+GREA
+**Sales avatar selection** (apply in order):
 
-**Selection heuristics** (apply in order until a clear winner emerges):
-
-1. **Direct trait match** — Echo for audio brands (he wears headphones), Yusuke for JDM culture, Yue for women's jewelry.
-2. **Audience gender skew** — feminine-leaning brands → Amber or Yue. Male-dominated verticals → any male avatar.
+1. **Sector gender fit** — feminine-leaning sectors (jewelry, beauty, fashion, shapewear, fragrance) → `amber` or `yue`. Masculine-leaning sectors (automotive, tools, security, exhaust, engine) → clearly male avatar.
+2. **Direct trait match** — Echo for audio brands (headphones), Yusuke for JDM, Yue for women's jewelry.
 3. **Vertical fit** — automotive/garage → Teo. Luxury/watches → Yusuke or Matt. Home/lifestyle → Amber or Luca. Tech → Kiran.
-4. **Brand tone** — playful/casual → Teo or Echo. Professional/authoritative → Will or Mathew. Refined/minimal → Yusuke or Luca.
-5. **Variety across the batch** — avoid assigning the same avatar to consecutive leads when possible. Diversity across the full invite set looks better.
+4. **Brand tone** — playful/casual → Teo or Echo. Professional → Will or Mathew. Refined → Yusuke or Luca.
+5. **Variety across the batch** — avoid consecutive duplicates when possible.
 
-Duplicates are fine — different brands can share an avatar. The goal is brand fit, not uniqueness.
+**Support avatar selection** (after sales avatar is chosen):
+
+- Sales avatar is male → support = `amber` or `yue` (pick whichever fits the brand better)
+- Sales avatar is female → support = any male avatar that fits the brand tone
+
+**Render format differences:**
+
+| | Sales avatar | Support avatar |
+|---|---|---|
+| Output file | `clerk-avatar.png` | `support-avatar.png` |
+| Widget format | Desktop (`mobile=False`) | Mobile (`mobile=True`) |
+| Framing | `upper_body` | `head` |
+| Animation | `presenting_left` | `idle_neutral` |
+| Expression | `E` | `smile` |
+| Widget state | `listening` | `speaking` |
 
 #### 6b — Update registry and generate
 
@@ -294,18 +349,21 @@ After assets are saved, **update the lead's entry in `scripts/early_access_avata
 ```python
 # Add to LEAD_REGISTRY in _config.py:
 {"id": "newlead", "primary_color": "#...", "logo_color_overlay": ...,
- "avatar_id": "echo",
+ "avatar_id": "echo", "support_avatar_id": "amber",
  "shirt_color": "#...", "stamp_color_overlay": "...", "stamp_image": "..."},
+# avatar_id and support_avatar_id are required.
+# support_avatar_id MUST be opposite gender from avatar_id.
 # Only include shirt_color / stamp_color_overlay / stamp_image when they
 # differ from primary_color / logo_color_overlay / default "logo.png".
-# avatar_id is required — choose from the table above.
 ```
 
-Then generate the clerk avatar (the per-lead `avatar_id` is used automatically):
+Then generate both avatars:
 
 ```python
-from early_access_avatars import generate_lead
+from early_access_avatars import generate_lead, generate_support_lead
+
 generate_lead("newlead")
+generate_support_lead("newlead")
 # Override for testing: generate_lead("newlead", avatar_id="will")
 ```
 
@@ -351,7 +409,11 @@ Use browser MCP tools to screenshot both the live store and the generated invite
 | Logo legibility     | Logo is readable on the banner (sufficient contrast with the banner background).                                                      |
 | Avatar shirt        | Shirt colour looks branded (not default/generic). Stamp is legible on the shirt. For untinted emblems, shirt must match banner background. |
 | Montage shopper cue | Shopper line relates to the store's niche and reads as a vague exploring question (not a specific product query). Max 80 chars. No em-dashes. |
-| Montage clerk cue   | Clerk line references the correct recommended product (matching `demoProducts[recommendedProductIndex].title` exactly) with a plausible domain reason. Max 80 chars. No em-dashes. Product name appears highlighted in bold + primaryColor in the rendered preview. |
+| Montage clerk cue   | Clerk line references the correct recommended product (matching `salesProducts[salesRecommendedIndex].title` exactly) with a plausible domain reason. Max 80 chars. No em-dashes. Product name appears highlighted in bold + primaryColor in the rendered preview. |
+| Support avatar      | Support avatar uses a different character than the sales avatar and is the opposite gender. Mobile widget format. |
+| Support shopper cue | Customer question mentions a specific product, relates to a positive policy topic (NOT returns/refunds). Max 60 chars. No em-dashes. |
+| Support clerk cue   | Bizmis response resolves the question naturally, references the same product. Max 60 chars. No em-dashes. Product name highlighted in bold + accent. |
+| Support policy chip | Tool chip reads "Answered via {policy}" with a relevant policy name (Warranty, Care Guide, Shipping, etc.). Not "Return Policy". |
 
 4. If any check fails → fix the issue (re-download logo, adjust `bannerColor`/`primaryColor`/`logoColorOverlay` in the JSON and `_config.py`, regenerate avatar) → re-screenshot the invite card → re-verify.
 
@@ -375,7 +437,9 @@ Open the admin UI at `/admin/invite-cards/early-access/<lead-id>` and check:
 - Logo visibility and contrast against the brand colour banner
 - Product images load correctly
 - Copy reads naturally
-- Clerk avatar renders with correct shirt colour and logo stamp
+- Sales clerk avatar renders with correct shirt colour and logo stamp
+- Support avatar renders in mobile format with a different character (opposite gender)
+- Support mockup shows per-lead content (not hardcoded fallbacks)
 - Email HTML size is reasonable (< 50 KB)
 
 ## JSON Schema
@@ -392,11 +456,16 @@ content            string       Custom HTML message (usually empty)
 primaryColor       string       Hex — navbar background colour (often #FFFFFF)
 secondaryColor     string|null  Secondary hex or null
 pitchLine          string       One-sentence value prop
-demoShopperPrompt  string       Shopper question for demo (specific product need)
-demoBizmisReply    string       Bizmis follow-up for demo (binary choice)
-demoProducts       array[3]     [{title, price, tag}, ...] — prices MUST be exact
+salesShopperPrompt  string      Assisted-sales demo: shopper question (specific product need)
+salesBizmisReply    string      Assisted-sales demo: Bizmis follow-up (binary choice)
+salesProducts       array[3]   [{title, price, tag}, ...] — prices MUST be exact
+salesRecommendedIndex  0|1|2   Index into salesProducts for the recommended pick
 montageShopperCue  string       Montage shopper line (vague exploring, max 80 chars)
 montageClerkCue    string       Montage clerk line (product name + reason, max 80 chars)
+supportShopperCue  string       Support demo: customer question (max 60 chars)
+supportClerkCue    string       Support demo: Bizmis response (max 60 chars)
+supportPolicyName  string       Support demo: policy chip label (e.g. "Warranty Policy")
+supportProductName string       Support demo: product to highlight in both cues
 country            string       Market label
 vertical           string       Industry vertical (snake_case)
 subNiche           string       Sub-niche (snake_case, can be empty)
@@ -414,7 +483,7 @@ Optional fields — invite-card top bar:
 
 Optional fields — email copy:
 
-- `demoFooterLine`: caption-style rephrase of pitchLine.
+- `salesFooterLine`: caption-style rephrase of pitchLine.
 - `montageShopperCue`: vague exploring shopper line for the montage (max 80 chars). See Step 4 rules.
 - `montageClerkCue`: full clerk recommendation for the montage with product name and reason (max 80 chars). See Step 4 rules.
 
