@@ -22,6 +22,8 @@ export const EARLY_ACCESS_EMAIL_COPY = {
   softCtaAboveMockupAfterLinkSuffix: " and ",
   softCtaAboveMockupEmphasisBold: "shape the product roadmap",
   softCtaAboveMockupEmphasisTail: " around your store\u2019s needs.",
+  softCtaClosingPhrase:
+    "Claim one of the limited spots to get premium early access and a direct voice in the product.",
   subline:
     "Try Bizmis at no cost for 30 days on your Shopify store, and shape the product around your team\u2019s and customers\u2019 needs by sharing feedback as you go.",
   ctaLabel: "Install Bizmis with early access",
@@ -74,8 +76,13 @@ export function buildEarlyAccessChips(storeCap: number): readonly [string, strin
   return [
     "30 days on us*. No commitment",
     "Shape the roadmap",
-    `Limited to ${storeCap} stores only`,
+    `Limited to ${storeCap} stores`,
   ] as const;
+}
+
+export function buildSoftCtaPlainText(shopifyAppUrl: string): string {
+  const c = EARLY_ACCESS_EMAIL_COPY;
+  return `${c.softCtaAboveMockupLinkPhrase} ${shopifyAppUrl}${c.softCtaAboveMockupAfterLinkPrefix}${c.softCtaAboveMockupNoCostBold}${c.softCtaAboveMockupAfterLinkSuffix}${c.softCtaAboveMockupEmphasisBold}${c.softCtaAboveMockupEmphasisTail} ${c.softCtaClosingPhrase}`;
 }
 
 export function buildEarlyAccessTrialUsageFootnotePlainText(): string {

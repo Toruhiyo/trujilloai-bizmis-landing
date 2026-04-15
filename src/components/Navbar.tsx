@@ -1,9 +1,11 @@
 import { Button } from "@/components/ui/button";
 import { Menu, X } from "lucide-react";
 import { FaShopify } from "react-icons/fa";
+import type { MouseEvent } from "react";
 import { useState, useEffect } from "react";
 import { scrollToTop, scrollToSection } from "@/lib/utils/scroll";
 import { useNavigate, useLocation } from "react-router-dom";
+import { BIZMIS_SHOPIFY_APP_LISTING_URL, openBizmisShopifyAppListing } from "@/lib/bizmisUrls";
 import Logo from "./Logo";
 
 const Navbar = () => {
@@ -35,6 +37,11 @@ const Navbar = () => {
     { label: "Pricing", href: "/pricing" },
     { label: "FAQs", href: "/faqs" },
   ];
+
+  const handleShopifyInstallNavClick = (e: MouseEvent<HTMLAnchorElement>) => {
+    e.preventDefault();
+    openBizmisShopifyAppListing();
+  };
 
   const handleNavigation = (href: string) => {
     if (href.startsWith("#")) {
@@ -110,15 +117,22 @@ const Navbar = () => {
             */}
             <Button
               variant={isInHero ? "outline" : "default"}
-              onClick={() => handleNavigation("/pricing")}
-              className={`font-medium text-base transition-all duration-300 inline-flex items-center gap-2 ${
+              asChild
+              className={`font-medium text-base transition-all duration-300 inline-flex items-center gap-2 [&_svg]:pointer-events-auto ${
                 isInHero
                   ? "bg-transparent text-white border border-white hover:bg-white/10 [&_svg]:text-white"
                   : ""
               }`}
             >
-              <FaShopify className="h-5 w-5" />
-              Install Now
+              <a
+                href={BIZMIS_SHOPIFY_APP_LISTING_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={handleShopifyInstallNavClick}
+              >
+                <FaShopify className="h-5 w-5" />
+                Install Now
+              </a>
             </Button>
           </div>
 
@@ -168,13 +182,17 @@ const Navbar = () => {
                   Sign In
                 </Button>
                 */}
-                <Button
-                  variant="default"
-                  onClick={() => handleNavigation("/pricing")}
-                  className="w-full font-medium text-base inline-flex items-center justify-center gap-2"
-                >
-                  <FaShopify className="h-5 w-5" />
-                  Install Now
+                <Button variant="default" asChild className="w-full font-medium text-base [&_svg]:pointer-events-auto">
+                  <a
+                    href={BIZMIS_SHOPIFY_APP_LISTING_URL}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex w-full items-center justify-center gap-2"
+                    onClick={handleShopifyInstallNavClick}
+                  >
+                    <FaShopify className="h-5 w-5" />
+                    Install Now
+                  </a>
                 </Button>
               </div>
             </div>

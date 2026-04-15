@@ -1,8 +1,10 @@
+import type { MouseEvent } from "react";
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
 import { FaShopify } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { usePostHog } from "posthog-js/react";
+import { BIZMIS_SHOPIFY_APP_LISTING_URL, openBizmisShopifyAppListing } from "@/lib/bizmisUrls";
 import Navbar from "./Navbar";
 
 const Hero = () => {
@@ -17,12 +19,13 @@ const Hero = () => {
     navigate("/contact?subject=Bizmis%20Website%20Integration");
   };
 
-  const handleGetStartedClick = () => {
+  const handleShopifyInstallClick = (e: MouseEvent<HTMLAnchorElement>) => {
+    e.preventDefault();
+    openBizmisShopifyAppListing();
     posthog.capture("cta_clicked", {
       cta_type: "get_started",
       location: "hero",
     });
-    navigate("/pricing");
   };
   return (
     <section
@@ -85,20 +88,27 @@ const Hero = () => {
               <Button
                 variant="hero"
                 size="xl"
-                onClick={handleGetStartedClick}
-                className="group flex items-center gap-3 h-12 sm:h-14 px-4 sm:px-6 text-sm sm:text-base [&_svg]:!w-5 [&_svg]:!h-5 sm:[&_svg]:!w-6 sm:[&_svg]:!h-6 w-full"
+                asChild
+                className="group flex items-center gap-3 h-12 sm:h-14 px-4 sm:px-6 text-sm sm:text-base [&_svg]:!w-5 [&_svg]:!h-5 sm:[&_svg]:!w-6 sm:[&_svg]:!h-6 w-full [&_svg]:pointer-events-auto"
               >
-                <div className="flex-shrink-0">
-                  <FaShopify className="w-6 h-6 sm:w-7 sm:h-7 text-primary" />
-                </div>
-                <div className="flex-1 min-w-0 text-center">
-                  <div className="font-semibold text-xs sm:text-sm">
-                    Install Now
+                <a
+                  href={BIZMIS_SHOPIFY_APP_LISTING_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={handleShopifyInstallClick}
+                >
+                  <div className="flex-shrink-0">
+                    <FaShopify className="w-6 h-6 sm:w-7 sm:h-7 text-primary" />
                   </div>
-                </div>
-                <div className="flex-shrink-0">
-                  <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 group-hover:translate-x-1 transition-transform" />
-                </div>
+                  <div className="flex-1 min-w-0 text-center">
+                    <div className="font-semibold text-xs sm:text-sm">
+                      Install Now
+                    </div>
+                  </div>
+                  <div className="flex-shrink-0">
+                    <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 group-hover:translate-x-1 transition-transform" />
+                  </div>
+                </a>
               </Button>
 
               <div className="flex flex-col gap-2 items-center w-full">
@@ -161,23 +171,30 @@ const Hero = () => {
                 <Button
                   variant="hero"
                   size="xl"
-                  onClick={handleGetStartedClick}
-                  className="group flex items-center gap-4 h-20 px-8 text-lg [&_svg]:!w-8 [&_svg]:!h-8 w-full"
+                  asChild
+                  className="group flex items-center gap-4 h-20 px-8 text-lg [&_svg]:!w-8 [&_svg]:!h-8 w-full [&_svg]:pointer-events-auto"
                 >
-                  <div className="flex-shrink-0">
-                    <FaShopify className="w-9 h-9 text-primary" />
-                  </div>
-                  <div className="flex-1 min-w-0 text-left">
-                    <div className="font-semibold">
-                      Install Now
+                  <a
+                    href={BIZMIS_SHOPIFY_APP_LISTING_URL}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onClick={handleShopifyInstallClick}
+                  >
+                    <div className="flex-shrink-0">
+                      <FaShopify className="w-9 h-9 text-primary" />
                     </div>
-                    <div className="text-sm opacity-80">
-                      One-click install, ready in minutes
+                    <div className="flex-1 min-w-0 text-left">
+                      <div className="font-semibold">
+                        Install Now
+                      </div>
+                      <div className="text-sm opacity-80">
+                        One-click install, ready in minutes
+                      </div>
                     </div>
-                  </div>
-                  <div className="flex-shrink-0">
-                    <ArrowRight className="w-6 h-6 group-hover:translate-x-1 transition-transform" />
-                  </div>
+                    <div className="flex-shrink-0">
+                      <ArrowRight className="w-6 h-6 group-hover:translate-x-1 transition-transform" />
+                    </div>
+                  </a>
                 </Button>
 
                 <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 items-center w-full">

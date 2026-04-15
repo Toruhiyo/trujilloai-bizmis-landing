@@ -1,3 +1,4 @@
+import type { MouseEvent } from "react";
 import { useState, useEffect } from "react";
 import {
   FaGlobe,
@@ -11,6 +12,7 @@ import {
   FaShopify,
 } from "react-icons/fa";
 import { Button } from "@/components/ui/button";
+import { BIZMIS_SHOPIFY_APP_LISTING_URL, openBizmisShopifyAppListing } from "@/lib/bizmisUrls";
 import SectionBadge from "./SectionBadge";
 import Xarrow from "react-xarrows";
 
@@ -64,6 +66,11 @@ const shopifyDataCards = [
 ];
 
 const Setup = () => {
+  const handleShopifyInstallClick = (e: MouseEvent<HTMLAnchorElement>) => {
+    e.preventDefault();
+    openBizmisShopifyAppListing();
+  };
+
   // State for forcing re-renders - separate key for each connector
   const [renderKeys, setRenderKeys] = useState([0, 0, 0, 0, 0]);
 
@@ -457,9 +464,17 @@ const Setup = () => {
 
             {/* CTA */}
             <div className="text-center">
-              <Button className="bg-foreground hover:bg-foreground/90 text-white px-8 py-3 text-lg inline-flex items-center gap-2">
-                <FaShopify className="h-5 w-5" />
-                Install Bizmis on Shopify
+              <Button asChild className="bg-foreground hover:bg-foreground/90 text-white px-8 py-3 text-lg [&_svg]:pointer-events-auto">
+                <a
+                  href={BIZMIS_SHOPIFY_APP_LISTING_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex w-full items-center justify-center gap-2 sm:w-auto"
+                  onClick={handleShopifyInstallClick}
+                >
+                  <FaShopify className="h-5 w-5" />
+                  Install Bizmis on Shopify
+                </a>
               </Button>
               <p className="text-sm text-muted-foreground mt-3 font-body opacity-60">
                 Start selling and supporting customers now.

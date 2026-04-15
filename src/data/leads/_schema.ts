@@ -1,3 +1,5 @@
+import { BIZMIS_SHOPIFY_APP_LISTING_URL } from "@/lib/bizmisUrls";
+
 export type DemoProductCard = {
   title: string;
   price: string;
@@ -64,7 +66,7 @@ export const EARLY_ACCESS_TERMS = {
   trialDays: 30,
   shopperCap: 500,
   storeCap: 25,
-  shopifyAppUrl: "https://apps.shopify.com/bizmis",
+  shopifyAppUrl: BIZMIS_SHOPIFY_APP_LISTING_URL,
 } as const;
 
 const HEX_OVERLAY = /^#([0-9A-Fa-f]{3}|[0-9A-Fa-f]{4}|[0-9A-Fa-f]{6}|[0-9A-Fa-f]{8})$/;

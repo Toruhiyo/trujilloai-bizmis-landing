@@ -3,18 +3,21 @@ import { MessageCircle } from "lucide-react";
 import { FaShopify } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { usePostHog } from "posthog-js/react";
+import type { MouseEvent } from "react";
+import { BIZMIS_SHOPIFY_APP_LISTING_URL, openBizmisShopifyAppListing } from "@/lib/bizmisUrls";
 import EarlyAccessCard from "./EarlyAccessCard";
 
 const FinalCTA = () => {
   const navigate = useNavigate();
   const posthog = usePostHog();
 
-  const handleJoinWaitlist = () => {
+  const handleInstallOnShopifyClick = (e: MouseEvent<HTMLAnchorElement>) => {
+    e.preventDefault();
+    openBizmisShopifyAppListing();
     posthog.capture("cta_clicked", {
-      cta_type: "join_waitlist",
+      cta_type: "shopify_app_listing",
       location: "final_cta",
     });
-    navigate("/pricing");
   };
 
   const handleTalkToSales = () => {
@@ -99,16 +102,24 @@ const FinalCTA = () => {
               {/* CTA Buttons */}
               <div className="flex flex-col sm:flex-row gap-4 mb-6">
                 <Button
-                  onClick={handleJoinWaitlist}
-                  aria-label="Join Bizmis Waitlist"
-                  className="bg-white text-primary hover:bg-white/95 hover:shadow-lg focus:ring-2 focus:ring-primary/30 focus:ring-offset-2 focus:ring-offset-primary text-lg px-8 py-4 h-auto group transition-all duration-200 [&>svg]:!w-6 [&>svg]:!h-6 [&>svg]:!mr-3"
+                  asChild
+                  aria-label="Install Bizmis on Shopify"
+                  className="inline-flex w-full min-w-0 justify-center bg-white text-primary hover:bg-white/95 hover:shadow-lg focus:ring-2 focus:ring-primary/30 focus:ring-offset-2 focus:ring-offset-primary text-lg px-8 py-4 h-auto group transition-all duration-200 sm:w-auto [&>svg]:!w-6 [&>svg]:!h-6 [&>svg]:!mr-3 [&_svg]:pointer-events-auto"
                   size="xl"
                 >
-                  <FaShopify
-                    className="text-primary"
-                    aria-hidden="true"
-                  />
-                  Join the Waitlist
+                  <a
+                    href={BIZMIS_SHOPIFY_APP_LISTING_URL}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex w-full min-w-0 items-center justify-center gap-2"
+                    onClick={handleInstallOnShopifyClick}
+                  >
+                    <FaShopify
+                      className="text-primary"
+                      aria-hidden="true"
+                    />
+                    Install on Shopify
+                  </a>
                 </Button>
 
                 <div className="flex flex-col sm:flex-row gap-4">
