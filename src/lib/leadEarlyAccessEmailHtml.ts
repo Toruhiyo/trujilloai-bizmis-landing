@@ -475,7 +475,15 @@ function buildSetupSyncBadgesHtml(): string {
   return badges.map((b) => `<span style="${badgeStyle}">${b.svg}&nbsp;${escapeHtml(b.label)}</span>`).join("");
 }
 
-function buildSetupPlugPlayFooterHtml(bizmisLogoUrl: string): string {
+function buildSetupPlugPlayFooterSharedParts(bizmisLogoUrl: string): {
+  badgesHtml: string;
+  logoMasked: string;
+  triangleStainLayersHtml: string;
+  triH: number;
+  triMaxW: number;
+  triTop: number;
+  triScale: number;
+} {
   const badgesHtml = buildSetupSyncBadgesHtml();
   const logoMasked = buildPlainBenefitCardIconHtml(bizmisLogoUrl, 24);
   const triH = SETUP_PLUG_PLAY_TRIANGLE_HEIGHT_PX;
@@ -492,21 +500,36 @@ function buildSetupPlugPlayFooterHtml(bizmisLogoUrl: string): string {
     ? `<div style="position:absolute;inset:0;background:rgb(249,163,83);clip-path:polygon(${bL}% 0, ${bR}% 0, 50% 100%);-webkit-clip-path:polygon(${bL}% 0, ${bR}% 0, 50% 100%);opacity:1;"></div>`
     : `<div style="position:absolute;inset:-9px;background:linear-gradient(180deg, rgba(249,163,83,0.02) 0%, rgba(249,163,83,0.06) 32%, rgba(249,163,83,0.12) 62%, rgba(249,163,83,0.2) 100%);clip-path:polygon(${blurL}% 0, ${blurR}% 0, 50% 100%);-webkit-clip-path:polygon(${blurL}% 0, ${blurR}% 0, 50% 100%);filter:blur(${bWide}px);-webkit-filter:blur(${bWide}px);opacity:0.88;"></div>
     <div style="position:absolute;inset:-5px;background:linear-gradient(180deg, rgba(249,163,83,0.04) 0%, rgba(249,163,83,0.03) 22%, rgba(249,163,83,0.08) 52%, rgba(249,163,83,0.14) 100%);clip-path:polygon(${bL}% 0, ${bR}% 0, 50% 100%);-webkit-clip-path:polygon(${bL}% 0, ${bR}% 0, 50% 100%);filter:blur(${bSoft}px);-webkit-filter:blur(${bSoft}px);opacity:0.9;"></div>`;
-  return `<!--[if !mso]><!-->
-<div style="position:relative;text-align:center;max-width:${triMaxW}px;margin:0 auto;padding:4px 12px 0;overflow:visible;">
-  <div aria-hidden="true" style="position:absolute;left:50%;top:${triTop}px;width:100%;max-width:${triMaxW}px;height:${triH}px;z-index:0;pointer-events:none;overflow:visible;transform:translateX(-50%) scale(${triScale});-webkit-transform:translateX(-50%) scale(${triScale});transform-origin:50% 0;">
-    ${triangleStainLayersHtml}
+  return {
+    badgesHtml,
+    logoMasked,
+    triangleStainLayersHtml,
+    triH,
+    triMaxW,
+    triTop,
+    triScale,
+  };
+}
+
+/** Sync badges + triangle + logo for modern clients; no MSO conditionals (safe inside outer `<!--[if !mso]>`). */
+function buildSetupPlugPlayFooterNonMsoHtml(bizmisLogoUrl: string): string {
+  const p = buildSetupPlugPlayFooterSharedParts(bizmisLogoUrl);
+  return `<div style="position:relative;text-align:center;max-width:${p.triMaxW}px;margin:0 auto;padding:4px 12px 0;overflow:visible;">
+  <div aria-hidden="true" style="position:absolute;left:50%;top:${p.triTop}px;width:100%;max-width:${p.triMaxW}px;height:${p.triH}px;z-index:0;pointer-events:none;overflow:visible;transform:translateX(-50%) scale(${p.triScale});-webkit-transform:translateX(-50%) scale(${p.triScale});transform-origin:50% 0;">
+    ${p.triangleStainLayersHtml}
   </div>
-  <div style="position:relative;z-index:1;line-height:1.2;">${badgesHtml}</div>
-  <div style="position:relative;z-index:1;padding:10px 0 0;">${logoMasked}</div>
-</div>
-<!--<![endif]-->
-<!--[if mso]>
-<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="${SETUP_PLUG_PLAY_TRIANGLE_MAX_WIDTH_PX}" align="center">
-  <tr><td style="padding:4px 12px 0;text-align:center;">${badgesHtml}</td></tr>
+  <div style="position:relative;z-index:1;line-height:1.2;">${p.badgesHtml}</div>
+  <div style="position:relative;z-index:1;padding:10px 0 0;">${p.logoMasked}</div>
+</div>`;
+}
+
+/** Outlook-only table; no outer `<!--[if mso]>` (caller wraps). */
+function buildSetupPlugPlayFooterMsoInnerHtml(bizmisLogoUrl: string): string {
+  const p = buildSetupPlugPlayFooterSharedParts(bizmisLogoUrl);
+  return `<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="${SETUP_PLUG_PLAY_TRIANGLE_MAX_WIDTH_PX}" align="center">
+  <tr><td style="padding:4px 12px 0;text-align:center;">${p.badgesHtml}</td></tr>
   <tr><td style="padding:10px 0 0;text-align:center;"><img src="${bizmisLogoUrl}" alt="Bizmis" width="24" height="24" style="display:inline-block;width:24px;height:24px;border:0;" /></td></tr>
-</table>
-<![endif]-->`;
+</table>`;
 }
 
 function buildBenefitCardHtml(
@@ -1018,7 +1041,7 @@ export function buildLeadEarlyAccessEmailHtml(
   const inviteTopPadAfterBannerPx = 34;
   const inviteTopPadAfterGreetingPx = 36;
   const inviteTopPadAfterLeadPx = 24;
-  const inviteTopPadBeforeMockupPx = 34;
+  const inviteTopPadBeforeMockupPx = 48;
 
   const softCtaChipPhrases = buildEarlyAccessChips(storeCap);
   const softCtaAboveMockupPrimaryStyle = `${HEADING}font-size:14px;font-weight:600;color:${BIZMIS_PRIMARY_HEX};letter-spacing:-0.02em;line-height:1.35;text-decoration:none;`;
@@ -1287,35 +1310,38 @@ export function buildLeadEarlyAccessEmailHtml(
           </td>
         </tr>
 
-        <!-- Benefit 4: Plug and Play wide card -->
+        <!-- Plug and Play: title + sync footer in one primary-bordered block -->
         <tr>
           <td style="padding:28px 20px 0 20px;">
             <!--[if !mso]><!-->
-            <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="max-width:520px;margin:0 auto;">
+            <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="max-width:520px;margin:0 auto;border:1px solid ${BIZMIS_PRIMARY_HEX};border-radius:14px;border-collapse:separate;background-color:transparent;">
               <tr>
                 <td style="padding:0;">
                   ${setupBenefitCardHtml}
                 </td>
               </tr>
+              <tr>
+                <td style="padding:0 4px 14px 4px;">
+                  ${buildSetupPlugPlayFooterNonMsoHtml(bizmisLogoUrl)}
+                </td>
+              </tr>
             </table>
             <!--<![endif]-->
             <!--[if mso]>
-            <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="520" align="center">
+            <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="520" align="center" style="border:1px solid ${BIZMIS_PRIMARY_HEX};border-collapse:collapse;">
               <tr>
-                <td valign="top" width="520" style="padding:0;">
+                <td valign="top" width="520" style="padding:12px 16px 0 16px;background-color:transparent;">
                   <p style="margin:0;${HEADING}font-size:${BENEFIT_CARD_GLOW_TITLE_FONT_PX}px;font-weight:800;color:${BIZMIS_FOREGROUND_HEX};text-align:center;">${escapeHtml(copy.setupTitle)}</p>
                   <p style="margin:6px 0 0;${BODY}font-size:${BENEFIT_CARD_GLOW_SUBTITLE_FONT_PX}px;color:${BIZMIS_MUTED_FG_HEX};line-height:1.35;text-align:center;">${escapeHtml(copy.setupSubtitle)}</p>
                 </td>
               </tr>
+              <tr>
+                <td width="520" style="padding:0 4px 12px 4px;background-color:transparent;">
+                  ${buildSetupPlugPlayFooterMsoInnerHtml(bizmisLogoUrl)}
+                </td>
+              </tr>
             </table>
             <![endif]-->
-          </td>
-        </tr>
-
-        <!-- Plug and Play: sync badges + primary triangle stain + Bizmis logo -->
-        <tr>
-          <td style="padding:0 8px 0 8px;">
-            ${buildSetupPlugPlayFooterHtml(bizmisLogoUrl)}
           </td>
         </tr>
 
