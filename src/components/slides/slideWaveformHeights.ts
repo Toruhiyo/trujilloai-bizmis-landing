@@ -2,6 +2,8 @@
  * Half-wave bars on benefit slides use the same height sequence and per-bar
  * opacity curve as the Shopify deck cover hero (`ShopifyDeck` waveform), scaled
  * to `HALF_WAVE_BAR_COUNT` bars — no separate smoothing/resampling pipeline.
+ *
+ * Full-width cover PNG for email: `scripts/lib/shopifyCoverFullWidthWaveform.mjs` (keep in sync).
  */
 
 /** Same sequence as `WAVEFORM_HEIGHTS` in `src/pages/slides/ShopifyDeck.tsx`. */
@@ -19,6 +21,21 @@ export const HALF_WAVE_BAR_COUNT = 80;
 const EYEBROW_CENTER = 0.28;
 const EYEBROW_FADE_HALF_WIDTH = 0.28;
 const EYEBROW_MIN_OPACITY = 0.3;
+
+/** Same as `WAVEFORM_FULL_WIDTH_BAR_COUNT` in `src/pages/slides/ShopifyDeck.tsx`. */
+export const SHOPIFY_COVER_FULL_WIDTH_BAR_COUNT = 200;
+
+/**
+ * Same as `waveBarOpacity` on the Shopify deck cover full-width waveform row
+ * (`ShopifyHeroContent`).
+ */
+export function shopifyCoverFullWidthWaveBarOpacity(barIndex: number): number {
+  const n = SHOPIFY_COVER_FULL_WIDTH_BAR_COUNT;
+  const progress = n > 1 ? barIndex / (n - 1) : 0;
+  const dist = Math.abs(progress - EYEBROW_CENTER) / EYEBROW_FADE_HALF_WIDTH;
+  if (dist >= 1) return 1;
+  return EYEBROW_MIN_OPACITY + (1 - EYEBROW_MIN_OPACITY) * dist * dist;
+}
 
 /** Bottom row starts mid-sequence so it differs from the top while staying on-cover. */
 const BOTTOM_PHASE_OFFSET = 40;
