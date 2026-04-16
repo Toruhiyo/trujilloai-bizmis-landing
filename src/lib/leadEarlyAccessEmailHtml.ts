@@ -435,12 +435,12 @@ function buildBenefitCardGlowBackdropHtml(
 const SETUP_SYNC_ICON_PX = 7;
 const SETUP_SYNC_BADGE_H_GAP_PX = 11;
 /** Triangle stain: base spans badge row; tip meets Bizmis logo — tuned for 8px labels + 7px icons + 10px logo gap. */
-const SETUP_PLUG_PLAY_TRIANGLE_HEIGHT_PX = 7;
+const SETUP_PLUG_PLAY_TRIANGLE_HEIGHT_PX = 6;
 const SETUP_PLUG_PLAY_TRIANGLE_MAX_WIDTH_PX = 440;
-/** Narrower base than full width (inset from each side, %). Blur layer inset +1% so edge stays soft. */
-const SETUP_PLUG_PLAY_TRIANGLE_BASE_LEFT_PCT = 22;
-const SETUP_PLUG_PLAY_TRIANGLE_BASE_RIGHT_PCT = 78;
-const SETUP_PLUG_PLAY_TRIANGLE_TOP_OFFSET_PX = 25;
+/** Top edge of clip-path (triangle base), % from left/right. Blur layer uses +1% / −1% so edge stays soft. */
+const SETUP_PLUG_PLAY_TRIANGLE_BASE_LEFT_PCT = 18;
+const SETUP_PLUG_PLAY_TRIANGLE_BASE_RIGHT_PCT = 82;
+const SETUP_PLUG_PLAY_TRIANGLE_TOP_OFFSET_PX = 29;
 const SETUP_PLUG_PLAY_TRIANGLE_DIFFUSE_BLUR_WIDE_PX = 12;
 const SETUP_PLUG_PLAY_TRIANGLE_DIFFUSE_BLUR_SOFT_PX = 8;
 const SETUP_PLUG_PLAY_TRIANGLE_LAYER_SCALE = 0.9;
@@ -496,10 +496,9 @@ function buildSetupPlugPlayFooterSharedParts(bizmisLogoUrl: string): {
   const bWide = SETUP_PLUG_PLAY_TRIANGLE_DIFFUSE_BLUR_WIDE_PX;
   const bSoft = SETUP_PLUG_PLAY_TRIANGLE_DIFFUSE_BLUR_SOFT_PX;
   const triScale = SETUP_PLUG_PLAY_TRIANGLE_LAYER_SCALE;
-  const triangleStainLayersHtml = BENEFIT_CARD_GLOW_SOLID_FLAT_PREVIEW
-    ? `<div style="position:absolute;inset:0;background:rgb(249,163,83);clip-path:polygon(${bL}% 0, ${bR}% 0, 50% 100%);-webkit-clip-path:polygon(${bL}% 0, ${bR}% 0, 50% 100%);opacity:1;"></div>`
-    : `<div style="position:absolute;inset:-9px;background:linear-gradient(180deg, rgba(249,163,83,0.02) 0%, rgba(249,163,83,0.06) 32%, rgba(249,163,83,0.12) 62%, rgba(249,163,83,0.2) 100%);clip-path:polygon(${blurL}% 0, ${blurR}% 0, 50% 100%);-webkit-clip-path:polygon(${blurL}% 0, ${blurR}% 0, 50% 100%);filter:blur(${bWide}px);-webkit-filter:blur(${bWide}px);opacity:0.88;"></div>
-    <div style="position:absolute;inset:-5px;background:linear-gradient(180deg, rgba(249,163,83,0.04) 0%, rgba(249,163,83,0.03) 22%, rgba(249,163,83,0.08) 52%, rgba(249,163,83,0.14) 100%);clip-path:polygon(${bL}% 0, ${bR}% 0, 50% 100%);-webkit-clip-path:polygon(${bL}% 0, ${bR}% 0, 50% 100%);filter:blur(${bSoft}px);-webkit-filter:blur(${bSoft}px);opacity:0.9;"></div>`;
+  /** Always diffuse (gradient + blur); not tied to `BENEFIT_CARD_GLOW_SOLID_FLAT_PREVIEW`. */
+  const triangleStainLayersHtml = `<div style="position:absolute;inset:-9px;background:linear-gradient(180deg, rgba(249,163,83,0.06) 0%, rgba(249,163,83,0.14) 32%, rgba(249,163,83,0.26) 62%, rgba(249,163,83,0.38) 100%);clip-path:polygon(${blurL}% 0, ${blurR}% 0, 50% 100%);-webkit-clip-path:polygon(${blurL}% 0, ${blurR}% 0, 50% 100%);filter:blur(${bWide}px);-webkit-filter:blur(${bWide}px);opacity:0.96;"></div>
+    <div style="position:absolute;inset:-5px;background:linear-gradient(180deg, rgba(249,163,83,0.09) 0%, rgba(249,163,83,0.07) 22%, rgba(249,163,83,0.16) 52%, rgba(249,163,83,0.26) 100%);clip-path:polygon(${bL}% 0, ${bR}% 0, 50% 100%);-webkit-clip-path:polygon(${bL}% 0, ${bR}% 0, 50% 100%);filter:blur(${bSoft}px);-webkit-filter:blur(${bSoft}px);opacity:0.98;"></div>`;
   return {
     badgesHtml,
     logoMasked,
