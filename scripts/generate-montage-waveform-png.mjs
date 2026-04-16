@@ -13,6 +13,10 @@ import sharp from "sharp";
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = join(__dirname, "..");
 
+/** Edge taper: the first and last EDGE_TAPER_BARS bars scale down to EDGE_TAPER_MIN of minBarH. */
+const EDGE_TAPER_BARS = 2;
+const EDGE_TAPER_MIN = 0.35;
+
 /** @typedef {{ trackH: number; barCount: number; cellW: number; barW: number; padX: number; minBarH: number; maxBarH: number; fadeBars: number; outFile: string }} WaveformPreset */
 
 /** @type {Record<string, WaveformPreset>} */
@@ -21,8 +25,8 @@ const PRESETS = {
     trackH: 82,
     barCount: 64,
     cellW: 6,
-    barW: 3,
-    padX: 1,
+    barW: 5,
+    padX: 0.5,
     minBarH: 32,
     maxBarH: 82 - 32,
     fadeBars: 6,
@@ -32,8 +36,8 @@ const PRESETS = {
     trackH: 74,
     barCount: 32,
     cellW: 6,
-    barW: 3,
-    padX: 1,
+    barW: 5,
+    padX: 0.5,
     minBarH: 38,
     maxBarH: 58,
     fadeBars: 5,
@@ -73,20 +77,27 @@ async function renderPreset(name, preset) {
 
   const rects = normalized
     .map((n, i) => {
-      const barH = Math.round(minBarH + n * (maxBarH - minBarH));
+      const baseH = minBarH + n * (maxBarH - minBarH);
+      const edgeIn = Math.min(i, barCount - 1 - i);
+      const edgeScale = edgeIn >= EDGE_TAPER_BARS ? 1 : EDGE_TAPER_MIN + (1 - EDGE_TAPER_MIN) * (edgeIn / EDGE_TAPER_BARS);
+      const barH = Math.round(baseH * edgeScale);
       const top = trackH - barH;
       const x = i * cellW + padX;
-      const rx = Math.min(2, barW / 2);
-      return `<rect x="${x}" y="${top}" width="${barW}" height="${barH}" rx="${rx}" fill="${BAR_FILL_HEX}"/>`;
+      const rx = barW / 2;
+      return `<rect x="${x}" y="${top}" width="${barW}" height="${barH}" rx="${rx}" ry="${rx}" fill="${BAR_FILL_HEX}"/>`;
     })
     .join("");
 
-  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${imgW}" height="${trackH}"><g>${rects}</g></svg>`;
+  const density = 2;
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${imgW}" height="${trackH}" viewBox="0 0 ${imgW} ${trackH}"><g shape-rendering="crispEdges">${rects}</g></svg>`;
 
   const outPath = join(ROOT, outFile);
-  const png = await sharp(Buffer.from(svg)).png({ compressionLevel: 9, effort: 10 }).toBuffer();
+  const png = await sharp(Buffer.from(svg), { density: 72 * density })
+    .png({ compressionLevel: 9, effort: 10 })
+    .toBuffer();
   writeFileSync(outPath, png);
-  process.stdout.write(`[${name}] Wrote ${outPath} (${png.length} bytes, ${imgW}×${trackH})\n`);
+  const meta = await sharp(png).metadata();
+  process.stdout.write(`[${name}] Wrote ${outPath} (${png.length} bytes, ${meta.width}×${meta.height})\n`);
 }
 
 for (const [name, preset] of Object.entries(PRESETS)) {
