@@ -14,6 +14,11 @@ import {
   FaPercent,
 } from "react-icons/fa";
 import SmartphoneFrame from "./SmartphoneFrame";
+import {
+  HALF_WAVE_BAR_COUNT,
+  halfWaveBarHeightPercent,
+  halfWaveBarOpacity,
+} from "./slideWaveformHeights";
 
 const ORBIT_RADIUS_X_PCT = 35;
 const ORBIT_PHASE_DEG = 3;
@@ -113,16 +118,6 @@ const ORBIT_SOURCES: Array<{
 
 const SCREENSHOT_SRC =
   "/images/slides/shopify-listing/shopify-customer-support-screenshot-smartphone.png";
-
-const HALF_WAVE_BAR_COUNT = 80;
-const HALF_WAVE_HEIGHTS_TOP = [
-  35, 52, 78, 42, 65, 38, 72, 48, 62, 85, 38, 72, 50, 80, 32, 58, 88, 42, 58,
-  70, 28, 65, 48, 82, 52, 38, 72, 62, 45, 75, 50, 68, 35, 82, 55, 42, 70, 48,
-];
-const HALF_WAVE_HEIGHTS_BOTTOM = [
-  62, 38, 80, 48, 35, 72, 42, 85, 55, 32, 68, 82, 48, 58, 42, 75, 52, 28, 70,
-  45, 82, 42, 65, 38, 62, 88, 50, 72, 35, 58, 68, 42, 82, 52, 30, 75, 60, 45,
-];
 
 const COVERAGE_ITEMS = [
   "Returns",
@@ -239,7 +234,8 @@ const CustomerSupportSlide = () => {
                   key={`top-${i}`}
                   className="flex-1 min-w-[2px] rounded-full bg-primary/10"
                   style={{
-                    height: `${HALF_WAVE_HEIGHTS_TOP[i % HALF_WAVE_HEIGHTS_TOP.length]}%`,
+                    height: `${halfWaveBarHeightPercent(i, "top")}%`,
+                    opacity: halfWaveBarOpacity(i),
                   }}
                 />
               ))}
@@ -297,7 +293,8 @@ const CustomerSupportSlide = () => {
                   key={`bottom-${i}`}
                   className="flex-1 min-w-[2px] rounded-full bg-primary/10"
                   style={{
-                    height: `${HALF_WAVE_HEIGHTS_BOTTOM[i % HALF_WAVE_HEIGHTS_BOTTOM.length]}%`,
+                    height: `${halfWaveBarHeightPercent(i, "bottom")}%`,
+                    opacity: halfWaveBarOpacity(i),
                   }}
                 />
               ))}

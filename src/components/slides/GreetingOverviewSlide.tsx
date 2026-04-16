@@ -2,6 +2,11 @@ import type { IconType } from "react-icons";
 import { FaBullseye, FaHandSparkles, FaHistory } from "react-icons/fa";
 import { MdGraphicEq } from "react-icons/md";
 import SmartphoneFrame from "./SmartphoneFrame";
+import {
+  HALF_WAVE_BAR_COUNT,
+  halfWaveBarHeightPercent,
+  halfWaveBarOpacity,
+} from "./slideWaveformHeights";
 
 const BADGE_ICON_CLASS = "h-3.5 w-3.5 shrink-0 text-primary-dark/80";
 
@@ -13,16 +18,6 @@ const MOCKUP_PHONE_BOTTOM_CLASS = "bottom-20";
 
 const DESKTOP_SRC = "/images/slides/shopify-listing/shopify-greeting-desktop.png";
 const MOBILE_SRC = "/images/slides/shopify-listing/shopify-greeting-mobile.png";
-
-const HALF_WAVE_BAR_COUNT = 80;
-const HALF_WAVE_HEIGHTS_TOP = [
-  32, 58, 88, 48, 72, 38, 82, 52, 68, 92, 42, 78, 55, 85, 35, 65, 95, 45, 62,
-  75, 28, 70, 50, 90, 58, 40, 78, 68, 48, 82, 55, 72, 38, 88, 62, 45, 75, 52,
-];
-const HALF_WAVE_HEIGHTS_BOTTOM = [
-  68, 42, 85, 55, 38, 78, 48, 92, 62, 35, 72, 88, 52, 65, 45, 82, 58, 28, 75,
-  50, 90, 48, 70, 42, 68, 95, 55, 78, 40, 62, 72, 45, 88, 58, 32, 82, 65, 48,
-];
 
 const GREETING_OVERVIEW_CHIPS: readonly {
   id: string;
@@ -83,7 +78,10 @@ const GreetingOverviewSlide = () => (
                 <div
                   key={`top-${i}`}
                   className="min-w-[2px] max-w-[6px] flex-1 rounded-full bg-primary/10"
-                  style={{ height: `${HALF_WAVE_HEIGHTS_TOP[i % HALF_WAVE_HEIGHTS_TOP.length]}%` }}
+                  style={{
+                    height: `${halfWaveBarHeightPercent(i, "top")}%`,
+                    opacity: halfWaveBarOpacity(i),
+                  }}
                 />
               ))}
             </div>
@@ -112,7 +110,10 @@ const GreetingOverviewSlide = () => (
                 <div
                   key={`bottom-${i}`}
                   className="min-w-[2px] max-w-[6px] flex-1 rounded-full bg-primary/10"
-                  style={{ height: `${HALF_WAVE_HEIGHTS_BOTTOM[i % HALF_WAVE_HEIGHTS_BOTTOM.length]}%` }}
+                  style={{
+                    height: `${halfWaveBarHeightPercent(i, "bottom")}%`,
+                    opacity: halfWaveBarOpacity(i),
+                  }}
                 />
               ))}
             </div>
