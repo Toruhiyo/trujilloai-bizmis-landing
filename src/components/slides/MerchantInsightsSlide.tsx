@@ -2,8 +2,10 @@ import { FaChartLine, FaPlay, FaTags, FaRoute } from "react-icons/fa";
 
 const BROWSER_CHROME_HEIGHT = 28;
 
-const ANALYTICS_TABLE_SRC = "/images/slides/shopify-listing/shopify-analytics-screenshot-table.png";
-const ANALYTICS_MODAL_SRC = "/images/slides/shopify-listing/shopify-analytics-screenshot-modal.png";
+const ANALYTICS_TABLE_SRC =
+  "/images/slides/shopify-listing/shopify-analytics-screenshot-table.png";
+const ANALYTICS_MODAL_SRC =
+  "/images/slides/shopify-listing/shopify-analytics-screenshot-modal.png";
 
 const INSIGHT_CARDS = [
   {
@@ -13,7 +15,7 @@ const INSIGHT_CARDS = [
   },
   {
     icon: FaTags,
-    title: "Auto-Tagged Chats",
+    title: "Auto-Tagged Sessions",
     description: "See repeated questions grouped by topic.",
   },
   {
@@ -42,7 +44,8 @@ const MerchantInsightsSlide = () => (
               Unlock Growth
             </h2>
             <p className="text-lg text-muted-foreground font-body leading-relaxed">
-              See where customers move forward, where they get stuck, and what to change to grow sales and reduce support load.
+              See where customers move forward, where they get stuck, and what
+              to change to grow sales and reduce support load.
             </p>
           </div>
 

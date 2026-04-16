@@ -66,8 +66,8 @@ const Benefits = () => {
               </div>
               <p className="text-xl text-muted-foreground font-body leading-relaxed mb-12">
                 Bizmis acts like a great in-store associate — guiding shoppers,
-                increasing cart value, and creating the kind of personal, warm experience that
-                brings customers back.
+                increasing cart value, and creating the kind of personal, warm
+                experience that brings customers back.
               </p>
 
               {/* Impact Pillars — Flip Cards */}
@@ -92,14 +92,14 @@ const Benefits = () => {
                     watermark: "/images/benefit-1-pillar-3.png",
                   },
                 ].map(({ title, subtitle, body, watermark }) => (
-                  <div
-                    key={title}
-                    className="group [perspective:800px] h-56"
-                  >
+                  <div key={title} className="group [perspective:800px] h-56">
                     <div className="relative w-full h-full transition-transform duration-500 [transform-style:preserve-3d] group-hover:[transform:rotateY(180deg)]">
                       {/* Front */}
                       <div className="absolute inset-0 [backface-visibility:hidden] bg-primary/10 rounded-2xl border border-primary/20 shadow-sm overflow-hidden flex flex-col items-center justify-end pb-6">
-                        <FaPlus className="absolute top-3 right-3 w-4 h-4 text-primary/60" aria-hidden />
+                        <FaPlus
+                          className="absolute top-3 right-3 w-4 h-4 text-primary/60"
+                          aria-hidden
+                        />
                         <img
                           src={watermark}
                           alt=""
@@ -192,15 +192,21 @@ const Benefits = () => {
               <div className="flex flex-wrap justify-center gap-3 sm:gap-4 w-full max-w-2xl">
                 <div className="inline-flex items-center gap-1.5 rounded-full border-2 border-muted-foreground/70 bg-transparent px-3.5 py-1.5">
                   <FaClock className="w-3.5 h-3.5 text-muted-foreground shrink-0" />
-                  <span className="text-sm font-medium text-muted-foreground">Save support hours</span>
+                  <span className="text-sm font-medium text-muted-foreground">
+                    Save support hours
+                  </span>
                 </div>
                 <div className="inline-flex items-center gap-1.5 rounded-full border-2 border-muted-foreground/70 bg-transparent px-3.5 py-1.5">
                   <FaStar className="w-3.5 h-3.5 text-muted-foreground shrink-0" />
-                  <span className="text-sm font-medium text-muted-foreground">Earn better reviews</span>
+                  <span className="text-sm font-medium text-muted-foreground">
+                    Earn better reviews
+                  </span>
                 </div>
                 <div className="inline-flex items-center gap-1.5 rounded-full border-2 border-muted-foreground/70 bg-transparent px-3.5 py-1.5">
                   <FaRedoAlt className="w-3.5 h-3.5 text-muted-foreground shrink-0" />
-                  <span className="text-sm font-medium text-muted-foreground">Grow repeat sales</span>
+                  <span className="text-sm font-medium text-muted-foreground">
+                    Grow repeat sales
+                  </span>
                 </div>
               </div>
 
@@ -327,11 +333,12 @@ const Benefits = () => {
                       <FaTag className="w-5 h-5 text-primary/60 group-hover:text-primary/90 transition-colors duration-300 flex-shrink-0 mt-0.5" />
                       <div>
                         <h3 className="text-lg font-heading font-semibold text-foreground mb-2">
-                          Auto-Tagged Chats
+                          Auto-Tagged Sessions
                         </h3>
                         <p className="text-muted-foreground font-body text-sm">
-                          Conversations auto-group by topic and intent. Update one
-                          FAQ/policy, cut repeat tickets, and reduce support load.
+                          Conversations auto-group by topic and intent. Update
+                          one FAQ/policy, cut repeat tickets, and reduce support
+                          load.
                         </p>
                       </div>
                     </div>
@@ -347,8 +354,9 @@ const Benefits = () => {
                           Funnel Insights
                         </h3>
                         <p className="text-muted-foreground font-body text-sm">
-                          See conversion paths, drop-offs, and product impact at a
-                          glance. Prioritize high-ROI fixes and back the winners.
+                          See conversion paths, drop-offs, and product impact at
+                          a glance. Prioritize high-ROI fixes and back the
+                          winners.
                         </p>
                       </div>
                     </div>

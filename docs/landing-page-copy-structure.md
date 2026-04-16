@@ -39,9 +39,9 @@ This document describes the **sections**, **copy**, and **content structure** of
   - **This isn't a chatbot.** Bizmis speaks naturally—welcoming your customers, answering their questions, and guiding them to buy with confidence, just like the best in-store salesperson would.
 - **Primary CTA (button):**
   - Label: **Install Now**
-  - Subtext (desktop): *One-click install, ready in minutes*
+  - Subtext (desktop): _One-click install, ready in minutes_
 - **Secondary line:**
-  - *Also available for [custom websites](link to contact)*
+  - _Also available for [custom websites](link to contact)_
 
 ---
 
@@ -98,11 +98,11 @@ Watch real-time satisfaction metrics and live customer reviews flowing in—proo
 
 **Structure:**
 
-1. **Voice support demo (VoiceSupportScene)**  
-   - Animated scene: customer card + customer message + waveform + action badge + resolution message + Bizmis avatar. Looping support cases (from `support-cases.ts`), e.g. return policy, order tracking, shipping, address change, cancel, warranty, start return.  
+1. **Voice support demo (VoiceSupportScene)**
+   - Animated scene: customer card + customer message + waveform + action badge + resolution message + Bizmis avatar. Looping support cases (from `support-cases.ts`), e.g. return policy, order tracking, shipping, address change, cancel, warranty, start return.
    - No headline above the scene.
 
-2. **Business outcomes (KPI strip)**  
+2. **Business outcomes (KPI strip)**
    - One horizontal row of 3 pill/badges (not aligned to cards below):
      - **Save support hours** (clock icon)
      - **Earn better reviews** (star icon)
@@ -134,7 +134,7 @@ See where buyers hesitate, what they ask, and which paths convert—so you fix l
 - **Feature cards (3):**
   1. **Session Replays**  
      Jump straight to drop-offs and hesitation points. Fix once, prevent abandoned carts, and recover at-risk sales.
-  2. **Auto-Tagged Chats**  
+  2. **Auto-Tagged Sessions**  
      Conversations auto-group by topic and intent. Update one FAQ/policy, cut repeat tickets, and reduce support load.
   3. **Funnel Insights**  
      See conversion paths, drop-offs, and product impact at a glance. Prioritize high-ROI fixes and back the winners.
@@ -165,12 +165,12 @@ Install the Bizmis Shopify app and start selling and supporting customers immedi
    - No extra headline between diagram and trust line.
 
 2. **Trust badges (single row)**
-   - One-click setup • Always synced • Ready in minutes  
+   - One-click setup • Always synced • Ready in minutes
    - (Icons: bolt, sync, shopping cart; separated by dots.)
 
 3. **CTA**
    - Button: **Install Bizmis on Shopify** (Shopify icon)
-   - Tagline: *Start selling and supporting customers now.*
+   - Tagline: _Start selling and supporting customers now._
 
 ---
 
@@ -179,7 +179,7 @@ Install the Bizmis Shopify app and start selling and supporting customers immedi
 **Section badge:** Personalization (icon: paint brush)
 
 **Headline (H2):**  
-**Make It *Truly Yours***
+**Make It _Truly Yours_**
 
 **Subline:**  
 Build authentic relationships that drive customer loyalty through personalized voice and appearance customization.
@@ -216,19 +216,19 @@ Build authentic relationships that drive customer loyalty through personalized v
 - **Primary button:** **Join the Waitlist** (Shopify icon)
 - **Secondary button:** **Talk to sales**
 - **Microline:**  
-  *Cancel anytime • [GDPR-ready](/privacy) • Built for Shopify*
+  _Cancel anytime • [GDPR-ready](/privacy) • Built for Shopify_
 
 **Right column — Early Access card:**
 
 - **Badge:** Early Bird
-- **Title:** **Be First. *Sell More.***
+- **Title:** **Be First. _Sell More._**
 - **Subline:**  
   Join the exclusive group of first 50 merchants shaping the future of conversational commerce.
 - **Benefits (3):**
   1. **50% Off First 3 Months** — Lock in our lowest launch pricing.
   2. **Direct Roadmap Influence** — Your feature requests get priority status.
   3. **VIP Onboarding** — Personal setup & Onboarding session included.
-- **Footer line:** *Limited spots available*
+- **Footer line:** _Limited spots available_
 - **Button:** **Claim Early Bird Offer**
 
 ---
@@ -252,16 +252,16 @@ Build authentic relationships that drive customer loyalty through personalized v
 
 ## Summary: section → content type
 
-| Section        | Section badge   | Headline / promise        | Internal content                                                                 |
-|----------------|-----------------|---------------------------|-----------------------------------------------------------------------------------|
-| Hero           | —               | Boost Profits, Selling…   | Subline, Install Now, custom websites                                            |
-| Benefit 1      | Boost Sales     | Convert. Upsell. Retain.  | 3 flip-card subbenefits + SpeakDiscoverBuy demo                                  |
-| Benefit 2      | Customer Support| Save hours… Earn loyal…   | VoiceSupportScene + 3 KPI pills + 3 feature cards                                 |
-| Benefit 3      | Store Insights  | Learn. Tune. Grow.        | TabbedSessionReplay + 3 feature cards                                            |
-| Setup          | Plug and Play   | One-Click Setup…          | Diagram (5 data cards + avatar) + trust badges + Install CTA                     |
-| Customization  | Personalization | Make It Truly Yours       | 2 feature blocks (Avatar, Voice) + voice toggle + carousels                      |
-| CTA            | —               | Install on Shopify…       | Value prop, 3 bullets, Join Waitlist / Talk to sales + Early Access card        |
-| Footer         | —               | —                         | Tagline, Built for Shopify, Product / Support / Legal links, copyright           |
+| Section       | Section badge    | Headline / promise       | Internal content                                                         |
+| ------------- | ---------------- | ------------------------ | ------------------------------------------------------------------------ |
+| Hero          | —                | Boost Profits, Selling…  | Subline, Install Now, custom websites                                    |
+| Benefit 1     | Boost Sales      | Convert. Upsell. Retain. | 3 flip-card subbenefits + SpeakDiscoverBuy demo                          |
+| Benefit 2     | Customer Support | Save hours… Earn loyal…  | VoiceSupportScene + 3 KPI pills + 3 feature cards                        |
+| Benefit 3     | Store Insights   | Learn. Tune. Grow.       | TabbedSessionReplay + 3 feature cards                                    |
+| Setup         | Plug and Play    | One-Click Setup…         | Diagram (5 data cards + avatar) + trust badges + Install CTA             |
+| Customization | Personalization  | Make It Truly Yours      | 2 feature blocks (Avatar, Voice) + voice toggle + carousels              |
+| CTA           | —                | Install on Shopify…      | Value prop, 3 bullets, Join Waitlist / Talk to sales + Early Access card |
+| Footer        | —                | —                        | Tagline, Built for Shopify, Product / Support / Legal links, copyright   |
 
 ---
 

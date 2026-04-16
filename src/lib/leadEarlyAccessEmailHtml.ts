@@ -499,6 +499,68 @@ function buildBenefitCardHtml(
   return `<div style="position:relative;display:block;overflow:visible;${tilt}">${cardBody}</div>`;
 }
 
+const INSIGHTS_PAIR_ICON_PX = 10;
+const INSIGHTS_PAIR_ROW_FONT_PX = 8;
+/** Space between insights subtitle and the icon+chip row (px). */
+const INSIGHTS_CHIPS_MARGIN_TOP_PX = 16;
+/** Tighter line-height when chips wrap to a second row. */
+const INSIGHTS_CHIPS_LINE_HEIGHT = 1.12;
+
+function buildInsightsPairRowSvgs(): readonly [string, string, string] {
+  const w = INSIGHTS_PAIR_ICON_PX;
+  const s = "#ffffff";
+  return [
+    `<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${w}" viewBox="0 0 24 24" fill="none" stroke="${s}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16" fill="${s}" stroke="none"/></svg>`,
+    `<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${w}" viewBox="0 0 24 24" fill="none" stroke="${s}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 01-2.83 0L2 12V2h10l8.59 8.59a2 2 0 010 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>`,
+    `<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${w}" viewBox="0 0 24 24" fill="none" stroke="${s}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="22 3 2 3 10 12 10 19 14 21 14 12 22 3"/></svg>`,
+  ];
+}
+
+function buildInsightsBenefitCardHtml(
+  headerIconUrl: string,
+  title: string,
+  subtitle: string,
+  pairLabels: readonly [string, string, string],
+  tiltDeg: number,
+): string {
+  const glowBackdropHtml = buildBenefitCardGlowBackdropHtml("column");
+  const iconInnerHtml = `<img src="${headerIconUrl}" alt="" width="${BENEFIT_CARD_ICON_PX}" height="${BENEFIT_CARD_ICON_PX}" style="display:block;width:${BENEFIT_CARD_ICON_PX}px;height:${BENEFIT_CARD_ICON_PX}px;border:0;filter:${BENEFIT_CARD_ICON_WHITE_FILTER};-webkit-filter:${BENEFIT_CARD_ICON_WHITE_FILTER};" />`;
+  const titleRowHtml = `<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%"><tr><td align="center" style="text-align:center;">
+    <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="display:inline-table;"><tr>
+    <td valign="middle" style="vertical-align:middle;padding-right:7px;width:${BENEFIT_CARD_ICON_PX}px;">
+      ${iconInnerHtml}
+    </td>
+    <td valign="middle" style="vertical-align:middle;">
+      <span style="${HEADING}font-size:${BENEFIT_CARD_GLOW_TITLE_FONT_PX}px;font-weight:800;color:${BENEFIT_CARD_TEXT_HEX};letter-spacing:-0.01em;line-height:1.25;">${escapeHtml(title)}</span>
+    </td>
+  </tr></table>
+  </td></tr></table>`;
+  const subtitleHtml = `<p style="margin:8px 0 0;text-align:center;${BODY}font-size:${BENEFIT_CARD_GLOW_SUBTITLE_FONT_PX}px;font-weight:400;color:${BENEFIT_CARD_SUBTITLE_HEX};line-height:1.35;">${escapeHtml(subtitle)}</p>`;
+  const [svgA, svgB, svgC] = buildInsightsPairRowSvgs();
+  const pairStyle = `display:inline-block;vertical-align:middle;${BODY}font-size:${INSIGHTS_PAIR_ROW_FONT_PX}px;font-weight:400;color:${BENEFIT_CARD_SUBTITLE_HEX};line-height:${INSIGHTS_CHIPS_LINE_HEIGHT};letter-spacing:0.01em;`;
+  const sepStyle = `display:inline-block;vertical-align:middle;margin:0 4px;color:${BENEFIT_CARD_SUBTITLE_HEX};opacity:0.45;font-size:${INSIGHTS_PAIR_ROW_FONT_PX}px;line-height:${INSIGHTS_CHIPS_LINE_HEIGHT};`;
+  const sep = `<span style="${sepStyle}">·</span>`;
+  const pairSpans = [
+    `<span style="${pairStyle}">${svgA}&nbsp;${escapeHtml(pairLabels[0])}</span>`,
+    `<span style="${pairStyle}">${svgB}&nbsp;${escapeHtml(pairLabels[1])}</span>`,
+    `<span style="${pairStyle}">${svgC}&nbsp;${escapeHtml(pairLabels[2])}</span>`,
+  ];
+  const pairsRowHtml = `<p style="margin:${INSIGHTS_CHIPS_MARGIN_TOP_PX}px 0 0;text-align:center;${BODY}line-height:${INSIGHTS_CHIPS_LINE_HEIGHT};">${pairSpans.join(sep)}</p>`;
+  const cardBody = `<div style="position:relative;border:0;background:transparent;padding:14px 16px;box-sizing:border-box;overflow:visible;">
+  ${glowBackdropHtml}
+  <div style="position:relative;z-index:1;">
+  ${titleRowHtml}
+  ${subtitleHtml}
+  ${pairsRowHtml}
+  </div>
+</div>`;
+  if (tiltDeg === 0) {
+    return cardBody;
+  }
+  const tilt = `transform:rotate(${tiltDeg}deg);-webkit-transform:rotate(${tiltDeg}deg);transform-origin:center center;`;
+  return `<div style="position:relative;display:block;overflow:visible;${tilt}">${cardBody}</div>`;
+}
+
 function emailMontageWatermarkWaveformHtml(
   r: number, g: number, b: number, alpha: number,
   flipped = false,
@@ -854,11 +916,13 @@ export function buildLeadEarlyAccessEmailHtml(
     glowPreset: "column",
     tiltDeg: BENEFIT_CARD_TILT_SUPPORT_DEG,
   });
-  const insightsBenefitCardHtml = buildBenefitCardHtml(outcomeIconUrls[2], copy.insightsTitle, copy.insightsSubtitle, {
-    titleAlign: "center",
-    glowPreset: "column",
-    tiltDeg: BENEFIT_CARD_TILT_INSIGHTS_DEG,
-  });
+  const insightsBenefitCardHtml = buildInsightsBenefitCardHtml(
+    outcomeIconUrls[2],
+    copy.insightsTitle,
+    copy.insightsSubtitle,
+    [copy.insightsPairSessionReplays, copy.insightsPairAutoTaggedChats, copy.insightsPairFunnelInsights],
+    BENEFIT_CARD_TILT_INSIGHTS_DEG,
+  );
   const setupBenefitCardHtml = buildBenefitCardHtml(setupIconUrl, copy.setupTitle, copy.setupSubtitle, {
     titleAlign: "center",
     appearance: "plain",
@@ -1132,6 +1196,7 @@ export function buildLeadEarlyAccessEmailHtml(
                   <br/>
                   <p style="margin:0;${HEADING}font-size:13px;font-weight:800;color:${BIZMIS_FOREGROUND_HEX};">${escapeHtml(copy.insightsTitle)}</p>
                   <p style="margin:6px 0 0;${BODY}font-size:10px;color:${BIZMIS_MUTED_FG_HEX};line-height:1.35;">${escapeHtml(copy.insightsSubtitle)}</p>
+                  <p style="margin:${INSIGHTS_CHIPS_MARGIN_TOP_PX}px 0 0;${BODY}font-size:8px;color:${BIZMIS_MUTED_FG_HEX};line-height:${INSIGHTS_CHIPS_LINE_HEIGHT};text-align:center;">${escapeHtml(copy.insightsPairSessionReplays)} · ${escapeHtml(copy.insightsPairAutoTaggedChats)} · ${escapeHtml(copy.insightsPairFunnelInsights)}</p>
                 </td>
                 <td valign="middle" align="center" width="320">
                 </td>
