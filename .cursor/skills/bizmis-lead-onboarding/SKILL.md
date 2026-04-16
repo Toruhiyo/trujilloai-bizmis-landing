@@ -295,6 +295,22 @@ download_lead_assets(
 )
 ```
 
+After downloading the logo, **always** crop transparent padding:
+
+```python
+from lead_onboarding import crop_logo_transparency
+
+crop_logo_transparency("newlead")
+```
+
+This removes fully-transparent pixels around the logo (alpha == 0 only). It never removes any pixel that is not strictly transparent, so logo content is always preserved. To batch-crop all leads at once:
+
+```python
+from lead_onboarding import crop_all_logos
+
+results = crop_all_logos()
+```
+
 If a custom stamp image was chosen (`avatarStampImage`), download or extract it into `public/invite-cards/leads/<id>/` with the chosen filename before generating the avatar.
 
 ### Step 6 — Choose avatar character and generate (cognitive + automated)
@@ -410,6 +426,7 @@ Use browser MCP tools to screenshot both the live store and the generated invite
 | ------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | Banner ↔ navbar          | Banner background colour must match the store's navbar background. If navbar is dark but accent is elsewhere, `bannerColor` must be set separately from `primaryColor`.                                                                                                              |
 | Logo match               | Invite card logo matches the store's header wordmark (shape, text). Must NOT be a product sub-brand or favicon.                                                                                                                                                                      |
+| Logo cropping            | Logo has no visible transparent padding — the image is tightly cropped. If padding is visible, re-run `crop_logo_transparency(lead_id)` and verify no content was lost (compare before/after dimensions — width and height should shrink, never lose visible pixels).                |
 | Logo tint decision       | **Classify the logo**: flat mark/wordmark → may be tinted. Detailed emblem/badge/roundel with internal text or contrast → MUST show native colours. If a detailed emblem appears as a flat single-colour blob, this is wrong — remove the tint (`logoColorOverlay: null`).           |
 | Stamp tint decision      | Same classification for the shirt stamp. If a detailed emblem stamp lost its internal detail, remove the tint (`stamp_color_overlay: null`).                                                                                                                                         |
 | Stamp ↔ shirt legibility | If the stamp is an untinted emblem, the shirt colour **must** be a colour the emblem was designed to sit on (typically the same dark/neutral banner colour). A bright accent shirt under an untinted emblem destroys legibility — fix by setting `shirt_color` to the banner colour. |
@@ -522,7 +539,7 @@ scripts/lead_onboarding/
   _brand.py      Brand colour extraction (HTTP, HTMLParser)
   _logo.py       Logo extraction (inline SVG, favicon, OG image)
   _products.py   Product catalog (Shopify products.json)
-  _assets.py     Image download and optimisation (Pillow)
+  _assets.py     Image download, optimisation, and logo crop (Pillow)
   _json_io.py    JSON read/write/validate
 ```
 

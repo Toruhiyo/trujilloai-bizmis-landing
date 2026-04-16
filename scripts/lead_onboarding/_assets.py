@@ -42,6 +42,60 @@ def download_logo(lead_id: str, url: str | None = None, svg_source: str | None =
     return None
 
 
+def crop_logo_transparency(lead_id: str) -> bool:
+    """Crop strictly-transparent pixels from the lead's logo.png.
+
+    Returns True if the image was cropped (or already tight), False if
+    the file is missing or has no alpha channel.  Never removes any pixel
+    that is not fully transparent (alpha == 0).
+    """
+    logo_path = LEADS_ASSETS_DIR / lead_id / "logo.png"
+    if not logo_path.is_file():
+        logger.warning("No logo.png for %s — skipping crop", lead_id)
+        return False
+
+    img = Image.open(logo_path)
+
+    if img.mode not in ("RGBA", "LA", "PA"):
+        img = img.convert("RGBA")
+
+    alpha = img.getchannel("A")
+    bbox = alpha.getbbox()
+
+    if bbox is None:
+        logger.warning("Logo for %s is fully transparent — skipping", lead_id)
+        return False
+
+    if bbox == (0, 0, img.width, img.height):
+        logger.info("Logo for %s already tight — no crop needed", lead_id)
+        return True
+
+    cropped = img.crop(bbox)
+    cropped.save(logo_path, format="PNG")
+    logger.info(
+        "Cropped %s logo: %dx%d → %dx%d",
+        lead_id, img.width, img.height, cropped.width, cropped.height,
+    )
+    return True
+
+
+def crop_all_logos() -> dict[str, bool]:
+    """Crop transparent padding from every lead's logo.png.
+
+    Returns a dict mapping lead_id → whether it was processed.
+    """
+    results: dict[str, bool] = {}
+    for lead_dir in sorted(LEADS_ASSETS_DIR.iterdir()):
+        if not lead_dir.is_dir():
+            continue
+        lead_id = lead_dir.name
+        logo = lead_dir / "logo.png"
+        if not logo.is_file():
+            continue
+        results[lead_id] = crop_logo_transparency(lead_id)
+    return results
+
+
 def download_product_images(lead_id: str, image_urls: list[str]) -> list[Path]:
     """Download product images for *lead_id*, optimising each."""
     lead_dir = LEADS_ASSETS_DIR / lead_id

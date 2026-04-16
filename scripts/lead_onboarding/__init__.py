@@ -6,6 +6,8 @@ Public API
 - ``save_lead(lead_id, data)``      — validate and persist a lead JSON file
 - ``download_lead_assets(lead_id, logo_url=None, svg_source=None, product_image_urls=None)``
                                       — download logo and product images
+- ``crop_logo_transparency(lead_id)`` — crop transparent padding from a lead's logo
+- ``crop_all_logos()``                — batch-crop all leads' logos
 - ``refresh_lead(lead_id, store_url)`` — re-extract and merge into existing data
 
 Usage (from landing repo root, using studio venv for Pillow)::
@@ -23,7 +25,7 @@ from pathlib import Path
 from ._brand import BrandData, extract_brand
 from ._logo import LogoCandidate, extract_logos
 from ._products import ProductInfo, fetch_products
-from ._assets import download_logo, download_product_images
+from ._assets import crop_all_logos, crop_logo_transparency, download_logo, download_product_images
 from ._json_io import list_leads, read_lead, validate, write_lead
 
 logger = logging.getLogger(__name__)
@@ -33,6 +35,8 @@ __all__ = [
     "save_lead",
     "download_lead_assets",
     "refresh_lead",
+    "crop_logo_transparency",
+    "crop_all_logos",
     "list_leads",
     "read_lead",
     "write_lead",
