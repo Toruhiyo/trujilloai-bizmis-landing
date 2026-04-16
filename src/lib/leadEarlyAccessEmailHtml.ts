@@ -29,7 +29,25 @@ const BIZMIS_LOGO_WHITE = "/images/bizmis-logo-white-transparent.png";
 const SHOPIFY_MARK_WHITE = "/images/shopify-mark-white.png";
 const BIZMIS_URL = "https://bizmis.ai";
 
-const EMAIL_NOISE_GRAIN_TILE = "/images/early-access-noise-grain.png";
+/** Native 560×120 overlay; regenerate with `node scripts/generate-email-banner-noise-png.mjs`. */
+const EMAIL_BANNER_NOISE_GRAIN = "/images/early-access-banner-noise-grain.png";
+/** Full-width cover waveform (Shopify deck hero row); regenerate with `node scripts/generate-email-banner-waveform-png.mjs`. */
+const EMAIL_BANNER_WAVEFORM = "/images/early-access-email-banner-waveform.png";
+/** Logical CSS pixels — matches `SHOPIFY_COVER_FULL_WIDTH_TRACK_H_PX` in `scripts/lib/shopifyCoverFullWidthWaveform.mjs`. */
+const EMAIL_BANNER_WAVEFORM_W_PX = 560;
+const EMAIL_BANNER_WAVEFORM_H_PX = 128;
+/** Display height for the waveform inside the banner (vertically centered, edge-to-edge; keep below ~80% of banner height). */
+const EMAIL_BANNER_WAVEFORM_DISPLAY_H_PX = 120;
+/** Fixed banner height — logos + waveform vertically centered, badge pinned to the bottom. */
+const EMAIL_BANNER_H_PX = 180;
+/** Bizmis mark + wordmark in the header strip (right). */
+const EMAIL_BANNER_BIZMIS_ICON_PX = 40;
+const EMAIL_BANNER_BIZMIS_WORDMARK_FONT_PX = 20;
+const EMAIL_BANNER_PAD_X_PX = 24;
+const EMAIL_BANNER_BADGE_PAD_BOTTOM_PX = 8;
+/** Bottom scrim: % of banner height for the fade-to-dark (from bottom up). */
+const EMAIL_BANNER_SCRIM_H_PCT = 26;
+const EMAIL_BANNER_BADGE_FONT_PX = 11;
 
 const OUTCOME_ICON_TREND = "/images/early-access-outcome-trend.svg";
 const OUTCOME_ICON_HEADPHONES = "/images/early-access-outcome-headphones.svg";
@@ -38,11 +56,6 @@ const OUTCOME_ICON_CHART = "/images/early-access-outcome-chart.svg";
 const EARLY_ACCESS_CHIP_GIFT_MUTED = "/images/early-access-chip-gift-muted.svg";
 const EARLY_ACCESS_CHIP_ROUTE_MUTED = "/images/early-access-chip-route-muted.svg";
 const EARLY_ACCESS_CHIP_CLOCK_MUTED = "/images/early-access-chip-clock-muted.svg";
-/** Soft CTA pull-quote — #B5A48E (`BIZMIS_MUTED_LIGHT_HEX`) to match surrounding copy. */
-const EARLY_ACCESS_SOFT_CTA_INLINE_GIFT = "/images/early-access-soft-cta-inline-gift.svg";
-const EARLY_ACCESS_SOFT_CTA_INLINE_ROUTE = "/images/early-access-soft-cta-inline-route.svg";
-const EARLY_ACCESS_SOFT_CTA_INLINE_CLOCK = "/images/early-access-soft-cta-inline-clock.svg";
-
 const CHIP_ROW_ICON_PX = 11;
 
 const BIZMIS_SALES_AVATAR_FALLBACK =
@@ -337,6 +350,27 @@ function storeLogoEmailMarkup(lead: LeadEarlyAccessData): string {
   return `<div role="presentation" aria-label="${store}" style="display:inline-block;width:${maxW}px;height:${maxH}px;background-color:${safeOverlay};-webkit-mask-image:url('${urlEsc}');mask-image:url('${urlEsc}');-webkit-mask-size:contain;mask-size:contain;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;-webkit-mask-position:left center;mask-position:left center;"></div>`;
 }
 
+/** Angle (deg) for the banner blend — diagonal transition (not vertical). CSS: 0° = up, 90° = right, 135° ≈ top-left → bottom-right. */
+const BANNER_GRADIENT_ANGLE_DEG = 128;
+/** Stops (%) along the gradient axis: solid lead → blend (via white) → solid Bizmis. */
+const BANNER_GRADIENT_LEAD_END_PCT = 22;
+const BANNER_GRADIENT_BIZMIS_START_PCT = 78;
+/** Softer than pure white so the transition peak doesn’t read as a flat opaque band. */
+const BANNER_GRADIENT_TRANSITION_WHITE = "rgba(255,255,255,0.42)";
+
+function buildEmailBannerStripCellStyle(leadHex: string, noisePublicUrl: string): string {
+  const urlEsc = noisePublicUrl.replace(/'/g, "\\'");
+  const whiteStopPct =
+    (BANNER_GRADIENT_LEAD_END_PCT + BANNER_GRADIENT_BIZMIS_START_PCT) / 2;
+  const grad = `linear-gradient(${BANNER_GRADIENT_ANGLE_DEG}deg, ${leadHex} 0%, ${leadHex} ${BANNER_GRADIENT_LEAD_END_PCT}%, ${BANNER_GRADIENT_TRANSITION_WHITE} ${whiteStopPct}%, ${BIZMIS_PRIMARY_HEX} ${BANNER_GRADIENT_BIZMIS_START_PCT}%, ${BIZMIS_PRIMARY_HEX} 100%)`;
+  return `padding:0;vertical-align:middle;position:relative;background-color:${leadHex};background-image:url('${urlEsc}'),${grad};background-repeat:no-repeat,no-repeat;background-size:100% 100%,100% 100%;`;
+}
+
+/** PNG from `buildShopifyCoverFullWidthWaveformSvg` — same math as `ShopifyDeck` cover row; `mix-blend-mode: overlay` like the slide. */
+function buildEmailBannerWaveformOverlayHtml(waveformPublicUrl: string): string {
+  return `<!--[if !mso]><!--><div aria-hidden="true" style="position:absolute;left:0;right:0;top:50%;transform:translateY(-50%);-webkit-transform:translateY(-50%);height:${EMAIL_BANNER_WAVEFORM_DISPLAY_H_PX}px;z-index:1;pointer-events:none;line-height:0;mso-line-height-rule:exactly;mix-blend-mode:overlay;"><img src="${waveformPublicUrl}" alt="" width="${EMAIL_BANNER_WAVEFORM_W_PX}" height="${EMAIL_BANNER_WAVEFORM_H_PX}" style="display:block;border:0;width:100%;height:${EMAIL_BANNER_WAVEFORM_DISPLAY_H_PX}px;object-fit:fill;" /></div><!--<![endif]-->`;
+}
+
 function buildBizmisCaptionIconHtml(primaryHex: string, sizePx: number): string {
   const safe = escapeHtml(primaryHex);
   const url = absImg(BIZMIS_LOGO_WHITE).replace(/'/g, "\\'");
@@ -363,30 +397,53 @@ function buildPlainBenefitCardIconHtml(iconUrl: string, sizePx: number): string 
   return `<span aria-hidden="true" style="display:inline-block;vertical-align:middle;width:${sizePx}px;height:${sizePx}px;background-color:${safePrimary};-webkit-mask-image:url('${urlEsc}');mask-image:url('${urlEsc}');-webkit-mask-size:contain;mask-size:contain;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;-webkit-mask-position:center;mask-position:center;"></span>`;
 }
 
-function buildBenefitCardGlowBackdropHtml(preset: BenefitCardGlowPreset): string {
+/** Scales the painted glow vs card; pair with blur — blur drives halo spread. */
+const BENEFIT_CARD_GLOW_LAYER_SCALE = 0.87;
+/** Slightly larger glow for Save Support Hours + Replays cards only (Boost Sales uses default). */
+const BENEFIT_CARD_GLOW_LAYER_SCALE_SUPPORT_AND_REPLAYS = 0.93;
+/** When true, benefit stains are flat solid orange (no gradient, no blur) — flip to false to restore soft glow. */
+const BENEFIT_CARD_GLOW_SOLID_FLAT_PREVIEW = true;
+/** Rounded corners on the orange stain for Boost Sales, Support, and Replays benefit cards. */
+const BENEFIT_CARD_STAIN_BORDER_RADIUS_PX = 28;
+
+function buildBenefitCardGlowBackdropHtml(
+  preset: BenefitCardGlowPreset,
+  layerScale: number = BENEFIT_CARD_GLOW_LAYER_SCALE,
+): string {
+  const s = layerScale;
+  const scale = `transform:scale(${s});-webkit-transform:scale(${s});transform-origin:50% 48%;`;
+  const r = BENEFIT_CARD_STAIN_BORDER_RADIUS_PX;
+  const stainRound = `border-radius:${r}px;`;
+  if (BENEFIT_CARD_GLOW_SOLID_FLAT_PREVIEW) {
+    const solid = "rgb(249,163,83)";
+    return `<!--[if !mso]><!-->
+<div aria-hidden="true" style="position:absolute;top:-10px;left:-10px;right:-10px;bottom:-10px;background:${solid};opacity:1;${scale}z-index:0;pointer-events:none;${stainRound}"></div>
+<!--<![endif]-->`;
+  }
   if (preset === "column") {
     return `<!--[if !mso]><!-->
-<div aria-hidden="true" style="position:absolute;top:-14px;left:-14px;right:-14px;bottom:-14px;background:radial-gradient(ellipse 118% 102% at 50% 48%, rgba(249,163,83,0.88) 0%, rgba(249,163,83,0.58) 20%, rgba(249,163,83,0.34) 42%, rgba(249,163,83,0.16) 58%, rgba(249,163,83,0.06) 74%, transparent 90%);opacity:1;filter:blur(15px);-webkit-filter:blur(15px);z-index:0;pointer-events:none;"></div>
-<div aria-hidden="true" style="position:absolute;top:-18px;left:-18px;right:-18px;bottom:-18px;background:radial-gradient(ellipse 128% 108% at 50% 52%, rgba(249,163,83,0.58) 0%, rgba(249,163,83,0.28) 36%, rgba(249,163,83,0.12) 56%, transparent 84%);opacity:1;filter:blur(22px);-webkit-filter:blur(22px);z-index:0;pointer-events:none;"></div>
+<div aria-hidden="true" style="position:absolute;top:-8px;left:-8px;right:-8px;bottom:-8px;background:radial-gradient(ellipse 96% 88% at 50% 48%, rgba(249,163,83,0.88) 0%, rgba(249,163,83,0.58) 20%, rgba(249,163,83,0.34) 42%, rgba(249,163,83,0.16) 58%, rgba(249,163,83,0.06) 74%, transparent 90%);opacity:1;filter:blur(9px);-webkit-filter:blur(9px);${scale}z-index:0;pointer-events:none;${stainRound}"></div>
+<div aria-hidden="true" style="position:absolute;top:-10px;left:-10px;right:-10px;bottom:-10px;background:radial-gradient(ellipse 104% 94% at 50% 52%, rgba(249,163,83,0.58) 0%, rgba(249,163,83,0.28) 36%, rgba(249,163,83,0.12) 56%, transparent 84%);opacity:1;filter:blur(13px);-webkit-filter:blur(13px);${scale}z-index:0;pointer-events:none;${stainRound}"></div>
 <!--<![endif]-->`;
   }
   return `<!--[if !mso]><!-->
-<div aria-hidden="true" style="position:absolute;top:-12px;left:-12px;right:-12px;bottom:-12px;background:radial-gradient(ellipse 112% 100% at 50% 48%, rgba(249,163,83,0.88) 0%, rgba(249,163,83,0.56) 22%, rgba(249,163,83,0.3) 44%, rgba(249,163,83,0.14) 58%, rgba(249,163,83,0.05) 72%, transparent 88%);opacity:1;filter:blur(16px);-webkit-filter:blur(16px);z-index:0;pointer-events:none;"></div>
-<div aria-hidden="true" style="position:absolute;top:-16px;left:-16px;right:-16px;bottom:-16px;background:radial-gradient(ellipse 120% 108% at 48% 52%, rgba(249,163,83,0.56) 0%, rgba(249,163,83,0.26) 38%, rgba(249,163,83,0.1) 58%, transparent 82%);opacity:1;filter:blur(24px);-webkit-filter:blur(24px);z-index:0;pointer-events:none;"></div>
+<div aria-hidden="true" style="position:absolute;top:-8px;left:-8px;right:-8px;bottom:-8px;background:radial-gradient(ellipse 94% 86% at 50% 48%, rgba(249,163,83,0.88) 0%, rgba(249,163,83,0.56) 22%, rgba(249,163,83,0.3) 44%, rgba(249,163,83,0.14) 58%, rgba(249,163,83,0.05) 72%, transparent 88%);opacity:1;filter:blur(9px);-webkit-filter:blur(9px);${scale}z-index:0;pointer-events:none;${stainRound}"></div>
+<div aria-hidden="true" style="position:absolute;top:-10px;left:-10px;right:-10px;bottom:-10px;background:radial-gradient(ellipse 100% 92% at 48% 52%, rgba(249,163,83,0.56) 0%, rgba(249,163,83,0.26) 38%, rgba(249,163,83,0.1) 58%, transparent 82%);opacity:1;filter:blur(13px);-webkit-filter:blur(13px);${scale}z-index:0;pointer-events:none;${stainRound}"></div>
 <!--<![endif]-->`;
 }
 
 const SETUP_SYNC_ICON_PX = 7;
 const SETUP_SYNC_BADGE_H_GAP_PX = 11;
 /** Triangle stain: base spans badge row; tip meets Bizmis logo — tuned for 8px labels + 7px icons + 10px logo gap. */
-const SETUP_PLUG_PLAY_TRIANGLE_HEIGHT_PX = 9;
-const SETUP_PLUG_PLAY_TRIANGLE_MAX_WIDTH_PX = 504;
+const SETUP_PLUG_PLAY_TRIANGLE_HEIGHT_PX = 7;
+const SETUP_PLUG_PLAY_TRIANGLE_MAX_WIDTH_PX = 440;
 /** Narrower base than full width (inset from each side, %). Blur layer inset +1% so edge stays soft. */
-const SETUP_PLUG_PLAY_TRIANGLE_BASE_LEFT_PCT = 19;
-const SETUP_PLUG_PLAY_TRIANGLE_BASE_RIGHT_PCT = 81;
-const SETUP_PLUG_PLAY_TRIANGLE_TOP_OFFSET_PX = 28;
-const SETUP_PLUG_PLAY_TRIANGLE_DIFFUSE_BLUR_WIDE_PX = 22;
-const SETUP_PLUG_PLAY_TRIANGLE_DIFFUSE_BLUR_SOFT_PX = 14;
+const SETUP_PLUG_PLAY_TRIANGLE_BASE_LEFT_PCT = 22;
+const SETUP_PLUG_PLAY_TRIANGLE_BASE_RIGHT_PCT = 78;
+const SETUP_PLUG_PLAY_TRIANGLE_TOP_OFFSET_PX = 25;
+const SETUP_PLUG_PLAY_TRIANGLE_DIFFUSE_BLUR_WIDE_PX = 12;
+const SETUP_PLUG_PLAY_TRIANGLE_DIFFUSE_BLUR_SOFT_PX = 8;
+const SETUP_PLUG_PLAY_TRIANGLE_LAYER_SCALE = 0.9;
 
 function buildSetupSyncBadgesHtml(): string {
   const m = BIZMIS_MUTED_LIGHT_HEX;
@@ -430,18 +487,22 @@ function buildSetupPlugPlayFooterHtml(bizmisLogoUrl: string): string {
   const blurR = bR - 1;
   const bWide = SETUP_PLUG_PLAY_TRIANGLE_DIFFUSE_BLUR_WIDE_PX;
   const bSoft = SETUP_PLUG_PLAY_TRIANGLE_DIFFUSE_BLUR_SOFT_PX;
+  const triScale = SETUP_PLUG_PLAY_TRIANGLE_LAYER_SCALE;
+  const triangleStainLayersHtml = BENEFIT_CARD_GLOW_SOLID_FLAT_PREVIEW
+    ? `<div style="position:absolute;inset:0;background:rgb(249,163,83);clip-path:polygon(${bL}% 0, ${bR}% 0, 50% 100%);-webkit-clip-path:polygon(${bL}% 0, ${bR}% 0, 50% 100%);opacity:1;"></div>`
+    : `<div style="position:absolute;inset:-9px;background:linear-gradient(180deg, rgba(249,163,83,0.02) 0%, rgba(249,163,83,0.06) 32%, rgba(249,163,83,0.12) 62%, rgba(249,163,83,0.2) 100%);clip-path:polygon(${blurL}% 0, ${blurR}% 0, 50% 100%);-webkit-clip-path:polygon(${blurL}% 0, ${blurR}% 0, 50% 100%);filter:blur(${bWide}px);-webkit-filter:blur(${bWide}px);opacity:0.88;"></div>
+    <div style="position:absolute;inset:-5px;background:linear-gradient(180deg, rgba(249,163,83,0.04) 0%, rgba(249,163,83,0.03) 22%, rgba(249,163,83,0.08) 52%, rgba(249,163,83,0.14) 100%);clip-path:polygon(${bL}% 0, ${bR}% 0, 50% 100%);-webkit-clip-path:polygon(${bL}% 0, ${bR}% 0, 50% 100%);filter:blur(${bSoft}px);-webkit-filter:blur(${bSoft}px);opacity:0.9;"></div>`;
   return `<!--[if !mso]><!-->
 <div style="position:relative;text-align:center;max-width:${triMaxW}px;margin:0 auto;padding:4px 12px 0;overflow:visible;">
-  <div aria-hidden="true" style="position:absolute;left:50%;top:${triTop}px;transform:translateX(-50%);width:100%;max-width:${triMaxW}px;height:${triH}px;z-index:0;pointer-events:none;overflow:visible;">
-    <div style="position:absolute;inset:-14px;background:linear-gradient(180deg, rgba(249,163,83,0.02) 0%, rgba(249,163,83,0.06) 32%, rgba(249,163,83,0.12) 62%, rgba(249,163,83,0.2) 100%);clip-path:polygon(${blurL}% 0, ${blurR}% 0, 50% 100%);-webkit-clip-path:polygon(${blurL}% 0, ${blurR}% 0, 50% 100%);filter:blur(${bWide}px);-webkit-filter:blur(${bWide}px);opacity:0.88;"></div>
-    <div style="position:absolute;inset:-8px;background:linear-gradient(180deg, rgba(249,163,83,0.04) 0%, rgba(249,163,83,0.03) 22%, rgba(249,163,83,0.08) 52%, rgba(249,163,83,0.14) 100%);clip-path:polygon(${bL}% 0, ${bR}% 0, 50% 100%);-webkit-clip-path:polygon(${bL}% 0, ${bR}% 0, 50% 100%);filter:blur(${bSoft}px);-webkit-filter:blur(${bSoft}px);opacity:0.9;"></div>
+  <div aria-hidden="true" style="position:absolute;left:50%;top:${triTop}px;width:100%;max-width:${triMaxW}px;height:${triH}px;z-index:0;pointer-events:none;overflow:visible;transform:translateX(-50%) scale(${triScale});-webkit-transform:translateX(-50%) scale(${triScale});transform-origin:50% 0;">
+    ${triangleStainLayersHtml}
   </div>
   <div style="position:relative;z-index:1;line-height:1.2;">${badgesHtml}</div>
   <div style="position:relative;z-index:1;padding:10px 0 0;">${logoMasked}</div>
 </div>
 <!--<![endif]-->
 <!--[if mso]>
-<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="504" align="center">
+<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="${SETUP_PLUG_PLAY_TRIANGLE_MAX_WIDTH_PX}" align="center">
   <tr><td style="padding:4px 12px 0;text-align:center;">${badgesHtml}</td></tr>
   <tr><td style="padding:10px 0 0;text-align:center;"><img src="${bizmisLogoUrl}" alt="Bizmis" width="24" height="24" style="display:inline-block;width:24px;height:24px;border:0;" /></td></tr>
 </table>
@@ -458,10 +519,13 @@ function buildBenefitCardHtml(
     appearance?: BenefitCardAppearance;
     /** Rotation in degrees; glow and content share the same transform. */
     tiltDeg?: number;
+    /** When set, scales the orange glow layers (default `BENEFIT_CARD_GLOW_LAYER_SCALE`). */
+    glowLayerScale?: number;
   },
 ): string {
   const appearance = options?.appearance ?? "glow";
   const glowPreset = options?.glowPreset ?? "overlay";
+  const glowLayerScale = options?.glowLayerScale ?? BENEFIT_CARD_GLOW_LAYER_SCALE;
   const titleAlign = options?.titleAlign ?? "left";
   const rowAlign = titleAlign === "center" ? "center" : "left";
   const textAlign = titleAlign === "center" ? "center" : "left";
@@ -473,7 +537,8 @@ function buildBenefitCardHtml(
     appearance === "plain"
       ? buildPlainBenefitCardIconHtml(iconUrl, BENEFIT_CARD_ICON_PX)
       : `<img src="${iconUrl}" alt="" width="${BENEFIT_CARD_ICON_PX}" height="${BENEFIT_CARD_ICON_PX}" style="display:block;width:${BENEFIT_CARD_ICON_PX}px;height:${BENEFIT_CARD_ICON_PX}px;border:0;filter:${BENEFIT_CARD_ICON_WHITE_FILTER};-webkit-filter:${BENEFIT_CARD_ICON_WHITE_FILTER};" />`;
-  const glowBackdropHtml = appearance === "plain" ? "" : buildBenefitCardGlowBackdropHtml(glowPreset);
+  const glowBackdropHtml =
+    appearance === "plain" ? "" : buildBenefitCardGlowBackdropHtml(glowPreset, glowLayerScale);
   const titleRowHtml = `<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%"><tr><td align="${rowAlign}" style="text-align:${textAlign};">
     <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="display:inline-table;"><tr>
     <td valign="middle" style="vertical-align:middle;padding-right:7px;width:${BENEFIT_CARD_ICON_PX}px;">
@@ -522,8 +587,9 @@ function buildInsightsBenefitCardHtml(
   subtitle: string,
   pairLabels: readonly [string, string, string],
   tiltDeg: number,
+  glowLayerScale: number = BENEFIT_CARD_GLOW_LAYER_SCALE,
 ): string {
-  const glowBackdropHtml = buildBenefitCardGlowBackdropHtml("column");
+  const glowBackdropHtml = buildBenefitCardGlowBackdropHtml("column", glowLayerScale);
   const iconInnerHtml = `<img src="${headerIconUrl}" alt="" width="${BENEFIT_CARD_ICON_PX}" height="${BENEFIT_CARD_ICON_PX}" style="display:block;width:${BENEFIT_CARD_ICON_PX}px;height:${BENEFIT_CARD_ICON_PX}px;border:0;filter:${BENEFIT_CARD_ICON_WHITE_FILTER};-webkit-filter:${BENEFIT_CARD_ICON_WHITE_FILTER};" />`;
   const titleRowHtml = `<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%"><tr><td align="center" style="text-align:center;">
     <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="display:inline-table;"><tr>
@@ -849,7 +915,8 @@ export function buildLeadEarlyAccessEmailHtml(
   const storeLogoHtml = storeLogoEmailMarkup(lead);
   const bizmisLogoUrl = absImg(BIZMIS_LOGO_WHITE);
   const shopifyMarkUrl = absImg(SHOPIFY_MARK_WHITE);
-  const noiseGrainUrl = absImg(EMAIL_NOISE_GRAIN_TILE);
+  const noiseGrainUrl = absImg(EMAIL_BANNER_NOISE_GRAIN);
+  const bannerWaveformUrl = absImg(EMAIL_BANNER_WAVEFORM);
   const salesAvatarUrl = absImg(lead.salesAvatarImagePath || BIZMIS_SALES_AVATAR_FALLBACK);
   const mp = deriveMontagePalette(pri, lead.textColor);
   const [muiR, muiG, muiB] = mp.uiRgb;
@@ -889,11 +956,6 @@ export function buildLeadEarlyAccessEmailHtml(
     absImg(EARLY_ACCESS_CHIP_ROUTE_MUTED),
     absImg(EARLY_ACCESS_CHIP_CLOCK_MUTED),
   ] as const;
-  const softCtaInlineIconUrls = [
-    absImg(EARLY_ACCESS_SOFT_CTA_INLINE_GIFT),
-    absImg(EARLY_ACCESS_SOFT_CTA_INLINE_ROUTE),
-    absImg(EARLY_ACCESS_SOFT_CTA_INLINE_CLOCK),
-  ] as const;
   const outcomeIconUrls = [
     absImg(OUTCOME_ICON_TREND),
     absImg(OUTCOME_ICON_HEADPHONES),
@@ -915,6 +977,7 @@ export function buildLeadEarlyAccessEmailHtml(
     titleAlign: "center",
     glowPreset: "column",
     tiltDeg: BENEFIT_CARD_TILT_SUPPORT_DEG,
+    glowLayerScale: BENEFIT_CARD_GLOW_LAYER_SCALE_SUPPORT_AND_REPLAYS,
   });
   const insightsBenefitCardHtml = buildInsightsBenefitCardHtml(
     outcomeIconUrls[2],
@@ -922,6 +985,7 @@ export function buildLeadEarlyAccessEmailHtml(
     copy.insightsSubtitle,
     [copy.insightsPairSessionReplays, copy.insightsPairAutoTaggedChats, copy.insightsPairFunnelInsights],
     BENEFIT_CARD_TILT_INSIGHTS_DEG,
+    BENEFIT_CARD_GLOW_LAYER_SCALE_SUPPORT_AND_REPLAYS,
   );
   const setupBenefitCardHtml = buildBenefitCardHtml(setupIconUrl, copy.setupTitle, copy.setupSubtitle, {
     titleAlign: "center",
@@ -950,14 +1014,30 @@ export function buildLeadEarlyAccessEmailHtml(
 
   const inviteTopLeadMeasurePx = 440;
   const inviteTopSupportMeasurePx = 420;
+  /** Vertical rhythm: greeting → lead → soft CTA → mockup (email-safe px). */
+  const inviteTopPadAfterBannerPx = 34;
+  const inviteTopPadAfterGreetingPx = 36;
+  const inviteTopPadAfterLeadPx = 24;
+  const inviteTopPadBeforeMockupPx = 34;
 
-  const softCtaAboveMockupBase = `${BODY}font-size:13px;line-height:1.72;`;
-  const softCtaStrong = `${softCtaAboveMockupBase}font-weight:600;color:${BIZMIS_MUTED_LIGHT_HEX};`;
-  const softCtaLinkStyle = `${softCtaAboveMockupBase}color:${BIZMIS_PRIMARY_HEX};font-weight:500;text-decoration:none;`;
-  const softCtaIconPx = CHIP_ROW_ICON_PX;
-  const softCtaInlineIcon = (iconUrl: string) =>
-    `<img src="${iconUrl}" alt="" width="${softCtaIconPx}" height="${softCtaIconPx}" style="display:inline-block;vertical-align:text-bottom;width:${softCtaIconPx}px;height:${softCtaIconPx}px;margin:0 3px 0 0;border:0;" />`;
-  const softCtaAboveMockupHtml = `<span style="${softCtaAboveMockupBase}color:${BIZMIS_MUTED_LIGHT_HEX};font-weight:400;"><a href="${shopifyAppUrl}" target="_blank" style="${softCtaLinkStyle}">${escapeHtml(copy.softCtaAboveMockupLinkPhrase)}</a>${escapeHtml(copy.softCtaAboveMockupAfterLinkPrefix)}${softCtaInlineIcon(softCtaInlineIconUrls[0])}<strong style="${softCtaStrong}">${escapeHtml(copy.softCtaAboveMockupNoCostBold)}</strong>${escapeHtml(copy.softCtaAboveMockupAfterLinkSuffix)}${softCtaInlineIcon(softCtaInlineIconUrls[1])}<strong style="${softCtaStrong}">${escapeHtml(copy.softCtaAboveMockupEmphasisBold)}</strong>${escapeHtml(copy.softCtaAboveMockupEmphasisTail)} ${softCtaInlineIcon(softCtaInlineIconUrls[2])}<strong style="${softCtaStrong}">${escapeHtml(copy.softCtaClosingPhrase)}</strong></span>`;
+  const softCtaChipPhrases = buildEarlyAccessChips(storeCap);
+  const softCtaAboveMockupPrimaryStyle = `${HEADING}font-size:14px;font-weight:600;color:${BIZMIS_PRIMARY_HEX};letter-spacing:-0.02em;line-height:1.35;text-decoration:none;`;
+  /** Smaller than install chip row so three phrases fit one line in ~440px column. */
+  const SOFT_CTA_CHIP_FONT_PX = 10;
+  const SOFT_CTA_CHIP_ICON_PX = 10;
+  const softCtaChipTextStyle = `${BODY}font-size:${SOFT_CTA_CHIP_FONT_PX}px;font-weight:400;line-height:1.35;letter-spacing:-0.01em;color:${BIZMIS_MUTED_LIGHT_HEX};`;
+  const softCtaChipIconHtml = (iconUrl: string, phrase: string) =>
+    `<img src="${iconUrl}" alt="" width="${SOFT_CTA_CHIP_ICON_PX}" height="${SOFT_CTA_CHIP_ICON_PX}" style="display:inline-block;vertical-align:-0.15em;width:${SOFT_CTA_CHIP_ICON_PX}px;height:${SOFT_CTA_CHIP_ICON_PX}px;margin:0 3px 0 0;border:0;" /><span style="${softCtaChipTextStyle}">${escapeHtml(phrase)}</span>`;
+  const softCtaChipSep = `<span style="display:inline-block;margin:0 3px;color:${BIZMIS_MUTED_LIGHT_HEX};opacity:0.45;font-size:${SOFT_CTA_CHIP_FONT_PX}px;line-height:1.35;">·</span>`;
+  const softCtaChipsInlineHtml = [
+    softCtaChipIconHtml(chipStripIconUrls[0], softCtaChipPhrases[0]),
+    softCtaChipIconHtml(chipStripIconUrls[1], softCtaChipPhrases[1]),
+    softCtaChipIconHtml(chipStripIconUrls[2], softCtaChipPhrases[2]),
+  ].join(softCtaChipSep);
+  const softCtaAboveMockupHtml = `<div style="border-left:3.5px solid ${BIZMIS_PRIMARY_HEX};padding:14px 16px 14px 16px;background-color:rgba(249,163,83,0.06);border-radius:0 8px 8px 0;">
+  <p style="margin:0;text-align:left;"><a href="${shopifyAppUrl}" target="_blank" rel="noopener noreferrer" style="${softCtaAboveMockupPrimaryStyle}">${escapeHtml(copy.softCtaAboveMockupPrimaryLine)} \u2192</a></p>
+  <p style="margin:10px 0 0;text-align:left;line-height:1.35;white-space:nowrap;">${softCtaChipsInlineHtml}</p>
+</div>`;
 
   const html = `<!DOCTYPE html>
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml">
@@ -978,46 +1058,49 @@ export function buildLeadEarlyAccessEmailHtml(
       <!-- Card wrapper -->
       <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="560" style="max-width:560px;width:100%;background-color:#ffffff;border:1px solid ${BIZMIS_BORDER_HEX};border-radius:16px;overflow:hidden;box-shadow:${BIZMIS_SHADOW_SOFT};">
 
-        <!-- Split banner: store left | diagonal | bizmis right -->
+        <!-- Banner: full-width lead→Bizmis gradient + grain; inner table for logos (no ×) -->
         <tr>
           <td style="padding:0;">
             <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%">
               <tr>
-                <td width="50%" background="${noiseGrainUrl}" bgcolor="${banner}" style="background-color:${banner};background-image:url('${noiseGrainUrl}');background-repeat:repeat;padding:14px 14px 14px 24px;vertical-align:middle;">
-                  ${storeLogoHtml}
-                </td>
-                <td width="6%" style="background-color:${banner};background:linear-gradient(to bottom right,${banner} 50%,${BIZMIS_PRIMARY_HEX} 50%);text-align:center;vertical-align:middle;padding:0;">
-                  <span style="${HEADING}font-size:28px;font-weight:900;color:#ffffff;line-height:1;text-shadow:0 1px 4px rgba(0,0,0,0.25);">&#x2716;</span>
-                </td>
-                <td width="44%" background="${noiseGrainUrl}" bgcolor="${BIZMIS_PRIMARY_HEX}" style="background-color:${BIZMIS_PRIMARY_HEX};background-image:url('${noiseGrainUrl}');background-repeat:repeat;padding:14px 24px 14px 14px;vertical-align:middle;text-align:right;">
-                  <a href="${BIZMIS_URL}" target="_blank" style="text-decoration:none;">
-                    <table role="presentation" cellpadding="0" cellspacing="0" border="0" align="right">
-                      <tr>
-                        <td style="vertical-align:middle;">
-                          <img src="${bizmisLogoUrl}" alt="Bizmis" width="32" height="32" style="display:block;width:32px;height:auto;border:0;" />
-                        </td>
-                        <td style="vertical-align:middle;padding-left:7px;${HEADING}font-size:17px;font-weight:700;color:#ffffff;letter-spacing:-0.02em;">
-                          bizmis
-                        </td>
-                      </tr>
-                    </table>
-                  </a>
+                <td height="${EMAIL_BANNER_H_PX}" style="${buildEmailBannerStripCellStyle(banner, noiseGrainUrl)}height:${EMAIL_BANNER_H_PX}px;border-bottom:1px solid ${BIZMIS_BORDER_HEX};">
+                  ${buildEmailBannerWaveformOverlayHtml(bannerWaveformUrl)}
+                  <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" height="${EMAIL_BANNER_H_PX}" style="position:relative;z-index:2;border-collapse:collapse;height:${EMAIL_BANNER_H_PX}px;">
+                    <tr>
+                      <td width="50%" valign="middle" style="padding:0 14px 0 ${EMAIL_BANNER_PAD_X_PX}px;background:transparent;">
+                        ${storeLogoHtml}
+                      </td>
+                      <td width="50%" valign="middle" style="padding:0 ${EMAIL_BANNER_PAD_X_PX}px 0 14px;text-align:right;background:transparent;">
+                        <a href="${BIZMIS_URL}" target="_blank" style="text-decoration:none;">
+                          <table role="presentation" cellpadding="0" cellspacing="0" border="0" align="right">
+                            <tr>
+                              <td style="vertical-align:middle;">
+                                <img src="${bizmisLogoUrl}" alt="Bizmis" width="${EMAIL_BANNER_BIZMIS_ICON_PX}" height="${EMAIL_BANNER_BIZMIS_ICON_PX}" style="display:block;width:${EMAIL_BANNER_BIZMIS_ICON_PX}px;height:auto;border:0;" />
+                              </td>
+                              <td style="vertical-align:middle;padding-left:8px;${HEADING}font-size:${EMAIL_BANNER_BIZMIS_WORDMARK_FONT_PX}px;font-weight:700;color:#ffffff;letter-spacing:-0.02em;">
+                                bizmis
+                              </td>
+                            </tr>
+                          </table>
+                        </a>
+                      </td>
+                    </tr>
+                  </table>
+                  <!--[if !mso]><!--><div aria-hidden="true" style="position:absolute;left:0;right:0;bottom:0;height:${EMAIL_BANNER_SCRIM_H_PCT}%;z-index:2;pointer-events:none;background:linear-gradient(to bottom,transparent 0%,rgba(0,0,0,0.18) 100%);"></div><!--<![endif]-->
+                  <!--[if !mso]><!--><div style="position:absolute;left:0;right:0;bottom:${EMAIL_BANNER_BADGE_PAD_BOTTOM_PX}px;z-index:3;text-align:center;pointer-events:none;">
+                    <p style="margin:0;${BODY}font-size:${EMAIL_BANNER_BADGE_FONT_PX}px;line-height:1.35;color:#ffffff;">
+                      <span style="font-weight:700;letter-spacing:0.08em;text-transform:uppercase;">${escapeHtml(copy.bannerBadgeTitle)}</span><span style="font-weight:400;"> &nbsp;&middot;&nbsp; ${escapeHtml(copy.bannerBadgeLimitPrefix)} ${storeCap} ${escapeHtml(copy.bannerBadgeLimitSuffix)}</span>
+                    </p>
+                  </div><!--<![endif]-->
                 </td>
               </tr>
             </table>
           </td>
         </tr>
 
-        <!-- Early access badge strip -->
-        <tr>
-          <td style="padding:10px 24px;text-align:center;background-color:rgba(249,163,83,0.06);border-bottom:1px solid ${BIZMIS_BORDER_HEX};">
-            <p style="margin:0;${BODY}font-size:11px;line-height:1.4;color:${BIZMIS_FOREGROUND_HEX};"><span style="font-weight:700;letter-spacing:0.08em;text-transform:uppercase;">${escapeHtml(copy.bannerBadgeTitle)}</span><span style="color:${BIZMIS_MUTED_LIGHT_HEX};font-weight:400;"> &nbsp;&middot;&nbsp; ${escapeHtml(copy.bannerBadgeLimitPrefix)} ${storeCap} ${escapeHtml(copy.bannerBadgeLimitSuffix)}</span></p>
-          </td>
-        </tr>
-
         <!-- Salutation (small) -->
         <tr>
-          <td style="padding:26px 32px 0 32px;">
+          <td style="padding:${inviteTopPadAfterBannerPx}px 32px 0 32px;">
             <p style="margin:0;${inviteTopGreetingStyle}">
               ${salutationParagraphInnerHtml}
             </p>
@@ -1026,7 +1109,7 @@ export function buildLeadEarlyAccessEmailHtml(
 
         <!-- Invitation sentence (dominant, softened — not hero weight) -->
         <tr>
-          <td style="padding:30px 32px 0 32px;">
+          <td style="padding:${inviteTopPadAfterGreetingPx}px 32px 0 32px;">
             <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="max-width:${inviteTopLeadMeasurePx}px;">
               <tr>
                 <td style="padding:0;">
@@ -1039,15 +1122,13 @@ export function buildLeadEarlyAccessEmailHtml(
           </td>
         </tr>
 
-        <!-- Soft editorial CTA (above mockup; same URL as install button) -->
+        <!-- Bridge to mockup: quote rail + primary link + chip icons (same URL as install) -->
         <tr>
-          <td style="padding:14px 32px 0 32px;">
+          <td style="padding:${inviteTopPadAfterLeadPx}px 32px 0 32px;">
             <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="max-width:${inviteTopLeadMeasurePx}px;">
               <tr>
                 <td style="padding:0;">
-                  <div style="border-left:3.5px solid ${BIZMIS_PRIMARY_HEX};background-color:rgba(249,163,83,0.06);padding:10px 14px;border-radius:0 6px 6px 0;">
-                    <p style="margin:0;text-align:left;">${softCtaAboveMockupHtml}</p>
-                  </div>
+                  ${softCtaAboveMockupHtml}
                 </td>
               </tr>
             </table>
@@ -1056,7 +1137,7 @@ export function buildLeadEarlyAccessEmailHtml(
 
         <!-- Desktop frame + Boost Sales card overlay -->
         <tr>
-          <td style="padding:26px 20px 0 20px;">
+          <td style="padding:${inviteTopPadBeforeMockupPx}px 20px 0 20px;">
             <!--[if !mso]><!--><div style="position:relative;"><!--<![endif]-->
             <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="border:0;border-radius:12px;overflow:hidden;box-shadow:0 8px 40px -8px rgba(0,0,0,0.12);">
               <tr>
@@ -1339,7 +1420,7 @@ export function buildLeadEarlyAccessEmailHtml(
     "",
     buildEarlyAccessValueSentencePlainText(lead.storeName, lead.leadContactName),
     "",
-    buildSoftCtaPlainText(shopifyAppUrl),
+    buildSoftCtaPlainText(shopifyAppUrl, storeCap),
     "",
     montagePlainLine,
     "",
