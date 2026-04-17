@@ -85,8 +85,14 @@ Always use the **studio venv** (it has Blender bindings, Playwright, Pillow):
 3. **Merge params** → universal `RENDER_DEFAULTS` + per-lead `shirt_color`
    (falling back to `primary_color`) for shirt mesh, widget button, and stamp
 4. **Render** → calls `render_avatar()` from the studio repo (Blender headless
-   - Playwright widget composite)
+   + Playwright widget composite)
 5. **Output** → `public/invite-cards/leads/<id>/sales-avatar.png`
+
+**Support** (`generate_support_lead` / `SUPPORT_RENDER_DEFAULTS`): same stamp
+resolution; mobile Playwright composite uses `button_color` (raw montage accent)
+for ring/icon chrome and `wave_color` (corrected) only for the animated
+voice-wave rings — see `render_store_clerk._build_mobile_html`. Output:
+`public/invite-cards/leads/<id>/support-avatar.png`.
 
 ## Configuration
 

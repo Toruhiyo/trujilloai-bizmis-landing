@@ -31,6 +31,7 @@ from ._config import (
     STUDIO_ROOT,
     get_lead,
     lead_output_path,
+    resolve_raw_montage_accent_hex,
     resolve_widget_wave_color,
     support_lead_output_path,
 )
@@ -136,7 +137,7 @@ def _render_support_lead(lead: dict, avatar_id: str) -> Path:
     params = {
         **SUPPORT_RENDER_DEFAULTS,
         "shirt_stamp": str(stamp),
-        "button_color": shirt_color,
+        "button_color": resolve_raw_montage_accent_hex(lead),
         "mesh_colors": {"Shirt_Color": shirt_color},
         "wave_color": resolve_widget_wave_color(lead),
     }

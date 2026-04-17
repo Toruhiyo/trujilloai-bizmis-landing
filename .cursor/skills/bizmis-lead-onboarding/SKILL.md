@@ -389,7 +389,11 @@ generate_support_lead("newlead")
 # Override for testing: generate_lead("newlead", avatar_id="will")
 ```
 
-**Widget wave ring colour:** Python `resolve_widget_wave_color()` mirrors `deriveMontagePalette()` in `leadEarlyAccessEmailHtml.ts`: pick accent (primary if contrast on white ≥ 1.8, else `textColor` if it passes, else primary), apply caption correction (if contrast &lt; 2.4 clamp HSL lightness ≤ 52 and saturation ≤ 65), then if still extremely light (luminance &gt; 0.85) use slate `#475569`. That hex is passed as `--wave-color` to Blender so the ring matches the email (policy chip, montage product accent, waveforms).
+**Support mobile widget colours (Blender + Playwright):** The landing pipeline passes **raw** accent as `button_color` and **corrected** accent as `wave_color`. In the studio repo, the **mobile** HTML composite used to ignore `button_color` and tint every ring/icon from `wave_color` only — that is fixed: `_composite_widget_ui` passes `ui_accent_hex=button_color` into `_build_mobile_html`, so the outer ring, idle ring, and floating icon use the raw brand colour; only the `.voice-wave` rings use `wave_color`. **Shirt mesh** still uses `shirt_color` from the registry.
+
+**Colour resolution:** `resolve_raw_montage_accent_hex` → `--button-color` (raw UI). `resolve_widget_wave_color()` mirrors `deriveMontagePalette()` in `leadEarlyAccessEmailHtml.ts` for `--wave-color` only: pick accent (primary if contrast on white ≥ 1.8, else `textColor` if it passes, else primary), apply caption correction (if contrast &lt; 2.4 clamp HSL lightness ≤ 52 and saturation ≤ 65), then if still extremely light (luminance &gt; 0.85) use slate `#475569`.
+
+**Assisted-sales avatars** keep `button_color` = `shirt_color` (shirt and desktop widget stay aligned with the curated shirt colour).
 
 See the [Bizmis Avatar Render skill](../../skills/bizmis-avatar-render/SKILL.md) for details and troubleshooting.
 
