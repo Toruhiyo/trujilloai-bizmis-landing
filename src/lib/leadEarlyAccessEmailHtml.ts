@@ -407,10 +407,10 @@ type BenefitCardGlowPreset = "overlay" | "column";
 
 type BenefitCardAppearance = "glow" | "plain";
 
-/** Subtle per-card tilt (deg); sign = clockwise vs counter-clockwise in modern email clients. */
-const BENEFIT_CARD_TILT_SALES_DEG = 2.4;
-const BENEFIT_CARD_TILT_SUPPORT_DEG = -2.8;
-const BENEFIT_CARD_TILT_INSIGHTS_DEG = 1.7;
+/** Per-card tilt (deg); kept at 0 so benefit cards render straight in all clients. */
+const BENEFIT_CARD_TILT_SALES_DEG = 0;
+const BENEFIT_CARD_TILT_SUPPORT_DEG = 0;
+const BENEFIT_CARD_TILT_INSIGHTS_DEG = 0;
 
 function buildPlainBenefitCardIconHtml(iconUrl: string, sizePx: number): string {
   const safePrimary = escapeHtml(BIZMIS_PRIMARY_HEX);
@@ -439,6 +439,8 @@ const BENEFIT_CARD_TINT_BACKDROP_BLUR_PX = 14;
 /** Inner padding on Boost Sales, Support, Replays, and Insights benefit card bodies. */
 const BENEFIT_CARD_INNER_PADDING_Y_PX = 14;
 const BENEFIT_CARD_INNER_PADDING_X_PX = 16;
+/** Vertical gap between the Support and Replays cards in the left column (non-MSO). */
+const BENEFIT_CARD_SUPPORT_TO_INSIGHTS_GAP_PX = 32;
 /** Bizmis-primary outline around the Plug and Play bordered block. */
 const SETUP_PLUG_PLAY_BORDER_PX = 2;
 
@@ -585,6 +587,8 @@ function buildBenefitCardHtml(
     tiltDeg?: number;
     /** When set, scales the orange glow layers (default `BENEFIT_CARD_GLOW_LAYER_SCALE`). */
     glowLayerScale?: number;
+    /** Optional Replays-style icon+text chip row below the subtitle (e.g. support capabilities). */
+    chipsRowHtml?: string;
   },
 ): string {
   const appearance = options?.appearance ?? "glow";
@@ -614,11 +618,13 @@ function buildBenefitCardHtml(
   </tr></table>
   </td></tr></table>`;
   const tiltDeg = options?.tiltDeg ?? 0;
+  const chipsRowHtml = options?.chipsRowHtml ?? "";
   const cardBody = `<div style="position:relative;border:0;background:transparent;padding:${BENEFIT_CARD_INNER_PADDING_Y_PX}px ${BENEFIT_CARD_INNER_PADDING_X_PX}px;box-sizing:border-box;overflow:visible;">
   ${glowBackdropHtml}
   <div style="position:relative;z-index:1;">
   ${titleRowHtml}
   <p style="margin:${BENEFIT_CARD_TITLE_TO_BODY_MARGIN_PX}px 0 0;text-align:${textAlign};${BODY}font-size:${subtitleFontPx}px;font-weight:400;color:${subtitleColor};line-height:${BENEFIT_CARD_SUBTITLE_LINE_HEIGHT};letter-spacing:${BENEFIT_CARD_SUBTITLE_LETTER_SPACING_EM}em;">${escapeHtml(subtitle)}</p>
+  ${chipsRowHtml}
   </div>
 </div>`;
   if (tiltDeg === 0) {
@@ -647,6 +653,33 @@ function buildInsightsPairRowSvgs(
   ];
 }
 
+function buildSupportPairRowSvgs(strokeColor: string): readonly [string, string, string] {
+  const w = INSIGHTS_PAIR_ICON_PX;
+  const s = strokeColor;
+  return [
+    `<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${w}" viewBox="0 0 24 24" fill="none" stroke="${s}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>`,
+    `<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${w}" viewBox="0 0 24 24" fill="none" stroke="${s}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>`,
+    `<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${w}" viewBox="0 0 24 24" fill="none" stroke="${s}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>`,
+  ];
+}
+
+function buildTripleIconTextChipRowHtml(
+  svgs: readonly [string, string, string],
+  labels: readonly [string, string, string],
+  textColor: string,
+  textAlign: "left" | "center",
+): string {
+  const pairStyle = `display:inline-block;vertical-align:middle;${BODY}font-size:${INSIGHTS_PAIR_ROW_FONT_PX}px;font-weight:400;color:${textColor};line-height:${INSIGHTS_CHIPS_LINE_HEIGHT};letter-spacing:0.01em;`;
+  const sepStyle = `display:inline-block;vertical-align:middle;margin:0 4px;color:${textColor};opacity:0.45;font-size:${INSIGHTS_PAIR_ROW_FONT_PX}px;line-height:${INSIGHTS_CHIPS_LINE_HEIGHT};`;
+  const sep = `<span style="${sepStyle}">·</span>`;
+  const pairSpans = [
+    `<span style="${pairStyle}">${svgs[0]}&nbsp;${escapeHtml(labels[0])}</span>`,
+    `<span style="${pairStyle}">${svgs[1]}&nbsp;${escapeHtml(labels[1])}</span>`,
+    `<span style="${pairStyle}">${svgs[2]}&nbsp;${escapeHtml(labels[2])}</span>`,
+  ];
+  return `<p style="margin:${INSIGHTS_CHIPS_MARGIN_TOP_PX}px 0 0;text-align:${textAlign};${BODY}line-height:${INSIGHTS_CHIPS_LINE_HEIGHT};">${pairSpans.join(sep)}</p>`;
+}
+
 function buildInsightsBenefitCardHtml(
   headerIconUrl: string,
   title: string,
@@ -673,16 +706,12 @@ function buildInsightsBenefitCardHtml(
   </td></tr></table>`;
   const subtitleHtml = `<p style="margin:${BENEFIT_CARD_TITLE_TO_BODY_MARGIN_PX}px 0 0;text-align:center;${BODY}font-size:${BENEFIT_CARD_GLOW_SUBTITLE_FONT_PX}px;font-weight:400;color:${insightsSubtitleColor};line-height:${BENEFIT_CARD_SUBTITLE_LINE_HEIGHT};letter-spacing:${BENEFIT_CARD_SUBTITLE_LETTER_SPACING_EM}em;">${escapeHtml(subtitle)}</p>`;
   const pairIconStroke = BENEFIT_CARD_LANDING_TINT_FILL ? BIZMIS_PRIMARY_HEX : "#ffffff";
-  const [svgA, svgB, svgC] = buildInsightsPairRowSvgs(pairIconStroke);
-  const pairStyle = `display:inline-block;vertical-align:middle;${BODY}font-size:${INSIGHTS_PAIR_ROW_FONT_PX}px;font-weight:400;color:${insightsSubtitleColor};line-height:${INSIGHTS_CHIPS_LINE_HEIGHT};letter-spacing:0.01em;`;
-  const sepStyle = `display:inline-block;vertical-align:middle;margin:0 4px;color:${insightsSubtitleColor};opacity:0.45;font-size:${INSIGHTS_PAIR_ROW_FONT_PX}px;line-height:${INSIGHTS_CHIPS_LINE_HEIGHT};`;
-  const sep = `<span style="${sepStyle}">·</span>`;
-  const pairSpans = [
-    `<span style="${pairStyle}">${svgA}&nbsp;${escapeHtml(pairLabels[0])}</span>`,
-    `<span style="${pairStyle}">${svgB}&nbsp;${escapeHtml(pairLabels[1])}</span>`,
-    `<span style="${pairStyle}">${svgC}&nbsp;${escapeHtml(pairLabels[2])}</span>`,
-  ];
-  const pairsRowHtml = `<p style="margin:${INSIGHTS_CHIPS_MARGIN_TOP_PX}px 0 0;text-align:center;${BODY}line-height:${INSIGHTS_CHIPS_LINE_HEIGHT};">${pairSpans.join(sep)}</p>`;
+  const pairsRowHtml = buildTripleIconTextChipRowHtml(
+    buildInsightsPairRowSvgs(pairIconStroke),
+    pairLabels,
+    insightsSubtitleColor,
+    "center",
+  );
   const cardBody = `<div style="position:relative;border:0;background:transparent;padding:${BENEFIT_CARD_INNER_PADDING_Y_PX}px ${BENEFIT_CARD_INNER_PADDING_X_PX}px;box-sizing:border-box;overflow:visible;">
   ${glowBackdropHtml}
   <div style="position:relative;z-index:1;">
@@ -1048,11 +1077,19 @@ export function buildLeadEarlyAccessEmailHtml(
     titleAlign: "center",
     tiltDeg: BENEFIT_CARD_TILT_SALES_DEG,
   });
+  const supportBenefitChipTextColor = BENEFIT_CARD_LANDING_TINT_FILL ? BIZMIS_MUTED_FG_HEX : BENEFIT_CARD_SUBTITLE_HEX;
+  const supportChipsRowHtml = buildTripleIconTextChipRowHtml(
+    buildSupportPairRowSvgs(BIZMIS_PRIMARY_HEX),
+    [copy.supportPairInstant247, copy.supportPairProblemResolution, copy.supportPairEmotionalIntelligence],
+    supportBenefitChipTextColor,
+    "center",
+  );
   const supportBenefitCardHtml = buildBenefitCardHtml(outcomeIconUrls[1], copy.supportMockupTitle, copy.supportMockupSubtitle, {
     titleAlign: "center",
     glowPreset: "column",
     tiltDeg: BENEFIT_CARD_TILT_SUPPORT_DEG,
     glowLayerScale: BENEFIT_CARD_GLOW_LAYER_SCALE_SUPPORT_AND_REPLAYS,
+    chipsRowHtml: supportChipsRowHtml,
   });
   const insightsBenefitCardHtml = buildInsightsBenefitCardHtml(
     outcomeIconUrls[2],
@@ -1336,7 +1373,7 @@ export function buildLeadEarlyAccessEmailHtml(
               <tr>
                 <td valign="middle" style="vertical-align:middle;padding:0 12px 0 0;width:50%;">
                   ${supportBenefitCardHtml}
-                  <div style="height:96px;font-size:0;line-height:0;">&nbsp;</div>
+                  <div style="height:${BENEFIT_CARD_SUPPORT_TO_INSIGHTS_GAP_PX}px;font-size:0;line-height:0;">&nbsp;</div>
                   ${insightsBenefitCardHtml}
                 </td>
                 <td valign="middle" align="center" style="vertical-align:middle;padding:0;">
@@ -1351,6 +1388,7 @@ export function buildLeadEarlyAccessEmailHtml(
                 <td valign="top" width="200" style="padding:0 12px 0 0;">
                   <p style="margin:0;${HEADING}font-size:13px;font-weight:800;color:${BIZMIS_FOREGROUND_HEX};">${escapeHtml(copy.supportMockupTitle)}</p>
                   <p style="margin:8px 0 0;${BODY}font-size:10px;color:${BIZMIS_MUTED_FG_HEX};line-height:${BENEFIT_CARD_SUBTITLE_LINE_HEIGHT};letter-spacing:${BENEFIT_CARD_SUBTITLE_LETTER_SPACING_EM}em;">${escapeHtml(copy.supportMockupSubtitle)}</p>
+                  <p style="margin:${INSIGHTS_CHIPS_MARGIN_TOP_PX}px 0 0;${BODY}font-size:${INSIGHTS_PAIR_ROW_FONT_PX}px;color:${BIZMIS_MUTED_FG_HEX};line-height:${INSIGHTS_CHIPS_LINE_HEIGHT};text-align:center;">${escapeHtml(copy.supportPairInstant247)} · ${escapeHtml(copy.supportPairProblemResolution)} · ${escapeHtml(copy.supportPairEmotionalIntelligence)}</p>
                   <br/>
                   <p style="margin:0;${HEADING}font-size:13px;font-weight:800;color:${BIZMIS_FOREGROUND_HEX};">${escapeHtml(copy.insightsTitle)}</p>
                   <p style="margin:8px 0 0;${BODY}font-size:10px;color:${BIZMIS_MUTED_FG_HEX};line-height:${BENEFIT_CARD_SUBTITLE_LINE_HEIGHT};letter-spacing:${BENEFIT_CARD_SUBTITLE_LETTER_SPACING_EM}em;">${escapeHtml(copy.insightsSubtitle)}</p>

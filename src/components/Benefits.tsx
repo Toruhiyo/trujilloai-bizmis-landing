@@ -236,11 +236,12 @@ const Benefits = () => {
                       <FaShieldAlt className="w-4 h-4 text-primary/35 group-hover:text-primary/60 transition-colors duration-300 flex-shrink-0 mt-0.5" />
                       <div>
                         <h3 className="text-sm font-heading font-medium text-foreground mb-1.5">
-                          Problem Resolution
+                          Store Knowledge
                         </h3>
                         <p className="text-muted-foreground font-body text-sm leading-relaxed">
-                          Quick, accurate solutions that turn frustrated
-                          customers into satisfied advocates.
+                          Answers policy, product, and documentation
+                          questions instantly, so shoppers and customers get
+                          clear guidance without waiting for your team.
                         </p>
                       </div>
                     </div>

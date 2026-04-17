@@ -30,6 +30,10 @@ export const EARLY_ACCESS_EMAIL_COPY = {
     "Convert, upsell and retain by guiding every shopper like a great store clerk would.",
   supportMockupTitle: "Save Support Hours",
   supportMockupSubtitle: "Reduce support load with instant 24/7 answers and emotional intelligence that turns frustrated customers into satisfied advocates.",
+  /** Icon+text chips under the support benefit body (matches landing capability row). */
+  supportPairInstant247: "24/7 Instant Support",
+  supportPairProblemResolution: "Store Knowledge",
+  supportPairEmotionalIntelligence: "Emotional Intelligence",
   insightsTitle: "Replays to Unlock Growth",
   insightsSubtitle:
     "Review store insights and voice replays to spot friction, sharpen conversion, and uncover your next wins.",
