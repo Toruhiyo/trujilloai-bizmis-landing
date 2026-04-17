@@ -84,13 +84,9 @@ const PHONE_AVATAR_GLOW_PLATEAU_PCT = 0.65;
 
 /** Inset for shopper + clerk caption blocks inside the support phone screen. */
 const PHONE_SUPPORT_CAPTION_INSET_PX = 12;
-const PHONE_SUPPORT_CLERK_FONT_PX = 10;
-const PHONE_SUPPORT_SHOPPER_LINE_HEIGHT = 1.0;
-const PHONE_SUPPORT_CLERK_LINE_HEIGHT = 1.0;
 
 /** Bizmis mark inline at start of clerk captions (emoji-like) — masked white logo tinted with caption accent (contrast-corrected, same as bold caption text). */
 const MONTAGE_SALES_BIZMIS_CAPTION_ICON_PX = 16;
-const MONTAGE_PHONE_BIZMIS_CAPTION_ICON_PX = 14;
 
 const MONTAGE_CHROME_BG_HEX = "#F7F7F7";
 const MONTAGE_CHROME_URL_HEX = "#A3A3A3";
@@ -135,6 +131,8 @@ function montageSalesCueSingleLine(s: string): string {
 }
 
 const MONTAGE_SALES_CUE_BASE_FONT_PX = 11;
+/** Matches desktop montage shopper cue (`montageSalesCueFontPx(..., 10)`). */
+const MONTAGE_CUSTOMER_CUE_BASE_FONT_PX = 10;
 const MONTAGE_SALES_CUE_MIN_FONT_PX = 8.5;
 const MONTAGE_SALES_CUE_CHARS_AT_BASE = 70;
 
@@ -783,19 +781,25 @@ function buildSupportMockupSceneHtml(
   );
   const clerkWaveHtml = emailMontageWatermarkWaveformHtml(...palette.rgb, palette.waveformOpacity, false, pw);
 
-  const customerCueStyle = `${BODY}font-size:10px;font-weight:300;font-style:italic;line-height:${PHONE_SUPPORT_SHOPPER_LINE_HEIGHT};color:${BIZMIS_MUTED_LIGHT_HEX};`;
-  const customerCueBoldStyle = `${BODY}font-size:10px;font-weight:600;font-style:italic;line-height:${PHONE_SUPPORT_SHOPPER_LINE_HEIGHT};color:${BIZMIS_MUTED_LIGHT_HEX};`;
-  const clerkReplyStyle = `${BODY}font-size:${PHONE_SUPPORT_CLERK_FONT_PX}px;font-weight:400;line-height:${PHONE_SUPPORT_CLERK_LINE_HEIGHT};color:${BIZMIS_MUTED_FG_HEX};`;
-  const clerkReplyBoldStyle = `${BODY}font-size:${PHONE_SUPPORT_CLERK_FONT_PX}px;font-weight:700;line-height:${PHONE_SUPPORT_CLERK_LINE_HEIGHT};color:${palette.captionAccent};`;
+  const supportCaptionParagraphWrap =
+    "white-space:normal;word-wrap:break-word;overflow-wrap:break-word;max-width:100%;";
 
   const shopperRaw = lead.supportShopperCue?.trim() || CS_SHOPPER_FALLBACK;
-  const shopperText = `\u201c${shopperRaw}\u201d`;
+  const shopperText = `\u201c${montageSalesCueSingleLine(shopperRaw)}\u201d`;
+  const shopperFontPx = montageSalesCueFontPx(shopperText, MONTAGE_CUSTOMER_CUE_BASE_FONT_PX);
+  const customerCueStyle = `${BODY}font-size:${shopperFontPx}px;font-weight:300;font-style:italic;line-height:1.35;color:${BIZMIS_MUTED_LIGHT_HEX};`;
+  const customerCueBoldStyle = `${BODY}font-size:${shopperFontPx}px;font-weight:600;font-style:italic;line-height:1.35;color:${BIZMIS_MUTED_LIGHT_HEX};`;
+
   const productName = lead.supportProductName?.trim() || null;
   const policyName = lead.supportPolicyName?.trim() || CS_POLICY_FALLBACK;
   const clerkRaw = lead.supportClerkCue?.trim() || CS_CLERK_FALLBACK;
+  const clerkDisplay = montageSalesCueSingleLine(clerkRaw);
+  const clerkFontPx = montageSalesCueFontPx(clerkDisplay, MONTAGE_SALES_CUE_BASE_FONT_PX);
+  const clerkReplyStyle = `${BODY}font-size:${clerkFontPx}px;font-weight:500;line-height:1.35;color:${BIZMIS_FOREGROUND_HEX};`;
+  const clerkReplyBoldStyle = `${BODY}font-size:${clerkFontPx}px;font-weight:800;line-height:1.35;letter-spacing:-0.02em;color:${palette.captionAccent};`;
 
   const shopperHtml = highlightProductInHtml(shopperText, productName, customerCueStyle, customerCueBoldStyle);
-  const clerkHtml = highlightProductInHtml(clerkRaw, productName, clerkReplyStyle, clerkReplyBoldStyle);
+  const clerkHtml = highlightProductInHtml(clerkDisplay, productName, clerkReplyStyle, clerkReplyBoldStyle);
 
   const policyChipAccent = palette.captionAccent;
   const [policyChipR, policyChipG, policyChipB] = hexToRgb(policyChipAccent);
@@ -811,10 +815,7 @@ function buildSupportMockupSceneHtml(
     </tr>
   </table>`;
 
-  const supportClerkBizmisIconHtml = buildBizmisCaptionIconHtml(
-    palette.captionAccent,
-    MONTAGE_PHONE_BIZMIS_CAPTION_ICON_PX,
-  );
+  const supportClerkBizmisIconHtml = buildBizmisCaptionIconHtml(palette.captionAccent, MONTAGE_SALES_BIZMIS_CAPTION_ICON_PX);
 
   return `<!--[if !mso]><!-->
             <div style="display:inline-block;width:${PHONE_FRAME_W}px;border-radius:${PHONE_BODY_RADIUS}px;background-color:${MONTAGE_CHROME_BG_HEX};border:1px solid rgba(0,0,0,0.06);padding:${PHONE_BEZEL_PX}px;box-shadow:0 8px 36px -8px rgba(${pr},${pg},${pb},0.18),0 0 0 0.5px rgba(0,0,0,0.04);">
@@ -832,7 +833,7 @@ function buildSupportMockupSceneHtml(
                       </div>
                     </div>
                     <div style="position:relative;z-index:1;padding:8px ${PHONE_SUPPORT_CAPTION_INSET_PX}px 4px ${PHONE_SUPPORT_CAPTION_INSET_PX}px;width:100%;box-sizing:border-box;text-align:left;">
-                      <p style="margin:0;width:100%;text-align:left;">
+                      <p style="margin:0;width:100%;text-align:left;${supportCaptionParagraphWrap}">
                         ${shopperHtml}
                       </p>
                     </div>
@@ -861,7 +862,7 @@ function buildSupportMockupSceneHtml(
                       <div style="margin:0 0 4px 0;text-align:right;">
                         ${lookupChipHtml}
                       </div>
-                      <p style="margin:0;width:100%;text-align:right;">
+                      <p style="margin:0;width:100%;text-align:right;${supportCaptionParagraphWrap}">
                         ${supportClerkBizmisIconHtml}${clerkHtml}
                       </p>
                     </div>
@@ -972,7 +973,7 @@ export function buildLeadEarlyAccessEmailHtml(
   const montageCustomerCueText = lead.montageShopperCue?.trim()
     ? `\u201c${montageSalesCueSingleLine(lead.montageShopperCue.trim())}\u201d`
     : MONTAGE_CUSTOMER_CUE_TEXT_FALLBACK;
-  const shopperFontPx = montageSalesCueFontPx(montageCustomerCueText, 10);
+  const shopperFontPx = montageSalesCueFontPx(montageCustomerCueText, MONTAGE_CUSTOMER_CUE_BASE_FONT_PX);
   const montageCustomerCueHtml = `<span style="${BODY}font-size:${shopperFontPx}px;font-weight:300;font-style:italic;line-height:1.35;color:${BIZMIS_MUTED_LIGHT_HEX};white-space:nowrap;">${escapeHtml(montageCustomerCueText)}</span>`;
   const chipStripIconUrls = [
     absImg(EARLY_ACCESS_CHIP_GIFT_MUTED),
