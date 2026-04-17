@@ -50,7 +50,7 @@ const EMAIL_BANNER_SCRIM_H_PCT = 26;
 const EMAIL_BANNER_BADGE_FONT_PX = 11;
 
 const OUTCOME_ICON_TREND = "/images/early-access-outcome-trend.svg";
-const OUTCOME_ICON_HEADPHONES = "/images/early-access-outcome-headphones.svg";
+const OUTCOME_ICON_HEADSET = "/images/early-access-outcome-headset.svg";
 const OUTCOME_ICON_CHART = "/images/early-access-outcome-chart.svg";
 /** Chip row below install button — #8F7856 to match pill label text. */
 const EARLY_ACCESS_CHIP_GIFT_MUTED = "/images/early-access-chip-gift-muted.svg";
@@ -364,9 +364,26 @@ function buildEmailBannerStripCellStyle(leadHex: string, noisePublicUrl: string)
   return `padding:0;vertical-align:middle;position:relative;background-color:${leadHex};background-image:url('${urlEsc}'),${grad};background-repeat:no-repeat,no-repeat;background-size:100% 100%,100% 100%;`;
 }
 
-/** PNG from `buildShopifyCoverFullWidthWaveformSvg` — same math as `ShopifyDeck` cover row; `mix-blend-mode: overlay` like the slide. */
+/** Mask fade stops for the darken pass: visible on the lead side, fades through the gradient white band, off on the Bizmis orange side. */
+const BANNER_WAVEFORM_DARKEN_MASK_VISIBLE_END_PCT = 45;
+const BANNER_WAVEFORM_DARKEN_MASK_FADE_END_PCT = 68;
+/** Opacity of the inverted darken pass — tuned to stay readable on near-white leads without crushing mid/dark leads. */
+const BANNER_WAVEFORM_DARKEN_OPACITY = 0.35;
+
+/**
+ * PNG from `buildShopifyCoverFullWidthWaveformSvg`. Uses two stacked passes so the wave stays
+ * visible over any lead color while keeping the Bizmis (orange) half always lightened:
+ *   - Lighten pass: `screen` full-width — boosts dark leads and orange; no-op on near-white.
+ *   - Darken pass: `multiply` with the PNG inverted, masked to fade out before the Bizmis half —
+ *     provides contrast over near-white regions without ever darkening the orange side.
+ */
 function buildEmailBannerWaveformOverlayHtml(waveformPublicUrl: string): string {
-  return `<!--[if !mso]><!--><div aria-hidden="true" style="position:absolute;left:0;right:0;top:50%;transform:translateY(-50%);-webkit-transform:translateY(-50%);height:${EMAIL_BANNER_WAVEFORM_DISPLAY_H_PX}px;z-index:1;pointer-events:none;line-height:0;mso-line-height-rule:exactly;mix-blend-mode:overlay;"><img src="${waveformPublicUrl}" alt="" width="${EMAIL_BANNER_WAVEFORM_W_PX}" height="${EMAIL_BANNER_WAVEFORM_H_PX}" style="display:block;border:0;width:100%;height:${EMAIL_BANNER_WAVEFORM_DISPLAY_H_PX}px;object-fit:fill;" /></div><!--<![endif]-->`;
+  const commonImgStyle = `display:block;border:0;width:100%;height:${EMAIL_BANNER_WAVEFORM_DISPLAY_H_PX}px;object-fit:fill;`;
+  const baseLayerStyle = `position:absolute;left:0;right:0;top:50%;transform:translateY(-50%);-webkit-transform:translateY(-50%);height:${EMAIL_BANNER_WAVEFORM_DISPLAY_H_PX}px;z-index:1;pointer-events:none;line-height:0;mso-line-height-rule:exactly;`;
+  const darkenMaskGradient = `linear-gradient(to right, #000 0%, #000 ${BANNER_WAVEFORM_DARKEN_MASK_VISIBLE_END_PCT}%, transparent ${BANNER_WAVEFORM_DARKEN_MASK_FADE_END_PCT}%, transparent 100%)`;
+  const lightenPass = `<div aria-hidden="true" style="${baseLayerStyle}mix-blend-mode:screen;"><img src="${waveformPublicUrl}" alt="" width="${EMAIL_BANNER_WAVEFORM_W_PX}" height="${EMAIL_BANNER_WAVEFORM_H_PX}" style="${commonImgStyle}" /></div>`;
+  const darkenPass = `<div aria-hidden="true" style="${baseLayerStyle}mix-blend-mode:multiply;opacity:${BANNER_WAVEFORM_DARKEN_OPACITY};-webkit-mask-image:${darkenMaskGradient};mask-image:${darkenMaskGradient};"><img src="${waveformPublicUrl}" alt="" width="${EMAIL_BANNER_WAVEFORM_W_PX}" height="${EMAIL_BANNER_WAVEFORM_H_PX}" style="${commonImgStyle}filter:invert(1);-webkit-filter:invert(1);" /></div>`;
+  return `<!--[if !mso]><!-->${lightenPass}${darkenPass}<!--<![endif]-->`;
 }
 
 function buildBizmisCaptionIconHtml(captionAccentHex: string, sizePx: number): string {
@@ -982,7 +999,7 @@ export function buildLeadEarlyAccessEmailHtml(
   ] as const;
   const outcomeIconUrls = [
     absImg(OUTCOME_ICON_TREND),
-    absImg(OUTCOME_ICON_HEADPHONES),
+    absImg(OUTCOME_ICON_HEADSET),
     absImg(OUTCOME_ICON_CHART),
   ] as const;
   const setupIconUrl = shopifyMarkUrl;

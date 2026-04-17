@@ -395,6 +395,8 @@ generate_support_lead("newlead")
 
 **Assisted-sales avatars** keep `button_color` = `shirt_color` (shirt and desktop widget stay aligned with the curated shirt colour).
 
+**Avatar accessories (hat + glasses):** Both `_render_lead` and `_render_support_lead` always pass `hat_color` / `glasses_color` to the studio renderer, resolved from `resolve_raw_montage_accent_hex(lead)` (the same raw brand accent used by the recommended product card — e.g. Jackery orange, Nanoleaf green, UroTuning red). The studio silently skips the mesh when the chosen avatar has no hat/glasses, so setting these is safe for every lead. Override per-lead only when the brand accent is the wrong pick for the accessory by setting `hat_color` or `glasses_color` on the lead dict in `LEAD_REGISTRY`.
+
 See the [Bizmis Avatar Render skill](../../skills/bizmis-avatar-render/SKILL.md) for details and troubleshooting.
 
 ### Step 7 — Update product manifest (automated)
@@ -437,6 +439,7 @@ Use browser MCP tools to screenshot both the live store and the generated invite
 | Colour match             | `primaryColor` accent (product card borders, browser dots, waveform) matches the store's brand accent / dominant CTA colour.                                                                                                                                                         |
 | Logo legibility          | Logo is readable on the banner (sufficient contrast with the banner background).                                                                                                                                                                                                     |
 | Avatar shirt             | Shirt colour looks branded (not default/generic). Stamp is legible on the shirt. For untinted emblems, shirt must match banner background.                                                                                                                                           |
+| Avatar hat / glasses     | When the avatar actually wears a hat or glasses, their colour matches the raw brand accent (same hex as the recommended product card border). If it doesn't read as the brand colour, override `hat_color` / `glasses_color` in `_config.py`.                                        |
 | Montage shopper cue      | Shopper line relates to the store's niche and reads as a vague exploring question (not a specific product query). Max 80 chars. No em-dashes.                                                                                                                                        |
 | Montage clerk cue        | Clerk line references the correct recommended product (matching `salesProducts[salesRecommendedIndex].title` exactly) with a plausible domain reason. Max 80 chars. No em-dashes. Product name appears highlighted in bold + primaryColor in the rendered preview.                   |
 | Support avatar           | Support avatar uses a different character than the sales avatar and is the opposite gender. Mobile widget format.                                                                                                                                                                    |

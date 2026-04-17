@@ -223,6 +223,15 @@ def resolve_widget_wave_color(lead: dict) -> str:
 #                          Falls back to logo_color_overlay when None.
 # • stamp_image         → filename inside the lead folder (e.g. "icon.png").
 #                          Falls back to "logo.png" when None.
+#
+# Avatar accessories (applied silently when the avatar actually wears them):
+# • hat_color           → hex applied to all Hat_Color* materials. Falls back
+#                          to the raw brand accent used by the recommended
+#                          product card (resolve_raw_montage_accent_hex).
+# • glasses_color       → hex applied to all Glasses_Color* materials. Same
+#                          fallback as hat_color.
+# Set per-lead only when the brand accent is not the right pick for the
+# accessory (otherwise leave unset — the fallback is correct).
 
 LEAD_REGISTRY: list[dict] = [
     # ── Batch 1 ──
@@ -248,6 +257,7 @@ LEAD_REGISTRY: list[dict] = [
         "logo_color_overlay": None,
         "avatar_id": "echo",
         "support_avatar_id": "yue",
+        "stamp_scale": 1.15,
     },
     {
         "id": "sodastream",
@@ -278,6 +288,7 @@ LEAD_REGISTRY: list[dict] = [
         "logo_color_overlay": "#ffffff",
         "avatar_id": "amber",
         "support_avatar_id": "luca",
+        "stamp_scale": 1.2,
     },
     {
         "id": "shapermint",
@@ -325,7 +336,7 @@ LEAD_REGISTRY: list[dict] = [
         "logo_color_overlay": None,
         "avatar_id": "teo",
         "support_avatar_id": "amber",
-        "stamp_scale": 1.2,
+        "stamp_scale": 1.3,
     },
     {
         "id": "mactools",
@@ -444,7 +455,7 @@ LEAD_REGISTRY: list[dict] = [
         "logo_color_overlay": None,
         "avatar_id": "yue",
         "support_avatar_id": "luca",
-        "stamp_scale": 1.0,
+        "stamp_scale": 1.1,
     },
     {
         "id": "crownandcaliber",
@@ -452,7 +463,7 @@ LEAD_REGISTRY: list[dict] = [
         "logo_color_overlay": None,
         "avatar_id": "yusuke",
         "support_avatar_id": "yue",
-        "stamp_scale": 1.0,
+        "stamp_scale": 1.1,
     },
     {
         "id": "schoolhouse",

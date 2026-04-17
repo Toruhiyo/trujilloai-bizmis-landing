@@ -129,6 +129,19 @@ def generate_support_lead(
 # Private:
 
 
+def _resolve_accessory_color(lead: dict, key: str) -> str:
+    """Resolve hat/glasses color for a lead.
+
+    Uses the lead's explicit ``hat_color`` / ``glasses_color`` override when
+    set, otherwise falls back to the raw brand accent (same hex the email's
+    recommended product card uses).
+    """
+    override = lead.get(key)
+    if isinstance(override, str) and override.strip():
+        return override
+    return resolve_raw_montage_accent_hex(lead)
+
+
 def _render_support_lead(lead: dict, avatar_id: str) -> Path:
     stamp = prepare_stamp(lead)
     out = support_lead_output_path(lead["id"])
@@ -140,6 +153,8 @@ def _render_support_lead(lead: dict, avatar_id: str) -> Path:
         "button_color": resolve_raw_montage_accent_hex(lead),
         "mesh_colors": {"Shirt_Color": shirt_color},
         "wave_color": resolve_widget_wave_color(lead),
+        "hat_color": _resolve_accessory_color(lead, "hat_color"),
+        "glasses_color": _resolve_accessory_color(lead, "glasses_color"),
     }
     if "stamp_scale" in lead:
         params["shirt_stamp_scale"] = float(lead["stamp_scale"])
@@ -159,6 +174,8 @@ def _render_lead(lead: dict, avatar_id: str) -> Path:
         "button_color": shirt_color,
         "mesh_colors": {"Shirt_Color": shirt_color},
         "wave_color": resolve_widget_wave_color(lead),
+        "hat_color": _resolve_accessory_color(lead, "hat_color"),
+        "glasses_color": _resolve_accessory_color(lead, "glasses_color"),
     }
     if "stamp_scale" in lead:
         params["shirt_stamp_scale"] = float(lead["stamp_scale"])
