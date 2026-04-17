@@ -83,6 +83,7 @@ _CAPTION_MAX_SATURATION = 65.0
 
 # ── Colour helpers ────────────────────────────────────────────────────
 
+
 def _hex_to_rgb(hex_color: str) -> tuple[int, int, int]:
     h = hex_color.strip().lstrip("#")
     if len(h) == 3:
@@ -139,7 +140,10 @@ def _hsl_to_hex(h: float, s: float, l_val: float) -> str:
 def _pick_montage_accent(primary_hex: str, text_color: str | None) -> str:
     if _contrast_ratio_on_white(primary_hex) >= _MONTAGE_ACCENT_MIN_CONTRAST:
         return primary_hex
-    if text_color and _contrast_ratio_on_white(text_color) >= _MONTAGE_ACCENT_MIN_CONTRAST:
+    if (
+        text_color
+        and _contrast_ratio_on_white(text_color) >= _MONTAGE_ACCENT_MIN_CONTRAST
+    ):
         return text_color
     return primary_hex
 
@@ -170,7 +174,9 @@ def _apply_caption_correction(hex_color: str) -> str:
     if _contrast_ratio_on_white(hex_color) >= _CAPTION_MIN_CONTRAST:
         return hex_color
     h, s, l_val = _hex_to_hsl(hex_color)
-    return _hsl_to_hex(h, min(s, _CAPTION_MAX_SATURATION), min(l_val, _CAPTION_MAX_LIGHTNESS))
+    return _hsl_to_hex(
+        h, min(s, _CAPTION_MAX_SATURATION), min(l_val, _CAPTION_MAX_LIGHTNESS)
+    )
 
 
 def resolve_widget_wave_color(lead: dict) -> str:
@@ -226,6 +232,7 @@ LEAD_REGISTRY: list[dict] = [
         "logo_color_overlay": "#ffffff",
         "avatar_id": "kiran",
         "support_avatar_id": "mia",
+        "stamp_scale": 1.85,
     },
     {
         "id": "glowforge",
@@ -233,6 +240,7 @@ LEAD_REGISTRY: list[dict] = [
         "logo_color_overlay": "#ffffff",
         "avatar_id": "kiran",
         "support_avatar_id": "amber",
+        "stamp_scale": 1.6,
     },
     {
         "id": "sennheiser",
@@ -247,6 +255,7 @@ LEAD_REGISTRY: list[dict] = [
         "logo_color_overlay": None,
         "avatar_id": "adrian",
         "support_avatar_id": "mia",
+        "stamp_scale": 1.85,
     },
     {
         "id": "peakdesign",
@@ -261,6 +270,7 @@ LEAD_REGISTRY: list[dict] = [
         "logo_color_overlay": None,
         "avatar_id": "yusuke",
         "support_avatar_id": "yue",
+        "stamp_scale": 0.95,
     },
     {
         "id": "sixpenny",
@@ -275,6 +285,7 @@ LEAD_REGISTRY: list[dict] = [
         "logo_color_overlay": None,
         "avatar_id": "yue",
         "support_avatar_id": "luca",
+        "stamp_scale": 0.9,
     },
     {
         "id": "glossier",
@@ -282,6 +293,7 @@ LEAD_REGISTRY: list[dict] = [
         "logo_color_overlay": None,
         "avatar_id": "mia",
         "support_avatar_id": "adrian",
+        "stamp_scale": 1.7,
     },
     {
         "id": "theproscloset",
@@ -289,6 +301,7 @@ LEAD_REGISTRY: list[dict] = [
         "logo_color_overlay": None,
         "avatar_id": "victor",
         "support_avatar_id": "amber",
+        "stamp_scale": 1.6,
     },
     {
         "id": "nanoleaf",
@@ -296,6 +309,7 @@ LEAD_REGISTRY: list[dict] = [
         "logo_color_overlay": None,
         "avatar_id": "adrian",
         "support_avatar_id": "mia",
+        "stamp_scale": 1.4,
     },
     {
         "id": "bluetti",
@@ -303,6 +317,7 @@ LEAD_REGISTRY: list[dict] = [
         "logo_color_overlay": None,
         "avatar_id": "kiran",
         "support_avatar_id": "yue",
+        "stamp_scale": 1.7,
     },
     {
         "id": "jackery",
@@ -310,6 +325,7 @@ LEAD_REGISTRY: list[dict] = [
         "logo_color_overlay": None,
         "avatar_id": "teo",
         "support_avatar_id": "amber",
+        "stamp_scale": 1.2,
     },
     {
         "id": "mactools",
@@ -334,6 +350,7 @@ LEAD_REGISTRY: list[dict] = [
         "logo_color_overlay": None,
         "avatar_id": "victor",
         "support_avatar_id": "yue",
+        "stamp_scale": 1.3,
     },
     {
         "id": "burrow",
@@ -341,6 +358,7 @@ LEAD_REGISTRY: list[dict] = [
         "logo_color_overlay": None,
         "avatar_id": "luca",
         "support_avatar_id": "mia",
+        "stamp_scale": 1.35,
     },
     {
         "id": "uswatersystems",
@@ -362,6 +380,7 @@ LEAD_REGISTRY: list[dict] = [
         "logo_color_overlay": "#ffffff",
         "avatar_id": "kiran",
         "support_avatar_id": "amber",
+        "stamp_scale": 1.7,
     },
     {
         "id": "floyd",
@@ -385,6 +404,7 @@ LEAD_REGISTRY: list[dict] = [
         "stamp_color_overlay": None,
         "avatar_id": "luca",
         "support_avatar_id": "amber",
+        "stamp_scale": 1.0,
     },
     {
         "id": "positivegrid",
@@ -392,6 +412,7 @@ LEAD_REGISTRY: list[dict] = [
         "logo_color_overlay": "#ffffff",
         "avatar_id": "echo",
         "support_avatar_id": "mia",
+        "stamp_scale": 1.15,
     },
     {
         "id": "thehomesecuritysuperstore",
@@ -399,6 +420,7 @@ LEAD_REGISTRY: list[dict] = [
         "logo_color_overlay": None,
         "avatar_id": "will",
         "support_avatar_id": "yue",
+        "stamp_scale": 1.2,
     },
     {
         "id": "pura",
@@ -406,6 +428,7 @@ LEAD_REGISTRY: list[dict] = [
         "logo_color_overlay": None,
         "avatar_id": "amber",
         "support_avatar_id": "yusuke",
+        "stamp_scale": 1.3,
     },
     {
         "id": "speedengineering",
@@ -413,6 +436,7 @@ LEAD_REGISTRY: list[dict] = [
         "logo_color_overlay": None,
         "avatar_id": "teo",
         "support_avatar_id": "amber",
+        "stamp_scale": 1.2,
     },
     {
         "id": "gorjana",
@@ -420,6 +444,7 @@ LEAD_REGISTRY: list[dict] = [
         "logo_color_overlay": None,
         "avatar_id": "yue",
         "support_avatar_id": "luca",
+        "stamp_scale": 1.0,
     },
     {
         "id": "crownandcaliber",
@@ -427,6 +452,7 @@ LEAD_REGISTRY: list[dict] = [
         "logo_color_overlay": None,
         "avatar_id": "yusuke",
         "support_avatar_id": "yue",
+        "stamp_scale": 1.0,
     },
     {
         "id": "schoolhouse",
@@ -434,6 +460,7 @@ LEAD_REGISTRY: list[dict] = [
         "logo_color_overlay": None,
         "avatar_id": "amber",
         "support_avatar_id": "will",
+        "stamp_scale": 1.05,
     },
 ]
 

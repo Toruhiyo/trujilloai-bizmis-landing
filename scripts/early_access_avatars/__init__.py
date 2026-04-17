@@ -141,6 +141,8 @@ def _render_support_lead(lead: dict, avatar_id: str) -> Path:
         "mesh_colors": {"Shirt_Color": shirt_color},
         "wave_color": resolve_widget_wave_color(lead),
     }
+    if "stamp_scale" in lead:
+        params["shirt_stamp_scale"] = float(lead["stamp_scale"])
 
     _studio_render(avatar_id, str(out), **params)
     return out
@@ -158,6 +160,8 @@ def _render_lead(lead: dict, avatar_id: str) -> Path:
         "mesh_colors": {"Shirt_Color": shirt_color},
         "wave_color": resolve_widget_wave_color(lead),
     }
+    if "stamp_scale" in lead:
+        params["shirt_stamp_scale"] = float(lead["stamp_scale"])
 
     _studio_render(avatar_id, str(out), **params)
     return out

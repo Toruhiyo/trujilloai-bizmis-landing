@@ -459,6 +459,42 @@ Use browser MCP tools to screenshot both the live store and the generated invite
 
 **Batching strategy**: Process ~5 leads per batch. For each batch, screenshot all store headers, then all invite cards, compare, fix issues, re-verify.
 
+#### Shirt stamp size tuning (assisted-sales avatar)
+
+The shirt stamp is rendered at a fixed base width (~40.5% of the shirt texture) multiplied by `shirt_stamp_scale`. **Height follows the logo's aspect ratio** — wide-thin wordmarks (high `width / height`) collapse to a small vertical height and read as tiny, even if horizontally large. Square-ish or bold tall wordmarks fill the shirt well at `1.0`.
+
+**Per-lead override**: set `stamp_scale` on the lead dict in `scripts/early_access_avatars/_config.py :: LEAD_REGISTRY`. Default is `1.0`.
+
+**Benchmarks (visual references — do NOT retune these):**
+
+| Lead            | `stamp_scale` | Why it works                                                                  |
+| --------------- | ------------- | ----------------------------------------------------------------------------- |
+| `mactools`      | `1.0`         | Square-ish logo (AR ≈ 1.55). Fills the shirt perfectly.                       |
+| `jdmenginezone` | `1.0`         | Moderate AR (≈ 2.1). Bold internal text remains legible.                      |
+| `floyd`         | `1.0`         | Tall bold wordmark (AR ≈ 3.9). Letters stay large even when width dominates.  |
+
+**Starting points by aspect ratio** (after cropping transparent padding):
+
+| Logo aspect ratio (`W / H`) | Suggested starting `stamp_scale` |
+| --------------------------- | -------------------------------- |
+| ≤ 2.5 (square-ish / tall)   | `1.0`                            |
+| 2.5 – 4.0                   | `1.0` – `1.2`                    |
+| 4.0 – 6.0                   | `1.2` – `1.4`                    |
+| 6.0 – 8.0                   | `1.4` – `1.7`                    |
+| > 8.0 (very wide-thin)      | `1.6` – `1.9` — cap at `2.0`     |
+
+**Iteration loop:**
+
+1. Render the sales avatar: `generate_lead("<id>")`.
+2. Screenshot the invite card in the admin UI.
+3. Compare to the nearest aspect-ratio benchmark above.
+4. **Too small / hard to read** → raise `stamp_scale` by `+0.1`–`+0.2`.
+5. **Spills onto shoulders / neckline** → lower `stamp_scale` by `-0.1`–`-0.2`.
+6. Regenerate, re-screenshot, repeat until it matches the benchmarks visually.
+7. **Never exceed `2.0`** — the stamp will clip the shirt silhouette and look broken.
+
+If a wide-thin wordmark cannot be made readable without overflowing, prefer a **compact icon** via `avatarStampImage` (e.g. `icon.svg`) — a square logomark at `stamp_scale = 1.0` always wins over a stretched wordmark.
+
 ### Step 10 — Final check (cognitive — LLM)
 
 Open the admin UI at `/admin/invite-cards/early-access/<lead-id>` and check:
