@@ -1056,8 +1056,10 @@ export function buildLeadEarlyAccessEmailHtml(
     softCtaChipIconHtml(chipStripIconUrls[1], softCtaChipPhrases[1]),
     softCtaChipIconHtml(chipStripIconUrls[2], softCtaChipPhrases[2]),
   ].join(softCtaChipSep);
+  const softCtaInlineTaglineStyle = `${BODY}font-size:10px;font-weight:400;line-height:1.35;letter-spacing:-0.01em;color:${BIZMIS_MUTED_LIGHT_HEX};font-style:italic;`;
+  const softCtaInlineTaglineHtml = `<span style="${softCtaInlineTaglineStyle}">${escapeHtml(copy.softCtaAboveMockupInlineTagline)}</span>`;
   const softCtaAboveMockupHtml = `<div style="border-left:3.5px solid ${BIZMIS_PRIMARY_HEX};padding:14px 16px 14px 16px;background-color:rgba(249,163,83,0.06);border-radius:0 8px 8px 0;">
-  <p style="margin:0;text-align:left;"><a href="${shopifyAppUrl}" target="_blank" rel="noopener noreferrer" style="${softCtaAboveMockupPrimaryStyle}">${escapeHtml(copy.softCtaAboveMockupPrimaryLine)} \u2192</a></p>
+  <p style="margin:0;text-align:left;"><a href="${shopifyAppUrl}" target="_blank" rel="noopener noreferrer" style="${softCtaAboveMockupPrimaryStyle}">${escapeHtml(copy.softCtaAboveMockupPrimaryLine)} \u2192</a>&nbsp;&nbsp;${softCtaInlineTaglineHtml}</p>
   <p style="margin:10px 0 0;text-align:left;line-height:1.35;white-space:nowrap;">${softCtaChipsInlineHtml}</p>
 </div>`;
 

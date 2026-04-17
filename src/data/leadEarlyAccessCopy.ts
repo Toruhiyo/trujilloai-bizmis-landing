@@ -18,6 +18,9 @@ export const EARLY_ACCESS_EMAIL_COPY = {
     " while feeling like a natural extension of your team.",
   /** Above mockup: primary tap target (same URL as install CTA). */
   softCtaAboveMockupPrimaryLine: "Join Bizmis early access",
+  /** Short muted tagline continuing the soft CTA link: roadmap shaped around their store + free + scarcity. */
+  softCtaAboveMockupInlineTagline:
+    "and shape the roadmap around your store, at no cost. Claim your spot before we close the list.",
   subline:
     "Try Bizmis at no cost for 30 days on your Shopify store, and shape the product around your team\u2019s and customers\u2019 needs by sharing your feedback with us.",
   ctaLabel: "Install Bizmis with early access",
@@ -88,7 +91,7 @@ export function buildEarlyAccessChips(storeCap: number): readonly [string, strin
 export function buildSoftCtaPlainText(shopifyAppUrl: string, storeCap: number): string {
   const c = EARLY_ACCESS_EMAIL_COPY;
   const chips = buildEarlyAccessChips(storeCap);
-  return `${c.softCtaAboveMockupPrimaryLine} ${shopifyAppUrl} — ${chips.join(" · ")}`;
+  return `${c.softCtaAboveMockupPrimaryLine} ${shopifyAppUrl} — ${c.softCtaAboveMockupInlineTagline} — ${chips.join(" · ")}`;
 }
 
 export function buildEarlyAccessTrialUsageFootnotePlainText(): string {
