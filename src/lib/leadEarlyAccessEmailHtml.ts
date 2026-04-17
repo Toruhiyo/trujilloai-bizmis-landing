@@ -88,7 +88,7 @@ const PHONE_SUPPORT_CLERK_FONT_PX = 10;
 const PHONE_SUPPORT_SHOPPER_LINE_HEIGHT = 1.0;
 const PHONE_SUPPORT_CLERK_LINE_HEIGHT = 1.0;
 
-/** Bizmis mark inline at start of clerk captions (emoji-like) — masked white logo tinted with lead primary. */
+/** Bizmis mark inline at start of clerk captions (emoji-like) — masked white logo tinted with caption accent (contrast-corrected, same as bold caption text). */
 const MONTAGE_SALES_BIZMIS_CAPTION_ICON_PX = 16;
 const MONTAGE_PHONE_BIZMIS_CAPTION_ICON_PX = 14;
 
@@ -371,8 +371,8 @@ function buildEmailBannerWaveformOverlayHtml(waveformPublicUrl: string): string 
   return `<!--[if !mso]><!--><div aria-hidden="true" style="position:absolute;left:0;right:0;top:50%;transform:translateY(-50%);-webkit-transform:translateY(-50%);height:${EMAIL_BANNER_WAVEFORM_DISPLAY_H_PX}px;z-index:1;pointer-events:none;line-height:0;mso-line-height-rule:exactly;mix-blend-mode:overlay;"><img src="${waveformPublicUrl}" alt="" width="${EMAIL_BANNER_WAVEFORM_W_PX}" height="${EMAIL_BANNER_WAVEFORM_H_PX}" style="display:block;border:0;width:100%;height:${EMAIL_BANNER_WAVEFORM_DISPLAY_H_PX}px;object-fit:fill;" /></div><!--<![endif]-->`;
 }
 
-function buildBizmisCaptionIconHtml(primaryHex: string, sizePx: number): string {
-  const safe = escapeHtml(primaryHex);
+function buildBizmisCaptionIconHtml(captionAccentHex: string, sizePx: number): string {
+  const safe = escapeHtml(captionAccentHex);
   const url = absImg(BIZMIS_LOGO_WHITE).replace(/'/g, "\\'");
   return `<span aria-hidden="true" style="display:inline-block;vertical-align:-0.2em;margin-right:0.35em;width:${sizePx}px;height:${sizePx}px;background-color:${safe};-webkit-mask-image:url('${url}');mask-image:url('${url}');-webkit-mask-size:contain;mask-size:contain;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;-webkit-mask-position:center;mask-position:center;"></span>`;
 }
@@ -811,8 +811,10 @@ function buildSupportMockupSceneHtml(
     </tr>
   </table>`;
 
-  const leadPrimaryHex = lead.primaryColor?.trim() || BIZMIS_PRIMARY_HEX;
-  const supportClerkBizmisIconHtml = buildBizmisCaptionIconHtml(leadPrimaryHex, MONTAGE_PHONE_BIZMIS_CAPTION_ICON_PX);
+  const supportClerkBizmisIconHtml = buildBizmisCaptionIconHtml(
+    palette.captionAccent,
+    MONTAGE_PHONE_BIZMIS_CAPTION_ICON_PX,
+  );
 
   return `<!--[if !mso]><!-->
             <div style="display:inline-block;width:${PHONE_FRAME_W}px;border-radius:${PHONE_BODY_RADIUS}px;background-color:${MONTAGE_CHROME_BG_HEX};border:1px solid rgba(0,0,0,0.06);padding:${PHONE_BEZEL_PX}px;box-shadow:0 8px 36px -8px rgba(${pr},${pg},${pb},0.18),0 0 0 0.5px rgba(0,0,0,0.04);">
@@ -959,9 +961,8 @@ export function buildLeadEarlyAccessEmailHtml(
   const montageClerkCueInnerHtml = buildMontageClerkCueInnerHtml(
     lead.montageClerkCue?.trim() || null, recProductTitle, montageCueBody, montageCueAccent,
   );
-  const leadPrimaryForMontageIcon = pri?.trim() || BIZMIS_PRIMARY_HEX;
   const montageSalesClerkBizmisIconHtml = buildBizmisCaptionIconHtml(
-    leadPrimaryForMontageIcon,
+    mp.captionAccent,
     MONTAGE_SALES_BIZMIS_CAPTION_ICON_PX,
   );
   const montageClerkWaveHtml = emailMontageWatermarkWaveformHtml(...mp.rgb, mp.waveformOpacity);
