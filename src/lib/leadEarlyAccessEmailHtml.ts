@@ -117,12 +117,18 @@ const COUPON_PILL_BG_HEX = "#F7F5F2";
 const BENEFIT_CARD_ICON_PX = 18;
 const BENEFIT_CARD_GLOW_TITLE_FONT_PX = 13;
 const BENEFIT_CARD_GLOW_SUBTITLE_FONT_PX = 10;
+/** Wrapped benefit body copy: looser line-height + light tracking so blocks do not read as dense. */
+const BENEFIT_CARD_SUBTITLE_LINE_HEIGHT = 1.48;
+const BENEFIT_CARD_SUBTITLE_LETTER_SPACING_EM = 0.015;
+const BENEFIT_CARD_TITLE_TO_BODY_MARGIN_PX = 10;
 const BENEFIT_CARD_TEXT_HEX = "#ffffff";
 const BENEFIT_CARD_SUBTITLE_HEX = "rgba(255,255,255,0.92)";
 const BENEFIT_CARD_ICON_WHITE_FILTER =
   "brightness(0) invert(1)";
 const MONTAGE_VERTICAL_SPREAD_PX = 56;
 const MONTAGE_COMPOSITION_SHIFT_PX = 28;
+/** Absolute width of the Boost Sales benefit card overlay on the desktop mockup. */
+const BOOST_SALES_BENEFIT_CARD_OVERLAY_WIDTH_PX = 166;
 
 const MONTAGE_CUSTOMER_CUE_TEXT_FALLBACK = "\u201cI\u2019m looking for something lightweight and easy to set up.\u201d";
 
@@ -417,9 +423,22 @@ const BENEFIT_CARD_GLOW_LAYER_SCALE = 0.87;
 /** Slightly larger glow for Save Support Hours + Replays cards only (Boost Sales uses default). */
 const BENEFIT_CARD_GLOW_LAYER_SCALE_SUPPORT_AND_REPLAYS = 0.93;
 /** When true, benefit stains are flat solid orange (no gradient, no blur) — flip to false to restore soft glow. */
-const BENEFIT_CARD_GLOW_SOLID_FLAT_PREVIEW = true;
+const BENEFIT_CARD_GLOW_SOLID_FLAT_PREVIEW = false;
+/** When true, benefit cards render as landing-style tinted fills (primary/10 + primary/25 border + soft shadow) instead of a diffuse stain. Takes precedence over the flat-solid preview. */
+const BENEFIT_CARD_LANDING_TINT_FILL = true;
 /** Rounded corners on the orange stain for Boost Sales, Support, and Replays benefit cards. */
 const BENEFIT_CARD_STAIN_BORDER_RADIUS_PX = 28;
+/** Landing-style tinted card tokens (align with `bg-primary/10 border-primary/20 rounded-3xl shadow-xl`). */
+/** Solid near-opaque cream: visually matches primary/10 on white but blocks anything behind from showing through in all email clients. */
+const BENEFIT_CARD_TINT_FILL_SOLID = "#FEF6EE";
+const BENEFIT_CARD_TINT_BORDER_RGBA = "rgba(249,163,83,0.22)";
+const BENEFIT_CARD_TINT_BORDER_PX = 1;
+const BENEFIT_CARD_TINT_SHADOW = "0 18px 36px -20px rgba(17,24,39,0.18),0 4px 10px -6px rgba(17,24,39,0.08)";
+/** Real backdrop blur for clients that support it (Apple Mail, iOS Mail, some webmails); ignored elsewhere. */
+const BENEFIT_CARD_TINT_BACKDROP_BLUR_PX = 14;
+/** Inner padding on Boost Sales, Support, Replays, and Insights benefit card bodies. */
+const BENEFIT_CARD_INNER_PADDING_Y_PX = 14;
+const BENEFIT_CARD_INNER_PADDING_X_PX = 16;
 
 function buildBenefitCardGlowBackdropHtml(
   preset: BenefitCardGlowPreset,
@@ -429,6 +448,12 @@ function buildBenefitCardGlowBackdropHtml(
   const scale = `transform:scale(${s});-webkit-transform:scale(${s});transform-origin:50% 48%;`;
   const r = BENEFIT_CARD_STAIN_BORDER_RADIUS_PX;
   const stainRound = `border-radius:${r}px;`;
+  if (BENEFIT_CARD_LANDING_TINT_FILL) {
+    const b = BENEFIT_CARD_TINT_BACKDROP_BLUR_PX;
+    return `<!--[if !mso]><!-->
+<div aria-hidden="true" style="position:absolute;top:0;left:0;right:0;bottom:0;background-color:${BENEFIT_CARD_TINT_FILL_SOLID};border:${BENEFIT_CARD_TINT_BORDER_PX}px solid ${BENEFIT_CARD_TINT_BORDER_RGBA};border-radius:${r}px;box-shadow:${BENEFIT_CARD_TINT_SHADOW};backdrop-filter:blur(${b}px);-webkit-backdrop-filter:blur(${b}px);z-index:0;pointer-events:none;box-sizing:border-box;"></div>
+<!--<![endif]-->`;
+  }
   if (BENEFIT_CARD_GLOW_SOLID_FLAT_PREVIEW) {
     const solid = "rgb(249,163,83)";
     return `<!--[if !mso]><!-->
@@ -437,13 +462,13 @@ function buildBenefitCardGlowBackdropHtml(
   }
   if (preset === "column") {
     return `<!--[if !mso]><!-->
-<div aria-hidden="true" style="position:absolute;top:-8px;left:-8px;right:-8px;bottom:-8px;background:radial-gradient(ellipse 96% 88% at 50% 48%, rgba(249,163,83,0.88) 0%, rgba(249,163,83,0.58) 20%, rgba(249,163,83,0.34) 42%, rgba(249,163,83,0.16) 58%, rgba(249,163,83,0.06) 74%, transparent 90%);opacity:1;filter:blur(9px);-webkit-filter:blur(9px);${scale}z-index:0;pointer-events:none;${stainRound}"></div>
-<div aria-hidden="true" style="position:absolute;top:-10px;left:-10px;right:-10px;bottom:-10px;background:radial-gradient(ellipse 104% 94% at 50% 52%, rgba(249,163,83,0.58) 0%, rgba(249,163,83,0.28) 36%, rgba(249,163,83,0.12) 56%, transparent 84%);opacity:1;filter:blur(13px);-webkit-filter:blur(13px);${scale}z-index:0;pointer-events:none;${stainRound}"></div>
+<div aria-hidden="true" style="position:absolute;top:-8px;left:-8px;right:-8px;bottom:-8px;background:radial-gradient(ellipse 96% 88% at 50% 48%, rgba(249,163,83,0.98) 0%, rgba(249,163,83,0.78) 22%, rgba(249,163,83,0.52) 44%, rgba(249,163,83,0.28) 60%, rgba(249,163,83,0.12) 76%, transparent 92%);opacity:1;filter:blur(9px);-webkit-filter:blur(9px);${scale}z-index:0;pointer-events:none;${stainRound}"></div>
+<div aria-hidden="true" style="position:absolute;top:-10px;left:-10px;right:-10px;bottom:-10px;background:radial-gradient(ellipse 104% 94% at 50% 52%, rgba(249,163,83,0.78) 0%, rgba(249,163,83,0.44) 38%, rgba(249,163,83,0.22) 58%, transparent 86%);opacity:1;filter:blur(13px);-webkit-filter:blur(13px);${scale}z-index:0;pointer-events:none;${stainRound}"></div>
 <!--<![endif]-->`;
   }
   return `<!--[if !mso]><!-->
-<div aria-hidden="true" style="position:absolute;top:-8px;left:-8px;right:-8px;bottom:-8px;background:radial-gradient(ellipse 94% 86% at 50% 48%, rgba(249,163,83,0.88) 0%, rgba(249,163,83,0.56) 22%, rgba(249,163,83,0.3) 44%, rgba(249,163,83,0.14) 58%, rgba(249,163,83,0.05) 72%, transparent 88%);opacity:1;filter:blur(9px);-webkit-filter:blur(9px);${scale}z-index:0;pointer-events:none;${stainRound}"></div>
-<div aria-hidden="true" style="position:absolute;top:-10px;left:-10px;right:-10px;bottom:-10px;background:radial-gradient(ellipse 100% 92% at 48% 52%, rgba(249,163,83,0.56) 0%, rgba(249,163,83,0.26) 38%, rgba(249,163,83,0.1) 58%, transparent 82%);opacity:1;filter:blur(13px);-webkit-filter:blur(13px);${scale}z-index:0;pointer-events:none;${stainRound}"></div>
+<div aria-hidden="true" style="position:absolute;top:-8px;left:-8px;right:-8px;bottom:-8px;background:radial-gradient(ellipse 94% 86% at 50% 48%, rgba(249,163,83,0.98) 0%, rgba(249,163,83,0.76) 24%, rgba(249,163,83,0.48) 46%, rgba(249,163,83,0.24) 60%, rgba(249,163,83,0.1) 74%, transparent 90%);opacity:1;filter:blur(9px);-webkit-filter:blur(9px);${scale}z-index:0;pointer-events:none;${stainRound}"></div>
+<div aria-hidden="true" style="position:absolute;top:-10px;left:-10px;right:-10px;bottom:-10px;background:radial-gradient(ellipse 100% 92% at 48% 52%, rgba(249,163,83,0.76) 0%, rgba(249,163,83,0.42) 40%, rgba(249,163,83,0.2) 60%, transparent 84%);opacity:1;filter:blur(13px);-webkit-filter:blur(13px);${scale}z-index:0;pointer-events:none;${stainRound}"></div>
 <!--<![endif]-->`;
 }
 
@@ -566,14 +591,14 @@ function buildBenefitCardHtml(
   const titleAlign = options?.titleAlign ?? "left";
   const rowAlign = titleAlign === "center" ? "center" : "left";
   const textAlign = titleAlign === "center" ? "center" : "left";
-  const titleColor = appearance === "plain" ? BIZMIS_FOREGROUND_HEX : BENEFIT_CARD_TEXT_HEX;
-  const subtitleColor = appearance === "plain" ? BIZMIS_MUTED_FG_HEX : BENEFIT_CARD_SUBTITLE_HEX;
+  const usesLightFill = appearance === "plain" || BENEFIT_CARD_LANDING_TINT_FILL;
+  const titleColor = usesLightFill ? BIZMIS_FOREGROUND_HEX : BENEFIT_CARD_TEXT_HEX;
+  const subtitleColor = usesLightFill ? BIZMIS_MUTED_FG_HEX : BENEFIT_CARD_SUBTITLE_HEX;
   const titleFontPx = BENEFIT_CARD_GLOW_TITLE_FONT_PX;
   const subtitleFontPx = BENEFIT_CARD_GLOW_SUBTITLE_FONT_PX;
-  const iconInnerHtml =
-    appearance === "plain"
-      ? buildPlainBenefitCardIconHtml(iconUrl, BENEFIT_CARD_ICON_PX)
-      : `<img src="${iconUrl}" alt="" width="${BENEFIT_CARD_ICON_PX}" height="${BENEFIT_CARD_ICON_PX}" style="display:block;width:${BENEFIT_CARD_ICON_PX}px;height:${BENEFIT_CARD_ICON_PX}px;border:0;filter:${BENEFIT_CARD_ICON_WHITE_FILTER};-webkit-filter:${BENEFIT_CARD_ICON_WHITE_FILTER};" />`;
+  const iconInnerHtml = usesLightFill
+    ? buildPlainBenefitCardIconHtml(iconUrl, BENEFIT_CARD_ICON_PX)
+    : `<img src="${iconUrl}" alt="" width="${BENEFIT_CARD_ICON_PX}" height="${BENEFIT_CARD_ICON_PX}" style="display:block;width:${BENEFIT_CARD_ICON_PX}px;height:${BENEFIT_CARD_ICON_PX}px;border:0;filter:${BENEFIT_CARD_ICON_WHITE_FILTER};-webkit-filter:${BENEFIT_CARD_ICON_WHITE_FILTER};" />`;
   const glowBackdropHtml =
     appearance === "plain" ? "" : buildBenefitCardGlowBackdropHtml(glowPreset, glowLayerScale);
   const titleRowHtml = `<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%"><tr><td align="${rowAlign}" style="text-align:${textAlign};">
@@ -587,11 +612,11 @@ function buildBenefitCardHtml(
   </tr></table>
   </td></tr></table>`;
   const tiltDeg = options?.tiltDeg ?? 0;
-  const cardBody = `<div style="position:relative;border:0;background:transparent;padding:14px 16px;box-sizing:border-box;overflow:visible;">
+  const cardBody = `<div style="position:relative;border:0;background:transparent;padding:${BENEFIT_CARD_INNER_PADDING_Y_PX}px ${BENEFIT_CARD_INNER_PADDING_X_PX}px;box-sizing:border-box;overflow:visible;">
   ${glowBackdropHtml}
   <div style="position:relative;z-index:1;">
   ${titleRowHtml}
-  <p style="margin:8px 0 0;text-align:${textAlign};${BODY}font-size:${subtitleFontPx}px;font-weight:400;color:${subtitleColor};line-height:1.35;">${escapeHtml(subtitle)}</p>
+  <p style="margin:${BENEFIT_CARD_TITLE_TO_BODY_MARGIN_PX}px 0 0;text-align:${textAlign};${BODY}font-size:${subtitleFontPx}px;font-weight:400;color:${subtitleColor};line-height:${BENEFIT_CARD_SUBTITLE_LINE_HEIGHT};letter-spacing:${BENEFIT_CARD_SUBTITLE_LETTER_SPACING_EM}em;">${escapeHtml(subtitle)}</p>
   </div>
 </div>`;
   if (tiltDeg === 0) {
@@ -608,9 +633,11 @@ const INSIGHTS_CHIPS_MARGIN_TOP_PX = 16;
 /** Tighter line-height when chips wrap to a second row. */
 const INSIGHTS_CHIPS_LINE_HEIGHT = 1.12;
 
-function buildInsightsPairRowSvgs(): readonly [string, string, string] {
+function buildInsightsPairRowSvgs(
+  strokeColor: string = "#ffffff",
+): readonly [string, string, string] {
   const w = INSIGHTS_PAIR_ICON_PX;
-  const s = "#ffffff";
+  const s = strokeColor;
   return [
     `<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${w}" viewBox="0 0 24 24" fill="none" stroke="${s}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16" fill="${s}" stroke="none"/></svg>`,
     `<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${w}" viewBox="0 0 24 24" fill="none" stroke="${s}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 01-2.83 0L2 12V2h10l8.59 8.59a2 2 0 010 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>`,
@@ -627,21 +654,26 @@ function buildInsightsBenefitCardHtml(
   glowLayerScale: number = BENEFIT_CARD_GLOW_LAYER_SCALE,
 ): string {
   const glowBackdropHtml = buildBenefitCardGlowBackdropHtml("column", glowLayerScale);
-  const iconInnerHtml = `<img src="${headerIconUrl}" alt="" width="${BENEFIT_CARD_ICON_PX}" height="${BENEFIT_CARD_ICON_PX}" style="display:block;width:${BENEFIT_CARD_ICON_PX}px;height:${BENEFIT_CARD_ICON_PX}px;border:0;filter:${BENEFIT_CARD_ICON_WHITE_FILTER};-webkit-filter:${BENEFIT_CARD_ICON_WHITE_FILTER};" />`;
+  const insightsTitleColor = BENEFIT_CARD_LANDING_TINT_FILL ? BIZMIS_FOREGROUND_HEX : BENEFIT_CARD_TEXT_HEX;
+  const insightsSubtitleColor = BENEFIT_CARD_LANDING_TINT_FILL ? BIZMIS_MUTED_FG_HEX : BENEFIT_CARD_SUBTITLE_HEX;
+  const iconInnerHtml = BENEFIT_CARD_LANDING_TINT_FILL
+    ? buildPlainBenefitCardIconHtml(headerIconUrl, BENEFIT_CARD_ICON_PX)
+    : `<img src="${headerIconUrl}" alt="" width="${BENEFIT_CARD_ICON_PX}" height="${BENEFIT_CARD_ICON_PX}" style="display:block;width:${BENEFIT_CARD_ICON_PX}px;height:${BENEFIT_CARD_ICON_PX}px;border:0;filter:${BENEFIT_CARD_ICON_WHITE_FILTER};-webkit-filter:${BENEFIT_CARD_ICON_WHITE_FILTER};" />`;
   const titleRowHtml = `<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%"><tr><td align="center" style="text-align:center;">
     <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="display:inline-table;"><tr>
     <td valign="middle" style="vertical-align:middle;padding-right:7px;width:${BENEFIT_CARD_ICON_PX}px;">
       ${iconInnerHtml}
     </td>
     <td valign="middle" style="vertical-align:middle;">
-      <span style="${HEADING}font-size:${BENEFIT_CARD_GLOW_TITLE_FONT_PX}px;font-weight:800;color:${BENEFIT_CARD_TEXT_HEX};letter-spacing:-0.01em;line-height:1.25;">${escapeHtml(title)}</span>
+      <span style="${HEADING}font-size:${BENEFIT_CARD_GLOW_TITLE_FONT_PX}px;font-weight:800;color:${insightsTitleColor};letter-spacing:-0.01em;line-height:1.25;">${escapeHtml(title)}</span>
     </td>
   </tr></table>
   </td></tr></table>`;
-  const subtitleHtml = `<p style="margin:8px 0 0;text-align:center;${BODY}font-size:${BENEFIT_CARD_GLOW_SUBTITLE_FONT_PX}px;font-weight:400;color:${BENEFIT_CARD_SUBTITLE_HEX};line-height:1.35;">${escapeHtml(subtitle)}</p>`;
-  const [svgA, svgB, svgC] = buildInsightsPairRowSvgs();
-  const pairStyle = `display:inline-block;vertical-align:middle;${BODY}font-size:${INSIGHTS_PAIR_ROW_FONT_PX}px;font-weight:400;color:${BENEFIT_CARD_SUBTITLE_HEX};line-height:${INSIGHTS_CHIPS_LINE_HEIGHT};letter-spacing:0.01em;`;
-  const sepStyle = `display:inline-block;vertical-align:middle;margin:0 4px;color:${BENEFIT_CARD_SUBTITLE_HEX};opacity:0.45;font-size:${INSIGHTS_PAIR_ROW_FONT_PX}px;line-height:${INSIGHTS_CHIPS_LINE_HEIGHT};`;
+  const subtitleHtml = `<p style="margin:${BENEFIT_CARD_TITLE_TO_BODY_MARGIN_PX}px 0 0;text-align:center;${BODY}font-size:${BENEFIT_CARD_GLOW_SUBTITLE_FONT_PX}px;font-weight:400;color:${insightsSubtitleColor};line-height:${BENEFIT_CARD_SUBTITLE_LINE_HEIGHT};letter-spacing:${BENEFIT_CARD_SUBTITLE_LETTER_SPACING_EM}em;">${escapeHtml(subtitle)}</p>`;
+  const pairIconStroke = BENEFIT_CARD_LANDING_TINT_FILL ? BIZMIS_PRIMARY_HEX : "#ffffff";
+  const [svgA, svgB, svgC] = buildInsightsPairRowSvgs(pairIconStroke);
+  const pairStyle = `display:inline-block;vertical-align:middle;${BODY}font-size:${INSIGHTS_PAIR_ROW_FONT_PX}px;font-weight:400;color:${insightsSubtitleColor};line-height:${INSIGHTS_CHIPS_LINE_HEIGHT};letter-spacing:0.01em;`;
+  const sepStyle = `display:inline-block;vertical-align:middle;margin:0 4px;color:${insightsSubtitleColor};opacity:0.45;font-size:${INSIGHTS_PAIR_ROW_FONT_PX}px;line-height:${INSIGHTS_CHIPS_LINE_HEIGHT};`;
   const sep = `<span style="${sepStyle}">·</span>`;
   const pairSpans = [
     `<span style="${pairStyle}">${svgA}&nbsp;${escapeHtml(pairLabels[0])}</span>`,
@@ -649,7 +681,7 @@ function buildInsightsBenefitCardHtml(
     `<span style="${pairStyle}">${svgC}&nbsp;${escapeHtml(pairLabels[2])}</span>`,
   ];
   const pairsRowHtml = `<p style="margin:${INSIGHTS_CHIPS_MARGIN_TOP_PX}px 0 0;text-align:center;${BODY}line-height:${INSIGHTS_CHIPS_LINE_HEIGHT};">${pairSpans.join(sep)}</p>`;
-  const cardBody = `<div style="position:relative;border:0;background:transparent;padding:14px 16px;box-sizing:border-box;overflow:visible;">
+  const cardBody = `<div style="position:relative;border:0;background:transparent;padding:${BENEFIT_CARD_INNER_PADDING_Y_PX}px ${BENEFIT_CARD_INNER_PADDING_X_PX}px;box-sizing:border-box;overflow:visible;">
   ${glowBackdropHtml}
   <div style="position:relative;z-index:1;">
   ${titleRowHtml}
@@ -1286,7 +1318,7 @@ export function buildLeadEarlyAccessEmailHtml(
             </table>
 
             <!--[if !mso]><!-->
-            <div style="position:absolute;top:-16px;right:-24px;z-index:10;width:190px;">
+            <div style="position:absolute;top:-16px;right:-24px;z-index:10;width:${BOOST_SALES_BENEFIT_CARD_OVERLAY_WIDTH_PX}px;">
               ${salesBenefitCardHtml}
             </div>
             </div>
@@ -1316,10 +1348,10 @@ export function buildLeadEarlyAccessEmailHtml(
               <tr>
                 <td valign="top" width="200" style="padding:0 12px 0 0;">
                   <p style="margin:0;${HEADING}font-size:13px;font-weight:800;color:${BIZMIS_FOREGROUND_HEX};">${escapeHtml(copy.supportMockupTitle)}</p>
-                  <p style="margin:6px 0 0;${BODY}font-size:10px;color:${BIZMIS_MUTED_FG_HEX};line-height:1.35;">${escapeHtml(copy.supportMockupSubtitle)}</p>
+                  <p style="margin:8px 0 0;${BODY}font-size:10px;color:${BIZMIS_MUTED_FG_HEX};line-height:${BENEFIT_CARD_SUBTITLE_LINE_HEIGHT};letter-spacing:${BENEFIT_CARD_SUBTITLE_LETTER_SPACING_EM}em;">${escapeHtml(copy.supportMockupSubtitle)}</p>
                   <br/>
                   <p style="margin:0;${HEADING}font-size:13px;font-weight:800;color:${BIZMIS_FOREGROUND_HEX};">${escapeHtml(copy.insightsTitle)}</p>
-                  <p style="margin:6px 0 0;${BODY}font-size:10px;color:${BIZMIS_MUTED_FG_HEX};line-height:1.35;">${escapeHtml(copy.insightsSubtitle)}</p>
+                  <p style="margin:8px 0 0;${BODY}font-size:10px;color:${BIZMIS_MUTED_FG_HEX};line-height:${BENEFIT_CARD_SUBTITLE_LINE_HEIGHT};letter-spacing:${BENEFIT_CARD_SUBTITLE_LETTER_SPACING_EM}em;">${escapeHtml(copy.insightsSubtitle)}</p>
                   <p style="margin:${INSIGHTS_CHIPS_MARGIN_TOP_PX}px 0 0;${BODY}font-size:8px;color:${BIZMIS_MUTED_FG_HEX};line-height:${INSIGHTS_CHIPS_LINE_HEIGHT};text-align:center;">${escapeHtml(copy.insightsPairSessionReplays)} · ${escapeHtml(copy.insightsPairAutoTaggedChats)} · ${escapeHtml(copy.insightsPairFunnelInsights)}</p>
                 </td>
                 <td valign="middle" align="center" width="320">
@@ -1352,7 +1384,7 @@ export function buildLeadEarlyAccessEmailHtml(
               <tr>
                 <td valign="top" width="520" style="padding:12px 16px 0 16px;background-color:transparent;">
                   <p style="margin:0;${HEADING}font-size:${BENEFIT_CARD_GLOW_TITLE_FONT_PX}px;font-weight:800;color:${BIZMIS_FOREGROUND_HEX};text-align:center;">${escapeHtml(copy.setupTitle)}</p>
-                  <p style="margin:6px 0 0;${BODY}font-size:${BENEFIT_CARD_GLOW_SUBTITLE_FONT_PX}px;color:${BIZMIS_MUTED_FG_HEX};line-height:1.35;text-align:center;">${escapeHtml(copy.setupSubtitle)}</p>
+                  <p style="margin:8px 0 0;${BODY}font-size:${BENEFIT_CARD_GLOW_SUBTITLE_FONT_PX}px;color:${BIZMIS_MUTED_FG_HEX};line-height:${BENEFIT_CARD_SUBTITLE_LINE_HEIGHT};letter-spacing:${BENEFIT_CARD_SUBTITLE_LETTER_SPACING_EM}em;text-align:center;">${escapeHtml(copy.setupSubtitle)}</p>
                 </td>
               </tr>
               <tr>
