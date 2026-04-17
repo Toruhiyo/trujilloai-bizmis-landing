@@ -22,7 +22,7 @@ export const EARLY_ACCESS_EMAIL_COPY = {
   softCtaAboveMockupInlineTagline:
     "and shape the roadmap around your store, at no cost. Claim your spot before we close the list.",
   subline:
-    "Try Bizmis at no cost for 30 days on your Shopify store, and shape the product around your team\u2019s and customers\u2019 needs by sharing your feedback with us.",
+    "Claim your early access spot while the list is still open. Install Bizmis free for 30 days on your Shopify store and help shape the product around your team\u2019s and customers\u2019 needs with your feedback.",
   ctaLabel: "Install Bizmis with early access",
   couponLabel: "Your early access code:",
   salesMockupTitle: "Boost Sales",
