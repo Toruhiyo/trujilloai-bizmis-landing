@@ -26,7 +26,8 @@ export const EARLY_ACCESS_EMAIL_COPY = {
   ctaLabel: "Install Bizmis with early access",
   couponLabel: "Your early access code:",
   salesMockupTitle: "Boost Sales",
-  salesMockupSubtitle: "Help more shoppers buy, lift cart value, and turn more of your existing traffic into revenue.",
+  salesMockupSubtitle:
+    "Convert, upsell and retain by guiding every shopper like a great store clerk would.",
   supportMockupTitle: "Save Support Hours",
   supportMockupSubtitle: "Reduce support load with instant 24/7 answers and emotional intelligence that turns frustrated customers into satisfied advocates.",
   insightsTitle: "Replays to Unlock Growth",
