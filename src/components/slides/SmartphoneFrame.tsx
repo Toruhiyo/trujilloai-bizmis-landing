@@ -11,8 +11,6 @@ type SmartphoneFrameProps = {
 const PHONE_WIDTH = 268;
 const PHONE_HEIGHT = 472;
 
-export const PHONE_FRAME_ASPECT_HEIGHT_PER_WIDTH = PHONE_HEIGHT / PHONE_WIDTH;
-
 const SmartphoneFrame = ({
   children,
   className = "",

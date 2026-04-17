@@ -13,9 +13,7 @@ import {
   FaThList,
   FaPercent,
 } from "react-icons/fa";
-import SmartphoneFrame, {
-  PHONE_FRAME_ASPECT_HEIGHT_PER_WIDTH,
-} from "./SmartphoneFrame";
+import SmartphoneFrame from "./SmartphoneFrame";
 import {
   HALF_WAVE_BAR_COUNT,
   halfWaveBarHeightPercent,
@@ -24,8 +22,7 @@ import {
 
 const ORBIT_RADIUS_X_PCT = 35;
 const ORBIT_PHASE_DEG = 3;
-const ORBIT_RADIUS_Y_PCT =
-  ORBIT_RADIUS_X_PCT * PHONE_FRAME_ASPECT_HEIGHT_PER_WIDTH;
+const ORBIT_RADIUS_Y_PCT = 42;
 const ORBIT_CORNER_RADIUS_PCT = 50;
 
 function orbitPointOnRoundedRect(angleDeg: number): { cx: number; cy: number } {
