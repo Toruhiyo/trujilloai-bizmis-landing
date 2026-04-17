@@ -439,6 +439,8 @@ const BENEFIT_CARD_TINT_BACKDROP_BLUR_PX = 14;
 /** Inner padding on Boost Sales, Support, Replays, and Insights benefit card bodies. */
 const BENEFIT_CARD_INNER_PADDING_Y_PX = 14;
 const BENEFIT_CARD_INNER_PADDING_X_PX = 16;
+/** Bizmis-primary outline around the Plug and Play bordered block. */
+const SETUP_PLUG_PLAY_BORDER_PX = 2;
 
 function buildBenefitCardGlowBackdropHtml(
   preset: BenefitCardGlowPreset,
@@ -1366,7 +1368,7 @@ export function buildLeadEarlyAccessEmailHtml(
         <tr>
           <td style="padding:28px 20px 0 20px;">
             <!--[if !mso]><!-->
-            <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="max-width:520px;margin:0 auto;border:1px solid ${BIZMIS_PRIMARY_HEX};border-radius:14px;border-collapse:separate;background-color:transparent;">
+            <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="max-width:520px;margin:0 auto;border:${SETUP_PLUG_PLAY_BORDER_PX}px solid ${BIZMIS_PRIMARY_HEX};border-radius:14px;border-collapse:separate;background-color:transparent;">
               <tr>
                 <td style="padding:0;">
                   ${setupBenefitCardHtml}
@@ -1380,7 +1382,7 @@ export function buildLeadEarlyAccessEmailHtml(
             </table>
             <!--<![endif]-->
             <!--[if mso]>
-            <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="520" align="center" style="border:1px solid ${BIZMIS_PRIMARY_HEX};border-collapse:collapse;">
+            <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="520" align="center" style="border:${SETUP_PLUG_PLAY_BORDER_PX}px solid ${BIZMIS_PRIMARY_HEX};border-collapse:collapse;">
               <tr>
                 <td valign="top" width="520" style="padding:12px 16px 0 16px;background-color:transparent;">
                   <p style="margin:0;${HEADING}font-size:${BENEFIT_CARD_GLOW_TITLE_FONT_PX}px;font-weight:800;color:${BIZMIS_FOREGROUND_HEX};text-align:center;">${escapeHtml(copy.setupTitle)}</p>
