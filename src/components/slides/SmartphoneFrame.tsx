@@ -9,9 +9,14 @@ type SmartphoneFrameProps = {
 };
 
 const PHONE_WIDTH = 268;
-const PHONE_HEIGHT = 430;
+const PHONE_HEIGHT = 472;
 
-const SmartphoneFrame = ({ children, className = "" }: SmartphoneFrameProps) => (
+export const PHONE_FRAME_ASPECT_HEIGHT_PER_WIDTH = PHONE_HEIGHT / PHONE_WIDTH;
+
+const SmartphoneFrame = ({
+  children,
+  className = "",
+}: SmartphoneFrameProps) => (
   <div
     className={`relative flex flex-col shrink-0 overflow-visible rounded-[2rem] border border-border/40 bg-secondary/40 shadow-[0_4px_24px_-4px_hsl(var(--primary)_/_0.08),0_0_0_1px_hsl(var(--border)_/_0.6)] ${className}`}
     style={{
@@ -36,9 +41,7 @@ const SmartphoneFrame = ({ children, className = "" }: SmartphoneFrameProps) => 
       className="relative flex-1 min-h-0 flex flex-col overflow-hidden rounded-[1.25rem] border border-border/50 bg-primary/[0.08]"
       style={{ marginTop: NOTCH_HEIGHT / 2 }}
     >
-      <div className="absolute inset-0 min-w-0 overflow-hidden">
-        {children}
-      </div>
+      <div className="absolute inset-0 min-w-0 overflow-hidden">{children}</div>
       <div
         className="absolute bottom-3 left-0 right-0 z-10 flex justify-center"
         aria-hidden
