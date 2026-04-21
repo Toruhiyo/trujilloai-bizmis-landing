@@ -58,6 +58,19 @@ const EARLY_ACCESS_CHIP_ROUTE_MUTED = "/images/early-access-chip-route-muted.svg
 const EARLY_ACCESS_CHIP_CLOCK_MUTED = "/images/early-access-chip-clock-muted.svg";
 const CHIP_ROW_ICON_PX = 11;
 
+const EMAIL_ICON_SYNC_WEBSITE = "/images/early-access-icon-sync-website.png";
+const EMAIL_ICON_SYNC_CATALOG = "/images/early-access-icon-sync-catalog.png";
+const EMAIL_ICON_SYNC_DISCOUNTS = "/images/early-access-icon-sync-discounts.png";
+const EMAIL_ICON_SYNC_CUSTOMERS = "/images/early-access-icon-sync-customers.png";
+const EMAIL_ICON_SYNC_ORDERS = "/images/early-access-icon-sync-orders.png";
+const EMAIL_ICON_INSIGHTS_PLAY = "/images/early-access-icon-insights-play.png";
+const EMAIL_ICON_INSIGHTS_TAG = "/images/early-access-icon-insights-tag.png";
+const EMAIL_ICON_INSIGHTS_FUNNEL = "/images/early-access-icon-insights-funnel.png";
+const EMAIL_ICON_SUPPORT_BOLT = "/images/early-access-icon-support-bolt.png";
+const EMAIL_ICON_SUPPORT_SHIELD = "/images/early-access-icon-support-shield.png";
+const EMAIL_ICON_SUPPORT_HEART = "/images/early-access-icon-support-heart.png";
+const EMAIL_ICON_POLICY_FILECHECK = "/images/early-access-icon-policy-filecheck.png";
+
 const BIZMIS_SALES_AVATAR_FALLBACK =
   "/images/slides/shopify-listing/shopify-personalization-screenshot-outfitters-tablet.png";
 
@@ -413,9 +426,27 @@ const BENEFIT_CARD_TILT_SUPPORT_DEG = 0;
 const BENEFIT_CARD_TILT_INSIGHTS_DEG = 0;
 
 function buildPlainBenefitCardIconHtml(iconUrl: string, sizePx: number): string {
-  const safePrimary = escapeHtml(BIZMIS_PRIMARY_HEX);
+  return buildMaskedIconHtml(iconUrl, sizePx, BIZMIS_PRIMARY_HEX);
+}
+
+/**
+ * Tint a transparent source PNG (shape in alpha) with an arbitrary hex color via
+ * CSS `mask-image` + `background-color`. Used in place of inline <svg> so Gmail
+ * (which strips inline SVG) still renders the icon. Outlook Windows ignores
+ * `mask-image`; every call site here already sits in a non-MSO branch or has a
+ * text-only MSO fallback, so there is no Outlook regression vs. inline SVG
+ * (Outlook Windows strips inline SVG too).
+ */
+function buildMaskedIconHtml(
+  iconUrl: string,
+  sizePx: number,
+  colorHex: string,
+  display: "inline-block" | "block" = "inline-block",
+  verticalAlign: string = "middle",
+): string {
+  const safeColor = escapeHtml(colorHex);
   const urlEsc = iconUrl.replace(/'/g, "\\'");
-  return `<span aria-hidden="true" style="display:inline-block;vertical-align:middle;width:${sizePx}px;height:${sizePx}px;background-color:${safePrimary};-webkit-mask-image:url('${urlEsc}');mask-image:url('${urlEsc}');-webkit-mask-size:contain;mask-size:contain;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;-webkit-mask-position:center;mask-position:center;"></span>`;
+  return `<span aria-hidden="true" style="display:${display};vertical-align:${verticalAlign};width:${sizePx}px;height:${sizePx}px;background-color:${safeColor};-webkit-mask-image:url('${urlEsc}');mask-image:url('${urlEsc}');-webkit-mask-size:contain;mask-size:contain;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;-webkit-mask-position:center;mask-position:center;"></span>`;
 }
 
 /** Scales the painted glow vs card; pair with blur — blur drives halo spread. */
@@ -492,31 +523,16 @@ const SETUP_PLUG_PLAY_TRIANGLE_LAYER_SCALE = 0.9;
 function buildSetupSyncBadgesHtml(): string {
   const m = BIZMIS_MUTED_LIGHT_HEX;
   const w = SETUP_SYNC_ICON_PX;
-  const stroke = 1.5;
-  const badges: { label: string; svg: string }[] = [
-    {
-      label: "Website",
-      svg: `<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${w}" viewBox="0 0 24 24" fill="none" stroke="${m}" stroke-width="${stroke}" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M2 12h20"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>`,
-    },
-    {
-      label: "Catalog",
-      svg: `<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${w}" viewBox="0 0 512 512" fill="${m}"><path d="M0 252.118V48C0 21.49 21.49 0 48 0h204.118a48 48 0 0 1 33.941 14.059l211.882 211.882c18.745 18.745 18.745 49.137 0 67.882L293.823 497.941c-18.745 18.745-49.137 18.745-67.882 0L14.059 286.059A48 48 0 0 1 0 252.118zM112 64c-26.51 0-48 21.49-48 48s21.49 48 48 48 48-21.49 48-48-21.49-48-48-48z"/></svg>`,
-    },
-    {
-      label: "Discounts",
-      svg: `<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${w}" viewBox="0 0 24 24" fill="none" stroke="${m}" stroke-width="${stroke}" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="5" x2="5" y2="19"/><circle cx="6.5" cy="6.5" r="2.5"/><circle cx="17.5" cy="17.5" r="2.5"/></svg>`,
-    },
-    {
-      label: "Customers",
-      svg: `<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${w}" viewBox="0 0 24 24" fill="none" stroke="${m}" stroke-width="${stroke}" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>`,
-    },
-    {
-      label: "Orders",
-      svg: `<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${w}" viewBox="0 0 448 512" fill="${m}"><path d="M50.7 58.5L0 160H208V32H93.7C75.5 32 58.9 42.3 50.7 58.5zM240 160H448L397.3 58.5C389.1 42.3 372.5 32 354.3 32H240V160zm208 32H0V416c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V192z"/></svg>`,
-    },
+  const icon = (iconPath: string) => buildMaskedIconHtml(absImg(iconPath), w, m);
+  const badges: { label: string; iconHtml: string }[] = [
+    { label: "Website", iconHtml: icon(EMAIL_ICON_SYNC_WEBSITE) },
+    { label: "Catalog", iconHtml: icon(EMAIL_ICON_SYNC_CATALOG) },
+    { label: "Discounts", iconHtml: icon(EMAIL_ICON_SYNC_DISCOUNTS) },
+    { label: "Customers", iconHtml: icon(EMAIL_ICON_SYNC_CUSTOMERS) },
+    { label: "Orders", iconHtml: icon(EMAIL_ICON_SYNC_ORDERS) },
   ];
   const badgeStyle = `display:inline-block;vertical-align:middle;${BODY}font-size:8px;font-weight:500;color:${m};letter-spacing:0.01em;white-space:nowrap;margin:0 ${SETUP_SYNC_BADGE_H_GAP_PX}px;`;
-  return badges.map((b) => `<span style="${badgeStyle}">${b.svg}&nbsp;${escapeHtml(b.label)}</span>`).join("");
+  return badges.map((b) => `<span style="${badgeStyle}">${b.iconHtml}&nbsp;${escapeHtml(b.label)}</span>`).join("");
 }
 
 function buildSetupPlugPlayFooterSharedParts(bizmisLogoUrl: string): {
@@ -645,22 +661,14 @@ function buildInsightsPairRowSvgs(
   strokeColor: string = "#ffffff",
 ): readonly [string, string, string] {
   const w = INSIGHTS_PAIR_ICON_PX;
-  const s = strokeColor;
-  return [
-    `<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${w}" viewBox="0 0 24 24" fill="none" stroke="${s}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16" fill="${s}" stroke="none"/></svg>`,
-    `<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${w}" viewBox="0 0 24 24" fill="none" stroke="${s}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 01-2.83 0L2 12V2h10l8.59 8.59a2 2 0 010 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>`,
-    `<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${w}" viewBox="0 0 24 24" fill="none" stroke="${s}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="22 3 2 3 10 12 10 19 14 21 14 12 22 3"/></svg>`,
-  ];
+  const mk = (iconPath: string) => buildMaskedIconHtml(absImg(iconPath), w, strokeColor);
+  return [mk(EMAIL_ICON_INSIGHTS_PLAY), mk(EMAIL_ICON_INSIGHTS_TAG), mk(EMAIL_ICON_INSIGHTS_FUNNEL)];
 }
 
 function buildSupportPairRowSvgs(strokeColor: string): readonly [string, string, string] {
   const w = INSIGHTS_PAIR_ICON_PX;
-  const s = strokeColor;
-  return [
-    `<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${w}" viewBox="0 0 24 24" fill="none" stroke="${s}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>`,
-    `<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${w}" viewBox="0 0 24 24" fill="none" stroke="${s}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>`,
-    `<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${w}" viewBox="0 0 24 24" fill="none" stroke="${s}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>`,
-  ];
+  const mk = (iconPath: string) => buildMaskedIconHtml(absImg(iconPath), w, strokeColor);
+  return [mk(EMAIL_ICON_SUPPORT_BOLT), mk(EMAIL_ICON_SUPPORT_SHIELD), mk(EMAIL_ICON_SUPPORT_HEART)];
 }
 
 function buildTripleIconTextChipRowHtml(
@@ -885,12 +893,16 @@ function buildSupportMockupSceneHtml(
   const [policyChipR, policyChipG, policyChipB] = hexToRgb(policyChipAccent);
 
   const chipLabelStyle = `${BODY}font-size:8px;font-weight:700;letter-spacing:0.02em;line-height:${CS_POLICY_CHIP_ROW_H}px;mso-line-height-rule:exactly;color:${policyChipAccent};`;
-  const policyIconSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="${CS_POLICY_ICON_PX}" height="${CS_POLICY_ICON_PX}" viewBox="0 0 24 24" fill="none" stroke="${policyChipAccent}" stroke-width="${CS_POLICY_ICON_STROKE}" stroke-linecap="round" stroke-linejoin="round" style="display:block;">` +
-    `<path d="M6 22a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h8a2.4 2.4 0 0 1 1.704.706l3.588 3.588A2.4 2.4 0 0 1 20 8v12a2 2 0 0 1-2 2z"/>` +
-    `<path d="M14 2v5a1 1 0 0 0 1 1h5"/><path d="m9 15 2 2 4-4"/></svg>`;
+  const policyIconHtml = buildMaskedIconHtml(
+    absImg(EMAIL_ICON_POLICY_FILECHECK),
+    CS_POLICY_ICON_PX,
+    policyChipAccent,
+    "block",
+    "baseline",
+  );
   const lookupChipHtml = `<table role="presentation" cellpadding="0" cellspacing="0" border="0" style="display:inline-table;border-radius:9999px;background:rgba(${policyChipR},${policyChipG},${policyChipB},0.10);border:1px solid ${policyChipAccent};padding:3px 7px 3px 6px;">
     <tr>
-      <td height="${CS_POLICY_CHIP_ROW_H}" style="height:${CS_POLICY_CHIP_ROW_H}px;vertical-align:middle;padding:0 4px 0 0;line-height:${CS_POLICY_CHIP_ROW_H}px;mso-line-height-rule:exactly;">${policyIconSvg}</td>
+      <td height="${CS_POLICY_CHIP_ROW_H}" style="height:${CS_POLICY_CHIP_ROW_H}px;vertical-align:middle;padding:0 4px 0 0;line-height:${CS_POLICY_CHIP_ROW_H}px;mso-line-height-rule:exactly;">${policyIconHtml}</td>
       <td height="${CS_POLICY_CHIP_ROW_H}" style="height:${CS_POLICY_CHIP_ROW_H}px;vertical-align:middle;padding:0;line-height:${CS_POLICY_CHIP_ROW_H}px;mso-line-height-rule:exactly;"><span style="${chipLabelStyle}">${escapeHtml(policyName)}</span></td>
     </tr>
   </table>`;
