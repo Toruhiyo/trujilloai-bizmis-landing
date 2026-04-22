@@ -90,6 +90,11 @@ export const EARLY_ACCESS_EMAIL_COPY = {
   bannerBadgeTitle: "Early Access Invite",
   bannerBadgeLimitPrefix: "Limited to the first",
   bannerBadgeLimitSuffix: "stores",
+  /** Signature block shown at the end of the invite body (above the footer). */
+  signatureClosing: "Cheers,",
+  signatureName: "Oriol Trujillo",
+  signatureRoleBeforeBizmis: "Founder of ",
+  signatureRoleBizmisWord: "Bizmis",
 } as const;
 
 export function buildCtaMixedUrgencyPlainText(): string {

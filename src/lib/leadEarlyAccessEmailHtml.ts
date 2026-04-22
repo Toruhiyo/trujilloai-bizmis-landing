@@ -32,6 +32,15 @@ import {
 
 const BIZMIS_LOGO_WHITE = "/images/bizmis-logo-white-transparent.png";
 const SHOPIFY_MARK_WHITE = "/images/shopify-mark-white.png";
+/** Orange-on-white Bizmis square mark used in the invite signature (281x281). */
+const BIZMIS_LOGO_ORANGE_WHITE = "/images/bizmis-logo-orange-white.png";
+const SIGNATURE_BIZMIS_LOGO_PX = 44;
+const SIGNATURE_LOGO_TEXT_GAP_PX = 14;
+const SIGNATURE_AFTER_CLOSING_GAP_PX = 24;
+/** Bottom padding on the signature row (part of air before the rule). */
+const SIGNATURE_BEFORE_FOOTER_GAP_PX = 36;
+/** Top padding on the footer separator row (rest of air before the rule). */
+const RICH_FOOTER_SEPARATOR_ROW_TOP_PAD_PX = 32;
 
 /** Native 560×120 overlay; regenerate with `node scripts/generate-email-banner-noise-png.mjs`. */
 const EMAIL_BANNER_NOISE_GRAIN = "/images/early-access-banner-noise-grain.png";
@@ -1719,9 +1728,29 @@ export function buildLeadEarlyAccessEmailHtml(
           </td>
         </tr>
 
+        <!-- Signature -->
+        <tr>
+          <td style="padding:28px 40px ${SIGNATURE_BEFORE_FOOTER_GAP_PX}px 40px;">
+            <p style="margin:0;${BODY}font-size:14px;line-height:1.5;color:${BIZMIS_FOREGROUND_HEX};">${escapeHtml(copy.signatureClosing)}</p>
+            <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin:${SIGNATURE_AFTER_CLOSING_GAP_PX}px 0 0 0;">
+              <tr>
+                <td valign="middle" style="padding:0 ${SIGNATURE_LOGO_TEXT_GAP_PX}px 0 0;vertical-align:middle;">
+                  <a href="${bizmisInviteHrefEsc}" target="_blank" rel="noopener noreferrer" style="display:inline-block;text-decoration:none;border:0;line-height:0;font-size:0;">
+                    <img src="${absImg(BIZMIS_LOGO_ORANGE_WHITE)}" alt="Bizmis" width="${SIGNATURE_BIZMIS_LOGO_PX}" height="${SIGNATURE_BIZMIS_LOGO_PX}" style="display:block;width:${SIGNATURE_BIZMIS_LOGO_PX}px;height:${SIGNATURE_BIZMIS_LOGO_PX}px;border:0;" />
+                  </a>
+                </td>
+                <td valign="top" style="padding:0;vertical-align:top;">
+                  <p style="margin:0;${BODY}font-size:15px;font-weight:600;line-height:1.4;color:${BIZMIS_FOREGROUND_HEX};">${escapeHtml(copy.signatureName)}</p>
+                  <p style="margin:2px 0 0 0;${BODY}font-size:13px;line-height:1.5;color:${BIZMIS_MUTED_FG_HEX};">${escapeHtml(copy.signatureRoleBeforeBizmis)}<span style="color:${BIZMIS_PRIMARY_HEX};font-weight:600;">${escapeHtml(copy.signatureRoleBizmisWord)}</span></p>
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+
         <!-- Footer (proof + contact + link) -->
         <tr>
-          <td style="padding:28px 48px 0 48px;">
+          <td style="padding:${RICH_FOOTER_SEPARATOR_ROW_TOP_PAD_PX}px 48px 0 48px;">
             <div style="border-top:1px solid ${COUPON_PILL_BORDER_HEX};"></div>
           </td>
         </tr>
@@ -1774,6 +1803,11 @@ export function buildLeadEarlyAccessEmailHtml(
     buildEarlyAccessTrialUsageFootnotePlainText(),
     "",
     copy.proofLine,
+    "",
+    copy.signatureClosing,
+    "",
+    copy.signatureName,
+    `${copy.signatureRoleBeforeBizmis}${copy.signatureRoleBizmisWord}`,
     "",
     buildEarlyAccessFooterPlainText(),
     `${copy.visitUsPrefix} ${bizmisInviteSiteUrl}`,

@@ -91,6 +91,21 @@ const MUTED_LIGHT_HEX = "#B5A48E";
 const MUTED_SUBTLE_HEX = "#C8BBA4";
 const CTA_BG_HEX = "#32281B";
 
+/** Orange-on-white Bizmis square mark used as the signature logo (public asset, 281x281). */
+const SIGNATURE_BIZMIS_LOGO_PATH = "/images/bizmis-logo-orange-white.png";
+/** Display size in logical CSS px (keeps square 1:1 aspect ratio). */
+const SIGNATURE_BIZMIS_LOGO_DISPLAY_PX = 44;
+const SIGNATURE_LOGO_TEXT_GAP_PX = 14;
+/** Vertical gap between "Cheers," and the logo + name row. */
+const SIGNATURE_AFTER_CLOSING_GAP_PX = 24;
+/**
+ * Space below the signature block before the footer border. On the
+ * Gmail-safe card the rule sits on the next row, so this bottom padding
+ * is the only lever for signature-to-line air (footer padding-top is
+ * below the rule, not above it).
+ */
+const SIGNATURE_BEFORE_FOOTER_GAP_PX = 44;
+
 const SYSTEM_FONT_STACK =
   "-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,Helvetica,sans-serif";
 
@@ -183,6 +198,7 @@ function renderSafeHtml(lead: LeadEarlyAccessData, baseUrl: string): string {
   });
 
   const titleHtml = buildEarlyAccessTitleHtml(storeName, storeAccent, bizmisInviteSiteUrl);
+  const signatureHtml = buildSignatureHtml(baseUrl, bizmisInviteSiteUrl);
 
   return `<!DOCTYPE html>
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml">
@@ -245,6 +261,12 @@ ${ctaBoxHtml}
 <tr>
 <td style="padding:28px 0 4px 0;line-height:0;font-size:0;" align="center">
 ${combinedImageHtml}
+</td>
+</tr>
+
+<tr>
+<td style="padding:24px 32px ${SIGNATURE_BEFORE_FOOTER_GAP_PX}px 32px;">
+${signatureHtml}
 </td>
 </tr>
 
@@ -372,6 +394,35 @@ ${escapeHtml(footnote)}
 </p>`;
 }
 
+/**
+ * Signature under the mockup: "Cheers," on its own line, then a row with
+ * the orange Bizmis mark on the left (link + `?ref=<lead id>`), vertically
+ * centered against only the name + founder lines on the right (not
+ * aligned with Cheers). Table layout for email clients (no flexbox).
+ */
+function buildSignatureHtml(baseUrl: string, bizmisInviteSiteUrl: string): string {
+  const c = EARLY_ACCESS_EMAIL_COPY;
+  const logoUrl = absUrl(baseUrl, SIGNATURE_BIZMIS_LOGO_PATH);
+  const closingStyle = `font-family:${SYSTEM_FONT_STACK};font-size:14px;line-height:1.5;color:${FOREGROUND_HEX};`;
+  const nameStyle = `font-family:${SYSTEM_FONT_STACK};font-size:15px;font-weight:600;line-height:1.4;color:${FOREGROUND_HEX};`;
+  const roleStyle = `font-family:${SYSTEM_FONT_STACK};font-size:13px;line-height:1.5;color:${BIZMIS_MUTED_FG_HEX};`;
+  const roleBizmisStyle = `color:${BIZMIS_PRIMARY_HEX};font-weight:600;`;
+  return `<p style="margin:0;${closingStyle}">${escapeHtml(c.signatureClosing)}</p>
+<table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin:${SIGNATURE_AFTER_CLOSING_GAP_PX}px 0 0 0;">
+<tr>
+<td valign="middle" style="padding:0 ${SIGNATURE_LOGO_TEXT_GAP_PX}px 0 0;vertical-align:middle;">
+<a href="${escapeAttr(bizmisInviteSiteUrl)}" target="_blank" rel="noopener noreferrer" style="display:inline-block;text-decoration:none;border:0;line-height:0;font-size:0;">
+<img src="${escapeAttr(logoUrl)}" alt="Bizmis" width="${SIGNATURE_BIZMIS_LOGO_DISPLAY_PX}" height="${SIGNATURE_BIZMIS_LOGO_DISPLAY_PX}" style="display:block;width:${SIGNATURE_BIZMIS_LOGO_DISPLAY_PX}px;height:${SIGNATURE_BIZMIS_LOGO_DISPLAY_PX}px;border:0;" />
+</a>
+</td>
+<td valign="top" style="padding:0;vertical-align:top;">
+<p style="margin:0;${nameStyle}">${escapeHtml(c.signatureName)}</p>
+<p style="margin:2px 0 0 0;${roleStyle}">${escapeHtml(c.signatureRoleBeforeBizmis)}<span style="${roleBizmisStyle}">${escapeHtml(c.signatureRoleBizmisWord)}</span></p>
+</td>
+</tr>
+</table>`;
+}
+
 // Plain text rendering.
 
 function renderPlainText(lead: LeadEarlyAccessData): string {
@@ -411,6 +462,11 @@ function renderPlainText(lead: LeadEarlyAccessData): string {
     `${c.couponLabel} ${lead.couponCode}`,
     `${c.ctaMixedButtonLabel}: ${installUrlWithCode}`,
     `* Up to ${EARLY_ACCESS_TRIAL_USAGE_MINUTES_LIMIT} minutes of included usage.`,
+    "",
+    c.signatureClosing,
+    "",
+    c.signatureName,
+    `${c.signatureRoleBeforeBizmis}${c.signatureRoleBizmisWord}`,
     "",
     `Questions? Just reply to this email (${c.contactEmail}).`,
     "",
