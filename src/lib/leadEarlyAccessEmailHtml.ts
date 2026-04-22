@@ -24,7 +24,11 @@ import {
   BIZMIS_PRIMARY_HEX,
   BIZMIS_WARM_BG_HEX,
 } from "@/lib/bizmisBrandColors";
-import { buildInviteBizmisSiteUrl } from "@/lib/leadEarlyAccessEmailHtmlSafe";
+import {
+  buildInviteBizmisSiteUrl,
+  INSTANTLY_UNSUBSCRIBE_MERGE_TAG,
+  INVITE_UNSUBSCRIBE_LABEL,
+} from "@/lib/leadEarlyAccessEmailHtmlSafe";
 
 const BIZMIS_LOGO_WHITE = "/images/bizmis-logo-white-transparent.png";
 const SHOPIFY_MARK_WHITE = "/images/shopify-mark-white.png";
@@ -1732,6 +1736,8 @@ export function buildLeadEarlyAccessEmailHtml(
             <a href="${bizmisInviteHrefEsc}" target="_blank" style="${BODY}font-size:10px;font-weight:500;color:${BIZMIS_MUTED_FG_HEX};text-decoration:none;">
               bizmis.ai
             </a>
+            <span style="${BODY}font-size:10px;color:${BIZMIS_MUTED_LIGHT_HEX};">&nbsp;&middot;&nbsp;</span>
+            <a href="${INSTANTLY_UNSUBSCRIBE_MERGE_TAG}" style="${BODY}font-size:10px;font-weight:400;color:${BIZMIS_MUTED_FG_HEX};text-decoration:underline;">${escapeHtml(INVITE_UNSUBSCRIBE_LABEL)}</a>
           </td>
         </tr>
 
@@ -1771,6 +1777,7 @@ export function buildLeadEarlyAccessEmailHtml(
     "",
     buildEarlyAccessFooterPlainText(),
     `${copy.visitUsPrefix} ${bizmisInviteSiteUrl}`,
+    `${INVITE_UNSUBSCRIBE_LABEL}: ${INSTANTLY_UNSUBSCRIBE_MERGE_TAG}`,
   ].join("\n");
 
   return { html, plainText };

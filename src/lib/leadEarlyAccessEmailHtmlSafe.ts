@@ -42,6 +42,21 @@ export const SAFE_EMAIL_MAX_BYTES = 102_000;
 export const SAFE_EMAIL_WARN_BYTES = 60_000;
 
 /**
+ * Instantly merge tag for the per-send unsubscribe URL. At send time Instantly
+ * replaces this literal with a tracked unsubscribe link and attaches the
+ * `List-Unsubscribe` + `List-Unsubscribe-Post: List-Unsubscribe=One-Click`
+ * SMTP headers (which is what mail-tester is checking for).
+ *
+ * Kept outside `EARLY_ACCESS_EMAIL_COPY` because it is sending-tool
+ * infrastructure, not copy — the literal string must survive the template
+ * unescaped so Instantly can find and replace it.
+ */
+export const INSTANTLY_UNSUBSCRIBE_MERGE_TAG = "{{unsubscribe}}" as const;
+
+/** Visible label shown next to the unsubscribe link in the email footer. */
+export const INVITE_UNSUBSCRIBE_LABEL = "Unsubscribe" as const;
+
+/**
  * Public marketing site URL for outbound invites, tagged with the lead id.
  * Uses `ref` so it matches the Shopify install CTA query shape in the same email.
  */
@@ -239,6 +254,8 @@ ${combinedImageHtml}
 Questions? Just reply to this email (<a href="mailto:${escapeHtml(copy.contactEmail)}" style="color:${BIZMIS_MUTED_FG_HEX};text-decoration:none;">${escapeHtml(copy.contactEmail)}</a>).
 </p>
 <a href="${escapeAttr(bizmisInviteSiteUrl)}" target="_blank" rel="noopener noreferrer" style="font-family:${SYSTEM_FONT_STACK};font-size:10px;font-weight:500;color:${BIZMIS_MUTED_FG_HEX};text-decoration:none;">bizmis.ai</a>
+<span style="font-family:${SYSTEM_FONT_STACK};font-size:10px;color:${MUTED_LIGHT_HEX};">&nbsp;&middot;&nbsp;</span>
+<a href="${INSTANTLY_UNSUBSCRIBE_MERGE_TAG}" style="font-family:${SYSTEM_FONT_STACK};font-size:10px;font-weight:400;color:${BIZMIS_MUTED_FG_HEX};text-decoration:underline;">${escapeHtml(INVITE_UNSUBSCRIBE_LABEL)}</a>
 </td>
 </tr>
 
@@ -398,6 +415,7 @@ function renderPlainText(lead: LeadEarlyAccessData): string {
     `Questions? Just reply to this email (${c.contactEmail}).`,
     "",
     buildInviteBizmisSiteUrl(lead.id),
+    `${INVITE_UNSUBSCRIBE_LABEL}: ${INSTANTLY_UNSUBSCRIBE_MERGE_TAG}`,
   ].join("\n");
 }
 
