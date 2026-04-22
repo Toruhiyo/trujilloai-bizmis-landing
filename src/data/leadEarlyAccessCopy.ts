@@ -26,9 +26,9 @@ export const EARLY_ACCESS_EMAIL_COPY = {
   ctaLabel: "Install Bizmis with early access",
   /** Gmail-safe invite mixes the install CTA + soft "join early access" into a single primary action. */
   ctaMixedButtonLabel: "Install Bizmis and join early access",
-  /** Urgency + roadmap-influence tagline that sits above the mixed CTA button in the Gmail-safe invite. */
+  /** Urgency + roadmap-influence tagline that sits above the mixed CTA block in the Gmail-safe invite. The asterisk after "no cost" references the trial-usage footnote. */
   ctaMixedUrgencyLine:
-    "Shape the roadmap around your store, at no cost. Claim your spot before we close the list.",
+    "Shape the roadmap around your store, at no cost*. Claim your spot before we close the list.",
   couponLabel: "Your early access code:",
   /** Inline heading on the Gmail-safe invite card: "Early Access Invite · bizmis × {StoreName}". */
   inviteTitleEyebrow: "Early Access Invite",

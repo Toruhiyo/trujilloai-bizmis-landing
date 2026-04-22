@@ -139,6 +139,7 @@ function renderSafeHtml(lead: LeadEarlyAccessData, baseUrl: string): string {
   const salutationText = escapeHtml(buildEarlyAccessSalutationPlainText(lead.storeName, lead.leadContactName));
 
   const pitchHtml = buildPitchParagraphHtml(storeName);
+  const ctaUrgencyHtml = buildCtaUrgencyHtml();
   const ctaBoxHtml = buildCtaBoxHtml(installUrlWithCode, earlyAccessCode);
 
   const preheader = escapeHtml(buildEarlyAccessPreheader(lead.storeName, storeCap));
@@ -201,7 +202,13 @@ ${pitchHtml}
 </tr>
 
 <tr>
-<td style="padding:28px 32px 0 32px;" align="center">
+<td style="padding:24px 32px 0 32px;" align="center">
+${ctaUrgencyHtml}
+</td>
+</tr>
+
+<tr>
+<td style="padding:14px 32px 0 32px;" align="center">
 ${ctaBoxHtml}
 </td>
 </tr>
@@ -280,22 +287,22 @@ ${escapeHtml(c.inviteSentenceLeadNamedBeforeBizmis)}${escapeHtml(c.inviteSentenc
 </p>`;
 }
 
+function buildCtaUrgencyHtml(): string {
+  const c = EARLY_ACCESS_EMAIL_COPY;
+  return `<p style="margin:0;font-family:${SYSTEM_FONT_STACK};font-size:13px;line-height:1.6;color:${FOREGROUND_HEX};text-align:center;">
+${escapeHtml(c.ctaMixedUrgencyLine)}
+</p>`;
+}
+
 function buildCtaBoxHtml(installUrlWithCode: string, earlyAccessCode: string): string {
   const c = EARLY_ACCESS_EMAIL_COPY;
   const footnote = `* Up to ${EARLY_ACCESS_TRIAL_USAGE_MINUTES_LIMIT} minutes of included usage.`;
   return `<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="border:1px dashed ${BIZMIS_BORDER_HEX};border-radius:14px;">
 <tr>
-<td style="padding:22px 28px 10px 28px;" align="center">
+<td style="padding:22px 28px 14px 28px;" align="center">
 <p style="margin:0;font-family:${SYSTEM_FONT_STACK};font-size:9px;color:${MUTED_LIGHT_HEX};letter-spacing:0.02em;">
 ${escapeHtml(c.couponLabel)}
 <span style="color:${BIZMIS_MUTED_FG_HEX};font-size:10px;letter-spacing:0.04em;">&nbsp;${escapeHtml(earlyAccessCode)}</span>
-</p>
-</td>
-</tr>
-<tr>
-<td style="padding:0 28px 14px 28px;" align="center">
-<p style="margin:0;font-family:${SYSTEM_FONT_STACK};font-size:12px;line-height:1.55;color:${FOREGROUND_HEX};">
-${escapeHtml(c.ctaMixedUrgencyLine)}
 </p>
 </td>
 </tr>
