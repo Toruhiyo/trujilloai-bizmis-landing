@@ -244,8 +244,9 @@ Questions? Just reply to this email (<a href="mailto:${escapeHtml(copy.contactEm
  *   `{StoreName} × bizmis · Early Access Invite`
  *
  * All three segments sit on a single centered line: the store name in
- * the lead's resolved accent, `bizmis` in Bizmis primary, and the
- * eyebrow in the same subtle tone as the × / · separators. Wraps naturally if the store
+ * the lead's resolved accent, `bizmis` in Bizmis primary (linked to
+ * `SAFE_EMAIL_DEFAULT_BASE_URL`), and the eyebrow in the same subtle tone
+ * as the × / · separators. Wraps naturally if the store
  * name is long enough to exceed the card's content width.
  */
 function buildEarlyAccessTitleHtml(storeName: string, storeAccent: string): string {
@@ -258,7 +259,7 @@ function buildEarlyAccessTitleHtml(storeName: string, storeAccent: string): stri
   return `<p style="margin:0;text-align:center;${baseTextStyle}">
 <span style="color:${storeAccent};">${storeName}</span>
 <span style="${separatorStyle}">&nbsp;${escapeHtml(c.inviteTitleBrandLeadSeparator)}&nbsp;</span>
-<span style="color:${BIZMIS_PRIMARY_HEX};">${escapeHtml(c.inviteTitleBrandLead)}</span>
+<a href="${escapeAttr(SAFE_EMAIL_DEFAULT_BASE_URL)}" target="_blank" rel="noopener noreferrer" style="${baseTextStyle}color:${BIZMIS_PRIMARY_HEX};text-decoration:none;">${escapeHtml(c.inviteTitleBrandLead)}</a>
 <span style="${separatorStyle}">&nbsp;${escapeHtml(c.inviteTitleEyebrowSeparator)}&nbsp;</span>
 <span style="${eyebrowStyle}">${escapeHtml(c.inviteTitleEyebrow)}</span>
 </p>`;
