@@ -147,7 +147,7 @@ function renderSafeHtml(lead: LeadEarlyAccessData, baseUrl: string): string {
 
   const combinedImageHtml = buildCenteredImage({
     src: combinedMockupUrl,
-    alt: `Mockup of Bizmis on the ${lead.storeName} Shopify storefront: a voice clerk guides a shopper through the catalog and recommends ${topProductTitle}, with a phone showing Bizmis answering a customer support question grounded in store policies and product details`,
+    alt: `Mockup of Bizmis on the ${lead.storeName} Shopify storefront`,
     widthPx: COMBINED_MOCKUP_DISPLAY_WIDTH_PX,
     heightPx: COMBINED_MOCKUP_DISPLAY_HEIGHT_PX,
     borderRadiusPx: 0,
@@ -203,13 +203,13 @@ ${pitchHtml}
 </tr>
 
 <tr>
-<td style="padding:24px 32px 0 32px;">
+<td style="padding:14px 32px 0 32px;">
 ${ctaUrgencyHtml}
 </td>
 </tr>
 
 <tr>
-<td style="padding:14px 32px 0 32px;" align="center">
+<td style="padding:24px 32px 0 32px;" align="center">
 ${ctaBoxHtml}
 </td>
 </tr>
@@ -286,21 +286,22 @@ function buildPitchParagraphHtml(storeName: string): string {
   const c = EARLY_ACCESS_EMAIL_COPY;
   const fgStyle = `font-family:${SYSTEM_FONT_STACK};font-size:15px;line-height:1.72;color:${FOREGROUND_HEX};`;
   return `<p style="margin:0;${fgStyle}">
-${escapeHtml(c.inviteSentenceLeadNamedBeforeBizmis)}${escapeHtml(c.inviteSentenceBizmisWord)}${escapeHtml(c.inviteSentenceAfterFirstBizmis)}${storeName}${escapeHtml(c.inviteSentenceAfterStorePreValue)}<strong style="font-weight:600;">${escapeHtml(c.inviteSentenceValueDriveSales)}</strong>${escapeHtml(c.inviteSentenceValueJoiner)}<strong style="font-weight:600;">${escapeHtml(c.inviteSentenceValueEaseSupport)}</strong>${escapeHtml(c.inviteSentenceAfterStorePostValue)}
+${escapeHtml(c.inviteIntroBeforeBizmis)}${escapeHtml(c.inviteSentenceBizmisWord)}${escapeHtml(c.inviteIntroAfterBizmis)}${escapeHtml(c.inviteSentenceLeadNamedBeforeBizmis)}${storeName}${escapeHtml(c.inviteSentenceAfterFirstBizmis)}${escapeHtml(c.inviteSentenceBizmisWord)}${escapeHtml(c.inviteSentenceAfterStorePreValue)}<strong style="font-weight:600;">${escapeHtml(c.inviteSentenceValueDriveSales)}</strong>${escapeHtml(c.inviteSentenceValueJoiner)}<strong style="font-weight:600;">${escapeHtml(c.inviteSentenceValueEaseSupport)}</strong>${escapeHtml(c.inviteSentenceAfterStorePostValue)}
 </p>`;
 }
 
 /**
- * Muted italic tagline matching the rich invite's soft CTA tone:
- * single muted foreground color, italic throughout, no Bizmis primary
- * highlight. Key phrases ("one-click setup", "at no cost*", "shape
- * the product's roadmap") stay italic but bump to 600 weight.
+ * Second body paragraph, rendered right under the pitch paragraph with
+ * matching typography (15px / 1.72 foreground) so it reads as a natural
+ * continuation rather than a separate tagline. Key phrases bump to 600
+ * weight; Bizmis stays in body color (same rule as the pitch paragraph
+ * in the Gmail-safe card).
  */
 function buildCtaUrgencyHtml(): string {
   const c = EARLY_ACCESS_EMAIL_COPY;
-  const taglineStyle = `font-family:${SYSTEM_FONT_STACK};font-size:14px;font-weight:400;font-style:italic;line-height:1.6;color:${BIZMIS_MUTED_FG_HEX};`;
+  const fgStyle = `font-family:${SYSTEM_FONT_STACK};font-size:15px;line-height:1.72;color:${FOREGROUND_HEX};`;
   const emphasis = "font-weight:600;";
-  return `<p style="margin:0;${taglineStyle}">
+  return `<p style="margin:0;${fgStyle}">
 ${escapeHtml(c.ctaMixedUrgencyLead)}${escapeHtml(c.ctaMixedUrgencyBizmisWord)}${escapeHtml(c.ctaMixedUrgencyAfterBizmis)}<strong style="${emphasis}">${escapeHtml(c.ctaMixedUrgencyOneClickSetup)}</strong>${escapeHtml(c.ctaMixedUrgencyBetweenSetupAndCost)}<strong style="${emphasis}">${escapeHtml(c.ctaMixedUrgencyNoCost)}</strong>${escapeHtml(c.ctaMixedUrgencyBeforeRoadmap)}<strong style="${emphasis}">${escapeHtml(c.ctaMixedUrgencyRoadmapPhrase)}</strong>${escapeHtml(c.ctaMixedUrgencyAfterRoadmap)}
 </p>`;
 }
@@ -348,10 +349,13 @@ function renderPlainText(lead: LeadEarlyAccessData): string {
     ? `${c.greetingDear} ${contactFirst},`
     : `${c.greetingDear} ${lead.storeName}${c.greetingStoreTeamSuffix}`;
   const pitch = [
-    c.inviteSentenceLeadNamedBeforeBizmis,
+    c.inviteIntroBeforeBizmis,
     c.inviteSentenceBizmisWord,
-    c.inviteSentenceAfterFirstBizmis,
+    c.inviteIntroAfterBizmis,
+    c.inviteSentenceLeadNamedBeforeBizmis,
     lead.storeName,
+    c.inviteSentenceAfterFirstBizmis,
+    c.inviteSentenceBizmisWord,
     c.inviteSentenceAfterStorePreValue,
     c.inviteSentenceValueDriveSales,
     c.inviteSentenceValueJoiner,
@@ -367,8 +371,9 @@ function renderPlainText(lead: LeadEarlyAccessData): string {
     "",
     pitch,
     "",
-    `${c.couponLabel} ${lead.couponCode}`,
     buildCtaMixedUrgencyPlainText(),
+    "",
+    `${c.couponLabel} ${lead.couponCode}`,
     `${c.ctaMixedButtonLabel}: ${installUrlWithCode}`,
     `* Up to ${EARLY_ACCESS_TRIAL_USAGE_MINUTES_LIMIT} minutes of included usage.`,
     "",

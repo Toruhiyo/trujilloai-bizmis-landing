@@ -5,13 +5,28 @@ export const EARLY_ACCESS_TRIAL_USAGE_MINUTES_LIMIT = 120;
 export const EARLY_ACCESS_EMAIL_COPY = {
   greetingDear: "Dear",
   greetingStoreTeamSuffix: " team,",
-  inviteSentenceLeadNamedBeforeBizmis: "We\u2019d love to invite you into ",
-  inviteSentenceLeadNoContactBeforeBizmis: "We\u2019d love to invite you into ",
+  inviteIntroBeforeBizmis: "I\u2019m Oriol, founder of ",
+  inviteIntroAfterBizmis:
+    ", voice-first store clerks for Shopify. ",
+  /**
+   * Curated/scarce hook leading into the store name. Kept identical for
+   * both the named-contact and team-only paths so the voice stays warm
+   * and personal regardless of whether we know a first name.
+   */
+  inviteSentenceLeadNamedBeforeBizmis:
+    "We\u2019re hand-picking a small group of Shopify stores for early access and I\u2019d really like ",
+  inviteSentenceLeadNoContactBeforeBizmis:
+    "We\u2019re hand-picking a small group of Shopify stores for early access and I\u2019d really like ",
   inviteSentenceBizmisWord: "Bizmis",
-  inviteSentenceAfterFirstBizmis: " early access for ",
-  inviteSentenceAfterStorePreValue:
-    " Shopify store, where Bizmis voice-first store clerks can help you ",
-  inviteSentenceValueDriveSales: "drive sales",
+  /** Follows the store name (e.g. "...Acme to be one of them. "). */
+  inviteSentenceAfterFirstBizmis: " to be one of them. ",
+  /**
+   * Immediately follows the second "Bizmis" word in the pitch so the
+   * pair reads "Bizmis clerks help your store ...". The plural "clerks"
+   * is intentional.
+   */
+  inviteSentenceAfterStorePreValue: " clerks help your store ",
+  inviteSentenceValueDriveSales: "drive more sales",
   inviteSentenceValueJoiner: " and ",
   inviteSentenceValueEaseSupport: "ease your support workload",
   inviteSentenceAfterStorePostValue:
@@ -27,22 +42,23 @@ export const EARLY_ACCESS_EMAIL_COPY = {
   /** Gmail-safe invite mixes the install CTA + soft "join early access" into a single primary action. */
   ctaMixedButtonLabel: "Install Bizmis and join early access",
   /**
-   * Gmail-safe CTA urgency (above the dashed box). Segments let the HTML
-   * builder mirror the rich invite lead paragraph (Bizmis in primary,
-   * strong on key phrases). Concatenate in order for plain text.
+   * Gmail-safe CTA urgency (above the dashed box). Reads as a
+   * continuation of the invite lead paragraph: same body typography,
+   * same emphasis treatment on key phrases ("one-click setup",
+   * "at no cost*", "shape the product's roadmap"). Closes with a
+   * light scarcity note. Concatenate in order for plain text.
    */
-  ctaMixedUrgencyLead:
-    "Claim your early access spot while the early access list is still open. Install ",
+  ctaMixedUrgencyLead: "You can install ",
   ctaMixedUrgencyBizmisWord: "Bizmis",
-  ctaMixedUrgencyAfterBizmis: " on your Shopify store with ",
+  ctaMixedUrgencyAfterBizmis: " with ",
   ctaMixedUrgencyOneClickSetup: "one-click setup",
-  ctaMixedUrgencyBetweenSetupAndCost: ", enjoy it ",
+  ctaMixedUrgencyBetweenSetupAndCost: ", run it ",
   /** Asterisk references the trial-usage minutes footnote under the button. */
   ctaMixedUrgencyNoCost: "at no cost*",
-  ctaMixedUrgencyBeforeRoadmap: " and ",
+  ctaMixedUrgencyBeforeRoadmap: ", and help ",
   ctaMixedUrgencyRoadmapPhrase: "shape the product\u2019s roadmap",
   ctaMixedUrgencyAfterRoadmap:
-    " around your team\u2019s and customers\u2019 needs with your feedback.",
+    " around your team\u2019s and customers\u2019 needs with your feedback. Your early access spot is still open.",
   couponLabel: "Your early access code:",
   /** Inline heading on the Gmail-safe invite card: "Early Access Invite · bizmis × {StoreName}". */
   inviteTitleEyebrow: "Early Access Invite",
@@ -121,7 +137,7 @@ export function buildEarlyAccessValueSentencePlainText(
   const beforeBizmis = contactFirst
     ? c.inviteSentenceLeadNamedBeforeBizmis
     : c.inviteSentenceLeadNoContactBeforeBizmis;
-  return `${beforeBizmis}${c.inviteSentenceBizmisWord}${c.inviteSentenceAfterFirstBizmis}${storeName}${c.inviteSentenceAfterStorePreValue}${c.inviteSentenceValueDriveSales}${c.inviteSentenceValueJoiner}${c.inviteSentenceValueEaseSupport}${c.inviteSentenceAfterStorePostValue}`;
+  return `${c.inviteIntroBeforeBizmis}${c.inviteSentenceBizmisWord}${c.inviteIntroAfterBizmis}${beforeBizmis}${storeName}${c.inviteSentenceAfterFirstBizmis}${c.inviteSentenceBizmisWord}${c.inviteSentenceAfterStorePreValue}${c.inviteSentenceValueDriveSales}${c.inviteSentenceValueJoiner}${c.inviteSentenceValueEaseSupport}${c.inviteSentenceAfterStorePostValue}`;
 }
 
 export function buildEarlyAccessChips(storeCap: number): readonly [string, string, string] {
