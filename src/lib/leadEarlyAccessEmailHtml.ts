@@ -850,12 +850,175 @@ function highlightProductInHtml(
   );
 }
 
-function buildSupportMockupSceneHtml(
-  lead: LeadEarlyAccessData,
-  palette: MontagePalette,
-  montageSceneBg: string,
-  supportGradient: string,
-): string {
+/**
+ * Desktop storefront mockup (rich email) as a self-contained fragment.
+ *
+ * Emits the `<table data-email-mockup="desktop">...</table>` block used
+ * inside the rich email plus the Gmail-safe email's hosted PNG (generated
+ * by isolating this fragment on a transparent background via the
+ * Playwright pipeline). No surrounding padding, no Boost Sales overlay.
+ */
+export function buildSalesMockupSceneHtml(lead: LeadEarlyAccessData): string {
+  const palette = deriveMontagePalette(lead.primaryColor, lead.textColor);
+  const [muiR, muiG, muiB] = palette.uiRgb;
+  const montageSceneBg = montageSceneBgHex(muiR, muiG, muiB);
+  const salesGradient = montageSalesGradientCss(montageSceneBg);
+  const montageWhiteGlow = montageWhiteGlowCss();
+  const MONTAGE_SCENE_APPROX_W = 550;
+  const glowTiltDeg = +(
+    Math.atan2(2 * MONTAGE_VERTICAL_SPREAD_PX, MONTAGE_SCENE_APPROX_W) * (180 / Math.PI)
+  ).toFixed(1);
+
+  const domain = escapeHtml(lead.storeDomain);
+  const salesAvatarUrl = absImg(lead.salesAvatarImagePath || BIZMIS_SALES_AVATAR_FALLBACK);
+
+  const recIdx = lead.salesRecommendedIndex;
+  const otherIndices = ([0, 1, 2] as const).filter((i) => i !== recIdx);
+  const recommendedCardHtml = buildMontageProductCardHtml(lead, recIdx, true, palette);
+  const otherCardHtmlA = buildMontageProductCardHtml(lead, otherIndices[0], false, palette);
+  const otherCardHtmlB = buildMontageProductCardHtml(lead, otherIndices[1], false, palette);
+
+  const clerkCueHtml = buildMontageClerkCueInnerHtml(
+    lead.montageClerkCue?.trim() || null,
+    lead.salesProducts[recIdx].title,
+    BIZMIS_FOREGROUND_HEX,
+    palette.captionAccent,
+  );
+  const clerkBizmisIconHtml = buildBizmisCaptionIconHtml(
+    palette.captionAccent,
+    MONTAGE_SALES_BIZMIS_CAPTION_ICON_PX,
+  );
+
+  const clerkWaveHtml = emailMontageWatermarkWaveformHtml(...palette.rgb, palette.waveformOpacity);
+  const customerWaveHtml = emailMontageWatermarkWaveformHtml(
+    ...MONTAGE_CUSTOMER_WAVE_GREY,
+    MONTAGE_CUSTOMER_WAVE_OPACITY,
+    true,
+  );
+
+  const shopperCueRaw = lead.montageShopperCue?.trim()
+    ? `\u201c${montageSalesCueSingleLine(lead.montageShopperCue.trim())}\u201d`
+    : MONTAGE_CUSTOMER_CUE_TEXT_FALLBACK;
+  const shopperFontPx = montageSalesCueFontPx(shopperCueRaw, MONTAGE_CUSTOMER_CUE_BASE_FONT_PX);
+  const shopperCueHtml = `<span style="${BODY}font-size:${shopperFontPx}px;font-weight:300;font-style:italic;line-height:1.35;color:${BIZMIS_MUTED_LIGHT_HEX};white-space:nowrap;">${escapeHtml(shopperCueRaw)}</span>`;
+
+  return `<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" data-email-mockup="desktop" style="border:0;border-radius:12px;overflow:hidden;box-shadow:0 8px 40px -8px rgba(0,0,0,0.12);">
+  <tr>
+    <td style="background-color:${MONTAGE_CHROME_BG_HEX};padding:${MONTAGE_CHROME_BAR_PADDING_Y_PX}px 10px;">
+      <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%">
+        <tr>
+          <td style="vertical-align:middle;white-space:nowrap;padding-right:8px;">
+            <span style="display:inline-block;width:${MONTAGE_CHROME_TRAFFIC_DOT_PX}px;height:${MONTAGE_CHROME_TRAFFIC_DOT_PX}px;border-radius:50%;background-color:#C8C8C8;margin-right:${MONTAGE_CHROME_TRAFFIC_GAP_PX}px;vertical-align:middle;"></span>
+            <span style="display:inline-block;width:${MONTAGE_CHROME_TRAFFIC_DOT_PX}px;height:${MONTAGE_CHROME_TRAFFIC_DOT_PX}px;border-radius:50%;background-color:#E8E8E8;margin-right:${MONTAGE_CHROME_TRAFFIC_GAP_PX}px;vertical-align:middle;"></span>
+            <span style="display:inline-block;width:${MONTAGE_CHROME_TRAFFIC_DOT_PX}px;height:${MONTAGE_CHROME_TRAFFIC_DOT_PX}px;border-radius:50%;background-color:#D8D8D8;vertical-align:middle;"></span>
+          </td>
+          <td style="vertical-align:middle;width:99%;padding:0;">
+            <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="background-color:#ffffff;border-radius:9999px;">
+              <tr>
+                <td style="padding:0 8px;height:${MONTAGE_CHROME_URL_ROW_HEIGHT_PX}px;vertical-align:middle;line-height:${MONTAGE_CHROME_URL_ROW_HEIGHT_PX}px;">
+                  <span style="${BODY}font-size:7px;color:${MONTAGE_CHROME_URL_HEX};line-height:${MONTAGE_CHROME_URL_ROW_HEIGHT_PX}px;">${domain}</span>
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+  <tr>
+    <td bgcolor="${montageSceneBg}" style="background:${salesGradient};background-color:${montageSceneBg};padding:0 10px 0 10px;">
+      <!--[if !mso]><!-->
+      <div style="position:relative;min-height:360px;overflow:visible;">
+
+        <div style="position:absolute;left:50%;top:calc(50% + ${MONTAGE_COMPOSITION_SHIFT_PX}px);width:160%;height:110%;transform:translate(-50%,-50%) rotate(${glowTiltDeg}deg);border-radius:50%;background:${montageWhiteGlow};-webkit-filter:blur(60px);filter:blur(60px);z-index:0;pointer-events:none;"></div>
+
+        <div style="position:absolute;top:${MONTAGE_VERTICAL_SPREAD_PX + MONTAGE_COMPOSITION_SHIFT_PX}px;right:0;bottom:82px;z-index:2;display:flex;align-items:center;justify-content:center;">
+          <img src="${salesAvatarUrl}" alt="Bizmis store clerk" width="280" style="display:block;max-width:280px;width:100%;height:auto;border:0;border-radius:16px;filter:drop-shadow(0 10px 32px rgba(50,40,27,0.16));" />
+        </div>
+
+        <div style="position:absolute;top:calc(50% + ${MONTAGE_COMPOSITION_SHIFT_PX - MONTAGE_VERTICAL_SPREAD_PX}px);left:2%;transform:translateY(-50%);z-index:3;width:52%;">
+          <div style="position:relative;display:flex;align-items:center;justify-content:center;min-height:220px;">
+
+            <div style="position:absolute;left:-2%;top:50%;transform:translateY(-52%) rotate(-6deg) scale(0.85);z-index:1;opacity:0.82;filter:drop-shadow(0 2px 8px rgba(50,40,27,0.08));">
+              ${otherCardHtmlA}
+            </div>
+
+            <div style="position:relative;z-index:3;filter:drop-shadow(0 6px 20px rgba(50,40,27,0.16));">
+              ${recommendedCardHtml}
+            </div>
+
+            <div style="position:absolute;right:-2%;top:50%;transform:translateY(-52%) rotate(6deg) scale(0.85);z-index:1;opacity:0.82;filter:drop-shadow(0 2px 8px rgba(50,40,27,0.08));">
+              ${otherCardHtmlB}
+            </div>
+
+          </div>
+        </div>
+
+        <div style="position:absolute;top:0;left:0;width:72%;z-index:1;pointer-events:none;">
+          <div style="position:relative;height:${WAVEFORM_DESKTOP.h}px;">
+            <div style="position:absolute;top:0;left:0;right:0;bottom:0;-webkit-mask-image:linear-gradient(to right,#000 60%,transparent 100%);mask-image:linear-gradient(to right,#000 60%,transparent 100%);">
+              <div style="text-align:left;line-height:0;font-size:0;padding:0;height:${WAVEFORM_DESKTOP.h}px;overflow:hidden;">
+                ${customerWaveHtml}
+              </div>
+            </div>
+            <div style="position:absolute;top:0;left:0;right:0;bottom:0;display:flex;align-items:center;justify-content:flex-start;overflow:visible;">
+              <div style="position:relative;display:flex;align-items:center;justify-content:flex-start;padding-left:8px;padding-right:8px;transform:translateY(-24px);width:100%;max-width:100%;box-sizing:border-box;overflow:visible;">
+                <div style="position:absolute;width:120%;height:100%;top:0;left:-10%;background:radial-gradient(ellipse 100% 100% at 30% 50%,rgba(255,255,255,0.92) 0%,rgba(255,255,255,0.45) 30%,transparent 68%);"></div>
+                <p style="margin:0;position:relative;text-align:left;white-space:nowrap;overflow:visible;text-overflow:clip;max-width:none;">
+                  ${shopperCueHtml}
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div style="position:absolute;bottom:0;right:0;width:72%;z-index:1;pointer-events:none;">
+          <div style="position:relative;height:${WAVEFORM_DESKTOP.h}px;">
+            <div style="position:absolute;top:0;left:0;right:0;bottom:0;-webkit-mask-image:linear-gradient(to left,#000 60%,transparent 100%);mask-image:linear-gradient(to left,#000 60%,transparent 100%);">
+              <div style="text-align:right;line-height:0;font-size:0;padding:0;height:${WAVEFORM_DESKTOP.h}px;overflow:hidden;">
+                ${clerkWaveHtml}
+              </div>
+            </div>
+            <div style="position:absolute;top:0;left:0;right:0;bottom:0;display:flex;align-items:center;justify-content:flex-end;overflow:visible;">
+              <div style="position:relative;display:flex;align-items:center;justify-content:flex-end;padding-left:8px;padding-right:8px;transform:translateY(24px);width:100%;max-width:100%;box-sizing:border-box;overflow:visible;">
+                <div style="position:absolute;width:120%;height:100%;top:0;right:-10%;background:radial-gradient(ellipse 100% 100% at 70% 50%,rgba(255,255,255,0.92) 0%,rgba(255,255,255,0.45) 30%,transparent 68%);"></div>
+                <p style="margin:0;position:relative;text-align:right;white-space:nowrap;overflow:visible;text-overflow:clip;max-width:none;">
+                  ${clerkBizmisIconHtml}${clerkCueHtml}
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+      <!--<![endif]-->
+      <!--[if mso]>
+      <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%">
+        <tr>
+          <td width="100%" align="center" style="padding:0;text-align:center;">
+            <img src="${salesAvatarUrl}" alt="Bizmis store clerk" width="260" style="display:block;margin:0 auto;max-width:260px;height:auto;border:0;" />
+          </td>
+        </tr>
+      </table>
+      <![endif]-->
+    </td>
+  </tr>
+</table>`;
+}
+
+/**
+ * Phone support mockup (rich email) as a self-contained fragment.
+ *
+ * Emits the `<div data-email-mockup="phone">...</div>` block used inside the
+ * rich email plus the Gmail-safe email's hosted PNG (isolated on transparent
+ * bg via the Playwright pipeline).
+ */
+export function buildSupportMockupSceneHtml(lead: LeadEarlyAccessData): string {
+  const palette = deriveMontagePalette(lead.primaryColor, lead.textColor);
+  const [muiR, muiG, muiB] = palette.uiRgb;
+  const montageSceneBg = montageSceneBgHex(muiR, muiG, muiB);
+  const supportGradient = montageSupportGradientCss(montageSceneBg);
+
   const avatarUrl = absImg(lead.supportAvatarImagePath || lead.salesAvatarImagePath || BIZMIS_SALES_AVATAR_FALLBACK);
   const [pr, pg, pb] = palette.uiRgb;
   const pw = WAVEFORM_PHONE;
@@ -910,7 +1073,7 @@ function buildSupportMockupSceneHtml(
   const supportClerkBizmisIconHtml = buildBizmisCaptionIconHtml(palette.captionAccent, MONTAGE_SALES_BIZMIS_CAPTION_ICON_PX);
 
   return `<!--[if !mso]><!-->
-            <div style="display:inline-block;width:${PHONE_FRAME_W}px;border-radius:${PHONE_BODY_RADIUS}px;background-color:${MONTAGE_CHROME_BG_HEX};border:1px solid rgba(0,0,0,0.06);padding:${PHONE_BEZEL_PX}px;box-shadow:0 8px 36px -8px rgba(${pr},${pg},${pb},0.18),0 0 0 0.5px rgba(0,0,0,0.04);">
+            <div data-email-mockup="phone" style="display:inline-block;width:${PHONE_FRAME_W}px;border-radius:${PHONE_BODY_RADIUS}px;background-color:${MONTAGE_CHROME_BG_HEX};border:1px solid rgba(0,0,0,0.06);padding:${PHONE_BEZEL_PX}px;box-shadow:0 8px 36px -8px rgba(${pr},${pg},${pb},0.18),0 0 0 0.5px rgba(0,0,0,0.04);">
 
               <div style="width:${PHONE_NOTCH_W}px;height:${PHONE_NOTCH_H}px;margin:0 auto;border-radius:0 0 ${Math.round(PHONE_NOTCH_H * 0.55)}px ${Math.round(PHONE_NOTCH_H * 0.55)}px;background-color:rgba(0,0,0,0.07);"></div>
 
@@ -1034,39 +1197,7 @@ export function buildLeadEarlyAccessEmailHtml(
   const shopifyMarkUrl = absImg(SHOPIFY_MARK_WHITE);
   const noiseGrainUrl = absImg(EMAIL_BANNER_NOISE_GRAIN);
   const bannerWaveformUrl = absImg(EMAIL_BANNER_WAVEFORM);
-  const salesAvatarUrl = absImg(lead.salesAvatarImagePath || BIZMIS_SALES_AVATAR_FALLBACK);
-  const mp = deriveMontagePalette(pri, lead.textColor);
-  const [muiR, muiG, muiB] = mp.uiRgb;
-  const montageSceneBg = montageSceneBgHex(muiR, muiG, muiB);
-  const supportGradient = montageSupportGradientCss(montageSceneBg);
-  const salesGradient = montageSalesGradientCss(montageSceneBg);
-  const montageWhiteGlow = montageWhiteGlowCss();
-  const MONTAGE_SCENE_APPROX_W = 550;
-  const glowTiltDeg = +(Math.atan2(2 * MONTAGE_VERTICAL_SPREAD_PX, MONTAGE_SCENE_APPROX_W) * (180 / Math.PI)).toFixed(1);
-  const recIdx = lead.salesRecommendedIndex;
-  const otherIndices = ([0, 1, 2] as const).filter((i) => i !== recIdx);
-  const recommendedCardHtml = buildMontageProductCardHtml(lead, recIdx, true, mp);
-  const otherCardHtmlA = buildMontageProductCardHtml(lead, otherIndices[0], false, mp);
-  const otherCardHtmlB = buildMontageProductCardHtml(lead, otherIndices[1], false, mp);
-  const montageCueBody = BIZMIS_FOREGROUND_HEX;
-  const montageCueAccent = mp.captionAccent;
-  const recProductTitle = lead.salesProducts[recIdx].title;
-  const montageClerkCueInnerHtml = buildMontageClerkCueInnerHtml(
-    lead.montageClerkCue?.trim() || null, recProductTitle, montageCueBody, montageCueAccent,
-  );
-  const montageSalesClerkBizmisIconHtml = buildBizmisCaptionIconHtml(
-    mp.captionAccent,
-    MONTAGE_SALES_BIZMIS_CAPTION_ICON_PX,
-  );
-  const montageClerkWaveHtml = emailMontageWatermarkWaveformHtml(...mp.rgb, mp.waveformOpacity);
-  const montageCustomerWaveHtml = emailMontageWatermarkWaveformHtml(
-    ...MONTAGE_CUSTOMER_WAVE_GREY, MONTAGE_CUSTOMER_WAVE_OPACITY, true,
-  );
-  const montageCustomerCueText = lead.montageShopperCue?.trim()
-    ? `\u201c${montageSalesCueSingleLine(lead.montageShopperCue.trim())}\u201d`
-    : MONTAGE_CUSTOMER_CUE_TEXT_FALLBACK;
-  const shopperFontPx = montageSalesCueFontPx(montageCustomerCueText, MONTAGE_CUSTOMER_CUE_BASE_FONT_PX);
-  const montageCustomerCueHtml = `<span style="${BODY}font-size:${shopperFontPx}px;font-weight:300;font-style:italic;line-height:1.35;color:${BIZMIS_MUTED_LIGHT_HEX};white-space:nowrap;">${escapeHtml(montageCustomerCueText)}</span>`;
+  const recProductTitle = lead.salesProducts[lead.salesRecommendedIndex].title;
   const chipStripIconUrls = [
     absImg(EARLY_ACCESS_CHIP_GIFT_MUTED),
     absImg(EARLY_ACCESS_CHIP_ROUTE_MUTED),
@@ -1083,7 +1214,8 @@ export function buildLeadEarlyAccessEmailHtml(
 
   const chipStripHtml = buildEarlyAccessChipStripHtml(storeCap, chipStripIconUrls);
   const chipTrialFootnoteEsc = escapeHtml(buildEarlyAccessTrialUsageFootnotePlainText());
-  const supportMockupHtml = buildSupportMockupSceneHtml(lead, mp, montageSceneBg, supportGradient);
+  const supportMockupHtml = buildSupportMockupSceneHtml(lead);
+  const salesMockupHtml = buildSalesMockupSceneHtml(lead);
 
   const salesBenefitCardHtml = buildBenefitCardHtml(outcomeIconUrls[0], copy.salesMockupTitle, copy.salesMockupSubtitle, {
     titleAlign: "center",
@@ -1267,108 +1399,7 @@ export function buildLeadEarlyAccessEmailHtml(
         <tr>
           <td style="padding:${inviteTopPadBeforeMockupPx}px 20px 0 20px;">
             <!--[if !mso]><!--><div style="position:relative;"><!--<![endif]-->
-            <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="border:0;border-radius:12px;overflow:hidden;box-shadow:0 8px 40px -8px rgba(0,0,0,0.12);">
-              <tr>
-                <td style="background-color:${MONTAGE_CHROME_BG_HEX};padding:${MONTAGE_CHROME_BAR_PADDING_Y_PX}px 10px;">
-                  <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%">
-                    <tr>
-                      <td style="vertical-align:middle;white-space:nowrap;padding-right:8px;">
-                        <span style="display:inline-block;width:${MONTAGE_CHROME_TRAFFIC_DOT_PX}px;height:${MONTAGE_CHROME_TRAFFIC_DOT_PX}px;border-radius:50%;background-color:#C8C8C8;margin-right:${MONTAGE_CHROME_TRAFFIC_GAP_PX}px;vertical-align:middle;"></span>
-                        <span style="display:inline-block;width:${MONTAGE_CHROME_TRAFFIC_DOT_PX}px;height:${MONTAGE_CHROME_TRAFFIC_DOT_PX}px;border-radius:50%;background-color:#E8E8E8;margin-right:${MONTAGE_CHROME_TRAFFIC_GAP_PX}px;vertical-align:middle;"></span>
-                        <span style="display:inline-block;width:${MONTAGE_CHROME_TRAFFIC_DOT_PX}px;height:${MONTAGE_CHROME_TRAFFIC_DOT_PX}px;border-radius:50%;background-color:#D8D8D8;vertical-align:middle;"></span>
-                      </td>
-                      <td style="vertical-align:middle;width:99%;padding:0;">
-                        <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="background-color:#ffffff;border-radius:9999px;">
-                          <tr>
-                            <td style="padding:0 8px;height:${MONTAGE_CHROME_URL_ROW_HEIGHT_PX}px;vertical-align:middle;line-height:${MONTAGE_CHROME_URL_ROW_HEIGHT_PX}px;">
-                              <span style="${BODY}font-size:7px;color:${MONTAGE_CHROME_URL_HEX};line-height:${MONTAGE_CHROME_URL_ROW_HEIGHT_PX}px;">${domain}</span>
-                            </td>
-                          </tr>
-                        </table>
-                      </td>
-                    </tr>
-                  </table>
-                </td>
-              </tr>
-              <tr>
-                <td bgcolor="${montageSceneBg}" style="background:${salesGradient};background-color:${montageSceneBg};padding:0 10px 0 10px;">
-                  <!--[if !mso]><!-->
-                  <div style="position:relative;min-height:360px;overflow:visible;">
-
-                    <div style="position:absolute;left:50%;top:calc(50% + ${MONTAGE_COMPOSITION_SHIFT_PX}px);width:160%;height:110%;transform:translate(-50%,-50%) rotate(${glowTiltDeg}deg);border-radius:50%;background:${montageWhiteGlow};-webkit-filter:blur(60px);filter:blur(60px);z-index:0;pointer-events:none;"></div>
-
-                    <div style="position:absolute;top:${MONTAGE_VERTICAL_SPREAD_PX + MONTAGE_COMPOSITION_SHIFT_PX}px;right:0;bottom:82px;z-index:2;display:flex;align-items:center;justify-content:center;">
-                      <img src="${salesAvatarUrl}" alt="Bizmis store clerk" width="280" style="display:block;max-width:280px;width:100%;height:auto;border:0;border-radius:16px;filter:drop-shadow(0 10px 32px rgba(50,40,27,0.16));" />
-                    </div>
-
-                    <div style="position:absolute;top:calc(50% + ${MONTAGE_COMPOSITION_SHIFT_PX - MONTAGE_VERTICAL_SPREAD_PX}px);left:2%;transform:translateY(-50%);z-index:3;width:52%;">
-                      <div style="position:relative;display:flex;align-items:center;justify-content:center;min-height:220px;">
-
-                        <div style="position:absolute;left:-2%;top:50%;transform:translateY(-52%) rotate(-6deg) scale(0.85);z-index:1;opacity:0.82;filter:drop-shadow(0 2px 8px rgba(50,40,27,0.08));">
-                          ${otherCardHtmlA}
-                        </div>
-
-                        <div style="position:relative;z-index:3;filter:drop-shadow(0 6px 20px rgba(50,40,27,0.16));">
-                          ${recommendedCardHtml}
-                        </div>
-
-                        <div style="position:absolute;right:-2%;top:50%;transform:translateY(-52%) rotate(6deg) scale(0.85);z-index:1;opacity:0.82;filter:drop-shadow(0 2px 8px rgba(50,40,27,0.08));">
-                          ${otherCardHtmlB}
-                        </div>
-
-                      </div>
-                    </div>
-
-                    <div style="position:absolute;top:0;left:0;width:72%;z-index:1;pointer-events:none;">
-                      <div style="position:relative;height:${WAVEFORM_DESKTOP.h}px;">
-                        <div style="position:absolute;top:0;left:0;right:0;bottom:0;-webkit-mask-image:linear-gradient(to right,#000 60%,transparent 100%);mask-image:linear-gradient(to right,#000 60%,transparent 100%);">
-                          <div style="text-align:left;line-height:0;font-size:0;padding:0;height:${WAVEFORM_DESKTOP.h}px;overflow:hidden;">
-                            ${montageCustomerWaveHtml}
-                          </div>
-                        </div>
-                        <div style="position:absolute;top:0;left:0;right:0;bottom:0;display:flex;align-items:center;justify-content:flex-start;overflow:visible;">
-                          <div style="position:relative;display:flex;align-items:center;justify-content:flex-start;padding-left:8px;padding-right:8px;transform:translateY(-24px);width:100%;max-width:100%;box-sizing:border-box;overflow:visible;">
-                            <div style="position:absolute;width:120%;height:100%;top:0;left:-10%;background:radial-gradient(ellipse 100% 100% at 30% 50%,rgba(255,255,255,0.92) 0%,rgba(255,255,255,0.45) 30%,transparent 68%);"></div>
-                            <p style="margin:0;position:relative;text-align:left;white-space:nowrap;overflow:visible;text-overflow:clip;max-width:none;">
-                              ${montageCustomerCueHtml}
-                            </p>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div style="position:absolute;bottom:0;right:0;width:72%;z-index:1;pointer-events:none;">
-                      <div style="position:relative;height:${WAVEFORM_DESKTOP.h}px;">
-                        <div style="position:absolute;top:0;left:0;right:0;bottom:0;-webkit-mask-image:linear-gradient(to left,#000 60%,transparent 100%);mask-image:linear-gradient(to left,#000 60%,transparent 100%);">
-                          <div style="text-align:right;line-height:0;font-size:0;padding:0;height:${WAVEFORM_DESKTOP.h}px;overflow:hidden;">
-                            ${montageClerkWaveHtml}
-                          </div>
-                        </div>
-                        <div style="position:absolute;top:0;left:0;right:0;bottom:0;display:flex;align-items:center;justify-content:flex-end;overflow:visible;">
-                          <div style="position:relative;display:flex;align-items:center;justify-content:flex-end;padding-left:8px;padding-right:8px;transform:translateY(24px);width:100%;max-width:100%;box-sizing:border-box;overflow:visible;">
-                            <div style="position:absolute;width:120%;height:100%;top:0;right:-10%;background:radial-gradient(ellipse 100% 100% at 70% 50%,rgba(255,255,255,0.92) 0%,rgba(255,255,255,0.45) 30%,transparent 68%);"></div>
-                            <p style="margin:0;position:relative;text-align:right;white-space:nowrap;overflow:visible;text-overflow:clip;max-width:none;">
-                              ${montageSalesClerkBizmisIconHtml}${montageClerkCueInnerHtml}
-                            </p>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-
-                  </div>
-                  <!--<![endif]-->
-                  <!--[if mso]>
-                  <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%">
-                    <tr>
-                      <td width="100%" align="center" style="padding:0;text-align:center;">
-                        <img src="${salesAvatarUrl}" alt="Bizmis store clerk" width="260" style="display:block;margin:0 auto;max-width:260px;height:auto;border:0;" />
-                      </td>
-                    </tr>
-                  </table>
-                  <![endif]-->
-                </td>
-              </tr>
-            </table>
+            ${salesMockupHtml}
 
             <!--[if !mso]><!-->
             <div style="position:absolute;top:-16px;right:-24px;z-index:10;width:${BOOST_SALES_BENEFIT_CARD_OVERLAY_WIDTH_PX}px;">

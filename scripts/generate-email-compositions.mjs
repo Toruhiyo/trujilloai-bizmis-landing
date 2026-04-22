@@ -1,11 +1,15 @@
 #!/usr/bin/env node
 /**
- * Email composition screenshot pipeline.
+ * Email mockup screenshot pipeline.
  *
- * Renders each composition (hero-banner, desktop-mockup, phone-mockup,
- * plug-and-play) via the Vite dev server at `/email-renders/:leadId/:composition`
- * and saves a 2x-density PNG to
- * `public/invite-cards/leads/<leadId>/email/<composition>.png`.
+ * Captures the two mockup PNGs consumed by the Gmail-safe early access email
+ * (`desktop-mockup.png`, `phone-mockup.png`) as isolated, transparent-background
+ * renders of the rich email mockup fragments. The dev-only route
+ * `/email-renders/:leadId/mockup/:which` renders each mockup alone on a
+ * transparent body via the same `buildSalesMockupSceneHtml` /
+ * `buildSupportMockupSceneHtml` helpers that feed the rich email, so there's
+ * no cropping of surrounding content (no Boost Sales overlay, no email card
+ * padding, no hero).
  *
  * Requires the dev server to be running (usually `npm run dev`). Set
  * `BIZMIS_DEV_URL` if it listens on something other than http://localhost:8080.
@@ -14,10 +18,10 @@
  *   node scripts/generate-email-compositions.mjs molekule
  *   node scripts/generate-email-compositions.mjs molekule jackery
  *   node scripts/generate-email-compositions.mjs --all
- *   node scripts/generate-email-compositions.mjs molekule --only hero-banner
+ *   node scripts/generate-email-compositions.mjs molekule --only desktop-mockup
  */
 
-import { existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, readdirSync, writeFileSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { chromium } from "playwright";
@@ -26,15 +30,24 @@ import sharp from "sharp";
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const DEV_URL = process.env.BIZMIS_DEV_URL ?? "http://localhost:8080";
 const DEVICE_SCALE_FACTOR = 2;
-const MAX_PNG_BYTES = 80 * 1024;
+/**
+ * Soft warning threshold. Images don't count toward Gmail's 102KB HTML clip
+ * limit; this only flags a PNG that may be unusually heavy for what it shows.
+ */
+const MAX_PNG_BYTES = 200 * 1024;
 const NAVIGATION_TIMEOUT_MS = 30_000;
-const POST_LOAD_SETTLE_MS = 250;
+const POST_LOAD_SETTLE_MS = 500;
+const SELECTOR_TIMEOUT_MS = 10_000;
 
-const COMPOSITION_VIEWPORTS = {
-  "hero-banner": { cssWidth: 560, cssHeight: 180 },
-  "desktop-mockup": { cssWidth: 540, cssHeight: 360 },
-  "phone-mockup": { cssWidth: 360, cssHeight: 480 },
-  "plug-and-play": { cssWidth: 560, cssHeight: 400 },
+/**
+ * `which` values accepted by the `/email-renders/:leadId/mockup/:which` route,
+ * plus the viewport size used when launching Playwright for each variant. The
+ * viewport just needs to be large enough to fit the mockup plus its drop
+ * shadow padding at 1x CSS density.
+ */
+const MOCKUPS = {
+  "desktop-mockup": { which: "desktop", cssWidth: 720, cssHeight: 520 },
+  "phone-mockup": { which: "phone", cssWidth: 420, cssHeight: 640 },
 };
 
 function parseArgs(argv) {
@@ -63,7 +76,9 @@ function listAllLeadIds() {
 function resolveLeadIds(args) {
   if (args.all) return listAllLeadIds();
   if (args.leadIds.length === 0) {
-    throw new Error("Provide one or more lead IDs, or --all. Example: node scripts/generate-email-compositions.mjs molekule");
+    throw new Error(
+      "Provide one or more lead IDs, or --all. Example: node scripts/generate-email-compositions.mjs molekule",
+    );
   }
   const valid = new Set(listAllLeadIds());
   for (const id of args.leadIds) {
@@ -73,13 +88,14 @@ function resolveLeadIds(args) {
 }
 
 function resolveCompositionIds(args) {
+  const validIds = Object.keys(MOCKUPS);
   if (args.only) {
-    if (!(args.only in COMPOSITION_VIEWPORTS)) {
-      throw new Error(`Unknown composition: ${args.only}. Valid: ${Object.keys(COMPOSITION_VIEWPORTS).join(", ")}`);
+    if (!validIds.includes(args.only)) {
+      throw new Error(`Unknown composition: ${args.only}. Valid: ${validIds.join(", ")}`);
     }
     return [args.only];
   }
-  return Object.keys(COMPOSITION_VIEWPORTS);
+  return validIds;
 }
 
 async function assertDevServerUp() {
@@ -87,45 +103,53 @@ async function assertDevServerUp() {
     const res = await fetch(DEV_URL, { signal: AbortSignal.timeout(3_000) });
     if (!res.ok && res.status >= 500) throw new Error(`dev server returned ${res.status}`);
   } catch (err) {
-    throw new Error(`Dev server not reachable at ${DEV_URL}. Start it with \`npm run dev\` first.\nUnderlying error: ${err.message}`);
+    throw new Error(
+      `Dev server not reachable at ${DEV_URL}. Start it with \`npm run dev\` first.\nUnderlying error: ${err.message}`,
+    );
   }
 }
 
 async function optimizePng(inputBuffer) {
-  const optimized = await sharp(inputBuffer).png({ compressionLevel: 9, palette: true }).toBuffer();
+  const optimized = await sharp(inputBuffer)
+    .png({ compressionLevel: 9, palette: true })
+    .toBuffer();
   return optimized.length < inputBuffer.length ? optimized : inputBuffer;
 }
 
-async function renderComposition(browser, leadId, compositionId) {
-  const viewport = COMPOSITION_VIEWPORTS[compositionId];
+function outputPathFor(leadId, compositionId) {
+  const outDir = join(ROOT, "public/invite-cards/leads", leadId, "email");
+  if (!existsSync(outDir)) mkdirSync(outDir, { recursive: true });
+  return join(outDir, `${compositionId}.png`);
+}
+
+function logResult(compositionId, bytes, outPath) {
+  const sizeKb = (bytes / 1024).toFixed(1);
+  const warn = bytes > MAX_PNG_BYTES ? " [over soft budget]" : "";
+  const relPath = outPath.replace(`${ROOT}/`, "");
+  console.log(`  ${compositionId}: ${sizeKb} KB -> ${relPath}${warn}`);
+}
+
+async function captureMockup(browser, leadId, compositionId) {
+  const { which, cssWidth, cssHeight } = MOCKUPS[compositionId];
   const context = await browser.newContext({
-    viewport: { width: viewport.cssWidth, height: viewport.cssHeight },
+    viewport: { width: cssWidth, height: cssHeight },
     deviceScaleFactor: DEVICE_SCALE_FACTOR,
   });
   const page = await context.newPage();
-  const url = `${DEV_URL}/email-renders/${leadId}/${compositionId}`;
+  const url = `${DEV_URL}/email-renders/${leadId}/mockup/${which}`;
   await page.goto(url, { waitUntil: "networkidle", timeout: NAVIGATION_TIMEOUT_MS });
-  await page.waitForSelector(`[data-email-composition="${compositionId}"]`, { timeout: 10_000 });
-  await page.evaluate(() => document.fonts?.ready);
+
+  const frame = page.locator(`[data-email-mockup-frame="${which}"]`).first();
+  await frame.waitFor({ state: "visible", timeout: SELECTOR_TIMEOUT_MS });
   await page.waitForTimeout(POST_LOAD_SETTLE_MS);
 
-  const rawPng = await page.screenshot({
-    type: "png",
-    omitBackground: false,
-    clip: { x: 0, y: 0, width: viewport.cssWidth, height: viewport.cssHeight },
-  });
+  const rawPng = await frame.screenshot({ type: "png", omitBackground: true });
   await context.close();
 
   const optimized = await optimizePng(rawPng);
-  const outDir = join(ROOT, "public/invite-cards/leads", leadId, "email");
-  if (!existsSync(outDir)) mkdirSync(outDir, { recursive: true });
-  const outPath = join(outDir, `${compositionId}.png`);
+  const outPath = outputPathFor(leadId, compositionId);
   writeFileSync(outPath, optimized);
-
-  const sizeKb = (optimized.length / 1024).toFixed(1);
-  const warn = optimized.length > MAX_PNG_BYTES ? " [over 80KB budget]" : "";
-  const relPath = outPath.replace(`${ROOT}/`, "");
-  console.log(`  ${compositionId}: ${sizeKb} KB -> ${relPath}${warn}`);
+  logResult(compositionId, optimized.length, outPath);
   return optimized.length;
 }
 
@@ -136,14 +160,14 @@ async function main() {
 
   await assertDevServerUp();
   console.log(`Using dev server at ${DEV_URL}`);
-  console.log(`Rendering ${compositionIds.length} composition(s) for ${leadIds.length} lead(s)...\n`);
+  console.log(`Rendering ${compositionIds.length} mockup(s) for ${leadIds.length} lead(s)...\n`);
 
   const browser = await chromium.launch();
   try {
     for (const leadId of leadIds) {
       console.log(`[${leadId}]`);
       for (const compositionId of compositionIds) {
-        await renderComposition(browser, leadId, compositionId);
+        await captureMockup(browser, leadId, compositionId);
       }
     }
   } finally {
