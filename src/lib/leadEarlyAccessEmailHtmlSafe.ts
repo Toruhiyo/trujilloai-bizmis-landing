@@ -140,7 +140,7 @@ function renderSafeHtml(lead: LeadEarlyAccessData, baseUrl: string): string {
   const salutationText = escapeHtml(buildEarlyAccessSalutationPlainText(lead.storeName, lead.leadContactName));
 
   const pitchHtml = buildPitchParagraphHtml(storeName, storeAccent);
-  const ctaBoxHtml = buildCtaBoxHtml(installUrlWithCode, earlyAccessCode, copy.ctaLabel);
+  const ctaBoxHtml = buildCtaBoxHtml(installUrlWithCode, earlyAccessCode);
 
   const preheader = escapeHtml(buildEarlyAccessPreheader(lead.storeName, storeCap));
 
@@ -153,7 +153,7 @@ function renderSafeHtml(lead: LeadEarlyAccessData, baseUrl: string): string {
     fullWidth: true,
   });
 
-  const titleHtml = buildEarlyAccessTitleHtml(accent);
+  const titleHtml = buildEarlyAccessTitleHtml(storeName, storeAccent);
 
   return `<!DOCTYPE html>
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml">
@@ -202,14 +202,14 @@ ${pitchHtml}
 </tr>
 
 <tr>
-<td style="padding:24px 0 4px 0;line-height:0;font-size:0;" align="center">
-${combinedImageHtml}
+<td style="padding:28px 32px 0 32px;" align="center">
+${ctaBoxHtml}
 </td>
 </tr>
 
 <tr>
-<td style="padding:32px 32px 0 32px;" align="center">
-${ctaBoxHtml}
+<td style="padding:28px 0 4px 0;line-height:0;font-size:0;" align="center">
+${combinedImageHtml}
 </td>
 </tr>
 
@@ -231,12 +231,27 @@ Questions? Just reply to this email (<a href="mailto:${escapeHtml(copy.contactEm
 </html>`;
 }
 
-function buildEarlyAccessTitleHtml(accent: string): string {
-  return `<p style="margin:0;font-family:${SYSTEM_FONT_STACK};font-size:11px;font-weight:700;letter-spacing:0.22em;text-transform:uppercase;color:${accent};">
-Early Access Invite
-</p>
-<p style="margin:10px 0 0 0;font-family:${SYSTEM_FONT_STACK};font-size:26px;font-weight:700;line-height:1.25;color:${FOREGROUND_HEX};letter-spacing:-0.01em;">
-bizmis<span style="color:${accent};">.</span>
+/**
+ * Inline early-access invite heading:
+ *
+ *   `{StoreName} × bizmis · Early Access Invite`
+ *
+ * All three segments sit on a single centered line: the store name in
+ * the lead's resolved accent, `bizmis` in Bizmis primary, and the
+ * eyebrow in the foreground/muted tone. Wraps naturally if the store
+ * name is long enough to exceed the card's content width.
+ */
+function buildEarlyAccessTitleHtml(storeName: string, storeAccent: string): string {
+  const c = EARLY_ACCESS_EMAIL_COPY;
+  const baseTextStyle =
+    `font-family:${SYSTEM_FONT_STACK};font-size:22px;font-weight:700;line-height:1.3;letter-spacing:-0.005em;`;
+  const separatorStyle = `${baseTextStyle}font-weight:400;color:${MUTED_SUBTLE_HEX};`;
+  return `<p style="margin:0;text-align:center;${baseTextStyle}">
+<span style="color:${storeAccent};">${storeName}</span>
+<span style="${separatorStyle}">&nbsp;${escapeHtml(c.inviteTitleBrandLeadSeparator)}&nbsp;</span>
+<span style="color:${BIZMIS_PRIMARY_HEX};">${escapeHtml(c.inviteTitleBrandLead)}</span>
+<span style="${separatorStyle}">&nbsp;${escapeHtml(c.inviteTitleEyebrowSeparator)}&nbsp;</span>
+<span style="color:${FOREGROUND_HEX};">${escapeHtml(c.inviteTitleEyebrow)}</span>
 </p>`;
 }
 
@@ -266,12 +281,12 @@ ${escapeHtml(c.inviteSentenceLeadNamedBeforeBizmis)}<span style="font-weight:600
 </p>`;
 }
 
-function buildCtaBoxHtml(installUrlWithCode: string, earlyAccessCode: string, ctaLabel: string): string {
+function buildCtaBoxHtml(installUrlWithCode: string, earlyAccessCode: string): string {
   const c = EARLY_ACCESS_EMAIL_COPY;
   const footnote = `* Up to ${EARLY_ACCESS_TRIAL_USAGE_MINUTES_LIMIT} minutes of included usage.`;
   return `<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="border:1px dashed ${BIZMIS_BORDER_HEX};border-radius:14px;">
 <tr>
-<td style="padding:24px 28px 14px 28px;" align="center">
+<td style="padding:22px 28px 10px 28px;" align="center">
 <p style="margin:0;font-family:${SYSTEM_FONT_STACK};font-size:9px;color:${MUTED_LIGHT_HEX};letter-spacing:0.02em;">
 ${escapeHtml(c.couponLabel)}
 <span style="color:${BIZMIS_MUTED_FG_HEX};font-size:10px;letter-spacing:0.04em;">&nbsp;${escapeHtml(earlyAccessCode)}</span>
@@ -279,12 +294,19 @@ ${escapeHtml(c.couponLabel)}
 </td>
 </tr>
 <tr>
-<td style="padding:0 28px 24px 28px;" align="center">
+<td style="padding:0 28px 14px 28px;" align="center">
+<p style="margin:0;font-family:${SYSTEM_FONT_STACK};font-size:12px;line-height:1.55;color:${FOREGROUND_HEX};">
+${escapeHtml(c.ctaMixedUrgencyLine)}
+</p>
+</td>
+</tr>
+<tr>
+<td style="padding:0 28px 22px 28px;" align="center">
 <table role="presentation" cellpadding="0" cellspacing="0" border="0" align="center">
 <tr>
 <td align="center" bgcolor="${CTA_BG_HEX}" style="border-radius:12px;">
 <a href="${escapeAttr(installUrlWithCode)}" target="_blank" rel="noopener noreferrer" style="display:inline-block;padding:14px 32px;font-family:${SYSTEM_FONT_STACK};font-size:13px;font-weight:600;color:#ffffff;text-decoration:none;border-radius:12px;">
-${escapeHtml(ctaLabel)}
+${escapeHtml(c.ctaMixedButtonLabel)}
 </a>
 </td>
 </tr>
@@ -320,15 +342,17 @@ function renderPlainText(lead: LeadEarlyAccessData): string {
     c.inviteSentenceAfterStorePostValue,
   ].join("");
 
+  const titleLine = `${lead.storeName} ${c.inviteTitleBrandLeadSeparator} ${c.inviteTitleBrandLead} ${c.inviteTitleEyebrowSeparator} ${c.inviteTitleEyebrow.toUpperCase()}`;
   return [
-    "EARLY ACCESS INVITE",
+    titleLine,
     "",
     salutation,
     "",
     pitch,
     "",
     `${c.couponLabel} ${lead.couponCode}`,
-    `${c.ctaLabel}: ${installUrlWithCode}`,
+    c.ctaMixedUrgencyLine,
+    `${c.ctaMixedButtonLabel}: ${installUrlWithCode}`,
     `* Up to ${EARLY_ACCESS_TRIAL_USAGE_MINUTES_LIMIT} minutes of included usage.`,
     "",
     `Questions? Just reply to this email (${c.contactEmail}).`,

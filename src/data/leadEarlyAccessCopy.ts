@@ -24,7 +24,17 @@ export const EARLY_ACCESS_EMAIL_COPY = {
   subline:
     "Claim your early access spot while the list is still open. Install Bizmis on your Shopify store for 30 days on us and help shape the product around your team\u2019s and customers\u2019 needs with your feedback.",
   ctaLabel: "Install Bizmis with early access",
+  /** Gmail-safe invite mixes the install CTA + soft "join early access" into a single primary action. */
+  ctaMixedButtonLabel: "Install Bizmis and join early access",
+  /** Urgency + roadmap-influence tagline that sits above the mixed CTA button in the Gmail-safe invite. */
+  ctaMixedUrgencyLine:
+    "Shape the roadmap around your store, at no cost. Claim your spot before we close the list.",
   couponLabel: "Your early access code:",
+  /** Inline heading on the Gmail-safe invite card: "Early Access Invite · bizmis × {StoreName}". */
+  inviteTitleEyebrow: "Early Access Invite",
+  inviteTitleEyebrowSeparator: "\u00b7",
+  inviteTitleBrandLead: "bizmis",
+  inviteTitleBrandLeadSeparator: "\u00d7",
   salesMockupTitle: "Boost Sales",
   salesMockupSubtitle:
     "Convert, upsell and retain by guiding every shopper like a great store clerk would.",
