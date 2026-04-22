@@ -27,6 +27,9 @@ Use this skill when the user asks to:
 - Python 3.11+ with Pillow installed (use the studio venv: `/Users/oriol/Projects/Bizmis/trujilloai-bizmis-studio/.venv/bin/python`)
 - Run scripts from the landing repo root: `/Users/oriol/Projects/Bizmis/trujilloai-bizmis-landing`
 - The `scripts/lead_onboarding/` package must be importable (add `scripts/` to `sys.path`)
+- Node 20+ with project dependencies installed (`npm install` in the landing repo). `playwright` and `sharp` are dev deps used by the email-mockup pipeline.
+- The Vite dev server running on `http://localhost:8080` (`npm run dev`). The mockup pipeline calls the `/email-renders/:leadId/mockup/:which` dev-only route, so it cannot run against a prod build.
+- On a fresh machine, run `npx playwright install chromium` once so Playwright has its browser.
 
 ## Workflow
 
@@ -407,6 +410,48 @@ Run the product manifest sync to pick up the new lead's product image extensions
 npm run sync:product-manifest
 ```
 
+### Step 7b — Generate Gmail-safe email mockup (automated)
+
+The Gmail-safe invite email (`src/lib/leadEarlyAccessEmailHtmlSafe.ts`) embeds a single pre-rendered PNG at `public/invite-cards/leads/<id>/email/mockup.png`. That file composes the rich email's desktop storefront, mobile support scene, and top banner on a transparent background. This PNG MUST be (re)generated whenever a lead is added, whenever its brand colours, logo, products, avatars, or mockup copy (`montage*`, `support*`) change, and whenever the mockup builders in `src/lib/leadEarlyAccessEmailHtml.ts` are modified.
+
+**Prereq**: dev server running on `http://localhost:8080` (`npm run dev`).
+
+Generate for a single new lead:
+
+```bash
+npm run generate:email-compositions -- <lead-id>
+```
+
+Regenerate for several leads in one call:
+
+```bash
+npm run generate:email-compositions -- molekule jackery
+```
+
+Regenerate for every lead in `src/data/leads/`:
+
+```bash
+npm run generate:email-compositions -- --all
+```
+
+Debug the isolated mockups (written as `desktop-mockup.png` / `phone-mockup.png` alongside `mockup.png`):
+
+```bash
+npm run generate:email-compositions -- <lead-id> --only desktop-mockup
+npm run generate:email-compositions -- <lead-id> --only phone-mockup
+```
+
+**Output**: `public/invite-cards/leads/<lead-id>/email/mockup.png`, roughly `816 x 650 CSS px` (2x = `1632 x 1300`). The script warns if the PNG exceeds a `250 KB` soft budget; that's informational only (images are fetched by the client, not inlined in the HTML, so they don't count toward Gmail's 102 KB clip limit).
+
+**Failure modes to watch**:
+
+- `Dev server not reachable at http://localhost:8080` → start it with `npm run dev` and retry.
+- `Unknown lead id: <id>` → the lead JSON isn't in `src/data/leads/` yet. Finish Step 5 first.
+- Empty/transparent regions or missing avatar → the lead's `sales-avatar.png` / `support-avatar.png` weren't generated yet. Finish Step 6 first.
+- Broken product images inside the PNG → product images not yet downloaded (Step 5) or `npm run sync:product-manifest` not run (Step 7).
+
+**Rule**: run this step **after** avatar generation (Step 6) and after the product manifest sync (Step 7), and **before** visual verification (Step 9). The order matters: the composited PNG pulls live data and images from the dev server, which reads the lead JSON and the manifest.
+
 ### Step 8 — Update leads loader (manual)
 
 Add the new lead's JSON import to `src/data/leads/index.ts`:
@@ -446,8 +491,9 @@ Use browser MCP tools to screenshot both the live store and the generated invite
 | Support shopper cue      | Customer question mentions a specific product, relates to a positive policy topic (NOT returns/refunds). Max 60 chars. No em-dashes.                                                                                                                                                 |
 | Support clerk cue        | Bizmis response resolves the question naturally, references the same product. Max 60 chars. No em-dashes. Product name highlighted in bold + accent.                                                                                                                                 |
 | Support policy chip      | Tool chip reads "Answered via {policy}" with a relevant policy name (Warranty, Care Guide, Shipping, etc.). Not "Return Policy".                                                                                                                                                     |
+| Gmail-safe mockup PNG    | `public/invite-cards/leads/<id>/email/mockup.png` exists, shows the combined scene (banner + desktop + phone) with the correct brand colours, logos, products, and avatars, and has a transparent background outside the mockup frame. Rerun Step 7b if missing or stale. |
 
-4. If any check fails → fix the issue (re-download logo, adjust `bannerColor`/`primaryColor`/`logoColorOverlay` in the JSON and `_config.py`, regenerate avatar) → re-screenshot the invite card → re-verify.
+4. If any check fails → fix the issue (re-download logo, adjust `bannerColor`/`primaryColor`/`logoColorOverlay` in the JSON and `_config.py`, regenerate avatar, rerun Step 7b when the Gmail-safe mockup must refresh) → re-screenshot the invite card → re-verify.
 
 **Common fixes:**
 
@@ -508,6 +554,7 @@ Open the admin UI at `/admin/invite-cards/early-access/<lead-id>` and check:
 - Assisted-sales avatar renders with correct shirt colour and logo stamp
 - Support avatar renders in mobile format with a different character (opposite gender)
 - Support mockup shows per-lead content (not hardcoded fallbacks)
+- Gmail-safe `mockup.png` exists under `public/invite-cards/leads/<lead-id>/email/` and matches the combined scene (rerun Step 7b after avatar, manifest, lead JSON, or mockup HTML changes)
 - Email HTML size is reasonable (< 50 KB)
 
 ## JSON Schema
@@ -605,6 +652,7 @@ scripts/lead_onboarding/
 | Shirt looks same as top bar, too repetitive        | Find a compact icon and/or use a different brand colour for the shirt.                                                                                                                          |
 | No compact icon for stamp                          | Use the full wordmark — it's fine if compact enough. Don't force-create icons.                                                                                                                  |
 | Product image URLs return 404                      | Try the store's shop subdomain CDN. Check that full paths (not truncated) are used. Some stores use different CDN hosts.                                                                        |
+| Gmail-safe email looks stale / wrong colours       | The embedded PNG is cached per-lead on disk. Rerun `npm run generate:email-compositions -- <lead-id>` (or `--all` after a builder change) to rebuild `public/invite-cards/leads/<id>/email/mockup.png`. |
 
 ## Lessons learned (update as new patterns emerge)
 
@@ -617,3 +665,4 @@ scripts/lead_onboarding/
 - **Logo tint classification is a first-class decision**: Every logo must be classified before any tint is applied. Flat marks (wordmarks, silhouettes, simple geometric symbols) can safely be recoloured to a solid tint. Detailed emblems, badges, roundels, and crests (anything with internal text, fine lines, or elements that rely on colour contrast to be legible) must keep native colours — tinting destroys internal detail and turns them into unrecognizable blobs. UroTuning's eagle roundel is the canonical example of a logo that must never be tinted. This classification must be double-checked in visual QA.
 - **Banner ≠ accent when navbar is dark**: When the store's navbar is dark (charcoal/black) and the brand accent (buttons, CTAs) is a different colour, use `bannerColor` for the dark navbar and `primaryColor` for the accent. This was the UroTuning lesson: dark navbar (#252525) with red accent (#CC0000). The banner must visually replicate the navbar, while the accent drives product cards, browser dots, and price text.
 - **Shirt colour for untinted emblems must match the banner, not the accent**: When a logo is a detailed emblem that cannot be tinted, the shirt stamp also cannot be tinted. The stamp will display in its native colours, so the shirt must use a background that the emblem was designed to sit on — typically the same dark/neutral banner colour. Placing an untinted emblem on a bright accent colour (e.g. red) destroys legibility because the emblem's internal colours clash with the background. UroTuning is the canonical example: the eagle roundel is unreadable on red, but perfectly legible on the dark #252525 banner colour. Rule of thumb: **if `stamp_color_overlay` is `null`, then `shirt_color` should equal `bannerColor` (or `primaryColor` if no banner override)**.
+- **Gmail-safe email uses a pre-rendered PNG, not live CSS**: Gmail (especially on iOS/Android) strips modern CSS, so the combined mockup cannot be assembled in-email. `scripts/generate-email-compositions.mjs` screenshots the rich-email React fragments on a transparent background via Playwright and saves one `mockup.png` per lead. Any change to brand colours, logo, avatars, products, or the mockup builders in `leadEarlyAccessEmailHtml.ts` requires regenerating this PNG (Step 7b). Running `--all` is cheap and safe after builder-level edits.
