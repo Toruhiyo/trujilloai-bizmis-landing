@@ -100,6 +100,8 @@ const PHONE_SUPPORT_CAPTION_INSET_PX = 12;
 
 /** Bizmis mark inline at start of clerk captions (emoji-like) — masked white logo tinted with caption accent (contrast-corrected, same as bold caption text). */
 const MONTAGE_SALES_BIZMIS_CAPTION_ICON_PX = 20;
+/** Trailing margin applied to the inline Bizmis caption icon (em, scales with font-size). */
+const MONTAGE_SALES_BIZMIS_CAPTION_ICON_MARGIN_EM = 0.35;
 
 const MONTAGE_CHROME_BG_HEX = "#F7F7F7";
 const MONTAGE_CHROME_URL_HEX = "#A3A3A3";
@@ -161,6 +163,102 @@ function montageSalesCueFontPx(text: string, basePx = MONTAGE_SALES_CUE_BASE_FON
   if (len <= MONTAGE_SALES_CUE_CHARS_AT_BASE) return basePx;
   const scaled = basePx * (MONTAGE_SALES_CUE_CHARS_AT_BASE / len);
   return Math.max(MONTAGE_SALES_CUE_MIN_FONT_PX, Math.round(scaled * 10) / 10);
+}
+
+/**
+ * Per-glyph advance estimates as a fraction of font-size for Inter /
+ * system-ui body copy at email-mockup sizes. Kept conservative so the
+ * width budget survives Inter's true bold advances plus any extra
+ * letter-spacing introduced by the rendering engine.
+ */
+const PHONE_CUE_CHAR_W_NORMAL = 0.55;
+const PHONE_CUE_CHAR_W_BOLD = 0.62;
+const PHONE_CUE_MAX_LINES = 2;
+
+/**
+ * Word-aware 2-line simulator for phone captions.
+ *
+ * Walks the words of `text`, computing the pixel width of each glyph
+ * (bold glyphs wider than regular) to greedily pack them into lines.
+ * Marks the span of the optional `boldSubstring` (used for the bolded
+ * product-name span inside clerk captions) so its extra advance is
+ * accounted for. Returns true iff the text fits in `maxLines` at the
+ * given font size.
+ */
+function phoneCueFitsInLines(
+  text: string,
+  fontPx: number,
+  widthPx: number,
+  boldSubstring: string | null,
+  maxLines: number,
+  firstLineReservePx: number = 0,
+): boolean {
+  const boldStart = boldSubstring ? text.indexOf(boldSubstring) : -1;
+  const boldEnd = boldStart >= 0 ? boldStart + (boldSubstring as string).length : -1;
+  const charWidthAt = (index: number): number => {
+    const ratio = index >= boldStart && index < boldEnd
+      ? PHONE_CUE_CHAR_W_BOLD : PHONE_CUE_CHAR_W_NORMAL;
+    return fontPx * ratio;
+  };
+  const spaceWidth = fontPx * PHONE_CUE_CHAR_W_NORMAL;
+  const tokens = text.split(/(\s+)/).filter((t) => t.length > 0);
+  let lineWidth = firstLineReservePx;
+  let lines = 1;
+  let cursor = 0;
+  for (const token of tokens) {
+    const isSpace = /^\s+$/.test(token);
+    let tokenWidth = 0;
+    for (let i = 0; i < token.length; i++) {
+      tokenWidth += isSpace ? spaceWidth : charWidthAt(cursor + i);
+    }
+    if (isSpace) {
+      if (lineWidth === 0) { cursor += token.length; continue; }
+      if (lineWidth + tokenWidth > widthPx) {
+        lines += 1;
+        if (lines > maxLines) return false;
+        lineWidth = 0;
+      } else {
+        lineWidth += tokenWidth;
+      }
+    } else if (lineWidth + tokenWidth <= widthPx) {
+      lineWidth += tokenWidth;
+    } else {
+      lines += 1;
+      if (lines > maxLines) return false;
+      lineWidth = tokenWidth;
+    }
+    cursor += token.length;
+  }
+  return lines <= maxLines;
+}
+
+/**
+ * Width-aware font sizing for the phone's shopper/clerk captions.
+ *
+ * Steps the font size down from `basePx` until the word-wrap simulator
+ * reports the copy fits in `maxLines` given the caption `widthPx` and
+ * an optional `boldSubstring` (wider glyphs). Falls back to
+ * `MONTAGE_SALES_CUE_MIN_FONT_PX` if the copy is too long even at the
+ * minimum. Kept separate from `montageSalesCueFontPx` (desktop) so the
+ * desktop caption behavior is unchanged.
+ */
+function montagePhoneCueFontPx(
+  text: string,
+  basePx: number,
+  widthPx: number,
+  boldSubstring: string | null = null,
+  firstLineReservePx: number = 0,
+  maxLines: number = PHONE_CUE_MAX_LINES,
+): number {
+  const step = 0.5;
+  for (let fontPx = basePx; fontPx >= MONTAGE_SALES_CUE_MIN_FONT_PX; fontPx -= step) {
+    if (phoneCueFitsInLines(
+      text, fontPx, widthPx, boldSubstring, maxLines, firstLineReservePx,
+    )) {
+      return Math.round(fontPx * 10) / 10;
+    }
+  }
+  return MONTAGE_SALES_CUE_MIN_FONT_PX;
 }
 
 const MONTAGE_CUSTOMER_WAVE_GREY: [number, number, number] = [180, 180, 180];
@@ -409,7 +507,7 @@ function buildEmailBannerWaveformOverlayHtml(waveformPublicUrl: string): string 
 function buildBizmisCaptionIconHtml(captionAccentHex: string, sizePx: number): string {
   const safe = escapeHtml(captionAccentHex);
   const url = absImg(BIZMIS_LOGO_WHITE).replace(/'/g, "\\'");
-  return `<span aria-hidden="true" style="display:inline-block;vertical-align:-0.2em;margin-right:0.35em;width:${sizePx}px;height:${sizePx}px;background-color:${safe};-webkit-mask-image:url('${url}');mask-image:url('${url}');-webkit-mask-size:contain;mask-size:contain;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;-webkit-mask-position:center;mask-position:center;"></span>`;
+  return `<span aria-hidden="true" style="display:inline-block;vertical-align:-0.2em;margin-right:${MONTAGE_SALES_BIZMIS_CAPTION_ICON_MARGIN_EM}em;width:${sizePx}px;height:${sizePx}px;background-color:${safe};-webkit-mask-image:url('${url}');mask-image:url('${url}');-webkit-mask-size:contain;mask-size:contain;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;-webkit-mask-position:center;mask-position:center;"></span>`;
 }
 
 const HEADING = "font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,Helvetica,sans-serif;";
@@ -1097,9 +1195,20 @@ export function buildSupportMockupSceneHtml(
    * reads slightly shorter than the desktop while keeping the same
    * width. The rich email keeps the default (non-compact) values.
    */
-  const avatarW = compact ? 252 : PHONE_AVATAR_W;
+  const avatarW = compact ? 276 : PHONE_AVATAR_W;
   const avatarClipMarginLeftPx = Math.round((PHONE_SCREEN_W - avatarW) / 2);
-  const topWaveRowMinH = compact ? Math.round(pw.h * 0.75) : pw.h;
+  /**
+   * Avatar PNGs carry ~20% transparent padding on all sides around the
+   * face + rings + badge. In the compact variant (combined mockup PNG)
+   * we crop that padding vertically so the avatar sits visually closer
+   * to the shopper cue above and the clerk chip below without touching
+   * the image asset itself.
+   */
+  const avatarVisibleHeightRatio = compact ? 0.78 : 1;
+  const avatarVisibleHeightPx = Math.round(avatarW * avatarVisibleHeightRatio);
+  const avatarClipMarginTopPx = compact
+    ? Math.round((avatarVisibleHeightPx - avatarW) / 2) : 0;
+  const topWaveRowMinH = compact ? Math.round(pw.h * 0.78) : pw.h;
   const bottomWaveRowMinH = compact ? Math.round(pw.h * 0.45) : pw.h;
   const shopperPadTopPx = compact ? 4 : 8;
   const shopperPadBottomPx = compact ? 0 : 4;
@@ -1119,17 +1228,25 @@ export function buildSupportMockupSceneHtml(
   const supportCaptionParagraphWrap =
     "white-space:normal;word-wrap:break-word;overflow-wrap:break-word;max-width:100%;";
 
+  const phoneCaptionWidthPx = PHONE_SCREEN_W - PHONE_SUPPORT_CAPTION_INSET_PX * 2;
+  const productName = lead.supportProductName?.trim() || null;
+  const policyName = lead.supportPolicyName?.trim() || CS_POLICY_FALLBACK;
+
   const shopperRaw = lead.supportShopperCue?.trim() || CS_SHOPPER_FALLBACK;
   const shopperText = `\u201c${montageSalesCueSingleLine(shopperRaw)}\u201d`;
-  const shopperFontPx = montageSalesCueFontPx(shopperText, MONTAGE_CUSTOMER_CUE_BASE_FONT_PX);
+  const shopperFontPx = montagePhoneCueFontPx(
+    shopperText, MONTAGE_CUSTOMER_CUE_BASE_FONT_PX, phoneCaptionWidthPx, productName,
+  );
   const customerCueStyle = `${BODY}font-size:${shopperFontPx}px;font-weight:300;font-style:italic;line-height:1.35;color:${BIZMIS_MUTED_LIGHT_HEX};`;
   const customerCueBoldStyle = `${BODY}font-size:${shopperFontPx}px;font-weight:600;font-style:italic;line-height:1.35;color:${BIZMIS_MUTED_LIGHT_HEX};`;
 
-  const productName = lead.supportProductName?.trim() || null;
-  const policyName = lead.supportPolicyName?.trim() || CS_POLICY_FALLBACK;
   const clerkRaw = lead.supportClerkCue?.trim() || CS_CLERK_FALLBACK;
   const clerkDisplay = montageSalesCueSingleLine(clerkRaw);
-  const clerkFontPx = montageSalesCueFontPx(clerkDisplay, MONTAGE_SALES_CUE_BASE_FONT_PX);
+  const clerkIconReservePx =
+    MONTAGE_SALES_BIZMIS_CAPTION_ICON_PX + MONTAGE_SALES_BIZMIS_CAPTION_ICON_MARGIN_EM * MONTAGE_SALES_CUE_BASE_FONT_PX;
+  const clerkFontPx = montagePhoneCueFontPx(
+    clerkDisplay, MONTAGE_SALES_CUE_BASE_FONT_PX, phoneCaptionWidthPx, productName, clerkIconReservePx,
+  );
   const clerkReplyStyle = `${BODY}font-size:${clerkFontPx}px;font-weight:500;line-height:1.35;color:${BIZMIS_FOREGROUND_HEX};`;
   const clerkReplyBoldStyle = `${BODY}font-size:${clerkFontPx}px;font-weight:800;line-height:1.35;letter-spacing:-0.02em;color:${palette.captionAccent};`;
 
@@ -1183,8 +1300,8 @@ export function buildSupportMockupSceneHtml(
                     <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="width:100%;position:relative;z-index:1;">
                       <tr>
                         <td align="center" width="100%" style="padding:0;margin:0;width:100%;text-align:center;">
-                          <div style="overflow:hidden;width:${PHONE_SCREEN_W}px;max-width:100%;margin:0 auto;line-height:0;font-size:0;">
-                            <img src="${avatarUrl}" alt="Bizmis support clerk" width="${avatarW}" style="display:block;margin:0;padding:0;margin-left:${avatarClipMarginLeftPx}px;margin-right:0;max-width:none;width:${avatarW}px;height:auto;border:0;border-radius:14px;filter:drop-shadow(0 8px 24px rgba(50,40,27,0.16));" />
+                          <div style="overflow:hidden;width:${PHONE_SCREEN_W}px;height:${avatarVisibleHeightPx}px;max-width:100%;margin:0 auto;line-height:0;font-size:0;">
+                            <img src="${avatarUrl}" alt="Bizmis support clerk" width="${avatarW}" style="display:block;margin:0;padding:0;margin-left:${avatarClipMarginLeftPx}px;margin-top:${avatarClipMarginTopPx}px;margin-right:0;max-width:none;width:${avatarW}px;height:auto;border:0;border-radius:14px;filter:drop-shadow(0 8px 24px rgba(50,40,27,0.16));" />
                           </div>
                         </td>
                       </tr>
