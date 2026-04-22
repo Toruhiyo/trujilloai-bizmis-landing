@@ -138,7 +138,7 @@ function renderSafeHtml(lead: LeadEarlyAccessData, baseUrl: string): string {
 
   const salutationText = escapeHtml(buildEarlyAccessSalutationPlainText(lead.storeName, lead.leadContactName));
 
-  const pitchHtml = buildPitchParagraphHtml(storeName, storeAccent);
+  const pitchHtml = buildPitchParagraphHtml(storeName);
   const ctaBoxHtml = buildCtaBoxHtml(installUrlWithCode, earlyAccessCode);
 
   const preheader = escapeHtml(buildEarlyAccessPreheader(lead.storeName, storeCap));
@@ -272,11 +272,11 @@ function buildCenteredImage(spec: CenteredImageSpec): string {
   return `<img src="${escapeAttr(spec.src)}" alt="${escapeAttr(spec.alt)}" width="${spec.widthPx}" height="${spec.heightPx}" style="display:block;${widthAttr}border:0;border-radius:${spec.borderRadiusPx}px;" />`;
 }
 
-function buildPitchParagraphHtml(storeName: string, storeAccent: string): string {
+function buildPitchParagraphHtml(storeName: string): string {
   const c = EARLY_ACCESS_EMAIL_COPY;
   const fgStyle = `font-family:${SYSTEM_FONT_STACK};font-size:15px;line-height:1.72;color:${FOREGROUND_HEX};`;
   return `<p style="margin:0;${fgStyle}">
-${escapeHtml(c.inviteSentenceLeadNamedBeforeBizmis)}<span style="font-weight:600;color:${BIZMIS_PRIMARY_HEX};">${escapeHtml(c.inviteSentenceBizmisWord)}</span>${escapeHtml(c.inviteSentenceAfterFirstBizmis)}<span style="color:${storeAccent};font-weight:600;">${storeName}</span>${escapeHtml(c.inviteSentenceAfterStorePreValue)}<strong style="font-weight:600;">${escapeHtml(c.inviteSentenceValueDriveSales)}</strong>${escapeHtml(c.inviteSentenceValueJoiner)}<strong style="font-weight:600;">${escapeHtml(c.inviteSentenceValueEaseSupport)}</strong>${escapeHtml(c.inviteSentenceAfterStorePostValue)}
+${escapeHtml(c.inviteSentenceLeadNamedBeforeBizmis)}${escapeHtml(c.inviteSentenceBizmisWord)}${escapeHtml(c.inviteSentenceAfterFirstBizmis)}${storeName}${escapeHtml(c.inviteSentenceAfterStorePreValue)}<strong style="font-weight:600;">${escapeHtml(c.inviteSentenceValueDriveSales)}</strong>${escapeHtml(c.inviteSentenceValueJoiner)}<strong style="font-weight:600;">${escapeHtml(c.inviteSentenceValueEaseSupport)}</strong>${escapeHtml(c.inviteSentenceAfterStorePostValue)}
 </p>`;
 }
 
