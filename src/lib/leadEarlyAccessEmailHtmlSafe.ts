@@ -225,7 +225,7 @@ ${combinedImageHtml}
 <p style="margin:0 0 10px 0;font-family:${SYSTEM_FONT_STACK};font-size:10px;line-height:1.55;color:${MUTED_LIGHT_HEX};">
 Questions? Just reply to this email (<a href="mailto:${escapeHtml(copy.contactEmail)}" style="color:${BIZMIS_MUTED_FG_HEX};text-decoration:none;">${escapeHtml(copy.contactEmail)}</a>).
 </p>
-<a href="https://bizmis.ai" target="_blank" rel="noopener noreferrer" style="font-family:${SYSTEM_FONT_STACK};font-size:10px;font-weight:500;color:${BIZMIS_MUTED_FG_HEX};text-decoration:none;">bizmis.ai</a>
+<a href="https://www.bizmis.ai" target="_blank" rel="noopener noreferrer" style="font-family:${SYSTEM_FONT_STACK};font-size:10px;font-weight:500;color:${BIZMIS_MUTED_FG_HEX};text-decoration:none;">bizmis.ai</a>
 </td>
 </tr>
 

@@ -27,7 +27,7 @@ import {
 
 const BIZMIS_LOGO_WHITE = "/images/bizmis-logo-white-transparent.png";
 const SHOPIFY_MARK_WHITE = "/images/shopify-mark-white.png";
-const BIZMIS_URL = "https://bizmis.ai";
+const BIZMIS_URL = "https://www.bizmis.ai";
 
 /** Native 560×120 overlay; regenerate with `node scripts/generate-email-banner-noise-png.mjs`. */
 const EMAIL_BANNER_NOISE_GRAIN = "/images/early-access-banner-noise-grain.png";
