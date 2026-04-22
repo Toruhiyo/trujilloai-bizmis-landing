@@ -41,6 +41,18 @@ export const SAFE_EMAIL_DEFAULT_BASE_URL = "https://www.bizmis.ai" as const;
 export const SAFE_EMAIL_MAX_BYTES = 102_000;
 export const SAFE_EMAIL_WARN_BYTES = 60_000;
 
+/**
+ * Public marketing site URL for outbound invites, tagged with the lead id.
+ * Uses `ref` so it matches the Shopify install CTA query shape in the same email.
+ */
+export function buildInviteBizmisSiteUrl(leadId: string): string {
+  const trimmed = leadId.trim();
+  const params = new URLSearchParams();
+  if (trimmed.length > 0) params.set("ref", trimmed);
+  const qs = params.toString();
+  return qs.length > 0 ? `${SAFE_EMAIL_DEFAULT_BASE_URL}?${qs}` : `${SAFE_EMAIL_DEFAULT_BASE_URL}`;
+}
+
 const CARD_MAX_WIDTH_PX = 600;
 /**
  * Display dimensions for the combined mockup PNG (phone overlapping the
@@ -136,6 +148,7 @@ function renderSafeHtml(lead: LeadEarlyAccessData, baseUrl: string): string {
   const combinedMockupUrl = absUrl(baseUrl, `/invite-cards/leads/${lead.id}/email/mockup.png`);
 
   const installUrlWithCode = `${shopifyAppUrl}?ref=${leadHandle}&code=${encodeURIComponent(earlyAccessCode)}`;
+  const bizmisInviteSiteUrl = buildInviteBizmisSiteUrl(lead.id);
 
   const salutationText = escapeHtml(buildEarlyAccessSalutationPlainText(lead.storeName, lead.leadContactName));
 
@@ -154,7 +167,7 @@ function renderSafeHtml(lead: LeadEarlyAccessData, baseUrl: string): string {
     fullWidth: true,
   });
 
-  const titleHtml = buildEarlyAccessTitleHtml(storeName, storeAccent);
+  const titleHtml = buildEarlyAccessTitleHtml(storeName, storeAccent, bizmisInviteSiteUrl);
 
   return `<!DOCTYPE html>
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml">
@@ -225,7 +238,7 @@ ${combinedImageHtml}
 <p style="margin:0 0 10px 0;font-family:${SYSTEM_FONT_STACK};font-size:10px;line-height:1.55;color:${MUTED_LIGHT_HEX};">
 Questions? Just reply to this email (<a href="mailto:${escapeHtml(copy.contactEmail)}" style="color:${BIZMIS_MUTED_FG_HEX};text-decoration:none;">${escapeHtml(copy.contactEmail)}</a>).
 </p>
-<a href="https://www.bizmis.ai" target="_blank" rel="noopener noreferrer" style="font-family:${SYSTEM_FONT_STACK};font-size:10px;font-weight:500;color:${BIZMIS_MUTED_FG_HEX};text-decoration:none;">bizmis.ai</a>
+<a href="${escapeAttr(bizmisInviteSiteUrl)}" target="_blank" rel="noopener noreferrer" style="font-family:${SYSTEM_FONT_STACK};font-size:10px;font-weight:500;color:${BIZMIS_MUTED_FG_HEX};text-decoration:none;">bizmis.ai</a>
 </td>
 </tr>
 
@@ -244,12 +257,16 @@ Questions? Just reply to this email (<a href="mailto:${escapeHtml(copy.contactEm
  *   `{StoreName} × bizmis · Early Access Invite`
  *
  * All three segments sit on a single centered line: the store name in
- * the lead's resolved accent, `bizmis` in Bizmis primary (linked to
- * `SAFE_EMAIL_DEFAULT_BASE_URL`), and the eyebrow in the same subtle tone
+ * the lead's resolved accent, `bizmis` in Bizmis primary (linked to the
+ * marketing site with `ref=<lead id>`), and the eyebrow in the same subtle tone
  * as the × / · separators. Wraps naturally if the store
  * name is long enough to exceed the card's content width.
  */
-function buildEarlyAccessTitleHtml(storeName: string, storeAccent: string): string {
+function buildEarlyAccessTitleHtml(
+  storeName: string,
+  storeAccent: string,
+  bizmisInviteSiteUrl: string,
+): string {
   const c = EARLY_ACCESS_EMAIL_COPY;
   const baseTextStyle =
     `font-family:${SYSTEM_FONT_STACK};font-size:22px;font-weight:700;line-height:1.3;letter-spacing:-0.005em;`;
@@ -259,7 +276,7 @@ function buildEarlyAccessTitleHtml(storeName: string, storeAccent: string): stri
   return `<p style="margin:0;text-align:center;${baseTextStyle}">
 <span style="color:${storeAccent};">${storeName}</span>
 <span style="${separatorStyle}">&nbsp;${escapeHtml(c.inviteTitleBrandLeadSeparator)}&nbsp;</span>
-<a href="${escapeAttr(SAFE_EMAIL_DEFAULT_BASE_URL)}" target="_blank" rel="noopener noreferrer" style="${baseTextStyle}color:${BIZMIS_PRIMARY_HEX};text-decoration:none;">${escapeHtml(c.inviteTitleBrandLead)}</a>
+<a href="${escapeAttr(bizmisInviteSiteUrl)}" target="_blank" rel="noopener noreferrer" style="${baseTextStyle}color:${BIZMIS_PRIMARY_HEX};text-decoration:none;">${escapeHtml(c.inviteTitleBrandLead)}</a>
 <span style="${separatorStyle}">&nbsp;${escapeHtml(c.inviteTitleEyebrowSeparator)}&nbsp;</span>
 <span style="${eyebrowStyle}">${escapeHtml(c.inviteTitleEyebrow)}</span>
 </p>`;
@@ -380,7 +397,7 @@ function renderPlainText(lead: LeadEarlyAccessData): string {
     "",
     `Questions? Just reply to this email (${c.contactEmail}).`,
     "",
-    "bizmis.ai",
+    buildInviteBizmisSiteUrl(lead.id),
   ].join("\n");
 }
 

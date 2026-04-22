@@ -24,10 +24,10 @@ import {
   BIZMIS_PRIMARY_HEX,
   BIZMIS_WARM_BG_HEX,
 } from "@/lib/bizmisBrandColors";
+import { buildInviteBizmisSiteUrl } from "@/lib/leadEarlyAccessEmailHtmlSafe";
 
 const BIZMIS_LOGO_WHITE = "/images/bizmis-logo-white-transparent.png";
 const SHOPIFY_MARK_WHITE = "/images/shopify-mark-white.png";
-const BIZMIS_URL = "https://www.bizmis.ai";
 
 /** Native 560×120 overlay; regenerate with `node scripts/generate-email-banner-noise-png.mjs`. */
 const EMAIL_BANNER_NOISE_GRAIN = "/images/early-access-banner-noise-grain.png";
@@ -548,7 +548,7 @@ export function buildEmailInviteBannerHtml(
                       ${storeLogoHtml}
                     </td>
                     <td width="50%" valign="middle" style="padding:0 ${EMAIL_BANNER_PAD_X_PX}px 0 14px;text-align:right;background:transparent;">
-                      <a href="${BIZMIS_URL}" target="_blank" style="text-decoration:none;">
+                      <a href="${escapeHtml(buildInviteBizmisSiteUrl(lead.id))}" target="_blank" style="text-decoration:none;">
                         <table role="presentation" cellpadding="0" cellspacing="0" border="0" align="right">
                           <tr>
                             <td style="vertical-align:middle;">
@@ -1396,6 +1396,8 @@ export function buildLeadEarlyAccessEmailHtml(
   const domain = escapeHtml(lead.storeDomain);
   const { storeCap, shopifyAppUrl } = EARLY_ACCESS_TERMS;
   const copy = EARLY_ACCESS_EMAIL_COPY;
+  const bizmisInviteSiteUrl = buildInviteBizmisSiteUrl(lead.id);
+  const bizmisInviteHrefEsc = escapeHtml(bizmisInviteSiteUrl);
 
   const bizmisLogoUrl = absImg(BIZMIS_LOGO_WHITE);
   const shopifyMarkUrl = absImg(SHOPIFY_MARK_WHITE);
@@ -1727,7 +1729,7 @@ export function buildLeadEarlyAccessEmailHtml(
             <p style="margin:0 0 6px 0;${BODY}font-size:10px;line-height:1.55;color:${BIZMIS_MUTED_LIGHT_HEX};">
               Questions? Just reply to this email (<a href="mailto:${escapeHtml(copy.contactEmail)}" style="${BODY}font-size:10px;font-weight:400;color:${BIZMIS_MUTED_FG_HEX};text-decoration:none;">${escapeHtml(copy.contactEmail)}</a>).
             </p>
-            <a href="${BIZMIS_URL}" target="_blank" style="${BODY}font-size:10px;font-weight:500;color:${BIZMIS_MUTED_FG_HEX};text-decoration:none;">
+            <a href="${bizmisInviteHrefEsc}" target="_blank" style="${BODY}font-size:10px;font-weight:500;color:${BIZMIS_MUTED_FG_HEX};text-decoration:none;">
               bizmis.ai
             </a>
           </td>
@@ -1768,7 +1770,7 @@ export function buildLeadEarlyAccessEmailHtml(
     copy.proofLine,
     "",
     buildEarlyAccessFooterPlainText(),
-    `${copy.visitUsPrefix} ${BIZMIS_URL}`,
+    `${copy.visitUsPrefix} ${bizmisInviteSiteUrl}`,
   ].join("\n");
 
   return { html, plainText };
