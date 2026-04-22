@@ -2,23 +2,27 @@
 /**
  * Email mockup screenshot pipeline.
  *
- * Captures the two mockup PNGs consumed by the Gmail-safe early access email
- * (`desktop-mockup.png`, `phone-mockup.png`) as isolated, transparent-background
- * renders of the rich email mockup fragments. The dev-only route
- * `/email-renders/:leadId/mockup/:which` renders each mockup alone on a
- * transparent body via the same `buildSalesMockupSceneHtml` /
- * `buildSupportMockupSceneHtml` helpers that feed the rich email, so there's
- * no cropping of surrounding content (no Boost Sales overlay, no email card
- * padding, no hero).
+ * Default output is a single `mockup.png` per lead, containing the rich
+ * email's desktop and phone mockups composed together (phone overlapping
+ * the desktop's top-right corner) on a transparent background. The
+ * isolated desktop and phone mockups remain available behind `--only`
+ * for debugging.
+ *
+ * The dev-only route `/email-renders/:leadId/mockup/:which` renders
+ * each variant alone on a transparent body via the same
+ * `buildSalesMockupSceneHtml` / `buildSupportMockupSceneHtml` helpers
+ * that feed the rich email, so no per-lead manual work is needed.
  *
  * Requires the dev server to be running (usually `npm run dev`). Set
- * `BIZMIS_DEV_URL` if it listens on something other than http://localhost:8080.
+ * `BIZMIS_DEV_URL` if it listens on something other than
+ * http://localhost:8080.
  *
  * Usage:
  *   node scripts/generate-email-compositions.mjs molekule
  *   node scripts/generate-email-compositions.mjs molekule jackery
  *   node scripts/generate-email-compositions.mjs --all
  *   node scripts/generate-email-compositions.mjs molekule --only desktop-mockup
+ *   node scripts/generate-email-compositions.mjs molekule --only phone-mockup
  */
 
 import { existsSync, mkdirSync, readdirSync, writeFileSync } from "node:fs";
@@ -31,24 +35,44 @@ const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const DEV_URL = process.env.BIZMIS_DEV_URL ?? "http://localhost:8080";
 const DEVICE_SCALE_FACTOR = 2;
 /**
- * Soft warning threshold. Images don't count toward Gmail's 102KB HTML clip
- * limit; this only flags a PNG that may be unusually heavy for what it shows.
+ * Soft warning threshold. Images don't count toward Gmail's 102KB HTML
+ * clip limit; this only flags a PNG that may be unusually heavy for what
+ * it shows.
  */
-const MAX_PNG_BYTES = 200 * 1024;
+const MAX_PNG_BYTES = 250 * 1024;
 const NAVIGATION_TIMEOUT_MS = 30_000;
 const POST_LOAD_SETTLE_MS = 500;
 const SELECTOR_TIMEOUT_MS = 10_000;
 
 /**
- * `which` values accepted by the `/email-renders/:leadId/mockup/:which` route,
- * plus the viewport size used when launching Playwright for each variant. The
- * viewport just needs to be large enough to fit the mockup plus its drop
- * shadow padding at 1x CSS density.
+ * Mockup variants accepted by the `/email-renders/:leadId/mockup/:which`
+ * route. `which` maps to the route segment, `outputName` is the PNG
+ * filename (without extension), and the viewport just needs to be
+ * comfortably larger than the rendered frame (including the shadow-safe
+ * padding that MockupRenderPage adds around the mockup).
  */
 const MOCKUPS = {
-  "desktop-mockup": { which: "desktop", cssWidth: 720, cssHeight: 520 },
-  "phone-mockup": { which: "phone", cssWidth: 420, cssHeight: 640 },
+  "mockup-combined": {
+    which: "combined",
+    outputName: "mockup",
+    cssWidth: 880,
+    cssHeight: 680,
+  },
+  "desktop-mockup": {
+    which: "desktop",
+    outputName: "desktop-mockup",
+    cssWidth: 720,
+    cssHeight: 520,
+  },
+  "phone-mockup": {
+    which: "phone",
+    outputName: "phone-mockup",
+    cssWidth: 420,
+    cssHeight: 640,
+  },
 };
+
+const DEFAULT_COMPOSITION_IDS = ["mockup-combined"];
 
 function parseArgs(argv) {
   const args = { leadIds: [], all: false, only: null };
@@ -95,7 +119,7 @@ function resolveCompositionIds(args) {
     }
     return [args.only];
   }
-  return validIds;
+  return DEFAULT_COMPOSITION_IDS;
 }
 
 async function assertDevServerUp() {
@@ -116,10 +140,10 @@ async function optimizePng(inputBuffer) {
   return optimized.length < inputBuffer.length ? optimized : inputBuffer;
 }
 
-function outputPathFor(leadId, compositionId) {
+function outputPathFor(leadId, outputName) {
   const outDir = join(ROOT, "public/invite-cards/leads", leadId, "email");
   if (!existsSync(outDir)) mkdirSync(outDir, { recursive: true });
-  return join(outDir, `${compositionId}.png`);
+  return join(outDir, `${outputName}.png`);
 }
 
 function logResult(compositionId, bytes, outPath) {
@@ -130,7 +154,7 @@ function logResult(compositionId, bytes, outPath) {
 }
 
 async function captureMockup(browser, leadId, compositionId) {
-  const { which, cssWidth, cssHeight } = MOCKUPS[compositionId];
+  const { which, outputName, cssWidth, cssHeight } = MOCKUPS[compositionId];
   const context = await browser.newContext({
     viewport: { width: cssWidth, height: cssHeight },
     deviceScaleFactor: DEVICE_SCALE_FACTOR,
@@ -147,7 +171,7 @@ async function captureMockup(browser, leadId, compositionId) {
   await context.close();
 
   const optimized = await optimizePng(rawPng);
-  const outPath = outputPathFor(leadId, compositionId);
+  const outPath = outputPathFor(leadId, outputName);
   writeFileSync(outPath, optimized);
   logResult(compositionId, optimized.length, outPath);
   return optimized.length;

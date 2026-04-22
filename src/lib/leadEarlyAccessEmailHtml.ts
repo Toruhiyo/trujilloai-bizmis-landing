@@ -83,7 +83,7 @@ const PHONE_BODY_RADIUS = 25;
 const PHONE_HOME_BAR_W = 56;
 const PHONE_HOME_BAR_H = 3;
 const PHONE_SCREEN_W = PHONE_FRAME_W - PHONE_BEZEL_PX * 2;
-const PHONE_AVATAR_W = 228;
+const PHONE_AVATAR_W = 288;
 /** Centers a wider-than-clip img: `margin: auto` fails when the child is wider than the overflow box. */
 const PHONE_AVATAR_CLIP_MARGIN_LEFT_PX = Math.round(
   (PHONE_SCREEN_W - PHONE_AVATAR_W) / 2,
@@ -99,25 +99,26 @@ const PHONE_AVATAR_GLOW_PLATEAU_PCT = 0.65;
 const PHONE_SUPPORT_CAPTION_INSET_PX = 12;
 
 /** Bizmis mark inline at start of clerk captions (emoji-like) — masked white logo tinted with caption accent (contrast-corrected, same as bold caption text). */
-const MONTAGE_SALES_BIZMIS_CAPTION_ICON_PX = 16;
+const MONTAGE_SALES_BIZMIS_CAPTION_ICON_PX = 20;
 
 const MONTAGE_CHROME_BG_HEX = "#F7F7F7";
 const MONTAGE_CHROME_URL_HEX = "#A3A3A3";
-const MONTAGE_CHROME_TRAFFIC_DOT_PX = 8;
-const MONTAGE_CHROME_TRAFFIC_GAP_PX = 2;
-const MONTAGE_CHROME_URL_ROW_HEIGHT_PX = 15;
-const MONTAGE_CHROME_BAR_PADDING_Y_PX = 5;
+const MONTAGE_CHROME_TRAFFIC_DOT_PX = 10;
+const MONTAGE_CHROME_TRAFFIC_GAP_PX = 3;
+const MONTAGE_CHROME_URL_ROW_HEIGHT_PX = 19;
+const MONTAGE_CHROME_BAR_PADDING_Y_PX = 6;
+const MONTAGE_CHROME_URL_FONT_PX = 9;
 type WaveformDims = { img: string; w: number; h: number };
 
 const WAVEFORM_DESKTOP: WaveformDims = {
   img: "/images/early-access-montage-waveform.png",
-  w: 384,
-  h: 82,
+  w: 448,
+  h: 96,
 };
 const WAVEFORM_PHONE: WaveformDims = {
   img: "/images/early-access-montage-waveform-phone.png",
-  w: 192,
-  h: 74,
+  w: 224,
+  h: 86,
 };
 const BIZMIS_FOREGROUND_HEX = "#32281B";
 const BIZMIS_MUTED_LIGHT_HEX = "#B5A48E";
@@ -149,10 +150,10 @@ function montageSalesCueSingleLine(s: string): string {
   return s.replace(/\s+/g, " ").trim();
 }
 
-const MONTAGE_SALES_CUE_BASE_FONT_PX = 11;
+const MONTAGE_SALES_CUE_BASE_FONT_PX = 13;
 /** Matches desktop montage shopper cue (`montageSalesCueFontPx(..., 10)`). */
-const MONTAGE_CUSTOMER_CUE_BASE_FONT_PX = 10;
-const MONTAGE_SALES_CUE_MIN_FONT_PX = 8.5;
+const MONTAGE_CUSTOMER_CUE_BASE_FONT_PX = 12;
+const MONTAGE_SALES_CUE_MIN_FONT_PX = 10;
 const MONTAGE_SALES_CUE_CHARS_AT_BASE = 70;
 
 function montageSalesCueFontPx(text: string, basePx = MONTAGE_SALES_CUE_BASE_FONT_PX): number {
@@ -413,6 +414,67 @@ function buildBizmisCaptionIconHtml(captionAccentHex: string, sizePx: number): s
 
 const HEADING = "font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,Helvetica,sans-serif;";
 const BODY = "font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,Helvetica,sans-serif;";
+
+/**
+ * Full-width banner strip used at the top of the rich invite card and
+ * baked as a backdrop into the mockup composition PNG consumed by the
+ * Gmail-safe email.
+ *
+ * Renders a `lead → white → Bizmis` gradient with noise grain, a
+ * blended waveform overlay, the store logo on the left, the Bizmis
+ * wordmark on the right, a bottom scrim and the "EARLY ACCESS" badge.
+ * Returns a full `<table>` fragment (no surrounding `<tr><td>`) so it
+ * can be dropped either into an email card row or into a
+ * `dangerouslySetInnerHTML` container on the render page.
+ */
+export function buildEmailInviteBannerHtml(
+  lead: LeadEarlyAccessData,
+  options: { heightPx?: number } = {},
+): string {
+  const heightPx = options.heightPx ?? EMAIL_BANNER_H_PX;
+  const banner = lead.bannerColor?.trim() || lead.primaryColor;
+  const storeLogoHtml = storeLogoEmailMarkup(lead);
+  const bizmisLogoUrl = absImg(BIZMIS_LOGO_WHITE);
+  const noiseGrainUrl = absImg(EMAIL_BANNER_NOISE_GRAIN);
+  const bannerWaveformUrl = absImg(EMAIL_BANNER_WAVEFORM);
+  const { storeCap } = EARLY_ACCESS_TERMS;
+  const copy = EARLY_ACCESS_EMAIL_COPY;
+
+  return `<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%">
+            <tr>
+              <td height="${heightPx}" style="${buildEmailBannerStripCellStyle(banner, noiseGrainUrl)}height:${heightPx}px;border-bottom:1px solid ${BIZMIS_BORDER_HEX};">
+                ${buildEmailBannerWaveformOverlayHtml(bannerWaveformUrl)}
+                <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" height="${heightPx}" style="position:relative;z-index:2;border-collapse:collapse;height:${heightPx}px;">
+                  <tr>
+                    <td width="50%" valign="middle" style="padding:0 14px 0 ${EMAIL_BANNER_PAD_X_PX}px;background:transparent;">
+                      ${storeLogoHtml}
+                    </td>
+                    <td width="50%" valign="middle" style="padding:0 ${EMAIL_BANNER_PAD_X_PX}px 0 14px;text-align:right;background:transparent;">
+                      <a href="${BIZMIS_URL}" target="_blank" style="text-decoration:none;">
+                        <table role="presentation" cellpadding="0" cellspacing="0" border="0" align="right">
+                          <tr>
+                            <td style="vertical-align:middle;">
+                              <img src="${bizmisLogoUrl}" alt="Bizmis" width="${EMAIL_BANNER_BIZMIS_ICON_PX}" height="${EMAIL_BANNER_BIZMIS_ICON_PX}" style="display:block;width:${EMAIL_BANNER_BIZMIS_ICON_PX}px;height:auto;border:0;" />
+                            </td>
+                            <td style="vertical-align:middle;padding-left:8px;${HEADING}font-size:${EMAIL_BANNER_BIZMIS_WORDMARK_FONT_PX}px;font-weight:700;color:#ffffff;letter-spacing:-0.02em;">
+                              bizmis
+                            </td>
+                          </tr>
+                        </table>
+                      </a>
+                    </td>
+                  </tr>
+                </table>
+                <!--[if !mso]><!--><div aria-hidden="true" style="position:absolute;left:0;right:0;bottom:0;height:${EMAIL_BANNER_SCRIM_H_PCT}%;z-index:2;pointer-events:none;background:linear-gradient(to bottom,transparent 0%,rgba(0,0,0,0.18) 100%);"></div><!--<![endif]-->
+                <!--[if !mso]><!--><div style="position:absolute;left:0;right:0;bottom:${EMAIL_BANNER_BADGE_PAD_BOTTOM_PX}px;z-index:3;text-align:center;pointer-events:none;">
+                  <p style="margin:0;${BODY}font-size:${EMAIL_BANNER_BADGE_FONT_PX}px;line-height:1.35;color:#ffffff;">
+                    <span style="font-weight:700;letter-spacing:0.08em;text-transform:uppercase;">${escapeHtml(copy.bannerBadgeTitle)}</span><span style="font-weight:400;"> &nbsp;&middot;&nbsp; ${escapeHtml(copy.bannerBadgeLimitPrefix)} ${storeCap} ${escapeHtml(copy.bannerBadgeLimitSuffix)}</span>
+                  </p>
+                </div><!--<![endif]-->
+              </td>
+            </tr>
+          </table>`;
+}
 
 type BenefitCardTitleAlign = "left" | "center";
 
@@ -746,11 +808,11 @@ function emailMontageWatermarkWaveformHtml(
   return `<div role="presentation" style="display:block;margin:0 auto;width:100%;max-width:${w}px;height:${h}px;background-color:rgba(${r},${g},${b},${alpha});-webkit-mask-image:url('${src}');mask-image:url('${src}');-webkit-mask-size:100% ${h}px;mask-size:100% ${h}px;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;-webkit-mask-position:center bottom;mask-position:center bottom;${flip}"></div>`;
 }
 
-const REGULAR_CARD_W = 105;
-const REGULAR_IMG_W = 62;
-const REGULAR_IMG_H = 62;
-const REC_CARD_MAX_W = 132;
-const REC_IMG_W = 94;
+const REGULAR_CARD_W = 122;
+const REGULAR_IMG_W = 76;
+const REGULAR_IMG_H = 76;
+const REC_CARD_MAX_W = 152;
+const REC_IMG_W = 112;
 
 function buildMontageClerkCueInnerHtml(
   customCue: string | null,
@@ -802,35 +864,36 @@ function buildMontageProductCardHtml(
 
   if (isRecommended) {
     return `<div style="display:inline-block;max-width:${REC_CARD_MAX_W}px;border-radius:14px;background:rgba(255,255,255,0.88);-webkit-backdrop-filter:blur(24px);backdrop-filter:blur(24px);border:1.5px solid ${palette.hex};box-shadow:0 0 0 3px rgba(${uir},${uig},${uib},0.12),0 6px 20px -4px rgba(${uir},${uig},${uib},0.18);overflow:hidden;">
-              <div style="background-color:${palette.hex};padding:6px 0;text-align:center;line-height:1;display:flex;align-items:center;justify-content:center;">
-                <span style="${BODY}font-size:8px;font-weight:700;color:${palette.uiBadgeTextColor};letter-spacing:0.06em;text-transform:uppercase;vertical-align:middle;">&#9733; Recommended</span>
+              <div style="background-color:${palette.hex};padding:7px 0;text-align:center;line-height:1;display:flex;align-items:center;justify-content:center;">
+                <span style="${BODY}font-size:10px;font-weight:700;color:${palette.uiBadgeTextColor};letter-spacing:0.06em;text-transform:uppercase;vertical-align:middle;">&#9733; Recommended</span>
               </div>
-              <div style="padding:8px 8px 6px 8px;text-align:center;">
+              <div style="padding:10px 10px 8px 10px;text-align:center;">
                 <img src="${imgUrl}" alt="" width="${REC_IMG_W}" style="display:block;margin:0 auto;max-width:${REC_IMG_W}px;height:auto;border:0;border-radius:8px;" />
               </div>
-              <div style="padding:4px 10px 10px 10px;text-align:center;">
-                <p style="margin:0;${BODY}font-size:9px;font-weight:700;color:${BIZMIS_FOREGROUND_HEX};line-height:1.3;">${escapeHtml(product.title)}</p>
-                <p style="margin:3px 0 0;${BODY}font-size:8px;font-weight:600;color:${palette.hex};">${escapeHtml(product.price)}</p>
+              <div style="padding:4px 12px 12px 12px;text-align:center;">
+                <p style="margin:0;${BODY}font-size:11px;font-weight:700;color:${BIZMIS_FOREGROUND_HEX};line-height:1.3;">${escapeHtml(product.title)}</p>
+                <p style="margin:4px 0 0;${BODY}font-size:10px;font-weight:600;color:${palette.hex};">${escapeHtml(product.price)}</p>
               </div>
             </div>`;
   }
 
   return `<div style="display:inline-block;width:${REGULAR_CARD_W}px;border-radius:12px;background:rgba(255,255,255,0.82);-webkit-backdrop-filter:blur(24px);backdrop-filter:blur(24px);border:1px solid rgba(240,224,208,0.5);overflow:hidden;">
-              <div style="padding:6px 6px 4px 6px;text-align:center;height:${REGULAR_IMG_H + 10}px;display:flex;align-items:center;justify-content:center;">
+              <div style="padding:8px 8px 6px 8px;text-align:center;height:${REGULAR_IMG_H + 12}px;display:flex;align-items:center;justify-content:center;">
                 <img src="${imgUrl}" alt="" width="${REGULAR_IMG_W}" style="display:block;margin:0 auto;max-width:${REGULAR_IMG_W}px;max-height:${REGULAR_IMG_H}px;height:auto;border:0;border-radius:8px;object-fit:contain;" />
               </div>
-              <div style="padding:0 8px 6px 8px;text-align:center;">
-                <p style="margin:0;${BODY}font-size:8px;font-weight:600;color:${BIZMIS_FOREGROUND_HEX};line-height:1.2;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${escapeHtml(product.title)}</p>
-                <p style="margin:1px 0 0;${BODY}font-size:7.5px;color:${BIZMIS_MUTED_LIGHT_HEX};">${escapeHtml(product.price)}</p>
+              <div style="padding:0 10px 8px 10px;text-align:center;">
+                <p style="margin:0;${BODY}font-size:10px;font-weight:600;color:${BIZMIS_FOREGROUND_HEX};line-height:1.2;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${escapeHtml(product.title)}</p>
+                <p style="margin:2px 0 0;${BODY}font-size:9px;color:${BIZMIS_MUTED_LIGHT_HEX};">${escapeHtml(product.price)}</p>
               </div>
             </div>`;
 }
 
 const CS_POLICY_FALLBACK = "Warranty Policy";
-const CS_POLICY_ICON_PX = 9;
+const CS_POLICY_ICON_PX = 12;
 const CS_POLICY_ICON_STROKE = 3;
 /** Inner row height: label line-height matches so text centers in the pill. */
-const CS_POLICY_CHIP_ROW_H = 14;
+const CS_POLICY_CHIP_ROW_H = 18;
+const CS_POLICY_CHIP_FONT_PX = 10;
 const CS_SHOPPER_FALLBACK = "Is my order covered under warranty?";
 const CS_CLERK_FALLBACK = "Yes, your unit has a full 1-year warranty.";
 
@@ -916,7 +979,7 @@ export function buildSalesMockupSceneHtml(lead: LeadEarlyAccessData): string {
             <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="background-color:#ffffff;border-radius:9999px;">
               <tr>
                 <td style="padding:0 8px;height:${MONTAGE_CHROME_URL_ROW_HEIGHT_PX}px;vertical-align:middle;line-height:${MONTAGE_CHROME_URL_ROW_HEIGHT_PX}px;">
-                  <span style="${BODY}font-size:7px;color:${MONTAGE_CHROME_URL_HEX};line-height:${MONTAGE_CHROME_URL_ROW_HEIGHT_PX}px;">${domain}</span>
+                  <span style="${BODY}font-size:${MONTAGE_CHROME_URL_FONT_PX}px;color:${MONTAGE_CHROME_URL_HEX};line-height:${MONTAGE_CHROME_URL_ROW_HEIGHT_PX}px;">${domain}</span>
                 </td>
               </tr>
             </table>
@@ -933,7 +996,7 @@ export function buildSalesMockupSceneHtml(lead: LeadEarlyAccessData): string {
         <div style="position:absolute;left:50%;top:calc(50% + ${MONTAGE_COMPOSITION_SHIFT_PX}px);width:160%;height:110%;transform:translate(-50%,-50%) rotate(${glowTiltDeg}deg);border-radius:50%;background:${montageWhiteGlow};-webkit-filter:blur(60px);filter:blur(60px);z-index:0;pointer-events:none;"></div>
 
         <div style="position:absolute;top:${MONTAGE_VERTICAL_SPREAD_PX + MONTAGE_COMPOSITION_SHIFT_PX}px;right:0;bottom:82px;z-index:2;display:flex;align-items:center;justify-content:center;">
-          <img src="${salesAvatarUrl}" alt="Bizmis store clerk" width="280" style="display:block;max-width:280px;width:100%;height:auto;border:0;border-radius:16px;filter:drop-shadow(0 10px 32px rgba(50,40,27,0.16));" />
+          <img src="${salesAvatarUrl}" alt="Bizmis store clerk" width="320" style="display:block;max-width:320px;width:100%;height:auto;border:0;border-radius:16px;filter:drop-shadow(0 10px 32px rgba(50,40,27,0.16));" />
         </div>
 
         <div style="position:absolute;top:calc(50% + ${MONTAGE_COMPOSITION_SHIFT_PX - MONTAGE_VERTICAL_SPREAD_PX}px);left:2%;transform:translateY(-50%);z-index:3;width:52%;">
@@ -996,7 +1059,7 @@ export function buildSalesMockupSceneHtml(lead: LeadEarlyAccessData): string {
       <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%">
         <tr>
           <td width="100%" align="center" style="padding:0;text-align:center;">
-            <img src="${salesAvatarUrl}" alt="Bizmis store clerk" width="260" style="display:block;margin:0 auto;max-width:260px;height:auto;border:0;" />
+            <img src="${salesAvatarUrl}" alt="Bizmis store clerk" width="296" style="display:block;margin:0 auto;max-width:296px;height:auto;border:0;" />
           </td>
         </tr>
       </table>
@@ -1013,7 +1076,11 @@ export function buildSalesMockupSceneHtml(lead: LeadEarlyAccessData): string {
  * rich email plus the Gmail-safe email's hosted PNG (isolated on transparent
  * bg via the Playwright pipeline).
  */
-export function buildSupportMockupSceneHtml(lead: LeadEarlyAccessData): string {
+export function buildSupportMockupSceneHtml(
+  lead: LeadEarlyAccessData,
+  options: { compact?: boolean } = {},
+): string {
+  const compact = options.compact === true;
   const palette = deriveMontagePalette(lead.primaryColor, lead.textColor);
   const [muiR, muiG, muiB] = palette.uiRgb;
   const montageSceneBg = montageSceneBgHex(muiR, muiG, muiB);
@@ -1022,6 +1089,23 @@ export function buildSupportMockupSceneHtml(lead: LeadEarlyAccessData): string {
   const avatarUrl = absImg(lead.supportAvatarImagePath || lead.salesAvatarImagePath || BIZMIS_SALES_AVATAR_FALLBACK);
   const [pr, pg, pb] = palette.uiRgb;
   const pw = WAVEFORM_PHONE;
+
+  /**
+   * Compact overrides trim the phone's intrinsic height without any
+   * transform (preserves aspect ratio of every internal element).
+   * Used by the combined email mockup composition where the phone
+   * reads slightly shorter than the desktop while keeping the same
+   * width. The rich email keeps the default (non-compact) values.
+   */
+  const avatarW = compact ? 252 : PHONE_AVATAR_W;
+  const avatarClipMarginLeftPx = Math.round((PHONE_SCREEN_W - avatarW) / 2);
+  const topWaveRowMinH = compact ? Math.round(pw.h * 0.75) : pw.h;
+  const bottomWaveRowMinH = compact ? Math.round(pw.h * 0.45) : pw.h;
+  const shopperPadTopPx = compact ? 4 : 8;
+  const shopperPadBottomPx = compact ? 0 : 4;
+  const avatarRowPadYPx = compact ? 0 : 4;
+  const clerkPadTopPx = compact ? 0 : 6;
+  const clerkPadBottomPx = compact ? 4 : 10;
   const avatarCircleGlow = montageWhiteGlowCss("circle", {
     plateauPct: PHONE_AVATAR_GLOW_PLATEAU_PCT,
     alphaPeak: MONTAGE_WHITE_GLOW_ALPHA_PEAK,
@@ -1055,7 +1139,7 @@ export function buildSupportMockupSceneHtml(lead: LeadEarlyAccessData): string {
   const policyChipAccent = palette.captionAccent;
   const [policyChipR, policyChipG, policyChipB] = hexToRgb(policyChipAccent);
 
-  const chipLabelStyle = `${BODY}font-size:8px;font-weight:700;letter-spacing:0.02em;line-height:${CS_POLICY_CHIP_ROW_H}px;mso-line-height-rule:exactly;color:${policyChipAccent};`;
+  const chipLabelStyle = `${BODY}font-size:${CS_POLICY_CHIP_FONT_PX}px;font-weight:700;letter-spacing:0.02em;line-height:${CS_POLICY_CHIP_ROW_H}px;mso-line-height-rule:exactly;color:${policyChipAccent};`;
   const policyIconHtml = buildMaskedIconHtml(
     absImg(EMAIL_ICON_POLICY_FILECHECK),
     CS_POLICY_ICON_PX,
@@ -1063,7 +1147,7 @@ export function buildSupportMockupSceneHtml(lead: LeadEarlyAccessData): string {
     "block",
     "baseline",
   );
-  const lookupChipHtml = `<table role="presentation" cellpadding="0" cellspacing="0" border="0" style="display:inline-table;border-radius:9999px;background:rgba(${policyChipR},${policyChipG},${policyChipB},0.10);border:1px solid ${policyChipAccent};padding:3px 7px 3px 6px;">
+  const lookupChipHtml = `<table role="presentation" cellpadding="0" cellspacing="0" border="0" style="display:inline-table;border-collapse:separate;border-spacing:0;border-radius:9999px;background:rgba(${policyChipR},${policyChipG},${policyChipB},0.10);border:1px solid ${policyChipAccent};padding:4px 10px 4px 8px;">
     <tr>
       <td height="${CS_POLICY_CHIP_ROW_H}" style="height:${CS_POLICY_CHIP_ROW_H}px;vertical-align:middle;padding:0 4px 0 0;line-height:${CS_POLICY_CHIP_ROW_H}px;mso-line-height-rule:exactly;">${policyIconHtml}</td>
       <td height="${CS_POLICY_CHIP_ROW_H}" style="height:${CS_POLICY_CHIP_ROW_H}px;vertical-align:middle;padding:0;line-height:${CS_POLICY_CHIP_ROW_H}px;mso-line-height-rule:exactly;"><span style="${chipLabelStyle}">${escapeHtml(policyName)}</span></td>
@@ -1081,39 +1165,39 @@ export function buildSupportMockupSceneHtml(lead: LeadEarlyAccessData): string {
 
                 <div style="position:relative;z-index:1;">
 
-                  <div style="position:relative;min-height:${pw.h}px;overflow:hidden;">
+                  <div style="position:relative;min-height:${topWaveRowMinH}px;overflow:hidden;">
                     <div style="position:absolute;left:0;right:0;bottom:0;height:${pw.h}px;-webkit-mask-image:linear-gradient(to right,#000 70%,transparent 100%);mask-image:linear-gradient(to right,#000 70%,transparent 100%);">
                       <div style="text-align:left;line-height:0;font-size:0;padding:0;height:${pw.h}px;overflow:hidden;">
                         ${customerWaveHtml}
                       </div>
                     </div>
-                    <div style="position:relative;z-index:1;padding:8px ${PHONE_SUPPORT_CAPTION_INSET_PX}px 4px ${PHONE_SUPPORT_CAPTION_INSET_PX}px;width:100%;box-sizing:border-box;text-align:left;">
+                    <div style="position:relative;z-index:1;padding:${shopperPadTopPx}px ${PHONE_SUPPORT_CAPTION_INSET_PX}px ${shopperPadBottomPx}px ${PHONE_SUPPORT_CAPTION_INSET_PX}px;width:100%;box-sizing:border-box;text-align:left;">
                       <p style="margin:0;width:100%;text-align:left;${supportCaptionParagraphWrap}">
                         ${shopperHtml}
                       </p>
                     </div>
                   </div>
 
-                  <div style="position:relative;width:100%;padding:4px 0;box-sizing:border-box;">
+                  <div style="position:relative;width:100%;padding:${avatarRowPadYPx}px 0;box-sizing:border-box;">
                     <div aria-hidden="true" style="position:absolute;left:50%;top:50%;width:${PHONE_AVATAR_GLOW_DIAM_PX}px;height:${PHONE_AVATAR_GLOW_DIAM_PX}px;margin-left:${-Math.round(PHONE_AVATAR_GLOW_DIAM_PX / 2)}px;margin-top:${-Math.round(PHONE_AVATAR_GLOW_DIAM_PX / 2)}px;border-radius:50%;background:${avatarCircleGlow};-webkit-filter:blur(${PHONE_AVATAR_GLOW_BLUR_PX}px);filter:blur(${PHONE_AVATAR_GLOW_BLUR_PX}px);z-index:0;pointer-events:none;"></div>
                     <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="width:100%;position:relative;z-index:1;">
                       <tr>
                         <td align="center" width="100%" style="padding:0;margin:0;width:100%;text-align:center;">
                           <div style="overflow:hidden;width:${PHONE_SCREEN_W}px;max-width:100%;margin:0 auto;line-height:0;font-size:0;">
-                            <img src="${avatarUrl}" alt="Bizmis support clerk" width="${PHONE_AVATAR_W}" style="display:block;margin:0;padding:0;margin-left:${PHONE_AVATAR_CLIP_MARGIN_LEFT_PX}px;margin-right:0;max-width:none;width:${PHONE_AVATAR_W}px;height:auto;border:0;border-radius:14px;filter:drop-shadow(0 8px 24px rgba(50,40,27,0.16));" />
+                            <img src="${avatarUrl}" alt="Bizmis support clerk" width="${avatarW}" style="display:block;margin:0;padding:0;margin-left:${avatarClipMarginLeftPx}px;margin-right:0;max-width:none;width:${avatarW}px;height:auto;border:0;border-radius:14px;filter:drop-shadow(0 8px 24px rgba(50,40,27,0.16));" />
                           </div>
                         </td>
                       </tr>
                     </table>
                   </div>
 
-                  <div style="position:relative;min-height:${pw.h}px;overflow:hidden;display:flex;flex-direction:column;justify-content:flex-end;">
+                  <div style="position:relative;min-height:${bottomWaveRowMinH}px;overflow:hidden;display:flex;flex-direction:column;justify-content:flex-end;">
                     <div style="position:absolute;left:0;right:0;bottom:0;height:${pw.h}px;-webkit-mask-image:linear-gradient(to left,#000 70%,transparent 100%);mask-image:linear-gradient(to left,#000 70%,transparent 100%);">
                       <div style="text-align:right;line-height:0;font-size:0;padding:0;height:${pw.h}px;overflow:hidden;">
                         ${clerkWaveHtml}
                       </div>
                     </div>
-                    <div style="position:relative;z-index:1;padding:6px ${PHONE_SUPPORT_CAPTION_INSET_PX}px 10px ${PHONE_SUPPORT_CAPTION_INSET_PX}px;width:100%;box-sizing:border-box;text-align:right;">
+                    <div style="position:relative;z-index:1;padding:${clerkPadTopPx}px ${PHONE_SUPPORT_CAPTION_INSET_PX}px ${clerkPadBottomPx}px ${PHONE_SUPPORT_CAPTION_INSET_PX}px;width:100%;box-sizing:border-box;text-align:right;">
                       <div style="margin:0 0 4px 0;text-align:right;">
                         ${lookupChipHtml}
                       </div>
@@ -1185,18 +1269,14 @@ export function buildLeadEarlyAccessEmailHtml(
   lead: LeadEarlyAccessData,
 ): { html: string; plainText: string } {
   const pri = lead.primaryColor;
-  const banner = lead.bannerColor?.trim() || pri;
   const storeNameColor = escapeHtml(resolveStoreNameTextColor(lead));
   const store = escapeHtml(lead.storeName);
   const domain = escapeHtml(lead.storeDomain);
   const { storeCap, shopifyAppUrl } = EARLY_ACCESS_TERMS;
   const copy = EARLY_ACCESS_EMAIL_COPY;
 
-  const storeLogoHtml = storeLogoEmailMarkup(lead);
   const bizmisLogoUrl = absImg(BIZMIS_LOGO_WHITE);
   const shopifyMarkUrl = absImg(SHOPIFY_MARK_WHITE);
-  const noiseGrainUrl = absImg(EMAIL_BANNER_NOISE_GRAIN);
-  const bannerWaveformUrl = absImg(EMAIL_BANNER_WAVEFORM);
   const recProductTitle = lead.salesProducts[lead.salesRecommendedIndex].title;
   const chipStripIconUrls = [
     absImg(EARLY_ACCESS_CHIP_GIFT_MUTED),
@@ -1321,40 +1401,7 @@ export function buildLeadEarlyAccessEmailHtml(
         <!-- Banner: full-width lead→Bizmis gradient + grain; inner table for logos (no ×) -->
         <tr>
           <td style="padding:0;">
-            <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%">
-              <tr>
-                <td height="${EMAIL_BANNER_H_PX}" style="${buildEmailBannerStripCellStyle(banner, noiseGrainUrl)}height:${EMAIL_BANNER_H_PX}px;border-bottom:1px solid ${BIZMIS_BORDER_HEX};">
-                  ${buildEmailBannerWaveformOverlayHtml(bannerWaveformUrl)}
-                  <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" height="${EMAIL_BANNER_H_PX}" style="position:relative;z-index:2;border-collapse:collapse;height:${EMAIL_BANNER_H_PX}px;">
-                    <tr>
-                      <td width="50%" valign="middle" style="padding:0 14px 0 ${EMAIL_BANNER_PAD_X_PX}px;background:transparent;">
-                        ${storeLogoHtml}
-                      </td>
-                      <td width="50%" valign="middle" style="padding:0 ${EMAIL_BANNER_PAD_X_PX}px 0 14px;text-align:right;background:transparent;">
-                        <a href="${BIZMIS_URL}" target="_blank" style="text-decoration:none;">
-                          <table role="presentation" cellpadding="0" cellspacing="0" border="0" align="right">
-                            <tr>
-                              <td style="vertical-align:middle;">
-                                <img src="${bizmisLogoUrl}" alt="Bizmis" width="${EMAIL_BANNER_BIZMIS_ICON_PX}" height="${EMAIL_BANNER_BIZMIS_ICON_PX}" style="display:block;width:${EMAIL_BANNER_BIZMIS_ICON_PX}px;height:auto;border:0;" />
-                              </td>
-                              <td style="vertical-align:middle;padding-left:8px;${HEADING}font-size:${EMAIL_BANNER_BIZMIS_WORDMARK_FONT_PX}px;font-weight:700;color:#ffffff;letter-spacing:-0.02em;">
-                                bizmis
-                              </td>
-                            </tr>
-                          </table>
-                        </a>
-                      </td>
-                    </tr>
-                  </table>
-                  <!--[if !mso]><!--><div aria-hidden="true" style="position:absolute;left:0;right:0;bottom:0;height:${EMAIL_BANNER_SCRIM_H_PCT}%;z-index:2;pointer-events:none;background:linear-gradient(to bottom,transparent 0%,rgba(0,0,0,0.18) 100%);"></div><!--<![endif]-->
-                  <!--[if !mso]><!--><div style="position:absolute;left:0;right:0;bottom:${EMAIL_BANNER_BADGE_PAD_BOTTOM_PX}px;z-index:3;text-align:center;pointer-events:none;">
-                    <p style="margin:0;${BODY}font-size:${EMAIL_BANNER_BADGE_FONT_PX}px;line-height:1.35;color:#ffffff;">
-                      <span style="font-weight:700;letter-spacing:0.08em;text-transform:uppercase;">${escapeHtml(copy.bannerBadgeTitle)}</span><span style="font-weight:400;"> &nbsp;&middot;&nbsp; ${escapeHtml(copy.bannerBadgeLimitPrefix)} ${storeCap} ${escapeHtml(copy.bannerBadgeLimitSuffix)}</span>
-                    </p>
-                  </div><!--<![endif]-->
-                </td>
-              </tr>
-            </table>
+            ${buildEmailInviteBannerHtml(lead)}
           </td>
         </tr>
 
