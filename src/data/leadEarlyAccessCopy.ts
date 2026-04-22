@@ -91,7 +91,7 @@ export const EARLY_ACCESS_EMAIL_COPY = {
   bannerBadgeLimitPrefix: "Limited to the first",
   bannerBadgeLimitSuffix: "stores",
   /** Signature block shown at the end of the invite body (above the footer). */
-  signatureClosing: "Cheers,",
+  signatureClosing: "Looking forward,",
   signatureName: "Oriol Trujillo",
   signatureRoleBeforeBizmis: "Founder of ",
   signatureRoleBizmisWord: "Bizmis",
