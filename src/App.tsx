@@ -15,6 +15,7 @@ import ShopifyDeck from "./pages/slides/ShopifyDeck";
 import AdminProtectedRoute from "./components/admin/AdminProtectedRoute";
 import InviteCardsIndex from "./pages/admin/InviteCardsIndex";
 import EarlyAccessCardPage from "./pages/admin/EarlyAccessCardPage";
+import EmailCompositionRenderPage from "./pages/email-renders/EmailCompositionRenderPage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -42,6 +43,8 @@ const App = () => (
               <Route path="early-access/:leadId" element={<EarlyAccessCardPage />} />
             </Route>
           </Route>
+          {/* Email composition render targets (used by the Playwright screenshot pipeline). */}
+          <Route path="email-renders/:leadId/:composition" element={<EmailCompositionRenderPage />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>

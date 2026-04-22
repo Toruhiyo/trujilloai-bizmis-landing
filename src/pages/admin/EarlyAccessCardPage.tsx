@@ -1,11 +1,22 @@
 import { useCallback, useMemo, useRef, useState } from "react";
 import { Link, useParams } from "react-router-dom";
-import { ExternalLink, Copy, Check } from "lucide-react";
+import { AlertTriangle, Check, Copy, ExternalLink } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { getLeadById } from "@/data/leads";
-import { buildLeadEarlyAccessEmailHtml, copyLeadEarlyAccessHtmlSource } from "@/lib/leadEarlyAccessEmailHtml";
+import {
+  buildLeadEarlyAccessEmailHtml,
+  copyLeadEarlyAccessHtmlSource,
+} from "@/lib/leadEarlyAccessEmailHtml";
+import {
+  buildLeadEarlyAccessEmailHtmlSafe,
+  copyLeadEarlyAccessSafeHtmlSource,
+  SAFE_EMAIL_MAX_BYTES,
+} from "@/lib/leadEarlyAccessEmailHtmlSafe";
 import NotFound from "@/pages/NotFound";
+
+type EmailVariant = "rich" | "safe";
 
 function formatTag(raw: string): string {
   return raw.replace(/_/g, " ");
@@ -16,29 +27,55 @@ function formatBytes(bytes: number): string {
   return `${(bytes / 1024).toFixed(1)} KB`;
 }
 
+function sizeBadgeClass(bytes: number): string {
+  if (bytes > SAFE_EMAIL_MAX_BYTES) return "bg-destructive/10 text-destructive";
+  if (bytes > 50_000) return "bg-amber-100 text-amber-800";
+  return "bg-emerald-100 text-emerald-800";
+}
+
 const EarlyAccessCardPage = () => {
   const { leadId } = useParams<{ leadId: string }>();
   const lead = leadId ? getLeadById(leadId) : undefined;
+  const [variant, setVariant] = useState<EmailVariant>("rich");
   const [copying, setCopying] = useState(false);
   const [copied, setCopied] = useState(false);
-  const iframeRef = useRef<HTMLIFrameElement>(null);
-  const [iframeHeight, setIframeHeight] = useState(0);
+  const richIframeRef = useRef<HTMLIFrameElement>(null);
+  const safeIframeRef = useRef<HTMLIFrameElement>(null);
+  const [richIframeHeight, setRichIframeHeight] = useState(0);
+  const [safeIframeHeight, setSafeIframeHeight] = useState(0);
 
-  const emailData = useMemo(() => {
+  const richEmail = useMemo(() => {
     if (!lead) return null;
     return buildLeadEarlyAccessEmailHtml(lead);
   }, [lead]);
 
-  const htmlSizeBytes = useMemo(() => {
-    if (!emailData) return 0;
-    return new TextEncoder().encode(emailData.html).byteLength;
-  }, [emailData]);
+  const richHtmlSizeBytes = useMemo(() => {
+    if (!richEmail) return 0;
+    return new TextEncoder().encode(richEmail.html).byteLength;
+  }, [richEmail]);
 
-  const onIframeLoad = useCallback(() => {
-    const doc = iframeRef.current?.contentDocument;
+  const safeEmailPreview = useMemo(() => {
+    if (!lead) return null;
+    try {
+      return buildLeadEarlyAccessEmailHtmlSafe(lead, { baseUrl: "" });
+    } catch (e) {
+      console.error(e);
+      return null;
+    }
+  }, [lead]);
+
+  const onRichIframeLoad = useCallback(() => {
+    const doc = richIframeRef.current?.contentDocument;
     if (!doc) return;
     const height = doc.documentElement.scrollHeight;
-    if (height > 0) setIframeHeight(height);
+    if (height > 0) setRichIframeHeight(height);
+  }, []);
+
+  const onSafeIframeLoad = useCallback(() => {
+    const doc = safeIframeRef.current?.contentDocument;
+    if (!doc) return;
+    const height = doc.documentElement.scrollHeight;
+    if (height > 0) setSafeIframeHeight(height);
   }, []);
 
   const onCopyHtml = useCallback(async () => {
@@ -46,9 +83,17 @@ const EarlyAccessCardPage = () => {
     setCopying(true);
     setCopied(false);
     try {
-      await copyLeadEarlyAccessHtmlSource(lead);
+      if (variant === "rich") {
+        await copyLeadEarlyAccessHtmlSource(lead);
+      } else {
+        await copyLeadEarlyAccessSafeHtmlSource(lead);
+      }
       setCopied(true);
-      toast.success("HTML source copied — paste into your email platform's HTML editor");
+      toast.success(
+        variant === "rich"
+          ? "Rich HTML copied. Paste into your email platform's HTML editor."
+          : "Gmail-safe HTML copied (absolute image URLs baked in).",
+      );
       setTimeout(() => setCopied(false), 3000);
     } catch (e) {
       console.error(e);
@@ -56,13 +101,15 @@ const EarlyAccessCardPage = () => {
     } finally {
       setCopying(false);
     }
-  }, [lead]);
+  }, [lead, variant]);
 
   if (!lead) {
     return <NotFound />;
   }
 
   const storeUrl = `https://${lead.storeDomain}`;
+  const activeSizeBytes = variant === "rich" ? richHtmlSizeBytes : (safeEmailPreview?.htmlSizeBytes ?? 0);
+  const safeWarnings = safeEmailPreview?.warnings ?? [];
 
   return (
     <div className="min-h-screen bg-muted/40 px-4 py-10 md:px-8">
@@ -118,44 +165,79 @@ const EarlyAccessCardPage = () => {
                 ) : (
                   <>
                     <Copy className="mr-1.5 h-3.5 w-3.5" />
-                    {copying ? "Copying…" : "Copy HTML"}
+                    {copying ? "Copying…" : `Copy ${variant === "rich" ? "rich" : "Gmail-safe"} HTML`}
                   </>
                 )}
               </Button>
             </div>
           </div>
 
-          {/* Size indicator */}
           <p className="mt-3 font-body text-xs text-muted-foreground">
             Email HTML size:{" "}
-            <span className={`rounded px-1.5 py-0.5 text-[0.65rem] font-bold ${
-              htmlSizeBytes > 100_000
-                ? "bg-destructive/10 text-destructive"
-                : htmlSizeBytes > 50_000
-                  ? "bg-amber-100 text-amber-800"
-                  : "bg-emerald-100 text-emerald-800"
-            }`}>
-              {formatBytes(htmlSizeBytes)}
+            <span className={`rounded px-1.5 py-0.5 text-[0.65rem] font-bold ${sizeBadgeClass(activeSizeBytes)}`}>
+              {formatBytes(activeSizeBytes)}
             </span>
+            {variant === "safe" && safeWarnings.length > 0 && (
+              <span className="ml-2 inline-flex items-center gap-1 text-amber-700">
+                <AlertTriangle className="h-3 w-3" />
+                {safeWarnings[0]}
+              </span>
+            )}
           </p>
         </div>
 
-        {/* Email HTML preview */}
+        {/* Variant toggle + previews */}
         <div className="w-full max-w-[38rem]">
-          <div className="overflow-hidden rounded-xl border border-border bg-white shadow-sm">
-            <iframe
-              ref={iframeRef}
-              title="Email HTML preview"
-              srcDoc={emailData?.html}
-              onLoad={onIframeLoad}
-              style={iframeHeight > 0 ? { height: `${iframeHeight}px` } : { height: "100vh" }}
-              className="w-full border-0"
-              sandbox="allow-same-origin"
-            />
-          </div>
-          <p className="mt-2 text-center font-body text-xs text-muted-foreground">
-            Rendered preview of the email-safe HTML (tables, inline CSS, hosted images).
-          </p>
+          <Tabs value={variant} onValueChange={(v) => setVariant(v as EmailVariant)}>
+            <TabsList className="mb-3">
+              <TabsTrigger value="rich">Rich (web view)</TabsTrigger>
+              <TabsTrigger value="safe">Gmail-safe (cold email)</TabsTrigger>
+            </TabsList>
+
+            <TabsContent value="rich">
+              <div className="overflow-hidden rounded-xl border border-border bg-white shadow-sm">
+                <iframe
+                  ref={richIframeRef}
+                  title="Rich email preview"
+                  srcDoc={richEmail?.html}
+                  onLoad={onRichIframeLoad}
+                  style={richIframeHeight > 0 ? { height: `${richIframeHeight}px` } : { height: "100vh" }}
+                  className="w-full border-0"
+                  sandbox="allow-same-origin"
+                />
+              </div>
+              <p className="mt-2 text-center font-body text-xs text-muted-foreground">
+                Rich layout. Preserves the full Bizmis visual identity — use for the web/admin view, not cold email sends.
+              </p>
+            </TabsContent>
+
+            <TabsContent value="safe">
+              <div className="overflow-hidden rounded-xl border border-border bg-white shadow-sm">
+                <iframe
+                  ref={safeIframeRef}
+                  title="Gmail-safe email preview"
+                  srcDoc={safeEmailPreview?.html}
+                  onLoad={onSafeIframeLoad}
+                  style={safeIframeHeight > 0 ? { height: `${safeIframeHeight}px` } : { height: "100vh" }}
+                  className="w-full border-0"
+                  sandbox="allow-same-origin"
+                />
+              </div>
+              <p className="mt-2 text-center font-body text-xs text-muted-foreground">
+                Table-based HTML. Images pulled locally from the dev server; Copy button emits absolute bizmis.ai URLs for Instantly.
+              </p>
+              {safeEmailPreview && (
+                <details className="mt-3 rounded-lg border border-border bg-background p-3">
+                  <summary className="cursor-pointer font-body text-xs font-medium text-muted-foreground">
+                    Plain-text alternative ({formatBytes(new TextEncoder().encode(safeEmailPreview.plainText).byteLength)})
+                  </summary>
+                  <pre className="mt-2 max-h-[40vh] overflow-auto whitespace-pre-wrap break-words rounded bg-muted/50 p-3 font-mono text-xs text-foreground">
+                    {safeEmailPreview.plainText}
+                  </pre>
+                </details>
+              )}
+            </TabsContent>
+          </Tabs>
         </div>
       </div>
     </div>

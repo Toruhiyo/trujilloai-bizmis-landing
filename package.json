@@ -11,6 +11,7 @@
     "fetch:lead-early-access-assets": "node scripts/fetch-lead-early-access-assets.mjs",
     "sync:lead-product-manifest": "node scripts/sync-lead-product-manifest.mjs",
     "generate:montage-waveform": "node scripts/generate-montage-waveform-png.mjs",
+    "generate:email-compositions": "node scripts/generate-email-compositions.mjs",
     "lint": "eslint .",
     "preview": "vite preview"
   },
@@ -86,6 +87,7 @@
     "eslint-plugin-react-refresh": "^0.4.9",
     "globals": "^15.9.0",
     "lovable-tagger": "^1.1.7",
+    "playwright": "^1.59.1",
     "postcss": "^8.4.47",
     "sharp": "^0.34.5",
     "tailwindcss": "^3.4.11",
