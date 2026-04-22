@@ -45,8 +45,8 @@ const EMAIL_BANNER_WAVEFORM_DISPLAY_H_PX = 120;
 /** Fixed banner height — logos + waveform vertically centered, badge pinned to the bottom. */
 const EMAIL_BANNER_H_PX = 180;
 /** Bizmis mark + wordmark in the header strip (right). */
-const EMAIL_BANNER_BIZMIS_ICON_PX = 40;
-const EMAIL_BANNER_BIZMIS_WORDMARK_FONT_PX = 20;
+const EMAIL_BANNER_BIZMIS_ICON_PX = 48;
+const EMAIL_BANNER_BIZMIS_WORDMARK_FONT_PX = 24;
 const EMAIL_BANNER_PAD_X_PX = 24;
 const EMAIL_BANNER_BADGE_PAD_BOTTOM_PX = 8;
 /** Bottom scrim: % of banner height for the fade-to-dark (from bottom up). */
