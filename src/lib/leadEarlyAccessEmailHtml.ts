@@ -1189,32 +1189,37 @@ export function buildSupportMockupSceneHtml(
   const pw = WAVEFORM_PHONE;
 
   /**
-   * Compact overrides trim the phone's intrinsic height without any
-   * transform (preserves aspect ratio of every internal element).
-   * Used by the combined email mockup composition where the phone
-   * reads slightly shorter than the desktop while keeping the same
-   * width. The rich email keeps the default (non-compact) values.
+   * Both variants natively trim the phone's intrinsic height (no
+   * transform, so every internal element keeps its aspect ratio). The
+   * compact variant is slightly tighter still, used by the combined
+   * email mockup PNG where the phone reads shorter than the desktop.
+   * The rich variant keeps a touch more breathing room but still
+   * reclaims the large vertical gaps the default values used to leave
+   * around the avatar.
    */
   const avatarW = compact ? 276 : PHONE_AVATAR_W;
   const avatarClipMarginLeftPx = Math.round((PHONE_SCREEN_W - avatarW) / 2);
   /**
-   * Avatar PNGs carry ~20% transparent padding on all sides around the
-   * face + rings + badge. In the compact variant (combined mockup PNG)
-   * we crop that padding vertically so the avatar sits visually closer
-   * to the shopper cue above and the clerk chip below without touching
-   * the image asset itself.
+   * Avatar PNGs carry ~15-20% transparent padding on all sides around
+   * the face + rings + badge. Both variants crop that padding
+   * vertically so the avatar sits visually closer to the shopper cue
+   * above and the clerk chip below without touching the image asset
+   * itself.
    */
-  const avatarVisibleHeightRatio = compact ? 0.78 : 1;
+  const avatarVisibleHeightRatio = compact ? 0.78 : 0.84;
   const avatarVisibleHeightPx = Math.round(avatarW * avatarVisibleHeightRatio);
-  const avatarClipMarginTopPx = compact
-    ? Math.round((avatarVisibleHeightPx - avatarW) / 2) : 0;
-  const topWaveRowMinH = compact ? Math.round(pw.h * 0.78) : pw.h;
-  const bottomWaveRowMinH = compact ? Math.round(pw.h * 0.45) : pw.h;
-  const shopperPadTopPx = compact ? 4 : 8;
-  const shopperPadBottomPx = compact ? 0 : 4;
-  const avatarRowPadYPx = compact ? 0 : 4;
-  const clerkPadTopPx = compact ? 0 : 6;
-  const clerkPadBottomPx = compact ? 4 : 10;
+  const avatarClipMarginTopPx = Math.round((avatarVisibleHeightPx - avatarW) / 2);
+  const topWaveRowMinH = compact
+    ? Math.round(pw.h * 0.78)
+    : Math.round(pw.h * 0.85);
+  const bottomWaveRowMinH = compact
+    ? Math.round(pw.h * 0.45)
+    : Math.round(pw.h * 0.6);
+  const shopperPadTopPx = compact ? 4 : 6;
+  const shopperPadBottomPx = compact ? 0 : 2;
+  const avatarRowPadYPx = compact ? 0 : 2;
+  const clerkPadTopPx = compact ? 0 : 2;
+  const clerkPadBottomPx = compact ? 4 : 6;
   const avatarCircleGlow = montageWhiteGlowCss("circle", {
     plateauPct: PHONE_AVATAR_GLOW_PLATEAU_PCT,
     alphaPeak: MONTAGE_WHITE_GLOW_ALPHA_PEAK,
