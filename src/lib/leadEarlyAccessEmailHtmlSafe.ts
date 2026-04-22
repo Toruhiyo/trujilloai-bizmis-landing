@@ -28,7 +28,7 @@ import {
   buildEarlyAccessSalutationPlainText,
   earlyAccessGreetingFirstName,
 } from "@/data/leadEarlyAccessCopy";
-import { EARLY_ACCESS_TERMS } from "@/data/leads/_schema";
+import { EARLY_ACCESS_TERMS, resolveStoreNameTextColor } from "@/data/leads/_schema";
 import {
   BIZMIS_BORDER_HEX,
   BIZMIS_MUTED_FG_HEX,
@@ -127,8 +127,7 @@ function renderSafeHtml(lead: LeadEarlyAccessData, baseUrl: string): string {
   const copy = EARLY_ACCESS_EMAIL_COPY;
 
   const storeName = escapeHtml(lead.storeName);
-  const accent = ensureHex(lead.primaryColor);
-  const storeAccent = resolveStoreAccentForEmail(accent);
+  const storeAccent = resolveStoreAccentForEmail(lead);
   const leadHandle = encodeURIComponent(lead.id);
   const earlyAccessCode = lead.couponCode;
   const topProductTitle = lead.salesProducts[lead.salesRecommendedIndex].title;
@@ -447,15 +446,25 @@ function ensureHex(value: string): string {
 }
 
 /**
- * The pitch paragraph highlights the store name in an accent. If the lead's
- * primaryColor is too light (white/very pale navbar leads), fall back to a
- * readable dark-green accent to avoid invisible text on the white card.
+ * Store-name accent used across the Gmail-safe invite (inline heading,
+ * pitch paragraph). Resolution order:
+ *
+ *   1. Lead `textColor` (brand accent from the site for leads whose
+ *      navbar background is white/too light for text), when present
+ *      and dark enough to read on the white email card.
+ *   2. Lead `primaryColor`, when dark enough to read.
+ *   3. Readable dark-green fallback, so the store name never disappears
+ *      on white for leads with only very pale palette overrides.
  */
-function resolveStoreAccentForEmail(primaryHex: string): string {
-  const lum = relativeLuminance(primaryHex);
-  if (lum > 0.82) return LINK_SUCCESS_GREEN_HEX;
-  return primaryHex;
+function resolveStoreAccentForEmail(lead: LeadEarlyAccessData): string {
+  const textBased = ensureHex(resolveStoreNameTextColor(lead));
+  if (relativeLuminance(textBased) <= STORE_ACCENT_MAX_LUMINANCE) return textBased;
+  const primary = ensureHex(lead.primaryColor);
+  if (relativeLuminance(primary) <= STORE_ACCENT_MAX_LUMINANCE) return primary;
+  return LINK_SUCCESS_GREEN_HEX;
 }
+
+const STORE_ACCENT_MAX_LUMINANCE = 0.82;
 
 function relativeLuminance(hex: string): number {
   const match = /^#([0-9A-Fa-f]{6})$/.exec(hex);
