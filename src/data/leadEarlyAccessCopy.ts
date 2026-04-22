@@ -26,9 +26,23 @@ export const EARLY_ACCESS_EMAIL_COPY = {
   ctaLabel: "Install Bizmis with early access",
   /** Gmail-safe invite mixes the install CTA + soft "join early access" into a single primary action. */
   ctaMixedButtonLabel: "Install Bizmis and join early access",
-  /** Urgency + roadmap-influence tagline that sits above the mixed CTA block in the Gmail-safe invite. The asterisk after "no cost" references the trial-usage footnote. */
-  ctaMixedUrgencyLine:
-    "Shape the roadmap around your store, at no cost*. Claim your spot before we close the list.",
+  /**
+   * Gmail-safe CTA urgency (above the dashed box). Segments let the HTML
+   * builder mirror the rich invite lead paragraph (Bizmis in primary,
+   * strong on key phrases). Concatenate in order for plain text.
+   */
+  ctaMixedUrgencyLead:
+    "Claim your early access spot while the early access list is still open. Install ",
+  ctaMixedUrgencyBizmisWord: "Bizmis",
+  ctaMixedUrgencyAfterBizmis: " on your Shopify store with ",
+  ctaMixedUrgencyOneClickSetup: "one-click setup",
+  ctaMixedUrgencyBetweenSetupAndCost: ", enjoy it ",
+  /** Asterisk references the trial-usage minutes footnote under the button. */
+  ctaMixedUrgencyNoCost: "at no cost*",
+  ctaMixedUrgencyBeforeRoadmap: " and ",
+  ctaMixedUrgencyRoadmapPhrase: "shape the product\u2019s roadmap",
+  ctaMixedUrgencyAfterRoadmap:
+    " around your team\u2019s and customers\u2019 needs with your feedback.",
   couponLabel: "Your early access code:",
   /** Inline heading on the Gmail-safe invite card: "Early Access Invite · bizmis × {StoreName}". */
   inviteTitleEyebrow: "Early Access Invite",
@@ -61,6 +75,21 @@ export const EARLY_ACCESS_EMAIL_COPY = {
   bannerBadgeLimitPrefix: "Limited to the first",
   bannerBadgeLimitSuffix: "stores",
 } as const;
+
+export function buildCtaMixedUrgencyPlainText(): string {
+  const c = EARLY_ACCESS_EMAIL_COPY;
+  return (
+    c.ctaMixedUrgencyLead +
+    c.ctaMixedUrgencyBizmisWord +
+    c.ctaMixedUrgencyAfterBizmis +
+    c.ctaMixedUrgencyOneClickSetup +
+    c.ctaMixedUrgencyBetweenSetupAndCost +
+    c.ctaMixedUrgencyNoCost +
+    c.ctaMixedUrgencyBeforeRoadmap +
+    c.ctaMixedUrgencyRoadmapPhrase +
+    c.ctaMixedUrgencyAfterRoadmap
+  );
+}
 
 export function buildEarlyAccessPreheader(storeName: string, storeCap: number): string {
   return `Early access invite for ${storeName}. First ${storeCap} stores only \u2014 ${EARLY_ACCESS_EMAIL_COPY.preheaderClosingPhrase}.`;

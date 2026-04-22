@@ -24,6 +24,7 @@ import type { LeadEarlyAccessData } from "@/data/leads/_schema";
 import {
   EARLY_ACCESS_EMAIL_COPY,
   EARLY_ACCESS_TRIAL_USAGE_MINUTES_LIMIT,
+  buildCtaMixedUrgencyPlainText,
   buildEarlyAccessPreheader,
   buildEarlyAccessSalutationPlainText,
   earlyAccessGreetingFirstName,
@@ -188,7 +189,7 @@ ${titleHtml}
 </tr>
 
 <tr>
-<td style="padding:22px 32px 0 32px;">
+<td style="padding:38px 32px 0 32px;">
 <p style="margin:0;font-family:${SYSTEM_FONT_STACK};font-size:11px;line-height:1.6;color:${BIZMIS_MUTED_FG_HEX};letter-spacing:0.01em;">
 ${salutationText}
 </p>
@@ -202,7 +203,7 @@ ${pitchHtml}
 </tr>
 
 <tr>
-<td style="padding:24px 32px 0 32px;" align="center">
+<td style="padding:24px 32px 0 32px;">
 ${ctaUrgencyHtml}
 </td>
 </tr>
@@ -244,7 +245,7 @@ Questions? Just reply to this email (<a href="mailto:${escapeHtml(copy.contactEm
  *
  * All three segments sit on a single centered line: the store name in
  * the lead's resolved accent, `bizmis` in Bizmis primary, and the
- * eyebrow in the foreground/muted tone. Wraps naturally if the store
+ * eyebrow in the same subtle tone as the × / · separators. Wraps naturally if the store
  * name is long enough to exceed the card's content width.
  */
 function buildEarlyAccessTitleHtml(storeName: string, storeAccent: string): string {
@@ -252,12 +253,14 @@ function buildEarlyAccessTitleHtml(storeName: string, storeAccent: string): stri
   const baseTextStyle =
     `font-family:${SYSTEM_FONT_STACK};font-size:22px;font-weight:700;line-height:1.3;letter-spacing:-0.005em;`;
   const separatorStyle = `${baseTextStyle}font-weight:400;color:${MUTED_SUBTLE_HEX};`;
+  const eyebrowStyle =
+    `font-family:${SYSTEM_FONT_STACK};font-size:14px;font-weight:600;line-height:1.3;letter-spacing:0.2em;text-transform:uppercase;color:${MUTED_SUBTLE_HEX};vertical-align:0.08em;`;
   return `<p style="margin:0;text-align:center;${baseTextStyle}">
 <span style="color:${storeAccent};">${storeName}</span>
 <span style="${separatorStyle}">&nbsp;${escapeHtml(c.inviteTitleBrandLeadSeparator)}&nbsp;</span>
 <span style="color:${BIZMIS_PRIMARY_HEX};">${escapeHtml(c.inviteTitleBrandLead)}</span>
 <span style="${separatorStyle}">&nbsp;${escapeHtml(c.inviteTitleEyebrowSeparator)}&nbsp;</span>
-<span style="color:${FOREGROUND_HEX};">${escapeHtml(c.inviteTitleEyebrow)}</span>
+<span style="${eyebrowStyle}">${escapeHtml(c.inviteTitleEyebrow)}</span>
 </p>`;
 }
 
@@ -287,10 +290,18 @@ ${escapeHtml(c.inviteSentenceLeadNamedBeforeBizmis)}${escapeHtml(c.inviteSentenc
 </p>`;
 }
 
+/**
+ * Muted italic tagline matching the rich invite's soft CTA tone:
+ * single muted foreground color, italic throughout, no Bizmis primary
+ * highlight. Key phrases ("one-click setup", "at no cost*", "shape
+ * the product's roadmap") stay italic but bump to 600 weight.
+ */
 function buildCtaUrgencyHtml(): string {
   const c = EARLY_ACCESS_EMAIL_COPY;
-  return `<p style="margin:0;font-family:${SYSTEM_FONT_STACK};font-size:13px;line-height:1.6;color:${FOREGROUND_HEX};text-align:center;">
-${escapeHtml(c.ctaMixedUrgencyLine)}
+  const taglineStyle = `font-family:${SYSTEM_FONT_STACK};font-size:14px;font-weight:400;font-style:italic;line-height:1.6;color:${BIZMIS_MUTED_FG_HEX};`;
+  const emphasis = "font-weight:600;";
+  return `<p style="margin:0;${taglineStyle}">
+${escapeHtml(c.ctaMixedUrgencyLead)}${escapeHtml(c.ctaMixedUrgencyBizmisWord)}${escapeHtml(c.ctaMixedUrgencyAfterBizmis)}<strong style="${emphasis}">${escapeHtml(c.ctaMixedUrgencyOneClickSetup)}</strong>${escapeHtml(c.ctaMixedUrgencyBetweenSetupAndCost)}<strong style="${emphasis}">${escapeHtml(c.ctaMixedUrgencyNoCost)}</strong>${escapeHtml(c.ctaMixedUrgencyBeforeRoadmap)}<strong style="${emphasis}">${escapeHtml(c.ctaMixedUrgencyRoadmapPhrase)}</strong>${escapeHtml(c.ctaMixedUrgencyAfterRoadmap)}
 </p>`;
 }
 
@@ -357,7 +368,7 @@ function renderPlainText(lead: LeadEarlyAccessData): string {
     pitch,
     "",
     `${c.couponLabel} ${lead.couponCode}`,
-    c.ctaMixedUrgencyLine,
+    buildCtaMixedUrgencyPlainText(),
     `${c.ctaMixedButtonLabel}: ${installUrlWithCode}`,
     `* Up to ${EARLY_ACCESS_TRIAL_USAGE_MINUTES_LIMIT} minutes of included usage.`,
     "",
