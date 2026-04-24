@@ -14,6 +14,7 @@
     "generate:email-compositions": "node scripts/generate-email-compositions.mjs",
     "generate:mock-lead-invite-assets": "node scripts/generate-mock-lead-invite-assets.mjs",
     "generate:instantly-template": "node scripts/generate-instantly-template.mjs",
+    "generate:instantly-lead-fields": "node scripts/generate-instantly-lead-fields.mjs",
     "lint": "eslint .",
     "preview": "vite preview"
   },

@@ -1,6 +1,6 @@
 import { useCallback, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
-import { ChevronDown, Copy, Download, ExternalLink } from "lucide-react";
+import { ChevronDown, Copy, Download, ExternalLink, RefreshCw } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import {
@@ -47,7 +47,45 @@ const InviteCardsIndex = () => {
   );
   const [bulkCopying, setBulkCopying] = useState(false);
   const [exporting, setExporting] = useState(false);
-  const ioLocked = bulkCopying || exporting;
+  const [regenerating, setRegenerating] = useState<null | "template" | "leads">(null);
+  const ioLocked = bulkCopying || exporting || regenerating !== null;
+
+  const regenerateInstantlyArtifact = useCallback(
+    async (kind: "template" | "leads") => {
+      const isTemplate = kind === "template";
+      const route = isTemplate
+        ? "/__bizmis/regenerate-instantly-template"
+        : "/__bizmis/regenerate-instantly-lead-fields";
+      const label = isTemplate ? "Instantly template" : "Per-lead Instantly JSONs";
+      setRegenerating(kind);
+      const startedAt = Date.now();
+      try {
+        const res = await fetch(route, { method: "POST" });
+        const payload = (await res.json()) as {
+          ok?: boolean;
+          exitCode?: number;
+          stdout?: string;
+          stderr?: string;
+          error?: string;
+        };
+        const elapsedSeconds = ((Date.now() - startedAt) / 1000).toFixed(1);
+        if (payload.ok) {
+          if (payload.stdout) console.log(`[${label}] ${payload.stdout.trim()}`);
+          toast.success(`${label} regenerated in ${elapsedSeconds}s.`);
+        } else {
+          const message = payload.stderr?.trim() || payload.stdout?.trim() || payload.error || "unknown error";
+          console.error(`[${label}] failed (exit ${payload.exitCode ?? "?"}):\n${message}`);
+          toast.error(`${label} regeneration failed. See console.`);
+        }
+      } catch (err) {
+        console.error(err);
+        toast.error(`Could not reach the dev server to regenerate the ${label}.`);
+      } finally {
+        setRegenerating(null);
+      }
+    },
+    [],
+  );
 
   const copyAllInvitesHtml = useCallback(
     async (variant: "rich" | "safe") => {
@@ -128,6 +166,34 @@ const InviteCardsIndex = () => {
         <div className="mb-2 flex flex-wrap items-start justify-between gap-3">
           <h1 className="font-heading text-3xl font-bold text-foreground">Invite cards</h1>
           <div className="flex shrink-0 flex-wrap justify-end gap-2">
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              disabled={ioLocked}
+              className="shrink-0"
+              onClick={() => void regenerateInstantlyArtifact("template")}
+              title="Re-run scripts/generate-instantly-template.mjs"
+            >
+              <RefreshCw
+                className={`mr-1.5 h-3.5 w-3.5 ${regenerating === "template" ? "animate-spin" : ""}`}
+              />
+              {regenerating === "template" ? "Regenerating…" : "Regen Instantly template"}
+            </Button>
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              disabled={ioLocked}
+              className="shrink-0"
+              onClick={() => void regenerateInstantlyArtifact("leads")}
+              title="Re-run scripts/generate-instantly-lead-fields.mjs"
+            >
+              <RefreshCw
+                className={`mr-1.5 h-3.5 w-3.5 ${regenerating === "leads" ? "animate-spin" : ""}`}
+              />
+              {regenerating === "leads" ? "Regenerating…" : "Regen lead JSONs"}
+            </Button>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button type="button" variant="outline" size="sm" disabled={ioLocked} className="shrink-0">

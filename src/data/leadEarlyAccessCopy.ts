@@ -133,6 +133,29 @@ export function buildEarlyAccessSalutationPlainText(
   return `${c.greetingDear} ${storeName}${c.greetingStoreTeamSuffix}`;
 }
 
+/**
+ * Resolves the merge value for the `{{firstName}}` Instantly tag.
+ *
+ * The template always emits `Dear {{firstName}},` as a single line —
+ * intake-side data normalization decides whether to use the real first
+ * name or the `<brand> team` fallback. This helper produces the exact
+ * string that the safe-email salutation would render, with the trailing
+ * punctuation from `greetingStoreTeamSuffix` stripped so the template's
+ * own comma isn't doubled up.
+ */
+export function earlyAccessFirstNameMergeValue(
+  storeName: string,
+  leadContactName: string | null,
+): string {
+  const first = earlyAccessGreetingFirstName(leadContactName);
+  if (first) return first;
+  const suffix = EARLY_ACCESS_EMAIL_COPY.greetingStoreTeamSuffix
+    .replace(/^\s+/, "")
+    .replace(/[.,;:!?]+$/, "")
+    .trim();
+  return suffix.length > 0 ? `${storeName} ${suffix}` : storeName;
+}
+
 export function buildEarlyAccessValueSentencePlainText(
   storeName: string,
   leadContactName: string | null,

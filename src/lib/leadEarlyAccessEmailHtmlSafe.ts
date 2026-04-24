@@ -613,7 +613,7 @@ function ensureHex(value: string): string {
  *   3. Readable dark-green fallback, so the store name never disappears
  *      on white for leads with only very pale palette overrides.
  */
-function resolveStoreAccentForEmail(lead: LeadEarlyAccessData): string {
+export function resolveStoreAccentForEmail(lead: LeadEarlyAccessData): string {
   const textBased = ensureHex(resolveStoreNameTextColor(lead));
   if (relativeLuminance(textBased) <= STORE_ACCENT_MAX_LUMINANCE) return textBased;
   const primary = ensureHex(lead.primaryColor);

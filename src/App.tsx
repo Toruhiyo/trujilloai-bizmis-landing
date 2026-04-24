@@ -17,6 +17,7 @@ import InviteCardsIndex from "./pages/admin/InviteCardsIndex";
 import EarlyAccessCardPage from "./pages/admin/EarlyAccessCardPage";
 import MockupRenderPage from "./pages/email-renders/MockupRenderPage";
 import InstantlyExportPage from "./pages/email-renders/InstantlyExportPage";
+import InstantlyLeadFieldsPage from "./pages/email-renders/InstantlyLeadFieldsPage";
 import NotFound from "./pages/NotFound";
 import AttributionTracker from "./components/AttributionTracker";
 
@@ -50,6 +51,8 @@ const App = () => (
           <Route path="email-renders/:leadId/mockup/:which" element={<MockupRenderPage />} />
           {/* Headless endpoint consumed by scripts/generate-instantly-template.mjs. */}
           <Route path="email-renders/instantly-html" element={<InstantlyExportPage />} />
+          {/* Headless endpoint consumed by scripts/generate-instantly-lead-fields.mjs. */}
+          <Route path="email-renders/instantly-lead-fields" element={<InstantlyLeadFieldsPage />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
