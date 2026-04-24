@@ -234,6 +234,17 @@ def resolve_widget_wave_color(lead: dict) -> str:
 # accessory (otherwise leave unset — the fallback is correct).
 
 LEAD_REGISTRY: list[dict] = [
+    # Internal preview lead (grey shirt + white stamp; see mock-lead-invite-card.json).
+    {
+        "id": "mock-lead-invite-card",
+        "primary_color": "#6B7280",
+        "logo_color_overlay": None,
+        "shirt_color": "#6B7280",
+        "stamp_color_overlay": "#ffffff",
+        "avatar_id": "kiran",
+        "support_avatar_id": "mia",
+        "stamp_scale": 2.0,
+    },
     # ── Batch 1 ──
     {
         "id": "molekule",

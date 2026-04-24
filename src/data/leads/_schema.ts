@@ -27,6 +27,8 @@ export type SalesProductCard = {
  */
 export type LeadEarlyAccessJson = {
   id: string;
+  /** When set, used as the install / email code instead of `BIZMIS-EARLY-ACCESS-<ID>`. */
+  couponCode?: string;
   storeName: string;
   storeDomain: string;
   leadContactName: string | null;

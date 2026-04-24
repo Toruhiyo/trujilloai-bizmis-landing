@@ -1,6 +1,7 @@
 import type { LeadEarlyAccessData, LeadEarlyAccessJson } from "./_schema";
 import { resolveLeadProductPath } from "@/data/leadEarlyAccessProductManifest";
 
+import mockLeadInviteCard from "./mock-lead-invite-card.json";
 import molekule from "./molekule.json";
 import glowforge from "./glowforge.json";
 import sennheiser from "./sennheiser.json";
@@ -33,6 +34,7 @@ import crownandcaliber from "./crownandcaliber.json";
 import schoolhouse from "./schoolhouse.json";
 
 const RAW_LEADS: LeadEarlyAccessJson[] = [
+  mockLeadInviteCard,
   molekule,
   glowforge,
   sennheiser,
@@ -65,15 +67,16 @@ const RAW_LEADS: LeadEarlyAccessJson[] = [
   schoolhouse,
 ];
 
-function couponCode(id: string): string {
+function defaultCouponCodeFromId(id: string): string {
   return `BIZMIS-EARLY-ACCESS-${id.toUpperCase()}`;
 }
 
 function hydrate(raw: LeadEarlyAccessJson, index: number): LeadEarlyAccessData {
   const { id } = raw;
+  const couponOverride = raw.couponCode?.trim();
   return {
     ...raw,
-    couponCode: couponCode(id),
+    couponCode: couponOverride && couponOverride.length > 0 ? couponOverride : defaultCouponCodeFromId(id),
     orderInBatch: index + 1,
     logoImagePath: `/invite-cards/leads/${id}/logo.png`,
     salesAvatarImagePath: `/invite-cards/leads/${id}/sales-avatar.png`,

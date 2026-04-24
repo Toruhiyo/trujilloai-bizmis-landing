@@ -18,6 +18,7 @@ export const LEAD_PRODUCT_URLS: Record<string, Partial<Record<LeadProductSlot, s
   "liveu": { a: "/invite-cards/leads/liveu/product-a.png", b: "/invite-cards/leads/liveu/product-b.png", c: "/invite-cards/leads/liveu/product-c.png" },
   "mactools": { a: "/invite-cards/leads/mactools/product-a.jpg", b: "/invite-cards/leads/mactools/product-b.jpg", c: "/invite-cards/leads/mactools/product-c.jpg" },
   "magnaflow": { a: "/invite-cards/leads/magnaflow/product-a.png", b: "/invite-cards/leads/magnaflow/product-b.png", c: "/invite-cards/leads/magnaflow/product-c.png" },
+  "mock-lead-invite-card": { a: "/invite-cards/leads/mock-lead-invite-card/product-a.webp", b: "/invite-cards/leads/mock-lead-invite-card/product-b.webp", c: "/invite-cards/leads/mock-lead-invite-card/product-c.webp" },
   "molekule": { a: "/invite-cards/leads/molekule/product-a.webp", b: "/invite-cards/leads/molekule/product-b.webp", c: "/invite-cards/leads/molekule/product-c.webp" },
   "nanoleaf": { a: "/invite-cards/leads/nanoleaf/product-a.jpg", b: "/invite-cards/leads/nanoleaf/product-b.jpg", c: "/invite-cards/leads/nanoleaf/product-c.png" },
   "peakdesign": { a: "/invite-cards/leads/peakdesign/product-a.webp", b: "/invite-cards/leads/peakdesign/product-b.webp", c: "/invite-cards/leads/peakdesign/product-c.webp" },

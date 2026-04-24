@@ -12,6 +12,7 @@
     "sync:lead-product-manifest": "node scripts/sync-lead-product-manifest.mjs",
     "generate:montage-waveform": "node scripts/generate-montage-waveform-png.mjs",
     "generate:email-compositions": "node scripts/generate-email-compositions.mjs",
+    "generate:mock-lead-invite-assets": "node scripts/generate-mock-lead-invite-assets.mjs",
     "lint": "eslint .",
     "preview": "vite preview"
   },
