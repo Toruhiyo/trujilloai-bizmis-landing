@@ -1,5 +1,8 @@
 import { useEffect, useMemo } from "react";
-import { INSTANTLY_TEMPLATE_LEAD } from "@/data/leads/instantlyTemplate";
+import {
+  INSTANTLY_TEMPLATE_LEAD,
+  INSTANTLY_TEMPLATE_TOKENS,
+} from "@/data/leads/instantlyTemplate";
 import {
   SAFE_EMAIL_DEFAULT_BASE_URL,
   buildLeadEarlyAccessEmailHtmlSafe,
@@ -30,6 +33,7 @@ const InstantlyExportPage = () => {
     () =>
       buildLeadEarlyAccessEmailHtmlSafe(INSTANTLY_TEMPLATE_LEAD, {
         baseUrl: SAFE_EMAIL_DEFAULT_BASE_URL,
+        utmCampaign: INSTANTLY_TEMPLATE_TOKENS.utmCampaign,
       }),
     [],
   );

@@ -35,12 +35,22 @@ const WINDOW_KEY_WAIT_MS = 10_000;
  * either the real first name, or `<brand> team` when no contact name is
  * known. The template always emits `Dear {{firstName}},` as a single
  * line — no template-side branching.
+ *
+ * Required Instantly CSV columns (per-lead row):
+ *   email          // the recipient address
+ *   firstName      // real first name, or pre-normalized `<brand> team`
+ *   lead_brand     // storeName, e.g. "Molekule"
+ *   lead_handle    // lead id (slug), e.g. "molekule"
+ *   access_code    // per-lead access code, e.g. "BIZMIS-EARLY-ACCESS-MOLEKULE"
+ *   store_accent_color  // hex value for the brand accent, e.g. "#6B7280"
+ *   utm_campaign   // per-batch campaign, e.g. "early-access-batch-0"
  */
 const SUBSTITUTIONS = [
   { token: "X7ZFIRSTNAME", mergeTag: "{{firstName}}" },
   { token: "X7ZLEADBRAND", mergeTag: "{{lead_brand}}" },
   { token: "x7zleadhandle", mergeTag: "{{lead_handle}}" },
   { token: "X7ZACCESSCODE", mergeTag: "{{access_code}}" },
+  { token: "X7ZUTMCAMPAIGN", mergeTag: "{{utm_campaign}}" },
   { token: "#AB1234", mergeTag: "{{store_accent_color}}" },
 ];
 

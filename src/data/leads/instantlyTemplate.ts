@@ -16,6 +16,7 @@ export const INSTANTLY_TEMPLATE_TOKENS = {
   leadHandle: "x7zleadhandle",
   accessCode: "X7ZACCESSCODE",
   storeAccentHex: "#AB1234",
+  utmCampaign: "X7ZUTMCAMPAIGN",
 } as const;
 
 export const INSTANTLY_TEMPLATE_LEAD: LeadEarlyAccessData = hydrateLead(

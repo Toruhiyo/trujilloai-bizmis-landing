@@ -18,6 +18,7 @@ import EarlyAccessCardPage from "./pages/admin/EarlyAccessCardPage";
 import MockupRenderPage from "./pages/email-renders/MockupRenderPage";
 import InstantlyExportPage from "./pages/email-renders/InstantlyExportPage";
 import NotFound from "./pages/NotFound";
+import AttributionTracker from "./components/AttributionTracker";
 
 const queryClient = new QueryClient();
 
@@ -27,6 +28,7 @@ const App = () => (
       <Toaster />
       <Sonner />
       <BrowserRouter>
+        <AttributionTracker />
         <Routes>
           <Route path="/" element={<Index />} />
           <Route path="/faqs" element={<FAQs />} />

@@ -111,6 +111,17 @@ const SYSTEM_FONT_STACK =
 
 const LINK_SUCCESS_GREEN_HEX = "#108849";
 
+/**
+ * Static UTM values baked into the Gmail-safe template. The cold-email
+ * path is identified channel-wide by `utm_source=bizmis-cold-email` +
+ * `utm_medium=email`; per-batch segmentation happens via `utm_campaign`
+ * (see `BuildSafeEmailOptions.utmCampaign`), and per-recipient tagging
+ * via `utm_content=<lead_handle>`.
+ */
+export const SAFE_EMAIL_UTM_SOURCE = "bizmis-cold-email" as const;
+export const SAFE_EMAIL_UTM_MEDIUM = "email" as const;
+export const SAFE_EMAIL_DEFAULT_UTM_CAMPAIGN = "early-access" as const;
+
 export type BuildSafeEmailOptions = {
   /**
    * Base URL used for absolute image src values. Leave empty ("") to emit
@@ -118,6 +129,14 @@ export type BuildSafeEmailOptions = {
    * production origin (default "https://www.bizmis.ai") for outbound copy.
    */
   baseUrl?: string;
+  /**
+   * Value for the `utm_campaign` query parameter appended to every
+   * outbound link. For Instantly sends, pass the campaign placeholder
+   * token — see `scripts/generate-instantly-template.mjs`, which swaps
+   * it for the `{{utm_campaign}}` merge tag so per-batch campaign names
+   * can be set from the Instantly CSV.
+   */
+  utmCampaign?: string;
 };
 
 export type SafeEmailBuildResult = {
@@ -134,10 +153,11 @@ export function buildLeadEarlyAccessEmailHtmlSafe(
   options: BuildSafeEmailOptions = {},
 ): SafeEmailBuildResult {
   const baseUrl = normalizeBaseUrl(options.baseUrl);
-  const html = renderSafeHtml(lead, baseUrl);
+  const utmCampaign = options.utmCampaign?.trim() || SAFE_EMAIL_DEFAULT_UTM_CAMPAIGN;
+  const html = renderSafeHtml(lead, baseUrl, utmCampaign);
   const htmlSizeBytes = new TextEncoder().encode(html).byteLength;
   const warnings = assertEmailSafe(html, htmlSizeBytes);
-  const plainText = renderPlainText(lead);
+  const plainText = renderPlainText(lead, utmCampaign);
   return { html, plainText, htmlSizeBytes, warnings };
 }
 
@@ -163,9 +183,28 @@ function absUrl(baseUrl: string, publicPath: string): string {
   return `${baseUrl}${safePath}`;
 }
 
+/**
+ * Builds the `utm_source=...&utm_medium=...&utm_campaign=...&utm_content=...`
+ * query string appended to every outbound link in the cold-email template.
+ *
+ * `leadId` is passed raw: URLSearchParams handles percent-encoding
+ * consistently. Synthetic placeholders in the Instantly pipeline are
+ * deliberately alphanumeric so they survive encoding untouched — the
+ * generator script then swaps them for merge tags.
+ */
+function buildOutboundUtmTail(leadId: string, utmCampaign: string): string {
+  const params = new URLSearchParams({
+    utm_source: SAFE_EMAIL_UTM_SOURCE,
+    utm_medium: SAFE_EMAIL_UTM_MEDIUM,
+    utm_campaign: utmCampaign,
+    utm_content: leadId,
+  });
+  return params.toString();
+}
+
 // HTML rendering.
 
-function renderSafeHtml(lead: LeadEarlyAccessData, baseUrl: string): string {
+function renderSafeHtml(lead: LeadEarlyAccessData, baseUrl: string, utmCampaign: string): string {
   const { storeCap, shopifyAppUrl } = EARLY_ACCESS_TERMS;
   const copy = EARLY_ACCESS_EMAIL_COPY;
 
@@ -177,8 +216,9 @@ function renderSafeHtml(lead: LeadEarlyAccessData, baseUrl: string): string {
 
   const combinedMockupUrl = absUrl(baseUrl, `/invite-cards/leads/${lead.id}/email/mockup.png`);
 
-  const installUrlWithCode = `${shopifyAppUrl}?ref=${leadHandle}&code=${encodeURIComponent(earlyAccessCode)}`;
-  const bizmisInviteSiteUrl = buildInviteBizmisSiteUrl(lead.id);
+  const utmTail = buildOutboundUtmTail(lead.id, utmCampaign);
+  const installUrlWithCode = `${shopifyAppUrl}?ref=${leadHandle}&code=${encodeURIComponent(earlyAccessCode)}&${utmTail}`;
+  const bizmisInviteSiteUrl = `${buildInviteBizmisSiteUrl(lead.id)}&${utmTail}`;
 
   const salutationText = escapeHtml(buildEarlyAccessSalutationPlainText(lead.storeName, lead.leadContactName));
 
@@ -425,11 +465,13 @@ function buildSignatureHtml(baseUrl: string, bizmisInviteSiteUrl: string): strin
 
 // Plain text rendering.
 
-function renderPlainText(lead: LeadEarlyAccessData): string {
+function renderPlainText(lead: LeadEarlyAccessData, utmCampaign: string): string {
   const { shopifyAppUrl } = EARLY_ACCESS_TERMS;
   const c = EARLY_ACCESS_EMAIL_COPY;
   const leadHandle = encodeURIComponent(lead.id);
-  const installUrlWithCode = `${shopifyAppUrl}?ref=${leadHandle}&code=${encodeURIComponent(lead.couponCode)}`;
+  const utmTail = buildOutboundUtmTail(lead.id, utmCampaign);
+  const installUrlWithCode = `${shopifyAppUrl}?ref=${leadHandle}&code=${encodeURIComponent(lead.couponCode)}&${utmTail}`;
+  const bizmisInviteSiteUrl = `${buildInviteBizmisSiteUrl(lead.id)}&${utmTail}`;
   const contactFirst = earlyAccessGreetingFirstName(lead.leadContactName);
   const salutation = contactFirst
     ? `${c.greetingDear} ${contactFirst},`
@@ -470,7 +512,7 @@ function renderPlainText(lead: LeadEarlyAccessData): string {
     "",
     `Questions? Just reply to this email (${c.contactEmail}).`,
     "",
-    buildInviteBizmisSiteUrl(lead.id),
+    bizmisInviteSiteUrl,
     `${INVITE_UNSUBSCRIBE_LABEL}: ${INSTANTLY_UNSUBSCRIBE_MERGE_TAG}`,
   ].join("\n");
 }
