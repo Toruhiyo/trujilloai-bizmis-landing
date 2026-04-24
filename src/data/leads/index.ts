@@ -71,7 +71,7 @@ function defaultCouponCodeFromId(id: string): string {
   return `BIZMIS-EARLY-ACCESS-${id.toUpperCase()}`;
 }
 
-function hydrate(raw: LeadEarlyAccessJson, index: number): LeadEarlyAccessData {
+export function hydrateLead(raw: LeadEarlyAccessJson, index: number): LeadEarlyAccessData {
   const { id } = raw;
   const couponOverride = raw.couponCode?.trim();
   return {
@@ -87,7 +87,7 @@ function hydrate(raw: LeadEarlyAccessJson, index: number): LeadEarlyAccessData {
   };
 }
 
-export const LEAD_EARLY_ACCESS_INVITES: LeadEarlyAccessData[] = RAW_LEADS.map(hydrate);
+export const LEAD_EARLY_ACCESS_INVITES: LeadEarlyAccessData[] = RAW_LEADS.map(hydrateLead);
 
 const byId = new Map(LEAD_EARLY_ACCESS_INVITES.map((l) => [l.id, l]));
 

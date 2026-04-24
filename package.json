@@ -13,6 +13,7 @@
     "generate:montage-waveform": "node scripts/generate-montage-waveform-png.mjs",
     "generate:email-compositions": "node scripts/generate-email-compositions.mjs",
     "generate:mock-lead-invite-assets": "node scripts/generate-mock-lead-invite-assets.mjs",
+    "generate:instantly-template": "node scripts/generate-instantly-template.mjs",
     "lint": "eslint .",
     "preview": "vite preview"
   },

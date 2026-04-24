@@ -16,6 +16,7 @@ import AdminProtectedRoute from "./components/admin/AdminProtectedRoute";
 import InviteCardsIndex from "./pages/admin/InviteCardsIndex";
 import EarlyAccessCardPage from "./pages/admin/EarlyAccessCardPage";
 import MockupRenderPage from "./pages/email-renders/MockupRenderPage";
+import InstantlyExportPage from "./pages/email-renders/InstantlyExportPage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -45,6 +46,8 @@ const App = () => (
           </Route>
           {/* Isolated mockup render target for the Playwright screenshot pipeline. */}
           <Route path="email-renders/:leadId/mockup/:which" element={<MockupRenderPage />} />
+          {/* Headless endpoint consumed by scripts/generate-instantly-template.mjs. */}
+          <Route path="email-renders/instantly-html" element={<InstantlyExportPage />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
