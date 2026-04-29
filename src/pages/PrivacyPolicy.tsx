@@ -194,25 +194,43 @@ const PrivacyPolicy = () => {
           </Section>
 
           <Section title="6. Data Retention">
-            <ul className="list-disc pl-6 space-y-1">
+            <ul className="list-disc pl-6 space-y-2">
               <li>
                 <strong>Session data</strong> (managed AWS data store) --
-                automatically deleted after 60 minutes of inactivity (TTL)
+                automatically deleted after 60 minutes of inactivity (TTL).
               </li>
               <li>
                 <strong>Conversation data</strong> (ElevenLabs) -- retained
-                until a deletion request is made
+                for the lifetime of the merchant's installation. After
+                uninstallation, retained during Shopify's 48-hour reinstall
+                window, then deleted within 30 days of receiving Shopify's{" "}
+                <code>shop/redact</code> webhook. Individual conversations
+                are also deleted on demand via Shopify's{" "}
+                <code>customers/redact</code> webhook or by direct request
+                to the contact email at the end of this policy.
               </li>
               <li>
                 <strong>Merchant configuration</strong> (managed relational
-                database) -- retained while the app is installed; deleted
-                when the merchant uninstalls the app
+                database) -- retained while the app is installed and during
+                Shopify's 48-hour reinstall window after uninstallation.
+                After 48 hours, Shopify dispatches its{" "}
+                <code>shop/redact</code> webhook and Bizmis deletes the
+                configuration within 30 days.
               </li>
               <li>
                 <strong>Shopify access tokens</strong> (managed AWS data
-                store) -- deleted within 48 hours of app uninstallation
+                store) -- invalidated immediately on uninstall via Shopify's{" "}
+                <code>app/uninstalled</code> webhook; the underlying record
+                is purged within 30 days of the subsequent{" "}
+                <code>shop/redact</code> webhook.
               </li>
             </ul>
+            <p>
+              If the merchant reinstalls Bizmis within Shopify's 48-hour
+              reinstall window, Shopify cancels the <code>shop/redact</code>{" "}
+              webhook and the merchant's configuration and historical
+              conversation data remain intact, by Shopify's design.
+            </p>
           </Section>
 
           <Section title="7. Cookies">

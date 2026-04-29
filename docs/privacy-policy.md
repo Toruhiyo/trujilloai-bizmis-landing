@@ -75,10 +75,12 @@ Each sub-processor processes data in accordance with its own privacy policy and 
 
 ## 6. Data Retention
 
-- **Session data** (managed AWS data store) — automatically deleted after 60 minutes of inactivity (TTL)
-- **Conversation data** (ElevenLabs) — retained until a deletion request is made
-- **Merchant configuration** (managed relational database) — retained while the app is installed; deleted when the merchant uninstalls the app
-- **Shopify access tokens** (managed AWS data store) — deleted within 48 hours of app uninstallation
+- **Session data** (managed AWS data store) — automatically deleted after 60 minutes of inactivity (TTL).
+- **Conversation data** (ElevenLabs) — retained for the lifetime of the merchant's installation. After uninstallation, retained during Shopify's 48-hour reinstall window, then deleted within 30 days of receiving Shopify's `shop/redact` webhook. Individual conversations are also deleted on demand via Shopify's `customers/redact` webhook or by direct request to the contact email at the end of this policy.
+- **Merchant configuration** (managed relational database) — retained while the app is installed and during Shopify's 48-hour reinstall window after uninstallation. After 48 hours, Shopify dispatches its `shop/redact` webhook and Bizmis deletes the configuration within 30 days.
+- **Shopify access tokens** (managed AWS data store) — invalidated immediately on uninstall via Shopify's `app/uninstalled` webhook; the underlying record is purged within 30 days of the subsequent `shop/redact` webhook.
+
+If the merchant reinstalls Bizmis within Shopify's 48-hour reinstall window, Shopify cancels the `shop/redact` webhook and the merchant's configuration and historical conversation data remain intact, by Shopify's design.
 
 ---
 
