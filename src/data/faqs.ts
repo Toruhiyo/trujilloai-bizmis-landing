@@ -172,7 +172,7 @@ export const faqCategories: FAQCategory[] = [
         id: "personalize-voice-look",
         question: "Can I personalize the voice and look?",
         answer:
-          "Yes. Bizmis offers voice cloning (so it can use your voice) and avatar customization to reflect your brand.",
+          "Yes. Bizmis offers avatar customization to reflect your brand, plus a curated catalog of natural-sounding voices in many languages. Voice cloning (using your own voice) is coming soon.",
         category: "customization",
       },
       {

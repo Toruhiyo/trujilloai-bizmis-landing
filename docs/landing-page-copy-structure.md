@@ -189,8 +189,8 @@ Build authentic relationships that drive customer loyalty through personalized v
 - **Two-column layout:** Left = avatar + clothing/haircut carousels; Right = 2 feature blocks + voice demo.
 - **Feature 1 — Personal Avatar**  
   Creating genuine connections by making your sales representative sound and look like you.
-- **Feature 2 — Voice Cloning**  
-  Authentic customer interactions through replication of your unique speaking style and personality.
+- **Feature 2 — Voice Cloning** _(Soon)_  
+  Authentic customer interactions through replication of your unique speaking style and personality. Marked as a "Soon" badge in the UI; not yet available.
 - **Voice demo**
   - Toggle: **Original Voice** | **Cloned Voice**
   - Audio player for comparison.

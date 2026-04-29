@@ -104,7 +104,7 @@ Yes—Bizmis is built exclusively for Shopify.
 
 ### Can I personalize the voice and look?
 
-Yes. Bizmis offers voice cloning (so it can use your voice) and avatar customization to reflect your brand.
+Yes. Bizmis offers avatar customization to reflect your brand, plus a curated catalog of natural-sounding voices in many languages. Voice cloning (using your own voice) is coming soon.
 
 ### Will the assistant feel human?
 

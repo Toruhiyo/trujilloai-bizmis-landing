@@ -1,6 +1,6 @@
 # Privacy Policy
 
-Last updated: February 16, 2026
+Last updated: April 28, 2026
 
 ---
 
@@ -42,22 +42,25 @@ We use the collected data to:
 - Provide and operate the AI voice shopping assistant
 - Process voice interactions in real time
 - Generate conversation transcripts for the merchant's analytics dashboard
-- Improve the quality and accuracy of the AI assistant
 - Provide session analytics and metrics to the merchant
+- Investigate abuse, debug failures, and maintain the security and integrity of the Service
+
+**No training on Store Customer data.** We do not use Store Customer voice recordings, audio, or conversation transcripts to train any AI model. We require our AI sub-processors to refrain from using this data to train their general-purpose models: AWS Bedrock customer data is not used to train any model by default; Anthropic does not train its foundation models on API or Bedrock customer data by default; and the ElevenLabs integration is configured so that conversation audio is not used to improve ElevenLabs's models.
 
 We do not sell personal data to third parties. We do not use customer data for advertising purposes.
 
 ---
 
-## 5. Third-Party Services
+## 5. Sub-Processors and Third-Party Services
 
-We use the following third-party services to operate Bizmis:
+We rely on the following sub-processors and third-party services to operate Bizmis:
 
-- **ElevenLabs** — processes voice interactions, stores audio recordings and conversation transcripts
-- **Amazon Web Services (AWS)** — hosts session data in DynamoDB, provides infrastructure
-- **Shopify** — provides store and customer context data through its APIs
+- **ElevenLabs** — speech-to-text, text-to-speech, and orchestration of the conversational AI agent (including LLM inference). The agent is configured to use Anthropic's Claude family of large language models for response generation. ElevenLabs stores conversation audio and transcripts so they can be replayed in the merchant analytics dashboard.
+- **Anthropic** — provider of the Claude family of large language models. Anthropic processes prompts and outputs via ElevenLabs (for live voice conversations) and via Amazon Bedrock (for our backend tasks such as policy search and session classification).
+- **Amazon Web Services (AWS)** — hosting, infrastructure, storage (DynamoDB, S3), and model inference (Amazon Bedrock).
+- **Shopify** — provides store and customer context data through its APIs and forwards data-subject requests to Bizmis through the mandatory compliance webhooks.
 
-Each third-party service processes data in accordance with their own privacy policies. We recommend reviewing their policies for details on their data handling practices.
+Each sub-processor processes data in accordance with its own privacy policy and the contractual safeguards we have in place with them. We recommend reviewing their policies for details on their data handling practices.
 
 ---
 
@@ -88,8 +91,9 @@ Under applicable privacy laws (including GDPR and CPRA), you have the right to:
 - Request correction of inaccurate data
 - Request deletion of your data
 - Restrict or object to certain processing activities
+- Lodge a complaint with your local data protection authority
 
-**Store customers:** please contact the merchant (store owner) to exercise your data rights. The merchant can submit data requests through Shopify, which are then processed by our GDPR compliance system.
+**Store customers:** please contact the merchant (store owner) to exercise your data rights. Merchants can forward data requests to Bizmis through Shopify's mandatory compliance webhooks (`customers/data_request`, `customers/redact`, and `shop/redact`) or by contacting us directly at the email below.
 
 **Merchants:** you can contact us directly at [hello@bizmis.ai](mailto:hello@bizmis.ai) to exercise your data rights.
 
@@ -97,22 +101,34 @@ Under applicable privacy laws (including GDPR and CPRA), you have the right to:
 
 ## 9. Data Security
 
-We implement appropriate technical and organizational measures to protect personal data, including encryption in transit (TLS), secure access controls, and regular security reviews. All data processing infrastructure is hosted on AWS with industry-standard security practices.
+We implement appropriate technical and organizational measures to protect personal data, including encryption in transit (TLS) and at rest, scoped access controls, separation of test and production environments, and regular security reviews. All data processing infrastructure is hosted on AWS with industry-standard security practices.
+
+**Breach notification.** If we become aware of a personal-data breach affecting Merchants or their Store Customers, we will notify the affected Merchant without undue delay and, where feasible, no later than 72 hours after we become aware of it, providing the information required by GDPR Article 33.
 
 ---
 
-## 10. International Data Transfers
+## 10. Sensitive Data Safeguards
 
-Data may be processed and stored in the United States and the European Union through our infrastructure providers (AWS) and third-party services (ElevenLabs). Where data is transferred outside the EEA, appropriate safeguards are in place in accordance with applicable data protection laws.
+**No voice biometrics.** Bizmis does not perform voice biometric identification and does not use voice recordings to uniquely identify a natural person within the meaning of GDPR Article 9. Voice recordings are processed solely to power the conversational assistant.
+
+**Not directed to children.** The voice assistant is not directed to children under 16 (or under 13 in jurisdictions where COPPA applies). Merchants must not deploy the assistant on stores or pages directed to children below those ages. If we become aware that voice or conversation data was collected from a child without appropriate consent, we will delete the data.
+
+**AI transparency.** The Bizmis voice widget makes its AI nature clear at the start of every conversation through its greeting and on-screen labeling, in line with the EU AI Act (Article 50) and analogous transparency requirements.
 
 ---
 
-## 11. Changes to This Policy
+## 11. International Data Transfers
+
+Data may be processed and stored in the United States and the European Union through our infrastructure providers (AWS) and our other sub-processors (ElevenLabs and Anthropic). Where data is transferred outside the EEA or the UK, we rely on the European Commission's Standard Contractual Clauses (and the UK International Data Transfer Addendum where relevant) and on the equivalent safeguards published by the sub-processor.
+
+---
+
+## 12. Changes to This Policy
 
 We may update this Privacy Policy from time to time. We will notify merchants of material changes through the Bizmis app admin panel or via email. The "Last updated" date at the top of this page indicates when the policy was last revised.
 
 ---
 
-## 12. Contact
+## 13. Contact
 
 For questions about this Privacy Policy or our data practices, contact us at: [hello@bizmis.ai](mailto:hello@bizmis.ai)
