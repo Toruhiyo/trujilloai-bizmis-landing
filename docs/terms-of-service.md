@@ -61,7 +61,7 @@ By interacting with the Bizmis voice assistant on a Merchant's storefront, you a
 - Voice and text data are processed by our sub-processors, including:
   - **ElevenLabs** — speech-to-text, text-to-speech, and orchestration of the conversational AI agent (including LLM inference). The agent is configured to use Anthropic's Claude family of large language models for response generation.
   - **Anthropic** — provider of the Claude family of large language models, used by ElevenLabs for live voice conversations and by our backend (through Amazon Bedrock) for background tasks such as policy search and session classification.
-  - **Amazon Web Services (AWS)** — hosting, storage (DynamoDB, S3), and model inference (Amazon Bedrock).
+  - **Amazon Web Services (AWS)** — hosting, managed data storage, and model inference (Amazon Bedrock).
 
   A current list of sub-processors, the data they receive, retention windows, and regions of processing is published in our [Privacy Policy](/privacy).
 - **No training on Store Customer data.** Bizmis does not use Store Customer voice recordings, audio, or conversation transcripts to train any AI model. We require our AI sub-processors to refrain from using this data to train their general-purpose models: AWS Bedrock customer data is not used to train any model by default; Anthropic does not train its foundation models on API or Bedrock customer data by default; and the ElevenLabs integration is configured so that conversation audio is not used to improve ElevenLabs's models.

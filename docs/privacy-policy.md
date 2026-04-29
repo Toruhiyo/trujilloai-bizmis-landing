@@ -45,6 +45,15 @@ We use the collected data to:
 - Provide session analytics and metrics to the merchant
 - Investigate abuse, debug failures, and maintain the security and integrity of the Service
 
+**Lawful basis for processing (GDPR Article 6).** We rely on the following lawful bases under GDPR Article 6 (and equivalent provisions in other jurisdictions):
+
+- **Performance of a contract (Art. 6(1)(b)).** For Merchant data, processing is necessary to deliver the Bizmis app under the Terms of Service. For Store Customer data, processing is carried out on behalf of the Merchant so that the Merchant can fulfill its own contract with the Store Customer.
+- **Consent (Art. 6(1)(a)).** Voice recording and conversation transcription only begin after the Store Customer accepts the in-widget consent prompt. Consent can be withdrawn at any time by closing the assistant or contacting us.
+- **Legitimate interests (Art. 6(1)(f)).** For security monitoring, abuse prevention, debugging, and aggregate analytics that do not identify individual Store Customers, balanced against the rights and freedoms of the affected individuals.
+- **Legal obligation (Art. 6(1)(c)).** When we respond to lawful requests from authorities or honor Shopify's mandatory compliance webhooks.
+
+Bizmis acts as a **data processor** on behalf of the Merchant (the controller) for Store Customer data, and as the **data controller** for Merchant account data and aggregated, non-identifying telemetry. Bizmis does not have a Data Protection Officer (DPO) because data processing is not its core activity within the meaning of GDPR Article 37; you can reach the privacy contact at the email at the end of this policy.
+
 **No training on Store Customer data.** We do not use Store Customer voice recordings, audio, or conversation transcripts to train any AI model. We require our AI sub-processors to refrain from using this data to train their general-purpose models: AWS Bedrock customer data is not used to train any model by default; Anthropic does not train its foundation models on API or Bedrock customer data by default; and the ElevenLabs integration is configured so that conversation audio is not used to improve ElevenLabs's models.
 
 We do not sell personal data to third parties. We do not use customer data for advertising purposes.
@@ -57,7 +66,7 @@ We rely on the following sub-processors and third-party services to operate Bizm
 
 - **ElevenLabs** — speech-to-text, text-to-speech, and orchestration of the conversational AI agent (including LLM inference). The agent is configured to use Anthropic's Claude family of large language models for response generation. ElevenLabs stores conversation audio and transcripts so they can be replayed in the merchant analytics dashboard.
 - **Anthropic** — provider of the Claude family of large language models. Anthropic processes prompts and outputs via ElevenLabs (for live voice conversations) and via Amazon Bedrock (for our backend tasks such as policy search and session classification).
-- **Amazon Web Services (AWS)** — hosting, infrastructure, storage (DynamoDB, S3), and model inference (Amazon Bedrock).
+- **Amazon Web Services (AWS)** — hosting, infrastructure, managed data storage, and model inference (Amazon Bedrock).
 - **Shopify** — provides store and customer context data through its APIs and forwards data-subject requests to Bizmis through the mandatory compliance webhooks.
 
 Each sub-processor processes data in accordance with its own privacy policy and the contractual safeguards we have in place with them. We recommend reviewing their policies for details on their data handling practices.
@@ -66,10 +75,10 @@ Each sub-processor processes data in accordance with its own privacy policy and 
 
 ## 6. Data Retention
 
-- **Session data** (DynamoDB) — automatically deleted after 60 minutes of inactivity (TTL)
+- **Session data** (managed AWS data store) — automatically deleted after 60 minutes of inactivity (TTL)
 - **Conversation data** (ElevenLabs) — retained until a deletion request is made
-- **Merchant configuration** (PostgreSQL) — retained while the app is installed; deleted when the merchant uninstalls the app
-- **Shopify access tokens** (DynamoDB) — deleted within 48 hours of app uninstallation
+- **Merchant configuration** (managed relational database) — retained while the app is installed; deleted when the merchant uninstalls the app
+- **Shopify access tokens** (managed AWS data store) — deleted within 48 hours of app uninstallation
 
 ---
 

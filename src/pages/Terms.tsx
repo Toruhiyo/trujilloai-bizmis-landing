@@ -220,7 +220,7 @@ const Terms = () => {
                   </li>
                   <li>
                     <strong>Amazon Web Services (AWS)</strong> — hosting,
-                    storage (DynamoDB, S3), and model inference (Amazon
+                    managed data storage, and model inference (Amazon
                     Bedrock).
                   </li>
                 </ul>

@@ -92,6 +92,50 @@ const PrivacyPolicy = () => {
               </li>
             </ul>
             <p>
+              <strong>Lawful basis for processing (GDPR Article 6).</strong>{" "}
+              We rely on the following lawful bases under GDPR Article 6
+              (and equivalent provisions in other jurisdictions):
+            </p>
+            <ul className="list-disc pl-6 space-y-1">
+              <li>
+                <strong>Performance of a contract (Art. 6(1)(b)).</strong>{" "}
+                For Merchant data, processing is necessary to deliver the
+                Bizmis app under the Terms of Service. For Store Customer
+                data, processing is carried out on behalf of the Merchant so
+                that the Merchant can fulfill its own contract with the
+                Store Customer.
+              </li>
+              <li>
+                <strong>Consent (Art. 6(1)(a)).</strong> Voice recording and
+                conversation transcription only begin after the Store
+                Customer accepts the in-widget consent prompt. Consent can
+                be withdrawn at any time by closing the assistant or
+                contacting us.
+              </li>
+              <li>
+                <strong>Legitimate interests (Art. 6(1)(f)).</strong> For
+                security monitoring, abuse prevention, debugging, and
+                aggregate analytics that do not identify individual Store
+                Customers, balanced against the rights and freedoms of the
+                affected individuals.
+              </li>
+              <li>
+                <strong>Legal obligation (Art. 6(1)(c)).</strong> When we
+                respond to lawful requests from authorities or honor
+                Shopify's mandatory compliance webhooks.
+              </li>
+            </ul>
+            <p>
+              Bizmis acts as a <strong>data processor</strong> on behalf of
+              the Merchant (the controller) for Store Customer data, and as
+              the <strong>data controller</strong> for Merchant account data
+              and aggregated, non-identifying telemetry. Bizmis does not have
+              a Data Protection Officer (DPO) because data processing is not
+              its core activity within the meaning of GDPR Article 37; you
+              can reach the privacy contact at the email at the end of this
+              policy.
+            </p>
+            <p>
               <strong>No training on Store Customer data.</strong> We do not
               use Store Customer voice recordings, audio, or conversation
               transcripts to train any AI model. We require our AI
@@ -132,7 +176,7 @@ const PrivacyPolicy = () => {
               </li>
               <li>
                 <strong>Amazon Web Services (AWS)</strong> -- hosting,
-                infrastructure, storage (DynamoDB, S3), and model inference
+                infrastructure, managed data storage, and model inference
                 (Amazon Bedrock).
               </li>
               <li>
@@ -152,21 +196,21 @@ const PrivacyPolicy = () => {
           <Section title="6. Data Retention">
             <ul className="list-disc pl-6 space-y-1">
               <li>
-                <strong>Session data</strong> (DynamoDB) -- automatically
-                deleted after 60 minutes of inactivity (TTL)
+                <strong>Session data</strong> (managed AWS data store) --
+                automatically deleted after 60 minutes of inactivity (TTL)
               </li>
               <li>
                 <strong>Conversation data</strong> (ElevenLabs) -- retained
                 until a deletion request is made
               </li>
               <li>
-                <strong>Merchant configuration</strong> (PostgreSQL) -- retained
-                while the app is installed; deleted when the merchant
-                uninstalls the app
+                <strong>Merchant configuration</strong> (managed relational
+                database) -- retained while the app is installed; deleted
+                when the merchant uninstalls the app
               </li>
               <li>
-                <strong>Shopify access tokens</strong> (DynamoDB) -- deleted
-                within 48 hours of app uninstallation
+                <strong>Shopify access tokens</strong> (managed AWS data
+                store) -- deleted within 48 hours of app uninstallation
               </li>
             </ul>
           </Section>
