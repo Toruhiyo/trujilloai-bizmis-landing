@@ -88,7 +88,7 @@ const Customization = () => {
   return (
     <section
       id="customization"
-      className="relative py-24 bg-[#FDF7E2]/20 overflow-hidden"
+      className="relative py-24 bg-[#FDF7E2]/20 border-t border-primary/20 overflow-hidden"
     >
       {/* Background Elements */}
       <div className="absolute inset-0">
