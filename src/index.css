@@ -376,6 +376,18 @@ All colors MUST be HSL.
   }
 }
 
+/* VoiceSupportScene: per-bar fluctuation. transform-origin: center so the
+   pulse doesn't compound the silent ↔ talk height morph at the bar's edges. */
+@keyframes voice-support-wave-bar {
+  0% {
+    transform: scaleY(0.55);
+  }
+
+  100% {
+    transform: scaleY(1);
+  }
+}
+
 /* Custom orange scrollbar for conversation UI */
 .conversation-scrollbar::-webkit-scrollbar {
   width: 4px;
