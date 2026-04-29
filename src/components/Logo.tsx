@@ -7,68 +7,66 @@ interface LogoProps {
   variant?: LogoVariant;
   size?: LogoSize;
   showText?: boolean;
+  tintColor?: string;
   className?: string;
   onClick?: () => void;
 }
 
-const IMAGE_SIZE_CLASSES: Record<LogoSize, string> = {
-  sm: "h-6 w-auto sm:h-7",
-  md: "h-8 w-auto sm:h-10",
-  lg: "h-10 w-auto sm:h-12",
+const HEIGHT_CLASSES: Record<LogoSize, string> = {
+  sm: "h-6 sm:h-7",
+  md: "h-8 sm:h-10",
+  lg: "h-10 sm:h-12",
 };
 
-const TEXT_SIZE_CLASSES: Record<LogoSize, string> = {
-  sm: "text-lg sm:text-xl",
-  md: "text-xl sm:text-2xl",
-  lg: "text-2xl sm:text-3xl",
-};
+const FULL_LOGO_MASK_URL = "/images/bizmis-logo-full-white-transparent.png";
+const AVATAR_MASK_URL = "/images/bizmis-logo-white-transparent.png";
 
-const LOGO_SRC: Record<LogoVariant, string> = {
-  white: "/images/bizmis-logo-white-transparent.png",
-  default: "/images/bizmis-logo-orange-transparent.png",
+const FULL_LOGO_ASPECT = "1948 / 640";
+const AVATAR_ASPECT = "1 / 1";
+
+const VARIANT_TINT: Record<LogoVariant, string> = {
+  white: "#ffffff",
+  default: "hsl(var(--primary))",
 };
 
 const Logo = ({
   variant = "default",
   size = "md",
   showText = false,
+  tintColor,
   className,
   onClick,
 }: LogoProps) => {
   const Component = onClick ? "button" : "div";
+  const maskUrl = showText ? FULL_LOGO_MASK_URL : AVATAR_MASK_URL;
+  const aspectRatio = showText ? FULL_LOGO_ASPECT : AVATAR_ASPECT;
+  const color = tintColor ?? VARIANT_TINT[variant];
 
   return (
     <Component
       onClick={onClick}
+      aria-label="Bizmis"
       className={cn(
-        "flex items-center gap-2 sm:gap-3 transition-all duration-300",
+        "inline-flex items-center transition-all duration-300",
         onClick && "hover:opacity-80 cursor-pointer",
         className
       )}
     >
-      <img
-        src={LOGO_SRC[variant]}
-        alt="Bizmis Logo"
-        className={cn(IMAGE_SIZE_CLASSES[size], "object-contain")}
+      <span
+        className={cn("block w-auto", HEIGHT_CLASSES[size])}
+        style={{
+          aspectRatio,
+          backgroundColor: color,
+          WebkitMaskImage: `url(${maskUrl})`,
+          maskImage: `url(${maskUrl})`,
+          WebkitMaskSize: "contain",
+          maskSize: "contain",
+          WebkitMaskRepeat: "no-repeat",
+          maskRepeat: "no-repeat",
+          WebkitMaskPosition: "center",
+          maskPosition: "center",
+        }}
       />
-
-      {showText && (
-        <span
-          className={cn(
-            "font-extrabold tracking-tight select-none font-heading",
-            TEXT_SIZE_CLASSES[size],
-            variant === "white" ? "text-white" : ""
-          )}
-          style={{
-            fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif",
-            fontWeight: 800,
-            letterSpacing: "-0.02em",
-            ...(variant !== "white" && { color: "hsl(var(--primary))" }),
-          }}
-        >
-          bizmis
-        </span>
-      )}
     </Component>
   );
 };
