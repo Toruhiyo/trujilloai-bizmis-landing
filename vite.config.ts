@@ -16,6 +16,19 @@ const DEV_GENERATOR_ROUTES: Record<string, string> = {
   "/__bizmis/regenerate-instantly-lead-fields": "generate:instantly-lead-fields",
 };
 
+/** Injects build/runtime year into index.html for static prerender footer (BIZ-28). */
+function prerenderYearPlaceholder(): PluginOption {
+  return {
+    name: "bizmis-prerender-year",
+    transformIndexHtml(html) {
+      return html.replace(
+        /%PRERENDER_YEAR%/g,
+        String(new Date().getFullYear()),
+      );
+    },
+  };
+}
+
 function devGeneratorEndpoints(): PluginOption {
   return {
     name: "bizmis-dev-generator-endpoints",
@@ -57,6 +70,7 @@ export default defineConfig(({ mode }) => ({
     port: 8080,
   },
   plugins: [
+    prerenderYearPlaceholder(),
     react(),
     mode === 'development' && devGeneratorEndpoints(),
     mode === 'development' &&

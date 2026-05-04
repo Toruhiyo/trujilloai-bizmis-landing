@@ -334,7 +334,7 @@ const Benefits = () => {
                       <FaTag className="w-5 h-5 text-primary/60 group-hover:text-primary/90 transition-colors duration-300 flex-shrink-0 mt-0.5" />
                       <div>
                         <h3 className="text-lg font-heading font-semibold text-foreground mb-2">
-                          Auto-Tagged Sessions
+                          Auto-Tagged Chats
                         </h3>
                         <p className="text-muted-foreground font-body text-sm">
                           Conversations auto-group by topic and intent. Update
