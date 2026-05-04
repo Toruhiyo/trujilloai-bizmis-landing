@@ -213,8 +213,8 @@ Build authentic relationships that drive customer loyalty through personalized v
   - Greets and qualifies shoppers
   - Compares products & recommends
   - Handles support and reduces tickets
-- **Primary button:** **Join the Waitlist** (Shopify icon)
-- **Secondary button:** **Talk to sales**
+- **Primary button:** **Install on Shopify** (Shopify icon) — opens `apps.shopify.com/bizmis` in a new tab; URL constant lives in `src/lib/bizmisUrls.ts` (`BIZMIS_SHOPIFY_APP_LISTING_URL`).
+- **Secondary button:** **Talk to sales** — navigates to `/contact`.
 - **Microline:**  
   _Cancel anytime • [GDPR-ready](/privacy) • Built for Shopify_
 
@@ -252,16 +252,16 @@ Build authentic relationships that drive customer loyalty through personalized v
 
 ## Summary: section → content type
 
-| Section       | Section badge    | Headline / promise       | Internal content                                                         |
-| ------------- | ---------------- | ------------------------ | ------------------------------------------------------------------------ |
-| Hero          | —                | Boost Profits, Selling…  | Subline, Install Now, custom websites                                    |
-| Benefit 1     | Boost Sales      | Convert. Upsell. Retain. | 3 flip-card subbenefits + SpeakDiscoverBuy demo                          |
-| Benefit 2     | Customer Support | Save hours… Earn loyal…  | VoiceSupportScene + 3 KPI pills + 3 feature cards                        |
-| Benefit 3     | Store Insights   | Learn. Tune. Grow.       | TabbedSessionReplay + 3 feature cards                                    |
-| Setup         | Plug and Play    | One-Click Setup…         | Diagram (5 data cards + avatar) + trust badges + Install CTA             |
-| Customization | Personalization  | Make It Truly Yours      | 2 feature blocks (Avatar, Voice) + voice toggle + carousels              |
-| CTA           | —                | Install on Shopify…      | Value prop, 3 bullets, Join Waitlist / Talk to sales + Early Access card |
-| Footer        | —                | —                        | Tagline, Built for Shopify, Product / Support / Legal links, copyright   |
+| Section       | Section badge    | Headline / promise       | Internal content                                                                |
+| ------------- | ---------------- | ------------------------ | ------------------------------------------------------------------------------- |
+| Hero          | —                | Boost Profits, Selling…  | Subline, Install Now, custom websites                                           |
+| Benefit 1     | Boost Sales      | Convert. Upsell. Retain. | 3 flip-card subbenefits + SpeakDiscoverBuy demo                                 |
+| Benefit 2     | Customer Support | Save hours… Earn loyal…  | VoiceSupportScene + 3 KPI pills + 3 feature cards                               |
+| Benefit 3     | Store Insights   | Learn. Tune. Grow.       | TabbedSessionReplay + 3 feature cards                                           |
+| Setup         | Plug and Play    | One-Click Setup…         | Diagram (5 data cards + avatar) + trust badges + Install CTA                    |
+| Customization | Personalization  | Make It Truly Yours      | 2 feature blocks (Avatar, Voice) + voice toggle + carousels                     |
+| CTA           | —                | Install on Shopify…      | Value prop, 3 bullets, Install on Shopify / Talk to sales + Early Access card   |
+| Footer        | —                | —                        | Tagline, Built for Shopify, Product / Support / Legal links, copyright          |
 
 ---
 
