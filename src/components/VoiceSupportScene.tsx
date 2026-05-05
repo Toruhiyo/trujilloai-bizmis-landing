@@ -205,13 +205,13 @@ const VoiceSupportScene = () => {
   return (
     <div
       ref={ref}
-      className="relative grid w-full min-h-[420px] sm:min-h-[520px] items-center"
+      className="relative flex flex-col items-center gap-6 lg:grid lg:gap-0 w-full min-h-[420px] sm:min-h-[480px] lg:min-h-[520px] lg:items-center"
       style={{ gridTemplateColumns: "1fr auto 1fr" }}
     >
       {/* Left cell — customer card pushed to the right edge */}
-      <div className="justify-self-end min-w-0 flex justify-end">
+      <div className="lg:justify-self-end min-w-0 flex justify-center lg:justify-end order-1 lg:order-none">
         <div
-          className="relative z-10 w-[12rem] flex-shrink-0"
+          className="relative z-10 w-[10rem] sm:w-[12rem] flex-shrink-0"
           style={{
             opacity: customerVisible && !fadingOut ? 1 : 0,
             transform: customerVisible && !fadingOut ? "translateX(0)" : "translateX(-1.5rem)",
@@ -223,13 +223,13 @@ const VoiceSupportScene = () => {
             size="small"
             showOverlay={false}
             isVisible={customerVisible && !fadingOut}
-            className="max-w-[12rem]"
+            className="max-w-[10rem] sm:max-w-[12rem]"
           />
         </div>
       </div>
 
       {/* Center cell — text, waveform, action + resolution */}
-      <div className="relative z-20 flex flex-col items-stretch gap-2 w-[22rem] sm:w-[28rem] px-8 sm:px-10">
+      <div className="relative z-20 flex flex-col items-stretch gap-2 w-full max-w-[22rem] sm:max-w-[28rem] px-4 sm:px-8 lg:px-10 lg:w-[22rem] xl:w-[28rem] order-3 lg:order-none">
         {/* Customer request text */}
         <div
           style={{
@@ -406,7 +406,7 @@ const VoiceSupportScene = () => {
       </div>
 
       {/* Right cell — avatar pushed to the left edge */}
-      <div className="justify-self-start">
+      <div className="lg:justify-self-start order-2 lg:order-none">
         <div
           className={`relative z-10 transition-all ease-out ${
             isVisible ? "opacity-100 scale-100" : "opacity-0 scale-90"
@@ -422,7 +422,7 @@ const VoiceSupportScene = () => {
           <img
             src="/images/benefit-2-customer-support.png"
             alt="Bizmis support assistant"
-            className="relative h-80 sm:h-96 lg:h-[28rem] object-contain drop-shadow-2xl"
+            className="relative h-56 sm:h-72 md:h-96 lg:h-[28rem] object-contain drop-shadow-2xl"
           />
         </div>
       </div>

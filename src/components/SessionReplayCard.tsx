@@ -306,7 +306,7 @@ const SessionReplayCard: React.FC<SessionReplayCardProps> = ({
     <div className={`w-full max-w-2xl ${className}`}>
       {/* Integrated Session Replay Card */}
       <div
-        className={`bg-card backdrop-blur-sm rounded-2xl p-8 border border-primary/20 shadow-brand transform rotate-2 hover:rotate-1 transition-all duration-500 ${
+        className={`bg-card backdrop-blur-sm rounded-2xl p-5 sm:p-8 border border-primary/20 shadow-brand transform lg:rotate-2 lg:hover:rotate-1 transition-all duration-500 ${
           isVisible ? "opacity-100 scale-100" : "opacity-0 scale-95"
         }`}
       >
@@ -344,7 +344,7 @@ const SessionReplayCard: React.FC<SessionReplayCardProps> = ({
         {/* Session Details - Above Audio Player */}
         <div className="mb-4 pb-6 border-b border-border/30">
           {/* All Session Info - Spread with Dots */}
-          <div className="flex items-center justify-between text-xs text-muted-foreground">
+          <div className="flex flex-wrap items-center justify-center sm:justify-between gap-x-3 gap-y-2 text-xs text-muted-foreground">
             {/* Customer Info */}
             <div className="flex items-center gap-2">
               <div
@@ -384,7 +384,7 @@ const SessionReplayCard: React.FC<SessionReplayCardProps> = ({
               </span>
             </div>
 
-            <div className="w-1 h-1 bg-muted-foreground/40 rounded-full" />
+            <div className="hidden sm:block w-1 h-1 bg-muted-foreground/40 rounded-full" />
 
             {/* Language */}
             <div className="flex items-center gap-1.5">
@@ -392,7 +392,7 @@ const SessionReplayCard: React.FC<SessionReplayCardProps> = ({
               <span>{language}</span>
             </div>
 
-            <div className="w-1 h-1 bg-muted-foreground/40 rounded-full" />
+            <div className="hidden sm:block w-1 h-1 bg-muted-foreground/40 rounded-full" />
 
             {/* Duration */}
             <div className="flex items-center gap-1.5">
@@ -400,7 +400,7 @@ const SessionReplayCard: React.FC<SessionReplayCardProps> = ({
               <span>{formatDuration(durationSeconds)}</span>
             </div>
 
-            <div className="w-1 h-1 bg-muted-foreground/40 rounded-full" />
+            <div className="hidden sm:block w-1 h-1 bg-muted-foreground/40 rounded-full" />
 
             {/* Messages */}
             <div className="flex items-center gap-1.5">
@@ -408,7 +408,7 @@ const SessionReplayCard: React.FC<SessionReplayCardProps> = ({
               <span>{messageCount}</span>
             </div>
 
-            <div className="w-1 h-1 bg-muted-foreground/40 rounded-full" />
+            <div className="hidden sm:block w-1 h-1 bg-muted-foreground/40 rounded-full" />
 
             {/* Date */}
             <div className="flex items-center gap-1.5">
@@ -449,11 +449,11 @@ const SessionReplayCard: React.FC<SessionReplayCardProps> = ({
                           : ""
                       }`}
                     >
-                      <div className="flex items-center gap-2 mb-3">
+                      <div className="flex flex-wrap items-center gap-x-2 gap-y-1 mb-3">
                         {isCoffeeConversation ? (
-                          <Coffee className="w-4 h-4 text-primary" />
+                          <Coffee className="w-4 h-4 text-primary shrink-0" />
                         ) : (
-                          <Search className="w-4 h-4 text-primary" />
+                          <Search className="w-4 h-4 text-primary shrink-0" />
                         )}
                         <span className="text-sm font-medium text-foreground">
                           {bubble.content}
@@ -463,7 +463,7 @@ const SessionReplayCard: React.FC<SessionReplayCardProps> = ({
                             ? '"coffee equipment"'
                             : '"gift search"'}
                         </span>
-                        <span className="text-xs text-muted-foreground ml-auto">
+                        <span className="text-xs text-muted-foreground sm:ml-auto">
                           {bubble.time}
                         </span>
                       </div>

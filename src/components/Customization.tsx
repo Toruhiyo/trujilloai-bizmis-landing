@@ -88,7 +88,7 @@ const Customization = () => {
   return (
     <section
       id="customization"
-      className="relative py-24 bg-[#FDF7E2]/20 border-t border-primary/20 overflow-hidden"
+      className="relative py-16 sm:py-20 lg:py-24 bg-[#FDF7E2]/20 border-t border-primary/20 overflow-hidden"
     >
       {/* Background Elements */}
       <div className="absolute inset-0">
@@ -105,15 +105,15 @@ const Customization = () => {
         <div className="absolute top-2/3 left-1/4 w-1.5 h-1.5 bg-primary/25 rounded-full animate-pulse delay-500"></div>
       </div>
 
-      <div className="container mx-auto px-6 relative z-10">
+      <div className="container mx-auto px-4 sm:px-6 relative z-10">
         <div className="max-w-7xl mx-auto">
           {/* Header */}
-          <div className="text-center mb-16">
+          <div className="text-center mb-10 sm:mb-12 lg:mb-16">
             <SectionBadge icon={FaPaintBrush} text="Personalization" />
-            <h2 className="text-4xl lg:text-5xl font-heading font-bold text-foreground mb-6">
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-heading font-bold text-foreground mb-6">
               Make It <span className="text-primary">Truly Yours</span>
             </h2>
-            <p className="text-xl text-muted-foreground font-body max-w-3xl mx-auto">
+            <p className="text-base sm:text-lg lg:text-xl text-muted-foreground font-body max-w-3xl mx-auto px-2">
               Build authentic relationships that drive customer loyalty through
               personalized voice and appearance customization.
             </p>
@@ -123,7 +123,7 @@ const Customization = () => {
           <div className="grid lg:grid-cols-2 gap-8 md:gap-12 lg:gap-16 items-center">
             {/* Right: Features */}
             <div className="space-y-6 md:space-y-12 lg:space-y-16 order-2 lg:order-2">
-              <div className="group bg-primary/10 backdrop-blur-md rounded-3xl p-8 border border-primary/20 hover:border-primary/30 transform -rotate-1 hover:rotate-0 transition-all duration-500 shadow-xl">
+              <div className="group bg-primary/10 backdrop-blur-md rounded-3xl p-6 sm:p-8 border border-primary/20 hover:border-primary/30 transform lg:-rotate-1 lg:hover:rotate-0 transition-all duration-500 shadow-xl">
                 <div className="space-y-6">
                   <div className="flex gap-4">
                     <FaPaintBrush className="w-5 h-5 text-primary/60 group-hover:text-primary/90 transition-colors duration-300 flex-shrink-0 mt-0.5" />
@@ -140,7 +140,7 @@ const Customization = () => {
                 </div>
               </div>
 
-              <div className="group bg-primary/10 backdrop-blur-md rounded-3xl p-8 border border-primary/20 hover:border-primary/30 transform rotate-1 hover:rotate-0 transition-all duration-500 shadow-xl">
+              <div className="group bg-primary/10 backdrop-blur-md rounded-3xl p-6 sm:p-8 border border-primary/20 hover:border-primary/30 transform lg:rotate-1 lg:hover:rotate-0 transition-all duration-500 shadow-xl">
                 <div className="space-y-6">
                   <div className="flex gap-4">
                     <FaMicrophone className="w-5 h-5 text-primary/60 group-hover:text-primary/90 transition-colors duration-300 flex-shrink-0 mt-0.5" />
@@ -207,9 +207,9 @@ const Customization = () => {
 
             {/* Left: Customization Image */}
             <div className="relative order-1 lg:order-1">
-              {/* Auto-Rotating Vertical Clothing Carousel */}
+              {/* Auto-Rotating Vertical Clothing Carousel — hidden on mobile (no horizontal room) */}
               {!isAvatarHovered && (
-                <div className="absolute -left-32 top-1/2 transform -translate-y-1/2 z-20">
+                <div className="hidden md:block absolute -left-16 lg:-left-32 top-1/2 transform -translate-y-1/2 z-20">
                   <FakeImagesSelector
                     images={clothingImages}
                     selectedId={selectedClothingId}
@@ -227,9 +227,9 @@ const Customization = () => {
                 </div>
               )}
 
-              {/* Auto-Rotating Vertical Haircut Carousel */}
+              {/* Auto-Rotating Vertical Haircut Carousel — hidden on mobile (no horizontal room) */}
               {!isAvatarHovered && (
-                <div className="absolute -right-32 top-1/2 transform -translate-y-1/2 z-20">
+                <div className="hidden md:block absolute -right-16 lg:-right-32 top-1/2 transform -translate-y-1/2 z-20">
                   <FakeImagesSelector
                     images={haircutImages}
                     selectedId={selectedHaircutId}

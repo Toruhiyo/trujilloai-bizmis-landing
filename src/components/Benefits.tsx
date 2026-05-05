@@ -20,7 +20,7 @@ import TabbedSessionReplay from "./TabbedSessionReplay";
 
 const Benefits = () => {
   return (
-    <div className="space-y-0 bg-gradient-to-b from-background via-[#FDF7E2]/10 to-background">
+    <div className="space-y-0 bg-gradient-to-b from-background via-[#FDF7E2]/10 to-background overflow-x-clip">
       {/* Shared Background Section: Driven Sales & Customization */}
       <section className="relative py-12 overflow-visible">
         {/* Modern Shared Background Design - Single background for both sections */}
@@ -51,20 +51,20 @@ const Benefits = () => {
           <div className="absolute -bottom-20 left-1/2 -translate-x-1/2 w-[35%] h-52 bg-[#FDF7E2]/80 rounded-[50%] blur-[60px]"></div>
         </div>
 
-        <div className="container mx-auto px-6 relative z-10">
+        <div className="container mx-auto px-4 sm:px-6 relative z-10">
           <div className="max-w-7xl mx-auto">
             {/* Section 1: Core Value Proposition */}
             <div className="text-center max-w-5xl mx-auto mb-10">
               <div className="relative">
-                <div className="absolute -left-64  top-10 text-9xl lg:text-[12rem] font-bold text-primary/20 transform -rotate-12 select-none">
+                <div className="hidden lg:block absolute -left-64 top-10 text-9xl lg:text-[12rem] font-bold text-primary/20 transform -rotate-12 select-none pointer-events-none">
                   #1
                 </div>
                 <SectionBadge icon={FaShoppingCart} text="Boost Sales" />
-                <h1 className="text-5xl lg:text-7xl font-heading font-bold text-foreground mb-8 relative z-10">
+                <h1 className="text-4xl sm:text-5xl lg:text-7xl font-heading font-bold text-foreground mb-6 sm:mb-8 relative z-10">
                   Convert. Upsell. Retain.
                 </h1>
               </div>
-              <p className="text-xl text-muted-foreground font-body leading-relaxed mb-12">
+              <p className="text-base sm:text-lg lg:text-xl text-muted-foreground font-body leading-relaxed mb-10 sm:mb-12 px-2">
                 Bizmis acts like a great in-store associate — guiding shoppers,
                 increasing cart value, and creating the kind of personal, warm
                 experience that brings customers back.
@@ -131,7 +131,7 @@ const Benefits = () => {
             </div>
 
             {/* Speak → Discover → Buy visual */}
-            <div className="relative mb-32 mt-4">
+            <div className="relative mb-16 sm:mb-24 lg:mb-32 mt-4">
               <SpeakDiscoverBuy />
             </div>
           </div>
@@ -141,7 +141,7 @@ const Benefits = () => {
       {/* Benefit 2: Customer Support - Enhanced Layout */}
       <section
         id="benefit-2"
-        className="relative py-32 bg-[#FDF7E2]/20 overflow-visible"
+        className="relative py-16 sm:py-24 lg:py-32 bg-[#FDF7E2]/20 overflow-visible"
       >
         {/* Background Elements - Enhanced for Dashboard */}
         <div className="absolute inset-0">
@@ -159,22 +159,25 @@ const Benefits = () => {
           <div className="absolute bottom-1/4 right-0 w-96 h-2 bg-gradient-to-l from-transparent via-primary/20 to-transparent blur-sm animate-pulse"></div>
         </div>
 
-        <div className="container mx-auto px-8 relative z-10">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="max-w-8xl mx-auto">
             {/* Header */}
             <div className="text-center mb-8">
               <SectionBadge icon={FaComments} text="Customer Support" />
               <div className="relative">
-                <div className="absolute -right-16 -top-16 text-8xl lg:text-9xl font-bold text-primary/25 transform rotate-12 select-none">
+                <div
+                  className="absolute -right-4 sm:-right-16 -top-6 sm:-top-16 text-6xl sm:text-8xl lg:text-9xl font-bold text-primary/25 transform rotate-12 select-none pointer-events-none"
+                  aria-hidden
+                >
                   #2
                 </div>
-                <h2 className="text-5xl lg:text-6xl font-heading font-bold text-foreground mb-6 relative z-10 mr-14">
+                <h2 className="text-4xl sm:text-5xl lg:text-6xl font-heading font-bold text-foreground mb-6 relative z-10 lg:mr-14">
                   Save hours on support.
                   <br />
                   Earn loyal customers.
                 </h2>
               </div>
-              <p className="text-xl text-muted-foreground font-body max-w-4xl mx-auto">
+              <p className="text-base sm:text-lg lg:text-xl text-muted-foreground font-body max-w-4xl mx-auto px-2">
                 Emotional intelligence and instant 24/7 support improve customer
                 satisfaction with immediate, warm, and empathetic resolutions
                 that feel like help from a great in-store clerk, while saving
@@ -183,7 +186,7 @@ const Benefits = () => {
             </div>
 
             {/* Hierarchy: demo scene → business outcomes (KPI strip) → enabling capabilities (cards) */}
-            <div className="flex flex-col items-center gap-14">
+            <div className="flex flex-col items-center gap-10 sm:gap-12 lg:gap-14">
               <div className="w-full flex justify-center">
                 <VoiceSupportScene />
               </div>
@@ -273,7 +276,7 @@ const Benefits = () => {
       {/* Benefit 3: Store Insights */}
       <section
         id="benefit-3"
-        className="relative py-32 bg-[#FDF7E2]/20 overflow-hidden"
+        className="relative py-16 sm:py-24 lg:py-32 bg-[#FDF7E2]/20 overflow-hidden"
       >
         {/* Background Elements */}
         <div className="absolute inset-0">
@@ -281,36 +284,38 @@ const Benefits = () => {
           <div className="absolute bottom-10 right-10 w-80 h-80 bg-primary/10 rounded-full blur-3xl"></div>
         </div>
 
-        <div className="container mx-auto px-6 relative z-10">
+        <div className="container mx-auto px-4 sm:px-6 relative z-10">
           <div className="max-w-7xl mx-auto">
             {/* Header */}
-            <div className="text-center mb-20">
+            <div className="text-center mb-12 sm:mb-16 lg:mb-20">
               <SectionBadge icon={FaChartLine} text="Store Insights" />
               <div className="relative">
-                <div className="absolute -left-16 -top-16 text-8xl lg:text-9xl font-bold text-primary/25 transform rotate-6 select-none">
+                <div
+                  className="absolute -left-4 sm:-left-16 -top-6 sm:-top-16 text-6xl sm:text-8xl lg:text-9xl font-bold text-primary/25 transform rotate-6 select-none pointer-events-none"
+                  aria-hidden
+                >
                   #3
                 </div>
-                <h2 className="text-5xl lg:text-6xl font-heading font-bold text-foreground mb-6 relative z-10 ml-14">
-                  {/* Understand Customers. Tune the funnel. Grow revenue. */}
+                <h2 className="text-4xl sm:text-5xl lg:text-6xl font-heading font-bold text-foreground mb-6 relative z-10 lg:ml-14">
                   Learn. Tune. Grow.
                 </h2>
               </div>
-              <p className="text-xl text-muted-foreground font-body max-w-3xl mx-auto">
+              <p className="text-base sm:text-lg lg:text-xl text-muted-foreground font-body max-w-3xl mx-auto px-2">
                 See where buyers hesitate, what they ask, and which paths
                 convert—so you fix less, save hours, and invest where revenue
                 grows.
               </p>
             </div>
 
-            <div className="grid lg:grid-cols-2 gap-20 items-center">
+            <div className="grid lg:grid-cols-2 gap-10 sm:gap-14 lg:gap-20 items-center">
               {/* Left: Tabbed Session Replay */}
               <div className="relative flex justify-center items-start order-2 lg:order-1">
                 <TabbedSessionReplay />
               </div>
 
               {/* Right: Features */}
-              <div className="space-y-8 order-1 lg:order-2">
-                <div className="group bg-primary/10 backdrop-blur-sm rounded-3xl p-8 border border-primary/20 hover:border-primary/30 transform rotate-1 hover:rotate-0 transition-all duration-500 shadow-xl">
+              <div className="space-y-6 sm:space-y-8 order-1 lg:order-2">
+                <div className="group bg-primary/10 backdrop-blur-sm rounded-3xl p-6 sm:p-8 border border-primary/20 hover:border-primary/30 transform lg:rotate-1 lg:hover:rotate-0 transition-all duration-500 shadow-xl">
                   <div className="space-y-6">
                     <div className="flex gap-4">
                       <FaPlay className="w-5 h-5 text-primary/60 group-hover:text-primary/90 transition-colors duration-300 flex-shrink-0 mt-0.5" />
@@ -328,7 +333,7 @@ const Benefits = () => {
                   </div>
                 </div>
 
-                <div className="group bg-primary/10 backdrop-blur-sm rounded-3xl p-8 border border-primary/20 hover:border-primary/30 transform -rotate-1 hover:rotate-0 transition-all duration-500 shadow-xl">
+                <div className="group bg-primary/10 backdrop-blur-sm rounded-3xl p-6 sm:p-8 border border-primary/20 hover:border-primary/30 transform lg:-rotate-1 lg:hover:rotate-0 transition-all duration-500 shadow-xl">
                   <div className="space-y-6">
                     <div className="flex gap-4">
                       <FaTag className="w-5 h-5 text-primary/60 group-hover:text-primary/90 transition-colors duration-300 flex-shrink-0 mt-0.5" />
@@ -346,7 +351,7 @@ const Benefits = () => {
                   </div>
                 </div>
 
-                <div className="group bg-primary/10 backdrop-blur-sm rounded-3xl p-8 border border-primary/20 hover:border-primary/30 transform rotate-2 hover:rotate-0 transition-all duration-500 shadow-xl">
+                <div className="group bg-primary/10 backdrop-blur-sm rounded-3xl p-6 sm:p-8 border border-primary/20 hover:border-primary/30 transform lg:rotate-2 lg:hover:rotate-0 transition-all duration-500 shadow-xl">
                   <div className="space-y-6">
                     <div className="flex gap-4">
                       <FaChartBar className="w-5 h-5 text-primary/60 group-hover:text-primary/90 transition-colors duration-300 flex-shrink-0 mt-0.5" />

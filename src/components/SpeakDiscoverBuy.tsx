@@ -75,7 +75,7 @@ const SpeakDiscoverBuy = () => {
     <div ref={sectionRef} className="w-full max-w-6xl mx-auto px-4">
       {/* Minimal step flow: 1 → 2 → 3 */}
       <div className="w-full mb-6 flex items-center justify-center">
-        <div className="flex items-center gap-2 sm:gap-4 text-primary text-xs sm:text-sm font-medium">
+        <div className="flex flex-wrap items-center justify-center gap-x-2 gap-y-1 sm:gap-4 text-primary text-[11px] sm:text-sm font-medium">
           {STEPS.map((step, idx) => (
             <span key={step.num} className="flex items-center gap-1.5 sm:gap-2">
               <span className="flex-shrink-0 w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-primary-light text-white text-[10px] sm:text-xs font-semibold flex items-center justify-center">
@@ -92,7 +92,7 @@ const SpeakDiscoverBuy = () => {
 
       <div className="relative flex flex-col lg:flex-row items-center justify-center gap-4 lg:gap-6">
         {/* Column 1: customer card */}
-        <div className="relative z-10 flex-1 flex flex-col items-center w-full max-w-[14rem]">
+        <div className="relative z-10 flex-1 flex flex-col items-center w-full max-w-[12rem] sm:max-w-[14rem]">
           <CustomerVoiceCard
             imageUrl="/images/benefit-1-driven-sales-pipeline-customer.png"
             quote='"Looking for a birthday gift."'
@@ -105,7 +105,7 @@ const SpeakDiscoverBuy = () => {
         {/* Column 2: recommendation scene */}
         <div className="relative z-10 flex-[1.4] flex flex-col items-center w-full max-w-full overflow-visible">
           <div
-            className={`relative w-full flex flex-col items-center transition-all ease-out min-h-[380px] sm:min-h-[460px] overflow-visible ${
+            className={`relative w-full flex flex-col items-center transition-all ease-out min-h-[300px] sm:min-h-[460px] overflow-visible ${
               isVisible
                 ? "opacity-100 translate-y-0"
                 : "opacity-0 translate-y-8"
@@ -124,19 +124,19 @@ const SpeakDiscoverBuy = () => {
             <img
               src="/images/benefit-1-driven-sales-pipeline-2.png"
               alt="Bizmis assistant"
-              className="relative w-[26rem] h-[26rem] sm:w-[30rem] sm:h-[30rem] lg:w-[34rem] lg:h-[34rem] object-contain object-top drop-shadow-2xl opacity-90"
+              className="relative w-[18rem] h-[18rem] sm:w-[26rem] sm:h-[26rem] md:w-[30rem] md:h-[30rem] lg:w-[34rem] lg:h-[34rem] object-contain object-top drop-shadow-2xl opacity-90"
             />
 
             {/* Voice waveform — overlapping avatar, matches Benefit 2 language */}
             <div
-              className="absolute bottom-[4.5rem] sm:bottom-[5.5rem] lg:bottom-[7rem] left-1/2 -translate-x-1/2 z-30 pointer-events-none"
+              className="absolute bottom-[3.25rem] sm:bottom-[4.5rem] md:bottom-[5.5rem] lg:bottom-[7rem] left-1/2 -translate-x-1/2 z-30 pointer-events-none"
               style={{
                 opacity: isVisible ? 1 : 0,
                 transition: `opacity 800ms ease-in-out`,
                 transitionDelay: isVisible ? `${ENTRANCE_CENTER_MS + 400}ms` : "0ms",
               }}
             >
-              <div className="bg-white/70 backdrop-blur-md rounded-full px-4 py-2 shadow-lg border border-primary/15 flex items-center gap-2 min-w-[11rem] sm:min-w-[13rem] lg:min-w-[15rem]">
+              <div className="bg-white/70 backdrop-blur-md rounded-full px-3 sm:px-4 py-1.5 sm:py-2 shadow-lg border border-primary/15 flex items-center gap-2 min-w-[8.5rem] sm:min-w-[11rem] md:min-w-[13rem] lg:min-w-[15rem]">
                 <div className="relative flex-shrink-0">
                   <div className="absolute inset-0 rounded-full bg-primary/20 animate-ping [animation-duration:2s]" />
                   <div className="relative w-6 h-6 bg-gradient-to-br from-primary to-primary/80 rounded-full flex items-center justify-center shadow-sm">
@@ -162,7 +162,7 @@ const SpeakDiscoverBuy = () => {
           </div>
 
           {/* Recommendation cards — z-20 so they sit clearly in front of avatar */}
-          <div className="relative z-20 flex flex-col sm:flex-row items-center sm:items-end gap-4 w-full justify-center pt-52 sm:pt-56 lg:pt-72 overflow-visible">
+          <div className="relative z-20 flex flex-row items-end gap-2 sm:gap-3 md:gap-4 w-full justify-center pt-36 sm:pt-56 md:pt-60 lg:pt-72 overflow-visible">
             {PRODUCTS.map((product, idx) => (
               <div
                 key={product.name}
@@ -172,7 +172,7 @@ const SpeakDiscoverBuy = () => {
                     : "opacity-0 translate-y-6 scale-95"
                 } ${
                   product.highlighted
-                    ? "sm:-mt-4"
+                    ? "-mt-3 sm:-mt-4"
                     : ""
                 }`}
                 style={{
@@ -183,14 +183,14 @@ const SpeakDiscoverBuy = () => {
                 <div
                   className={`relative rounded-2xl border transition-all duration-300 hover:scale-105 ${
                     product.highlighted
-                      ? "bg-white border-primary/40 shadow-[0_16px_48px_-8px_rgba(253,145,42,0.55),0_40px_80px_-20px_rgba(0,0,0,0.35)] w-44 sm:w-48"
-                      : "bg-white/95 border-primary/25 shadow-[0_12px_36px_-4px_rgba(0,0,0,0.28),0_32px_64px_-12px_rgba(253,145,42,0.28)] w-36 sm:w-40"
+                      ? "bg-white border-primary/40 shadow-[0_16px_48px_-8px_rgba(253,145,42,0.55),0_40px_80px_-20px_rgba(0,0,0,0.35)] w-28 sm:w-44 md:w-48"
+                      : "bg-white/95 border-primary/25 shadow-[0_12px_36px_-4px_rgba(0,0,0,0.28),0_32px_64px_-12px_rgba(253,145,42,0.28)] w-24 sm:w-36 md:w-40"
                   }`}
                 >
                   {/* Product image */}
                   <div
                     className={`relative overflow-hidden rounded-t-2xl ${
-                      product.highlighted ? "h-32" : "h-24"
+                      product.highlighted ? "h-20 sm:h-32" : "h-16 sm:h-24"
                     } bg-[#FDF7E2]/50`}
                   >
                     <img
@@ -200,7 +200,7 @@ const SpeakDiscoverBuy = () => {
                     />
                     {/* Label badge */}
                     <div
-                      className={`absolute top-2 left-2 text-[10px] font-semibold px-2 py-0.5 rounded-full ${
+                      className={`absolute top-1.5 left-1.5 sm:top-2 sm:left-2 text-[8px] sm:text-[10px] font-semibold px-1.5 py-0.5 rounded-full ${
                         product.highlighted
                           ? "bg-primary text-white"
                           : "bg-white/80 text-primary border border-primary/20"
@@ -211,9 +211,9 @@ const SpeakDiscoverBuy = () => {
                   </div>
 
                   {/* Product info */}
-                  <div className="p-3">
+                  <div className="p-2 sm:p-3">
                     <h4
-                      className={`font-heading font-semibold text-sm leading-tight mb-1 ${
+                      className={`font-heading font-semibold text-[11px] sm:text-sm leading-tight mb-0.5 sm:mb-1 ${
                         product.highlighted
                           ? "text-foreground"
                           : "text-foreground/70"
@@ -221,9 +221,9 @@ const SpeakDiscoverBuy = () => {
                     >
                       {product.name}
                     </h4>
-                    <div className="flex items-center justify-between">
+                    <div className="flex items-center justify-between gap-1">
                       <span
-                        className={`font-bold text-base ${
+                        className={`font-bold text-xs sm:text-base ${
                           product.highlighted
                             ? "text-primary"
                             : "text-foreground/60"
@@ -232,7 +232,7 @@ const SpeakDiscoverBuy = () => {
                         {product.price}
                       </span>
                       {product.highlighted && (
-                        <div className="flex gap-0.5">
+                        <div className="hidden sm:flex gap-0.5">
                           {[...Array(5)].map((_, i) => (
                             <FaStar
                               key={i}
@@ -251,7 +251,7 @@ const SpeakDiscoverBuy = () => {
         </div>
 
         {/* Column 3: success card */}
-        <div className="relative z-10 flex-1 flex flex-col items-center w-full max-w-[14rem]">
+        <div className="relative z-10 flex-1 flex flex-col items-center w-full max-w-[18rem] sm:max-w-[14rem]">
           <div
             className={`w-full transition-all ease-out lg:mt-[-1.5rem] ${
               isVisible
@@ -263,7 +263,7 @@ const SpeakDiscoverBuy = () => {
               transitionDuration: `${ENTRANCE_DURATION_MS}ms`,
             }}
           >
-            <div className="bg-white/80 backdrop-blur-sm rounded-3xl border border-primary/15 shadow-lg p-5 w-full text-center aspect-[3/4] flex flex-col justify-center min-h-0">
+            <div className="bg-white/80 backdrop-blur-sm rounded-3xl border border-primary/15 shadow-lg p-4 sm:p-5 w-full text-center sm:aspect-[3/4] flex flex-col justify-center min-h-0">
             {/* Success icon */}
             <div className="relative w-12 h-12 mx-auto mb-3">
               <div className="absolute -inset-2 rounded-full bg-primary/10 animate-pulse [animation-duration:2.5s]" />

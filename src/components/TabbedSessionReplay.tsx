@@ -59,7 +59,7 @@ const TabbedSessionReplay: React.FC<TabbedSessionReplayProps> = ({
   return (
     <div className={`w-full max-w-2xl ${className}`}>
       {/* Tab Navigation */}
-      <div className="flex flex-wrap gap-2 mb-6">
+      <div className="flex flex-wrap justify-center sm:justify-start gap-2 mb-6 px-1">
         {tabs.map((tab) => {
           const IconComponent = getCategoryIcon(tab.data.category);
           const isActive = activeTab === tab.id;
@@ -69,7 +69,7 @@ const TabbedSessionReplay: React.FC<TabbedSessionReplayProps> = ({
               type="button"
               title={TAB_TOOLTIPS[tab.id] ?? ""}
               onClick={() => setActiveTab(tab.id)}
-              className={`relative flex items-center justify-center gap-2 px-5 py-2.5 text-sm font-medium rounded-full transition-all duration-200 ${
+              className={`relative flex items-center justify-center gap-1.5 sm:gap-2 px-3.5 sm:px-5 py-2 sm:py-2.5 text-xs sm:text-sm font-medium rounded-full transition-all duration-200 ${
                 isActive
                   ? "bg-transparent text-primary"
                   : "bg-transparent text-muted-foreground hover:text-foreground"

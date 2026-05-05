@@ -161,7 +161,7 @@ const Setup = () => {
 
       <section
         id="setup"
-        className="py-24 bg-gradient-to-r from-[#FDF7E2]/[0.05] via-background/40 to-[#FDF7E2]/[0.08] border-t border-primary/20 relative overflow-visible"
+        className="py-16 sm:py-20 lg:py-24 bg-gradient-to-r from-[#FDF7E2]/[0.05] via-background/40 to-[#FDF7E2]/[0.08] border-t border-primary/20 relative overflow-visible"
       >
         {/* Perimeter glow — strongest at outer edge, fading inward */}
         <div className="absolute inset-0 pointer-events-none" aria-hidden="true">
@@ -188,15 +188,15 @@ const Setup = () => {
           <div className="absolute -bottom-48 -right-48 w-[28rem] h-72 bg-primary/[0.28] rounded-[50%] blur-[60px]"></div>
         </div>
 
-        <div className="container mx-auto px-6 overflow-visible">
+        <div className="container mx-auto px-4 sm:px-6 overflow-visible">
           <div className="max-w-7xl mx-auto overflow-visible">
             {/* Header */}
-            <div className="text-center mb-16">
+            <div className="text-center mb-10 sm:mb-12 lg:mb-16">
               <SectionBadge icon={FaShopify} text="Plug and Play" />
-              <h2 className="text-4xl lg:text-5xl font-heading font-bold text-foreground mb-6">
+              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-heading font-bold text-foreground mb-6">
                 One-Click Setup, Instant Selling & Support
               </h2>
-              <p className="text-xl text-muted-foreground font-body max-w-3xl mx-auto">
+              <p className="text-base sm:text-lg lg:text-xl text-muted-foreground font-body max-w-3xl mx-auto px-2">
                 Install the Bizmis Shopify app and start selling and supporting
                 customers immediately.
               </p>
@@ -204,10 +204,10 @@ const Setup = () => {
 
             {/* Integration diagram */}
             <div className="relative mb-12">
-              <div className="flex flex-col lg:flex-row items-center justify-between gap-16 lg:gap-24">
+              <div className="flex flex-col lg:flex-row items-center justify-between gap-8 sm:gap-12 lg:gap-24">
                 {/* Shopify Data Cards - Stacked Vertically */}
-                <div className="flex-1 max-w-md">
-                  <div className="rounded-2xl border border-primary/20 p-6">
+                <div className="flex-1 w-full max-w-md">
+                  <div className="rounded-2xl border border-primary/20 p-4 sm:p-6">
                     <div className="text-center mb-6">
                       <div className="inline-flex items-center gap-2 text-primary/85">
                         <FaShopify className="w-5 h-5" />
@@ -217,27 +217,27 @@ const Setup = () => {
                       </div>
                     </div>
 
-                    <div className="space-y-4">
+                    <div className="space-y-3 sm:space-y-4">
                     {shopifyDataCards.map((card, index) => (
                       <div
                         key={index}
                         id={`card-${index}`}
-                        className="group relative bg-primary/10 backdrop-blur-sm rounded-2xl p-6 shadow-[0_4px_20px_-2px_rgba(0,0,0,0.06),0_2px_8px_-2px_rgba(253,145,42,0.06)] hover:scale-[1.02] transition-all duration-300 overflow-hidden"
+                        className="group relative bg-primary/10 backdrop-blur-sm rounded-2xl p-4 sm:p-6 shadow-[0_4px_20px_-2px_rgba(0,0,0,0.06),0_2px_8px_-2px_rgba(253,145,42,0.06)] hover:scale-[1.02] transition-all duration-300 overflow-hidden"
                       >
                         {/* Shopify Icon Watermark */}
                         <div className="absolute bottom-[calc(50%-2.5rem)] right-0 opacity-10 group-hover:opacity-15 transition-opacity duration-300">
-                          <FaShopify className="w-20 h-20 text-primary" />
+                          <FaShopify className="w-16 h-16 sm:w-20 sm:h-20 text-primary" />
                         </div>
 
-                        <div className="flex items-center gap-4 relative z-10">
-                          <div className="w-14 h-14 bg-transparent rounded-xl flex items-center justify-center shrink-0">
-                            <card.icon className="w-6 h-6 text-primary/60 group-hover:text-primary/85 transition-colors duration-300" />
+                        <div className="flex items-center gap-3 sm:gap-4 relative z-10">
+                          <div className="w-10 h-10 sm:w-14 sm:h-14 bg-transparent rounded-xl flex items-center justify-center shrink-0">
+                            <card.icon className="w-5 h-5 sm:w-6 sm:h-6 text-primary/60 group-hover:text-primary/85 transition-colors duration-300" />
                           </div>
-                          <div className="flex-1">
-                            <h3 className="font-heading font-semibold text-foreground text-lg mb-1">
+                          <div className="flex-1 min-w-0">
+                            <h3 className="font-heading font-semibold text-foreground text-base sm:text-lg mb-0.5 sm:mb-1">
                               {card.title}
                             </h3>
-                            <p className="text-sm text-muted-foreground font-body">
+                            <p className="text-xs sm:text-sm text-muted-foreground font-body">
                               {card.description}
                             </p>
                           </div>
@@ -251,7 +251,7 @@ const Setup = () => {
                 {/* Avatar Image with Aura */}
                 <div
                   className="relative flex items-center justify-center max-w-full"
-                  style={{ minHeight: "clamp(24rem, 50vh, 48rem)" }}
+                  style={{ minHeight: "clamp(18rem, 40vh, 48rem)" }}
                 >
                   {/* Aura — centered, expands/retracts in sync with orange avatar */}
                   {(() => {
@@ -259,10 +259,8 @@ const Setup = () => {
                     return (
                       <>
                         <div
-                          className="absolute rounded-full pointer-events-none"
+                          className="absolute rounded-full pointer-events-none w-[16rem] h-[16rem] sm:w-[22rem] sm:h-[22rem] lg:w-[28rem] lg:h-[28rem]"
                           style={{
-                            width: "28rem",
-                            height: "28rem",
                             left: "50%",
                             top: "50%",
                             transform: `translate(-50%, -50%) scale(${0.5 + pulse * 0.5})`,
@@ -274,10 +272,8 @@ const Setup = () => {
                           }}
                         />
                         <div
-                          className="absolute rounded-full pointer-events-none"
+                          className="absolute rounded-full pointer-events-none w-[22rem] h-[22rem] sm:w-[30rem] sm:h-[30rem] lg:w-[38rem] lg:h-[38rem]"
                           style={{
-                            width: "38rem",
-                            height: "38rem",
                             left: "50%",
                             top: "50%",
                             transform: `translate(-50%, -50%) scale(${0.4 + pulse * 0.6})`,
@@ -292,13 +288,13 @@ const Setup = () => {
                     );
                   })()}
 
-                  {/* Avatar Images with Heartbeat Effect — scale-90 below lg; full size at lg+ */}
-                  <div id="avatar-target" className="relative z-10 max-w-full scale-90 lg:scale-100">
+                  {/* Avatar Images with Heartbeat Effect — smaller on mobile, full size at lg+ */}
+                  <div id="avatar-target" className="relative z-10 max-w-full">
                     {/* Orange avatar always visible behind */}
                     <img
                       src="/images/setup-avatar-orange.png"
                       alt="Bizmis Storemate Orange"
-                      className="h-[36rem] w-auto max-w-full object-contain"
+                      className="h-[20rem] sm:h-[26rem] lg:h-[36rem] w-auto max-w-full object-contain"
                       style={{ aspectRatio: "auto" }}
                       onError={(e) =>
                         console.error(
@@ -311,7 +307,7 @@ const Setup = () => {
                     <img
                       src="/images/setup-avatar.png"
                       alt="Bizmis Storemate"
-                      className="h-[36rem] w-auto max-w-full object-contain absolute top-0 left-0"
+                      className="h-[20rem] sm:h-[26rem] lg:h-[36rem] w-auto max-w-full object-contain absolute top-0 left-0"
                       style={{
                         opacity: avatarOpacity,
                         transition: `opacity ${HEARTBEAT_FADE_DURATION_MS}ms ease-in-out`,
@@ -367,77 +363,7 @@ const Setup = () => {
                 ))}
               </div>
 
-              {/* Mobile Connectors - Start from each side of cards and go to avatar */}
-              <div className="lg:hidden relative">
-                {shopifyDataCards.map((_, index) => (
-                  <div key={`mobile-connector-${renderKeys[index]}-${index}`}>
-                    {/* Left side connector */}
-                    <Xarrow
-                      start={`card-${index}`}
-                      end="avatar-target"
-                      color={CONNECTOR_COLOR}
-                      strokeWidth={CONNECTOR_STROKE_WIDTH}
-                      curveness={0.2}
-                      showHead={false}
-                      path="smooth"
-                      startAnchor="left"
-                      endAnchor="middle"
-                      animateDrawing={CONNECTOR_ANIMATION_DURATION}
-                      zIndex={CONNECTOR_Z_INDEX}
-                    />
-                    {/* Right side connector */}
-                    <Xarrow
-                      start={`card-${index}`}
-                      end="avatar-target"
-                      color={CONNECTOR_COLOR}
-                      strokeWidth={CONNECTOR_STROKE_WIDTH}
-                      curveness={0.2}
-                      showHead={false}
-                      path="smooth"
-                      startAnchor="right"
-                      endAnchor="middle"
-                      animateDrawing={CONNECTOR_ANIMATION_DURATION}
-                      zIndex={CONNECTOR_Z_INDEX}
-                    />
-                  </div>
-                ))}
-              </div>
-
-              {/* Mobile Shiny Dots */}
-              <div className="lg:hidden relative">
-                {shopifyDataCards.map((_, index) => (
-                  <div key={`mobile-dot-${renderKeys[index]}-${index}`}>
-                    {/* Left side shiny dot */}
-                    <Xarrow
-                      start={`card-${index}`}
-                      end="avatar-target"
-                      color={SHINY_DOT_COLOR}
-                      strokeWidth={SHINY_DOT_STROKE_WIDTH}
-                      curveness={0.2}
-                      showHead={false}
-                      path="smooth"
-                      startAnchor="left"
-                      endAnchor="middle"
-                      zIndex={CONNECTOR_Z_INDEX}
-                      animateDrawing={SHINY_DOT_ANIMATION_DURATION}
-                    />
-                    {/* Right side shiny dot */}
-                    <Xarrow
-                      start={`card-${index}`}
-                      end="avatar-target"
-                      color={SHINY_DOT_COLOR}
-                      strokeWidth={SHINY_DOT_STROKE_WIDTH}
-                      curveness={0.2}
-                      showHead={false}
-                      path="smooth"
-                      startAnchor="right"
-                      endAnchor="middle"
-                      zIndex={CONNECTOR_Z_INDEX}
-                      animateDrawing={SHINY_DOT_ANIMATION_DURATION}
-                    />
-                  </div>
-                ))}
-              </div>
+              {/* Mobile connectors intentionally omitted: stacked vertical layout reads as a flow without xarrows. */}
             </div>
 
             {/* Trust badges — lightweight reassurance, footnotes of the diagram */}
