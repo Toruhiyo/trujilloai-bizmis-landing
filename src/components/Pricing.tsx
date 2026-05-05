@@ -662,7 +662,7 @@ const Pricing = () => {
                   variant="outline"
                   size="lg"
                   onClick={handleContactSales}
-                  className="group/ent w-full border-0 bg-background text-foreground shadow-sm ring-1 ring-black/5 transition-all duration-300 hover:bg-background/95 hover:shadow-md hover:text-foreground group-hover:border group-hover:border-primary-foreground/30 group-hover:bg-background/95 group-hover:text-primary-dark"
+                  className="group/ent w-full border border-primary-foreground/20 bg-[hsl(25_22%_9%)] text-primary-foreground shadow-sm transition-all duration-300 hover:border-primary-foreground/45 hover:bg-[hsl(25_22%_12%)] hover:text-primary-foreground hover:shadow-md group-hover:border-primary-foreground/45 group-hover:bg-[hsl(25_22%_12%)] group-hover:text-primary-foreground"
                 >
                   <span>Contact Sales</span>
                   <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover/ent:translate-x-1" />
