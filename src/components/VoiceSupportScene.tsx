@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState, useCallback } from "react";
 import { FaCheck } from "react-icons/fa";
 import CustomerVoiceCard from "./CustomerVoiceCard";
+import Waveform from "./Waveform";
 import { SUPPORT_CASES, SupportCase } from "@/data/support-cases";
 
 const INTERSECTION_THRESHOLD = 0.3;
@@ -10,30 +11,6 @@ const RESOLUTION_TEXT_DELAY_MS = 200;
 const ACTION_DONE_LINGER_MS = 1200;
 const RESOLUTION_SLOT_MIN_HEIGHT = "5rem";
 const SOLVED_DURATION_MS = 1800;
-const WAVEFORM_BARS = 40;
-const WAVEFORM_HEIGHTS = [
-  44, 64, 80, 54, 84, 60, 74, 48, 68, 86, 52, 72, 56, 82,
-  62, 76, 46, 70, 58, 80, 50, 66, 60, 78, 42, 68, 54, 84,
-  58, 74, 48, 70, 62, 82, 52, 66, 56, 82, 50, 72,
-];
-
-/** Gap between bars (matches the `gap-[1.5px]` Tailwind class on the wave row). */
-const WAVE_BAR_GAP_PX = 1.5;
-/** Silent ↔ talking: slow symmetric height morph (was 300ms; transform pulse fought this). */
-const WAVE_HEIGHT_MORPH_MS = 820;
-/** Bar opacity dimming applied while silent so the row reads as "idle" without disappearing. */
-const WAVE_BAR_OPACITY_TALKING = 1;
-const WAVE_BAR_OPACITY_SILENT = 0.4;
-const WAVE_HEIGHT_MORPH_EASING = "cubic-bezier(0.42, 0, 0.58, 1)";
-/** Per-bar fluctuation while talking. */
-const WAVE_PULSE_S = 1.2;
-/** Pseudo-random but deterministic per-bar phase offsets in [0, WAVE_PULSE_S).
-   Applied as a NEGATIVE delay so all bars start mid-cycle at different phases — avoids
-   the left→right sweep you'd get from a positive staggered delay. */
-const WAVE_BAR_PHASE_OFFSETS_S = Array.from({ length: 40 }, (_, i) => {
-  const pseudo = Math.sin(i * 12.9898) * 43758.5453;
-  return +(WAVE_PULSE_S * (pseudo - Math.floor(pseudo))).toFixed(3);
-});
 
 type Phase =
   | "idle"
@@ -83,33 +60,13 @@ const SOLVED_PARTICLES = [
 
 const VoiceSupportScene = () => {
   const ref = useRef<HTMLDivElement>(null);
-  const waveRowRef = useRef<HTMLDivElement>(null);
   const [isVisible, setIsVisible] = useState(false);
   const [caseIndex, setCaseIndex] = useState(0);
   const [phase, setPhase] = useState<Phase>("idle");
   const [actionDismissed, setActionDismissed] = useState(false);
   const [resolutionRevealed, setResolutionRevealed] = useState(false);
-  const [silentBarHeightPx, setSilentBarHeightPx] = useState(0);
 
   const currentCase: SupportCase = SUPPORT_CASES[caseIndex];
-
-  useEffect(() => {
-    const node = waveRowRef.current;
-    if (!node) return;
-
-    const measure = () => {
-      const rowWidth = node.clientWidth;
-      if (rowWidth <= 0) return;
-      const totalGap = WAVE_BAR_GAP_PX * (WAVEFORM_BARS - 1);
-      const barWidth = (rowWidth - totalGap) / WAVEFORM_BARS;
-      setSilentBarHeightPx(Math.max(0, barWidth));
-    };
-
-    measure();
-    const resizeObserver = new ResizeObserver(measure);
-    resizeObserver.observe(node);
-    return () => resizeObserver.disconnect();
-  }, []);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -252,26 +209,7 @@ const VoiceSupportScene = () => {
             transition: `opacity ${TRANSITION_MS}ms ease-in-out`,
           }}
         >
-          <div ref={waveRowRef} className="flex items-center gap-[1.5px] h-14 w-full">
-            {Array.from({ length: WAVEFORM_BARS }).map((_, i) => (
-              <div
-                key={i}
-                className="flex-1 min-w-[1px] rounded-full bg-primary-light"
-                style={{
-                  width: "100%",
-                  height: waveAnimating
-                    ? `${WAVEFORM_HEIGHTS[i % WAVEFORM_BARS]}%`
-                    : `${silentBarHeightPx}px`,
-                  opacity: waveAnimating ? WAVE_BAR_OPACITY_TALKING : WAVE_BAR_OPACITY_SILENT,
-                  transformOrigin: "center",
-                  transition: `height ${WAVE_HEIGHT_MORPH_MS}ms ${WAVE_HEIGHT_MORPH_EASING}, opacity ${WAVE_HEIGHT_MORPH_MS}ms ${WAVE_HEIGHT_MORPH_EASING}`,
-                  animation: waveAnimating
-                    ? `voice-support-wave-bar ${WAVE_PULSE_S}s ease-in-out ${-WAVE_BAR_PHASE_OFFSETS_S[i % WAVE_BAR_PHASE_OFFSETS_S.length]}s infinite alternate`
-                    : "none",
-                }}
-              />
-            ))}
-          </div>
+          <Waveform animating={waveAnimating} className="h-14" />
         </div>
 
         {/* Single slot: action badge or resolution message (fixed height to avoid layout shift) */}

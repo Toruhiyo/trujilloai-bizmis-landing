@@ -7,6 +7,7 @@ import {
   FaMicrophone,
 } from "react-icons/fa";
 import CustomerVoiceCard from "./CustomerVoiceCard";
+import Waveform from "./Waveform";
 
 const INTERSECTION_THRESHOLD = 0.3;
 const WAVEFORM_BARS = 32;
@@ -91,6 +92,27 @@ const SpeakDiscoverBuy = () => {
       </div>
 
       <div className="relative flex flex-col lg:flex-row items-center justify-center gap-4 lg:gap-6">
+        {/* Bridging waveform — connects the customer card (left) to the order card
+            (right) and passes behind the avatar. Width is constrained so the wave
+            never touches the side cards; the bar width matches the benefit-2 wave
+            (Waveform defaults). Desktop only: on mobile the layout is vertical so a
+            horizontal bridge would not make spatial sense. */}
+        <div
+          className="hidden lg:flex absolute inset-x-0 top-1/2 -translate-y-1/2 z-0 pointer-events-none items-center mx-auto w-full max-w-[30rem] xl:max-w-[36rem]"
+          style={{
+            opacity: isVisible ? 1 : 0,
+            transition: `opacity 1000ms ease-in-out`,
+            transitionDelay: isVisible ? `${ENTRANCE_CENTER_MS + 200}ms` : "0ms",
+          }}
+          aria-hidden
+        >
+          <Waveform
+            animating={isVisible}
+            barClassName="bg-primary/70"
+            className="h-16 xl:h-20"
+          />
+        </div>
+
         {/* Column 1: customer card */}
         <div className="relative z-10 flex-1 flex flex-col items-center w-full max-w-[12rem] sm:max-w-[14rem]">
           <CustomerVoiceCard
@@ -118,13 +140,25 @@ const SpeakDiscoverBuy = () => {
           {/* Avatar behind cards — z-0 so cards can sit in front */}
           <div className="absolute inset-0 flex items-start justify-center pt-0 pointer-events-none z-0">
             <div className="absolute top-0 left-1/2 -translate-x-1/2 flex flex-col items-center">
-              <div className="absolute -inset-10 rounded-full bg-primary/10 blur-2xl animate-pulse" />
-              <div className="absolute -inset-20 rounded-full bg-primary/5 blur-3xl animate-pulse [animation-delay:0.5s]" />
+              <div className="absolute -inset-10 rounded-full bg-primary/44 blur-2xl animate-pulse" />
+              <div className="absolute -inset-24 rounded-full bg-primary/32 blur-3xl animate-pulse [animation-delay:0.5s]" />
             </div>
+            {/* Halo: mostly primary-tinted stain (matches blur layers); light page-color
+                veil only to soften the bridging waveform near the avatar silhouette. */}
+            <div
+              className="hidden lg:block absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[24rem] xl:w-[28rem] h-[11rem] xl:h-[13rem] rounded-full pointer-events-none"
+              style={{
+                background: [
+                  "radial-gradient(ellipse, hsl(var(--background) / 0.5) 0%, hsl(var(--background) / 0.24) 52%, transparent 82%)",
+                  "radial-gradient(ellipse, hsl(var(--primary) / 0.66) 0%, hsl(var(--primary) / 0.3) 44%, transparent 72%)",
+                ].join(", "),
+              }}
+              aria-hidden
+            />
             <img
               src="/images/benefit-1-driven-sales-pipeline-2.png"
               alt="Bizmis assistant"
-              className="relative w-[18rem] h-[18rem] sm:w-[26rem] sm:h-[26rem] md:w-[30rem] md:h-[30rem] lg:w-[34rem] lg:h-[34rem] object-contain object-top drop-shadow-2xl opacity-90"
+              className="relative w-[18rem] h-[18rem] sm:w-[26rem] sm:h-[26rem] md:w-[30rem] md:h-[30rem] lg:w-[34rem] lg:h-[34rem] object-contain object-top drop-shadow-2xl"
             />
 
             {/* Voice waveform — overlapping avatar, matches Benefit 2 language */}
