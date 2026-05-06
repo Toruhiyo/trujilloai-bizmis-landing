@@ -9,6 +9,7 @@ import { usePostHog } from "posthog-js/react";
 import confetti from "canvas-confetti";
 import { PricingPlanFeatureSoon } from "./PricingPlanFeatureSoon";
 import { cn } from "@/lib/utils";
+import { bizmisConfettiColors } from "@/lib/colors";
 
 interface PricingTier {
   monthlyStandard: number;
@@ -128,20 +129,6 @@ const PricingFootnoteStar = ({ className }: { className?: string }) => (
   </span>
 );
 
-/** Resolves `29 93% 65%`-style values from `:root` for canvas / gradients. */
-const hslFromCssVar = (name: string): string => {
-  if (typeof document === "undefined") {
-    return "hsl(29 93% 65%)";
-  }
-  const value = getComputedStyle(document.documentElement)
-    .getPropertyValue(name)
-    .trim();
-  if (!value) {
-    return "hsl(29 93% 65%)";
-  }
-  return `hsl(${value})`;
-};
-
 /** Dark noisy backdrop for the enterprise card — always visible. */
 const EnterpriseCardBackdrop = () => (
   <div
@@ -242,29 +229,24 @@ const fireEarlyBirdConfetti = (
     });
   };
 
-  const primary = hslFromCssVar("--primary");
-  const primaryDark = hslFromCssVar("--primary-dark");
-  const primaryLight = hslFromCssVar("--primary-light");
-  const background = hslFromCssVar("--background");
-  const accent = hslFromCssVar("--accent");
-  const secondary = hslFromCssVar("--secondary");
+  const C = bizmisConfettiColors();
 
   fire(0.25, {
     spread: 26,
     startVelocity: 55,
-    colors: [primary, primaryDark],
+    colors: [C[0], C[1]],
   });
 
   fire(0.2, {
     spread: 60,
-    colors: [primaryLight, background],
+    colors: [C[2], C[6]],
   });
 
   fire(0.35, {
     spread: 100,
     decay: 0.91,
     scalar: 0.8,
-    colors: [primary, primaryDark, primaryLight, background, accent],
+    colors: C,
   });
 
   fire(0.1, {
@@ -272,13 +254,13 @@ const fireEarlyBirdConfetti = (
     startVelocity: 25,
     decay: 0.92,
     scalar: 1.2,
-    colors: [primary, primaryDark],
+    colors: [C[0], C[1]],
   });
 
   fire(0.1, {
     spread: 120,
     startVelocity: 45,
-    colors: [primaryLight, background, secondary],
+    colors: [C[2], C[6], C[5]],
   });
 };
 

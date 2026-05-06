@@ -374,6 +374,142 @@ All colors MUST be HSL.
   }
 }
 
+/* Order receipt entrance for SpeakDiscoverBuy: graceful pop + settle */
+@keyframes order-receipt-in {
+  0% {
+    opacity: 0;
+    transform: translateY(10px) scale(0.9);
+  }
+  60% {
+    opacity: 1;
+    transform: translateY(-3px) scale(1.03);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Receipt staggered inner row entrance */
+@keyframes receipt-row-in {
+  0% { opacity: 0; transform: translateY(6px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+/* Receipt check circle pop in */
+@keyframes receipt-check-pop {
+  0% { transform: scale(0); }
+  60% { transform: scale(1.1); }
+  100% { transform: scale(1); }
+}
+
+/* Receipt check halo ring expanding outward */
+@keyframes receipt-check-halo {
+  0% { opacity: 0.65; transform: scale(0.55); }
+  100% { opacity: 0; transform: scale(1.9); }
+}
+
+/* Receipt check stroke draw */
+@keyframes receipt-check-draw {
+  to { stroke-dashoffset: 0; }
+}
+
+/* Tag badge entrance for product cards in SpeakDiscoverBuy */
+@keyframes product-tag-in {
+  0% {
+    opacity: 0;
+    transform: translateY(-4px) scale(0.7);
+  }
+  60% {
+    opacity: 1;
+    transform: translateY(0) scale(1.08);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Recommended product card promotion: scale + soft bounce */
+@keyframes product-promote {
+  0% { transform: translateY(0) scale(1); }
+  35% { transform: translateY(-6px) scale(1.07); }
+  65% { transform: translateY(-1px) scale(0.99); }
+  100% { transform: translateY(0) scale(1); }
+}
+
+/* Recommended product glow ring expanding outward */
+@keyframes product-glow-ring {
+  0% { box-shadow: 0 0 0 0 hsl(var(--primary) / 0.55); opacity: 1; }
+  100% { box-shadow: 0 0 0 28px hsl(var(--primary) / 0); opacity: 0; }
+}
+
+/* Shopper message drift-in: independent motion from the shopper card, with a
+   tiny lateral overshoot so it reads as a separate floating unit. */
+@keyframes shopper-message-drift-in {
+  0% {
+    opacity: 0;
+    transform: translate(-8px, 10px);
+  }
+  55% {
+    opacity: 1;
+    transform: translate(3px, -3px);
+  }
+  100% {
+    opacity: 1;
+    transform: translate(0, 0);
+  }
+}
+
+/* Continuous, very slow idle drift so the shopper message is never 100% still.
+   Composes on a separate wrapper element from the entrance keyframe so the two
+   animations don't clobber each other on the transform property. */
+@keyframes shopper-message-idle-drift {
+  0%, 100% { transform: translate(0, 0); }
+  25% { transform: translate(2.5px, -2px); }
+  50% { transform: translate(-1.5px, 2px); }
+  75% { transform: translate(-2.5px, -1.5px); }
+}
+
+/* Shared radial fade for shopper message stain layers: the colored glow and the
+   backdrop blur both use this mask so tint and frosted blur feather outward in sync
+   instead of a hard rectangle edge. */
+.shopper-message-stain-mask {
+  mask-image: radial-gradient(
+    ellipse 118% 112% at 50% 46%,
+    #000 0%,
+    rgb(0 0 0 / 0.82) 24%,
+    rgb(0 0 0 / 0.38) 52%,
+    transparent 76%
+  );
+  -webkit-mask-image: radial-gradient(
+    ellipse 118% 112% at 50% 46%,
+    #000 0%,
+    rgb(0 0 0 / 0.82) 24%,
+    rgb(0 0 0 / 0.38) 52%,
+    transparent 76%
+  );
+  mask-mode: alpha;
+  mask-repeat: no-repeat;
+  -webkit-mask-repeat: no-repeat;
+}
+
+/* "Added to cart" badge entrance: small playful pop with a slight rotate. */
+@keyframes cart-badge-in {
+  0% {
+    opacity: 0;
+    transform: scale(0.4) rotate(-14deg);
+  }
+  60% {
+    opacity: 1;
+    transform: scale(1.15) rotate(5deg);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) rotate(0deg);
+  }
+}
+
 /* VoiceSupportScene: per-bar fluctuation. transform-origin: center so the
    pulse doesn't compound the silent ↔ talk height morph at the bar's edges. */
 @keyframes voice-support-wave-bar {

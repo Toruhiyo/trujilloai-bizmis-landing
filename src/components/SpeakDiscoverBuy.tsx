@@ -1,31 +1,47 @@
-import { useEffect, useRef, useState } from "react";
-import {
-  FaCheck,
-  FaStar,
-  FaShoppingBag,
-  FaChevronRight,
-  FaMicrophone,
-} from "react-icons/fa";
+import { useEffect, useRef, useState, useCallback } from "react";
+import { FaShoppingBag, FaChevronRight } from "react-icons/fa";
+import confetti from "canvas-confetti";
 import CustomerVoiceCard from "./CustomerVoiceCard";
 import Waveform from "./Waveform";
+import { SHOPPER_CASES, ShopperCase } from "@/data/shopper-cases";
+import { bizmisConfettiColors } from "@/lib/colors";
 
 const INTERSECTION_THRESHOLD = 0.3;
-const WAVEFORM_BARS = 32;
-const BRIDGE_WAVEFORM_TALKING_OPACITY = 0.2;
-const BRIDGE_WAVEFORM_SILENT_OPACITY = 0.2;
-const AVATAR_WAVEFORM_ROW_OPACITY = 0.48;
-const MOBILE_CUSTOMER_QUOTE = '"Looking for a birthday gift."';
-const MOBILE_ORDER_PILL_LABEL = "Order Confirmed · French Press Kit · $89";
-const WAVEFORM_HEIGHTS = [
-  32, 52, 68, 42, 72, 48, 62, 36, 56, 74, 40, 60, 44, 70, 50, 64, 34, 58, 46,
-  68, 38, 54, 48, 66, 30, 56, 42, 72, 46, 62, 36, 58,
-];
-const ENTRANCE_DURATION_MS = 1400;
-const ENTRANCE_CUSTOMER_MS = 0;
-const ENTRANCE_CENTER_MS = 650;
-const ENTRANCE_PRODUCT_OFFSET_MS = 450;
-const ENTRANCE_PRODUCT_STAGGER_MS = 320;
-const ENTRANCE_RECEIPT_AFTER_LAST_PRODUCT_MS = 320;
+const TRANSITION_MS = 500;
+const AVATAR_ENTRANCE_DELAY_MS = 200;
+const AVATAR_ENTRANCE_DURATION_MS = 1200;
+
+const CUSTOMER_MESSAGE_OFFSET_MS = 250;
+const TAG_BASE_DELAY_MS = 0;
+const TAG_PER_CARD_DELAY_MS = 120;
+const TAG_ANIMATION_MS = 420;
+const PROMOTE_ANIMATION_MS = 700;
+const GLOW_ANIMATION_MS = 1100;
+const PRODUCT_ANIMATION_MS = 600;
+
+const RECEIPT_CARD_ANIMATION_MS = 700;
+const RECEIPT_CHECK_HALO_DELAY_MS = 200;
+const RECEIPT_CHECK_HALO_DURATION_MS = 900;
+const RECEIPT_CHECK_POP_DELAY_MS = 250;
+const RECEIPT_CHECK_POP_DURATION_MS = 500;
+const RECEIPT_CHECK_DRAW_DELAY_MS = 600;
+const RECEIPT_CHECK_DRAW_DURATION_MS = 380;
+const RECEIPT_TITLE_DELAY_MS = 850;
+const RECEIPT_PRODUCT_DELAY_MS = 1000;
+const RECEIPT_BREAKDOWN_DELAY_MS = 1150;
+const RECEIPT_DELIVERY_DELAY_MS = 1300;
+const RECEIPT_ROW_DURATION_MS = 400;
+
+const BRIDGE_WAVEFORM_ACTIVE_OPACITY = 0.55;
+const BRIDGE_WAVEFORM_INACTIVE_OPACITY = 0.18;
+
+const DESKTOP_ROW_GAP_REM = 1;
+const MOBILE_ROW_GAP_REM = 0.5;
+const ADD_TO_CART_TRANSITION_MS = 850;
+const ADD_TO_CART_EASE = "cubic-bezier(0.34, 1.56, 0.64, 1)";
+/** Burst once the recommended card has nearly reached center so origin stays aligned. */
+const CONFETTI_FIRE_DELAY_MS = Math.round(ADD_TO_CART_TRANSITION_MS * 0.82);
+const CONFETTI_Z_INDEX = 60;
 
 const STEPS = [
   { num: 1, label: "Discover & Recommend" },
@@ -33,33 +49,97 @@ const STEPS = [
   { num: 3, label: "Seal the Deal" },
 ];
 
-const PRODUCTS = [
-  {
-    name: "Cozy Candle Set",
-    price: "$48",
-    label: "Popular Choice",
-    image: "/images/benefit-3-session-replay-cozy-candle-set.png",
-    highlighted: false,
-  },
-  {
-    name: "French Press Kit",
-    price: "$89",
-    label: "Best Match",
-    image: "/images/benefit-3-session-replay-french-press.png",
-    highlighted: true,
-  },
-  {
-    name: "Ethiopian Beans",
-    price: "$32",
-    label: "Great Value",
-    image: "/images/benefit-3-session-replay-ethiopian-beans.png",
-    highlighted: false,
-  },
+type Phase =
+  | "idle"
+  | "customer-in"
+  | "speaking"
+  | "product-1"
+  | "product-2"
+  | "product-3"
+  | "recommended"
+  | "add-to-cart"
+  | "confirmed"
+  | "audio-off"
+  | "fade-out";
+
+const PHASE_DURATIONS: Record<Phase, number> = {
+  idle: 600,
+  "customer-in": 1100,
+  speaking: 1300,
+  "product-1": 380,
+  "product-2": 380,
+  "product-3": 600,
+  recommended: 1500,
+  "add-to-cart": 1300,
+  confirmed: 2800,
+  "audio-off": 700,
+  "fade-out": 600,
+};
+
+const PHASE_ORDER: Phase[] = [
+  "idle",
+  "customer-in",
+  "speaking",
+  "product-1",
+  "product-2",
+  "product-3",
+  "recommended",
+  "add-to-cart",
+  "confirmed",
+  "audio-off",
+  "fade-out",
 ];
+
+const CART_BADGE_ANIMATION_MS = 500;
+
+const productPhase = (i: number): Phase =>
+  ["product-1", "product-2", "product-3"][i] as Phase;
+
+const fireBizmisConfetti = (origin: { x: number; y: number }) => {
+  const colors = bizmisConfettiColors();
+  /** Omnidirectional burst from `origin`: spread 360° covers angle ± 180° so
+   *  particles radiate outward evenly instead of the default upward cone. */
+  const radialBase = {
+    origin,
+    colors,
+    zIndex: CONFETTI_Z_INDEX,
+    angle: 90,
+    spread: 360,
+    drift: 0,
+  };
+  confetti({
+    ...radialBase,
+    particleCount: 100,
+    startVelocity: 12,
+    gravity: 0.0,
+    scalar: 1,
+    ticks: 125,
+    decay: 0.95,
+  });
+  confetti({
+    ...radialBase,
+    particleCount: 60,
+    startVelocity: 15,
+    gravity: 0.0,
+    scalar: 0.72,
+    ticks: 138,
+    decay: 0.97,
+  });
+};
 
 const SpeakDiscoverBuy = () => {
   const sectionRef = useRef<HTMLDivElement>(null);
+  const desktopRecommendedRef = useRef<HTMLDivElement>(null);
+  const mobileRecommendedRef = useRef<HTMLDivElement>(null);
   const [isVisible, setIsVisible] = useState(false);
+  const [caseIndex, setCaseIndex] = useState(0);
+  const [phase, setPhase] = useState<Phase>("idle");
+
+  const currentCase: ShopperCase = SHOPPER_CASES[caseIndex];
+  const recommendedIndex = currentCase.products.findIndex(
+    (p) => p.id === currentCase.recommendedProductId,
+  );
+  const recommendedProduct = currentCase.products[recommendedIndex];
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -71,14 +151,84 @@ const SpeakDiscoverBuy = () => {
       },
       { threshold: INTERSECTION_THRESHOLD },
     );
-
     if (sectionRef.current) observer.observe(sectionRef.current);
     return () => observer.disconnect();
   }, []);
 
+  const advanceToNext = useCallback(() => {
+    setCaseIndex((prev) => (prev + 1) % SHOPPER_CASES.length);
+    setPhase("idle");
+  }, []);
+
+  useEffect(() => {
+    if (!isVisible) return;
+    if (phase === "fade-out") {
+      const t = setTimeout(advanceToNext, PHASE_DURATIONS["fade-out"]);
+      return () => clearTimeout(t);
+    }
+    const i = PHASE_ORDER.indexOf(phase);
+    if (i < PHASE_ORDER.length - 1) {
+      const next = PHASE_ORDER[i + 1];
+      const t = setTimeout(() => setPhase(next), PHASE_DURATIONS[phase]);
+      return () => clearTimeout(t);
+    }
+  }, [isVisible, phase, advanceToNext]);
+
+  // Bizmis-primary confetti burst the moment the recommended product centers.
+  // Origin is the recommended card's on-screen center (DOM rect of whichever
+  // layout is currently rendered) so confetti always erupts from the card.
+  useEffect(() => {
+    if (phase !== "add-to-cart") return;
+    const t = setTimeout(() => {
+      const node =
+        desktopRecommendedRef.current ?? mobileRecommendedRef.current;
+      if (!node) return;
+      const rect = node.getBoundingClientRect();
+      if (rect.width === 0 || rect.height === 0) return;
+      fireBizmisConfetti({
+        x: (rect.left + rect.width / 2) / window.innerWidth,
+        y: (rect.top + rect.height / 2) / window.innerHeight,
+      });
+    }, CONFETTI_FIRE_DELAY_MS);
+    return () => clearTimeout(t);
+  }, [phase, caseIndex]);
+
+  const phaseIndex = PHASE_ORDER.indexOf(phase);
+  const phaseAtLeast = (p: Phase) => phaseIndex >= PHASE_ORDER.indexOf(p);
+
+  const fadingOut = phase === "fade-out";
+  const customerVisible = phase !== "idle" && !fadingOut;
+  const customerTextVisible = phaseAtLeast("speaking") && !fadingOut;
+  const audioActive = phaseAtLeast("speaking") && !phaseAtLeast("audio-off");
+  const preAudio = phase === "idle" || phase === "customer-in";
+  const productVisible = (i: number) =>
+    phaseAtLeast(productPhase(i)) && !fadingOut;
+  const tagsVisible = phaseAtLeast("recommended") && !fadingOut;
+  const recommendationActive = phaseAtLeast("recommended");
+  const addToCartActive = phaseAtLeast("add-to-cart") && !fadingOut;
+  const receiptVisible = phaseAtLeast("confirmed") && !fadingOut;
+
+  const productLabel = (productId: string, fallback: string) =>
+    productId === currentCase.recommendedProductId ? "Recommended" : fallback;
+
+  const subtotal = `${recommendedProduct.price}.00`;
+  const total = subtotal;
+
+  const tagAnimation = (idx: number) =>
+    tagsVisible
+      ? `product-tag-in ${TAG_ANIMATION_MS}ms cubic-bezier(0.34, 1.56, 0.64, 1) ${
+          TAG_BASE_DELAY_MS + idx * TAG_PER_CARD_DELAY_MS
+        }ms both`
+      : "none";
+
+  const promoteAnimation = (promoted: boolean) =>
+    promoted
+      ? `product-promote ${PROMOTE_ANIMATION_MS}ms cubic-bezier(0.34, 1.56, 0.64, 1) both`
+      : "none";
+
   return (
     <div ref={sectionRef} className="w-full max-w-6xl mx-auto px-4">
-      {/* Minimal step flow: 1 → 2 → 3 */}
+      {/* Minimal step flow: 1 -> 2 -> 3 */}
       <div className="w-full mb-6 flex items-center justify-center">
         <div className="flex flex-wrap items-center justify-center gap-x-2 gap-y-1 sm:gap-4 text-primary text-[11px] sm:text-sm font-medium">
           {STEPS.map((step, idx) => (
@@ -98,13 +248,10 @@ const SpeakDiscoverBuy = () => {
         </div>
       </div>
 
-      {/* Mobile layout: same spatial story as desktop (avatar centered, products
-          overlapping its lower half) but compact and without the customer/receipt
-          cards. The customer line sits as plain italic text next to the avatar's
-          head; "Seal the Deal" collapses into a one-line pill below. */}
+      {/* Mobile layout: avatar always visible, customer line at head level,
+          products and order pill cycle through cases. The bridging waveform
+          (background audio) is the only audio indicator on mobile too. */}
       <div className="lg:hidden flex flex-col items-center gap-3">
-        {/* Scene wrapper: avatar (z-0) is overlapped by product cards (z-20),
-            and the customer quote floats on the left at head level (z-10). */}
         <div className="relative w-full">
           <div className="absolute inset-x-0 top-0 flex justify-center pointer-events-none z-0">
             <div className="relative">
@@ -122,173 +269,222 @@ const SpeakDiscoverBuy = () => {
                 }`}
                 style={{
                   transitionDelay: isVisible
-                    ? `${ENTRANCE_CENTER_MS}ms`
+                    ? `${AVATAR_ENTRANCE_DELAY_MS}ms`
                     : "0ms",
-                  transitionDuration: `${ENTRANCE_DURATION_MS}ms`,
+                  transitionDuration: `${AVATAR_ENTRANCE_DURATION_MS}ms`,
                 }}
               />
-              {/* Mic pulse — kept above products (z-30) at avatar's chest level
-                  so the talking cue stays visible despite the product overlap. */}
-              <div
-                className="absolute left-1/2 -translate-x-1/2 bottom-[7rem] xs:bottom-[8rem] sm:bottom-[9rem] w-7 h-7 rounded-full bg-gradient-to-br from-primary to-primary/80 flex items-center justify-center shadow-md z-30"
-                style={{
-                  opacity: isVisible ? 1 : 0,
-                  transition: `opacity 800ms ease-in-out`,
-                  transitionDelay: isVisible
-                    ? `${ENTRANCE_CENTER_MS + 400}ms`
-                    : "0ms",
-                }}
-                aria-hidden
-              >
-                <FaMicrophone className="w-3 h-3 text-white" />
+            </div>
+          </div>
+
+          <div
+            key={`mobile-quote-${caseIndex}`}
+            className="absolute left-1 xs:left-2 top-[2rem] xs:top-[2.5rem] sm:top-[3.25rem] z-10 max-w-[7.5rem] xs:max-w-[9rem] sm:max-w-[11rem] pointer-events-none"
+            style={{
+              opacity: customerTextVisible ? 1 : 0,
+              animation: customerTextVisible
+                ? `shopper-message-drift-in 700ms ease-out ${CUSTOMER_MESSAGE_OFFSET_MS}ms both`
+                : "none",
+            }}
+          >
+            <div
+              style={{
+                animation: customerTextVisible
+                  ? `shopper-message-idle-drift 8s ease-in-out ${CUSTOMER_MESSAGE_OFFSET_MS + 700}ms infinite`
+                  : "none",
+              }}
+            >
+              <div className="relative px-3 py-2">
+                <span
+                  aria-hidden
+                  className="shopper-message-stain-mask absolute -inset-3 rounded-2xl bg-primary/35 blur-xl pointer-events-none"
+                />
+                <span
+                  aria-hidden
+                  className="shopper-message-stain-mask absolute -inset-1 rounded-xl bg-primary/22 backdrop-blur-xl pointer-events-none"
+                />
+                <p className="relative text-[11px] xs:text-xs sm:text-sm italic font-semibold text-foreground/90 leading-snug">
+                  {currentCase.customerQuote}
+                </p>
               </div>
             </div>
           </div>
 
-          {/* Customer quote — plain italic text, no bubble, head level */}
-          <p
-            className={`absolute left-1 xs:left-2 top-[2.5rem] xs:top-[3rem] sm:top-[4rem] z-10 max-w-[6.5rem] xs:max-w-[8rem] sm:max-w-[10rem] text-[11px] xs:text-xs sm:text-sm italic text-foreground/75 leading-snug transition-all ease-out ${
-              isVisible
-                ? "opacity-100 translate-y-0"
-                : "opacity-0 translate-y-2"
-            }`}
-            style={{
-              transitionDelay: isVisible ? `${ENTRANCE_CUSTOMER_MS}ms` : "0ms",
-              transitionDuration: `${ENTRANCE_DURATION_MS}ms`,
-            }}
-          >
-            {MOBILE_CUSTOMER_QUOTE}
-          </p>
-
-          {/* Product cards — pushed down so they overlap the avatar's lower body */}
           <div className="relative z-20 flex flex-row items-end gap-2 w-full justify-center pt-[10rem] xs:pt-[11.5rem] sm:pt-[13rem]">
-            {PRODUCTS.map((product, idx) => (
-              <div
-                key={product.name}
-                className={`relative transition-all duration-700 ease-out ${
-                  isVisible
-                    ? "opacity-100 translate-y-0 scale-100"
-                    : "opacity-0 translate-y-4 scale-95"
-                } ${product.highlighted ? "-mt-2" : ""}`}
-                style={{
-                  transitionDelay: isVisible
-                    ? `${ENTRANCE_CENTER_MS + ENTRANCE_PRODUCT_OFFSET_MS + idx * ENTRANCE_PRODUCT_STAGGER_MS}ms`
-                    : "0ms",
-                  transitionDuration: `${ENTRANCE_DURATION_MS}ms`,
-                }}
-              >
+            {currentCase.products.map((product, idx) => {
+              const isRecommended = idx === recommendedIndex;
+              const visible = productVisible(idx);
+              const promoted = recommendationActive && isRecommended;
+              const dismissed = addToCartActive && !isRecommended;
+              const addedToCart = addToCartActive && isRecommended;
+              const cardOpacity = dismissed ? 0 : visible ? 1 : 0;
+              const recenterX = `calc(${1 - idx} * (100% + ${MOBILE_ROW_GAP_REM}rem))`;
+              const cardTransform = dismissed
+                ? "translateY(14px) scale(0.85)"
+                : addedToCart
+                  ? `translateX(${recenterX}) translateY(-6px) scale(1.06)`
+                  : visible
+                    ? "translateY(0) scale(1)"
+                    : "translateY(0.75rem) scale(0.95)";
+              const cardTransition = addedToCart
+                ? `transform ${ADD_TO_CART_TRANSITION_MS}ms ${ADD_TO_CART_EASE}, opacity 400ms ease`
+                : `opacity ${PRODUCT_ANIMATION_MS}ms ease, transform ${PRODUCT_ANIMATION_MS}ms ease`;
+              return (
                 <div
-                  className={`relative rounded-xl border ${
-                    product.highlighted
-                      ? "bg-white border-primary/40 shadow-[0_8px_24px_-4px_rgba(253,145,42,0.45)] w-[5.5rem] xs:w-24"
-                      : "bg-white/95 border-primary/25 shadow-[0_6px_18px_-2px_rgba(0,0,0,0.18)] w-[4.75rem] xs:w-[5.25rem]"
-                  }`}
+                  key={`mobile-${currentCase.id}-${product.id}`}
+                  ref={isRecommended ? mobileRecommendedRef : undefined}
+                  className="relative"
+                  style={{
+                    opacity: cardOpacity,
+                    transform: cardTransform,
+                    transition: cardTransition,
+                  }}
                 >
-                  <div
-                    className={`relative overflow-hidden rounded-t-xl ${
-                      product.highlighted ? "h-12 xs:h-14" : "h-10 xs:h-12"
-                    } bg-[#FDF7E2]/50`}
-                  >
-                    <img
-                      src={product.image}
-                      alt={product.name}
-                      className="w-full h-full object-cover"
+                  {promoted && (
+                    <span
+                      aria-hidden
+                      className="absolute inset-0 rounded-xl pointer-events-none"
+                      style={{
+                        animation: `product-glow-ring ${GLOW_ANIMATION_MS}ms ease-out both`,
+                      }}
                     />
+                  )}
+                  {addedToCart && (
                     <div
-                      className={`absolute top-1 left-1 text-[7px] font-semibold px-1 py-0.5 rounded-full ${
-                        product.highlighted
-                          ? "bg-primary text-white"
-                          : "bg-white/85 text-primary border border-primary/20"
-                      }`}
+                      className="absolute -top-2 -right-2 z-10 bg-primary text-white text-[8px] font-semibold rounded-full px-1.5 py-0.5 shadow-md flex items-center gap-1"
+                      style={{
+                        animation: `cart-badge-in ${CART_BADGE_ANIMATION_MS}ms cubic-bezier(0.34, 1.56, 0.64, 1) both`,
+                      }}
+                      aria-hidden
                     >
-                      {product.label}
+                      <FaShoppingBag className="w-2 h-2" />
+                      <span>Added</span>
+                    </div>
+                  )}
+                  <div
+                    className={`relative rounded-xl border transition-all duration-500 w-[5.5rem] xs:w-24 ${
+                      promoted
+                        ? "bg-white border-primary/40 shadow-[0_8px_24px_-4px_rgba(253,145,42,0.45)] -mt-2"
+                        : "bg-white/95 border-primary/25 shadow-[0_6px_18px_-2px_rgba(0,0,0,0.18)]"
+                    }`}
+                    style={{ animation: promoteAnimation(promoted) }}
+                  >
+                    <div className="relative overflow-hidden rounded-t-xl bg-[#FDF7E2]/50 h-12 xs:h-14">
+                      <img
+                        src={product.image}
+                        alt={product.name}
+                        className="w-full h-full object-cover"
+                      />
+                      <div
+                        className={`absolute top-1 left-1 text-[7px] font-semibold px-1 py-0.5 rounded-full ${
+                          isRecommended
+                            ? "bg-primary text-white shadow-sm"
+                            : "bg-white/85 text-primary border border-primary/20"
+                        }`}
+                        style={{
+                          opacity: tagsVisible ? 1 : 0,
+                          animation: tagAnimation(idx),
+                        }}
+                      >
+                        {productLabel(product.id, product.label)}
+                      </div>
+                    </div>
+                    <div className="p-1.5">
+                      <h4
+                        className={`font-heading font-semibold text-[9px] leading-tight mb-0.5 transition-colors duration-300 ${
+                          promoted ? "text-foreground" : "text-foreground/70"
+                        }`}
+                      >
+                        {product.name}
+                      </h4>
+                      <span
+                        className={`font-bold text-[10px] transition-colors duration-300 ${
+                          promoted ? "text-primary" : "text-foreground/60"
+                        }`}
+                      >
+                        {product.price}
+                      </span>
                     </div>
                   </div>
-                  <div className="p-1.5">
-                    <h4
-                      className={`font-heading font-semibold text-[9px] leading-tight mb-0.5 ${
-                        product.highlighted
-                          ? "text-foreground"
-                          : "text-foreground/70"
-                      }`}
-                    >
-                      {product.name}
-                    </h4>
-                    <span
-                      className={`font-bold text-[10px] ${
-                        product.highlighted
-                          ? "text-primary"
-                          : "text-foreground/60"
-                      }`}
-                    >
-                      {product.price}
-                    </span>
-                  </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
 
-        {/* Compact Order Confirmed pill */}
         <div
-          className={`flex items-center gap-2 bg-white/95 rounded-full border border-primary/20 shadow-md px-3 py-1.5 transition-all ease-out ${
-            isVisible
-              ? "opacity-100 translate-y-0"
-              : "opacity-0 translate-y-3"
-          }`}
           style={{
-            transitionDelay: isVisible
-              ? `${ENTRANCE_CENTER_MS + ENTRANCE_PRODUCT_OFFSET_MS + (PRODUCTS.length - 1) * ENTRANCE_PRODUCT_STAGGER_MS + ENTRANCE_RECEIPT_AFTER_LAST_PRODUCT_MS}ms`
-              : "0ms",
-            transitionDuration: `${ENTRANCE_DURATION_MS}ms`,
+            opacity: receiptVisible ? 1 : 0,
+            transition: `opacity ${TRANSITION_MS}ms ease`,
           }}
         >
-          <div className="w-5 h-5 rounded-full bg-gradient-to-br from-primary to-primary/80 flex items-center justify-center shadow-sm shrink-0">
-            <FaCheck className="w-2.5 h-2.5 text-white" />
-          </div>
-          <span className="text-[11px] xs:text-xs font-medium text-foreground whitespace-nowrap">
-            {MOBILE_ORDER_PILL_LABEL}
-          </span>
+          {receiptVisible && (
+            <div
+              key={`mobile-receipt-${caseIndex}`}
+              className="flex items-center gap-2 bg-white/95 rounded-full border border-primary/20 shadow-md px-3 py-1.5"
+              style={{
+                animation: `order-receipt-in ${RECEIPT_CARD_ANIMATION_MS}ms cubic-bezier(0.34, 1.56, 0.64, 1) both`,
+              }}
+            >
+              <ReceiptCheckIcon size={20} pathSize={14} />
+              <span
+                className="text-[11px] xs:text-xs font-medium text-foreground whitespace-nowrap"
+                style={{
+                  animation: `receipt-row-in ${RECEIPT_ROW_DURATION_MS}ms ease-out ${RECEIPT_TITLE_DELAY_MS}ms both`,
+                }}
+              >
+                {`Order Confirmed · ${recommendedProduct.name} · ${recommendedProduct.price}`}
+              </span>
+            </div>
+          )}
         </div>
       </div>
 
       {/* Desktop layout */}
       <div className="hidden lg:flex relative items-center justify-center gap-6">
-        {/* Bridging waveform — connects the customer card (left) to the order card
-            (right) and passes behind the avatar. Width is constrained so the wave
-            never touches the side cards; the bar width matches the benefit-2 wave
-            (Waveform defaults). Desktop only: on mobile the layout is vertical so a
-            horizontal bridge would not make spatial sense. */}
+        {/* Bridging waveform behind avatar — switches between active/inactive
+            opacity per choreography phase. This is the only audio indicator. */}
         <div
           className="hidden lg:flex absolute inset-x-0 top-1/2 -translate-y-1/2 z-0 pointer-events-none items-center mx-auto w-full max-w-[30rem] xl:max-w-[36rem]"
           style={{
-            opacity: isVisible ? 1 : 0,
-            transition: `opacity 1000ms ease-in-out`,
+            opacity: !isVisible || preAudio ? 0 : 1,
+            transition: `opacity 700ms ease-in-out`,
             transitionDelay: isVisible
-              ? `${ENTRANCE_CENTER_MS + 200}ms`
+              ? `${AVATAR_ENTRANCE_DELAY_MS + 200}ms`
               : "0ms",
           }}
           aria-hidden
         >
           <Waveform
-            animating={isVisible}
+            animating={audioActive}
             barClassName="bg-primary"
             className="h-16 xl:h-20"
-            talkingOpacity={BRIDGE_WAVEFORM_TALKING_OPACITY}
-            silentOpacity={BRIDGE_WAVEFORM_SILENT_OPACITY}
+            talkingOpacity={BRIDGE_WAVEFORM_ACTIVE_OPACITY}
+            silentOpacity={BRIDGE_WAVEFORM_INACTIVE_OPACITY}
           />
         </div>
 
         {/* Column 1: customer card */}
         <div className="relative z-10 flex-1 flex flex-col items-center w-full max-w-[12rem] sm:max-w-[14rem]">
-          <CustomerVoiceCard
-            imageUrl="/images/benefit-1-driven-sales-pipeline-customer.png"
-            quote='"Looking for a birthday gift."'
-            isVisible={isVisible}
-            transitionDelayMs={ENTRANCE_CUSTOMER_MS}
-            transitionDurationMs={ENTRANCE_DURATION_MS}
-          />
+          <div
+            className="w-full"
+            style={{
+              opacity: customerVisible ? 1 : 0,
+              transform: customerVisible
+                ? "translateX(0)"
+                : "translateX(-1rem)",
+              transition: `opacity ${TRANSITION_MS}ms ease, transform ${TRANSITION_MS}ms ease`,
+            }}
+          >
+            <CustomerVoiceCard
+              key={`desktop-customer-${caseIndex}`}
+              imageUrl={currentCase.customerImage}
+              quote={currentCase.customerQuote}
+              isVisible={customerVisible}
+              quoteVisible={customerTextVisible}
+              quoteEnterDelayMs={CUSTOMER_MESSAGE_OFFSET_MS}
+            />
+          </div>
         </div>
 
         {/* Column 2: recommendation scene */}
@@ -300,17 +496,19 @@ const SpeakDiscoverBuy = () => {
                 : "opacity-0 translate-y-8"
             }`}
             style={{
-              transitionDelay: isVisible ? `${ENTRANCE_CENTER_MS}ms` : "0ms",
-              transitionDuration: `${ENTRANCE_DURATION_MS}ms`,
+              transitionDelay: isVisible
+                ? `${AVATAR_ENTRANCE_DELAY_MS}ms`
+                : "0ms",
+              transitionDuration: `${AVATAR_ENTRANCE_DURATION_MS}ms`,
             }}
           >
-            {/* Avatar behind cards — z-0 so cards can sit in front */}
+            {/* Avatar behind cards */}
             <div className="absolute inset-0 flex items-start justify-center pt-0 pointer-events-none z-0">
               <div className="absolute top-0 left-1/2 -translate-x-1/2 flex flex-col items-center">
                 <div className="absolute -inset-10 rounded-full bg-primary/34 blur-2xl animate-pulse" />
                 <div className="absolute -inset-24 rounded-full bg-primary/22 blur-3xl animate-pulse [animation-delay:0.5s]" />
               </div>
-              {/* Halo: soft white (background) core with a hint of primary from beneath. */}
+              {/* Halo: soft white core to ease the bridging wave near the avatar silhouette. */}
               <div
                 className="hidden lg:block absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[24rem] xl:w-[28rem] h-[11rem] xl:h-[13rem] rounded-full pointer-events-none"
                 style={{
@@ -326,129 +524,112 @@ const SpeakDiscoverBuy = () => {
                 alt="Bizmis assistant"
                 className="relative w-[18rem] h-[18rem] sm:w-[26rem] sm:h-[26rem] md:w-[30rem] md:h-[30rem] lg:w-[34rem] lg:h-[34rem] object-contain object-top drop-shadow-2xl"
               />
-
-              {/* Voice waveform — overlapping avatar, matches Benefit 2 language */}
-              <div
-                className="absolute bottom-[3.25rem] sm:bottom-[4.5rem] md:bottom-[5.5rem] lg:bottom-[7rem] left-1/2 -translate-x-1/2 z-30 pointer-events-none"
-                style={{
-                  opacity: isVisible ? 1 : 0,
-                  transition: `opacity 800ms ease-in-out`,
-                  transitionDelay: isVisible
-                    ? `${ENTRANCE_CENTER_MS + 400}ms`
-                    : "0ms",
-                }}
-              >
-                <div className="bg-white/70 backdrop-blur-md rounded-full px-3 sm:px-4 py-1.5 sm:py-2 shadow-lg border border-primary/15 flex items-center gap-2 min-w-[8.5rem] sm:min-w-[11rem] md:min-w-[13rem] lg:min-w-[15rem]">
-                  <div className="relative flex-shrink-0">
-                    <div className="absolute inset-0 rounded-full bg-primary/20 animate-ping [animation-duration:2s]" />
-                    <div className="relative w-6 h-6 bg-gradient-to-br from-primary to-primary/80 rounded-full flex items-center justify-center shadow-sm">
-                      <FaMicrophone className="w-2.5 h-2.5 text-white" />
-                    </div>
-                  </div>
-                  <div
-                    className="flex items-center gap-[1.5px] h-7 flex-1 min-w-0"
-                    style={{ opacity: AVATAR_WAVEFORM_ROW_OPACITY }}
-                  >
-                    {Array.from({ length: WAVEFORM_BARS }).map((_, i) => (
-                      <div
-                        key={i}
-                        className="flex-1 min-w-[1.5px] rounded-full bg-primary"
-                        style={{
-                          height: `${WAVEFORM_HEIGHTS[i % WAVEFORM_BARS]}%`,
-                          animation: isVisible
-                            ? `waveform-pulse 1.2s ease-in-out ${i * 0.04}s infinite alternate`
-                            : "none",
-                        }}
-                      />
-                    ))}
-                  </div>
-                </div>
-              </div>
             </div>
 
-            {/* Recommendation cards — z-20 so they sit clearly in front of avatar */}
-            <div className="relative z-20 flex flex-row items-end gap-2 sm:gap-3 md:gap-4 w-full justify-center pt-36 sm:pt-56 md:pt-60 lg:pt-72 overflow-visible">
-              {PRODUCTS.map((product, idx) => (
-                <div
-                  key={product.name}
-                  className={`relative transition-all duration-700 ease-out ${
-                    isVisible
-                      ? "opacity-100 translate-y-0 scale-100"
-                      : "opacity-0 translate-y-6 scale-95"
-                  } ${product.highlighted ? "-mt-3 sm:-mt-4" : ""}`}
-                  style={{
-                    transitionDelay: isVisible
-                      ? `${ENTRANCE_CENTER_MS + ENTRANCE_PRODUCT_OFFSET_MS + idx * ENTRANCE_PRODUCT_STAGGER_MS}ms`
-                      : "0ms",
-                    transitionDuration: `${ENTRANCE_DURATION_MS}ms`,
-                  }}
-                >
+            {/* Recommendation cards. Uniform `gap-4` so the recenter calc is a
+                single rem value across breakpoints. */}
+            <div className="relative z-20 flex flex-row items-end gap-4 w-full justify-center pt-36 sm:pt-56 md:pt-60 lg:pt-72 overflow-visible">
+              {currentCase.products.map((product, idx) => {
+                const isRecommended = idx === recommendedIndex;
+                const visible = productVisible(idx);
+                const promoted = recommendationActive && isRecommended;
+                const dismissed = addToCartActive && !isRecommended;
+                const addedToCart = addToCartActive && isRecommended;
+                const cardOpacity = dismissed ? 0 : visible ? 1 : 0;
+                const recenterX = `calc(${1 - idx} * (100% + ${DESKTOP_ROW_GAP_REM}rem))`;
+                const cardTransform = dismissed
+                  ? "translateY(28px) scale(0.85)"
+                  : addedToCart
+                    ? `translateX(${recenterX}) translateY(-12px) scale(1.06)`
+                    : visible
+                      ? "translateY(0) scale(1)"
+                      : "translateY(1rem) scale(0.95)";
+                const cardTransition = addedToCart
+                  ? `transform ${ADD_TO_CART_TRANSITION_MS}ms ${ADD_TO_CART_EASE}, opacity 400ms ease`
+                  : `opacity ${PRODUCT_ANIMATION_MS}ms ease, transform ${PRODUCT_ANIMATION_MS}ms ease`;
+                return (
                   <div
-                    className={`relative rounded-2xl border transition-all duration-300 hover:scale-105 ${
-                      product.highlighted
-                        ? "bg-white border-primary/40 shadow-[0_16px_48px_-8px_rgba(253,145,42,0.55),0_40px_80px_-20px_rgba(0,0,0,0.35)] w-28 sm:w-44 md:w-48"
-                        : "bg-white/95 border-primary/25 shadow-[0_12px_36px_-4px_rgba(0,0,0,0.28),0_32px_64px_-12px_rgba(253,145,42,0.28)] w-24 sm:w-36 md:w-40"
-                    }`}
+                    key={`desktop-${currentCase.id}-${product.id}`}
+                    ref={isRecommended ? desktopRecommendedRef : undefined}
+                    className="relative"
+                    style={{
+                      opacity: cardOpacity,
+                      transform: cardTransform,
+                      transition: cardTransition,
+                    }}
                   >
-                    {/* Product image */}
-                    <div
-                      className={`relative overflow-hidden rounded-t-2xl ${
-                        product.highlighted ? "h-20 sm:h-32" : "h-16 sm:h-24"
-                      } bg-[#FDF7E2]/50`}
-                    >
-                      <img
-                        src={product.image}
-                        alt={product.name}
-                        className="w-full h-full object-cover"
+                    {promoted && (
+                      <span
+                        aria-hidden
+                        className="absolute inset-0 rounded-2xl pointer-events-none"
+                        style={{
+                          animation: `product-glow-ring ${GLOW_ANIMATION_MS}ms ease-out both`,
+                        }}
                       />
-                      {/* Label badge */}
+                    )}
+                    {addedToCart && (
                       <div
-                        className={`absolute top-1.5 left-1.5 sm:top-2 sm:left-2 text-[8px] sm:text-[10px] font-semibold px-1.5 py-0.5 rounded-full ${
-                          product.highlighted
-                            ? "bg-primary text-white"
-                            : "bg-white/80 text-primary border border-primary/20"
-                        }`}
+                        className="absolute -top-3 -right-3 z-10 bg-primary text-white text-[10px] font-semibold rounded-full px-2 py-1 shadow-md flex items-center gap-1"
+                        style={{
+                          animation: `cart-badge-in ${CART_BADGE_ANIMATION_MS}ms cubic-bezier(0.34, 1.56, 0.64, 1) both`,
+                        }}
+                        aria-hidden
                       >
-                        {product.label}
+                        <FaShoppingBag className="w-2.5 h-2.5" />
+                        <span>Added</span>
                       </div>
-                    </div>
+                    )}
+                    <div
+                      className={`relative rounded-2xl border transition-all duration-500 hover:scale-105 w-28 sm:w-44 md:w-48 ${
+                        promoted
+                          ? "bg-white border-primary/40 shadow-[0_16px_48px_-8px_rgba(253,145,42,0.55),0_40px_80px_-20px_rgba(0,0,0,0.35)] -mt-3 sm:-mt-4"
+                          : "bg-white/95 border-primary/25 shadow-[0_12px_36px_-4px_rgba(0,0,0,0.28),0_32px_64px_-12px_rgba(253,145,42,0.28)]"
+                      }`}
+                      style={{ animation: promoteAnimation(promoted) }}
+                    >
+                      <div className="relative overflow-hidden rounded-t-2xl bg-[#FDF7E2]/50 h-20 sm:h-32">
+                        <img
+                          src={product.image}
+                          alt={product.name}
+                          className="w-full h-full object-cover"
+                        />
+                        <div
+                          className={`absolute top-1.5 left-1.5 sm:top-2 sm:left-2 text-[8px] sm:text-[10px] font-semibold px-1.5 py-0.5 rounded-full ${
+                            isRecommended
+                              ? "bg-primary text-white shadow-sm"
+                              : "bg-white/80 text-primary border border-primary/20"
+                          }`}
+                          style={{
+                            opacity: tagsVisible ? 1 : 0,
+                            animation: tagAnimation(idx),
+                          }}
+                        >
+                          {productLabel(product.id, product.label)}
+                        </div>
+                      </div>
 
-                    {/* Product info */}
-                    <div className="p-2 sm:p-3">
-                      <h4
-                        className={`font-heading font-semibold text-[11px] sm:text-sm leading-tight mb-0.5 sm:mb-1 ${
-                          product.highlighted
-                            ? "text-foreground"
-                            : "text-foreground/70"
-                        }`}
-                      >
-                        {product.name}
-                      </h4>
-                      <div className="flex items-center justify-between gap-1">
-                        <span
-                          className={`font-bold text-xs sm:text-base ${
-                            product.highlighted
-                              ? "text-primary"
-                              : "text-foreground/60"
+                      <div className="p-2 sm:p-3">
+                        <h4
+                          className={`font-heading font-semibold text-[11px] sm:text-sm leading-tight mb-0.5 sm:mb-1 transition-colors duration-300 ${
+                            promoted ? "text-foreground" : "text-foreground/70"
                           }`}
                         >
-                          {product.price}
-                        </span>
-                        {product.highlighted && (
-                          <div className="hidden sm:flex gap-0.5">
-                            {[...Array(5)].map((_, i) => (
-                              <FaStar
-                                key={i}
-                                className="w-2.5 h-2.5 text-primary"
-                              />
-                            ))}
-                          </div>
-                        )}
+                          {product.name}
+                        </h4>
+                        <div className="flex items-center justify-between gap-1">
+                          <span
+                            className={`font-bold text-xs sm:text-base transition-colors duration-300 ${
+                              promoted ? "text-primary" : "text-foreground/60"
+                            }`}
+                          >
+                            {product.price}
+                          </span>
+                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           </div>
         </div>
@@ -456,65 +637,152 @@ const SpeakDiscoverBuy = () => {
         {/* Column 3: success card */}
         <div className="relative z-10 flex-1 flex flex-col items-center w-full max-w-[18rem] sm:max-w-[14rem]">
           <div
-            className={`w-full transition-all ease-out lg:mt-[-1.5rem] ${
-              isVisible
-                ? "opacity-100 translate-y-0"
-                : "opacity-0 translate-y-8"
-            }`}
+            className="w-full lg:mt-[-1.5rem]"
             style={{
-              transitionDelay: isVisible
-                ? `${ENTRANCE_CENTER_MS + ENTRANCE_PRODUCT_OFFSET_MS + (PRODUCTS.length - 1) * ENTRANCE_PRODUCT_STAGGER_MS + ENTRANCE_RECEIPT_AFTER_LAST_PRODUCT_MS}ms`
-                : "0ms",
-              transitionDuration: `${ENTRANCE_DURATION_MS}ms`,
+              opacity: receiptVisible ? 1 : 0,
+              transition: `opacity ${TRANSITION_MS}ms ease`,
             }}
           >
-            <div className="bg-white/80 backdrop-blur-sm rounded-3xl border border-primary/15 shadow-lg p-4 sm:p-5 w-full text-center sm:aspect-[3/4] flex flex-col justify-center min-h-0">
-              {/* Success icon */}
-              <div className="relative w-12 h-12 mx-auto mb-3">
-                <div className="absolute -inset-2 rounded-full bg-primary/10 animate-pulse [animation-duration:2.5s]" />
-                <div className="relative w-12 h-12 bg-gradient-to-br from-primary to-primary/80 rounded-full flex items-center justify-center shadow-md">
-                  <FaCheck className="w-5 h-5 text-white" />
-                </div>
-              </div>
-
-              {/* Confirmation content */}
-              <h4 className="text-base font-heading font-bold text-foreground mb-0.5">
-                Order Confirmed
-              </h4>
-              <p className="text-xs text-muted-foreground mb-3">
-                French Press Kit — $89
-              </p>
-
-              {/* Mini receipt */}
-              <div className="bg-[#FDF7E2]/60 rounded-xl p-2.5 mb-3 border border-primary/10">
-                <div className="flex items-center justify-between text-[10px] mb-1.5">
-                  <span className="text-muted-foreground">Subtotal</span>
-                  <span className="font-medium">$89.00</span>
-                </div>
-                <div className="flex items-center justify-between text-[10px] mb-1.5">
-                  <span className="text-muted-foreground">Shipping</span>
-                  <span className="font-medium text-muted-foreground">
-                    Free
-                  </span>
-                </div>
-                <div className="h-px bg-primary/10 my-1.5" />
-                <div className="flex items-center justify-between text-xs">
-                  <span className="font-semibold">Total</span>
-                  <span className="font-bold text-primary">$89.00</span>
-                </div>
-              </div>
-
-              {/* Delivery estimate */}
-              <div className="flex items-center justify-center gap-1.5 text-[10px] text-muted-foreground">
-                <FaShoppingBag className="w-2.5 h-2.5 text-primary" />
-                <span>Delivery in 2–3 days</span>
-              </div>
-            </div>
+            {receiptVisible && (
+              <ReceiptCard
+                key={`desktop-receipt-${caseIndex}`}
+                productName={recommendedProduct.name}
+                productPrice={recommendedProduct.price}
+                deliveryEstimate={currentCase.deliveryEstimate}
+                subtotal={subtotal}
+                total={total}
+              />
+            )}
           </div>
         </div>
       </div>
     </div>
   );
 };
+
+const ReceiptCheckIcon = ({
+  size = 48,
+  pathSize = 22,
+}: {
+  size?: number;
+  pathSize?: number;
+}) => {
+  const innerScale = pathSize / 24;
+  return (
+    <div
+      className="relative shrink-0"
+      style={{ width: size, height: size }}
+      aria-hidden
+    >
+      <span
+        className="absolute inset-0 rounded-full border-2 border-primary/40"
+        style={{
+          animation: `receipt-check-halo ${RECEIPT_CHECK_HALO_DURATION_MS}ms ease-out ${RECEIPT_CHECK_HALO_DELAY_MS}ms both`,
+        }}
+      />
+      <div
+        className="relative w-full h-full bg-gradient-to-br from-primary to-primary/80 rounded-full flex items-center justify-center shadow-md"
+        style={{
+          animation: `receipt-check-pop ${RECEIPT_CHECK_POP_DURATION_MS}ms cubic-bezier(0.34, 1.56, 0.64, 1) ${RECEIPT_CHECK_POP_DELAY_MS}ms both`,
+        }}
+      >
+        <svg
+          width={pathSize}
+          height={pathSize}
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="white"
+          strokeWidth={3 / innerScale}
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        >
+          <path
+            d="M5 12L10 17L19 7"
+            style={{
+              strokeDasharray: 30,
+              strokeDashoffset: 30,
+              animation: `receipt-check-draw ${RECEIPT_CHECK_DRAW_DURATION_MS}ms ease-out ${RECEIPT_CHECK_DRAW_DELAY_MS}ms forwards`,
+            }}
+          />
+        </svg>
+      </div>
+    </div>
+  );
+};
+
+interface ReceiptCardProps {
+  productName: string;
+  productPrice: string;
+  deliveryEstimate: string;
+  subtotal: string;
+  total: string;
+}
+
+const ReceiptCard = ({
+  productName,
+  productPrice,
+  deliveryEstimate,
+  subtotal,
+  total,
+}: ReceiptCardProps) => (
+  <div
+    className="bg-white/80 backdrop-blur-sm rounded-3xl border border-primary/15 shadow-lg p-4 sm:p-5 w-full text-center sm:aspect-[3/4] flex flex-col justify-center min-h-0"
+    style={{
+      animation: `order-receipt-in ${RECEIPT_CARD_ANIMATION_MS}ms cubic-bezier(0.34, 1.56, 0.64, 1) both`,
+    }}
+  >
+    <div className="mx-auto mb-3">
+      <ReceiptCheckIcon />
+    </div>
+
+    <h4
+      className="text-base font-heading font-bold text-foreground mb-0.5"
+      style={{
+        animation: `receipt-row-in ${RECEIPT_ROW_DURATION_MS}ms ease-out ${RECEIPT_TITLE_DELAY_MS}ms both`,
+      }}
+    >
+      Order Confirmed
+    </h4>
+    <p
+      className="text-xs text-muted-foreground mb-3"
+      style={{
+        animation: `receipt-row-in ${RECEIPT_ROW_DURATION_MS}ms ease-out ${RECEIPT_PRODUCT_DELAY_MS}ms both`,
+      }}
+    >
+      {productName} - {productPrice}
+    </p>
+
+    <div
+      className="bg-[#FDF7E2]/60 rounded-xl p-2.5 mb-3 border border-primary/10"
+      style={{
+        animation: `receipt-row-in ${RECEIPT_ROW_DURATION_MS}ms ease-out ${RECEIPT_BREAKDOWN_DELAY_MS}ms both`,
+      }}
+    >
+      <div className="flex items-center justify-between text-[10px] mb-1.5">
+        <span className="text-muted-foreground">Subtotal</span>
+        <span className="font-medium">{subtotal}</span>
+      </div>
+      <div className="flex items-center justify-between text-[10px] mb-1.5">
+        <span className="text-muted-foreground">Shipping</span>
+        <span className="font-medium text-muted-foreground">Free</span>
+      </div>
+      <div className="h-px bg-primary/10 my-1.5" />
+      <div className="flex items-center justify-between text-xs">
+        <span className="font-semibold">Total</span>
+        <span className="font-bold text-primary">{total}</span>
+      </div>
+    </div>
+
+    <div
+      className="flex items-center justify-center gap-1.5 text-[10px] text-muted-foreground"
+      style={{
+        animation: `receipt-row-in ${RECEIPT_ROW_DURATION_MS}ms ease-out ${RECEIPT_DELIVERY_DELAY_MS}ms both`,
+      }}
+    >
+      <FaShoppingBag className="w-2.5 h-2.5 text-primary" />
+      <span>{deliveryEstimate}</span>
+    </div>
+  </div>
+);
 
 export default SpeakDiscoverBuy;

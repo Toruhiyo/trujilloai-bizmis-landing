@@ -18,6 +18,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import emailjs from "@emailjs/browser";
 import confetti from "canvas-confetti";
+import { bizmisConfettiColors } from "@/lib/colors";
 
 const EMAILJS_SERVICE_ID = import.meta.env.VITE_EMAILJS_SERVICE_ID;
 const EMAILJS_WAITLIST_TEMPLATE_ID = import.meta.env.VITE_EMAILJS_WAITLIST_TEMPLATE_ID;
@@ -118,7 +119,7 @@ const JoinWaitlist = () => {
       const duration = 3000;
       const animationEnd = Date.now() + duration;
       const defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 0 };
-      const colors = ['#FF8F00', '#F59E0B', '#FCD34D', '#FFFFFF', '#FFF7ED'];
+      const colors = bizmisConfettiColors();
 
       const randomInRange = (min: number, max: number) => {
         return Math.random() * (max - min) + min;
