@@ -1,7 +1,11 @@
-import { useEffect, useRef, useState, useCallback } from "react";
+import { useEffect, useRef, useState, useCallback, useLayoutEffect } from "react";
 import { FaShoppingBag, FaChevronRight } from "react-icons/fa";
 import confetti from "canvas-confetti";
-import CustomerVoiceCard from "./CustomerVoiceCard";
+import CustomerVoiceCard, {
+  ShopperShortCaption,
+  SHOPPER_MESSAGE_DRIFT_IN_MS,
+  SHOPPER_CAPTION_WORD_INTRA_DRIFT_OFFSET_MS,
+} from "./CustomerVoiceCard";
 import Waveform from "./Waveform";
 import { SHOPPER_CASES, ShopperCase } from "@/data/shopper-cases";
 import { bizmisConfettiColors } from "@/lib/colors";
@@ -140,6 +144,8 @@ const SpeakDiscoverBuy = () => {
   const [caseIndex, setCaseIndex] = useState(0);
   const [phase, setPhase] = useState<Phase>("idle");
   const [bridgeWaveTalkingHold, setBridgeWaveTalkingHold] = useState(false);
+  const [shopperCaptionPlaybackConsumed, setShopperCaptionPlaybackConsumed] =
+    useState(false);
 
   const currentCase: ShopperCase = SHOPPER_CASES[caseIndex];
   const recommendedIndex = currentCase.products.findIndex(
@@ -166,11 +172,28 @@ const SpeakDiscoverBuy = () => {
     setPhase("idle");
   }, []);
 
+  const onShopperCaptionPlaybackConsumed = useCallback(() => {
+    setShopperCaptionPlaybackConsumed(true);
+  }, []);
+
+  useLayoutEffect(() => {
+    setShopperCaptionPlaybackConsumed(false);
+  }, [caseIndex]);
+
+  useLayoutEffect(() => {
+    if (phase === "speaking") {
+      setShopperCaptionPlaybackConsumed(false);
+    }
+  }, [phase]);
+
   useEffect(() => {
     if (!isVisible) return;
     if (phase === "fade-out") {
       const t = setTimeout(advanceToNext, PHASE_DURATIONS["fade-out"]);
       return () => clearTimeout(t);
+    }
+    if (phase === "speaking") {
+      return;
     }
     const i = PHASE_ORDER.indexOf(phase);
     if (i < PHASE_ORDER.length - 1) {
@@ -179,6 +202,13 @@ const SpeakDiscoverBuy = () => {
       return () => clearTimeout(t);
     }
   }, [isVisible, phase, advanceToNext]);
+
+  useEffect(() => {
+    if (!isVisible || phase !== "speaking") return;
+    if (!shopperCaptionPlaybackConsumed) return;
+    const t = window.setTimeout(() => setPhase("product-1"), 0);
+    return () => clearTimeout(t);
+  }, [isVisible, phase, shopperCaptionPlaybackConsumed]);
 
   useEffect(() => {
     return () => {
@@ -267,7 +297,7 @@ const SpeakDiscoverBuy = () => {
       : "none";
 
   return (
-    <div ref={sectionRef} className="w-full max-w-6xl mx-auto px-4">
+    <div ref={sectionRef} className="w-full max-w-6xl mx-auto px-4 overflow-visible">
       {/* Minimal step flow: 1 -> 2 -> 3 */}
       <div className="w-full mb-6 flex items-center justify-center">
         <div className="flex flex-wrap items-center justify-center gap-x-2 gap-y-1 sm:gap-4 text-primary text-[11px] sm:text-sm font-medium">
@@ -292,7 +322,7 @@ const SpeakDiscoverBuy = () => {
           products and order pill cycle through cases. The bridging waveform
           (background audio) is the only audio indicator on mobile too. */}
       <div className="lg:hidden flex flex-col items-center gap-3">
-        <div className="relative w-full">
+        <div className="relative w-full overflow-visible">
           <div className="absolute inset-x-0 top-0 flex justify-center pointer-events-none z-0">
             <div className="relative">
               <div
@@ -319,33 +349,35 @@ const SpeakDiscoverBuy = () => {
 
           <div
             key={`mobile-quote-${caseIndex}`}
-            className="absolute left-1 xs:left-2 top-[2rem] xs:top-[2.5rem] sm:top-[3.25rem] z-10 max-w-[7.5rem] xs:max-w-[9rem] sm:max-w-[11rem] pointer-events-none"
+            className="absolute left-3 xs:left-4 sm:left-5 top-[2rem] xs:top-[2.5rem] sm:top-[3.25rem] z-10 max-w-[11rem] xs:max-w-[12.5rem] sm:max-w-[14rem] pointer-events-none overflow-visible"
             style={{
               opacity: customerTextVisible ? 1 : 0,
               animation: customerTextVisible
-                ? `shopper-message-drift-in 700ms ease-out ${CUSTOMER_MESSAGE_OFFSET_MS}ms both`
+                ? `shopper-message-drift-in ${SHOPPER_MESSAGE_DRIFT_IN_MS}ms ease-out ${CUSTOMER_MESSAGE_OFFSET_MS}ms both`
                 : "none",
             }}
           >
             <div
+              className="overflow-visible"
               style={{
                 animation: customerTextVisible
-                  ? `shopper-message-idle-drift 8s ease-in-out ${CUSTOMER_MESSAGE_OFFSET_MS + 700}ms infinite`
+                  ? `shopper-message-idle-drift 8s ease-in-out ${CUSTOMER_MESSAGE_OFFSET_MS + SHOPPER_MESSAGE_DRIFT_IN_MS}ms infinite`
                   : "none",
               }}
             >
-              <div className="relative px-3 py-2">
-                <span
-                  aria-hidden
-                  className="shopper-message-stain-mask absolute -inset-3 rounded-2xl bg-primary/35 blur-xl pointer-events-none"
+              <div className="relative overflow-visible px-2 py-1.5 xs:px-2.5 xs:py-2">
+                <ShopperShortCaption
+                  quote={currentCase.customerQuote}
+                  shown={customerTextVisible}
+                  wordBaseDelayMs={
+                    CUSTOMER_MESSAGE_OFFSET_MS +
+                    SHOPPER_CAPTION_WORD_INTRA_DRIFT_OFFSET_MS
+                  }
+                  textClassName="text-[10px] xs:text-[11px] sm:text-[12px] leading-none"
+                  onCaptionPlaybackConsumed={
+                    onShopperCaptionPlaybackConsumed
+                  }
                 />
-                <span
-                  aria-hidden
-                  className="shopper-message-stain-mask absolute -inset-1 rounded-xl bg-primary/22 backdrop-blur-xl pointer-events-none"
-                />
-                <p className="relative text-[11px] xs:text-xs sm:text-sm italic font-semibold text-foreground/90 leading-snug">
-                  {currentCase.customerQuote}
-                </p>
               </div>
             </div>
           </div>
@@ -481,7 +513,7 @@ const SpeakDiscoverBuy = () => {
       </div>
 
       {/* Desktop layout */}
-      <div className="hidden lg:flex relative items-center justify-center gap-6">
+      <div className="hidden lg:flex relative items-center justify-center gap-6 overflow-visible">
         {/* Bridging waveform behind avatar — switches between active/inactive
             opacity per choreography phase. This is the only audio indicator. */}
         <div
@@ -507,7 +539,7 @@ const SpeakDiscoverBuy = () => {
         </div>
 
         {/* Column 1: customer card */}
-        <div className="relative z-10 flex-1 flex flex-col items-center w-full max-w-[12rem] sm:max-w-[14rem]">
+        <div className="relative z-10 flex-1 flex flex-col items-center w-full max-w-[12rem] sm:max-w-[14rem] overflow-visible">
           <div
             className="w-full"
             style={{
@@ -525,6 +557,9 @@ const SpeakDiscoverBuy = () => {
               isVisible={customerVisible}
               quoteVisible={customerTextVisible}
               quoteEnterDelayMs={CUSTOMER_MESSAGE_OFFSET_MS}
+              onCaptionPlaybackConsumed={
+                onShopperCaptionPlaybackConsumed
+              }
             />
           </div>
         </div>

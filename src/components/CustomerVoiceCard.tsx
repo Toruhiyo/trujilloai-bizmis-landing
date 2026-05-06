@@ -1,5 +1,25 @@
-const QUOTE_DRIFT_IN_MS = 700;
+import {
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+  type CSSProperties,
+} from "react";
+
+export const SHOPPER_MESSAGE_DRIFT_IN_MS = 700;
+const QUOTE_DRIFT_IN_MS = SHOPPER_MESSAGE_DRIFT_IN_MS;
+
+/** Words begin revealing partway through the bubble drift-in, like speech starting mid motion. */
+export const SHOPPER_CAPTION_WORD_INTRA_DRIFT_OFFSET_MS = Math.round(
+  SHOPPER_MESSAGE_DRIFT_IN_MS * 0.35,
+);
 const QUOTE_IDLE_DRIFT_MS = 8000;
+
+const CAPTION_WORD_DWELL_MS_DEFAULT = 340;
+const CAPTION_WORD_DWELL_MS_SMALL = 300;
+/** Uniform bleed around measured caption bounds for primary stain layers. */
+const CAPTION_STAIN_MARGIN_PX_DEFAULT = 14;
+const CAPTION_STAIN_MARGIN_PX_SMALL = 11;
 
 export type CustomerVoiceCardSize = "default" | "small";
 
@@ -20,24 +40,244 @@ export type CustomerVoiceCardProps = {
   transitionDelayMs?: number;
   transitionDurationMs?: number;
   className?: string;
+  /** Called once when the shopper caption karaoke pass completes (`consumed`). */
+  onCaptionPlaybackConsumed?: () => void;
 };
 
-const QUOTE_OVERHANG_TRANSFORM = "translate(45%, -22%)";
+export type ShopperShortCaptionProps = {
+  quote: string;
+  shown: boolean;
+  /** Delay before the first word animates in (ms). */
+  wordBaseDelayMs: number;
+  size?: CustomerVoiceCardSize;
+  textClassName?: string;
+  className?: string;
+  /** Called once when the first karaoke pass finishes (`consumed`). */
+  onCaptionPlaybackConsumed?: () => void;
+};
+
+const QUOTE_OVERHANG_TRANSFORM = "translate(58%, -22%)";
+
+function parseCaptionWords(raw: string): string[] {
+  const trimmed = raw
+    .trim()
+    .replace(/^["'\u201c\u2018]+|["'\u201d\u2019]+$/gu, "");
+  if (!trimmed) return [];
+  return trimmed.split(/\s+/).filter(Boolean);
+}
+
+type HighlightRect = {
+  left: number;
+  top: number;
+  width: number;
+  height: number;
+};
+
+/**
+ * Short-form captions: stroked white words; active word uses white chip + primary text.
+ */
+export function ShopperShortCaption({
+  quote,
+  shown,
+  wordBaseDelayMs,
+  size = "default",
+  textClassName,
+  className = "",
+  onCaptionPlaybackConsumed,
+}: ShopperShortCaptionProps) {
+  const words = parseCaptionWords(quote);
+  const dwellMs =
+    size === "small"
+      ? CAPTION_WORD_DWELL_MS_SMALL
+      : CAPTION_WORD_DWELL_MS_DEFAULT;
+
+  const onConsumedRef = useRef(onCaptionPlaybackConsumed);
+  onConsumedRef.current = onCaptionPlaybackConsumed;
+
+  const containerRef = useRef<HTMLParagraphElement>(null);
+  const wrapperRef = useRef<HTMLDivElement>(null);
+  const wordRefs = useRef<(HTMLSpanElement | null)[]>([]);
+  const [activeWordIndex, setActiveWordIndex] = useState(-1);
+  /** First karaoke pass finished; highlight stays off until quote/`shown` resets. */
+  const [captionConsumed, setCaptionConsumed] = useState(false);
+  const [stainRect, setStainRect] = useState<HighlightRect | null>(null);
+  const [layoutNonce, setLayoutNonce] = useState(0);
+
+  const stainMarginPx =
+    size === "small"
+      ? CAPTION_STAIN_MARGIN_PX_SMALL
+      : CAPTION_STAIN_MARGIN_PX_DEFAULT;
+
+  const baseSize =
+    textClassName ??
+    (size === "small"
+      ? "text-[10px] leading-none"
+      : "text-[11px] sm:text-[12px] leading-none");
+
+  useEffect(() => {
+    const el = containerRef.current;
+    if (!el || typeof ResizeObserver === "undefined") return undefined;
+    const ro = new ResizeObserver(() =>
+      setLayoutNonce((value) => value + 1),
+    );
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, [quote]);
+
+  useLayoutEffect(() => {
+    const wrap = wrapperRef.current;
+    const paragraph = containerRef.current;
+    if (!wrap || !paragraph || !shown || words.length === 0) {
+      setStainRect(null);
+      return;
+    }
+    const wrapBox = wrap.getBoundingClientRect();
+    const captionBox = paragraph.getBoundingClientRect();
+    const margin = stainMarginPx;
+    setStainRect({
+      left: captionBox.left - wrapBox.left - margin,
+      top: captionBox.top - wrapBox.top - margin,
+      width: captionBox.width + margin * 2,
+      height: captionBox.height + margin * 2,
+    });
+  }, [layoutNonce, shown, quote, words.length, stainMarginPx]);
+
+  useEffect(() => {
+    if (!shown) {
+      setActiveWordIndex(-1);
+      setCaptionConsumed(false);
+      return undefined;
+    }
+    if (words.length === 0) {
+      setActiveWordIndex(-1);
+      setCaptionConsumed(false);
+      queueMicrotask(() => onConsumedRef.current?.());
+      return undefined;
+    }
+
+    setCaptionConsumed(false);
+
+    const timeoutIds: ReturnType<typeof setTimeout>[] = [];
+    let cancelled = false;
+
+    const scheduleWord = (index: number) => {
+      if (cancelled) return;
+      if (index >= words.length) {
+        setActiveWordIndex(-1);
+        setCaptionConsumed(true);
+        onConsumedRef.current?.();
+        return;
+      }
+      setActiveWordIndex(index);
+      timeoutIds.push(
+        window.setTimeout(() => scheduleWord(index + 1), dwellMs),
+      );
+    };
+
+    timeoutIds.push(
+      window.setTimeout(() => scheduleWord(0), wordBaseDelayMs),
+    );
+
+    return () => {
+      cancelled = true;
+      timeoutIds.forEach((id) => window.clearTimeout(id));
+    };
+  }, [shown, words.length, wordBaseDelayMs, quote, dwellMs]);
+
+  const stainVisible = Boolean(stainRect && shown && stainRect.width > 0);
+
+  const stainPositionStyle: CSSProperties = stainRect
+    ? {
+        left: stainRect.left,
+        top: stainRect.top,
+        width: stainRect.width,
+        height: stainRect.height,
+      }
+    : {
+        left: 0,
+        top: 0,
+        width: 0,
+        height: 0,
+        visibility: "hidden",
+      };
+
+  return (
+    <div
+      ref={wrapperRef}
+      className="relative inline-block max-w-full overflow-visible align-top"
+    >
+      <span
+        aria-hidden
+        className="shopper-caption-stain-halo"
+        style={{
+          ...stainPositionStyle,
+          opacity: stainVisible ? 1 : 0,
+        }}
+      />
+      <span
+        aria-hidden
+        className="shopper-caption-stain-core"
+        style={{
+          ...stainPositionStyle,
+          opacity: stainVisible ? 1 : 0,
+        }}
+      />
+      <p
+        ref={containerRef}
+        data-caption-state={
+          !shown || words.length === 0
+            ? "idle"
+            : captionConsumed
+              ? "consumed"
+              : "playing"
+        }
+        className={`relative z-[1] m-0 flex flex-wrap items-baseline gap-x-1 gap-y-1 font-body ${baseSize} ${className}`}
+        aria-label={words.join(" ")}
+      >
+        {words.map((word, index) => {
+          const isActive =
+            shown &&
+            !captionConsumed &&
+            activeWordIndex >= 0 &&
+            activeWordIndex === index;
+          return (
+            <span
+              key={`${index}-${word}`}
+              ref={(node) => {
+                wordRefs.current[index] = node;
+              }}
+              className={
+                isActive
+                  ? "relative z-[3] -m-1.5 inline-block rounded-[7px] bg-white p-1.5 align-baseline text-[1.12em] font-extrabold uppercase tracking-[0.03em] leading-none text-primary transition-colors duration-150"
+                  : "shopper-caption-token relative z-[2] inline-block align-baseline leading-none transition-colors duration-150"
+              }
+              style={{
+                opacity: shown ? 1 : 0,
+                visibility: shown ? "visible" : "hidden",
+              }}
+            >
+              {word}
+            </span>
+          );
+        })}
+    </p>
+    </div>
+  );
+}
 
 const sizeClasses = {
   default: {
     wrapper: "max-w-[14rem]",
     card: "rounded-3xl",
-    quoteText: "text-[12px] sm:text-[13px]",
-    quoteWidth: "w-[8.5rem] sm:w-[9.75rem]",
-    quotePadding: "px-3 py-2",
+    quoteWidth:
+      "max-w-[11rem] xs:max-w-[12rem] sm:max-w-[13.5rem] min-w-0 w-max",
+    quotePadding: "px-2 py-1.5 sm:px-2.5 sm:py-2",
   },
   small: {
     wrapper: "max-w-[10rem]",
     card: "rounded-2xl",
-    quoteText: "text-[11px]",
-    quoteWidth: "w-[7rem]",
-    quotePadding: "px-2.5 py-1.5",
+    quoteWidth: "max-w-[9rem] min-w-0 w-max",
+    quotePadding: "px-1.5 py-1",
   },
 };
 
@@ -52,13 +292,14 @@ const CustomerVoiceCard = ({
   transitionDelayMs = 0,
   transitionDurationMs = 1400,
   className = "",
+  onCaptionPlaybackConsumed,
 }: CustomerVoiceCardProps) => {
   const s = sizeClasses[size];
   const isQuoteShown = quoteVisible !== undefined ? quoteVisible : isVisible;
   const idleDriftDelayMs = quoteEnterDelayMs + QUOTE_DRIFT_IN_MS;
   return (
     <div
-      className={`relative w-full ${s.wrapper} ${className}`}
+      className={`relative w-full overflow-visible ${s.wrapper} ${className}`}
       style={{
         transition: `opacity ${transitionDurationMs}ms ease, transform ${transitionDurationMs}ms ease`,
         transitionDelay: `${transitionDelayMs}ms`,
@@ -74,16 +315,17 @@ const CustomerVoiceCard = ({
         <div className="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-primary/30 to-transparent" />
       </div>
 
-      {/* Floating quote — partly over the card's top-right corner, partly outside */}
+      {/* Floating short-caption — partly over the card's top-right corner, partly outside */}
       {showOverlay && quote ? (
         <ShopperMessageBubble
           quote={quote}
-          quoteText={s.quoteText}
           quoteWidth={s.quoteWidth}
           quotePadding={s.quotePadding}
+          size={size}
           shown={isQuoteShown}
           enterDelayMs={quoteEnterDelayMs}
           idleDriftDelayMs={idleDriftDelayMs}
+          onCaptionPlaybackConsumed={onCaptionPlaybackConsumed}
         />
       ) : null}
     </div>
@@ -92,12 +334,13 @@ const CustomerVoiceCard = ({
 
 interface ShopperMessageBubbleProps {
   quote: string;
-  quoteText: string;
   quoteWidth: string;
   quotePadding: string;
+  size: CustomerVoiceCardSize;
   shown: boolean;
   enterDelayMs: number;
   idleDriftDelayMs: number;
+  onCaptionPlaybackConsumed?: () => void;
 }
 
 /* Three nested elements so the static positioning offset and the animated
@@ -110,18 +353,20 @@ interface ShopperMessageBubbleProps {
 */
 const ShopperMessageBubble = ({
   quote,
-  quoteText,
   quoteWidth,
   quotePadding,
+  size,
   shown,
   enterDelayMs,
   idleDriftDelayMs,
+  onCaptionPlaybackConsumed,
 }: ShopperMessageBubbleProps) => (
   <div
-    className={`absolute top-0 right-0 z-10 ${quoteWidth} pointer-events-none`}
+    className={`absolute top-0 right-0 z-10 overflow-visible ${quoteWidth} pointer-events-none`}
     style={{ transform: QUOTE_OVERHANG_TRANSFORM }}
   >
     <div
+      className="overflow-visible"
       style={{
         opacity: shown ? 1 : 0,
         animation: shown
@@ -130,60 +375,27 @@ const ShopperMessageBubble = ({
       }}
     >
       <div
+        className="overflow-visible"
         style={{
           animation: shown
             ? `shopper-message-idle-drift ${QUOTE_IDLE_DRIFT_MS}ms ease-in-out ${idleDriftDelayMs}ms infinite`
             : "none",
         }}
       >
-        <ShopperMessageBody
-          quote={quote}
-          quoteText={quoteText}
-          quotePadding={quotePadding}
-        />
+        <div className={`relative overflow-visible ${quotePadding}`}>
+          <ShopperShortCaption
+            quote={quote}
+            shown={shown}
+            wordBaseDelayMs={
+              enterDelayMs + SHOPPER_CAPTION_WORD_INTRA_DRIFT_OFFSET_MS
+            }
+            size={size}
+            onCaptionPlaybackConsumed={onCaptionPlaybackConsumed}
+          />
+        </div>
       </div>
     </div>
   </div>
-);
-
-interface ShopperMessageBodyProps {
-  quote: string;
-  quoteText: string;
-  quotePadding: string;
-}
-
-const ShopperMessageBody = ({
-  quote,
-  quoteText,
-  quotePadding,
-}: ShopperMessageBodyProps) => (
-  <div className={`relative ${quotePadding}`}>
-    <ShopperMessageStain />
-    <p
-      className={`relative ${quoteText} font-semibold italic text-foreground/90 font-body leading-snug`}
-    >
-      {quote}
-    </p>
-  </div>
-);
-
-/* Two stacked layers:
-   - Outer: soft primary tint + gaussian blur on its own pixels (outward glow).
-   - Inner: frosted glass (`backdrop-filter`) — masked with the same radial as the
-     outer so blur strength fades toward the edges just like the color stain.
-   Filter blur and backdrop-filter cannot share one element; masks stay aligned
-   via the shared `.shopper-message-stain-mask` class in `index.css`. */
-const ShopperMessageStain = () => (
-  <>
-    <span
-      aria-hidden
-      className="shopper-message-stain-mask absolute -inset-3 rounded-2xl pointer-events-none bg-primary/35 blur-xl"
-    />
-    <span
-      aria-hidden
-      className="shopper-message-stain-mask absolute -inset-1 rounded-xl pointer-events-none bg-primary/22 backdrop-blur-xl"
-    />
-  </>
 );
 
 export default CustomerVoiceCard;

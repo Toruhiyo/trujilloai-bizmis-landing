@@ -471,27 +471,54 @@ All colors MUST be HSL.
   75% { transform: translate(-2.5px, -1.5px); }
 }
 
-/* Shared radial fade for shopper message stain layers: the colored glow and the
-   backdrop blur both use this mask so tint and frosted blur feather outward in sync
-   instead of a hard rectangle edge. */
-.shopper-message-stain-mask {
-  mask-image: radial-gradient(
-    ellipse 118% 112% at 50% 46%,
-    #000 0%,
-    rgb(0 0 0 / 0.82) 24%,
-    rgb(0 0 0 / 0.38) 52%,
-    transparent 76%
+/* Short-form captions: white words on stain; active word is white chip + primary text */
+.shopper-caption-token {
+  color: #ffffff;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  line-height: 1;
+}
+
+/* Primary stain behind captions: size/position set in TS from caption bounds + uniform margin */
+.shopper-caption-stain-halo {
+  position: absolute;
+  z-index: 0;
+  pointer-events: none;
+  box-sizing: border-box;
+  border-radius: 22px;
+  background: radial-gradient(
+    ellipse 134% 72% at 50% 50%,
+    hsl(var(--primary) / 0.98) 0%,
+    hsl(var(--primary) / 0.82) 26%,
+    hsl(var(--primary) / 0.6) 44%,
+    hsl(var(--primary) / 0.38) 60%,
+    hsl(var(--primary) / 0.2) 74%,
+    hsl(var(--primary) / 0.088) 86%,
+    hsl(var(--primary) / 0.03) 94%,
+    transparent 100%
   );
-  -webkit-mask-image: radial-gradient(
-    ellipse 118% 112% at 50% 46%,
-    #000 0%,
-    rgb(0 0 0 / 0.82) 24%,
-    rgb(0 0 0 / 0.38) 52%,
-    transparent 76%
+  filter: blur(50px);
+}
+
+.shopper-caption-stain-core {
+  position: absolute;
+  z-index: 0;
+  pointer-events: none;
+  box-sizing: border-box;
+  border-radius: 18px;
+  background: radial-gradient(
+    ellipse 130% 68% at 50% 50%,
+    hsl(var(--primary) / 1) 0%,
+    hsl(var(--primary) / 0.98) 24%,
+    hsl(var(--primary) / 0.86) 42%,
+    hsl(var(--primary) / 0.64) 58%,
+    hsl(var(--primary) / 0.4) 72%,
+    hsl(var(--primary) / 0.19) 84%,
+    hsl(var(--primary) / 0.072) 93%,
+    transparent 100%
   );
-  mask-mode: alpha;
-  mask-repeat: no-repeat;
-  -webkit-mask-repeat: no-repeat;
+  filter: blur(22px);
 }
 
 /* "Added to cart" badge entrance: small playful pop with a slight rotate. */
