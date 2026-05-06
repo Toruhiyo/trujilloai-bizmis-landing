@@ -51,6 +51,12 @@ const BRIDGE_WAVE_FADE_OUT_MS = 580;
 
 const DESKTOP_ROW_GAP_REM = 1;
 const MOBILE_ROW_GAP_REM = 0.5;
+/** Mobile single-stage cross-fade: leaving element fades out fully before
+ *  the next element starts fading in, so caption/products/receipt never
+ *  overlap visually. */
+const MOBILE_STAGE_FADE_OUT_MS = 280;
+const MOBILE_STAGE_FADE_IN_MS = 360;
+const MOBILE_STAGE_FADE_IN_DELAY_MS = MOBILE_STAGE_FADE_OUT_MS + 80;
 const ADD_TO_CART_TRANSITION_MS = 850;
 const ADD_TO_CART_EASE = "cubic-bezier(0.34, 1.56, 0.64, 1)";
 /** Burst once the recommended card has nearly reached center so origin stays aligned. */
@@ -292,6 +298,16 @@ const SpeakDiscoverBuy = () => {
   const addToCartActive = phaseAtLeast("add-to-cart") && !fadingOut;
   const receiptVisible = phaseAtLeast("confirmed") && !fadingOut;
 
+  /** Mobile-only: caption/products/receipt mutually exclusive in one stage. */
+  const mobileCaptionStageVisible = phase === "speaking" && !fadingOut;
+  const mobileProductsStageVisible =
+    phaseAtLeast("product-1") && !phaseAtLeast("confirmed") && !fadingOut;
+  const mobileReceiptStageVisible = receiptVisible;
+  const mobileStageTransition = (visible: boolean) =>
+    visible
+      ? `opacity ${MOBILE_STAGE_FADE_IN_MS}ms ease ${MOBILE_STAGE_FADE_IN_DELAY_MS}ms`
+      : `opacity ${MOBILE_STAGE_FADE_OUT_MS}ms ease`;
+
   const productLabel = (productId: string, fallback: string) =>
     productId === currentCase.recommendedProductId ? "Recommended" : fallback;
 
@@ -335,195 +351,214 @@ const SpeakDiscoverBuy = () => {
         </div>
       </div>
 
-      {/* Mobile layout: avatar always visible, customer line at head level,
-          products and order pill cycle through cases. The bridging waveform
-          (background audio) is the only audio indicator on mobile too. */}
-      <div className="lg:hidden flex flex-col items-center gap-3">
-        <div className="relative w-full overflow-visible">
-          <div className="absolute inset-x-0 top-0 flex justify-center pointer-events-none z-0">
-            <div className="relative">
-              <div
-                className="absolute inset-4 rounded-full bg-primary/25 blur-2xl animate-pulse"
-                aria-hidden
-              />
-              <img
-                src="/images/benefit-1-driven-sales-pipeline-2.png"
-                alt="Bizmis assistant"
-                className={`relative w-[14rem] h-[14rem] xs:w-[16rem] xs:h-[16rem] sm:w-[18rem] sm:h-[18rem] object-contain object-top drop-shadow-xl transition-all ease-out ${
-                  isVisible
-                    ? "opacity-100 translate-y-0"
-                    : "opacity-0 translate-y-3"
-                }`}
-                style={{
-                  transitionDelay: isVisible
-                    ? `${AVATAR_ENTRANCE_DELAY_MS}ms`
-                    : "0ms",
-                  transitionDuration: `${AVATAR_ENTRANCE_DURATION_MS}ms`,
-                }}
-              />
-            </div>
-          </div>
-
+      {/* Mobile layout: avatar centered + a shared "stage" below it where the
+          caption, products and order receipt take turns. Each layer fades out
+          fully before the next one fades in (staggered transition delay) so
+          they never visually overlap. */}
+      <div className="lg:hidden flex flex-col items-center">
+        <div className="relative flex justify-center">
           <div
-            key={`mobile-quote-${caseIndex}`}
-            className="absolute left-3 xs:left-4 sm:left-5 top-[2rem] xs:top-[2.5rem] sm:top-[3.25rem] z-10 max-w-[11rem] xs:max-w-[12.5rem] sm:max-w-[14rem] pointer-events-none overflow-visible"
+            className="absolute inset-4 rounded-full bg-primary/25 blur-2xl animate-pulse"
+            aria-hidden
+          />
+          <img
+            src="/images/benefit-1-driven-sales-pipeline-2.png"
+            alt="Bizmis assistant"
+            className={`relative w-full max-w-[26rem] xs:max-w-[30rem] sm:max-w-[34rem] aspect-square object-contain object-top drop-shadow-xl transition-all ease-out ${
+              isVisible
+                ? "opacity-100 translate-y-0"
+                : "opacity-0 translate-y-3"
+            }`}
             style={{
-              opacity: customerTextVisible ? 1 : 0,
-              animation: customerTextVisible
-                ? `shopper-message-drift-in ${SHOPPER_MESSAGE_DRIFT_IN_MS}ms ease-out ${CUSTOMER_MESSAGE_OFFSET_MS}ms both`
-                : "none",
+              transitionDelay: isVisible
+                ? `${AVATAR_ENTRANCE_DELAY_MS}ms`
+                : "0ms",
+              transitionDuration: `${AVATAR_ENTRANCE_DURATION_MS}ms`,
+            }}
+          />
+        </div>
+
+        <div className="relative w-full -mt-[13rem] xs:-mt-[15rem] sm:-mt-[17rem] z-20 flex items-center justify-center min-h-[7.5rem] xs:min-h-[8.5rem] sm:min-h-[9rem] px-4 overflow-visible">
+          {/* Caption layer */}
+          <div
+            className="absolute inset-0 flex items-center justify-center pointer-events-none px-4"
+            style={{
+              opacity: mobileCaptionStageVisible ? 1 : 0,
+              transition: mobileStageTransition(mobileCaptionStageVisible),
             }}
           >
             <div
-              className="overflow-visible"
+              key={`mobile-quote-${caseIndex}`}
+              className="overflow-visible w-full max-w-[16rem] xs:max-w-[18rem] sm:max-w-[20rem] flex justify-center"
               style={{
                 animation: customerTextVisible
-                  ? `shopper-message-idle-drift 8s ease-in-out ${CUSTOMER_MESSAGE_OFFSET_MS + SHOPPER_MESSAGE_DRIFT_IN_MS}ms infinite`
+                  ? `shopper-message-drift-in ${SHOPPER_MESSAGE_DRIFT_IN_MS}ms ease-out ${CUSTOMER_MESSAGE_OFFSET_MS}ms both`
                   : "none",
               }}
             >
-              <div className="relative overflow-visible px-2 py-1.5 xs:px-2.5 xs:py-2">
-                <ShopperShortCaption
-                  quote={currentCase.customerQuote}
-                  shown={customerTextVisible}
-                  wordBaseDelayMs={
-                    CUSTOMER_MESSAGE_OFFSET_MS +
-                    SHOPPER_CAPTION_WORD_INTRA_DRIFT_OFFSET_MS
-                  }
-                  textClassName="text-[10px] xs:text-[11px] sm:text-[12px] leading-none"
-                  onCaptionPlaybackConsumed={onShopperCaptionPlaybackConsumed}
-                />
+              <div
+                className="overflow-visible flex justify-center"
+                style={{
+                  animation: customerTextVisible
+                    ? `shopper-message-idle-drift 8s ease-in-out ${CUSTOMER_MESSAGE_OFFSET_MS + SHOPPER_MESSAGE_DRIFT_IN_MS}ms infinite`
+                    : "none",
+                }}
+              >
+                <div className="relative overflow-visible px-3 py-2">
+                  <ShopperShortCaption
+                    quote={currentCase.customerQuote}
+                    shown={customerTextVisible}
+                    wordBaseDelayMs={
+                      CUSTOMER_MESSAGE_OFFSET_MS +
+                      SHOPPER_CAPTION_WORD_INTRA_DRIFT_OFFSET_MS
+                    }
+                    textClassName="text-[13px] xs:text-[14px] sm:text-[15px] leading-tight"
+                    className="justify-center text-center"
+                    onCaptionPlaybackConsumed={onShopperCaptionPlaybackConsumed}
+                  />
+                </div>
               </div>
             </div>
           </div>
 
-          <div className="relative z-20 flex flex-row items-end gap-2 w-full justify-center pt-[10rem] xs:pt-[11.5rem] sm:pt-[13rem]">
-            {currentCase.products.map((product, idx) => {
-              const isRecommended = idx === recommendedIndex;
-              const visible = productVisible(idx);
-              const promoted = recommendationActive && isRecommended;
-              const dismissed = addToCartActive && !isRecommended;
-              const addedToCart = addToCartActive && isRecommended;
-              const cardOpacity = dismissed ? 0 : visible ? 1 : 0;
-              const recenterX = `calc(${1 - idx} * (100% + ${MOBILE_ROW_GAP_REM}rem))`;
-              const cardTransform = dismissed
-                ? "translateY(14px) scale(0.85)"
-                : addedToCart
-                  ? `translateX(${recenterX}) translateY(-6px) scale(1.06)`
-                  : visible
-                    ? "translateY(0) scale(1)"
-                    : "translateY(0.75rem) scale(0.95)";
-              const cardTransition = addedToCart
-                ? `transform ${ADD_TO_CART_TRANSITION_MS}ms ${ADD_TO_CART_EASE}, opacity 400ms ease`
-                : `opacity ${PRODUCT_ANIMATION_MS}ms ease, transform ${PRODUCT_ANIMATION_MS}ms ease`;
-              return (
-                <div
-                  key={`mobile-${currentCase.id}-${product.id}`}
-                  ref={isRecommended ? mobileRecommendedRef : undefined}
-                  className="relative"
-                  style={{
-                    opacity: cardOpacity,
-                    transform: cardTransform,
-                    transition: cardTransition,
-                  }}
-                >
-                  {promoted && (
-                    <span
-                      aria-hidden
-                      className="absolute inset-0 rounded-xl pointer-events-none"
-                      style={{
-                        animation: `product-glow-ring ${GLOW_ANIMATION_MS}ms ease-out both`,
-                      }}
-                    />
-                  )}
-                  {addedToCart && (
-                    <div
-                      className="absolute -top-2 -right-2 z-10 bg-primary text-white text-[8px] font-semibold rounded-full px-1.5 py-0.5 shadow-md flex items-center gap-1"
-                      style={{
-                        animation: `cart-badge-in ${CART_BADGE_ANIMATION_MS}ms cubic-bezier(0.34, 1.56, 0.64, 1) both`,
-                      }}
-                      aria-hidden
-                    >
-                      <FaShoppingBag className="w-2 h-2" />
-                      <span>Added</span>
-                    </div>
-                  )}
+          {/* Products layer */}
+          <div
+            className="absolute inset-0 flex items-center justify-center"
+            style={{
+              opacity: mobileProductsStageVisible ? 1 : 0,
+              transition: mobileStageTransition(mobileProductsStageVisible),
+            }}
+          >
+            <div className="flex flex-row items-end gap-2.5">
+              {currentCase.products.map((product, idx) => {
+                const isRecommended = idx === recommendedIndex;
+                const visible = productVisible(idx);
+                const promoted = recommendationActive && isRecommended;
+                const dismissed = addToCartActive && !isRecommended;
+                const addedToCart = addToCartActive && isRecommended;
+                const cardOpacity = dismissed ? 0 : visible ? 1 : 0;
+                const recenterX = `calc(${1 - idx} * (100% + ${MOBILE_ROW_GAP_REM}rem))`;
+                const cardTransform = dismissed
+                  ? "translateY(14px) scale(0.85)"
+                  : addedToCart
+                    ? `translateX(${recenterX}) translateY(-6px) scale(1.06)`
+                    : visible
+                      ? "translateY(0) scale(1)"
+                      : "translateY(0.75rem) scale(0.95)";
+                const cardTransition = addedToCart
+                  ? `transform ${ADD_TO_CART_TRANSITION_MS}ms ${ADD_TO_CART_EASE}, opacity 400ms ease`
+                  : `opacity ${PRODUCT_ANIMATION_MS}ms ease, transform ${PRODUCT_ANIMATION_MS}ms ease`;
+                return (
                   <div
-                    className={`relative rounded-xl border transition-all duration-500 w-[5.5rem] xs:w-24 ${
-                      promoted
-                        ? "bg-white border-primary/40 shadow-[0_8px_24px_-4px_rgba(253,145,42,0.45)] -mt-2"
-                        : "bg-white/95 border-primary/25 shadow-[0_6px_18px_-2px_rgba(0,0,0,0.18)]"
-                    }`}
-                    style={{ animation: promoteAnimation(promoted) }}
+                    key={`mobile-${currentCase.id}-${product.id}`}
+                    ref={isRecommended ? mobileRecommendedRef : undefined}
+                    className="relative"
+                    style={{
+                      opacity: cardOpacity,
+                      transform: cardTransform,
+                      transition: cardTransition,
+                    }}
                   >
-                    <div className="relative overflow-hidden rounded-t-xl bg-[#FDF7E2]/50 h-12 xs:h-14">
-                      <img
-                        src={product.image}
-                        alt={product.name}
-                        className="w-full h-full object-cover"
-                      />
-                      <div
-                        className={`absolute top-1 left-1 text-[7px] font-semibold px-1 py-0.5 rounded-full ${
-                          isRecommended
-                            ? "bg-primary text-white shadow-sm"
-                            : "bg-white/85 text-primary border border-primary/20"
-                        }`}
+                    {promoted && (
+                      <span
+                        aria-hidden
+                        className="absolute inset-0 rounded-xl pointer-events-none"
                         style={{
-                          opacity: tagsVisible ? 1 : 0,
-                          animation: tagAnimation(idx),
+                          animation: `product-glow-ring ${GLOW_ANIMATION_MS}ms ease-out both`,
                         }}
+                      />
+                    )}
+                    {addedToCart && (
+                      <div
+                        className="absolute -top-2.5 -right-2.5 z-10 bg-primary text-white text-[10px] font-semibold rounded-full px-2 py-0.5 shadow-md flex items-center gap-1"
+                        style={{
+                          animation: `cart-badge-in ${CART_BADGE_ANIMATION_MS}ms cubic-bezier(0.34, 1.56, 0.64, 1) both`,
+                        }}
+                        aria-hidden
                       >
-                        {productLabel(product.id, product.label)}
+                        <FaShoppingBag className="w-2.5 h-2.5" />
+                        <span>Added</span>
+                      </div>
+                    )}
+                    <div
+                      className={`relative rounded-xl border transition-all duration-500 w-[7rem] xs:w-32 ${
+                        promoted
+                          ? "bg-white border-primary/40 shadow-[0_8px_24px_-4px_rgba(253,145,42,0.45)] -mt-2"
+                          : "bg-white/95 border-primary/25 shadow-[0_6px_18px_-2px_rgba(0,0,0,0.18)]"
+                      }`}
+                      style={{ animation: promoteAnimation(promoted) }}
+                    >
+                      <div className="relative overflow-hidden rounded-t-xl bg-[#FDF7E2]/50 h-16 xs:h-20">
+                        <img
+                          src={product.image}
+                          alt={product.name}
+                          className="w-full h-full object-cover"
+                        />
+                        <div
+                          className={`absolute top-1 left-1 text-[9px] font-semibold px-1.5 py-0.5 rounded-full ${
+                            isRecommended
+                              ? "bg-primary text-white shadow-sm"
+                              : "bg-white/85 text-primary border border-primary/20"
+                          }`}
+                          style={{
+                            opacity: tagsVisible ? 1 : 0,
+                            animation: tagAnimation(idx),
+                          }}
+                        >
+                          {productLabel(product.id, product.label)}
+                        </div>
+                      </div>
+                      <div className="p-2">
+                        <h4
+                          className={`font-heading font-semibold text-[11px] leading-tight mb-0.5 transition-colors duration-300 ${
+                            promoted ? "text-foreground" : "text-foreground/70"
+                          }`}
+                        >
+                          {product.name}
+                        </h4>
+                        <span
+                          className={`font-bold text-[12px] transition-colors duration-300 ${
+                            promoted ? "text-primary" : "text-foreground/60"
+                          }`}
+                        >
+                          {product.price}
+                        </span>
                       </div>
                     </div>
-                    <div className="p-1.5">
-                      <h4
-                        className={`font-heading font-semibold text-[9px] leading-tight mb-0.5 transition-colors duration-300 ${
-                          promoted ? "text-foreground" : "text-foreground/70"
-                        }`}
-                      >
-                        {product.name}
-                      </h4>
-                      <span
-                        className={`font-bold text-[10px] transition-colors duration-300 ${
-                          promoted ? "text-primary" : "text-foreground/60"
-                        }`}
-                      >
-                        {product.price}
-                      </span>
-                    </div>
                   </div>
-                </div>
-              );
-            })}
+                );
+              })}
+            </div>
           </div>
-        </div>
 
-        <div
-          style={{
-            opacity: receiptVisible ? 1 : 0,
-            transition: `opacity ${TRANSITION_MS}ms ease`,
-          }}
-        >
-          {receiptVisible && (
-            <div
-              key={`mobile-receipt-${caseIndex}`}
-              className="flex items-center gap-2 bg-white/95 rounded-full border border-primary/20 shadow-md px-3 py-1.5"
-              style={{
-                animation: `order-receipt-in ${RECEIPT_CARD_ANIMATION_MS}ms cubic-bezier(0.34, 1.56, 0.64, 1) both`,
-              }}
-            >
-              <ReceiptCheckIcon size={20} pathSize={14} />
-              <span
-                className="text-[11px] xs:text-xs font-medium text-foreground whitespace-nowrap"
+          {/* Receipt layer */}
+          <div
+            className="absolute inset-0 flex items-center justify-center pointer-events-none"
+            style={{
+              opacity: mobileReceiptStageVisible ? 1 : 0,
+              transition: mobileStageTransition(mobileReceiptStageVisible),
+            }}
+          >
+            {receiptVisible && (
+              <div
+                key={`mobile-receipt-${caseIndex}`}
+                className="flex items-center gap-2.5 bg-white/95 rounded-full border border-primary/20 shadow-md px-4 py-2"
                 style={{
-                  animation: `receipt-row-in ${RECEIPT_ROW_DURATION_MS}ms ease-out ${RECEIPT_TITLE_DELAY_MS}ms both`,
+                  animation: `order-receipt-in ${RECEIPT_CARD_ANIMATION_MS}ms cubic-bezier(0.34, 1.56, 0.64, 1) both`,
                 }}
               >
-                {`Order Confirmed · ${recommendedProduct.name} · ${recommendedProduct.price}`}
-              </span>
-            </div>
-          )}
+                <ReceiptCheckIcon size={24} pathSize={16} />
+                <span
+                  className="text-[13px] xs:text-sm font-medium text-foreground whitespace-nowrap"
+                  style={{
+                    animation: `receipt-row-in ${RECEIPT_ROW_DURATION_MS}ms ease-out ${RECEIPT_TITLE_DELAY_MS}ms both`,
+                  }}
+                >
+                  {`Order Confirmed · ${recommendedProduct.name} · ${recommendedProduct.price}`}
+                </span>
+              </div>
+            )}
+          </div>
         </div>
       </div>
 
