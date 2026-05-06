@@ -34,6 +34,8 @@ const RECEIPT_ROW_DURATION_MS = 400;
 
 const BRIDGE_WAVEFORM_ACTIVE_OPACITY = 0.55;
 const BRIDGE_WAVEFORM_INACTIVE_OPACITY = 0.18;
+const BRIDGE_WAVE_FADE_IN_MS = 700;
+const BRIDGE_WAVE_FADE_OUT_MS = 580;
 
 const DESKTOP_ROW_GAP_REM = 1;
 const MOBILE_ROW_GAP_REM = 0.5;
@@ -110,20 +112,20 @@ const fireBizmisConfetti = (origin: { x: number; y: number }) => {
   confetti({
     ...radialBase,
     particleCount: 100,
-    startVelocity: 12,
+    startVelocity: 20,
     gravity: 0.0,
     scalar: 1,
     ticks: 125,
-    decay: 0.95,
+    decay: 0.9,
   });
   confetti({
     ...radialBase,
     particleCount: 60,
-    startVelocity: 15,
+    startVelocity: 23,
     gravity: 0.0,
     scalar: 0.72,
     ticks: 138,
-    decay: 0.97,
+    decay: 0.9,
   });
 };
 
@@ -131,9 +133,13 @@ const SpeakDiscoverBuy = () => {
   const sectionRef = useRef<HTMLDivElement>(null);
   const desktopRecommendedRef = useRef<HTMLDivElement>(null);
   const mobileRecommendedRef = useRef<HTMLDivElement>(null);
+  const bridgeWaveHoldTimerRef = useRef<ReturnType<typeof setTimeout> | null>(
+    null,
+  );
   const [isVisible, setIsVisible] = useState(false);
   const [caseIndex, setCaseIndex] = useState(0);
   const [phase, setPhase] = useState<Phase>("idle");
+  const [bridgeWaveTalkingHold, setBridgeWaveTalkingHold] = useState(false);
 
   const currentCase: ShopperCase = SHOPPER_CASES[caseIndex];
   const recommendedIndex = currentCase.products.findIndex(
@@ -174,6 +180,37 @@ const SpeakDiscoverBuy = () => {
     }
   }, [isVisible, phase, advanceToNext]);
 
+  useEffect(() => {
+    return () => {
+      if (bridgeWaveHoldTimerRef.current !== null) {
+        clearTimeout(bridgeWaveHoldTimerRef.current);
+        bridgeWaveHoldTimerRef.current = null;
+      }
+    };
+  }, []);
+
+  useEffect(() => {
+    if (phase === "audio-off") {
+      setBridgeWaveTalkingHold(true);
+      if (bridgeWaveHoldTimerRef.current !== null) {
+        clearTimeout(bridgeWaveHoldTimerRef.current);
+      }
+      bridgeWaveHoldTimerRef.current = setTimeout(() => {
+        bridgeWaveHoldTimerRef.current = null;
+        setBridgeWaveTalkingHold(false);
+      }, BRIDGE_WAVE_FADE_OUT_MS);
+      return;
+    }
+    if (phase === "fade-out") {
+      return;
+    }
+    setBridgeWaveTalkingHold(false);
+    if (bridgeWaveHoldTimerRef.current !== null) {
+      clearTimeout(bridgeWaveHoldTimerRef.current);
+      bridgeWaveHoldTimerRef.current = null;
+    }
+  }, [phase]);
+
   // Bizmis-primary confetti burst the moment the recommended product centers.
   // Origin is the recommended card's on-screen center (DOM rect of whichever
   // layout is currently rendered) so confetti always erupts from the card.
@@ -201,6 +238,9 @@ const SpeakDiscoverBuy = () => {
   const customerTextVisible = phaseAtLeast("speaking") && !fadingOut;
   const audioActive = phaseAtLeast("speaking") && !phaseAtLeast("audio-off");
   const preAudio = phase === "idle" || phase === "customer-in";
+  /** Opacity target 1 from speaking through confirmed; 0 otherwise (idle, customer-in, audio-off, fade-out). */
+  const bridgeWaveOpaque =
+    isVisible && !preAudio && phase !== "audio-off" && phase !== "fade-out";
   const productVisible = (i: number) =>
     phaseAtLeast(productPhase(i)) && !fadingOut;
   const tagsVisible = phaseAtLeast("recommended") && !fadingOut;
@@ -447,16 +487,18 @@ const SpeakDiscoverBuy = () => {
         <div
           className="hidden lg:flex absolute inset-x-0 top-1/2 -translate-y-1/2 z-0 pointer-events-none items-center mx-auto w-full max-w-[30rem] xl:max-w-[36rem]"
           style={{
-            opacity: !isVisible || preAudio ? 0 : 1,
-            transition: `opacity 700ms ease-in-out`,
-            transitionDelay: isVisible
+            opacity: bridgeWaveOpaque ? 1 : 0,
+            transition: bridgeWaveOpaque
+              ? `opacity ${BRIDGE_WAVE_FADE_IN_MS}ms ease-in-out`
+              : `opacity ${BRIDGE_WAVE_FADE_OUT_MS}ms ease-out`,
+            transitionDelay: bridgeWaveOpaque
               ? `${AVATAR_ENTRANCE_DELAY_MS + 200}ms`
               : "0ms",
           }}
           aria-hidden
         >
           <Waveform
-            animating={audioActive}
+            animating={audioActive || bridgeWaveTalkingHold}
             barClassName="bg-primary"
             className="h-16 xl:h-20"
             talkingOpacity={BRIDGE_WAVEFORM_ACTIVE_OPACITY}
