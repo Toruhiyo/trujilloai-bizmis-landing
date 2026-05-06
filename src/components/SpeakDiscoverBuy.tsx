@@ -69,17 +69,17 @@ type Phase =
   | "fade-out";
 
 const PHASE_DURATIONS: Record<Phase, number> = {
-  idle: 600,
-  "customer-in": 1100,
-  speaking: 1300,
-  "product-1": 380,
-  "product-2": 380,
-  "product-3": 600,
-  recommended: 1500,
-  "add-to-cart": 1300,
-  confirmed: 2800,
-  "audio-off": 700,
-  "fade-out": 600,
+  idle: 900,
+  "customer-in": 1450,
+  speaking: 1600,
+  "product-1": 520,
+  "product-2": 520,
+  "product-3": 820,
+  recommended: 1950,
+  "add-to-cart": 1750,
+  confirmed: 3500,
+  "audio-off": 920,
+  "fade-out": 820,
 };
 
 const PHASE_ORDER: Phase[] = [
