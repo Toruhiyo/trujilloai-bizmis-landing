@@ -1,4 +1,10 @@
-import { useEffect, useRef, useState, useCallback, useLayoutEffect } from "react";
+import {
+  useEffect,
+  useRef,
+  useState,
+  useCallback,
+  useLayoutEffect,
+} from "react";
 import { FaShoppingBag, FaChevronRight } from "react-icons/fa";
 import confetti from "canvas-confetti";
 import CustomerVoiceCard, {
@@ -16,6 +22,8 @@ const AVATAR_ENTRANCE_DELAY_MS = 200;
 const AVATAR_ENTRANCE_DURATION_MS = 1200;
 
 const CUSTOMER_MESSAGE_OFFSET_MS = 250;
+/** Pause after shopper caption karaoke completes before the first product phase. */
+const CAPTION_END_TO_PRODUCTS_DELAY_MS = 800;
 const TAG_BASE_DELAY_MS = 0;
 const TAG_PER_CARD_DELAY_MS = 120;
 const TAG_ANIMATION_MS = 420;
@@ -206,7 +214,10 @@ const SpeakDiscoverBuy = () => {
   useEffect(() => {
     if (!isVisible || phase !== "speaking") return;
     if (!shopperCaptionPlaybackConsumed) return;
-    const t = window.setTimeout(() => setPhase("product-1"), 0);
+    const t = window.setTimeout(
+      () => setPhase("product-1"),
+      CAPTION_END_TO_PRODUCTS_DELAY_MS,
+    );
     return () => clearTimeout(t);
   }, [isVisible, phase, shopperCaptionPlaybackConsumed]);
 
@@ -297,7 +308,10 @@ const SpeakDiscoverBuy = () => {
       : "none";
 
   return (
-    <div ref={sectionRef} className="w-full max-w-6xl mx-auto px-4 overflow-visible">
+    <div
+      ref={sectionRef}
+      className="w-full max-w-6xl mx-auto px-4 overflow-visible"
+    >
       {/* Minimal step flow: 1 -> 2 -> 3 */}
       <div className="w-full mb-6 flex items-center justify-center">
         <div className="flex flex-wrap items-center justify-center gap-x-2 gap-y-1 sm:gap-4 text-primary text-[11px] sm:text-sm font-medium">
@@ -374,9 +388,7 @@ const SpeakDiscoverBuy = () => {
                     SHOPPER_CAPTION_WORD_INTRA_DRIFT_OFFSET_MS
                   }
                   textClassName="text-[10px] xs:text-[11px] sm:text-[12px] leading-none"
-                  onCaptionPlaybackConsumed={
-                    onShopperCaptionPlaybackConsumed
-                  }
+                  onCaptionPlaybackConsumed={onShopperCaptionPlaybackConsumed}
                 />
               </div>
             </div>
@@ -557,9 +569,7 @@ const SpeakDiscoverBuy = () => {
               isVisible={customerVisible}
               quoteVisible={customerTextVisible}
               quoteEnterDelayMs={CUSTOMER_MESSAGE_OFFSET_MS}
-              onCaptionPlaybackConsumed={
-                onShopperCaptionPlaybackConsumed
-              }
+              onCaptionPlaybackConsumed={onShopperCaptionPlaybackConsumed}
             />
           </div>
         </div>
