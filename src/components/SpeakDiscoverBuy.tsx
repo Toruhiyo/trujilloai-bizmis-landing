@@ -14,6 +14,8 @@ const WAVEFORM_BARS = 32;
 const BRIDGE_WAVEFORM_TALKING_OPACITY = 0.2;
 const BRIDGE_WAVEFORM_SILENT_OPACITY = 0.2;
 const AVATAR_WAVEFORM_ROW_OPACITY = 0.48;
+const MOBILE_CUSTOMER_QUOTE = '"Looking for a birthday gift."';
+const MOBILE_ORDER_PILL_LABEL = "Order Confirmed · French Press Kit · $89";
 const WAVEFORM_HEIGHTS = [
   32, 52, 68, 42, 72, 48, 62, 36, 56, 74, 40, 60, 44, 70, 50, 64, 34, 58, 46,
   68, 38, 54, 48, 66, 30, 56, 42, 72, 46, 62, 36, 58,
@@ -96,7 +98,163 @@ const SpeakDiscoverBuy = () => {
         </div>
       </div>
 
-      <div className="relative flex flex-col lg:flex-row items-center justify-center gap-4 lg:gap-6">
+      {/* Mobile layout: same spatial story as desktop (avatar centered, products
+          overlapping its lower half) but compact and without the customer/receipt
+          cards. The customer line sits as plain italic text next to the avatar's
+          head; "Seal the Deal" collapses into a one-line pill below. */}
+      <div className="lg:hidden flex flex-col items-center gap-3">
+        {/* Scene wrapper: avatar (z-0) is overlapped by product cards (z-20),
+            and the customer quote floats on the left at head level (z-10). */}
+        <div className="relative w-full">
+          <div className="absolute inset-x-0 top-0 flex justify-center pointer-events-none z-0">
+            <div className="relative">
+              <div
+                className="absolute inset-4 rounded-full bg-primary/25 blur-2xl animate-pulse"
+                aria-hidden
+              />
+              <img
+                src="/images/benefit-1-driven-sales-pipeline-2.png"
+                alt="Bizmis assistant"
+                className={`relative w-[14rem] h-[14rem] xs:w-[16rem] xs:h-[16rem] sm:w-[18rem] sm:h-[18rem] object-contain object-top drop-shadow-xl transition-all ease-out ${
+                  isVisible
+                    ? "opacity-100 translate-y-0"
+                    : "opacity-0 translate-y-3"
+                }`}
+                style={{
+                  transitionDelay: isVisible
+                    ? `${ENTRANCE_CENTER_MS}ms`
+                    : "0ms",
+                  transitionDuration: `${ENTRANCE_DURATION_MS}ms`,
+                }}
+              />
+              {/* Mic pulse — kept above products (z-30) at avatar's chest level
+                  so the talking cue stays visible despite the product overlap. */}
+              <div
+                className="absolute left-1/2 -translate-x-1/2 bottom-[7rem] xs:bottom-[8rem] sm:bottom-[9rem] w-7 h-7 rounded-full bg-gradient-to-br from-primary to-primary/80 flex items-center justify-center shadow-md z-30"
+                style={{
+                  opacity: isVisible ? 1 : 0,
+                  transition: `opacity 800ms ease-in-out`,
+                  transitionDelay: isVisible
+                    ? `${ENTRANCE_CENTER_MS + 400}ms`
+                    : "0ms",
+                }}
+                aria-hidden
+              >
+                <FaMicrophone className="w-3 h-3 text-white" />
+              </div>
+            </div>
+          </div>
+
+          {/* Customer quote — plain italic text, no bubble, head level */}
+          <p
+            className={`absolute left-1 xs:left-2 top-[2.5rem] xs:top-[3rem] sm:top-[4rem] z-10 max-w-[6.5rem] xs:max-w-[8rem] sm:max-w-[10rem] text-[11px] xs:text-xs sm:text-sm italic text-foreground/75 leading-snug transition-all ease-out ${
+              isVisible
+                ? "opacity-100 translate-y-0"
+                : "opacity-0 translate-y-2"
+            }`}
+            style={{
+              transitionDelay: isVisible ? `${ENTRANCE_CUSTOMER_MS}ms` : "0ms",
+              transitionDuration: `${ENTRANCE_DURATION_MS}ms`,
+            }}
+          >
+            {MOBILE_CUSTOMER_QUOTE}
+          </p>
+
+          {/* Product cards — pushed down so they overlap the avatar's lower body */}
+          <div className="relative z-20 flex flex-row items-end gap-2 w-full justify-center pt-[10rem] xs:pt-[11.5rem] sm:pt-[13rem]">
+            {PRODUCTS.map((product, idx) => (
+              <div
+                key={product.name}
+                className={`relative transition-all duration-700 ease-out ${
+                  isVisible
+                    ? "opacity-100 translate-y-0 scale-100"
+                    : "opacity-0 translate-y-4 scale-95"
+                } ${product.highlighted ? "-mt-2" : ""}`}
+                style={{
+                  transitionDelay: isVisible
+                    ? `${ENTRANCE_CENTER_MS + ENTRANCE_PRODUCT_OFFSET_MS + idx * ENTRANCE_PRODUCT_STAGGER_MS}ms`
+                    : "0ms",
+                  transitionDuration: `${ENTRANCE_DURATION_MS}ms`,
+                }}
+              >
+                <div
+                  className={`relative rounded-xl border ${
+                    product.highlighted
+                      ? "bg-white border-primary/40 shadow-[0_8px_24px_-4px_rgba(253,145,42,0.45)] w-[5.5rem] xs:w-24"
+                      : "bg-white/95 border-primary/25 shadow-[0_6px_18px_-2px_rgba(0,0,0,0.18)] w-[4.75rem] xs:w-[5.25rem]"
+                  }`}
+                >
+                  <div
+                    className={`relative overflow-hidden rounded-t-xl ${
+                      product.highlighted ? "h-12 xs:h-14" : "h-10 xs:h-12"
+                    } bg-[#FDF7E2]/50`}
+                  >
+                    <img
+                      src={product.image}
+                      alt={product.name}
+                      className="w-full h-full object-cover"
+                    />
+                    <div
+                      className={`absolute top-1 left-1 text-[7px] font-semibold px-1 py-0.5 rounded-full ${
+                        product.highlighted
+                          ? "bg-primary text-white"
+                          : "bg-white/85 text-primary border border-primary/20"
+                      }`}
+                    >
+                      {product.label}
+                    </div>
+                  </div>
+                  <div className="p-1.5">
+                    <h4
+                      className={`font-heading font-semibold text-[9px] leading-tight mb-0.5 ${
+                        product.highlighted
+                          ? "text-foreground"
+                          : "text-foreground/70"
+                      }`}
+                    >
+                      {product.name}
+                    </h4>
+                    <span
+                      className={`font-bold text-[10px] ${
+                        product.highlighted
+                          ? "text-primary"
+                          : "text-foreground/60"
+                      }`}
+                    >
+                      {product.price}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Compact Order Confirmed pill */}
+        <div
+          className={`flex items-center gap-2 bg-white/95 rounded-full border border-primary/20 shadow-md px-3 py-1.5 transition-all ease-out ${
+            isVisible
+              ? "opacity-100 translate-y-0"
+              : "opacity-0 translate-y-3"
+          }`}
+          style={{
+            transitionDelay: isVisible
+              ? `${ENTRANCE_CENTER_MS + ENTRANCE_PRODUCT_OFFSET_MS + (PRODUCTS.length - 1) * ENTRANCE_PRODUCT_STAGGER_MS + ENTRANCE_RECEIPT_AFTER_LAST_PRODUCT_MS}ms`
+              : "0ms",
+            transitionDuration: `${ENTRANCE_DURATION_MS}ms`,
+          }}
+        >
+          <div className="w-5 h-5 rounded-full bg-gradient-to-br from-primary to-primary/80 flex items-center justify-center shadow-sm shrink-0">
+            <FaCheck className="w-2.5 h-2.5 text-white" />
+          </div>
+          <span className="text-[11px] xs:text-xs font-medium text-foreground whitespace-nowrap">
+            {MOBILE_ORDER_PILL_LABEL}
+          </span>
+        </div>
+      </div>
+
+      {/* Desktop layout */}
+      <div className="hidden lg:flex relative items-center justify-center gap-6">
         {/* Bridging waveform — connects the customer card (left) to the order card
             (right) and passes behind the avatar. Width is constrained so the wave
             never touches the side cards; the bar width matches the benefit-2 wave

@@ -1,11 +1,3 @@
-import { FaMicrophone } from "react-icons/fa";
-
-const WAVEFORM_BARS = 24;
-const WAVEFORM_HEIGHTS = [
-  28, 42, 55, 38, 62, 48, 70, 30, 58, 45, 65, 35,
-  50, 68, 40, 55, 32, 60, 44, 72, 36, 52, 46, 64,
-];
-
 export type CustomerVoiceCardSize = "default" | "small";
 
 export type CustomerVoiceCardProps = {
@@ -24,20 +16,12 @@ const sizeClasses = {
     wrapper: "max-w-[14rem]",
     card: "rounded-3xl",
     padding: "p-6",
-    mic: "w-9 h-9",
-    micIcon: "w-3.5 h-3.5",
-    gap: "gap-3 mb-4",
-    waveform: "h-8",
     quote: "text-base",
   },
   small: {
     wrapper: "max-w-[10rem]",
     card: "rounded-2xl",
     padding: "p-4",
-    mic: "w-7 h-7",
-    micIcon: "w-3 h-3",
-    gap: "gap-2 mb-3",
-    waveform: "h-6",
     quote: "text-sm",
   },
 };
@@ -70,34 +54,16 @@ const CustomerVoiceCard = ({
         <div className="absolute inset-0 bg-gradient-to-t from-primary/50 via-primary/20 to-transparent" />
 
         {showOverlay ? (
-          <div className={`relative z-10 ${s.padding} flex flex-col justify-end h-full`}>
-            <div className={`flex items-center ${s.gap}`}>
-              <div className="relative flex-shrink-0">
-                <div className="absolute inset-0 rounded-full bg-primary/20 animate-ping [animation-duration:2s]" />
-                <div className={`relative ${s.mic} bg-gradient-to-br from-primary to-primary/80 rounded-full flex items-center justify-center shadow-md`}>
-                  <FaMicrophone className={`${s.micIcon} text-white`} />
-                </div>
-              </div>
-              <div className={`flex items-center gap-[2px] ${s.waveform} flex-1 min-w-0`}>
-                {Array.from({ length: WAVEFORM_BARS }).map((_, i) => (
-                  <div
-                    key={i}
-                    className="flex-1 min-w-[2px] max-w-[3px] rounded-full bg-primary/80"
-                    style={{
-                      height: `${WAVEFORM_HEIGHTS[i % WAVEFORM_BARS]}%`,
-                      animation: isVisible
-                        ? `waveform-pulse 1.2s ease-in-out ${i * 0.05}s infinite alternate`
-                        : "none",
-                    }}
-                  />
-                ))}
-              </div>
-            </div>
-            {quote && (
-              <p className={`${s.quote} font-semibold text-white/90 italic font-body drop-shadow-sm`}>
+          <div
+            className={`relative z-10 ${s.padding} flex flex-col justify-end h-full`}
+          >
+            {quote ? (
+              <p
+                className={`${s.quote} font-semibold text-white/90 italic font-body drop-shadow-sm`}
+              >
                 {quote}
               </p>
-            )}
+            ) : null}
           </div>
         ) : null}
       </div>
