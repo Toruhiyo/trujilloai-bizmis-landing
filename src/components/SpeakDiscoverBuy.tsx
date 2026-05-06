@@ -55,6 +55,9 @@ const ADD_TO_CART_TRANSITION_MS = 850;
 const ADD_TO_CART_EASE = "cubic-bezier(0.34, 1.56, 0.64, 1)";
 /** Burst once the recommended card has nearly reached center so origin stays aligned. */
 const CONFETTI_FIRE_DELAY_MS = Math.round(ADD_TO_CART_TRANSITION_MS * 0.82);
+/** Pause after the burst before the order-confirmed receipt appears */
+const CONFETTI_TO_RECEIPT_GAP_MS = 1700;
+const ADD_TO_CART_PHASE_MS = CONFETTI_FIRE_DELAY_MS + CONFETTI_TO_RECEIPT_GAP_MS;
 const CONFETTI_Z_INDEX = 60;
 
 const STEPS = [
@@ -84,7 +87,7 @@ const PHASE_DURATIONS: Record<Phase, number> = {
   "product-2": 520,
   "product-3": 820,
   recommended: 1950,
-  "add-to-cart": 1750,
+  "add-to-cart": ADD_TO_CART_PHASE_MS,
   confirmed: 3500,
   "audio-off": 920,
   "fade-out": 820,
