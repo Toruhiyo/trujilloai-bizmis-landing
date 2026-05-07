@@ -22,7 +22,7 @@ const Benefits = () => {
   return (
     <div className="space-y-0 bg-gradient-to-b from-background via-[#FDF7E2]/10 to-background overflow-x-clip">
       {/* Shared Background Section: Driven Sales & Customization */}
-      <section className="relative py-12 overflow-visible">
+      <section className="relative pt-12 pb-8 sm:py-12 overflow-visible">
         {/* Modern Shared Background Design - Single background for both sections */}
         <div className="absolute inset-0 bg-gradient-to-br from-slate-50 via-[#FDF7E2]/30 to-[#FDF7E2]/20"></div>
 
@@ -131,7 +131,7 @@ const Benefits = () => {
             </div>
 
             {/* Speak → Discover → Buy visual */}
-            <div className="relative mb-28 sm:mb-36 lg:mb-32 mt-4">
+            <div className="relative mb-10 sm:mb-16 lg:mb-32 mt-4">
               <SpeakDiscoverBuy />
             </div>
           </div>
@@ -141,7 +141,7 @@ const Benefits = () => {
       {/* Benefit 2: Customer Support - Enhanced Layout */}
       <section
         id="benefit-2"
-        className="relative py-16 sm:py-24 lg:py-32 bg-[#FDF7E2]/20 overflow-visible"
+        className="relative pt-8 pb-16 sm:pt-16 sm:pb-24 lg:py-32 bg-[#FDF7E2]/20 overflow-visible"
       >
         {/* Background Elements - Enhanced for Dashboard */}
         <div className="absolute inset-0">
