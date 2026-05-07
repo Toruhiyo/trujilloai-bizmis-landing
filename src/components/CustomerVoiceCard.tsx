@@ -9,11 +9,10 @@ import {
 export const SHOPPER_MESSAGE_DRIFT_IN_MS = 700;
 const QUOTE_DRIFT_IN_MS = SHOPPER_MESSAGE_DRIFT_IN_MS;
 
-/** Words begin revealing partway through the bubble drift-in, like speech starting mid motion. */
+/** Words begin revealing partway through the bubble fade-in. */
 export const SHOPPER_CAPTION_WORD_INTRA_DRIFT_OFFSET_MS = Math.round(
   SHOPPER_MESSAGE_DRIFT_IN_MS * 0.35,
 );
-const QUOTE_IDLE_DRIFT_MS = 8000;
 
 const CAPTION_WORD_DWELL_MS_DEFAULT = 340;
 const CAPTION_WORD_DWELL_MS_SMALL = 300;
@@ -322,7 +321,6 @@ const CustomerVoiceCard = ({
 }: CustomerVoiceCardProps) => {
   const s = sizeClasses[size];
   const isQuoteShown = quoteVisible !== undefined ? quoteVisible : isVisible;
-  const idleDriftDelayMs = quoteEnterDelayMs + QUOTE_DRIFT_IN_MS;
   return (
     <div
       className={`relative w-full overflow-visible ${s.wrapper} ${className}`}
@@ -350,7 +348,6 @@ const CustomerVoiceCard = ({
           size={size}
           shown={isQuoteShown}
           enterDelayMs={quoteEnterDelayMs}
-          idleDriftDelayMs={idleDriftDelayMs}
           onCaptionPlaybackConsumed={onCaptionPlaybackConsumed}
         />
       ) : null}
@@ -365,18 +362,10 @@ interface ShopperMessageBubbleProps {
   size: CustomerVoiceCardSize;
   shown: boolean;
   enterDelayMs: number;
-  idleDriftDelayMs: number;
   onCaptionPlaybackConsumed?: () => void;
 }
 
-/* Three nested elements so the static positioning offset and the animated
-   transforms (entrance drift-in + continuous idle drift) live on separate
-   elements and never clobber each other:
-
-   - Outer: absolute positioning + static overhang offset (stable)
-   - Middle: opacity + one-shot entrance drift-in animation
-   - Inner: continuous idle drift animation
-*/
+/* Outer: absolute positioning + static overhang offset. Inner: fade-in only (no drift). */
 const ShopperMessageBubble = ({
   quote,
   quoteWidth,
@@ -384,7 +373,6 @@ const ShopperMessageBubble = ({
   size,
   shown,
   enterDelayMs,
-  idleDriftDelayMs,
   onCaptionPlaybackConsumed,
 }: ShopperMessageBubbleProps) => (
   <div
@@ -395,30 +383,20 @@ const ShopperMessageBubble = ({
       className="overflow-visible"
       style={{
         opacity: shown ? 1 : 0,
-        animation: shown
-          ? `shopper-message-drift-in ${QUOTE_DRIFT_IN_MS}ms ease-out ${enterDelayMs}ms both`
-          : "none",
+        transition: `opacity ${QUOTE_DRIFT_IN_MS}ms ease-out`,
+        transitionDelay: shown ? `${enterDelayMs}ms` : "0ms",
       }}
     >
-      <div
-        className="overflow-visible"
-        style={{
-          animation: shown
-            ? `shopper-message-idle-drift ${QUOTE_IDLE_DRIFT_MS}ms ease-in-out ${idleDriftDelayMs}ms infinite`
-            : "none",
-        }}
-      >
-        <div className={`relative overflow-visible ${quotePadding}`}>
-          <ShopperShortCaption
-            quote={quote}
-            shown={shown}
-            wordBaseDelayMs={
-              enterDelayMs + SHOPPER_CAPTION_WORD_INTRA_DRIFT_OFFSET_MS
-            }
-            size={size}
-            onCaptionPlaybackConsumed={onCaptionPlaybackConsumed}
-          />
-        </div>
+      <div className={`relative overflow-visible ${quotePadding}`}>
+        <ShopperShortCaption
+          quote={quote}
+          shown={shown}
+          wordBaseDelayMs={
+            enterDelayMs + SHOPPER_CAPTION_WORD_INTRA_DRIFT_OFFSET_MS
+          }
+          size={size}
+          onCaptionPlaybackConsumed={onCaptionPlaybackConsumed}
+        />
       </div>
     </div>
   </div>

@@ -444,33 +444,6 @@ All colors MUST be HSL.
   100% { box-shadow: 0 0 0 28px hsl(var(--primary) / 0); opacity: 0; }
 }
 
-/* Shopper message drift-in: independent motion from the shopper card, with a
-   tiny lateral overshoot so it reads as a separate floating unit. */
-@keyframes shopper-message-drift-in {
-  0% {
-    opacity: 0;
-    transform: translate(-8px, 10px);
-  }
-  55% {
-    opacity: 1;
-    transform: translate(3px, -3px);
-  }
-  100% {
-    opacity: 1;
-    transform: translate(0, 0);
-  }
-}
-
-/* Continuous, very slow idle drift so the shopper message is never 100% still.
-   Composes on a separate wrapper element from the entrance keyframe so the two
-   animations don't clobber each other on the transform property. */
-@keyframes shopper-message-idle-drift {
-  0%, 100% { transform: translate(0, 0); }
-  25% { transform: translate(2.5px, -2px); }
-  50% { transform: translate(-1.5px, 2px); }
-  75% { transform: translate(-2.5px, -1.5px); }
-}
-
 /* Short-form captions: white words on stain; active word is white chip + primary text */
 .shopper-caption-token {
   color: #ffffff;
