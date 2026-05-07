@@ -436,7 +436,7 @@ const SpeakDiscoverBuy = () => {
           />
         </div>
 
-        <div className="relative w-full -mt-[9.5rem] xs:-mt-[11.5rem] sm:-mt-[14rem] z-20 flex items-center justify-center min-h-[7.5rem] xs:min-h-[8.5rem] sm:min-h-[9rem] px-4 overflow-visible">
+        <div className="relative w-full min-w-0 max-w-full -mt-[9.5rem] xs:-mt-[11.5rem] sm:-mt-[14rem] z-20 flex items-center justify-center min-h-[7.5rem] xs:min-h-[8.5rem] sm:min-h-[9rem] px-4 overflow-visible">
           {/* Caption layer */}
           <div
             className="absolute inset-0 flex items-center justify-center pointer-events-none px-4"
@@ -482,13 +482,18 @@ const SpeakDiscoverBuy = () => {
           {/* Products layer */}
           {/* Bottom-aligned so cards sit on torso/waist, not over the face */}
           <div
-            className="absolute inset-0 flex flex-col justify-end items-center pb-3 xs:pb-4 sm:pb-5 pointer-events-none"
+            className="absolute inset-0 flex min-w-0 max-w-full flex-col justify-end items-center px-0 pb-3 xs:pb-4 sm:pb-5 pointer-events-none"
             style={{
               opacity: mobileProductsStageVisible ? 1 : 0,
               transition: mobileStageTransition(mobileProductsStageVisible),
             }}
           >
-            <div className="flex flex-row items-end gap-2.5">
+            {/*
+              Equal-width columns + min-w-0 so three cards always fit inside
+              the padded stage on narrow viewports (no horizontal clipping).
+              gap-x-2 matches MOBILE_ROW_GAP_REM for add-to-cart recenter math.
+            */}
+            <div className="grid w-full min-w-0 max-w-full grid-cols-3 gap-x-2">
               {currentCase.products.map((product, idx) => {
                 const isRecommended = idx === recommendedIndex;
                 const visible = productVisible(idx);
@@ -511,7 +516,7 @@ const SpeakDiscoverBuy = () => {
                   <div
                     key={`mobile-${currentCase.id}-${product.id}`}
                     ref={isRecommended ? mobileRecommendedRef : undefined}
-                    className="relative"
+                    className="relative flex min-w-0 w-full max-w-full flex-col justify-end"
                     style={{
                       opacity: cardOpacity,
                       transform: cardTransform,
@@ -540,21 +545,21 @@ const SpeakDiscoverBuy = () => {
                       </div>
                     )}
                     <div
-                      className={`relative rounded-xl border transition-all duration-500 w-[7rem] xs:w-32 ${
+                      className={`relative w-full min-w-0 max-w-full rounded-xl border transition-all duration-500 ${
                         promoted
                           ? "bg-white border-primary/40 shadow-[0_8px_24px_-4px_rgba(253,145,42,0.45)] -mt-2"
                           : "bg-white/95 border-primary/25 shadow-[0_6px_18px_-2px_rgba(0,0,0,0.18)]"
                       }`}
                       style={{ animation: promoteAnimation(promoted) }}
                     >
-                      <div className="relative overflow-hidden rounded-t-xl bg-[#FDF7E2]/50 h-16 xs:h-20">
+                      <div className="relative aspect-[5/4] w-full overflow-hidden rounded-t-xl bg-[#FDF7E2]/50">
                         <img
                           src={product.image}
                           alt={product.name}
                           className="w-full h-full object-cover"
                         />
                         <div
-                          className={`absolute top-1 left-1 text-[9px] font-semibold px-1.5 py-0.5 rounded-full ${
+                          className={`absolute top-0.5 left-0.5 max-w-[calc(100%-0.5rem)] truncate text-[8px] xs:text-[9px] font-semibold px-1 py-0.5 rounded-full ${
                             isRecommended
                               ? "bg-primary text-white shadow-sm"
                               : "bg-white/85 text-primary border border-primary/20"
@@ -567,16 +572,16 @@ const SpeakDiscoverBuy = () => {
                           {productLabel(product.id, product.label)}
                         </div>
                       </div>
-                      <div className="p-2">
+                      <div className="p-1 xs:p-1.5 sm:p-2">
                         <h4
-                          className={`font-heading font-semibold text-[11px] leading-tight mb-0.5 transition-colors duration-300 ${
+                          className={`font-heading font-semibold text-[10px] xs:text-[11px] leading-tight mb-0.5 line-clamp-2 transition-colors duration-300 ${
                             promoted ? "text-foreground" : "text-foreground/70"
                           }`}
                         >
                           {product.name}
                         </h4>
                         <span
-                          className={`font-bold text-[12px] transition-colors duration-300 ${
+                          className={`font-bold text-[11px] xs:text-[12px] transition-colors duration-300 ${
                             promoted ? "text-primary" : "text-foreground/60"
                           }`}
                         >
