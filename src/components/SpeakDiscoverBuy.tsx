@@ -302,9 +302,14 @@ const SpeakDiscoverBuy = () => {
   const customerTextVisible = phaseAtLeast("speaking") && !fadingOut;
   const audioActive = phaseAtLeast("speaking") && !phaseAtLeast("audio-off");
   const preAudio = phase === "idle" || phase === "customer-in";
-  /** Opacity target 1 from speaking through confirmed; 0 otherwise (idle, customer-in, audio-off, fade-out). */
+  /** Desktop bridging-wave opacity: 1 from speaking through confirmed, 0 in idle/customer-in/audio-off/fade-out. */
   const bridgeWaveOpaque =
     isVisible && !preAudio && phase !== "audio-off" && phase !== "fade-out";
+  /** Mobile bridging-wave stays visible all the way through `confirmed` (parity
+   *  with Benefit 2): bars keep showing as silent dots during product/receipt
+   *  phases instead of fading the whole waveform out. */
+  const mobileBridgeWaveOpaque =
+    isVisible && phaseAtLeast("speaking") && phase !== "fade-out";
   const productVisible = (i: number) =>
     phaseAtLeast(productPhase(i)) && !fadingOut;
   const tagsVisible = phaseAtLeast("recommended") && !fadingOut;
@@ -416,10 +421,32 @@ const SpeakDiscoverBuy = () => {
             className="absolute inset-4 rounded-full bg-primary/25 blur-2xl animate-pulse"
             aria-hidden
           />
+          {/* Mobile bridging waveform — behind the avatar, parity with Benefit 2. */}
+          <div
+            className="absolute inset-x-0 top-1/2 -translate-y-1/2 z-0 pointer-events-none flex items-center mx-auto w-full max-w-[min(24rem,calc(100vw-2rem))]"
+            style={{
+              opacity: mobileBridgeWaveOpaque ? 1 : 0,
+              transition: mobileBridgeWaveOpaque
+                ? `opacity ${BRIDGE_WAVE_FADE_IN_MS}ms ease-in-out`
+                : `opacity ${BRIDGE_WAVE_FADE_OUT_MS}ms ease-out`,
+              transitionDelay: mobileBridgeWaveOpaque
+                ? `${AVATAR_ENTRANCE_DELAY_MS + 200}ms`
+                : "0ms",
+            }}
+            aria-hidden
+          >
+            <Waveform
+              animating={audioActive || bridgeWaveTalkingHold}
+              barClassName="bg-primary"
+              className="h-12 xs:h-14"
+              talkingOpacity={BRIDGE_WAVEFORM_ACTIVE_OPACITY}
+              silentOpacity={BRIDGE_WAVEFORM_INACTIVE_OPACITY}
+            />
+          </div>
           <img
             src="/images/benefit-1-driven-sales-pipeline-2.png"
             alt="Bizmis assistant"
-            className={`relative w-full max-w-[min(34rem,calc(100vw-1rem))] xs:max-w-[min(36rem,calc(100vw-1rem))] sm:max-w-[min(40rem,calc(100vw-1rem))] aspect-square object-contain object-top drop-shadow-xl transition-all ease-out ${
+            className={`relative z-10 w-full max-w-[min(32rem,calc(100vw-1rem))] xs:max-w-[min(34rem,calc(100vw-1rem))] sm:max-w-[min(38rem,calc(100vw-1rem))] aspect-square object-contain object-top drop-shadow-xl transition-all ease-out ${
               isVisible
                 ? "opacity-100 translate-y-0"
                 : "opacity-0 translate-y-3"
@@ -433,7 +460,7 @@ const SpeakDiscoverBuy = () => {
           />
         </div>
 
-        <div className="relative w-full min-w-0 max-w-full -mt-[9.5rem] xs:-mt-[11.5rem] sm:-mt-[14rem] z-20 flex items-center justify-center min-h-[7.5rem] xs:min-h-[8.5rem] sm:min-h-[9rem] px-4 overflow-visible">
+        <div className="relative w-full min-w-0 max-w-full -mt-[7rem] xs:-mt-[8rem] sm:-mt-[10rem] z-20 flex items-center justify-center min-h-[7.5rem] xs:min-h-[8.5rem] sm:min-h-[9rem] px-4 overflow-visible">
           {/* Caption layer */}
           <div
             className="absolute inset-0 flex items-center justify-center pointer-events-none px-4"

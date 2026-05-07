@@ -25,6 +25,13 @@ const ACTION_DONE_LINGER_MS = 1200;
 const RESOLUTION_SLOT_MIN_HEIGHT = "5rem";
 const SOLVED_DURATION_MS = 1800;
 
+/** Bridging waveform behind the avatar (parity with Benefit 1). */
+const BRIDGE_WAVEFORM_ACTIVE_OPACITY = 0.55;
+const BRIDGE_WAVEFORM_INACTIVE_OPACITY = 0.18;
+const BRIDGE_WAVE_FADE_IN_MS = 700;
+const BRIDGE_WAVE_FADE_OUT_MS = 580;
+const AVATAR_ENTRANCE_DELAY_MS = 200;
+
 /** Caption sits to the left of the avatar; small overhang back over the figure for visual link. */
 const CLERK_CAPTION_OVERHANG_TRANSFORM = "translate(22%, -22%)";
 /** Vertical anchor: sits lower than torso midpoint so caption clears the center waveform. */
@@ -359,6 +366,16 @@ const VoiceSupportScene = () => {
     (shopperKaraokeStarted && !shopperCaptionConsumed) ||
     (clerkKaraokeStarted && !clerkCaptionConsumed);
 
+  /** Bridging-wave visibility: opaque whenever the central audio is active or
+   *  the action is being processed; mirrors Benefit 1's bridging cadence. */
+  const bridgeWaveOpaque =
+    isVisible &&
+    (phase === "customer-speaking" ||
+      phase === "pause" ||
+      phase === "agent-speaking" ||
+      phase === "done" ||
+      phase === "hold");
+
   const customerTextVisible =
     phase === "customer-speaking" ||
     phase === "pause" ||
@@ -558,10 +575,32 @@ const VoiceSupportScene = () => {
             className="absolute inset-20 rounded-full bg-primary/20 blur-3xl animate-pulse [animation-delay:0.5s]"
             aria-hidden
           />
+          {/* Mobile bridging waveform — behind the avatar, parity with Benefit 1. */}
+          <div
+            className="absolute inset-x-0 top-1/2 -translate-y-1/2 z-0 pointer-events-none flex items-center mx-auto w-full max-w-[min(24rem,calc(100vw-2rem))]"
+            style={{
+              opacity: bridgeWaveOpaque ? 1 : 0,
+              transition: bridgeWaveOpaque
+                ? `opacity ${BRIDGE_WAVE_FADE_IN_MS}ms ease-in-out`
+                : `opacity ${BRIDGE_WAVE_FADE_OUT_MS}ms ease-out`,
+              transitionDelay: bridgeWaveOpaque
+                ? `${AVATAR_ENTRANCE_DELAY_MS + 200}ms`
+                : "0ms",
+            }}
+            aria-hidden
+          >
+            <Waveform
+              animating={waveAnimating}
+              barClassName="bg-primary"
+              className="h-12 xs:h-14"
+              talkingOpacity={BRIDGE_WAVEFORM_ACTIVE_OPACITY}
+              silentOpacity={BRIDGE_WAVEFORM_INACTIVE_OPACITY}
+            />
+          </div>
           <img
             src="/images/benefit-2-customer-support.png"
             alt="Bizmis support assistant"
-            className={`relative w-full max-w-[min(20rem,calc(100vw-1rem))] xs:max-w-[min(22rem,calc(100vw-1rem))] sm:max-w-[min(26rem,calc(100vw-1rem))] aspect-square object-contain object-top drop-shadow-2xl transition-all ease-out ${
+            className={`relative z-10 w-full max-w-[min(20rem,calc(100vw-1rem))] xs:max-w-[min(22rem,calc(100vw-1rem))] sm:max-w-[min(26rem,calc(100vw-1rem))] aspect-square object-contain object-top drop-shadow-2xl transition-all ease-out ${
               isVisible
                 ? "opacity-100 translate-y-0 scale-100"
                 : "opacity-0 translate-y-3 scale-95"
