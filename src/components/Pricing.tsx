@@ -10,6 +10,7 @@ import confetti from "canvas-confetti";
 import { PricingPlanFeatureSoon } from "./PricingPlanFeatureSoon";
 import { cn } from "@/lib/utils";
 import { bizmisConfettiColors } from "@/lib/colors";
+import { openBizmisShopifyAppListing } from "@/lib/bizmisUrls";
 
 interface PricingTier {
   monthlyStandard: number;
@@ -280,8 +281,9 @@ const Pricing = () => {
       plan: planName.toLowerCase(),
       billing_period: isYearly ? "yearly" : "monthly",
       early_bird_enabled: showEarlyBird,
+      destination: "shopify_app_listing",
     });
-    navigate(`/join-waitlist?plan=${planName.toLowerCase()}`);
+    openBizmisShopifyAppListing();
   };
 
   const handleContactSales = () => {

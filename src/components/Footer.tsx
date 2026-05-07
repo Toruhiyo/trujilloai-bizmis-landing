@@ -1,4 +1,5 @@
 import { getCurrentYear } from "../lib/utils/time";
+import { BIZMIS_DEMO_STORE_URL } from "@/lib/bizmisUrls";
 import Logo from "./Logo";
 
 const Footer = () => {
@@ -8,7 +9,7 @@ const Footer = () => {
       links: [
         { label: "Features", href: "#" },
         { label: "Pricing", href: "#" },
-        { label: "Demo", href: "#" },
+        { label: "Demo", href: BIZMIS_DEMO_STORE_URL },
       ],
     },
     {
@@ -66,6 +67,12 @@ const Footer = () => {
                     <li key={label}>
                       <a
                         href={href}
+                        {...(href.startsWith("http")
+                          ? {
+                              target: "_blank",
+                              rel: "noopener noreferrer",
+                            }
+                          : {})}
                         className="hover:text-white transition-colors break-words"
                       >
                         {label}
