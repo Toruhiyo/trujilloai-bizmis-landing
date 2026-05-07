@@ -28,6 +28,9 @@ const SOLVED_DURATION_MS = 1800;
 /** Bridging waveform behind the avatar (parity with Benefit 1). */
 const BRIDGE_WAVEFORM_ACTIVE_OPACITY = 0.55;
 const BRIDGE_WAVEFORM_INACTIVE_OPACITY = 0.18;
+/** Softer bars on small screens where the wave sits behind the hero avatar. */
+const MOBILE_BRIDGE_WAVEFORM_ACTIVE_OPACITY = 0.36;
+const MOBILE_BRIDGE_WAVEFORM_INACTIVE_OPACITY = 0.11;
 const BRIDGE_WAVE_FADE_IN_MS = 700;
 const BRIDGE_WAVE_FADE_OUT_MS = 580;
 const AVATAR_ENTRANCE_DELAY_MS = 200;
@@ -354,20 +357,13 @@ const VoiceSupportScene = () => {
 
   const customerVisible = phase !== "idle";
 
-  const waveVisible =
-    phase === "customer-speaking" ||
-    phase === "pause" ||
-    phase === "agent-speaking" ||
-    phase === "done" ||
-    phase === "hold" ||
-    phase === "solved";
-
   const waveAnimating =
     (shopperKaraokeStarted && !shopperCaptionConsumed) ||
     (clerkKaraokeStarted && !clerkCaptionConsumed);
 
-  /** Bridging-wave visibility: opaque whenever the central audio is active or
-   *  the action is being processed; mirrors Benefit 1's bridging cadence. */
+  /** Waveform shell opacity (mobile behind avatar + desktop center column):
+   *  visible only during active-call phases; hidden from solved through idle so it
+   *  matches Benefit 1’s post-resolution / between-query cadence. */
   const bridgeWaveOpaque =
     isVisible &&
     (phase === "customer-speaking" ||
@@ -593,8 +589,8 @@ const VoiceSupportScene = () => {
               animating={waveAnimating}
               barClassName="bg-primary"
               className="h-12 xs:h-14"
-              talkingOpacity={BRIDGE_WAVEFORM_ACTIVE_OPACITY}
-              silentOpacity={BRIDGE_WAVEFORM_INACTIVE_OPACITY}
+              talkingOpacity={MOBILE_BRIDGE_WAVEFORM_ACTIVE_OPACITY}
+              silentOpacity={MOBILE_BRIDGE_WAVEFORM_INACTIVE_OPACITY}
             />
           </div>
           <img
@@ -739,7 +735,7 @@ const VoiceSupportScene = () => {
           <div
             className="w-full py-1"
             style={{
-              opacity: waveVisible ? 1 : 0,
+              opacity: bridgeWaveOpaque ? 1 : 0,
               transition: `opacity ${TRANSITION_MS}ms ease-in-out`,
             }}
           >

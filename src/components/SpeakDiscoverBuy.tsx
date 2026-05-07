@@ -42,6 +42,9 @@ const RECEIPT_ROW_DURATION_MS = 400;
 
 const BRIDGE_WAVEFORM_ACTIVE_OPACITY = 0.55;
 const BRIDGE_WAVEFORM_INACTIVE_OPACITY = 0.18;
+/** Softer bars on small screens where the wave sits behind the hero avatar. */
+const MOBILE_BRIDGE_WAVEFORM_ACTIVE_OPACITY = 0.36;
+const MOBILE_BRIDGE_WAVEFORM_INACTIVE_OPACITY = 0.11;
 const BRIDGE_WAVE_FADE_IN_MS = 700;
 const BRIDGE_WAVE_FADE_OUT_MS = 580;
 
@@ -443,8 +446,8 @@ const SpeakDiscoverBuy = () => {
               animating={audioActive || bridgeWaveTalkingHold}
               barClassName="bg-primary"
               className="h-12 xs:h-14"
-              talkingOpacity={BRIDGE_WAVEFORM_ACTIVE_OPACITY}
-              silentOpacity={BRIDGE_WAVEFORM_INACTIVE_OPACITY}
+              talkingOpacity={MOBILE_BRIDGE_WAVEFORM_ACTIVE_OPACITY}
+              silentOpacity={MOBILE_BRIDGE_WAVEFORM_INACTIVE_OPACITY}
             />
           </div>
           <img
