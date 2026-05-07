@@ -352,52 +352,52 @@ const SpeakDiscoverBuy = () => {
       ref={sectionRef}
       className="w-full max-w-6xl mx-auto px-4 overflow-visible"
     >
-      {/* Step flow synced with mockup phase: active step grows + glows. */}
-      <div className="w-full mb-6 flex items-center justify-center">
-        <div className="flex flex-wrap items-center justify-center gap-x-3 gap-y-1 sm:gap-x-5 text-primary text-[11px] sm:text-sm font-medium">
+      {/* Step flow synced with mockup phase: grid keeps one rail row at every
+          width so highlighting never changes how many lines the strip uses. */}
+      <div className="w-full mb-6 flex items-center justify-center overflow-visible">
+        <div
+          className="grid w-full max-w-3xl mx-auto items-center gap-x-1 sm:gap-x-2 text-primary text-[11px] sm:text-sm font-medium overflow-visible"
+          style={{
+            gridTemplateColumns:
+              "minmax(0, 1fr) auto minmax(0, 1fr) auto minmax(0, 1fr)",
+          }}
+        >
           {STEPS.map((step, idx) => {
             const isActive = idx === activeStepIdx;
             return (
               <Fragment key={step.num}>
-                {/*
-                  Outer wrapper does not scale: padding-right reserves horizontal
-                  room so scaled labels/glow cannot collide visually with ">"
-                  separators (transform ignores layout flow).
-                */}
-                <span
-                  className={`inline-flex items-center shrink-0 ${
-                    isActive && idx > 0 ? "pl-2 sm:pl-3.5" : ""
-                  } ${isActive ? "pr-3 sm:pr-5" : "pr-1 sm:pr-2"}`}
-                >
-                  <span
-                    className="flex items-center gap-1.5 sm:gap-2 origin-center"
-                    style={{
-                      transform: isActive ? "scale(1.18)" : "scale(1)",
-                      opacity: isActive ? 1 : 0.55,
-                      transition: `transform ${STEP_HIGHLIGHT_TRANSITION_MS}ms cubic-bezier(0.34, 1.56, 0.64, 1), opacity ${STEP_HIGHLIGHT_TRANSITION_MS}ms ease`,
-                    }}
-                  >
+                <div className="flex min-w-0 justify-center overflow-visible px-0.5 sm:px-1">
+                  <span className="inline-flex max-w-full justify-center">
                     <span
-                      className={`flex-shrink-0 w-5 h-5 sm:w-6 sm:h-6 rounded-full text-white text-[10px] sm:text-xs font-semibold flex items-center justify-center transition-all duration-300 ${
-                        isActive
-                          ? "bg-primary shadow-[0_0_0_4px_hsl(var(--primary)/0.18),0_4px_14px_-2px_hsl(var(--primary)/0.55)]"
-                          : "bg-primary-light"
-                      }`}
+                      className="flex max-w-full flex-wrap items-center justify-center gap-x-1.5 gap-y-0.5 sm:gap-x-2 origin-center text-center"
+                      style={{
+                        transform: isActive ? "scale(1.18)" : "scale(1)",
+                        opacity: isActive ? 1 : 0.55,
+                        transition: `transform ${STEP_HIGHLIGHT_TRANSITION_MS}ms cubic-bezier(0.34, 1.56, 0.64, 1), opacity ${STEP_HIGHLIGHT_TRANSITION_MS}ms ease`,
+                      }}
                     >
-                      {step.num}
-                    </span>
-                    <span
-                      className={`transition-colors duration-300 ${
-                        isActive ? "text-primary font-semibold" : "text-primary"
-                      }`}
-                    >
-                      {step.label}
+                      <span
+                        className={`flex-shrink-0 w-5 h-5 sm:w-6 sm:h-6 rounded-full text-white text-[10px] sm:text-xs font-semibold flex items-center justify-center transition-all duration-300 ${
+                          isActive
+                            ? "bg-primary shadow-[0_0_0_4px_hsl(var(--primary)/0.18),0_4px_14px_-2px_hsl(var(--primary)/0.55)]"
+                            : "bg-primary-light"
+                        }`}
+                      >
+                        {step.num}
+                      </span>
+                      <span
+                        className={`min-w-0 max-w-[11rem] xs:max-w-[13rem] sm:max-w-none transition-colors duration-300 ${
+                          isActive ? "text-primary font-semibold" : "text-primary"
+                        }`}
+                      >
+                        {step.label}
+                      </span>
                     </span>
                   </span>
-                </span>
+                </div>
                 {idx < STEPS.length - 1 && (
                   <span
-                    className="inline-flex shrink-0 items-center justify-center pl-1 sm:pl-2 select-none"
+                    className="inline-flex shrink-0 items-center justify-center select-none self-center px-0.5 sm:px-1"
                     aria-hidden
                   >
                     <FaChevronRight className="w-2.5 h-2.5 sm:w-3 sm:h-3 text-primary/60" />
