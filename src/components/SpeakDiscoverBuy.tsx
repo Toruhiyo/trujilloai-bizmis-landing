@@ -418,7 +418,11 @@ const SpeakDiscoverBuy = () => {
       <div className="lg:hidden flex flex-col items-center w-[calc(100%+2rem)] max-w-[100vw] -mx-4 sm:w-full sm:max-w-none sm:mx-0">
         <div className="relative flex justify-center w-full">
           <div
-            className="absolute inset-4 rounded-full bg-primary/25 blur-2xl animate-pulse"
+            className="absolute inset-12 rounded-full bg-primary/30 blur-2xl animate-pulse"
+            aria-hidden
+          />
+          <div
+            className="absolute inset-20 rounded-full bg-primary/20 blur-3xl animate-pulse [animation-delay:0.5s]"
             aria-hidden
           />
           {/* Mobile bridging waveform — behind the avatar, parity with Benefit 2. */}
@@ -446,7 +450,7 @@ const SpeakDiscoverBuy = () => {
           <img
             src="/images/benefit-1-driven-sales-pipeline-2.png"
             alt="Bizmis assistant"
-            className={`relative z-10 w-full max-w-[min(32rem,calc(100vw-1rem))] xs:max-w-[min(34rem,calc(100vw-1rem))] sm:max-w-[min(38rem,calc(100vw-1rem))] aspect-square object-contain object-top drop-shadow-xl transition-all ease-out ${
+            className={`relative z-10 w-full max-w-[min(32rem,calc(100vw-1rem))] xs:max-w-[min(34rem,calc(100vw-1rem))] sm:max-w-[min(38rem,calc(100vw-1rem))] aspect-square object-contain object-top drop-shadow-2xl transition-all ease-out ${
               isVisible
                 ? "opacity-100 translate-y-0"
                 : "opacity-0 translate-y-3"
