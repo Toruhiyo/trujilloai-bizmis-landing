@@ -293,7 +293,7 @@ const Benefits = () => {
       {/* Benefit 3: Store Insights */}
       <section
         id="benefit-3"
-        className="relative py-16 sm:py-24 lg:py-32 bg-[#FDF7E2]/20 overflow-hidden"
+        className="relative py-12 sm:py-24 lg:py-32 bg-[#FDF7E2]/20 overflow-hidden"
       >
         {/* Background Elements */}
         <div className="absolute inset-0">
@@ -304,87 +304,82 @@ const Benefits = () => {
         <div className="container mx-auto px-4 sm:px-6 relative z-10">
           <div className="max-w-7xl mx-auto">
             {/* Header */}
-            <div className="text-center mb-12 sm:mb-16 lg:mb-20">
+            <div className="text-center mb-8 sm:mb-16 lg:mb-20">
               <SectionBadge icon={FaChartLine} text="Store Insights" />
               <div className="relative">
+                {/* #3 watermark — desktop-only, parity with #1 / #2 watermarks. */}
                 <div
-                  className="absolute -left-4 sm:-left-16 -top-6 sm:-top-16 text-6xl sm:text-8xl lg:text-9xl font-bold text-primary/25 transform rotate-6 select-none pointer-events-none"
+                  className="hidden sm:block absolute sm:-left-16 sm:-top-16 text-6xl sm:text-8xl lg:text-9xl font-bold text-primary/25 transform rotate-6 select-none pointer-events-none"
                   aria-hidden
                 >
                   #3
                 </div>
-                <h2 className="text-4xl sm:text-5xl lg:text-6xl font-heading font-bold text-foreground mb-6 relative z-10 lg:ml-14">
+                <h2 className="text-4xl xs:text-[2.5rem] sm:text-5xl lg:text-6xl font-heading font-bold text-foreground leading-tight mb-3 sm:mb-6 relative z-10 lg:ml-14">
                   Learn. Tune. Grow.
                 </h2>
               </div>
-              <p className="text-base sm:text-lg lg:text-xl text-muted-foreground font-body max-w-3xl mx-auto px-2">
+              <p className="text-sm sm:text-lg lg:text-xl text-muted-foreground font-body max-w-3xl mx-auto px-2">
                 See where buyers hesitate, what they ask, and which paths
                 convert—so you fix less, save hours, and invest where revenue
                 grows.
               </p>
             </div>
 
-            <div className="grid lg:grid-cols-2 gap-10 sm:gap-14 lg:gap-20 items-center">
+            <div className="grid lg:grid-cols-2 gap-6 sm:gap-14 lg:gap-20 items-center">
               {/* Left: Tabbed Session Replay */}
-              <div className="relative flex justify-center items-start order-2 lg:order-1">
+              <div className="relative flex justify-center items-start order-2 lg:order-1 min-w-0 w-full">
                 <TabbedSessionReplay />
               </div>
 
-              {/* Right: Features */}
-              <div className="space-y-6 sm:space-y-8 order-1 lg:order-2">
-                <div className="group bg-primary/10 backdrop-blur-sm rounded-3xl p-6 sm:p-8 border border-primary/20 hover:border-primary/30 transform lg:rotate-1 lg:hover:rotate-0 transition-all duration-500 shadow-xl">
-                  <div className="space-y-6">
-                    <div className="flex gap-4">
-                      <FaPlay className="w-5 h-5 text-primary/60 group-hover:text-primary/90 transition-colors duration-300 flex-shrink-0 mt-0.5" />
-                      <div>
-                        <h3 className="text-lg font-heading font-semibold text-foreground mb-2">
-                          Session Replays
+              {/* Right: Features — punchier title + tagline on mobile/tablet,
+                  full body copy and the lg flair (rotation + thicker padding)
+                  preserved at md+. */}
+              <div className="space-y-3 sm:space-y-6 lg:space-y-8 order-1 lg:order-2">
+                {[
+                  {
+                    icon: FaPlay,
+                    title: "Session Replays",
+                    tagline: "Jump straight to drop-offs",
+                    body: "Jump straight to drop-offs and hesitation points. Fix once, prevent abandoned carts, and recover at-risk sales.",
+                    rotate: "lg:rotate-1",
+                  },
+                  {
+                    icon: FaTag,
+                    title: "Auto-Tagged Chats",
+                    tagline: "One fix, fewer repeat tickets",
+                    body: "Conversations auto-group by topic and intent. Update one FAQ/policy, cut repeat tickets, and reduce support load.",
+                    rotate: "lg:-rotate-1",
+                  },
+                  {
+                    icon: FaChartBar,
+                    title: "Funnel Insights",
+                    tagline: "Spot high-ROI fixes at a glance",
+                    body: "See conversion paths, drop-offs, and product impact at a glance. Prioritize high-ROI fixes and back the winners.",
+                    rotate: "lg:rotate-2",
+                  },
+                ].map(({ icon: Icon, title, tagline, body, rotate }) => (
+                  <div
+                    key={title}
+                    className={`group bg-primary/10 backdrop-blur-sm rounded-2xl sm:rounded-3xl p-4 xs:p-5 sm:p-6 lg:p-8 border border-primary/20 hover:border-primary/30 transform ${rotate} lg:hover:rotate-0 transition-all duration-500 shadow-xl`}
+                  >
+                    <div className="flex gap-3 sm:gap-4">
+                      <Icon className="w-4 h-4 xs:w-5 xs:h-5 text-primary/60 group-hover:text-primary/90 transition-colors duration-300 flex-shrink-0 mt-0.5" />
+                      <div className="min-w-0">
+                        <h3 className="text-[15px] xs:text-base sm:text-lg font-heading font-semibold text-foreground leading-tight mb-1 sm:mb-2">
+                          {title}
                         </h3>
-                        <p className="text-muted-foreground font-body text-sm">
-                          Jump straight to drop-offs and hesitation points. Fix
-                          once, prevent abandoned carts, and recover at-risk
-                          sales.
+                        {/* Mobile/tablet: short primary tagline only. */}
+                        <p className="md:hidden text-primary/85 font-heading font-medium text-[12px] xs:text-[13px] leading-snug">
+                          {tagline}
+                        </p>
+                        {/* md+: full body copy. */}
+                        <p className="hidden md:block text-muted-foreground font-body text-sm">
+                          {body}
                         </p>
                       </div>
                     </div>
                   </div>
-                </div>
-
-                <div className="group bg-primary/10 backdrop-blur-sm rounded-3xl p-6 sm:p-8 border border-primary/20 hover:border-primary/30 transform lg:-rotate-1 lg:hover:rotate-0 transition-all duration-500 shadow-xl">
-                  <div className="space-y-6">
-                    <div className="flex gap-4">
-                      <FaTag className="w-5 h-5 text-primary/60 group-hover:text-primary/90 transition-colors duration-300 flex-shrink-0 mt-0.5" />
-                      <div>
-                        <h3 className="text-lg font-heading font-semibold text-foreground mb-2">
-                          Auto-Tagged Chats
-                        </h3>
-                        <p className="text-muted-foreground font-body text-sm">
-                          Conversations auto-group by topic and intent. Update
-                          one FAQ/policy, cut repeat tickets, and reduce support
-                          load.
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="group bg-primary/10 backdrop-blur-sm rounded-3xl p-6 sm:p-8 border border-primary/20 hover:border-primary/30 transform lg:rotate-2 lg:hover:rotate-0 transition-all duration-500 shadow-xl">
-                  <div className="space-y-6">
-                    <div className="flex gap-4">
-                      <FaChartBar className="w-5 h-5 text-primary/60 group-hover:text-primary/90 transition-colors duration-300 flex-shrink-0 mt-0.5" />
-                      <div>
-                        <h3 className="text-lg font-heading font-semibold text-foreground mb-2">
-                          Funnel Insights
-                        </h3>
-                        <p className="text-muted-foreground font-body text-sm">
-                          See conversion paths, drop-offs, and product impact at
-                          a glance. Prioritize high-ROI fixes and back the
-                          winners.
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
+                ))}
               </div>
             </div>
           </div>

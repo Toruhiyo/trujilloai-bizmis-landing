@@ -933,3 +933,15 @@ All colors MUST be HSL.
     opacity: 0;
   }
 }
+
+/* Hide native scrollbars on horizontal swipe strips (mobile tab selectors,
+   etc.) without affecting their scroll behaviour. */
+@layer utilities {
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+}

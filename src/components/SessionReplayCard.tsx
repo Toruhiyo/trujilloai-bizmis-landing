@@ -303,32 +303,33 @@ const SessionReplayCard: React.FC<SessionReplayCardProps> = ({
   }, [conversations]);
 
   return (
-    <div className={`w-full max-w-2xl ${className}`}>
+    <div className={`w-full min-w-0 max-w-2xl ${className}`}>
       {/* Integrated Session Replay Card */}
       <div
-        className={`bg-card backdrop-blur-sm rounded-2xl px-5 pt-5 pb-0 sm:px-8 sm:pt-8 sm:pb-0 border border-primary/20 shadow-brand transform lg:rotate-2 lg:hover:rotate-1 transition-all duration-500 ${
+        className={`bg-card backdrop-blur-sm rounded-2xl px-4 pt-4 pb-0 sm:px-8 sm:pt-8 sm:pb-0 border border-primary/20 shadow-brand transform lg:rotate-2 lg:hover:rotate-1 transition-all duration-500 ${
           isVisible ? "opacity-100 scale-100" : "opacity-0 scale-95"
         }`}
       >
         {/* Conversation Details Header */}
-        <div className="mb-8">
+        <div className="mb-5 sm:mb-8">
           {/* Status Strip */}
           <div
-            className={`w-full h-1 rounded-full mb-6 ${
+            className={`w-full h-1 rounded-full mb-4 sm:mb-6 ${
               success
                 ? "bg-gradient-to-r from-primary via-primary/80 to-primary/40"
                 : "bg-gradient-to-r from-muted-foreground/40 via-muted-foreground/20 to-muted-foreground/10"
             }`}
           />
 
-          {/* Conversation Context */}
-          <div className="flex items-start justify-between">
-            <div>
-              <h3 className="font-heading font-semibold text-foreground text-lg mb-2">
+          {/* Conversation Context — title shrinks (min-w-0) so the badge
+              stays inline on phones without pushing past the viewport. */}
+          <div className="flex items-start justify-between gap-2.5 sm:gap-4">
+            <div className="min-w-0 flex-1">
+              <h3 className="font-heading font-semibold text-foreground text-base sm:text-lg leading-tight mb-1 sm:mb-2">
                 {title}
               </h3>
               <div
-                className={`text-sm font-bold uppercase tracking-wider ${
+                className={`text-xs sm:text-sm font-bold uppercase tracking-wider ${
                   success ? "text-primary" : "text-muted-foreground"
                 }`}
               >
@@ -342,7 +343,7 @@ const SessionReplayCard: React.FC<SessionReplayCardProps> = ({
 
         {/* Audio Player with Conversation Marks */}
         {/* Session Details - Above Audio Player */}
-        <div className="mb-4 pb-6 border-b border-border/30">
+        <div className="mb-3 sm:mb-4 pb-4 sm:pb-6 border-b border-border/30">
           {/* All Session Info - Spread with Dots */}
           <div className="flex flex-wrap items-center justify-center sm:justify-between gap-x-3 gap-y-2 text-xs text-muted-foreground">
             {/* Customer Info */}
@@ -668,11 +669,11 @@ const SessionReplayCard: React.FC<SessionReplayCardProps> = ({
           ))}
 
           {/* End of Call Indicator */}
-          <div className="flex flex-col items-center py-8 text-center">
-            <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mb-4 border-2 border-primary/20">
-              <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center">
+          <div className="flex flex-col items-center py-5 sm:py-8 text-center">
+            <div className="w-12 h-12 sm:w-16 sm:h-16 bg-primary/10 rounded-full flex items-center justify-center mb-3 sm:mb-4 border-2 border-primary/20">
+              <div className="w-7 h-7 sm:w-8 sm:h-8 bg-primary rounded-full flex items-center justify-center">
                 <svg
-                  className="w-4 h-4 text-primary-foreground"
+                  className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-primary-foreground"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
