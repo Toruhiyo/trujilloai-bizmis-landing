@@ -498,7 +498,7 @@ const Pricing = () => {
                           className={`flex flex-wrap items-baseline justify-center ${hasDiscount ? "gap-2" : "gap-1"}`}
                         >
                           {hasDiscount && (
-                            <span className="font-heading text-lg font-light tabular-nums text-foreground/60 line-through decoration-foreground/45 transition-colors group-hover:text-primary-foreground/75 group-hover:decoration-primary-foreground/50">
+                            <span className="font-heading text-lg font-light tabular-nums text-neutral-400 line-through decoration-2 decoration-neutral-400 transition-colors group-hover:text-primary-foreground/95 group-hover:decoration-primary-foreground/80">
                               ${formatPrice(plan.pricing.monthlyStandard)}
                             </span>
                           )}
