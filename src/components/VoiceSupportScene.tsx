@@ -8,6 +8,8 @@ import {
 } from "react";
 import { FaCheck, FaChevronRight } from "react-icons/fa";
 import CustomerVoiceCard, {
+  ShopperShortCaption,
+  SHOPPER_MESSAGE_DRIFT_IN_MS,
   SHOPPER_CAPTION_WORD_INTRA_DRIFT_OFFSET_MS,
 } from "./CustomerVoiceCard";
 import FloatingCaption from "./FloatingCaption";
@@ -49,6 +51,15 @@ const CLERK_KARAOKE_START_DELAY_MS = RESOLUTION_TEXT_DELAY_MS;
  * after this much time so the scene never freezes.
  */
 const CAPTION_GATE_MAX_WAIT_MS = 10_000;
+
+/**
+ * Mobile single-stage cross-fade: leaving layer fades out fully before the
+ * next layer starts fading in (staggered transition delay) so the shopper
+ * card / action badge / clerk caption never visually overlap.
+ */
+const MOBILE_STAGE_FADE_OUT_MS = 280;
+const MOBILE_STAGE_FADE_IN_MS = 360;
+const MOBILE_STAGE_FADE_IN_DELAY_MS = MOBILE_STAGE_FADE_OUT_MS + 80;
 
 type Phase =
   | "idle"
@@ -357,7 +368,156 @@ const VoiceSupportScene = () => {
 
   const solvedVisible = phase === "solved";
 
+  /** Mobile-only: shopper card / action badge / clerk caption mutually exclusive in one stage. */
+  const mobileShopperStageVisible =
+    (phase === "customer-in" || phase === "customer-speaking") && !fadingOut;
+  const mobileBadgeStageVisible = actionBadgeVisible;
+  const mobileResolutionStageVisible = resolutionVisible;
+  const mobileStageTransition = (visible: boolean) =>
+    visible
+      ? `opacity ${MOBILE_STAGE_FADE_IN_MS}ms ease ${MOBILE_STAGE_FADE_IN_DELAY_MS}ms`
+      : `opacity ${MOBILE_STAGE_FADE_OUT_MS}ms ease`;
+
   const activeStepIdx = PHASE_TO_STEP[phase];
+
+  const actionBadgeNode = actionBadgeVisible ? (
+    <div
+      style={{
+        opacity: 1,
+        animation: "action-badge-in 500ms ease-out forwards",
+        pointerEvents: "none",
+      }}
+    >
+      <div
+        className="backdrop-blur-md rounded-xl px-3.5 py-2 shadow-md flex items-center gap-2 transition-all duration-300"
+        style={{
+          background: actionCompleted
+            ? "rgba(253,145,42,0.12)"
+            : "rgba(255,255,255,0.9)",
+          borderWidth: 1,
+          borderStyle: "solid",
+          borderColor: actionCompleted
+            ? "rgba(253,145,42,0.45)"
+            : "rgba(253,145,42,0.15)",
+          animation: actionCompleted
+            ? "action-badge-done-halo 700ms ease-out forwards"
+            : undefined,
+        }}
+      >
+        <div
+          className="w-6 h-6 rounded-full flex items-center justify-center shrink-0 transition-colors duration-300"
+          style={{
+            background: actionCompleted
+              ? "rgba(253,145,42,0.2)"
+              : "rgba(253,145,42,0.1)",
+            animation: actionCompleted
+              ? "action-badge-done-pop 450ms cubic-bezier(0.34, 1.56, 0.64, 1) forwards"
+              : undefined,
+          }}
+        >
+          {actionCompleted ? (
+            <FaCheck className="w-2.5 h-2.5 text-primary" />
+          ) : (
+            <currentCase.resolutionIcon className="w-3 h-3 text-primary" />
+          )}
+        </div>
+        <div className="flex flex-col gap-0.5">
+          <span className="text-[12px] sm:text-[13px] font-semibold text-foreground/80 whitespace-nowrap leading-tight">
+            {currentCase.resolutionAction}
+          </span>
+          {actionCompleted ? (
+            <span className="text-[11px] sm:text-[12px] text-primary font-semibold leading-tight">
+              Done
+            </span>
+          ) : (
+            <span className="flex items-center gap-0.5 text-[11px] sm:text-[12px] text-primary font-medium leading-tight">
+              Processing
+              {[0, 1, 2].map((i) => (
+                <span
+                  key={i}
+                  style={{
+                    animation: `action-dots 1.2s ease-in-out ${i * 0.2}s infinite`,
+                  }}
+                >
+                  .
+                </span>
+              ))}
+            </span>
+          )}
+        </div>
+      </div>
+    </div>
+  ) : null;
+
+  const solvedBurstNode = solvedVisible ? (
+    <>
+      {SOLVED_PARTICLES.map((p, i) => (
+        <div
+          key={i}
+          className="absolute rounded-full"
+          style={{
+            width: p.size,
+            height: p.size,
+            background: p.color,
+            animation: `solved-particle 800ms ease-out ${p.delay}ms forwards`,
+            left: "50%",
+            top: "50%",
+            transform: "translate(-50%, -50%)",
+            ["--px" as string]: `${p.x}px`,
+            ["--py" as string]: `${p.y}px`,
+          }}
+        />
+      ))}
+      <div
+        className="absolute rounded-full border-2 border-primary/30"
+        style={{
+          animation: "solved-ring 1s ease-out forwards",
+          left: "50%",
+          top: "50%",
+          translate: "-50% -50%",
+        }}
+      />
+      <svg
+        width="64"
+        height="64"
+        viewBox="0 0 56 56"
+        fill="none"
+        style={{
+          animation:
+            "solved-badge 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards",
+        }}
+      >
+        <circle
+          cx="28"
+          cy="28"
+          r="26"
+          stroke="#FD912A"
+          strokeWidth="2.5"
+          strokeLinecap="round"
+          fill="none"
+          opacity="0.25"
+          style={{
+            strokeDasharray: 163,
+            strokeDashoffset: 163,
+            animation: "solved-circle-draw 0.6s ease-out 0.1s forwards",
+          }}
+        />
+        <path
+          d="M17 28.5L24.5 36L39 21"
+          stroke="#FD912A"
+          strokeWidth="3.5"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          fill="none"
+          style={{
+            strokeDasharray: 36,
+            strokeDashoffset: 36,
+            animation: "solved-check-draw 0.5s ease-out 0.5s forwards",
+          }}
+        />
+      </svg>
+    </>
+  ) : null;
 
   return (
     <div ref={ref} className="w-full max-w-6xl mx-auto px-4 overflow-visible">
@@ -418,14 +578,132 @@ const VoiceSupportScene = () => {
         </div>
       </div>
 
+      {/* Mobile layout: clerk avatar at top + a shared "stage" below where
+          the shopper karaoke caption, action badge and clerk karaoke caption
+          (+solved burst) take turns. Each layer fades out fully before the
+          next starts fading in so they never overlap. */}
+      <div className="lg:hidden flex flex-col items-center w-[calc(100%+2rem)] max-w-[100vw] -mx-4 sm:w-full sm:max-w-none sm:mx-0">
+        <div className="relative flex justify-center w-full">
+          <div
+            className="absolute inset-12 rounded-full bg-primary/30 blur-2xl animate-pulse"
+            aria-hidden
+          />
+          <div
+            className="absolute inset-20 rounded-full bg-primary/20 blur-3xl animate-pulse [animation-delay:0.5s]"
+            aria-hidden
+          />
+          <img
+            src="/images/benefit-2-customer-support.png"
+            alt="Bizmis support assistant"
+            className={`relative w-full max-w-[min(20rem,calc(100vw-1rem))] xs:max-w-[min(22rem,calc(100vw-1rem))] sm:max-w-[min(26rem,calc(100vw-1rem))] aspect-square object-contain object-top drop-shadow-2xl transition-all ease-out ${
+              isVisible
+                ? "opacity-100 translate-y-0 scale-100"
+                : "opacity-0 translate-y-3 scale-95"
+            }`}
+            style={{
+              transitionDelay: isVisible ? "200ms" : "0ms",
+              transitionDuration: "1200ms",
+            }}
+          />
+        </div>
+
+        <div className="relative w-full min-w-0 max-w-full -mt-[7rem] xs:-mt-[8rem] sm:-mt-[10rem] z-20 flex items-center justify-center min-h-[7.5rem] xs:min-h-[8.5rem] sm:min-h-[9rem] px-4 overflow-visible">
+          {/* Layer A — shopper karaoke caption (no card, freestanding text) */}
+          <div
+            className="absolute inset-0 flex items-center justify-center pointer-events-none px-4"
+            style={{
+              opacity: mobileShopperStageVisible ? 1 : 0,
+              transition: mobileStageTransition(mobileShopperStageVisible),
+            }}
+          >
+            <div
+              key={`mobile-shopper-${caseIndex}`}
+              className="overflow-visible w-full max-w-[19rem] xs:max-w-[22rem] sm:max-w-[25rem] flex justify-center"
+              style={{
+                opacity: customerTextVisible && !fadingOut ? 1 : 0,
+                transition: `opacity ${SHOPPER_MESSAGE_DRIFT_IN_MS}ms ease-out`,
+                transitionDelay:
+                  customerTextVisible && !fadingOut
+                    ? `${CUSTOMER_TEXT_DELAY_MS}ms`
+                    : "0ms",
+              }}
+            >
+              <div className="relative overflow-visible px-3 py-2 flex justify-center">
+                <ShopperShortCaption
+                  quote={currentCase.customerQuote}
+                  shown={customerTextVisible && !fadingOut}
+                  wordBaseDelayMs={
+                    CUSTOMER_TEXT_DELAY_MS +
+                    SHOPPER_CAPTION_WORD_INTRA_DRIFT_OFFSET_MS
+                  }
+                  textClassName="text-[15px] xs:text-[16px] sm:text-[17px] leading-tight"
+                  className="justify-center text-center"
+                  onCaptionPlaybackConsumed={onShopperCaptionConsumed}
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* Layer B — Bizmis processing (action badge centered) */}
+          <div
+            className="absolute inset-0 flex items-center justify-center pointer-events-none px-4"
+            style={{
+              opacity: mobileBadgeStageVisible ? 1 : 0,
+              transition: mobileStageTransition(mobileBadgeStageVisible),
+            }}
+          >
+            {actionBadgeNode}
+          </div>
+
+          {/* Layer C — clerk karaoke caption (+solved burst overlay below) */}
+          <div
+            className="absolute inset-0 flex items-center justify-center pointer-events-none px-4"
+            style={{
+              opacity: mobileResolutionStageVisible ? 1 : 0,
+              transition: mobileStageTransition(mobileResolutionStageVisible),
+            }}
+          >
+            <div className="relative flex w-full max-w-[19rem] xs:max-w-[22rem] sm:max-w-[25rem] items-center justify-center overflow-visible">
+              {resolutionVisible ? (
+                <FloatingCaption
+                  key={`mobile-clerk-${caseIndex}`}
+                  wrapperClassName="overflow-visible w-full flex justify-center"
+                  paddingClassName="px-3 py-2"
+                  shown={resolutionVisible && resolutionRevealed}
+                  enterDelayMs={RESOLUTION_TEXT_DELAY_MS}
+                  enterDurationMs={TRANSITION_MS}
+                  translateYOffsetRem={0.5}
+                  quote={currentCase.response}
+                  wordBaseDelayMs={RESOLUTION_TEXT_DELAY_MS}
+                  textClassName="text-[15px] xs:text-[16px] sm:text-[17px] leading-tight"
+                  captionClassName="justify-center text-center"
+                  tone="clerk"
+                  onCaptionPlaybackConsumed={onClerkCaptionConsumed}
+                />
+              ) : null}
+              <div
+                className="absolute left-1/2 -translate-x-1/2 -bottom-12 flex items-center justify-center pointer-events-none"
+                style={{
+                  opacity: solvedVisible ? 1 : 0,
+                  transition: `opacity ${TRANSITION_MS}ms ease-in-out`,
+                }}
+              >
+                {solvedBurstNode}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Desktop layout: three columns (shopper card · waveform+badge · clerk avatar with floating caption). */}
       <div
-        className="relative flex flex-col items-center gap-6 lg:grid lg:gap-0 w-full min-h-[420px] sm:min-h-[480px] lg:min-h-[520px] lg:items-center"
+        className="hidden lg:grid lg:gap-0 w-full lg:min-h-[520px] lg:items-center"
         style={{ gridTemplateColumns: "1fr auto 1fr" }}
       >
         {/* Left cell — customer card pushed to the right edge */}
-        <div className="lg:justify-self-end min-w-0 flex justify-center lg:justify-end order-1 lg:order-none">
+        <div className="justify-self-end min-w-0 flex justify-end">
           <div
-            className="relative z-10 w-[10rem] sm:w-[12rem] flex-shrink-0"
+            className="relative z-10 w-[12rem] flex-shrink-0"
             style={{
               opacity: customerVisible && !fadingOut ? 1 : 0,
               transform:
@@ -436,7 +714,7 @@ const VoiceSupportScene = () => {
             }}
           >
             <CustomerVoiceCard
-              key={`support-customer-${caseIndex}`}
+              key={`desktop-customer-${caseIndex}`}
               imageUrl={currentCase.customerImage}
               quote={currentCase.customerQuote}
               size="small"
@@ -444,14 +722,14 @@ const VoiceSupportScene = () => {
               isVisible={customerVisible && !fadingOut}
               quoteVisible={customerTextVisible && !fadingOut}
               quoteEnterDelayMs={CUSTOMER_TEXT_DELAY_MS}
-              className="max-w-[10rem] sm:max-w-[12rem]"
+              className="max-w-[12rem]"
               onCaptionPlaybackConsumed={onShopperCaptionConsumed}
             />
           </div>
         </div>
 
         {/* Center cell — waveform + action badge (clerk reply floats on avatar) */}
-        <div className="relative z-20 flex flex-col items-stretch gap-3 w-full max-w-[22rem] sm:max-w-[28rem] px-4 sm:px-8 lg:px-10 lg:w-[22rem] xl:w-[28rem] order-3 lg:order-none">
+        <div className="relative z-20 flex flex-col items-stretch gap-3 w-[22rem] xl:w-[28rem] px-10">
           {/* Audio waveform */}
           <div
             className="w-full py-1"
@@ -468,74 +746,7 @@ const VoiceSupportScene = () => {
             className="flex flex-col items-end justify-start"
             style={{ minHeight: RESOLUTION_SLOT_MIN_HEIGHT }}
           >
-            {actionBadgeVisible ? (
-              <div
-                style={{
-                  opacity: 1,
-                  animation: "action-badge-in 500ms ease-out forwards",
-                  pointerEvents: "none",
-                }}
-              >
-                <div
-                  className="backdrop-blur-md rounded-xl px-3.5 py-2 shadow-md flex items-center gap-2 transition-all duration-300"
-                  style={{
-                    background: actionCompleted
-                      ? "rgba(253,145,42,0.12)"
-                      : "rgba(255,255,255,0.9)",
-                    borderWidth: 1,
-                    borderStyle: "solid",
-                    borderColor: actionCompleted
-                      ? "rgba(253,145,42,0.45)"
-                      : "rgba(253,145,42,0.15)",
-                    animation: actionCompleted
-                      ? "action-badge-done-halo 700ms ease-out forwards"
-                      : undefined,
-                  }}
-                >
-                  <div
-                    className="w-6 h-6 rounded-full flex items-center justify-center shrink-0 transition-colors duration-300"
-                    style={{
-                      background: actionCompleted
-                        ? "rgba(253,145,42,0.2)"
-                        : "rgba(253,145,42,0.1)",
-                      animation: actionCompleted
-                        ? "action-badge-done-pop 450ms cubic-bezier(0.34, 1.56, 0.64, 1) forwards"
-                        : undefined,
-                    }}
-                  >
-                    {actionCompleted ? (
-                      <FaCheck className="w-2.5 h-2.5 text-primary" />
-                    ) : (
-                      <currentCase.resolutionIcon className="w-3 h-3 text-primary" />
-                    )}
-                  </div>
-                  <div className="flex flex-col gap-0.5">
-                    <span className="text-[12px] sm:text-[13px] font-semibold text-foreground/80 whitespace-nowrap leading-tight">
-                      {currentCase.resolutionAction}
-                    </span>
-                    {actionCompleted ? (
-                      <span className="text-[11px] sm:text-[12px] text-primary font-semibold leading-tight">
-                        Done
-                      </span>
-                    ) : (
-                      <span className="flex items-center gap-0.5 text-[11px] sm:text-[12px] text-primary font-medium leading-tight">
-                        Processing
-                        {[0, 1, 2].map((i) => (
-                          <span
-                            key={i}
-                            style={{
-                              animation: `action-dots 1.2s ease-in-out ${i * 0.2}s infinite`,
-                            }}
-                          >
-                            .
-                          </span>
-                        ))}
-                      </span>
-                    )}
-                  </div>
-                </div>
-              </div>
-            ) : null}
+            {actionBadgeNode}
           </div>
 
           {/* Solved checkmark — below content, no layout displacement */}
@@ -547,82 +758,12 @@ const VoiceSupportScene = () => {
               transform: "translateY(100%)",
             }}
           >
-            {solvedVisible && (
-              <>
-                {SOLVED_PARTICLES.map((p, i) => (
-                  <div
-                    key={i}
-                    className="absolute rounded-full"
-                    style={{
-                      width: p.size,
-                      height: p.size,
-                      background: p.color,
-                      animation: `solved-particle 800ms ease-out ${p.delay}ms forwards`,
-                      left: "50%",
-                      top: "50%",
-                      transform: "translate(-50%, -50%)",
-                      ["--px" as string]: `${p.x}px`,
-                      ["--py" as string]: `${p.y}px`,
-                    }}
-                  />
-                ))}
-                <div
-                  className="absolute rounded-full border-2 border-primary/30"
-                  style={{
-                    animation: "solved-ring 1s ease-out forwards",
-                    left: "50%",
-                    top: "50%",
-                    translate: "-50% -50%",
-                  }}
-                />
-                <svg
-                  width="64"
-                  height="64"
-                  viewBox="0 0 56 56"
-                  fill="none"
-                  style={{
-                    animation:
-                      "solved-badge 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards",
-                  }}
-                >
-                  <circle
-                    cx="28"
-                    cy="28"
-                    r="26"
-                    stroke="#FD912A"
-                    strokeWidth="2.5"
-                    strokeLinecap="round"
-                    fill="none"
-                    opacity="0.25"
-                    style={{
-                      strokeDasharray: 163,
-                      strokeDashoffset: 163,
-                      animation:
-                        "solved-circle-draw 0.6s ease-out 0.1s forwards",
-                    }}
-                  />
-                  <path
-                    d="M17 28.5L24.5 36L39 21"
-                    stroke="#FD912A"
-                    strokeWidth="3.5"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    fill="none"
-                    style={{
-                      strokeDasharray: 36,
-                      strokeDashoffset: 36,
-                      animation:
-                        "solved-check-draw 0.5s ease-out 0.5s forwards",
-                    }}
-                  />
-                </svg>
-              </>
-            )}
+            {solvedBurstNode}
           </div>
         </div>
 
         {/* Right cell — clerk avatar with dual primary halo (parity with Benefit 1) */}
-        <div className="lg:justify-self-start order-2 lg:order-none">
+        <div className="justify-self-start">
           <div
             className={`relative z-10 transition-all ease-out ${
               isVisible ? "opacity-100 scale-100" : "opacity-0 scale-90"
@@ -660,7 +801,7 @@ const VoiceSupportScene = () => {
             <img
               src="/images/benefit-2-customer-support.png"
               alt="Bizmis support assistant"
-              className="relative h-56 sm:h-72 md:h-96 lg:h-[28rem] object-contain drop-shadow-2xl"
+              className="relative h-[26rem] xl:h-[28rem] object-contain drop-shadow-2xl"
             />
           </div>
         </div>
