@@ -157,7 +157,7 @@ const SessionReplayCard: React.FC<SessionReplayCardProps> = ({
 
   const productInfo = useMemo(
     () => getProductImageFromContent(),
-    [getProductImageFromContent]
+    [getProductImageFromContent],
   );
 
   // Function to get product search results based on conversation content
@@ -214,7 +214,7 @@ const SessionReplayCard: React.FC<SessionReplayCardProps> = ({
 
   const productSearchResults = useMemo(
     () => getProductSearchResults(),
-    [getProductSearchResults]
+    [getProductSearchResults],
   );
 
   // Helper to check if conversation is about coffee/equipment
@@ -248,7 +248,7 @@ const SessionReplayCard: React.FC<SessionReplayCardProps> = ({
       }
       return focusedMessage;
     },
-    [conversations]
+    [conversations],
   );
 
   // Smooth scroll to focused message
@@ -283,7 +283,7 @@ const SessionReplayCard: React.FC<SessionReplayCardProps> = ({
         setCurrentFocusedMessage(null);
       }
     },
-    [currentFocusedMessage, getFocusedMessageId, scrollToMessage]
+    [currentFocusedMessage, getFocusedMessageId, scrollToMessage],
   );
 
   useEffect(() => {
@@ -306,7 +306,7 @@ const SessionReplayCard: React.FC<SessionReplayCardProps> = ({
     <div className={`w-full max-w-2xl ${className}`}>
       {/* Integrated Session Replay Card */}
       <div
-        className={`bg-card backdrop-blur-sm rounded-2xl p-5 sm:p-8 border border-primary/20 shadow-brand transform lg:rotate-2 lg:hover:rotate-1 transition-all duration-500 ${
+        className={`bg-card backdrop-blur-sm rounded-2xl px-5 pt-5 pb-0 sm:px-8 sm:pt-8 sm:pb-0 border border-primary/20 shadow-brand transform lg:rotate-2 lg:hover:rotate-1 transition-all duration-500 ${
           isVisible ? "opacity-100 scale-100" : "opacity-0 scale-95"
         }`}
       >
@@ -423,11 +423,12 @@ const SessionReplayCard: React.FC<SessionReplayCardProps> = ({
           onTimeUpdate={handleAudioTimeUpdate}
         />
 
-        {/* Conversation Area */}
-        <div
-          ref={conversationContainerRef}
-          className="space-y-4 mb-8 max-h-80 overflow-y-auto conversation-scrollbar"
-        >
+        {/* Conversation Area — taller viewport + bottom fade into modal bg */}
+        <div className="relative">
+          <div
+            ref={conversationContainerRef}
+            className="space-y-4 max-h-96 sm:max-h-[26rem] overflow-y-auto conversation-scrollbar pb-6"
+          >
           {conversations.map((bubble, index) => (
             <div
               key={bubble.id}
@@ -693,6 +694,12 @@ const SessionReplayCard: React.FC<SessionReplayCardProps> = ({
               {formatDuration(durationSeconds)}
             </p>
           </div>
+          </div>
+
+          <div
+            className="pointer-events-none absolute inset-x-0 bottom-0 z-[2] h-16 bg-gradient-to-t from-card from-[28%] via-card/80 via-[52%] to-transparent sm:h-[4.5rem]"
+            aria-hidden
+          />
         </div>
       </div>
     </div>

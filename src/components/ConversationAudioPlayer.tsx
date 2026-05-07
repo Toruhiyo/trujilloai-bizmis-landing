@@ -144,7 +144,7 @@ const ConversationAudioPlayer: React.FC<ConversationAudioPlayerProps> = ({
 
   return (
     <div
-      className={`mb-6 p-4 bg-muted/20 rounded-lg border border-border/30 ${className}`}
+      className={`p-4 bg-muted/20 rounded-lg border border-border/30 ${className}`}
     >
       {/* Hidden audio element */}
       <audio ref={audioRef} src={audioUrl} preload="metadata" />
