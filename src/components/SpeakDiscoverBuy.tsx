@@ -611,7 +611,7 @@ const SpeakDiscoverBuy = () => {
 
           {/* Receipt layer */}
           <div
-            className="absolute inset-0 flex items-center justify-center pointer-events-none"
+            className="absolute inset-0 flex items-center justify-center pointer-events-none px-3 xs:px-5"
             style={{
               opacity: mobileReceiptStageVisible ? 1 : 0,
               transition: mobileStageTransition(mobileReceiptStageVisible),
@@ -620,17 +620,18 @@ const SpeakDiscoverBuy = () => {
             {receiptVisible && (
               <div
                 key={`mobile-receipt-${caseIndex}`}
-                className="flex items-center gap-2.5 bg-white/95 rounded-full border border-primary/20 shadow-md px-4 py-2"
+                className="flex max-w-full min-w-0 items-center gap-2 rounded-3xl border border-primary/20 bg-white/95 px-3 py-2 shadow-md xs:gap-2.5 xs:px-4"
                 style={{
                   animation: `order-receipt-in ${RECEIPT_CARD_ANIMATION_MS}ms cubic-bezier(0.34, 1.56, 0.64, 1) both`,
                 }}
               >
                 <ReceiptCheckIcon size={24} pathSize={16} />
                 <span
-                  className="text-[13px] xs:text-sm font-medium text-foreground whitespace-nowrap"
+                  className="min-w-0 flex-1 overflow-hidden text-ellipsis whitespace-nowrap text-left text-[12px] font-medium text-foreground xs:text-[13px] xs:text-sm"
                   style={{
                     animation: `receipt-row-in ${RECEIPT_ROW_DURATION_MS}ms ease-out ${RECEIPT_TITLE_DELAY_MS}ms both`,
                   }}
+                  title={`Order Confirmed · ${recommendedProduct.name} · ${recommendedProduct.price}`}
                 >
                   {`Order Confirmed · ${recommendedProduct.name} · ${recommendedProduct.price}`}
                 </span>
