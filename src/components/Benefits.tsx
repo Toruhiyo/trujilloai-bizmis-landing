@@ -22,7 +22,7 @@ const Benefits = () => {
   return (
     <div className="space-y-0 bg-gradient-to-b from-background via-[#FDF7E2]/10 to-background overflow-x-clip">
       {/* Shared Background Section: Driven Sales & Customization */}
-      <section className="relative pt-12 pb-8 sm:py-12 overflow-visible">
+      <section className="relative pt-10 pb-6 sm:py-12 overflow-visible">
         {/* Modern Shared Background Design - Single background for both sections */}
         <div className="absolute inset-0 bg-gradient-to-br from-slate-50 via-[#FDF7E2]/30 to-[#FDF7E2]/20"></div>
 
@@ -54,24 +54,25 @@ const Benefits = () => {
         <div className="container mx-auto px-4 sm:px-6 relative z-10">
           <div className="max-w-7xl mx-auto">
             {/* Section 1: Core Value Proposition */}
-            <div className="text-center max-w-5xl mx-auto mb-10">
+            <div className="text-center max-w-5xl mx-auto mb-8 sm:mb-10">
               <div className="relative">
                 <div className="hidden lg:block absolute -left-64 top-10 text-9xl lg:text-[12rem] font-bold text-primary/20 transform -rotate-12 select-none pointer-events-none">
                   #1
                 </div>
                 <SectionBadge icon={FaShoppingCart} text="Boost Sales" />
-                <h1 className="text-4xl sm:text-5xl lg:text-7xl font-heading font-bold text-foreground mb-6 sm:mb-8 relative z-10">
+                <h1 className="text-4xl sm:text-5xl lg:text-7xl font-heading font-bold text-foreground mb-4 sm:mb-8 relative z-10">
                   Convert. Upsell. Retain.
                 </h1>
               </div>
-              <p className="text-base sm:text-lg lg:text-xl text-muted-foreground font-body leading-relaxed mb-10 sm:mb-12 px-2">
+              <p className="text-sm sm:text-lg lg:text-xl text-muted-foreground font-body leading-relaxed mb-6 sm:mb-12 px-2">
                 Bizmis acts like a great in-store associate — guiding shoppers,
                 increasing cart value, and creating the kind of personal, warm
                 experience that brings customers back.
               </p>
 
-              {/* Impact Pillars — Flip Cards */}
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 lg:gap-6 max-w-5xl mx-auto mb-10">
+              {/* Impact Pillars — flip cards on lg+, flat compact rows on mobile/tablet
+                  (touch can't trigger hover, so mobile shows the full content inline). */}
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-3 sm:gap-4 lg:gap-6 max-w-5xl mx-auto mb-8 sm:mb-10">
                 {[
                   {
                     title: "Convert More Visitors",
@@ -92,8 +93,30 @@ const Benefits = () => {
                     watermark: "/images/benefit-1-pillar-3.png",
                   },
                 ].map(({ title, subtitle, body, watermark }) => (
-                  <div key={title} className="group [perspective:800px] h-56">
-                    <div className="relative w-full h-full transition-transform duration-500 [transform-style:preserve-3d] group-hover:[transform:rotateY(180deg)]">
+                  <div key={title} className="group lg:[perspective:800px] lg:h-56">
+                    {/* Mobile / tablet: punchy headline + tagline only (body
+                        copy lives in the lg flip card so the mobile cards stay
+                        scannable rather than text-dense). */}
+                    <div className="lg:hidden relative bg-primary/10 rounded-2xl border border-primary/20 shadow-sm overflow-hidden flex items-center text-left">
+                      <div className="relative shrink-0 w-20 xs:w-24 sm:w-28 self-stretch bg-primary/15 flex items-center justify-center">
+                        <img
+                          src={watermark}
+                          alt=""
+                          className="w-14 xs:w-16 sm:w-20 h-14 xs:h-16 sm:h-20 object-contain opacity-70"
+                        />
+                      </div>
+                      <div className="flex-1 min-w-0 px-4 xs:px-5 sm:px-6 py-3.5 xs:py-4 sm:py-5">
+                        <h3 className="text-base xs:text-lg sm:text-xl font-heading font-bold text-foreground leading-tight mb-1">
+                          {title}
+                        </h3>
+                        <p className="text-primary text-[13px] xs:text-sm sm:text-base font-heading font-semibold leading-snug">
+                          {subtitle}
+                        </p>
+                      </div>
+                    </div>
+
+                    {/* Desktop: original 3D flip card. */}
+                    <div className="hidden lg:block relative w-full h-full transition-transform duration-500 [transform-style:preserve-3d] group-hover:[transform:rotateY(180deg)]">
                       {/* Front */}
                       <div className="absolute inset-0 [backface-visibility:hidden] bg-primary/10 rounded-2xl border border-primary/20 shadow-sm overflow-hidden flex flex-col items-center justify-end pb-6">
                         <FaPlus
@@ -131,7 +154,7 @@ const Benefits = () => {
             </div>
 
             {/* Speak → Discover → Buy visual */}
-            <div className="relative mb-10 sm:mb-16 lg:mb-32 mt-4">
+            <div className="relative mb-8 sm:mb-16 lg:mb-32 mt-2 sm:mt-4">
               <SpeakDiscoverBuy />
             </div>
           </div>
