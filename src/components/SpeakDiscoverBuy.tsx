@@ -423,7 +423,7 @@ const SpeakDiscoverBuy = () => {
           />
           {/* Mobile bridging waveform — behind the avatar, parity with Benefit 2. */}
           <div
-            className="absolute inset-x-0 top-1/2 -translate-y-1/2 z-0 pointer-events-none flex items-center mx-auto w-full max-w-[min(24rem,calc(100vw-2rem))]"
+            className="absolute inset-x-0 top-1/2 -translate-y-1/2 z-0 pointer-events-none flex items-center justify-center px-6 xs:px-8 sm:px-10"
             style={{
               opacity: mobileBridgeWaveOpaque ? 1 : 0,
               transition: mobileBridgeWaveOpaque
