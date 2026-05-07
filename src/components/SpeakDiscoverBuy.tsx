@@ -4,6 +4,7 @@ import {
   useState,
   useCallback,
   useLayoutEffect,
+  Fragment,
 } from "react";
 import { FaShoppingBag, FaChevronRight } from "react-icons/fa";
 import confetti from "canvas-confetti";
@@ -71,6 +72,23 @@ const STEPS = [
   { num: 2, label: "Compare Products" },
   { num: 3, label: "Seal the Deal" },
 ];
+
+/** Maps each mockup phase to the demo step (0-based index) it belongs to so
+ *  the step rail can highlight in sync with the active stage. */
+const PHASE_TO_STEP: Record<Phase, number> = {
+  idle: 0,
+  "customer-in": 0,
+  speaking: 0,
+  "product-1": 1,
+  "product-2": 1,
+  "product-3": 1,
+  recommended: 1,
+  "add-to-cart": 2,
+  confirmed: 2,
+  "audio-off": 2,
+  "fade-out": 2,
+};
+const STEP_HIGHLIGHT_TRANSITION_MS = 450;
 
 type Phase =
   | "idle"
@@ -326,28 +344,65 @@ const SpeakDiscoverBuy = () => {
       ? `product-promote ${PROMOTE_ANIMATION_MS}ms cubic-bezier(0.34, 1.56, 0.64, 1) both`
       : "none";
 
+  const activeStepIdx = PHASE_TO_STEP[phase];
+
   return (
     <div
       ref={sectionRef}
       className="w-full max-w-6xl mx-auto px-4 overflow-visible"
     >
-      {/* Minimal step flow: 1 -> 2 -> 3 */}
+      {/* Step flow synced with mockup phase: active step grows + glows. */}
       <div className="w-full mb-6 flex items-center justify-center">
-        <div className="flex flex-wrap items-center justify-center gap-x-2 gap-y-1 sm:gap-4 text-primary text-[11px] sm:text-sm font-medium">
-          {STEPS.map((step, idx) => (
-            <span key={step.num} className="flex items-center gap-1.5 sm:gap-2">
-              <span className="flex-shrink-0 w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-primary-light text-white text-[10px] sm:text-xs font-semibold flex items-center justify-center">
-                {step.num}
-              </span>
-              <span>{step.label}</span>
-              {idx < STEPS.length - 1 && (
-                <FaChevronRight
-                  className="w-2.5 h-2.5 sm:w-3 sm:h-3 text-primary/60 ml-0.5"
-                  aria-hidden
-                />
-              )}
-            </span>
-          ))}
+        <div className="flex flex-wrap items-center justify-center gap-x-3 gap-y-1 sm:gap-x-5 text-primary text-[11px] sm:text-sm font-medium">
+          {STEPS.map((step, idx) => {
+            const isActive = idx === activeStepIdx;
+            return (
+              <Fragment key={step.num}>
+                {/*
+                  Outer wrapper does not scale: padding-right reserves horizontal
+                  room so scaled labels/glow cannot collide visually with ">"
+                  separators (transform ignores layout flow).
+                */}
+                <span
+                  className={`inline-flex items-center shrink-0 ${isActive ? "pr-3 sm:pr-5" : "pr-1 sm:pr-2"}`}
+                >
+                  <span
+                    className="flex items-center gap-1.5 sm:gap-2 origin-center"
+                    style={{
+                      transform: isActive ? "scale(1.18)" : "scale(1)",
+                      opacity: isActive ? 1 : 0.55,
+                      transition: `transform ${STEP_HIGHLIGHT_TRANSITION_MS}ms cubic-bezier(0.34, 1.56, 0.64, 1), opacity ${STEP_HIGHLIGHT_TRANSITION_MS}ms ease`,
+                    }}
+                  >
+                    <span
+                      className={`flex-shrink-0 w-5 h-5 sm:w-6 sm:h-6 rounded-full text-white text-[10px] sm:text-xs font-semibold flex items-center justify-center transition-all duration-300 ${
+                        isActive
+                          ? "bg-primary shadow-[0_0_0_4px_hsl(var(--primary)/0.18),0_4px_14px_-2px_hsl(var(--primary)/0.55)]"
+                          : "bg-primary-light"
+                      }`}
+                    >
+                      {step.num}
+                    </span>
+                    <span
+                      className={`transition-colors duration-300 ${
+                        isActive ? "text-primary font-semibold" : "text-primary"
+                      }`}
+                    >
+                      {step.label}
+                    </span>
+                  </span>
+                </span>
+                {idx < STEPS.length - 1 && (
+                  <span
+                    className="inline-flex shrink-0 items-center justify-center pl-1 sm:pl-2 select-none"
+                    aria-hidden
+                  >
+                    <FaChevronRight className="w-2.5 h-2.5 sm:w-3 sm:h-3 text-primary/60" />
+                  </span>
+                )}
+              </Fragment>
+            );
+          })}
         </div>
       </div>
 
