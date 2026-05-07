@@ -485,8 +485,11 @@ const VoiceSupportScene = () => {
                     borderWidth: 1,
                     borderStyle: "solid",
                     borderColor: actionCompleted
-                      ? "rgba(253,145,42,0.3)"
+                      ? "rgba(253,145,42,0.45)"
                       : "rgba(253,145,42,0.15)",
+                    animation: actionCompleted
+                      ? "action-badge-done-halo 700ms ease-out forwards"
+                      : undefined,
                   }}
                 >
                   <div
@@ -495,6 +498,9 @@ const VoiceSupportScene = () => {
                       background: actionCompleted
                         ? "rgba(253,145,42,0.2)"
                         : "rgba(253,145,42,0.1)",
+                      animation: actionCompleted
+                        ? "action-badge-done-pop 450ms cubic-bezier(0.34, 1.56, 0.64, 1) forwards"
+                        : undefined,
                     }}
                   >
                     {actionCompleted ? (
@@ -503,16 +509,16 @@ const VoiceSupportScene = () => {
                       <currentCase.resolutionIcon className="w-3 h-3 text-primary" />
                     )}
                   </div>
-                  <div className="flex flex-col">
-                    <span className="text-[11px] font-semibold text-foreground/80 whitespace-nowrap">
+                  <div className="flex flex-col gap-0.5">
+                    <span className="text-[12px] sm:text-[13px] font-semibold text-foreground/80 whitespace-nowrap leading-tight">
                       {currentCase.resolutionAction}
                     </span>
                     {actionCompleted ? (
-                      <span className="text-[10px] text-primary font-semibold">
+                      <span className="text-[11px] sm:text-[12px] text-primary font-semibold leading-tight">
                         Done
                       </span>
                     ) : (
-                      <span className="flex items-center gap-0.5 text-[10px] text-primary font-medium">
+                      <span className="flex items-center gap-0.5 text-[11px] sm:text-[12px] text-primary font-medium leading-tight">
                         Processing
                         {[0, 1, 2].map((i) => (
                           <span
