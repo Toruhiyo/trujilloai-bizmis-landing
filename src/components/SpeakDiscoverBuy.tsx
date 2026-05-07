@@ -500,6 +500,8 @@ const SpeakDiscoverBuy = () => {
                 const promoted = recommendationActive && isRecommended;
                 const dismissed = addToCartActive && !isRecommended;
                 const addedToCart = addToCartActive && isRecommended;
+                const showImageTag =
+                  tagsVisible && !(isRecommended && addedToCart);
                 const cardOpacity = dismissed ? 0 : visible ? 1 : 0;
                 const recenterX = `calc(${1 - idx} * (100% + ${MOBILE_ROW_GAP_REM}rem))`;
                 const cardTransform = dismissed
@@ -532,18 +534,6 @@ const SpeakDiscoverBuy = () => {
                         }}
                       />
                     )}
-                    {addedToCart && (
-                      <div
-                        className="absolute -top-2.5 -right-2.5 z-10 bg-primary text-white text-[10px] font-semibold rounded-full px-2 py-0.5 shadow-md flex items-center gap-1"
-                        style={{
-                          animation: `cart-badge-in ${CART_BADGE_ANIMATION_MS}ms cubic-bezier(0.34, 1.56, 0.64, 1) both`,
-                        }}
-                        aria-hidden
-                      >
-                        <FaShoppingBag className="w-2.5 h-2.5" />
-                        <span>Added</span>
-                      </div>
-                    )}
                     <div
                       className={`relative w-full min-w-0 max-w-full rounded-xl border transition-all duration-500 ${
                         promoted
@@ -559,17 +549,41 @@ const SpeakDiscoverBuy = () => {
                           className="w-full h-full object-cover"
                         />
                         <div
-                          className={`absolute top-0.5 left-0.5 max-w-[calc(100%-0.5rem)] truncate text-[8px] xs:text-[9px] font-semibold px-1 py-0.5 rounded-full ${
-                            isRecommended
-                              ? "bg-primary text-white shadow-sm"
-                              : "bg-white/85 text-primary border border-primary/20"
+                          className={`pointer-events-none absolute inset-x-0 top-0 z-[6] flex items-start gap-1 px-1 pt-0.5 ${
+                            addedToCart && isRecommended ? "justify-end" : ""
                           }`}
-                          style={{
-                            opacity: tagsVisible ? 1 : 0,
-                            animation: tagAnimation(idx),
-                          }}
                         >
-                          {productLabel(product.id, product.label)}
+                          {showImageTag && (
+                            <div
+                              className="min-w-0 flex-1 overflow-hidden pr-0.5"
+                              style={{
+                                opacity: 1,
+                                animation: tagAnimation(idx),
+                              }}
+                            >
+                              <span
+                                className={`inline-block max-w-full truncate rounded-full px-1 py-0.5 text-[8px] xs:text-[9px] font-semibold ${
+                                  isRecommended
+                                    ? "bg-primary text-white shadow-sm"
+                                    : "bg-white/85 text-primary border border-primary/20"
+                                }`}
+                              >
+                                {productLabel(product.id, product.label)}
+                              </span>
+                            </div>
+                          )}
+                          {addedToCart && (
+                            <div
+                              className="flex shrink-0 items-center gap-1 rounded-full bg-primary px-1.5 py-0.5 text-[9px] font-semibold text-white shadow-md"
+                              style={{
+                                animation: `cart-badge-in ${CART_BADGE_ANIMATION_MS}ms cubic-bezier(0.34, 1.56, 0.64, 1) both`,
+                              }}
+                              aria-hidden
+                            >
+                              <FaShoppingBag className="h-2 w-2 shrink-0 xs:h-2.5 xs:w-2.5" />
+                              <span className="whitespace-nowrap">Added</span>
+                            </div>
+                          )}
                         </div>
                       </div>
                       <div className="p-1 xs:p-1.5 sm:p-2">
@@ -724,6 +738,8 @@ const SpeakDiscoverBuy = () => {
                 const promoted = recommendationActive && isRecommended;
                 const dismissed = addToCartActive && !isRecommended;
                 const addedToCart = addToCartActive && isRecommended;
+                const showImageTag =
+                  tagsVisible && !(isRecommended && addedToCart);
                 const cardOpacity = dismissed ? 0 : visible ? 1 : 0;
                 const recenterX = `calc(${1 - idx} * (100% + ${DESKTOP_ROW_GAP_REM}rem))`;
                 const cardTransform = dismissed
@@ -756,18 +772,6 @@ const SpeakDiscoverBuy = () => {
                         }}
                       />
                     )}
-                    {addedToCart && (
-                      <div
-                        className="absolute -top-3 -right-3 z-10 bg-primary text-white text-[10px] font-semibold rounded-full px-2 py-1 shadow-md flex items-center gap-1"
-                        style={{
-                          animation: `cart-badge-in ${CART_BADGE_ANIMATION_MS}ms cubic-bezier(0.34, 1.56, 0.64, 1) both`,
-                        }}
-                        aria-hidden
-                      >
-                        <FaShoppingBag className="w-2.5 h-2.5" />
-                        <span>Added</span>
-                      </div>
-                    )}
                     <div
                       className={`relative rounded-2xl border transition-all duration-500 hover:scale-105 w-28 sm:w-44 md:w-48 ${
                         promoted
@@ -783,17 +787,41 @@ const SpeakDiscoverBuy = () => {
                           className="w-full h-full object-cover"
                         />
                         <div
-                          className={`absolute top-1.5 left-1.5 sm:top-2 sm:left-2 text-[8px] sm:text-[10px] font-semibold px-1.5 py-0.5 rounded-full ${
-                            isRecommended
-                              ? "bg-primary text-white shadow-sm"
-                              : "bg-white/80 text-primary border border-primary/20"
+                          className={`pointer-events-none absolute inset-x-0 top-0 z-[6] flex items-start gap-1 px-1 pt-1 sm:gap-1.5 sm:px-2 sm:pt-1.5 ${
+                            addedToCart && isRecommended ? "justify-end" : ""
                           }`}
-                          style={{
-                            opacity: tagsVisible ? 1 : 0,
-                            animation: tagAnimation(idx),
-                          }}
                         >
-                          {productLabel(product.id, product.label)}
+                          {showImageTag && (
+                            <div
+                              className="min-w-0 flex-1 overflow-hidden pr-0.5 sm:pr-1"
+                              style={{
+                                opacity: 1,
+                                animation: tagAnimation(idx),
+                              }}
+                            >
+                              <span
+                                className={`inline-block max-w-full truncate rounded-full px-1.5 py-0.5 text-[8px] font-semibold sm:px-2 sm:py-0.5 sm:text-[10px] ${
+                                  isRecommended
+                                    ? "bg-primary text-white shadow-sm"
+                                    : "bg-white/80 text-primary border border-primary/20"
+                                }`}
+                              >
+                                {productLabel(product.id, product.label)}
+                              </span>
+                            </div>
+                          )}
+                          {addedToCart && (
+                            <div
+                              className="flex shrink-0 items-center gap-1 rounded-full bg-primary px-2 py-1 text-[10px] font-semibold text-white shadow-md"
+                              style={{
+                                animation: `cart-badge-in ${CART_BADGE_ANIMATION_MS}ms cubic-bezier(0.34, 1.56, 0.64, 1) both`,
+                              }}
+                              aria-hidden
+                            >
+                              <FaShoppingBag className="h-2.5 w-2.5 shrink-0" />
+                              <span className="whitespace-nowrap">Added</span>
+                            </div>
+                          )}
                         </div>
                       </div>
 
