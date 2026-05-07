@@ -164,7 +164,7 @@ const Benefits = () => {
       {/* Benefit 2: Customer Support - Enhanced Layout */}
       <section
         id="benefit-2"
-        className="relative pt-8 pb-16 sm:pt-16 sm:pb-24 lg:py-32 bg-[#FDF7E2]/20 overflow-visible"
+        className="relative pt-6 pb-12 sm:pt-16 sm:pb-24 lg:py-32 bg-[#FDF7E2]/20 overflow-visible"
       >
         {/* Background Elements - Enhanced for Dashboard */}
         <div className="absolute inset-0">
@@ -185,22 +185,24 @@ const Benefits = () => {
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="max-w-8xl mx-auto">
             {/* Header */}
-            <div className="text-center mb-8">
+            <div className="text-center mb-6 sm:mb-8">
               <SectionBadge icon={FaComments} text="Customer Support" />
               <div className="relative">
+                {/* #2 watermark — desktop-only so it doesn't collide with the
+                    wrapped title on phones (matches Benefit 1's #1 watermark). */}
                 <div
-                  className="absolute -right-4 sm:-right-16 -top-6 sm:-top-16 text-6xl sm:text-8xl lg:text-9xl font-bold text-primary/25 transform rotate-12 select-none pointer-events-none"
+                  className="hidden sm:block absolute sm:-right-16 sm:-top-16 text-6xl sm:text-8xl lg:text-9xl font-bold text-primary/25 transform rotate-12 select-none pointer-events-none"
                   aria-hidden
                 >
                   #2
                 </div>
-                <h2 className="text-4xl sm:text-5xl lg:text-6xl font-heading font-bold text-foreground mb-6 relative z-10 lg:mr-14">
+                <h2 className="text-[28px] xs:text-3xl sm:text-5xl lg:text-6xl font-heading font-bold text-foreground leading-tight mb-3 sm:mb-6 relative z-10 lg:mr-14">
                   Save hours on support.
                   <br />
                   Earn loyal customers.
                 </h2>
               </div>
-              <p className="text-base sm:text-lg lg:text-xl text-muted-foreground font-body max-w-4xl mx-auto px-2">
+              <p className="text-sm sm:text-lg lg:text-xl text-muted-foreground font-body max-w-4xl mx-auto px-2">
                 Emotional intelligence and instant 24/7 support improve customer
                 satisfaction with immediate, warm, and empathetic resolutions
                 that feel like help from a great in-store clerk, while saving
@@ -209,87 +211,79 @@ const Benefits = () => {
             </div>
 
             {/* Hierarchy: demo scene → business outcomes (KPI strip) → enabling capabilities (cards) */}
-            <div className="flex flex-col items-center gap-10 sm:gap-12 lg:gap-14">
+            <div className="flex flex-col items-center gap-6 sm:gap-12 lg:gap-14">
               <div className="w-full flex justify-center">
                 <VoiceSupportScene />
               </div>
 
-              {/* Business outcomes — compact KPI strip, narrower than cards, not aligned to columns */}
-              <div className="flex flex-wrap justify-center gap-3 sm:gap-4 w-full max-w-2xl">
-                <div className="inline-flex items-center gap-1.5 rounded-full border-2 border-muted-foreground/70 bg-transparent px-3.5 py-1.5">
-                  <FaClock className="w-3.5 h-3.5 text-muted-foreground shrink-0" />
-                  <span className="text-sm font-medium text-muted-foreground">
+              {/* Business outcomes — compact KPI strip. Tighter pills on mobile
+                  so the three outcomes fit without ballooning vertically. */}
+              <div className="flex flex-wrap justify-center gap-2 xs:gap-2.5 sm:gap-4 w-full max-w-2xl">
+                <div className="inline-flex items-center gap-1.5 rounded-full border-2 border-muted-foreground/70 bg-transparent px-3 xs:px-3.5 py-1 xs:py-1.5">
+                  <FaClock className="w-3 h-3 xs:w-3.5 xs:h-3.5 text-muted-foreground shrink-0" />
+                  <span className="text-[12px] xs:text-[13px] sm:text-sm font-medium text-muted-foreground">
                     Save support hours
                   </span>
                 </div>
-                <div className="inline-flex items-center gap-1.5 rounded-full border-2 border-muted-foreground/70 bg-transparent px-3.5 py-1.5">
-                  <FaStar className="w-3.5 h-3.5 text-muted-foreground shrink-0" />
-                  <span className="text-sm font-medium text-muted-foreground">
+                <div className="inline-flex items-center gap-1.5 rounded-full border-2 border-muted-foreground/70 bg-transparent px-3 xs:px-3.5 py-1 xs:py-1.5">
+                  <FaStar className="w-3 h-3 xs:w-3.5 xs:h-3.5 text-muted-foreground shrink-0" />
+                  <span className="text-[12px] xs:text-[13px] sm:text-sm font-medium text-muted-foreground">
                     Earn better reviews
                   </span>
                 </div>
-                <div className="inline-flex items-center gap-1.5 rounded-full border-2 border-muted-foreground/70 bg-transparent px-3.5 py-1.5">
-                  <FaRedoAlt className="w-3.5 h-3.5 text-muted-foreground shrink-0" />
-                  <span className="text-sm font-medium text-muted-foreground">
+                <div className="inline-flex items-center gap-1.5 rounded-full border-2 border-muted-foreground/70 bg-transparent px-3 xs:px-3.5 py-1 xs:py-1.5">
+                  <FaRedoAlt className="w-3 h-3 xs:w-3.5 xs:h-3.5 text-muted-foreground shrink-0" />
+                  <span className="text-[12px] xs:text-[13px] sm:text-sm font-medium text-muted-foreground">
                     Grow repeat sales
                   </span>
                 </div>
               </div>
 
-              {/* Enabling capabilities */}
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-5 w-full max-w-5xl">
-                <div className="group bg-primary/6 backdrop-blur-sm rounded-2xl p-6 border border-primary/15 hover:border-primary/25 transition-all duration-300 shadow-lg">
-                  <div className="space-y-4">
-                    <div className="flex gap-3">
-                      <FaBolt className="w-4 h-4 text-primary/35 group-hover:text-primary/60 transition-colors duration-300 flex-shrink-0 mt-0.5" />
-                      <div>
-                        <h3 className="text-sm font-heading font-medium text-foreground mb-1.5">
-                          24/7 Instant Support
+              {/* Enabling capabilities — punchier title + tagline on mobile/tablet
+                  (full body copy still appears at md+ in the same card). */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-3 sm:gap-5 w-full max-w-5xl">
+                {[
+                  {
+                    icon: FaBolt,
+                    title: "24/7 Instant Support",
+                    tagline: "No waiting, no frustration",
+                    body: "Customers get help the moment they need it — no waiting, no frustration, no bad reviews from unanswered questions.",
+                  },
+                  {
+                    icon: FaShieldAlt,
+                    title: "Store Knowledge",
+                    tagline: "Policy, product, and docs answered instantly",
+                    body: "Answers policy, product, and documentation questions instantly, so shoppers and customers get clear guidance without waiting for your team.",
+                  },
+                  {
+                    icon: FaHeart,
+                    title: "Emotional Intelligence",
+                    tagline: "Warm, empathetic responses",
+                    body: "AI that understands customer emotions and responds with genuine care and understanding.",
+                  },
+                ].map(({ icon: Icon, title, tagline, body }) => (
+                  <div
+                    key={title}
+                    className="group bg-primary/6 backdrop-blur-sm rounded-xl xs:rounded-2xl p-3.5 xs:p-4 sm:p-6 border border-primary/15 hover:border-primary/25 transition-all duration-300 shadow-lg"
+                  >
+                    <div className="flex gap-2.5 xs:gap-3">
+                      <Icon className="w-4 h-4 text-primary/35 group-hover:text-primary/60 transition-colors duration-300 flex-shrink-0 mt-0.5" />
+                      <div className="min-w-0">
+                        <h3 className="text-[14px] xs:text-[15px] sm:text-sm font-heading font-semibold md:font-medium text-foreground leading-tight mb-1 sm:mb-1.5">
+                          {title}
                         </h3>
-                        <p className="text-muted-foreground font-body text-sm leading-relaxed">
-                          Customers get help the moment they need it — no
-                          waiting, no frustration, no bad reviews from
-                          unanswered questions.
+                        {/* Mobile/tablet: short tagline only. */}
+                        <p className="md:hidden text-primary/85 font-heading font-medium text-[12px] xs:text-[13px] leading-snug">
+                          {tagline}
+                        </p>
+                        {/* md+: full body copy. */}
+                        <p className="hidden md:block text-muted-foreground font-body text-sm leading-relaxed">
+                          {body}
                         </p>
                       </div>
                     </div>
                   </div>
-                </div>
-
-                <div className="group bg-primary/6 backdrop-blur-sm rounded-2xl p-6 border border-primary/15 hover:border-primary/25 transition-all duration-300 shadow-lg">
-                  <div className="space-y-4">
-                    <div className="flex gap-3">
-                      <FaShieldAlt className="w-4 h-4 text-primary/35 group-hover:text-primary/60 transition-colors duration-300 flex-shrink-0 mt-0.5" />
-                      <div>
-                        <h3 className="text-sm font-heading font-medium text-foreground mb-1.5">
-                          Store Knowledge
-                        </h3>
-                        <p className="text-muted-foreground font-body text-sm leading-relaxed">
-                          Answers policy, product, and documentation
-                          questions instantly, so shoppers and customers get
-                          clear guidance without waiting for your team.
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="group bg-primary/6 backdrop-blur-sm rounded-2xl p-6 border border-primary/15 hover:border-primary/25 transition-all duration-300 shadow-lg">
-                  <div className="space-y-4">
-                    <div className="flex gap-3">
-                      <FaHeart className="w-4 h-4 text-primary/35 group-hover:text-primary/60 transition-colors duration-300 flex-shrink-0 mt-0.5" />
-                      <div>
-                        <h3 className="text-sm font-heading font-medium text-foreground mb-1.5">
-                          Emotional Intelligence
-                        </h3>
-                        <p className="text-muted-foreground font-body text-sm leading-relaxed">
-                          AI that understands customer emotions and responds
-                          with genuine care and understanding.
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
+                ))}
               </div>
             </div>
           </div>
