@@ -89,7 +89,7 @@ const Hero = () => {
                 variant="hero"
                 size="xl"
                 asChild
-                className="group flex items-center gap-3 h-12 sm:h-14 px-4 sm:px-6 text-sm sm:text-base [&_svg]:!w-5 [&_svg]:!h-5 sm:[&_svg]:!w-6 sm:[&_svg]:!h-6 w-full [&_svg]:pointer-events-auto"
+                className="group flex items-center gap-3 xs:gap-3.5 sm:gap-4 h-14 xs:h-16 sm:h-[4.5rem] md:h-[4.75rem] px-4 xs:px-5 sm:px-6 md:px-7 text-base xs:text-lg sm:text-xl md:text-xl w-full [&_svg]:pointer-events-auto"
               >
                 <a
                   href={BIZMIS_SHOPIFY_APP_LISTING_URL}
@@ -98,15 +98,15 @@ const Hero = () => {
                   onClick={handleShopifyInstallClick}
                 >
                   <div className="flex-shrink-0">
-                    <FaShopify className="w-6 h-6 sm:w-7 sm:h-7 text-primary" />
+                    <FaShopify className="!w-6 !h-6 xs:!w-7 xs:!h-7 sm:!w-8 sm:!h-8 md:!w-9 md:!h-9 text-primary" />
                   </div>
                   <div className="flex-1 min-w-0 text-center">
-                    <div className="font-semibold text-xs sm:text-sm">
+                    <div className="font-semibold text-base xs:text-lg sm:text-xl md:text-xl">
                       Install Now
                     </div>
                   </div>
                   <div className="flex-shrink-0">
-                    <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 group-hover:translate-x-1 transition-transform" />
+                    <ArrowRight className="!w-5 !h-5 xs:!w-5 xs:!h-5 sm:!w-6 sm:!h-6 md:!w-6 md:!h-6 group-hover:translate-x-1 transition-transform" />
                   </div>
                 </a>
               </Button>
