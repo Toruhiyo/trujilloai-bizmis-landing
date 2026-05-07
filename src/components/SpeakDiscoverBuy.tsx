@@ -9,11 +9,11 @@ import {
 import { FaShoppingBag, FaChevronRight } from "react-icons/fa";
 import confetti from "canvas-confetti";
 import CustomerVoiceCard, {
-  ShopperShortCaption,
   SHOPPER_MESSAGE_DRIFT_IN_MS,
   SHOPPER_CAPTION_WORD_INTRA_DRIFT_OFFSET_MS,
 } from "./CustomerVoiceCard";
 import ReceiptCheckIcon from "./ReceiptCheckIcon";
+import MobileShopperCaptionRow from "./MobileShopperCaptionRow";
 import Waveform from "./Waveform";
 import { SHOPPER_CASES, ShopperCase } from "@/data/shopper-cases";
 import { bizmisConfettiColors } from "@/lib/colors";
@@ -478,7 +478,7 @@ const SpeakDiscoverBuy = () => {
           >
             <div
               key={`mobile-quote-${caseIndex}`}
-              className="overflow-visible w-full max-w-[19rem] xs:max-w-[22rem] sm:max-w-[25rem] flex justify-center"
+              className="overflow-visible w-full max-w-[22rem] xs:max-w-[26rem] sm:max-w-[28rem] flex justify-center"
               style={{
                 opacity: customerTextVisible ? 1 : 0,
                 transition: `opacity ${SHOPPER_MESSAGE_DRIFT_IN_MS}ms ease-out`,
@@ -487,8 +487,10 @@ const SpeakDiscoverBuy = () => {
                   : "0ms",
               }}
             >
-              <div className="relative overflow-visible px-3 py-2 flex justify-center">
-                <ShopperShortCaption
+              <div className="relative w-full min-w-0 overflow-visible px-2 py-2 xs:px-3">
+                <MobileShopperCaptionRow
+                  thumbnailSrc={currentCase.customerImage}
+                  thumbnailAlt=""
                   quote={currentCase.customerQuote}
                   shown={customerTextVisible}
                   wordBaseDelayMs={
@@ -496,7 +498,6 @@ const SpeakDiscoverBuy = () => {
                     SHOPPER_CAPTION_WORD_INTRA_DRIFT_OFFSET_MS
                   }
                   textClassName="text-[15px] xs:text-[16px] sm:text-[17px] leading-tight"
-                  className="justify-center text-center"
                   onCaptionPlaybackConsumed={onShopperCaptionPlaybackConsumed}
                 />
               </div>

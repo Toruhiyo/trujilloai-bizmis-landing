@@ -8,12 +8,12 @@ import {
 } from "react";
 import { FaCheck, FaChevronRight } from "react-icons/fa";
 import CustomerVoiceCard, {
-  ShopperShortCaption,
   SHOPPER_MESSAGE_DRIFT_IN_MS,
   SHOPPER_CAPTION_WORD_INTRA_DRIFT_OFFSET_MS,
 } from "./CustomerVoiceCard";
 import FloatingCaption from "./FloatingCaption";
 import IssueResolvedCard from "./IssueResolvedCard";
+import MobileShopperCaptionRow from "./MobileShopperCaptionRow";
 import Waveform from "./Waveform";
 import { SUPPORT_CASES, SupportCase } from "@/data/support-cases";
 
@@ -619,7 +619,7 @@ const VoiceSupportScene = () => {
           >
             <div
               key={`mobile-shopper-${caseIndex}`}
-              className="overflow-visible w-full max-w-[19rem] xs:max-w-[22rem] sm:max-w-[25rem] flex justify-center"
+              className="overflow-visible w-full max-w-[22rem] xs:max-w-[26rem] sm:max-w-[28rem] flex justify-center"
               style={{
                 opacity: customerTextVisible && !fadingOut ? 1 : 0,
                 transition: `opacity ${SHOPPER_MESSAGE_DRIFT_IN_MS}ms ease-out`,
@@ -629,8 +629,10 @@ const VoiceSupportScene = () => {
                     : "0ms",
               }}
             >
-              <div className="relative overflow-visible px-3 py-2 flex justify-center">
-                <ShopperShortCaption
+              <div className="relative w-full min-w-0 overflow-visible px-2 py-2 xs:px-3">
+                <MobileShopperCaptionRow
+                  thumbnailSrc={currentCase.customerImage}
+                  thumbnailAlt=""
                   quote={currentCase.customerQuote}
                   shown={customerTextVisible && !fadingOut}
                   wordBaseDelayMs={
@@ -638,7 +640,6 @@ const VoiceSupportScene = () => {
                     SHOPPER_CAPTION_WORD_INTRA_DRIFT_OFFSET_MS
                   }
                   textClassName="text-[15px] xs:text-[16px] sm:text-[17px] leading-tight"
-                  className="justify-center text-center"
                   onCaptionPlaybackConsumed={onShopperCaptionConsumed}
                 />
               </div>
