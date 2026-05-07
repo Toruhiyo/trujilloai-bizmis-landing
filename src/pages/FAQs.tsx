@@ -91,17 +91,17 @@ const FAQsPage = () => {
     <div className="min-h-screen bg-gradient-to-br from-[#FDF7E2] via-white to-[#FDF7E2]/30">
       {/* Header with navigation */}
       <div className="bg-white border-b border-border">
-        <div className="container mx-auto px-6 py-4">
-          <div className="flex items-center gap-4">
+        <div className="container mx-auto px-4 py-3 sm:px-6 sm:py-4">
+          <div className="flex items-center gap-3 sm:gap-4">
             <a
               href="/"
-              className="inline-flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors"
+              className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors sm:gap-2 sm:text-base"
             >
               <ArrowLeft className="w-4 h-4" />
               Back to Home
             </a>
-            <div className="w-px h-6 bg-border"></div>
-            <h1 className="text-2xl font-heading font-bold text-foreground">
+            <div className="w-px h-5 bg-border sm:h-6"></div>
+            <h1 className="text-lg font-heading font-bold text-foreground sm:text-2xl">
               FAQ's
             </h1>
           </div>
@@ -109,22 +109,22 @@ const FAQsPage = () => {
       </div>
 
       {/* Main content */}
-      <div className="py-20">
-        <div className="container mx-auto px-6">
+      <div className="py-12 sm:py-16 lg:py-20">
+        <div className="container mx-auto px-4 sm:px-6">
           <div className="max-w-4xl mx-auto">
             {/* Header */}
-            <div className="text-center mb-12">
-              <h2 className="text-4xl lg:text-5xl font-heading font-bold text-foreground mb-6">
+            <div className="text-center mb-8 sm:mb-12">
+              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-heading font-bold leading-tight text-foreground mb-4 sm:mb-6">
                 Everything you need to know about Bizmis
               </h2>
-              <p className="text-xl text-muted-foreground">
+              <p className="text-base sm:text-lg lg:text-xl text-muted-foreground px-2">
                 Find answers to the most common questions about our Shopify
                 sales assistant
               </p>
             </div>
 
             {/* Search and Filter */}
-            <div className="mb-8 space-y-4">
+            <div className="mb-6 space-y-3 sm:mb-8 sm:space-y-4">
               {/* Search Bar */}
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-muted-foreground" />
@@ -138,10 +138,10 @@ const FAQsPage = () => {
               </div>
 
               {/* Category Filter */}
-              <div className="flex flex-wrap gap-2">
+              <div className="flex flex-wrap gap-1.5 sm:gap-2">
                 <button
                   onClick={() => setSelectedCategory("all")}
-                  className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+                  className={`px-3 py-1.5 sm:px-4 sm:py-2 rounded-lg text-xs sm:text-sm font-medium transition-colors ${
                     selectedCategory === "all"
                       ? "bg-primary text-primary-foreground"
                       : "bg-muted text-muted-foreground hover:bg-muted/80"
@@ -153,7 +153,7 @@ const FAQsPage = () => {
                   <button
                     key={category.id}
                     onClick={() => setSelectedCategory(category.id)}
-                    className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+                    className={`px-3 py-1.5 sm:px-4 sm:py-2 rounded-lg text-xs sm:text-sm font-medium transition-colors ${
                       selectedCategory === category.id
                         ? "bg-primary text-primary-foreground"
                         : "bg-muted text-muted-foreground hover:bg-muted/80"
@@ -166,7 +166,7 @@ const FAQsPage = () => {
             </div>
 
             {/* FAQs */}
-            <div className="space-y-4">
+            <div className="space-y-3 sm:space-y-4">
               {filteredFAQs.length === 0 ? (
                 <div className="text-center py-12">
                   <p className="text-muted-foreground text-lg">
@@ -184,10 +184,10 @@ const FAQsPage = () => {
                     >
                       <button
                         onClick={() => toggleItem(faq.id)}
-                        className="w-full px-6 py-5 text-left flex items-center justify-between hover:bg-muted/30 transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-inset"
+                        className="w-full px-4 py-4 sm:px-6 sm:py-5 text-left flex items-center justify-between gap-3 hover:bg-muted/30 transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-inset"
                         aria-expanded={isOpen}
                       >
-                        <h3 className="text-lg font-medium text-foreground pr-4">
+                        <h3 className="text-base sm:text-lg font-medium text-foreground leading-snug">
                           {faq.question}
                         </h3>
                         <ChevronDown
@@ -198,14 +198,19 @@ const FAQsPage = () => {
                         />
                       </button>
 
+                      {/* max-h cap is generous so multi-line answers (especially
+                          when wrapped to many rows on narrow phones) aren't
+                          clipped; opacity covers the visual fade. */}
                       <div
                         className={`transition-all duration-300 ease-in-out ${
-                          isOpen ? "max-h-96 opacity-100" : "max-h-0 opacity-0"
+                          isOpen
+                            ? "max-h-[60rem] opacity-100"
+                            : "max-h-0 opacity-0"
                         }`}
                         style={{ overflow: "hidden" }}
                       >
-                        <div className="px-6 pb-5 pt-2">
-                          <div className="text-muted-foreground leading-relaxed">
+                        <div className="px-4 pb-4 pt-1 sm:px-6 sm:pb-5 sm:pt-2">
+                          <div className="text-sm sm:text-base text-muted-foreground leading-relaxed">
                             {formatAnswer(faq.answer)}
                           </div>
                         </div>
@@ -217,16 +222,16 @@ const FAQsPage = () => {
             </div>
 
             {/* Contact CTA */}
-            <div className="text-center mt-12 p-8 bg-[#FDF7E2]/50 rounded-2xl border border-primary/20">
-              <h3 className="text-xl font-heading font-semibold text-foreground mb-3">
+            <div className="text-center mt-10 p-6 sm:mt-12 sm:p-8 bg-[#FDF7E2]/50 rounded-2xl border border-primary/20">
+              <h3 className="text-lg sm:text-xl font-heading font-semibold text-foreground mb-2 sm:mb-3">
                 Still have questions?
               </h3>
-              <p className="text-muted-foreground mb-6">
+              <p className="text-sm sm:text-base text-muted-foreground mb-4 sm:mb-6">
                 Our team is here to help you get the most out of Bizmis.
               </p>
               <a
                 href="/contact"
-                className="inline-flex items-center px-6 py-3 bg-primary text-primary-foreground font-medium rounded-lg hover:bg-primary/90 transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+                className="inline-flex items-center px-5 py-2.5 sm:px-6 sm:py-3 bg-primary text-primary-foreground text-sm sm:text-base font-medium rounded-lg hover:bg-primary/90 transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
               >
                 Contact Support
               </a>
