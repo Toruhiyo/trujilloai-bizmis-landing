@@ -78,9 +78,16 @@ const Hero = () => {
               </h1>
               <p className="text-sm sm:text-base text-white/80 font-body max-w-xl mx-auto">
                 <span className="font-semibold">This isn't a chatbot.</span>{" "}
-                Bizmis speaks naturally—welcoming your
-                customers, answering their questions, and guiding them to buy
-                with confidence, just like the best in-store salesperson would.
+                {/* Tighter pitch on phones; full version reads at sm+. */}
+                <span className="sm:hidden">
+                  Bizmis welcomes shoppers, answers questions, and guides them
+                  to buy — like your best in-store salesperson, 24/7.
+                </span>
+                <span className="hidden sm:inline">
+                  Bizmis speaks naturally—welcoming your customers, answering
+                  their questions, and guiding them to buy with confidence,
+                  just like the best in-store salesperson would.
+                </span>
               </p>
             </div>
 

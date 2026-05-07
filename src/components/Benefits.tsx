@@ -65,9 +65,16 @@ const Benefits = () => {
                 </h1>
               </div>
               <p className="text-sm sm:text-lg lg:text-xl text-muted-foreground font-body leading-relaxed mb-6 sm:mb-12 px-2">
-                Bizmis acts like a great in-store associate — guiding shoppers,
-                increasing cart value, and creating the kind of personal, warm
-                experience that brings customers back.
+                {/* Tighter pitch on phones; full version reads at sm+. */}
+                <span className="sm:hidden">
+                  A great in-store associate that guides shoppers, lifts cart
+                  value, and brings customers back.
+                </span>
+                <span className="hidden sm:inline">
+                  Bizmis acts like a great in-store associate — guiding shoppers,
+                  increasing cart value, and creating the kind of personal, warm
+                  experience that brings customers back.
+                </span>
               </p>
 
               {/* Impact Pillars — flip cards on lg+, flat compact rows on mobile/tablet
@@ -203,10 +210,17 @@ const Benefits = () => {
                 </h2>
               </div>
               <p className="text-sm sm:text-lg lg:text-xl text-muted-foreground font-body max-w-4xl mx-auto px-2">
-                Emotional intelligence and instant 24/7 support improve customer
-                satisfaction with immediate, warm, and empathetic resolutions
-                that feel like help from a great in-store clerk, while saving
-                valuable support time.
+                {/* Tighter pitch on phones; full version reads at sm+. */}
+                <span className="sm:hidden">
+                  Instant, empathetic 24/7 support that feels human — lifting
+                  satisfaction and saving hours of support work.
+                </span>
+                <span className="hidden sm:inline">
+                  Emotional intelligence and instant 24/7 support improve customer
+                  satisfaction with immediate, warm, and empathetic resolutions
+                  that feel like help from a great in-store clerk, while saving
+                  valuable support time.
+                </span>
               </p>
             </div>
 
