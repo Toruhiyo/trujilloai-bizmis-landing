@@ -2,7 +2,8 @@ import React from "react";
 import { FaPaintBrush, FaMicrophone } from "react-icons/fa";
 import SectionBadge from "./SectionBadge";
 import { PricingPlanFeatureSoon } from "./PricingPlanFeatureSoon";
-import AudioPlayer from "./AudioPlayer";
+// TEMP: voice clone demo disabled — re-enable AudioPlayer + selectedVoice state + block below.
+// import AudioPlayer from "./AudioPlayer";
 import FakeImagesSelector, { type ImageOption } from "./FakeImagesSelector";
 
 const Customization = () => {
@@ -44,9 +45,10 @@ const Customization = () => {
     React.useState<string>("selected");
   const [selectedHaircutId, setSelectedHaircutId] =
     React.useState<string>("haircut-1");
-  const [selectedVoice, setSelectedVoice] = React.useState<
-    "original" | "cloned"
-  >("original");
+  // TEMP: voice clone demo — restore when re-enabling AudioPlayer below.
+  // const [selectedVoice, setSelectedVoice] = React.useState<
+  //   "original" | "cloned"
+  // >("original");
 
   // State to control carousel visibility on avatar hover
   const [isAvatarHovered, setIsAvatarHovered] = React.useState(false);
@@ -119,19 +121,21 @@ const Customization = () => {
             </p>
           </div>
 
-          {/* Customization Layout */}
-          <div className="grid lg:grid-cols-2 gap-8 md:gap-12 lg:gap-16 items-center">
+          {/* Customization Layout — switch to side-by-side as soon as md so the
+              avatar (left) + cards/audio (right) composition matches desktop
+              from tablet widths up. */}
+          <div className="grid md:grid-cols-2 gap-6 sm:gap-8 md:gap-8 lg:gap-16 items-center">
             {/* Right: Features */}
-            <div className="space-y-6 md:space-y-12 lg:space-y-16 order-2 lg:order-2">
-              <div className="group bg-primary/10 backdrop-blur-md rounded-3xl p-6 sm:p-8 border border-primary/20 hover:border-primary/30 transform lg:-rotate-1 lg:hover:rotate-0 transition-all duration-500 shadow-xl">
+            <div className="space-y-4 sm:space-y-6 md:space-y-8 lg:space-y-16 order-2 md:order-2">
+              <div className="group bg-primary/10 backdrop-blur-md rounded-xl xs:rounded-2xl sm:rounded-3xl p-3 xs:p-4 sm:p-6 lg:p-8 border border-primary/20 hover:border-primary/30 transform lg:-rotate-1 lg:hover:rotate-0 transition-all duration-500 shadow-xl">
                 <div className="space-y-6">
-                  <div className="flex gap-4">
-                    <FaPaintBrush className="w-5 h-5 text-primary/60 group-hover:text-primary/90 transition-colors duration-300 flex-shrink-0 mt-0.5" />
+                  <div className="flex gap-2.5 xs:gap-3 sm:gap-4">
+                    <FaPaintBrush className="w-4 h-4 xs:w-5 xs:h-5 text-primary/60 group-hover:text-primary/90 transition-colors duration-300 flex-shrink-0 mt-0.5" />
                     <div>
-                      <h3 className="text-xl font-heading font-bold text-foreground">
+                      <h3 className="text-[15px] xs:text-base sm:text-xl font-heading font-bold text-foreground">
                         Personal Avatar
                       </h3>
-                      <p className="text-muted-foreground font-body">
+                      <p className="text-[12px] xs:text-[13px] sm:text-base leading-snug text-muted-foreground font-body">
                         Creating genuine connections by making your sales
                         representative sound and look like you.
                       </p>
@@ -140,18 +144,18 @@ const Customization = () => {
                 </div>
               </div>
 
-              <div className="group bg-primary/10 backdrop-blur-md rounded-3xl p-6 sm:p-8 border border-primary/20 hover:border-primary/30 transform lg:rotate-1 lg:hover:rotate-0 transition-all duration-500 shadow-xl">
+              <div className="group bg-primary/10 backdrop-blur-md rounded-xl xs:rounded-2xl sm:rounded-3xl p-3 xs:p-4 sm:p-6 lg:p-8 border border-primary/20 hover:border-primary/30 transform lg:rotate-1 lg:hover:rotate-0 transition-all duration-500 shadow-xl">
                 <div className="space-y-6">
-                  <div className="flex gap-4">
-                    <FaMicrophone className="w-5 h-5 text-primary/60 group-hover:text-primary/90 transition-colors duration-300 flex-shrink-0 mt-0.5" />
+                  <div className="flex gap-2.5 xs:gap-3 sm:gap-4">
+                    <FaMicrophone className="w-4 h-4 xs:w-5 xs:h-5 text-primary/60 group-hover:text-primary/90 transition-colors duration-300 flex-shrink-0 mt-0.5" />
                     <div>
                       <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
-                        <h3 className="text-xl font-heading font-bold text-foreground">
+                        <h3 className="text-[15px] xs:text-base sm:text-xl font-heading font-bold text-foreground">
                           Voice Cloning
                         </h3>
                         <PricingPlanFeatureSoon className="ml-0 shrink-0" />
                       </div>
-                      <p className="text-muted-foreground font-body">
+                      <p className="text-[12px] xs:text-[13px] sm:text-base leading-snug text-muted-foreground font-body">
                         Authentic customer interactions through replication of
                         your unique speaking style and personality.
                       </p>
@@ -160,12 +164,10 @@ const Customization = () => {
                 </div>
               </div>
 
-              {/* Voice Cloning Demo */}
+              {/* TEMP: Voice cloning demo (toggle + AudioPlayer) — uncomment when shipping again.
               <div className="relative space-y-3">
-                {/* Enhanced background for audio player section */}
                 <div className="absolute -inset-8 bg-primary/15 rounded-3xl blur-2xl opacity-60"></div>
 
-                {/* Voice Toggle Selector */}
                 <div className="relative z-10">
                   <div className="flex bg-white/80 backdrop-blur-sm rounded-xl p-1 border border-primary/50 shadow-sm">
                     <button
@@ -191,7 +193,6 @@ const Customization = () => {
                   </div>
                 </div>
 
-                {/* Single Audio Player */}
                 <div className="relative z-10">
                   <AudioPlayer
                     audioUrl={
@@ -203,13 +204,15 @@ const Customization = () => {
                   />
                 </div>
               </div>
+              */}
             </div>
 
             {/* Left: Customization Image */}
-            <div className="relative order-1 lg:order-1">
-              {/* Auto-Rotating Vertical Clothing Carousel — hidden on mobile (no horizontal room) */}
+            <div className="relative order-1 md:order-1">
+              {/* Auto-Rotating Vertical Clothing Carousel — only visible at lg+
+                  where the avatar column has horizontal room for the side rail. */}
               {!isAvatarHovered && (
-                <div className="hidden md:block absolute -left-16 lg:-left-32 top-1/2 transform -translate-y-1/2 z-20">
+                <div className="hidden lg:block absolute -left-16 lg:-left-32 top-1/2 transform -translate-y-1/2 z-20">
                   <FakeImagesSelector
                     images={clothingImages}
                     selectedId={selectedClothingId}
@@ -227,9 +230,10 @@ const Customization = () => {
                 </div>
               )}
 
-              {/* Auto-Rotating Vertical Haircut Carousel — hidden on mobile (no horizontal room) */}
+              {/* Auto-Rotating Vertical Haircut Carousel — only visible at lg+
+                  where the avatar column has horizontal room for the side rail. */}
               {!isAvatarHovered && (
-                <div className="hidden md:block absolute -right-16 lg:-right-32 top-1/2 transform -translate-y-1/2 z-20">
+                <div className="hidden lg:block absolute -right-16 lg:-right-32 top-1/2 transform -translate-y-1/2 z-20">
                   <FakeImagesSelector
                     images={haircutImages}
                     selectedId={selectedHaircutId}
@@ -268,17 +272,19 @@ const Customization = () => {
                     <div className="absolute w-3/5 h-3/5 border-2 border-primary/50 rounded-full scale-0 group-hover:scale-100 transition-all duration-700 ease-out group-hover:delay-200 delay-400 shadow-[0_0_10px_rgba(253,145,42,0.5)] group-hover:shadow-[0_0_25px_rgba(253,145,42,0.6)]"></div>
                   </div>
 
-                  {/* Default image */}
+                  {/* Default image — capped per tier so it doesn't dominate
+                      the viewport on phones, fits a 2-col layout from md, and
+                      only blooms to the full size at lg+. */}
                   <img
                     src="/images/benefit-1-customization-1.png"
                     alt="Personalization Hub - Voice & Appearance Customization"
-                    className="relative z-30 w-full max-w-md mx-auto object-contain drop-shadow-2xl transition-opacity duration-500 group-hover:opacity-0"
+                    className="relative z-30 w-full max-w-[14rem] xs:max-w-[16rem] sm:max-w-xs md:max-w-[18rem] lg:max-w-md mx-auto object-contain drop-shadow-2xl transition-opacity duration-500 group-hover:opacity-0"
                   />
                   {/* Hover image */}
                   <img
                     src="/images/benefit-1-customization-2.png"
                     alt="Personalization Hub - Voice & Appearance Customization (Active)"
-                    className="absolute inset-0 z-30 w-full max-w-md mx-auto object-contain drop-shadow-2xl opacity-0 transition-opacity duration-500 group-hover:opacity-100"
+                    className="absolute inset-0 z-30 w-full max-w-[14rem] xs:max-w-[16rem] sm:max-w-xs md:max-w-[18rem] lg:max-w-md mx-auto object-contain drop-shadow-2xl opacity-0 transition-opacity duration-500 group-hover:opacity-100"
                   />
                 </div>
               </div>
