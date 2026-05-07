@@ -308,11 +308,17 @@ const SpeakDiscoverBuy = () => {
   /** Desktop bridging-wave opacity: 1 from speaking through confirmed, 0 in idle/customer-in/audio-off/fade-out. */
   const bridgeWaveOpaque =
     isVisible && !preAudio && phase !== "audio-off" && phase !== "fade-out";
-  /** Mobile bridging-wave stays visible all the way through `confirmed` (parity
-   *  with Benefit 2): bars keep showing as silent dots during product/receipt
-   *  phases instead of fading the whole waveform out. */
+  /** Mobile waveform cadence:
+   *  - Hidden in idle / customer-in (pre-query) and from `audio-off` / `fade-out`
+   *    onward (after the brief silent beat on `confirmed`).
+   *  - Visible silent on `confirmed` (the order receipt is on screen, audio is
+   *    done but the strip lingers for a beat before disappearing).
+   *  - Visible animating from the moment the shopper starts speaking through
+   *    products / recommendation / add-to-cart. */
   const mobileBridgeWaveOpaque =
-    isVisible && phaseAtLeast("speaking") && phase !== "fade-out";
+    isVisible && phaseAtLeast("speaking") && !phaseAtLeast("audio-off");
+  const mobileWaveAnimating =
+    phaseAtLeast("speaking") && !phaseAtLeast("confirmed");
   const productVisible = (i: number) =>
     phaseAtLeast(productPhase(i)) && !fadingOut;
   const tagsVisible = phaseAtLeast("recommended") && !fadingOut;
@@ -443,7 +449,7 @@ const SpeakDiscoverBuy = () => {
             aria-hidden
           >
             <Waveform
-              animating={audioActive || bridgeWaveTalkingHold}
+              animating={mobileWaveAnimating}
               barClassName="bg-primary"
               className="h-12 xs:h-14"
               talkingOpacity={MOBILE_BRIDGE_WAVEFORM_ACTIVE_OPACITY}
