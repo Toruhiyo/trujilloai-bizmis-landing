@@ -352,7 +352,7 @@ const Pricing = () => {
   const showUpgradeCreditNote = !isYearly && showEarlyBird;
 
   return (
-    <section id="pricing" className="relative overflow-hidden py-16 lg:py-24">
+    <section id="pricing" className="relative overflow-hidden py-12 sm:py-16 lg:py-24">
       <div
         className="pointer-events-none absolute inset-0 bg-gradient-to-br from-muted/90 via-accent/25 to-background"
         aria-hidden
@@ -364,14 +364,14 @@ const Pricing = () => {
       </div>
 
       <div className="container relative z-10 mx-auto px-4 lg:px-6">
-        <div className="mb-12 text-center">
-          <div className="mb-6 flex justify-center">
+        <div className="mb-8 text-center sm:mb-12">
+          <div className="mb-4 flex justify-center sm:mb-6">
             <SectionBadge icon={FaTag} text="Pricing" />
           </div>
-          <h2 className="mb-6 font-heading text-4xl font-bold text-foreground lg:text-5xl xl:text-6xl">
+          <h2 className="mb-4 font-heading text-3xl font-bold leading-tight text-foreground sm:mb-6 sm:text-4xl sm:leading-tight lg:text-5xl xl:text-6xl">
             Simple, Transparent Pricing
           </h2>
-          <p className="mx-auto mb-8 max-w-3xl font-body text-lg leading-relaxed text-muted-foreground sm:text-xl">
+          <p className="mx-auto mb-6 max-w-3xl px-2 font-body text-base leading-relaxed text-muted-foreground sm:mb-8 sm:text-lg lg:text-xl">
             Choose the plan that fits your business. All plans include full
             Shopify integration.
           </p>
@@ -415,7 +415,7 @@ const Pricing = () => {
         {/* Pricing Cards - 4 columns */}
         <div
           id="pricing-cards"
-          className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-4 gap-6 xl:gap-6 max-w-7xl mx-auto"
+          className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 sm:gap-5 lg:gap-6 max-w-7xl mx-auto"
         >
           {PLANS.map((plan, index) => {
             const displayPrice = getDisplayPrice(plan);
@@ -439,7 +439,7 @@ const Pricing = () => {
                   </div>
                 )}
                 <div
-                  className={`relative flex h-full flex-col overflow-hidden rounded-2xl border p-6 shadow-soft backdrop-blur-sm transition-[box-shadow,border-color] hover:shadow-lg lg:p-7 ${
+                  className={`relative flex h-full flex-col overflow-hidden rounded-2xl border p-5 shadow-soft backdrop-blur-sm transition-[box-shadow,border-color] hover:shadow-lg sm:p-6 lg:p-7 ${
                     plan.popular
                       ? "border-2 border-primary group-hover:border-primary-foreground/30"
                       : "border-border/60"
@@ -457,7 +457,7 @@ const Pricing = () => {
                   {/* Discount — filled scalloped seal badge */}
                   {hasDiscount && (
                     <div
-                      className="pointer-events-none absolute right-3 top-3 z-20 flex h-16 w-16 items-center justify-center text-center"
+                      className="pointer-events-none absolute right-2 top-2 z-20 flex h-14 w-14 items-center justify-center text-center sm:right-3 sm:top-3 sm:h-16 sm:w-16"
                       title={
                         !isYearly && showEarlyBird
                           ? "Discounted intro period"
@@ -476,10 +476,10 @@ const Pricing = () => {
                             aria-hidden
                           />
                         )}
-                        <span className="font-heading text-xl font-extrabold leading-none text-primary-foreground tabular-nums">
+                        <span className="font-heading text-lg font-extrabold leading-none text-primary-foreground tabular-nums sm:text-xl">
                           {discountPercent}%
                         </span>
-                        <span className="font-heading text-[0.65rem] font-bold uppercase leading-none tracking-wide text-primary-foreground/90">
+                        <span className="font-heading text-[0.6rem] font-bold uppercase leading-none tracking-wide text-primary-foreground/90 sm:text-[0.65rem]">
                           off
                         </span>
                       </div>
@@ -487,8 +487,8 @@ const Pricing = () => {
                   )}
 
                   <div className="relative z-10 flex min-h-0 flex-1 flex-col">
-                    <div className="mb-6 pt-4 text-center">
-                      <h3 className="mb-3 font-heading text-lg font-bold text-foreground transition-colors lg:text-xl group-hover:text-primary-foreground">
+                    <div className="mb-4 pt-2 text-center sm:mb-6 sm:pt-4">
+                      <h3 className="mb-2 font-heading text-lg font-bold text-foreground transition-colors sm:mb-3 lg:text-xl group-hover:text-primary-foreground">
                         {plan.name}
                       </h3>
 
@@ -529,7 +529,7 @@ const Pricing = () => {
                       </div>
                     </div>
 
-                    <div className="mb-4 space-y-1.5 border-b border-border/70 pb-4 transition-colors group-hover:border-primary-foreground/30">
+                    <div className="mb-3 space-y-1 border-b border-border/70 pb-3 transition-colors group-hover:border-primary-foreground/30 sm:mb-4 sm:space-y-1.5 sm:pb-4">
                       <div className="flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
                         <span className="font-heading text-base font-bold tabular-nums text-foreground/80 transition-colors group-hover:text-primary-foreground sm:text-lg">
                           {plan.includedMinutes.toLocaleString()}
@@ -560,8 +560,8 @@ const Pricing = () => {
                     </div>
 
                     {/* Features List */}
-                    <div className="mb-6 flex-grow">
-                      <ul className="space-y-2.5">
+                    <div className="mb-4 flex-grow sm:mb-6">
+                      <ul className="space-y-2 sm:space-y-2.5">
                         {plan.features.map((feature, idx) => (
                           <li key={idx} className="flex items-start gap-2.5">
                             <Check className="mt-0.5 h-4 w-4 shrink-0 text-primary transition-colors group-hover:text-primary-foreground" />
@@ -598,14 +598,14 @@ const Pricing = () => {
           })}
 
           {/* Enterprise Card */}
-          <div className="group relative flex flex-col overflow-hidden rounded-2xl p-6 text-primary-foreground shadow-soft transition-all duration-500 hover:scale-[1.02] hover:shadow-lg lg:p-7">
+          <div className="group relative flex flex-col overflow-hidden rounded-2xl p-5 text-primary-foreground shadow-soft transition-all duration-500 hover:scale-[1.02] hover:shadow-lg sm:p-6 lg:p-7">
             <EnterpriseCardBackdrop />
             <div className="relative z-10 flex flex-1 flex-col">
-              <div className="mb-6 pt-2 text-center">
-                <h3 className="mb-3 font-heading text-xl font-bold lg:text-2xl">
+              <div className="mb-4 pt-2 text-center sm:mb-6">
+                <h3 className="mb-2 font-heading text-xl font-bold sm:mb-3 lg:text-2xl">
                   Enterprise
                 </h3>
-                <div className="mb-3">
+                <div className="mb-2 sm:mb-3">
                   <div className="flex items-baseline justify-center gap-1">
                     <span className="font-heading text-3xl font-bold lg:text-4xl">
                       Custom
@@ -618,11 +618,11 @@ const Pricing = () => {
                 </p>
               </div>
 
-              <div className="mb-8 flex-grow">
+              <div className="mb-6 flex-grow sm:mb-8">
                 <p className="mb-3 text-sm font-medium text-primary-foreground/75 transition-colors group-hover:text-primary-foreground/90">
                   Everything in Pro plus:
                 </p>
-                <ul className="space-y-3">
+                <ul className="space-y-2.5 sm:space-y-3">
                   {ENTERPRISE_FEATURES.map((feature, idx) => (
                     <li key={idx} className="flex items-start gap-3">
                       <div className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-primary-foreground/10 transition-colors group-hover:bg-primary-foreground/20">
@@ -684,8 +684,8 @@ const Pricing = () => {
         )}
 
         {/* Billing Summary */}
-        <div className="mt-12 text-center">
-          <div className="mb-10 flex flex-wrap items-center justify-center gap-x-6 gap-y-3 text-sm text-foreground/75 lg:gap-x-8">
+        <div className="mt-10 text-center sm:mt-12">
+          <div className="mb-8 flex flex-wrap items-center justify-center gap-x-4 gap-y-2 text-sm text-foreground/75 sm:mb-10 sm:gap-x-6 sm:gap-y-3 lg:gap-x-8">
             <div
               className="flex items-center gap-2"
               aria-label="Voice is billed per minute. You choose your maximum spend limit and can change it anytime."
