@@ -13,6 +13,7 @@ import CustomerVoiceCard, {
   SHOPPER_CAPTION_WORD_INTRA_DRIFT_OFFSET_MS,
 } from "./CustomerVoiceCard";
 import FloatingCaption from "./FloatingCaption";
+import IssueResolvedCard from "./IssueResolvedCard";
 import Waveform from "./Waveform";
 import { SUPPORT_CASES, SupportCase } from "@/data/support-cases";
 
@@ -389,34 +390,27 @@ const VoiceSupportScene = () => {
       }}
     >
       <div
-        className="backdrop-blur-md rounded-xl px-3.5 py-2 shadow-md flex items-center gap-2 transition-all duration-300"
+        className={`support-action-badge-surface rounded-xl px-3.5 py-2 shadow-md flex items-center gap-2 transition-all duration-300 ${
+          actionCompleted ? "support-action-badge-surface--done" : ""
+        }`}
         style={{
-          background: actionCompleted
-            ? "rgba(253,145,42,0.12)"
-            : "rgba(255,255,255,0.9)",
-          borderWidth: 1,
-          borderStyle: "solid",
-          borderColor: actionCompleted
-            ? "rgba(253,145,42,0.45)"
-            : "rgba(253,145,42,0.15)",
           animation: actionCompleted
             ? "action-badge-done-halo 700ms ease-out forwards"
             : undefined,
         }}
       >
         <div
-          className="w-6 h-6 rounded-full flex items-center justify-center shrink-0 transition-colors duration-300"
+          className={`w-6 h-6 rounded-full flex items-center justify-center shrink-0 transition-colors duration-300 ${
+            actionCompleted ? "bg-primary" : "bg-primary/10"
+          }`}
           style={{
-            background: actionCompleted
-              ? "rgba(253,145,42,0.2)"
-              : "rgba(253,145,42,0.1)",
             animation: actionCompleted
               ? "action-badge-done-pop 450ms cubic-bezier(0.34, 1.56, 0.64, 1) forwards"
               : undefined,
           }}
         >
           {actionCompleted ? (
-            <FaCheck className="w-2.5 h-2.5 text-primary" />
+            <FaCheck className="w-2.5 h-2.5 text-white" />
           ) : (
             <currentCase.resolutionIcon className="w-3 h-3 text-primary" />
           )}
@@ -477,45 +471,15 @@ const VoiceSupportScene = () => {
           translate: "-50% -50%",
         }}
       />
-      <svg
-        width="64"
-        height="64"
-        viewBox="0 0 56 56"
-        fill="none"
+      <div
+        className="relative"
         style={{
           animation:
             "solved-badge 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards",
         }}
       >
-        <circle
-          cx="28"
-          cy="28"
-          r="26"
-          stroke="#FD912A"
-          strokeWidth="2.5"
-          strokeLinecap="round"
-          fill="none"
-          opacity="0.25"
-          style={{
-            strokeDasharray: 163,
-            strokeDashoffset: 163,
-            animation: "solved-circle-draw 0.6s ease-out 0.1s forwards",
-          }}
-        />
-        <path
-          d="M17 28.5L24.5 36L39 21"
-          stroke="#FD912A"
-          strokeWidth="3.5"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          fill="none"
-          style={{
-            strokeDasharray: 36,
-            strokeDashoffset: 36,
-            animation: "solved-check-draw 0.5s ease-out 0.5s forwards",
-          }}
-        />
-      </svg>
+        <IssueResolvedCard summary={currentCase.resolutionAction} />
+      </div>
     </>
   ) : null;
 
@@ -556,7 +520,9 @@ const VoiceSupportScene = () => {
                       </span>
                       <span
                         className={`min-w-0 max-w-[11rem] xs:max-w-[13rem] sm:max-w-none transition-colors duration-300 ${
-                          isActive ? "text-primary font-semibold" : "text-primary"
+                          isActive
+                            ? "text-primary font-semibold"
+                            : "text-primary"
                         }`}
                       >
                         {step.label}
@@ -682,7 +648,7 @@ const VoiceSupportScene = () => {
                 />
               ) : null}
               <div
-                className="absolute left-1/2 -translate-x-1/2 -bottom-12 flex items-center justify-center pointer-events-none"
+                className="absolute left-1/2 -translate-x-1/2 -bottom-20 xs:-bottom-[5.5rem] sm:-bottom-24 flex items-center justify-center pointer-events-none"
                 style={{
                   opacity: solvedVisible ? 1 : 0,
                   transition: `opacity ${TRANSITION_MS}ms ease-in-out`,

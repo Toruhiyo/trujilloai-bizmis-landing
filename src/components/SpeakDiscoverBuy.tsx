@@ -13,6 +13,7 @@ import CustomerVoiceCard, {
   SHOPPER_MESSAGE_DRIFT_IN_MS,
   SHOPPER_CAPTION_WORD_INTRA_DRIFT_OFFSET_MS,
 } from "./CustomerVoiceCard";
+import ReceiptCheckIcon from "./ReceiptCheckIcon";
 import Waveform from "./Waveform";
 import { SHOPPER_CASES, ShopperCase } from "@/data/shopper-cases";
 import { bizmisConfettiColors } from "@/lib/colors";
@@ -33,12 +34,6 @@ const GLOW_ANIMATION_MS = 1100;
 const PRODUCT_ANIMATION_MS = 600;
 
 const RECEIPT_CARD_ANIMATION_MS = 700;
-const RECEIPT_CHECK_HALO_DELAY_MS = 200;
-const RECEIPT_CHECK_HALO_DURATION_MS = 900;
-const RECEIPT_CHECK_POP_DELAY_MS = 250;
-const RECEIPT_CHECK_POP_DURATION_MS = 500;
-const RECEIPT_CHECK_DRAW_DELAY_MS = 600;
-const RECEIPT_CHECK_DRAW_DURATION_MS = 380;
 const RECEIPT_TITLE_DELAY_MS = 850;
 const RECEIPT_PRODUCT_DELAY_MS = 1000;
 const RECEIPT_BREAKDOWN_DELAY_MS = 1150;
@@ -868,56 +863,6 @@ const SpeakDiscoverBuy = () => {
             )}
           </div>
         </div>
-      </div>
-    </div>
-  );
-};
-
-const ReceiptCheckIcon = ({
-  size = 48,
-  pathSize = 22,
-}: {
-  size?: number;
-  pathSize?: number;
-}) => {
-  const innerScale = pathSize / 24;
-  return (
-    <div
-      className="relative shrink-0"
-      style={{ width: size, height: size }}
-      aria-hidden
-    >
-      <span
-        className="absolute inset-0 rounded-full border-2 border-primary/40"
-        style={{
-          animation: `receipt-check-halo ${RECEIPT_CHECK_HALO_DURATION_MS}ms ease-out ${RECEIPT_CHECK_HALO_DELAY_MS}ms both`,
-        }}
-      />
-      <div
-        className="relative w-full h-full bg-gradient-to-br from-primary to-primary/80 rounded-full flex items-center justify-center shadow-md"
-        style={{
-          animation: `receipt-check-pop ${RECEIPT_CHECK_POP_DURATION_MS}ms cubic-bezier(0.34, 1.56, 0.64, 1) ${RECEIPT_CHECK_POP_DELAY_MS}ms both`,
-        }}
-      >
-        <svg
-          width={pathSize}
-          height={pathSize}
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="white"
-          strokeWidth={3 / innerScale}
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        >
-          <path
-            d="M5 12L10 17L19 7"
-            style={{
-              strokeDasharray: 30,
-              strokeDashoffset: 30,
-              animation: `receipt-check-draw ${RECEIPT_CHECK_DRAW_DURATION_MS}ms ease-out ${RECEIPT_CHECK_DRAW_DELAY_MS}ms forwards`,
-            }}
-          />
-        </svg>
       </div>
     </div>
   );
