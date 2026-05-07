@@ -125,6 +125,12 @@ All colors MUST be HSL.
     --sidebar-border: 220 13% 91%;
 
     --sidebar-ring: 217.2 91.2% 59.8%;
+
+    /**
+     * Benefits / hero-adjacent canvas (~ #FDF7E2). Clerk karaoke stains use this so they
+     * blend with the landing sections instead of `--background` (pure white in :root).
+     */
+    --landing-warm-surface: 43 72% 93%;
   }
 
   .dark {
@@ -163,6 +169,8 @@ All colors MUST be HSL.
     --sidebar-accent-foreground: 240 4.8% 95.9%;
     --sidebar-border: 240 3.7% 15.9%;
     --sidebar-ring: 217.2 91.2% 59.8%;
+
+    --landing-warm-surface: 222.2 28% 11%;
   }
 }
 
@@ -521,7 +529,7 @@ All colors MUST be HSL.
   filter: blur(15px);
 }
 
-/* Clerk caption — same karaoke shape, swapped colors: primary text on white stain. */
+/* Clerk caption — primary text on warm landing canvas stain (Benefits cream, not pure white). */
 .clerk-caption-token {
   color: hsl(var(--primary));
   font-weight: 800;
@@ -538,13 +546,13 @@ All colors MUST be HSL.
   border-radius: 22px;
   background: radial-gradient(
     ellipse 134% 72% at 50% 50%,
-    hsl(0 0% 100% / 1) 0%,
-    hsl(0 0% 100% / 0.94) 26%,
-    hsl(0 0% 100% / 0.82) 44%,
-    hsl(0 0% 100% / 0.6) 60%,
-    hsl(0 0% 100% / 0.4) 74%,
-    hsl(0 0% 100% / 0.22) 86%,
-    hsl(0 0% 100% / 0.1) 94%,
+    hsl(var(--landing-warm-surface) / 1) 0%,
+    hsl(var(--landing-warm-surface) / 0.94) 26%,
+    hsl(var(--landing-warm-surface) / 0.82) 44%,
+    hsl(var(--landing-warm-surface) / 0.6) 60%,
+    hsl(var(--landing-warm-surface) / 0.4) 74%,
+    hsl(var(--landing-warm-surface) / 0.22) 86%,
+    hsl(var(--landing-warm-surface) / 0.1) 94%,
     transparent 100%
   );
   filter: blur(46px);
@@ -558,13 +566,13 @@ All colors MUST be HSL.
   border-radius: 18px;
   background: radial-gradient(
     ellipse 130% 68% at 50% 50%,
-    hsl(0 0% 100% / 1) 0%,
-    hsl(0 0% 100% / 1) 24%,
-    hsl(0 0% 100% / 0.96) 42%,
-    hsl(0 0% 100% / 0.84) 58%,
-    hsl(0 0% 100% / 0.62) 72%,
-    hsl(0 0% 100% / 0.36) 84%,
-    hsl(0 0% 100% / 0.16) 93%,
+    hsl(var(--landing-warm-surface) / 1) 0%,
+    hsl(var(--landing-warm-surface) / 1) 24%,
+    hsl(var(--landing-warm-surface) / 0.96) 42%,
+    hsl(var(--landing-warm-surface) / 0.84) 58%,
+    hsl(var(--landing-warm-surface) / 0.62) 72%,
+    hsl(var(--landing-warm-surface) / 0.36) 84%,
+    hsl(var(--landing-warm-surface) / 0.16) 93%,
     transparent 100%
   );
   filter: blur(18px);
