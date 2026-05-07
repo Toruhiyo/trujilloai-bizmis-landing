@@ -8,9 +8,9 @@ import {
 } from "react";
 import { FaCheck, FaChevronRight } from "react-icons/fa";
 import CustomerVoiceCard, {
-  ShopperShortCaption,
   SHOPPER_CAPTION_WORD_INTRA_DRIFT_OFFSET_MS,
 } from "./CustomerVoiceCard";
+import FloatingCaption from "./FloatingCaption";
 import Waveform from "./Waveform";
 import { SUPPORT_CASES, SupportCase } from "@/data/support-cases";
 
@@ -42,6 +42,13 @@ const CLERK_CAPTION_TO_FADE_DELAY_MS = 500;
 const SHOPPER_KARAOKE_START_DELAY_MS =
   CUSTOMER_TEXT_DELAY_MS + SHOPPER_CAPTION_WORD_INTRA_DRIFT_OFFSET_MS;
 const CLERK_KARAOKE_START_DELAY_MS = RESOLUTION_TEXT_DELAY_MS;
+
+/**
+ * Hard ceiling for caption-driven phase gates. If the caption never reports
+ * `consumed` (e.g. throttled tab, tracker dropping the timer), force-advance
+ * after this much time so the scene never freezes.
+ */
+const CAPTION_GATE_MAX_WAIT_MS = 10_000;
 
 type Phase =
   | "idle"
@@ -225,48 +232,70 @@ const VoiceSupportScene = () => {
     return () => clearTimeout(t);
   }, [resolutionRevealed]);
 
-  /** customer-speaking → pause once the shopper karaoke is consumed. */
+  /** customer-speaking → pause once the shopper karaoke is consumed (with hard ceiling). */
   useEffect(() => {
     if (!isVisible || phase !== "customer-speaking") return;
-    if (!shopperCaptionConsumed) return;
-    const t = window.setTimeout(
+    let captionTimer: number | null = null;
+    if (shopperCaptionConsumed) {
+      captionTimer = window.setTimeout(
+        () => setPhase("pause"),
+        SHOPPER_CAPTION_TO_PAUSE_DELAY_MS,
+      );
+    }
+    const fallbackTimer = window.setTimeout(
       () => setPhase("pause"),
-      SHOPPER_CAPTION_TO_PAUSE_DELAY_MS,
+      CAPTION_GATE_MAX_WAIT_MS,
     );
-    return () => clearTimeout(t);
+    return () => {
+      if (captionTimer !== null) clearTimeout(captionTimer);
+      clearTimeout(fallbackTimer);
+    };
   }, [isVisible, phase, shopperCaptionConsumed]);
 
-  /** hold → solved only after clerk karaoke finishes (keeps the check stage gated to the full reply). */
+  /** hold → solved once the clerk karaoke is consumed (with hard ceiling). */
   useEffect(() => {
     if (!isVisible || phase !== "hold") return;
-    if (!clerkCaptionConsumed) return;
-    const t = window.setTimeout(
+    let captionTimer: number | null = null;
+    if (clerkCaptionConsumed) {
+      captionTimer = window.setTimeout(
+        () => setPhase("solved"),
+        PHASE_DURATIONS.hold,
+      );
+    }
+    const fallbackTimer = window.setTimeout(
       () => setPhase("solved"),
-      PHASE_DURATIONS.hold,
+      CAPTION_GATE_MAX_WAIT_MS,
     );
-    return () => clearTimeout(t);
+    return () => {
+      if (captionTimer !== null) clearTimeout(captionTimer);
+      clearTimeout(fallbackTimer);
+    };
   }, [isVisible, phase, clerkCaptionConsumed]);
 
-  /** solved → fade-out once the clerk karaoke is consumed (with a min linger). */
+  /** solved → fade-out once the clerk karaoke is consumed (min linger + hard ceiling). */
   useEffect(() => {
     if (!isVisible || phase !== "solved") return;
     const minDuration = PHASE_DURATIONS.solved;
     const enteredAt = performance.now();
-    let cleanupId: number | null = null;
+    let captionTimer: number | null = null;
 
-    const tryAdvance = () => {
-      if (!clerkCaptionConsumed) return;
+    if (clerkCaptionConsumed) {
       const elapsed = performance.now() - enteredAt;
       const wait = Math.max(
         CLERK_CAPTION_TO_FADE_DELAY_MS,
         minDuration - elapsed,
       );
-      cleanupId = window.setTimeout(() => setPhase("fade-out"), wait);
-    };
+      captionTimer = window.setTimeout(() => setPhase("fade-out"), wait);
+    }
 
-    tryAdvance();
+    const fallbackTimer = window.setTimeout(
+      () => setPhase("fade-out"),
+      CAPTION_GATE_MAX_WAIT_MS,
+    );
+
     return () => {
-      if (cleanupId !== null) clearTimeout(cleanupId);
+      if (captionTimer !== null) clearTimeout(captionTimer);
+      clearTimeout(fallbackTimer);
     };
   }, [isVisible, phase, clerkCaptionConsumed]);
 
@@ -602,38 +631,25 @@ const VoiceSupportScene = () => {
               <div className="absolute -inset-24 rounded-full bg-primary/22 blur-3xl animate-pulse [animation-delay:0.5s]" />
             </div>
             {resolutionVisible ? (
-              <div
-                className="absolute right-full z-30 overflow-visible pointer-events-none max-w-[17rem] xs:max-w-[20rem] sm:max-w-[24rem] lg:max-w-[28rem] min-w-0 w-max"
-                style={{
+              <FloatingCaption
+                key={`clerk-${caseIndex}`}
+                wrapperClassName="absolute right-full z-30 pointer-events-none max-w-[17rem] xs:max-w-[20rem] sm:max-w-[24rem] lg:max-w-[28rem] min-w-0 w-max"
+                wrapperStyle={{
                   top: CLERK_CAPTION_OVERLAY_TOP,
                   transform: CLERK_CAPTION_OVERHANG_TRANSFORM,
                 }}
-              >
-                <div
-                  className="relative overflow-visible px-3 py-2"
-                  style={{
-                    opacity: resolutionRevealed ? 1 : 0,
-                    transform: resolutionRevealed
-                      ? "translateY(0)"
-                      : "translateY(0.75rem)",
-                    transition: `opacity ${TRANSITION_MS}ms ease-in-out, transform ${TRANSITION_MS}ms ease-in-out`,
-                    transitionDelay: resolutionRevealed
-                      ? "0ms"
-                      : `${RESOLUTION_TEXT_DELAY_MS}ms`,
-                  }}
-                >
-                  <ShopperShortCaption
-                    key={`clerk-${caseIndex}`}
-                    quote={currentCase.response}
-                    shown={resolutionVisible && resolutionRevealed}
-                    wordBaseDelayMs={RESOLUTION_TEXT_DELAY_MS}
-                    textClassName="text-[14px] sm:text-[15px] leading-tight"
-                    className="justify-end text-right"
-                    tone="clerk"
-                    onCaptionPlaybackConsumed={onClerkCaptionConsumed}
-                  />
-                </div>
-              </div>
+                paddingClassName="px-3 py-2"
+                shown={resolutionVisible && resolutionRevealed}
+                enterDelayMs={RESOLUTION_TEXT_DELAY_MS}
+                enterDurationMs={TRANSITION_MS}
+                translateYOffsetRem={0.75}
+                quote={currentCase.response}
+                wordBaseDelayMs={RESOLUTION_TEXT_DELAY_MS}
+                textClassName="text-[14px] sm:text-[15px] leading-tight"
+                captionClassName="justify-end text-right"
+                tone="clerk"
+                onCaptionPlaybackConsumed={onClerkCaptionConsumed}
+              />
             ) : null}
             <img
               src="/images/benefit-2-customer-support.png"

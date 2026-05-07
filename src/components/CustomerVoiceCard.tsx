@@ -5,6 +5,7 @@ import {
   useState,
   type CSSProperties,
 } from "react";
+import FloatingCaption from "./FloatingCaption";
 
 export const SHOPPER_MESSAGE_DRIFT_IN_MS = 700;
 const QUOTE_DRIFT_IN_MS = SHOPPER_MESSAGE_DRIFT_IN_MS;
@@ -341,65 +342,23 @@ const CustomerVoiceCard = ({
 
       {/* Floating short-caption — partly over the card's top-right corner, partly outside */}
       {showOverlay && quote ? (
-        <ShopperMessageBubble
-          quote={quote}
-          quoteWidth={s.quoteWidth}
-          quotePadding={s.quotePadding}
-          size={size}
+        <FloatingCaption
+          wrapperClassName={`absolute top-0 right-0 z-10 pointer-events-none ${s.quoteWidth}`}
+          wrapperStyle={{ transform: QUOTE_OVERHANG_TRANSFORM }}
+          paddingClassName={s.quotePadding}
           shown={isQuoteShown}
           enterDelayMs={quoteEnterDelayMs}
+          enterDurationMs={QUOTE_DRIFT_IN_MS}
+          quote={quote}
+          wordBaseDelayMs={
+            quoteEnterDelayMs + SHOPPER_CAPTION_WORD_INTRA_DRIFT_OFFSET_MS
+          }
+          size={size}
           onCaptionPlaybackConsumed={onCaptionPlaybackConsumed}
         />
       ) : null}
     </div>
   );
 };
-
-interface ShopperMessageBubbleProps {
-  quote: string;
-  quoteWidth: string;
-  quotePadding: string;
-  size: CustomerVoiceCardSize;
-  shown: boolean;
-  enterDelayMs: number;
-  onCaptionPlaybackConsumed?: () => void;
-}
-
-/* Outer: absolute positioning + static overhang offset. Inner: fade-in only (no drift). */
-const ShopperMessageBubble = ({
-  quote,
-  quoteWidth,
-  quotePadding,
-  size,
-  shown,
-  enterDelayMs,
-  onCaptionPlaybackConsumed,
-}: ShopperMessageBubbleProps) => (
-  <div
-    className={`absolute top-0 right-0 z-10 overflow-visible ${quoteWidth} pointer-events-none`}
-    style={{ transform: QUOTE_OVERHANG_TRANSFORM }}
-  >
-    <div
-      className="overflow-visible"
-      style={{
-        opacity: shown ? 1 : 0,
-        transition: `opacity ${QUOTE_DRIFT_IN_MS}ms ease-out`,
-        transitionDelay: shown ? `${enterDelayMs}ms` : "0ms",
-      }}
-    >
-      <div className={`relative overflow-visible ${quotePadding}`}>
-        <ShopperShortCaption
-          quote={quote}
-          shown={shown}
-          wordBaseDelayMs={
-            enterDelayMs + SHOPPER_CAPTION_WORD_INTRA_DRIFT_OFFSET_MS
-          }
-          size={size}
-          onCaptionPlaybackConsumed={onCaptionPlaybackConsumed}
-        />
-      </div>
-    </div>
-  </div>
-);
 
 export default CustomerVoiceCard;
