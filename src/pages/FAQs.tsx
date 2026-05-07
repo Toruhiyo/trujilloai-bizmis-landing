@@ -87,10 +87,13 @@ const FAQsPage = () => {
     });
   };
 
+  // Page canvas matches the landing warm-surface palette: a subtle cream
+  // gradient over background, identical in feel to Benefits / Customization
+  // sections rather than a separate page tone.
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#FDF7E2] via-white to-[#FDF7E2]/30">
+    <div className="min-h-screen bg-gradient-to-b from-background via-[#FDF7E2]/30 to-background">
       {/* Header with navigation */}
-      <div className="bg-white border-b border-border">
+      <div className="bg-background/80 backdrop-blur-md border-b border-primary/20">
         <div className="container mx-auto px-4 py-3 sm:px-6 sm:py-4">
           <div className="flex items-center gap-3 sm:gap-4">
             <a
@@ -180,7 +183,7 @@ const FAQsPage = () => {
                     <div
                       key={faq.id}
                       id={`faq-${faq.id}`}
-                      className="bg-white rounded-lg border border-border overflow-hidden shadow-sm hover:shadow-md transition-shadow"
+                      className="bg-card/85 backdrop-blur-sm rounded-lg border border-primary/15 overflow-hidden shadow-sm hover:shadow-md hover:border-primary/25 transition-all"
                     >
                       <button
                         onClick={() => toggleItem(faq.id)}
