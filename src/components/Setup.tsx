@@ -252,9 +252,12 @@ const Setup = () => {
               </p>
             </div>
 
-            {/* Integration diagram */}
-            <div className="relative mb-12">
-              <div className="flex flex-row items-center justify-between gap-3 xs:gap-4 sm:gap-10 lg:gap-24">
+            {/* Integration diagram — row width is capped at lg+ so the cards
+                and avatar don't drift apart inside the wider section
+                container; on smaller screens justify-between still spreads
+                the two columns to fill the available width. */}
+            <div className="relative mb-12 lg:max-w-5xl lg:mx-auto">
+              <div className="flex flex-row items-center justify-between gap-3 xs:gap-4 sm:gap-10 lg:gap-16">
                 {/* Shopify Data Cards - always vertical stack, side-by-side with avatar */}
                 <div className="flex-1 min-w-0 max-w-[58%] xs:max-w-[60%] sm:max-w-md">
                   <div className="rounded-xl sm:rounded-2xl border border-primary/20 p-2.5 xs:p-3 sm:p-5 lg:p-6">
