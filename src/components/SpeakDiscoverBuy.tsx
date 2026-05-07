@@ -330,8 +330,8 @@ const SpeakDiscoverBuy = () => {
   const productLabel = (productId: string, fallback: string) =>
     productId === currentCase.recommendedProductId ? "Recommended" : fallback;
 
-  const subtotal = `${recommendedProduct.price}.00`;
-  const total = subtotal;
+  const subtotal = recommendedProduct.price;
+  const total = recommendedProduct.price;
 
   const tagAnimation = (idx: number) =>
     tagsVisible
