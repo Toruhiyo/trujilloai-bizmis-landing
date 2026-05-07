@@ -417,8 +417,10 @@ const Setup = () => {
               </div>
             </div>
 
-            {/* Trust badges — lightweight reassurance, footnotes of the diagram */}
-            <div className="flex flex-wrap justify-center items-center gap-4 md:gap-6 py-4 mb-8 opacity-60">
+            {/* Trust badges — lightweight reassurance, footnotes of the diagram.
+                Bullet separators are hidden below sm so they don't appear
+                orphaned at the start of a wrapped line on phones. */}
+            <div className="flex flex-wrap justify-center items-center gap-x-4 gap-y-2 md:gap-x-6 py-4 mb-8 opacity-60">
               {[
                 { icon: FaBolt, label: "One-click setup" },
                 { icon: FaSync, label: "Always synced" },
@@ -427,7 +429,7 @@ const Setup = () => {
                 <div key={i} className="flex items-center gap-4 md:gap-6">
                   {i > 0 && (
                     <span
-                      className="w-1.5 h-1.5 rounded-full bg-muted-foreground/85 shrink-0"
+                      className="hidden sm:block w-1.5 h-1.5 rounded-full bg-muted-foreground/85 shrink-0"
                       aria-hidden
                     />
                   )}

@@ -70,7 +70,7 @@ const Hero = () => {
         <div className="flex-shrink-0 px-4 sm:px-6 pb-4 sm:pb-6">
           <div className="text-center space-y-3 sm:space-y-4">
             <div className="space-y-2 sm:space-y-3">
-              <h1 className="text-4xl xs:text-5xl sm:text-6xl font-heading font-bold text-white ">
+              <h1 className="text-4xl xs:text-5xl sm:text-6xl font-heading font-bold text-white leading-tight">
                 Boost Profits,
                 <span className="block text-white/90">
                   Selling The Human Way

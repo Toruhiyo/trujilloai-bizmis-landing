@@ -121,12 +121,12 @@ const Customization = () => {
             </p>
           </div>
 
-          {/* Customization Layout — switch to side-by-side as soon as md so the
+          {/* Customization Layout — switch to side-by-side as soon as sm so the
               avatar (left) + cards/audio (right) composition matches desktop
-              from tablet widths up. */}
-          <div className="grid md:grid-cols-2 gap-6 sm:gap-8 md:gap-8 lg:gap-16 items-center">
+              from tablet/portrait-tablet widths up. */}
+          <div className="grid sm:grid-cols-2 gap-6 sm:gap-8 md:gap-8 lg:gap-16 items-center">
             {/* Right: Features */}
-            <div className="space-y-4 sm:space-y-6 md:space-y-8 lg:space-y-16 order-2 md:order-2">
+            <div className="space-y-4 sm:space-y-6 md:space-y-8 lg:space-y-16 order-2 sm:order-2">
               <div className="group bg-primary/10 backdrop-blur-md rounded-xl xs:rounded-2xl sm:rounded-3xl p-3 xs:p-4 sm:p-6 lg:p-8 border border-primary/20 hover:border-primary/30 transform lg:-rotate-1 lg:hover:rotate-0 transition-all duration-500 shadow-xl">
                 <div className="space-y-6">
                   <div className="flex gap-2.5 xs:gap-3 sm:gap-4">
@@ -208,7 +208,7 @@ const Customization = () => {
             </div>
 
             {/* Left: Customization Image */}
-            <div className="relative order-1 md:order-1">
+            <div className="relative order-1 sm:order-1">
               {/* Auto-Rotating Vertical Clothing Carousel — only visible at lg+
                   where the avatar column has horizontal room for the side rail. */}
               {!isAvatarHovered && (
@@ -273,18 +273,19 @@ const Customization = () => {
                   </div>
 
                   {/* Default image — capped per tier so it doesn't dominate
-                      the viewport on phones, fits a 2-col layout from md, and
-                      only blooms to the full size at lg+. */}
+                      the viewport on phones, fits the 2-col layout from sm
+                      (where the side-by-side composition starts), and only
+                      blooms to the full size at lg+. */}
                   <img
                     src="/images/benefit-1-customization-1.png"
                     alt="Personalization Hub - Voice & Appearance Customization"
-                    className="relative z-30 w-full max-w-[14rem] xs:max-w-[16rem] sm:max-w-xs md:max-w-[18rem] lg:max-w-md mx-auto object-contain drop-shadow-2xl transition-opacity duration-500 group-hover:opacity-0"
+                    className="relative z-30 w-full max-w-[14rem] xs:max-w-[16rem] sm:max-w-[15rem] md:max-w-[18rem] lg:max-w-md mx-auto object-contain drop-shadow-2xl transition-opacity duration-500 group-hover:opacity-0"
                   />
                   {/* Hover image */}
                   <img
                     src="/images/benefit-1-customization-2.png"
                     alt="Personalization Hub - Voice & Appearance Customization (Active)"
-                    className="absolute inset-0 z-30 w-full max-w-[14rem] xs:max-w-[16rem] sm:max-w-xs md:max-w-[18rem] lg:max-w-md mx-auto object-contain drop-shadow-2xl opacity-0 transition-opacity duration-500 group-hover:opacity-100"
+                    className="absolute inset-0 z-30 w-full max-w-[14rem] xs:max-w-[16rem] sm:max-w-[15rem] md:max-w-[18rem] lg:max-w-md mx-auto object-contain drop-shadow-2xl opacity-0 transition-opacity duration-500 group-hover:opacity-100"
                   />
                 </div>
               </div>
