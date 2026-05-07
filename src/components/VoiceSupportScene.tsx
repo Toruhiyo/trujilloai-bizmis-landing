@@ -9,6 +9,7 @@ import {
 import { FaCheck, FaChevronRight } from "react-icons/fa";
 import CustomerVoiceCard, {
   ShopperShortCaption,
+  SHOPPER_CAPTION_WORD_INTRA_DRIFT_OFFSET_MS,
 } from "./CustomerVoiceCard";
 import Waveform from "./Waveform";
 import { SUPPORT_CASES, SupportCase } from "@/data/support-cases";
@@ -29,6 +30,18 @@ const CLERK_CAPTION_OVERLAY_TOP = "56%";
 /** Pause after each karaoke caption finishes before progressing to the next phase. */
 const SHOPPER_CAPTION_TO_PAUSE_DELAY_MS = 600;
 const CLERK_CAPTION_TO_FADE_DELAY_MS = 500;
+
+/**
+ * Delays from each caption's "shown" trigger to the first karaoke word (used to
+ * sync the audio waveform animation with the karaoke playback windows).
+ *
+ * - Shopper: `CustomerVoiceCard` adds `SHOPPER_CAPTION_WORD_INTRA_DRIFT_OFFSET_MS`
+ *   on top of the card's `quoteEnterDelayMs` (which we pass as `CUSTOMER_TEXT_DELAY_MS`).
+ * - Clerk: `ShopperShortCaption` is rendered directly with `wordBaseDelayMs={RESOLUTION_TEXT_DELAY_MS}`.
+ */
+const SHOPPER_KARAOKE_START_DELAY_MS =
+  CUSTOMER_TEXT_DELAY_MS + SHOPPER_CAPTION_WORD_INTRA_DRIFT_OFFSET_MS;
+const CLERK_KARAOKE_START_DELAY_MS = RESOLUTION_TEXT_DELAY_MS;
 
 type Phase =
   | "idle"
@@ -106,6 +119,8 @@ const VoiceSupportScene = () => {
   const [resolutionRevealed, setResolutionRevealed] = useState(false);
   const [shopperCaptionConsumed, setShopperCaptionConsumed] = useState(false);
   const [clerkCaptionConsumed, setClerkCaptionConsumed] = useState(false);
+  const [shopperKaraokeStarted, setShopperKaraokeStarted] = useState(false);
+  const [clerkKaraokeStarted, setClerkKaraokeStarted] = useState(false);
 
   const currentCase: SupportCase = SUPPORT_CASES[caseIndex];
 
@@ -141,6 +156,8 @@ const VoiceSupportScene = () => {
   useLayoutEffect(() => {
     setShopperCaptionConsumed(false);
     setClerkCaptionConsumed(false);
+    setShopperKaraokeStarted(false);
+    setClerkKaraokeStarted(false);
   }, [caseIndex]);
 
   useLayoutEffect(() => {
@@ -180,6 +197,33 @@ const VoiceSupportScene = () => {
       return () => clearTimeout(timeout);
     }
   }, [isVisible, phase, advanceToNext]);
+
+  /** Mirror the shopper karaoke playback window so the waveform can sync to it. */
+  useEffect(() => {
+    if (phase !== "customer-speaking") {
+      setShopperKaraokeStarted(false);
+      return;
+    }
+    setShopperKaraokeStarted(false);
+    const t = window.setTimeout(
+      () => setShopperKaraokeStarted(true),
+      SHOPPER_KARAOKE_START_DELAY_MS,
+    );
+    return () => clearTimeout(t);
+  }, [phase]);
+
+  /** Mirror the clerk karaoke playback window (resolutionRevealed → consumed). */
+  useEffect(() => {
+    if (!resolutionRevealed) {
+      setClerkKaraokeStarted(false);
+      return;
+    }
+    const t = window.setTimeout(
+      () => setClerkKaraokeStarted(true),
+      CLERK_KARAOKE_START_DELAY_MS,
+    );
+    return () => clearTimeout(t);
+  }, [resolutionRevealed]);
 
   /** customer-speaking → pause once the shopper karaoke is consumed. */
   useEffect(() => {
@@ -271,7 +315,8 @@ const VoiceSupportScene = () => {
     phase === "solved";
 
   const waveAnimating =
-    phase === "customer-speaking" || phase === "agent-speaking";
+    (shopperKaraokeStarted && !shopperCaptionConsumed) ||
+    (clerkKaraokeStarted && !clerkCaptionConsumed);
 
   const customerTextVisible =
     phase === "customer-speaking" ||
