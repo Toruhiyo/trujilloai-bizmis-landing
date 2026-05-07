@@ -64,7 +64,8 @@ const ADD_TO_CART_EASE = "cubic-bezier(0.34, 1.56, 0.64, 1)";
 const CONFETTI_FIRE_DELAY_MS = Math.round(ADD_TO_CART_TRANSITION_MS * 0.82);
 /** Pause after the burst before the order-confirmed receipt appears */
 const CONFETTI_TO_RECEIPT_GAP_MS = 1700;
-const ADD_TO_CART_PHASE_MS = CONFETTI_FIRE_DELAY_MS + CONFETTI_TO_RECEIPT_GAP_MS;
+const ADD_TO_CART_PHASE_MS =
+  CONFETTI_FIRE_DELAY_MS + CONFETTI_TO_RECEIPT_GAP_MS;
 const CONFETTI_Z_INDEX = 60;
 
 const STEPS = [
@@ -364,7 +365,9 @@ const SpeakDiscoverBuy = () => {
                   separators (transform ignores layout flow).
                 */}
                 <span
-                  className={`inline-flex items-center shrink-0 ${isActive ? "pr-3 sm:pr-5" : "pr-1 sm:pr-2"}`}
+                  className={`inline-flex items-center shrink-0 ${
+                    isActive && idx > 0 ? "pl-2 sm:pl-3.5" : ""
+                  } ${isActive ? "pr-3 sm:pr-5" : "pr-1 sm:pr-2"}`}
                 >
                   <span
                     className="flex items-center gap-1.5 sm:gap-2 origin-center"
@@ -410,8 +413,8 @@ const SpeakDiscoverBuy = () => {
           caption, products and order receipt take turns. Each layer fades out
           fully before the next one fades in (staggered transition delay) so
           they never visually overlap. */}
-      <div className="lg:hidden flex flex-col items-center">
-        <div className="relative flex justify-center">
+      <div className="lg:hidden flex flex-col items-center w-[calc(100%+2rem)] max-w-[100vw] -mx-4 sm:w-full sm:max-w-none sm:mx-0">
+        <div className="relative flex justify-center w-full">
           <div
             className="absolute inset-4 rounded-full bg-primary/25 blur-2xl animate-pulse"
             aria-hidden
@@ -419,7 +422,7 @@ const SpeakDiscoverBuy = () => {
           <img
             src="/images/benefit-1-driven-sales-pipeline-2.png"
             alt="Bizmis assistant"
-            className={`relative w-full max-w-[26rem] xs:max-w-[30rem] sm:max-w-[34rem] aspect-square object-contain object-top drop-shadow-xl transition-all ease-out ${
+            className={`relative w-full max-w-[min(34rem,calc(100vw-1rem))] xs:max-w-[min(36rem,calc(100vw-1rem))] sm:max-w-[min(40rem,calc(100vw-1rem))] aspect-square object-contain object-top drop-shadow-xl transition-all ease-out ${
               isVisible
                 ? "opacity-100 translate-y-0"
                 : "opacity-0 translate-y-3"
@@ -433,7 +436,7 @@ const SpeakDiscoverBuy = () => {
           />
         </div>
 
-        <div className="relative w-full -mt-[13rem] xs:-mt-[15rem] sm:-mt-[17rem] z-20 flex items-center justify-center min-h-[7.5rem] xs:min-h-[8.5rem] sm:min-h-[9rem] px-4 overflow-visible">
+        <div className="relative w-full -mt-[9.5rem] xs:-mt-[11.5rem] sm:-mt-[14rem] z-20 flex items-center justify-center min-h-[7.5rem] xs:min-h-[8.5rem] sm:min-h-[9rem] px-4 overflow-visible">
           {/* Caption layer */}
           <div
             className="absolute inset-0 flex items-center justify-center pointer-events-none px-4"
@@ -477,8 +480,9 @@ const SpeakDiscoverBuy = () => {
           </div>
 
           {/* Products layer */}
+          {/* Bottom-aligned so cards sit on torso/waist, not over the face */}
           <div
-            className="absolute inset-0 flex items-center justify-center"
+            className="absolute inset-0 flex flex-col justify-end items-center pb-3 xs:pb-4 sm:pb-5 pointer-events-none"
             style={{
               opacity: mobileProductsStageVisible ? 1 : 0,
               transition: mobileStageTransition(mobileProductsStageVisible),

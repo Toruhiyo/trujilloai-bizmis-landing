@@ -131,7 +131,7 @@ const Benefits = () => {
             </div>
 
             {/* Speak → Discover → Buy visual */}
-            <div className="relative mb-24 sm:mb-32 lg:mb-32 mt-4">
+            <div className="relative mb-28 sm:mb-36 lg:mb-32 mt-4">
               <SpeakDiscoverBuy />
             </div>
           </div>
