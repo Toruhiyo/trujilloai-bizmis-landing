@@ -23,6 +23,13 @@ const CAPTION_STAIN_MARGIN_PX_SMALL = 11;
 
 export type CustomerVoiceCardSize = "default" | "small";
 
+/**
+ * Karaoke caption color tone:
+ * - "shopper": white words on primary stain (active word: white chip + primary text).
+ * - "clerk":   primary words on white stain (active word: primary chip + white text).
+ */
+export type ShopperCaptionTone = "shopper" | "clerk";
+
 export type CustomerVoiceCardProps = {
   imageUrl: string;
   quote?: string;
@@ -52,6 +59,7 @@ export type ShopperShortCaptionProps = {
   size?: CustomerVoiceCardSize;
   textClassName?: string;
   className?: string;
+  tone?: ShopperCaptionTone;
   /** Called once when the first karaoke pass finishes (`consumed`). */
   onCaptionPlaybackConsumed?: () => void;
 };
@@ -83,8 +91,25 @@ export function ShopperShortCaption({
   size = "default",
   textClassName,
   className = "",
+  tone = "shopper",
   onCaptionPlaybackConsumed,
 }: ShopperShortCaptionProps) {
+  const stainHaloClass =
+    tone === "clerk" ? "clerk-caption-stain-halo" : "shopper-caption-stain-halo";
+  const stainCoreClass =
+    tone === "clerk" ? "clerk-caption-stain-core" : "shopper-caption-stain-core";
+  const tokenClass =
+    tone === "clerk" ? "clerk-caption-token" : "shopper-caption-token";
+  /*
+   * Active word "chip" pops visually via transform: scale (paint-only) so it
+   * never reflows neighboring words. The negative margin cancels the chip
+   * padding so its layout box is identical to an inactive word's box; the
+   * scale only affects rendering.
+   */
+  const activeWordChipClass =
+    tone === "clerk"
+      ? "relative z-[3] -m-1.5 inline-block rounded-[7px] bg-primary p-1.5 align-baseline font-extrabold uppercase tracking-[0.03em] leading-none text-white origin-center scale-[1.12] transition duration-150"
+      : "relative z-[3] -m-1.5 inline-block rounded-[7px] bg-white p-1.5 align-baseline font-extrabold uppercase tracking-[0.03em] leading-none text-primary origin-center scale-[1.12] transition duration-150";
   const words = parseCaptionWords(quote);
   const dwellMs =
     size === "small"
@@ -111,8 +136,8 @@ export function ShopperShortCaption({
   const baseSize =
     textClassName ??
     (size === "small"
-      ? "text-[10px] leading-none"
-      : "text-[11px] sm:text-[12px] leading-none");
+      ? "text-[12px] xs:text-[13px] leading-none"
+      : "text-[13px] sm:text-[14px] md:text-[15px] leading-none");
 
   useEffect(() => {
     const el = containerRef.current;
@@ -208,7 +233,7 @@ export function ShopperShortCaption({
     >
       <span
         aria-hidden
-        className="shopper-caption-stain-halo"
+        className={stainHaloClass}
         style={{
           ...stainPositionStyle,
           opacity: stainVisible ? 1 : 0,
@@ -216,7 +241,7 @@ export function ShopperShortCaption({
       />
       <span
         aria-hidden
-        className="shopper-caption-stain-core"
+        className={stainCoreClass}
         style={{
           ...stainPositionStyle,
           opacity: stainVisible ? 1 : 0,
@@ -248,8 +273,8 @@ export function ShopperShortCaption({
               }}
               className={
                 isActive
-                  ? "relative z-[3] -m-1.5 inline-block rounded-[7px] bg-white p-1.5 align-baseline text-[1.12em] font-extrabold uppercase tracking-[0.03em] leading-none text-primary transition-colors duration-150"
-                  : "shopper-caption-token relative z-[2] inline-block align-baseline leading-none transition-colors duration-150"
+                  ? activeWordChipClass
+                  : `${tokenClass} relative z-[2] inline-block align-baseline leading-none transition-colors duration-150`
               }
               style={{
                 opacity: shown ? 1 : 0,
@@ -270,13 +295,14 @@ const sizeClasses = {
     wrapper: "max-w-[14rem]",
     card: "rounded-3xl",
     quoteWidth:
-      "max-w-[11rem] xs:max-w-[12rem] sm:max-w-[13.5rem] min-w-0 w-max",
+      "max-w-[13rem] xs:max-w-[14.5rem] sm:max-w-[17rem] min-w-0 w-max",
     quotePadding: "px-2 py-1.5 sm:px-2.5 sm:py-2",
   },
   small: {
     wrapper: "max-w-[10rem]",
     card: "rounded-2xl",
-    quoteWidth: "max-w-[9rem] min-w-0 w-max",
+    quoteWidth:
+      "max-w-[11.5rem] xs:max-w-[13.5rem] sm:max-w-[15rem] min-w-0 w-max",
     quotePadding: "px-1.5 py-1",
   },
 };

@@ -447,7 +447,7 @@ const SpeakDiscoverBuy = () => {
           >
             <div
               key={`mobile-quote-${caseIndex}`}
-              className="overflow-visible w-full max-w-[16rem] xs:max-w-[18rem] sm:max-w-[20rem] flex justify-center"
+              className="overflow-visible w-full max-w-[19rem] xs:max-w-[22rem] sm:max-w-[25rem] flex justify-center"
               style={{
                 animation: customerTextVisible
                   ? `shopper-message-drift-in ${SHOPPER_MESSAGE_DRIFT_IN_MS}ms ease-out ${CUSTOMER_MESSAGE_OFFSET_MS}ms both`
@@ -470,7 +470,7 @@ const SpeakDiscoverBuy = () => {
                       CUSTOMER_MESSAGE_OFFSET_MS +
                       SHOPPER_CAPTION_WORD_INTRA_DRIFT_OFFSET_MS
                     }
-                    textClassName="text-[13px] xs:text-[14px] sm:text-[15px] leading-tight"
+                    textClassName="text-[15px] xs:text-[16px] sm:text-[17px] leading-tight"
                     className="justify-center text-center"
                     onCaptionPlaybackConsumed={onShopperCaptionPlaybackConsumed}
                   />

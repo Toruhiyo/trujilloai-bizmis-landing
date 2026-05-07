@@ -490,15 +490,16 @@ All colors MUST be HSL.
   background: radial-gradient(
     ellipse 134% 72% at 50% 50%,
     hsl(var(--primary) / 1) 0%,
-    hsl(var(--primary) / 0.92) 26%,
-    hsl(var(--primary) / 0.78) 44%,
-    hsl(var(--primary) / 0.56) 60%,
-    hsl(var(--primary) / 0.36) 74%,
-    hsl(var(--primary) / 0.2) 86%,
-    hsl(var(--primary) / 0.09) 94%,
+    hsl(var(--primary) / 0.97) 22%,
+    hsl(var(--primary) / 0.88) 38%,
+    hsl(var(--primary) / 0.72) 54%,
+    hsl(var(--primary) / 0.52) 68%,
+    hsl(var(--primary) / 0.34) 80%,
+    hsl(var(--primary) / 0.18) 90%,
+    hsl(var(--primary) / 0.07) 96%,
     transparent 100%
   );
-  filter: blur(46px);
+  filter: blur(42px);
 }
 
 .shopper-caption-stain-core {
@@ -510,12 +511,62 @@ All colors MUST be HSL.
   background: radial-gradient(
     ellipse 130% 68% at 50% 50%,
     hsl(var(--primary) / 1) 0%,
-    hsl(var(--primary) / 1) 24%,
-    hsl(var(--primary) / 0.94) 42%,
-    hsl(var(--primary) / 0.8) 58%,
-    hsl(var(--primary) / 0.58) 72%,
-    hsl(var(--primary) / 0.34) 84%,
-    hsl(var(--primary) / 0.15) 93%,
+    hsl(var(--primary) / 1) 28%,
+    hsl(var(--primary) / 0.98) 40%,
+    hsl(var(--primary) / 0.9) 52%,
+    hsl(var(--primary) / 0.74) 64%,
+    hsl(var(--primary) / 0.52) 76%,
+    hsl(var(--primary) / 0.28) 86%,
+    hsl(var(--primary) / 0.12) 94%,
+    transparent 100%
+  );
+  filter: blur(15px);
+}
+
+/* Clerk caption — same karaoke shape, swapped colors: primary text on white stain. */
+.clerk-caption-token {
+  color: hsl(var(--primary));
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  line-height: 1;
+}
+
+.clerk-caption-stain-halo {
+  position: absolute;
+  z-index: 0;
+  pointer-events: none;
+  box-sizing: border-box;
+  border-radius: 22px;
+  background: radial-gradient(
+    ellipse 134% 72% at 50% 50%,
+    hsl(0 0% 100% / 1) 0%,
+    hsl(0 0% 100% / 0.94) 26%,
+    hsl(0 0% 100% / 0.82) 44%,
+    hsl(0 0% 100% / 0.6) 60%,
+    hsl(0 0% 100% / 0.4) 74%,
+    hsl(0 0% 100% / 0.22) 86%,
+    hsl(0 0% 100% / 0.1) 94%,
+    transparent 100%
+  );
+  filter: blur(46px);
+}
+
+.clerk-caption-stain-core {
+  position: absolute;
+  z-index: 0;
+  pointer-events: none;
+  box-sizing: border-box;
+  border-radius: 18px;
+  background: radial-gradient(
+    ellipse 130% 68% at 50% 50%,
+    hsl(0 0% 100% / 1) 0%,
+    hsl(0 0% 100% / 1) 24%,
+    hsl(0 0% 100% / 0.96) 42%,
+    hsl(0 0% 100% / 0.84) 58%,
+    hsl(0 0% 100% / 0.62) 72%,
+    hsl(0 0% 100% / 0.36) 84%,
+    hsl(0 0% 100% / 0.16) 93%,
     transparent 100%
   );
   filter: blur(18px);
