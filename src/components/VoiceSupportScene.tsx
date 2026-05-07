@@ -629,8 +629,8 @@ const VoiceSupportScene = () => {
               transition: mobileStageTransition(mobileResolutionStageVisible),
             }}
           >
-            <div className="relative flex w-full max-w-[19rem] xs:max-w-[22rem] sm:max-w-[25rem] items-center justify-center overflow-visible">
-              {resolutionVisible ? (
+            <div className="relative flex w-full max-w-[min(94vw,38rem)] xs:max-w-[min(94vw,40rem)] sm:max-w-[min(94vw,42rem)] items-center justify-center overflow-visible">
+              {resolutionVisible && !solvedVisible ? (
                 <FloatingCaption
                   key={`mobile-clerk-${caseIndex}`}
                   wrapperClassName="overflow-visible w-full flex justify-center"
@@ -648,7 +648,7 @@ const VoiceSupportScene = () => {
                 />
               ) : null}
               <div
-                className="absolute left-1/2 -translate-x-1/2 -bottom-20 xs:-bottom-[5.5rem] sm:-bottom-24 flex items-center justify-center pointer-events-none"
+                className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 flex items-center justify-center pointer-events-none"
                 style={{
                   opacity: solvedVisible ? 1 : 0,
                   transition: `opacity ${TRANSITION_MS}ms ease-in-out`,
@@ -714,18 +714,6 @@ const VoiceSupportScene = () => {
           >
             {actionBadgeNode}
           </div>
-
-          {/* Solved checkmark — below content, no layout displacement */}
-          <div
-            className="absolute left-0 right-0 bottom-0 flex justify-center pointer-events-none"
-            style={{
-              opacity: solvedVisible ? 1 : 0,
-              transition: `opacity ${TRANSITION_MS}ms ease-in-out`,
-              transform: "translateY(100%)",
-            }}
-          >
-            {solvedBurstNode}
-          </div>
         </div>
 
         {/* Right cell — clerk avatar with dual primary halo (parity with Benefit 1) */}
@@ -743,7 +731,7 @@ const VoiceSupportScene = () => {
               <div className="absolute -inset-10 rounded-full bg-primary/34 blur-2xl animate-pulse" />
               <div className="absolute -inset-24 rounded-full bg-primary/22 blur-3xl animate-pulse [animation-delay:0.5s]" />
             </div>
-            {resolutionVisible ? (
+            {resolutionVisible && !solvedVisible ? (
               <FloatingCaption
                 key={`clerk-${caseIndex}`}
                 wrapperClassName="absolute right-full z-30 pointer-events-none max-w-[17rem] xs:max-w-[20rem] sm:max-w-[24rem] lg:max-w-[28rem] min-w-0 w-max"
@@ -764,6 +752,17 @@ const VoiceSupportScene = () => {
                 onCaptionPlaybackConsumed={onClerkCaptionConsumed}
               />
             ) : null}
+            <div
+              className="absolute right-full z-30 pointer-events-none flex w-max max-w-[min(92vw,38rem)] lg:max-w-[42rem] items-center justify-end"
+              style={{
+                top: CLERK_CAPTION_OVERLAY_TOP,
+                transform: CLERK_CAPTION_OVERHANG_TRANSFORM,
+                opacity: solvedVisible ? 1 : 0,
+                transition: `opacity ${TRANSITION_MS}ms ease-in-out`,
+              }}
+            >
+              <div className="relative">{solvedBurstNode}</div>
+            </div>
             <img
               src="/images/benefit-2-customer-support.png"
               alt="Bizmis support assistant"
