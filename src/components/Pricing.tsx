@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Check, ArrowRight, Clock, Badge as BadgeIcon } from "lucide-react";
+import { Check, ArrowRight, Clock, Badge as BadgeIcon, ChevronDown } from "lucide-react";
 import { FaTag } from "react-icons/fa";
 import { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
@@ -109,11 +109,9 @@ const ENTERPRISE_FEATURES = [
 ];
 
 const formatOverageRate = (rate: number): string => {
-  const str = rate.toString();
-  const decimals = str.includes(".") ? str.split(".")[1].length : 0;
   return rate.toLocaleString("en-US", {
-    minimumFractionDigits: decimals,
-    maximumFractionDigits: decimals,
+    minimumFractionDigits: 3,
+    maximumFractionDigits: 3,
   });
 };
 
@@ -142,6 +140,48 @@ const PricingFootnoteStar = ({ className }: { className?: string }) => (
     *
   </span>
 );
+
+const CreditBreakdown = ({
+  voiceMin,
+  textMsgs,
+  sessionEstimate,
+}: {
+  voiceMin: string;
+  textMsgs: string;
+  sessionEstimate: string;
+}) => {
+  const [open, setOpen] = useState(false);
+  return (
+    <div className="mt-0.5">
+      <button
+        type="button"
+        onClick={(e) => {
+          e.stopPropagation();
+          setOpen((v) => !v);
+        }}
+        className="inline-flex items-center gap-1 text-[0.7rem] leading-snug text-foreground/50 transition-colors hover:text-foreground/70 group-hover:text-primary-foreground/70 group-hover:hover:text-primary-foreground/90"
+      >
+        <span>What does this mean?</span>
+        <ChevronDown
+          className={cn(
+            "h-3 w-3 transition-transform duration-200",
+            open && "rotate-180",
+          )}
+        />
+      </button>
+      {open && (
+        <div className="mt-1 space-y-0.5 text-[0.65rem] leading-snug text-foreground/50 transition-colors group-hover:text-primary-foreground/65">
+          <p>1 voice min = 10 credits, 1 text msg = 1 credit</p>
+          <p>~{voiceMin} voice min or ~{textMsgs} text msgs</p>
+          <p>
+            ~{sessionEstimate} shopper sessions/mo{" "}
+            <PricingFootnoteStar className="text-[0.55rem] transition-colors group-hover:text-primary-foreground" />
+          </p>
+        </div>
+      )}
+    </div>
+  );
+};
 
 /** Dark noisy backdrop for the enterprise card — always visible. */
 const EnterpriseCardBackdrop = () => (
@@ -553,13 +593,11 @@ const Pricing = () => {
                           credits included
                         </span>
                       </div>
-                      <p className="text-[0.7rem] leading-snug text-foreground/50 transition-colors group-hover:text-primary-foreground/70">
-                        ~{(plan.includedCredits / CREDITS_PER_VOICE_MINUTE).toLocaleString()} voice min or ~{plan.includedCredits.toLocaleString()} text msgs
-                      </p>
-                      <p className="text-[0.7rem] leading-snug text-foreground/50 transition-colors group-hover:text-primary-foreground/70">
-                        ~{plan.sessionEstimate} shopper sessions/mo{" "}
-                        <PricingFootnoteStar className="text-[0.6rem] transition-colors group-hover:text-primary-foreground" />
-                      </p>
+                      <CreditBreakdown
+                        voiceMin={(plan.includedCredits / CREDITS_PER_VOICE_MINUTE).toLocaleString()}
+                        textMsgs={plan.includedCredits.toLocaleString()}
+                        sessionEstimate={plan.sessionEstimate}
+                      />
                       <div className="flex flex-wrap items-baseline gap-x-2 gap-y-0.5 pt-0.5">
                         <span className="inline-flex items-baseline gap-0.5">
                           <span className="font-heading text-base font-bold tabular-nums text-foreground/80 transition-colors group-hover:text-primary-foreground sm:text-lg">
@@ -710,10 +748,10 @@ const Pricing = () => {
           <div className="mb-8 flex flex-wrap items-center justify-center gap-x-4 gap-y-2 text-sm text-foreground/75 sm:mb-10 sm:gap-x-6 sm:gap-y-3 lg:gap-x-8">
             <div
               className="flex items-center gap-2"
-              aria-label="1 voice min = 10 credits, 1 text msg = 1 credit. Session estimates vary by voice/text mix and session length."
+              aria-label="Session estimates vary by voice/text mix and session length. You choose your maximum spend limit."
             >
               <PricingFootnoteStar />
-              <span>1 voice min = 10 credits / 1 text msg = 1 credit. You choose your spend limit.</span>
+              <span>Session estimates vary by mix. You choose your spend limit.</span>
             </div>
             <div className="flex items-center gap-2">
               <Check className="h-4 w-4 text-primary" />
