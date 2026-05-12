@@ -705,15 +705,15 @@ const Pricing = () => {
           </div>
         </div>
 
-        {/* Credit conversion reference */}
+        {/* Credit conversion reference — matches slide deck pills (e.g. ProductDiscoverySlide) */}
         <div className="mx-auto mt-6 flex max-w-7xl flex-wrap items-center justify-center gap-3 sm:mt-8 sm:gap-4">
-          <span className="inline-flex items-center gap-2.5 rounded-xl bg-primary/[0.07] px-4 py-2 text-sm font-medium text-foreground/70 sm:px-5 sm:py-2.5 sm:text-base">
-            <Phone className="h-4 w-4 text-primary sm:h-[1.125rem] sm:w-[1.125rem]" />
-            1 voice minute <span className="font-semibold text-foreground/85">=</span> 10 credits
+          <span className="inline-flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-full border border-primary/25 bg-primary/15 px-4 py-2 text-sm font-heading font-semibold text-primary-dark backdrop-blur-md sm:text-base">
+            <Phone className="h-4 w-4 shrink-0 text-primary-dark sm:h-[1.125rem] sm:w-[1.125rem]" />
+            1 voice minute = 10 credits
           </span>
-          <span className="inline-flex items-center gap-2.5 rounded-xl bg-primary/[0.07] px-4 py-2 text-sm font-medium text-foreground/70 sm:px-5 sm:py-2.5 sm:text-base">
-            <MessageSquareText className="h-4 w-4 text-primary sm:h-[1.125rem] sm:w-[1.125rem]" />
-            1 text message <span className="font-semibold text-foreground/85">=</span> 1 credit
+          <span className="inline-flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-full border border-primary/25 bg-primary/15 px-4 py-2 text-sm font-heading font-semibold text-primary-dark backdrop-blur-md sm:text-base">
+            <MessageSquareText className="h-4 w-4 shrink-0 text-primary-dark sm:h-[1.125rem] sm:w-[1.125rem]" />
+            1 text message = 1 credit
           </span>
         </div>
         <p className="mt-2.5 text-center text-xs italic text-foreground/40">
