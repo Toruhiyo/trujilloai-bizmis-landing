@@ -176,12 +176,14 @@ const CreditsLine = ({ plan }: { plan: Plan }) => {
         )}
       >
         <div className="overflow-hidden">
-          <div className="space-y-0.5 pt-1 text-[0.65rem] leading-snug text-foreground/50 transition-colors group-hover:text-primary-foreground/65">
-            <p>1 voice min = 10 credits</p>
-            <p>1 text msg = 1 credit</p>
-            <p className="pt-0.5">~{voiceMin} voice min or ~{textMsgs} text msgs</p>
-            <p>
-              ~{plan.sessionEstimate} sessions/mo{" "}
+          <div className="mt-1.5 rounded-lg bg-foreground/[0.03] px-2.5 py-2 transition-colors group-hover:bg-primary-foreground/[0.08]">
+            <div className="flex items-baseline justify-between text-xs text-foreground/60 transition-colors group-hover:text-primary-foreground/75">
+              <span>~{voiceMin} voice min</span>
+              <span className="text-foreground/30 transition-colors group-hover:text-primary-foreground/40">or</span>
+              <span>~{textMsgs} text msgs</span>
+            </div>
+            <p className="mt-1 text-center text-[0.65rem] text-foreground/45 transition-colors group-hover:text-primary-foreground/60">
+              ~{plan.sessionEstimate} shopper sessions/mo{" "}
               <PricingFootnoteStar className="text-[0.55rem] transition-colors group-hover:text-primary-foreground" />
             </p>
           </div>
@@ -708,6 +710,13 @@ const Pricing = () => {
               </div>
             </div>
           </div>
+        </div>
+
+        {/* Credit conversion reference */}
+        <div className="mx-auto mt-6 flex max-w-7xl flex-wrap items-center justify-center gap-x-6 gap-y-1.5 text-sm text-foreground/60 sm:mt-8">
+          <span className="font-medium">1 voice min = 10 credits</span>
+          <span className="hidden text-foreground/25 sm:inline" aria-hidden>&middot;</span>
+          <span className="font-medium">1 text message = 1 credit</span>
         </div>
 
         {/* Upgrade Credit Note - Only when Monthly + Early Access ON */}
