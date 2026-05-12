@@ -759,12 +759,12 @@ const Pricing = () => {
 
         {/* Credit conversion reference — matches slide deck pills (e.g. ProductDiscoverySlide) */}
         <div className="mx-auto mt-6 flex max-w-7xl flex-wrap items-center justify-center gap-3 sm:mt-8 sm:gap-4">
-          <span className="inline-flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-full border border-primary/25 bg-primary/15 px-4 py-2 text-sm font-heading font-semibold text-primary-dark backdrop-blur-md sm:text-base">
-            <Phone className="h-4 w-4 shrink-0 text-primary-dark sm:h-[1.125rem] sm:w-[1.125rem]" />
+          <span className="inline-flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-full border border-primary/25 bg-primary/15 px-3 py-1.5 text-xs font-heading font-medium text-primary-dark backdrop-blur-md sm:text-sm">
+            <Phone className="h-3.5 w-3.5 shrink-0 text-primary-dark sm:h-4 sm:w-4" />
             1 voice minute = 10 credits
           </span>
-          <span className="inline-flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-full border border-primary/25 bg-primary/15 px-4 py-2 text-sm font-heading font-semibold text-primary-dark backdrop-blur-md sm:text-base">
-            <MessageSquareText className="h-4 w-4 shrink-0 text-primary-dark sm:h-[1.125rem] sm:w-[1.125rem]" />
+          <span className="inline-flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-full border border-primary/25 bg-primary/15 px-3 py-1.5 text-xs font-heading font-medium text-primary-dark backdrop-blur-md sm:text-sm">
+            <MessageSquareText className="h-3.5 w-3.5 shrink-0 text-primary-dark sm:h-4 sm:w-4" />
             1 text message = 1 credit
           </span>
         </div>
