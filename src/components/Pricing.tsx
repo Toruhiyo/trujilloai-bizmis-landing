@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Check, ArrowRight, Clock, Badge as BadgeIcon, ChevronDown, Phone, MessageSquareText } from "lucide-react";
+import { Check, ArrowRight, Clock, Badge as BadgeIcon, Phone, MessageSquareText } from "lucide-react";
 import { FaTag } from "react-icons/fa";
 import { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
@@ -12,7 +12,7 @@ import { cn } from "@/lib/utils";
 import { bizmisConfettiColors } from "@/lib/colors";
 import { openBizmisShopifyAppListing } from "@/lib/bizmisUrls";
 
-const CREDITS_PER_VOICE_MINUTE = 10;
+
 
 interface PricingTier {
   monthlyStandard: number;
@@ -141,67 +141,22 @@ const PricingFootnoteStar = ({ className }: { className?: string }) => (
   </span>
 );
 
-const CreditsLine = ({ plan }: { plan: Plan }) => {
-  const [open, setOpen] = useState(false);
-  const voiceMin = (plan.includedCredits / CREDITS_PER_VOICE_MINUTE).toLocaleString();
-  const textMsgs = plan.includedCredits.toLocaleString();
-
-  return (
-    <div>
-      <button
-        type="button"
-        onClick={(e) => {
-          e.stopPropagation();
-          setOpen((v) => !v);
-        }}
-        className="flex w-full items-baseline gap-x-1.5 gap-y-0.5"
-      >
-        <span className="font-heading text-base font-bold tabular-nums text-foreground/80 transition-colors group-hover:text-primary-foreground sm:text-lg">
-          {plan.includedCredits.toLocaleString()}
-        </span>
-        <span className="text-xs font-medium text-foreground/65 transition-colors group-hover:text-primary-foreground/85">
-          credits included
-        </span>
-        <ChevronDown
-          className={cn(
-            "ml-auto h-3.5 w-3.5 shrink-0 text-foreground/40 transition-all duration-200 group-hover:text-primary-foreground/60",
-            open && "rotate-180",
-          )}
-        />
-      </button>
-      <div
-        className={cn(
-          "grid transition-[grid-template-rows] duration-200 ease-out",
-          open ? "grid-rows-[1fr]" : "grid-rows-[0fr]",
-        )}
-      >
-        <div className="overflow-hidden">
-          <div className="mt-2 rounded-lg border border-foreground/[0.06] bg-foreground/[0.02] px-3 py-2.5 transition-colors group-hover:border-primary-foreground/10 group-hover:bg-primary-foreground/[0.06]">
-            <table className="w-full text-[0.8rem] leading-relaxed text-foreground/65 transition-colors group-hover:text-primary-foreground/80">
-              <tbody>
-                <tr>
-                  <td className="pr-1 text-right tabular-nums">~{voiceMin}</td>
-                  <td>voice minutes</td>
-                </tr>
-                <tr>
-                  <td className="pr-1 text-right tabular-nums">~{textMsgs}</td>
-                  <td>text messages</td>
-                </tr>
-                <tr>
-                  <td className="pr-1 text-right tabular-nums">~{plan.sessionEstimate}</td>
-                  <td>
-                    shopper sessions/mo{" "}
-                    <PricingFootnoteStar className="text-[0.6rem] transition-colors group-hover:text-primary-foreground" />
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
+const CreditsLine = ({ plan }: { plan: Plan }) => (
+  <div className="space-y-1">
+    <div className="flex items-baseline gap-x-1.5">
+      <span className="font-heading text-base font-bold tabular-nums text-foreground/80 transition-colors group-hover:text-primary-foreground sm:text-lg">
+        {plan.includedCredits.toLocaleString()}
+      </span>
+      <span className="text-xs font-medium text-foreground/65 transition-colors group-hover:text-primary-foreground/85">
+        credits included
+      </span>
     </div>
-  );
-};
+    <p className="text-xs text-foreground/55 transition-colors group-hover:text-primary-foreground/70">
+      ~{plan.sessionEstimate} shopper sessions/mo{" "}
+      <PricingFootnoteStar className="text-[0.6rem] transition-colors group-hover:text-primary-foreground" />
+    </p>
+  </div>
+);
 
 /** Dark noisy backdrop for the enterprise card — always visible. */
 const EnterpriseCardBackdrop = () => (
