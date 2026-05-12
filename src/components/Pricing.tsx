@@ -645,7 +645,7 @@ const Pricing = () => {
                                 className="inline-flex shrink-0 rounded-full text-primary/60 transition-colors hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring group-hover:text-primary-foreground/50 group-hover:hover:text-primary-foreground/80"
                                 aria-label={CONCURRENCY_TOOLTIP}
                               >
-                                <Info className="h-3.5 w-3.5" />
+                                <Info className="h-3.5 w-3.5" strokeWidth={2.5} />
                               </button>
                             </TooltipTrigger>
                             <TooltipContent
