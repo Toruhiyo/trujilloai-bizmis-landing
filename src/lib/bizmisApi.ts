@@ -8,7 +8,6 @@ const getBaseUrl = (): string =>
   );
 
 export type CouponKind = "early_access" | "custom";
-export type CouponStatus = "unclaimed" | "claimed";
 
 export interface CouponSummary {
   label: string;
@@ -26,13 +25,10 @@ export interface CouponPlanPrice {
 export interface CouponDTO {
   code: string;
   kind: CouponKind;
-  status: CouponStatus;
   summary: CouponSummary;
   prices: CouponPlanPrice[];
   starts_at: string | null;
   expires_at: string | null;
-  claimed_by_store_domain: string | null;
-  claimed_at: string | null;
 }
 
 export type CouponErrorCode =
@@ -41,6 +37,7 @@ export type CouponErrorCode =
   | "COUPON_NOT_YET_ACTIVE"
   | "COUPON_INVALID_FORMAT"
   | "COUPON_ALREADY_CLAIMED_BY_ANOTHER_STORE"
+  | "COUPON_CAMPAIGN_EXHAUSTED"
   | "COUPON_INVALID_ACCESS_TOKEN"
   | "NETWORK_ERROR";
 
@@ -75,6 +72,7 @@ const parseCouponErrorCode = (raw: string | undefined): CouponErrorCode => {
     case "COUPON_NOT_YET_ACTIVE":
     case "COUPON_INVALID_FORMAT":
     case "COUPON_ALREADY_CLAIMED_BY_ANOTHER_STORE":
+    case "COUPON_CAMPAIGN_EXHAUSTED":
     case "COUPON_INVALID_ACCESS_TOKEN":
       return raw;
     default:
