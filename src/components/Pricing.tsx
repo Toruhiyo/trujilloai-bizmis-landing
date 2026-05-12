@@ -553,17 +553,11 @@ const Pricing = () => {
                         strokeWidth={0}
                         aria-hidden
                       />
-                      <div className="relative z-10 flex flex-col items-center gap-0.5">
-                        {!isYearly && showEarlyAccess && (
-                          <Clock
-                            className="h-2.5 w-2.5 shrink-0 text-primary-foreground/90"
-                            aria-hidden
-                          />
-                        )}
+                      <div className="relative z-10 flex flex-col items-center gap-0">
                         <span className="font-heading text-lg font-extrabold leading-none text-primary-foreground tabular-nums sm:text-xl">
                           {discountPercent}%
                         </span>
-                        <span className="font-heading text-[0.6rem] font-bold uppercase leading-none tracking-wide text-primary-foreground/90 sm:text-[0.65rem]">
+                        <span className="-mt-0.5 font-heading text-[0.6rem] font-bold uppercase leading-none tracking-wide text-primary-foreground/90 sm:-mt-1 sm:text-[0.65rem]">
                           off
                         </span>
                       </div>
