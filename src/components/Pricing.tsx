@@ -1,5 +1,10 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { Check, ArrowRight, Clock, Badge as BadgeIcon, ChevronDown, Phone, MessageSquareText } from "lucide-react";
 import { FaTag } from "react-icons/fa";
 import { useState, useRef } from "react";
@@ -13,6 +18,9 @@ import { bizmisConfettiColors } from "@/lib/colors";
 import { openBizmisShopifyAppListing } from "@/lib/bizmisUrls";
 
 const CREDITS_PER_VOICE_MINUTE = 10;
+
+const CONCURRENCY_TOOLTIP =
+  "Voice-only limit. Text concurrency is effectively unlimited.";
 
 interface PricingTier {
   monthlyStandard: number;
@@ -626,8 +634,32 @@ const Pricing = () => {
                         <span className="font-heading text-base font-bold tabular-nums text-foreground/80 transition-colors group-hover:text-primary-foreground sm:text-lg">
                           {plan.maxConcurrency}
                         </span>
-                        <span className="text-xs font-medium text-foreground/65 transition-colors group-hover:text-primary-foreground/85">
-                          concurrent voice conversations
+                        <span className="inline-flex items-center gap-1">
+                          <span className="text-xs font-medium text-foreground/65 transition-colors group-hover:text-primary-foreground/85">
+                            concurrent voice conversations
+                          </span>
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <button
+                                type="button"
+                                className="-m-0.5 inline-flex shrink-0 rounded-full p-0.5 text-foreground/45 transition-colors hover:text-foreground/70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 group-hover:text-primary-foreground/55"
+                                aria-label={CONCURRENCY_TOOLTIP}
+                              >
+                                <span
+                                  className="select-none text-[0.65rem] leading-none sm:text-[0.7rem]"
+                                  aria-hidden
+                                >
+                                  ⓘ
+                                </span>
+                              </button>
+                            </TooltipTrigger>
+                            <TooltipContent
+                              side="top"
+                              className="max-w-[min(18rem,calc(100vw-2rem))]"
+                            >
+                              {CONCURRENCY_TOOLTIP}
+                            </TooltipContent>
+                          </Tooltip>
                         </span>
                       </div>
                     </div>
