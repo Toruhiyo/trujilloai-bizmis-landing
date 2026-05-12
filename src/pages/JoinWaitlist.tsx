@@ -25,7 +25,7 @@ const EMAILJS_WAITLIST_TEMPLATE_ID = import.meta.env.VITE_EMAILJS_WAITLIST_TEMPL
 const EMAILJS_PUBLIC_KEY = import.meta.env.VITE_EMAILJS_PUBLIC_KEY;
 
 const LAUNCH_DATE = "March 2026";
-const EARLY_BIRD_SPOTS = 50;
+const EARLY_ACCESS_SPOTS = 50;
 
 type FormStatus = "idle" | "sending" | "success" | "error";
 
@@ -177,7 +177,7 @@ const JoinWaitlist = () => {
           </h2>
 
           <p className="text-xl text-muted-foreground mb-8 leading-relaxed">
-            Welcome to the Bizmis Early Bird program.<br />
+            Welcome to the Bizmis Early Access program.<br />
             We'll notify you as soon as we launch in <span className="font-semibold text-foreground">{LAUNCH_DATE}</span>.
           </p>
 
@@ -187,7 +187,7 @@ const JoinWaitlist = () => {
               Check your inbox!
             </p>
             <p className="text-sm text-muted-foreground mt-2">
-              We've sent a confirmation email with more details about your early bird benefits.
+              We've sent a confirmation email with more details about your early access benefits.
             </p>
           </div>
 
@@ -241,13 +241,13 @@ const JoinWaitlist = () => {
               <div className="lg:sticky lg:top-8">
                 <div className="inline-flex items-center gap-2 bg-gradient-warm text-white px-4 py-2 rounded-full text-sm font-semibold mb-6 shadow-lg">
                   <Crown className="w-4 h-4" />
-                  Early Bird Program
+                  Early Access Program
                 </div>
 
                 <h2 className="text-4xl lg:text-5xl font-heading font-bold text-foreground mb-6 leading-tight">
                   Be Among the First{" "}
                   <span className="text-primary">
-                    {EARLY_BIRD_SPOTS} Merchants
+                    {EARLY_ACCESS_SPOTS} Merchants
                   </span>
                 </h2>
 
@@ -277,7 +277,7 @@ const JoinWaitlist = () => {
                 <div className="space-y-5">
                   <h3 className="text-lg font-heading font-semibold text-foreground flex items-center gap-2">
                     <Sparkles className="w-5 h-5 text-primary" />
-                    Early Bird Benefits
+                    Early Access Benefits
                   </h3>
 
                   <div className="space-y-4">

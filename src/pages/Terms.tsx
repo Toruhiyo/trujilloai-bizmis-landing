@@ -74,9 +74,10 @@ const Terms = () => {
                 Shopify's billing system.
               </li>
               <li>
-                <strong>"Minutes"</strong> means the unit of voice usage
-                consumed by Store Customer interactions, tracked per billing
-                period.
+                <strong>"Credits"</strong> means the unit of usage consumed by
+                Store Customer interactions (voice or text), tracked per
+                billing period. One voice minute equals 10 credits; one text
+                message equals 1 credit.
               </li>
             </ul>
           </Section>
@@ -407,7 +408,7 @@ const Terms = () => {
           <Section title="9. Subscription Plans, Billing & Free Preview (Merchants)">
             <p>
               The Service is offered to Merchants on tiered Subscription plans.
-              Current plan names, pricing, included Minutes, and overage rates
+              Current plan names, pricing, included Credits, and overage rates
               are published on our{" "}
               <a
                 href="/pricing"
@@ -430,26 +431,26 @@ const Terms = () => {
                 every 30 days. Yearly plans bill upfront for the full year.
               </li>
               <li>
-                <strong>Included Minutes.</strong> Each plan includes a fixed
-                pool of Minutes that resets at the start of every billing
-                period. Unused Minutes do not roll over.
+                <strong>Included Credits.</strong> Each plan includes a fixed
+                pool of Credits that resets at the start of every billing
+                period. Unused Credits do not roll over.
               </li>
               <li>
-                <strong>Overage (monthly plans only).</strong> Voice usage
-                beyond the included pool is billed as overage at the per-minute
-                rate published for your plan, capped at the overage limit you
-                set inside the Bizmis admin (and at Shopify's per-app capped
-                amount). When the cap is reached, voice usage is paused until
-                the next billing period or until you raise the cap. Yearly
-                plans do not include overage; voice usage is paused once
-                included Minutes are exhausted.
+                <strong>Overage (monthly plans only).</strong> Usage beyond the
+                included pool is billed as overage at the per-credit rate
+                published for your plan, capped at the overage limit you set
+                inside the Bizmis admin (and at Shopify's per-app capped
+                amount). When the cap is reached, usage is paused until the
+                next billing period or until you raise the cap. Yearly plans
+                do not include overage; usage is paused once included Credits
+                are exhausted.
               </li>
               <li>
                 <strong>Free preview.</strong> New stores receive a limited
-                pool of preview Minutes so the Merchant can evaluate the
-                Service before subscribing. While preview Minutes remain, the
-                voice widget is fully functional on the Merchant's storefront.
-                Once preview Minutes are exhausted (or the trial window ends),
+                pool of preview Credits so the Merchant can evaluate the
+                Service before subscribing. While preview Credits remain, the
+                widget is fully functional on the Merchant's storefront.
+                Once preview Credits are exhausted (or the trial window ends),
                 the widget is hidden from Store Customers and a paid
                 Subscription is required to make it visible again. The
                 embedded Bizmis admin remains accessible to the Merchant
@@ -493,7 +494,7 @@ const Terms = () => {
               <li>
                 <strong>Monthly plans — no refunds.</strong> Charges already
                 billed for the current monthly period are non-refundable, and
-                unused Minutes in the current period are forfeited. You will
+                unused Credits in the current period are forfeited. You will
                 not be billed again going forward.
               </li>
               <li>

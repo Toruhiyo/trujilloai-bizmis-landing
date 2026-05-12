@@ -102,28 +102,28 @@ export const faqCategories: FAQCategory[] = [
         id: "how-much-cost",
         question: "How much does Bizmis cost?",
         answer:
-          "Three plans plus Enterprise. **Starter** ($149/mo) for solo or small stores. **Plus** ($499/mo) for growing stores — most popular. **Pro** ($1,499/mo) for high-volume stores. **Enterprise** for custom volume and SLAs. All plans include voice minutes; extra minutes beyond the included pool are billed per minute. Yearly billing saves ~20%.",
+          "Three plans plus Enterprise. **Starter** ($149/mo, 2,500 credits) for solo or small stores. **Plus** ($499/mo, 9,000 credits) for growing stores -- most popular. **Pro** ($1,499/mo, 30,000 credits) for high-volume stores. **Enterprise** for custom volume and SLAs. Credits cover both voice and text interactions (1 voice min = 10 credits, 1 text msg = 1 credit). Yearly billing saves ~20%.",
         category: "pricing-billing",
       },
       {
-        id: "per-minute-model",
-        question: "How does the per-minute model work?",
+        id: "credit-model",
+        question: "How does the credit model work?",
         answer:
-          "Each plan includes a fixed pool of conversation minutes (Starter 250 / Plus 900 / Pro 3,000) that resets at the start of each billing period. Voice usage beyond that is billed at your plan's overage rate ($0.60 / $0.55 / $0.50 per minute). You set a hard spend cap inside the Bizmis admin — once hit, voice usage pauses until the next period or until you raise the cap. Unused minutes don't roll over.",
+          "Each plan includes a credit pool (Starter 2,500 / Plus 9,000 / Pro 30,000) that resets every billing period. Credits cover both voice and text: 1 voice minute = 10 credits, 1 text message = 1 credit. Usage beyond the pool is billed at your plan's overage rate ($0.06 / $0.055 / $0.05 per credit). You set a hard spend cap inside the Bizmis admin -- once hit, usage pauses until the next period or until you raise the cap. Unused credits don't roll over.",
         category: "pricing-billing",
       },
       {
         id: "yearly-billing",
         question: "How does yearly billing work?",
         answer:
-          "Yearly billing is paid upfront and gives you ~20% off the monthly price. Included minutes still reset every month. Yearly plans don't include overage — once your monthly minute pool is exhausted, voice usage pauses until next month.",
+          "Yearly billing is paid upfront and gives you ~20% off the monthly price. Included credits still reset every month. Yearly plans don't include overage -- once your monthly credit pool is exhausted, usage pauses until next month.",
         category: "pricing-billing",
       },
       {
-        id: "early-bird-offer",
-        question: "What is the Early Bird offer?",
+        id: "early-access-offer",
+        question: "What is the Early Access offer?",
         answer:
-          "The first 50 merchants get **50% off the first 3 months** on monthly plans, or **~33% off** yearly plans (Starter $99, Plus $333, Pro $999 monthly equivalent). Apply with code EARLY_BIRD_50. After the first 3 months on monthly, standard rates resume. Extra minutes are billed at standard rates throughout.",
+          "The first 50 merchants get **50% off the first 3 months** on monthly plans, or **~33% off** yearly plans (Starter $99, Plus $333, Pro $999 monthly equivalent). Apply with code EARLY_BIRD_50. After the first 3 months on monthly, standard rates resume. Overage credits are billed at standard rates throughout.",
         category: "pricing-billing",
       },
       {
@@ -158,7 +158,7 @@ export const faqCategories: FAQCategory[] = [
         id: "refund-policy",
         question: "What's your refund policy?",
         answer:
-          "**Yearly plans:** 30-day money-back guarantee on the initial yearly charge — cancel within 30 days of your first yearly payment and we'll refund the commitment fee, no questions asked. The guarantee doesn't cover renewal years or overage usage.\n**Monthly plans:** charges already billed for the current period are non-refundable, but you won't be billed again. Unused minutes don't carry over.",
+          "**Yearly plans:** 30-day money-back guarantee on the initial yearly charge -- cancel within 30 days of your first yearly payment and we'll refund the commitment fee, no questions asked. The guarantee doesn't cover renewal years or overage usage.\n**Monthly plans:** charges already billed for the current period are non-refundable, but you won't be billed again. Unused credits don't carry over.",
         category: "pricing-billing",
       },
     ],

@@ -23,7 +23,7 @@
 import type { LeadEarlyAccessData } from "@/data/leads/_schema";
 import {
   EARLY_ACCESS_EMAIL_COPY,
-  EARLY_ACCESS_TRIAL_USAGE_MINUTES_LIMIT,
+  EARLY_ACCESS_TRIAL_USAGE_CREDITS_LIMIT,
   buildCtaMixedUrgencyPlainText,
   buildEarlyAccessPreheader,
   buildEarlyAccessSalutationPlainText,
@@ -405,7 +405,7 @@ ${escapeHtml(c.ctaMixedUrgencyLead)}${escapeHtml(c.ctaMixedUrgencyBizmisWord)}${
 
 function buildCtaBoxHtml(installUrlWithCode: string, earlyAccessCode: string): string {
   const c = EARLY_ACCESS_EMAIL_COPY;
-  const footnote = `* Up to ${EARLY_ACCESS_TRIAL_USAGE_MINUTES_LIMIT} minutes of included usage.`;
+  const footnote = `* Up to ${EARLY_ACCESS_TRIAL_USAGE_CREDITS_LIMIT.toLocaleString()} credits of included usage (~${EARLY_ACCESS_TRIAL_USAGE_CREDITS_LIMIT / 10} voice min or ~${EARLY_ACCESS_TRIAL_USAGE_CREDITS_LIMIT.toLocaleString()} text msgs).`;
   return `<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="border:1px dashed ${BIZMIS_BORDER_HEX};border-radius:14px;">
 <tr>
 <td style="padding:22px 28px 14px 28px;" align="center">
@@ -503,7 +503,7 @@ function renderPlainText(lead: LeadEarlyAccessData, utmCampaign: string): string
     "",
     `${c.couponLabel} ${lead.couponCode}`,
     `${c.ctaMixedButtonLabel}: ${installUrlWithCode}`,
-    `* Up to ${EARLY_ACCESS_TRIAL_USAGE_MINUTES_LIMIT} minutes of included usage.`,
+    `* Up to ${EARLY_ACCESS_TRIAL_USAGE_CREDITS_LIMIT.toLocaleString()} credits of included usage (~${EARLY_ACCESS_TRIAL_USAGE_CREDITS_LIMIT / 10} voice min or ~${EARLY_ACCESS_TRIAL_USAGE_CREDITS_LIMIT.toLocaleString()} text msgs).`,
     "",
     c.signatureClosing,
     "",

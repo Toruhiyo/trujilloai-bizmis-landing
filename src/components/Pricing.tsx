@@ -12,24 +12,27 @@ import { cn } from "@/lib/utils";
 import { bizmisConfettiColors } from "@/lib/colors";
 import { openBizmisShopifyAppListing } from "@/lib/bizmisUrls";
 
+const CREDITS_PER_VOICE_MINUTE = 10;
+
 interface PricingTier {
   monthlyStandard: number;
-  monthlyEarlyBird: number;
+  monthlyEarlyAccess: number;
   yearlyStandardMonthlyEquivalent: number;
-  yearlyEarlyBirdMonthlyEquivalent: number;
+  yearlyEarlyAccessMonthlyEquivalent: number;
 }
 
 interface Plan {
   name: string;
   pricing: PricingTier;
-  includedMinutes: number;
-  extraMinuteRate: number;
+  includedCredits: number;
+  overageRatePerCredit: number;
   maxConcurrency: number;
   features: string[];
   popular: boolean;
   buttonText: string;
   buttonVariant: "outline" | "warm";
   everythingIn?: string;
+  sessionEstimate: string;
 }
 
 const COMING_SOON_FEATURES: string[] = [];
@@ -39,13 +42,14 @@ const PLANS: Plan[] = [
     name: "Starter",
     pricing: {
       monthlyStandard: 149,
-      monthlyEarlyBird: 74,
+      monthlyEarlyAccess: 74,
       yearlyStandardMonthlyEquivalent: 119,
-      yearlyEarlyBirdMonthlyEquivalent: 99,
+      yearlyEarlyAccessMonthlyEquivalent: 99,
     },
-    includedMinutes: 250,
-    extraMinuteRate: 0.6,
+    includedCredits: 2500,
+    overageRatePerCredit: 0.06,
     maxConcurrency: 20,
+    sessionEstimate: "250\u2013400",
     features: ["1 Bizmis Store Clerk", "Support: Email (48h)"],
     popular: false,
     buttonText: "Get Started",
@@ -55,13 +59,14 @@ const PLANS: Plan[] = [
     name: "Plus",
     pricing: {
       monthlyStandard: 499,
-      monthlyEarlyBird: 249,
+      monthlyEarlyAccess: 249,
       yearlyStandardMonthlyEquivalent: 399,
-      yearlyEarlyBirdMonthlyEquivalent: 333,
+      yearlyEarlyAccessMonthlyEquivalent: 333,
     },
-    includedMinutes: 900,
-    extraMinuteRate: 0.55,
+    includedCredits: 9000,
+    overageRatePerCredit: 0.055,
     maxConcurrency: 40,
+    sessionEstimate: "900\u20131,500",
     features: [
       "Up to 5 Bizmis Store Clerks",
       "Session history and Replays",
@@ -77,19 +82,18 @@ const PLANS: Plan[] = [
     name: "Pro",
     pricing: {
       monthlyStandard: 1499,
-      monthlyEarlyBird: 749,
+      monthlyEarlyAccess: 749,
       yearlyStandardMonthlyEquivalent: 1199,
-      yearlyEarlyBirdMonthlyEquivalent: 999,
+      yearlyEarlyAccessMonthlyEquivalent: 999,
     },
-    includedMinutes: 3000,
-    extraMinuteRate: 0.5,
+    includedCredits: 30000,
+    overageRatePerCredit: 0.05,
     maxConcurrency: 100,
+    sessionEstimate: "3,000\u20135,000",
     features: [
-      "Best rates per minute",
+      "Lowest overage rate",
       "Unlimited Bizmis Store Clerks",
       "Auto-Tagged conversations",
-      // "Advanced Analytics, Auto-Tags, Exports", // TODO: Add this back in when we have it
-      // "Custom voice cloning", // TODO: Add this back in when we have it
       "Priority support and Live onboarding",
     ],
     popular: false,
@@ -100,9 +104,18 @@ const PLANS: Plan[] = [
 ];
 
 const ENTERPRISE_FEATURES = [
-  "Custom minutes, concurrency & pricing",
+  "Custom credits, concurrency & pricing",
   "Support: Dedicated CSM, 99.9%+ SLA",
 ];
+
+const formatOverageRate = (rate: number): string => {
+  const str = rate.toString();
+  const decimals = str.includes(".") ? str.split(".")[1].length : 0;
+  return rate.toLocaleString("en-US", {
+    minimumFractionDigits: decimals,
+    maximumFractionDigits: decimals,
+  });
+};
 
 const formatPrice = (price: number): string => {
   return Math.round(price).toLocaleString("en-US");
@@ -198,14 +211,14 @@ const PricingCardHeroBackdrop = ({ noiseId }: { noiseId: string }) => (
   </div>
 );
 
-/** Only valid early-bird coupon for now (case-insensitive). */
-const EARLY_BIRD_COUPON_CODE = "EARLY_BIRD_50";
-const EARLY_BIRD_SEAT_CAP = 50;
+/** Coupon code stays as EARLY_BIRD_50 in code; user-facing label is "Early Access". */
+const EARLY_ACCESS_COUPON_CODE = "EARLY_BIRD_50";
+const EARLY_ACCESS_SEAT_CAP = 50;
 
 const normalizeCouponInput = (value: string): string =>
   value.trim().toUpperCase();
 
-const fireEarlyBirdConfetti = (
+const fireEarlyAccessConfetti = (
   originElement: HTMLElement | null | undefined,
 ) => {
   let originX = 0.5;
@@ -269,8 +282,8 @@ const Pricing = () => {
   const navigate = useNavigate();
   const posthog = usePostHog();
   const [isYearly, setIsYearly] = useState(true);
-  const [showEarlyBird, setShowEarlyBird] = useState(false);
-  const [couponValue, setCouponValue] = useState(EARLY_BIRD_COUPON_CODE);
+  const [showEarlyAccess, setShowEarlyAccess] = useState(false);
+  const [couponValue, setCouponValue] = useState(EARLY_ACCESS_COUPON_CODE);
   const [couponError, setCouponError] = useState<string | null>(null);
   const [showUpgradeCreditDetails, setShowUpgradeCreditDetails] =
     useState(false);
@@ -280,7 +293,7 @@ const Pricing = () => {
     posthog.capture("pricing_plan_clicked", {
       plan: planName.toLowerCase(),
       billing_period: isYearly ? "yearly" : "monthly",
-      early_bird_enabled: showEarlyBird,
+      early_access_enabled: showEarlyAccess,
       destination: "shopify_app_listing",
     });
     openBizmisShopifyAppListing();
@@ -290,7 +303,7 @@ const Pricing = () => {
     posthog.capture("pricing_plan_clicked", {
       plan: "enterprise",
       billing_period: isYearly ? "yearly" : "monthly",
-      early_bird_enabled: showEarlyBird,
+      early_access_enabled: showEarlyAccess,
     });
     navigate("/contact?subject=Enterprise%20Plan%20Inquiry");
   };
@@ -298,49 +311,49 @@ const Pricing = () => {
   const handleBillingToggle = (yearly: boolean) => {
     posthog.capture("billing_period_toggled", {
       billing_period: yearly ? "yearly" : "monthly",
-      early_bird_enabled: showEarlyBird,
+      early_access_enabled: showEarlyAccess,
     });
     setIsYearly(yearly);
   };
 
-  const tryApplyEarlyBirdCoupon = () => {
-    if (showEarlyBird) {
+  const tryApplyEarlyAccessCoupon = () => {
+    if (showEarlyAccess) {
       return;
     }
 
     const entered = normalizeCouponInput(couponValue);
-    if (entered !== EARLY_BIRD_COUPON_CODE) {
+    if (entered !== EARLY_ACCESS_COUPON_CODE) {
       setCouponError("That code isn’t valid.");
       return;
     }
 
     setCouponError(null);
-    setShowEarlyBird(true);
+    setShowEarlyAccess(true);
     posthog.capture("pricing_coupon_applied", {
-      coupon: EARLY_BIRD_COUPON_CODE,
+      coupon: EARLY_ACCESS_COUPON_CODE,
       billing_period: isYearly ? "yearly" : "monthly",
     });
 
-    fireEarlyBirdConfetti(couponInputRef.current);
+    fireEarlyAccessConfetti(couponInputRef.current);
   };
 
   const removeAppliedCoupon = () => {
-    if (!showEarlyBird) {
+    if (!showEarlyAccess) {
       return;
     }
-    setShowEarlyBird(false);
+    setShowEarlyAccess(false);
     setCouponError(null);
     posthog.capture("pricing_coupon_removed", {
-      coupon: EARLY_BIRD_COUPON_CODE,
+      coupon: EARLY_ACCESS_COUPON_CODE,
       billing_period: isYearly ? "yearly" : "monthly",
     });
   };
 
   const getDisplayPrice = (plan: Plan): number => {
-    if (isYearly && showEarlyBird)
-      return plan.pricing.yearlyEarlyBirdMonthlyEquivalent;
+    if (isYearly && showEarlyAccess)
+      return plan.pricing.yearlyEarlyAccessMonthlyEquivalent;
     if (isYearly) return plan.pricing.yearlyStandardMonthlyEquivalent;
-    if (showEarlyBird) return plan.pricing.monthlyEarlyBird;
+    if (showEarlyAccess) return plan.pricing.monthlyEarlyAccess;
     return plan.pricing.monthlyStandard;
   };
 
@@ -351,7 +364,7 @@ const Pricing = () => {
     return Math.round(((standardPrice - currentPrice) / standardPrice) * 100);
   };
 
-  const showUpgradeCreditNote = !isYearly && showEarlyBird;
+  const showUpgradeCreditNote = !isYearly && showEarlyAccess;
 
   return (
     <section id="pricing" className="relative overflow-hidden py-12 sm:py-16 lg:py-24">
@@ -461,7 +474,7 @@ const Pricing = () => {
                     <div
                       className="pointer-events-none absolute right-2 top-2 z-20 flex h-14 w-14 items-center justify-center text-center sm:right-3 sm:top-3 sm:h-16 sm:w-16"
                       title={
-                        !isYearly && showEarlyBird
+                        !isYearly && showEarlyAccess
                           ? "Discounted intro period"
                           : `${discountPercent}% off vs. list price`
                       }
@@ -472,7 +485,7 @@ const Pricing = () => {
                         aria-hidden
                       />
                       <div className="relative z-10 flex flex-col items-center gap-0.5">
-                        {!isYearly && showEarlyBird && (
+                        {!isYearly && showEarlyAccess && (
                           <Clock
                             className="h-2.5 w-2.5 shrink-0 text-primary-foreground/90"
                             aria-hidden
@@ -521,7 +534,7 @@ const Pricing = () => {
                           </p>
                         )}
 
-                        {!isYearly && showEarlyBird && (
+                        {!isYearly && showEarlyAccess && (
                           <p className="flex items-center justify-center gap-1 text-sm text-foreground/70 transition-colors group-hover:text-primary-foreground/85">
                             <Clock className="h-3.5 w-3.5" />
                             first 3 months, then $
@@ -534,16 +547,23 @@ const Pricing = () => {
                     <div className="mb-3 space-y-1 border-b border-border/70 pb-3 transition-colors group-hover:border-primary-foreground/30 sm:mb-4 sm:space-y-1.5 sm:pb-4">
                       <div className="flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
                         <span className="font-heading text-base font-bold tabular-nums text-foreground/80 transition-colors group-hover:text-primary-foreground sm:text-lg">
-                          {plan.includedMinutes.toLocaleString()}
+                          {plan.includedCredits.toLocaleString()}
                         </span>
                         <span className="text-xs font-medium text-foreground/65 transition-colors group-hover:text-primary-foreground/85">
-                          min included
+                          credits included
                         </span>
                       </div>
-                      <div className="flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
+                      <p className="text-[0.7rem] leading-snug text-foreground/50 transition-colors group-hover:text-primary-foreground/70">
+                        ~{(plan.includedCredits / CREDITS_PER_VOICE_MINUTE).toLocaleString()} voice min or ~{plan.includedCredits.toLocaleString()} text msgs
+                      </p>
+                      <p className="text-[0.7rem] leading-snug text-foreground/50 transition-colors group-hover:text-primary-foreground/70">
+                        ~{plan.sessionEstimate} shopper sessions/mo{" "}
+                        <PricingFootnoteStar className="text-[0.6rem] transition-colors group-hover:text-primary-foreground" />
+                      </p>
+                      <div className="flex flex-wrap items-baseline gap-x-2 gap-y-0.5 pt-0.5">
                         <span className="inline-flex items-baseline gap-0.5">
                           <span className="font-heading text-base font-bold tabular-nums text-foreground/80 transition-colors group-hover:text-primary-foreground sm:text-lg">
-                            ${plan.extraMinuteRate.toFixed(2)}/min
+                            ${formatOverageRate(plan.overageRatePerCredit)}/credit
                           </span>
                           <PricingFootnoteStar className="text-sm transition-colors group-hover:text-primary-foreground sm:text-base" />
                         </span>
@@ -656,7 +676,7 @@ const Pricing = () => {
           </div>
         </div>
 
-        {/* Upgrade Credit Note - Only when Monthly + Early Bird ON */}
+        {/* Upgrade Credit Note - Only when Monthly + Early Access ON */}
         {showUpgradeCreditNote && (
           <div className="max-w-3xl mx-auto mt-8">
             <div className="rounded-xl border border-primary/20 bg-accent/35 px-6 py-4">
@@ -678,7 +698,7 @@ const Pricing = () => {
               {showUpgradeCreditDetails && (
                 <p className="text-xs text-muted-foreground mt-2 pt-2 border-t border-primary/20">
                   Credit applies to commitment charges only. On-demand usage
-                  charges (extra minutes) are excluded from the credit.
+                  charges (overage credits) are excluded from the credit.
                 </p>
               )}
             </div>
@@ -690,10 +710,10 @@ const Pricing = () => {
           <div className="mb-8 flex flex-wrap items-center justify-center gap-x-4 gap-y-2 text-sm text-foreground/75 sm:mb-10 sm:gap-x-6 sm:gap-y-3 lg:gap-x-8">
             <div
               className="flex items-center gap-2"
-              aria-label="Voice is billed per minute. You choose your maximum spend limit and can change it anytime."
+              aria-label="1 voice min = 10 credits, 1 text msg = 1 credit. Session estimates vary by voice/text mix and session length."
             >
               <PricingFootnoteStar />
-              <span>You choose your spend limit</span>
+              <span>1 voice min = 10 credits / 1 text msg = 1 credit. You choose your spend limit.</span>
             </div>
             <div className="flex items-center gap-2">
               <Check className="h-4 w-4 text-primary" />
@@ -706,9 +726,9 @@ const Pricing = () => {
           </div>
         </div>
 
-        {/* Discount coupon — below plan grid, above FAQs (early bird copy only after valid apply) */}
+        {/* Discount coupon — below plan grid, above FAQs (Early Access copy only after valid apply) */}
         <div className="mx-auto mb-10 max-w-xl px-2">
-          {!showEarlyBird ? (
+          {!showEarlyAccess ? (
             <p className="mb-4 text-center text-sm text-muted-foreground">
               Have a discount code? Enter it and press Enter or Apply to update
               the prices above.
@@ -723,19 +743,19 @@ const Pricing = () => {
                 setCouponError(null);
               }}
               onKeyDown={(e) => {
-                if (e.key === "Enter" && !showEarlyBird) {
+                if (e.key === "Enter" && !showEarlyAccess) {
                   e.preventDefault();
-                  tryApplyEarlyBirdCoupon();
+                  tryApplyEarlyAccessCoupon();
                 }
               }}
-              disabled={showEarlyBird}
+              disabled={showEarlyAccess}
               className="h-12 font-mono text-sm uppercase tracking-wide sm:min-w-0 sm:flex-1"
               placeholder="Discount code"
               autoComplete="off"
               spellCheck={false}
               aria-label="Discount coupon code"
             />
-            {showEarlyBird ? (
+            {showEarlyAccess ? (
               <Button
                 type="button"
                 variant="outline"
@@ -749,7 +769,7 @@ const Pricing = () => {
                 type="button"
                 variant="default"
                 className="shrink-0 sm:w-32"
-                onClick={tryApplyEarlyBirdCoupon}
+                onClick={tryApplyEarlyAccessCoupon}
               >
                 Apply
               </Button>
@@ -764,17 +784,17 @@ const Pricing = () => {
             </p>
           ) : null}
 
-          {showEarlyBird ? (
+          {showEarlyAccess ? (
             <div className="relative mt-8 rounded-2xl border border-primary/25 bg-accent/35 px-5 py-6 shadow-sm sm:px-6 sm:py-7">
               <div className="absolute -top-3 left-1/2 -translate-x-1/2">
                 <span className="rounded-full bg-primary px-3 py-1 text-xs font-bold uppercase tracking-wider text-primary-foreground shadow-md">
-                  Early bird active
+                  Early Access active
                 </span>
               </div>
               <p className="mt-2 text-center text-foreground">
                 <span className="font-semibold">
-                  You&apos;re viewing early bird pricing — reserved for our
-                  first {EARLY_BIRD_SEAT_CAP} merchants only.
+                  You&apos;re viewing Early Access pricing -- reserved for our
+                  first {EARLY_ACCESS_SEAT_CAP} merchants only.
                 </span>{" "}
                 <span className="text-foreground/85">
                   Help shape the product with your feedback on the roadmap. Your

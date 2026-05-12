@@ -34,7 +34,7 @@ const EarlyAccessCard: React.FC<EarlyAccessCardProps> = ({ className = "" }) => 
         <div className="flex flex-col gap-3 sm:gap-4 mb-4 sm:mb-6">
           <div className="inline-flex items-center gap-1.5 self-start bg-transparent border-2 border-primary rounded-full pl-2 pr-3 py-1">
             <Crown className="w-3 h-3 text-primary fill-primary" />
-            <span className="text-xs font-bold text-primary uppercase tracking-wide">Early Bird</span>
+            <span className="text-xs font-bold text-primary uppercase tracking-wide">Early Access</span>
           </div>
 
           <div>
@@ -94,7 +94,7 @@ const EarlyAccessCard: React.FC<EarlyAccessCardProps> = ({ className = "" }) => 
             onClick={handleClaimClick}
             className="w-full bg-gray-900 hover:bg-gray-800 text-white font-medium h-11 sm:h-12 rounded-xl transition-all shadow-lg hover:shadow-xl hover:-translate-y-0.5 flex items-center justify-center gap-2 group"
           >
-            Claim Early Bird Offer
+            Claim Early Access Offer
             <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
           </Button>
         </div>

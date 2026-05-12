@@ -1,6 +1,6 @@
 export const BIZMIS_PRODUCT_NAME = "Bizmis \u2014 Voice Store Clerk";
 
-export const EARLY_ACCESS_TRIAL_USAGE_MINUTES_LIMIT = 120;
+export const EARLY_ACCESS_TRIAL_USAGE_CREDITS_LIMIT = 1200;
 
 export const EARLY_ACCESS_EMAIL_COPY = {
   greetingDear: "Dear",
@@ -183,7 +183,7 @@ export function buildSoftCtaPlainText(shopifyAppUrl: string, storeCap: number): 
 }
 
 export function buildEarlyAccessTrialUsageFootnotePlainText(): string {
-  return `* Up to ${EARLY_ACCESS_TRIAL_USAGE_MINUTES_LIMIT} minutes of included usage.`;
+  return `* Up to ${EARLY_ACCESS_TRIAL_USAGE_CREDITS_LIMIT.toLocaleString()} credits of included usage (~${EARLY_ACCESS_TRIAL_USAGE_CREDITS_LIMIT / 10} voice min or ~${EARLY_ACCESS_TRIAL_USAGE_CREDITS_LIMIT.toLocaleString()} text msgs).`;
 }
 
 export function buildEarlyAccessFooterPlainText(): string {
