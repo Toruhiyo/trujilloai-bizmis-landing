@@ -141,16 +141,26 @@ const PricingFootnoteStar = ({ className }: { className?: string }) => (
   </span>
 );
 
-const CreditsLine = ({ plan }: { plan: Plan }) => {
-  const [open, setOpen] = useState(false);
-
+const CreditsLine = ({
+  plan,
+  panelId,
+  open,
+  onToggle,
+}: {
+  plan: Plan;
+  panelId: string;
+  open: boolean;
+  onToggle: () => void;
+}) => {
   return (
     <div>
       <button
         type="button"
+        aria-expanded={open}
+        aria-controls={panelId}
         onClick={(e) => {
           e.stopPropagation();
-          setOpen((v) => !v);
+          onToggle();
         }}
         className="flex w-full items-baseline gap-x-1.5 gap-y-0.5"
       >
@@ -168,6 +178,9 @@ const CreditsLine = ({ plan }: { plan: Plan }) => {
         />
       </button>
       <div
+        id={panelId}
+        role="region"
+        aria-label={`Estimated shopper sessions for ${plan.name}`}
         className={cn(
           "grid transition-[grid-template-rows] duration-200 ease-out",
           open ? "grid-rows-[1fr]" : "grid-rows-[0fr]",
@@ -332,6 +345,8 @@ const Pricing = () => {
   const [couponValue, setCouponValue] = useState(EARLY_ACCESS_COUPON_CODE);
   const [couponError, setCouponError] = useState<string | null>(null);
   const [showUpgradeCreditDetails, setShowUpgradeCreditDetails] =
+    useState(false);
+  const [sessionEstimatesExpanded, setSessionEstimatesExpanded] =
     useState(false);
   const couponInputRef = useRef<HTMLInputElement>(null);
 
@@ -591,7 +606,14 @@ const Pricing = () => {
                     </div>
 
                     <div className="mb-3 space-y-1 border-b border-border/70 pb-3 transition-colors group-hover:border-primary-foreground/30 sm:mb-4 sm:space-y-1.5 sm:pb-4">
-                      <CreditsLine plan={plan} />
+                      <CreditsLine
+                        plan={plan}
+                        panelId={`pricing-session-estimate-${plan.name.toLowerCase()}`}
+                        open={sessionEstimatesExpanded}
+                        onToggle={() =>
+                          setSessionEstimatesExpanded((v) => !v)
+                        }
+                      />
                       <div className="flex flex-wrap items-baseline gap-x-2 gap-y-0.5 pt-0.5">
                         <span className="font-heading text-base font-bold tabular-nums text-foreground/80 transition-colors group-hover:text-primary-foreground sm:text-lg">
                           ${formatOverageRate(plan.overageRatePerCredit)}/credit
