@@ -5,7 +5,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { Check, ArrowRight, Clock, Badge as BadgeIcon, ChevronDown, Phone, MessageSquareText } from "lucide-react";
+import { Check, ArrowRight, Clock, Badge as BadgeIcon, ChevronDown, Phone, MessageSquareText, Info } from "lucide-react";
 import { FaTag } from "react-icons/fa";
 import { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
@@ -638,26 +638,24 @@ const Pricing = () => {
                           <span className="text-xs font-medium text-foreground/65 transition-colors group-hover:text-primary-foreground/85">
                             concurrent voice conversations
                           </span>
-                          <Tooltip>
+                          <Tooltip delayDuration={150}>
                             <TooltipTrigger asChild>
                               <button
                                 type="button"
-                                className="-m-0.5 inline-flex shrink-0 rounded-full p-0.5 text-foreground/45 transition-colors hover:text-foreground/70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 group-hover:text-primary-foreground/55"
+                                className="inline-flex shrink-0 rounded-full text-primary/60 transition-colors hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring group-hover:text-primary-foreground/50 group-hover:hover:text-primary-foreground/80"
                                 aria-label={CONCURRENCY_TOOLTIP}
                               >
-                                <span
-                                  className="select-none text-[0.65rem] leading-none sm:text-[0.7rem]"
-                                  aria-hidden
-                                >
-                                  ⓘ
-                                </span>
+                                <Info className="h-3.5 w-3.5" />
                               </button>
                             </TooltipTrigger>
                             <TooltipContent
                               side="top"
-                              className="max-w-[min(18rem,calc(100vw-2rem))]"
+                              className="max-w-[min(16rem,calc(100vw-2rem))] rounded-lg border-primary/15 bg-card px-3.5 py-2.5 text-[0.8rem] leading-snug text-foreground/80 shadow-lg"
                             >
-                              {CONCURRENCY_TOOLTIP}
+                              <span className="flex items-start gap-2">
+                                <Info className="mt-0.5 h-3.5 w-3.5 shrink-0 text-primary" />
+                                {CONCURRENCY_TOOLTIP}
+                              </span>
                             </TooltipContent>
                           </Tooltip>
                         </span>
