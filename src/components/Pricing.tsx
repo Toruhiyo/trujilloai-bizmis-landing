@@ -176,16 +176,18 @@ const CreditsLine = ({ plan }: { plan: Plan }) => {
         )}
       >
         <div className="overflow-hidden">
-          <div className="mt-1.5 rounded-lg bg-foreground/[0.03] px-2.5 py-2 transition-colors group-hover:bg-primary-foreground/[0.08]">
-            <div className="flex items-baseline justify-between text-xs text-foreground/60 transition-colors group-hover:text-primary-foreground/75">
-              <span>~{voiceMin} voice min</span>
-              <span className="text-foreground/30 transition-colors group-hover:text-primary-foreground/40">or</span>
-              <span>~{textMsgs} text msgs</span>
+          <div className="mt-2 space-y-1.5 rounded-lg border border-foreground/[0.06] bg-foreground/[0.02] px-3 py-2.5 transition-colors group-hover:border-primary-foreground/10 group-hover:bg-primary-foreground/[0.06]">
+            <div className="flex items-baseline justify-between text-[0.8rem] leading-tight text-foreground/65 transition-colors group-hover:text-primary-foreground/80">
+              <span>~{voiceMin} voice minutes</span>
+              <span className="text-[0.7rem] text-foreground/35 transition-colors group-hover:text-primary-foreground/45">or</span>
+              <span>~{textMsgs} text messages</span>
             </div>
-            <p className="mt-1 text-center text-[0.65rem] text-foreground/45 transition-colors group-hover:text-primary-foreground/60">
-              ~{plan.sessionEstimate} shopper sessions/mo{" "}
-              <PricingFootnoteStar className="text-[0.55rem] transition-colors group-hover:text-primary-foreground" />
-            </p>
+            <div className="border-t border-foreground/[0.06] pt-1.5 transition-colors group-hover:border-primary-foreground/10">
+              <p className="text-center text-[0.8rem] leading-tight text-foreground/65 transition-colors group-hover:text-primary-foreground/80">
+                ~{plan.sessionEstimate} shopper sessions/month{" "}
+                <PricingFootnoteStar className="text-[0.6rem] transition-colors group-hover:text-primary-foreground" />
+              </p>
+            </div>
           </div>
         </div>
       </div>
@@ -713,10 +715,15 @@ const Pricing = () => {
         </div>
 
         {/* Credit conversion reference */}
-        <div className="mx-auto mt-6 flex max-w-7xl flex-wrap items-center justify-center gap-x-6 gap-y-1.5 text-sm text-foreground/60 sm:mt-8">
-          <span className="font-medium">1 voice min = 10 credits</span>
-          <span className="hidden text-foreground/25 sm:inline" aria-hidden>&middot;</span>
-          <span className="font-medium">1 text message = 1 credit</span>
+        <div className="mx-auto mt-6 flex max-w-7xl items-center justify-center gap-x-3 sm:mt-8 sm:gap-x-4">
+          <span className="inline-flex items-center gap-1.5 rounded-full border border-foreground/10 bg-foreground/[0.03] px-3.5 py-1.5 text-xs font-medium text-foreground/65 sm:text-sm">
+            <span className="text-primary" aria-hidden>&#9679;</span>
+            1 voice minute = 10 credits
+          </span>
+          <span className="inline-flex items-center gap-1.5 rounded-full border border-foreground/10 bg-foreground/[0.03] px-3.5 py-1.5 text-xs font-medium text-foreground/65 sm:text-sm">
+            <span className="text-primary" aria-hidden>&#9679;</span>
+            1 text message = 1 credit
+          </span>
         </div>
 
         {/* Upgrade Credit Note - Only when Monthly + Early Access ON */}
