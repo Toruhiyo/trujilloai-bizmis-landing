@@ -174,7 +174,7 @@ const CreditsLine = ({ plan }: { plan: Plan }) => {
         )}
       >
         <div className="overflow-hidden">
-          <div className="mt-2 flex items-center gap-2 rounded-lg border border-primary/15 bg-primary/[0.04] px-3 py-2 transition-colors group-hover:border-primary-foreground/15 group-hover:bg-primary-foreground/[0.08]">
+          <div className="mt-2 flex items-center gap-2 whitespace-nowrap rounded-lg border border-primary/15 bg-primary/[0.04] px-3 py-2 transition-colors group-hover:border-primary-foreground/15 group-hover:bg-primary-foreground/[0.08]">
             <span className="text-sm font-semibold tabular-nums text-foreground/75 transition-colors group-hover:text-primary-foreground/90">
               ~{plan.sessionEstimate}
             </span>
@@ -719,6 +719,9 @@ const Pricing = () => {
             1 text message = 1 credit
           </span>
         </div>
+        <p className="mt-2.5 text-center text-xs italic text-foreground/40">
+          <PricingFootnoteStar className="text-[0.55rem]" /> Session estimates vary by voice/text mix and session length.
+        </p>
 
         {/* Upgrade Credit Note - Only when Monthly + Early Access ON */}
         {showUpgradeCreditNote && (
@@ -752,12 +755,9 @@ const Pricing = () => {
         {/* Billing Summary */}
         <div className="mt-10 text-center sm:mt-12">
           <div className="mb-8 flex flex-wrap items-center justify-center gap-x-4 gap-y-2 text-sm text-foreground/75 sm:mb-10 sm:gap-x-6 sm:gap-y-3 lg:gap-x-8">
-            <div
-              className="flex items-center gap-2"
-              aria-label="Session estimates vary by voice/text mix and session length. You choose your maximum spend limit."
-            >
-              <PricingFootnoteStar />
-              <span>Session estimates vary by mix. You choose your spend limit.</span>
+            <div className="flex items-center gap-2">
+              <Check className="h-4 w-4 text-primary" />
+              <span>You choose your spend limit</span>
             </div>
             <div className="flex items-center gap-2">
               <Check className="h-4 w-4 text-primary" />
