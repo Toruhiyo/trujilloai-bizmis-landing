@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Check, ArrowRight, Clock, Badge as BadgeIcon, ChevronDown } from "lucide-react";
+import { Check, ArrowRight, Clock, Badge as BadgeIcon, ChevronDown, Phone, MessageSquareText } from "lucide-react";
 import { FaTag } from "react-icons/fa";
 import { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
@@ -176,18 +176,26 @@ const CreditsLine = ({ plan }: { plan: Plan }) => {
         )}
       >
         <div className="overflow-hidden">
-          <div className="mt-2 space-y-1.5 rounded-lg border border-foreground/[0.06] bg-foreground/[0.02] px-3 py-2.5 transition-colors group-hover:border-primary-foreground/10 group-hover:bg-primary-foreground/[0.06]">
-            <div className="flex items-baseline justify-between text-[0.8rem] leading-tight text-foreground/65 transition-colors group-hover:text-primary-foreground/80">
-              <span>~{voiceMin} voice minutes</span>
-              <span className="text-[0.7rem] text-foreground/35 transition-colors group-hover:text-primary-foreground/45">or</span>
-              <span>~{textMsgs} text messages</span>
-            </div>
-            <div className="border-t border-foreground/[0.06] pt-1.5 transition-colors group-hover:border-primary-foreground/10">
-              <p className="text-center text-[0.8rem] leading-tight text-foreground/65 transition-colors group-hover:text-primary-foreground/80">
-                ~{plan.sessionEstimate} shopper sessions/month{" "}
-                <PricingFootnoteStar className="text-[0.6rem] transition-colors group-hover:text-primary-foreground" />
-              </p>
-            </div>
+          <div className="mt-2 rounded-lg border border-foreground/[0.06] bg-foreground/[0.02] px-3 py-2.5 transition-colors group-hover:border-primary-foreground/10 group-hover:bg-primary-foreground/[0.06]">
+            <table className="w-full text-[0.8rem] leading-relaxed text-foreground/65 transition-colors group-hover:text-primary-foreground/80">
+              <tbody>
+                <tr>
+                  <td className="pr-1 text-right tabular-nums">~{voiceMin}</td>
+                  <td>voice minutes</td>
+                </tr>
+                <tr>
+                  <td className="pr-1 text-right tabular-nums">~{textMsgs}</td>
+                  <td>text messages</td>
+                </tr>
+                <tr>
+                  <td className="pr-1 text-right tabular-nums">~{plan.sessionEstimate}</td>
+                  <td>
+                    shopper sessions/mo{" "}
+                    <PricingFootnoteStar className="text-[0.6rem] transition-colors group-hover:text-primary-foreground" />
+                  </td>
+                </tr>
+              </tbody>
+            </table>
           </div>
         </div>
       </div>
@@ -715,13 +723,13 @@ const Pricing = () => {
         </div>
 
         {/* Credit conversion reference */}
-        <div className="mx-auto mt-6 flex max-w-7xl items-center justify-center gap-x-3 sm:mt-8 sm:gap-x-4">
-          <span className="inline-flex items-center gap-1.5 rounded-full border border-foreground/10 bg-foreground/[0.03] px-3.5 py-1.5 text-xs font-medium text-foreground/65 sm:text-sm">
-            <span className="text-primary" aria-hidden>&#9679;</span>
+        <div className="mx-auto mt-6 flex max-w-7xl flex-wrap items-center justify-center gap-3 sm:mt-8 sm:gap-4">
+          <span className="inline-flex items-center gap-2 rounded-full border-2 border-primary bg-transparent px-5 py-2 text-sm font-medium text-primary sm:px-6 sm:py-2.5 sm:text-base">
+            <Phone className="h-4 w-4 sm:h-5 sm:w-5" />
             1 voice minute = 10 credits
           </span>
-          <span className="inline-flex items-center gap-1.5 rounded-full border border-foreground/10 bg-foreground/[0.03] px-3.5 py-1.5 text-xs font-medium text-foreground/65 sm:text-sm">
-            <span className="text-primary" aria-hidden>&#9679;</span>
+          <span className="inline-flex items-center gap-2 rounded-full border-2 border-primary bg-transparent px-5 py-2 text-sm font-medium text-primary sm:px-6 sm:py-2.5 sm:text-base">
+            <MessageSquareText className="h-4 w-4 sm:h-5 sm:w-5" />
             1 text message = 1 credit
           </span>
         </div>
