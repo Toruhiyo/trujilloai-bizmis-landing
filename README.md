@@ -24,7 +24,7 @@ These files are the canonical source for content that appears on the live site *
 | Canonical content | Source file |
 |---|---|
 | Landing page copy + section structure | `src/pages/Index.tsx` (and `src/components/`) |
-| Pricing tiers + Early Bird logic | `src/components/Pricing.tsx` |
+| Pricing tiers + Early Access coupon UI | `src/components/Pricing.tsx` |
 | FAQs (questions, answers, categories) | `src/data/faqs.ts` |
 | Privacy Policy text | `src/pages/PrivacyPolicy.tsx` |
 | Terms of Service text | `src/pages/Terms.tsx` |

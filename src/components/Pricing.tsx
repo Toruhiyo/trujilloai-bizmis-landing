@@ -16,6 +16,13 @@ import { PricingPlanFeatureSoon } from "./PricingPlanFeatureSoon";
 import { cn } from "@/lib/utils";
 import { bizmisConfettiColors } from "@/lib/colors";
 import { openBizmisShopifyAppListing } from "@/lib/bizmisUrls";
+import {
+  CouponApiError,
+  CouponDTO,
+  CouponErrorCode,
+  requestCouponAccessToken,
+  validateCoupon,
+} from "@/lib/bizmisApi";
 
 const CREDITS_PER_VOICE_MINUTE = 10;
 
@@ -24,9 +31,7 @@ const CONCURRENCY_TOOLTIP =
 
 interface PricingTier {
   monthlyStandard: number;
-  monthlyEarlyAccess: number;
   yearlyStandardMonthlyEquivalent: number;
-  yearlyEarlyAccessMonthlyEquivalent: number;
 }
 
 interface Plan {
@@ -50,9 +55,7 @@ const PLANS: Plan[] = [
     name: "Starter",
     pricing: {
       monthlyStandard: 149,
-      monthlyEarlyAccess: 74,
       yearlyStandardMonthlyEquivalent: 119,
-      yearlyEarlyAccessMonthlyEquivalent: 99,
     },
     includedCredits: 2500,
     overageRatePerCredit: 0.06,
@@ -67,9 +70,7 @@ const PLANS: Plan[] = [
     name: "Plus",
     pricing: {
       monthlyStandard: 499,
-      monthlyEarlyAccess: 249,
       yearlyStandardMonthlyEquivalent: 399,
-      yearlyEarlyAccessMonthlyEquivalent: 333,
     },
     includedCredits: 9000,
     overageRatePerCredit: 0.055,
@@ -90,9 +91,7 @@ const PLANS: Plan[] = [
     name: "Pro",
     pricing: {
       monthlyStandard: 1499,
-      monthlyEarlyAccess: 749,
       yearlyStandardMonthlyEquivalent: 1199,
-      yearlyEarlyAccessMonthlyEquivalent: 999,
     },
     includedCredits: 30000,
     overageRatePerCredit: 0.05,
@@ -278,12 +277,29 @@ const PricingCardHeroBackdrop = ({ noiseId }: { noiseId: string }) => (
   </div>
 );
 
-/** Coupon code stays as EARLY_BIRD_50 in code; user-facing label is "Early Access". */
-const EARLY_ACCESS_COUPON_CODE = "EARLY_BIRD_50";
 const EARLY_ACCESS_SEAT_CAP = 50;
 
 const normalizeCouponInput = (value: string): string =>
   value.trim().toUpperCase();
+
+const couponErrorMessage = (code: CouponErrorCode | string): string => {
+  switch (code) {
+    case "COUPON_NOT_FOUND":
+      return "That code isn\u2019t valid.";
+    case "COUPON_EXPIRED":
+      return "That code has expired.";
+    case "COUPON_NOT_YET_ACTIVE":
+      return "That code isn\u2019t active yet.";
+    case "COUPON_INVALID_FORMAT":
+      return "Code format looks off \u2014 check for typos.";
+    case "COUPON_ALREADY_CLAIMED_BY_ANOTHER_STORE":
+      return "That code has already been claimed.";
+    case "COUPON_INVALID_ACCESS_TOKEN":
+      return "Session expired. Please try again.";
+    default:
+      return "Couldn\u2019t verify the code right now. Please try again.";
+  }
+};
 
 const fireEarlyAccessConfetti = (
   originElement: HTMLElement | null | undefined,
@@ -349,20 +365,25 @@ const Pricing = () => {
   const navigate = useNavigate();
   const posthog = usePostHog();
   const [isYearly, setIsYearly] = useState(true);
-  const [showEarlyAccess, setShowEarlyAccess] = useState(false);
-  const [couponValue, setCouponValue] = useState(EARLY_ACCESS_COUPON_CODE);
+  const [appliedCoupon, setAppliedCoupon] = useState<CouponDTO | null>(null);
+  const [couponValue, setCouponValue] = useState("");
   const [couponError, setCouponError] = useState<string | null>(null);
+  const [isApplyingCoupon, setIsApplyingCoupon] = useState(false);
   const [showUpgradeCreditDetails, setShowUpgradeCreditDetails] =
     useState(false);
   const [sessionEstimatesExpanded, setSessionEstimatesExpanded] =
     useState(false);
   const couponInputRef = useRef<HTMLInputElement>(null);
 
+  const showEarlyAccess = appliedCoupon !== null;
+  const earlyAccessIntroMonths = appliedCoupon?.summary.intro_months ?? 0;
+
   const handlePlanClick = (planName: string) => {
     posthog.capture("pricing_plan_clicked", {
       plan: planName.toLowerCase(),
       billing_period: isYearly ? "yearly" : "monthly",
       early_access_enabled: showEarlyAccess,
+      coupon_code: appliedCoupon?.code ?? null,
       destination: "shopify_app_listing",
     });
     openBizmisShopifyAppListing();
@@ -373,6 +394,7 @@ const Pricing = () => {
       plan: "enterprise",
       billing_period: isYearly ? "yearly" : "monthly",
       early_access_enabled: showEarlyAccess,
+      coupon_code: appliedCoupon?.code ?? null,
     });
     navigate("/contact?subject=Enterprise%20Plan%20Inquiry");
   };
@@ -385,44 +407,75 @@ const Pricing = () => {
     setIsYearly(yearly);
   };
 
-  const tryApplyEarlyAccessCoupon = () => {
-    if (showEarlyAccess) {
+  const findCouponPriceFor = (plan: Plan) => {
+    if (!appliedCoupon) return null;
+    return (
+      appliedCoupon.prices.find(
+        (price) => price.plan_name === plan.name.toLowerCase(),
+      ) ?? null
+    );
+  };
+
+  const tryApplyEarlyAccessCoupon = async () => {
+    if (showEarlyAccess || isApplyingCoupon) {
       return;
     }
 
     const entered = normalizeCouponInput(couponValue);
-    if (entered !== EARLY_ACCESS_COUPON_CODE) {
-      setCouponError("That code isn’t valid.");
+    if (!entered) {
+      setCouponError("Enter a code first.");
       return;
     }
 
     setCouponError(null);
-    setShowEarlyAccess(true);
-    posthog.capture("pricing_coupon_applied", {
-      coupon: EARLY_ACCESS_COUPON_CODE,
-      billing_period: isYearly ? "yearly" : "monthly",
-    });
-
-    fireEarlyAccessConfetti(couponInputRef.current);
+    setIsApplyingCoupon(true);
+    try {
+      const accessToken = await requestCouponAccessToken();
+      const coupon = await validateCoupon(entered, accessToken);
+      setAppliedCoupon(coupon);
+      setCouponValue(coupon.code);
+      posthog.capture("pricing_coupon_applied", {
+        coupon: coupon.code,
+        coupon_kind: coupon.kind,
+        billing_period: isYearly ? "yearly" : "monthly",
+      });
+      fireEarlyAccessConfetti(couponInputRef.current);
+    } catch (error) {
+      const errorCode =
+        error instanceof CouponApiError ? error.code : "NETWORK_ERROR";
+      setCouponError(couponErrorMessage(errorCode));
+      posthog.capture("pricing_coupon_apply_failed", {
+        coupon: entered,
+        error_code: errorCode,
+        billing_period: isYearly ? "yearly" : "monthly",
+      });
+    } finally {
+      setIsApplyingCoupon(false);
+    }
   };
 
   const removeAppliedCoupon = () => {
-    if (!showEarlyAccess) {
+    if (!appliedCoupon) {
       return;
     }
-    setShowEarlyAccess(false);
+    const previousCode = appliedCoupon.code;
+    setAppliedCoupon(null);
     setCouponError(null);
+    setCouponValue("");
     posthog.capture("pricing_coupon_removed", {
-      coupon: EARLY_ACCESS_COUPON_CODE,
+      coupon: previousCode,
       billing_period: isYearly ? "yearly" : "monthly",
     });
   };
 
   const getDisplayPrice = (plan: Plan): number => {
-    if (isYearly && showEarlyAccess)
-      return plan.pricing.yearlyEarlyAccessMonthlyEquivalent;
+    const couponPrice = findCouponPriceFor(plan);
+    if (couponPrice) {
+      return isYearly
+        ? couponPrice.yearly_monthly_equivalent
+        : couponPrice.monthly;
+    }
     if (isYearly) return plan.pricing.yearlyStandardMonthlyEquivalent;
-    if (showEarlyAccess) return plan.pricing.monthlyEarlyAccess;
     return plan.pricing.monthlyStandard;
   };
 
@@ -597,13 +650,16 @@ const Pricing = () => {
                           </p>
                         )}
 
-                        {!isYearly && showEarlyAccess && (
-                          <p className="flex items-center justify-center gap-1 text-sm text-foreground/70 transition-colors group-hover:text-primary-foreground/85">
-                            <Clock className="h-3.5 w-3.5" />
-                            first 3 months, then $
-                            {formatPrice(plan.pricing.monthlyStandard)}/mo
-                          </p>
-                        )}
+                        {!isYearly &&
+                          showEarlyAccess &&
+                          earlyAccessIntroMonths > 0 && (
+                            <p className="flex items-center justify-center gap-1 text-sm text-foreground/70 transition-colors group-hover:text-primary-foreground/85">
+                              <Clock className="h-3.5 w-3.5" />
+                              first {earlyAccessIntroMonths} month
+                              {earlyAccessIntroMonths === 1 ? "" : "s"}, then $
+                              {formatPrice(plan.pricing.monthlyStandard)}/mo
+                            </p>
+                          )}
                       </div>
                     </div>
 
@@ -830,12 +886,16 @@ const Pricing = () => {
                 setCouponError(null);
               }}
               onKeyDown={(e) => {
-                if (e.key === "Enter" && !showEarlyAccess) {
+                if (
+                  e.key === "Enter" &&
+                  !showEarlyAccess &&
+                  !isApplyingCoupon
+                ) {
                   e.preventDefault();
-                  tryApplyEarlyAccessCoupon();
+                  void tryApplyEarlyAccessCoupon();
                 }
               }}
-              disabled={showEarlyAccess}
+              disabled={showEarlyAccess || isApplyingCoupon}
               className="h-12 font-mono text-sm uppercase tracking-wide sm:min-w-0 sm:flex-1"
               placeholder="Discount code"
               autoComplete="off"
@@ -856,9 +916,10 @@ const Pricing = () => {
                 type="button"
                 variant="default"
                 className="shrink-0 sm:w-32"
-                onClick={tryApplyEarlyAccessCoupon}
+                onClick={() => void tryApplyEarlyAccessCoupon()}
+                disabled={isApplyingCoupon}
               >
-                Apply
+                {isApplyingCoupon ? "Applying\u2026" : "Apply"}
               </Button>
             )}
           </div>
@@ -871,27 +932,32 @@ const Pricing = () => {
             </p>
           ) : null}
 
-          {showEarlyAccess ? (
+          {showEarlyAccess && appliedCoupon ? (
             <div className="relative mt-8 rounded-2xl border border-primary/25 bg-accent/35 px-5 py-6 shadow-sm sm:px-6 sm:py-7">
               <div className="absolute -top-3 left-1/2 -translate-x-1/2">
                 <span className="rounded-full bg-primary px-3 py-1 text-xs font-bold uppercase tracking-wider text-primary-foreground shadow-md">
-                  Early Access active
+                  {appliedCoupon.summary.label} active
                 </span>
               </div>
               <p className="mt-2 text-center text-foreground">
                 <span className="font-semibold">
-                  You&apos;re viewing Early Access pricing -- reserved for our
-                  first {EARLY_ACCESS_SEAT_CAP} merchants only.
+                  You&apos;re viewing {appliedCoupon.summary.label} pricing --
+                  reserved for our first {EARLY_ACCESS_SEAT_CAP} merchants only.
                 </span>{" "}
                 <span className="text-foreground/85">
                   Help shape the product with your feedback on the roadmap. Your
                   plan prices above include{" "}
                   <span className="font-semibold text-foreground">
-                    50% off your first 3 months
+                    {appliedCoupon.summary.monthly_discount_percent}% off
+                    {earlyAccessIntroMonths > 0
+                      ? ` your first ${earlyAccessIntroMonths} month${
+                          earlyAccessIntroMonths === 1 ? "" : "s"
+                        }`
+                      : ""}
                   </span>{" "}
                   on monthly billing, or{" "}
                   <span className="font-semibold text-foreground">
-                    33% off yearly
+                    {appliedCoupon.summary.yearly_discount_percent}% off yearly
                   </span>{" "}
                   when yearly is selected.
                 </span>

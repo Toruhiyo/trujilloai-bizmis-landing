@@ -123,7 +123,7 @@ export const faqCategories: FAQCategory[] = [
         id: "early-access-offer",
         question: "What is the Early Access offer?",
         answer:
-          "The first 50 merchants get **50% off the first 3 months** on monthly plans, or **~33% off** yearly plans (Starter $99, Plus $333, Pro $999 monthly equivalent). Apply with code EARLY_BIRD_50. After the first 3 months on monthly, standard rates resume. Overage credits are billed at standard rates throughout.",
+          "The first 50 merchants get **50% off the first 3 months** on monthly plans, or **~33% off** yearly plans (Starter $99, Plus $333, Pro $999 monthly equivalent). Each Early Access merchant receives a personal code via our outreach \u2014 enter it on the pricing page to unlock the discounted plans, and it stays valid for your store across upgrades, downgrades, and resubscribes. After the first 3 months on monthly, standard rates resume. Overage credits are billed at standard rates throughout.",
         category: "pricing-billing",
       },
       {
