@@ -149,6 +149,7 @@ const FAQsPage = () => {
                 <input
                   type="text"
                   placeholder="Search FAQs..."
+                  aria-label="Search FAQs"
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                   className="w-full pl-10 pr-4 py-3 border border-border rounded-lg bg-background focus:ring-2 focus:ring-ring focus:border-ring outline-none transition-colors"
