@@ -8,6 +8,11 @@ const Pricing = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-accent/40 via-background to-muted/80">
+      <Seo
+        title="Bizmis Pricing — Plans for Shopify Stores"
+        description="Simple Bizmis pricing for Shopify stores of any size. Pick a plan, install in one click, and start selling with a voice-first store clerk."
+        path="/pricing"
+      />
       <div className="border-b border-border bg-background">
         <div className="container mx-auto px-4 py-3 sm:px-6 sm:py-4">
           <div className="flex items-center gap-3 sm:gap-4">
