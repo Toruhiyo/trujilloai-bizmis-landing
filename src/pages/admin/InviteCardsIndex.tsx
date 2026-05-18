@@ -125,7 +125,7 @@ const InviteCardsIndex = () => {
 
   const exportAllInvitesHtml = useCallback(
     async (variant: "rich" | "safe") => {
-      const picker = window.showDirectoryPicker;
+      const picker = (window as unknown as { showDirectoryPicker?: (...args: unknown[]) => unknown }).showDirectoryPicker;
       if (typeof picker !== "function") {
         toast.error("Folder export needs Chrome or Edge (File System Access API). Use Copy all HTML elsewhere.");
         return;
