@@ -19,6 +19,7 @@ import { Input } from "@/components/ui/input";
 import emailjs from "@emailjs/browser";
 import confetti from "canvas-confetti";
 import { bizmisConfettiColors } from "@/lib/colors";
+import Seo from "@/components/Seo";
 
 const EMAILJS_SERVICE_ID = import.meta.env.VITE_EMAILJS_SERVICE_ID;
 const EMAILJS_WAITLIST_TEMPLATE_ID = import.meta.env.VITE_EMAILJS_WAITLIST_TEMPLATE_ID;
@@ -215,6 +216,11 @@ const JoinWaitlist = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#FDF7E2] via-white to-[#FDF7E2]/30">
+      <Seo
+        title="Join the Bizmis Early Access Waitlist"
+        description="Limited early-access spots for Bizmis — the voice-first store clerk for Shopify. Join the waitlist and be first to install at launch."
+        path="/join-waitlist"
+      />
       <div className="bg-white border-b border-border">
         <div className="container mx-auto px-6 py-4">
           <div className="flex items-center gap-4">
