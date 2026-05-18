@@ -2,6 +2,7 @@ import { ArrowLeft } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import PricingComponent from "@/components/Pricing";
 import Footer from "@/components/Footer";
+import Seo from "@/components/Seo";
 
 const Pricing = () => {
   const navigate = useNavigate();
