@@ -1,0 +1,16 @@
+# Bizmis
+
+> Bizmis is a voice-first store clerk for Shopify. It welcomes shoppers, answers questions about products, orders, and policies, and guides them to checkout — like a knowledgeable in-store associate, 24/7.
+
+## Pages
+
+- [Home](/): What Bizmis is and how it helps Shopify stores sell more.
+- [Pricing](/pricing): Plans and pricing for Bizmis.
+- [FAQs](/faqs): Answers to common questions about setup, behavior, data, and billing.
+- [Contact](/contact): Get in touch with the Bizmis team.
+- [Join Waitlist](/join-waitlist): Sign up for early access.
+
+## Optional
+
+- [Privacy Policy](/privacy): How Bizmis collects and uses data.
+- [Terms of Service](/terms): Terms governing use of Bizmis.

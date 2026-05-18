@@ -1,5 +1,6 @@
 import { ArrowLeft } from "lucide-react";
 import Footer from "@/components/Footer";
+import Seo from "@/components/Seo";
 
 const LAST_UPDATED = "April 28, 2026";
 const CONTACT_EMAIL = "hello@bizmis.ai";
@@ -7,6 +8,11 @@ const CONTACT_EMAIL = "hello@bizmis.ai";
 const PrivacyPolicy = () => {
   return (
     <div className="min-h-screen bg-white">
+      <Seo
+        title="Privacy Policy — Bizmis"
+        description="How Bizmis collects, uses, and protects shopper and merchant data inside Shopify storefronts."
+        path="/privacy"
+      />
       <div className="container mx-auto px-6 py-16 max-w-3xl">
         <a
           href="/"
