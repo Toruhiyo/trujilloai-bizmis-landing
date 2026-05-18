@@ -161,7 +161,7 @@ const Setup = () => {
 
   // Effect for heartbeat avatar animation
   useEffect(() => {
-    let avatarInterval: NodeJS.Timeout;
+    let avatarInterval: ReturnType<typeof setInterval>;
 
     const createHeartbeatEffect = () => {
       avatarInterval = setInterval(() => {
