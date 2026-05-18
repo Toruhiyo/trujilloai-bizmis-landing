@@ -129,7 +129,7 @@ const Setup = () => {
 
   // Effect to force re-renders at random intervals for each connector
   useEffect(() => {
-    const timeouts: NodeJS.Timeout[] = [];
+    const timeouts: ReturnType<typeof setTimeout>[] = [];
 
     const scheduleNextRender = (connectorIndex: number) => {
       const randomInterval =
