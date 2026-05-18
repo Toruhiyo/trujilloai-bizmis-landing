@@ -818,7 +818,7 @@ const Pricing = () => {
             1 text message = 1 credit
           </span>
         </div>
-        <p className="mt-2.5 text-center text-xs italic text-foreground/40">
+        <p className="mt-2.5 text-center text-xs italic text-muted-foreground">
           <PricingFootnoteStar className="text-[0.55rem]" /> Session estimates vary by voice/text mix and session length.
         </p>
 
