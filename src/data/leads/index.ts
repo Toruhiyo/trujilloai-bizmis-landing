@@ -33,7 +33,7 @@ import gorjana from "./gorjana.json";
 import crownandcaliber from "./crownandcaliber.json";
 import schoolhouse from "./schoolhouse.json";
 
-const RAW_LEADS: LeadEarlyAccessJson[] = [
+const RAW_LEADS = [
   mockLeadInviteCard,
   molekule,
   glowforge,
