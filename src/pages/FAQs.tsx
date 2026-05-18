@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { ChevronDown, Search, ArrowLeft } from "lucide-react";
 import { faqCategories, allFAQs, type FAQ } from "@/data/faqs";
 import Footer from "@/components/Footer";
+import Seo from "@/components/Seo";
 
 const FAQsPage = () => {
   const [openItems, setOpenItems] = useState<string[]>([]);
