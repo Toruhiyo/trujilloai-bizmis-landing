@@ -87,7 +87,7 @@ export function hydrateLead(raw: LeadEarlyAccessJson, index: number): LeadEarlyA
   };
 }
 
-export const LEAD_EARLY_ACCESS_INVITES: LeadEarlyAccessData[] = RAW_LEADS.map(hydrateLead);
+export const LEAD_EARLY_ACCESS_INVITES: LeadEarlyAccessData[] = (RAW_LEADS as unknown as LeadEarlyAccessJson[]).map(hydrateLead);
 
 const byId = new Map(LEAD_EARLY_ACCESS_INVITES.map((l) => [l.id, l]));
 
