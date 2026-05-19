@@ -13,4 +13,4 @@ Allow: /
 User-agent: *
 Allow: /
 
-Sitemap: https://www.bizmis.ai/sitemap.xml
+Sitemap: https://trujilloai-bizmis-landing.lovable.app/sitemap.xml

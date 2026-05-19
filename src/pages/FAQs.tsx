@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { ChevronDown, Search, ArrowLeft } from "lucide-react";
 import { faqCategories, allFAQs, type FAQ } from "@/data/faqs";
 import Footer from "@/components/Footer";
+import Seo from "@/components/Seo";
 
 const FAQsPage = () => {
   const [openItems, setOpenItems] = useState<string[]>([]);
@@ -92,6 +93,20 @@ const FAQsPage = () => {
   // sections rather than a separate page tone.
   return (
     <div className="min-h-screen bg-gradient-to-b from-background via-[#FDF7E2]/30 to-background">
+      <Seo
+        title="Bizmis FAQs — Setup, Pricing, Data, and Behavior"
+        description="Answers to common questions about Bizmis: how it works on Shopify, setup time, data handling, voice behavior, pricing, and more."
+        path="/faqs"
+        jsonLd={{
+          "@context": "https://schema.org",
+          "@type": "FAQPage",
+          mainEntity: allFAQs.map((f) => ({
+            "@type": "Question",
+            name: f.question,
+            acceptedAnswer: { "@type": "Answer", text: f.answer },
+          })),
+        }}
+      />
       {/* Header with navigation */}
       <div className="bg-background/80 backdrop-blur-md border-b border-primary/20">
         <div className="container mx-auto px-4 py-3 sm:px-6 sm:py-4">
@@ -134,6 +149,7 @@ const FAQsPage = () => {
                 <input
                   type="text"
                   placeholder="Search FAQs..."
+                  aria-label="Search FAQs"
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                   className="w-full pl-10 pr-4 py-3 border border-border rounded-lg bg-background focus:ring-2 focus:ring-ring focus:border-ring outline-none transition-colors"

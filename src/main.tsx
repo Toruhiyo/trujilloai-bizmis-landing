@@ -1,5 +1,6 @@
 import React from 'react'
 import { createRoot } from 'react-dom/client'
+import { HelmetProvider } from 'react-helmet-async'
 import App from './App.tsx'
 import './index.css'
 import { PostHogProvider } from 'posthog-js/react'
@@ -8,23 +9,25 @@ const root = createRoot(document.getElementById('root')!)
 
 root.render(
   <React.StrictMode>
-    <PostHogProvider
-      apiKey={import.meta.env.VITE_PUBLIC_POSTHOG_KEY}
-      options={{
-        api_host: import.meta.env.VITE_PUBLIC_POSTHOG_HOST,
-        defaults: '2025-05-24',
-        capture_exceptions: true,
-        debug: import.meta.env.MODE === 'development',
-        disable_session_recording: false,
-        session_recording: {
-          maskAllInputs: false,
-          maskInputOptions: {
-            password: true,
+    <HelmetProvider>
+      <PostHogProvider
+        apiKey={import.meta.env.VITE_PUBLIC_POSTHOG_KEY}
+        options={{
+          api_host: import.meta.env.VITE_PUBLIC_POSTHOG_HOST,
+          defaults: '2025-05-24',
+          capture_exceptions: true,
+          debug: import.meta.env.MODE === 'development',
+          disable_session_recording: false,
+          session_recording: {
+            maskAllInputs: false,
+            maskInputOptions: {
+              password: true,
+            },
           },
-        },
-      }}
-    >
-      <App />
-    </PostHogProvider>
+        }}
+      >
+        <App />
+      </PostHogProvider>
+    </HelmetProvider>
   </React.StrictMode>
 )

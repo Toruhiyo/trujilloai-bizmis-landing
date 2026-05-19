@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import emailjs from "@emailjs/browser";
 import Footer from "@/components/Footer";
+import Seo from "@/components/Seo";
 
 const EMAILJS_SERVICE_ID = import.meta.env.VITE_EMAILJS_SERVICE_ID;
 const EMAILJS_CONTACT_TEMPLATE_ID = import.meta.env.VITE_EMAILJS_CONTACT_TEMPLATE_ID;
@@ -96,6 +97,11 @@ const Contact = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#FDF7E2] via-white to-[#FDF7E2]/30">
+      <Seo
+        title="Contact Bizmis — Get in Touch"
+        description="Reach the Bizmis team about Shopify install, custom website integrations, partnerships, or anything else. We reply fast."
+        path="/contact"
+      />
       <div className="bg-white border-b border-border">
         <div className="container mx-auto px-6 py-4">
           <div className="flex items-center gap-4">

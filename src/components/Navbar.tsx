@@ -153,6 +153,8 @@ const Navbar = () => {
                     : "text-white hover:bg-white/10"
                 }`}
                 onClick={() => setIsMenuOpen(!isMenuOpen)}
+                aria-label={isMenuOpen ? "Close menu" : "Open menu"}
+                aria-expanded={isMenuOpen}
               >
                 {isMenuOpen ? (
                   <X className="h-5 w-5 sm:h-6 sm:w-6" />

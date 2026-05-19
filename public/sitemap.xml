@@ -20,4 +20,19 @@
     <priority>0.6</priority>
     <changefreq>monthly</changefreq>
   </url>
+  <url>
+    <loc>https://www.bizmis.ai/join-waitlist</loc>
+    <priority>0.6</priority>
+    <changefreq>monthly</changefreq>
+  </url>
+  <url>
+    <loc>https://www.bizmis.ai/privacy</loc>
+    <priority>0.3</priority>
+    <changefreq>yearly</changefreq>
+  </url>
+  <url>
+    <loc>https://www.bizmis.ai/terms</loc>
+    <priority>0.3</priority>
+    <changefreq>yearly</changefreq>
+  </url>
 </urlset>

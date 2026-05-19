@@ -129,7 +129,7 @@ const Setup = () => {
 
   // Effect to force re-renders at random intervals for each connector
   useEffect(() => {
-    const timeouts: NodeJS.Timeout[] = [];
+    const timeouts: ReturnType<typeof setTimeout>[] = [];
 
     const scheduleNextRender = (connectorIndex: number) => {
       const randomInterval =
@@ -161,7 +161,7 @@ const Setup = () => {
 
   // Effect for heartbeat avatar animation
   useEffect(() => {
-    let avatarInterval: NodeJS.Timeout;
+    let avatarInterval: ReturnType<typeof setInterval>;
 
     const createHeartbeatEffect = () => {
       avatarInterval = setInterval(() => {
