@@ -8,7 +8,7 @@ import {
   buildEarlyAccessSalutationPlainText,
   buildSoftCtaPlainText,
   buildEarlyAccessTrialUsageFootnotePlainText,
-  buildEarlyAccessValueSentencePlainText,
+  buildInviteLeadParagraphPlainText,
   earlyAccessGreetingFirstName,
   EARLY_ACCESS_EMAIL_COPY,
 } from "@/data/leadEarlyAccessCopy";
@@ -29,6 +29,8 @@ import {
   INSTANTLY_UNSUBSCRIBE_MERGE_TAG,
   INVITE_UNSUBSCRIBE_LABEL,
 } from "@/lib/leadEarlyAccessEmailHtmlSafe";
+import { buildReactIconSvgDataUri } from "@/lib/reactIconDataUri";
+import { FaRegCalendarAlt } from "react-icons/fa";
 
 const BIZMIS_LOGO_WHITE = "/images/bizmis-logo-white-transparent.png";
 const SHOPIFY_MARK_WHITE = "/images/shopify-mark-white.png";
@@ -137,6 +139,13 @@ const WAVEFORM_PHONE: WaveformDims = {
 };
 const BIZMIS_FOREGROUND_HEX = "#32281B";
 const BIZMIS_MUTED_LIGHT_HEX = "#B5A48E";
+const CALENDAR_ICON_SIZE_PX = 18;
+const CTA_BUTTON_INNER_LINE_HEIGHT_PX = CALENDAR_ICON_SIZE_PX;
+const CALENDAR_ICON_DATA_URI = buildReactIconSvgDataUri(
+  FaRegCalendarAlt,
+  BIZMIS_FOREGROUND_HEX,
+  CALENDAR_ICON_SIZE_PX,
+);
 const BIZMIS_SHADOW_SOFT = "0 6px 25px -6px rgba(249,163,83,0.18)";
 const COUPON_PILL_BORDER_HEX = "#EBE6DF";
 const CTA_COUPON_CUTOUT_BORDER_PX = 1.5;
@@ -1407,7 +1416,10 @@ export function buildLeadEarlyAccessEmailHtml(
   const storeNameColor = escapeHtml(resolveStoreNameTextColor(lead));
   const store = escapeHtml(lead.storeName);
   const domain = escapeHtml(lead.storeDomain);
-  const { storeCap, shopifyAppUrl } = EARLY_ACCESS_TERMS;
+  const { storeCap, shopifyAppUrl, bookACallUrl } = EARLY_ACCESS_TERMS;
+  const leadHandle = encodeURIComponent(lead.id);
+  const installUrlWithCode = `${shopifyAppUrl}?ref=${leadHandle}&code=${encodeURIComponent(lead.couponCode.trim())}`;
+  const bookCallUrl = `${bookACallUrl}?ref=${leadHandle}`;
   const copy = EARLY_ACCESS_EMAIL_COPY;
   const bizmisInviteSiteUrl = buildInviteBizmisSiteUrl(lead.id);
   const bizmisInviteHrefEsc = escapeHtml(bizmisInviteSiteUrl);
@@ -1474,12 +1486,10 @@ export function buildLeadEarlyAccessEmailHtml(
   const salutationParagraphInnerHtml = contactFirstName
     ? `${escapeHtml(copy.greetingDear)} ${contactFirstEsc},`
     : `${escapeHtml(copy.greetingDear)} ${store}${escapeHtml(copy.greetingStoreTeamSuffix)}`;
-  const beforeBizmis = contactFirstName
-    ? copy.inviteSentenceLeadNamedBeforeBizmis
-    : copy.inviteSentenceLeadNoContactBeforeBizmis;
   const bizmisWordEsc = escapeHtml(copy.inviteSentenceBizmisWord);
   const valueBold = "font-weight:600;";
-  const inviteLeadParagraphInnerHtml = `${escapeHtml(copy.inviteIntroBeforeBizmis)}<span style="${accentInviteBizmis}">${bizmisWordEsc}</span>${escapeHtml(copy.inviteIntroAfterBizmis)}${escapeHtml(beforeBizmis)}<span style="${accentInviteStore}">${store}</span>${escapeHtml(copy.inviteSentenceAfterFirstBizmis)}<span style="${accentInviteBizmis}">${bizmisWordEsc}</span>${escapeHtml(copy.inviteSentenceAfterStorePreValue)}<strong style="${valueBold}">${escapeHtml(copy.inviteSentenceValueDriveSales)}</strong>${escapeHtml(copy.inviteSentenceValueJoiner)}<strong style="${valueBold}">${escapeHtml(copy.inviteSentenceValueEaseSupport)}</strong>${escapeHtml(copy.inviteSentenceAfterStorePostValue)}`;
+  const inviteLeadParagraphInnerHtml = `${escapeHtml(copy.inviteIntroBeforeBizmis)}<span style="${accentInviteBizmis}">${bizmisWordEsc}</span>${escapeHtml(copy.inviteIntroAfterBizmis)}<strong style="${valueBold}">${escapeHtml(copy.inviteSentenceValueDriveSales)}</strong>${escapeHtml(copy.inviteSentenceValueJoiner)}<strong style="${valueBold}">${escapeHtml(copy.inviteSentenceValueEaseSupport)}</strong>.`;
+  const ctaUrgencyParagraphInnerHtml = `${escapeHtml(copy.ctaUrgencyEaOpenBeforeCap)}${storeCap}${escapeHtml(copy.ctaUrgencyEaOpenAfterCapBeforeStore)}${store}${escapeHtml(copy.ctaUrgencyEaOpenAfterStoreName)}<strong style="${valueBold}">${escapeHtml(copy.ctaUrgencyEmphasis1)}</strong>${escapeHtml(copy.ctaUrgencyBetweenEmphasis1And2)}<strong style="${valueBold}">${store}${escapeHtml(copy.ctaUrgencyAfterStoreName)}</strong>${escapeHtml(copy.ctaUrgencyBetweenEmphasis2And3)}<strong style="${valueBold}">${escapeHtml(copy.ctaUrgencyEmphasis3)}</strong>${escapeHtml(copy.ctaUrgencyAfterEmphasis3)}`;
 
   const inviteTopGreetingStyle = `${BODY}font-size:11px;font-weight:400;line-height:1.6;color:${BIZMIS_MUTED_FG_HEX};letter-spacing:0.01em;`;
   const inviteTopLeadStyle = `${BODY}font-size:15px;font-weight:400;line-height:1.72;color:${BIZMIS_FOREGROUND_HEX};`;
@@ -1559,6 +1569,21 @@ export function buildLeadEarlyAccessEmailHtml(
                 <td style="padding:0;">
                   <p style="margin:0;${inviteTopLeadStyle}">
                     ${inviteLeadParagraphInnerHtml}
+                  </p>
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+
+        <!-- Early access offer (scarcity, roadmap, call) -->
+        <tr>
+          <td style="padding:14px 32px 0 32px;">
+            <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="max-width:${inviteTopLeadMeasurePx}px;">
+              <tr>
+                <td style="padding:0;">
+                  <p style="margin:0;${inviteTopLeadStyle}">
+                    ${ctaUrgencyParagraphInnerHtml}
                   </p>
                 </td>
               </tr>
@@ -1686,14 +1711,8 @@ export function buildLeadEarlyAccessEmailHtml(
           <td style="padding:28px 32px 0 32px;" align="center">
             <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="background-color:transparent;border:${CTA_COUPON_CUTOUT_BORDER_PX}px dashed ${CTA_COUPON_CUTOUT_DASH};border-radius:14px;">
               <tr>
-                <td style="padding:24px 28px 14px 28px;" align="center">
-                  <table role="presentation" cellpadding="0" cellspacing="0" border="0">
-                    <tr>
-                      <td style="padding:6px 14px;text-align:center;line-height:1.5;">
-                        <span style="${BODY}font-size:9px;font-weight:400;color:${BIZMIS_MUTED_LIGHT_HEX};letter-spacing:0.02em;vertical-align:middle;">${escapeHtml(copy.couponLabel)}</span> <span style="${BODY}font-size:10px;font-weight:400;color:${BIZMIS_MUTED_FG_HEX};letter-spacing:0.04em;vertical-align:middle;">${couponCodeEsc}</span>
-                      </td>
-                    </tr>
-                  </table>
+                <td style="padding:24px 28px 10px 28px;" align="center">
+                  <p style="margin:0;${BODY}font-size:10px;font-weight:600;line-height:1.4;color:${BIZMIS_MUTED_FG_HEX};letter-spacing:0.14em;text-transform:uppercase;">${escapeHtml(copy.ctaScheduleKicker)}</p>
                 </td>
               </tr>
               <tr>
@@ -1701,18 +1720,36 @@ export function buildLeadEarlyAccessEmailHtml(
                   <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%">
                     <tr>
                       <td style="padding:0;border-radius:12px;overflow:hidden;">
-                        <a href="${shopifyAppUrl}" target="_blank" rel="noopener noreferrer" style="display:block;padding:14px 36px;text-align:center;text-decoration:none;color:#ffffff;background-color:${BIZMIS_FOREGROUND_HEX};border-radius:12px;box-shadow:0 2px 8px -2px rgba(50,40,27,0.12);-webkit-text-size-adjust:none;">
+                        <a href="${bookCallUrl}" target="_blank" rel="noopener noreferrer" style="display:block;padding:14px 36px;text-align:center;text-decoration:none;color:${BIZMIS_FOREGROUND_HEX};background-color:${BIZMIS_PRIMARY_HEX};border-radius:12px;box-shadow:0 2px 8px -2px rgba(249,163,83,0.35);-webkit-text-size-adjust:none;">
                           <table role="presentation" cellpadding="0" cellspacing="0" border="0" align="center" style="margin:0 auto;">
-                            <tr>
-                              <td style="vertical-align:middle;padding-right:10px;">
-                                <img src="${shopifyMarkUrl}" alt="Shopify" width="20" height="20" style="display:block;width:20px;height:20px;border:0;" />
+                            <tr valign="middle" align="center">
+                              <td width="${CALENDAR_ICON_SIZE_PX}" height="${CTA_BUTTON_INNER_LINE_HEIGHT_PX}" style="padding:0 10px 0 0;width:${CALENDAR_ICON_SIZE_PX}px;height:${CTA_BUTTON_INNER_LINE_HEIGHT_PX}px;vertical-align:middle;line-height:${CTA_BUTTON_INNER_LINE_HEIGHT_PX}px;mso-line-height-rule:exactly;font-size:0;" aria-hidden="true" valign="middle">
+                                <img src="${escapeHtml(CALENDAR_ICON_DATA_URI)}" alt="" width="${CALENDAR_ICON_SIZE_PX}" height="${CALENDAR_ICON_SIZE_PX}" style="display:block;width:${CALENDAR_ICON_SIZE_PX}px;height:${CALENDAR_ICON_SIZE_PX}px;border:0;margin:0;" />
                               </td>
-                              <td style="vertical-align:middle;${HEADING}font-size:13px;font-weight:600;color:#ffffff;">
-                                ${escapeHtml(copy.ctaLabel)}
+                              <td style="padding:0;vertical-align:middle;${HEADING}font-size:13px;font-weight:600;line-height:${CTA_BUTTON_INNER_LINE_HEIGHT_PX}px;mso-line-height-rule:exactly;color:${BIZMIS_FOREGROUND_HEX};white-space:nowrap;" valign="middle">
+                                ${escapeHtml(copy.ctaPrimaryButtonLabel)}
                               </td>
                             </tr>
                           </table>
                         </a>
+                      </td>
+                    </tr>
+                  </table>
+                </td>
+              </tr>
+              <tr>
+                <td style="padding:0 28px 6px 28px;" align="center">
+                  <a href="${installUrlWithCode}" target="_blank" rel="noopener noreferrer" style="${BODY}font-size:11px;font-weight:500;color:${BIZMIS_MUTED_FG_HEX};text-decoration:underline;">
+                    ${escapeHtml(copy.ctaSecondaryInstallLinkLabel)}
+                  </a>
+                </td>
+              </tr>
+              <tr>
+                <td style="padding:0 28px 20px 28px;" align="center">
+                  <table role="presentation" cellpadding="0" cellspacing="0" border="0">
+                    <tr>
+                      <td style="padding:6px 14px;text-align:center;line-height:1.5;">
+                        <span style="${BODY}font-size:9px;font-weight:400;color:${BIZMIS_MUTED_LIGHT_HEX};letter-spacing:0.02em;vertical-align:middle;">${escapeHtml(copy.couponLabel)}</span> <span style="${BODY}font-size:10px;font-weight:400;color:${BIZMIS_MUTED_FG_HEX};letter-spacing:0.04em;vertical-align:middle;">${couponCodeEsc}</span>
                       </td>
                     </tr>
                   </table>
@@ -1787,7 +1824,7 @@ export function buildLeadEarlyAccessEmailHtml(
   const plainText = [
     buildEarlyAccessSalutationPlainText(lead.storeName, lead.leadContactName),
     "",
-    buildEarlyAccessValueSentencePlainText(lead.storeName, lead.leadContactName),
+    buildInviteLeadParagraphPlainText(),
     "",
     buildSoftCtaPlainText(shopifyAppUrl, storeCap),
     "",
@@ -1796,7 +1833,8 @@ export function buildLeadEarlyAccessEmailHtml(
     copy.subline,
     "",
     `${copy.couponLabel} ${lead.couponCode.trim()}`,
-    `${copy.ctaLabel}: ${shopifyAppUrl}`,
+    `${copy.ctaPrimaryButtonLabel}: ${bookCallUrl}`,
+    `${copy.ctaSecondaryInstallLinkLabel}: ${installUrlWithCode}`,
     "",
     ...chipPlainLines,
     "",

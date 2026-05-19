@@ -23,10 +23,10 @@
 import type { LeadEarlyAccessData } from "@/data/leads/_schema";
 import {
   EARLY_ACCESS_EMAIL_COPY,
-  EARLY_ACCESS_TRIAL_USAGE_CREDITS_LIMIT,
-  buildCtaMixedUrgencyPlainText,
+  buildCtaUrgencyPlainText,
   buildEarlyAccessPreheader,
   buildEarlyAccessSalutationPlainText,
+  buildInviteLeadParagraphPlainText,
   earlyAccessGreetingFirstName,
 } from "@/data/leadEarlyAccessCopy";
 import { EARLY_ACCESS_TERMS, resolveStoreNameTextColor } from "@/data/leads/_schema";
@@ -36,6 +36,8 @@ import {
   BIZMIS_PRIMARY_HEX,
   BIZMIS_WARM_BG_HEX,
 } from "@/lib/bizmisBrandColors";
+import { buildReactIconSvgDataUri } from "@/lib/reactIconDataUri";
+import { FaRegCalendarAlt } from "react-icons/fa";
 
 export const SAFE_EMAIL_DEFAULT_BASE_URL = "https://www.bizmis.ai" as const;
 export const SAFE_EMAIL_MAX_BYTES = 102_000;
@@ -89,8 +91,13 @@ const COMBINED_MOCKUP_DISPLAY_HEIGHT_PX = Math.round(
 const FOREGROUND_HEX = "#32281B";
 const MUTED_LIGHT_HEX = "#B5A48E";
 const MUTED_SUBTLE_HEX = "#C8BBA4";
-const CTA_BG_HEX = "#32281B";
-
+const CALENDAR_ICON_SIZE_PX = 18;
+const CTA_BUTTON_INNER_LINE_HEIGHT_PX = CALENDAR_ICON_SIZE_PX;
+const CALENDAR_ICON_DATA_URI = buildReactIconSvgDataUri(
+  FaRegCalendarAlt,
+  FOREGROUND_HEX,
+  CALENDAR_ICON_SIZE_PX,
+);
 /** Orange-on-white Bizmis square mark used as the signature logo (public asset, 281x281). */
 const SIGNATURE_BIZMIS_LOGO_PATH = "/images/bizmis-logo-orange-white.png";
 /** Display size in logical CSS px (keeps square 1:1 aspect ratio). */
@@ -205,7 +212,7 @@ function buildOutboundUtmTail(leadId: string, utmCampaign: string): string {
 // HTML rendering.
 
 function renderSafeHtml(lead: LeadEarlyAccessData, baseUrl: string, utmCampaign: string): string {
-  const { storeCap, shopifyAppUrl } = EARLY_ACCESS_TERMS;
+  const { storeCap, shopifyAppUrl, bookACallUrl } = EARLY_ACCESS_TERMS;
   const copy = EARLY_ACCESS_EMAIL_COPY;
 
   const storeName = escapeHtml(lead.storeName);
@@ -217,14 +224,15 @@ function renderSafeHtml(lead: LeadEarlyAccessData, baseUrl: string, utmCampaign:
   const combinedMockupUrl = absUrl(baseUrl, `/invite-cards/leads/${lead.id}/email/mockup.png`);
 
   const utmTail = buildOutboundUtmTail(lead.id, utmCampaign);
+  const bookCallUrl = `${bookACallUrl}?ref=${leadHandle}&${utmTail}`;
   const installUrlWithCode = `${shopifyAppUrl}?ref=${leadHandle}&code=${encodeURIComponent(earlyAccessCode)}&${utmTail}`;
   const bizmisInviteSiteUrl = `${buildInviteBizmisSiteUrl(lead.id)}&${utmTail}`;
 
   const salutationText = escapeHtml(buildEarlyAccessSalutationPlainText(lead.storeName, lead.leadContactName));
 
-  const pitchHtml = buildPitchParagraphHtml(storeName);
-  const ctaUrgencyHtml = buildCtaUrgencyHtml();
-  const ctaBoxHtml = buildCtaBoxHtml(installUrlWithCode, earlyAccessCode);
+  const pitchHtml = buildPitchParagraphHtml();
+  const ctaUrgencyHtml = buildCtaUrgencyHtml(storeName, storeCap);
+  const ctaBoxHtml = buildCtaBoxHtml(bookCallUrl, installUrlWithCode, earlyAccessCode);
 
   const preheader = escapeHtml(buildEarlyAccessPreheader(lead.storeName, storeCap));
 
@@ -379,11 +387,11 @@ function buildCenteredImage(spec: CenteredImageSpec): string {
   return `<img src="${escapeAttr(spec.src)}" alt="${escapeAttr(spec.alt)}" width="${spec.widthPx}" height="${spec.heightPx}" style="display:block;${widthAttr}border:0;border-radius:${spec.borderRadiusPx}px;" />`;
 }
 
-function buildPitchParagraphHtml(storeName: string): string {
+function buildPitchParagraphHtml(): string {
   const c = EARLY_ACCESS_EMAIL_COPY;
   const fgStyle = `font-family:${SYSTEM_FONT_STACK};font-size:15px;line-height:1.72;color:${FOREGROUND_HEX};`;
   return `<p style="margin:0;${fgStyle}">
-${escapeHtml(c.inviteIntroBeforeBizmis)}${escapeHtml(c.inviteSentenceBizmisWord)}${escapeHtml(c.inviteIntroAfterBizmis)}${escapeHtml(c.inviteSentenceLeadNamedBeforeBizmis)}${storeName}${escapeHtml(c.inviteSentenceAfterFirstBizmis)}${escapeHtml(c.inviteSentenceBizmisWord)}${escapeHtml(c.inviteSentenceAfterStorePreValue)}<strong style="font-weight:600;">${escapeHtml(c.inviteSentenceValueDriveSales)}</strong>${escapeHtml(c.inviteSentenceValueJoiner)}<strong style="font-weight:600;">${escapeHtml(c.inviteSentenceValueEaseSupport)}</strong>${escapeHtml(c.inviteSentenceAfterStorePostValue)}
+${escapeHtml(c.inviteIntroBeforeBizmis)}${escapeHtml(c.inviteSentenceBizmisWord)}${escapeHtml(c.inviteIntroAfterBizmis)}<strong style="font-weight:600;">${escapeHtml(c.inviteSentenceValueDriveSales)}</strong>${escapeHtml(c.inviteSentenceValueJoiner)}<strong style="font-weight:600;">${escapeHtml(c.inviteSentenceValueEaseSupport)}</strong>.
 </p>`;
 }
 
@@ -394,44 +402,66 @@ ${escapeHtml(c.inviteIntroBeforeBizmis)}${escapeHtml(c.inviteSentenceBizmisWord)
  * weight; Bizmis stays in body color (same rule as the pitch paragraph
  * in the Gmail-safe card).
  */
-function buildCtaUrgencyHtml(): string {
+function buildCtaUrgencyHtml(storeName: string, storeCap: number): string {
   const c = EARLY_ACCESS_EMAIL_COPY;
   const fgStyle = `font-family:${SYSTEM_FONT_STACK};font-size:15px;line-height:1.72;color:${FOREGROUND_HEX};`;
   const emphasis = "font-weight:600;";
   return `<p style="margin:0;${fgStyle}">
-${escapeHtml(c.ctaMixedUrgencyLead)}${escapeHtml(c.ctaMixedUrgencyBizmisWord)}${escapeHtml(c.ctaMixedUrgencyAfterBizmis)}<strong style="${emphasis}">${escapeHtml(c.ctaMixedUrgencyOneClickSetup)}</strong>${escapeHtml(c.ctaMixedUrgencyBetweenSetupAndCost)}<strong style="${emphasis}">${escapeHtml(c.ctaMixedUrgencyNoCost)}</strong>${escapeHtml(c.ctaMixedUrgencyBeforeRoadmap)}<strong style="${emphasis}">${escapeHtml(c.ctaMixedUrgencyRoadmapPhrase)}</strong>${escapeHtml(c.ctaMixedUrgencyAfterRoadmap)}
+${escapeHtml(c.ctaUrgencyEaOpenBeforeCap)}${storeCap}${escapeHtml(c.ctaUrgencyEaOpenAfterCapBeforeStore)}${escapeHtml(storeName)}${escapeHtml(c.ctaUrgencyEaOpenAfterStoreName)}<strong style="${emphasis}">${escapeHtml(c.ctaUrgencyEmphasis1)}</strong>${escapeHtml(c.ctaUrgencyBetweenEmphasis1And2)}<strong style="${emphasis}">${escapeHtml(storeName)}${escapeHtml(c.ctaUrgencyAfterStoreName)}</strong>${escapeHtml(c.ctaUrgencyBetweenEmphasis2And3)}<strong style="${emphasis}">${escapeHtml(c.ctaUrgencyEmphasis3)}</strong>${escapeHtml(c.ctaUrgencyAfterEmphasis3)}
 </p>`;
 }
 
-function buildCtaBoxHtml(installUrlWithCode: string, earlyAccessCode: string): string {
+function buildCtaBoxHtml(
+  bookCallUrl: string,
+  installUrlWithCode: string,
+  earlyAccessCode: string,
+): string {
   const c = EARLY_ACCESS_EMAIL_COPY;
-  const footnote = `* Up to ${EARLY_ACCESS_TRIAL_USAGE_CREDITS_LIMIT.toLocaleString()} credits of included usage (~${EARLY_ACCESS_TRIAL_USAGE_CREDITS_LIMIT / 10} voice min or ~${EARLY_ACCESS_TRIAL_USAGE_CREDITS_LIMIT.toLocaleString()} text msgs).`;
+  const kickerStyle = `margin:0;font-family:${SYSTEM_FONT_STACK};font-size:10px;font-weight:600;line-height:1.4;color:${BIZMIS_MUTED_FG_HEX};letter-spacing:0.14em;text-transform:uppercase;`;
+  const primaryLinkStyle = `display:inline-block;padding:14px 28px;font-family:${SYSTEM_FONT_STACK};font-size:13px;font-weight:600;color:${FOREGROUND_HEX};text-decoration:none;border-radius:12px;`;
+  const secondaryLinkStyle = `font-family:${SYSTEM_FONT_STACK};font-size:11px;font-weight:500;color:${BIZMIS_MUTED_FG_HEX};text-decoration:underline;`;
   return `<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="border:1px dashed ${BIZMIS_BORDER_HEX};border-radius:14px;">
 <tr>
-<td style="padding:22px 28px 14px 28px;" align="center">
-<p style="margin:0;font-family:${SYSTEM_FONT_STACK};font-size:9px;color:${MUTED_LIGHT_HEX};letter-spacing:0.02em;">
-${escapeHtml(c.couponLabel)}
-<span style="color:${BIZMIS_MUTED_FG_HEX};font-size:10px;letter-spacing:0.04em;">&nbsp;${escapeHtml(earlyAccessCode)}</span>
-</p>
+<td style="padding:22px 28px 10px 28px;" align="center">
+<p style="${kickerStyle}">${escapeHtml(c.ctaScheduleKicker)}</p>
 </td>
 </tr>
 <tr>
-<td style="padding:0 28px 22px 28px;" align="center">
+<td style="padding:0 28px 20px 28px;" align="center">
 <table role="presentation" cellpadding="0" cellspacing="0" border="0" align="center">
 <tr>
-<td align="center" bgcolor="${CTA_BG_HEX}" style="border-radius:12px;">
-<a href="${escapeAttr(installUrlWithCode)}" target="_blank" rel="noopener noreferrer" style="display:inline-block;padding:14px 32px;font-family:${SYSTEM_FONT_STACK};font-size:13px;font-weight:600;color:#ffffff;text-decoration:none;border-radius:12px;">
-${escapeHtml(c.ctaMixedButtonLabel)}
+<td align="center" bgcolor="${BIZMIS_PRIMARY_HEX}" style="border-radius:12px;">
+<a href="${escapeAttr(bookCallUrl)}" target="_blank" rel="noopener noreferrer" style="${primaryLinkStyle}">
+<table role="presentation" cellpadding="0" cellspacing="0" border="0" align="center">
+<tr valign="middle" align="center">
+<td width="${CALENDAR_ICON_SIZE_PX}" height="${CTA_BUTTON_INNER_LINE_HEIGHT_PX}" style="padding:0 10px 0 0;width:${CALENDAR_ICON_SIZE_PX}px;height:${CTA_BUTTON_INNER_LINE_HEIGHT_PX}px;vertical-align:middle;line-height:${CTA_BUTTON_INNER_LINE_HEIGHT_PX}px;mso-line-height-rule:exactly;font-size:0;" aria-hidden="true" valign="middle">
+<img src="${escapeAttr(CALENDAR_ICON_DATA_URI)}" alt="" width="${CALENDAR_ICON_SIZE_PX}" height="${CALENDAR_ICON_SIZE_PX}" style="display:block;width:${CALENDAR_ICON_SIZE_PX}px;height:${CALENDAR_ICON_SIZE_PX}px;border:0;margin:0;" />
+</td>
+<td style="padding:0;vertical-align:middle;font-family:${SYSTEM_FONT_STACK};font-size:13px;font-weight:600;line-height:${CTA_BUTTON_INNER_LINE_HEIGHT_PX}px;mso-line-height-rule:exactly;color:${FOREGROUND_HEX};white-space:nowrap;" valign="middle">${escapeHtml(c.ctaPrimaryButtonLabel)}</td>
+</tr>
+</table>
 </a>
 </td>
 </tr>
 </table>
 </td>
 </tr>
-</table>
-<p style="margin:10px 0 0 0;font-family:${SYSTEM_FONT_STACK};font-size:8px;line-height:1.4;color:${MUTED_SUBTLE_HEX};text-align:center;">
-${escapeHtml(footnote)}
-</p>`;
+<tr>
+<td style="padding:0 28px 6px 28px;" align="center">
+<a href="${escapeAttr(installUrlWithCode)}" target="_blank" rel="noopener noreferrer" style="${secondaryLinkStyle}">
+${escapeHtml(c.ctaSecondaryInstallLinkLabel)}
+</a>
+</td>
+</tr>
+<tr>
+<td style="padding:0 28px 20px 28px;" align="center">
+<p style="margin:0;font-family:${SYSTEM_FONT_STACK};font-size:9px;color:${MUTED_LIGHT_HEX};letter-spacing:0.02em;">
+${escapeHtml(c.couponLabel)}
+<span style="color:${BIZMIS_MUTED_FG_HEX};font-size:10px;letter-spacing:0.04em;">&nbsp;${escapeHtml(earlyAccessCode)}</span>
+</p>
+</td>
+</tr>
+</table>`;
 }
 
 /**
@@ -466,30 +496,18 @@ function buildSignatureHtml(baseUrl: string, bizmisInviteSiteUrl: string): strin
 // Plain text rendering.
 
 function renderPlainText(lead: LeadEarlyAccessData, utmCampaign: string): string {
-  const { shopifyAppUrl } = EARLY_ACCESS_TERMS;
+  const { shopifyAppUrl, storeCap, bookACallUrl } = EARLY_ACCESS_TERMS;
   const c = EARLY_ACCESS_EMAIL_COPY;
   const leadHandle = encodeURIComponent(lead.id);
   const utmTail = buildOutboundUtmTail(lead.id, utmCampaign);
+  const bookCallUrl = `${bookACallUrl}?ref=${leadHandle}&${utmTail}`;
   const installUrlWithCode = `${shopifyAppUrl}?ref=${leadHandle}&code=${encodeURIComponent(lead.couponCode)}&${utmTail}`;
   const bizmisInviteSiteUrl = `${buildInviteBizmisSiteUrl(lead.id)}&${utmTail}`;
   const contactFirst = earlyAccessGreetingFirstName(lead.leadContactName);
   const salutation = contactFirst
     ? `${c.greetingDear} ${contactFirst},`
     : `${c.greetingDear} ${lead.storeName}${c.greetingStoreTeamSuffix}`;
-  const pitch = [
-    c.inviteIntroBeforeBizmis,
-    c.inviteSentenceBizmisWord,
-    c.inviteIntroAfterBizmis,
-    c.inviteSentenceLeadNamedBeforeBizmis,
-    lead.storeName,
-    c.inviteSentenceAfterFirstBizmis,
-    c.inviteSentenceBizmisWord,
-    c.inviteSentenceAfterStorePreValue,
-    c.inviteSentenceValueDriveSales,
-    c.inviteSentenceValueJoiner,
-    c.inviteSentenceValueEaseSupport,
-    c.inviteSentenceAfterStorePostValue,
-  ].join("");
+  const pitch = buildInviteLeadParagraphPlainText();
 
   const titleLine = `${lead.storeName} ${c.inviteTitleBrandLeadSeparator} ${c.inviteTitleBrandLead} ${c.inviteTitleEyebrowSeparator} ${c.inviteTitleEyebrow.toUpperCase()}`;
   return [
@@ -499,11 +517,11 @@ function renderPlainText(lead: LeadEarlyAccessData, utmCampaign: string): string
     "",
     pitch,
     "",
-    buildCtaMixedUrgencyPlainText(),
+    buildCtaUrgencyPlainText(lead.storeName, storeCap),
     "",
     `${c.couponLabel} ${lead.couponCode}`,
-    `${c.ctaMixedButtonLabel}: ${installUrlWithCode}`,
-    `* Up to ${EARLY_ACCESS_TRIAL_USAGE_CREDITS_LIMIT.toLocaleString()} credits of included usage (~${EARLY_ACCESS_TRIAL_USAGE_CREDITS_LIMIT / 10} voice min or ~${EARLY_ACCESS_TRIAL_USAGE_CREDITS_LIMIT.toLocaleString()} text msgs).`,
+    `${c.ctaPrimaryButtonLabel}: ${bookCallUrl}`,
+    `${c.ctaSecondaryInstallLinkLabel}: ${installUrlWithCode}`,
     "",
     c.signatureClosing,
     "",

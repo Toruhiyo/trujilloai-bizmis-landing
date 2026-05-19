@@ -92,7 +92,7 @@ function parseArgs(argv) {
 function listAllLeadIds() {
   const leadsDir = join(ROOT, "src/data/leads");
   return readdirSync(leadsDir)
-    .filter((f) => f.endsWith(".json"))
+    .filter((f) => f.endsWith(".json") && !f.startsWith("__"))
     .map((f) => f.replace(/\.json$/, ""))
     .sort();
 }

@@ -1,4 +1,4 @@
-import { BIZMIS_SHOPIFY_APP_LISTING_URL } from "@/lib/bizmisUrls";
+import { BIZMIS_BOOK_A_CALL_URL, BIZMIS_SHOPIFY_APP_LISTING_URL } from "@/lib/bizmisUrls";
 
 export const SUPPORT_POLICY_TYPES = [
   "Troubleshooting Guide",
@@ -85,11 +85,15 @@ export type LeadEarlyAccessData = LeadEarlyAccessJson & {
   productCImagePath: string;
 };
 
+/** Single source for early-access store count (invite copy, mockup banner, Instantly template). */
+export const EARLY_ACCESS_STORE_CAP = 50;
+
 export const EARLY_ACCESS_TERMS = {
   trialDays: 30,
   shopperCap: 500,
-  storeCap: 25,
+  storeCap: EARLY_ACCESS_STORE_CAP,
   shopifyAppUrl: BIZMIS_SHOPIFY_APP_LISTING_URL,
+  bookACallUrl: BIZMIS_BOOK_A_CALL_URL,
 } as const;
 
 const HEX_OVERLAY = /^#([0-9A-Fa-f]{3}|[0-9A-Fa-f]{4}|[0-9A-Fa-f]{6}|[0-9A-Fa-f]{8})$/;

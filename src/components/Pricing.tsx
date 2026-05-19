@@ -23,6 +23,7 @@ import {
   requestCouponAccessToken,
   validateCoupon,
 } from "@/lib/bizmisApi";
+import { EARLY_ACCESS_STORE_CAP } from "@/data/leads/_schema";
 
 const CREDITS_PER_VOICE_MINUTE = 10;
 
@@ -276,8 +277,6 @@ const PricingCardHeroBackdrop = ({ noiseId }: { noiseId: string }) => (
     </svg>
   </div>
 );
-
-const EARLY_ACCESS_SEAT_CAP = 50;
 
 const normalizeCouponInput = (value: string): string =>
   value.trim().toUpperCase();
@@ -942,7 +941,7 @@ const Pricing = () => {
               <p className="mt-2 text-center text-foreground">
                 <span className="font-semibold">
                   You&apos;re viewing {appliedCoupon.summary.label} pricing --
-                  reserved for our first {EARLY_ACCESS_SEAT_CAP} merchants only.
+                  reserved for our first {EARLY_ACCESS_STORE_CAP} merchants only.
                 </span>{" "}
                 <span className="text-foreground/85">
                   Help shape the product with your feedback on the roadmap. Your
