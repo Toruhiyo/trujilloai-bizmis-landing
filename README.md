@@ -59,17 +59,18 @@ The dev server runs at `http://localhost:8080` (Vite default).
 | Script | Description |
 |---|---|
 | `npm run dev` | Start Vite dev server with HMR. |
-| `npm run build` | Production build (runs `prebuild` first to sync lead manifests). |
-| `npm run build:dev` | Development-mode build (with lead manifest sync). |
+| `npm run build` | Production build. |
+| `npm run build:dev` | Development-mode build. |
 | `npm run preview` | Preview the production build locally. |
 | `npm run lint` | Run ESLint. |
 
-### Outbound funnel asset generators
+### Outbound funnel asset generators (local dev only)
 
-These scripts power the Bizmis cold-outbound campaign assets (per-lead invite cards, early-access mockups, Instantly email templates). See the [Bizmis cold outbound funnel skills](https://www.notion.so/356985ebf15f81c9b8f3e51974c53474) (Go-to-Market) for the full pipeline.
+These scripts power the Bizmis cold-outbound campaign assets (per-lead invite cards, early-access mockups, Instantly email templates). They all live in the sibling [`bizmis-skills`](https://github.com/Toruhiyo/bizmis-skills) repo and are wrapped here as npm script shortcuts that shell out to `../bizmis-skills/scripts/invite-cards/…`. Production builds on Vercel do NOT run these — the lead loader in `src/data/leads/index.ts` auto-discovers any JSONs that exist locally and gracefully falls back to empty when bizmis-skills isn't checked out. See the [Bizmis cold outbound funnel skills](https://www.notion.so/356985ebf15f81c9b8f3e51974c53474) (Go-to-Market) for the full pipeline.
 
 | Script | Description |
 |---|---|
+| `npm run sync:leads-to-landing` | Copy per-lead JSONs from `bizmis-skills/data/invite-cards/` into `src/data/leads/`. |
 | `npm run sync:lead-product-manifest` | Sync the per-lead product manifest from upstream sources. |
 | `npm run fetch:lead-early-access-assets` | Fetch generated early-access assets per lead. |
 | `npm run generate:mock-lead-invite-assets` | Generate per-lead mockup invite assets (PNG renders). |
@@ -86,19 +87,20 @@ These scripts power the Bizmis cold-outbound campaign assets (per-lead invite ca
 ├── src/
 │   ├── pages/             # Route-level pages (Index, PrivacyPolicy, Terms, etc.)
 │   ├── components/        # React components (Hero, Pricing, FAQs sections, etc.)
-│   ├── data/              # Static data (faqs.ts, support-cases.ts, etc.)
+│   ├── data/              # Static data (faqs.ts, support-cases.ts, leads/, etc.)
 │   ├── hooks/             # React hooks
 │   ├── lib/               # Utilities + brand constants (bizmisBrandColors.ts)
 │   └── styles/            # Global CSS
 ├── public/                # Static assets served as-is
-├── scripts/               # Outbound funnel + asset generation scripts
-├── email-templates/       # Cold-outbound email templates (Instantly source)
+├── email-templates/       # Output of the Instantly generator scripts (HTML + per-lead merge fields)
 ├── index.html             # Vite entry HTML
 ├── vite.config.ts         # Vite config
 ├── tailwind.config.ts     # Tailwind config
 ├── components.json        # shadcn/ui config
 └── vercel.json            # Vercel rewrites + headers
 ```
+
+Outbound funnel scripts and lead/asset data live in the sibling `bizmis-skills` repo (see scripts table above).
 
 ---
 
@@ -110,7 +112,6 @@ These scripts power the Bizmis cold-outbound campaign assets (per-lead invite ca
 - [react-router-dom](https://reactrouter.com/) — client-side routing.
 - [@tanstack/react-query](https://tanstack.com/query) — server state.
 - [PostHog](https://posthog.com/) — product analytics.
-- [Playwright](https://playwright.dev/) + [sharp](https://sharp.pixelplumbing.com/) — image generation in `scripts/`.
 - [@emailjs/browser](https://www.emailjs.com/) — contact form delivery.
 
 ---

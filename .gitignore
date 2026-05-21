@@ -30,6 +30,11 @@ dist-ssr
 # files are absent (e.g. on Vercel, where bizmis-skills is not checked out).
 src/data/leads/*.json
 
+# Local invite-card asset mirror. Production serves /invite-cards/* from
+# Vercel Blob Storage (see vercel.json rewrites); devs typically symlink
+# this to ../../bizmis-skills/data/invite-cards for local previews.
+public/invite-cards
+
 # Env files
 .env
 .env.local
