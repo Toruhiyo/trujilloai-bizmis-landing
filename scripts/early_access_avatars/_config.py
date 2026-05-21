@@ -337,6 +337,8 @@ LEAD_REGISTRY: list[dict] = [
         "id": "bluetti",
         "primary_color": "#FFFFFF",
         "logo_color_overlay": None,
+        "shirt_color": "#00A2E4",
+        "stamp_color_overlay": "#FFFFFF",
         "avatar_id": "kiran",
         "support_avatar_id": "yue",
         "stamp_scale": 1.7,
@@ -483,6 +485,16 @@ LEAD_REGISTRY: list[dict] = [
         "avatar_id": "amber",
         "support_avatar_id": "will",
         "stamp_scale": 1.05,
+    },
+    # ── Batch 3 ──
+    {
+        "id": "upscale-audio",
+        "primary_color": "#FFFFFF",
+        "logo_color_overlay": None,
+        "shirt_color": "#1a1a1a",
+        "stamp_color_overlay": None,
+        "avatar_id": "echo",
+        "support_avatar_id": "amber",
     },
 ]
 

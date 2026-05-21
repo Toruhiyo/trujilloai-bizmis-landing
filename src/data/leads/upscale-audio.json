@@ -1,0 +1,45 @@
+{
+  "id": "upscale-audio",
+  "storeName": "Upscale Audio",
+  "storeDomain": "upscaleaudio.com",
+  "leadContactName": "Kevin",
+  "leadContactLastName": "Deal",
+  "content": "",
+  "primaryColor": "#FFFFFF",
+  "secondaryColor": null,
+  "textColor": "#fa2e00",
+  "logoColorOverlay": null,
+  "avatarShirtColor": "#1a1a1a",
+  "avatarStampColorOverlay": null,
+  "pitchLine": "Help audiophiles match the right source, amplifier, and speakers to their system and room.",
+  "salesShopperPrompt": "I want to get into vinyl — which turntable should I start with?",
+  "salesBizmisReply": "Good starting point. Do you already have speakers and a phono stage, or starting from scratch?",
+  "salesProducts": [
+    {
+      "title": "Technics SL-1500C",
+      "price": "$1,499.99",
+      "tag": "Turntable"
+    },
+    {
+      "title": "Klipsch The Fives II",
+      "price": "$1,399.99",
+      "tag": "Speakers"
+    },
+    {
+      "title": "Focal Azurys",
+      "price": "$499.00",
+      "tag": "Headphones"
+    }
+  ],
+  "salesRecommendedIndex": 0,
+  "salesFooterLine": "Guides listeners by source type, system compatibility, and listening goals.",
+  "montageShopperCue": "I want to get into vinyl but don't know where to start.",
+  "montageClerkCue": "The Technics SL-1500C, direct drive with a built-in phono stage.",
+  "supportShopperCue": "My Focal Azurys has a channel imbalance on the left side.",
+  "supportClerkCue": "Let's check your cable connections and Azurys warranty coverage.",
+  "supportPolicyName": "Warranty Policy",
+  "supportProductName": "Focal Azurys",
+  "country": "USA",
+  "vertical": "consumer_electronics_appliances",
+  "subNiche": "audio_home_theater"
+}

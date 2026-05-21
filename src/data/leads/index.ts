@@ -32,6 +32,7 @@ import speedengineering from "./speedengineering.json";
 import gorjana from "./gorjana.json";
 import crownandcaliber from "./crownandcaliber.json";
 import schoolhouse from "./schoolhouse.json";
+import upscaleaudio from "./upscale-audio.json";
 
 const RAW_LEADS = [
   mockLeadInviteCard,
@@ -65,6 +66,7 @@ const RAW_LEADS = [
   gorjana,
   crownandcaliber,
   schoolhouse,
+  upscaleaudio,
 ];
 
 function defaultCouponCodeFromId(id: string): string {

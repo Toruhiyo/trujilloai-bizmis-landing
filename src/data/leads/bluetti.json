@@ -7,14 +7,31 @@
   "content": "",
   "primaryColor": "#FFFFFF",
   "secondaryColor": null,
+  "bannerColor": null,
   "textColor": "#232f3f",
+  "logoColorOverlay": null,
+  "avatarShirtColor": "#00A2E4",
+  "avatarStampColorOverlay": "#FFFFFF",
+  "avatarStampImage": null,
   "pitchLine": "Help shoppers choose the right power station by use case, capacity, and portability.",
   "salesShopperPrompt": "I need backup power for my home that can also run during outages.",
   "salesBizmisReply": "Got it — whole-home panel integration or a portable unit you can move around?",
   "salesProducts": [
-    { "title": "Apex 300", "price": "$1,499", "tag": "Home" },
-    { "title": "AC200L", "price": "$899", "tag": "Portable" },
-    { "title": "Elite 300", "price": "$1,199", "tag": "Versatile" }
+    {
+      "title": "Apex 300",
+      "price": "$1,499",
+      "tag": "Home"
+    },
+    {
+      "title": "AC200L",
+      "price": "$899",
+      "tag": "Portable"
+    },
+    {
+      "title": "Elite 300",
+      "price": "$1,199",
+      "tag": "Versatile"
+    }
   ],
   "salesRecommendedIndex": 0,
   "salesFooterLine": "Guides shoppers by use case, capacity, and portability.",
@@ -24,7 +41,7 @@
   "supportClerkCue": "Update your Apex 300 firmware to fix the charge cap.",
   "supportPolicyName": "Troubleshooting Guide",
   "supportProductName": "Apex 300",
-  "country": "US/EU (global)",
-  "vertical": "home_furniture_decor",
+  "country": "USA",
+  "vertical": "consumer_electronics_appliances",
   "subNiche": "portable_power"
 }

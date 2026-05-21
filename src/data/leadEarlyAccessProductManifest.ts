@@ -3,7 +3,7 @@
 export type LeadProductSlot = "a" | "b" | "c";
 
 export const LEAD_PRODUCT_URLS: Record<string, Partial<Record<LeadProductSlot, string>>> = {
-  "bluetti": { a: "/invite-cards/leads/bluetti/product-a.webp", b: "/invite-cards/leads/bluetti/product-b.png", c: "/invite-cards/leads/bluetti/product-c.png" },
+  "bluetti": { a: "/invite-cards/leads/bluetti/product-a.webp", b: "/invite-cards/leads/bluetti/product-b.png", c: "/invite-cards/leads/bluetti/product-c.webp" },
   "bulova": { a: "/invite-cards/leads/bulova/product-a.png", b: "/invite-cards/leads/bulova/product-b.png", c: "/invite-cards/leads/bulova/product-c.png" },
   "burrow": { a: "/invite-cards/leads/burrow/product-a.png", b: "/invite-cards/leads/burrow/product-b.png", c: "/invite-cards/leads/burrow/product-c.png" },
   "crownandcaliber": { a: "/invite-cards/leads/crownandcaliber/product-a.png", b: "/invite-cards/leads/crownandcaliber/product-b.png", c: "/invite-cards/leads/crownandcaliber/product-c.png" },
@@ -32,6 +32,7 @@ export const LEAD_PRODUCT_URLS: Record<string, Partial<Record<LeadProductSlot, s
   "speedengineering": { a: "/invite-cards/leads/speedengineering/product-a.png", b: "/invite-cards/leads/speedengineering/product-b.png", c: "/invite-cards/leads/speedengineering/product-c.png" },
   "thehomesecuritysuperstore": { a: "/invite-cards/leads/thehomesecuritysuperstore/product-a.png", b: "/invite-cards/leads/thehomesecuritysuperstore/product-b.png", c: "/invite-cards/leads/thehomesecuritysuperstore/product-c.png" },
   "theproscloset": { a: "/invite-cards/leads/theproscloset/product-a.jpg", b: "/invite-cards/leads/theproscloset/product-b.jpg", c: "/invite-cards/leads/theproscloset/product-c.jpg" },
+  "upscale-audio": { a: "/invite-cards/leads/upscale-audio/product-a.jpg", b: "/invite-cards/leads/upscale-audio/product-b.jpg", c: "/invite-cards/leads/upscale-audio/product-c.jpg" },
   "urotuning": { a: "/invite-cards/leads/urotuning/product-a.png", b: "/invite-cards/leads/urotuning/product-b.png", c: "/invite-cards/leads/urotuning/product-c.png" },
   "uswatersystems": { a: "/invite-cards/leads/uswatersystems/product-a.png", b: "/invite-cards/leads/uswatersystems/product-b.png", c: "/invite-cards/leads/uswatersystems/product-c.png" },
 };
