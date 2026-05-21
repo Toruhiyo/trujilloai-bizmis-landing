@@ -496,6 +496,25 @@ LEAD_REGISTRY: list[dict] = [
         "avatar_id": "echo",
         "support_avatar_id": "amber",
     },
+    # ── Batch 4 ──
+    {
+        "id": "gymshark",
+        "primary_color": "#FFFFFF",
+        "logo_color_overlay": None,
+        "shirt_color": "#000000",
+        "stamp_color_overlay": "#ffffff",
+        "avatar_id": "mia",
+        "support_avatar_id": "luca",
+    },
+    {
+        "id": "bodega",
+        "primary_color": "#000000",
+        "logo_color_overlay": "#ffffff",
+        "shirt_color": "#000000",
+        "stamp_color_overlay": "#ffffff",
+        "avatar_id": "will",
+        "support_avatar_id": "amber",
+    },
 ]
 
 _LEAD_BY_ID: dict[str, dict] = {lead["id"]: lead for lead in LEAD_REGISTRY}

@@ -33,6 +33,8 @@ import gorjana from "./gorjana.json";
 import crownandcaliber from "./crownandcaliber.json";
 import schoolhouse from "./schoolhouse.json";
 import upscaleaudio from "./upscale-audio.json";
+import gymshark from "./gymshark.json";
+import bodega from "./bodega.json";
 
 const RAW_LEADS = [
   mockLeadInviteCard,
@@ -67,6 +69,8 @@ const RAW_LEADS = [
   crownandcaliber,
   schoolhouse,
   upscaleaudio,
+  gymshark,
+  bodega,
 ];
 
 function defaultCouponCodeFromId(id: string): string {

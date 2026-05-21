@@ -1,0 +1,46 @@
+{
+  "id": "gymshark",
+  "storeName": "Gymshark",
+  "storeDomain": "gymshark.com",
+  "leadContactName": "Sagar",
+  "leadContactLastName": "Dulal",
+  "leadContactEmail": "sagar.dulal@gymshark.com",
+  "content": "",
+  "primaryColor": "#FFFFFF",
+  "secondaryColor": null,
+  "textColor": "#000000",
+  "logoColorOverlay": null,
+  "avatarShirtColor": "#000000",
+  "avatarStampColorOverlay": "#ffffff",
+  "pitchLine": "Guide fitness shoppers to the right training gear by workout type, fit style, and performance goal.",
+  "salesShopperPrompt": "I do a mix of lifting and yoga — which leggings work for both?",
+  "salesBizmisReply": "Good combo. Do you want more sculpting compression or lighter fabric with full stretch?",
+  "salesProducts": [
+    {
+      "title": "Vital Seamless 2.0 Leggings",
+      "price": "$54.00",
+      "tag": "Leggings"
+    },
+    {
+      "title": "Vital Seamless Midi Zip Pullover",
+      "price": "$55.00",
+      "tag": "Pullover"
+    },
+    {
+      "title": "Vital 2-in-1 Shorts",
+      "price": "$50.00",
+      "tag": "Shorts"
+    }
+  ],
+  "salesRecommendedIndex": 0,
+  "salesFooterLine": "Guides shoppers by workout type, fit preference, and performance goal.",
+  "montageShopperCue": "I need leggings that hold up for lifting but still look good.",
+  "montageClerkCue": "The Vital Seamless 2.0 Leggings, sculpting fit with seamless flexibility.",
+  "supportShopperCue": "My Vital Seamless Leggings started pilling after a few washes.",
+  "supportClerkCue": "Pilling on the Vital Seamless Leggings is covered under the care guide.",
+  "supportPolicyName": "Care Guide",
+  "supportProductName": "Vital Seamless 2.0 Leggings",
+  "country": "USA",
+  "vertical": "apparel_footwear",
+  "subNiche": "athletic_performance_apparel"
+}

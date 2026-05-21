@@ -4,6 +4,7 @@ export type LeadProductSlot = "a" | "b" | "c";
 
 export const LEAD_PRODUCT_URLS: Record<string, Partial<Record<LeadProductSlot, string>>> = {
   "bluetti": { a: "/invite-cards/leads/bluetti/product-a.webp", b: "/invite-cards/leads/bluetti/product-b.png", c: "/invite-cards/leads/bluetti/product-c.webp" },
+  "bodega": { a: "/invite-cards/leads/bodega/product-a.jpg", b: "/invite-cards/leads/bodega/product-b.jpg", c: "/invite-cards/leads/bodega/product-c.jpg" },
   "bulova": { a: "/invite-cards/leads/bulova/product-a.png", b: "/invite-cards/leads/bulova/product-b.png", c: "/invite-cards/leads/bulova/product-c.png" },
   "burrow": { a: "/invite-cards/leads/burrow/product-a.png", b: "/invite-cards/leads/burrow/product-b.png", c: "/invite-cards/leads/burrow/product-c.png" },
   "crownandcaliber": { a: "/invite-cards/leads/crownandcaliber/product-a.png", b: "/invite-cards/leads/crownandcaliber/product-b.png", c: "/invite-cards/leads/crownandcaliber/product-c.png" },
@@ -12,6 +13,7 @@ export const LEAD_PRODUCT_URLS: Record<string, Partial<Record<LeadProductSlot, s
   "glossier": { a: "/invite-cards/leads/glossier/product-a.jpg", b: "/invite-cards/leads/glossier/product-b.jpg", c: "/invite-cards/leads/glossier/product-c.jpg" },
   "glowforge": { a: "/invite-cards/leads/glowforge/product-a.webp", b: "/invite-cards/leads/glowforge/product-b.webp", c: "/invite-cards/leads/glowforge/product-c.webp" },
   "gorjana": { a: "/invite-cards/leads/gorjana/product-a.png", b: "/invite-cards/leads/gorjana/product-b.png", c: "/invite-cards/leads/gorjana/product-c.png" },
+  "gymshark": { a: "/invite-cards/leads/gymshark/product-a.jpg", b: "/invite-cards/leads/gymshark/product-b.jpg", c: "/invite-cards/leads/gymshark/product-c.jpg" },
   "hodinkee": { a: "/invite-cards/leads/hodinkee/product-a.webp", b: "/invite-cards/leads/hodinkee/product-b.webp", c: "/invite-cards/leads/hodinkee/product-c.webp" },
   "jackery": { a: "/invite-cards/leads/jackery/product-a.png", b: "/invite-cards/leads/jackery/product-b.png", c: "/invite-cards/leads/jackery/product-c.png" },
   "jdmenginezone": { a: "/invite-cards/leads/jdmenginezone/product-a.png", b: "/invite-cards/leads/jdmenginezone/product-b.png", c: "/invite-cards/leads/jdmenginezone/product-c.png" },
