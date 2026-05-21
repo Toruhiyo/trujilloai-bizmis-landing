@@ -24,8 +24,8 @@ dist-ssr
 *.sw?
 
 
-# Generated lead data (source of truth is bizmis-skills/data/leads/)
-src/data/leads/*.json
+# Generated lead data (source of truth is bizmis-skills/data/invite-cards/)
+src/data/leads/[!_]*.json
 src/data/leads/index.ts
 
 # Env files
