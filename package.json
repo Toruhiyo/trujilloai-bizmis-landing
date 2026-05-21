@@ -15,6 +15,7 @@
     "generate:mock-lead-invite-assets": "node ../bizmis-skills/scripts/invite-cards/generate-mock-lead-invite-assets.mjs",
     "generate:instantly-template": "node ../bizmis-skills/scripts/invite-cards/generate-instantly-template.mjs",
     "generate:instantly-lead-fields": "node ../bizmis-skills/scripts/invite-cards/generate-instantly-lead-fields.mjs",
+    "upload:mockup": "/Users/oriol/Projects/Bizmis/trujilloai-bizmis-studio/.venv/bin/python ../bizmis-skills/scripts/invite-cards/upload-mockup.py",
     "lint": "eslint .",
     "preview": "vite preview"
   },
