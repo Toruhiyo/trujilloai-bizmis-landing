@@ -477,15 +477,18 @@ function buildSignatureHtml(baseUrl: string, bizmisInviteSiteUrl: string): strin
   const nameStyle = `font-family:${SYSTEM_FONT_STACK};font-size:15px;font-weight:600;line-height:1.4;color:${FOREGROUND_HEX};`;
   const roleStyle = `font-family:${SYSTEM_FONT_STACK};font-size:13px;line-height:1.5;color:${BIZMIS_MUTED_FG_HEX};`;
   const roleBizmisStyle = `color:${BIZMIS_PRIMARY_HEX};font-weight:600;`;
+  const logoPx = SIGNATURE_BIZMIS_LOGO_DISPLAY_PX;
+  const gapPx = SIGNATURE_LOGO_TEXT_GAP_PX;
   return `<p style="margin:0;${closingStyle}">${escapeHtml(c.signatureClosing)}</p>
-<table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin:${SIGNATURE_AFTER_CLOSING_GAP_PX}px 0 0 0;">
+<table role="presentation" cellpadding="0" cellspacing="0" border="0" align="left" style="margin:${SIGNATURE_AFTER_CLOSING_GAP_PX}px 0 0 0;">
 <tr>
-<td valign="middle" style="padding:0 ${SIGNATURE_LOGO_TEXT_GAP_PX}px 0 0;vertical-align:middle;">
-<a href="${escapeAttr(bizmisInviteSiteUrl)}" target="_blank" rel="noopener noreferrer" style="display:inline-block;text-decoration:none;border:0;line-height:0;font-size:0;">
-<img src="${escapeAttr(logoUrl)}" alt="Bizmis" width="${SIGNATURE_BIZMIS_LOGO_DISPLAY_PX}" height="${SIGNATURE_BIZMIS_LOGO_DISPLAY_PX}" style="display:block;width:${SIGNATURE_BIZMIS_LOGO_DISPLAY_PX}px;height:${SIGNATURE_BIZMIS_LOGO_DISPLAY_PX}px;border:0;" />
+<td width="${logoPx}" valign="middle" align="left" style="width:${logoPx}px;vertical-align:middle;">
+<a href="${escapeAttr(bizmisInviteSiteUrl)}" target="_blank" rel="noopener noreferrer" style="text-decoration:none;">
+<img src="${escapeAttr(logoUrl)}" alt="Bizmis" width="${logoPx}" height="${logoPx}" border="0" style="display:block;width:${logoPx}px;height:${logoPx}px;border:0;" />
 </a>
 </td>
-<td valign="top" style="padding:0;vertical-align:top;">
+<td width="${gapPx}" style="width:${gapPx}px;font-size:0;line-height:0;">&nbsp;</td>
+<td width="1" valign="middle" align="left" style="width:1px;vertical-align:middle;white-space:nowrap;">
 <p style="margin:0;${nameStyle}">${escapeHtml(c.signatureName)}</p>
 <p style="margin:2px 0 0 0;${roleStyle}">${escapeHtml(c.signatureRoleBeforeBizmis)}<span style="${roleBizmisStyle}">${escapeHtml(c.signatureRoleBizmisWord)}</span></p>
 </td>
