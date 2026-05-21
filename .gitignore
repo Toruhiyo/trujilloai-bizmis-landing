@@ -24,6 +24,10 @@ dist-ssr
 *.sw?
 
 
+# Generated lead data (source of truth is bizmis-skills/data/leads/)
+src/data/leads/*.json
+src/data/leads/index.ts
+
 # Env files
 .env
 .env.local
