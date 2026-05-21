@@ -221,7 +221,7 @@ function renderSafeHtml(lead: LeadEarlyAccessData, baseUrl: string, utmCampaign:
   const earlyAccessCode = lead.couponCode;
   const topProductTitle = lead.salesProducts[lead.salesRecommendedIndex].title;
 
-  const combinedMockupUrl = absUrl(baseUrl, `/invite-cards/leads/${lead.id}/email/mockup.png`);
+  const combinedMockupUrl = absUrl(baseUrl, `/invite-cards/${lead.id}/email/mockup.png`);
 
   const utmTail = buildOutboundUtmTail(lead.id, utmCampaign);
   const bookCallUrl = `${bookACallUrl}?ref=${leadHandle}&${utmTail}`;
