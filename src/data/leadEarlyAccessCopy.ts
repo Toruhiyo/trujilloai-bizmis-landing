@@ -46,9 +46,9 @@ export const EARLY_ACCESS_EMAIL_COPY = {
    */
   ctaUrgencyEmphasis1: "priority input on the Bizmis roadmap",
   ctaUrgencyBetweenEmphasis1And2:
-    " \u2014 early-access stores get a real say in what gets built, and what we learn from ",
+    " \u2014 early-access stores get a real say in what gets built, so every update pushes ",
   ctaUrgencyStoreFallback: "your store",
-  ctaUrgencyAfterStoreName: " informs what comes next",
+  ctaUrgencyAfterStoreName: " further ahead",
   ctaUrgencyBetweenEmphasis2And3:
     ". Book the call and I\u2019ll personally get Bizmis live on your storefront with you. ",
   ctaUrgencyEmphasis3: "No card, free during early access",
