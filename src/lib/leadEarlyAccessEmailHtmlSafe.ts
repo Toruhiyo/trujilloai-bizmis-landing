@@ -230,7 +230,7 @@ function renderSafeHtml(lead: LeadEarlyAccessData, baseUrl: string, utmCampaign:
 
   const salutationText = escapeHtml(buildEarlyAccessSalutationPlainText(lead.storeName, lead.leadContactName));
 
-  const pitchHtml = buildPitchParagraphHtml();
+  const pitchHtml = buildPitchParagraphHtml(storeName);
   const ctaUrgencyHtml = buildCtaUrgencyHtml(storeName, storeCap);
   const ctaBoxHtml = buildCtaBoxHtml(bookCallUrl, installUrlWithCode, earlyAccessCode);
 
@@ -387,11 +387,11 @@ function buildCenteredImage(spec: CenteredImageSpec): string {
   return `<img src="${escapeAttr(spec.src)}" alt="${escapeAttr(spec.alt)}" width="${spec.widthPx}" height="${spec.heightPx}" style="display:block;${widthAttr}border:0;border-radius:${spec.borderRadiusPx}px;" />`;
 }
 
-function buildPitchParagraphHtml(): string {
+function buildPitchParagraphHtml(storeName: string): string {
   const c = EARLY_ACCESS_EMAIL_COPY;
   const fgStyle = `font-family:${SYSTEM_FONT_STACK};font-size:15px;line-height:1.72;color:${FOREGROUND_HEX};`;
   return `<p style="margin:0;${fgStyle}">
-${escapeHtml(c.inviteIntroBeforeBizmis)}${escapeHtml(c.inviteSentenceBizmisWord)}${escapeHtml(c.inviteIntroAfterBizmis)}<strong style="font-weight:600;">${escapeHtml(c.inviteSentenceValueDriveSales)}</strong>${escapeHtml(c.inviteSentenceValueJoiner)}<strong style="font-weight:600;">${escapeHtml(c.inviteSentenceValueEaseSupport)}</strong>.
+${escapeHtml(c.inviteIntroBeforeBizmis)}${escapeHtml(c.inviteSentenceBizmisWord)}${escapeHtml(c.inviteIntroReachOutBeforeStore)}${escapeHtml(storeName)}${escapeHtml(c.inviteIntroReachOutAfterStore)}${escapeHtml(c.inviteIntroProductPitch)}<strong style="font-weight:600;">${escapeHtml(c.inviteSentenceValueDriveSales)}</strong>${escapeHtml(c.inviteSentenceValueJoiner)}<strong style="font-weight:600;">${escapeHtml(c.inviteSentenceValueEaseSupport)}</strong>.
 </p>`;
 }
 

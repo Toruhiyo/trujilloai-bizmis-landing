@@ -1488,7 +1488,7 @@ export function buildLeadEarlyAccessEmailHtml(
     : `${escapeHtml(copy.greetingDear)} ${store}${escapeHtml(copy.greetingStoreTeamSuffix)}`;
   const bizmisWordEsc = escapeHtml(copy.inviteSentenceBizmisWord);
   const valueBold = "font-weight:600;";
-  const inviteLeadParagraphInnerHtml = `${escapeHtml(copy.inviteIntroBeforeBizmis)}<span style="${accentInviteBizmis}">${bizmisWordEsc}</span>${escapeHtml(copy.inviteIntroAfterBizmis)}<strong style="${valueBold}">${escapeHtml(copy.inviteSentenceValueDriveSales)}</strong>${escapeHtml(copy.inviteSentenceValueJoiner)}<strong style="${valueBold}">${escapeHtml(copy.inviteSentenceValueEaseSupport)}</strong>.`;
+  const inviteLeadParagraphInnerHtml = `${escapeHtml(copy.inviteIntroBeforeBizmis)}<span style="${accentInviteBizmis}">${bizmisWordEsc}</span>${escapeHtml(copy.inviteIntroReachOutBeforeStore)}<span style="${accentInviteStore}">${store}</span>${escapeHtml(copy.inviteIntroReachOutAfterStore)}${escapeHtml(copy.inviteIntroProductPitch)}<strong style="${valueBold}">${escapeHtml(copy.inviteSentenceValueDriveSales)}</strong>${escapeHtml(copy.inviteSentenceValueJoiner)}<strong style="${valueBold}">${escapeHtml(copy.inviteSentenceValueEaseSupport)}</strong>.`;
   const ctaUrgencyParagraphInnerHtml = `${escapeHtml(copy.ctaUrgencyEaOpenBeforeCap)}${storeCap}${escapeHtml(copy.ctaUrgencyEaOpenAfterCapBeforeStore)}${store}${escapeHtml(copy.ctaUrgencyEaOpenAfterStoreName)}<strong style="${valueBold}">${escapeHtml(copy.ctaUrgencyEmphasis1)}</strong>${escapeHtml(copy.ctaUrgencyBetweenEmphasis1And2)}<strong style="${valueBold}">${store}${escapeHtml(copy.ctaUrgencyAfterStoreName)}</strong>${escapeHtml(copy.ctaUrgencyBetweenEmphasis2And3)}<strong style="${valueBold}">${escapeHtml(copy.ctaUrgencyEmphasis3)}</strong>${escapeHtml(copy.ctaUrgencyAfterEmphasis3)}`;
 
   const inviteTopGreetingStyle = `${BODY}font-size:11px;font-weight:400;line-height:1.6;color:${BIZMIS_MUTED_FG_HEX};letter-spacing:0.01em;`;
@@ -1824,7 +1824,7 @@ export function buildLeadEarlyAccessEmailHtml(
   const plainText = [
     buildEarlyAccessSalutationPlainText(lead.storeName, lead.leadContactName),
     "",
-    buildInviteLeadParagraphPlainText(),
+    buildInviteLeadParagraphPlainText(lead.storeName),
     "",
     buildSoftCtaPlainText(shopifyAppUrl, storeCap),
     "",

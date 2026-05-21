@@ -8,8 +8,11 @@ export const EARLY_ACCESS_EMAIL_COPY = {
   greetingDear: "Dear",
   greetingStoreTeamSuffix: " team,",
   inviteIntroBeforeBizmis: "I\u2019m Oriol, founder of ",
-  inviteIntroAfterBizmis:
-    ". We\u2019ve built voice-first AI store associates for Shopify that bring the in-store shopping experience to e-commerce. This isn\u2019t a chatbot. It welcomes shoppers, answers their questions, and guides them to buy with confidence, just like your best in-store salesperson would, helping your store ",
+  inviteIntroReachOutBeforeStore:
+    ". I\u2019m reaching out because we\u2019re inviting a small group of Shopify stores like ",
+  inviteIntroReachOutAfterStore: " to try Bizmis in real storefronts before the public launch. ",
+  inviteIntroProductPitch:
+    "We\u2019ve built voice-first AI store associates for Shopify that bring the in-store shopping experience to e-commerce. This isn\u2019t a chatbot. It welcomes shoppers, answers their questions, and guides them to buy with confidence, just like your best in-store salesperson would, helping your store ",
   inviteSentenceBizmisWord: "Bizmis",
   inviteSentenceValueDriveSales: "drive more sales",
   inviteSentenceValueJoiner: " and ",
@@ -156,9 +159,9 @@ export function earlyAccessFirstNameMergeValue(
   return suffix.length > 0 ? `${storeName} ${suffix}` : storeName;
 }
 
-export function buildInviteLeadParagraphPlainText(): string {
+export function buildInviteLeadParagraphPlainText(storeName: string): string {
   const c = EARLY_ACCESS_EMAIL_COPY;
-  return `${c.inviteIntroBeforeBizmis}${c.inviteSentenceBizmisWord}${c.inviteIntroAfterBizmis}${c.inviteSentenceValueDriveSales}${c.inviteSentenceValueJoiner}${c.inviteSentenceValueEaseSupport}.`;
+  return `${c.inviteIntroBeforeBizmis}${c.inviteSentenceBizmisWord}${c.inviteIntroReachOutBeforeStore}${storeName}${c.inviteIntroReachOutAfterStore}${c.inviteIntroProductPitch}${c.inviteSentenceValueDriveSales}${c.inviteSentenceValueJoiner}${c.inviteSentenceValueEaseSupport}.`;
 }
 
 export function buildEarlyAccessChips(storeCap: number): readonly [string, string, string] {
