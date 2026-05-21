@@ -5,6 +5,7 @@ export type LeadProductSlot = "a" | "b" | "c";
 export const LEAD_PRODUCT_URLS: Record<string, Partial<Record<LeadProductSlot, string>>> = {
   "bluetti": { a: "/invite-cards/bluetti/product-a.webp", b: "/invite-cards/bluetti/product-b.png", c: "/invite-cards/bluetti/product-c.webp" },
   "bodega": { a: "/invite-cards/bodega/product-a.jpg", b: "/invite-cards/bodega/product-b.jpg", c: "/invite-cards/bodega/product-c.jpg" },
+  "bombas": { a: "/invite-cards/bombas/product-a.png", b: "/invite-cards/bombas/product-b.png", c: "/invite-cards/bombas/product-c.png" },
   "bulova": { a: "/invite-cards/bulova/product-a.png", b: "/invite-cards/bulova/product-b.png", c: "/invite-cards/bulova/product-c.png" },
   "burrow": { a: "/invite-cards/burrow/product-a.png", b: "/invite-cards/burrow/product-b.png", c: "/invite-cards/burrow/product-c.png" },
   "crownandcaliber": { a: "/invite-cards/crownandcaliber/product-a.png", b: "/invite-cards/crownandcaliber/product-b.png", c: "/invite-cards/crownandcaliber/product-c.png" },
@@ -26,6 +27,7 @@ export const LEAD_PRODUCT_URLS: Record<string, Partial<Record<LeadProductSlot, s
   "peakdesign": { a: "/invite-cards/peakdesign/product-a.webp", b: "/invite-cards/peakdesign/product-b.webp", c: "/invite-cards/peakdesign/product-c.webp" },
   "positivegrid": { a: "/invite-cards/positivegrid/product-a.png", b: "/invite-cards/positivegrid/product-b.png", c: "/invite-cards/positivegrid/product-c.png" },
   "pura": { a: "/invite-cards/pura/product-a.png", b: "/invite-cards/pura/product-b.png", c: "/invite-cards/pura/product-c.png" },
+  "ruggable": { a: "/invite-cards/ruggable/product-a.jpg", b: "/invite-cards/ruggable/product-b.jpg", c: "/invite-cards/ruggable/product-c.jpg" },
   "schoolhouse": { a: "/invite-cards/schoolhouse/product-a.png", b: "/invite-cards/schoolhouse/product-b.png", c: "/invite-cards/schoolhouse/product-c.png" },
   "sennheiser": { a: "/invite-cards/sennheiser/product-a.png", b: "/invite-cards/sennheiser/product-b.png", c: "/invite-cards/sennheiser/product-c.png" },
   "shapermint": { a: "/invite-cards/shapermint/product-a.webp", b: "/invite-cards/shapermint/product-b.webp", c: "/invite-cards/shapermint/product-c.webp" },
