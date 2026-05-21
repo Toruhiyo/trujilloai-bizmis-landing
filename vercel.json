@@ -12,12 +12,12 @@
   ],
   "rewrites": [
     {
-      "source": "/(.*)",
-      "destination": "/index.html"
+      "source": "/invite-cards/:path*",
+      "destination": "https://8josk2l8la4zszeg.public.blob.vercel-storage.com/invite-cards/:path*"
     },
     {
-      "source": "/invite-cards/:path*",
-      "destination": "https://store_8joSk2L8La4zsZeg.public.blob.vercel-storage.com/invite-cards/:path*"
+      "source": "/(.*)",
+      "destination": "/index.html"
     }
   ]
 }
