@@ -24,9 +24,11 @@ dist-ssr
 *.sw?
 
 
-# Generated lead data (source of truth is bizmis-skills/data/invite-cards/)
-src/data/leads/[!_]*.json
-src/data/leads/index.ts
+# Generated lead data (source of truth is bizmis-skills/data/invite-cards/).
+# The loader in src/data/leads/index.ts auto-discovers any JSONs that exist
+# locally via import.meta.glob, so production builds still work when these
+# files are absent (e.g. on Vercel, where bizmis-skills is not checked out).
+src/data/leads/*.json
 
 # Env files
 .env

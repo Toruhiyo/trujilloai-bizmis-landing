@@ -5,11 +5,9 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "predev": "node ../bizmis-skills/scripts/invite-cards/sync-leads-to-landing.mjs",
-    "prebuild": "node ../bizmis-skills/scripts/invite-cards/sync-leads-to-landing.mjs && node ../bizmis-skills/scripts/invite-cards/sync-lead-product-manifest.mjs",
     "sync:leads-to-landing": "node ../bizmis-skills/scripts/invite-cards/sync-leads-to-landing.mjs",
     "build": "vite build",
-    "build:dev": "npm run sync:leads-to-landing && npm run sync:lead-product-manifest && vite build --mode development",
+    "build:dev": "vite build --mode development",
     "fetch:lead-early-access-assets": "node ../bizmis-skills/scripts/invite-cards/fetch-lead-early-access-assets.mjs",
     "sync:lead-product-manifest": "node ../bizmis-skills/scripts/invite-cards/sync-lead-product-manifest.mjs",
     "generate:montage-waveform": "node ../bizmis-skills/scripts/invite-cards/generate-montage-waveform-png.mjs",
