@@ -10,6 +10,7 @@ export const LEAD_PRODUCT_URLS: Record<string, Partial<Record<LeadProductSlot, s
   "burrow": { a: "/invite-cards/burrow/product-a.png", b: "/invite-cards/burrow/product-b.png", c: "/invite-cards/burrow/product-c.png" },
   "crownandcaliber": { a: "/invite-cards/crownandcaliber/product-a.png", b: "/invite-cards/crownandcaliber/product-b.png", c: "/invite-cards/crownandcaliber/product-c.png" },
   "emotiva": { a: "/invite-cards/emotiva/product-a.png", b: "/invite-cards/emotiva/product-b.png", c: "/invite-cards/emotiva/product-c.png" },
+  "emotiva-audio": { a: "/invite-cards/emotiva-audio/product-a.png", b: "/invite-cards/emotiva-audio/product-b.png", c: "/invite-cards/emotiva-audio/product-c.png" },
   "floyd": { a: "/invite-cards/floyd/product-a.png", b: "/invite-cards/floyd/product-b.png", c: "/invite-cards/floyd/product-c.png" },
   "glossier": { a: "/invite-cards/glossier/product-a.jpg", b: "/invite-cards/glossier/product-b.jpg", c: "/invite-cards/glossier/product-c.jpg" },
   "glowforge": { a: "/invite-cards/glowforge/product-a.webp", b: "/invite-cards/glowforge/product-b.webp", c: "/invite-cards/glowforge/product-c.webp" },
@@ -24,7 +25,9 @@ export const LEAD_PRODUCT_URLS: Record<string, Partial<Record<LeadProductSlot, s
   "mock-lead-invite-card": { a: "/invite-cards/mock-lead-invite-card/product-a.webp", b: "/invite-cards/mock-lead-invite-card/product-b.webp", c: "/invite-cards/mock-lead-invite-card/product-c.webp" },
   "molekule": { a: "/invite-cards/molekule/product-a.webp", b: "/invite-cards/molekule/product-b.webp", c: "/invite-cards/molekule/product-c.webp" },
   "nanoleaf": { a: "/invite-cards/nanoleaf/product-a.jpg", b: "/invite-cards/nanoleaf/product-b.jpg", c: "/invite-cards/nanoleaf/product-c.png" },
+  "paloma-wool": { a: "/invite-cards/paloma-wool/product-a.png", b: "/invite-cards/paloma-wool/product-b.png", c: "/invite-cards/paloma-wool/product-c.png" },
   "peakdesign": { a: "/invite-cards/peakdesign/product-a.webp", b: "/invite-cards/peakdesign/product-b.webp", c: "/invite-cards/peakdesign/product-c.webp" },
+  "popflex-active": { a: "/invite-cards/popflex-active/product-a.jpg", b: "/invite-cards/popflex-active/product-b.jpg", c: "/invite-cards/popflex-active/product-c.jpg" },
   "positivegrid": { a: "/invite-cards/positivegrid/product-a.png", b: "/invite-cards/positivegrid/product-b.png", c: "/invite-cards/positivegrid/product-c.png" },
   "pura": { a: "/invite-cards/pura/product-a.png", b: "/invite-cards/pura/product-b.png", c: "/invite-cards/pura/product-c.png" },
   "ruggable": { a: "/invite-cards/ruggable/product-a.jpg", b: "/invite-cards/ruggable/product-b.jpg", c: "/invite-cards/ruggable/product-c.jpg" },
@@ -39,6 +42,7 @@ export const LEAD_PRODUCT_URLS: Record<string, Partial<Record<LeadProductSlot, s
   "upscale-audio": { a: "/invite-cards/upscale-audio/product-a.jpg", b: "/invite-cards/upscale-audio/product-b.jpg", c: "/invite-cards/upscale-audio/product-c.jpg" },
   "urotuning": { a: "/invite-cards/urotuning/product-a.png", b: "/invite-cards/urotuning/product-b.png", c: "/invite-cards/urotuning/product-c.png" },
   "uswatersystems": { a: "/invite-cards/uswatersystems/product-a.png", b: "/invite-cards/uswatersystems/product-b.png", c: "/invite-cards/uswatersystems/product-c.png" },
+  "vrai": { a: "/invite-cards/vrai/product-a.jpg", b: "/invite-cards/vrai/product-b.jpg", c: "/invite-cards/vrai/product-c.jpg" },
 };
 
 export function resolveLeadProductPath(leadId: string, slot: LeadProductSlot): string {
