@@ -931,8 +931,11 @@ function emailMontageWatermarkWaveformHtml(
 const REGULAR_CARD_W = 122;
 const REGULAR_IMG_W = 76;
 const REGULAR_IMG_H = 76;
+const REGULAR_IMG_SLOT_H = REGULAR_IMG_H + 12;
 const REC_CARD_MAX_W = 152;
 const REC_IMG_W = 112;
+const REC_IMG_H = 88;
+const REC_IMG_SLOT_H = REC_IMG_H + 18;
 
 function buildMontageClerkCueInnerHtml(
   customCue: string | null,
@@ -987,8 +990,8 @@ function buildMontageProductCardHtml(
               <div style="background-color:${palette.hex};padding:7px 0;text-align:center;line-height:1;display:flex;align-items:center;justify-content:center;">
                 <span style="${BODY}font-size:10px;font-weight:700;color:${palette.uiBadgeTextColor};letter-spacing:0.06em;text-transform:uppercase;vertical-align:middle;">&#9733; Recommended</span>
               </div>
-              <div style="padding:10px 10px 8px 10px;text-align:center;">
-                <img src="${imgUrl}" alt="" width="${REC_IMG_W}" style="display:block;margin:0 auto;max-width:${REC_IMG_W}px;height:auto;border:0;border-radius:8px;" />
+              <div style="padding:10px 10px 8px 10px;text-align:center;height:${REC_IMG_SLOT_H}px;display:flex;align-items:center;justify-content:center;overflow:hidden;">
+                <img src="${imgUrl}" alt="" width="${REC_IMG_W}" style="display:block;margin:0 auto;max-width:${REC_IMG_W}px;max-height:${REC_IMG_H}px;width:auto;height:auto;border:0;border-radius:8px;object-fit:contain;" />
               </div>
               <div style="padding:4px 12px 12px 12px;text-align:center;">
                 <p style="margin:0;${BODY}font-size:11px;font-weight:700;color:${BIZMIS_FOREGROUND_HEX};line-height:1.3;">${escapeHtml(product.title)}</p>
@@ -998,8 +1001,8 @@ function buildMontageProductCardHtml(
   }
 
   return `<div style="display:inline-block;width:${REGULAR_CARD_W}px;border-radius:12px;background:rgba(255,255,255,0.82);-webkit-backdrop-filter:blur(24px);backdrop-filter:blur(24px);border:1px solid rgba(240,224,208,0.5);overflow:hidden;">
-              <div style="padding:8px 8px 6px 8px;text-align:center;height:${REGULAR_IMG_H + 12}px;display:flex;align-items:center;justify-content:center;">
-                <img src="${imgUrl}" alt="" width="${REGULAR_IMG_W}" style="display:block;margin:0 auto;max-width:${REGULAR_IMG_W}px;max-height:${REGULAR_IMG_H}px;height:auto;border:0;border-radius:8px;object-fit:contain;" />
+              <div style="padding:8px 8px 6px 8px;text-align:center;height:${REGULAR_IMG_SLOT_H}px;display:flex;align-items:center;justify-content:center;overflow:hidden;">
+                <img src="${imgUrl}" alt="" width="${REGULAR_IMG_W}" style="display:block;margin:0 auto;max-width:${REGULAR_IMG_W}px;max-height:${REGULAR_IMG_H}px;width:auto;height:auto;border:0;border-radius:8px;object-fit:contain;" />
               </div>
               <div style="padding:0 10px 8px 10px;text-align:center;">
                 <p style="margin:0;${BODY}font-size:10px;font-weight:600;color:${BIZMIS_FOREGROUND_HEX};line-height:1.2;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${escapeHtml(product.title)}</p>
