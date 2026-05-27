@@ -1,5 +1,4 @@
 import type { LeadEarlyAccessData, LeadEarlyAccessJson } from "./_schema";
-import { resolveLeadProductPath } from "@/data/leadEarlyAccessProductManifest";
 
 /**
  * Per-lead JSON files are produced by the bizmis-skills sync script
@@ -40,9 +39,9 @@ export function hydrateLead(raw: LeadEarlyAccessJson, index: number): LeadEarlyA
     logoImagePath: `/invite-cards/_/${id}/logo.png`,
     salesAvatarImagePath: `/invite-cards/_/${id}/sales-avatar.png`,
     supportAvatarImagePath: `/invite-cards/_/${id}/support-avatar.png`,
-    productAImagePath: resolveLeadProductPath(id, "a"),
-    productBImagePath: resolveLeadProductPath(id, "b"),
-    productCImagePath: resolveLeadProductPath(id, "c"),
+    productAImagePath: `/invite-cards/_/${id}/product-a.jpg`,
+    productBImagePath: `/invite-cards/_/${id}/product-b.jpg`,
+    productCImagePath: `/invite-cards/_/${id}/product-c.jpg`,
   };
 }
 

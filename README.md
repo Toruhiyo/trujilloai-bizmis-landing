@@ -71,7 +71,6 @@ These scripts power the Bizmis cold-outbound campaign assets (per-lead invite ca
 | Script | Description |
 |---|---|
 | `npm run sync:leads-to-landing` | Copy per-lead JSONs from `bizmis-skills/data/invite-cards/` into `src/data/leads/`. |
-| `npm run sync:lead-product-manifest` | Sync the per-lead product manifest from upstream sources. |
 | `npm run fetch:lead-early-access-assets` | Fetch generated early-access assets per lead. |
 | `npm run generate:mock-lead-invite-assets` | Generate per-lead mockup invite assets (PNG renders). |
 | `npm run generate:montage-waveform` | Generate the waveform PNG used in support montages. |

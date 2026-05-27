@@ -9,7 +9,6 @@
     "build": "vite build",
     "build:dev": "vite build --mode development",
     "fetch:lead-early-access-assets": "node ../bizmis-skills/scripts/invite-cards/fetch-lead-early-access-assets.mjs",
-    "sync:lead-product-manifest": "node ../bizmis-skills/scripts/invite-cards/sync-lead-product-manifest.mjs",
     "generate:montage-waveform": "node ../bizmis-skills/scripts/invite-cards/generate-montage-waveform-png.mjs",
     "generate:email-compositions": "node ../bizmis-skills/scripts/invite-cards/generate-email-compositions.mjs",
     "generate:mock-lead-invite-assets": "node ../bizmis-skills/scripts/invite-cards/generate-mock-lead-invite-assets.mjs",
