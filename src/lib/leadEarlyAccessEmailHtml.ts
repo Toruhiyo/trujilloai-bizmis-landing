@@ -29,8 +29,6 @@ import {
   INSTANTLY_UNSUBSCRIBE_MERGE_TAG,
   INVITE_UNSUBSCRIBE_LABEL,
 } from "@/lib/leadEarlyAccessEmailHtmlSafe";
-import { buildReactIconSvgDataUri } from "@/lib/reactIconDataUri";
-import { FaRegCalendarAlt } from "react-icons/fa";
 
 const BIZMIS_LOGO_WHITE = "/images/bizmis-logo-white-transparent.png";
 const SHOPIFY_MARK_WHITE = "/images/shopify-mark-white.png";
@@ -139,13 +137,6 @@ const WAVEFORM_PHONE: WaveformDims = {
 };
 const BIZMIS_FOREGROUND_HEX = "#32281B";
 const BIZMIS_MUTED_LIGHT_HEX = "#B5A48E";
-const CALENDAR_ICON_SIZE_PX = 18;
-const CTA_BUTTON_INNER_LINE_HEIGHT_PX = CALENDAR_ICON_SIZE_PX;
-const CALENDAR_ICON_DATA_URI = buildReactIconSvgDataUri(
-  FaRegCalendarAlt,
-  BIZMIS_FOREGROUND_HEX,
-  CALENDAR_ICON_SIZE_PX,
-);
 const BIZMIS_SHADOW_SOFT = "0 6px 25px -6px rgba(249,163,83,0.18)";
 const COUPON_PILL_BORDER_HEX = "#EBE6DF";
 const CTA_COUPON_CUTOUT_BORDER_PX = 1.5;
@@ -474,12 +465,25 @@ function logoPublicPathForEmail(logoImagePath: string): string {
 const EMAIL_HEADER_LOGO_MAX_W_PX = 160;
 const EMAIL_HEADER_LOGO_MAX_H_PX = 38;
 
-function storeLogoEmailMarkup(lead: LeadEarlyAccessData): string {
+/** Luminance threshold above which an overlay colour is considered too light for a white background. */
+const LOGO_NEAR_WHITE_LUMINANCE_THRESHOLD = 0.65;
+
+function isNearWhite(hex: string): boolean {
+  const [r, g, b] = hexToRgb(hex);
+  return relativeLuminance(r, g, b) > LOGO_NEAR_WHITE_LUMINANCE_THRESHOLD;
+}
+
+function storeLogoEmailMarkup(lead: LeadEarlyAccessData, forWhiteBg = false): string {
   const store = escapeHtml(lead.storeName);
   const logoUrl = absImg(logoPublicPathForEmail(lead.logoImagePath));
-  const overlay = resolveLogoColorOverlay(lead);
+  let overlay = resolveLogoColorOverlay(lead);
   const maxW = EMAIL_HEADER_LOGO_MAX_W_PX;
   const maxH = EMAIL_HEADER_LOGO_MAX_H_PX;
+  // On a white-background context (HTML invite card), a near-white overlay makes the logo
+  // invisible. Drop the overlay so the native logo image renders instead.
+  if (forWhiteBg && overlay && isNearWhite(overlay)) {
+    overlay = null;
+  }
   if (!overlay) {
     return `<img src="${logoUrl}" alt="${store}" style="display:block;max-width:${maxW}px;max-height:${maxH}px;width:auto;height:auto;border:0;" />`;
   }
@@ -549,11 +553,11 @@ const BODY = "font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Ari
  */
 export function buildEmailInviteBannerHtml(
   lead: LeadEarlyAccessData,
-  options: { heightPx?: number } = {},
+  options: { heightPx?: number; forWhiteBg?: boolean } = {},
 ): string {
   const heightPx = options.heightPx ?? EMAIL_BANNER_H_PX;
   const banner = lead.bannerColor?.trim() || lead.primaryColor;
-  const storeLogoHtml = storeLogoEmailMarkup(lead);
+  const storeLogoHtml = storeLogoEmailMarkup(lead, options.forWhiteBg ?? false);
   const bizmisLogoUrl = absImg(BIZMIS_LOGO_WHITE);
   const noiseGrainUrl = absImg(EMAIL_BANNER_NOISE_GRAIN);
   const bannerWaveformUrl = absImg(EMAIL_BANNER_WAVEFORM);
@@ -1551,7 +1555,7 @@ export function buildLeadEarlyAccessEmailHtml(
         <!-- Banner: full-width lead→Bizmis gradient + grain; inner table for logos (no ×) -->
         <tr>
           <td style="padding:0;">
-            ${buildEmailInviteBannerHtml(lead)}
+            ${buildEmailInviteBannerHtml(lead, { forWhiteBg: true })}
           </td>
         </tr>
 
@@ -1726,10 +1730,7 @@ export function buildLeadEarlyAccessEmailHtml(
                         <a href="${bookCallUrl}" target="_blank" rel="noopener noreferrer" style="display:block;padding:14px 36px;text-align:center;text-decoration:none;color:${BIZMIS_FOREGROUND_HEX};background-color:${BIZMIS_PRIMARY_HEX};border-radius:12px;box-shadow:0 2px 8px -2px rgba(249,163,83,0.35);-webkit-text-size-adjust:none;">
                           <table role="presentation" cellpadding="0" cellspacing="0" border="0" align="center" style="margin:0 auto;">
                             <tr valign="middle" align="center">
-                              <td width="${CALENDAR_ICON_SIZE_PX}" height="${CTA_BUTTON_INNER_LINE_HEIGHT_PX}" style="padding:0 10px 0 0;width:${CALENDAR_ICON_SIZE_PX}px;height:${CTA_BUTTON_INNER_LINE_HEIGHT_PX}px;vertical-align:middle;line-height:${CTA_BUTTON_INNER_LINE_HEIGHT_PX}px;mso-line-height-rule:exactly;font-size:0;" aria-hidden="true" valign="middle">
-                                <img src="${escapeHtml(CALENDAR_ICON_DATA_URI)}" alt="" width="${CALENDAR_ICON_SIZE_PX}" height="${CALENDAR_ICON_SIZE_PX}" style="display:block;width:${CALENDAR_ICON_SIZE_PX}px;height:${CALENDAR_ICON_SIZE_PX}px;border:0;margin:0;" />
-                              </td>
-                              <td style="padding:0;vertical-align:middle;${HEADING}font-size:13px;font-weight:600;line-height:${CTA_BUTTON_INNER_LINE_HEIGHT_PX}px;mso-line-height-rule:exactly;color:${BIZMIS_FOREGROUND_HEX};white-space:nowrap;" valign="middle">
+                              <td style="padding:0;vertical-align:middle;${HEADING}font-size:13px;font-weight:600;line-height:18px;mso-line-height-rule:exactly;color:${BIZMIS_FOREGROUND_HEX};white-space:nowrap;" valign="middle">
                                 ${escapeHtml(copy.ctaPrimaryButtonLabel)}
                               </td>
                             </tr>

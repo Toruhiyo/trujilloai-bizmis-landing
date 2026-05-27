@@ -36,8 +36,6 @@ import {
   BIZMIS_PRIMARY_HEX,
   BIZMIS_WARM_BG_HEX,
 } from "@/lib/bizmisBrandColors";
-import { buildReactIconSvgDataUri } from "@/lib/reactIconDataUri";
-import { FaRegCalendarAlt } from "react-icons/fa";
 
 export const SAFE_EMAIL_DEFAULT_BASE_URL = "https://www.bizmis.ai" as const;
 export const SAFE_EMAIL_MAX_BYTES = 102_000;
@@ -91,13 +89,6 @@ const COMBINED_MOCKUP_DISPLAY_HEIGHT_PX = Math.round(
 const FOREGROUND_HEX = "#32281B";
 const MUTED_LIGHT_HEX = "#B5A48E";
 const MUTED_SUBTLE_HEX = "#C8BBA4";
-const CALENDAR_ICON_SIZE_PX = 18;
-const CTA_BUTTON_INNER_LINE_HEIGHT_PX = CALENDAR_ICON_SIZE_PX;
-const CALENDAR_ICON_DATA_URI = buildReactIconSvgDataUri(
-  FaRegCalendarAlt,
-  FOREGROUND_HEX,
-  CALENDAR_ICON_SIZE_PX,
-);
 /** Orange-on-white Bizmis square mark used as the signature logo (public asset, 281x281). */
 const SIGNATURE_BIZMIS_LOGO_PATH = "/images/bizmis-logo-orange-white.png";
 /** Display size in logical CSS px (keeps square 1:1 aspect ratio). */
@@ -434,10 +425,7 @@ function buildCtaBoxHtml(
 <a href="${escapeAttr(bookCallUrl)}" target="_blank" rel="noopener noreferrer" style="${primaryLinkStyle}">
 <table role="presentation" cellpadding="0" cellspacing="0" border="0" align="center">
 <tr valign="middle" align="center">
-<td width="${CALENDAR_ICON_SIZE_PX}" height="${CTA_BUTTON_INNER_LINE_HEIGHT_PX}" style="padding:0 10px 0 0;width:${CALENDAR_ICON_SIZE_PX}px;height:${CTA_BUTTON_INNER_LINE_HEIGHT_PX}px;vertical-align:middle;line-height:${CTA_BUTTON_INNER_LINE_HEIGHT_PX}px;mso-line-height-rule:exactly;font-size:0;" aria-hidden="true" valign="middle">
-<img src="${escapeAttr(CALENDAR_ICON_DATA_URI)}" alt="" width="${CALENDAR_ICON_SIZE_PX}" height="${CALENDAR_ICON_SIZE_PX}" style="display:block;width:${CALENDAR_ICON_SIZE_PX}px;height:${CALENDAR_ICON_SIZE_PX}px;border:0;margin:0;" />
-</td>
-<td style="padding:0;vertical-align:middle;font-family:${SYSTEM_FONT_STACK};font-size:13px;font-weight:600;line-height:${CTA_BUTTON_INNER_LINE_HEIGHT_PX}px;mso-line-height-rule:exactly;color:${FOREGROUND_HEX};white-space:nowrap;" valign="middle">${escapeHtml(c.ctaPrimaryButtonLabel)}</td>
+<td style="padding:0;vertical-align:middle;font-family:${SYSTEM_FONT_STACK};font-size:13px;font-weight:600;line-height:18px;mso-line-height-rule:exactly;color:${FOREGROUND_HEX};white-space:nowrap;" valign="middle">${escapeHtml(c.ctaPrimaryButtonLabel)}</td>
 </tr>
 </table>
 </a>
