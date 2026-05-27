@@ -3,6 +3,7 @@
 export type LeadProductSlot = "a" | "b" | "c";
 
 export const LEAD_PRODUCT_URLS: Record<string, Partial<Record<LeadProductSlot, string>>> = {
+  "blk-bold-specialty-beverages": { a: "/invite-cards/_/blk-bold-specialty-beverages/product-a.png", b: "/invite-cards/_/blk-bold-specialty-beverages/product-b.png", c: "/invite-cards/_/blk-bold-specialty-beverages/product-c.jpg" },
   "bodega": { a: "/invite-cards/_/bodega/product-a.jpg", b: "/invite-cards/_/bodega/product-b.jpg", c: "/invite-cards/_/bodega/product-c.jpg" },
   "bombas": { a: "/invite-cards/_/bombas/product-a.jpg", b: "/invite-cards/_/bombas/product-b.jpg", c: "/invite-cards/_/bombas/product-c.jpg" },
   "emotiva-audio": { a: "/invite-cards/_/emotiva-audio/product-a.png", b: "/invite-cards/_/emotiva-audio/product-b.png", c: "/invite-cards/_/emotiva-audio/product-c.png" },
@@ -13,6 +14,7 @@ export const LEAD_PRODUCT_URLS: Record<string, Partial<Record<LeadProductSlot, s
   "liveu": { a: "/invite-cards/_/liveu/product-a.png", b: "/invite-cards/_/liveu/product-b.png", c: "/invite-cards/_/liveu/product-c.png" },
   "mac-tools": { a: "/invite-cards/_/mac-tools/product-a.jpg", b: "/invite-cards/_/mac-tools/product-b.jpg", c: "/invite-cards/_/mac-tools/product-c.jpg" },
   "magnaflow": { a: "/invite-cards/_/magnaflow/product-a.jpg", b: "/invite-cards/_/magnaflow/product-b.jpg", c: "/invite-cards/_/magnaflow/product-c.jpg" },
+  "maguire-shoes": { a: "/invite-cards/_/maguire-shoes/product-a.jpg", b: "/invite-cards/_/maguire-shoes/product-b.jpg", c: "/invite-cards/_/maguire-shoes/product-c.jpg" },
   "nanoleaf": { a: "/invite-cards/_/nanoleaf/product-a.jpg", b: "/invite-cards/_/nanoleaf/product-b.jpg", c: "/invite-cards/_/nanoleaf/product-c.png" },
   "paloma-wool": { a: "/invite-cards/_/paloma-wool/product-a.jpg", b: "/invite-cards/_/paloma-wool/product-b.jpg", c: "/invite-cards/_/paloma-wool/product-c.jpg" },
   "popflex-active": { a: "/invite-cards/_/popflex-active/product-a.jpg", b: "/invite-cards/_/popflex-active/product-b.jpg", c: "/invite-cards/_/popflex-active/product-c.jpg" },
@@ -21,7 +23,10 @@ export const LEAD_PRODUCT_URLS: Record<string, Partial<Record<LeadProductSlot, s
   "schoolhouse": { a: "/invite-cards/_/schoolhouse/product-a.jpg", b: "/invite-cards/_/schoolhouse/product-b.jpg", c: "/invite-cards/_/schoolhouse/product-c.jpg" },
   "skullcandy": { a: "/invite-cards/_/skullcandy/product-a.png", b: "/invite-cards/_/skullcandy/product-b.png", c: "/invite-cards/_/skullcandy/product-c.png" },
   "speedengineering": { a: "/invite-cards/_/speedengineering/product-a.jpg", b: "/invite-cards/_/speedengineering/product-b.jpg", c: "/invite-cards/_/speedengineering/product-c.jpg" },
+  "tentree": { a: "/invite-cards/_/tentree/product-a.jpg", b: "/invite-cards/_/tentree/product-b.jpg", c: "/invite-cards/_/tentree/product-c.jpg" },
+  "the-honey-pot-co": { a: "/invite-cards/_/the-honey-pot-co/product-a.jpg", b: "/invite-cards/_/the-honey-pot-co/product-b.jpg", c: "/invite-cards/_/the-honey-pot-co/product-c.jpg" },
   "upscale-audio": { a: "/invite-cards/_/upscale-audio/product-a.webp", b: "/invite-cards/_/upscale-audio/product-b.jpg", c: "/invite-cards/_/upscale-audio/product-c.jpg" },
+  "verve-coffee-roasters": { a: "/invite-cards/_/verve-coffee-roasters/product-a.png", b: "/invite-cards/_/verve-coffee-roasters/product-b.png", c: "/invite-cards/_/verve-coffee-roasters/product-c.png" },
   "vrai": { a: "/invite-cards/_/vrai/product-a.jpg", b: "/invite-cards/_/vrai/product-b.jpg", c: "/invite-cards/_/vrai/product-c.jpg" },
 };
 
