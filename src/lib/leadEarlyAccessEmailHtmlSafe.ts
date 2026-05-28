@@ -152,7 +152,7 @@ export function buildLeadEarlyAccessEmailHtmlSafe(
 ): SafeEmailBuildResult {
   const baseUrl = normalizeBaseUrl(options.baseUrl);
   const utmCampaign = options.utmCampaign?.trim() || SAFE_EMAIL_DEFAULT_UTM_CAMPAIGN;
-  const html = renderSafeHtml(lead, baseUrl, utmCampaign);
+  const html = minifyEmailHtml(renderSafeHtml(lead, baseUrl, utmCampaign));
   const htmlSizeBytes = new TextEncoder().encode(html).byteLength;
   const warnings = assertEmailSafe(html, htmlSizeBytes);
   const plainText = renderPlainText(lead, utmCampaign);
@@ -579,6 +579,25 @@ function assertEmailSafe(html: string, htmlSizeBytes: number): string[] {
   }
 
   return warnings;
+}
+
+// Minification.
+
+/**
+ * Collapse all newlines (and trailing whitespace) in the rendered HTML.
+ *
+ * Instantly's campaign sending engine converts literal `\n` characters
+ * inside the email body to `<br>` tags, which breaks inline layouts
+ * (title spans stack vertically, paragraphs get extra line breaks).
+ * Their preview and test-email features do NOT do this, so the issue
+ * only surfaces in actual campaign sends.
+ *
+ * HTML whitespace normalization already treats newlines as collapsible
+ * space, and all intentional spacing in the template uses `&nbsp;`,
+ * so stripping newlines is semantically safe.
+ */
+function minifyEmailHtml(html: string): string {
+  return html.replace(/\n\s*/g, "");
 }
 
 // Utilities.
