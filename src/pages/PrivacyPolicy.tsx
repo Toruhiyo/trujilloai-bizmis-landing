@@ -2,7 +2,7 @@ import { ArrowLeft } from "lucide-react";
 import Footer from "@/components/Footer";
 import Seo from "@/components/Seo";
 
-const LAST_UPDATED = "April 28, 2026";
+const LAST_UPDATED = "May 29, 2026";
 const CONTACT_EMAIL = "hello@bizmis.ai";
 
 const PrivacyPolicy = () => {
@@ -67,6 +67,23 @@ const PrivacyPolicy = () => {
                 context)
               </li>
               <li>
+                <strong>Name</strong> -- the customer's first name, only if the
+                customer is signed in, used to address the customer naturally
+                during the conversation
+              </li>
+              <li>
+                <strong>Order history</strong> -- only if the customer is signed
+                in, the customer's recent orders (order numbers, dates, items,
+                totals, and financial and fulfillment status), used so the
+                assistant can answer order and support questions
+              </li>
+              <li>
+                <strong>Shipping and fulfillment details</strong> -- only if the
+                customer is signed in, the shipping destination (city, region,
+                country) and the fulfillment and tracking status of recent
+                orders, used to answer delivery and "where is my order" questions
+              </li>
+              <li>
                 <strong>Voice conversation audio</strong> -- the voice
                 interaction is recorded to power the AI assistant
               </li>
@@ -83,6 +100,13 @@ const PrivacyPolicy = () => {
                 session duration, and timestamps
               </li>
             </ul>
+            <p>
+              Order history, name, and shipping details are retrieved from
+              Shopify on demand during the conversation to answer the shopper's
+              questions. They are provided to the AI assistant as temporary
+              session context and are not stored in our databases beyond the
+              live session.
+            </p>
           </Section>
 
           <Section title="4. How We Use the Data">
@@ -203,7 +227,12 @@ const PrivacyPolicy = () => {
             <ul className="list-disc pl-6 space-y-2">
               <li>
                 <strong>Session data</strong> (managed AWS data store) --
-                automatically deleted after 60 minutes of inactivity (TTL).
+                retained while the merchant's app remains installed so that
+                conversation history and analytics stay available in the
+                merchant dashboard. Deleted on demand when Shopify dispatches
+                its <code>customers/redact</code> webhook, and purged within 30
+                days of the <code>shop/redact</code> webhook after
+                uninstallation.
               </li>
               <li>
                 <strong>Conversation data</strong> (ElevenLabs) -- retained
