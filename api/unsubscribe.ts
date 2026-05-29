@@ -97,74 +97,33 @@ async function processUnsubscribe(
   attioApiKey: string,
   unsubStageId: string,
 ): Promise<UnsubscribeResult> {
-  const lead = await findInstantlyLeadByHandle(ref, instantlyApiKey, campaignId);
-  if (lead) {
-    await deleteInstantlyLead(lead.id, instantlyApiKey);
+  const company = await findAttioCompanyByHandle(ref, attioApiKey);
+
+  await removeInstantlyLead(ref, company?.domain ?? "", instantlyApiKey, campaignId);
+
+  if (!company) {
+    console.error(`Unsubscribe: no Attio company resolved for handle="${ref}"`);
+    return { success: true };
   }
 
-  const domain = lead ? extractDomain(lead.website) : "";
-  const dealId = await findAttioDeal(domain, lead?.companyName ?? "", ref, attioApiKey);
+  const dealId = await findAttioDealForCompany(company.id, attioApiKey);
   if (dealId) {
     await moveAttioDealToUnsubscribed(dealId, unsubStageId, attioApiKey);
     await appendAttioSyncLog(ref, dealId, attioApiKey);
   } else {
-    console.error(`Unsubscribe: no Attio deal resolved for handle="${ref}" domain="${domain}"`);
+    console.error(`Unsubscribe: Attio company ${company.id} has no deal (handle="${ref}")`);
   }
 
   return { success: true };
 }
 
-// Instantly helpers.
-
-interface InstantlyLead {
-  id: string;
-  email: string;
-  website: string;
-  companyName: string;
+function slugify(name: string): string {
+  return name
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
 }
-
-async function findInstantlyLeadByHandle(
-  handle: string,
-  apiKey: string,
-  campaignId: string,
-): Promise<InstantlyLead | null> {
-  const resp = await fetch(`${INSTANTLY_BASE}/leads/list`, {
-    method: "POST",
-    headers: instantlyHeaders(apiKey),
-    body: JSON.stringify({ campaign_id: campaignId, search: handle, limit: 50 }),
-    signal: AbortSignal.timeout(TIMEOUT_MS),
-  });
-  if (!resp.ok) return null;
-
-  const data = await resp.json();
-  const items: any[] = data.items ?? [];
-  for (const item of items) {
-    const vars = item.custom_variables ?? {};
-    if (vars.lead_handle === handle && item.campaign === campaignId) {
-      return {
-        id: item.id,
-        email: item.email ?? "",
-        website: item.website ?? "",
-        companyName: item.company_name ?? "",
-      };
-    }
-  }
-  return null;
-}
-
-async function deleteInstantlyLead(leadId: string, apiKey: string): Promise<void> {
-  await fetch(`${INSTANTLY_BASE}/leads/${leadId}`, {
-    method: "DELETE",
-    headers: instantlyHeaders(apiKey),
-    signal: AbortSignal.timeout(TIMEOUT_MS),
-  });
-}
-
-function instantlyHeaders(apiKey: string): Record<string, string> {
-  return { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json" };
-}
-
-// Attio helpers.
 
 function extractDomain(website: string): string {
   return website
@@ -175,40 +134,120 @@ function extractDomain(website: string): string {
     .replace(/\/.*$/, "");
 }
 
-async function findAttioDeal(
+// Instantly helpers.
+
+interface InstantlyLead {
+  id: string;
+  email: string;
+  website: string;
+}
+
+async function removeInstantlyLead(
+  handle: string,
   domain: string,
-  companyName: string,
+  apiKey: string,
+  campaignId: string,
+): Promise<void> {
+  const lead = await findInstantlyLead(handle, domain, apiKey, campaignId);
+  if (lead) {
+    await deleteInstantlyLead(lead.id, apiKey);
+  } else {
+    console.error(`Unsubscribe: no Instantly lead for handle="${handle}" domain="${domain}"`);
+  }
+}
+
+async function findInstantlyLead(
+  handle: string,
+  domain: string,
+  apiKey: string,
+  campaignId: string,
+): Promise<InstantlyLead | null> {
+  const searches = domain ? [domain, handle] : [handle];
+  for (const search of searches) {
+    const items = await listInstantlyLeads(search, apiKey, campaignId);
+    const match = items.find((item) => leadMatches(item, handle, domain, campaignId));
+    if (match) {
+      return { id: match.id, email: match.email ?? "", website: match.website ?? "" };
+    }
+  }
+  return null;
+}
+
+function leadMatches(item: any, handle: string, domain: string, campaignId: string): boolean {
+  if (item.campaign !== campaignId) return false;
+  const vars = item.custom_variables ?? {};
+  if (vars.lead_handle === handle) return true;
+  if (!domain) return false;
+  if (extractDomain(item.website ?? "") === domain) return true;
+  return (item.email ?? "").toLowerCase().endsWith(`@${domain}`);
+}
+
+async function listInstantlyLeads(
+  search: string,
+  apiKey: string,
+  campaignId: string,
+): Promise<any[]> {
+  const resp = await fetch(`${INSTANTLY_BASE}/leads/list`, {
+    method: "POST",
+    headers: instantlyHeaders(apiKey),
+    body: JSON.stringify({ campaign_id: campaignId, search, limit: 50 }),
+    signal: AbortSignal.timeout(TIMEOUT_MS),
+  });
+  if (!resp.ok) {
+    console.error(`Unsubscribe: Instantly leads/list failed (${resp.status})`);
+    return [];
+  }
+  return (await resp.json()).items ?? [];
+}
+
+async function deleteInstantlyLead(leadId: string, apiKey: string): Promise<void> {
+  const resp = await fetch(`${INSTANTLY_BASE}/leads/${leadId}`, {
+    method: "DELETE",
+    headers: instantlyHeaders(apiKey),
+    signal: AbortSignal.timeout(TIMEOUT_MS),
+  });
+  if (!resp.ok) {
+    console.error(`Unsubscribe: Instantly lead delete failed for ${leadId} (${resp.status})`);
+  }
+}
+
+function instantlyHeaders(apiKey: string): Record<string, string> {
+  return { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json" };
+}
+
+// Attio helpers.
+
+interface AttioCompany {
+  id: string;
+  domain: string;
+}
+
+// The handle is slugify(company_name) by construction, so resolve the company by
+// searching on the handle's first word and matching slugify(name) exactly. This is
+// independent of any Instantly custom variable.
+async function findAttioCompanyByHandle(
   handle: string,
   apiKey: string,
-): Promise<string | null> {
-  const nameGuess = companyName || handle.replace(/-/g, " ");
-  const companyId =
-    (domain ? await findAttioCompanyByDomain(domain, apiKey) : null) ??
-    (nameGuess ? await findAttioCompanyByName(nameGuess, apiKey) : null);
-  if (!companyId) {
-    console.error(
-      `Unsubscribe: no Attio company for handle="${handle}" domain="${domain}" name="${nameGuess}"`,
-    );
-    return null;
+): Promise<AttioCompany | null> {
+  const firstWord = handle.split("-")[0];
+  const companies = await queryAttioCompanies({ name: { $contains: firstWord } }, apiKey);
+  for (const company of companies) {
+    const name = company.values?.name?.[0]?.value ?? "";
+    if (slugify(name) === handle) {
+      return {
+        id: company.id?.record_id ?? "",
+        domain: extractDomain(company.values?.domains?.[0]?.domain ?? ""),
+      };
+    }
   }
-  return findAttioDealForCompany(companyId, apiKey);
-}
-
-async function findAttioCompanyByDomain(domain: string, apiKey: string): Promise<string | null> {
-  const resp = await queryAttioCompanies({ domains: { $eq: domain } }, apiKey);
-  return resp[0]?.id?.record_id ?? null;
-}
-
-async function findAttioCompanyByName(name: string, apiKey: string): Promise<string | null> {
-  const resp = await queryAttioCompanies({ name: { $contains: name } }, apiKey);
-  return resp[0]?.id?.record_id ?? null;
+  return null;
 }
 
 async function queryAttioCompanies(filter: unknown, apiKey: string): Promise<any[]> {
   const resp = await fetch(`${ATTIO_BASE}/objects/companies/records/query`, {
     method: "POST",
     headers: attioHeaders(apiKey),
-    body: JSON.stringify({ filter, limit: 1 }),
+    body: JSON.stringify({ filter, limit: 100 }),
     signal: AbortSignal.timeout(TIMEOUT_MS),
   });
   if (!resp.ok) {
