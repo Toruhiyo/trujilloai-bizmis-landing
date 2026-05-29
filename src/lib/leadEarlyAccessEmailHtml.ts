@@ -1486,7 +1486,7 @@ export function buildLeadEarlyAccessEmailHtml(
 
   const couponCodeEsc = escapeHtml(lead.couponCode.trim());
 
-  const contactFirstName = earlyAccessGreetingFirstName(lead.leadContactName);
+  const contactFirstName = earlyAccessGreetingFirstName(lead.leadContactName, lead.storeName);
   const contactFirstEsc = contactFirstName ? escapeHtml(contactFirstName) : "";
   const accentInviteBizmis = `font-weight:600;color:${BIZMIS_PRIMARY_HEX};`;
   const accentInviteStore = `color:${storeNameColor};font-weight:600;`;

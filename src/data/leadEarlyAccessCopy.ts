@@ -119,9 +119,62 @@ export function buildEarlyAccessPreheader(storeName: string, storeCap: number): 
   return `Early access invite for ${storeName}. First ${storeCap} stores only \u2014 ${EARLY_ACCESS_EMAIL_COPY.preheaderClosingPhrase}.`;
 }
 
-export function earlyAccessGreetingFirstName(leadContactName: string | null): string | null {
+/**
+ * Local-part tokens that mark a "contact" as a shared mailbox / role
+ * account (info@, sales@, support@…) rather than a real person. When
+ * discovery falls back to a shared mailbox it is supposed to leave
+ * `leadContactName` null; this set guards the cases where a role token
+ * leaked into the field instead.
+ */
+const NON_PERSON_CONTACT_TOKENS = new Set<string>([
+  "info", "sales", "support", "hello", "hi", "contact", "team", "admin",
+  "office", "service", "help", "care", "orders", "shop", "store", "mail",
+  "email", "wholesale", "press", "marketing", "enquiries", "inquiries",
+  "customerservice", "customercare", "noreply", "no-reply",
+]);
+
+function normalizeNameToken(value: string): string {
+  return value.toLowerCase().replace(/[^a-z0-9]+/g, "");
+}
+
+/**
+ * True when `leadContactName` is not a real person — either a role /
+ * shared-mailbox token (info@, sales@…) or the brand name itself. This is
+ * a deliberately CONSERVATIVE guard: it only fires on signals that cannot
+ * plausibly be a person's first name, so an eponymous founder whose name
+ * matches the brand (e.g. Paloma of "Paloma Wool") is still greeted by
+ * name. The authoritative fix for shared mailboxes is upstream — discovery
+ * must leave `leadContactName` null — so this only backstops the cases
+ * where an obvious non-person value leaks through.
+ */
+function isNonPersonContactName(leadContactName: string, storeName: string): boolean {
+  const contact = leadContactName.trim();
+  if (!contact) return true;
+  const contactNorm = normalizeNameToken(contact);
+  if (!contactNorm) return true;
+
+  // Role / shared-mailbox local part stored as the name ("info", "sales"…).
+  const firstToken = normalizeNameToken(contact.split(/\s+/)[0]);
+  if (NON_PERSON_CONTACT_TOKENS.has(firstToken)) return true;
+
+  // The whole contact equals a MULTI-WORD brand ("Speed Engineering" ===
+  // "Speed Engineering"): a multi-word brand is never a person's first
+  // name. Restricted to multi-word stores so eponymous single-word brands
+  // — founder "Gorjana" of "gorjana", "Paloma" of "Paloma Wool" — are
+  // still greeted by name. We never match on a shared first token alone.
+  const storeIsMultiWord = /\s/.test(storeName.trim());
+  if (storeIsMultiWord && contactNorm === normalizeNameToken(storeName)) return true;
+
+  return false;
+}
+
+export function earlyAccessGreetingFirstName(
+  leadContactName: string | null,
+  storeName?: string | null,
+): string | null {
   const t = leadContactName?.trim();
   if (!t) return null;
+  if (storeName != null && isNonPersonContactName(t, storeName)) return null;
   const first = t.split(/\s+/)[0];
   return first.length > 0 ? first : null;
 }
@@ -131,7 +184,7 @@ export function buildEarlyAccessSalutationPlainText(
   leadContactName: string | null,
 ): string {
   const c = EARLY_ACCESS_EMAIL_COPY;
-  const contactFirst = earlyAccessGreetingFirstName(leadContactName);
+  const contactFirst = earlyAccessGreetingFirstName(leadContactName, storeName);
   if (contactFirst) return `${c.greetingDear} ${contactFirst},`;
   return `${c.greetingDear} ${storeName}${c.greetingStoreTeamSuffix}`;
 }
@@ -150,7 +203,7 @@ export function earlyAccessFirstNameMergeValue(
   storeName: string,
   leadContactName: string | null,
 ): string {
-  const first = earlyAccessGreetingFirstName(leadContactName);
+  const first = earlyAccessGreetingFirstName(leadContactName, storeName);
   if (first) return first;
   const suffix = EARLY_ACCESS_EMAIL_COPY.greetingStoreTeamSuffix
     .replace(/^\s+/, "")

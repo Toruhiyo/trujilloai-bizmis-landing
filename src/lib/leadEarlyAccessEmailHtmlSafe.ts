@@ -495,7 +495,7 @@ function renderPlainText(lead: LeadEarlyAccessData, utmCampaign: string, unsubSi
   const bookCallUrl = `${bookACallUrl}?ref=${leadHandle}&${utmTail}`;
   const installUrlWithCode = `${shopifyAppUrl}?ref=${leadHandle}&code=${encodeURIComponent(lead.couponCode)}&${utmTail}`;
   const bizmisInviteSiteUrl = `${buildInviteBizmisSiteUrl(lead.id)}&${utmTail}`;
-  const contactFirst = earlyAccessGreetingFirstName(lead.leadContactName);
+  const contactFirst = earlyAccessGreetingFirstName(lead.leadContactName, lead.storeName);
   const salutation = contactFirst
     ? `${c.greetingDear} ${contactFirst},`
     : `${c.greetingDear} ${lead.storeName}${c.greetingStoreTeamSuffix}`;
