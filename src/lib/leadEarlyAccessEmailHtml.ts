@@ -26,7 +26,7 @@ import {
 } from "@/lib/bizmisBrandColors";
 import {
   buildInviteBizmisSiteUrl,
-  INSTANTLY_UNSUBSCRIBE_MERGE_TAG,
+  buildUnsubscribeUrl,
   INVITE_UNSUBSCRIBE_LABEL,
 } from "@/lib/leadEarlyAccessEmailHtmlSafe";
 
@@ -1807,7 +1807,7 @@ export function buildLeadEarlyAccessEmailHtml(
               bizmis.ai
             </a>
             <span style="${BODY}font-size:10px;color:${BIZMIS_MUTED_LIGHT_HEX};">&nbsp;&middot;&nbsp;</span>
-            <a href="${INSTANTLY_UNSUBSCRIBE_MERGE_TAG}" style="${BODY}font-size:10px;font-weight:400;color:${BIZMIS_MUTED_FG_HEX};text-decoration:underline;">${escapeHtml(INVITE_UNSUBSCRIBE_LABEL)}</a>
+            <a href="${escapeHtml(buildUnsubscribeUrl(lead.id))}" style="${BODY}font-size:10px;font-weight:400;color:${BIZMIS_MUTED_FG_HEX};text-decoration:underline;">${escapeHtml(INVITE_UNSUBSCRIBE_LABEL)}</a>
           </td>
         </tr>
 
@@ -1853,7 +1853,7 @@ export function buildLeadEarlyAccessEmailHtml(
     "",
     buildEarlyAccessFooterPlainText(),
     `${copy.visitUsPrefix} ${bizmisInviteSiteUrl}`,
-    `${INVITE_UNSUBSCRIBE_LABEL}: ${INSTANTLY_UNSUBSCRIBE_MERGE_TAG}`,
+    `${INVITE_UNSUBSCRIBE_LABEL}: ${buildUnsubscribeUrl(lead.id)}`,
   ].join("\n");
 
   return { html, plainText };

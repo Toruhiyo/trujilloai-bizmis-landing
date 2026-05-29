@@ -42,16 +42,18 @@ export const SAFE_EMAIL_MAX_BYTES = 102_000;
 export const SAFE_EMAIL_WARN_BYTES = 60_000;
 
 /**
- * Instantly merge tag for the per-send unsubscribe URL. At send time Instantly
- * replaces this literal with a tracked unsubscribe link and attaches the
- * `List-Unsubscribe` + `List-Unsubscribe-Post: List-Unsubscribe=One-Click`
- * SMTP headers (which is what mail-tester is checking for).
+ * Self-hosted unsubscribe URL. Instantly's `{{unsubscribe}}` merge tag
+ * resolves to an empty `href=""` when the template is uploaded via API
+ * (it only works through their rich-text editor). We use our own Vercel
+ * API route instead, passing the lead handle via `ref=` so the handler
+ * can look up the lead in Instantly and Attio.
  *
- * Kept outside `EARLY_ACCESS_EMAIL_COPY` because it is sending-tool
- * infrastructure, not copy — the literal string must survive the template
- * unescaped so Instantly can find and replace it.
+ * The `List-Unsubscribe` SMTP header is still handled by Instantly's
+ * campaign-level setting (separate from the visible in-body link).
  */
-export const INSTANTLY_UNSUBSCRIBE_MERGE_TAG = "{{unsubscribe}}" as const;
+export function buildUnsubscribeUrl(leadId: string): string {
+  return `${SAFE_EMAIL_DEFAULT_BASE_URL}/unsubscribe?ref=${encodeURIComponent(leadId)}`;
+}
 
 /** Visible label shown next to the unsubscribe link in the email footer. */
 export const INVITE_UNSUBSCRIBE_LABEL = "Unsubscribe" as const;
@@ -218,6 +220,7 @@ function renderSafeHtml(lead: LeadEarlyAccessData, baseUrl: string, utmCampaign:
   const bookCallUrl = `${bookACallUrl}?ref=${leadHandle}&${utmTail}`;
   const installUrlWithCode = `${shopifyAppUrl}?ref=${leadHandle}&code=${encodeURIComponent(earlyAccessCode)}&${utmTail}`;
   const bizmisInviteSiteUrl = `${buildInviteBizmisSiteUrl(lead.id)}&${utmTail}`;
+  const unsubscribeUrl = buildUnsubscribeUrl(lead.id);
 
   const salutationText = escapeHtml(buildEarlyAccessSalutationPlainText(lead.storeName, lead.leadContactName));
 
@@ -316,7 +319,7 @@ Questions? Just reply to this email (<a href="mailto:${escapeHtml(copy.contactEm
 </p>
 <a href="${escapeAttr(bizmisInviteSiteUrl)}" target="_blank" rel="noopener noreferrer" style="font-family:${SYSTEM_FONT_STACK};font-size:10px;font-weight:500;color:${BIZMIS_MUTED_FG_HEX};text-decoration:none;">bizmis.ai</a>
 <span style="font-family:${SYSTEM_FONT_STACK};font-size:10px;color:${MUTED_LIGHT_HEX};">&nbsp;&middot;&nbsp;</span>
-<a href="${INSTANTLY_UNSUBSCRIBE_MERGE_TAG}" style="font-family:${SYSTEM_FONT_STACK};font-size:10px;font-weight:400;color:${BIZMIS_MUTED_FG_HEX};text-decoration:underline;">${escapeHtml(INVITE_UNSUBSCRIBE_LABEL)}</a>
+<a href="${escapeAttr(unsubscribeUrl)}" style="font-family:${SYSTEM_FONT_STACK};font-size:10px;font-weight:400;color:${BIZMIS_MUTED_FG_HEX};text-decoration:underline;">${escapeHtml(INVITE_UNSUBSCRIBE_LABEL)}</a>
 </td>
 </tr>
 
@@ -512,7 +515,7 @@ function renderPlainText(lead: LeadEarlyAccessData, utmCampaign: string): string
     `Questions? Just reply to this email (${c.contactEmail}).`,
     "",
     bizmisInviteSiteUrl,
-    `${INVITE_UNSUBSCRIBE_LABEL}: ${INSTANTLY_UNSUBSCRIBE_MERGE_TAG}`,
+    `${INVITE_UNSUBSCRIBE_LABEL}: ${buildUnsubscribeUrl(lead.id)}`,
   ].join("\n");
 }
 
