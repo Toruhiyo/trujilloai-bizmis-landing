@@ -16,6 +16,7 @@ export const INSTANTLY_TEMPLATE_TOKENS = {
   accessCode: "X7ZACCESSCODE",
   storeAccentHex: "#AB1234",
   utmCampaign: "X7ZUTMCAMPAIGN",
+  unsubSig: "x7zunsubsig",
 } as const;
 
 /**

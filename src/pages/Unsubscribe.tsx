@@ -10,9 +10,11 @@ const MUTED_FG = "#8F7856";
 const Unsubscribe = () => {
   const [searchParams] = useSearchParams();
   const ref = searchParams.get("ref")?.trim().toLowerCase() ?? "";
-  const [state, setState] = useState<PageState>(ref ? "confirm" : "error");
+  const sig = searchParams.get("sig")?.trim().toLowerCase() ?? "";
+  const isValidLink = Boolean(ref && sig);
+  const [state, setState] = useState<PageState>(isValidLink ? "confirm" : "error");
   const [errorMessage, setErrorMessage] = useState(
-    ref ? "" : "This unsubscribe link is invalid. If you reached this page from an email, please contact hello@bizmis.ai.",
+    isValidLink ? "" : "This unsubscribe link is invalid. If you reached this page from an email, please contact hello@bizmis.ai.",
   );
 
   const handleConfirm = useCallback(async () => {
@@ -21,7 +23,7 @@ const Unsubscribe = () => {
       const resp = await fetch("/api/unsubscribe", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ref }),
+        body: JSON.stringify({ ref, sig }),
       });
       const data = await resp.json();
       if (data.success) {
@@ -34,7 +36,7 @@ const Unsubscribe = () => {
       setErrorMessage("Could not reach the server. Please try again or email hello@bizmis.ai.");
       setState("error");
     }
-  }, [ref]);
+  }, [ref, sig]);
 
   const handleRetry = useCallback(() => {
     setErrorMessage("");
@@ -125,7 +127,7 @@ const Unsubscribe = () => {
             >
               {errorMessage}
             </p>
-            {ref && (
+            {isValidLink && (
               <button
                 onClick={handleRetry}
                 className="w-full rounded-xl py-3 text-sm font-semibold transition-opacity hover:opacity-90"

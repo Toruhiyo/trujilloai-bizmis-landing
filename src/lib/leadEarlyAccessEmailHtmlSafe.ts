@@ -51,8 +51,9 @@ export const SAFE_EMAIL_WARN_BYTES = 60_000;
  * The `List-Unsubscribe` SMTP header is still handled by Instantly's
  * campaign-level setting (separate from the visible in-body link).
  */
-export function buildUnsubscribeUrl(leadId: string): string {
-  return `${SAFE_EMAIL_DEFAULT_BASE_URL}/unsubscribe?ref=${encodeURIComponent(leadId)}`;
+export function buildUnsubscribeUrl(leadId: string, unsubSig?: string): string {
+  const base = `${SAFE_EMAIL_DEFAULT_BASE_URL}/unsubscribe?ref=${encodeURIComponent(leadId)}`;
+  return unsubSig ? `${base}&sig=${encodeURIComponent(unsubSig)}` : base;
 }
 
 /** Visible label shown next to the unsubscribe link in the email footer. */
@@ -137,6 +138,12 @@ export type BuildSafeEmailOptions = {
    * can be set from the Instantly CSV.
    */
   utmCampaign?: string;
+  /**
+   * HMAC signature for the self-hosted unsubscribe link. Appended as
+   * `&sig=<value>` to the unsubscribe URL. For Instantly sends this
+   * is a placeholder token swapped for `{{unsub_sig}}` by the generator.
+   */
+  unsubSig?: string;
 };
 
 export type SafeEmailBuildResult = {
@@ -154,10 +161,11 @@ export function buildLeadEarlyAccessEmailHtmlSafe(
 ): SafeEmailBuildResult {
   const baseUrl = normalizeBaseUrl(options.baseUrl);
   const utmCampaign = options.utmCampaign?.trim() || SAFE_EMAIL_DEFAULT_UTM_CAMPAIGN;
-  const html = minifyEmailHtml(renderSafeHtml(lead, baseUrl, utmCampaign));
+  const unsubSig = options.unsubSig?.trim() || "";
+  const html = minifyEmailHtml(renderSafeHtml(lead, baseUrl, utmCampaign, unsubSig));
   const htmlSizeBytes = new TextEncoder().encode(html).byteLength;
   const warnings = assertEmailSafe(html, htmlSizeBytes);
-  const plainText = renderPlainText(lead, utmCampaign);
+  const plainText = renderPlainText(lead, utmCampaign, unsubSig);
   return { html, plainText, htmlSizeBytes, warnings };
 }
 
@@ -204,7 +212,7 @@ function buildOutboundUtmTail(leadId: string, utmCampaign: string): string {
 
 // HTML rendering.
 
-function renderSafeHtml(lead: LeadEarlyAccessData, baseUrl: string, utmCampaign: string): string {
+function renderSafeHtml(lead: LeadEarlyAccessData, baseUrl: string, utmCampaign: string, unsubSig: string): string {
   const { storeCap, shopifyAppUrl, bookACallUrl } = EARLY_ACCESS_TERMS;
   const copy = EARLY_ACCESS_EMAIL_COPY;
 
@@ -220,7 +228,7 @@ function renderSafeHtml(lead: LeadEarlyAccessData, baseUrl: string, utmCampaign:
   const bookCallUrl = `${bookACallUrl}?ref=${leadHandle}&${utmTail}`;
   const installUrlWithCode = `${shopifyAppUrl}?ref=${leadHandle}&code=${encodeURIComponent(earlyAccessCode)}&${utmTail}`;
   const bizmisInviteSiteUrl = `${buildInviteBizmisSiteUrl(lead.id)}&${utmTail}`;
-  const unsubscribeUrl = buildUnsubscribeUrl(lead.id);
+  const unsubscribeUrl = buildUnsubscribeUrl(lead.id, unsubSig || undefined);
 
   const salutationText = escapeHtml(buildEarlyAccessSalutationPlainText(lead.storeName, lead.leadContactName));
 
@@ -479,7 +487,7 @@ function buildSignatureHtml(baseUrl: string, bizmisInviteSiteUrl: string): strin
 
 // Plain text rendering.
 
-function renderPlainText(lead: LeadEarlyAccessData, utmCampaign: string): string {
+function renderPlainText(lead: LeadEarlyAccessData, utmCampaign: string, unsubSig: string): string {
   const { shopifyAppUrl, storeCap, bookACallUrl } = EARLY_ACCESS_TERMS;
   const c = EARLY_ACCESS_EMAIL_COPY;
   const leadHandle = encodeURIComponent(lead.id);
@@ -515,7 +523,7 @@ function renderPlainText(lead: LeadEarlyAccessData, utmCampaign: string): string
     `Questions? Just reply to this email (${c.contactEmail}).`,
     "",
     bizmisInviteSiteUrl,
-    `${INVITE_UNSUBSCRIBE_LABEL}: ${buildUnsubscribeUrl(lead.id)}`,
+    `${INVITE_UNSUBSCRIBE_LABEL}: ${buildUnsubscribeUrl(lead.id, unsubSig || undefined)}`,
   ].join("\n");
 }
 

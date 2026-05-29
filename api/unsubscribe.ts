@@ -1,13 +1,25 @@
 import type { VercelRequest, VercelResponse } from "@vercel/node";
+import { createHmac, timingSafeEqual } from "node:crypto";
 
 const INSTANTLY_BASE = "https://api.instantly.ai/api/v2";
 const ATTIO_BASE = "https://api.attio.com/v2";
 const REF_PATTERN = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
+const HMAC_HEX_LENGTH = 16;
 const TIMEOUT_MS = 15_000;
 
 type UnsubscribeResult =
   | { success: true }
   | { success: false; error: string };
+
+export function computeUnsubscribeSig(ref: string, secret: string): string {
+  return createHmac("sha256", secret).update(ref).digest("hex").slice(0, HMAC_HEX_LENGTH);
+}
+
+function verifySig(ref: string, sig: string, secret: string): boolean {
+  const expected = computeUnsubscribeSig(ref, secret);
+  if (sig.length !== expected.length) return false;
+  return timingSafeEqual(Buffer.from(sig), Buffer.from(expected));
+}
 
 export default async function handler(
   req: VercelRequest,
@@ -28,18 +40,25 @@ export default async function handler(
   }
 
   const ref = (req.body?.ref ?? "").trim().toLowerCase();
+  const sig = (req.body?.sig ?? "").trim().toLowerCase();
   if (!ref || !REF_PATTERN.test(ref)) {
     res.status(400).json({ success: false, error: "Invalid or missing ref parameter" });
     return;
   }
 
+  const hmacSecret = process.env.UNSUBSCRIBE_HMAC_SECRET;
   const instantlyApiKey = process.env.INSTANTLY_API_KEY;
   const instantlyCampaignId = process.env.INSTANTLY_EA_CAMPAIGN_ID;
   const attioApiKey = process.env.ATTIO_API_KEY;
   const attioUnsubStageId = process.env.ATTIO_DEAL_STAGE_LOST_UNSUBSCRIBED;
 
-  if (!instantlyApiKey || !instantlyCampaignId || !attioApiKey || !attioUnsubStageId) {
+  if (!hmacSecret || !instantlyApiKey || !instantlyCampaignId || !attioApiKey || !attioUnsubStageId) {
     res.status(500).json({ success: false, error: "Server configuration error" });
+    return;
+  }
+
+  if (!sig || !verifySig(ref, sig, hmacSecret)) {
+    res.status(403).json({ success: false, error: "Invalid unsubscribe link" });
     return;
   }
 

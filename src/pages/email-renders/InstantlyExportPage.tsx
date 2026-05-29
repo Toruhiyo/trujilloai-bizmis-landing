@@ -34,6 +34,7 @@ const InstantlyExportPage = () => {
       buildLeadEarlyAccessEmailHtmlSafe(INSTANTLY_TEMPLATE_LEAD, {
         baseUrl: SAFE_EMAIL_DEFAULT_BASE_URL,
         utmCampaign: INSTANTLY_TEMPLATE_TOKENS.utmCampaign,
+        unsubSig: INSTANTLY_TEMPLATE_TOKENS.unsubSig,
       }),
     [],
   );
