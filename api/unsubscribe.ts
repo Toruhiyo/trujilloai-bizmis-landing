@@ -46,16 +46,28 @@ export default async function handler(
     return;
   }
 
-  const hmacSecret = process.env.UNSUBSCRIBE_HMAC_SECRET;
-  const instantlyApiKey = process.env.INSTANTLY_API_KEY;
-  const instantlyCampaignId = process.env.INSTANTLY_EA_CAMPAIGN_ID;
-  const attioApiKey = process.env.ATTIO_API_KEY;
-  const attioUnsubStageId = process.env.ATTIO_DEAL_STAGE_LOST_UNSUBSCRIBED;
+  const requiredEnv = {
+    UNSUBSCRIBE_HMAC_SECRET: process.env.UNSUBSCRIBE_HMAC_SECRET,
+    INSTANTLY_API_KEY: process.env.INSTANTLY_API_KEY,
+    INSTANTLY_EA_CAMPAIGN_ID: process.env.INSTANTLY_EA_CAMPAIGN_ID,
+    ATTIO_API_KEY: process.env.ATTIO_API_KEY,
+    ATTIO_DEAL_STAGE_LOST_UNSUBSCRIBED: process.env.ATTIO_DEAL_STAGE_LOST_UNSUBSCRIBED,
+  };
+  const missingEnv = Object.entries(requiredEnv)
+    .filter(([, value]) => !value)
+    .map(([key]) => key);
 
-  if (!hmacSecret || !instantlyApiKey || !instantlyCampaignId || !attioApiKey || !attioUnsubStageId) {
+  if (missingEnv.length > 0) {
+    console.error(`Missing required env vars: ${missingEnv.join(", ")}`);
     res.status(500).json({ success: false, error: "Server configuration error" });
     return;
   }
+
+  const hmacSecret = requiredEnv.UNSUBSCRIBE_HMAC_SECRET as string;
+  const instantlyApiKey = requiredEnv.INSTANTLY_API_KEY as string;
+  const instantlyCampaignId = requiredEnv.INSTANTLY_EA_CAMPAIGN_ID as string;
+  const attioApiKey = requiredEnv.ATTIO_API_KEY as string;
+  const attioUnsubStageId = requiredEnv.ATTIO_DEAL_STAGE_LOST_UNSUBSCRIBED as string;
 
   if (!sig || !verifySig(ref, sig, hmacSecret)) {
     res.status(403).json({ success: false, error: "Invalid unsubscribe link" });
@@ -90,10 +102,13 @@ async function processUnsubscribe(
     await deleteInstantlyLead(lead.id, instantlyApiKey);
   }
 
-  const dealId = await findAttioDealByHandle(ref, attioApiKey);
+  const domain = lead ? extractDomain(lead.website) : "";
+  const dealId = await findAttioDeal(domain, lead?.companyName ?? "", ref, attioApiKey);
   if (dealId) {
-    await moveAttioDeadToUnsubscribed(dealId, unsubStageId, attioApiKey);
+    await moveAttioDealToUnsubscribed(dealId, unsubStageId, attioApiKey);
     await appendAttioSyncLog(ref, dealId, attioApiKey);
+  } else {
+    console.error(`Unsubscribe: no Attio deal resolved for handle="${ref}" domain="${domain}"`);
   }
 
   return { success: true };
@@ -104,6 +119,8 @@ async function processUnsubscribe(
 interface InstantlyLead {
   id: string;
   email: string;
+  website: string;
+  companyName: string;
 }
 
 async function findInstantlyLeadByHandle(
@@ -124,7 +141,12 @@ async function findInstantlyLeadByHandle(
   for (const item of items) {
     const vars = item.custom_variables ?? {};
     if (vars.lead_handle === handle && item.campaign === campaignId) {
-      return { id: item.id, email: item.email ?? "" };
+      return {
+        id: item.id,
+        email: item.email ?? "",
+        website: item.website ?? "",
+        companyName: item.company_name ?? "",
+      };
     }
   }
   return null;
@@ -144,52 +166,90 @@ function instantlyHeaders(apiKey: string): Record<string, string> {
 
 // Attio helpers.
 
-async function findAttioDealByHandle(
+function extractDomain(website: string): string {
+  return website
+    .trim()
+    .toLowerCase()
+    .replace(/^https?:\/\//, "")
+    .replace(/^www\./, "")
+    .replace(/\/.*$/, "");
+}
+
+async function findAttioDeal(
+  domain: string,
+  companyName: string,
   handle: string,
   apiKey: string,
 ): Promise<string | null> {
-  const companiesResp = await fetch(`${ATTIO_BASE}/objects/companies/records/query`, {
-    method: "POST",
-    headers: attioHeaders(apiKey),
-    body: JSON.stringify({ filter: { name: { $contains: handle } }, limit: 5 }),
-    signal: AbortSignal.timeout(TIMEOUT_MS),
-  });
-  if (!companiesResp.ok) return null;
-
-  const companies = (await companiesResp.json()).data ?? [];
-  for (const company of companies) {
-    const companyId = company.id?.record_id;
-    if (!companyId) continue;
-
-    const dealsResp = await fetch(`${ATTIO_BASE}/objects/deals/records/query`, {
-      method: "POST",
-      headers: attioHeaders(apiKey),
-      body: JSON.stringify({
-        filter: { associated_company: { target_record_id: { $eq: companyId } } },
-        limit: 1,
-      }),
-      signal: AbortSignal.timeout(TIMEOUT_MS),
-    });
-    if (!dealsResp.ok) continue;
-
-    const deals = (await dealsResp.json()).data ?? [];
-    if (deals.length > 0) return deals[0].id?.record_id ?? null;
+  const nameGuess = companyName || handle.replace(/-/g, " ");
+  const companyId =
+    (domain ? await findAttioCompanyByDomain(domain, apiKey) : null) ??
+    (nameGuess ? await findAttioCompanyByName(nameGuess, apiKey) : null);
+  if (!companyId) {
+    console.error(
+      `Unsubscribe: no Attio company for handle="${handle}" domain="${domain}" name="${nameGuess}"`,
+    );
+    return null;
   }
-
-  return null;
+  return findAttioDealForCompany(companyId, apiKey);
 }
 
-async function moveAttioDeadToUnsubscribed(
+async function findAttioCompanyByDomain(domain: string, apiKey: string): Promise<string | null> {
+  const resp = await queryAttioCompanies({ domains: { $eq: domain } }, apiKey);
+  return resp[0]?.id?.record_id ?? null;
+}
+
+async function findAttioCompanyByName(name: string, apiKey: string): Promise<string | null> {
+  const resp = await queryAttioCompanies({ name: { $contains: name } }, apiKey);
+  return resp[0]?.id?.record_id ?? null;
+}
+
+async function queryAttioCompanies(filter: unknown, apiKey: string): Promise<any[]> {
+  const resp = await fetch(`${ATTIO_BASE}/objects/companies/records/query`, {
+    method: "POST",
+    headers: attioHeaders(apiKey),
+    body: JSON.stringify({ filter, limit: 1 }),
+    signal: AbortSignal.timeout(TIMEOUT_MS),
+  });
+  if (!resp.ok) {
+    console.error(`Unsubscribe: Attio company query failed (${resp.status})`);
+    return [];
+  }
+  return (await resp.json()).data ?? [];
+}
+
+async function findAttioDealForCompany(companyId: string, apiKey: string): Promise<string | null> {
+  const resp = await fetch(`${ATTIO_BASE}/objects/deals/records/query`, {
+    method: "POST",
+    headers: attioHeaders(apiKey),
+    body: JSON.stringify({
+      filter: { associated_company: { target_record_id: { $eq: companyId } } },
+      limit: 1,
+    }),
+    signal: AbortSignal.timeout(TIMEOUT_MS),
+  });
+  if (!resp.ok) {
+    console.error(`Unsubscribe: Attio deal query failed (${resp.status})`);
+    return null;
+  }
+  const deals = (await resp.json()).data ?? [];
+  return deals[0]?.id?.record_id ?? null;
+}
+
+async function moveAttioDealToUnsubscribed(
   dealId: string,
   stageId: string,
   apiKey: string,
 ): Promise<void> {
-  await fetch(`${ATTIO_BASE}/objects/deals/records/${dealId}`, {
+  const resp = await fetch(`${ATTIO_BASE}/objects/deals/records/${dealId}`, {
     method: "PATCH",
     headers: attioHeaders(apiKey),
     body: JSON.stringify({ data: { values: { stage: [{ status: stageId }] } } }),
     signal: AbortSignal.timeout(TIMEOUT_MS),
   });
+  if (!resp.ok) {
+    console.error(`Unsubscribe: Attio stage move failed for deal ${dealId} (${resp.status})`);
+  }
 }
 
 async function appendAttioSyncLog(
