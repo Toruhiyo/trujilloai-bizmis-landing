@@ -1,9 +1,9 @@
 import { useState, useCallback } from "react";
 import { useSearchParams } from "react-router-dom";
+import Logo from "@/components/Logo";
 
 type PageState = "confirm" | "loading" | "success" | "error";
 
-const BIZMIS_PRIMARY = "#F9A353";
 const FOREGROUND = "#32281B";
 const MUTED_FG = "#8F7856";
 
@@ -51,12 +51,7 @@ const Unsubscribe = () => {
         style={{ backgroundColor: "#ffffff", borderColor: "#DFD3C3" }}
       >
         <a href="https://www.bizmis.ai" className="inline-block mb-8">
-          <span
-            className="text-xl font-bold"
-            style={{ color: BIZMIS_PRIMARY }}
-          >
-            bizmis
-          </span>
+          <Logo showText size="md" />
         </a>
 
         {state === "confirm" && (
