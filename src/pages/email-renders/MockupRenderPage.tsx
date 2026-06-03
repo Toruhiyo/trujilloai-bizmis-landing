@@ -35,8 +35,12 @@ const SHADOW_SAFE_PADDING_PX = 48;
  * + caption paddings) without any CSS transform — every element keeps
  * its aspect ratio.
  */
-const COMBINED_BANNER_HEIGHT_PX = 150;
-const COMBINED_DESKTOP_TOP_OFFSET_PX = COMBINED_BANNER_HEIGHT_PX;
+const COMBINED_BANNER_HEIGHT_PX = 188;
+/** Shift both mockups (desktop + phone, which derives its top from the desktop)
+ *  up by this much so they tuck into the banner's empty lower strip. */
+const COMBINED_MOCKUP_RAISE_PX = 8;
+const COMBINED_DESKTOP_TOP_OFFSET_PX =
+  COMBINED_BANNER_HEIGHT_PX - COMBINED_MOCKUP_RAISE_PX;
 const COMBINED_PHONE_STICK_UP_PX = 14;
 const COMBINED_PHONE_TOP_OFFSET_PX =
   COMBINED_DESKTOP_TOP_OFFSET_PX - COMBINED_PHONE_STICK_UP_PX;
