@@ -51,16 +51,31 @@ const EMAIL_BANNER_WAVEFORM_W_PX = 560;
 const EMAIL_BANNER_WAVEFORM_H_PX = 128;
 /** Display height for the waveform inside the banner (vertically centered, edge-to-edge; keep below ~80% of banner height). */
 const EMAIL_BANNER_WAVEFORM_DISPLAY_H_PX = 120;
-/** Fixed banner height — logos + waveform vertically centered, badge pinned to the bottom. */
-const EMAIL_BANNER_H_PX = 180;
+/** Fixed banner height — logos pinned to the top row, the big "Early Access Invite" title block vertically centered below them. */
+const EMAIL_BANNER_H_PX = 188;
 /** Bizmis mark + wordmark in the header strip (right). */
-const EMAIL_BANNER_BIZMIS_ICON_PX = 48;
-const EMAIL_BANNER_BIZMIS_WORDMARK_FONT_PX = 24;
+const EMAIL_BANNER_BIZMIS_ICON_PX = 44;
+const EMAIL_BANNER_BIZMIS_WORDMARK_FONT_PX = 22;
 const EMAIL_BANNER_PAD_X_PX = 24;
-const EMAIL_BANNER_BADGE_PAD_BOTTOM_PX = 8;
+/** Top padding for the logo row (logos sit at the top edge so they never overlap the centered title). */
+const EMAIL_BANNER_LOGO_ROW_PAD_TOP_PX = 16;
 /** Bottom scrim: % of banner height for the fade-to-dark (from bottom up). */
-const EMAIL_BANNER_SCRIM_H_PCT = 26;
-const EMAIL_BANNER_BADGE_FONT_PX = 11;
+const EMAIL_BANNER_SCRIM_H_PCT = 30;
+/** Large centered "Early Access Invite" headline + "Limited to the first {X} stores" subtitle. */
+const EMAIL_BANNER_TITLE_FONT_PX = 24;
+const EMAIL_BANNER_SUBTITLE_FONT_PX = 13;
+/** Gap between the centered title and its subtitle. */
+const EMAIL_BANNER_TITLE_SUBTITLE_GAP_PX = 7;
+/** Title line-height multiplier (kept in sync with the inline style below). */
+const EMAIL_BANNER_TITLE_LINE_HEIGHT = 1.08;
+/**
+ * Half the title's line box, used to anchor the overlay so the TITLE itself
+ * (not the title+subtitle block) sits exactly on the banner's vertical center,
+ * with the subtitle hanging directly below it.
+ */
+const EMAIL_BANNER_TITLE_HALF_LINE_PX = Math.round(
+  (EMAIL_BANNER_TITLE_FONT_PX * EMAIL_BANNER_TITLE_LINE_HEIGHT) / 2,
+);
 
 const OUTCOME_ICON_TREND = "/images/early-access-outcome-trend.svg";
 const OUTCOME_ICON_HEADSET = "/images/early-access-outcome-headset.svg";
@@ -564,16 +579,30 @@ export function buildEmailInviteBannerHtml(
   const { storeCap } = EARLY_ACCESS_TERMS;
   const copy = EARLY_ACCESS_EMAIL_COPY;
 
+  // Contrast-aware centered title/subtitle. White by default; switches to dark
+  // on near-white banners (e.g. Bodega, whose #FFFFFF banner would otherwise
+  // render white-on-white). The matching text-shadow lifts the glyphs off the
+  // banner: a dark glow under white text, a light glow under dark text.
+  const titleOnLightBanner = isNearWhite(banner);
+  const bannerTitleColor = titleOnLightBanner ? BIZMIS_FOREGROUND_HEX : "#ffffff";
+  const bannerTitleShadow = titleOnLightBanner
+    ? "0 1px 4px rgba(255,255,255,0.65)"
+    : "0 1px 6px rgba(0,0,0,0.35)";
+  const bannerSubtitleShadow = titleOnLightBanner
+    ? "0 1px 3px rgba(255,255,255,0.55)"
+    : "0 1px 4px rgba(0,0,0,0.3)";
+
   return `<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%">
             <tr>
               <td height="${heightPx}" style="${buildEmailBannerStripCellStyle(banner, noiseGrainUrl)}height:${heightPx}px;border-bottom:1px solid ${BIZMIS_BORDER_HEX};">
                 ${buildEmailBannerWaveformOverlayHtml(bannerWaveformUrl)}
-                <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" height="${heightPx}" style="position:relative;z-index:2;border-collapse:collapse;height:${heightPx}px;">
+                <!--[if !mso]><!--><div aria-hidden="true" style="position:absolute;left:0;right:0;bottom:0;height:${EMAIL_BANNER_SCRIM_H_PCT}%;z-index:2;pointer-events:none;background:linear-gradient(to bottom,transparent 0%,rgba(0,0,0,0.22) 100%);"></div><!--<![endif]-->
+                <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" height="${heightPx}" style="position:relative;z-index:3;border-collapse:collapse;height:${heightPx}px;">
                   <tr>
-                    <td width="50%" valign="middle" style="padding:0 14px 0 ${EMAIL_BANNER_PAD_X_PX}px;background:transparent;">
+                    <td width="50%" valign="top" style="padding:${EMAIL_BANNER_LOGO_ROW_PAD_TOP_PX}px 14px 0 ${EMAIL_BANNER_PAD_X_PX}px;background:transparent;">
                       ${storeLogoHtml}
                     </td>
-                    <td width="50%" valign="middle" style="padding:0 ${EMAIL_BANNER_PAD_X_PX}px 0 14px;text-align:right;background:transparent;">
+                    <td width="50%" valign="top" style="padding:${EMAIL_BANNER_LOGO_ROW_PAD_TOP_PX}px ${EMAIL_BANNER_PAD_X_PX}px 0 14px;text-align:right;background:transparent;">
                       <a href="${escapeHtml(buildInviteBizmisSiteUrl(lead.id))}" target="_blank" style="text-decoration:none;">
                         <table role="presentation" cellpadding="0" cellspacing="0" border="0" align="right">
                           <tr>
@@ -589,11 +618,9 @@ export function buildEmailInviteBannerHtml(
                     </td>
                   </tr>
                 </table>
-                <!--[if !mso]><!--><div aria-hidden="true" style="position:absolute;left:0;right:0;bottom:0;height:${EMAIL_BANNER_SCRIM_H_PCT}%;z-index:2;pointer-events:none;background:linear-gradient(to bottom,transparent 0%,rgba(0,0,0,0.18) 100%);"></div><!--<![endif]-->
-                <!--[if !mso]><!--><div style="position:absolute;left:0;right:0;bottom:${EMAIL_BANNER_BADGE_PAD_BOTTOM_PX}px;z-index:3;text-align:center;pointer-events:none;">
-                  <p style="margin:0;${BODY}font-size:${EMAIL_BANNER_BADGE_FONT_PX}px;line-height:1.35;color:#ffffff;">
-                    <span style="font-weight:700;letter-spacing:0.08em;text-transform:uppercase;">${escapeHtml(copy.bannerBadgeTitle)}</span><span style="font-weight:400;"> &nbsp;&middot;&nbsp; ${escapeHtml(copy.bannerBadgeLimitPrefix)} ${storeCap} ${escapeHtml(copy.bannerBadgeLimitSuffix)}</span>
-                  </p>
+                <!--[if !mso]><!--><div style="position:absolute;left:0;right:0;top:50%;transform:translateY(-${EMAIL_BANNER_TITLE_HALF_LINE_PX}px);-webkit-transform:translateY(-${EMAIL_BANNER_TITLE_HALF_LINE_PX}px);z-index:3;text-align:center;pointer-events:none;padding:0 20px;">
+                  <p style="margin:0;${HEADING}font-size:${EMAIL_BANNER_TITLE_FONT_PX}px;font-weight:800;line-height:${EMAIL_BANNER_TITLE_LINE_HEIGHT};letter-spacing:0.06em;text-transform:uppercase;color:${bannerTitleColor};text-shadow:${bannerTitleShadow};">${escapeHtml(copy.bannerBadgeTitle)}</p>
+                  <p style="margin:${EMAIL_BANNER_TITLE_SUBTITLE_GAP_PX}px 0 0 0;${BODY}font-size:${EMAIL_BANNER_SUBTITLE_FONT_PX}px;font-weight:500;line-height:1.3;letter-spacing:0.04em;color:${bannerTitleColor};text-shadow:${bannerSubtitleShadow};">${escapeHtml(copy.bannerBadgeLimitPrefix)} ${storeCap} ${escapeHtml(copy.bannerBadgeLimitSuffix)}</p>
                 </div><!--<![endif]-->
               </td>
             </tr>
@@ -934,11 +961,11 @@ function emailMontageWatermarkWaveformHtml(
 
 const REGULAR_CARD_W = 122;
 const REGULAR_IMG_W = 76;
-const REGULAR_IMG_H = 76;
+const REGULAR_IMG_H = 67;
 const REGULAR_IMG_SLOT_H = REGULAR_IMG_H + 12;
 const REC_CARD_MAX_W = 152;
 const REC_IMG_W = 112;
-const REC_IMG_H = 88;
+const REC_IMG_H = 77;
 const REC_IMG_SLOT_H = REC_IMG_H + 18;
 
 function buildMontageClerkCueInnerHtml(

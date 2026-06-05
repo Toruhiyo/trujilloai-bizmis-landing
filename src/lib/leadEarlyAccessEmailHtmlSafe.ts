@@ -83,7 +83,7 @@ const CARD_MAX_WIDTH_PX = 600;
  */
 const COMBINED_MOCKUP_DISPLAY_WIDTH_PX = CARD_MAX_WIDTH_PX;
 const COMBINED_MOCKUP_INTRINSIC_WIDTH_PX = 844;
-const COMBINED_MOCKUP_INTRINSIC_HEIGHT_PX = 650;
+const COMBINED_MOCKUP_INTRINSIC_HEIGHT_PX = 688;
 const COMBINED_MOCKUP_DISPLAY_HEIGHT_PX = Math.round(
   (COMBINED_MOCKUP_DISPLAY_WIDTH_PX * COMBINED_MOCKUP_INTRINSIC_HEIGHT_PX) /
     COMBINED_MOCKUP_INTRINSIC_WIDTH_PX,
@@ -91,7 +91,6 @@ const COMBINED_MOCKUP_DISPLAY_HEIGHT_PX = Math.round(
 
 const FOREGROUND_HEX = "#32281B";
 const MUTED_LIGHT_HEX = "#B5A48E";
-const MUTED_SUBTLE_HEX = "#C8BBA4";
 /** Orange-on-white Bizmis square mark used as the signature logo (public asset, 281x281). */
 const SIGNATURE_BIZMIS_LOGO_PATH = "/images/bizmis-logo-orange-white.png";
 /** Display size in logical CSS px (keeps square 1:1 aspect ratio). */
@@ -217,7 +216,6 @@ function renderSafeHtml(lead: LeadEarlyAccessData, baseUrl: string, utmCampaign:
   const copy = EARLY_ACCESS_EMAIL_COPY;
 
   const storeName = escapeHtml(lead.storeName);
-  const storeAccent = resolveStoreAccentForEmail(lead);
   const leadHandle = encodeURIComponent(lead.id);
   const earlyAccessCode = lead.couponCode;
   const topProductTitle = lead.salesProducts[lead.salesRecommendedIndex].title;
@@ -247,7 +245,6 @@ function renderSafeHtml(lead: LeadEarlyAccessData, baseUrl: string, utmCampaign:
     fullWidth: true,
   });
 
-  const titleHtml = buildEarlyAccessTitleHtml(storeName, storeAccent, bizmisInviteSiteUrl);
   const signatureHtml = buildSignatureHtml(baseUrl, bizmisInviteSiteUrl);
 
   return `<!DOCTYPE html>
@@ -277,13 +274,13 @@ ${preheader}
 <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="${CARD_MAX_WIDTH_PX}" style="max-width:${CARD_MAX_WIDTH_PX}px;width:100%;background-color:#ffffff;border:1px solid ${BIZMIS_BORDER_HEX};border-radius:16px;overflow:hidden;">
 
 <tr>
-<td style="padding:36px 32px 0 32px;" align="center">
-${titleHtml}
+<td style="padding:0 0 4px 0;line-height:0;font-size:0;" align="center">
+${combinedImageHtml}
 </td>
 </tr>
 
 <tr>
-<td style="padding:38px 32px 0 32px;">
+<td style="padding:8px 32px 0 32px;">
 <p style="margin:0;font-family:${SYSTEM_FONT_STACK};font-size:11px;line-height:1.6;color:${BIZMIS_MUTED_FG_HEX};letter-spacing:0.01em;">
 ${salutationText}
 </p>
@@ -309,13 +306,7 @@ ${ctaBoxHtml}
 </tr>
 
 <tr>
-<td style="padding:28px 0 4px 0;line-height:0;font-size:0;" align="center">
-${combinedImageHtml}
-</td>
-</tr>
-
-<tr>
-<td style="padding:24px 32px ${SIGNATURE_BEFORE_FOOTER_GAP_PX}px 32px;">
+<td style="padding:28px 32px ${SIGNATURE_BEFORE_FOOTER_GAP_PX}px 32px;">
 ${signatureHtml}
 </td>
 </tr>
@@ -338,37 +329,6 @@ Questions? Just reply to this email (<a href="mailto:${escapeHtml(copy.contactEm
 
 </body>
 </html>`;
-}
-
-/**
- * Inline early-access invite heading:
- *
- *   `{StoreName} × bizmis · Early Access Invite`
- *
- * All three segments sit on a single centered line: the store name in
- * the lead's resolved accent, `bizmis` in Bizmis primary (linked to the
- * marketing site with `ref=<lead id>`), and the eyebrow in the same subtle tone
- * as the × / · separators. Wraps naturally if the store
- * name is long enough to exceed the card's content width.
- */
-function buildEarlyAccessTitleHtml(
-  storeName: string,
-  storeAccent: string,
-  bizmisInviteSiteUrl: string,
-): string {
-  const c = EARLY_ACCESS_EMAIL_COPY;
-  const baseTextStyle =
-    `font-family:${SYSTEM_FONT_STACK};font-size:22px;font-weight:700;line-height:1.3;letter-spacing:-0.005em;`;
-  const separatorStyle = `${baseTextStyle}font-weight:400;color:${MUTED_SUBTLE_HEX};`;
-  const eyebrowStyle =
-    `font-family:${SYSTEM_FONT_STACK};font-size:14px;font-weight:600;line-height:1.3;letter-spacing:0.2em;text-transform:uppercase;color:${MUTED_SUBTLE_HEX};vertical-align:0.08em;`;
-  return `<p style="margin:0;text-align:center;${baseTextStyle}">
-<span style="color:${storeAccent};">${storeName}</span>
-<span style="${separatorStyle}">&nbsp;${escapeHtml(c.inviteTitleBrandLeadSeparator)}&nbsp;</span>
-<a href="${escapeAttr(bizmisInviteSiteUrl)}" target="_blank" rel="noopener noreferrer" style="${baseTextStyle}color:${BIZMIS_PRIMARY_HEX};text-decoration:none;">${escapeHtml(c.inviteTitleBrandLead)}</a>
-<span style="${separatorStyle}">&nbsp;${escapeHtml(c.inviteTitleEyebrowSeparator)}&nbsp;</span>
-<span style="${eyebrowStyle}">${escapeHtml(c.inviteTitleEyebrow)}</span>
-</p>`;
 }
 
 // HTML fragment helpers.
