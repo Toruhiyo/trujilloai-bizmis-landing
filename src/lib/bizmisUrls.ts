@@ -6,9 +6,12 @@ export const BIZMIS_SHOPIFY_APP_LISTING_URL =
 export const BIZMIS_BOOK_A_CALL_URL =
   "https://calendly.com/oriol-bizmis/bizmis-onboarding" as const;
 
-/** Demo storefront (Paper & Pine Books) — `?_bt` preserves storefront preview/session access. */
-export const BIZMIS_DEMO_STORE_URL =
-  "https://paper-and-pine-books.myshopify.com/?_bt=BAh7BkkiC19yYWlscwY6BkVUewhJIglkYXRhBjsAVEkiJ3BhcGVyLWFuZC1waW5lLWJvb2tzLm15c2hvcGlmeS5jb20GOwBGSSIIZXhwBjsAVEkiHTIwMjYtMDUtMDdUMTc6MTI6MjUuNDM0WgY7AFRJIghwdXIGOwBUSSIecGVybWFuZW50X3Bhc3N3b3JkX2J5cGFzcwY7AEY%3D--80808056a1a1351c22fd3ad6dd80534feecf5799" as const;
+/**
+ * Demo storefront entry point. Routes through our `/demo` serverless redirect, which mints a
+ * fresh App Store password-bypass token per request (Shopify's `_bt` tokens are short-lived, so
+ * a hardcoded one rots). Falls back to the app listing if the bypass can't be resolved.
+ */
+export const BIZMIS_DEMO_STORE_URL = "/demo" as const;
 
 /** Opens the listing in a new tab (use from click handlers; `target=_blank` alone is unreliable in some embeds). */
 export function openBizmisShopifyAppListing(): Window | null {

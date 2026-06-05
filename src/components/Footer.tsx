@@ -2,14 +2,17 @@ import { getCurrentYear } from "../lib/utils/time";
 import { BIZMIS_DEMO_STORE_URL } from "@/lib/bizmisUrls";
 import Logo from "./Logo";
 
+type FooterLink = { label: string; href: string; newTab?: boolean };
+type FooterColumn = { heading: string; links: FooterLink[] };
+
 const Footer = () => {
-  const linkColumns = [
+  const linkColumns: FooterColumn[] = [
     {
       heading: "Product",
       links: [
         { label: "Features", href: "#" },
         { label: "Pricing", href: "#" },
-        { label: "Demo", href: BIZMIS_DEMO_STORE_URL },
+        { label: "Demo", href: BIZMIS_DEMO_STORE_URL, newTab: true },
       ],
     },
     {
@@ -63,11 +66,11 @@ const Footer = () => {
                   {heading}
                 </h4>
                 <ul className="space-y-1.5 sm:space-y-2 text-sm sm:text-base text-gray-400">
-                  {links.map(({ label, href }) => (
+                  {links.map(({ label, href, newTab }) => (
                     <li key={label}>
                       <a
                         href={href}
-                        {...(href.startsWith("http")
+                        {...(href.startsWith("http") || newTab
                           ? {
                               target: "_blank",
                               rel: "noopener noreferrer",

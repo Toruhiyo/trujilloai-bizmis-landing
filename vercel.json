@@ -12,6 +12,10 @@
   ],
   "rewrites": [
     {
+      "source": "/demo",
+      "destination": "/api/demo"
+    },
+    {
       "source": "/invite-cards/:path*",
       "destination": "https://8josk2l8la4zszeg.public.blob.vercel-storage.com/invite-cards/:path*"
     },
