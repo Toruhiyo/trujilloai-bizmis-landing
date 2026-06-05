@@ -1,10 +1,15 @@
 import type { MouseEvent } from "react";
 import { Button } from "@/components/ui/button";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, PlayCircle } from "lucide-react";
 import { FaShopify } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { usePostHog } from "posthog-js/react";
-import { BIZMIS_SHOPIFY_APP_LISTING_URL, openBizmisShopifyAppListing } from "@/lib/bizmisUrls";
+import {
+  BIZMIS_DEMO_STORE_URL,
+  BIZMIS_SHOPIFY_APP_LISTING_URL,
+  openBizmisDemoStore,
+  openBizmisShopifyAppListing,
+} from "@/lib/bizmisUrls";
 import Navbar from "./Navbar";
 
 const Hero = () => {
@@ -27,6 +32,16 @@ const Hero = () => {
       location: "hero",
     });
   };
+
+  const handleViewDemoClick = (e: MouseEvent<HTMLAnchorElement>) => {
+    e.preventDefault();
+    openBizmisDemoStore();
+    posthog.capture("cta_clicked", {
+      cta_type: "view_demo",
+      location: "hero",
+    });
+  };
+
   return (
     <section
       id="hero"
@@ -118,6 +133,23 @@ const Hero = () => {
                 </a>
               </Button>
 
+              <Button
+                variant="outline"
+                size="lg"
+                asChild
+                className="w-full border-white/30 bg-white/10 text-white hover:bg-white/20 hover:text-white [&_svg]:pointer-events-auto"
+              >
+                <a
+                  href={BIZMIS_DEMO_STORE_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={handleViewDemoClick}
+                >
+                  <PlayCircle className="!h-5 !w-5" aria-hidden="true" />
+                  Live Demo
+                </a>
+              </Button>
+
               <div className="flex flex-col gap-2 items-center w-full">
                 <span className="text-white/70 text-xs text-center">
                   Also available for{" "}
@@ -175,34 +207,53 @@ const Hero = () => {
               </div>
 
               <div className="space-y-4 w-fit">
-                <Button
-                  variant="hero"
-                  size="xl"
-                  asChild
-                  className="group flex items-center gap-4 h-20 px-8 text-lg [&_svg]:!w-8 [&_svg]:!h-8 w-full [&_svg]:pointer-events-auto"
-                >
-                  <a
-                    href={BIZMIS_SHOPIFY_APP_LISTING_URL}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    onClick={handleShopifyInstallClick}
+                <div className="flex items-stretch gap-3">
+                  <Button
+                    variant="hero"
+                    size="xl"
+                    asChild
+                    className="group flex items-center gap-4 h-20 px-8 text-lg [&_svg]:!w-8 [&_svg]:!h-8 [&_svg]:pointer-events-auto"
                   >
-                    <div className="flex-shrink-0">
-                      <FaShopify className="w-9 h-9 text-primary" />
-                    </div>
-                    <div className="flex-1 min-w-0 text-left">
-                      <div className="font-semibold">
-                        Install Now
+                    <a
+                      href={BIZMIS_SHOPIFY_APP_LISTING_URL}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      onClick={handleShopifyInstallClick}
+                    >
+                      <div className="flex-shrink-0">
+                        <FaShopify className="w-9 h-9 text-primary" />
                       </div>
-                      <div className="text-sm opacity-80">
-                        One-click install, ready in minutes
+                      <div className="flex-1 min-w-0 text-left">
+                        <div className="font-semibold">
+                          Install Now
+                        </div>
+                        <div className="text-sm opacity-80">
+                          One-click install, ready in minutes
+                        </div>
                       </div>
-                    </div>
-                    <div className="flex-shrink-0">
-                      <ArrowRight className="w-6 h-6 group-hover:translate-x-1 transition-transform" />
-                    </div>
-                  </a>
-                </Button>
+                      <div className="flex-shrink-0">
+                        <ArrowRight className="w-6 h-6 group-hover:translate-x-1 transition-transform" />
+                      </div>
+                    </a>
+                  </Button>
+
+                  <Button
+                    variant="outline"
+                    size="lg"
+                    asChild
+                    className="h-20 border-white/30 bg-white/10 px-6 text-lg text-white hover:bg-white/20 hover:text-white [&_svg]:pointer-events-auto"
+                  >
+                    <a
+                      href={BIZMIS_DEMO_STORE_URL}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      onClick={handleViewDemoClick}
+                    >
+                      <PlayCircle className="!h-5 !w-5" aria-hidden="true" />
+                      Live Demo
+                    </a>
+                  </Button>
+                </div>
 
                 <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 items-center w-full">
                   <span className="text-white/70 text-sm text-center sm:text-left flex-1 min-w-0">

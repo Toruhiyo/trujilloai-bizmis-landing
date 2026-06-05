@@ -4,7 +4,10 @@ import { FaShopify } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { usePostHog } from "posthog-js/react";
 import type { MouseEvent } from "react";
-import { BIZMIS_SHOPIFY_APP_LISTING_URL, openBizmisShopifyAppListing } from "@/lib/bizmisUrls";
+import {
+  BIZMIS_SHOPIFY_APP_LISTING_URL,
+  openBizmisShopifyAppListing,
+} from "@/lib/bizmisUrls";
 import EarlyAccessCard from "./EarlyAccessCard";
 
 const FinalCTA = () => {
@@ -111,15 +114,13 @@ const FinalCTA = () => {
                     className="inline-flex w-full min-w-0 items-center justify-center gap-2"
                     onClick={handleInstallOnShopifyClick}
                   >
-                    <FaShopify
-                      className="text-primary"
-                      aria-hidden="true"
-                    />
+                    <FaShopify className="text-primary" aria-hidden="true" />
                     Install on Shopify
                   </a>
                 </Button>
 
                 <div className="flex flex-col sm:flex-row gap-4">
+                  v{" "}
                   <Button
                     onClick={handleTalkToSales}
                     aria-label="Talk to sales team"
@@ -137,7 +138,10 @@ const FinalCTA = () => {
               {/* Microline */}
               <p className="text-white/70 text-xs sm:text-sm mb-4 leading-relaxed">
                 Cancel anytime •{" "}
-                <a href="/privacy" className="underline hover:text-white transition-colors">
+                <a
+                  href="/privacy"
+                  className="underline hover:text-white transition-colors"
+                >
                   GDPR-ready
                 </a>{" "}
                 • Built for Shopify

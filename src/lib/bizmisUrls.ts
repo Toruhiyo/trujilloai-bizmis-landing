@@ -17,3 +17,8 @@ export const BIZMIS_DEMO_STORE_URL = "/demo" as const;
 export function openBizmisShopifyAppListing(): Window | null {
   return window.open(BIZMIS_SHOPIFY_APP_LISTING_URL, "_blank", "noopener,noreferrer");
 }
+
+/** Opens the demo storefront through the self-healing `/demo` redirect. */
+export function openBizmisDemoStore(): Window | null {
+  return window.open(BIZMIS_DEMO_STORE_URL, "_blank", "noopener,noreferrer");
+}
