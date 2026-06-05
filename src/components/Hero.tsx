@@ -137,7 +137,7 @@ const Hero = () => {
                 variant="outline"
                 size="lg"
                 asChild
-                className="w-full border-white/30 bg-white/10 text-white hover:bg-white/20 hover:text-white [&_svg]:pointer-events-auto"
+                className="h-11 w-full border-white/25 bg-white/[0.06] text-sm font-medium text-white/90 hover:bg-white/15 hover:text-white xs:h-12 xs:text-base [&_svg]:pointer-events-auto"
               >
                 <a
                   href={BIZMIS_DEMO_STORE_URL}
@@ -145,7 +145,7 @@ const Hero = () => {
                   rel="noopener noreferrer"
                   onClick={handleViewDemoClick}
                 >
-                  <PlayCircle className="!h-5 !w-5" aria-hidden="true" />
+                  <PlayCircle className="!h-4 !w-4 xs:!h-5 xs:!w-5" aria-hidden="true" />
                   Live Demo
                 </a>
               </Button>
