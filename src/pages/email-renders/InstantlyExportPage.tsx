@@ -35,6 +35,9 @@ const InstantlyExportPage = () => {
         baseUrl: SAFE_EMAIL_DEFAULT_BASE_URL,
         utmCampaign: INSTANTLY_TEMPLATE_TOKENS.utmCampaign,
         unsubSig: INSTANTLY_TEMPLATE_TOKENS.unsubSig,
+        // Emit both variants wrapped in a Liquid {% if mail_provider == "google" %}
+        // conditional; Instantly renders the right branch per recipient at send.
+        instantlyDualVariant: true,
       }),
     [],
   );

@@ -143,7 +143,40 @@ export type BuildSafeEmailOptions = {
    * is a placeholder token swapped for `{{unsub_sig}}` by the generator.
    */
   unsubSig?: string;
+  /**
+   * Which single layout to render (ignored when `instantlyDualVariant`):
+   *   - "gmail"   — image-first hero card (default; the rich Gmail experience).
+   *   - "allmail" — text-first universal layout (headline + pitch + CTA carry
+   *     the value; the hero image sits lower as an enhancement). Safe when the
+   *     client blocks remote images by default (Outlook / corporate gateways).
+   */
+  variant?: SafeEmailVariant;
+  /**
+   * When true, emit BOTH variants wrapped in an Instantly Liquid conditional
+   * keyed on the per-lead `mail_provider` field:
+   *   {% if mail_provider == "google" %}<gmail>{% else %}<allmail>{% endif %}
+   * Instantly evaluates the Liquid at send time, so the recipient receives only
+   * their one branch (the 102 KB Gmail clip limit applies to that single
+   * branch, which is asserted individually). Used by the Instantly export route.
+   *
+   * Image-first is gated to CONFIRMED Gmail only; everything else — Microsoft,
+   * other/gateway, unknown, AND any missing/empty value — falls through to the
+   * text-first all-mail variant, which renders safely in every client (Gmail
+   * included). `mail_provider` is backfilled on all leads + set on every new
+   * one, so the fallback is rarely hit; when it is, text-first is the safe
+   * degradation rather than a broken image.
+   */
+  instantlyDualVariant?: boolean;
 };
+
+export type SafeEmailVariant = "gmail" | "allmail";
+
+/**
+ * Liquid condition selecting the Gmail (image-first) branch — true only for
+ * confirmed Google recipients. Everything else (Microsoft, other, unknown,
+ * missing, empty) falls through to the text-first all-mail default.
+ */
+const INSTANTLY_GMAIL_LIQUID_CONDITION = 'mail_provider == "google"';
 
 export type SafeEmailBuildResult = {
   html: string;
@@ -161,10 +194,39 @@ export function buildLeadEarlyAccessEmailHtmlSafe(
   const baseUrl = normalizeBaseUrl(options.baseUrl);
   const utmCampaign = options.utmCampaign?.trim() || SAFE_EMAIL_DEFAULT_UTM_CAMPAIGN;
   const unsubSig = options.unsubSig?.trim() || "";
-  const html = minifyEmailHtml(renderSafeHtml(lead, baseUrl, utmCampaign, unsubSig));
-  const htmlSizeBytes = new TextEncoder().encode(html).byteLength;
-  const warnings = assertEmailSafe(html, htmlSizeBytes);
+  const encoder = new TextEncoder();
   const plainText = renderPlainText(lead, utmCampaign, unsubSig);
+
+  if (options.instantlyDualVariant) {
+    // Single shared document shell; only the inner card differs. The Liquid
+    // conditional wraps the two cards INSIDE the centering <td> (see
+    // renderDocument) so Instantly's body sanitizer can't strip it.
+    const gmailCard = renderCard(lead, baseUrl, utmCampaign, unsubSig, "gmail");
+    const allmailCard = renderCard(lead, baseUrl, utmCampaign, unsubSig, "allmail");
+
+    // Validate each rendered branch independently — Instantly sends only one per
+    // recipient, so each must fit Gmail's clip budget on its own.
+    const gmail = minifyEmailHtml(renderDocument(lead, gmailCard));
+    const allmail = minifyEmailHtml(renderDocument(lead, allmailCard));
+    const gmailBytes = encoder.encode(gmail).byteLength;
+    const allmailBytes = encoder.encode(allmail).byteLength;
+    const warnings = [
+      ...assertEmailSafe(gmail, gmailBytes).map((w) => `[gmail] ${w}`),
+      ...assertEmailSafe(allmail, allmailBytes).map((w) => `[allmail] ${w}`),
+    ];
+
+    const liquidCard =
+      `{% if ${INSTANTLY_GMAIL_LIQUID_CONDITION} %}${gmailCard}` +
+      `{% else %}${allmailCard}{% endif %}`;
+    const html = minifyEmailHtml(renderDocument(lead, liquidCard));
+    // The sent email is a single branch; report the larger branch as the size.
+    return { html, plainText, htmlSizeBytes: Math.max(gmailBytes, allmailBytes), warnings };
+  }
+
+  const variant = options.variant ?? "gmail";
+  const html = minifyEmailHtml(renderSafeHtml(lead, baseUrl, utmCampaign, unsubSig, variant));
+  const htmlSizeBytes = encoder.encode(html).byteLength;
+  const warnings = assertEmailSafe(html, htmlSizeBytes);
   return { html, plainText, htmlSizeBytes, warnings };
 }
 
@@ -211,41 +273,31 @@ function buildOutboundUtmTail(leadId: string, utmCampaign: string): string {
 
 // HTML rendering.
 
-function renderSafeHtml(lead: LeadEarlyAccessData, baseUrl: string, utmCampaign: string, unsubSig: string): string {
-  const { storeCap, shopifyAppUrl, bookACallUrl } = EARLY_ACCESS_TERMS;
+function renderSafeHtml(
+  lead: LeadEarlyAccessData,
+  baseUrl: string,
+  utmCampaign: string,
+  unsubSig: string,
+  variant: SafeEmailVariant,
+): string {
+  return renderDocument(lead, renderCard(lead, baseUrl, utmCampaign, unsubSig, variant));
+}
+
+/**
+ * Wrap card content (a single `<table>` card, or a Liquid `{% if %}` choosing
+ * between two cards) in the shared email document shell. The shell — DOCTYPE,
+ * <head>, <body>, the outer background table and its centering <td> — is
+ * identical for every variant. Keeping it shared is essential for the Instantly
+ * dual-variant template: the Liquid conditional must sit INSIDE the centering
+ * <td>, not around whole documents. Instantly's API HTML-sanitizes the body on
+ * save and discards anything outside <body> (and foster-parents stray text
+ * placed directly inside <table>) — both of which silently strip the Liquid.
+ * Inside a <td> the conditional survives.
+ */
+function renderDocument(lead: LeadEarlyAccessData, innerCardHtml: string): string {
   const copy = EARLY_ACCESS_EMAIL_COPY;
-
-  const storeName = escapeHtml(lead.storeName);
-  const leadHandle = encodeURIComponent(lead.id);
-  const earlyAccessCode = lead.couponCode;
-  const topProductTitle = lead.salesProducts[lead.salesRecommendedIndex].title;
-
-  const combinedMockupUrl = absUrl(baseUrl, `/invite-cards/${lead.id}/email/mockup.png`);
-
-  const utmTail = buildOutboundUtmTail(lead.id, utmCampaign);
-  const bookCallUrl = `${bookACallUrl}?ref=${leadHandle}&${utmTail}`;
-  const installUrlWithCode = `${shopifyAppUrl}?ref=${leadHandle}&code=${encodeURIComponent(earlyAccessCode)}&${utmTail}`;
-  const bizmisInviteSiteUrl = `${buildInviteBizmisSiteUrl(lead.id)}&${utmTail}`;
-  const unsubscribeUrl = buildUnsubscribeUrl(lead.id, unsubSig || undefined);
-
-  const salutationText = escapeHtml(buildEarlyAccessSalutationPlainText(lead.storeName, lead.leadContactName));
-
-  const pitchHtml = buildPitchParagraphHtml(storeName);
-  const ctaUrgencyHtml = buildCtaUrgencyHtml(storeName, storeCap);
-  const ctaBoxHtml = buildCtaBoxHtml(bookCallUrl, installUrlWithCode, earlyAccessCode);
-
+  const { storeCap } = EARLY_ACCESS_TERMS;
   const preheader = escapeHtml(buildEarlyAccessPreheader(lead.storeName, storeCap));
-
-  const combinedImageHtml = buildCenteredImage({
-    src: combinedMockupUrl,
-    alt: `Mockup of Bizmis on the ${lead.storeName} Shopify storefront`,
-    widthPx: COMBINED_MOCKUP_DISPLAY_WIDTH_PX,
-    heightPx: COMBINED_MOCKUP_DISPLAY_HEIGHT_PX,
-    borderRadiusPx: 0,
-    fullWidth: true,
-  });
-
-  const signatureHtml = buildSignatureHtml(baseUrl, bizmisInviteSiteUrl);
 
   return `<!DOCTYPE html>
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml">
@@ -270,48 +322,128 @@ ${preheader}
 <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="background-color:${BIZMIS_WARM_BG_HEX};">
 <tr>
 <td align="center" style="padding:28px 16px;">
+<!--[if mso]><table role="presentation" cellpadding="0" cellspacing="0" border="0" width="${CARD_MAX_WIDTH_PX}" align="center"><tr><td><![endif]-->
+${innerCardHtml}
+<!--[if mso]></td></tr></table><![endif]-->
+</td>
+</tr>
+</table>
 
-<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="${CARD_MAX_WIDTH_PX}" style="max-width:${CARD_MAX_WIDTH_PX}px;width:100%;background-color:#ffffff;border:1px solid ${BIZMIS_BORDER_HEX};border-radius:16px;overflow:hidden;">
+</body>
+</html>`;
+}
 
-<tr>
+/**
+ * Render the white invite card (`<table>…</table>`) for one variant — the only
+ * part that differs between Gmail (image-first) and all-mail (text-first).
+ */
+function renderCard(
+  lead: LeadEarlyAccessData,
+  baseUrl: string,
+  utmCampaign: string,
+  unsubSig: string,
+  variant: SafeEmailVariant,
+): string {
+  const { storeCap, shopifyAppUrl, bookACallUrl, demoPath } = EARLY_ACCESS_TERMS;
+  const copy = EARLY_ACCESS_EMAIL_COPY;
+
+  const storeName = escapeHtml(lead.storeName);
+  const leadHandle = encodeURIComponent(lead.id);
+  const earlyAccessCode = lead.couponCode;
+
+  const combinedMockupUrl = absUrl(baseUrl, `/invite-cards/${lead.id}/email/mockup.png`);
+
+  const utmTail = buildOutboundUtmTail(lead.id, utmCampaign);
+  // BIZ-127: primary CTA → the live demo storefront (code rides in the query for
+  // the demo→install redemption, BIZ-134). The direct install link + visible
+  // early-access code are kept as a secondary option; book-a-call is one text line.
+  const demoUrl = `${absUrl(baseUrl, demoPath)}?ref=${leadHandle}&code=${encodeURIComponent(earlyAccessCode)}&${utmTail}`;
+  const installUrlWithCode = `${shopifyAppUrl}?ref=${leadHandle}&code=${encodeURIComponent(earlyAccessCode)}&${utmTail}`;
+  const bookCallUrl = `${bookACallUrl}?ref=${leadHandle}&${utmTail}`;
+  const bizmisInviteSiteUrl = `${buildInviteBizmisSiteUrl(lead.id)}&${utmTail}`;
+  const unsubscribeUrl = buildUnsubscribeUrl(lead.id, unsubSig || undefined);
+
+  const salutationText = escapeHtml(buildEarlyAccessSalutationPlainText(lead.storeName, lead.leadContactName));
+
+  const pitchHtml = buildPitchParagraphHtml(storeName);
+  const ctaUrgencyHtml = buildCtaUrgencyHtml(storeName, storeCap);
+  const ctaBoxHtml = buildCtaBoxHtml(demoUrl, installUrlWithCode, bookCallUrl, earlyAccessCode, variant);
+
+  const altText = `Mockup of Bizmis on the ${lead.storeName} Shopify storefront`;
+
+  const combinedImageHtml = buildCenteredImage({
+    src: combinedMockupUrl,
+    alt: altText,
+    widthPx: COMBINED_MOCKUP_DISPLAY_WIDTH_PX,
+    heightPx: COMBINED_MOCKUP_DISPLAY_HEIGHT_PX,
+    borderRadiusPx: 0,
+    fullWidth: true,
+  });
+
+  const signatureHtml = buildSignatureHtml(baseUrl, bizmisInviteSiteUrl);
+
+  // ── Rows (assembled in a variant-specific order below) ──────────────────────
+  // Gmail: edge-to-edge hero image (renders inline by default in Gmail).
+  const imageRow = `<tr>
 <td style="padding:0 0 4px 0;line-height:0;font-size:0;" align="center">
 ${combinedImageHtml}
 </td>
-</tr>
+</tr>`;
 
-<tr>
-<td style="padding:8px 32px 0 32px;">
+  // #1 All-mail: a solid branded band — a table-cell bgcolor, which Outlook
+  // honors — gives a real visual anchor that survives image-blocking AND Word.
+  const bandRow = `<tr>
+<td bgcolor="${FOREGROUND_HEX}" align="center" style="background-color:${FOREGROUND_HEX};padding:26px 32px;">
+${buildTitleBandHtml(storeName)}
+</td>
+</tr>`;
+
+  // #2/#3 All-mail: NO framing box (a bordered/bg container made Outlook render a
+  // giant empty placeholder). The descriptive text sits ABOVE the image, flanked
+  // by down arrows pointing to it. The <img> carries no alt (text is above), no
+  // border/bg, and NO fixed height — so a blocked image collapses to a small icon
+  // instead of reserving a tall box; when it loads, height:auto scales it.
+  const previewW = CARD_MAX_WIDTH_PX - 64; // within the 32px side padding
+  const allmailImageRow = `<tr>
+<td style="padding:26px 32px 0 32px;" align="center">
+<p style="margin:0 0 8px 0;font-family:${SYSTEM_FONT_STACK};font-size:11px;line-height:1.5;color:${MUTED_LIGHT_HEX};">&#8595;&nbsp;&nbsp;${escapeHtml(altText)}&nbsp;&nbsp;&#8595;</p>
+<img src="${escapeAttr(combinedMockupUrl)}" alt="" width="${previewW}" style="display:block;width:100%;max-width:${previewW}px;height:auto;border:0;margin:0 auto;" />
+</td>
+</tr>`;
+
+  const salutationRow = (topPad: number) => `<tr>
+<td style="padding:${topPad}px 32px 0 32px;">
 <p style="margin:0;font-family:${SYSTEM_FONT_STACK};font-size:11px;line-height:1.6;color:${BIZMIS_MUTED_FG_HEX};letter-spacing:0.01em;">
 ${salutationText}
 </p>
 </td>
-</tr>
+</tr>`;
 
-<tr>
+  const pitchRow = `<tr>
 <td style="padding:14px 32px 0 32px;">
 ${pitchHtml}
 </td>
-</tr>
+</tr>`;
 
-<tr>
+  const urgencyRow = `<tr>
 <td style="padding:14px 32px 0 32px;">
 ${ctaUrgencyHtml}
 </td>
-</tr>
+</tr>`;
 
-<tr>
+  const ctaRow = `<tr>
 <td style="padding:24px 32px 0 32px;" align="center">
 ${ctaBoxHtml}
 </td>
-</tr>
+</tr>`;
 
-<tr>
+  const signatureRow = `<tr>
 <td style="padding:28px 32px ${SIGNATURE_BEFORE_FOOTER_GAP_PX}px 32px;">
 ${signatureHtml}
 </td>
-</tr>
+</tr>`;
 
-<tr>
+  const footerRow = `<tr>
 <td style="padding:28px 40px 32px 40px;text-align:center;border-top:1px solid #EBE6DF;">
 <p style="margin:0 0 10px 0;font-family:${SYSTEM_FONT_STACK};font-size:10px;line-height:1.55;color:${MUTED_LIGHT_HEX};">
 Questions? Just reply to this email (<a href="mailto:${escapeHtml(copy.contactEmail)}" style="color:${BIZMIS_MUTED_FG_HEX};text-decoration:none;">${escapeHtml(copy.contactEmail)}</a>).
@@ -320,15 +452,42 @@ Questions? Just reply to this email (<a href="mailto:${escapeHtml(copy.contactEm
 <span style="font-family:${SYSTEM_FONT_STACK};font-size:10px;color:${MUTED_LIGHT_HEX};">&nbsp;&middot;&nbsp;</span>
 <a href="${escapeAttr(unsubscribeUrl)}" style="font-family:${SYSTEM_FONT_STACK};font-size:10px;font-weight:400;color:${BIZMIS_MUTED_FG_HEX};text-decoration:underline;">${escapeHtml(INVITE_UNSUBSCRIBE_LABEL)}</a>
 </td>
-</tr>
+</tr>`;
 
-</table>
-</td>
-</tr>
-</table>
+  // Gmail: image-first hero (renders inline by default). All-mail: branded band +
+  // pitch + CTA stand alone when the hero image is blocked (Outlook/gateways);
+  // the framed image follows as an enhancement.
+  const innerRows = variant === "gmail"
+    ? imageRow + salutationRow(8) + pitchRow + urgencyRow + ctaRow + signatureRow + footerRow
+    : bandRow + salutationRow(18) + pitchRow + urgencyRow + ctaRow + allmailImageRow + signatureRow + footerRow;
 
-</body>
-</html>`;
+  // #5 All-mail: flat (square) card — Outlook squares corners anyway, so make it
+  // deliberate rather than degraded. Gmail keeps the rounded card.
+  const cardRadius = variant === "gmail" ? 16 : 0;
+  return `<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="${CARD_MAX_WIDTH_PX}" style="max-width:${CARD_MAX_WIDTH_PX}px;width:100%;background-color:#ffffff;border:1px solid ${BIZMIS_BORDER_HEX};border-radius:${cardRadius}px;overflow:hidden;">
+${innerRows}
+</table>`;
+}
+
+/**
+ * Title for the all-mail branded band (#1): `<Store> × bizmis` on a dark band,
+ * with the `EARLY ACCESS INVITE` eyebrow beneath. Renders on the dark
+ * `FOREGROUND_HEX` band, so the store name is white and `bizmis` keeps the brand
+ * orange (which would vanish on a light band). Real text — no image — so it
+ * survives both image-blocking and Outlook's Word engine. The store-name accent
+ * is fixed (the per-lead accent can't be baked into a single Instantly template).
+ */
+function buildTitleBandHtml(storeName: string): string {
+  const c = EARLY_ACCESS_EMAIL_COPY;
+  const base = `font-family:${SYSTEM_FONT_STACK};font-size:22px;font-weight:700;line-height:1.3;letter-spacing:-0.005em;`;
+  const sep = `${base}font-weight:400;color:${MUTED_LIGHT_HEX};`;
+  const eyebrow = `font-family:${SYSTEM_FONT_STACK};font-size:13px;font-weight:600;line-height:1.3;letter-spacing:0.2em;text-transform:uppercase;color:${MUTED_LIGHT_HEX};`;
+  return `<p style="margin:0;text-align:center;${base}color:#ffffff;">` +
+    `${storeName}` +
+    `<span style="${sep}">&nbsp;${escapeHtml(c.inviteTitleBrandLeadSeparator)}&nbsp;</span>` +
+    `<span style="${base}color:${BIZMIS_PRIMARY_HEX};">${escapeHtml(c.inviteTitleBrandLead)}</span>` +
+    `</p>` +
+    `<p style="margin:8px 0 0 0;text-align:center;${eyebrow}">${escapeHtml(c.inviteTitleEyebrow)}</p>`;
 }
 
 // HTML fragment helpers.
@@ -374,50 +533,59 @@ ${escapeHtml(c.ctaUrgencyEaOpenBeforeCap)}${storeCap}${escapeHtml(c.ctaUrgencyEa
 }
 
 function buildCtaBoxHtml(
-  bookCallUrl: string,
+  demoUrl: string,
   installUrlWithCode: string,
+  bookCallUrl: string,
   earlyAccessCode: string,
+  variant: SafeEmailVariant,
 ): string {
   const c = EARLY_ACCESS_EMAIL_COPY;
+  // #5 All-mail flattens decoration (square, solid) so it reads as intentional
+  // in Outlook rather than a degraded rounded design.
+  const flat = variant === "allmail";
+  const boxBorder = flat ? `1px solid ${BIZMIS_BORDER_HEX}` : `1px dashed ${BIZMIS_BORDER_HEX}`;
+  const boxRadius = flat ? 0 : 14;
+  const btnRadius = flat ? 0 : 12;
   const kickerStyle = `margin:0;font-family:${SYSTEM_FONT_STACK};font-size:10px;font-weight:600;line-height:1.4;color:${BIZMIS_MUTED_FG_HEX};letter-spacing:0.14em;text-transform:uppercase;`;
-  const primaryLinkStyle = `display:inline-block;padding:14px 28px;font-family:${SYSTEM_FONT_STACK};font-size:13px;font-weight:600;color:${FOREGROUND_HEX};text-decoration:none;border-radius:12px;`;
+  const buttonLinkStyle = `font-family:${SYSTEM_FONT_STACK};font-size:13px;font-weight:600;line-height:18px;mso-line-height-rule:exactly;color:${FOREGROUND_HEX};text-decoration:none;white-space:nowrap;`;
   const secondaryLinkStyle = `font-family:${SYSTEM_FONT_STACK};font-size:11px;font-weight:500;color:${BIZMIS_MUTED_FG_HEX};text-decoration:underline;`;
-  return `<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="border:1px dashed ${BIZMIS_BORDER_HEX};border-radius:14px;">
+  const mutedSmall = `font-family:${SYSTEM_FONT_STACK};font-size:11px;color:${MUTED_LIGHT_HEX};`;
+  // BIZ-127: primary CTA = "Try the live demo". Below it, a secondary install
+  // link that keeps the visible early-access code (the install link also carries
+  // the code in its query). Book-a-call is one demoted text line.
+  //
+  // Button: padding + bgcolor on the <td> (Outlook's Word engine honors td
+  // padding but NOT padding on an <a>). No VML — Instantly strips it; td-padding
+  // renders a real button in Outlook/Gmail/Apple. Square in Outlook (border-radius
+  // unsupported); the all-mail variant is flat by design.
+  const buttonHtml = `<table role="presentation" cellpadding="0" cellspacing="0" border="0" align="center">
+<tr>
+<td align="center" bgcolor="${BIZMIS_PRIMARY_HEX}" style="background-color:${BIZMIS_PRIMARY_HEX};border-radius:${btnRadius}px;padding:14px 30px;mso-padding-alt:14px 30px;">
+<a href="${escapeAttr(demoUrl)}" target="_blank" rel="noopener noreferrer" style="${buttonLinkStyle}">${escapeHtml(c.ctaPrimaryButtonLabel)}</a>
+</td>
+</tr>
+</table>`;
+  return `<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="border:${boxBorder};border-radius:${boxRadius}px;">
 <tr>
 <td style="padding:22px 28px 10px 28px;" align="center">
 <p style="${kickerStyle}">${escapeHtml(c.ctaScheduleKicker)}</p>
 </td>
 </tr>
 <tr>
-<td style="padding:0 28px 20px 28px;" align="center">
-<table role="presentation" cellpadding="0" cellspacing="0" border="0" align="center">
-<tr>
-<td align="center" bgcolor="${BIZMIS_PRIMARY_HEX}" style="border-radius:12px;">
-<a href="${escapeAttr(bookCallUrl)}" target="_blank" rel="noopener noreferrer" style="${primaryLinkStyle}">
-<table role="presentation" cellpadding="0" cellspacing="0" border="0" align="center">
-<tr valign="middle" align="center">
-<td style="padding:0;vertical-align:middle;font-family:${SYSTEM_FONT_STACK};font-size:13px;font-weight:600;line-height:18px;mso-line-height-rule:exactly;color:${FOREGROUND_HEX};white-space:nowrap;" valign="middle">${escapeHtml(c.ctaPrimaryButtonLabel)}</td>
-</tr>
-</table>
-</a>
-</td>
-</tr>
-</table>
+<td style="padding:0 28px 16px 28px;" align="center">
+${buttonHtml}
 </td>
 </tr>
 <tr>
 <td style="padding:0 28px 6px 28px;" align="center">
-<a href="${escapeAttr(installUrlWithCode)}" target="_blank" rel="noopener noreferrer" style="${secondaryLinkStyle}">
-${escapeHtml(c.ctaSecondaryInstallLinkLabel)}
-</a>
+<a href="${escapeAttr(installUrlWithCode)}" target="_blank" rel="noopener noreferrer" style="${secondaryLinkStyle}">${escapeHtml(c.ctaSecondaryInstallLinkLabel)}</a>
+<span style="${mutedSmall}">&nbsp;&nbsp;&middot;&nbsp;&nbsp;</span>
+<a href="${escapeAttr(bookCallUrl)}" target="_blank" rel="noopener noreferrer" style="${secondaryLinkStyle}">${escapeHtml(c.ctaSecondaryCallLinkLabel)}</a>
 </td>
 </tr>
 <tr>
 <td style="padding:0 28px 20px 28px;" align="center">
-<p style="margin:0;font-family:${SYSTEM_FONT_STACK};font-size:9px;color:${MUTED_LIGHT_HEX};letter-spacing:0.02em;">
-${escapeHtml(c.couponLabel)}
-<span style="color:${BIZMIS_MUTED_FG_HEX};font-size:10px;letter-spacing:0.04em;">&nbsp;${escapeHtml(earlyAccessCode)}</span>
-</p>
+<p style="margin:0;${mutedSmall}">${escapeHtml(c.couponLabel)}<span style="color:${BIZMIS_MUTED_FG_HEX};font-weight:600;">&nbsp;${escapeHtml(earlyAccessCode)}</span></p>
 </td>
 </tr>
 </table>`;
@@ -448,12 +616,13 @@ function buildSignatureHtml(baseUrl: string, bizmisInviteSiteUrl: string): strin
 // Plain text rendering.
 
 function renderPlainText(lead: LeadEarlyAccessData, utmCampaign: string, unsubSig: string): string {
-  const { shopifyAppUrl, storeCap, bookACallUrl } = EARLY_ACCESS_TERMS;
+  const { shopifyAppUrl, storeCap, bookACallUrl, demoPath } = EARLY_ACCESS_TERMS;
   const c = EARLY_ACCESS_EMAIL_COPY;
   const leadHandle = encodeURIComponent(lead.id);
   const utmTail = buildOutboundUtmTail(lead.id, utmCampaign);
-  const bookCallUrl = `${bookACallUrl}?ref=${leadHandle}&${utmTail}`;
+  const demoUrl = `${SAFE_EMAIL_DEFAULT_BASE_URL}${demoPath}?ref=${leadHandle}&code=${encodeURIComponent(lead.couponCode)}&${utmTail}`;
   const installUrlWithCode = `${shopifyAppUrl}?ref=${leadHandle}&code=${encodeURIComponent(lead.couponCode)}&${utmTail}`;
+  const bookCallUrl = `${bookACallUrl}?ref=${leadHandle}&${utmTail}`;
   const bizmisInviteSiteUrl = `${buildInviteBizmisSiteUrl(lead.id)}&${utmTail}`;
   const contactFirst = earlyAccessGreetingFirstName(lead.leadContactName, lead.storeName);
   const salutation = contactFirst
@@ -471,9 +640,10 @@ function renderPlainText(lead: LeadEarlyAccessData, utmCampaign: string, unsubSi
     "",
     buildCtaUrgencyPlainText(lead.storeName, storeCap),
     "",
-    `${c.couponLabel} ${lead.couponCode}`,
-    `${c.ctaPrimaryButtonLabel}: ${bookCallUrl}`,
+    `${c.ctaPrimaryButtonLabel}: ${demoUrl}`,
     `${c.ctaSecondaryInstallLinkLabel}: ${installUrlWithCode}`,
+    `${c.couponLabel} ${lead.couponCode}`,
+    `${c.ctaSecondaryCallLinkLabel}: ${bookCallUrl}`,
     "",
     c.signatureClosing,
     "",

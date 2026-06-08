@@ -26,11 +26,13 @@ export const EARLY_ACCESS_EMAIL_COPY = {
     "Claim your early access spot while the list is still open. Book a 30-minute setup call and help shape the Bizmis roadmap around your team\u2019s goals, customer questions, and storefront needs.",
   ctaLabel: "Book a 30-min call with me",
   /** Small caps kicker above the primary button — signals scheduling, not install. */
-  ctaScheduleKicker: "Schedule a call",
-  /** Primary invite CTA (founder onboarding call). */
-  ctaPrimaryButtonLabel: "Book a 30-min call with me",
-  /** Secondary text link under the primary button (Shopify install). */
-  ctaSecondaryInstallLinkLabel: "Or try it first \u2014 install link here",
+  ctaScheduleKicker: "See it live",
+  /** Primary invite CTA (BIZ-127: the live demo storefront — one CTA). */
+  ctaPrimaryButtonLabel: "Try the live demo",
+  /** Secondary text line under the primary button — call demoted to one line. */
+  ctaSecondaryCallLinkLabel: "Prefer to talk first? Book a 30-min call",
+  /** Secondary install link under the demo button \u2014 shown inline with the code. */
+  ctaSecondaryInstallLinkLabel: "Or install it on your store now",
   /**
    * Gmail-safe paragraph above the dashed CTA box. Emphasis phrases are
    * bolded in HTML via `buildCtaUrgencyHtml`.
@@ -50,7 +52,7 @@ export const EARLY_ACCESS_EMAIL_COPY = {
   ctaUrgencyStoreFallback: "your store",
   ctaUrgencyAfterStoreName: " further ahead",
   ctaUrgencyBetweenEmphasis2And3:
-    ". Book the call and I\u2019ll personally get Bizmis live on your storefront with you. ",
+    ". Try the live demo to see it on a real storefront, and I\u2019ll personally get Bizmis live on yours. ",
   ctaUrgencyEmphasis3: "No card, free during early access",
   ctaUrgencyAfterEmphasis3: ", no obligation after.",
   couponLabel: "Your early access code:",

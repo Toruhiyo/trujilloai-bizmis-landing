@@ -1,4 +1,4 @@
-import { BIZMIS_BOOK_A_CALL_URL, BIZMIS_SHOPIFY_APP_LISTING_URL } from "@/lib/bizmisUrls";
+import { BIZMIS_BOOK_A_CALL_URL, BIZMIS_DEMO_STORE_URL, BIZMIS_SHOPIFY_APP_LISTING_URL } from "@/lib/bizmisUrls";
 
 export const SUPPORT_POLICY_TYPES = [
   "Troubleshooting Guide",
@@ -94,6 +94,8 @@ export const EARLY_ACCESS_TERMS = {
   storeCap: EARLY_ACCESS_STORE_CAP,
   shopifyAppUrl: BIZMIS_SHOPIFY_APP_LISTING_URL,
   bookACallUrl: BIZMIS_BOOK_A_CALL_URL,
+  /** Live demo storefront path (BIZ-127 single CTA). Absolutized per-email. */
+  demoPath: BIZMIS_DEMO_STORE_URL,
 } as const;
 
 const HEX_OVERLAY = /^#([0-9A-Fa-f]{3}|[0-9A-Fa-f]{4}|[0-9A-Fa-f]{6}|[0-9A-Fa-f]{8})$/;
