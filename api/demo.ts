@@ -33,12 +33,41 @@ export default async function handler(
 
   res.setHeader("Cache-Control", "no-store");
 
+  // BIZ-134: carry the lead handle + early-access code (and campaign UTMs) through
+  // the redirect so the demo store can surface the install CTA and redeem the code.
+  // The email no longer prints the code; it rides the query instead.
   const bypassUrl = await resolveDemoBypassUrl();
-  res.setHeader("Location", bypassUrl ?? APP_LISTING_URL);
+  const target = appendAttributionParams(bypassUrl ?? APP_LISTING_URL, req.query);
+  res.setHeader("Location", target);
   res.status(302).end();
 }
 
 // Core logic.
+
+const ATTRIBUTION_PARAMS = new Set(["ref", "code"]);
+const UTM_PARAM_PREFIX = "utm_";
+
+export function appendAttributionParams(
+  target: string,
+  query: VercelRequest["query"],
+): string {
+  let url: URL;
+  try {
+    url = new URL(target);
+  } catch {
+    return target;
+  }
+  for (const [key, raw] of Object.entries(query)) {
+    if (!isAttributionParam(key)) continue;
+    const value = Array.isArray(raw) ? raw[0] : raw;
+    if (value) url.searchParams.set(key, value);
+  }
+  return url.toString();
+}
+
+function isAttributionParam(key: string): boolean {
+  return ATTRIBUTION_PARAMS.has(key) || key.startsWith(UTM_PARAM_PREFIX);
+}
 
 async function resolveDemoBypassUrl(): Promise<string | null> {
   try {
