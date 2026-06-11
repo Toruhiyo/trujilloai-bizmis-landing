@@ -22,11 +22,11 @@ export const SUPPORT_CASES: SupportCase[] = [
   {
     id: "return-policy",
     customerImage: "/images/benefit-2-customer-1.png",
-    customerQuote: '"What\'s your return policy?"',
+    customerQuote: '"Can I return it if it doesn\'t fit?"',
     resolutionIcon: FaFileAlt,
     resolutionAction: "Policy retrieved",
     response:
-      "You've got 30 days to return any item. Happy to help start one.",
+      "Absolutely — you've got 30 days. I can walk you through it if you need to.",
   },
   {
     id: "order-tracking",
