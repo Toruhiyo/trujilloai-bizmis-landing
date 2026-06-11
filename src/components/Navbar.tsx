@@ -1,11 +1,17 @@
 import { Button } from "@/components/ui/button";
-import { Menu, X } from "lucide-react";
+import { Menu, PlayCircle, X } from "lucide-react";
 import { FaShopify } from "react-icons/fa";
 import type { MouseEvent } from "react";
 import { useState, useEffect } from "react";
+import { usePostHog } from "posthog-js/react";
 import { scrollToTop, scrollToSection } from "@/lib/utils/scroll";
 import { useNavigate, useLocation } from "react-router-dom";
-import { BIZMIS_SHOPIFY_APP_LISTING_URL, openBizmisShopifyAppListing } from "@/lib/bizmisUrls";
+import {
+  BIZMIS_DEMO_STORE_URL,
+  BIZMIS_SHOPIFY_APP_LISTING_URL,
+  openBizmisDemoStore,
+  openBizmisShopifyAppListing,
+} from "@/lib/bizmisUrls";
 import Logo from "./Logo";
 
 const Navbar = () => {
@@ -13,6 +19,7 @@ const Navbar = () => {
   const [isInHero, setIsInHero] = useState(true);
   const navigate = useNavigate();
   const location = useLocation();
+  const posthog = usePostHog();
 
   useEffect(() => {
     if (location.pathname !== "/") {
@@ -41,6 +48,15 @@ const Navbar = () => {
   const handleShopifyInstallNavClick = (e: MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault();
     openBizmisShopifyAppListing();
+  };
+
+  const handleViewDemoNavClick = (e: MouseEvent<HTMLAnchorElement>) => {
+    e.preventDefault();
+    openBizmisDemoStore();
+    posthog.capture("cta_clicked", {
+      cta_type: "view_demo",
+      location: "navbar",
+    });
   };
 
   const handleNavigation = (href: string) => {
@@ -108,7 +124,7 @@ const Navbar = () => {
             </div>
 
             {/* Desktop CTA */}
-            <div className="hidden md:flex items-center space-x-4">
+            <div className="hidden md:flex items-center space-x-3">
               {/* TODO: DO NOT REMOVE - Sign In button temporarily commented out
               <Button
                 variant="ghost"
@@ -121,6 +137,25 @@ const Navbar = () => {
                 Sign In
               </Button>
               */}
+              <Button
+                variant="ghost"
+                asChild
+                className={`font-medium transition-colors duration-300 [&_svg]:pointer-events-auto ${
+                  showWhiteChrome
+                    ? "text-foreground/80 hover:text-foreground hover:bg-accent"
+                    : "text-white/75 hover:text-white hover:bg-white/10"
+                }`}
+              >
+                <a
+                  href={BIZMIS_DEMO_STORE_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={handleViewDemoNavClick}
+                >
+                  <PlayCircle className="h-4 w-4" aria-hidden="true" />
+                  Live Demo
+                </a>
+              </Button>
               <Button
                 variant={showWhiteChrome ? "default" : "outline"}
                 asChild
@@ -183,12 +218,28 @@ const Navbar = () => {
                   {item.label}
                 </button>
               ))}
-              <div className="pt-3 mt-2 border-t border-primary/15">
+              <div className="pt-3 mt-2 border-t border-primary/15 space-y-2">
                 {/* TODO: DO NOT REMOVE - Sign In button temporarily commented out
                 <Button variant="ghost" className="w-full font-medium">
                   Sign In
                 </Button>
                 */}
+                <Button
+                  variant="ghost"
+                  asChild
+                  className="w-full font-medium text-foreground/80 hover:text-foreground [&_svg]:pointer-events-auto"
+                >
+                  <a
+                    href={BIZMIS_DEMO_STORE_URL}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex w-full items-center justify-center gap-2"
+                    onClick={handleViewDemoNavClick}
+                  >
+                    <PlayCircle className="h-4 w-4" aria-hidden="true" />
+                    Live Demo
+                  </a>
+                </Button>
                 <Button
                   variant="default"
                   asChild
