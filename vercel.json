@@ -17,7 +17,7 @@
     },
     {
       "source": "/invite-cards/:path*",
-      "destination": "https://8josk2l8la4zszeg.public.blob.vercel-storage.com/invite-cards/:path*"
+      "destination": "https://go.bizmis.ai/invite-cards/:path*"
     },
     {
       "source": "/(.*)",
