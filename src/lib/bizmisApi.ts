@@ -41,6 +41,40 @@ export type CouponErrorCode =
   | "COUPON_INVALID_ACCESS_TOKEN"
   | "NETWORK_ERROR";
 
+/**
+ * Public plan catalog returned by `GET /bizmis/coupons/plans`. This is the
+ * single source of truth for base prices and credits; the landing must not
+ * hardcode them. Marketing-only fields (feature bullets, session estimates)
+ * stay in the component.
+ */
+export interface PublicPlanDTO {
+  name: string;
+  display_name: string;
+  monthly_price: number;
+  included_credits: number;
+  overage_rate_per_credit: number;
+  max_concurrency: number;
+  is_popular: boolean;
+  yearly_discount_percent: number | null;
+  yearly_price: number | null;
+}
+
+interface PlansResponseBody {
+  data: PublicPlanDTO[];
+}
+
+export async function fetchPublicPlans(): Promise<PublicPlanDTO[]> {
+  const response = await fetch(`${getBaseUrl()}/bizmis/coupons/plans`, {
+    method: "GET",
+    headers: { Accept: "application/json" },
+  });
+  if (!response.ok) {
+    throw new Error(`Plans request failed (HTTP ${response.status})`);
+  }
+  const body = (await response.json()) as PlansResponseBody;
+  return body.data;
+}
+
 export class CouponApiError extends Error {
   readonly code: CouponErrorCode;
 

@@ -123,7 +123,14 @@ export const faqCategories: FAQCategory[] = [
         id: "early-access-offer",
         question: "What is the Early Access offer?",
         answer:
-          "The first 50 merchants get **50% off the first 3 months** on monthly plans, or **~33% off** yearly plans (Starter $99, Plus $333, Pro $999 monthly equivalent). Each Early Access merchant receives a personal code via our outreach \u2014 enter it on the pricing page to unlock the discounted plans, and it stays valid for your store across upgrades, downgrades, and resubscribes. After the first 3 months on monthly, standard rates resume. Overage credits are billed at standard rates throughout.",
+          "Early Access is a discount on the paid plans, not a free trial. Invited merchants get **50% off the first 3 months** on monthly plans (Starter $74, Plus $249, Pro $749/mo) or **~33% off** yearly plans (Starter $99, Plus $334, Pro $1,004 monthly equivalent). Each Early Access merchant receives a personal code via our outreach \u2014 enter it on the pricing page to unlock the discounted plans, and it stays valid for your store across upgrades, downgrades, and resubscribes. After the first 3 months on monthly, standard rates resume. Overage credits are billed at standard rates throughout.",
+        category: "pricing-billing",
+      },
+      {
+        id: "free-plan",
+        question: "Is there a free plan?",
+        answer:
+          "Yes. The **Free plan** runs Bizmis live in your store up to a one-time **1,200 credits** (~120 voice minutes or ~1,200 text messages). No subscription, no commitment, and nothing renews \u2014 it's a real test with real shoppers. When you're ready for ongoing capacity, upgrade to a paid plan. Billing is handled by Shopify, so no card is collected for the Free plan.",
         category: "pricing-billing",
       },
       {

@@ -1,8 +1,15 @@
-import { EARLY_ACCESS_STORE_CAP, EARLY_ACCESS_TERMS } from "@/data/leads/_schema";
+import { EARLY_ACCESS_STORE_CAP } from "@/data/leads/_schema";
 
 export const BIZMIS_PRODUCT_NAME = "Bizmis \u2014 Voice Store Clerk";
 
-export const EARLY_ACCESS_TRIAL_USAGE_CREDITS_LIMIT = 1200;
+/**
+ * Free plan lifetime credit allowance. The Free plan runs live in the store
+ * up to this one-time amount (no renewal, no commitment). Keep in sync with
+ * the backend `PREVIEW_LIFETIME_CREDITS`.
+ */
+export const FREE_PLAN_CREDITS_ALLOWANCE = 1200;
+
+const FREE_PLAN_CREDITS_PER_VOICE_MINUTE = 10;
 
 export const EARLY_ACCESS_EMAIL_COPY = {
   greetingDear: "Dear",
@@ -53,8 +60,9 @@ export const EARLY_ACCESS_EMAIL_COPY = {
   ctaUrgencyAfterStoreName: " further ahead",
   ctaUrgencyBetweenEmphasis2And3:
     ". Try the live demo to see it on a real storefront, and I\u2019ll personally get Bizmis live on yours. ",
-  ctaUrgencyEmphasis3: "No card, free during early access",
-  ctaUrgencyAfterEmphasis3: ", no obligation after.",
+  ctaUrgencyEmphasis3: "Start free, no commitment",
+  ctaUrgencyAfterEmphasis3:
+    " \u2014 then your early-access discount when you upgrade.",
   couponLabel: "Your early access code:",
   /** Inline heading on the Gmail-safe invite card: "Early Access Invite · bizmis × {StoreName}". */
   inviteTitleEyebrow: "Early Access Invite",
@@ -221,7 +229,7 @@ export function buildInviteLeadParagraphPlainText(storeName: string): string {
 
 export function buildEarlyAccessChips(storeCap: number): readonly [string, string, string] {
   return [
-    "30 days on us*. No commitment",
+    "Free to try live*. No commitment",
     "Shape the roadmap",
     `Limited to ${storeCap} stores`,
   ] as const;
@@ -234,7 +242,8 @@ export function buildSoftCtaPlainText(shopifyAppUrl: string, storeCap: number): 
 }
 
 export function buildEarlyAccessTrialUsageFootnotePlainText(): string {
-  return `* Up to ${EARLY_ACCESS_TRIAL_USAGE_CREDITS_LIMIT.toLocaleString()} credits of included usage (~${EARLY_ACCESS_TRIAL_USAGE_CREDITS_LIMIT / 10} voice min or ~${EARLY_ACCESS_TRIAL_USAGE_CREDITS_LIMIT.toLocaleString()} text msgs).`;
+  const voiceMinutes = FREE_PLAN_CREDITS_ALLOWANCE / FREE_PLAN_CREDITS_PER_VOICE_MINUTE;
+  return `* Free plan: a one-time ${FREE_PLAN_CREDITS_ALLOWANCE.toLocaleString()} credits of live usage (~${voiceMinutes.toLocaleString()} voice min or ~${FREE_PLAN_CREDITS_ALLOWANCE.toLocaleString()} text msgs), no renewal.`;
 }
 
 export function buildEarlyAccessFooterPlainText(): string {

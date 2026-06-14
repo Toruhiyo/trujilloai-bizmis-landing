@@ -89,8 +89,6 @@ export type LeadEarlyAccessData = LeadEarlyAccessJson & {
 export const EARLY_ACCESS_STORE_CAP = 50;
 
 export const EARLY_ACCESS_TERMS = {
-  trialDays: 30,
-  shopperCap: 500,
   storeCap: EARLY_ACCESS_STORE_CAP,
   shopifyAppUrl: BIZMIS_SHOPIFY_APP_LISTING_URL,
   bookACallUrl: BIZMIS_BOOK_A_CALL_URL,

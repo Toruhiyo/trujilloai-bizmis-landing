@@ -7,7 +7,7 @@ import {
 } from "@/components/ui/tooltip";
 import { Check, ArrowRight, Clock, Badge as BadgeIcon, ChevronDown, Phone, MessageSquareText, Info } from "lucide-react";
 import { FaTag } from "react-icons/fa";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import SectionBadge from "./SectionBadge";
 import { usePostHog } from "posthog-js/react";
@@ -20,12 +20,16 @@ import {
   CouponApiError,
   CouponDTO,
   CouponErrorCode,
+  PublicPlanDTO,
+  fetchPublicPlans,
   requestCouponAccessToken,
   validateCoupon,
 } from "@/lib/bizmisApi";
 import { EARLY_ACCESS_STORE_CAP } from "@/data/leads/_schema";
+import { FREE_PLAN_CREDITS_ALLOWANCE } from "@/data/leadEarlyAccessCopy";
 
 const CREDITS_PER_VOICE_MINUTE = 10;
+const MONTHS_PER_YEAR = 12;
 
 const CONCURRENCY_TOOLTIP =
   "Voice-only limit. Text concurrency is effectively unlimited.";
@@ -110,6 +114,39 @@ const PLANS: Plan[] = [
     everythingIn: "Plus",
   },
 ];
+
+/**
+ * Overlays backend prices/credits (single source of truth) onto the static
+ * marketing template, which keeps copy-only fields (feature bullets, session
+ * estimates, button text). When the catalog hasn't loaded or a plan is
+ * missing, the hardcoded values act as a fallback so the page never blanks.
+ */
+const mergePlansWithBackend = (
+  templates: Plan[],
+  backendPlans: PublicPlanDTO[] | null,
+): Plan[] => {
+  if (!backendPlans) return templates;
+  return templates.map((template) => {
+    const backendPlan = backendPlans.find(
+      (plan) => plan.name.toLowerCase() === template.name.toLowerCase(),
+    );
+    if (!backendPlan) return template;
+    const yearlyMonthlyEquivalent =
+      backendPlan.yearly_price != null
+        ? backendPlan.yearly_price / MONTHS_PER_YEAR
+        : backendPlan.monthly_price;
+    return {
+      ...template,
+      pricing: {
+        monthlyStandard: backendPlan.monthly_price,
+        yearlyStandardMonthlyEquivalent: yearlyMonthlyEquivalent,
+      },
+      includedCredits: backendPlan.included_credits,
+      overageRatePerCredit: backendPlan.overage_rate_per_credit,
+      maxConcurrency: backendPlan.max_concurrency,
+    };
+  });
+};
 
 const ENTERPRISE_FEATURES = [
   "Custom credits, concurrency & pricing",
@@ -372,7 +409,29 @@ const Pricing = () => {
     useState(false);
   const [sessionEstimatesExpanded, setSessionEstimatesExpanded] =
     useState(false);
+  const [backendPlans, setBackendPlans] = useState<PublicPlanDTO[] | null>(
+    null,
+  );
   const couponInputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    let active = true;
+    fetchPublicPlans()
+      .then((catalog) => {
+        if (active) setBackendPlans(catalog);
+      })
+      .catch(() => {
+        // Keep the hardcoded fallback prices if the catalog can't load.
+      });
+    return () => {
+      active = false;
+    };
+  }, []);
+
+  const plans = useMemo(
+    () => mergePlansWithBackend(PLANS, backendPlans),
+    [backendPlans],
+  );
 
   const showEarlyAccess = appliedCoupon !== null;
   const earlyAccessIntroMonths = appliedCoupon?.summary.intro_months ?? 0;
@@ -479,6 +538,15 @@ const Pricing = () => {
   };
 
   const getDiscountPercent = (plan: Plan): number => {
+    // With a coupon applied, use the campaign's single discount percent so
+    // every card shows the same badge (e.g. 33% yearly), avoiding per-plan
+    // rounding drift like 34% vs 33%.
+    const couponPrice = findCouponPriceFor(plan);
+    if (appliedCoupon && couponPrice) {
+      return isYearly
+        ? appliedCoupon.summary.yearly_discount_percent
+        : appliedCoupon.summary.monthly_discount_percent;
+    }
     const currentPrice = getDisplayPrice(plan);
     const standardPrice = plan.pricing.monthlyStandard;
     if (currentPrice >= standardPrice) return 0;
@@ -548,12 +616,55 @@ const Pricing = () => {
           </div>
         </div>
 
+        {/* Free plan — live-but-capped lead-in above the paid grid */}
+        <div className="mx-auto mb-5 max-w-7xl sm:mb-6">
+          <div className="group relative flex flex-col gap-4 overflow-hidden rounded-2xl border border-primary/30 bg-background/75 p-5 shadow-soft backdrop-blur-md sm:flex-row sm:items-center sm:justify-between sm:p-6 lg:px-7">
+            <div className="flex flex-col gap-1.5 sm:max-w-2xl">
+              <div className="flex items-baseline gap-2.5">
+                <h3 className="font-heading text-xl font-bold text-foreground lg:text-2xl">
+                  Free
+                </h3>
+                <span className="font-heading text-2xl font-bold tabular-nums text-foreground lg:text-3xl">
+                  $0
+                </span>
+                <span className="rounded-full border border-primary/30 bg-primary/10 px-2.5 py-0.5 font-heading text-[0.65rem] font-semibold uppercase tracking-wide text-primary-dark">
+                  No commitment
+                </span>
+              </div>
+              <p className="font-body text-sm leading-relaxed text-foreground/80">
+                Run Bizmis live in your store up to a one-time{" "}
+                <span className="font-semibold text-foreground">
+                  {FREE_PLAN_CREDITS_ALLOWANCE.toLocaleString()} credits
+                </span>{" "}
+                (~
+                {(
+                  FREE_PLAN_CREDITS_ALLOWANCE / CREDITS_PER_VOICE_MINUTE
+                ).toLocaleString()}{" "}
+                voice minutes or ~
+                {FREE_PLAN_CREDITS_ALLOWANCE.toLocaleString()} text messages).
+                Nothing renews — upgrade for ongoing monthly capacity.
+              </p>
+            </div>
+            <div className="shrink-0">
+              <Button
+                variant="outline"
+                size="lg"
+                onClick={() => handlePlanClick("Free")}
+                className="group/free w-full border border-primary/40 bg-primary/5 font-semibold text-primary-dark shadow-sm transition-all duration-300 hover:border-primary hover:bg-primary/10 sm:w-auto"
+              >
+                <span>Start free</span>
+                <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover/free:translate-x-1" />
+              </Button>
+            </div>
+          </div>
+        </div>
+
         {/* Pricing Cards - 4 columns */}
         <div
           id="pricing-cards"
           className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 sm:gap-5 lg:gap-6 max-w-7xl mx-auto"
         >
-          {PLANS.map((plan, index) => {
+          {plans.map((plan, index) => {
             const displayPrice = getDisplayPrice(plan);
             const discountPercent = getDiscountPercent(plan);
             const hasDiscount = discountPercent > 0;
