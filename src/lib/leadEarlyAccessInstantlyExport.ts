@@ -23,6 +23,8 @@ export type InstantlyMergeFields = {
   firstName: string;
   access_code: string;
   store_accent_color: string;
+  /** Attio company record_id — demo link `ref` for demo-session linking (BIZ-165). */
+  company_record_id: string;
 };
 
 export const INSTANTLY_MERGE_FIELD_KEYS: readonly (keyof InstantlyMergeFields)[] = [
@@ -31,6 +33,7 @@ export const INSTANTLY_MERGE_FIELD_KEYS: readonly (keyof InstantlyMergeFields)[]
   "firstName",
   "access_code",
   "store_accent_color",
+  "company_record_id",
 ];
 
 export function buildInstantlyMergeFields(lead: LeadEarlyAccessData): InstantlyMergeFields {
@@ -40,5 +43,6 @@ export function buildInstantlyMergeFields(lead: LeadEarlyAccessData): InstantlyM
     firstName: earlyAccessFirstNameMergeValue(lead.storeName, lead.leadContactName),
     access_code: lead.couponCode,
     store_accent_color: resolveStoreAccentForEmail(lead),
+    company_record_id: lead.companyRecordId ?? "",
   };
 }

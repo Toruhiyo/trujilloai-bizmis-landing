@@ -349,6 +349,10 @@ function renderCard(
 
   const storeName = escapeHtml(lead.storeName);
   const leadHandle = encodeURIComponent(lead.id);
+  // BIZ-165: the demo link carries the Attio company record_id (not the handle)
+  // so demo sessions can be linked back to the deal; fall back to the handle for
+  // leads onboarded before companyRecordId existed.
+  const demoRef = encodeURIComponent(lead.companyRecordId || lead.id);
   const earlyAccessCode = lead.couponCode;
 
   const combinedMockupUrl = absUrl(baseUrl, `/invite-cards/${lead.id}/email/mockup.png`);
@@ -357,7 +361,7 @@ function renderCard(
   // BIZ-127: primary CTA → the live demo storefront (code rides in the query for
   // the demo→install redemption, BIZ-134). The direct install link + visible
   // early-access code are kept as a secondary option; book-a-call is one text line.
-  const demoUrl = `${absUrl(baseUrl, demoPath)}?ref=${leadHandle}&code=${encodeURIComponent(earlyAccessCode)}&${utmTail}`;
+  const demoUrl = `${absUrl(baseUrl, demoPath)}?ref=${demoRef}&code=${encodeURIComponent(earlyAccessCode)}&${utmTail}`;
   const installUrlWithCode = `${shopifyAppUrl}?ref=${leadHandle}&code=${encodeURIComponent(earlyAccessCode)}&${utmTail}`;
   const bookCallUrl = `${bookACallUrl}?ref=${leadHandle}&${utmTail}`;
   const bizmisInviteSiteUrl = `${buildInviteBizmisSiteUrl(lead.id)}&${utmTail}`;

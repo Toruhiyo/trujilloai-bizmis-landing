@@ -29,6 +29,12 @@ export type LeadEarlyAccessJson = {
   id: string;
   /** When set, used as the install / email code instead of `BIZMIS-EARLY-ACCESS-<ID>`. */
   couponCode?: string;
+  /**
+   * Attio Company record_id. Written by draft_outreach.py at onboarding and
+   * emitted as the demo link `ref` so the funnel can link demo sessions back to
+   * this deal (BIZ-165). Absent on leads onboarded before this existed.
+   */
+  companyRecordId?: string;
   storeName: string;
   storeDomain: string;
   leadContactName: string | null;
