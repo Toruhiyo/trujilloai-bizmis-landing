@@ -21,6 +21,7 @@ import {
 import {
   BIZMIS_BORDER_HEX,
   BIZMIS_MUTED_FG_HEX,
+  BIZMIS_PRIMARY_DARK_HEX,
   BIZMIS_PRIMARY_HEX,
   BIZMIS_WARM_BG_HEX,
 } from "@/lib/bizmisBrandColors";
@@ -1770,7 +1771,7 @@ export function buildLeadEarlyAccessEmailHtml(
               </tr>
               <tr>
                 <td style="padding:0 28px 6px 28px;" align="center">
-                  <a href="${installUrlWithCode}" target="_blank" rel="noopener noreferrer" style="${BODY}font-size:11px;font-weight:500;color:${BIZMIS_MUTED_FG_HEX};text-decoration:underline;">
+                  <a href="${installUrlWithCode}" target="_blank" rel="noopener noreferrer" style="${BODY}font-size:12px;font-weight:600;color:${BIZMIS_PRIMARY_DARK_HEX};text-decoration:underline;">
                     ${escapeHtml(copy.ctaSecondaryInstallLinkLabel)}
                   </a>
                 </td>
