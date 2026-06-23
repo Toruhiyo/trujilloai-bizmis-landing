@@ -38,8 +38,12 @@ export const EARLY_ACCESS_EMAIL_COPY = {
   ctaPrimaryButtonLabel: "Live Demo",
   /** Secondary text line under the primary button — call demoted to one line. */
   ctaSecondaryCallLinkLabel: "Prefer to talk first? Book a 30-min call",
+  /** Emphasized (bold + underlined) action phrase inside the call link. */
+  ctaSecondaryCallEmphasis: "Book a 30-min call",
   /** Secondary install link under the demo button \u2014 shown inline with the code. */
   ctaSecondaryInstallLinkLabel: "Or install it on your store now",
+  /** Emphasized (bold + underlined) action phrase inside the install link. */
+  ctaSecondaryInstallEmphasis: "install it on your store",
   /**
    * Gmail-safe paragraph above the dashed CTA box. Emphasis phrases are
    * bolded in HTML via `buildCtaUrgencyHtml`.
@@ -101,6 +105,25 @@ export const EARLY_ACCESS_EMAIL_COPY = {
   signatureRoleBeforeBizmis: "Founder of ",
   signatureRoleBizmisWord: "Bizmis",
 } as const;
+
+/**
+ * Splits a secondary-link label around its emphasized action phrase so the
+ * builders can bold + underline only that phrase while the surrounding words
+ * stay plain. Falls back to the whole label as `before` if the phrase is
+ * missing (so the link never renders empty).
+ */
+export function splitSecondaryLinkEmphasis(
+  label: string,
+  emphasis: string,
+): { before: string; emphasis: string; after: string } {
+  const idx = label.indexOf(emphasis);
+  if (idx === -1) return { before: label, emphasis: "", after: "" };
+  return {
+    before: label.slice(0, idx),
+    emphasis,
+    after: label.slice(idx + emphasis.length),
+  };
+}
 
 export function buildCtaUrgencyPlainText(
   storeName?: string,

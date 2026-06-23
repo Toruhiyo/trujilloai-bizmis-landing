@@ -28,6 +28,7 @@ import {
   buildEarlyAccessSalutationPlainText,
   buildInviteLeadParagraphPlainText,
   earlyAccessGreetingFirstName,
+  splitSecondaryLinkEmphasis,
 } from "@/data/leadEarlyAccessCopy";
 import { EARLY_ACCESS_TERMS, resolveStoreNameTextColor } from "@/data/leads/_schema";
 import {
@@ -552,7 +553,15 @@ function buildCtaBoxHtml(
   const btnRadius = flat ? 0 : 12;
   const kickerStyle = `margin:0;font-family:${SYSTEM_FONT_STACK};font-size:10px;font-weight:600;line-height:1.4;color:${BIZMIS_MUTED_FG_HEX};letter-spacing:0.14em;text-transform:uppercase;`;
   const buttonLinkStyle = `font-family:${SYSTEM_FONT_STACK};font-size:13px;font-weight:600;line-height:18px;mso-line-height-rule:exactly;color:${FOREGROUND_HEX};text-decoration:none;white-space:nowrap;`;
-  const secondaryLinkStyle = `font-family:${SYSTEM_FONT_STACK};font-size:11px;font-weight:700;color:${BIZMIS_MUTED_FG_HEX};text-decoration:underline;`;
+  const secondaryLinkStyle = `font-family:${SYSTEM_FONT_STACK};font-size:11px;font-weight:500;color:${BIZMIS_MUTED_FG_HEX};text-decoration:none;`;
+  const secondaryEmphasisStyle = "font-weight:700;text-decoration:underline;";
+  const renderSecondaryLinkInner = (label: string, emphasis: string): string => {
+    const seg = splitSecondaryLinkEmphasis(label, emphasis);
+    const strong = seg.emphasis
+      ? `<span style="${secondaryEmphasisStyle}">${escapeHtml(seg.emphasis)}</span>`
+      : "";
+    return `${escapeHtml(seg.before)}${strong}${escapeHtml(seg.after)}`;
+  };
   const mutedSmall = `font-family:${SYSTEM_FONT_STACK};font-size:11px;color:${MUTED_LIGHT_HEX};`;
   // BIZ-127: primary CTA = "Try the live demo". Below it, a secondary install
   // link that keeps the visible early-access code (the install link also carries
@@ -582,9 +591,9 @@ ${buttonHtml}
 </tr>
 <tr>
 <td style="padding:0 28px 6px 28px;" align="center">
-<a href="${escapeAttr(installUrlWithCode)}" target="_blank" rel="noopener noreferrer" style="${secondaryLinkStyle}">${escapeHtml(c.ctaSecondaryInstallLinkLabel)}</a>
+<a href="${escapeAttr(installUrlWithCode)}" target="_blank" rel="noopener noreferrer" style="${secondaryLinkStyle}">${renderSecondaryLinkInner(c.ctaSecondaryInstallLinkLabel, c.ctaSecondaryInstallEmphasis)}</a>
 <span style="${mutedSmall}">&nbsp;&nbsp;&middot;&nbsp;&nbsp;</span>
-<a href="${escapeAttr(bookCallUrl)}" target="_blank" rel="noopener noreferrer" style="${secondaryLinkStyle}">${escapeHtml(c.ctaSecondaryCallLinkLabel)}</a>
+<a href="${escapeAttr(bookCallUrl)}" target="_blank" rel="noopener noreferrer" style="${secondaryLinkStyle}">${renderSecondaryLinkInner(c.ctaSecondaryCallLinkLabel, c.ctaSecondaryCallEmphasis)}</a>
 </td>
 </tr>
 <tr>

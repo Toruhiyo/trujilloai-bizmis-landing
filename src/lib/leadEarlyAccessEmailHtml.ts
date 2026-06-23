@@ -10,6 +10,7 @@ import {
   buildEarlyAccessTrialUsageFootnotePlainText,
   buildInviteLeadParagraphPlainText,
   earlyAccessGreetingFirstName,
+  splitSecondaryLinkEmphasis,
   EARLY_ACCESS_EMAIL_COPY,
 } from "@/data/leadEarlyAccessCopy";
 import {
@@ -1770,8 +1771,12 @@ export function buildLeadEarlyAccessEmailHtml(
               </tr>
               <tr>
                 <td style="padding:0 28px 6px 28px;" align="center">
-                  <a href="${installUrlWithCode}" target="_blank" rel="noopener noreferrer" style="${BODY}font-size:11px;font-weight:700;color:${BIZMIS_MUTED_FG_HEX};text-decoration:underline;">
-                    ${escapeHtml(copy.ctaSecondaryInstallLinkLabel)}
+                  <a href="${installUrlWithCode}" target="_blank" rel="noopener noreferrer" style="${BODY}font-size:11px;font-weight:500;color:${BIZMIS_MUTED_FG_HEX};text-decoration:none;">
+                    ${(() => {
+                      const seg = splitSecondaryLinkEmphasis(copy.ctaSecondaryInstallLinkLabel, copy.ctaSecondaryInstallEmphasis);
+                      const strong = seg.emphasis ? `<span style="font-weight:700;text-decoration:underline;">${escapeHtml(seg.emphasis)}</span>` : "";
+                      return `${escapeHtml(seg.before)}${strong}${escapeHtml(seg.after)}`;
+                    })()}
                   </a>
                 </td>
               </tr>
