@@ -130,7 +130,14 @@ export const faqCategories: FAQCategory[] = [
         id: "free-plan",
         question: "Is there a free plan?",
         answer:
-          "Yes. The **Free plan** runs Bizmis live in your store up to a one-time **1,200 credits** (~120 voice minutes or ~1,200 text messages). No subscription, no commitment, and nothing renews \u2014 it's a real test with real shoppers. When you're ready for ongoing capacity, upgrade to a paid plan. Billing is handled by Shopify, so no card is collected for the Free plan.",
+          "Yes. The **Free plan** runs Bizmis live in your store up to a one-time **1,200 credits** (~120 voice minutes or ~1,200 text messages). No subscription, no commitment, and nothing renews. It's a real test with real shoppers. When you're ready for ongoing capacity, upgrade to a paid plan. Every Bizmis charge runs through Shopify on the account you already use, so you never add a separate card for Bizmis, and the Free plan has nothing to charge.",
+        category: "pricing-billing",
+      },
+      {
+        id: "billing-payment-method",
+        question: "How does payment work? Do I need to add a card?",
+        answer:
+          "All Bizmis billing runs through Shopify's Billing API on the same account you already use to run your store. You approve Bizmis charges directly inside Shopify, and everything (your plan plus any overage) lands on your regular Shopify invoice alongside your other app charges. You never enter a separate credit card into Bizmis. Paid usage is still billed, it's just collected by Shopify rather than by us. The Free plan has nothing to charge, so there's nothing to approve until you decide to upgrade.",
         category: "pricing-billing",
       },
       {
