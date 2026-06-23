@@ -33,9 +33,9 @@ export const EARLY_ACCESS_EMAIL_COPY = {
     "Claim your early access spot while the list is still open. Book a 30-minute setup call and help shape the Bizmis roadmap around your team\u2019s goals, customer questions, and storefront needs.",
   ctaLabel: "Book a 30-min call with me",
   /** Small caps kicker above the primary button — signals scheduling, not install. */
-  ctaScheduleKicker: "See it live",
+  ctaScheduleKicker: "See it in action",
   /** Primary invite CTA (BIZ-127: the live demo storefront — one CTA). */
-  ctaPrimaryButtonLabel: "Try the live demo",
+  ctaPrimaryButtonLabel: "Live Demo",
   /** Secondary text line under the primary button — call demoted to one line. */
   ctaSecondaryCallLinkLabel: "Prefer to talk first? Book a 30-min call",
   /** Secondary install link under the demo button \u2014 shown inline with the code. */
