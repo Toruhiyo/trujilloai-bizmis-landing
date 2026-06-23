@@ -33,7 +33,6 @@ import { EARLY_ACCESS_TERMS, resolveStoreNameTextColor } from "@/data/leads/_sch
 import {
   BIZMIS_BORDER_HEX,
   BIZMIS_MUTED_FG_HEX,
-  BIZMIS_PRIMARY_DARK_HEX,
   BIZMIS_PRIMARY_HEX,
   BIZMIS_WARM_BG_HEX,
 } from "@/lib/bizmisBrandColors";
@@ -553,7 +552,7 @@ function buildCtaBoxHtml(
   const btnRadius = flat ? 0 : 12;
   const kickerStyle = `margin:0;font-family:${SYSTEM_FONT_STACK};font-size:10px;font-weight:600;line-height:1.4;color:${BIZMIS_MUTED_FG_HEX};letter-spacing:0.14em;text-transform:uppercase;`;
   const buttonLinkStyle = `font-family:${SYSTEM_FONT_STACK};font-size:13px;font-weight:600;line-height:18px;mso-line-height-rule:exactly;color:${FOREGROUND_HEX};text-decoration:none;white-space:nowrap;`;
-  const secondaryLinkStyle = `font-family:${SYSTEM_FONT_STACK};font-size:12px;font-weight:600;color:${BIZMIS_PRIMARY_DARK_HEX};text-decoration:underline;`;
+  const secondaryLinkStyle = `font-family:${SYSTEM_FONT_STACK};font-size:11px;font-weight:700;color:${BIZMIS_MUTED_FG_HEX};text-decoration:underline;`;
   const mutedSmall = `font-family:${SYSTEM_FONT_STACK};font-size:11px;color:${MUTED_LIGHT_HEX};`;
   // BIZ-127: primary CTA = "Try the live demo". Below it, a secondary install
   // link that keeps the visible early-access code (the install link also carries
