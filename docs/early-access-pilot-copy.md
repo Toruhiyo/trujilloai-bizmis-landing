@@ -36,7 +36,7 @@ real voice / confirm the canonical offer.** Brand voice: warm, human, in-store-a
   their questions in real time, and guides them to buy, just like your best in-store associate.
   *This isn't a chatbot.*
 - **What you get as an early-access store (the canonical 5-part offer):**
-  - Free to use live\* — no commitment, no card
+  - Free to use live\* — no subscription, no commitment (Shopify Billing still needs a card on file — don't claim "no card")
   - Priority support — a direct line to the founder
   - Priority feedback — shape the roadmap; your shoppers' questions decide what we build next
   - An early-access discount when you upgrade — your personal early-access code for any paid plan

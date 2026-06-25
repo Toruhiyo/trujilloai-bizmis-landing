@@ -34,7 +34,7 @@ One primary CTA. Benefit-led, on-brand, fast.
    isn't a chatbot.*"
 4. **Founder note** (short, builds trust) — the 2-paragraph founder narrative from the copy doc.
 5. **Offer block — the canonical 5-part offer** (icon + label each):
-   - Free to use live\* — no commitment, no card
+   - Free to use live\* — no subscription, no commitment (NOT "no card" — Shopify Billing needs a card)
    - Priority support — a direct line to the founder
    - Priority feedback — shape the roadmap; your shoppers' questions decide what we build next
    - An early-access discount when you upgrade — your personal early-access code for any paid plan
