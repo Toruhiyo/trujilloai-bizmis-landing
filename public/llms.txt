@@ -8,7 +8,7 @@
 - [Pricing](/pricing): Plans and pricing for Bizmis.
 - [FAQs](/faqs): Answers to common questions about setup, behavior, data, and billing.
 - [Contact](/contact): Get in touch with the Bizmis team.
-- [Join Waitlist](/join-waitlist): Sign up for early access.
+- [Early Access](/early-access): Free pilot for the first 50 Shopify stores — book a 30-min onboarding call.
 
 ## Optional
 

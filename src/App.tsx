@@ -6,7 +6,7 @@ import { BrowserRouter, Routes, Route, Navigate, Outlet } from "react-router-dom
 import Index from "./pages/Index";
 import FAQs from "./pages/FAQs";
 import Contact from "./pages/Contact";
-import JoinWaitlist from "./pages/JoinWaitlist";
+import EarlyAccess from "./pages/EarlyAccess";
 import Pricing from "./pages/Pricing";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import Terms from "./pages/Terms";
@@ -35,7 +35,11 @@ const App = () => (
           <Route path="/" element={<Index />} />
           <Route path="/faqs" element={<FAQs />} />
           <Route path="/contact" element={<Contact />} />
-          <Route path="/join-waitlist" element={<JoinWaitlist />} />
+          <Route path="/early-access" element={<EarlyAccess />} />
+          <Route
+            path="/join-waitlist"
+            element={<Navigate to="/early-access" replace />}
+          />
           <Route path="/pricing" element={<Pricing />} />
           <Route path="/privacy" element={<PrivacyPolicy />} />
           <Route path="/terms" element={<Terms />} />
