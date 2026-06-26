@@ -42,6 +42,13 @@ const Hero = () => {
     });
   };
 
+  const handleEarlyAccessClick = () => {
+    posthog.capture("cta_clicked", {
+      cta_type: "early_access",
+      location: "hero",
+    });
+  };
+
   return (
     <section
       id="hero"
@@ -84,6 +91,27 @@ const Hero = () => {
         {/* Text Content - Top Section with proper spacing */}
         <div className="flex-shrink-0 px-4 sm:px-6 pb-4 sm:pb-6">
           <div className="text-center space-y-3 sm:space-y-4">
+            <div className="flex justify-center">
+              <a
+                href="/early-access"
+                onClick={handleEarlyAccessClick}
+                className="group inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/[0.06] px-3 py-1.5 text-xs text-white/80 backdrop-blur-sm transition-colors hover:border-white/25 hover:bg-white/[0.10] hover:text-white sm:text-sm"
+              >
+                <span className="relative flex h-1.5 w-1.5 flex-shrink-0" aria-hidden="true">
+                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-white/70 opacity-50" />
+                  <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-white/80" />
+                </span>
+                <span className="font-medium">
+                  <span className="text-white/90">Early Access</span>
+                  <span className="text-white/45" aria-hidden="true"> · </span>
+                  <span className="text-white/70">First 50 stores</span>
+                </span>
+                <ArrowRight
+                  className="h-3 w-3 text-white/45 transition-transform group-hover:translate-x-0.5 group-hover:text-white/65"
+                  aria-hidden="true"
+                />
+              </a>
+            </div>
             <div className="space-y-2 sm:space-y-3">
               <h1 className="text-4xl xs:text-5xl sm:text-6xl font-heading font-bold text-white leading-tight">
                 Boost Profits,
@@ -100,8 +128,8 @@ const Hero = () => {
                 </span>
                 <span className="hidden sm:inline">
                   Bizmis speaks naturally—welcoming your customers, answering
-                  their questions, and guiding them to buy with confidence,
-                  just like the best in-store salesperson would.
+                  their questions, and guiding them to buy with confidence, just
+                  like the best in-store salesperson would.
                 </span>
               </p>
             </div>
@@ -145,7 +173,10 @@ const Hero = () => {
                   rel="noopener noreferrer"
                   onClick={handleViewDemoClick}
                 >
-                  <PlayCircle className="!h-4 !w-4 xs:!h-5 xs:!w-5" aria-hidden="true" />
+                  <PlayCircle
+                    className="!h-4 !w-4 xs:!h-5 xs:!w-5"
+                    aria-hidden="true"
+                  />
                   Live Demo
                 </a>
               </Button>
@@ -191,6 +222,25 @@ const Hero = () => {
             {/* Left Content */}
             <div className="space-y-[clamp(1.5rem,3vh,2rem)] text-left">
               <div className="space-y-[clamp(0.75rem,1.5vh,1rem)]">
+                <a
+                  href="/early-access"
+                  onClick={handleEarlyAccessClick}
+                  className="group inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/[0.06] px-3.5 py-1.5 text-sm text-white/80 backdrop-blur-sm transition-colors hover:border-white/25 hover:bg-white/[0.10] hover:text-white"
+                >
+                  <span className="relative flex h-1.5 w-1.5 flex-shrink-0" aria-hidden="true">
+                    <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-white/70 opacity-50" />
+                    <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-white/80" />
+                  </span>
+                  <span className="font-medium">
+                    <span className="text-white/90">Early Access</span>
+                    <span className="text-white/45" aria-hidden="true"> · </span>
+                    <span className="text-white/70">Free for the first 50 Shopify stores</span>
+                  </span>
+                  <ArrowRight
+                    className="h-3.5 w-3.5 text-white/45 transition-transform group-hover:translate-x-0.5 group-hover:text-white/65"
+                    aria-hidden="true"
+                  />
+                </a>
                 <h1 className="text-[clamp(3rem,6.7vh,4.5rem)] font-heading font-bold text-white leading-[1.0]">
                   Boost Profits,
                   <span className="block text-white/90">
@@ -199,10 +249,9 @@ const Hero = () => {
                 </h1>
                 <p className="text-[clamp(1.125rem,2.2vh,1.5rem)] text-white/80 font-body max-w-2xl">
                   <span className="font-semibold">This isn't a chatbot.</span>{" "}
-                  Bizmis speaks naturally—welcoming your
-                  customers, answering their questions, and guiding them to buy
-                  with confidence, just like the best in-store salesperson
-                  would.
+                  Bizmis speaks naturally—welcoming your customers, answering
+                  their questions, and guiding them to buy with confidence, just
+                  like the best in-store salesperson would.
                 </p>
               </div>
 
@@ -224,9 +273,7 @@ const Hero = () => {
                         <FaShopify className="w-9 h-9 text-primary" />
                       </div>
                       <div className="flex-1 min-w-0 text-left">
-                        <div className="font-semibold">
-                          Install Now
-                        </div>
+                        <div className="font-semibold">Install Now</div>
                         <div className="text-sm opacity-80">
                           One-click install, ready in minutes
                         </div>

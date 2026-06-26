@@ -122,6 +122,20 @@ const Navbar = () => {
                     {item.label}
                   </button>
                 ))}
+                <a
+                  href={BIZMIS_DEMO_STORE_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={handleViewDemoNavClick}
+                  className={`inline-flex items-center gap-1.5 font-medium transition-colors duration-300 hover:opacity-80 ${
+                    showWhiteChrome
+                      ? "text-foreground hover:text-primary"
+                      : "text-white/90 hover:text-white"
+                  }`}
+                >
+                  <PlayCircle className="h-4 w-4" aria-hidden="true" />
+                  Live Demo
+                </a>
               </div>
             </div>
 
@@ -139,25 +153,6 @@ const Navbar = () => {
                 Sign In
               </Button>
               */}
-              <Button
-                variant="ghost"
-                asChild
-                className={`font-medium transition-colors duration-300 [&_svg]:pointer-events-auto ${
-                  showWhiteChrome
-                    ? "text-foreground/80 hover:text-foreground hover:bg-accent"
-                    : "text-white/75 hover:text-white hover:bg-white/10"
-                }`}
-              >
-                <a
-                  href={BIZMIS_DEMO_STORE_URL}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  onClick={handleViewDemoNavClick}
-                >
-                  <PlayCircle className="h-4 w-4" aria-hidden="true" />
-                  Live Demo
-                </a>
-              </Button>
               <Button
                 variant={showWhiteChrome ? "default" : "outline"}
                 asChild
@@ -220,28 +215,22 @@ const Navbar = () => {
                   {item.label}
                 </button>
               ))}
+              <a
+                href={BIZMIS_DEMO_STORE_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={handleViewDemoNavClick}
+                className="flex w-full items-center gap-2 rounded-xl px-3 py-2.5 text-sm font-medium text-foreground hover:bg-primary/10 hover:text-primary transition-colors"
+              >
+                <PlayCircle className="h-4 w-4" aria-hidden="true" />
+                Live Demo
+              </a>
               <div className="pt-3 mt-2 border-t border-primary/15 space-y-2">
                 {/* TODO: DO NOT REMOVE - Sign In button temporarily commented out
                 <Button variant="ghost" className="w-full font-medium">
                   Sign In
                 </Button>
                 */}
-                <Button
-                  variant="ghost"
-                  asChild
-                  className="w-full font-medium text-foreground/80 hover:text-foreground [&_svg]:pointer-events-auto"
-                >
-                  <a
-                    href={BIZMIS_DEMO_STORE_URL}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex w-full items-center justify-center gap-2"
-                    onClick={handleViewDemoNavClick}
-                  >
-                    <PlayCircle className="h-4 w-4" aria-hidden="true" />
-                    Live Demo
-                  </a>
-                </Button>
                 <Button
                   variant="default"
                   asChild
