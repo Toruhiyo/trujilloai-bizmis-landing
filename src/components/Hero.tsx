@@ -134,7 +134,7 @@ const Hero = () => {
               </p>
             </div>
 
-            <div className="space-y-2 w-full max-w-md mx-auto">
+            <div className="space-y-3 w-full max-w-md mx-auto">
               <Button
                 variant="hero"
                 size="xl"
@@ -256,7 +256,7 @@ const Hero = () => {
               </div>
 
               <div className="space-y-4 w-fit">
-                <div className="flex items-stretch gap-3">
+                <div className="flex items-stretch gap-5">
                   <Button
                     variant="hero"
                     size="xl"
