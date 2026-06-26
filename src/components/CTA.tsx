@@ -120,7 +120,6 @@ const FinalCTA = () => {
                 </Button>
 
                 <div className="flex flex-col sm:flex-row gap-4">
-                  v{" "}
                   <Button
                     onClick={handleTalkToSales}
                     aria-label="Talk to sales team"
