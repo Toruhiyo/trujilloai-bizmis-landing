@@ -1,5 +1,5 @@
-import { ArrowLeft } from "lucide-react";
 import Footer from "@/components/Footer";
+import PublicPageLayout from "@/components/PublicPageLayout";
 import Seo from "@/components/Seo";
 
 const LAST_UPDATED = "April 28, 2026";
@@ -14,21 +14,13 @@ const COMPANY_VENUE = "Barcelona, Spain";
 
 const Terms = () => {
   return (
-    <div className="min-h-screen bg-white">
+    <PublicPageLayout className="bg-white">
       <Seo
         title="Terms of Service — Bizmis"
         description="The terms governing your use of Bizmis, the voice-first store clerk for Shopify."
         path="/terms"
       />
       <div className="container mx-auto px-6 py-16 max-w-3xl">
-        <a
-          href="/"
-          className="inline-flex items-center text-gray-500 hover:text-gray-900 mb-8 transition-colors"
-        >
-          <ArrowLeft size={16} className="mr-2" />
-          Back to Home
-        </a>
-
         <h1 className="text-4xl font-heading font-bold text-gray-900 mb-2">
           Terms of Service
         </h1>
@@ -918,7 +910,7 @@ const Terms = () => {
       </div>
 
       <Footer />
-    </div>
+    </PublicPageLayout>
   );
 };
 

@@ -54,7 +54,7 @@ const Benefits = () => {
         <div className="container mx-auto px-4 sm:px-6 relative z-10">
           <div className="max-w-7xl mx-auto">
             {/* Section 1: Core Value Proposition */}
-            <div className="text-center max-w-5xl mx-auto mb-8 sm:mb-10">
+            <div id="benefits" className="text-center max-w-5xl mx-auto mb-8 sm:mb-10">
               <div className="relative">
                 <div className="hidden lg:block absolute -left-64 top-10 text-9xl lg:text-[12rem] font-bold text-primary/20 transform -rotate-12 select-none pointer-events-none">
                   #1

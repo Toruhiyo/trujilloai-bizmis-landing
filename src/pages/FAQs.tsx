@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { ChevronDown, Search, ArrowLeft } from "lucide-react";
+import { ChevronDown, Search } from "lucide-react";
 import { faqCategories, allFAQs, type FAQ } from "@/data/faqs";
 import Footer from "@/components/Footer";
+import PublicPageLayout from "@/components/PublicPageLayout";
 import Seo from "@/components/Seo";
 
 const FAQsPage = () => {
@@ -92,7 +93,7 @@ const FAQsPage = () => {
   // gradient over background, identical in feel to Benefits / Customization
   // sections rather than a separate page tone.
   return (
-    <div className="min-h-screen bg-gradient-to-b from-background via-[#FDF7E2]/30 to-background">
+    <PublicPageLayout className="bg-gradient-to-b from-background via-[#FDF7E2]/30 to-background">
       <Seo
         title="Bizmis FAQs — Setup, Pricing, Data, and Behavior"
         description="Answers to common questions about Bizmis: how it works on Shopify, setup time, data handling, voice behavior, pricing, and more."
@@ -107,26 +108,6 @@ const FAQsPage = () => {
           })),
         }}
       />
-      {/* Header with navigation */}
-      <div className="bg-background/80 backdrop-blur-md border-b border-primary/20">
-        <div className="container mx-auto px-4 py-3 sm:px-6 sm:py-4">
-          <div className="flex items-center gap-3 sm:gap-4">
-            <a
-              href="/"
-              className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors sm:gap-2 sm:text-base"
-            >
-              <ArrowLeft className="w-4 h-4" />
-              Back to Home
-            </a>
-            <div className="w-px h-5 bg-border sm:h-6"></div>
-            <h1 className="text-lg font-heading font-bold text-foreground sm:text-2xl">
-              FAQ's
-            </h1>
-          </div>
-        </div>
-      </div>
-
-      {/* Main content */}
       <div className="py-12 sm:py-16 lg:py-20">
         <div className="container mx-auto px-4 sm:px-6">
           <div className="max-w-4xl mx-auto">
@@ -260,7 +241,7 @@ const FAQsPage = () => {
       </div>
 
       <Footer />
-    </div>
+    </PublicPageLayout>
   );
 };
 

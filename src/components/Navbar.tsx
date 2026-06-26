@@ -14,36 +14,87 @@ import {
 } from "@/lib/bizmisUrls";
 import Logo from "./Logo";
 
+const HERO_SCROLL_OFFSET_PX = 100;
+
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isInHero, setIsInHero] = useState(true);
+  const [heroNavTheme, setHeroNavTheme] = useState<"dark" | "light">("dark");
   const navigate = useNavigate();
   const location = useLocation();
   const posthog = usePostHog();
 
   useEffect(() => {
-    if (location.pathname !== "/") {
-      setIsInHero(false);
-      return;
-    }
+    setIsMenuOpen(false);
+    setIsInHero(Boolean(document.getElementById("hero")));
 
-    const handleScroll = () => {
-      const heroHeight = window.innerHeight;
-      const scrolled = window.scrollY > heroHeight - 100;
-      setIsInHero(!scrolled);
+    let rafId = 0;
+
+    const updateHeroNav = () => {
+      cancelAnimationFrame(rafId);
+      rafId = requestAnimationFrame(() => {
+        const hero = document.getElementById("hero");
+        if (!hero) {
+          setIsInHero(false);
+          return;
+        }
+
+        setHeroNavTheme(hero.dataset.navTheme === "light" ? "light" : "dark");
+        setIsInHero(
+          hero.getBoundingClientRect().bottom > HERO_SCROLL_OFFSET_PX
+        );
+      });
     };
 
-    handleScroll();
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
+    updateHeroNav();
+
+    const hero = document.getElementById("hero");
+    const resizeObserver =
+      hero && typeof ResizeObserver !== "undefined"
+        ? new ResizeObserver(updateHeroNav)
+        : null;
+    resizeObserver?.observe(hero as Element);
+
+    window.addEventListener("scroll", updateHeroNav, { passive: true });
+    window.addEventListener("resize", updateHeroNav);
+    return () => {
+      cancelAnimationFrame(rafId);
+      resizeObserver?.disconnect();
+      window.removeEventListener("scroll", updateHeroNav);
+      window.removeEventListener("resize", updateHeroNav);
+    };
   }, [location.pathname]);
 
   const navItems = [
-    { label: "Features", href: "#benefits" },
+    { label: "Early Access", href: "/early-access" },
+    { label: "Benefits", href: "#benefits" },
     { label: "Setup", href: "#setup" },
     { label: "Pricing", href: "/pricing" },
     { label: "FAQs", href: "/faqs" },
-  ];
+  ] as const;
+
+  const isActiveRoute = (href: string) =>
+    !href.startsWith("#") && location.pathname === href;
+
+  // Fixed white bar when past #hero or when the mobile menu is open.
+  const showWhiteChrome = !isInHero || isMenuOpen;
+  // Light #hero backgrounds use foreground nav chrome while still transparent.
+  const useForegroundNavChrome =
+    showWhiteChrome || (isInHero && heroNavTheme === "light");
+
+  const navLinkClassName = (href: string) => {
+    const isActive = isActiveRoute(href);
+
+    if (useForegroundNavChrome) {
+      return isActive
+        ? "text-primary font-semibold"
+        : "text-foreground hover:text-primary";
+    }
+
+    return isActive
+      ? "text-white font-semibold"
+      : "text-white/90 hover:text-white";
+  };
 
   const handleShopifyInstallNavClick = (e: MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault();
@@ -62,7 +113,7 @@ const Navbar = () => {
   const handleNavigation = (href: string) => {
     if (href.startsWith("#")) {
       if (location.pathname !== "/") {
-        navigate("/" + href);
+        navigate({ pathname: "/", hash: href.slice(1) });
       } else {
         scrollToSection(href);
       }
@@ -73,14 +124,10 @@ const Navbar = () => {
     setIsMenuOpen(false);
   };
 
-  // The nav adopts its scrolled "white chrome" styling whenever the user is
-  // out of the hero OR the mobile menu is open. The drawer is rendered as a
-  // sibling (not a child) of the nav so both can independently apply
-  // backdrop-filter — nested backdrop-filter doesn't work per CSS spec.
-  const showWhiteChrome = !isInHero || isMenuOpen;
   return (
     <>
       <nav
+        id="site-navbar"
         className={`w-full z-50 transition-all duration-300 ${
           showWhiteChrome
             ? "fixed top-0 bg-white/80 backdrop-blur-xl backdrop-saturate-150 border-b border-border shadow-soft"
@@ -92,7 +139,7 @@ const Navbar = () => {
             {/* Logo */}
             <div className="relative z-10 flex items-center">
               <Logo
-                variant={showWhiteChrome ? "default" : "white"}
+                variant={useForegroundNavChrome ? "default" : "white"}
                 showText={true}
                 onClick={() => {
                   if (location.pathname !== "/") {
@@ -113,11 +160,7 @@ const Navbar = () => {
                   <button
                     key={item.label}
                     onClick={() => handleNavigation(item.href)}
-                    className={`font-medium transition-colors duration-300 hover:opacity-80 ${
-                      showWhiteChrome
-                        ? "text-foreground hover:text-primary"
-                        : "text-white/90 hover:text-white"
-                    }`}
+                    className={`font-medium transition-colors duration-300 hover:opacity-80 ${navLinkClassName(item.href)}`}
                   >
                     {item.label}
                   </button>
@@ -145,7 +188,7 @@ const Navbar = () => {
                 rel="noopener noreferrer"
                 onClick={handleViewDemoNavClick}
                 className={`inline-flex items-center gap-1.5 font-medium transition-colors duration-300 hover:opacity-80 ${
-                  showWhiteChrome
+                  useForegroundNavChrome
                     ? "text-foreground hover:text-primary"
                     : "text-white/90 hover:text-white"
                 }`}
@@ -154,10 +197,10 @@ const Navbar = () => {
                 Live Demo
               </a>
               <Button
-                variant={showWhiteChrome ? "default" : "outline"}
+                variant={useForegroundNavChrome ? "default" : "outline"}
                 asChild
                 className={`font-medium text-base transition-all duration-300 inline-flex items-center gap-2 [&_svg]:pointer-events-auto ${
-                  showWhiteChrome
+                  useForegroundNavChrome
                     ? ""
                     : "bg-transparent text-white border border-white hover:bg-white/10 [&_svg]:text-white"
                 }`}
@@ -180,7 +223,7 @@ const Navbar = () => {
                 variant="ghost"
                 size="icon"
                 className={`transition-colors duration-300 h-8 w-8 sm:h-10 sm:w-10 ${
-                  showWhiteChrome
+                  useForegroundNavChrome
                     ? "text-foreground hover:bg-accent"
                     : "text-white hover:bg-white/10"
                 }`}
@@ -210,7 +253,11 @@ const Navbar = () => {
                 <button
                   key={item.label}
                   onClick={() => handleNavigation(item.href)}
-                  className="block w-full rounded-xl px-3 py-2.5 text-left text-sm font-medium text-foreground hover:bg-primary/10 hover:text-primary transition-colors"
+                  className={`block w-full rounded-xl px-3 py-2.5 text-left text-sm font-medium transition-colors hover:bg-primary/10 hover:text-primary ${
+                    isActiveRoute(item.href)
+                      ? "bg-primary/10 text-primary font-semibold"
+                      : "text-foreground"
+                  }`}
                 >
                   {item.label}
                 </button>

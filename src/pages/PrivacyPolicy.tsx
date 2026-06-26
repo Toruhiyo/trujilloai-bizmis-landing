@@ -1,5 +1,5 @@
-import { ArrowLeft } from "lucide-react";
 import Footer from "@/components/Footer";
+import PublicPageLayout from "@/components/PublicPageLayout";
 import Seo from "@/components/Seo";
 
 const LAST_UPDATED = "May 29, 2026";
@@ -7,21 +7,13 @@ const CONTACT_EMAIL = "hello@bizmis.ai";
 
 const PrivacyPolicy = () => {
   return (
-    <div className="min-h-screen bg-white">
+    <PublicPageLayout className="bg-white">
       <Seo
         title="Privacy Policy — Bizmis"
         description="How Bizmis collects, uses, and protects shopper and merchant data inside Shopify storefronts."
         path="/privacy"
       />
       <div className="container mx-auto px-6 py-16 max-w-3xl">
-        <a
-          href="/"
-          className="inline-flex items-center text-gray-500 hover:text-gray-900 mb-8 transition-colors"
-        >
-          <ArrowLeft size={16} className="mr-2" />
-          Back to Home
-        </a>
-
         <h1 className="text-4xl font-heading font-bold text-gray-900 mb-2">
           Privacy Policy
         </h1>
@@ -394,7 +386,7 @@ const PrivacyPolicy = () => {
       </div>
 
       <Footer />
-    </div>
+    </PublicPageLayout>
   );
 };
 

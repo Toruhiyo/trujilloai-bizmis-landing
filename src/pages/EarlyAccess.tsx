@@ -1,6 +1,5 @@
 import type { MouseEvent } from "react";
 import {
-  ArrowLeft,
   ArrowUpRight,
   BadgePercent,
   Calendar,
@@ -14,6 +13,8 @@ import { FaShopify } from "react-icons/fa";
 import { usePostHog } from "posthog-js/react";
 import { Button } from "@/components/ui/button";
 import Footer from "@/components/Footer";
+import Navbar from "@/components/Navbar";
+import PublicPageLayout from "@/components/PublicPageLayout";
 import Seo from "@/components/Seo";
 import { EARLY_ACCESS_STORE_CAP } from "@/data/leads/_schema";
 import {
@@ -80,35 +81,22 @@ const EarlyAccess = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#FDF7E2] via-white to-[#FDF7E2]/40 flex flex-col">
+    <PublicPageLayout
+      hasHero
+      className="bg-gradient-to-br from-[#FDF7E2] via-white to-[#FDF7E2]/40"
+    >
       <Seo
         title="Bizmis Early Access — free for the first 50 Shopify stores"
         description="Become a Bizmis Early Access member: install free, get a direct line to the founder, shape the roadmap, and keep member discounts when you upgrade. First 50 Shopify stores only."
         path="/early-access"
       />
 
-      <header className="bg-white border-b border-border">
-        <div className="container mx-auto px-6 py-4">
-          <div className="flex items-center gap-4">
-            <a
-              href="/"
-              className="inline-flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors"
-            >
-              <ArrowLeft className="w-4 h-4" aria-hidden="true" />
-              Back to Home
-            </a>
-            <div className="w-px h-6 bg-border" aria-hidden="true" />
-            <p className="text-2xl font-heading font-bold text-foreground">
-              Early Access
-            </p>
-          </div>
-        </div>
-      </header>
+      <section id="hero" data-nav-theme="light" className="relative">
+        <Navbar />
 
-      <main className="flex-1 py-12 lg:py-20">
-        <div className="container mx-auto px-6">
+        <div className="container mx-auto px-6 pb-6 pt-20 sm:pt-24 lg:pb-10 lg:pt-28">
           <div className="max-w-5xl mx-auto">
-            <section className="relative isolate grid items-center gap-10 overflow-hidden rounded-[2.75rem] py-6 lg:grid-cols-[minmax(0,1fr)_22rem] lg:gap-14 lg:px-10 lg:py-12">
+            <div className="relative isolate grid items-center gap-10 overflow-hidden rounded-[2.75rem] pt-8 pb-6 sm:pt-10 lg:grid-cols-[minmax(0,1fr)_22rem] lg:gap-14 lg:px-10 lg:pt-12 lg:pb-12">
               <div
                 className="absolute inset-0 -z-10 bg-[radial-gradient(circle_at_24%_24%,_rgba(249,163,83,0.20),_transparent_34%),radial-gradient(circle_at_78%_18%,_rgba(251,189,132,0.34),_transparent_32%),linear-gradient(135deg,_rgba(253,247,226,0.82),_rgba(255,255,255,0.28)_48%,_rgba(253,247,226,0.58))]"
                 aria-hidden="true"
@@ -206,8 +194,13 @@ const EarlyAccess = () => {
                   className="relative z-10 mx-auto w-full max-w-[18rem] object-contain drop-shadow-2xl lg:max-w-[22rem]"
                 />
               </div>
-            </section>
+            </div>
+          </div>
+        </div>
+      </section>
 
+      <div className="container mx-auto px-6 pb-12 lg:pb-20">
+        <div className="max-w-5xl mx-auto">
             <section
               aria-labelledby="benefits-heading"
               className="relative isolate mt-16 mb-14 overflow-hidden rounded-[2.75rem] border border-primary/10 bg-white/55 px-4 py-10 shadow-2xl shadow-primary/[0.08] ring-1 ring-white/80 backdrop-blur-sm sm:px-6 lg:px-8 lg:py-12"
@@ -438,10 +431,9 @@ const EarlyAccess = () => {
             </p>
           </div>
         </div>
-      </main>
 
       <Footer />
-    </div>
+    </PublicPageLayout>
   );
 };
 

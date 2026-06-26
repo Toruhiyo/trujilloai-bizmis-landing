@@ -6,6 +6,17 @@ declare global {
   }
 }
 
+const SECTION_SCROLL_GAP_PX = 8;
+const FALLBACK_NAVBAR_HEIGHT_PX = 64;
+
+export const getSectionScrollOffset = (): number => {
+  const nav = document.getElementById("site-navbar");
+  const navHeight =
+    nav?.getBoundingClientRect().height ?? FALLBACK_NAVBAR_HEIGHT_PX;
+
+  return navHeight + SECTION_SCROLL_GAP_PX;
+};
+
 export const scrollToTop = (behavior: ScrollBehavior = "smooth"): void => {
   window.scrollTo({
     top: 0,
@@ -16,27 +27,24 @@ export const scrollToTop = (behavior: ScrollBehavior = "smooth"): void => {
 
 export const scrollToElement = (
   elementId: string,
-  behavior: ScrollBehavior = "smooth",
-  offset: number = 0
+  behavior: ScrollBehavior = "smooth"
 ): void => {
   const element = document.getElementById(elementId);
-  if (element) {
-    const elementPosition =
-      element.getBoundingClientRect().top + window.pageYOffset;
-    const offsetPosition = elementPosition - offset;
-
-    window.scrollTo({
-      top: offsetPosition,
-      behavior,
-    });
+  if (!element) {
+    return;
   }
+
+  const offset = getSectionScrollOffset();
+  const top =
+    element.getBoundingClientRect().top + window.scrollY - offset;
+
+  window.scrollTo({ top, behavior });
 };
 
 export const scrollToSection = (
   sectionId: string,
   updateUrl: boolean = true,
-  behavior: ScrollBehavior = "smooth",
-  offset: number = 80
+  behavior: ScrollBehavior = "smooth"
 ): void => {
   const cleanSectionId = sectionId.replace("#", "");
 
@@ -55,7 +63,18 @@ export const scrollToSection = (
     window.isProgrammaticScroll = false;
   }, scrollDuration);
 
-  scrollToElement(cleanSectionId, behavior, offset);
+  scrollToElement(cleanSectionId, behavior);
+};
+
+const scrollToHashWhenReady = (
+  hash: string,
+  behavior: ScrollBehavior = "smooth"
+): void => {
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      scrollToSection(hash, false, behavior);
+    });
+  });
 };
 
 export const setupScrollToSectionOnLoad = (): (() => void) => {
@@ -63,15 +82,15 @@ export const setupScrollToSectionOnLoad = (): (() => void) => {
     const hash = window.location.hash;
     if (hash) {
       setTimeout(() => {
-        scrollToSection(hash, false, "smooth");
-      }, 100);
+        scrollToHashWhenReady(hash);
+      }, 150);
     }
   };
 
   const handleHashChange = () => {
     const hash = window.location.hash;
     if (hash) {
-      scrollToSection(hash, false, "smooth");
+      scrollToHashWhenReady(hash);
     }
   };
 

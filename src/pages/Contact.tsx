@@ -1,5 +1,5 @@
 import { useState, useRef, FormEvent, useEffect } from "react";
-import { ArrowLeft, Send, Mail, CheckCircle, AlertCircle } from "lucide-react";
+import { Send, Mail, CheckCircle, AlertCircle } from "lucide-react";
 import { useSearchParams } from "react-router-dom";
 import { usePostHog } from "posthog-js/react";
 import { Button } from "@/components/ui/button";
@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import emailjs from "@emailjs/browser";
 import Footer from "@/components/Footer";
+import PublicPageLayout from "@/components/PublicPageLayout";
 import Seo from "@/components/Seo";
 
 const EMAILJS_SERVICE_ID = import.meta.env.VITE_EMAILJS_SERVICE_ID;
@@ -96,32 +97,16 @@ const Contact = () => {
     formData.message.trim();
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#FDF7E2] via-white to-[#FDF7E2]/30">
+    <PublicPageLayout
+      className="bg-gradient-to-br from-[#FDF7E2] via-white to-[#FDF7E2]/30"
+      mainClassName="py-20"
+    >
       <Seo
         title="Contact Bizmis — Get in Touch"
         description="Reach the Bizmis team about Shopify install, custom website integrations, partnerships, or anything else. We reply fast."
         path="/contact"
       />
-      <div className="bg-white border-b border-border">
-        <div className="container mx-auto px-6 py-4">
-          <div className="flex items-center gap-4">
-            <a
-              href="/"
-              className="inline-flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors"
-            >
-              <ArrowLeft className="w-4 h-4" />
-              Back to Home
-            </a>
-            <div className="w-px h-6 bg-border"></div>
-            <h1 className="text-2xl font-heading font-bold text-foreground">
-              Contact Us
-            </h1>
-          </div>
-        </div>
-      </div>
-
-      <div className="py-20">
-        <div className="container mx-auto px-6">
+      <div className="container mx-auto px-6">
           <div className="max-w-2xl mx-auto">
             <div className="text-center mb-12">
               <div className="inline-flex items-center justify-center w-16 h-16 bg-[#FDF7E2] rounded-full mb-6">
@@ -305,10 +290,9 @@ const Contact = () => {
             </div>
           </div>
         </div>
-      </div>
 
       <Footer />
-    </div>
+    </PublicPageLayout>
   );
 };
 

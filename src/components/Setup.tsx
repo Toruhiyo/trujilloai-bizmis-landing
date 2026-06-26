@@ -199,18 +199,18 @@ const Setup = () => {
         }
 
         /* Ensure aura elements can extend beyond container boundaries */
-        #setup .relative {
+        #setup-section .relative {
           overflow: visible !important;
         }
         
         /* Allow aura elements to render outside their containers */
-        #setup .absolute {
+        #setup-section .absolute {
           overflow: visible !important;
         }
       `}</style>
 
       <section
-        id="setup"
+        id="setup-section"
         className="py-16 sm:py-20 lg:py-24 bg-gradient-to-r from-[#FDF7E2]/[0.05] via-background/40 to-[#FDF7E2]/[0.08] border-t border-primary/20 relative overflow-visible"
       >
         {/* Perimeter glow — strongest at outer edge, fading inward */}
@@ -241,7 +241,7 @@ const Setup = () => {
         <div className="container mx-auto px-4 sm:px-6 overflow-visible">
           <div className="max-w-7xl mx-auto overflow-visible">
             {/* Header */}
-            <div className="text-center mb-10 sm:mb-12 lg:mb-16">
+            <div id="setup" className="text-center mb-10 sm:mb-12 lg:mb-16">
               <SectionBadge icon={FaShopify} text="Plug and Play" />
               <h2 className="text-3xl sm:text-4xl lg:text-5xl font-heading font-bold text-foreground mb-6">
                 One-Click Setup, Instant Selling & Support
