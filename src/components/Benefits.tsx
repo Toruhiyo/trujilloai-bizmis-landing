@@ -22,7 +22,7 @@ const Benefits = () => {
   return (
     <div className="space-y-0 bg-gradient-to-b from-background via-[#FDF7E2]/10 to-background overflow-x-clip">
       {/* Shared Background Section: Driven Sales & Customization */}
-      <section className="relative pt-10 pb-6 sm:py-12 overflow-visible">
+      <section className="relative pt-10 pb-6 sm:py-12 lg:py-16 overflow-visible">
         {/* Modern Shared Background Design - Single background for both sections */}
         <div className="absolute inset-0 bg-gradient-to-br from-slate-50 via-[#FDF7E2]/30 to-[#FDF7E2]/20"></div>
 
@@ -60,11 +60,11 @@ const Benefits = () => {
                   #1
                 </div>
                 <SectionBadge icon={FaShoppingCart} text="Boost Sales" />
-                <h1 className="text-4xl sm:text-5xl lg:text-7xl font-heading font-bold text-foreground mb-4 sm:mb-8 relative z-10">
+                <h1 className="text-3xl sm:text-4xl lg:text-5xl font-heading font-bold text-foreground mb-4 sm:mb-8 relative z-10">
                   Convert. Upsell. Retain.
                 </h1>
               </div>
-              <p className="text-sm sm:text-lg lg:text-xl text-muted-foreground font-body leading-relaxed mb-6 sm:mb-12 px-2">
+              <p className="text-base sm:text-lg lg:text-xl text-muted-foreground font-body leading-relaxed mb-6 sm:mb-12 px-2">
                 {/* Tighter pitch on phones; full version reads at sm+. */}
                 <span className="sm:hidden">
                   A great in-store associate that guides shoppers, lifts cart
@@ -161,7 +161,7 @@ const Benefits = () => {
             </div>
 
             {/* Speak → Discover → Buy visual */}
-            <div className="relative mb-8 sm:mb-16 lg:mb-32 mt-2 sm:mt-4">
+            <div className="relative mb-8 sm:mb-16 lg:mb-0 mt-2 sm:mt-4 lg-zoom-80 origin-top">
               <SpeakDiscoverBuy />
             </div>
           </div>
@@ -171,7 +171,7 @@ const Benefits = () => {
       {/* Benefit 2: Customer Support - Enhanced Layout */}
       <section
         id="benefit-2"
-        className="relative pt-6 pb-12 sm:pt-16 sm:pb-24 lg:py-32 bg-[#FDF7E2]/20 overflow-visible"
+        className="relative pt-6 pb-12 sm:pt-16 sm:pb-24 lg:py-12 bg-[#FDF7E2]/20 overflow-visible"
       >
         {/* Background Elements - Enhanced for Dashboard */}
         <div className="absolute inset-0">
@@ -192,7 +192,7 @@ const Benefits = () => {
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="max-w-8xl mx-auto">
             {/* Header */}
-            <div className="text-center mb-6 sm:mb-8">
+            <div className="text-center mb-6 sm:mb-8 lg:mb-4">
               <SectionBadge icon={FaComments} text="Customer Support" />
               <div className="relative">
                 {/* #2 watermark — desktop-only so it doesn't collide with the
@@ -203,13 +203,13 @@ const Benefits = () => {
                 >
                   #2
                 </div>
-                <h2 className="text-[28px] xs:text-3xl sm:text-5xl lg:text-6xl font-heading font-bold text-foreground leading-tight mb-3 sm:mb-6 relative z-10 lg:mr-14">
+                <h2 className="text-3xl sm:text-4xl lg:text-5xl font-heading font-bold text-foreground leading-tight mb-3 sm:mb-6 relative z-10 lg:mr-14">
                   Save hours on support.
                   <br />
                   Earn loyal customers.
                 </h2>
               </div>
-              <p className="text-sm sm:text-lg lg:text-xl text-muted-foreground font-body max-w-4xl mx-auto px-2">
+              <p className="text-base sm:text-lg lg:text-xl text-muted-foreground font-body max-w-4xl mx-auto px-2">
                 {/* Tighter pitch on phones; full version reads at sm+. */}
                 <span className="sm:hidden">
                   Instant, empathetic 24/7 support that feels human — lifting
@@ -225,8 +225,8 @@ const Benefits = () => {
             </div>
 
             {/* Hierarchy: demo scene → business outcomes (KPI strip) → enabling capabilities (cards) */}
-            <div className="flex flex-col items-center gap-6 sm:gap-12 lg:gap-14">
-              <div className="w-full flex justify-center">
+            <div className="flex flex-col items-center gap-6 sm:gap-12 lg:gap-6">
+              <div className="w-full flex justify-center lg-zoom-80 origin-top">
                 <VoiceSupportScene />
               </div>
 
@@ -283,11 +283,11 @@ const Benefits = () => {
                     <div className="flex gap-2.5 xs:gap-3">
                       <Icon className="w-4 h-4 text-primary/35 group-hover:text-primary/60 transition-colors duration-300 flex-shrink-0 mt-0.5" />
                       <div className="min-w-0">
-                        <h3 className="text-[14px] xs:text-[15px] sm:text-sm font-heading font-semibold md:font-medium text-foreground leading-tight mb-1 sm:mb-1.5">
+                        <h3 className="text-base sm:text-lg font-heading font-semibold text-foreground leading-tight mb-1 sm:mb-1.5">
                           {title}
                         </h3>
                         {/* Mobile/tablet: short tagline only. */}
-                        <p className="md:hidden text-primary/85 font-heading font-medium text-[12px] xs:text-[13px] leading-snug">
+                        <p className="md:hidden text-primary/85 font-heading font-medium text-[13px] xs:text-sm leading-snug">
                           {tagline}
                         </p>
                         {/* md+: full body copy. */}
@@ -307,7 +307,7 @@ const Benefits = () => {
       {/* Benefit 3: Store Insights */}
       <section
         id="benefit-3"
-        className="relative py-12 sm:py-24 lg:py-32 bg-[#FDF7E2]/20 overflow-hidden"
+        className="relative py-12 sm:py-24 lg:py-16 bg-[#FDF7E2]/20 overflow-hidden"
       >
         {/* Background Elements */}
         <div className="absolute inset-0">
@@ -318,7 +318,7 @@ const Benefits = () => {
         <div className="container mx-auto px-4 sm:px-6 relative z-10">
           <div className="max-w-7xl mx-auto">
             {/* Header */}
-            <div className="text-center mb-8 sm:mb-16 lg:mb-20">
+            <div className="text-center mb-8 sm:mb-16 lg:mb-10">
               <SectionBadge icon={FaChartLine} text="Store Insights" />
               <div className="relative">
                 {/* #3 watermark — desktop-only, parity with #1 / #2 watermarks. */}
@@ -328,20 +328,20 @@ const Benefits = () => {
                 >
                   #3
                 </div>
-                <h2 className="text-4xl xs:text-[2.5rem] sm:text-5xl lg:text-6xl font-heading font-bold text-foreground leading-tight mb-3 sm:mb-6 relative z-10 lg:ml-14">
+                <h2 className="text-3xl sm:text-4xl lg:text-5xl font-heading font-bold text-foreground leading-tight mb-3 sm:mb-6 relative z-10 lg:ml-14">
                   Learn. Tune. Grow.
                 </h2>
               </div>
-              <p className="text-sm sm:text-lg lg:text-xl text-muted-foreground font-body max-w-3xl mx-auto px-2">
+              <p className="text-base sm:text-lg lg:text-xl text-muted-foreground font-body max-w-3xl mx-auto px-2">
                 See where buyers hesitate, what they ask, and which paths
                 convert—so you fix less, save hours, and invest where revenue
                 grows.
               </p>
             </div>
 
-            <div className="grid lg:grid-cols-2 gap-6 sm:gap-14 lg:gap-20 items-center">
+            <div className="grid lg:grid-cols-2 gap-6 sm:gap-14 lg:gap-12 items-center">
               {/* Left: Tabbed Session Replay */}
-              <div className="relative flex justify-center items-start order-2 lg:order-1 min-w-0 w-full">
+              <div className="relative flex justify-center items-start order-2 lg:order-1 min-w-0 w-full lg-zoom-85 origin-top">
                 <TabbedSessionReplay />
               </div>
 
@@ -379,15 +379,15 @@ const Benefits = () => {
                     <div className="flex gap-3 sm:gap-4">
                       <Icon className="w-4 h-4 xs:w-5 xs:h-5 text-primary/60 group-hover:text-primary/90 transition-colors duration-300 flex-shrink-0 mt-0.5" />
                       <div className="min-w-0">
-                        <h3 className="text-[15px] xs:text-base sm:text-lg font-heading font-semibold text-foreground leading-tight mb-1 sm:mb-2">
+                        <h3 className="text-base sm:text-lg font-heading font-semibold text-foreground leading-tight mb-1 sm:mb-2">
                           {title}
                         </h3>
                         {/* Mobile/tablet: short primary tagline only. */}
-                        <p className="md:hidden text-primary/85 font-heading font-medium text-[12px] xs:text-[13px] leading-snug">
+                        <p className="md:hidden text-primary/85 font-heading font-medium text-[13px] xs:text-sm leading-snug">
                           {tagline}
                         </p>
                         {/* md+: full body copy. */}
-                        <p className="hidden md:block text-muted-foreground font-body text-sm">
+                        <p className="hidden md:block text-muted-foreground font-body text-sm leading-relaxed">
                           {body}
                         </p>
                       </div>

@@ -208,6 +208,33 @@ All colors MUST be HSL.
   }
 }
 
+/* Desktop-only demo compaction: the interactive mockups are the tallest part of
+   each landing section. Zooming them (and their headers) down on lg+ keeps the
+   whole section closer to a single screen without shrinking copy on mobile,
+   where content stacks and scrolls naturally. zoom collapses layout height too,
+   unlike transform: scale, so no leftover gap is left behind. */
+@media (min-width: 1024px) {
+  .lg-zoom-90 {
+    zoom: 0.9;
+  }
+
+  .lg-zoom-85 {
+    zoom: 0.85;
+  }
+
+  .lg-zoom-80 {
+    zoom: 0.8;
+  }
+
+  .lg-zoom-75 {
+    zoom: 0.75;
+  }
+
+  .lg-zoom-70 {
+    zoom: 0.7;
+  }
+}
+
 /* 3D Studio Lighting Components */
 @layer components {
   .studio-lighting-base {

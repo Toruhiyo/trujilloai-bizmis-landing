@@ -31,7 +31,6 @@ export interface FakeImagesSelectorProps {
   containerClasses?: string;
   imageClasses?: string;
   showFading?: boolean;
-  fadingColor?: string;
   draggable?: boolean;
   showArrows?: boolean;
   selectable?: boolean;
@@ -56,7 +55,6 @@ const FakeImagesSelector: React.FC<FakeImagesSelectorProps> = ({
   containerClasses = "",
   imageClasses = "",
   showFading = true,
-  fadingColor = "white",
   draggable = true,
   showArrows = false,
   selectable = true,
@@ -113,7 +111,7 @@ const FakeImagesSelector: React.FC<FakeImagesSelectorProps> = ({
     }
   }, [currentSlide, images.length, isReverse]);
 
-  const slideSize = isVertical ? 144 : 144; // Size in pixels for each slide (36 * 4 + spacing = 144px)
+  const slideSize = isVertical ? 96 : 96; // Size in pixels per slide; must match the h-24/w-24 cell (24 * 4 = 96px)
 
   const handleMouseDown = (e: React.MouseEvent) => {
     if (!draggable) return;
@@ -157,7 +155,7 @@ const FakeImagesSelector: React.FC<FakeImagesSelectorProps> = ({
   const getImageClasses = (image: ImageOption) => {
     const isSelected = selectedId === image.id;
     const sizeClasses = isSelected
-      ? "w-32 h-32" // Bigger size for selected image
+      ? "w-20 h-20" // Bigger size for selected image
       : `${imageSize.width} ${imageSize.height}`;
 
     const baseClasses = `${sizeClasses} bg-white/90 rounded-xl shadow-lg border flex items-center justify-center transition-all duration-300 ${
@@ -171,35 +169,22 @@ const FakeImagesSelector: React.FC<FakeImagesSelectorProps> = ({
     return `${baseClasses} ${selectedClasses} ${imageClasses}`;
   };
 
+  // Fade the rail edges by masking the cards out to true transparency, so they
+  // blend into whatever background sits behind the rail (matching a flat color
+  // overlay can't, since the section background is a warm gradient).
+  const edgeFadeMask = isVertical
+    ? "linear-gradient(to bottom, transparent 0%, #000 18%, #000 82%, transparent 100%)"
+    : "linear-gradient(to right, transparent 0%, #000 18%, #000 82%, transparent 100%)";
+
+  const fadeStyle: React.CSSProperties = showFading
+    ? { maskImage: edgeFadeMask, WebkitMaskImage: edgeFadeMask }
+    : {};
+
   return (
     <div
       className={`relative ${containerSize.width} ${containerSize.height} overflow-hidden rounded-2xl ${containerClasses}`}
+      style={fadeStyle}
     >
-      {/* Fading overlays */}
-      {showFading && (
-        <>
-          {isVertical ? (
-            <>
-              <div
-                className={`absolute top-0 left-1/2 transform -translate-x-1/2 ${imageSize.width} h-20 bg-gradient-to-b from-white via-white/60 to-transparent z-10`}
-              ></div>
-              <div
-                className={`absolute bottom-0 left-1/2 transform -translate-x-1/2 ${imageSize.width} h-20 bg-gradient-to-t from-white via-white/60 to-transparent z-10`}
-              ></div>
-            </>
-          ) : (
-            <>
-              <div
-                className={`absolute left-0 top-1/2 transform -translate-y-1/2 w-20 ${imageSize.height} bg-gradient-to-r from-white via-white/60 to-transparent z-10`}
-              ></div>
-              <div
-                className={`absolute right-0 top-1/2 transform -translate-y-1/2 w-20 ${imageSize.height} bg-gradient-to-l from-white via-white/60 to-transparent z-10`}
-              ></div>
-            </>
-          )}
-        </>
-      )}
-
       {/* Arrow controls */}
       {showArrows && (
         <>
@@ -252,8 +237,8 @@ const FakeImagesSelector: React.FC<FakeImagesSelectorProps> = ({
           <div
             key={`${image.id}-${index}`}
             className={`${
-              isVertical ? "w-full h-36" : "h-full w-36"
-            } flex items-center justify-center flex-shrink-0 p-2`}
+              isVertical ? "w-full h-24" : "h-full w-24"
+            } flex items-center justify-center flex-shrink-0 p-1`}
           >
             <div
               className={getImageClasses(image)}
@@ -263,7 +248,7 @@ const FakeImagesSelector: React.FC<FakeImagesSelectorProps> = ({
                 src={image.url}
                 alt={image.alt || image.title}
                 className={`object-contain ${
-                  selectedId === image.id ? "w-28 h-28" : "w-24 h-24"
+                  selectedId === image.id ? "w-16 h-16" : "w-14 h-14"
                 }`}
               />
             </div>

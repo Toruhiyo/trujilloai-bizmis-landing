@@ -90,7 +90,7 @@ const Customization = () => {
   return (
     <section
       id="customization"
-      className="relative py-16 sm:py-20 lg:py-24 bg-[#FDF7E2]/20 border-t border-primary/20 overflow-hidden"
+      className="relative py-16 sm:py-20 lg:py-16 bg-[#FDF7E2]/20 border-t border-primary/20 overflow-hidden"
     >
       {/* Background Elements */}
       <div className="absolute inset-0">
@@ -110,9 +110,9 @@ const Customization = () => {
       <div className="container mx-auto px-4 sm:px-6 relative z-10">
         <div className="max-w-7xl mx-auto">
           {/* Header */}
-          <div className="text-center mb-10 sm:mb-12 lg:mb-16">
+          <div className="text-center mb-10 sm:mb-12 lg:mb-6">
             <SectionBadge icon={FaPaintBrush} text="Personalization" />
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-heading font-bold text-foreground mb-6">
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-heading font-bold text-foreground mb-6 lg:mb-4">
               Make It <span className="text-primary">Truly Yours</span>
             </h2>
             <p className="text-base sm:text-lg lg:text-xl text-muted-foreground font-body max-w-3xl mx-auto px-2">
@@ -126,16 +126,16 @@ const Customization = () => {
               from tablet/portrait-tablet widths up. */}
           <div className="grid sm:grid-cols-2 gap-6 sm:gap-8 md:gap-8 lg:gap-16 items-center">
             {/* Right: Features */}
-            <div className="space-y-4 sm:space-y-6 md:space-y-8 lg:space-y-16 order-2 sm:order-2">
+            <div className="space-y-4 sm:space-y-6 md:space-y-8 lg:space-y-8 order-2 sm:order-2">
               <div className="group bg-primary/10 backdrop-blur-md rounded-xl xs:rounded-2xl sm:rounded-3xl p-3 xs:p-4 sm:p-6 lg:p-8 border border-primary/20 hover:border-primary/30 transform lg:-rotate-1 lg:hover:rotate-0 transition-all duration-500 shadow-xl">
                 <div className="space-y-6">
                   <div className="flex gap-2.5 xs:gap-3 sm:gap-4">
                     <FaPaintBrush className="w-4 h-4 xs:w-5 xs:h-5 text-primary/60 group-hover:text-primary/90 transition-colors duration-300 flex-shrink-0 mt-0.5" />
                     <div>
-                      <h3 className="text-[15px] xs:text-base sm:text-xl font-heading font-bold text-foreground">
+                      <h3 className="text-base sm:text-lg font-heading font-semibold text-foreground">
                         Personal Avatar
                       </h3>
-                      <p className="text-[12px] xs:text-[13px] sm:text-base leading-snug text-muted-foreground font-body">
+                      <p className="text-sm leading-relaxed text-muted-foreground font-body">
                         Creating genuine connections by making your sales
                         representative sound and look like you.
                       </p>
@@ -150,12 +150,12 @@ const Customization = () => {
                     <FaMicrophone className="w-4 h-4 xs:w-5 xs:h-5 text-primary/60 group-hover:text-primary/90 transition-colors duration-300 flex-shrink-0 mt-0.5" />
                     <div>
                       <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
-                        <h3 className="text-[15px] xs:text-base sm:text-xl font-heading font-bold text-foreground">
+                        <h3 className="text-base sm:text-lg font-heading font-semibold text-foreground">
                           Voice Cloning
                         </h3>
                         <PricingPlanFeatureSoon className="ml-0 shrink-0" />
                       </div>
-                      <p className="text-[12px] xs:text-[13px] sm:text-base leading-snug text-muted-foreground font-body">
+                      <p className="text-sm leading-relaxed text-muted-foreground font-body">
                         Authentic customer interactions through replication of
                         your unique speaking style and personality.
                       </p>
@@ -221,8 +221,9 @@ const Customization = () => {
                     numberOfDuplicates={10}
                     autoRotateInterval={4000}
                     onImageSelect={setSelectedClothingId}
+                    containerSize={{ width: "w-[28rem]", height: "h-[24rem]" }}
+                    imageSize={{ width: "w-20", height: "h-20" }}
                     showFading={true}
-                    fadingColor="white"
                     draggable={false}
                     showArrows={false}
                     selectable={false}
@@ -242,8 +243,9 @@ const Customization = () => {
                     numberOfDuplicates={10}
                     autoRotateInterval={4000}
                     onImageSelect={setSelectedHaircutId}
+                    containerSize={{ width: "w-[28rem]", height: "h-[24rem]" }}
+                    imageSize={{ width: "w-20", height: "h-20" }}
                     showFading={true}
-                    fadingColor="white"
                     draggable={false}
                     showArrows={false}
                     selectable={false}
@@ -260,16 +262,16 @@ const Customization = () => {
                   {/* Concentric flower-shaped outlines - Chupa Chups style effect */}
                   <div className="absolute inset-0 flex items-center justify-center">
                     {/* Orange glow background */}
-                    <div className="absolute w-full h-full bg-primary/15 rounded-full scale-0 group-hover:scale-100 transition-all duration-1000 ease-out group-hover:delay-100 delay-500 blur-sm"></div>
+                    <div className="absolute h-full aspect-square bg-primary/15 rounded-full scale-0 group-hover:scale-100 transition-all duration-1000 ease-out group-hover:delay-100 delay-500 blur-sm"></div>
 
                     {/* Outer flower outline with glow */}
-                    <div className="absolute w-full h-full border-2 border-primary/30 rounded-full scale-0 group-hover:scale-100 transition-all duration-700 ease-out group-hover:delay-0 delay-200 shadow-[0_0_20px_rgba(253,145,42,0.3)] group-hover:shadow-[0_0_30px_rgba(253,145,42,0.4)]"></div>
+                    <div className="absolute h-full aspect-square border-2 border-primary/30 rounded-full scale-0 group-hover:scale-100 transition-all duration-700 ease-out group-hover:delay-0 delay-200 shadow-[0_0_20px_rgba(253,145,42,0.3)] group-hover:shadow-[0_0_30px_rgba(253,145,42,0.4)]"></div>
 
                     {/* Middle flower outline with glow */}
-                    <div className="absolute w-4/5 h-4/5 border-2 border-primary/40 rounded-full scale-0 group-hover:scale-100 transition-all duration-700 ease-out group-hover:delay-100 delay-300 shadow-[0_0_15px_rgba(253,145,42,0.4)] group-hover:shadow-[0_0_25px_rgba(253,145,42,0.5)]"></div>
+                    <div className="absolute h-4/5 aspect-square border-2 border-primary/40 rounded-full scale-0 group-hover:scale-100 transition-all duration-700 ease-out group-hover:delay-100 delay-300 shadow-[0_0_15px_rgba(253,145,42,0.4)] group-hover:shadow-[0_0_25px_rgba(253,145,42,0.5)]"></div>
 
                     {/* Inner flower outline with glow */}
-                    <div className="absolute w-3/5 h-3/5 border-2 border-primary/50 rounded-full scale-0 group-hover:scale-100 transition-all duration-700 ease-out group-hover:delay-200 delay-400 shadow-[0_0_10px_rgba(253,145,42,0.5)] group-hover:shadow-[0_0_25px_rgba(253,145,42,0.6)]"></div>
+                    <div className="absolute h-3/5 aspect-square border-2 border-primary/50 rounded-full scale-0 group-hover:scale-100 transition-all duration-700 ease-out group-hover:delay-200 delay-400 shadow-[0_0_10px_rgba(253,145,42,0.5)] group-hover:shadow-[0_0_25px_rgba(253,145,42,0.6)]"></div>
                   </div>
 
                   {/* Default image — capped per tier so it doesn't dominate
@@ -279,13 +281,13 @@ const Customization = () => {
                   <img
                     src="/images/benefit-1-customization-1.png"
                     alt="Personalization Hub - Voice & Appearance Customization"
-                    className="relative z-30 w-full max-w-[14rem] xs:max-w-[16rem] sm:max-w-[15rem] md:max-w-[18rem] lg:max-w-md mx-auto object-contain drop-shadow-2xl transition-opacity duration-500 group-hover:opacity-0"
+                    className="relative z-30 w-full max-w-[14rem] xs:max-w-[16rem] sm:max-w-[15rem] md:max-w-[18rem] lg:max-w-xs mx-auto object-contain drop-shadow-2xl transition-opacity duration-500 group-hover:opacity-0"
                   />
                   {/* Hover image */}
                   <img
                     src="/images/benefit-1-customization-2.png"
                     alt="Personalization Hub - Voice & Appearance Customization (Active)"
-                    className="absolute inset-0 z-30 w-full max-w-[14rem] xs:max-w-[16rem] sm:max-w-[15rem] md:max-w-[18rem] lg:max-w-md mx-auto object-contain drop-shadow-2xl opacity-0 transition-opacity duration-500 group-hover:opacity-100"
+                    className="absolute inset-0 z-30 w-full max-w-[14rem] xs:max-w-[16rem] sm:max-w-[15rem] md:max-w-[18rem] lg:max-w-xs mx-auto object-contain drop-shadow-2xl opacity-0 transition-opacity duration-500 group-hover:opacity-100"
                   />
                 </div>
               </div>

@@ -5,6 +5,7 @@ import {
   FaTag,
   FaUsers,
   FaPercent,
+  FaShieldAlt,
   FaBox,
   FaSync,
   FaBolt,
@@ -85,6 +86,11 @@ const shopifyDataCards = [
     description: "All current promotions",
   },
   {
+    icon: FaShieldAlt,
+    title: "Policies",
+    description: "Shipping, returns, and store policies",
+  },
+  {
     icon: FaUsers,
     title: "Customers",
     description: "Customer sales and support records",
@@ -103,7 +109,7 @@ const Setup = () => {
   };
 
   // State for forcing re-renders - separate key for each connector
-  const [renderKeys, setRenderKeys] = useState([0, 0, 0, 0, 0]);
+  const [renderKeys, setRenderKeys] = useState([0, 0, 0, 0, 0, 0]);
 
   // State for heartbeat avatar effect
   const [avatarOpacity, setAvatarOpacity] = useState(1);
@@ -211,7 +217,7 @@ const Setup = () => {
 
       <section
         id="setup-section"
-        className="py-16 sm:py-20 lg:py-24 bg-gradient-to-r from-[#FDF7E2]/[0.05] via-background/40 to-[#FDF7E2]/[0.08] border-t border-primary/20 relative overflow-visible"
+        className="py-16 sm:py-20 lg:py-16 bg-gradient-to-r from-[#FDF7E2]/[0.05] via-background/40 to-[#FDF7E2]/[0.08] border-t border-primary/20 relative overflow-visible"
       >
         {/* Perimeter glow — strongest at outer edge, fading inward */}
         <div className="absolute inset-0 pointer-events-none" aria-hidden="true">
@@ -260,8 +266,8 @@ const Setup = () => {
               <div className="flex flex-row items-center justify-between gap-3 xs:gap-4 sm:gap-10 lg:gap-16">
                 {/* Shopify Data Cards - always vertical stack, side-by-side with avatar */}
                 <div className="flex-1 min-w-0 max-w-[58%] xs:max-w-[60%] sm:max-w-md">
-                  <div className="rounded-xl sm:rounded-2xl border border-primary/20 p-2.5 xs:p-3 sm:p-5 lg:p-6">
-                    <div className="text-center mb-3 xs:mb-4 sm:mb-5 lg:mb-6">
+                  <div className="rounded-xl sm:rounded-2xl border border-primary/20 p-2.5 xs:p-3 sm:p-5 lg:p-4">
+                    <div className="text-center mb-3 xs:mb-4 sm:mb-5 lg:mb-3">
                       <div className="inline-flex items-center gap-1.5 sm:gap-2 text-primary/85">
                         <FaShopify className="w-3.5 h-3.5 xs:w-4 xs:h-4 sm:w-5 sm:h-5" />
                         <span className="text-[12px] xs:text-sm sm:text-base lg:text-lg font-heading font-semibold leading-tight">
@@ -270,28 +276,28 @@ const Setup = () => {
                       </div>
                     </div>
 
-                    <div className="space-y-1.5 xs:space-y-2 sm:space-y-3 lg:space-y-4">
+                    <div className="space-y-1.5 xs:space-y-2 sm:space-y-3 lg:space-y-2.5">
                     {shopifyDataCards.map((card, index) => (
                       <div
                         key={index}
                         id={`card-${index}`}
-                        className="group relative bg-primary/10 backdrop-blur-sm rounded-lg sm:rounded-2xl p-1.5 xs:p-2.5 sm:p-4 lg:p-6 shadow-[0_4px_20px_-2px_rgba(0,0,0,0.06),0_2px_8px_-2px_rgba(253,145,42,0.06)] hover:scale-[1.02] transition-all duration-300 overflow-hidden"
+                        className="group relative bg-primary/10 backdrop-blur-sm rounded-lg sm:rounded-2xl p-1.5 xs:p-2.5 sm:p-4 lg:p-3.5 shadow-[0_4px_20px_-2px_rgba(0,0,0,0.06),0_2px_8px_-2px_rgba(253,145,42,0.06)] hover:scale-[1.02] transition-all duration-300 overflow-hidden"
                       >
                         {/* Shopify Icon Watermark — hidden on the most compact tier
                             so the simplified cards stay clean (icon + title only). */}
-                        <div className="hidden xs:block absolute xs:bottom-[calc(50%-2rem)] sm:bottom-[calc(50%-2.5rem)] right-0 opacity-10 group-hover:opacity-15 transition-opacity duration-300">
-                          <FaShopify className="xs:w-11 xs:h-11 sm:w-16 sm:h-16 lg:w-20 lg:h-20 text-primary" />
+                        <div className="hidden xs:block absolute xs:bottom-[calc(50%-0.875rem)] sm:bottom-[calc(50%-1.25rem)] lg:bottom-[calc(50%-1.5rem)] right-0 opacity-10 group-hover:opacity-15 transition-opacity duration-300">
+                          <FaShopify className="xs:w-7 xs:h-7 sm:w-10 sm:h-10 lg:w-12 lg:h-12 text-primary" />
                         </div>
 
                         <div className="flex items-center gap-1.5 xs:gap-2.5 sm:gap-3 lg:gap-4 relative z-10">
-                          <div className="w-6 h-6 xs:w-8 xs:h-8 sm:w-10 sm:h-10 lg:w-14 lg:h-14 bg-transparent rounded-md sm:rounded-xl flex items-center justify-center shrink-0">
-                            <card.icon className="w-3 h-3 xs:w-4 xs:h-4 sm:w-5 sm:h-5 lg:w-6 lg:h-6 text-primary/60 group-hover:text-primary/85 transition-colors duration-300" />
+                          <div className="w-6 h-6 xs:w-8 xs:h-8 sm:w-10 sm:h-10 lg:w-11 lg:h-11 bg-transparent rounded-md sm:rounded-xl flex items-center justify-center shrink-0">
+                            <card.icon className="w-3 h-3 xs:w-4 xs:h-4 sm:w-5 sm:h-5 lg:w-5 lg:h-5 text-primary/60 group-hover:text-primary/85 transition-colors duration-300" />
                           </div>
                           <div className="flex-1 min-w-0">
-                            <h3 className="font-heading font-semibold text-foreground text-[11px] xs:text-[13px] sm:text-base lg:text-lg leading-tight sm:leading-snug xs:mb-0.5 lg:mb-1 truncate sm:whitespace-normal">
+                            <h3 className="font-heading font-semibold text-foreground text-[11px] xs:text-[13px] sm:text-base lg:text-base leading-tight sm:leading-snug xs:mb-0.5 lg:mb-0.5 truncate sm:whitespace-normal">
                               {card.title}
                             </h3>
-                            <p className="hidden xs:block xs:text-[11px] sm:text-xs lg:text-sm leading-snug text-muted-foreground font-body line-clamp-1 sm:line-clamp-none">
+                            <p className="hidden xs:block xs:text-[10px] sm:text-[11px] lg:text-xs leading-snug text-muted-foreground/60 font-body line-clamp-1 sm:line-clamp-none">
                               {card.description}
                             </p>
                           </div>
@@ -313,7 +319,7 @@ const Setup = () => {
                     return (
                       <>
                         <div
-                          className="absolute rounded-full pointer-events-none w-[10rem] h-[10rem] xs:w-[12rem] xs:h-[12rem] sm:w-[22rem] sm:h-[22rem] lg:w-[28rem] lg:h-[28rem]"
+                          className="absolute rounded-full pointer-events-none w-[10rem] h-[10rem] xs:w-[12rem] xs:h-[12rem] sm:w-[22rem] sm:h-[22rem] lg:w-[21rem] lg:h-[21rem]"
                           style={{
                             left: "50%",
                             top: "50%",
@@ -326,7 +332,7 @@ const Setup = () => {
                           }}
                         />
                         <div
-                          className="absolute rounded-full pointer-events-none w-[14rem] h-[14rem] xs:w-[16rem] xs:h-[16rem] sm:w-[30rem] sm:h-[30rem] lg:w-[38rem] lg:h-[38rem]"
+                          className="absolute rounded-full pointer-events-none w-[14rem] h-[14rem] xs:w-[16rem] xs:h-[16rem] sm:w-[30rem] sm:h-[30rem] lg:w-[28rem] lg:h-[28rem]"
                           style={{
                             left: "50%",
                             top: "50%",
@@ -348,7 +354,7 @@ const Setup = () => {
                     <img
                       src="/images/setup-avatar-orange.png"
                       alt="Bizmis Storemate Orange"
-                      className="h-[12rem] xs:h-[14rem] sm:h-[24rem] lg:h-[36rem] w-auto max-w-full object-contain"
+                      className="h-[12rem] xs:h-[14rem] sm:h-[24rem] lg:h-[26rem] w-auto max-w-full object-contain"
                       style={{ aspectRatio: "auto" }}
                       onError={(e) =>
                         console.error(
@@ -361,7 +367,7 @@ const Setup = () => {
                     <img
                       src="/images/setup-avatar.png"
                       alt="Bizmis Storemate"
-                      className="h-[12rem] xs:h-[14rem] sm:h-[24rem] lg:h-[36rem] w-auto max-w-full object-contain absolute top-0 left-0"
+                      className="h-[12rem] xs:h-[14rem] sm:h-[24rem] lg:h-[26rem] w-auto max-w-full object-contain absolute top-0 left-0"
                       style={{
                         opacity: avatarOpacity,
                         transition: `opacity ${HEARTBEAT_FADE_DURATION_MS}ms ease-in-out`,
