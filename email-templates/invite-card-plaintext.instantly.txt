@@ -1,0 +1,16 @@
+Hey {{firstName}},
+
+I'm Oriol, and I'm reaching out because I built something for {{lead_brand}} I think you'll love, called Bizmis. It's a voice-first, real-time store associate that brings the in-person shopping experience to your site. Talking to it feels like being helped by your best salesperson in-store, not another chatbot: it welcomes your shoppers, answers their questions, and guides them to the right products, so you sell more and spend less time on support.
+
+I took a look at {{lead_brand}} and built [a quick mockup of it running on your store](https://www.bizmis.ai/invite-cards/{{lead_handle}}/email/mockup.png?ref={{lead_handle}}&utm_source=bizmis-cold-email&utm_medium=email&utm_campaign={{utm_campaign}}&utm_content={{lead_handle}}), set up with your products and branding.
+
+Whenever you're ready:
+[See it live on a real store](https://www.bizmis.ai/demo?ref={{lead_handle}}&code={{access_code}}&utm_source=bizmis-cold-email&utm_medium=email&utm_campaign={{utm_campaign}}&utm_content={{lead_handle}})
+[Add it to {{lead_brand}} in one click, it sets itself up for you](https://apps.shopify.com/bizmis?ref={{lead_handle}}&code={{access_code}}&utm_source=bizmis-cold-email&utm_medium=email&utm_campaign={{utm_campaign}}&utm_content={{lead_handle}})
+[Grab 30 minutes with me](https://calendly.com/oriol-bizmis/bizmis-onboarding?ref={{lead_handle}}&utm_source=bizmis-cold-email&utm_medium=email&utm_campaign={{utm_campaign}}&utm_content={{lead_handle}})
+
+We're only opening early access to the first 50 stores, and I'd love {{lead_brand}} to be one. Your code {{access_code}} is already on the links, so your discount is automatic.
+
+If it's not your thing, no worries at all, just say the word and I'll leave you alone.
+
+Oriol
