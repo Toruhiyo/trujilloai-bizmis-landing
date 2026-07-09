@@ -10,33 +10,40 @@ const FAQsPage = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
 
-  // Handle URL hash navigation to specific FAQ
+  // Handle URL hash navigation to a specific FAQ or a whole category
   useEffect(() => {
     const hash = window.location.hash.replace("#", "");
-    if (hash) {
-      // Find the FAQ with this ID
-      const targetFaq = allFAQs.find((faq) => faq.id === hash);
-      if (targetFaq) {
-        // Open the FAQ
-        setOpenItems((prev) => [...prev, hash]);
-        // Set the category if not "all"
-        setSelectedCategory(targetFaq.category);
-        // Scroll to the FAQ after a brief delay to ensure rendering
-        setTimeout(() => {
-          const element = document.getElementById(`faq-${hash}`);
-          if (element) {
-            element.scrollIntoView({
-              behavior: "smooth",
-              block: "center",
-            });
-            // Focus the FAQ button for accessibility
-            const button = element.querySelector("button");
-            if (button) {
-              button.focus();
-            }
+    if (!hash) return;
+
+    // Deep link to an individual FAQ (e.g. /faqs#refund-policy)
+    const targetFaq = allFAQs.find((faq) => faq.id === hash);
+    if (targetFaq) {
+      // Open the FAQ
+      setOpenItems((prev) => [...prev, hash]);
+      // Set the category if not "all"
+      setSelectedCategory(targetFaq.category);
+      // Scroll to the FAQ after a brief delay to ensure rendering
+      setTimeout(() => {
+        const element = document.getElementById(`faq-${hash}`);
+        if (element) {
+          element.scrollIntoView({
+            behavior: "smooth",
+            block: "center",
+          });
+          // Focus the FAQ button for accessibility
+          const button = element.querySelector("button");
+          if (button) {
+            button.focus();
           }
-        }, 100);
-      }
+        }
+      }, 100);
+      return;
+    }
+
+    // Deep link to a category (e.g. /faqs#pricing-billing)
+    const targetCategory = faqCategories.find((cat) => cat.id === hash);
+    if (targetCategory) {
+      setSelectedCategory(targetCategory.id);
     }
   }, []);
 

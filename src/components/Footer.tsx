@@ -10,8 +10,8 @@ const Footer = () => {
     {
       heading: "Product",
       links: [
-        { label: "Features", href: "#" },
-        { label: "Pricing", href: "#" },
+        { label: "Features", href: "/#benefits" },
+        { label: "Pricing", href: "/pricing" },
         { label: "Demo", href: BIZMIS_DEMO_STORE_URL, newTab: true },
       ],
     },

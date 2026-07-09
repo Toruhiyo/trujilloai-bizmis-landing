@@ -1078,7 +1078,7 @@ const Pricing = () => {
 
         <div className="mt-2 text-center">
           <a
-            href="/faqs#billing"
+            href="/faqs#pricing-billing"
             className="inline-flex items-center gap-1 text-sm font-medium text-primary transition-colors hover:text-primary-dark"
           >
             View all frequently asked questions{" "}
