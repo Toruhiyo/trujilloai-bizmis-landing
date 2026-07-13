@@ -4,6 +4,7 @@ import { ArrowRight, PlayCircle } from "lucide-react";
 import { FaShopify } from "react-icons/fa";
 import { usePostHog } from "posthog-js/react";
 import {
+  BIZMIS_BOOK_A_CALL_GENERAL_URL,
   BIZMIS_DEMO_STORE_URL,
   BIZMIS_SHOPIFY_APP_LISTING_URL,
   openBizmisCustomIntegrationCall,
@@ -21,6 +22,13 @@ const Hero = () => {
       location: "hero",
     });
     openBizmisCustomIntegrationCall();
+  };
+
+  const handleBookACallClick = () => {
+    posthog.capture("cta_clicked", {
+      cta_type: "book_a_call",
+      location: "hero",
+    });
   };
 
   const handleShopifyInstallClick = (e: MouseEvent<HTMLAnchorElement>) => {
@@ -180,7 +188,7 @@ const Hero = () => {
                 </a>
               </Button>
 
-              <div className="flex flex-col gap-2 items-center w-full">
+              <div className="flex flex-col gap-1.5 items-center w-full">
                 <span className="text-white/70 text-xs text-center">
                   Also available for{" "}
                   <button
@@ -189,6 +197,18 @@ const Hero = () => {
                   >
                     custom websites
                   </button>
+                </span>
+                <span className="text-white/70 text-xs text-center">
+                  Prefer a walkthrough?{" "}
+                  <a
+                    href={BIZMIS_BOOK_A_CALL_GENERAL_URL}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onClick={handleBookACallClick}
+                    className="text-white/80 hover:text-white underline underline-offset-2 transition-colors"
+                  >
+                    Book a call
+                  </a>
                 </span>
               </div>
             </div>
@@ -301,8 +321,8 @@ const Hero = () => {
                   </Button>
                 </div>
 
-                <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 items-center w-full">
-                  <span className="text-white/70 text-sm text-center sm:text-left flex-1 min-w-0">
+                <div className="flex flex-col gap-1.5 items-start w-full">
+                  <span className="text-white/70 text-sm text-left">
                     Also available for{" "}
                     <button
                       onClick={handleCustomWebsitesClick}
@@ -310,6 +330,18 @@ const Hero = () => {
                     >
                       custom websites
                     </button>
+                  </span>
+                  <span className="text-white/70 text-sm text-left">
+                    Prefer a walkthrough?{" "}
+                    <a
+                      href={BIZMIS_BOOK_A_CALL_GENERAL_URL}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      onClick={handleBookACallClick}
+                      className="text-white/80 hover:text-white underline underline-offset-2 transition-colors"
+                    >
+                      Book a call
+                    </a>
                   </span>
                 </div>
               </div>
