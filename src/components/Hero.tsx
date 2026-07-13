@@ -188,22 +188,7 @@ const Hero = () => {
                 </a>
               </Button>
 
-              <div className="flex flex-wrap items-center justify-center gap-x-2 gap-y-1 w-full text-white/70 text-xs text-center">
-                <span>
-                  Prefer a walkthrough?{" "}
-                  <a
-                    href={BIZMIS_BOOK_A_CALL_GENERAL_URL}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    onClick={handleBookACallClick}
-                    className="text-white/80 hover:text-white underline underline-offset-2 transition-colors"
-                  >
-                    Book a call
-                  </a>
-                </span>
-                <span className="text-white/45" aria-hidden="true">
-                  ·
-                </span>
+              <div className="flex flex-col gap-1.5 items-center w-full text-white/70 text-xs text-center">
                 <span>
                   Also available for{" "}
                   <button
@@ -213,6 +198,15 @@ const Hero = () => {
                     custom websites
                   </button>
                 </span>
+                <a
+                  href={BIZMIS_BOOK_A_CALL_GENERAL_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={handleBookACallClick}
+                  className="text-white/80 hover:text-white underline underline-offset-2 transition-colors"
+                >
+                  Book a call
+                </a>
               </div>
             </div>
           </div>
@@ -326,7 +320,7 @@ const Hero = () => {
 
                 <div className="flex flex-wrap items-center gap-x-2 gap-y-1 w-full text-white/70 text-sm text-left">
                   <span>
-                    Prefer a walkthrough?{" "}
+                    Rather talk it through?{" "}
                     <a
                       href={BIZMIS_BOOK_A_CALL_GENERAL_URL}
                       target="_blank"
