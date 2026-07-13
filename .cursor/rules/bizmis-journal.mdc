@@ -25,8 +25,11 @@ routine|manual), Areas (Operations|Product|Business, Linear definitions), Entry
 types (🎯 Decision, 🔄 Reversal, 🧗 Struggle, 🚀 Ship, 📊 Numbers, 💡 Idea, ❓ Doubt,
 🌍 External event), Story potential (high|medium|low), Mined=unmined. Body: facts,
 then verbatim quotes (Oriol's exact words, typos included; exact error messages;
-exact numbers), then refs as links. Never edit existing entries. No AI-sounding
-prose, no em dashes, no wrap-up sentences. Never write secrets, tokens, EA codes,
-or third-party personal data.
+exact numbers), then refs as links. NO MINIMUM LENGTH: two lines and a quote is a
+complete entry. Never pad with the drafting/iteration process (unless the iteration
+is itself the story) or by restating the artifact; entries grow by appending later
+developments, not by padding at birth. Never rewrite existing entries, only append.
+No AI-sounding prose, no em dashes, no wrap-up sentences. Never write secrets,
+tokens, EA codes, or third-party personal data.
 
 <!-- bizmis-journal:end -->
