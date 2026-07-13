@@ -188,17 +188,8 @@ const Hero = () => {
                 </a>
               </Button>
 
-              <div className="flex flex-col gap-1.5 items-center w-full">
-                <span className="text-white/70 text-xs text-center">
-                  Also available for{" "}
-                  <button
-                    onClick={handleCustomWebsitesClick}
-                    className="text-white/80 hover:text-white underline underline-offset-2 transition-colors"
-                  >
-                    custom websites
-                  </button>
-                </span>
-                <span className="text-white/70 text-xs text-center">
+              <div className="flex flex-wrap items-center justify-center gap-x-2 gap-y-1 w-full text-white/70 text-xs text-center">
+                <span>
                   Prefer a walkthrough?{" "}
                   <a
                     href={BIZMIS_BOOK_A_CALL_GENERAL_URL}
@@ -209,6 +200,18 @@ const Hero = () => {
                   >
                     Book a call
                   </a>
+                </span>
+                <span className="text-white/45" aria-hidden="true">
+                  ·
+                </span>
+                <span>
+                  Also available for{" "}
+                  <button
+                    onClick={handleCustomWebsitesClick}
+                    className="text-white/80 hover:text-white underline underline-offset-2 transition-colors"
+                  >
+                    custom websites
+                  </button>
                 </span>
               </div>
             </div>
@@ -321,17 +324,8 @@ const Hero = () => {
                   </Button>
                 </div>
 
-                <div className="flex flex-col gap-1.5 items-start w-full">
-                  <span className="text-white/70 text-sm text-left">
-                    Also available for{" "}
-                    <button
-                      onClick={handleCustomWebsitesClick}
-                      className="text-white/80 hover:text-white underline underline-offset-2 transition-colors"
-                    >
-                      custom websites
-                    </button>
-                  </span>
-                  <span className="text-white/70 text-sm text-left">
+                <div className="flex flex-wrap items-center gap-x-2 gap-y-1 w-full text-white/70 text-sm text-left">
+                  <span>
                     Prefer a walkthrough?{" "}
                     <a
                       href={BIZMIS_BOOK_A_CALL_GENERAL_URL}
@@ -342,6 +336,18 @@ const Hero = () => {
                     >
                       Book a call
                     </a>
+                  </span>
+                  <span className="text-white/45" aria-hidden="true">
+                    ·
+                  </span>
+                  <span>
+                    Also available for{" "}
+                    <button
+                      onClick={handleCustomWebsitesClick}
+                      className="text-white/80 hover:text-white underline underline-offset-2 transition-colors"
+                    >
+                      custom websites
+                    </button>
                   </span>
                 </div>
               </div>
