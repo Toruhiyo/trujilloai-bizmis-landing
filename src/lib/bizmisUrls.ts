@@ -6,6 +6,14 @@ export const BIZMIS_SHOPIFY_APP_LISTING_URL =
 export const BIZMIS_BOOK_A_CALL_URL =
   "https://calendly.com/oriol-bizmis/bizmis-onboarding" as const;
 
+/** General "book a call" scheduling page — lets landing visitors pick the right event type. */
+export const BIZMIS_BOOK_A_CALL_GENERAL_URL =
+  "https://calendly.com/oriol-bizmis" as const;
+
+/** Dedicated call for merchants who want Bizmis on a custom (non-Shopify) website. */
+export const BIZMIS_CUSTOM_INTEGRATION_CALL_URL =
+  "https://calendly.com/oriol-bizmis/bizmis-custom-integration" as const;
+
 /**
  * Demo storefront entry point. Routes through our `/demo` serverless redirect, which mints a
  * fresh App Store password-bypass token per request (Shopify's `_bt` tokens are short-lived, so
@@ -21,4 +29,13 @@ export function openBizmisShopifyAppListing(): Window | null {
 /** Opens the demo storefront through the self-healing `/demo` redirect. */
 export function openBizmisDemoStore(): Window | null {
   return window.open(BIZMIS_DEMO_STORE_URL, "_blank", "noopener,noreferrer");
+}
+
+/** Opens the custom-website integration scheduling page in a new tab. */
+export function openBizmisCustomIntegrationCall(): Window | null {
+  return window.open(
+    BIZMIS_CUSTOM_INTEGRATION_CALL_URL,
+    "_blank",
+    "noopener,noreferrer"
+  );
 }

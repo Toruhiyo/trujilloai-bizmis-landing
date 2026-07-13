@@ -1,17 +1,16 @@
 import { Button } from "@/components/ui/button";
-import { MessageCircle } from "lucide-react";
+import { Calendar } from "lucide-react";
 import { FaShopify } from "react-icons/fa";
-import { useNavigate } from "react-router-dom";
 import { usePostHog } from "posthog-js/react";
 import type { MouseEvent } from "react";
 import {
+  BIZMIS_BOOK_A_CALL_GENERAL_URL,
   BIZMIS_SHOPIFY_APP_LISTING_URL,
   openBizmisShopifyAppListing,
 } from "@/lib/bizmisUrls";
 import EarlyAccessCard from "./EarlyAccessCard";
 
 const FinalCTA = () => {
-  const navigate = useNavigate();
   const posthog = usePostHog();
 
   const handleInstallOnShopifyClick = (e: MouseEvent<HTMLAnchorElement>) => {
@@ -23,12 +22,11 @@ const FinalCTA = () => {
     });
   };
 
-  const handleTalkToSales = () => {
+  const handleBookACall = () => {
     posthog.capture("cta_clicked", {
-      cta_type: "talk_to_sales",
+      cta_type: "book_a_call",
       location: "final_cta",
     });
-    navigate("/contact");
   };
 
   return (
@@ -121,15 +119,19 @@ const FinalCTA = () => {
 
                 <div className="flex flex-col sm:flex-row gap-4">
                   <Button
-                    onClick={handleTalkToSales}
-                    aria-label="Talk to sales team"
-                    className="bg-transparent border-2 border-white/30 text-white hover:bg-white/20 hover:border-white/50 focus:ring-2 focus:ring-white/50 focus:ring-offset-2 focus:ring-offset-primary px-6 py-3 h-auto transition-all duration-200 hidden md:flex items-center justify-center"
+                    asChild
+                    aria-label="Book a call with the Bizmis team"
+                    className="bg-transparent border-2 border-white/30 text-white hover:bg-white/20 hover:border-white/50 focus:ring-2 focus:ring-white/50 focus:ring-offset-2 focus:ring-offset-primary px-6 py-3 h-auto transition-all duration-200 flex items-center justify-center [&_svg]:pointer-events-auto"
                   >
-                    <MessageCircle
-                      className="w-5 h-5 mr-2"
-                      aria-hidden="true"
-                    />
-                    Talk to sales
+                    <a
+                      href={BIZMIS_BOOK_A_CALL_GENERAL_URL}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      onClick={handleBookACall}
+                    >
+                      <Calendar className="w-5 h-5 mr-2" aria-hidden="true" />
+                      Book a call
+                    </a>
                   </Button>
                 </div>
               </div>

@@ -1,5 +1,8 @@
 import { getCurrentYear } from "../lib/utils/time";
-import { BIZMIS_DEMO_STORE_URL } from "@/lib/bizmisUrls";
+import {
+  BIZMIS_BOOK_A_CALL_GENERAL_URL,
+  BIZMIS_DEMO_STORE_URL,
+} from "@/lib/bizmisUrls";
 import Logo from "./Logo";
 
 type FooterLink = { label: string; href: string; newTab?: boolean };
@@ -19,6 +22,7 @@ const Footer = () => {
       heading: "Support",
       links: [
         { label: "Contact", href: "/contact" },
+        { label: "Book a call", href: BIZMIS_BOOK_A_CALL_GENERAL_URL, newTab: true },
         { label: "FAQs", href: "/faqs" },
       ],
     },

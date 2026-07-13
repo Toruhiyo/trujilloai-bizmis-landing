@@ -2,18 +2,17 @@ import type { MouseEvent } from "react";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, PlayCircle } from "lucide-react";
 import { FaShopify } from "react-icons/fa";
-import { useNavigate } from "react-router-dom";
 import { usePostHog } from "posthog-js/react";
 import {
   BIZMIS_DEMO_STORE_URL,
   BIZMIS_SHOPIFY_APP_LISTING_URL,
+  openBizmisCustomIntegrationCall,
   openBizmisDemoStore,
   openBizmisShopifyAppListing,
 } from "@/lib/bizmisUrls";
 import Navbar from "./Navbar";
 
 const Hero = () => {
-  const navigate = useNavigate();
   const posthog = usePostHog();
 
   const handleCustomWebsitesClick = () => {
@@ -21,7 +20,7 @@ const Hero = () => {
       cta_type: "custom_websites",
       location: "hero",
     });
-    navigate("/contact?subject=Bizmis%20Website%20Integration");
+    openBizmisCustomIntegrationCall();
   };
 
   const handleShopifyInstallClick = (e: MouseEvent<HTMLAnchorElement>) => {
