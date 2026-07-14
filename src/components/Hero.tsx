@@ -104,13 +104,19 @@ const Hero = () => {
                 onClick={handleEarlyAccessClick}
                 className="group inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/[0.06] px-3 py-1.5 text-xs text-white/80 backdrop-blur-sm transition-colors hover:border-white/25 hover:bg-white/[0.10] hover:text-white sm:text-sm"
               >
-                <span className="relative flex h-1.5 w-1.5 flex-shrink-0" aria-hidden="true">
+                <span
+                  className="relative flex h-1.5 w-1.5 flex-shrink-0"
+                  aria-hidden="true"
+                >
                   <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-white/70 opacity-50" />
                   <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-white/80" />
                 </span>
                 <span className="font-medium">
                   <span className="text-white/90">Early Access</span>
-                  <span className="text-white/45" aria-hidden="true"> · </span>
+                  <span className="text-white/45" aria-hidden="true">
+                    {" "}
+                    ·{" "}
+                  </span>
                   <span className="text-white/70">First 50 stores</span>
                 </span>
                 <ArrowRight
@@ -119,24 +125,37 @@ const Hero = () => {
                 />
               </a>
             </div>
-            <div className="space-y-2 sm:space-y-3">
-              <h1 className="text-4xl xs:text-5xl sm:text-6xl font-heading font-bold text-white leading-tight">
-                Boost Profits,
-                <span className="block text-white/90">
-                  Selling The Human Way
-                </span>
-              </h1>
-              <p className="text-sm sm:text-base text-white/80 font-body max-w-xl mx-auto">
-                <span className="font-semibold">This isn't a chatbot.</span>{" "}
+            <div className="space-y-3 sm:space-y-4">
+              <div>
+                <h1 className="text-4xl xs:text-5xl sm:text-6xl font-heading font-bold text-white leading-tight">
+                  Your Store's
+                  <span className="block">Best Salesperson</span>
+                </h1>
+                <p className="mt-2 text-lg xs:text-xl sm:text-2xl font-heading font-medium text-white/75">
+                  Helps Every Shopper{" "}
+                  <span className="font-semibold text-white">Find It</span>,{" "}
+                  <span className="font-semibold text-white">Trust It</span>, and{" "}
+                  <span className="font-semibold text-white">Buy It</span>
+                </p>
+              </div>
+              <p className="text-sm sm:text-base text-white/70 font-body max-w-xl mx-auto leading-relaxed">
+                <span className="font-semibold text-white/90">
+                  This isn't a chatbot.
+                </span>{" "}
                 {/* Tighter pitch on phones; full version reads at sm+. */}
                 <span className="sm:hidden">
-                  Bizmis welcomes shoppers, answers questions, and guides them
-                  to buy — like your best in-store salesperson, 24/7.
+                  Shoppers leave when they can't find the right product or
+                  second-guess the buy, the moments an in-store clerk would
+                  catch. Bizmis brings that help online, voice-first, narrowing
+                  your catalog to the right product and clearing doubts so they
+                  buy with confidence.
                 </span>
                 <span className="hidden sm:inline">
-                  Bizmis speaks naturally—welcoming your customers, answering
-                  their questions, and guiding them to buy with confidence, just
-                  like the best in-store salesperson would.
+                  Shoppers leave when they can't find the right product or
+                  second-guess the buy, the moments an in-store clerk would
+                  catch. Bizmis brings that help online, voice-first. It listens,
+                  narrows your catalog to the right product, and reassures away
+                  the doubts, so they buy with confidence.
                 </span>
               </p>
             </div>
@@ -237,37 +256,56 @@ const Hero = () => {
           <div className="grid lg:grid-cols-2 gap-16 xl:gap-20 items-center">
             {/* Left Content */}
             <div className="space-y-[clamp(1.5rem,3vh,2rem)] text-left">
-              <div className="space-y-[clamp(0.75rem,1.5vh,1rem)]">
+              <div className="space-y-[clamp(1rem,2vh,1.5rem)]">
                 <a
                   href="/early-access"
                   onClick={handleEarlyAccessClick}
                   className="group inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/[0.06] px-3.5 py-1.5 text-sm text-white/80 backdrop-blur-sm transition-colors hover:border-white/25 hover:bg-white/[0.10] hover:text-white"
                 >
-                  <span className="relative flex h-1.5 w-1.5 flex-shrink-0" aria-hidden="true">
+                  <span
+                    className="relative flex h-1.5 w-1.5 flex-shrink-0"
+                    aria-hidden="true"
+                  >
                     <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-white/70 opacity-50" />
                     <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-white/80" />
                   </span>
                   <span className="font-medium">
                     <span className="text-white/90">Early Access</span>
-                    <span className="text-white/45" aria-hidden="true"> · </span>
-                    <span className="text-white/70">Free for the first 50 Shopify stores</span>
+                    <span className="text-white/45" aria-hidden="true">
+                      {" "}
+                      ·{" "}
+                    </span>
+                    <span className="text-white/70">
+                      Free for the first 50 Shopify stores
+                    </span>
                   </span>
                   <ArrowRight
                     className="h-3.5 w-3.5 text-white/45 transition-transform group-hover:translate-x-0.5 group-hover:text-white/65"
                     aria-hidden="true"
                   />
                 </a>
-                <h1 className="text-[clamp(3rem,6.7vh,4.5rem)] font-heading font-bold text-white leading-[1.0]">
-                  Boost Profits,
-                  <span className="block text-white/90">
-                    Selling The Human Way
-                  </span>
-                </h1>
-                <p className="text-[clamp(1.125rem,2.2vh,1.5rem)] text-white/80 font-body max-w-2xl">
-                  <span className="font-semibold">This isn't a chatbot.</span>{" "}
-                  Bizmis speaks naturally—welcoming your customers, answering
-                  their questions, and guiding them to buy with confidence, just
-                  like the best in-store salesperson would.
+
+                <div>
+                  <h1 className="text-[clamp(3rem,6.4vh,4.5rem)] font-heading font-bold text-white leading-[1.05]">
+                    Your Store's
+                    <span className="block">Best Salesperson</span>
+                  </h1>
+                  <p className="mt-3 text-2xl xl:text-3xl font-heading font-medium text-white/75 whitespace-nowrap">
+                    Helps Every Shopper{" "}
+                    <span className="font-semibold text-white">Find It</span>,{" "}
+                    <span className="font-semibold text-white">Trust It</span>, and{" "}
+                    <span className="font-semibold text-white">Buy It</span>
+                  </p>
+                </div>
+                <p className="text-base lg:text-lg text-white/70 font-body max-w-2xl leading-relaxed">
+                  <span className="font-semibold text-white/90">
+                    This isn't a chatbot.
+                  </span>{" "}
+                  Shoppers leave when they can't find the right product or
+                  second-guess the buy, the moments an in-store clerk would
+                  catch. Bizmis brings that help online, voice-first. It listens,
+                  narrows your catalog to the right product, and reassures away
+                  the doubts, so they buy with confidence.
                 </p>
               </div>
 
