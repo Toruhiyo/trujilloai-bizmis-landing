@@ -98,6 +98,10 @@ const Navbar = () => {
 
   const handleShopifyInstallNavClick = (e: MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault();
+    posthog.capture("cta_clicked", {
+      cta_type: "shopify_app_listing",
+      location: "navbar",
+    });
     openBizmisShopifyAppListing();
   };
 
