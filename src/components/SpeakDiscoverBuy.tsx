@@ -18,7 +18,13 @@ import Waveform from "./Waveform";
 import { SHOPPER_CASES, ShopperCase } from "@/data/shopper-cases";
 import { bizmisConfettiColors } from "@/lib/colors";
 
-const INTERSECTION_THRESHOLD = 0.3;
+/** Fire as soon as the scene begins entering the viewport (any sliver visible)
+ *  instead of waiting for 30% — fast first-time scrollers were passing the
+ *  section before the choreography had a chance to start. */
+const INTERSECTION_THRESHOLD = 0;
+/** Head start: begin the choreography while the scene is still ~35% of a
+ *  viewport below the fold, so it's already playing once it scrolls into frame. */
+const INTERSECTION_ROOT_MARGIN = "0px 0px 35% 0px";
 const TRANSITION_MS = 500;
 const AVATAR_ENTRANCE_DELAY_MS = 200;
 const AVATAR_ENTRANCE_DURATION_MS = 1200;
@@ -104,7 +110,7 @@ type Phase =
 
 const PHASE_DURATIONS: Record<Phase, number> = {
   idle: 900,
-  "customer-in": 1450,
+  "customer-in": 750,
   speaking: 1600,
   "product-1": 520,
   "product-2": 520,
@@ -195,7 +201,10 @@ const SpeakDiscoverBuy = () => {
           observer.disconnect();
         }
       },
-      { threshold: INTERSECTION_THRESHOLD },
+      {
+        threshold: INTERSECTION_THRESHOLD,
+        rootMargin: INTERSECTION_ROOT_MARGIN,
+      },
     );
     if (sectionRef.current) observer.observe(sectionRef.current);
     return () => observer.disconnect();

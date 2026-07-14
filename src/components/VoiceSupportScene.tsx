@@ -17,7 +17,13 @@ import MobileShopperCaptionRow from "./MobileShopperCaptionRow";
 import Waveform from "./Waveform";
 import { SUPPORT_CASES, SupportCase } from "@/data/support-cases";
 
-const INTERSECTION_THRESHOLD = 0.3;
+/** Fire as soon as the scene begins entering the viewport (any sliver visible)
+ *  instead of waiting for 30% — fast first-time scrollers were passing the
+ *  section before the choreography had a chance to start. */
+const INTERSECTION_THRESHOLD = 0;
+/** Head start: begin the choreography while the scene is still ~35% of a
+ *  viewport below the fold, so it's already playing once it scrolls into frame. */
+const INTERSECTION_ROOT_MARGIN = "0px 0px 35% 0px";
 const TRANSITION_MS = 500;
 const CUSTOMER_TEXT_DELAY_MS = 400;
 const RESOLUTION_TEXT_DELAY_MS = 200;
@@ -161,7 +167,10 @@ const VoiceSupportScene = () => {
           observer.disconnect();
         }
       },
-      { threshold: INTERSECTION_THRESHOLD },
+      {
+        threshold: INTERSECTION_THRESHOLD,
+        rootMargin: INTERSECTION_ROOT_MARGIN,
+      },
     );
     if (ref.current) observer.observe(ref.current);
     return () => observer.disconnect();
