@@ -1,6 +1,6 @@
 Hey {{firstName}},
 
-I'm Oriol, founder of Bizmis. {{opening_hook}}
+I'm Oriol, founder of Bizmis. {% if opening_hook and opening_hook != "" %}{{opening_hook}}{% else %}I spent a while browsing {{lead_brand}} the other day, and I kept coming back to the same thought: somewhere in that catalog there's a shopper with one question they'd ask out loud in a store, and no way to do that on a website.{% endif %}
 
 I think about that moment a lot. It's a big part of why I ended up building Bizmis, a voice-first store associate for Shopify, meant to be your store's best salesperson brought online. It catches the moments stores usually lose: the shopper drifting mid-catalog, the one about to buy with a doubt nobody's around to clear. They just say it out loud, it answers right there like in-person help would, and the shipping and order questions it handles never reach your inbox.
 
