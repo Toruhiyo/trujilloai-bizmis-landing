@@ -1,0 +1,19 @@
+Hey {{firstName}},
+
+I'm Oriol, founder of Bizmis. {{opening_hook}}
+
+I think about that moment a lot. It's a big part of why I ended up building Bizmis, a voice-first store associate for Shopify, meant to be your store's best salesperson brought online. It catches the moments stores usually lose: the shopper drifting mid-catalog, the one about to buy with a doubt nobody's around to clear. They just say it out loud, it answers right there like in-person help would, and the shipping and order questions it handles never reach your inbox.
+
+I put together a [mockup](https://go.bizmis.ai/invite-cards/{{lead_handle}}/email/mockup.png) with Bizmis running on {{lead_brand}}.
+
+I'd love for {{lead_brand}} to join the Early Access program: Bizmis is free while Early Access lasts, with priority support and early influence over the product's direction so it evolves around businesses like yours, and it's capped at 50 stores. It's also a completely safe try: setup takes one click, it stays in private preview so only your Shopify admins can see and test it until you decide to make it available to shoppers, and if it's not a fit you simply uninstall it. If you want one of the spots, install it or grab a call with me and I'll help you get it live on {{lead_brand}} myself.
+
+[See it live on a test store](https://www.bizmis.ai/demo?ref={{lead_handle}}&code={{access_code}}&utm_source=bizmis-cold-email&utm_medium=email&utm_campaign={{utm_campaign}}&utm_content={{lead_handle}})
+[Add it to {{lead_brand}} in one click, it sets itself up](https://apps.shopify.com/bizmis?ref={{lead_handle}}&code={{access_code}}&utm_source=bizmis-cold-email&utm_medium=email&utm_campaign={{utm_campaign}}&utm_content={{lead_handle}})
+[Grab 30 minutes with me](https://calendly.com/oriol-bizmis/bizmis-onboarding?ref={{lead_handle}}&utm_source=bizmis-cold-email&utm_medium=email&utm_campaign={{utm_campaign}}&utm_content={{lead_handle}})
+
+And if this isn't for you, no worries at all.
+
+Oriol
+
+[Unsubscribe](https://www.bizmis.ai/unsubscribe?ref={{lead_handle}}&sig={{unsub_sig}})

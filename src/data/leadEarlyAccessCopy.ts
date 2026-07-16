@@ -63,7 +63,7 @@ export const EARLY_ACCESS_EMAIL_COPY = {
   ctaUrgencyStoreFallback: "your store",
   ctaUrgencyAfterStoreName: " further ahead",
   ctaUrgencyBetweenEmphasis2And3:
-    ". Try the live demo to see it on a real storefront, and I\u2019ll personally get Bizmis live on yours. ",
+    ". Try the live demo to see it on a test store, and I\u2019ll personally get Bizmis live on yours. ",
   ctaUrgencyEmphasis3: "Start free, no commitment",
   ctaUrgencyAfterEmphasis3:
     " \u2014 then your early-access discount when you upgrade.",
