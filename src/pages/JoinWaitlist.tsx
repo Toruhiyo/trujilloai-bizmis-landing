@@ -111,6 +111,10 @@ const JoinWaitlist = () => {
       );
       setFormStatus("success");
 
+      posthog.identify(cleanedData.email, {
+        email: cleanedData.email,
+        name: cleanedData.name,
+      });
       posthog.capture("waitlist_signup_completed", {
         selected_plan: planParam || "not_selected",
         store_domain: cleanedData.storeUrl,
@@ -151,6 +155,9 @@ const JoinWaitlist = () => {
     } catch (error) {
       console.error("Failed to submit waitlist:", error);
       setFormStatus("error");
+      posthog.capture("waitlist_signup_failed", {
+        selected_plan: planParam || "not_selected",
+      });
     }
   };
 

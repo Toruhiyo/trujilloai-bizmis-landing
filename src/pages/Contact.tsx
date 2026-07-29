@@ -86,6 +86,10 @@ const Contact = () => {
         EMAILJS_PUBLIC_KEY,
       );
       setFormStatus("success");
+      posthog.identify(formData.email.trim(), {
+        email: formData.email.trim(),
+        name: formData.name.trim(),
+      });
       posthog.capture("contact_form_submitted", {
         subject: formData.subject,
       });

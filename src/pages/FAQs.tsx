@@ -1,14 +1,17 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { ChevronDown, Search } from "lucide-react";
 import { faqCategories, allFAQs, type FAQ } from "@/data/faqs";
 import Footer from "@/components/Footer";
 import PublicPageLayout from "@/components/PublicPageLayout";
 import Seo from "@/components/Seo";
+import { usePostHog } from "posthog-js/react";
 
 const FAQsPage = () => {
+  const posthog = usePostHog();
   const [openItems, setOpenItems] = useState<string[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
+  const searchDebounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // Handle URL hash navigation to a specific FAQ or a whole category
   useEffect(() => {
@@ -48,9 +51,39 @@ const FAQsPage = () => {
   }, []);
 
   const toggleItem = (id: string) => {
+    const isOpening = !openItems.includes(id);
     setOpenItems((prev) =>
       prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id]
     );
+    if (isOpening) {
+      const faq = allFAQs.find((f) => f.id === id);
+      posthog.capture("faq_expanded", {
+        faq_id: id,
+        faq_question: faq?.question,
+        faq_category: faq?.category ?? selectedCategory,
+      });
+    }
+  };
+
+  const handleSearchChange = (value: string) => {
+    setSearchTerm(value);
+    if (searchDebounceRef.current) clearTimeout(searchDebounceRef.current);
+    if (value.trim()) {
+      searchDebounceRef.current = setTimeout(() => {
+        posthog.capture("faq_searched", {
+          search_term: value.trim(),
+          active_category: selectedCategory,
+        });
+      }, 600);
+    }
+  };
+
+  const handleCategorySelect = (categoryId: string) => {
+    setSelectedCategory(categoryId);
+    posthog.capture("faq_category_selected", {
+      category: categoryId,
+      previous_category: selectedCategory,
+    });
   };
 
   const filteredFAQs = React.useMemo(() => {
@@ -139,7 +172,7 @@ const FAQsPage = () => {
                   placeholder="Search FAQs..."
                   aria-label="Search FAQs"
                   value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
+                  onChange={(e) => handleSearchChange(e.target.value)}
                   className="w-full pl-10 pr-4 py-3 border border-border rounded-lg bg-background focus:ring-2 focus:ring-ring focus:border-ring outline-none transition-colors"
                 />
               </div>
@@ -147,7 +180,7 @@ const FAQsPage = () => {
               {/* Category Filter */}
               <div className="flex flex-wrap gap-1.5 sm:gap-2">
                 <button
-                  onClick={() => setSelectedCategory("all")}
+                  onClick={() => handleCategorySelect("all")}
                   className={`px-3 py-1.5 sm:px-4 sm:py-2 rounded-lg text-xs sm:text-sm font-medium transition-colors ${
                     selectedCategory === "all"
                       ? "bg-primary text-primary-foreground"
@@ -159,7 +192,7 @@ const FAQsPage = () => {
                 {faqCategories.map((category) => (
                   <button
                     key={category.id}
-                    onClick={() => setSelectedCategory(category.id)}
+                    onClick={() => handleCategorySelect(category.id)}
                     className={`px-3 py-1.5 sm:px-4 sm:py-2 rounded-lg text-xs sm:text-sm font-medium transition-colors ${
                       selectedCategory === category.id
                         ? "bg-primary text-primary-foreground"
