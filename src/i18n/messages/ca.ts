@@ -6,7 +6,7 @@ export const ca: Messages = {
     installOnShopify: "Instal·la'l a Shopify",
     installOnYourStore: "Instal·la'l a la teva botiga",
     installBizmisOnShopify: "Instal·la Bizmis a Shopify",
-    liveDemo: "Demo en directe",
+    liveDemo: "Demo",
     bookACall: "Reserva una trucada",
     getStarted: "Comença",
     contactSupport: "Contacta amb suport",
@@ -41,7 +41,7 @@ export const ca: Messages = {
     subtitleTrust: "confiar-hi",
     subtitleBuy: "comprar-ho",
     subtitleConnector: " i a",
-    pitchLead: "Això no és un chatbot.",
+    pitchLead: "Això no és un xatbot.",
     pitchShort:
       "Els clients marxen quan no troben el producte adequat o dubten abans de comprar, just els moments que un dependent resoldria a la botiga. Bizmis porta aquesta ajuda al teu web, amb veu, acotant el catàleg al producte correcte i resolent dubtes perquè comprin amb confiança.",
     pitchLong:
@@ -492,7 +492,7 @@ export const ca: Messages = {
           "Bizmis és un dependent amb IA i veu per a Shopify. Saluda els compradors, respon preguntes sobre productes, comandes, devolucions i polítiques, i els guia fins al checkout, igual que faria un bon dependent a la botiga. Funciona 24/7 dins la teva botiga com un petit widget de veu.",
       },
       "is-chatbot": {
-        question: "Bizmis és un chatbot?",
+        question: "Bizmis és un xatbot?",
         answer:
           "No. Bizmis funciona per veu, no per text. El comprador parla, Bizmis respon i la conversa flueix com un intercanvi real amb un dependent, no com un arbre de xat amb guió. El widget mostra la transcripció perquè es pugui llegir el que s'ha dit, però la interacció principal és la veu.",
       },

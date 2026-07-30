@@ -14,7 +14,8 @@ import {
 } from "@/lib/bizmisUrls";
 import Logo from "./Logo";
 import LanguageSwitcher from "./LanguageSwitcher";
-import { useLocaleHref, useMessages } from "@/i18n/LocaleProvider";
+import { useLocale, useLocaleHref, useMessages } from "@/i18n/LocaleProvider";
+import { COMPACT_DESKTOP_NAV_LOCALES } from "@/i18n/locales";
 
 const HERO_SCROLL_OFFSET_PX = 100;
 
@@ -25,6 +26,7 @@ const Navbar = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const posthog = usePostHog();
+  const locale = useLocale();
   const localeHref = useLocaleHref();
   const messages = useMessages();
 
@@ -76,6 +78,17 @@ const Navbar = () => {
     { label: messages.nav.pricing, href: "/pricing" },
     { label: messages.nav.faqs, href: "/faqs" },
   ] as const;
+
+  // Translated labels run longer than English and overflow the centered
+  // desktop nav into the language switcher / CTA cluster, so those locales
+  // drop the two jump links here. The mobile drawer keeps every item —
+  // it's a vertical list, so there's no overlap to avoid.
+  const isCompactDesktopNav = COMPACT_DESKTOP_NAV_LOCALES.includes(locale);
+  const desktopNavItems = isCompactDesktopNav
+    ? navItems.filter(
+        (item) => item.href !== "#benefits" && item.href !== "#setup"
+      )
+    : navItems;
 
   const isActiveRoute = (href: string) =>
     !href.startsWith("#") && location.pathname === localeHref(href);
@@ -164,7 +177,7 @@ const Navbar = () => {
             {/* Desktop Navigation — viewport-centered regardless of CTA width */}
             <div className="pointer-events-none absolute inset-x-0 hidden md:flex items-center justify-center">
               <div className="pointer-events-auto flex items-center space-x-8">
-                {navItems.map((item) => (
+                {desktopNavItems.map((item) => (
                   <button
                     key={item.label}
                     onClick={() => handleNavigation(item.href)}

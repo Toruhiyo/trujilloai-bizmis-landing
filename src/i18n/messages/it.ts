@@ -6,7 +6,7 @@ export const it: Messages = {
     installOnShopify: "Installa su Shopify",
     installOnYourStore: "Installa nel tuo negozio",
     installBizmisOnShopify: "Installa Bizmis su Shopify",
-    liveDemo: "Demo dal vivo",
+    liveDemo: "Demo",
     bookACall: "Prenota una call",
     getStarted: "Inizia",
     contactSupport: "Contatta il supporto",

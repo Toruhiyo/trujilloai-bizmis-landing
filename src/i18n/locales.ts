@@ -35,6 +35,18 @@ export const LOCALE_TAGS: Record<Locale, string> = {
 export const isLocale = (value: string | undefined): value is Locale =>
   value !== undefined && (LOCALES as readonly string[]).includes(value);
 
+/**
+ * Locales whose translated nav labels run long enough to overlap the
+ * language switcher / CTA cluster in the centered desktop navbar. These
+ * locales drop the "Benefits" and "Setup" jump links from the desktop nav.
+ */
+export const COMPACT_DESKTOP_NAV_LOCALES: readonly Locale[] = [
+  "es",
+  "fr",
+  "it",
+  "ca",
+];
+
 /** Best supported locale for a browser language list, default when none match. */
 export const matchLocale = (preferred: readonly string[]): Locale => {
   for (const language of preferred) {
