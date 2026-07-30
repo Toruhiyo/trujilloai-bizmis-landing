@@ -8,13 +8,7 @@ import {
   supportFailedRequestSessionReplayData,
   SessionReplayData,
 } from "../data/session-replays";
-
-const TAB_TOOLTIPS: Record<string, string> = {
-  sale: "Anonymous user sale session — gift search leading to purchase",
-  "sale-loyal": "Logged-in user sale session — returning customer purchase",
-  "support-success": "Support session — policy question resolved successfully",
-  "support-failed": "Support session — request not completed",
-};
+import { useMessages } from "@/i18n/LocaleProvider";
 
 interface TabOption {
   id: string;
@@ -28,6 +22,13 @@ interface TabbedSessionReplayProps {
 const TabbedSessionReplay: React.FC<TabbedSessionReplayProps> = ({
   className = "",
 }) => {
+  const messages = useMessages();
+  const tabTooltips: Record<string, string> = {
+    sale: messages.sessionReplay.tabTooltips.sale,
+    "sale-loyal": messages.sessionReplay.tabTooltips.saleLoyal,
+    "support-success": messages.sessionReplay.tabTooltips.supportSuccess,
+    "support-failed": messages.sessionReplay.tabTooltips.supportFailed,
+  };
   const tabs: TabOption[] = [
     {
       id: "sale",
@@ -70,7 +71,7 @@ const TabbedSessionReplay: React.FC<TabbedSessionReplayProps> = ({
             <button
               key={tab.id}
               type="button"
-              title={TAB_TOOLTIPS[tab.id] ?? ""}
+              title={tabTooltips[tab.id] ?? ""}
               onClick={() => setActiveTab(tab.id)}
               className={`shrink-0 sm:shrink snap-center relative flex items-center justify-center gap-1.5 sm:gap-2 px-3 sm:px-5 py-1.5 sm:py-2.5 text-xs sm:text-sm font-medium rounded-full transition-all duration-200 ${
                 isActive

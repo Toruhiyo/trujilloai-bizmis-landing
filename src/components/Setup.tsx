@@ -16,6 +16,7 @@ import { Button } from "@/components/ui/button";
 import { BIZMIS_SHOPIFY_APP_LISTING_URL, openBizmisShopifyAppListing } from "@/lib/bizmisUrls";
 import SectionBadge from "./SectionBadge";
 import Xarrow from "react-xarrows";
+import { useMessages } from "@/i18n/LocaleProvider";
 
 // Constants for connector styling
 const CONNECTOR_ANIMATION_DURATION = 0.5;
@@ -69,40 +70,15 @@ const MAX_RERENDER_INTERVAL_MS = 4000; // 4 seconds
 const HEARTBEAT_PULSE_DURATION_MS = 2000; // 4s for slower heartbeat
 const HEARTBEAT_FADE_DURATION_MS = 600; // Duration of each heartbeat fade
 
-const shopifyDataCards = [
-  {
-    icon: FaGlobe,
-    title: "Store Website",
-    description: "Vision, mission and core values",
-  },
-  {
-    icon: FaTag,
-    title: "Products Catalog",
-    description: "Collections, inventory, purchase orders",
-  },
-  {
-    icon: FaPercent,
-    title: "Discounts",
-    description: "All current promotions",
-  },
-  {
-    icon: FaShieldAlt,
-    title: "Policies",
-    description: "Shipping, returns, and store policies",
-  },
-  {
-    icon: FaUsers,
-    title: "Customers",
-    description: "Customer sales and support records",
-  },
-  {
-    icon: FaBox,
-    title: "Orders",
-    description: "Customer order history",
-  },
-];
+const SHOPIFY_DATA_CARD_ICONS = [FaGlobe, FaTag, FaPercent, FaShieldAlt, FaUsers, FaBox];
 
 const Setup = () => {
+  const messages = useMessages();
+  const shopifyDataCards = messages.setup.dataCards.map((card, index) => ({
+    ...card,
+    icon: SHOPIFY_DATA_CARD_ICONS[index],
+  }));
+
   const handleShopifyInstallClick = (e: MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault();
     openBizmisShopifyAppListing();
@@ -248,13 +224,12 @@ const Setup = () => {
           <div className="max-w-7xl mx-auto overflow-visible">
             {/* Header */}
             <div id="setup" className="text-center mb-10 sm:mb-12 lg:mb-16">
-              <SectionBadge icon={FaShopify} text="Plug and Play" />
+              <SectionBadge icon={FaShopify} text={messages.setup.badge} />
               <h2 className="text-3xl sm:text-4xl lg:text-5xl font-heading font-bold text-foreground mb-6">
-                One-Click Setup, Instant Selling & Support
+                {messages.setup.title}
               </h2>
               <p className="text-base sm:text-lg lg:text-xl text-muted-foreground font-body max-w-3xl mx-auto px-2">
-                Install the Bizmis Shopify app and start selling and supporting
-                customers immediately.
+                {messages.setup.lead}
               </p>
             </div>
 
@@ -271,7 +246,7 @@ const Setup = () => {
                       <div className="inline-flex items-center gap-1.5 sm:gap-2 text-primary/85">
                         <FaShopify className="w-3.5 h-3.5 xs:w-4 xs:h-4 sm:w-5 sm:h-5" />
                         <span className="text-[12px] xs:text-sm sm:text-base lg:text-lg font-heading font-semibold leading-tight">
-                          Your Shopify Store Data
+                          {messages.setup.storeDataTitle}
                         </span>
                       </div>
                     </div>
@@ -431,9 +406,9 @@ const Setup = () => {
                 orphaned at the start of a wrapped line on phones. */}
             <div className="flex flex-wrap justify-center items-center gap-x-4 gap-y-2 md:gap-x-6 py-4 mb-8 opacity-60">
               {[
-                { icon: FaBolt, label: "One-click setup" },
-                { icon: FaSync, label: "Always synced" },
-                { icon: FaShoppingCart, label: "Ready in minutes" },
+                { icon: FaBolt, label: messages.setup.badges.oneClick },
+                { icon: FaSync, label: messages.setup.badges.alwaysSynced },
+                { icon: FaShoppingCart, label: messages.setup.badges.readyInMinutes },
               ].map((badge, i) => (
                 <div key={i} className="flex items-center gap-4 md:gap-6">
                   {i > 0 && (
@@ -461,11 +436,11 @@ const Setup = () => {
                   onClick={handleShopifyInstallClick}
                 >
                   <FaShopify className="h-5 w-5" />
-                  Install Bizmis on Shopify
+                  {messages.common.installBizmisOnShopify}
                 </a>
               </Button>
               <p className="text-sm text-muted-foreground mt-3 font-body opacity-60">
-                Start selling and supporting customers now.
+                {messages.setup.ctaNote}
               </p>
             </div>
           </div>

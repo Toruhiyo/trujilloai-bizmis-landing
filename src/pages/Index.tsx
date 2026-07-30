@@ -10,8 +10,11 @@ import {
   setupScrollToSectionOnLoad,
   setupScrollToUrlUpdater,
 } from "@/lib/utils/scroll";
+import { useMessages } from "@/i18n/LocaleProvider";
 
 const Index = () => {
+  const messages = useMessages();
+
   useEffect(() => {
     const sectionIds = [
       "hero",
@@ -35,15 +38,14 @@ const Index = () => {
   return (
     <div className="min-h-screen">
       <Seo
-        title="Bizmis — Voice-First Sales Clerk for Shopify"
-        description="Bizmis welcomes shoppers, answers questions, and guides them to buy — like a great in-store associate, 24/7 inside your Shopify store."
+        title={messages.seo.home.title}
+        description={messages.seo.home.description}
         path="/"
         jsonLd={{
           "@context": "https://schema.org",
           "@type": "SoftwareApplication",
           name: "Bizmis",
-          description:
-            "Voice-first store clerk for Shopify that welcomes shoppers, answers questions, and guides them to buy.",
+          description: messages.seo.home.jsonLdDescription,
           url: "https://www.bizmis.ai",
           applicationCategory: "BusinessApplication",
           operatingSystem: "Web",

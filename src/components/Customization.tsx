@@ -5,8 +5,11 @@ import { PricingPlanFeatureSoon } from "./PricingPlanFeatureSoon";
 // TEMP: voice clone demo disabled — re-enable AudioPlayer + selectedVoice state + block below.
 // import AudioPlayer from "./AudioPlayer";
 import FakeImagesSelector, { type ImageOption } from "./FakeImagesSelector";
+import { useMessages } from "@/i18n/LocaleProvider";
 
 const Customization = () => {
+  const messages = useMessages();
+
   // Clothing images for the carousel
   const clothingImages: ImageOption[] = [
     {
@@ -111,13 +114,12 @@ const Customization = () => {
         <div className="max-w-7xl mx-auto">
           {/* Header */}
           <div className="text-center mb-10 sm:mb-12 lg:mb-6">
-            <SectionBadge icon={FaPaintBrush} text="Personalization" />
+            <SectionBadge icon={FaPaintBrush} text={messages.customization.badge} />
             <h2 className="text-3xl sm:text-4xl lg:text-5xl font-heading font-bold text-foreground mb-6 lg:mb-4">
-              Make It <span className="text-primary">Truly Yours</span>
+              {messages.customization.titleLead} <span className="text-primary">{messages.customization.titleHighlight}</span>
             </h2>
             <p className="text-base sm:text-lg lg:text-xl text-muted-foreground font-body max-w-3xl mx-auto px-2">
-              Build authentic relationships that drive customer loyalty through
-              personalized voice and appearance customization.
+              {messages.customization.lead}
             </p>
           </div>
 
@@ -133,11 +135,10 @@ const Customization = () => {
                     <FaPaintBrush className="w-4 h-4 xs:w-5 xs:h-5 text-primary/60 group-hover:text-primary/90 transition-colors duration-300 flex-shrink-0 mt-0.5" />
                     <div>
                       <h3 className="text-base sm:text-lg font-heading font-semibold text-foreground">
-                        Personal Avatar
+                        {messages.customization.avatar.title}
                       </h3>
                       <p className="text-sm leading-relaxed text-muted-foreground font-body">
-                        Creating genuine connections by making your sales
-                        representative sound and look like you.
+                        {messages.customization.avatar.body}
                       </p>
                     </div>
                   </div>
@@ -151,13 +152,12 @@ const Customization = () => {
                     <div>
                       <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
                         <h3 className="text-base sm:text-lg font-heading font-semibold text-foreground">
-                          Voice Cloning
+                          {messages.customization.voiceCloning.title}
                         </h3>
                         <PricingPlanFeatureSoon className="ml-0 shrink-0" />
                       </div>
                       <p className="text-sm leading-relaxed text-muted-foreground font-body">
-                        Authentic customer interactions through replication of
-                        your unique speaking style and personality.
+                        {messages.customization.voiceCloning.body}
                       </p>
                     </div>
                   </div>
@@ -280,13 +280,13 @@ const Customization = () => {
                       blooms to the full size at lg+. */}
                   <img
                     src="/images/benefit-1-customization-1.png"
-                    alt="Personalization Hub - Voice & Appearance Customization"
+                    alt={messages.customization.imageAlt}
                     className="relative z-30 w-full max-w-[14rem] xs:max-w-[16rem] sm:max-w-[15rem] md:max-w-[18rem] lg:max-w-xs mx-auto object-contain drop-shadow-2xl transition-opacity duration-500 group-hover:opacity-0"
                   />
                   {/* Hover image */}
                   <img
                     src="/images/benefit-1-customization-2.png"
-                    alt="Personalization Hub - Voice & Appearance Customization (Active)"
+                    alt={messages.customization.imageAlt}
                     className="absolute inset-0 z-30 w-full max-w-[14rem] xs:max-w-[16rem] sm:max-w-[15rem] md:max-w-[18rem] lg:max-w-xs mx-auto object-contain drop-shadow-2xl opacity-0 transition-opacity duration-500 group-hover:opacity-100"
                   />
                 </div>

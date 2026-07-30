@@ -17,6 +17,7 @@ import MobileShopperCaptionRow from "./MobileShopperCaptionRow";
 import Waveform from "./Waveform";
 import { SHOPPER_CASES, ShopperCase } from "@/data/shopper-cases";
 import { bizmisConfettiColors } from "@/lib/colors";
+import { useMessages } from "@/i18n/LocaleProvider";
 
 /** Fire as soon as the scene begins entering the viewport (any sliver visible)
  *  instead of waiting for 30% — fast first-time scrollers were passing the
@@ -72,11 +73,7 @@ const ADD_TO_CART_PHASE_MS =
   CONFETTI_FIRE_DELAY_MS + CONFETTI_TO_RECEIPT_GAP_MS;
 const CONFETTI_Z_INDEX = 60;
 
-const STEPS = [
-  { num: 1, label: "Discover & Recommend" },
-  { num: 2, label: "Compare Products" },
-  { num: 3, label: "Seal the Deal" },
-];
+const STEP_NUMBERS = [1, 2, 3];
 
 /** Maps each mockup phase to the demo step (0-based index) it belongs to so
  *  the step rail can highlight in sync with the active stage. */
@@ -174,6 +171,11 @@ const fireBizmisConfetti = (origin: { x: number; y: number }) => {
 };
 
 const SpeakDiscoverBuy = () => {
+  const messages = useMessages();
+  const STEPS = STEP_NUMBERS.map((num, index) => ({
+    num,
+    label: messages.salesDemo.steps[index],
+  }));
   const sectionRef = useRef<HTMLDivElement>(null);
   const desktopRecommendedRef = useRef<HTMLDivElement>(null);
   const mobileRecommendedRef = useRef<HTMLDivElement>(null);
@@ -346,7 +348,9 @@ const SpeakDiscoverBuy = () => {
       : `opacity ${MOBILE_STAGE_FADE_OUT_MS}ms ease`;
 
   const productLabel = (productId: string, fallback: string) =>
-    productId === currentCase.recommendedProductId ? "Recommended" : fallback;
+    productId === currentCase.recommendedProductId
+      ? messages.salesDemo.recommended
+      : fallback;
 
   const subtotal = recommendedProduct.price;
   const total = recommendedProduct.price;
@@ -467,7 +471,7 @@ const SpeakDiscoverBuy = () => {
           </div>
           <img
             src="/images/benefit-1-driven-sales-pipeline-2.png"
-            alt="Bizmis assistant"
+            alt={messages.salesDemo.assistantAlt}
             className={`relative z-10 w-full max-w-[min(32rem,calc(100vw-1rem))] xs:max-w-[min(34rem,calc(100vw-1rem))] sm:max-w-[min(38rem,calc(100vw-1rem))] aspect-square object-contain object-top drop-shadow-2xl transition-all ease-out ${
               isVisible
                 ? "opacity-100 translate-y-0"
@@ -621,7 +625,7 @@ const SpeakDiscoverBuy = () => {
                               aria-hidden
                             >
                               <FaShoppingBag className="h-2 w-2 shrink-0 xs:h-2.5 xs:w-2.5" />
-                              <span className="whitespace-nowrap">Added</span>
+                              <span className="whitespace-nowrap">{messages.salesDemo.added}</span>
                             </div>
                           )}
                         </div>
@@ -671,9 +675,9 @@ const SpeakDiscoverBuy = () => {
                   style={{
                     animation: `receipt-row-in ${RECEIPT_ROW_DURATION_MS}ms ease-out ${RECEIPT_TITLE_DELAY_MS}ms both`,
                   }}
-                  title={`Order Confirmed · ${recommendedProduct.name} · ${recommendedProduct.price}`}
+                  title={`${messages.salesDemo.orderConfirmed} · ${recommendedProduct.name} · ${recommendedProduct.price}`}
                 >
-                  {`Order Confirmed · ${recommendedProduct.name} · ${recommendedProduct.price}`}
+                  {`${messages.salesDemo.orderConfirmed} · ${recommendedProduct.name} · ${recommendedProduct.price}`}
                 </span>
               </div>
             )}
@@ -765,7 +769,7 @@ const SpeakDiscoverBuy = () => {
               />
               <img
                 src="/images/benefit-1-driven-sales-pipeline-2.png"
-                alt="Bizmis assistant"
+                alt={messages.salesDemo.assistantAlt}
                 className="relative w-[18rem] h-[18rem] sm:w-[26rem] sm:h-[26rem] md:w-[30rem] md:h-[30rem] lg:w-[34rem] lg:h-[34rem] object-contain object-top drop-shadow-2xl"
               />
             </div>
@@ -860,7 +864,7 @@ const SpeakDiscoverBuy = () => {
                               aria-hidden
                             >
                               <FaShoppingBag className="h-2.5 w-2.5 shrink-0" />
-                              <span className="whitespace-nowrap">Added</span>
+                              <span className="whitespace-nowrap">{messages.salesDemo.added}</span>
                             </div>
                           )}
                         </div>
@@ -932,7 +936,9 @@ const ReceiptCard = ({
   deliveryEstimate,
   subtotal,
   total,
-}: ReceiptCardProps) => (
+}: ReceiptCardProps) => {
+  const messages = useMessages();
+  return (
   <div
     className="bg-white/80 backdrop-blur-sm rounded-3xl border border-primary/15 shadow-lg p-4 sm:p-5 w-full text-center sm:aspect-[3/4] flex flex-col justify-center min-h-0"
     style={{
@@ -949,7 +955,7 @@ const ReceiptCard = ({
         animation: `receipt-row-in ${RECEIPT_ROW_DURATION_MS}ms ease-out ${RECEIPT_TITLE_DELAY_MS}ms both`,
       }}
     >
-      Order Confirmed
+      {messages.salesDemo.orderConfirmed}
     </h4>
     <p
       className="text-xs text-muted-foreground mb-3"
@@ -967,16 +973,16 @@ const ReceiptCard = ({
       }}
     >
       <div className="flex items-center justify-between text-[10px] mb-1.5">
-        <span className="text-muted-foreground">Subtotal</span>
+        <span className="text-muted-foreground">{messages.salesDemo.subtotal}</span>
         <span className="font-medium">{subtotal}</span>
       </div>
       <div className="flex items-center justify-between text-[10px] mb-1.5">
-        <span className="text-muted-foreground">Shipping</span>
-        <span className="font-medium text-muted-foreground">Free</span>
+        <span className="text-muted-foreground">{messages.salesDemo.shipping}</span>
+        <span className="font-medium text-muted-foreground">{messages.salesDemo.free}</span>
       </div>
       <div className="h-px bg-primary/10 my-1.5" />
       <div className="flex items-center justify-between text-xs">
-        <span className="font-semibold">Total</span>
+        <span className="font-semibold">{messages.salesDemo.total}</span>
         <span className="font-bold text-primary">{total}</span>
       </div>
     </div>
@@ -991,6 +997,7 @@ const ReceiptCard = ({
       <span>{deliveryEstimate}</span>
     </div>
   </div>
-);
+  );
+};
 
 export default SpeakDiscoverBuy;

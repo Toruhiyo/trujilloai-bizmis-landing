@@ -17,8 +17,12 @@ import SectionBadge from "./SectionBadge";
 import SpeakDiscoverBuy from "./SpeakDiscoverBuy";
 import VoiceSupportScene from "./VoiceSupportScene";
 import TabbedSessionReplay from "./TabbedSessionReplay";
+import { useMessages } from "@/i18n/LocaleProvider";
 
 const Benefits = () => {
+  const messages = useMessages();
+  const { sales, support, insights } = messages.benefits;
+
   return (
     <div className="space-y-0 bg-gradient-to-b from-background via-[#FDF7E2]/10 to-background overflow-x-clip">
       {/* Shared Background Section: Driven Sales & Customization */}
@@ -59,47 +63,24 @@ const Benefits = () => {
                 <div className="hidden lg:block absolute -left-64 top-10 text-9xl lg:text-[12rem] font-bold text-primary/20 transform -rotate-12 select-none pointer-events-none">
                   #1
                 </div>
-                <SectionBadge icon={FaShoppingCart} text="Boost Sales" />
+                <SectionBadge icon={FaShoppingCart} text={sales.badge} />
                 <h1 className="text-3xl sm:text-4xl lg:text-5xl font-heading font-bold text-foreground mb-4 sm:mb-8 relative z-10">
-                  Convert. Upsell. Retain.
+                  {sales.title}
                 </h1>
               </div>
               <p className="text-base sm:text-lg lg:text-xl text-muted-foreground font-body leading-relaxed mb-6 sm:mb-12 px-2">
                 {/* Tighter pitch on phones; full version reads at sm+. */}
-                <span className="sm:hidden">
-                  A great in-store associate that guides shoppers, lifts cart
-                  value, and brings customers back.
-                </span>
-                <span className="hidden sm:inline">
-                  Bizmis acts like a great in-store associate — guiding shoppers,
-                  increasing cart value, and creating the kind of personal, warm
-                  experience that brings customers back.
-                </span>
+                <span className="sm:hidden">{sales.leadShort}</span>
+                <span className="hidden sm:inline">{sales.leadLong}</span>
               </p>
 
               {/* Impact Pillars — flip cards on lg+, flat compact rows on mobile/tablet
                   (touch can't trigger hover, so mobile shows the full content inline). */}
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-3 sm:gap-4 lg:gap-6 max-w-5xl mx-auto mb-8 sm:mb-10">
-                {[
-                  {
-                    title: "Convert More Visitors",
-                    subtitle: "Remove Buying Hesitation",
-                    body: "Bizmis answers questions instantly and guides shoppers to the right product — so more visitors feel confident enough to buy.",
-                    watermark: "/images/benefit-1-pillar-1.png",
-                  },
-                  {
-                    title: "Increase Order Value",
-                    subtitle: "Smart Upsells & Add-Ons",
-                    body: "Smart recommendations, upgrades, and complementary products appear naturally during the conversation.",
-                    watermark: "/images/benefit-1-pillar-2.png",
-                  },
-                  {
-                    title: "Build Customer Loyalty",
-                    subtitle: "Personal Shopping Experience",
-                    body: "A warm, personal shopping experience customers remember — and come back for.",
-                    watermark: "/images/benefit-1-pillar-3.png",
-                  },
-                ].map(({ title, subtitle, body, watermark }) => (
+                {sales.pillars.map((pillar, index) => {
+                  const watermark = `/images/benefit-1-pillar-${index + 1}.png`;
+                  const { title, subtitle, body } = pillar;
+                  return (
                   <div key={title} className="group lg:[perspective:800px] lg:h-56">
                     {/* Mobile / tablet: punchy headline + tagline only (body
                         copy lives in the lg flip card so the mobile cards stay
@@ -156,7 +137,8 @@ const Benefits = () => {
                       </div>
                     </div>
                   </div>
-                ))}
+                  );
+                })}
               </div>
             </div>
 
@@ -193,7 +175,7 @@ const Benefits = () => {
           <div className="max-w-8xl mx-auto">
             {/* Header */}
             <div className="text-center mb-6 sm:mb-8 lg:mb-4">
-              <SectionBadge icon={FaComments} text="Customer Support" />
+              <SectionBadge icon={FaComments} text={support.badge} />
               <div className="relative">
                 {/* #2 watermark — desktop-only so it doesn't collide with the
                     wrapped title on phones (matches Benefit 1's #1 watermark). */}
@@ -204,23 +186,15 @@ const Benefits = () => {
                   #2
                 </div>
                 <h2 className="text-3xl sm:text-4xl lg:text-5xl font-heading font-bold text-foreground leading-tight mb-3 sm:mb-6 relative z-10 lg:mr-14">
-                  Save hours on support.
+                  {support.titleLine1}
                   <br />
-                  Earn loyal customers.
+                  {support.titleLine2}
                 </h2>
               </div>
               <p className="text-base sm:text-lg lg:text-xl text-muted-foreground font-body max-w-4xl mx-auto px-2">
                 {/* Tighter pitch on phones; full version reads at sm+. */}
-                <span className="sm:hidden">
-                  Instant, empathetic 24/7 support that feels human — lifting
-                  satisfaction and saving hours of support work.
-                </span>
-                <span className="hidden sm:inline">
-                  Emotional intelligence and instant 24/7 support improve customer
-                  satisfaction with immediate, warm, and empathetic resolutions
-                  that feel like help from a great in-store clerk, while saving
-                  valuable support time.
-                </span>
+                <span className="sm:hidden">{support.leadShort}</span>
+                <span className="hidden sm:inline">{support.leadLong}</span>
               </p>
             </div>
 
@@ -236,19 +210,19 @@ const Benefits = () => {
                 <div className="inline-flex items-center gap-1.5 rounded-full border-2 border-muted-foreground/70 bg-transparent px-3 xs:px-3.5 py-1 xs:py-1.5">
                   <FaClock className="w-3 h-3 xs:w-3.5 xs:h-3.5 text-muted-foreground shrink-0" />
                   <span className="text-[12px] xs:text-[13px] sm:text-sm font-medium text-muted-foreground">
-                    Save support hours
+                    {support.outcomes.saveHours}
                   </span>
                 </div>
                 <div className="inline-flex items-center gap-1.5 rounded-full border-2 border-muted-foreground/70 bg-transparent px-3 xs:px-3.5 py-1 xs:py-1.5">
                   <FaStar className="w-3 h-3 xs:w-3.5 xs:h-3.5 text-muted-foreground shrink-0" />
                   <span className="text-[12px] xs:text-[13px] sm:text-sm font-medium text-muted-foreground">
-                    Earn better reviews
+                    {support.outcomes.betterReviews}
                   </span>
                 </div>
                 <div className="inline-flex items-center gap-1.5 rounded-full border-2 border-muted-foreground/70 bg-transparent px-3 xs:px-3.5 py-1 xs:py-1.5">
                   <FaRedoAlt className="w-3 h-3 xs:w-3.5 xs:h-3.5 text-muted-foreground shrink-0" />
                   <span className="text-[12px] xs:text-[13px] sm:text-sm font-medium text-muted-foreground">
-                    Grow repeat sales
+                    {support.outcomes.repeatSales}
                   </span>
                 </div>
               </div>
@@ -257,24 +231,9 @@ const Benefits = () => {
                   (full body copy still appears at md+ in the same card). */}
               <div className="grid grid-cols-1 md:grid-cols-3 gap-3 sm:gap-5 w-full max-w-5xl">
                 {[
-                  {
-                    icon: FaBolt,
-                    title: "24/7 Instant Support",
-                    tagline: "No waiting, no frustration",
-                    body: "Customers get help the moment they need it — no waiting, no frustration, no bad reviews from unanswered questions.",
-                  },
-                  {
-                    icon: FaShieldAlt,
-                    title: "Store Knowledge",
-                    tagline: "Policy, product, and docs answered instantly",
-                    body: "Answers policy, product, and documentation questions instantly, so shoppers and customers get clear guidance without waiting for your team.",
-                  },
-                  {
-                    icon: FaHeart,
-                    title: "Emotional Intelligence",
-                    tagline: "Warm, empathetic responses",
-                    body: "AI that understands customer emotions and responds with genuine care and understanding.",
-                  },
+                  { icon: FaBolt, ...support.capabilities[0] },
+                  { icon: FaShieldAlt, ...support.capabilities[1] },
+                  { icon: FaHeart, ...support.capabilities[2] },
                 ].map(({ icon: Icon, title, tagline, body }) => (
                   <div
                     key={title}
@@ -319,7 +278,7 @@ const Benefits = () => {
           <div className="max-w-7xl mx-auto">
             {/* Header */}
             <div className="text-center mb-8 sm:mb-16 lg:mb-10">
-              <SectionBadge icon={FaChartLine} text="Store Insights" />
+              <SectionBadge icon={FaChartLine} text={insights.badge} />
               <div className="relative">
                 {/* #3 watermark — desktop-only, parity with #1 / #2 watermarks. */}
                 <div
@@ -329,13 +288,11 @@ const Benefits = () => {
                   #3
                 </div>
                 <h2 className="text-3xl sm:text-4xl lg:text-5xl font-heading font-bold text-foreground leading-tight mb-3 sm:mb-6 relative z-10 lg:ml-14">
-                  Learn. Tune. Grow.
+                  {insights.title}
                 </h2>
               </div>
               <p className="text-base sm:text-lg lg:text-xl text-muted-foreground font-body max-w-3xl mx-auto px-2">
-                See where buyers hesitate, what they ask, and which paths
-                convert—so you fix less, save hours, and invest where revenue
-                grows.
+                {insights.lead}
               </p>
             </div>
 
@@ -350,27 +307,9 @@ const Benefits = () => {
                   preserved at md+. */}
               <div className="space-y-3 sm:space-y-6 lg:space-y-8 order-1 lg:order-2">
                 {[
-                  {
-                    icon: FaPlay,
-                    title: "Session Replays",
-                    tagline: "Jump straight to drop-offs",
-                    body: "Jump straight to drop-offs and hesitation points. Fix once, prevent abandoned carts, and recover at-risk sales.",
-                    rotate: "lg:rotate-1",
-                  },
-                  {
-                    icon: FaTag,
-                    title: "Auto-Tagged Chats",
-                    tagline: "One fix, fewer repeat tickets",
-                    body: "Conversations auto-group by topic and intent. Update one FAQ/policy, cut repeat tickets, and reduce support load.",
-                    rotate: "lg:-rotate-1",
-                  },
-                  {
-                    icon: FaChartBar,
-                    title: "Funnel Insights",
-                    tagline: "Spot high-ROI fixes at a glance",
-                    body: "See conversion paths, drop-offs, and product impact at a glance. Prioritize high-ROI fixes and back the winners.",
-                    rotate: "lg:rotate-2",
-                  },
+                  { icon: FaPlay, rotate: "lg:rotate-1", ...insights.features[0] },
+                  { icon: FaTag, rotate: "lg:-rotate-1", ...insights.features[1] },
+                  { icon: FaChartBar, rotate: "lg:rotate-2", ...insights.features[2] },
                 ].map(({ icon: Icon, title, tagline, body, rotate }) => (
                   <div
                     key={title}

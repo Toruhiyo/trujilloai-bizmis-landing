@@ -27,12 +27,11 @@ import {
 } from "@/lib/bizmisApi";
 import { EARLY_ACCESS_STORE_CAP } from "@/data/leads/_schema";
 import { FREE_PLAN_CREDITS_ALLOWANCE } from "@/data/leadEarlyAccessCopy";
+import { useLocaleHref, useMessages } from "@/i18n/LocaleProvider";
+import type { Messages } from "@/i18n/messages/en";
 
 const CREDITS_PER_VOICE_MINUTE = 10;
 const MONTHS_PER_YEAR = 12;
-
-const CONCURRENCY_TOOLTIP =
-  "Voice-only limit. Text concurrency is effectively unlimited.";
 
 interface PricingTier {
   monthlyStandard: number;
@@ -55,9 +54,12 @@ interface Plan {
 
 const COMING_SOON_FEATURES: string[] = [];
 
-const PLANS: Plan[] = [
+/** Copy-only fields (name/features/sessionEstimate/buttonText) come from the
+ *  locale dictionary; pricing/credits/concurrency are overlaid from the
+ *  backend catalog in `mergePlansWithBackend`. */
+const buildPlans = (messages: Messages): Plan[] => [
   {
-    name: "Starter",
+    name: messages.pricing.plans.starter.name,
     pricing: {
       monthlyStandard: 149,
       yearlyStandardMonthlyEquivalent: 119,
@@ -66,13 +68,13 @@ const PLANS: Plan[] = [
     overageRatePerCredit: 0.06,
     maxConcurrency: 20,
     sessionEstimate: "250\u2013400",
-    features: ["1 Bizmis Store Clerk", "Support: Email (48h)"],
+    features: messages.pricing.plans.starter.features,
     popular: false,
-    buttonText: "Get Started",
+    buttonText: messages.common.getStarted,
     buttonVariant: "outline",
   },
   {
-    name: "Plus",
+    name: messages.pricing.plans.plus.name,
     pricing: {
       monthlyStandard: 499,
       yearlyStandardMonthlyEquivalent: 399,
@@ -81,19 +83,14 @@ const PLANS: Plan[] = [
     overageRatePerCredit: 0.055,
     maxConcurrency: 40,
     sessionEstimate: "900\u20131,500",
-    features: [
-      "Up to 5 Bizmis Store Clerks",
-      "Session history and Replays",
-      "Avatar customization",
-      "Support: Email (24h) and Scheduled calls",
-    ],
+    features: messages.pricing.plans.plus.features,
     popular: true,
-    buttonText: "Get Started",
+    buttonText: messages.common.getStarted,
     buttonVariant: "warm",
-    everythingIn: "Starter",
+    everythingIn: messages.pricing.plans.starter.name,
   },
   {
-    name: "Pro",
+    name: messages.pricing.plans.pro.name,
     pricing: {
       monthlyStandard: 1499,
       yearlyStandardMonthlyEquivalent: 1199,
@@ -102,16 +99,11 @@ const PLANS: Plan[] = [
     overageRatePerCredit: 0.05,
     maxConcurrency: 100,
     sessionEstimate: "3,000\u20135,000",
-    features: [
-      "Lowest overage rate",
-      "Unlimited Bizmis Store Clerks",
-      "Auto-Tagged conversations",
-      "Priority support and Live onboarding",
-    ],
+    features: messages.pricing.plans.pro.features,
     popular: false,
-    buttonText: "Get Started",
+    buttonText: messages.common.getStarted,
     buttonVariant: "outline",
-    everythingIn: "Plus",
+    everythingIn: messages.pricing.plans.plus.name,
   },
 ];
 
@@ -147,11 +139,6 @@ const mergePlansWithBackend = (
     };
   });
 };
-
-const ENTERPRISE_FEATURES = [
-  "Custom credits, concurrency & pricing",
-  "Support: Dedicated CSM, 99.9%+ SLA",
-];
 
 const formatOverageRate = (rate: number): string => {
   return rate.toLocaleString("en-US", {
@@ -191,11 +178,13 @@ const CreditsLine = ({
   panelId,
   open,
   onToggle,
+  messages,
 }: {
   plan: Plan;
   panelId: string;
   open: boolean;
   onToggle: () => void;
+  messages: Messages;
 }) => {
   return (
     <div>
@@ -213,7 +202,7 @@ const CreditsLine = ({
           {plan.includedCredits.toLocaleString()}
         </span>
         <span className="text-xs font-medium text-foreground/65 transition-colors group-hover:text-primary-foreground/85">
-          credits included
+          {messages.pricing.creditsIncluded}
         </span>
         <ChevronDown
           className={cn(
@@ -225,7 +214,7 @@ const CreditsLine = ({
       <div
         id={panelId}
         role="region"
-        aria-label={`Estimated shopper sessions for ${plan.name}`}
+        aria-label={messages.pricing.sessionEstimatesAria(plan.name)}
         className={cn(
           "grid transition-[grid-template-rows] duration-200 ease-out",
           open ? "grid-rows-[1fr]" : "grid-rows-[0fr]",
@@ -237,7 +226,7 @@ const CreditsLine = ({
               ~{plan.sessionEstimate}
             </span>
             <span className="text-xs text-foreground/55 transition-colors group-hover:text-primary-foreground/70">
-              shopper sessions/mo{" "}
+              {messages.pricing.shopperSessionsPerMonth}{" "}
               <PricingFootnoteStar className="text-[0.6rem] transition-colors group-hover:text-primary-foreground" />
             </span>
           </div>
@@ -318,22 +307,25 @@ const PricingCardHeroBackdrop = ({ noiseId }: { noiseId: string }) => (
 const normalizeCouponInput = (value: string): string =>
   value.trim().toUpperCase();
 
-const couponErrorMessage = (code: CouponErrorCode | string): string => {
+const couponErrorMessage = (
+  code: CouponErrorCode | string,
+  errors: Messages["pricing"]["coupon"]["errors"],
+): string => {
   switch (code) {
     case "COUPON_NOT_FOUND":
-      return "That code isn\u2019t valid.";
+      return errors.notFound;
     case "COUPON_EXPIRED":
-      return "That code has expired.";
+      return errors.expired;
     case "COUPON_NOT_YET_ACTIVE":
-      return "That code isn\u2019t active yet.";
+      return errors.notYetActive;
     case "COUPON_INVALID_FORMAT":
-      return "Code format looks off \u2014 check for typos.";
+      return errors.invalidFormat;
     case "COUPON_ALREADY_CLAIMED_BY_ANOTHER_STORE":
-      return "That code has already been claimed.";
+      return errors.alreadyClaimed;
     case "COUPON_INVALID_ACCESS_TOKEN":
-      return "Session expired. Please try again.";
+      return errors.invalidToken;
     default:
-      return "Couldn\u2019t verify the code right now. Please try again.";
+      return errors.generic;
   }
 };
 
@@ -399,6 +391,8 @@ const fireEarlyAccessConfetti = (
 
 const Pricing = () => {
   const navigate = useNavigate();
+  const href = useLocaleHref();
+  const messages = useMessages();
   const posthog = usePostHog();
   const [isYearly, setIsYearly] = useState(true);
   const [appliedCoupon, setAppliedCoupon] = useState<CouponDTO | null>(null);
@@ -429,8 +423,8 @@ const Pricing = () => {
   }, []);
 
   const plans = useMemo(
-    () => mergePlansWithBackend(PLANS, backendPlans),
-    [backendPlans],
+    () => mergePlansWithBackend(buildPlans(messages), backendPlans),
+    [backendPlans, messages],
   );
 
   const showEarlyAccess = appliedCoupon !== null;
@@ -454,7 +448,11 @@ const Pricing = () => {
       early_access_enabled: showEarlyAccess,
       coupon_code: appliedCoupon?.code ?? null,
     });
-    navigate("/contact?subject=Enterprise%20Plan%20Inquiry");
+    navigate(
+      `${href("/contact")}?subject=${encodeURIComponent(
+        messages.pricing.enterpriseInquirySubject,
+      )}`,
+    );
   };
 
   const handleBillingToggle = (yearly: boolean) => {
@@ -481,7 +479,7 @@ const Pricing = () => {
 
     const entered = normalizeCouponInput(couponValue);
     if (!entered) {
-      setCouponError("Enter a code first.");
+      setCouponError(messages.pricing.coupon.errors.empty);
       return;
     }
 
@@ -501,7 +499,9 @@ const Pricing = () => {
     } catch (error) {
       const errorCode =
         error instanceof CouponApiError ? error.code : "NETWORK_ERROR";
-      setCouponError(couponErrorMessage(errorCode));
+      setCouponError(
+        couponErrorMessage(errorCode, messages.pricing.coupon.errors),
+      );
       posthog.capture("pricing_coupon_apply_failed", {
         coupon: entered,
         error_code: errorCode,
@@ -570,14 +570,13 @@ const Pricing = () => {
       <div className="container relative z-10 mx-auto px-4 lg:px-6">
         <div className="mb-8 text-center sm:mb-12">
           <div className="mb-4 flex justify-center sm:mb-6">
-            <SectionBadge icon={FaTag} text="Pricing" />
+            <SectionBadge icon={FaTag} text={messages.pricing.badge} />
           </div>
           <h2 className="mb-4 font-heading text-3xl font-bold leading-tight text-foreground sm:mb-6 sm:text-4xl sm:leading-tight lg:text-5xl xl:text-6xl">
-            Simple, Transparent Pricing
+            {messages.pricing.title}
           </h2>
           <p className="mx-auto mb-6 max-w-3xl px-2 font-body text-base leading-relaxed text-muted-foreground sm:mb-8 sm:text-lg lg:text-xl">
-            Choose the plan that fits your business. All plans include full
-            Shopify integration.
+            {messages.pricing.lead}
           </p>
 
           {/* Billing period only */}
@@ -588,7 +587,7 @@ const Pricing = () => {
                   !isYearly ? "text-foreground" : "text-muted-foreground"
                 }`}
               >
-                Monthly
+                {messages.pricing.monthly}
               </span>
               <button
                 type="button"
@@ -610,7 +609,7 @@ const Pricing = () => {
                   isYearly ? "text-foreground" : "text-muted-foreground"
                 }`}
               >
-                Yearly
+                {messages.pricing.yearly}
               </span>
             </div>
           </div>
@@ -622,27 +621,22 @@ const Pricing = () => {
             <div className="flex flex-col gap-1.5 sm:max-w-2xl">
               <div className="flex items-baseline gap-2.5">
                 <h3 className="font-heading text-xl font-bold text-foreground lg:text-2xl">
-                  Free
+                  {messages.pricing.free.name}
                 </h3>
                 <span className="font-heading text-2xl font-bold tabular-nums text-foreground lg:text-3xl">
                   $0
                 </span>
                 <span className="rounded-full border border-primary/30 bg-primary/10 px-2.5 py-0.5 font-heading text-[0.65rem] font-semibold uppercase tracking-wide text-primary-dark">
-                  No commitment
+                  {messages.pricing.free.noCommitment}
                 </span>
               </div>
               <p className="font-body text-sm leading-relaxed text-foreground/80">
-                Run Bizmis live in your store up to a one-time{" "}
-                <span className="font-semibold text-foreground">
-                  {FREE_PLAN_CREDITS_ALLOWANCE.toLocaleString()} credits
-                </span>{" "}
-                (~
-                {(
-                  FREE_PLAN_CREDITS_ALLOWANCE / CREDITS_PER_VOICE_MINUTE
-                ).toLocaleString()}{" "}
-                voice minutes or ~
-                {FREE_PLAN_CREDITS_ALLOWANCE.toLocaleString()} text messages).
-                Nothing renews — upgrade for ongoing monthly capacity.
+                {messages.pricing.free.description(
+                  FREE_PLAN_CREDITS_ALLOWANCE.toLocaleString(),
+                  (
+                    FREE_PLAN_CREDITS_ALLOWANCE / CREDITS_PER_VOICE_MINUTE
+                  ).toLocaleString(),
+                )}
               </p>
             </div>
             <div className="shrink-0">
@@ -652,7 +646,7 @@ const Pricing = () => {
                 onClick={() => handlePlanClick("Free")}
                 className="group/free w-full border border-primary/40 bg-primary/5 font-semibold text-primary-dark shadow-sm transition-all duration-300 hover:border-primary hover:bg-primary/10 sm:w-auto"
               >
-                <span>Start free</span>
+                <span>{messages.pricing.free.cta}</span>
                 <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover/free:translate-x-1" />
               </Button>
             </div>
@@ -681,7 +675,7 @@ const Pricing = () => {
                 {plan.popular && (
                   <div className="absolute -top-4 left-1/2 z-30 flex w-full -translate-x-1/2 transform justify-center">
                     <div className="whitespace-nowrap rounded-full border-2 border-primary bg-background/25 px-4 py-1.5 font-heading text-sm font-semibold text-primary backdrop-blur-md transition-colors group-hover:border-primary-foreground/85 group-hover:text-primary-foreground group-hover:bg-primary-light/85">
-                      Popular
+                      {messages.pricing.popular}
                     </div>
                   </div>
                 )}
@@ -707,8 +701,8 @@ const Pricing = () => {
                       className="pointer-events-none absolute right-2 top-2 z-20 flex h-14 w-14 items-center justify-center text-center sm:right-3 sm:top-3 sm:h-16 sm:w-16"
                       title={
                         !isYearly && showEarlyAccess
-                          ? "Discounted intro period"
-                          : `${discountPercent}% off vs. list price`
+                          ? messages.pricing.introPeriodTitle
+                          : messages.pricing.discountTitle(discountPercent)
                       }
                     >
                       <BadgeIcon
@@ -721,7 +715,7 @@ const Pricing = () => {
                           {discountPercent}%
                         </span>
                         <span className="-mt-0.5 font-heading text-[0.6rem] font-bold uppercase leading-none tracking-wide text-primary-foreground/90 sm:-mt-1 sm:text-[0.65rem]">
-                          off
+                          {messages.pricing.off}
                         </span>
                       </div>
                     </div>
@@ -747,7 +741,7 @@ const Pricing = () => {
                             ${formatExactPrice(displayPrice)}
                           </span>
                           <span className="font-body text-sm text-foreground/70 transition-colors group-hover:text-primary-foreground/80">
-                            /mo
+                            {messages.pricing.perMonth}
                           </span>
                         </div>
 
@@ -755,7 +749,7 @@ const Pricing = () => {
                         {isYearly && (
                           <p className="flex justify-center pt-0.5">
                             <span className="font-heading text-[0.625rem] font-semibold uppercase leading-none tracking-widest text-muted-foreground/55 transition-colors group-hover:text-primary-foreground/75">
-                              billed yearly
+                              {messages.pricing.billedYearly}
                             </span>
                           </p>
                         )}
@@ -765,9 +759,10 @@ const Pricing = () => {
                           earlyAccessIntroMonths > 0 && (
                             <p className="flex items-center justify-center gap-1 text-sm text-foreground/70 transition-colors group-hover:text-primary-foreground/85">
                               <Clock className="h-3.5 w-3.5" />
-                              first {earlyAccessIntroMonths} month
-                              {earlyAccessIntroMonths === 1 ? "" : "s"}, then $
-                              {formatPrice(plan.pricing.monthlyStandard)}/mo
+                              {messages.pricing.introMonths(
+                                earlyAccessIntroMonths,
+                                formatPrice(plan.pricing.monthlyStandard),
+                              )}
                             </p>
                           )}
                       </div>
@@ -781,13 +776,15 @@ const Pricing = () => {
                         onToggle={() =>
                           setSessionEstimatesExpanded((v) => !v)
                         }
+                        messages={messages}
                       />
                       <div className="flex flex-wrap items-baseline gap-x-2 gap-y-0.5 pt-0.5">
                         <span className="font-heading text-base font-bold tabular-nums text-foreground/80 transition-colors group-hover:text-primary-foreground sm:text-lg">
-                          ${formatOverageRate(plan.overageRatePerCredit)}/credit
+                          ${formatOverageRate(plan.overageRatePerCredit)}
+                          {messages.pricing.perCredit}
                         </span>
                         <span className="text-xs font-medium leading-snug text-foreground/65 transition-colors group-hover:text-primary-foreground/85">
-                          beyond included
+                          {messages.pricing.beyondIncluded}
                         </span>
                       </div>
                       <div className="flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
@@ -796,14 +793,14 @@ const Pricing = () => {
                         </span>
                         <span className="inline-flex items-center gap-1">
                           <span className="text-xs font-medium text-foreground/65 transition-colors group-hover:text-primary-foreground/85">
-                            concurrent voice conversations
+                            {messages.pricing.concurrentConversations}
                           </span>
                           <Tooltip delayDuration={150}>
                             <TooltipTrigger asChild>
                               <button
                                 type="button"
                                 className="inline-flex shrink-0 rounded-full text-primary/60 transition-colors hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring group-hover:text-primary-foreground/50 group-hover:hover:text-primary-foreground/80"
-                                aria-label={CONCURRENCY_TOOLTIP}
+                                aria-label={messages.pricing.concurrencyTooltip}
                               >
                                 <Info className="h-3.5 w-3.5" strokeWidth={2.5} />
                               </button>
@@ -814,7 +811,7 @@ const Pricing = () => {
                             >
                               <span className="flex items-start gap-2">
                                 <Info className="mt-0.5 h-3.5 w-3.5 shrink-0 text-primary" />
-                                {CONCURRENCY_TOOLTIP}
+                                {messages.pricing.concurrencyTooltip}
                               </span>
                             </TooltipContent>
                           </Tooltip>
@@ -866,27 +863,26 @@ const Pricing = () => {
             <div className="relative z-10 flex flex-1 flex-col">
               <div className="mb-4 pt-2 text-center sm:mb-6">
                 <h3 className="mb-2 font-heading text-xl font-bold sm:mb-3 lg:text-2xl">
-                  Enterprise
+                  {messages.pricing.enterprise.name}
                 </h3>
                 <div className="mb-2 sm:mb-3">
                   <div className="flex items-baseline justify-center gap-1">
                     <span className="font-heading text-3xl font-bold lg:text-4xl">
-                      Custom
+                      {messages.pricing.enterprise.price}
                     </span>
                   </div>
                 </div>
                 <p className="text-sm text-primary-foreground/75 transition-colors group-hover:text-primary-foreground/90">
-                  Tailored solutions for large-scale operations with custom
-                  volume and requirements.
+                  {messages.pricing.enterprise.description}
                 </p>
               </div>
 
               <div className="mb-6 flex-grow sm:mb-8">
                 <p className="mb-3 text-sm font-medium text-primary-foreground/75 transition-colors group-hover:text-primary-foreground/90">
-                  Everything in Pro plus:
+                  {messages.pricing.enterprise.everythingInPro}
                 </p>
                 <ul className="space-y-2.5 sm:space-y-3">
-                  {ENTERPRISE_FEATURES.map((feature, idx) => (
+                  {messages.pricing.enterprise.features.map((feature, idx) => (
                     <li key={idx} className="flex items-start gap-3">
                       <div className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-primary-foreground/10 transition-colors group-hover:bg-primary-foreground/20">
                         <Check className="h-3 w-3 text-primary-foreground" />
@@ -909,7 +905,7 @@ const Pricing = () => {
                   onClick={handleContactSales}
                   className="group/ent w-full border border-primary-foreground/20 bg-[hsl(25_22%_9%)] text-primary-foreground shadow-sm transition-all duration-300 hover:border-primary-foreground/45 hover:bg-[hsl(25_22%_12%)] hover:text-primary-foreground hover:shadow-md group-hover:border-primary-foreground/45 group-hover:bg-[hsl(25_22%_12%)] group-hover:text-primary-foreground"
                 >
-                  <span>Contact Sales</span>
+                  <span>{messages.common.contactSales}</span>
                   <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover/ent:translate-x-1" />
                 </Button>
               </div>
@@ -921,15 +917,15 @@ const Pricing = () => {
         <div className="mx-auto mt-6 flex max-w-7xl flex-wrap items-center justify-center gap-3 sm:mt-8 sm:gap-4">
           <span className="inline-flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-full border border-primary/25 bg-primary/15 px-3 py-1.5 text-xs font-heading font-medium text-primary-dark backdrop-blur-md sm:text-sm">
             <Phone className="h-3.5 w-3.5 shrink-0 text-primary-dark sm:h-4 sm:w-4" />
-            1 voice minute = 10 credits
+            {messages.pricing.conversions.voice}
           </span>
           <span className="inline-flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-full border border-primary/25 bg-primary/15 px-3 py-1.5 text-xs font-heading font-medium text-primary-dark backdrop-blur-md sm:text-sm">
             <MessageSquareText className="h-3.5 w-3.5 shrink-0 text-primary-dark sm:h-4 sm:w-4" />
-            1 text message = 1 credit
+            {messages.pricing.conversions.text}
           </span>
         </div>
         <p className="mt-2.5 text-center text-xs italic text-muted-foreground">
-          <PricingFootnoteStar className="text-[0.55rem]" /> Session estimates vary by voice/text mix and session length.
+          <PricingFootnoteStar className="text-[0.55rem]" /> {messages.pricing.sessionFootnote}
         </p>
 
         {/* Upgrade Credit Note - Only when Monthly + Early Access ON */}
@@ -938,23 +934,23 @@ const Pricing = () => {
             <div className="rounded-xl border border-primary/20 bg-accent/35 px-6 py-4">
               <p className="text-sm text-foreground">
                 <span className="font-medium">
-                  Upgrade to yearly within 90 days
+                  {messages.pricing.upgradeNote.highlight}
                 </span>{" "}
-                and we'll credit what you already paid toward your yearly plan
-                (commitment charges only).{" "}
+                {messages.pricing.upgradeNote.body}{" "}
                 <button
                   onClick={() =>
                     setShowUpgradeCreditDetails(!showUpgradeCreditDetails)
                   }
                   className="text-primary underline underline-offset-2 hover:text-foreground transition-colors"
                 >
-                  {showUpgradeCreditDetails ? "Hide details" : "Learn more"}
+                  {showUpgradeCreditDetails
+                    ? messages.pricing.upgradeNote.hideDetails
+                    : messages.pricing.upgradeNote.learnMore}
                 </button>
               </p>
               {showUpgradeCreditDetails && (
                 <p className="text-xs text-muted-foreground mt-2 pt-2 border-t border-primary/20">
-                  Credit applies to commitment charges only. On-demand usage
-                  charges (overage credits) are excluded from the credit.
+                  {messages.pricing.upgradeNote.details}
                 </p>
               )}
             </div>
@@ -966,15 +962,15 @@ const Pricing = () => {
           <div className="mb-8 flex flex-wrap items-center justify-center gap-x-4 gap-y-2 text-sm text-foreground/75 sm:mb-10 sm:gap-x-6 sm:gap-y-3 lg:gap-x-8">
             <div className="flex items-center gap-2">
               <Check className="h-4 w-4 text-primary" />
-              <span>You choose your spend limit</span>
+              <span>{messages.pricing.guarantees.spendLimit}</span>
             </div>
             <div className="flex items-center gap-2">
               <Check className="h-4 w-4 text-primary" />
-              <span>Cancel anytime</span>
+              <span>{messages.pricing.guarantees.cancelAnytime}</span>
             </div>
             <div className="flex items-center gap-2">
               <Check className="h-4 w-4 text-primary" />
-              <span>30-day money-back guarantee (yearly plans)</span>
+              <span>{messages.pricing.guarantees.moneyBack}</span>
             </div>
           </div>
         </div>
@@ -983,8 +979,7 @@ const Pricing = () => {
         <div className="mx-auto mb-10 max-w-xl px-2">
           {!showEarlyAccess ? (
             <p className="mb-4 text-center text-sm text-muted-foreground">
-              Have a discount code? Enter it and press Enter or Apply to update
-              the prices above.
+              {messages.pricing.coupon.prompt}
             </p>
           ) : null}
           <div className="flex flex-col gap-3 sm:flex-row sm:items-stretch">
@@ -1007,10 +1002,10 @@ const Pricing = () => {
               }}
               disabled={showEarlyAccess || isApplyingCoupon}
               className="h-12 font-mono text-sm uppercase tracking-wide sm:min-w-0 sm:flex-1"
-              placeholder="Discount code"
+              placeholder={messages.pricing.coupon.placeholder}
               autoComplete="off"
               spellCheck={false}
-              aria-label="Discount coupon code"
+              aria-label={messages.pricing.coupon.inputAria}
             />
             {showEarlyAccess ? (
               <Button
@@ -1019,7 +1014,7 @@ const Pricing = () => {
                 className="shrink-0 border-primary/40 font-semibold text-primary-dark sm:min-w-[8.5rem]"
                 onClick={removeAppliedCoupon}
               >
-                Remove coupon
+                {messages.pricing.coupon.remove}
               </Button>
             ) : (
               <Button
@@ -1029,7 +1024,9 @@ const Pricing = () => {
                 onClick={() => void tryApplyEarlyAccessCoupon()}
                 disabled={isApplyingCoupon}
               >
-                {isApplyingCoupon ? "Applying\u2026" : "Apply"}
+                {isApplyingCoupon
+                  ? messages.pricing.coupon.applying
+                  : messages.pricing.coupon.apply}
               </Button>
             )}
           </div>
@@ -1046,30 +1043,31 @@ const Pricing = () => {
             <div className="relative mt-8 rounded-2xl border border-primary/25 bg-accent/35 px-5 py-6 shadow-sm sm:px-6 sm:py-7">
               <div className="absolute -top-3 left-1/2 -translate-x-1/2">
                 <span className="rounded-full bg-primary px-3 py-1 text-xs font-bold uppercase tracking-wider text-primary-foreground shadow-md">
-                  {appliedCoupon.summary.label} active
+                  {messages.pricing.coupon.active(appliedCoupon.summary.label)}
                 </span>
               </div>
               <p className="mt-2 text-center text-foreground">
                 <span className="font-semibold">
-                  You&apos;re viewing {appliedCoupon.summary.label} pricing --
-                  reserved for our first {EARLY_ACCESS_STORE_CAP} merchants only.
+                  {messages.pricing.coupon.viewingPricing(
+                    appliedCoupon.summary.label,
+                    EARLY_ACCESS_STORE_CAP,
+                  )}
                 </span>{" "}
                 <span className="text-foreground/85">
-                  Help shape the product with your feedback on the roadmap. Your
-                  plan prices above include{" "}
+                  {messages.pricing.coupon.shapeProduct}{" "}
                   <span className="font-semibold text-foreground">
-                    {appliedCoupon.summary.monthly_discount_percent}% off
-                    {earlyAccessIntroMonths > 0
-                      ? ` your first ${earlyAccessIntroMonths} month${
-                          earlyAccessIntroMonths === 1 ? "" : "s"
-                        }`
-                      : ""}
+                    {messages.pricing.coupon.monthlyDiscount(
+                      appliedCoupon.summary.monthly_discount_percent,
+                      earlyAccessIntroMonths,
+                    )}
                   </span>{" "}
-                  on monthly billing, or{" "}
+                  {messages.pricing.coupon.onMonthlyBilling}{" "}
                   <span className="font-semibold text-foreground">
-                    {appliedCoupon.summary.yearly_discount_percent}% off yearly
+                    {messages.pricing.coupon.yearlyDiscount(
+                      appliedCoupon.summary.yearly_discount_percent,
+                    )}
                   </span>{" "}
-                  when yearly is selected.
+                  {messages.pricing.coupon.whenYearlySelected}
                 </span>
               </p>
             </div>
@@ -1078,10 +1076,10 @@ const Pricing = () => {
 
         <div className="mt-2 text-center">
           <a
-            href="/faqs#pricing-billing"
+            href={`${href("/faqs")}#pricing-billing`}
             className="inline-flex items-center gap-1 text-sm font-medium text-primary transition-colors hover:text-primary-dark"
           >
-            View all frequently asked questions{" "}
+            {messages.pricing.viewAllFaqs}{" "}
             <ArrowRight className="h-4 w-4" />
           </a>
         </div>

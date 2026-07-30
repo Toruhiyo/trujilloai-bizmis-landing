@@ -1,9 +1,11 @@
 import { useLocation } from "react-router-dom";
 import { useEffect } from "react";
 import PublicPageLayout from "@/components/PublicPageLayout";
+import { useMessages } from "@/i18n/LocaleProvider";
 
 const NotFound = () => {
   const location = useLocation();
+  const messages = useMessages();
 
   useEffect(() => {
     console.error(
@@ -16,10 +18,12 @@ const NotFound = () => {
     <PublicPageLayout className="bg-gray-100">
       <div className="flex flex-1 items-center justify-center px-6 py-20">
         <div className="text-center">
-          <h1 className="text-4xl font-bold mb-4">404</h1>
-          <p className="text-xl text-gray-600 mb-4">Oops! Page not found</p>
+          <h1 className="text-4xl font-bold mb-4">{messages.notFound.title}</h1>
+          <p className="text-xl text-gray-600 mb-4">
+            {messages.notFound.message}
+          </p>
           <a href="/" className="text-primary hover:underline font-medium">
-            Return to Home
+            {messages.notFound.backHome}
           </a>
         </div>
       </div>

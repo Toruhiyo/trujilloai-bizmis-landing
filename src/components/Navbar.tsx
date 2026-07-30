@@ -13,6 +13,8 @@ import {
   openBizmisShopifyAppListing,
 } from "@/lib/bizmisUrls";
 import Logo from "./Logo";
+import LanguageSwitcher from "./LanguageSwitcher";
+import { useLocaleHref, useMessages } from "@/i18n/LocaleProvider";
 
 const HERO_SCROLL_OFFSET_PX = 100;
 
@@ -23,6 +25,8 @@ const Navbar = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const posthog = usePostHog();
+  const localeHref = useLocaleHref();
+  const messages = useMessages();
 
   useEffect(() => {
     setIsMenuOpen(false);
@@ -66,15 +70,15 @@ const Navbar = () => {
   }, [location.pathname]);
 
   const navItems = [
-    { label: "Early Access", href: "/early-access" },
-    { label: "Benefits", href: "#benefits" },
-    { label: "Setup", href: "#setup" },
-    { label: "Pricing", href: "/pricing" },
-    { label: "FAQs", href: "/faqs" },
+    { label: messages.nav.earlyAccess, href: "/early-access" },
+    { label: messages.nav.benefits, href: "#benefits" },
+    { label: messages.nav.setup, href: "#setup" },
+    { label: messages.nav.pricing, href: "/pricing" },
+    { label: messages.nav.faqs, href: "/faqs" },
   ] as const;
 
   const isActiveRoute = (href: string) =>
-    !href.startsWith("#") && location.pathname === href;
+    !href.startsWith("#") && location.pathname === localeHref(href);
 
   // Fixed white bar when past #hero or when the mobile menu is open.
   const showWhiteChrome = !isInHero || isMenuOpen;
@@ -116,13 +120,13 @@ const Navbar = () => {
 
   const handleNavigation = (href: string) => {
     if (href.startsWith("#")) {
-      if (location.pathname !== "/") {
-        navigate({ pathname: "/", hash: href.slice(1) });
+      if (location.pathname !== localeHref("/")) {
+        navigate({ pathname: localeHref("/"), hash: href.slice(1) });
       } else {
         scrollToSection(href);
       }
     } else {
-      navigate(href);
+      navigate(localeHref(href));
       window.scrollTo(0, 0);
     }
     setIsMenuOpen(false);
@@ -146,8 +150,8 @@ const Navbar = () => {
                 variant={useForegroundNavChrome ? "default" : "white"}
                 showText={true}
                 onClick={() => {
-                  if (location.pathname !== "/") {
-                    navigate("/");
+                  if (location.pathname !== localeHref("/")) {
+                    navigate(localeHref("/"));
                   } else {
                     scrollToTop();
                     // Clear the URL hash to remove section paths like /#setup
@@ -186,6 +190,7 @@ const Navbar = () => {
                 Sign In
               </Button>
               */}
+              <LanguageSwitcher theme={useForegroundNavChrome ? "light" : "dark"} />
               <a
                 href={BIZMIS_DEMO_STORE_URL}
                 target="_blank"
@@ -198,7 +203,7 @@ const Navbar = () => {
                 }`}
               >
                 <PlayCircle className="h-4 w-4" aria-hidden="true" />
-                Live Demo
+                {messages.common.liveDemo}
               </a>
               <Button
                 variant={useForegroundNavChrome ? "default" : "outline"}
@@ -216,13 +221,14 @@ const Navbar = () => {
                   onClick={handleShopifyInstallNavClick}
                 >
                   <FaShopify className="h-5 w-5" />
-                  Install Now
+                  {messages.common.installNow}
                 </a>
               </Button>
             </div>
 
             {/* Mobile Menu Button */}
-            <div className="relative z-10 ml-auto md:hidden">
+            <div className="relative z-10 ml-auto flex items-center gap-2 md:hidden">
+              <LanguageSwitcher theme={useForegroundNavChrome ? "light" : "dark"} />
               <Button
                 variant="ghost"
                 size="icon"
@@ -232,7 +238,7 @@ const Navbar = () => {
                     : "text-white hover:bg-white/10"
                 }`}
                 onClick={() => setIsMenuOpen(!isMenuOpen)}
-                aria-label={isMenuOpen ? "Close menu" : "Open menu"}
+                aria-label={isMenuOpen ? messages.nav.closeMenu : messages.nav.openMenu}
                 aria-expanded={isMenuOpen}
               >
                 {isMenuOpen ? (
@@ -280,7 +286,7 @@ const Navbar = () => {
                   className="flex w-full items-center justify-center gap-2 rounded-xl px-3 py-2.5 text-sm font-medium text-foreground hover:bg-primary/10 hover:text-primary transition-colors"
                 >
                   <PlayCircle className="h-4 w-4" aria-hidden="true" />
-                  Live Demo
+                  {messages.common.liveDemo}
                 </a>
                 <Button
                   variant="default"
@@ -295,7 +301,7 @@ const Navbar = () => {
                     onClick={handleShopifyInstallNavClick}
                   >
                     <FaShopify className="h-5 w-5" />
-                    Install Now
+                    {messages.common.installNow}
                   </a>
                 </Button>
               </div>

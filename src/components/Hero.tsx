@@ -12,9 +12,12 @@ import {
   openBizmisShopifyAppListing,
 } from "@/lib/bizmisUrls";
 import Navbar from "./Navbar";
+import { useLocaleHref, useMessages } from "@/i18n/LocaleProvider";
 
 const Hero = () => {
   const posthog = usePostHog();
+  const messages = useMessages();
+  const href = useLocaleHref();
 
   const handleCustomWebsitesClick = () => {
     posthog.capture("cta_clicked", {
@@ -100,7 +103,7 @@ const Hero = () => {
           <div className="text-center space-y-3 sm:space-y-4">
             <div className="flex justify-center">
               <a
-                href="/early-access"
+                href={href("/early-access")}
                 onClick={handleEarlyAccessClick}
                 className="group inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/[0.06] px-3 py-1.5 text-xs text-white/80 backdrop-blur-sm transition-colors hover:border-white/25 hover:bg-white/[0.10] hover:text-white sm:text-sm"
               >
@@ -112,12 +115,12 @@ const Hero = () => {
                   <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-white/80" />
                 </span>
                 <span className="font-medium">
-                  <span className="text-white/90">Early Access</span>
+                  <span className="text-white/90">{messages.hero.badgeLabel}</span>
                   <span className="text-white/45" aria-hidden="true">
                     {" "}
                     ·{" "}
                   </span>
-                  <span className="text-white/70">First 50 stores</span>
+                  <span className="text-white/70">{messages.hero.badgeDetailShort}</span>
                 </span>
                 <ArrowRight
                   className="h-3 w-3 text-white/45 transition-transform group-hover:translate-x-0.5 group-hover:text-white/65"
@@ -128,35 +131,23 @@ const Hero = () => {
             <div className="space-y-3 sm:space-y-4">
               <div>
                 <h1 className="text-4xl xs:text-5xl sm:text-6xl font-heading font-bold text-white leading-tight">
-                  Your Store's
-                  <span className="block">Best Salesperson</span>
+                  {messages.hero.titleLine1}
+                  <span className="block">{messages.hero.titleLine2}</span>
                 </h1>
                 <p className="mt-2 text-lg xs:text-xl sm:text-2xl font-heading font-medium text-white/75">
-                  Helps Every Shopper{" "}
-                  <span className="font-semibold text-white">Find It</span>,{" "}
-                  <span className="font-semibold text-white">Trust It</span>, and{" "}
-                  <span className="font-semibold text-white">Buy It</span>
+                  {messages.hero.subtitleLead}{" "}
+                  <span className="font-semibold text-white">{messages.hero.subtitleFind}</span>,{" "}
+                  <span className="font-semibold text-white">{messages.hero.subtitleTrust}</span>{messages.hero.subtitleConnector}{" "}
+                  <span className="font-semibold text-white">{messages.hero.subtitleBuy}</span>
                 </p>
               </div>
               <p className="text-sm sm:text-base text-white/70 font-body max-w-xl mx-auto leading-relaxed">
                 <span className="font-semibold text-white/90">
-                  This isn't a chatbot.
+                  {messages.hero.pitchLead}
                 </span>{" "}
                 {/* Tighter pitch on phones; full version reads at sm+. */}
-                <span className="sm:hidden">
-                  Shoppers leave when they can't find the right product or
-                  second-guess the buy, the moments an in-store clerk would
-                  catch. Bizmis brings that help online, voice-first, narrowing
-                  your catalog to the right product and clearing doubts so they
-                  buy with confidence.
-                </span>
-                <span className="hidden sm:inline">
-                  Shoppers leave when they can't find the right product or
-                  second-guess the buy, the moments an in-store clerk would
-                  catch. Bizmis brings that help online, voice-first. It listens,
-                  narrows your catalog to the right product, and reassures away
-                  the doubts, so they buy with confidence.
-                </span>
+                <span className="sm:hidden">{messages.hero.pitchShort}</span>
+                <span className="hidden sm:inline">{messages.hero.pitchLong}</span>
               </p>
             </div>
 
@@ -178,7 +169,7 @@ const Hero = () => {
                   </div>
                   <div className="flex-1 min-w-0 text-center">
                     <div className="font-semibold text-base xs:text-lg sm:text-xl md:text-xl">
-                      Install Now
+                      {messages.common.installNow}
                     </div>
                   </div>
                   <div className="flex-shrink-0">
@@ -203,18 +194,18 @@ const Hero = () => {
                     className="!h-4 !w-4 xs:!h-5 xs:!w-5"
                     aria-hidden="true"
                   />
-                  Live Demo
+                  {messages.common.liveDemo}
                 </a>
               </Button>
 
               <div className="flex flex-col gap-1.5 items-center w-full text-white/70 text-xs text-center">
                 <span>
-                  Also available for{" "}
+                  {messages.hero.alsoAvailableFor}{" "}
                   <button
                     onClick={handleCustomWebsitesClick}
                     className="text-white/80 hover:text-white underline underline-offset-2 transition-colors"
                   >
-                    custom websites
+                    {messages.hero.customWebsites}
                   </button>
                 </span>
                 <a
@@ -224,7 +215,7 @@ const Hero = () => {
                   onClick={handleBookACallClick}
                   className="text-white/80 hover:text-white underline underline-offset-2 transition-colors"
                 >
-                  Book a call
+                  {messages.common.bookACall}
                 </a>
               </div>
             </div>
@@ -236,7 +227,7 @@ const Hero = () => {
           <div className="relative w-full h-full max-h-[50vh] flex items-center justify-center">
             <img
               src="/images/hero-avatar-1.png"
-              alt="Digital sales assistant helping customers"
+              alt={messages.hero.avatarAlt}
               className="max-w-full max-h-[-webkit-fill-available] h-auto w-auto object-contain object-center z-10"
             />
 
@@ -258,7 +249,7 @@ const Hero = () => {
             <div className="space-y-[clamp(1.5rem,3vh,2rem)] text-left">
               <div className="space-y-[clamp(1rem,2vh,1.5rem)]">
                 <a
-                  href="/early-access"
+                  href={href("/early-access")}
                   onClick={handleEarlyAccessClick}
                   className="group inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/[0.06] px-3.5 py-1.5 text-sm text-white/80 backdrop-blur-sm transition-colors hover:border-white/25 hover:bg-white/[0.10] hover:text-white"
                 >
@@ -270,13 +261,13 @@ const Hero = () => {
                     <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-white/80" />
                   </span>
                   <span className="font-medium">
-                    <span className="text-white/90">Early Access</span>
+                    <span className="text-white/90">{messages.hero.badgeLabel}</span>
                     <span className="text-white/45" aria-hidden="true">
                       {" "}
                       ·{" "}
                     </span>
                     <span className="text-white/70">
-                      Free for the first 50 Shopify stores
+                      {messages.hero.badgeDetailLong}
                     </span>
                   </span>
                   <ArrowRight
@@ -287,25 +278,21 @@ const Hero = () => {
 
                 <div>
                   <h1 className="text-[clamp(3rem,6.4vh,4.5rem)] font-heading font-bold text-white leading-[1.05]">
-                    Your Store's
-                    <span className="block">Best Salesperson</span>
+                    {messages.hero.titleLine1}
+                    <span className="block">{messages.hero.titleLine2}</span>
                   </h1>
                   <p className="mt-3 text-2xl xl:text-3xl font-heading font-medium text-white/75 whitespace-nowrap">
-                    Helps Every Shopper{" "}
-                    <span className="font-semibold text-white">Find It</span>,{" "}
-                    <span className="font-semibold text-white">Trust It</span>, and{" "}
-                    <span className="font-semibold text-white">Buy It</span>
+                    {messages.hero.subtitleLead}{" "}
+                    <span className="font-semibold text-white">{messages.hero.subtitleFind}</span>,{" "}
+                    <span className="font-semibold text-white">{messages.hero.subtitleTrust}</span>{messages.hero.subtitleConnector}{" "}
+                    <span className="font-semibold text-white">{messages.hero.subtitleBuy}</span>
                   </p>
                 </div>
                 <p className="text-base lg:text-lg text-white/70 font-body max-w-2xl leading-relaxed">
                   <span className="font-semibold text-white/90">
-                    This isn't a chatbot.
+                    {messages.hero.pitchLead}
                   </span>{" "}
-                  Shoppers leave when they can't find the right product or
-                  second-guess the buy, the moments an in-store clerk would
-                  catch. Bizmis brings that help online, voice-first. It listens,
-                  narrows your catalog to the right product, and reassures away
-                  the doubts, so they buy with confidence.
+                  {messages.hero.pitchLong}
                 </p>
               </div>
 
@@ -327,9 +314,9 @@ const Hero = () => {
                         <FaShopify className="w-9 h-9 text-primary" />
                       </div>
                       <div className="flex-1 min-w-0 text-left">
-                        <div className="font-semibold">Install Now</div>
+                        <div className="font-semibold">{messages.common.installNow}</div>
                         <div className="text-sm opacity-80">
-                          One-click install, ready in minutes
+                          {messages.hero.installSubline}
                         </div>
                       </div>
                       <div className="flex-shrink-0">
@@ -351,14 +338,14 @@ const Hero = () => {
                       onClick={handleViewDemoClick}
                     >
                       <PlayCircle className="!h-5 !w-5" aria-hidden="true" />
-                      Live Demo
+                      {messages.common.liveDemo}
                     </a>
                   </Button>
                 </div>
 
                 <div className="flex flex-wrap items-center gap-x-2 gap-y-1 w-full text-white/70 text-sm text-left">
                   <span>
-                    Rather talk it through?{" "}
+                    {messages.hero.ratherTalk}{" "}
                     <a
                       href={BIZMIS_BOOK_A_CALL_GENERAL_URL}
                       target="_blank"
@@ -366,19 +353,19 @@ const Hero = () => {
                       onClick={handleBookACallClick}
                       className="text-white/80 hover:text-white underline underline-offset-2 transition-colors"
                     >
-                      Book a call
+                      {messages.common.bookACall}
                     </a>
                   </span>
                   <span className="text-white/45" aria-hidden="true">
                     ·
                   </span>
                   <span>
-                    Also available for{" "}
+                    {messages.hero.alsoAvailableFor}{" "}
                     <button
                       onClick={handleCustomWebsitesClick}
                       className="text-white/80 hover:text-white underline underline-offset-2 transition-colors"
                     >
-                      custom websites
+                      {messages.hero.customWebsites}
                     </button>
                   </span>
                 </div>
@@ -391,7 +378,7 @@ const Hero = () => {
               <div className="relative z-10">
                 <img
                   src="/images/hero-avatar-1.png"
-                  alt="Digital sales assistant helping customers"
+                  alt={messages.hero.avatarAlt}
                   className="w-auto h-auto max-w-full max-h-[calc(100vh-10rem)] mx-auto z-10"
                 />
               </div>

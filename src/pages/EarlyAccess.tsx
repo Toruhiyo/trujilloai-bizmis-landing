@@ -24,36 +24,17 @@ import {
   openBizmisDemoStore,
   openBizmisShopifyAppListing,
 } from "@/lib/bizmisUrls";
+import { useMessages } from "@/i18n/LocaleProvider";
 
-const BENEFITS = [
-  {
-    icon: Sparkles,
-    title: "Free as a member*",
-    detail:
-      "Claim Early Access in the app and use 1,200 live credits at no cost. No subscription, no commitment.",
-  },
-  {
-    icon: Compass,
-    title: "Shape the roadmap",
-    detail:
-      "Your feedback gets priority. The questions your shoppers ask help decide the next features, fixes, and product decisions.",
-  },
-  {
-    icon: Headphones,
-    title: "Priority support",
-    detail:
-      "Get a direct line to the founder for setup questions, configuration guidance, and priority help as an Early Access member.",
-  },
-  {
-    icon: BadgePercent,
-    title: "Exclusive discounts",
-    detail:
-      "Your Early Access code unlocks discounted monthly intro pricing and discounted yearly pricing when you upgrade.",
-  },
-] as const;
+const BENEFIT_ICONS = [Sparkles, Compass, Headphones, BadgePercent];
 
 const EarlyAccess = () => {
+  const messages = useMessages();
   const posthog = usePostHog();
+  const benefits = messages.earlyAccessPage.benefits.map((benefit, index) => ({
+    ...benefit,
+    icon: BENEFIT_ICONS[index],
+  }));
 
   const handleInstallClick = (e: MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault();
@@ -86,8 +67,8 @@ const EarlyAccess = () => {
       className="bg-gradient-to-br from-[#FDF7E2] via-white to-[#FDF7E2]/40"
     >
       <Seo
-        title="Bizmis Early Access — free for the first 50 Shopify stores"
-        description="Become a Bizmis Early Access member: install free, get a direct line to the founder, shape the roadmap, and keep member discounts when you upgrade. First 50 Shopify stores only."
+        title={messages.seo.earlyAccess.title}
+        description={messages.seo.earlyAccess.description}
         path="/early-access"
       />
 
@@ -117,18 +98,17 @@ const EarlyAccess = () => {
               <div className="mx-auto max-w-3xl text-center lg:mx-0 lg:text-left">
                 <div className="inline-flex items-center gap-2 bg-primary text-white px-4 py-2 rounded-full text-sm font-bold uppercase tracking-wide mb-6 shadow-lg shadow-primary/30">
                   <Flame className="w-4 h-4" aria-hidden="true" />
-                  First {EARLY_ACCESS_STORE_CAP} stores only
+                  {messages.earlyAccessPage.badge(EARLY_ACCESS_STORE_CAP)}
                 </div>
 
                 <h1 className="text-4xl lg:text-6xl font-heading font-bold text-foreground mb-6 leading-[1.05]">
-                  Join the Early Access
-                  <br className="hidden sm:block" /> program
+                  {messages.earlyAccessPage.titleLine1}
+                  <br className="hidden sm:block" />{" "}
+                  {messages.earlyAccessPage.titleLine2}
                 </h1>
 
                 <p className="text-lg lg:text-xl text-muted-foreground mb-8 leading-relaxed">
-                  Only {EARLY_ACCESS_STORE_CAP} Shopify stores can join. Install
-                  Bizmis free while Early Access is open, and keep your member
-                  benefits when you upgrade.
+                  {messages.earlyAccessPage.lead(EARLY_ACCESS_STORE_CAP)}
                 </p>
 
                 <div className="flex flex-col items-center gap-4 lg:items-start">
@@ -144,7 +124,7 @@ const EarlyAccess = () => {
                       onClick={handleInstallClick}
                     >
                       <FaShopify className="mr-2" aria-hidden="true" />
-                      Install on your store
+                      {messages.common.installOnYourStore}
                     </a>
                   </Button>
 
@@ -157,7 +137,7 @@ const EarlyAccess = () => {
                       className="inline-flex items-center gap-1.5 text-muted-foreground hover:text-foreground transition-colors"
                     >
                       <PlayCircle className="w-4 h-4" aria-hidden="true" />
-                      See the live demo
+                      {messages.earlyAccessPage.seeLiveDemo}
                     </a>
                     <span
                       className="hidden sm:inline text-muted-foreground/40"
@@ -173,7 +153,7 @@ const EarlyAccess = () => {
                       className="inline-flex items-center gap-1.5 text-muted-foreground hover:text-foreground transition-colors"
                     >
                       <Calendar className="w-4 h-4" aria-hidden="true" />
-                      Book a 30-min call with the founder
+                      {messages.earlyAccessPage.bookFounderCall}
                     </a>
                   </div>
                 </div>
@@ -190,7 +170,7 @@ const EarlyAccess = () => {
                 />
                 <img
                   src="/images/early-access-avatar.png"
-                  alt="Bizmis Early Access invitation"
+                  alt={messages.earlyAccessPage.avatarAlt}
                   className="relative z-10 mx-auto w-full max-w-[18rem] object-contain drop-shadow-2xl lg:max-w-[22rem]"
                 />
               </div>
@@ -223,21 +203,20 @@ const EarlyAccess = () => {
               />
               <div className="mx-auto mb-10 max-w-2xl text-center lg:mb-12">
                 <span className="mb-4 inline-flex items-center rounded-full border border-primary/15 bg-white/85 px-4 py-1.5 text-[11px] font-bold uppercase tracking-[0.22em] text-primary shadow-sm shadow-primary/10 backdrop-blur-sm">
-                  Early Access benefits
+                  {messages.earlyAccessPage.benefitsBadge}
                 </span>
                 <h2
                   id="benefits-heading"
                   className="text-4xl font-heading font-extrabold leading-none tracking-[-0.025em] text-foreground lg:text-5xl"
                 >
-                  <span>You'll</span> <span>get</span>
+                  {messages.earlyAccessPage.benefitsTitle}
                 </h2>
                 <p className="mx-auto mt-4 max-w-xl text-sm leading-relaxed text-muted-foreground sm:text-base">
-                  Hover each card to see what's included with your Early Access
-                  benefits.
+                  {messages.earlyAccessPage.benefitsLead}
                 </p>
               </div>
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4 lg:gap-5">
-                {BENEFITS.map(({ icon: Icon, title, detail }) => (
+                {benefits.map(({ icon: Icon, title, detail }) => (
                   <div
                     key={title}
                     className="group lg:min-h-[21rem] lg:[perspective:1000px]"
@@ -321,7 +300,7 @@ const EarlyAccess = () => {
                 id="cta-heading"
                 className="text-2xl lg:text-3xl font-heading font-bold text-foreground text-center mb-8"
               >
-                Choose your way in
+                {messages.earlyAccessPage.ctaTitle}
               </h2>
               <div className="grid gap-5 sm:grid-cols-2 max-w-4xl mx-auto">
                 <a
@@ -346,13 +325,13 @@ const EarlyAccess = () => {
                     </div>
                     <div>
                       <p className="mb-3 text-sm font-bold uppercase tracking-[0.2em] text-white/70">
-                        Fastest path
+                        {messages.earlyAccessPage.fastestPath}
                       </p>
                       <h3 className="text-3xl font-heading font-extrabold leading-[0.95] tracking-[-0.04em] lg:text-4xl">
-                        Install on your store
+                        {messages.common.installOnYourStore}
                       </h3>
                       <p className="mt-4 max-w-sm text-sm leading-relaxed text-white/75">
-                        Claim Early Access directly from the Shopify app.
+                        {messages.earlyAccessPage.installCardBody}
                       </p>
                     </div>
                   </div>
@@ -384,13 +363,13 @@ const EarlyAccess = () => {
                     </div>
                     <div>
                       <p className="mb-3 text-sm font-bold uppercase tracking-[0.2em] text-primary/70">
-                        Want help?
+                        {messages.earlyAccessPage.wantHelp}
                       </p>
                       <h3 className="text-3xl font-heading font-extrabold leading-[0.95] tracking-[-0.04em] lg:text-4xl">
-                        Book a founder call
+                        {messages.earlyAccessPage.bookCallTitle}
                       </h3>
                       <p className="mt-4 max-w-sm text-sm leading-relaxed text-muted-foreground">
-                        Get a 30-minute guided walkthrough before you install.
+                        {messages.earlyAccessPage.bookCallBody}
                       </p>
                     </div>
                   </div>
@@ -409,14 +388,14 @@ const EarlyAccess = () => {
                     onClick={handleViewDemoClick}
                   >
                     <PlayCircle className="h-4 w-4" aria-hidden="true" />
-                    See the live demo first
+                    {messages.earlyAccessPage.seeDemoFirst}
                   </a>
                 </Button>
               </div>
             </section>
 
             <p className="text-center text-sm text-muted-foreground mb-4">
-              Built founder-led. Questions?{" "}
+              {messages.earlyAccessPage.founderLed}{" "}
               <a
                 href="mailto:hello@bizmis.ai"
                 className="text-foreground font-medium hover:underline"
@@ -426,8 +405,7 @@ const EarlyAccess = () => {
             </p>
 
             <p className="text-center text-xs text-muted-foreground">
-              *Free for Early Access members = a one-time 1,200 credits of live
-              usage (~120 voice minutes), no renewal.
+              {messages.earlyAccessPage.footnote}
             </p>
           </div>
         </div>

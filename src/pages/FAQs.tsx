@@ -1,13 +1,18 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useMemo } from "react";
 import { ChevronDown, Search } from "lucide-react";
-import { faqCategories, allFAQs, type FAQ } from "@/data/faqs";
+import { buildFaqCategories, buildAllFaqs } from "@/data/faqs";
 import Footer from "@/components/Footer";
 import PublicPageLayout from "@/components/PublicPageLayout";
 import Seo from "@/components/Seo";
 import { usePostHog } from "posthog-js/react";
+import { useLocaleHref, useMessages } from "@/i18n/LocaleProvider";
 
 const FAQsPage = () => {
   const posthog = usePostHog();
+  const messages = useMessages();
+  const href = useLocaleHref();
+  const faqCategories = useMemo(() => buildFaqCategories(messages), [messages]);
+  const allFAQs = useMemo(() => buildAllFaqs(messages), [messages]);
   const [openItems, setOpenItems] = useState<string[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
@@ -48,7 +53,7 @@ const FAQsPage = () => {
     if (targetCategory) {
       setSelectedCategory(targetCategory.id);
     }
-  }, []);
+  }, [allFAQs, faqCategories]);
 
   const toggleItem = (id: string) => {
     const isOpening = !openItems.includes(id);
@@ -135,8 +140,8 @@ const FAQsPage = () => {
   return (
     <PublicPageLayout className="bg-gradient-to-b from-background via-[#FDF7E2]/30 to-background">
       <Seo
-        title="Bizmis FAQs — Setup, Pricing, Data, and Behavior"
-        description="Answers to common questions about Bizmis: how it works on Shopify, setup time, data handling, voice behavior, pricing, and more."
+        title={messages.seo.faqs.title}
+        description={messages.seo.faqs.description}
         path="/faqs"
         jsonLd={{
           "@context": "https://schema.org",
@@ -154,11 +159,10 @@ const FAQsPage = () => {
             {/* Header */}
             <div className="text-center mb-8 sm:mb-12">
               <h2 className="text-3xl sm:text-4xl lg:text-5xl font-heading font-bold leading-tight text-foreground mb-4 sm:mb-6">
-                Everything you need to know about Bizmis
+                {messages.faqsPage.title}
               </h2>
               <p className="text-base sm:text-lg lg:text-xl text-muted-foreground px-2">
-                Find answers to the most common questions about our Shopify
-                sales assistant
+                {messages.faqsPage.lead}
               </p>
             </div>
 
@@ -169,8 +173,8 @@ const FAQsPage = () => {
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-muted-foreground" />
                 <input
                   type="text"
-                  placeholder="Search FAQs..."
-                  aria-label="Search FAQs"
+                  placeholder={messages.faqsPage.searchPlaceholder}
+                  aria-label={messages.faqsPage.searchAria}
                   value={searchTerm}
                   onChange={(e) => handleSearchChange(e.target.value)}
                   className="w-full pl-10 pr-4 py-3 border border-border rounded-lg bg-background focus:ring-2 focus:ring-ring focus:border-ring outline-none transition-colors"
@@ -187,7 +191,7 @@ const FAQsPage = () => {
                       : "bg-muted text-muted-foreground hover:bg-muted/80"
                   }`}
                 >
-                  All Questions
+                  {messages.faqsPage.allQuestions}
                 </button>
                 {faqCategories.map((category) => (
                   <button
@@ -210,7 +214,7 @@ const FAQsPage = () => {
               {filteredFAQs.length === 0 ? (
                 <div className="text-center py-12">
                   <p className="text-muted-foreground text-lg">
-                    No FAQs found matching your search.
+                    {messages.faqsPage.noResults}
                   </p>
                 </div>
               ) : (
@@ -264,16 +268,16 @@ const FAQsPage = () => {
             {/* Contact CTA */}
             <div className="text-center mt-10 p-6 sm:mt-12 sm:p-8 bg-[#FDF7E2]/50 rounded-2xl border border-primary/20">
               <h3 className="text-lg sm:text-xl font-heading font-semibold text-foreground mb-2 sm:mb-3">
-                Still have questions?
+                {messages.faqsPage.stillHaveQuestions}
               </h3>
               <p className="text-sm sm:text-base text-muted-foreground mb-4 sm:mb-6">
-                Our team is here to help you get the most out of Bizmis.
+                {messages.faqsPage.teamIsHere}
               </p>
               <a
-                href="/contact"
+                href={href("/contact")}
                 className="inline-flex items-center px-5 py-2.5 sm:px-6 sm:py-3 bg-primary text-primary-foreground text-sm sm:text-base font-medium rounded-lg hover:bg-primary/90 transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
               >
-                Contact Support
+                {messages.common.contactSupport}
               </a>
             </div>
           </div>

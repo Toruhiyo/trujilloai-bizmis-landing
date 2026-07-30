@@ -1,6 +1,7 @@
 import { useState, useCallback } from "react";
 import { useSearchParams } from "react-router-dom";
 import Logo from "@/components/Logo";
+import { useMessages } from "@/i18n/LocaleProvider";
 
 type PageState = "confirm" | "loading" | "success" | "error";
 
@@ -8,13 +9,14 @@ const FOREGROUND = "#32281B";
 const MUTED_FG = "#8F7856";
 
 const Unsubscribe = () => {
+  const messages = useMessages();
   const [searchParams] = useSearchParams();
   const ref = searchParams.get("ref")?.trim().toLowerCase() ?? "";
   const sig = searchParams.get("sig")?.trim().toLowerCase() ?? "";
   const isValidLink = Boolean(ref && sig);
   const [state, setState] = useState<PageState>(isValidLink ? "confirm" : "error");
   const [errorMessage, setErrorMessage] = useState(
-    isValidLink ? "" : "This unsubscribe link is invalid. If you reached this page from an email, please contact hello@bizmis.ai.",
+    isValidLink ? "" : messages.unsubscribe.invalidLink,
   );
 
   const handleConfirm = useCallback(async () => {
@@ -29,14 +31,14 @@ const Unsubscribe = () => {
       if (data.success) {
         setState("success");
       } else {
-        setErrorMessage(data.error || "Something went wrong. Please try again.");
+        setErrorMessage(data.error || messages.unsubscribe.genericError);
         setState("error");
       }
     } catch {
-      setErrorMessage("Could not reach the server. Please try again or email hello@bizmis.ai.");
+      setErrorMessage(messages.unsubscribe.networkError);
       setState("error");
     }
-  }, [ref, sig]);
+  }, [ref, sig, messages.unsubscribe.genericError, messages.unsubscribe.networkError]);
 
   const handleRetry = useCallback(() => {
     setErrorMessage("");
@@ -62,28 +64,27 @@ const Unsubscribe = () => {
               className="text-lg font-semibold mb-3"
               style={{ color: FOREGROUND }}
             >
-              Unsubscribe from Bizmis emails?
+              {messages.unsubscribe.confirmTitle}
             </h1>
             <p
               className="text-sm mb-8 leading-relaxed"
               style={{ color: MUTED_FG }}
             >
-              You will no longer receive early access invites or other
-              outreach emails from Bizmis.
+              {messages.unsubscribe.confirmBody}
             </p>
             <button
               onClick={handleConfirm}
               className="w-full rounded-xl py-3 text-sm font-semibold transition-opacity hover:opacity-90"
               style={{ backgroundColor: FOREGROUND, color: "#ffffff" }}
             >
-              Confirm Unsubscribe
+              {messages.unsubscribe.confirmButton}
             </button>
           </>
         )}
 
         {state === "loading" && (
           <p className="text-sm py-6" style={{ color: MUTED_FG }}>
-            Processing your request...
+            {messages.unsubscribe.processing}
           </p>
         )}
 
@@ -93,14 +94,13 @@ const Unsubscribe = () => {
               className="text-lg font-semibold mb-3"
               style={{ color: FOREGROUND }}
             >
-              You've been unsubscribed
+              {messages.unsubscribe.successTitle}
             </h1>
             <p
               className="text-sm mb-8 leading-relaxed"
               style={{ color: MUTED_FG }}
             >
-              You won't receive any more emails from us. If this was a
-              mistake, just reply to any previous email or reach out at{" "}
+              {messages.unsubscribe.successBody}{" "}
               <a
                 href="mailto:hello@bizmis.ai"
                 className="underline"
@@ -119,7 +119,7 @@ const Unsubscribe = () => {
               className="text-lg font-semibold mb-3"
               style={{ color: FOREGROUND }}
             >
-              Something went wrong
+              {messages.unsubscribe.errorTitle}
             </h1>
             <p
               className="text-sm mb-8 leading-relaxed"
@@ -133,14 +133,14 @@ const Unsubscribe = () => {
                 className="w-full rounded-xl py-3 text-sm font-semibold transition-opacity hover:opacity-90"
                 style={{ backgroundColor: FOREGROUND, color: "#ffffff" }}
               >
-                Try Again
+                {messages.unsubscribe.tryAgain}
               </button>
             )}
           </>
         )}
 
         <p className="mt-8 text-xs" style={{ color: MUTED_FG }}>
-          Questions?{" "}
+          {messages.unsubscribe.questions}{" "}
           <a
             href="mailto:hello@bizmis.ai"
             className="underline"

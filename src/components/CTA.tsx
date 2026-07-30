@@ -9,9 +9,11 @@ import {
   openBizmisShopifyAppListing,
 } from "@/lib/bizmisUrls";
 import EarlyAccessCard from "./EarlyAccessCard";
+import { useMessages } from "@/i18n/LocaleProvider";
 
 const FinalCTA = () => {
   const posthog = usePostHog();
+  const messages = useMessages();
 
   const handleInstallOnShopifyClick = (e: MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault();
@@ -71,22 +73,16 @@ const FinalCTA = () => {
                 id="final-cta-title"
                 className="text-[28px] xs:text-3xl sm:text-4xl lg:text-5xl xl:text-6xl font-heading font-bold text-white leading-tight mb-3 sm:mb-6"
               >
-                Install on Shopify in 1 click. Start selling today.
+                {messages.finalCta.title}
               </h2>
 
               <p className="text-base sm:text-xl lg:text-2xl text-white/90 mb-5 sm:mb-8 leading-relaxed">
-                Bizmis greets visitors, answers their questions, and guides them
-                to checkout—fully synced with your Shopify products, discounts,
-                and orders.
+                {messages.finalCta.lead}
               </p>
 
               {/* Feature bullets */}
               <ul className="space-y-2 sm:space-y-3 mb-6 sm:mb-10">
-                {[
-                  "Greets and qualifies shoppers",
-                  "Compares products & recommends",
-                  "Handles support and reduces tickets",
-                ].map((bullet) => (
+                {messages.finalCta.bullets.map((bullet) => (
                   <li
                     key={bullet}
                     className="flex items-start gap-2.5 sm:gap-3 text-white/90"
@@ -101,7 +97,7 @@ const FinalCTA = () => {
               <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 mb-4 sm:mb-6">
                 <Button
                   asChild
-                  aria-label="Install Bizmis on Shopify"
+                  aria-label={messages.finalCta.installAria}
                   className="inline-flex w-full min-w-0 justify-center bg-white text-primary hover:bg-white/95 hover:shadow-lg focus:ring-2 focus:ring-primary/30 focus:ring-offset-2 focus:ring-offset-primary text-base sm:text-lg px-6 sm:px-8 py-3.5 sm:py-4 h-auto group transition-all duration-200 sm:w-auto [&>svg]:!w-5 [&>svg]:!h-5 sm:[&>svg]:!w-6 sm:[&>svg]:!h-6 [&>svg]:!mr-2.5 sm:[&>svg]:!mr-3 [&_svg]:pointer-events-auto"
                   size="xl"
                 >
@@ -113,14 +109,14 @@ const FinalCTA = () => {
                     onClick={handleInstallOnShopifyClick}
                   >
                     <FaShopify className="text-primary" aria-hidden="true" />
-                    Install on Shopify
+                    {messages.common.installOnShopify}
                   </a>
                 </Button>
 
                 <div className="flex flex-col sm:flex-row gap-4">
                   <Button
                     asChild
-                    aria-label="Book a call with the Bizmis team"
+                    aria-label={messages.finalCta.bookCallAria}
                     className="bg-transparent border-2 border-white/30 text-white hover:bg-white/20 hover:border-white/50 focus:ring-2 focus:ring-white/50 focus:ring-offset-2 focus:ring-offset-primary px-6 py-3 h-auto transition-all duration-200 flex items-center justify-center [&_svg]:pointer-events-auto"
                   >
                     <a
@@ -130,7 +126,7 @@ const FinalCTA = () => {
                       onClick={handleBookACall}
                     >
                       <Calendar className="w-5 h-5 mr-2" aria-hidden="true" />
-                      Book a call
+                      {messages.common.bookACall}
                     </a>
                   </Button>
                 </div>
@@ -138,14 +134,14 @@ const FinalCTA = () => {
 
               {/* Microline */}
               <p className="text-white/70 text-xs sm:text-sm mb-4 leading-relaxed">
-                Cancel anytime •{" "}
+                {messages.finalCta.cancelAnytime} •{" "}
                 <a
                   href="/privacy"
                   className="underline hover:text-white transition-colors"
                 >
-                  GDPR-ready
+                  {messages.finalCta.gdprReady}
                 </a>{" "}
-                • Built for Shopify
+                • {messages.finalCta.builtForShopify}
               </p>
             </div>
 

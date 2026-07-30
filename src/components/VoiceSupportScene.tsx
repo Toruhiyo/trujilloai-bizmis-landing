@@ -16,6 +16,7 @@ import IssueResolvedCard from "./IssueResolvedCard";
 import MobileShopperCaptionRow from "./MobileShopperCaptionRow";
 import Waveform from "./Waveform";
 import { SUPPORT_CASES, SupportCase } from "@/data/support-cases";
+import { useMessages } from "@/i18n/LocaleProvider";
 
 /** Fire as soon as the scene begins entering the viewport (any sliver visible)
  *  instead of waiting for 30% — fast first-time scrollers were passing the
@@ -114,11 +115,7 @@ const PHASE_ORDER: Phase[] = [
   "fade-out",
 ];
 
-const STEPS = [
-  { num: 1, label: "Question received" },
-  { num: 2, label: "Source checked" },
-  { num: 3, label: "Answered & resolved" },
-] as const;
+const STEP_NUMBERS = [1, 2, 3] as const;
 
 /** Maps each support phase to the step rail index it belongs to. */
 const PHASE_TO_STEP: Record<Phase, number> = {
@@ -146,6 +143,11 @@ const SOLVED_PARTICLES = [
 ];
 
 const VoiceSupportScene = () => {
+  const messages = useMessages();
+  const STEPS = STEP_NUMBERS.map((num, index) => ({
+    num,
+    label: messages.supportDemo.steps[index],
+  }));
   const ref = useRef<HTMLDivElement>(null);
   const [isVisible, setIsVisible] = useState(false);
   const [caseIndex, setCaseIndex] = useState(0);
@@ -443,11 +445,11 @@ const VoiceSupportScene = () => {
           </span>
           {actionCompleted ? (
             <span className="text-[11px] sm:text-[12px] text-primary font-semibold leading-tight">
-              Done
+              {messages.supportDemo.done}
             </span>
           ) : (
             <span className="flex items-center gap-0.5 text-[11px] sm:text-[12px] text-primary font-medium leading-tight">
-              Processing
+              {messages.supportDemo.processing}
               {[0, 1, 2].map((i) => (
                 <span
                   key={i}
@@ -604,7 +606,7 @@ const VoiceSupportScene = () => {
           </div>
           <img
             src="/images/benefit-2-customer-support.png"
-            alt="Bizmis support assistant"
+            alt={messages.supportDemo.assistantAlt}
             className={`relative z-10 w-full max-w-[min(20rem,calc(100vw-1rem))] xs:max-w-[min(22rem,calc(100vw-1rem))] sm:max-w-[min(26rem,calc(100vw-1rem))] aspect-square object-contain object-top drop-shadow-2xl transition-all ease-out ${
               isVisible
                 ? "opacity-100 translate-y-0 scale-100"
@@ -810,7 +812,7 @@ const VoiceSupportScene = () => {
             </div>
             <img
               src="/images/benefit-2-customer-support.png"
-              alt="Bizmis support assistant"
+              alt={messages.supportDemo.assistantAlt}
               className="relative h-[26rem] xl:h-[28rem] object-contain drop-shadow-2xl"
             />
           </div>

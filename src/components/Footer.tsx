@@ -4,33 +4,38 @@ import {
   BIZMIS_DEMO_STORE_URL,
 } from "@/lib/bizmisUrls";
 import Logo from "./Logo";
+import LanguageSwitcher from "./LanguageSwitcher";
+import { useLocaleHref, useMessages } from "@/i18n/LocaleProvider";
 
 type FooterLink = { label: string; href: string; newTab?: boolean };
 type FooterColumn = { heading: string; links: FooterLink[] };
 
 const Footer = () => {
+  const messages = useMessages();
+  const href = useLocaleHref();
+
   const linkColumns: FooterColumn[] = [
     {
-      heading: "Product",
+      heading: messages.footer.columns.product,
       links: [
-        { label: "Features", href: "/#benefits" },
-        { label: "Pricing", href: "/pricing" },
-        { label: "Demo", href: BIZMIS_DEMO_STORE_URL, newTab: true },
+        { label: messages.footer.links.features, href: href("/#benefits") },
+        { label: messages.footer.links.pricing, href: href("/pricing") },
+        { label: messages.footer.links.demo, href: BIZMIS_DEMO_STORE_URL, newTab: true },
       ],
     },
     {
-      heading: "Support",
+      heading: messages.footer.columns.support,
       links: [
-        { label: "Contact", href: "/contact" },
-        { label: "Book a call", href: BIZMIS_BOOK_A_CALL_GENERAL_URL, newTab: true },
-        { label: "FAQs", href: "/faqs" },
+        { label: messages.footer.links.contact, href: href("/contact") },
+        { label: messages.footer.links.bookACall, href: BIZMIS_BOOK_A_CALL_GENERAL_URL, newTab: true },
+        { label: messages.footer.links.faqs, href: href("/faqs") },
       ],
     },
     {
-      heading: "Legal",
+      heading: messages.footer.columns.legal,
       links: [
-        { label: "Privacy Policy", href: "/privacy" },
-        { label: "Terms of Service", href: "/terms" },
+        { label: messages.footer.links.privacy, href: "/privacy" },
+        { label: messages.footer.links.terms, href: "/terms" },
       ],
     },
   ];
@@ -42,14 +47,13 @@ const Footer = () => {
           <div className="md:col-span-2">
             <Logo variant="white" size="md" showText className="mb-3 sm:mb-4" />
             <p className="text-sm sm:text-base text-gray-400 mb-4 sm:mb-6 max-w-md">
-              Your store's best salesperson, working 24/7 to boost sales,
-              provide support, and understand your customers.
+              {messages.footer.tagline}
             </p>
 
             {/* Built for Shopify Section */}
             <div className="flex items-center space-x-2.5 sm:space-x-3 bg-gray-800 rounded-lg px-3 py-2.5 sm:p-4 max-w-fit">
               <p className="text-xs sm:text-sm font-medium text-white">
-                Built for
+                {messages.footer.builtFor}
               </p>
               <img
                 src="/images/shopify-full-logo-white.png"
@@ -70,11 +74,11 @@ const Footer = () => {
                   {heading}
                 </h4>
                 <ul className="space-y-1.5 sm:space-y-2 text-sm sm:text-base text-gray-400">
-                  {links.map(({ label, href, newTab }) => (
+                  {links.map(({ label, href: linkHref, newTab }) => (
                     <li key={label}>
                       <a
-                        href={href}
-                        {...(href.startsWith("http") || newTab
+                        href={linkHref}
+                        {...(linkHref.startsWith("http") || newTab
                           ? {
                               target: "_blank",
                               rel: "noopener noreferrer",
@@ -92,9 +96,15 @@ const Footer = () => {
           </div>
         </div>
 
-        <div className="border-t border-gray-800 mt-6 sm:mt-8 pt-6 sm:pt-8 text-center text-xs sm:text-sm text-gray-400">
-          <p>&copy; {getCurrentYear()} Bizmis. All rights reserved.</p>
+        <div className="mt-6 flex flex-col items-center gap-4 border-t border-gray-800 pt-6 sm:mt-8 sm:flex-row sm:items-center sm:justify-between sm:pt-8">
+          <p className="text-center text-xs text-gray-400 sm:text-sm sm:text-left">
+            {messages.footer.copyright(getCurrentYear())}
+          </p>
+          <LanguageSwitcher theme="dark" />
         </div>
+        <p className="mt-3 text-center text-[11px] text-gray-500 sm:text-xs">
+          {messages.footer.legalNotice}
+        </p>
       </div>
     </footer>
   );

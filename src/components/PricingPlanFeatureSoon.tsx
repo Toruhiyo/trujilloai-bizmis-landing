@@ -1,10 +1,12 @@
 import { cn } from "@/lib/utils";
+import { useMessages } from "@/i18n/LocaleProvider";
 
 export const PricingPlanFeatureSoon = ({
   className,
 }: {
   className?: string;
 }) => {
+  const messages = useMessages();
   return (
     <span
       className={cn(
@@ -12,7 +14,7 @@ export const PricingPlanFeatureSoon = ({
         className,
       )}
     >
-      Soon
+      {messages.common.soon}
     </span>
   );
 };

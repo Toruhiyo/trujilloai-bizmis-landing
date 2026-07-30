@@ -22,6 +22,7 @@ import SectionBadge from "./SectionBadge";
 import ConfettiExplosion from "./ConfettiExplosion";
 import { SessionReplayData } from "../data/session-replays";
 import { formatDuration, timeStringToSeconds } from "../lib/utils/time";
+import { useMessages } from "@/i18n/LocaleProvider";
 
 interface SessionReplayCardProps {
   sessionData: SessionReplayData;
@@ -31,6 +32,7 @@ const SessionReplayCard: React.FC<SessionReplayCardProps> = ({
   sessionData,
   className = "",
 }) => {
+  const messages = useMessages();
   const [isVisible, setIsVisible] = useState(false);
   const [animatePlayhead, setAnimatePlayhead] = useState(false);
   const [visibleBubbles, setVisibleBubbles] = useState<Set<string>>(new Set());
@@ -333,7 +335,9 @@ const SessionReplayCard: React.FC<SessionReplayCardProps> = ({
                   success ? "text-primary" : "text-muted-foreground"
                 }`}
               >
-                {success ? "✓ Sucessful" : "⚠ UnResolved"}
+                {success
+                  ? `✓ ${messages.sessionReplay.successful}`
+                  : `⚠ ${messages.sessionReplay.unresolved}`}
               </div>
             </div>
 
@@ -376,10 +380,10 @@ const SessionReplayCard: React.FC<SessionReplayCardProps> = ({
                   customer.name ? "text-foreground" : "text-muted-foreground/70"
                 }`}
               >
-                {customer.name || "Anonymous Customer"}
+                {customer.name || messages.sessionReplay.anonymousCustomer}
                 {customer.isLoyal && (
                   <span className="ml-1.5 text-xs text-primary font-medium bg-primary/10 px-1.5 py-0.5 rounded-full">
-                    VIP
+                    {messages.sessionReplay.vip}
                   </span>
                 )}
               </span>

@@ -21,8 +21,33 @@ import InstantlyLeadFieldsPage from "./pages/email-renders/InstantlyLeadFieldsPa
 import NotFound from "./pages/NotFound";
 import Unsubscribe from "./pages/Unsubscribe";
 import AttributionTracker from "./components/AttributionTracker";
+import { LocaleRoute, LocalizedRedirect } from "./i18n/LocaleRoute";
+import { LocaleProvider } from "./i18n/LocaleProvider";
+import { DEFAULT_LOCALE } from "./i18n/locales";
 
 const queryClient = new QueryClient();
+
+/**
+ * Public, localizable routes. Rendered twice: unprefixed (English, the
+ * default) and nested under `/:locale` for es/fr/it/ca. Kept as a plain
+ * function (not a JSX component) — `<Routes>` only flattens `Route`
+ * elements and `Fragment`s, so a custom component wrapping them here
+ * would be invisible to its route matching.
+ */
+const publicLocalizedRoutes = () => [
+  <Route key="index" index element={<Index />} />,
+  <Route key="faqs" path="faqs" element={<FAQs />} />,
+  <Route key="contact" path="contact" element={<Contact />} />,
+  <Route key="early-access" path="early-access" element={<EarlyAccess />} />,
+  <Route
+    key="join-waitlist"
+    path="join-waitlist"
+    element={<LocalizedRedirect to="/early-access" />}
+  />,
+  <Route key="pricing" path="pricing" element={<Pricing />} />,
+  <Route key="unsubscribe" path="unsubscribe" element={<Unsubscribe />} />,
+  <Route key="not-found" path="*" element={<NotFound />} />,
+];
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
@@ -32,17 +57,22 @@ const App = () => (
       <BrowserRouter>
         <AttributionTracker />
         <Routes>
-          <Route path="/" element={<Index />} />
-          <Route path="/faqs" element={<FAQs />} />
-          <Route path="/contact" element={<Contact />} />
-          <Route path="/early-access" element={<EarlyAccess />} />
-          <Route
-            path="/join-waitlist"
-            element={<Navigate to="/early-access" replace />}
-          />
-          <Route path="/pricing" element={<Pricing />} />
-          <Route path="/privacy" element={<PrivacyPolicy />} />
-          <Route path="/terms" element={<Terms />} />
+          {/* English — default, unprefixed. */}
+          <Route element={<LocaleRoute />}>
+            {publicLocalizedRoutes()}
+            <Route path="privacy" element={<PrivacyPolicy />} />
+            <Route path="terms" element={<Terms />} />
+          </Route>
+
+          {/* es / fr / it / ca — locale-prefixed. Legal pages stay English:
+              the binding version lives unprefixed, so /es/privacy redirects
+              there instead of rendering a duplicate. */}
+          <Route path="/:locale" element={<LocaleRoute />}>
+            {publicLocalizedRoutes()}
+            <Route path="privacy" element={<Navigate to="/privacy" replace />} />
+            <Route path="terms" element={<Navigate to="/terms" replace />} />
+          </Route>
+
           <Route path="admin" element={<AdminProtectedRoute />}>
             <Route index element={<Navigate to="slides" replace />} />
             <Route path="slides" element={<Slides />} />
@@ -58,9 +88,15 @@ const App = () => (
           <Route path="email-renders/instantly-html" element={<InstantlyExportPage />} />
           {/* Headless endpoint consumed by scripts/generate-instantly-lead-fields.mjs. */}
           <Route path="email-renders/instantly-lead-fields" element={<InstantlyLeadFieldsPage />} />
-          <Route path="/unsubscribe" element={<Unsubscribe />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-          <Route path="*" element={<NotFound />} />
+          <Route
+            path="*"
+            element={
+              <LocaleProvider locale={DEFAULT_LOCALE}>
+                <NotFound />
+              </LocaleProvider>
+            }
+          />
         </Routes>
       </BrowserRouter>
     </TooltipProvider>
