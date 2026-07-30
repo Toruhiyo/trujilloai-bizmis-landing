@@ -35,8 +35,8 @@ export const ca: Messages = {
     badgeDetailShort: "Primeres 50 botigues",
     badgeDetailLong: "Gratuït per a les 50 primeres botigues Shopify",
     titleLine1: "El millor venedor",
-    titleLine2: "de la teva botiga,",
-    titleLine3: "ara online",
+    // Non-breaking space keeps "ara online" together if this line wraps.
+    titleLine2: "de la teva botiga, ara\u00A0online",
     subtitleLead: "Ajuda cada client a",
     subtitleFind: "trobar-ho",
     subtitleTrust: "confiar-hi",

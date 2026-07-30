@@ -35,8 +35,8 @@ export const it: Messages = {
     badgeDetailShort: "Primi 50 negozi",
     badgeDetailLong: "Gratis per i primi 50 negozi Shopify",
     titleLine1: "Il miglior venditore",
-    titleLine2: "del tuo negozio,",
-    titleLine3: "ora online",
+    // Non-breaking space keeps "ora online" together if this line wraps.
+    titleLine2: "del tuo negozio, ora\u00A0online",
     subtitleLead: "Aiuta ogni cliente a",
     subtitleFind: "trovarlo",
     subtitleTrust: "fidarsi",
