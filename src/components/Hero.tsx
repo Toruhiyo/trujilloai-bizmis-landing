@@ -133,6 +133,9 @@ const Hero = () => {
                 <h1 className="text-4xl xs:text-5xl sm:text-6xl font-heading font-bold text-white leading-tight">
                   {messages.hero.titleLine1}
                   <span className="block">{messages.hero.titleLine2}</span>
+                  {messages.hero.titleLine3 && (
+                    <span className="block">{messages.hero.titleLine3}</span>
+                  )}
                 </h1>
                 <p className="mt-2 text-lg xs:text-xl sm:text-2xl font-heading font-medium text-white/75">
                   {messages.hero.subtitleLead}{" "}
@@ -280,6 +283,9 @@ const Hero = () => {
                   <h1 className="text-[clamp(3rem,6.4vh,4.5rem)] font-heading font-bold text-white leading-[1.05]">
                     {messages.hero.titleLine1}
                     <span className="block">{messages.hero.titleLine2}</span>
+                    {messages.hero.titleLine3 && (
+                      <span className="block">{messages.hero.titleLine3}</span>
+                    )}
                   </h1>
                   <p className="mt-3 text-2xl xl:text-3xl font-heading font-medium text-white/75 whitespace-nowrap">
                     {messages.hero.subtitleLead}{" "}

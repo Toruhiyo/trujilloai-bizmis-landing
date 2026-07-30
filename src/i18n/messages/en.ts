@@ -38,6 +38,8 @@ export const en = {
     badgeDetailLong: "Free for the first 50 Shopify stores",
     titleLine1: "Your Store's",
     titleLine2: "Best Salesperson",
+    /** Optional third headline line — used by locales whose "now online" coda needs its own line (see es/fr/it/ca). */
+    titleLine3: "",
     subtitleLead: "Helps Every Shopper",
     subtitleFind: "Find It",
     subtitleTrust: "Trust It",
