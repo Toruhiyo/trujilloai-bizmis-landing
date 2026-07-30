@@ -35,7 +35,7 @@ export const ca: Messages = {
     badgeDetailShort: "Primeres 50 botigues",
     badgeDetailLong: "Gratuït per a les 50 primeres botigues Shopify",
     titleLine1: "El millor venedor",
-    titleLine2: "de la teva botiga",
+    titleLine2: "de la teva botiga, ara online",
     subtitleLead: "Ajuda cada client a",
     subtitleFind: "trobar-ho",
     subtitleTrust: "confiar-hi",

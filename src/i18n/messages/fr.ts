@@ -35,7 +35,7 @@ export const fr: Messages = {
     badgeDetailShort: "50 premières boutiques",
     badgeDetailLong: "Gratuit pour les 50 premières boutiques Shopify",
     titleLine1: "Le meilleur vendeur",
-    titleLine2: "de votre boutique",
+    titleLine2: "de votre boutique, maintenant en ligne",
     subtitleLead: "Il aide chaque client à",
     subtitleFind: "le trouver",
     subtitleTrust: "s'y fier",
