@@ -555,7 +555,7 @@ export const fr: Messages = {
       "early-access-offer": {
         question: "En quoi consiste l'offre d'accès anticipé ?",
         answer:
-          "L'accès anticipé est une remise sur les plans payants, pas un essai gratuit. Les marchands invités bénéficient de **50 % de remise les 3 premiers mois** sur les plans mensuels (Starter 74 $, Plus 249 $, Pro 749 $/mois) ou d'environ **33 % de remise** sur les plans annuels (Starter 99 $, Plus 334 $, Pro 1 004 $ en équivalent mensuel). Chaque marchand reçoit un code personnel dans notre message : saisissez-le sur la page des tarifs pour débloquer les plans remisés. Il reste valable pour votre boutique en cas de changement de plan ou de réabonnement. Passé les 3 premiers mois en mensuel, les tarifs standard s'appliquent. Les crédits de dépassement sont facturés au tarif standard en permanence.",
+          "L'accès anticipé offre aux boutiques Shopify invitées les **1 200 crédits** uniques du plan gratuit (~120 minutes de voix ou ~1 200 messages texte). Il n'y a aucun abonnement, frais d'utilisation, passage automatique à un plan supérieur ni renouvellement. Lorsque les crédits sont épuisés, Bizmis se met en pause, sauf si vous choisissez et approuvez un plan payant dans Shopify. Les membres bénéficient également d'un accompagnement individuel, d'une assistance prioritaire, d'une prise en compte prioritaire de leurs retours produit et d'une remise personnelle s'ils décident ensuite de passer à un plan supérieur.",
       },
       "free-plan": {
         question: "Existe-t-il un plan gratuit ?",
@@ -647,15 +647,20 @@ export const fr: Messages = {
         answer:
           "Produits et collections, prix et remises, fiches clients (lorsqu'ils sont connectés), historique des commandes et politiques de la boutique (livraison, retours, FAQ). La synchronisation est automatique et continue : dès que vous modifiez un produit, Bizmis le voit.",
       },
+      "private-testing": {
+        question: "Puis-je tester Bizmis sans le montrer aux acheteurs ?",
+        answer:
+          "Oui. Bizmis reste masqué jusqu'à ce qu'un administrateur active son intégration au thème. Pour tester de vraies réponses en privé, dupliquez votre thème publié, activez Bizmis uniquement sur la copie non publiée et ouvrez-la avec l'aperçu de thème Shopify. Bizmis utilisera votre vrai catalogue et vos politiques, tandis que votre boutique publiée restera inchangée. L'interrupteur Pause du tableau de bord Bizmis permet de le masquer immédiatement à tout moment.",
+      },
       permissions: {
         question: "Quelles autorisations Bizmis demande-t-il ?",
         answer:
-          "Les portées Shopify standard en lecture pour les produits, clients, commandes et politiques, ainsi que les portées de données client protégées (read_customers, read_orders) pour les parcours de support. Nous respectons les Protected Customer Data Requirements de Shopify : chiffrement en transit et au repos, accès au moindre privilège, aucune revente ni usage publicitaire des données protégées. Les jetons sont révoqués immédiatement à la désinstallation.",
+          "Bizmis lit les produits, les clients, les commandes et les politiques de la boutique pour répondre aux questions de vente et d'assistance. L'accès aux politiques légales est en lecture seule, Bizmis ne peut donc pas les modifier. Le seul accès en écriture concerne Shopify Files et n'est utilisé que si vous choisissez de téléverser une image, comme votre logo, pour le t-shirt de l'avatar. Bizmis ne modifie pas les fichiers existants.",
       },
       uninstall: {
         question: "Que se passe-t-il si je désinstalle ?",
         answer:
-          "Le widget cesse immédiatement de répondre aux acheteurs. Le webhook app/uninstalled de Shopify révoque les jetons d'accès. Les données de configuration sont conservées pendant la fenêtre de réinstallation de 48 heures de Shopify : si vous réinstallez dans ce délai, tout est restauré, historique compris. Au-delà de 48 heures, Shopify envoie shop/redact et nous supprimons la configuration et les données de conversation dans les 30 jours.",
+          "Le widget s'arrête immédiatement, Shopify supprime l'extension du thème et révoque les jetons d'accès de Bizmis. Nous conservons les données de configuration et de conversation pendant la fenêtre de réinstallation de 48 heures de Shopify afin de pouvoir restaurer votre compte si vous réinstallez l'application. Shopify déclenche ensuite la suppression, et nous effaçons ces données dans un délai de 30 jours. Toute image d'avatar que vous avez téléversée reste dans vos propres Shopify Files et peut y être supprimée.",
       },
     },
   },

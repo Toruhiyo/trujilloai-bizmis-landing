@@ -554,7 +554,7 @@ export const es: Messages = {
       "early-access-offer": {
         question: "¿En qué consiste la oferta de acceso anticipado?",
         answer:
-          "El acceso anticipado es un descuento sobre los planes de pago, no una prueba gratuita. Los comercios invitados reciben un **50% de descuento los 3 primeros meses** en planes mensuales (Starter 74 $, Plus 249 $, Pro 749 $/mes) o un **~33% de descuento** en planes anuales (Starter 99 $, Plus 334 $, Pro 1.004 $ de equivalente mensual). Cada comercio recibe un código personal en nuestra comunicación: introdúcelo en la página de precios para desbloquear los planes con descuento. El código sigue siendo válido para tu tienda aunque cambies de plan o vuelvas a suscribirte. Pasados los 3 primeros meses en mensual, se aplican las tarifas estándar. Los créditos de exceso se facturan siempre a tarifa estándar.",
+          "El acceso anticipado ofrece a las tiendas Shopify invitadas los **1.200 créditos** de un solo uso del plan gratuito (~120 minutos de voz o ~1.200 mensajes de texto). No hay suscripción, cargos por uso, actualización automática ni renovación. Cuando se agotan los créditos, Bizmis se pausa, salvo que elijas y apruebes un plan de pago en Shopify. Los miembros también reciben onboarding 1 a 1, soporte prioritario, prioridad para sus comentarios sobre el producto y un descuento personal si más adelante deciden mejorar su plan.",
       },
       "free-plan": {
         question: "¿Hay un plan gratuito?",
@@ -646,15 +646,20 @@ export const es: Messages = {
         answer:
           "Productos y colecciones, precios y descuentos, fichas de cliente (cuando han iniciado sesión), historial de pedidos y políticas de la tienda (envíos, devoluciones, FAQ). La sincronización es automática y continua: cuando actualizas un producto, Bizmis lo ve.",
       },
+      "private-testing": {
+        question: "¿Puedo probar Bizmis sin mostrarlo a los compradores?",
+        answer:
+          "Sí. Bizmis permanece oculto hasta que un administrador activa su integración en el tema. Para probar respuestas reales en privado, duplica tu tema publicado, activa Bizmis solo en la copia no publicada y ábrela con la vista previa de temas de Shopify. Usará tu catálogo y tus políticas reales mientras tu tienda publicada permanece intacta. El interruptor Pausar del panel de Bizmis lo oculta inmediatamente en cualquier momento.",
+      },
       permissions: {
         question: "¿Qué permisos pide Bizmis?",
         answer:
-          "Los permisos estándar de Shopify para leer productos, clientes, pedidos y políticas, más los permisos de datos protegidos de cliente (read_customers, read_orders) para los flujos de soporte. Cumplimos los Protected Customer Data Requirements de Shopify: cifrado en tránsito y en reposo, acceso de mínimo privilegio y ningún uso de datos protegidos para reventa o publicidad. Los tokens se revocan de inmediato al desinstalar.",
+          "Bizmis lee productos, clientes, pedidos y políticas de la tienda para responder preguntas de venta y soporte. El acceso a las políticas legales es de solo lectura, por lo que no puede editarlas. El único acceso de escritura es a Shopify Files y solo se usa cuando eliges subir una imagen, como tu logo, para la camiseta del avatar. Bizmis no modifica archivos existentes.",
       },
       uninstall: {
         question: "¿Qué pasa si desinstalo la app?",
         answer:
-          "El widget deja de atender compradores de inmediato. El webhook app/uninstalled de Shopify revoca los tokens de acceso. Los datos de configuración se conservan durante la ventana de reinstalación de 48 horas de Shopify: si reinstalas dentro de ese plazo, se restaura todo, historial incluido. Pasadas las 48 horas, Shopify envía shop/redact y eliminamos la configuración y los datos de conversación en un plazo de 30 días.",
+          "El widget se detiene de inmediato, Shopify elimina la extensión del tema y revoca los tokens de acceso de Bizmis. Conservamos los datos de configuración y conversación durante la ventana de reinstalación de 48 horas de Shopify para poder restaurar tu cuenta si reinstalas. Después, Shopify activa la eliminación y borramos esos datos en un plazo de 30 días. Cualquier imagen del avatar que hayas subido permanece en tus propios Shopify Files y puedes eliminarla allí.",
       },
     },
   },

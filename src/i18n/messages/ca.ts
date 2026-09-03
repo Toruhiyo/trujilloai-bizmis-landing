@@ -555,7 +555,7 @@ export const ca: Messages = {
       "early-access-offer": {
         question: "En què consisteix l'oferta d'accés anticipat?",
         answer:
-          "L'accés anticipat és un descompte sobre els plans de pagament, no una prova gratuïta. Els comerços convidats reben un **50% de descompte els 3 primers mesos** en plans mensuals (Starter 74 $, Plus 249 $, Pro 749 $/mes) o un **~33% de descompte** en plans anuals (Starter 99 $, Plus 334 $, Pro 1.004 $ d'equivalent mensual). Cada comerç rep un codi personal a la nostra comunicació: introdueix-lo a la pàgina de preus per desbloquejar els plans amb descompte. El codi continua sent vàlid per a la teva botiga encara que canviïs de pla o et tornis a subscriure. Passats els 3 primers mesos en mensual, s'apliquen les tarifes estàndard. Els crèdits d'excés es facturen sempre a tarifa estàndard.",
+          "L'accés anticipat ofereix a les botigues Shopify convidades els **1.200 crèdits** d'un sol ús del pla gratuït (~120 minuts de veu o ~1.200 missatges de text). No hi ha subscripció, càrrecs per ús, actualització automàtica ni renovació. Quan s'esgoten els crèdits, Bizmis es posa en pausa, tret que triïs i aprovis un pla de pagament a Shopify. Els membres també reben onboarding 1 a 1, suport prioritari, prioritat per als seus comentaris sobre el producte i un descompte personal si més endavant decideixen millorar el pla.",
       },
       "free-plan": {
         question: "Hi ha un pla gratuït?",
@@ -647,15 +647,20 @@ export const ca: Messages = {
         answer:
           "Productes i col·leccions, preus i descomptes, fitxes de client (quan han iniciat sessió), historial de comandes i polítiques de la botiga (enviaments, devolucions, FAQ). La sincronització és automàtica i contínua: quan actualitzes un producte, Bizmis ho veu.",
       },
+      "private-testing": {
+        question: "Puc provar Bizmis sense mostrar-lo als compradors?",
+        answer:
+          "Sí. Bizmis es manté ocult fins que un administrador activa la seva integració al tema. Per provar respostes reals en privat, duplica el tema publicat, activa Bizmis només a la còpia no publicada i obre-la amb la vista prèvia de temes de Shopify. Utilitzarà el teu catàleg i les teves polítiques reals mentre la botiga publicada es manté intacta. L'interruptor Pausa del tauler de Bizmis l'oculta immediatament en qualsevol moment.",
+      },
       permissions: {
         question: "Quins permisos demana Bizmis?",
         answer:
-          "Els permisos estàndard de Shopify per llegir productes, clients, comandes i polítiques, més els permisos de dades protegides de client (read_customers, read_orders) per als fluxos de suport. Complim els Protected Customer Data Requirements de Shopify: xifratge en trànsit i en repòs, accés de mínim privilegi i cap ús de dades protegides per a revenda o publicitat. Els tokens es revoquen immediatament en desinstal·lar.",
+          "Bizmis llegeix productes, clients, comandes i polítiques de la botiga per respondre preguntes de venda i suport. L'accés a les polítiques legals és només de lectura, de manera que no les pot editar. L'únic accés d'escriptura és a Shopify Files i només s'utilitza quan tries pujar una imatge, com ara el teu logotip, per a la samarreta de l'avatar. Bizmis no modifica fitxers existents.",
       },
       uninstall: {
         question: "Què passa si desinstal·lo l'app?",
         answer:
-          "El widget deixa d'atendre compradors immediatament. El webhook app/uninstalled de Shopify revoca els tokens d'accés. Les dades de configuració es conserven durant la finestra de reinstal·lació de 48 hores de Shopify: si reinstal·les dins d'aquest termini, es restaura tot, historial inclòs. Passades les 48 hores, Shopify envia shop/redact i eliminem la configuració i les dades de conversa en un termini de 30 dies.",
+          "El widget s'atura immediatament, Shopify elimina l'extensió del tema i revoca els tokens d'accés de Bizmis. Conservem les dades de configuració i conversa durant la finestra de reinstal·lació de 48 hores de Shopify per poder restaurar el teu compte si reinstal·les. Després, Shopify activa l'eliminació i esborrem aquestes dades en un termini de 30 dies. Qualsevol imatge de l'avatar que hagis pujat roman als teus propis Shopify Files i la pots eliminar allà.",
       },
     },
   },

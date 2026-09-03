@@ -548,7 +548,7 @@ export const en = {
       "early-access-offer": {
         question: "What is the Early Access offer?",
         answer:
-          "Early Access is a discount on the paid plans, not a free trial. Invited merchants get **50% off the first 3 months** on monthly plans (Starter $74, Plus $249, Pro $749/mo) or **~33% off** yearly plans (Starter $99, Plus $334, Pro $1,004 monthly equivalent). Each Early Access merchant receives a personal code via our outreach, enter it on the pricing page to unlock the discounted plans, and it stays valid for your store across upgrades, downgrades, and resubscribes. After the first 3 months on monthly, standard rates resume. Overage credits are billed at standard rates throughout.",
+          "Early Access gives invited Shopify stores the Free plan's one-time **1,200 credits** (~120 voice minutes or ~1,200 text messages). There is no subscription, usage charge, automatic upgrade, or renewal. When the credits run out, Bizmis pauses unless you choose and approve a paid plan in Shopify. Members also get 1-to-1 onboarding, priority support, prioritized product feedback, and a personal discount if they later upgrade.",
       },
       "free-plan": {
         question: "Is there a free plan?",
@@ -640,15 +640,20 @@ export const en = {
         answer:
           "Products and collections, prices and discounts, customer records (when signed in), order history, and store policies (shipping, returns, FAQ). Sync is automatic and continuous, when you update a product, Bizmis sees it.",
       },
+      "private-testing": {
+        question: "Can I test Bizmis without showing it to shoppers?",
+        answer:
+          "Yes. Bizmis stays hidden until an admin activates its theme app embed. To test real responses privately, duplicate your live theme, activate Bizmis only on the unpublished copy, and open it with Shopify's theme preview. It will use your real catalog and policies while your live store stays unchanged. The Pause switch in the Bizmis dashboard hides it immediately at any time.",
+      },
       permissions: {
         question: "What permissions does Bizmis request?",
         answer:
-          "Standard Shopify scopes for product, customer, order, and policy reads, plus protected customer data scopes (read_customers, read_orders) for the support flows. We follow Shopify's Protected Customer Data Requirements: encryption in transit and at rest, least-privilege access, no resale or advertising use of protected data. Tokens are revoked immediately on uninstall.",
+          "Bizmis reads products, customers, orders, and store policies to handle sales and support questions. Its legal-policy access is read-only, so it cannot edit your policies. The only write access is Shopify Files, used only when you choose to upload an image, such as your logo, for the avatar's shirt. Bizmis does not modify existing files.",
       },
       uninstall: {
         question: "What happens when I uninstall?",
         answer:
-          "The widget stops serving shoppers immediately. Shopify's app/uninstalled webhook revokes access tokens. Configuration data is held for Shopify's 48-hour reinstall window, if you reinstall within that window, everything (history included) is restored. After 48 hours, Shopify dispatches shop/redact and we delete configuration and conversation data within 30 days.",
+          "The widget stops immediately, Shopify removes the theme app extension, and Shopify revokes Bizmis's access tokens. We keep configuration and conversation data during Shopify's 48-hour reinstall window so your account can be restored if you reinstall. Shopify then triggers deletion, and we delete that data within 30 days. An avatar image you uploaded remains in your own Shopify Files and can be deleted there.",
       },
     },
   },

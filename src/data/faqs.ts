@@ -69,6 +69,7 @@ const CATEGORY_ITEM_IDS: Record<(typeof CATEGORY_IDS)[number], string[]> = {
   "shopify-integration": [
     "shopify-only",
     "what-syncs",
+    "private-testing",
     "permissions",
     "uninstall",
   ],
