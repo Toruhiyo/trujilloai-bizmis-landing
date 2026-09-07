@@ -2,7 +2,7 @@ import Footer from "@/components/Footer";
 import PublicPageLayout from "@/components/PublicPageLayout";
 import Seo from "@/components/Seo";
 
-const LAST_UPDATED = "May 29, 2026";
+const LAST_UPDATED = "September 7, 2026";
 const CONTACT_EMAIL = "hello@bizmis.ai";
 
 const PrivacyPolicy = () => {
@@ -43,7 +43,16 @@ const PrivacyPolicy = () => {
               <li>Store name, domain, and description</li>
               <li>Widget configuration preferences (appearance, language, avatar settings)</li>
               <li>Shopify access token and granted OAuth scopes (used solely to operate the app)</li>
-              <li>App usage data (pages visited within the admin panel)</li>
+              <li>
+                Product catalog and collection data (titles, descriptions,
+                prices, images, availability), indexed so the assistant can
+                search and recommend the store's products
+              </li>
+              <li>
+                Store policies and support pages (shipping, returns, privacy,
+                FAQ), read so the assistant can answer support questions from
+                the merchant's own content
+              </li>
             </ul>
           </Section>
 
@@ -76,12 +85,19 @@ const PrivacyPolicy = () => {
                 orders, used to answer delivery and "where is my order" questions
               </li>
               <li>
+                <strong>Details the customer chooses to share</strong> -- any
+                information the customer volunteers during the conversation,
+                whether signed in or not (for example an email address or
+                phone number dictated so the assistant can fill in the store's
+                contact form)
+              </li>
+              <li>
                 <strong>Voice conversation audio</strong> -- the voice
                 interaction is recorded to power the AI assistant
               </li>
               <li>
                 <strong>Conversation transcripts</strong> -- text transcriptions
-                of the voice interactions
+                of voice interactions and the messages exchanged in text chat
               </li>
               <li>
                 <strong>Browsing activity</strong> -- pages visited and
@@ -89,15 +105,29 @@ const PrivacyPolicy = () => {
               </li>
               <li>
                 <strong>Session metadata</strong> -- language preference,
-                session duration, and timestamps
+                session duration, timestamps, and the outcome of the
+                microphone permission request
+              </li>
+              <li>
+                <strong>Widget session replay</strong> -- once a customer
+                starts interacting with the assistant, a visual replay of the
+                customer's browser session on the store (page structure,
+                scrolling, clicks, and the assistant's on-screen state) is
+                recorded through PostHog so we can debug and improve the
+                widget. Form fields and other text inputs are masked before
+                recording; the replay does not contain audio. Sessions where
+                the customer never interacts with the assistant are not sent.
               </li>
             </ul>
             <p>
               Order history, name, and shipping details are retrieved from
               Shopify on demand during the conversation to answer the shopper's
               questions. They are provided to the AI assistant as temporary
-              session context and are not stored in our databases beyond the
-              live session.
+              session context and the raw Shopify records are not stored in
+              our databases beyond the live session. Note that whatever the
+              assistant says about an order (for example an order number or a
+              delivery status) becomes part of the conversation transcript and
+              is retained with it.
             </p>
           </Section>
 
@@ -108,6 +138,10 @@ const PrivacyPolicy = () => {
               <li>Process voice interactions in real time</li>
               <li>Generate conversation transcripts for the merchant's analytics dashboard</li>
               <li>Provide session analytics and metrics to the merchant</li>
+              <li>
+                Review widget session replays to debug failures and improve
+                the assistant's usability
+              </li>
               <li>
                 Investigate abuse, debug failures, and maintain the security
                 and integrity of the Service
@@ -162,11 +196,16 @@ const PrivacyPolicy = () => {
               use Store Customer voice recordings, audio, or conversation
               transcripts to train any AI model. We require our AI
               sub-processors to refrain from using this data to train their
-              general-purpose models: AWS Bedrock customer data is not used to
-              train any model by default; Anthropic does not train its
-              foundation models on API or Bedrock customer data by default;
-              and the ElevenLabs integration is configured so that conversation
-              audio is not used to improve ElevenLabs's models.
+              general-purpose models: the large language model that powers the
+              live conversation is hosted and operated by ElevenLabs on its
+              own infrastructure, so the model's original developer never
+              receives conversation inputs or outputs, and ElevenLabs
+              contractually prohibits the LLM providers it works with from
+              training on customer content; AWS Bedrock customer data is not
+              used to train any model by default; Anthropic does not train
+              its foundation models on API or Bedrock customer data by
+              default; and the ElevenLabs integration is configured so that
+              conversation audio is not used to improve ElevenLabs's models.
             </p>
             <p>
               We do not sell personal data to third parties. We do not use
@@ -183,23 +222,44 @@ const PrivacyPolicy = () => {
               <li>
                 <strong>ElevenLabs</strong> -- speech-to-text, text-to-speech,
                 and orchestration of the conversational AI agent (including
-                LLM inference). The agent is configured to use Anthropic's
-                Claude family of large language models for response
-                generation. ElevenLabs stores conversation audio and
+                LLM inference). The agent's responses are generated by a Qwen
+                large language model that ElevenLabs hosts and operates on its
+                own infrastructure, so the model's original developer does
+                not receive or process any conversation data. ElevenLabs stores conversation audio and
                 transcripts so they can be replayed in the merchant analytics
                 dashboard.
               </li>
               <li>
-                <strong>Anthropic</strong> -- provider of the Claude family of
-                large language models. Anthropic processes prompts and outputs
-                via ElevenLabs (for live voice conversations) and via Amazon
-                Bedrock (for our backend tasks such as policy search and
-                session classification).
+                <strong>Amazon Web Services (AWS)</strong> -- hosting of the
+                Bizmis backend API, managed data storage for session data and
+                store records (Amazon DynamoDB), and model inference through
+                Amazon Bedrock for background tasks: product search,
+                extraction of answers from the merchant's support pages, and
+                session classification, using Anthropic Claude models and
+                Cohere embedding models served by Bedrock.
               </li>
               <li>
-                <strong>Amazon Web Services (AWS)</strong> -- hosting,
-                infrastructure, managed data storage, and model inference
-                (Amazon Bedrock).
+                <strong>Anthropic</strong> -- developer of the Claude family of
+                large language models used for the Bedrock background tasks
+                above. Prompts and outputs are processed inside Amazon Bedrock;
+                Anthropic itself does not receive them.
+              </li>
+              <li>
+                <strong>Render</strong> -- hosting of the Bizmis merchant admin
+                app (the Shopify embedded app) and its managed PostgreSQL
+                database, which stores the merchant configuration, avatar
+                settings, billing plan, and Shopify session tokens.
+              </li>
+              <li>
+                <strong>Typesense Cloud</strong> -- managed search index that
+                holds the merchant's product catalog and collection data so the
+                assistant can search the store. It receives no Store Customer
+                data.
+              </li>
+              <li>
+                <strong>PostHog (EU Cloud)</strong> -- product analytics and
+                widget session replay, as described in Section 3. Hosted in
+                the European Union.
               </li>
               <li>
                 <strong>Shopify</strong> -- provides store and customer context
@@ -218,41 +278,58 @@ const PrivacyPolicy = () => {
           <Section title="6. Data Retention">
             <ul className="list-disc pl-6 space-y-2">
               <li>
-                <strong>Session data</strong> (managed AWS data store) --
-                retained while the merchant's app remains installed so that
+                <strong>Session data</strong> (Amazon DynamoDB) -- retained
+                while the merchant's app remains installed so that
                 conversation history and analytics stay available in the
                 merchant dashboard. Deleted on demand when Shopify dispatches
-                its <code>customers/redact</code> webhook, and purged within 30
-                days of the <code>shop/redact</code> webhook after
+                its <code>customers/redact</code> webhook, and deleted when we
+                receive the <code>shop/redact</code> webhook after
                 uninstallation.
               </li>
               <li>
                 <strong>Conversation data</strong> (ElevenLabs) -- retained
-                for the lifetime of the merchant's installation. After
-                uninstallation, retained during Shopify's 48-hour reinstall
-                window, then deleted within 30 days of receiving Shopify's{" "}
-                <code>shop/redact</code> webhook. Individual conversations
-                are also deleted on demand via Shopify's{" "}
+                for the lifetime of the merchant's installation, capped at
+                730 days per conversation: audio and transcripts older than
+                that are automatically deleted even while the app stays
+                installed. After uninstallation, retained during Shopify's
+                48-hour reinstall window, then deleted when we receive
+                Shopify's <code>shop/redact</code> webhook. Individual
+                conversations are also deleted on demand via Shopify's{" "}
                 <code>customers/redact</code> webhook or by direct request
                 to the contact email at the end of this policy.
               </li>
               <li>
-                <strong>Merchant configuration</strong> (managed relational
-                database) -- retained while the app is installed and during
-                Shopify's 48-hour reinstall window after uninstallation.
+                <strong>Merchant configuration and Shopify session tokens</strong>{" "}
+                (Render PostgreSQL) -- retained while the app is installed and
+                during Shopify's 48-hour reinstall window after uninstallation.
                 After 48 hours, Shopify dispatches its{" "}
                 <code>shop/redact</code> webhook and Bizmis deletes the
-                configuration within 30 days.
+                configuration, avatar, billing, and session records.
               </li>
               <li>
-                <strong>Shopify access tokens</strong> (managed AWS data
-                store) -- invalidated immediately on uninstall via Shopify's{" "}
-                <code>app/uninstalled</code> webhook; the underlying record
-                is purged within 30 days of the subsequent{" "}
+                <strong>Store record and access token</strong> (Amazon
+                DynamoDB) -- the token is invalidated immediately on uninstall
+                via Shopify's <code>app/uninstalled</code> webhook; the record
+                is deleted when we receive the subsequent{" "}
                 <code>shop/redact</code> webhook.
+              </li>
+              <li>
+                <strong>Catalog index</strong> (Typesense Cloud) -- kept in
+                sync with the store's products and collections while the app
+                is installed; the store's collection is dropped when we
+                receive the <code>shop/redact</code> webhook.
+              </li>
+              <li>
+                <strong>Widget session replays and analytics events</strong>{" "}
+                (PostHog) -- retained according to PostHog's plan retention
+                for session replays, and deleted on request to the contact
+                email at the end of this policy.
               </li>
             </ul>
             <p>
+              Deletion triggered by the <code>shop/redact</code> and{" "}
+              <code>customers/redact</code> webhooks runs as soon as the
+              webhook is received, and in all cases completes within 30 days.
               If the merchant reinstalls Bizmis within Shopify's 48-hour
               reinstall window, Shopify cancels the <code>shop/redact</code>{" "}
               webhook and the merchant's configuration and historical
@@ -260,20 +337,35 @@ const PrivacyPolicy = () => {
             </p>
           </Section>
 
-          <Section title="7. Cookies">
+          <Section title="7. Cookies and Local Storage">
             <p>
-              The Bizmis widget uses a single cookie to remember whether a
-              customer has accepted the Terms and Conditions:
+              The Bizmis widget stores the following in the customer's
+              browser:
             </p>
             <ul className="list-disc pl-6 space-y-1">
               <li>
-                <strong>bizmis_voicechat_terms_accepted</strong> -- stores
-                consent status; expires after 1 year
+                <strong>bizmis_voicechat_terms_accepted</strong> (cookie) --
+                stores consent status; expires after 1 year
+              </li>
+              <li>
+                <strong>bizmis-session</strong> (local storage) -- the current
+                conversation state (session identifier, message history,
+                products discussed) so a conversation survives page navigation
+                within the store
+              </li>
+              <li>
+                <strong>bizmis-posthog-link</strong> (local storage) -- links
+                the current conversation to its PostHog session replay
+              </li>
+              <li>
+                <strong>ph_* / PostHog</strong> (cookie and local storage) --
+                PostHog's own identifiers used to group analytics events and
+                the session replay described in Section 3
               </li>
             </ul>
             <p>
-              We do not use cookies for tracking, analytics, or advertising
-              purposes.
+              We do not use cookies or local storage for advertising, and we
+              do not track customers across other websites.
             </p>
           </Section>
 
@@ -313,9 +405,10 @@ const PrivacyPolicy = () => {
               We implement appropriate technical and organizational measures to
               protect personal data, including encryption in transit (TLS) and
               at rest, scoped access controls, separation of test and
-              production environments, and regular security reviews. All data
-              processing infrastructure is hosted on AWS with industry-standard
-              security practices.
+              production environments, and regular security reviews. Our
+              infrastructure is hosted on AWS (backend API and data stores)
+              and Render (merchant admin app and its database), both operated
+              with industry-standard security practices.
             </p>
             <p>
               <strong>Breach notification.</strong> If we become aware of a
@@ -354,10 +447,12 @@ const PrivacyPolicy = () => {
 
           <Section title="11. International Data Transfers">
             <p>
-              Data may be processed and stored in the United States and the
-              European Union through our infrastructure providers (AWS) and
-              our other sub-processors (ElevenLabs and Anthropic). Where data
-              is transferred outside the EEA or the UK, we rely on the
+              Data is processed and stored primarily in the United States
+              through our infrastructure providers (AWS, Render, Typesense
+              Cloud) and ElevenLabs, including the ElevenLabs-hosted language
+              model. PostHog analytics and session replays are stored in the
+              European Union. Where data is transferred outside the EEA or
+              the UK, we rely on the
               European Commission's Standard Contractual Clauses (and the UK
               International Data Transfer Addendum where relevant) and on the
               equivalent safeguards published by the sub-processor.

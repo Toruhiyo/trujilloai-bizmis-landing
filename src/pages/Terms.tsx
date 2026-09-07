@@ -2,7 +2,7 @@ import Footer from "@/components/Footer";
 import PublicPageLayout from "@/components/PublicPageLayout";
 import Seo from "@/components/Seo";
 
-const LAST_UPDATED = "April 28, 2026";
+const LAST_UPDATED = "September 7, 2026";
 const CONTACT_EMAIL = "hello@bizmis.ai";
 const COMPANY_LEGAL_NAME = "Bizmis";
 const COMPANY_JURISDICTION = "Spain";
@@ -204,23 +204,31 @@ const Terms = () => {
                 including:
                 <ul className="list-[circle] pl-6 space-y-1 mt-2">
                   <li>
-                    <strong>ElevenLabs</strong> — speech-to-text,
+                    <strong>ElevenLabs</strong>: speech-to-text,
                     text-to-speech, and orchestration of the conversational AI
-                    agent (including LLM inference). The agent is configured
-                    to use Anthropic's Claude family of large language models
-                    for response generation.
+                    agent (including LLM inference). Responses are generated
+                    by a Qwen large language model hosted and operated by
+                    ElevenLabs on its own infrastructure.
                   </li>
                   <li>
-                    <strong>Anthropic</strong> — provider of the Claude family
-                    of large language models, used by ElevenLabs for live
-                    voice conversations and by our backend (through Amazon
-                    Bedrock) for background tasks such as policy search and
-                    session classification.
+                    <strong>Amazon Web Services (AWS)</strong>: hosting of the
+                    backend API, managed data storage, and model inference
+                    through Amazon Bedrock (Anthropic Claude and Cohere
+                    embedding models) for background tasks such as product
+                    search, support-content extraction, and session
+                    classification.
                   </li>
                   <li>
-                    <strong>Amazon Web Services (AWS)</strong> — hosting,
-                    managed data storage, and model inference (Amazon
-                    Bedrock).
+                    <strong>Render</strong>: hosting of the merchant admin app
+                    and its database.
+                  </li>
+                  <li>
+                    <strong>Typesense Cloud</strong>: search index for the
+                    Merchant's product catalog (no Store Customer data).
+                  </li>
+                  <li>
+                    <strong>PostHog (EU Cloud)</strong>: product analytics and
+                    widget session replay.
                   </li>
                 </ul>
                 A current list of sub-processors, the data they receive,
@@ -239,12 +247,14 @@ const Terms = () => {
                 does not use Store Customer voice recordings, audio, or
                 conversation transcripts to train any AI model. We require
                 our AI sub-processors to refrain from using this data to
-                train their general-purpose models: AWS Bedrock customer data
-                is not used to train any model by default; Anthropic does not
-                train its foundation models on API or Bedrock customer data
-                by default; and the ElevenLabs integration is configured so
-                that conversation audio is not used to improve ElevenLabs's
-                models.
+                train their general-purpose models: the live-conversation
+                language model is hosted by ElevenLabs, whose agreements
+                prohibit LLM providers from training on customer content;
+                AWS Bedrock customer data is not used to train any model by
+                default; Anthropic does not train its foundation models on
+                API or Bedrock customer data by default; and the ElevenLabs
+                integration is configured so that conversation audio is not
+                used to improve ElevenLabs's models.
               </li>
               <li>
                 <strong>No voice biometrics.</strong> Bizmis does not perform
