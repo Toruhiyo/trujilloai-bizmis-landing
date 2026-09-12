@@ -1,0 +1,16 @@
+Hi,
+
+I spent some time on {{lead_brand}} picturing who's on it right now. {% if pain_hook and pain_hook != "" %}{{pain_hook}}{% else %}Someone's on a product page right now with the question they'd ask out loud in a shop, but nobody's there to answer it, so they're gone.{% endif %} Most won't email or open a chat. They just leave, and you never find out why.
+
+I'm Oriol. I built Bizmis for that moment. It's a voice-first store associate for Shopify-based stores like yours. Shoppers talk to it like they would with your best in-store salesperson, and it walks them to the right product, clearing up their doubts while they're still on the page. Shipping and returns questions get handled on the spot too. Here's a mockup of it running on {{lead_brand}}, with your products and branding in it:
+
+![Bizmis running on {{lead_brand}}](https://www.bizmis.ai/invite-cards/{{lead_handle}}/email/mockup.png)
+
+Early Access is free for the first 50 stores, with no commitment. It [installs in one click](https://apps.shopify.com/bizmis?ref={{lead_handle}}&code={{access_code}}&utm_source=bizmis-cold-email&utm_medium=email&utm_campaign={{utm_campaign}}&utm_content={{lead_handle}}), stays in private mode so only your Shopify admins can see it until you turn it on, nothing renews, and if it doesn't sell more for you, you uninstall it and we're done.
+
+If you'd rather see it live first, [grab 30 minutes here](https://calendly.com/oriol-bizmis/bizmis-onboarding?ref={{lead_handle}}&utm_source=bizmis-cold-email&utm_medium=email&utm_campaign={{utm_campaign}}&utm_content={{lead_handle}}). And if the store isn't your side of things, no problem, just point me to whoever runs it.
+
+Oriol
+Founder, Bizmis · [bizmis.ai](https://www.bizmis.ai "color:#8F7856;text-decoration:none")
+
+[Unsubscribe](https://www.bizmis.ai/unsubscribe?ref={{lead_handle}}&sig={{unsub_sig}} "font-size:10px;font-weight:400;color:#B5A48E;text-decoration:underline")
