@@ -8,7 +8,7 @@ import {
 import { Check, ArrowRight, Clock, Badge as BadgeIcon, ChevronDown, Phone, MessageSquareText, Info } from "lucide-react";
 import { FaTag } from "react-icons/fa";
 import { useState, useRef, useEffect, useMemo } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import SectionBadge from "./SectionBadge";
 import { usePostHog } from "posthog-js/react";
 import confetti from "canvas-confetti";
@@ -307,6 +307,27 @@ const PricingCardHeroBackdrop = ({ noiseId }: { noiseId: string }) => (
 const normalizeCouponInput = (value: string): string =>
   value.trim().toUpperCase();
 
+/** Matches the `?code=` query used on early-access email and install links. */
+const COUPON_URL_PARAM = "code";
+
+const readCouponFromSearchParams = (params: URLSearchParams): string => {
+  const raw = params.get(COUPON_URL_PARAM);
+  return raw ? normalizeCouponInput(raw) : "";
+};
+
+const withCouponSearchParam = (
+  params: URLSearchParams,
+  code: string | null,
+): URLSearchParams => {
+  const next = new URLSearchParams(params);
+  if (code) {
+    next.set(COUPON_URL_PARAM, code);
+  } else {
+    next.delete(COUPON_URL_PARAM);
+  }
+  return next;
+};
+
 const couponErrorMessage = (
   code: CouponErrorCode | string,
   errors: Messages["pricing"]["coupon"]["errors"],
@@ -391,6 +412,7 @@ const fireEarlyAccessConfetti = (
 
 const Pricing = () => {
   const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
   const href = useLocaleHref();
   const messages = useMessages();
   const posthog = usePostHog();
@@ -407,6 +429,18 @@ const Pricing = () => {
     null,
   );
   const couponInputRef = useRef<HTMLInputElement>(null);
+  const applyInFlightRef = useRef(false);
+  const didAutoApplyUrlCouponRef = useRef(false);
+
+  const persistCouponUrlParam = (code: string | null) => {
+    setSearchParams(
+      (prev) => {
+        const next = withCouponSearchParam(prev, code);
+        return next.toString() === prev.toString() ? prev : next;
+      },
+      { replace: true },
+    );
+  };
 
   useEffect(() => {
     let active = true;
@@ -472,30 +506,39 @@ const Pricing = () => {
     );
   };
 
-  const tryApplyEarlyAccessCoupon = async () => {
-    if (showEarlyAccess || isApplyingCoupon) {
+  const tryApplyEarlyAccessCoupon = async (
+    rawCode?: string,
+    options?: { celebrate?: boolean },
+  ) => {
+    if (showEarlyAccess || isApplyingCoupon || applyInFlightRef.current) {
       return;
     }
 
-    const entered = normalizeCouponInput(couponValue);
+    const entered = normalizeCouponInput(rawCode ?? couponValue);
     if (!entered) {
       setCouponError(messages.pricing.coupon.errors.empty);
       return;
     }
 
+    persistCouponUrlParam(entered);
+    setCouponValue(entered);
     setCouponError(null);
+    applyInFlightRef.current = true;
     setIsApplyingCoupon(true);
     try {
       const accessToken = await requestCouponAccessToken();
       const coupon = await validateCoupon(entered, accessToken);
       setAppliedCoupon(coupon);
       setCouponValue(coupon.code);
+      persistCouponUrlParam(coupon.code);
       posthog.capture("pricing_coupon_applied", {
         coupon: coupon.code,
         coupon_kind: coupon.kind,
         billing_period: isYearly ? "yearly" : "monthly",
       });
-      fireEarlyAccessConfetti(couponInputRef.current);
+      if (options?.celebrate !== false) {
+        fireEarlyAccessConfetti(couponInputRef.current);
+      }
     } catch (error) {
       const errorCode =
         error instanceof CouponApiError ? error.code : "NETWORK_ERROR";
@@ -508,6 +551,7 @@ const Pricing = () => {
         billing_period: isYearly ? "yearly" : "monthly",
       });
     } finally {
+      applyInFlightRef.current = false;
       setIsApplyingCoupon(false);
     }
   };
@@ -520,11 +564,26 @@ const Pricing = () => {
     setAppliedCoupon(null);
     setCouponError(null);
     setCouponValue("");
+    persistCouponUrlParam(null);
     posthog.capture("pricing_coupon_removed", {
       coupon: previousCode,
       billing_period: isYearly ? "yearly" : "monthly",
     });
   };
+
+  useEffect(() => {
+    if (didAutoApplyUrlCouponRef.current) {
+      return;
+    }
+    const fromUrl = readCouponFromSearchParams(searchParams);
+    if (!fromUrl) {
+      return;
+    }
+    didAutoApplyUrlCouponRef.current = true;
+    void tryApplyEarlyAccessCoupon(fromUrl, { celebrate: false });
+    // Apply the landing `?code=` once on mount; later writes keep the URL in sync.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const getDisplayPrice = (plan: Plan): number => {
     const couponPrice = findCouponPriceFor(plan);
