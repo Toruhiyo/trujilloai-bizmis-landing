@@ -2,6 +2,22 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
+    <script>
+      (function () {
+        var params = new URLSearchParams(location.search);
+        var ad = params.get("marketing") === "ad-1" || params.get("promo_video") === "opening";
+        if (!ad) return;
+        var root = document.documentElement;
+        root.classList.add("is-promo-opening");
+        root.classList.remove("is-promo-cover");
+        root.style.setProperty("--ad-warmth", (params.get("part") || "") === "pitch" ? "1" : "0");
+        document.write(
+          '<link rel="stylesheet" href="/promo/promo-host.css">' +
+          '<link rel="stylesheet" href="/promo/promo-ad-tokens.css">' +
+          '<link rel="stylesheet" href="/promo/promo-ad.css">'
+        );
+      })();
+    </script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Bizmis — Voice-First Sales Clerk for Shopify</title>
     <meta

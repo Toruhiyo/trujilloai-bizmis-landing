@@ -24,6 +24,7 @@ import AttributionTracker from "./components/AttributionTracker";
 import { LocaleRoute, LocalizedRedirect } from "./i18n/LocaleRoute";
 import { LocaleProvider } from "./i18n/LocaleProvider";
 import { DEFAULT_LOCALE } from "./i18n/locales";
+import AdFilm, { isAdFilmRequest } from "./promo/AdFilm";
 
 const queryClient = new QueryClient();
 
@@ -49,7 +50,9 @@ const publicLocalizedRoutes = () => [
   <Route key="not-found" path="*" element={<NotFound />} />,
 ];
 
-const App = () => (
+const App = () => {
+  if (isAdFilmRequest()) return <AdFilm />;
+  return (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
       <Toaster />
@@ -101,6 +104,7 @@ const App = () => (
       </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>
-);
+  );
+};
 
 export default App;
