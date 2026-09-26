@@ -6695,6 +6695,32 @@ html.is-promo-clip.is-clip-moment #bizmis-avatar-embed {
   z-index: 40;
 }
 
+.promo-glide.is-pain .promo-glide__veil,
+.promo-close__veil.is-lost {
+  background: rgba(232, 230, 226, 0.92);
+}
+
+.promo-glide.is-pain .promo-glide__mark {
+  display: none;
+}
+
+.promo-glide__lost-mark,
+.promo-close__lost-mark {
+  position: absolute;
+  left: 50%;
+  top: 46%;
+  z-index: 5;
+  margin: 0;
+  color: #4a4744;
+  font-family: var(--font-heading);
+  font-weight: 700;
+  letter-spacing: -0.04em;
+  line-height: 0.85;
+  opacity: 0;
+  pointer-events: none;
+  user-select: none;
+}
+
 .promo-glide__mark svg {
   display: block;
   width: 100%;

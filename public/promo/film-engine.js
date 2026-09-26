@@ -317,9 +317,9 @@
     cellScale: 0.3,
     baseH: 100,
     layDownMs: 2200,
-    rampMs: 5000,
+    rampMs: 9000,
     speedFrom: 0,
-    speedTo: 2400,
+    speedTo: 1100,
     liveRows: 2,
     liveMaxSpeed: 600,
     blurStart: 0.72,
@@ -482,7 +482,12 @@
 
   function glideRamp(u) {
     const t = Math.min(1, Math.max(0, u));
-    return t * t * t;
+    return t * t * (3 - 2 * t);
+  }
+
+  function glideRampDistance(u) {
+    const t = Math.min(1, Math.max(0, u));
+    return t * t * t - (t * t * t * t) / 2;
   }
 
   function glideSpeed(glideMs) {
@@ -495,13 +500,12 @@
     const from = PROMO_GLIDE.speedFrom;
     const to = PROMO_GLIDE.speedTo;
     const elapsed = Math.max(0, glideMs);
-    const power = 4;
     if (elapsed >= span) {
-      const ramp = from * span + (to - from) * span / power;
+      const ramp = from * span + (to - from) * span * glideRampDistance(1);
       return (ramp + to * (elapsed - span)) / 1000;
     }
     const u = elapsed / span;
-    return (from * elapsed + (to - from) * elapsed * glideRamp(u) / power) / 1000;
+    return (from * elapsed + (to - from) * span * glideRampDistance(u)) / 1000;
   }
 
   function glideCamera(timeMs) {
@@ -936,6 +940,7 @@
       video: node.querySelector('.promo-glide__video'),
       veil: node.querySelector('.promo-glide__veil'),
       mark: node.querySelector('.promo-glide__mark'),
+      lost: node.querySelector('.promo-glide__lost-mark'),
       bloom: fx ? fx.querySelector('.promo-glide__bloom') : null,
       rays: fx ? fx.querySelector('.promo-glide__rays') : null,
       poof,
@@ -980,6 +985,16 @@
   }
 
   const GLIDE_LIVE_CAP = 16;
+
+  function paintGlideStamp(veil, mark, age, veilStrength) {
+    const veilIn = Math.min(1, Math.max(0, age) / PROMO_GLIDE.bloomMs);
+    const flash = veilIn < 1 ? Math.sin(veilIn * Math.PI) * 0.08 : 0;
+    if (veil) veil.style.opacity = Math.min(1, veilStrength * veilIn + flash).toFixed(3);
+    if (!mark) return;
+    const pop = Math.min(1, Math.max(0, age) / 260);
+    mark.style.opacity = Math.min(1, pop * 1.35).toFixed(3);
+    mark.style.transform = `translate(-50%, -50%) scale(${(0.72 + (1 - (1 - pop) ** 3) * 0.28).toFixed(3)})`;
+  }
 
   function paintPainPoof(poof, seedA, seedB, age) {
     const dustLife = PROMO_GLIDE.poofMs + PROMO_GLIDE.dustMs;
@@ -2915,6 +2930,28 @@
     return keys;
   }
 
+  function glideSeaStills() {
+    const frame = { width: 1440, height: 810 };
+    const urls = new Set();
+    ['pain', 'pitch'].forEach((mode) => {
+      const end = PROMO_GLIDE.layDownMs + PROMO_GLIDE.rampMs;
+      for (let time = 0; time <= end; time += 800) {
+        const view = glideCells(time, frame, mode);
+        view.cells.forEach((cell) => {
+          const screen = glideCellScreen(cell, view.span.cam, view.span.unit, frame);
+          if (screen.h < 48) return;
+          if (Math.abs(screen.cx - frame.width / 2) > frame.width * 0.55) return;
+          if (screen.cy < -80 || screen.cy > frame.height + 80) return;
+          const tone = mode === 'pitch' ? 'pitch' : 'pain';
+          const url = glideStillSrc(tone, cell.id, glideMotion(cell, mode), mode !== 'pitch', glideLook(cell, mode));
+          if (url) urls.add(url);
+        });
+      }
+      glideEvents(mode, frame);
+    });
+    return urls;
+  }
+
   function preloadGlideMedia() {
     const add = (bucket, tone, device, motion, chat, look) => {
       const video = clipSrc(tone, device, motion, chat, look);
@@ -2926,6 +2963,7 @@
     const urgent = { images: new Set(), videos: new Set() };
     const later = { images: new Set(), videos: new Set() };
     const opening = glideOpeningKeys();
+    glideSeaStills().forEach((url) => urgent.images.add(url));
     PROMO_CLIP_DEVICES.forEach((device) => {
       (PROMO_CLIP_MOTIONS[device] || []).forEach((motion) => {
         PROMO_STORE_LOOKS.forEach((look) => {
@@ -4250,7 +4288,7 @@
         store.style.transform = '';
         store.style.transition = '';
         store.style.transformOrigin = '';
-        store.querySelectorAll('.promo-close__veil, .promo-close__mark').forEach((node) => node.remove());
+        store.querySelectorAll('.promo-close__veil, .promo-close__mark, .promo-close__lost-mark').forEach((node) => node.remove());
       }
       this.root.classList.remove('is-close-seat');
       this.root.querySelectorAll('.promo-close__lost, .promo-close__poof').forEach((node) => node.remove());
@@ -5427,6 +5465,7 @@
         const still = document.createElement('img');
         still.className = 'promo-glide__still';
         still.alt = '';
+        still.decoding = 'sync';
         const video = document.createElement('video');
         video.className = 'promo-glide__video';
         video.muted = true;
@@ -5455,11 +5494,14 @@
         const mark = document.createElement('span');
         mark.className = 'promo-glide__mark';
         mark.innerHTML = '<svg viewBox="0 0 12 12" aria-hidden="true"><path d="M1.8 6.1 4.6 9.1 10.2 2.8" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+        const lost = document.createElement('span');
+        lost.className = 'promo-glide__lost-mark';
+        lost.textContent = 'LOST';
         const fx = document.createElement('div');
         fx.className = 'promo-glide__fx';
         fx.append(bloom, rays, poof);
         fx.hidden = true;
-        cell.append(still, video, veil, mark);
+        cell.append(still, video, veil, mark, lost);
         sheet.append(cell);
         fxLayer.append(fx);
         pool.push({ cell, fx });
@@ -5620,14 +5662,8 @@
         this.paintLostLead(node, fx, cell, view);
         return true;
       }
-      const pain = mode === 'pitch' ? null : painPoofState(cell, timeMs, frame);
-      const painAge = pain ? pain.age : null;
-      const event = mode === 'pitch'
-        ? glideEventAt(mode, frame, cell.key, timeMs)
-        : (painAge == null ? null : { t: timeMs - painAge });
-      const sold = mode === 'pitch' && !!event;
-      const poofing = painAge != null;
-      const stamp = `${cell.key}|${event ? Math.round(event.t) : ''}|${live ? 1 : 0}`;
+      const event = glideEventAt(mode, frame, cell.key, timeMs);
+      const stamp = `${cell.key}|${event ? Math.round(event.t) : ''}`;
       if (node.dataset.stamp !== stamp) {
         node.dataset.stamp = stamp;
         node.classList.remove('is-dusting');
@@ -5647,6 +5683,7 @@
         const height = cell.h * unit;
         node.style.width = `${width.toFixed(2)}px`;
         node.style.height = `${height.toFixed(2)}px`;
+        if (parts.lost) parts.lost.style.fontSize = `${Math.max(28, width * 0.16).toFixed(0)}px`;
         node.style.transform = `translate3d(${(cell.x * unit).toFixed(2)}px, ${(cell.y * unit).toFixed(2)}px, 0)`;
         node.style.borderRadius = `${gridMockupRadius(cell.device, width).toFixed(2)}px`;
         const still = parts.still;
@@ -5662,7 +5699,7 @@
             still.src = stillSrc;
           }
         }
-        const wantVideo = live && !poofing;
+        const wantVideo = false;
         if (video && wantVideo && video.dataset.clip !== clipKey) {
           video.style.opacity = '';
           delete video.dataset.held;
@@ -5680,7 +5717,7 @@
       const stillNode = parts.still;
       const videoNode = parts.video;
       if (!live) this.releaseGlideVideo(node);
-      const showVideo = live && !poofing && videoNode && videoNode.dataset.still !== '1' && videoNode.readyState >= 2 && !!videoNode.dataset.clip;
+      const showVideo = false;
       if (videoNode) {
         if (showVideo && videoNode.paused && videoNode.dataset.held !== '1') videoNode.play().catch(() => {});
         if (!showVideo && !videoNode.paused && videoNode.dataset.held !== '1') videoNode.pause();
@@ -5689,84 +5726,28 @@
       if (stillNode) writeHidden(stillNode, showVideo);
       node.hidden = false;
       node.style.opacity = '';
-      if (!event || (!poofing && !sold)) {
-        const veil = parts.veil;
-        const mark = parts.mark;
-        writePaint(veil, 'opacity', '0');
-        writePaint(mark, 'opacity', '0');
+      if (!event) {
+        writePaint(parts.veil, 'opacity', '0');
+        writePaint(parts.mark, 'opacity', '0');
+        writePaint(parts.lost, 'opacity', '0');
         if (fx) writeHidden(fx, true);
-        if (mode !== 'pitch') {
-          const gone = pain && pain.opacity <= 0.001;
-          const opacity = !pain || pain.opacity >= 0.99 ? '' : pain.opacity.toFixed(3);
-          writePaint(stillNode, 'opacity', gone ? '0' : opacity);
-          writePaint(videoNode, 'opacity', gone ? '0' : opacity);
-          if (gone) {
-            node.classList.add('is-dusting');
-            node.style.setProperty('--card-left', '0');
-          } else node.classList.remove('is-dusting');
-        }
-        return true;
-      }
-      if (fx && mode !== 'pitch') {
-        const screen = glideCellScreenAt(
-          cell,
-          view.span.cam,
-          view.span.unit,
-          frame,
-          view.visibleTilt == null ? PROMO_GLIDE.tilt : view.visibleTilt,
-        );
-        writeHidden(fx, false);
-        writePaint(fx, 'width', `${screen.w.toFixed(1)}px`);
-        writePaint(fx, 'height', `${screen.h.toFixed(1)}px`);
-        writePaint(fx, 'transform', `translate(${screen.x.toFixed(1)}px, ${screen.y.toFixed(1)}px)`);
-      }
-      const bloom = parts.bloom;
-      const rays = parts.rays;
-      const poof = parts.poof;
-      const still = stillNode;
-      const video = videoNode;
-      if (mode === 'pitch') {
-        const age = timeMs - event.t;
-        const veilIn = Math.min(1, age / PROMO_GLIDE.bloomMs);
-        const flash = veilIn < 1 ? Math.sin(veilIn * Math.PI) * 0.1 : 0;
-        const veil = node.querySelector('.promo-glide__veil');
-        const mark = node.querySelector('.promo-glide__mark');
-        if (veil) veil.style.opacity = (0.4 * veilIn + flash).toFixed(3);
-        if (mark) {
-          const pop = Math.min(1, age / 260);
-          mark.style.opacity = Math.min(1, pop * 1.35).toFixed(3);
-          mark.style.transform = `translate(-50%, -50%) scale(${(0.72 + (1 - (1 - pop) ** 3) * 0.28).toFixed(3)})`;
-        }
-        if (video && video.dataset.held !== '1' && veilIn >= 1) {
-          const holdLastFrame = () => {
-            const duration = video.duration;
-            if (Number.isFinite(duration) && duration > 0.2) {
-              try { video.currentTime = Math.max(0, duration - 0.04); } catch (error) { /* keep the frame already on screen */ }
-            }
-            video.pause();
-            const snap = () => releaseHeldVideo(video, still);
-            if (video.seeking) video.addEventListener('seeked', snap, { once: true });
-            else snap();
-          };
-          video.dataset.held = '1';
-          if (video.readyState >= 1) holdLastFrame();
-          else video.addEventListener('loadeddata', holdLastFrame, { once: true });
-        }
-        if (bloom) bloom.style.opacity = '0';
-        if (rays) rays.style.opacity = '0';
-        if (poof) poof.style.opacity = '0';
-        if (fx) fx.hidden = true;
+        node.classList.remove('is-dusting');
         return true;
       }
       const age = timeMs - event.t;
-      const fade = paintPainPoof(poof, cell.row, cell.col, age);
-      const fadeText = fade <= 0.001 ? '0' : fade.toFixed(3);
-      node.classList.add('is-dusting');
-      node.style.setProperty('--card-left', fadeText);
-      writePaint(still, 'opacity', fadeText);
-      writePaint(video, 'opacity', fadeText);
-      writePaint(bloom, 'opacity', '0');
-      writePaint(rays, 'opacity', '0');
+      if (mode === 'pitch') {
+        paintGlideStamp(parts.veil, parts.mark, age, 0.4);
+        writePaint(parts.lost, 'opacity', '0');
+      } else {
+        if (parts.lost && !parts.lost.style.fontSize) {
+          const width = Number.parseFloat(node.style.width) || cell.w * view.span.unit;
+          parts.lost.style.fontSize = `${Math.max(28, width * 0.16).toFixed(0)}px`;
+        }
+        paintGlideStamp(parts.veil, parts.lost, age, 0.82);
+        writePaint(parts.mark, 'opacity', '0');
+      }
+      if (fx) writeHidden(fx, true);
+      node.classList.remove('is-dusting');
       return true;
     }
 
@@ -5788,10 +5769,11 @@
         if (poof) poof.style.opacity = '0';
         return;
       }
-      const fade = paintPainPoof(poof, 4, 9, timeMs - marks.captionHoldEnd);
-      const fadeText = fade <= 0.001 ? '0' : fade.toFixed(3);
-      text.style.opacity = fadeText;
-      if (haze) haze.style.opacity = fadeText;
+      const fadeU = Math.min(1, (timeMs - marks.captionHoldEnd) / PROMO_GLIDE.poofMs);
+      const fade = 1 - fadeU * fadeU * (3 - 2 * fadeU);
+      text.style.opacity = fade.toFixed(3);
+      if (haze) haze.style.opacity = fade.toFixed(3);
+      if (poof) poof.style.opacity = '0';
     }
 
     paintGlideEnd(timeMs, mode) {
@@ -5949,7 +5931,11 @@
           streak.style.transform = `rotate(${angle.toFixed(2)}deg) scale(1.14)`;
           level.style.transform = `rotate(${(-angle).toFixed(2)}deg) scale(${(1 / 1.14).toFixed(4)})`;
           streak.style.filter = 'url(#promo-glide-blur)';
-          document.getElementById('promo-glide-blur-node')?.setAttribute('stdDeviation', `${Math.min(blur, 8).toFixed(2)} 0`);
+          const blurStep = (Math.round(Math.min(blur, 8) * 2) / 2).toFixed(1);
+          if (root.dataset.blur !== blurStep) {
+            root.dataset.blur = blurStep;
+            document.getElementById('promo-glide-blur-node')?.setAttribute('stdDeviation', `${blurStep} 0`);
+          }
         } else {
           streak.style.transform = '';
           level.style.transform = '';
@@ -6001,17 +5987,26 @@
           slot.fx.hidden = true;
           return;
         }
-        if (this.glideKeepStore && item.cell.key === this.glideLeadKey) {
+        const trackLead = this.glideKeepStore && arrive < 0.992 && item.cell.key === this.glideLeadKey;
+        const leadFace = '.promo-glide__still, .promo-glide__video, .promo-glide__veil, .promo-glide__mark, .promo-glide__lost-mark';
+        if (trackLead) {
           slot.cell.style.background = 'transparent';
           slot.cell.style.boxShadow = 'none';
-          slot.cell.querySelectorAll('.promo-glide__still, .promo-glide__video, .promo-glide__veil, .promo-glide__mark').forEach((node) => {
+          slot.cell.querySelectorAll(leadFace).forEach((node) => {
             node.style.visibility = 'hidden';
+          });
+        } else if (item.cell.key === this.glideLeadKey) {
+          slot.cell.style.background = '';
+          slot.cell.style.boxShadow = '';
+          slot.cell.querySelectorAll(leadFace).forEach((node) => {
+            node.style.visibility = '';
           });
         }
         shown += 1;
       });
       this.clipGlideOpen(root, arrive);
-      this.placeCloseStore(root);
+      if (this.glideKeepStore && arrive < 0.992) this.placeCloseStore(root);
+      else if (this.glideKeepStore) this.releaseCloseStore();
       pool.forEach((slot) => {
         if (!used.has(slot)) {
           this.releaseGlideVideo(slot.cell);
@@ -6042,8 +6037,18 @@
       };
     }
 
+    releaseCloseStore() {
+      const store = this.painStore();
+      if (store) {
+        store.style.visibility = 'hidden';
+        store.style.transform = '';
+      }
+      this.root.classList.remove('is-close-seat');
+    }
+
     runGlide(mode) {
       window.cancelAnimationFrame(this.planeFrame);
+      glideEvents(mode, this.gridFrame());
       const start = performance.now();
       const step = (now) => {
         const elapsed = now - start;
@@ -6229,50 +6234,27 @@
     async poofCloseStore() {
       const store = this.painStore();
       if (!store || prefersReducedMotion()) return;
-      this.root.querySelectorAll('.promo-close__lost').forEach((node) => node.remove());
-      const lost = document.createElement('div');
-      lost.className = 'promo-close__lost';
-      lost.textContent = 'LOST';
-      const parent = store.parentElement;
-      parent.insertBefore(lost, store);
-      const parentBox = parent.getBoundingClientRect();
+      store.querySelectorAll('.promo-close__veil, .promo-close__lost-mark').forEach((node) => node.remove());
+      this.root.querySelectorAll('.promo-close__poof, .promo-close__lost').forEach((node) => node.remove());
+      const veil = document.createElement('div');
+      veil.className = 'promo-close__veil is-lost';
+      const mark = document.createElement('span');
+      mark.className = 'promo-close__lost-mark';
+      mark.textContent = 'LOST';
       const box = store.getBoundingClientRect();
-      lost.style.left = `${(box.left - parentBox.left).toFixed(1)}px`;
-      lost.style.top = `${(box.top - parentBox.top).toFixed(1)}px`;
-      lost.style.width = `${box.width.toFixed(1)}px`;
-      lost.style.height = `${box.height.toFixed(1)}px`;
-      lost.style.fontSize = `${Math.round(box.width * 0.2)}px`;
-      lost.style.opacity = '0';
-      const host = document.createElement('div');
-      host.className = 'promo-close__poof';
-      const poof = buildPainPoof();
-      host.append(poof);
-      this.placeOverStore(host, store);
-      const reference = 280;
-      const scale = box.width / reference;
-      host.style.width = `${reference}px`;
-      host.style.height = `${(reference * box.height / box.width).toFixed(1)}px`;
-      host.style.transformOrigin = 'top left';
-      host.style.transform = `scale(${scale.toFixed(3)})`;
-      this.root.append(host);
-      const previous = store.style.transition;
-      store.style.transition = 'none';
-      const life = PROMO_GLIDE.poofMs + PROMO_GLIDE.dustMs;
+      mark.style.fontSize = `${Math.max(36, box.width * 0.16).toFixed(0)}px`;
+      store.append(veil, mark);
+      store.style.opacity = '';
+      const life = 260 + 900;
       const started = performance.now();
       await new Promise((resolve) => {
         const step = (now) => {
-          const age = now - started;
-          const fade = paintPainPoof(poof, 4, 9, age);
-          store.style.opacity = fade <= 0.001 ? '0' : fade.toFixed(3);
-          const reveal = Math.min(1, Math.max(0, (age - PROMO_GLIDE.poofMs * 0.35) / (PROMO_GLIDE.poofMs * 0.65)));
-          lost.style.opacity = reveal.toFixed(3);
-          if (age < life) window.requestAnimationFrame(step);
+          paintGlideStamp(veil, mark, now - started, 0.82);
+          if (now - started < life) window.requestAnimationFrame(step);
           else resolve();
         };
         window.requestAnimationFrame(step);
       });
-      host.remove();
-      store.style.transition = previous;
     }
 
     async markCloseStoreSold() {
@@ -6335,7 +6317,6 @@
       this.captureGlideClose('pain');
       await this.poofCloseStore();
       if (generation !== this.scaleGeneration) return;
-      this.glideLeadPoofed = true;
       this.revealScaleLayer();
       this.mountGlide('pain');
       if (generation !== this.scaleGeneration) return;
@@ -6618,7 +6599,6 @@
         if (stage) applyMomentPose(stage, 'bundle', { instant: true });
         promoWidget.applyStoreLook(this.bizmisLook());
       } else {
-        this.glideLeadPoofed = true;
         this.root.classList.remove('is-pitch');
         this.openPainStage();
         this.applyPainBeat('answer-2', true);
