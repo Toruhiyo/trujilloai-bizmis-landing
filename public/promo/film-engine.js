@@ -225,6 +225,10 @@
   const PROMO_SCALE_HOLD_MS = 1000;
   const PROMO_END_CTA_DELAY_MS = 400;
   const PROMO_END_CTA_HOLD_MS = 3000;
+  const PROMO_END_CARD_MOVE_MS = 700;
+  const PROMO_END_CARD_BUTTON_MS = 140;
+  const PROMO_END_CARD_CURSOR_MS = 800;
+  const PROMO_END_CARD_HOLD_MS = 4000;
   const PROMO_SCALE_FADE_MS = 250;
   const PROMO_SCALE_LOOP_MS = 3000;
   const PROMO_GRID = {
@@ -3111,7 +3115,7 @@
       const fromFace = this.root.querySelector('[data-promo-face-from]');
       const toFace = this.root.querySelector('[data-promo-face-to]');
       if (!line || !fromFace) {
-        this.playSeeForYourself();
+        this.playEndCard();
         return;
       }
 
@@ -3160,7 +3164,7 @@
         line.classList.add('is-replaced');
         this.playHeroWords(toFace, () => {
           if (momentsEnabled()) this.playMoments(() => this.playPitchConveyor());
-          else this.playSeeForYourself();
+          else this.playEndCard();
         });
       }, toInAt);
     }
@@ -4548,6 +4552,18 @@
         if (!caption.textContent) caption.textContent = '';
         verdict.replaceChildren(hero, caption);
       }
+      const hero = verdict.querySelector('.promo-scale__end-hero');
+      if (hero && !this.root.querySelector('[data-promo-end-mark]')) {
+        const mark = document.createElement('span');
+        mark.className = 'promo-scale__mark';
+        mark.setAttribute('data-promo-end-mark', '');
+        const stamp = document.documentElement.getAttribute('data-promo-bizmis-stamp');
+        if (stamp) {
+          mark.style.webkitMaskImage = `url('${stamp}')`;
+          mark.style.maskImage = `url('${stamp}')`;
+        }
+        hero.append(mark);
+      }
       scale.querySelector('[data-promo-residue]')?.remove();
       scale.querySelector('.promo-scale__world')?.setAttribute('hidden', '');
       scale.querySelector('.promo-scale__readout')?.setAttribute('hidden', '');
@@ -5400,7 +5416,6 @@
       const elapsed = timeMs - endAt;
       const settle = Math.min(1, elapsed / PROMO_GLIDE.resolveMs);
       const ease = 1 - (1 - settle) ** 3;
-      const colors = this.gridPalette();
       const mark = verdict.querySelector('.promo-scale__mark');
       verdict.style.opacity = '1';
       if (streak) streak.style.opacity = (1 - ease).toFixed(3);
@@ -5409,15 +5424,16 @@
         verdict.style.transformOrigin = 'center calc(50% - 24px)';
         verdict.style.transform = `scale(${scale.toFixed(3)})`;
         if (mark) {
-          mark.style.background = colors.primary;
+          mark.style.background = '#fff';
           mark.style.transform = 'none';
         }
         if (caption) {
           caption.textContent = 'Built to sell.';
+          caption.style.color = '#fff';
           caption.style.opacity = '1';
           caption.style.transform = 'none';
         }
-        if (field) field.style.opacity = (1 - ease).toFixed(3);
+        if (field) field.style.opacity = '1';
         if (ease >= 1 && !this.gridThudSent) {
           this.gridThudSent = true;
           this.emitThud();
@@ -5883,9 +5899,7 @@
         this.paintGlideAt(0, 'pitch', { reduced: true });
         await waitMs(400);
         await this.playConveyorEnd('pitch');
-        this.restoreClerkSeat();
-        this.leaveCorridor();
-        this.playSeeForYourself();
+        await this.playEndCard();
         return;
       }
       this.captureGlideClose('pitch');
@@ -5897,9 +5911,148 @@
       await waitMs(glidePlayEnd('pitch'));
       if (generation !== this.scaleGeneration) return;
       await this.playConveyorEnd('pitch', { settled: true });
-      this.restoreClerkSeat();
-      this.leaveCorridor();
-      this.playSeeForYourself();
+      await this.playEndCard();
+    }
+
+    ensureEndCard(ctaKey) {
+      const key = ctaKey && Object.prototype.hasOwnProperty.call(PROMO_END_CTA, ctaKey)
+        ? ctaKey
+        : promoVideoConfig.cta;
+      const existing = this.root.querySelector('[data-promo-end-card]');
+      if (existing && existing.dataset.cta === key) return existing;
+      const parkedMark = existing?.querySelector('[data-promo-end-mark]');
+      const hero = this.root.querySelector('.promo-scale__end-hero');
+      if (parkedMark && hero) hero.appendChild(parkedMark);
+      existing?.remove();
+      const copy = PROMO_END_CTA[key];
+      const card = document.createElement('div');
+      card.className = 'promo-end';
+      card.setAttribute('data-promo-end-card', '');
+      card.dataset.cta = key;
+      const lockup = document.createElement('div');
+      lockup.className = 'promo-end__lockup';
+      const column = document.createElement('div');
+      column.className = 'promo-end__column';
+      if (copy && copy.scarcity) {
+        const eyebrow = document.createElement('p');
+        eyebrow.className = 'promo-end__eyebrow';
+        eyebrow.textContent = copy.scarcity;
+        column.append(eyebrow);
+      }
+      const headline = document.createElement('h2');
+      headline.className = 'promo-end__headline';
+      headline.textContent = 'Built to sell.';
+      column.append(headline);
+      if (copy) {
+        const action = document.createElement('div');
+        action.className = 'promo-end__action';
+        const button = document.createElement('span');
+        button.className = 'promo-end__button';
+        button.textContent = copy.label;
+        const cursor = document.createElement('span');
+        cursor.className = 'promo-end__cursor';
+        cursor.setAttribute('aria-hidden', 'true');
+        cursor.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 3.2 19.2 12.1 11.6 13.4 8.8 20.6z"/></svg>';
+        action.append(button, cursor);
+        if (copy.url) {
+          const url = document.createElement('p');
+          url.className = 'promo-end__url';
+          url.textContent = copy.url;
+          action.append(url);
+        }
+        column.append(action);
+      }
+      card.append(lockup, column);
+      this.root.append(card);
+      return card;
+    }
+
+    placeEndClerk() {
+      this.parkWidget();
+      promoWidget.applyStoreLook(this.bizmisLook());
+      const embed = this.parkedEmbed || document.getElementById('bizmis-avatar-embed');
+      if (!embed) return;
+      this.root.classList.add('is-clerk-instant');
+      embed.style.setProperty('--promo-avatar-scale', '2.05');
+      embed.style.setProperty('--promo-avatar-lift', '0px');
+    }
+
+    dockEndMark(card, animate) {
+      const mark = this.root.querySelector('[data-promo-end-mark]');
+      const lockup = card.querySelector('.promo-end__lockup');
+      if (!mark || !lockup || lockup.contains(mark)) return;
+      mark.style.background = '#fff';
+      if (!animate) {
+        mark.style.transition = 'none';
+        mark.style.transform = '';
+        lockup.appendChild(mark);
+        return;
+      }
+      const first = mark.getBoundingClientRect();
+      lockup.appendChild(mark);
+      const last = mark.getBoundingClientRect();
+      const sx = last.width > 1 ? first.width / last.width : 1;
+      const sy = last.height > 1 ? first.height / last.height : 1;
+      mark.style.transformOrigin = '0 0';
+      mark.style.transition = 'none';
+      mark.style.transform = `translate(${(first.left - last.left).toFixed(1)}px, ${(first.top - last.top).toFixed(1)}px) scale(${sx.toFixed(4)}, ${sy.toFixed(4)})`;
+      mark.getBoundingClientRect();
+      mark.style.transition = `transform ${PROMO_END_CARD_MOVE_MS}ms cubic-bezier(0.22, 1, 0.36, 1)`;
+      mark.style.transform = '';
+    }
+
+    settleEndCard(ctaKey) {
+      const card = this.ensureEndCard(ctaKey);
+      this.root.classList.add('is-end-card');
+      this.placeEndClerk();
+      this.dockEndMark(card, false);
+      card.classList.add('is-copy', 'is-settled');
+      if (card.dataset.cta !== 'none') {
+        card.querySelector('.promo-end__button')?.classList.add('is-in');
+        card.classList.add('is-aim');
+      }
+      const sold = this.root.querySelector('.promo-scale__sold');
+      if (sold) sold.style.opacity = '0';
+    }
+
+    async animateEndCard(ctaKey) {
+      const card = this.ensureEndCard(ctaKey);
+      this.root.classList.add('is-end-card');
+      this.placeEndClerk();
+      this.dockEndMark(card, true);
+      const sold = this.root.querySelector('.promo-scale__sold');
+      if (sold) {
+        sold.style.transition = 'opacity 280ms linear';
+        sold.style.opacity = '0';
+      }
+      window.setTimeout(() => card.classList.add('is-copy'), 180);
+      if (card.dataset.cta === 'none') {
+        window.setTimeout(() => setOpeningAvatarAction('thumbsup'), 280);
+        window.setTimeout(() => setOpeningAvatarAction('idle_neutral'), 1500);
+        await waitMs(PROMO_END_CARD_MOVE_MS);
+        return;
+      }
+      const buttonAt = PROMO_END_CARD_MOVE_MS;
+      window.setTimeout(() => {
+        card.querySelector('.promo-end__button')?.classList.add('is-in');
+        setOpeningAvatarAction('thumbsup');
+      }, buttonAt);
+      window.setTimeout(() => card.classList.add('is-aim'), buttonAt + PROMO_END_CARD_BUTTON_MS);
+      window.setTimeout(() => setOpeningAvatarAction('idle_neutral'), buttonAt + 1400);
+      await waitMs(buttonAt + PROMO_END_CARD_BUTTON_MS + PROMO_END_CARD_CURSOR_MS);
+    }
+
+    async playEndCard() {
+      if (prefersReducedMotion()) this.settleEndCard();
+      else await this.animateEndCard();
+      await waitMs(PROMO_END_CARD_HOLD_MS + promoHoldMs());
+      this.depart();
+    }
+
+    async showEndCardExport(ctaKey) {
+      await this.showScaleExport('end', 'pitch', ctaKey);
+      this.settleEndCard(ctaKey);
+      return this.whenPainRest(this.painHost());
     }
 
     async showScaleExport(kind, mode = 'pain', ctaKey) {
@@ -6563,6 +6716,11 @@
         'pitch-c-end-install': () => this.showScaleExport('end', 'pitch', 'install'),
         'pitch-c-end-ea': () => this.showScaleExport('end', 'pitch', 'ea'),
         'pitch-c-end-none': () => this.showScaleExport('end', 'pitch', 'none'),
+        'end-card': () => this.showEndCardExport(promoVideoConfig.cta),
+        'end-card-demo': () => this.showEndCardExport('demo'),
+        'end-card-install': () => this.showEndCardExport('install'),
+        'end-card-ea': () => this.showEndCardExport('ea'),
+        'end-card-none': () => this.showEndCardExport('none'),
         'pain-c-aim': () => this.showPainCloseAim(),
         'pain-b-zoom': () => this.showPainExport('answer-2'),
       };
