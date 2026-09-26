@@ -2864,6 +2864,58 @@ html.is-promo-opening.is-promo-depart .promo-opening {
   font-size: 18px;
 }
 
+.promo-moments__board.is-pose-close .promo-moments__card.is-pick {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(240px, 300px) 220px;
+  grid-template-rows: 1fr auto auto 1fr;
+  column-gap: 36px;
+  align-items: center;
+  padding: 28px 16px 28px 28px;
+}
+
+.promo-moments__board.is-pose-close .promo-moments__card.is-pick .promo-moments__photo {
+  position: relative;
+  grid-column: 1;
+  grid-row: 1 / -1;
+  left: auto;
+  top: auto;
+  bottom: auto;
+  width: auto;
+  height: 100%;
+  max-width: 100%;
+  aspect-ratio: 1;
+  justify-self: center;
+}
+
+.promo-moments__board.is-pose-close .promo-moments__card.is-pick .promo-moments__meta {
+  position: relative;
+  grid-column: 2;
+  grid-row: 2;
+  left: auto;
+  right: auto;
+  top: auto;
+  align-self: end;
+  margin: 0 0 18px;
+}
+
+.promo-moments__board.is-pose-close .promo-moments__card.is-pick .promo-moments__add {
+  position: relative;
+  grid-column: 2;
+  grid-row: 3;
+  left: auto;
+  right: auto;
+  top: auto;
+  bottom: auto;
+  align-self: start;
+  width: min(240px, 100%);
+  margin: 0;
+}
+
+.promo-opening.is-clerk-corner.is-moments:has(.promo-moments__board.is-pose-close) .promo-opening__widget {
+  top: 14%;
+  right: 2%;
+}
+
 .is-pose-doubt:not(.is-settled):not(.is-reduced) .promo-moments__card.is-pick {
   animation: promo-moments-page-in 720ms cubic-bezier(0.22, 1, 0.36, 1) both;
 }
@@ -3496,7 +3548,11 @@ html.is-promo-opening.is-promo-depart .promo-opening {
   opacity: 0;
   animation: none;
 }
-.is-pose-extra .promo-moments__card.is-pick .promo-moments__kept,
+.is-pose-extra .promo-moments__card.is-pick .promo-moments__kept {
+  opacity: 0;
+  animation: none;
+}
+
 .is-pose-bundle .promo-moments__card.is-pick .promo-moments__kept {
   opacity: 1;
   transform: scale(1);
