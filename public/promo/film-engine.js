@@ -326,6 +326,11 @@
     fieldHoldMs: 1000,
     resolveMs: 1100,
     endHoldMs: 1000,
+    captionInMs: 350,
+    captionHoldMs: 1000,
+    horizonMs: 1400,
+    horizonTilt: 54,
+    painFieldHoldMs: 400,
     pool: 140,
     dirX: 0.34,
     dirY: 0.94,
@@ -336,18 +341,50 @@
     tablet: { x: 0.88, y: 0.14 },
     phone: { x: 0.82, y: 0.07 },
   };
-  const GLIDE_PAIN_LINE = "It replies. It doesn't sell.";
+  const GLIDE_PAIN_CAPTION = 'Your store, on a typical day.';
   const glideRows = new Map();
   const glideWarmMedia = [];
   let glideEventCache = { key: '', list: [] };
+  let glideActiveTilt = PROMO_GLIDE.tilt * Math.PI / 180;
 
-  function glidePlayEnd() {
-    return PROMO_GLIDE.layDownMs
-      + PROMO_GLIDE.rampMs
-      + PROMO_GLIDE.dissolveMs
-      + PROMO_GLIDE.fieldHoldMs
-      + PROMO_GLIDE.resolveMs
-      + PROMO_GLIDE.endHoldMs;
+  function glideMarks(mode) {
+    const laydown = PROMO_GLIDE.layDownMs;
+    const glideEnd = laydown + PROMO_GLIDE.rampMs;
+    if (mode !== 'pain') {
+      const fieldEnd = glideEnd + PROMO_GLIDE.dissolveMs + PROMO_GLIDE.fieldHoldMs;
+      return {
+        laydown,
+        glideEnd,
+        captionStart: glideEnd,
+        captionInEnd: glideEnd,
+        captionHoldEnd: glideEnd,
+        captionPoofEnd: glideEnd,
+        horizonEnd: glideEnd,
+        fieldEnd,
+        playEnd: fieldEnd + PROMO_GLIDE.resolveMs + PROMO_GLIDE.endHoldMs,
+      };
+    }
+    const captionStart = glideEnd;
+    const captionInEnd = captionStart + PROMO_GLIDE.captionInMs;
+    const captionHoldEnd = captionInEnd + PROMO_GLIDE.captionHoldMs;
+    const captionPoofEnd = captionHoldEnd + PROMO_GLIDE.poofMs + PROMO_GLIDE.dustMs;
+    const horizonEnd = captionPoofEnd + PROMO_GLIDE.horizonMs;
+    const fieldEnd = horizonEnd + PROMO_GLIDE.painFieldHoldMs;
+    return {
+      laydown,
+      glideEnd,
+      captionStart,
+      captionInEnd,
+      captionHoldEnd,
+      captionPoofEnd,
+      horizonEnd,
+      fieldEnd,
+      playEnd: fieldEnd,
+    };
+  }
+
+  function glidePlayEnd(mode) {
+    return glideMarks(mode || 'pitch').playEnd;
   }
 
   function glideArrive(timeMs) {
@@ -355,17 +392,32 @@
     return u * u * (3 - 2 * u);
   }
 
-  function glidePhase(timeMs) {
-    const fieldAt = PROMO_GLIDE.layDownMs + PROMO_GLIDE.rampMs;
-    const endAt = fieldAt + PROMO_GLIDE.dissolveMs + PROMO_GLIDE.fieldHoldMs;
-    if (timeMs < PROMO_GLIDE.layDownMs) return 'laydown';
-    if (timeMs < fieldAt) return 'glide';
-    if (timeMs < endAt) return 'field';
+  function glidePhase(timeMs, mode) {
+    const marks = glideMarks(mode || 'pitch');
+    if (timeMs < marks.laydown) return 'laydown';
+    if (timeMs < marks.glideEnd) return 'glide';
+    if ((mode || 'pitch') === 'pain') {
+      if (timeMs < marks.captionPoofEnd) return 'caption';
+      if (timeMs < marks.horizonEnd) return 'horizon';
+      if (timeMs < marks.fieldEnd) return 'field';
+      return 'end';
+    }
+    if (timeMs < marks.fieldEnd) return 'field';
     return 'end';
   }
 
+  function glideTiltAt(timeMs, mode) {
+    if (mode !== 'pain') return PROMO_GLIDE.tilt;
+    const marks = glideMarks('pain');
+    if (timeMs <= marks.captionPoofEnd) return PROMO_GLIDE.tilt;
+    if (timeMs >= marks.horizonEnd) return PROMO_GLIDE.horizonTilt;
+    const u = (timeMs - marks.captionPoofEnd) / PROMO_GLIDE.horizonMs;
+    const ease = u * u * (3 - 2 * u);
+    return PROMO_GLIDE.tilt + (PROMO_GLIDE.horizonTilt - PROMO_GLIDE.tilt) * ease;
+  }
+
   function glideTilt() {
-    return PROMO_GLIDE.tilt * Math.PI / 180;
+    return glideActiveTilt;
   }
 
   function glideYaw() {
@@ -389,8 +441,10 @@
     const tilt = glideTilt();
     const cosT = Math.cos(tilt);
     const sinT = Math.sin(tilt);
-    const denom = PROMO_GLIDE.perspective * cosT + screenY * sinT;
-    const y1 = denom === 0 ? 0 : (screenY * PROMO_GLIDE.perspective) / denom;
+    const minDenom = Math.max(48, PROMO_GLIDE.perspective * 0.08);
+    let denom = PROMO_GLIDE.perspective * cosT + screenY * sinT;
+    if (denom < minDenom) denom = minDenom;
+    const y1 = (screenY * PROMO_GLIDE.perspective) / denom;
     const z2 = y1 * sinT;
     const scale = PROMO_GLIDE.perspective / Math.max(80, PROMO_GLIDE.perspective - z2);
     const x1 = screenX / scale;
@@ -555,7 +609,8 @@
     };
   }
 
-  function glideCells(timeMs, frame) {
+  function glideCells(timeMs, frame, mode) {
+    glideActiveTilt = glideTiltAt(timeMs, mode || 'pitch') * Math.PI / 180;
     const span = glideSpan(timeMs, frame);
     const pitch = glidePitch();
     const row0 = Math.floor(span.minY / pitch) - 1;
@@ -663,7 +718,7 @@
     for (let time = glideEventStart(); time < end; time += PROMO_GLIDE.stepMs) {
       debt += glideRate(mode, time) * PROMO_GLIDE.stepMs / 1000;
       if (debt < 1) continue;
-      const view = glideCells(time, frame);
+      const view = glideCells(time, frame, mode);
       while (debt >= 1) {
         const open = view.cells.filter((cell) => {
           if (used.has(cell.key)) return false;
@@ -726,7 +781,66 @@
     return local < painPoofWindow() ? local : null;
   }
 
-  function glideBlurPx(timeMs) {
+  function buildPainPoof() {
+    const poof = document.createElement('div');
+    poof.className = 'promo-glide__poof';
+    for (let puff = 0; puff < 6; puff += 1) {
+      const smoke = document.createElement('i');
+      smoke.className = 'promo-glide__smoke';
+      poof.append(smoke);
+    }
+    for (let bit = 0; bit < 40; bit += 1) {
+      const ash = document.createElement('i');
+      ash.className = 'promo-glide__ash';
+      ash.style.setProperty('--ash', `${bit % 7 === 0 ? 2.5 : 1.5}px`);
+      poof.append(ash);
+    }
+    return poof;
+  }
+
+  function paintPainPoof(poof, seedA, seedB, age) {
+    const dustLife = PROMO_GLIDE.poofMs + PROMO_GLIDE.dustMs;
+    const cardU = Math.min(1, Math.max(0, age) / PROMO_GLIDE.poofMs);
+    const dustU = Math.min(1, Math.max(0, age) / dustLife);
+    const fade = cardU >= 1 ? 0 : (1 - cardU * cardU);
+    if (!poof) return fade;
+    poof.style.opacity = '1';
+    poof.querySelectorAll('.promo-glide__smoke').forEach((smoke, index) => {
+      const seed = wallSeededUnit(seedA * 17 + seedB, 31 + index);
+      const speck = wallSeededUnit(seedB * 13 + index, 47 + seedA);
+      const puff = 1 - (1 - Math.min(1, dustU * 1.35)) ** 2;
+      const life = dustU < 0.05 ? dustU / 0.05 : Math.max(0, 1 - (dustU - 0.05) / 0.4);
+      const angle = seed * Math.PI * 2;
+      const reach = (30 + speck * 220) * puff;
+      const x = Math.cos(angle) * reach;
+      const y = Math.sin(angle) * reach * 0.7 - puff * 36;
+      const scale = 0.15 + puff * (3.2 + seed * 2.2);
+      smoke.style.opacity = (life * 0.28).toFixed(3);
+      smoke.style.transform = `translate(${x.toFixed(1)}px, ${y.toFixed(1)}px) scale(${scale.toFixed(3)})`;
+    });
+    poof.querySelectorAll('.promo-glide__ash').forEach((ash, index) => {
+      const seed = wallSeededUnit(seedA + index * 3, 61 + seedB);
+      const speck = wallSeededUnit(index + seedB, 73 + seedA);
+      const seedC = wallSeededUnit(index * 9 + seedA, 89 + seedB);
+      const fly = 1 - (1 - dustU) ** 3;
+      const angle = seed * Math.PI * 2 + (seedC - 0.5) * 0.9;
+      const reach = (36 + speck * speck * 520) * fly;
+      const x = (seedC - 0.5) * 34 + Math.cos(angle) * reach;
+      const y = (seed - 0.5) * 20 + Math.sin(angle) * reach * 0.8 - fly * 28;
+      const left = dustU < 0.04 ? dustU / 0.04 : Math.max(0, 1 - (dustU - 0.04) / 0.62);
+      ash.style.opacity = (left * (0.45 + speck * 0.55)).toFixed(3);
+      ash.style.transform = `translate(${x.toFixed(1)}px, ${y.toFixed(1)}px)`;
+    });
+    return fade;
+  }
+
+  function glideBlurPx(timeMs, mode) {
+    if (mode === 'pain') {
+      const marks = glideMarks('pain');
+      if (timeMs <= marks.captionPoofEnd) return 0;
+      const u = Math.min(1, (timeMs - marks.captionPoofEnd) / PROMO_GLIDE.horizonMs);
+      return PROMO_GLIDE.blurMax * u * u;
+    }
     const glideMs = timeMs - PROMO_GLIDE.layDownMs;
     const start = PROMO_GLIDE.rampMs * PROMO_GLIDE.blurStart;
     if (glideMs <= start) return 0;
@@ -734,7 +848,14 @@
     return PROMO_GLIDE.blurMax * u * u;
   }
 
-  function glideFieldOpacity(timeMs) {
+  function glideFieldOpacity(timeMs, mode) {
+    if (mode === 'pain') {
+      const marks = glideMarks('pain');
+      const start = marks.horizonEnd - PROMO_GLIDE.dissolveMs;
+      if (timeMs <= start) return 0;
+      if (timeMs >= marks.horizonEnd) return 1;
+      return (timeMs - start) / PROMO_GLIDE.dissolveMs;
+    }
     const start = PROMO_GLIDE.layDownMs + PROMO_GLIDE.rampMs;
     const fade = start + PROMO_GLIDE.dissolveMs;
     const hold = fade + PROMO_GLIDE.fieldHoldMs;
@@ -4364,7 +4485,7 @@
       this.gridPaletteCache = null;
       this.gridThudSent = false;
       const caption = this.root.querySelector('[data-promo-end-caption]');
-      if (caption) caption.textContent = GLIDE_PAIN_LINE;
+      if (caption) caption.textContent = '';
       const scale = this.root.querySelector('[data-promo-scale]');
       if (scale) scale.hidden = true;
       const wall = this.root.querySelector('[data-promo-scale-wall]');
@@ -4424,7 +4545,7 @@
         const caption = verdict.querySelector('.promo-scale__sold') || document.createElement('p');
         caption.className = 'promo-scale__sold';
         caption.setAttribute('data-promo-end-caption', '');
-        if (!caption.textContent) caption.textContent = GLIDE_PAIN_LINE;
+        if (!caption.textContent) caption.textContent = '';
         verdict.replaceChildren(hero, caption);
       }
       scale.querySelector('[data-promo-residue]')?.remove();
@@ -4958,19 +5079,7 @@
           spark.className = 'promo-glide__spark';
           rays.append(spark);
         }
-        const poof = document.createElement('div');
-        poof.className = 'promo-glide__poof';
-        for (let puff = 0; puff < 6; puff += 1) {
-          const smoke = document.createElement('i');
-          smoke.className = 'promo-glide__smoke';
-          poof.append(smoke);
-        }
-        for (let bit = 0; bit < 40; bit += 1) {
-          const ash = document.createElement('i');
-          ash.className = 'promo-glide__ash';
-          ash.style.setProperty('--ash', `${bit % 7 === 0 ? 2.5 : 1.5}px`);
-          poof.append(ash);
-        }
+        const poof = buildPainPoof();
         const veil = document.createElement('div');
         veil.className = 'promo-glide__veil';
         const mark = document.createElement('span');
@@ -4995,6 +5104,8 @@
       dofMid.className = 'promo-glide__dof promo-glide__dof-mid';
       const dofFar = document.createElement('div');
       dofFar.className = 'promo-glide__dof promo-glide__dof-far';
+      const horizon = document.createElement('div');
+      horizon.className = 'promo-glide__horizon';
       const field = document.createElement('div');
       field.className = 'promo-glide__field';
       field.setAttribute('data-promo-grid-field', '');
@@ -5012,7 +5123,22 @@
       const viewWrap = document.createElement('div');
       viewWrap.className = 'promo-glide__view';
       viewWrap.append(streak, fxLayer);
-      root.append(viewWrap, light, dofMid, dofFar, field, lead);
+      const caption = document.createElement('div');
+      caption.className = 'promo-glide__caption';
+      caption.setAttribute('data-promo-glide-caption', '');
+      caption.hidden = mode !== 'pain';
+      if (mode === 'pain') {
+        const haze = document.createElement('div');
+        haze.className = 'promo-glide__haze';
+        const body = document.createElement('div');
+        body.className = 'promo-glide__caption-body';
+        const text = document.createElement('p');
+        text.className = 'promo-glide__caption-text';
+        text.textContent = GLIDE_PAIN_CAPTION;
+        body.append(text, buildPainPoof());
+        caption.append(haze, body);
+      }
+      root.append(viewWrap, light, dofMid, dofFar, horizon, caption, field, lead);
       root._glidePool = pool;
       wall.append(root);
       if (store) store.style.visibility = 'hidden';
@@ -5071,7 +5197,6 @@
       const event = mode === 'pitch'
         ? glideEventAt(mode, frame, cell.key, timeMs)
         : (painAge == null ? null : { t: timeMs - painAge });
-      const dustLife = PROMO_GLIDE.poofMs + PROMO_GLIDE.dustMs;
       const sold = mode === 'pitch' && !!event;
       const poofing = painAge != null;
       const stamp = `${cell.key}|${event ? Math.round(event.t) : ''}`;
@@ -5212,45 +5337,39 @@
         return true;
       }
       const age = timeMs - event.t;
-      const cardU = Math.min(1, age / PROMO_GLIDE.poofMs);
-      const dustU = Math.min(1, age / dustLife);
-      const fade = cardU >= 1 ? '0' : (1 - cardU * cardU).toFixed(3);
+      const fade = paintPainPoof(poof, cell.row, cell.col, age);
+      const fadeText = fade <= 0.001 ? '0' : fade.toFixed(3);
       node.classList.add('is-dusting');
-      node.style.setProperty('--card-left', fade);
-      if (still) still.style.opacity = fade;
-      if (video) video.style.opacity = fade;
+      node.style.setProperty('--card-left', fadeText);
+      if (still) still.style.opacity = fadeText;
+      if (video) video.style.opacity = fadeText;
       if (bloom) bloom.style.opacity = '0';
       if (rays) rays.style.opacity = '0';
-      if (poof) {
-        poof.style.opacity = '1';
-        poof.querySelectorAll('.promo-glide__smoke').forEach((smoke, index) => {
-          const seed = wallSeededUnit(cell.row * 17 + cell.col, 31 + index);
-          const seedB = wallSeededUnit(cell.col * 13 + index, 47 + cell.row);
-          const puff = 1 - (1 - Math.min(1, dustU * 1.35)) ** 2;
-          const life = dustU < 0.05 ? dustU / 0.05 : Math.max(0, 1 - (dustU - 0.05) / 0.4);
-          const angle = seed * Math.PI * 2;
-          const reach = (30 + seedB * 220) * puff;
-          const x = Math.cos(angle) * reach;
-          const y = Math.sin(angle) * reach * 0.7 - puff * 36;
-          const scale = 0.15 + puff * (3.2 + seed * 2.2);
-          smoke.style.opacity = (life * 0.28).toFixed(3);
-          smoke.style.transform = `translate(${x.toFixed(1)}px, ${y.toFixed(1)}px) scale(${scale.toFixed(3)})`;
-        });
-        poof.querySelectorAll('.promo-glide__ash').forEach((ash, index) => {
-          const seed = wallSeededUnit(cell.row + index * 3, 61 + cell.col);
-          const seedB = wallSeededUnit(index + cell.col, 73 + cell.row);
-          const seedC = wallSeededUnit(index * 9 + cell.row, 89 + cell.col);
-          const fly = 1 - (1 - dustU) ** 3;
-          const angle = seed * Math.PI * 2 + (seedC - 0.5) * 0.9;
-          const reach = (36 + seedB * seedB * 520) * fly;
-          const x = (seedC - 0.5) * 34 + Math.cos(angle) * reach;
-          const y = (seed - 0.5) * 20 + Math.sin(angle) * reach * 0.8 - fly * 28;
-          const left = dustU < 0.04 ? dustU / 0.04 : Math.max(0, 1 - (dustU - 0.04) / 0.62);
-          ash.style.opacity = (left * (0.45 + seedB * 0.55)).toFixed(3);
-          ash.style.transform = `translate(${x.toFixed(1)}px, ${y.toFixed(1)}px)`;
-        });
-      }
       return true;
+    }
+
+    paintPainCaption(root, timeMs) {
+      const caption = root.querySelector('[data-promo-glide-caption]');
+      const text = caption?.querySelector('.promo-glide__caption-text');
+      if (!caption || !text) return;
+      const marks = glideMarks('pain');
+      const haze = caption.querySelector('.promo-glide__haze');
+      const poof = caption.querySelector('.promo-glide__poof');
+      const show = timeMs >= marks.captionStart && timeMs < marks.captionPoofEnd;
+      caption.hidden = !show;
+      if (!show) return;
+      const inU = Math.min(1, (timeMs - marks.captionStart) / PROMO_GLIDE.captionInMs);
+      const inEase = inU * inU * (3 - 2 * inU);
+      if (timeMs < marks.captionHoldEnd) {
+        text.style.opacity = inEase.toFixed(3);
+        if (haze) haze.style.opacity = inEase.toFixed(3);
+        if (poof) poof.style.opacity = '0';
+        return;
+      }
+      const fade = paintPainPoof(poof, 4, 9, timeMs - marks.captionHoldEnd);
+      const fadeText = fade <= 0.001 ? '0' : fade.toFixed(3);
+      text.style.opacity = fadeText;
+      if (haze) haze.style.opacity = fadeText;
     }
 
     paintGlideEnd(timeMs, mode) {
@@ -5259,16 +5378,23 @@
       const caption = verdict?.querySelector('.promo-scale__sold');
       const field = this.root.querySelector('[data-promo-grid-field]');
       if (!verdict || !hero) return;
-      const endAt = PROMO_GLIDE.layDownMs + PROMO_GLIDE.rampMs + PROMO_GLIDE.dissolveMs + PROMO_GLIDE.fieldHoldMs;
-      this.root.classList.toggle('is-end-pitch', mode === 'pitch');
-      this.root.classList.toggle('is-end-pain', mode !== 'pitch');
+      if (mode !== 'pitch') {
+        verdict.style.opacity = '0';
+        if (caption) caption.style.opacity = '0';
+        this.root.classList.remove('is-end-pitch');
+        this.root.classList.add('is-end-pain');
+        return;
+      }
+      const endAt = glideMarks('pitch').fieldEnd;
+      this.root.classList.add('is-end-pitch');
+      this.root.classList.remove('is-end-pain');
       const streak = this.root.querySelector('.promo-glide__streak');
       if (timeMs < endAt) {
         verdict.style.opacity = '0';
         verdict.style.transform = '';
         if (caption) caption.style.opacity = '0';
         if (streak) streak.style.opacity = '1';
-        if (field && glidePhase(timeMs) === 'field') field.style.opacity = glideFieldOpacity(timeMs).toFixed(3);
+        if (field && glidePhase(timeMs, 'pitch') === 'field') field.style.opacity = glideFieldOpacity(timeMs, 'pitch').toFixed(3);
         return;
       }
       const elapsed = timeMs - endAt;
@@ -5296,23 +5422,18 @@
           this.gridThudSent = true;
           this.emitThud();
         }
-        return;
       }
-      verdict.style.transform = 'none';
-      if (caption) {
-        caption.textContent = GLIDE_PAIN_LINE;
-        caption.style.opacity = ease.toFixed(3);
-        caption.style.transform = `translateY(${((1 - ease) * 28).toFixed(1)}px)`;
-      }
-      if (field) field.style.opacity = (1 - ease).toFixed(3);
     }
 
     paintGlideAt(timeMs, mode, options = {}) {
       const root = this.mountGlide(mode);
       if (!root) return;
       const frame = this.gridFrame();
-      const time = options.reduced ? PROMO_GLIDE.layDownMs + 1500 : timeMs;
-      const view = glideCells(time, frame);
+      const marks = glideMarks(mode);
+      const time = options.reduced
+        ? (mode === 'pain' ? marks.captionHoldEnd - 120 : PROMO_GLIDE.layDownMs + 1500)
+        : timeMs;
+      const view = glideCells(time, frame, mode);
       const sheet = root.querySelector('.promo-glide__sheet');
       const streak = root.querySelector('.promo-glide__streak');
       const level = root.querySelector('.promo-glide__level');
@@ -5326,7 +5447,8 @@
       const arrive = options.reduced ? 1 : glideArrive(time);
       const tiltNode = root.querySelector('.promo-glide__tilt');
       if (tiltNode) {
-        const tilt = PROMO_GLIDE.tilt * arrive;
+        const rising = mode === 'pain' && time >= marks.captionPoofEnd;
+        const tilt = rising ? glideTiltAt(time, mode) : PROMO_GLIDE.tilt * arrive;
         const yaw = PROMO_GLIDE.yaw * arrive;
         tiltNode.style.transform = `rotateX(${tilt.toFixed(2)}deg) rotateZ(${yaw.toFixed(2)}deg)`;
       }
@@ -5356,7 +5478,7 @@
         viewWrap.style.transform = '';
       }
       root._glidePull = pull;
-      const blur = options.reduced ? 0 : glideBlurPx(time);
+      const blur = options.reduced ? 0 : glideBlurPx(time, mode);
       if (streak && level) {
         if (blur > 0.4) {
           const angle = glideBlurAngle();
@@ -5375,7 +5497,7 @@
       });
       const nearRow = Math.floor(view.span.maxY / view.pitch);
       const speed = cam.speed;
-      const phase = glidePhase(time);
+      const phase = glidePhase(time, mode);
       const liveOk = speed <= PROMO_GLIDE.liveMaxSpeed && (phase === 'glide' || phase === 'laydown');
       const pool = root._glidePool || [];
       const used = new Set();
@@ -5401,7 +5523,16 @@
         }
       });
       if (lead) lead.hidden = true;
-      if (field && glidePhase(time) !== 'end') field.style.opacity = glideFieldOpacity(time).toFixed(3);
+      if (mode === 'pain') this.paintPainCaption(root, options.reduced ? marks.captionHoldEnd - 120 : time);
+      const horizon = root.querySelector('.promo-glide__horizon');
+      if (horizon) {
+        const rise = mode === 'pain' && !options.reduced && time > marks.captionPoofEnd
+          ? Math.min(1, (time - marks.captionPoofEnd) / PROMO_GLIDE.horizonMs)
+          : 0;
+        horizon.style.opacity = rise.toFixed(3);
+      }
+      if (field && glidePhase(time, mode) !== 'end') field.style.opacity = glideFieldOpacity(time, mode).toFixed(3);
+      glideActiveTilt = glideTiltAt(time, mode) * Math.PI / 180;
       if (!options.reduced) this.paintGlideEnd(time, mode);
       const activeEvents = glideEvents(mode, frame).filter((event) => event.t <= time).length;
       this.glideStats = {
@@ -5409,7 +5540,7 @@
         nearCellWidth: Math.round(glideNearWidth(frame) * 10) / 10,
         activeEvents,
         shown,
-        phase: options.reduced ? 'glide' : glidePhase(time),
+        phase: options.reduced ? (mode === 'pain' ? 'caption' : 'glide') : glidePhase(time, mode),
         mode,
       };
     }
@@ -5424,7 +5555,7 @@
         } catch (error) {
           console.error(error);
         }
-        if (elapsed < glidePlayEnd()) this.planeFrame = window.requestAnimationFrame(step);
+        if (elapsed < glidePlayEnd(mode)) this.planeFrame = window.requestAnimationFrame(step);
       };
       this.planeFrame = window.requestAnimationFrame(step);
     }
@@ -5570,7 +5701,9 @@
         this.root.classList.add('is-scale-still');
         await this.captureConveyorStill();
         this.paintGlideAt(0, 'pain', { reduced: true });
-        await waitMs(400);
+        await waitMs(PROMO_GLIDE.captionHoldMs);
+        const caption = this.root.querySelector('[data-promo-glide-caption]');
+        if (caption) caption.hidden = true;
         await this.playConveyorEnd('pain');
         if (marketingPart() === 'full') {
           await this.fadeScaleToSwitch();
@@ -5621,7 +5754,7 @@
       if (generation !== this.scaleGeneration) return;
       this.paintGlideAt(0, 'pain');
       this.runGlide('pain');
-      await waitMs(glidePlayEnd());
+      await waitMs(glidePlayEnd('pain'));
       if (generation !== this.scaleGeneration) return;
       await this.playConveyorEnd('pain', { settled: true });
     }
@@ -5687,7 +5820,7 @@
 
     setConveyorEnd(mode, ctaKey) {
       const caption = this.root.querySelector('[data-promo-end-caption]');
-      if (caption) caption.textContent = mode === 'pitch' ? 'Built to sell.' : GLIDE_PAIN_LINE;
+      if (caption) caption.textContent = mode === 'pitch' ? 'Built to sell.' : '';
       this.root.classList.toggle('is-end-pitch', mode === 'pitch');
       this.root.classList.toggle('is-end-pain', mode !== 'pitch');
       this.mountEndCta('none');
@@ -5696,6 +5829,12 @@
     async playConveyorEnd(mode, options = {}) {
       window.cancelAnimationFrame(this.conveyorFrame);
       this.setConveyorEnd(mode);
+      if (mode !== 'pitch') {
+        const verdict = this.root.querySelector('[data-promo-scale-verdict]');
+        if (verdict) verdict.style.opacity = '0';
+        await waitMs(promoHoldMs());
+        return;
+      }
       if (options.settled) {
         this.root.classList.add('is-scale-white', 'is-scale-zero', 'is-grid-locked');
         this.clearGridResolve();
@@ -5755,7 +5894,7 @@
       if (generation !== this.scaleGeneration) return;
       this.paintGlideAt(0, 'pitch');
       this.runGlide('pitch');
-      await waitMs(glidePlayEnd());
+      await waitMs(glidePlayEnd('pitch'));
       if (generation !== this.scaleGeneration) return;
       await this.playConveyorEnd('pitch', { settled: true });
       this.restoreClerkSeat();
@@ -5790,7 +5929,10 @@
       this.root.classList.add('is-scale-still');
       if (mode !== 'pitch') await Promise.race([this.captureConveyorStill(), waitMs(1200)]);
       const shot = kind === 'puff' ? 'event' : (kind === 'stream' ? 'lanes-7' : (kind === 'zero' ? 'end' : kind));
-      const fieldAt = PROMO_GLIDE.layDownMs + PROMO_GLIDE.rampMs + PROMO_GLIDE.dissolveMs;
+      const marks = glideMarks(mode);
+      const fieldAt = mode === 'pain'
+        ? marks.horizonEnd
+        : PROMO_GLIDE.layDownMs + PROMO_GLIDE.rampMs + PROMO_GLIDE.dissolveMs;
       const gridAt = {
         travel: 280,
         'lane-1': 280,
@@ -5804,15 +5946,17 @@
         'residue-100': 4800,
         'residue-full': 5600,
         texture: 5400,
-        field: fieldAt + 200,
-        resolve: fieldAt + PROMO_GLIDE.fieldHoldMs + 280,
-        white: fieldAt + 200,
+        field: fieldAt + (mode === 'pain' ? 40 : 200),
+        resolve: mode === 'pain' ? marks.fieldEnd - 40 : fieldAt + PROMO_GLIDE.fieldHoldMs + 280,
+        white: fieldAt + (mode === 'pain' ? 40 : 200),
+        caption: mode === 'pain' ? marks.captionHoldEnd - 80 : null,
       };
       if (gridAt[shot] != null) {
         this.paintGlideAt(gridAt[shot], mode);
         await this.whenGlideMediaReady();
       }
       if (shot === 'end') {
+        if (mode === 'pain') this.paintGlideAt(marks.fieldEnd - 40, 'pain');
         this.setConveyorEnd(mode, ctaKey);
         this.root.classList.add('is-scale-white', 'is-scale-zero', 'is-grid-locked');
         this.clearGridResolve();
@@ -6388,6 +6532,7 @@
         'pain-c-lanes-5': () => this.showScaleExport('lanes-5', 'pain'),
         'pain-c-lanes-7': () => this.showScaleExport('lanes-7', 'pain'),
         'pain-c-texture': () => this.showScaleExport('texture', 'pain'),
+        'pain-c-caption': () => this.showScaleExport('caption', 'pain'),
         'pain-c-field': () => this.showScaleExport('field', 'pain'),
         'pain-c-resolve': () => this.showScaleExport('resolve', 'pain'),
         'pain-c-residue-10': () => this.showScaleExport('lanes-5', 'pain'),
