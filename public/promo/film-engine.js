@@ -1007,12 +1007,104 @@
 
   const GLIDE_LIVE_CAP = 16;
 
+  const PROMO_CHECK_DRAW_MS = 220;
+  const PROMO_CHECK_POP_MS = 380;
+  const PROMO_CHECK_SETTLE_MS = 460;
+  const PROMO_CHECK_PATH = 14;
+  const PROMO_CHECK_CHIPS = [
+    { x: -0.7, y: -0.85, rot: -24 },
+    { x: 0.75, y: -0.4, rot: 18 },
+    { x: 0.45, y: 0.8, rot: 12 },
+    { x: -0.8, y: 0.35, rot: -16 },
+    { x: 0.05, y: -1, rot: 8 },
+  ];
+
+  function checkPopScale(t) {
+    if (t < 0.62) {
+      const u = t / 0.62;
+      return 0.86 + (1.06 - 0.86) * (1 - (1 - u) ** 3);
+    }
+    const u = (t - 0.62) / 0.38;
+    return 1.06 + (1 - 1.06) * (1 - (1 - u) ** 2);
+  }
+
+  function armCheckPop(mark) {
+    if (mark.dataset.armed === '1') return;
+    mark.dataset.armed = '1';
+    const path = mark.querySelector('path');
+    if (path) {
+      path.style.strokeDasharray = String(PROMO_CHECK_PATH);
+      path.style.strokeDashoffset = String(PROMO_CHECK_PATH);
+    }
+    PROMO_CHECK_CHIPS.forEach((chip, index) => {
+      const node = document.createElement('i');
+      node.className = `promo-glide__chip ${index % 2 === 0 ? 'is-orange' : 'is-ink'}`;
+      node.dataset.x = String(chip.x);
+      node.dataset.y = String(chip.y);
+      node.dataset.rot = String(chip.rot);
+      mark.append(node);
+    });
+  }
+
+  function paintCheckChips(mark, age) {
+    const start = 160;
+    const life = 280;
+    const u = Math.min(1, Math.max(0, age - start) / life);
+    const fade = u <= 0 ? 0 : (1 - u) * Math.min(1, u * 4);
+    mark.querySelectorAll('.promo-glide__chip').forEach((node) => {
+      if (u >= 1) {
+        node.remove();
+        return;
+      }
+      const travel = 1 - (1 - u) ** 2;
+      const x = Number(node.dataset.x) * 78 * travel;
+      const y = Number(node.dataset.y) * 78 * travel;
+      const rot = Number(node.dataset.rot) * travel;
+      node.style.opacity = fade.toFixed(3);
+      node.style.transform = `translate(${x.toFixed(1)}%, ${y.toFixed(1)}%) rotate(${rot.toFixed(1)}deg)`;
+    });
+  }
+
+  function settleCheckPop(mark) {
+    const path = mark.querySelector('path');
+    if (path) path.style.strokeDashoffset = '0';
+    mark.style.opacity = '1';
+    mark.style.transform = 'translate(-50%, -50%) scale(1)';
+    mark.querySelectorAll('.promo-glide__chip').forEach((node) => node.remove());
+  }
+
+  function paintCheckPop(mark, age) {
+    if (prefersReducedMotion()) {
+      settleCheckPop(mark);
+      mark.dataset.settled = '1';
+      return;
+    }
+    armCheckPop(mark);
+    const path = mark.querySelector('path');
+    const draw = Math.min(1, Math.max(0, age) / PROMO_CHECK_DRAW_MS);
+    if (path) path.style.strokeDashoffset = (PROMO_CHECK_PATH * (1 - draw)).toFixed(2);
+    mark.style.opacity = '1';
+    const pop = Math.min(1, Math.max(0, age) / PROMO_CHECK_POP_MS);
+    mark.style.transform = `translate(-50%, -50%) scale(${checkPopScale(pop).toFixed(3)})`;
+    paintCheckChips(mark, age);
+    if (age >= PROMO_CHECK_SETTLE_MS) {
+      settleCheckPop(mark);
+      mark.dataset.settled = '1';
+    }
+  }
+
   function paintGlideStamp(veil, mark, age, veilStrength) {
-    if (mark?.dataset.settled === '1' && age >= 260) return;
+    const check = mark?.querySelector('svg');
+    const settleAt = check ? PROMO_CHECK_SETTLE_MS : 260;
+    if (mark?.dataset.settled === '1' && age >= settleAt) return;
     const veilIn = Math.min(1, Math.max(0, age) / PROMO_GLIDE.bloomMs);
     const flash = veilIn < 1 ? Math.sin(veilIn * Math.PI) * 0.08 : 0;
     if (veil) veil.style.opacity = Math.min(1, veilStrength * veilIn + flash).toFixed(3);
     if (!mark) return;
+    if (check) {
+      paintCheckPop(mark, age);
+      return;
+    }
     const pop = Math.min(1, Math.max(0, age) / 260);
     mark.style.opacity = Math.min(1, pop * 1.35).toFixed(3);
     mark.style.transform = `translate(-50%, -50%) scale(${(0.72 + (1 - (1 - pop) ** 3) * 0.28).toFixed(3)})`;
@@ -5756,7 +5848,16 @@
       const stamp = `${cell.key}|${event ? Math.round(event.t) : ''}`;
       if (node.dataset.stamp !== stamp) {
         node.dataset.stamp = stamp;
-        if (parts.mark) delete parts.mark.dataset.settled;
+        if (parts.mark) {
+          delete parts.mark.dataset.settled;
+          delete parts.mark.dataset.armed;
+          parts.mark.querySelectorAll('.promo-glide__chip').forEach((node) => node.remove());
+          const path = parts.mark.querySelector('path');
+          if (path) {
+            path.style.strokeDasharray = '';
+            path.style.strokeDashoffset = '';
+          }
+        }
         if (parts.lost) delete parts.lost.dataset.settled;
         node.classList.remove('is-dusting');
         node.style.opacity = '';
@@ -6391,18 +6492,12 @@
       mark.innerHTML = '<svg viewBox="0 0 12 12" aria-hidden="true"><path d="M1.8 6.1 4.6 9.1 10.2 2.8" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>';
       store.append(veil, mark);
       const hold = 900;
-      const life = 260 + hold;
+      const life = PROMO_CHECK_SETTLE_MS + hold;
       const started = performance.now();
       await new Promise((resolve) => {
         const step = (now) => {
-          const age = now - started;
-          const veilIn = Math.min(1, age / PROMO_GLIDE.bloomMs);
-          const flash = veilIn < 1 ? Math.sin(veilIn * Math.PI) * 0.1 : 0;
-          veil.style.opacity = (0.4 * veilIn + flash).toFixed(3);
-          const pop = Math.min(1, age / 260);
-          mark.style.opacity = Math.min(1, pop * 1.35).toFixed(3);
-          mark.style.transform = `translate(-50%, -50%) scale(${(0.72 + (1 - (1 - pop) ** 3) * 0.28).toFixed(3)})`;
-          if (age < life) window.requestAnimationFrame(step);
+          paintGlideStamp(veil, mark, now - started, 0.4);
+          if (now - started < life) window.requestAnimationFrame(step);
           else resolve();
         };
         window.requestAnimationFrame(step);

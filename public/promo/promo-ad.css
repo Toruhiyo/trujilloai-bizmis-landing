@@ -2776,6 +2776,12 @@ html.is-promo-opening.is-promo-depart .promo-opening {
   transform: none;
 }
 
+.promo-opening.is-moments .promo-moments__board.is-pose-doubt,
+.promo-opening.is-moments .promo-moments__board.is-pose-close {
+  container-type: size;
+  --page-pad: 28px;
+}
+
 .promo-moments__board.is-pose-doubt .promo-moments__card.is-pick,
 .promo-moments__board.is-pose-close .promo-moments__card.is-pick {
   --card-w: 980px;
@@ -2866,15 +2872,17 @@ html.is-promo-opening.is-promo-depart .promo-opening {
   font-size: 18px;
 }
 
+.promo-moments__board.is-pose-doubt .promo-moments__card.is-pick,
 .promo-moments__board.is-pose-close .promo-moments__card.is-pick {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(240px, 300px) 220px;
   grid-template-rows: 1fr auto auto 1fr;
   column-gap: 36px;
   align-items: center;
-  padding: 28px 16px 28px 28px;
+  padding: var(--page-pad) 16px var(--page-pad) var(--page-pad);
 }
 
+.promo-moments__board.is-pose-doubt .promo-moments__card.is-pick .promo-moments__photo,
 .promo-moments__board.is-pose-close .promo-moments__card.is-pick .promo-moments__photo {
   position: relative;
   grid-column: 1;
@@ -2886,9 +2894,10 @@ html.is-promo-opening.is-promo-depart .promo-opening {
   height: 100%;
   max-width: 100%;
   aspect-ratio: 1;
-  justify-self: center;
+  justify-self: start;
 }
 
+.promo-moments__board.is-pose-doubt .promo-moments__card.is-pick .promo-moments__meta,
 .promo-moments__board.is-pose-close .promo-moments__card.is-pick .promo-moments__meta {
   position: relative;
   grid-column: 2;
@@ -2900,6 +2909,7 @@ html.is-promo-opening.is-promo-depart .promo-opening {
   margin: 0 0 18px;
 }
 
+.promo-moments__board.is-pose-doubt .promo-moments__card.is-pick .promo-moments__add,
 .promo-moments__board.is-pose-close .promo-moments__card.is-pick .promo-moments__add {
   position: relative;
   grid-column: 2;
@@ -2913,6 +2923,7 @@ html.is-promo-opening.is-promo-depart .promo-opening {
   margin: 0;
 }
 
+.promo-opening.is-clerk-corner.is-moments:has(.promo-moments__board.is-pose-doubt) .promo-opening__widget,
 .promo-opening.is-clerk-corner.is-moments:has(.promo-moments__board.is-pose-close) .promo-opening__widget {
   top: 14%;
   right: 2%;
@@ -3177,7 +3188,7 @@ html.is-promo-opening.is-promo-depart .promo-opening {
 
 .promo-moments__board.is-pose-doubt .promo-moments__orbit,
 .promo-moments__board.is-pose-close .promo-moments__orbit {
-  left: calc(23% + 8px);
+  left: calc(var(--page-pad) + (100cqh - (var(--page-pad) * 2)) / 2);
   top: 50%;
   opacity: 1;
   animation: promo-moments-orbit var(--promo-moments-orbit, 14s) linear infinite;
@@ -3551,6 +3562,7 @@ html.is-promo-opening.is-promo-depart .promo-opening {
   animation: none;
 }
 .is-pose-extra .promo-moments__card.is-pick .promo-moments__kept {
+  display: none;
   opacity: 0;
   animation: none;
 }
@@ -6855,6 +6867,25 @@ html.is-promo-clip.is-clip-moment #bizmis-avatar-embed {
   display: block;
   width: 100%;
   height: 100%;
+}
+
+.promo-glide__chip {
+  position: absolute;
+  left: 42%;
+  top: 46%;
+  width: 22%;
+  height: 12%;
+  border-radius: 2px;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.promo-glide__chip.is-orange {
+  background: var(--bizmis-primary);
+}
+
+.promo-glide__chip.is-ink {
+  background: var(--ad-ink);
 }
 
 .promo-glide__fx-layer {
