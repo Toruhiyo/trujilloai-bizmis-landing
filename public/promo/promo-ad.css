@@ -6292,6 +6292,12 @@ html.is-promo-clip.is-clip-moment #bizmis-avatar-embed {
   overflow: hidden;
 }
 
+.promo-glide__view {
+  position: absolute;
+  inset: 0;
+  transform-origin: 50% 66%;
+}
+
 .promo-glide.is-pain .promo-glide__sheet {
   filter: saturate(0);
 }
@@ -6338,6 +6344,34 @@ html.is-promo-clip.is-clip-moment #bizmis-avatar-embed {
   transform-origin: center center;
 }
 
+.promo-glide__veil {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  background: var(--bizmis-primary);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.promo-glide__mark {
+  position: absolute;
+  left: 50%;
+  top: 46%;
+  z-index: 4;
+  width: 22%;
+  aspect-ratio: 1;
+  color: #fff;
+  opacity: 0;
+  pointer-events: none;
+  filter: drop-shadow(0 1px 2px rgba(120, 64, 12, 0.4));
+}
+
+.promo-glide__mark svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
 .promo-glide__fx-layer {
   position: absolute;
   inset: 0;
@@ -6363,23 +6397,7 @@ html.is-promo-clip.is-clip-moment #bizmis-avatar-embed {
 }
 
 .promo-glide__bloom {
-  z-index: 3;
-  inset: auto;
-  left: var(--bloom-x, 90%);
-  top: var(--bloom-y, 16%);
-  width: 42%;
-  height: 42%;
-  border-radius: 50%;
-  opacity: 0;
-  mix-blend-mode: screen;
-  transform: translate(-50%, -50%) scale(calc(0.2 + var(--bloom, 0) * 1.45));
-  background: radial-gradient(
-    circle,
-    #fff 0%,
-    #ffe7c2 16%,
-    var(--bizmis-primary) 38%,
-    transparent 70%
-  );
+  display: none;
 }
 
 .promo-glide__bloom::after {
@@ -6414,17 +6432,7 @@ html.is-promo-clip.is-clip-moment #bizmis-avatar-embed {
 }
 
 .promo-glide__rays i:not(.promo-glide__spark) {
-  position: absolute;
-  left: var(--bloom-x, 90%);
-  top: var(--bloom-y, 16%);
-  width: 4px;
-  height: calc(22% * var(--ray-len, 1));
-  margin-left: -2px;
-  border-radius: 2px;
-  background: linear-gradient(to bottom, #fff 0%, color-mix(in srgb, var(--bizmis-primary) 70%, white) 42%, transparent 100%);
-  filter: blur(0.6px);
-  transform-origin: center top;
-  transform: rotate(calc(var(--ray) * 45deg + (var(--ray) - 3.5) * 6deg)) scaleY(calc(0.2 + var(--burst, 0) * 1.35));
+  display: none;
 }
 
 .promo-glide__spark {
@@ -6449,41 +6457,26 @@ html.is-promo-clip.is-clip-moment #bizmis-avatar-embed {
   position: absolute;
   left: 50%;
   top: 46%;
-  width: 34%;
-  height: 28%;
-  margin-left: -17%;
-  margin-top: -14%;
+  width: 14%;
+  height: 11%;
+  margin-left: -7%;
+  margin-top: -5.5%;
   border-radius: 50%;
-  background: radial-gradient(circle, rgba(120, 116, 110, 0.55) 0%, rgba(186, 180, 172, 0.22) 42%, transparent 72%);
-  filter: blur(8px);
-}
-
-.promo-glide__smoke:nth-child(2),
-.promo-glide__smoke:nth-child(4) {
-  width: 22%;
-  height: 18%;
-  margin-left: -11%;
-  margin-top: -9%;
-  filter: blur(5px);
-  background: radial-gradient(circle, rgba(92, 88, 82, 0.5) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(168, 162, 154, 0.42) 0%, rgba(186, 180, 172, 0.12) 38%, transparent 70%);
+  filter: blur(1.4px);
 }
 
 .promo-glide__ash {
   position: absolute;
   left: 50%;
   top: 46%;
-  width: var(--ash, 3px);
-  height: var(--ash, 3px);
-  margin-left: calc(var(--ash, 3px) / -2);
-  margin-top: calc(var(--ash, 3px) / -2);
+  width: var(--ash, 1.5px);
+  height: var(--ash, 1.5px);
+  margin-left: calc(var(--ash, 1.5px) / -2);
+  margin-top: calc(var(--ash, 1.5px) / -2);
   border-radius: 50%;
-  background: #8a847c;
-  filter: blur(0.6px);
-}
-
-.promo-glide__ash.is-soft {
-  background: #c4beb6;
-  filter: blur(2.2px);
+  background: #9c968e;
+  filter: none;
 }
 
 .promo-glide__light,
