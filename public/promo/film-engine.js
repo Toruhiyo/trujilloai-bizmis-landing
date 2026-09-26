@@ -317,8 +317,9 @@
     liveMaxSpeed: 600,
     blurStart: 0.72,
     blurMax: 24,
-    poofMs: 110,
-    dustMs: 520,
+    poofMs: 680,
+    dustMs: 1100,
+    poofShare: 0.4,
     bloomMs: 180,
     burstMs: 320,
     dissolveMs: 800,
@@ -337,6 +338,7 @@
   };
   const GLIDE_PAIN_LINE = "It replies. It doesn't sell.";
   const glideRows = new Map();
+  const glideWarmMedia = [];
   let glideEventCache = { key: '', list: [] };
 
   function glidePlayEnd() {
@@ -707,6 +709,21 @@
 
   function glideEventAt(mode, frame, key, timeMs) {
     return glideEvents(mode, frame).find((event) => event.key === key && event.t <= timeMs) || null;
+  }
+
+  function painPoofWindow() {
+    return PROMO_GLIDE.poofMs + PROMO_GLIDE.dustMs;
+  }
+
+  function painPoofLocal(cell, timeMs) {
+    const cycle = painPoofWindow() / PROMO_GLIDE.poofShare;
+    const phase = wallSeededUnit(cell.row * 19 + 3, cell.col * 11 + 7) * cycle;
+    return (timeMs + phase) % cycle;
+  }
+
+  function painPoofAge(cell, timeMs) {
+    const local = painPoofLocal(cell, timeMs);
+    return local < painPoofWindow() ? local : null;
   }
 
   function glideBlurPx(timeMs) {
@@ -2495,6 +2512,51 @@
     });
   }
 
+  function preloadPromoVideo(url) {
+    return new Promise((resolve) => {
+      const video = document.createElement('video');
+      video.muted = true;
+      video.defaultMuted = true;
+      video.preload = 'auto';
+      video.playsInline = true;
+      video.setAttribute('playsinline', '');
+      glideWarmMedia.push(video);
+      let settled = false;
+      const done = () => {
+        if (settled) return;
+        settled = true;
+        resolve();
+      };
+      video.addEventListener('canplaythrough', done, { once: true });
+      video.addEventListener('error', done, { once: true });
+      window.setTimeout(done, 12000);
+      video.src = url;
+    });
+  }
+
+  function preloadGlideMedia() {
+    const images = new Set();
+    const videos = new Set();
+    const add = (tone, device, motion, chat) => {
+      const video = clipSrc(tone, device, motion, chat);
+      if (!video) return;
+      videos.add(video);
+      const still = glideStillSrc(tone, device, motion, chat);
+      if (still) images.add(still);
+    };
+    PROMO_CLIP_DEVICES.forEach((device) => {
+      (PROMO_CLIP_MOTIONS[device] || []).forEach((motion) => {
+        add('pain', device, motion, true);
+        add('pitch', device, motion, false);
+      });
+      PROMO_PITCH_MOMENTS.forEach((motion) => add('pitch', device, motion, false));
+    });
+    return Promise.all([
+      ...[...images].map((url) => preloadPromoImage(url)),
+      ...[...videos].map((url) => preloadPromoVideo(url)),
+    ]);
+  }
+
   function preloadPromoOpening(stores) {
     const images = new Set();
     (stores || []).forEach((store) => {
@@ -2503,6 +2565,7 @@
     return Promise.all([
       ...[...images].map((url) => preloadPromoImage(url)),
       preloadAvatarModels(storeModelUrls(stores)),
+      preloadGlideMedia(),
     ]);
   }
 
@@ -4968,17 +5031,14 @@
 
     paintGlideCell(node, fx, cell, mode, timeMs, view, live) {
       const frame = this.gridFrame();
-      const event = glideEventAt(mode, frame, cell.key, timeMs);
+      const painAge = mode === 'pitch' ? null : painPoofAge(cell, timeMs);
+      const event = mode === 'pitch'
+        ? glideEventAt(mode, frame, cell.key, timeMs)
+        : (painAge == null ? null : { t: timeMs - painAge });
       const dustLife = PROMO_GLIDE.poofMs + PROMO_GLIDE.dustMs;
-      if (mode !== 'pitch' && event && timeMs - event.t >= dustLife) {
-        node.classList.remove('is-dusting');
-        node.dataset.key = cell.key;
-        if (fx) fx.hidden = true;
-        return false;
-      }
       const sold = mode === 'pitch' && !!event;
-      const poofing = mode !== 'pitch' && event && timeMs - event.t < dustLife;
-      const stamp = `${cell.key}|${live ? 1 : 0}|${event ? event.t : ''}`;
+      const poofing = painAge != null;
+      const stamp = `${cell.key}|${event ? Math.round(event.t) : ''}`;
       if (node.dataset.stamp !== stamp) {
         node.dataset.stamp = stamp;
         node.classList.remove('is-dusting');
@@ -5013,29 +5073,28 @@
           }
         }
         const wantVideo = (live || sold) && !poofing;
-        if (video) {
+        if (video && wantVideo && video.dataset.clip !== clipKey) {
           video.style.opacity = '';
           delete video.dataset.held;
-          if (wantVideo && video.dataset.clip !== clipKey) {
-            video.dataset.clip = clipKey;
-            video.src = clipSrc(tone, cell.id, motion, chat);
-            const offset = wallSeededUnit(cell.row * 3 + cell.col, 19) * 1.4;
-            const seek = () => {
-              if (video.duration && offset < video.duration) video.currentTime = offset;
-            };
-            video.addEventListener('loadeddata', seek, { once: true });
-            video.play().catch(() => {});
-          }
-          if (!wantVideo && video.dataset.clip) {
-            video.pause();
-            video.removeAttribute('src');
-            video.dataset.clip = '';
-            video.load();
-          }
-          video.hidden = !wantVideo;
+          video.dataset.clip = clipKey;
+          video.src = clipSrc(tone, cell.id, motion, chat);
+          const offset = wallSeededUnit(cell.row * 3 + cell.col, 19) * 1.4;
+          const seek = () => {
+            if (video.duration && offset < video.duration) video.currentTime = offset;
+          };
+          video.addEventListener('loadeddata', seek, { once: true });
+          video.play().catch(() => {});
         }
-        if (still) still.hidden = wantVideo;
       }
+      const stillNode = node.querySelector('.promo-glide__still');
+      const videoNode = node.querySelector('.promo-glide__video');
+      const showVideo = !poofing && (live || sold) && videoNode && videoNode.readyState >= 2 && !!videoNode.dataset.clip;
+      if (videoNode) {
+        if (showVideo && videoNode.paused && videoNode.dataset.held !== '1') videoNode.play().catch(() => {});
+        if (!showVideo && !videoNode.paused && videoNode.dataset.held !== '1') videoNode.pause();
+        videoNode.hidden = !showVideo;
+      }
+      if (stillNode) stillNode.hidden = showVideo;
       node.hidden = false;
       node.style.opacity = '';
       if (!event || (!poofing && !sold)) {
@@ -5044,6 +5103,16 @@
         if (veil) veil.style.opacity = '0';
         if (mark) mark.style.opacity = '0';
         if (fx) fx.hidden = true;
+        if (mode !== 'pitch') {
+          const since = painPoofLocal(cell, timeMs) - painPoofWindow();
+          const back = Math.min(1, Math.max(0, since / 220));
+          const opacity = back >= 0.99 ? '' : back.toFixed(3);
+          const stillBack = node.querySelector('.promo-glide__still');
+          const videoBack = node.querySelector('.promo-glide__video');
+          if (stillBack) stillBack.style.opacity = opacity;
+          if (videoBack) videoBack.style.opacity = opacity;
+          node.classList.remove('is-dusting');
+        }
         return true;
       }
       if (fx && mode !== 'pitch') {
