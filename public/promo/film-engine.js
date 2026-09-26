@@ -1545,6 +1545,7 @@
   const PROMO_CATALOG_VISIBLE_ROWS = 2.2;
   const PROMO_CATALOG_PAD_X = 36;
   const PROMO_CATALOG_PAD_Y = 28;
+  const PROMO_CATALOG_TOP_GAP = 18;
   const PROMO_ROW_CLERK_LANE = 220;
   const PROMO_COMPARE_RESERVE = 124;
   const PROMO_ROW_GAP = 20;
@@ -2063,6 +2064,12 @@
     const gx0 = inset + cardW / 2 - (contentWidth / 2 + shift);
     const pitchBoard = !board.closest('.promo-opening')?.classList.contains('is-pain');
     const padY = (pitchBoard ? 28 : PROMO_CATALOG_PAD_Y) + (look === 'home-hero' ? 132 : 0);
+    if (pitchBoard && look !== 'home-hero') {
+      const fitRaw = parseFloat(getComputedStyle(board).getPropertyValue('--promo-grid-fit'));
+      const fit = Number.isFinite(fitRaw) && fitRaw > 0 && fitRaw <= 1 ? fitRaw : 1;
+      const naturalGap = stage.clientHeight * (1 - fit) / 2 + fit * padY;
+      board.style.setProperty('--promo-grid-rest-y', `${(PROMO_CATALOG_TOP_GAP - naturalGap).toFixed(1)}px`);
+    }
     const gy0 = -stage.clientHeight / 2 + padY + cardH / 2;
     const rowGap = PROMO_ROW_GAP;
     const rowInset = 28;
