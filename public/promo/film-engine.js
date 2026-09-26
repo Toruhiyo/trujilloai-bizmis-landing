@@ -1550,18 +1550,34 @@
   const PROMO_COMPARE_RESERVE = 124;
   const PROMO_ROW_GAP = 20;
   // Only product images used in pain and pitch. Files live in assets/ as promo-product-<key>.png.
+  const PROMO_CLAY_TINTS = ['stone', 'warm-grey', 'sand', 'oat', 'clay', 'mist'];
   const PROMO_CATALOG = {
-    capsule: { tint: 'stone' },
-    sphere: { tint: 'stone' },
-    'rounded-cube': { tint: 'warm-grey' },
-    cone: { tint: 'sand' },
-    torus: { tint: 'stone' },
-    'tall-box': { tint: 'blush' },
-    cylinder: { tint: 'sage' },
-    dome: { tint: 'warm-grey' },
-    slab: { tint: 'sand' },
+    capsule: { family: 'round', tint: 'stone' },
+    sphere: { family: 'round', tint: 'stone' },
+    cylinder: { family: 'round', tint: 'sand' },
+    dome: { family: 'round', tint: 'oat' },
+    torus: { family: 'round', tint: 'clay' },
+    egg: { family: 'round', tint: 'mist' },
+    'tall-cylinder': { family: 'round', tint: 'warm-grey' },
+    arch: { family: 'round', tint: 'sand' },
+    'rounded-cube': { family: 'boxy', tint: 'warm-grey' },
+    'tall-box': { family: 'boxy', tint: 'oat' },
+    'bevelled-cube': { family: 'boxy', tint: 'clay' },
+    'hexagonal-prism': { family: 'boxy', tint: 'mist' },
+    cone: { family: 'pointed', tint: 'sand' },
+    'truncated-cone': { family: 'pointed', tint: 'oat' },
+    icosahedron: { family: 'pointed', tint: 'clay' },
+    dodecahedron: { family: 'pointed', tint: 'mist' },
+    octahedron: { family: 'pointed', tint: 'stone' },
+    'rounded-pyramid': { family: 'pointed', tint: 'warm-grey' },
+    'triangular-prism': { family: 'pointed', tint: 'sand' },
+    'rounded-tetrahedron': { family: 'pointed', tint: 'oat' },
+    wedge: { family: 'pointed', tint: 'clay' },
+    slab: { family: 'flat', tint: 'mist' },
+    lens: { family: 'flat', tint: 'warm-grey' },
+    'squircle-slab': { family: 'flat', tint: 'sand' },
   };
-  const PROMO_CLAY_KINDS = Object.keys(PROMO_CATALOG);
+  const PROMO_CLAY_KINDS = Object.keys(PROMO_CATALOG).filter((kind) => PROMO_CLAY_TINTS.includes(PROMO_CATALOG[kind].tint));
   const PROMO_CLAY_TURNS = ['m20', '0', 'p20'];
   const PROMO_CLAY_FINISHES = ['matte', 'satin'];
   const PROMO_CLAY_SCALES = [0.8, 0.86, 0.92, 0.98, 1.04, 1.1];
@@ -1626,7 +1642,7 @@
     const urls = promoClayUrls();
     const key = look.file || clayVariantKey(look);
     if (urls[key]) return urls[key];
-    const plain = key.replace(/-satin$/, '');
+    const plain = key.replace(/-satin$/, '').replace(/-[bc]$/, '');
     return urls[plain] || '';
   }
 
@@ -1634,10 +1650,12 @@
     return PROMO_CATALOG[kind]?.tint || 'stone';
   }
 
+  function clayFamilyOf(kind) {
+    return PROMO_CATALOG[kind]?.family || 'round';
+  }
+
   function tintsClash(left, right) {
-    if (!left || !right) return false;
-    if (left === right) return true;
-    return (left === 'blush' && right === 'sage') || (left === 'sage' && right === 'blush');
+    return !!left && left === right;
   }
 
   function catalogNeighbors(index, cols, count) {
@@ -1659,60 +1677,85 @@
     };
   }
 
-  function catalogLooks(count, cols) {
-    const rand = mulberry32(PROMO_CATALOG_SEED);
-    const heroes = [PROMO_MOMENT_GO_INDEX, PROMO_MOMENT_OTHER_INDEX, PROMO_MOMENT_PICK_INDEX];
-    const kinds = [];
-    const looks = [];
-    for (let index = 0; index < count; index += 1) {
-      const column = index % cols;
-      const blockedKinds = new Set();
-      const blockedTints = new Set();
-      const note = (other) => {
-        if (other == null || other < 0) return;
-        blockedKinds.add(kinds[other]);
-        blockedTints.add(clayTintOf(kinds[other]));
-        if (clayTintOf(kinds[other]) === 'blush') blockedTints.add('sage');
-        if (clayTintOf(kinds[other]) === 'sage') blockedTints.add('blush');
-      };
-      if (column > 0) note(index - 1);
-      if (index >= cols) note(index - cols);
-      if (heroes.includes(index)) {
-        heroes.forEach((hero) => {
-          if (hero < index) blockedKinds.add(kinds[hero]);
-        });
-      }
-      const tinted = PROMO_CLAY_KINDS.filter((kind) => !blockedKinds.has(kind) && !blockedTints.has(clayTintOf(kind)));
-      const pool = tinted.length ? tinted : PROMO_CLAY_KINDS.filter((kind) => !blockedKinds.has(kind));
-      const kind = pool[Math.floor(rand() * pool.length)];
-      kinds.push(kind);
-      looks.push(makeCatalogLook(kind, rand));
+  function catalogVariantSeed(variant) {
+    const key = String(variant || 'classic');
+    let hash = PROMO_CATALOG_SEED;
+    for (let index = 0; index < key.length; index += 1) {
+      hash = Math.imul(hash ^ key.charCodeAt(index), 16777619);
     }
-    looks[PROMO_MOMENT_GO_INDEX] = lookForTint(PROMO_COMPARE_SHAPES.go, PROMO_COMPARE_TINT);
-    looks[PROMO_MOMENT_PICK_INDEX] = lookForTint(PROMO_COMPARE_SHAPES.pick, PROMO_COMPARE_TINT);
-    looks[PROMO_MOMENT_OTHER_INDEX] = lookForTint(PROMO_COMPARE_SHAPES.other, PROMO_COMPARE_TINT);
-    kinds[PROMO_MOMENT_GO_INDEX] = looks[PROMO_MOMENT_GO_INDEX].kind;
-    kinds[PROMO_MOMENT_PICK_INDEX] = looks[PROMO_MOMENT_PICK_INDEX].kind;
-    kinds[PROMO_MOMENT_OTHER_INDEX] = looks[PROMO_MOMENT_OTHER_INDEX].kind;
-    const locked = new Set(heroes);
-    for (let pass = 0; pass < 8; pass += 1) {
-      for (let index = 0; index < count; index += 1) {
-        if (locked.has(index)) continue;
-        const neighbors = catalogNeighbors(index, cols, count);
-        const clash = neighbors.some((other) => looks[other].kind === looks[index].kind || tintsClash(looks[other].tint, looks[index].tint));
-        if (!clash) continue;
-        const options = PROMO_CLAY_KINDS.filter((kind) => neighbors.every((other) => looks[other].kind !== kind && !tintsClash(looks[other].tint, clayTintOf(kind))));
-        if (!options.length) continue;
-        const kind = options[index % options.length];
-        looks[index] = makeCatalogLook(kind, () => 0);
-        kinds[index] = kind;
-      }
-    }
-    return looks;
+    return hash >>> 0;
   }
 
-  function gridAllLooks() {
-    return catalogLooks(PROMO_MOMENT_CARD_COUNT, PROMO_CATALOG_COLS);
+  function catalogWindow(cols) {
+    return cols * Math.ceil(PROMO_CATALOG_VISIBLE_ROWS);
+  }
+
+  function catalogHeroKind(index) {
+    if (index === PROMO_MOMENT_GO_INDEX) return PROMO_COMPARE_SHAPES.go;
+    if (index === PROMO_MOMENT_PICK_INDEX) return PROMO_COMPARE_SHAPES.pick;
+    if (index === PROMO_MOMENT_OTHER_INDEX) return PROMO_COMPARE_SHAPES.other;
+    return '';
+  }
+
+  function catalogLooks(count, cols, variant) {
+    const rand = mulberry32(catalogVariantSeed(variant));
+    const span = catalogWindow(cols);
+    const preference = [...PROMO_CLAY_KINDS];
+    for (let index = preference.length - 1; index > 0; index -= 1) {
+      const swap = Math.floor(rand() * (index + 1));
+      const held = preference[index];
+      preference[index] = preference[swap];
+      preference[swap] = held;
+    }
+    const kinds = new Array(count);
+    const knownKind = (index) => kinds[index] || catalogHeroKind(index);
+    const knownTint = (index) => {
+      const hero = catalogHeroKind(index);
+      if (hero) return PROMO_COMPARE_TINT;
+      return kinds[index] ? clayTintOf(kinds[index]) : '';
+    };
+    const fits = (index, kind) => {
+      const start = Math.max(0, index - span + 1);
+      const end = Math.min(count, index + span);
+      for (let prev = start; prev < index; prev += 1) {
+        if (knownKind(prev) === kind) return false;
+      }
+      for (let ahead = index + 1; ahead < end; ahead += 1) {
+        if (catalogHeroKind(ahead) === kind) return false;
+      }
+      const family = clayFamilyOf(kind);
+      const tint = catalogHeroKind(index) ? PROMO_COMPARE_TINT : clayTintOf(kind);
+      return catalogNeighbors(index, cols, count).every((other) => {
+        const otherKind = knownKind(other);
+        if (!otherKind || other > index && !catalogHeroKind(other)) return true;
+        if (otherKind === kind) return false;
+        if (clayFamilyOf(otherKind) === family) return false;
+        return !tintsClash(knownTint(other), tint);
+      });
+    };
+    const place = (index) => {
+      if (index === count) return true;
+      const hero = catalogHeroKind(index);
+      const options = hero ? [hero] : preference.filter((candidate) => fits(index, candidate));
+      for (let option = 0; option < options.length; option += 1) {
+        kinds[index] = options[option];
+        if (place(index + 1)) return true;
+      }
+      kinds[index] = undefined;
+      return false;
+    };
+    if (!place(0)) {
+      throw new Error(`catalog look failed for ${variant || 'classic'}`);
+    }
+    return kinds.map((kind, index) => (
+      catalogHeroKind(index)
+        ? lookForTint(kind, PROMO_COMPARE_TINT)
+        : makeCatalogLook(kind, rand)
+    ));
+  }
+
+  function gridAllLooks(variant) {
+    return catalogLooks(PROMO_MOMENT_CARD_COUNT, PROMO_CATALOG_COLS, variant);
   }
 
   function lookForTint(shape, tint) {
@@ -1743,10 +1786,12 @@
     if (img && img.getAttribute('src') !== src) img.src = src;
   }
 
-  function paintCatalogClay(board) {
+  function paintCatalogClay(board, cols) {
     if (!board || board.dataset.clayReady === '1') return;
     const cards = [...board.querySelectorAll('.promo-moments__card:not(.is-extra)')];
-    const looks = catalogLooks(cards.length, PROMO_CATALOG_COLS);
+    const columnCount = cols || Number(board.dataset.painCols) || PROMO_CATALOG_COLS;
+    const variant = board.dataset.catalogVariant || board.dataset.storeLook || 'classic';
+    const looks = catalogLooks(cards.length, columnCount, variant);
     cards.forEach((card, index) => applyClayLook(card, looks[index]));
     const extra = board.querySelector('.promo-moments__card.is-extra');
     const pick = looks[PROMO_MOMENT_PICK_INDEX];
@@ -2100,7 +2145,7 @@
     board.dataset.painCols = String(cols);
     board.dataset.painPitch = String(pitchY);
     stampMomentRoles(board);
-    paintCatalogClay(board);
+    paintCatalogClay(board, cols);
     return true;
   }
 
@@ -5159,6 +5204,7 @@
       if (board) {
         delete board.dataset.clayReady;
         delete board.dataset.gridLaid;
+        board.dataset.catalogVariant = clip.motion || clip.look || 'classic';
       }
       promoWidget.applyStoreLook(this.bizmisLook());
       const widget = this.root.querySelector('[data-promo-widget]');
@@ -5222,7 +5268,7 @@
       if (!host) return;
       const stage = document.createElement('div');
       stage.className = `promo-clip__product is-${clip.motion}`;
-      const looks = gridAllLooks();
+      const looks = gridAllLooks(clip.look);
       const scroller = document.createElement('div');
       scroller.className = 'promo-clip__scroll';
       const count = clip.motion === 'compare' ? 2 : 1;
@@ -5316,7 +5362,7 @@
           : clip.look === 'list' ? 1
             : clip.device === 'tablet' ? 3 : 2;
       const count = clip.look === 'list' ? 5 : clip.look === 'lookbook' ? 4 : cols * 4;
-      const looks = gridAllLooks().slice(0, count);
+      const looks = gridAllLooks(clip.look).slice(0, count);
       const track = document.createElement('div');
       track.className = 'promo-clip__track';
       for (let copy = 0; copy < 2; copy += 1) {
