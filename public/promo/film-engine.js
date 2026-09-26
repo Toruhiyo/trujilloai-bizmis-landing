@@ -226,7 +226,10 @@
   const PROMO_END_CTA_DELAY_MS = 400;
   const PROMO_END_CTA_HOLD_MS = 3000;
   const PROMO_END_CARD_MOVE_MS = 700;
-  const PROMO_END_CARD_BUTTON_MS = 140;
+  const PROMO_END_CARD_OPEN_MS = 420;
+  const PROMO_END_CARD_BUTTON_MS = 280;
+  const PROMO_END_CARD_COPY_DELAY_MS = 300;
+  const PROMO_END_CARD_COPY_MS = 300;
   const PROMO_END_CARD_CURSOR_MS = 800;
   const PROMO_END_CARD_HOLD_MS = 4000;
   const PROMO_SCALE_FADE_MS = 250;
@@ -3373,7 +3376,7 @@
       const fromFace = this.root.querySelector('[data-promo-face-from]');
       const toFace = this.root.querySelector('[data-promo-face-to]');
       if (!line || !fromFace) {
-        this.playEndCard();
+        this.playSeeForYourself();
         return;
       }
 
@@ -3422,7 +3425,7 @@
         line.classList.add('is-replaced');
         this.playHeroWords(toFace, () => {
           if (momentsEnabled()) this.playMoments(() => this.playPitchConveyor());
-          else this.playEndCard();
+          else this.playSeeForYourself();
         });
       }, toInAt);
     }
@@ -3954,13 +3957,14 @@
     playSeeForYourself() {
       endOpeningAgent();
       if (!this.stores.length) {
-        window.setTimeout(() => this.depart(), PROMO_PITCH_SETTLE_MS);
+        this.playEndCard();
         return;
       }
 
       if (prefersReducedMotion()) {
-        this.snapSeeLanded();
-        window.setTimeout(() => this.depart(), PROMO_SEE_CTA_HOLD_MS);
+        this.root.classList.add('is-see', 'is-see-in', 'is-see-docked', 'is-see-row', 'is-see-landed', 'is-see-wave');
+        this.paintWave(Math.max(0, this.landIndex), 1, 0.5);
+        window.setTimeout(() => this.playEndCard(), 800);
         return;
       }
 
@@ -3975,23 +3979,7 @@
 
       window.setTimeout(() => {
         this.glideClerkIntoRow();
-        this.playStoreWave(() => {
-          const cta = promoVideoConfig.cta;
-          if (cta === 'none') {
-            this.paintWave(Math.max(0, this.stores.length - 1), 1, 0.5);
-            window.setTimeout(() => this.depart(), 1200);
-            return;
-          }
-          if (cta === 'demo') {
-            window.setTimeout(() => this.depart(), 400);
-            return;
-          }
-          this.root.classList.add('is-see-cta');
-          window.setTimeout(() => {
-            this.root.classList.add('is-cta-aim');
-          }, Math.max(0, PROMO_SEE_CTA_HOLD_MS - PROMO_SEE_CURSOR_MS));
-          window.setTimeout(() => this.depart(), PROMO_SEE_CTA_HOLD_MS);
-        });
+        this.playStoreWave(() => this.playEndCard());
       }, 360);
     }
 
@@ -6440,7 +6428,7 @@
         this.paintGlideAt(0, 'pitch', { reduced: true });
         await waitMs(400);
         await this.playConveyorEnd('pitch');
-        await this.playEndCard();
+        this.playSeeForYourself();
         return;
       }
       this.glideKeepStore = true;
@@ -6455,7 +6443,7 @@
       await waitMs(glidePlayEnd('pitch'));
       if (generation !== this.scaleGeneration) return;
       await this.playConveyorEnd('pitch', { settled: true });
-      await this.playEndCard();
+      this.playSeeForYourself();
     }
 
     ensureEndCard(ctaKey) {
@@ -6476,17 +6464,13 @@
       const lockup = document.createElement('div');
       lockup.className = 'promo-end__lockup';
       const column = document.createElement('div');
-      column.className = 'promo-end__column';
+      column.className = 'promo-end__stack';
       if (copy && copy.scarcity) {
         const eyebrow = document.createElement('p');
         eyebrow.className = 'promo-end__eyebrow';
         eyebrow.textContent = copy.scarcity;
         column.append(eyebrow);
       }
-      const headline = document.createElement('h2');
-      headline.className = 'promo-end__headline';
-      headline.textContent = 'Built to sell.';
-      column.append(headline);
       if (copy) {
         const action = document.createElement('div');
         action.className = 'promo-end__action';
@@ -6548,7 +6532,6 @@
     settleEndCard(ctaKey) {
       const card = this.ensureEndCard(ctaKey);
       this.root.classList.add('is-end-card');
-      this.placeEndClerk();
       this.dockEndMark(card, false);
       card.classList.add('is-copy', 'is-settled');
       if (card.dataset.cta !== 'none') {
@@ -6562,28 +6545,18 @@
     async animateEndCard(ctaKey) {
       const card = this.ensureEndCard(ctaKey);
       this.root.classList.add('is-end-card');
-      this.placeEndClerk();
-      this.dockEndMark(card, true);
+      this.dockEndMark(card, false);
       const sold = this.root.querySelector('.promo-scale__sold');
-      if (sold) {
-        sold.style.transition = 'opacity 280ms linear';
-        sold.style.opacity = '0';
-      }
-      window.setTimeout(() => card.classList.add('is-copy'), 180);
-      if (card.dataset.cta === 'none') {
-        window.setTimeout(() => setOpeningAvatarAction('thumbsup'), 280);
-        window.setTimeout(() => setOpeningAvatarAction('idle_neutral'), 1500);
-        await waitMs(PROMO_END_CARD_MOVE_MS);
-        return;
-      }
-      const buttonAt = PROMO_END_CARD_MOVE_MS;
-      window.setTimeout(() => {
-        card.querySelector('.promo-end__button')?.classList.add('is-in');
-        setOpeningAvatarAction('thumbsup');
-      }, buttonAt);
-      window.setTimeout(() => card.classList.add('is-aim'), buttonAt + PROMO_END_CARD_BUTTON_MS);
-      window.setTimeout(() => setOpeningAvatarAction('idle_neutral'), buttonAt + 1400);
-      await waitMs(buttonAt + PROMO_END_CARD_BUTTON_MS + PROMO_END_CARD_CURSOR_MS);
+      if (sold) sold.style.opacity = '0';
+      await waitMs(PROMO_END_CARD_OPEN_MS);
+      if (card.dataset.cta === 'none') return;
+      card.querySelector('.promo-end__button')?.classList.add('is-in');
+      this.emitThud();
+      await waitMs(PROMO_END_CARD_COPY_DELAY_MS);
+      card.classList.add('is-copy');
+      await waitMs(PROMO_END_CARD_COPY_MS);
+      card.classList.add('is-aim');
+      await waitMs(PROMO_END_CARD_CURSOR_MS);
     }
 
     async playEndCard() {
