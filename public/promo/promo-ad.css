@@ -6328,6 +6328,11 @@ html.is-promo-clip.is-clip-moment #bizmis-avatar-embed {
   overflow: hidden;
   background: var(--ad-surface);
   transform-origin: 0 0;
+  contain: layout paint style;
+}
+
+.promo-glide__sheet {
+  will-change: transform;
 }
 
 .promo-glide__cell.is-dusting {
@@ -6395,6 +6400,7 @@ html.is-promo-clip.is-clip-moment #bizmis-avatar-embed {
   top: 0;
   overflow: visible;
   pointer-events: none;
+  contain: layout style;
 }
 
 .promo-glide__bloom,

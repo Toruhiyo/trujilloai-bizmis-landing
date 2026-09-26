@@ -802,14 +802,91 @@
     return poof;
   }
 
+  function writePaint(node, key, value) {
+    if (!node) return;
+    const wrote = node._paint || (node._paint = {});
+    const next = value == null ? '' : String(value);
+    if (wrote[key] === next) return;
+    wrote[key] = next;
+    if (key === 'opacity') node.style.opacity = next;
+    else if (key === 'transform') node.style.transform = next;
+    else if (key === 'width') node.style.width = next;
+    else if (key === 'height') node.style.height = next;
+    else node.style.setProperty(key, next);
+  }
+
+  function writeHidden(node, hidden) {
+    if (!node || node.hidden === hidden) return;
+    node.hidden = hidden;
+  }
+
+  function glideParts(node, fx) {
+    if (node._parts) return node._parts;
+    const poof = fx ? fx.querySelector('.promo-glide__poof') : null;
+    const parts = {
+      still: node.querySelector('.promo-glide__still'),
+      video: node.querySelector('.promo-glide__video'),
+      veil: node.querySelector('.promo-glide__veil'),
+      mark: node.querySelector('.promo-glide__mark'),
+      bloom: fx ? fx.querySelector('.promo-glide__bloom') : null,
+      rays: fx ? fx.querySelector('.promo-glide__rays') : null,
+      poof,
+      smokes: poof ? [...poof.querySelectorAll('.promo-glide__smoke')] : [],
+      ashes: poof ? [...poof.querySelectorAll('.promo-glide__ash')] : [],
+    };
+    node._parts = parts;
+    return parts;
+  }
+
+  function glideCellScreenAt(cell, cam, unit, frame, tiltDeg) {
+    const prev = glideActiveTilt;
+    glideActiveTilt = tiltDeg * Math.PI / 180;
+    const screen = glideCellScreen(cell, cam, unit, frame);
+    glideActiveTilt = prev;
+    return screen;
+  }
+
+  function releaseHeldVideo(video, still) {
+    if (!video || !still || video.dataset.still === '1' || !video.videoWidth) return;
+    const canvas = document.createElement('canvas');
+    const width = Math.min(480, video.videoWidth);
+    const height = Math.max(1, Math.round(width * video.videoHeight / Math.max(1, video.videoWidth)));
+    canvas.width = width;
+    canvas.height = height;
+    const context = canvas.getContext('2d');
+    if (!context) return;
+    try {
+      context.drawImage(video, 0, 0, width, height);
+    } catch (error) {
+      return;
+    }
+    const url = canvas.toDataURL('image/jpeg', 0.72);
+    still.src = url;
+    still.dataset.src = url;
+    video.dataset.still = '1';
+    video.pause();
+    video.removeAttribute('src');
+    video.load();
+    writeHidden(video, true);
+    writeHidden(still, false);
+  }
+
+  const GLIDE_LIVE_CAP = 16;
+
   function paintPainPoof(poof, seedA, seedB, age) {
     const dustLife = PROMO_GLIDE.poofMs + PROMO_GLIDE.dustMs;
     const cardU = Math.min(1, Math.max(0, age) / PROMO_GLIDE.poofMs);
     const dustU = Math.min(1, Math.max(0, age) / dustLife);
     const fade = cardU >= 1 ? 0 : (1 - cardU * cardU);
     if (!poof) return fade;
-    poof.style.opacity = '1';
-    poof.querySelectorAll('.promo-glide__smoke').forEach((smoke, index) => {
+    if (!poof._parts) {
+      poof._parts = {
+        smokes: [...poof.querySelectorAll('.promo-glide__smoke')],
+        ashes: [...poof.querySelectorAll('.promo-glide__ash')],
+      };
+    }
+    writePaint(poof, 'opacity', '1');
+    poof._parts.smokes.forEach((smoke, index) => {
       const seed = wallSeededUnit(seedA * 17 + seedB, 31 + index);
       const speck = wallSeededUnit(seedB * 13 + index, 47 + seedA);
       const puff = 1 - (1 - Math.min(1, dustU * 1.35)) ** 2;
@@ -822,7 +899,7 @@
       smoke.style.opacity = (life * 0.28).toFixed(3);
       smoke.style.transform = `translate(${x.toFixed(1)}px, ${y.toFixed(1)}px) scale(${scale.toFixed(3)})`;
     });
-    poof.querySelectorAll('.promo-glide__ash').forEach((ash, index) => {
+    poof._parts.ashes.forEach((ash, index) => {
       const seed = wallSeededUnit(seedA + index * 3, 61 + seedB);
       const speck = wallSeededUnit(index + seedB, 73 + seedA);
       const seedC = wallSeededUnit(index * 9 + seedA, 89 + seedB);
@@ -5209,6 +5286,7 @@
 
     paintGlideCell(node, fx, cell, mode, timeMs, view, live) {
       const frame = this.gridFrame();
+      const parts = glideParts(node, fx);
       const painAge = mode === 'pitch' ? null : painPoofAge(cell, timeMs);
       const event = mode === 'pitch'
         ? glideEventAt(mode, frame, cell.key, timeMs)
@@ -5236,8 +5314,8 @@
         node.style.height = `${height.toFixed(2)}px`;
         node.style.transform = `translate3d(${(cell.x * unit).toFixed(2)}px, ${(cell.y * unit).toFixed(2)}px, 0)`;
         node.style.borderRadius = `${gridMockupRadius(cell.device, width).toFixed(2)}px`;
-        const still = node.querySelector('.promo-glide__still');
-        const video = node.querySelector('.promo-glide__video');
+        const still = parts.still;
+        const video = parts.video;
         const leadStill = false;
         const stillSrc = leadStill
           ? (document.documentElement.getAttribute('data-promo-pitch-lead') || '')
@@ -5253,6 +5331,7 @@
         if (video && wantVideo && video.dataset.clip !== clipKey) {
           video.style.opacity = '';
           delete video.dataset.held;
+          delete video.dataset.still;
           video.dataset.clip = clipKey;
           video.src = clipSrc(tone, cell.id, motion, chat);
           const offset = wallSeededUnit(cell.row * 3 + cell.col, 19) * 1.4;
@@ -5263,65 +5342,58 @@
           video.play().catch(() => {});
         }
       }
-      const stillNode = node.querySelector('.promo-glide__still');
-      const videoNode = node.querySelector('.promo-glide__video');
-      const showVideo = !poofing && (live || sold) && videoNode && videoNode.readyState >= 2 && !!videoNode.dataset.clip;
+      const stillNode = parts.still;
+      const videoNode = parts.video;
+      if (videoNode && !live && !sold && videoNode.getAttribute('src')) {
+        videoNode.pause();
+        videoNode.removeAttribute('src');
+        videoNode.load();
+        delete videoNode.dataset.clip;
+        delete videoNode.dataset.held;
+      }
+      const showVideo = !poofing && (live || sold) && videoNode && videoNode.dataset.still !== '1' && videoNode.readyState >= 2 && !!videoNode.dataset.clip;
       if (videoNode) {
         if (showVideo && videoNode.paused && videoNode.dataset.held !== '1') videoNode.play().catch(() => {});
         if (!showVideo && !videoNode.paused && videoNode.dataset.held !== '1') videoNode.pause();
-        videoNode.hidden = !showVideo;
+        writeHidden(videoNode, !showVideo);
       }
-      if (stillNode) stillNode.hidden = showVideo;
+      if (stillNode) writeHidden(stillNode, showVideo);
       node.hidden = false;
       node.style.opacity = '';
       if (!event || (!poofing && !sold)) {
-        const veil = node.querySelector('.promo-glide__veil');
-        const mark = node.querySelector('.promo-glide__mark');
-        if (veil) veil.style.opacity = '0';
-        if (mark) mark.style.opacity = '0';
-        if (fx) fx.hidden = true;
+        const veil = parts.veil;
+        const mark = parts.mark;
+        writePaint(veil, 'opacity', '0');
+        writePaint(mark, 'opacity', '0');
+        if (fx) writeHidden(fx, true);
         if (mode !== 'pitch') {
           const since = painPoofLocal(cell, timeMs) - painPoofWindow();
           const back = Math.min(1, Math.max(0, since / 220));
           const opacity = back >= 0.99 ? '' : back.toFixed(3);
-          const stillBack = node.querySelector('.promo-glide__still');
-          const videoBack = node.querySelector('.promo-glide__video');
-          if (stillBack) stillBack.style.opacity = opacity;
-          if (videoBack) videoBack.style.opacity = opacity;
+          writePaint(stillNode, 'opacity', opacity);
+          writePaint(videoNode, 'opacity', opacity);
           node.classList.remove('is-dusting');
         }
         return true;
       }
       if (fx && mode !== 'pitch') {
-        const pull = node.closest('[data-promo-glide]')?._glidePull;
-        const zoom = pull?.zoom || 1;
-        let screen;
-        if (zoom > 1.02) {
-          const host = this.root.getBoundingClientRect();
-          const cellBox = node.getBoundingClientRect();
-          const ox = pull.ox || 0;
-          const oy = pull.oy || 0;
-          const sx = cellBox.left - host.left;
-          const sy = cellBox.top - host.top;
-          screen = {
-            x: ox + (sx - (pull.dx || 0) - ox) / zoom,
-            y: oy + (sy - (pull.dy || 0) - oy) / zoom,
-            w: cellBox.width / zoom,
-            h: cellBox.height / zoom,
-          };
-        } else {
-          screen = glideCellScreen(cell, view.span.cam, view.span.unit, frame);
-        }
-        fx.hidden = false;
-        fx.style.width = `${screen.w.toFixed(1)}px`;
-        fx.style.height = `${screen.h.toFixed(1)}px`;
-        fx.style.transform = `translate(${screen.x.toFixed(1)}px, ${screen.y.toFixed(1)}px)`;
+        const screen = glideCellScreenAt(
+          cell,
+          view.span.cam,
+          view.span.unit,
+          frame,
+          view.visibleTilt == null ? PROMO_GLIDE.tilt : view.visibleTilt,
+        );
+        writeHidden(fx, false);
+        writePaint(fx, 'width', `${screen.w.toFixed(1)}px`);
+        writePaint(fx, 'height', `${screen.h.toFixed(1)}px`);
+        writePaint(fx, 'transform', `translate(${screen.x.toFixed(1)}px, ${screen.y.toFixed(1)}px)`);
       }
-      const bloom = fx ? fx.querySelector('.promo-glide__bloom') : null;
-      const rays = fx ? fx.querySelector('.promo-glide__rays') : null;
-      const poof = fx ? fx.querySelector('.promo-glide__poof') : null;
-      const still = node.querySelector('.promo-glide__still');
-      const video = node.querySelector('.promo-glide__video');
+      const bloom = parts.bloom;
+      const rays = parts.rays;
+      const poof = parts.poof;
+      const still = stillNode;
+      const video = videoNode;
       if (mode === 'pitch') {
         const age = timeMs - event.t;
         const veilIn = Math.min(1, age / PROMO_GLIDE.bloomMs);
@@ -5341,6 +5413,9 @@
               try { video.currentTime = Math.max(0, duration - 0.04); } catch (error) { /* keep the frame already on screen */ }
             }
             video.pause();
+            const snap = () => releaseHeldVideo(video, still);
+            if (video.seeking) video.addEventListener('seeked', snap, { once: true });
+            else snap();
           };
           video.dataset.held = '1';
           if (video.readyState >= 1) holdLastFrame();
@@ -5357,10 +5432,10 @@
       const fadeText = fade <= 0.001 ? '0' : fade.toFixed(3);
       node.classList.add('is-dusting');
       node.style.setProperty('--card-left', fadeText);
-      if (still) still.style.opacity = fadeText;
-      if (video) video.style.opacity = fadeText;
-      if (bloom) bloom.style.opacity = '0';
-      if (rays) rays.style.opacity = '0';
+      writePaint(still, 'opacity', fadeText);
+      writePaint(video, 'opacity', fadeText);
+      writePaint(bloom, 'opacity', '0');
+      writePaint(rays, 'opacity', '0');
       return true;
     }
 
@@ -5465,6 +5540,7 @@
       if (tiltNode) {
         const rising = mode === 'pain' && time >= marks.captionPoofEnd;
         const tilt = rising ? glideTiltAt(time, mode) : PROMO_GLIDE.tilt * arrive;
+        view.visibleTilt = tilt;
         const yaw = PROMO_GLIDE.yaw * arrive;
         tiltNode.style.transform = `rotateX(${tilt.toFixed(2)}deg) rotateZ(${yaw.toFixed(2)}deg)`;
       }
@@ -5518,13 +5594,34 @@
       const pool = root._glidePool || [];
       const used = new Set();
       let shown = 0;
+      const keyed = new Map();
+      const free = [];
+      pool.forEach((item) => {
+        const key = item.cell.dataset.key;
+        if (key) keyed.set(key, item);
+        else free.push(item);
+      });
+      const pending = [];
       view.cells.forEach((cell) => {
-        const slot = pool.find((item) => item.cell.dataset.key === cell.key && !used.has(item))
-          || pool.find((item) => !used.has(item));
+        let slot = keyed.get(cell.key);
+        if (!slot || used.has(slot)) {
+          slot = free.find((item) => !used.has(item)) || pool.find((item) => !used.has(item));
+        }
         if (!slot) return;
-        const live = liveOk && cell.row >= nearRow - (PROMO_GLIDE.liveRows - 1) && cell.row <= nearRow;
-        const keep = this.paintGlideCell(slot.cell, slot.fx, cell, mode, time, view, live);
         used.add(slot);
+        const near = liveOk && cell.row >= nearRow - (PROMO_GLIDE.liveRows - 1) && cell.row <= nearRow;
+        pending.push({ slot, cell, near });
+      });
+      const liveSlots = new Set();
+      if (liveOk) {
+        pending.filter((item) => item.near)
+          .sort((a, b) => b.cell.y - a.cell.y)
+          .slice(0, GLIDE_LIVE_CAP)
+          .forEach((item) => liveSlots.add(item.slot));
+      }
+      pending.forEach((item) => {
+        const keep = this.paintGlideCell(item.slot.cell, item.slot.fx, item.cell, mode, time, view, liveSlots.has(item.slot));
+        const slot = item.slot;
         if (!keep) {
           slot.cell.hidden = true;
           slot.fx.hidden = true;
