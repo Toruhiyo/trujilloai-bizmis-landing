@@ -4924,7 +4924,7 @@
       world.style.perspective = `${PROMO_GLIDE.perspective}px`;
       const tilt = document.createElement('div');
       tilt.className = 'promo-glide__tilt';
-      tilt.style.transform = `rotateX(${PROMO_GLIDE.tilt}deg) rotateZ(${PROMO_GLIDE.yaw}deg)`;
+      tilt.style.transform = 'rotateX(0deg) rotateZ(0deg)';
       const sheet = document.createElement('div');
       sheet.className = 'promo-glide__sheet';
       const fxLayer = document.createElement('div');
@@ -5026,7 +5026,43 @@
         : null;
       this.glideLeadStart = start;
       this.glideLeadKey = glideLeadCell(frame)?.key || '';
+      this.glideZoomFrom = 0;
+      this.glideAnchor = null;
       return root;
+    }
+
+    captureGlideClose(mode) {
+      const frameBox = this.root.getBoundingClientRect();
+      this.glideZoomFrom = 0;
+      this.glideAnchor = null;
+      const box = this.glideCloseBox(mode);
+      if (!box || frameBox.width < 40 || box.width < 40) {
+        this.glideCloseRect = null;
+        return;
+      }
+      this.glideCloseRect = {
+        cx: box.left - frameBox.left + box.width / 2,
+        cy: box.top - frameBox.top + box.height / 2,
+        w: box.width,
+        h: box.height,
+      };
+    }
+
+    glideCloseBox(mode) {
+      if (mode !== 'pitch') return this.painStore()?.getBoundingClientRect() || null;
+      const stage = this.momentStage();
+      const cards = [...(stage?.querySelectorAll('.promo-moments__card') || [])].filter((card) => {
+        const box = card.getBoundingClientRect();
+        const style = getComputedStyle(card);
+        return box.width > 40 && style.visibility !== 'hidden' && Number(style.opacity) > 0.05;
+      });
+      if (!cards.length) return stage?.getBoundingClientRect() || null;
+      const boxes = cards.map((card) => card.getBoundingClientRect());
+      const left = Math.min(...boxes.map((box) => box.left));
+      const top = Math.min(...boxes.map((box) => box.top));
+      const right = Math.max(...boxes.map((box) => box.right));
+      const bottom = Math.max(...boxes.map((box) => box.bottom));
+      return { left, top, width: right - left, height: bottom - top };
     }
 
     paintGlideCell(node, fx, cell, mode, timeMs, view, live) {
@@ -5116,7 +5152,25 @@
         return true;
       }
       if (fx && mode !== 'pitch') {
-        const screen = glideCellScreen(cell, view.span.cam, view.span.unit, frame);
+        const pull = node.closest('[data-promo-glide]')?._glidePull;
+        const zoom = pull?.zoom || 1;
+        let screen;
+        if (zoom > 1.02) {
+          const host = this.root.getBoundingClientRect();
+          const cellBox = node.getBoundingClientRect();
+          const ox = pull.ox || 0;
+          const oy = pull.oy || 0;
+          const sx = cellBox.left - host.left;
+          const sy = cellBox.top - host.top;
+          screen = {
+            x: ox + (sx - (pull.dx || 0) - ox) / zoom,
+            y: oy + (sy - (pull.dy || 0) - oy) / zoom,
+            w: cellBox.width / zoom,
+            h: cellBox.height / zoom,
+          };
+        } else {
+          screen = glideCellScreen(cell, view.span.cam, view.span.unit, frame);
+        }
         fx.hidden = false;
         fx.style.width = `${screen.w.toFixed(1)}px`;
         fx.style.height = `${screen.h.toFixed(1)}px`;
@@ -5269,16 +5323,39 @@
         sheet.style.transform = `translate3d(${(frame.width / 2 - cam.x).toFixed(2)}px, ${(frame.height / 2 - cam.y).toFixed(2)}px, 0)`;
         sheet.style.opacity = '1';
       }
-      const viewWrap = root.querySelector('.promo-glide__view');
-      if (viewWrap) {
-        const arrive = options.reduced ? 1 : glideArrive(time);
-        if (arrive >= 0.995) viewWrap.style.transform = '';
-        else {
-          const tilt = (1 - arrive) * -20;
-          const zoom = 1 + (1 - arrive) * 1.55;
-          viewWrap.style.transform = `rotateX(${tilt.toFixed(2)}deg) scale(${zoom.toFixed(3)})`;
-        }
+      const arrive = options.reduced ? 1 : glideArrive(time);
+      const tiltNode = root.querySelector('.promo-glide__tilt');
+      if (tiltNode) {
+        const tilt = PROMO_GLIDE.tilt * arrive;
+        const yaw = PROMO_GLIDE.yaw * arrive;
+        tiltNode.style.transform = `rotateX(${tilt.toFixed(2)}deg) rotateZ(${yaw.toFixed(2)}deg)`;
       }
+      const viewWrap = root.querySelector('.promo-glide__view');
+      const leadCell = view.cells.find((cell) => cell.key === this.glideLeadKey) || glideLeadCell(frame);
+      let pull = { zoom: 1, dx: 0, dy: 0, ox: frame.width / 2, oy: frame.height * 0.62 };
+      if (viewWrap && leadCell && arrive < 0.995) {
+        const unit = view.span.unit;
+        const faceW = Math.max(1, leadCell.w * unit);
+        if (!this.glideZoomFrom) {
+          const closeW = this.glideCloseRect?.w || faceW * 2.6;
+          this.glideZoomFrom = Math.min(4.4, Math.max(1, closeW / faceW));
+          this.glideAnchor = {
+            x: frame.width / 2 - cam.x + (leadCell.x + leadCell.w / 2) * unit,
+            y: frame.height / 2 - cam.y + (leadCell.y + leadCell.h / 2) * unit,
+          };
+        }
+        const zoom = 1 + (1 - arrive) * (this.glideZoomFrom - 1);
+        const anchor = this.glideAnchor;
+        const close = this.glideCloseRect;
+        const dx = close ? (close.cx - anchor.x) * (1 - arrive) : 0;
+        const dy = close ? (close.cy - anchor.y) * (1 - arrive) : 0;
+        pull = { zoom, dx, dy, ox: anchor.x, oy: anchor.y };
+        viewWrap.style.transformOrigin = `${anchor.x.toFixed(1)}px ${anchor.y.toFixed(1)}px`;
+        viewWrap.style.transform = `translate(${dx.toFixed(1)}px, ${dy.toFixed(1)}px) scale(${zoom.toFixed(3)})`;
+      } else if (viewWrap) {
+        viewWrap.style.transform = '';
+      }
+      root._glidePull = pull;
       const blur = options.reduced ? 0 : glideBlurPx(time);
       if (streak && level) {
         if (blur > 0.4) {
@@ -5538,6 +5615,7 @@
 
     async playScaleTimeline() {
       const generation = this.scaleGeneration;
+      this.captureGlideClose('pain');
       this.revealScaleLayer();
       this.mountGlide('pain');
       if (generation !== this.scaleGeneration) return;
@@ -5671,6 +5749,7 @@
         this.playSeeForYourself();
         return;
       }
+      this.captureGlideClose('pitch');
       this.revealScaleLayer();
       this.mountGlide('pitch');
       if (generation !== this.scaleGeneration) return;
@@ -5706,6 +5785,7 @@
         this.applyPainBeat('answer-2', true);
         this.hideScaleStore();
       }
+      this.captureGlideClose(mode);
       this.revealScaleLayer();
       this.root.classList.add('is-scale-still');
       if (mode !== 'pitch') await Promise.race([this.captureConveyorStill(), waitMs(1200)]);
