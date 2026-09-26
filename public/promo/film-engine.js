@@ -674,7 +674,46 @@
         bestDist = dist;
       }
     });
-    return best || view.cells[0] || null;
+    const lead = best || view.cells[0] || null;
+    glideFlankLead(lead);
+    return lead;
+  }
+
+  function glideRetargetDevice(cell, id, lead) {
+    const spec = glideSpec(id);
+    cell.id = spec.id;
+    cell.device = spec.device;
+    cell.w = spec.w;
+    cell.h = spec.h;
+    cell.y = lead.y + (lead.h - spec.h) / 2;
+  }
+
+  function glideFlankLead(lead) {
+    if (!lead || lead.flanked) return;
+    const line = glideRows.get(lead.row);
+    if (!line) return;
+    const gap = PROMO_GLIDE.baseH * PROMO_GRID.flowGap;
+    glideEnsureRow(lead.row, lead.x - lead.w * 3, lead.x + lead.w * 3);
+    const left = line.cells.find((cell) => cell.col === lead.col - 1);
+    const right = line.cells.find((cell) => cell.col === lead.col + 1);
+    if (!left || !right) return;
+    glideRetargetDevice(left, 'tablet', lead);
+    glideRetargetDevice(right, 'phone', lead);
+    left.kept = true;
+    right.kept = true;
+    const index = line.cells.findIndex((cell) => cell.key === lead.key);
+    for (let i = index - 1; i >= 0; i -= 1) {
+      const next = line.cells[i + 1];
+      line.cells[i].x = next.x - gap - line.cells[i].w;
+    }
+    for (let i = index + 1; i < line.cells.length; i += 1) {
+      const prev = line.cells[i - 1];
+      line.cells[i].x = prev.x + prev.w + gap;
+    }
+    line.left = line.cells[0].x;
+    const last = line.cells[line.cells.length - 1];
+    line.right = last.x + last.w + gap;
+    lead.flanked = true;
   }
 
   function glideMotion(cell, mode) {
@@ -786,29 +825,83 @@
     return PROMO_GLIDE.poofMs + PROMO_GLIDE.dustMs;
   }
 
-  function painPoofLocal(cell, timeMs) {
-    const cycle = painPoofWindow() / PROMO_GLIDE.poofShare;
-    const phase = wallSeededUnit(cell.row * 19 + 3, cell.col * 11 + 7) * cycle;
-    return (timeMs + phase) % cycle;
+  function painInView(screen, frame, timeMs) {
+    const arrive = glideArrive(timeMs);
+    const insetX = (1 - arrive) * frame.width * 0.1 + frame.width * 0.035;
+    const insetY = (1 - arrive) * frame.height * 0.08 + frame.height * 0.03;
+    return screen.cx > insetX
+      && screen.cx < frame.width - insetX
+      && screen.cy > insetY
+      && screen.cy < frame.height - insetY;
   }
 
-  function painPoofAge(cell, timeMs) {
-    const local = painPoofLocal(cell, timeMs);
-    return local < painPoofWindow() ? local : null;
+  function painScreenAt(cell, timeMs, frame) {
+    const previous = glideActiveTilt;
+    glideActiveTilt = glideTiltAt(timeMs, 'pain') * Math.PI / 180;
+    const screen = glideCellScreen(cell, glideCamera(timeMs), glideUnit(frame), frame);
+    glideActiveTilt = previous;
+    return screen;
+  }
+
+  function painEntryTime(cell, frame, now) {
+    const visible = (timeMs) => painInView(painScreenAt(cell, timeMs, frame), frame, timeMs);
+    if (!visible(now)) return null;
+    if (visible(0)) return 0;
+    let lo = 0;
+    let hi = now;
+    for (let step = 0; step < 14; step += 1) {
+      const mid = (lo + hi) / 2;
+      if (visible(mid)) hi = mid;
+      else lo = mid;
+    }
+    return hi;
+  }
+
+  function painPoofState(cell, timeMs, frame) {
+    if (cell.kept) return { age: null, opacity: 1 };
+    if (cell.poofFrameW !== frame.width) {
+      cell.poofEntry = null;
+      cell.poofFrameW = frame.width;
+    }
+    if (cell.poofEntry == null) {
+      const entry = painEntryTime(cell, frame, timeMs);
+      if (entry == null) return { age: null, opacity: 1 };
+      const speed = glideSpeed(entry);
+      const haste = Math.min(1, Math.max(0, (speed - 280) / (PROMO_GLIDE.speedTo - 280)));
+      const seed = wallSeededUnit(cell.row * 19 + 3, cell.col * 11 + 7);
+      cell.poofEntry = entry;
+      cell.poofHaste = haste;
+      cell.poofBlows = haste > 0.42 || seed < PROMO_GLIDE.poofShare;
+      cell.poofLead = (1 - haste) * (140 + seed * 820) + haste * (20 + seed * 70);
+      cell.poofRate = 1 + haste * 2.6;
+    }
+    if (!cell.poofBlows) return { age: null, opacity: 1 };
+    const elapsed = (timeMs - cell.poofEntry - cell.poofLead) * cell.poofRate;
+    if (elapsed < 0) return { age: null, opacity: 1 };
+    const window = painPoofWindow();
+    if (cell.poofRate > 1.8) {
+      if (elapsed < window) return { age: elapsed, opacity: null };
+      return { age: null, opacity: 0 };
+    }
+    const cycle = window / PROMO_GLIDE.poofShare;
+    const local = elapsed % cycle;
+    if (local < window) return { age: local, opacity: null };
+    return { age: null, opacity: Math.min(1, (local - window) / 280) };
   }
 
   function buildPainPoof() {
     const poof = document.createElement('div');
     poof.className = 'promo-glide__poof';
-    for (let puff = 0; puff < 6; puff += 1) {
+    for (let puff = 0; puff < 10; puff += 1) {
       const smoke = document.createElement('i');
       smoke.className = 'promo-glide__smoke';
       poof.append(smoke);
     }
-    for (let bit = 0; bit < 40; bit += 1) {
+    for (let bit = 0; bit < 64; bit += 1) {
       const ash = document.createElement('i');
       ash.className = 'promo-glide__ash';
-      ash.style.setProperty('--ash', `${bit % 7 === 0 ? 2.5 : 1.5}px`);
+      const size = bit % 9 === 0 ? 9 : bit % 3 === 0 ? 5 : 3;
+      ash.style.setProperty('--ash', `${size}px`);
       poof.append(ash);
     }
     return poof;
@@ -901,27 +994,27 @@
     poof._parts.smokes.forEach((smoke, index) => {
       const seed = wallSeededUnit(seedA * 17 + seedB, 31 + index);
       const speck = wallSeededUnit(seedB * 13 + index, 47 + seedA);
-      const puff = 1 - (1 - Math.min(1, dustU * 1.35)) ** 2;
-      const life = dustU < 0.05 ? dustU / 0.05 : Math.max(0, 1 - (dustU - 0.05) / 0.4);
+      const puff = 1 - (1 - Math.min(1, dustU * 2.1)) ** 2;
+      const life = dustU < 0.06 ? dustU / 0.06 : Math.max(0, 1 - (dustU - 0.06) / 0.78);
       const angle = seed * Math.PI * 2;
-      const reach = (30 + speck * 220) * puff;
+      const reach = (80 + speck * 460) * puff;
       const x = Math.cos(angle) * reach;
-      const y = Math.sin(angle) * reach * 0.7 - puff * 36;
-      const scale = 0.15 + puff * (3.2 + seed * 2.2);
-      smoke.style.opacity = (life * 0.28).toFixed(3);
+      const y = Math.sin(angle) * reach * 0.72 - puff * 70;
+      const scale = 0.7 + puff * (6.5 + seed * 3.4);
+      smoke.style.opacity = (life * 0.92).toFixed(3);
       smoke.style.transform = `translate(${x.toFixed(1)}px, ${y.toFixed(1)}px) scale(${scale.toFixed(3)})`;
     });
     poof._parts.ashes.forEach((ash, index) => {
       const seed = wallSeededUnit(seedA + index * 3, 61 + seedB);
       const speck = wallSeededUnit(index + seedB, 73 + seedA);
       const seedC = wallSeededUnit(index * 9 + seedA, 89 + seedB);
-      const fly = 1 - (1 - dustU) ** 3;
+      const fly = 1 - (1 - Math.min(1, dustU * 1.35)) ** 3;
       const angle = seed * Math.PI * 2 + (seedC - 0.5) * 0.9;
-      const reach = (36 + speck * speck * 520) * fly;
-      const x = (seedC - 0.5) * 34 + Math.cos(angle) * reach;
-      const y = (seed - 0.5) * 20 + Math.sin(angle) * reach * 0.8 - fly * 28;
-      const left = dustU < 0.04 ? dustU / 0.04 : Math.max(0, 1 - (dustU - 0.04) / 0.62);
-      ash.style.opacity = (left * (0.45 + speck * 0.55)).toFixed(3);
+      const reach = (64 + speck * speck * 860) * fly;
+      const x = (seedC - 0.5) * 48 + Math.cos(angle) * reach;
+      const y = (seed - 0.5) * 28 + Math.sin(angle) * reach * 0.82 - fly * 54;
+      const left = dustU < 0.05 ? dustU / 0.05 : Math.max(0, 1 - (dustU - 0.05) / 0.82);
+      ash.style.opacity = (left * (0.8 + speck * 0.2)).toFixed(3);
       ash.style.transform = `translate(${x.toFixed(1)}px, ${y.toFixed(1)}px)`;
     });
     return fade;
@@ -4651,6 +4744,7 @@
       this.residue?.reset();
       this.residue = null;
       this.openingResidueAt = 0;
+      this.glideLeadPoofed = false;
       this.gridPaletteCache = null;
       this.gridThudSent = false;
       const caption = this.root.querySelector('[data-promo-end-caption]');
@@ -5449,15 +5543,50 @@
       return { left, top, width: right - left, height: bottom - top };
     }
 
+    paintLostLead(node, fx, cell, view) {
+      const unit = view.span.unit;
+      const width = cell.w * unit;
+      const height = cell.h * unit;
+      if (node.dataset.stamp !== `${cell.key}|lost`) {
+        node.dataset.stamp = `${cell.key}|lost`;
+        node.dataset.key = cell.key;
+        node.classList.add('is-lost', 'is-desktop');
+        node.classList.remove('is-dusting', 'is-tablet', 'is-phone');
+        node.style.width = `${width.toFixed(2)}px`;
+        node.style.height = `${height.toFixed(2)}px`;
+        node.style.transform = `translate3d(${(cell.x * unit).toFixed(2)}px, ${(cell.y * unit).toFixed(2)}px, 0)`;
+        node.style.borderRadius = `${gridMockupRadius(cell.device, width).toFixed(2)}px`;
+        node.style.background = 'transparent';
+        node.style.boxShadow = 'none';
+        const parts = glideParts(node, fx);
+        writeHidden(parts.still, true);
+        writeHidden(parts.video, true);
+        writePaint(parts.veil, 'opacity', '0');
+        writePaint(parts.mark, 'opacity', '0');
+        let lost = node.querySelector('.promo-glide__lost');
+        if (!lost) {
+          lost = document.createElement('div');
+          lost.className = 'promo-glide__lost';
+          lost.textContent = 'LOST';
+          node.append(lost);
+        }
+        lost.style.fontSize = `${Math.max(64, width * 0.22).toFixed(0)}px`;
+      }
+      node.hidden = false;
+      node.style.opacity = '1';
+      if (fx) writeHidden(fx, true);
+      this.root.querySelector('.promo-close__lost')?.setAttribute('hidden', '');
+    }
+
     paintGlideCell(node, fx, cell, mode, timeMs, view, live) {
       const frame = this.gridFrame();
       const parts = glideParts(node, fx);
       if (mode !== 'pitch' && this.glideLeadPoofed && cell.key === this.glideLeadKey) {
-        node.hidden = true;
-        if (fx) writeHidden(fx, true);
-        return false;
+        this.paintLostLead(node, fx, cell, view);
+        return true;
       }
-      const painAge = mode === 'pitch' ? null : painPoofAge(cell, timeMs);
+      const pain = mode === 'pitch' ? null : painPoofState(cell, timeMs, frame);
+      const painAge = pain ? pain.age : null;
       const event = mode === 'pitch'
         ? glideEventAt(mode, frame, cell.key, timeMs)
         : (painAge == null ? null : { t: timeMs - painAge });
@@ -5538,12 +5667,14 @@
         writePaint(mark, 'opacity', '0');
         if (fx) writeHidden(fx, true);
         if (mode !== 'pitch') {
-          const since = painPoofLocal(cell, timeMs) - painPoofWindow();
-          const back = Math.min(1, Math.max(0, since / 220));
-          const opacity = back >= 0.99 ? '' : back.toFixed(3);
-          writePaint(stillNode, 'opacity', opacity);
-          writePaint(videoNode, 'opacity', opacity);
-          node.classList.remove('is-dusting');
+          const gone = pain && pain.opacity <= 0.001;
+          const opacity = !pain || pain.opacity >= 0.99 ? '' : pain.opacity.toFixed(3);
+          writePaint(stillNode, 'opacity', gone ? '0' : opacity);
+          writePaint(videoNode, 'opacity', gone ? '0' : opacity);
+          if (gone) {
+            node.classList.add('is-dusting');
+            node.style.setProperty('--card-left', '0');
+          } else node.classList.remove('is-dusting');
         }
         return true;
       }
@@ -6068,12 +6199,25 @@
     async poofCloseStore() {
       const store = this.painStore();
       if (!store || prefersReducedMotion()) return;
+      this.root.querySelectorAll('.promo-close__lost').forEach((node) => node.remove());
+      const lost = document.createElement('div');
+      lost.className = 'promo-close__lost';
+      lost.textContent = 'LOST';
+      const parent = store.parentElement;
+      parent.insertBefore(lost, store);
+      const parentBox = parent.getBoundingClientRect();
+      const box = store.getBoundingClientRect();
+      lost.style.left = `${(box.left - parentBox.left).toFixed(1)}px`;
+      lost.style.top = `${(box.top - parentBox.top).toFixed(1)}px`;
+      lost.style.width = `${box.width.toFixed(1)}px`;
+      lost.style.height = `${box.height.toFixed(1)}px`;
+      lost.style.fontSize = `${Math.round(box.width * 0.2)}px`;
+      lost.style.opacity = '0';
       const host = document.createElement('div');
       host.className = 'promo-close__poof';
       const poof = buildPainPoof();
       host.append(poof);
       this.placeOverStore(host, store);
-      const box = store.getBoundingClientRect();
       const reference = 280;
       const scale = box.width / reference;
       host.style.width = `${reference}px`;
@@ -6090,6 +6234,8 @@
           const age = now - started;
           const fade = paintPainPoof(poof, 4, 9, age);
           store.style.opacity = fade <= 0.001 ? '0' : fade.toFixed(3);
+          const reveal = Math.min(1, Math.max(0, (age - PROMO_GLIDE.poofMs * 0.35) / (PROMO_GLIDE.poofMs * 0.65)));
+          lost.style.opacity = reveal.toFixed(3);
           if (age < life) window.requestAnimationFrame(step);
           else resolve();
         };
@@ -6470,6 +6616,7 @@
         if (stage) applyMomentPose(stage, 'bundle', { instant: true });
         promoWidget.applyStoreLook(this.bizmisLook());
       } else {
+        this.glideLeadPoofed = true;
         this.root.classList.remove('is-pitch');
         this.openPainStage();
         this.applyPainBeat('answer-2', true);
