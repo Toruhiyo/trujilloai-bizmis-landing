@@ -6648,6 +6648,18 @@ html.is-promo-clip.is-clip-moment #bizmis-avatar-embed {
   filter: drop-shadow(0 1px 2px rgba(120, 64, 12, 0.4));
 }
 
+.promo-close__poof {
+  position: absolute;
+  z-index: 40;
+  overflow: visible;
+  pointer-events: none;
+}
+
+.promo-opening__store > .promo-close__veil,
+.promo-opening__store > .promo-close__mark {
+  z-index: 40;
+}
+
 .promo-glide__mark svg {
   display: block;
   width: 100%;

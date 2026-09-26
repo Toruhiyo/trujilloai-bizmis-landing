@@ -764,8 +764,8 @@
     const lead = glideLeadCell(frame);
     if (lead) {
       const existing = list.find((event) => event.key === lead.key);
-      if (existing) existing.t = Math.min(existing.t, 180);
-      else list.push({ t: 180, key: lead.key, row: lead.row, col: lead.col });
+      if (existing) existing.t = -400;
+      else list.push({ t: -400, key: lead.key, row: lead.row, col: lead.col });
     }
     glideEventCache = { key, list };
     return list;
@@ -5447,6 +5447,11 @@
     paintGlideCell(node, fx, cell, mode, timeMs, view, live) {
       const frame = this.gridFrame();
       const parts = glideParts(node, fx);
+      if (mode !== 'pitch' && this.glideLeadPoofed && cell.key === this.glideLeadKey) {
+        node.hidden = true;
+        if (fx) writeHidden(fx, true);
+        return false;
+      }
       const painAge = mode === 'pitch' ? null : painPoofAge(cell, timeMs);
       const event = mode === 'pitch'
         ? glideEventAt(mode, frame, cell.key, timeMs)
@@ -5994,6 +5999,80 @@
       }
     }
 
+    placeOverStore(host, store) {
+      const rootBox = this.root.getBoundingClientRect();
+      const box = store.getBoundingClientRect();
+      host.style.left = `${(box.left - rootBox.left).toFixed(1)}px`;
+      host.style.top = `${(box.top - rootBox.top).toFixed(1)}px`;
+      host.style.width = `${box.width.toFixed(1)}px`;
+      host.style.height = `${box.height.toFixed(1)}px`;
+    }
+
+    async poofCloseStore() {
+      const store = this.painStore();
+      if (!store || prefersReducedMotion()) return;
+      const host = document.createElement('div');
+      host.className = 'promo-close__poof';
+      const poof = buildPainPoof();
+      host.append(poof);
+      this.placeOverStore(host, store);
+      const box = store.getBoundingClientRect();
+      const reference = 280;
+      const scale = box.width / reference;
+      host.style.width = `${reference}px`;
+      host.style.height = `${(reference * box.height / box.width).toFixed(1)}px`;
+      host.style.transformOrigin = 'top left';
+      host.style.transform = `scale(${scale.toFixed(3)})`;
+      this.root.append(host);
+      const previous = store.style.transition;
+      store.style.transition = 'none';
+      const life = PROMO_GLIDE.poofMs + PROMO_GLIDE.dustMs;
+      const started = performance.now();
+      await new Promise((resolve) => {
+        const step = (now) => {
+          const age = now - started;
+          const fade = paintPainPoof(poof, 4, 9, age);
+          store.style.opacity = fade <= 0.001 ? '0' : fade.toFixed(3);
+          if (age < life) window.requestAnimationFrame(step);
+          else resolve();
+        };
+        window.requestAnimationFrame(step);
+      });
+      host.remove();
+      store.style.opacity = '';
+      store.style.transition = previous;
+    }
+
+    async markCloseStoreSold() {
+      const store = this.painStore();
+      if (!store || prefersReducedMotion()) return;
+      const veil = document.createElement('div');
+      veil.className = 'promo-glide__veil promo-close__veil';
+      const mark = document.createElement('span');
+      mark.className = 'promo-glide__mark promo-close__mark';
+      mark.innerHTML = '<svg viewBox="0 0 12 12" aria-hidden="true"><path d="M1.8 6.1 4.6 9.1 10.2 2.8" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+      store.append(veil, mark);
+      const hold = 900;
+      const life = 260 + hold;
+      const started = performance.now();
+      await new Promise((resolve) => {
+        const step = (now) => {
+          const age = now - started;
+          const veilIn = Math.min(1, age / PROMO_GLIDE.bloomMs);
+          const flash = veilIn < 1 ? Math.sin(veilIn * Math.PI) * 0.1 : 0;
+          veil.style.opacity = (0.4 * veilIn + flash).toFixed(3);
+          const pop = Math.min(1, age / 260);
+          mark.style.opacity = Math.min(1, pop * 1.35).toFixed(3);
+          mark.style.transform = `translate(-50%, -50%) scale(${(0.72 + (1 - (1 - pop) ** 3) * 0.28).toFixed(3)})`;
+          if (age < life) window.requestAnimationFrame(step);
+          else resolve();
+        };
+        window.requestAnimationFrame(step);
+      });
+      veil.remove();
+      mark.remove();
+    }
+
     async aimCursorAtWindowClose() {
       const store = this.painStore();
       const cursor = this.root.querySelector('[data-promo-pain-cursor]');
@@ -6023,6 +6102,9 @@
     async playScaleTimeline() {
       const generation = this.scaleGeneration;
       this.captureGlideClose('pain');
+      await this.poofCloseStore();
+      if (generation !== this.scaleGeneration) return;
+      this.glideLeadPoofed = true;
       this.revealScaleLayer();
       this.mountGlide('pain');
       if (generation !== this.scaleGeneration) return;
@@ -6161,6 +6243,8 @@
         return;
       }
       this.captureGlideClose('pitch');
+      await this.markCloseStoreSold();
+      if (generation !== this.scaleGeneration) return;
       this.revealScaleLayer();
       this.mountGlide('pitch');
       if (generation !== this.scaleGeneration) return;
