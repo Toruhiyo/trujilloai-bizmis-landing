@@ -3485,7 +3485,11 @@
       const widget = this.root.querySelector('[data-promo-widget]');
       const canvas = this.root.querySelector('[data-promo-canvas]');
       const store = this.root.querySelector('.promo-opening__store');
-      if (store) store.style.visibility = '';
+      if (store) {
+        store.style.visibility = '';
+        store.style.opacity = '';
+      }
+      this.root.classList.remove('is-close-seat');
       this.root.classList.add('is-moments');
       const stage = this.momentStage();
       void stage?.offsetWidth;
@@ -3956,6 +3960,7 @@
 
     playSeeForYourself() {
       endOpeningAgent();
+      this.root.classList.remove('is-close-seat');
       if (!this.stores.length) {
         this.playEndCard();
         return;
@@ -4214,10 +4219,14 @@
         if (host?.classList.contains('promo-puff__host')) host.replaceWith(store);
         store.classList.remove('promo-puff__body');
         store.style.visibility = '';
+        store.style.opacity = '';
         store.style.transform = '';
         store.style.transition = '';
         store.style.transformOrigin = '';
+        store.querySelectorAll('.promo-close__veil, .promo-close__mark').forEach((node) => node.remove());
       }
+      this.root.classList.remove('is-close-seat');
+      this.root.querySelectorAll('.promo-close__lost, .promo-close__poof').forEach((node) => node.remove());
       const host = this.painHost();
       host?.querySelector('.promo-moments__board')?.style.removeProperty('--pain-scroll');
       host?.classList.remove('is-pain-dim');
