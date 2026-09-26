@@ -6,7 +6,7 @@ const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const WIDGET = path.resolve(ROOT, '../trujilloai-bizmis-widget');
 const OUT = path.join(ROOT, 'public/promo');
 const SIZE = 512;
-const KINDS = ['bottle', 'bowl', 'pyramid', 'hex-prism', 'pebble', 'vase', 'ring-stack', 'lamp'];
+const KINDS = [];
 const TURNS = [-20, 0, 20];
 const FINISHES = ['matte', 'satin'];
 

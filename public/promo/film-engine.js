@@ -477,9 +477,14 @@
     return (frame.width * PROMO_GLIDE.cellScale) / (desktopW * scale);
   }
 
+  function glideRamp(u) {
+    const t = Math.min(1, Math.max(0, u));
+    return t * t * t;
+  }
+
   function glideSpeed(glideMs) {
     const u = Math.min(1, Math.max(0, glideMs / PROMO_GLIDE.rampMs));
-    return PROMO_GLIDE.speedFrom + (PROMO_GLIDE.speedTo - PROMO_GLIDE.speedFrom) * u * u;
+    return PROMO_GLIDE.speedFrom + (PROMO_GLIDE.speedTo - PROMO_GLIDE.speedFrom) * glideRamp(u);
   }
 
   function glideDistance(glideMs) {
@@ -487,12 +492,13 @@
     const from = PROMO_GLIDE.speedFrom;
     const to = PROMO_GLIDE.speedTo;
     const elapsed = Math.max(0, glideMs);
+    const power = 4;
     if (elapsed >= span) {
-      const ramp = from * span + (to - from) * span / 3;
+      const ramp = from * span + (to - from) * span / power;
       return (ramp + to * (elapsed - span)) / 1000;
     }
     const u = elapsed / span;
-    return (from * elapsed + (to - from) * elapsed * u * u / 3) / 1000;
+    return (from * elapsed + (to - from) * elapsed * glideRamp(u) / power) / 1000;
   }
 
   function glideCamera(timeMs) {
@@ -697,7 +703,8 @@
     const u = Math.min(1, Math.max(0, (timeMs - glideEventStart()) / span));
     const flutter = 0.25 + Math.abs(Math.sin(timeMs / 68 + (mode === 'pitch' ? 1.4 : 0.2))) * 1.7;
     const chop = Math.abs(Math.sin(timeMs / 173 + (mode === 'pitch' ? 0.6 : 2.1))) > 0.32 ? 1.65 : 0.4;
-    const base = mode === 'pitch' ? 11 + u * 13 : 13 + u * 15;
+    const ramp = glideRamp(u);
+    const base = mode === 'pitch' ? 11 + ramp * 13 : 13 + ramp * 15;
     return base * flutter * chop;
   }
 
@@ -1441,14 +1448,6 @@
     cylinder: { tint: 'sage' },
     dome: { tint: 'warm-grey' },
     slab: { tint: 'sand' },
-    bottle: { tint: 'sage' },
-    bowl: { tint: 'sand' },
-    pyramid: { tint: 'warm-grey' },
-    'hex-prism': { tint: 'stone' },
-    pebble: { tint: 'blush' },
-    vase: { tint: 'stone' },
-    'ring-stack': { tint: 'sand' },
-    lamp: { tint: 'sage' },
   };
   const PROMO_CLAY_KINDS = Object.keys(PROMO_CATALOG);
   const PROMO_CLAY_TURNS = ['m20', '0', 'p20'];
@@ -5394,7 +5393,7 @@
       root.append(viewWrap, light, dofMid, dofFar, horizon, caption, field, lead);
       root._glidePool = pool;
       wall.append(root);
-      if (store) store.style.visibility = 'hidden';
+      if (store && !this.glideKeepStore) store.style.visibility = 'hidden';
       const start = storeBox && storeBox.width > 40
         ? {
           x: storeBox.left - wallBox.left,
@@ -5428,7 +5427,13 @@
     }
 
     glideCloseBox(mode) {
-      if (mode !== 'pitch') return this.painStore()?.getBoundingClientRect() || null;
+      const store = this.painStore();
+      const storeBox = store?.getBoundingClientRect();
+      const storeStyle = store ? getComputedStyle(store) : null;
+      if (storeBox && storeBox.width > 40 && storeBox.height > 40 && storeStyle.visibility !== 'hidden' && Number(storeStyle.opacity) > 0.05) {
+        return storeBox;
+      }
+      if (mode !== 'pitch') return storeBox || null;
       const stage = this.momentStage();
       const cards = [...(stage?.querySelectorAll('.promo-moments__card') || [])].filter((card) => {
         const box = card.getBoundingClientRect();
@@ -5682,6 +5687,47 @@
       }
     }
 
+    clipGlideOpen(root, arrive) {
+      if (!root || !this.glideCloseRect || arrive >= 0.995) {
+        if (root) root.style.clipPath = '';
+        return;
+      }
+      const keep = 1 - arrive;
+      const host = root.getBoundingClientRect();
+      const frame = this.root.getBoundingClientRect();
+      const close = this.glideCloseRect;
+      const left = close.cx - close.w / 2 + frame.left;
+      const top = close.cy - close.h / 2 + frame.top;
+      const right = left + close.w;
+      const bottom = top + close.h;
+      const insetTop = Math.max(0, top - host.top) * keep;
+      const insetRight = Math.max(0, host.right - right) * keep;
+      const insetBottom = Math.max(0, host.bottom - bottom) * keep;
+      const insetLeft = Math.max(0, left - host.left) * keep;
+      root.style.clipPath = `inset(${insetTop.toFixed(1)}px ${insetRight.toFixed(1)}px ${insetBottom.toFixed(1)}px ${insetLeft.toFixed(1)}px)`;
+    }
+
+    placeCloseStore(root) {
+      const store = this.painStore();
+      if (!store || !this.glideKeepStore || !this.glideCloseRect) return;
+      this.root.classList.add('is-close-seat');
+      const lead = [...(root?._glidePool || [])].find((item) => item.cell.dataset.key === this.glideLeadKey)?.cell;
+      const box = lead && !lead.hidden ? lead.getBoundingClientRect() : null;
+      if (!box || box.width < 8) return;
+      if (!this.closeStoreLock) {
+        this.closeStoreLock = { left: box.left, top: box.top, width: box.width };
+        store.style.transform = 'none';
+        return;
+      }
+      const lock = this.closeStoreLock;
+      const scale = box.width / lock.width;
+      const dx = box.left - lock.left;
+      const dy = box.top - lock.top;
+      store.style.transition = 'none';
+      store.style.transformOrigin = '0 0';
+      store.style.transform = `translate(${dx.toFixed(1)}px, ${dy.toFixed(1)}px) scale(${scale.toFixed(4)})`;
+    }
+
     paintGlideAt(timeMs, mode, options = {}) {
       const root = this.mountGlide(mode);
       if (!root) return;
@@ -5750,9 +5796,11 @@
           streak.style.filter = '';
         }
       }
-      root.querySelectorAll('.promo-glide__dof').forEach((layer) => {
-        layer.style.visibility = blur > 8 ? 'hidden' : '';
+      root.querySelectorAll('.promo-glide__dof, .promo-glide__light').forEach((layer) => {
+        layer.style.visibility = blur > 8 || arrive < 0.85 ? 'hidden' : '';
       });
+      const fxLayer = root.querySelector('.promo-glide__fx-layer');
+      if (fxLayer) fxLayer.style.visibility = arrive < 0.35 ? 'hidden' : '';
       const nearRow = Math.floor(view.span.maxY / view.pitch);
       const speed = cam.speed;
       const phase = glidePhase(time, mode);
@@ -5793,8 +5841,17 @@
           slot.fx.hidden = true;
           return;
         }
+        if (this.glideKeepStore && item.cell.key === this.glideLeadKey) {
+          slot.cell.style.background = 'transparent';
+          slot.cell.style.boxShadow = 'none';
+          slot.cell.querySelectorAll('.promo-glide__still, .promo-glide__video, .promo-glide__veil, .promo-glide__mark').forEach((node) => {
+            node.style.visibility = 'hidden';
+          });
+        }
         shown += 1;
       });
+      this.clipGlideOpen(root, arrive);
+      this.placeCloseStore(root);
       pool.forEach((slot) => {
         if (!used.has(slot)) {
           slot.cell.hidden = true;
@@ -6039,7 +6096,6 @@
         window.requestAnimationFrame(step);
       });
       host.remove();
-      store.style.opacity = '';
       store.style.transition = previous;
     }
 
@@ -6069,8 +6125,6 @@
         };
         window.requestAnimationFrame(step);
       });
-      veil.remove();
-      mark.remove();
     }
 
     async aimCursorAtWindowClose() {
@@ -6101,6 +6155,7 @@
 
     async playScaleTimeline() {
       const generation = this.scaleGeneration;
+      this.glideKeepStore = false;
       this.captureGlideClose('pain');
       await this.poofCloseStore();
       if (generation !== this.scaleGeneration) return;
@@ -6242,6 +6297,7 @@
         await this.playEndCard();
         return;
       }
+      this.glideKeepStore = true;
       this.captureGlideClose('pitch');
       await this.markCloseStoreSold();
       if (generation !== this.scaleGeneration) return;

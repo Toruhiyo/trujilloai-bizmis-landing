@@ -1589,6 +1589,16 @@ html.is-promo-opening.is-promo-depart .promo-opening {
   opacity: 0;
 }
 
+.promo-opening.is-close-seat .promo-opening__pitch {
+  z-index: 8;
+  opacity: 1;
+}
+
+.promo-opening.is-close-seat .promo-opening__moments-label,
+.promo-opening.is-close-seat .promo-opening__stores {
+  visibility: hidden;
+}
+
 .promo-opening.is-pain.is-pain-out .promo-opening__moments {
   opacity: 0;
   transition: opacity var(--promo-pain-exit, 260ms) linear;
@@ -6567,6 +6577,7 @@ html.is-promo-clip.is-clip-moment #bizmis-avatar-embed {
   position: absolute;
   inset: 0;
   overflow: hidden;
+  background: var(--ad-white);
 }
 
 .promo-glide__view {
