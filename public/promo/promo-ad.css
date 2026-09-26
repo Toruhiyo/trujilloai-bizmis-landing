@@ -1785,41 +1785,43 @@ html.is-promo-opening.is-promo-depart .promo-opening {
 .promo-pain__close {
   position: relative;
   flex: 0 0 auto;
-  width: 16px;
-  height: 16px;
+  width: 18px;
+  height: 18px;
   padding: 0;
   border: 0;
-  border-radius: 50%;
-  background: var(--ad-red);
+  border-radius: 0;
+  background: transparent;
   pointer-events: none;
 }
 
-.promo-opening.is-chat-aim .promo-pain__close {
-  transform: scale(1.15);
-}
-
-.promo-opening.click.is-chat-aim .promo-pain__close {
-  transform: scale(0.86);
-}
-
-.promo-opening.is-chat-aim .promo-pain__close::before,
-.promo-opening.is-chat-aim .promo-pain__close::after {
+.promo-pain__close::before,
+.promo-pain__close::after {
   content: "";
   position: absolute;
   left: 50%;
   top: 50%;
-  width: 7px;
-  height: 1.4px;
+  width: 12px;
+  height: 1.5px;
   border-radius: 1px;
-  background: var(--ad-white);
+  background: var(--bot-ink);
+  opacity: 0.45;
 }
 
-.promo-opening.is-chat-aim .promo-pain__close::before {
+.promo-pain__close::before {
   transform: translate(-50%, -50%) rotate(45deg);
 }
 
-.promo-opening.is-chat-aim .promo-pain__close::after {
+.promo-pain__close::after {
   transform: translate(-50%, -50%) rotate(-45deg);
+}
+
+.promo-opening.is-chat-aim .promo-pain__close::before,
+.promo-opening.is-chat-aim .promo-pain__close::after {
+  opacity: 1;
+}
+
+.promo-opening.click.is-chat-aim .promo-pain__close {
+  transform: scale(0.86);
 }
 
 .promo-pain__chips,
@@ -6717,61 +6719,31 @@ html.is-promo-clip.is-clip-moment #bizmis-avatar-embed {
   left: 0;
   top: 0;
   overflow: hidden;
-  background: var(--ad-surface);
+  background: color-mix(in srgb, var(--ad-white) 72%, transparent);
   transform-origin: 0 0;
   -webkit-backdrop-filter: none;
   backdrop-filter: none;
-  box-shadow: none;
 }
 
 .promo-glide__sheet {
   will-change: transform;
 }
 
-.promo-glide__cell.is-tablet {
-  background: #e6e2dc;
+.promo-glide__cell.is-phone .promo-glide__still,
+.promo-glide__cell.is-phone .promo-glide__video {
+  transform: scale(1.34);
+  transform-origin: center 40%;
 }
 
 .promo-glide__cell.is-tablet .promo-glide__still,
-.promo-glide__cell.is-tablet .promo-glide__video,
-.promo-glide__cell.is-tablet .promo-glide__veil {
-  inset: 7.5% 5.5% 8.5%;
-  width: auto;
-  height: auto;
-  border-radius: 8%;
-}
-
-.promo-glide__cell.is-tablet::before {
-  content: "";
-  position: absolute;
-  z-index: 6;
-  left: 50%;
-  top: 2.6%;
-  width: 3.4%;
-  aspect-ratio: 1;
-  border-radius: 50%;
-  background: #2c2a28;
-  transform: translateX(-50%);
-  pointer-events: none;
-}
-
-.promo-glide__cell.is-tablet::after {
-  content: "";
-  position: absolute;
-  z-index: 6;
-  left: 50%;
-  bottom: 3%;
-  width: 22%;
-  height: 1.5%;
-  border-radius: 999px;
-  background: rgba(44, 42, 40, 0.28);
-  transform: translateX(-50%);
-  pointer-events: none;
+.promo-glide__cell.is-tablet .promo-glide__video {
+  transform: scale(1.22);
+  transform-origin: center 28%;
 }
 
 .promo-glide__cell.is-dusting,
 .promo-glide__cell.is-lost {
-  overflow: visible;
+  overflow: hidden;
   background: transparent;
   border-color: transparent;
   box-shadow: none;
@@ -6820,6 +6792,7 @@ html.is-promo-clip.is-clip-moment #bizmis-avatar-embed {
   position: absolute;
   inset: 0;
   z-index: 3;
+  border-radius: inherit;
   background: var(--bizmis-primary);
   opacity: 0;
   pointer-events: none;
@@ -6865,7 +6838,9 @@ html.is-promo-clip.is-clip-moment #bizmis-avatar-embed {
   left: 50%;
   top: 46%;
   z-index: 5;
+  max-width: 86%;
   margin: 0;
+  text-align: center;
   color: #8f8a84;
   font-family: var(--font-heading);
   font-weight: 700;
@@ -7076,12 +7051,18 @@ html.is-promo-clip.is-clip-moment #bizmis-avatar-embed {
 }
 
 .promo-glide__lead img,
-.promo-opening .promo-glide__lead .promo-opening__store {
-  width: 100%;
-  height: 100%;
+.promo-opening .promo-glide__lead .promo-opening__store,
+.promo-opening.is-moments .promo-glide__cell > .promo-opening__store {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: auto;
+  height: auto;
+  max-width: none;
   max-height: none;
   aspect-ratio: auto;
-  transform: none;
+  transform-origin: 0 0;
+  border-radius: 0;
   object-fit: cover;
 }
 
@@ -7146,39 +7127,32 @@ html.is-promo-clip.is-clip-moment #bizmis-avatar-embed {
 
 .promo-end__claim {
   margin: 0;
+  padding: 0.14em 0.08em 0.18em;
   color: transparent;
   -webkit-text-fill-color: transparent;
   font-family: var(--font-heading);
-  font-size: clamp(4.8rem, 8.4vw, 8rem);
+  font-size: clamp(4.2rem, 7.2vw, 6.8rem);
   font-weight: 700;
   letter-spacing: -0.05em;
-  line-height: 0.9;
+  line-height: 1.08;
   background-image:
     linear-gradient(
       108deg,
       transparent 0%,
       transparent 40%,
-      rgba(255, 255, 255, 0.2) 46%,
-      #fff 50%,
-      rgba(255, 255, 255, 0.2) 54%,
+      rgba(255, 255, 255, 0.16) 46%,
+      rgba(255, 255, 255, 0.92) 50%,
+      rgba(255, 255, 255, 0.16) 54%,
       transparent 60%,
       transparent 100%
     ),
-    linear-gradient(
-      180deg,
-      #fbfaf8 0%,
-      #d4cec6 14%,
-      #8a847c 36%,
-      #3a3734 50%,
-      #6a655f 66%,
-      #c9c3bb 82%,
-      #45423f 100%
-    );
+    linear-gradient(var(--ad-ink), var(--ad-ink));
   background-size: 280% 100%, 100% 100%;
   background-position: 40% 0, 0 0;
+  background-repeat: no-repeat;
   -webkit-background-clip: text;
   background-clip: text;
-  filter: drop-shadow(0 1px 0 rgba(255, 255, 255, 0.85)) drop-shadow(0 1px 1px rgba(28, 26, 24, 0.35));
+  filter: drop-shadow(0 1px 0 rgba(255, 255, 255, 0.85)) drop-shadow(0 1px 1px rgba(28, 26, 24, 0.28));
   opacity: 0;
   transform: translateY(0.06em);
   transition: opacity 520ms cubic-bezier(0.22, 1, 0.36, 1), transform 520ms cubic-bezier(0.22, 1, 0.36, 1);

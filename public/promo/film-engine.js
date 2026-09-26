@@ -222,7 +222,6 @@
   const PROMO_WINDOW_CLOSE_MS = 760;
   const PROMO_CHAT_CLOSE_AT_MS = 880;
   const PROMO_CHAT_AIM_MS = 720;
-  const PROMO_GLIDE_LEAD_RELEASE = 0.9;
   const PROMO_SCALE_SNAP_CLASS_MS = 50;
   const PROMO_SCALE_WHITE_MS = 200;
   const PROMO_SCALE_HOLD_MS = 1000;
@@ -257,7 +256,7 @@
     devices: [
       { id: 'desktop', ratio: 16 / 10, frame: 800 },
       { id: 'phone', ratio: 9 / 19.5, frame: 800 },
-      { id: 'tablet', ratio: 4 / 3, frame: 800 },
+      { id: 'tablet', ratio: 3 / 4, frame: 800 },
     ],
     variants: ['scroll-up', 'scroll-down', 'wander-near', 'wander-far', 'product-read', 'product-scroll', 'compare'],
     burstMin: 4,
@@ -283,7 +282,7 @@
     stampAngle: -12,
     stampPressMs: 120,
     deviceMix: { desktop: 0.28, tablet: 0.26, phone: 0.46 },
-    deviceWidth: { desktop: 1, tablet: 0.55, phone: 0.22 },
+    deviceWidth: { desktop: 1, tablet: 0.44, phone: 0.22 },
     nearWidth: 0.8,
     farWidth: 0.14,
     stagger: 0,
@@ -2756,8 +2755,15 @@
   const PROMO_MOCKUP_RADIUS_PX = 32;
 
   function gridMockupRadius(device, width) {
-    if (device.id === 'tablet') return width * 0.1;
-    return width * (PROMO_MOCKUP_RADIUS_PX / device.frame);
+    const browser = width * (PROMO_MOCKUP_RADIUS_PX / device.frame);
+    if (device.id === 'desktop') return browser;
+    return Math.max(browser, width * 0.11);
+  }
+
+  function applyMockupShape(node, device, width) {
+    const radius = gridMockupRadius(device, width).toFixed(2);
+    node.style.borderRadius = `${radius}px`;
+    node.style.clipPath = `inset(0 round ${radius}px)`;
   }
 
   function loadPromoStores() {
@@ -4759,6 +4765,8 @@
 
     painCursorPoint(target, store = this.painStore()) {
       if (!store || !target) return null;
+      const local = this.painCursorLocal(target, store);
+      if (local) return local;
       const storeBox = store.getBoundingClientRect();
       const box = target.getBoundingClientRect();
       const scale = storeBox.width / (store.offsetWidth || storeBox.width) || 1;
@@ -4766,6 +4774,19 @@
         x: (box.left + box.width / 2 - storeBox.left) / scale - PROMO_CURSOR_HOT_X,
         y: (box.top + box.height / 2 - storeBox.top) / scale - PROMO_CURSOR_HOT_Y,
       };
+    }
+
+    painCursorLocal(target, store) {
+      if (!store.contains(target)) return null;
+      let x = target.offsetWidth / 2 - PROMO_CURSOR_HOT_X;
+      let y = target.offsetHeight / 2 - PROMO_CURSOR_HOT_Y;
+      let node = target;
+      while (node && node !== store) {
+        x += node.offsetLeft;
+        y += node.offsetTop;
+        node = node.offsetParent;
+      }
+      return node === store ? { x, y } : null;
     }
 
     pinWindowCloseOrigin() {
@@ -5690,7 +5711,7 @@
         node.style.width = `${width.toFixed(2)}px`;
         node.style.height = `${height.toFixed(2)}px`;
         node.style.transform = `translate3d(${(cell.x * unit).toFixed(2)}px, ${(cell.y * unit).toFixed(2)}px, 0)`;
-        node.style.borderRadius = `${gridMockupRadius(cell.device, width).toFixed(2)}px`;
+        applyMockupShape(node, cell.device, width);
         node.style.background = 'transparent';
         node.style.boxShadow = 'none';
         const parts = glideParts(node, fx);
@@ -5756,7 +5777,7 @@
         node.style.height = `${height.toFixed(2)}px`;
         if (parts.lost) parts.lost.style.fontSize = `${Math.max(28, width * 0.16).toFixed(0)}px`;
         node.style.transform = `translate3d(${(cell.x * unit).toFixed(2)}px, ${(cell.y * unit).toFixed(2)}px, 0)`;
-        node.style.borderRadius = `${gridMockupRadius(cell.device, width).toFixed(2)}px`;
+        applyMockupShape(node, cell.device, width);
         const still = parts.still;
         const video = parts.video;
         const leadStill = false;
@@ -5809,9 +5830,10 @@
         paintGlideStamp(parts.veil, parts.mark, age, 0.4);
         writePaint(parts.lost, 'opacity', '0');
       } else {
-        if (parts.lost && !parts.lost.style.fontSize) {
+        if (parts.lost) {
           const width = Number.parseFloat(node.style.width) || cell.w * view.span.unit;
-          parts.lost.style.fontSize = `${Math.max(28, width * 0.16).toFixed(0)}px`;
+          const size = `${Math.max(8, width * 0.18).toFixed(0)}px`;
+          if (parts.lost.style.fontSize !== size) parts.lost.style.fontSize = size;
         }
         paintGlideStamp(parts.veil, parts.lost, age, 0.82);
         writePaint(parts.mark, 'opacity', '0');
@@ -6098,24 +6120,39 @@
 
     placeGlideLead(root, cellNode, arrive) {
       const lead = root.querySelector('.promo-glide__lead');
-      const clone = lead?.querySelector('.promo-opening__store');
-      if (!lead || !clone) return;
-      if (!cellNode || cellNode.hidden || arrive >= PROMO_GLIDE_LEAD_RELEASE) {
-        lead.hidden = true;
+      const clone = root.querySelector('.promo-glide__cell > .promo-opening__store')
+        || lead?.querySelector('.promo-opening__store');
+      if (!clone) return;
+      const face = '.promo-glide__still, .promo-glide__video, .promo-glide__veil, .promo-glide__mark, .promo-glide__lost-mark';
+      const fadeStart = 0.84;
+      const fadeEnd = 0.98;
+      if (!cellNode || cellNode.hidden || arrive >= fadeEnd) {
+        clone.style.visibility = 'hidden';
+        clone.style.opacity = '0';
+        if (lead) lead.hidden = true;
         return;
       }
-      const box = cellNode.getBoundingClientRect();
-      const host = root.getBoundingClientRect();
-      const naturalW = Number(clone.dataset.naturalW) || box.width;
-      const naturalH = Number(clone.dataset.naturalH) || box.height;
-      const scale = naturalW > 0 ? box.width / naturalW : 1;
-      lead.hidden = false;
-      lead.style.left = '0';
-      lead.style.top = '0';
-      lead.style.width = `${naturalW.toFixed(1)}px`;
-      lead.style.height = `${naturalH.toFixed(1)}px`;
-      lead.style.transformOrigin = '0 0';
-      lead.style.transform = `translate(${(box.left - host.left).toFixed(1)}px, ${(box.top - host.top).toFixed(1)}px) scale(${scale.toFixed(4)})`;
+      if (clone.parentElement !== cellNode) cellNode.appendChild(clone);
+      const width = parseFloat(cellNode.style.width) || cellNode.offsetWidth;
+      const height = parseFloat(cellNode.style.height) || cellNode.offsetHeight;
+      const naturalW = Number(clone.dataset.naturalW) || width;
+      const naturalH = Number(clone.dataset.naturalH) || height;
+      const blend = arrive <= fadeStart ? 1 : 1 - (arrive - fadeStart) / (fadeEnd - fadeStart);
+      clone.style.visibility = 'visible';
+      clone.style.opacity = blend.toFixed(3);
+      clone.style.zIndex = '2';
+      clone.style.width = `${naturalW.toFixed(1)}px`;
+      clone.style.height = `${naturalH.toFixed(1)}px`;
+      clone.style.transform = `scale(${(width / naturalW).toFixed(4)}, ${(height / naturalH).toFixed(4)})`;
+      cellNode.querySelectorAll(face).forEach((node) => {
+        if (!node.classList.contains('promo-glide__still')) {
+          node.style.visibility = 'hidden';
+          return;
+        }
+        node.style.visibility = blend > 0.98 ? 'hidden' : '';
+        node.style.opacity = (1 - blend).toFixed(3);
+      });
+      if (lead) lead.hidden = true;
     }
 
     releaseCloseStore() {
@@ -6313,7 +6350,9 @@
     }
 
     visibleCloseStore() {
-      return this.root.querySelector('.promo-glide__lead:not([hidden]) .promo-opening__store') || this.painStore();
+      const seated = this.root.querySelector('.promo-glide__cell > .promo-opening__store');
+      if (seated && seated.style.visibility !== 'hidden') return seated;
+      return this.root.querySelector('.promo-glide__lead .promo-opening__store') || this.painStore();
     }
 
     async poofCloseStore() {
