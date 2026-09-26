@@ -2047,7 +2047,7 @@
     const inset = PROMO_CATALOG_PAD_X;
     const gx0 = inset + cardW / 2 - (contentWidth / 2 + shift);
     const pitchBoard = !board.closest('.promo-opening')?.classList.contains('is-pain');
-    const padY = (pitchBoard ? 4 : PROMO_CATALOG_PAD_Y) + (look === 'home-hero' ? 132 : 0);
+    const padY = (pitchBoard ? 28 : PROMO_CATALOG_PAD_Y) + (look === 'home-hero' ? 132 : 0);
     const gy0 = -stage.clientHeight / 2 + padY + cardH / 2;
     const rowGap = PROMO_ROW_GAP;
     const rowInset = 28;
@@ -2105,6 +2105,14 @@
     return Math.max(needed, -pitch * 0.72);
   }
 
+  function armCatalogEntrance(stage, board) {
+    const root = stage?.closest('.promo-opening');
+    if (!board || !root || root.classList.contains('is-pain')) return;
+    if (board.classList.contains('is-reduced') || board.dataset.catalogEntered) return;
+    board.dataset.catalogEntered = '1';
+    board.classList.add('is-entering');
+  }
+
   function applyMomentPose(stage, pose, options = {}) {
     const board = ensureMomentBoard(stage);
     if (!board || !pose) return;
@@ -2124,6 +2132,7 @@
     }
     host?.classList.remove('is-title');
     host?.classList.toggle('is-vignette-gone', pose === 'fly' || pose === 'gone');
+    if (pose === 'grid') armCatalogEntrance(stage, board);
     if (host) {
       host.classList.toggle('is-instant', board.classList.contains('is-instant'));
       host.classList.toggle('is-settled', board.classList.contains('is-settled'));
@@ -3493,9 +3502,8 @@
       this.root.classList.add('is-moments');
       const stage = this.momentStage();
       void stage?.offsetWidth;
-      const laid = stage?.querySelector('.promo-moments__board');
-      if (laid && !this.root.classList.contains('is-clip-moment')) {
-        delete laid.dataset.gridLaid;
+      if (stage && !this.root.classList.contains('is-clip-moment')) {
+        stage.querySelector('.promo-moments__board')?.removeAttribute('data-grid-laid');
         applyMomentPose(stage, 'grid', { instant: true });
       }
       if (!embed || !widget || !canvas || !store) return;
@@ -3958,9 +3966,28 @@
       return [...this.carouselTrack.children].indexOf(cta);
     }
 
+    releaseSea() {
+      window.cancelAnimationFrame(this.planeFrame);
+      this.stopGlide();
+      this.root.classList.remove(
+        'is-close-seat',
+        'is-scale-white',
+        'is-scale-zero',
+        'is-grid-locked',
+        'is-pitch-belt',
+        'is-clerk-corner',
+      );
+      this.root.classList.add('is-scale-out');
+      const scale = this.root.querySelector('.promo-scale');
+      if (scale) {
+        scale.style.transition = 'none';
+        scale.style.opacity = '0';
+      }
+    }
+
     playSeeForYourself() {
       endOpeningAgent();
-      this.root.classList.remove('is-close-seat');
+      this.releaseSea();
       if (!this.stores.length) {
         this.playEndCard();
         return;
@@ -5575,6 +5602,17 @@
       this.root.querySelector('.promo-close__lost')?.setAttribute('hidden', '');
     }
 
+    releaseGlideVideo(node) {
+      const video = node?.querySelector('video.promo-glide__video');
+      if (!video?.getAttribute('src')) return;
+      video.pause();
+      video.removeAttribute('src');
+      video.load();
+      delete video.dataset.clip;
+      delete video.dataset.held;
+      delete video.dataset.still;
+    }
+
     paintGlideCell(node, fx, cell, mode, timeMs, view, live) {
       const frame = this.gridFrame();
       const parts = glideParts(node, fx);
@@ -5589,7 +5627,7 @@
         : (painAge == null ? null : { t: timeMs - painAge });
       const sold = mode === 'pitch' && !!event;
       const poofing = painAge != null;
-      const stamp = `${cell.key}|${event ? Math.round(event.t) : ''}`;
+      const stamp = `${cell.key}|${event ? Math.round(event.t) : ''}|${live ? 1 : 0}`;
       if (node.dataset.stamp !== stamp) {
         node.dataset.stamp = stamp;
         node.classList.remove('is-dusting');
@@ -5624,7 +5662,7 @@
             still.src = stillSrc;
           }
         }
-        const wantVideo = (live || sold) && !poofing;
+        const wantVideo = live && !poofing;
         if (video && wantVideo && video.dataset.clip !== clipKey) {
           video.style.opacity = '';
           delete video.dataset.held;
@@ -5641,14 +5679,8 @@
       }
       const stillNode = parts.still;
       const videoNode = parts.video;
-      if (videoNode && !live && !sold && videoNode.getAttribute('src')) {
-        videoNode.pause();
-        videoNode.removeAttribute('src');
-        videoNode.load();
-        delete videoNode.dataset.clip;
-        delete videoNode.dataset.held;
-      }
-      const showVideo = !poofing && (live || sold) && videoNode && videoNode.dataset.still !== '1' && videoNode.readyState >= 2 && !!videoNode.dataset.clip;
+      if (!live) this.releaseGlideVideo(node);
+      const showVideo = live && !poofing && videoNode && videoNode.dataset.still !== '1' && videoNode.readyState >= 2 && !!videoNode.dataset.clip;
       if (videoNode) {
         if (showVideo && videoNode.paused && videoNode.dataset.held !== '1') videoNode.play().catch(() => {});
         if (!showVideo && !videoNode.paused && videoNode.dataset.held !== '1') videoNode.pause();
@@ -5982,6 +6014,7 @@
       this.placeCloseStore(root);
       pool.forEach((slot) => {
         if (!used.has(slot)) {
+          this.releaseGlideVideo(slot.cell);
           slot.cell.hidden = true;
           slot.fx.hidden = true;
         }
@@ -6474,30 +6507,23 @@
       lockup.className = 'promo-end__lockup';
       const column = document.createElement('div');
       column.className = 'promo-end__stack';
-      if (copy && copy.scarcity) {
+      if (copy?.scarcity) {
         const eyebrow = document.createElement('p');
         eyebrow.className = 'promo-end__eyebrow';
         eyebrow.textContent = copy.scarcity;
         column.append(eyebrow);
       }
       if (copy) {
-        const action = document.createElement('div');
-        action.className = 'promo-end__action';
-        const button = document.createElement('span');
-        button.className = 'promo-end__button';
-        button.textContent = copy.label;
-        const cursor = document.createElement('span');
-        cursor.className = 'promo-end__cursor';
-        cursor.setAttribute('aria-hidden', 'true');
-        cursor.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 3.2 19.2 12.1 11.6 13.4 8.8 20.6z"/></svg>';
-        action.append(button, cursor);
+        const claim = document.createElement('p');
+        claim.className = 'promo-end__claim';
+        claim.textContent = copy.label;
+        column.append(claim);
         if (copy.url) {
           const url = document.createElement('p');
           url.className = 'promo-end__url';
           url.textContent = copy.url;
-          action.append(url);
+          column.append(url);
         }
-        column.append(action);
       }
       card.append(lockup, column);
       this.root.append(card);
@@ -6518,7 +6544,7 @@
       const mark = this.root.querySelector('[data-promo-end-mark]');
       const lockup = card.querySelector('.promo-end__lockup');
       if (!mark || !lockup || lockup.contains(mark)) return;
-      mark.style.background = '#fff';
+      mark.style.background = '';
       if (!animate) {
         mark.style.transition = 'none';
         mark.style.transform = '';
@@ -6543,10 +6569,7 @@
       this.root.classList.add('is-end-card');
       this.dockEndMark(card, false);
       card.classList.add('is-copy', 'is-settled');
-      if (card.dataset.cta !== 'none') {
-        card.querySelector('.promo-end__button')?.classList.add('is-in');
-        card.classList.add('is-aim');
-      }
+      card.querySelector('.promo-end__claim')?.classList.add('is-in');
       const sold = this.root.querySelector('.promo-scale__sold');
       if (sold) sold.style.opacity = '0';
     }
@@ -6559,13 +6582,10 @@
       if (sold) sold.style.opacity = '0';
       await waitMs(PROMO_END_CARD_OPEN_MS);
       if (card.dataset.cta === 'none') return;
-      card.querySelector('.promo-end__button')?.classList.add('is-in');
-      this.emitThud();
+      card.querySelector('.promo-end__claim')?.classList.add('is-in');
       await waitMs(PROMO_END_CARD_COPY_DELAY_MS);
       card.classList.add('is-copy');
       await waitMs(PROMO_END_CARD_COPY_MS);
-      card.classList.add('is-aim');
-      await waitMs(PROMO_END_CARD_CURSOR_MS);
     }
 
     async playEndCard() {
