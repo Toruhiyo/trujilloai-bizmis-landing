@@ -1769,10 +1769,57 @@ html.is-promo-opening.is-promo-depart .promo-opening {
   font-family: var(--font-heading);
 }
 
+.promo-pain__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
 .promo-pain__title {
   color: var(--bot-ink);
   font-size: 0.95rem;
   font-weight: 600;
+}
+
+.promo-pain__close {
+  position: relative;
+  flex: 0 0 auto;
+  width: 16px;
+  height: 16px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: var(--ad-red);
+  pointer-events: none;
+}
+
+.promo-opening.is-chat-aim .promo-pain__close {
+  transform: scale(1.15);
+}
+
+.promo-opening.click.is-chat-aim .promo-pain__close {
+  transform: scale(0.86);
+}
+
+.promo-opening.is-chat-aim .promo-pain__close::before,
+.promo-opening.is-chat-aim .promo-pain__close::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 7px;
+  height: 1.4px;
+  border-radius: 1px;
+  background: var(--ad-white);
+}
+
+.promo-opening.is-chat-aim .promo-pain__close::before {
+  transform: translate(-50%, -50%) rotate(45deg);
+}
+
+.promo-opening.is-chat-aim .promo-pain__close::after {
+  transform: translate(-50%, -50%) rotate(-45deg);
 }
 
 .promo-pain__chips,
@@ -6592,7 +6639,11 @@ html.is-promo-clip.is-clip-moment #bizmis-avatar-embed {
 }
 
 .promo-glide.is-pain .promo-glide__sheet {
-  filter: saturate(0);
+  filter: none;
+}
+
+.promo-glide.is-pain .promo-glide__still {
+  filter: grayscale(1);
 }
 
 .promo-glide__streak,
@@ -6612,10 +6663,9 @@ html.is-promo-clip.is-clip-moment #bizmis-avatar-embed {
   overflow: hidden;
   background: var(--ad-surface);
   transform-origin: 0 0;
-  contain: layout paint style;
   -webkit-backdrop-filter: none;
   backdrop-filter: none;
-  box-shadow: 0 10px 22px color-mix(in srgb, var(--ad-ink) 12%, transparent);
+  box-shadow: none;
 }
 
 .promo-glide__sheet {
@@ -6661,7 +6711,12 @@ html.is-promo-clip.is-clip-moment #bizmis-avatar-embed {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  transform: translateZ(0);
   transform-origin: center center;
+}
+
+.promo-glide__video {
+  display: none;
 }
 
 .promo-glide__veil {
@@ -6847,23 +6902,13 @@ html.is-promo-clip.is-clip-moment #bizmis-avatar-embed {
   pointer-events: none;
 }
 
-.promo-glide__light {
-  background: radial-gradient(ellipse at 50% 74%, rgba(255, 248, 240, 0.34), transparent 46%);
-  mix-blend-mode: soft-light;
-}
-
-.promo-glide__dof-mid {
-  backdrop-filter: blur(2px);
-  -webkit-backdrop-filter: blur(2px);
-  -webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 26%, transparent 62%);
-  mask-image: linear-gradient(to bottom, #000 0%, #000 26%, transparent 62%);
-}
-
+.promo-glide__light,
+.promo-glide__dof-mid,
 .promo-glide__dof-far {
-  backdrop-filter: blur(6px);
-  -webkit-backdrop-filter: blur(6px);
-  -webkit-mask-image: linear-gradient(to bottom, #000 0%, transparent 40%);
-  mask-image: linear-gradient(to bottom, #000 0%, transparent 40%);
+  display: none;
+  mix-blend-mode: normal;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
 }
 
 .promo-glide__horizon {
@@ -6934,9 +6979,12 @@ html.is-promo-clip.is-clip-moment #bizmis-avatar-embed {
 }
 
 .promo-glide__lead img,
-.promo-glide__lead .promo-opening__store {
+.promo-opening .promo-glide__lead .promo-opening__store {
   width: 100%;
   height: 100%;
+  max-height: none;
+  aspect-ratio: auto;
+  transform: none;
   object-fit: cover;
 }
 

@@ -220,6 +220,9 @@
   const PROMO_WINDOW_LEAVE_MS = 400;
   const PROMO_WINDOW_HOLD_MS = 560;
   const PROMO_WINDOW_CLOSE_MS = 760;
+  const PROMO_CHAT_CLOSE_AT_MS = 880;
+  const PROMO_CHAT_AIM_MS = 720;
+  const PROMO_GLIDE_LEAD_RELEASE = 0.9;
   const PROMO_SCALE_SNAP_CLASS_MS = 50;
   const PROMO_SCALE_WHITE_MS = 200;
   const PROMO_SCALE_HOLD_MS = 1000;
@@ -1006,6 +1009,7 @@
   const GLIDE_LIVE_CAP = 16;
 
   function paintGlideStamp(veil, mark, age, veilStrength) {
+    if (mark?.dataset.settled === '1' && age >= 260) return;
     const veilIn = Math.min(1, Math.max(0, age) / PROMO_GLIDE.bloomMs);
     const flash = veilIn < 1 ? Math.sin(veilIn * Math.PI) * 0.08 : 0;
     if (veil) veil.style.opacity = Math.min(1, veilStrength * veilIn + flash).toFixed(3);
@@ -1013,6 +1017,7 @@
     const pop = Math.min(1, Math.max(0, age) / 260);
     mark.style.opacity = Math.min(1, pop * 1.35).toFixed(3);
     mark.style.transform = `translate(-50%, -50%) scale(${(0.72 + (1 - (1 - pop) ** 3) * 0.28).toFixed(3)})`;
+    if (age >= 260) mark.dataset.settled = '1';
   }
 
   function paintPainPoof(poof, seedA, seedB, age) {
@@ -1055,20 +1060,6 @@
       ash.style.transform = `translate(${x.toFixed(1)}px, ${y.toFixed(1)}px)`;
     });
     return fade;
-  }
-
-  function glideBlurPx(timeMs, mode) {
-    if (mode === 'pain') {
-      const marks = glideMarks('pain');
-      if (timeMs <= marks.captionPoofEnd) return 0;
-      const u = Math.min(1, (timeMs - marks.captionPoofEnd) / PROMO_GLIDE.horizonMs);
-      return PROMO_GLIDE.blurMax * u * u;
-    }
-    const glideMs = timeMs - PROMO_GLIDE.layDownMs;
-    const start = PROMO_GLIDE.rampMs * PROMO_GLIDE.blurStart;
-    if (glideMs <= start) return 0;
-    const u = Math.min(1, (glideMs - start) / (PROMO_GLIDE.rampMs - start));
-    return PROMO_GLIDE.blurMax * u * u;
   }
 
   function glideFieldOpacity(timeMs, mode) {
@@ -4342,6 +4333,7 @@
         'is-moments',
         'is-window-aim',
         'is-window-shut',
+        'is-chat-aim',
         'is-scale-shrink',
       );
       const store = this.painStore();
@@ -4397,6 +4389,15 @@
       const title = document.createElement('p');
       title.className = 'promo-pain__title';
       title.textContent = 'Dull Chatbot';
+      const close = document.createElement('button');
+      close.type = 'button';
+      close.className = 'promo-pain__close';
+      close.setAttribute('data-promo-chat-close', '');
+      close.setAttribute('aria-hidden', 'true');
+      close.tabIndex = -1;
+      const head = document.createElement('div');
+      head.className = 'promo-pain__head';
+      head.append(title, close);
       const chips = document.createElement('div');
       chips.className = 'promo-pain__chips';
       PROMO_PAIN_CHIPS.forEach((label) => {
@@ -4418,7 +4419,7 @@
       const footer = document.createElement('p');
       footer.className = 'promo-pain__footer';
       footer.textContent = 'Powered by Every Chatbot Ever';
-      panel.append(title, chips, log, typing, input, footer);
+      panel.append(head, chips, log, typing, input, footer);
       chat.append(panel, launcher);
       store.appendChild(chat);
       this.lockPainChatBox();
@@ -4755,14 +4756,14 @@
       await this.playScaleScene();
     }
 
-    painCursorPoint(target) {
-      const store = this.painStore();
+    painCursorPoint(target, store = this.painStore()) {
       if (!store || !target) return null;
       const storeBox = store.getBoundingClientRect();
       const box = target.getBoundingClientRect();
+      const scale = storeBox.width / (store.offsetWidth || storeBox.width) || 1;
       return {
-        x: box.left + box.width / 2 - storeBox.left - PROMO_CURSOR_HOT_X,
-        y: box.top + box.height / 2 - storeBox.top - PROMO_CURSOR_HOT_Y,
+        x: (box.left + box.width / 2 - storeBox.left) / scale - PROMO_CURSOR_HOT_X,
+        y: (box.top + box.height / 2 - storeBox.top) / scale - PROMO_CURSOR_HOT_Y,
       };
     }
 
@@ -5733,12 +5734,14 @@
       const stamp = `${cell.key}|${event ? Math.round(event.t) : ''}`;
       if (node.dataset.stamp !== stamp) {
         node.dataset.stamp = stamp;
+        if (parts.mark) delete parts.mark.dataset.settled;
+        if (parts.lost) delete parts.lost.dataset.settled;
         node.classList.remove('is-dusting');
         node.style.opacity = '';
         node.style.removeProperty('--card-left');
         const unit = view.span.unit;
         const tone = mode === 'pitch' ? 'pitch' : 'pain';
-        const chat = mode !== 'pitch';
+        const chat = mode !== 'pitch' && cell.key !== this.glideLeadKey;
         const motion = glideMotion(cell, mode);
         const look = glideLook(cell, mode);
         const clipKey = clipFileKey(tone, cell.id, motion, chat, look);
@@ -5792,7 +5795,6 @@
       }
       if (stillNode) writeHidden(stillNode, showVideo);
       node.hidden = false;
-      node.style.opacity = '';
       if (!event) {
         writePaint(parts.veil, 'opacity', '0');
         writePaint(parts.mark, 'opacity', '0');
@@ -5898,7 +5900,7 @@
 
     clipGlideOpen(root, arrive) {
       if (!root || !this.glideCloseRect || arrive >= 0.995) {
-        if (root) root.style.clipPath = '';
+        if (root?.style.clipPath) root.style.clipPath = '';
         return;
       }
       const keep = 1 - arrive;
@@ -5954,7 +5956,7 @@
       const cam = view.span.cam;
       if (sheet) {
         sheet.style.transform = `translate3d(${(frame.width / 2 - cam.x).toFixed(2)}px, ${(frame.height / 2 - cam.y).toFixed(2)}px, 0)`;
-        sheet.style.opacity = '1';
+        if (sheet.style.opacity !== '1') sheet.style.opacity = '1';
       }
       const arrive = options.reduced ? 1 : glideArrive(time);
       const tiltNode = root.querySelector('.promo-glide__tilt');
@@ -5991,14 +5993,13 @@
         viewWrap.style.transform = '';
       }
       root._glidePull = pull;
-      const blur = options.reduced ? 0 : glideBlurPx(time, mode);
       if (streak && level && (streak.style.filter || streak.style.transform)) {
         streak.style.transform = '';
         level.style.transform = '';
         streak.style.filter = '';
       }
       root.querySelectorAll('.promo-glide__dof, .promo-glide__light').forEach((layer) => {
-        layer.style.visibility = blur > 8 || arrive < 0.85 ? 'hidden' : '';
+        if (layer.style.visibility !== 'hidden') layer.style.visibility = 'hidden';
       });
       const fxLayer = root.querySelector('.promo-glide__fx-layer');
       if (fxLayer) fxLayer.style.visibility = arrive < 0.35 ? 'hidden' : '';
@@ -6069,7 +6070,9 @@
           slot.fx.hidden = true;
         }
       });
-      if (lead) lead.hidden = true;
+      const leadNode = (root._glidePool || []).find((item) => item.cell.dataset.key === this.glideLeadKey)?.cell;
+      if (mode === 'pain') this.placeGlideLead(root, leadNode, arrive);
+      else if (lead) lead.hidden = true;
       if (mode === 'pain') this.paintPainCaption(root, options.reduced ? marks.captionHoldEnd - 120 : time);
       const horizon = root.querySelector('.promo-glide__horizon');
       if (horizon) {
@@ -6092,6 +6095,28 @@
       };
     }
 
+    placeGlideLead(root, cellNode, arrive) {
+      const lead = root.querySelector('.promo-glide__lead');
+      const clone = lead?.querySelector('.promo-opening__store');
+      if (!lead || !clone) return;
+      if (!cellNode || cellNode.hidden || arrive >= PROMO_GLIDE_LEAD_RELEASE) {
+        lead.hidden = true;
+        return;
+      }
+      const box = cellNode.getBoundingClientRect();
+      const host = root.getBoundingClientRect();
+      const naturalW = Number(clone.dataset.naturalW) || box.width;
+      const naturalH = Number(clone.dataset.naturalH) || box.height;
+      const scale = naturalW > 0 ? box.width / naturalW : 1;
+      lead.hidden = false;
+      lead.style.left = '0';
+      lead.style.top = '0';
+      lead.style.width = `${naturalW.toFixed(1)}px`;
+      lead.style.height = `${naturalH.toFixed(1)}px`;
+      lead.style.transformOrigin = '0 0';
+      lead.style.transform = `translate(${(box.left - host.left).toFixed(1)}px, ${(box.top - host.top).toFixed(1)}px) scale(${scale.toFixed(4)})`;
+    }
+
     releaseCloseStore() {
       const store = this.painStore();
       if (store) {
@@ -6101,10 +6126,10 @@
       this.root.classList.remove('is-close-seat');
     }
 
-    runGlide(mode) {
+    runGlide(mode, offsetMs = 0) {
       window.cancelAnimationFrame(this.planeFrame);
       glideEvents(mode, this.gridFrame());
-      const start = performance.now();
+      const start = performance.now() - offsetMs;
       const step = (now) => {
         const elapsed = now - start;
         try {
@@ -6286,8 +6311,12 @@
       host.style.height = `${box.height.toFixed(1)}px`;
     }
 
+    visibleCloseStore() {
+      return this.root.querySelector('.promo-glide__lead:not([hidden]) .promo-opening__store') || this.painStore();
+    }
+
     async poofCloseStore() {
-      const store = this.painStore();
+      const store = this.visibleCloseStore();
       if (!store || prefersReducedMotion()) return;
       store.querySelectorAll('.promo-close__veil, .promo-close__lost-mark').forEach((node) => node.remove());
       this.root.querySelectorAll('.promo-close__poof, .promo-close__lost').forEach((node) => node.remove());
@@ -6366,18 +6395,57 @@
       this.emitClick();
     }
 
+    async closeChatForLost() {
+      if (prefersReducedMotion()) return;
+      const store = this.visibleCloseStore();
+      const chat = store?.querySelector('[data-promo-pain-chat]');
+      const cursor = store?.querySelector('[data-promo-pain-cursor]');
+      const dot = chat?.querySelector('[data-promo-chat-close]');
+      if (!store || !chat || !cursor || !dot) return;
+      chat.classList.remove('is-shut');
+      chat.classList.add('is-open');
+      chat.removeAttribute('hidden');
+      cursor.hidden = false;
+      cursor.style.transitionDuration = '0ms';
+      cursor.style.opacity = '0';
+      cursor.style.setProperty('--pain-x', `${Math.round(store.clientWidth * 0.58)}px`);
+      cursor.style.setProperty('--pain-y', `${Math.round(store.clientHeight * 0.7)}px`);
+      cursor.getBoundingClientRect();
+      cursor.style.transitionDuration = '';
+      cursor.style.opacity = '1';
+      await waitMs(160);
+      this.root.style.setProperty('--promo-pain-ease', 'cubic-bezier(0.45, 0, 0.2, 1)');
+      this.root.style.setProperty('--promo-pain-open', `${PROMO_CHAT_AIM_MS}ms`);
+      const aim = this.painCursorPoint(dot, store);
+      if (aim) {
+        cursor.style.setProperty('--pain-x', `${Math.round(aim.x)}px`);
+        cursor.style.setProperty('--pain-y', `${Math.round(aim.y)}px`);
+        this.root.classList.add('is-chat-aim');
+        await waitMs(PROMO_CHAT_AIM_MS);
+        this.emitClick();
+        await waitMs(120);
+      }
+      chat.classList.remove('is-open');
+      chat.classList.add('is-shut');
+      chat.setAttribute('hidden', '');
+      cursor.style.opacity = '0';
+      await waitMs(180);
+    }
+
     async playScaleTimeline() {
       const generation = this.scaleGeneration;
       this.glideKeepStore = false;
       this.captureGlideClose('pain');
-      await this.poofCloseStore();
-      if (generation !== this.scaleGeneration) return;
       this.revealScaleLayer();
       this.mountGlide('pain');
       if (generation !== this.scaleGeneration) return;
-      this.paintGlideAt(0, 'pain');
-      this.runGlide('pain');
-      await waitMs(glidePlayEnd('pain'));
+      this.paintGlideAt(PROMO_CHAT_CLOSE_AT_MS, 'pain');
+      await this.closeChatForLost();
+      if (generation !== this.scaleGeneration) return;
+      await this.poofCloseStore();
+      if (generation !== this.scaleGeneration) return;
+      this.runGlide('pain', PROMO_CHAT_CLOSE_AT_MS);
+      await waitMs(Math.max(0, glidePlayEnd('pain') - PROMO_CHAT_CLOSE_AT_MS));
       if (generation !== this.scaleGeneration) return;
       await this.playConveyorEnd('pain', { settled: true });
     }
