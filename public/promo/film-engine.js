@@ -322,7 +322,9 @@
     layDownMs: 2200,
     rampMs: 9000,
     speedFrom: 0,
-    speedTo: 1800,
+    speedTo: 2400,
+    blurFrom: 900,
+    blurPx: 8,
     liveRows: 2,
     liveMaxSpeed: 600,
     blurStart: 0.72,
@@ -416,14 +418,8 @@
     return 'end';
   }
 
-  function glideTiltAt(timeMs, mode) {
-    if (mode !== 'pain') return PROMO_GLIDE.tilt;
-    const marks = glideMarks('pain');
-    if (timeMs <= marks.captionPoofEnd) return PROMO_GLIDE.tilt;
-    if (timeMs >= marks.horizonEnd) return PROMO_GLIDE.horizonTilt;
-    const u = (timeMs - marks.captionPoofEnd) / PROMO_GLIDE.horizonMs;
-    const ease = u * u * (3 - 2 * u);
-    return PROMO_GLIDE.tilt + (PROMO_GLIDE.horizonTilt - PROMO_GLIDE.tilt) * ease;
+  function glideTiltAt() {
+    return PROMO_GLIDE.tilt;
   }
 
   function glideTilt() {
@@ -475,12 +471,19 @@
 
   function glideRamp(u) {
     const t = Math.min(1, Math.max(0, u));
-    return t * t * t;
+    return t * t * t * t;
   }
 
   function glideRampDistance(u) {
     const t = Math.min(1, Math.max(0, u));
-    return (t * t * t * t) / 4;
+    return (t * t * t * t * t) / 5;
+  }
+
+  function glideBlurPx(speed) {
+    if (speed <= PROMO_GLIDE.blurFrom) return 0;
+    const span = Math.max(1, PROMO_GLIDE.speedTo - PROMO_GLIDE.blurFrom);
+    const u = Math.min(1, (speed - PROMO_GLIDE.blurFrom) / span);
+    return Math.round(u * u * PROMO_GLIDE.blurPx * 2) / 2;
   }
 
   function glideSpeed(glideMs) {
@@ -1120,23 +1123,6 @@
       ash.style.transform = `translate(${x.toFixed(1)}px, ${y.toFixed(1)}px)`;
     });
     return fade;
-  }
-
-  function glideFieldOpacity(timeMs, mode) {
-    if (mode === 'pain') {
-      const marks = glideMarks('pain');
-      const start = marks.horizonEnd - PROMO_GLIDE.dissolveMs;
-      if (timeMs <= start) return 0;
-      if (timeMs >= marks.horizonEnd) return 1;
-      return (timeMs - start) / PROMO_GLIDE.dissolveMs;
-    }
-    const start = PROMO_GLIDE.layDownMs + PROMO_GLIDE.rampMs;
-    const fade = start + PROMO_GLIDE.dissolveMs;
-    const hold = fade + PROMO_GLIDE.fieldHoldMs;
-    if (timeMs <= start) return 0;
-    if (timeMs >= hold) return 1;
-    if (timeMs >= fade) return 1;
-    return (timeMs - start) / PROMO_GLIDE.dissolveMs;
   }
 
   function glideCoverage(timeMs, frame) {
@@ -5947,8 +5933,8 @@
         verdict.style.opacity = '0';
         verdict.style.transform = '';
         if (caption) caption.style.opacity = '0';
-        if (streak) streak.style.opacity = '1';
-        if (field && glidePhase(timeMs, 'pitch') === 'field') field.style.opacity = glideFieldOpacity(timeMs, 'pitch').toFixed(3);
+        if (streak && streak.style.opacity !== '1') streak.style.opacity = '1';
+        if (field && field.style.opacity !== '0') field.style.opacity = '0';
         return;
       }
       const elapsed = timeMs - endAt;
@@ -5956,7 +5942,7 @@
       const ease = 1 - (1 - settle) ** 3;
       const mark = verdict.querySelector('.promo-scale__mark');
       verdict.style.opacity = '1';
-      if (streak) streak.style.opacity = (1 - ease).toFixed(3);
+      if (streak && streak.style.opacity !== '1') streak.style.opacity = '1';
       if (mode === 'pitch') {
         const scale = 11 + (1 - 11) * ease;
         verdict.style.transformOrigin = 'center calc(50% - 24px)';
@@ -5971,7 +5957,7 @@
           caption.style.opacity = '1';
           caption.style.transform = 'none';
         }
-        if (field) field.style.opacity = '1';
+        if (field && field.style.opacity !== '0') field.style.opacity = '0';
         if (ease >= 1 && !this.gridThudSent) {
           this.gridThudSent = true;
           this.emitThud();
@@ -6028,7 +6014,9 @@
       const time = options.reduced
         ? (mode === 'pain' ? marks.captionHoldEnd - 120 : PROMO_GLIDE.layDownMs + 1500)
         : timeMs;
-      const view = glideCells(time, frame, mode);
+      const overlayAt = mode === 'pain' ? marks.captionStart : marks.fieldEnd;
+      const seaTime = !options.reduced && time > overlayAt ? overlayAt : time;
+      const view = glideCells(seaTime, frame, mode);
       const sheet = root.querySelector('.promo-glide__sheet');
       const streak = root.querySelector('.promo-glide__streak');
       const level = root.querySelector('.promo-glide__level');
@@ -6038,12 +6026,14 @@
       if (sheet) {
         sheet.style.transform = `translate3d(${(frame.width / 2 - cam.x).toFixed(2)}px, ${(frame.height / 2 - cam.y).toFixed(2)}px, 0)`;
         if (sheet.style.opacity !== '1') sheet.style.opacity = '1';
+        const blur = seaTime < overlayAt ? glideBlurPx(cam.speed) : 0;
+        const filter = blur ? `blur(${blur}px)` : '';
+        if (sheet.style.filter !== filter) sheet.style.filter = filter;
       }
-      const arrive = options.reduced ? 1 : glideArrive(time);
+      const arrive = options.reduced ? 1 : glideArrive(seaTime);
       const tiltNode = root.querySelector('.promo-glide__tilt');
       if (tiltNode) {
-        const rising = mode === 'pain' && time >= marks.captionPoofEnd;
-        const tilt = rising ? glideTiltAt(time, mode) : PROMO_GLIDE.tilt * arrive;
+        const tilt = PROMO_GLIDE.tilt * arrive;
         view.visibleTilt = tilt;
         const yaw = PROMO_GLIDE.yaw * arrive;
         tiltNode.style.transform = `rotateX(${tilt.toFixed(2)}deg) rotateZ(${yaw.toFixed(2)}deg)`;
@@ -6086,7 +6076,7 @@
       if (fxLayer) fxLayer.style.visibility = arrive < 0.35 ? 'hidden' : '';
       const nearRow = Math.floor(view.span.maxY / view.pitch);
       const speed = cam.speed;
-      const phase = glidePhase(time, mode);
+      const phase = glidePhase(seaTime, mode);
       const liveOk = speed <= PROMO_GLIDE.liveMaxSpeed && (phase === 'glide' || phase === 'laydown');
       const pool = root._glidePool || [];
       const used = new Set();
@@ -6117,7 +6107,7 @@
           .forEach((item) => liveSlots.add(item.slot));
       }
       pending.forEach((item) => {
-        const keep = this.paintGlideCell(item.slot.cell, item.slot.fx, item.cell, mode, time, view, liveSlots.has(item.slot));
+        const keep = this.paintGlideCell(item.slot.cell, item.slot.fx, item.cell, mode, seaTime, view, liveSlots.has(item.slot));
         const slot = item.slot;
         if (!keep) {
           slot.cell.hidden = true;
@@ -6133,11 +6123,17 @@
             node.style.visibility = 'hidden';
           });
         } else if (item.cell.key === this.glideLeadKey) {
-          slot.cell.style.background = '';
-          slot.cell.style.boxShadow = '';
-          slot.cell.querySelectorAll(leadFace).forEach((node) => {
-            node.style.visibility = '';
-          });
+          const covered = arrive < 0.98 && slot.cell.querySelector(':scope > .promo-opening__store');
+          if (covered) {
+            delete slot.cell.dataset.leadOpen;
+          } else if (slot.cell.dataset.leadOpen !== '1') {
+            slot.cell.dataset.leadOpen = '1';
+            slot.cell.style.background = '';
+            slot.cell.style.boxShadow = '';
+            slot.cell.querySelectorAll(leadFace).forEach((node) => {
+              if (node.style.visibility) node.style.visibility = '';
+            });
+          }
         }
         shown += 1;
       });
@@ -6155,13 +6151,8 @@
       this.placeGlideLead(root, leadNode, arrive);
       if (mode === 'pain') this.paintPainCaption(root, options.reduced ? marks.captionHoldEnd - 120 : time);
       const horizon = root.querySelector('.promo-glide__horizon');
-      if (horizon) {
-        const rise = mode === 'pain' && !options.reduced && time > marks.captionPoofEnd
-          ? Math.min(1, (time - marks.captionPoofEnd) / PROMO_GLIDE.horizonMs)
-          : 0;
-        horizon.style.opacity = rise.toFixed(3);
-      }
-      if (field && glidePhase(time, mode) !== 'end') field.style.opacity = glideFieldOpacity(time, mode).toFixed(3);
+      if (horizon && horizon.style.opacity !== '0') horizon.style.opacity = '0';
+      if (field && field.style.opacity !== '0') field.style.opacity = '0';
       glideActiveTilt = glideTiltAt(time, mode) * Math.PI / 180;
       if (!options.reduced) this.paintGlideEnd(time, mode);
       const activeEvents = glideEvents(mode, frame).filter((event) => event.t <= time).length;
