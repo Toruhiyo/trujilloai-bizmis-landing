@@ -2756,6 +2756,7 @@
   const PROMO_MOCKUP_RADIUS_PX = 32;
 
   function gridMockupRadius(device, width) {
+    if (device.id === 'tablet') return width * 0.1;
     return width * (PROMO_MOCKUP_RADIUS_PX / device.frame);
   }
 

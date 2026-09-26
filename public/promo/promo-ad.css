@@ -6728,6 +6728,47 @@ html.is-promo-clip.is-clip-moment #bizmis-avatar-embed {
   will-change: transform;
 }
 
+.promo-glide__cell.is-tablet {
+  background: #e6e2dc;
+}
+
+.promo-glide__cell.is-tablet .promo-glide__still,
+.promo-glide__cell.is-tablet .promo-glide__video,
+.promo-glide__cell.is-tablet .promo-glide__veil {
+  inset: 7.5% 5.5% 8.5%;
+  width: auto;
+  height: auto;
+  border-radius: 8%;
+}
+
+.promo-glide__cell.is-tablet::before {
+  content: "";
+  position: absolute;
+  z-index: 6;
+  left: 50%;
+  top: 2.6%;
+  width: 3.4%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: #2c2a28;
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+
+.promo-glide__cell.is-tablet::after {
+  content: "";
+  position: absolute;
+  z-index: 6;
+  left: 50%;
+  bottom: 3%;
+  width: 22%;
+  height: 1.5%;
+  border-radius: 999px;
+  background: rgba(44, 42, 40, 0.28);
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+
 .promo-glide__cell.is-dusting,
 .promo-glide__cell.is-lost {
   overflow: visible;
