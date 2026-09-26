@@ -679,8 +679,13 @@
     return list[slot];
   }
 
-  function glideStillSrc(tone, device, motion, chat) {
-    return clipSrc(tone, device, motion, chat).replace(/promo-clip-([^/?#]+)\.mp4/, 'promo-still-$1.jpg');
+  function glideLook(cell, mode) {
+    const slot = gridSlot(cell.col, cell.row, mode === 'pitch' ? 11 : 5, PROMO_STORE_LOOKS.length, () => false);
+    return PROMO_STORE_LOOKS[slot];
+  }
+
+  function glideStillSrc(tone, device, motion, chat, look) {
+    return clipSrc(tone, device, motion, chat, look).replace(/promo-clip-([^/?#]+)\.mp4/, 'promo-still-$1.jpg');
   }
 
   function glideEventStart() {
@@ -965,12 +970,14 @@
     return glideSpec('desktop').w * unit * glideProject(local.x, local.y).scale;
   }
   const PROMO_CLIP_DEVICES = ['desktop', 'phone', 'tablet'];
+  const PROMO_STORE_LOOKS = ['classic', 'home-hero', 'collection-dense', 'lookbook', 'list'];
+  const PROMO_PAIN_ACTS = ['search-empty', 'filter-hop', 'variant-doubt', 'cart-abandon', 'back-bounce'];
   const PROMO_CLIP_MOTIONS = {
-    desktop: ['scroll-up', 'scroll-down', 'wander-near', 'wander-far', 'product-read', 'product-scroll', 'compare'],
-    phone: ['scroll-up', 'scroll-down', 'product-read', 'product-scroll', 'compare'],
-    tablet: ['scroll-up', 'scroll-down', 'product-read', 'product-scroll', 'compare'],
+    desktop: ['scroll-up', 'scroll-down', 'wander-near', 'wander-far', 'product-read', 'product-scroll', 'compare', ...PROMO_PAIN_ACTS],
+    phone: ['scroll-up', 'scroll-down', 'product-read', 'product-scroll', 'compare', ...PROMO_PAIN_ACTS],
+    tablet: ['scroll-up', 'scroll-down', 'product-read', 'product-scroll', 'compare', ...PROMO_PAIN_ACTS],
   };
-  const PROMO_CLIP_MOTION_ALL = ['scroll-up', 'scroll-down', 'wander-near', 'wander-far', 'product-read', 'product-scroll', 'compare'];
+  const PROMO_CLIP_MOTION_ALL = ['scroll-up', 'scroll-down', 'wander-near', 'wander-far', 'product-read', 'product-scroll', 'compare', ...PROMO_PAIN_ACTS];
   const PROMO_PITCH_MOMENTS = [
     'moment-catalog-a',
     'moment-catalog-b',
@@ -980,12 +987,34 @@
     'moment-compare-b',
     'moment-bundle-a',
     'moment-bundle-b',
+    'moment-search-a',
+    'moment-search-b',
+    'moment-variant-a',
+    'moment-variant-b',
+    'moment-cart-a',
+    'moment-cart-b',
+    'moment-upsell-a',
+    'moment-upsell-b',
   ];
   const PROMO_MOMENT_CLIP_POSE = {
     catalog: 'grid',
     product: 'close',
     compare: 'choice',
     bundle: 'bundle',
+    search: 'grid',
+    variant: 'close',
+    cart: 'bundle',
+    upsell: 'choice',
+  };
+  const PROMO_MOMENT_GESTURE = {
+    catalog: 'waving',
+    product: 'nod',
+    compare: 'nod',
+    bundle: 'thumbsup',
+    search: 'thinking',
+    variant: 'nod',
+    cart: 'thumbsup',
+    upsell: 'waving',
   };
   const PROMO_MOMENT_TAKE_HEROES = {
     b: { go: 'cone', pick: 'cylinder', other: 'dome', extra: 'slab' },
@@ -1412,6 +1441,14 @@
     cylinder: { tint: 'sage' },
     dome: { tint: 'warm-grey' },
     slab: { tint: 'sand' },
+    bottle: { tint: 'sage' },
+    bowl: { tint: 'sand' },
+    pyramid: { tint: 'warm-grey' },
+    'hex-prism': { tint: 'stone' },
+    pebble: { tint: 'blush' },
+    vase: { tint: 'stone' },
+    'ring-stack': { tint: 'sand' },
+    lamp: { tint: 'sage' },
   };
   const PROMO_CLAY_KINDS = Object.keys(PROMO_CATALOG);
   const PROMO_CLAY_TURNS = ['m20', '0', 'p20'];
@@ -1468,14 +1505,18 @@
   function clayVariantKey(look) {
     const kind = typeof look === 'string' ? look : look.kind;
     const turn = typeof look === 'string' ? '0' : look.turn;
-    if (turn === 'm20') return `${kind}-b`;
-    if (turn === 'p20') return `${kind}-c`;
-    return kind;
+    const satin = look && look.finish === 'satin' ? '-satin' : '';
+    if (turn === 'm20') return `${kind}-b${satin}`;
+    if (turn === 'p20') return `${kind}-c${satin}`;
+    return `${kind}${satin}`;
   }
 
   function claySrc(look) {
+    const urls = promoClayUrls();
     const key = look.file || clayVariantKey(look);
-    return promoClayUrls()[key] || '';
+    if (urls[key]) return urls[key];
+    const plain = key.replace(/-satin$/, '');
+    return urls[plain] || '';
   }
 
   function clayTintOf(kind) {
@@ -1557,6 +1598,10 @@
       }
     }
     return looks;
+  }
+
+  function gridAllLooks() {
+    return catalogLooks(PROMO_MOMENT_CARD_COUNT, PROMO_CATALOG_COLS);
   }
 
   function lookForTint(shape, tint) {
@@ -1891,18 +1936,23 @@
     const shiftRaw = getComputedStyle(board).getPropertyValue('--promo-board-x').trim();
     const shift = shiftRaw.endsWith('rem') ? parseFloat(shiftRaw) * 16 : (parseFloat(shiftRaw) || 0);
     const contentWidth = stage.clientWidth;
-    const cols = PROMO_CATALOG_COLS;
-    const gutter = PROMO_CATALOG_GUTTER;
-    const rowGapY = PROMO_CATALOG_ROW_GAP;
+    const look = board.dataset.storeLook || 'classic';
+    const cols = look === 'collection-dense' ? 5
+      : look === 'lookbook' ? 2
+        : look === 'list' ? 1
+          : look === 'home-hero' ? 3
+            : PROMO_CATALOG_COLS;
+    const gutter = look === 'collection-dense' ? 12 : look === 'lookbook' ? 28 : PROMO_CATALOG_GUTTER;
+    const rowGapY = look === 'list' ? 12 : PROMO_CATALOG_ROW_GAP;
     const cardW = (contentWidth - PROMO_CATALOG_PAD_X * 2 - (cols - 1) * gutter) / cols;
-    const cardFooter = 52;
-    const cardH = cardW + cardFooter;
+    const cardFooter = look === 'lookbook' ? 72 : look === 'list' ? 8 : 52;
+    const cardH = look === 'list' ? 96 : cardW + cardFooter;
     const pitchX = cardW + gutter;
     const pitchY = cardH + rowGapY;
     const inset = PROMO_CATALOG_PAD_X;
     const gx0 = inset + cardW / 2 - (contentWidth / 2 + shift);
     const pitchBoard = !board.closest('.promo-opening')?.classList.contains('is-pain');
-    const padY = pitchBoard ? 4 : PROMO_CATALOG_PAD_Y;
+    const padY = (pitchBoard ? 4 : PROMO_CATALOG_PAD_Y) + (look === 'home-hero' ? 132 : 0);
     const gy0 = -stage.clientHeight / 2 + padY + cardH / 2;
     const rowGap = PROMO_ROW_GAP;
     const rowInset = 28;
@@ -2458,12 +2508,14 @@
     const motions = PROMO_CLIP_MOTIONS[device];
     const motionRaw = (promoBootParams.get('motion') || motions[0]).trim().toLowerCase();
     const toneRaw = (promoBootParams.get('tone') || 'pain').trim().toLowerCase();
+    const lookRaw = (promoBootParams.get('look') || 'classic').trim().toLowerCase();
     const moment = PROMO_PITCH_MOMENTS.includes(motionRaw);
     return {
       device,
       motion: moment || motions.includes(motionRaw) ? motionRaw : motions[0],
       chat: promoBootParams.get('chat') === '1',
       tone: moment || toneRaw === 'pitch' ? 'pitch' : 'pain',
+      look: PROMO_STORE_LOOKS.includes(lookRaw) ? lookRaw : 'classic',
     };
   }
 
@@ -2478,17 +2530,21 @@
     }
   }
 
-  function clipFileKey(tone, device, motion, chat) {
-    return `${tone}-${device}-${motion}-${chat ? '1' : '0'}`;
+  function clipFileKey(tone, device, motion, chat, look) {
+    const base = `${tone}-${device}-${motion}-${chat ? '1' : '0'}`;
+    if (!look || look === 'classic') return base;
+    return `${base}-${look}`;
   }
 
-  function clipSrc(tone, device, motion, chat) {
-    const key = clipFileKey(tone, device, motion, chat);
-    const mapped = promoClipUrls()[key];
-    if (mapped) return mapped;
+  function clipSrc(tone, device, motion, chat, look) {
+    const urls = promoClipUrls();
+    const key = clipFileKey(tone, device, motion, chat, look);
+    if (urls[key]) return urls[key];
+    const classic = clipFileKey(tone, device, motion, chat, 'classic');
+    if (urls[classic]) return urls[classic];
     const sample = Object.values(promoClayUrls())[0] || '';
     if (!sample) return '';
-    return sample.replace(/[^/?#]+\.png(\?[^#]*)?/, `promo-clip-${key}.mp4`);
+    return sample.replace(/[^/?#]+\.png(\?[^#]*)?/, `promo-clip-${classic}.mp4`);
   }
 
   function gridMix(col, row, salt) {
@@ -2736,27 +2792,60 @@
     });
   }
 
+  function glideOpeningKeys() {
+    const frame = { width: 1440, height: 810 };
+    const keys = new Set();
+    ['pain', 'pitch'].forEach((mode) => {
+      [240, 1100].forEach((time) => {
+        const view = glideCells(time, frame, mode);
+        view.cells.forEach((cell) => {
+          const screen = glideCellScreen(cell, view.span.cam, view.span.unit, frame);
+          if (screen.h < 72) return;
+          if (Math.abs(screen.cx - frame.width / 2) > frame.width * 0.46) return;
+          if (screen.cy < -40 || screen.cy > frame.height + 40) return;
+          const tone = mode === 'pitch' ? 'pitch' : 'pain';
+          keys.add(clipFileKey(tone, cell.id, glideMotion(cell, mode), mode !== 'pitch', glideLook(cell, mode)));
+        });
+      });
+    });
+    return keys;
+  }
+
   function preloadGlideMedia() {
-    const images = new Set();
-    const videos = new Set();
-    const add = (tone, device, motion, chat) => {
-      const video = clipSrc(tone, device, motion, chat);
+    const add = (bucket, tone, device, motion, chat, look) => {
+      const video = clipSrc(tone, device, motion, chat, look);
       if (!video) return;
-      videos.add(video);
-      const still = glideStillSrc(tone, device, motion, chat);
-      if (still) images.add(still);
+      bucket.videos.add(video);
+      const still = glideStillSrc(tone, device, motion, chat, look);
+      if (still) bucket.images.add(still);
     };
+    const urgent = { images: new Set(), videos: new Set() };
+    const later = { images: new Set(), videos: new Set() };
+    const opening = glideOpeningKeys();
     PROMO_CLIP_DEVICES.forEach((device) => {
       (PROMO_CLIP_MOTIONS[device] || []).forEach((motion) => {
-        add('pain', device, motion, true);
-        add('pitch', device, motion, false);
+        PROMO_STORE_LOOKS.forEach((look) => {
+          [['pain', true], ['pitch', false]].forEach(([tone, chat]) => {
+            const key = clipFileKey(tone, device, motion, chat, look);
+            const bucket = opening.has(key) ? urgent : later;
+            add(bucket, tone, device, motion, chat, look);
+          });
+        });
       });
-      PROMO_PITCH_MOMENTS.forEach((motion) => add('pitch', device, motion, false));
+      PROMO_PITCH_MOMENTS.forEach((motion) => {
+        PROMO_STORE_LOOKS.forEach((look) => {
+          const key = clipFileKey('pitch', device, motion, false, look);
+          add(opening.has(key) ? urgent : later, 'pitch', device, motion, false, look);
+        });
+      });
     });
-    return Promise.all([
-      ...[...images].map((url) => preloadPromoImage(url)),
-      ...[...videos].map((url) => preloadPromoVideo(url)),
+    const warm = (bucket) => Promise.all([
+      ...[...bucket.images].map((url) => preloadPromoImage(url)),
+      ...[...bucket.videos].map((url) => preloadPromoVideo(url)),
     ]);
+    const first = warm(urgent);
+    first.then(() => { warm(later); });
+    return first;
   }
 
   function preloadPromoOpening(stores) {
@@ -4813,6 +4902,7 @@
         motion: 'scroll-up',
         chat: false,
         tone: 'pain',
+        look: 'classic',
         ...(fromUrl || {}),
         ...(overrides || {}),
       };
@@ -4820,6 +4910,7 @@
       const moment = momentClipParts(clip.motion);
       if (!PROMO_CLIP_DEVICES.includes(clip.device)) clip.device = 'desktop';
       if (!moment && !motions.includes(clip.motion)) clip.motion = motions[0];
+      if (!PROMO_STORE_LOOKS.includes(clip.look)) clip.look = 'classic';
       clip.tone = moment || clip.tone === 'pitch' ? 'pitch' : 'pain';
       clip.chat = !!clip.chat && !moment;
 
@@ -4828,6 +4919,8 @@
       this.root.classList.add('is-clip');
       PROMO_CLIP_DEVICES.forEach((id) => this.root.classList.toggle(`is-clip-${id}`, id === clip.device));
       PROMO_CLIP_MOTION_ALL.forEach((id) => this.root.classList.toggle(`is-motion-${id}`, id === clip.motion));
+      PROMO_STORE_LOOKS.forEach((id) => this.root.classList.toggle(`is-look-${id}`, id === clip.look));
+      this.root.classList.toggle('is-clerk-head', clip.device === 'phone' && (!!moment || clip.chat));
       this.root.classList.toggle('is-tone-pain', clip.tone === 'pain');
       this.root.classList.toggle('is-tone-pitch', clip.tone === 'pitch');
       this.root.classList.toggle('is-pain-loop', clip.tone === 'pain');
@@ -4836,7 +4929,7 @@
 
       this.openPainStage();
       this.applyPainBeat(clip.chat && clip.tone === 'pain' ? 'answer-2' : 'grid', true);
-      this.root.querySelectorAll('.promo-clip__product, .promo-clip__clerk, [data-promo-clip]').forEach((node) => node.remove());
+      this.root.querySelectorAll('.promo-clip__product, .promo-clip__clerk, .promo-clip__act, .promo-clip__banner, [data-promo-clip]').forEach((node) => node.remove());
       this.painHost()?.querySelector('.promo-moments__board')?.removeAttribute('hidden');
 
       const chat = this.root.querySelector('[data-promo-pain-chat]');
@@ -4857,20 +4950,36 @@
         this.showMomentClip(clip, moment);
         return;
       }
+      const stage = store?.querySelector('.promo-opening__moments-stage');
+      this.applyClipLook(stage, clip.look);
+      if (!(clip.device === 'phone' && clip.chat)) {
+        this.root.classList.remove('is-clerk-corner', 'is-clerk-head');
+        const widget = this.root.querySelector('[data-promo-widget]');
+        if (widget) widget.style.visibility = 'hidden';
+      }
       if (clip.device === 'desktop') {
         if (store) store.style.visibility = '';
-        if (clip.motion === 'product-read' || clip.motion === 'product-scroll' || clip.motion === 'compare') {
-          this.mountClipProduct(store?.querySelector('.promo-opening__moments-stage'), clip);
+        if (clip.motion === 'product-read' || clip.motion === 'product-scroll' || clip.motion === 'compare' || clip.motion === 'back-bounce' || clip.motion === 'variant-doubt') {
+          this.mountClipProduct(stage, clip);
         }
+        this.mountClipBehavior(stage, clip);
       } else if (store) {
         store.style.visibility = 'hidden';
         this.mountHandheldClip(clip);
+      }
+      if (clip.device === 'phone' && clip.chat) {
+        const widget = this.root.querySelector('[data-promo-widget]');
+        if (widget) widget.style.visibility = 'visible';
+        promoWidget.applyStoreLook(this.bizmisLook());
+        this.parkWidget();
+        this.seatClerkInStore(true);
       }
 
       this.root.dataset.clipDevice = clip.device;
       this.root.dataset.clipMotion = clip.motion;
       this.root.dataset.clipTone = clip.tone;
       this.root.dataset.clipChat = clip.chat ? '1' : '0';
+      this.root.dataset.clipLook = clip.look;
       this.root.setAttribute('data-promo-clip-ready', '1');
     }
 
@@ -4890,20 +4999,61 @@
         delete board.dataset.gridLaid;
       }
       promoWidget.applyStoreLook(this.bizmisLook());
+      const widget = this.root.querySelector('[data-promo-widget]');
+      if (widget) widget.style.visibility = 'visible';
       this.parkWidget();
       this.clipClerkScale = clip.device === 'phone' ? 0.62 : clip.device === 'tablet' ? 0.55 : 0.72;
       if (stage) {
+        const board = stage.querySelector('.promo-moments__board');
+        if (board) board.dataset.storeLook = clip.look || 'classic';
         applyMomentPose(stage, moment.pose, { instant: false });
         applyMomentTake(stage.querySelector('.promo-moments__board'), moment.take);
+        this.mountClipBehavior(stage, { motion: moment.scene, look: clip.look, take: moment.take });
       }
       this.seatClerkInStore(true);
-      const gesture = moment.scene === 'catalog' ? 'waving' : 'nod';
+      const gesture = PROMO_MOMENT_GESTURE[moment.scene] || 'nod';
       window.setTimeout(() => setOpeningAvatarAction(gesture), 400);
       this.root.dataset.clipDevice = clip.device;
       this.root.dataset.clipMotion = clip.motion;
       this.root.dataset.clipTone = 'pitch';
       this.root.dataset.clipChat = '0';
+      this.root.dataset.clipLook = clip.look || 'classic';
       this.root.setAttribute('data-promo-clip-ready', '1');
+    }
+
+    applyClipLook(stage, look) {
+      const board = stage?.querySelector('.promo-moments__board');
+      if (!board) return;
+      board.dataset.storeLook = look || 'classic';
+      board.querySelector('.promo-clip__banner')?.remove();
+      if (look === 'home-hero') {
+        const banner = document.createElement('div');
+        banner.className = 'promo-clip__banner';
+        board.prepend(banner);
+      }
+      delete board.dataset.gridLaid;
+      layoutStoreGrid(board);
+    }
+
+    mountClipBehavior(host, clip) {
+      if (!host || !PROMO_PAIN_ACTS.includes(clip.motion) && !['search', 'variant', 'cart', 'upsell'].includes(clip.motion)) return;
+      host.querySelector('.promo-clip__act')?.remove();
+      const layer = document.createElement('div');
+      layer.className = `promo-clip__act is-${clip.motion}${clip.take ? ` is-take-${clip.take}` : ''}`;
+      if (clip.motion === 'search-empty' || clip.motion === 'search') {
+        layer.innerHTML = '<div class="promo-clip__search"><i></i></div><p class="promo-clip__empty">No matches</p>';
+      } else if (clip.motion === 'filter-hop') {
+        layer.innerHTML = '<div class="promo-clip__chips"><b>Light</b><b>Small</b><b>Stone</b><b>New</b></div>';
+      } else if (clip.motion === 'variant-doubt' || clip.motion === 'variant') {
+        layer.innerHTML = '<div class="promo-clip__sizes"><b>S</b><b>M</b><b>L</b></div>';
+      } else if (clip.motion === 'cart-abandon' || clip.motion === 'cart') {
+        layer.innerHTML = '<aside class="promo-clip__drawer"><i></i><i class="is-short"></i><b>Checkout</b></aside>';
+      } else if (clip.motion === 'back-bounce') {
+        layer.innerHTML = '<div class="promo-clip__back">Back</div>';
+      } else if (clip.motion === 'upsell') {
+        layer.innerHTML = '<div class="promo-clip__upsell"><i></i><span>Add the pair</span></div>';
+      }
+      host.appendChild(layer);
     }
 
     mountClipProduct(host, clip) {
@@ -4999,21 +5149,31 @@
       bezel.className = 'promo-clip__bezel';
       const screen = document.createElement('div');
       screen.className = 'promo-clip__screen';
-      const cols = clip.device === 'tablet' ? 3 : 2;
-      const looks = gridAllLooks().slice(0, cols * 4);
+      const cols = clip.look === 'collection-dense' ? (clip.device === 'tablet' ? 5 : 4)
+        : clip.look === 'lookbook' ? 2
+          : clip.look === 'list' ? 1
+            : clip.device === 'tablet' ? 3 : 2;
+      const count = clip.look === 'list' ? 5 : clip.look === 'lookbook' ? 4 : cols * 4;
+      const looks = gridAllLooks().slice(0, count);
       const track = document.createElement('div');
       track.className = 'promo-clip__track';
       for (let copy = 0; copy < 2; copy += 1) {
         const sheet = document.createElement('div');
-        sheet.className = 'promo-clip__sheet';
+        sheet.className = `promo-clip__sheet is-look-${clip.look || 'classic'}`;
         sheet.style.gridTemplateColumns = `repeat(${cols}, minmax(0, 1fr))`;
         looks.forEach((look) => sheet.appendChild(this.clipCard(look)));
         track.appendChild(sheet);
       }
       screen.appendChild(track);
-      if (clip.motion === 'product-read' || clip.motion === 'product-scroll' || clip.motion === 'compare') {
+      if (clip.look === 'home-hero') {
+        const banner = document.createElement('div');
+        banner.className = 'promo-clip__banner';
+        screen.prepend(banner);
+      }
+      if (clip.motion === 'product-read' || clip.motion === 'product-scroll' || clip.motion === 'compare' || clip.motion === 'back-bounce' || clip.motion === 'variant-doubt') {
         this.mountClipProduct(screen, clip);
       }
+      this.mountClipBehavior(screen, clip);
       if (clip.chat && clip.tone === 'pain') {
         const chat = this.root.querySelector('[data-promo-pain-chat]');
         if (chat) {
@@ -5303,7 +5463,8 @@
         const tone = mode === 'pitch' ? 'pitch' : 'pain';
         const chat = mode !== 'pitch';
         const motion = glideMotion(cell, mode);
-        const clipKey = `${tone}-${cell.id}-${motion}-${chat ? '1' : '0'}`;
+        const look = glideLook(cell, mode);
+        const clipKey = clipFileKey(tone, cell.id, motion, chat, look);
         node.dataset.key = cell.key;
         node.classList.toggle('is-desktop', cell.id === 'desktop');
         node.classList.toggle('is-tablet', cell.id === 'tablet');
@@ -5319,7 +5480,7 @@
         const leadStill = false;
         const stillSrc = leadStill
           ? (document.documentElement.getAttribute('data-promo-pitch-lead') || '')
-          : glideStillSrc(tone, cell.id, motion, chat);
+          : glideStillSrc(tone, cell.id, motion, chat, look);
         if (still) {
           still.style.opacity = '';
           if (still.dataset.src !== stillSrc) {
@@ -5333,7 +5494,7 @@
           delete video.dataset.held;
           delete video.dataset.still;
           video.dataset.clip = clipKey;
-          video.src = clipSrc(tone, cell.id, motion, chat);
+          video.src = clipSrc(tone, cell.id, motion, chat, look);
           const offset = wallSeededUnit(cell.row * 3 + cell.col, 19) * 1.4;
           const seek = () => {
             if (video.duration && offset < video.duration) video.currentTime = offset;
