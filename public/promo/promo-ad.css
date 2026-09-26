@@ -4525,38 +4525,20 @@ html.is-promo-opening.is-promo-depart .promo-opening {
 
 .promo-opening__wave-ambient {
   position: absolute;
-  left: 50%;
-  top: 58%;
-  width: 140%;
-  height: 130%;
-  border-radius: 50%;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 0;
   background: radial-gradient(
-    circle,
-    color-mix(in srgb, var(--promo-store-accent, #888) 78%, white) 0%,
-    color-mix(in srgb, var(--promo-store-accent, #888) 34%, transparent) 42%,
-    transparent 70%
+    ellipse 78% 62% at calc(8% + var(--see-travel, 0.5) * 84%) calc(92% - var(--see-travel, 0.5) * 58%),
+    color-mix(in srgb, var(--promo-store-accent, #888) 62%, white) 0%,
+    color-mix(in srgb, var(--promo-store-accent, #888) 22%, transparent) 46%,
+    transparent 74%
   );
-  filter: blur(42px);
-  opacity: calc(var(--see-wave, 0));
-  transform: translate(-50%, -50%) scale(calc(0.55 + var(--see-travel, 0) * 0.9));
-}
-
-.promo-opening__wave-mote {
-  position: absolute;
-  left: 50%;
-  top: 58%;
-  width: var(--mote, 6px);
-  height: var(--mote, 6px);
-  margin-left: calc(var(--mote, 6px) / -2);
-  margin-top: calc(var(--mote, 6px) / -2);
-  border-radius: 50%;
-  background: var(--promo-store-accent, #888);
-  box-shadow: 0 0 14px var(--promo-store-accent, #888);
-  opacity: calc(var(--see-wave, 0) * 0.92);
-  transform: translate(
-    calc((var(--mx) - 0.5) * var(--see-travel, 0) * 1400px),
-    calc((var(--my) - 0.58) * var(--see-travel, 0) * 1100px)
-  );
+  filter: blur(18px);
+  opacity: calc(0.12 + var(--see-wave, 0) * 0.88);
+  transform: none;
 }
 
 .promo-opening.is-see-wave .promo-opening__slide-card {
@@ -6356,6 +6338,22 @@ html.is-promo-clip.is-clip-moment #bizmis-avatar-embed {
   transform-origin: center center;
 }
 
+.promo-glide__fx-layer {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  pointer-events: none;
+  overflow: visible;
+}
+
+.promo-glide__fx {
+  position: absolute;
+  left: 0;
+  top: 0;
+  overflow: visible;
+  pointer-events: none;
+}
+
 .promo-glide__bloom,
 .promo-glide__rays,
 .promo-glide__poof {
@@ -6366,20 +6364,48 @@ html.is-promo-clip.is-clip-moment #bizmis-avatar-embed {
 
 .promo-glide__bloom {
   z-index: 3;
+  inset: auto;
+  left: var(--bloom-x, 90%);
+  top: var(--bloom-y, 16%);
+  width: 42%;
+  height: 42%;
+  border-radius: 50%;
   opacity: 0;
+  mix-blend-mode: screen;
+  transform: translate(-50%, -50%) scale(calc(0.2 + var(--bloom, 0) * 1.45));
   background: radial-gradient(
-    circle at var(--bloom-x, 90%) var(--bloom-y, 16%),
+    circle,
     #fff 0%,
-    var(--bizmis-primary) 16%,
-    color-mix(in srgb, var(--bizmis-primary) 78%, transparent) calc(var(--bloom, 0) * 92%),
-    transparent calc(18% + var(--bloom, 0) * 90%)
+    #ffe7c2 16%,
+    var(--bizmis-primary) 38%,
+    transparent 70%
   );
 }
 
+.promo-glide__bloom::after {
+  content: "";
+  position: absolute;
+  inset: -22%;
+  border-radius: 50%;
+  border: 3px solid color-mix(in srgb, var(--bizmis-primary) 75%, white);
+  opacity: calc((1 - var(--bloom, 0)) * 0.9);
+  transform: scale(calc(0.35 + var(--bloom, 0) * 1.5));
+}
+
 .promo-glide__bloom.is-settled {
-  background:
-    radial-gradient(circle at var(--bloom-x, 90%) var(--bloom-y, 16%), #fff 0%, var(--bizmis-primary) 22%, transparent 58%),
-    linear-gradient(155deg, color-mix(in srgb, var(--bizmis-primary) 86%, white) 0%, color-mix(in srgb, var(--bizmis-primary) 48%, transparent) 78%);
+  width: 18%;
+  height: 18%;
+  transform: translate(-50%, -50%) scale(1);
+  background: radial-gradient(
+    circle,
+    rgba(255, 255, 255, 0.85) 0%,
+    var(--bizmis-primary) 34%,
+    transparent 72%
+  );
+}
+
+.promo-glide__bloom.is-settled::after {
+  opacity: 0;
 }
 
 .promo-glide__rays {
@@ -6387,16 +6413,31 @@ html.is-promo-clip.is-clip-moment #bizmis-avatar-embed {
   opacity: 0;
 }
 
-.promo-glide__rays i {
+.promo-glide__rays i:not(.promo-glide__spark) {
+  position: absolute;
+  left: var(--bloom-x, 90%);
+  top: var(--bloom-y, 16%);
+  width: 4px;
+  height: calc(22% * var(--ray-len, 1));
+  margin-left: -2px;
+  border-radius: 2px;
+  background: linear-gradient(to bottom, #fff 0%, color-mix(in srgb, var(--bizmis-primary) 70%, white) 42%, transparent 100%);
+  filter: blur(0.6px);
+  transform-origin: center top;
+  transform: rotate(calc(var(--ray) * 45deg + (var(--ray) - 3.5) * 6deg)) scaleY(calc(0.2 + var(--burst, 0) * 1.35));
+}
+
+.promo-glide__spark {
   position: absolute;
   left: var(--bloom-x, 90%);
   top: var(--bloom-y, 16%);
   width: 5px;
-  height: 78%;
+  height: 5px;
   margin-left: -2.5px;
-  background: linear-gradient(to bottom, #fff 0%, var(--bizmis-primary) 28%, transparent 100%);
-  transform-origin: center top;
-  transform: rotate(calc(var(--ray) * 45deg)) scaleY(calc(0.2 + var(--burst, 0) * 1.45));
+  margin-top: -2.5px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 0 8px 2px var(--bizmis-primary);
 }
 
 .promo-glide__poof {
@@ -6404,33 +6445,45 @@ html.is-promo-clip.is-clip-moment #bizmis-avatar-embed {
   overflow: visible;
 }
 
-.promo-glide__dust {
+.promo-glide__smoke {
   position: absolute;
   left: 50%;
   top: 46%;
-  width: 78%;
-  height: 78%;
-  margin: -39% 0 0 -39%;
+  width: 34%;
+  height: 28%;
+  margin-left: -17%;
+  margin-top: -14%;
   border-radius: 50%;
-  background: radial-gradient(circle, rgba(214, 208, 200, 0.95) 0%, rgba(176, 168, 158, 0.55) 38%, transparent 70%);
+  background: radial-gradient(circle, rgba(120, 116, 110, 0.55) 0%, rgba(186, 180, 172, 0.22) 42%, transparent 72%);
+  filter: blur(8px);
+}
+
+.promo-glide__smoke:nth-child(2),
+.promo-glide__smoke:nth-child(4) {
+  width: 22%;
+  height: 18%;
+  margin-left: -11%;
+  margin-top: -9%;
   filter: blur(5px);
+  background: radial-gradient(circle, rgba(92, 88, 82, 0.5) 0%, transparent 70%);
 }
 
-.promo-glide__speck {
+.promo-glide__ash {
   position: absolute;
   left: 50%;
   top: 46%;
-  width: var(--speck, 6px);
-  height: var(--speck, 6px);
-  margin-left: calc(var(--speck, 6px) / -2);
-  margin-top: calc(var(--speck, 6px) / -2);
+  width: var(--ash, 3px);
+  height: var(--ash, 3px);
+  margin-left: calc(var(--ash, 3px) / -2);
+  margin-top: calc(var(--ash, 3px) / -2);
   border-radius: 50%;
-  background: #b7b1aa;
+  background: #8a847c;
+  filter: blur(0.6px);
 }
 
-.promo-glide__speck.is-mote {
-  filter: blur(1.4px);
-  opacity: 0.8;
+.promo-glide__ash.is-soft {
+  background: #c4beb6;
+  filter: blur(2.2px);
 }
 
 .promo-glide__light,

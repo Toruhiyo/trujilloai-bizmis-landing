@@ -1,5 +1,22 @@
-/* Tokens the ad film reads from the Crimson Index theme. Loaded only for ?marketing=ad-1. */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
+/* Tokens the ad film reads from the Crimson Index theme. Loaded only for ?marketing=ad-1.
+   Heading is Shopify Inter n6, body is Inter n4. The Google Inter link (weights
+   400, 500, 600) loads first, then these faces replace 400 and 600, matching theme.liquid. */
+
+@font-face {
+  font-family: Inter;
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+  src: url("/promo/fonts/inter_n6.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: Inter;
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+  src: url("/promo/fonts/inter_n4.woff2") format("woff2");
+}
 
 :root {
   --color-bg: #FFFFFF;
@@ -15,11 +32,11 @@
   --bizmis-orange-dark: #ec7709;
   --color-success: #34C759;
   --color-warning: #FF9500;
-  --font-body: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-body: Inter, 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   --font-body-weight: 400;
   --font-body-style: normal;
   --font-body-size: 16px;
-  --font-heading: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-heading: Inter, 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   --font-heading-weight: 600;
   --font-heading-style: normal;
   --heading-scale: 1;
@@ -30,7 +47,43 @@
   --radius-card: 16px;
 }
 
+html.is-promo-opening {
+  font-size: var(--font-body-size, 16px);
+  -webkit-text-size-adjust: 100%;
+}
+
 html.is-promo-opening,
 html.is-promo-opening body {
   background: var(--color-bg);
+}
+
+html.is-promo-opening,
+html.is-promo-opening body,
+html.is-promo-opening .promo-opening,
+html.is-promo-opening .promo-cover {
+  font-family: var(--font-body);
+  font-weight: var(--font-body-weight, 400);
+  font-style: var(--font-body-style, normal);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Landing sets a family on every p, span, div, and button. Two element selectors
+   beat that, and still lose to any film class that names its own family. */
+:where(html.is-promo-opening) :where(.promo-opening, .promo-cover) :is(div, span, p, button, a, label, li, input, textarea, h1, h2, h3, h4, h5, h6, strong, em, small):is(div, span, p, button, a, label, li, input, textarea, h1, h2, h3, h4, h5, h6, strong, em, small) {
+  font-family: inherit;
+}
+
+:where(html.is-promo-opening) :where(.promo-opening, .promo-cover) :is(h1, h2, h3, h4, h5, h6):is(h1, h2, h3, h4, h5, h6) {
+  font-family: var(--font-heading);
+  font-weight: var(--font-heading-weight, 600);
+  font-style: var(--font-heading-style, normal);
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+}
+
+/* Same landing override hits the clerk. Inherit so the widget's own families win. */
+:where(html.is-promo-opening) :where(#bizmis-avatar-embed, .bizmis-avatar-widget-root, .bizmis-viewport-portal-root, .bizmis-subtitles-portal-root, .avatar-widget-container) :is(div, span, p, button, a, label, li, input, textarea, h1, h2, h3, h4, h5, h6, strong, em, small):is(div, span, p, button, a, label, li, input, textarea, h1, h2, h3, h4, h5, h6, strong, em, small) {
+  font-family: inherit;
 }

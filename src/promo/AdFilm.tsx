@@ -2,7 +2,9 @@ import { useEffect } from "react";
 
 const WIDGET_SCRIPT = "https://cdn.bizmis.ai/widget/avatar-widget.js";
 const WIDGET_STYLE = "https://cdn.bizmis.ai/widget/avatar-widget-style.css";
+const INTER_STYLE = "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap";
 const FILM_STYLES = [
+  INTER_STYLE,
   "/promo/promo-host.css",
   "/promo/promo-ad-tokens.css",
   "/promo/promo-ad.css",

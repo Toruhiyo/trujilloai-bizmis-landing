@@ -12,6 +12,7 @@
         root.classList.remove("is-promo-cover");
         root.style.setProperty("--ad-warmth", (params.get("part") || "") === "pitch" ? "1" : "0");
         document.write(
+          '<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap">' +
           '<link rel="stylesheet" href="/promo/promo-host.css">' +
           '<link rel="stylesheet" href="/promo/promo-ad-tokens.css">' +
           '<link rel="stylesheet" href="/promo/promo-ad.css">'
