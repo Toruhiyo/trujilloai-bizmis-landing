@@ -6998,11 +6998,9 @@ html.is-promo-clip.is-clip-moment #bizmis-avatar-embed {
 }
 
 .promo-end__lockup {
-  position: absolute;
-  top: 36px;
-  left: 40px;
-  width: calc(48px * 1948 / 640);
-  height: 48px;
+  position: relative;
+  width: calc(84px * 1948 / 640);
+  height: 84px;
 }
 
 .promo-opening.is-end-card .promo-end__lockup .promo-scale__mark {
@@ -7051,12 +7049,39 @@ html.is-promo-clip.is-clip-moment #bizmis-avatar-embed {
 
 .promo-end__claim {
   margin: 0;
-  color: var(--ad-ink);
+  color: transparent;
+  -webkit-text-fill-color: transparent;
   font-family: var(--font-heading);
   font-size: clamp(4.8rem, 8.4vw, 8rem);
   font-weight: 700;
   letter-spacing: -0.05em;
   line-height: 0.9;
+  background-image:
+    linear-gradient(
+      108deg,
+      transparent 0%,
+      transparent 40%,
+      rgba(255, 255, 255, 0.2) 46%,
+      #fff 50%,
+      rgba(255, 255, 255, 0.2) 54%,
+      transparent 60%,
+      transparent 100%
+    ),
+    linear-gradient(
+      180deg,
+      #fbfaf8 0%,
+      #d4cec6 14%,
+      #8a847c 36%,
+      #3a3734 50%,
+      #6a655f 66%,
+      #c9c3bb 82%,
+      #45423f 100%
+    );
+  background-size: 280% 100%, 100% 100%;
+  background-position: 40% 0, 0 0;
+  -webkit-background-clip: text;
+  background-clip: text;
+  filter: drop-shadow(0 1px 0 rgba(255, 255, 255, 0.85)) drop-shadow(0 1px 1px rgba(28, 26, 24, 0.35));
   opacity: 0;
   transform: translateY(0.06em);
   transition: opacity 520ms cubic-bezier(0.22, 1, 0.36, 1), transform 520ms cubic-bezier(0.22, 1, 0.36, 1);
@@ -7066,6 +7091,13 @@ html.is-promo-clip.is-clip-moment #bizmis-avatar-embed {
 .promo-end.is-settled .promo-end__claim {
   opacity: 1;
   transform: none;
+  animation: promo-end-metal 3.8s cubic-bezier(0.45, 0.05, 0.2, 1) infinite;
+}
+
+@keyframes promo-end-metal {
+  0% { background-position: 140% 0, 0 0; }
+  68% { background-position: -40% 0, 0 0; }
+  100% { background-position: -40% 0, 0 0; }
 }
 
 .promo-end__url {
@@ -7086,6 +7118,7 @@ html.is-promo-clip.is-clip-moment #bizmis-avatar-embed {
   .promo-end__url,
   .promo-end__lockup .promo-scale__mark {
     transition: none;
+    animation: none;
   }
 }
 

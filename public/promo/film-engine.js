@@ -6611,6 +6611,7 @@
       lockup.className = 'promo-end__lockup';
       const column = document.createElement('div');
       column.className = 'promo-end__stack';
+      column.append(lockup);
       if (copy?.scarcity) {
         const eyebrow = document.createElement('p');
         eyebrow.className = 'promo-end__eyebrow';
@@ -6629,7 +6630,7 @@
           column.append(url);
         }
       }
-      card.append(lockup, column);
+      card.append(column);
       this.root.append(card);
       return card;
     }
