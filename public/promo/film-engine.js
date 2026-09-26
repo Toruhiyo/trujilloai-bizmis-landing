@@ -279,7 +279,7 @@
     stampInk: 0.7,
     stampAngle: -12,
     stampPressMs: 120,
-    deviceMix: { desktop: 0.6, tablet: 0.3, phone: 0.1 },
+    deviceMix: { desktop: 0.28, tablet: 0.26, phone: 0.46 },
     deviceWidth: { desktop: 1, tablet: 0.55, phone: 0.22 },
     nearWidth: 0.8,
     farWidth: 0.14,
@@ -463,16 +463,6 @@
     };
   }
 
-  function glideBlurAngle() {
-    const len = Math.hypot(PROMO_GLIDE.dirX, PROMO_GLIDE.dirY) || 1;
-    const step = 48;
-    const moved = glideProject(
-      -PROMO_GLIDE.dirX / len * step,
-      -PROMO_GLIDE.dirY / len * step,
-    );
-    return Math.atan2(moved.y, moved.x) * 180 / Math.PI;
-  }
-
   function glideUnit(frame) {
     const local = glideUnproject(0, frame.height * 0.46);
     const scale = Math.max(0.2, glideProject(local.x, local.y).scale);
@@ -532,6 +522,13 @@
     return PROMO_GLIDE.baseH * (1 + PROMO_GRID.flowGap);
   }
 
+  function glideOtherDevice(id, row, col) {
+    const roll = wallSeededUnit(row * 19 + col * 7 + 11, 41);
+    if (id === 'desktop') return roll < 0.62 ? 'phone' : 'tablet';
+    if (id === 'tablet') return roll < 0.68 ? 'phone' : 'desktop';
+    return roll < 0.55 ? 'tablet' : 'desktop';
+  }
+
   function glideDeviceId(row, col, neighborA, neighborB) {
     if (row === 0 && col === 0) return 'desktop';
     const roll = wallSeededUnit(row * 17 + col * 13 + 400, 29);
@@ -539,7 +536,10 @@
     let id = 'desktop';
     if (roll < mix.phone) id = 'phone';
     else if (roll < mix.phone + mix.tablet) id = 'tablet';
-    if (id === 'phone' && neighborA === 'phone' && neighborB === 'phone') id = 'tablet';
+    const above = glideRows.get(row - 1)?.cells.find((cell) => cell.col === col)?.id;
+    const triple = Boolean(neighborA && neighborA === neighborB && id === neighborA);
+    const boxed = Boolean(neighborA && id === neighborA && id === above);
+    if (triple || boxed) id = glideOtherDevice(neighborA, row, col);
     return id;
   }
 
@@ -723,16 +723,31 @@
     lead.flanked = true;
   }
 
+  function glideFreshSlot(col, row, salt, count) {
+    let slot = Math.floor(gridMix(col, row, salt) * count);
+    if (count < 2) return slot;
+    const left = Math.floor(gridMix(col - 1, row, salt) * count);
+    const up = Math.floor(gridMix(col, row - 1, salt) * count);
+    let guard = 0;
+    while (guard < count && (slot === left || slot === up)) {
+      slot = (slot + 1) % count;
+      guard += 1;
+    }
+    return slot;
+  }
+
   function glideMotion(cell, mode) {
     const list = mode === 'pitch'
       ? PROMO_PITCH_MOMENTS
       : (PROMO_CLIP_MOTIONS[cell.id] || PROMO_CLIP_MOTIONS.desktop);
-    const slot = gridSlot(cell.col, cell.row, mode === 'pitch' ? 7 : 3, list.length, () => false);
+    const deviceSalt = cell.id === 'phone' ? 2 : cell.id === 'tablet' ? 4 : 0;
+    const slot = glideFreshSlot(cell.col, cell.row, (mode === 'pitch' ? 7 : 3) + deviceSalt, list.length);
     return list[slot];
   }
 
   function glideLook(cell, mode) {
-    const slot = gridSlot(cell.col, cell.row, mode === 'pitch' ? 11 : 5, PROMO_STORE_LOOKS.length, () => false);
+    const deviceSalt = cell.id === 'phone' ? 2 : cell.id === 'tablet' ? 4 : 0;
+    const slot = glideFreshSlot(cell.col, cell.row, (mode === 'pitch' ? 11 : 5) + deviceSalt, PROMO_STORE_LOOKS.length);
     return PROMO_STORE_LOOKS[slot];
   }
 
@@ -741,25 +756,24 @@
   }
 
   function glideEventStart() {
-    return 0;
+    return PROMO_GLIDE.layDownMs;
   }
 
   function glideRate(mode, timeMs) {
     const span = PROMO_GLIDE.rampMs;
     const u = Math.min(1, Math.max(0, (timeMs - glideEventStart()) / span));
-    const flutter = 0.25 + Math.abs(Math.sin(timeMs / 68 + (mode === 'pitch' ? 1.4 : 0.2))) * 1.7;
-    const chop = Math.abs(Math.sin(timeMs / 173 + (mode === 'pitch' ? 0.6 : 2.1))) > 0.32 ? 1.65 : 0.4;
     const ramp = glideRamp(u);
-    const base = mode === 'pitch' ? 11 + ramp * 13 : 13 + ramp * 15;
-    return base * flutter * chop;
+    return mode === 'pitch' ? 34 + ramp * 46 : 38 + ramp * 50;
   }
 
   function glideMiddle(cell, cam, unit, frame) {
     const screen = glideCellScreen(cell, cam, unit, frame);
-    return screen.cx > frame.width * -0.28
-      && screen.cx < frame.width * 1.28
-      && screen.cy > frame.height * -0.42
-      && screen.cy < frame.height * 1.18;
+    const insetX = frame.width * 0.05;
+    const insetY = frame.height * 0.06;
+    return screen.cx > insetX
+      && screen.cx < frame.width - insetX
+      && screen.cy > insetY
+      && screen.cy < frame.height - insetY;
   }
 
   function glideBand(cell, cam, unit, frame) {
@@ -805,9 +819,9 @@
         if (!pick) break;
         debt -= 1;
         used.add(pick.key);
-        const jitter = Math.round((wallSeededUnit(list.length * 3, mode === 'pitch' ? 29 : 19) - 0.5) * 460);
+        const delay = Math.round(wallSeededUnit(list.length * 3, mode === 'pitch' ? 29 : 19) * 120);
         list.push({
-          t: Math.max(glideEventStart(), Math.min(end - 1, time + jitter)),
+          t: Math.max(glideEventStart(), Math.min(end - 1, time + delay)),
           key: pick.key,
           row: pick.row,
           col: pick.col,
@@ -5978,22 +5992,10 @@
       }
       root._glidePull = pull;
       const blur = options.reduced ? 0 : glideBlurPx(time, mode);
-      if (streak && level) {
-        if (blur > 0.4) {
-          const angle = glideBlurAngle();
-          streak.style.transform = `rotate(${angle.toFixed(2)}deg) scale(1.14)`;
-          level.style.transform = `rotate(${(-angle).toFixed(2)}deg) scale(${(1 / 1.14).toFixed(4)})`;
-          streak.style.filter = 'url(#promo-glide-blur)';
-          const blurStep = (Math.round(Math.min(blur, 8) * 2) / 2).toFixed(1);
-          if (root.dataset.blur !== blurStep) {
-            root.dataset.blur = blurStep;
-            document.getElementById('promo-glide-blur-node')?.setAttribute('stdDeviation', `${blurStep} 0`);
-          }
-        } else {
-          streak.style.transform = '';
-          level.style.transform = '';
-          streak.style.filter = '';
-        }
+      if (streak && level && (streak.style.filter || streak.style.transform)) {
+        streak.style.transform = '';
+        level.style.transform = '';
+        streak.style.filter = '';
       }
       root.querySelectorAll('.promo-glide__dof, .promo-glide__light').forEach((layer) => {
         layer.style.visibility = blur > 8 || arrive < 0.85 ? 'hidden' : '';

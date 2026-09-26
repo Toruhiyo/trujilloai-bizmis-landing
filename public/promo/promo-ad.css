@@ -6613,6 +6613,9 @@ html.is-promo-clip.is-clip-moment #bizmis-avatar-embed {
   background: var(--ad-surface);
   transform-origin: 0 0;
   contain: layout paint style;
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+  box-shadow: 0 10px 22px color-mix(in srgb, var(--ad-ink) 12%, transparent);
 }
 
 .promo-glide__sheet {
@@ -6711,7 +6714,7 @@ html.is-promo-clip.is-clip-moment #bizmis-avatar-embed {
   top: 46%;
   z-index: 5;
   margin: 0;
-  color: #4a4744;
+  color: #8f8a84;
   font-family: var(--font-heading);
   font-weight: 700;
   letter-spacing: -0.04em;
