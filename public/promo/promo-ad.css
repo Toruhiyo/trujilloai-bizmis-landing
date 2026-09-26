@@ -2923,12 +2923,6 @@ html.is-promo-opening.is-promo-depart .promo-opening {
   margin: 0;
 }
 
-.promo-opening.is-clerk-corner.is-moments:has(.promo-moments__board.is-pose-doubt) .promo-opening__widget,
-.promo-opening.is-clerk-corner.is-moments:has(.promo-moments__board.is-pose-close) .promo-opening__widget {
-  top: 14%;
-  right: 2%;
-}
-
 .is-pose-doubt:not(.is-settled):not(.is-reduced) .promo-moments__card.is-pick {
   animation: promo-moments-page-in 720ms cubic-bezier(0.22, 1, 0.36, 1) both;
 }
@@ -6867,25 +6861,6 @@ html.is-promo-clip.is-clip-moment #bizmis-avatar-embed {
   display: block;
   width: 100%;
   height: 100%;
-}
-
-.promo-glide__chip {
-  position: absolute;
-  left: 42%;
-  top: 46%;
-  width: 22%;
-  height: 12%;
-  border-radius: 2px;
-  opacity: 0;
-  pointer-events: none;
-}
-
-.promo-glide__chip.is-orange {
-  background: var(--bizmis-primary);
-}
-
-.promo-glide__chip.is-ink {
-  background: var(--ad-ink);
 }
 
 .promo-glide__fx-layer {

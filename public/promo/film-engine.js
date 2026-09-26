@@ -220,8 +220,9 @@
   const PROMO_WINDOW_LEAVE_MS = 400;
   const PROMO_WINDOW_HOLD_MS = 560;
   const PROMO_WINDOW_CLOSE_MS = 760;
-  const PROMO_CHAT_CLOSE_AT_MS = 880;
   const PROMO_CHAT_AIM_MS = 720;
+  const PROMO_LOST_SIZE_RATIO = 0.18;
+  const PROMO_LOST_SIZE_MIN = 8;
   const PROMO_SCALE_SNAP_CLASS_MS = 50;
   const PROMO_SCALE_WHITE_MS = 200;
   const PROMO_SCALE_HOLD_MS = 1000;
@@ -321,7 +322,7 @@
     layDownMs: 2200,
     rampMs: 9000,
     speedFrom: 0,
-    speedTo: 1100,
+    speedTo: 1800,
     liveRows: 2,
     liveMaxSpeed: 600,
     blurStart: 0.72,
@@ -474,12 +475,12 @@
 
   function glideRamp(u) {
     const t = Math.min(1, Math.max(0, u));
-    return t * t * (3 - 2 * t);
+    return t * t * t;
   }
 
   function glideRampDistance(u) {
     const t = Math.min(1, Math.max(0, u));
-    return t * t * t - (t * t * t * t) / 2;
+    return (t * t * t * t) / 4;
   }
 
   function glideSpeed(glideMs) {
@@ -1011,13 +1012,10 @@
   const PROMO_CHECK_POP_MS = 380;
   const PROMO_CHECK_SETTLE_MS = 460;
   const PROMO_CHECK_PATH = 14;
-  const PROMO_CHECK_CHIPS = [
-    { x: -0.7, y: -0.85, rot: -24 },
-    { x: 0.75, y: -0.4, rot: 18 },
-    { x: 0.45, y: 0.8, rot: 12 },
-    { x: -0.8, y: 0.35, rot: -16 },
-    { x: 0.05, y: -1, rot: 8 },
-  ];
+
+  function lostMarkSize(width) {
+    return `${Math.max(PROMO_LOST_SIZE_MIN, width * PROMO_LOST_SIZE_RATIO).toFixed(0)}px`;
+  }
 
   function checkPopScale(t) {
     if (t < 0.62) {
@@ -1036,33 +1034,6 @@
       path.style.strokeDasharray = String(PROMO_CHECK_PATH);
       path.style.strokeDashoffset = String(PROMO_CHECK_PATH);
     }
-    PROMO_CHECK_CHIPS.forEach((chip, index) => {
-      const node = document.createElement('i');
-      node.className = `promo-glide__chip ${index % 2 === 0 ? 'is-orange' : 'is-ink'}`;
-      node.dataset.x = String(chip.x);
-      node.dataset.y = String(chip.y);
-      node.dataset.rot = String(chip.rot);
-      mark.append(node);
-    });
-  }
-
-  function paintCheckChips(mark, age) {
-    const start = 160;
-    const life = 280;
-    const u = Math.min(1, Math.max(0, age - start) / life);
-    const fade = u <= 0 ? 0 : (1 - u) * Math.min(1, u * 4);
-    mark.querySelectorAll('.promo-glide__chip').forEach((node) => {
-      if (u >= 1) {
-        node.remove();
-        return;
-      }
-      const travel = 1 - (1 - u) ** 2;
-      const x = Number(node.dataset.x) * 78 * travel;
-      const y = Number(node.dataset.y) * 78 * travel;
-      const rot = Number(node.dataset.rot) * travel;
-      node.style.opacity = fade.toFixed(3);
-      node.style.transform = `translate(${x.toFixed(1)}%, ${y.toFixed(1)}%) rotate(${rot.toFixed(1)}deg)`;
-    });
   }
 
   function settleCheckPop(mark) {
@@ -1070,7 +1041,6 @@
     if (path) path.style.strokeDashoffset = '0';
     mark.style.opacity = '1';
     mark.style.transform = 'translate(-50%, -50%) scale(1)';
-    mark.querySelectorAll('.promo-glide__chip').forEach((node) => node.remove());
   }
 
   function paintCheckPop(mark, age) {
@@ -1086,7 +1056,6 @@
     mark.style.opacity = '1';
     const pop = Math.min(1, Math.max(0, age) / PROMO_CHECK_POP_MS);
     mark.style.transform = `translate(-50%, -50%) scale(${checkPopScale(pop).toFixed(3)})`;
-    paintCheckChips(mark, age);
     if (age >= PROMO_CHECK_SETTLE_MS) {
       settleCheckPop(mark);
       mark.dataset.settled = '1';
@@ -5539,12 +5508,6 @@
     }
 
     gridLeadNode(mode) {
-      if (mode === 'pitch' && this.neutralStage) {
-        const clone = this.neutralStage.cloneNode(true);
-        clone.dataset.naturalW = String(this.neutralStageWidth || 0);
-        clone.dataset.naturalH = String(this.neutralStageHeight || 0);
-        return clone;
-      }
       const store = this.painStore();
       if (!store) return null;
       const clone = store.cloneNode(true);
@@ -5705,15 +5668,8 @@
       field.setAttribute('data-promo-grid-field', '');
       const lead = document.createElement('div');
       lead.className = 'promo-glide__lead';
-      if (mode === 'pitch') {
-        const image = document.createElement('img');
-        image.alt = '';
-        image.src = document.documentElement.getAttribute('data-promo-pitch-lead') || '';
-        lead.append(image);
-      } else {
-        const clone = this.gridLeadNode('pain');
-        if (clone) lead.append(clone);
-      }
+      const clone = this.gridLeadNode(mode);
+      if (clone) lead.append(clone);
       const viewWrap = document.createElement('div');
       viewWrap.className = 'promo-glide__view';
       viewWrap.append(streak, fxLayer);
@@ -5851,14 +5807,14 @@
         if (parts.mark) {
           delete parts.mark.dataset.settled;
           delete parts.mark.dataset.armed;
-          parts.mark.querySelectorAll('.promo-glide__chip').forEach((node) => node.remove());
           const path = parts.mark.querySelector('path');
           if (path) {
             path.style.strokeDasharray = '';
             path.style.strokeDashoffset = '';
           }
         }
-        if (parts.lost) delete parts.lost.dataset.settled;
+        const keepLeadLost = mode !== 'pitch' && this.glideLeadStamped && cell.key === this.glideLeadKey;
+        if (parts.lost && !keepLeadLost) delete parts.lost.dataset.settled;
         node.classList.remove('is-dusting');
         node.style.opacity = '';
         node.style.removeProperty('--card-left');
@@ -5876,7 +5832,7 @@
         const height = cell.h * unit;
         node.style.width = `${width.toFixed(2)}px`;
         node.style.height = `${height.toFixed(2)}px`;
-        if (parts.lost) parts.lost.style.fontSize = `${Math.max(28, width * 0.16).toFixed(0)}px`;
+        if (parts.lost) parts.lost.style.fontSize = lostMarkSize(width);
         node.style.transform = `translate3d(${(cell.x * unit).toFixed(2)}px, ${(cell.y * unit).toFixed(2)}px, 0)`;
         applyMockupShape(node, cell.device, width);
         const still = parts.still;
@@ -5918,7 +5874,8 @@
       }
       if (stillNode) writeHidden(stillNode, showVideo);
       node.hidden = false;
-      if (!event) {
+      const leadLost = mode !== 'pitch' && this.glideLeadStamped && cell.key === this.glideLeadKey;
+      if (!event && !leadLost) {
         writePaint(parts.veil, 'opacity', '0');
         writePaint(parts.mark, 'opacity', '0');
         writePaint(parts.lost, 'opacity', '0');
@@ -5926,14 +5883,14 @@
         node.classList.remove('is-dusting');
         return true;
       }
-      const age = timeMs - event.t;
+      const age = leadLost ? PROMO_CHECK_SETTLE_MS + 1000 : timeMs - event.t;
       if (mode === 'pitch') {
         paintGlideStamp(parts.veil, parts.mark, age, 0.4);
         writePaint(parts.lost, 'opacity', '0');
       } else {
         if (parts.lost) {
           const width = Number.parseFloat(node.style.width) || cell.w * view.span.unit;
-          const size = `${Math.max(8, width * 0.18).toFixed(0)}px`;
+          const size = lostMarkSize(width);
           if (parts.lost.style.fontSize !== size) parts.lost.style.fontSize = size;
         }
         paintGlideStamp(parts.veil, parts.lost, age, 0.82);
@@ -6195,8 +6152,7 @@
         }
       });
       const leadNode = (root._glidePool || []).find((item) => item.cell.dataset.key === this.glideLeadKey)?.cell;
-      if (mode === 'pain') this.placeGlideLead(root, leadNode, arrive);
-      else if (lead) lead.hidden = true;
+      this.placeGlideLead(root, leadNode, arrive);
       if (mode === 'pain') this.paintPainCaption(root, options.reduced ? marks.captionHoldEnd - 120 : time);
       const horizon = root.querySelector('.promo-glide__horizon');
       if (horizon) {
@@ -6224,7 +6180,6 @@
       const clone = root.querySelector('.promo-glide__cell > .promo-opening__store')
         || lead?.querySelector('.promo-opening__store');
       if (!clone) return;
-      const face = '.promo-glide__still, .promo-glide__video, .promo-glide__veil, .promo-glide__mark, .promo-glide__lost-mark';
       const fadeStart = 0.84;
       const fadeEnd = 0.98;
       if (!cellNode || cellNode.hidden || arrive >= fadeEnd) {
@@ -6245,13 +6200,21 @@
       clone.style.width = `${naturalW.toFixed(1)}px`;
       clone.style.height = `${naturalH.toFixed(1)}px`;
       clone.style.transform = `scale(${(width / naturalW).toFixed(4)}, ${(height / naturalH).toFixed(4)})`;
-      cellNode.querySelectorAll(face).forEach((node) => {
-        if (!node.classList.contains('promo-glide__still')) {
+      cellNode.querySelectorAll(':scope > .promo-glide__still, :scope > .promo-glide__video, :scope > .promo-glide__mark').forEach((node) => {
+        if (node.classList.contains('promo-glide__still')) {
+          node.style.visibility = blend > 0.98 ? 'hidden' : '';
+          node.style.opacity = (1 - blend).toFixed(3);
+          return;
+        }
+        node.style.visibility = 'hidden';
+      });
+      cellNode.querySelectorAll(':scope > .promo-glide__veil, :scope > .promo-glide__lost-mark').forEach((node) => {
+        if (!this.glideLeadStamped) {
           node.style.visibility = 'hidden';
           return;
         }
-        node.style.visibility = blend > 0.98 ? 'hidden' : '';
-        node.style.opacity = (1 - blend).toFixed(3);
+        node.style.visibility = 'visible';
+        node.style.zIndex = node.classList.contains('promo-glide__lost-mark') ? '7' : '6';
       });
       if (lead) lead.hidden = true;
     }
@@ -6456,20 +6419,27 @@
       return this.root.querySelector('.promo-glide__lead .promo-opening__store') || this.painStore();
     }
 
+    leadGlideCell() {
+      const root = this.root.querySelector('[data-promo-glide]');
+      const pooled = (root?._glidePool || []).find((item) => item.cell.dataset.key === this.glideLeadKey)?.cell;
+      if (pooled) return pooled;
+      return this.root.querySelector('.promo-glide__cell > .promo-opening__store')?.parentElement || null;
+    }
+
     async poofCloseStore() {
-      const store = this.visibleCloseStore();
-      if (!store || prefersReducedMotion()) return;
-      store.querySelectorAll('.promo-close__veil, .promo-close__lost-mark').forEach((node) => node.remove());
-      this.root.querySelectorAll('.promo-close__poof, .promo-close__lost').forEach((node) => node.remove());
-      const veil = document.createElement('div');
-      veil.className = 'promo-close__veil is-lost';
-      const mark = document.createElement('span');
-      mark.className = 'promo-close__lost-mark';
+      if (prefersReducedMotion()) return;
+      const cell = this.leadGlideCell();
+      const veil = cell?.querySelector(':scope > .promo-glide__veil');
+      const mark = cell?.querySelector(':scope > .promo-glide__lost-mark');
+      if (!cell || !veil || !mark) return;
+      cell.querySelectorAll('.promo-close__veil, .promo-close__lost-mark').forEach((node) => node.remove());
       mark.textContent = 'LOST';
-      const box = store.getBoundingClientRect();
-      mark.style.fontSize = `${Math.max(36, box.width * 0.16).toFixed(0)}px`;
-      store.append(veil, mark);
-      store.style.opacity = '';
+      const width = Number.parseFloat(cell.style.width) || cell.offsetWidth;
+      mark.style.fontSize = lostMarkSize(width);
+      veil.style.visibility = 'visible';
+      mark.style.visibility = 'visible';
+      veil.style.zIndex = '6';
+      mark.style.zIndex = '7';
       const life = 260 + 900;
       const started = performance.now();
       await new Promise((resolve) => {
@@ -6480,6 +6450,8 @@
         };
         window.requestAnimationFrame(step);
       });
+      this.glideLeadStamped = true;
+      mark.dataset.settled = '1';
     }
 
     async markCloseStoreSold() {
@@ -6569,18 +6541,19 @@
 
     async playScaleTimeline() {
       const generation = this.scaleGeneration;
+      this.glideLeadStamped = false;
       this.glideKeepStore = false;
       this.captureGlideClose('pain');
       this.revealScaleLayer();
       this.mountGlide('pain');
       if (generation !== this.scaleGeneration) return;
-      this.paintGlideAt(PROMO_CHAT_CLOSE_AT_MS, 'pain');
+      this.paintGlideAt(0, 'pain');
       await this.closeChatForLost();
       if (generation !== this.scaleGeneration) return;
       await this.poofCloseStore();
       if (generation !== this.scaleGeneration) return;
-      this.runGlide('pain', PROMO_CHAT_CLOSE_AT_MS);
-      await waitMs(Math.max(0, glidePlayEnd('pain') - PROMO_CHAT_CLOSE_AT_MS));
+      this.runGlide('pain', 0);
+      await waitMs(glidePlayEnd('pain'));
       if (generation !== this.scaleGeneration) return;
       await this.playConveyorEnd('pain', { settled: true });
     }
@@ -6712,7 +6685,7 @@
         this.playSeeForYourself();
         return;
       }
-      this.glideKeepStore = true;
+      this.glideKeepStore = false;
       this.captureGlideClose('pitch');
       await this.markCloseStoreSold();
       if (generation !== this.scaleGeneration) return;
