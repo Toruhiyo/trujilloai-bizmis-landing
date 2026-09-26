@@ -766,6 +766,11 @@
     return mode === 'pitch' ? 34 + ramp * 46 : 38 + ramp * 50;
   }
 
+  function glideKeepsStamp(cell, mode) {
+    if (mode !== 'pain') return true;
+    return wallSeededUnit(cell.row * 19 + cell.col * 7, 53) < 0.72;
+  }
+
   function glideMiddle(cell, cam, unit, frame) {
     const screen = glideCellScreen(cell, cam, unit, frame);
     const insetX = frame.width * 0.05;
@@ -797,7 +802,7 @@
       const view = glideCells(time, frame, mode);
       while (debt >= 1) {
         const open = view.cells.filter((cell) => {
-          if (used.has(cell.key)) return false;
+          if (used.has(cell.key) || !glideKeepsStamp(cell, mode)) return false;
           return glideMiddle(cell, view.span.cam, view.span.unit, frame);
         });
         if (!open.length) {
