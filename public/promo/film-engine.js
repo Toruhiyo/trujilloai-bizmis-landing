@@ -326,6 +326,8 @@
     blurFrom: 900,
     blurPx: 8,
     claimLeadMs: 700,
+    washMs: 2000,
+    washBlurPx: 42,
     liveRows: 2,
     liveMaxSpeed: 600,
     blurStart: 0.72,
@@ -488,6 +490,13 @@
     const span = Math.max(1, PROMO_GLIDE.speedTo - PROMO_GLIDE.blurFrom);
     const u = Math.min(1, (speed - PROMO_GLIDE.blurFrom) / span);
     return Math.round(u * u * PROMO_GLIDE.blurPx * 2) / 2;
+  }
+
+  function glideWash(timeMs, mode) {
+    const marks = glideMarks(mode || 'pitch');
+    const start = mode === 'pain' ? marks.captionStart : marks.claimAt;
+    const u = Math.min(1, Math.max(0, (timeMs - start) / PROMO_GLIDE.washMs));
+    return u * u * (3 - 2 * u);
   }
 
   function glideSpeed(glideMs) {
@@ -5886,21 +5895,14 @@
       const marks = glideMarks('pain');
       const haze = caption.querySelector('.promo-glide__haze');
       const poof = caption.querySelector('.promo-glide__poof');
-      const show = timeMs >= marks.captionStart && timeMs < marks.captionPoofEnd;
+      const show = timeMs >= marks.captionStart;
       caption.hidden = !show;
       if (!show) return;
       const inU = Math.min(1, (timeMs - marks.captionStart) / PROMO_GLIDE.captionInMs);
       const inEase = inU * inU * (3 - 2 * inU);
-      if (timeMs < marks.captionHoldEnd) {
-        text.style.opacity = inEase.toFixed(3);
-        if (haze) haze.style.opacity = inEase.toFixed(3);
-        if (poof) poof.style.opacity = '0';
-        return;
-      }
-      const fadeU = Math.min(1, (timeMs - marks.captionHoldEnd) / PROMO_GLIDE.poofMs);
-      const fade = 1 - fadeU * fadeU * (3 - 2 * fadeU);
-      text.style.opacity = fade.toFixed(3);
-      if (haze) haze.style.opacity = fade.toFixed(3);
+      const wash = glideWash(timeMs, 'pain');
+      text.style.opacity = inEase.toFixed(3);
+      if (haze) haze.style.opacity = (inEase * (1 - wash)).toFixed(3);
       if (poof) poof.style.opacity = '0';
     }
 
@@ -5908,7 +5910,6 @@
       const verdict = this.root.querySelector('[data-promo-scale-verdict]');
       const hero = verdict?.querySelector('.promo-scale__end-hero');
       const caption = verdict?.querySelector('.promo-scale__sold');
-      const field = this.root.querySelector('[data-promo-grid-field]');
       if (!verdict || !hero) return;
       if (mode !== 'pitch') {
         verdict.style.opacity = '0';
@@ -5926,7 +5927,6 @@
         verdict.style.transform = '';
         if (caption) caption.style.opacity = '0';
         if (streak && streak.style.opacity !== '1') streak.style.opacity = '1';
-        if (field && field.style.opacity !== '0') field.style.opacity = '0';
         return;
       }
       const elapsed = timeMs - endAt;
@@ -5949,7 +5949,6 @@
           caption.style.opacity = '1';
           caption.style.transform = 'none';
         }
-        if (field && field.style.opacity !== '0') field.style.opacity = '0';
         if (ease >= 1 && !this.gridThudSent) {
           this.gridThudSent = true;
           this.emitThud();
@@ -6017,7 +6016,8 @@
       if (sheet) {
         sheet.style.transform = `translate3d(${(frame.width / 2 - cam.x).toFixed(2)}px, ${(frame.height / 2 - cam.y).toFixed(2)}px, 0)`;
         if (sheet.style.opacity !== '1') sheet.style.opacity = '1';
-        const blur = glideBlurPx(cam.speed);
+        const wash = options.reduced ? 1 : glideWash(time, mode);
+        const blur = Math.max(glideBlurPx(cam.speed), Math.round(wash * PROMO_GLIDE.washBlurPx * 2) / 2);
         const filter = blur ? `blur(${blur}px)` : '';
         if (sheet.style.filter !== filter) sheet.style.filter = filter;
       }
@@ -6148,7 +6148,8 @@
       if (mode === 'pain') this.paintPainCaption(root, options.reduced ? marks.captionHoldEnd - 120 : time);
       const horizon = root.querySelector('.promo-glide__horizon');
       if (horizon && horizon.style.opacity !== '0') horizon.style.opacity = '0';
-      if (field && field.style.opacity !== '0') field.style.opacity = '0';
+      const wash = options.reduced ? 1 : glideWash(time, mode);
+      if (field) field.style.opacity = wash.toFixed(3);
       glideActiveTilt = glideTiltAt(time, mode) * Math.PI / 180;
       if (!options.reduced) this.paintGlideEnd(time, mode);
       const activeEvents = glideEvents(mode, frame).filter((event) => event.t <= time).length;
