@@ -7075,6 +7075,23 @@ html.is-promo-clip.is-clip-moment #bizmis-avatar-embed {
   object-fit: cover;
 }
 
+.promo-glide__cell.is-lead-match {
+  overflow: visible;
+  border: none;
+  background: transparent;
+  box-shadow: none;
+  clip-path: none;
+}
+
+.promo-glide__cell.is-lead-match::after {
+  display: none;
+}
+
+.promo-opening.is-moments .promo-glide__cell.is-lead-match > .promo-opening__store {
+  border-radius: 32px;
+  overflow: hidden;
+}
+
 .promo-end {
   position: absolute;
   inset: 0;

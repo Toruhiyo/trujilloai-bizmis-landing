@@ -5510,8 +5510,8 @@
       clone.classList.remove('is-belt-stage');
       clone.removeAttribute('style');
       const rect = store.getBoundingClientRect();
-      clone.dataset.naturalW = String(Math.round(rect.width) || store.offsetWidth || 0);
-      clone.dataset.naturalH = String(Math.round(rect.height) || store.offsetHeight || 0);
+      clone.dataset.naturalW = String(rect.width || store.offsetWidth || 0);
+      clone.dataset.naturalH = String(rect.height || store.offsetHeight || 0);
       return clone;
     }
 
@@ -5685,6 +5685,7 @@
       this.glideLeadStart = start;
       this.glideLeadKey = glideLeadCell(frame)?.key || '';
       this.glideZoomFrom = 0;
+      this.glideZoomFromY = 0;
       this.glideAnchor = null;
       return root;
     }
@@ -5692,6 +5693,7 @@
     captureGlideClose(mode) {
       const frameBox = this.root.getBoundingClientRect();
       this.glideZoomFrom = 0;
+      this.glideZoomFromY = 0;
       this.glideAnchor = null;
       const box = this.glideCloseBox(mode);
       if (!box || frameBox.width < 40 || box.width < 40) {
@@ -5968,10 +5970,11 @@
       const top = close.cy - close.h / 2 + frame.top;
       const right = left + close.w;
       const bottom = top + close.h;
-      const insetTop = Math.max(0, top - host.top) * keep;
-      const insetRight = Math.max(0, host.right - right) * keep;
-      const insetBottom = Math.max(0, host.bottom - bottom) * keep;
-      const insetLeft = Math.max(0, left - host.left) * keep;
+      const slack = 2 * keep;
+      const insetTop = Math.max(0, (top - host.top) * keep - slack);
+      const insetRight = Math.max(0, (host.right - right) * keep - slack);
+      const insetBottom = Math.max(0, (host.bottom - bottom) * keep - slack);
+      const insetLeft = Math.max(0, (left - host.left) * keep - slack);
       root.style.clipPath = `inset(${insetTop.toFixed(1)}px ${insetRight.toFixed(1)}px ${insetBottom.toFixed(1)}px ${insetLeft.toFixed(1)}px)`;
     }
 
@@ -6032,22 +6035,27 @@
       if (viewWrap && leadCell && arrive < 0.995) {
         const unit = view.span.unit;
         const faceW = Math.max(1, leadCell.w * unit);
+        const faceH = Math.max(1, leadCell.h * unit);
         if (!this.glideZoomFrom) {
-          const closeW = this.glideCloseRect?.w || faceW * 2.6;
-          this.glideZoomFrom = Math.min(4.4, Math.max(1, closeW / faceW));
+          const closeW = this.glideCloseRect?.w || faceW;
+          const closeH = this.glideCloseRect?.h || faceH;
+          this.glideZoomFrom = closeW / faceW;
+          this.glideZoomFromY = closeH / faceH;
           this.glideAnchor = {
             x: frame.width / 2 - cam.x + (leadCell.x + leadCell.w / 2) * unit,
             y: frame.height / 2 - cam.y + (leadCell.y + leadCell.h / 2) * unit,
           };
         }
-        const zoom = 1 + (1 - arrive) * (this.glideZoomFrom - 1);
+        const pullU = 1 - arrive;
+        const zoomX = 1 + pullU * (this.glideZoomFrom - 1);
+        const zoomY = 1 + pullU * ((this.glideZoomFromY || this.glideZoomFrom) - 1);
         const anchor = this.glideAnchor;
         const close = this.glideCloseRect;
-        const dx = close ? (close.cx - anchor.x) * (1 - arrive) : 0;
-        const dy = close ? (close.cy - anchor.y) * (1 - arrive) : 0;
-        pull = { zoom, dx, dy, ox: anchor.x, oy: anchor.y };
+        const dx = close ? (close.cx - anchor.x) * pullU : 0;
+        const dy = close ? (close.cy - anchor.y) * pullU : 0;
+        pull = { zoom: zoomX, dx, dy, ox: anchor.x, oy: anchor.y };
         viewWrap.style.transformOrigin = `${anchor.x.toFixed(1)}px ${anchor.y.toFixed(1)}px`;
-        viewWrap.style.transform = `translate(${dx.toFixed(1)}px, ${dy.toFixed(1)}px) scale(${zoom.toFixed(3)})`;
+        viewWrap.style.transform = `translate(${dx.toFixed(2)}px, ${dy.toFixed(2)}px) scale(${zoomX.toFixed(4)}, ${zoomY.toFixed(4)})`;
       } else if (viewWrap) {
         viewWrap.style.transform = '';
       }
@@ -6164,6 +6172,7 @@
       if (!cellNode || cellNode.hidden || arrive >= fadeEnd) {
         clone.style.visibility = 'hidden';
         clone.style.opacity = '0';
+        cellNode?.classList.remove('is-lead-match');
         if (lead) lead.hidden = true;
         return;
       }
@@ -6179,6 +6188,25 @@
       clone.style.width = `${naturalW.toFixed(1)}px`;
       clone.style.height = `${naturalH.toFixed(1)}px`;
       clone.style.transform = `scale(${(width / naturalW).toFixed(4)}, ${(height / naturalH).toFixed(4)})`;
+      const matched = blend > 0.98;
+      const wasMatched = cellNode.classList.contains('is-lead-match');
+      cellNode.classList.toggle('is-lead-match', matched);
+      if (matched) {
+        cellNode.style.border = 'none';
+        cellNode.style.boxShadow = 'none';
+        cellNode.style.background = 'transparent';
+        cellNode.style.clipPath = 'none';
+        cellNode.style.borderRadius = '0';
+      } else if (wasMatched) {
+        cellNode.style.border = '';
+        cellNode.style.boxShadow = '';
+        cellNode.style.background = '';
+        const deviceId = cellNode.classList.contains('is-phone')
+          ? 'phone'
+          : cellNode.classList.contains('is-tablet') ? 'tablet' : 'desktop';
+        const device = PROMO_GRID.devices.find((item) => item.id === deviceId) || PROMO_GRID.devices[0];
+        applyMockupShape(cellNode, device, width);
+      }
       cellNode.querySelectorAll(':scope > .promo-glide__still, :scope > .promo-glide__video, :scope > .promo-glide__mark').forEach((node) => {
         if (node.classList.contains('promo-glide__still')) {
           node.style.visibility = blend > 0.98 ? 'hidden' : '';
