@@ -2840,7 +2840,7 @@ html.is-promo-opening.is-promo-depart .promo-opening {
 .is-pose-close .promo-moments__card.is-pick .promo-moments__meta::before {
   content: "";
   display: block;
-  width: 46%;
+  width: 100%;
   height: 16em;
   margin-bottom: 16px;
   border-radius: 999px;
