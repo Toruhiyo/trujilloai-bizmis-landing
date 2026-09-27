@@ -325,6 +325,7 @@
     speedTo: 2400,
     blurFrom: 900,
     blurPx: 8,
+    claimLeadMs: 700,
     liveRows: 2,
     liveMaxSpeed: 600,
     blurStart: 0.72,
@@ -356,17 +357,20 @@
   const GLIDE_PAIN_CAPTION = 'Your store, on a typical day.';
   const glideRows = new Map();
   const glideWarmMedia = [];
+  const glideDecodedStills = new Map();
   let glideEventCache = { key: '', list: [] };
   let glideActiveTilt = PROMO_GLIDE.tilt * Math.PI / 180;
 
   function glideMarks(mode) {
     const laydown = PROMO_GLIDE.layDownMs;
     const glideEnd = laydown + PROMO_GLIDE.rampMs;
+    const claimAt = glideEnd - PROMO_GLIDE.claimLeadMs;
     if (mode !== 'pain') {
       const fieldEnd = glideEnd + PROMO_GLIDE.dissolveMs + PROMO_GLIDE.fieldHoldMs;
       return {
         laydown,
         glideEnd,
+        claimAt,
         captionStart: glideEnd,
         captionInEnd: glideEnd,
         captionHoldEnd: glideEnd,
@@ -376,7 +380,7 @@
         playEnd: fieldEnd + PROMO_GLIDE.resolveMs + PROMO_GLIDE.endHoldMs,
       };
     }
-    const captionStart = glideEnd;
+    const captionStart = claimAt;
     const captionInEnd = captionStart + PROMO_GLIDE.captionInMs;
     const captionHoldEnd = captionInEnd + PROMO_GLIDE.captionHoldMs;
     const captionPoofEnd = captionHoldEnd + PROMO_GLIDE.poofMs + PROMO_GLIDE.dustMs;
@@ -3022,39 +3026,24 @@
     });
   }
 
-  function glideOpeningKeys() {
-    const frame = { width: 1440, height: 810 };
-    const keys = new Set();
-    ['pain', 'pitch'].forEach((mode) => {
-      [240, 1100].forEach((time) => {
-        const view = glideCells(time, frame, mode);
-        view.cells.forEach((cell) => {
-          const screen = glideCellScreen(cell, view.span.cam, view.span.unit, frame);
-          if (screen.h < 72) return;
-          if (Math.abs(screen.cx - frame.width / 2) > frame.width * 0.46) return;
-          if (screen.cy < -40 || screen.cy > frame.height + 40) return;
-          const tone = mode === 'pitch' ? 'pitch' : 'pain';
-          keys.add(clipFileKey(tone, cell.id, glideMotion(cell, mode), mode !== 'pitch', glideLook(cell, mode)));
-        });
-      });
-    });
-    return keys;
+  function glidePreloadFrame() {
+    const width = Math.round(window.innerWidth || 0);
+    const height = Math.round(window.innerHeight || 0);
+    if (width >= 40 && height >= 40) return { width, height };
+    return { width: 1440, height: 810 };
   }
 
-  function glideSeaStills() {
-    const frame = { width: 1440, height: 810 };
+  function glideSeaStills(frame) {
     const urls = new Set();
+    const leadKey = glideLeadCell(frame)?.key;
     ['pain', 'pitch'].forEach((mode) => {
-      const end = PROMO_GLIDE.layDownMs + PROMO_GLIDE.rampMs;
-      for (let time = 0; time <= end; time += 800) {
+      const end = glidePlayEnd(mode);
+      for (let time = 0; time <= end; time += 40) {
         const view = glideCells(time, frame, mode);
         view.cells.forEach((cell) => {
-          const screen = glideCellScreen(cell, view.span.cam, view.span.unit, frame);
-          if (screen.h < 48) return;
-          if (Math.abs(screen.cx - frame.width / 2) > frame.width * 0.55) return;
-          if (screen.cy < -80 || screen.cy > frame.height + 80) return;
           const tone = mode === 'pitch' ? 'pitch' : 'pain';
-          const url = glideStillSrc(tone, cell.id, glideMotion(cell, mode), mode !== 'pitch', glideLook(cell, mode));
+          const chat = mode !== 'pitch' && cell.key !== leadKey;
+          const url = glideStillSrc(tone, cell.id, glideMotion(cell, mode), chat, glideLook(cell, mode));
           if (url) urls.add(url);
         });
       }
@@ -3063,42 +3052,58 @@
     return urls;
   }
 
-  function preloadGlideMedia() {
-    const add = (bucket, tone, device, motion, chat, look) => {
-      const video = clipSrc(tone, device, motion, chat, look);
-      if (!video) return;
-      bucket.videos.add(video);
-      const still = glideStillSrc(tone, device, motion, chat, look);
-      if (still) bucket.images.add(still);
-    };
-    const urgent = { images: new Set(), videos: new Set() };
-    const later = { images: new Set(), videos: new Set() };
-    const opening = glideOpeningKeys();
-    glideSeaStills().forEach((url) => urgent.images.add(url));
-    PROMO_CLIP_DEVICES.forEach((device) => {
-      (PROMO_CLIP_MOTIONS[device] || []).forEach((motion) => {
-        PROMO_STORE_LOOKS.forEach((look) => {
-          [['pain', true], ['pitch', false]].forEach(([tone, chat]) => {
-            const key = clipFileKey(tone, device, motion, chat, look);
-            const bucket = opening.has(key) ? urgent : later;
-            add(bucket, tone, device, motion, chat, look);
-          });
-        });
-      });
-      PROMO_PITCH_MOMENTS.forEach((motion) => {
-        PROMO_STORE_LOOKS.forEach((look) => {
-          const key = clipFileKey('pitch', device, motion, false, look);
-          add(opening.has(key) ? urgent : later, 'pitch', device, motion, false, look);
-        });
-      });
+  function preloadDecodedStill(url) {
+    if (!url) return Promise.resolve();
+    if (glideDecodedStills.has(url)) return Promise.resolve();
+    return new Promise((resolve) => {
+      const img = new Image();
+      img.decoding = 'sync';
+      const finish = () => {
+        if (img.naturalWidth) glideDecodedStills.set(url, img);
+        resolve();
+      };
+      img.onload = () => {
+        if (typeof img.decode === 'function') img.decode().then(finish).catch(finish);
+        else finish();
+      };
+      img.onerror = () => resolve();
+      img.src = url;
     });
-    const warm = (bucket) => Promise.all([
-      ...[...bucket.images].map((url) => preloadPromoImage(url)),
-      ...[...bucket.videos].map((url) => preloadPromoVideo(url)),
-    ]);
-    const first = warm(urgent);
-    first.then(() => { warm(later); });
-    return first;
+  }
+
+  function paintGlideStill(canvas, url, cssW, cssH) {
+    const img = glideDecodedStills.get(url);
+    if (!canvas || !img || !img.naturalWidth || cssW < 2 || cssH < 2) return;
+    const dpr = Math.min(3, window.devicePixelRatio || 1);
+    const w = Math.max(1, Math.round(cssW * dpr));
+    const h = Math.max(1, Math.round(cssH * dpr));
+    const key = `${url}|${w}x${h}`;
+    if (canvas.dataset.paint === key) return;
+    const ctx = canvas.getContext('2d', { alpha: false });
+    if (!ctx) return;
+    canvas.dataset.paint = key;
+    canvas.dataset.src = url;
+    if (canvas.width !== w) canvas.width = w;
+    if (canvas.height !== h) canvas.height = h;
+    ctx.imageSmoothingEnabled = true;
+    ctx.imageSmoothingQuality = 'high';
+    const scale = Math.max(w / img.naturalWidth, h / img.naturalHeight);
+    const dw = img.naturalWidth * scale;
+    const dh = img.naturalHeight * scale;
+    ctx.drawImage(img, (w - dw) / 2, (h - dh) / 2, dw, dh);
+  }
+
+  function preloadGlideMedia() {
+    const urls = [...glideSeaStills(glidePreloadFrame())];
+    const size = 8;
+    const chunks = [];
+    for (let index = 0; index < urls.length; index += size) {
+      chunks.push(urls.slice(index, index + size));
+    }
+    return chunks.reduce(
+      (chain, chunk) => chain.then(() => Promise.all(chunk.map((url) => preloadDecodedStill(url)))),
+      Promise.resolve(),
+    );
   }
 
   function preloadPromoOpening(stores) {
@@ -5593,17 +5598,8 @@
       for (let index = 0; index < PROMO_GLIDE.pool; index += 1) {
         const cell = document.createElement('div');
         cell.className = 'promo-glide__cell promo-device';
-        const still = document.createElement('img');
+        const still = document.createElement('canvas');
         still.className = 'promo-glide__still';
-        still.alt = '';
-        still.decoding = 'sync';
-        const video = document.createElement('video');
-        video.className = 'promo-glide__video';
-        video.muted = true;
-        video.defaultMuted = true;
-        video.loop = true;
-        video.playsInline = true;
-        video.setAttribute('playsinline', '');
         const bloom = document.createElement('div');
         bloom.className = 'promo-glide__bloom';
         const rays = document.createElement('div');
@@ -5632,7 +5628,7 @@
         fx.className = 'promo-glide__fx';
         fx.append(bloom, rays, poof);
         fx.hidden = true;
-        cell.append(still, video, veil, mark, lost);
+        cell.append(still, veil, mark, lost);
         sheet.append(cell);
         fxLayer.append(fx);
         pool.push({ cell, fx });
@@ -5827,13 +5823,7 @@
         const stillSrc = leadStill
           ? (document.documentElement.getAttribute('data-promo-pitch-lead') || '')
           : glideStillSrc(tone, cell.id, motion, chat, look);
-        if (still) {
-          still.style.opacity = '';
-          if (still.dataset.src !== stillSrc) {
-            still.dataset.src = stillSrc;
-            still.src = stillSrc;
-          }
-        }
+        if (still) paintGlideStill(still, stillSrc, width, height);
         const wantVideo = false;
         if (video && wantVideo && video.dataset.clip !== clipKey) {
           video.style.opacity = '';
@@ -5925,7 +5915,7 @@
         this.root.classList.add('is-end-pain');
         return;
       }
-      const endAt = glideMarks('pitch').fieldEnd;
+      const endAt = glideMarks('pitch').claimAt;
       this.root.classList.add('is-end-pitch');
       this.root.classList.remove('is-end-pain');
       const streak = this.root.querySelector('.promo-glide__streak');
@@ -6014,9 +6004,7 @@
       const time = options.reduced
         ? (mode === 'pain' ? marks.captionHoldEnd - 120 : PROMO_GLIDE.layDownMs + 1500)
         : timeMs;
-      const overlayAt = mode === 'pain' ? marks.captionStart : marks.fieldEnd;
-      const seaTime = !options.reduced && time > overlayAt ? overlayAt : time;
-      const view = glideCells(seaTime, frame, mode);
+      const view = glideCells(time, frame, mode);
       const sheet = root.querySelector('.promo-glide__sheet');
       const streak = root.querySelector('.promo-glide__streak');
       const level = root.querySelector('.promo-glide__level');
@@ -6026,11 +6014,11 @@
       if (sheet) {
         sheet.style.transform = `translate3d(${(frame.width / 2 - cam.x).toFixed(2)}px, ${(frame.height / 2 - cam.y).toFixed(2)}px, 0)`;
         if (sheet.style.opacity !== '1') sheet.style.opacity = '1';
-        const blur = seaTime < overlayAt ? glideBlurPx(cam.speed) : 0;
+        const blur = glideBlurPx(cam.speed);
         const filter = blur ? `blur(${blur}px)` : '';
         if (sheet.style.filter !== filter) sheet.style.filter = filter;
       }
-      const arrive = options.reduced ? 1 : glideArrive(seaTime);
+      const arrive = options.reduced ? 1 : glideArrive(time);
       const tiltNode = root.querySelector('.promo-glide__tilt');
       if (tiltNode) {
         const tilt = PROMO_GLIDE.tilt * arrive;
@@ -6076,7 +6064,7 @@
       if (fxLayer) fxLayer.style.visibility = arrive < 0.35 ? 'hidden' : '';
       const nearRow = Math.floor(view.span.maxY / view.pitch);
       const speed = cam.speed;
-      const phase = glidePhase(seaTime, mode);
+      const phase = glidePhase(time, mode);
       const liveOk = speed <= PROMO_GLIDE.liveMaxSpeed && (phase === 'glide' || phase === 'laydown');
       const pool = root._glidePool || [];
       const used = new Set();
@@ -6107,7 +6095,7 @@
           .forEach((item) => liveSlots.add(item.slot));
       }
       pending.forEach((item) => {
-        const keep = this.paintGlideCell(item.slot.cell, item.slot.fx, item.cell, mode, seaTime, view, liveSlots.has(item.slot));
+        const keep = this.paintGlideCell(item.slot.cell, item.slot.fx, item.cell, mode, time, view, liveSlots.has(item.slot));
         const slot = item.slot;
         if (!keep) {
           slot.cell.hidden = true;
