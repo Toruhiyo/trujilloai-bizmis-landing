@@ -6706,18 +6706,19 @@ html.is-promo-clip.is-clip-moment #bizmis-avatar-embed {
   filter: none;
 }
 
-.promo-glide.is-pain .promo-glide__still {
-  filter: grayscale(1);
-}
-
 .promo-glide__streak,
 .promo-glide__level,
 .promo-glide__world,
-.promo-glide__tilt,
-.promo-glide__sheet {
+.promo-glide__tilt {
   position: absolute;
   inset: 0;
   transform-style: preserve-3d;
+}
+
+.promo-glide__sheet {
+  position: absolute;
+  inset: 0;
+  transform-style: flat;
 }
 
 .promo-glide__cell {
@@ -6736,6 +6737,10 @@ html.is-promo-clip.is-clip-moment #bizmis-avatar-embed {
 
 .promo-glide__sheet {
   will-change: transform;
+}
+
+.promo-glide__cell.promo-device::after {
+  content: none;
 }
 
 .promo-glide__cell.is-phone .promo-glide__still,
@@ -7085,6 +7090,16 @@ html.is-promo-clip.is-clip-moment #bizmis-avatar-embed {
 
 .promo-glide__cell.is-lead-match::after {
   display: none;
+}
+
+.promo-glide__shade {
+  position: absolute;
+  z-index: 2;
+  border-radius: 32px;
+  pointer-events: none;
+  box-shadow:
+    0 3px 8px color-mix(in srgb, var(--ad-ink) 12%, transparent),
+    0 38px 88px color-mix(in srgb, var(--ad-ink) 18%, transparent);
 }
 
 .promo-opening.is-moments .promo-glide__cell.is-lead-match > .promo-opening__store {

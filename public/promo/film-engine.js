@@ -3080,13 +3080,13 @@
     });
   }
 
-  function paintGlideStill(canvas, url, cssW, cssH) {
+  function paintGlideStill(canvas, url, cssW, cssH, pain) {
     const img = glideDecodedStills.get(url);
     if (!canvas || !img || !img.naturalWidth || cssW < 2 || cssH < 2) return;
     const dpr = Math.min(3, window.devicePixelRatio || 1);
     const w = Math.max(1, Math.round(cssW * dpr));
     const h = Math.max(1, Math.round(cssH * dpr));
-    const key = `${url}|${w}x${h}`;
+    const key = `${url}|${w}x${h}|${pain ? 'pain' : 'pitch'}`;
     if (canvas.dataset.paint === key) return;
     const ctx = canvas.getContext('2d', { alpha: false });
     if (!ctx) return;
@@ -3096,10 +3096,12 @@
     if (canvas.height !== h) canvas.height = h;
     ctx.imageSmoothingEnabled = true;
     ctx.imageSmoothingQuality = 'high';
+    if (pain) ctx.filter = 'grayscale(1)';
     const scale = Math.max(w / img.naturalWidth, h / img.naturalHeight);
     const dw = img.naturalWidth * scale;
     const dh = img.naturalHeight * scale;
     ctx.drawImage(img, (w - dw) / 2, (h - dh) / 2, dw, dh);
+    ctx.filter = 'none';
   }
 
   function preloadGlideMedia() {
@@ -5834,7 +5836,7 @@
         const stillSrc = leadStill
           ? (document.documentElement.getAttribute('data-promo-pitch-lead') || '')
           : glideStillSrc(tone, cell.id, motion, chat, look);
-        if (still) paintGlideStill(still, stillSrc, width, height);
+        if (still) paintGlideStill(still, stillSrc, width, height, mode === 'pain');
         const wantVideo = false;
         if (video && wantVideo && video.dataset.clip !== clipKey) {
           video.style.opacity = '';
@@ -6173,8 +6175,10 @@
       if (!cellNode || cellNode.hidden || arrive >= fadeEnd) {
         clone.style.visibility = 'hidden';
         clone.style.opacity = '0';
+        clone.style.boxShadow = '';
         cellNode?.classList.remove('is-lead-match');
         if (lead) lead.hidden = true;
+        this.placeLeadShade(null, 0);
         return;
       }
       if (clone.parentElement !== cellNode) cellNode.appendChild(clone);
@@ -6189,6 +6193,7 @@
       clone.style.width = `${naturalW.toFixed(1)}px`;
       clone.style.height = `${naturalH.toFixed(1)}px`;
       clone.style.transform = `scale(${(width / naturalW).toFixed(4)}, ${(height / naturalH).toFixed(4)})`;
+      clone.style.boxShadow = 'inset 0 2px 0 color-mix(in srgb, var(--ad-white) 92%, transparent), inset 0 -2px 6px color-mix(in srgb, var(--ad-ink) 16%, transparent), inset 0 0 14px color-mix(in srgb, var(--ad-white) 40%, transparent)';
       const matched = blend > 0.98;
       const wasMatched = cellNode.classList.contains('is-lead-match');
       cellNode.classList.toggle('is-lead-match', matched);
@@ -6198,10 +6203,17 @@
         cellNode.style.background = 'transparent';
         cellNode.style.clipPath = 'none';
         cellNode.style.borderRadius = '0';
+        const curve = 32 * (width / Math.max(1, naturalW));
+        cellNode.querySelectorAll(':scope > .promo-glide__veil').forEach((veil) => {
+          veil.style.borderRadius = `${curve.toFixed(2)}px`;
+        });
       } else if (wasMatched) {
         cellNode.style.border = '';
         cellNode.style.boxShadow = '';
         cellNode.style.background = '';
+        cellNode.querySelectorAll(':scope > .promo-glide__veil').forEach((veil) => {
+          veil.style.borderRadius = '';
+        });
         const deviceId = cellNode.classList.contains('is-phone')
           ? 'phone'
           : cellNode.classList.contains('is-tablet') ? 'tablet' : 'desktop';
@@ -6225,6 +6237,30 @@
         node.style.zIndex = node.classList.contains('promo-glide__lost-mark') ? '7' : '6';
       });
       if (lead) lead.hidden = true;
+      this.placeLeadShade(clone, blend);
+    }
+
+    placeLeadShade(clone, blend) {
+      const host = this.root.querySelector('[data-promo-scale]');
+      if (!host) return;
+      let shade = host.querySelector(':scope > .promo-glide__shade');
+      if (!clone || blend <= 0) {
+        if (shade) shade.hidden = true;
+        return;
+      }
+      if (!shade) {
+        shade = document.createElement('div');
+        shade.className = 'promo-glide__shade';
+        host.append(shade);
+      }
+      const hostBox = host.getBoundingClientRect();
+      const box = clone.getBoundingClientRect();
+      shade.hidden = false;
+      shade.style.opacity = blend.toFixed(3);
+      shade.style.left = `${(box.left - hostBox.left).toFixed(2)}px`;
+      shade.style.top = `${(box.top - hostBox.top).toFixed(2)}px`;
+      shade.style.width = `${box.width.toFixed(2)}px`;
+      shade.style.height = `${box.height.toFixed(2)}px`;
     }
 
     releaseCloseStore() {
