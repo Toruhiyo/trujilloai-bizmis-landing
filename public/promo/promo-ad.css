@@ -5520,6 +5520,114 @@ html.is-promo-live-card .bizmis-chat-input-bar {
   animation: promo-live-chrome-in 720ms cubic-bezier(0.22, 1, 0.36, 1) 140ms both;
 }
 
+.promo-widget-events {
+  position: absolute;
+  z-index: 9;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 8px;
+  pointer-events: none;
+}
+
+.promo-widget-event {
+  width: 100%;
+  animation: promo-widget-event-in 180ms ease-out both;
+}
+
+.promo-widget-event__label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0 0 4px;
+  padding-left: 2px;
+  color: #737373;
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.promo-widget-event__label svg {
+  width: 12px;
+  height: 12px;
+  flex: none;
+  color: var(--bizmis-primary);
+}
+
+.promo-widget-event__tiles {
+  display: flex;
+  gap: 8px;
+}
+
+.promo-widget-event__tile,
+.promo-widget-event__item {
+  border: 1px solid rgba(0, 0, 0, 0.07);
+  background: rgba(0, 0, 0, 0.03);
+  border-radius: 16px;
+}
+
+.promo-widget-event__tile {
+  flex: 1 1 0;
+  min-width: 0;
+  padding: 6px;
+}
+
+.promo-widget-event__tile img,
+.promo-widget-event__item img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 1;
+  object-fit: cover;
+  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.05);
+}
+
+.promo-widget-event__tile span {
+  display: -webkit-box;
+  margin-top: 6px;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  color: #262626;
+  font-size: 11px;
+  line-height: 1.2;
+}
+
+.promo-widget-event__item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: fit-content;
+  max-width: 100%;
+  margin-left: auto;
+  padding: 8px 12px 8px 8px;
+}
+
+.promo-widget-event__item img {
+  width: 44px;
+  height: 44px;
+  aspect-ratio: auto;
+}
+
+.promo-widget-event__item span {
+  color: #262626;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.2;
+}
+
+html.is-promo-card-out .promo-widget-events {
+  opacity: 0;
+  transition: opacity 420ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@keyframes promo-widget-event-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
 .promo-opening.is-pitch-cards.is-moments .promo-opening__store > .promo-opening__widget {
   position: absolute;
   top: auto;

@@ -1751,6 +1751,75 @@
     window.dispatchEvent(new CustomEvent('bizmis:shopper-event', { detail }));
   }
 
+  function pitchEventAnchor(store) {
+    const phone = store.classList.contains('is-phone');
+    const hiddenWidget = phone ? store.querySelector('[data-promo-widget]') : null;
+    const scope = phone ? store : (store.querySelector('[data-promo-widget]') || store);
+    let top = Infinity;
+    let right = -Infinity;
+    let width = 0;
+    scope.querySelectorAll('.theme-bg-glassy, .bizmis-desktop-lite-chat, .bizmis-chat-input-bar, [class*="bottom-full"]').forEach((node) => {
+      if (hiddenWidget?.contains(node)) return;
+      if (phone && node.matches('[class*="bottom-full"]')) return;
+      const style = getComputedStyle(node);
+      if (style.display === 'none' || style.visibility === 'hidden' || Number(style.opacity) === 0) return;
+      const box = node.getBoundingClientRect();
+      if (box.width < 40 || box.height < 16) return;
+      if (box.top < top) top = box.top;
+      if (box.right > right) {
+        right = box.right;
+        width = box.width;
+      }
+    });
+    if (!Number.isFinite(top)) return null;
+    return { top, right, width: phone ? Math.min(220, width) : width };
+  }
+
+  function pitchEventLabel(detail) {
+    if (detail.kind === 'products') return 'Products shown to you';
+    if (detail.kind === 'product') return 'Product opened';
+    if (detail.kind === 'cart') return 'Added to cart';
+    return '';
+  }
+
+  function pitchEventIcon(kind) {
+    const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    svg.setAttribute('viewBox', '0 0 24 24');
+    svg.setAttribute('aria-hidden', 'true');
+    const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+    path.setAttribute('fill', 'none');
+    path.setAttribute('stroke', 'currentColor');
+    path.setAttribute('stroke-width', '2.25');
+    path.setAttribute('stroke-linecap', 'round');
+    path.setAttribute('stroke-linejoin', 'round');
+    if (kind === 'product') {
+      path.setAttribute('d', 'M20.6 13.4 13.4 20.6a2 2 0 0 1-2.8 0L3 13V3h10l7.6 7.6a2 2 0 0 1 0 2.8z');
+      svg.append(path);
+      const dot = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+      dot.setAttribute('cx', '7.5');
+      dot.setAttribute('cy', '7.5');
+      dot.setAttribute('r', '1.2');
+      dot.setAttribute('fill', 'currentColor');
+      svg.append(dot);
+      return svg;
+    }
+    if (kind === 'cart') {
+      path.setAttribute('d', 'M6 6h15l-1.5 9h-12z');
+      svg.append(path);
+      const bag = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+      bag.setAttribute('fill', 'none');
+      bag.setAttribute('stroke', 'currentColor');
+      bag.setAttribute('stroke-width', '2.25');
+      bag.setAttribute('stroke-linecap', 'round');
+      bag.setAttribute('d', 'M9 6a3 3 0 0 1 6 0M9 20h.01M18 20h.01');
+      svg.append(bag);
+      return svg;
+    }
+    path.setAttribute('d', 'M4 4h6v6H4zM14 4h6v6h-6zM4 14h6v6H4zM14 14h6v6h-6z');
+    svg.append(path);
+    return svg;
+  }
+
   const PROMO_MOMENT_POSES = ['grid', 'row', 'choice', 'doubt', 'close', 'extra', 'bundle', 'fly', 'gone'];
   const PROMO_MOMENT_GRID_COLS = 4;
   const PROMO_MOMENT_CARD_COUNT = 12;
@@ -3810,6 +3879,103 @@
       window.setTimeout(() => veil.remove(), 300);
     }
 
+    ensurePitchEvents() {
+      const store = this.painStore();
+      if (!store) return null;
+      let host = store.querySelector('[data-promo-widget-events]');
+      if (!host) {
+        host = document.createElement('div');
+        host.className = 'promo-widget-events';
+        host.setAttribute('data-promo-widget-events', '');
+        store.append(host);
+      }
+      this.placePitchEvents(host, store);
+      return host;
+    }
+
+    placePitchEvents(host, store) {
+      const storeBox = store.getBoundingClientRect();
+      const anchor = pitchEventAnchor(store);
+      host.style.left = 'auto';
+      if (!anchor || storeBox.width < 40) {
+        const phone = store.classList.contains('is-phone');
+        host.style.right = phone ? '14px' : '18px';
+        host.style.width = phone ? '220px' : '288px';
+        host.style.bottom = phone ? '96px' : '330px';
+        return;
+      }
+      const phone = store.classList.contains('is-phone');
+      const width = phone ? Math.min(220, anchor.width) : anchor.width;
+      host.style.width = `${Math.round(width)}px`;
+      host.style.right = `${Math.max(8, Math.round(storeBox.right - anchor.right))}px`;
+      host.style.bottom = `${Math.max(8, Math.round(storeBox.bottom - anchor.top + 10))}px`;
+    }
+
+    clearPitchEvents() {
+      this.painStore()?.querySelector('[data-promo-widget-events]')?.replaceChildren();
+    }
+
+    paintPitchEvent(detail) {
+      const host = this.ensurePitchEvents();
+      if (!host || !detail) return;
+      const card = document.createElement('div');
+      card.className = 'promo-widget-event';
+      const label = document.createElement('p');
+      label.className = 'promo-widget-event__label';
+      label.append(pitchEventIcon(detail.kind));
+      label.append(document.createTextNode(pitchEventLabel(detail)));
+      card.append(label);
+      if (detail.kind === 'products') {
+        const row = document.createElement('div');
+        row.className = 'promo-widget-event__tiles';
+        const shots = [
+          '.promo-moments__card.is-pick img',
+          '.promo-moments__card.is-go img',
+          '.promo-moments__card.is-other img',
+        ];
+        (detail.products || []).forEach((product, index) => {
+          row.append(this.pitchEventTile(product, shots[index] || ''));
+        });
+        card.append(row);
+      } else if (detail.product) {
+        const item = document.createElement('div');
+        item.className = 'promo-widget-event__item';
+        const shot = detail.product.title === 'The sleeve'
+          ? '.promo-moments__card.is-extra img'
+          : '.promo-moments__card.is-pick img';
+        item.append(this.pitchEventThumb(shot, 44));
+        const title = document.createElement('span');
+        title.textContent = detail.product.title || '';
+        item.append(title);
+        card.append(item);
+      }
+      host.append(card);
+      const cap = host.closest('.is-phone') ? 1 : 2;
+      while (host.children.length > cap) host.firstElementChild?.remove();
+    }
+
+    pitchEventTile(product, shot) {
+      const tile = document.createElement('div');
+      tile.className = 'promo-widget-event__tile';
+      tile.append(this.pitchEventThumb(shot, 0));
+      const title = document.createElement('span');
+      title.textContent = product?.title || '';
+      tile.append(title);
+      return tile;
+    }
+
+    pitchEventThumb(shot, size) {
+      const img = document.createElement('img');
+      img.alt = '';
+      const source = shot ? this.root.querySelector(shot) : null;
+      if (source?.getAttribute('src')) img.src = source.getAttribute('src');
+      if (size) {
+        img.style.width = `${size}px`;
+        img.style.height = `${size}px`;
+      }
+      return img;
+    }
+
     async slideStoreToPhone() {
       const store = this.painStore();
       if (!store || prefersReducedMotion()) {
@@ -3859,25 +4025,29 @@
         cursor.hidden = true;
         cursor.style.opacity = '0';
       }
+      this.clearPitchEvents();
       await this.typeShopperLine(PROMO_PITCH_LINE_1);
       const first = playClerkLine(PROMO_PITCH_CLERK_1, reduced ? 200 : PROMO_PITCH_SPEAK_1_MS, () => {});
       applyMomentPose(stage, 'row', { instant: reduced });
-      emitShopper({
+      const shown = {
         kind: 'products',
-        query: 'light',
         products: [
           { title: 'The light one', url: 'https://bizmis.ai/demo/light' },
           { title: 'The day one', url: 'https://bizmis.ai/demo/day' },
           { title: 'The travel one', url: 'https://bizmis.ai/demo/travel' },
         ],
-      });
+      };
+      emitShopper(shown);
+      this.paintPitchEvent(shown);
       this.flashSweep(stage);
       await waitMs(reduced ? 40 : 1500);
       applyMomentPose(stage, 'close', { instant: reduced });
-      emitShopper({
+      const opened = {
         kind: 'product',
         product: { title: 'The light one', url: 'https://bizmis.ai/demo/light' },
-      });
+      };
+      emitShopper(opened);
+      this.paintPitchEvent(opened);
       this.flashSweep(stage?.querySelector('.promo-moments__card.is-pick'));
       await first;
       await this.markCloseStoreSold();
@@ -3885,25 +4055,30 @@
       if (!reduced) await waitMs(promoVoGuard('narrows'));
       this.painStore()?.querySelectorAll('.promo-close__veil, .promo-close__mark').forEach((node) => node.remove());
       await this.slideStoreToPhone();
+      this.clearPitchEvents();
       applyMomentPose(stage, 'doubt', { instant: true });
       await this.typeShopperLine(PROMO_PITCH_LINE_2);
       const second = playClerkLine(PROMO_PITCH_CLERK_2, reduced ? 200 : PROMO_PITCH_SPEAK_2_MS, () => {});
       host?.classList.add('is-cart-one');
-      emitShopper({
+      const cartOne = {
         kind: 'cart',
         product: { title: 'The light one', url: 'https://bizmis.ai/demo/light' },
         quantity: 1,
-      });
+      };
+      emitShopper(cartOne);
+      this.paintPitchEvent(cartOne);
       this.flashSweep(this.painStore()?.querySelector('.promo-moments__cart'));
       await waitMs(reduced ? 40 : 1400);
       applyMomentPose(stage, 'bundle', { instant: reduced });
       host?.classList.remove('is-cart-one');
       host?.classList.add('is-cart-two');
-      emitShopper({
+      const cartSleeve = {
         kind: 'cart',
         product: { title: 'The sleeve', url: 'https://bizmis.ai/demo/sleeve' },
         quantity: 1,
-      });
+      };
+      emitShopper(cartSleeve);
+      this.paintPitchEvent(cartSleeve);
       this.flashSweep(stage?.querySelector('.promo-moments__card.is-extra') || this.painStore()?.querySelector('.promo-moments__cart'));
       await second;
       this.painStore()?.querySelectorAll('.promo-close__veil, .promo-close__mark').forEach((node) => node.remove());
@@ -4022,6 +4197,7 @@
       }
       document.documentElement.classList.remove('is-promo-live-card', 'is-promo-saying');
       releaseSayThisBubbles();
+      this.clearPitchEvents();
     }
 
     seatClerkInStore(instant) {
