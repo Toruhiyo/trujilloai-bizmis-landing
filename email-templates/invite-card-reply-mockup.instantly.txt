@@ -1,0 +1,18 @@
+Hey {{firstName}},
+
+{% if opening_hook and opening_hook != "" %}{{opening_hook}}{% else %}I spent a while browsing {{lead_brand}} the other day, and I kept coming back to the same thought: somewhere in that catalog there's a shopper with one question they'd ask out loud in a store, and no way to do that on a website.{% endif %}
+
+That's the moment I built Bizmis for: your store's best salesperson, online. It isn't a chatbot, it's a voice-first store associate that knows your products, prices and policies. Shoppers just talk to it, naturally. It listens, puts the right products on screen and takes them there, and reassures away the doubts, so they buy with confidence. Shipping and returns questions get handled as they come up too, so most never reach your inbox.
+
+I've got a 2-minute version running on a test store you can talk to yourself. Want me to send it?
+
+Just hit reply.
+
+Oriol
+Founder, Bizmis · [bizmis.ai](https://www.bizmis.ai "color:#8F7856;text-decoration:none")
+
+{% if mail_provider == "google" %}PS: I couldn't resist, I already made a mockup of Bizmis running on {{lead_brand}} with your own products in it. Here's how it looks:
+
+![Bizmis running on {{lead_brand}}](https://www.bizmis.ai/invite-cards/{{lead_handle}}/email/mockup.png){% endif %}
+
+[Unsubscribe](https://www.bizmis.ai/unsubscribe?ref={{lead_handle}}&sig={{unsub_sig}} "font-size:10px;font-weight:400;color:#B5A48E;text-decoration:underline")

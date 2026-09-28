@@ -4,7 +4,7 @@ I'm Oriol, and I built Bizmis, a voice-first store associate for Shopify, to mak
 
 Like in a physical store, Bizmis catches both by bringing that in-person help online. Unlike conventional chatbots, shoppers just talk to it, naturally. It guides them through your catalog and finds what they need, answers on the spot, notices when someone's hesitant or in a hurry and adjusts, and walks them to the right product, like your best in-store associate would. And since it answers shipping, returns and order questions as they come up, most of those support questions never reach your inbox.
 
-I already built [a mockup running on {{lead_brand}}](https://www.bizmis.ai/invite-cards/{{lead_handle}}/email/mockup.png?ref={{lead_handle}}&utm_source=bizmis-cold-email&utm_medium=email&utm_campaign={{utm_campaign}}&utm_content={{lead_handle}}), with your products and branding set up.
+{% if mail_provider == "google" %}I already built [a mockup running on {{lead_brand}}](https://www.bizmis.ai/invite-cards/{{lead_handle}}/email/mockup.png?ref={{lead_handle}}&utm_source=bizmis-cold-email&utm_medium=email&utm_campaign={{utm_campaign}}&utm_content={{lead_handle}}), with your products and branding set up.{% endif %}
 
 The fastest way to get it: [see it live on a test store](https://www.bizmis.ai/demo?ref={{lead_handle}}&code={{access_code}}&utm_source=bizmis-cold-email&utm_medium=email&utm_campaign={{utm_campaign}}&utm_content={{lead_handle}}) and talk to it yourself. Ask it whatever a shopper would; two minutes of that tells you more than anything I can write here. And if a call is easier, [grab 30 minutes with me](https://calendly.com/oriol-bizmis/bizmis-onboarding?ref={{lead_handle}}&utm_source=bizmis-cold-email&utm_medium=email&utm_campaign={{utm_campaign}}&utm_content={{lead_handle}}) and I'll get it set up on {{lead_brand}} with you.
 
@@ -12,4 +12,4 @@ We're opening Early Access to the first 50 stores and I'd love {{lead_brand}} to
 
 Oriol
 
-[Unsubscribe](https://www.bizmis.ai/unsubscribe?ref={{lead_handle}}&sig={{unsub_sig}})
+[Unsubscribe](https://www.bizmis.ai/unsubscribe?ref={{lead_handle}}&sig={{unsub_sig}} "font-size:10px;font-weight:400;color:#B5A48E;text-decoration:underline")

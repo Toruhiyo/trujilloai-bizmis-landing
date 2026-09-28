@@ -1,0 +1,19 @@
+Dear {{firstName}},
+
+I’m Oriol, founder of Bizmis. I’m reaching out because we’re inviting a small group of Shopify stores like {{lead_brand}} to try Bizmis in real storefronts before the public launch. We’ve built voice-first AI store associates for Shopify that bring the in-store shopping experience to e-commerce. This isn’t a chatbot. It welcomes shoppers, answers their questions, and guides them to buy with confidence, just like your best in-store salesperson would, helping your store drive more sales and ease your support workload.
+
+We’re opening early access to just 50 Shopify stores — I’d really like {{lead_brand}} to be one of them. Join before the spots close and you’d have priority input on the Bizmis roadmap — early-access stores get a real say in what gets built, so every update pushes {{lead_brand}} further ahead. Try the live demo to see it on a test store, and I’ll personally get Bizmis live on yours. Start free, no commitment — then your early-access discount when you upgrade.
+
+See it in action: [Live Demo](https://www.bizmis.ai/demo?ref={{lead_handle}}&code={{access_code}}&utm_source=bizmis-cold-email&utm_medium=email&utm_campaign={{utm_campaign}}&utm_content={{lead_handle}})
+[Or install it on your store now](https://apps.shopify.com/bizmis?ref={{lead_handle}}&code={{access_code}}&utm_source=bizmis-cold-email&utm_medium=email&utm_campaign={{utm_campaign}}&utm_content={{lead_handle}})
+[Prefer to talk first? Book a 30-min call](https://calendly.com/oriol-bizmis/bizmis-onboarding?ref={{lead_handle}}&utm_source=bizmis-cold-email&utm_medium=email&utm_campaign={{utm_campaign}}&utm_content={{lead_handle}})
+
+Your early access code: {{access_code}}
+
+Looking forward,
+Oriol Trujillo
+Founder of Bizmis
+
+Questions? Just reply to this email.
+
+[Unsubscribe](https://www.bizmis.ai/unsubscribe?ref={{lead_handle}}&sig={{unsub_sig}})
