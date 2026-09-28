@@ -98,22 +98,20 @@ The sea washes to solid Bizmis orange.
 
 ## 8. Other stores, into the slot
 
-From the orange field, the mark stays and "Built to sell." leaves. A fast pass of the real demo stores slows as it goes. The clerk wears each store's uniform. Sector labels, in order: Consumer electronics, Clothing & apparel, Books & stationery, Skincare & beauty, Gaming gear, Home & DIY, Car parts & accessories, Wine & spirits.
+From the orange field the picture eases to white. The mark stays, now dark, and "Built to sell." leaves. No clerk. A fast pass of large store frames slows as it goes. Behind each frame, a soft light in that store's own color. Sector labels, in order: Consumer electronics, Clothing & apparel, Books & stationery, Skincare & beauty, Gaming gear, Home & DIY, Car parts & accessories, Wine & spirits.
 
 **VO** `any-store`: "Any store."
 
-The pass ends on one empty slot: a dotted-outline window labelled "Your store", centred on the orange field. The wordmark is small, top-left.
-
 ## 9. End card
 
-The slot stays on the orange field. Nothing is clickable. No glow, shine, particles, glass, or counters. By `cta`:
+The frames leave. The field stays white. Nothing is clickable. No window, button, cursor, glow, shine, or glass. By `cta`:
 
-- `demo` (default): button "See it in action" and `bizmis.ai/demo`
-- `ea`: eyebrow "First 50 stores. Free to run live." then "Join Early Access" and `bizmis.ai/early-access`
-- `install`: eyebrow "Installs in one click." then "Install on Shopify". No URL.
-- `none`: the wordmark only. No slot.
+- `demo` (default): "See it in action" and `bizmis.ai/demo`
+- `ea`: "First 50 stores. Free to run live." then "Join Early Access" and `bizmis.ai/early-access`
+- `install`: "Installs in one click." then "Install on Shopify". No URL.
+- `none`: the wordmark only.
 
-The button lands last and presses in. The cursor drifts onto it over the last 800 ms and rests. Hold ≥ 4 s.
+The line fades up and holds ≥ 4 s. The wordmark stays small, top-left.
 
 **VO:** per `cta`. demo `see-it`: "See it in action." ea `join-fifty`: "Join the first fifty stores." install `install-shopify`: "Install it on Shopify." none: silence.
 

@@ -4490,12 +4490,39 @@
       if (sold) sold.style.opacity = '0';
       const mark = this.root.querySelector('[data-promo-end-mark]');
       if (mark) {
-        mark.style.background = '#fff';
-        mark.style.transform = 'none';
+        mark.style.background = 'var(--ad-ink)';
+        mark.style.transition = 'background-color 800ms linear';
       }
-      this.root.querySelectorAll('.promo-opening__slide-sector').forEach((node) => {
-        node.style.color = '#fff';
+      this.ensurePassLight();
+      this.root.querySelectorAll('.promo-opening__slide').forEach((slide) => {
+        const sector = slide.querySelector('.promo-opening__slide-sector');
+        const store = this.stores.find((item) => item.slug === slide.dataset.store);
+        if (sector && store) sector.style.color = storeInk(store.accent);
       });
+    }
+
+    ensurePassLight() {
+      const scale = this.root.querySelector('[data-promo-scale]');
+      if (!scale) return null;
+      let light = scale.querySelector('[data-promo-pass-light]');
+      if (light) return light;
+      light = document.createElement('div');
+      light.className = 'promo-pass-light';
+      light.setAttribute('data-promo-pass-light', '');
+      light.setAttribute('aria-hidden', 'true');
+      scale.prepend(light);
+      return light;
+    }
+
+    paintPassLight(color) {
+      const light = this.ensurePassLight();
+      if (!light) return;
+      if (!color) {
+        light.style.opacity = '0';
+        return;
+      }
+      light.style.backgroundColor = color;
+      light.style.opacity = '0.62';
     }
 
     orderPassStores() {
@@ -4531,12 +4558,16 @@
       let index = 0;
       const step = () => {
         const store = this.stores[index];
-        if (store) this.arriveStore(store);
+        if (store) {
+          this.arriveStore(store);
+          this.paintPassLight(store.accent);
+        }
         this.paintWave(index, 1, 0.5, 1);
         window.setTimeout(() => {
           index += 1;
           if (index >= count) {
             this.paintWave(-1, 0, 0, 0);
+            this.paintPassLight(null);
             onDone();
             return;
           }
@@ -4560,31 +4591,22 @@
       slot.className = 'promo-pass-slot';
       slot.setAttribute('data-promo-pass-slot', '');
       slot.dataset.cta = key;
-      const label = document.createElement('p');
-      label.className = 'promo-pass-slot__label';
-      label.textContent = 'Your store';
-      slot.append(label);
       if (copy.scarcity) {
-        const eyebrow = document.createElement('p');
-        eyebrow.className = 'promo-pass-slot__eyebrow';
-        eyebrow.textContent = copy.scarcity;
-        slot.append(eyebrow);
+        const line = document.createElement('p');
+        line.className = 'promo-pass-slot__line';
+        line.textContent = copy.scarcity;
+        slot.append(line);
       }
-      const button = document.createElement('div');
-      button.className = 'promo-pass-slot__button';
-      button.textContent = copy.label;
-      slot.append(button);
+      const action = document.createElement('p');
+      action.className = 'promo-pass-slot__action';
+      action.textContent = copy.label;
+      slot.append(action);
       if (copy.url) {
         const url = document.createElement('p');
         url.className = 'promo-pass-slot__url';
         url.textContent = copy.url;
         slot.append(url);
       }
-      const cursor = document.createElement('span');
-      cursor.className = 'promo-pass-slot__cursor';
-      cursor.setAttribute('aria-hidden', 'true');
-      cursor.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 3.2 19.2 12.1 11.6 13.4 8.8 20.6z"/></svg>';
-      slot.append(cursor);
       scale.append(slot);
       return slot;
     }
@@ -4594,12 +4616,12 @@
       this.root.classList.add('is-pass-slot');
       const slot = this.ensurePassSlot(ctaKey);
       if (!slot) return;
-      slot.querySelector('.promo-pass-slot__button')?.classList.add('is-in');
-      slot.querySelector('.promo-pass-slot__cursor')?.classList.add('is-rest');
+      slot.classList.add('is-in');
     }
 
     async landPassSlot() {
       this.root.classList.add('is-pass-slot');
+      this.paintPassLight(null);
       const copy = PROMO_END_CTA[promoVideoConfig.cta];
       if (!copy) {
         await waitMs(PROMO_END_CARD_HOLD_MS + promoHoldMs());
@@ -4607,17 +4629,10 @@
         return;
       }
       const slot = this.ensurePassSlot();
-      const button = slot?.querySelector('.promo-pass-slot__button');
-      const cursor = slot?.querySelector('.promo-pass-slot__cursor');
       await waitMs(PROMO_PASS_SLOT_IN_MS);
-      button?.classList.add('is-in');
-      await waitMs(PROMO_END_CARD_BUTTON_MS);
-      button?.classList.add('is-pressed');
-      await waitMs(140);
-      button?.classList.remove('is-pressed');
+      slot?.classList.add('is-in');
       markPromoVo(copy.vo);
-      cursor?.classList.add('is-rest');
-      await waitMs(PROMO_END_CARD_CURSOR_MS + PROMO_END_CARD_HOLD_MS + promoHoldMs());
+      await waitMs(PROMO_END_CARD_HOLD_MS + promoHoldMs());
       this.depart();
     }
 
@@ -4630,7 +4645,6 @@
         window.setTimeout(() => this.depart(), PROMO_END_CARD_HOLD_MS);
         return;
       }
-      this.glideClerkIntoRow();
       this.playStorePass(() => {
         this.landPassSlot();
       });
