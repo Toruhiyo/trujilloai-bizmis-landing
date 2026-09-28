@@ -7135,6 +7135,182 @@ html.is-promo-clip.is-clip-moment #bizmis-avatar-embed {
   line-height: 1;
 }
 
+.promo-opening.is-store-pass .promo-scale {
+  background: var(--bizmis-primary);
+  opacity: 1;
+}
+
+.promo-opening.is-store-pass .promo-glide__view,
+.promo-opening.is-store-pass .promo-glide__light,
+.promo-opening.is-store-pass .promo-glide__dof,
+.promo-opening.is-store-pass .promo-glide__horizon,
+.promo-opening.is-store-pass .promo-glide__lead,
+.promo-opening.is-store-pass .promo-glide__caption {
+  visibility: hidden;
+}
+
+.promo-opening.is-store-pass .promo-glide__field {
+  opacity: 1;
+  background: var(--bizmis-primary);
+}
+
+.promo-opening.is-store-pass .promo-scale__verdict {
+  transform: none;
+}
+
+.promo-opening.is-store-pass .promo-scale__end-hero {
+  position: absolute;
+  top: 28px;
+  left: 36px;
+  height: auto;
+  width: auto;
+}
+
+.promo-opening.is-store-pass .promo-scale__mark {
+  width: calc(36px * 1948 / 640);
+  height: 36px;
+}
+
+.promo-opening.is-store-pass .promo-scale__sold,
+.promo-opening.is-store-pass .promo-opening__wave-field,
+.promo-opening.is-store-pass .promo-opening__clerk-glow,
+.promo-opening.is-store-pass .promo-opening__slide-glow {
+  display: none;
+}
+
+.promo-opening.is-store-pass .promo-opening__stores {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  max-height: none;
+  width: 100%;
+  opacity: 1;
+  overflow: visible;
+  pointer-events: none;
+}
+
+.promo-opening.is-store-pass .promo-opening__slide-card {
+  background: var(--ad-white);
+  box-shadow: none;
+  backdrop-filter: none;
+}
+
+.promo-opening.is-store-pass .promo-opening__slide-sector {
+  color: #fff;
+}
+
+.promo-opening.is-pass-slot .promo-opening__stores,
+.promo-opening.is-pass-slot .promo-opening__widget {
+  visibility: hidden;
+}
+
+.promo-pass-slot {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  z-index: 5;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+  width: min(640px, 72vw);
+  aspect-ratio: 16 / 10;
+  border: 2px dashed rgba(255, 255, 255, 0.88);
+  border-radius: 28px;
+  color: #fff;
+  pointer-events: none;
+  transform: translate(-50%, -50%);
+}
+
+.promo-pass-slot__label {
+  position: absolute;
+  top: 18px;
+  left: 22px;
+  margin: 0;
+  font-family: var(--font-heading);
+  font-size: 1.05rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+
+.promo-pass-slot__eyebrow,
+.promo-pass-slot__url {
+  margin: 0;
+  text-align: center;
+}
+
+.promo-pass-slot__eyebrow {
+  max-width: 16em;
+  font-family: var(--font-heading);
+  font-size: clamp(1.15rem, 1.8vw, 1.45rem);
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+.promo-pass-slot__url {
+  font-family: var(--font-body);
+  font-size: 18px;
+  font-variant-numeric: tabular-nums;
+  opacity: 0.82;
+}
+
+.promo-pass-slot__button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 52px;
+  padding: 0 22px;
+  border-radius: 999px;
+  background: #fff;
+  color: var(--ad-ink);
+  font-family: var(--font-heading);
+  font-size: 1.15rem;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  opacity: 0;
+  transform: scale(1.06);
+}
+
+.promo-pass-slot__button.is-in {
+  opacity: 1;
+  transform: scale(1);
+  transition: opacity 220ms ease, transform 220ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.promo-pass-slot__button.is-pressed {
+  transform: scale(0.96);
+}
+
+.promo-pass-slot__cursor {
+  position: absolute;
+  left: calc(50% - 72px);
+  top: calc(50% + 28px);
+  width: 28px;
+  height: 28px;
+  opacity: 0;
+  transition: left 800ms cubic-bezier(0.22, 1, 0.36, 1), top 800ms cubic-bezier(0.22, 1, 0.36, 1), opacity 200ms linear;
+}
+
+.promo-pass-slot__cursor.is-rest {
+  left: calc(50% + 46px);
+  top: calc(50% - 6px);
+  opacity: 1;
+}
+
+.promo-pass-slot__cursor svg {
+  display: block;
+  width: 28px;
+  height: 28px;
+}
+
+.promo-pass-slot__cursor svg path {
+  fill: #fff;
+}
+
 .promo-opening.is-end-card .promo-opening__widget {
   visibility: hidden;
 }

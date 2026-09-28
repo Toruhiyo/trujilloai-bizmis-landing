@@ -90,22 +90,24 @@ The product window is marked sold: an orange veil and a white check. The camera 
 
 The sea washes to solid Bizmis orange. The white Bizmis mark and the line stay on top.
 
-## 8. Other stores
+## 8. Other stores, into the slot
 
-A fast pass of the real demo stores, the clerk in each store's uniform: Car parts & accessories, Home & DIY, Clothing & apparel, Wine & spirits, Gaming gear, Skincare & beauty, Consumer electronics, Books & stationery.
+From the orange field, the mark stays and "Built to sell." leaves. A fast pass of the real demo stores slows as it goes. The clerk wears each store's uniform. Sector labels, in order: Consumer electronics, Clothing & apparel, Books & stationery, Skincare & beauty, Gaming gear, Home & DIY, Car parts & accessories, Wine & spirits.
 
 **VO:** "Any store."
 
+The pass ends on one empty slot: a dotted-outline window labelled "Your store", centred on the orange field. The wordmark is small, top-left.
+
 ## 9. End card
 
-White, centered. The Bizmis wordmark first. Then, by `cta`:
+The slot stays on the orange field. Nothing is clickable. No glow, shine, particles, glass, or counters. By `cta`:
 
-- `demo` (default): "See it in action" and `bizmis.ai/demo`
+- `demo` (default): button "See it in action" and `bizmis.ai/demo`
 - `ea`: eyebrow "First 50 stores. Free to run live." then "Join Early Access" and `bizmis.ai/early-access`
-- `install`: "Install on Shopify". No URL.
-- `none`: the wordmark only.
+- `install`: eyebrow "Installs in one click." then "Install on Shopify". No URL.
+- `none`: the wordmark only. No slot.
 
-The claim is solid ink with a moving shine. Hold, then the film leaves. Nothing is clickable in the recording.
+The button lands last and presses in. The cursor drifts onto it over the last 800 ms and rests. Hold ≥ 4 s.
 
 **VO:** per `cta`. demo: "See it in action." ea: "Join the first fifty stores." install: "Install it on Shopify." none: silence.
 

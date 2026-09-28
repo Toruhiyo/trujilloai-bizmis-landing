@@ -12,11 +12,31 @@
   const legacyPromoVideo = promoBootParams.get(PROMO_VIDEO_PARAM);
   const marketingValue = promoBootParams.get(PROMO_MARKETING_PARAM);
   const PROMO_END_CTA = {
-    demo: { scarcity: '', label: 'See it in action', url: 'bizmis.ai/demo' },
-    install: { scarcity: '', label: 'Install on Shopify', url: '' },
-    ea: { scarcity: 'First 50 stores. Free to run live.', label: 'Join Early Access', url: 'bizmis.ai/early-access' },
+    demo: { scarcity: '', label: 'See it in action', url: 'bizmis.ai/demo', vo: 'see-it' },
+    install: { scarcity: 'Installs in one click.', label: 'Install on Shopify', url: '', vo: 'install-shopify' },
+    ea: { scarcity: 'First 50 stores. Free to run live.', label: 'Join Early Access', url: 'bizmis.ai/early-access', vo: 'join-fifty' },
     none: null,
   };
+  const PROMO_PASS_SECTORS = [
+    'Consumer electronics',
+    'Clothing & apparel',
+    'Books & stationery',
+    'Skincare & beauty',
+    'Gaming gear',
+    'Home & DIY',
+    'Car parts & accessories',
+    'Wine & spirits',
+  ];
+  const PROMO_PASS_FAST_MS = 220;
+  const PROMO_PASS_SLOW_MS = 640;
+  const PROMO_PASS_SLOT_IN_MS = 420;
+  function markPromoVo(id) {
+    if (!id) {
+      delete document.documentElement.dataset.promoVo;
+      return;
+    }
+    document.documentElement.dataset.promoVo = id;
+  }
   let promoCtaFallbackLogged = false;
   function readPromoCta() {
     const raw = (promoBootParams.get('cta') || 'demo').trim().toLowerCase();
@@ -4123,34 +4143,168 @@
       }
     }
 
+    holdOrangeField() {
+      this.stopGlide();
+      this.root.classList.remove('is-scale-out');
+      this.root.classList.add('is-store-pass', 'is-see', 'is-see-in', 'is-see-docked', 'is-see-row', 'is-see-wave', 'is-end-pitch');
+      const scale = this.root.querySelector('[data-promo-scale]');
+      if (scale) {
+        scale.hidden = false;
+        scale.style.opacity = '1';
+        const stores = this.root.querySelector('[data-promo-stores]');
+        if (stores && stores.parentElement !== scale) scale.appendChild(stores);
+      }
+      const field = this.root.querySelector('.promo-glide__field');
+      if (field) field.style.opacity = '1';
+      const verdict = this.root.querySelector('[data-promo-scale-verdict]');
+      if (verdict) {
+        verdict.style.opacity = '1';
+        verdict.style.transform = 'none';
+      }
+      const sold = this.root.querySelector('.promo-scale__sold');
+      if (sold) sold.style.opacity = '0';
+      const mark = this.root.querySelector('[data-promo-end-mark]');
+      if (mark) {
+        mark.style.background = '#fff';
+        mark.style.transform = 'none';
+      }
+    }
+
+    orderPassStores() {
+      if (!this.carouselTrack) return;
+      const slides = [...this.carouselTrack.querySelectorAll('.promo-opening__slide')];
+      const paired = this.stores.map((store, index) => ({ store, slide: slides[index] }));
+      paired.sort((a, b) => {
+        const ai = PROMO_PASS_SECTORS.indexOf(a.store.sector);
+        const bi = PROMO_PASS_SECTORS.indexOf(b.store.sector);
+        return (ai < 0 ? PROMO_PASS_SECTORS.length : ai) - (bi < 0 ? PROMO_PASS_SECTORS.length : bi);
+      });
+      this.stores = paired.map((item) => item.store);
+      paired.forEach((item) => {
+        if (item.slide) this.carouselTrack.appendChild(item.slide);
+      });
+    }
+
+    playStorePass(onDone) {
+      const slides = this.carouselTrack
+        ? [...this.carouselTrack.querySelectorAll('.promo-opening__slide')]
+        : [];
+      if (!slides.length) {
+        onDone();
+        return;
+      }
+      markPromoVo('any-store');
+      const count = slides.length;
+      const durations = slides.map((_, index) => {
+        const t = count <= 1 ? 1 : index / (count - 1);
+        return Math.round(PROMO_PASS_FAST_MS + (PROMO_PASS_SLOW_MS - PROMO_PASS_FAST_MS) * t * t);
+      });
+      let index = 0;
+      const step = () => {
+        const store = this.stores[index];
+        if (store) this.arriveStore(store);
+        this.paintWave(index, 1, 0.5, 1);
+        window.setTimeout(() => {
+          index += 1;
+          if (index >= count) {
+            this.paintWave(-1, 0, 0, 0);
+            onDone();
+            return;
+          }
+          step();
+        }, durations[index]);
+      };
+      step();
+    }
+
+    ensurePassSlot(ctaKey) {
+      const key = ctaKey && Object.prototype.hasOwnProperty.call(PROMO_END_CTA, ctaKey)
+        ? ctaKey
+        : promoVideoConfig.cta;
+      const scale = this.root.querySelector('[data-promo-scale]');
+      const existing = scale?.querySelector('[data-promo-pass-slot]');
+      if (existing && existing.dataset.cta === key) return existing;
+      existing?.remove();
+      const copy = PROMO_END_CTA[key];
+      if (!scale || !copy) return null;
+      const slot = document.createElement('div');
+      slot.className = 'promo-pass-slot';
+      slot.setAttribute('data-promo-pass-slot', '');
+      slot.dataset.cta = key;
+      const label = document.createElement('p');
+      label.className = 'promo-pass-slot__label';
+      label.textContent = 'Your store';
+      slot.append(label);
+      if (copy.scarcity) {
+        const eyebrow = document.createElement('p');
+        eyebrow.className = 'promo-pass-slot__eyebrow';
+        eyebrow.textContent = copy.scarcity;
+        slot.append(eyebrow);
+      }
+      const button = document.createElement('div');
+      button.className = 'promo-pass-slot__button';
+      button.textContent = copy.label;
+      slot.append(button);
+      if (copy.url) {
+        const url = document.createElement('p');
+        url.className = 'promo-pass-slot__url';
+        url.textContent = copy.url;
+        slot.append(url);
+      }
+      const cursor = document.createElement('span');
+      cursor.className = 'promo-pass-slot__cursor';
+      cursor.setAttribute('aria-hidden', 'true');
+      cursor.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 3.2 19.2 12.1 11.6 13.4 8.8 20.6z"/></svg>';
+      slot.append(cursor);
+      scale.append(slot);
+      return slot;
+    }
+
+    settlePassSlot(ctaKey) {
+      this.holdOrangeField();
+      this.root.classList.add('is-pass-slot');
+      const slot = this.ensurePassSlot(ctaKey);
+      if (!slot) return;
+      slot.querySelector('.promo-pass-slot__button')?.classList.add('is-in');
+      slot.querySelector('.promo-pass-slot__cursor')?.classList.add('is-rest');
+    }
+
+    async landPassSlot() {
+      this.root.classList.add('is-pass-slot');
+      const copy = PROMO_END_CTA[promoVideoConfig.cta];
+      if (!copy) {
+        await waitMs(PROMO_END_CARD_HOLD_MS + promoHoldMs());
+        this.depart();
+        return;
+      }
+      const slot = this.ensurePassSlot();
+      const button = slot?.querySelector('.promo-pass-slot__button');
+      const cursor = slot?.querySelector('.promo-pass-slot__cursor');
+      await waitMs(PROMO_PASS_SLOT_IN_MS);
+      button?.classList.add('is-in');
+      await waitMs(PROMO_END_CARD_BUTTON_MS);
+      button?.classList.add('is-pressed');
+      await waitMs(140);
+      button?.classList.remove('is-pressed');
+      markPromoVo(copy.vo);
+      cursor?.classList.add('is-rest');
+      await waitMs(PROMO_END_CARD_CURSOR_MS + PROMO_END_CARD_HOLD_MS + promoHoldMs());
+      this.depart();
+    }
+
     playSeeForYourself() {
       endOpeningAgent();
-      this.releaseSea();
-      if (!this.stores.length) {
-        this.playEndCard();
+      this.holdOrangeField();
+      this.orderPassStores();
+      if (!this.stores.length || prefersReducedMotion()) {
+        this.settlePassSlot();
+        window.setTimeout(() => this.depart(), PROMO_END_CARD_HOLD_MS);
         return;
       }
-
-      if (prefersReducedMotion()) {
-        this.root.classList.add('is-see', 'is-see-in', 'is-see-docked', 'is-see-row', 'is-see-landed', 'is-see-wave');
-        this.paintWave(Math.max(0, this.landIndex), 1, 0.5);
-        window.setTimeout(() => this.playEndCard(), 800);
-        return;
-      }
-
-      const sell = this.root.querySelector('.promo-opening__word--sell');
-      sell?.classList.remove('is-in');
-      sell?.classList.add('is-out');
-
-      this.root.classList.add('is-see', 'is-see-wave');
-      window.requestAnimationFrame(() => {
-        this.root.classList.add('is-see-in', 'is-see-docked', 'is-see-row');
+      this.glideClerkIntoRow();
+      this.playStorePass(() => {
+        this.landPassSlot();
       });
-
-      window.setTimeout(() => {
-        this.glideClerkIntoRow();
-        this.playStoreWave(() => this.playEndCard());
-      }, 360);
     }
 
     playStoreStack(onDone) {
@@ -6795,34 +6949,22 @@
     }
 
     settleEndCard(ctaKey) {
-      const card = this.ensureEndCard(ctaKey);
-      this.root.classList.add('is-end-card');
-      this.dockEndMark(card, false);
-      card.classList.add('is-copy', 'is-settled');
-      card.querySelector('.promo-end__claim')?.classList.add('is-in');
-      const sold = this.root.querySelector('.promo-scale__sold');
-      if (sold) sold.style.opacity = '0';
+      this.settlePassSlot(ctaKey);
     }
 
-    async animateEndCard(ctaKey) {
-      const card = this.ensureEndCard(ctaKey);
-      this.root.classList.add('is-end-card');
-      this.dockEndMark(card, false);
-      const sold = this.root.querySelector('.promo-scale__sold');
-      if (sold) sold.style.opacity = '0';
-      await waitMs(PROMO_END_CARD_OPEN_MS);
-      if (card.dataset.cta === 'none') return;
-      card.querySelector('.promo-end__claim')?.classList.add('is-in');
-      await waitMs(PROMO_END_CARD_COPY_DELAY_MS);
-      card.classList.add('is-copy');
-      await waitMs(PROMO_END_CARD_COPY_MS);
+    async animateEndCard() {
+      await this.landPassSlot();
     }
 
     async playEndCard() {
-      if (prefersReducedMotion()) this.settleEndCard();
-      else await this.animateEndCard();
-      await waitMs(PROMO_END_CARD_HOLD_MS + promoHoldMs());
-      this.depart();
+      if (!this.root.classList.contains('is-store-pass')) this.holdOrangeField();
+      if (prefersReducedMotion()) {
+        this.settlePassSlot();
+        await waitMs(PROMO_END_CARD_HOLD_MS + promoHoldMs());
+        this.depart();
+        return;
+      }
+      await this.landPassSlot();
     }
 
     async showEndCardExport(ctaKey) {
