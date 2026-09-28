@@ -37,7 +37,7 @@ src/data/leads/*.json
 public/invite-cards
 
 # Frame-accurate ad-1 exports (PNG sequence, video, markers).
-tmp/ad-1-export
+tmp/ad-1-export*
 
 # Env files
 .env

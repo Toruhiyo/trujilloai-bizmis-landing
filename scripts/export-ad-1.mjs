@@ -8,6 +8,8 @@ import { fileURLToPath } from 'node:url';
 
 const FPS = 30;
 const FRAME_CAP = 3600;
+const LAYOUT_WIDTH = 1920;
+const LAYOUT_HEIGHT = 1080;
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 
 function arg(name, fallback) {
@@ -38,6 +40,16 @@ function parseResolution(raw) {
   const match = /^(\d+)x(\d+)$/.exec(String(raw || '').trim());
   if (!match) throw new Error(`Resolution must look like 1920x1080. Got "${raw}".`);
   return { width: Number(match[1]), height: Number(match[2]) };
+}
+
+function captureSetup(width, height) {
+  const scaleX = width / LAYOUT_WIDTH;
+  const scaleY = height / LAYOUT_HEIGHT;
+  const sameScale = scaleX === scaleY && Number.isInteger(scaleX) && scaleX >= 1;
+  if (sameScale) {
+    return { viewportWidth: LAYOUT_WIDTH, viewportHeight: LAYOUT_HEIGHT, scale: scaleX };
+  }
+  return { viewportWidth: width, viewportHeight: height, scale: 1 };
 }
 
 function parseFrames(raw) {
@@ -83,7 +95,7 @@ function filmUrl(base, cta, part) {
   return url.toString();
 }
 
-async function launchBrowser(chromium) {
+async function launchBrowser(chromium, scale) {
   return chromium.launch({
     headless: true,
     channel: process.env.PROMO_FRAMES_CHANNEL || 'chrome',
@@ -92,7 +104,7 @@ async function launchBrowser(chromium) {
       '--disable-lcd-text',
       '--disable-font-subpixel-positioning',
       '--force-color-profile=srgb',
-      '--force-device-scale-factor=1',
+      `--force-device-scale-factor=${scale}`,
       '--disable-background-timer-throttling',
       '--disable-renderer-backgrounding',
       '--disable-checker-imaging',
@@ -111,8 +123,8 @@ async function launchBrowser(chromium) {
 
 async function bootPage(browser, options) {
   const context = await browser.newContext({
-    viewport: { width: options.width, height: options.height },
-    deviceScaleFactor: 1,
+    viewport: { width: options.viewportWidth, height: options.viewportHeight },
+    deviceScaleFactor: options.scale,
     locale: 'en-US',
     timezoneId: 'UTC',
     colorScheme: 'light',
@@ -313,6 +325,7 @@ async function main() {
   const part = (arg('part', 'full') || 'full').trim().toLowerCase();
   const codec = (arg('codec', 'ffv1') || 'ffv1').trim().toLowerCase();
   const resolution = parseResolution(arg('resolution', '1920x1080'));
+  const capture = captureSetup(resolution.width, resolution.height);
   const range = parseFrames(arg('frames', ''));
   const verify = hasFlag('verify');
   const outRoot = path.resolve(ROOT, arg('out', 'tmp/ad-1-export'));
@@ -322,6 +335,9 @@ async function main() {
     codec,
     width: resolution.width,
     height: resolution.height,
+    viewportWidth: capture.viewportWidth,
+    viewportHeight: capture.viewportHeight,
+    scale: capture.scale,
     from: range ? range.from : 0,
     to: range ? range.to : null,
     url: arg('url', 'http://127.0.0.1:8080/'),
@@ -332,7 +348,7 @@ async function main() {
   if (!['ffv1', 'prores'].includes(codec)) throw new Error(`Unknown codec "${codec}".`);
 
   const { chromium } = await loadPlaywright();
-  const browser = await launchBrowser(chromium);
+  const browser = await launchBrowser(chromium, capture.scale);
   try {
     const run = async (folder) => {
       const framesDir = path.join(folder, 'frames');
