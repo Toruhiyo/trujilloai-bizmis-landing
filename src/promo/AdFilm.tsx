@@ -20,12 +20,20 @@ type FilmAssets = {
 
 type AvatarApi = {
   init?: (config: Record<string, unknown>) => void;
+  destroy?: (containerId: string) => void;
+};
+
+type PromoWidgetMount = {
+  isMobile?: boolean;
+  viewportHostSelector?: string;
 };
 
 declare global {
   interface Window {
     AvatarVoicechat?: AvatarApi;
     __promoFilmBooted?: boolean;
+    __promoMountWidget?: (options?: PromoWidgetMount) => void;
+    __promoSayPatched?: boolean;
   }
 }
 
@@ -98,9 +106,10 @@ function ensureWidgetHost() {
   document.body.appendChild(host);
 }
 
-function startWidget() {
+function mountWidget(options: PromoWidgetMount = {}) {
   const api = window.AvatarVoicechat;
   if (!api || typeof api.init !== "function") return;
+  api.destroy?.("bizmis-avatar-embed");
   api.init({
     containerId: "bizmis-avatar-embed",
     rootUrl: "https://cdn.bizmis.ai/widget",
@@ -115,11 +124,18 @@ function startWidget() {
     anchor: "bottom-right",
     mobileAlignment: "center",
     mobileAnchor: "bottom-center",
-    themeMode: "auto",
+    themeMode: "light",
     themePalette: "default",
     autoOpen: false,
     zIndex: 9999,
+    isMobile: options.isMobile === true,
+    viewportHostSelector: options.viewportHostSelector,
   });
+}
+
+function startWidget() {
+  window.__promoMountWidget = mountWidget;
+  mountWidget();
 }
 
 async function bootFilm() {

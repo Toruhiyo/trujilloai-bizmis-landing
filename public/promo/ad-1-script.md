@@ -26,7 +26,7 @@ The cursor closes the chat. A grey veil covers the window and "LOST" stamps in g
 
 ## 2. The last doubt (phone)
 
-The close-up pans to the next card. That card is a phone, still titled "Your store". The sea stays out of frame. A product page. The thumb scrolls to Add to cart, hovers, retreats to the specs, comes back, retreats.
+The desktop window leaves. The next card is a phone on its own, still titled "Your store". It is not inside the desktop window. The sea stays out of frame. A product page, laid out for the phone. The thumb scrolls to Add to cart, hovers, retreats to the specs, comes back, retreats.
 
 **VO** `last-doubt`: "Or stuck on the last doubt."
 
@@ -60,7 +60,7 @@ The Bizmis mark.
 
 **VO** `introducing`: "Introducing Bizmis."
 
-Word by word: "Your store salesperson." Then "person" is struck, and the line reads "Your store sales agent."
+Word by word: "Your store salesperson." Then "person" is struck, and the line reads "Your store sales agent." "sales agent" is Bizmis orange.
 
 **VO** `sales-agent`: "Your store's sales agent. Built to sell."
 
@@ -68,7 +68,7 @@ Word by word: "Your store salesperson." Then "person" is struck, and the line re
 
 ## 6. The same two cards, sold
 
-Same two windows, including the pan. The cursor and the thumb stay put. The store moves. The real Bizmis card eases into the corner of the window, composer and all. The shopper types in that composer. The clerk speaks through the real widget, one sentence, captioned. No VO during that speech. The widget draws its own cards: "Products shown to you", "Product opened", "Added to cart". A short orange sweep marks whatever just changed.
+Same two windows, including the pan. The phone is its own frame. Catalog, comparison, and product page reflow for the phone and the tablet. The cursor and the thumb stay put. The store moves. The real Bizmis card, in light mode, eases into the corner of the desktop window, composer and all. The shopper types in that composer, and that line is sent. Behind the scenes the agent receives `Say this: "{the clerk's line}"`. On the phone the widget switches to its mobile bar, docked in the phone. The clerk speaks through the real widget, one sentence, captioned. No VO during that speech. The widget draws its own cards: "Products shown to you", "Product opened", "Added to cart". A short orange sweep marks whatever just changed.
 
 Desktop, the same grid. The shopper types: "Looking for something light I can take everywhere."
 

@@ -1668,22 +1668,40 @@
     return { input, setter };
   }
 
+  let promoSaySwap = null;
+
+  function installPromoSayRewrite() {
+    if (window.__promoSayPatched) return;
+    window.__promoSayPatched = true;
+    const send = WebSocket.prototype.send;
+    WebSocket.prototype.send = function (data) {
+      if (promoSaySwap && typeof data === 'string') {
+        try {
+          const parsed = JSON.parse(data);
+          if (parsed && parsed.type === 'user_message' && parsed.text === promoSaySwap.from) {
+            parsed.text = promoSaySwap.to;
+            promoSaySwap = null;
+            data = JSON.stringify(parsed);
+          }
+        } catch (error) {
+          /* binary or non-json frames stay as they are */
+        }
+      }
+      return send.call(this, data);
+    };
+  }
+
   function sayClerkLine(line) {
+    installPromoSayRewrite();
     const draft = widgetDraftInput();
     if (!draft) return false;
-    const { input, setter } = draft;
-    const shown = input.value;
-    const live = document.documentElement.classList.contains('is-promo-live-card');
-    if (live) document.documentElement.classList.add('is-promo-saying');
-    setter.call(input, `Say this: "${line}"`);
-    input.dispatchEvent(new Event('input', { bubbles: true }));
+    const { input } = draft;
+    const from = (input.value || '').trim();
+    if (!from) return false;
+    promoSaySwap = { from, to: `Say this: "${line}"` };
     const form = input.form || input.closest('form');
     if (!form || typeof form.requestSubmit !== 'function') return false;
     form.requestSubmit();
-    if (live && shown) {
-      setter.call(input, shown);
-      input.dispatchEvent(new Event('input', { bubbles: true }));
-    }
     return true;
   }
 
@@ -2274,24 +2292,30 @@
 
   function layoutStoreGrid(board) {
     const stage = board?.parentElement;
-    if (!stage || stage.clientWidth < 240 || stage.clientHeight < 160) return false;
+    const storeNode = stage?.closest('.promo-opening__store');
+    const phone = Boolean(storeNode?.classList.contains('is-phone'));
+    const tablet = Boolean(storeNode?.classList.contains('is-tablet'));
+    if (!stage || stage.clientWidth < (phone ? 160 : 240) || stage.clientHeight < (phone ? 120 : 160)) return false;
     const shiftRaw = getComputedStyle(board).getPropertyValue('--promo-board-x').trim();
-    const shift = shiftRaw.endsWith('rem') ? parseFloat(shiftRaw) * 16 : (parseFloat(shiftRaw) || 0);
+    const shift = phone || tablet ? 0 : (shiftRaw.endsWith('rem') ? parseFloat(shiftRaw) * 16 : (parseFloat(shiftRaw) || 0));
     const contentWidth = stage.clientWidth;
     const look = board.dataset.storeLook || 'classic';
-    const cols = look === 'collection-dense' ? 5
+    let cols = look === 'collection-dense' ? 5
       : look === 'lookbook' ? 2
         : look === 'list' ? 1
           : look === 'home-hero' ? 3
             : PROMO_CATALOG_COLS;
-    const gutter = look === 'collection-dense' ? 12 : look === 'lookbook' ? 28 : PROMO_CATALOG_GUTTER;
+    if (phone) cols = Math.min(cols, 2);
+    else if (tablet) cols = Math.min(cols, 3);
+    const padX = phone ? 14 : tablet ? 22 : PROMO_CATALOG_PAD_X;
+    const gutter = look === 'collection-dense' ? 12 : look === 'lookbook' ? 28 : (phone ? 12 : PROMO_CATALOG_GUTTER);
     const rowGapY = look === 'list' ? 12 : PROMO_CATALOG_ROW_GAP;
-    const cardW = (contentWidth - PROMO_CATALOG_PAD_X * 2 - (cols - 1) * gutter) / cols;
+    const cardW = (contentWidth - padX * 2 - (cols - 1) * gutter) / cols;
     const cardFooter = look === 'lookbook' ? 72 : look === 'list' ? 8 : 52;
     const cardH = look === 'list' ? 96 : cardW + cardFooter;
     const pitchX = cardW + gutter;
     const pitchY = cardH + rowGapY;
-    const inset = PROMO_CATALOG_PAD_X;
+    const inset = padX;
     const gx0 = inset + cardW / 2 - (contentWidth / 2 + shift);
     const pitchBoard = !board.closest('.promo-opening')?.classList.contains('is-pain');
     const padY = (pitchBoard ? 28 : PROMO_CATALOG_PAD_Y) + (look === 'home-hero' ? 132 : 0);
@@ -2302,14 +2326,18 @@
       board.style.setProperty('--promo-grid-rest-y', `${(PROMO_CATALOG_TOP_GAP - naturalGap).toFixed(1)}px`);
     }
     const gy0 = -stage.clientHeight / 2 + padY + cardH / 2;
-    const rowGap = PROMO_ROW_GAP;
-    const rowInset = 28;
+    const rowGap = phone ? 12 : PROMO_ROW_GAP;
+    const rowInset = phone ? 16 : tablet ? 20 : 28;
     const laneRaw = parseFloat(getComputedStyle(stage).getPropertyValue('--clip-clerk-lane'));
-    const clerkLane = Number.isFinite(laneRaw) && laneRaw > 40 ? laneRaw : PROMO_ROW_CLERK_LANE;
+    const clerkLane = phone ? 0 : tablet ? 64 : (Number.isFinite(laneRaw) && laneRaw > 40 ? laneRaw : PROMO_ROW_CLERK_LANE);
     const rowBudget = contentWidth - clerkLane - rowInset;
-    const rowCardW = (rowBudget - rowGap * 2) / 3;
-    const rowCardH = Math.max(200, stage.clientHeight - 64 - PROMO_COMPARE_RESERVE);
-    const rowSeat = rowCardW + rowGap;
+    const rowCardW = phone
+      ? Math.min(220, contentWidth - rowInset * 2)
+      : (rowBudget - rowGap * 2) / 3;
+    const rowCardH = phone
+      ? Math.max(112, Math.min(168, (stage.clientHeight - 150) / 3))
+      : Math.max(tablet ? 160 : 200, stage.clientHeight - 64 - (tablet ? 80 : PROMO_COMPARE_RESERVE));
+    const rowSeat = phone ? rowCardH + rowGap : rowCardW + rowGap;
     const groupHalf = rowSeat + rowCardW / 2;
     const minShift = rowInset - contentWidth / 2 + groupHalf;
     const rowNudge = Math.max(0, minShift - shift);
@@ -2328,6 +2356,7 @@
       card.style.setProperty('--gx', `${(gx0 + column * pitchX).toFixed(1)}px`);
       card.style.setProperty('--gy', `${(gy0 + row * pitchY).toFixed(1)}px`);
     });
+    board.dataset.rowAxis = phone ? 'y' : 'x';
     board.dataset.painCols = String(cols);
     board.dataset.painPitch = String(pitchY);
     stampMomentRoles(board);
@@ -3759,6 +3788,10 @@
       if (!store || prefersReducedMotion()) {
         store?.classList.remove('is-desktop');
         store?.classList.add('is-phone');
+        store?.setAttribute('data-promo-widget-host', '');
+        if (typeof window.__promoMountWidget === 'function') {
+          window.__promoMountWidget({ isMobile: true, viewportHostSelector: '[data-promo-widget-host]' });
+        }
         return;
       }
       store.style.transition = 'transform 450ms cubic-bezier(0.45, 0, 0.2, 1)';
@@ -3766,9 +3799,16 @@
       await waitMs(450);
       store.classList.remove('is-desktop');
       store.classList.add('is-phone');
+      store.setAttribute('data-promo-widget-host', '');
       store.querySelector('[data-promo-shopper-line]')?.replaceChildren();
       this.root.querySelector('[data-promo-moments]')?.classList.remove('is-cart-one', 'is-cart-two');
       applyMomentPose(this.momentStage(), 'doubt', { instant: true });
+      const mount = window.__promoMountWidget;
+      if (typeof mount === 'function') {
+        mount({ isMobile: true, viewportHostSelector: '[data-promo-widget-host]' });
+        hideSayThisBubbles();
+      }
+      await waitMs(640);
       store.style.transition = 'none';
       store.style.transform = 'translateX(108%)';
       store.getBoundingClientRect();
@@ -7286,6 +7326,7 @@
       const from = clone.getBoundingClientRect();
       const host = scale.getBoundingClientRect();
       if (glide) glide.style.display = 'none';
+      this.placeLeadShade(null, 0);
       scale.appendChild(clone);
       clone.classList.remove('is-desktop');
       clone.style.position = 'absolute';
