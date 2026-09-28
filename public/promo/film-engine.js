@@ -30,13 +30,61 @@
   const PROMO_PASS_FAST_MS = 220;
   const PROMO_PASS_SLOW_MS = 640;
   const PROMO_PASS_SLOT_IN_MS = 420;
-  function markPromoVo(id) {
-    if (!id) {
-      delete document.documentElement.dataset.promoVo;
-      return;
-    }
-    document.documentElement.dataset.promoVo = id;
+  const PROMO_VO_ON = promoBootParams.get('vo') === '1';
+  const PROMO_VO_BUDGET_S = [
+    { scene: 'pain', seconds: 13 },
+    { scene: 'dull-sea', seconds: 6 },
+    { scene: 'switch-reveal', seconds: 8 },
+    { scene: 'pitch', seconds: 14 },
+    { scene: 'selling-sea', seconds: 6 },
+    { scene: 'stores-end', seconds: 9 },
+  ];
+  const PROMO_VO = [
+    { scene: 'pain', id: 'two-places', line: 'In every online store, a sale dies in two places.' },
+    { scene: 'pain', id: 'catalog', line: 'Lost in the catalog.' },
+    { scene: 'pain', id: 'last-doubt', line: 'Or stuck on the last doubt.' },
+    { scene: 'pain', id: 'salesperson', line: 'In a physical store, a salesperson catches both.' },
+    { scene: 'pain', id: 'loses-both', line: 'Online, a chatbot replies to both. And loses both.' },
+    { scene: 'dull-sea', id: 'numbers-game', line: "Online sales is a numbers game. And a chatbot doesn't play." },
+    { scene: 'switch', id: 'change-that', line: "Let's change that." },
+    { scene: 'reveal', id: 'introducing', line: 'Introducing Bizmis.' },
+    { scene: 'reveal', id: 'sales-agent', line: "Your store's sales agent. Built to sell." },
+    { scene: 'reveal', id: 'catch-both', line: 'Now watch it catch both.', guardMs: 1600 },
+    { scene: 'pitch', id: 'narrows', line: 'It narrows. It recommends.', guardMs: 1400 },
+    { scene: 'pitch', id: 'closes', line: 'It answers like an expert, and closes. Then sells them one more thing.' },
+    { scene: 'selling-sea', id: 'all-day', line: 'For every shopper. All day long.' },
+    { scene: 'stores', id: 'any-store', line: 'Any store.' },
+    { scene: 'end', id: 'see-it', line: 'See it in action.', cta: 'demo' },
+    { scene: 'end', id: 'join-fifty', line: 'Join the first fifty stores.', cta: 'ea' },
+    { scene: 'end', id: 'install-shopify', line: 'Install it on Shopify.', cta: 'install' },
+  ];
+  function promoVoCue(id) {
+    return PROMO_VO.find((cue) => cue.id === id) || null;
   }
+  function promoVoGuard(id) {
+    const cue = promoVoCue(id);
+    return cue && cue.guardMs ? cue.guardMs : 0;
+  }
+  function markPromoVo(id) {
+    const cue = promoVoCue(id);
+    if (!cue) return;
+    document.documentElement.dataset.promoVo = id;
+    const row = { scene: cue.scene, id: cue.id, line: cue.line, at: Math.round(performance.now()) };
+    const log = window.__promoVoTimeline || (window.__promoVoTimeline = []);
+    log.push(row);
+    if (!PROMO_VO_ON) return;
+    let node = document.querySelector('[data-promo-vo-debug]');
+    if (!node) {
+      node = document.createElement('p');
+      node.className = 'promo-vo-debug';
+      node.setAttribute('data-promo-vo-debug', '');
+      document.body.appendChild(node);
+    }
+    node.textContent = cue.id;
+    node.title = cue.line;
+  }
+  window.__promoVo = PROMO_VO;
+  window.__promoVoBudget = PROMO_VO_BUDGET_S;
   let promoCtaFallbackLogged = false;
   function readPromoCta() {
     const raw = (promoBootParams.get('cta') || 'demo').trim().toLowerCase();
@@ -3441,6 +3489,7 @@
       this.pinKnobOrigin();
       this.root.classList.add('is-on');
       this.startOpeningClock();
+      markPromoVo('change-that');
       window.setTimeout(() => {
         this.root.style.setProperty('--promo-center', `${PROMO_SWITCH_MOVE_MS}ms`);
         this.root.classList.add('is-cleared');
@@ -3511,6 +3560,7 @@
     }
 
     async pitch() {
+      markPromoVo('introducing');
       document.documentElement.style.setProperty('--ad-warmth', '1');
       this.releasePainStage();
       document.documentElement.classList.add('is-promo-pitch');
@@ -3575,8 +3625,8 @@
         word.style.animationDelay = `${index * PROMO_PITCH_WORD_STAGGER_MS}ms`;
       });
       line.classList.add('is-revealing');
-
       const wordsInAt = (fromWords.length - 1) * PROMO_PITCH_WORD_STAGGER_MS + PROMO_PITCH_WORD_IN_MS;
+      window.setTimeout(() => markPromoVo('sales-agent'), wordsInAt);
       const replaceAt = wordsInAt + PROMO_PITCH_REPLACE_PAUSE_MS;
       const outSpan = Math.max(...PROMO_PITCH_WORD_OUT_STAGGER_MS);
       const toInAt = replaceAt + PROMO_PITCH_WORD_OUT_MS + outSpan + PROMO_PITCH_REPLACE_GAP_MS;
@@ -3591,8 +3641,11 @@
       window.setTimeout(() => {
         line.classList.add('is-replaced');
         this.playHeroWords(toFace, () => {
-          if (momentsEnabled()) this.playMoments(() => this.playPitchConveyor());
-          else this.playSeeForYourself();
+          markPromoVo('catch-both');
+          window.setTimeout(() => {
+            if (momentsEnabled()) this.playMoments(() => this.playPitchConveyor());
+            else this.playSeeForYourself();
+          }, promoVoGuard('catch-both'));
         });
       }, toInAt);
     }
@@ -4097,8 +4150,12 @@
       this.seatClerkInStore(reduced);
       if (!reduced) await waitMs(PROMO_CLERK_CORNER_MS);
 
-      for (const beat of PROMO_MOMENT_BEATS) {
-      this.showMoment(beat, reduced);
+      for (const [index, beat] of PROMO_MOMENT_BEATS.entries()) {
+        if (index === 2) {
+          markPromoVo('narrows');
+          if (!reduced) await waitMs(promoVoGuard('narrows'));
+        }
+        this.showMoment(beat, reduced);
       if (!reduced && beat.lookMs) await waitMs(beat.lookMs);
       await waitMs(beat.voMs);
         if (reduced) {
@@ -4115,6 +4172,7 @@
       endOpeningAgent();
       setOpeningAvatarAction('nod');
       applyMomentPose(this.momentStage(), 'bundle', { instant: true });
+      markPromoVo('closes');
       onDone();
     }
 
@@ -4864,6 +4922,9 @@
       const host = this.painHost();
       host?.setAttribute('data-promo-pain-scene', scene);
       for (const [beat, ms] of steps) {
+        if (beat === 'scroll-1') markPromoVo('catalog');
+        if (beat === 'typed-2') markPromoVo('last-doubt');
+        if (beat === 'answer-2') markPromoVo('salesperson');
         this.applyPainBeat(beat, prefersReducedMotion());
         if (prefersReducedMotion()) continue;
         if (beat === 'typed-1' || beat === 'typed-2') {
@@ -4943,6 +5004,7 @@
       this.painPlayed = true;
       this.startOpeningClock();
       this.openPainStage();
+      markPromoVo('two-places');
       if (prefersReducedMotion()) {
         this.applyPainBeat('answer-2', true);
         await this.playScaleScene();
@@ -6027,6 +6089,10 @@
       const show = timeMs >= marks.captionStart;
       caption.hidden = !show;
       if (!show) return;
+      if (!this.voNumbersGame) {
+        this.voNumbersGame = true;
+        markPromoVo('numbers-game');
+      }
       const inU = Math.min(1, (timeMs - marks.captionStart) / PROMO_GLIDE.captionInMs);
       const inEase = inU * inU * (3 - 2 * inU);
       const wash = glideWash(timeMs, 'pain');
@@ -6057,6 +6123,10 @@
         if (caption) caption.style.opacity = '0';
         if (streak && streak.style.opacity !== '1') streak.style.opacity = '1';
         return;
+      }
+      if (!this.voAllDay) {
+        this.voAllDay = true;
+        markPromoVo('all-day');
       }
       const elapsed = timeMs - endAt;
       const settle = Math.min(1, elapsed / PROMO_GLIDE.resolveMs);
@@ -6599,6 +6669,7 @@
 
     async poofCloseStore() {
       if (prefersReducedMotion()) return;
+      markPromoVo('loses-both');
       const cell = this.leadGlideCell();
       const veil = cell?.querySelector(':scope > .promo-glide__veil');
       const mark = cell?.querySelector(':scope > .promo-glide__lost-mark');
