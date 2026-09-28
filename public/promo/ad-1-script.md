@@ -4,13 +4,13 @@ Played at `/?marketing=ad-1`. The default call to action is `cta=demo`. `cta=ea`
 
 Lines in quotes are on screen or spoken. **VO** is the narrator (recorded by Oriol, voice-changed in ElevenLabs). **Clerk** is the product's own voice, speaking to the shopper. Spoken lines are never written on the store. The VO never overlaps the clerk: VO between cards, clerk inside them.
 
-The film says "chatbot" and "sales agent". The term "agentic sales" is not used anywhere (VO, switch, eyebrow). The hero eyebrow reads "YOUR STORE, WITH bizmis". The narrator says "salesperson" once, for a person in a physical store.
+The film says "chatbot" and "sales agent". "Salesperson" is only the struck word in the reveal, and the narrator's line about a physical store.
 
 ---
 
 ## 1. Lost in the catalog (desktop)
 
-A desktop window titled "Your store". A product grid, no clerk. The shopper opens a product, goes back, scrolls, bounces between two similar products, opens another, backs out.
+A desktop window titled "Your store". The shopper opens a product, goes back, bounces between two similar products, opens another, backs out.
 
 **VO** `two-places`: "In every online store, a sale dies in two places."
 
@@ -22,29 +22,31 @@ The shopper types: "Looking for something light I can take everywhere."
 
 The bot answers: "You can browse our full collection. Use the filters to narrow by size and weight." Links: View collection, Size guide.
 
-## 2. The last doubt (same window)
+The cursor closes the chat. A grey veil covers the window and "LOST" stamps in grey, inside the rounded window.
 
-The window stays on that desktop. The shopper types: "Which one would you pick for me?"
+## 2. The last doubt (phone)
+
+The close-up pans to the next card. That card is a phone, still titled "Your store". The sea stays out of frame. A product page. The thumb scrolls to Add to cart, hovers, retreats to the specs, comes back, retreats.
 
 **VO** `last-doubt`: "Or stuck on the last doubt."
+
+The shopper types: "Will it fit my setup?"
 
 The bot answers: "Recommendations vary by preference. Check each product page for details, or I can open a support ticket." Buttons: Open a ticket, No, thanks.
 
 **VO** `salesperson`: "In a physical store, a salesperson catches both."
 
-**VO** `loses-both`: "Online, a chatbot replies to both. And loses both."
+The thumb leaves. No X. A grey veil and "LOST" stamp the phone.
 
-The window stays flat. The cursor goes to the chat's X. Click. The chat closes. A grey veil covers the window and "LOST" stamps in grey, inside the rounded window.
+**VO** `loses-both`: "Online, a chatbot replies to both. And loses both."
 
 ## 3. The dull sea
 
-That same window is the first card. The camera pulls back over the sea of store cards (desktop, phone, tablet). Every card is "Your store". Most of them stamp "LOST". While the sea is still moving and blurred, this line comes up and stays:
+The pullback starts on that phone. The desktop LOST is the card beside it. Every card is "Your store". Most of them stamp "LOST". While the sea is still moving and blurred, this line comes up, holds, then leaves with the caption poof, before the field is solid grey:
 
-"Your store, on a typical day."
+"Unattended visits. Lost sales."
 
 **VO** `numbers-game`: "Online sales is a numbers game. And a chatbot doesn't play."
-
-The sea washes to solid light grey. The line stays on top.
 
 ## 4. The switch
 
@@ -52,43 +54,47 @@ The grey fades out. A switch reads "Typical chatbot" and "Sales agent". The knob
 
 **VO** `change-that`: "Let's change that."
 
-## 5. Your store, with bizmis
+## 5. The reveal
 
 The Bizmis mark.
 
 **VO** `introducing`: "Introducing Bizmis."
 
-The eyebrow, word by word: "YOUR STORE, WITH bizmis."
-
-Then, one word at a time: "Built." "to." "sell."
+Word by word: "Your store salesperson." Then "person" is struck, and the line reads "Your store sales agent."
 
 **VO** `sales-agent`: "Your store's sales agent. Built to sell."
 
 **VO** `catch-both`: "Now watch it catch both."
 
-## 6. The clerk sells (desktop)
+## 6. The same two cards, sold
 
-Same desktop window, the real Bizmis widget in the corner. Four beats. The clerk speaks inside them:
+Same two windows, including the pan. The cursor and the thumb stay put. The store moves. The clerk speaks through the real widget, one sentence, captioned. No VO during that speech. The widget draws its own cards: "Products shown to you", "Product opened", "Added to cart". A short orange sweep marks whatever just changed.
 
-1. **Clerk:** "I narrow it down to the best few." The catalog fades in.
-2. **Clerk:** "I recommend the one that fits them best." Two products are compared. The right one gets the tick.
+Desktop, the same grid. The shopper types: "Looking for something light I can take everywhere."
+
+**Clerk:** "Light and easy to carry, here are the three that fit. This one's the best of them."
+
+While he speaks, the grid narrows to three, then the pick's page opens. Orange veil, white check, "SOLD".
 
 **VO** `narrows`: "It narrows. It recommends."
 
-3. **Clerk:** "I clear them like an expert. And close the deal." A product page, question marks around the photo, then the close.
-4. **Clerk:** "I suggest what goes best with it." A matching extra, then the bundle, with a check that draws itself.
+Phone, the same product page. The shopper types: "Will it fit my setup? If so, add it."
+
+**Clerk:** "It will. And if it doesn't, returns are free. Added, with the sleeve that goes with it."
+
+While he speaks, the product is added, then a matching extra, and the cart badge goes to 2. "SOLD".
 
 **VO** `closes`: "It answers like an expert, and closes. Then sells them one more thing."
 
 ## 7. The selling sea
 
-The product window is marked sold: an orange veil and a white check. The camera pulls back over the sea of "Your store" cards. Most of them stamp "SOLD". While it is still moving and blurred, this line comes up and stays:
+The pullback starts on that phone. Every card is "Your store". Most of them stamp "SOLD". While the sea is still moving and blurred, this line comes up and stays, with the white Bizmis mark, through the orange field:
 
 "Built to sell."
 
 **VO** `all-day`: "For every shopper. All day long."
 
-The sea washes to solid Bizmis orange. The white Bizmis mark and the line stay on top.
+The sea washes to solid Bizmis orange.
 
 ## 8. Other stores, into the slot
 

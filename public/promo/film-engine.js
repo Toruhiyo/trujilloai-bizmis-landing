@@ -284,7 +284,7 @@
   const PROMO_WINDOW_LEAVE_MS = 400;
   const PROMO_WINDOW_HOLD_MS = 560;
   const PROMO_WINDOW_CLOSE_MS = 760;
-  const PROMO_CHAT_AIM_MS = 720;
+  const PROMO_CHAT_AIM_MS = 360;
   const PROMO_LOST_SIZE_RATIO = 0.18;
   const PROMO_LOST_SIZE_MIN = 8;
   const PROMO_SCALE_SNAP_CLASS_MS = 50;
@@ -420,8 +420,9 @@
     tablet: { x: 0.88, y: 0.14 },
     phone: { x: 0.82, y: 0.07 },
   };
-  const GLIDE_PAIN_CAPTION = 'Your store, on a typical day.';
+  const GLIDE_PAIN_CAPTION = 'Unattended visits. Lost sales.';
   const glideRows = new Map();
+  let glideLeadDevice = 'desktop';
   const glideWarmMedia = [];
   const glideDecodedStills = new Map();
   let glideEventCache = { key: '', list: [] };
@@ -558,7 +559,7 @@
 
   function glideWash(timeMs, mode) {
     const marks = glideMarks(mode || 'pitch');
-    const start = mode === 'pain' ? marks.captionStart : marks.claimAt;
+    const start = mode === 'pain' ? marks.captionPoofEnd : marks.claimAt;
     const u = Math.min(1, Math.max(0, (timeMs - start) / PROMO_GLIDE.washMs));
     return u * u * (3 - 2 * u);
   }
@@ -614,6 +615,7 @@
 
   function glideDeviceId(row, col, neighborA, neighborB) {
     if (row === 0 && col === 0) return 'desktop';
+    if (row === 0 && col === 1) return 'phone';
     const roll = wallSeededUnit(row * 17 + col * 13 + 400, 29);
     const mix = PROMO_GRID.deviceMix;
     let id = 'desktop';
@@ -766,6 +768,10 @@
     });
     const lead = best || view.cells[0] || null;
     glideFlankLead(lead);
+    if (glideLeadDevice === 'phone' && lead) {
+      const phone = glideRows.get(lead.row)?.cells.find((cell) => cell.col === lead.col + 1);
+      if (phone) return phone;
+    }
     return lead;
   }
 
@@ -1273,7 +1279,13 @@
   const PROMO_CURSOR_HOT_X = 33 * (5 / 24);
   const PROMO_CURSOR_HOT_Y = 33 * (3.2 / 24);
   const PROMO_PAIN_LINE_1 = 'Looking for something light I can take everywhere.';
-  const PROMO_PAIN_LINE_2 = 'Which one would you pick for me?';
+  const PROMO_PAIN_LINE_2 = 'Will it fit my setup?';
+  const PROMO_PITCH_LINE_1 = 'Looking for something light I can take everywhere.';
+  const PROMO_PITCH_LINE_2 = 'Will it fit my setup? If so, add it.';
+  const PROMO_PITCH_CLERK_1 = "Light and easy to carry, here are the three that fit. This one's the best of them.";
+  const PROMO_PITCH_CLERK_2 = "It will. And if it doesn't, returns are free. Added, with the sleeve that goes with it.";
+  const PROMO_PITCH_SPEAK_1_MS = 5200;
+  const PROMO_PITCH_SPEAK_2_MS = 5600;
   const PROMO_PAIN_ANSWER_1 = [
     'You can browse our full collection.',
     'Use the filters to narrow by size and weight.',
@@ -1282,22 +1294,21 @@
   const PROMO_PAIN_ANSWER_2 = 'Recommendations vary by preference. Check each product page for details, or I can open a support ticket.';
   const PROMO_PAIN_CHIPS = ['Track order', 'Returns', 'Contact us'];
   const PROMO_PAIN_A = [
-    ['grid', 280],
-    ['enter', 220],
-    ['open', 380],
-    ['back', 140],
-    ['scroll-1', 640],
-    ['open-2', 360],
+    ['grid', 160],
+    ['enter', 140],
+    ['open', 220],
+    ['back', 90],
+    ['hover-a', 180],
+    ['hover-b', 180],
+    ['open-2', 200],
+    ['back-2', 110],
   ];
   const PROMO_PAIN_B = [
-    ['launcher', 120],
-    ['panel', 200],
+    ['launcher', 80],
+    ['panel', 140],
     ['typed-1', PROMO_PAIN_LINE_1.length * PROMO_PAIN_TYPE_CHAR_MS],
-    ['think-1', 340],
-    ['answer-1', 1800],
-    ['typed-2', PROMO_PAIN_LINE_2.length * PROMO_PAIN_TYPE_CHAR_MS],
-    ['think-2', 300],
-    ['answer-2', 2000],
+    ['think-1', 200],
+    ['answer-1', 900],
   ];
   const PROMO_PITCH_SETTLE_MS = 700;
   const PROMO_MOMENTS_VO_MS = 280;
@@ -1666,6 +1677,10 @@
     sayClerkLine(line);
     onStart();
     return waitMs(speakMs);
+  }
+
+  function emitShopper(detail) {
+    window.dispatchEvent(new CustomEvent('bizmis:shopper-event', { detail }));
   }
 
   const PROMO_MOMENT_POSES = ['grid', 'row', 'choice', 'doubt', 'close', 'extra', 'bundle', 'fly', 'gone'];
@@ -3614,40 +3629,147 @@
     playPitchLine() {
       const line = this.line;
       const fromFace = this.root.querySelector('[data-promo-face-from]');
-      const toFace = this.root.querySelector('[data-promo-face-to]');
       if (!line || !fromFace) {
         this.playSeeForYourself();
         return;
       }
-
       const fromWords = [...fromFace.querySelectorAll('[data-promo-from-word]')];
       fromWords.forEach((word, index) => {
         word.style.animationDelay = `${index * PROMO_PITCH_WORD_STAGGER_MS}ms`;
       });
       line.classList.add('is-revealing');
       const wordsInAt = (fromWords.length - 1) * PROMO_PITCH_WORD_STAGGER_MS + PROMO_PITCH_WORD_IN_MS;
-      window.setTimeout(() => markPromoVo('sales-agent'), wordsInAt);
-      const replaceAt = wordsInAt + PROMO_PITCH_REPLACE_PAUSE_MS;
-      const outSpan = Math.max(...PROMO_PITCH_WORD_OUT_STAGGER_MS);
-      const toInAt = replaceAt + PROMO_PITCH_WORD_OUT_MS + outSpan + PROMO_PITCH_REPLACE_GAP_MS;
-
+      const strikeAt = wordsInAt + 640;
+      window.setTimeout(() => line.classList.add('is-striking'), strikeAt);
+      window.setTimeout(() => markPromoVo('sales-agent'), strikeAt + 420);
       window.setTimeout(() => {
-        fromWords.forEach((word, index) => {
-          word.style.animationDelay = `${PROMO_PITCH_WORD_OUT_STAGGER_MS[index] || 0}ms`;
-        });
-        fromFace.classList.add('is-exiting');
-      }, replaceAt);
+        markPromoVo('catch-both');
+        window.setTimeout(() => {
+          this.root.classList.add('is-pitch-cards');
+          if (momentsEnabled()) this.playPitchPair();
+          else this.playSeeForYourself();
+        }, promoVoGuard('catch-both'));
+      }, strikeAt + 1100);
+    }
 
-      window.setTimeout(() => {
-        line.classList.add('is-replaced');
-        this.playHeroWords(toFace, () => {
-          markPromoVo('catch-both');
-          window.setTimeout(() => {
-            if (momentsEnabled()) this.playMoments(() => this.playPitchConveyor());
-            else this.playSeeForYourself();
-          }, promoVoGuard('catch-both'));
-        });
-      }, toInAt);
+    async typeShopperLine(text) {
+      const store = this.painStore();
+      if (!store) return;
+      let node = store.querySelector('[data-promo-shopper-line]');
+      if (!node) {
+        node = document.createElement('p');
+        node.className = 'promo-shopper-line';
+        node.setAttribute('data-promo-shopper-line', '');
+        store.append(node);
+      }
+      node.hidden = false;
+      if (prefersReducedMotion()) {
+        node.textContent = text;
+        return;
+      }
+      for (let index = 1; index <= text.length; index += 1) {
+        node.textContent = text.slice(0, index);
+        await waitMs(PROMO_PAIN_TYPE_CHAR_MS);
+      }
+    }
+
+    flashSweep(node) {
+      if (!node) return;
+      const veil = document.createElement('div');
+      veil.className = 'promo-sweep';
+      node.append(veil);
+      window.setTimeout(() => veil.remove(), 300);
+    }
+
+    async slideStoreToPhone() {
+      const store = this.painStore();
+      if (!store || prefersReducedMotion()) {
+        store?.classList.remove('is-desktop');
+        store?.classList.add('is-phone');
+        return;
+      }
+      store.style.transition = 'transform 450ms cubic-bezier(0.45, 0, 0.2, 1)';
+      store.style.transform = 'translateX(-108%)';
+      await waitMs(450);
+      store.classList.remove('is-desktop');
+      store.classList.add('is-phone');
+      store.style.transition = 'none';
+      store.style.transform = 'translateX(108%)';
+      store.getBoundingClientRect();
+      store.style.transition = 'transform 450ms cubic-bezier(0.45, 0, 0.2, 1)';
+      store.style.transform = 'translateX(0)';
+      await waitMs(460);
+      store.style.transition = '';
+      store.style.transform = '';
+    }
+
+    async playPitchPair() {
+      const reduced = prefersReducedMotion();
+      this.pitchCardsPlayed = true;
+      this.seatClerkInStore(reduced);
+      if (!reduced) await waitMs(PROMO_CLERK_CORNER_MS);
+      const stage = this.momentStage();
+      const host = this.root.querySelector('[data-promo-moments]');
+      applyMomentPose(stage, 'grid', { instant: true });
+      const cursor = this.root.querySelector('[data-promo-pain-cursor]');
+      if (cursor) {
+        cursor.hidden = false;
+        cursor.classList.remove('is-thumb');
+        cursor.style.opacity = '1';
+        cursor.style.setProperty('--pain-x', '46%');
+        cursor.style.setProperty('--pain-y', '62%');
+      }
+      await this.typeShopperLine(PROMO_PITCH_LINE_1);
+      const first = playClerkLine(PROMO_PITCH_CLERK_1, reduced ? 200 : PROMO_PITCH_SPEAK_1_MS, () => {});
+      applyMomentPose(stage, 'row', { instant: reduced });
+      emitShopper({
+        kind: 'products',
+        query: 'light',
+        products: [
+          { title: 'The light one', url: 'https://bizmis.ai/demo/light' },
+          { title: 'The day one', url: 'https://bizmis.ai/demo/day' },
+          { title: 'The travel one', url: 'https://bizmis.ai/demo/travel' },
+        ],
+      });
+      this.flashSweep(stage);
+      await waitMs(reduced ? 40 : 1500);
+      applyMomentPose(stage, 'close', { instant: reduced });
+      emitShopper({
+        kind: 'product',
+        product: { title: 'The light one', url: 'https://bizmis.ai/demo/light' },
+      });
+      this.flashSweep(stage?.querySelector('.promo-moments__card.is-pick'));
+      await first;
+      await this.markCloseStoreSold();
+      markPromoVo('narrows');
+      if (!reduced) await waitMs(promoVoGuard('narrows'));
+      await this.slideStoreToPhone();
+      applyMomentPose(stage, 'close', { instant: true });
+      await this.typeShopperLine(PROMO_PITCH_LINE_2);
+      const second = playClerkLine(PROMO_PITCH_CLERK_2, reduced ? 200 : PROMO_PITCH_SPEAK_2_MS, () => {});
+      host?.classList.add('is-cart-one');
+      emitShopper({
+        kind: 'cart',
+        product: { title: 'The light one', url: 'https://bizmis.ai/demo/light' },
+        quantity: 1,
+      });
+      this.flashSweep(this.painStore()?.querySelector('.promo-moments__cart'));
+      await waitMs(reduced ? 40 : 1400);
+      applyMomentPose(stage, 'bundle', { instant: reduced });
+      host?.classList.remove('is-cart-one');
+      host?.classList.add('is-cart-two');
+      emitShopper({
+        kind: 'cart',
+        product: { title: 'The sleeve', url: 'https://bizmis.ai/demo/sleeve' },
+        quantity: 1,
+      });
+      this.flashSweep(stage?.querySelector('.promo-moments__card.is-extra') || this.painStore()?.querySelector('.promo-moments__cart'));
+      await second;
+      this.painStore()?.querySelectorAll('.promo-close__veil, .promo-close__mark').forEach((node) => node.remove());
+      await this.markCloseStoreSold();
+      endOpeningAgent();
+      markPromoVo('closes');
+      this.playPitchConveyor();
     }
 
     bizmisLook() {
@@ -4854,8 +4976,8 @@
       board.classList.toggle('is-instant', !!instant);
       if (PROMO_PAIN_LIFE_HOLD.includes(beat)) board.dataset.life = 'hold';
       else delete board.dataset.life;
-      const browseSlot = beat === 'enter' || beat === 'open' || beat === 'back' ? 0
-        : beat === 'scroll-1' || beat === 'open-2' || beat === 'back-2' ? 1
+      const browseSlot = beat === 'enter' || beat === 'open' || beat === 'back' || beat === 'hover-a' ? 0
+        : beat === 'scroll-1' || beat === 'open-2' || beat === 'back-2' || beat === 'hover-b' ? 1
           : beat === 'scroll-2' ? 2
             : beat === 'scroll-3' ? 3
               : beat === 'scroll-4' ? 4
@@ -4922,9 +5044,7 @@
       const host = this.painHost();
       host?.setAttribute('data-promo-pain-scene', scene);
       for (const [beat, ms] of steps) {
-        if (beat === 'scroll-1') markPromoVo('catalog');
-        if (beat === 'typed-2') markPromoVo('last-doubt');
-        if (beat === 'answer-2') markPromoVo('salesperson');
+        if (beat === 'hover-b') markPromoVo('catalog');
         this.applyPainBeat(beat, prefersReducedMotion());
         if (prefersReducedMotion()) continue;
         if (beat === 'typed-1' || beat === 'typed-2') {
@@ -5006,7 +5126,8 @@
       this.openPainStage();
       markPromoVo('two-places');
       if (prefersReducedMotion()) {
-        this.applyPainBeat('answer-2', true);
+        glideLeadDevice = 'phone';
+        this.glideLeadStamped = true;
         await this.playScaleScene();
         return;
       }
@@ -5824,11 +5945,14 @@
         const lost = document.createElement('span');
         lost.className = 'promo-glide__lost-mark';
         lost.textContent = 'LOST';
+        const name = document.createElement('span');
+        name.className = 'promo-glide__name';
+        name.textContent = 'Your store';
         const fx = document.createElement('div');
         fx.className = 'promo-glide__fx';
         fx.append(bloom, rays, poof);
         fx.hidden = true;
-        cell.append(still, veil, mark, lost);
+        cell.append(still, name, veil, mark, lost);
         sheet.append(cell);
         fxLayer.append(fx);
         pool.push({ cell, fx });
@@ -5997,7 +6121,10 @@
             path.style.strokeDashoffset = '';
           }
         }
-        const keepLeadLost = mode !== 'pitch' && this.glideLeadStamped && cell.key === this.glideLeadKey;
+        const keepLeadLost = mode !== 'pitch' && (
+          (this.glideLeadStamped && cell.key === this.glideLeadKey)
+          || this.painLostKeys?.has(cell.key)
+        );
         if (parts.lost && !keepLeadLost) delete parts.lost.dataset.settled;
         node.classList.remove('is-dusting');
         node.style.opacity = '';
@@ -6017,6 +6144,8 @@
         node.style.width = `${width.toFixed(2)}px`;
         node.style.height = `${height.toFixed(2)}px`;
         if (parts.lost) parts.lost.style.fontSize = lostMarkSize(width);
+        const nameNode = node.querySelector('.promo-glide__name');
+        if (nameNode) nameNode.style.fontSize = `${Math.max(8, width * 0.075).toFixed(1)}px`;
         node.style.transform = `translate3d(${(cell.x * unit).toFixed(2)}px, ${(cell.y * unit).toFixed(2)}px, 0)`;
         applyMockupShape(node, cell.device, width);
         const still = parts.still;
@@ -6052,7 +6181,10 @@
       }
       if (stillNode) writeHidden(stillNode, showVideo);
       node.hidden = false;
-      const leadLost = mode !== 'pitch' && this.glideLeadStamped && cell.key === this.glideLeadKey;
+      const leadLost = mode !== 'pitch' && (
+        (this.glideLeadStamped && cell.key === this.glideLeadKey)
+        || this.painLostKeys?.has(cell.key)
+      );
       if (!event && !leadLost) {
         writePaint(parts.veil, 'opacity', '0');
         writePaint(parts.mark, 'opacity', '0');
@@ -6095,10 +6227,16 @@
       }
       const inU = Math.min(1, (timeMs - marks.captionStart) / PROMO_GLIDE.captionInMs);
       const inEase = inU * inU * (3 - 2 * inU);
-      const wash = glideWash(timeMs, 'pain');
-      text.style.opacity = inEase.toFixed(3);
-      if (haze) haze.style.opacity = (inEase * (1 - wash)).toFixed(3);
-      if (poof) poof.style.opacity = '0';
+      const exitSpan = Math.max(1, marks.captionPoofEnd - marks.captionHoldEnd);
+      const exitU = timeMs <= marks.captionHoldEnd ? 0 : Math.min(1, (timeMs - marks.captionHoldEnd) / exitSpan);
+      const fade = exitU <= 0 ? inEase : inEase * (1 - exitU);
+      text.style.opacity = Math.max(0, fade).toFixed(3);
+      if (haze) haze.style.opacity = (Math.max(0, fade)).toFixed(3);
+      if (poof) {
+        if (exitU <= 0) poof.style.opacity = '0';
+        else paintPainPoof(poof, 4, 9, timeMs - marks.captionHoldEnd);
+      }
+      if (timeMs >= marks.captionPoofEnd) caption.hidden = true;
     }
 
     paintGlideEnd(timeMs, mode) {
@@ -6310,7 +6448,7 @@
           return;
         }
         const trackLead = this.glideKeepStore && arrive < 0.992 && item.cell.key === this.glideLeadKey;
-        const leadFace = '.promo-glide__still, .promo-glide__video, .promo-glide__veil, .promo-glide__mark, .promo-glide__lost-mark';
+        const leadFace = '.promo-glide__still, .promo-glide__video, .promo-glide__veil, .promo-glide__mark, .promo-glide__lost-mark, .promo-glide__name';
         if (trackLead) {
           slot.cell.style.background = 'transparent';
           slot.cell.style.boxShadow = 'none';
@@ -6400,7 +6538,11 @@
         cellNode.style.background = 'transparent';
         cellNode.style.clipPath = 'none';
         cellNode.style.borderRadius = '0';
-        const curve = 32 * (width / Math.max(1, naturalW));
+        const deviceId = cellNode.classList.contains('is-phone')
+          ? 'phone'
+          : cellNode.classList.contains('is-tablet') ? 'tablet' : 'desktop';
+        const device = PROMO_GRID.devices.find((item) => item.id === deviceId) || PROMO_GRID.devices[0];
+        const curve = gridMockupRadius(device, naturalW) * (width / Math.max(1, naturalW));
         cellNode.querySelectorAll(':scope > .promo-glide__veil').forEach((veil) => {
           veil.style.borderRadius = `${curve.toFixed(2)}px`;
         });
@@ -6667,9 +6809,9 @@
       return this.root.querySelector('.promo-glide__cell > .promo-opening__store')?.parentElement || null;
     }
 
-    async poofCloseStore() {
+    async poofCloseStore(voice) {
       if (prefersReducedMotion()) return;
-      markPromoVo('loses-both');
+      if (voice) markPromoVo('loses-both');
       const cell = this.leadGlideCell();
       const veil = cell?.querySelector(':scope > .promo-glide__veil');
       const mark = cell?.querySelector(':scope > .promo-glide__lost-mark');
@@ -6781,6 +6923,230 @@
       await waitMs(180);
     }
 
+    phoneNeighborKey() {
+      const frame = this.gridFrame();
+      const view = glideCells(0, frame, 'pain');
+      const lead = view.cells.find((cell) => cell.key === this.glideLeadKey);
+      if (!lead) return '';
+      glideFlankLead(lead);
+      return glideRows.get(lead.row)?.cells.find((cell) => cell.col === lead.col + 1)?.key || '';
+    }
+
+    async panCloseUpTo(cellKey) {
+      const root = this.root.querySelector('[data-promo-glide]');
+      const viewWrap = root?.querySelector('.promo-glide__view');
+      const frame = this.gridFrame();
+      const view = glideCells(0, frame, 'pain');
+      const from = view.cells.find((cell) => cell.key === this.glideLeadKey);
+      const to = view.cells.find((cell) => cell.key === cellKey);
+      if (!viewWrap || !from || !to) return;
+      const unit = view.span.unit;
+      const zoomX = this.glideZoomFrom || 1;
+      const zoomY = this.glideZoomFromY || zoomX;
+      const shiftX = ((from.x + from.w / 2) - (to.x + to.w / 2)) * unit * zoomX;
+      const shiftY = ((from.y + from.h / 2) - (to.y + to.h / 2)) * unit * zoomY;
+      const match = viewWrap.style.transform.match(/translate\(([-\d.]+)px,\s*([-\d.]+)px\)\s*scale\(([-\d.]+),\s*([-\d.]+)\)/);
+      const baseX = match ? Number(match[1]) : 0;
+      const baseY = match ? Number(match[2]) : 0;
+      const scaleX = match ? match[3] : zoomX.toFixed(4);
+      const scaleY = match ? match[4] : zoomY.toFixed(4);
+      const started = performance.now();
+      const dur = 450;
+      await new Promise((resolve) => {
+        const step = (now) => {
+          const u = Math.min(1, (now - started) / dur);
+          const ease = u * u * (3 - 2 * u);
+          viewWrap.style.transform = `translate(${(baseX + shiftX * ease).toFixed(2)}px, ${(baseY + shiftY * ease).toFixed(2)}px) scale(${scaleX}, ${scaleY})`;
+          if (u < 1) window.requestAnimationFrame(step);
+          else resolve();
+        };
+        window.requestAnimationFrame(step);
+      });
+    }
+
+    seatPhoneClone(phoneKey) {
+      const root = this.root.querySelector('[data-promo-glide]');
+      const clone = this.root.querySelector('.promo-glide__cell > .promo-opening__store');
+      const phoneNode = (root?._glidePool || []).find((item) => item.cell.dataset.key === phoneKey)?.cell;
+      if (!clone || !phoneNode) return null;
+      this.painLostKeys = this.painLostKeys || new Set();
+      if (this.glideLeadKey) this.painLostKeys.add(this.glideLeadKey);
+      const desk = this.leadGlideCell();
+      desk?.querySelector(':scope > .promo-glide__veil')?.style.setProperty('visibility', 'visible');
+      desk?.querySelector(':scope > .promo-glide__lost-mark')?.style.setProperty('visibility', 'visible');
+      clone.querySelector('[data-promo-pain-chat]')?.setAttribute('hidden', '');
+      clone.classList.remove('is-desktop');
+      clone.classList.add('is-phone');
+      clone.style.width = '360px';
+      clone.style.height = '780px';
+      clone.dataset.naturalW = '360';
+      clone.dataset.naturalH = '780';
+      phoneNode.appendChild(clone);
+      phoneNode.classList.add('is-phone', 'is-lead-match');
+      phoneNode.classList.remove('is-desktop');
+      phoneNode.querySelector(':scope > .promo-glide__name')?.style.setProperty('visibility', 'hidden');
+      const width = Number.parseFloat(phoneNode.style.width) || phoneNode.offsetWidth || 360;
+      const height = Number.parseFloat(phoneNode.style.height) || phoneNode.offsetHeight || 780;
+      clone.style.transformOrigin = '0 0';
+      clone.style.transform = `scale(${(width / 360).toFixed(4)}, ${(height / 780).toFixed(4)})`;
+      clone.style.visibility = 'visible';
+      clone.style.opacity = '1';
+      this.glideLeadKey = phoneKey;
+      const stage = clone.querySelector('[data-promo-moments-stage]');
+      if (stage) applyMomentPose(stage, 'doubt', { instant: true });
+      return clone;
+    }
+
+    clipGlideTo(node) {
+      const root = this.root.querySelector('[data-promo-glide]');
+      if (!root || !node) return;
+      const host = root.getBoundingClientRect();
+      const box = node.getBoundingClientRect();
+      const top = Math.max(0, box.top - host.top);
+      const right = Math.max(0, host.right - box.right);
+      const bottom = Math.max(0, host.bottom - box.bottom);
+      const left = Math.max(0, box.left - host.left);
+      root.style.clipPath = `inset(${top.toFixed(1)}px ${right.toFixed(1)}px ${bottom.toFixed(1)}px ${left.toFixed(1)}px)`;
+    }
+
+    growPhoneClose(phoneNode) {
+      const glide = this.root.querySelector('[data-promo-glide]');
+      const close = this.glideCloseRect;
+      if (!glide || !phoneNode || !close) return;
+      const box = phoneNode.getBoundingClientRect();
+      if (box.height < 8) return;
+      const factor = Math.min(close.h / box.height, (close.w * 0.62) / Math.max(1, box.width));
+      if (factor < 1.08) return;
+      const rootBox = this.root.getBoundingClientRect();
+      const ox = box.left - rootBox.left + box.width / 2;
+      const oy = box.top - rootBox.top + box.height / 2;
+      glide.style.transformOrigin = `${ox.toFixed(1)}px ${oy.toFixed(1)}px`;
+      glide.style.transition = 'transform 280ms ease';
+      glide.style.transform = `scale(${Math.min(factor, 4.2).toFixed(3)})`;
+    }
+
+    framePhoneClose(clone) {
+      const frameBox = this.root.getBoundingClientRect();
+      const box = clone.getBoundingClientRect();
+      this.glideZoomFrom = 0;
+      this.glideZoomFromY = 0;
+      this.glideAnchor = null;
+      if (box.width < 40) return;
+      this.glideCloseRect = {
+        cx: box.left - frameBox.left + box.width / 2,
+        cy: box.top - frameBox.top + box.height / 2,
+        w: box.width,
+        h: box.height,
+      };
+    }
+
+    async moveThumb(clone, x, y, ms) {
+      const cursor = clone.querySelector('[data-promo-pain-cursor]');
+      if (!cursor) return;
+      cursor.hidden = false;
+      cursor.classList.add('is-thumb');
+      cursor.style.opacity = '1';
+      this.root.style.setProperty('--promo-pain-open', `${ms}ms`);
+      cursor.style.setProperty('--pain-x', `${Math.round(x)}px`);
+      cursor.style.setProperty('--pain-y', `${Math.round(y)}px`);
+      await waitMs(ms);
+    }
+
+    fillCloneChat(clone, through) {
+      const chat = clone.querySelector('[data-promo-pain-chat]');
+      const log = clone.querySelector('[data-promo-pain-log]');
+      const input = clone.querySelector('[data-promo-pain-input]');
+      const typing = clone.querySelector('[data-promo-pain-typing]');
+      if (!chat || !log || !input) return;
+      chat.hidden = false;
+      chat.removeAttribute('hidden');
+      chat.classList.add('is-open');
+      chat.classList.remove('is-shut');
+      log.replaceChildren();
+      if (typing) typing.hidden = through !== 'think-2';
+      const addUser = (text) => {
+        const block = document.createElement('div');
+        block.className = 'promo-pain__msg is-user';
+        const line = document.createElement('p');
+        line.textContent = text;
+        block.appendChild(line);
+        log.appendChild(block);
+      };
+      const addBot = (text) => {
+        const block = document.createElement('div');
+        block.className = 'promo-pain__msg is-bot';
+        const line = document.createElement('p');
+        line.textContent = text;
+        block.appendChild(line);
+        const row = document.createElement('div');
+        row.className = 'promo-pain__actions';
+        ['Open a ticket', 'No, thanks'].forEach((label) => {
+          const button = document.createElement('span');
+          button.textContent = label;
+          row.appendChild(button);
+        });
+        block.appendChild(row);
+        log.appendChild(block);
+      };
+      if (through === 'typed-2') input.textContent = PROMO_PAIN_LINE_2;
+      if (through === 'think-2' || through === 'answer-2') {
+        addUser(PROMO_PAIN_LINE_2);
+        input.textContent = '';
+      }
+      if (through === 'answer-2') addBot(PROMO_PAIN_ANSWER_2);
+    }
+
+    async playPhoneDoubt(clone) {
+      const stage = clone.querySelector('[data-promo-moments-stage]');
+      if (stage) applyMomentPose(stage, 'doubt', { instant: true });
+      const width = 360;
+      const height = 780;
+      await this.moveThumb(clone, width * 0.62, height * 0.72, 420);
+      markPromoVo('last-doubt');
+      await waitMs(280);
+      await this.moveThumb(clone, width * 0.48, height * 0.4, 320);
+      await this.moveThumb(clone, width * 0.62, height * 0.72, 280);
+      await this.moveThumb(clone, width * 0.5, height * 0.46, 260);
+      const input = clone.querySelector('[data-promo-pain-input]');
+      this.fillCloneChat(clone, 'panel');
+      if (input) input.textContent = '';
+      for (let index = 1; index <= PROMO_PAIN_LINE_2.length; index += 1) {
+        if (input) input.textContent = PROMO_PAIN_LINE_2.slice(0, index);
+        await waitMs(PROMO_PAIN_TYPE_CHAR_MS);
+      }
+      this.fillCloneChat(clone, 'think-2');
+      await waitMs(220);
+      this.fillCloneChat(clone, 'answer-2');
+      markPromoVo('salesperson');
+      await waitMs(900);
+      const cursor = clone.querySelector('[data-promo-pain-cursor]');
+      if (cursor) cursor.style.opacity = '0';
+      await waitMs(200);
+    }
+
+    async playPhonePain() {
+      const phoneKey = this.phoneNeighborKey();
+      if (!phoneKey) return;
+      await this.panCloseUpTo(phoneKey);
+      const clone = this.seatPhoneClone(phoneKey);
+      if (!clone) return;
+      this.clipGlideTo(clone);
+      this.growPhoneClose(clone.parentElement);
+      await waitMs(300);
+      await this.playPhoneDoubt(clone);
+      await this.poofCloseStore(true);
+      this.painLostKeys = this.painLostKeys || new Set();
+      this.painLostKeys.add(phoneKey);
+      const glide = this.root.querySelector('[data-promo-glide]');
+      this.framePhoneClose(clone);
+      if (glide) {
+        glide.style.transition = 'none';
+        glide.style.transform = '';
+        glide.style.transformOrigin = '';
+      }
+      this.paintGlideAt(0, 'pain');
+    }
+
     async playScaleTimeline() {
       const generation = this.scaleGeneration;
       this.glideLeadStamped = false;
@@ -6792,8 +7158,11 @@
       this.paintGlideAt(0, 'pain');
       await this.closeChatForLost();
       if (generation !== this.scaleGeneration) return;
-      await this.poofCloseStore();
+      await this.poofCloseStore(false);
       if (generation !== this.scaleGeneration) return;
+      await this.playPhonePain();
+      if (generation !== this.scaleGeneration) return;
+      glideLeadDevice = 'phone';
       this.runGlide('pain', 0);
       await waitMs(glidePlayEnd('pain'));
       if (generation !== this.scaleGeneration) return;
@@ -6914,8 +7283,9 @@
       this.prepareScaleScene();
       promoWidget.applyStoreLook(this.bizmisLook());
       const generation = this.scaleGeneration;
+      glideLeadDevice = 'phone';
       const stage = this.momentStage();
-      if (stage) applyMomentPose(stage, 'bundle', { instant: true });
+      if (stage && !this.pitchCardsPlayed) applyMomentPose(stage, 'bundle', { instant: true });
       this.captureNeutralStage();
       this.root.classList.add('is-pitch-belt');
       if (prefersReducedMotion()) {
@@ -6929,7 +7299,7 @@
       }
       this.glideKeepStore = false;
       this.captureGlideClose('pitch');
-      await this.markCloseStoreSold();
+      if (!this.pitchCardsPlayed) await this.markCloseStoreSold();
       if (generation !== this.scaleGeneration) return;
       this.revealScaleLayer();
       this.mountGlide('pitch');

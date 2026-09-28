@@ -583,6 +583,13 @@ html.is-promo-opening.is-promo-depart .promo-opening {
   transform: translateY(-0.4rem);
 }
 
+.promo-opening.is-moments:not(.is-see) .promo-opening__store.is-phone {
+  width: min(22rem, 34cqw);
+  height: auto;
+  max-height: 92cqh;
+  aspect-ratio: 9 / 19.5;
+}
+
 .promo-opening.is-moments:not(.is-see) .promo-opening__moments > .promo-puff__host {
   position: relative;
   flex: 0 0 auto;
@@ -673,6 +680,103 @@ html.is-promo-opening.is-promo-depart .promo-opening {
   border-radius: 32px;
   opacity: 1;
   transition: opacity 300ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.promo-opening__store.is-phone {
+  width: min(22rem, 36cqw);
+  aspect-ratio: 9 / 19.5;
+  border-radius: 36px;
+}
+
+.promo-opening.is-pitch-cards .promo-opening__line {
+  visibility: hidden;
+}
+
+.promo-shopper-line {
+  position: absolute;
+  z-index: 6;
+  left: 8%;
+  right: 8%;
+  bottom: 7%;
+  margin: 0;
+  padding: 0.7rem 1rem;
+  border-radius: 14px;
+  background: var(--ad-white);
+  color: var(--ad-ink);
+  font-family: var(--font-heading);
+  font-size: 1.05rem;
+  line-height: 1.35;
+  box-shadow: 0 10px 28px color-mix(in srgb, var(--ad-ink) 12%, transparent);
+}
+
+.promo-sweep {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  pointer-events: none;
+  background: color-mix(in srgb, var(--bizmis-primary) 46%, transparent);
+  animation: promo-sweep 300ms ease forwards;
+}
+
+@keyframes promo-sweep {
+  from { opacity: 0.9; }
+  to { opacity: 0; }
+}
+
+.promo-opening__moments.is-cart-one .promo-moments__count.is-one,
+.promo-opening__moments.is-cart-two .promo-moments__count.is-two {
+  display: grid;
+}
+
+.promo-opening__moments.is-cart-two .promo-moments__count.is-one {
+  display: none;
+}
+
+.promo-glide__name {
+  position: absolute;
+  z-index: 3;
+  top: 7%;
+  left: 6%;
+  font-family: var(--font-heading);
+  font-size: 22px;
+  font-weight: 560;
+  letter-spacing: -0.03em;
+  color: var(--ad-ink-2);
+  pointer-events: none;
+}
+
+.promo-opening__word--salesperson {
+  position: relative;
+}
+
+.promo-opening__tail {
+  display: inline-grid;
+  vertical-align: baseline;
+}
+
+.promo-opening__tail > span {
+  grid-area: 1 / 1;
+}
+
+.promo-opening__struck,
+.promo-opening__agent {
+  display: inline-block;
+}
+
+.promo-opening__agent {
+  opacity: 0;
+  white-space: pre;
+}
+
+.promo-opening__line.is-striking .promo-opening__struck {
+  text-decoration: line-through;
+  opacity: 0;
+  transition: opacity 280ms ease;
+}
+
+.promo-opening__line.is-striking .promo-opening__agent {
+  opacity: 1;
+  transition: opacity 280ms ease 80ms;
 }
 
 .promo-opening__store::before {
@@ -1675,6 +1779,18 @@ html.is-promo-opening.is-promo-depart .promo-opening {
   transition:
     transform var(--promo-pain-open, 640ms) var(--promo-pain-ease, cubic-bezier(0.45, 0.05, 0.2, 1)),
     opacity 280ms linear;
+}
+
+.promo-pain__cursor.is-thumb svg {
+  display: none;
+}
+
+.promo-pain__cursor.is-thumb {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--ad-ink) 55%, transparent);
+  filter: none;
 }
 
 @media (prefers-reduced-motion: reduce) {
