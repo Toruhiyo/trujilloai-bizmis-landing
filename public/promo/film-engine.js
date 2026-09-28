@@ -6736,6 +6736,7 @@
       if (field) field.style.opacity = wash.toFixed(3);
       glideActiveTilt = glideTiltAt(time, mode) * Math.PI / 180;
       if (!options.reduced) this.paintGlideEnd(time, mode);
+      if (wash >= 0.995) this.root.classList.add('is-wash-covered');
       const activeEvents = glideEvents(mode, frame).filter((event) => event.t <= time).length;
       this.glideStats = {
         coverage: glideCoverage(time, frame),

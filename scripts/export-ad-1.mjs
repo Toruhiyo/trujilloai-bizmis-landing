@@ -8,6 +8,7 @@ import { fileURLToPath } from 'node:url';
 
 const FPS = 30;
 const FRAME_CAP = 3600;
+const CAPTURE_CHUNK = 180;
 const LAYOUT_WIDTH = 1920;
 const LAYOUT_HEIGHT = 1080;
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
@@ -33,6 +34,7 @@ function usage() {
     '  --out <folder>                 default tmp/ad-1-export',
     '  --url http://127.0.0.1:8080/   dev server',
     '  --verify                       export the range twice and compare frames',
+    '  --resume                       keep frames already in --out and continue',
   ].join('\n');
 }
 
@@ -322,6 +324,56 @@ function printReport(report) {
   }
 }
 
+function firstGap(framesDir) {
+  let frame = 0;
+  while (fs.existsSync(path.join(framesDir, `frame-${String(frame).padStart(6, '0')}.png`))) frame += 1;
+  return frame;
+}
+
+async function captureFilm(chromium, options, framesDir) {
+  fs.mkdirSync(framesDir, { recursive: true });
+  let browser = await launchBrowser(chromium, options.scale);
+  let cursor = options.from;
+  const hardEnd = options.to;
+  const merged = {
+    from: options.from,
+    last: cursor - 1,
+    timeouts: [],
+    rerendered: [],
+    stillTimedOut: [],
+    markers: [],
+    endedEarly: false,
+  };
+  try {
+    while (cursor <= FRAME_CAP) {
+      const chunkEnd = options.scale > 1
+        ? Math.min(hardEnd ?? FRAME_CAP, cursor + CAPTURE_CHUNK - 1)
+        : (hardEnd ?? FRAME_CAP);
+      if (options.scale > 1) process.stdout.write(`capture ${cursor} to ${chunkEnd}\n`);
+      const exported = await exportRange(browser, { ...options, from: cursor, to: chunkEnd }, framesDir);
+      if (exported.last >= cursor) {
+        merged.last = exported.last;
+        merged.timeouts.push(...exported.timeouts);
+        merged.rerendered.push(...exported.rerendered);
+        merged.stillTimedOut.push(...exported.stillTimedOut);
+        merged.markers = exported.markers;
+        merged.endedEarly = exported.endedEarly;
+      }
+      const reachedEnd = exported.endedEarly
+        || exported.last < cursor
+        || exported.last >= (hardEnd ?? FRAME_CAP)
+        || options.scale <= 1;
+      if (reachedEnd) break;
+      cursor = exported.last + 1;
+      await browser.close();
+      browser = await launchBrowser(chromium, options.scale);
+    }
+  } finally {
+    await browser.close();
+  }
+  return merged;
+}
+
 async function main() {
   if (hasFlag('help')) {
     process.stdout.write(`${usage()}\n`);
@@ -334,6 +386,7 @@ async function main() {
   const capture = captureSetup(resolution.width, resolution.height);
   const range = parseFrames(arg('frames', ''));
   const verify = hasFlag('verify');
+  const resume = hasFlag('resume') && !verify;
   const outRoot = path.resolve(ROOT, arg('out', 'tmp/ad-1-export'));
   const options = {
     cta,
@@ -354,18 +407,20 @@ async function main() {
   if (!['ffv1', 'prores'].includes(codec)) throw new Error(`Unknown codec "${codec}".`);
 
   const { chromium } = await loadPlaywright();
-  const browser = await launchBrowser(chromium, capture.scale);
-  try {
-    const run = async (folder) => {
+  const run = async (folder) => {
       const framesDir = path.join(folder, 'frames');
-      fs.rmSync(folder, { recursive: true, force: true });
-      const exported = await exportRange(browser, options, framesDir);
-      const visible = exported.markers.filter((marker) => marker.frame >= options.from && marker.frame <= exported.last);
+      if (!resume) fs.rmSync(folder, { recursive: true, force: true });
+      fs.mkdirSync(framesDir, { recursive: true });
+      if (resume && !range) options.from = firstGap(framesDir);
+      const exported = await captureFilm(chromium, options, framesDir);
+      const sequenceFrom = resume && fs.existsSync(path.join(framesDir, 'frame-000000.png')) ? 0 : options.from;
+      const visible = exported.markers.filter((marker) => marker.frame >= sequenceFrom && marker.frame <= exported.last);
       const ext = codec === 'prores' ? 'mov' : 'mkv';
       const video = path.join(folder, `ad-1-${part}-${cta}-${options.width}x${options.height}.${ext}`);
-      if (exported.last >= options.from) {
-        await encodeVideo(framesDir, video, codec, options.from);
+      if (exported.last >= sequenceFrom) {
+        await encodeVideo(framesDir, video, codec, sequenceFrom);
       }
+      const count = exported.last >= sequenceFrom ? exported.last - sequenceFrom + 1 : 0;
       const report = {
         fps: FPS,
         cta,
@@ -373,10 +428,10 @@ async function main() {
         codec,
         width: options.width,
         height: options.height,
-        from: options.from,
+        from: sequenceFrom,
         last: exported.last,
-        frames: exported.last >= options.from ? exported.last - options.from + 1 : 0,
-        durationSeconds: exported.last >= options.from ? (exported.last - options.from + 1) / FPS : 0,
+        frames: count,
+        durationSeconds: count / FPS,
         timeouts: exported.timeouts,
         rerendered: exported.rerendered,
         stillTimedOut: exported.stillTimedOut,
@@ -407,9 +462,6 @@ async function main() {
     first.verify = compared;
     printReport(first);
     if (compared.mismatches.length) process.exitCode = 1;
-  } finally {
-    await browser.close();
-  }
 }
 
 main().catch((error) => {

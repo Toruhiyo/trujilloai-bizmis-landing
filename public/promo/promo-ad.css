@@ -7393,6 +7393,27 @@ html.is-promo-clip.is-clip-moment #bizmis-avatar-embed {
   background: var(--bizmis-primary);
 }
 
+.promo-opening.is-wash-covered .promo-glide__sheet {
+  visibility: hidden;
+}
+
+.promo-opening.is-wash-covered:not(.is-scale-white) {
+  background: var(--bizmis-primary);
+}
+
+.promo-opening.is-end-pain.is-wash-covered:not(.is-scale-white) {
+  background: var(--ad-surface);
+}
+
+.promo-opening.is-wash-covered:not(.is-scale-white) .promo-glide.is-pitch {
+  background: var(--bizmis-primary);
+}
+
+.promo-opening.is-wash-covered.is-scale-white,
+.promo-opening.is-wash-covered.is-scale-white .promo-glide {
+  background: var(--ad-white);
+}
+
 .promo-glide__lead {
   inset: auto;
   overflow: hidden;
