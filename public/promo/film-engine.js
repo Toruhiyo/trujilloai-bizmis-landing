@@ -1660,17 +1660,60 @@
     window.dispatchEvent(new CustomEvent('bizmis:agent-session-end'));
   }
 
-  function sayClerkLine(line) {
+  function widgetDraftInput() {
     const embed = document.getElementById('bizmis-avatar-embed');
     const input = embed?.querySelector('input[type="text"]:not([disabled])');
     const setter = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, 'value')?.set;
-    if (!input || !setter) return false;
+    if (!input || !setter) return null;
+    return { input, setter };
+  }
+
+  function sayClerkLine(line) {
+    const draft = widgetDraftInput();
+    if (!draft) return false;
+    const { input, setter } = draft;
+    const shown = input.value;
+    const live = document.documentElement.classList.contains('is-promo-live-card');
+    if (live) document.documentElement.classList.add('is-promo-saying');
     setter.call(input, `Say this: "${line}"`);
     input.dispatchEvent(new Event('input', { bubbles: true }));
     const form = input.form || input.closest('form');
     if (!form || typeof form.requestSubmit !== 'function') return false;
     form.requestSubmit();
+    if (live && shown) {
+      setter.call(input, shown);
+      input.dispatchEvent(new Event('input', { bubbles: true }));
+    }
     return true;
+  }
+
+  function hideSayThisBubbles() {
+    const root = document.getElementById('bizmis-avatar-embed');
+    if (!root || root.dataset.sayHidden === '1') return;
+    root.dataset.sayHidden = '1';
+    const hide = () => {
+      root.querySelectorAll('div').forEach((node) => {
+        if (node.children.length > 0) return;
+        const text = (node.textContent || '').trim();
+        if (!text.startsWith('Say this:')) return;
+        node.style.setProperty('display', 'none', 'important');
+        const parent = node.parentElement;
+        if (!parent || parent.querySelector('canvas, input, .bizmis-chat-input-bar')) return;
+        parent.style.setProperty('display', 'none', 'important');
+      });
+    };
+    hide();
+    const observer = new MutationObserver(hide);
+    observer.observe(root, { childList: true, subtree: true, characterData: true });
+    root._promoSayObserver = observer;
+  }
+
+  function releaseSayThisBubbles() {
+    const root = document.getElementById('bizmis-avatar-embed');
+    if (!root) return;
+    root._promoSayObserver?.disconnect();
+    root._promoSayObserver = null;
+    delete root.dataset.sayHidden;
   }
 
   function playClerkLine(line, speakMs, onStart) {
@@ -3652,7 +3695,37 @@
       }, strikeAt + 1100);
     }
 
+    async typeWidgetDraft(text) {
+      const draft = widgetDraftInput();
+      if (!draft) return false;
+      const { input, setter } = draft;
+      if (input.value && input.value !== text) {
+        input.style.transition = 'opacity 260ms cubic-bezier(0.22, 1, 0.36, 1)';
+        input.style.opacity = '0';
+        await waitMs(260);
+        setter.call(input, '');
+        input.dispatchEvent(new Event('input', { bubbles: true }));
+        input.style.opacity = '1';
+        await waitMs(180);
+      }
+      if (prefersReducedMotion()) {
+        setter.call(input, text);
+        input.dispatchEvent(new Event('input', { bubbles: true }));
+        return true;
+      }
+      for (let index = 1; index <= text.length; index += 1) {
+        setter.call(input, text.slice(0, index));
+        input.dispatchEvent(new Event('input', { bubbles: true }));
+        await waitMs(PROMO_PAIN_TYPE_CHAR_MS);
+      }
+      return true;
+    }
+
     async typeShopperLine(text) {
+      if (document.documentElement.classList.contains('is-promo-live-card')) {
+        const typed = await this.typeWidgetDraft(text);
+        if (typed) return;
+      }
       const store = this.painStore();
       if (!store) return;
       let node = store.querySelector('[data-promo-shopper-line]');
@@ -3773,6 +3846,7 @@
       await this.markCloseStoreSold();
       endOpeningAgent();
       markPromoVo('closes');
+      await this.releaseLiveCard();
       this.playPitchConveyor();
     }
 
@@ -3826,6 +3900,66 @@
       step(started);
     }
 
+    seatLiveCard(instant) {
+      const widget = this.root.querySelector('[data-promo-widget]');
+      const store = this.painStore();
+      const embed = this.parkedEmbed || document.getElementById('bizmis-avatar-embed');
+      if (!widget || !store) return;
+      document.documentElement.classList.add('is-promo-live-card');
+      document.documentElement.classList.remove('is-promo-card-out');
+      hideSayThisBubbles();
+      if (embed) {
+        embed.style.setProperty('--promo-avatar-scale', '1');
+        embed.style.setProperty('--promo-avatar-lift', '0px');
+      }
+      const from = widget.getBoundingClientRect();
+      if (widget.parentElement !== store) store.appendChild(widget);
+      widget.style.top = 'auto';
+      widget.style.left = 'auto';
+      widget.style.right = '';
+      widget.style.bottom = '';
+      widget.style.margin = '0';
+      widget.style.transformOrigin = 'top left';
+      widget.style.transition = 'none';
+      widget.style.transform = 'none';
+      if (instant) return;
+      const to = widget.getBoundingClientRect();
+      const dx = from.left - to.left;
+      const dy = from.top - to.top;
+      const scale = to.width > 8 ? from.width / to.width : 1;
+      if (Math.abs(dx) < 1 && Math.abs(dy) < 1 && Math.abs(scale - 1) < 0.04) return;
+      widget.style.transform = `translate(${dx.toFixed(1)}px, ${dy.toFixed(1)}px) scale(${scale.toFixed(4)})`;
+      widget.getBoundingClientRect();
+      widget.style.transition = 'transform 900ms cubic-bezier(0.22, 1, 0.36, 1)';
+      widget.style.transform = 'none';
+      window.setTimeout(() => {
+        if (!document.documentElement.classList.contains('is-promo-live-card')) return;
+        widget.style.transition = '';
+        widget.style.transform = '';
+        widget.style.transformOrigin = '';
+      }, 940);
+    }
+
+    async releaseLiveCard() {
+      const widget = this.root.querySelector('[data-promo-widget]');
+      const stage = this.root.querySelector('.promo-opening__stage');
+      document.documentElement.classList.add('is-promo-card-out');
+      if (!prefersReducedMotion()) await waitMs(420);
+      if (widget && stage && widget.parentElement !== stage) stage.appendChild(widget);
+      if (widget) {
+        widget.style.top = '';
+        widget.style.left = '';
+        widget.style.right = '';
+        widget.style.bottom = '';
+        widget.style.margin = '';
+        widget.style.transform = '';
+        widget.style.transformOrigin = '';
+        widget.style.transition = '';
+      }
+      document.documentElement.classList.remove('is-promo-live-card', 'is-promo-saying');
+      releaseSayThisBubbles();
+    }
+
     seatClerkInStore(instant) {
       const embed = this.parkedEmbed || document.getElementById('bizmis-avatar-embed');
       const widget = this.root.querySelector('[data-promo-widget]');
@@ -3844,6 +3978,10 @@
         applyMomentPose(stage, 'grid', { instant: true });
       }
       if (!embed || !widget || !canvas || !store) return;
+      if (this.root.classList.contains('is-pitch-cards') && !this.root.classList.contains('is-clip-moment')) {
+        this.seatLiveCard(instant || prefersReducedMotion());
+        return;
+      }
       this.settleClerkRow();
       this.clerkCornerActive = true;
       const snap = instant || prefersReducedMotion();
@@ -4376,6 +4514,7 @@
     }
 
     playStorePass(onDone) {
+      document.documentElement.classList.remove('is-promo-card-out');
       const slides = this.carouselTrack
         ? [...this.carouselTrack.querySelectorAll('.promo-opening__slide')]
         : [];

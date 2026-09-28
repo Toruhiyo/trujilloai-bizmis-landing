@@ -5210,10 +5210,10 @@ html.is-promo-ready .promo-opening__boot {
   height: 100% !important;
 }
 
-[id="bizmis-avatar-embed"].is-promo-widget-parked,
-[id="bizmis-avatar-embed"].is-promo-widget-parked .avatar-widget-container,
-[id="bizmis-avatar-embed"].is-promo-widget-parked .avatar-widget-container *,
-[id="bizmis-avatar-embed"].is-promo-widget-parked canvas {
+html:not(.is-promo-live-card) [id="bizmis-avatar-embed"].is-promo-widget-parked,
+html:not(.is-promo-live-card) [id="bizmis-avatar-embed"].is-promo-widget-parked .avatar-widget-container,
+html:not(.is-promo-live-card) [id="bizmis-avatar-embed"].is-promo-widget-parked .avatar-widget-container *,
+html:not(.is-promo-live-card) [id="bizmis-avatar-embed"].is-promo-widget-parked canvas {
   background: transparent !important;
   background-color: transparent !important;
   background-image: none !important;
@@ -5232,15 +5232,108 @@ html.is-promo-ready .promo-opening__boot {
   transform: none !important;
 }
 
-[id="bizmis-avatar-embed"].is-promo-widget-parked button,
-[id="bizmis-avatar-embed"].is-promo-widget-parked [data-window-chrome],
-[id="bizmis-avatar-embed"].is-promo-widget-parked .bizmis-audio-toggle,
-[id="bizmis-avatar-embed"].is-promo-widget-parked .bizmis-chat-input-bar,
-[id="bizmis-avatar-embed"].is-promo-widget-parked form,
-[id="bizmis-avatar-embed"].is-promo-widget-parked textarea,
-[id="bizmis-avatar-embed"].is-promo-widget-parked input,
-[id="bizmis-avatar-embed"].is-promo-widget-parked [class*='composer'] {
+html:not(.is-promo-live-card) [id="bizmis-avatar-embed"].is-promo-widget-parked button,
+html:not(.is-promo-live-card) [id="bizmis-avatar-embed"].is-promo-widget-parked [data-window-chrome],
+html:not(.is-promo-live-card) [id="bizmis-avatar-embed"].is-promo-widget-parked .bizmis-audio-toggle,
+html:not(.is-promo-live-card) [id="bizmis-avatar-embed"].is-promo-widget-parked .bizmis-chat-input-bar,
+html:not(.is-promo-live-card) [id="bizmis-avatar-embed"].is-promo-widget-parked form,
+html:not(.is-promo-live-card) [id="bizmis-avatar-embed"].is-promo-widget-parked textarea,
+html:not(.is-promo-live-card) [id="bizmis-avatar-embed"].is-promo-widget-parked input,
+html:not(.is-promo-live-card) [id="bizmis-avatar-embed"].is-promo-widget-parked [class*='composer'] {
   display: none !important;
+}
+
+html.is-promo-live-card [id="bizmis-avatar-embed"].is-promo-widget-parked {
+  width: 288px !important;
+  height: auto !important;
+  overflow: visible !important;
+}
+
+html.is-promo-live-card [id="bizmis-avatar-embed"].is-promo-widget-parked > .avatar-widget-container {
+  position: relative !important;
+  top: auto !important;
+  left: auto !important;
+  width: 288px !important;
+  height: auto !important;
+  overflow: visible !important;
+  transform: none !important;
+}
+
+html.is-promo-live-card [id="bizmis-avatar-embed"].is-promo-widget-parked .avatar-widget-container,
+html.is-promo-live-card [id="bizmis-avatar-embed"].is-promo-widget-parked .avatar-widget-container > * {
+  overflow: visible !important;
+  width: auto !important;
+  height: auto !important;
+}
+
+html.is-promo-live-card .promo-shopper-line {
+  display: none;
+}
+
+html.is-promo-live-card .bizmis-desktop-lite-chat .theme-bg-primary.rounded-2xl {
+  visibility: hidden !important;
+  position: absolute !important;
+  width: 0 !important;
+  height: 0 !important;
+  overflow: hidden !important;
+  padding: 0 !important;
+}
+
+@keyframes promo-live-glass-in {
+  from {
+    background-color: transparent;
+    background-image: none;
+    box-shadow: none;
+    border-color: transparent;
+  }
+}
+
+@keyframes promo-live-chrome-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+html.is-promo-live-card .theme-bg-glassy {
+  animation: promo-live-glass-in 860ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+html.is-promo-live-card .bizmis-chat-input-bar {
+  animation: promo-live-chrome-in 720ms cubic-bezier(0.22, 1, 0.36, 1) 140ms both;
+}
+
+.promo-opening.is-pitch-cards.is-moments .promo-opening__store > .promo-opening__widget {
+  position: absolute;
+  top: auto;
+  right: 18px;
+  bottom: 18px;
+  left: auto;
+  z-index: 8;
+  width: max-content;
+  margin: 0;
+  transform: none;
+}
+
+.promo-opening.is-pitch-cards.is-moments .promo-opening__store.is-phone > .promo-opening__widget {
+  right: 8px;
+  bottom: 10px;
+  transform: scale(0.78);
+  transform-origin: 100% 100%;
+  transition: transform 700ms cubic-bezier(0.22, 1, 0.36, 1), right 700ms cubic-bezier(0.22, 1, 0.36, 1), bottom 700ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+html.is-promo-card-out .promo-opening__widget {
+  opacity: 0 !important;
+  transition: opacity 420ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.promo-opening.is-store-pass .promo-opening__widget {
+  transition: opacity 500ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 html.is-promo-opening.is-promo-pitch [id="bizmis-avatar-embed"]:not(.is-promo-widget-parked),
@@ -5317,16 +5410,16 @@ html.is-promo-widget-entering .avatar-widget-container {
   }
 }
 
-html.is-promo-opening.is-promo-pitch [id="bizmis-avatar-embed"] textarea,
-html.is-promo-opening.is-promo-pitch [id="bizmis-avatar-embed"] input,
-html.is-promo-opening.is-promo-pitch [id="bizmis-avatar-embed"] .bizmis-chat-input-bar,
-html.is-promo-opening.is-promo-pitch [id="bizmis-avatar-embed"] [class*='composer'],
-html.is-promo-opening.is-promo-pitch [id="bizmis-avatar-embed"] button,
-html.is-promo-opening.is-promo-pitch [id="bizmis-avatar-embed"] [data-window-chrome],
-html.is-promo-opening.is-promo-pitch [id="bizmis-avatar-embed"] form,
-html.is-promo-opening.is-promo-pitch [id="bizmis-avatar-embed"] .bottom-full,
-html.is-promo-opening.is-promo-pitch [id="bizmis-avatar-embed"] .bizmis-card-activity-card,
-html.is-promo-opening.is-promo-pitch [id="bizmis-avatar-embed"] .bizmis-bar-activity-card,
+html.is-promo-opening.is-promo-pitch:not(.is-promo-live-card) [id="bizmis-avatar-embed"] textarea,
+html.is-promo-opening.is-promo-pitch:not(.is-promo-live-card) [id="bizmis-avatar-embed"] input,
+html.is-promo-opening.is-promo-pitch:not(.is-promo-live-card) [id="bizmis-avatar-embed"] .bizmis-chat-input-bar,
+html.is-promo-opening.is-promo-pitch:not(.is-promo-live-card) [id="bizmis-avatar-embed"] [class*='composer'],
+html.is-promo-opening.is-promo-pitch:not(.is-promo-live-card) [id="bizmis-avatar-embed"] button,
+html.is-promo-opening.is-promo-pitch:not(.is-promo-live-card) [id="bizmis-avatar-embed"] [data-window-chrome],
+html.is-promo-opening.is-promo-pitch:not(.is-promo-live-card) [id="bizmis-avatar-embed"] form,
+html.is-promo-opening.is-promo-pitch:not(.is-promo-live-card) [id="bizmis-avatar-embed"] .bottom-full,
+html.is-promo-opening.is-promo-pitch:not(.is-promo-live-card) [id="bizmis-avatar-embed"] .bizmis-card-activity-card,
+html.is-promo-opening.is-promo-pitch:not(.is-promo-live-card) [id="bizmis-avatar-embed"] .bizmis-bar-activity-card,
 html.is-promo-opening.is-promo-pitch .bizmis-subtitles-portal-root,
 html.is-promo-opening.is-promo-pitch [data-caption-style],
 html.is-promo-opening.is-promo-pitch .bizmis-caption-word {
