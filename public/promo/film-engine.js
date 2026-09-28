@@ -169,13 +169,13 @@
   const PROMO_TOGGLE_REST_MS = 1000;
   const PROMO_OPENING_REVEAL_STORE = false;
   const PROMO_OPENING_CLOCK = true;
-  const PROMO_AGENTIC_MOVE_MS = 900;
-  const PROMO_AGENTIC_GROW_MS = 1800;
-  const PROMO_AGENTIC_SCALE = 10;
-  const PROMO_AGENTIC_BURST_AT_MS = 680;
-  const PROMO_AGENTIC_WHITE_AT_MS = 40;
-  const PROMO_AGENTIC_FADE_AT_MS = 170;
-  const PROMO_AGENTIC_FADE_MS = 380;
+  const PROMO_SWITCH_MOVE_MS = 900;
+  const PROMO_SWITCH_GROW_MS = 1800;
+  const PROMO_SWITCH_SCALE = 10;
+  const PROMO_SWITCH_BURST_AT_MS = 680;
+  const PROMO_SWITCH_WHITE_AT_MS = 40;
+  const PROMO_SWITCH_FADE_AT_MS = 170;
+  const PROMO_SWITCH_FADE_MS = 380;
   const PROMO_FLIP_BURST_MS = 600;
   const PROMO_FLOOD_MS = 600;
   const PROMO_FLIP_HOLD_MS = 1350;
@@ -184,13 +184,9 @@
   const PROMO_PITCH_LOGO_OUT_MS = 420;
   const PROMO_PITCH_WORD_STAGGER_MS = 36;
   const PROMO_PITCH_WORD_IN_MS = 180;
-  const PROMO_PITCH_REDEFINE_HOLD_MS = 180;
-  const PROMO_PITCH_STRIKE_MS = 420;
-  const PROMO_PITCH_STRIKE_HOLD_MS = 200;
-  const PROMO_PITCH_MORPH_MS = 720;
   const PROMO_PITCH_REPLACE_PAUSE_MS = 920;
   const PROMO_PITCH_WORD_OUT_MS = 400;
-  const PROMO_PITCH_WORD_OUT_STAGGER_MS = [0, 140, 70];
+  const PROMO_PITCH_WORD_OUT_STAGGER_MS = [0, 140, 70, 210];
   const PROMO_AVATAR_MAX_SCALE = 2.15;
   const PROMO_AVATAR_BOX_W = 440;
   const PROMO_AVATAR_BOX_H = 340;
@@ -3426,17 +3422,17 @@
       this.root.classList.add('is-on');
       this.startOpeningClock();
       window.setTimeout(() => {
-        this.root.style.setProperty('--promo-center', `${PROMO_AGENTIC_MOVE_MS}ms`);
+        this.root.style.setProperty('--promo-center', `${PROMO_SWITCH_MOVE_MS}ms`);
         this.root.classList.add('is-cleared');
-        this.centerAgenticSales();
+        this.centerSwitchLabel();
         window.setTimeout(() => {
-          this.scaleAgenticSales();
-          window.setTimeout(() => this.burst(), PROMO_AGENTIC_BURST_AT_MS);
-        }, PROMO_AGENTIC_MOVE_MS);
+          this.scaleSwitchLabel();
+          window.setTimeout(() => this.burst(), PROMO_SWITCH_BURST_AT_MS);
+        }, PROMO_SWITCH_MOVE_MS);
       }, PROMO_FLIP_KNOB_MS);
     }
 
-    centerAgenticSales() {
+    centerSwitchLabel() {
       const label = this.root.querySelector('.promo-opening__choice--right');
       const stage = this.root.querySelector('.promo-opening__center');
       if (!label || !stage) return;
@@ -3445,17 +3441,17 @@
       const stageRect = stage.getBoundingClientRect();
       const dx = (stageRect.left + stageRect.width / 2) - (labelRect.left + labelRect.width / 2);
       const dy = (stageRect.top + stageRect.height / 2) - (labelRect.top + labelRect.height / 2);
-      this.agenticShift = { dx, dy };
+      this.switchLabelShift = { dx, dy };
       label.style.transform = `translate(${dx}px, ${dy}px) scale(1)`;
     }
 
-    scaleAgenticSales(scale = PROMO_AGENTIC_SCALE) {
+    scaleSwitchLabel(scale = PROMO_SWITCH_SCALE) {
       const label = this.root.querySelector('.promo-opening__choice--right');
       if (!label) return;
-      if (!this.agenticShift) this.centerAgenticSales();
-      const { dx, dy } = this.agenticShift;
+      if (!this.switchLabelShift) this.centerSwitchLabel();
+      const { dx, dy } = this.switchLabelShift;
       if (label.style.transition !== 'none') {
-        label.style.transition = `transform ${PROMO_AGENTIC_GROW_MS}ms linear, opacity ${PROMO_AGENTIC_FADE_MS}ms linear`;
+        label.style.transition = `transform ${PROMO_SWITCH_GROW_MS}ms linear, opacity ${PROMO_SWITCH_FADE_MS}ms linear`;
       }
       label.style.transform = `translate(${dx}px, ${dy}px) scale(${scale})`;
     }
@@ -3477,13 +3473,13 @@
       this.root.classList.add('is-bursting');
       tweenAdWarmth();
       window.setTimeout(() => {
-        this.root.classList.add('is-agentic-white');
-      }, PROMO_AGENTIC_WHITE_AT_MS);
-      window.setTimeout(() => this.fadeAgenticSales(), PROMO_AGENTIC_FADE_AT_MS);
+        this.root.classList.add('is-switch-white');
+      }, PROMO_SWITCH_WHITE_AT_MS);
+      window.setTimeout(() => this.fadeSwitchLabel(), PROMO_SWITCH_FADE_AT_MS);
       window.setTimeout(() => this.hold(), PROMO_FLIP_BURST_MS);
     }
 
-    fadeAgenticSales() {
+    fadeSwitchLabel() {
       const label = this.root.querySelector('.promo-opening__choice--right');
       if (!label) return;
       label.style.opacity = '0';
@@ -3561,32 +3557,9 @@
       line.classList.add('is-revealing');
 
       const wordsInAt = (fromWords.length - 1) * PROMO_PITCH_WORD_STAGGER_MS + PROMO_PITCH_WORD_IN_MS;
-      const strikeAt = wordsInAt + PROMO_PITCH_REDEFINE_HOLD_MS;
-      const morphAt = strikeAt + PROMO_PITCH_STRIKE_MS + PROMO_PITCH_STRIKE_HOLD_MS;
-      const morphDoneAt = morphAt + PROMO_PITCH_MORPH_MS;
-      const replaceAt = morphDoneAt + PROMO_PITCH_REPLACE_PAUSE_MS;
-      const from = line.querySelector('.promo-opening__from');
-      const to = line.querySelector('.promo-opening__to');
+      const replaceAt = wordsInAt + PROMO_PITCH_REPLACE_PAUSE_MS;
       const outSpan = Math.max(...PROMO_PITCH_WORD_OUT_STAGGER_MS);
       const toInAt = replaceAt + PROMO_PITCH_WORD_OUT_MS + outSpan + PROMO_PITCH_REPLACE_GAP_MS;
-
-      window.setTimeout(() => {
-        if (from) from.style.width = `${from.getBoundingClientRect().width}px`;
-        if (to) to.style.width = '0px';
-        line.classList.add('is-striking');
-      }, strikeAt);
-
-      window.setTimeout(() => {
-        line.classList.add('is-erasing', 'is-redefined');
-        if (from) from.style.width = '0px';
-        if (to) to.style.width = 'auto';
-      }, morphAt);
-
-      window.setTimeout(() => {
-        line.classList.remove('is-striking', 'is-erasing');
-        if (from) from.style.width = '0px';
-        if (to) to.style.width = '';
-      }, morphDoneAt);
 
       window.setTimeout(() => {
         fromWords.forEach((word, index) => {
@@ -6933,8 +6906,8 @@
         node.style.transition = 'none';
         node.style.opacity = '0';
       });
-      this.centerAgenticSales();
-      this.scaleAgenticSales(2.25 + warmth * 2.35);
+      this.centerSwitchLabel();
+      this.scaleSwitchLabel(2.25 + warmth * 2.35);
       this.pinLabelOrigin();
       const fill = root.querySelector('.promo-opening__fill--orange');
       if (fill) {
@@ -6985,8 +6958,6 @@
       const toFace = root.querySelector('[data-promo-face-to]');
       const fromWords = fromFace ? [...fromFace.querySelectorAll('[data-promo-from-word]')] : [];
       const toWords = toFace ? [...toFace.querySelectorAll('[data-promo-to-word]')] : [];
-      const from = line?.querySelector('.promo-opening__from');
-      const to = line?.querySelector('.promo-opening__to');
 
       const resetText = () => {
         this.resetSee();
@@ -7011,14 +6982,6 @@
           word.style.animation = 'none';
           word.style.transform = '';
         });
-        if (from) {
-          from.style.width = '';
-          from.style.opacity = '';
-        }
-        if (to) {
-          to.style.width = '';
-          to.style.opacity = '';
-        }
       };
 
       const hideToggle = () => {
@@ -7210,10 +7173,10 @@
             node.style.transition = 'none';
             node.style.opacity = '0';
           });
-          this.centerAgenticSales();
+          this.centerSwitchLabel();
           return 80;
         },
-        '02c-agentic-scaled': () => {
+        '02c-switch-scaled': () => {
           rest();
           root.classList.add('is-on', 'is-cleared');
           const label = root.querySelector('.promo-opening__choice--right');
@@ -7222,8 +7185,8 @@
             node.style.transition = 'none';
             node.style.opacity = '0';
           });
-          this.centerAgenticSales();
-          this.scaleAgenticSales(2.25);
+          this.centerSwitchLabel();
+          this.scaleSwitchLabel(2.25);
           return 80;
         },
         '03a-flood-warmth-0': () => this.paintFloodStill(0),
@@ -7231,7 +7194,7 @@
         '03c-flood-warmth-1': () => this.paintFloodStill(1),
         '03-orange-burst': () => {
           rest();
-          root.classList.add('is-on', 'is-cleared', 'is-bursting', 'is-agentic-white');
+          root.classList.add('is-on', 'is-cleared', 'is-bursting', 'is-switch-white');
           const label = root.querySelector('.promo-opening__choice--right');
           if (label) label.style.transition = 'none';
           root.querySelectorAll('.promo-opening__choice-layer--hot').forEach((node) => {
@@ -7241,8 +7204,8 @@
             node.style.transition = 'none';
             node.style.opacity = '0';
           });
-          this.centerAgenticSales();
-          this.scaleAgenticSales(4.6);
+          this.centerSwitchLabel();
+          this.scaleSwitchLabel(4.6);
           this.pinLabelOrigin();
           document.documentElement.style.setProperty('--ad-warmth', '1');
           const fill = root.querySelector('.promo-opening__fill--orange');
@@ -7281,35 +7244,8 @@
           showFromCount(2);
           return 180;
         },
-        '08-salesperson': () => {
-          showFromCount(3);
-          return 180;
-        },
-        '09-salesperson-struck': () => {
-          showFromCount(3);
-          line?.classList.add('is-striking');
-          if (from) from.style.width = `${from.getBoundingClientRect().width}px`;
-          if (to) {
-            to.style.width = '0px';
-            to.style.opacity = '0';
-          }
-          return 180;
-        },
-        '10-sales-agent': () => {
-          showFromCount(3);
-          line?.classList.add('is-redefined');
-          const word = line?.querySelector('.promo-opening__word--salesperson');
-          [word, from, to].forEach((node) => {
-            if (node) node.style.transition = 'none';
-          });
-          if (from) {
-            from.style.width = '0px';
-            from.style.opacity = '0';
-          }
-          if (to) {
-            to.style.width = 'auto';
-            to.style.opacity = '1';
-          }
+        '08-eyebrow': () => {
+          showFromCount(4);
           return 180;
         },
         '11-built': () => {

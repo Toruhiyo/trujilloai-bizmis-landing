@@ -34,13 +34,11 @@ The sea washes to solid light grey. The line stays on top.
 
 ## 5. The switch
 
-The sea fades out. A switch reads "Typical chatbot" and "Agentic sales". The knob flips to Agentic sales. That label moves to center, grows, and bursts to white.
+The sea fades out. A switch reads "Typical chatbot" and "Sales agent". The knob flips to Sales agent. That label moves to center, grows, and bursts to white.
 
-## 6. Your store sales agent
+## 6. Your store, with bizmis
 
-The Bizmis mark. Then the line, word by word: "Your store salesperson."
-
-"person" is struck out and replaced, so the line reads "Your store sales agent."
+The Bizmis mark. Then the eyebrow: "YOUR STORE, WITH bizmis."
 
 Then, one word at a time: "Built." "to." "sell."
 
