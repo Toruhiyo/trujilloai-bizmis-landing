@@ -1,0 +1,10 @@
+---
+description: Keep the ad-1 screen script in sync with the film
+alwaysApply: true
+---
+
+When a change alters what the ad-1 film shows, says, or the order of its beats, update `public/promo/ad-1-script.md` in this repo in the same change, before the film change is done.
+
+The script is the shot list and the on-screen and spoken lines. It is not a timing spec. Rewrite only the beats that changed. Do not leave a stale line.
+
+Behavior lives in `public/promo/film-engine.js` and `public/promo/film-markup.html`. The script follows those files. If they disagree, the code is right and the script gets corrected.
