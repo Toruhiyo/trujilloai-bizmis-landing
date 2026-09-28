@@ -8,7 +8,7 @@ import { fileURLToPath } from 'node:url';
 
 const FPS = 30;
 const FRAME_CAP = 3600;
-const CAPTURE_CHUNK = 180;
+const CAPTURE_CHUNK = 3600;
 const LAYOUT_WIDTH = 1920;
 const LAYOUT_HEIGHT = 1080;
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
