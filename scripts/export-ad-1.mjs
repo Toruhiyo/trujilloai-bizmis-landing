@@ -25,7 +25,7 @@ function hasFlag(name) {
 function usage() {
   return [
     'Usage: node scripts/export-ad-1.mjs [options]',
-    '  --cta demo|ea|install|none     default demo',
+    '  --cta demo|ea|install|none     default install',
     '  --part full|pain|pitch         default full',
     '  --resolution 1920x1080         or 3840x2160',
     '  --frames 0-59                  inclusive range, default the whole film',
@@ -321,7 +321,7 @@ async function main() {
     process.stdout.write(`${usage()}\n`);
     return;
   }
-  const cta = (arg('cta', 'demo') || 'demo').trim().toLowerCase();
+  const cta = (arg('cta', 'install') || 'install').trim().toLowerCase();
   const part = (arg('part', 'full') || 'full').trim().toLowerCase();
   const codec = (arg('codec', 'ffv1') || 'ffv1').trim().toLowerCase();
   const resolution = parseResolution(arg('resolution', '1920x1080'));

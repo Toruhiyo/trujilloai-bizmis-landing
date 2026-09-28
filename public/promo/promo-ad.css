@@ -842,25 +842,29 @@ html.is-promo-opening.is-promo-depart .promo-opening {
 .promo-opening__store.is-phone .promo-moments__board.is-pose-bundle .promo-moments__card.is-pick,
 .promo-opening__store.is-phone .promo-moments__board.is-pose-extra .promo-moments__card.is-pick {
   left: 50%;
-  top: 27%;
-  --card-w: min(188px, 70%);
+  top: 18%;
+  --card-w: min(220px, 78%);
   padding: 10px;
 }
 
 .promo-opening__store.is-phone .promo-moments__board.is-pose-bundle .promo-moments__card.is-extra,
 .promo-opening__store.is-phone .promo-moments__board.is-pose-extra .promo-moments__card.is-extra {
   left: 50%;
-  top: 66%;
-  --card-w: min(168px, 62%);
+  top: 64%;
+  --card-w: min(220px, 78%);
   padding: 10px;
 }
 
 .promo-opening__store.is-phone .promo-moments__board.is-pose-bundle .promo-moments__card.is-pick .promo-moments__photo,
-.promo-opening__store.is-phone .promo-moments__board.is-pose-extra .promo-moments__card.is-pick .promo-moments__photo,
+.promo-opening__store.is-phone .promo-moments__board.is-pose-extra .promo-moments__card.is-pick .promo-moments__photo {
+  aspect-ratio: 1.15;
+  max-height: 148px;
+}
+
 .promo-opening__store.is-phone .promo-moments__board.is-pose-bundle .promo-moments__card.is-extra .promo-moments__photo,
 .promo-opening__store.is-phone .promo-moments__board.is-pose-extra .promo-moments__card.is-extra .promo-moments__photo {
-  aspect-ratio: 1.45;
-  max-height: 108px;
+  aspect-ratio: 2.2;
+  max-height: 86px;
 }
 
 .promo-opening__store.is-phone .promo-moments__board.is-pose-bundle .promo-moments__plus,
@@ -907,21 +911,28 @@ html.is-promo-opening.is-promo-depart .promo-opening {
   position: relative;
 }
 
-.promo-opening__struck::after {
+.promo-opening__struck::after,
+.promo-opening__person::after {
   content: "";
   position: absolute;
   left: 0;
   top: 50%;
   width: 0;
-  height: 0.08em;
-  min-height: 3px;
+  height: 0.11em;
+  min-height: 4px;
   border-radius: 999px;
-  background: currentColor;
+  background: var(--bizmis-primary);
   transform: translateY(-50%);
+}
+
+.promo-opening__person {
+  position: relative;
+  display: inline-block;
 }
 
 .promo-opening__agent {
   opacity: 0;
+  color: var(--bizmis-primary);
   white-space: pre;
 }
 
@@ -932,25 +943,20 @@ html.is-promo-opening.is-promo-depart .promo-opening {
   transition: opacity 280ms ease 520ms;
 }
 
-.promo-opening__line.is-striking .promo-opening__struck::after {
+.promo-opening__line.is-striking .promo-opening__person::after {
   width: 100%;
   transition: width 420ms cubic-bezier(0.65, 0, 0.35, 1);
 }
 
-.promo-opening__line.is-striking .promo-opening__word--salesperson {
-  color: var(--bizmis-primary);
-}
-
 .promo-opening__line.is-striking .promo-opening__agent {
   opacity: 1;
-  color: var(--bizmis-primary);
-  transition: opacity 280ms ease 560ms;
+  transition: opacity 320ms ease 560ms;
 }
 
 .promo-store-open {
   position: absolute;
   inset: 0;
-  z-index: 30;
+  z-index: 6;
   display: grid;
   place-items: center;
   background: var(--ad-white);
@@ -962,12 +968,12 @@ html.is-promo-opening.is-promo-depart .promo-opening {
   color: var(--ad-ink);
   font-family: var(--font-heading);
   font-weight: 700;
-  font-size: clamp(3.4rem, 7vw, 6rem);
+  font-size: clamp(2.2rem, 8cqw, 4.4rem);
   letter-spacing: -0.045em;
   line-height: 1;
   opacity: 0;
-  transform: translateY(14px);
-  transition: opacity 420ms ease, transform 420ms ease;
+  transform: translateY(8px);
+  transition: opacity 140ms ease, transform 140ms ease;
 }
 
 .promo-store-open.is-in .promo-store-open__title {
@@ -977,7 +983,7 @@ html.is-promo-opening.is-promo-depart .promo-opening {
 
 .promo-store-open.is-out {
   opacity: 0;
-  transition: opacity 460ms ease;
+  transition: opacity 160ms ease;
 }
 
 .promo-opening__store::before {
@@ -1963,6 +1969,10 @@ html.is-promo-opening.is-promo-depart .promo-opening {
 .promo-opening.is-pain .promo-moments__card.is-pain-add .promo-moments__add {
   border-color: var(--ad-ink);
   color: var(--ad-ink);
+}
+
+.promo-opening.is-pitch .promo-opening__store.is-desktop .promo-pain__cursor {
+  display: none !important;
 }
 
 .promo-pain__cursor {
@@ -7639,7 +7649,7 @@ html.is-promo-clip.is-clip-moment #bizmis-avatar-embed {
 }
 
 .promo-opening.is-store-pass .promo-opening__slide {
-  width: min(1160px, 90vw);
+  width: min(1400px, 92vw);
   margin: 0;
 }
 
@@ -7651,9 +7661,8 @@ html.is-promo-clip.is-clip-moment #bizmis-avatar-embed {
 
 .promo-opening.is-store-pass .promo-opening__slide-hero {
   object-fit: cover;
-  object-position: left top;
-  transform: scale(1.3);
-  transform-origin: left top;
+  object-position: center center;
+  transform: none;
 }
 
 .promo-opening.is-store-pass.is-see-wave .promo-opening__slide-sector {
@@ -7677,10 +7686,12 @@ html.is-promo-clip.is-clip-moment #bizmis-avatar-embed {
 }
 
 .promo-opening.is-store-pass .promo-opening__slide-card {
+  height: min(68vh, 780px);
+  aspect-ratio: auto;
   background: var(--ad-white);
   box-shadow: 0 28px 70px color-mix(in srgb, var(--promo-store-accent, #888) 22%, transparent);
   backdrop-filter: none;
-  border-radius: 22px;
+  border-radius: 28px;
 }
 
 .promo-opening.is-pass-slot .promo-opening__stores,
@@ -7727,11 +7738,35 @@ html.is-promo-clip.is-clip-moment #bizmis-avatar-embed {
 }
 
 .promo-pass-slot__action {
+  padding: 0.08em 0.04em 0.12em;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
   font-family: var(--font-heading);
-  font-size: clamp(2.6rem, 5vw, 4.4rem);
-  font-weight: 600;
+  font-size: clamp(2.8rem, 5.4vw, 4.8rem);
+  font-weight: 700;
   letter-spacing: -0.045em;
   line-height: 1.02;
+  background-image:
+    linear-gradient(
+      108deg,
+      transparent 0%,
+      transparent 40%,
+      rgba(255, 255, 255, 0.2) 46%,
+      rgba(255, 255, 255, 0.95) 50%,
+      rgba(255, 255, 255, 0.2) 54%,
+      transparent 60%,
+      transparent 100%
+    ),
+    linear-gradient(var(--ad-ink), var(--ad-ink));
+  background-size: 280% 100%, 100% 100%;
+  background-position: 140% 0, 0 0;
+  background-repeat: no-repeat;
+  -webkit-background-clip: text;
+  background-clip: text;
+}
+
+.promo-pass-slot.is-in .promo-pass-slot__action {
+  animation: promo-end-metal 3.8s cubic-bezier(0.45, 0.05, 0.2, 1) infinite;
 }
 
 .promo-pass-slot__url {

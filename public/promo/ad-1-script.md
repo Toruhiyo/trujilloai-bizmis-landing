@@ -1,6 +1,6 @@
 # ad-1
 
-Played at `/?marketing=ad-1`. The default call to action is `cta=demo`. `cta=ea`, `cta=install`, and `cta=none` change only the end card. `part=pain` stops after the dull sea. `part=pitch` starts at the switch.
+Played at `/?marketing=ad-1`. The default call to action is `cta=install`. `cta=demo`, `cta=ea`, and `cta=none` change only the end card. `part=pain` stops after the dull sea. `part=pitch` starts at the switch.
 
 Lines in quotes are on screen or spoken. **VO** is the narrator (recorded by Oriol, voice-changed in ElevenLabs). **Clerk** is the product's own voice, speaking to the shopper. Spoken lines are never written on the store. The VO never overlaps the clerk: VO between cards, clerk inside them.
 
@@ -10,7 +10,7 @@ The film says "chatbot" and "sales agent". "Salesperson" is only the struck word
 
 ## 1. Lost in the catalog (desktop)
 
-The first close-up opens on a large "Your store" in the center, like the page arriving, with no spinner. That title leaves and the desktop window is there, titled "Your store" in the browser bar. The shopper opens a product, goes back, bounces between two similar products, opens another, backs out.
+The first close-up is the desktop window, already framed. Inside that window only, the page loads with a large "Your store" in the center of the page and no spinner. It is gone in under half a second, and the catalog is there. The window's own header also reads "Your store". The shopper opens a product, goes back, bounces between two similar products, opens another, backs out.
 
 **VO** `two-places`: "In every online store, a sale dies in two places."
 
@@ -42,7 +42,7 @@ The thumb leaves. No X. A grey veil and "LOST" stamp the phone.
 
 ## 3. The dull sea
 
-The pullback starts on that phone. The desktop LOST is the card beside it. Every card is "Your store", in the browser bar next to the store icon. Most of them stamp "LOST". While the sea is still moving and blurred, this line comes up, holds, then fades out before the field is solid grey:
+The pullback starts on that phone. The desktop LOST is the card beside it. The frame stays full of mockup screens, with no empty stretches of field. Every card is "Your store", in the browser bar next to the store icon. Most of them stamp "LOST". While the sea is still moving and blurred, this line comes up, holds, then fades out before the field is solid grey:
 
 "Unattended visits. Lost sales."
 
@@ -60,7 +60,7 @@ The Bizmis mark.
 
 **VO** `introducing`: "Introducing Bizmis."
 
-Word by word: "Your store salesperson." A line draws through the middle of "person", then that word leaves and the line reads "Your store sales agent." "sales agent" is Bizmis orange.
+Word by word: "Your store salesperson." The whole word stays black. A Bizmis orange line draws through the middle of "person". Then the whole word rewrites as "salesagent." in Bizmis orange.
 
 **VO** `sales-agent`: "Your store's sales agent. Built to sell."
 
@@ -68,7 +68,7 @@ Word by word: "Your store salesperson." A line draws through the middle of "pers
 
 ## 6. The same two cards, sold
 
-Same two windows, including the pan. Each window is centered on the screen. Phone and tablet show no arrow cursor. The phone is its own frame. Catalog, comparison, and product page reflow for the phone and the tablet. The cursor and the thumb stay put. The store moves. The real Bizmis card, in light mode, eases into the corner of the desktop window, composer and all. The shopper types in that composer, and that line is sent. The bubble stays the shopper's words. A failed send does not show a retry control. Behind the scenes the agent receives `Say this: "{the clerk's line}"`. On the phone the widget switches to its mobile bar, docked in a band at the bottom of the phone, clear of the product and the comparison. The clerk speaks through the real widget, one sentence, captioned. No VO during that speech. The widget draws its own cards: "Products shown to you", "Product opened", "Added to cart". A short orange sweep marks whatever just changed.
+Same two windows, including the pan. Each window is centered on the screen. The desktop pitch has no arrow cursor, because nothing is clicked there. The pain desktop keeps its cursor. Phone and tablet show no arrow cursor. The phone is its own frame and keeps the thumb. Catalog, comparison, and product page reflow for the phone and the tablet. The store moves. The real Bizmis card, in light mode, eases into the corner of the desktop window, composer and all. The shopper types in that composer, and that line is sent. The bubble stays the shopper's words. A failed send does not show a retry control. Behind the scenes the agent receives `Say this: "{the clerk's line}"`. On the phone the widget switches to its mobile bar, docked in a band at the bottom of the phone, clear of the product and the comparison. The clerk speaks through the real widget, one sentence, captioned. No VO during that speech. The widget draws its own cards: "Products shown to you", "Product opened", "Added to cart". A short orange sweep marks whatever just changed.
 
 Desktop, the same grid. The shopper types: "Looking for something light I can take everywhere."
 
@@ -82,13 +82,13 @@ Phone, the same product page. The shopper types: "Will it fit my setup? If so, a
 
 **Clerk:** "It will. And if it doesn't, returns are free. Added, with the sleeve that goes with it."
 
-While he speaks, the product is added, then a matching extra, and the cart badge goes to 2. "SOLD".
+While he speaks, the product is added, then a flat sleeve that belongs with it, and the cart badge goes to 2. "SOLD".
 
 **VO** `closes`: "It answers like an expert, and closes. Then sells them one more thing."
 
 ## 7. The selling sea
 
-The pullback starts on that phone. Every card is "Your store". Most of them stamp "SOLD". While the sea is still moving and blurred, this line comes up and stays, with the white Bizmis mark, through the orange field:
+The pullback starts on that phone. The frame stays full of mockup screens, with no empty stretches of field. Every card is "Your store". Most of them stamp "SOLD". While the sea is still moving and blurred, this line comes up and stays, with the white Bizmis mark, through the orange field:
 
 "Built to sell."
 
@@ -98,17 +98,17 @@ The sea washes to solid Bizmis orange.
 
 ## 8. Other stores, into the slot
 
-From the orange field the picture eases to white. "Built to sell." leaves. The mark is off during the pass. No clerk. A pass of larger store frames starts near a second each and slows toward about three seconds. Behind each frame, a soft light in that store's own color. Sector and store names use that color, large and bold. Sector labels, in order: Consumer electronics, Clothing & apparel, Books & stationery, Skincare & beauty, Gaming gear, Home & DIY, Car parts & accessories, Wine & spirits. The wordmark is never black.
+From the orange field the picture eases to white. "Built to sell." leaves. The mark is off during the pass. No clerk. A pass of large store frames starts near a second each and slows toward about three seconds. Each picture fills its frame from the center. Behind it, a soft light in that store's color rises, then falls back to off, then the next store's color rises the same way. Sector and store names use that color, large and bold, above the frame. Sector labels, in order: Consumer electronics, Clothing & apparel, Books & stationery, Skincare & beauty, Gaming gear, Home & DIY, Car parts & accessories, Wine & spirits. The wordmark is never black.
 
 **VO** `any-store`: "Any store."
 
 ## 9. End card
 
-The frames leave. The field stays white. Nothing is clickable. No window, button, cursor, glow, shine, or glass. By `cta`:
+The frames leave. The field stays white. Nothing is clickable. No window, button, cursor, glow, or glass. The call to action line plays a metal shine. By `cta`:
 
-- `demo` (default): "See it in action" and `bizmis.ai/demo`
+- `install` (default): "Installs in one click." then "Install on Shopify". No URL.
+- `demo`: "See it in action" and `bizmis.ai/demo`
 - `ea`: "First 50 stores. Free to run live." then "Join Early Access" and `bizmis.ai/early-access`
-- `install`: "Installs in one click." then "Install on Shopify". No URL.
 - `none`: the wordmark only.
 
 The line fades up and holds ≥ 4 s. The wordmark is Bizmis orange and sits centered above the line.

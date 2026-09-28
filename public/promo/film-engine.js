@@ -87,15 +87,15 @@
   window.__promoVoBudget = PROMO_VO_BUDGET_S;
   let promoCtaFallbackLogged = false;
   function readPromoCta() {
-    const raw = (promoBootParams.get('cta') || 'demo').trim().toLowerCase();
+    const raw = (promoBootParams.get('cta') || 'install').trim().toLowerCase();
     if (Object.prototype.hasOwnProperty.call(PROMO_END_CTA, raw)) return raw;
     if (!promoCtaFallbackLogged) {
       promoCtaFallbackLogged = true;
       const host = location.hostname;
       const dev = host === 'localhost' || host === '127.0.0.1' || host.endsWith('.myshopify.com');
-      if (dev) console.warn(`Unknown cta "${raw}". Using demo.`);
+      if (dev) console.warn(`Unknown cta "${raw}". Using install.`);
     }
-    return 'demo';
+    return 'install';
   }
   const promoVideoConfig = { cta: readPromoCta() };
   const isMarketingAd = marketingValue === PROMO_MARKETING_AD || legacyPromoVideo === 'opening';
@@ -340,7 +340,7 @@
     texture: 64,
     fieldCount: 20,
     lostField: '#F4F4F6',
-    flowGap: 0.06,
+    flowGap: 0.02,
     frameMargin: 0.06,
     stampWidth: 0.78,
     stampInk: 0.7,
@@ -381,7 +381,7 @@
     tilt: 28,
     yaw: -8,
     perspective: 1600,
-    cellScale: 0.3,
+    cellScale: 0.52,
     baseH: 100,
     layDownMs: 2200,
     rampMs: 9000,
@@ -410,7 +410,7 @@
     horizonMs: 1400,
     horizonTilt: 54,
     painFieldHoldMs: 400,
-    pool: 140,
+    pool: 240,
     dirX: 0.34,
     dirY: 0.94,
     stepMs: 36,
@@ -598,8 +598,15 @@
     const desktop = devices[0];
     const device = devices.find((item) => item.id === id) || desktop;
     const desktopW = PROMO_GLIDE.baseH * desktop.ratio;
-    const w = desktopW * (PROMO_GRID.deviceWidth[id] || 1);
-    return { id, device, w, h: w / device.ratio };
+    let w = desktopW * (PROMO_GRID.deviceWidth[id] || 1);
+    let h = w / device.ratio;
+    const rowH = PROMO_GLIDE.baseH * 0.98;
+    if (h < rowH) {
+      const grow = rowH / h;
+      w *= grow;
+      h *= grow;
+    }
+    return { id, device, w, h };
   }
 
   function glidePitch() {
@@ -1791,9 +1798,7 @@
   const PROMO_MOMENT_OTHER_INDEX = 3;
   const PROMO_COMPARE_TINT = 'stone';
   const PROMO_COMPARE_SHAPES = { go: 'capsule', pick: 'sphere', other: 'rounded-cube' };
-  const PROMO_ACCESSORY_SHAPE = 'torus';
-  const PROMO_ACCESSORY_TINT = 'stone';
-  const PROMO_ACCESSORY_OBJECT_SCALE = 1.51;
+  const PROMO_ACCESSORY_OBJECT_SCALE = 1.08;
   const PROMO_TINT_FILE = {
     sphere: { stone: 'sphere-b' },
     capsule: { stone: 'capsule' },
@@ -1974,7 +1979,13 @@
   }
 
   function accessoryLook() {
-    return lookForTint(PROMO_ACCESSORY_SHAPE, PROMO_ACCESSORY_TINT);
+    return {
+      kind: 'slab',
+      turn: '0',
+      finish: 'matte',
+      scale: 1,
+      tint: 'stone',
+    };
   }
 
   function applyClayLook(card, look) {
@@ -3845,11 +3856,8 @@
       applyMomentPose(stage, 'grid', { instant: true });
       const cursor = this.root.querySelector('[data-promo-pain-cursor]');
       if (cursor) {
-        cursor.hidden = false;
-        cursor.classList.remove('is-thumb');
-        cursor.style.opacity = '1';
-        cursor.style.setProperty('--pain-x', '46%');
-        cursor.style.setProperty('--pain-y', '62%');
+        cursor.hidden = true;
+        cursor.style.opacity = '0';
       }
       await this.typeShopperLine(PROMO_PITCH_LINE_1);
       const first = playClerkLine(PROMO_PITCH_CLERK_1, reduced ? 200 : PROMO_PITCH_SPEAK_1_MS, () => {});
@@ -4574,15 +4582,28 @@
       return light;
     }
 
-    paintPassLight(color) {
+    paintPassLight(color, durationMs) {
       const light = this.ensurePassLight();
       if (!light) return;
+      window.clearTimeout(this.passLightTimer);
       if (!color) {
+        light.style.transition = 'opacity 420ms ease';
         light.style.opacity = '0';
         return;
       }
+      const duration = Math.max(700, Number(durationMs) || 1600);
+      const rise = Math.round(duration * 0.38);
+      const fall = Math.round(duration * 0.38);
+      light.style.transition = 'none';
       light.style.backgroundColor = color;
-      light.style.opacity = '0.62';
+      light.style.opacity = '0';
+      light.getBoundingClientRect();
+      light.style.transition = `opacity ${rise}ms cubic-bezier(0.45, 0.05, 0.2, 1)`;
+      light.style.opacity = '0.72';
+      this.passLightTimer = window.setTimeout(() => {
+        light.style.transition = `opacity ${fall}ms cubic-bezier(0.45, 0.05, 0.2, 1)`;
+        light.style.opacity = '0';
+      }, Math.max(rise, duration - fall));
     }
 
     orderPassStores() {
@@ -4620,7 +4641,7 @@
         const store = this.stores[index];
         if (store) {
           this.arriveStore(store);
-          this.paintPassLight(store.accent);
+          this.paintPassLight(store.accent, durations[index]);
         }
         this.paintWave(index, 1, 0.5, 1);
         window.setTimeout(() => {
@@ -5359,6 +5380,12 @@
         await this.playScaleScene();
         return;
       }
+      const cursor = this.root.querySelector('[data-promo-pain-cursor]');
+      if (cursor) {
+        cursor.hidden = true;
+        cursor.style.opacity = '0';
+      }
+      await this.playStoreOpenTitle(this.mountStoreOpenTitle());
       await this.playPainSteps(PROMO_PAIN_A, 'unattended');
       await this.playPainSteps(PROMO_PAIN_B, 'chat');
       await this.playScaleScene();
@@ -7437,8 +7464,8 @@
     }
 
     mountStoreOpenTitle() {
-      const scale = this.root.querySelector('[data-promo-scale]');
-      if (!scale || scale.querySelector('[data-promo-store-open]')) return null;
+      const stage = this.root.querySelector('.promo-opening__store.is-desktop [data-promo-moments-stage]');
+      if (!stage || stage.querySelector('[data-promo-store-open]')) return null;
       const veil = document.createElement('div');
       veil.className = 'promo-store-open';
       veil.setAttribute('data-promo-store-open', '');
@@ -7446,7 +7473,7 @@
       title.className = 'promo-store-open__title';
       title.textContent = 'Your store';
       veil.append(title);
-      scale.append(veil);
+      stage.append(veil);
       return veil;
     }
 
@@ -7458,9 +7485,9 @@
       }
       veil.getBoundingClientRect();
       veil.classList.add('is-in');
-      await waitMs(820);
+      await waitMs(240);
       veil.classList.add('is-out');
-      await waitMs(480);
+      await waitMs(160);
       veil.remove();
     }
 
@@ -7471,10 +7498,8 @@
       this.captureGlideClose('pain');
       this.revealScaleLayer();
       this.mountGlide('pain');
-      const storeOpen = this.mountStoreOpenTitle();
       if (generation !== this.scaleGeneration) return;
       this.paintGlideAt(0, 'pain');
-      await this.playStoreOpenTitle(storeOpen);
       if (generation !== this.scaleGeneration) return;
       await this.closeChatForLost();
       if (generation !== this.scaleGeneration) return;
