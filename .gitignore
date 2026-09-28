@@ -36,6 +36,9 @@ src/data/leads/*.json
 # this to ../../bizmis-skills/data/invite-cards for local previews.
 public/invite-cards
 
+# Frame-accurate ad-1 exports (PNG sequence, video, markers).
+tmp/ad-1-export
+
 # Env files
 .env
 .env.local

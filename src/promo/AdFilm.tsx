@@ -160,6 +160,7 @@ async function bootFilm() {
   root.setAttribute("data-promo-clay", JSON.stringify(assets.clay));
   mountMarkup(markup);
   ensureWidgetHost();
+  await loadScript("/promo/promo-clock.js");
   await loadScript(WIDGET_SCRIPT);
   await loadScript("/promo/film-engine.js");
   startWidget();
