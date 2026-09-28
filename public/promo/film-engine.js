@@ -27,8 +27,8 @@
     'Car parts & accessories',
     'Wine & spirits',
   ];
-  const PROMO_PASS_FAST_MS = 220;
-  const PROMO_PASS_SLOW_MS = 640;
+  const PROMO_PASS_FAST_MS = 1100;
+  const PROMO_PASS_SLOW_MS = 2800;
   const PROMO_PASS_SLOT_IN_MS = 420;
   const PROMO_VO_ON = promoBootParams.get('vo') === '1';
   const PROMO_VO_BUDGET_S = [
@@ -4654,6 +4654,8 @@
     settlePassSlot(ctaKey) {
       this.holdOrangeField();
       this.root.classList.add('is-pass-slot');
+      const mark = this.root.querySelector('[data-promo-end-mark]');
+      if (mark) mark.style.background = 'var(--bizmis-primary)';
       const slot = this.ensurePassSlot(ctaKey);
       if (!slot) return;
       slot.classList.add('is-in');
@@ -4662,6 +4664,8 @@
     async landPassSlot() {
       this.root.classList.add('is-pass-slot');
       this.paintPassLight(null);
+      const mark = this.root.querySelector('[data-promo-end-mark]');
+      if (mark) mark.style.background = 'var(--bizmis-primary)';
       const copy = PROMO_END_CTA[promoVideoConfig.cta];
       if (!copy) {
         await waitMs(PROMO_END_CARD_HOLD_MS + promoHoldMs());

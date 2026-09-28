@@ -68,7 +68,7 @@ Word by word: "Your store salesperson." Then "person" is struck, and the line re
 
 ## 6. The same two cards, sold
 
-Same two windows, including the pan. The phone is its own frame. Catalog, comparison, and product page reflow for the phone and the tablet. The cursor and the thumb stay put. The store moves. The real Bizmis card, in light mode, eases into the corner of the desktop window, composer and all. The shopper types in that composer, and that line is sent. Behind the scenes the agent receives `Say this: "{the clerk's line}"`. On the phone the widget switches to its mobile bar, docked in the phone. The clerk speaks through the real widget, one sentence, captioned. No VO during that speech. The widget draws its own cards: "Products shown to you", "Product opened", "Added to cart". A short orange sweep marks whatever just changed.
+Same two windows, including the pan. Each window is centered on the screen. Phone and tablet show no arrow cursor. The phone is its own frame. Catalog, comparison, and product page reflow for the phone and the tablet. The cursor and the thumb stay put. The store moves. The real Bizmis card, in light mode, eases into the corner of the desktop window, composer and all. The shopper types in that composer, and that line is sent. Behind the scenes the agent receives `Say this: "{the clerk's line}"`. On the phone the widget switches to its mobile bar, docked in the phone. The clerk speaks through the real widget, one sentence, captioned. No VO during that speech. The widget draws its own cards: "Products shown to you", "Product opened", "Added to cart". A short orange sweep marks whatever just changed.
 
 Desktop, the same grid. The shopper types: "Looking for something light I can take everywhere."
 
@@ -98,7 +98,7 @@ The sea washes to solid Bizmis orange.
 
 ## 8. Other stores, into the slot
 
-From the orange field the picture eases to white. The mark stays, now dark, and "Built to sell." leaves. No clerk. A fast pass of large store frames slows as it goes. Behind each frame, a soft light in that store's own color. Sector labels, in order: Consumer electronics, Clothing & apparel, Books & stationery, Skincare & beauty, Gaming gear, Home & DIY, Car parts & accessories, Wine & spirits.
+From the orange field the picture eases to white. The mark stays, now dark, and "Built to sell." leaves. No clerk. A pass of large store frames starts near a second each and slows toward about three seconds. Behind each frame, a soft light in that store's own color. Sector labels, in order: Consumer electronics, Clothing & apparel, Books & stationery, Skincare & beauty, Gaming gear, Home & DIY, Car parts & accessories, Wine & spirits.
 
 **VO** `any-store`: "Any store."
 
@@ -111,7 +111,7 @@ The frames leave. The field stays white. Nothing is clickable. No window, button
 - `install`: "Installs in one click." then "Install on Shopify". No URL.
 - `none`: the wordmark only.
 
-The line fades up and holds ≥ 4 s. The wordmark stays small, top-left.
+The line fades up and holds ≥ 4 s. The wordmark is Bizmis orange and sits centered above the line.
 
 **VO:** per `cta`. demo `see-it`: "See it in action." ea `join-fifty`: "Join the first fifty stores." install `install-shopify`: "Install it on Shopify." none: silence.
 

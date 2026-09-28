@@ -571,16 +571,16 @@ html.is-promo-opening.is-promo-depart .promo-opening {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding-inline: 6.25cqw 11.875cqw;
+  padding: 0;
 }
 
 .promo-opening.is-moments:not(.is-see) .promo-opening__store {
   flex: 0 0 auto;
-  width: 100%;
-  height: min(46rem, 92cqh);
+  width: min(72rem, 88cqw);
+  height: min(44rem, 84cqh);
   max-height: none;
   aspect-ratio: auto;
-  transform: translateY(-0.4rem);
+  transform: none;
 }
 
 .promo-opening.is-moments:not(.is-see) .promo-opening__store.is-phone {
@@ -603,8 +603,8 @@ html.is-promo-opening.is-promo-depart .promo-opening {
 }
 
 .promo-opening.is-moments:not(.is-see) .promo-moments__board {
-  --promo-board-x: -12.5rem;
-  transform: translate(calc(-50% + var(--promo-board-x)), -50%);
+  --promo-board-x: 0px;
+  transform: translate(-50%, -50%);
 }
 
 .promo-opening.is-moments:not(.is-see) .promo-moments__board.is-pose-grid {
@@ -1901,6 +1901,11 @@ html.is-promo-opening.is-promo-depart .promo-opening {
   transition:
     transform var(--promo-pain-open, 640ms) var(--promo-pain-ease, cubic-bezier(0.45, 0.05, 0.2, 1)),
     opacity 280ms linear;
+}
+
+.promo-opening__store.is-phone .promo-pain__cursor:not(.is-thumb),
+.promo-opening__store.is-tablet .promo-pain__cursor:not(.is-thumb) {
+  display: none;
 }
 
 .promo-pain__cursor.is-thumb svg {
@@ -7508,6 +7513,23 @@ html.is-promo-clip.is-clip-moment #bizmis-avatar-embed {
 .promo-opening.is-store-pass .promo-scale__mark {
   width: calc(36px * 1948 / 640);
   height: 36px;
+}
+
+.promo-opening.is-pass-slot .promo-scale__end-hero {
+  position: absolute;
+  left: 50%;
+  top: calc(50% - 6.4rem);
+  z-index: 6;
+  width: max-content;
+  height: auto;
+  transform: translate(-50%, -100%);
+}
+
+.promo-opening.is-pass-slot .promo-scale__mark {
+  display: block;
+  width: calc(52px * 1948 / 640);
+  height: 52px;
+  background: var(--bizmis-primary);
 }
 
 .promo-opening.is-store-pass .promo-scale__sold,
