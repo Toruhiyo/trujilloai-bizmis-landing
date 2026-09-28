@@ -95,29 +95,35 @@ function filmUrl(base, cta, part) {
   return url.toString();
 }
 
+function chromeArgs(scale) {
+  const args = [
+    '--font-render-hinting=none',
+    '--disable-lcd-text',
+    '--disable-font-subpixel-positioning',
+    '--force-color-profile=srgb',
+    `--force-device-scale-factor=${scale}`,
+    '--disable-background-timer-throttling',
+    '--disable-renderer-backgrounding',
+    '--disable-checker-imaging',
+    '--disable-threaded-animation',
+    '--disable-threaded-scrolling',
+    '--disable-partial-raster',
+    '--disable-features=PaintHolding',
+    '--run-all-compositor-stages-before-draw',
+    '--use-gl=angle',
+    '--use-angle=swiftshader',
+    '--enable-webgl',
+  ];
+  // Software raster at 4K leaves blank tiles that flicker. 1080p keeps it so frames stay bit-stable.
+  if (scale <= 1) args.push('--disable-gpu-rasterization');
+  return args;
+}
+
 async function launchBrowser(chromium, scale) {
   return chromium.launch({
     headless: true,
     channel: process.env.PROMO_FRAMES_CHANNEL || 'chrome',
-    args: [
-      '--font-render-hinting=none',
-      '--disable-lcd-text',
-      '--disable-font-subpixel-positioning',
-      '--force-color-profile=srgb',
-      `--force-device-scale-factor=${scale}`,
-      '--disable-background-timer-throttling',
-      '--disable-renderer-backgrounding',
-      '--disable-checker-imaging',
-      '--disable-threaded-animation',
-      '--disable-threaded-scrolling',
-      '--disable-partial-raster',
-      '--disable-gpu-rasterization',
-      '--disable-features=PaintHolding',
-      '--run-all-compositor-stages-before-draw',
-      '--use-gl=angle',
-      '--use-angle=swiftshader',
-      '--enable-webgl',
-    ],
+    args: chromeArgs(scale),
   });
 }
 
