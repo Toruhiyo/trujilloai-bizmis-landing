@@ -42,7 +42,7 @@ The thumb leaves. No X. A grey veil and "LOST" stamp the phone.
 
 ## 3. The dull sea
 
-The pullback starts on that phone. The desktop LOST is the card beside it. Every card is "Your store". Most of them stamp "LOST". While the sea is still moving and blurred, this line comes up, holds, then leaves with the caption poof, before the field is solid grey:
+The pullback starts on that phone. The desktop LOST is the card beside it. Every card is "Your store", in the browser bar next to the store icon. Most of them stamp "LOST". While the sea is still moving and blurred, this line comes up, holds, then fades out before the field is solid grey:
 
 "Unattended visits. Lost sales."
 
