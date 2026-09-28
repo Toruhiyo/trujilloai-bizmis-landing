@@ -10,7 +10,7 @@ The film says "chatbot" and "sales agent". "Salesperson" is only the struck word
 
 ## 1. Lost in the catalog (desktop)
 
-A desktop window titled "Your store". The shopper opens a product, goes back, bounces between two similar products, opens another, backs out.
+The first close-up opens on a large "Your store" in the center, like the page arriving, with no spinner. That title leaves and the desktop window is there, titled "Your store" in the browser bar. The shopper opens a product, goes back, bounces between two similar products, opens another, backs out.
 
 **VO** `two-places`: "In every online store, a sale dies in two places."
 
@@ -60,7 +60,7 @@ The Bizmis mark.
 
 **VO** `introducing`: "Introducing Bizmis."
 
-Word by word: "Your store salesperson." Then "person" is struck, and the line reads "Your store sales agent." "sales agent" is Bizmis orange.
+Word by word: "Your store salesperson." A line draws through the middle of "person", then that word leaves and the line reads "Your store sales agent." "sales agent" is Bizmis orange.
 
 **VO** `sales-agent`: "Your store's sales agent. Built to sell."
 
@@ -68,7 +68,7 @@ Word by word: "Your store salesperson." Then "person" is struck, and the line re
 
 ## 6. The same two cards, sold
 
-Same two windows, including the pan. Each window is centered on the screen. Phone and tablet show no arrow cursor. The phone is its own frame. Catalog, comparison, and product page reflow for the phone and the tablet. The cursor and the thumb stay put. The store moves. The real Bizmis card, in light mode, eases into the corner of the desktop window, composer and all. The shopper types in that composer, and that line is sent. Behind the scenes the agent receives `Say this: "{the clerk's line}"`. On the phone the widget switches to its mobile bar, docked in the phone. The clerk speaks through the real widget, one sentence, captioned. No VO during that speech. The widget draws its own cards: "Products shown to you", "Product opened", "Added to cart". A short orange sweep marks whatever just changed.
+Same two windows, including the pan. Each window is centered on the screen. Phone and tablet show no arrow cursor. The phone is its own frame. Catalog, comparison, and product page reflow for the phone and the tablet. The cursor and the thumb stay put. The store moves. The real Bizmis card, in light mode, eases into the corner of the desktop window, composer and all. The shopper types in that composer, and that line is sent. The bubble stays the shopper's words. A failed send does not show a retry control. Behind the scenes the agent receives `Say this: "{the clerk's line}"`. On the phone the widget switches to its mobile bar, docked in a band at the bottom of the phone, clear of the product and the comparison. The clerk speaks through the real widget, one sentence, captioned. No VO during that speech. The widget draws its own cards: "Products shown to you", "Product opened", "Added to cart". A short orange sweep marks whatever just changed.
 
 Desktop, the same grid. The shopper types: "Looking for something light I can take everywhere."
 
@@ -98,7 +98,7 @@ The sea washes to solid Bizmis orange.
 
 ## 8. Other stores, into the slot
 
-From the orange field the picture eases to white. The mark stays, now dark, and "Built to sell." leaves. No clerk. A pass of large store frames starts near a second each and slows toward about three seconds. Behind each frame, a soft light in that store's own color. Sector labels, in order: Consumer electronics, Clothing & apparel, Books & stationery, Skincare & beauty, Gaming gear, Home & DIY, Car parts & accessories, Wine & spirits.
+From the orange field the picture eases to white. "Built to sell." leaves. The mark is off during the pass. No clerk. A pass of larger store frames starts near a second each and slows toward about three seconds. Behind each frame, a soft light in that store's own color. Sector and store names use that color, large and bold. Sector labels, in order: Consumer electronics, Clothing & apparel, Books & stationery, Skincare & beauty, Gaming gear, Home & DIY, Car parts & accessories, Wine & spirits. The wordmark is never black.
 
 **VO** `any-store`: "Any store."
 

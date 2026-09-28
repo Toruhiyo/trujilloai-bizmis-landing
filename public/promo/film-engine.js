@@ -4530,14 +4530,18 @@
       if (sold) sold.style.opacity = '0';
       const mark = this.root.querySelector('[data-promo-end-mark]');
       if (mark) {
-        mark.style.background = 'var(--ad-ink)';
+        mark.style.background = 'var(--bizmis-primary)';
         mark.style.transition = 'background-color 800ms linear';
       }
       this.ensurePassLight();
       this.root.querySelectorAll('.promo-opening__slide').forEach((slide) => {
         const sector = slide.querySelector('.promo-opening__slide-sector');
+        const name = slide.querySelector('.promo-opening__slide-name');
         const store = this.stores.find((item) => item.slug === slide.dataset.store);
-        if (sector && store) sector.style.color = storeInk(store.accent);
+        if (!store) return;
+        const ink = storeInk(store.accent);
+        if (sector) sector.style.color = ink;
+        if (name) name.style.color = ink;
       });
     }
 
@@ -7415,6 +7419,34 @@
       }
     }
 
+    mountStoreOpenTitle() {
+      const scale = this.root.querySelector('[data-promo-scale]');
+      if (!scale || scale.querySelector('[data-promo-store-open]')) return null;
+      const veil = document.createElement('div');
+      veil.className = 'promo-store-open';
+      veil.setAttribute('data-promo-store-open', '');
+      const title = document.createElement('p');
+      title.className = 'promo-store-open__title';
+      title.textContent = 'Your store';
+      veil.append(title);
+      scale.append(veil);
+      return veil;
+    }
+
+    async playStoreOpenTitle(veil) {
+      if (!veil) return;
+      if (prefersReducedMotion()) {
+        veil.remove();
+        return;
+      }
+      veil.getBoundingClientRect();
+      veil.classList.add('is-in');
+      await waitMs(820);
+      veil.classList.add('is-out');
+      await waitMs(480);
+      veil.remove();
+    }
+
     async playScaleTimeline() {
       const generation = this.scaleGeneration;
       this.glideLeadStamped = false;
@@ -7422,8 +7454,11 @@
       this.captureGlideClose('pain');
       this.revealScaleLayer();
       this.mountGlide('pain');
+      const storeOpen = this.mountStoreOpenTitle();
       if (generation !== this.scaleGeneration) return;
       this.paintGlideAt(0, 'pain');
+      await this.playStoreOpenTitle(storeOpen);
+      if (generation !== this.scaleGeneration) return;
       await this.closeChatForLost();
       if (generation !== this.scaleGeneration) return;
       await this.poofCloseStore(false);

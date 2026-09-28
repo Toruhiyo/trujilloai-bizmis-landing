@@ -739,11 +739,14 @@ html.is-promo-opening.is-promo-depart .promo-opening {
 .promo-opening__store.is-phone .promo-moments__board.is-pose-doubt .promo-moments__card.is-pick,
 .promo-opening__store.is-phone .promo-moments__board.is-pose-close .promo-moments__card.is-pick {
   grid-template-columns: 1fr;
-  grid-template-rows: minmax(180px, 1.15fr) auto auto;
+  grid-template-rows: minmax(150px, 0.92fr) auto auto;
   column-gap: 0;
-  row-gap: 14px;
+  row-gap: 16px;
   align-items: stretch;
-  padding: 16px 16px 20px;
+  align-content: start;
+  height: 100%;
+  box-sizing: border-box;
+  padding: 18px 18px 22px;
 }
 
 .promo-opening__store.is-phone .promo-moments__board.is-pose-doubt .promo-moments__card.is-pick .promo-moments__photo,
@@ -777,6 +780,10 @@ html.is-promo-opening.is-promo-depart .promo-opening {
   width: 100%;
   height: 100%;
   transform: none;
+}
+
+.promo-opening.is-pitch-cards.is-moments:not(.is-see) .promo-opening__store.is-phone .promo-moments__board {
+  height: calc(100% - 120px);
 }
 
 .promo-opening__store.is-phone .promo-moments__board.is-pose-doubt .promo-moments__card.is-pick .promo-moments__photo,
@@ -835,15 +842,32 @@ html.is-promo-opening.is-promo-depart .promo-opening {
 .promo-opening__store.is-phone .promo-moments__board.is-pose-bundle .promo-moments__card.is-pick,
 .promo-opening__store.is-phone .promo-moments__board.is-pose-extra .promo-moments__card.is-pick {
   left: 50%;
-  top: 34%;
-  --card-w: min(220px, 78%);
+  top: 27%;
+  --card-w: min(188px, 70%);
+  padding: 10px;
 }
 
 .promo-opening__store.is-phone .promo-moments__board.is-pose-bundle .promo-moments__card.is-extra,
 .promo-opening__store.is-phone .promo-moments__board.is-pose-extra .promo-moments__card.is-extra {
   left: 50%;
-  top: 70%;
-  --card-w: min(180px, 68%);
+  top: 66%;
+  --card-w: min(168px, 62%);
+  padding: 10px;
+}
+
+.promo-opening__store.is-phone .promo-moments__board.is-pose-bundle .promo-moments__card.is-pick .promo-moments__photo,
+.promo-opening__store.is-phone .promo-moments__board.is-pose-extra .promo-moments__card.is-pick .promo-moments__photo,
+.promo-opening__store.is-phone .promo-moments__board.is-pose-bundle .promo-moments__card.is-extra .promo-moments__photo,
+.promo-opening__store.is-phone .promo-moments__board.is-pose-extra .promo-moments__card.is-extra .promo-moments__photo {
+  aspect-ratio: 1.45;
+  max-height: 108px;
+}
+
+.promo-opening__store.is-phone .promo-moments__board.is-pose-bundle .promo-moments__plus,
+.promo-opening__store.is-phone .promo-moments__board.is-pose-extra .promo-moments__plus {
+  left: 50%;
+  top: 46%;
+  transform: translate3d(-50%, -50%, 0);
 }
 
 .promo-opening__store.is-tablet .promo-moments__board.is-pose-bundle .promo-moments__card.is-pick,
@@ -869,11 +893,31 @@ html.is-promo-opening.is-promo-depart .promo-opening {
 
 .promo-opening__tail > span {
   grid-area: 1 / 1;
+  justify-self: start;
+  align-self: center;
+  width: max-content;
 }
 
 .promo-opening__struck,
 .promo-opening__agent {
   display: inline-block;
+}
+
+.promo-opening__struck {
+  position: relative;
+}
+
+.promo-opening__struck::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 50%;
+  width: 0;
+  height: 0.08em;
+  min-height: 3px;
+  border-radius: 999px;
+  background: currentColor;
+  transform: translateY(-50%);
 }
 
 .promo-opening__agent {
@@ -882,23 +926,58 @@ html.is-promo-opening.is-promo-depart .promo-opening {
 }
 
 .promo-opening__line.is-striking .promo-opening__struck {
-  text-decoration: line-through;
+  text-decoration: none;
+  color: var(--ad-ink);
   opacity: 0;
-  transition: opacity 280ms ease;
+  transition: opacity 280ms ease 520ms;
+}
+
+.promo-opening__line.is-striking .promo-opening__struck::after {
+  width: 100%;
+  transition: width 420ms cubic-bezier(0.65, 0, 0.35, 1);
 }
 
 .promo-opening__line.is-striking .promo-opening__word--salesperson {
   color: var(--bizmis-primary);
 }
 
-.promo-opening__line.is-striking .promo-opening__struck {
-  color: var(--ad-ink);
-}
-
 .promo-opening__line.is-striking .promo-opening__agent {
   opacity: 1;
   color: var(--bizmis-primary);
-  transition: opacity 280ms ease 80ms;
+  transition: opacity 280ms ease 560ms;
+}
+
+.promo-store-open {
+  position: absolute;
+  inset: 0;
+  z-index: 30;
+  display: grid;
+  place-items: center;
+  background: var(--ad-white);
+  pointer-events: none;
+}
+
+.promo-store-open__title {
+  margin: 0;
+  color: var(--ad-ink);
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: clamp(3.4rem, 7vw, 6rem);
+  letter-spacing: -0.045em;
+  line-height: 1;
+  opacity: 0;
+  transform: translateY(14px);
+  transition: opacity 420ms ease, transform 420ms ease;
+}
+
+.promo-store-open.is-in .promo-store-open__title {
+  opacity: 1;
+  transform: none;
+}
+
+.promo-store-open.is-out {
+  opacity: 0;
+  transition: opacity 460ms ease;
 }
 
 .promo-opening__store::before {
@@ -5449,6 +5528,10 @@ html.is-promo-live-card .promo-opening__store.is-phone > .bizmis-viewport-portal
   opacity: 1 !important;
 }
 
+html.is-promo-live-card [aria-label="Not sent. Tap to retry."] {
+  display: none !important;
+}
+
 html.is-promo-opening.is-promo-pitch:not(.is-promo-clerk) [id="bizmis-avatar-embed"].is-promo-widget-parked,
 html.is-promo-opening.is-promo-pitch:not(.is-promo-clerk) [id="bizmis-avatar-embed"].is-promo-widget-parked .avatar-widget-container,
 html.is-promo-opening.is-promo-pitch:not(.is-promo-clerk) .bizmis-avatar-widget-root.is-promo-widget-parked {
@@ -7502,12 +7585,8 @@ html.is-promo-clip.is-clip-moment #bizmis-avatar-embed {
   transform: none;
 }
 
-.promo-opening.is-store-pass .promo-scale__end-hero {
-  position: absolute;
-  top: 28px;
-  left: 36px;
-  height: auto;
-  width: auto;
+.promo-opening.is-store-pass:not(.is-pass-slot) .promo-scale__end-hero {
+  display: none;
 }
 
 .promo-opening.is-store-pass .promo-scale__mark {
@@ -7548,7 +7627,7 @@ html.is-promo-clip.is-clip-moment #bizmis-avatar-embed {
   justify-content: center;
   max-height: none;
   width: 100%;
-  padding-top: 64px;
+  padding-top: 0;
   box-sizing: border-box;
   opacity: 1;
   overflow: visible;
@@ -7560,7 +7639,7 @@ html.is-promo-clip.is-clip-moment #bizmis-avatar-embed {
 }
 
 .promo-opening.is-store-pass .promo-opening__slide {
-  width: min(1000px, 76vw);
+  width: min(1160px, 90vw);
   margin: 0;
 }
 
@@ -7578,10 +7657,10 @@ html.is-promo-clip.is-clip-moment #bizmis-avatar-embed {
 }
 
 .promo-opening.is-store-pass.is-see-wave .promo-opening__slide-sector {
-  font-size: 1.35rem;
-  font-weight: 600;
-  letter-spacing: -0.03em;
-  color: var(--ad-ink);
+  font-size: clamp(1.85rem, 3vw, 2.45rem);
+  font-weight: 700;
+  letter-spacing: -0.045em;
+  line-height: 1;
 }
 
 .promo-opening.is-store-pass .promo-opening__widget,
@@ -7591,9 +7670,10 @@ html.is-promo-clip.is-clip-moment #bizmis-avatar-embed {
 }
 
 .promo-opening.is-store-pass .promo-opening__slide-name {
-  font-size: 0.82rem;
-  color: color-mix(in srgb, var(--ad-ink) 58%, transparent);
-  letter-spacing: 0.08em;
+  font-size: 1.05rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
 }
 
 .promo-opening.is-store-pass .promo-opening__slide-card {
