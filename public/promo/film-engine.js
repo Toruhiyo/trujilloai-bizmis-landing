@@ -1685,7 +1685,7 @@
       if (promoSaySwap && typeof data === 'string') {
         try {
           const parsed = JSON.parse(data);
-          if (parsed && parsed.type === 'user_message' && parsed.text === promoSaySwap.from) {
+          if (parsed && parsed.type === 'user_message' && typeof parsed.text === 'string') {
             parsed.text = promoSaySwap.to;
             promoSaySwap = null;
             data = JSON.stringify(parsed);
@@ -3738,9 +3738,9 @@
       });
       line.classList.add('is-revealing');
       const wordsInAt = (fromWords.length - 1) * PROMO_PITCH_WORD_STAGGER_MS + PROMO_PITCH_WORD_IN_MS;
-      const strikeAt = wordsInAt + 640;
+      const strikeAt = wordsInAt + 160;
       window.setTimeout(() => line.classList.add('is-striking'), strikeAt);
-      window.setTimeout(() => markPromoVo('sales-agent'), strikeAt + 420);
+      window.setTimeout(() => markPromoVo('sales-agent'), strikeAt + 140);
       window.setTimeout(() => {
         markPromoVo('catch-both');
         window.setTimeout(() => {
@@ -3748,7 +3748,7 @@
           if (momentsEnabled()) this.playPitchPair();
           else this.playSeeForYourself();
         }, promoVoGuard('catch-both'));
-      }, strikeAt + 1100);
+      }, strikeAt + 380);
     }
 
     async typeWidgetDraft(text) {
@@ -4587,23 +4587,16 @@
       if (!light) return;
       window.clearTimeout(this.passLightTimer);
       if (!color) {
-        light.style.transition = 'opacity 420ms ease';
+        light.style.animation = 'none';
         light.style.opacity = '0';
         return;
       }
       const duration = Math.max(700, Number(durationMs) || 1600);
-      const rise = Math.round(duration * 0.38);
-      const fall = Math.round(duration * 0.38);
-      light.style.transition = 'none';
+      light.style.animation = 'none';
       light.style.backgroundColor = color;
       light.style.opacity = '0';
       light.getBoundingClientRect();
-      light.style.transition = `opacity ${rise}ms cubic-bezier(0.45, 0.05, 0.2, 1)`;
-      light.style.opacity = '0.72';
-      this.passLightTimer = window.setTimeout(() => {
-        light.style.transition = `opacity ${fall}ms cubic-bezier(0.45, 0.05, 0.2, 1)`;
-        light.style.opacity = '0';
-      }, Math.max(rise, duration - fall));
+      light.style.animation = `promo-pass-ambient ${duration}ms linear both`;
     }
 
     orderPassStores() {
@@ -6623,23 +6616,23 @@
         if (!this.glideZoomFrom) {
           const closeW = this.glideCloseRect?.w || faceW;
           const closeH = this.glideCloseRect?.h || faceH;
-          this.glideZoomFrom = closeW / faceW;
-          this.glideZoomFromY = closeH / faceH;
+          const cover = Math.max(closeW / faceW, closeH / faceH);
+          this.glideZoomFrom = cover;
+          this.glideZoomFromY = cover;
           this.glideAnchor = {
             x: frame.width / 2 - cam.x + (leadCell.x + leadCell.w / 2) * unit,
             y: frame.height / 2 - cam.y + (leadCell.y + leadCell.h / 2) * unit,
           };
         }
         const pullU = 1 - arrive;
-        const zoomX = 1 + pullU * (this.glideZoomFrom - 1);
-        const zoomY = 1 + pullU * ((this.glideZoomFromY || this.glideZoomFrom) - 1);
+        const zoom = 1 + pullU * (this.glideZoomFrom - 1);
         const anchor = this.glideAnchor;
         const close = this.glideCloseRect;
         const dx = close ? (close.cx - anchor.x) * pullU : 0;
         const dy = close ? (close.cy - anchor.y) * pullU : 0;
-        pull = { zoom: zoomX, dx, dy, ox: anchor.x, oy: anchor.y };
+        pull = { zoom, dx, dy, ox: anchor.x, oy: anchor.y };
         viewWrap.style.transformOrigin = `${anchor.x.toFixed(1)}px ${anchor.y.toFixed(1)}px`;
-        viewWrap.style.transform = `translate(${dx.toFixed(2)}px, ${dy.toFixed(2)}px) scale(${zoomX.toFixed(4)}, ${zoomY.toFixed(4)})`;
+        viewWrap.style.transform = `translate(${dx.toFixed(2)}px, ${dy.toFixed(2)}px) scale(${zoom.toFixed(4)})`;
       } else if (viewWrap) {
         viewWrap.style.transform = '';
       }
@@ -6717,7 +6710,7 @@
         }
         shown += 1;
       });
-      this.clipGlideOpen(root, arrive);
+      if (mode !== 'pain') this.clipGlideOpen(root, arrive);
       if (this.glideKeepStore && arrive < 0.992) this.placeCloseStore(root);
       else if (this.glideKeepStore) this.releaseCloseStore();
       pool.forEach((slot) => {

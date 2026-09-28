@@ -126,6 +126,7 @@ function mountWidget(options: PromoWidgetMount = {}) {
     mobileAnchor: "bottom-center",
     themeMode: "light",
     themePalette: "default",
+    viewportHostSelector: options.viewportHostSelector || "[data-promo-canvas]",
     autoOpen: false,
     zIndex: 9999,
     isMobile: options.isMobile === true,
