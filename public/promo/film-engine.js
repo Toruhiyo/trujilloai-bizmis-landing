@@ -7395,8 +7395,8 @@
       clone.style.transition = 'left 420ms cubic-bezier(0.45, 0, 0.2, 1)';
       clone.style.left = `${-from.width - 48}px`;
       await waitMs(420);
-      const phoneW = Math.min(360, Math.max(220, host.height * 0.38));
-      const phoneH = phoneW * (19.5 / 9);
+      const phoneH = host.height * 0.94;
+      const phoneW = phoneH * (9 / 19.5);
       clone.classList.add('is-phone');
       clone.dataset.naturalW = String(Math.round(phoneW));
       clone.dataset.naturalH = String(Math.round(phoneH));

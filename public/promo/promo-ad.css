@@ -497,6 +497,11 @@ html.is-promo-opening.is-promo-depart .promo-opening {
   overflow: visible;
 }
 
+.promo-opening.is-pitch:not(.is-moments):not(.is-see) .promo-opening__stage {
+  width: min(1840px, 96%);
+  grid-template-columns: minmax(0, 1fr);
+}
+
 .promo-opening.is-see:not(.is-see-row):not(.is-moments) .promo-opening__stage {
   width: min(1100px, 100%);
   grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
@@ -576,17 +581,17 @@ html.is-promo-opening.is-promo-depart .promo-opening {
 
 .promo-opening.is-moments:not(.is-see) .promo-opening__store {
   flex: 0 0 auto;
-  width: min(72rem, 88cqw);
-  height: min(44rem, 84cqh);
+  width: 96cqw;
+  height: 94cqh;
   max-height: none;
   aspect-ratio: auto;
   transform: none;
 }
 
 .promo-opening.is-moments:not(.is-see) .promo-opening__store.is-phone {
-  width: min(22rem, 34cqw);
-  height: auto;
-  max-height: 92cqh;
+  width: calc(94cqh * 9 / 19.5);
+  height: 94cqh;
+  max-height: none;
   aspect-ratio: 9 / 19.5;
 }
 
@@ -4555,6 +4560,19 @@ html.is-promo-opening.is-promo-depart .promo-opening {
   justify-self: start;
   width: min(590px, 72cqw);
   aspect-ratio: 1948 / 640;
+}
+
+.promo-opening.is-pitch:not(.is-moments):not(.is-see) .promo-opening__logo-slot {
+  width: min(1480px, 76%);
+}
+
+.promo-opening.is-pitch:not(.is-moments):not(.is-see) .promo-opening__line {
+  font-size: clamp(9.5rem, 14cqw, 14.5rem);
+  max-width: 74%;
+}
+
+.promo-opening.is-pitch:not(.is-moments):not(.is-see) .promo-opening__widget {
+  right: 0.6cqw;
 }
 
 .promo-opening__line {
