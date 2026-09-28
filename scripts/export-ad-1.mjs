@@ -3,7 +3,7 @@
 import crypto from 'node:crypto';
 import fs from 'node:fs';
 import path from 'node:path';
-import { spawn } from 'node:child_process';
+import { execFileSync, spawn } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 
 const FPS = 30;
@@ -118,6 +118,8 @@ function chromeArgs(scale) {
   ];
   // Software raster at 4K leaves blank tiles that flicker. 1080p keeps it so frames stay bit-stable.
   if (scale <= 1) args.push('--disable-gpu-rasterization');
+  // 4K compositing drops whole tile rows, so the orange field splits and the sea shows through.
+  if (scale > 1) args.push('--disable-gpu-compositing');
   return args;
 }
 
@@ -177,6 +179,33 @@ async function stepFrame(page, frame, framesDir, timeoutMs, write) {
   return { ended: state.ended, timedOut, file };
 }
 
+function frameIsTorn(file) {
+  const raw = execFileSync(process.env.FFMPEG || 'ffmpeg', [
+    '-v', 'error', '-i', file, '-vf', 'scale=80:45', '-f', 'rawvideo', '-pix_fmt', 'rgb24', '-',
+  ], { maxBuffer: 200_000 });
+  const width = 80;
+  const band = (y0, y1) => {
+    let orange = 0;
+    let white = 0;
+    let total = 0;
+    for (let y = y0; y < y1; y += 1) {
+      for (let x = 0; x < width; x += 2) {
+        const offset = (y * width + x) * 3;
+        const red = raw[offset];
+        const green = raw[offset + 1];
+        const blue = raw[offset + 2];
+        total += 1;
+        if (Math.abs(red - 249) + Math.abs(green - 163) + Math.abs(blue - 83) < 60) orange += 1;
+        else if (red > 240 && green > 240 && blue > 240) white += 1;
+      }
+    }
+    return { orange: orange / total, white: white / total };
+  };
+  const top = band(0, 14);
+  const bottom = band(31, 45);
+  return top.orange > 0.65 && bottom.orange < 0.25 && bottom.white > 0.28;
+}
+
 async function exportRange(browser, options, framesDir) {
   fs.mkdirSync(framesDir, { recursive: true });
   const { context, page } = await bootPage(browser, options);
@@ -190,6 +219,10 @@ async function exportRange(browser, options, framesDir) {
   try {
     for (let frame = 0; frame <= limit; frame += 1) {
       const captured = await stepFrame(page, frame, framesDir, options.timeoutMs, frame >= from);
+      if (frame >= from && options.scale > 1 && captured.file && frameIsTorn(captured.file)) {
+        fs.unlinkSync(captured.file);
+        throw new Error(`Frame ${frame} is torn: the orange field is split. Stopped so no more frames are written.`);
+      }
       if (frame >= from) {
         last = frame;
         if (captured.timedOut) timeouts.push(frame);
