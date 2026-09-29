@@ -5356,7 +5356,15 @@
         if (copy.aside) {
           const aside = document.createElement('span');
           aside.className = 'promo-pass-slot__aside';
-          aside.textContent = copy.aside;
+          const mark = '50 stores';
+          const at = copy.aside.indexOf(mark);
+          if (at < 0) aside.textContent = copy.aside;
+          else {
+            const strong = document.createElement('strong');
+            strong.className = 'promo-pass-slot__aside-mark';
+            strong.textContent = mark;
+            aside.append(copy.aside.slice(0, at), strong, copy.aside.slice(at + mark.length));
+          }
           slot.append(aside);
         }
       }

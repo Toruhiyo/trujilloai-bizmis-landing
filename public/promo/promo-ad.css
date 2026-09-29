@@ -9373,7 +9373,7 @@ html.is-promo-still .promo-clip__product.is-compare::after {
   color: var(--bizmis-primary);
   font-family: var(--font-heading);
   font-size: 1.02rem;
-  font-weight: 800;
+  font-weight: 500;
   letter-spacing: 0.01em;
   line-height: 1.05;
   overflow: visible;
@@ -9382,6 +9382,11 @@ html.is-promo-still .promo-clip__product.is-compare::after {
   transform: translateY(-0.45em) rotate(-18deg) scale(1.35);
   transform-origin: center center;
   box-shadow: 0 8px 14px color-mix(in srgb, var(--bizmis-primary) 16%, transparent);
+}
+
+.promo-pass-slot__aside-mark {
+  font-weight: 800;
+  letter-spacing: -0.02em;
 }
 
 .promo-pass-slot__aside.is-stamped {
