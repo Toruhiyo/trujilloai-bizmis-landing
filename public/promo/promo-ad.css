@@ -4177,11 +4177,9 @@ html.is-promo-opening.is-promo-depart .promo-opening {
 
 .promo-moments__board.is-pose-doubt .promo-moments__orbit,
 .promo-moments__board.is-pose-close .promo-moments__orbit {
-  left: calc(var(--page-pad) + (100cqh - (var(--page-pad) * 2)) / 2);
-  top: 50%;
   opacity: 1;
   animation: promo-moments-orbit var(--promo-moments-orbit, 14s) linear infinite;
-  animation-delay: var(--orbit-delay, 0s);
+  animation-delay: calc(var(--promo-moments-orbit, 14s) * var(--orbit-phase, 0));
 }
 
 .promo-moments__board.is-pose-close .promo-moments__orbit {
@@ -4282,18 +4280,18 @@ html.is-promo-opening.is-promo-depart .promo-opening {
   left: 0;
   top: 0;
   z-index: 7;
-  width: 2.4rem;
-  height: 1.7rem;
-  margin: -0.85rem 0 0 -1.2rem;
+  width: 3.1rem;
+  height: 3.1rem;
+  margin: -1.55rem 0 0 -1.55rem;
   border-radius: 50%;
-  background: color-mix(in srgb, var(--ad-ink) 10%, transparent);
-  filter: blur(8px);
+  background: color-mix(in srgb, var(--bizmis-primary) 58%, white);
+  filter: blur(9px);
   opacity: 0;
   pointer-events: none;
 }
 
 .is-pose-close:not(.is-settled):not(.is-reduced) .promo-moments__vapor-bit {
-  animation: promo-moments-vapor-bit 760ms cubic-bezier(0.22, 1, 0.36, 1) calc(var(--vapor-stagger, 0ms) + var(--bit-delay, 0ms)) forwards;
+  animation: promo-moments-vapor-bit 980ms cubic-bezier(0.22, 1, 0.36, 1) calc(var(--vapor-stagger, 0ms) + var(--bit-delay, 0ms)) forwards;
 }
 
 .is-pose-close:not(.is-settled):not(.is-reduced) .promo-moments__card.is-pick {
@@ -4825,15 +4823,36 @@ html.is-promo-opening.is-promo-depart .promo-opening {
 }
 
 @keyframes promo-moments-vapor {
-  0% { opacity: 1; filter: blur(0); transform: scale(1); background: color-mix(in srgb, var(--ad-white) 45%, transparent); color: var(--ad-ink-3); box-shadow: 0 14px 36px color-mix(in srgb, var(--ad-ink) 6%, transparent); }
-  45% { opacity: 0.72; filter: blur(3px); transform: scale(1.16); background: color-mix(in srgb, var(--ad-ink) 8%, transparent); color: var(--ad-ink-3); box-shadow: 0 0 14px color-mix(in srgb, var(--ad-ink) 10%, transparent); }
-  100% { opacity: 0; filter: blur(16px); transform: scale(1.7); background: transparent; color: transparent; box-shadow: none; }
+  0% {
+    opacity: 1;
+    filter: blur(0);
+    transform: scale(1);
+    background: color-mix(in srgb, var(--ad-white) 55%, transparent);
+    color: var(--ad-ink-3);
+    box-shadow: 0 0 0 0 color-mix(in srgb, var(--bizmis-primary) 0%, transparent);
+  }
+  20% {
+    opacity: 0.9;
+    filter: blur(1px);
+    transform: scale(1.18);
+    background: color-mix(in srgb, var(--bizmis-primary) 72%, white);
+    color: transparent;
+    box-shadow: 0 0 22px 10px color-mix(in srgb, var(--bizmis-primary) 46%, transparent);
+  }
+  100% {
+    opacity: 0;
+    filter: blur(22px);
+    transform: scale(2.4);
+    background: color-mix(in srgb, var(--bizmis-primary) 28%, transparent);
+    color: transparent;
+    box-shadow: 0 0 48px 22px color-mix(in srgb, var(--bizmis-primary) 0%, transparent);
+  }
 }
 
 @keyframes promo-moments-vapor-bit {
-  0% { opacity: 0; transform: translate3d(0, 0, 0) scale(0.8); }
-  35% { opacity: 0.5; transform: translate3d(calc(var(--dx) * 0.35), calc(var(--dy) * 0.35), 0) scale(1); }
-  100% { opacity: 0; transform: translate3d(var(--dx), var(--dy), 0) scale(1.25); filter: blur(16px); }
+  0% { opacity: 0; transform: translate3d(0, 0, 0) scale(0.3); filter: blur(2px); }
+  24% { opacity: 0.82; transform: translate3d(calc(var(--dx) * 0.22), calc(var(--dy) * 0.22), 0) scale(1); filter: blur(8px); }
+  100% { opacity: 0; transform: translate3d(var(--dx), var(--dy), 0) scale(1.9); filter: blur(22px); }
 }
 
 @keyframes promo-moments-orbit {

@@ -1452,7 +1452,7 @@
   const PROMO_MOMENTS_EXTRA_MS = 5400;
   const PROMO_MOMENTS_SALESPERSON_MS = 800;
   const PROMO_MOMENTS_HOLD_MS = 700;
-  const PROMO_MOMENTS_VAPOR_MS = 480;
+  const PROMO_MOMENTS_VAPOR_MS = 720;
   const PROMO_MOMENTS_CART_GAP_MS = 420;
   const PROMO_MOMENTS_ACCESSORY_MS = 350;
   const PROMO_MOMENTS_COLLAPSE_MS = 560;
@@ -2441,16 +2441,15 @@
     board.appendChild(accessory);
     board.appendChild(momentCompare());
     const orbits = [
-      ['1', '14rem', '-0.4s'],
-      ['2', '16.5rem', '-4.1s'],
-      ['3', '13rem', '-7.6s'],
-      ['4', '15.5rem', '-10.8s'],
+      ['1', '0'],
+      ['2', '-0.25'],
+      ['3', '-0.5'],
+      ['4', '-0.75'],
     ];
-    orbits.forEach(([slot, radius, delay]) => {
+    orbits.forEach(([slot, phase]) => {
       const orbit = document.createElement('span');
       orbit.className = `promo-moments__orbit is-bubble-${slot}`;
-      orbit.style.setProperty('--orbit', radius);
-      orbit.style.setProperty('--orbit-delay', delay);
+      orbit.style.setProperty('--orbit-phase', phase);
       const bubble = document.createElement('span');
       bubble.className = 'promo-moments__bubble';
       const ask = document.createElement('span');
@@ -2461,11 +2460,11 @@
       yes.appendChild(momentMark('yes'));
       bubble.append(ask, yes);
       orbit.appendChild(bubble);
-      for (let bit = 0; bit < 4; bit += 1) {
+      for (let bit = 0; bit < 6; bit += 1) {
         const particle = document.createElement('span');
         particle.className = 'promo-moments__vapor-bit';
-        const angle = (bit / 4) * Math.PI * 2 + Number(slot) * 0.8;
-        const dist = 1.15 + (bit % 2) * 0.45;
+        const angle = (bit / 6) * Math.PI * 2 + Number(slot) * 0.55;
+        const dist = 2.1 + (bit % 3) * 1.25;
         particle.style.setProperty('--dx', `${Math.cos(angle) * dist}rem`);
         particle.style.setProperty('--dy', `${Math.sin(angle) * dist}rem`);
         particle.style.setProperty('--bit-delay', `${bit * 40}ms`);
@@ -2701,6 +2700,63 @@
     board.classList.add('is-entering');
   }
 
+  const DOUBT_BUBBLE_RADIUS_PX = 26;
+  const DOUBT_CORNER_CLEAR_PX = 78;
+  const DOUBT_BOARD_EDGE_PX = 18;
+
+  function clearDoubtOrbitFit(board) {
+    const photo = board?.querySelector('.promo-moments__card.is-pick .promo-moments__photo');
+    if (!photo) return;
+    photo.style.width = '';
+    photo.style.height = '';
+    photo.style.maxWidth = '';
+    photo.style.maxHeight = '';
+    photo.style.marginLeft = '';
+    photo.style.marginRight = '';
+    photo.style.alignSelf = '';
+    photo.style.justifySelf = '';
+  }
+
+  function doubtPhotoSide(span) {
+    const maxRadius = span / 2 - DOUBT_BUBBLE_RADIUS_PX - DOUBT_BOARD_EDGE_PX;
+    const half = (maxRadius - DOUBT_CORNER_CLEAR_PX) / Math.SQRT2;
+    return Math.max(140, half * 2);
+  }
+
+  function placeDoubtOrbits(board) {
+    const photo = board?.querySelector('.promo-moments__card.is-pick .promo-moments__photo');
+    const orbits = board?.querySelectorAll('.promo-moments__orbit');
+    if (!photo || !orbits?.length || !board.offsetWidth || !board.offsetHeight) return;
+    const boardBox = board.getBoundingClientRect();
+    const scaleX = boardBox.width / board.offsetWidth || 1;
+    const meta = board.querySelector('.promo-moments__card.is-pick .promo-moments__meta');
+    const metaBox = meta?.getBoundingClientRect();
+    const metaLeft = metaBox ? (metaBox.left - boardBox.left) / scaleX : board.offsetWidth;
+    const stacked = !metaBox || metaLeft < board.offsetWidth * 0.35;
+    const spanX = stacked ? board.offsetWidth : Math.max(180, metaLeft - 20);
+    const side = Math.min(doubtPhotoSide(board.offsetHeight), doubtPhotoSide(spanX));
+    photo.style.width = `${side}px`;
+    photo.style.height = `${side}px`;
+    photo.style.maxWidth = `${side}px`;
+    photo.style.maxHeight = `${side}px`;
+    photo.style.alignSelf = 'center';
+    photo.style.justifySelf = stacked ? 'center' : 'start';
+    photo.style.marginLeft = stacked ? '0' : `${Math.max(0, (spanX - side) / 2)}px`;
+    photo.style.marginRight = stacked ? '0' : '';
+    const fitted = photo.getBoundingClientRect();
+    if (!fitted.width || !fitted.height) return;
+    const scaleY = boardBox.height / board.offsetHeight || 1;
+    const centerX = (fitted.left + fitted.width / 2 - boardBox.left) / scaleX;
+    const centerY = (fitted.top + fitted.height / 2 - boardBox.top) / scaleY;
+    const fittedSide = Math.min(fitted.width / scaleX, fitted.height / scaleY);
+    const radius = (fittedSide / 2) * Math.SQRT2 + DOUBT_CORNER_CLEAR_PX;
+    orbits.forEach((orbit) => {
+      orbit.style.left = `${centerX}px`;
+      orbit.style.top = `${centerY}px`;
+      orbit.style.setProperty('--orbit', `${radius}px`);
+    });
+  }
+
   function applyMomentPose(stage, pose, options = {}) {
     const board = ensureMomentBoard(stage);
     if (!board || !pose) return;
@@ -2748,6 +2804,14 @@
       startGridLife(board);
     } else {
       stopGridLife();
+    }
+    if (pose === 'doubt' || pose === 'close') {
+      placeDoubtOrbits(board);
+      window.requestAnimationFrame(() => {
+        if (board.dataset.pose === pose) placeDoubtOrbits(board);
+      });
+    } else {
+      clearDoubtOrbitFit(board);
     }
     if (options.instant) {
       void board.offsetWidth;
