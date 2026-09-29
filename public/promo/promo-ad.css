@@ -9649,3 +9649,12 @@ html.is-promo-clip.is-clip-moment.is-clip-tablet .bizmis-viewport-portal-root {
   transform-origin: bottom right !important;
 }
 
+.promo-opening.is-clip .promo-moments__board .promo-moments__card {
+  background: color-mix(in srgb, var(--ad-white) 96%, var(--ad-field));
+  border: 1px solid color-mix(in srgb, var(--ad-ink) 9%, transparent);
+  box-shadow:
+    0 1px 1px color-mix(in srgb, var(--ad-ink) 6%, transparent),
+    0 8px 16px color-mix(in srgb, var(--ad-ink) 9%, transparent),
+    0 20px 36px color-mix(in srgb, var(--ad-ink) 8%, transparent);
+}
+
