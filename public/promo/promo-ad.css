@@ -9719,6 +9719,14 @@ html.is-promo-clip.is-clip-moment.is-clip-tablet .bizmis-viewport-portal-root {
   transform-origin: bottom right !important;
 }
 
+.promo-opening.is-clip-moment.is-clip-desktop.is-pitch-cards .promo-moments__board.is-pose-doubt .promo-moments__card.is-pick,
+.promo-opening.is-clip-moment.is-clip-desktop.is-pitch-cards .promo-moments__board.is-pose-close .promo-moments__card.is-pick,
+.promo-opening.is-pitch-cards.is-moments .promo-opening__store.is-desktop .promo-moments__board.is-pose-doubt .promo-moments__card.is-pick,
+.promo-opening.is-pitch-cards.is-moments .promo-opening__store.is-desktop .promo-moments__board.is-pose-close .promo-moments__card.is-pick {
+  --widget-lane: 520px;
+  grid-template-columns: minmax(0, 1fr) minmax(220px, 280px) var(--widget-lane);
+}
+
 .promo-opening.is-clip .promo-moments__board .promo-moments__card {
   background: color-mix(in srgb, var(--ad-white) 96%, var(--ad-field));
   border: 1px solid color-mix(in srgb, var(--ad-ink) 9%, transparent);

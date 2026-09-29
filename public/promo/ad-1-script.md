@@ -84,7 +84,7 @@ Desktop, the same grid. The shopper types: "Looking for something light I can ta
 
 **Clerk:** "Light and easy to carry, here are the three that fit. This one's the best of them."
 
-While he speaks, the grid narrows to three, then the pick's page opens. Question marks travel one circle around the product photo, clear of the picture, then puff into a soft Bizmis orange smoke and disappear. Orange veil, white check, "SOLD".
+While he speaks, the grid narrows to three, then the pick's page opens. The title, price, description, and add button sit beside the photo, clear of the widget in the bottom right. Question marks travel one circle around the product photo, clear of the picture, then puff into a soft Bizmis orange smoke and disappear. Orange veil, white check, "SOLD".
 
 **VO** `narrows`: "It narrows. It recommends."
 
