@@ -854,7 +854,7 @@
 
   function glideStillSrc(tone, device, motion, chat, look) {
     const match = clipSrc(tone, device, motion, chat, look).match(/promo-clip-([^/?#]+)\.mp4/);
-    return match ? `/promo/images/promo-still-${match[1]}.jpg` : '';
+    return match ? `/promo/sea/${tone}/images/promo-still-${match[1]}.jpg` : '';
   }
 
   function glideEventStart() {
@@ -3030,7 +3030,7 @@
     if (urls[key]) return urls[key];
     const classic = clipFileKey(tone, device, motion, chat, 'classic');
     if (urls[classic]) return urls[classic];
-    return `/promo/old/promo-clip-${classic}.mp4`;
+    return `/promo/sea/${tone}/videos/promo-clip-${classic}.mp4`;
   }
 
   function gridMix(col, row, salt) {

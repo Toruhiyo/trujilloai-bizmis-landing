@@ -98,10 +98,22 @@ function encodeClip(frames, dest) {
   });
 }
 
+function seaAsset(key, kind) {
+  const tone = key.split('-')[0];
+  const folder = kind === 'still' ? 'images' : 'videos';
+  const ext = kind === 'still' ? 'jpg' : 'mp4';
+  const prefix = kind === 'still' ? 'promo-still' : 'promo-clip';
+  const name = `${prefix}-${key}.${ext}`;
+  return {
+    disk: path.join(OUT_DIR, 'sea', tone, folder, name),
+    url: `/promo/sea/${tone}/${folder}/${name}`,
+  };
+}
+
 function rememberClip(key) {
   const assetsPath = path.join(OUT_DIR, 'film-assets.json');
   const assets = JSON.parse(fs.readFileSync(assetsPath, 'utf8'));
-  assets.clips[key] = `/promo/old/promo-clip-${key}.mp4`;
+  assets.clips[key] = seaAsset(key, 'clip').url;
   fs.writeFileSync(assetsPath, `${JSON.stringify(assets)}\n`);
 }
 
@@ -148,7 +160,8 @@ async function recordDevice(browser, device) {
       await page.waitForTimeout(40);
     }
     if (STILLS_ONLY) {
-      const still = path.join(OUT_DIR, 'images', `promo-still-${clip.key}.jpg`);
+      const still = seaAsset(clip.key, 'still').disk;
+      fs.mkdirSync(path.dirname(still), { recursive: true });
       await page.screenshot({ path: still, type: 'jpeg', quality: 72, timeout: 15000 });
       process.stdout.write(`wrote promo-still-${clip.key}.jpg\n`);
       continue;
@@ -161,8 +174,12 @@ async function recordDevice(browser, device) {
       const remain = frameMs - (Date.now() - started);
       if (remain > 0) await page.waitForTimeout(remain);
     }
-    fs.copyFileSync(path.join(frames, 'frame-00.jpg'), path.join(OUT_DIR, 'images', `promo-still-${clip.key}.jpg`));
-    await encodeClip(frames, path.join(OUT_DIR, 'old', `promo-clip-${clip.key}.mp4`));
+    const still = seaAsset(clip.key, 'still');
+    const clipFile = seaAsset(clip.key, 'clip');
+    fs.mkdirSync(path.dirname(still.disk), { recursive: true });
+    fs.mkdirSync(path.dirname(clipFile.disk), { recursive: true });
+    fs.copyFileSync(path.join(frames, 'frame-00.jpg'), still.disk);
+    await encodeClip(frames, clipFile.disk);
     fs.rmSync(frames, { recursive: true, force: true });
     rememberClip(clip.key);
     process.stdout.write(`wrote promo-clip-${clip.key}.mp4\n`);

@@ -14,7 +14,16 @@ const THEME = path.resolve(LANDING, '../ShopifyThemes/shopify-theme-crimson-inde
 const OUT = path.join(LANDING, 'public/promo');
 const ASSET = path.join(THEME, 'assets');
 
+function seaAssetPath(name) {
+  const match = name.match(/^promo-(still|clip)-([a-z]+)-/);
+  if (!match) return '';
+  const kind = match[1] === 'still' ? 'images' : 'videos';
+  return `/promo/sea/${match[2]}/${kind}/${name}`;
+}
+
 function publicAssetPath(name) {
+  const sea = seaAssetPath(name);
+  if (sea) return sea;
   const ext = path.extname(name).toLowerCase();
   if (name === 'logo-mono.png' || name.startsWith('promo-store-')) return `/promo/old/${name}`;
   if (['.jpg', '.jpeg', '.png', '.svg', '.webp', '.gif'].includes(ext)) return `/promo/images/${name}`;
@@ -86,10 +95,13 @@ function assetMap() {
   const clips = {};
   const clay = {};
   const readDir = (dir) => (fs.existsSync(dir) ? fs.readdirSync(dir) : []);
-  readDir(path.join(OUT, 'old')).forEach((name) => {
-    if (name.startsWith('promo-clip-') && name.endsWith('.mp4')) {
-      clips[name.slice('promo-clip-'.length, -'.mp4'.length)] = `/promo/old/${name}`;
-    }
+  const seaDir = path.join(OUT, 'sea');
+  readDir(seaDir).forEach((tone) => {
+    readDir(path.join(seaDir, tone, 'videos')).forEach((name) => {
+      if (name.startsWith('promo-clip-') && name.endsWith('.mp4')) {
+        clips[name.slice('promo-clip-'.length, -'.mp4'.length)] = `/promo/sea/${tone}/videos/${name}`;
+      }
+    });
   });
   readDir(path.join(OUT, 'images')).forEach((name) => {
     if (name.startsWith('promo-product-') && name.endsWith('.png')) {
