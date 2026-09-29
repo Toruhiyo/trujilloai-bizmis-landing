@@ -105,8 +105,8 @@ function seaAsset(key, kind) {
   const prefix = kind === 'still' ? 'promo-still' : 'promo-clip';
   const name = `${prefix}-${key}.${ext}`;
   return {
-    disk: path.join(OUT_DIR, 'sea', tone, folder, name),
-    url: `/promo/sea/${tone}/${folder}/${name}`,
+    disk: path.join(OUT_DIR, 'sea-of-cards', tone, folder, name),
+    url: `/promo/sea-of-cards/${tone}/${folder}/${name}`,
   };
 }
 

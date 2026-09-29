@@ -4,7 +4,7 @@ import { fileURLToPath } from 'node:url';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const WIDGET = path.resolve(ROOT, '../trujilloai-bizmis-widget');
-const OUT = path.join(ROOT, 'public/promo/images');
+const OUT = path.join(ROOT, 'public/promo/products/images');
 const SIZE = 512;
 const KINDS = [];
 const TURNS = [-20, 0, 20];
@@ -260,7 +260,7 @@ if (failed) throw new Error(failed);
 const assetsPath = path.join(ROOT, 'public/promo/film-assets.json');
 const assets = JSON.parse(fs.readFileSync(assetsPath, 'utf8'));
 for (const job of jobs) {
-  assets.clay[job.name] = `/promo/images/promo-product-${job.name}.png`;
+  assets.clay[job.name] = `/promo/products/images/promo-product-${job.name}.png`;
 }
 fs.writeFileSync(assetsPath, `${JSON.stringify(assets)}\n`);
 process.stdout.write(`renders ${jobs.length}\n`);

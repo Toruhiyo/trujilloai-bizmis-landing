@@ -18,18 +18,19 @@ function seaAssetPath(name) {
   const match = name.match(/^promo-(still|clip)-([a-z]+)-/);
   if (!match) return '';
   const kind = match[1] === 'still' ? 'images' : 'videos';
-  return `/promo/sea/${match[2]}/${kind}/${name}`;
+  return `/promo/sea-of-cards/${match[2]}/${kind}/${name}`;
 }
 
 function publicAssetPath(name) {
   const sea = seaAssetPath(name);
   if (sea) return sea;
-  const ext = path.extname(name).toLowerCase();
-  if (name === 'logo-mono.png' || name.startsWith('promo-store-')) return `/promo/old/${name}`;
-  if (['.jpg', '.jpeg', '.png', '.svg', '.webp', '.gif'].includes(ext)) return `/promo/images/${name}`;
-  if (name === 'promo-pain-wall.mp4') return `/promo/videos/${name}`;
-  if (['.mp4', '.webm'].includes(ext)) return `/promo/old/${name}`;
-  return `/promo/${name}`;
+  if (name === 'promo-pitch-grid-lead.jpg') return `/promo/sea-of-cards/pitch/images/${name}`;
+  if (name.startsWith('promo-home-') || name === 'logo-white.png' || name === 'logo-transparent.png') return `/promo/stores/images/${name}`;
+  if (name.startsWith('promo-product-')) return `/promo/products/images/${name}`;
+  if (name.startsWith('bizmis-logo-')) return `/promo/brand/images/${name}`;
+  if (name === 'promo-pain-wall.mp4') return `/promo/wall/videos/${name}`;
+  if (name === 'logo-mono.png' || name.startsWith('promo-store-') || name.endsWith('.webm')) return `/promo/old/${name}`;
+  return `/promo/old/${name}`;
 }
 
 function rewriteLiquid(source) {
@@ -95,24 +96,24 @@ function assetMap() {
   const clips = {};
   const clay = {};
   const readDir = (dir) => (fs.existsSync(dir) ? fs.readdirSync(dir) : []);
-  const seaDir = path.join(OUT, 'sea');
+  const seaDir = path.join(OUT, 'sea-of-cards');
   readDir(seaDir).forEach((tone) => {
     readDir(path.join(seaDir, tone, 'videos')).forEach((name) => {
       if (name.startsWith('promo-clip-') && name.endsWith('.mp4')) {
-        clips[name.slice('promo-clip-'.length, -'.mp4'.length)] = `/promo/sea/${tone}/videos/${name}`;
+        clips[name.slice('promo-clip-'.length, -'.mp4'.length)] = `/promo/sea-of-cards/${tone}/videos/${name}`;
       }
     });
   });
-  readDir(path.join(OUT, 'images')).forEach((name) => {
+  readDir(path.join(OUT, 'products/images')).forEach((name) => {
     if (name.startsWith('promo-product-') && name.endsWith('.png')) {
-      clay[name.slice('promo-product-'.length, -'.png'.length)] = `/promo/images/${name}`;
+      clay[name.slice('promo-product-'.length, -'.png'.length)] = `/promo/products/images/${name}`;
     }
   });
   return {
     clips,
     clay,
-    pitchLead: '/promo/images/promo-pitch-grid-lead.jpg',
-    stamp: '/promo/images/bizmis-logo-full-white-transparent.png',
+    pitchLead: '/promo/sea-of-cards/pitch/images/promo-pitch-grid-lead.jpg',
+    stamp: '/promo/brand/images/bizmis-logo-full-white-transparent.png',
   };
 }
 
@@ -124,11 +125,11 @@ fs.writeFileSync(path.join(OUT, 'film-engine.js'), engine);
 const map = assetMap();
 fs.writeFileSync(path.join(OUT, 'film-assets.json'), JSON.stringify(map));
 
-const referenced = [...markup.matchAll(/\/promo\/(?:images|videos|old)\/[A-Za-z0-9._-]+/g)].map((match) => match[0].slice('/promo/'.length));
+const referenced = [...markup.matchAll(/\/promo\/(?:sea-of-cards\/[a-z]+\/(?:images|videos)|stores\/images|products\/images|brand\/images|wall\/videos|old)\/[A-Za-z0-9._-]+/g)].map((match) => match[0].slice('/promo/'.length));
 const missing = [...new Set(referenced)].filter((name) => !fs.existsSync(path.join(OUT, name)));
 if (missing.length) throw new Error(`Markup references missing files: ${missing.join(', ')}`);
 if (!map.clips['pain-desktop-scroll-up-1']) throw new Error('Clip map is missing a known pain clip');
-if (!fs.existsSync(path.join(OUT, 'images/promo-pitch-grid-lead.jpg'))) throw new Error('Pitch lead still was not copied');
+if (!fs.existsSync(path.join(OUT, 'sea-of-cards/pitch/images/promo-pitch-grid-lead.jpg'))) throw new Error('Pitch lead still was not copied');
 
 const check = spawnSync(process.execPath, ['--check', path.join(OUT, 'film-engine.js')], { encoding: 'utf8' });
 if (check.status !== 0) {
