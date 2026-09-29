@@ -5138,6 +5138,10 @@
       if (!slot) return;
       slot.classList.add('is-in');
       if (slot.querySelector('.is-shopify')) this.root.classList.add('is-ea-in');
+      const key = ctaKey && Object.prototype.hasOwnProperty.call(PROMO_END_CTA, ctaKey)
+        ? ctaKey
+        : promoVideoConfig.cta;
+      markPromoVo(PROMO_END_CTA[key]?.vo);
     }
 
     async landPassSlot() {

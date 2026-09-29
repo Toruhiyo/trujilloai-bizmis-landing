@@ -9338,6 +9338,10 @@ html.is-promo-still .promo-clip__product.is-compare::after {
   animation: promo-end-metal 3.8s cubic-bezier(0.45, 0.05, 0.2, 1) infinite;
 }
 
+.promo-pass-slot.is-in .promo-pass-slot__action.is-shopify {
+  animation: none;
+}
+
 .promo-pass-slot__url {
   margin-top: 6px;
   font-family: var(--font-body);

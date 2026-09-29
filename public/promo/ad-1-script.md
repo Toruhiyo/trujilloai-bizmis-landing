@@ -116,11 +116,11 @@ From the orange field the picture eases to white. "Built to sell." leaves. The m
 
 **VO:** per `cta`.
 - demo `see-it`: "See it in action."
-- ea `join-fifty`: "Run it free, no commitment. And what your store needs next is what we build next. Join Early Access."
+- ea `join-fifty`: "Run it free. No commitment, no credit card. Your feedback shapes what we build next, with a direct line to us, and a discount when you upgrade. Install to join Early Access."
 - install `install-shopify`: "Install it on Shopify."
 - none: silence.
 
-Delivery for `join-fifty`: warm, unhurried, the offer said as a fact; a half-beat before "Join Early Access." The "no commitment" and roadmap lines are spoken only, never written on screen.
+Delivery for `join-fifty`: warm, unhurried, the offer said as a fact. "Run it free", the feedback line, and the discount are spoken only. The card stays up through the line, so the full sentence is kept.
 
 ## 9. End card: by `cta`
 
@@ -128,11 +128,7 @@ The frames leave. The field stays white. Nothing is clickable. No window, button
 
 - `install` (default): eyebrow "Installs in one click." then the line "Install on Shopify". No URL.
 - `demo`: the line "See it in action" and `bizmis.ai/demo`.
-- `ea`: a three-line build above the CTA, landing one at a time, 500 ms apart, each with the film's press-in, in the eyebrow size:
-    "Free to run live."
-    "Half price when you upgrade."
-    "Only 50 stores."
-  Then the line "Join Early Access" lands, then `bizmis.ai/early-access`. Hold ≥ 4 s after the URL. Never "no card required".
+- `ea`: one eyebrow line, centred: "First 50 stores · No commitment · No credit card". Then one lockup on one line, headline style: the Shopify bag in black, then "Install to join Early Access". The bag sits on the same baseline as the words, slightly smaller than the capitals, with a small gap before the text. No URL. The metal shine plays on this line only. The wordmark, the eyebrow, and the lockup fade up, then the card holds through the spoken line (at least 4 s).
 - `none`: the wordmark only.
 
 The call-to-action line plays a metal shine. It fades up and holds ≥ 4 s.
