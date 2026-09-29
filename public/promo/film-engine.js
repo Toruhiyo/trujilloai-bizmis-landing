@@ -1776,9 +1776,10 @@
   }
 
   function pitchEventLabel(detail) {
-    if (detail.kind === 'products') return 'Products shown to you';
-    if (detail.kind === 'product') return 'Product opened';
-    if (detail.kind === 'cart') return 'Added to cart';
+    if (detail.kind === 'products') return 'Preparing product results…';
+    if (detail.kind === 'product') return 'Opening the product…';
+    if (detail.kind === 'policies') return 'Checking store policies…';
+    if (detail.kind === 'cart') return 'Adding to your cart…';
     return '';
   }
 
@@ -1793,14 +1794,25 @@
     path.setAttribute('stroke-linecap', 'round');
     path.setAttribute('stroke-linejoin', 'round');
     if (kind === 'product') {
-      path.setAttribute('d', 'M20.6 13.4 13.4 20.6a2 2 0 0 1-2.8 0L3 13V3h10l7.6 7.6a2 2 0 0 1 0 2.8z');
+      path.setAttribute('d', 'M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6S2 12 2 12z');
       svg.append(path);
-      const dot = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-      dot.setAttribute('cx', '7.5');
-      dot.setAttribute('cy', '7.5');
-      dot.setAttribute('r', '1.2');
-      dot.setAttribute('fill', 'currentColor');
-      svg.append(dot);
+      const pupil = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+      pupil.setAttribute('cx', '12');
+      pupil.setAttribute('cy', '12');
+      pupil.setAttribute('r', '2.4');
+      pupil.setAttribute('fill', 'currentColor');
+      svg.append(pupil);
+      return svg;
+    }
+    if (kind === 'policies') {
+      path.setAttribute('d', 'M4 5.5A2.5 2.5 0 0 1 6.5 3H20v16H6.5A2.5 2.5 0 0 0 4 21.5z');
+      svg.append(path);
+      const spine = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+      spine.setAttribute('fill', 'none');
+      spine.setAttribute('stroke', 'currentColor');
+      spine.setAttribute('stroke-width', '2.25');
+      spine.setAttribute('d', 'M4 5.5A2.5 2.5 0 0 1 6.5 8H20');
+      svg.append(spine);
       return svg;
     }
     if (kind === 'cart') {
@@ -3917,63 +3929,20 @@
 
     paintPitchEvent(detail) {
       const host = this.ensurePitchEvents();
-      if (!host || !detail) return;
+      const labelText = pitchEventLabel(detail);
+      if (!host || !labelText) return;
       const card = document.createElement('div');
       card.className = 'promo-widget-event';
-      const label = document.createElement('p');
-      label.className = 'promo-widget-event__label';
-      label.append(pitchEventIcon(detail.kind));
-      label.append(document.createTextNode(pitchEventLabel(detail)));
-      card.append(label);
-      if (detail.kind === 'products') {
-        const row = document.createElement('div');
-        row.className = 'promo-widget-event__tiles';
-        const shots = [
-          '.promo-moments__card.is-pick img',
-          '.promo-moments__card.is-go img',
-          '.promo-moments__card.is-other img',
-        ];
-        (detail.products || []).forEach((product, index) => {
-          row.append(this.pitchEventTile(product, shots[index] || ''));
-        });
-        card.append(row);
-      } else if (detail.product) {
-        const item = document.createElement('div');
-        item.className = 'promo-widget-event__item';
-        const shot = detail.product.title === 'The sleeve'
-          ? '.promo-moments__card.is-extra img'
-          : '.promo-moments__card.is-pick img';
-        item.append(this.pitchEventThumb(shot, 44));
-        const title = document.createElement('span');
-        title.textContent = detail.product.title || '';
-        item.append(title);
-        card.append(item);
-      }
+      card.setAttribute('role', 'status');
+      const icon = document.createElement('span');
+      icon.className = 'promo-widget-event__icon';
+      icon.append(pitchEventIcon(detail.kind));
+      const label = document.createElement('span');
+      label.textContent = labelText;
+      card.append(icon, label);
       host.append(card);
       const cap = host.closest('.is-phone') ? 1 : 2;
       while (host.children.length > cap) host.firstElementChild?.remove();
-    }
-
-    pitchEventTile(product, shot) {
-      const tile = document.createElement('div');
-      tile.className = 'promo-widget-event__tile';
-      tile.append(this.pitchEventThumb(shot, 0));
-      const title = document.createElement('span');
-      title.textContent = product?.title || '';
-      tile.append(title);
-      return tile;
-    }
-
-    pitchEventThumb(shot, size) {
-      const img = document.createElement('img');
-      img.alt = '';
-      const source = shot ? this.root.querySelector(shot) : null;
-      if (source?.getAttribute('src')) img.src = source.getAttribute('src');
-      if (size) {
-        img.style.width = `${size}px`;
-        img.style.height = `${size}px`;
-      }
-      return img;
     }
 
     async slideStoreToPhone() {
@@ -4059,6 +4028,8 @@
       applyMomentPose(stage, 'doubt', { instant: true });
       await this.typeShopperLine(PROMO_PITCH_LINE_2);
       const second = playClerkLine(PROMO_PITCH_CLERK_2, reduced ? 200 : PROMO_PITCH_SPEAK_2_MS, () => {});
+      this.paintPitchEvent({ kind: 'policies' });
+      if (!reduced) await waitMs(900);
       host?.classList.add('is-cart-one');
       const cartOne = {
         kind: 'cart',
@@ -5260,7 +5231,7 @@
       host?.setAttribute('data-promo-pain-beat', 'grid');
       const cursor = this.root.querySelector('[data-promo-pain-cursor]');
       if (cursor) {
-        cursor.hidden = false;
+        cursor.hidden = true;
         cursor.style.opacity = '0';
       }
       this.root.querySelector('[data-promo-pain-chat]')?.setAttribute('hidden', '');
@@ -5298,17 +5269,23 @@
       const cursor = this.root.querySelector('[data-promo-pain-cursor]');
       const store = this.painStore();
       if (!cursor || !store) return;
+      const reveal = cursor.hidden || cursor.style.opacity !== '1';
       cursor.hidden = false;
       if (!target) {
         cursor.style.opacity = '0';
         return;
       }
+      if (reveal) cursor.style.transition = 'none';
       const storeBox = store.getBoundingClientRect();
       const box = target.getBoundingClientRect();
       const x = box.left + box.width * 0.55 - storeBox.left;
       const y = box.top + box.height * 0.34 - storeBox.top + scrollDelta;
       cursor.style.setProperty('--pain-x', `${Math.round(x)}px`);
       cursor.style.setProperty('--pain-y', `${Math.round(y)}px`);
+      if (reveal) {
+        cursor.getBoundingClientRect();
+        cursor.style.transition = '';
+      }
       cursor.style.opacity = visible ? '1' : '0';
     }
 
@@ -5402,6 +5379,7 @@
                 : -1;
       const scrollSlot = browseSlot >= 0 ? browseSlot : beat === 'leave' ? 2 : -1;
       const scrollTarget = scrollSlot < 0 ? 0 : this.painBrowseScroll(scrollSlot);
+      const exportSnap = document.documentElement.classList.contains('is-promo-export');
       const scrollDelta = scene === 'unattended' ? this.setPainScroll(scrollTarget) : 0;
       if (instant && scene === 'unattended') board.offsetWidth;
       host.classList.remove('is-pain-dim');
@@ -5432,7 +5410,7 @@
       if (chatOn) this.lockPainChatBox();
       if (scene === 'unattended' && beat !== 'grid') {
         if (beat === 'leave') this.placePainCursorEdge();
-        else if (browseSlot >= 0) this.placePainCursor(this.painBrowseCard(browseSlot), true, instant ? 0 : scrollDelta);
+        else if (browseSlot >= 0) this.placePainCursor(this.painBrowseCard(browseSlot), true, instant || exportSnap ? 0 : scrollDelta);
       }
       this.paintPainLog(beat);
     }
@@ -6922,8 +6900,8 @@
       const clone = root.querySelector('.promo-glide__cell > .promo-opening__store')
         || lead?.querySelector('.promo-opening__store');
       if (!clone) return;
-      const fadeStart = 0.84;
-      const fadeEnd = 0.98;
+      const fadeStart = 0.96;
+      const fadeEnd = 0.99;
       if (!cellNode || cellNode.hidden || arrive >= fadeEnd) {
         clone.style.visibility = 'hidden';
         clone.style.opacity = '0';
@@ -6945,7 +6923,7 @@
       clone.style.width = `${naturalW.toFixed(1)}px`;
       clone.style.height = `${naturalH.toFixed(1)}px`;
       clone.style.transform = `scale(${(width / naturalW).toFixed(4)}, ${(height / naturalH).toFixed(4)})`;
-      clone.style.boxShadow = 'inset 0 2px 0 color-mix(in srgb, var(--ad-white) 92%, transparent), inset 0 -2px 6px color-mix(in srgb, var(--ad-ink) 16%, transparent), inset 0 0 14px color-mix(in srgb, var(--ad-white) 40%, transparent)';
+      clone.style.boxShadow = 'none';
       const matched = blend > 0.98;
       const wasMatched = cellNode.classList.contains('is-lead-match');
       cellNode.classList.toggle('is-lead-match', matched);
@@ -6978,8 +6956,9 @@
       }
       cellNode.querySelectorAll(':scope > .promo-glide__still, :scope > .promo-glide__video, :scope > .promo-glide__mark').forEach((node) => {
         if (node.classList.contains('promo-glide__still')) {
-          node.style.visibility = blend > 0.98 ? 'hidden' : '';
-          node.style.opacity = (1 - blend).toFixed(3);
+          const showStill = blend < 0.04;
+          node.style.visibility = showStill ? '' : 'hidden';
+          node.style.opacity = showStill ? '1' : '0';
           return;
         }
         node.style.visibility = 'hidden';
@@ -7564,7 +7543,7 @@
       clone.style.transition = 'left 420ms cubic-bezier(0.45, 0, 0.2, 1)';
       clone.style.left = `${-from.width - 48}px`;
       await waitMs(420);
-      const phoneH = host.height * 0.94;
+      const phoneH = host.height * 0.78;
       const phoneW = phoneH * (9 / 19.5);
       clone.classList.add('is-phone');
       clone.dataset.naturalW = String(Math.round(phoneW));
@@ -7653,11 +7632,15 @@
         veil.remove();
         return;
       }
+      const store = this.painStore();
       veil.getBoundingClientRect();
       veil.classList.add('is-in');
-      await waitMs(240);
+      store?.classList.add('is-window-in');
+      await waitMs(780);
+      store?.classList.remove('is-window-in');
+      await waitMs(480);
       veil.classList.add('is-out');
-      await waitMs(160);
+      await waitMs(200);
       veil.remove();
     }
 

@@ -10,7 +10,7 @@ The film says "chatbot" and "sales agent". "Salesperson" is only the struck word
 
 ## 1. Lost in the catalog (desktop)
 
-The first close-up is the desktop window, already framed. Inside that window only, the page loads with a large "Your store" in the center of the page and no spinner. It is gone in under half a second, and the catalog is there. The window's own header also reads "Your store". The shopper opens a product, goes back, bounces between two similar products, opens another, backs out.
+The first close-up is the desktop window. It opens the way a Mac window unminimizes, scaling up from the bottom. Inside that window only, the page loads with a large "Your store" in the center of the page and no spinner. It holds, then leaves, and the catalog is there. The window's own header also reads "Your store". The cursor stays hidden until it is on a product. The shopper opens a product, goes back, bounces between two similar products, opens another, backs out.
 
 **VO** `two-places`: "In every online store, a sale dies in two places."
 
@@ -68,7 +68,7 @@ Word by word: "Your store salesperson." The whole word stays black. A Bizmis ora
 
 ## 6. The same two cards, sold
 
-Same two windows, including the pan. Each window is centered on the screen. The desktop pitch has no arrow cursor, because nothing is clicked there. The pain desktop keeps its cursor. Phone and tablet show no arrow cursor. The phone is its own frame and keeps the thumb. Catalog, comparison, and product page reflow for the phone and the tablet. The store moves. The real Bizmis card, in light mode, eases into the corner of the desktop window, composer and all. The shopper types in that composer, and that line is sent. The bubble stays the shopper's words. A failed send does not show a retry control. Behind the scenes the agent receives `Say this: "{the clerk's line}"`. On the phone the widget switches to its mobile bar, docked in a band at the bottom of the phone, clear of the product and the comparison. The clerk speaks through the real widget, one sentence, captioned. No VO during that speech. Above the card, the same event cards the widget draws in a session: "Products shown to you", then "Product opened", then "Added to cart". A short orange sweep marks whatever just changed.
+Same two windows, including the pan. Each window is centered on the screen. The desktop pitch has no arrow cursor, because nothing is clicked there. The pain desktop keeps its cursor. Phone and tablet show no arrow cursor. The phone is its own frame and keeps the thumb. Catalog, comparison, and product page reflow for the phone and the tablet. The store moves. The real Bizmis card, in light mode, eases into the corner of the desktop window, composer and all. The shopper types in that composer, and that line is sent. The bubble stays the shopper's words. A failed send does not show a retry control. Behind the scenes the agent receives `Say this: "{the clerk's line}"`. On the phone the widget switches to its mobile bar, docked in a band at the bottom of the phone, clear of the product and the comparison. The clerk speaks through the real widget, one sentence, captioned. No VO during that speech. Above the card, the same action the widget names while it works: "Preparing product results…", then "Opening the product…". On the phone, "Checking store policies…", then "Adding to your cart…". No product thumbnails on those cards. A short orange sweep marks whatever just changed.
 
 Desktop, the same grid. The shopper types: "Looking for something light I can take everywhere."
 
@@ -98,7 +98,7 @@ The sea washes to solid Bizmis orange.
 
 ## 8. Other stores, into the slot
 
-From the orange field the picture eases to white. "Built to sell." leaves. The mark is off during the pass. No clerk. A pass of large store frames starts near a second each and slows toward about three seconds. Each picture fills its frame from the center. Behind it, a soft light in that store's color rises, then falls back to off, then the next store's color rises the same way. Sector and store names use that color, large and bold, above the frame. Sector labels, in order: Consumer electronics, Clothing & apparel, Books & stationery, Skincare & beauty, Gaming gear, Home & DIY, Car parts & accessories, Wine & spirits. The wordmark is never black.
+From the orange field the picture eases to white. "Built to sell." leaves. The mark is off during the pass. No clerk. A pass of large store frames starts near a second each and slows toward about three seconds. Each picture fills a large frame from the center. Behind it, a clear light in that store's color rises, then falls back to off, then the next store's color rises the same way. Sector and store names use that color, large and bold, above the frame. Sector labels, in order: Consumer electronics, Clothing & apparel, Books & stationery, Skincare & beauty, Gaming gear, Home & DIY, Car parts & accessories, Wine & spirits. The wordmark is never black.
 
 **VO** `any-store`: "Any store."
 
