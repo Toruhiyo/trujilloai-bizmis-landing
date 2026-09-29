@@ -18,7 +18,7 @@
       scarcity: '',
       label: 'Install now',
       invite: 'for Early Access benefits!',
-      aside: 'First 50 stores',
+      aside: 'first 50 stores only!',
       terms: ['No commitment', 'No credit card'],
       shopify: true,
       url: '',
@@ -40,6 +40,8 @@
   const PROMO_PASS_SLOW_MS = 2800;
   const PROMO_PASS_SLOT_IN_MS = 420;
   const PROMO_PASS_SLOT_FADE_MS = 700;
+  const PROMO_EA_WRITE_MS = 1300;
+  const PROMO_EA_STAMP_MS = 460;
   const PROMO_EA_TERM_GAP_MS = 340;
   const PROMO_EA_TERM_IN_MS = 560;
   const PROMO_EA_HOLD_MS = 14000;
@@ -5243,14 +5245,17 @@
       if (copy.invite) {
         const invite = document.createElement('p');
         invite.className = 'promo-pass-slot__invite';
-        invite.textContent = copy.invite;
+        const written = document.createElement('span');
+        written.className = 'promo-pass-slot__invite-line';
+        written.textContent = copy.invite;
+        invite.append(written);
+        slot.append(invite);
         if (copy.aside) {
           const aside = document.createElement('span');
           aside.className = 'promo-pass-slot__aside';
           aside.textContent = copy.aside;
-          invite.append(aside);
+          slot.append(aside);
         }
-        slot.append(invite);
       }
       if (copy.terms?.length) {
         const terms = document.createElement('p');
@@ -5312,6 +5317,10 @@
       markPromoVo(copy.vo);
       if (copy.shopify && slot) {
         await waitMs(PROMO_PASS_SLOT_FADE_MS);
+        slot.classList.add('is-writing');
+        await waitMs(PROMO_EA_WRITE_MS);
+        slot.querySelector('.promo-pass-slot__aside')?.classList.add('is-stamped');
+        await waitMs(PROMO_EA_STAMP_MS);
         await this.playEaTerms(slot);
         await waitMs(PROMO_EA_TERM_IN_MS + PROMO_EA_HOLD_MS + promoHoldMs());
       } else {

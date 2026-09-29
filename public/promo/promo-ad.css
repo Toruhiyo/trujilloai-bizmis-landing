@@ -9376,22 +9376,73 @@ html.is-promo-still .promo-clip__product.is-compare::after {
   white-space: nowrap;
 }
 
+.promo-pass-slot__invite-line {
+  display: inline-block;
+  padding: 0.18em 0.06em 0.22em;
+  margin: -0.18em -0.06em -0.22em;
+  clip-path: inset(0 100% 0 0);
+}
+
+.promo-pass-slot.is-writing .promo-pass-slot__invite-line {
+  animation: promo-ea-write 1300ms steps(34, end) forwards;
+}
+
+.promo-pass-slot.is-settled .promo-pass-slot__invite-line {
+  clip-path: none;
+  animation: none;
+}
+
+@keyframes promo-ea-write {
+  to { clip-path: inset(0 0 0 0); }
+}
+
 .promo-pass-slot__aside {
-  position: absolute;
-  left: calc(100% + 0.85em);
-  top: -0.15em;
-  padding: 0.34em 0.7em 0.38em;
-  border-radius: 999px;
+  position: relative;
+  display: inline-block;
+  margin: -0.15rem 0 0;
+  padding: 0.42em 0.85em 0.46em 1.35em;
+  border-radius: 2px 8px 8px 2px;
   background: var(--bizmis-primary);
   color: #fff;
   font-family: var(--font-heading);
-  font-size: 0.4em;
-  font-weight: 700;
-  letter-spacing: -0.02em;
+  font-size: 1.05rem;
+  font-weight: 800;
+  letter-spacing: 0.01em;
   line-height: 1;
   white-space: nowrap;
-  transform: rotate(-7deg);
-  box-shadow: 0 8px 18px color-mix(in srgb, var(--bizmis-primary) 32%, transparent);
+  opacity: 0;
+  transform: translateY(-0.45em) rotate(-18deg) scale(1.35);
+  transform-origin: center center;
+  box-shadow: 0 10px 16px color-mix(in srgb, var(--bizmis-primary) 28%, transparent);
+}
+
+.promo-pass-slot__aside::before {
+  content: "";
+  position: absolute;
+  left: 0.38em;
+  top: 50%;
+  width: 0.42em;
+  height: 0.42em;
+  margin-top: -0.21em;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: inset 0 0 0 1.5px color-mix(in srgb, var(--bizmis-primary) 40%, #fff);
+}
+
+.promo-pass-slot__aside.is-stamped {
+  animation: promo-ea-stamp 460ms cubic-bezier(0.16, 0.84, 0.32, 1.2) forwards;
+}
+
+.promo-pass-slot.is-settled .promo-pass-slot__aside {
+  opacity: 1;
+  transform: rotate(-8deg);
+  animation: none;
+}
+
+@keyframes promo-ea-stamp {
+  0% { opacity: 0; transform: translateY(-0.7em) rotate(-22deg) scale(1.45); }
+  62% { opacity: 1; transform: translateY(0.06em) rotate(-8deg) scale(0.94); }
+  100% { opacity: 1; transform: rotate(-8deg) scale(1); }
 }
 
 .promo-pass-slot__terms {
@@ -9399,7 +9450,7 @@ html.is-promo-still .promo-clip__product.is-compare::after {
   align-items: baseline;
   justify-content: center;
   gap: 0.55em;
-  margin: 8px 0 0;
+  margin: 0.85rem 0 0;
   color: color-mix(in srgb, var(--ad-ink) 46%, #c8bfb6);
   font-family: var(--font-body, var(--font-heading));
   font-size: clamp(1.2rem, 1.8vw, 1.5rem);
@@ -9471,11 +9522,17 @@ html.is-promo-still .promo-clip__product.is-compare::after {
 
   .promo-opening.is-ea-card.is-pass-slot .promo-scale__end-hero,
   .promo-pass-slot__shopify-label,
-  .promo-pass-slot__piece {
+  .promo-pass-slot__piece,
+  .promo-pass-slot__invite-line,
+  .promo-pass-slot__aside {
     opacity: 1;
-    transform: none;
+    clip-path: none;
     transition: none;
     animation: none;
+  }
+
+  .promo-pass-slot__aside {
+    transform: rotate(-8deg);
   }
 }
 
