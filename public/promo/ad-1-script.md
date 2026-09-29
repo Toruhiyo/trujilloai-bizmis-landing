@@ -1,6 +1,6 @@
 # ad-1
 
-Played at `/?marketing=ad-1`. The default call to action is `cta=install`. `cta=demo`, `cta=ea`, and `cta=none` change only the end card. `part=pain` stops after the dull sea. `part=pitch` starts at the switch.
+Played at `/?marketing=ad-1`. The default call to action is `cta=install`. `cta=demo`, `cta=ea`, and `cta=none` change only the end card. `part=pain` stops after the dull sea. `part=pitch` starts at the switch. `part=cta` starts on the end card.
 
 Lines in quotes are on screen or spoken. **VO** is the narrator (recorded by Oriol, voice-changed in ElevenLabs). **Clerk** is the product's own voice, speaking to the shopper. Spoken lines are never written on the store. The VO never overlaps the clerk: VO between cards, clerk inside them.
 

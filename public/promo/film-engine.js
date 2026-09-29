@@ -3250,7 +3250,7 @@
   function marketingPart() {
     if (!isMarketingAd) return 'pitch';
     const part = (promoSearchParams().get('part') || 'full').trim().toLowerCase();
-    if (part === 'pain' || part === 'pitch' || part === 'full') return part;
+    if (part === 'pain' || part === 'pitch' || part === 'full' || part === 'cta') return part;
     return 'full';
   }
 
@@ -3876,6 +3876,10 @@
       document.documentElement.classList.add('is-promo-ready');
       if (promoBootParams.get('export') === '1') {
         window.__promoExportBoot = () => {
+          if (marketingPart() === 'cta') {
+            this.playEndCard();
+            return;
+          }
           if (marketingPart() === 'pitch') {
             this.flip();
             return;
@@ -3896,6 +3900,10 @@
       }
       if (readPromoClip()) {
         this.showClip();
+        return;
+      }
+      if (marketingPart() === 'cta') {
+        this.playEndCard();
         return;
       }
       if (marketingPart() !== 'pitch') this.playPain();
