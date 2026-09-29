@@ -112,17 +112,29 @@ From the orange field the picture eases to white. "Built to sell." leaves. The m
 
 **VO** `any-store`: "Any store."
 
-## 9. End card
+## 9. End card: VO
 
-The frames leave. The field stays white. Nothing is clickable. No window, button, cursor, glow, or glass. The call to action line plays a metal shine. By `cta`:
+**VO:** per `cta`.
+- demo `see-it`: "See it in action."
+- ea `join-fifty`: "Run it free, no commitment. And what your store needs next is what we build next. Join Early Access."
+- install `install-shopify`: "Install it on Shopify."
+- none: silence.
 
-- `install` (default): "Installs in one click." then "Install on Shopify". No URL.
-- `demo`: "See it in action" and `bizmis.ai/demo`
-- `ea`: "First 50 stores. Free to run live." then "Join Early Access" and `bizmis.ai/early-access`
+Delivery for `join-fifty`: warm, unhurried, the offer said as a fact; a half-beat before "Join Early Access." The "no commitment" and roadmap lines are spoken only, never written on screen.
+
+## 9. End card: by `cta`
+
+The frames leave. The field stays white. Nothing is clickable. No window, button, cursor, glow, or glass. The wordmark is Bizmis orange, centred above the copy.
+
+- `install` (default): eyebrow "Installs in one click." then the line "Install on Shopify". No URL.
+- `demo`: the line "See it in action" and `bizmis.ai/demo`.
+- `ea`: a three-line build above the CTA, landing one at a time, 500 ms apart, each with the film's press-in, in the eyebrow size:
+    "Free to run live."
+    "Half price when you upgrade."
+    "Only 50 stores."
+  Then the line "Join Early Access" lands, then `bizmis.ai/early-access`. Hold ≥ 4 s after the URL. Never "no card required".
 - `none`: the wordmark only.
 
-The line fades up and holds ≥ 4 s. The wordmark is Bizmis orange and sits centered above the line.
-
-**VO:** per `cta`. demo `see-it`: "See it in action." ea `join-fifty`: "Join the first fifty stores." install `install-shopify`: "Install it on Shopify." none: silence.
+The call-to-action line plays a metal shine. It fades up and holds ≥ 4 s.
 
 `&vo=1` prints the marker name as a small debug caption. The list is `PROMO_VO` in `film-engine.js` (`window.__promoVo`): scene, marker name, expected line. New markers in scene 2: `replies-both`, `lets-be-honest`, `loses-both` (replaces the single `loses-both` line). `catch-both` and `narrows` hold the next clerk line for their `guardMs`, so the narrator and the clerk never speak together. Picture retiming waits until the recorded VO is placed. Target total ≈ 60 s: pain 15 · dull sea 6 · switch + reveal 8 · pitch 14 · selling sea 6 · stores + end card 9.

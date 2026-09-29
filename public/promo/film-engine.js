@@ -14,7 +14,16 @@
   const PROMO_END_CTA = {
     demo: { scarcity: '', label: 'See it in action', url: 'bizmis.ai/demo', vo: 'see-it' },
     install: { scarcity: 'Installs in one click.', label: 'Install on Shopify', url: '', vo: 'install-shopify' },
-    ea: { scarcity: 'First 50 stores. Free to run live.', label: 'Join Early Access', url: 'bizmis.ai/early-access', vo: 'join-fifty' },
+    ea: {
+      lines: [
+        'Free to run live.',
+        'Half price when you upgrade.',
+        'Only 50 stores.',
+      ],
+      label: 'Join Early Access',
+      url: 'bizmis.ai/early-access',
+      vo: 'join-fifty',
+    },
     none: null,
   };
   const PROMO_PASS_SECTORS = [
@@ -30,6 +39,8 @@
   const PROMO_PASS_FAST_MS = 1100;
   const PROMO_PASS_SLOW_MS = 2800;
   const PROMO_PASS_SLOT_IN_MS = 420;
+  const PROMO_EA_LINE_GAP_MS = 500;
+  const PROMO_END_URL_IN_MS = 300;
   const PROMO_VO_ON = promoBootParams.get('vo') === '1';
   const PROMO_VO_BUDGET_S = [
     { scene: 'pain', seconds: 13 },
@@ -55,7 +66,7 @@
     { scene: 'selling-sea', id: 'all-day', line: 'For every shopper. All day long.' },
     { scene: 'stores', id: 'any-store', line: 'Any store.' },
     { scene: 'end', id: 'see-it', line: 'See it in action.', cta: 'demo' },
-    { scene: 'end', id: 'join-fifty', line: 'Join the first fifty stores.', cta: 'ea' },
+    { scene: 'end', id: 'join-fifty', line: 'Run it free, no commitment. And what your store needs next is what we build next. Join Early Access.', cta: 'ea' },
     { scene: 'end', id: 'install-shopify', line: 'Install it on Shopify.', cta: 'install' },
   ];
   function promoVoCue(id) {
@@ -5034,12 +5045,23 @@
       if (existing && existing.dataset.cta === key) return existing;
       existing?.remove();
       const copy = PROMO_END_CTA[key];
+      this.root.classList.toggle('is-ea-offer', Boolean(copy?.lines?.length));
       if (!scale || !copy) return null;
       const slot = document.createElement('div');
       slot.className = 'promo-pass-slot';
       slot.setAttribute('data-promo-pass-slot', '');
       slot.dataset.cta = key;
-      if (copy.scarcity) {
+      if (copy.lines?.length) {
+        const offers = document.createElement('div');
+        offers.className = 'promo-pass-slot__offers';
+        copy.lines.forEach((text) => {
+          const line = document.createElement('p');
+          line.className = 'promo-pass-slot__line';
+          line.textContent = text;
+          offers.append(line);
+        });
+        slot.append(offers);
+      } else if (copy.scarcity) {
         const line = document.createElement('p');
         line.className = 'promo-pass-slot__line';
         line.textContent = copy.scarcity;
@@ -5082,9 +5104,28 @@
       }
       const slot = this.ensurePassSlot();
       await waitMs(PROMO_PASS_SLOT_IN_MS);
+      if (copy.lines?.length && slot) {
+        await this.playEaOffer(slot, copy);
+        return;
+      }
       slot?.classList.add('is-in');
       markPromoVo(copy.vo);
       await waitMs(PROMO_END_CARD_HOLD_MS + promoHoldMs());
+      this.depart();
+    }
+
+    async playEaOffer(slot, copy) {
+      slot.classList.add('is-built');
+      const lines = [...slot.querySelectorAll('.promo-pass-slot__line')];
+      markPromoVo(copy.vo);
+      for (const line of lines) {
+        line.classList.add('is-in');
+        await waitMs(PROMO_EA_LINE_GAP_MS);
+      }
+      slot.querySelector('.promo-pass-slot__action')?.classList.add('is-in');
+      await waitMs(PROMO_EA_LINE_GAP_MS);
+      slot.querySelector('.promo-pass-slot__url')?.classList.add('is-in');
+      await waitMs(PROMO_END_URL_IN_MS + PROMO_END_CARD_HOLD_MS + promoHoldMs());
       this.depart();
     }
 
