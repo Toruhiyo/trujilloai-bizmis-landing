@@ -9363,9 +9363,8 @@ html.is-promo-still .promo-clip__product.is-compare::after {
 }
 
 .promo-pass-slot__invite {
-  display: inline-flex;
-  align-items: baseline;
-  gap: 0.42em;
+  position: relative;
+  display: inline-block;
   margin: -2px 0 0;
   font-family: "Caveat", "Nunito", var(--font-heading);
   font-weight: 700;
@@ -9378,8 +9377,21 @@ html.is-promo-still .promo-clip__product.is-compare::after {
 }
 
 .promo-pass-slot__aside {
-  font-size: 0.62em;
-  font-weight: 600;
+  position: absolute;
+  left: calc(100% + 0.85em);
+  top: -0.15em;
+  padding: 0.34em 0.7em 0.38em;
+  border-radius: 999px;
+  background: var(--bizmis-primary);
+  color: #fff;
+  font-family: var(--font-heading);
+  font-size: 0.4em;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1;
+  white-space: nowrap;
+  transform: rotate(-7deg);
+  box-shadow: 0 8px 18px color-mix(in srgb, var(--bizmis-primary) 32%, transparent);
 }
 
 .promo-pass-slot__terms {
