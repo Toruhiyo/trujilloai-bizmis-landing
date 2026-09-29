@@ -19,7 +19,7 @@
       label: 'Install now',
       invite: 'for Early Access benefits!',
       aside: 'first 50 stores only!',
-      terms: ['No commitment', 'No credit card'],
+      terms: ['Free credits included', 'No credit card', '50% off when you upgrade'],
       shopify: true,
       url: '',
       vo: 'join-fifty',
