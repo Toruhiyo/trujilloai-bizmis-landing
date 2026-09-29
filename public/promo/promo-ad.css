@@ -9418,12 +9418,12 @@ html.is-promo-still .promo-clip__product.is-compare::after {
   justify-content: center;
   gap: 1.75rem;
   margin: 3.6rem 0 0;
-  color: color-mix(in srgb, var(--ad-ink) 78%, #fff);
-  font-family: "Caveat", "Nunito", var(--font-heading);
-  font-size: clamp(1.85rem, 2.8vw, 2.25rem);
-  font-weight: 700;
-  letter-spacing: 0.01em;
-  line-height: 1;
+  color: color-mix(in srgb, var(--ad-ink) 46%, #c8bfb6);
+  font-family: var(--font-body, var(--font-heading));
+  font-size: clamp(1.2rem, 1.8vw, 1.5rem);
+  font-weight: 500;
+  letter-spacing: -0.015em;
+  line-height: 1.2;
   white-space: nowrap;
 }
 
