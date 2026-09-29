@@ -285,6 +285,8 @@
   const PROMO_WINDOW_HOLD_MS = 560;
   const PROMO_WINDOW_CLOSE_MS = 760;
   const PROMO_CHAT_AIM_MS = 360;
+  const PROMO_LAUNCHER_AIM_MS = 780;
+  const PROMO_WINDOW_IN_MS = 1200;
   const PROMO_LOST_SIZE_RATIO = 0.18;
   const PROMO_LOST_SIZE_MIN = 8;
   const PROMO_SCALE_SNAP_CLASS_MS = 50;
@@ -3323,13 +3325,82 @@
     });
   }
 
-  function paintGlideStill(canvas, url, cssW, cssH, pain) {
+  function inlineRasterTree(source, target) {
+    if (!(source instanceof Element) || !(target instanceof Element)) return;
+    const computed = getComputedStyle(source);
+    let css = '';
+    for (let index = 0; index < computed.length; index += 1) {
+      const prop = computed.item(index);
+      if (prop === 'backdrop-filter' || prop === '-webkit-backdrop-filter') continue;
+      let value = computed.getPropertyValue(prop);
+      if (value.includes('url(') && !value.includes('data:')) value = 'none';
+      css += `${prop}:${value};`;
+    }
+    target.setAttribute('style', css);
+    const count = Math.min(source.children.length, target.children.length);
+    for (let index = 0; index < count; index += 1) {
+      inlineRasterTree(source.children[index], target.children[index]);
+    }
+  }
+
+  function rasterImageUrl(img) {
+    if (!img.naturalWidth) return img.currentSrc || img.src || '';
+    const scratch = document.createElement('canvas');
+    scratch.width = img.naturalWidth;
+    scratch.height = img.naturalHeight;
+    const ctx = scratch.getContext('2d');
+    if (!ctx) return img.currentSrc || img.src || '';
+    try {
+      ctx.drawImage(img, 0, 0);
+      return scratch.toDataURL('image/png');
+    } catch (error) {
+      return img.currentSrc || img.src || '';
+    }
+  }
+
+  async function rasterStore(node) {
+    const rect = node.getBoundingClientRect();
+    const width = Math.max(1, Math.round(rect.width));
+    const height = Math.max(1, Math.round(rect.height));
+    if (width < 8 || height < 8) return '';
+    const clone = node.cloneNode(true);
+    clone.setAttribute('xmlns', 'http://www.w3.org/1999/xhtml');
+    inlineRasterTree(node, clone);
+    const liveImages = [...node.querySelectorAll('img')];
+    const cloneImages = [...clone.querySelectorAll('img')];
+    liveImages.forEach((img, index) => {
+      const dest = cloneImages[index];
+      if (dest) dest.setAttribute('src', rasterImageUrl(img));
+    });
+    const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    svg.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
+    svg.setAttribute('viewBox', `0 0 ${width} ${height}`);
+    svg.setAttribute('preserveAspectRatio', 'none');
+    svg.setAttribute('class', 'promo-glide__raster');
+    const foreign = document.createElementNS('http://www.w3.org/2000/svg', 'foreignObject');
+    foreign.setAttribute('x', '0');
+    foreign.setAttribute('y', '0');
+    foreign.setAttribute('width', String(width));
+    foreign.setAttribute('height', String(height));
+    foreign.append(clone);
+    svg.append(foreign);
+    return svg;
+  }
+
+  function paintLeadRaster(node, svg) {
+    if (!node || !svg) return;
+    if (svg.parentElement !== node) node.append(svg);
+    const still = node.querySelector(':scope > .promo-glide__still');
+    if (still) still.style.visibility = 'hidden';
+  }
+
+  function paintGlideStill(canvas, url, cssW, cssH, pain, fill) {
     const img = glideDecodedStills.get(url);
     if (!canvas || !img || !img.naturalWidth || cssW < 2 || cssH < 2) return;
     const dpr = Math.min(3, window.devicePixelRatio || 1);
     const w = Math.max(1, Math.round(cssW * dpr));
     const h = Math.max(1, Math.round(cssH * dpr));
-    const key = `${url}|${w}x${h}|${pain ? 'pain' : 'pitch'}`;
+    const key = `${url}|${w}x${h}|${pain ? 'pain' : 'pitch'}|${fill ? 'fill' : 'cover'}`;
     if (canvas.dataset.paint === key) return;
     const ctx = canvas.getContext('2d', { alpha: false });
     if (!ctx) return;
@@ -3340,10 +3411,14 @@
     ctx.imageSmoothingEnabled = true;
     ctx.imageSmoothingQuality = 'high';
     if (pain) ctx.filter = 'grayscale(1)';
-    const scale = Math.max(w / img.naturalWidth, h / img.naturalHeight);
-    const dw = img.naturalWidth * scale;
-    const dh = img.naturalHeight * scale;
-    ctx.drawImage(img, (w - dw) / 2, (h - dh) / 2, dw, dh);
+    if (fill) {
+      ctx.drawImage(img, 0, 0, w, h);
+    } else {
+      const scale = Math.max(w / img.naturalWidth, h / img.naturalHeight);
+      const dw = img.naturalWidth * scale;
+      const dh = img.naturalHeight * scale;
+      ctx.drawImage(img, (w - dw) / 2, (h - dh) / 2, dw, dh);
+    }
     ctx.filter = 'none';
   }
 
@@ -5379,7 +5454,6 @@
                 : -1;
       const scrollSlot = browseSlot >= 0 ? browseSlot : beat === 'leave' ? 2 : -1;
       const scrollTarget = scrollSlot < 0 ? 0 : this.painBrowseScroll(scrollSlot);
-      const exportSnap = document.documentElement.classList.contains('is-promo-export');
       const scrollDelta = scene === 'unattended' ? this.setPainScroll(scrollTarget) : 0;
       if (instant && scene === 'unattended') board.offsetWidth;
       host.classList.remove('is-pain-dim');
@@ -5402,7 +5476,7 @@
       }
       if (cursor) {
         cursor.style.transitionDuration = instant ? '0ms' : '';
-        if (scene === 'chat' || beat === 'grid') {
+        if ((scene === 'chat' && beat !== 'launcher') || beat === 'grid') {
           cursor.style.opacity = '0';
         }
       }
@@ -5410,7 +5484,7 @@
       if (chatOn) this.lockPainChatBox();
       if (scene === 'unattended' && beat !== 'grid') {
         if (beat === 'leave') this.placePainCursorEdge();
-        else if (browseSlot >= 0) this.placePainCursor(this.painBrowseCard(browseSlot), true, instant || exportSnap ? 0 : scrollDelta);
+        else if (browseSlot >= 0) this.placePainCursor(this.painBrowseCard(browseSlot), true, instant ? 0 : scrollDelta);
       }
       this.paintPainLog(beat);
     }
@@ -5421,13 +5495,24 @@
           window.requestAnimationFrame(() => {
             const stage = host?.closest('.promo-opening__stage') || host;
             const pending = (stage?.getAnimations({ subtree: true }) || []).filter((anim) => {
-              if (anim.playState !== 'running' && anim.playState !== 'pending') return false;
+              if (anim.playState === 'finished' || anim.playState === 'idle') return false;
               const timing = anim.effect?.getComputedTiming?.();
-              if (!timing || timing.iterations === Infinity) return false;
-              return timing.duration !== Infinity;
+              if (!timing || timing.iterations === Infinity || timing.duration === Infinity) return false;
+              const duration = Number(timing.duration) || 0;
+              const current = Number(anim.currentTime) || 0;
+              return duration > 0 && current < duration - 16;
             });
             if (!pending.length) {
               resolve();
+              return;
+            }
+            if (document.documentElement.classList.contains('is-promo-export')) {
+              const remaining = Math.max(...pending.map((anim) => {
+                const duration = Number(anim.effect?.getComputedTiming?.().duration) || 0;
+                const current = Number(anim.currentTime) || 0;
+                return Math.max(0, duration - current);
+              }));
+              waitMs(remaining + 32).then(() => resolve());
               return;
             }
             Promise.all(pending.map((anim) => anim.finished.catch(() => {}))).then(() => resolve());
@@ -5442,6 +5527,10 @@
       for (const [beat, ms] of steps) {
         if (beat === 'hover-b') markPromoVo('catalog');
         this.applyPainBeat(beat, prefersReducedMotion());
+        if (beat === 'launcher' && !prefersReducedMotion()) {
+          await this.aimCursorAtLauncher();
+          continue;
+        }
         if (prefersReducedMotion()) continue;
         if (beat === 'typed-1' || beat === 'typed-2') {
           const input = this.root.querySelector('[data-promo-pain-input]');
@@ -6508,6 +6597,10 @@
         return true;
       }
       const event = glideEventAt(mode, frame, cell.key, timeMs);
+      if (this.cellRasters?.has(cell.key) && node.dataset.rasterLead !== '1') {
+        node.dataset.rasterLead = '1';
+        delete node.dataset.stamp;
+      }
       const stamp = `${cell.key}|${event ? Math.round(event.t) : ''}`;
       if (node.dataset.stamp !== stamp) {
         node.dataset.stamp = stamp;
@@ -6547,11 +6640,10 @@
         applyMockupShape(node, cell.device, width);
         const still = parts.still;
         const video = parts.video;
-        const leadStill = false;
-        const stillSrc = leadStill
-          ? (document.documentElement.getAttribute('data-promo-pitch-lead') || '')
-          : glideStillSrc(tone, cell.id, motion, chat, look);
-        if (still) paintGlideStill(still, stillSrc, width, height, mode === 'pain');
+        const raster = this.cellRasters?.get(cell.key) || null;
+        node.classList.toggle('is-raster-lead', !!raster);
+        if (raster) paintLeadRaster(node, raster);
+        else if (still) paintGlideStill(still, glideStillSrc(tone, cell.id, motion, chat, look), width, height, mode === 'pain');
         const wantVideo = false;
         if (video && wantVideo && video.dataset.clip !== clipKey) {
           video.style.opacity = '';
@@ -6902,7 +6994,8 @@
       if (!clone) return;
       const fadeStart = 0.96;
       const fadeEnd = 0.99;
-      if (!cellNode || cellNode.hidden || arrive >= fadeEnd) {
+      const rastered = this.cellRasters?.has(this.glideLeadKey);
+      if (rastered || !cellNode || cellNode.hidden || arrive >= fadeEnd) {
         clone.style.visibility = 'hidden';
         clone.style.opacity = '0';
         clone.style.boxShadow = '';
@@ -7282,6 +7375,27 @@
       this.emitClick();
     }
 
+    async aimCursorAtLauncher() {
+      const store = this.visibleCloseStore();
+      const chat = store?.querySelector('[data-promo-pain-chat]');
+      const cursor = store?.querySelector('[data-promo-pain-cursor]');
+      const launcher = chat?.querySelector('.promo-pain__launcher');
+      if (!store || !chat || !cursor || !launcher) return;
+      chat.classList.remove('is-open');
+      chat.removeAttribute('hidden');
+      cursor.hidden = false;
+      cursor.style.opacity = '1';
+      this.root.style.setProperty('--promo-pain-ease', 'cubic-bezier(0.45, 0, 0.2, 1)');
+      this.root.style.setProperty('--promo-pain-open', `${PROMO_LAUNCHER_AIM_MS}ms`);
+      const aim = this.painCursorPoint(launcher, store);
+      if (!aim) return;
+      cursor.style.setProperty('--pain-x', `${Math.round(aim.x)}px`);
+      cursor.style.setProperty('--pain-y', `${Math.round(aim.y)}px`);
+      await waitMs(PROMO_LAUNCHER_AIM_MS);
+      this.emitClick();
+      await waitMs(140);
+    }
+
     async closeChatForLost() {
       if (prefersReducedMotion()) return;
       const store = this.visibleCloseStore();
@@ -7535,6 +7649,7 @@
       clone.style.zIndex = '8';
       clone.style.transition = 'none';
       clone.style.transform = 'none';
+      clone.style.boxShadow = '';
       clone.style.width = `${Math.max(40, from.width)}px`;
       clone.style.height = `${Math.max(40, from.height)}px`;
       clone.style.left = `${from.left - host.left}px`;
@@ -7618,10 +7733,17 @@
       const veil = document.createElement('div');
       veil.className = 'promo-store-open';
       veil.setAttribute('data-promo-store-open', '');
+      const brand = document.createElement('div');
+      brand.className = 'promo-store-open__brand';
+      const mark = document.createElement('span');
+      mark.className = 'promo-opening__store-mark';
+      mark.setAttribute('aria-hidden', 'true');
+      mark.innerHTML = PROMO_STORE_MARK;
       const title = document.createElement('p');
       title.className = 'promo-store-open__title';
       title.textContent = 'Your store';
-      veil.append(title);
+      brand.append(mark, title);
+      veil.append(brand);
       stage.append(veil);
       return veil;
     }
@@ -7636,12 +7758,22 @@
       veil.getBoundingClientRect();
       veil.classList.add('is-in');
       store?.classList.add('is-window-in');
-      await waitMs(780);
+      await waitMs(PROMO_WINDOW_IN_MS);
       store?.classList.remove('is-window-in');
       await waitMs(480);
       veil.classList.add('is-out');
       await waitMs(200);
       veil.remove();
+    }
+
+    async rememberLeadRaster() {
+      const store = this.visibleCloseStore();
+      const key = this.glideLeadKey;
+      if (!store || !key) return;
+      const image = await rasterStore(store);
+      if (!image) return;
+      if (!this.cellRasters) this.cellRasters = new Map();
+      this.cellRasters.set(key, image);
     }
 
     async playScaleTimeline() {
@@ -7656,9 +7788,15 @@
       if (generation !== this.scaleGeneration) return;
       await this.closeChatForLost();
       if (generation !== this.scaleGeneration) return;
+      await this.rememberLeadRaster();
+      if (generation !== this.scaleGeneration) return;
+      this.paintGlideAt(0, 'pain');
+      if (generation !== this.scaleGeneration) return;
       await this.poofCloseStore(false);
       if (generation !== this.scaleGeneration) return;
       await this.playPhonePain();
+      if (generation !== this.scaleGeneration) return;
+      await this.rememberLeadRaster();
       if (generation !== this.scaleGeneration) return;
       glideLeadDevice = 'phone';
       this.runGlide('pain', 0);

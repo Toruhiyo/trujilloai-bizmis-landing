@@ -10,23 +10,23 @@ The film says "chatbot" and "sales agent". "Salesperson" is only the struck word
 
 ## 1. Lost in the catalog (desktop)
 
-The first close-up is the desktop window. It opens the way a Mac window unminimizes, scaling up from the bottom. Inside that window only, the page loads with a large "Your store" in the center of the page and no spinner. It holds, then leaves, and the catalog is there. The window's own header also reads "Your store". The cursor stays hidden until it is on a product. The shopper opens a product, goes back, bounces between two similar products, opens another, backs out.
+The first close-up is a laptop window, 16:10. It opens the way a Mac window unminimizes, scaling up from the bottom, slow enough to read. While that opening plays, the header "Your store" stays hidden. Inside the window only, the page loads with the store icon beside a large "Your store" in the center, and no spinner. It holds, then leaves, and the catalog is there. The header comes back with the catalog. The cursor stays hidden until it is on a product. The shopper opens a product, goes back, bounces between two similar products, opens another, backs out.
 
 **VO** `two-places`: "In every online store, a sale dies in two places."
 
 **VO** `catalog`: "Lost in the catalog."
 
-The Dull Chatbot panel opens. Chips: Track order, Returns, Contact us.
+The cursor moves to the Dull Chatbot button and opens it. The panel does not open on its own. Chips: Track order, Returns, Contact us.
 
 The shopper types: "Looking for something light I can take everywhere."
 
 The bot answers: "You can browse our full collection. Use the filters to narrow by size and weight." Links: View collection, Size guide.
 
-The cursor closes the chat. A grey veil covers the window and "LOST" stamps in grey, inside the rounded window.
+The cursor closes the chat. A grey veil covers the window and "LOST" stamps in grey, inside the rounded window. The picture under that stamp is the same catalog that was just on screen.
 
 ## 2. The last doubt (phone)
 
-The desktop window leaves. The next card is a phone on its own, still titled "Your store". It is not inside the desktop window. The sea stays out of frame. A product page, laid out for the phone. The thumb scrolls to Add to cart, hovers, retreats to the specs, comes back, retreats.
+The desktop window leaves. The next card is a phone on its own, still titled "Your store", in the glass mockup frame with its shadow on screen. It is not inside the desktop window. The sea stays out of frame. A product page, laid out for the phone. The thumb scrolls to Add to cart, hovers, retreats to the specs, comes back, retreats.
 
 **VO** `last-doubt`: "Or stuck on the last doubt."
 
@@ -42,7 +42,7 @@ The thumb leaves. No X. A grey veil and "LOST" stamp the phone.
 
 ## 3. The dull sea
 
-The pullback starts on that phone. The desktop LOST is the card beside it. The frame stays full of mockup screens, with no empty stretches of field. Every card is "Your store", in the browser bar next to the store icon. Most of them stamp "LOST". While the sea is still moving and blurred, this line comes up, holds, then fades out before the field is solid grey:
+The pullback starts on that phone. The card is the same phone, one picture, tilted with the sea. No second glass pane sits flat on top of it. The desktop LOST is the card beside it, the same desktop that was just on screen. The frame stays full of mockup screens, with no empty stretches of field. Every card is "Your store", in the browser bar next to the store icon. Most of them stamp "LOST". While the sea is still moving and blurred, this line comes up, holds, then fades out before the field is solid grey:
 
 "Unattended visits. Lost sales."
 
@@ -68,7 +68,7 @@ Word by word: "Your store salesperson." The whole word stays black. A Bizmis ora
 
 ## 6. The same two cards, sold
 
-Same two windows, including the pan. Each window is centered on the screen. The desktop pitch has no arrow cursor, because nothing is clicked there. The pain desktop keeps its cursor. Phone and tablet show no arrow cursor. The phone is its own frame and keeps the thumb. Catalog, comparison, and product page reflow for the phone and the tablet. The store moves. The real Bizmis card, in light mode, eases into the corner of the desktop window, composer and all. The shopper types in that composer, and that line is sent. The bubble stays the shopper's words. A failed send does not show a retry control. Behind the scenes the agent receives `Say this: "{the clerk's line}"`. On the phone the widget switches to its mobile bar, docked in a band at the bottom of the phone, clear of the product and the comparison. The clerk speaks through the real widget, one sentence, captioned. No VO during that speech. Above the card, the same action the widget names while it works: "Preparing product results…", then "Opening the product…". On the phone, "Checking store policies…", then "Adding to your cart…". No product thumbnails on those cards. A short orange sweep marks whatever just changed.
+Same two windows, including the pan. Each window is centered on the screen. The desktop pitch has no arrow cursor, because nothing is clicked there. The pain desktop keeps its cursor. Phone and tablet show no arrow cursor. The phone is its own frame and keeps the thumb. Catalog, comparison, and product page reflow for the phone and the tablet. The store moves. The real Bizmis card, in light mode, eases into the corner of the desktop window, composer and all. The shopper types in that composer, and that line is sent. The bubble stays the shopper's words. A failed send does not show a retry control. Behind the scenes the agent receives `Say this: "{the clerk's line}"`. On the phone the widget switches to its mobile bar, docked in a band at the bottom of the phone, clear of the product and the comparison. The clerk speaks through the real widget, one sentence, captioned. No VO during that speech. Above the card, the widget's glassy overlay chip, in the widget's own light-mode glass: "Preparing product results…", then "Opening the product…". On the phone, "Checking store policies…", then "Adding to your cart…". No product thumbnails on those chips. A short orange sweep marks whatever just changed.
 
 Desktop, the same grid. The shopper types: "Looking for something light I can take everywhere."
 
@@ -98,7 +98,7 @@ The sea washes to solid Bizmis orange.
 
 ## 8. Other stores, into the slot
 
-From the orange field the picture eases to white. "Built to sell." leaves. The mark is off during the pass. No clerk. A pass of large store frames starts near a second each and slows toward about three seconds. Each picture fills a large frame from the center. Behind it, a clear light in that store's color rises, then falls back to off, then the next store's color rises the same way. Sector and store names use that color, large and bold, above the frame. Sector labels, in order: Consumer electronics, Clothing & apparel, Books & stationery, Skincare & beauty, Gaming gear, Home & DIY, Car parts & accessories, Wine & spirits. The wordmark is never black.
+From the orange field the picture eases to white. "Built to sell." leaves. The mark is off during the pass. No clerk. A pass of large store frames starts near a second each and slows toward about three seconds. Each picture fills a large frame from the center. Behind it, a light in that store's color is wide enough to show around the frame. It rises, then falls back to off, then the next store's color rises the same way. Sector and store names use that color, large and bold, above the frame. Sector labels, in order: Consumer electronics, Clothing & apparel, Books & stationery, Skincare & beauty, Gaming gear, Home & DIY, Car parts & accessories, Wine & spirits. The wordmark is never black.
 
 **VO** `any-store`: "Any store."
 

@@ -77,14 +77,6 @@ html.is-promo-export.is-export-quad .promo-opening__canvas {
   transform-origin: var(--export-quad-origin, 0% 0%);
 }
 
-/* The export clock seeks CSS transitions a frame off the cursor.
-   Snap the pain catalog to the beat so the hovered card is the one under the pointer. */
-html.is-promo-export .promo-opening.is-pain .promo-moments__card,
-html.is-promo-export .promo-opening.is-pain.is-moments .promo-moments__board.is-pose-grid,
-html.is-promo-export .promo-pain__cursor {
-  transition: none !important;
-}
-
 .promo-opening__canvas {
   position: relative;
   container-type: size;
@@ -603,11 +595,27 @@ html.is-promo-opening.is-promo-depart .promo-opening {
   transform: none;
 }
 
+.promo-opening.is-moments:not(.is-see) .promo-opening__store.is-desktop {
+  width: auto;
+  height: 72cqh;
+  max-width: 88cqw;
+  aspect-ratio: 16 / 10;
+}
+
 .promo-opening.is-moments:not(.is-see) .promo-opening__store.is-phone {
-  width: calc(78cqh * 9 / 19.5);
-  height: 78cqh;
+  width: calc(66cqh * 9 / 19.5);
+  height: 66cqh;
   max-height: none;
   aspect-ratio: 9 / 19.5;
+  background: color-mix(in srgb, var(--ad-white) 58%, transparent);
+  border: 2px solid color-mix(in srgb, var(--ad-white) 62%, var(--ad-ink) 14%);
+  box-shadow:
+    inset 0 1px 0 color-mix(in srgb, white 92%, transparent),
+    inset 0 -1px 0 color-mix(in srgb, var(--ad-ink) 10%, transparent),
+    0 1px 0 color-mix(in srgb, var(--ad-ink) 8%, transparent),
+    0 12px 32px color-mix(in srgb, var(--ad-ink) 18%, transparent);
+  -webkit-backdrop-filter: blur(28px) saturate(1.65);
+  backdrop-filter: blur(28px) saturate(1.65);
 }
 
 .promo-opening.is-moments:not(.is-see) .promo-opening__moments > .promo-puff__host {
@@ -991,22 +999,40 @@ html.is-promo-opening.is-promo-depart .promo-opening {
   pointer-events: none;
 }
 
-.promo-store-open__title {
-  margin: 0;
-  color: var(--ad-ink);
-  font-family: var(--font-heading);
-  font-weight: 700;
+.promo-opening__store:has([data-promo-store-open]) .promo-opening__store-bar {
+  visibility: hidden;
+}
+
+.promo-store-open__brand {
+  display: flex;
+  align-items: center;
+  gap: 0.28em;
   font-size: clamp(2.2rem, 8cqw, 4.4rem);
-  letter-spacing: -0.045em;
-  line-height: 1;
   opacity: 0;
   transform: translateY(8px);
   transition: opacity 140ms ease, transform 140ms ease;
 }
 
+.promo-store-open__brand .promo-opening__store-mark {
+  width: 0.85em;
+  height: 0.85em;
+  color: var(--ad-ink);
+  opacity: 0.72;
+}
+
+.promo-store-open__title {
+  margin: 0;
+  color: var(--ad-ink);
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 1em;
+  letter-spacing: -0.045em;
+  line-height: 1;
+}
+
 .promo-opening.is-pain.is-moments .promo-opening__store.is-desktop.is-window-in {
   transform-origin: 50% 100%;
-  animation: promo-window-in 780ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation: promo-window-in 1200ms cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
 @keyframes promo-window-in {
@@ -1020,7 +1046,7 @@ html.is-promo-opening.is-promo-depart .promo-opening {
   }
 }
 
-.promo-store-open.is-in .promo-store-open__title {
+.promo-store-open.is-in .promo-store-open__brand {
   opacity: 1;
   transform: none;
 }
@@ -5568,32 +5594,39 @@ html.is-promo-live-card .bizmis-chat-input-bar {
   width: auto;
   max-width: 100%;
   margin-left: auto;
-  padding: 6px 14px 6px 6px;
+  padding: 6px 12px;
   border-radius: 999px;
-  border: 1px solid color-mix(in srgb, var(--ad-white) 70%, transparent);
-  background: color-mix(in srgb, var(--ad-white) 78%, transparent);
-  box-shadow: 0 10px 28px color-mix(in srgb, var(--ad-ink) 10%, transparent);
-  color: var(--ad-ink);
-  font-size: 13px;
-  font-weight: 560;
-  line-height: 1.2;
-  animation: promo-widget-event-in 180ms ease-out both;
+  border: 1px solid hsl(0 0% 100% / 0.8);
+  background-color: hsl(0 0% 100% / 0.55);
+  background-image: linear-gradient(150deg, hsl(0 0% 100% / 0.51) 0%, hsl(0 0% 100% / 0) 100%);
+  box-shadow: 0 1px 0 hsl(0 0% 100% / 0.9) inset, 0 12px 28px -16px rgb(0 0 0 / 0.3);
+  -webkit-backdrop-filter: blur(24px) saturate(1.25);
+  backdrop-filter: blur(24px) saturate(1.25);
+  color: hsl(0 0% 3.9%);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 16px;
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  isolation: isolate;
+  animation: promo-widget-event-in 200ms ease-out both;
 }
 
 .promo-widget-event__icon {
-  display: grid;
+  display: flex;
   flex: none;
-  place-items: center;
-  width: 22px;
-  height: 22px;
-  border-radius: 50%;
-  background: color-mix(in srgb, var(--bizmis-primary) 22%, var(--ad-white));
-  color: var(--bizmis-primary);
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 999px;
+  background: hsl(0 0% 9% / 0.14);
+  color: hsl(0 0% 3.9%);
 }
 
 .promo-widget-event__icon svg {
-  width: 13px;
-  height: 13px;
+  width: 12px;
+  height: 12px;
 }
 
 html.is-promo-card-out .promo-widget-events {
@@ -5602,8 +5635,8 @@ html.is-promo-card-out .promo-widget-events {
 }
 
 @keyframes promo-widget-event-in {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from { opacity: 0; transform: translateY(4px) scale(0.98); }
+  to { opacity: 1; transform: none; }
 }
 
 .promo-opening.is-pitch-cards.is-moments .promo-opening__store > .promo-opening__widget {
@@ -7564,13 +7597,26 @@ html.is-promo-clip.is-clip-moment #bizmis-avatar-embed {
 }
 
 .promo-glide__shade {
+  display: none;
+}
+
+.promo-glide__cell.is-raster-lead,
+.promo-glide__cell.is-raster-lead::after {
+  background: transparent;
+  border-color: transparent;
+  box-shadow: none;
+}
+
+.promo-glide__cell.is-raster-lead::after {
+  display: none;
+}
+
+.promo-glide__raster {
   position: absolute;
-  z-index: 2;
-  border-radius: 32px;
-  pointer-events: none;
-  box-shadow:
-    0 3px 8px color-mix(in srgb, var(--ad-ink) 12%, transparent),
-    0 38px 88px color-mix(in srgb, var(--ad-ink) 18%, transparent);
+  inset: 0;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
 }
 
 .promo-opening.is-moments .promo-glide__cell.is-lead-match > .promo-opening__store {
@@ -7716,11 +7762,11 @@ html.is-promo-clip.is-clip-moment #bizmis-avatar-embed {
   left: 50%;
   top: 50%;
   z-index: 1;
-  width: 78vw;
-  height: 70vh;
+  width: 130vw;
+  height: 120vh;
   border-radius: 50%;
   transform: translate(-50%, -50%);
-  filter: blur(36px);
+  filter: blur(28px);
   opacity: 0;
   pointer-events: none;
 }
@@ -7836,7 +7882,7 @@ html.is-promo-clip.is-clip-moment #bizmis-avatar-embed {
 }
 
 .promo-opening.is-store-pass .promo-opening__slide-card {
-  width: min(92cqw, calc(72cqh * 1024 / 640));
+  width: min(96cqw, calc(80cqh * 1024 / 640));
   height: auto;
   aspect-ratio: 1024 / 640;
   background: var(--ad-white);
