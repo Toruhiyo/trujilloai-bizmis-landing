@@ -10,8 +10,8 @@ const FPS = 30;
 let exportFps = FPS;
 const FRAME_CAP = 3600;
 const CAPTURE_CHUNK = 3600;
-const LAYOUT_WIDTH = 1008;
-const LAYOUT_HEIGHT = 654;
+const LAYOUT_WIDTH = 1920;
+const LAYOUT_HEIGHT = 1080;
 const QUAD_WIDTH = 1920;
 const QUAD_HEIGHT = 1080;
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
@@ -32,7 +32,7 @@ function usage() {
     '  --cta demo|ea|install|none     default install',
     '  --part full|pain|pitch         default full',
     '  --resolution 1920x1080         or 3840x2160',
-    '  --preview                      layout at 1512x982, file is 756x491, 6fps',
+    '  --preview                      layout at 1920x1080, file is 960x540, 6fps',
     '  --frames 0-59                  inclusive range, default the whole film',
     '  --codec ffv1|prores            default ffv1 (MKV). prores is ProRes 4444',
     '  --out <folder>                 default tmp/ad-1-export',
@@ -52,8 +52,8 @@ function captureSetup(width, height) {
   if (width === QUAD_WIDTH * 2 && height === QUAD_HEIGHT * 2 && process.platform === 'darwin') {
     // Chrome refuses BeginFrameControl on macOS. A single 4K framebuffer
     // drops tiles. Each quadrant is the 1920x1080 scale that already paints
-    // completely, then the four are stitched. The film layout itself is the
-    // MacBook Pro 14 panel, 1008x654.
+    // completely, then the four are stitched. The film layout itself is 16:9,
+    // 1920x1080.
     return {
       viewportWidth: QUAD_WIDTH,
       viewportHeight: QUAD_HEIGHT,
@@ -727,12 +727,12 @@ async function main() {
   const codec = (arg('codec', 'ffv1') || 'ffv1').trim().toLowerCase();
   const preview = hasFlag('preview');
   const resolution = preview
-    ? { width: 756, height: 491 }
+    ? { width: 960, height: 540 }
     : parseResolution(arg('resolution', '1920x1080'));
   captureAttempts = preview ? 1 : CAPTURE_ATTEMPTS;
   exportFps = preview ? 6 : FPS;
   const capture = preview
-    ? { viewportWidth: 1512, viewportHeight: 982, scale: 0.5, quadrants: 1, beginFrame: false }
+    ? { viewportWidth: 1920, viewportHeight: 1080, scale: 0.5, quadrants: 1, beginFrame: false }
     : captureSetup(resolution.width, resolution.height);
   const range = parseFrames(arg('frames', ''));
   const verify = hasFlag('verify');

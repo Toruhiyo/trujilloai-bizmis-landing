@@ -2497,9 +2497,8 @@
     const shift = phone || tablet ? 0 : (shiftRaw.endsWith('rem') ? parseFloat(shiftRaw) * 16 : (parseFloat(shiftRaw) || 0));
     const opening = board.closest('.promo-opening');
     const clipLayout = Boolean(opening?.classList.contains('is-clip'));
-    const widgetOpen = clipLayout && opening.classList.contains('is-clip-moment') && !phone && !tablet;
     const stageWidth = stage.clientWidth;
-    const contentWidth = stageWidth - (widgetOpen ? 460 : 0);
+    const contentWidth = stageWidth;
     const look = board.dataset.storeLook || 'classic';
     let cols = look === 'collection-dense' ? 5
       : look === 'lookbook' ? 2
@@ -2521,21 +2520,24 @@
     const inset = padX;
     let gx0 = inset + cardW / 2 - (stageWidth / 2 + shift);
     const pitchBoard = !board.closest('.promo-opening')?.classList.contains('is-pain');
-    const actControl = stage.querySelector('.promo-clip__search, .promo-clip__chips, .promo-clip__sizes');
+    const actControl = stage.querySelector('.promo-clip__chips, .promo-clip__sizes');
     const actReserve = actControl ? Math.round(stage.clientWidth * 0.024 + 56) : 0;
     const heroReserve = look === 'home-hero' && !opening.classList.contains('is-motion-scroll-down')
-      ? (clipLayout ? 380 : 132)
+      ? (clipLayout ? Math.round(Math.min(stage.clientWidth * 0.46, 620) * 9 / 16 + 20) : 132)
       : 0;
     const padY = (pitchBoard ? 28 : PROMO_CATALOG_PAD_Y) + heroReserve + actReserve;
     let visibleRows = 99;
     if (clipLayout) {
-      const rows = look === 'list' ? 4 : look === 'collection-dense' ? 2 : 1;
+      const rows = look === 'list' ? 4
+        : look === 'collection-dense' ? 2
+          : (look === 'home-hero' || look === 'lookbook') ? 1
+            : 2;
       visibleRows = rows + (opening.classList.contains('is-motion-scroll-down') ? 1 : 0);
       const budget = Math.max(160, stage.clientHeight - padY - 16);
       const fitted = (budget - (rows - 1) * rowGapY) / rows;
       cardH = look === 'list' ? 128 : Math.max(160, fitted);
       pitchY = cardH + rowGapY;
-      if (look === 'home-hero' && !opening.classList.contains('is-motion-scroll-down')) {
+      if (look === 'home-hero' && !clipLayout && !opening.classList.contains('is-motion-scroll-down')) {
         const photo = cardH - 96;
         if (photo > 180 && cardW > photo) {
           cardW = photo;
@@ -2562,11 +2564,23 @@
       const naturalGap = stage.clientHeight * (1 - fit) / 2 + fit * padY;
       board.style.setProperty('--promo-grid-rest-y', `${(PROMO_CATALOG_TOP_GAP - naturalGap).toFixed(1)}px`);
     }
+    if (clipLayout && look !== 'list' && look !== 'lookbook') {
+      const cardFooter = 64;
+      const square = Math.min(cardW, Math.max(140, cardH - cardFooter));
+      cardW = square;
+      cardH = square + cardFooter;
+      pitchX = cardW + gutter;
+      pitchY = cardH + rowGapY;
+      const group = cols * cardW + (cols - 1) * gutter;
+      gx0 = (stageWidth - group) / 2 + cardW / 2 - stageWidth / 2 - shift;
+    }
     const gy0 = -stage.clientHeight / 2 + padY + cardH / 2;
     const rowGap = phone ? 12 : PROMO_ROW_GAP;
     const rowInset = phone ? 16 : tablet ? 20 : 28;
     const laneRaw = parseFloat(getComputedStyle(stage).getPropertyValue('--clip-clerk-lane'));
-    const clerkLane = phone || tablet ? 0 : (Number.isFinite(laneRaw) && laneRaw > 40 ? laneRaw : PROMO_ROW_CLERK_LANE);
+    const clerkLane = phone || tablet || (clipLayout && opening.classList.contains('is-clip-moment'))
+      ? 0
+      : (Number.isFinite(laneRaw) && laneRaw > 40 ? laneRaw : PROMO_ROW_CLERK_LANE);
     const rowBudget = contentWidth - clerkLane - rowInset;
     const rowCardW = phone
       ? Math.min(contentWidth - rowInset * 2, stage.clientWidth * 0.86)
@@ -2588,6 +2602,34 @@
     board.style.setProperty('--row-nudge', `${rowNudge.toFixed(1)}px`);
     board.style.setProperty('--row-compare-y', `${(rowCardH / 2 + 40).toFixed(1)}px`);
     board.style.setProperty('--row-lift', `${(PROMO_COMPARE_RESERVE / 2).toFixed(1)}px`);
+    if (clipLayout && opening.classList.contains('is-clip-moment')) {
+      const gap = phone ? 12 : 16;
+      if (phone) {
+        const wide = Math.max(120, stage.clientWidth - 28);
+        const tall = Math.max(108, (stage.clientHeight - 36) / 3.15);
+        board.style.setProperty('--row-card-w', `${wide.toFixed(1)}px`);
+        board.style.setProperty('--row-card-h', `${tall.toFixed(1)}px`);
+        board.style.setProperty('--row-seat', `${(tall + gap).toFixed(1)}px`);
+        board.style.setProperty('--row-nudge', '0px');
+        board.style.setProperty('--row-lift', '0px');
+      } else if (tablet) {
+        const wide = Math.max(120, (stage.clientWidth - 36 - gap * 2) / 3);
+        const tall = Math.max(240, stage.clientHeight - 72);
+        board.style.setProperty('--row-card-w', `${wide.toFixed(1)}px`);
+        board.style.setProperty('--row-card-h', `${tall.toFixed(1)}px`);
+        board.style.setProperty('--row-seat', `${(wide + gap).toFixed(1)}px`);
+        board.style.setProperty('--row-nudge', '0px');
+        board.style.setProperty('--row-lift', '0px');
+      } else {
+        const wide = Math.max(180, (stage.clientWidth - 48 - gap * 2) / 3);
+        const tall = Math.max(320, stage.clientHeight - 72);
+        board.style.setProperty('--row-card-w', `${wide.toFixed(1)}px`);
+        board.style.setProperty('--row-card-h', `${tall.toFixed(1)}px`);
+        board.style.setProperty('--row-seat', `${(wide + gap).toFixed(1)}px`);
+        board.style.setProperty('--row-nudge', '0px');
+        board.style.setProperty('--row-lift', '0px');
+      }
+    }
     stage.closest('.promo-opening__store')?.style.setProperty('--catalog-inset', `${Math.max(inset, 0).toFixed(1)}px`);
     const momentPose = clipLayout
       && opening.classList.contains('is-clip-moment')
@@ -6212,8 +6254,13 @@
       document.documentElement.classList.add('is-promo-clip');
       document.getElementById('page-loader')?.setAttribute('hidden', '');
       this.root.classList.add('is-clip');
-      PROMO_CLIP_DEVICES.forEach((id) => this.root.classList.toggle(`is-clip-${id}`, id === clip.device));
+      PROMO_CLIP_DEVICES.forEach((id) => {
+        const on = id === clip.device;
+        this.root.classList.toggle(`is-clip-${id}`, on);
+        document.documentElement.classList.toggle(`is-clip-${id}`, on);
+      });
       PROMO_CLIP_MOTION_ALL.forEach((id) => this.root.classList.toggle(`is-motion-${id}`, id === clip.motion));
+      PROMO_PITCH_MOMENTS.forEach((id) => this.root.classList.toggle(`is-motion-${id}`, id === clip.motion));
       PROMO_STORE_LOOKS.forEach((id) => this.root.classList.toggle(`is-look-${id}`, id === clip.look));
       this.root.classList.toggle('is-clerk-head', clip.device === 'phone' && clip.chat && !moment);
       this.root.classList.toggle('is-tone-pain', clip.tone === 'pain');
@@ -6296,6 +6343,11 @@
         board.dataset.catalogVariant = clip.motion || clip.look || 'classic';
       }
       promoWidget.applyStoreLook(this.bizmisLook());
+      if ((clip.device === 'phone' || clip.device === 'tablet') && !this.clipMobileWidget) {
+        this.clipMobileWidget = true;
+        store?.setAttribute('data-promo-widget-host', '');
+        window.__promoMountWidget?.({ isMobile: true, viewportHostSelector: '[data-promo-widget-host]' });
+      }
       const widget = this.root.querySelector('[data-promo-widget]');
       if (widget) widget.style.visibility = 'visible';
       this.parkWidget();
@@ -6339,8 +6391,9 @@
       host.querySelector('.promo-clip__act')?.remove();
       const layer = document.createElement('div');
       layer.className = `promo-clip__act is-${clip.motion}${clip.take ? ` is-take-${clip.take}` : ''}`;
-      if (clip.motion === 'search-empty' || clip.motion === 'search') {
-        layer.innerHTML = '<div class="promo-clip__search"><i></i></div><p class="promo-clip__empty">No matches</p>';
+      if (clip.motion === 'search') return;
+      if (clip.motion === 'search-empty') {
+        layer.innerHTML = '<p class="promo-clip__empty">No matches</p>';
       } else if (clip.motion === 'filter-hop') {
         layer.innerHTML = '<div class="promo-clip__chips"><b>Light</b><b>Small</b><b>Stone</b><b>New</b></div>';
       } else if (clip.motion === 'variant-doubt' || clip.motion === 'variant') {

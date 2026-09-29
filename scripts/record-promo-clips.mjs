@@ -164,7 +164,11 @@ async function recordDevice(browser, device) {
     if (needsClerk) {
       await page.waitForFunction(() => {
         const canvas = document.querySelector('#bizmis-avatar-embed canvas');
-        return !!(canvas && canvas.width > 32);
+        if (canvas && canvas.width > 32) return true;
+        const bar = document.querySelector('.bizmis-mobile-lite-chat, .bizmis-bar-row');
+        if (!bar) return false;
+        const box = bar.getBoundingClientRect();
+        return box.width > 40 && box.height > 20;
       }, null, { timeout: 20000 }).catch(() => {});
       await page.waitForTimeout(900);
     } else {

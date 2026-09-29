@@ -80,8 +80,8 @@ html.is-promo-export.is-export-quad .promo-opening__canvas {
 .promo-opening__canvas {
   position: relative;
   container-type: size;
-  width: min(100%, calc(100dvh * 3024 / 1964));
-  height: min(100%, calc(100dvw * 1964 / 3024));
+  width: min(100%, calc(100dvh * 16 / 9));
+  height: min(100%, calc(100dvw * 9 / 16));
   overflow: hidden;
 }
 
@@ -3642,10 +3642,10 @@ html.is-promo-opening.is-promo-depart .promo-opening {
 .promo-opening.is-clip-moment.is-clip-tablet .promo-moments__board.is-pose-doubt .promo-moments__card.is-pick .promo-moments__meta {
   position: absolute !important;
   left: 28px !important;
-  right: auto !important;
-  top: 690px !important;
-  bottom: auto !important;
-  width: 300px !important;
+  right: 28px !important;
+  top: auto !important;
+  bottom: 168px !important;
+  width: auto !important;
 }
 
 .promo-opening.is-clip-moment.is-clip-tablet .promo-moments__board.is-pose-close .promo-moments__card.is-pick .promo-moments__add,
@@ -3653,9 +3653,9 @@ html.is-promo-opening.is-promo-depart .promo-opening {
   position: absolute !important;
   left: 28px !important;
   right: auto !important;
-  top: 800px !important;
-  bottom: auto !important;
-  width: 280px !important;
+  top: auto !important;
+  bottom: 96px !important;
+  width: min(320px, 70%) !important;
 }
 
 .promo-opening.is-clip-moment.is-clip-tablet .promo-moments__board.is-pose-choice .promo-moments__card.is-go,
@@ -3664,24 +3664,26 @@ html.is-promo-opening.is-promo-depart .promo-opening {
 .promo-opening.is-clip-moment.is-clip-tablet .promo-moments__board.is-pose-row .promo-moments__card.is-go,
 .promo-opening.is-clip-moment.is-clip-tablet .promo-moments__board.is-pose-row .promo-moments__card.is-pick,
 .promo-opening.is-clip-moment.is-clip-tablet .promo-moments__board.is-pose-row .promo-moments__card.is-other {
-  --card-h: min(30cqh, 300px);
-  height: min(30cqh, 300px);
+  --card-w: var(--row-card-w, 220px);
+  --card-h: var(--row-card-h, 460px);
+  width: var(--row-card-w, 220px);
+  height: var(--row-card-h, 460px);
   animation: none !important;
 }
 
 .promo-opening.is-clip-moment.is-clip-tablet .promo-moments__board.is-pose-choice .promo-moments__card.is-go,
 .promo-opening.is-clip-moment.is-clip-tablet .promo-moments__board.is-pose-row .promo-moments__card.is-go {
-  transform: translate3d(calc(-50% - var(--row-seat, 256px) + var(--row-nudge, 0px)), calc(-50% - 14cqh), 0) !important;
+  transform: translate3d(calc(-50% - var(--row-seat, 220px) + var(--row-nudge, 0px)), calc(-50% - var(--row-lift, 64px)), 0) !important;
 }
 
 .promo-opening.is-clip-moment.is-clip-tablet .promo-moments__board.is-pose-choice .promo-moments__card.is-pick,
 .promo-opening.is-clip-moment.is-clip-tablet .promo-moments__board.is-pose-row .promo-moments__card.is-pick {
-  transform: translate3d(calc(-50% + var(--row-nudge, 0px)), calc(-50% - 14cqh), 0) !important;
+  transform: translate3d(calc(-50% + var(--row-nudge, 0px)), calc(-50% - var(--row-lift, 64px)), 0) !important;
 }
 
 .promo-opening.is-clip-moment.is-clip-tablet .promo-moments__board.is-pose-choice .promo-moments__card.is-other,
 .promo-opening.is-clip-moment.is-clip-tablet .promo-moments__board.is-pose-row .promo-moments__card.is-other {
-  transform: translate3d(calc(-50% + var(--row-seat, 256px) + var(--row-nudge, 0px)), calc(-50% - 14cqh), 0) !important;
+  transform: translate3d(calc(-50% + var(--row-seat, 220px) + var(--row-nudge, 0px)), calc(-50% - var(--row-lift, 64px)), 0) !important;
 }
 
 .is-pose-choice .promo-moments__card.is-pick::after,
@@ -6269,7 +6271,8 @@ html.is-promo-opening.is-promo-pitch .bizmis-viewport-portal-root {
   pointer-events: none !important;
 }
 
-html.is-promo-live-card .promo-opening__store.is-phone > .bizmis-viewport-portal-root {
+html.is-promo-live-card .promo-opening__store.is-phone > .bizmis-viewport-portal-root,
+html.is-promo-live-card .promo-opening__store.is-tablet > .bizmis-viewport-portal-root {
   visibility: visible !important;
   opacity: 1 !important;
 }
@@ -7287,16 +7290,20 @@ html.is-promo-still .promo-clip__product.is-compare::after {
 
 .promo-opening.is-clip .promo-opening__moments-stage > .promo-clip__banner {
   position: absolute;
-  left: 36px;
-  right: 36px;
-  top: 112px;
+  left: 28px;
+  right: auto;
+  top: 8px;
   z-index: 4;
-  height: 248px;
+  width: min(620px, 46%);
+  height: auto;
+  aspect-ratio: 16 / 9;
+  min-height: 0;
   margin: 0;
-  border-radius: 24px;
-  background-color: #f3efe9;
+  border-radius: 20px;
+  background-image: url("/promo/products/images/promo-hero-clay.jpg");
+  background-color: transparent;
   background-size: cover;
-  background-position: center 44%;
+  background-position: center;
   background-repeat: no-repeat;
   transform: translateY(var(--pain-scroll, 0px));
 }
@@ -7472,10 +7479,12 @@ html.is-promo-still .promo-clip__product.is-compare::after {
 .promo-clip__screen > .promo-clip__banner {
   position: relative;
   flex: 0 0 auto;
-  height: 132px;
+  height: auto;
+  aspect-ratio: 16 / 9;
+  max-height: 30%;
   margin: 12px 18px 0;
-  background-color: #f3efe9;
-  background-size: auto 100%;
+  background-color: transparent;
+  background-size: contain;
   background-position: center;
   background-repeat: no-repeat;
 }
@@ -9367,5 +9376,266 @@ html.is-promo-still .promo-clip__product.is-compare::after {
     transition: none;
     animation: none;
   }
+}
+
+.promo-opening.is-clip .promo-clip__search {
+  display: none;
+}
+
+.promo-opening.is-clip.is-clip-desktop .promo-moments__board.is-pose-choice .promo-moments__photo,
+.promo-opening.is-clip.is-clip-desktop .promo-moments__board.is-pose-row .promo-moments__photo,
+.promo-opening.is-clip.is-clip-tablet .promo-moments__board.is-pose-choice .promo-moments__photo,
+.promo-opening.is-clip.is-clip-tablet .promo-moments__board.is-pose-row .promo-moments__photo {
+  flex: 1 1 auto;
+  width: 100%;
+  height: auto;
+  min-height: 0;
+  max-height: none;
+  aspect-ratio: 1;
+}
+
+.promo-opening.is-clip-moment .promo-moments__board.is-pose-bundle .promo-moments__card.is-pick,
+.promo-opening.is-clip-moment .promo-moments__board.is-pose-bundle .promo-moments__card.is-extra,
+.promo-opening.is-clip-moment .promo-moments__board.is-pose-extra .promo-moments__card.is-pick,
+.promo-opening.is-clip-moment .promo-moments__board.is-pose-extra .promo-moments__card.is-extra {
+  --card-w: 340px;
+  --card-h: 520px;
+  width: 340px;
+  height: auto;
+  max-height: none;
+  overflow: visible;
+  opacity: 1;
+  display: flex;
+  grid-template-columns: none;
+  padding: 16px;
+  transform: translate3d(-50%, -50%, 0) !important;
+}
+
+.promo-opening.is-clip-moment.is-clip-desktop .promo-moments__board.is-pose-bundle .promo-moments__card.is-pick,
+.promo-opening.is-clip-moment.is-clip-desktop .promo-moments__board.is-pose-extra .promo-moments__card.is-pick {
+  left: 34%;
+  top: 50%;
+}
+
+.promo-opening.is-clip-moment.is-clip-desktop .promo-moments__board.is-pose-bundle .promo-moments__card.is-extra,
+.promo-opening.is-clip-moment.is-clip-desktop .promo-moments__board.is-pose-extra .promo-moments__card.is-extra {
+  left: 66%;
+  top: 50%;
+}
+
+.promo-opening.is-clip-moment.is-clip-desktop .promo-moments__board.is-pose-bundle .promo-moments__plus,
+.promo-opening.is-clip-moment.is-clip-desktop .promo-moments__board.is-pose-extra .promo-moments__plus {
+  left: 50%;
+  top: 50%;
+  opacity: 1;
+  transform: translate3d(-50%, -50%, 0);
+}
+
+.promo-opening.is-clip-desktop.is-motion-moment-cart-a .promo-moments__board.is-pose-bundle .promo-moments__card.is-pick,
+.promo-opening.is-clip-desktop.is-motion-moment-cart-b .promo-moments__board.is-pose-bundle .promo-moments__card.is-pick {
+  left: 16%;
+  top: 42%;
+  --card-w: 250px;
+  width: 250px;
+}
+
+.promo-opening.is-clip-desktop.is-motion-moment-cart-a .promo-moments__board.is-pose-bundle .promo-moments__card.is-extra,
+.promo-opening.is-clip-desktop.is-motion-moment-cart-b .promo-moments__board.is-pose-bundle .promo-moments__card.is-extra {
+  left: 36%;
+  top: 42%;
+  --card-w: 250px;
+  width: 250px;
+}
+
+.promo-opening.is-clip-desktop.is-motion-moment-cart-a .promo-moments__board.is-pose-bundle .promo-moments__plus,
+.promo-opening.is-clip-desktop.is-motion-moment-cart-b .promo-moments__board.is-pose-bundle .promo-moments__plus {
+  left: 26%;
+  top: 42%;
+}
+
+.promo-opening.is-clip-desktop.is-motion-moment-cart-a .promo-clip__drawer,
+.promo-opening.is-clip-desktop.is-motion-moment-cart-b .promo-clip__drawer {
+  top: 72px !important;
+  right: 16px !important;
+  bottom: 16px !important;
+  left: auto !important;
+  width: 38% !important;
+  height: auto !important;
+  border-radius: 20px;
+}
+
+.promo-opening.is-clip-desktop.is-motion-moment-cart-a .promo-moments__board.is-pose-bundle .promo-moments__card.is-pick,
+.promo-opening.is-clip-desktop.is-motion-moment-cart-b .promo-moments__board.is-pose-bundle .promo-moments__card.is-pick {
+  left: 15% !important;
+  top: 46% !important;
+  width: 240px !important;
+}
+
+.promo-opening.is-clip-desktop.is-motion-moment-cart-a .promo-moments__board.is-pose-bundle .promo-moments__card.is-extra,
+.promo-opening.is-clip-desktop.is-motion-moment-cart-b .promo-moments__board.is-pose-bundle .promo-moments__card.is-extra {
+  left: 34% !important;
+  top: 46% !important;
+  width: 240px !important;
+}
+
+.promo-opening.is-clip-desktop.is-clip-moment .promo-moments__board.is-pose-choice .promo-moments__card.is-go,
+.promo-opening.is-clip-desktop.is-clip-moment .promo-moments__board.is-pose-row .promo-moments__card.is-go,
+.promo-opening.is-clip-desktop.is-clip-moment .promo-moments__board.is-pose-choice .promo-moments__card.is-pick,
+.promo-opening.is-clip-desktop.is-clip-moment .promo-moments__board.is-pose-row .promo-moments__card.is-pick,
+.promo-opening.is-clip-desktop.is-clip-moment .promo-moments__board.is-pose-choice .promo-moments__card.is-other,
+.promo-opening.is-clip-desktop.is-clip-moment .promo-moments__board.is-pose-row .promo-moments__card.is-other {
+  width: 340px !important;
+  height: 640px !important;
+  top: 52% !important;
+  transform: translate3d(-50%, -50%, 0) !important;
+}
+
+.promo-opening.is-clip-desktop.is-clip-moment .promo-moments__board.is-pose-choice .promo-moments__card.is-go,
+.promo-opening.is-clip-desktop.is-clip-moment .promo-moments__board.is-pose-row .promo-moments__card.is-go {
+  left: 22% !important;
+}
+
+.promo-opening.is-clip-desktop.is-clip-moment .promo-moments__board.is-pose-choice .promo-moments__card.is-pick,
+.promo-opening.is-clip-desktop.is-clip-moment .promo-moments__board.is-pose-row .promo-moments__card.is-pick {
+  left: 50% !important;
+}
+
+.promo-opening.is-clip-desktop.is-clip-moment .promo-moments__board.is-pose-choice .promo-moments__card.is-other,
+.promo-opening.is-clip-desktop.is-clip-moment .promo-moments__board.is-pose-row .promo-moments__card.is-other {
+  left: 78% !important;
+}
+
+.promo-opening.is-clip.is-look-home-hero .promo-moments__board.is-pose-grid .promo-moments__glyph img {
+  object-fit: contain;
+  object-position: center;
+}
+
+.promo-opening.is-clip-moment .promo-moments__board.is-pose-bundle .promo-moments__card.is-extra .promo-moments__glyph img,
+.promo-opening.is-clip-moment .promo-moments__board.is-pose-extra .promo-moments__card.is-extra .promo-moments__glyph img,
+.promo-opening.is-clip-moment .promo-moments__board.is-pose-bundle .promo-moments__card.is-pick .promo-moments__glyph img {
+  transform: none !important;
+}
+
+.promo-opening.is-clip-moment.is-clip-phone .promo-moments__board.is-pose-bundle .promo-moments__photo,
+.promo-opening.is-clip-moment.is-clip-phone .promo-moments__board.is-pose-extra .promo-moments__photo {
+  width: 100% !important;
+  height: auto !important;
+  max-height: none !important;
+  aspect-ratio: 1.4 !important;
+  flex: 0 0 auto !important;
+}
+
+html.is-promo-clip.is-clip-moment.is-clip-phone .bizmis-viewport-portal-root,
+html.is-promo-clip.is-clip-moment.is-clip-tablet .bizmis-viewport-portal-root {
+  visibility: visible !important;
+  opacity: 1 !important;
+  z-index: 50 !important;
+}
+
+.promo-opening.is-clip-moment.is-clip-tablet .promo-moments__board.is-pose-bundle .promo-moments__card.is-pick,
+.promo-opening.is-clip-moment.is-clip-tablet .promo-moments__board.is-pose-extra .promo-moments__card.is-pick,
+.promo-opening.is-clip-moment.is-clip-tablet .promo-moments__board.is-pose-bundle .promo-moments__card.is-extra,
+.promo-opening.is-clip-moment.is-clip-tablet .promo-moments__board.is-pose-extra .promo-moments__card.is-extra {
+  --card-w: 300px;
+  width: 300px;
+  top: 48%;
+}
+
+.promo-opening.is-clip-moment.is-clip-tablet .promo-moments__board.is-pose-bundle .promo-moments__card.is-pick,
+.promo-opening.is-clip-moment.is-clip-tablet .promo-moments__board.is-pose-extra .promo-moments__card.is-pick {
+  left: 28%;
+}
+
+.promo-opening.is-clip-moment.is-clip-tablet .promo-moments__board.is-pose-bundle .promo-moments__card.is-extra,
+.promo-opening.is-clip-moment.is-clip-tablet .promo-moments__board.is-pose-extra .promo-moments__card.is-extra {
+  left: 68%;
+}
+
+.promo-opening.is-clip-moment.is-clip-tablet .promo-moments__board.is-pose-bundle .promo-moments__plus,
+.promo-opening.is-clip-moment.is-clip-tablet .promo-moments__board.is-pose-extra .promo-moments__plus {
+  left: 48%;
+  top: 48%;
+  opacity: 1;
+  transform: translate3d(-50%, -50%, 0);
+}
+
+.promo-opening.is-clip-moment.is-clip-phone .promo-moments__board.is-pose-bundle .promo-moments__card.is-pick,
+.promo-opening.is-clip-moment.is-clip-phone .promo-moments__board.is-pose-extra .promo-moments__card.is-pick,
+.promo-opening.is-clip-moment.is-clip-phone .promo-moments__board.is-pose-bundle .promo-moments__card.is-extra,
+.promo-opening.is-clip-moment.is-clip-phone .promo-moments__board.is-pose-extra .promo-moments__card.is-extra {
+  left: 50%;
+  width: 88%;
+  --card-w: 88%;
+  height: auto;
+  max-height: none;
+  display: flex;
+  grid-template-columns: none;
+  overflow: visible;
+  transform: translate3d(-50%, 0, 0) !important;
+}
+
+.promo-opening.is-clip-moment.is-clip-phone .promo-moments__board.is-pose-bundle .promo-moments__card.is-pick,
+.promo-opening.is-clip-moment.is-clip-phone .promo-moments__board.is-pose-extra .promo-moments__card.is-pick {
+  top: 8%;
+}
+
+.promo-opening.is-clip-moment.is-clip-phone .promo-moments__board.is-pose-bundle .promo-moments__card.is-extra,
+.promo-opening.is-clip-moment.is-clip-phone .promo-moments__board.is-pose-extra .promo-moments__card.is-extra {
+  top: 48%;
+}
+
+.promo-opening.is-clip-moment.is-clip-phone .promo-moments__board.is-pose-bundle .promo-moments__card.is-pick .promo-moments__add,
+.promo-opening.is-clip-moment.is-clip-phone .promo-moments__board.is-pose-extra .promo-moments__card.is-pick .promo-moments__add {
+  display: block;
+}
+
+.promo-opening.is-clip-moment.is-clip-phone .promo-moments__board.is-pose-bundle .promo-moments__plus,
+.promo-opening.is-clip-moment.is-clip-phone .promo-moments__board.is-pose-extra .promo-moments__plus {
+  left: 50%;
+  top: 45%;
+  opacity: 1;
+  transform: translate3d(-50%, -50%, 0) !important;
+}
+
+.promo-opening.is-clip-phone.is-motion-moment-cart-a .promo-clip__drawer,
+.promo-opening.is-clip-phone.is-motion-moment-cart-b .promo-clip__drawer,
+.promo-opening.is-clip-tablet.is-motion-moment-cart-a .promo-clip__drawer,
+.promo-opening.is-clip-tablet.is-motion-moment-cart-b .promo-clip__drawer {
+  top: auto;
+  right: 12px;
+  left: 12px;
+  bottom: 12px;
+  width: auto;
+  height: 28%;
+  border-radius: 18px;
+  border-left: 0;
+}
+
+.promo-opening.is-clip-moment.is-clip-phone.is-pitch-cards .promo-opening__store.is-phone > .promo-opening__widget,
+.promo-opening.is-clip-moment.is-clip-tablet.is-pitch-cards .promo-opening__store.is-tablet > .promo-opening__widget {
+  right: 12px !important;
+  left: 12px !important;
+  bottom: 10px !important;
+  width: auto !important;
+  transform: none !important;
+  transform-origin: bottom center !important;
+}
+
+.promo-opening.is-clip .promo-moments__board.is-pose-grid:not([data-store-look="list"]):not([data-store-look="lookbook"]) .promo-moments__photo {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1;
+  flex: 0 0 auto;
+  max-height: none;
+}
+
+.promo-opening.is-clip .promo-moments__board.is-pose-grid:not([data-store-look="list"]):not([data-store-look="lookbook"]) .promo-moments__glyph img {
+  object-fit: contain;
+  object-position: center;
+}
+
+.promo-opening.is-clip-moment.is-clip-desktop.is-pitch-cards .promo-opening__store.is-desktop > .promo-opening__widget {
+  transform: scale(1.65) !important;
+  transform-origin: bottom right !important;
 }
 
