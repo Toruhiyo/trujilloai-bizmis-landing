@@ -14,11 +14,20 @@ const THEME = path.resolve(LANDING, '../ShopifyThemes/shopify-theme-crimson-inde
 const OUT = path.join(LANDING, 'public/promo');
 const ASSET = path.join(THEME, 'assets');
 
+function publicAssetPath(name) {
+  const ext = path.extname(name).toLowerCase();
+  if (name === 'logo-mono.png' || name.startsWith('promo-store-')) return `/promo/old/${name}`;
+  if (['.jpg', '.jpeg', '.png', '.svg', '.webp', '.gif'].includes(ext)) return `/promo/images/${name}`;
+  if (name === 'promo-pain-wall.mp4') return `/promo/videos/${name}`;
+  if (['.mp4', '.webm'].includes(ext)) return `/promo/old/${name}`;
+  return `/promo/${name}`;
+}
+
 function rewriteLiquid(source) {
   let html = source;
-  html = html.replaceAll('{{ promo_logo_url }}', '/promo/bizmis-logo-full-white-transparent.png');
-  html = html.replace(/\{\{\s*'([^']+)'\s*\|\s*asset_url\s*\|\s*json\s*\}\}/g, '"/promo/$1"');
-  html = html.replace(/\{\{\s*'([^']+)'\s*\|\s*asset_url\s*\}\}/g, '/promo/$1');
+  html = html.replaceAll('{{ promo_logo_url }}', publicAssetPath('bizmis-logo-full-white-transparent.png'));
+  html = html.replace(/\{\{\s*'([^']+)'\s*\|\s*asset_url\s*\|\s*json\s*\}\}/g, (_, name) => `"${publicAssetPath(name)}"`);
+  html = html.replace(/\{\{\s*'([^']+)'\s*\|\s*asset_url\s*\}\}/g, (_, name) => publicAssetPath(name));
   html = html.replace(/\{\{\s*promo_red\s*\|\s*json\s*\}\}/g, '"#D1001A"');
   const leftover = html.match(/\{\{[^}]+\}\}|\{%[^%]+%\}/);
   if (leftover) throw new Error(`Unreplaced Liquid: ${leftover[0]}`);
@@ -63,7 +72,9 @@ function copyAssets() {
     || name === 'bizmis-logo-full-white-transparent.png'
   ));
   names.forEach((name) => {
-    fs.copyFileSync(path.join(ASSET, name), path.join(OUT, name));
+    const dest = path.join(OUT, publicAssetPath(name).replace(/^\/promo\//, ''));
+    fs.mkdirSync(path.dirname(dest), { recursive: true });
+    fs.copyFileSync(path.join(ASSET, name), dest);
   });
   for (const css of ['promo-ad.css', 'promo-ad-tokens.css']) {
     fs.copyFileSync(path.join(ASSET, css), path.join(OUT, css));
@@ -74,19 +85,22 @@ function copyAssets() {
 function assetMap() {
   const clips = {};
   const clay = {};
-  fs.readdirSync(OUT).forEach((name) => {
+  const readDir = (dir) => (fs.existsSync(dir) ? fs.readdirSync(dir) : []);
+  readDir(path.join(OUT, 'old')).forEach((name) => {
     if (name.startsWith('promo-clip-') && name.endsWith('.mp4')) {
-      clips[name.slice('promo-clip-'.length, -'.mp4'.length)] = `/promo/${name}`;
+      clips[name.slice('promo-clip-'.length, -'.mp4'.length)] = `/promo/old/${name}`;
     }
+  });
+  readDir(path.join(OUT, 'images')).forEach((name) => {
     if (name.startsWith('promo-product-') && name.endsWith('.png')) {
-      clay[name.slice('promo-product-'.length, -'.png'.length)] = `/promo/${name}`;
+      clay[name.slice('promo-product-'.length, -'.png'.length)] = `/promo/images/${name}`;
     }
   });
   return {
     clips,
     clay,
-    pitchLead: '/promo/promo-pitch-grid-lead.jpg',
-    stamp: '/promo/bizmis-logo-full-white-transparent.png',
+    pitchLead: '/promo/images/promo-pitch-grid-lead.jpg',
+    stamp: '/promo/images/bizmis-logo-full-white-transparent.png',
   };
 }
 
@@ -98,11 +112,11 @@ fs.writeFileSync(path.join(OUT, 'film-engine.js'), engine);
 const map = assetMap();
 fs.writeFileSync(path.join(OUT, 'film-assets.json'), JSON.stringify(map));
 
-const referenced = [...markup.matchAll(/\/promo\/[A-Za-z0-9._-]+/g)].map((match) => match[0].slice('/promo/'.length));
+const referenced = [...markup.matchAll(/\/promo\/(?:images|videos|old)\/[A-Za-z0-9._-]+/g)].map((match) => match[0].slice('/promo/'.length));
 const missing = [...new Set(referenced)].filter((name) => !fs.existsSync(path.join(OUT, name)));
 if (missing.length) throw new Error(`Markup references missing files: ${missing.join(', ')}`);
 if (!map.clips['pain-desktop-scroll-up-1']) throw new Error('Clip map is missing a known pain clip');
-if (!fs.existsSync(path.join(OUT, 'promo-pitch-grid-lead.jpg'))) throw new Error('Pitch lead still was not copied');
+if (!fs.existsSync(path.join(OUT, 'images/promo-pitch-grid-lead.jpg'))) throw new Error('Pitch lead still was not copied');
 
 const check = spawnSync(process.execPath, ['--check', path.join(OUT, 'film-engine.js')], { encoding: 'utf8' });
 if (check.status !== 0) {

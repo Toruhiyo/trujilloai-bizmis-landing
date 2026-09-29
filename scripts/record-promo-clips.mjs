@@ -101,7 +101,7 @@ function encodeClip(frames, dest) {
 function rememberClip(key) {
   const assetsPath = path.join(OUT_DIR, 'film-assets.json');
   const assets = JSON.parse(fs.readFileSync(assetsPath, 'utf8'));
-  assets.clips[key] = `/promo/promo-clip-${key}.mp4`;
+  assets.clips[key] = `/promo/old/promo-clip-${key}.mp4`;
   fs.writeFileSync(assetsPath, `${JSON.stringify(assets)}\n`);
 }
 
@@ -148,7 +148,7 @@ async function recordDevice(browser, device) {
       await page.waitForTimeout(40);
     }
     if (STILLS_ONLY) {
-      const still = path.join(OUT_DIR, `promo-still-${clip.key}.jpg`);
+      const still = path.join(OUT_DIR, 'images', `promo-still-${clip.key}.jpg`);
       await page.screenshot({ path: still, type: 'jpeg', quality: 72, timeout: 15000 });
       process.stdout.write(`wrote promo-still-${clip.key}.jpg\n`);
       continue;
@@ -161,8 +161,8 @@ async function recordDevice(browser, device) {
       const remain = frameMs - (Date.now() - started);
       if (remain > 0) await page.waitForTimeout(remain);
     }
-    fs.copyFileSync(path.join(frames, 'frame-00.jpg'), path.join(OUT_DIR, `promo-still-${clip.key}.jpg`));
-    await encodeClip(frames, path.join(OUT_DIR, `promo-clip-${clip.key}.mp4`));
+    fs.copyFileSync(path.join(frames, 'frame-00.jpg'), path.join(OUT_DIR, 'images', `promo-still-${clip.key}.jpg`));
+    await encodeClip(frames, path.join(OUT_DIR, 'old', `promo-clip-${clip.key}.mp4`));
     fs.rmSync(frames, { recursive: true, force: true });
     rememberClip(clip.key);
     process.stdout.write(`wrote promo-clip-${clip.key}.mp4\n`);

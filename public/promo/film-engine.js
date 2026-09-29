@@ -853,7 +853,8 @@
   }
 
   function glideStillSrc(tone, device, motion, chat, look) {
-    return clipSrc(tone, device, motion, chat, look).replace(/promo-clip-([^/?#]+)\.mp4/, 'promo-still-$1.jpg');
+    const match = clipSrc(tone, device, motion, chat, look).match(/promo-clip-([^/?#]+)\.mp4/);
+    return match ? `/promo/images/promo-still-${match[1]}.jpg` : '';
   }
 
   function glideEventStart() {
@@ -1851,7 +1852,7 @@
   const PROMO_ROW_CLERK_LANE = 220;
   const PROMO_COMPARE_RESERVE = 124;
   const PROMO_ROW_GAP = 20;
-  // Only product images used in pain and pitch. Files live in assets/ as promo-product-<key>.png.
+  // Only product images used in pain and pitch. Files live in images/ as promo-product-<key>.png.
   const PROMO_CLAY_TINTS = ['stone', 'warm-grey', 'sand', 'oat', 'clay', 'mist'];
   const PROMO_CATALOG = {
     capsule: { family: 'round', tint: 'stone' },
@@ -3029,9 +3030,7 @@
     if (urls[key]) return urls[key];
     const classic = clipFileKey(tone, device, motion, chat, 'classic');
     if (urls[classic]) return urls[classic];
-    const sample = Object.values(promoClayUrls())[0] || '';
-    if (!sample) return '';
-    return sample.replace(/[^/?#]+\.png(\?[^#]*)?/, `promo-clip-${classic}.mp4`);
+    return `/promo/old/promo-clip-${classic}.mp4`;
   }
 
   function gridMix(col, row, salt) {
