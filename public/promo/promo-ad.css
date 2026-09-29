@@ -6184,68 +6184,6 @@ html.is-promo-live-card .bizmis-chat-input-bar {
   animation: promo-live-chrome-in 720ms cubic-bezier(0.22, 1, 0.36, 1) 140ms both;
 }
 
-.promo-widget-events {
-  position: absolute;
-  z-index: 9;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: 8px;
-  pointer-events: none;
-}
-
-.promo-widget-event {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  width: auto;
-  max-width: 100%;
-  margin-left: auto;
-  padding: 6px 12px;
-  border-radius: 999px;
-  border: 1px solid hsl(0 0% 100% / 0.8);
-  background-color: hsl(0 0% 100% / 0.55);
-  background-image: linear-gradient(150deg, hsl(0 0% 100% / 0.51) 0%, hsl(0 0% 100% / 0) 100%);
-  box-shadow: 0 1px 0 hsl(0 0% 100% / 0.9) inset, 0 12px 28px -16px rgb(0 0 0 / 0.3);
-  -webkit-backdrop-filter: blur(24px) saturate(1.25);
-  backdrop-filter: blur(24px) saturate(1.25);
-  color: hsl(0 0% 3.9%);
-  font-size: 12px;
-  font-weight: 500;
-  line-height: 16px;
-  -webkit-backface-visibility: hidden;
-  backface-visibility: hidden;
-  isolation: isolate;
-  animation: promo-widget-event-in 200ms ease-out both;
-}
-
-.promo-widget-event__icon {
-  display: flex;
-  flex: none;
-  align-items: center;
-  justify-content: center;
-  width: 20px;
-  height: 20px;
-  border-radius: 999px;
-  background: hsl(0 0% 9% / 0.14);
-  color: hsl(0 0% 3.9%);
-}
-
-.promo-widget-event__icon svg {
-  width: 12px;
-  height: 12px;
-}
-
-html.is-promo-card-out .promo-widget-events {
-  opacity: 0;
-  transition: opacity 420ms cubic-bezier(0.22, 1, 0.36, 1);
-}
-
-@keyframes promo-widget-event-in {
-  from { opacity: 0; transform: translateY(4px) scale(0.98); }
-  to { opacity: 1; transform: none; }
-}
-
 .promo-opening.is-pitch-cards.is-moments .promo-opening__store > .promo-opening__widget {
   position: absolute;
   top: auto;
@@ -9392,7 +9330,7 @@ html.is-promo-still .promo-clip__product.is-compare::after {
 .promo-pass-slot__invite {
   position: relative;
   display: inline-block;
-  margin: 1.7rem 0 0;
+  margin: 0.35rem 0 0;
   font-family: "Caveat", "Nunito", var(--font-heading);
   font-weight: 700;
   font-size: clamp(2.55rem, 4.4vw, 3.25rem);
@@ -9427,7 +9365,7 @@ html.is-promo-still .promo-clip__product.is-compare::after {
 .promo-pass-slot__aside {
   position: relative;
   display: inline-block;
-  margin: 2.6rem 0 0;
+  margin: 1.05rem 0 0;
   padding: 0.7em 1em 0.78em 1.55em;
   border-radius: 2px 8px 8px 2px;
   background: var(--bizmis-primary);
@@ -9476,25 +9414,71 @@ html.is-promo-still .promo-clip__product.is-compare::after {
 
 .promo-pass-slot__terms {
   display: flex;
-  align-items: baseline;
+  align-items: center;
   justify-content: center;
-  gap: 0.55em;
-  margin: 4.25rem 0 0;
-  color: color-mix(in srgb, var(--ad-ink) 46%, #c8bfb6);
-  font-family: var(--font-body, var(--font-heading));
-  font-size: clamp(1.2rem, 1.8vw, 1.5rem);
-  font-weight: 500;
-  letter-spacing: -0.015em;
-  line-height: 1.2;
+  gap: 1.75rem;
+  margin: 3.6rem 0 0;
+  color: color-mix(in srgb, var(--ad-ink) 82%, #fff);
+  font-family: var(--font-heading);
+  font-size: clamp(1.15rem, 1.7vw, 1.4rem);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1;
   white-space: nowrap;
 }
 
 .promo-pass-slot__piece {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.38em;
   opacity: 0;
-  transform: translateY(0.35em);
+}
+
+.promo-pass-slot__tick {
+  width: 1.15em;
+  height: 1.15em;
+  flex: none;
+  overflow: visible;
+  color: var(--bizmis-primary);
+  transform: rotate(-8deg);
+}
+
+.promo-pass-slot__tick path {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+}
+
+.promo-pass-slot__piece.is-in .promo-pass-slot__tick path,
+.promo-pass-slot.is-settled .promo-pass-slot__tick path {
+  animation: promo-ea-tick 560ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+.promo-pass-slot.is-settled .promo-pass-slot__tick path {
+  stroke-dashoffset: 0;
+  animation: none;
+}
+
+@keyframes promo-ea-tick {
+  to { stroke-dashoffset: 0; }
+}
+
+.promo-pass-slot__term {
+  opacity: 0;
+  transform: translateY(0.22em);
   transition:
-    opacity 560ms cubic-bezier(0.22, 1, 0.36, 1),
-    transform 560ms cubic-bezier(0.22, 1, 0.36, 1);
+    opacity 480ms cubic-bezier(0.22, 1, 0.36, 1),
+    transform 480ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.promo-pass-slot__piece.is-in .promo-pass-slot__term {
+  opacity: 1;
+  transform: none;
+  transition-delay: 180ms;
 }
 
 .promo-pass-slot__piece.is-in,
@@ -9503,12 +9487,11 @@ html.is-promo-still .promo-clip__product.is-compare::after {
   transform: none;
 }
 
-.promo-pass-slot.is-settled .promo-pass-slot__piece {
+.promo-pass-slot.is-settled .promo-pass-slot__piece,
+.promo-pass-slot.is-settled .promo-pass-slot__term {
+  opacity: 1;
+  transform: none;
   transition: none;
-}
-
-.promo-pass-slot__dot {
-  font-weight: 600;
 }
 
 .promo-pass-slot__url {
@@ -9552,11 +9535,22 @@ html.is-promo-still .promo-clip__product.is-compare::after {
   .promo-opening.is-ea-card.is-pass-slot .promo-scale__end-hero,
   .promo-pass-slot__shopify-label,
   .promo-pass-slot__piece,
+  .promo-pass-slot__term,
   .promo-pass-slot__invite-line,
   .promo-pass-slot__aside {
     opacity: 1;
     clip-path: none;
+    transform: none;
     transition: none;
+    animation: none;
+  }
+
+  .promo-pass-slot__tick {
+    transform: rotate(-8deg);
+  }
+
+  .promo-pass-slot__tick path {
+    stroke-dashoffset: 0;
     animation: none;
   }
 
