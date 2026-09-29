@@ -9330,7 +9330,7 @@ html.is-promo-still .promo-clip__product.is-compare::after {
 .promo-pass-slot__invite {
   position: relative;
   display: inline-block;
-  margin: 0.35rem 0 0;
+  margin: 0 0 0;
   font-family: "Caveat", "Nunito", var(--font-heading);
   font-weight: 700;
   font-size: clamp(2.55rem, 4.4vw, 3.25rem);
@@ -9365,7 +9365,7 @@ html.is-promo-still .promo-clip__product.is-compare::after {
 .promo-pass-slot__aside {
   position: relative;
   display: inline-block;
-  margin: 1.05rem 0 0;
+  margin: 1.35rem 0 0;
   padding: 0.7em 1em 0.78em 1.55em;
   border-radius: 2px 8px 8px 2px;
   background: var(--bizmis-primary);
@@ -9418,11 +9418,11 @@ html.is-promo-still .promo-clip__product.is-compare::after {
   justify-content: center;
   gap: 1.75rem;
   margin: 3.6rem 0 0;
-  color: color-mix(in srgb, var(--ad-ink) 82%, #fff);
-  font-family: var(--font-heading);
-  font-size: clamp(1.15rem, 1.7vw, 1.4rem);
-  font-weight: 600;
-  letter-spacing: -0.02em;
+  color: color-mix(in srgb, var(--ad-ink) 78%, #fff);
+  font-family: "Caveat", "Nunito", var(--font-heading);
+  font-size: clamp(1.85rem, 2.8vw, 2.25rem);
+  font-weight: 700;
+  letter-spacing: 0.01em;
   line-height: 1;
   white-space: nowrap;
 }
@@ -9440,22 +9440,21 @@ html.is-promo-still .promo-clip__product.is-compare::after {
   flex: none;
   overflow: visible;
   color: var(--bizmis-primary);
-  transform: rotate(-8deg);
+  transform: rotate(-12deg);
 }
 
 .promo-pass-slot__tick path {
   fill: none;
   stroke: currentColor;
-  stroke-width: 2.6;
+  stroke-width: 3.4;
   stroke-linecap: round;
   stroke-linejoin: round;
   stroke-dasharray: 1;
   stroke-dashoffset: 1;
 }
 
-.promo-pass-slot__piece.is-in .promo-pass-slot__tick path,
-.promo-pass-slot.is-settled .promo-pass-slot__tick path {
-  animation: promo-ea-tick 560ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
+.promo-pass-slot__piece.is-in .promo-pass-slot__tick path {
+  animation: promo-ea-tick 620ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
 }
 
 .promo-pass-slot.is-settled .promo-pass-slot__tick path {
@@ -9546,7 +9545,7 @@ html.is-promo-still .promo-clip__product.is-compare::after {
   }
 
   .promo-pass-slot__tick {
-    transform: rotate(-8deg);
+    transform: rotate(-12deg);
   }
 
   .promo-pass-slot__tick path {
