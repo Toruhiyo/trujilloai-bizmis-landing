@@ -98,7 +98,7 @@ While he speaks, the product is added, then a flat sleeve that belongs with it, 
 
 ## 7. The selling sea
 
-The pullback starts on that phone. The frame stays full of mockup screens, with no empty stretches of field. Every card is "Your store". Most of them stamp "SOLD". While the sea is still moving and blurred, this line comes up and stays, with the white Bizmis mark, through the orange field:
+The pullback starts on that phone. The frame stays full of mockup screens, with no empty stretches of field. Every card is "Your store". Most of them stamp "SOLD". The Bizmis widget on those cards is caught mid-task: idle, talking, thinking, a wave, a nod, a salute, a bow, a thumbs-up, or a chip such as "Opening the product…" or "Adding to your cart…". While the sea is still moving and blurred, this line comes up and stays, with the white Bizmis mark, through the orange field:
 
 "Built to sell."
 

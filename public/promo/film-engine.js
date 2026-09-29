@@ -1307,15 +1307,23 @@
     cart: 'bundle',
     upsell: 'choice',
   };
-  const PROMO_MOMENT_GESTURE = {
-    catalog: 'waving',
-    product: 'nod',
-    compare: 'nod',
-    bundle: 'thumbsup',
-    search: 'thinking',
-    variant: 'nod',
-    cart: 'thumbsup',
-    upsell: 'waving',
+  const PROMO_MOMENT_WIDGET = {
+    'moment-catalog-a': { action: 'idle_neutral' },
+    'moment-catalog-b': { action: 'waving' },
+    'moment-product-a': { action: 'exaggerated_talking' },
+    'moment-product-b': { action: 'nod', event: 'product' },
+    'moment-compare-a': { action: 'thinking' },
+    'moment-compare-b': { action: 'salute' },
+    'moment-bundle-a': { action: 'thumbsup', event: 'cart' },
+    'moment-bundle-b': { action: 'exaggerated_talking' },
+    'moment-search-a': { action: 'thinking', event: 'products' },
+    'moment-search-b': { action: 'bow' },
+    'moment-variant-a': { action: 'nod', event: 'policies' },
+    'moment-variant-b': { action: 'idle_neutral' },
+    'moment-cart-a': { action: 'thumbsup', event: 'cart' },
+    'moment-cart-b': { action: 'exaggerated_talking' },
+    'moment-upsell-a': { action: 'waving' },
+    'moment-upsell-b': { action: 'thinking' },
   };
   const PROMO_MOMENT_TAKE_HEROES = {
     b: { go: 'cone', pick: 'cylinder', other: 'dome', extra: 'slab' },
@@ -1756,6 +1764,7 @@
   window.addEventListener('avatar-animation', (event) => {
     const detail = event.detail;
     if (!detail || detail.name !== 'waving') return;
+    if (String(detail.toolCallId || '').startsWith('promo-')) return;
     event.stopImmediatePropagation();
   }, true);
 
@@ -4474,6 +4483,32 @@
       this.seatLiveCard(true);
     }
 
+    poseMomentWidget(clip) {
+      const beat = PROMO_MOMENT_WIDGET[clip?.motion] || { action: 'idle_neutral' };
+      this.clearPitchEvents();
+      const place = () => {
+        setOpeningAvatarAction(beat.action);
+        if (!beat.event) return;
+        this.clearPitchEvents();
+        this.paintPitchEvent({ kind: beat.event });
+        const store = this.painStore();
+        const host = store?.querySelector('[data-promo-widget-events]');
+        if (host && store) this.placePitchEvents(host, store);
+      };
+      let tries = 0;
+      const run = () => {
+        const ready = document.querySelector('#bizmis-avatar-embed canvas, .bizmis-mobile-lite-chat, .bizmis-bar-row');
+        tries += 1;
+        if (!ready && tries < 40) {
+          window.setTimeout(run, 100);
+          return;
+        }
+        place();
+        window.setTimeout(place, 220);
+      };
+      run();
+    }
+
     seatLiveCard(instant) {
       const widget = this.root.querySelector('[data-promo-widget]');
       const store = this.painStore();
@@ -6470,8 +6505,7 @@
         this.applyClipLook(stage, clip.look);
       }
       this.seatClipWidget();
-      const gesture = PROMO_MOMENT_GESTURE[moment.scene] || 'nod';
-      window.setTimeout(() => setOpeningAvatarAction(gesture), 400);
+      this.poseMomentWidget(clip);
       this.root.dataset.clipDevice = clip.device;
       this.root.dataset.clipMotion = clip.motion;
       this.root.dataset.clipTone = 'pitch';
