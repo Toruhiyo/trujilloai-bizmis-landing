@@ -15,13 +15,10 @@
     demo: { scarcity: '', label: 'See it in action', url: 'bizmis.ai/demo', vo: 'see-it' },
     install: { scarcity: 'Installs in one click.', label: 'Install on Shopify', url: '', vo: 'install-shopify' },
     ea: {
-      lines: [
-        'Free to run live.',
-        'Half price when you upgrade.',
-        'Only 50 stores.',
-      ],
-      label: 'Join Early Access',
-      url: 'bizmis.ai/early-access',
+      scarcity: 'First 50 stores · No commitment · No credit card',
+      label: 'Install to join Early Access',
+      shopify: true,
+      url: '',
       vo: 'join-fifty',
     },
     none: null,
@@ -39,8 +36,9 @@
   const PROMO_PASS_FAST_MS = 1100;
   const PROMO_PASS_SLOW_MS = 2800;
   const PROMO_PASS_SLOT_IN_MS = 420;
-  const PROMO_EA_LINE_GAP_MS = 500;
-  const PROMO_END_URL_IN_MS = 300;
+  const PROMO_PASS_SLOT_FADE_MS = 700;
+  const PROMO_EA_HOLD_MS = 14000;
+  const PROMO_SHOPIFY_BAG = 'M15.337 23.979l7.216-1.561s-2.604-17.613-2.625-17.73c-.018-.116-.114-.192-.211-.192s-1.929-.136-1.929-.136-1.275-1.274-1.439-1.411c-.045-.037-.075-.057-.121-.074l-.914 21.104h.023zM11.71 11.305s-.81-.424-1.774-.424c-1.447 0-1.504.906-1.504 1.141 0 1.232 3.24 1.715 3.24 4.629 0 2.295-1.44 3.76-3.406 3.76-2.354 0-3.54-1.465-3.54-1.465l.646-2.086s1.245 1.066 2.28 1.066c.675 0 .975-.545.975-.932 0-1.619-2.654-1.694-2.654-4.359-.034-2.237 1.571-4.416 4.827-4.416 1.257 0 1.875.361 1.875.361l-.945 2.715-.02.01zM11.17.83c.136 0 .271.038.405.135-.984.465-2.064 1.639-2.508 3.992-.656.213-1.293.405-1.889.578C7.697 3.75 8.951.84 11.17.84V.83zm1.235 2.949v.135c-.754.232-1.583.484-2.394.736.466-1.777 1.333-2.645 2.085-2.971.193.501.309 1.176.309 2.1zm.539-2.234c.694.074 1.141.867 1.429 1.755-.349.114-.735.231-1.158.366v-.252c0-.752-.096-1.371-.271-1.871v.002zm2.992 1.289c-.02 0-.06.021-.078.021s-.289.075-.714.21c-.423-1.233-1.176-2.37-2.508-2.37h-.115C12.135.209 11.669 0 11.265 0 8.159 0 6.675 3.877 6.21 5.846c-1.194.365-2.063.636-2.16.674-.675.213-.694.232-.772.87-.075.462-1.83 14.063-1.83 14.063L15.009 24l.927-21.166z';
   const PROMO_VO_ON = promoBootParams.get('vo') === '1';
   const PROMO_VO_BUDGET_S = [
     { scene: 'pain', seconds: 13 },
@@ -66,9 +64,19 @@
     { scene: 'selling-sea', id: 'all-day', line: 'For every shopper. All day long.' },
     { scene: 'stores', id: 'any-store', line: 'Any store.' },
     { scene: 'end', id: 'see-it', line: 'See it in action.', cta: 'demo' },
-    { scene: 'end', id: 'join-fifty', line: 'Run it free, no commitment. And what your store needs next is what we build next. Join Early Access.', cta: 'ea' },
+    { scene: 'end', id: 'join-fifty', line: 'Run it free. No commitment, no credit card. Your feedback shapes what we build next, with a direct line to us, and a discount when you upgrade. Install to join Early Access.', cta: 'ea' },
     { scene: 'end', id: 'install-shopify', line: 'Install it on Shopify.', cta: 'install' },
   ];
+  function shopifyBag() {
+    const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    svg.setAttribute('viewBox', '0 0 24 24');
+    svg.setAttribute('aria-hidden', 'true');
+    svg.classList.add('promo-pass-slot__bag');
+    const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+    path.setAttribute('d', PROMO_SHOPIFY_BAG);
+    svg.append(path);
+    return svg;
+  }
   function promoVoCue(id) {
     return PROMO_VO.find((cue) => cue.id === id) || null;
   }
@@ -5087,23 +5095,13 @@
       if (existing && existing.dataset.cta === key) return existing;
       existing?.remove();
       const copy = PROMO_END_CTA[key];
-      this.root.classList.toggle('is-ea-offer', Boolean(copy?.lines?.length));
+      this.root.classList.toggle('is-ea-card', Boolean(copy?.shopify));
       if (!scale || !copy) return null;
       const slot = document.createElement('div');
       slot.className = 'promo-pass-slot';
       slot.setAttribute('data-promo-pass-slot', '');
       slot.dataset.cta = key;
-      if (copy.lines?.length) {
-        const offers = document.createElement('div');
-        offers.className = 'promo-pass-slot__offers';
-        copy.lines.forEach((text) => {
-          const line = document.createElement('p');
-          line.className = 'promo-pass-slot__line';
-          line.textContent = text;
-          offers.append(line);
-        });
-        slot.append(offers);
-      } else if (copy.scarcity) {
+      if (copy.scarcity) {
         const line = document.createElement('p');
         line.className = 'promo-pass-slot__line';
         line.textContent = copy.scarcity;
@@ -5111,7 +5109,15 @@
       }
       const action = document.createElement('p');
       action.className = 'promo-pass-slot__action';
-      action.textContent = copy.label;
+      if (copy.shopify) {
+        action.classList.add('is-shopify');
+        const label = document.createElement('span');
+        label.className = 'promo-pass-slot__shopify-label';
+        label.textContent = copy.label;
+        action.append(shopifyBag(), label);
+      } else {
+        action.textContent = copy.label;
+      }
       slot.append(action);
       if (copy.url) {
         const url = document.createElement('p');
@@ -5131,6 +5137,7 @@
       const slot = this.ensurePassSlot(ctaKey);
       if (!slot) return;
       slot.classList.add('is-in');
+      if (slot.querySelector('.is-shopify')) this.root.classList.add('is-ea-in');
     }
 
     async landPassSlot() {
@@ -5146,28 +5153,12 @@
       }
       const slot = this.ensurePassSlot();
       await waitMs(PROMO_PASS_SLOT_IN_MS);
-      if (copy.lines?.length && slot) {
-        await this.playEaOffer(slot, copy);
-        return;
-      }
       slot?.classList.add('is-in');
+      if (copy.shopify) this.root.classList.add('is-ea-in');
       markPromoVo(copy.vo);
-      await waitMs(PROMO_END_CARD_HOLD_MS + promoHoldMs());
-      this.depart();
-    }
-
-    async playEaOffer(slot, copy) {
-      slot.classList.add('is-built');
-      const lines = [...slot.querySelectorAll('.promo-pass-slot__line')];
-      markPromoVo(copy.vo);
-      for (const line of lines) {
-        line.classList.add('is-in');
-        await waitMs(PROMO_EA_LINE_GAP_MS);
-      }
-      slot.querySelector('.promo-pass-slot__action')?.classList.add('is-in');
-      await waitMs(PROMO_EA_LINE_GAP_MS);
-      slot.querySelector('.promo-pass-slot__url')?.classList.add('is-in');
-      await waitMs(PROMO_END_URL_IN_MS + PROMO_END_CARD_HOLD_MS + promoHoldMs());
+      const afterFade = copy.shopify ? PROMO_PASS_SLOT_FADE_MS : 0;
+      const hold = copy.shopify ? PROMO_EA_HOLD_MS : PROMO_END_CARD_HOLD_MS;
+      await waitMs(afterFade + hold + promoHoldMs());
       this.depart();
     }
 
@@ -5177,7 +5168,8 @@
       this.orderPassStores();
       if (!this.stores.length || prefersReducedMotion()) {
         this.settlePassSlot();
-        window.setTimeout(() => this.depart(), PROMO_END_CARD_HOLD_MS);
+        const hold = PROMO_END_CTA[promoVideoConfig.cta]?.shopify ? PROMO_EA_HOLD_MS : PROMO_END_CARD_HOLD_MS;
+        window.setTimeout(() => this.depart(), hold);
         return;
       }
       this.playStorePass(() => {
@@ -6343,6 +6335,7 @@
         board.dataset.catalogVariant = clip.motion || clip.look || 'classic';
       }
       promoWidget.applyStoreLook(this.bizmisLook());
+      this.mountDeviceChrome(store, clip.device);
       if ((clip.device === 'phone' || clip.device === 'tablet') && !this.clipMobileWidget) {
         this.clipMobileWidget = true;
         store?.setAttribute('data-promo-widget-host', '');
@@ -6530,21 +6523,45 @@
     }
 
     clipStatus(device) {
+      const phone = device === 'phone';
       const status = document.createElement('div');
       status.className = 'promo-clip__status';
+      status.dataset.device = device;
       const time = document.createElement('span');
       time.className = 'promo-clip__time';
       time.textContent = '9:41';
-      const island = document.createElement('span');
-      island.className = 'promo-clip__island';
       const icons = document.createElement('span');
       icons.className = 'promo-clip__status-icons';
-      icons.innerHTML = device === 'phone'
-        ? '<svg viewBox="0 0 17 12" aria-hidden="true"><rect x="0" y="7.6" width="3" height="4.4" rx="0.8"/><rect x="4.6" y="5" width="3" height="7" rx="0.8"/><rect x="9.2" y="2.4" width="3" height="9.6" rx="0.8"/><rect x="13.8" y="0" width="3" height="12" rx="0.8"/></svg><svg viewBox="0 0 16 12" aria-hidden="true"><path d="M1.2 4.4a8.8 8.8 0 0 1 13.6 0" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M3.8 7a5.2 5.2 0 0 1 8.4 0" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><circle cx="8" cy="10" r="1.15"/></svg><svg viewBox="0 0 28 13" aria-hidden="true"><rect x="0.7" y="0.7" width="23" height="11.6" rx="3.2" fill="none" stroke="currentColor" stroke-width="1.2"/><rect x="2.4" y="2.4" width="16.4" height="8.2" rx="1.6"/><path d="M25.2 4.4c.9.3 1.5 1.1 1.5 2.1s-.6 1.8-1.5 2.1z"/></svg>'
-        : '<svg viewBox="0 0 18 12" aria-hidden="true"><rect x="0" y="8" width="3" height="4" rx="0.6"/><rect x="5" y="5" width="3" height="7" rx="0.6"/><rect x="10" y="2" width="3" height="10" rx="0.6"/><rect x="15" y="0" width="3" height="12" rx="0.6" opacity="0.35"/></svg><svg viewBox="0 0 26 12" aria-hidden="true"><rect x="0.6" y="0.6" width="22" height="10.8" rx="2.2" fill="none" stroke="currentColor" stroke-width="1.2"/><rect x="23.6" y="3.6" width="1.5" height="4.8" rx="0.4"/><rect x="2.4" y="2.4" width="15.2" height="7.2" rx="1"/></svg>';
-      status.append(time, island, icons);
-      status.dataset.device = device;
+      icons.innerHTML = this.clipStatusIcons(device);
+      if (phone) {
+        const island = document.createElement('span');
+        island.className = 'promo-clip__island';
+        status.append(time, island, icons);
+      } else {
+        const date = document.createElement('span');
+        date.className = 'promo-clip__date';
+        date.textContent = 'Tue 29';
+        status.append(time, date, icons);
+      }
       return status;
+    }
+
+    clipStatusIcons(device) {
+      const cellular = '<svg viewBox="0 0 15 11" aria-hidden="true"><rect x="0.4" y="7.2" width="2" height="3.2" rx="0.6"/><rect x="3.6" y="5" width="2" height="5.4" rx="0.6"/><rect x="6.8" y="2.6" width="2" height="7.8" rx="0.6"/><rect x="10" y="0.5" width="2" height="9.9" rx="0.6" opacity="0.28"/></svg>';
+      const wifi = '<svg viewBox="0 0 15 11" aria-hidden="true"><path d="M1.2 4.2a8 8 0 0 1 12.6 0" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round"/><path d="M3.4 6.5a5 5 0 0 1 8.2 0" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round"/><circle cx="7.5" cy="9.2" r="0.95"/></svg>';
+      const battery = '<svg viewBox="0 0 26 12" aria-hidden="true"><rect x="0.6" y="0.6" width="21.2" height="10.8" rx="3.1" fill="none" stroke="currentColor" stroke-width="1.1" opacity="0.55"/><rect x="2.1" y="2.1" width="14.2" height="7.8" rx="1.5"/><path d="M23.2 4c.7.35 1.15 1 1.15 2s-.45 1.65-1.15 2" fill="currentColor" opacity="0.45"/></svg>';
+      return device === 'tablet' ? wifi + battery : cellular + wifi + battery;
+    }
+
+    mountDeviceChrome(store, device) {
+      if (!store) return;
+      store.querySelector(':scope > .promo-clip__status')?.remove();
+      store.querySelector(':scope > .promo-clip__home')?.remove();
+      if (device !== 'phone' && device !== 'tablet') return;
+      store.prepend(this.clipStatus(device));
+      const home = document.createElement('span');
+      home.className = 'promo-clip__home';
+      store.append(home);
     }
 
     clipStoreBar() {
@@ -8388,7 +8405,8 @@
       if (!this.root.classList.contains('is-store-pass')) this.holdOrangeField();
       if (prefersReducedMotion()) {
         this.settlePassSlot();
-        await waitMs(PROMO_END_CARD_HOLD_MS + promoHoldMs());
+        const hold = PROMO_END_CTA[promoVideoConfig.cta]?.shopify ? PROMO_EA_HOLD_MS : PROMO_END_CARD_HOLD_MS;
+        await waitMs(hold + promoHoldMs());
         this.depart();
         return;
       }
