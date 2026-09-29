@@ -1,0 +1,420 @@
+{
+  "devices": {
+    "desktop": {
+      "cssWidth": 1440,
+      "cssHeight": 900,
+      "scale": 2,
+      "masterWidth": 1920,
+      "masterHeight": 1200,
+      "cursor": true
+    },
+    "tablet": {
+      "cssWidth": 810,
+      "cssHeight": 1080,
+      "scale": 2,
+      "masterWidth": 1080,
+      "masterHeight": 1440,
+      "cursor": false
+    },
+    "phone": {
+      "cssWidth": 360,
+      "cssHeight": 760,
+      "scale": 3,
+      "masterWidth": 1080,
+      "masterHeight": 2280,
+      "cursor": false
+    }
+  },
+  "stores": [
+    {
+      "slug": "12-weather-outfitters",
+      "host": "12-weather-outfitters.myshopify.com"
+    },
+    {
+      "slug": "meridian",
+      "host": "meridian-consumer-electronics.myshopify.com"
+    },
+    {
+      "slug": "paper-and-pine-books",
+      "host": "paper-and-pine-books.myshopify.com"
+    },
+    {
+      "slug": "pulse-forge",
+      "host": "pulse-forge-2.myshopify.com"
+    },
+    {
+      "slug": "rolling-district",
+      "host": "rolling-district.myshopify.com"
+    },
+    {
+      "slug": "buildright-home",
+      "host": "buildright-home.myshopify.com"
+    },
+    {
+      "slug": "the-apricot-theory",
+      "host": "the-apricot-theory.myshopify.com"
+    },
+    {
+      "slug": "viniteca-marti",
+      "host": "viniteca-marti.myshopify.com"
+    }
+  ],
+  "beats": [
+    {
+      "slug": "12-weather-outfitters",
+      "beat": "raincoat",
+      "kind": "catalog",
+      "lines": [
+        "I need a city rain coat, in a quiet color."
+      ],
+      "followUp": "Open the navy one.",
+      "mustMatch": [
+        [
+          "navy"
+        ],
+        [
+          "sand"
+        ],
+        [
+          "mint"
+        ]
+      ],
+      "productUrlIncludes": [
+        "navy"
+      ],
+      "clarify": "Women's."
+    },
+    {
+      "slug": "12-weather-outfitters",
+      "beat": "return",
+      "kind": "cart",
+      "lines": [
+        "If it doesn't fit, can I send it back?",
+        "Yeah, add the navy coat and the Chelsea boot."
+      ],
+      "cartMustMatch": [
+        [
+          "coat",
+          "rain"
+        ],
+        [
+          "chelsea",
+          "boot"
+        ]
+      ],
+      "clarify": "Size medium."
+    },
+    {
+      "slug": "meridian",
+      "beat": "pocket-phone",
+      "kind": "catalog",
+      "lines": [
+        "A phone I can carry all day, not a huge one."
+      ],
+      "followUp": "Open the blue iPhone 15.",
+      "mustMatch": [
+        [
+          "iphone 15"
+        ],
+        [
+          "pixel 8"
+        ],
+        [
+          "flip"
+        ]
+      ],
+      "productUrlIncludes": [
+        "iphone-15",
+        "iphone"
+      ],
+      "clarify": "Either is fine, show me a few."
+    },
+    {
+      "slug": "meridian",
+      "beat": "watch-ship",
+      "kind": "cart",
+      "lines": [
+        "Should I take the 41mm instead, and how fast does it ship?",
+        "Add the 41mm, and an AirTag."
+      ],
+      "cartMustMatch": [
+        [
+          "41"
+        ],
+        [
+          "airtag"
+        ]
+      ],
+      "clarify": "Any color is fine."
+    },
+    {
+      "slug": "paper-and-pine-books",
+      "beat": "novel",
+      "kind": "catalog",
+      "lines": [
+        "A novel I can get lost in on a long trip."
+      ],
+      "followUp": "Open The Midnight Library.",
+      "mustMatch": [
+        [
+          "midnight library"
+        ],
+        [
+          "crawdads"
+        ],
+        [
+          "daisy jones"
+        ]
+      ],
+      "productUrlIncludes": [
+        "midnight-library",
+        "midnight"
+      ],
+      "clarify": "Literary fiction."
+    },
+    {
+      "slug": "paper-and-pine-books",
+      "beat": "return-book",
+      "kind": "cart",
+      "lines": [
+        "If I start it and it's not for me, can I return it?",
+        "Add Atomic Habits, and Deep Work."
+      ],
+      "cartMustMatch": [
+        [
+          "atomic"
+        ],
+        [
+          "deep work"
+        ]
+      ],
+      "clarify": "Paperback is fine."
+    },
+    {
+      "slug": "pulse-forge",
+      "beat": "ps5-headset",
+      "kind": "catalog",
+      "lines": [
+        "A headset for a PS5, not for PC."
+      ],
+      "followUp": "Open the PS5 one.",
+      "mustMatch": [
+        [
+          "ps5"
+        ],
+        [
+          "xbox"
+        ],
+        [
+          "mobile"
+        ]
+      ],
+      "productUrlIncludes": [
+        "ps5"
+      ],
+      "clarify": "Wireless, please."
+    },
+    {
+      "slug": "pulse-forge",
+      "beat": "return-headset",
+      "kind": "cart",
+      "lines": [
+        "If I open the box and it doesn't pair, can I return it?",
+        "Add the PS5 headset and the travel case."
+      ],
+      "cartMustMatch": [
+        [
+          "ps5",
+          "console"
+        ],
+        [
+          "travel",
+          "case"
+        ]
+      ],
+      "clarify": "Yes, the PS5 one."
+    },
+    {
+      "slug": "rolling-district",
+      "beat": "bolt-pattern",
+      "kind": "catalog",
+      "lines": [
+        "I need a 5x114.3 wheel."
+      ],
+      "followUp": "Open the gloss bronze JNC014.",
+      "mustMatch": [
+        [
+          "jnc014"
+        ],
+        [
+          "jnc032"
+        ],
+        [
+          "jnc033"
+        ]
+      ],
+      "productUrlIncludes": [
+        "jnc014"
+      ],
+      "clarify": "Any size, show me a few."
+    },
+    {
+      "slug": "rolling-district",
+      "beat": "return-fee",
+      "kind": "cart",
+      "lines": [
+        "If the bolt pattern is wrong, what does a return cost me?",
+        "Add the gloss bronze JNC014 and the titanium lug nuts."
+      ],
+      "cartMustMatch": [
+        [
+          "jnc014"
+        ],
+        [
+          "lug"
+        ]
+      ],
+      "clarify": "Any size is fine."
+    },
+    {
+      "slug": "buildright-home",
+      "beat": "mirror",
+      "kind": "catalog",
+      "lines": [
+        "A round mirror for a small hall."
+      ],
+      "followUp": "Open the 40 centimeter one.",
+      "mustMatch": [
+        [
+          "40"
+        ],
+        [
+          "60"
+        ],
+        [
+          "80"
+        ]
+      ],
+      "productUrlIncludes": [
+        "40",
+        "halo"
+      ],
+      "clarify": "Show me the sizes you have."
+    },
+    {
+      "slug": "buildright-home",
+      "beat": "hook-rail",
+      "kind": "cart",
+      "lines": [
+        "Is there a hook rail for the same wall?",
+        "Add the 40 centimeter mirror and the 3-hook rack."
+      ],
+      "cartMustMatch": [
+        [
+          "mirror",
+          "halo"
+        ],
+        [
+          "hook",
+          "rack",
+          "forge"
+        ]
+      ],
+      "clarify": "Whatever matches the mirror."
+    },
+    {
+      "slug": "the-apricot-theory",
+      "beat": "tint",
+      "kind": "catalog",
+      "lines": [
+        "A light coverage base with some sun protection."
+      ],
+      "followUp": "Open the Skin Veil Tint.",
+      "mustMatch": [
+        [
+          "skin veil",
+          "veil tint"
+        ],
+        [
+          "concealer"
+        ],
+        [
+          "spf 50",
+          "tinted spf"
+        ]
+      ],
+      "productUrlIncludes": [
+        "veil",
+        "tint"
+      ],
+      "clarify": "Light to medium skin."
+    },
+    {
+      "slug": "the-apricot-theory",
+      "beat": "setting-mist",
+      "kind": "cart",
+      "lines": [
+        "What do I set this with?",
+        "Add the tint and the setting mist."
+      ],
+      "cartMustMatch": [
+        [
+          "tint",
+          "veil"
+        ],
+        [
+          "mist",
+          "setting"
+        ]
+      ],
+      "clarify": "Yes, those two."
+    },
+    {
+      "slug": "viniteca-marti",
+      "beat": "penedes",
+      "kind": "catalog",
+      "lines": [
+        "A young Penedès red, and do you deliver in Catalonia?"
+      ],
+      "followUp": "Open the Puig.",
+      "mustMatch": [
+        [
+          "puig"
+        ],
+        [
+          "sotabosc"
+        ],
+        [
+          "josep"
+        ],
+        [
+          "catalonia",
+          "catalunya"
+        ]
+      ],
+      "productUrlIncludes": [
+        "puig"
+      ],
+      "clarify": "Anything under 20 euros."
+    },
+    {
+      "slug": "viniteca-marti",
+      "beat": "sealed-return",
+      "kind": "cart",
+      "lines": [
+        "If I don't open it, can I send it back?",
+        "Add the Puig negre and the Puig blanc."
+      ],
+      "cartMustMatch": [
+        [
+          "negre",
+          "2023"
+        ],
+        [
+          "blanc"
+        ]
+      ],
+      "clarify": "Yes, both of them."
+    }
+  ]
+}
