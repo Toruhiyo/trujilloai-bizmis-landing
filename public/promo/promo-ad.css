@@ -9363,6 +9363,9 @@ html.is-promo-still .promo-clip__product.is-compare::after {
 }
 
 .promo-pass-slot__invite {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.42em;
   margin: -2px 0 0;
   font-family: "Caveat", "Nunito", var(--font-heading);
   font-weight: 700;
@@ -9371,6 +9374,12 @@ html.is-promo-still .promo-clip__product.is-compare::after {
   line-height: 0.85;
   color: var(--bizmis-primary);
   transform: rotate(-1.5deg);
+  white-space: nowrap;
+}
+
+.promo-pass-slot__aside {
+  font-size: 0.62em;
+  font-weight: 600;
 }
 
 .promo-pass-slot__terms {

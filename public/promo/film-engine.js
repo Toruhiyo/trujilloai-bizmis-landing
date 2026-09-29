@@ -18,7 +18,8 @@
       scarcity: '',
       label: 'Install now',
       invite: 'for Early Access benefits!',
-      terms: ['First 50 stores', 'No commitment', 'No credit card'],
+      aside: 'First 50 stores',
+      terms: ['No commitment', 'No credit card'],
       shopify: true,
       url: '',
       vo: 'join-fifty',
@@ -5235,6 +5236,12 @@
         const invite = document.createElement('p');
         invite.className = 'promo-pass-slot__invite';
         invite.textContent = copy.invite;
+        if (copy.aside) {
+          const aside = document.createElement('span');
+          aside.className = 'promo-pass-slot__aside';
+          aside.textContent = copy.aside;
+          invite.append(aside);
+        }
         slot.append(invite);
       }
       if (copy.terms?.length) {

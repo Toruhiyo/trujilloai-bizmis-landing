@@ -128,7 +128,7 @@ The frames leave. The field stays white. Nothing is clickable. No window, button
 
 - `install` (default): eyebrow "Installs in one click." then the line "Install on Shopify". No URL.
 - `demo`: the line "See it in action" and `bizmis.ai/demo`.
-- `ea`: one lockup on one line, headline style: the Shopify bag in black, then "Install now". The bag sits on the same baseline as the words, slightly smaller than the capitals, with a small gap before the text. Under it, "for Early Access benefits!" in a handwritten face, Bizmis orange, tilted a little. Under that, one line in a softer color: "First 50 stores", a dot, "No commitment", a dot, "No credit card". Each part, including each dot, eases in on its own, left to right. No URL. The metal shine plays on "Install now" only. The wordmark, the lockup, and the orange line fade up together. After the last condition lands, the card holds through the spoken line (at least 4 s).
+- `ea`: one lockup on one line, headline style: the Shopify bag in black, then "Install now". The bag sits on the same baseline as the words, slightly smaller than the capitals, with a small gap before the text. Under it, "for Early Access benefits!" in a handwritten face, Bizmis orange, tilted a little, with "First 50 stores" in the same handwriting, smaller, on the same line. Under that, one line in a softer color: "No commitment", a dot, "No credit card". Each part, including each dot, eases in on its own, left to right. No URL. The metal shine plays on "Install now" only. The wordmark, the lockup, and the orange line fade up together. After the last condition lands, the card holds through the spoken line (at least 4 s).
 - `none`: the wordmark only.
 
 The call-to-action line plays a metal shine. It fades up and holds ≥ 4 s.
