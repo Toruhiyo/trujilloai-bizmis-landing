@@ -10,8 +10,10 @@ const FPS = 30;
 let exportFps = FPS;
 const FRAME_CAP = 3600;
 const CAPTURE_CHUNK = 3600;
-const LAYOUT_WIDTH = 1920;
-const LAYOUT_HEIGHT = 1080;
+const LAYOUT_WIDTH = 1008;
+const LAYOUT_HEIGHT = 654;
+const QUAD_WIDTH = 1920;
+const QUAD_HEIGHT = 1080;
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 
 function arg(name, fallback) {
@@ -47,13 +49,23 @@ function parseResolution(raw) {
 }
 
 function captureSetup(width, height) {
+  if (width === QUAD_WIDTH * 2 && height === QUAD_HEIGHT * 2 && process.platform === 'darwin') {
+    // Chrome refuses BeginFrameControl on macOS. A single 4K framebuffer
+    // drops tiles. Each quadrant is the 1920x1080 scale that already paints
+    // completely, then the four are stitched. The film layout itself is the
+    // MacBook Pro 14 panel, 1008x654.
+    return {
+      viewportWidth: QUAD_WIDTH,
+      viewportHeight: QUAD_HEIGHT,
+      scale: 1,
+      quadrants: 2,
+      beginFrame: false,
+    };
+  }
   const scaleX = width / LAYOUT_WIDTH;
   const scaleY = height / LAYOUT_HEIGHT;
   const sameScale = scaleX === scaleY && Number.isInteger(scaleX) && scaleX >= 1;
   if (sameScale && scaleX > 1 && process.platform === 'darwin') {
-    // Chrome refuses BeginFrameControl on macOS. A single 4K framebuffer
-    // drops tiles. Each quadrant is the 1920x1080 scale that already paints
-    // completely, then the four are stitched.
     return {
       viewportWidth: LAYOUT_WIDTH,
       viewportHeight: LAYOUT_HEIGHT,
