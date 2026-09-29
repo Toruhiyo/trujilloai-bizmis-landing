@@ -1971,14 +1971,18 @@
   }
 
   function activityStage() {
+    const phoneStore = document.querySelector('.promo-opening__store.is-phone, .promo-opening__store.is-tablet');
     const desktop = document.querySelector('.bizmis-desktop-lite-chat canvas');
-    if (desktop) {
+    if (desktop && !phoneStore) {
       const layer = desktop.closest('.absolute');
       const stage = layer?.parentElement;
-      if (stage) return { stage, before: layer };
+      if (stage && layer.parentElement === stage) return { stage, before: layer };
     }
     const button = document.querySelector('.bizmis-mobile-lite-chat button.relative.rounded-full, .bizmis-bar-row .relative.rounded-full');
-    if (button) return { stage: button, before: button.firstElementChild };
+    if (button) {
+      const before = [...button.children].find((node) => !node.hasAttribute('data-activity-laser')) || null;
+      return { stage: button, before };
+    }
     return null;
   }
 
@@ -4291,9 +4295,10 @@
 
     paintPitchEvent(detail) {
       const labelText = pitchEventLabel(detail);
-      const mount = activityStage();
-      if (!labelText || !mount) return;
+      if (!labelText) return;
       this.clearPitchEvents();
+      const mount = activityStage();
+      if (!mount) return;
       const sizePx = activityHaloPx(mount.stage);
       const orbitRadiusPx = (LASER_RADIUS / LASER_VIEWBOX) * sizePx;
       const iconPx = (11 / LASER_VIEWBOX) * sizePx;
@@ -4417,7 +4422,8 @@
       tip.append(laserIcon(detail.kind));
       rider.append(tip);
       laser.append(rider);
-      mount.stage.insertBefore(laser, mount.before);
+      if (mount.before && mount.before.parentNode === mount.stage) mount.stage.insertBefore(laser, mount.before);
+      else mount.stage.appendChild(laser);
     }
 
     stageTravel(node) {
