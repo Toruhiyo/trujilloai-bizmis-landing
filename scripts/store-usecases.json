@@ -6,7 +6,8 @@
       "scale": 2,
       "masterWidth": 1920,
       "masterHeight": 1200,
-      "cursor": true
+      "cursor": true,
+      "mobileWidget": false
     },
     "tablet": {
       "cssWidth": 810,
@@ -14,7 +15,8 @@
       "scale": 2,
       "masterWidth": 1080,
       "masterHeight": 1440,
-      "cursor": false
+      "cursor": false,
+      "mobileWidget": true
     },
     "phone": {
       "cssWidth": 360,
@@ -22,7 +24,8 @@
       "scale": 3,
       "masterWidth": 1080,
       "masterHeight": 2280,
-      "cursor": false
+      "cursor": false,
+      "mobileWidget": true
     }
   },
   "stores": [
@@ -67,16 +70,20 @@
       "lines": [
         "I need a city rain coat, in a quiet color."
       ],
-      "followUp": "Take me to the women's Navy City Rain Coat.",
+      "followUp": "Open the navy one.",
       "mustMatch": [
         [
           "navy"
         ],
         [
-          "sand"
-        ],
-        [
-          "mint"
+          "sand",
+          "mint",
+          "dusty rose",
+          "stone",
+          "olive",
+          "charcoal",
+          "grey",
+          "gray"
         ]
       ],
       "productUrlIncludes": [

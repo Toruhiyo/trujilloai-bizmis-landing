@@ -1,7 +1,9 @@
 #!/usr/bin/env node
 // BIZ-413: live Bizmis use-case videos on the dev stores.
-// Shoppers type. Desktop and tablet keep the caption overlay. The phone
-// sheet is the clerk's words, because the widget turns captions off under 768px.
+// Shoppers type. Desktop keeps the caption overlay. Tablet and phone run the
+// widget in mobile mode, where the sheet holds the clerk's words and captions
+// are off. Waiting stretches (loading, thinking) ease up to 2x and back.
+// The widget's sound is tapped in the page and paced with the picture.
 
 import { spawn } from 'node:child_process';
 import fs from 'node:fs';
@@ -25,6 +27,34 @@ const TURN_QUIET_MS = 4500;
 const HOLD_AFTER_MS = 1500;
 const NAVIGATION_GRACE_MS = 15000;
 const NAVIGATION_SETTLE_MS = 20000;
+const SOCKET_DROP_GRACE_MS = 20000;
+const BROWSER_CLOSE_TIMEOUT_MS = 8000;
+const KEY_DELAY_MIN_MS = 16;
+const KEY_DELAY_SPREAD_MS = 38;
+const KEY_HESITATION_CHANCE = 0.04;
+const KEY_HESITATION_MIN_MS = 90;
+const KEY_HESITATION_SPREAD_MS = 90;
+const WAITING_SPEED = 2;
+const PACE_RAMP_MS = 1500;
+const PACE_STEP_MS = 20;
+const OUTPUT_FPS = 30;
+const AUDIO_RATE = 48000;
+const AUDIO_GRAIN_SAMPLES = 1920;
+const AUDIO_TAP_BUFFER = 4096;
+const AUDIO_SILENCE_PEAK = 0.0001;
+// The thinking loop sits near 0.075. The clerk's voice is louder, and that
+// voice is the only sound that holds the video at normal speed.
+const SPEECH_PEAK = 0.1;
+const SPEECH_TAIL_MS = 900;
+const GREETING_WAIT_MS = 20000;
+const AUDIO_SNAP_SAMPLES = 4;
+const AUDIO_BITRATE = '160k';
+const COMPOSER_SELECTOR = [
+  '#bizmis-avatar-embed textarea',
+  '#bizmis-avatar-embed input[type="text"]',
+  '.bizmis-viewport-portal-root textarea',
+  '.bizmis-viewport-portal-root input[type="text"]',
+].join(', ');
 
 const storeBySlug = new Map(SHOTS.stores.map((store) => [store.slug, store]));
 
@@ -109,15 +139,115 @@ function installHiddenCursor(page) {
   });
 }
 
+// The widget's own default is hybrid mode: the clerk speaks with captions
+// and the shopper types. Seeding a session here used to open the text chat
+// panel instead, so nothing is seeded. The caption bubble shows a history
+// button while the pointer is over it, so the pointer stays clear of it.
 function installPrefs() {
   localStorage.setItem('bizmis-subtitles', 'true');
-  localStorage.setItem('bizmis-session', JSON.stringify({
-    sessionId: '',
-    lastActive: Date.now(),
-    wasConnected: false,
-    voiceEnabled: false,
-    isClosed: false,
-  }));
+  document.addEventListener('pointermove', (event) => {
+    const caption = event.target instanceof Element
+      && event.target.closest('.bizmis-subtitles-portal-root [data-caption-style]');
+    if (!caption) return;
+    caption.dispatchEvent(new PointerEvent('pointerout', { bubbles: true }));
+    caption.dispatchEvent(new MouseEvent('mouseout', { bubbles: true }));
+  }, true);
+}
+
+// The widget picks mobile mode below 768px. Tablets are wider, so the
+// recorder passes the widget's own isMobile option through its init call.
+function installMobileWidget(page) {
+  return page.addInitScript(() => {
+    let api;
+    Object.defineProperty(window, 'AvatarVoicechat', {
+      configurable: true,
+      get: () => api,
+      set: (value) => {
+        api = value;
+        if (!value || typeof value.init !== 'function') return;
+        const init = value.init.bind(value);
+        value.init = (config) => init({ ...config, isMobile: true });
+      },
+    });
+  });
+}
+
+// Headless Chrome cannot record its own output, so every sound the widget
+// sends to a speaker is copied to Node with the wall time it plays at.
+// Plain <audio> elements are routed through Web Audio first. The CDN allows
+// CORS, and crossOrigin must be set before the source loads.
+function installAudioTap(page, chunks) {
+  return page.exposeBinding('__promoAudio', (_source, chunk) => { chunks.push(chunk); })
+    .then(() => page.addInitScript(({ bufferSize, silencePeak }) => {
+      const connect = AudioNode.prototype.connect;
+      const taps = new Map();
+      const routedElements = new WeakSet();
+      let elementContext = null;
+      const toBase64 = (samples) => {
+        const pcm = new Int16Array(samples.length);
+        for (let index = 0; index < samples.length; index += 1) {
+          pcm[index] = Math.max(-1, Math.min(1, samples[index])) * 0x7fff;
+        }
+        const bytes = new Uint8Array(pcm.buffer);
+        let binary = '';
+        for (let index = 0; index < bytes.length; index += 1) binary += String.fromCharCode(bytes[index]);
+        return btoa(binary);
+      };
+      const tapFor = (context) => {
+        if (taps.has(context)) return taps.get(context);
+        const contextId = `${Date.now()}-${taps.size}-${Math.random()}`;
+        const tap = context.createScriptProcessor(bufferSize, 1, 1);
+        tap.onaudioprocess = (event) => {
+          const samples = event.inputBuffer.getChannelData(0);
+          let peak = 0;
+          for (let index = 0; index < samples.length; index += 1) peak = Math.max(peak, Math.abs(samples[index]));
+          if (peak < silencePeak) return;
+          const stamp = context.getOutputTimestamp();
+          const at = performance.timeOrigin + stamp.performanceTime + (event.playbackTime - stamp.contextTime) * 1000;
+          window.__promoAudio({
+            contextId,
+            at,
+            rate: context.sampleRate,
+            peak,
+            samples: samples.length,
+            pcm: toBase64(samples),
+          });
+        };
+        connect.call(tap, context.destination);
+        taps.set(context, tap);
+        return tap;
+      };
+      AudioNode.prototype.connect = function connectAndTap(target, ...rest) {
+        const result = connect.call(this, target, ...rest);
+        if (target instanceof AudioDestinationNode) connect.call(this, tapFor(this.context));
+        return result;
+      };
+      const createSource = AudioContext.prototype.createMediaElementSource;
+      AudioContext.prototype.createMediaElementSource = function markRouted(element) {
+        routedElements.add(element);
+        return createSource.call(this, element);
+      };
+      const NativeAudio = window.Audio;
+      window.Audio = function CorsAudio(url) {
+        const element = new NativeAudio();
+        element.crossOrigin = 'anonymous';
+        if (url !== undefined) element.src = url;
+        return element;
+      };
+      window.Audio.prototype = NativeAudio.prototype;
+      const play = HTMLMediaElement.prototype.play;
+      HTMLMediaElement.prototype.play = function playThroughTap(...args) {
+        if (!routedElements.has(this)) {
+          try {
+            elementContext = elementContext || new AudioContext();
+            elementContext.createMediaElementSource(this).connect(elementContext.destination);
+          } catch {
+            routedElements.add(this);
+          }
+        }
+        return play.apply(this, args);
+      };
+    }, { bufferSize: AUDIO_TAP_BUFFER, silencePeak: AUDIO_SILENCE_PEAK }));
 }
 
 async function withPage(page, read) {
@@ -136,7 +266,7 @@ async function withPage(page, read) {
 }
 
 async function samplePage(page) {
-  return withPage(page, () => page.evaluate(() => {
+  return withPage(page, () => page.evaluate((composerSelector) => {
     const captionWords = [...document.querySelectorAll('.bizmis-caption-word')];
     const captionText = captionWords.map((node) => node.textContent || '').join('');
     const bubble = document.querySelector('[data-caption-style]');
@@ -156,35 +286,56 @@ async function samplePage(page) {
       if (!box) return 0;
       return Math.max(0 - box.left, 0 - box.top, box.right - view.width, box.bottom - view.height);
     };
-    const portal = document.querySelector('.bizmis-viewport-portal-root');
-    const embed = document.querySelector('#bizmis-avatar-embed');
-    const sheetText = `${portal ? portal.innerText : ''}\n${embed ? embed.innerText : ''}`;
-    const reply = portal
-      ? [...portal.querySelectorAll('div')].reverse().find((node) => (node.innerText || '').trim().length > 24)
-      : null;
-    const replyBox = boxOf(reply);
+    const clerkBubbles = [...document.querySelectorAll(
+      '.bizmis-viewport-portal-root div.select-text > div, #bizmis-avatar-embed div.select-text > div',
+    )].filter((node) => !node.classList.contains('bizmis-user-message'));
+    const clerkMessages = clerkBubbles.map((node) => (node.innerText || '').trim()).filter(Boolean);
+    const replyBox = boxOf(clerkBubbles[clerkBubbles.length - 1]);
     return {
       captionText,
       captionBox: boxOf(bubble),
       captionOverflow: overflow(boxOf(bubble)),
       replyOverflow: overflow(replyBox),
-      sheetText,
+      clerkMessages,
+      widgetReady: [...document.querySelectorAll(composerSelector)].some((node) => !!boxOf(node)),
       title: document.title || '',
       path: location.pathname + location.search,
     };
-  }));
+  }, COMPOSER_SELECTOR));
+}
+
+// The sheet re-renders its history on every page. Keeping each clerk
+// message once, and letting a streaming message grow in place, gives an
+// append-only transcript whose offsets survive navigation.
+function mergeClerkMessages(known, seen) {
+  for (const message of seen) {
+    if (known.includes(message)) continue;
+    const growing = known.findIndex((existing) => message.startsWith(existing));
+    if (growing >= 0) known[growing] = message;
+    else known.push(message);
+  }
+  return known;
+}
+
+function describePage(snap) {
+  const readablePath = snap.path.replace(/\+/g, ' ').replace(/%([0-9A-F]{2})/gi, (_, hex) => String.fromCharCode(parseInt(hex, 16)));
+  return `${readablePath} ${snap.title}`;
 }
 
 function createCollector() {
   const state = {
     captions: '',
     sheet: '',
+    said: '',
+    trail: '',
     title: '',
     path: '',
     captionClipped: false,
     replyClipped: false,
     sawCaption: false,
+    widgetReady: false,
   };
+  const clerkMessages = [];
   return {
     state,
     async ingest(page) {
@@ -194,14 +345,17 @@ function createCollector() {
         state.sawCaption = true;
         if (snap.captionOverflow > 12) state.captionClipped = true;
       }
-      if (snap.sheetText.length > state.sheet.length) state.sheet = snap.sheetText;
+      state.sheet = mergeClerkMessages(clerkMessages, snap.clerkMessages).join('\n');
+      state.said = `${state.said}\n${snap.clerkMessages.join('\n')}`;
       if (snap.replyOverflow > 24) state.replyClipped = true;
+      if (snap.path !== state.path) state.trail = `${state.trail}\n${describePage(snap)}`;
+      state.widgetReady = snap.widgetReady;
       state.title = snap.title;
       state.path = snap.path;
       return snap;
     },
     haystack() {
-      return `${state.captions}\n${state.sheet}\n${state.title}\n${state.path}`;
+      return `${state.captions}\n${state.said}\n${state.trail}\n${state.title}\n${state.path}`;
     },
     length() {
       return this.haystack().length;
@@ -268,13 +422,11 @@ async function prepareWidget(page) {
   if (await reopen.count()) {
     await reopen.first().click().catch(() => {});
   }
-  const composer = page.locator('#bizmis-avatar-embed textarea, #bizmis-avatar-embed input[type="text"], .bizmis-viewport-portal-root textarea, .bizmis-viewport-portal-root input[type="text"]').first();
+  const composer = page.locator(COMPOSER_SELECTOR).first();
   await composer.waitFor({ state: 'visible', timeout: 45000 });
   const accept = page.locator('#bizmis-avatar-embed button, .bizmis-viewport-portal-root button').filter({ hasText: /^Accept$/ });
   if (await accept.count()) await accept.first().click().catch(() => {});
   await acceptCookies(page);
-  await sleep(400);
-  await composer.click({ force: true });
   return composer;
 }
 
@@ -327,14 +479,18 @@ async function clickAddToCart(page) {
   return true;
 }
 
+function keyDelay() {
+  if (Math.random() < KEY_HESITATION_CHANCE) return KEY_HESITATION_MIN_MS + Math.random() * KEY_HESITATION_SPREAD_MS;
+  return KEY_DELAY_MIN_MS + Math.random() * KEY_DELAY_SPREAD_MS;
+}
+
 async function typeLine(page, line) {
-  const composer = page.locator('#bizmis-avatar-embed textarea, #bizmis-avatar-embed input[type="text"], .bizmis-viewport-portal-root textarea, .bizmis-viewport-portal-root input[type="text"]').first();
+  const composer = page.locator(COMPOSER_SELECTOR).first();
   await composer.waitFor({ state: 'visible', timeout: 20000 });
   await composer.click();
   for (const char of line) {
     await page.keyboard.type(char);
-    const pause = Math.random() < 0.08 ? 160 + Math.random() * 160 : 32 + Math.random() * 78;
-    await sleep(pause);
+    await sleep(keyDelay());
   }
   await sleep(180);
   await page.keyboard.press('Enter');
@@ -352,35 +508,145 @@ async function typeLine(page, line) {
 function clerkHasReplied(collector, marker) {
   const openedProduct = collector.state.path.includes('/products/') && collector.state.path !== marker.path;
   if (openedProduct) return true;
-  const sheetAdded = collector.state.sheet.length - marker.sheet - marker.line.length;
-  if (marker.device === 'phone' || sheetAdded > 24) return sheetAdded > 24;
+  const sheetAdded = collector.state.sheet.length - marker.sheet;
+  if (marker.mobileWidget || sheetAdded > 24) return sheetAdded > 24;
   const added = collector.state.captions.slice(marker.captions).toLowerCase().replace(marker.line.toLowerCase(), '');
   return added.replace(/\s+/g, ' ').trim().length > 12;
 }
 
-async function waitForTurn(page, collector, sockets, marker) {
+// Loud chunks are the clerk talking. Gaps inside one reply stay part of it,
+// so a breath between sentences is not a moment to type or to speed up.
+function createSpeech(chunks) {
+  const spans = () => {
+    const raw = chunks
+      .filter((chunk) => chunk.peak >= SPEECH_PEAK)
+      .map((chunk) => [chunk.at, chunk.at + (chunk.samples / chunk.rate) * 1000])
+      .sort((left, right) => left[0] - right[0]);
+    const merged = [];
+    for (const span of raw) {
+      const last = merged[merged.length - 1];
+      if (last && span[0] - last[1] < SPEECH_TAIL_MS) last[1] = Math.max(last[1], span[1]);
+      else merged.push([...span]);
+    }
+    return merged;
+  };
+  return {
+    covers(at) {
+      return spans().some(([start, end]) => at >= start && at < end);
+    },
+    lastEndSince(since) {
+      let end = 0;
+      for (const [start, stop] of spans()) {
+        if (start >= since && stop > end) end = stop;
+      }
+      return end;
+    },
+  };
+}
+
+// Wall-clock stretches where nothing is said or typed: page and widget
+// loading, and the clerk thinking. The encoder plays them faster.
+// The clerk's own voice is never part of one of these stretches.
+function createPace() {
+  const windows = [];
+  let hurryingSince = 0;
+  return {
+    hurry() {
+      if (!hurryingSince) hurryingSince = Date.now();
+    },
+    relax() {
+      if (!hurryingSince) return;
+      windows.push([hurryingSince, Date.now()]);
+      hurryingSince = 0;
+    },
+    speedAt(at) {
+      const open = hurryingSince ? [[hurryingSince, Infinity]] : [];
+      const lifts = [...windows, ...open].map(([start, end]) => (
+        Math.min(1, (at - start) / PACE_RAMP_MS, (end - at) / PACE_RAMP_MS)
+      ));
+      return 1 + (WAITING_SPEED - 1) * Math.max(0, ...lifts);
+    },
+  };
+}
+
+// Maps wall-clock ms to seconds of finished video and back.
+function buildTimeline(pace, speech, startMs, endMs) {
+  const steps = Math.max(1, Math.ceil((endMs - startMs) / PACE_STEP_MS));
+  const paced = new Float64Array(steps + 1);
+  for (let index = 0; index < steps; index += 1) {
+    const middle = startMs + (index + 0.5) * PACE_STEP_MS;
+    const speed = speech.covers(middle) ? 1 : pace.speedAt(middle);
+    paced[index + 1] = paced[index] + PACE_STEP_MS / 1000 / speed;
+  }
+  const toPaced = (ms) => {
+    const position = Math.min(steps, Math.max(0, (ms - startMs) / PACE_STEP_MS));
+    const index = Math.min(steps - 1, Math.floor(position));
+    return paced[index] + (paced[index + 1] - paced[index]) * (position - index);
+  };
+  const toWall = (seconds) => {
+    let low = 0;
+    let high = steps;
+    while (high - low > 1) {
+      const middle = (low + high) >> 1;
+      if (paced[middle] <= seconds) low = middle;
+      else high = middle;
+    }
+    const span = paced[low + 1] - paced[low];
+    const fraction = span > 0 ? Math.min(1, Math.max(0, (seconds - paced[low]) / span)) : 0;
+    return startMs + (low + fraction) * PACE_STEP_MS;
+  };
+  return { toPaced, toWall, duration: paced[steps] };
+}
+
+function isLoading(collector, sockets) {
+  const requestPending = sockets.leavingAt > sockets.navigatedAt;
+  const widgetBooting = Date.now() - sockets.navigatedAt < NAVIGATION_SETTLE_MS && !collector.state.widgetReady;
+  return requestPending || widgetBooting;
+}
+
+// Resolves once the clerk has spoken and the voice has been quiet for the
+// tail. The next shopper line is typed on that resolve.
+async function waitForSpeechTail(speech, since, pace, timeoutMs) {
+  const started = Date.now();
+  while (Date.now() - started < timeoutMs) {
+    if (speech.covers(Date.now())) pace.relax();
+    const end = speech.lastEndSince(since);
+    if (end > 0 && !speech.covers(Date.now()) && Date.now() - end >= SPEECH_TAIL_MS) {
+      pace.relax();
+      return true;
+    }
+    await sleep(200);
+  }
+  return false;
+}
+
+async function waitForTurn(page, collector, sockets, marker, pace, speech) {
   await collector.ingest(page);
   const started = Date.now();
   let socketDownSince = 0;
-  let lastLength = collector.length();
+  let lastReplyLength = collector.state.captions.length + collector.state.sheet.length;
   let lastPath = collector.state.path;
   let lastCartCount = (await readCart(page)).length;
-  let lastChange = Date.now();
+  let lastReplyChange = Date.now();
   while (Date.now() - started < TURN_TIMEOUT_MS) {
     await collector.ingest(page);
     const cart = await readCart(page);
     const pathChanged = collector.state.path !== lastPath;
-    const changed = collector.length() !== lastLength
-      || pathChanged
-      || cart.length !== lastCartCount;
-    if (changed) {
-      lastLength = collector.length();
+    const replyLength = collector.state.captions.length + collector.state.sheet.length;
+    if (replyLength !== lastReplyLength || pathChanged || cart.length !== lastCartCount) {
+      lastReplyLength = replyLength;
       lastPath = collector.state.path;
       lastCartCount = cart.length;
-      lastChange = Date.now();
+      lastReplyChange = Date.now();
     }
     const replied = clerkHasReplied(collector, marker);
-    const quiet = Date.now() - lastChange > TURN_QUIET_MS;
+    const speechEnd = speech.lastEndSince(started);
+    const speaking = speech.covers(Date.now()) || (speechEnd > 0 && Date.now() - speechEnd < SPEECH_TAIL_MS);
+    if (speaking) pace.relax();
+    else if (!replied || isLoading(collector, sockets)) pace.hurry();
+    else pace.relax();
+    const quiet = Date.now() - lastReplyChange > TURN_QUIET_MS;
+    const speechDone = speechEnd > 0 && !speech.covers(Date.now()) && Date.now() - speechEnd >= SPEECH_TAIL_MS;
     const navigationPending = sockets
       && sockets.leavingAt > started
       && collector.state.path === marker.path
@@ -388,16 +654,22 @@ async function waitForTurn(page, collector, sockets, marker) {
     if (navigationPending) {
       await page.waitForLoadState('domcontentloaded', { timeout: NAVIGATION_GRACE_MS }).catch(() => {});
     }
-    if (replied && quiet && Date.now() - started > 4000 && !navigationPending) {
+    const heardSpeech = speechEnd > 0;
+    const replyDone = heardSpeech ? speechDone : quiet && Date.now() - started > 4000;
+    if (replied && replyDone && !navigationPending) {
       const said = collector.state.captions.replace(/\s+/g, ' ').slice(-180);
-      process.stdout.write(`turn settled path=${collector.state.path} captions="${said}"\n`);
+      process.stdout.write(`turn settled path=${collector.state.path} speech=${heardSpeech} captions="${said}"\n`);
+      pace.relax();
       return cart;
     }
     const navigating = sockets
       && Date.now() - Math.max(sockets.navigatedAt, sockets.leavingAt) < NAVIGATION_SETTLE_MS;
+    // Headless Chrome fires pagehide on its own, and the widget closes its
+    // socket on that and reconnects. A drop only ends the take once it has
+    // stayed down long enough to be a real disconnect, and no reply came.
     if (sockets && sockets.open < 1 && !replied && !navigating) {
       if (!socketDownSince) socketDownSince = Date.now();
-      if (Date.now() - socketDownSince > 8000) {
+      if (Date.now() - socketDownSince > SOCKET_DROP_GRACE_MS) {
         const tail = (sockets.recent || []).slice(-4).join(' || ');
         throw new Error(`clerk socket dropped${tail ? ` | ${tail}` : ''}`);
       }
@@ -422,7 +694,8 @@ async function waitForTurn(page, collector, sockets, marker) {
   throw new Error(`clerk turn timed out | path=${collector.state.path} | ${clip} | ${JSON.stringify(debug)}`);
 }
 
-async function shopperTurn(page, collector, sockets, job, line) {
+async function shopperTurn(page, collector, sockets, pace, speech, job, line) {
+  pace.relax();
   await typeLine(page, line);
   await collector.ingest(page);
   const marker = {
@@ -430,23 +703,17 @@ async function shopperTurn(page, collector, sockets, job, line) {
     sheet: collector.state.sheet.length,
     path: collector.state.path,
     line,
-    device: job.device,
+    mobileWidget: job.spec.mobileWidget,
   };
-  const cart = await waitForTurn(page, collector, sockets, marker);
+  const cart = await waitForTurn(page, collector, sockets, marker, pace, speech);
   return { cart, marker };
 }
 
 function latestReply(collector, marker) {
-  const added = marker.device === 'phone'
+  const added = marker.mobileWidget
     ? collector.state.sheet.slice(marker.sheet)
     : collector.state.captions.slice(marker.captions);
   return added.replace(marker.line, '').replace(/\s+/g, ' ').trim();
-}
-
-function clerkAskedBack(job, collector, marker) {
-  if (!latestReply(collector, marker).endsWith('?')) return false;
-  const expected = job.beat.kind === 'catalog' ? job.beat.mustMatch : job.beat.cartMustMatch;
-  return !groupsMatch(collector.haystack(), expected);
 }
 
 function openedProduct(path, title, hints) {
@@ -460,15 +727,17 @@ function judge(job, collector, cart) {
   const haystack = collector.haystack();
   if (collector.state.path.includes('/password')) reasons.push('password page');
   if (/something went wrong/i.test(haystack)) reasons.push('error toast');
-  if (job.device === 'phone') {
-    if (collector.state.sheet.trim().length < 24 && !collector.state.sawCaption) reasons.push('no phone reply');
-    if (collector.state.replyClipped && !collector.state.sawCaption) reasons.push('phone reply clipped');
+  if (job.spec.mobileWidget) {
+    if (collector.state.sheet.trim().length < 24 && !collector.state.sawCaption) reasons.push('no sheet reply');
   } else {
     if (!collector.state.sawCaption) reasons.push('no captions');
     if (collector.state.captionClipped) reasons.push('captions clipped');
   }
   if (job.beat.kind === 'catalog') {
-    if (!groupsMatch(haystack, job.beat.mustMatch)) reasons.push('missing products in the reply');
+    const shown = job.beat.mustMatch.length > 1 && openedProduct(collector.state.path, collector.state.title, job.beat.productUrlIncludes)
+      ? job.beat.mustMatch.slice(0, 1)
+      : job.beat.mustMatch;
+    if (!groupsMatch(haystack, shown)) reasons.push('missing products in the reply');
     if (!openedProduct(collector.state.path, collector.state.title, job.beat.productUrlIncludes)) {
       reasons.push('product page did not open');
     }
@@ -493,17 +762,32 @@ function startScreencast(page, spec, framesDir) {
   const onFrame = (frame) => {
     const file = path.join(framesDir, `frame-${String(index).padStart(6, '0')}.jpg`);
     index += 1;
-    frames.push({ file, timestamp: frame.metadata?.timestamp ?? null });
+    const swappedAt = frame.metadata?.timestamp;
+    frames.push({ file, at: typeof swappedAt === 'number' ? swappedAt * 1000 : Date.now() });
     writes.push(fs.promises.writeFile(file, Buffer.from(frame.data, 'base64')));
     client.send('Page.screencastFrameAck', { sessionId: frame.sessionId }).catch(() => {});
   };
   const attach = async () => {
     client = await page.context().newCDPSession(page);
     client.on('Page.screencastFrame', onFrame);
+    await fitScreen();
     await client.send('Page.startScreencast', castParams);
+  };
+  const fitScreen = async () => {
+    const session = client || await page.context().newCDPSession(page);
+    client = session;
+    await session.send('Emulation.setDeviceMetricsOverride', {
+      width: spec.cssWidth,
+      height: spec.cssHeight,
+      deviceScaleFactor: spec.scale,
+      mobile: false,
+      screenWidth: spec.cssWidth,
+      screenHeight: spec.cssHeight,
+    }).catch(() => {});
   };
   return {
     frames,
+    fitScreen,
     start: attach,
     async restart() {
       if (!client) return;
@@ -520,32 +804,128 @@ function startScreencast(page, spec, framesDir) {
   };
 }
 
-async function encode(frames, spec, dest) {
-  const existing = frames.filter((frame) => fs.existsSync(frame.file));
-  if (existing.length < 8) throw new Error(`only ${existing.length} frames`);
-  const midpoint = existing[Math.floor(existing.length / 2)].file;
-  const midRaw = await run(FFPROBE, [
+// Each output slot shows the latest capture at that paced moment. The
+// screencast only emits frames on change, so real timestamps keep still
+// moments at their true length before the timeline shortens waiting stretches.
+function linkPacedFrames(frames, timeline, framesDir) {
+  const pacedDir = path.join(framesDir, 'paced');
+  fs.mkdirSync(pacedDir);
+  const pacedAt = frames.map((frame) => timeline.toPaced(frame.at));
+  const slots = Math.max(1, Math.round(timeline.duration * OUTPUT_FPS));
+  let current = 0;
+  for (let slot = 0; slot < slots; slot += 1) {
+    const seconds = slot / OUTPUT_FPS;
+    while (current + 1 < frames.length && pacedAt[current + 1] <= seconds) current += 1;
+    fs.linkSync(frames[current].file, path.join(pacedDir, `slot-${String(slot).padStart(6, '0')}.jpg`));
+  }
+  return path.join(pacedDir, 'slot-%06d.jpg');
+}
+
+function decodePcm(base64) {
+  const bytes = Buffer.from(base64, 'base64');
+  return new Int16Array(bytes.buffer, bytes.byteOffset, bytes.length / 2);
+}
+
+// Chunks from one audio context are contiguous. Snapping a start that lands
+// a few samples off the previous end avoids clicks from timestamp rounding.
+function wallAudioTrack(chunks, startMs, endMs) {
+  const track = new Float32Array(Math.ceil(((endMs - startMs) / 1000) * AUDIO_RATE));
+  const endByContext = new Map();
+  for (const chunk of chunks) {
+    const pcm = decodePcm(chunk.pcm);
+    const step = chunk.rate / AUDIO_RATE;
+    const length = Math.floor(pcm.length / step);
+    const measured = Math.round(((chunk.at - startMs) / 1000) * AUDIO_RATE);
+    const previousEnd = endByContext.get(chunk.contextId);
+    const offset = previousEnd !== undefined && Math.abs(measured - previousEnd) <= AUDIO_SNAP_SAMPLES
+      ? previousEnd
+      : measured;
+    endByContext.set(chunk.contextId, offset + length);
+    for (let index = 0; index < length; index += 1) {
+      const target = offset + index;
+      if (target < 0 || target >= track.length) continue;
+      const position = index * step;
+      const before = Math.floor(position);
+      const after = Math.min(before + 1, pcm.length - 1);
+      const sample = pcm[before] + (pcm[after] - pcm[before]) * (position - before);
+      track[target] += sample / 0x8000;
+    }
+  }
+  return track;
+}
+
+// Overlap-add time stretch. Pitch stays put, and at 1x the Hann grains sum
+// back to the original signal, so the clerk's speech is untouched.
+function pacedAudioTrack(track, timeline, startMs) {
+  const hop = AUDIO_GRAIN_SAMPLES / 2;
+  const grain = Float32Array.from({ length: AUDIO_GRAIN_SAMPLES }, (_, index) => (
+    0.5 - 0.5 * Math.cos((2 * Math.PI * index) / AUDIO_GRAIN_SAMPLES)
+  ));
+  const paced = new Float32Array(Math.ceil(timeline.duration * AUDIO_RATE));
+  for (let outStart = -hop; outStart < paced.length; outStart += hop) {
+    const centerSeconds = (outStart + hop) / AUDIO_RATE;
+    const sourceCenter = Math.round(((timeline.toWall(centerSeconds) - startMs) / 1000) * AUDIO_RATE);
+    const sourceStart = sourceCenter - hop;
+    for (let index = 0; index < AUDIO_GRAIN_SAMPLES; index += 1) {
+      const out = outStart + index;
+      const source = sourceStart + index;
+      if (out < 0 || out >= paced.length || source < 0 || source >= track.length) continue;
+      paced[out] += track[source] * grain[index];
+    }
+  }
+  for (let index = 0; index < paced.length; index += 1) paced[index] = Math.max(-1, Math.min(1, paced[index]));
+  return paced;
+}
+
+function writePacedAudio(chunks, timeline, startMs, endMs, framesDir) {
+  if (!chunks.length) throw new Error('no audio captured');
+  const audioFile = path.join(framesDir, 'audio.f32');
+  const paced = pacedAudioTrack(wallAudioTrack(chunks, startMs, endMs), timeline, startMs);
+  fs.writeFileSync(audioFile, Buffer.from(paced.buffer));
+  return audioFile;
+}
+
+async function verifyCaptureSize(frames, spec) {
+  const midpoint = frames[Math.floor(frames.length / 2)].file;
+  const size = (await run(FFPROBE, [
     '-v', 'error',
     '-select_streams', 'v:0',
     '-show_entries', 'stream=width,height',
     '-of', 'csv=p=0',
     midpoint,
-  ]);
-  process.stdout.write(`capture ${midRaw.trim()} frames ${existing.length}\n`);
-  const stamps = existing.map((frame) => frame.timestamp).filter((stamp) => typeof stamp === 'number');
-  const span = stamps.length > 1 ? stamps[stamps.length - 1] - stamps[0] : existing.length / 15;
-  const measured = Math.max(8, Math.min(30, (existing.length - 1) / Math.max(span, 0.5)));
+  ])).trim();
+  process.stdout.write(`capture ${size} frames ${frames.length}\n`);
+  const wanted = `${spec.cssWidth * spec.scale},${spec.cssHeight * spec.scale}`;
+  if (size !== wanted) throw new Error(`capture ${size}, wanted ${wanted}`);
+}
+
+async function encode(frames, audioChunks, spec, pace, framesDir, dest) {
+  const existing = frames.filter((frame) => fs.existsSync(frame.file));
+  if (existing.length < 8) throw new Error(`only ${existing.length} frames`);
+  await verifyCaptureSize(existing, spec);
+  const startMs = existing[0].at;
+  const endMs = existing[existing.length - 1].at + 1000 / OUTPUT_FPS;
+  const timeline = buildTimeline(pace, createSpeech(audioChunks), startMs, endMs);
+  const slotPattern = linkPacedFrames(existing, timeline, framesDir);
+  const audioFile = writePacedAudio(audioChunks, timeline, startMs, endMs, framesDir);
+  process.stdout.write(`paced ${((endMs - startMs) / 1000).toFixed(1)}s -> ${timeline.duration.toFixed(1)}s, audio chunks ${audioChunks.length}\n`);
   await run(FFMPEG, [
     '-y',
-    '-framerate', measured.toFixed(3),
-    '-i', path.join(path.dirname(existing[0].file), 'frame-%06d.jpg'),
-    '-r', '30',
+    '-framerate', String(OUTPUT_FPS),
+    '-i', slotPattern,
+    '-f', 'f32le',
+    '-ar', String(AUDIO_RATE),
+    '-ac', '1',
+    '-i', audioFile,
+    '-map', '0:v',
+    '-map', '1:a',
     '-vf', `scale=${spec.masterWidth}:${spec.masterHeight}:flags=lanczos`,
     '-c:v', 'libx264',
     '-preset', 'fast',
     '-pix_fmt', 'yuv420p',
     '-crf', '18',
-    '-an',
+    '-c:a', 'aac',
+    '-b:a', AUDIO_BITRATE,
     '-movflags', '+faststart',
     dest,
   ]);
@@ -567,10 +947,9 @@ async function probe(file) {
   };
 }
 
-async function recordTake(browser, job) {
+async function recordTake(browser, job, dest) {
   const store = storeBySlug.get(job.beat.slug);
   const spec = job.spec;
-  const dest = path.join(OUT_DIR, fileName(job));
   const framesDir = fs.mkdtempSync(path.join(os.tmpdir(), 'bizmis-store-'));
   const context = await browser.newContext({
     viewport: { width: spec.cssWidth, height: spec.cssHeight },
@@ -583,6 +962,10 @@ async function recordTake(browser, job) {
   const page = await context.newPage();
   await page.addInitScript(installPrefs);
   await installHiddenCursor(page);
+  if (spec.mobileWidget) await installMobileWidget(page);
+  const audioChunks = [];
+  await installAudioTap(page, audioChunks);
+  const pace = createPace();
   const sockets = { open: 0, navigatedAt: 0, leavingAt: 0, recent: [] };
   page.on('console', (message) => {
     const text = message.text();
@@ -609,7 +992,7 @@ async function recordTake(browser, job) {
     if (frame !== page.mainFrame()) return;
     sockets.navigatedAt = Date.now();
     process.stdout.write(`nav ${frame.url()}\n`);
-    if (capture) capture.restart().catch(() => {});
+    if (capture) capture.fitScreen().then(() => capture.restart()).catch(() => {});
   });
   let capture = null;
   try {
@@ -623,43 +1006,63 @@ async function recordTake(browser, job) {
     await prepareWidget(page);
     const warmup = createCollector();
     const warmStarted = Date.now();
-    let last = 0;
-    let lastChange = Date.now();
     while (Date.now() - warmStarted < 20000) {
       await warmup.ingest(page);
-      if (warmup.length() !== last) {
-        last = warmup.length();
-        lastChange = Date.now();
-      }
-      if (warmup.state.sawCaption && Date.now() - lastChange > TURN_QUIET_MS) break;
+      if (warmup.state.widgetReady) break;
       await sleep(300);
     }
     capture = startScreencast(page, spec, framesDir);
+    const speech = createSpeech(audioChunks);
+    pace.hurry();
+    await capture.fitScreen();
     await capture.start();
-    const socketWaitStarted = Date.now();
-    while (sockets.open < 1 && Date.now() - socketWaitStarted < 20000) await sleep(200);
-    await sleep(1200);
-    if (sockets.open < 1) throw new Error('clerk socket did not stay open');
-    await sleep(800);
+    await waitForSpeechTail(speech, 0, pace, GREETING_WAIT_MS);
     const collector = createCollector();
-    const say = (line) => shopperTurn(page, collector, sockets, job, line);
+    const say = (line) => shopperTurn(page, collector, sockets, pace, speech, job, line);
     let cart = [];
+    let clarified = false;
+    const answerIfAsked = async (turn, stillMissing) => {
+      if (clarified || !job.beat.clarify || !stillMissing()) return turn;
+      if (!latestReply(collector, turn.marker).includes('?')) return turn;
+      clarified = true;
+      return say(job.beat.clarify);
+    };
+    const onProductPage = () => collector.state.path.includes('/products/');
     for (let index = 0; index < job.beat.lines.length; index += 1) {
       const isLastLine = index === job.beat.lines.length - 1;
       let turn = await say(job.beat.lines[index]);
-      if (isLastLine && job.beat.clarify && clerkAskedBack(job, collector, turn.marker)) {
-        turn = await say(job.beat.clarify);
-      }
+      const stillMissing = job.beat.kind === 'cart'
+        ? () => !cartCovers(turn.cart, job.beat.cartMustMatch)
+        : () => collector.state.path === turn.marker.path;
+      if (isLastLine) turn = await answerIfAsked(turn, stillMissing);
       cart = turn.cart;
       const needsOpen = job.beat.kind === 'catalog'
         && isLastLine
         && job.beat.followUp
-        && !collector.state.path.includes('/products/');
-      if (needsOpen) cart = (await say(job.beat.followUp)).cart;
+        && !onProductPage();
+      if (needsOpen) {
+        turn = await answerIfAsked(await say(job.beat.followUp), () => !onProductPage());
+        cart = turn.cart;
+      }
     }
-    if (job.beat.kind === 'cart') {
-      const clicked = await clickAddToCart(page);
-      if (!clicked) throw new Error('add to cart button was not on screen');
+    // The clerk often finishes talking and then changes the page. The next
+    // shopper line already went out when the voice stopped. This wait is
+    // only so the landing page is on screen before the take is judged.
+    const pathBeforeLanding = collector.state.path;
+    const landingMark = Date.now();
+    while (Date.now() - landingMark < NAVIGATION_GRACE_MS) {
+      await collector.ingest(page);
+      const left = sockets.leavingAt >= landingMark - 1000;
+      const arrived = collector.state.path !== pathBeforeLanding
+        && Date.now() - sockets.navigatedAt > HOLD_AFTER_MS;
+      if (left && arrived && !isLoading(collector, sockets)) break;
+      if (!left && Date.now() - landingMark > TURN_QUIET_MS) break;
+      await sleep(300);
+    }
+    const shopperMustAdd = job.beat.kind === 'cart'
+      && !cartCovers(cart, job.beat.cartMustMatch)
+      && onProductPage();
+    if (shopperMustAdd && await clickAddToCart(page)) {
       cart = await readCart(page);
       await sleep(900);
     }
@@ -672,7 +1075,7 @@ async function recordTake(browser, job) {
       throw new Error(`${reasons.join('; ')} | path=${collector.state.path} | ${clip}`);
     }
     fs.mkdirSync(OUT_DIR, { recursive: true });
-    await encode(capture.frames, spec, dest);
+    await encode(capture.frames, audioChunks, spec, pace, framesDir, dest);
     const info = await probe(dest);
     if (info.width !== spec.masterWidth || info.height !== spec.masterHeight) {
       throw new Error(`size ${info.width}x${info.height}`);
@@ -686,64 +1089,79 @@ async function recordTake(browser, job) {
   }
 }
 
-async function recordJob(browser, job, results) {
+// The screencast records the browser window, not the emulated viewport, so
+// each take gets a window of the device's exact size and pixel ratio.
+async function launchForDevice(chromium, spec) {
+  return chromium.launch({
+    headless: process.env.PROMO_HEADED !== '1',
+    channel: process.env.PROMO_FRAMES_CHANNEL || 'chrome',
+    args: [
+      `--window-size=${spec.cssWidth},${spec.cssHeight}`,
+      `--force-device-scale-factor=${spec.scale}`,
+      '--autoplay-policy=no-user-gesture-required',
+      '--use-fake-ui-for-media-stream',
+      '--use-fake-device-for-media-stream',
+    ],
+  });
+}
+
+async function closeBrowser(browser) {
+  const closed = browser.close().then(() => 'closed').catch(() => 'close-failed');
+  await Promise.race([closed, sleep(BROWSER_CLOSE_TIMEOUT_MS)]);
+}
+
+// A finished video is only replaced once a new take has passed, and it is
+// written under a temporary name first. A failing take, or another run
+// recording the same beat, can never wipe a video that already exists.
+async function recordJob(chromium, job) {
   const name = fileName(job);
   const dest = path.join(OUT_DIR, name);
-  if (!FORCE && results[name]?.ok && fs.existsSync(dest)) {
+  const staging = path.join(OUT_DIR, `.recording-${name}`);
+  if (!FORCE && fs.existsSync(dest)) {
     process.stdout.write(`skip ${name}\n`);
-    return results[name];
+    return { ok: true, file: name };
   }
   let lastError = 'unknown';
   for (let attempt = 1; attempt <= MAX_TRIES; attempt += 1) {
+    const browser = await launchForDevice(chromium, job.spec);
     try {
-      const result = await recordTake(browser, job);
-      results[name] = { ...result, attempt };
-      saveResults(results);
+      const result = await recordTake(browser, job, staging);
+      fs.renameSync(staging, dest);
       process.stdout.write(`pass ${name} (${result.duration.toFixed(1)}s, try ${attempt})\n`);
-      return results[name];
+      return { ...result, attempt };
     } catch (error) {
       lastError = error instanceof Error ? error.message : String(error);
       process.stdout.write(`fail ${name} try ${attempt}: ${lastError}\n`);
-      if (fs.existsSync(dest)) fs.rmSync(dest, { force: true });
+      if (fs.existsSync(staging)) fs.rmSync(staging, { force: true });
+    } finally {
+      await closeBrowser(browser);
     }
   }
-  results[name] = { ok: false, file: name, error: lastError };
-  saveResults(results);
-  return results[name];
+  return { ok: false, file: name, error: lastError };
 }
 
 async function main() {
   const jobs = selectedJobs();
   if (!jobs.length) throw new Error('no jobs selected');
   fs.mkdirSync(OUT_DIR, { recursive: true });
-  const results = loadResults();
   const { chromium } = await import('playwright');
-  // Headless keeps the viewport at the exact CSS size. A headed window gets
-  // clipped by the display and the aspect ratio slips.
-  const browser = await chromium.launch({
-    headless: process.env.PROMO_HEADED !== '1',
-    channel: process.env.PROMO_FRAMES_CHANNEL || 'chrome',
-    args: [
-      '--autoplay-policy=no-user-gesture-required',
-      '--use-fake-ui-for-media-stream',
-      '--use-fake-device-for-media-stream',
-    ],
-  });
   const concurrency = Math.max(1, Number(process.env.PROMO_CONCURRENCY || 1));
+  const outcomes = new Array(jobs.length);
   let cursor = 0;
   async function worker() {
     while (cursor < jobs.length) {
-      const job = jobs[cursor];
+      const index = cursor;
       cursor += 1;
-      await recordJob(browser, job, results);
+      outcomes[index] = await recordJob(chromium, jobs[index]);
     }
   }
   await Promise.all(Array.from({ length: Math.min(concurrency, jobs.length) }, () => worker()));
-  const failed = Object.values(results).filter((item) => jobs.some((job) => fileName(job) === item.file) && !item.ok);
+  const results = loadResults();
+  jobs.forEach((job, index) => { results[fileName(job)] = outcomes[index]; });
+  saveResults(results);
+  const failed = outcomes.filter((item) => !item.ok);
   process.stdout.write(`done ${jobs.length - failed.length}/${jobs.length}\n`);
   if (failed.length) process.exitCode = 1;
-  const closed = browser.close().then(() => 'closed').catch(() => 'close-failed');
-  await Promise.race([closed, sleep(8000)]);
   process.exit(process.exitCode || 0);
 }
 
