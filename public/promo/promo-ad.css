@@ -9330,7 +9330,7 @@ html.is-promo-still .promo-clip__product.is-compare::after {
 .promo-pass-slot__invite {
   position: relative;
   display: inline-block;
-  margin: 0 0 0;
+  margin: -0.9rem 0 0;
   font-family: "Caveat", "Nunito", var(--font-heading);
   font-weight: 700;
   font-size: clamp(2.55rem, 4.4vw, 3.25rem);
@@ -9365,7 +9365,7 @@ html.is-promo-still .promo-clip__product.is-compare::after {
 .promo-pass-slot__aside {
   position: relative;
   display: inline-block;
-  margin: 1.35rem 0 0;
+  margin: 1.05rem 0 0;
   padding: 0.7em 1em 0.78em 1.55em;
   border-radius: 2px 8px 8px 2px;
   background: var(--bizmis-primary);
@@ -9416,13 +9416,13 @@ html.is-promo-still .promo-clip__product.is-compare::after {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 1.75rem;
-  margin: 3.6rem 0 0;
-  color: color-mix(in srgb, var(--ad-ink) 46%, #c8bfb6);
-  font-family: var(--font-body, var(--font-heading));
-  font-size: clamp(1.2rem, 1.8vw, 1.5rem);
-  font-weight: 500;
-  letter-spacing: -0.015em;
+  gap: 2rem;
+  margin: 4.8rem 0 0;
+  color: color-mix(in srgb, var(--ad-ink) 74%, #fff);
+  font-family: var(--font-heading);
+  font-size: clamp(1.15rem, 1.6vw, 1.35rem);
+  font-weight: 600;
+  letter-spacing: -0.025em;
   line-height: 1.2;
   white-space: nowrap;
 }
@@ -9440,13 +9440,12 @@ html.is-promo-still .promo-clip__product.is-compare::after {
   flex: none;
   overflow: visible;
   color: var(--bizmis-primary);
-  transform: rotate(-12deg);
 }
 
 .promo-pass-slot__tick path {
   fill: none;
   stroke: currentColor;
-  stroke-width: 3.4;
+  stroke-width: 2.4;
   stroke-linecap: round;
   stroke-linejoin: round;
   stroke-dasharray: 1;
@@ -9542,10 +9541,6 @@ html.is-promo-still .promo-clip__product.is-compare::after {
     transform: none;
     transition: none;
     animation: none;
-  }
-
-  .promo-pass-slot__tick {
-    transform: rotate(-12deg);
   }
 
   .promo-pass-slot__tick path {

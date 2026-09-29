@@ -95,12 +95,12 @@
   }
   function handwrittenTick() {
     const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-    svg.setAttribute('viewBox', '0 0 32 32');
+    svg.setAttribute('viewBox', '0 0 24 24');
     svg.setAttribute('aria-hidden', 'true');
     svg.classList.add('promo-pass-slot__tick');
     const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
     path.setAttribute('pathLength', '1');
-    path.setAttribute('d', 'M5 18c2.2 2.4 3.4 6.2 5.6 6.4 1.2-2.8 3.4-8.2 6.2-12.2C20.2 8 24.2 5.2 28.4 3.6');
+    path.setAttribute('d', 'M4.5 12.5 L9.5 17.5 L19.5 6.5');
     svg.append(path);
     return svg;
   }
