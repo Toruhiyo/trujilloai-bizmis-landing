@@ -9366,9 +9366,9 @@ html.is-promo-still .promo-clip__product.is-compare::after {
   position: relative;
   display: inline-block;
   margin: 1.05rem 0 0;
-  padding: 0.38em 0.85em 0.42em 1.45em;
+  padding: 0.38em 0.9em 0.42em;
   border: 2px solid var(--bizmis-primary);
-  border-radius: 2px 9px 9px 2px;
+  border-radius: 9px;
   background: #fff;
   color: var(--bizmis-primary);
   font-family: var(--font-heading);
@@ -9378,8 +9378,6 @@ html.is-promo-still .promo-clip__product.is-compare::after {
   line-height: 1.05;
   overflow: visible;
   white-space: nowrap;
-  -webkit-mask: radial-gradient(circle at 0 50%, transparent 0.42em, #000 0.46em);
-  mask: radial-gradient(circle at 0 50%, transparent 0.42em, #000 0.46em);
   opacity: 0;
   transform: translateY(-0.45em) rotate(-18deg) scale(1.35);
   transform-origin: center center;
