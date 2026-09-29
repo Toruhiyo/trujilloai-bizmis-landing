@@ -7327,6 +7327,13 @@ html.is-promo-still .promo-clip__product.is-compare::after {
   transform: translateY(var(--pain-scroll, 0px));
 }
 
+.promo-opening.is-clip.is-clip-phone .promo-opening__moments-stage > .promo-clip__banner,
+.promo-opening.is-clip.is-clip-tablet .promo-opening__moments-stage > .promo-clip__banner {
+  left: 14px;
+  right: 14px;
+  width: auto;
+}
+
 .promo-opening.is-clip.is-motion-scroll-down .promo-opening__moments-stage > .promo-clip__banner {
   display: none;
 }
@@ -9655,17 +9662,17 @@ html.is-promo-still .promo-clip__product.is-compare::after {
 
 .promo-opening.is-clip-desktop.is-clip-moment .promo-moments__board.is-pose-choice .promo-moments__card.is-go,
 .promo-opening.is-clip-desktop.is-clip-moment .promo-moments__board.is-pose-row .promo-moments__card.is-go {
-  left: 22% !important;
+  left: 8% !important;
 }
 
 .promo-opening.is-clip-desktop.is-clip-moment .promo-moments__board.is-pose-choice .promo-moments__card.is-pick,
 .promo-opening.is-clip-desktop.is-clip-moment .promo-moments__board.is-pose-row .promo-moments__card.is-pick {
-  left: 50% !important;
+  left: 36% !important;
 }
 
 .promo-opening.is-clip-desktop.is-clip-moment .promo-moments__board.is-pose-choice .promo-moments__card.is-other,
 .promo-opening.is-clip-desktop.is-clip-moment .promo-moments__board.is-pose-row .promo-moments__card.is-other {
-  left: 78% !important;
+  left: 64% !important;
 }
 
 .promo-opening.is-clip.is-look-home-hero .promo-moments__board.is-pose-grid .promo-moments__glyph img {
@@ -9714,10 +9721,35 @@ html.is-promo-clip.is-clip-moment.is-clip-tablet .bizmis-viewport-portal-root {
   left: 68%;
 }
 
+.promo-opening.is-clip-moment .promo-moments__board.is-pose-bundle .promo-moments__plus,
+.promo-opening.is-clip-moment .promo-moments__board.is-pose-extra .promo-moments__plus {
+  width: 104px;
+  height: 104px;
+  margin: 0;
+}
+
+.promo-opening.is-clip-moment .promo-moments__board.is-pose-bundle .promo-moments__plus svg,
+.promo-opening.is-clip-moment .promo-moments__board.is-pose-extra .promo-moments__plus svg {
+  width: 104px;
+  height: 104px;
+}
+
+.promo-opening.is-clip-moment.is-clip-phone .promo-moments__board.is-pose-bundle .promo-moments__plus,
+.promo-opening.is-clip-moment.is-clip-phone .promo-moments__board.is-pose-extra .promo-moments__plus {
+  width: 48px;
+  height: 48px;
+}
+
+.promo-opening.is-clip-moment.is-clip-phone .promo-moments__board.is-pose-bundle .promo-moments__plus svg,
+.promo-opening.is-clip-moment.is-clip-phone .promo-moments__board.is-pose-extra .promo-moments__plus svg {
+  width: 48px;
+  height: 48px;
+}
+
 .promo-opening.is-clip-moment.is-clip-tablet .promo-moments__board.is-pose-bundle .promo-moments__plus,
 .promo-opening.is-clip-moment.is-clip-tablet .promo-moments__board.is-pose-extra .promo-moments__plus {
   left: 48%;
-  top: 48%;
+  top: 42%;
   opacity: 1;
   transform: translate3d(-50%, -50%, 0);
 }

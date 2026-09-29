@@ -2553,20 +2553,26 @@
     const pitchBoard = !board.closest('.promo-opening')?.classList.contains('is-pain');
     const actControl = stage.querySelector('.promo-clip__chips, .promo-clip__sizes');
     const actReserve = actControl ? Math.round(stage.clientWidth * 0.024 + 56) : 0;
+    const heroWide = phone || tablet;
     const heroReserve = look === 'home-hero' && !opening.classList.contains('is-motion-scroll-down')
-      ? (clipLayout ? Math.round(Math.min(stage.clientWidth * 0.46, 620) * 9 / 16 + 20) : 132)
+      ? (clipLayout
+        ? (heroWide
+          ? Math.round((stage.clientWidth - (phone ? 28 : 36)) * 9 / 16 + 18)
+          : Math.round(Math.min(stage.clientWidth * 0.46, 620) * 9 / 16 + 20))
+        : 132)
       : 0;
     const padY = (pitchBoard ? 28 : PROMO_CATALOG_PAD_Y) + heroReserve + actReserve;
     let visibleRows = 99;
     if (clipLayout) {
-      const rows = look === 'list' ? 4
-        : look === 'collection-dense' ? 2
-          : (look === 'home-hero' || look === 'lookbook') ? 1
-            : 2;
+      const rows = look === 'list' ? (phone || tablet ? 5 : 4)
+        : look === 'collection-dense' ? (phone ? 3 : 2)
+          : look === 'home-hero' ? (phone ? 2 : 1)
+            : look === 'lookbook' ? 1
+              : (phone ? 3 : 2);
       visibleRows = rows + (opening.classList.contains('is-motion-scroll-down') ? 1 : 0);
       const budget = Math.max(160, stage.clientHeight - padY - 16);
       const fitted = (budget - (rows - 1) * rowGapY) / rows;
-      cardH = look === 'list' ? 128 : Math.max(160, fitted);
+      cardH = look === 'list' ? Math.max(92, Math.min(phone ? 132 : 168, fitted)) : Math.max(160, fitted);
       pitchY = cardH + rowGapY;
       if (look === 'home-hero' && !clipLayout && !opening.classList.contains('is-motion-scroll-down')) {
         const photo = cardH - 96;
