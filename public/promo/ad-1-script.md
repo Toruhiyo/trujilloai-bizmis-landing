@@ -84,7 +84,7 @@ Desktop, the same grid. The shopper types: "Looking for something light I can ta
 
 **Clerk:** "Light and easy to carry, here are the three that fit. This one's the best of them."
 
-While he speaks, the grid narrows to three, then the pick's page opens. Orange veil, white check, "SOLD".
+While he speaks, the grid narrows to three, then the pick's page opens. Question marks travel one circle around the product photo, clear of the picture, then puff into a soft Bizmis orange smoke and disappear. Orange veil, white check, "SOLD".
 
 **VO** `narrows`: "It narrows. It recommends."
 
@@ -128,7 +128,7 @@ The frames leave. The field stays white. Nothing is clickable. No window, button
 
 - `install` (default): eyebrow "Installs in one click." then the line "Install on Shopify". No URL.
 - `demo`: the line "See it in action" and `bizmis.ai/demo`.
-- `ea`: one eyebrow line, centred: "First 50 stores · No commitment · No credit card". Then one lockup on one line, headline style: the Shopify bag in black, then "Install to join Early Access". The bag sits on the same baseline as the words, slightly smaller than the capitals, with a small gap before the text. No URL. The metal shine plays on this line only. The wordmark, the eyebrow, and the lockup fade up, then the card holds through the spoken line (at least 4 s).
+- `ea`: one lockup on one line, headline style: the Shopify bag in black, then "Install now". The bag sits on the same baseline as the words, slightly smaller than the capitals, with a small gap before the text. Under it, "to join Early Access!" in a handwritten face, Bizmis orange, tilted a little. Under that, one line in a softer color: "First 50 stores", a dot, "No commitment", a dot, "No credit card". Each part, including each dot, eases in on its own, left to right. No URL. The metal shine plays on "Install now" only. The wordmark, the lockup, and the orange line fade up together. After the last condition lands, the card holds through the spoken line (at least 4 s).
 - `none`: the wordmark only.
 
 The call-to-action line plays a metal shine. It fades up and holds ≥ 4 s.

@@ -15,8 +15,10 @@
     demo: { scarcity: '', label: 'See it in action', url: 'bizmis.ai/demo', vo: 'see-it' },
     install: { scarcity: 'Installs in one click.', label: 'Install on Shopify', url: '', vo: 'install-shopify' },
     ea: {
-      scarcity: 'First 50 stores · No commitment · No credit card',
-      label: 'Install to join Early Access',
+      scarcity: '',
+      label: 'Install now',
+      invite: 'to join Early Access!',
+      terms: ['First 50 stores', 'No commitment', 'No credit card'],
       shopify: true,
       url: '',
       vo: 'join-fifty',
@@ -37,6 +39,8 @@
   const PROMO_PASS_SLOW_MS = 2800;
   const PROMO_PASS_SLOT_IN_MS = 420;
   const PROMO_PASS_SLOT_FADE_MS = 700;
+  const PROMO_EA_TERM_GAP_MS = 340;
+  const PROMO_EA_TERM_IN_MS = 560;
   const PROMO_EA_HOLD_MS = 14000;
   const PROMO_SHOPIFY_BAG = 'M15.337 23.979l7.216-1.561s-2.604-17.613-2.625-17.73c-.018-.116-.114-.192-.211-.192s-1.929-.136-1.929-.136-1.275-1.274-1.439-1.411c-.045-.037-.075-.057-.121-.074l-.914 21.104h.023zM11.71 11.305s-.81-.424-1.774-.424c-1.447 0-1.504.906-1.504 1.141 0 1.232 3.24 1.715 3.24 4.629 0 2.295-1.44 3.76-3.406 3.76-2.354 0-3.54-1.465-3.54-1.465l.646-2.086s1.245 1.066 2.28 1.066c.675 0 .975-.545.975-.932 0-1.619-2.654-1.694-2.654-4.359-.034-2.237 1.571-4.416 4.827-4.416 1.257 0 1.875.361 1.875.361l-.945 2.715-.02.01zM11.17.83c.136 0 .271.038.405.135-.984.465-2.064 1.639-2.508 3.992-.656.213-1.293.405-1.889.578C7.697 3.75 8.951.84 11.17.84V.83zm1.235 2.949v.135c-.754.232-1.583.484-2.394.736.466-1.777 1.333-2.645 2.085-2.971.193.501.309 1.176.309 2.1zm.539-2.234c.694.074 1.141.867 1.429 1.755-.349.114-.735.231-1.158.366v-.252c0-.752-.096-1.371-.271-1.871v.002zm2.992 1.289c-.02 0-.06.021-.078.021s-.289.075-.714.21c-.423-1.233-1.176-2.37-2.508-2.37h-.115C12.135.209 11.669 0 11.265 0 8.159 0 6.675 3.877 6.21 5.846c-1.194.365-2.063.636-2.16.674-.675.213-.694.232-.772.87-.075.462-1.83 14.063-1.83 14.063L15.009 24l.927-21.166z';
   const PROMO_VO_ON = promoBootParams.get('vo') === '1';
@@ -67,6 +71,14 @@
     { scene: 'end', id: 'join-fifty', line: 'Run it free. No commitment, no credit card. Your feedback shapes what we build next, with a direct line to us, and a discount when you upgrade. Install to join Early Access.', cta: 'ea' },
     { scene: 'end', id: 'install-shopify', line: 'Install it on Shopify.', cta: 'install' },
   ];
+  function ensureInviteFont() {
+    if (document.getElementById('promo-invite-font')) return;
+    const link = document.createElement('link');
+    link.id = 'promo-invite-font';
+    link.rel = 'stylesheet';
+    link.href = 'https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&display=swap';
+    document.head.append(link);
+  }
   function shopifyBag() {
     const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
     svg.setAttribute('viewBox', '0 0 24 24');
@@ -5110,6 +5122,7 @@
       const action = document.createElement('p');
       action.className = 'promo-pass-slot__action';
       if (copy.shopify) {
+        ensureInviteFont();
         action.classList.add('is-shopify');
         const label = document.createElement('span');
         label.className = 'promo-pass-slot__shopify-label';
@@ -5119,6 +5132,29 @@
         action.textContent = copy.label;
       }
       slot.append(action);
+      if (copy.invite) {
+        const invite = document.createElement('p');
+        invite.className = 'promo-pass-slot__invite';
+        invite.textContent = copy.invite;
+        slot.append(invite);
+      }
+      if (copy.terms?.length) {
+        const terms = document.createElement('p');
+        terms.className = 'promo-pass-slot__terms';
+        copy.terms.forEach((text, index) => {
+          if (index > 0) {
+            const dot = document.createElement('span');
+            dot.className = 'promo-pass-slot__piece promo-pass-slot__dot';
+            dot.textContent = '·';
+            terms.append(dot);
+          }
+          const piece = document.createElement('span');
+          piece.className = 'promo-pass-slot__piece';
+          piece.textContent = text;
+          terms.append(piece);
+        });
+        slot.append(terms);
+      }
       if (copy.url) {
         const url = document.createElement('p');
         url.className = 'promo-pass-slot__url';
@@ -5136,7 +5172,7 @@
       if (mark) mark.style.background = 'var(--bizmis-primary)';
       const slot = this.ensurePassSlot(ctaKey);
       if (!slot) return;
-      slot.classList.add('is-in');
+      slot.classList.add('is-in', 'is-settled');
       if (slot.querySelector('.is-shopify')) this.root.classList.add('is-ea-in');
       const key = ctaKey && Object.prototype.hasOwnProperty.call(PROMO_END_CTA, ctaKey)
         ? ctaKey
@@ -5160,10 +5196,22 @@
       slot?.classList.add('is-in');
       if (copy.shopify) this.root.classList.add('is-ea-in');
       markPromoVo(copy.vo);
-      const afterFade = copy.shopify ? PROMO_PASS_SLOT_FADE_MS : 0;
-      const hold = copy.shopify ? PROMO_EA_HOLD_MS : PROMO_END_CARD_HOLD_MS;
-      await waitMs(afterFade + hold + promoHoldMs());
+      if (copy.shopify && slot) {
+        await waitMs(PROMO_PASS_SLOT_FADE_MS);
+        await this.playEaTerms(slot);
+        await waitMs(PROMO_EA_TERM_IN_MS + PROMO_EA_HOLD_MS + promoHoldMs());
+      } else {
+        await waitMs(PROMO_END_CARD_HOLD_MS + promoHoldMs());
+      }
       this.depart();
+    }
+
+    async playEaTerms(slot) {
+      const pieces = [...slot.querySelectorAll('.promo-pass-slot__piece')];
+      for (let index = 0; index < pieces.length; index += 1) {
+        pieces[index].classList.add('is-in');
+        if (index < pieces.length - 1) await waitMs(PROMO_EA_TERM_GAP_MS);
+      }
     }
 
     playSeeForYourself() {
