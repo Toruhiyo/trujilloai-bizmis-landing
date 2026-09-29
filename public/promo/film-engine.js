@@ -324,8 +324,8 @@
     gapRatio: 0.012,
     steps: [1, 2, 4, 8],
     devices: [
-      { id: 'desktop', ratio: 3024 / 1964, frame: 800 },
-      { id: 'phone', ratio: 9 / 21, frame: 800 },
+      { id: 'desktop', ratio: 16 / 10, frame: 800 },
+      { id: 'phone', ratio: 9 / 19, frame: 800 },
       { id: 'tablet', ratio: 3 / 4, frame: 800 },
     ],
     variants: ['scroll-up', 'scroll-down', 'wander-near', 'wander-far', 'product-read', 'product-scroll', 'compare'],
@@ -1292,20 +1292,82 @@
   const PROMO_CURSOR_HOT_X = 33 * (5 / 24);
   const PROMO_CURSOR_HOT_Y = 33 * (3.2 / 24);
   const PROMO_PAIN_LINE_1 = 'Looking for something light I can take everywhere.';
-  const PROMO_PAIN_LINE_2 = 'Will it fit my setup?';
+  const PROMO_PAIN_LINE_2 = "What if it's not right for me?";
   const PROMO_PITCH_LINE_1 = 'Looking for something light I can take everywhere.';
-  const PROMO_PITCH_LINE_2 = 'Will it fit my setup? If so, add it.';
+  const PROMO_PITCH_LINE_2 = "What if it's not right for me?";
   const PROMO_PITCH_CLERK_1 = "Light and easy to carry, here are the three that fit. This one's the best of them.";
-  const PROMO_PITCH_CLERK_2 = "It will. And if it doesn't, returns are free. Added, with the sleeve that goes with it.";
+  const PROMO_PITCH_CLERK_2 = "If it's not right, returns are free. Added, with the sleeve that goes with it.";
   const PROMO_PITCH_SPEAK_1_MS = 5200;
   const PROMO_PITCH_SPEAK_2_MS = 5600;
-  const PROMO_PAIN_ANSWER_1 = [
-    'You can browse our full collection.',
-    'Use the filters to narrow by size and weight.',
-  ];
-  const PROMO_PAIN_LINKS = ['View collection', 'Size guide'];
-  const PROMO_PAIN_ANSWER_2 = 'Recommendations vary by preference. Check each product page for details, or I can open a support ticket.';
+  const PROMO_PAIN_ANSWER_1 = 'Thanks for reaching out! You can browse our full collection using the menu above. To narrow your search, use the filters for size, weight and category. Product details, specifications and customer reviews are available on each product page. Let me know if there\'s anything else I can help you with.';
+  const PROMO_PAIN_LINKS = ['View collection', 'Size guide', 'Shipping info'];
+  const PROMO_PAIN_ANSWER_2 = "That's a great question. Recommendations vary depending on individual preferences and intended use, so we're unable to confirm suitability for a specific customer. We suggest reviewing the product description, specifications and customer reviews on the product page before purchasing. If you'd like further assistance, I can open a support ticket and a member of our team will get back to you within 1-2 business days.";
+  const PROMO_PAIN_ACTIONS = ['Open a ticket', 'No, thanks'];
   const PROMO_PAIN_CHIPS = ['Track order', 'Returns', 'Contact us'];
+  const PROMO_PAIN_MARK = '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M5.4 3.4h11.4a3.8 3.8 0 0 1 3.8 3.8v7.1a3.8 3.8 0 0 1-3.8 3.8h-4.7L8 21.7v-3.6H5.4a3.8 3.8 0 0 1-3.8-3.8V7.2a3.8 3.8 0 0 1 3.8-3.8z"/><circle cx="8.7" cy="10.8" r="1.45" fill="var(--bot-user)"/><circle cx="14.1" cy="10.8" r="1.45" fill="var(--bot-user)"/></svg>';
+  const PROMO_PAIN_SEND = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg>';
+  const PROMO_PAIN_THUMB_UP = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 10v12"/><path d="M15 5.88 14 10h5.83a2 2 0 0 1 1.92 2.56l-2.33 8A2 2 0 0 1 17.5 22H4a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2h2.76a2 2 0 0 0 1.79-1.11L12 2a3.13 3.13 0 0 1 3 3.88Z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+  const PROMO_PAIN_THUMB_DOWN = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M17 14V2"/><path d="M9 18.12 10 14H4.17a2 2 0 0 1-1.92-2.56l2.33-8A2 2 0 0 1 6.5 2H20a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2h-2.76a2 2 0 0 0-1.79 1.11L12 22a3.13 3.13 0 0 1-3-3.88Z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+
+  function appendDullUser(log, text) {
+    const line = document.createElement('p');
+    line.className = 'promo-pain__msg is-user';
+    line.textContent = text;
+    log.appendChild(line);
+  }
+
+  function appendDullBot(log, lines, links, actions) {
+    const block = document.createElement('div');
+    block.className = 'promo-pain__msg is-bot';
+    const bubble = document.createElement('div');
+    bubble.className = 'promo-pain__bubble';
+    const copy = Array.isArray(lines) ? lines : [lines];
+    copy.forEach((text) => {
+      const line = document.createElement('p');
+      line.textContent = text;
+      bubble.appendChild(line);
+    });
+    if (links?.length) {
+      const list = document.createElement('div');
+      list.className = 'promo-pain__links';
+      links.forEach((label) => {
+        const link = document.createElement('span');
+        link.textContent = label;
+        list.appendChild(link);
+      });
+      bubble.appendChild(list);
+    }
+    if (actions?.length) {
+      const row = document.createElement('div');
+      row.className = 'promo-pain__actions';
+      actions.forEach((label, index) => {
+        const button = document.createElement('span');
+        if (index === 0) button.className = 'is-primary';
+        button.textContent = label;
+        row.appendChild(button);
+      });
+      bubble.appendChild(row);
+    }
+    block.appendChild(bubble);
+    log.appendChild(block);
+  }
+
+  function appendDullCloser(log) {
+    log.querySelector('.promo-pain__helpful')?.remove();
+    const helpful = document.createElement('div');
+    helpful.className = 'promo-pain__helpful';
+    const label = document.createElement('span');
+    label.textContent = 'Was I helpful?';
+    const votes = document.createElement('span');
+    votes.className = 'promo-pain__votes';
+    votes.innerHTML = PROMO_PAIN_THUMB_UP + PROMO_PAIN_THUMB_DOWN;
+    helpful.append(label, votes);
+    log.appendChild(helpful);
+  }
+
+  function scrollDullLog(log) {
+    log.scrollTop = log.scrollHeight;
+  }
   const PROMO_PAIN_A = [
     ['grid', 160],
     ['enter', 140],
@@ -2396,7 +2458,11 @@
     if (!stage || stage.clientWidth < (phone ? 160 : 240) || stage.clientHeight < (phone ? 120 : 160)) return false;
     const shiftRaw = getComputedStyle(board).getPropertyValue('--promo-board-x').trim();
     const shift = phone || tablet ? 0 : (shiftRaw.endsWith('rem') ? parseFloat(shiftRaw) * 16 : (parseFloat(shiftRaw) || 0));
-    const contentWidth = stage.clientWidth;
+    const opening = board.closest('.promo-opening');
+    const clipLayout = Boolean(opening?.classList.contains('is-clip'));
+    const widgetOpen = clipLayout && opening.classList.contains('is-clip-moment') && !phone && !tablet;
+    const stageWidth = stage.clientWidth;
+    const contentWidth = stageWidth - (widgetOpen ? 460 : 0);
     const look = board.dataset.storeLook || 'classic';
     let cols = look === 'collection-dense' ? 5
       : look === 'lookbook' ? 2
@@ -2404,21 +2470,44 @@
           : look === 'home-hero' ? 3
             : PROMO_CATALOG_COLS;
     if (phone) cols = Math.min(cols, 2);
+    else if (tablet && clipLayout) cols = look === 'list' ? 1 : look === 'lookbook' ? 2 : look === 'collection-dense' ? 3 : 2;
     else if (tablet) cols = Math.min(cols, 3);
+    else if (clipLayout && look !== 'list' && look !== 'lookbook') cols = look === 'collection-dense' ? 3 : 2;
     const padX = phone ? 14 : tablet ? 22 : PROMO_CATALOG_PAD_X;
     const gutter = look === 'collection-dense' ? 12 : look === 'lookbook' ? 28 : (phone ? 12 : PROMO_CATALOG_GUTTER);
     const rowGapY = look === 'list' ? 12 : PROMO_CATALOG_ROW_GAP;
-    const cardW = (contentWidth - padX * 2 - (cols - 1) * gutter) / cols;
+    let cardW = (contentWidth - padX * 2 - (cols - 1) * gutter) / cols;
     const cardFooter = look === 'lookbook' ? 72 : look === 'list' ? 8 : 52;
-    const cardH = look === 'list' ? 96 : cardW + cardFooter;
-    const pitchX = cardW + gutter;
-    const pitchY = cardH + rowGapY;
+    let cardH = look === 'list' ? 96 : cardW + cardFooter;
+    let pitchX = cardW + gutter;
+    let pitchY = cardH + rowGapY;
     const inset = padX;
-    const gx0 = inset + cardW / 2 - (contentWidth / 2 + shift);
+    let gx0 = inset + cardW / 2 - (stageWidth / 2 + shift);
     const pitchBoard = !board.closest('.promo-opening')?.classList.contains('is-pain');
     const actControl = stage.querySelector('.promo-clip__search, .promo-clip__chips, .promo-clip__sizes');
     const actReserve = actControl ? Math.round(stage.clientWidth * 0.024 + 56) : 0;
-    const padY = (pitchBoard ? 28 : PROMO_CATALOG_PAD_Y) + (look === 'home-hero' ? 132 : 0) + actReserve;
+    const heroReserve = look === 'home-hero' && !opening.classList.contains('is-motion-scroll-down')
+      ? (clipLayout ? 380 : 132)
+      : 0;
+    const padY = (pitchBoard ? 28 : PROMO_CATALOG_PAD_Y) + heroReserve + actReserve;
+    let visibleRows = 99;
+    if (clipLayout) {
+      const rows = look === 'list' ? 4 : look === 'collection-dense' ? 2 : 1;
+      visibleRows = rows + (opening.classList.contains('is-motion-scroll-down') ? 1 : 0);
+      const budget = Math.max(160, stage.clientHeight - padY - 16);
+      const fitted = (budget - (rows - 1) * rowGapY) / rows;
+      cardH = look === 'list' ? 128 : Math.max(160, fitted);
+      pitchY = cardH + rowGapY;
+      if (look === 'home-hero' && !opening.classList.contains('is-motion-scroll-down')) {
+        const photo = cardH - 96;
+        if (photo > 180 && cardW > photo) {
+          cardW = photo;
+          pitchX = cardW + gutter;
+          const group = cols * cardW + (cols - 1) * gutter;
+          gx0 = (stageWidth - group) / 2 + cardW / 2 - stageWidth / 2 - shift;
+        }
+      }
+    }
     if (pitchBoard && look !== 'home-hero') {
       const fitRaw = parseFloat(getComputedStyle(board).getPropertyValue('--promo-grid-fit'));
       const fit = Number.isFinite(fitRaw) && fitRaw > 0 && fitRaw <= 1 ? fitRaw : 1;
@@ -2452,9 +2541,14 @@
     board.style.setProperty('--row-compare-y', `${(rowCardH / 2 + 40).toFixed(1)}px`);
     board.style.setProperty('--row-lift', `${(PROMO_COMPARE_RESERVE / 2).toFixed(1)}px`);
     stage.closest('.promo-opening__store')?.style.setProperty('--catalog-inset', `${Math.max(inset, 0).toFixed(1)}px`);
+    const momentPose = clipLayout
+      && opening.classList.contains('is-clip-moment')
+      && !board.classList.contains('is-pose-grid');
     board.querySelectorAll('.promo-moments__card:not(.is-extra)').forEach((card, index) => {
       const column = index % cols;
       const row = Math.floor(index / cols);
+      card.hidden = clipLayout && !momentPose && row >= visibleRows;
+      if (momentPose) return;
       card.style.setProperty('--gx', `${(gx0 + column * pitchX).toFixed(1)}px`);
       card.style.setProperty('--gy', `${(gy0 + row * pitchY).toFixed(1)}px`);
     });
@@ -3030,7 +3124,7 @@
     if (urls[key]) return urls[key];
     const classic = clipFileKey(tone, device, motion, chat, 'classic');
     if (urls[classic]) return urls[classic];
-    return `/promo/sea-of-cards/of-cards/${tone}/videos/promo-clip-${classic}.mp4`;
+    return `/promo/sea-of-cards/${tone}/videos/promo-clip-${classic}.mp4`;
   }
 
   function gridMix(col, row, salt) {
@@ -5245,21 +5339,38 @@
       launcher.className = 'promo-pain__launcher';
       launcher.setAttribute('aria-hidden', 'true');
       launcher.tabIndex = -1;
-      launcher.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 7.2h12a2 2 0 0 1 2 2v5.2a2 2 0 0 1-2 2H11l-3.6 2.6V16.4H6a2 2 0 0 1-2-2V9.2a2 2 0 0 1 2-2z"/></svg>';
+      launcher.innerHTML = PROMO_PAIN_MARK;
+      launcher.addEventListener('click', (event) => {
+        event.preventDefault();
+        chat.classList.add('is-open');
+        chat.classList.remove('is-shut');
+        chat.removeAttribute('hidden');
+      });
       const panel = document.createElement('div');
       panel.className = 'promo-pain__panel';
+      const avatar = document.createElement('span');
+      avatar.className = 'promo-pain__avatar';
+      avatar.innerHTML = PROMO_PAIN_MARK;
       const title = document.createElement('p');
       title.className = 'promo-pain__title';
       title.textContent = 'Dull Chatbot';
+      const brand = document.createElement('div');
+      brand.className = 'promo-pain__brand';
+      brand.append(avatar, title);
       const close = document.createElement('button');
       close.type = 'button';
       close.className = 'promo-pain__close';
       close.setAttribute('data-promo-chat-close', '');
       close.setAttribute('aria-hidden', 'true');
       close.tabIndex = -1;
+      close.addEventListener('click', (event) => {
+        event.preventDefault();
+        chat.classList.remove('is-open', 'is-shut');
+        chat.removeAttribute('hidden');
+      });
       const head = document.createElement('div');
       head.className = 'promo-pain__head';
-      head.append(title, close);
+      head.append(brand, close);
       const chips = document.createElement('div');
       chips.className = 'promo-pain__chips';
       PROMO_PAIN_CHIPS.forEach((label) => {
@@ -5274,36 +5385,28 @@
       const input = document.createElement('p');
       input.className = 'promo-pain__input';
       input.setAttribute('data-promo-pain-input', '');
+      const send = document.createElement('span');
+      send.className = 'promo-pain__send';
+      send.innerHTML = PROMO_PAIN_SEND;
+      const composer = document.createElement('div');
+      composer.className = 'promo-pain__composer';
+      composer.append(input, send);
       const typing = document.createElement('p');
       typing.className = 'promo-pain__typing';
       typing.setAttribute('data-promo-pain-typing', '');
       typing.innerHTML = '<i></i><i></i><i></i>';
       const footer = document.createElement('p');
       footer.className = 'promo-pain__footer';
-      footer.textContent = 'Powered by Every Chatbot Ever';
-      panel.append(head, chips, log, typing, input, footer);
+      footer.innerHTML = 'Powered by <b>Every Chatbot Ever</b>';
+      panel.append(head, log, typing, chips, composer, footer);
       chat.append(panel, launcher);
       store.appendChild(chat);
       this.lockPainChatBox();
     }
 
     lockPainChatBox() {
-      const chat = this.root.querySelector('[data-promo-pain-chat]');
-      const panel = chat?.querySelector('.promo-pain__panel');
-      if (!panel || panel.dataset.locked === '1') return;
-      const wasHidden = chat.hasAttribute('hidden');
-      const wasOpen = chat.classList.contains('is-open');
-      chat.classList.add('is-measuring', 'is-open');
-      chat.removeAttribute('hidden');
-      this.paintPainLog('answer-2');
-      const height = Math.ceil(panel.getBoundingClientRect().height);
-      this.paintPainLog('launcher');
-      chat.classList.remove('is-measuring');
-      chat.classList.toggle('is-open', wasOpen);
-      if (wasHidden) chat.setAttribute('hidden', '');
-      if (height < 80) return;
-      panel.style.height = `${height}px`;
-      panel.dataset.locked = '1';
+      const panel = this.root.querySelector('[data-promo-pain-chat] .promo-pain__panel');
+      if (panel) panel.style.height = '';
     }
 
     openPainStage() {
@@ -5402,59 +5505,26 @@
       if (!log || !input || !typing) return;
       log.replaceChildren();
       input.textContent = '';
+      input.classList.remove('is-live');
       typing.hidden = true;
-      const addUser = (text) => {
-        const line = document.createElement('p');
-        line.className = 'promo-pain__msg is-user';
-        line.textContent = text;
-        log.appendChild(line);
-      };
-      const addBot = (lines, links, actions) => {
-        const block = document.createElement('div');
-        block.className = 'promo-pain__msg is-bot';
-        lines.forEach((text) => {
-          const line = document.createElement('p');
-          line.textContent = text;
-          block.appendChild(line);
-        });
-        if (links) {
-          const list = document.createElement('div');
-          list.className = 'promo-pain__links';
-          links.forEach((label) => {
-            const link = document.createElement('span');
-            link.textContent = label;
-            list.appendChild(link);
-          });
-          block.appendChild(list);
-        }
-        if (actions) {
-          const row = document.createElement('div');
-          row.className = 'promo-pain__actions';
-          actions.forEach((label) => {
-            const button = document.createElement('span');
-            button.textContent = label;
-            row.appendChild(button);
-          });
-          block.appendChild(row);
-        }
-        log.appendChild(block);
-      };
       if (through === 'typed-1') input.textContent = PROMO_PAIN_LINE_1;
       if (through === 'think-1' || through === 'answer-1' || through === 'typed-2' || through === 'think-2' || through === 'answer-2') {
-        addUser(PROMO_PAIN_LINE_1);
+        appendDullUser(log, PROMO_PAIN_LINE_1);
       }
       if (through === 'think-1') typing.hidden = false;
       if (through === 'answer-1' || through === 'typed-2' || through === 'think-2' || through === 'answer-2') {
-        addBot(PROMO_PAIN_ANSWER_1, PROMO_PAIN_LINKS);
+        appendDullBot(log, PROMO_PAIN_ANSWER_1, PROMO_PAIN_LINKS);
       }
       if (through === 'typed-2') input.textContent = PROMO_PAIN_LINE_2;
       if (through === 'think-2' || through === 'answer-2') {
-        addUser(PROMO_PAIN_LINE_2);
+        appendDullUser(log, PROMO_PAIN_LINE_2);
       }
       if (through === 'think-2') typing.hidden = false;
       if (through === 'answer-2') {
-        addBot([PROMO_PAIN_ANSWER_2], null, ['Open a ticket', 'No, thanks']);
+        appendDullBot(log, PROMO_PAIN_ANSWER_2, null, PROMO_PAIN_ACTIONS);
       }
+      if (log.querySelector('.promo-pain__msg.is-bot')) appendDullCloser(log);
+      scrollDullLog(log);
     }
 
     applyPainBeat(beat, instant) {
@@ -5556,11 +5626,15 @@
         if (beat === 'typed-1' || beat === 'typed-2') {
           const input = this.root.querySelector('[data-promo-pain-input]');
           const text = beat === 'typed-1' ? PROMO_PAIN_LINE_1 : PROMO_PAIN_LINE_2;
-          if (input) input.textContent = '';
+          if (input) {
+            input.textContent = '';
+            input.classList.add('is-live');
+          }
           for (let index = 1; index <= text.length; index += 1) {
             if (input) input.textContent = text.slice(0, index);
             await waitMs(PROMO_PAIN_TYPE_CHAR_MS);
           }
+          input?.classList.remove('is-live');
           continue;
         }
         await Promise.all([
@@ -6043,6 +6117,14 @@
       clip.tone = moment || clip.tone === 'pitch' ? 'pitch' : 'pain';
       clip.chat = !!clip.chat && !moment;
 
+      if (new URLSearchParams(window.location.search).get('still') === '1') {
+        document.documentElement.classList.add('is-promo-still');
+      }
+      document.documentElement.classList.remove('is-promo-pitch', 'is-clip-moment', 'is-promo-clerk', 'is-promo-live-card');
+      this.root.classList.remove('is-pitch', 'is-moments', 'is-clip-moment', 'is-pitch-cards', 'is-clerk-corner', 'is-clerk-head', 'is-clerk-moving');
+      const leakedEmbed = document.getElementById('bizmis-avatar-embed');
+      if (leakedEmbed && !moment) leakedEmbed.style.visibility = 'hidden';
+
       document.documentElement.classList.add('is-promo-clip');
       document.getElementById('page-loader')?.setAttribute('hidden', '');
       this.root.classList.add('is-clip');
@@ -6081,11 +6163,9 @@
       }
       const stage = store?.querySelector('.promo-opening__moments-stage');
       this.applyClipLook(stage, clip.look);
-      if (!(clip.device === 'phone' && clip.chat)) {
-        this.root.classList.remove('is-clerk-corner', 'is-clerk-head');
-        const widget = this.root.querySelector('[data-promo-widget]');
-        if (widget) widget.style.visibility = 'hidden';
-      }
+      this.root.classList.remove('is-clerk-corner', 'is-clerk-head');
+      const widget = this.root.querySelector('[data-promo-widget]');
+      if (widget) widget.style.visibility = 'hidden';
       if (clip.device === 'desktop') {
         if (store) store.style.visibility = '';
         if (clip.motion === 'product-read' || clip.motion === 'product-scroll' || clip.motion === 'compare' || clip.motion === 'back-bounce' || clip.motion === 'variant-doubt') {
@@ -6098,14 +6178,7 @@
         store.style.visibility = 'hidden';
         this.mountHandheldClip(clip);
       }
-      if (clip.device === 'phone' && clip.chat) {
-        const widget = this.root.querySelector('[data-promo-widget]');
-        if (widget) widget.style.visibility = 'visible';
-        promoWidget.applyStoreLook(this.bizmisLook());
-        this.parkWidget();
-        this.seatClerkInStore(true);
-      }
-
+      this.poseStill(clip);
       this.root.dataset.clipDevice = clip.device;
       this.root.dataset.clipMotion = clip.motion;
       this.root.dataset.clipTone = clip.tone;
@@ -6164,10 +6237,11 @@
       if (!board) return;
       board.dataset.storeLook = look || 'classic';
       board.querySelector('.promo-clip__banner')?.remove();
+      stage.querySelector(':scope > .promo-clip__banner')?.remove();
       if (look === 'home-hero') {
         const banner = document.createElement('div');
         banner.className = 'promo-clip__banner';
-        board.prepend(banner);
+        stage.appendChild(banner);
       }
       delete board.dataset.gridLaid;
       layoutStoreGrid(board);
@@ -6185,7 +6259,7 @@
       } else if (clip.motion === 'variant-doubt' || clip.motion === 'variant') {
         layer.innerHTML = '<div class="promo-clip__sizes"><b>S</b><b>M</b><b>L</b></div>';
       } else if (clip.motion === 'cart-abandon' || clip.motion === 'cart') {
-        layer.innerHTML = '<aside class="promo-clip__drawer"><i></i><i class="is-short"></i><b>Checkout</b></aside>';
+        layer.innerHTML = '<aside class="promo-clip__drawer"><i class="promo-clip__drawer-title"></i><div class="promo-clip__drawer-row"><span></span><i></i><i class="is-short"></i></div><div class="promo-clip__drawer-row"><span></span><i></i><i class="is-short"></i></div><b>Checkout</b></aside>';
       } else if (clip.motion === 'back-bounce') {
         layer.innerHTML = '<div class="promo-clip__back">Back</div>';
       } else if (clip.motion === 'upsell') {
@@ -6203,19 +6277,13 @@
       scroller.className = 'promo-clip__scroll';
       const count = clip.motion === 'compare' ? 2 : 1;
       for (let index = 0; index < count; index += 1) {
-        scroller.appendChild(this.clipHero(looks[index], clip.motion !== 'compare'));
-      }
-      if (clip.motion === 'product-scroll') {
-        const blurb = document.createElement('div');
-        blurb.className = 'promo-clip__blurb';
-        blurb.innerHTML = '<i></i><i></i><i></i><i class="is-short"></i>';
-        scroller.appendChild(blurb);
+        scroller.appendChild(this.clipHero(looks[index], true, clip.motion === 'product-scroll' && index === 0));
       }
       stage.appendChild(scroller);
       host.appendChild(stage);
     }
 
-    clipHero(look, withCopy) {
+    clipHero(look, withCopy, withBlurb) {
       const card = document.createElement('div');
       card.className = 'promo-clip__hero';
       const img = document.createElement('img');
@@ -6223,20 +6291,30 @@
       img.draggable = false;
       const src = claySrc(look);
       if (src) img.src = src;
-      card.appendChild(img);
+      const frame = document.createElement('span');
+      frame.className = 'promo-clip__frame';
+      frame.appendChild(img);
+      card.appendChild(frame);
       if (withCopy) {
         const copy = document.createElement('div');
         copy.className = 'promo-clip__copy';
         copy.innerHTML = '<i></i><i class="is-short"></i><i class="is-mid"></i>';
+        card.appendChild(copy);
+        if (withBlurb) {
+          const blurb = document.createElement('div');
+          blurb.className = 'promo-clip__blurb';
+          blurb.innerHTML = '<i></i><i class="is-short"></i>';
+          card.appendChild(blurb);
+        }
         const buy = document.createElement('div');
         buy.className = 'promo-clip__buy';
         buy.innerHTML = '<p class="promo-clip__price"><span>$</span><i></i></p><b>Add</b>';
-        card.append(copy, buy);
+        card.appendChild(buy);
       }
       return card;
     }
 
-    clipCard(look) {
+    clipCard(look, lined) {
       const card = document.createElement('article');
       card.className = 'promo-clip__card';
       const img = document.createElement('img');
@@ -6244,11 +6322,67 @@
       img.draggable = false;
       const src = claySrc(look);
       if (src) img.src = src;
+      const frame = document.createElement('span');
+      frame.className = 'promo-clip__frame';
+      frame.appendChild(img);
       const price = document.createElement('p');
       price.className = 'promo-clip__price';
       price.innerHTML = '<span>$</span><i></i>';
-      card.append(img, price);
+      if (lined) {
+        const copy = document.createElement('div');
+        copy.className = 'promo-clip__copy';
+        copy.innerHTML = '<i></i><i class="is-short"></i>';
+        copy.appendChild(price);
+        card.append(frame, copy);
+      } else {
+        card.append(frame, price);
+      }
       return card;
+    }
+
+    poseStill(clip) {
+      if (!document.documentElement.classList.contains('is-promo-still')) return;
+      if (clip.motion === 'scroll-down') {
+        const board = this.painHost()?.querySelector('.promo-moments__board');
+        const stage = board?.closest('.promo-opening__moments-stage');
+        const cols = Number.parseInt(board?.dataset.painCols || '', 10);
+        if (board && stage && Number.isFinite(cols) && cols > 0) {
+          board.style.setProperty('--pain-scroll', '0px');
+          stage.style.setProperty('--pain-scroll', '0px');
+          const nextRow = board.querySelectorAll('.promo-moments__card:not([hidden])')[cols];
+          if (nextRow) {
+            const delta = nextRow.getBoundingClientRect().top - stage.getBoundingClientRect().top;
+            const scroll = `${(-delta).toFixed(1)}px`;
+            board.style.setProperty('--pain-scroll', scroll);
+            stage.style.setProperty('--pain-scroll', scroll);
+          }
+        }
+        const screen = this.root.querySelector('.promo-clip__screen');
+        const banner = screen?.querySelector(':scope > .promo-clip__banner');
+        const track = screen?.querySelector(':scope > .promo-clip__track');
+        if (clip.look === 'home-hero' && banner && track) {
+          const shift = Math.round(banner.getBoundingClientRect().height + 16);
+          banner.style.transform = `translateY(-${shift}px)`;
+          track.style.transform = `translateY(-${shift}px)`;
+        } else if (track && !this.root.querySelector('.promo-clip .promo-pain__chat.is-open')) {
+          const card = this.root.querySelector('.promo-clip__card');
+          const row = card?.getBoundingClientRect().height || 0;
+          if (row > 20) track.style.transform = `translateY(-${Math.round(row)}px)`;
+        }
+      }
+      this.settleHeroChat(clip);
+    }
+
+    settleHeroChat(clip) {
+      if (clip.look !== 'home-hero' || clip.motion === 'scroll-down') return;
+      const screen = this.root.querySelector('.promo-clip__screen');
+      const banner = screen?.querySelector(':scope > .promo-clip__banner');
+      const chat = screen?.querySelector('.promo-pain__chat.is-open');
+      if (!screen || !banner || !chat) return;
+      const top = banner.getBoundingClientRect().bottom - screen.getBoundingClientRect().top + 8;
+      chat.style.top = `${Math.round(top)}px`;
+      chat.style.height = 'auto';
+      chat.style.bottom = '0px';
     }
 
     clipStatus(device) {
@@ -6261,7 +6395,9 @@
       island.className = 'promo-clip__island';
       const icons = document.createElement('span');
       icons.className = 'promo-clip__status-icons';
-      icons.innerHTML = '<svg viewBox="0 0 18 12" aria-hidden="true"><rect x="0" y="8" width="3" height="4" rx="0.6"/><rect x="5" y="5" width="3" height="7" rx="0.6"/><rect x="10" y="2" width="3" height="10" rx="0.6"/><rect x="15" y="0" width="3" height="12" rx="0.6" opacity="0.35"/></svg><svg viewBox="0 0 26 12" aria-hidden="true"><rect x="0.6" y="0.6" width="22" height="10.8" rx="2.2" fill="none" stroke="currentColor" stroke-width="1.2"/><rect x="23.6" y="3.6" width="1.5" height="4.8" rx="0.4"/><rect x="2.4" y="2.4" width="15.2" height="7.2" rx="1"/></svg>';
+      icons.innerHTML = device === 'phone'
+        ? '<svg viewBox="0 0 17 12" aria-hidden="true"><rect x="0" y="7.6" width="3" height="4.4" rx="0.8"/><rect x="4.6" y="5" width="3" height="7" rx="0.8"/><rect x="9.2" y="2.4" width="3" height="9.6" rx="0.8"/><rect x="13.8" y="0" width="3" height="12" rx="0.8"/></svg><svg viewBox="0 0 16 12" aria-hidden="true"><path d="M1.2 4.4a8.8 8.8 0 0 1 13.6 0" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M3.8 7a5.2 5.2 0 0 1 8.4 0" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><circle cx="8" cy="10" r="1.15"/></svg><svg viewBox="0 0 28 13" aria-hidden="true"><rect x="0.7" y="0.7" width="23" height="11.6" rx="3.2" fill="none" stroke="currentColor" stroke-width="1.2"/><rect x="2.4" y="2.4" width="16.4" height="8.2" rx="1.6"/><path d="M25.2 4.4c.9.3 1.5 1.1 1.5 2.1s-.6 1.8-1.5 2.1z"/></svg>'
+        : '<svg viewBox="0 0 18 12" aria-hidden="true"><rect x="0" y="8" width="3" height="4" rx="0.6"/><rect x="5" y="5" width="3" height="7" rx="0.6"/><rect x="10" y="2" width="3" height="10" rx="0.6"/><rect x="15" y="0" width="3" height="12" rx="0.6" opacity="0.35"/></svg><svg viewBox="0 0 26 12" aria-hidden="true"><rect x="0.6" y="0.6" width="22" height="10.8" rx="2.2" fill="none" stroke="currentColor" stroke-width="1.2"/><rect x="23.6" y="3.6" width="1.5" height="4.8" rx="0.4"/><rect x="2.4" y="2.4" width="15.2" height="7.2" rx="1"/></svg>';
       status.append(time, island, icons);
       status.dataset.device = device;
       return status;
@@ -6294,7 +6430,7 @@
         : clip.look === 'lookbook' ? 2
           : clip.look === 'list' ? 1
             : clip.device === 'tablet' ? 3 : 2;
-      const count = clip.look === 'list' ? 5 : clip.look === 'lookbook' ? 4 : cols * 4;
+    const count = clip.look === 'list' ? 5 : clip.look === 'lookbook' ? 4 : cols * 4;
       const looks = gridAllLooks(clip.look).slice(0, count);
       const track = document.createElement('div');
       track.className = 'promo-clip__track';
@@ -6302,7 +6438,7 @@
         const sheet = document.createElement('div');
         sheet.className = `promo-clip__sheet is-look-${clip.look || 'classic'}`;
         sheet.style.gridTemplateColumns = `repeat(${cols}, minmax(0, 1fr))`;
-        looks.forEach((look) => sheet.appendChild(this.clipCard(look)));
+        looks.forEach((look) => sheet.appendChild(this.clipCard(look, clip.look === 'list')));
         track.appendChild(sheet);
       }
       screen.appendChild(track);
@@ -7458,9 +7594,8 @@
         this.emitClick();
         await waitMs(120);
       }
-      chat.classList.remove('is-open');
-      chat.classList.add('is-shut');
-      chat.setAttribute('hidden', '');
+      chat.classList.remove('is-open', 'is-shut');
+      chat.removeAttribute('hidden');
       cursor.style.opacity = '0';
       await waitMs(180);
     }
@@ -7605,37 +7740,16 @@
       chat.classList.add('is-open');
       chat.classList.remove('is-shut');
       log.replaceChildren();
+      input.classList.remove('is-live');
       if (typing) typing.hidden = through !== 'think-2';
-      const addUser = (text) => {
-        const block = document.createElement('div');
-        block.className = 'promo-pain__msg is-user';
-        const line = document.createElement('p');
-        line.textContent = text;
-        block.appendChild(line);
-        log.appendChild(block);
-      };
-      const addBot = (text) => {
-        const block = document.createElement('div');
-        block.className = 'promo-pain__msg is-bot';
-        const line = document.createElement('p');
-        line.textContent = text;
-        block.appendChild(line);
-        const row = document.createElement('div');
-        row.className = 'promo-pain__actions';
-        ['Open a ticket', 'No, thanks'].forEach((label) => {
-          const button = document.createElement('span');
-          button.textContent = label;
-          row.appendChild(button);
-        });
-        block.appendChild(row);
-        log.appendChild(block);
-      };
       if (through === 'typed-2') input.textContent = PROMO_PAIN_LINE_2;
       if (through === 'think-2' || through === 'answer-2') {
-        addUser(PROMO_PAIN_LINE_2);
+        appendDullUser(log, PROMO_PAIN_LINE_2);
         input.textContent = '';
       }
-      if (through === 'answer-2') addBot(PROMO_PAIN_ANSWER_2);
+      if (through === 'answer-2') appendDullBot(log, PROMO_PAIN_ANSWER_2, null, PROMO_PAIN_ACTIONS);
+      if (log.querySelector('.promo-pain__msg.is-bot')) appendDullCloser(log);
+      scrollDullLog(log);
     }
 
     async playPhoneDoubt(clone) {
@@ -7651,11 +7765,15 @@
       await this.moveThumb(clone, width * 0.5, height * 0.46, 260);
       const input = clone.querySelector('[data-promo-pain-input]');
       this.fillCloneChat(clone, 'panel');
-      if (input) input.textContent = '';
+      if (input) {
+        input.textContent = '';
+        input.classList.add('is-live');
+      }
       for (let index = 1; index <= PROMO_PAIN_LINE_2.length; index += 1) {
         if (input) input.textContent = PROMO_PAIN_LINE_2.slice(0, index);
         await waitMs(PROMO_PAIN_TYPE_CHAR_MS);
       }
+      input?.classList.remove('is-live');
       this.fillCloneChat(clone, 'think-2');
       await waitMs(220);
       this.fillCloneChat(clone, 'answer-2');
@@ -7694,7 +7812,7 @@
       clone.style.left = `${-leave}px`;
       await waitMs(420);
       const phoneH = host.height * 0.9;
-      const phoneW = phoneH * (9 / 21);
+      const phoneW = phoneH * (9 / 19);
       clone.classList.add('is-phone');
       clone.dataset.naturalW = String(Math.round(phoneW));
       clone.dataset.naturalH = String(Math.round(phoneH));

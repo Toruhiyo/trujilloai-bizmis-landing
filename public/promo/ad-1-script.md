@@ -10,23 +10,23 @@ The film says "chatbot" and "sales agent". "Salesperson" is only the struck word
 
 The picture is the MacBook Pro 14 panel, 3024 by 1964, so a full window on that laptop and the exported file are the same frame. A low-resolution preview is that same layout, scaled down. It changes sharpness only.
 
-The phone mockup is 9:21 and tall in the frame. The tablet mockup is 3:4.
+The desktop store is 16:10. The phone mockup is 9:19 and tall in the frame. The tablet mockup is 3:4.
 
 ## 1. Lost in the catalog (desktop)
 
-The first close-up is a laptop window, the same 3024:1964 panel, limited by height and larger than the sea cards. It opens the way a Mac window unminimizes, scaling up from the bottom, slow enough to read. The header "Your store" stays hidden until the catalog is there. The window finishes opening first. Then the store icon and a large "Your store" ease in above the center of the page, hold, and ease out. No spinner. The catalog does not show through the title. The header comes back with the catalog. The cursor stays hidden until it is on a product. The shopper opens a product, goes back, bounces between two similar products, opens another, backs out.
+The first close-up is a laptop window, 16:10, limited by height and larger than the sea cards. It opens the way a Mac window unminimizes, scaling up from the bottom, slow enough to read. The header "Your store" stays hidden until the catalog is there. The window finishes opening first. Then the store icon and a large "Your store" ease in above the center of the page, hold, and ease out. No spinner. The catalog does not show through the title. The header comes back with the catalog. The cursor stays hidden until it is on a product. The shopper opens a product, goes back, bounces between two similar products, opens another, backs out.
 
 **VO** `two-places`: "In every online store, a sale dies in two places."
 
 **VO** `catalog`: "Lost in the catalog."
 
-The cursor moves to the Dull Chatbot button and opens it. The panel does not open on its own. On the phone that panel is a sheet across the bottom, and the chips wrap. Chips: Track order, Returns, Contact us.
+The cursor moves to the bubble circle in the bottom right corner and opens it. The panel rises from that corner. It is a grey commercial chat window, tall enough to read, and the messages scroll when they do not fit. It shows a chat bubble with two eyes, the name "Dull Chatbot", message bubbles, a round composer with a paper-plane send button, and quick replies above the composer. The footer reads "Powered by Every Chatbot Ever", with "Every Chatbot Ever" in bold. It does not open on its own. On the phone the open panel is a sheet across the bottom, and the chips wrap. The collapsed control stays a circle in the bottom right. Chips: Track order, Returns, Contact us.
 
 The shopper types: "Looking for something light I can take everywhere."
 
-The bot answers: "You can browse our full collection. Use the filters to narrow by size and weight." Links: View collection, Size guide.
+The bot answers: "Thanks for reaching out! You can browse our full collection using the menu above. To narrow your search, use the filters for size, weight and category. Product details, specifications and customer reviews are available on each product page. Let me know if there's anything else I can help you with." Links: View collection, Size guide, Shipping info. After the reply, as the end of the conversation: "Was I helpful?" with a flat thumbs-up and a flat thumbs-down.
 
-The cursor closes the chat. A grey veil covers the window and "LOST" stamps in grey, inside the rounded window. The picture under that stamp is the same catalog that was just on screen.
+The cursor presses X. The window collapses to the bubble circle in the bottom right corner. A grey veil covers the window and "LOST" stamps in grey, inside the rounded window. The picture under that stamp is the same catalog that was just on screen.
 
 ## 2. The last doubt (phone)
 
@@ -34,9 +34,9 @@ The desktop window leaves the frame. The next card is a phone on its own, still 
 
 **VO** `last-doubt`: "Or stuck on the last doubt."
 
-The shopper types: "Will it fit my setup?"
+The shopper types: "What if it's not right for me?"
 
-The bot answers: "Recommendations vary by preference. Check each product page for details, or I can open a support ticket." Buttons: Open a ticket, No, thanks.
+The bot answers: "That's a great question. Recommendations vary depending on individual preferences and intended use, so we're unable to confirm suitability for a specific customer. We suggest reviewing the product description, specifications and customer reviews on the product page before purchasing. If you'd like further assistance, I can open a support ticket and a member of our team will get back to you within 1-2 business days." Buttons: Open a ticket, No, thanks. After the reply, as the end of the conversation: "Was I helpful?" with a flat thumbs-up and a flat thumbs-down.
 
 **VO** `salesperson`: "In a physical store, a salesperson catches both."
 
@@ -82,9 +82,9 @@ While he speaks, the grid narrows to three, then the pick's page opens. Orange v
 
 **VO** `narrows`: "It narrows. It recommends."
 
-Phone, the same product page. The shopper types: "Will it fit my setup? If so, add it."
+Phone, the same product page. The shopper types: "What if it's not right for me?"
 
-**Clerk:** "It will. And if it doesn't, returns are free. Added, with the sleeve that goes with it."
+**Clerk:** "If it's not right, returns are free. Added, with the sleeve that goes with it."
 
 While he speaks, the product is added, then a flat sleeve that belongs with it, and the cart badge goes to 2. "SOLD".
 

@@ -27,8 +27,13 @@ html.is-promo-cover,
   --ad-shadow: rgba(30, 26, 20, 0.08);
   --ad-red: #E5533D;
   --bot-surface: #EEF0F3;
+  --bot-panel: #FFFFFF;
+  --bot-bubble: #F2F3F5;
   --bot-line: #D8DCE2;
   --bot-ink: #4A5160;
+  --bot-muted: #8B919C;
+  --bot-user: #3A4150;
+  --bot-user-ink: #FFFFFF;
 }
 
 html.is-promo-opening {
