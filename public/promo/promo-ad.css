@@ -9366,34 +9366,24 @@ html.is-promo-still .promo-clip__product.is-compare::after {
   position: relative;
   display: inline-block;
   margin: 1.05rem 0 0;
-  padding: 0.7em 1em 0.78em 1.55em;
-  border-radius: 2px 8px 8px 2px;
-  background: var(--bizmis-primary);
-  color: #fff;
+  padding: 0.38em 0.85em 0.42em 1.45em;
+  border: 2px solid var(--bizmis-primary);
+  border-radius: 2px 9px 9px 2px;
+  background: #fff;
+  color: var(--bizmis-primary);
   font-family: var(--font-heading);
-  font-size: 1.05rem;
+  font-size: 1.02rem;
   font-weight: 800;
   letter-spacing: 0.01em;
-  line-height: 1.25;
+  line-height: 1.05;
   overflow: visible;
   white-space: nowrap;
+  -webkit-mask: radial-gradient(circle at 0 50%, transparent 0.42em, #000 0.46em);
+  mask: radial-gradient(circle at 0 50%, transparent 0.42em, #000 0.46em);
   opacity: 0;
   transform: translateY(-0.45em) rotate(-18deg) scale(1.35);
   transform-origin: center center;
-  box-shadow: 0 10px 16px color-mix(in srgb, var(--bizmis-primary) 28%, transparent);
-}
-
-.promo-pass-slot__aside::before {
-  content: "";
-  position: absolute;
-  left: 0.38em;
-  top: 50%;
-  width: 0.42em;
-  height: 0.42em;
-  margin-top: -0.21em;
-  border-radius: 50%;
-  background: #fff;
-  box-shadow: inset 0 0 0 1.5px color-mix(in srgb, var(--bizmis-primary) 40%, #fff);
+  box-shadow: 0 8px 14px color-mix(in srgb, var(--bizmis-primary) 16%, transparent);
 }
 
 .promo-pass-slot__aside.is-stamped {
