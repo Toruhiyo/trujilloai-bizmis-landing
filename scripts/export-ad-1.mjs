@@ -32,7 +32,7 @@ function usage() {
     '  --cta demo|ea|install|none     default install',
     '  --part full|pain|pitch         default full',
     '  --resolution 1920x1080         or 3840x2160',
-    '  --preview                      one 1008x654 viewport at 6fps, no quadrants',
+    '  --preview                      layout at 1512x982, file is 756x491, 6fps',
     '  --frames 0-59                  inclusive range, default the whole film',
     '  --codec ffv1|prores            default ffv1 (MKV). prores is ProRes 4444',
     '  --out <folder>                 default tmp/ad-1-export',
@@ -727,11 +727,13 @@ async function main() {
   const codec = (arg('codec', 'ffv1') || 'ffv1').trim().toLowerCase();
   const preview = hasFlag('preview');
   const resolution = preview
-    ? { width: 1008, height: 654 }
+    ? { width: 756, height: 491 }
     : parseResolution(arg('resolution', '1920x1080'));
   captureAttempts = preview ? 1 : CAPTURE_ATTEMPTS;
   exportFps = preview ? 6 : FPS;
-  const capture = captureSetup(resolution.width, resolution.height);
+  const capture = preview
+    ? { viewportWidth: 1512, viewportHeight: 982, scale: 0.5, quadrants: 1, beginFrame: false }
+    : captureSetup(resolution.width, resolution.height);
   const range = parseFrames(arg('frames', ''));
   const verify = hasFlag('verify');
   const resume = hasFlag('resume') && !verify;

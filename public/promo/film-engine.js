@@ -324,8 +324,8 @@
     gapRatio: 0.012,
     steps: [1, 2, 4, 8],
     devices: [
-      { id: 'desktop', ratio: 16 / 10, frame: 800 },
-      { id: 'phone', ratio: 9 / 19.5, frame: 800 },
+      { id: 'desktop', ratio: 3024 / 1964, frame: 800 },
+      { id: 'phone', ratio: 9 / 21, frame: 800 },
       { id: 'tablet', ratio: 3 / 4, frame: 800 },
     ],
     variants: ['scroll-up', 'scroll-down', 'wander-near', 'wander-far', 'product-read', 'product-scroll', 'compare'],
@@ -2415,7 +2415,9 @@
     const inset = padX;
     const gx0 = inset + cardW / 2 - (contentWidth / 2 + shift);
     const pitchBoard = !board.closest('.promo-opening')?.classList.contains('is-pain');
-    const padY = (pitchBoard ? 28 : PROMO_CATALOG_PAD_Y) + (look === 'home-hero' ? 132 : 0);
+    const actControl = stage.querySelector('.promo-clip__search, .promo-clip__chips, .promo-clip__sizes');
+    const actReserve = actControl ? Math.round(stage.clientWidth * 0.024 + 56) : 0;
+    const padY = (pitchBoard ? 28 : PROMO_CATALOG_PAD_Y) + (look === 'home-hero' ? 132 : 0) + actReserve;
     if (pitchBoard && look !== 'home-hero') {
       const fitRaw = parseFloat(getComputedStyle(board).getPropertyValue('--promo-grid-fit'));
       const fit = Number.isFinite(fitRaw) && fitRaw > 0 && fitRaw <= 1 ? fitRaw : 1;
@@ -6040,7 +6042,7 @@
       PROMO_CLIP_DEVICES.forEach((id) => this.root.classList.toggle(`is-clip-${id}`, id === clip.device));
       PROMO_CLIP_MOTION_ALL.forEach((id) => this.root.classList.toggle(`is-motion-${id}`, id === clip.motion));
       PROMO_STORE_LOOKS.forEach((id) => this.root.classList.toggle(`is-look-${id}`, id === clip.look));
-      this.root.classList.toggle('is-clerk-head', clip.device === 'phone' && (!!moment || clip.chat));
+      this.root.classList.toggle('is-clerk-head', clip.device === 'phone' && clip.chat && !moment);
       this.root.classList.toggle('is-tone-pain', clip.tone === 'pain');
       this.root.classList.toggle('is-tone-pitch', clip.tone === 'pitch');
       this.root.classList.toggle('is-pain-loop', clip.tone === 'pain');
@@ -6083,6 +6085,8 @@
           this.mountClipProduct(stage, clip);
         }
         this.mountClipBehavior(stage, clip);
+        const board = stage?.querySelector('.promo-moments__board');
+        if (board) layoutStoreGrid(board);
       } else if (store) {
         store.style.visibility = 'hidden';
         this.mountHandheldClip(clip);
@@ -6111,7 +6115,11 @@
       this.root.querySelector('[data-promo-clip]')?.remove();
       this.root.querySelectorAll('.promo-clip__clerk, .promo-grid__clerk').forEach((node) => node.remove());
       const store = this.painStore();
-      if (store) store.style.visibility = '';
+      if (store) {
+        store.style.visibility = '';
+        store.classList.remove('is-desktop', 'is-phone', 'is-tablet');
+        store.classList.add(clip.device === 'phone' ? 'is-phone' : clip.device === 'tablet' ? 'is-tablet' : 'is-desktop');
+      }
       const stage = this.momentStage();
       const board = stage?.querySelector('.promo-moments__board');
       if (board) {
@@ -6123,13 +6131,15 @@
       const widget = this.root.querySelector('[data-promo-widget]');
       if (widget) widget.style.visibility = 'visible';
       this.parkWidget();
-      this.clipClerkScale = clip.device === 'phone' ? 0.62 : clip.device === 'tablet' ? 0.55 : 0.72;
+      this.clipClerkScale = clip.device === 'phone' ? 0.34 : clip.device === 'tablet' ? 0.46 : 0.72;
       if (stage) {
         const board = stage.querySelector('.promo-moments__board');
         if (board) board.dataset.storeLook = clip.look || 'classic';
         applyMomentPose(stage, moment.pose, { instant: false });
         applyMomentTake(stage.querySelector('.promo-moments__board'), moment.take);
         this.mountClipBehavior(stage, { motion: moment.scene, look: clip.look, take: moment.take });
+        const laid = stage.querySelector('.promo-moments__board');
+        if (laid) layoutStoreGrid(laid);
       }
       this.seatClerkInStore(true);
       const gesture = PROMO_MOMENT_GESTURE[moment.scene] || 'nod';
@@ -7500,17 +7510,17 @@
       clone.classList.remove('is-desktop');
       clone.classList.add('is-phone');
       clone.style.width = '360px';
-      clone.style.height = '780px';
+      clone.style.height = '840px';
       clone.dataset.naturalW = '360';
-      clone.dataset.naturalH = '780';
+      clone.dataset.naturalH = '840';
       phoneNode.appendChild(clone);
       phoneNode.classList.add('is-phone', 'is-lead-match');
       phoneNode.classList.remove('is-desktop');
       phoneNode.querySelector(':scope > .promo-glide__name')?.style.setProperty('visibility', 'hidden');
       const width = Number.parseFloat(phoneNode.style.width) || phoneNode.offsetWidth || 360;
-      const height = Number.parseFloat(phoneNode.style.height) || phoneNode.offsetHeight || 780;
+      const height = Number.parseFloat(phoneNode.style.height) || phoneNode.offsetHeight || 840;
       clone.style.transformOrigin = '0 0';
-      clone.style.transform = `scale(${(width / 360).toFixed(4)}, ${(height / 780).toFixed(4)})`;
+      clone.style.transform = `scale(${(width / 360).toFixed(4)}, ${(height / 840).toFixed(4)})`;
       clone.style.visibility = 'visible';
       clone.style.opacity = '1';
       this.glideLeadKey = phoneKey;
@@ -7622,7 +7632,7 @@
       const stage = clone.querySelector('[data-promo-moments-stage]');
       if (stage) applyMomentPose(stage, 'doubt', { instant: true });
       const width = clone.clientWidth || 360;
-      const height = clone.clientHeight || 780;
+      const height = clone.clientHeight || 840;
       await this.moveThumb(clone, width * 0.62, height * 0.72, 420);
       markPromoVo('last-doubt');
       await waitMs(280);
@@ -7673,8 +7683,8 @@
       clone.style.transition = 'left 420ms cubic-bezier(0.45, 0, 0.2, 1)';
       clone.style.left = `${-leave}px`;
       await waitMs(420);
-      const phoneH = host.height * 0.78;
-      const phoneW = phoneH * (9 / 19.5);
+      const phoneH = host.height * 0.9;
+      const phoneW = phoneH * (9 / 21);
       clone.classList.add('is-phone');
       clone.dataset.naturalW = String(Math.round(phoneW));
       clone.dataset.naturalH = String(Math.round(phoneH));

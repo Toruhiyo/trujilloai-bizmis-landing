@@ -15,6 +15,14 @@ const FPS = 10;
 const FRAME_COUNT = 30;
 const PAIN_ACTS = ['search-empty', 'filter-hop', 'variant-doubt', 'cart-abandon', 'back-bounce'];
 const MOMENTS = [
+  'moment-catalog-a',
+  'moment-catalog-b',
+  'moment-product-a',
+  'moment-product-b',
+  'moment-compare-a',
+  'moment-compare-b',
+  'moment-bundle-a',
+  'moment-bundle-b',
   'moment-search-a',
   'moment-search-b',
   'moment-variant-a',
@@ -29,8 +37,8 @@ const LOOK_MOTIONS = ['scroll-up', 'scroll-down'];
 
 const DEVICES = {
   desktop: { width: 1512, height: 982 },
-  phone: { width: 360, height: 780 },
-  tablet: { width: 960, height: 720 },
+  phone: { width: 360, height: 840 },
+  tablet: { width: 768, height: 1024 },
 };
 const STILLS_ONLY = process.env.PROMO_STILLS_ONLY === '1';
 

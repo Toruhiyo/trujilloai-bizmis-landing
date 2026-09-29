@@ -8,7 +8,9 @@ The film says "chatbot" and "sales agent". "Salesperson" is only the struck word
 
 ---
 
-The picture is the MacBook Pro 14 panel, 3024 by 1964, so a full window on that laptop and the exported file are the same frame.
+The picture is the MacBook Pro 14 panel, 3024 by 1964, so a full window on that laptop and the exported file are the same frame. A low-resolution preview is that same layout, scaled down. It changes sharpness only.
+
+The phone mockup is 9:21 and tall in the frame. The tablet mockup is 3:4.
 
 ## 1. Lost in the catalog (desktop)
 
