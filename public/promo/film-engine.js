@@ -2631,7 +2631,7 @@
             resolve();
             return;
           }
-          Promise.all(pending.map((anim) => anim.finished.catch(() => {}))).then(() => resolve());
+          Promise.all(pending.map((anim) => anim.finished.catch(() => { }))).then(() => resolve());
         });
       });
     });
@@ -3030,7 +3030,7 @@
     if (urls[key]) return urls[key];
     const classic = clipFileKey(tone, device, motion, chat, 'classic');
     if (urls[classic]) return urls[classic];
-    return `/promo/sea-of-cards/${tone}/videos/promo-clip-${classic}.mp4`;
+    return `/promo/sea-of-cards/of-cards/${tone}/videos/promo-clip-${classic}.mp4`;
   }
 
   function gridMix(col, row, salt) {
@@ -3239,7 +3239,7 @@
         if (Date.now() - started > 20000) {
           Promise.all(urls.map((url) => fetch(url, { mode: 'cors', cache: 'force-cache' })
             .then((response) => response.arrayBuffer())
-            .catch(() => {}))).then(() => resolve());
+            .catch(() => { }))).then(() => resolve());
           return;
         }
         window.setTimeout(tick, 80);
@@ -4086,7 +4086,7 @@
       }
       this.clearPitchEvents();
       await this.typeShopperLine(PROMO_PITCH_LINE_1);
-      const first = playClerkLine(PROMO_PITCH_CLERK_1, reduced ? 200 : PROMO_PITCH_SPEAK_1_MS, () => {});
+      const first = playClerkLine(PROMO_PITCH_CLERK_1, reduced ? 200 : PROMO_PITCH_SPEAK_1_MS, () => { });
       applyMomentPose(stage, 'row', { instant: reduced });
       const shown = {
         kind: 'products',
@@ -4117,7 +4117,7 @@
       this.clearPitchEvents();
       applyMomentPose(stage, 'doubt', { instant: true });
       await this.typeShopperLine(PROMO_PITCH_LINE_2);
-      const second = playClerkLine(PROMO_PITCH_CLERK_2, reduced ? 200 : PROMO_PITCH_SPEAK_2_MS, () => {});
+      const second = playClerkLine(PROMO_PITCH_CLERK_2, reduced ? 200 : PROMO_PITCH_SPEAK_2_MS, () => { });
       this.paintPitchEvent({ kind: 'policies' });
       if (!reduced) await waitMs(900);
       host?.classList.add('is-cart-one');
@@ -4383,7 +4383,7 @@
       animation.finished.then(() => {
         if (this.clerkMove !== animation) return;
         this.settleClerkRow();
-      }).catch(() => {});
+      }).catch(() => { });
     }
 
     resetSee() {
@@ -4727,8 +4727,8 @@
           if (!reduced) await waitMs(promoVoGuard('narrows'));
         }
         this.showMoment(beat, reduced);
-      if (!reduced && beat.lookMs) await waitMs(beat.lookMs);
-      await waitMs(beat.voMs);
+        if (!reduced && beat.lookMs) await waitMs(beat.lookMs);
+        await waitMs(beat.voMs);
         if (reduced) {
           await waitMs(beat.speakMs);
         } else {
@@ -5536,7 +5536,7 @@
               waitMs(remaining + 32).then(() => resolve());
               return;
             }
-            Promise.all(pending.map((anim) => anim.finished.catch(() => {}))).then(() => resolve());
+            Promise.all(pending.map((anim) => anim.finished.catch(() => { }))).then(() => resolve());
           });
         });
       });
@@ -5947,7 +5947,7 @@
       }
       if (live) {
         video.autoplay = true;
-        video.play().catch(() => {});
+        video.play().catch(() => { });
       } else {
         video.addEventListener('loadeddata', () => {
           try { video.currentTime = PROMO_CONVEYOR_STILL_MS; } catch { /* first frame */ }
@@ -6688,7 +6688,7 @@
             if (video.duration && offset < video.duration) video.currentTime = offset;
           };
           video.addEventListener('loadeddata', seek, { once: true });
-          video.play().catch(() => {});
+          video.play().catch(() => { });
         }
       }
       const stillNode = parts.still;
@@ -6696,7 +6696,7 @@
       if (!live) this.releaseGlideVideo(node);
       const showVideo = false;
       if (videoNode) {
-        if (showVideo && videoNode.paused && videoNode.dataset.held !== '1') videoNode.play().catch(() => {});
+        if (showVideo && videoNode.paused && videoNode.dataset.held !== '1') videoNode.play().catch(() => { });
         if (!showVideo && !videoNode.paused && videoNode.dataset.held !== '1') videoNode.pause();
         writeHidden(videoNode, !showVideo);
       }
@@ -11102,7 +11102,7 @@
     if (promoVideo === 'opening') {
       const opening = document.querySelector('[data-promo-opening]');
       if (opening) {
-        const openingController = new PromoOpening(opening, () => {});
+        const openingController = new PromoOpening(opening, () => { });
         window.__promoOpeningFrames = openingController;
       }
     }

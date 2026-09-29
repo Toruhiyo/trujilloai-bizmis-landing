@@ -1,0 +1,139 @@
+{
+  "fps": 6,
+  "cta": "ea",
+  "part": "full",
+  "codec": "ffv1",
+  "width": 756,
+  "height": 491,
+  "from": 0,
+  "last": 755,
+  "frames": 756,
+  "durationSeconds": 126,
+  "timeouts": [],
+  "rerendered": [],
+  "stillTimedOut": [],
+  "markers": [
+    {
+      "scene": "pain",
+      "id": "two-places",
+      "line": "In every online store, a sale dies in two places.",
+      "ms": 0,
+      "frame": 0,
+      "timecode": "00:00:00:00"
+    },
+    {
+      "scene": "pain",
+      "id": "catalog",
+      "line": "Lost in the catalog.",
+      "ms": 7167,
+      "frame": 43,
+      "timecode": "00:00:07:01"
+    },
+    {
+      "scene": "pain",
+      "id": "last-doubt",
+      "line": "Or stuck on the last doubt.",
+      "ms": 25500,
+      "frame": 153,
+      "timecode": "00:00:25:03"
+    },
+    {
+      "scene": "pain",
+      "id": "salesperson",
+      "line": "In a physical store, a salesperson catches both.",
+      "ms": 30667,
+      "frame": 184,
+      "timecode": "00:00:30:04"
+    },
+    {
+      "scene": "pain",
+      "id": "loses-both",
+      "line": "Online, a chatbot replies to both. And loses both.",
+      "ms": 32000,
+      "frame": 192,
+      "timecode": "00:00:32:00"
+    },
+    {
+      "scene": "dull-sea",
+      "id": "numbers-game",
+      "line": "Online sales is a numbers game. And a chatbot doesn't play.",
+      "ms": 43667,
+      "frame": 262,
+      "timecode": "00:00:43:04"
+    },
+    {
+      "scene": "switch",
+      "id": "change-that",
+      "line": "Let's change that.",
+      "ms": 50000,
+      "frame": 300,
+      "timecode": "00:00:50:00"
+    },
+    {
+      "scene": "reveal",
+      "id": "introducing",
+      "line": "Introducing Bizmis.",
+      "ms": 53730,
+      "frame": 322,
+      "timecode": "00:00:53:04"
+    },
+    {
+      "scene": "reveal",
+      "id": "sales-agent",
+      "line": "Your store's sales agent. Built to sell.",
+      "ms": 56322,
+      "frame": 338,
+      "timecode": "00:00:56:02"
+    },
+    {
+      "scene": "reveal",
+      "id": "catch-both",
+      "line": "Now watch it catch both.",
+      "ms": 56562,
+      "frame": 339,
+      "timecode": "00:00:56:03"
+    },
+    {
+      "scene": "pitch",
+      "id": "narrows",
+      "line": "It narrows. It recommends.",
+      "ms": 74500,
+      "frame": 447,
+      "timecode": "00:01:14:03"
+    },
+    {
+      "scene": "pitch",
+      "id": "closes",
+      "line": "It answers like an expert, and closes. Then sells them one more thing.",
+      "ms": 90833,
+      "frame": 545,
+      "timecode": "00:01:30:05"
+    },
+    {
+      "scene": "selling-sea",
+      "id": "all-day",
+      "line": "For every shopper. All day long.",
+      "ms": 101867,
+      "frame": 611,
+      "timecode": "00:01:41:05"
+    },
+    {
+      "scene": "stores",
+      "id": "any-store",
+      "line": "Any store.",
+      "ms": 107500,
+      "frame": 645,
+      "timecode": "00:01:47:03"
+    },
+    {
+      "scene": "end",
+      "id": "join-fifty",
+      "line": "Join the first fifty stores.",
+      "ms": 121667,
+      "frame": 730,
+      "timecode": "00:02:01:04"
+    }
+  ],
+  "video": "/Users/toruhiyo/Projects/Bizmis/trujilloai-bizmis-landing/tmp/ad-1-preview/ad-1-full-ea-756x491.mkv",
+  "framesDir": "/Users/toruhiyo/Projects/Bizmis/trujilloai-bizmis-landing/tmp/ad-1-preview/frames"
+}

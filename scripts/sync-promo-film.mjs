@@ -18,13 +18,13 @@ function seaAssetPath(name) {
   const match = name.match(/^promo-(still|clip)-([a-z]+)-/);
   if (!match) return '';
   const kind = match[1] === 'still' ? 'images' : 'videos';
-  return `/promo/sea-of-cards/${match[2]}/${kind}/${name}`;
+  return `/promo/sea-of-cards/of-cards/${match[2]}/${kind}/${name}`;
 }
 
 function publicAssetPath(name) {
   const sea = seaAssetPath(name);
   if (sea) return sea;
-  if (name === 'promo-pitch-grid-lead.jpg') return `/promo/sea-of-cards/pitch/images/${name}`;
+  if (name === 'promo-pitch-grid-lead.jpg') return `/promo/sea-of-cards/of-cards/pitch/images/${name}`;
   if (name.startsWith('promo-home-') || name === 'logo-white.png' || name === 'logo-transparent.png') return `/promo/stores/images/${name}`;
   if (name.startsWith('promo-product-')) return `/promo/products/images/${name}`;
   if (name.startsWith('bizmis-logo-')) return `/promo/brand/images/${name}`;
@@ -100,7 +100,7 @@ function assetMap() {
   readDir(seaDir).forEach((tone) => {
     readDir(path.join(seaDir, tone, 'videos')).forEach((name) => {
       if (name.startsWith('promo-clip-') && name.endsWith('.mp4')) {
-        clips[name.slice('promo-clip-'.length, -'.mp4'.length)] = `/promo/sea-of-cards/${tone}/videos/${name}`;
+        clips[name.slice('promo-clip-'.length, -'.mp4'.length)] = `/promo/sea-of-cards/of-cards/${tone}/videos/${name}`;
       }
     });
   });
@@ -112,7 +112,7 @@ function assetMap() {
   return {
     clips,
     clay,
-    pitchLead: '/promo/sea-of-cards/pitch/images/promo-pitch-grid-lead.jpg',
+    pitchLead: '/promo/sea-of-cards/of-cards/pitch/images/promo-pitch-grid-lead.jpg',
     stamp: '/promo/brand/images/bizmis-logo-full-white-transparent.png',
   };
 }
