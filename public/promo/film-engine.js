@@ -5325,6 +5325,7 @@
         await waitMs(PROMO_PASS_SLOT_FADE_MS);
         slot.classList.add('is-writing');
         await waitMs(PROMO_EA_WRITE_MS);
+        slot.classList.add('is-written');
         slot.querySelector('.promo-pass-slot__aside')?.classList.add('is-stamped');
         await waitMs(PROMO_EA_STAMP_MS);
         await this.playEaTerms(slot);
