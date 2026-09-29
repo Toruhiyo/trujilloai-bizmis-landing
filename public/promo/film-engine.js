@@ -2428,14 +2428,16 @@
     const rowGap = phone ? 12 : PROMO_ROW_GAP;
     const rowInset = phone ? 16 : tablet ? 20 : 28;
     const laneRaw = parseFloat(getComputedStyle(stage).getPropertyValue('--clip-clerk-lane'));
-    const clerkLane = phone ? 0 : tablet ? 64 : (Number.isFinite(laneRaw) && laneRaw > 40 ? laneRaw : PROMO_ROW_CLERK_LANE);
+    const clerkLane = phone || tablet ? 0 : (Number.isFinite(laneRaw) && laneRaw > 40 ? laneRaw : PROMO_ROW_CLERK_LANE);
     const rowBudget = contentWidth - clerkLane - rowInset;
     const rowCardW = phone
-      ? Math.min(220, contentWidth - rowInset * 2)
+      ? Math.min(contentWidth - rowInset * 2, stage.clientWidth * 0.86)
       : (rowBudget - rowGap * 2) / 3;
     const rowCardH = phone
-      ? Math.max(112, Math.min(168, (stage.clientHeight - 150) / 3))
-      : Math.max(tablet ? 160 : 200, stage.clientHeight - 64 - (tablet ? 80 : PROMO_COMPARE_RESERVE));
+      ? Math.max(112, Math.min(200, (stage.clientHeight - 160) / 3.2))
+      : tablet
+        ? Math.round(Math.min(stage.clientHeight * 0.36, Math.max(210, rowCardW * 1.22)))
+        : Math.max(200, stage.clientHeight - 64 - PROMO_COMPARE_RESERVE);
     const rowSeat = phone ? rowCardH + rowGap : rowCardW + rowGap;
     const groupHalf = rowSeat + rowCardW / 2;
     const minShift = rowInset - contentWidth / 2 + groupHalf;
@@ -4197,6 +4199,12 @@
         if (t < 1) this.clerkScaleFrame = window.requestAnimationFrame(step);
       };
       step(started);
+    }
+
+    seatClipWidget() {
+      this.root.classList.remove('is-clerk-corner', 'is-clerk-head', 'is-clerk-moving');
+      this.root.classList.add('is-pitch-cards');
+      this.seatLiveCard(true);
     }
 
     seatLiveCard(instant) {
@@ -6141,7 +6149,7 @@
         const laid = stage.querySelector('.promo-moments__board');
         if (laid) layoutStoreGrid(laid);
       }
-      this.seatClerkInStore(true);
+      this.seatClipWidget();
       const gesture = PROMO_MOMENT_GESTURE[moment.scene] || 'nod';
       window.setTimeout(() => setOpeningAvatarAction(gesture), 400);
       this.root.dataset.clipDevice = clip.device;
@@ -6220,8 +6228,11 @@
       if (withCopy) {
         const copy = document.createElement('div');
         copy.className = 'promo-clip__copy';
-        copy.innerHTML = '<i></i><i class="is-short"></i><i></i><i class="is-mid"></i>';
-        card.appendChild(copy);
+        copy.innerHTML = '<i></i><i class="is-short"></i><i class="is-mid"></i>';
+        const buy = document.createElement('div');
+        buy.className = 'promo-clip__buy';
+        buy.innerHTML = '<p class="promo-clip__price"><span>$</span><i></i></p><b>Add</b>';
+        card.append(copy, buy);
       }
       return card;
     }

@@ -2229,6 +2229,17 @@ html.is-promo-opening.is-promo-depart .promo-opening {
   flex: 0 0 auto;
 }
 
+.promo-opening.is-clip-desktop .promo-pain__chat.is-open {
+  top: auto;
+  bottom: 20px;
+  max-height: calc(100% - 92px);
+}
+
+.promo-opening.is-clip-desktop .promo-pain__chat.is-open .promo-pain__panel {
+  max-height: 100%;
+  overflow: hidden;
+}
+
 .promo-pain__title,
 .promo-pain__footer,
 .promo-pain__input,
@@ -3158,6 +3169,163 @@ html.is-promo-opening.is-promo-depart .promo-opening {
 .is-pose-choice .promo-moments__card.is-other {
   opacity: 1;
   transform: translate3d(calc(-50% + var(--row-seat, 256px) + var(--row-nudge, 0px)), calc(-50% - var(--row-lift, 0px)), 0);
+}
+
+.promo-opening.is-clip-moment.is-clip-phone .promo-moments__board.is-pose-choice .promo-moments__card.is-go,
+.promo-opening.is-clip-moment.is-clip-phone .promo-moments__board.is-pose-row .promo-moments__card.is-go,
+.promo-opening.is-clip-moment.is-clip-phone .promo-moments__board.is-pose-choice .promo-moments__card.is-pick,
+.promo-opening.is-clip-moment.is-clip-phone .promo-moments__board.is-pose-row .promo-moments__card.is-pick,
+.promo-opening.is-clip-moment.is-clip-phone .promo-moments__board.is-pose-choice .promo-moments__card.is-other,
+.promo-opening.is-clip-moment.is-clip-phone .promo-moments__board.is-pose-row .promo-moments__card.is-other {
+  --card-w: 88cqi;
+  --card-h: 18cqh;
+  display: grid;
+  grid-template-columns: 14cqh minmax(0, 1fr);
+  align-items: center;
+  column-gap: 3cqi;
+  width: 88cqi;
+  height: 18cqh;
+  padding: 2cqi;
+  animation: none !important;
+  opacity: 1;
+}
+
+.promo-opening.is-clip-moment.is-clip-phone .promo-moments__board.is-pose-choice .promo-moments__card.is-go,
+.promo-opening.is-clip-moment.is-clip-phone .promo-moments__board.is-pose-row .promo-moments__card.is-go {
+  transform: translate3d(-50%, calc(-50% - 31cqh), 0) !important;
+}
+
+.promo-opening.is-clip-moment.is-clip-phone .promo-moments__board.is-pose-choice .promo-moments__card.is-pick,
+.promo-opening.is-clip-moment.is-clip-phone .promo-moments__board.is-pose-row .promo-moments__card.is-pick {
+  transform: translate3d(-50%, calc(-50% - 12cqh), 0) !important;
+}
+
+.promo-opening.is-clip-moment.is-clip-phone .promo-moments__board.is-pose-choice .promo-moments__card.is-other,
+.promo-opening.is-clip-moment.is-clip-phone .promo-moments__board.is-pose-row .promo-moments__card.is-other {
+  transform: translate3d(-50%, calc(-50% + 7cqh), 0) !important;
+}
+
+.promo-opening.is-clip-moment.is-clip-phone .promo-moments__board.is-pose-choice .promo-moments__photo,
+.promo-opening.is-clip-moment.is-clip-phone .promo-moments__board.is-pose-row .promo-moments__photo {
+  width: 14cqh;
+  height: 14cqh;
+  max-height: none;
+  min-height: 0;
+  aspect-ratio: 1;
+}
+
+.promo-opening.is-clip-moment.is-clip-phone .promo-moments__board.is-pose-choice .promo-moments__glyph img,
+.promo-opening.is-clip-moment.is-clip-phone .promo-moments__board.is-pose-row .promo-moments__glyph img {
+  object-fit: contain;
+}
+
+.promo-opening.is-clip-moment.is-clip-phone .promo-moments__compare,
+.promo-opening.is-clip-moment.is-clip-tablet .promo-moments__compare {
+  display: none;
+}
+
+.promo-opening.is-clip-moment.is-clip-phone .promo-opening__store.is-phone .promo-moments__board.is-pose-close .promo-moments__card.is-pick,
+.promo-opening.is-clip-moment.is-clip-phone .promo-opening__store.is-phone .promo-moments__board.is-pose-doubt .promo-moments__card.is-pick {
+  --card-w: 320px;
+  --card-h: auto;
+  left: 50%;
+  top: 72px;
+  width: 88cqi;
+  height: auto;
+  max-height: none;
+  transform: translate3d(-50%, 0, 0) !important;
+  padding: 0;
+  overflow: visible;
+  background: transparent;
+  border: none;
+  box-shadow: none;
+}
+
+.promo-opening.is-clip-moment.is-clip-phone .promo-opening__store.is-phone .promo-moments__board.is-pose-close .promo-moments__card.is-pick .promo-moments__photo,
+.promo-opening.is-clip-moment.is-clip-phone .promo-opening__store.is-phone .promo-moments__board.is-pose-doubt .promo-moments__card.is-pick .promo-moments__photo {
+  position: relative;
+  left: auto;
+  top: auto;
+  width: 100%;
+  height: 220px;
+  min-height: 0;
+  max-height: 220px;
+  aspect-ratio: auto;
+}
+
+.promo-opening.is-clip-moment.is-clip-phone .promo-moments__board.is-pose-bundle .promo-moments__card.is-pick,
+.promo-opening.is-clip-moment.is-clip-phone .promo-moments__board.is-pose-extra .promo-moments__card.is-pick {
+  top: 64px;
+  height: 24cqh;
+  transform: translate3d(-50%, 0, 0) !important;
+}
+
+.promo-opening.is-clip-moment.is-clip-phone .promo-moments__board.is-pose-bundle .promo-moments__card.is-pick .promo-moments__photo,
+.promo-opening.is-clip-moment.is-clip-phone .promo-moments__board.is-pose-extra .promo-moments__card.is-pick .promo-moments__photo {
+  flex: 0 0 11cqh;
+  height: 11cqh;
+  aspect-ratio: auto;
+  max-height: none;
+}
+
+.promo-opening.is-clip-moment.is-clip-phone .promo-moments__board.is-pose-bundle .promo-moments__card.is-pick .promo-moments__glyph img,
+.promo-opening.is-clip-moment.is-clip-phone .promo-moments__board.is-pose-extra .promo-moments__card.is-pick .promo-moments__glyph img {
+  object-fit: contain;
+}
+
+.promo-opening.is-clip-moment.is-clip-phone .promo-moments__board.is-pose-bundle .promo-moments__card.is-extra,
+.promo-opening.is-clip-moment.is-clip-phone .promo-moments__board.is-pose-extra .promo-moments__card.is-extra {
+  top: 33cqh;
+  height: 22cqh;
+  display: grid;
+  grid-template-columns: 14cqh minmax(0, 1fr);
+  align-items: center;
+  column-gap: 2cqi;
+  transform: translate3d(-50%, 0, 0) !important;
+}
+
+.promo-opening.is-clip-moment.is-clip-phone .promo-moments__board.is-pose-bundle .promo-moments__card.is-extra .promo-moments__photo,
+.promo-opening.is-clip-moment.is-clip-phone .promo-moments__board.is-pose-extra .promo-moments__card.is-extra .promo-moments__photo {
+  width: 14cqh;
+  height: 14cqh;
+  aspect-ratio: 1;
+  max-height: none;
+}
+
+.promo-opening.is-clip-moment.is-clip-phone .promo-moments__board.is-pose-bundle .promo-moments__card.is-extra .promo-moments__glyph img,
+.promo-opening.is-clip-moment.is-clip-phone .promo-moments__board.is-pose-extra .promo-moments__card.is-extra .promo-moments__glyph img {
+  object-fit: contain;
+}
+
+.promo-opening.is-clip-moment.is-clip-phone .promo-moments__board.is-pose-bundle .promo-moments__plus,
+.promo-opening.is-clip-moment.is-clip-phone .promo-moments__board.is-pose-extra .promo-moments__plus {
+  top: 32.4cqh;
+}
+
+.promo-opening.is-clip-moment.is-clip-tablet .promo-moments__board.is-pose-choice .promo-moments__card.is-go,
+.promo-opening.is-clip-moment.is-clip-tablet .promo-moments__board.is-pose-choice .promo-moments__card.is-pick,
+.promo-opening.is-clip-moment.is-clip-tablet .promo-moments__board.is-pose-choice .promo-moments__card.is-other,
+.promo-opening.is-clip-moment.is-clip-tablet .promo-moments__board.is-pose-row .promo-moments__card.is-go,
+.promo-opening.is-clip-moment.is-clip-tablet .promo-moments__board.is-pose-row .promo-moments__card.is-pick,
+.promo-opening.is-clip-moment.is-clip-tablet .promo-moments__board.is-pose-row .promo-moments__card.is-other {
+  --card-h: min(30cqh, 300px);
+  height: min(30cqh, 300px);
+  animation: none !important;
+}
+
+.promo-opening.is-clip-moment.is-clip-tablet .promo-moments__board.is-pose-choice .promo-moments__card.is-go,
+.promo-opening.is-clip-moment.is-clip-tablet .promo-moments__board.is-pose-row .promo-moments__card.is-go {
+  transform: translate3d(calc(-50% - var(--row-seat, 256px) + var(--row-nudge, 0px)), calc(-50% - 14cqh), 0) !important;
+}
+
+.promo-opening.is-clip-moment.is-clip-tablet .promo-moments__board.is-pose-choice .promo-moments__card.is-pick,
+.promo-opening.is-clip-moment.is-clip-tablet .promo-moments__board.is-pose-row .promo-moments__card.is-pick {
+  transform: translate3d(calc(-50% + var(--row-nudge, 0px)), calc(-50% - 14cqh), 0) !important;
+}
+
+.promo-opening.is-clip-moment.is-clip-tablet .promo-moments__board.is-pose-choice .promo-moments__card.is-other,
+.promo-opening.is-clip-moment.is-clip-tablet .promo-moments__board.is-pose-row .promo-moments__card.is-other {
+  transform: translate3d(calc(-50% + var(--row-seat, 256px) + var(--row-nudge, 0px)), calc(-50% - 14cqh), 0) !important;
 }
 
 .is-pose-choice .promo-moments__card.is-pick::after,
@@ -6415,9 +6583,14 @@ html.is-promo-clip .promo-scale {
   bottom: 64px;
 }
 
-.promo-opening.is-clip-moment.is-clip-phone [id="bizmis-avatar-embed"].is-promo-widget-parked {
+.promo-opening.is-clip-moment.is-clip-phone:not(.is-pitch-cards) [id="bizmis-avatar-embed"].is-promo-widget-parked {
   height: 460px !important;
   overflow: hidden !important;
+}
+
+.promo-opening.is-clip-moment.is-clip-phone.is-pitch-cards [id="bizmis-avatar-embed"].is-promo-widget-parked {
+  height: auto !important;
+  overflow: visible !important;
 }
 
 .promo-opening.is-clip-moment.is-clip-tablet.is-clerk-corner .promo-opening__widget {
@@ -6456,6 +6629,38 @@ html.is-promo-clip.is-clip-moment #bizmis-avatar-embed {
   visibility: visible !important;
   opacity: 1 !important;
   z-index: 40 !important;
+}
+
+.promo-opening.is-clip-moment.is-pitch-cards .promo-opening__store > .promo-opening__widget {
+  position: absolute !important;
+  top: auto !important;
+  right: 16px !important;
+  bottom: 16px !important;
+  left: auto !important;
+  width: max-content !important;
+  height: auto !important;
+  margin: 0 !important;
+  transform: none !important;
+}
+
+.promo-opening.is-clip-moment.is-clip-phone.is-pitch-cards .promo-opening__store.is-phone > .promo-opening__widget {
+  right: 8px !important;
+  bottom: 8px !important;
+  left: auto !important;
+  width: max-content !important;
+  visibility: visible !important;
+  transform: none !important;
+}
+
+.promo-opening.is-clip-moment.is-clip-phone.is-pitch-cards .bizmis-desktop-lite-chat,
+.promo-opening.is-clip-moment.is-clip-phone.is-pitch-cards .bizmis-desktop-lite-chat .group\/card {
+  overflow: hidden !important;
+  border-radius: 16px;
+}
+
+html.is-promo-clip.is-clip-moment .bizmis-viewport-portal-root {
+  visibility: hidden !important;
+  opacity: 0 !important;
 }
 
 .promo-opening.is-clip .promo-pain__cursor {
@@ -6614,6 +6819,26 @@ html.is-promo-clip.is-clip-moment #bizmis-avatar-embed {
   border-radius: 4cqi 4cqi 2.4cqi 2.4cqi;
 }
 
+.promo-clip.is-tablet .promo-clip__screen .promo-pain__chat.is-open {
+  left: 0;
+  right: 0;
+  bottom: 0;
+  min-height: 520px;
+}
+
+.promo-clip.is-phone .promo-clip__screen:not(:has(.promo-clip__search)):not(:has(.promo-clip__chips)):not(:has(.promo-clip__sizes)):has(.promo-pain__chat.is-open) .promo-clip__track {
+  max-height: 200px;
+  overflow: hidden;
+}
+
+
+.promo-clip.is-tablet .promo-clip__screen .promo-pain__chat.is-open .promo-pain__panel {
+  flex: 1 1 auto;
+  height: 100%;
+  max-height: none;
+  border-radius: 22px 22px 0 0;
+}
+
 .promo-clip.is-phone .promo-pain__title,
 .promo-clip.is-phone .promo-pain__msg,
 .promo-clip.is-phone .promo-pain__chip,
@@ -6738,15 +6963,44 @@ html.is-promo-clip.is-clip-moment #bizmis-avatar-embed {
   padding: 0 6%;
 }
 
+.promo-opening.is-clip-desktop .promo-clip__product.is-product-read .promo-clip__scroll,
+.promo-opening.is-clip-desktop .promo-clip__product.is-product-scroll .promo-clip__scroll,
+.promo-opening.is-clip-desktop .promo-clip__product.is-back-bounce .promo-clip__scroll,
+.promo-opening.is-clip-desktop .promo-clip__product.is-variant-doubt .promo-clip__scroll {
+  height: auto;
+  width: min(460px, 42%);
+  margin: 0 auto;
+  justify-content: flex-start;
+}
+
+.promo-opening.is-clip-desktop .promo-clip__product.is-variant-doubt .promo-clip__scroll {
+  padding-top: 72px;
+}
+
+.promo-opening.is-clip-desktop .promo-clip__product.is-product-read .promo-clip__hero,
+.promo-opening.is-clip-desktop .promo-clip__product.is-product-scroll .promo-clip__hero,
+.promo-opening.is-clip-desktop .promo-clip__product.is-back-bounce .promo-clip__hero,
+.promo-opening.is-clip-desktop .promo-clip__product.is-variant-doubt .promo-clip__hero {
+  width: 100%;
+  height: auto;
+  max-width: none;
+  margin: 7% 0 0;
+  padding: 0;
+  justify-content: flex-start;
+  gap: 20px;
+}
+
 .promo-opening.is-clip-desktop .promo-clip__product.is-product-read .promo-clip__hero img,
-.promo-opening.is-clip-desktop .promo-clip__product.is-product-scroll .promo-clip__hero img {
-  width: auto;
-  height: 78%;
-  max-width: 100%;
+.promo-opening.is-clip-desktop .promo-clip__product.is-product-scroll .promo-clip__hero img,
+.promo-opening.is-clip-desktop .promo-clip__product.is-back-bounce .promo-clip__hero img,
+.promo-opening.is-clip-desktop .promo-clip__product.is-variant-doubt .promo-clip__hero img {
+  width: 100%;
+  height: auto;
+  max-width: none;
   max-height: none;
   flex: 0 0 auto;
   aspect-ratio: 1;
-  margin: 0 auto;
+  margin: 0;
   object-fit: contain;
 }
 
@@ -6774,31 +7028,41 @@ html.is-promo-clip.is-clip-moment #bizmis-avatar-embed {
 }
 
 .promo-clip.is-phone .promo-clip__product.is-product-read .promo-clip__hero,
-.promo-clip.is-phone .promo-clip__product.is-product-scroll .promo-clip__hero {
+.promo-clip.is-phone .promo-clip__product.is-product-scroll .promo-clip__hero,
+.promo-clip.is-phone .promo-clip__product.is-back-bounce .promo-clip__hero,
+.promo-clip.is-phone .promo-clip__product.is-variant-doubt .promo-clip__hero {
   width: 100%;
   max-width: none;
-  height: 100%;
+  height: auto;
   justify-content: flex-start;
+  gap: 14px;
+  padding: 4% 5% 0;
 }
 
 .promo-clip.is-phone .promo-clip__product.is-product-read .promo-clip__hero img,
-.promo-clip.is-phone .promo-clip__product.is-product-scroll .promo-clip__hero img {
+.promo-clip.is-phone .promo-clip__product.is-product-scroll .promo-clip__hero img,
+.promo-clip.is-phone .promo-clip__product.is-back-bounce .promo-clip__hero img,
+.promo-clip.is-phone .promo-clip__product.is-variant-doubt .promo-clip__hero img {
   width: 100%;
-  height: 58%;
+  height: auto;
   max-height: none;
   flex: 0 0 auto;
-  aspect-ratio: auto;
+  aspect-ratio: 1;
+  margin: 0;
   object-fit: contain;
 }
 
 .promo-clip.is-phone .promo-clip__copy {
-  flex: 1 1 auto;
-  justify-content: space-evenly;
-  padding-top: 10px;
+  flex: 0 0 auto;
+  justify-content: flex-start;
+  gap: 10px;
+  padding-top: 2px;
 }
 
 .promo-clip.is-tablet .promo-clip__product.is-product-read .promo-clip__hero,
-.promo-clip.is-tablet .promo-clip__product.is-product-scroll .promo-clip__hero {
+.promo-clip.is-tablet .promo-clip__product.is-product-scroll .promo-clip__hero,
+.promo-clip.is-tablet .promo-clip__product.is-back-bounce .promo-clip__hero,
+.promo-clip.is-tablet .promo-clip__product.is-variant-doubt .promo-clip__hero {
   width: 100%;
   max-width: none;
   height: 100%;
@@ -6807,7 +7071,9 @@ html.is-promo-clip.is-clip-moment #bizmis-avatar-embed {
 }
 
 .promo-clip.is-tablet .promo-clip__product.is-product-read .promo-clip__hero img,
-.promo-clip.is-tablet .promo-clip__product.is-product-scroll .promo-clip__hero img {
+.promo-clip.is-tablet .promo-clip__product.is-product-scroll .promo-clip__hero img,
+.promo-clip.is-tablet .promo-clip__product.is-back-bounce .promo-clip__hero img,
+.promo-clip.is-tablet .promo-clip__product.is-variant-doubt .promo-clip__hero img {
   width: auto;
   height: 72%;
   max-width: 80%;
@@ -6854,7 +7120,34 @@ html.is-promo-clip.is-clip-moment #bizmis-avatar-embed {
   width: 100%;
   display: flex;
   flex-direction: column;
+  align-items: flex-start;
   gap: 8px;
+}
+
+.promo-opening.is-clip-desktop .promo-clip__product.is-product-read,
+.promo-opening.is-clip-desktop .promo-clip__product.is-product-scroll,
+.promo-opening.is-clip-desktop .promo-clip__product.is-back-bounce,
+.promo-opening.is-clip-desktop .promo-clip__product.is-variant-doubt {
+  align-items: center;
+  justify-content: center;
+}
+
+.promo-clip__buy {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-top: 6px;
+}
+
+.promo-clip__buy b {
+  display: block;
+  padding: 14px 0;
+  border-radius: 12px;
+  border: 1px solid color-mix(in srgb, var(--ad-ink) 16%, transparent);
+  text-align: center;
+  font: 600 16px/1 var(--font-heading);
+  letter-spacing: -0.02em;
 }
 
 .promo-clip__blurb i {
@@ -6878,7 +7171,9 @@ html.is-promo-clip.is-clip-moment #bizmis-avatar-embed {
 
 .promo-clip__product.is-compare,
 .promo-clip__product.is-product-read,
-.promo-clip__product.is-product-scroll {
+.promo-clip__product.is-product-scroll,
+.promo-clip__product.is-back-bounce,
+.promo-clip__product.is-variant-doubt {
   position: absolute;
   top: 0;
   right: 0;
