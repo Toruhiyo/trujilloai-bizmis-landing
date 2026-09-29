@@ -7,6 +7,7 @@ import { execFileSync, spawn } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 
 const FPS = 30;
+let exportFps = FPS;
 const FRAME_CAP = 3600;
 const CAPTURE_CHUNK = 3600;
 const LAYOUT_WIDTH = 1920;
@@ -29,6 +30,7 @@ function usage() {
     '  --cta demo|ea|install|none     default install',
     '  --part full|pain|pitch         default full',
     '  --resolution 1920x1080         or 3840x2160',
+    '  --preview                      one 1008x654 viewport at 6fps, no quadrants',
     '  --frames 0-59                  inclusive range, default the whole film',
     '  --codec ffv1|prores            default ffv1 (MKV). prores is ProRes 4444',
     '  --out <folder>                 default tmp/ad-1-export',
@@ -48,10 +50,43 @@ function captureSetup(width, height) {
   const scaleX = width / LAYOUT_WIDTH;
   const scaleY = height / LAYOUT_HEIGHT;
   const sameScale = scaleX === scaleY && Number.isInteger(scaleX) && scaleX >= 1;
-  if (sameScale) {
-    return { viewportWidth: LAYOUT_WIDTH, viewportHeight: LAYOUT_HEIGHT, scale: scaleX };
+  if (sameScale && scaleX > 1 && process.platform === 'darwin') {
+    // Chrome refuses BeginFrameControl on macOS. A single 4K framebuffer
+    // drops tiles. Each quadrant is the 1920x1080 scale that already paints
+    // completely, then the four are stitched.
+    return {
+      viewportWidth: LAYOUT_WIDTH,
+      viewportHeight: LAYOUT_HEIGHT,
+      scale: 1,
+      quadrants: scaleX,
+      beginFrame: false,
+    };
   }
-  return { viewportWidth: width, viewportHeight: height, scale: 1 };
+  if (sameScale && scaleX > 1) {
+    return {
+      viewportWidth: LAYOUT_WIDTH,
+      viewportHeight: LAYOUT_HEIGHT,
+      scale: scaleX,
+      quadrants: 1,
+      beginFrame: true,
+    };
+  }
+  if (sameScale) {
+    return { viewportWidth: LAYOUT_WIDTH, viewportHeight: LAYOUT_HEIGHT, scale: scaleX, quadrants: 1, beginFrame: false };
+  }
+  return { viewportWidth: width, viewportHeight: height, scale: 1, quadrants: 1, beginFrame: false };
+}
+
+function headlessShellPath() {
+  if (process.env.PROMO_HEADLESS_SHELL) return process.env.PROMO_HEADLESS_SHELL;
+  const root = path.join(process.env.HOME || '', 'Library/Caches/ms-playwright');
+  if (!fs.existsSync(root)) return '';
+  const dirs = fs.readdirSync(root).filter((name) => name.startsWith('chromium_headless_shell-')).sort();
+  const dir = dirs[dirs.length - 1];
+  if (!dir) return '';
+  const folder = fs.readdirSync(path.join(root, dir)).find((name) => name.startsWith('chrome-headless-shell'));
+  if (!folder) return '';
+  return path.join(root, dir, folder, 'chrome-headless-shell');
 }
 
 function parseFrames(raw) {
@@ -65,8 +100,8 @@ function parseFrames(raw) {
 }
 
 function timecode(frame) {
-  const ff = frame % FPS;
-  const total = Math.floor(frame / FPS);
+  const ff = frame % exportFps;
+  const total = Math.floor(frame / exportFps);
   const ss = total % 60;
   const mm = Math.floor(total / 60) % 60;
   const hh = Math.floor(total / 3600);
@@ -75,7 +110,7 @@ function timecode(frame) {
 }
 
 function frameMs(frame) {
-  return (frame * 1000) / FPS;
+  return (frame * 1000) / exportFps;
 }
 
 async function loadPlaywright() {
@@ -97,7 +132,7 @@ function filmUrl(base, cta, part) {
   return url.toString();
 }
 
-function chromeArgs(scale) {
+function chromeArgs(scale, heavy, beginFrame) {
   const args = [
     '--font-render-hinting=none',
     '--disable-lcd-text',
@@ -117,18 +152,34 @@ function chromeArgs(scale) {
     '--enable-webgl',
   ];
   // Software raster at 4K leaves blank tiles that flicker. 1080p keeps it so frames stay bit-stable.
-  if (scale <= 1) args.push('--disable-gpu-rasterization');
+  // Quadrant captures stay at device scale 1, then the picture is scaled in CSS.
+  // That scaled layer is bigger than the software tile budget, so software raster
+  // skips tiles (the "Your" in "Your store" vanished on a white header).
+  if (scale <= 1 && !heavy) args.push('--disable-gpu-rasterization');
   // 4K compositing drops whole tile rows, so the orange field splits and the sea shows through.
   if (scale > 1) args.push('--disable-gpu-compositing');
+  // A 4K sea is bigger than Chrome's default tile budget, so tiles are skipped, not slow.
+  if (heavy || scale > 1 || beginFrame) args.push('--force-gpu-mem-available-mb=8192');
+  if (beginFrame) {
+    args.push('--deterministic-mode', '--enable-begin-frame-control');
+  }
   return args;
 }
 
-async function launchBrowser(chromium, scale) {
-  return chromium.launch({
-    headless: true,
-    channel: process.env.PROMO_FRAMES_CHANNEL || 'chrome',
-    args: chromeArgs(scale),
-  });
+function launchOptions(chromium, scale, heavy, beginFrame) {
+  const shell = headlessShellPath();
+  const options = {
+    headless: shell ? false : true,
+    args: chromeArgs(scale, heavy, beginFrame),
+  };
+  if (shell) options.executablePath = shell;
+  else options.channel = process.env.PROMO_FRAMES_CHANNEL || 'chrome';
+  return { chromium, options, shell: Boolean(shell) };
+}
+
+async function launchBrowser(chromium, scale, heavy, beginFrame) {
+  const launch = launchOptions(chromium, scale, heavy, beginFrame);
+  return chromium.launch(launch.options);
 }
 
 async function bootPage(browser, options) {
@@ -143,6 +194,22 @@ async function bootPage(browser, options) {
   const page = await context.newPage();
   page.setDefaultTimeout(90000);
   await page.goto(filmUrl(options.url, options.cta, options.part), { waitUntil: 'domcontentloaded' });
+  if (options.beginFrame) {
+    const client = await context.newCDPSession(page);
+    page.__beginFrame = client;
+    page.__beginTicks = 1000;
+    await client.send('HeadlessExperimental.enable').catch(() => {});
+    for (let pump = 0; pump < 40; pump += 1) {
+      const ready = await page.evaluate(() => document.documentElement.classList.contains('is-promo-ready')).catch(() => false);
+      if (ready) break;
+      await client.send('HeadlessExperimental.beginFrame', {
+        frameTimeTicks: page.__beginTicks,
+        interval: 1000 / FPS,
+        noDisplayUpdates: true,
+      });
+      page.__beginTicks += 1000 / FPS;
+    }
+  }
   await page.waitForFunction(() => document.documentElement.classList.contains('is-promo-ready'));
   await page.evaluate(async () => {
     const clock = window.__promoClock;
@@ -160,13 +227,166 @@ async function bootPage(browser, options) {
   return { context, page };
 }
 
-async function stepFrame(page, frame, framesDir, timeoutMs, write) {
-  const state = await page.evaluate((ms) => {
-    window.__promoClock.seek(ms);
-    return { ended: window.__promoExportEnded === true };
-  }, frameMs(frame));
-  if (!write) return { ended: state.ended, timedOut: false };
+const QUAD_ORIGINS = ['0% 0%', '100% 0%', '0% 100%', '100% 100%'];
+const CAPTURE_ATTEMPTS = 4;
+let captureAttempts = CAPTURE_ATTEMPTS;
+const DIFF_CHANNEL = 18;
+const DIFF_FRACTION = 0.0025;
 
+async function setQuadrant(page, origin) {
+  await page.evaluate((value) => {
+    const root = document.documentElement;
+    if (!value) {
+      root.classList.remove('is-export-quad');
+      root.style.removeProperty('--export-quad-origin');
+      return;
+    }
+    root.classList.add('is-export-quad');
+    root.style.setProperty('--export-quad-origin', value);
+  }, origin || '');
+}
+
+function rawFrame(file, width, height) {
+  return execFileSync(process.env.FFMPEG || 'ffmpeg', [
+    '-v', 'error', '-i', file, '-vf', `scale=${width}:${height}`, '-f', 'rawvideo', '-pix_fmt', 'rgb24', '-',
+  ], { maxBuffer: width * height * 3 + 4096 });
+}
+
+function framesDiffer(leftFile, rightFile) {
+  const width = 160;
+  const height = 90;
+  const left = rawFrame(leftFile, width, height);
+  const right = rawFrame(rightFile, width, height);
+  const total = width * height;
+  let diff = 0;
+  for (let index = 0; index < total; index += 1) {
+    const offset = index * 3;
+    const red = Math.abs(left[offset] - right[offset]);
+    const green = Math.abs(left[offset + 1] - right[offset + 1]);
+    const blue = Math.abs(left[offset + 2] - right[offset + 2]);
+    if (red > DIFF_CHANNEL || green > DIFF_CHANNEL || blue > DIFF_CHANNEL) diff += 1;
+  }
+  return diff / total > DIFF_FRACTION;
+}
+
+function frameHasHole(file) {
+  const width = 160;
+  const height = 90;
+  const block = 10;
+  const cols = width / block;
+  const rows = height / block;
+  const raw = rawFrame(file, width, height);
+  const white = [];
+  for (let by = 0; by < rows; by += 1) {
+    for (let bx = 0; bx < cols; bx += 1) {
+      let count = 0;
+      for (let y = 0; y < block; y += 1) {
+        for (let x = 0; x < block; x += 1) {
+          const offset = ((by * block + y) * width + (bx * block + x)) * 3;
+          if (raw[offset] > 248 && raw[offset + 1] > 248 && raw[offset + 2] > 248) count += 1;
+        }
+      }
+      white.push(count / (block * block) > 0.92);
+    }
+  }
+  const seen = new Set();
+  const indexOf = (x, y) => y * cols + x;
+  for (let y = 0; y < rows; y += 1) {
+    for (let x = 0; x < cols; x += 1) {
+      const start = indexOf(x, y);
+      if (!white[start] || seen.has(start)) continue;
+      const stack = [start];
+      seen.add(start);
+      let minX = x;
+      let maxX = x;
+      let minY = y;
+      let maxY = y;
+      let count = 0;
+      let touchesEdge = false;
+      while (stack.length) {
+        const current = stack.pop();
+        const cx = current % cols;
+        const cy = (current - cx) / cols;
+        count += 1;
+        if (cx < minX) minX = cx;
+        if (cx > maxX) maxX = cx;
+        if (cy < minY) minY = cy;
+        if (cy > maxY) maxY = cy;
+        if (cx <= 1 || cy <= 1 || cx >= cols - 2 || cy >= rows - 2) touchesEdge = true;
+        [[1, 0], [-1, 0], [0, 1], [0, -1]].forEach(([dx, dy]) => {
+          const nx = cx + dx;
+          const ny = cy + dy;
+          if (nx < 0 || ny < 0 || nx >= cols || ny >= rows) return;
+          const next = indexOf(nx, ny);
+          if (!white[next] || seen.has(next)) return;
+          seen.add(next);
+          stack.push(next);
+        });
+      }
+      const spanX = maxX - minX + 1;
+      const spanY = maxY - minY + 1;
+      const box = spanX * spanY;
+      const aspect = Math.max(spanX, spanY) / Math.min(spanX, spanY);
+      const maxHole = Math.round(cols * rows * 0.2);
+      if (!touchesEdge && count >= 6 && count <= maxHole && count / box > 0.95 && aspect <= 2.2 && Math.min(spanX, spanY) >= 3) {
+        return true;
+      }
+    }
+  }
+  return false;
+}
+
+async function grabPng(page, file) {
+  if (page.__beginFrame) {
+    const result = await page.__beginFrame.send('HeadlessExperimental.beginFrame', {
+      frameTimeTicks: page.__beginTicks,
+      interval: 1000 / FPS,
+      screenshot: { format: 'png' },
+    });
+    page.__beginTicks += 1000 / FPS;
+    if (!result.screenshotData) throw new Error('beginFrame returned no pixels.');
+    fs.writeFileSync(file, Buffer.from(result.screenshotData, 'base64'));
+    return;
+  }
+  await page.screenshot({ path: file, type: 'png' });
+}
+
+async function captureStable(page, dest, timeoutMs) {
+  if (captureAttempts <= 1) {
+    await grabPng(page, dest);
+    return;
+  }
+  let reason = 'unpainted block';
+  for (let attempt = 0; attempt < captureAttempts; attempt += 1) {
+    const left = `${dest}.a.png`;
+    const right = `${dest}.b.png`;
+    await grabPng(page, left);
+    await grabPng(page, right);
+    const differ = framesDiffer(left, right);
+    const hole = frameHasHole(left);
+    if (!differ && !hole) {
+      fs.renameSync(left, dest);
+      fs.rmSync(right, { force: true });
+      return;
+    }
+    reason = differ ? 'two captures of the same time differ' : 'unpainted block';
+    fs.rmSync(left, { force: true });
+    fs.rmSync(right, { force: true });
+    await page.evaluate((timeout) => window.__promoClock.settle(timeout), timeoutMs);
+  }
+  throw new Error(reason);
+}
+
+function stitchQuadrants(parts, dest) {
+  execFileSync(process.env.FFMPEG || 'ffmpeg', [
+    '-y', '-v', 'error',
+    '-i', parts[0], '-i', parts[1], '-i', parts[2], '-i', parts[3],
+    '-filter_complex', '[0:v][1:v]hstack[top];[2:v][3:v]hstack[bottom];[top][bottom]vstack',
+    dest,
+  ]);
+}
+
+async function writeFrame(page, frame, framesDir, timeoutMs, quadrants) {
   let timedOut = false;
   for (let attempt = 0; attempt < 2; attempt += 1) {
     const result = await page.evaluate((timeout) => window.__promoClock.settle(timeout), timeoutMs);
@@ -175,8 +395,47 @@ async function stepFrame(page, frame, framesDir, timeoutMs, write) {
   }
 
   const file = path.join(framesDir, `frame-${String(frame).padStart(6, '0')}.png`);
-  await page.screenshot({ path: file, type: 'png' });
-  return { ended: state.ended, timedOut, file };
+  const quadCount = quadrants > 1 ? quadrants * quadrants : 1;
+  if (quadCount === 1) {
+    await captureStable(page, file, timeoutMs);
+    return { timedOut, file };
+  }
+
+  const parts = [];
+  try {
+    for (let index = 0; index < quadCount; index += 1) {
+      await setQuadrant(page, QUAD_ORIGINS[index]);
+      await page.evaluate((timeout) => window.__promoClock.settle(Math.min(timeout, 800)), timeoutMs);
+      const part = path.join(framesDir, `quad-${String(frame).padStart(6, '0')}-${index}.png`);
+      await captureStable(page, part, timeoutMs);
+      parts.push(part);
+    }
+    const stitched = `${file}.stitch.png`;
+    stitchQuadrants(parts, stitched);
+    if (frameHasHole(stitched)) {
+      fs.rmSync(stitched, { force: true });
+      throw new Error('unpainted block');
+    }
+    fs.renameSync(stitched, file);
+  } catch (error) {
+    fs.rmSync(file, { force: true });
+    throw new Error(`Frame ${frame} is not finished: ${error instanceof Error ? error.message : error}`);
+  } finally {
+    parts.forEach((part) => fs.rmSync(part, { force: true }));
+    await setQuadrant(page, '');
+  }
+  return { timedOut, file };
+}
+
+async function stepFrame(page, frame, framesDir, timeoutMs, write, quadrants) {
+  await setQuadrant(page, '');
+  const state = await page.evaluate((ms) => {
+    window.__promoClock.seek(ms);
+    return { ended: window.__promoExportEnded === true };
+  }, frameMs(frame));
+  if (!write) return { ended: state.ended, timedOut: false };
+  const written = await writeFrame(page, frame, framesDir, timeoutMs, quadrants);
+  return { ended: state.ended, timedOut: written.timedOut, file: written.file };
 }
 
 function frameIsTorn(file) {
@@ -215,11 +474,27 @@ async function exportRange(browser, options, framesDir) {
   let last = -1;
   let endedEarly = false;
   let markerRows = [];
+  let unfinished = null;
 
   try {
     for (let frame = 0; frame <= limit; frame += 1) {
-      const captured = await stepFrame(page, frame, framesDir, options.timeoutMs, frame >= from);
-      if (frame >= from && options.scale > 1 && captured.file && frameIsTorn(captured.file)) {
+      let captured;
+      try {
+        captured = await stepFrame(
+          page,
+          frame,
+          framesDir,
+          options.timeoutMs,
+          frame >= from,
+          options.quadrants || 1,
+        );
+      } catch (error) {
+        const message = error instanceof Error ? error.message : String(error);
+        if (!message.includes('is not finished')) throw error;
+        unfinished = { frame, message };
+        break;
+      }
+      if (frame >= from && captured.file && frameIsTorn(captured.file)) {
         fs.unlinkSync(captured.file);
         throw new Error(`Frame ${frame} is torn: the orange field is split. Stopped so no more frames are written.`);
       }
@@ -235,9 +510,22 @@ async function exportRange(browser, options, framesDir) {
         break;
       }
     }
-    markerRows = await page.evaluate(() => window.__promoVoTimeline || []);
+    if (!unfinished) markerRows = await page.evaluate(() => window.__promoVoTimeline || []);
   } finally {
     await context.close();
+  }
+
+  if (unfinished) {
+    return {
+      from,
+      last,
+      timeouts,
+      rerendered: [],
+      stillTimedOut: [],
+      endedEarly: false,
+      unfinished,
+      markers: [],
+    };
   }
 
   const rerendered = [];
@@ -256,8 +544,7 @@ async function exportRange(browser, options, framesDir) {
         return window.__promoClock.settle(timeout);
       }, options.timeoutMs * 2);
       still = Boolean(result.timedOut);
-      const file = path.join(framesDir, `frame-${String(frame).padStart(6, '0')}.png`);
-      await again.page.screenshot({ path: file, type: 'png' });
+      await writeFrame(again.page, frame, framesDir, options.timeoutMs, options.quadrants || 1);
     } finally {
       await again.context.close();
     }
@@ -273,7 +560,7 @@ async function exportRange(browser, options, framesDir) {
     stillTimedOut,
     endedEarly,
     markers: markerRows.map((row) => {
-      const frame = Math.max(0, Math.round((row.at / 1000) * FPS));
+      const frame = Math.max(0, Math.round((row.at / 1000) * exportFps));
       return {
         scene: row.scene,
         id: row.id,
@@ -288,7 +575,7 @@ async function exportRange(browser, options, framesDir) {
 
 function encodeVideo(framesDir, dest, codec, startNumber) {
   const input = path.join(framesDir, 'frame-%06d.png');
-  const args = ['-y', '-framerate', String(FPS), '-start_number', String(startNumber), '-i', input];
+  const args = ['-y', '-framerate', String(exportFps), '-start_number', String(startNumber), '-i', input];
   if (codec === 'prores') {
     args.push('-c:v', 'prores_ks', '-profile:v', '4', '-pix_fmt', 'yuv444p10le');
   } else {
@@ -329,7 +616,7 @@ function compareFrames(leftDir, rightDir) {
 
 function printReport(report) {
   const count = report.last >= report.from ? report.last - report.from + 1 : 0;
-  const seconds = count / FPS;
+  const seconds = count / exportFps;
   process.stdout.write('\n');
   process.stdout.write(`Frames: ${count}\n`);
   process.stdout.write(`Duration: ${seconds.toFixed(3)} s (${timecode(count)})\n`);
@@ -365,9 +652,10 @@ function firstGap(framesDir) {
 
 async function captureFilm(chromium, options, framesDir) {
   fs.mkdirSync(framesDir, { recursive: true });
-  let browser = await launchBrowser(chromium, options.scale);
+  let browser = await launchBrowser(chromium, options.scale, (options.quadrants || 1) > 1, options.beginFrame);
   let cursor = options.from;
   const hardEnd = options.to;
+  let unfinishedRetries = 0;
   const merged = {
     from: options.from,
     last: cursor - 1,
@@ -384,6 +672,16 @@ async function captureFilm(chromium, options, framesDir) {
         : (hardEnd ?? FRAME_CAP);
       if (options.scale > 1) process.stdout.write(`capture ${cursor} to ${chunkEnd}\n`);
       const exported = await exportRange(browser, { ...options, from: cursor, to: chunkEnd }, framesDir);
+      if (exported.unfinished) {
+        unfinishedRetries += 1;
+        if (unfinishedRetries > 1) throw new Error(exported.unfinished.message);
+        process.stdout.write(`${exported.unfinished.message} Retrying that frame in a fresh browser.\n`);
+        await browser.close();
+        browser = await launchBrowser(chromium, options.scale, (options.quadrants || 1) > 1, options.beginFrame);
+        cursor = exported.unfinished.frame;
+        continue;
+      }
+      unfinishedRetries = 0;
       if (exported.last >= cursor) {
         merged.last = exported.last;
         merged.timeouts.push(...exported.timeouts);
@@ -399,7 +697,7 @@ async function captureFilm(chromium, options, framesDir) {
       if (reachedEnd) break;
       cursor = exported.last + 1;
       await browser.close();
-      browser = await launchBrowser(chromium, options.scale);
+      browser = await launchBrowser(chromium, options.scale, (options.quadrants || 1) > 1, options.beginFrame);
     }
   } finally {
     await browser.close();
@@ -415,12 +713,17 @@ async function main() {
   const cta = (arg('cta', 'install') || 'install').trim().toLowerCase();
   const part = (arg('part', 'full') || 'full').trim().toLowerCase();
   const codec = (arg('codec', 'ffv1') || 'ffv1').trim().toLowerCase();
-  const resolution = parseResolution(arg('resolution', '1920x1080'));
+  const preview = hasFlag('preview');
+  const resolution = preview
+    ? { width: 1008, height: 654 }
+    : parseResolution(arg('resolution', '1920x1080'));
+  captureAttempts = preview ? 1 : CAPTURE_ATTEMPTS;
+  exportFps = preview ? 6 : FPS;
   const capture = captureSetup(resolution.width, resolution.height);
   const range = parseFrames(arg('frames', ''));
   const verify = hasFlag('verify');
   const resume = hasFlag('resume') && !verify;
-  const outRoot = path.resolve(ROOT, arg('out', 'tmp/ad-1-export'));
+  const outRoot = path.resolve(ROOT, arg('out', preview ? 'tmp/ad-1-preview' : 'tmp/ad-1-export'));
   const options = {
     cta,
     part,
@@ -430,6 +733,8 @@ async function main() {
     viewportWidth: capture.viewportWidth,
     viewportHeight: capture.viewportHeight,
     scale: capture.scale,
+    quadrants: capture.quadrants,
+    beginFrame: capture.beginFrame,
     from: range ? range.from : 0,
     to: range ? range.to : null,
     url: arg('url', 'http://127.0.0.1:8080/'),
@@ -438,6 +743,11 @@ async function main() {
   if (!['demo', 'ea', 'install', 'none'].includes(cta)) throw new Error(`Unknown cta "${cta}".`);
   if (!['full', 'pain', 'pitch'].includes(part)) throw new Error(`Unknown part "${part}".`);
   if (!['ffv1', 'prores'].includes(codec)) throw new Error(`Unknown codec "${codec}".`);
+  if (options.beginFrame) {
+    process.stdout.write('Capture: HeadlessExperimental.beginFrame, one composited frame at a time.\n');
+  } else if ((options.quadrants || 1) > 1) {
+    process.stdout.write('Capture: four 1920x1080 quadrants stitched to 4K. BeginFrameControl is not supported on macOS.\n');
+  }
 
   const { chromium } = await loadPlaywright();
   const run = async (folder) => {
@@ -455,7 +765,7 @@ async function main() {
       }
       const count = exported.last >= sequenceFrom ? exported.last - sequenceFrom + 1 : 0;
       const report = {
-        fps: FPS,
+        fps: exportFps,
         cta,
         part,
         codec,
@@ -464,7 +774,7 @@ async function main() {
         from: sequenceFrom,
         last: exported.last,
         frames: count,
-        durationSeconds: count / FPS,
+        durationSeconds: count / exportFps,
         timeouts: exported.timeouts,
         rerendered: exported.rerendered,
         stillTimedOut: exported.stillTimedOut,
@@ -473,7 +783,7 @@ async function main() {
         framesDir,
       };
       fs.writeFileSync(path.join(folder, 'markers.json'), `${JSON.stringify({
-        fps: FPS,
+        fps: exportFps,
         cta,
         part,
         resolution: `${options.width}x${options.height}`,

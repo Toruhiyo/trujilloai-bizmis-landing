@@ -8,15 +8,17 @@ The film says "chatbot" and "sales agent". "Salesperson" is only the struck word
 
 ---
 
+The picture is the MacBook Pro 14 panel, 3024 by 1964, so a full window on that laptop and the exported file are the same frame.
+
 ## 1. Lost in the catalog (desktop)
 
-The first close-up is a laptop window, 16:10. It opens the way a Mac window unminimizes, scaling up from the bottom, slow enough to read. While that opening plays, the header "Your store" stays hidden. Inside the window only, the page loads with the store icon beside a large "Your store" in the center, and no spinner. It holds, then leaves, and the catalog is there. The header comes back with the catalog. The cursor stays hidden until it is on a product. The shopper opens a product, goes back, bounces between two similar products, opens another, backs out.
+The first close-up is a laptop window, the same 3024:1964 panel, limited by height and larger than the sea cards. It opens the way a Mac window unminimizes, scaling up from the bottom, slow enough to read. The header "Your store" stays hidden until the catalog is there. The window finishes opening first. Then the store icon and a large "Your store" ease in above the center of the page, hold, and ease out. No spinner. The catalog does not show through the title. The header comes back with the catalog. The cursor stays hidden until it is on a product. The shopper opens a product, goes back, bounces between two similar products, opens another, backs out.
 
 **VO** `two-places`: "In every online store, a sale dies in two places."
 
 **VO** `catalog`: "Lost in the catalog."
 
-The cursor moves to the Dull Chatbot button and opens it. The panel does not open on its own. Chips: Track order, Returns, Contact us.
+The cursor moves to the Dull Chatbot button and opens it. The panel does not open on its own. On the phone that panel is a sheet across the bottom, and the chips wrap. Chips: Track order, Returns, Contact us.
 
 The shopper types: "Looking for something light I can take everywhere."
 
@@ -26,7 +28,7 @@ The cursor closes the chat. A grey veil covers the window and "LOST" stamps in g
 
 ## 2. The last doubt (phone)
 
-The desktop window leaves. The next card is a phone on its own, still titled "Your store", in the glass mockup frame with its shadow on screen. It is not inside the desktop window. The sea stays out of frame. A product page, laid out for the phone. The thumb scrolls to Add to cart, hovers, retreats to the specs, comes back, retreats.
+The desktop window leaves the frame. The next card is a phone on its own, still titled "Your store", in the glass mockup frame with its shadow on screen. It slides in from outside the frame. It does not sit on the left first. It is not inside the desktop window. The sea stays out of frame. A product page, laid out for the phone. The thumb scrolls to Add to cart, hovers, retreats to the specs, comes back, retreats.
 
 **VO** `last-doubt`: "Or stuck on the last doubt."
 

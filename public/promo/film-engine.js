@@ -287,6 +287,9 @@
   const PROMO_CHAT_AIM_MS = 360;
   const PROMO_LAUNCHER_AIM_MS = 780;
   const PROMO_WINDOW_IN_MS = 1200;
+  const PROMO_STORE_TITLE_IN_MS = 450;
+  const PROMO_STORE_TITLE_HOLD_MS = 700;
+  const PROMO_STORE_TITLE_OUT_MS = 450;
   const PROMO_LOST_SIZE_RATIO = 0.18;
   const PROMO_LOST_SIZE_MIN = 8;
   const PROMO_SCALE_SNAP_CLASS_MS = 50;
@@ -4020,6 +4023,13 @@
       while (host.children.length > cap) host.firstElementChild?.remove();
     }
 
+    stageTravel(node) {
+      const stage = node.closest('[data-promo-canvas]') || node.offsetParent || node.parentElement;
+      const stageBox = stage?.getBoundingClientRect();
+      const box = node.getBoundingClientRect();
+      return Math.ceil(Math.max(stageBox?.width || 0, box.width) + box.width);
+    }
+
     async slideStoreToPhone() {
       const store = this.painStore();
       if (!store || prefersReducedMotion()) {
@@ -4031,8 +4041,9 @@
         }
         return;
       }
+      const leave = this.stageTravel(store);
       store.style.transition = 'transform 450ms cubic-bezier(0.45, 0, 0.2, 1)';
-      store.style.transform = 'translateX(-108%)';
+      store.style.transform = `translateX(-${leave}px)`;
       await waitMs(450);
       store.classList.remove('is-desktop');
       store.classList.add('is-phone');
@@ -4046,8 +4057,9 @@
         hideSayThisBubbles();
       }
       await waitMs(640);
+      const enter = this.stageTravel(store);
       store.style.transition = 'none';
-      store.style.transform = 'translateX(108%)';
+      store.style.transform = `translateX(${enter}px)`;
       store.getBoundingClientRect();
       store.style.transition = 'transform 450ms cubic-bezier(0.45, 0, 0.2, 1)';
       store.style.transform = 'translateX(0)';
@@ -7647,6 +7659,8 @@
       clone.style.position = 'absolute';
       clone.style.margin = '0';
       clone.style.zIndex = '8';
+      clone.style.visibility = 'visible';
+      clone.style.opacity = '1';
       clone.style.transition = 'none';
       clone.style.transform = 'none';
       clone.style.boxShadow = '';
@@ -7655,8 +7669,9 @@
       clone.style.left = `${from.left - host.left}px`;
       clone.style.top = `${from.top - host.top}px`;
       clone.getBoundingClientRect();
+      const leave = Math.max(host.width, from.width) + from.width;
       clone.style.transition = 'left 420ms cubic-bezier(0.45, 0, 0.2, 1)';
-      clone.style.left = `${-from.width - 48}px`;
+      clone.style.left = `${-leave}px`;
       await waitMs(420);
       const phoneH = host.height * 0.78;
       const phoneW = phoneH * (9 / 19.5);
@@ -7667,7 +7682,7 @@
       clone.style.width = `${phoneW.toFixed(1)}px`;
       clone.style.height = `${phoneH.toFixed(1)}px`;
       clone.style.top = `${((host.height - phoneH) / 2).toFixed(1)}px`;
-      clone.style.left = `${host.width + 40}px`;
+      clone.style.left = `${host.width + phoneW + 40}px`;
       clone.getBoundingClientRect();
       clone.style.transition = 'left 450ms cubic-bezier(0.45, 0, 0.2, 1)';
       clone.style.left = `${((host.width - phoneW) / 2).toFixed(1)}px`;
@@ -7755,14 +7770,14 @@
         return;
       }
       const store = this.painStore();
-      veil.getBoundingClientRect();
-      veil.classList.add('is-in');
       store?.classList.add('is-window-in');
       await waitMs(PROMO_WINDOW_IN_MS);
       store?.classList.remove('is-window-in');
-      await waitMs(480);
+      veil.getBoundingClientRect();
+      veil.classList.add('is-in');
+      await waitMs(PROMO_STORE_TITLE_IN_MS + PROMO_STORE_TITLE_HOLD_MS);
       veil.classList.add('is-out');
-      await waitMs(200);
+      await waitMs(PROMO_STORE_TITLE_OUT_MS);
       veil.remove();
     }
 

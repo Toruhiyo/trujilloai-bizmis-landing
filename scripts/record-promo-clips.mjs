@@ -28,10 +28,11 @@ const LOOKS = ['home-hero', 'collection-dense', 'lookbook', 'list'];
 const LOOK_MOTIONS = ['scroll-up', 'scroll-down'];
 
 const DEVICES = {
-  desktop: { width: 800, height: 500 },
+  desktop: { width: 1512, height: 982 },
   phone: { width: 360, height: 780 },
   tablet: { width: 960, height: 720 },
 };
+const STILLS_ONLY = process.env.PROMO_STILLS_ONLY === '1';
 
 function clipsFor(device) {
   const onlyMotion = (process.env.PROMO_CLIP_MOTION || '').trim();
@@ -137,6 +138,12 @@ async function recordDevice(browser, device) {
       await page.waitForTimeout(900);
     } else {
       await page.waitForTimeout(40);
+    }
+    if (STILLS_ONLY) {
+      const still = path.join(OUT_DIR, `promo-still-${clip.key}.jpg`);
+      await page.screenshot({ path: still, type: 'jpeg', quality: 72, timeout: 15000 });
+      process.stdout.write(`wrote promo-still-${clip.key}.jpg\n`);
+      continue;
     }
     const frameMs = 1000 / FPS;
     for (let index = 0; index < FRAME_COUNT; index += 1) {

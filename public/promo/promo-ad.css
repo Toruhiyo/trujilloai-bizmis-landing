@@ -80,8 +80,8 @@ html.is-promo-export.is-export-quad .promo-opening__canvas {
 .promo-opening__canvas {
   position: relative;
   container-type: size;
-  width: min(100%, calc(100dvh * 16 / 9));
-  height: min(100%, calc(100dvw * 9 / 16));
+  width: min(100%, calc(100dvh * 3024 / 1964));
+  height: min(100%, calc(100dvw * 1964 / 3024));
   overflow: hidden;
 }
 
@@ -597,9 +597,9 @@ html.is-promo-opening.is-promo-depart .promo-opening {
 
 .promo-opening.is-moments:not(.is-see) .promo-opening__store.is-desktop {
   width: auto;
-  height: 72cqh;
-  max-width: 88cqw;
-  aspect-ratio: 16 / 10;
+  height: 86cqh;
+  max-width: 90cqw;
+  aspect-ratio: 3024 / 1964;
 }
 
 .promo-opening.is-moments:not(.is-see) .promo-opening__store.is-phone {
@@ -698,6 +698,7 @@ html.is-promo-opening.is-promo-depart .promo-opening {
 .promo-opening__store {
   position: relative;
   z-index: 1;
+  container-type: size;
   display: flex;
   flex-direction: column;
   width: min(50rem, 64cqw);
@@ -811,7 +812,7 @@ html.is-promo-opening.is-promo-depart .promo-opening {
 }
 
 .promo-opening.is-pitch-cards.is-moments:not(.is-see) .promo-opening__store.is-phone .promo-moments__board {
-  height: calc(100% - 120px);
+  height: calc(100% - 22cqi);
 }
 
 .promo-opening__store.is-phone .promo-moments__board.is-pose-doubt .promo-moments__card.is-pick .promo-moments__photo,
@@ -871,22 +872,22 @@ html.is-promo-opening.is-promo-depart .promo-opening {
 .promo-opening__store.is-phone .promo-moments__board.is-pose-extra .promo-moments__card.is-pick {
   left: 50%;
   top: 27%;
-  --card-w: 400px;
-  --card-h: 360px;
+  --card-w: 78cqi;
+  --card-h: 34cqh;
   width: 86%;
   height: 36cqh;
-  padding: 14px;
+  padding: 3cqi;
 }
 
 .promo-opening__store.is-phone .promo-moments__board.is-pose-bundle .promo-moments__card.is-extra,
 .promo-opening__store.is-phone .promo-moments__board.is-pose-extra .promo-moments__card.is-extra {
   left: 50%;
   top: 73%;
-  --card-w: 400px;
-  --card-h: 260px;
+  --card-w: 78cqi;
+  --card-h: 24cqh;
   width: 86%;
   height: 26cqh;
-  padding: 14px;
+  padding: 3cqi;
 }
 
 .promo-opening__store.is-phone .promo-moments__board.is-pose-bundle .promo-moments__card.is-pick .promo-moments__photo,
@@ -913,13 +914,13 @@ html.is-promo-opening.is-promo-depart .promo-opening {
 .promo-opening__store.is-tablet .promo-moments__board.is-pose-bundle .promo-moments__card.is-pick,
 .promo-opening__store.is-tablet .promo-moments__board.is-pose-extra .promo-moments__card.is-pick {
   left: calc(50% - 24%);
-  --card-w: min(220px, 42%);
+  --card-w: 42cqi;
 }
 
 .promo-opening__store.is-tablet .promo-moments__board.is-pose-bundle .promo-moments__card.is-extra,
 .promo-opening__store.is-tablet .promo-moments__board.is-pose-extra .promo-moments__card.is-extra {
   left: calc(50% + 20%);
-  --card-w: min(168px, 34%);
+  --card-w: 34cqi;
 }
 
 .promo-opening__word--salesperson {
@@ -995,6 +996,7 @@ html.is-promo-opening.is-promo-depart .promo-opening {
   z-index: 6;
   display: grid;
   place-items: center;
+  padding-bottom: 18%;
   background: var(--ad-white);
   pointer-events: none;
 }
@@ -1009,8 +1011,8 @@ html.is-promo-opening.is-promo-depart .promo-opening {
   gap: 0.28em;
   font-size: clamp(2.2rem, 8cqw, 4.4rem);
   opacity: 0;
-  transform: translateY(8px);
-  transition: opacity 140ms ease, transform 140ms ease;
+  transform: translateY(16px);
+  transition: opacity 450ms ease, transform 450ms cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .promo-store-open__brand .promo-opening__store-mark {
@@ -1051,9 +1053,14 @@ html.is-promo-opening.is-promo-depart .promo-opening {
   transform: none;
 }
 
+.promo-store-open.is-out .promo-store-open__brand {
+  opacity: 0;
+  transform: translateY(-14px);
+}
+
 .promo-store-open.is-out {
   opacity: 0;
-  transition: opacity 160ms ease;
+  transition: opacity 450ms ease;
 }
 
 .promo-opening__store::before {
@@ -2018,8 +2025,8 @@ html.is-promo-opening.is-promo-depart .promo-opening {
 
 .promo-opening.is-pain .promo-moments__card.is-pain-open {
   z-index: 6;
-  --card-w: 300px;
-  --card-h: 416px;
+  --card-w: 34cqi;
+  --card-h: 46cqi;
   box-shadow:
     inset 0 1em 0 color-mix(in srgb, var(--ad-white) 80%, transparent),
     0 2em 6em color-mix(in srgb, var(--ad-ink) 4%, transparent),
@@ -2113,6 +2120,54 @@ html.is-promo-opening.is-promo-depart .promo-opening {
   gap: 0;
   width: 300px;
   max-width: calc(100% - 48px);
+}
+
+.promo-opening__store.is-phone {
+  container-type: size;
+}
+
+.promo-opening__store.is-phone .promo-pain__chat {
+  left: 3.5cqi;
+  right: 3.5cqi;
+  bottom: 3cqi;
+  width: auto;
+  max-width: none;
+}
+
+.promo-opening__store.is-phone .promo-pain__launcher {
+  width: 14cqi;
+  height: 14cqi;
+}
+
+.promo-opening__store.is-phone .promo-pain__panel {
+  width: 100%;
+  max-height: 52cqh;
+  border-radius: 4.5cqi 4.5cqi 2.8cqi 2.8cqi;
+  padding: 3.2cqi 3.4cqi 2.8cqi;
+}
+
+.promo-opening__store.is-phone .promo-pain__title,
+.promo-opening__store.is-phone .promo-pain__footer,
+.promo-opening__store.is-phone .promo-pain__input,
+.promo-opening__store.is-phone .promo-pain__msg,
+.promo-opening__store.is-phone .promo-pain__chip,
+.promo-opening__store.is-phone .promo-pain__actions span {
+  font-size: 3.2cqi;
+}
+
+.promo-opening__store.is-phone .promo-opening__store-bar {
+  flex-basis: 12cqi;
+  height: 12cqi;
+  padding: 0 4cqi;
+}
+
+.promo-opening__store.is-phone .promo-opening__store-name {
+  font-size: 4.2cqi;
+}
+
+.promo-opening__store.is-phone .promo-opening__store-mark {
+  width: 7cqi;
+  height: 7cqi;
 }
 
 .promo-pain__chat[hidden] {
