@@ -17,7 +17,7 @@
     ea: {
       scarcity: '',
       label: 'Install now',
-      invite: 'to join Early Access!',
+      invite: 'for Early Access benefits!',
       terms: ['First 50 stores', 'No commitment', 'No credit card'],
       shopify: true,
       url: '',
