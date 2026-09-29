@@ -20,11 +20,11 @@ The first close-up is a laptop window, 16:10, limited by height and larger than 
 
 **VO** `catalog`: "Lost in the catalog."
 
-The cursor moves to the bubble circle in the bottom right corner and opens it. The panel rises from that corner. It is a grey commercial chat window, tall enough to read, and the messages scroll when they do not fit. It shows a chat bubble with two eyes, the name "Dull Chatbot", message bubbles, a round composer with a paper-plane send button, and quick replies above the composer. The footer reads "Powered by Every Chatbot Ever", with "Every Chatbot Ever" in bold. It does not open on its own. On the phone the open panel is a sheet across the bottom, and the chips wrap. The collapsed control stays a circle in the bottom right. Chips: Track order, Returns, Contact us.
+The cursor moves to the bubble circle in the bottom right corner and opens it. The panel rises from that corner. It is a grey commercial chat window with a fixed height, and the messages scroll inside it. It shows a chat bubble with two eyes, the name "Dull Chatbot", message bubbles, a round composer with a paper-plane send button, and quick replies above the composer. The footer reads "Powered by Every Chatbot Ever", with "Every Chatbot Ever" in bold. It does not open on its own. On the phone the open panel is a sheet across the bottom, and the chips wrap. The collapsed control stays a circle in the bottom right, with the eyed bubble centered in that circle. Chips: Track order, Returns, Contact us.
 
 The shopper types: "Looking for something light I can take everywhere."
 
-The bot answers: "Thanks for reaching out! You can browse our full collection using the menu above. To narrow your search, use the filters for size, weight and category. Product details, specifications and customer reviews are available on each product page. Let me know if there's anything else I can help you with." Links: View collection, Size guide, Shipping info. After the reply, as the end of the conversation: "Was I helpful?" with a flat thumbs-up and a flat thumbs-down.
+Three dots pulse for a short moment. Then the bot answers: "Thanks for reaching out! You can browse our full collection using the menu above. To narrow your search, use the filters for size, weight and category. Product details, specifications and customer reviews are available on each product page. Let me know if there's anything else I can help you with." Links: View collection, Size guide, Shipping info. After the reply, as the end of the conversation: "Was I helpful?" with a flat thumbs-up and a flat thumbs-down. The cursor moves onto the thumbs-down and presses it. The thumbs-down fills dark.
 
 The cursor presses X. The window collapses to the bubble circle in the bottom right corner. A grey veil covers the window and "LOST" stamps in grey, inside the rounded window. The picture under that stamp is the same catalog that was just on screen.
 
@@ -34,7 +34,7 @@ The desktop window leaves the frame. The next card is a phone on its own, still 
 
 **VO** `last-doubt`: "Or stuck on the last doubt."
 
-The shopper types: "What if it's not right for me?"
+The shopper types: "What if it's not right for me?" Three dots pulse for a short moment before the reply.
 
 **VO** `salesperson`: "In a physical store, a salesperson catches both."
 

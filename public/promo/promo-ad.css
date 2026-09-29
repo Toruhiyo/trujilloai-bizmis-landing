@@ -646,6 +646,10 @@ html.is-promo-opening.is-promo-depart .promo-opening {
   transform: translate(calc(-50% + var(--promo-board-x)), calc(-50% + var(--promo-grid-rest-y))) scale(var(--promo-grid-fit));
 }
 
+.promo-opening.is-moments:not(.is-see):not(.is-pain) .promo-opening__store.is-desktop .promo-moments__board.is-pose-grid {
+  --promo-grid-fit: 1;
+}
+
 .promo-opening.is-moments:not(.is-see):not(.is-pain) .promo-moments__board.is-pose-grid.is-catalog-seek {
   animation: promo-moments-catalog-seek var(--promo-catalog-seek, 680ms) cubic-bezier(0.45, 0.05, 0.2, 1) both;
 }
@@ -2102,6 +2106,7 @@ html.is-promo-opening.is-promo-depart .promo-opening {
   .promo-opening.is-pain .promo-opening__stage,
   .promo-opening.is-pain .promo-moments__card,
   .promo-pain__cursor,
+  .promo-pain__typing i,
   .promo-opening.is-bursting .promo-pain__chat,
   .promo-opening.is-window-shut .promo-opening__store {
     transition: none;
@@ -2155,7 +2160,9 @@ html.is-promo-opening.is-promo-depart .promo-opening {
 
 .promo-opening__store.is-phone .promo-pain__panel {
   width: 100%;
-  max-height: 78cqh;
+  height: 74cqh;
+  min-height: 74cqh;
+  max-height: 74cqh;
   border-radius: 4.2cqi 4.2cqi 2.4cqi 2.4cqi;
   padding: 0;
 }
@@ -2250,8 +2257,9 @@ html.is-promo-opening.is-promo-depart .promo-opening {
 }
 
 .promo-pain__launcher svg {
-  width: 1.85rem;
-  height: 1.85rem;
+  display: block;
+  width: 1.7rem;
+  height: 1.7rem;
   fill: currentColor;
   stroke: none;
 }
@@ -2281,12 +2289,18 @@ html.is-promo-opening.is-promo-depart .promo-opening {
   flex-direction: column;
   gap: 0;
   box-sizing: border-box;
-  flex: 0 0 auto;
-  max-height: 84cqh;
+  flex: 0 0 70cqh;
+  height: 70cqh;
+  min-height: 70cqh;
+  max-height: 70cqh;
+  overflow: hidden;
 }
 
 .promo-opening__store.is-phone .promo-pain__chat.is-open .promo-pain__panel {
-  max-height: 78cqh;
+  flex: 0 0 74cqh;
+  height: 74cqh;
+  min-height: 74cqh;
+  max-height: 74cqh;
 }
 
 .promo-opening.is-clip-desktop .promo-pain__chat.is-open {
@@ -2319,9 +2333,10 @@ html.is-promo-opening.is-promo-depart .promo-opening {
 .promo-opening.is-clip-desktop.is-chat.is-motion-product-scroll .promo-pain__chat.is-open .promo-pain__panel,
 .promo-opening.is-clip-desktop.is-chat.is-motion-variant-doubt .promo-pain__chat.is-open .promo-pain__panel,
 .promo-opening.is-clip-desktop.is-chat.is-motion-compare .promo-pain__chat.is-open .promo-pain__panel {
-  flex: 0 0 auto;
-  height: auto;
-  max-height: 84cqh;
+  flex: 0 0 70cqh;
+  height: 70cqh;
+  min-height: 70cqh;
+  max-height: 70cqh;
 }
 
 .promo-pain__title,
@@ -2336,12 +2351,15 @@ html.is-promo-opening.is-promo-depart .promo-opening {
 }
 
 .promo-pain__head {
+  position: relative;
+  z-index: 2;
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 12px;
   padding: 0.75rem 0.85rem;
   border-bottom: 1px solid var(--bot-line);
+  background: var(--bot-panel);
   flex: 0 0 auto;
 }
 
@@ -2457,6 +2475,7 @@ html.is-promo-opening.is-promo-depart .promo-opening {
 }
 
 .promo-pain__msg {
+  flex-shrink: 0;
   font-size: 0.78rem;
   font-weight: 400;
   line-height: 1.4;
@@ -2512,6 +2531,7 @@ html.is-promo-opening.is-promo-depart .promo-opening {
   display: flex;
   flex-direction: column;
   align-items: center;
+  flex-shrink: 0;
   gap: 0.35rem;
   margin-top: 0.15rem;
   padding: 0.15rem 0 0.1rem;
@@ -2524,26 +2544,48 @@ html.is-promo-opening.is-promo-depart .promo-opening {
 .promo-pain__votes {
   display: flex;
   align-items: center;
-  gap: 0.4rem;
+  gap: 0.35rem;
   color: var(--bot-ink);
 }
 
-.promo-pain__votes svg {
-  width: 0.95rem;
-  height: 0.95rem;
+.promo-pain__vote {
+  width: 1.85rem;
+  height: 1.85rem;
+  padding: 0;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--bot-ink);
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+}
+
+.promo-pain__vote svg {
+  width: 1rem;
+  height: 1rem;
   display: block;
+}
+
+.promo-pain__vote.is-down {
+  background: var(--bot-user);
+  color: var(--bot-user-ink);
+}
+
+.promo-opening.click.is-thumb-aim [data-promo-thumb="down"] {
+  transform: scale(0.88);
 }
 
 .promo-pain__typing {
   display: flex;
   gap: 0.22rem;
   align-self: flex-start;
+  flex-shrink: 0;
   width: fit-content;
-  margin: 0 0.85rem;
+  margin: 0;
   padding: 0.45rem 0.55rem;
   border-radius: 4px 12px 12px 12px;
   background: var(--bot-bubble);
-  flex: 0 0 auto;
 }
 
 .promo-pain__typing[hidden] {
@@ -2555,7 +2597,21 @@ html.is-promo-opening.is-promo-depart .promo-opening {
   height: 0.32rem;
   border-radius: 999px;
   background: var(--bot-ink);
-  opacity: 0.45;
+  opacity: 0.35;
+  animation: promo-pain-think 900ms ease-in-out infinite;
+}
+
+.promo-pain__typing i:nth-child(2) {
+  animation-delay: 140ms;
+}
+
+.promo-pain__typing i:nth-child(3) {
+  animation-delay: 280ms;
+}
+
+@keyframes promo-pain-think {
+  0%, 70%, 100% { opacity: 0.28; transform: translateY(0); }
+  35% { opacity: 1; transform: translateY(-2px); }
 }
 
 .promo-pain__composer {
@@ -3263,6 +3319,15 @@ html.is-promo-opening.is-promo-depart .promo-opening {
   min-height: 0;
   aspect-ratio: 1;
   background: var(--ad-photo);
+}
+
+.promo-opening__store.is-desktop .promo-moments__board.is-pose-grid .promo-moments__photo {
+  flex: 1 1 auto;
+  aspect-ratio: auto;
+}
+
+.promo-opening__store.is-desktop .promo-moments__board.is-pose-grid .promo-moments__glyph img {
+  object-fit: contain;
 }
 
 .promo-moments__card.is-drop { z-index: 1; }

@@ -1304,7 +1304,7 @@
   const PROMO_PAIN_ANSWER_2 = "That's a great question. Recommendations vary depending on individual preferences and intended use, so we're unable to confirm suitability for a specific customer. We suggest reviewing the product description, specifications and customer reviews on the product page before purchasing. If you'd like further assistance, I can open a support ticket and a member of our team will get back to you within 1-2 business days.";
   const PROMO_PAIN_ACTIONS = ['Open a ticket', 'No, thanks'];
   const PROMO_PAIN_CHIPS = ['Track order', 'Returns', 'Contact us'];
-  const PROMO_PAIN_MARK = '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M5.4 3.4h11.4a3.8 3.8 0 0 1 3.8 3.8v7.1a3.8 3.8 0 0 1-3.8 3.8h-4.7L8 21.7v-3.6H5.4a3.8 3.8 0 0 1-3.8-3.8V7.2a3.8 3.8 0 0 1 3.8-3.8z"/><circle cx="8.7" cy="10.8" r="1.45" fill="var(--bot-user)"/><circle cx="14.1" cy="10.8" r="1.45" fill="var(--bot-user)"/></svg>';
+  const PROMO_PAIN_MARK = '<svg viewBox="-0.9 0.55 24 24" aria-hidden="true"><path fill="currentColor" d="M5.4 3.4h11.4a3.8 3.8 0 0 1 3.8 3.8v7.1a3.8 3.8 0 0 1-3.8 3.8h-4.7L8 21.7v-3.6H5.4a3.8 3.8 0 0 1-3.8-3.8V7.2a3.8 3.8 0 0 1 3.8-3.8z"/><circle cx="8.7" cy="10.8" r="1.45" fill="var(--bot-user)"/><circle cx="14.1" cy="10.8" r="1.45" fill="var(--bot-user)"/></svg>';
   const PROMO_PAIN_SEND = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg>';
   const PROMO_PAIN_THUMB_UP = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 10v12"/><path d="M15 5.88 14 10h5.83a2 2 0 0 1 1.92 2.56l-2.33 8A2 2 0 0 1 17.5 22H4a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2h2.76a2 2 0 0 0 1.79-1.11L12 2a3.13 3.13 0 0 1 3 3.88Z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>';
   const PROMO_PAIN_THUMB_DOWN = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M17 14V2"/><path d="M9 18.12 10 14H4.17a2 2 0 0 1-1.92-2.56l2.33-8A2 2 0 0 1 6.5 2H20a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2h-2.76a2 2 0 0 0-1.79 1.11L12 22a3.13 3.13 0 0 1-3-3.88Z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>';
@@ -1352,6 +1352,30 @@
     log.appendChild(block);
   }
 
+  function dullThumb(which) {
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.className = 'promo-pain__vote';
+    button.setAttribute('data-promo-thumb', which);
+    button.setAttribute('aria-hidden', 'true');
+    button.tabIndex = -1;
+    button.innerHTML = which === 'down' ? PROMO_PAIN_THUMB_DOWN : PROMO_PAIN_THUMB_UP;
+    button.addEventListener('click', (event) => {
+      event.preventDefault();
+      const row = button.parentElement;
+      row?.querySelectorAll('.promo-pain__vote').forEach((node) => node.classList.remove('is-down'));
+      if (which === 'down') button.classList.add('is-down');
+    });
+    return button;
+  }
+
+  function appendDullThink(log) {
+    const dots = document.createElement('p');
+    dots.className = 'promo-pain__typing';
+    dots.innerHTML = '<i></i><i></i><i></i>';
+    log.appendChild(dots);
+  }
+
   function appendDullCloser(log) {
     log.querySelector('.promo-pain__helpful')?.remove();
     const helpful = document.createElement('div');
@@ -1360,7 +1384,7 @@
     label.textContent = 'Was I helpful?';
     const votes = document.createElement('span');
     votes.className = 'promo-pain__votes';
-    votes.innerHTML = PROMO_PAIN_THUMB_UP + PROMO_PAIN_THUMB_DOWN;
+    votes.append(dullThumb('up'), dullThumb('down'));
     helpful.append(label, votes);
     log.appendChild(helpful);
   }
@@ -1378,12 +1402,14 @@
     ['open-2', 200],
     ['back-2', 110],
   ];
+  const PROMO_PAIN_THINK_MS = 900;
   const PROMO_PAIN_B = [
     ['launcher', 80],
     ['panel', 140],
     ['typed-1', PROMO_PAIN_LINE_1.length * PROMO_PAIN_TYPE_CHAR_MS],
-    ['think-1', 200],
-    ['answer-1', 900],
+    ['think-1', PROMO_PAIN_THINK_MS],
+    ['answer-1', 720],
+    ['down', 0],
   ];
   const PROMO_PITCH_SETTLE_MS = 700;
   const PROMO_MOMENTS_VO_MS = 280;
@@ -2506,6 +2532,17 @@
           const group = cols * cardW + (cols - 1) * gutter;
           gx0 = (stageWidth - group) / 2 + cardW / 2 - stageWidth / 2 - shift;
         }
+      }
+    }
+    const fillsWindow = !phone && !tablet && !clipLayout && look !== 'list' && look !== 'lookbook' && look !== 'home-hero';
+    if (fillsWindow) {
+      const painStore = Boolean(opening?.classList.contains('is-pain'));
+      const bottomPad = painStore ? 88 : 16;
+      const rowsOnScreen = 2;
+      const fitted = (stage.clientHeight - padY - bottomPad - (rowsOnScreen - 1) * rowGapY) / rowsOnScreen;
+      if (fitted > 140) {
+        cardH = fitted;
+        pitchY = cardH + rowGapY;
       }
     }
     if (pitchBoard && look !== 'home-hero') {
@@ -5508,22 +5545,23 @@
       input.classList.remove('is-live');
       typing.hidden = true;
       if (through === 'typed-1') input.textContent = PROMO_PAIN_LINE_1;
-      if (through === 'think-1' || through === 'answer-1' || through === 'typed-2' || through === 'think-2' || through === 'answer-2') {
+      if (through === 'think-1' || through === 'answer-1' || through === 'down' || through === 'typed-2' || through === 'think-2' || through === 'answer-2') {
         appendDullUser(log, PROMO_PAIN_LINE_1);
       }
-      if (through === 'think-1') typing.hidden = false;
-      if (through === 'answer-1' || through === 'typed-2' || through === 'think-2' || through === 'answer-2') {
+      if (through === 'think-1') appendDullThink(log);
+      if (through === 'answer-1' || through === 'down' || through === 'typed-2' || through === 'think-2' || through === 'answer-2') {
         appendDullBot(log, PROMO_PAIN_ANSWER_1, PROMO_PAIN_LINKS);
       }
       if (through === 'typed-2') input.textContent = PROMO_PAIN_LINE_2;
       if (through === 'think-2' || through === 'answer-2') {
         appendDullUser(log, PROMO_PAIN_LINE_2);
       }
-      if (through === 'think-2') typing.hidden = false;
+      if (through === 'think-2') appendDullThink(log);
       if (through === 'answer-2') {
         appendDullBot(log, PROMO_PAIN_ANSWER_2, null, PROMO_PAIN_ACTIONS);
       }
       if (log.querySelector('.promo-pain__msg.is-bot')) appendDullCloser(log);
+      if (through === 'down') log.querySelector('[data-promo-thumb="down"]')?.classList.add('is-down');
       scrollDullLog(log);
     }
 
@@ -5558,7 +5596,7 @@
       });
       const chat = this.root.querySelector('[data-promo-pain-chat]');
       const cursor = this.root.querySelector('[data-promo-pain-cursor]');
-      const chatBeats = ['launcher', 'panel', 'typed-1', 'think-1', 'answer-1', 'typed-2', 'think-2', 'answer-2'];
+      const chatBeats = ['launcher', 'panel', 'typed-1', 'think-1', 'answer-1', 'down', 'typed-2', 'think-2', 'answer-2'];
       const chatOn = chatBeats.includes(beat);
       if (chat) {
         if (chatOn) chat.removeAttribute('hidden');
@@ -5567,7 +5605,7 @@
       }
       if (cursor) {
         cursor.style.transitionDuration = instant ? '0ms' : '';
-        if ((scene === 'chat' && beat !== 'launcher') || beat === 'grid') {
+        if ((scene === 'chat' && beat !== 'launcher' && beat !== 'down') || beat === 'grid') {
           cursor.style.opacity = '0';
         }
       }
@@ -5620,6 +5658,11 @@
         this.applyPainBeat(beat, prefersReducedMotion());
         if (beat === 'launcher' && !prefersReducedMotion()) {
           await this.aimCursorAtLauncher();
+          continue;
+        }
+        if (beat === 'down' && !prefersReducedMotion()) {
+          this.root.querySelector('[data-promo-thumb="down"]')?.classList.remove('is-down');
+          await this.aimCursorAtThumbDown();
           continue;
         }
         if (prefersReducedMotion()) continue;
@@ -7564,6 +7607,59 @@
       await waitMs(140);
     }
 
+    revealDullThumb(log, thumb) {
+      if (!log || !thumb) return;
+      const frame = log.getBoundingClientRect();
+      const box = thumb.getBoundingClientRect();
+      if (box.bottom > frame.bottom - 6) log.scrollTop += box.bottom - frame.bottom + 14;
+      if (box.top < frame.top + 6) log.scrollTop -= frame.top + 14 - box.top;
+    }
+
+    painCursorVisual(target, store) {
+      if (!store || !target) return null;
+      const storeBox = store.getBoundingClientRect();
+      const box = target.getBoundingClientRect();
+      const scale = storeBox.width / (store.offsetWidth || storeBox.width) || 1;
+      return {
+        x: (box.left + box.width / 2 - storeBox.left) / scale - PROMO_CURSOR_HOT_X,
+        y: (box.top + box.height / 2 - storeBox.top) / scale - PROMO_CURSOR_HOT_Y,
+      };
+    }
+
+    async aimCursorAtThumbDown() {
+      const store = this.painStore();
+      const chat = store?.querySelector('[data-promo-pain-chat]');
+      const cursor = this.root.querySelector('[data-promo-pain-cursor]');
+      const thumb = chat?.querySelector('[data-promo-thumb="down"]');
+      const log = chat?.querySelector('[data-promo-pain-log]');
+      if (!store || !chat || !cursor || !thumb) return;
+      this.revealDullThumb(log, thumb);
+      const place = (target) => {
+        const spot = this.painCursorVisual(target, store);
+        if (!spot) return;
+        cursor.style.setProperty('--pain-x', `${Math.round(spot.x)}px`);
+        cursor.style.setProperty('--pain-y', `${Math.round(spot.y)}px`);
+      };
+      cursor.hidden = false;
+      cursor.style.transitionDuration = '0ms';
+      cursor.style.opacity = '0';
+      place(chat.querySelector('.promo-pain__composer') || thumb);
+      cursor.getBoundingClientRect();
+      cursor.style.transitionDuration = '';
+      cursor.style.opacity = '1';
+      await waitMs(220);
+      this.root.style.setProperty('--promo-pain-ease', 'cubic-bezier(0.45, 0, 0.2, 1)');
+      this.root.style.setProperty('--promo-pain-open', `${PROMO_CHAT_AIM_MS}ms`);
+      this.revealDullThumb(log, thumb);
+      place(thumb);
+      this.root.classList.add('is-thumb-aim');
+      await waitMs(PROMO_CHAT_AIM_MS);
+      this.emitClick();
+      thumb.click();
+      await waitMs(560);
+      this.root.classList.remove('is-thumb-aim');
+    }
+
     async closeChatForLost() {
       if (prefersReducedMotion()) return;
       const store = this.visibleCloseStore();
@@ -7741,12 +7837,13 @@
       chat.classList.remove('is-shut');
       log.replaceChildren();
       input.classList.remove('is-live');
-      if (typing) typing.hidden = through !== 'think-2';
+      if (typing) typing.hidden = true;
       if (through === 'typed-2') input.textContent = PROMO_PAIN_LINE_2;
       if (through === 'think-2' || through === 'answer-2') {
         appendDullUser(log, PROMO_PAIN_LINE_2);
         input.textContent = '';
       }
+      if (through === 'think-2') appendDullThink(log);
       if (through === 'answer-2') appendDullBot(log, PROMO_PAIN_ANSWER_2, null, PROMO_PAIN_ACTIONS);
       if (log.querySelector('.promo-pain__msg.is-bot')) appendDullCloser(log);
       scrollDullLog(log);
@@ -7775,7 +7872,7 @@
       }
       input?.classList.remove('is-live');
       this.fillCloneChat(clone, 'think-2');
-      await waitMs(220);
+      await waitMs(PROMO_PAIN_THINK_MS);
       this.fillCloneChat(clone, 'answer-2');
       markPromoVo('salesperson');
       await waitMs(900);
