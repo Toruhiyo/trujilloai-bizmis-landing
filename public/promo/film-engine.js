@@ -42,6 +42,7 @@
   const PROMO_PASS_SLOT_FADE_MS = 700;
   const PROMO_EA_WRITE_MS = 1300;
   const PROMO_EA_STAMP_MS = 460;
+  const PROMO_EA_BEAT_MS = 380;
   const PROMO_EA_TERM_GAP_MS = 340;
   const PROMO_EA_TERM_IN_MS = 560;
   const PROMO_EA_HOLD_MS = 14000;
@@ -1920,53 +1921,81 @@
     return '';
   }
 
-  function pitchEventIcon(kind) {
+  const LASER_VIEWBOX = 100;
+  const LASER_RADIUS = 42;
+  const LASER_TAIL_COUNT = 24;
+  const LASER_TAIL_SWEEP = 225;
+  const LASER_TAIL_OVERLAP = 0.8;
+  const DESKTOP_ACTIVITY_HALO_PX = 144;
+  const ACTIVITY_HALO_RATIO = 1.34;
+  const LASER_ICON_NODES = {
+    product: [
+      ['path', { d: 'M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z' }],
+      ['circle', { cx: '12', cy: '12', r: '3' }],
+    ],
+    policies: [
+      ['path', { d: 'M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z' }],
+      ['path', { d: 'M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z' }],
+    ],
+    cart: [
+      ['circle', { cx: '8', cy: '21', r: '1' }],
+      ['circle', { cx: '19', cy: '21', r: '1' }],
+      ['path', { d: 'M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12' }],
+    ],
+    products: [
+      ['rect', { width: '7', height: '7', x: '3', y: '3', rx: '1' }],
+      ['rect', { width: '7', height: '7', x: '14', y: '3', rx: '1' }],
+      ['rect', { width: '7', height: '7', x: '14', y: '14', rx: '1' }],
+      ['rect', { width: '7', height: '7', x: '3', y: '14', rx: '1' }],
+    ],
+  };
+
+  function laserPolar(angleDeg) {
+    const radians = (angleDeg * Math.PI) / 180;
+    return {
+      x: LASER_VIEWBOX / 2 + LASER_RADIUS * Math.sin(radians),
+      y: LASER_VIEWBOX / 2 - LASER_RADIUS * Math.cos(radians),
+    };
+  }
+
+  function laserArc(startAngle, endAngle) {
+    const start = laserPolar(startAngle);
+    const end = laserPolar(endAngle);
+    return `M ${start.x.toFixed(3)} ${start.y.toFixed(3)} A ${LASER_RADIUS} ${LASER_RADIUS} 0 0 1 ${end.x.toFixed(3)} ${end.y.toFixed(3)}`;
+  }
+
+  function laserIcon(kind) {
     const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
     svg.setAttribute('viewBox', '0 0 24 24');
+    svg.setAttribute('fill', 'none');
     svg.setAttribute('aria-hidden', 'true');
-    const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-    path.setAttribute('fill', 'none');
-    path.setAttribute('stroke', 'currentColor');
-    path.setAttribute('stroke-width', '2.25');
-    path.setAttribute('stroke-linecap', 'round');
-    path.setAttribute('stroke-linejoin', 'round');
-    if (kind === 'product') {
-      path.setAttribute('d', 'M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6S2 12 2 12z');
-      svg.append(path);
-      const pupil = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-      pupil.setAttribute('cx', '12');
-      pupil.setAttribute('cy', '12');
-      pupil.setAttribute('r', '2.4');
-      pupil.setAttribute('fill', 'currentColor');
-      svg.append(pupil);
-      return svg;
-    }
-    if (kind === 'policies') {
-      path.setAttribute('d', 'M4 5.5A2.5 2.5 0 0 1 6.5 3H20v16H6.5A2.5 2.5 0 0 0 4 21.5z');
-      svg.append(path);
-      const spine = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-      spine.setAttribute('fill', 'none');
-      spine.setAttribute('stroke', 'currentColor');
-      spine.setAttribute('stroke-width', '2.25');
-      spine.setAttribute('d', 'M4 5.5A2.5 2.5 0 0 1 6.5 8H20');
-      svg.append(spine);
-      return svg;
-    }
-    if (kind === 'cart') {
-      path.setAttribute('d', 'M6 6h15l-1.5 9h-12z');
-      svg.append(path);
-      const bag = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-      bag.setAttribute('fill', 'none');
-      bag.setAttribute('stroke', 'currentColor');
-      bag.setAttribute('stroke-width', '2.25');
-      bag.setAttribute('stroke-linecap', 'round');
-      bag.setAttribute('d', 'M9 6a3 3 0 0 1 6 0M9 20h.01M18 20h.01');
-      svg.append(bag);
-      return svg;
-    }
-    path.setAttribute('d', 'M4 4h6v6H4zM14 4h6v6h-6zM4 14h6v6H4zM14 14h6v6h-6z');
-    svg.append(path);
+    svg.style.width = '100%';
+    svg.style.height = '100%';
+    svg.style.stroke = 'currentColor';
+    svg.style.strokeWidth = '2.75';
+    svg.style.strokeLinecap = 'round';
+    svg.style.strokeLinejoin = 'round';
+    (LASER_ICON_NODES[kind] || LASER_ICON_NODES.products).forEach(([tag, attrs]) => {
+      const node = document.createElementNS('http://www.w3.org/2000/svg', tag);
+      Object.entries(attrs).forEach(([key, value]) => node.setAttribute(key, value));
+      svg.append(node);
+    });
     return svg;
+  }
+
+  function activityStage() {
+    const embed = document.getElementById('bizmis-avatar-embed');
+    const canvas = embed?.querySelector('canvas');
+    if (!embed || !canvas) return null;
+    const layer = canvas.closest('.absolute');
+    const stage = layer?.parentElement?.querySelector('canvas') ? layer.parentElement : canvas.closest('button');
+    if (!stage) return null;
+    return { embed, stage, before: layer && stage.contains(layer) ? layer : stage.firstElementChild };
+  }
+
+  function activityHaloPx(stage) {
+    if (stage.closest('.bizmis-desktop-lite-chat')) return DESKTOP_ACTIVITY_HALO_PX;
+    return stage.offsetWidth * ACTIVITY_HALO_RATIO;
   }
 
   const PROMO_MOMENT_POSES = ['grid', 'row', 'choice', 'doubt', 'close', 'extra', 'bundle', 'fly', 'gone'];
@@ -4300,24 +4329,138 @@
 
     clearPitchEvents() {
       this.painStore()?.querySelector('[data-promo-widget-events]')?.replaceChildren();
+      document.querySelectorAll('[data-activity-laser]').forEach((node) => node.remove());
     }
 
     paintPitchEvent(detail) {
-      const host = this.ensurePitchEvents();
       const labelText = pitchEventLabel(detail);
-      if (!host || !labelText) return;
-      const card = document.createElement('div');
-      card.className = 'promo-widget-event';
-      card.setAttribute('role', 'status');
-      const icon = document.createElement('span');
-      icon.className = 'promo-widget-event__icon';
-      icon.append(pitchEventIcon(detail.kind));
-      const label = document.createElement('span');
-      label.textContent = labelText;
-      card.append(icon, label);
-      host.append(card);
-      const cap = host.closest('.is-phone') ? 1 : 2;
-      while (host.children.length > cap) host.firstElementChild?.remove();
+      const mount = activityStage();
+      if (!labelText || !mount) return;
+      this.clearPitchEvents();
+      const sizePx = activityHaloPx(mount.stage);
+      const orbitRadiusPx = (LASER_RADIUS / LASER_VIEWBOX) * sizePx;
+      const iconPx = (11 / LASER_VIEWBOX) * sizePx;
+      const focus = laserPolar(0);
+      const filterId = `promo-laser-${detail.kind}`;
+      const bloomId = `${filterId}-bloom`;
+      const laser = document.createElement('div');
+      laser.setAttribute('data-activity-laser', '');
+      laser.setAttribute('role', 'status');
+      laser.setAttribute('aria-label', labelText);
+      laser.className = 'theme-text-primary';
+      laser.style.position = 'absolute';
+      laser.style.left = '50%';
+      laser.style.top = '50%';
+      laser.style.width = `${sizePx}px`;
+      laser.style.height = `${sizePx}px`;
+      laser.style.transform = 'translate(-50%, -50%)';
+      laser.style.pointerEvents = 'none';
+      laser.style.setProperty('--bizmis-laser-spin-duration', '2.4s');
+
+      const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+      svg.setAttribute('viewBox', `0 0 ${LASER_VIEWBOX} ${LASER_VIEWBOX}`);
+      svg.setAttribute('fill', 'none');
+      svg.setAttribute('aria-hidden', 'true');
+      svg.classList.add('bizmis-laser-orbit');
+      svg.style.position = 'absolute';
+      svg.style.inset = '0';
+      svg.style.overflow = 'visible';
+      svg.style.width = '100%';
+      svg.style.height = '100%';
+
+      const defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
+      const filter = document.createElementNS('http://www.w3.org/2000/svg', 'filter');
+      filter.id = filterId;
+      filter.setAttribute('x', '-40%');
+      filter.setAttribute('y', '-40%');
+      filter.setAttribute('width', '180%');
+      filter.setAttribute('height', '180%');
+      const blur = document.createElementNS('http://www.w3.org/2000/svg', 'feGaussianBlur');
+      blur.setAttribute('stdDeviation', '1.4');
+      blur.setAttribute('result', 'bloom');
+      const merge = document.createElementNS('http://www.w3.org/2000/svg', 'feMerge');
+      ['bloom', 'SourceGraphic'].forEach((source) => {
+        const node = document.createElementNS('http://www.w3.org/2000/svg', 'feMergeNode');
+        node.setAttribute('in', source);
+        merge.append(node);
+      });
+      filter.append(blur, merge);
+      const gradient = document.createElementNS('http://www.w3.org/2000/svg', 'radialGradient');
+      gradient.id = bloomId;
+      [[0, '0.55'], [55, '0.22'], [100, '0']].forEach(([offset, opacity]) => {
+        const stop = document.createElementNS('http://www.w3.org/2000/svg', 'stop');
+        stop.setAttribute('offset', `${offset}%`);
+        stop.setAttribute('stop-color', 'currentColor');
+        stop.setAttribute('stop-opacity', opacity);
+        gradient.append(stop);
+      });
+      defs.append(filter, gradient);
+      svg.append(defs);
+
+      const track = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+      track.setAttribute('cx', String(LASER_VIEWBOX / 2));
+      track.setAttribute('cy', String(LASER_VIEWBOX / 2));
+      track.setAttribute('r', String(LASER_RADIUS));
+      track.setAttribute('stroke', 'currentColor');
+      track.setAttribute('stroke-width', '1.5');
+      track.setAttribute('opacity', '0.16');
+      track.setAttribute('vector-effect', 'non-scaling-stroke');
+      svg.append(track);
+
+      const tail = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+      tail.setAttribute('filter', `url(#${filterId})`);
+      const segmentSweep = LASER_TAIL_SWEEP / LASER_TAIL_COUNT;
+      for (let index = 0; index < LASER_TAIL_COUNT; index += 1) {
+        const endAngle = -LASER_TAIL_SWEEP + segmentSweep * (index + 1);
+        const intensity = ((index + 1) / LASER_TAIL_COUNT) ** 2.15;
+        const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        path.setAttribute('d', laserArc(endAngle - segmentSweep - LASER_TAIL_OVERLAP, endAngle));
+        path.setAttribute('stroke', 'currentColor');
+        path.setAttribute('stroke-width', String(0.8 + (2.5 - 0.8) * intensity));
+        path.setAttribute('stroke-opacity', String(0.025 + (0.82 - 0.025) * intensity));
+        path.setAttribute('stroke-linecap', 'butt');
+        path.setAttribute('vector-effect', 'non-scaling-stroke');
+        tail.append(path);
+      }
+      svg.append(tail);
+
+      const focusGroup = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+      const bloom = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+      bloom.setAttribute('cx', String(focus.x));
+      bloom.setAttribute('cy', String(focus.y));
+      bloom.setAttribute('r', '15');
+      bloom.setAttribute('fill', `url(#${bloomId})`);
+      const disc = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+      disc.setAttribute('cx', String(focus.x));
+      disc.setAttribute('cy', String(focus.y));
+      disc.setAttribute('r', '9');
+      disc.setAttribute('fill', 'currentColor');
+      disc.setAttribute('filter', `url(#${filterId})`);
+      focusGroup.append(bloom, disc);
+      svg.append(focusGroup);
+      laser.append(svg);
+
+      const rider = document.createElement('div');
+      rider.className = 'bizmis-laser-orbit';
+      rider.style.position = 'absolute';
+      rider.style.inset = '0';
+      rider.setAttribute('aria-hidden', 'true');
+      const tip = document.createElement('span');
+      tip.className = 'bizmis-laser-icon-lock theme-text-on-primary';
+      tip.style.position = 'absolute';
+      tip.style.left = '50%';
+      tip.style.top = '50%';
+      tip.style.display = 'flex';
+      tip.style.alignItems = 'center';
+      tip.style.justifyContent = 'center';
+      tip.style.width = `${iconPx}px`;
+      tip.style.height = `${iconPx}px`;
+      tip.style.marginLeft = `${-iconPx / 2}px`;
+      tip.style.marginTop = `${-iconPx / 2 - orbitRadiusPx}px`;
+      tip.append(laserIcon(detail.kind));
+      rider.append(tip);
+      laser.append(rider);
+      mount.stage.insertBefore(laser, mount.before);
     }
 
     stageTravel(node) {
@@ -5322,12 +5465,12 @@
       if (copy.shopify) this.root.classList.add('is-ea-in');
       markPromoVo(copy.vo);
       if (copy.shopify && slot) {
-        await waitMs(PROMO_PASS_SLOT_FADE_MS);
+        await waitMs(PROMO_PASS_SLOT_FADE_MS + PROMO_EA_BEAT_MS);
         slot.classList.add('is-writing');
-        await waitMs(PROMO_EA_WRITE_MS);
+        await waitMs(PROMO_EA_WRITE_MS + PROMO_EA_BEAT_MS);
         slot.classList.add('is-written');
         slot.querySelector('.promo-pass-slot__aside')?.classList.add('is-stamped');
-        await waitMs(PROMO_EA_STAMP_MS);
+        await waitMs(PROMO_EA_STAMP_MS + PROMO_EA_BEAT_MS);
         await this.playEaTerms(slot);
         await waitMs(PROMO_EA_TERM_IN_MS + PROMO_EA_HOLD_MS + promoHoldMs());
       } else {
@@ -5340,7 +5483,7 @@
       const pieces = [...slot.querySelectorAll('.promo-pass-slot__piece')];
       for (let index = 0; index < pieces.length; index += 1) {
         pieces[index].classList.add('is-in');
-        if (index < pieces.length - 1) await waitMs(PROMO_EA_TERM_GAP_MS);
+        if (index < pieces.length - 1) await waitMs(PROMO_EA_TERM_GAP_MS + PROMO_EA_BEAT_MS);
       }
     }
 
