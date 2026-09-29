@@ -6181,6 +6181,10 @@
       this.root.classList.toggle('is-chat', clip.chat);
       document.documentElement.style.setProperty('--ad-warmth', clip.tone === 'pitch' ? '1' : '0');
 
+      const priorStage = this.painStore()?.querySelector('.promo-opening__moments-stage');
+      const priorBoard = priorStage?.querySelector('.promo-moments__board');
+      priorBoard?.style.setProperty('--pain-scroll', '0px');
+      priorStage?.style.setProperty('--pain-scroll', '0px');
       this.openPainStage();
       this.applyPainBeat(clip.chat && clip.tone === 'pain' ? 'answer-2' : 'grid', true);
       this.root.querySelectorAll('.promo-clip__product, .promo-clip__clerk, .promo-clip__act, .promo-clip__banner, [data-promo-clip]').forEach((node) => node.remove());
@@ -6261,8 +6265,7 @@
         applyMomentPose(stage, moment.pose, { instant: false });
         applyMomentTake(stage.querySelector('.promo-moments__board'), moment.take);
         this.mountClipBehavior(stage, { motion: moment.scene, look: clip.look, take: moment.take });
-        const laid = stage.querySelector('.promo-moments__board');
-        if (laid) layoutStoreGrid(laid);
+        this.applyClipLook(stage, clip.look);
       }
       this.seatClipWidget();
       const gesture = PROMO_MOMENT_GESTURE[moment.scene] || 'nod';
@@ -6385,9 +6388,13 @@
 
     poseStill(clip) {
       if (!document.documentElement.classList.contains('is-promo-still')) return;
+      const board = this.painHost()?.querySelector('.promo-moments__board');
+      const stage = board?.closest('.promo-opening__moments-stage');
+      if (clip.motion !== 'scroll-down') {
+        board?.style.setProperty('--pain-scroll', '0px');
+        stage?.style.setProperty('--pain-scroll', '0px');
+      }
       if (clip.motion === 'scroll-down') {
-        const board = this.painHost()?.querySelector('.promo-moments__board');
-        const stage = board?.closest('.promo-opening__moments-stage');
         const cols = Number.parseInt(board?.dataset.painCols || '', 10);
         if (board && stage && Number.isFinite(cols) && cols > 0) {
           board.style.setProperty('--pain-scroll', '0px');

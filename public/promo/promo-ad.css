@@ -3321,12 +3321,12 @@ html.is-promo-opening.is-promo-depart .promo-opening {
   background: var(--ad-photo);
 }
 
-.promo-opening__store.is-desktop .promo-moments__board.is-pose-grid .promo-moments__photo {
+.promo-opening:not(.is-clip) .promo-opening__store.is-desktop .promo-moments__board.is-pose-grid .promo-moments__photo {
   flex: 1 1 auto;
   aspect-ratio: auto;
 }
 
-.promo-opening__store.is-desktop .promo-moments__board.is-pose-grid .promo-moments__glyph img {
+.promo-opening:not(.is-clip) .promo-opening__store.is-desktop .promo-moments__board.is-pose-grid .promo-moments__glyph img {
   object-fit: contain;
 }
 
@@ -7295,8 +7295,8 @@ html.is-promo-still .promo-clip__product.is-compare::after {
   margin: 0;
   border-radius: 24px;
   background-color: #f3efe9;
-  background-size: auto 100%;
-  background-position: center;
+  background-size: cover;
+  background-position: center 44%;
   background-repeat: no-repeat;
   transform: translateY(var(--pain-scroll, 0px));
 }

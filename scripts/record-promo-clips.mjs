@@ -14,6 +14,11 @@ const FFMPEG = process.env.FFMPEG || 'ffmpeg';
 const FPS = 10;
 const FRAME_COUNT = 30;
 const PAIN_ACTS = ['search-empty', 'filter-hop', 'variant-doubt', 'cart-abandon', 'back-bounce'];
+const PAIN_MOTIONS = {
+  desktop: ['scroll-up', 'scroll-down', 'wander-near', 'wander-far', 'product-read', 'product-scroll', 'compare', ...PAIN_ACTS],
+  phone: ['scroll-up', 'scroll-down', 'product-read', 'product-scroll', 'compare', ...PAIN_ACTS],
+  tablet: ['scroll-up', 'scroll-down', 'product-read', 'product-scroll', 'compare', ...PAIN_ACTS],
+};
 const MOMENTS = [
   'moment-catalog-a',
   'moment-catalog-b',
@@ -36,8 +41,8 @@ const LOOKS = ['home-hero', 'collection-dense', 'lookbook', 'list'];
 const LOOK_MOTIONS = ['scroll-up', 'scroll-down'];
 
 const DEVICES = {
-  desktop: { width: 1512, height: 982 },
-  phone: { width: 360, height: 840 },
+  desktop: { width: 1600, height: 1000 },
+  phone: { width: 360, height: 760 },
   tablet: { width: 768, height: 1024 },
 };
 const STILLS_ONLY = process.env.PROMO_STILLS_ONLY === '1';
@@ -48,7 +53,7 @@ function clipsFor(device) {
   const onlyTone = (process.env.PROMO_CLIP_TONE || '').trim();
   const clips = [];
   if (!onlyLook || onlyLook === 'classic') {
-    for (const motion of PAIN_ACTS) {
+    for (const motion of PAIN_MOTIONS[device] || PAIN_MOTIONS.desktop) {
       for (const chat of [false, true]) {
         clips.push({ device, motion, chat, tone: 'pain', look: 'classic', moment: false });
       }
@@ -124,6 +129,11 @@ async function recordDevice(browser, device) {
     deviceScaleFactor: 1,
   });
   await page.emulateMedia({ reducedMotion: 'no-preference' });
+  if (STILLS_ONLY) {
+    await page.addInitScript(() => {
+      document.documentElement.classList.add('is-promo-still');
+    });
+  }
   if (device === 'phone') {
     await page.addInitScript(() => {
       Object.defineProperty(window, 'innerWidth', { configurable: true, get: () => 1280 });
@@ -135,6 +145,7 @@ async function recordDevice(browser, device) {
   url.searchParams.set('clip', '1');
   url.searchParams.set('device', device);
   url.searchParams.set('nocover', '1');
+  if (STILLS_ONLY) url.searchParams.set('still', '1');
   await page.goto(url.toString(), { waitUntil: 'domcontentloaded', timeout: 30000 });
   await page.waitForFunction(
     () => document.documentElement.classList.contains('is-promo-ready') && document.querySelector('[data-promo-clip-ready]'),
@@ -160,6 +171,15 @@ async function recordDevice(browser, device) {
       await page.waitForTimeout(40);
     }
     if (STILLS_ONLY) {
+      await page.evaluate(() => Promise.all([...document.querySelectorAll('*')].flatMap((node) => {
+        const image = getComputedStyle(node).backgroundImage;
+        return [...image.matchAll(/url\(["']?([^"')]+)/g)].map((match) => new Promise((resolve) => {
+          const pic = new Image();
+          pic.onload = () => resolve();
+          pic.onerror = () => resolve();
+          pic.src = match[1];
+        }));
+      })));
       const still = seaAsset(clip.key, 'still').disk;
       fs.mkdirSync(path.dirname(still), { recursive: true });
       await page.screenshot({ path: still, type: 'jpeg', quality: 72, timeout: 15000 });
