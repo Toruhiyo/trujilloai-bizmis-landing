@@ -151,9 +151,13 @@
       if (!src) return;
       video.pause();
       video.autoplay = false;
+      // Idle videos keep their frame and cost nothing. data-promo-start plays
+      // a clip from that second once the film re-arms it (origin reset).
+      if (video.dataset.promoIdle === '1') return;
       if (video.__promoOriginMs == null) video.__promoOriginMs = filmMs;
       if (!Number.isFinite(video.duration) || video.duration <= 0) return;
-      const localSec = Math.max(0, (filmMs - video.__promoOriginMs) / 1000);
+      const startSec = Number(video.dataset.promoStart) || 0;
+      const localSec = startSec + Math.max(0, (filmMs - video.__promoOriginMs) / 1000);
       const frameCount = Math.max(1, Math.round(video.duration * VIDEO_FPS));
       const frame = Math.floor(localSec * VIDEO_FPS) % frameCount;
       const next = Math.min(frame / VIDEO_FPS, Math.max(0, video.duration - 1 / VIDEO_FPS));

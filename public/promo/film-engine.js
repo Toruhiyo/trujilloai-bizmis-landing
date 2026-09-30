@@ -41,6 +41,7 @@
   const PROMO_PASS_TITLE_MS = 420;
   const PROMO_PASS_SLOW_MS = 4800;
   const PROMO_PASS_SLOT_IN_MS = 420;
+  const PROMO_PASS_SOLD_HOLD_MS = 1150;
   const PROMO_EA_WRITE_MS = 1700;
   const PROMO_EA_STAMP_MS = 460;
   const PROMO_EA_BEAT_MS = 780;
@@ -409,7 +410,7 @@
     texture: 64,
     fieldCount: 20,
     lostField: '#F4F4F6',
-    flowGap: 0.02,
+    flowGap: 0.08,
     frameMargin: 0.06,
     stampWidth: 0.78,
     stampInk: 0.7,
@@ -503,7 +504,19 @@
     if (index < 3) return step * index;
     return step * 2 + PROMO_GLIDE.captionInMs + PROMO_GLIDE.captionQuietMs;
   }
-  const PROMO_GLIDE_NEIGHBOR_IN_MS = 1100;
+  const PROMO_GLIDE_NEIGHBOR_IN_MS = 1400;
+
+  // 0..1 reveal of a sea card around the close-up. Cards further from the
+  // lead wait a little longer, so the sea opens outward.
+  function glideNeighborIn(cell, lead, timeMs) {
+    if (!lead) return 1;
+    const dx = (cell.x + cell.w / 2) - (lead.x + lead.w / 2);
+    const dy = (cell.y + cell.h / 2) - (lead.y + lead.h / 2);
+    const dist = Math.hypot(dx, dy) / PROMO_GLIDE.baseH;
+    const delay = Math.min(900, 120 + dist * 260);
+    const u = Math.min(1, Math.max(0, (timeMs - delay) / PROMO_GLIDE_NEIGHBOR_IN_MS));
+    return u * u * (3 - 2 * u);
+  }
   const glideRows = new Map();
   let glideLeadDevice = 'desktop';
   const glideWarmMedia = [];
@@ -905,32 +918,94 @@
     lead.flanked = true;
   }
 
-  function glideFreshSlot(col, row, salt, count) {
-    let slot = Math.floor(gridMix(col, row, salt) * count);
-    if (count < 2) return slot;
-    const left = Math.floor(gridMix(col - 1, row, salt) * count);
-    const up = Math.floor(gridMix(col, row - 1, salt) * count);
-    let guard = 0;
-    while (guard < count && (slot === left || slot === up)) {
-      slot = (slot + 1) % count;
-      guard += 1;
-    }
-    return slot;
+  // What each sea card shows. Picked once per card and remembered, so a card
+  // can look at what its neighbours already show and never repeat an image
+  // that sits beside it, above it, or below it.
+  const glideContentMemo = new Map();
+  const GLIDE_NO_CHAT_SHARE = 0.34;
+
+  function glideEffectiveLook(tone, device, motion, chat, look) {
+    if (!look || look === 'classic') return 'classic';
+    const urls = promoClipUrls();
+    return urls[clipFileKey(tone, device, motion, chat, look)] ? look : 'classic';
   }
 
-  function glideMotion(cell, mode) {
-    const list = mode === 'pitch'
+  // The same moment on a phone, a tablet, or a desktop still reads as the
+  // same screen, so the device does not make two cards different.
+  function glideVisualKey(cell, content) {
+    const family = content.motion.replace(/-[ab]$/, '');
+    return `${family}|${content.look}|${content.chat ? 1 : 0}`;
+  }
+
+  function glideNeighborKeys(cell, mode) {
+    const keys = new Set();
+    const take = (other) => {
+      if (!other || other.key === cell.key) return;
+      const memo = glideContentMemo.get(`${mode}:${other.key}`);
+      if (memo) keys.add(memo.visual);
+    };
+    const line = glideRows.get(cell.row);
+    line?.cells.forEach((other) => {
+      if (Math.abs(other.col - cell.col) <= 2) take(other);
+    });
+    [-2, -1, 1, 2].forEach((dy) => {
+      const reach = Math.abs(dy) === 1 ? 1.2 : 0.4;
+      const left = cell.x - cell.w * reach;
+      const right = cell.x + cell.w * (1 + reach);
+      glideRows.get(cell.row + dy)?.cells.forEach((other) => {
+        if (other.x < right && other.x + other.w > left) take(other);
+      });
+    });
+    return keys;
+  }
+
+  function glideContent(cell, mode) {
+    const memoKey = `${mode}:${cell.key}`;
+    const known = glideContentMemo.get(memoKey);
+    if (known) return known;
+    const tone = mode === 'pitch' ? 'pitch' : 'pain';
+    const motions = mode === 'pitch'
       ? PROMO_PITCH_MOMENTS
       : (PROMO_CLIP_MOTIONS[cell.id] || PROMO_CLIP_MOTIONS.desktop);
     const deviceSalt = cell.id === 'phone' ? 2 : cell.id === 'tablet' ? 4 : 0;
-    const slot = glideFreshSlot(cell.col, cell.row, (mode === 'pitch' ? 7 : 3) + deviceSalt, list.length);
-    return list[slot];
+    const m0 = Math.floor(gridMix(cell.col, cell.row, (mode === 'pitch' ? 7 : 3) + deviceSalt) * motions.length);
+    const l0 = Math.floor(gridMix(cell.col, cell.row, (mode === 'pitch' ? 11 : 5) + deviceSalt) * PROMO_STORE_LOOKS.length);
+    const wantsChat = mode !== 'pitch'
+      && glideHashUnit(cell.row, cell.col, 97) >= GLIDE_NO_CHAT_SHARE;
+    const taken = glideNeighborKeys(cell, mode);
+    let pick = null;
+    for (let i = 0; i < motions.length && !pick; i += 1) {
+      const motion = motions[(m0 + i) % motions.length];
+      for (let j = 0; j < PROMO_STORE_LOOKS.length && !pick; j += 1) {
+        const rawLook = PROMO_STORE_LOOKS[(l0 + j) % PROMO_STORE_LOOKS.length];
+        // Store looks were only recorded with the chat open.
+        const chat = mode === 'pitch' ? false : (rawLook !== 'classic' ? true : wantsChat);
+        const look = glideEffectiveLook(tone, cell.id, motion, chat, rawLook);
+        const content = { motion, look, chat };
+        const visual = glideVisualKey(cell, content);
+        if (!taken.has(visual)) pick = { ...content, visual };
+      }
+    }
+    if (!pick) {
+      const motion = motions[m0];
+      const content = { motion, look: 'classic', chat: mode !== 'pitch' && wantsChat };
+      pick = { ...content, visual: glideVisualKey(cell, content) };
+    }
+    glideContentMemo.set(memoKey, pick);
+    return pick;
+  }
+
+  function glideMotion(cell, mode) {
+    return glideContent(cell, mode).motion;
   }
 
   function glideLook(cell, mode) {
-    const deviceSalt = cell.id === 'phone' ? 2 : cell.id === 'tablet' ? 4 : 0;
-    const slot = glideFreshSlot(cell.col, cell.row, (mode === 'pitch' ? 11 : 5) + deviceSalt, PROMO_STORE_LOOKS.length);
-    return PROMO_STORE_LOOKS[slot];
+    return glideContent(cell, mode).look;
+  }
+
+  function glideChat(cell, mode, leadKey) {
+    if (mode === 'pitch' || cell.key === leadKey) return false;
+    return glideContent(cell, mode).chat;
   }
 
   function glideStillSrc(tone, device, motion, chat, look) {
@@ -966,7 +1041,7 @@
 
   function glideKeepsStamp(cell, mode) {
     if (mode !== 'pain') return true;
-    return glideHashUnit(cell.row, cell.col, 53) < 0.86;
+    return glideHashUnit(cell.row, cell.col, 53) < 0.93;
   }
 
   function glideMiddle(cell, cam, unit, frame) {
@@ -1002,7 +1077,7 @@
   }
 
   function glideMiddleExit(cell, frame, mode, entry) {
-    const limit = PROMO_GLIDE.layDownMs + PROMO_GLIDE.rampMs + 4000;
+    const limit = glideMarks(mode).playEnd + 2000;
     let lo = entry;
     let hi = null;
     for (let t = entry + 80; t <= limit; t += 80) {
@@ -1026,7 +1101,9 @@
     if (glideEventCache.key === key) return glideEventCache.list;
     const list = [];
     const seen = new Set();
-    const end = PROMO_GLIDE.layDownMs + PROMO_GLIDE.rampMs;
+    // Keep stamping for as long as the sea is on screen, not only through the
+    // ramp: the camera is fastest after it, under the caption.
+    const end = glideMarks(mode).playEnd;
     for (let time = glideEventStart(); time < end; time += PROMO_GLIDE.stepMs) {
       const view = glideCells(time, frame, mode);
       view.cells.forEach((cell) => {
@@ -2113,7 +2190,7 @@
   const PROMO_MOMENT_PICK_INDEX = 5;
   const PROMO_MOMENT_OTHER_INDEX = 3;
   const PROMO_COMPARE_SHAPES = { go: 'capsule', pick: 'sphere', other: 'rounded-cube' };
-  const PROMO_COMPARE_TINTS = { go: 'stone', pick: 'sand', other: 'warm-grey' };
+  const PROMO_COMPARE_TINTS = { go: 'sage', pick: 'blush', other: 'sand' };
   const PROMO_ACCESSORY_OBJECT_SCALE = 1.08;
   const PROMO_TINT_FILE = {
     sphere: { stone: 'sphere-b' },
@@ -3756,7 +3833,7 @@
         const view = glideCells(time, frame, mode);
         view.cells.forEach((cell) => {
           const tone = mode === 'pitch' ? 'pitch' : 'pain';
-          const chat = mode !== 'pitch' && cell.key !== leadKey;
+          const chat = glideChat(cell, mode, leadKey);
           const url = glideStillSrc(tone, cell.id, glideMotion(cell, mode), chat, glideLook(cell, mode));
           if (url) urls.add(url);
         });
@@ -3958,10 +4035,31 @@
       card.className = 'promo-opening__slide-card';
       const glow = document.createElement('span');
       glow.className = 'promo-opening__slide-glow';
-      const hero = document.createElement('img');
-      hero.className = 'promo-opening__slide-hero';
-      hero.alt = '';
-      hero.src = store.hero || '';
+      let hero;
+      if (store.video) {
+        hero = document.createElement('video');
+        hero.className = 'promo-opening__slide-hero promo-opening__slide-video';
+        hero.muted = true;
+        hero.playsInline = true;
+        hero.preload = 'auto';
+        hero.poster = store.hero || '';
+        hero.dataset.promoStart = String(store.videoStart || 0);
+        hero.dataset.promoIdle = '1';
+        // Park the clip on its first frame so the card never flashes the poster.
+        hero.addEventListener('loadedmetadata', () => {
+          try {
+            hero.currentTime = Number(hero.dataset.promoStart) || 0;
+          } catch {
+            /* seek again when the store comes up */
+          }
+        }, { once: true });
+        hero.src = store.video;
+      } else {
+        hero = document.createElement('img');
+        hero.className = 'promo-opening__slide-hero';
+        hero.alt = '';
+        hero.src = store.hero || '';
+      }
       card.append(glow, hero);
       slide.append(meta, card);
       track.appendChild(slide);
@@ -5459,8 +5557,15 @@
         verdict.style.opacity = '1';
         verdict.style.transform = 'none';
       }
+      // The pass brings its own orange field up about a second later. Hold the
+      // SOLD wash until then, or the frame flashes white in between.
       const sold = this.root.querySelector('.promo-scale__sold');
-      if (sold) sold.style.opacity = '0';
+      if (sold) {
+        window.clearTimeout(this.soldHoldTimer);
+        this.soldHoldTimer = window.setTimeout(() => {
+          sold.style.opacity = '0';
+        }, PROMO_PASS_SOLD_HOLD_MS);
+      }
       const mark = this.root.querySelector('[data-promo-end-mark]');
       if (mark) {
         mark.style.background = 'var(--bizmis-primary)';
@@ -5493,13 +5598,62 @@
       return light;
     }
 
-    paintPassLight(color) {
-      window.clearTimeout(this.passLightTimer);
-      this.root.classList.add('is-pass-dim');
-      if (!color) return;
-      this.passLightTimer = window.setTimeout(() => {
-        this.root.classList.remove('is-pass-dim');
-      }, 120);
+    paintPassLight() {
+      // The light is driven every frame by runPassLight.
+    }
+
+    // Trailer lighting for one store: the backlight is at its brightest and
+    // almost still at the middle of the hold, then speeds up and dims to its
+    // lowest right at the switch. Brightness follows sin^2, the sweep moves
+    // fastest where the light is dimmest.
+    runPassLight(durationMs) {
+      this.stopPassLight();
+      const root = this.root;
+      const start = performance.now();
+      const span = Math.max(400, durationMs);
+      const frame = () => {
+        const u = Math.min(1, (performance.now() - start) / span);
+        const glow = Math.sin(Math.PI * u) ** 2;
+        const sweep = u + Math.sin(2 * Math.PI * u) / (2 * Math.PI);
+        const x = (-1 + 2 * sweep) * 150;
+        const y = Math.sin(Math.PI * sweep) * -40;
+        root.style.setProperty('--pass-glow', (0.08 + 0.92 * glow).toFixed(3));
+        root.style.setProperty('--pass-glow-x', `${x.toFixed(1)}px`);
+        root.style.setProperty('--pass-glow-y', `${y.toFixed(1)}px`);
+        if (u < 1) this.passLightFrame = window.requestAnimationFrame(frame);
+      };
+      frame();
+    }
+
+    stopPassLight() {
+      if (this.passLightFrame) window.cancelAnimationFrame(this.passLightFrame);
+      this.passLightFrame = 0;
+    }
+
+    // Only the store on screen plays its clip, from its chosen moment.
+    playPassVideo(slides, index) {
+      slides.forEach((slide, slideIndex) => {
+        const video = slide.querySelector('video.promo-opening__slide-video');
+        if (!video) return;
+        const on = slideIndex === index;
+        const start = Number(video.dataset.promoStart) || 0;
+        if (!on) {
+          video.dataset.promoIdle = '1';
+          video.pause();
+          return;
+        }
+        if (video.dataset.promoIdle === '1' || video.dataset.promoArmed !== '1') {
+          video.dataset.promoArmed = '1';
+          video.__promoOriginMs = null;
+          try {
+            video.currentTime = start;
+          } catch {
+            /* metadata not ready yet */
+          }
+        }
+        delete video.dataset.promoIdle;
+        if (!document.documentElement.classList.contains('is-promo-export')) video.play().catch(() => { });
+      });
     }
 
     orderPassStores() {
@@ -5579,6 +5733,8 @@
           slide.classList.remove('is-pass-tag', 'is-pass-title');
         });
         const current = slides[index];
+        this.playPassVideo(slides, index);
+        this.runPassLight(durations[index]);
         window.setTimeout(() => {
           if (current?.classList.contains('is-pass-current')) current.classList.add('is-pass-tag');
         }, PROMO_PASS_TAG_MS);
@@ -5590,6 +5746,8 @@
           if (index >= count) {
             this.paintWave(-1, 0, 0, 0);
             this.paintPassLight(null);
+            this.stopPassLight();
+            this.playPassVideo(slides, -1);
             onDone();
             return;
           }
@@ -7556,7 +7714,7 @@
         node.style.removeProperty('--card-left');
         const unit = view.span.unit;
         const tone = mode === 'pitch' ? 'pitch' : 'pain';
-        const chat = mode !== 'pitch' && cell.key !== this.glideLeadKey;
+        const chat = glideChat(cell, mode, this.glideLeadKey);
         const motion = glideMotion(cell, mode);
         const look = glideLook(cell, mode);
         const clipKey = clipFileKey(tone, cell.id, motion, chat, look);
@@ -7883,13 +8041,12 @@
           slot.fx.hidden = true;
           return;
         }
-        // The pain sea grows out of the phone close-up: the neighbours fade in
-        // as the camera starts to pull back, so there is no cut.
-        if (mode === 'pain' && item.cell.key !== this.glideLeadKey && time < PROMO_GLIDE_NEIGHBOR_IN_MS) {
-          const u = Math.max(0, time / PROMO_GLIDE_NEIGHBOR_IN_MS);
-          slot.cell.style.opacity = (u * u * (3 - 2 * u)).toFixed(3);
-        } else if (mode === 'pain' && slot.cell.dataset.neighborIn !== '1' && item.cell.key !== this.glideLeadKey) {
-          slot.cell.dataset.neighborIn = '1';
+        // The sea grows out of the close-up: neighbours fade in as the camera
+        // pulls back, nearest last-to-first outward, so there is no cut.
+        if (item.cell.key !== this.glideLeadKey && time < PROMO_GLIDE_NEIGHBOR_IN_MS + 900) {
+          const u = glideNeighborIn(item.cell, leadCell, time);
+          slot.cell.style.opacity = u >= 1 ? '' : u.toFixed(3);
+        } else if (item.cell.key !== this.glideLeadKey && slot.cell.style.opacity) {
           slot.cell.style.opacity = '';
         }
         const trackLead = this.glideKeepStore && arrive < 0.992 && item.cell.key === this.glideLeadKey;
