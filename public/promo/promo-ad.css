@@ -1182,7 +1182,7 @@ html.is-promo-opening.is-promo-depart .promo-opening {
   --promo-puff: 1;
 }
 
-.promo-opening.is-pain-loop .promo-opening__store > :not(.promo-opening__browser),
+.promo-opening.is-pain-loop .promo-opening__store > :not(.promo-opening__browser):not(.promo-pain__chat),
 .promo-opening.is-pain-loop .promo-opening__browser-pill {
   filter: grayscale(1);
 }
@@ -2808,15 +2808,25 @@ html.is-promo-opening.is-promo-depart .promo-opening {
   pointer-events: none;
 }
 
+.promo-opening [data-tint="stone"] { --tint-warm: var(--tint-stone); }
+.promo-opening [data-tint="sand"] { --tint-warm: var(--tint-sand); }
+.promo-opening [data-tint="blush"] { --tint-warm: var(--tint-blush); }
+.promo-opening [data-tint="sage"] { --tint-warm: var(--tint-sage); }
+.promo-opening [data-tint="warm-grey"] { --tint-warm: var(--tint-warm-grey); }
+
+.promo-moments__card,
+.promo-clip__card,
+.promo-clip__hero {
+  --ad-tile: color-mix(in oklab, #F2F2F2, var(--tint-warm, var(--tint-stone)) calc(var(--ad-warmth) * 100%));
+}
+
 .promo-moments__card::after {
   content: "";
   position: absolute;
   inset: 0;
   border-radius: inherit;
-  border: 3.5em solid color-mix(in srgb, var(--bizmis-primary) 88%, transparent);
-  box-shadow:
-    0 0 0 2em var(--bizmis-primary-ring),
-    0 0 28em color-mix(in srgb, var(--bizmis-primary) 50%, transparent);
+  border: 3.5em solid var(--bizmis-primary);
+  box-shadow: none;
   opacity: 0;
   pointer-events: none;
   transition: opacity 380ms var(--promo-spring);
@@ -2831,8 +2841,8 @@ html.is-promo-opening.is-promo-depart .promo-opening {
   min-height: calc(var(--card-h) * 0.5);
   overflow: hidden;
   border-radius: 12em;
-  background: var(--ad-photo);
-  filter: saturate(var(--ad-warmth)) grayscale(calc(1 - var(--ad-warmth)));
+  background: var(--ad-tile, var(--ad-photo));
+  filter: grayscale(calc(1 - var(--ad-warmth)));
 }
 
 .promo-moments__glyph {
@@ -3321,7 +3331,7 @@ html.is-promo-opening.is-promo-depart .promo-opening {
   height: auto;
   min-height: 0;
   aspect-ratio: 1;
-  background: var(--ad-photo);
+  background: var(--ad-tile, var(--ad-photo));
 }
 
 .promo-opening:not(.is-clip) .promo-opening__store.is-desktop .promo-moments__board.is-pose-grid .promo-moments__photo {
@@ -3823,7 +3833,7 @@ html.is-promo-opening.is-promo-depart .promo-opening {
   margin: 0;
   aspect-ratio: 1;
   border-radius: 22px;
-  background: var(--ad-photo);
+  background: var(--ad-tile, var(--ad-photo));
 }
 
 .is-pose-doubt .promo-moments__card.is-pick .promo-moments__meta,
@@ -4073,8 +4083,8 @@ html.is-promo-opening.is-promo-depart .promo-opening {
   height: 28rem;
   margin: -14rem 0 0 -14rem;
   border-radius: 50%;
-  background: color-mix(in srgb, var(--bizmis-primary) 72%, transparent);
-  filter: blur(36px);
+  background: transparent;
+  filter: none;
   opacity: 0;
 }
 
@@ -4083,8 +4093,8 @@ html.is-promo-opening.is-promo-depart .promo-opening {
   height: 14rem;
   margin: -7rem 0 0 -7rem;
   border-radius: 50%;
-  border: 3px solid color-mix(in srgb, var(--bizmis-primary) 95%, transparent);
-  box-shadow: 0 0 28px color-mix(in srgb, var(--bizmis-primary) 70%, transparent);
+  border: 3px solid var(--bizmis-primary);
+  box-shadow: none;
   opacity: 0;
 }
 
@@ -4094,7 +4104,7 @@ html.is-promo-opening.is-promo-depart .promo-opening {
   margin: -0.45rem 0 0 -0.45rem;
   border-radius: 50%;
   background: var(--bizmis-primary);
-  box-shadow: 0 0 16px color-mix(in srgb, var(--bizmis-primary) 95%, transparent);
+  box-shadow: none;
   opacity: 0;
 }
 
@@ -4288,7 +4298,7 @@ html.is-promo-opening.is-promo-depart .promo-opening {
   height: 3.1rem;
   margin: -1.55rem 0 0 -1.55rem;
   border-radius: 50%;
-  background: color-mix(in srgb, var(--bizmis-primary) 58%, white);
+  background: #E6E6E6;
   filter: blur(9px);
   opacity: 0;
   pointer-events: none;
@@ -4469,8 +4479,8 @@ html.is-promo-opening.is-promo-depart .promo-opening {
   height: 36px;
   margin-top: -18px;
   border-radius: 50%;
-  background: color-mix(in srgb, var(--bizmis-primary) 55%, transparent);
-  box-shadow: 0 0 18px color-mix(in srgb, var(--bizmis-primary) 80%, transparent);
+  background: var(--bizmis-primary);
+  box-shadow: none;
   opacity: 0;
   pointer-events: none;
 }
@@ -4612,7 +4622,7 @@ html.is-promo-opening.is-promo-depart .promo-opening {
   width: 7rem;
   height: 7rem;
   margin: -3.5rem 0 0 -3.5rem;
-  background: radial-gradient(circle, color-mix(in srgb, var(--bizmis-primary) 75%, transparent), color-mix(in srgb, var(--bizmis-primary) 8%, transparent) 58%, transparent 72%);
+  background: transparent;
   opacity: 0;
 }
 
@@ -4623,8 +4633,8 @@ html.is-promo-opening.is-promo-depart .promo-opening {
   width: 34px;
   height: 34px;
   border-radius: 50%;
-  border: 3px solid color-mix(in srgb, var(--bizmis-primary) 95%, transparent);
-  box-shadow: 0 0 28px color-mix(in srgb, var(--bizmis-primary) 55%, transparent);
+  border: 3px solid var(--bizmis-primary);
+  box-shadow: none;
   opacity: 0;
 }
 
@@ -7326,7 +7336,7 @@ html.is-promo-still .promo-clip__product.is-compare::after {
 }
 
 .promo-opening.is-tone-pain .promo-clip__bezel {
-  filter: grayscale(1);
+  background: var(--ad-field);
 }
 
 .promo-clip__status {
@@ -7596,10 +7606,10 @@ html.is-promo-still .promo-clip__product.is-compare::after {
   object-fit: cover;
   object-position: center;
   display: block;
-  background: var(--ad-photo);
+  background: var(--ad-tile, var(--ad-photo));
   border-radius: 18px;
   overflow: hidden;
-  filter: saturate(var(--ad-warmth)) grayscale(calc(1 - var(--ad-warmth)));
+  filter: grayscale(calc(1 - var(--ad-warmth)));
 }
 
 .promo-clip__price {
@@ -8597,7 +8607,7 @@ html.is-promo-still .promo-clip__product.is-compare::after {
   color: #fff;
   opacity: 0;
   pointer-events: none;
-  filter: drop-shadow(0 1px 2px rgba(120, 64, 12, 0.4));
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.28));
 }
 
 .promo-close__poof {
@@ -8614,7 +8624,7 @@ html.is-promo-still .promo-clip__product.is-compare::after {
 
 .promo-glide.is-pain .promo-glide__veil,
 .promo-close__veil.is-lost {
-  background: rgba(232, 230, 226, 0.92);
+  background: rgba(228, 228, 228, 0.92);
 }
 
 .promo-glide.is-pain .promo-glide__mark {
@@ -8630,7 +8640,7 @@ html.is-promo-still .promo-clip__product.is-compare::after {
   max-width: 86%;
   margin: 0;
   text-align: center;
-  color: #8f8a84;
+  color: #8A8A8A;
   font-family: var(--font-heading);
   font-weight: 700;
   letter-spacing: -0.04em;

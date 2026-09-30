@@ -2034,27 +2034,27 @@
   const PROMO_COMPARE_RESERVE = 124;
   const PROMO_ROW_GAP = 20;
   // Only product images used in pain and pitch. Files live in products/images/ as promo-product-<key>.png.
-  const PROMO_CLAY_TINTS = ['stone', 'warm-grey', 'sand', 'oat', 'clay', 'mist'];
+  const PROMO_CLAY_TINTS = ['stone', 'sand', 'blush', 'sage', 'warm-grey'];
   const PROMO_CATALOG = {
     capsule: { family: 'round', tint: 'stone' },
-    sphere: { family: 'round', tint: 'stone' },
-    cylinder: { family: 'round', tint: 'sand' },
-    dome: { family: 'round', tint: 'oat' },
-    torus: { family: 'round', tint: 'clay' },
-    egg: { family: 'round', tint: 'mist' },
-    'tall-cylinder': { family: 'round', tint: 'warm-grey' },
-    arch: { family: 'round', tint: 'sand' },
+    sphere: { family: 'round', tint: 'sand' },
+    cylinder: { family: 'round', tint: 'blush' },
+    dome: { family: 'round', tint: 'sage' },
+    torus: { family: 'round', tint: 'warm-grey' },
+    egg: { family: 'round', tint: 'blush' },
+    'tall-cylinder': { family: 'round', tint: 'sage' },
+    arch: { family: 'round', tint: 'stone' },
     'rounded-cube': { family: 'boxy', tint: 'warm-grey' },
-    'tall-box': { family: 'boxy', tint: 'oat' },
-    'hexagonal-prism': { family: 'boxy', tint: 'mist' },
-    cone: { family: 'pointed', tint: 'sand' },
-    'truncated-cone': { family: 'pointed', tint: 'oat' },
-    icosahedron: { family: 'pointed', tint: 'clay' },
-    dodecahedron: { family: 'pointed', tint: 'mist' },
-    'rounded-tetrahedron': { family: 'pointed', tint: 'oat' },
-    slab: { family: 'flat', tint: 'mist' },
-    lens: { family: 'flat', tint: 'warm-grey' },
-    'squircle-slab': { family: 'flat', tint: 'sand' },
+    'tall-box': { family: 'boxy', tint: 'sand' },
+    'hexagonal-prism': { family: 'boxy', tint: 'blush' },
+    cone: { family: 'pointed', tint: 'sage' },
+    'truncated-cone': { family: 'pointed', tint: 'stone' },
+    icosahedron: { family: 'pointed', tint: 'sand' },
+    dodecahedron: { family: 'pointed', tint: 'blush' },
+    'rounded-tetrahedron': { family: 'pointed', tint: 'warm-grey' },
+    slab: { family: 'flat', tint: 'sand' },
+    lens: { family: 'flat', tint: 'sage' },
+    'squircle-slab': { family: 'flat', tint: 'blush' },
   };
   const PROMO_CLAY_KINDS = Object.keys(PROMO_CATALOG).filter((kind) => PROMO_CLAY_TINTS.includes(PROMO_CATALOG[kind].tint));
   const PROMO_CLAY_TURNS = ['m20', '0', 'p20'];
@@ -2064,8 +2064,8 @@
   const PROMO_MOMENT_GO_INDEX = 0;
   const PROMO_MOMENT_PICK_INDEX = 5;
   const PROMO_MOMENT_OTHER_INDEX = 3;
-  const PROMO_COMPARE_TINT = 'stone';
   const PROMO_COMPARE_SHAPES = { go: 'capsule', pick: 'sphere', other: 'rounded-cube' };
+  const PROMO_COMPARE_TINTS = { go: 'stone', pick: 'sand', other: 'warm-grey' };
   const PROMO_ACCESSORY_OBJECT_SCALE = 1.08;
   const PROMO_TINT_FILE = {
     sphere: { stone: 'sphere-b' },
@@ -2186,11 +2186,7 @@
     }
     const kinds = new Array(count);
     const knownKind = (index) => kinds[index] || catalogHeroKind(index);
-    const knownTint = (index) => {
-      const hero = catalogHeroKind(index);
-      if (hero) return PROMO_COMPARE_TINT;
-      return kinds[index] ? clayTintOf(kinds[index]) : '';
-    };
+    const knownTint = (index) => compareTintAt(index) || (kinds[index] ? clayTintOf(kinds[index]) : '');
     const fits = (index, kind) => {
       const start = Math.max(0, index - span + 1);
       const end = Math.min(count, index + span);
@@ -2201,7 +2197,7 @@
         if (catalogHeroKind(ahead) === kind) return false;
       }
       const family = clayFamilyOf(kind);
-      const tint = catalogHeroKind(index) ? PROMO_COMPARE_TINT : clayTintOf(kind);
+      const tint = compareTintAt(index) || clayTintOf(kind);
       return catalogNeighbors(index, cols, count).every((other) => {
         const otherKind = knownKind(other);
         if (!otherKind || other > index && !catalogHeroKind(other)) return true;
@@ -2226,7 +2222,7 @@
     }
     return kinds.map((kind, index) => (
       catalogHeroKind(index)
-        ? lookForTint(kind, PROMO_COMPARE_TINT)
+        ? lookForTint(kind, compareTintAt(index))
         : makeCatalogLook(kind, rand)
     ));
   }
@@ -2235,14 +2231,22 @@
     return catalogLooks(PROMO_MOMENT_CARD_COUNT, PROMO_CATALOG_COLS, variant);
   }
 
+  function compareTintAt(index) {
+    if (index === PROMO_MOMENT_GO_INDEX) return PROMO_COMPARE_TINTS.go;
+    if (index === PROMO_MOMENT_PICK_INDEX) return PROMO_COMPARE_TINTS.pick;
+    if (index === PROMO_MOMENT_OTHER_INDEX) return PROMO_COMPARE_TINTS.other;
+    return '';
+  }
+
   function lookForTint(shape, tint) {
+    const file = PROMO_TINT_FILE[shape]?.[tint];
     return {
       kind: shape,
       turn: '0',
       finish: 'matte',
       scale: 1,
       tint,
-      file: PROMO_TINT_FILE[shape][tint],
+      ...(file ? { file } : {}),
     };
   }
 
@@ -2262,8 +2266,8 @@
     card.dataset.clayKind = look.kind;
     card.dataset.clayTurn = look.turn;
     card.dataset.clayFinish = look.finish;
+    card.dataset.tint = look.tint;
     card.style.setProperty('--clay-scale', String(look.scale));
-    card.style.removeProperty('--tint');
     const img = card.querySelector('.promo-moments__glyph img');
     const src = claySrc(look);
     if (img && img.getAttribute('src') !== src) img.src = src;
@@ -6918,6 +6922,7 @@
     clipHero(look, withCopy, withBlurb) {
       const card = document.createElement('div');
       card.className = 'promo-clip__hero';
+      card.dataset.tint = look?.tint || 'stone';
       const img = document.createElement('img');
       img.alt = '';
       img.draggable = false;
@@ -6949,6 +6954,7 @@
     clipCard(look, lined) {
       const card = document.createElement('article');
       card.className = 'promo-clip__card';
+      card.dataset.tint = look?.tint || 'stone';
       const img = document.createElement('img');
       img.alt = '';
       img.draggable = false;

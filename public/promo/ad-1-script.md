@@ -6,6 +6,8 @@ Lines in quotes are on screen or spoken. **VO** is the narrator (recorded by Ori
 
 The film says "chatbot" and "sales agent". "Salesperson" is only the struck word in the reveal, and the narrator's line about a physical store.
 
+Two palettes, and the switch is the only transition between them. Before the knob flips, the picture is greyscale: white field, white cards, light grey product tiles, dark grey type. The products are the same renders as the warm half, with the colour taken out. LOST is a mid grey. The chatbot is the only cool slate. From the flip onward the field is warm off-white. Product tiles are stone, sand, blush, sage, or warm grey, and a product keeps its own colour. Bizmis orange means the agent acted or the sale happened: the selection ring, the Add button as it fills, the cart badge, the SOLD veil and check, the switch burst, the clerk's shirt, the mark, and the end-card wordmark. The only orange type is the reveal's "salesagent." and the words "Sales agent".
+
 ---
 
 The picture is 16:9, and the exported file is that same frame. A low-resolution preview is that same layout, scaled down. It changes sharpness only.
@@ -79,7 +81,7 @@ The shopper types: "Looking for something light I can take everywhere."
 
 **Clerk:** "Light and easy to carry, here are the three that fit. This one's the best of them."
 
-The grid narrows to three and holds long enough to read them. Then a comparison table of those three holds. Then the pick's page opens clean: no question marks yet. The photo is a square about 44% of the window, on the left, top aligned. Beside it, two thick title bars, a large price, three short description bars, and a wide Add button directly under that text. The bottom right stays clear for the widget. There is no LOST on this page.
+The grid narrows to three and holds long enough to read them: a capsule on stone, a sphere on sand, and a rounded cube on warm grey. No two share a shape or a tile. The pick keeps its tile, and an orange ring is the only mark on it. Then a comparison table of those three holds. Then the pick's page opens clean: no question marks yet. The photo is a square about 44% of the window, on the left, top aligned. Beside it, two thick title bars, a large price, three short description bars, and a wide Add button directly under that text. The bottom right stays clear for the widget. There is no LOST on this page.
 
 **VO** `narrows`: "It narrows. It recommends."
 
@@ -87,7 +89,7 @@ The shopper types: "What if it's not right for me?"
 
 **Clerk:** "For what you told me, it's the right one. Added, with the one that goes with it."
 
-Question marks pop in on one tighter circle around the product photo and hold. They then break into a soft Bizmis orange smoke and disappear. Add presses, the product flies to the cart, and the badge stays on 1. Then the cross-sell: the picked product and a smaller sleeve sit large in the space left of the widget, with a large plus between them, and the badge goes to 2. Only then the orange veil and the white check draw on together. "SOLD". The pullback keeps that same picture, widget included.
+Question marks pop in on one tighter circle around the product photo and hold. They then break apart and disappear. Add presses, the product flies to the cart, and the badge stays on 1. Then the cross-sell: the picked product and a smaller sleeve sit large in the space left of the widget, with a large plus between them, and the badge goes to 2. Only then the orange veil and the white check draw on together. "SOLD". The pullback keeps that same picture, widget included.
 
 **VO** `closes`: "It answers like an expert, and closes. Then sells them one more thing."
 
