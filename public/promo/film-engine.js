@@ -289,6 +289,8 @@
   const PROMO_SWITCH_MOVE_MS = 900;
   const PROMO_SWITCH_GROW_MS = 1800;
   const PROMO_SWITCH_SCALE = 10;
+  // The toggle label is 70px; the zoom was tuned on 84px.
+  const PROMO_SWITCH_LABEL_GAIN = 84 / 70;
   const PROMO_SWITCH_BURST_AT_MS = 680;
   const PROMO_SWITCH_WHITE_AT_MS = 40;
   const PROMO_SWITCH_FADE_AT_MS = 170;
@@ -501,6 +503,7 @@
     if (index < 3) return step * index;
     return step * 2 + PROMO_GLIDE.captionInMs + PROMO_GLIDE.captionQuietMs;
   }
+  const PROMO_GLIDE_NEIGHBOR_IN_MS = 1100;
   const glideRows = new Map();
   let glideLeadDevice = 'desktop';
   const glideWarmMedia = [];
@@ -939,25 +942,31 @@
     return PROMO_GLIDE.layDownMs;
   }
 
-  function glideStampLeadMs(speed) {
-    const span = Math.max(1, PROMO_GLIDE.speedTo - PROMO_GLIDE.speedFrom);
-    const u = Math.min(1, Math.max(0, (speed - PROMO_GLIDE.speedFrom) / span));
-    return 900 + (60 - 900) * u;
+  // Integer hash (lowbias32). wallSeededUnit is linear in its inputs, so
+  // neighbouring cards got neighbouring seeds and stamped in stripes.
+  function glideHashUnit(row, col, salt) {
+    let h = (Math.imul(row + 1013, 0x9e3779b1) ^ Math.imul(col + 7919, 0x85ebca77) ^ Math.imul(salt + 31, 0xc2b2ae3d)) >>> 0;
+    h ^= h >>> 16;
+    h = Math.imul(h, 0x7feb352d) >>> 0;
+    h ^= h >>> 15;
+    h = Math.imul(h, 0x846ca68b) >>> 0;
+    h ^= h >>> 16;
+    return (h >>> 0) / 4294967296;
   }
 
-  function glideStampAt(cell, entry, speed, frame) {
-    const span = Math.max(1, PROMO_GLIDE.speedTo - PROMO_GLIDE.speedFrom);
-    const haste = Math.min(1, Math.max(0, (speed - PROMO_GLIDE.speedFrom) / span));
-    const seed = wallSeededUnit(cell.row * 17 + 5, cell.col * 13 + 9);
-    const dwell = (frame.height * 0.72) / Math.max(speed, 80) * 1000;
-    const jitter = (1 - haste) * seed * Math.min(780, dwell * 0.55);
-    const lead = Math.min(glideStampLeadMs(speed), dwell * (0.22 + (1 - haste) * 0.15));
-    return Math.min(entry + lead + jitter, entry + dwell * 0.82);
+  // Each card stamps at a random point inside its own time on screen, so
+  // cards that enter together still land apart, and a fast card still lands
+  // before it leaves the frame.
+  function glideStampAt(cell, entry, exit, mode) {
+    const u = glideHashUnit(cell.row, cell.col, mode === 'pitch' ? 71 : 29);
+    const dwell = Math.max(120, exit - entry);
+    const offset = Math.min(dwell * (0.08 + 0.5 * u), 180 + 2600 * u);
+    return entry + offset;
   }
 
   function glideKeepsStamp(cell, mode) {
     if (mode !== 'pain') return true;
-    return wallSeededUnit(cell.row * 19 + cell.col * 7, 53) < 0.72;
+    return glideHashUnit(cell.row, cell.col, 53) < 0.86;
   }
 
   function glideMiddle(cell, cam, unit, frame) {
@@ -992,6 +1001,26 @@
     return hi;
   }
 
+  function glideMiddleExit(cell, frame, mode, entry) {
+    const limit = PROMO_GLIDE.layDownMs + PROMO_GLIDE.rampMs + 4000;
+    let lo = entry;
+    let hi = null;
+    for (let t = entry + 80; t <= limit; t += 80) {
+      if (!glideMiddleAt(cell, frame, mode, t)) {
+        hi = t;
+        break;
+      }
+      lo = t;
+    }
+    if (hi == null) return limit;
+    for (let step = 0; step < 8; step += 1) {
+      const mid = (lo + hi) / 2;
+      if (glideMiddleAt(cell, frame, mode, mid)) lo = mid;
+      else hi = mid;
+    }
+    return lo;
+  }
+
   function glideEvents(mode, frame) {
     const key = `${mode}:${frame.width}x${frame.height}`;
     if (glideEventCache.key === key) return glideEventCache.list;
@@ -1005,9 +1034,9 @@
         if (!glideMiddle(cell, view.span.cam, view.span.unit, frame)) return;
         seen.add(cell.key);
         const entry = glideMiddleEntry(cell, frame, mode, time) ?? time;
-        const speed = glideCamera(entry).speed;
+        const exit = glideMiddleExit(cell, frame, mode, entry);
         list.push({
-          t: glideStampAt(cell, entry, speed, frame),
+          t: glideStampAt(cell, entry, exit, mode),
           key: cell.key,
           row: cell.row,
           col: cell.col,
@@ -1495,7 +1524,7 @@
     ['panel', 140],
     ['typed-1', PROMO_PAIN_LINE_1.length * PROMO_PAIN_TYPE_CHAR_MS],
     ['think-1', PROMO_PAIN_THINK_MS],
-    ['answer-1', 720],
+    ['answer-1', 2200],
     ['down', 0],
   ];
   const PROMO_PITCH_SETTLE_MS = 700;
@@ -2901,9 +2930,15 @@
     }
     if (pose === 'doubt' || pose === 'close') {
       placeDoubtOrbits(board);
-      window.requestAnimationFrame(() => {
-        if (board.dataset.pose === pose) placeDoubtOrbits(board);
-      });
+      // The photo grows into place over the pose change. Follow it until it
+      // settles so the orbit centers on the final photo, not a mid-tween one.
+      const followFrom = performance.now();
+      const follow = () => {
+        if (board.dataset.pose !== pose) return;
+        placeDoubtOrbits(board);
+        if (performance.now() - followFrom < 1600) window.requestAnimationFrame(follow);
+      };
+      window.requestAnimationFrame(follow);
     } else {
       clearDoubtOrbitFit(board);
     }
@@ -3433,21 +3468,47 @@
     return Math.max(browser, width * 0.11);
   }
 
+  // Card depth by level: 0 flush on the floor, 1 resting, 2.2 raised.
+  function glideDepth(width, height, level) {
+    const edgeBase = Math.max(8, width * 0.024);
+    const rest = Math.min(1, level);
+    const up = Math.max(0, level - 1) / 1.2;
+    return {
+      edge: Math.max(0, edgeBase * (rest + up * 0.8)),
+      drop: 4 + 40 * rest + 34 * up,
+      blur: 10 + 52 * rest + 30 * up,
+      alpha: 0.1 + 0.08 * rest + 0.06 * up,
+      scale: 0.982 + 0.018 * rest + 0.035 * up,
+      lift: -height * (0.022 * rest + 0.05 * up) + height * 0.012 * (1 - rest),
+    };
+  }
+
+  function glideDepthShadow(depth) {
+    return `0 ${depth.edge.toFixed(1)}px 0 #e4e0da, 0 ${depth.drop.toFixed(1)}px ${depth.blur.toFixed(1)}px -12px rgba(28, 24, 20, ${depth.alpha.toFixed(3)})`;
+  }
+
   function applyMockupShape(node, device, width) {
     const radius = gridMockupRadius(device, width);
-    const edge = Math.max(6, width * 0.016);
     node.style.borderRadius = `${radius.toFixed(2)}px`;
     node.style.clipPath = '';
     node.style.overflow = 'hidden';
     node.style.outline = '1px solid rgba(28, 24, 20, 0.06)';
     node.style.outlineOffset = '-1px';
-    node.style.boxShadow = `0 ${edge.toFixed(1)}px 0 #e4e0da, 0 34px 54px -12px rgba(28, 24, 20, 0.16), 0 8px 12px -8px rgba(28, 24, 20, 0.08)`;
+    node.style.boxShadow = glideDepthShadow(glideDepth(width, width, 1));
   }
 
   function glideElevationLevel(mode, age) {
     if (age == null || age < 0) return 1;
-    if (mode === 'pitch') return 2.2;
-    return 0.12;
+    if (mode === 'pitch') {
+      // A click up: fast rise, small overshoot, settle high.
+      const u = Math.min(1, age / 300);
+      const rise = 1 - (1 - u) ** 3;
+      const overshoot = Math.sin(u * Math.PI) * 0.18;
+      return 1 + 1.2 * rise + overshoot;
+    }
+    // LOST presses the card flat, almost at once, and it stays down.
+    const u = Math.min(1, age / 140);
+    return 1 - (1 - (1 - u) ** 2);
   }
 
   function paintGlideElevation(node, cell, unit, mode, age) {
@@ -3459,18 +3520,10 @@
     if (node.dataset.elevation !== String(rounded) || node.dataset.elevationW !== widthKey) {
       node.dataset.elevation = String(rounded);
       node.dataset.elevationW = widthKey;
-      const edgeBase = Math.max(6, width * 0.016);
-      const pressed = rounded < 0.5;
-      const lifted = rounded > 1;
-      const edge = pressed ? Math.max(1, edgeBase * 0.12) : edgeBase * (lifted ? 1.45 : 1);
-      const drop = pressed ? 3 : (lifted ? 52 : 34);
-      const blur = pressed ? 8 : (lifted ? 64 : 54);
-      const alpha = pressed ? 0.2 : (lifted ? 0.2 : 0.16);
-      node.style.boxShadow = `0 ${edge.toFixed(1)}px 0 #e4e0da, 0 ${drop.toFixed(1)}px ${blur.toFixed(1)}px -12px rgba(28, 24, 20, ${alpha.toFixed(3)})`;
-      const scale = pressed ? 0.985 : (lifted ? 1.02 : 1);
-      const lift = pressed ? height * 0.02 : (lifted ? -height * 0.045 : -height * 0.014);
-      node.dataset.cardScale = scale.toFixed(4);
-      node.dataset.cardLift = lift.toFixed(2);
+      const depth = glideDepth(width, height, rounded);
+      node.style.boxShadow = glideDepthShadow(depth);
+      node.dataset.cardScale = depth.scale.toFixed(4);
+      node.dataset.cardLift = depth.lift.toFixed(2);
     }
     const scale = node.dataset.cardScale || '1';
     const lift = Number(node.dataset.cardLift) || 0;
@@ -4282,7 +4335,7 @@
       if (label.style.transition !== 'none') {
         label.style.transition = `transform ${PROMO_SWITCH_GROW_MS}ms linear, opacity ${PROMO_SWITCH_FADE_MS}ms linear`;
       }
-      label.style.transform = `translate(${dx}px, ${dy}px) scale(${scale})`;
+      label.style.transform = `translate(${dx}px, ${dy}px) scale(${scale * PROMO_SWITCH_LABEL_GAIN})`;
     }
 
     pinLabelOrigin() {
@@ -7567,6 +7620,11 @@
         return true;
       }
       const age = leadLost ? PROMO_CHECK_SETTLE_MS + 1000 : timeMs - event.t;
+      // The close-up phone was upright; press it into the floor gently so the
+      // first sea frame does not jump.
+      const pressAge = mode !== 'pitch' && cell.key === this.glideLeadKey
+        ? Math.max(0, timeMs) * (140 / 900)
+        : age;
       if (mode === 'pitch') {
         paintGlideStamp(parts.veil, parts.mark, age, 0.4);
         writePaint(parts.lost, 'opacity', '0');
@@ -7581,7 +7639,7 @@
       }
       if (fx) writeHidden(fx, true);
       node.classList.remove('is-dusting');
-      paintGlideElevation(node, cell, view.span.unit, mode, age);
+      paintGlideElevation(node, cell, view.span.unit, mode, pressAge);
       return true;
     }
 
@@ -7825,6 +7883,15 @@
           slot.fx.hidden = true;
           return;
         }
+        // The pain sea grows out of the phone close-up: the neighbours fade in
+        // as the camera starts to pull back, so there is no cut.
+        if (mode === 'pain' && item.cell.key !== this.glideLeadKey && time < PROMO_GLIDE_NEIGHBOR_IN_MS) {
+          const u = Math.max(0, time / PROMO_GLIDE_NEIGHBOR_IN_MS);
+          slot.cell.style.opacity = (u * u * (3 - 2 * u)).toFixed(3);
+        } else if (mode === 'pain' && slot.cell.dataset.neighborIn !== '1' && item.cell.key !== this.glideLeadKey) {
+          slot.cell.dataset.neighborIn = '1';
+          slot.cell.style.opacity = '';
+        }
         const trackLead = this.glideKeepStore && arrive < 0.992 && item.cell.key === this.glideLeadKey;
         const leadFace = '.promo-glide__still, .promo-glide__video, .promo-glide__veil, .promo-glide__mark, .promo-glide__lost-mark';
         if (trackLead) {
@@ -7910,6 +7977,11 @@
         clone.style.opacity = '0';
         clone.style.boxShadow = '';
         cellNode?.classList.remove('is-lead-match');
+        if (cellNode && this.glideLeadStamped) {
+          cellNode.querySelectorAll(':scope > .promo-glide__veil, :scope > .promo-glide__lost-mark').forEach((node) => {
+            node.style.visibility = 'visible';
+          });
+        }
         if (lead) lead.hidden = true;
         this.placeLeadShade(null, 0);
         return;
@@ -7967,7 +8039,9 @@
         node.style.visibility = 'hidden';
       });
       cellNode.querySelectorAll(':scope > .promo-glide__veil, :scope > .promo-glide__lost-mark').forEach((node) => {
-        if (!this.glideLeadStamped) {
+        // The clone carries its own veil and LOST; the cell's take over only
+        // once the clone has mostly faded, or they stack into a grey slab.
+        if (!this.glideLeadStamped || blend > 0.5) {
           node.style.visibility = 'hidden';
           return;
         }
@@ -8578,7 +8652,7 @@
       await waitMs(PROMO_PAIN_THINK_MS);
       this.fillCloneChat(clone, 'answer-2');
       markPromoVo('salesperson');
-      await waitMs(700);
+      await waitMs(1800);
       await this.aimCursorAtThumbDown(clone);
     }
 
@@ -8715,6 +8789,8 @@
         await this.rememberRaster(phone, phoneKey);
         this.glideLeadKey = phoneKey;
       }
+      // The phone the sea grows from is already stamped: keep its LOST and veil.
+      this.glideLeadStamped = true;
       const frame = this.root.getBoundingClientRect();
       const box = phone.getBoundingClientRect();
       this.glideZoomFrom = 0;
@@ -8783,11 +8859,11 @@
       store?.classList.remove('is-window-in');
       veil.getBoundingClientRect();
       veil.classList.add('is-in');
-      await waitMs(PROMO_STORE_TITLE_IN_MS + PROMO_STORE_TITLE_HOLD_MS);
-      veil.classList.add('is-out');
-      await waitMs(Math.max(0, PROMO_STORE_TITLE_OUT_MS - 250));
+      await waitMs(PROMO_STORE_TITLE_IN_MS + PROMO_STORE_TITLE_HOLD_MS - 200);
       store?.classList.add('is-bar-in');
-      await waitMs(250);
+      await waitMs(200);
+      veil.classList.add('is-out');
+      await waitMs(PROMO_STORE_TITLE_OUT_MS);
       veil.remove();
     }
 
