@@ -289,16 +289,24 @@ function frameHasHole(file) {
   const rows = height / block;
   const raw = rawFrame(file, width, height);
   const white = [];
+  const blockLuma = [];
   for (let by = 0; by < rows; by += 1) {
     for (let bx = 0; bx < cols; bx += 1) {
       let count = 0;
+      let luma = 0;
       for (let y = 0; y < block; y += 1) {
         for (let x = 0; x < block; x += 1) {
           const offset = ((by * block + y) * width + (bx * block + x)) * 3;
-          if (raw[offset] > 248 && raw[offset + 1] > 248 && raw[offset + 2] > 248) count += 1;
+          const red = raw[offset];
+          const green = raw[offset + 1];
+          const blue = raw[offset + 2];
+          luma += (red + green + blue) / 3;
+          if (red > 248 && green > 248 && blue > 248) count += 1;
         }
       }
-      white.push(count / (block * block) > 0.92);
+      const area = block * block;
+      white.push(count / area > 0.92);
+      blockLuma.push(luma / area);
     }
   }
   const seen = new Set();
@@ -315,6 +323,7 @@ function frameHasHole(file) {
       let maxY = y;
       let count = 0;
       let touchesEdge = false;
+      let darkestBeside = 255;
       while (stack.length) {
         const current = stack.pop();
         const cx = current % cols;
@@ -330,7 +339,11 @@ function frameHasHole(file) {
           const ny = cy + dy;
           if (nx < 0 || ny < 0 || nx >= cols || ny >= rows) return;
           const next = indexOf(nx, ny);
-          if (!white[next] || seen.has(next)) return;
+          if (!white[next]) {
+            darkestBeside = Math.min(darkestBeside, blockLuma[next]);
+            return;
+          }
+          if (seen.has(next)) return;
           seen.add(next);
           stack.push(next);
         });
@@ -340,7 +353,8 @@ function frameHasHole(file) {
       const box = spanX * spanY;
       const aspect = Math.max(spanX, spanY) / Math.min(spanX, spanY);
       const maxHole = Math.round(cols * rows * 0.2);
-      if (!touchesEdge && count >= 6 && count <= maxHole && count / box > 0.95 && aspect <= 2.2 && Math.min(spanX, spanY) >= 3) {
+      const hardEdge = darkestBeside < 220;
+      if (hardEdge && !touchesEdge && count >= 6 && count <= maxHole && count / box > 0.95 && aspect <= 2.2 && Math.min(spanX, spanY) >= 3) {
         return true;
       }
     }
@@ -686,7 +700,7 @@ async function captureFilm(chromium, options, framesDir) {
       const exported = await exportRange(browser, { ...options, from: cursor, to: chunkEnd }, framesDir);
       if (exported.unfinished) {
         unfinishedRetries += 1;
-        if (unfinishedRetries > 1) throw new Error(exported.unfinished.message);
+        if (unfinishedRetries > 8) throw new Error(exported.unfinished.message);
         process.stdout.write(`${exported.unfinished.message} Retrying that frame in a fresh browser.\n`);
         await browser.close();
         browser = await launchBrowser(chromium, options.scale, (options.quadrants || 1) > 1, options.beginFrame);
