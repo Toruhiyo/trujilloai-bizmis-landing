@@ -63,10 +63,12 @@ function selectedJobs() {
   const onlySlug = (process.env.PROMO_STORE_SLUG || '').trim();
   const onlyDevice = (process.env.PROMO_DEVICE || '').trim();
   const onlyBeat = (process.env.PROMO_BEAT || '').trim();
+  const onlyKind = (process.env.PROMO_KIND || '').trim();
   const jobs = [];
   for (const beat of SHOTS.beats) {
     if (onlySlug && beat.slug !== onlySlug) continue;
     if (onlyBeat && beat.beat !== onlyBeat) continue;
+    if (onlyKind && beat.kind !== onlyKind) continue;
     for (const device of Object.keys(SHOTS.devices)) {
       if (onlyDevice && device !== onlyDevice) continue;
       jobs.push({ beat, device, spec: SHOTS.devices[device] });
@@ -290,7 +292,13 @@ async function samplePage(page) {
     const clerkBubbles = [...document.querySelectorAll(
       '.bizmis-viewport-portal-root div.select-text > div, #bizmis-avatar-embed div.select-text > div',
     )].filter((node) => !node.classList.contains('bizmis-user-message'));
-    const clerkMessages = clerkBubbles.map((node) => (node.innerText || '').trim()).filter(Boolean);
+    // With the sheet collapsed, the clerk's replies float above the composer
+    // instead. User bubbles there carry .select-text; notices carry buttons.
+    const floatingClerkBubbles = [...document.querySelectorAll('[data-floating-item-id]')]
+      .filter((node) => !node.querySelector('.select-text, button'));
+    const clerkMessages = [...clerkBubbles, ...floatingClerkBubbles]
+      .map((node) => (node.innerText || '').trim())
+      .filter(Boolean);
     const replyBox = boxOf(clerkBubbles[clerkBubbles.length - 1]);
     return {
       captionText,
@@ -417,8 +425,16 @@ async function acceptCookies(page) {
   }).catch(() => {});
 }
 
+async function confirmAgeGate(page) {
+  const confirm = page.locator('[data-age-gate-confirm]');
+  if (!await confirm.isVisible().catch(() => false)) return;
+  await confirm.click().catch(() => {});
+  await page.locator('[data-age-gate]').waitFor({ state: 'hidden', timeout: 5000 }).catch(() => {});
+}
+
 async function prepareWidget(page) {
   await acceptCookies(page);
+  await confirmAgeGate(page);
   const reopen = page.getByRole('button', { name: /reopen assistant/i });
   if (await reopen.count()) {
     await reopen.first().click().catch(() => {});
@@ -488,6 +504,7 @@ function keyDelay() {
 async function typeLine(page, line) {
   const composer = page.locator(COMPOSER_SELECTOR).first();
   await composer.waitFor({ state: 'visible', timeout: 20000 });
+  await confirmAgeGate(page);
   await composer.click();
   for (const char of line) {
     await page.keyboard.type(char);
@@ -1057,7 +1074,8 @@ async function recordTake(browser, job, dest) {
       let turn = await say(job.beat.lines[index]);
       const stillMissing = job.beat.kind === 'cart'
         ? () => !cartCovers(turn.cart, job.beat.cartMustMatch)
-        : () => collector.state.path === turn.marker.path;
+        : () => collector.state.path === turn.marker.path
+          || !groupsMatch(latestReply(collector, turn.marker), job.beat.mustMatch);
       if (isLastLine) turn = await answerIfAsked(turn, stillMissing);
       cart = turn.cart;
       const needsOpen = job.beat.kind === 'catalog'
