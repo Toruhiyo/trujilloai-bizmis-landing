@@ -3748,6 +3748,11 @@ html.is-promo-opening.is-promo-depart .promo-opening {
   animation: promo-moments-ring 280ms var(--promo-spring) 1820ms both;
 }
 
+html.is-promo-still .is-pose-choice:not(.is-settled):not(.is-reduced) .promo-moments__card.is-pick::after {
+  opacity: 1;
+  animation: none;
+}
+
 .is-pose-choice:not(.is-settled):not(.is-reduced) .promo-moments__compare .promo-moments__mark {
   opacity: 0;
   transform: scale(0.96);
