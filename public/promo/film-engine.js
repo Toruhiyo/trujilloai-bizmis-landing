@@ -42,6 +42,7 @@
   const PROMO_PASS_SLOW_MS = 4800;
   const PROMO_PASS_SLOT_IN_MS = 420;
   const PROMO_PHONE_PAN_MS = 820;
+  const PROMO_PASS_WHITE_MS = 750;
   const PROMO_EA_WRITE_MS = 1700;
   const PROMO_EA_STAMP_MS = 460;
   const PROMO_EA_BEAT_MS = 780;
@@ -71,8 +72,8 @@
     { scene: 'reveal', id: 'introducing', line: 'Introducing Bizmis.' },
     { scene: 'reveal', id: 'sales-agent', line: "Your store's sales agent. Built to sell." },
     { scene: 'reveal', id: 'catch-both', line: 'Now watch it catch both.', guardMs: 1600 },
-    { scene: 'pitch', id: 'narrows', line: 'It narrows. It recommends.', guardMs: 1400 },
-    { scene: 'pitch', id: 'closes', line: 'It answers like an expert, and closes. Then sells them one more thing.' },
+    { scene: 'pitch', id: 'narrows', line: 'It narrows. It recommends.', guardMs: 2000 },
+    { scene: 'pitch', id: 'closes', line: 'It answers the doubt. And closes.', guardMs: 2200 },
     { scene: 'selling-sea', id: 'all-day', line: 'For every shopper. All day long.' },
     { scene: 'stores', id: 'any-store', line: 'Any store.' },
     { scene: 'end', id: 'see-it', line: 'See it in action.', cta: 'demo' },
@@ -305,8 +306,6 @@
   const PROMO_PITCH_WORD_STAGGER_MS = 36;
   const PROMO_PITCH_WORD_IN_MS = 180;
   const PROMO_PITCH_REPLACE_PAUSE_MS = 1480;
-  const PROMO_PITCH_NARROW_MS = 2800;
-  const PROMO_PITCH_COMPARE_MS = 3000;
   const PROMO_PITCH_DOUBT_MS = 3500;
   const PROMO_PITCH_POOF_MS = 1100;
   const PROMO_DOUBT_ORBIT_RATIO = 0.6;
@@ -1488,10 +1487,17 @@
   const PROMO_PAIN_LINE_2 = "What if it's not right for me?";
   const PROMO_PITCH_LINE_1 = 'Looking for something light I can take everywhere.';
   const PROMO_PITCH_LINE_2 = "What if it's not right for me?";
-  const PROMO_PITCH_CLERK_1 = "Light and easy to carry, here are the three that fit. This one's the best of them.";
-  const PROMO_PITCH_CLERK_2 = "If it's not right, returns are free. Added, with the sleeve that goes with it.";
-  const PROMO_PITCH_SPEAK_1_MS = 5200;
-  const PROMO_PITCH_SPEAK_2_MS = 5600;
+  // The clerk's lines. Short, spoken to the shopper, never to the viewer.
+  const PROMO_PITCH_CLERK_1 = 'Here are the three that fit. Let me compare them for you.';
+  const PROMO_PITCH_CLERK_COMPARE = "This one's the lightest, and it packs flat. It's the one.";
+  const PROMO_PITCH_CLERK_2 = "Returns are free, so there's no risk. I'll add it.";
+  const PROMO_PITCH_CLERK_UPSELL = 'It travels better with its sleeve. Adding that too.';
+  const PROMO_PITCH_SPEAK_1_MS = 3000;
+  const PROMO_PITCH_SPEAK_COMPARE_MS = 3600;
+  const PROMO_PITCH_SPEAK_2_MS = 3200;
+  const PROMO_PITCH_SPEAK_UPSELL_MS = 3200;
+  // One full turn of the widget's activity laser (--bizmis-laser-spin-duration).
+  const PROMO_LASER_LAP_MS = 2400;
   const PROMO_PAIN_ANSWER_1 = 'Thanks for reaching out! You can browse our full collection using the menu above. To narrow your search, use the filters for size, weight and category. Product details, specifications and customer reviews are available on each product page. Let me know if there\'s anything else I can help you with.';
   const PROMO_PAIN_LINKS = ['View collection', 'Size guide', 'Shipping info'];
   const PROMO_PAIN_ANSWER_2 = "That's a great question. Recommendations vary depending on individual preferences and intended use, so we're unable to confirm suitability for a specific customer. We suggest reviewing the product description, specifications and customer reviews on the product page before purchasing. If you'd like further assistance, I can open a support ticket and a member of our team will get back to you within 1-2 business days.";
@@ -2028,6 +2034,14 @@
     return true;
   }
 
+  // The clerk speaks on its own, with no shopper message: only the hidden
+  // steer goes out.
+  function sayClerkAlone(line) {
+    const api = promoDebugWidget();
+    if (!api) return false;
+    return api.sendHiddenMessage(`Say this: "${line}"`);
+  }
+
   function hideSayThisBubbles() {
     const root = document.getElementById('bizmis-avatar-embed');
     if (!root || root.dataset.sayHidden === '1') return;
@@ -2075,122 +2089,6 @@
     if (detail.kind === 'policies') return 'Checking store policies…';
     if (detail.kind === 'cart') return 'Adding to your cart…';
     return '';
-  }
-
-  // Copy of the widget's ChatEventCard (trujilloai-bizmis-widget,
-  // src/components/chat/ChatEventCard.tsx). The card layout of the widget
-  // keeps events in its history only, so the film floats the same cards
-  // above the widget for the viewer.
-  const EVENT_ICON_NODES = {
-    products: [
-      ['rect', { width: '7', height: '7', x: '3', y: '3', rx: '1' }],
-      ['rect', { width: '7', height: '7', x: '14', y: '3', rx: '1' }],
-      ['rect', { width: '7', height: '7', x: '14', y: '14', rx: '1' }],
-      ['rect', { width: '7', height: '7', x: '3', y: '14', rx: '1' }],
-    ],
-    product: [
-      ['path', { d: 'M12.586 2.586A2 2 0 0 0 11.172 2H4a2 2 0 0 0-2 2v7.172a2 2 0 0 0 .586 1.414l8.704 8.704a2.426 2.426 0 0 0 3.42 0l6.58-6.58a2.426 2.426 0 0 0 0-3.42z' }],
-      ['circle', { cx: '7.5', cy: '7.5', r: '.5', fill: 'currentColor' }],
-    ],
-    cart: [
-      ['circle', { cx: '8', cy: '21', r: '1' }],
-      ['circle', { cx: '19', cy: '21', r: '1' }],
-      ['path', { d: 'M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12' }],
-    ],
-  };
-  const EVENT_LABELS = {
-    products: 'Products shown to you',
-    product: 'Product opened',
-    cart: 'Added to cart',
-  };
-
-  function lucideSvg(nodes, className, strokeWidth) {
-    const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-    svg.setAttribute('viewBox', '0 0 24 24');
-    svg.setAttribute('fill', 'none');
-    svg.setAttribute('stroke', 'currentColor');
-    svg.setAttribute('stroke-width', String(strokeWidth));
-    svg.setAttribute('stroke-linecap', 'round');
-    svg.setAttribute('stroke-linejoin', 'round');
-    svg.setAttribute('aria-hidden', 'true');
-    svg.setAttribute('class', className);
-    (nodes || []).forEach(([tag, attrs]) => {
-      const node = document.createElementNS('http://www.w3.org/2000/svg', tag);
-      Object.entries(attrs).forEach(([key, value]) => node.setAttribute(key, value));
-      svg.appendChild(node);
-    });
-    return svg;
-  }
-
-  function eventThumb(product, extraClass) {
-    const thumb = document.createElement('div');
-    thumb.className = `promo-evt__thumb ${extraClass || ''}`.trim();
-    if (product.tint) thumb.dataset.tint = product.tint;
-    if (product.imageUrl) {
-      const img = document.createElement('img');
-      img.alt = '';
-      img.src = product.imageUrl;
-      thumb.appendChild(img);
-    }
-    return thumb;
-  }
-
-  function promoEventCard(detail) {
-    const card = document.createElement('div');
-    card.className = 'promo-evt';
-    const head = document.createElement('div');
-    head.className = 'promo-evt__head';
-    head.appendChild(lucideSvg(EVENT_ICON_NODES[detail.kind], 'promo-evt__icon', 2.25));
-    const label = document.createElement('span');
-    label.className = 'promo-evt__label';
-    label.textContent = EVENT_LABELS[detail.kind] || '';
-    head.appendChild(label);
-    card.appendChild(head);
-    if (detail.kind === 'products') {
-      const row = document.createElement('div');
-      row.className = 'promo-evt__carousel';
-      (detail.products || []).forEach((product) => {
-        const item = document.createElement('div');
-        item.className = 'promo-evt__surface promo-evt__tile';
-        item.appendChild(eventThumb(product, 'is-square'));
-        const title = document.createElement('div');
-        title.className = 'promo-evt__tile-title';
-        title.textContent = product.title;
-        item.appendChild(title);
-        if (product.price) {
-          const price = document.createElement('div');
-          price.className = 'promo-evt__tile-price';
-          price.textContent = product.price;
-          item.appendChild(price);
-        }
-        row.appendChild(item);
-      });
-      card.appendChild(row);
-      return card;
-    }
-    const product = detail.product;
-    if (!product) return card;
-    const line = document.createElement('div');
-    line.className = 'promo-evt__surface promo-evt__row';
-    line.appendChild(eventThumb(product, 'is-row'));
-    const text = document.createElement('div');
-    text.className = 'promo-evt__text';
-    const title = document.createElement('div');
-    title.className = 'promo-evt__title';
-    title.textContent = product.title;
-    text.appendChild(title);
-    const meta = detail.kind === 'cart'
-      ? [detail.variantTitle, product.price].filter(Boolean).join(' · ')
-      : (product.price || '');
-    if (meta) {
-      const small = document.createElement('div');
-      small.className = 'promo-evt__meta';
-      small.textContent = meta;
-      text.appendChild(small);
-    }
-    line.appendChild(text);
-    card.appendChild(line);
-    return card;
   }
 
   const LASER_VIEWBOX = 100;
@@ -4756,52 +4654,6 @@
       if (api && typeof api.muteRealActivity === 'function') api.muteRealActivity(muted);
     }
 
-    eventCardsHost() {
-      const canvas = this.root.querySelector('[data-promo-canvas]') || this.root;
-      let host = canvas.querySelector('[data-promo-event-cards]');
-      if (!host) {
-        host = document.createElement('div');
-        host.className = 'promo-evt-stack';
-        host.setAttribute('data-promo-event-cards', '');
-        canvas.appendChild(host);
-      }
-      return { canvas, host };
-    }
-
-    placeEventCards() {
-      const { canvas, host } = this.eventCardsHost();
-      const card = document.querySelector('.bizmis-desktop-lite-chat');
-      if (!card) return;
-      const frame = canvas.getBoundingClientRect();
-      const scale = frame.width / (canvas.offsetWidth || frame.width) || 1;
-      const box = card.getBoundingClientRect();
-      // The widget sits in a scaled store window; the cards take the same
-      // scale so they read as part of it.
-      const native = card.offsetWidth || box.width;
-      const zoom = box.width / scale / native;
-      host.style.width = `${native.toFixed(1)}px`;
-      host.style.transformOrigin = 'left bottom';
-      host.style.transform = `scale(${zoom.toFixed(4)})`;
-      host.style.left = `${((box.left - frame.left) / scale).toFixed(1)}px`;
-      host.style.bottom = `${((frame.bottom - box.top) / scale + 8).toFixed(1)}px`;
-    }
-
-    // Newest at the bottom, right above the widget, the way the phone floats
-    // its history. Two at most, so the window stays readable.
-    showEventCard(detail) {
-      const { host } = this.eventCardsHost();
-      this.placeEventCards();
-      const card = promoEventCard(detail);
-      host.appendChild(card);
-      while (host.children.length > 2) host.firstElementChild.remove();
-      card.getBoundingClientRect();
-      card.classList.add('is-in');
-    }
-
-    clearEventCards() {
-      this.root.querySelector('[data-promo-event-cards]')?.replaceChildren();
-    }
-
     paintPitchEvent(detail) {
       const labelText = pitchEventLabel(detail);
       if (!labelText) return;
@@ -4981,6 +4833,15 @@
       store.style.transform = '';
     }
 
+    // The loading ring runs from the moment a message goes out, or from the
+    // end of the clerk's own line, until the next moment shows. At least one
+    // full lap, so it never flickers.
+    async laserUntilNext(kind, reduced, ms = PROMO_LASER_LAP_MS) {
+      this.paintPitchEvent({ kind });
+      await waitMs(reduced ? 40 : Math.max(PROMO_LASER_LAP_MS, ms));
+      this.clearPitchEvents();
+    }
+
     async playPitchPair() {
       const reduced = prefersReducedMotion();
       this.pitchCardsPlayed = true;
@@ -4995,84 +4856,68 @@
         cursor.style.opacity = '0';
       }
       this.clearPitchEvents();
-      this.clearEventCards();
       this.muteWidgetActivity(true);
       const clay = promoClayUrls();
-      const product = (title, key, tint) => ({ title, url: `https://bizmis.ai/demo/${key}`, imageUrl: clay[key] || '', tint });
-      const pick = product('The light one', 'sphere', PROMO_COMPARE_TINTS.pick);
-      const sleeve = product('The sleeve', 'slab', 'stone');
+      const product = (title, key) => ({ title, url: `https://bizmis.ai/demo/${key}`, imageUrl: clay[key] || '' });
+      const pick = product('The light one', 'sphere');
+      const sleeve = product('The sleeve', 'slab');
+      const speak = (ms) => waitMs(reduced ? 200 : ms);
+
+      // Beat 1. The VO names it, then the shopper asks and the clerk leads.
+      markPromoVo('narrows');
+      if (!reduced) await waitMs(promoVoGuard('narrows'));
       await this.typeShopperLine(PROMO_PITCH_LINE_1);
-      const first = playClerkLine(PROMO_PITCH_CLERK_1, reduced ? 200 : PROMO_PITCH_SPEAK_1_MS, () => { });
-      // Each pose has its own activity, so the laser always matches what the
-      // store is doing: search, then results, then details, then the page.
-      this.paintPitchEvent({ kind: 'search' });
+      sayClerkLine(PROMO_PITCH_CLERK_1);
+      await this.laserUntilNext('search', reduced);
       applyMomentPose(stage, 'row', { instant: reduced });
-      const shown = {
-        kind: 'products',
-        products: [
-          product('The day one', 'capsule', PROMO_COMPARE_TINTS.go),
-          pick,
-          product('The travel one', 'rounded-cube', PROMO_COMPARE_TINTS.other),
-        ],
-      };
-      await waitMs(reduced ? 20 : Math.round(PROMO_PITCH_NARROW_MS * 0.4));
-      emitShopper(shown);
-      this.paintPitchEvent(shown);
-      this.showEventCard(shown);
-      await waitMs(reduced ? 20 : Math.round(PROMO_PITCH_NARROW_MS * 0.6));
+      emitShopper({ kind: 'products', products: [product('The day one', 'capsule'), pick, product('The travel one', 'rounded-cube')] });
+      await speak(PROMO_PITCH_SPEAK_1_MS);
+      await this.laserUntilNext('compare', reduced);
       applyMomentPose(stage, 'choice', { instant: reduced });
-      this.paintPitchEvent({ kind: 'compare' });
-      await waitMs(reduced ? 40 : PROMO_PITCH_COMPARE_MS);
+      // The clerk reads the comparison on its own; nobody asked.
+      sayClerkAlone(PROMO_PITCH_CLERK_COMPARE);
+      await speak(PROMO_PITCH_SPEAK_COMPARE_MS);
+      await this.laserUntilNext('product', reduced);
       applyMomentPose(stage, 'doubt', { instant: reduced });
       const board = stage?.querySelector('.promo-moments__board');
       board?.classList.add('is-doubts-hidden');
-      const opened = { kind: 'product', product: pick };
-      emitShopper(opened);
-      this.paintPitchEvent(opened);
-      this.showEventCard(opened);
-      await first;
-      markPromoVo('narrows');
-      if (!reduced) await waitMs(promoVoGuard('narrows'));
-      this.clearPitchEvents();
+      emitShopper({ kind: 'product', product: pick });
+
+      // Beat 2. The VO names it, then the doubt, the answer, and the upsell.
+      markPromoVo('closes');
+      if (!reduced) await waitMs(promoVoGuard('closes'));
       board?.classList.remove('is-doubts-hidden');
-      const typed = this.typeShopperLine(PROMO_PITCH_LINE_2);
-      const second = playClerkLine(PROMO_PITCH_CLERK_2, reduced ? 200 : PROMO_PITCH_SPEAK_2_MS, () => { });
-      this.paintPitchEvent({ kind: 'policies' });
-      await Promise.all([
-        typed,
-        waitMs(reduced ? 40 : PROMO_PITCH_DOUBT_MS),
-      ]);
+      await this.typeShopperLine(PROMO_PITCH_LINE_2);
+      sayClerkLine(PROMO_PITCH_CLERK_2);
+      await this.laserUntilNext('policies', reduced, PROMO_PITCH_DOUBT_MS);
       const cartLandMs = PROMO_MOMENTS_VAPOR_MS + PROMO_MOMENTS_CART_GAP_MS + 220;
-      const closeMs = PROMO_PITCH_POOF_MS + 1400;
+      this.paintPitchEvent({ kind: 'cart' });
+      const cartStart = performance.now();
       if (!reduced) {
         applyMomentPose(stage, 'close');
         await waitMs(cartLandMs);
       } else {
         applyMomentPose(stage, 'close', { instant: true });
       }
+      if (!reduced) await waitMs(Math.max(0, PROMO_LASER_LAP_MS - (performance.now() - cartStart)));
+      this.clearPitchEvents();
       host?.classList.add('is-cart-one');
-      const cartOne = { kind: 'cart', product: pick, quantity: 1 };
-      emitShopper(cartOne);
-      this.paintPitchEvent(cartOne);
-      this.showEventCard(cartOne);
-      if (!reduced) await waitMs(Math.max(0, closeMs - cartLandMs));
+      emitShopper({ kind: 'cart', product: pick, quantity: 1 });
+      await speak(Math.max(0, PROMO_PITCH_SPEAK_2_MS - PROMO_LASER_LAP_MS * 2));
+      // The clerk offers the sleeve on its own and adds it.
+      sayClerkAlone(PROMO_PITCH_CLERK_UPSELL);
+      await this.laserUntilNext('cart', reduced);
       applyMomentPose(stage, 'bundle', { instant: reduced });
       host?.classList.remove('is-cart-one');
       host?.classList.add('is-cart-two');
-      const cartSleeve = { kind: 'cart', product: sleeve, quantity: 1 };
-      emitShopper(cartSleeve);
-      this.paintPitchEvent(cartSleeve);
-      this.showEventCard(cartSleeve);
-      await second;
-      this.clearPitchEvents();
-      await waitMs(reduced ? 40 : 1600);
+      emitShopper({ kind: 'cart', product: sleeve, quantity: 1 });
+      await speak(Math.max(0, PROMO_PITCH_SPEAK_UPSELL_MS - PROMO_LASER_LAP_MS));
+      await waitMs(reduced ? 40 : 900);
       this.painStore()?.querySelectorAll('.promo-close__veil, .promo-close__mark, .promo-glide__lost-mark, .promo-glide__veil').forEach((node) => node.remove());
       await this.markCloseStoreSold();
       await this.rememberPitchLead();
-      this.clearEventCards();
       this.muteWidgetActivity(false);
       endOpeningAgent();
-      markPromoVo('closes');
       await this.releaseLiveCard();
       this.playPitchConveyor();
     }
@@ -5913,7 +5758,8 @@
         }
         const carousel = this.carouselTrack?.parentElement;
         if (carousel) carousel.style.position = 'static';
-        const width = Math.min(canvas.width * 0.7, canvas.height * 0.62 * (1024 / 640));
+        // Tag and name share one line above the card, so the card can be taller.
+        const width = Math.min(canvas.width * 0.8, canvas.height * 0.74 * (1024 / 640));
         const height = width * (640 / 1024);
         const origin = host.getBoundingClientRect();
         const left = canvas.left + (canvas.width - width) / 2 - origin.left;
@@ -6125,9 +5971,13 @@
         window.setTimeout(() => this.depart(), hold);
         return;
       }
-      this.playStorePass(() => {
-        this.landPassSlot();
-      });
+      // The orange field turns white before the first store comes in.
+      this.root.classList.add('is-pass-white');
+      window.setTimeout(() => {
+        this.playStorePass(() => {
+          this.landPassSlot();
+        });
+      }, PROMO_PASS_WHITE_MS);
     }
 
     playStoreStack(onDone) {
@@ -6986,7 +6836,10 @@
           mark.style.webkitMaskImage = `url('${stamp}')`;
           mark.style.maskImage = `url('${stamp}')`;
         }
-        hero.append(zero, mark);
+        const lead = document.createElement('p');
+        lead.className = 'promo-scale__lead';
+        lead.textContent = 'Boost sales with';
+        hero.append(zero, lead, mark);
         const caption = verdict.querySelector('.promo-scale__sold') || document.createElement('p');
         caption.className = 'promo-scale__sold';
         caption.setAttribute('data-promo-end-caption', '');
@@ -8085,7 +7938,7 @@
           mark.style.transform = 'none';
         }
         if (caption) {
-          caption.textContent = 'Built to sell.';
+          caption.textContent = '';
           caption.style.color = '#fff';
           caption.style.opacity = '1';
           caption.style.transform = 'none';
@@ -9387,7 +9240,7 @@
 
     setConveyorEnd(mode, ctaKey) {
       const caption = this.root.querySelector('[data-promo-end-caption]');
-      if (caption) caption.textContent = mode === 'pitch' ? 'Built to sell.' : '';
+      if (caption) caption.textContent = '';
       this.root.classList.toggle('is-end-pitch', mode === 'pitch');
       this.root.classList.toggle('is-end-pain', mode !== 'pitch');
       this.mountEndCta('none');

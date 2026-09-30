@@ -77,29 +77,39 @@ The headline and the avatar sit beside each other, as one group, centered in the
 
 ## 6. One desktop, sold
 
-One desktop window, centered. No phone in this story. The pitch has no arrow cursor, because nothing is clicked there. The pain desktop keeps its cursor. The real Bizmis card, in light mode, eases into the corner of the window, composer and all. The shopper types in that composer, and that line is sent as typed. The bubble stays the shopper's words. A failed send does not show a retry control. Right behind it the film sends a hidden message the viewer never sees, `Say this: "{the clerk's line}"`, through the widget's debug steering (see `docs/agent-steering.md`). The clerk speaks through the real widget, one sentence, captioned. No VO during that speech. The page is not a real store, so no tool really runs. The agent's own activity is muted, and the film plays a copy of the widget's activity laser that follows each beat exactly: the same orange contour and tip icon it uses in the product. A magnifier while it searches the catalog, a grid as the three results come up, a package while it compares them, an eye while the product opens, a book while store policies are checked, a cart while each item is added. The widget's card layout keeps store events in its history, so the film floats exact copies of its event cards above the widget: "Products shown to you" with the three, "Product opened", then "Added to cart" for the pick and for the sleeve. Two at most, newest at the bottom. The Bizmis orange veil waits until the sold tick draws at the end of the close-up.
-
-The shopper types: "Looking for something light I can take everywhere."
-
-**Clerk:** "Light and easy to carry, here are the three that fit. This one's the best of them."
-
-The grid narrows to three and holds long enough to read them: a capsule on sage, a sphere on a soft Bizmis orange, and a rounded cube on stone. No two share a shape or a tile. The pick keeps its tile, and an orange ring is the only mark on it. Then a comparison table of those three holds. Then the pick's page opens clean: no question marks yet. The photo is a square about 44% of the window, on the left, top aligned. Beside it, top down: a thick title bar, a subtitle bar, a large price, the wide Add button, and three thick description bars under the button. Doubts orbit the center of the photo, on a circle about three quarters the size of the photo. The bottom right stays clear for the widget. There is no LOST on this page.
+One desktop window, centered. No phone in this story. The pitch has no arrow cursor, because nothing is clicked there. The pain desktop keeps its cursor. The real Bizmis card, in light mode, eases into the corner of the window, composer and all. The VO only names each beat before it plays, then stays out of the way. The clerk talks to the shopper, never to the viewer, in short lines, captioned in the widget in sync with its voice. Every clerk line reaches the agent as a hidden `Say this: "{line}"` the viewer never sees (see `docs/agent-steering.md`). Some ride right behind the shopper's message; the others the clerk says on its own, with nothing typed. The page is not a real store, so the agent's own activity is muted. The loading ring, a copy of the widget's activity laser with the same orange contour and tip icon, runs from the moment a message goes out, or from the end of the clerk's own line, until the next moment shows, never less than one full lap. No event cards.
 
 **VO** `narrows`: "It narrows. It recommends."
 
-The shopper types: "What if it's not right for me?"
+The shopper types: "Looking for something light I can take everywhere." The magnifier orbits from the send until the three results show.
 
-**Clerk:** "For what you told me, it's the right one. Added, with the one that goes with it."
+The grid narrows to three and holds: a capsule on sage, a sphere on a soft Bizmis orange, and a rounded cube on stone. No two share a shape or a tile.
 
-Question marks pop in on one tighter circle around the product photo and hold. They then break apart and disappear. Add presses, the product flies to the cart, and the badge stays on 1. Then the cross-sell: the picked product and the sleeve are the same size and sit centered on the page as a pair, narrow enough that the widget does not cover them, with a large plus halfway between them. The main card has no tick. Both buttons are the same large button. The title bars and the $ are large enough to read at a glance. The badge goes to 2. Only then the orange veil and the white check draw on together. "SOLD". The pullback keeps that same picture, widget included.
+**Clerk:** "Here are the three that fit. Let me compare them for you."
 
-**VO** `closes`: "It answers like an expert, and closes. Then sells them one more thing."
+The package orbits, then a comparison table of those three holds. The pick keeps its tile, and an orange ring is the only mark on it.
+
+**Clerk**, on its own: "This one's the lightest, and it packs flat. It's the one."
+
+The eye orbits, then the pick's page opens clean: no question marks yet. The photo is a square about 44% of the window, on the left, top aligned. Beside it, top down: a thick title bar, a subtitle bar, a large price, the wide Add button, and three thick description bars under the button. The bottom right stays clear for the widget. There is no LOST on this page.
+
+**VO** `closes`: "It answers the doubt. And closes."
+
+Question marks pop in on one circle around the center of the photo, about three quarters its size. The shopper types: "What if it's not right for me?" The book orbits from the send.
+
+**Clerk:** "Returns are free, so there's no risk. I'll add it."
+
+The question marks break apart and disappear. The cart orbits while Add presses and the product flies to the cart. The badge shows 1.
+
+**Clerk**, on its own: "It travels better with its sleeve. Adding that too."
+
+The cart orbits again, then the cross-sell: the picked product and the sleeve are the same size and sit centered on the page as a pair, narrow enough that the widget does not cover them, with a large plus halfway between them. The main card has no tick. Both buttons are the same large button. The title bars and the $ are large enough to read at a glance. The badge goes to 2. Only then the orange veil and the white check draw on together. "SOLD". The pullback keeps that same picture, widget included.
 
 ## 7. The selling sea
 
-The pullback starts on that same desktop, the cross-sell still on it and the widget still in the corner of the picture. The rest of the sea fades in around it as the camera pulls back, and no two cards near each other show the same screen. There is no center curtain. The frame stays full of mockup screens, with no empty stretches of field. Every card is "Your store". Most of them stamp "SOLD", each at its own random moment while on screen, never in rows. The cards stand thick off the floor. When a card sells it clicks up, higher still, and stays there. The Bizmis widget on the other cards is caught mid-task: idle, talking, thinking, a wave, a nod, a salute, a bow, a thumbs-up, or the widget's own activity laser orbiting the avatar, with a grid, an eye, a book, or a cart on the tip. On the phone the catalog runs down the screen, and the home hero spans the width. On desktop the comparison sits clear of the corner widget. The cross-sell plus between the two products is large. While the sea is still moving and blurred, this line comes up and stays, with the white Bizmis mark, through the orange field:
+The pullback starts on that same desktop, the cross-sell still on it and the widget still in the corner of the picture. The rest of the sea fades in around it as the camera pulls back, and no two cards near each other show the same screen. There is no center curtain. The frame stays full of mockup screens, with no empty stretches of field. Every card is "Your store". Most of them stamp "SOLD", each at its own random moment while on screen, never in rows. The cards stand thick off the floor. When a card sells it clicks up, higher still, and stays there. The Bizmis widget on the other cards is caught mid-task: idle, talking, thinking, a wave, a nod, a salute, a bow, a thumbs-up, or the widget's own activity laser orbiting the avatar, with a grid, an eye, a book, or a cart on the tip. On the phone the catalog runs down the screen, and the home hero spans the width. On desktop the comparison sits clear of the corner widget. The cross-sell plus between the two products is large. While the sea is still moving and blurred, this line comes up and stays through the orange field, white, on one line, the Bizmis wordmark as its last word:
 
-"Built to sell."
+"Boost sales with [bizmis]"
 
 **VO** `all-day`: "For every shopper. All day long."
 
@@ -107,7 +117,7 @@ The sea washes to solid Bizmis orange.
 
 ## 8. Other stores, into the slot
 
-From the orange field the picture eases to white. "Built to sell." leaves. The mark is off during the pass. No clerk. No centered Install now button during the pass. The stores sit on a vertical wheel. Only the current store is visible. The next one swings up into place and the current one swings up and away, and both show only during that turn. Each card shows a few seconds of that store's real recording, from the moment the clerk is talking or showing results, with its own sound: the clerk's voice plays under that store, and cuts when the wheel turns. A backlight hugs the card the way LEDs sit on the back of a monitor and spills into a wide halo of the store's color. It moves like a trailer light: brightest and almost still in the middle of each store, then it sweeps faster and faster and dims, and is at its lowest right on the switch. Above the frame, the sector is the lead line, bold capitals in the store color, and the store name sits under it, smaller and lighter, with clear air before the card. The sector lands first like a trailer title: wide letter spacing snaps tight, the blur clears, and a wipe reveals it left to right, then a short rule in the store color draws under it. The name rises out of a mask just after. Each store holds from about two and a half seconds at the start of the pass to just under five at the end. Sector labels, in order: Consumer electronics, Clothing & apparel, Books & stationery, Skincare & beauty, Gaming gear, Home & DIY, Car parts & accessories, Wine & spirits. The wordmark is never black.
+The orange field turns white, and "Boost sales with" fades with it, before the first store comes in. No store ever shows over orange. The mark is off during the pass. No clerk. No centered Install now button during the pass. The stores sit on a vertical wheel. Only the current store is visible. The next one swings up into place and the current one swings up and away, and both show only during that turn. Each card shows a few seconds of that store's real recording, from the moment the clerk is talking or showing results, with its own sound: the clerk's voice plays under that store, and cuts when the wheel turns. A backlight hugs the card the way LEDs sit on the back of a monitor and spills into a wide halo of the store's color. It moves like a trailer light: brightest and almost still in the middle of each store, then it sweeps faster and faster and dims, and is at its lowest right on the switch. Above the frame, on one line: the sector on the left, bold capitals in the store color, and the store name on the right, smaller and lighter. Sharing one line lets the card be larger. The sector lands first like a trailer title: wide letter spacing snaps tight, the blur clears, and a wipe reveals it left to right, then a short rule in the store color draws under it. The name rises out of a mask just after. Each store holds from about two and a half seconds at the start of the pass to just under five at the end. Sector labels, in order: Consumer electronics, Clothing & apparel, Books & stationery, Skincare & beauty, Gaming gear, Home & DIY, Car parts & accessories, Wine & spirits. The wordmark is never black.
 
 **VO** `any-store`: "Any store."
 

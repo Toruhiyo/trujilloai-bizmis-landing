@@ -110,6 +110,12 @@ function mountWidget(options: PromoWidgetMount = {}) {
   const api = window.AvatarVoicechat;
   if (!api || typeof api.init !== "function") return;
   api.destroy?.("bizmis-avatar-embed");
+  // The clerk's lines are captioned, in sync with its voice.
+  try {
+    localStorage.setItem("bizmis-subtitles", "true");
+  } catch {
+    /* storage blocked: captions keep the widget default */
+  }
   api.init({
     containerId: "bizmis-avatar-embed",
     rootUrl: "https://cdn.bizmis.ai/widget",

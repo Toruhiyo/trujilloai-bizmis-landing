@@ -1725,7 +1725,26 @@ html.is-promo-opening.is-promo-depart .promo-opening {
 
 .promo-opening.is-end-pitch .promo-scale__mark {
   display: block;
+  width: calc(132px * 1948 / 640);
+  height: 132px;
   background: #fff;
+}
+
+/* "Boost sales with [bizmis]", one line. */
+.promo-scale__lead {
+  display: none;
+  margin: 0 0.42em 0 0;
+  color: #fff;
+  font-family: var(--font-heading);
+  font-size: 104px;
+  font-weight: 600;
+  letter-spacing: -0.035em;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.promo-opening.is-end-pitch .promo-scale__lead {
+  display: block;
 }
 
 .promo-opening.is-end-pitch .promo-scale__sold {
@@ -9263,7 +9282,7 @@ html.is-promo-still .promo-clip__product.is-compare::after {
   position: absolute;
   left: 50%;
   top: 50%;
-  width: min(70cqw, calc(62cqh * 1024 / 640));
+  width: min(80cqw, calc(74cqh * 1024 / 640));
   margin: 0;
   visibility: hidden;
   opacity: 0;
@@ -9298,12 +9317,12 @@ html.is-promo-still .promo-clip__product.is-compare::after {
 
 .promo-opening.is-store-pass .promo-opening__slide-meta {
   display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  justify-content: flex-start;
-  gap: 0.6rem;
+  flex-direction: row;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 2rem;
   width: 100%;
-  margin: 0 0 2.4rem;
+  margin: 0 0 1.6rem;
 }
 
 .promo-opening.is-store-pass.is-see-wave .promo-opening__slide-sector {
@@ -9361,10 +9380,13 @@ html.is-promo-still .promo-clip__product.is-compare::after {
 
 .promo-opening.is-store-pass .promo-opening__slide-name {
   margin: 0;
+  flex: none;
+  padding-bottom: calc(0.7rem + 4px);
   font-size: clamp(1.3rem, 2vw, 1.75rem);
   font-weight: 500;
   letter-spacing: 0.01em;
   line-height: 1.2;
+  text-align: right;
   text-transform: none;
   opacity: 0;
   filter: blur(6px);
@@ -10274,167 +10296,16 @@ html.is-promo-clip.is-clip-moment.is-clip-tablet .bizmis-viewport-portal-root {
     0 20px 36px color-mix(in srgb, var(--ad-ink) 8%, transparent);
 }
 
-
-/* Copy of the widget's ChatEventCard (trujilloai-bizmis-widget,
-   src/components/chat/ChatEventCard.tsx), light theme, floated above the
-   widget card. Tailwind values spelled out. */
-.promo-evt-stack {
-  position: absolute;
-  z-index: 10001;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  padding: 10px;
-  border-radius: 20px;
-  background: rgba(255, 255, 255, 0.94);
-  box-shadow: 0 10px 30px rgba(28, 24, 20, 0.12), 0 1px 3px rgba(28, 24, 20, 0.08);
-  font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
-  pointer-events: none;
+/* The orange field eases to white before the store pass starts. */
+.promo-opening.is-pass-white,
+.promo-opening.is-pass-white .promo-glide,
+.promo-opening.is-pass-white .promo-glide__field,
+.promo-opening.is-pass-white .promo-scale {
+  background-color: #fff !important;
+  transition: background-color 600ms ease;
 }
 
-.promo-evt-stack:empty {
-  display: none;
-}
-
-.promo-evt {
-  width: 100%;
-  min-width: 0;
+.promo-opening.is-pass-white .promo-scale__lead {
   opacity: 0;
-  transition: opacity 180ms ease-out;
-}
-
-.promo-evt.is-in {
-  opacity: 1;
-}
-
-.promo-evt__head {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  padding: 0 0 4px 2px;
-}
-
-.promo-evt__icon {
-  width: 12px;
-  height: 12px;
-  flex: none;
-  color: var(--bizmis-primary);
-}
-
-.promo-evt__label {
-  overflow: hidden;
-  color: #737373;
-  font-size: 10px;
-  font-weight: 500;
-  letter-spacing: 0.05em;
-  line-height: 1.4;
-  text-transform: uppercase;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-}
-
-.promo-evt__surface {
-  border: 1px solid rgba(0, 0, 0, 0.07);
-  border-radius: 16px;
-  background: rgba(0, 0, 0, 0.03);
-  padding: 8px 10px;
-}
-
-.promo-evt__carousel {
-  display: flex;
-  gap: 8px;
-  overflow: hidden;
-}
-
-.promo-evt__tile {
-  flex: none;
-  width: 104px;
-  padding: 6px;
-}
-
-.promo-evt__thumb {
-  position: relative;
-  flex: none;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden;
-  border-radius: 8px;
-  background: rgba(0, 0, 0, 0.05);
-}
-
-.promo-evt__thumb.is-square {
-  width: 100%;
-  aspect-ratio: 1;
-}
-
-.promo-evt__thumb.is-row {
-  width: 44px;
-  height: 44px;
-}
-
-.promo-evt__thumb img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.promo-evt__thumb[data-tint]::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: var(--tint-warm, var(--tint-stone));
-  mix-blend-mode: multiply;
-  opacity: var(--ad-warmth, 0);
-}
-
-.promo-evt__tile-title {
-  display: -webkit-box;
-  overflow: hidden;
-  margin-top: 6px;
-  color: #262626;
-  font-size: 11px;
-  line-height: 1.25;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 2;
-}
-
-.promo-evt__tile-price,
-.promo-evt__meta {
-  color: #737373;
-  font-size: 11px;
-  line-height: 1.25;
-}
-
-.promo-evt__tile-price {
-  font-weight: 600;
-}
-
-.promo-evt__row {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  width: fit-content;
-  max-width: 100%;
-}
-
-.promo-evt__text {
-  flex: 1;
-  min-width: 0;
-  padding-right: 4px;
-}
-
-.promo-evt__title {
-  display: -webkit-box;
-  overflow: hidden;
-  color: #262626;
-  font-size: 12px;
-  font-weight: 500;
-  line-height: 1.25;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 2;
-}
-
-.promo-evt__meta {
-  padding-top: 2px;
+  transition: opacity 280ms ease;
 }

@@ -44,7 +44,12 @@ Widget code: `src/utils/hiddenMessages.ts` in `trujilloai-bizmis-widget`.
 
 ## ad-1 film
 
-`sayClerkLine` in `public/promo/film-engine.js` submits the shopper's typed line and queues `Say this: "{clerk line}"` behind it. The clerk lines live in `PROMO_PITCH_CLERK_1` and `PROMO_PITCH_CLERK_2`. The film page is not a store, so no tool really runs. `paintPitchEvent` plays the matching widget activity through `simulateToolActivity` (`PROMO_EVENT_TOOLS` maps film events to tool names) and `emitShopper` raises the real product and cart cards. On a widget build without the debug API, the film falls back to rewriting the outgoing socket frame and to its own copy of the laser.
+- **Replies:** `sayClerkLine` in `public/promo/film-engine.js` submits the shopper's typed line and queues `Say this: "{clerk line}"` behind it.
+- **Lines the clerk says on its own:** `sayClerkAlone` sends only the hidden steer, with no shopper message. The film uses it to comment on the comparison and to offer the cross-sell. The clerk lines are the `PROMO_PITCH_CLERK_*` constants.
+- **Activity:** the film calls `muteRealActivity(true)` for the pitch, so the agent's own tool calls and thinking never show. Its copy of the activity laser (`laserUntilNext`) runs from each send until the next moment shows, at least one full lap.
+- **Captions:** the film sets `localStorage["bizmis-subtitles"] = "true"` before mounting, so the widget captions each line in sync with its voice.
+
+On a widget build without the debug API, the film falls back to rewriting the outgoing socket frame.
 
 ## Demo store videos
 
