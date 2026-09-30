@@ -978,8 +978,7 @@
       const motion = motions[(m0 + i) % motions.length];
       for (let j = 0; j < PROMO_STORE_LOOKS.length && !pick; j += 1) {
         const rawLook = PROMO_STORE_LOOKS[(l0 + j) % PROMO_STORE_LOOKS.length];
-        // Store looks were only recorded with the chat open.
-        const chat = mode === 'pitch' ? false : (rawLook !== 'classic' ? true : wantsChat);
+        const chat = mode === 'pitch' ? false : wantsChat;
         const look = glideEffectiveLook(tone, cell.id, motion, chat, rawLook);
         const content = { motion, look, chat };
         const visual = glideVisualKey(cell, content);
@@ -2758,7 +2757,7 @@
         : look === 'list' ? 1
           : look === 'home-hero' ? 3
             : PROMO_CATALOG_COLS;
-    if (phone) cols = Math.min(cols, 2);
+    if (phone) cols = look === 'lookbook' ? 1 : Math.min(cols, 2);
     else if (tablet && clipLayout) cols = look === 'list' ? 1 : look === 'lookbook' ? 2 : look === 'collection-dense' ? 3 : 2;
     else if (tablet) cols = Math.min(cols, 3);
     else if (clipLayout && look !== 'list' && look !== 'lookbook') cols = look === 'collection-dense' ? 3 : 2;
@@ -2795,6 +2794,8 @@
       const budget = Math.max(160, stage.clientHeight - padY - 16);
       const fitted = (budget - (rows - 1) * rowGapY) / rows;
       cardH = look === 'list' ? Math.max(92, Math.min(phone ? 132 : 168, fitted)) : Math.max(160, fitted);
+      // A lookbook card is its photo plus a caption, never a tall empty strip.
+      if (look === 'lookbook') cardH = Math.min(cardH, cardW * 1.45 + 72);
       pitchY = cardH + rowGapY;
       if (look === 'home-hero' && !clipLayout && !opening.classList.contains('is-motion-scroll-down')) {
         const photo = cardH - 96;
@@ -2877,7 +2878,8 @@
         board.style.setProperty('--row-lift', '0px');
       } else if (tablet) {
         const wide = Math.max(120, (stage.clientWidth - 36 - gap * 2) / 3);
-        const tall = Math.max(240, stage.clientHeight - 72);
+        // A product card's own shape, not a strip the height of the stage.
+        const tall = Math.min(stage.clientHeight - 72, wide * 1.3 + 56);
         board.style.setProperty('--row-card-w', `${wide.toFixed(1)}px`);
         board.style.setProperty('--row-card-h', `${tall.toFixed(1)}px`);
         board.style.setProperty('--row-seat', `${(wide + gap).toFixed(1)}px`);
@@ -2885,7 +2887,7 @@
         board.style.setProperty('--row-lift', '0px');
       } else {
         const wide = Math.max(180, (stage.clientWidth - 48 - gap * 2) / 3);
-        const tall = Math.max(320, stage.clientHeight - 72);
+        const tall = Math.min(stage.clientHeight - 72, wide * 1.3 + 56);
         board.style.setProperty('--row-card-w', `${wide.toFixed(1)}px`);
         board.style.setProperty('--row-card-h', `${tall.toFixed(1)}px`);
         board.style.setProperty('--row-seat', `${(wide + gap).toFixed(1)}px`);
@@ -7203,8 +7205,103 @@
       frame.appendChild(clone);
     }
 
+    // Sea-of-cards stills: whatever the pose laid out, fit it into the part
+    // of the store the viewer can see. The safe area is the stage minus the
+    // widget and the dull chatbot. Content is scaled and centered into it.
+    // An axis where the content runs past the stage (a scrolling catalog)
+    // keeps its bleed and is only fitted across the other axis.
+    fitClip() {
+      const store = this.root.querySelector('.promo-opening__store');
+      const stage = store?.querySelector('.promo-opening__moments-stage');
+      if (!store || !stage) return null;
+      stage.style.scale = '';
+      stage.style.translate = '';
+      stage.style.clipPath = '';
+      stage.style.transformOrigin = '';
+      const box = stage.getBoundingClientRect();
+      if (box.width < 40 || box.height < 40) return null;
+      const area = box.width * box.height;
+      const shown = (el) => (typeof el.checkVisibility === 'function'
+        ? el.checkVisibility({ opacityProperty: true, visibilityProperty: true })
+        : el.offsetParent !== null);
+      let left = Infinity;
+      let top = Infinity;
+      let right = -Infinity;
+      let bottom = -Infinity;
+      // What actually paints: each box cut to the ancestors that clip it.
+      const clipped = (el) => {
+        const r = el.getBoundingClientRect();
+        let l = r.left;
+        let t = r.top;
+        let rr = r.right;
+        let bb = r.bottom;
+        for (let node = el.parentElement; node && node !== stage; node = node.parentElement) {
+          const cs = getComputedStyle(node);
+          if (cs.overflowX === 'visible' && cs.overflowY === 'visible' && cs.clipPath === 'none') continue;
+          const c = node.getBoundingClientRect();
+          l = Math.max(l, c.left);
+          t = Math.max(t, c.top);
+          rr = Math.min(rr, c.right);
+          bb = Math.min(bb, c.bottom);
+        }
+        return { left: l, top: t, right: rr, bottom: bb, width: rr - l, height: bb - t };
+      };
+      stage.querySelectorAll('*').forEach((el) => {
+        const raw = el.getBoundingClientRect();
+        if (raw.width < 3 || raw.height < 3 || raw.width * raw.height > area * 0.6) return;
+        if (!shown(el)) return;
+        const r = clipped(el);
+        if (r.width < 3 || r.height < 3) return;
+        left = Math.min(left, r.left);
+        top = Math.min(top, r.top);
+        right = Math.max(right, r.right);
+        bottom = Math.max(bottom, r.bottom);
+      });
+      if (!Number.isFinite(left)) return null;
+      // Stores scroll vertically, so only a vertical overflow is a bleed.
+      const bleedX = false;
+      const bleedY = top < box.top - 4 || bottom > box.bottom + 4;
+      // Safe area: trim whichever side loses less to each obstacle.
+      const gap = Math.round(box.width * 0.02) + 8;
+      const safe = { left: box.left + gap, top: box.top + gap * 0.5, right: box.right - gap, bottom: box.bottom - gap };
+      const obstacles = [
+        document.querySelector('.bizmis-desktop-lite-chat, .bizmis-mobile-lite-chat, .bizmis-bar-row'),
+        store.querySelector('.promo-pain__chat.is-open .promo-pain__panel'),
+        store.querySelector('.promo-pain__chat:not(.is-open) .promo-pain__launcher'),
+      ].filter((el) => el && shown(el));
+      obstacles.forEach((el) => {
+        const o = el.getBoundingClientRect();
+        if (o.right <= safe.left || o.left >= safe.right || o.bottom <= safe.top || o.top >= safe.bottom) return;
+        const cutRight = (safe.right - (o.left - gap)) * (safe.bottom - safe.top);
+        const cutBottom = (safe.bottom - (o.top - gap)) * (safe.right - safe.left);
+        if (cutRight <= cutBottom) safe.right = Math.min(safe.right, o.left - gap);
+        else safe.bottom = Math.min(safe.bottom, o.top - gap);
+      });
+      const cw = Math.max(1, right - left);
+      const ch = Math.max(1, bottom - top);
+      const sw = Math.max(40, safe.right - safe.left);
+      const sh = Math.max(40, safe.bottom - safe.top);
+      let scale = Math.min(bleedX ? Infinity : sw / cw, bleedY ? Infinity : sh / ch, 1.3);
+      if (!Number.isFinite(scale)) scale = 1;
+      // Content position after scaling about the stage's top-left corner.
+      const at = (x, y) => ({ x: box.left + (x - box.left) * scale, y: box.top + (y - box.top) * scale });
+      const a = at(left, top);
+      const b = at(right, bottom);
+      const tx = bleedX ? 0 : (safe.left + safe.right) / 2 - (a.x + b.x) / 2;
+      const ty = bleedY ? (safe.top - box.top) * 0 : (safe.top + safe.bottom) / 2 - (a.y + b.y) / 2;
+      stage.style.transformOrigin = '0 0';
+      stage.style.scale = scale.toFixed(4);
+      stage.style.translate = `${tx.toFixed(1)}px ${ty.toFixed(1)}px`;
+      return { scale, tx, ty, bleedX, bleedY };
+    }
+
     showClip(overrides) {
       const fromUrl = readPromoClip();
+      const fitStage = this.root.querySelector('.promo-opening__moments-stage');
+      if (fitStage) {
+        fitStage.style.scale = '';
+        fitStage.style.translate = '';
+      }
       const clip = {
         device: 'desktop',
         motion: 'scroll-up',

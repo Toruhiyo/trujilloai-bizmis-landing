@@ -39,6 +39,7 @@ const MOMENTS = [
 ];
 const LOOKS = ['home-hero', 'collection-dense', 'lookbook', 'list'];
 const LOOK_MOTIONS = ['scroll-up', 'scroll-down'];
+const LOOK_MOMENTS = ['moment-catalog-a', 'moment-catalog-b', 'moment-search-a'];
 
 const DEVICES = {
   desktop: { width: 1600, height: 1000 },
@@ -62,12 +63,18 @@ function clipsFor(device) {
       clips.push({ device, motion, chat: false, tone: 'pitch', look: 'classic', moment: true });
     }
   }
+  // Every store look, in pain with and without the dull chatbot, and in
+  // several pitch moments, so the sea has more distinct screens.
   for (const look of LOOKS) {
     if (onlyLook && onlyLook !== look) continue;
     for (const motion of LOOK_MOTIONS) {
-      clips.push({ device, motion, chat: true, tone: 'pain', look, moment: false });
+      for (const chat of [false, true]) {
+        clips.push({ device, motion, chat, tone: 'pain', look, moment: false });
+      }
     }
-    clips.push({ device, motion: 'moment-catalog-a', chat: false, tone: 'pitch', look, moment: true });
+    for (const motion of LOOK_MOMENTS) {
+      clips.push({ device, motion, chat: false, tone: 'pitch', look, moment: true });
+    }
   }
   const keyed = clips.map((clip) => {
     const base = `${clip.tone}-${device}-${clip.motion}-${clip.chat ? '1' : '0'}`;
@@ -153,6 +160,8 @@ async function recordDevice(browser, device) {
     { timeout: 60000 },
   );
 
+  // The page fades in after it loads; let it finish before the first shot.
+  await page.waitForTimeout(1500);
   for (const clip of clipsFor(device)) {
     const frames = path.join(FRAME_DIR, clip.key);
     fs.rmSync(frames, { recursive: true, force: true });
@@ -175,6 +184,9 @@ async function recordDevice(browser, device) {
       await page.waitForTimeout(40);
     }
     if (STILLS_ONLY) {
+      // Fit the pose into the visible part of the store, clear of the widget.
+      await page.evaluate(() => window.__promoOpeningFrames.fitClip?.());
+      await page.waitForTimeout(60);
       await page.evaluate(() => Promise.all([...document.querySelectorAll('*')].flatMap((node) => {
         const image = getComputedStyle(node).backgroundImage;
         return [...image.matchAll(/url\(["']?([^"')]+)/g)].map((match) => new Promise((resolve) => {

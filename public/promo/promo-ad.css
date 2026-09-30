@@ -9904,31 +9904,24 @@ html.is-promo-still .promo-clip__product.is-compare::after {
   width: 240px !important;
 }
 
-.promo-opening.is-clip-desktop.is-clip-moment .promo-moments__board.is-pose-choice .promo-moments__card.is-go,
-.promo-opening.is-clip-desktop.is-clip-moment .promo-moments__board.is-pose-row .promo-moments__card.is-go,
-.promo-opening.is-clip-desktop.is-clip-moment .promo-moments__board.is-pose-choice .promo-moments__card.is-pick,
-.promo-opening.is-clip-desktop.is-clip-moment .promo-moments__board.is-pose-row .promo-moments__card.is-pick,
-.promo-opening.is-clip-desktop.is-clip-moment .promo-moments__board.is-pose-choice .promo-moments__card.is-other,
-.promo-opening.is-clip-desktop.is-clip-moment .promo-moments__board.is-pose-row .promo-moments__card.is-other {
-  width: 340px !important;
-  height: 640px !important;
-  top: 52% !important;
+.promo-opening.is-clip-desktop.is-clip-moment .promo-moments__board.is-pose-choice .promo-moments__card:is(.is-go, .is-pick, .is-other),
+.promo-opening.is-clip-desktop.is-clip-moment .promo-moments__board.is-pose-row .promo-moments__card:is(.is-go, .is-pick, .is-other) {
+  width: var(--row-card-w, 340px) !important;
+  height: var(--row-card-h, 480px) !important;
+  left: 50% !important;
+  top: 50% !important;
+}
+
+.promo-opening.is-clip-desktop.is-clip-moment .promo-moments__board:is(.is-pose-choice, .is-pose-row) .promo-moments__card.is-go {
+  transform: translate3d(calc(-50% - var(--row-seat, 360px)), -50%, 0) !important;
+}
+
+.promo-opening.is-clip-desktop.is-clip-moment .promo-moments__board:is(.is-pose-choice, .is-pose-row) .promo-moments__card.is-pick {
   transform: translate3d(-50%, -50%, 0) !important;
 }
 
-.promo-opening.is-clip-desktop.is-clip-moment .promo-moments__board.is-pose-choice .promo-moments__card.is-go,
-.promo-opening.is-clip-desktop.is-clip-moment .promo-moments__board.is-pose-row .promo-moments__card.is-go {
-  left: 8% !important;
-}
-
-.promo-opening.is-clip-desktop.is-clip-moment .promo-moments__board.is-pose-choice .promo-moments__card.is-pick,
-.promo-opening.is-clip-desktop.is-clip-moment .promo-moments__board.is-pose-row .promo-moments__card.is-pick {
-  left: 36% !important;
-}
-
-.promo-opening.is-clip-desktop.is-clip-moment .promo-moments__board.is-pose-choice .promo-moments__card.is-other,
-.promo-opening.is-clip-desktop.is-clip-moment .promo-moments__board.is-pose-row .promo-moments__card.is-other {
-  left: 64% !important;
+.promo-opening.is-clip-desktop.is-clip-moment .promo-moments__board:is(.is-pose-choice, .is-pose-row) .promo-moments__card.is-other {
+  transform: translate3d(calc(-50% + var(--row-seat, 360px)), -50%, 0) !important;
 }
 
 .promo-opening.is-clip.is-look-home-hero .promo-moments__board.is-pose-grid .promo-moments__glyph img {
@@ -10373,4 +10366,65 @@ html.is-promo-clip.is-clip-moment.is-clip-tablet .bizmis-viewport-portal-root {
   background: #fff;
   opacity: 0;
   pointer-events: none;
+}
+
+/* Sea stills, desktop: the compare trio uses the same card size as tablet. */
+.promo-opening.is-clip-moment.is-clip-desktop .promo-moments__board.is-pose-choice .promo-moments__card.is-go,
+.promo-opening.is-clip-moment.is-clip-desktop .promo-moments__board.is-pose-choice .promo-moments__card.is-pick,
+.promo-opening.is-clip-moment.is-clip-desktop .promo-moments__board.is-pose-choice .promo-moments__card.is-other,
+.promo-opening.is-clip-moment.is-clip-desktop .promo-moments__board.is-pose-row .promo-moments__card.is-go,
+.promo-opening.is-clip-moment.is-clip-desktop .promo-moments__board.is-pose-row .promo-moments__card.is-pick,
+.promo-opening.is-clip-moment.is-clip-desktop .promo-moments__board.is-pose-row .promo-moments__card.is-other {
+  --card-w: var(--row-card-w, 220px);
+  --card-h: var(--row-card-h, 460px);
+  width: var(--row-card-w, 220px);
+  height: var(--row-card-h, 460px);
+  animation: none !important;
+}
+
+/* Sea stills, tablet product page: photo across the top, then title and
+   price, then Add, as one column. */
+.promo-opening.is-clip-moment.is-clip-tablet .promo-moments__board:is(.is-pose-close, .is-pose-doubt) .promo-moments__card.is-pick {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 18px !important;
+  padding: 24px 28px !important;
+  box-sizing: border-box;
+}
+
+.promo-opening.is-clip-moment.is-clip-tablet .promo-moments__board:is(.is-pose-close, .is-pose-doubt) .promo-moments__card.is-pick .promo-moments__photo {
+  position: relative !important;
+  inset: auto !important;
+  flex: none !important;
+  width: 100% !important;
+  height: 58% !important;
+  max-height: none !important;
+  aspect-ratio: auto !important;
+}
+
+.promo-opening.is-clip-moment.is-clip-tablet .promo-moments__board:is(.is-pose-close, .is-pose-doubt) .promo-moments__card.is-pick .promo-moments__meta,
+.promo-opening.is-clip-moment.is-clip-tablet .promo-moments__board:is(.is-pose-close, .is-pose-doubt) .promo-moments__card.is-pick .promo-moments__add {
+  position: static !important;
+  width: 100% !important;
+  margin: 0 !important;
+}
+
+/* Sea stills: a list row keeps its title and badge inside it. */
+.promo-opening.is-clip.is-look-list .promo-moments__card {
+  overflow: hidden;
+}
+
+/* Sea stills, phone compare: each of the two products is a real photo,
+   the width of the column, not a thumbnail. */
+.promo-clip.is-phone .promo-clip__product.is-compare .promo-clip__hero img {
+  width: min(78%, 30vh) !important;
+  height: auto !important;
+  max-height: none !important;
+  aspect-ratio: 1;
+  border-radius: 16px;
+}
+
+.promo-clip.is-phone .promo-clip__product.is-compare .promo-clip__hero {
+  justify-content: flex-start;
+  gap: 10px;
 }
