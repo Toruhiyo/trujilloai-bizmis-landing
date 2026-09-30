@@ -41,6 +41,7 @@
   const PROMO_PASS_TITLE_MS = 420;
   const PROMO_PASS_SLOW_MS = 4800;
   const PROMO_PASS_SLOT_IN_MS = 420;
+  const PROMO_PHONE_PAN_MS = 820;
   const PROMO_EA_WRITE_MS = 1700;
   const PROMO_EA_STAMP_MS = 460;
   const PROMO_EA_BEAT_MS = 780;
@@ -2066,20 +2067,130 @@
     window.dispatchEvent(new CustomEvent('bizmis:shopper-event', { detail }));
   }
 
-  // Film events, as the widget tool whose activity they stand for.
-  const PROMO_EVENT_TOOLS = {
-    products: 'show_products',
-    product: 'go_to_product',
-    policies: 'search_shop_policies_and_faqs',
-    cart: 'add_to_cart',
-  };
-
   function pitchEventLabel(detail) {
+    if (detail.kind === 'search') return 'Searching the catalog…';
+    if (detail.kind === 'compare') return 'Checking product details…';
     if (detail.kind === 'products') return 'Preparing product results…';
     if (detail.kind === 'product') return 'Opening the product…';
     if (detail.kind === 'policies') return 'Checking store policies…';
     if (detail.kind === 'cart') return 'Adding to your cart…';
     return '';
+  }
+
+  // Copy of the widget's ChatEventCard (trujilloai-bizmis-widget,
+  // src/components/chat/ChatEventCard.tsx). The card layout of the widget
+  // keeps events in its history only, so the film floats the same cards
+  // above the widget for the viewer.
+  const EVENT_ICON_NODES = {
+    products: [
+      ['rect', { width: '7', height: '7', x: '3', y: '3', rx: '1' }],
+      ['rect', { width: '7', height: '7', x: '14', y: '3', rx: '1' }],
+      ['rect', { width: '7', height: '7', x: '14', y: '14', rx: '1' }],
+      ['rect', { width: '7', height: '7', x: '3', y: '14', rx: '1' }],
+    ],
+    product: [
+      ['path', { d: 'M12.586 2.586A2 2 0 0 0 11.172 2H4a2 2 0 0 0-2 2v7.172a2 2 0 0 0 .586 1.414l8.704 8.704a2.426 2.426 0 0 0 3.42 0l6.58-6.58a2.426 2.426 0 0 0 0-3.42z' }],
+      ['circle', { cx: '7.5', cy: '7.5', r: '.5', fill: 'currentColor' }],
+    ],
+    cart: [
+      ['circle', { cx: '8', cy: '21', r: '1' }],
+      ['circle', { cx: '19', cy: '21', r: '1' }],
+      ['path', { d: 'M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12' }],
+    ],
+  };
+  const EVENT_LABELS = {
+    products: 'Products shown to you',
+    product: 'Product opened',
+    cart: 'Added to cart',
+  };
+
+  function lucideSvg(nodes, className, strokeWidth) {
+    const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    svg.setAttribute('viewBox', '0 0 24 24');
+    svg.setAttribute('fill', 'none');
+    svg.setAttribute('stroke', 'currentColor');
+    svg.setAttribute('stroke-width', String(strokeWidth));
+    svg.setAttribute('stroke-linecap', 'round');
+    svg.setAttribute('stroke-linejoin', 'round');
+    svg.setAttribute('aria-hidden', 'true');
+    svg.setAttribute('class', className);
+    (nodes || []).forEach(([tag, attrs]) => {
+      const node = document.createElementNS('http://www.w3.org/2000/svg', tag);
+      Object.entries(attrs).forEach(([key, value]) => node.setAttribute(key, value));
+      svg.appendChild(node);
+    });
+    return svg;
+  }
+
+  function eventThumb(product, extraClass) {
+    const thumb = document.createElement('div');
+    thumb.className = `promo-evt__thumb ${extraClass || ''}`.trim();
+    if (product.tint) thumb.dataset.tint = product.tint;
+    if (product.imageUrl) {
+      const img = document.createElement('img');
+      img.alt = '';
+      img.src = product.imageUrl;
+      thumb.appendChild(img);
+    }
+    return thumb;
+  }
+
+  function promoEventCard(detail) {
+    const card = document.createElement('div');
+    card.className = 'promo-evt';
+    const head = document.createElement('div');
+    head.className = 'promo-evt__head';
+    head.appendChild(lucideSvg(EVENT_ICON_NODES[detail.kind], 'promo-evt__icon', 2.25));
+    const label = document.createElement('span');
+    label.className = 'promo-evt__label';
+    label.textContent = EVENT_LABELS[detail.kind] || '';
+    head.appendChild(label);
+    card.appendChild(head);
+    if (detail.kind === 'products') {
+      const row = document.createElement('div');
+      row.className = 'promo-evt__carousel';
+      (detail.products || []).forEach((product) => {
+        const item = document.createElement('div');
+        item.className = 'promo-evt__surface promo-evt__tile';
+        item.appendChild(eventThumb(product, 'is-square'));
+        const title = document.createElement('div');
+        title.className = 'promo-evt__tile-title';
+        title.textContent = product.title;
+        item.appendChild(title);
+        if (product.price) {
+          const price = document.createElement('div');
+          price.className = 'promo-evt__tile-price';
+          price.textContent = product.price;
+          item.appendChild(price);
+        }
+        row.appendChild(item);
+      });
+      card.appendChild(row);
+      return card;
+    }
+    const product = detail.product;
+    if (!product) return card;
+    const line = document.createElement('div');
+    line.className = 'promo-evt__surface promo-evt__row';
+    line.appendChild(eventThumb(product, 'is-row'));
+    const text = document.createElement('div');
+    text.className = 'promo-evt__text';
+    const title = document.createElement('div');
+    title.className = 'promo-evt__title';
+    title.textContent = product.title;
+    text.appendChild(title);
+    const meta = detail.kind === 'cart'
+      ? [detail.variantTitle, product.price].filter(Boolean).join(' · ')
+      : (product.price || '');
+    if (meta) {
+      const small = document.createElement('div');
+      small.className = 'promo-evt__meta';
+      small.textContent = meta;
+      text.appendChild(small);
+    }
+    line.appendChild(text);
+    card.appendChild(line);
+    return card;
   }
 
   const LASER_VIEWBOX = 100;
@@ -2090,6 +2201,18 @@
   const DESKTOP_ACTIVITY_HALO_PX = 144;
   const ACTIVITY_HALO_RATIO = 1.34;
   const LASER_ICON_NODES = {
+    search: [
+      ['circle', { cx: '11', cy: '11', r: '8' }],
+      ['path', { d: 'm21 21-4.3-4.3' }],
+    ],
+    compare: [
+      ['path', { d: 'M21 10V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l2-1.14' }],
+      ['path', { d: 'm7.5 4.27 9 5.15' }],
+      ['polyline', { points: '3.29 7 12 12 20.71 7' }],
+      ['line', { x1: '12', x2: '12', y1: '22', y2: '12' }],
+      ['circle', { cx: '18.5', cy: '15.5', r: '2.5' }],
+      ['path', { d: 'M20.27 17.27 22 19' }],
+    ],
     product: [
       ['path', { d: 'M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z' }],
       ['circle', { cx: '12', cy: '12', r: '3' }],
@@ -2211,7 +2334,7 @@
   const PROMO_MOMENT_PICK_INDEX = 5;
   const PROMO_MOMENT_OTHER_INDEX = 3;
   const PROMO_COMPARE_SHAPES = { go: 'capsule', pick: 'sphere', other: 'rounded-cube' };
-  const PROMO_COMPARE_TINTS = { go: 'sage', pick: 'blush', other: 'sand' };
+  const PROMO_COMPARE_TINTS = { go: 'sage', pick: 'apricot', other: 'stone' };
   const PROMO_ACCESSORY_OBJECT_SCALE = 1.08;
   const PROMO_TINT_FILE = {
     sphere: { stone: 'sphere-b' },
@@ -4623,34 +4746,66 @@
     clearPitchEvents() {
       this.painStore()?.querySelector('[data-promo-widget-events]')?.replaceChildren();
       document.querySelectorAll('[data-promo-laser]').forEach((node) => node.remove());
-      this.endWidgetActivity();
     }
 
-    // The widget's own activity laser, played through its debug API, so the
-    // film shows exactly what a real tool call shows.
-    endWidgetActivity() {
-      const current = this.widgetActivity;
-      if (!current) return;
-      this.widgetActivity = null;
-      promoDebugWidget()?.simulateToolActivity({ ...current, phase: 'success' });
+    // Keeps only the film's scripted activity on the widget: the agent's own
+    // tool calls and thinking state would show its real catalog search over
+    // a later beat.
+    muteWidgetActivity(muted) {
+      const api = window.AvatarVoicechat;
+      if (api && typeof api.muteRealActivity === 'function') api.muteRealActivity(muted);
     }
 
-    playWidgetActivity(detail) {
-      const api = promoDebugWidget();
-      const toolName = PROMO_EVENT_TOOLS[detail.kind];
-      if (!api || !toolName || document.documentElement.classList.contains('is-promo-clip')) return false;
-      this.widgetActivityCall = (this.widgetActivityCall || 0) + 1;
-      const call = { toolName, toolCallId: `promo-${detail.kind}-${this.widgetActivityCall}` };
-      if (!api.simulateToolActivity({ ...call, phase: 'loading' })) return false;
-      this.widgetActivity = call;
-      return true;
+    eventCardsHost() {
+      const canvas = this.root.querySelector('[data-promo-canvas]') || this.root;
+      let host = canvas.querySelector('[data-promo-event-cards]');
+      if (!host) {
+        host = document.createElement('div');
+        host.className = 'promo-evt-stack';
+        host.setAttribute('data-promo-event-cards', '');
+        canvas.appendChild(host);
+      }
+      return { canvas, host };
+    }
+
+    placeEventCards() {
+      const { canvas, host } = this.eventCardsHost();
+      const card = document.querySelector('.bizmis-desktop-lite-chat');
+      if (!card) return;
+      const frame = canvas.getBoundingClientRect();
+      const scale = frame.width / (canvas.offsetWidth || frame.width) || 1;
+      const box = card.getBoundingClientRect();
+      // The widget sits in a scaled store window; the cards take the same
+      // scale so they read as part of it.
+      const native = card.offsetWidth || box.width;
+      const zoom = box.width / scale / native;
+      host.style.width = `${native.toFixed(1)}px`;
+      host.style.transformOrigin = 'left bottom';
+      host.style.transform = `scale(${zoom.toFixed(4)})`;
+      host.style.left = `${((box.left - frame.left) / scale).toFixed(1)}px`;
+      host.style.bottom = `${((frame.bottom - box.top) / scale + 8).toFixed(1)}px`;
+    }
+
+    // Newest at the bottom, right above the widget, the way the phone floats
+    // its history. Two at most, so the window stays readable.
+    showEventCard(detail) {
+      const { host } = this.eventCardsHost();
+      this.placeEventCards();
+      const card = promoEventCard(detail);
+      host.appendChild(card);
+      while (host.children.length > 2) host.firstElementChild.remove();
+      card.getBoundingClientRect();
+      card.classList.add('is-in');
+    }
+
+    clearEventCards() {
+      this.root.querySelector('[data-promo-event-cards]')?.replaceChildren();
     }
 
     paintPitchEvent(detail) {
       const labelText = pitchEventLabel(detail);
       if (!labelText) return;
       this.clearPitchEvents();
-      if (this.playWidgetActivity(detail)) return;
       const mount = activityStage();
       if (!mount) return;
       const sizePx = activityHaloPx(mount.stage);
@@ -4840,31 +4995,41 @@
         cursor.style.opacity = '0';
       }
       this.clearPitchEvents();
+      this.clearEventCards();
+      this.muteWidgetActivity(true);
+      const clay = promoClayUrls();
+      const product = (title, key, tint) => ({ title, url: `https://bizmis.ai/demo/${key}`, imageUrl: clay[key] || '', tint });
+      const pick = product('The light one', 'sphere', PROMO_COMPARE_TINTS.pick);
+      const sleeve = product('The sleeve', 'slab', 'stone');
       await this.typeShopperLine(PROMO_PITCH_LINE_1);
       const first = playClerkLine(PROMO_PITCH_CLERK_1, reduced ? 200 : PROMO_PITCH_SPEAK_1_MS, () => { });
+      // Each pose has its own activity, so the laser always matches what the
+      // store is doing: search, then results, then details, then the page.
+      this.paintPitchEvent({ kind: 'search' });
       applyMomentPose(stage, 'row', { instant: reduced });
       const shown = {
         kind: 'products',
         products: [
-          { title: 'The light one', url: 'https://bizmis.ai/demo/light' },
-          { title: 'The day one', url: 'https://bizmis.ai/demo/day' },
-          { title: 'The travel one', url: 'https://bizmis.ai/demo/travel' },
+          product('The day one', 'capsule', PROMO_COMPARE_TINTS.go),
+          pick,
+          product('The travel one', 'rounded-cube', PROMO_COMPARE_TINTS.other),
         ],
       };
+      await waitMs(reduced ? 20 : Math.round(PROMO_PITCH_NARROW_MS * 0.4));
       emitShopper(shown);
       this.paintPitchEvent(shown);
-      await waitMs(reduced ? 40 : PROMO_PITCH_NARROW_MS);
+      this.showEventCard(shown);
+      await waitMs(reduced ? 20 : Math.round(PROMO_PITCH_NARROW_MS * 0.6));
       applyMomentPose(stage, 'choice', { instant: reduced });
+      this.paintPitchEvent({ kind: 'compare' });
       await waitMs(reduced ? 40 : PROMO_PITCH_COMPARE_MS);
       applyMomentPose(stage, 'doubt', { instant: reduced });
       const board = stage?.querySelector('.promo-moments__board');
       board?.classList.add('is-doubts-hidden');
-      const opened = {
-        kind: 'product',
-        product: { title: 'The light one', url: 'https://bizmis.ai/demo/light' },
-      };
+      const opened = { kind: 'product', product: pick };
       emitShopper(opened);
       this.paintPitchEvent(opened);
+      this.showEventCard(opened);
       await first;
       markPromoVo('narrows');
       if (!reduced) await waitMs(promoVoGuard('narrows'));
@@ -4886,29 +5051,26 @@
         applyMomentPose(stage, 'close', { instant: true });
       }
       host?.classList.add('is-cart-one');
-      const cartOne = {
-        kind: 'cart',
-        product: { title: 'The light one', url: 'https://bizmis.ai/demo/light' },
-        quantity: 1,
-      };
+      const cartOne = { kind: 'cart', product: pick, quantity: 1 };
       emitShopper(cartOne);
       this.paintPitchEvent(cartOne);
+      this.showEventCard(cartOne);
       if (!reduced) await waitMs(Math.max(0, closeMs - cartLandMs));
       applyMomentPose(stage, 'bundle', { instant: reduced });
       host?.classList.remove('is-cart-one');
       host?.classList.add('is-cart-two');
-      const cartSleeve = {
-        kind: 'cart',
-        product: { title: 'The sleeve', url: 'https://bizmis.ai/demo/sleeve' },
-        quantity: 1,
-      };
+      const cartSleeve = { kind: 'cart', product: sleeve, quantity: 1 };
       emitShopper(cartSleeve);
       this.paintPitchEvent(cartSleeve);
+      this.showEventCard(cartSleeve);
       await second;
+      this.clearPitchEvents();
       await waitMs(reduced ? 40 : 1600);
       this.painStore()?.querySelectorAll('.promo-close__veil, .promo-close__mark, .promo-glide__lost-mark, .promo-glide__veil').forEach((node) => node.remove());
       await this.markCloseStoreSold();
       await this.rememberPitchLead();
+      this.clearEventCards();
+      this.muteWidgetActivity(false);
       endOpeningAgent();
       markPromoVo('closes');
       await this.releaseLiveCard();
@@ -5667,18 +5829,30 @@
       this.passLightFrame = 0;
     }
 
-    // Only the store on screen plays its clip, from its chosen moment.
+    // Only the store on screen plays its clip, with its sound, from its
+    // chosen moment. Each stretch is logged in window.__promoAudioCues so the
+    // exporter can lay the same sound under the frames.
     playPassVideo(slides, index) {
+      const now = performance.now();
       slides.forEach((slide, slideIndex) => {
         const video = slide.querySelector('video.promo-opening__slide-video');
         if (!video) return;
         const on = slideIndex === index;
         const start = Number(video.dataset.promoStart) || 0;
         if (!on) {
+          if (video._promoCue && video._promoCue.endMs == null) video._promoCue.endMs = now;
           video.dataset.promoIdle = '1';
+          video.muted = true;
           video.pause();
           return;
         }
+        if (video.dataset.promoIdle === '1' || !video._promoCue) {
+          const cue = { src: video.getAttribute('src'), atMs: now, fromSec: start, endMs: null };
+          (window.__promoAudioCues = window.__promoAudioCues || []).push(cue);
+          video._promoCue = cue;
+        }
+        video.muted = false;
+        video.volume = 1;
         if (video.dataset.promoIdle === '1' || video.dataset.promoArmed !== '1') {
           video.dataset.promoArmed = '1';
           video.__promoOriginMs = null;
@@ -8780,6 +8954,44 @@
       };
     }
 
+    // Center of a node in the phone's own coordinates, for the touch dot.
+    thumbSpot(target, clone) {
+      let x = target.offsetWidth / 2;
+      let y = target.offsetHeight / 2;
+      let node = target;
+      while (node && node !== clone) {
+        x += node.offsetLeft;
+        y += node.offsetTop;
+        node = node.offsetParent;
+      }
+      if (node !== clone) return null;
+      return { x: x - 14, y: y - 14 };
+    }
+
+    // A finger comes in and taps the dull chatbot's circle to open it.
+    async tapPhoneLauncher(clone) {
+      const launcher = clone.querySelector('.promo-pain__launcher');
+      const cursor = clone.querySelector('[data-promo-pain-cursor]');
+      const spot = launcher && this.thumbSpot(launcher, clone);
+      if (!cursor || !spot) return;
+      cursor.hidden = false;
+      cursor.classList.add('is-thumb');
+      cursor.style.transitionDuration = '0ms';
+      cursor.style.opacity = '0';
+      cursor.style.setProperty('--pain-x', `${Math.round(spot.x - clone.clientWidth * 0.22)}px`);
+      cursor.style.setProperty('--pain-y', `${Math.round(spot.y - clone.clientHeight * 0.16)}px`);
+      cursor.getBoundingClientRect();
+      cursor.style.transitionDuration = '';
+      cursor.style.opacity = '1';
+      await waitMs(120);
+      await this.moveThumb(clone, spot.x, spot.y, 520);
+      cursor.classList.add('is-tapping');
+      this.emitClick();
+      await waitMs(200);
+      cursor.classList.remove('is-tapping');
+      cursor.style.opacity = '0';
+    }
+
     async moveThumb(clone, x, y, ms) {
       const cursor = clone.querySelector('[data-promo-pain-cursor]');
       if (!cursor) return;
@@ -8831,7 +9043,8 @@
         cursor.style.opacity = '0';
       }
       markPromoVo('last-doubt');
-      await waitMs(900);
+      await waitMs(500);
+      await this.tapPhoneLauncher(clone);
       const input = clone.querySelector('[data-promo-pain-input]');
       this.fillCloneChat(clone, 'panel');
       if (input) {
@@ -8903,7 +9116,12 @@
       phone.classList.add('is-phone');
       const phoneH = host.height * 0.78;
       const phoneW = phoneH * (9 / 19);
-      const start = host.width + 36;
+      // The phone waits just right of the desktop, as the next mockup on the
+      // same table, and the camera pans across to it.
+      const desk = desktop.getBoundingClientRect();
+      const scale = host.width / (canvas.offsetWidth || host.width) || 1;
+      const deskRight = (desk.right - host.left) / scale;
+      const start = Math.max(host.width * 0.55, deskRight + host.width * 0.08);
       const home = (host.width - phoneW) / 2;
       phone.style.position = 'absolute';
       phone.style.zIndex = '9';
@@ -8920,12 +9138,23 @@
       if (board) layoutStoreGrid(board);
       phone.style.visibility = '';
       phone.getBoundingClientRect();
-      const ease = 'transform 640ms cubic-bezier(0.22, 1, 0.36, 1)';
-      desktop.style.transition = ease;
-      phone.style.transition = ease;
-      desktop.style.transform = 'translateX(-160%)';
-      phone.style.transform = `translateX(${(home - start).toFixed(1)}px)`;
-      await waitMs(680);
+      // Stepped per frame so the export clock samples every step of the pan.
+      const pan = home - start;
+      desktop.style.transition = 'none';
+      phone.style.transition = 'none';
+      await new Promise((resolve) => {
+        const began = performance.now();
+        const step = () => {
+          const u = Math.min(1, (performance.now() - began) / PROMO_PHONE_PAN_MS);
+          const eased = u < 0.5 ? 4 * u * u * u : 1 - ((-2 * u + 2) ** 3) / 2;
+          const x = `translateX(${(pan * eased).toFixed(1)}px)`;
+          desktop.style.transform = x;
+          phone.style.transform = x;
+          if (u < 1) window.requestAnimationFrame(step);
+          else resolve();
+        };
+        step();
+      });
       return phone;
     }
 

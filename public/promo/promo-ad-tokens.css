@@ -31,6 +31,8 @@ html.is-promo-cover,
   --tint-blush: #E8D5D0;
   --tint-sage: #D5DDD4;
   --tint-warm-grey: #E3E0DB;
+  /* Bizmis orange, softened for a product tile. */
+  --tint-apricot: #F5C391;
   --bot-surface: #F2F2F2;
   --bot-panel: #FFFFFF;
   --bot-bubble: #F2F2F2;

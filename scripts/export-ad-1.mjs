@@ -501,6 +501,7 @@ async function exportRange(browser, options, framesDir) {
   let last = -1;
   let endedEarly = false;
   let markerRows = [];
+  let audioCues = [];
   let unfinished = null;
 
   try {
@@ -538,6 +539,14 @@ async function exportRange(browser, options, framesDir) {
       }
     }
     if (!unfinished) markerRows = await page.evaluate(() => window.__promoVoTimeline || []);
+    if (!unfinished) {
+      audioCues = await page.evaluate(() => (window.__promoAudioCues || []).map((cue) => ({
+        src: cue.src,
+        atMs: cue.atMs,
+        fromSec: cue.fromSec,
+        endMs: cue.endMs == null ? window.__promoClock.now() : cue.endMs,
+      })));
+    }
   } finally {
     await context.close();
   }
@@ -586,6 +595,7 @@ async function exportRange(browser, options, framesDir) {
     rerendered,
     stillTimedOut,
     endedEarly,
+    audioCues,
     markers: markerRows.map((row) => {
       const frame = Math.max(0, Math.round((row.at / 1000) * exportFps));
       return {
@@ -600,15 +610,39 @@ async function exportRange(browser, options, framesDir) {
   };
 }
 
-function encodeVideo(framesDir, dest, codec, startNumber) {
+// Store clips play with their own sound in the film. Each cue is a stretch
+// of one clip: film time atMs..endMs, starting fromSec into the file.
+function audioCueArgs(cues, startNumber) {
+  const offsetMs = (startNumber / exportFps) * 1000;
+  const usable = (cues || [])
+    .map((cue) => ({ ...cue, file: path.join(ROOT, 'public', decodeURI(String(cue.src || '').replace(/^\//, ''))) }))
+    .filter((cue) => cue.src && cue.endMs > cue.atMs && cue.atMs >= offsetMs && fs.existsSync(cue.file));
+  if (!usable.length) return null;
+  const inputs = [];
+  const chains = [];
+  usable.forEach((cue, index) => {
+    const seconds = ((cue.endMs - cue.atMs) / 1000).toFixed(3);
+    inputs.push('-ss', String(cue.fromSec), '-t', seconds, '-i', cue.file);
+    const delay = Math.max(0, Math.round(cue.atMs - offsetMs));
+    chains.push(`[${index + 1}:a]afade=t=in:d=0.15,afade=t=out:st=${Math.max(0, seconds - 0.25).toFixed(3)}:d=0.25,adelay=${delay}|${delay}[a${index}]`);
+  });
+  const mix = `${usable.map((_, index) => `[a${index}]`).join('')}amix=inputs=${usable.length}:normalize=0[aout]`;
+  return { inputs, filter: `${chains.join(';')};${mix}` };
+}
+
+function encodeVideo(framesDir, dest, codec, startNumber, audioCues) {
   const input = path.join(framesDir, 'frame-%06d.png');
   const args = ['-y', '-framerate', String(exportFps), '-start_number', String(startNumber), '-i', input];
+  const audio = audioCueArgs(audioCues, startNumber);
+  if (audio) args.push(...audio.inputs, '-filter_complex', audio.filter, '-map', '0:v', '-map', '[aout]');
   if (codec === 'prores') {
     args.push('-c:v', 'prores_ks', '-profile:v', '4', '-pix_fmt', 'yuv444p10le');
   } else {
     args.push('-c:v', 'ffv1', '-level', '3', '-pix_fmt', 'rgb24', '-g', '1');
   }
-  args.push('-an', dest);
+  if (audio) args.push('-c:a', 'pcm_s16le', '-ar', '48000');
+  else args.push('-an');
+  args.push(dest);
   return new Promise((resolve, reject) => {
     const child = spawn(process.env.FFMPEG || 'ffmpeg', args, { stdio: ['ignore', 'ignore', 'pipe'] });
     let err = '';
@@ -790,7 +824,7 @@ async function main() {
       const ext = codec === 'prores' ? 'mov' : 'mkv';
       const video = path.join(folder, `ad-1-${part}-${cta}-${options.width}x${options.height}.${ext}`);
       if (exported.last >= sequenceFrom) {
-        await encodeVideo(framesDir, video, codec, sequenceFrom);
+        await encodeVideo(framesDir, video, codec, sequenceFrom, exported.audioCues);
       }
       const count = exported.last >= sequenceFrom ? exported.last - sequenceFrom + 1 : 0;
       const report = {

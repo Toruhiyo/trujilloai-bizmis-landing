@@ -2116,6 +2116,29 @@ html.is-promo-opening.is-promo-depart .promo-opening {
   filter: none;
 }
 
+.promo-pain__cursor.is-thumb::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: inherit;
+  opacity: 0;
+  transform: scale(1);
+}
+
+.promo-pain__cursor.is-thumb.is-tapping {
+  background: color-mix(in srgb, var(--ad-ink) 75%, transparent);
+}
+
+.promo-pain__cursor.is-thumb.is-tapping::after {
+  animation: promo-tap-ring 320ms ease-out both;
+}
+
+@keyframes promo-tap-ring {
+  from { opacity: 0.55; transform: scale(1); }
+  to { opacity: 0; transform: scale(2.2); }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .promo-opening.is-pain .promo-opening__stage,
   .promo-opening.is-pain .promo-moments__card,
@@ -2145,7 +2168,7 @@ html.is-promo-opening.is-promo-depart .promo-opening {
   align-items: flex-end;
   justify-content: flex-end;
   gap: 0;
-  width: 360px;
+  width: 420px;
   max-width: calc(100% - 48px);
   pointer-events: none;
 }
@@ -2207,7 +2230,7 @@ html.is-promo-opening.is-promo-depart .promo-opening {
 .promo-opening__store.is-phone .promo-pain__links span,
 .promo-opening__store.is-phone .promo-pain__footer,
 .promo-opening__store.is-phone .promo-pain__helpful {
-  font-size: 3.1cqi;
+  font-size: 3.7cqi;
 }
 
 .promo-opening__store.is-phone .promo-pain__composer {
@@ -2468,7 +2491,7 @@ html.is-promo-opening.is-promo-depart .promo-opening {
   border-radius: 999px;
   background: var(--bot-panel);
   color: var(--bot-ink);
-  font-size: 0.72rem;
+  font-size: 0.86rem;
 }
 
 .promo-pain__actions span.is-primary {
@@ -2490,7 +2513,7 @@ html.is-promo-opening.is-promo-depart .promo-opening {
 
 .promo-pain__msg {
   flex-shrink: 0;
-  font-size: 0.78rem;
+  font-size: 0.94rem;
   font-weight: 400;
   line-height: 1.4;
 }
@@ -2532,7 +2555,7 @@ html.is-promo-opening.is-promo-depart .promo-opening {
 
 .promo-pain__links span {
   color: var(--bot-ink);
-  font-size: 0.74rem;
+  font-size: 0.88rem;
   text-decoration: underline;
   text-underline-offset: 2px;
 }
@@ -2550,7 +2573,7 @@ html.is-promo-opening.is-promo-depart .promo-opening {
   margin-top: 0.15rem;
   padding: 0.15rem 0 0.1rem;
   color: var(--bot-muted);
-  font-size: 0.78rem;
+  font-size: 0.94rem;
   font-weight: 400;
   text-align: center;
 }
@@ -2649,7 +2672,7 @@ html.is-promo-opening.is-promo-depart .promo-opening {
   border-radius: 0;
   background: transparent;
   color: var(--bot-ink);
-  font-size: 0.75rem;
+  font-size: 0.9rem;
   font-weight: 400;
 }
 
@@ -2691,7 +2714,7 @@ html.is-promo-opening.is-promo-depart .promo-opening {
 
 .promo-pain__footer {
   padding: 0.45rem 0.85rem 0.6rem;
-  font-size: 0.84rem;
+  font-size: 0.92rem;
   font-weight: 400;
   color: var(--bot-muted);
   text-align: center;
@@ -2824,6 +2847,7 @@ html.is-promo-opening.is-promo-depart .promo-opening {
 .promo-opening [data-tint="blush"] { --tint-warm: var(--tint-blush); }
 .promo-opening [data-tint="sage"] { --tint-warm: var(--tint-sage); }
 .promo-opening [data-tint="warm-grey"] { --tint-warm: var(--tint-warm-grey); }
+.promo-opening [data-tint="apricot"] { --tint-warm: var(--tint-apricot); }
 
 .promo-moments__card,
 .promo-clip__card,
@@ -10250,3 +10274,167 @@ html.is-promo-clip.is-clip-moment.is-clip-tablet .bizmis-viewport-portal-root {
     0 20px 36px color-mix(in srgb, var(--ad-ink) 8%, transparent);
 }
 
+
+/* Copy of the widget's ChatEventCard (trujilloai-bizmis-widget,
+   src/components/chat/ChatEventCard.tsx), light theme, floated above the
+   widget card. Tailwind values spelled out. */
+.promo-evt-stack {
+  position: absolute;
+  z-index: 10001;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 10px;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.94);
+  box-shadow: 0 10px 30px rgba(28, 24, 20, 0.12), 0 1px 3px rgba(28, 24, 20, 0.08);
+  font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  pointer-events: none;
+}
+
+.promo-evt-stack:empty {
+  display: none;
+}
+
+.promo-evt {
+  width: 100%;
+  min-width: 0;
+  opacity: 0;
+  transition: opacity 180ms ease-out;
+}
+
+.promo-evt.is-in {
+  opacity: 1;
+}
+
+.promo-evt__head {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0 0 4px 2px;
+}
+
+.promo-evt__icon {
+  width: 12px;
+  height: 12px;
+  flex: none;
+  color: var(--bizmis-primary);
+}
+
+.promo-evt__label {
+  overflow: hidden;
+  color: #737373;
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  line-height: 1.4;
+  text-transform: uppercase;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.promo-evt__surface {
+  border: 1px solid rgba(0, 0, 0, 0.07);
+  border-radius: 16px;
+  background: rgba(0, 0, 0, 0.03);
+  padding: 8px 10px;
+}
+
+.promo-evt__carousel {
+  display: flex;
+  gap: 8px;
+  overflow: hidden;
+}
+
+.promo-evt__tile {
+  flex: none;
+  width: 104px;
+  padding: 6px;
+}
+
+.promo-evt__thumb {
+  position: relative;
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.05);
+}
+
+.promo-evt__thumb.is-square {
+  width: 100%;
+  aspect-ratio: 1;
+}
+
+.promo-evt__thumb.is-row {
+  width: 44px;
+  height: 44px;
+}
+
+.promo-evt__thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.promo-evt__thumb[data-tint]::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--tint-warm, var(--tint-stone));
+  mix-blend-mode: multiply;
+  opacity: var(--ad-warmth, 0);
+}
+
+.promo-evt__tile-title {
+  display: -webkit-box;
+  overflow: hidden;
+  margin-top: 6px;
+  color: #262626;
+  font-size: 11px;
+  line-height: 1.25;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+.promo-evt__tile-price,
+.promo-evt__meta {
+  color: #737373;
+  font-size: 11px;
+  line-height: 1.25;
+}
+
+.promo-evt__tile-price {
+  font-weight: 600;
+}
+
+.promo-evt__row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: fit-content;
+  max-width: 100%;
+}
+
+.promo-evt__text {
+  flex: 1;
+  min-width: 0;
+  padding-right: 4px;
+}
+
+.promo-evt__title {
+  display: -webkit-box;
+  overflow: hidden;
+  color: #262626;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.25;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+.promo-evt__meta {
+  padding-top: 2px;
+}
