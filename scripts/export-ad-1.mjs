@@ -354,7 +354,8 @@ function frameHasHole(file) {
       const aspect = Math.max(spanX, spanY) / Math.min(spanX, spanY);
       const maxHole = Math.round(cols * rows * 0.2);
       const hardEdge = darkestBeside < 220;
-      if (hardEdge && !touchesEdge && count >= 6 && count <= maxHole && count / box > 0.95 && aspect <= 2.2 && Math.min(spanX, spanY) >= 3) {
+      const minHoleSpan = 4;
+      if (hardEdge && !touchesEdge && count >= 6 && count <= maxHole && count / box > 0.95 && aspect <= 2.2 && Math.min(spanX, spanY) >= minHoleSpan) {
         return true;
       }
     }
