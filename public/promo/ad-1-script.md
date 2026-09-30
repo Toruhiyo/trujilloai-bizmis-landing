@@ -30,7 +30,7 @@ The cursor presses X. The window collapses to the bubble circle in the bottom ri
 
 ## 2. The last doubt (phone)
 
-The desktop window leaves the frame. The next card is a phone on its own, still titled "Your store", in the glass mockup frame with its shadow on screen. It slides in from outside the frame. It does not sit on the left first. It is not inside the desktop window. The sea stays out of frame. A product page, laid out for the phone. The thumb scrolls to Add to cart, hovers, retreats to the specs, comes back, retreats.
+The desktop catalog, with LOST already on it, slides out. A phone slides in from the right, already on the product page. It does not flash the catalog. It is not inside the desktop window. Neighboring mockups stay out of frame. The product photo is large. Question marks orbit outside the phone, and the phone does not clip them. The thumb stays hidden during that orbit. The dull chatbot circle sits in the bottom right, inset from the corner. The store bar is tall enough that the cart is not jammed into the corner.
 
 **VO** `last-doubt`: "Or stuck on the last doubt."
 
@@ -38,21 +38,15 @@ The shopper types: "What if it's not right for me?" Three dots pulse for a short
 
 **VO** `salesperson`: "In a physical store, a salesperson catches both."
 
-The bot answers: "That's a great question. Recommendations vary depending on individual preferences and intended use, so we're unable to confirm suitability for a specific customer. We suggest reviewing the product description, specifications and customer reviews on the product page before purchasing. If you'd like further assistance, I can open a support ticket and a member of our team will get back to you within 1-2 business days." Buttons: Open a ticket, No, thanks. After the reply, as the end of the conversation: "Was I helpful?" with a flat thumbs-up and a flat thumbs-down.
+The bot answers: "That's a great question. Recommendations vary depending on individual preferences and intended use, so we're unable to confirm suitability for a specific customer. We suggest reviewing the product description, specifications and customer reviews on the product page before purchasing. If you'd like further assistance, I can open a support ticket and a member of our team will get back to you within 1-2 business days." Buttons: Open a ticket, No, thanks. After the reply, as the end of the conversation: "Was I helpful?" with a flat thumbs-up and a flat thumbs-down. The thumb moves onto the thumbs-down and presses it.
 
-**VO** `replies-both`: "Online, a chatbot replies to both."
+**VO** `loses-both`: "Online, a chatbot replies to both. And loses both."
 
-The thumb scrolls down through the long reply.
-
-**VO** `lets-be-honest`: "...but let's be honest. Nobody reads a wall of text to be told 'it depends'."
-
-The thumb leaves. No X. A grey veil and "LOST" stamp the phone.
-
-**VO** `loses-both`: "...so it loses both."
+A grey veil and "LOST" stamp that product page. The picture under the stamp is that page.
 
 ## 3. The dull sea
 
-The pullback starts on that phone. The card is the same phone, one picture, tilted with the sea. No second glass pane sits flat on top of it. The desktop LOST is the card beside it, the same desktop that was just on screen. The frame stays full of mockup screens, with no empty stretches of field. Every card is "Your store", in the browser bar next to the store icon. Most of them stamp "LOST". While the sea is still moving and blurred, this line comes up, holds, then fades out before the field is solid grey:
+The pullback starts on that phone. The card is the same phone, one picture, tilted with the sea. No second glass pane sits flat on top of it. The desktop LOST is the card beside it, the same catalog that was just on screen. Each mockup has full rounded corners, a hairline edge, a thin pale side, and a faint soft shadow. Stamps come faster as the camera speeds up. The frame stays full of mockup screens, with no empty stretches of field. Every card is "Your store", in the browser bar next to the store icon. Most of them stamp "LOST". While the sea is still moving and blurred, this line comes up, holds, then fades out before the field is solid grey:
 
 "Unattended visits. Lost sales."
 
@@ -70,35 +64,35 @@ The Bizmis mark.
 
 **VO** `introducing`: "Introducing Bizmis."
 
-Word by word: "Your store salesperson." The whole word stays black. A Bizmis orange line draws through the middle of "person". Then the whole word rewrites as "salesagent." in Bizmis orange.
+The headline and the avatar sit beside each other, as one group. The avatar is rendered large at its own canvas size. Word by word: "Your store salesperson." The whole word stays black. A Bizmis orange line draws through the middle of "person". Then the whole word rewrites as "salesagent." in Bizmis orange. The word holds, and the strike is slow.
 
 **VO** `sales-agent`: "Your store's sales agent. Built to sell."
 
 **VO** `catch-both`: "Now watch it catch both."
 
-## 6. The same two cards, sold
+## 6. One desktop, sold
 
-Same two windows, including the pan. Each window is centered on the screen. The desktop pitch has no arrow cursor, because nothing is clicked there. The pain desktop keeps its cursor. Phone and tablet show no arrow cursor. The phone is its own frame and keeps the thumb. Catalog, comparison, and product page reflow for the phone and the tablet. The store moves. The real Bizmis card, in light mode, eases into the corner of the desktop window, composer and all. The shopper types in that composer, and that line is sent. The bubble stays the shopper's words. A failed send does not show a retry control. Behind the scenes the agent receives `Say this: "{the clerk's line}"`. On the phone the widget switches to its mobile bar, docked in a band at the bottom of the phone, clear of the product and the comparison. The clerk speaks through the real widget, one sentence, captioned. No VO during that speech. While a tool runs, the widget's own activity laser orbits the avatar: the same orange contour and tip icon it uses in the product. A grid while product results are prepared, an eye while the product opens, a book while store policies are checked, a cart while the item is added. A short orange sweep marks whatever just changed.
+One desktop window, centered. No phone in this story. The pitch has no arrow cursor, because nothing is clicked there. The pain desktop keeps its cursor. The real Bizmis card, in light mode, eases into the corner of the window, composer and all. The shopper types in that composer, and that line is sent. The bubble stays the shopper's words. A failed send does not show a retry control. Behind the scenes the agent receives `Say this: "{the clerk's line}"`. The clerk speaks through the real widget, one sentence, captioned. No VO during that speech. While a tool runs, the widget's own activity laser orbits the avatar: the same orange contour and tip icon it uses in the product. A grid while product results are prepared, an eye while the product opens, a book while store policies are checked, a cart while the item is added. A short orange sweep marks whatever just changed.
 
-Desktop, the same grid. The shopper types: "Looking for something light I can take everywhere."
+The shopper types: "Looking for something light I can take everywhere."
 
 **Clerk:** "Light and easy to carry, here are the three that fit. This one's the best of them."
 
-While he speaks, the grid narrows to three, then the pick's page opens. The title, price, description, and add button sit beside the photo, clear of the widget in the bottom right. Question marks travel one circle around the product photo, clear of the picture, then puff into a soft Bizmis orange smoke and disappear. Orange veil, white check, "SOLD".
+The grid narrows to three and holds long enough to read them. Then a comparison table of those three holds. Then the pick's page opens. The photo is a square about 44% of the window, on the left, top aligned. Title, price, a short description, and Add sit in a column beside it. The bottom right stays clear for the widget. There is no LOST on this page.
 
 **VO** `narrows`: "It narrows. It recommends."
 
-Phone, the same product page. The shopper types: "What if it's not right for me?"
+The shopper types: "What if it's not right for me?"
 
 **Clerk:** "For what you told me, it's the right one. Added, with the one that goes with it."
 
-While he speaks, the product is added, then a flat sleeve that belongs with it, and the cart badge goes to 2. "SOLD".
+Question marks travel one circle just around the product photo, about the size of the picture, and hold long enough to see. They then break into a soft Bizmis orange smoke and disappear. The product is added, then a flat sleeve that belongs with it, and the cart badge goes to 2. Orange veil, white check, "SOLD".
 
 **VO** `closes`: "It answers like an expert, and closes. Then sells them one more thing."
 
 ## 7. The selling sea
 
-The pullback starts on that phone. The frame stays full of mockup screens, with no empty stretches of field. Every card is "Your store". Most of them stamp "SOLD". The Bizmis widget on those cards is caught mid-task: idle, talking, thinking, a wave, a nod, a salute, a bow, a thumbs-up, or the widget's own activity laser orbiting the avatar, with a grid, an eye, a book, or a cart on the tip. On the phone the catalog runs down the screen, and the home hero spans the width. On desktop the comparison sits clear of the corner widget. The cross-sell plus between the two products is large. While the sea is still moving and blurred, this line comes up and stays, with the white Bizmis mark, through the orange field:
+The pullback starts on that desktop SOLD card. The sea is already around it. There is no center curtain. The frame stays full of mockup screens, with no empty stretches of field. Every card is "Your store". Most of them stamp "SOLD". The Bizmis widget on those cards is caught mid-task: idle, talking, thinking, a wave, a nod, a salute, a bow, a thumbs-up, or the widget's own activity laser orbiting the avatar, with a grid, an eye, a book, or a cart on the tip. On the phone the catalog runs down the screen, and the home hero spans the width. On desktop the comparison sits clear of the corner widget. The cross-sell plus between the two products is large. While the sea is still moving and blurred, this line comes up and stays, with the white Bizmis mark, through the orange field:
 
 "Built to sell."
 
@@ -108,7 +102,7 @@ The sea washes to solid Bizmis orange.
 
 ## 8. Other stores, into the slot
 
-From the orange field the picture eases to white. "Built to sell." leaves. The mark is off during the pass. No clerk. A pass of large store frames starts near a second each and slows toward about three seconds. Each picture fills a large frame from the center. Behind it, a light in that store's color is wide enough to show around the frame. It rises, then falls back to off, then the next store's color rises the same way. Sector and store names use that color, large and bold, above the frame. Sector labels, in order: Consumer electronics, Clothing & apparel, Books & stationery, Skincare & beauty, Gaming gear, Home & DIY, Car parts & accessories, Wine & spirits. The wordmark is never black.
+From the orange field the picture eases to white. "Built to sell." leaves. The mark is off during the pass. No clerk. No centered Install now button during the pass. One store is on screen at a time. The next rises in from below as the current one leaves upward. Nothing waiting is visible behind them. A moving light in that store's color shows around the frame. Above the frame, one line: the category on the left, small caps, then the store name, much larger and bold, in the store color. The category slides in first. The store name then hits, large, and settles. The pass starts a little over a second and slows toward about three seconds. Sector labels, in order: Consumer electronics, Clothing & apparel, Books & stationery, Skincare & beauty, Gaming gear, Home & DIY, Car parts & accessories, Wine & spirits. The wordmark is never black.
 
 **VO** `any-store`: "Any store."
 
@@ -128,9 +122,9 @@ The frames leave. The field stays white. Nothing is clickable. No window, button
 
 - `install` (default): eyebrow "Installs in one click." then the line "Install on Shopify". No URL.
 - `demo`: the line "See it in action" and `bizmis.ai/demo`.
-- `ea`: one lockup on one line, headline style: the Shopify bag in black, then "Install now". The bag sits on the same baseline as the words, slightly smaller than the capitals, with a small gap before the text. Under it, "for Early Access benefits!" writes on in a handwritten face, Bizmis orange, tilted a little. The line stays centred. When the writing finishes, a white discount tag with orange type stamps in just under the end of the line: "first 50 stores only!", with "50 stores" in bold. Under that, one plain line: an orange tick draws itself, then "Free credits included", then the same tick and "No credit card", then the same tick and "50% off when you upgrade". The words are a darker heading face. Each tick draws on its own, left to right. No URL. The metal shine plays on "Install now" only. The wordmark and the lockup fade up first. After the last condition lands, the card holds through the spoken line (at least 4 s).
+- `ea`: the Bizmis wordmark fades in alone. After a pause, "Install now" flies in from the camera, large and soft, and settles on the line with the Shopify bag. The bag sits on the same baseline as the words, slightly smaller than the capitals, with a small gap before the text. Under it, "for Early Access benefits!" writes on in a handwritten face, Bizmis orange, tilted a little. The line stays centred. When the writing finishes, a white discount tag with orange type stamps in just under the end of the line: "first 50 stores only!", with "50 stores" in bold. Under that, one plain line: an orange tick draws itself, then "Free credits included", then the same tick and "No credit card", then the same tick and "50% off when you upgrade". The words are a darker heading face. Each tick draws on its own, left to right. Each of those pieces still waits long enough to be read. No URL. The metal shine plays on "Install now" only. After the last condition lands, the card holds through the spoken line (at least 4 s).
 - `none`: the wordmark only.
 
 The call-to-action line plays a metal shine. It fades up and holds ≥ 4 s.
 
-`&vo=1` prints the marker name as a small debug caption. The list is `PROMO_VO` in `film-engine.js` (`window.__promoVo`): scene, marker name, expected line. New markers in scene 2: `replies-both`, `lets-be-honest`, `loses-both` (replaces the single `loses-both` line). `catch-both` and `narrows` hold the next clerk line for their `guardMs`, so the narrator and the clerk never speak together. Picture retiming waits until the recorded VO is placed. Target total ≈ 60 s: pain 15 · dull sea 6 · switch + reveal 8 · pitch 14 · selling sea 6 · stores + end card 9.
+`&vo=1` prints the marker name as a small debug caption. The list is `PROMO_VO` in `film-engine.js` (`window.__promoVo`): scene, marker name, expected line. Scene 2 marks `loses-both` when the phone is stamped. `catch-both` and `narrows` hold the next clerk line for their `guardMs`, so the narrator and the clerk never speak together. Picture retiming waits until the recorded VO is placed. Target total ≈ 60 s: pain 15 · dull sea 6 · switch + reveal 8 · pitch 14 · selling sea 6 · stores + end card 9.

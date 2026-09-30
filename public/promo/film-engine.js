@@ -36,14 +36,17 @@
     'Car parts & accessories',
     'Wine & spirits',
   ];
-  const PROMO_PASS_FAST_MS = 1100;
+  const PROMO_PASS_FAST_MS = 1300;
+  const PROMO_PASS_TAG_MS = 220;
+  const PROMO_PASS_TITLE_MS = 420;
   const PROMO_PASS_SLOW_MS = 2800;
   const PROMO_PASS_SLOT_IN_MS = 420;
-  const PROMO_PASS_SLOT_FADE_MS = 700;
-  const PROMO_EA_WRITE_MS = 1300;
+  const PROMO_EA_WRITE_MS = 1700;
   const PROMO_EA_STAMP_MS = 460;
-  const PROMO_EA_BEAT_MS = 380;
-  const PROMO_EA_TERM_GAP_MS = 340;
+  const PROMO_EA_BEAT_MS = 780;
+  const PROMO_EA_LOGO_LEAD_MS = 900;
+  const PROMO_EA_FLY_MS = 860;
+  const PROMO_EA_TERM_GAP_MS = 720;
   const PROMO_EA_TERM_IN_MS = 560;
   const PROMO_EA_HOLD_MS = 14000;
   const PROMO_SHOPIFY_BAG = 'M15.337 23.979l7.216-1.561s-2.604-17.613-2.625-17.73c-.018-.116-.114-.192-.211-.192s-1.929-.136-1.929-.136-1.275-1.274-1.439-1.411c-.045-.037-.075-.057-.121-.074l-.914 21.104h.023zM11.71 11.305s-.81-.424-1.774-.424c-1.447 0-1.504.906-1.504 1.141 0 1.232 3.24 1.715 3.24 4.629 0 2.295-1.44 3.76-3.406 3.76-2.354 0-3.54-1.465-3.54-1.465l.646-2.086s1.245 1.066 2.28 1.066c.675 0 .975-.545.975-.932 0-1.619-2.654-1.694-2.654-4.359-.034-2.237 1.571-4.416 4.827-4.416 1.257 0 1.875.361 1.875.361l-.945 2.715-.02.01zM11.17.83c.136 0 .271.038.405.135-.984.465-2.064 1.639-2.508 3.992-.656.213-1.293.405-1.889.578C7.697 3.75 8.951.84 11.17.84V.83zm1.235 2.949v.135c-.754.232-1.583.484-2.394.736.466-1.777 1.333-2.645 2.085-2.971.193.501.309 1.176.309 2.1zm.539-2.234c.694.074 1.141.867 1.429 1.755-.349.114-.735.231-1.158.366v-.252c0-.752-.096-1.371-.271-1.871v.002zm2.992 1.289c-.02 0-.06.021-.078.021s-.289.075-.714.21c-.423-1.233-1.176-2.37-2.508-2.37h-.115C12.135.209 11.669 0 11.265 0 8.159 0 6.675 3.877 6.21 5.846c-1.194.365-2.063.636-2.16.674-.675.213-.694.232-.772.87-.075.462-1.83 14.063-1.83 14.063L15.009 24l.927-21.166z';
@@ -298,18 +301,29 @@
   const PROMO_PITCH_LOGO_OUT_MS = 420;
   const PROMO_PITCH_WORD_STAGGER_MS = 36;
   const PROMO_PITCH_WORD_IN_MS = 180;
-  const PROMO_PITCH_REPLACE_PAUSE_MS = 920;
+  const PROMO_PITCH_REPLACE_PAUSE_MS = 1480;
+  const PROMO_PITCH_NARROW_MS = 2800;
+  const PROMO_PITCH_COMPARE_MS = 3000;
+  const PROMO_PITCH_DOUBT_MS = 3500;
+  const PROMO_PITCH_POOF_MS = 1100;
+  const PROMO_DOUBT_ORBIT_RATIO = 0.72;
+  const PROMO_DOUBT_BUBBLE_PX = 26;
+  const PROMO_TYPE_LINE_MS = 1100;
   const PROMO_PITCH_WORD_OUT_MS = 400;
   const PROMO_PITCH_WORD_OUT_STAGGER_MS = [0, 140, 70, 210];
-  const PROMO_AVATAR_MAX_SCALE = 2.15;
+  const PROMO_AVATAR_MAX_SCALE = 2.5;
   const PROMO_AVATAR_BOX_W = 440;
   const PROMO_AVATAR_BOX_H = 340;
+  const PROMO_AVATAR_EXPORT_DPR = 2;
+  const PROMO_REVEAL_GAP_PX = 40;
   const PROMO_AVATAR_LIFT_PX = -120;
   const PROMO_CLERK_CORNER_MS = 1080;
   const PROMO_CLERK_CORNER_SCALE = 1.65;
   const PROMO_CLERK_CORNER_INSET_X = -110;
   const PROMO_CLERK_CORNER_INSET_Y = 52;
-  const PROMO_AVATAR_CANVAS_WIDTH_PX = 720;
+  const PROMO_AVATAR_CANVAS_WIDTH_PX = Math.ceil(
+    PROMO_AVATAR_BOX_W * PROMO_AVATAR_MAX_SCALE * Math.max(PROMO_AVATAR_EXPORT_DPR, window.devicePixelRatio || 1),
+  );
   const PROMO_PITCH_REPLACE_GAP_MS = 180;
   const PROMO_PITCH_HERO_IN_MS = 140;
   const PROMO_PITCH_HERO_HOLD_MS = 30;
@@ -908,10 +922,10 @@
   }
 
   function glideRate(mode, timeMs) {
-    const span = PROMO_GLIDE.rampMs;
-    const u = Math.min(1, Math.max(0, (timeMs - glideEventStart()) / span));
-    const ramp = glideRamp(u);
-    return mode === 'pitch' ? 34 + ramp * 46 : 38 + ramp * 50;
+    const speed = glideSpeed(Math.max(0, timeMs - glideEventStart()));
+    const span = Math.max(1, PROMO_GLIDE.speedTo - PROMO_GLIDE.speedFrom);
+    const u = Math.min(1, Math.max(0, (speed - PROMO_GLIDE.speedFrom) / span));
+    return mode === 'pitch' ? 34 + u * 46 : 28 + u * 72;
   }
 
   function glideKeepsStamp(cell, mode) {
@@ -1449,11 +1463,11 @@
   const PROMO_PAIN_A = [
     ['grid', 160],
     ['enter', 140],
-    ['open', 220],
+    ['open', 1100],
     ['back', 90],
-    ['hover-a', 180],
-    ['hover-b', 180],
-    ['open-2', 200],
+    ['hover-a', 380],
+    ['hover-b', 380],
+    ['open-2', 1000],
     ['back-2', 110],
   ];
   const PROMO_PAIN_THINK_MS = 900;
@@ -1790,6 +1804,20 @@
   function waitMs(ms) {
     return new Promise((resolve) => {
       window.setTimeout(resolve, ms);
+    });
+  }
+
+  function typeOver(text, write) {
+    return new Promise((resolve) => {
+      const started = performance.now();
+      const tick = (now) => {
+        const u = Math.min(1, (now - started) / PROMO_TYPE_LINE_MS);
+        const count = u >= 1 ? text.length : Math.max(1, Math.round(text.length * u));
+        write(text.slice(0, count));
+        if (u < 1) window.requestAnimationFrame(tick);
+        else resolve();
+      };
+      window.requestAnimationFrame(tick);
     });
   }
 
@@ -2607,15 +2635,19 @@
       }
     }
     const fillsWindow = !phone && !tablet && !clipLayout && look !== 'list' && look !== 'lookbook' && look !== 'home-hero';
-    if (fillsWindow) {
+    if (fillsWindow && look !== 'list') {
+      const footer = 52;
       const painStore = Boolean(opening?.classList.contains('is-pain'));
       const bottomPad = painStore ? 88 : 16;
       const rowsOnScreen = 2;
-      const fitted = (stage.clientHeight - padY - bottomPad - (rowsOnScreen - 1) * rowGapY) / rowsOnScreen;
-      if (fitted > 140) {
-        cardH = fitted;
-        pitchY = cardH + rowGapY;
-      }
+      const budget = stage.clientHeight - padY - bottomPad - (rowsOnScreen - 1) * rowGapY;
+      const side = Math.min(cardW, Math.max(96, budget / rowsOnScreen - footer));
+      cardW = side;
+      cardH = side + footer;
+      pitchX = cardW + gutter;
+      pitchY = cardH + rowGapY;
+      const group = cols * cardW + (cols - 1) * gutter;
+      gx0 = (stageWidth - group) / 2 + cardW / 2 - stageWidth / 2 - shift;
     }
     if (pitchBoard && look !== 'home-hero') {
       const fitRaw = parseFloat(getComputedStyle(board).getPropertyValue('--promo-grid-fit'));
@@ -2740,10 +2772,6 @@
     board.classList.add('is-entering');
   }
 
-  const DOUBT_BUBBLE_RADIUS_PX = 26;
-  const DOUBT_CORNER_CLEAR_PX = 78;
-  const DOUBT_BOARD_EDGE_PX = 18;
-
   function clearDoubtOrbitFit(board) {
     const photo = board?.querySelector('.promo-moments__card.is-pick .promo-moments__photo');
     if (!photo) return;
@@ -2757,42 +2785,53 @@
     photo.style.justifySelf = '';
   }
 
-  function doubtPhotoSide(span) {
-    const maxRadius = span / 2 - DOUBT_BUBBLE_RADIUS_PX - DOUBT_BOARD_EDGE_PX;
-    const half = (maxRadius - DOUBT_CORNER_CLEAR_PX) / Math.SQRT2;
-    return Math.max(140, half * 2);
-  }
-
   function placeDoubtOrbits(board) {
     const photo = board?.querySelector('.promo-moments__card.is-pick .promo-moments__photo');
     const orbits = board?.querySelectorAll('.promo-moments__orbit');
     if (!photo || !orbits?.length || !board.offsetWidth || !board.offsetHeight) return;
     const boardBox = board.getBoundingClientRect();
     const scaleX = boardBox.width / board.offsetWidth || 1;
-    const meta = board.querySelector('.promo-moments__card.is-pick .promo-moments__meta');
-    const metaBox = meta?.getBoundingClientRect();
-    const metaLeft = metaBox ? (metaBox.left - boardBox.left) / scaleX : board.offsetWidth;
-    const stacked = !metaBox || metaLeft < board.offsetWidth * 0.35;
-    const spanX = stacked ? board.offsetWidth : Math.max(180, metaLeft - 20);
-    const side = Math.min(doubtPhotoSide(board.offsetHeight), doubtPhotoSide(spanX));
-    photo.style.width = `${side}px`;
-    photo.style.height = `${side}px`;
-    photo.style.maxWidth = `${side}px`;
-    photo.style.maxHeight = `${side}px`;
-    photo.style.alignSelf = 'center';
-    photo.style.justifySelf = stacked ? 'center' : 'start';
-    photo.style.marginLeft = stacked ? '0' : `${Math.max(0, (spanX - side) / 2)}px`;
-    photo.style.marginRight = stacked ? '0' : '';
+    const phone = Boolean(board.closest('.promo-opening__store.is-phone'));
+    if (phone) {
+      const side = Math.min(board.offsetWidth * 0.9, board.offsetHeight * 0.68);
+      photo.style.width = `${side}px`;
+      photo.style.height = `${side}px`;
+      photo.style.maxWidth = `${side}px`;
+      photo.style.maxHeight = `${side}px`;
+      photo.style.alignSelf = 'center';
+      photo.style.justifySelf = 'center';
+      photo.style.marginLeft = '0';
+      photo.style.marginRight = '';
+    } else {
+      photo.style.width = '';
+      photo.style.height = '';
+      photo.style.maxWidth = '';
+      photo.style.maxHeight = '';
+      photo.style.alignSelf = '';
+      photo.style.justifySelf = '';
+      photo.style.marginLeft = '';
+      photo.style.marginRight = '';
+    }
     const fitted = photo.getBoundingClientRect();
     if (!fitted.width || !fitted.height) return;
     const scaleY = boardBox.height / board.offsetHeight || 1;
     const centerX = (fitted.left + fitted.width / 2 - boardBox.left) / scaleX;
     const centerY = (fitted.top + fitted.height / 2 - boardBox.top) / scaleY;
     const fittedSide = Math.min(fitted.width / scaleX, fitted.height / scaleY);
-    const radius = (fittedSide / 2) * Math.SQRT2 + DOUBT_CORNER_CLEAR_PX;
+    const orbitCenterX = phone ? board.offsetWidth / 2 : centerX;
+    const orbitCenterY = phone ? board.offsetHeight / 2 : centerY;
+    const room = Math.min(
+      orbitCenterX,
+      orbitCenterY,
+      board.offsetWidth - orbitCenterX,
+      board.offsetHeight - orbitCenterY,
+    ) - PROMO_DOUBT_BUBBLE_PX - 8;
+    const radius = phone
+      ? Math.hypot(board.offsetWidth, board.offsetHeight) / 2 + 28
+      : Math.max(fittedSide * 0.45, Math.min(fittedSide * PROMO_DOUBT_ORBIT_RATIO, room));
     orbits.forEach((orbit) => {
-      orbit.style.left = `${centerX}px`;
-      orbit.style.top = `${centerY}px`;
+      orbit.style.left = `${orbitCenterX}px`;
+      orbit.style.top = `${orbitCenterY}px`;
       orbit.style.setProperty('--orbit', `${radius}px`);
     });
   }
@@ -3380,9 +3419,14 @@
   }
 
   function applyMockupShape(node, device, width) {
-    const radius = gridMockupRadius(device, width).toFixed(2);
-    node.style.borderRadius = `${radius}px`;
-    node.style.clipPath = `inset(0 round ${radius}px)`;
+    const radius = gridMockupRadius(device, width);
+    const edge = Math.max(2, width * 0.005);
+    node.style.borderRadius = `${radius.toFixed(2)}px`;
+    node.style.clipPath = '';
+    node.style.overflow = 'hidden';
+    node.style.outline = '1px solid rgba(28, 24, 20, 0.06)';
+    node.style.outlineOffset = '-1px';
+    node.style.boxShadow = `0 ${edge.toFixed(1)}px 0 #e4e0da, 0 18px 40px -14px rgba(28, 24, 20, 0.08)`;
   }
 
   function loadPromoStores() {
@@ -3680,6 +3724,14 @@
     const clone = node.cloneNode(true);
     clone.setAttribute('xmlns', 'http://www.w3.org/1999/xhtml');
     inlineRasterTree(node, clone);
+    clone.style.transform = 'none';
+    clone.style.position = 'relative';
+    clone.style.inset = 'auto';
+    clone.style.left = '0';
+    clone.style.top = '0';
+    clone.style.margin = '0';
+    clone.style.width = `${width}px`;
+    clone.style.height = `${height}px`;
     const liveImages = [...node.querySelectorAll('img')];
     const cloneImages = [...clone.querySelectorAll('img')];
     liveImages.forEach((img, index) => {
@@ -3974,9 +4026,34 @@
       embed.style.setProperty('--promo-avatar-lift', `${PROMO_AVATAR_LIFT_PX}px`);
     }
 
+    seatRevealPair() {
+      const line = this.root.querySelector('[data-promo-pitch-line]');
+      const reveal = line.classList.contains('is-revealing')
+        && !this.root.classList.contains('is-moments')
+        && !this.root.classList.contains('is-see')
+        && !this.clerkCornerActive;
+      if (!line || !reveal) {
+        if (line) line.style.transform = '';
+        this.root.style.removeProperty('--promo-reveal-right');
+        return;
+      }
+      line.style.transform = '';
+      const frame = this.root.getBoundingClientRect();
+      const lineBox = line.getBoundingClientRect();
+      if (frame.width < 40 || lineBox.width < 40) return;
+      const avatarW = PROMO_AVATAR_BOX_W * PROMO_AVATAR_MAX_SCALE;
+      const group = lineBox.width + PROMO_REVEAL_GAP_PX + avatarW;
+      const groupLeft = frame.left + Math.max(0, (frame.width - group) / 2);
+      const shift = groupLeft - lineBox.left;
+      line.style.transform = `translateX(${shift.toFixed(1)}px)`;
+      const widgetRight = frame.right - (groupLeft + lineBox.width + PROMO_REVEAL_GAP_PX + avatarW);
+      this.root.style.setProperty('--promo-reveal-right', `${Math.max(0, widgetRight).toFixed(1)}px`);
+    }
+
     fitOpeningLayout() {
       this.fitOpeningType();
       this.fitClerk();
+      this.seatRevealPair();
       this.dockLogo();
       const board = this.root.querySelector('.promo-moments__board.is-pose-grid');
       if (board && this.root.classList.contains('is-moments')) layoutStoreGrid(board);
@@ -4215,8 +4292,10 @@
         word.style.animationDelay = `${index * PROMO_PITCH_WORD_STAGGER_MS}ms`;
       });
       line.classList.add('is-revealing');
+      this.seatRevealPair();
+      window.requestAnimationFrame(() => this.seatRevealPair());
       const wordsInAt = (fromWords.length - 1) * PROMO_PITCH_WORD_STAGGER_MS + PROMO_PITCH_WORD_IN_MS;
-      const strikeAt = wordsInAt + 160;
+      const strikeAt = wordsInAt + PROMO_PITCH_REPLACE_PAUSE_MS;
       window.setTimeout(() => line.classList.add('is-striking'), strikeAt);
       window.setTimeout(() => markPromoVo('sales-agent'), strikeAt + 140);
       window.setTimeout(() => {
@@ -4247,11 +4326,10 @@
         input.dispatchEvent(new Event('input', { bubbles: true }));
         return true;
       }
-      for (let index = 1; index <= text.length; index += 1) {
-        setter.call(input, text.slice(0, index));
+      await typeOver(text, (slice) => {
+        setter.call(input, slice);
         input.dispatchEvent(new Event('input', { bubbles: true }));
-        await waitMs(PROMO_PAIN_TYPE_CHAR_MS);
-      }
+      });
       return true;
     }
 
@@ -4274,10 +4352,9 @@
         node.textContent = text;
         return;
       }
-      for (let index = 1; index <= text.length; index += 1) {
-        node.textContent = text.slice(0, index);
-        await waitMs(PROMO_PAIN_TYPE_CHAR_MS);
-      }
+      await typeOver(text, (slice) => {
+        node.textContent = slice;
+      });
     }
 
     flashSweep(node) {
@@ -4499,7 +4576,9 @@
       emitShopper(shown);
       this.paintPitchEvent(shown);
       this.flashSweep(stage);
-      await waitMs(reduced ? 40 : 1500);
+      await waitMs(reduced ? 40 : PROMO_PITCH_NARROW_MS);
+      applyMomentPose(stage, 'choice', { instant: reduced });
+      await waitMs(reduced ? 40 : PROMO_PITCH_COMPARE_MS);
       applyMomentPose(stage, 'close', { instant: reduced });
       const opened = {
         kind: 'product',
@@ -4509,17 +4588,21 @@
       this.paintPitchEvent(opened);
       this.flashSweep(stage?.querySelector('.promo-moments__card.is-pick'));
       await first;
-      await this.markCloseStoreSold();
       markPromoVo('narrows');
       if (!reduced) await waitMs(promoVoGuard('narrows'));
-      this.painStore()?.querySelectorAll('.promo-close__veil, .promo-close__mark').forEach((node) => node.remove());
-      await this.slideStoreToPhone();
       this.clearPitchEvents();
-      applyMomentPose(stage, 'doubt', { instant: true });
-      await this.typeShopperLine(PROMO_PITCH_LINE_2);
+      applyMomentPose(stage, 'doubt', { instant: reduced });
+      const typed = this.typeShopperLine(PROMO_PITCH_LINE_2);
       const second = playClerkLine(PROMO_PITCH_CLERK_2, reduced ? 200 : PROMO_PITCH_SPEAK_2_MS, () => { });
       this.paintPitchEvent({ kind: 'policies' });
-      if (!reduced) await waitMs(900);
+      await Promise.all([
+        typed,
+        waitMs(reduced ? 40 : PROMO_PITCH_DOUBT_MS),
+      ]);
+      if (!reduced) {
+        applyMomentPose(stage, 'close');
+        await waitMs(PROMO_PITCH_POOF_MS);
+      }
       host?.classList.add('is-cart-one');
       const cartOne = {
         kind: 'cart',
@@ -4542,7 +4625,8 @@
       this.paintPitchEvent(cartSleeve);
       this.flashSweep(stage?.querySelector('.promo-moments__card.is-extra') || this.painStore()?.querySelector('.promo-moments__cart'));
       await second;
-      this.painStore()?.querySelectorAll('.promo-close__veil, .promo-close__mark').forEach((node) => node.remove());
+      await waitMs(reduced ? 40 : 1600);
+      this.painStore()?.querySelectorAll('.promo-close__veil, .promo-close__mark, .promo-glide__lost-mark, .promo-glide__veil').forEach((node) => node.remove());
       await this.markCloseStoreSold();
       endOpeningAgent();
       markPromoVo('closes');
@@ -5206,6 +5290,16 @@
         scale.style.opacity = '1';
         const stores = this.root.querySelector('[data-promo-stores]');
         if (stores && stores.parentElement !== scale) scale.appendChild(stores);
+        if (stores) {
+          stores.style.position = 'absolute';
+          stores.style.inset = '0';
+          stores.style.left = '0';
+          stores.style.right = '0';
+          stores.style.width = '100%';
+          stores.style.maxWidth = 'none';
+          stores.style.margin = '0';
+          stores.style.transform = 'none';
+        }
         const widget = this.root.querySelector('[data-promo-widget]');
         if (widget && widget.parentElement !== scale) scale.appendChild(widget);
       }
@@ -5244,7 +5338,9 @@
       light.className = 'promo-pass-light';
       light.setAttribute('data-promo-pass-light', '');
       light.setAttribute('aria-hidden', 'true');
-      scale.prepend(light);
+      const glide = scale.querySelector('.promo-glide');
+      if (glide) glide.after(light);
+      else scale.prepend(light);
       return light;
     }
 
@@ -5296,6 +5392,32 @@
         return Math.round(PROMO_PASS_FAST_MS + (PROMO_PASS_SLOW_MS - PROMO_PASS_FAST_MS) * t * t);
       });
       let index = 0;
+      slides.forEach((slide) => {
+        slide.style.transition = '';
+        slide.style.opacity = '';
+        slide.style.transform = '';
+      });
+      const placePassSlides = () => {
+        const canvas = this.root.querySelector('[data-promo-canvas]')?.getBoundingClientRect();
+        const host = this.root.querySelector('[data-promo-stores]');
+        if (!canvas || canvas.width < 40 || !host) return;
+        if (this.carouselTrack) {
+          this.carouselTrack.style.transform = 'none';
+          this.carouselTrack.style.position = 'static';
+        }
+        const carousel = this.carouselTrack?.parentElement;
+        if (carousel) carousel.style.position = 'static';
+        const width = Math.min(canvas.width * 0.7, canvas.height * 0.62 * (1024 / 640));
+        const origin = host.getBoundingClientRect();
+        const left = canvas.left + (canvas.width - width) / 2 - origin.left;
+        slides.forEach((slide) => {
+          slide.style.position = 'absolute';
+          slide.style.width = `${width.toFixed(1)}px`;
+          slide.style.margin = '0';
+          slide.style.right = 'auto';
+          slide.style.left = `${left.toFixed(1)}px`;
+        });
+      };
       const step = () => {
         const store = this.stores[index];
         if (store) {
@@ -5303,6 +5425,19 @@
           this.paintPassLight(store.accent, durations[index]);
         }
         this.paintWave(index, 1, 0.5, 1);
+        placePassSlides();
+        slides.forEach((slide, slideIndex) => {
+          slide.classList.toggle('is-pass-current', slideIndex === index);
+          slide.classList.toggle('is-pass-leaving', slideIndex === index - 1);
+          slide.classList.remove('is-pass-tag', 'is-pass-title');
+        });
+        const current = slides[index];
+        window.setTimeout(() => {
+          if (current?.classList.contains('is-pass-current')) current.classList.add('is-pass-tag');
+        }, PROMO_PASS_TAG_MS);
+        window.setTimeout(() => {
+          if (current?.classList.contains('is-pass-current')) current.classList.add('is-pass-title');
+        }, PROMO_PASS_TITLE_MS);
         window.setTimeout(() => {
           index += 1;
           if (index >= count) {
@@ -5406,7 +5541,10 @@
       const slot = this.ensurePassSlot(ctaKey);
       if (!slot) return;
       slot.classList.add('is-in', 'is-settled');
-      if (slot.querySelector('.is-shopify')) this.root.classList.add('is-ea-in');
+      if (slot.querySelector('.is-shopify')) {
+        this.root.classList.add('is-ea-in', 'is-ea-logo', 'is-ea-action');
+        slot.classList.add('is-action-in');
+      }
       const key = ctaKey && Object.prototype.hasOwnProperty.call(PROMO_END_CTA, ctaKey)
         ? ctaKey
         : promoVideoConfig.cta;
@@ -5425,12 +5563,20 @@
         return;
       }
       const slot = this.ensurePassSlot();
-      await waitMs(PROMO_PASS_SLOT_IN_MS);
-      slot?.classList.add('is-in');
-      if (copy.shopify) this.root.classList.add('is-ea-in');
+      if (copy.shopify) {
+        this.root.classList.add('is-ea-logo');
+        slot?.classList.add('is-in');
+        await waitMs(PROMO_EA_LOGO_LEAD_MS);
+        slot?.classList.add('is-action-in');
+        this.root.classList.add('is-ea-in', 'is-ea-action');
+        await waitMs(PROMO_EA_FLY_MS);
+      } else {
+        await waitMs(PROMO_PASS_SLOT_IN_MS);
+        slot?.classList.add('is-in');
+      }
       markPromoVo(copy.vo);
       if (copy.shopify && slot) {
-        await waitMs(PROMO_PASS_SLOT_FADE_MS + PROMO_EA_BEAT_MS);
+        await waitMs(PROMO_EA_BEAT_MS);
         slot.classList.add('is-writing');
         await waitMs(PROMO_EA_WRITE_MS + PROMO_EA_BEAT_MS);
         slot.classList.add('is-written');
@@ -5552,12 +5698,14 @@
       this.root.style.setProperty('--see-travel', motion.toFixed(4));
       const store = this.stores[index];
       if (store?.accent) this.root.style.setProperty('--promo-store-accent', store.accent);
+      const pass = this.root.classList.contains('is-store-pass');
       slides.forEach((slide, slideIndex) => {
         const on = slideIndex === index && shown > 0.01;
         slide.classList.toggle('is-wave', on);
-        slide.style.opacity = on ? shown.toFixed(4) : '0';
         slide.style.setProperty('--wave', on ? wave.toFixed(4) : '0');
         slide.style.setProperty('--wave-x', on ? motion.toFixed(4) : '0.5');
+        if (pass) return;
+        slide.style.opacity = on ? shown.toFixed(4) : '0';
         slide.style.zIndex = on ? '2' : '1';
         slide.style.transform = on ? 'scale(1)' : 'scale(0.96)';
       });
@@ -5704,7 +5852,7 @@
         store.style.transform = '';
         store.style.transition = '';
         store.style.transformOrigin = '';
-        store.querySelectorAll('.promo-close__veil, .promo-close__mark, .promo-close__lost-mark').forEach((node) => node.remove());
+        store.querySelectorAll('.promo-close__veil, .promo-close__mark, .promo-close__lost-mark, .promo-glide__lost-mark, .promo-glide__veil').forEach((node) => node.remove());
       }
       this.root.classList.remove('is-close-seat');
       this.root.querySelectorAll('.promo-close__lost, .promo-close__poof').forEach((node) => node.remove());
@@ -6038,10 +6186,9 @@
             input.textContent = '';
             input.classList.add('is-live');
           }
-          for (let index = 1; index <= text.length; index += 1) {
-            if (input) input.textContent = text.slice(0, index);
-            await waitMs(PROMO_PAIN_TYPE_CHAR_MS);
-          }
+          await typeOver(text, (slice) => {
+            if (input) input.textContent = slice;
+          });
           input?.classList.remove('is-live');
           continue;
         }
@@ -6921,10 +7068,14 @@
 
     gridFrame() {
       const scale = this.root.querySelector('[data-promo-scale]');
-      const rect = scale?.getBoundingClientRect();
+      const rect = scale && !scale.hidden ? scale.getBoundingClientRect() : null;
       const width = Math.round(rect?.width || 0);
       const height = Math.round(rect?.height || 0);
       if (width >= 40 && height >= 40) return { width, height };
+      const root = this.root.getBoundingClientRect();
+      const rootW = Math.round(root.width || 0);
+      const rootH = Math.round(root.height || 0);
+      if (rootW >= 40 && rootH >= 40) return { width: rootW, height: rootH };
       return { width: 1440, height: 810 };
     }
 
@@ -7080,7 +7231,7 @@
       field.setAttribute('data-promo-grid-field', '');
       const lead = document.createElement('div');
       lead.className = 'promo-glide__lead';
-      const clone = this.gridLeadNode(mode);
+      const clone = mode === 'pain' && this.cellRasters?.size ? null : this.gridLeadNode(mode);
       if (clone) lead.append(clone);
       const viewWrap = document.createElement('div');
       viewWrap.className = 'promo-glide__view';
@@ -7262,6 +7413,10 @@
         node.classList.toggle('is-raster-lead', !!raster);
         if (raster) paintLeadRaster(node, raster);
         else if (still) paintGlideStill(still, glideStillSrc(tone, cell.id, motion, chat, look), width, height, mode === 'pain');
+        if (still && raster) {
+          still.hidden = true;
+          still.style.visibility = 'hidden';
+        }
         const wantVideo = false;
         if (video && wantVideo && video.dataset.clip !== clipKey) {
           video.style.opacity = '';
@@ -7286,8 +7441,15 @@
         if (!showVideo && !videoNode.paused && videoNode.dataset.held !== '1') videoNode.pause();
         writeHidden(videoNode, !showVideo);
       }
-      if (stillNode) writeHidden(stillNode, showVideo);
+      if (stillNode) writeHidden(stillNode, showVideo || this.cellRasters?.has(cell.key));
       node.hidden = false;
+      if (this.cellRasters?.has(cell.key)) {
+        writePaint(parts.veil, 'opacity', '0');
+        writePaint(parts.mark, 'opacity', '0');
+        writePaint(parts.lost, 'opacity', '0');
+        if (fx) writeHidden(fx, true);
+        return true;
+      }
       const leadLost = mode !== 'pitch' && (
         (this.glideLeadStamped && cell.key === this.glideLeadKey)
         || this.painLostKeys?.has(cell.key)
@@ -7377,9 +7539,10 @@
       verdict.style.opacity = '1';
       if (streak && streak.style.opacity !== '1') streak.style.opacity = '1';
       if (mode === 'pitch') {
-        const scale = 11 + (1 - 11) * ease;
-        verdict.style.transformOrigin = 'center calc(50% - 24px)';
-        verdict.style.transform = `scale(${scale.toFixed(3)})`;
+        const shown = ease < 0.82 ? 0 : (ease - 0.82) / 0.18;
+        verdict.style.opacity = shown.toFixed(3);
+        verdict.style.transformOrigin = 'center center';
+        verdict.style.transform = 'none';
         if (mark) {
           mark.style.background = '#fff';
           mark.style.transform = 'none';
@@ -7483,20 +7646,21 @@
           const cover = Math.max(closeW / faceW, closeH / faceH);
           this.glideZoomFrom = cover;
           this.glideZoomFromY = cover;
-          this.glideAnchor = {
-            x: frame.width / 2 - cam.x + (leadCell.x + leadCell.w / 2) * unit,
-            y: frame.height / 2 - cam.y + (leadCell.y + leadCell.h / 2) * unit,
-          };
+          this.glideAnchor = null;
         }
         const pullU = 1 - arrive;
         const zoom = 1 + pullU * (this.glideZoomFrom - 1);
         const anchor = this.glideAnchor;
         const close = this.glideCloseRect;
-        const dx = close ? (close.cx - anchor.x) * pullU : 0;
-        const dy = close ? (close.cy - anchor.y) * pullU : 0;
-        pull = { zoom, dx, dy, ox: anchor.x, oy: anchor.y };
-        viewWrap.style.transformOrigin = `${anchor.x.toFixed(1)}px ${anchor.y.toFixed(1)}px`;
-        viewWrap.style.transform = `translate(${dx.toFixed(2)}px, ${dy.toFixed(2)}px) scale(${zoom.toFixed(4)})`;
+        if (anchor) {
+          const dx = close ? (close.cx - anchor.x) * pullU : 0;
+          const dy = close ? (close.cy - anchor.y) * pullU : 0;
+          pull = { zoom, dx, dy, ox: anchor.x, oy: anchor.y };
+          viewWrap.style.transformOrigin = `${anchor.x.toFixed(1)}px ${anchor.y.toFixed(1)}px`;
+          viewWrap.style.transform = `translate(${dx.toFixed(2)}px, ${dy.toFixed(2)}px) scale(${zoom.toFixed(4)})`;
+        } else {
+          viewWrap.style.transform = 'none';
+        }
       } else if (viewWrap) {
         viewWrap.style.transform = '';
       }
@@ -7574,7 +7738,6 @@
         }
         shown += 1;
       });
-      if (mode !== 'pain') this.clipGlideOpen(root, arrive);
       if (this.glideKeepStore && arrive < 0.992) this.placeCloseStore(root);
       else if (this.glideKeepStore) this.releaseCloseStore();
       pool.forEach((slot) => {
@@ -7585,6 +7748,7 @@
         }
       });
       const leadNode = (root._glidePool || []).find((item) => item.cell.dataset.key === this.glideLeadKey)?.cell;
+      this.measureGlideAnchor(root, leadNode);
       this.placeGlideLead(root, leadNode, arrive);
       if (mode === 'pain') this.paintPainCaption(root, options.reduced ? marks.captionHoldEnd - 120 : time);
       const horizon = root.querySelector('.promo-glide__horizon');
@@ -7603,6 +7767,25 @@
         phase: options.reduced ? (mode === 'pain' ? 'caption' : 'glide') : glidePhase(time, mode),
         mode,
       };
+    }
+
+    measureGlideAnchor(root, leadNode) {
+      if (this.glideAnchor || !leadNode || leadNode.hidden || !this.glideCloseRect) return;
+      const box = leadNode.getBoundingClientRect();
+      const host = this.root.getBoundingClientRect();
+      if (box.width < 8 || box.height < 8) return;
+      const originX = box.left - host.left + box.width / 2;
+      const originY = box.top - host.top + box.height / 2;
+      const cover = Math.max(this.glideCloseRect.w / box.width, this.glideCloseRect.h / box.height);
+      this.glideZoomFrom = cover;
+      this.glideZoomFromY = cover;
+      this.glideAnchor = { x: originX, y: originY };
+      const viewWrap = root.querySelector('.promo-glide__view');
+      if (!viewWrap) return;
+      const dx = this.glideCloseRect.cx - originX;
+      const dy = this.glideCloseRect.cy - originY;
+      viewWrap.style.transformOrigin = `${originX.toFixed(1)}px ${originY.toFixed(1)}px`;
+      viewWrap.style.transform = `translate(${dx.toFixed(2)}px, ${dy.toFixed(2)}px) scale(${cover.toFixed(4)})`;
     }
 
     placeGlideLead(root, cellNode, arrive) {
@@ -8033,10 +8216,10 @@
       };
     }
 
-    async aimCursorAtThumbDown() {
-      const store = this.painStore();
+    async aimCursorAtThumbDown(store = this.painStore()) {
       const chat = store?.querySelector('[data-promo-pain-chat]');
-      const cursor = this.root.querySelector('[data-promo-pain-cursor]');
+      const cursor = store?.querySelector('[data-promo-pain-cursor]')
+        || this.root.querySelector('[data-promo-pain-cursor]');
       const thumb = chat?.querySelector('[data-promo-thumb="down"]');
       const log = chat?.querySelector('[data-promo-pain-log]');
       if (!store || !chat || !cursor || !thumb) return;
@@ -8259,78 +8442,113 @@
     async playPhoneDoubt(clone) {
       const stage = clone.querySelector('[data-promo-moments-stage]');
       if (stage) applyMomentPose(stage, 'doubt', { instant: true });
-      const width = clone.clientWidth || 360;
-      const height = clone.clientHeight || 840;
-      await this.moveThumb(clone, width * 0.62, height * 0.72, 420);
+      clone.classList.add('is-orbit-open');
+      const cell = clone.closest('.promo-glide__cell');
+      if (cell) {
+        cell.style.overflow = 'visible';
+        cell.style.clipPath = 'none';
+      }
+      const cursor = clone.querySelector('[data-promo-pain-cursor]');
+      if (cursor) {
+        cursor.classList.add('is-thumb');
+        cursor.style.opacity = '0';
+      }
       markPromoVo('last-doubt');
-      await waitMs(280);
-      await this.moveThumb(clone, width * 0.48, height * 0.4, 320);
-      await this.moveThumb(clone, width * 0.62, height * 0.72, 280);
-      await this.moveThumb(clone, width * 0.5, height * 0.46, 260);
+      await waitMs(900);
       const input = clone.querySelector('[data-promo-pain-input]');
       this.fillCloneChat(clone, 'panel');
       if (input) {
         input.textContent = '';
         input.classList.add('is-live');
       }
-      for (let index = 1; index <= PROMO_PAIN_LINE_2.length; index += 1) {
-        if (input) input.textContent = PROMO_PAIN_LINE_2.slice(0, index);
-        await waitMs(PROMO_PAIN_TYPE_CHAR_MS);
-      }
+      await typeOver(PROMO_PAIN_LINE_2, (slice) => {
+        if (input) input.textContent = slice;
+      });
       input?.classList.remove('is-live');
       this.fillCloneChat(clone, 'think-2');
       await waitMs(PROMO_PAIN_THINK_MS);
       this.fillCloneChat(clone, 'answer-2');
       markPromoVo('salesperson');
-      await waitMs(900);
-      const cursor = clone.querySelector('[data-promo-pain-cursor]');
-      if (cursor) cursor.style.opacity = '0';
-      await waitMs(200);
+      await waitMs(700);
+      await this.aimCursorAtThumbDown(clone);
     }
 
-    async swapCloseUpToPhone(clone) {
-      const scale = this.root.querySelector('[data-promo-scale]');
-      const glide = this.root.querySelector('[data-promo-glide]');
-      if (!scale || !clone) return;
-      const from = clone.getBoundingClientRect();
-      const host = scale.getBoundingClientRect();
-      if (glide) glide.style.display = 'none';
-      this.placeLeadShade(null, 0);
-      scale.appendChild(clone);
-      clone.classList.remove('is-desktop');
-      clone.style.position = 'absolute';
-      clone.style.margin = '0';
-      clone.style.zIndex = '8';
-      clone.style.visibility = 'visible';
-      clone.style.opacity = '1';
-      clone.style.transition = 'none';
-      clone.style.transform = 'none';
-      clone.style.boxShadow = '';
-      clone.style.width = `${Math.max(40, from.width)}px`;
-      clone.style.height = `${Math.max(40, from.height)}px`;
-      clone.style.left = `${from.left - host.left}px`;
-      clone.style.top = `${from.top - host.top}px`;
-      clone.getBoundingClientRect();
-      const leave = Math.max(host.width, from.width) + from.width;
-      clone.style.transition = 'left 420ms cubic-bezier(0.45, 0, 0.2, 1)';
-      clone.style.left = `${-leave}px`;
-      await waitMs(420);
-      const phoneH = host.height * 0.9;
+    hideSeaNeighbors() {
+      const root = this.root.querySelector('[data-promo-glide]');
+      (root?._glidePool || []).forEach((item) => {
+        if (item.cell.dataset.key === this.glideLeadKey) return;
+        item.cell.hidden = true;
+        item.fx.hidden = true;
+      });
+    }
+
+    clearCloseFace() {
+      this.root.querySelectorAll('.promo-close-face').forEach((node) => node.remove());
+    }
+
+    async stampLost(node) {
+      if (!node || prefersReducedMotion()) return;
+      const veil = document.createElement('div');
+      veil.className = 'promo-close__veil is-lost';
+      const mark = document.createElement('span');
+      mark.className = 'promo-glide__lost-mark';
+      mark.textContent = 'LOST';
+      mark.style.fontSize = lostMarkSize(node.clientWidth || 640);
+      node.append(veil, mark);
+      const life = 1100;
+      const started = performance.now();
+      await new Promise((resolve) => {
+        const step = (now) => {
+          paintGlideStamp(veil, mark, now - started, 0.82);
+          if (now - started < life) window.requestAnimationFrame(step);
+          else resolve();
+        };
+        window.requestAnimationFrame(step);
+      });
+    }
+
+    async rememberRaster(node, key) {
+      if (!node || !key) return;
+      const image = await rasterStore(node);
+      if (!image) return;
+      if (!this.cellRasters) this.cellRasters = new Map();
+      this.cellRasters.set(key, image);
+    }
+
+    async slideInPhoneProduct(desktop) {
+      const host = this.root.getBoundingClientRect();
+      const phone = desktop.cloneNode(true);
+      phone.removeAttribute('id');
+      phone.querySelectorAll('[id]').forEach((item) => item.removeAttribute('id'));
+      phone.querySelectorAll('.promo-close__veil, .promo-glide__lost-mark, .promo-glide__veil').forEach((item) => item.remove());
+      phone.classList.remove('is-desktop');
+      phone.classList.add('is-phone');
+      const phoneH = host.height * 0.78;
       const phoneW = phoneH * (9 / 19);
-      clone.classList.add('is-phone');
-      clone.dataset.naturalW = String(Math.round(phoneW));
-      clone.dataset.naturalH = String(Math.round(phoneH));
-      clone.style.transition = 'none';
-      clone.style.width = `${phoneW.toFixed(1)}px`;
-      clone.style.height = `${phoneH.toFixed(1)}px`;
-      clone.style.top = `${((host.height - phoneH) / 2).toFixed(1)}px`;
-      clone.style.left = `${host.width + phoneW + 40}px`;
-      clone.getBoundingClientRect();
-      clone.style.transition = 'left 450ms cubic-bezier(0.45, 0, 0.2, 1)';
-      clone.style.left = `${((host.width - phoneW) / 2).toFixed(1)}px`;
-      await waitMs(460);
-      const stage = clone.querySelector('[data-promo-moments-stage]');
+      const start = host.width + 36;
+      const home = (host.width - phoneW) / 2;
+      phone.style.position = 'absolute';
+      phone.style.zIndex = '9';
+      phone.style.margin = '0';
+      phone.style.left = `${start.toFixed(1)}px`;
+      phone.style.top = `${((host.height - phoneH) / 2).toFixed(1)}px`;
+      phone.style.width = `${phoneW.toFixed(1)}px`;
+      phone.style.height = `${phoneH.toFixed(1)}px`;
+      phone.style.visibility = 'hidden';
+      this.root.appendChild(phone);
+      const stage = phone.querySelector('[data-promo-moments-stage]');
+      const board = phone.querySelector('.promo-moments__board');
       if (stage) applyMomentPose(stage, 'doubt', { instant: true });
+      if (board) layoutStoreGrid(board);
+      phone.style.visibility = '';
+      phone.getBoundingClientRect();
+      const ease = 'transform 640ms cubic-bezier(0.22, 1, 0.36, 1)';
+      desktop.style.transition = ease;
+      phone.style.transition = ease;
+      desktop.style.transform = 'translateX(-160%)';
+      phone.style.transform = `translateX(${(home - start).toFixed(1)}px)`;
+      await waitMs(680);
+      return phone;
     }
 
     restorePhoneLead(clone) {
@@ -8368,20 +8586,40 @@
     }
 
     async playPhonePain() {
+      const desktop = this.painStore();
+      if (!desktop) return;
       const phoneKey = this.phoneNeighborKey();
-      const clone = this.root.querySelector('.promo-glide__cell > .promo-opening__store');
-      if (!clone) return;
       this.painLostKeys = this.painLostKeys || new Set();
       if (this.glideLeadKey) this.painLostKeys.add(this.glideLeadKey);
-      await this.swapCloseUpToPhone(clone);
-      if (phoneKey) this.glideLeadKey = phoneKey;
-      await this.playPhoneDoubt(clone);
-      this.restorePhoneLead(clone);
-      await this.poofCloseStore(true);
+      const phone = await this.slideInPhoneProduct(desktop);
+      await this.playPhoneDoubt(phone);
+      const chat = phone.querySelector('[data-promo-pain-chat]');
+      chat?.classList.remove('is-open');
+      const cursor = phone.querySelector('[data-promo-pain-cursor]');
+      if (cursor) cursor.style.opacity = '0';
+      await waitMs(180);
+      await this.stampLost(phone);
+      markPromoVo('loses-both');
       if (phoneKey) {
         this.painLostKeys.add(phoneKey);
+        await this.rememberRaster(phone, phoneKey);
         this.glideLeadKey = phoneKey;
       }
+      const frame = this.root.getBoundingClientRect();
+      const box = phone.getBoundingClientRect();
+      this.glideZoomFrom = 0;
+      this.glideZoomFromY = 0;
+      this.glideAnchor = null;
+      if (box.width > 40) {
+        this.glideCloseRect = {
+          cx: box.left - frame.left + box.width / 2,
+          cy: box.top - frame.top + box.height / 2,
+          w: box.width,
+          h: box.height,
+        };
+      }
+      phone.remove();
+      desktop.style.visibility = 'hidden';
     }
 
     mountStoreOpenTitle() {
@@ -8437,25 +8675,21 @@
       const generation = this.scaleGeneration;
       this.glideLeadStamped = false;
       this.glideKeepStore = false;
-      this.captureGlideClose('pain');
+      await this.closeChatForLost();
+      if (generation !== this.scaleGeneration) return;
+      const desktop = this.painStore();
+      await this.stampLost(desktop);
+      if (generation !== this.scaleGeneration) return;
+      this.glideLeadKey = glideLeadCell(this.gridFrame())?.key || '';
+      await this.rememberRaster(desktop, this.glideLeadKey);
+      if (generation !== this.scaleGeneration) return;
+      await this.playPhonePain();
+      if (generation !== this.scaleGeneration) return;
+      glideLeadDevice = 'phone';
       this.revealScaleLayer();
       this.mountGlide('pain');
       if (generation !== this.scaleGeneration) return;
       this.paintGlideAt(0, 'pain');
-      if (generation !== this.scaleGeneration) return;
-      await this.closeChatForLost();
-      if (generation !== this.scaleGeneration) return;
-      await this.rememberLeadRaster();
-      if (generation !== this.scaleGeneration) return;
-      this.paintGlideAt(0, 'pain');
-      if (generation !== this.scaleGeneration) return;
-      await this.poofCloseStore(false);
-      if (generation !== this.scaleGeneration) return;
-      await this.playPhonePain();
-      if (generation !== this.scaleGeneration) return;
-      await this.rememberLeadRaster();
-      if (generation !== this.scaleGeneration) return;
-      glideLeadDevice = 'phone';
       this.runGlide('pain', 0);
       await waitMs(glidePlayEnd('pain'));
       if (generation !== this.scaleGeneration) return;
@@ -8576,7 +8810,7 @@
       this.prepareScaleScene();
       promoWidget.applyStoreLook(this.bizmisLook());
       const generation = this.scaleGeneration;
-      glideLeadDevice = 'phone';
+      glideLeadDevice = 'desktop';
       const stage = this.momentStage();
       if (stage && !this.pitchCardsPlayed) applyMomentPose(stage, 'bundle', { instant: true });
       this.captureNeutralStage();
@@ -8591,6 +8825,8 @@
         return;
       }
       this.glideKeepStore = false;
+      this.cellRasters = new Map();
+      this.painLostKeys = new Set();
       this.captureGlideClose('pitch');
       if (!this.pitchCardsPlayed) await this.markCloseStoreSold();
       if (generation !== this.scaleGeneration) return;
@@ -8902,6 +9138,7 @@
         }
         resetText();
         line?.classList.add('is-revealing');
+        this.seatRevealPair();
         if (fromFace) {
           fromFace.style.visibility = 'visible';
           fromFace.style.opacity = '1';
