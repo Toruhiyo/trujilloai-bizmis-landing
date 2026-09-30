@@ -41,7 +41,6 @@
   const PROMO_PASS_TITLE_MS = 420;
   const PROMO_PASS_SLOW_MS = 4800;
   const PROMO_PASS_SLOT_IN_MS = 420;
-  const PROMO_PASS_SOLD_HOLD_MS = 1150;
   const PROMO_EA_WRITE_MS = 1700;
   const PROMO_EA_STAMP_MS = 460;
   const PROMO_EA_BEAT_MS = 780;
@@ -5557,15 +5556,8 @@
         verdict.style.opacity = '1';
         verdict.style.transform = 'none';
       }
-      // The pass brings its own orange field up about a second later. Hold the
-      // SOLD wash until then, or the frame flashes white in between.
       const sold = this.root.querySelector('.promo-scale__sold');
-      if (sold) {
-        window.clearTimeout(this.soldHoldTimer);
-        this.soldHoldTimer = window.setTimeout(() => {
-          sold.style.opacity = '0';
-        }, PROMO_PASS_SOLD_HOLD_MS);
-      }
+      if (sold) sold.style.opacity = '0';
       const mark = this.root.querySelector('[data-promo-end-mark]');
       if (mark) {
         mark.style.background = 'var(--bizmis-primary)';
@@ -9137,7 +9129,10 @@
         return;
       }
       if (options.settled) {
-        this.root.classList.add('is-scale-white', 'is-scale-zero', 'is-grid-locked');
+        // The settled pitch sea is already a solid orange field that the store
+        // pass eases out of. Turning the scale white here flashed a white
+        // second before the orange came back.
+        this.root.classList.add('is-grid-locked');
         this.clearGridResolve();
       } else {
         this.root.classList.add('is-scale-white');
