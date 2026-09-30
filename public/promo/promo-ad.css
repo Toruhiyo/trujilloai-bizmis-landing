@@ -9191,11 +9191,11 @@ html.is-promo-still .promo-clip__product.is-compare::after {
   transform: none;
 }
 
-.promo-opening.is-store-pass:not(.is-pass-slot) .promo-scale__end-hero {
+.promo-opening.is-store-pass.is-pass-white:not(.is-pass-slot) .promo-scale__end-hero {
   display: none;
 }
 
-.promo-opening.is-store-pass .promo-scale__mark {
+.promo-opening.is-store-pass.is-pass-white .promo-scale__mark {
   width: calc(36px * 1948 / 640);
   height: 36px;
 }
@@ -10302,12 +10302,10 @@ html.is-promo-clip.is-clip-moment.is-clip-tablet .bizmis-viewport-portal-root {
 .promo-opening.is-pass-white .promo-glide__field,
 .promo-opening.is-pass-white .promo-scale {
   background-color: #fff !important;
-  transition: background-color 600ms ease;
 }
 
 .promo-opening.is-pass-white .promo-scale__lead {
   opacity: 0;
-  transition: opacity 280ms ease;
 }
 
 /* Copy of the widget's caption pill (trujilloai-bizmis-widget,
@@ -10358,4 +10356,12 @@ html.is-promo-clip.is-clip-moment.is-clip-tablet .bizmis-viewport-portal-root {
 
 .promo-caption__word.is-upcoming {
   color: rgba(23, 23, 23, 0.4);
+}
+
+/* "Boost sales with" belongs to the selling-sea line only. Out of it, it
+   must not take room beside the mark, or the CTA logo sits off center. */
+.promo-opening.is-pass-white .promo-scale__lead,
+.promo-opening.is-pass-slot .promo-scale__lead,
+.promo-opening:not(.is-end-pitch) .promo-scale__lead {
+  display: none;
 }

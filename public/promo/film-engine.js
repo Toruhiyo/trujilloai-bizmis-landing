@@ -42,6 +42,7 @@
   const PROMO_PASS_SLOW_MS = 4800;
   const PROMO_PASS_SLOT_IN_MS = 420;
   const PROMO_PHONE_PAN_MS = 820;
+  const PROMO_SOLD_WAVE_MS = 700;
   const PROMO_PASS_WHITE_MS = 750;
   const PROMO_EA_WRITE_MS = 1700;
   const PROMO_EA_STAMP_MS = 460;
@@ -1486,12 +1487,12 @@
   const PROMO_PAIN_LINE_1 = 'Looking for something light I can take everywhere.';
   const PROMO_PAIN_LINE_2 = "What if it's not right for me?";
   const PROMO_PITCH_LINE_1 = 'Looking for something light I can take everywhere.';
-  const PROMO_PITCH_LINE_2 = "What if it's not right for me?";
+  const PROMO_PITCH_LINE_2 = 'Is it big enough for a weekend away?';
   // The clerk's lines. Short, spoken to the shopper, never to the viewer.
   const PROMO_PITCH_CLERK_1 = 'Here are the three that fit. Let me compare them for you.';
   const PROMO_PITCH_CLERK_COMPARE = "This one's the lightest, and it packs flat. It's the one.";
-  const PROMO_PITCH_CLERK_2 = "Returns are free, so there's no risk. I'll add it.";
-  const PROMO_PITCH_CLERK_UPSELL = 'It travels better with its sleeve. Adding that too.';
+  const PROMO_PITCH_CLERK_2 = 'Yes. It fits a full weekend, and still packs flat.';
+  const PROMO_PITCH_CLERK_UPSELL = 'Nice pick. Its sleeve keeps it safe on the road.';
   const PROMO_PITCH_SPEAK_1_MS = 3000;
   const PROMO_PITCH_SPEAK_COMPARE_MS = 3600;
   const PROMO_PITCH_SPEAK_2_MS = 3200;
@@ -3640,9 +3641,28 @@
       node.dataset.elevation = String(rounded);
       node.dataset.elevationW = widthKey;
       const depth = glideDepth(width, height, rounded);
-      node.style.boxShadow = glideDepthShadow(depth);
+      node._depthShadow = glideDepthShadow(depth);
+      node.style.boxShadow = node._depthShadow;
       node.dataset.cardScale = depth.scale.toFixed(4);
       node.dataset.cardLift = depth.lift.toFixed(2);
+    }
+    // A sold card sends a small wave out from its edge: two orange rings
+    // that grow and fade.
+    const waveAge = mode === 'pitch' && age != null ? age : -1;
+    if (waveAge >= 0 && waveAge < PROMO_SOLD_WAVE_MS + 260) {
+      const ring = (delay) => {
+        const u = Math.min(1, Math.max(0, (waveAge - delay) / PROMO_SOLD_WAVE_MS));
+        if (u <= 0 || u >= 1) return '';
+        const spread = 2 + width * 0.09 * (1 - (1 - u) ** 2);
+        const alpha = 0.6 * (1 - u) ** 1.6;
+        return `0 0 0 ${spread.toFixed(1)}px rgba(247, 162, 82, ${alpha.toFixed(3)})`;
+      };
+      const rings = [ring(0), ring(260)].filter(Boolean);
+      node.style.boxShadow = [...rings, node._depthShadow].filter(Boolean).join(', ');
+      node.dataset.waving = '1';
+    } else if (node.dataset.waving === '1') {
+      delete node.dataset.waving;
+      node.style.boxShadow = node._depthShadow || node.style.boxShadow;
     }
     const scale = node.dataset.cardScale || '1';
     const lift = Number(node.dataset.cardLift) || 0;
@@ -4306,12 +4326,21 @@
       if (frame.width < 40 || textWidth < 40 || !Number.isFinite(textLeft)) return;
       const boxW = PROMO_AVATAR_BOX_W * PROMO_AVATAR_MAX_SCALE;
       const avatarW = boxW * PROMO_REVEAL_BODY;
-      const group = textWidth + PROMO_REVEAL_GAP_PX + avatarW;
-      const groupLeft = frame.left + Math.max(0, (frame.width - group) / 2);
-      const shift = groupLeft - textLeft;
+      // The avatar stays where it stood beside the logo; the line fits to
+      // its left. Without a logo seat yet, the pair centers as a group.
+      const pairRight = parseFloat(this.root.style.getPropertyValue('--promo-logo-pair-right'));
+      let widgetRight;
+      let visibleLeft;
+      if (Number.isFinite(pairRight)) {
+        widgetRight = pairRight;
+        visibleLeft = frame.right - widgetRight - boxW / 2 - avatarW / 2 + PROMO_REVEAL_BODY_SHIFT_PX;
+      } else {
+        const group = textWidth + PROMO_REVEAL_GAP_PX + avatarW;
+        visibleLeft = frame.left + Math.max(0, (frame.width - group) / 2) + textWidth + PROMO_REVEAL_GAP_PX;
+        widgetRight = frame.right - visibleLeft - boxW / 2 - avatarW / 2 + PROMO_REVEAL_BODY_SHIFT_PX;
+      }
+      const shift = visibleLeft - PROMO_REVEAL_GAP_PX - textWidth - textLeft;
       line.style.transform = `translateX(${shift.toFixed(1)}px)`;
-      const visibleLeft = groupLeft + textWidth + PROMO_REVEAL_GAP_PX;
-      const widgetRight = frame.right - visibleLeft - boxW / 2 - avatarW / 2 + PROMO_REVEAL_BODY_SHIFT_PX;
       this.root.style.setProperty('--promo-reveal-right', `${widgetRight.toFixed(1)}px`);
     }
 
@@ -4348,7 +4377,8 @@
         const visibleLeft = groupLeft + to.width + gap;
         const widgetRight = frame.right - visibleLeft - boxW / 2 - avatarW / 2 + PROMO_REVEAL_BODY_SHIFT_PX;
         this.root.style.setProperty('--promo-logo-pair-right', `${widgetRight.toFixed(1)}px`);
-      } else {
+      } else if (!line?.classList.contains('is-revealing')) {
+        // Kept through the line reveal, so the avatar does not move.
         this.root.style.removeProperty('--promo-logo-pair-right');
       }
 
@@ -4853,8 +4883,11 @@
       const scale = frame.width / (canvas.offsetWidth || frame.width) || 1;
       const box = card.getBoundingClientRect();
       const zoom = box.width / scale / (card.offsetWidth || box.width);
-      pill.style.left = `${((box.left + box.width / 2 - frame.left) / scale).toFixed(1)}px`;
-      pill.style.bottom = `${((frame.bottom - box.top) / scale + 12).toFixed(1)}px`;
+      // Bottom center of the browser window, inside it, where a store's
+      // captions sit.
+      const store = this.painStore()?.getBoundingClientRect() || box;
+      pill.style.left = `${((store.left + store.width / 2 - frame.left) / scale).toFixed(1)}px`;
+      pill.style.bottom = `${((frame.bottom - store.bottom) / scale + store.height / scale * 0.06).toFixed(1)}px`;
       pill.style.setProperty('--caption-zoom', zoom.toFixed(4));
       // Chunks of a few words, one line each, paced across the spoken time.
       const words = line.split(/\s+/).filter(Boolean);
@@ -4960,31 +4993,28 @@
       board?.classList.remove('is-doubts-hidden');
       await this.typeShopperLine(PROMO_PITCH_LINE_2);
       sayClerkLine(PROMO_PITCH_CLERK_2);
-      await this.laserUntilNext('policies', reduced, PROMO_PITCH_DOUBT_MS);
+      await this.laserUntilNext('compare', reduced, PROMO_PITCH_DOUBT_MS);
       this.playFilmCaption(PROMO_PITCH_CLERK_2, PROMO_PITCH_SPEAK_2_MS);
+      await speak(PROMO_PITCH_SPEAK_2_MS);
+      // The doubt is gone, so the shopper adds it. The clerk never adds.
       const cartLandMs = PROMO_MOMENTS_VAPOR_MS + PROMO_MOMENTS_CART_GAP_MS + 220;
-      this.paintPitchEvent({ kind: 'cart' });
-      const cartStart = performance.now();
       if (!reduced) {
         applyMomentPose(stage, 'close');
         await waitMs(cartLandMs);
       } else {
         applyMomentPose(stage, 'close', { instant: true });
       }
-      if (!reduced) await waitMs(Math.max(0, PROMO_LASER_LAP_MS - (performance.now() - cartStart)));
-      this.clearPitchEvents();
       host?.classList.add('is-cart-one');
       emitShopper({ kind: 'cart', product: pick, quantity: 1 });
-      await speak(Math.max(0, PROMO_PITCH_SPEAK_2_MS - PROMO_LASER_LAP_MS * 2));
-      // The clerk offers the sleeve on its own and adds it.
+      await waitMs(reduced ? 40 : 500);
+      // The clerk recommends the sleeve on its own; the shopper adds it.
       sayClerkAlone(PROMO_PITCH_CLERK_UPSELL);
       this.playFilmCaption(PROMO_PITCH_CLERK_UPSELL, PROMO_PITCH_SPEAK_UPSELL_MS);
-      await this.laserUntilNext('cart', reduced);
+      await speak(PROMO_PITCH_SPEAK_UPSELL_MS);
       applyMomentPose(stage, 'bundle', { instant: reduced });
       host?.classList.remove('is-cart-one');
       host?.classList.add('is-cart-two');
       emitShopper({ kind: 'cart', product: sleeve, quantity: 1 });
-      await speak(Math.max(0, PROMO_PITCH_SPEAK_UPSELL_MS - PROMO_LASER_LAP_MS));
       await waitMs(reduced ? 40 : 900);
       this.painStore()?.querySelectorAll('.promo-close__veil, .promo-close__mark, .promo-glide__lost-mark, .promo-glide__veil').forEach((node) => node.remove());
       await this.markCloseStoreSold();
@@ -5002,7 +5032,48 @@
       glideLeadDevice = 'desktop';
       this.pitchLeadKey = glideLeadCell(this.gridFrame())?.key || '';
       glideLeadDevice = previous;
+      this.pinWidgetInStore(store);
       await this.rememberRaster(store, this.pitchLeadKey);
+    }
+
+    // A still of the live widget card, pinned into the store window where the
+    // card sits, so the zoom-out keeps the widget in the picture.
+    pinWidgetInStore(store) {
+      const card = document.querySelector('.bizmis-desktop-lite-chat');
+      if (!card || store.querySelector('[data-promo-widget-still]')) return;
+      const storeBox = store.getBoundingClientRect();
+      const cardBox = card.getBoundingClientRect();
+      if (cardBox.width < 8) return;
+      const scale = storeBox.width / (store.offsetWidth || storeBox.width) || 1;
+      const clone = card.cloneNode(true);
+      inlineRasterTree(card, clone);
+      clone.querySelectorAll('[id]').forEach((node) => node.removeAttribute('id'));
+      const native = card.offsetWidth || cardBox.width;
+      const width = cardBox.width / scale;
+      Object.assign(clone.style, {
+        position: 'absolute',
+        left: '0',
+        top: '0',
+        right: 'auto',
+        bottom: 'auto',
+        margin: '0',
+        width: `${native}px`,
+        transformOrigin: 'top left',
+        transform: `scale(${(width / native).toFixed(4)})`,
+      });
+      const still = document.createElement('div');
+      still.setAttribute('data-promo-widget-still', '');
+      Object.assign(still.style, {
+        position: 'absolute',
+        left: `${((cardBox.left - storeBox.left) / scale).toFixed(1)}px`,
+        top: `${((cardBox.top - storeBox.top) / scale).toFixed(1)}px`,
+        width: `${width.toFixed(1)}px`,
+        height: `${(cardBox.height / scale).toFixed(1)}px`,
+        zIndex: '30',
+        pointerEvents: 'none',
+      });
+      still.appendChild(clone);
+      store.appendChild(still);
     }
 
     bizmisLook() {
@@ -6045,12 +6116,51 @@
         return;
       }
       // The orange field turns white before the first store comes in.
-      this.root.classList.add('is-pass-white');
-      window.setTimeout(() => {
+      // Stepped per frame so the export clock samples the fade.
+      // Every large layer painted orange right now, whichever one it is.
+      const viewArea = window.innerWidth * window.innerHeight;
+      // Computed colors can come back as oklab(); a 1x1 canvas reads any
+      // of them back as plain RGBA.
+      const probe = document.createElement('canvas').getContext('2d', { willReadFrequently: true });
+      const rgba = (color) => {
+        if (!probe || !color || color === 'transparent') return null;
+        probe.clearRect(0, 0, 1, 1);
+        probe.fillStyle = '#000';
+        probe.fillStyle = color;
+        probe.fillRect(0, 0, 1, 1);
+        return probe.getImageData(0, 0, 1, 1).data;
+      };
+      const layers = [document.documentElement, document.body, this.root, ...this.root.querySelectorAll('*')].filter((node) => {
+        const px = rgba(getComputedStyle(node).backgroundColor);
+        if (!px) return false;
+        const [r, g, b, a] = px;
+        if (a < 128 || r < 200 || g < 120 || g > 190 || b > 120) return false;
+        const box = node.getBoundingClientRect();
+        return box.width * box.height > viewArea * 0.5;
+      });
+      const lead = this.root.querySelector('.promo-scale__lead');
+      const mark = this.root.querySelector('[data-promo-end-mark]');
+      const began = performance.now();
+      const fade = () => {
+        const u = Math.min(1, (performance.now() - began) / PROMO_PASS_WHITE_MS);
+        const eased = u * u * (3 - 2 * u);
+        const color = `color-mix(in srgb, var(--bizmis-primary) ${((1 - eased) * 100).toFixed(1)}%, #fff)`;
+        layers.forEach((node) => node.style.setProperty('background-color', color, 'important'));
+        const textFade = Math.max(0, 1 - u * 2.2).toFixed(3);
+        if (lead) lead.style.opacity = textFade;
+        if (mark) mark.style.opacity = textFade;
+        if (u < 1) {
+          window.requestAnimationFrame(fade);
+          return;
+        }
+        layers.forEach((node) => node.style.setProperty('background-color', '#fff', 'important'));
+        this.root.classList.add('is-pass-white');
+        if (mark) mark.style.opacity = '';
         this.playStorePass(() => {
           this.landPassSlot();
         });
-      }, PROMO_PASS_WHITE_MS);
+      };
+      fade();
     }
 
     playStoreStack(onDone) {
@@ -9082,6 +9192,9 @@
           const x = `translateX(${(pan * eased).toFixed(1)}px)`;
           desktop.style.transform = x;
           phone.style.transform = x;
+          // The desktop fades away as the camera leaves it; it comes back
+          // with the rest of the sea.
+          desktop.style.opacity = Math.max(0, 1 - u * 1.6).toFixed(3);
           if (u < 1) window.requestAnimationFrame(step);
           else resolve();
         };
@@ -9340,6 +9453,12 @@
         // second before the orange came back.
         this.root.classList.add('is-grid-locked');
         this.clearGridResolve();
+        // Keep "Boost sales with [bizmis]" on screen through the hold.
+        const verdict = this.root.querySelector('[data-promo-scale-verdict]');
+        if (verdict) {
+          verdict.style.opacity = '1';
+          verdict.style.transform = 'none';
+        }
       } else {
         this.root.classList.add('is-scale-white');
         await waitMs(PROMO_SCALE_WHITE_MS);
