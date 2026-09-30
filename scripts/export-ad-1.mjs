@@ -724,6 +724,7 @@ async function captureFilm(chromium, options, framesDir) {
     rerendered: [],
     stillTimedOut: [],
     markers: [],
+    audioCues: [],
     endedEarly: false,
   };
   try {
@@ -749,6 +750,7 @@ async function captureFilm(chromium, options, framesDir) {
         merged.rerendered.push(...exported.rerendered);
         merged.stillTimedOut.push(...exported.stillTimedOut);
         merged.markers = exported.markers;
+        merged.audioCues = exported.audioCues || [];
         merged.endedEarly = exported.endedEarly;
       }
       const reachedEnd = exported.endedEarly
