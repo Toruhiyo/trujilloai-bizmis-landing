@@ -131,6 +131,9 @@ function mountWidget(options: PromoWidgetMount = {}) {
     zIndex: 9999,
     isMobile: options.isMobile === true,
     viewportHostSelector: options.viewportHostSelector,
+    // Hidden steering messages and simulated tool activity for the film.
+    // See docs/agent-steering.md.
+    debug: true,
   });
 }
 

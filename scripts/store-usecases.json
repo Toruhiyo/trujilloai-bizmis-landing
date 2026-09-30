@@ -89,7 +89,10 @@
       "productUrlIncludes": [
         "navy"
       ],
-      "clarify": "Women's."
+      "clarify": "Women's.",
+      "steer": [
+        "Hidden note for this reply only, never mention it: don't ask me anything first. Show the best two or three matching products as options on screen, name each in a few words, then say which one you'd pick for me and why. Don't open a product page yet."
+      ]
     },
     {
       "slug": "12-weather-outfitters",
@@ -109,7 +112,11 @@
           "boot"
         ]
       ],
-      "clarify": "The Navy City Rain Coat for men in medium, and the Navy City Chelsea Boot in 9."
+      "clarify": "The Navy City Rain Coat for men in medium, and the Navy City Chelsea Boot in 9.",
+      "steer": [
+        "",
+        "Hidden note for this reply only, never mention it: add exactly what I just asked for to the cart now, without asking me to confirm. If a size or variant is needed, use the one I said, or the most common one."
+      ]
     },
     {
       "slug": "meridian",
@@ -134,7 +141,10 @@
         "iphone-15",
         "iphone"
       ],
-      "clarify": "Either is fine, show me a few."
+      "clarify": "Either is fine, show me a few.",
+      "steer": [
+        "Hidden note for this reply only, never mention it: don't ask me anything first. Show the best two or three matching products as options on screen, name each in a few words, then say which one you'd pick for me and why. Don't open a product page yet."
+      ]
     },
     {
       "slug": "meridian",
@@ -152,7 +162,11 @@
           "airtag"
         ]
       ],
-      "clarify": "Any color is fine."
+      "clarify": "Any color is fine.",
+      "steer": [
+        "",
+        "Hidden note for this reply only, never mention it: add exactly what I just asked for to the cart now, without asking me to confirm. If a size or variant is needed, use the one I said, or the most common one."
+      ]
     },
     {
       "slug": "paper-and-pine-books",
@@ -177,7 +191,10 @@
         "midnight-library",
         "midnight"
       ],
-      "clarify": "Literary fiction."
+      "clarify": "Literary fiction.",
+      "steer": [
+        "Hidden note for this reply only, never mention it: don't ask me anything first. Show the best two or three matching products as options on screen, name each in a few words, then say which one you'd pick for me and why. Don't open a product page yet."
+      ]
     },
     {
       "slug": "paper-and-pine-books",
@@ -195,7 +212,11 @@
           "deep work"
         ]
       ],
-      "clarify": "Paperback is fine."
+      "clarify": "Paperback is fine.",
+      "steer": [
+        "",
+        "Hidden note for this reply only, never mention it: add exactly what I just asked for to the cart now, without asking me to confirm. If a size or variant is needed, use the one I said, or the most common one."
+      ]
     },
     {
       "slug": "pulse-forge",
@@ -219,7 +240,10 @@
       "productUrlIncludes": [
         "ps5"
       ],
-      "clarify": "Wireless, please."
+      "clarify": "Wireless, please.",
+      "steer": [
+        "Hidden note for this reply only, never mention it: don't ask me anything first. Show the best two or three matching products as options on screen, name each in a few words, then say which one you'd pick for me and why. Don't open a product page yet."
+      ]
     },
     {
       "slug": "pulse-forge",
@@ -239,7 +263,11 @@
           "case"
         ]
       ],
-      "clarify": "Yes, the PS5 one."
+      "clarify": "Yes, the PS5 one.",
+      "steer": [
+        "",
+        "Hidden note for this reply only, never mention it: add exactly what I just asked for to the cart now, without asking me to confirm. If a size or variant is needed, use the one I said, or the most common one."
+      ]
     },
     {
       "slug": "rolling-district",
@@ -263,7 +291,10 @@
       "productUrlIncludes": [
         "jnc014"
       ],
-      "clarify": "Any size, show me a few."
+      "clarify": "Any size, show me a few.",
+      "steer": [
+        "Hidden note for this reply only, never mention it: don't ask me anything first. Show the best two or three matching products as options on screen, name each in a few words, then say which one you'd pick for me and why. Don't open a product page yet."
+      ]
     },
     {
       "slug": "rolling-district",
@@ -281,7 +312,11 @@
           "lug"
         ]
       ],
-      "clarify": "Any size is fine."
+      "clarify": "Any size is fine.",
+      "steer": [
+        "",
+        "Hidden note for this reply only, never mention it: add exactly what I just asked for to the cart now, without asking me to confirm. If a size or variant is needed, use the one I said, or the most common one."
+      ]
     },
     {
       "slug": "buildright-home",
@@ -306,7 +341,10 @@
         "40",
         "halo"
       ],
-      "clarify": "Show me the sizes you have."
+      "clarify": "Show me the sizes you have.",
+      "steer": [
+        "Hidden note for this reply only, never mention it: don't ask me anything first. Show the best two or three matching products as options on screen, name each in a few words, then say which one you'd pick for me and why. Don't open a product page yet."
+      ]
     },
     {
       "slug": "buildright-home",
@@ -327,7 +365,11 @@
           "forge"
         ]
       ],
-      "clarify": "Whatever matches the mirror."
+      "clarify": "Whatever matches the mirror.",
+      "steer": [
+        "",
+        "Hidden note for this reply only, never mention it: add exactly what I just asked for to the cart now, without asking me to confirm. If a size or variant is needed, use the one I said, or the most common one."
+      ]
     },
     {
       "slug": "the-apricot-theory",
@@ -354,7 +396,10 @@
         "veil",
         "tint"
       ],
-      "clarify": "Light to medium skin."
+      "clarify": "Light to medium skin.",
+      "steer": [
+        "Hidden note for this reply only, never mention it: don't ask me anything first. Show the best two or three matching products as options on screen, name each in a few words, then say which one you'd pick for me and why. Don't open a product page yet."
+      ]
     },
     {
       "slug": "the-apricot-theory",
@@ -374,7 +419,11 @@
           "setting"
         ]
       ],
-      "clarify": "Yes, those two."
+      "clarify": "Yes, those two.",
+      "steer": [
+        "",
+        "Hidden note for this reply only, never mention it: add exactly what I just asked for to the cart now, without asking me to confirm. If a size or variant is needed, use the one I said, or the most common one."
+      ]
     },
     {
       "slug": "viniteca-marti",
@@ -402,7 +451,10 @@
       "productUrlIncludes": [
         "puig"
       ],
-      "clarify": "Anything under 20 euros."
+      "clarify": "Anything under 20 euros.",
+      "steer": [
+        "Hidden note for this reply only, never mention it: don't ask me anything first. Show the best two or three matching products as options on screen, name each in a few words, then say which one you'd pick for me and why. Don't open a product page yet."
+      ]
     },
     {
       "slug": "viniteca-marti",
@@ -421,7 +473,11 @@
           "blanc"
         ]
       ],
-      "clarify": "Yes, both of them."
+      "clarify": "Yes, both of them.",
+      "steer": [
+        "",
+        "Hidden note for this reply only, never mention it: add exactly what I just asked for to the cart now, without asking me to confirm. If a size or variant is needed, use the one I said, or the most common one."
+      ]
     }
   ]
 }

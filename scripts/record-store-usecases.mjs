@@ -151,6 +151,9 @@ function installHiddenCursor(page) {
 // button while the pointer is over it, so the pointer stays clear of it.
 function installPrefs() {
   localStorage.setItem('bizmis-subtitles', 'true');
+  // Widget debug steering: lets a beat send hidden messages. See
+  // docs/agent-steering.md.
+  localStorage.setItem('bizmis-debug', '1');
   document.addEventListener('pointermove', (event) => {
     const caption = event.target instanceof Element
       && event.target.closest('.bizmis-subtitles-portal-root [data-caption-style]');
@@ -504,7 +507,19 @@ function keyDelay() {
   return KEY_DELAY_MIN_MS + Math.random() * KEY_DELAY_SPREAD_MS;
 }
 
-async function typeLine(page, line) {
+// Queues a hidden steering message that the widget sends right behind the
+// shopper's next visible line. Never shown in the video.
+async function queueSteer(page, steer) {
+  if (!steer) return;
+  const queued = await page.evaluate((text) => {
+    const api = window.AvatarVoicechat;
+    if (!api || typeof api.sendHiddenMessage !== 'function') return false;
+    return api.sendHiddenMessage(text, { afterNextUserMessage: true });
+  }, steer).catch(() => false);
+  process.stdout.write(`steer ${queued ? 'queued' : 'NOT AVAILABLE'}: "${steer.slice(0, 80)}"\n`);
+}
+
+async function typeLine(page, line, steer = '') {
   const composer = page.locator(COMPOSER_SELECTOR).first();
   await composer.waitFor({ state: 'visible', timeout: 20000 });
   await confirmAgeGate(page);
@@ -513,6 +528,7 @@ async function typeLine(page, line) {
     await page.keyboard.type(char);
     await sleep(keyDelay());
   }
+  await queueSteer(page, steer);
   await sleep(180);
   await page.keyboard.press('Enter');
   await sleep(400);
@@ -745,9 +761,9 @@ async function waitForCartFollowThrough(page, collector, speech, pace, job) {
   return cart;
 }
 
-async function shopperTurn(page, collector, sockets, pace, speech, job, line) {
+async function shopperTurn(page, collector, sockets, pace, speech, job, line, steer = '') {
   pace.relax();
-  await typeLine(page, line);
+  await typeLine(page, line, steer);
   await collector.ingest(page);
   const marker = {
     captions: collector.state.captions.length,
@@ -1069,19 +1085,22 @@ async function recordTake(browser, job, dest) {
     await capture.start();
     await waitForSpeechTail(speech, 0, pace, GREETING_WAIT_MS);
     const collector = createCollector();
-    const say = (line) => shopperTurn(page, collector, sockets, pace, speech, job, line);
+    // beat.steer[i] rides hidden behind lines[i]; followUpSteer and
+    // clarifySteer ride behind those lines.
+    const steerFor = (index) => (Array.isArray(job.beat.steer) ? job.beat.steer[index] : '') || '';
+    const say = (line, steer = '') => shopperTurn(page, collector, sockets, pace, speech, job, line, steer);
     let cart = [];
     let clarified = false;
     const answerIfAsked = async (turn, stillMissing) => {
       if (clarified || !job.beat.clarify || !stillMissing()) return turn;
       if (!latestReply(collector, turn.marker).includes('?')) return turn;
       clarified = true;
-      return say(job.beat.clarify);
+      return say(job.beat.clarify, job.beat.clarifySteer);
     };
     const onProductPage = () => collector.state.path.includes('/products/');
     for (let index = 0; index < job.beat.lines.length; index += 1) {
       const isLastLine = index === job.beat.lines.length - 1;
-      let turn = await say(job.beat.lines[index]);
+      let turn = await say(job.beat.lines[index], steerFor(index));
       const stillMissing = job.beat.kind === 'cart'
         ? () => !cartCovers(turn.cart, job.beat.cartMustMatch)
         : () => collector.state.path === turn.marker.path
@@ -1093,7 +1112,7 @@ async function recordTake(browser, job, dest) {
         && job.beat.followUp
         && !onProductPage();
       if (needsOpen) {
-        turn = await answerIfAsked(await say(job.beat.followUp), () => !onProductPage());
+        turn = await answerIfAsked(await say(job.beat.followUp, job.beat.followUpSteer), () => !onProductPage());
         cart = turn.cart;
       }
     }

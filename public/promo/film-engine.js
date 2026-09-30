@@ -1999,16 +1999,30 @@
     };
   }
 
+  // Widget debug steering (init({ debug: true }) in AdFilm.tsx). Absent on
+  // older widget builds, which fall back to rewriting the socket frame.
+  function promoDebugWidget() {
+    const api = window.AvatarVoicechat;
+    return api && typeof api.sendHiddenMessage === 'function' ? api : null;
+  }
+
+  // The shopper's line goes out as typed and stays in the chat. The clerk's
+  // scripted line goes right behind it as a hidden message the viewer never
+  // sees. See docs/agent-steering.md.
   function sayClerkLine(line) {
-    installPromoSayRewrite();
     const draft = widgetDraftInput();
     if (!draft) return false;
     const { input } = draft;
     const from = (input.value || '').trim();
     if (!from) return false;
-    promoSaySwap = { from, to: `Say this: "${line}"` };
     const form = input.form || input.closest('form');
     if (!form || typeof form.requestSubmit !== 'function') return false;
+    const steer = `Say this: "${line}"`;
+    const api = promoDebugWidget();
+    if (!api || !api.sendHiddenMessage(steer, { afterNextUserMessage: true })) {
+      installPromoSayRewrite();
+      promoSaySwap = { from, to: steer };
+    }
     form.requestSubmit();
     return true;
   }
@@ -2051,6 +2065,14 @@
   function emitShopper(detail) {
     window.dispatchEvent(new CustomEvent('bizmis:shopper-event', { detail }));
   }
+
+  // Film events, as the widget tool whose activity they stand for.
+  const PROMO_EVENT_TOOLS = {
+    products: 'show_products',
+    product: 'go_to_product',
+    policies: 'search_shop_policies_and_faqs',
+    cart: 'add_to_cart',
+  };
 
   function pitchEventLabel(detail) {
     if (detail.kind === 'products') return 'Preparing product results…';
@@ -4600,13 +4622,35 @@
 
     clearPitchEvents() {
       this.painStore()?.querySelector('[data-promo-widget-events]')?.replaceChildren();
-      document.querySelectorAll('[data-activity-laser]').forEach((node) => node.remove());
+      document.querySelectorAll('[data-promo-laser]').forEach((node) => node.remove());
+      this.endWidgetActivity();
+    }
+
+    // The widget's own activity laser, played through its debug API, so the
+    // film shows exactly what a real tool call shows.
+    endWidgetActivity() {
+      const current = this.widgetActivity;
+      if (!current) return;
+      this.widgetActivity = null;
+      promoDebugWidget()?.simulateToolActivity({ ...current, phase: 'success' });
+    }
+
+    playWidgetActivity(detail) {
+      const api = promoDebugWidget();
+      const toolName = PROMO_EVENT_TOOLS[detail.kind];
+      if (!api || !toolName || document.documentElement.classList.contains('is-promo-clip')) return false;
+      this.widgetActivityCall = (this.widgetActivityCall || 0) + 1;
+      const call = { toolName, toolCallId: `promo-${detail.kind}-${this.widgetActivityCall}` };
+      if (!api.simulateToolActivity({ ...call, phase: 'loading' })) return false;
+      this.widgetActivity = call;
+      return true;
     }
 
     paintPitchEvent(detail) {
       const labelText = pitchEventLabel(detail);
       if (!labelText) return;
       this.clearPitchEvents();
+      if (this.playWidgetActivity(detail)) return;
       const mount = activityStage();
       if (!mount) return;
       const sizePx = activityHaloPx(mount.stage);
@@ -4617,6 +4661,7 @@
       const bloomId = `${filterId}-bloom`;
       const laser = document.createElement('div');
       laser.setAttribute('data-activity-laser', '');
+      laser.setAttribute('data-promo-laser', '');
       laser.setAttribute('role', 'status');
       laser.setAttribute('aria-label', labelText);
       laser.className = 'theme-text-primary';
