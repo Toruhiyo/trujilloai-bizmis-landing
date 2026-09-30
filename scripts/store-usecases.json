@@ -97,7 +97,7 @@
       "kind": "cart",
       "lines": [
         "If it doesn't fit, can I send it back?",
-        "Yeah, add the navy coat and the Chelsea boot."
+        "Yeah, add the men's navy rain coat in medium and the navy Chelsea boot in size 9."
       ],
       "cartMustMatch": [
         [
@@ -109,7 +109,7 @@
           "boot"
         ]
       ],
-      "clarify": "Size medium."
+      "clarify": "The Navy City Rain Coat for men in medium, and the Navy City Chelsea Boot in 9."
     },
     {
       "slug": "meridian",

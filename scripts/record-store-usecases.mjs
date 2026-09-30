@@ -26,6 +26,7 @@ const TURN_TIMEOUT_MS = 75000;
 const TURN_QUIET_MS = 4500;
 const HOLD_AFTER_MS = 1500;
 const NAVIGATION_GRACE_MS = 15000;
+const CART_FOLLOW_THROUGH_MS = 30000;
 const NAVIGATION_SETTLE_MS = 20000;
 const SOCKET_DROP_GRACE_MS = 20000;
 const BROWSER_CLOSE_TIMEOUT_MS = 8000;
@@ -694,6 +695,29 @@ async function waitForTurn(page, collector, sockets, marker, pace, speech) {
   throw new Error(`clerk turn timed out | path=${collector.state.path} | ${clip} | ${JSON.stringify(debug)}`);
 }
 
+// After showing products the clerk resumes on the new page and adds them
+// there, so a cart take is judged only once that resumed turn is over.
+async function waitForCartFollowThrough(page, collector, speech, pace, job) {
+  const started = Date.now();
+  let cart = await readCart(page);
+  while (Date.now() - started < CART_FOLLOW_THROUGH_MS) {
+    await collector.ingest(page);
+    cart = await readCart(page);
+    if (cartCovers(cart, job.beat.cartMustMatch)) break;
+    if (speech.covers(Date.now())) pace.relax();
+    else pace.hurry();
+    const speechEnd = speech.lastEndSince(started);
+    const spokeThenQuiet = speechEnd > 0
+      && !speech.covers(Date.now())
+      && Date.now() - speechEnd >= TURN_QUIET_MS;
+    if (spokeThenQuiet) break;
+    await sleep(300);
+  }
+  pace.relax();
+  process.stdout.write(`cart follow-through ${Date.now() - started}ms items=${cart.length}\n`);
+  return cart;
+}
+
 async function shopperTurn(page, collector, sockets, pace, speech, job, line) {
   pace.relax();
   await typeLine(page, line);
@@ -1058,6 +1082,9 @@ async function recordTake(browser, job, dest) {
       if (left && arrived && !isLoading(collector, sockets)) break;
       if (!left && Date.now() - landingMark > TURN_QUIET_MS) break;
       await sleep(300);
+    }
+    if (job.beat.kind === 'cart' && !cartCovers(cart, job.beat.cartMustMatch)) {
+      cart = await waitForCartFollowThrough(page, collector, speech, pace, job);
     }
     const shopperMustAdd = job.beat.kind === 'cart'
       && !cartCovers(cart, job.beat.cartMustMatch)
