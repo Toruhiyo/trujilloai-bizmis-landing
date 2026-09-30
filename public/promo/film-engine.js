@@ -44,7 +44,7 @@
   const PROMO_EA_WRITE_MS = 1700;
   const PROMO_EA_STAMP_MS = 460;
   const PROMO_EA_BEAT_MS = 780;
-  const PROMO_EA_LOGO_LEAD_MS = 900;
+  const PROMO_EA_LOGO_LEAD_MS = 980;
   const PROMO_EA_FLY_MS = 860;
   const PROMO_EA_TERM_GAP_MS = 720;
   const PROMO_EA_TERM_IN_MS = 560;
@@ -306,7 +306,7 @@
   const PROMO_PITCH_COMPARE_MS = 3000;
   const PROMO_PITCH_DOUBT_MS = 3500;
   const PROMO_PITCH_POOF_MS = 1100;
-  const PROMO_DOUBT_ORBIT_RATIO = 0.72;
+  const PROMO_DOUBT_ORBIT_RATIO = 0.6;
   const PROMO_DOUBT_BUBBLE_PX = 26;
   const PROMO_TYPE_LINE_MS = 1100;
   const PROMO_PITCH_WORD_OUT_MS = 400;
@@ -316,6 +316,8 @@
   const PROMO_AVATAR_BOX_H = 340;
   const PROMO_AVATAR_EXPORT_DPR = 2;
   const PROMO_REVEAL_GAP_PX = 40;
+  const PROMO_REVEAL_BODY = 0.27;
+  const PROMO_REVEAL_BODY_SHIFT_PX = 140;
   const PROMO_AVATAR_LIFT_PX = -120;
   const PROMO_CLERK_CORNER_MS = 1080;
   const PROMO_CLERK_CORNER_SCALE = 1.65;
@@ -471,6 +473,8 @@
     resolveMs: 1100,
     endHoldMs: 1000,
     captionInMs: 350,
+    captionPauseMs: 450,
+    captionLeadMs: 1500,
     captionHoldMs: 1000,
     horizonMs: 1400,
     horizonTilt: 54,
@@ -485,7 +489,10 @@
     tablet: { x: 0.88, y: 0.14 },
     phone: { x: 0.82, y: 0.07 },
   };
-  const GLIDE_PAIN_CAPTION = 'Unattended visits. Lost sales.';
+  const GLIDE_PAIN_CAPTION = [
+    ['Unattended visits', 'cost you sales.'],
+    ['Every day. Quietly.'],
+  ];
   const glideRows = new Map();
   let glideLeadDevice = 'desktop';
   const glideWarmMedia = [];
@@ -512,15 +519,17 @@
         playEnd: fieldEnd + PROMO_GLIDE.resolveMs + PROMO_GLIDE.endHoldMs,
       };
     }
-    const captionStart = claimAt;
-    const captionInEnd = captionStart + PROMO_GLIDE.captionInMs;
+    const captionAnchor = claimAt;
+    const captionInEnd = captionAnchor + PROMO_GLIDE.captionInMs;
     const captionHoldEnd = captionInEnd + PROMO_GLIDE.captionHoldMs;
+    const captionStart = captionAnchor - PROMO_GLIDE.captionLeadMs;
     const captionPoofEnd = captionHoldEnd + PROMO_GLIDE.poofMs + PROMO_GLIDE.dustMs;
     const horizonEnd = captionPoofEnd + PROMO_GLIDE.horizonMs;
     const fieldEnd = horizonEnd + PROMO_GLIDE.painFieldHoldMs;
     return {
       laydown,
       glideEnd,
+      claimAt,
       captionStart,
       captionInEnd,
       captionHoldEnd,
@@ -921,11 +930,10 @@
     return PROMO_GLIDE.layDownMs;
   }
 
-  function glideRate(mode, timeMs) {
-    const speed = glideSpeed(Math.max(0, timeMs - glideEventStart()));
+  function glideStampLeadMs(speed) {
     const span = Math.max(1, PROMO_GLIDE.speedTo - PROMO_GLIDE.speedFrom);
     const u = Math.min(1, Math.max(0, (speed - PROMO_GLIDE.speedFrom) / span));
-    return mode === 'pitch' ? 34 + u * 46 : 28 + u * 72;
+    return 900 + (60 - 900) * u;
   }
 
   function glideKeepsStamp(cell, mode) {
@@ -943,57 +951,49 @@
       && screen.cy < frame.height - insetY;
   }
 
-  function glideBand(cell, cam, unit, frame) {
-    const screen = glideCellScreen(cell, cam, unit, frame);
-    const col = screen.cx < frame.width * 0.34 ? 0 : screen.cx > frame.width * 0.66 ? 2 : 1;
-    const row = screen.cy < frame.height * 0.48 ? 0 : 1;
-    return row * 3 + col;
+  function glideMiddleAt(cell, frame, mode, timeMs) {
+    const previous = glideActiveTilt;
+    glideActiveTilt = glideTiltAt(timeMs, mode) * Math.PI / 180;
+    const hit = glideMiddle(cell, glideCamera(timeMs), glideUnit(frame), frame);
+    glideActiveTilt = previous;
+    return hit;
+  }
+
+  function glideMiddleEntry(cell, frame, mode, now) {
+    if (!glideMiddleAt(cell, frame, mode, now)) return null;
+    const start = glideEventStart();
+    if (glideMiddleAt(cell, frame, mode, start)) return start;
+    let lo = start;
+    let hi = now;
+    for (let step = 0; step < 14; step += 1) {
+      const mid = (lo + hi) / 2;
+      if (glideMiddleAt(cell, frame, mode, mid)) hi = mid;
+      else lo = mid;
+    }
+    return hi;
   }
 
   function glideEvents(mode, frame) {
     const key = `${mode}:${frame.width}x${frame.height}`;
     if (glideEventCache.key === key) return glideEventCache.list;
     const list = [];
-    const used = new Set();
+    const seen = new Set();
     const end = PROMO_GLIDE.layDownMs + PROMO_GLIDE.rampMs;
-    let debt = 0;
-    const salt = mode === 'pitch' ? 11 : 5;
     for (let time = glideEventStart(); time < end; time += PROMO_GLIDE.stepMs) {
-      debt += glideRate(mode, time) * PROMO_GLIDE.stepMs / 1000;
-      if (debt < 1) continue;
       const view = glideCells(time, frame, mode);
-      while (debt >= 1) {
-        const open = view.cells.filter((cell) => {
-          if (used.has(cell.key) || !glideKeepsStamp(cell, mode)) return false;
-          return glideMiddle(cell, view.span.cam, view.span.unit, frame);
-        });
-        if (!open.length) {
-          debt = Math.min(debt, 1.5);
-          break;
-        }
-        const bands = [[], [], [], [], [], []];
-        open.forEach((cell) => {
-          bands[glideBand(cell, view.span.cam, view.span.unit, frame)].push(cell);
-        });
-        const startBand = Math.floor(wallSeededUnit(list.length + 3, salt) * bands.length);
-        let pick = null;
-        for (let step = 0; step < bands.length; step += 1) {
-          const band = bands[(startBand + step) % bands.length];
-          if (!band.length) continue;
-          pick = band[Math.floor(wallSeededUnit(list.length + 1, salt + step) * band.length)];
-          break;
-        }
-        if (!pick) break;
-        debt -= 1;
-        used.add(pick.key);
-        const delay = Math.round(wallSeededUnit(list.length * 3, mode === 'pitch' ? 29 : 19) * 120);
+      view.cells.forEach((cell) => {
+        if (seen.has(cell.key) || !glideKeepsStamp(cell, mode)) return;
+        if (!glideMiddle(cell, view.span.cam, view.span.unit, frame)) return;
+        seen.add(cell.key);
+        const entry = glideMiddleEntry(cell, frame, mode, time) ?? time;
+        const speed = glideCamera(entry).speed;
         list.push({
-          t: Math.max(glideEventStart(), Math.min(end - 1, time + delay)),
-          key: pick.key,
-          row: pick.row,
-          col: pick.col,
+          t: entry + glideStampLeadMs(speed),
+          key: cell.key,
+          row: cell.row,
+          col: cell.col,
         });
-      }
+      });
     }
     const lead = glideLeadCell(frame);
     if (lead) {
@@ -3420,13 +3420,49 @@
 
   function applyMockupShape(node, device, width) {
     const radius = gridMockupRadius(device, width);
-    const edge = Math.max(2, width * 0.005);
+    const edge = Math.max(3, width * 0.008);
     node.style.borderRadius = `${radius.toFixed(2)}px`;
     node.style.clipPath = '';
     node.style.overflow = 'hidden';
     node.style.outline = '1px solid rgba(28, 24, 20, 0.06)';
     node.style.outlineOffset = '-1px';
-    node.style.boxShadow = `0 ${edge.toFixed(1)}px 0 #e4e0da, 0 18px 40px -14px rgba(28, 24, 20, 0.08)`;
+    node.style.boxShadow = `0 ${edge.toFixed(1)}px 0 #e4e0da, 0 22px 46px -14px rgba(28, 24, 20, 0.11), 0 6px 10px -8px rgba(28, 24, 20, 0.07)`;
+  }
+
+  function glideElevationLevel(mode, age) {
+    if (age == null || age < 0) return 1;
+    const u = Math.min(1, age / 260);
+    if (mode === 'pitch') return 1 + 1.2 * (1 - (1 - u) ** 3);
+    const ease = u * u * (3 - 2 * u);
+    return 1 - 0.85 * ease;
+  }
+
+  function paintGlideElevation(node, cell, unit, mode, age) {
+    const width = cell.w * unit;
+    const height = cell.h * unit;
+    const level = glideElevationLevel(mode, age);
+    const rounded = Math.round(level * 20) / 20;
+    const widthKey = String(Math.round(width));
+    if (node.dataset.elevation !== String(rounded) || node.dataset.elevationW !== widthKey) {
+      node.dataset.elevation = String(rounded);
+      node.dataset.elevationW = widthKey;
+      const edge = Math.max(3, width * 0.008) * Math.max(0.2, rounded);
+      const drop = 22 * Math.max(0.35, rounded);
+      const blur = 46 * (0.7 + Math.min(rounded, 2.2) * 0.2);
+      const alpha = Math.min(0.2, 0.11 * Math.max(0.4, rounded));
+      const pressed = rounded < 0.95;
+      node.style.boxShadow = `0 ${edge.toFixed(1)}px 0 #e4e0da, 0 ${drop.toFixed(1)}px ${blur.toFixed(1)}px -14px rgba(28, 24, 20, ${alpha.toFixed(3)}), 0 ${pressed ? 8 : 6}px 10px -8px rgba(28, 24, 20, ${pressed ? 0.18 : 0.07})`;
+      const scale = rounded <= 1
+        ? 0.985 + 0.015 * ((rounded - 0.15) / 0.85)
+        : 1 + (rounded - 1) * 0.015;
+      const lift = rounded > 1 ? -height * 0.015 * ((rounded - 1) / 1.2) : 0;
+      node.dataset.cardScale = Math.max(0.97, scale).toFixed(4);
+      node.dataset.cardLift = lift.toFixed(2);
+    }
+    const scale = node.dataset.cardScale || '1';
+    const lift = Number(node.dataset.cardLift) || 0;
+    node.style.transformOrigin = 'center bottom';
+    node.style.transform = `translate3d(${(cell.x * unit).toFixed(2)}px, ${(cell.y * unit + lift).toFixed(2)}px, 0) scale(${scale})`;
   }
 
   function loadPromoStores() {
@@ -3695,6 +3731,17 @@
       css += `${prop}:${value};`;
     }
     target.setAttribute('style', css);
+    if (source instanceof HTMLCanvasElement) {
+      const img = document.createElement('img');
+      img.setAttribute('style', css);
+      try {
+        img.src = source.toDataURL('image/png');
+      } catch (error) {
+        return;
+      }
+      target.replaceWith(img);
+      return;
+    }
     const count = Math.min(source.children.length, target.children.length);
     for (let index = 0; index < count; index += 1) {
       inlineRasterTree(source.children[index], target.children[index]);
@@ -3723,6 +3770,7 @@
     if (width < 8 || height < 8) return '';
     const clone = node.cloneNode(true);
     clone.setAttribute('xmlns', 'http://www.w3.org/1999/xhtml');
+    clone.querySelectorAll('.promo-close__veil, .promo-close__mark, .promo-glide__veil, .promo-glide__mark, .promo-glide__lost-mark, .promo-close__lost-mark').forEach((veil) => veil.remove());
     inlineRasterTree(node, clone);
     clone.style.transform = 'none';
     clone.style.position = 'relative';
@@ -4039,15 +4087,26 @@
       }
       line.style.transform = '';
       const frame = this.root.getBoundingClientRect();
-      const lineBox = line.getBoundingClientRect();
-      if (frame.width < 40 || lineBox.width < 40) return;
-      const avatarW = PROMO_AVATAR_BOX_W * PROMO_AVATAR_MAX_SCALE;
-      const group = lineBox.width + PROMO_REVEAL_GAP_PX + avatarW;
+      const words = [...line.querySelectorAll('.promo-opening__word')];
+      let textLeft = Infinity;
+      let textRight = -Infinity;
+      words.forEach((word) => {
+        const box = word.getBoundingClientRect();
+        if (box.width < 1 || box.height < 1) return;
+        textLeft = Math.min(textLeft, box.left);
+        textRight = Math.max(textRight, box.right);
+      });
+      const textWidth = textRight - textLeft;
+      if (frame.width < 40 || textWidth < 40 || !Number.isFinite(textLeft)) return;
+      const boxW = PROMO_AVATAR_BOX_W * PROMO_AVATAR_MAX_SCALE;
+      const avatarW = boxW * PROMO_REVEAL_BODY;
+      const group = textWidth + PROMO_REVEAL_GAP_PX + avatarW;
       const groupLeft = frame.left + Math.max(0, (frame.width - group) / 2);
-      const shift = groupLeft - lineBox.left;
+      const shift = groupLeft - textLeft;
       line.style.transform = `translateX(${shift.toFixed(1)}px)`;
-      const widgetRight = frame.right - (groupLeft + lineBox.width + PROMO_REVEAL_GAP_PX + avatarW);
-      this.root.style.setProperty('--promo-reveal-right', `${Math.max(0, widgetRight).toFixed(1)}px`);
+      const visibleLeft = groupLeft + textWidth + PROMO_REVEAL_GAP_PX;
+      const widgetRight = frame.right - visibleLeft - boxW / 2 - avatarW / 2 + PROMO_REVEAL_BODY_SHIFT_PX;
+      this.root.style.setProperty('--promo-reveal-right', `${widgetRight.toFixed(1)}px`);
     }
 
     fitOpeningLayout() {
@@ -4357,14 +4416,6 @@
       });
     }
 
-    flashSweep(node) {
-      if (!node) return;
-      const veil = document.createElement('div');
-      veil.className = 'promo-sweep';
-      node.append(veil);
-      window.setTimeout(() => veil.remove(), 300);
-    }
-
     clearPitchEvents() {
       this.painStore()?.querySelector('[data-promo-widget-events]')?.replaceChildren();
       document.querySelectorAll('[data-activity-laser]').forEach((node) => node.remove());
@@ -4575,23 +4626,23 @@
       };
       emitShopper(shown);
       this.paintPitchEvent(shown);
-      this.flashSweep(stage);
       await waitMs(reduced ? 40 : PROMO_PITCH_NARROW_MS);
       applyMomentPose(stage, 'choice', { instant: reduced });
       await waitMs(reduced ? 40 : PROMO_PITCH_COMPARE_MS);
-      applyMomentPose(stage, 'close', { instant: reduced });
+      applyMomentPose(stage, 'doubt', { instant: reduced });
+      const board = stage?.querySelector('.promo-moments__board');
+      board?.classList.add('is-doubts-hidden');
       const opened = {
         kind: 'product',
         product: { title: 'The light one', url: 'https://bizmis.ai/demo/light' },
       };
       emitShopper(opened);
       this.paintPitchEvent(opened);
-      this.flashSweep(stage?.querySelector('.promo-moments__card.is-pick'));
       await first;
       markPromoVo('narrows');
       if (!reduced) await waitMs(promoVoGuard('narrows'));
       this.clearPitchEvents();
-      applyMomentPose(stage, 'doubt', { instant: reduced });
+      board?.classList.remove('is-doubts-hidden');
       const typed = this.typeShopperLine(PROMO_PITCH_LINE_2);
       const second = playClerkLine(PROMO_PITCH_CLERK_2, reduced ? 200 : PROMO_PITCH_SPEAK_2_MS, () => { });
       this.paintPitchEvent({ kind: 'policies' });
@@ -4599,9 +4650,13 @@
         typed,
         waitMs(reduced ? 40 : PROMO_PITCH_DOUBT_MS),
       ]);
+      const cartLandMs = PROMO_MOMENTS_VAPOR_MS + PROMO_MOMENTS_CART_GAP_MS + 220;
+      const closeMs = PROMO_PITCH_POOF_MS + 1400;
       if (!reduced) {
         applyMomentPose(stage, 'close');
-        await waitMs(PROMO_PITCH_POOF_MS);
+        await waitMs(cartLandMs);
+      } else {
+        applyMomentPose(stage, 'close', { instant: true });
       }
       host?.classList.add('is-cart-one');
       const cartOne = {
@@ -4611,8 +4666,7 @@
       };
       emitShopper(cartOne);
       this.paintPitchEvent(cartOne);
-      this.flashSweep(this.painStore()?.querySelector('.promo-moments__cart'));
-      await waitMs(reduced ? 40 : 1400);
+      if (!reduced) await waitMs(Math.max(0, closeMs - cartLandMs));
       applyMomentPose(stage, 'bundle', { instant: reduced });
       host?.classList.remove('is-cart-one');
       host?.classList.add('is-cart-two');
@@ -4623,15 +4677,25 @@
       };
       emitShopper(cartSleeve);
       this.paintPitchEvent(cartSleeve);
-      this.flashSweep(stage?.querySelector('.promo-moments__card.is-extra') || this.painStore()?.querySelector('.promo-moments__cart'));
       await second;
       await waitMs(reduced ? 40 : 1600);
       this.painStore()?.querySelectorAll('.promo-close__veil, .promo-close__mark, .promo-glide__lost-mark, .promo-glide__veil').forEach((node) => node.remove());
       await this.markCloseStoreSold();
+      await this.rememberPitchLead();
       endOpeningAgent();
       markPromoVo('closes');
       await this.releaseLiveCard();
       this.playPitchConveyor();
+    }
+
+    async rememberPitchLead() {
+      const store = this.painStore();
+      if (!store) return;
+      const previous = glideLeadDevice;
+      glideLeadDevice = 'desktop';
+      this.pitchLeadKey = glideLeadCell(this.gridFrame())?.key || '';
+      glideLeadDevice = previous;
+      await this.rememberRaster(store, this.pitchLeadKey);
     }
 
     bizmisLook() {
@@ -5344,21 +5408,13 @@
       return light;
     }
 
-    paintPassLight(color, durationMs) {
-      const light = this.ensurePassLight();
-      if (!light) return;
+    paintPassLight(color) {
       window.clearTimeout(this.passLightTimer);
-      if (!color) {
-        light.style.animation = 'none';
-        light.style.opacity = '0';
-        return;
-      }
-      const duration = Math.max(700, Number(durationMs) || 1600);
-      light.style.animation = 'none';
-      light.style.backgroundColor = color;
-      light.style.opacity = '0';
-      light.getBoundingClientRect();
-      light.style.animation = `promo-pass-ambient ${duration}ms linear both`;
+      this.root.classList.add('is-pass-dim');
+      if (!color) return;
+      this.passLightTimer = window.setTimeout(() => {
+        this.root.classList.remove('is-pass-dim');
+      }, 120);
     }
 
     orderPassStores() {
@@ -5408,21 +5464,27 @@
         const carousel = this.carouselTrack?.parentElement;
         if (carousel) carousel.style.position = 'static';
         const width = Math.min(canvas.width * 0.7, canvas.height * 0.62 * (1024 / 640));
+        const height = width * (640 / 1024);
         const origin = host.getBoundingClientRect();
         const left = canvas.left + (canvas.width - width) / 2 - origin.left;
+        host.style.perspective = '1600px';
+        host.style.setProperty('--wheel-r', `${Math.round(height * 0.72)}px`);
         slides.forEach((slide) => {
           slide.style.position = 'absolute';
           slide.style.width = `${width.toFixed(1)}px`;
           slide.style.margin = '0';
           slide.style.right = 'auto';
           slide.style.left = `${left.toFixed(1)}px`;
+          slide.style.top = '';
+          slide.style.transform = '';
+          slide.style.transformOrigin = '';
         });
       };
       const step = () => {
         const store = this.stores[index];
         if (store) {
           this.arriveStore(store);
-          this.paintPassLight(store.accent, durations[index]);
+          this.paintPassLight(store.accent);
         }
         this.paintWave(index, 1, 0.5, 1);
         placePassSlides();
@@ -5564,8 +5626,9 @@
       }
       const slot = this.ensurePassSlot();
       if (copy.shopify) {
-        this.root.classList.add('is-ea-logo');
         slot?.classList.add('is-in');
+        await waitMs(80);
+        this.root.classList.add('is-ea-logo');
         await waitMs(PROMO_EA_LOGO_LEAD_MS);
         slot?.classList.add('is-action-in');
         this.root.classList.add('is-ea-in', 'is-ea-action');
@@ -7231,7 +7294,8 @@
       field.setAttribute('data-promo-grid-field', '');
       const lead = document.createElement('div');
       lead.className = 'promo-glide__lead';
-      const clone = mode === 'pain' && this.cellRasters?.size ? null : this.gridLeadNode(mode);
+      const pitchRaster = mode === 'pitch' && this.pitchLeadKey && this.cellRasters?.has(this.pitchLeadKey);
+      const clone = (mode === 'pain' && this.cellRasters?.size) || pitchRaster ? null : this.gridLeadNode(mode);
       if (clone) lead.append(clone);
       const viewWrap = document.createElement('div');
       viewWrap.className = 'promo-glide__view';
@@ -7247,7 +7311,20 @@
         body.className = 'promo-glide__caption-body';
         const text = document.createElement('p');
         text.className = 'promo-glide__caption-text';
-        text.textContent = GLIDE_PAIN_CAPTION;
+        let beat = 0;
+        GLIDE_PAIN_CAPTION.forEach((line) => {
+          const row = document.createElement('span');
+          row.className = 'promo-glide__caption-line';
+          line.forEach((part) => {
+            const span = document.createElement('span');
+            span.className = 'promo-glide__caption-beat';
+            span.dataset.captionBeat = String(beat);
+            span.textContent = part;
+            beat += 1;
+            row.append(span);
+          });
+          text.append(row);
+        });
         body.append(text, buildPainPoof());
         caption.append(haze, body);
       }
@@ -7264,7 +7341,7 @@
         }
         : null;
       this.glideLeadStart = start;
-      this.glideLeadKey = glideLeadCell(frame)?.key || '';
+      this.glideLeadKey = (mode === 'pitch' && this.pitchLeadKey) || glideLeadCell(frame)?.key || '';
       this.glideZoomFrom = 0;
       this.glideZoomFromY = 0;
       this.glideAnchor = null;
@@ -7405,7 +7482,6 @@
         node.style.width = `${width.toFixed(2)}px`;
         node.style.height = `${height.toFixed(2)}px`;
         if (parts.lost) parts.lost.style.fontSize = lostMarkSize(width);
-        node.style.transform = `translate3d(${(cell.x * unit).toFixed(2)}px, ${(cell.y * unit).toFixed(2)}px, 0)`;
         applyMockupShape(node, cell.device, width);
         const still = parts.still;
         const video = parts.video;
@@ -7443,13 +7519,6 @@
       }
       if (stillNode) writeHidden(stillNode, showVideo || this.cellRasters?.has(cell.key));
       node.hidden = false;
-      if (this.cellRasters?.has(cell.key)) {
-        writePaint(parts.veil, 'opacity', '0');
-        writePaint(parts.mark, 'opacity', '0');
-        writePaint(parts.lost, 'opacity', '0');
-        if (fx) writeHidden(fx, true);
-        return true;
-      }
       const leadLost = mode !== 'pitch' && (
         (this.glideLeadStamped && cell.key === this.glideLeadKey)
         || this.painLostKeys?.has(cell.key)
@@ -7460,6 +7529,7 @@
         writePaint(parts.lost, 'opacity', '0');
         if (fx) writeHidden(fx, true);
         node.classList.remove('is-dusting');
+        paintGlideElevation(node, cell, view.span.unit, mode, null);
         return true;
       }
       const age = leadLost ? PROMO_CHECK_SETTLE_MS + 1000 : timeMs - event.t;
@@ -7477,6 +7547,7 @@
       }
       if (fx) writeHidden(fx, true);
       node.classList.remove('is-dusting');
+      paintGlideElevation(node, cell, view.span.unit, mode, age);
       return true;
     }
 
@@ -7490,17 +7561,23 @@
       const show = timeMs >= marks.captionStart;
       caption.hidden = !show;
       if (!show) return;
-      if (!this.voNumbersGame) {
+      if (!this.voNumbersGame && timeMs >= marks.claimAt) {
         this.voNumbersGame = true;
         markPromoVo('numbers-game');
       }
-      const inU = Math.min(1, (timeMs - marks.captionStart) / PROMO_GLIDE.captionInMs);
-      const inEase = inU * inU * (3 - 2 * inU);
+      const beatMs = PROMO_GLIDE.captionInMs + PROMO_GLIDE.captionPauseMs;
       const exitSpan = Math.max(1, marks.captionPoofEnd - marks.captionHoldEnd);
       const exitU = timeMs <= marks.captionHoldEnd ? 0 : Math.min(1, (timeMs - marks.captionHoldEnd) / exitSpan);
-      const fade = exitU <= 0 ? inEase : inEase * (1 - exitU);
-      text.style.opacity = Math.max(0, fade).toFixed(3);
-      if (haze) haze.style.opacity = Math.max(0, fade).toFixed(3);
+      const exitFade = 1 - exitU;
+      text.querySelectorAll('[data-caption-beat]').forEach((beat) => {
+        const start = marks.captionStart + Number(beat.dataset.captionBeat) * beatMs;
+        const inU = Math.min(1, Math.max(0, (timeMs - start) / PROMO_GLIDE.captionInMs));
+        const inEase = inU * inU * (3 - 2 * inU);
+        beat.style.opacity = Math.max(0, inEase * exitFade).toFixed(3);
+      });
+      const hazeIn = Math.min(1, Math.max(0, (timeMs - marks.captionStart) / PROMO_GLIDE.captionInMs));
+      const hazeEase = hazeIn * hazeIn * (3 - 2 * hazeIn);
+      if (haze) haze.style.opacity = Math.max(0, hazeEase * exitFade).toFixed(3);
       if (poof) poof.style.opacity = '0';
       if (timeMs >= marks.captionPoofEnd) caption.hidden = true;
     }
@@ -8825,8 +8902,10 @@
         return;
       }
       this.glideKeepStore = false;
+      const pitchRaster = this.pitchLeadKey ? this.cellRasters?.get(this.pitchLeadKey) : null;
       this.cellRasters = new Map();
       this.painLostKeys = new Set();
+      if (pitchRaster && this.pitchLeadKey) this.cellRasters.set(this.pitchLeadKey, pitchRaster);
       this.captureGlideClose('pitch');
       if (!this.pitchCardsPlayed) await this.markCloseStoreSold();
       if (generation !== this.scaleGeneration) return;

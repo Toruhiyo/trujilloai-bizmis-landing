@@ -197,10 +197,10 @@ html.is-promo-opening.is-promo-depart .promo-opening {
 
 .promo-opening__center {
   position: absolute;
-  top: 45%;
-  left: 50%;
+  inset: 0;
   z-index: 1;
-  transform: translate(-50%, -50%);
+  display: grid;
+  place-items: center;
 }
 
 .promo-mark {
@@ -312,9 +312,11 @@ html.is-promo-opening.is-promo-depart .promo-opening {
 }
 
 .promo-opening__toggle {
-  display: flex;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
   align-items: center;
-  gap: 36px;
+  column-gap: 58px;
+  width: 100%;
   padding: 0;
   border: 0;
   background: none;
@@ -334,7 +336,7 @@ html.is-promo-opening.is-promo-depart .promo-opening {
   position: relative;
   font-family: var(--font-heading);
   font-weight: 700;
-  font-size: 52px;
+  font-size: 84px;
   line-height: 1.08;
   letter-spacing: -0.03em;
   white-space: nowrap;
@@ -385,8 +387,8 @@ html.is-promo-opening.is-promo-depart .promo-opening {
   display: block;
   position: relative;
   flex: 0 0 auto;
-  width: 248px;
-  height: 86px;
+  width: 396px;
+  height: 136px;
   border: 1px solid var(--ad-line);
   border-radius: 999px;
   background: var(--ad-line);
@@ -395,10 +397,10 @@ html.is-promo-opening.is-promo-depart .promo-opening {
 
 .promo-opening__knob {
   position: absolute;
-  top: 6px;
-  left: 6px;
-  width: 74px;
-  height: 74px;
+  top: 8px;
+  left: 8px;
+  width: 120px;
+  height: 120px;
   border-radius: 50%;
   background: var(--ad-white);
   box-shadow: 0 1px 3px color-mix(in srgb, var(--ad-ink) 16%, transparent), 0 1px 1px color-mix(in srgb, var(--ad-ink) 8%, transparent);
@@ -407,7 +409,7 @@ html.is-promo-opening.is-promo-depart .promo-opening {
 }
 
 .promo-opening.is-on .promo-opening__knob {
-  transform: translate3d(162px, 0, 0);
+  transform: translate3d(260px, 0, 0);
 }
 
 .promo-opening__knob-on {
@@ -423,12 +425,17 @@ html.is-promo-opening.is-promo-depart .promo-opening {
   opacity: 1;
 }
 
+.promo-opening__choice--left {
+  justify-self: end;
+}
+
 .promo-opening__choice--left,
 .promo-opening__switch {
   transition: opacity 160ms linear;
 }
 
 .promo-opening__choice--right {
+  justify-self: start;
   transform-origin: center center;
   transition: transform var(--promo-center, 900ms) cubic-bezier(0.45, 0.05, 0.2, 1);
 }
@@ -747,20 +754,6 @@ html.is-promo-opening.is-promo-depart .promo-opening {
   font-size: 1.05rem;
   line-height: 1.35;
   box-shadow: 0 10px 28px color-mix(in srgb, var(--ad-ink) 12%, transparent);
-}
-
-.promo-sweep {
-  position: absolute;
-  inset: 0;
-  z-index: 5;
-  pointer-events: none;
-  background: color-mix(in srgb, var(--bizmis-primary) 46%, transparent);
-  animation: promo-sweep 300ms ease forwards;
-}
-
-@keyframes promo-sweep {
-  from { opacity: 0.9; }
-  to { opacity: 0; }
 }
 
 .promo-opening__moments.is-cart-one .promo-moments__count.is-one,
@@ -4303,6 +4296,13 @@ html.is-promo-opening.is-promo-depart .promo-opening {
 
 .is-pose-close:not(.is-settled):not(.is-reduced) .promo-moments__vapor-bit {
   animation: promo-moments-vapor-bit 980ms cubic-bezier(0.22, 1, 0.36, 1) calc(var(--vapor-stagger, 0ms) + var(--bit-delay, 0ms)) forwards;
+}
+
+.promo-moments__board.is-doubts-hidden.is-pose-doubt .promo-moments__orbit,
+.promo-moments__board.is-doubts-hidden.is-pose-doubt .promo-moments__bubble,
+.promo-moments__board.is-doubts-hidden.is-pose-doubt .promo-moments__vapor-bit {
+  opacity: 0;
+  animation: none;
 }
 
 .is-pose-close:not(.is-settled):not(.is-reduced) .promo-moments__card.is-pick {
@@ -8807,15 +8807,30 @@ html.is-promo-still .promo-clip__product.is-compare::after {
 }
 
 .promo-glide__caption-text {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   margin: 0;
   color: var(--ad-ink);
   font-family: var(--font-heading);
   font-weight: 700;
   font-size: clamp(3.4rem, 6.4vw, 5.6rem);
-  line-height: 1.02;
+  line-height: 1.08;
   letter-spacing: -0.035em;
   text-align: center;
+}
+
+.promo-glide__caption-line {
+  display: block;
   white-space: nowrap;
+}
+
+.promo-glide__caption-beat {
+  opacity: 0;
+}
+
+.promo-glide__caption-line .promo-glide__caption-beat + .promo-glide__caption-beat {
+  margin-left: 0.28em;
 }
 
 .promo-glide__caption .promo-glide__poof {
@@ -9047,6 +9062,11 @@ html.is-promo-still .promo-clip__product.is-compare::after {
   opacity: 1;
 }
 
+.promo-opening.is-store-pass .promo-opening__wave-field {
+  opacity: 0;
+  visibility: hidden;
+}
+
 .promo-opening.is-store-pass .promo-glide__field {
   z-index: 1;
   opacity: 1;
@@ -9055,24 +9075,7 @@ html.is-promo-still .promo-clip__product.is-compare::after {
 }
 
 .promo-pass-light {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  z-index: 3;
-  width: 130vw;
-  height: 120vh;
-  border-radius: 50%;
-  transform: translate(-50%, -50%);
-  filter: blur(48px) saturate(1.8);
-  mix-blend-mode: multiply;
-  opacity: 0;
-  pointer-events: none;
-}
-
-@keyframes promo-pass-ambient {
-  0% { opacity: 0.72; transform: translate(-68%, -40%); }
-  45% { opacity: 1; transform: translate(-34%, -62%); }
-  100% { opacity: 0.7; transform: translate(-52%, -32%); }
+  display: none;
 }
 
 .promo-opening.is-store-pass .promo-glide__view,
@@ -9110,12 +9113,20 @@ html.is-promo-still .promo-clip__product.is-compare::after {
 .promo-opening.is-ea-card.is-pass-slot .promo-scale__end-hero {
   top: calc(50% - 9.4rem);
   opacity: 0;
-  transition: opacity 700ms cubic-bezier(0.22, 1, 0.36, 1);
+  transform: translate(-50%, -100%) scale(5);
+  filter: blur(18px);
 }
 
 .promo-opening.is-ea-card.is-ea-logo .promo-scale__end-hero,
-.promo-opening.is-ea-card.is-ea-in .promo-scale__end-hero {
+.promo-opening.is-ea-card.is-ea-in .promo-scale__end-hero,
+.promo-opening.is-ea-card.is-pass-slot.is-settled .promo-scale__end-hero {
   opacity: 1;
+  transform: translate(-50%, -100%) scale(1);
+  filter: blur(0);
+  transition:
+    opacity 640ms ease,
+    transform 860ms cubic-bezier(0.16, 1.12, 0.32, 1),
+    filter 640ms ease;
 }
 
 .promo-opening.is-pass-slot .promo-scale__mark {
@@ -9146,6 +9157,7 @@ html.is-promo-still .promo-clip__product.is-compare::after {
   opacity: 1;
   overflow: visible;
   pointer-events: none;
+  perspective: 1600px;
 }
 
 .promo-opening.is-store-pass.is-see-wave.is-see-row .promo-opening__stores {
@@ -9173,23 +9185,28 @@ html.is-promo-still .promo-clip__product.is-compare::after {
   width: min(70cqw, calc(62cqh * 1024 / 640));
   margin: 0;
   visibility: hidden;
-  transform: translateY(120%);
+  opacity: 0;
+  transform-origin: center center;
+  transform: translateY(120%) rotateX(-70deg);
   transition: none;
 }
 
 .promo-opening.is-store-pass .promo-opening__slide.is-pass-current,
 .promo-opening.is-store-pass .promo-opening__slide.is-pass-leaving {
   visibility: visible;
-  opacity: 1;
-  transition: transform 640ms cubic-bezier(0.22, 1, 0.36, 1);
+  transition:
+    transform 640ms cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 640ms linear;
 }
 
 .promo-opening.is-store-pass .promo-opening__slide.is-pass-current {
-  transform: translateY(-46%);
+  opacity: 1;
+  transform: translateY(-46%) rotateX(0deg);
 }
 
 .promo-opening.is-store-pass .promo-opening__slide.is-pass-leaving {
-  transform: translateY(-160%);
+  opacity: 0;
+  transform: translateY(-160%) rotateX(70deg);
 }
 
 .promo-opening.is-store-pass .promo-opening__slide-hero {
@@ -9259,9 +9276,18 @@ html.is-promo-still .promo-clip__product.is-compare::after {
   height: auto;
   aspect-ratio: 1024 / 640;
   background: var(--ad-white);
-  box-shadow: 0 28px 70px color-mix(in srgb, var(--promo-store-accent, #888) 22%, transparent);
-  backdrop-filter: none;
   border-radius: 28px;
+  backdrop-filter: none;
+  box-shadow:
+    0 0 0 2px color-mix(in srgb, var(--promo-store-accent, transparent) 55%, transparent),
+    0 0 16px 2px color-mix(in srgb, var(--promo-store-accent, transparent) 70%, transparent),
+    0 16px 36px rgba(28, 24, 20, 0.12);
+  transition: box-shadow 320ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.promo-opening.is-store-pass.is-pass-dim .promo-opening__slide-card {
+  box-shadow: 0 12px 28px rgba(28, 24, 20, 0.1);
+  transition: box-shadow 120ms linear;
 }
 
 .promo-opening.is-pass-slot .promo-opening__stores,
@@ -9935,10 +9961,11 @@ html.is-promo-clip.is-clip-moment.is-clip-tablet .bizmis-viewport-portal-root {
 .promo-opening.is-pitch-cards.is-moments .promo-opening__store.is-desktop .promo-moments__board.is-pose-doubt .promo-moments__card.is-pick,
 .promo-opening.is-pitch-cards.is-moments .promo-opening__store.is-desktop .promo-moments__board.is-pose-close .promo-moments__card.is-pick {
   display: grid;
-  grid-template-columns: 44% minmax(200px, 300px) minmax(0, 1fr);
+  grid-template-columns: 44% minmax(0, 1fr);
+  grid-template-rows: auto auto 1fr;
   align-content: start;
-  column-gap: 32px;
-  padding: 28px;
+  column-gap: 40px;
+  padding: 36px;
 }
 
 .promo-opening.is-pitch-cards.is-moments .promo-opening__store.is-desktop .promo-moments__board.is-pose-close .promo-moments__card.is-pick .promo-moments__photo,
@@ -9947,7 +9974,7 @@ html.is-promo-clip.is-clip-moment.is-clip-tablet .bizmis-viewport-portal-root {
   left: auto;
   top: auto;
   grid-column: 1;
-  grid-row: 1 / span 3;
+  grid-row: 1 / -1;
   width: 100%;
   height: auto;
   max-height: none;
@@ -9966,23 +9993,53 @@ html.is-promo-clip.is-clip-moment.is-clip-tablet .bizmis-viewport-portal-root {
   grid-row: 1;
   align-self: start;
   width: auto;
+  max-width: 460px;
   margin: 0;
+  font-size: 2px;
+  gap: 18px;
 }
 
 .promo-opening.is-pitch-cards.is-moments .promo-opening__store.is-desktop .promo-moments__board.is-pose-doubt .promo-moments__card.is-pick .promo-moments__meta::before,
 .promo-opening.is-pitch-cards.is-moments .promo-opening__store.is-desktop .promo-moments__board.is-pose-close .promo-moments__card.is-pick .promo-moments__meta::before {
-  height: 3.4em;
-  margin-bottom: 22px;
+  height: 60px;
+  margin: 8px 0 0;
   border-radius: 0;
   background:
-    linear-gradient(var(--ad-line), var(--ad-line)) 0 0 / 92% 0.42em no-repeat,
-    linear-gradient(var(--ad-line), var(--ad-line)) 0 1.2em / 74% 0.42em no-repeat,
-    linear-gradient(var(--ad-line), var(--ad-line)) 0 2.4em / 58% 0.42em no-repeat;
+    linear-gradient(var(--ad-line), var(--ad-line)) 0 0 / 100% 12px no-repeat,
+    linear-gradient(var(--ad-line), var(--ad-line)) 0 24px / 92% 12px no-repeat,
+    linear-gradient(var(--ad-line), var(--ad-line)) 0 48px / 70% 12px no-repeat;
 }
 
 .promo-opening.is-pitch-cards.is-moments .promo-opening__store.is-desktop .promo-moments__board.is-pose-doubt .promo-moments__card.is-pick .promo-moments__title,
 .promo-opening.is-pitch-cards.is-moments .promo-opening__store.is-desktop .promo-moments__board.is-pose-close .promo-moments__card.is-pick .promo-moments__title {
+  position: relative;
+  width: 92%;
+  height: 28px;
+  margin-bottom: 46px;
+  border-radius: 8px;
+}
+
+.promo-opening.is-pitch-cards.is-moments .promo-opening__store.is-desktop .promo-moments__board.is-pose-doubt .promo-moments__card.is-pick .promo-moments__title::after,
+.promo-opening.is-pitch-cards.is-moments .promo-opening__store.is-desktop .promo-moments__board.is-pose-close .promo-moments__card.is-pick .promo-moments__title::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 38px;
   width: 72%;
+  height: 28px;
+  border-radius: 8px;
+  background: var(--ad-line);
+}
+
+.promo-opening.is-pitch-cards.is-moments .promo-opening__store.is-desktop .promo-moments__board.is-pose-doubt .promo-moments__card.is-pick .promo-moments__price b,
+.promo-opening.is-pitch-cards.is-moments .promo-opening__store.is-desktop .promo-moments__board.is-pose-close .promo-moments__card.is-pick .promo-moments__price b {
+  font-size: 48px;
+}
+
+.promo-opening.is-pitch-cards.is-moments .promo-opening__store.is-desktop .promo-moments__board.is-pose-doubt .promo-moments__card.is-pick .promo-moments__price i,
+.promo-opening.is-pitch-cards.is-moments .promo-opening__store.is-desktop .promo-moments__board.is-pose-close .promo-moments__card.is-pick .promo-moments__price i {
+  width: 28%;
+  height: 22px;
 }
 
 .promo-opening.is-pitch-cards.is-moments .promo-opening__store.is-desktop .promo-moments__board.is-pose-doubt .promo-moments__card.is-pick .promo-moments__add,
@@ -9993,9 +10050,54 @@ html.is-promo-clip.is-clip-moment.is-clip-tablet .bizmis-viewport-portal-root {
   top: auto;
   grid-column: 2;
   grid-row: 2;
+  justify-self: start;
   width: 100%;
-  height: 54px;
-  margin-top: 22px;
+  max-width: 460px;
+  height: 64px;
+  margin-top: 28px;
+}
+
+.promo-opening.is-pitch-cards.is-moments .promo-opening__store.is-desktop .promo-moments__bubble {
+  width: 4.8rem;
+  height: 4.8rem;
+  margin: -2.4rem 0 0 -2.4rem;
+  font-size: 2.2rem;
+}
+
+.promo-opening.is-pitch-cards.is-moments .promo-opening__store.is-desktop .promo-moments__vapor-bit {
+  width: 4.8rem;
+  height: 4.8rem;
+  margin: -2.4rem 0 0 -2.4rem;
+}
+
+.promo-opening.is-pitch-cards.is-moments .promo-opening__store.is-desktop .promo-moments__board.is-pose-bundle .promo-moments__card.is-pick,
+.promo-opening.is-pitch-cards.is-moments .promo-opening__store.is-desktop .promo-moments__board.is-pose-bundle .promo-moments__card.is-extra {
+  top: 48%;
+}
+
+.promo-opening.is-pitch-cards.is-moments .promo-opening__store.is-desktop .promo-moments__board.is-pose-bundle .promo-moments__card.is-pick {
+  left: 21%;
+  width: 34%;
+  --card-w: 34%;
+}
+
+.promo-opening.is-pitch-cards.is-moments .promo-opening__store.is-desktop .promo-moments__board.is-pose-bundle .promo-moments__card.is-extra {
+  left: 56%;
+  width: 26%;
+  --card-w: 26%;
+}
+
+.promo-opening.is-pitch-cards.is-moments .promo-opening__store.is-desktop .promo-moments__board.is-pose-bundle .promo-moments__plus {
+  left: 40%;
+  top: 48%;
+  width: 36px;
+  height: 36px;
+  margin: -18px 0 0 -18px;
+}
+
+.promo-opening.is-pitch-cards.is-moments .promo-opening__store.is-desktop .promo-moments__board.is-pose-bundle .promo-moments__plus svg {
+  width: 36px;
+  height: 36px;
 }
 
 .promo-opening__store.is-phone.is-orbit-open,
