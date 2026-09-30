@@ -6,7 +6,7 @@ Lines in quotes are on screen or spoken. **VO** is the narrator (recorded by Ori
 
 The film says "chatbot" and "sales agent". "Salesperson" is only the struck word in the reveal, and the narrator's line about a physical store.
 
-Two palettes, and the switch is the only transition between them. Before the knob flips, the picture is greyscale: white field, white cards, light grey product tiles, dark grey type. The products are the same renders as the warm half, with the colour taken out. LOST is a mid grey. The chatbot uses the same neutral greys as the store. From the flip onward the field is a quiet warm grey, and the skeletons, rules, and type stay neutral grey so they do not share a hue with Bizmis orange. Product tiles are stone, sand, blush, sage, or warm grey, and a product keeps its own colour. Bizmis orange means the agent acted or the sale happened: the selection ring, the Add button as it fills, the cart badge, the SOLD veil and check, the switch burst, the clerk's shirt, the mark, and the end-card wordmark. The only orange type is the reveal's "salesagent." and the words "Sales agent".
+Two palettes, and the switch is the only transition between them. Before the knob flips, the picture is greyscale: white field, white cards, light grey product tiles, dark grey type. The products are the same renders as the warm half, with the colour taken out. LOST is a mid grey. The chatbot uses the same neutral greys as the store. From the flip onward the field is a quiet warm grey, and the skeletons, rules, and type stay neutral grey so they do not share a hue with Bizmis orange. Product tiles are stone, sand, blush, sage, or warm grey. When the picture is warm, the product and its contact shadow take on that tile's tint. Cold, they stay greyscale. Bizmis orange means the agent acted or the sale happened: the selection ring, the Add button as it fills, the cart badge, the SOLD veil and check, the switch burst, the clerk's shirt, the mark, and the end-card wordmark. The only orange type is the reveal's "salesagent." and the words "Sales agent".
 
 ---
 
@@ -16,7 +16,7 @@ The desktop store is 16:10. The phone mockup is 9:19 and tall in the frame. The 
 
 ## 1. Lost in the catalog (desktop)
 
-The first close-up is a laptop window, 16:10, limited by height and larger than the sea cards. It opens the way a Mac window unminimizes, scaling up from the bottom, slow enough to read. The header "Your store" stays hidden until the catalog is there. The window finishes opening first. Then the store icon and a large "Your store" ease in above the center of the page, hold, and ease out. No spinner. The catalog does not show through the title. The header comes back with the catalog. The catalog fills the window: four columns across, two full rows under the header, more products below as the shopper moves. The cursor stays hidden until it is on a product. The shopper opens a product, goes back, bounces between two similar products, opens another, backs out.
+The first close-up is a laptop window, 16:10, limited by height and larger than the sea cards. It opens the way a Mac window unminimizes, scaling up from the bottom, slow enough to read. The header "Your store" stays hidden until the catalog is there. The window finishes opening first. Then the store icon and a large "Your store" ease in above the center of the page, hold, and ease out. No spinner. The catalog does not show through the title. The store name and the cart fade in as that title leaves. On desktop they sit inward from the window edges. The catalog fills the window: four columns across, two full rows under the header, more products below as the shopper moves. The cursor stays hidden until it is on a product. The shopper opens a product, goes back, bounces between two similar products, opens another, backs out.
 
 **VO** `two-places`: "In every online store, a sale dies in two places."
 
@@ -48,10 +48,12 @@ A grey veil and "LOST" stamp that product page. The picture under the stamp is t
 
 ## 3. The dull sea
 
-The pullback starts on that phone. The card is the same phone, one picture, tilted with the sea. No second glass pane sits flat on top of it. The desktop LOST is the card beside it, the same catalog that was just on screen, and it gets the same grey veil as every other LOST card. Each mockup has full rounded corners, a hairline edge, a slightly thicker pale side, and a soft shadow with a small contact shadow. A card stamps when it reaches the middle of the frame. The wait after that shrinks as the camera speeds up, from a long beat when the sea is slow to almost immediate at full speed. When LOST lands, that card presses down onto the floor and stays there. The frame stays full of mockup screens, with no empty stretches of field. Every card is "Your store", in the browser bar next to the store icon. Most of them stamp "LOST". While the sea is still moving, three beats come up over the tail of the glide, hold together, then fade out together before the field is solid grey. The whole pain sequence ends at the same time as before:
+The pullback starts on that phone. The card is the same phone, one picture, tilted with the sea. No second glass pane sits flat on top of it. The desktop LOST is the card beside it, the same catalog that was just on screen, and it gets the same grey veil as every other LOST card. Each mockup has full rounded corners, a hairline edge, a slightly thicker pale side, and a soft shadow with a small contact shadow. A card stamps as it crosses the middle, and at full speed that stamp lands before the card leaves the frame. Neighboring cards do not stamp together. When LOST lands, that card presses down onto the floor and stays there. The frame stays full of mockup screens, with no empty stretches of field. Every card is "Your store", in the browser bar next to the store icon. Most of them stamp "LOST". While the sea is still moving, four beats come up over the tail of the glide. The gaps between the first three are long, and the gap before the last one is longer. They hold, then fade together before the field is solid grey:
 
-"Unattended visits" then "cost you sales."
-"Every day. Quietly."
+"Unattended visits"
+"cost you sales."
+"Every day."
+"Quietly."
 
 **VO** `numbers-game`: "Online sales is a numbers game. And a chatbot doesn't play."
 
@@ -63,7 +65,7 @@ The grey fades out. A large switch sits in the exact center of the frame, with "
 
 ## 5. The reveal
 
-The Bizmis mark.
+The Bizmis mark docks beside the avatar. The two sit as one group, centered, with a small gap between the mark and the visible character.
 
 **VO** `introducing`: "Introducing Bizmis."
 
@@ -81,7 +83,7 @@ The shopper types: "Looking for something light I can take everywhere."
 
 **Clerk:** "Light and easy to carry, here are the three that fit. This one's the best of them."
 
-The grid narrows to three and holds long enough to read them: a capsule on stone, a sphere on sand, and a rounded cube on warm grey. No two share a shape or a tile. The pick keeps its tile, and an orange ring is the only mark on it. Then a comparison table of those three holds. Then the pick's page opens clean: no question marks yet. The photo is a square about 44% of the window, on the left, top aligned. Beside it, two thick title bars, a large price, three short description bars, and a wide Add button directly under that text. The bottom right stays clear for the widget. There is no LOST on this page.
+The grid narrows to three and holds long enough to read them: a capsule on stone, a sphere on sand, and a rounded cube on warm grey. No two share a shape or a tile. The pick keeps its tile, and an orange ring is the only mark on it. Then a comparison table of those three holds. Then the pick's page opens clean: no question marks yet. The photo is a square about 44% of the window, on the left, top aligned. Beside it, a wide Add button, then the title, subtitle, and price as thick bars under that button. Doubts orbit the center of the photo, on a circle about three quarters the size of the photo. The bottom right stays clear for the widget. There is no LOST on this page.
 
 **VO** `narrows`: "It narrows. It recommends."
 
@@ -89,7 +91,7 @@ The shopper types: "What if it's not right for me?"
 
 **Clerk:** "For what you told me, it's the right one. Added, with the one that goes with it."
 
-Question marks pop in on one tighter circle around the product photo and hold. They then break apart and disappear. Add presses, the product flies to the cart, and the badge stays on 1. Then the cross-sell: the picked product and a smaller sleeve sit large in the space left of the widget, with a large plus between them, and the badge goes to 2. Only then the orange veil and the white check draw on together. "SOLD". The pullback keeps that same picture, widget included.
+Question marks pop in on one tighter circle around the product photo and hold. They then break apart and disappear. Add presses, the product flies to the cart, and the badge stays on 1. Then the cross-sell: the picked product and the sleeve are the same size and sit centered as a pair, with a large plus halfway between them. The main card has no tick. Both buttons are the large one. The badge goes to 2. Only then the orange veil and the white check draw on together. "SOLD". The pullback keeps that same picture, widget included.
 
 **VO** `closes`: "It answers like an expert, and closes. Then sells them one more thing."
 
@@ -105,7 +107,7 @@ The sea washes to solid Bizmis orange.
 
 ## 8. Other stores, into the slot
 
-From the orange field the picture eases to white. "Built to sell." leaves. The mark is off during the pass. No clerk. No centered Install now button during the pass. The stores sit on a vertical wheel. Only the current store is visible. The next one swings up into place and the current one swings up and away, and both show only during that turn. A backlight hugs the card the way LEDs sit on the back of a monitor: it dims fast as the wheel turns, then the new store's color comes back on, smooth and quick. Above the frame, one line: the category on the left, small caps, then the store name, much larger and bold, in the store color. The category slides in first. The store name then hits, large, and settles. The pass starts a little over a second and slows toward about three seconds. Sector labels, in order: Consumer electronics, Clothing & apparel, Books & stationery, Skincare & beauty, Gaming gear, Home & DIY, Car parts & accessories, Wine & spirits. The wordmark is never black.
+From the orange field the picture eases to white. "Built to sell." leaves. The mark is off during the pass. No clerk. No centered Install now button during the pass. The stores sit on a vertical wheel. Only the current store is visible. The next one swings up into place and the current one swings up and away, and both show only during that turn. A backlight hugs the card the way LEDs sit on the back of a monitor: it dims fast as the wheel turns, then the new store's color comes back on, smooth and quick. Above the frame, the sector is the large line and the store name sits smaller and quieter under it. The sector slides in first. The name follows. Each store holds from about two and a half seconds at the start of the pass to just under five at the end. The wash behind the card is wide and soft. Sector labels, in order: Consumer electronics, Clothing & apparel, Books & stationery, Skincare & beauty, Gaming gear, Home & DIY, Car parts & accessories, Wine & spirits. The wordmark is never black.
 
 **VO** `any-store`: "Any store."
 

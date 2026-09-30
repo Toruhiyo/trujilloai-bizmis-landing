@@ -36,10 +36,10 @@
     'Car parts & accessories',
     'Wine & spirits',
   ];
-  const PROMO_PASS_FAST_MS = 1300;
+  const PROMO_PASS_FAST_MS = 2600;
   const PROMO_PASS_TAG_MS = 220;
   const PROMO_PASS_TITLE_MS = 420;
-  const PROMO_PASS_SLOW_MS = 2800;
+  const PROMO_PASS_SLOW_MS = 4800;
   const PROMO_PASS_SLOT_IN_MS = 420;
   const PROMO_EA_WRITE_MS = 1700;
   const PROMO_EA_STAMP_MS = 460;
@@ -473,7 +473,8 @@
     resolveMs: 1100,
     endHoldMs: 1000,
     captionInMs: 350,
-    captionPauseMs: 450,
+    captionPauseMs: 720,
+    captionQuietMs: 980,
     captionLeadMs: 1500,
     captionHoldMs: 1000,
     horizonMs: 1400,
@@ -491,8 +492,15 @@
   };
   const GLIDE_PAIN_CAPTION = [
     ['Unattended visits', 'cost you sales.'],
-    ['Every day. Quietly.'],
+    ['Every day.', 'Quietly.'],
   ];
+
+  function captionBeatOffset(index) {
+    const step = PROMO_GLIDE.captionInMs + PROMO_GLIDE.captionPauseMs;
+    if (index <= 0) return 0;
+    if (index < 3) return step * index;
+    return step * 2 + PROMO_GLIDE.captionInMs + PROMO_GLIDE.captionQuietMs;
+  }
   const glideRows = new Map();
   let glideLeadDevice = 'desktop';
   const glideWarmMedia = [];
@@ -520,9 +528,10 @@
       };
     }
     const captionAnchor = claimAt;
-    const captionInEnd = captionAnchor + PROMO_GLIDE.captionInMs;
-    const captionHoldEnd = captionInEnd + PROMO_GLIDE.captionHoldMs;
     const captionStart = captionAnchor - PROMO_GLIDE.captionLeadMs;
+    const quietlyAt = captionBeatOffset(3);
+    const captionInEnd = captionStart + quietlyAt + PROMO_GLIDE.captionInMs;
+    const captionHoldEnd = captionInEnd + PROMO_GLIDE.captionHoldMs;
     const captionPoofEnd = captionHoldEnd + PROMO_GLIDE.poofMs + PROMO_GLIDE.dustMs;
     const horizonEnd = captionPoofEnd + PROMO_GLIDE.horizonMs;
     const fieldEnd = horizonEnd + PROMO_GLIDE.painFieldHoldMs;
@@ -936,6 +945,16 @@
     return 900 + (60 - 900) * u;
   }
 
+  function glideStampAt(cell, entry, speed, frame) {
+    const span = Math.max(1, PROMO_GLIDE.speedTo - PROMO_GLIDE.speedFrom);
+    const haste = Math.min(1, Math.max(0, (speed - PROMO_GLIDE.speedFrom) / span));
+    const seed = wallSeededUnit(cell.row * 17 + 5, cell.col * 13 + 9);
+    const dwell = (frame.height * 0.72) / Math.max(speed, 80) * 1000;
+    const jitter = (1 - haste) * seed * Math.min(780, dwell * 0.55);
+    const lead = Math.min(glideStampLeadMs(speed), dwell * (0.22 + (1 - haste) * 0.15));
+    return Math.min(entry + lead + jitter, entry + dwell * 0.82);
+  }
+
   function glideKeepsStamp(cell, mode) {
     if (mode !== 'pain') return true;
     return wallSeededUnit(cell.row * 19 + cell.col * 7, 53) < 0.72;
@@ -988,7 +1007,7 @@
         const entry = glideMiddleEntry(cell, frame, mode, time) ?? time;
         const speed = glideCamera(entry).speed;
         list.push({
-          t: entry + glideStampLeadMs(speed),
+          t: glideStampAt(cell, entry, speed, frame),
           key: cell.key,
           row: cell.row,
           col: cell.col,
@@ -2673,9 +2692,9 @@
     const rowGap = phone ? 12 : PROMO_ROW_GAP;
     const rowInset = phone ? 16 : tablet ? 20 : 28;
     const laneRaw = parseFloat(getComputedStyle(stage).getPropertyValue('--clip-clerk-lane'));
-    const clerkLane = phone || tablet || (clipLayout && opening.classList.contains('is-clip-moment'))
+    const clerkLane = phone || tablet || !clipLayout
       ? 0
-      : (Number.isFinite(laneRaw) && laneRaw > 40 ? laneRaw : PROMO_ROW_CLERK_LANE);
+      : (Number.isFinite(laneRaw) && laneRaw > 40 ? laneRaw : 0);
     const rowBudget = contentWidth - clerkLane - rowInset;
     const rowCardW = phone
       ? Math.min(contentWidth - rowInset * 2, stage.clientWidth * 0.86)
@@ -2822,17 +2841,9 @@
     const centerX = (fitted.left + fitted.width / 2 - boardBox.left) / scaleX;
     const centerY = (fitted.top + fitted.height / 2 - boardBox.top) / scaleY;
     const fittedSide = Math.min(fitted.width / scaleX, fitted.height / scaleY);
-    const orbitCenterX = phone ? board.offsetWidth / 2 : centerX;
-    const orbitCenterY = phone ? board.offsetHeight / 2 : centerY;
-    const room = Math.min(
-      orbitCenterX,
-      orbitCenterY,
-      board.offsetWidth - orbitCenterX,
-      board.offsetHeight - orbitCenterY,
-    ) - PROMO_DOUBT_BUBBLE_PX - 8;
-    const radius = phone
-      ? Math.hypot(board.offsetWidth, board.offsetHeight) / 2 + 28
-      : Math.max(fittedSide * 0.45, Math.min(fittedSide * PROMO_DOUBT_ORBIT_RATIO, room));
+    const orbitCenterX = centerX;
+    const orbitCenterY = centerY;
+    const radius = fittedSide * 0.375;
     orbits.forEach((orbit) => {
       orbit.style.left = `${orbitCenterX}px`;
       orbit.style.top = `${orbitCenterY}px`;
@@ -3424,21 +3435,19 @@
 
   function applyMockupShape(node, device, width) {
     const radius = gridMockupRadius(device, width);
-    const edge = Math.max(3, width * 0.008);
+    const edge = Math.max(6, width * 0.016);
     node.style.borderRadius = `${radius.toFixed(2)}px`;
     node.style.clipPath = '';
     node.style.overflow = 'hidden';
     node.style.outline = '1px solid rgba(28, 24, 20, 0.06)';
     node.style.outlineOffset = '-1px';
-    node.style.boxShadow = `0 ${edge.toFixed(1)}px 0 #e4e0da, 0 22px 46px -14px rgba(28, 24, 20, 0.11), 0 6px 10px -8px rgba(28, 24, 20, 0.07)`;
+    node.style.boxShadow = `0 ${edge.toFixed(1)}px 0 #e4e0da, 0 34px 54px -12px rgba(28, 24, 20, 0.16), 0 8px 12px -8px rgba(28, 24, 20, 0.08)`;
   }
 
   function glideElevationLevel(mode, age) {
     if (age == null || age < 0) return 1;
-    const u = Math.min(1, age / 260);
-    if (mode === 'pitch') return 1 + 1.2 * (1 - (1 - u) ** 3);
-    const ease = u * u * (3 - 2 * u);
-    return 1 - 0.85 * ease;
+    if (mode === 'pitch') return 2.2;
+    return 0.12;
   }
 
   function paintGlideElevation(node, cell, unit, mode, age) {
@@ -3450,17 +3459,17 @@
     if (node.dataset.elevation !== String(rounded) || node.dataset.elevationW !== widthKey) {
       node.dataset.elevation = String(rounded);
       node.dataset.elevationW = widthKey;
-      const edge = Math.max(3, width * 0.008) * Math.max(0.2, rounded);
-      const drop = 22 * Math.max(0.35, rounded);
-      const blur = 46 * (0.7 + Math.min(rounded, 2.2) * 0.2);
-      const alpha = Math.min(0.2, 0.11 * Math.max(0.4, rounded));
-      const pressed = rounded < 0.95;
-      node.style.boxShadow = `0 ${edge.toFixed(1)}px 0 #e4e0da, 0 ${drop.toFixed(1)}px ${blur.toFixed(1)}px -14px rgba(28, 24, 20, ${alpha.toFixed(3)}), 0 ${pressed ? 8 : 6}px 10px -8px rgba(28, 24, 20, ${pressed ? 0.18 : 0.07})`;
-      const scale = rounded <= 1
-        ? 0.985 + 0.015 * ((rounded - 0.15) / 0.85)
-        : 1 + (rounded - 1) * 0.015;
-      const lift = rounded > 1 ? -height * 0.015 * ((rounded - 1) / 1.2) : 0;
-      node.dataset.cardScale = Math.max(0.97, scale).toFixed(4);
+      const edgeBase = Math.max(6, width * 0.016);
+      const pressed = rounded < 0.5;
+      const lifted = rounded > 1;
+      const edge = pressed ? Math.max(1, edgeBase * 0.12) : edgeBase * (lifted ? 1.45 : 1);
+      const drop = pressed ? 3 : (lifted ? 52 : 34);
+      const blur = pressed ? 8 : (lifted ? 64 : 54);
+      const alpha = pressed ? 0.2 : (lifted ? 0.2 : 0.16);
+      node.style.boxShadow = `0 ${edge.toFixed(1)}px 0 #e4e0da, 0 ${drop.toFixed(1)}px ${blur.toFixed(1)}px -12px rgba(28, 24, 20, ${alpha.toFixed(3)})`;
+      const scale = pressed ? 0.985 : (lifted ? 1.02 : 1);
+      const lift = pressed ? height * 0.02 : (lifted ? -height * 0.045 : -height * 0.014);
+      node.dataset.cardScale = scale.toFixed(4);
       node.dataset.cardLift = lift.toFixed(2);
     }
     const scale = node.dataset.cardScale || '1';
@@ -4130,8 +4139,27 @@
       const to = target.getBoundingClientRect();
       if (to.width < 4 || to.height < 4) return;
       const frame = this.canvasFrame();
+      const line = this.root.querySelector('.promo-opening__line');
+      const pairing = this.root.classList.contains('is-pitch')
+        && !this.root.classList.contains('is-moments')
+        && !this.root.classList.contains('is-see')
+        && !line?.classList.contains('is-revealing');
+      let logoLeft = to.left + to.width / 2 - frame.left;
+      if (pairing) {
+        const boxW = PROMO_AVATAR_BOX_W * PROMO_AVATAR_MAX_SCALE;
+        const avatarW = boxW * PROMO_REVEAL_BODY;
+        const gap = 36;
+        const group = to.width + gap + avatarW;
+        const groupLeft = frame.left + Math.max(0, (frame.width - group) / 2);
+        logoLeft = groupLeft + to.width / 2 - frame.left;
+        const visibleLeft = groupLeft + to.width + gap;
+        const widgetRight = frame.right - visibleLeft - boxW / 2 - avatarW / 2 + PROMO_REVEAL_BODY_SHIFT_PX;
+        this.root.style.setProperty('--promo-logo-pair-right', `${widgetRight.toFixed(1)}px`);
+      } else {
+        this.root.style.removeProperty('--promo-logo-pair-right');
+      }
 
-      this.root.style.setProperty('--promo-logo-left', `${to.left + to.width / 2 - frame.left}px`);
+      this.root.style.setProperty('--promo-logo-left', `${logoLeft}px`);
       this.root.style.setProperty('--promo-logo-top', `${to.top + to.height / 2 - frame.top}px`);
       this.root.style.setProperty('--promo-logo-w', `${to.width}px`);
       this.root.style.setProperty('--promo-logo-h', `${to.height}px`);
@@ -7571,12 +7599,11 @@
         this.voNumbersGame = true;
         markPromoVo('numbers-game');
       }
-      const beatMs = PROMO_GLIDE.captionInMs + PROMO_GLIDE.captionPauseMs;
       const exitSpan = Math.max(1, marks.captionPoofEnd - marks.captionHoldEnd);
       const exitU = timeMs <= marks.captionHoldEnd ? 0 : Math.min(1, (timeMs - marks.captionHoldEnd) / exitSpan);
       const exitFade = 1 - exitU;
       text.querySelectorAll('[data-caption-beat]').forEach((beat) => {
-        const start = marks.captionStart + Number(beat.dataset.captionBeat) * beatMs;
+        const start = marks.captionStart + captionBeatOffset(Number(beat.dataset.captionBeat));
         const inU = Math.min(1, Math.max(0, (timeMs - start) / PROMO_GLIDE.captionInMs));
         const inEase = inU * inU * (3 - 2 * inU);
         beat.style.opacity = Math.max(0, inEase * exitFade).toFixed(3);
@@ -7878,8 +7905,7 @@
       if (!clone) return;
       const fadeStart = 0.96;
       const fadeEnd = 0.99;
-      const rastered = this.cellRasters?.has(this.glideLeadKey);
-      if (rastered || !cellNode || cellNode.hidden || arrive >= fadeEnd) {
+      if (!cellNode || cellNode.hidden || arrive >= fadeEnd) {
         clone.style.visibility = 'hidden';
         clone.style.opacity = '0';
         clone.style.boxShadow = '';
@@ -8599,7 +8625,8 @@
     }
 
     async slideInPhoneProduct(desktop) {
-      const host = this.root.getBoundingClientRect();
+      const canvas = this.root.querySelector('[data-promo-canvas]') || this.root;
+      const host = canvas.getBoundingClientRect();
       const phone = desktop.cloneNode(true);
       phone.removeAttribute('id');
       phone.querySelectorAll('[id]').forEach((item) => item.removeAttribute('id'));
@@ -8618,7 +8645,7 @@
       phone.style.width = `${phoneW.toFixed(1)}px`;
       phone.style.height = `${phoneH.toFixed(1)}px`;
       phone.style.visibility = 'hidden';
-      this.root.appendChild(phone);
+      canvas.appendChild(phone);
       const stage = phone.querySelector('[data-promo-moments-stage]');
       const board = phone.querySelector('.promo-moments__board');
       if (stage) applyMomentPose(stage, 'doubt', { instant: true });
@@ -8701,8 +8728,26 @@
           h: box.height,
         };
       }
-      phone.remove();
+      this.painPhoneLead = phone;
       desktop.style.visibility = 'hidden';
+    }
+
+    seatPhoneLead() {
+      const phone = this.painPhoneLead;
+      const lead = this.root.querySelector('.promo-glide__lead');
+      if (!phone || !lead) return;
+      const close = this.glideCloseRect;
+      phone.dataset.naturalW = String(Math.round(close?.w || phone.offsetWidth));
+      phone.dataset.naturalH = String(Math.round(close?.h || phone.offsetHeight));
+      phone.style.position = '';
+      phone.style.left = '';
+      phone.style.top = '';
+      phone.style.margin = '';
+      phone.style.zIndex = '';
+      phone.style.transition = '';
+      phone.style.transform = '';
+      lead.hidden = false;
+      lead.appendChild(phone);
     }
 
     mountStoreOpenTitle() {
@@ -8740,7 +8785,9 @@
       veil.classList.add('is-in');
       await waitMs(PROMO_STORE_TITLE_IN_MS + PROMO_STORE_TITLE_HOLD_MS);
       veil.classList.add('is-out');
-      await waitMs(PROMO_STORE_TITLE_OUT_MS);
+      await waitMs(Math.max(0, PROMO_STORE_TITLE_OUT_MS - 250));
+      store?.classList.add('is-bar-in');
+      await waitMs(250);
       veil.remove();
     }
 
@@ -8772,6 +8819,7 @@
       this.revealScaleLayer();
       this.mountGlide('pain');
       if (generation !== this.scaleGeneration) return;
+      this.seatPhoneLead();
       this.paintGlideAt(0, 'pain');
       this.runGlide('pain', 0);
       await waitMs(glidePlayEnd('pain'));
