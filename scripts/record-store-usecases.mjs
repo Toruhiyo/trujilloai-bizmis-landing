@@ -27,6 +27,9 @@ const TURN_QUIET_MS = 4500;
 const HOLD_AFTER_MS = 1500;
 const NAVIGATION_GRACE_MS = 15000;
 const CART_FOLLOW_THROUGH_MS = 30000;
+const CART_CONFIRM_ROUNDS = 2;
+const CART_CONFIRM_LINE = 'Yes, go ahead.';
+const CLERK_TAIL_CHARS = 160;
 const NAVIGATION_SETTLE_MS = 20000;
 const SOCKET_DROP_GRACE_MS = 20000;
 const BROWSER_CLOSE_TIMEOUT_MS = 8000;
@@ -712,6 +715,13 @@ async function waitForTurn(page, collector, sockets, marker, pace, speech) {
   throw new Error(`clerk turn timed out | path=${collector.state.path} | ${clip} | ${JSON.stringify(debug)}`);
 }
 
+function clerkEndedOnQuestion(collector, job) {
+  const lastWords = job.spec.mobileWidget
+    ? collector.state.sheet.split('\n').pop()
+    : collector.state.captions.slice(-CLERK_TAIL_CHARS);
+  return (lastWords || '').includes('?');
+}
+
 // After showing products the clerk resumes on the new page and adds them
 // there, so a cart take is judged only once that resumed turn is over.
 async function waitForCartFollowThrough(page, collector, speech, pace, job) {
@@ -1103,6 +1113,13 @@ async function recordTake(browser, job, dest) {
     }
     if (job.beat.kind === 'cart' && !cartCovers(cart, job.beat.cartMustMatch)) {
       cart = await waitForCartFollowThrough(page, collector, speech, pace, job);
+      for (let round = 0; round < CART_CONFIRM_ROUNDS; round += 1) {
+        if (cartCovers(cart, job.beat.cartMustMatch) || !clerkEndedOnQuestion(collector, job)) break;
+        const answer = clarified || !job.beat.clarify ? CART_CONFIRM_LINE : job.beat.clarify;
+        clarified = true;
+        await say(answer);
+        cart = await waitForCartFollowThrough(page, collector, speech, pace, job);
+      }
     }
     const shopperMustAdd = job.beat.kind === 'cart'
       && !cartCovers(cart, job.beat.cartMustMatch)
