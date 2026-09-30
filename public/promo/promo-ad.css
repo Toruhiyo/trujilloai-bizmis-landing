@@ -2255,7 +2255,7 @@ html.is-promo-opening.is-promo-depart .promo-opening {
   color: var(--bot-user-ink);
   display: grid;
   place-items: center;
-  box-shadow: 0 12px 28px rgba(32, 36, 44, 0.22);
+  box-shadow: 0 12px 28px rgba(28, 28, 28, 0.22);
   cursor: pointer;
 }
 
