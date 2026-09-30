@@ -10365,3 +10365,12 @@ html.is-promo-clip.is-clip-moment.is-clip-tablet .bizmis-viewport-portal-root {
 .promo-opening:not(.is-end-pitch) .promo-scale__lead {
   display: none;
 }
+
+.promo-pass-white {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  background: #fff;
+  opacity: 0;
+  pointer-events: none;
+}

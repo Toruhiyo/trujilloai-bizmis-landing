@@ -5063,17 +5063,27 @@
       });
       const still = document.createElement('div');
       still.setAttribute('data-promo-widget-still', '');
+      // Placed in percent of the store, so it stays in the corner however
+      // the sea scales the window.
+      const pct = (value, total) => `${((value / total) * 100).toFixed(3)}%`;
       Object.assign(still.style, {
         position: 'absolute',
-        left: `${((cardBox.left - storeBox.left) / scale).toFixed(1)}px`,
-        top: `${((cardBox.top - storeBox.top) / scale).toFixed(1)}px`,
-        width: `${width.toFixed(1)}px`,
-        height: `${(cardBox.height / scale).toFixed(1)}px`,
+        left: 'auto',
+        top: 'auto',
+        right: pct(storeBox.right - cardBox.right, storeBox.width),
+        bottom: pct(storeBox.bottom - cardBox.bottom, storeBox.height),
+        width: pct(cardBox.width, storeBox.width),
+        height: pct(cardBox.height, storeBox.height),
         zIndex: '30',
         pointerEvents: 'none',
       });
+      if (getComputedStyle(store).position === 'static') store.style.position = 'relative';
       still.appendChild(clone);
-      store.appendChild(still);
+      // Before any veil or mark: store captures drop those and then pair
+      // styles by child index, so anything after them gets the wrong style.
+      const veil = store.querySelector(':scope > .promo-close__veil, :scope > .promo-close__mark, :scope > .promo-glide__veil, :scope > .promo-glide__mark, :scope > .promo-glide__lost-mark, :scope > .promo-close__lost-mark');
+      if (veil) store.insertBefore(still, veil);
+      else store.appendChild(still);
     }
 
     bizmisLook() {
@@ -6115,37 +6125,19 @@
         window.setTimeout(() => this.depart(), hold);
         return;
       }
-      // The orange field turns white before the first store comes in.
-      // Stepped per frame so the export clock samples the fade.
-      // Every large layer painted orange right now, whichever one it is.
-      const viewArea = window.innerWidth * window.innerHeight;
-      // Computed colors can come back as oklab(); a 1x1 canvas reads any
-      // of them back as plain RGBA.
-      const probe = document.createElement('canvas').getContext('2d', { willReadFrequently: true });
-      const rgba = (color) => {
-        if (!probe || !color || color === 'transparent') return null;
-        probe.clearRect(0, 0, 1, 1);
-        probe.fillStyle = '#000';
-        probe.fillStyle = color;
-        probe.fillRect(0, 0, 1, 1);
-        return probe.getImageData(0, 0, 1, 1).data;
-      };
-      const layers = [document.documentElement, document.body, this.root, ...this.root.querySelectorAll('*')].filter((node) => {
-        const px = rgba(getComputedStyle(node).backgroundColor);
-        if (!px) return false;
-        const [r, g, b, a] = px;
-        if (a < 128 || r < 200 || g < 120 || g > 190 || b > 120) return false;
-        const box = node.getBoundingClientRect();
-        return box.width * box.height > viewArea * 0.5;
-      });
+      // The orange field turns white before the first store comes in: a
+      // white sheet fades in over whatever paints the orange, under the
+      // stores. Stepped per frame so the export clock samples it.
+      const scaleLayer = this.root.querySelector('[data-promo-scale]');
+      const sheet = document.createElement('div');
+      sheet.className = 'promo-pass-white';
+      scaleLayer?.prepend(sheet);
       const lead = this.root.querySelector('.promo-scale__lead');
       const mark = this.root.querySelector('[data-promo-end-mark]');
       const began = performance.now();
       const fade = () => {
         const u = Math.min(1, (performance.now() - began) / PROMO_PASS_WHITE_MS);
-        const eased = u * u * (3 - 2 * u);
-        const color = `color-mix(in srgb, var(--bizmis-primary) ${((1 - eased) * 100).toFixed(1)}%, #fff)`;
-        layers.forEach((node) => node.style.setProperty('background-color', color, 'important'));
+        sheet.style.opacity = (u * u * (3 - 2 * u)).toFixed(3);
         const textFade = Math.max(0, 1 - u * 2.2).toFixed(3);
         if (lead) lead.style.opacity = textFade;
         if (mark) mark.style.opacity = textFade;
@@ -6153,7 +6145,6 @@
           window.requestAnimationFrame(fade);
           return;
         }
-        layers.forEach((node) => node.style.setProperty('background-color', '#fff', 'important'));
         this.root.classList.add('is-pass-white');
         if (mark) mark.style.opacity = '';
         this.playStorePass(() => {
