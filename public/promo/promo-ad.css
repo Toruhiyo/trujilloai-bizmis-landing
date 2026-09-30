@@ -2695,6 +2695,12 @@ html.is-promo-opening.is-promo-depart .promo-opening {
   font-weight: 400;
 }
 
+/* One line that scrolls with the text, so the end being typed stays in view. */
+.promo-pain__input {
+  overflow: hidden;
+  white-space: nowrap;
+}
+
 .promo-pain__input:empty::before {
   content: "Write a message...";
   color: var(--bot-muted);
@@ -9417,8 +9423,8 @@ html.is-promo-still .promo-clip__product.is-compare::after {
   box-shadow:
     0 0 0 2px color-mix(in srgb, var(--promo-store-accent, transparent) calc(18% + var(--pass-glow, 1) * 50%), transparent),
     0 0 26px 4px color-mix(in srgb, var(--promo-store-accent, transparent) calc(var(--pass-glow, 1) * 85%), transparent),
-    var(--pass-glow-x, 0px) var(--pass-glow-y, 0px) 140px 44px color-mix(in srgb, var(--promo-store-accent, transparent) calc(var(--pass-glow, 1) * 55%), transparent),
-    calc(var(--pass-glow-x, 0px) * 1.7) calc(var(--pass-glow-y, 0px) * 1.7) 300px 110px color-mix(in srgb, var(--promo-store-accent, transparent) calc(var(--pass-glow, 1) * 28%), transparent),
+    var(--pass-glow-x, 0px) var(--pass-glow-y, 0px) calc(140px * var(--pass-glow-spread, 1)) calc(44px * var(--pass-glow-spread, 1)) color-mix(in srgb, var(--promo-store-accent, transparent) calc(var(--pass-glow, 1) * 55%), transparent),
+    calc(var(--pass-glow-x, 0px) * -1.4) calc(var(--pass-glow-y, 0px) * 1.7) calc(300px * var(--pass-glow-spread, 1)) calc(110px * var(--pass-glow-spread, 1)) color-mix(in srgb, var(--promo-store-accent, transparent) calc(var(--pass-glow, 1) * 28%), transparent),
     0 16px 36px rgba(28, 24, 20, 0.12);
 }
 
@@ -10273,6 +10279,82 @@ html.is-promo-clip.is-clip-moment.is-clip-tablet .bizmis-viewport-portal-root {
   height: 36px;
 }
 
+/* The recommended add-on shows at the same size as the pair it joins. */
+.promo-opening.is-pitch-cards.is-moments .promo-opening__store.is-desktop .promo-moments__board.is-pose-extra .promo-moments__card.is-pick,
+.promo-opening.is-pitch-cards.is-moments .promo-opening__store.is-desktop .promo-moments__board.is-pose-extra .promo-moments__card.is-extra {
+  top: 50%;
+  width: 26%;
+  --card-w: 26%;
+}
+
+/* The pair stays centred on the page and narrow enough to clear the widget. */
+.promo-opening.is-pitch-cards.is-moments .promo-opening__store.is-desktop .promo-moments__board.is-pose-extra .promo-moments__card.is-pick {
+  left: calc(50% - 14.6%);
+}
+
+.promo-opening.is-pitch-cards.is-moments .promo-opening__store.is-desktop .promo-moments__board.is-pose-extra .promo-moments__card.is-extra {
+  left: calc(50% + 14.6%);
+}
+
+.promo-opening.is-pitch-cards.is-moments .promo-opening__store.is-desktop .promo-moments__board.is-pose-extra .promo-moments__card.is-pick .promo-moments__title,
+.promo-opening.is-pitch-cards.is-moments .promo-opening__store.is-desktop .promo-moments__board.is-pose-extra .promo-moments__card.is-extra .promo-moments__title,
+.promo-opening.is-pitch-cards.is-moments .promo-opening__store.is-desktop .promo-moments__board.is-pose-extra .promo-moments__card.is-pick .promo-moments__title,
+.promo-opening.is-pitch-cards.is-moments .promo-opening__store.is-desktop .promo-moments__board.is-pose-extra .promo-moments__card.is-extra .promo-moments__title {
+  width: 88%;
+  height: 16px;
+  border-radius: 6px;
+}
+
+.promo-opening.is-pitch-cards.is-moments .promo-opening__store.is-desktop .promo-moments__board.is-pose-extra .promo-moments__card.is-pick .promo-moments__price,
+.promo-opening.is-pitch-cards.is-moments .promo-opening__store.is-desktop .promo-moments__board.is-pose-extra .promo-moments__card.is-extra .promo-moments__price,
+.promo-opening.is-pitch-cards.is-moments .promo-opening__store.is-desktop .promo-moments__board.is-pose-extra .promo-moments__card.is-pick .promo-moments__price,
+.promo-opening.is-pitch-cards.is-moments .promo-opening__store.is-desktop .promo-moments__board.is-pose-extra .promo-moments__card.is-extra .promo-moments__price {
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.promo-opening.is-pitch-cards.is-moments .promo-opening__store.is-desktop .promo-moments__board.is-pose-extra .promo-moments__card.is-pick .promo-moments__price b,
+.promo-opening.is-pitch-cards.is-moments .promo-opening__store.is-desktop .promo-moments__board.is-pose-extra .promo-moments__card.is-extra .promo-moments__price b,
+.promo-opening.is-pitch-cards.is-moments .promo-opening__store.is-desktop .promo-moments__board.is-pose-extra .promo-moments__card.is-pick .promo-moments__price b,
+.promo-opening.is-pitch-cards.is-moments .promo-opening__store.is-desktop .promo-moments__board.is-pose-extra .promo-moments__card.is-extra .promo-moments__price b {
+  font-size: 30px;
+  line-height: 1;
+}
+
+.promo-opening.is-pitch-cards.is-moments .promo-opening__store.is-desktop .promo-moments__board.is-pose-extra .promo-moments__card.is-pick .promo-moments__price i,
+.promo-opening.is-pitch-cards.is-moments .promo-opening__store.is-desktop .promo-moments__board.is-pose-extra .promo-moments__card.is-extra .promo-moments__price i,
+.promo-opening.is-pitch-cards.is-moments .promo-opening__store.is-desktop .promo-moments__board.is-pose-extra .promo-moments__card.is-pick .promo-moments__price i,
+.promo-opening.is-pitch-cards.is-moments .promo-opening__store.is-desktop .promo-moments__board.is-pose-extra .promo-moments__card.is-extra .promo-moments__price i {
+  width: 42%;
+  height: 16px;
+  border-radius: 6px;
+}
+
+.promo-opening.is-pitch-cards.is-moments .promo-opening__store.is-desktop .promo-moments__board.is-pose-extra .promo-moments__card.is-pick .promo-moments__add,
+.promo-opening.is-pitch-cards.is-moments .promo-opening__store.is-desktop .promo-moments__board.is-pose-extra .promo-moments__card.is-extra .promo-moments__add,
+.promo-opening.is-pitch-cards.is-moments .promo-opening__store.is-desktop .promo-moments__board.is-pose-extra .promo-moments__card.is-pick .promo-moments__add,
+.promo-opening.is-pitch-cards.is-moments .promo-opening__store.is-desktop .promo-moments__board.is-pose-extra .promo-moments__card.is-extra .promo-moments__add {
+  width: 100%;
+  height: 56px;
+  margin-top: 16px;
+  border-radius: 14px;
+  font-size: 20px;
+}
+
+.promo-opening.is-pitch-cards.is-moments .promo-opening__store.is-desktop .promo-moments__board.is-pose-extra .promo-moments__plus {
+  left: 50%;
+  top: 50%;
+  width: 36px;
+  height: 36px;
+  margin: -18px 0 0 -18px;
+}
+
+.promo-opening.is-pitch-cards.is-moments .promo-opening__store.is-desktop .promo-moments__board.is-pose-extra .promo-moments__plus svg {
+  width: 36px;
+  height: 36px;
+}
+
+
 .promo-opening__store.is-phone.is-orbit-open,
 .promo-opening__store.is-phone.is-orbit-open .promo-opening__moments,
 .promo-opening__store.is-phone.is-orbit-open .promo-moments__stage,
@@ -10427,4 +10509,72 @@ html.is-promo-clip.is-clip-moment.is-clip-tablet .bizmis-viewport-portal-root {
 .promo-clip.is-phone .promo-clip__product.is-compare .promo-clip__hero {
   justify-content: flex-start;
   gap: 10px;
+}
+
+/* Store pass titles: the sector reads as a title filled with the store
+   color, the store name as a glass chip with a dot of that color. */
+.promo-opening.is-store-pass.is-see-wave .promo-opening__slide-sector {
+  background: linear-gradient(100deg, currentColor 0%, color-mix(in srgb, currentColor 62%, #000) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+}
+
+.promo-opening.is-store-pass .promo-opening__slide.is-pass-tag .promo-opening__slide-sector {
+  letter-spacing: -0.01em;
+}
+
+.promo-opening.is-store-pass .promo-opening__slide-sector::after {
+  -webkit-text-fill-color: initial;
+  background: currentColor;
+}
+
+.promo-opening.is-store-pass .promo-opening__slide-name {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55em;
+  padding: 0.42em 0.95em 0.42em 0.8em;
+  margin-bottom: 0.5rem;
+  border: 1px solid color-mix(in srgb, currentColor 22%, transparent);
+  border-radius: 999px;
+  background: color-mix(in srgb, #fff 78%, transparent);
+  box-shadow: 0 8px 24px -12px color-mix(in srgb, currentColor 45%, transparent);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  font-size: clamp(1.05rem, 1.55vw, 1.4rem);
+  font-weight: 600;
+  letter-spacing: 0;
+}
+
+.promo-opening.is-store-pass .promo-opening__slide-name::before {
+  content: "";
+  width: 0.55em;
+  height: 0.55em;
+  border-radius: 50%;
+  background: currentColor;
+  box-shadow: 0 0 0 0.22em color-mix(in srgb, currentColor 20%, transparent);
+}
+
+/* The desktop card composer stays one line in the film, so the end of what
+   is typed can scroll into view instead of wrapping out of sight. */
+html.is-promo-opening #bizmis-avatar-embed textarea,
+html.is-promo-opening .bizmis-viewport-portal-root textarea {
+  white-space: pre !important;
+  overflow-x: hidden !important;
+  overflow-wrap: normal !important;
+}
+
+/* Pitch desktop: the recommended add-on sits where it will stay once added. */
+.promo-opening.is-pitch-cards.is-moments .promo-opening__store.is-desktop .promo-moments__board.is-pose-extra .promo-moments__card.is-pick {
+  left: calc(50% - 14.6%) !important;
+}
+
+.promo-opening.is-pitch-cards.is-moments .promo-opening__store.is-desktop .promo-moments__board.is-pose-extra .promo-moments__card.is-extra {
+  left: calc(50% + 14.6%) !important;
+}
+
+.promo-opening.is-pitch-cards.is-moments .promo-opening__store.is-desktop .promo-moments__board.is-pose-extra .promo-moments__plus {
+  left: 50% !important;
 }

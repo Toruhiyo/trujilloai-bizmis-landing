@@ -1491,11 +1491,11 @@
   const PROMO_PITCH_CLERK_1 = 'Here are the three that fit. Let me compare them for you.';
   const PROMO_PITCH_CLERK_COMPARE = "This one's the lightest, and it packs flat. It's the one.";
   const PROMO_PITCH_CLERK_2 = 'Yes. It fits a full weekend, and still packs flat.';
-  const PROMO_PITCH_CLERK_UPSELL = 'Nice pick. Its sleeve keeps it safe on the road.';
+  const PROMO_PITCH_CLERK_UPSELL = 'Great pick. Pair it with this sleeve: made for it, and it keeps it safe on the road.';
   const PROMO_PITCH_SPEAK_1_MS = 3000;
   const PROMO_PITCH_SPEAK_COMPARE_MS = 3600;
   const PROMO_PITCH_SPEAK_2_MS = 3200;
-  const PROMO_PITCH_SPEAK_UPSELL_MS = 3200;
+  const PROMO_PITCH_SPEAK_UPSELL_MS = 4400;
   // One full turn of the widget's activity laser (--bizmis-laser-spin-duration).
   const PROMO_LASER_LAP_MS = 2400;
   const PROMO_PAIN_ANSWER_1 = 'Thanks for reaching out! You can browse our full collection using the menu above. To narrow your search, use the filters for size, weight and category. Product details, specifications and customer reviews are available on each product page. Let me know if there\'s anything else I can help you with.';
@@ -2016,6 +2016,22 @@
   // The shopper's line goes out as typed and stays in the chat. The clerk's
   // scripted line goes right behind it as a hidden message the viewer never
   // sees. See docs/agent-steering.md.
+  // Typed text set from code does not scroll its field the way a keyboard
+  // does. Keep the end of the text, where the caret is, in view.
+  function showInputEnd(input) {
+    if (!input) return;
+    if (typeof input.setSelectionRange === 'function') {
+      const end = (input.value || '').length;
+      try {
+        input.setSelectionRange(end, end);
+      } catch {
+        /* inputs that refuse a selection still scroll below */
+      }
+    }
+    input.scrollLeft = input.scrollWidth;
+    input.scrollTop = input.scrollHeight;
+  }
+
   function sayClerkLine(line) {
     const draft = widgetDraftInput();
     if (!draft) return false;
@@ -4640,11 +4656,13 @@
       if (prefersReducedMotion()) {
         setter.call(input, text);
         input.dispatchEvent(new Event('input', { bubbles: true }));
+        showInputEnd(input);
         return true;
       }
       await typeOver(text, (slice) => {
         setter.call(input, slice);
         input.dispatchEvent(new Event('input', { bubbles: true }));
+        showInputEnd(input);
       });
       return true;
     }
@@ -5009,10 +5027,16 @@
       host?.classList.add('is-cart-one');
       emitShopper({ kind: 'cart', product: pick, quantity: 1 });
       await waitMs(reduced ? 40 : 500);
-      // The clerk recommends the sleeve on its own; the shopper adds it.
+      // The clerk looks for what goes with the pick, then recommends the
+      // sleeve while it shows beside the pick, with its own Add button.
+      await this.laserUntilNext('products', reduced);
+      applyMomentPose(stage, 'extra', { instant: reduced });
+      emitShopper({ kind: 'products', products: [sleeve] });
       sayClerkAlone(PROMO_PITCH_CLERK_UPSELL);
       this.playFilmCaption(PROMO_PITCH_CLERK_UPSELL, PROMO_PITCH_SPEAK_UPSELL_MS);
       await speak(PROMO_PITCH_SPEAK_UPSELL_MS);
+      // Convinced, the shopper adds the sleeve too.
+      await waitMs(reduced ? 40 : 450);
       applyMomentPose(stage, 'bundle', { instant: reduced });
       host?.classList.remove('is-cart-one');
       host?.classList.add('is-cart-two');
@@ -5812,14 +5836,20 @@
       const start = performance.now();
       const span = Math.max(400, durationMs);
       const frame = () => {
-        const u = Math.min(1, (performance.now() - start) / span);
-        const glow = Math.sin(Math.PI * u) ** 2;
+        const now = performance.now();
+        const u = Math.min(1, (now - start) / span);
+        const t = now / 1000;
+        // Slow waves at unrelated rates: the light drifts and breathes on
+        // its own, on top of the sin^2 cycle, and never repeats.
+        const drift = (a, b, c) => Math.sin(t * a + c) * 0.6 + Math.sin(t * b + c * 1.7) * 0.4;
+        const glow = Math.sin(Math.PI * u) ** 2 * (0.86 + 0.14 * drift(1.3, 2.9, 0.4));
         const sweep = u + Math.sin(2 * Math.PI * u) / (2 * Math.PI);
-        const x = (-1 + 2 * sweep) * 150;
-        const y = Math.sin(Math.PI * sweep) * -40;
-        root.style.setProperty('--pass-glow', (0.08 + 0.92 * glow).toFixed(3));
+        const x = (-1 + 2 * sweep) * 150 + 70 * drift(0.7, 1.9, 1.1);
+        const y = Math.sin(Math.PI * sweep) * -40 + 45 * drift(0.9, 1.6, 2.3);
+        root.style.setProperty('--pass-glow', Math.max(0.05, 0.08 + 0.92 * glow).toFixed(3));
         root.style.setProperty('--pass-glow-x', `${x.toFixed(1)}px`);
         root.style.setProperty('--pass-glow-y', `${y.toFixed(1)}px`);
+        root.style.setProperty('--pass-glow-spread', (1 + 0.12 * drift(0.5, 1.2, 0.8)).toFixed(3));
         if (u < 1) this.passLightFrame = window.requestAnimationFrame(frame);
       };
       frame();
@@ -6600,7 +6630,10 @@
       input.textContent = '';
       input.classList.remove('is-live');
       typing.hidden = true;
-      if (through === 'typed-1') input.textContent = PROMO_PAIN_LINE_1;
+      if (through === 'typed-1') {
+        input.textContent = PROMO_PAIN_LINE_1;
+        showInputEnd(input);
+      }
       if (through === 'think-1' || through === 'answer-1' || through === 'down' || through === 'typed-2' || through === 'think-2' || through === 'answer-2') {
         appendDullUser(log, PROMO_PAIN_LINE_1);
       }
@@ -6608,7 +6641,10 @@
       if (through === 'answer-1' || through === 'down' || through === 'typed-2' || through === 'think-2' || through === 'answer-2') {
         appendDullBot(log, PROMO_PAIN_ANSWER_1, PROMO_PAIN_LINKS);
       }
-      if (through === 'typed-2') input.textContent = PROMO_PAIN_LINE_2;
+      if (through === 'typed-2') {
+        input.textContent = PROMO_PAIN_LINE_2;
+        showInputEnd(input);
+      }
       if (through === 'think-2' || through === 'answer-2') {
         appendDullUser(log, PROMO_PAIN_LINE_2);
       }
@@ -6730,7 +6766,10 @@
             input.classList.add('is-live');
           }
           await typeOver(text, (slice) => {
-            if (input) input.textContent = slice;
+            if (input) {
+              input.textContent = slice;
+              showInputEnd(input);
+            }
           });
           input?.classList.remove('is-live');
           continue;
@@ -9147,7 +9186,10 @@
       log.replaceChildren();
       input.classList.remove('is-live');
       if (typing) typing.hidden = true;
-      if (through === 'typed-2') input.textContent = PROMO_PAIN_LINE_2;
+      if (through === 'typed-2') {
+        input.textContent = PROMO_PAIN_LINE_2;
+        showInputEnd(input);
+      }
       if (through === 'think-2' || through === 'answer-2') {
         appendDullUser(log, PROMO_PAIN_LINE_2);
         input.textContent = '';
@@ -9182,7 +9224,10 @@
         input.classList.add('is-live');
       }
       await typeOver(PROMO_PAIN_LINE_2, (slice) => {
-        if (input) input.textContent = slice;
+        if (input) {
+          input.textContent = slice;
+          showInputEnd(input);
+        }
       });
       input?.classList.remove('is-live');
       this.fillCloneChat(clone, 'think-2');
