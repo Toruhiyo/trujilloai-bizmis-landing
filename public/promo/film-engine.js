@@ -4833,6 +4833,75 @@
       store.style.transform = '';
     }
 
+    // Copy of the widget's caption (Subtitles.tsx, "progress" style), for
+    // exports only: there the live agent's voice never plays, so the widget
+    // has nothing to caption. Live playback keeps the widget's own captions.
+    playFilmCaption(line, speakMs) {
+      if (!document.documentElement.classList.contains('is-promo-export')) return;
+      const canvas = this.root.querySelector('[data-promo-canvas]') || this.root;
+      const card = document.querySelector('.bizmis-desktop-lite-chat');
+      if (!card) return;
+      canvas.querySelector('[data-promo-caption]')?.remove();
+      const pill = document.createElement('div');
+      pill.className = 'promo-caption';
+      pill.setAttribute('data-promo-caption', '');
+      const text = document.createElement('p');
+      text.className = 'promo-caption__text';
+      pill.appendChild(text);
+      canvas.appendChild(pill);
+      const frame = canvas.getBoundingClientRect();
+      const scale = frame.width / (canvas.offsetWidth || frame.width) || 1;
+      const box = card.getBoundingClientRect();
+      const zoom = box.width / scale / (card.offsetWidth || box.width);
+      pill.style.left = `${((box.left + box.width / 2 - frame.left) / scale).toFixed(1)}px`;
+      pill.style.bottom = `${((frame.bottom - box.top) / scale + 12).toFixed(1)}px`;
+      pill.style.setProperty('--caption-zoom', zoom.toFixed(4));
+      // Chunks of a few words, one line each, paced across the spoken time.
+      const words = line.split(/\s+/).filter(Boolean);
+      const chunks = [];
+      for (let i = 0; i < words.length; i += 5) chunks.push(words.slice(i, i + 5));
+      const total = words.reduce((sum, word) => sum + word.length + 1, 0);
+      const span = Math.max(600, speakMs * 0.94);
+      const starts = [];
+      let acc = 0;
+      words.forEach((word) => {
+        starts.push((acc / total) * span);
+        acc += word.length + 1;
+      });
+      const began = performance.now();
+      let shownChunk = -1;
+      const step = () => {
+        if (!pill.isConnected) return;
+        const t = performance.now() - began;
+        if (t > span + 350) {
+          pill.classList.remove('is-in');
+          window.setTimeout(() => pill.remove(), 320);
+          return;
+        }
+        let current = 0;
+        while (current + 1 < words.length && starts[current + 1] <= t) current += 1;
+        const chunk = Math.floor(current / 5);
+        if (chunk !== shownChunk) {
+          shownChunk = chunk;
+          text.replaceChildren(...chunks[chunk].map((word, index) => {
+            const node = document.createElement('span');
+            node.className = 'promo-caption__word';
+            node.textContent = index === chunks[chunk].length - 1 ? word : `${word} `;
+            return node;
+          }));
+        }
+        text.querySelectorAll('.promo-caption__word').forEach((node, index) => {
+          const at = chunk * 5 + index;
+          node.classList.toggle('is-current', at === current);
+          node.classList.toggle('is-upcoming', at > current);
+        });
+        window.requestAnimationFrame(step);
+      };
+      pill.getBoundingClientRect();
+      pill.classList.add('is-in');
+      step();
+    }
+
     // The loading ring runs from the moment a message goes out, or from the
     // end of the clerk's own line, until the next moment shows. At least one
     // full lap, so it never flickers.
@@ -4870,12 +4939,14 @@
       sayClerkLine(PROMO_PITCH_CLERK_1);
       await this.laserUntilNext('search', reduced);
       applyMomentPose(stage, 'row', { instant: reduced });
+      this.playFilmCaption(PROMO_PITCH_CLERK_1, PROMO_PITCH_SPEAK_1_MS);
       emitShopper({ kind: 'products', products: [product('The day one', 'capsule'), pick, product('The travel one', 'rounded-cube')] });
       await speak(PROMO_PITCH_SPEAK_1_MS);
       await this.laserUntilNext('compare', reduced);
       applyMomentPose(stage, 'choice', { instant: reduced });
       // The clerk reads the comparison on its own; nobody asked.
       sayClerkAlone(PROMO_PITCH_CLERK_COMPARE);
+      this.playFilmCaption(PROMO_PITCH_CLERK_COMPARE, PROMO_PITCH_SPEAK_COMPARE_MS);
       await speak(PROMO_PITCH_SPEAK_COMPARE_MS);
       await this.laserUntilNext('product', reduced);
       applyMomentPose(stage, 'doubt', { instant: reduced });
@@ -4890,6 +4961,7 @@
       await this.typeShopperLine(PROMO_PITCH_LINE_2);
       sayClerkLine(PROMO_PITCH_CLERK_2);
       await this.laserUntilNext('policies', reduced, PROMO_PITCH_DOUBT_MS);
+      this.playFilmCaption(PROMO_PITCH_CLERK_2, PROMO_PITCH_SPEAK_2_MS);
       const cartLandMs = PROMO_MOMENTS_VAPOR_MS + PROMO_MOMENTS_CART_GAP_MS + 220;
       this.paintPitchEvent({ kind: 'cart' });
       const cartStart = performance.now();
@@ -4906,6 +4978,7 @@
       await speak(Math.max(0, PROMO_PITCH_SPEAK_2_MS - PROMO_LASER_LAP_MS * 2));
       // The clerk offers the sleeve on its own and adds it.
       sayClerkAlone(PROMO_PITCH_CLERK_UPSELL);
+      this.playFilmCaption(PROMO_PITCH_CLERK_UPSELL, PROMO_PITCH_SPEAK_UPSELL_MS);
       await this.laserUntilNext('cart', reduced);
       applyMomentPose(stage, 'bundle', { instant: reduced });
       host?.classList.remove('is-cart-one');
@@ -6836,10 +6909,7 @@
           mark.style.webkitMaskImage = `url('${stamp}')`;
           mark.style.maskImage = `url('${stamp}')`;
         }
-        const lead = document.createElement('p');
-        lead.className = 'promo-scale__lead';
-        lead.textContent = 'Boost sales with';
-        hero.append(zero, lead, mark);
+        hero.append(zero, mark);
         const caption = verdict.querySelector('.promo-scale__sold') || document.createElement('p');
         caption.className = 'promo-scale__sold';
         caption.setAttribute('data-promo-end-caption', '');
@@ -6847,6 +6917,15 @@
         verdict.replaceChildren(hero, caption);
       }
       const hero = verdict.querySelector('.promo-scale__end-hero');
+      // "Boost sales with [bizmis]": the words sit just before the mark.
+      if (hero && !hero.querySelector('.promo-scale__lead')) {
+        const lead = document.createElement('p');
+        lead.className = 'promo-scale__lead';
+        lead.textContent = 'Boost sales with';
+        const markNode = hero.querySelector('[data-promo-end-mark]');
+        if (markNode) hero.insertBefore(lead, markNode);
+        else hero.appendChild(lead);
+      }
       if (hero && !this.root.querySelector('[data-promo-end-mark]')) {
         const mark = document.createElement('span');
         mark.className = 'promo-scale__mark';

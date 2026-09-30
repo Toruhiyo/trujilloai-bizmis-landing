@@ -10309,3 +10309,53 @@ html.is-promo-clip.is-clip-moment.is-clip-tablet .bizmis-viewport-portal-root {
   opacity: 0;
   transition: opacity 280ms ease;
 }
+
+/* Copy of the widget's caption pill (trujilloai-bizmis-widget,
+   src/components/Subtitles.tsx, "progress" style, text-xl), for exports. */
+.promo-caption {
+  position: absolute;
+  z-index: 10002;
+  padding: 4px 16px;
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  border-radius: 24px;
+  background-color: rgba(255, 255, 255, 0.55);
+  background-image: linear-gradient(150deg, rgba(255, 255, 255, 0.51) 0%, rgba(255, 255, 255, 0) 100%);
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.9) inset, 0 20px 48px -24px rgba(0, 0, 0, 0.28);
+  -webkit-backdrop-filter: blur(24px) saturate(1.25);
+  backdrop-filter: blur(24px) saturate(1.25);
+  pointer-events: none;
+  opacity: 0;
+  transform: translateX(-50%) translateY(20px) scale(calc(var(--caption-zoom, 1) * 0.95));
+  transform-origin: center bottom;
+  transition: opacity 300ms ease-out, transform 300ms ease-out;
+}
+
+.promo-caption.is-in {
+  opacity: 1;
+  transform: translateX(-50%) scale(var(--caption-zoom, 1));
+}
+
+.promo-caption__text {
+  margin: 0;
+  color: rgb(23, 23, 23);
+  font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  font-size: 20px;
+  font-weight: 500;
+  line-height: 1.25;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.promo-caption__word {
+  display: inline-block;
+  padding: 0.05em 0.12em;
+  border-radius: 0.4em;
+}
+
+.promo-caption__word.is-current {
+  font-weight: 700;
+}
+
+.promo-caption__word.is-upcoming {
+  color: rgba(23, 23, 23, 0.4);
+}
