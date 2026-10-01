@@ -10820,3 +10820,33 @@ html.is-promo-final .promo-vo-debug {
   width: 64px !important;
   height: 64px !important;
 }
+
+/* Store pass, light-led: the card stays in place. The backlight is at its
+   dimmest on the switch, so the store color changes in the dark; the page
+   dissolves through a slight lift of exposure and soft focus, then the next
+   store settles sharp as its light comes back up. No color flood. */
+.promo-opening.is-store-pass .promo-opening__slide {
+  transform: translateY(-46%) scale(1.014) !important;
+  opacity: 0;
+  filter: blur(8px) brightness(1.1) saturate(0.9);
+}
+
+.promo-opening.is-store-pass .promo-opening__slide.is-pass-current {
+  transform: translateY(-46%) scale(1) !important;
+  opacity: 1;
+  filter: none;
+  transition:
+    opacity calc(var(--pass-turn, 640ms) * 0.75) ease calc(var(--pass-turn, 640ms) * 0.25),
+    filter var(--pass-turn, 640ms) cubic-bezier(0.22, 1, 0.36, 1) calc(var(--pass-turn, 640ms) * 0.2),
+    transform calc(var(--pass-turn, 640ms) * 1.4) cubic-bezier(0.22, 1, 0.36, 1) calc(var(--pass-turn, 640ms) * 0.2) !important;
+}
+
+.promo-opening.is-store-pass .promo-opening__slide.is-pass-leaving {
+  transform: translateY(-46%) scale(0.992) !important;
+  opacity: 0;
+  filter: blur(8px) brightness(1.1) saturate(0.9);
+  transition:
+    opacity calc(var(--pass-turn, 640ms) * 0.6) ease,
+    filter calc(var(--pass-turn, 640ms) * 0.6) ease,
+    transform calc(var(--pass-turn, 640ms) * 0.6) ease !important;
+}

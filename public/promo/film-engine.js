@@ -3745,23 +3745,20 @@
       node.dataset.cardScale = depth.scale.toFixed(4);
       node.dataset.cardLift = depth.lift.toFixed(2);
     }
-    // A sold card sends a small wave out from its edge: two orange rings
-    // that grow and fade.
+    // A sold card sends one fine orange line out from its edge, which
+    // drifts outward and fades: a hairline, not a band.
     const waveAge = mode === 'pitch' && age != null ? age : -1;
-    if (waveAge >= 0 && waveAge < PROMO_SOLD_WAVE_MS + 260) {
-      const ring = (delay) => {
-        const u = Math.min(1, Math.max(0, (waveAge - delay) / PROMO_SOLD_WAVE_MS));
-        if (u <= 0 || u >= 1) return '';
-        const spread = 2 + width * 0.09 * (1 - (1 - u) ** 2);
-        const alpha = 0.6 * (1 - u) ** 1.6;
-        return `0 0 0 ${spread.toFixed(1)}px rgba(247, 162, 82, ${alpha.toFixed(3)})`;
-      };
-      const rings = [ring(0), ring(260)].filter(Boolean);
-      node.style.boxShadow = [...rings, node._depthShadow].filter(Boolean).join(', ');
+    if (waveAge >= 0 && waveAge < PROMO_SOLD_WAVE_MS) {
+      const u = waveAge / PROMO_SOLD_WAVE_MS;
+      const reach = width * 0.05 * (1 - (1 - u) ** 3);
+      const alpha = 0.75 * (1 - u) ** 1.4;
+      node.style.outline = `1.5px solid rgba(247, 162, 82, ${alpha.toFixed(3)})`;
+      node.style.outlineOffset = `${reach.toFixed(1)}px`;
       node.dataset.waving = '1';
     } else if (node.dataset.waving === '1') {
       delete node.dataset.waving;
-      node.style.boxShadow = node._depthShadow || node.style.boxShadow;
+      node.style.outline = '1px solid rgba(28, 24, 20, 0.06)';
+      node.style.outlineOffset = '-1px';
     }
     const scale = node.dataset.cardScale || '1';
     const lift = Number(node.dataset.cardLift) || 0;
