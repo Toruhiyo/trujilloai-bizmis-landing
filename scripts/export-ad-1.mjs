@@ -8,7 +8,7 @@ import { fileURLToPath } from 'node:url';
 
 const FPS = 30;
 let exportFps = FPS;
-const FRAME_CAP = 4800;
+const FRAME_CAP = 6000;
 const CAPTURE_CHUNK = 3600;
 const LAYOUT_WIDTH = 1920;
 const LAYOUT_HEIGHT = 1080;
