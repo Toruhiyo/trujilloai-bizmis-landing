@@ -10791,3 +10791,32 @@ html.is-promo-final .promo-vo-debug {
 .promo-opening__slide.is-final .promo-opening__slide-sector {
   color: var(--bizmis-primary) !important;
 }
+
+/* Cross-sell pair: a clear gap, and a large plus at its exact middle. */
+.promo-opening.is-pitch-cards.is-moments .promo-opening__store.is-desktop .promo-moments__board:is(.is-pose-extra, .is-pose-bundle) .promo-moments__card:is(.is-pick, .is-extra) {
+  width: 25% !important;
+  --card-w: 25% !important;
+}
+
+.promo-opening.is-pitch-cards.is-moments .promo-opening__store.is-desktop .promo-moments__board:is(.is-pose-extra, .is-pose-bundle) .promo-moments__card.is-pick {
+  left: calc(50% - 16%) !important;
+}
+
+.promo-opening.is-pitch-cards.is-moments .promo-opening__store.is-desktop .promo-moments__board:is(.is-pose-extra, .is-pose-bundle) .promo-moments__card.is-extra {
+  left: calc(50% + 16%) !important;
+}
+
+.promo-opening.is-pitch-cards.is-moments .promo-opening__store.is-desktop .promo-moments__board:is(.is-pose-extra, .is-pose-bundle) .promo-moments__plus {
+  left: 50% !important;
+  top: 50% !important;
+  width: 64px !important;
+  height: 64px !important;
+  margin: 0 !important;
+  transform: translate3d(-50%, -50%, 0) !important;
+  opacity: 1 !important;
+}
+
+.promo-opening.is-pitch-cards.is-moments .promo-opening__store.is-desktop .promo-moments__board:is(.is-pose-extra, .is-pose-bundle) .promo-moments__plus svg {
+  width: 64px !important;
+  height: 64px !important;
+}

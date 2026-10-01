@@ -53,7 +53,7 @@ The pullback starts on that phone. The card is the same phone, one picture, tilt
 "Unattended visits"
 "cost you sales."
 "Every day."
-"Adding up."
+"And counting."
 
 **VO** `numbers-game`: "Online sales is a numbers game. And a chatbot doesn't play."
 
@@ -141,7 +141,7 @@ The frames leave. The field stays white. Nothing is clickable. No window, button
 
 - `install` (default): eyebrow "Installs in one click." then the line "Install on Shopify". No URL.
 - `demo`: the line "See it in action" and `bizmis.ai/demo`.
-- `ea`: the Bizmis wordmark flies in from the camera, large and soft, and settles centred above the copy. After a pause, "Install now" flies in the same way and settles on the line with the Shopify bag. The bag sits on the same baseline as the words, slightly smaller than the capitals, with a small gap before the text. Under it, "for Early Access benefits!" writes on in a handwritten face, Bizmis orange, tilted a little. The line stays centred. When the writing finishes, a white discount tag with orange type stamps in just under the end of the line: "first 50 stores only!", with "50 stores" in bold. Under that, one plain line: an orange tick draws itself, then "Free credits included", then the same tick and "No credit card", then the same tick and "50% off when you upgrade". The words are a darker heading face. Each tick draws on its own, left to right. Each of those pieces still waits long enough to be read. No URL. The metal shine plays on "Install now" only. After the last condition lands, the card holds through the spoken line (at least 4 s).
+- `ea`: the Bizmis wordmark flies in from the camera, large and soft, and settles centred above the copy. After a pause, "Install now" flies in the same way and settles on the line with the Shopify bag. The bag sits on the same baseline as the words, slightly smaller than the capitals, with a small gap before the text. Under it, "for Early Access benefits!" writes on in a handwritten face, Bizmis orange, tilted a little. The line stays centred. When the writing finishes, a white discount tag with orange type stamps in just under the end of the line: "first 50 stores only!", with "50 stores" in bold. Under that, one plain line: an orange tick draws itself, then "Sets itself up", then the same tick and "Free credits included", then "No credit card", then the same tick and "50% off when you upgrade". The words are a darker heading face. Each tick draws on its own, left to right. Each of those pieces still waits long enough to be read. No URL. The metal shine plays on "Install now" only. After the last condition lands, the card holds through the spoken line (at least 4 s).
 - `none`: the wordmark only.
 
 The call-to-action line plays a metal shine. It fades up and holds ≥ 4 s.

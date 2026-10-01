@@ -19,7 +19,7 @@
       label: 'Install now',
       invite: 'for Early Access benefits!',
       aside: 'first 50 stores only!',
-      terms: ['Free credits included', 'No credit card', '50% off when you upgrade'],
+      terms: ['Sets itself up', 'Free credits included', 'No credit card', '50% off when you upgrade'],
       shopify: true,
       url: '',
       vo: 'join-fifty',
@@ -506,7 +506,7 @@
   };
   const GLIDE_PAIN_CAPTION = [
     ['Unattended visits', 'cost you sales.'],
-    ['Every day.', 'Adding up.'],
+    ['Every day.', 'And counting.'],
   ];
 
   function captionBeatOffset(index) {
