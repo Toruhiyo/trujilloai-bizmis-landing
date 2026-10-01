@@ -45,6 +45,11 @@
   const PROMO_PASS_MIN_MS = 820;
   const PROMO_PASS_FINAL_MS = 1500;
   const PROMO_PASS_DIVE_MS = 720;
+  const PROMO_RACK_IN_MS = 560;
+  const PROMO_RACK_HOLD_MS = 140;
+  const PROMO_RACK_PULL_MS = 1600;
+  const PROMO_RACK_TOTAL_MS = PROMO_RACK_IN_MS + PROMO_RACK_HOLD_MS + PROMO_RACK_PULL_MS;
+  const PROMO_RACK_BLUR_PX = 44;
   const PROMO_STORE_VOICES = ['store-1', 'store-2', 'store-3', 'store-4', 'store-5', 'store-6', 'store-7', 'store-2'];
   const PROMO_PASS_TAG_MS = 220;
   const PROMO_PASS_TITLE_MS = 420;
@@ -52,7 +57,6 @@
   const PROMO_PASS_SLOT_IN_MS = 420;
   const PROMO_PHONE_PAN_MS = 820;
   const PROMO_SOLD_WAVE_MS = 700;
-  const PROMO_PASS_WHITE_MS = 1100;
   const PROMO_EA_WRITE_MS = 1700;
   const PROMO_EA_STAMP_MS = 460;
   const PROMO_EA_BEAT_MS = 780;
@@ -6021,7 +6025,7 @@
       });
     }
 
-    playStorePass(onDone) {
+    playStorePass(onDone, rack = null) {
       document.documentElement.classList.remove('is-promo-card-out');
       const slides = this.carouselTrack
         ? [...this.carouselTrack.querySelectorAll('.promo-opening__slide')]
@@ -6102,7 +6106,8 @@
         const turnMs = Math.round(Math.min(640, Math.max(300, durations[index] * 0.32)));
         slides.forEach((slide) => slide.style.setProperty('--pass-turn', `${turnMs}ms`));
         this.playPassVideo(slides, index);
-        this.runPassLight(durations[index]);
+        this.runPassLight(durations[index] + (rack && index === 0 ? PROMO_RACK_TOTAL_MS : 0));
+        const holdStore = () => {
         window.setTimeout(() => {
           if (current?.classList.contains('is-pass-current')) current.classList.add('is-pass-tag');
         }, PROMO_PASS_TAG_MS);
@@ -6122,8 +6127,73 @@
           }
           step();
         }, durations[index]);
+        };
+        if (rack && index === 0) this.rackFocusIn(current, rack).then(holdStore);
+        else holdStore();
       };
       step();
+    }
+
+    // The orange "Boost sales with" field is the first store seen fully out
+    // of focus, filling the frame. The words fade, then the focus pulls in
+    // while the camera eases back to the store's window. Stepped per frame.
+    async rackFocusIn(slide, rack) {
+      const card = slide?.querySelector('.promo-opening__slide-card');
+      if (!card) return;
+      slide.classList.add('is-rack');
+      const canvas = (this.root.querySelector('[data-promo-canvas]') || this.root).getBoundingClientRect();
+      const box = card.getBoundingClientRect();
+      const cover = Math.max(canvas.width / box.width, canvas.height / box.height) * 1.06;
+      const dx = canvas.left + canvas.width / 2 - (box.left + box.width / 2);
+      const dy = canvas.top + canvas.height / 2 - (box.top + box.height / 2);
+      card.style.transformOrigin = 'center center';
+      // An orange veil over the blurred store: the frame stays Bizmis orange
+      // until the focus pulls, then clears to the store's own colors.
+      const veil = document.createElement('span');
+      veil.className = 'promo-rack-veil';
+      card.appendChild(veil);
+      const paint = (scale, x, y, blur, opacity) => {
+        card.style.transform = `translate(${x.toFixed(1)}px, ${y.toFixed(1)}px) scale(${scale.toFixed(4)})`;
+        card.style.filter = blur > 0.2 ? `blur(${blur.toFixed(1)}px) saturate(1.08)` : '';
+        card.style.opacity = opacity.toFixed(3);
+      };
+      const frames = (ms, draw) => new Promise((resolve) => {
+        const began = performance.now();
+        const tick = () => {
+          const u = Math.min(1, (performance.now() - began) / ms);
+          draw(u);
+          if (u < 1) window.requestAnimationFrame(tick);
+          else resolve();
+        };
+        tick();
+      });
+      const smooth = (u) => u * u * (3 - 2 * u);
+      // The blurred store fades up over the orange; the words leave.
+      await frames(PROMO_RACK_IN_MS, (u) => {
+        paint(cover, dx, dy, PROMO_RACK_BLUR_PX, smooth(u));
+        veil.style.opacity = '1';
+        const words = Math.max(0, 1 - u * 1.6).toFixed(3);
+        if (rack.lead) rack.lead.style.opacity = words;
+        if (rack.mark) rack.mark.style.opacity = words;
+      });
+      if (rack.sheet) rack.sheet.style.opacity = '1';
+      this.root.classList.add('is-pass-white');
+      if (rack.mark) rack.mark.style.opacity = '';
+      await waitMs(PROMO_RACK_HOLD_MS);
+      // Focus pulls in as the camera eases back to the window.
+      await frames(PROMO_RACK_PULL_MS, (u) => {
+        const move = u < 0.5 ? 4 * u * u * u : 1 - ((-2 * u + 2) ** 3) / 2;
+        const focus = 1 - (1 - u) ** 2.2;
+        const scale = cover + (1 - cover) * move;
+        paint(scale, dx * (1 - move), dy * (1 - move), PROMO_RACK_BLUR_PX * (1 - focus), 1);
+        veil.style.opacity = Math.max(0, 1 - focus * 1.5).toFixed(3);
+      });
+      veil.remove();
+      card.style.transform = '';
+      card.style.filter = '';
+      card.style.opacity = '';
+      card.style.transformOrigin = '';
+      slide.classList.remove('is-rack');
     }
 
     // Plays a recorded clerk line with no avatar on screen (store pass).
@@ -6373,39 +6443,19 @@
         window.setTimeout(() => this.depart(), hold);
         return;
       }
-      // The orange field turns white before the first store comes in: a
-      // white sheet fades in over whatever paints the orange, under the
-      // stores. Stepped per frame so the export clock samples it.
+      // Rack focus: the orange field is the first store, fully out of focus.
+      // A white sheet waits behind it for when the camera pulls back.
       const scaleLayer = this.root.querySelector('[data-promo-scale]');
       const sheet = document.createElement('div');
       sheet.className = 'promo-pass-white';
       scaleLayer?.prepend(sheet);
-      const lead = this.root.querySelector('.promo-scale__lead');
-      const mark = this.root.querySelector('[data-promo-end-mark]');
-      const began = performance.now();
-      let passStarted = false;
-      const fade = () => {
-        const u = Math.min(1, (performance.now() - began) / PROMO_PASS_WHITE_MS);
-        sheet.style.opacity = (u * u * (3 - 2 * u)).toFixed(3);
-        const textFade = Math.max(0, 1 - u * 2.2).toFixed(3);
-        if (lead) lead.style.opacity = textFade;
-        if (mark) mark.style.opacity = textFade;
-        // The first store rises while the orange is still fading, so the
-        // apricot store takes over from the orange instead of following it.
-        if (u >= 0.15 && !passStarted) {
-          passStarted = true;
-          this.playStorePass(() => {
-            this.landPassSlot();
-          });
-        }
-        if (u < 1) {
-          window.requestAnimationFrame(fade);
-          return;
-        }
-        this.root.classList.add('is-pass-white');
-        if (mark) mark.style.opacity = '';
-      };
-      fade();
+      this.playStorePass(() => {
+        this.landPassSlot();
+      }, {
+        sheet,
+        lead: this.root.querySelector('.promo-scale__lead'),
+        mark: this.root.querySelector('[data-promo-end-mark]'),
+      });
     }
 
     playStoreStack(onDone) {

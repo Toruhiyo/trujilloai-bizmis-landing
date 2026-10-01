@@ -10850,3 +10850,21 @@ html.is-promo-final .promo-vo-debug {
     filter calc(var(--pass-turn, 640ms) * 0.6) ease,
     transform calc(var(--pass-turn, 640ms) * 0.6) ease !important;
 }
+
+/* Rack focus into the first store: the slide itself holds still; only its
+   card moves, driven per frame. */
+.promo-opening.is-store-pass .promo-opening__slide.is-rack {
+  opacity: 1 !important;
+  filter: none !important;
+  transform: translateY(-46%) !important;
+  transition: none !important;
+}
+
+.promo-rack-veil {
+  position: absolute;
+  inset: 0;
+  z-index: 50;
+  border-radius: inherit;
+  background: var(--bizmis-primary);
+  pointer-events: none;
+}
