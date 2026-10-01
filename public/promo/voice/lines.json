@@ -1,0 +1,13 @@
+[
+  { "id": "pitch-1", "text": "Here are the three that fit. Let me compare them for you." },
+  { "id": "pitch-compare", "text": "This one's the lightest, and it packs flat. It's the one." },
+  { "id": "pitch-2", "text": "Yes. It fits a full weekend, and still packs flat." },
+  { "id": "pitch-upsell", "text": "Great pick. Pair it with this sleeve: made for it, and it keeps it safe on the road." },
+  { "id": "store-1", "text": "Here are your options!" },
+  { "id": "store-2", "text": "There you go!" },
+  { "id": "store-3", "text": "We do have that!" },
+  { "id": "store-4", "text": "Added to your cart." },
+  { "id": "store-5", "text": "Great choice!" },
+  { "id": "store-6", "text": "Here it is." },
+  { "id": "store-7", "text": "Done!" }
+]

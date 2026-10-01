@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Bizmis voice capture</title>
+  <link rel="stylesheet" href="https://cdn.bizmis.ai/widget/avatar-widget-style.css">
+</head>
+<body>
+  <!--
+    Records the live Bizmis agent saying fixed lines, for the ad-1 film
+    (scripts/capture-clerk-voice.mjs drives this page). The page taps the
+    widget's websocket and keeps every audio chunk with its alignment.
+  -->
+  <div id="bizmis-avatar-embed"></div>
+  <script>
+    window.__voice = { chunks: [], responses: [], status: [] };
+    const NativeSocket = window.WebSocket;
+    window.WebSocket = function (...args) {
+      const socket = new NativeSocket(...args);
+      socket.addEventListener('message', (event) => {
+        if (typeof event.data !== 'string') return;
+        let data;
+        try { data = JSON.parse(event.data); } catch { return; }
+        if (data.type === 'audio') {
+          const audioEvent = data.audio_event || {};
+          window.__voice.chunks.push({
+            at: performance.now(),
+            audio: audioEvent.audio_base_64 || data.audio_base_64 || data.audio || '',
+            alignment: audioEvent.alignment || audioEvent.normalized_alignment || null,
+          });
+        } else if (data.type === 'agent_response') {
+          window.__voice.responses.push({ at: performance.now(), text: data.agent_response_event?.agent_response || '' });
+        } else if (data.type === 'conversation_initiation_metadata') {
+          window.__voice.status.push({ at: performance.now(), meta: data.conversation_initiation_metadata_event || {} });
+        }
+      });
+      return socket;
+    };
+    window.WebSocket.prototype = NativeSocket.prototype;
+    Object.assign(window.WebSocket, NativeSocket);
+    try { localStorage.setItem('bizmis-subtitles', 'true'); } catch {}
+  </script>
+  <script src="https://cdn.bizmis.ai/widget/avatar-widget.js"></script>
+  <script>
+    window.AvatarVoicechat.init({
+      containerId: 'bizmis-avatar-embed',
+      rootUrl: 'https://cdn.bizmis.ai/widget',
+      apiUrl: 'https://api.trujillo.ai',
+      websocketUrl: 'wss://api.trujillo.ai',
+      language: 'en',
+      layout: 'card',
+      autoOpen: true,
+      enableAcceptTerms: false,
+      debug: true,
+    });
+  </script>
+</body>
+</html>

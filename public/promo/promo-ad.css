@@ -4378,7 +4378,7 @@ html.is-promo-still .is-pose-choice:not(.is-settled):not(.is-reduced) .promo-mom
   height: 3.1rem;
   margin: -1.55rem 0 0 -1.55rem;
   border-radius: 50%;
-  background: #E6E6E6;
+  background: var(--bizmis-primary);
   filter: blur(9px);
   opacity: 0;
   pointer-events: none;
@@ -4936,15 +4936,15 @@ html.is-promo-still .is-pose-choice:not(.is-settled):not(.is-reduced) .promo-mom
     opacity: 0.9;
     filter: blur(1px);
     transform: scale(1.18);
-    background: color-mix(in srgb, var(--bizmis-primary) 72%, white);
+    background: var(--bizmis-primary);
     color: transparent;
-    box-shadow: 0 0 22px 10px color-mix(in srgb, var(--bizmis-primary) 46%, transparent);
+    box-shadow: 0 0 22px 10px color-mix(in srgb, var(--bizmis-primary) 60%, transparent);
   }
   100% {
     opacity: 0;
     filter: blur(22px);
     transform: scale(2.4);
-    background: color-mix(in srgb, var(--bizmis-primary) 28%, transparent);
+    background: color-mix(in srgb, var(--bizmis-primary) 55%, transparent);
     color: transparent;
     box-shadow: 0 0 48px 22px color-mix(in srgb, var(--bizmis-primary) 0%, transparent);
   }
@@ -9301,8 +9301,16 @@ html.is-promo-still .promo-clip__product.is-compare::after {
 .promo-opening.is-store-pass .promo-opening__slide.is-pass-leaving {
   visibility: visible;
   transition:
-    transform 640ms cubic-bezier(0.22, 1, 0.36, 1),
-    opacity 640ms linear;
+    transform var(--pass-turn, 640ms) cubic-bezier(0.65, 0, 0.35, 1),
+    opacity calc(var(--pass-turn, 640ms) * 0.8) ease;
+}
+
+/* The leaving store clears out quicker than the new one arrives, so the
+   two never stack in the middle of the frame. */
+.promo-opening.is-store-pass .promo-opening__slide.is-pass-leaving {
+  transition:
+    transform var(--pass-turn, 640ms) cubic-bezier(0.55, 0, 0.75, 0),
+    opacity calc(var(--pass-turn, 640ms) * 0.45) ease;
 }
 
 .promo-opening.is-store-pass .promo-opening__slide.is-pass-current {
@@ -10577,4 +10585,209 @@ html.is-promo-opening .bizmis-viewport-portal-root textarea {
 
 .promo-opening.is-pitch-cards.is-moments .promo-opening__store.is-desktop .promo-moments__board.is-pose-extra .promo-moments__plus {
   left: 50% !important;
+}
+
+/* The film clock is for review previews only, never in a final export. */
+html.is-promo-final .promo-opening__clock,
+html.is-promo-final .promo-vo-debug {
+  display: none !important;
+}
+
+/* Comparison chips: three glass chips in the photo's top-right corner, one
+   per attribute, an icon and its verdict. The pick's are all orange. They
+   only show while the shopper compares. */
+.promo-moments__compare {
+  display: none !important;
+}
+
+.promo-moments__chips {
+  position: absolute;
+  top: 7%;
+  right: 6%;
+  z-index: 4;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.45em;
+  font-size: clamp(10px, calc(var(--card-w, 300px) * 0.045), 22px);
+  pointer-events: none;
+}
+
+.promo-moments__chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4em;
+  padding: 0.38em 0.55em 0.38em 0.5em;
+  border: 1px solid rgba(255, 255, 255, 0.65);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.55);
+  box-shadow: 0 6px 16px -8px rgba(28, 24, 20, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.8);
+  -webkit-backdrop-filter: blur(12px) saturate(1.3);
+  backdrop-filter: blur(12px) saturate(1.3);
+  color: var(--ad-ink-2);
+  opacity: 0;
+  transform: translateX(0.6em) scale(0.92);
+  transition: opacity 260ms ease, transform 420ms cubic-bezier(0.22, 1, 0.36, 1);
+  transition-delay: var(--chip-delay, 0ms);
+}
+
+.promo-moments__chip-icon,
+.promo-moments__chip .promo-moments__mark {
+  display: block;
+  width: 1.1em;
+  height: 1.1em;
+}
+
+.promo-moments__chip-icon svg {
+  width: 100%;
+  height: 100%;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.promo-moments__chip.is-yes .promo-moments__mark {
+  color: var(--bizmis-primary);
+}
+
+.promo-moments__chip.is-no .promo-moments__mark {
+  color: var(--ad-ink-3);
+}
+
+.promo-moments__card.is-pick .promo-moments__chip {
+  border-color: color-mix(in srgb, var(--bizmis-primary) 55%, white);
+  background: color-mix(in srgb, var(--bizmis-primary) 78%, transparent);
+  color: #fff;
+}
+
+.promo-moments__card.is-pick .promo-moments__chip .promo-moments__mark {
+  color: #fff;
+}
+
+.is-pose-choice .promo-moments__card .promo-moments__chip {
+  opacity: 1;
+  transform: none;
+}
+
+/* The sleeve add celebrates once, at the cart. No second burst on the button. */
+.is-pose-bundle .promo-moments__celebrate,
+.is-pose-bundle .promo-moments__fest-ring,
+.is-pose-bundle .promo-moments__bloom,
+.is-pose-bundle .promo-moments__halo,
+.is-pose-bundle .promo-moments__spark,
+.is-pose-bundle .promo-moments__burst-check {
+  animation: none !important;
+  opacity: 0 !important;
+}
+
+/* Premium finish on every mockup: a fine inner light edge and a soft glass
+   sheen over the screen, like a lit glass panel. Corner radius follows real
+   hardware (see gridMockupRadius). */
+.promo-glide__cell::before,
+.promo-opening__store::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 60;
+  border-radius: inherit;
+  pointer-events: none;
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.55),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9);
+  background: linear-gradient(140deg, rgba(255, 255, 255, 0.16) 0%, rgba(255, 255, 255, 0) 38%);
+}
+
+.promo-opening__store {
+  border-radius: 22px;
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.8) inset,
+    0 30px 70px -28px rgba(28, 24, 20, 0.28),
+    0 10px 24px -14px rgba(28, 24, 20, 0.16);
+}
+
+.promo-opening__store.is-tablet {
+  border-radius: 26px;
+}
+
+.promo-opening__store.is-phone {
+  border-radius: 40px;
+}
+
+/* The pass ends on a blank "Your store" window with the Bizmis widget. */
+.promo-pass-final {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: #fff;
+}
+
+.promo-pass-final__bar {
+  display: flex;
+  gap: 0.55em;
+  align-items: center;
+  height: 7%;
+  padding: 0 2.4%;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  opacity: var(--final-chrome, 1);
+}
+
+.promo-pass-final__bar i {
+  width: 0.75em;
+  height: 0.75em;
+  border-radius: 50%;
+  background: #E3E1DD;
+}
+
+.promo-pass-final__head {
+  display: flex;
+  align-items: center;
+  height: 11%;
+  padding: 0 4.5%;
+  opacity: var(--final-chrome, 1);
+}
+
+.promo-pass-final__brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5em;
+  color: var(--ad-ink-2);
+  font-family: var(--font-heading);
+  font-size: clamp(14px, 1.5cqw, 26px);
+  font-weight: 600;
+}
+
+.promo-pass-final__mark {
+  display: inline-block;
+  width: 1.3em;
+  height: 1.3em;
+}
+
+.promo-pass-final__mark svg {
+  width: 100%;
+  height: 100%;
+}
+
+.promo-pass-final__page {
+  flex: 1;
+}
+
+.promo-pass-final__widget {
+  position: absolute !important;
+  right: 2% !important;
+  bottom: 3% !important;
+  width: 19% !important;
+  height: auto !important;
+  aspect-ratio: 288 / 294;
+  opacity: var(--final-chrome, 1);
+}
+
+.promo-pass-final__widget > * {
+  transform-origin: top left;
+}
+
+.promo-opening__slide.is-final .promo-opening__slide-sector {
+  color: var(--bizmis-primary) !important;
 }

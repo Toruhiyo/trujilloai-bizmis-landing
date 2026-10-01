@@ -26,24 +26,33 @@
     },
     none: null,
   };
+  // Skincare first: The Apricot Theory's color is the nearest to Bizmis
+  // orange, so the orange field hands over to it.
   const PROMO_PASS_SECTORS = [
+    'Skincare & beauty',
     'Consumer electronics',
     'Clothing & apparel',
     'Books & stationery',
-    'Skincare & beauty',
     'Gaming gear',
     'Home & DIY',
     'Car parts & accessories',
     'Wine & spirits',
   ];
   const PROMO_PASS_FAST_MS = 2600;
+  const PROMO_PASS_READ_MS = 2900;
+  const PROMO_PASS_STEP_MS = 1900;
+  const PROMO_PASS_SPEEDUP = 0.8;
+  const PROMO_PASS_MIN_MS = 820;
+  const PROMO_PASS_FINAL_MS = 1500;
+  const PROMO_PASS_DIVE_MS = 720;
+  const PROMO_STORE_VOICES = ['store-1', 'store-2', 'store-3', 'store-4', 'store-5', 'store-6', 'store-7', 'store-2'];
   const PROMO_PASS_TAG_MS = 220;
   const PROMO_PASS_TITLE_MS = 420;
   const PROMO_PASS_SLOW_MS = 4800;
   const PROMO_PASS_SLOT_IN_MS = 420;
   const PROMO_PHONE_PAN_MS = 820;
   const PROMO_SOLD_WAVE_MS = 700;
-  const PROMO_PASS_WHITE_MS = 750;
+  const PROMO_PASS_WHITE_MS = 1100;
   const PROMO_EA_WRITE_MS = 1700;
   const PROMO_EA_STAMP_MS = 460;
   const PROMO_EA_BEAT_MS = 780;
@@ -312,6 +321,8 @@
   const PROMO_DOUBT_ORBIT_RATIO = 0.6;
   const PROMO_DOUBT_BUBBLE_PX = 26;
   const PROMO_TYPE_LINE_MS = 1100;
+  // Quick, but readable as typing: about 26 characters a second.
+  const PROMO_FILM_TYPE_CHAR_MS = 38;
   const PROMO_PITCH_WORD_OUT_MS = 400;
   const PROMO_PITCH_WORD_OUT_STAGGER_MS = [0, 140, 70, 210];
   const PROMO_AVATAR_MAX_SCALE = 2.5;
@@ -343,7 +354,7 @@
   const PROMO_STORE_MARK = '<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round"><path d="M3.6 10.2 6.1 4.8h11.8l2.5 5.4"/><path d="M4.4 10.2h15.2V19.6H4.4z"/><path d="M10.1 19.6V14h3.8v5.6"/></svg>';
   const PROMO_PAIN_PAD = 24;
   const PROMO_PAIN_SCROLL_MS = 860;
-  const PROMO_PAIN_TYPE_CHAR_MS = 16;
+  const PROMO_PAIN_TYPE_CHAR_MS = 38;
   const PROMO_PAIN_EXIT_MS = 420;
   const PROMO_WINDOW_AIM_MS = 1600;
   const PROMO_WINDOW_LEAVE_MS = 400;
@@ -495,7 +506,7 @@
   };
   const GLIDE_PAIN_CAPTION = [
     ['Unattended visits', 'cost you sales.'],
-    ['Every day.', 'Quietly.'],
+    ['Every day.', 'Adding up.'],
   ];
 
   function captionBeatOffset(index) {
@@ -1621,7 +1632,7 @@
   const PROMO_MOMENTS_SALESPERSON_MS = 800;
   const PROMO_MOMENTS_HOLD_MS = 700;
   const PROMO_MOMENTS_VAPOR_MS = 720;
-  const PROMO_MOMENTS_CART_GAP_MS = 420;
+  const PROMO_MOMENTS_CART_GAP_MS = 900;
   const PROMO_MOMENTS_ACCESSORY_MS = 350;
   const PROMO_MOMENTS_COLLAPSE_MS = 560;
   const PROMO_MOMENT_RING_GAP_MS = 300;
@@ -1942,7 +1953,7 @@
     return new Promise((resolve) => {
       const started = performance.now();
       const tick = (now) => {
-        const u = Math.min(1, (now - started) / PROMO_TYPE_LINE_MS);
+        const u = Math.min(1, (now - started) / Math.max(PROMO_TYPE_LINE_MS, text.length * PROMO_FILM_TYPE_CHAR_MS));
         const count = u >= 1 ? text.length : Math.max(1, Math.round(text.length * u));
         write(text.slice(0, count));
         if (u < 1) window.requestAnimationFrame(tick);
@@ -2048,6 +2059,45 @@
     }
     form.requestSubmit();
     return true;
+  }
+
+  // The clerk's lines, recorded once from the live agent through the real
+  // widget (scripts/capture-clerk-voice.mjs): public/promo/voice/<id>.wav
+  // with the agent's own character timings in <id>.json.
+  const promoVoiceCache = new Map();
+  function clerkVoice(id) {
+    if (!promoVoiceCache.has(id)) {
+      promoVoiceCache.set(id, fetch(`/promo/voice/${id}.json`)
+        .then((response) => (response.ok ? response.json() : null))
+        .catch(() => null));
+    }
+    return promoVoiceCache.get(id);
+  }
+  ['pitch-1', 'pitch-compare', 'pitch-2', 'pitch-upsell', 'store-1', 'store-2', 'store-3', 'store-4', 'store-5', 'store-6', 'store-7']
+    .forEach((id) => clerkVoice(id));
+
+  // Word start times (ms) from the agent's character timings.
+  function voiceWords(voice) {
+    const words = [];
+    let current = null;
+    (voice?.chars || []).forEach((entry) => {
+      if (/\s/.test(entry.char)) {
+        current = null;
+        return;
+      }
+      if (!current) {
+        current = { text: '', startMs: entry.startMs };
+        words.push(current);
+      }
+      current.text += entry.char;
+    });
+    return words;
+  }
+
+  function promoWidgetDebug(method, ...args) {
+    const api = window.AvatarVoicechat;
+    if (api && typeof api[method] === 'function') return api[method](...args);
+    return false;
   }
 
   // The clerk speaks on its own, with no shopper message: only the hidden
@@ -2626,6 +2676,32 @@
     return mark;
   }
 
+  // The comparison sits on each product: three glass chips in the photo's
+  // top-right corner, each an attribute icon and its verdict.
+  const PROMO_CHIP_VERDICTS = {
+    go: ['yes', 'yes', 'no'],
+    pick: ['yes', 'yes', 'yes'],
+    other: ['yes', 'no', 'yes'],
+  };
+
+  function momentChips(role) {
+    const verdicts = PROMO_CHIP_VERDICTS[role];
+    if (!verdicts) return null;
+    const stack = document.createElement('span');
+    stack.className = 'promo-moments__chips';
+    PROMO_MOMENT_SPEC_KINDS.forEach((kind, row) => {
+      const chip = document.createElement('span');
+      chip.className = `promo-moments__chip is-${verdicts[row]}`;
+      chip.style.setProperty('--chip-delay', `${row * 140}ms`);
+      const icon = document.createElement('span');
+      icon.className = 'promo-moments__chip-icon';
+      icon.innerHTML = `<svg viewBox="0 0 24 24" aria-hidden="true">${PROMO_MOMENT_ICONS[kind]}</svg>`;
+      chip.append(icon, momentMark(verdicts[row]));
+      stack.appendChild(chip);
+    });
+    return stack;
+  }
+
   function momentCompare() {
     const panel = document.createElement('div');
     panel.className = 'promo-moments__compare';
@@ -2667,7 +2743,10 @@
       paintShelf(card, index);
       card.style.setProperty('--gx', `${((column - 1.5) * PROMO_MOMENT_GRID_PITCH_X).toFixed(0)}px`);
       card.style.setProperty('--gy', `${((row - 1) * PROMO_MOMENT_GRID_PITCH_Y).toFixed(0)}px`);
-      card.append(momentPhoto(index), momentMeta(index), momentAdd());
+      const photo = momentPhoto(index);
+      const chips = momentChips(role);
+      if (chips) photo.appendChild(chips);
+      card.append(photo, momentMeta(index), momentAdd());
       if (role === 'pick') card.appendChild(momentKept());
       board.appendChild(card);
     }
@@ -3600,10 +3679,12 @@
 
   const PROMO_MOCKUP_RADIUS_PX = 32;
 
+  // Device corner radius as a share of its width, close to real hardware:
+  // a browser window, an iPad, an iPhone. Never so round it eats the screen.
   function gridMockupRadius(device, width) {
-    const browser = width * (PROMO_MOCKUP_RADIUS_PX / device.frame);
-    if (device.id === 'desktop') return browser;
-    return Math.max(browser, width * 0.11);
+    if (device.id === 'tablet') return width * 0.042;
+    if (device.id === 'phone') return width * 0.1;
+    return width * (22 / device.frame);
   }
 
   // Card depth by level: 0 flush on the floor, 1 resting, 2.2 raised.
@@ -4886,8 +4967,7 @@
     // Copy of the widget's caption (Subtitles.tsx, "progress" style), for
     // exports only: there the live agent's voice never plays, so the widget
     // has nothing to caption. Live playback keeps the widget's own captions.
-    playFilmCaption(line, speakMs) {
-      if (!document.documentElement.classList.contains('is-promo-export')) return;
+    playFilmCaption(line, speakMs, timedWords = null) {
       const canvas = this.root.querySelector('[data-promo-canvas]') || this.root;
       const card = document.querySelector('.bizmis-desktop-lite-chat');
       if (!card) return;
@@ -4910,17 +4990,21 @@
       pill.style.bottom = `${((frame.bottom - store.bottom) / scale + store.height / scale * 0.06).toFixed(1)}px`;
       pill.style.setProperty('--caption-zoom', zoom.toFixed(4));
       // Chunks of a few words, one line each, paced across the spoken time.
-      const words = line.split(/\s+/).filter(Boolean);
+      const words = timedWords?.length ? timedWords.map((word) => word.text) : line.split(/\s+/).filter(Boolean);
       const chunks = [];
       for (let i = 0; i < words.length; i += 5) chunks.push(words.slice(i, i + 5));
-      const total = words.reduce((sum, word) => sum + word.length + 1, 0);
-      const span = Math.max(600, speakMs * 0.94);
+      const span = Math.max(600, speakMs);
       const starts = [];
-      let acc = 0;
-      words.forEach((word) => {
-        starts.push((acc / total) * span);
-        acc += word.length + 1;
-      });
+      if (timedWords?.length) {
+        timedWords.forEach((word) => starts.push(word.startMs));
+      } else {
+        const total = words.reduce((sum, word) => sum + word.length + 1, 0);
+        let acc = 0;
+        words.forEach((word) => {
+          starts.push((acc / total) * span * 0.94);
+          acc += word.length + 1;
+        });
+      }
       const began = performance.now();
       let shownChunk = -1;
       const step = () => {
@@ -4955,6 +5039,38 @@
       step();
     }
 
+    // The clerk says a recorded line: the avatar talks for exactly its
+    // length, the captions follow its word timings, and the sound is logged
+    // so the exporter lays it under the frames.
+    async speakClerk(id, reduced) {
+      const voice = await clerkVoice(id);
+      if (!voice) return;
+      const durationMs = voice.durationMs;
+      const src = `/promo/voice/${id}.wav`;
+      const now = performance.now();
+      (window.__promoAudioCues = window.__promoAudioCues || []).push({ src, atMs: now, fromSec: 0, endMs: now + durationMs });
+      if (!document.documentElement.classList.contains('is-promo-export')) {
+        const audio = new Audio(src);
+        audio.play().catch(() => { });
+      }
+      this.playFilmCaption(voice.text, durationMs, voiceWords(voice));
+      promoWidgetDebug('setSpeaking', true);
+      await waitMs(reduced ? 200 : durationMs);
+      promoWidgetDebug('setSpeaking', false);
+    }
+
+    // The shopper's line goes out: the composer empties as if sent. Nothing
+    // reaches the live agent, so it never talks over the recorded clerk.
+    async sendShopperLine(text) {
+      await this.typeShopperLine(text);
+      await waitMs(240);
+      const draft = widgetDraftInput();
+      if (draft) {
+        draft.setter.call(draft.input, '');
+        draft.input.dispatchEvent(new Event('input', { bubbles: true }));
+      }
+    }
+
     // The loading ring runs from the moment a message goes out, or from the
     // end of the clerk's own line, until the next moment shows. At least one
     // full lap, so it never flickers.
@@ -4967,6 +5083,7 @@
     async playPitchPair() {
       const reduced = prefersReducedMotion();
       this.pitchCardsPlayed = true;
+      promoWidgetDebug('setPlaceholder', "Ask what you're looking for");
       this.seatClerkInStore(reduced);
       if (!reduced) await waitMs(PROMO_CLERK_CORNER_MS);
       const stage = this.momentStage();
@@ -4983,24 +5100,22 @@
       const product = (title, key) => ({ title, url: `https://bizmis.ai/demo/${key}`, imageUrl: clay[key] || '' });
       const pick = product('The light one', 'sphere');
       const sleeve = product('The sleeve', 'slab');
-      const speak = (ms) => waitMs(reduced ? 200 : ms);
 
       // Beat 1. The VO names it, then the shopper asks and the clerk leads.
       markPromoVo('narrows');
+      promoWidgetDebug('setPlaceholder', "Ask what you're looking for");
       if (!reduced) await waitMs(promoVoGuard('narrows'));
-      await this.typeShopperLine(PROMO_PITCH_LINE_1);
-      sayClerkLine(PROMO_PITCH_CLERK_1);
+      await this.sendShopperLine(PROMO_PITCH_LINE_1);
+      promoWidgetDebug('setPlaceholder', 'Ask me to compare them');
       await this.laserUntilNext('search', reduced);
       applyMomentPose(stage, 'row', { instant: reduced });
-      this.playFilmCaption(PROMO_PITCH_CLERK_1, PROMO_PITCH_SPEAK_1_MS);
       emitShopper({ kind: 'products', products: [product('The day one', 'capsule'), pick, product('The travel one', 'rounded-cube')] });
-      await speak(PROMO_PITCH_SPEAK_1_MS);
+      await this.speakClerk('pitch-1', reduced);
       await this.laserUntilNext('compare', reduced);
       applyMomentPose(stage, 'choice', { instant: reduced });
       // The clerk reads the comparison on its own; nobody asked.
-      sayClerkAlone(PROMO_PITCH_CLERK_COMPARE);
-      this.playFilmCaption(PROMO_PITCH_CLERK_COMPARE, PROMO_PITCH_SPEAK_COMPARE_MS);
-      await speak(PROMO_PITCH_SPEAK_COMPARE_MS);
+      await this.speakClerk('pitch-compare', reduced);
+      promoWidgetDebug('setPlaceholder', 'Ask anything about it');
       await this.laserUntilNext('product', reduced);
       applyMomentPose(stage, 'doubt', { instant: reduced });
       const board = stage?.querySelector('.promo-moments__board');
@@ -5011,12 +5126,12 @@
       markPromoVo('closes');
       if (!reduced) await waitMs(promoVoGuard('closes'));
       board?.classList.remove('is-doubts-hidden');
-      await this.typeShopperLine(PROMO_PITCH_LINE_2);
-      sayClerkLine(PROMO_PITCH_CLERK_2);
+      await this.sendShopperLine(PROMO_PITCH_LINE_2);
       await this.laserUntilNext('compare', reduced, PROMO_PITCH_DOUBT_MS);
-      this.playFilmCaption(PROMO_PITCH_CLERK_2, PROMO_PITCH_SPEAK_2_MS);
-      await speak(PROMO_PITCH_SPEAK_2_MS);
-      // The doubt is gone, so the shopper adds it. The clerk never adds.
+      await this.speakClerk('pitch-2', reduced);
+      promoWidgetDebug('setPlaceholder', 'Ask what goes with it');
+      // The doubt is gone; a beat later the shopper adds it. The clerk never adds.
+      await waitMs(reduced ? 40 : 700);
       const cartLandMs = PROMO_MOMENTS_VAPOR_MS + PROMO_MOMENTS_CART_GAP_MS + 220;
       if (!reduced) {
         applyMomentPose(stage, 'close');
@@ -5032,9 +5147,8 @@
       await this.laserUntilNext('products', reduced);
       applyMomentPose(stage, 'extra', { instant: reduced });
       emitShopper({ kind: 'products', products: [sleeve] });
-      sayClerkAlone(PROMO_PITCH_CLERK_UPSELL);
-      this.playFilmCaption(PROMO_PITCH_CLERK_UPSELL, PROMO_PITCH_SPEAK_UPSELL_MS);
-      await speak(PROMO_PITCH_SPEAK_UPSELL_MS);
+      await this.speakClerk('pitch-upsell', reduced);
+      promoWidgetDebug('setPlaceholder', 'Ask about shipping or returns');
       // Convinced, the shopper adds the sleeve too.
       await waitMs(reduced ? 40 : 450);
       applyMomentPose(stage, 'bundle', { instant: reduced });
@@ -5046,6 +5160,7 @@
       await this.markCloseStoreSold();
       await this.rememberPitchLead();
       this.muteWidgetActivity(false);
+      promoWidgetDebug('setPlaceholder', null);
       endOpeningAgent();
       await this.releaseLiveCard();
       this.playPitchConveyor();
@@ -5877,13 +5992,9 @@
           video.pause();
           return;
         }
-        if (video.dataset.promoIdle === '1' || !video._promoCue) {
-          const cue = { src: video.getAttribute('src'), atMs: now, fromSec: start, endMs: null };
-          (window.__promoAudioCues = window.__promoAudioCues || []).push(cue);
-          video._promoCue = cue;
-        }
-        video.muted = false;
-        video.volume = 1;
+        // The clip plays silent: each store gets a short recorded
+        // confirmation from the clerk instead (store-N voices).
+        video.muted = true;
         if (video.dataset.promoIdle === '1' || video.dataset.promoArmed !== '1') {
           video.dataset.promoArmed = '1';
           video.__promoOriginMs = null;
@@ -5923,10 +6034,15 @@
         return;
       }
       markPromoVo('any-store');
+      const finalSlide = this.ensureFinalPassSlide();
+      if (finalSlide && !slides.includes(finalSlide)) slides.push(finalSlide);
       const count = slides.length;
-      const durations = slides.map((_, index) => {
-        const t = count <= 1 ? 1 : index / (count - 1);
-        return Math.round(PROMO_PASS_FAST_MS + (PROMO_PASS_SLOW_MS - PROMO_PASS_FAST_MS) * t * t);
+      // The first two stores hold long enough to read; then each store is
+      // shorter than the last, so the pass gathers speed into "Your store".
+      const durations = slides.map((slide, index) => {
+        if (slide === finalSlide) return PROMO_PASS_FINAL_MS;
+        if (index < 2) return PROMO_PASS_READ_MS;
+        return Math.round(Math.max(PROMO_PASS_MIN_MS, PROMO_PASS_STEP_MS * PROMO_PASS_SPEEDUP ** (index - 2)));
       });
       let index = 0;
       slides.forEach((slide) => {
@@ -5963,19 +6079,31 @@
         });
       };
       const step = () => {
-        const store = this.stores[index];
+        const isFinal = slides[index] === finalSlide;
+        const store = isFinal ? null : this.stores[index];
         if (store) {
           this.arriveStore(store);
           this.paintPassLight(store.accent);
+          // A short confirmation from the clerk on each store.
+          const line = PROMO_STORE_VOICES[index % PROMO_STORE_VOICES.length];
+          window.setTimeout(() => this.playVoiceSound(line), PROMO_PASS_TITLE_MS);
         }
         this.paintWave(index, 1, 0.5, 1);
         placePassSlides();
+        if (isFinal) {
+          this.fitFinalWidget(finalSlide);
+          this.root.style.setProperty('--promo-store-accent', 'var(--bizmis-primary)');
+        }
         slides.forEach((slide, slideIndex) => {
           slide.classList.toggle('is-pass-current', slideIndex === index);
           slide.classList.toggle('is-pass-leaving', slideIndex === index - 1);
           slide.classList.remove('is-pass-tag', 'is-pass-title');
         });
         const current = slides[index];
+        // The wheel turn scales with how long the store holds, so a quick
+        // store never shows two cards crossing.
+        const turnMs = Math.round(Math.min(640, Math.max(300, durations[index] * 0.32)));
+        slides.forEach((slide) => slide.style.setProperty('--pass-turn', `${turnMs}ms`));
         this.playPassVideo(slides, index);
         this.runPassLight(durations[index]);
         window.setTimeout(() => {
@@ -5984,13 +6112,14 @@
         window.setTimeout(() => {
           if (current?.classList.contains('is-pass-current')) current.classList.add('is-pass-title');
         }, PROMO_PASS_TITLE_MS);
-        window.setTimeout(() => {
+        window.setTimeout(async () => {
           index += 1;
           if (index >= count) {
             this.paintWave(-1, 0, 0, 0);
             this.paintPassLight(null);
             this.stopPassLight();
             this.playPassVideo(slides, -1);
+            if (finalSlide) await this.diveIntoFinal(finalSlide);
             onDone();
             return;
           }
@@ -5998,6 +6127,96 @@
         }, durations[index]);
       };
       step();
+    }
+
+    // Plays a recorded clerk line with no avatar on screen (store pass).
+    async playVoiceSound(id) {
+      const voice = await clerkVoice(id);
+      if (!voice) return;
+      const src = `/promo/voice/${id}.wav`;
+      const now = performance.now();
+      (window.__promoAudioCues = window.__promoAudioCues || []).push({ src, atMs: now, fromSec: 0, endMs: now + voice.durationMs });
+      if (!document.documentElement.classList.contains('is-promo-export')) {
+        new Audio(src).play().catch(() => { });
+      }
+    }
+
+    // The last card of the pass: a blank "Your store" window with the Bizmis
+    // widget in its corner. The wheel brings it in like any other store.
+    ensureFinalPassSlide() {
+      if (!this.carouselTrack) return null;
+      let slide = this.carouselTrack.querySelector('.promo-opening__slide.is-final');
+      if (slide) return slide;
+      slide = document.createElement('div');
+      slide.className = 'promo-opening__slide is-final';
+      slide.style.setProperty('--promo-store-accent', 'var(--bizmis-primary)');
+      const meta = document.createElement('div');
+      meta.className = 'promo-opening__slide-meta';
+      const sector = document.createElement('p');
+      sector.className = 'promo-opening__slide-sector';
+      sector.textContent = 'Your store';
+      sector.style.color = 'var(--bizmis-primary)';
+      meta.appendChild(sector);
+      const card = document.createElement('div');
+      card.className = 'promo-opening__slide-card promo-pass-final';
+      const bar = document.createElement('div');
+      bar.className = 'promo-pass-final__bar';
+      bar.innerHTML = '<i></i><i></i><i></i>';
+      const head = document.createElement('div');
+      head.className = 'promo-pass-final__head';
+      const brand = document.createElement('span');
+      brand.className = 'promo-pass-final__brand';
+      brand.innerHTML = `<span class="promo-pass-final__mark">${PROMO_STORE_MARK}</span><span>Your store</span>`;
+      head.appendChild(brand);
+      const page = document.createElement('div');
+      page.className = 'promo-pass-final__page';
+      card.append(bar, head, page);
+      const widget = document.querySelector('[data-promo-widget-still]');
+      if (widget) {
+        const copy = widget.cloneNode(true);
+        copy.removeAttribute('style');
+        copy.className = 'promo-pass-final__widget';
+        card.appendChild(copy);
+      }
+      slide.append(meta, card);
+      this.carouselTrack.appendChild(slide);
+      return slide;
+    }
+
+    fitFinalWidget(slide) {
+      const holder = slide.querySelector('.promo-pass-final__widget');
+      const inner = holder?.firstElementChild;
+      if (!holder || !inner) return;
+      const native = parseFloat(inner.style.width) || inner.offsetWidth || 288;
+      inner.style.transform = `scale(${(holder.offsetWidth / native).toFixed(4)})`;
+    }
+
+    // The camera dives into the blank page until the window is gone and the
+    // frame is white, ready for the call to action. Stepped per frame.
+    async diveIntoFinal(slide) {
+      const card = slide.querySelector('.promo-opening__slide-card');
+      const meta = slide.querySelector('.promo-opening__slide-meta');
+      if (!card) return;
+      const box = card.getBoundingClientRect();
+      const frame = this.root.getBoundingClientRect();
+      const target = Math.max(frame.width / box.width, frame.height / box.height) * 1.6;
+      const dx = frame.left + frame.width / 2 - (box.left + box.width / 2);
+      const dy = frame.top + frame.height / 2 - (box.top + box.height * 0.58);
+      card.style.transformOrigin = 'center 58%';
+      await new Promise((resolve) => {
+        const began = performance.now();
+        const tick = () => {
+          const u = Math.min(1, (performance.now() - began) / PROMO_PASS_DIVE_MS);
+          const e = u * u * u;
+          const scale = 1 + (target - 1) * e;
+          card.style.transform = `translate(${(dx * e).toFixed(1)}px, ${(dy * e).toFixed(1)}px) scale(${scale.toFixed(4)})`;
+          if (meta) meta.style.opacity = Math.max(0, 1 - u * 3).toFixed(3);
+          card.style.setProperty('--final-chrome', Math.max(0, 1 - u * 1.4).toFixed(3));
+          if (u < 1) window.requestAnimationFrame(tick);
+          else resolve();
+        };
+        tick();
+      });
     }
 
     ensurePassSlot(ctaKey) {
@@ -6167,21 +6386,27 @@
       const lead = this.root.querySelector('.promo-scale__lead');
       const mark = this.root.querySelector('[data-promo-end-mark]');
       const began = performance.now();
+      let passStarted = false;
       const fade = () => {
         const u = Math.min(1, (performance.now() - began) / PROMO_PASS_WHITE_MS);
         sheet.style.opacity = (u * u * (3 - 2 * u)).toFixed(3);
         const textFade = Math.max(0, 1 - u * 2.2).toFixed(3);
         if (lead) lead.style.opacity = textFade;
         if (mark) mark.style.opacity = textFade;
+        // The first store rises while the orange is still fading, so the
+        // apricot store takes over from the orange instead of following it.
+        if (u >= 0.15 && !passStarted) {
+          passStarted = true;
+          this.playStorePass(() => {
+            this.landPassSlot();
+          });
+        }
         if (u < 1) {
           window.requestAnimationFrame(fade);
           return;
         }
         this.root.classList.add('is-pass-white');
         if (mark) mark.style.opacity = '';
-        this.playStorePass(() => {
-          this.landPassSlot();
-        });
       };
       fade();
     }

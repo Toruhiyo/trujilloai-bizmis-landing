@@ -223,9 +223,10 @@ async function bootPage(browser, options) {
     }
   }
   await page.waitForFunction(() => document.documentElement.classList.contains('is-promo-ready'));
-  await page.evaluate(async () => {
+  await page.evaluate(async (final) => {
     const clock = window.__promoClock;
     if (!clock) throw new Error('Export clock did not install. Open the page with export=1.');
+    if (final) document.documentElement.classList.add('is-promo-final');
     clock.arm();
     window.AvatarVoicechat?.destroy?.('bizmis-avatar-embed');
     window.__promoMountWidget?.();
@@ -235,7 +236,7 @@ async function bootPage(browser, options) {
     await clock.ready();
     clock.reseed();
     window.__promoExportBoot();
-  });
+  }, !options.preview);
   return { context, page };
 }
 
@@ -804,6 +805,7 @@ async function main() {
     to: range ? range.to : null,
     url: arg('url', 'http://127.0.0.1:8080/'),
     timeoutMs: 4000,
+    preview,
   };
   if (!['demo', 'ea', 'install', 'none'].includes(cta)) throw new Error(`Unknown cta "${cta}".`);
   if (!['full', 'pain', 'pitch'].includes(part)) throw new Error(`Unknown part "${part}".`);
