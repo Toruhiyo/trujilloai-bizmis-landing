@@ -2194,14 +2194,14 @@
   const PROMO_REEL_BURST_MS = 2300;
   const PROMO_REEL_BEAT_MS = 60000 / 112;   // the pitch score's tempo: every cut lands on its grid
   const PROMO_REEL_TUNNEL_BEATS = 4;
-  const PROMO_REEL_WHIP_BEATS = [2, 2, 1, 1];
+  const PROMO_REEL_WHIP_BEATS = [4, 4, 4, 3];   // v13b: room for each quick store's line
+  const PROMO_REEL_QUICK_VOICES = ['quick-es', 'quick-fr', 'quick-de', 'quick-it'];   // the quick stores speak, each in another language
   function promoBackOut(u) { const c1 = 1.5; const c3 = c1 + 1; return 1 + c3 * (u - 1) ** 3 + c1 * (u - 1) ** 2; }
   const PROMO_REEL_WHIP_HOLD_MS = 900;   // a quick store holds this long (shorter each time)
-  const PROMO_REEL_SKELETONS = [
-    { device: 'desktop', color: '#4F7CFF', v: 0 }, { device: 'phone', color: '#E85D75', v: 1 }, { device: 'tablet', color: '#2BB673', v: 2 },
-    { device: 'desktop', color: '#F2994A', v: 1 }, { device: 'phone', color: '#8E6CEF', v: 0 }, { device: 'desktop', color: '#16A3B8', v: 2 },
-    { device: 'tablet', color: '#D64545', v: 0 }, { device: 'phone', color: '#B8860B', v: 2 }, { device: 'desktop', color: '#5A6B7B', v: 1 },
-    { device: 'phone', color: '#FF6FB5', v: 1 },
+  const PROMO_REEL_SKELETONS = [   // v13b: soft, muted store colours (the tunnel must read calm, not trippy)
+    { device: 'desktop', color: '#9DB4E8', v: 0 }, { device: 'phone', color: '#E8B4BE', v: 1 }, { device: 'tablet', color: '#A9D4BC', v: 2 },
+    { device: 'desktop', color: '#EBC9A2', v: 1 }, { device: 'phone', color: '#C5B8E8', v: 0 }, { device: 'desktop', color: '#A8D3DA', v: 2 },
+    { device: 'tablet', color: '#E6B8A8', v: 0 }, { device: 'phone', color: '#D9CC9A', v: 2 },
   ];
   function promoSkeletonStore(sk) {
     const tiles = sk.device === 'desktop' ? 8 : sk.device === 'tablet' ? 6 : 4;
@@ -7589,10 +7589,10 @@
         const row = document.createElement('div');
         row.className = 'promo-ea-pills';
         row.innerHTML = `<div class="promo-ea-pills__row">${(copy.terms || []).map((t) => `<p class="promo-ea-pill is-benefit"><svg class="promo-ea-pill__check" viewBox="0 0 24 24" aria-hidden="true"><path pathLength="1" d="M5 12.5l4.4 4.4L19 7.4"/></svg><span>${t}</span></p>`).join('')}</div>`
-          // v13: what the VO adds rolls through one quiet line, word by word as it is said
-          + `<div class="promo-ea-pills__row is-roll"><p class="promo-ea-pill is-roll"><span class="promo-ea-pill__dot" aria-hidden="true"></span><span class="promo-ea-pill__text"></span></p>`
-          // v13 (S1): the scarcity handwritten in Bizmis orange, a hand-drawn underline under it (it takes the rolling line's place)
-          + `<p class="promo-ea-hand"><span class="promo-ea-hand__text">${copy.aside || 'Only 50 spots'}!</span><svg class="promo-ea-hand__line" viewBox="0 0 240 24" preserveAspectRatio="none" aria-hidden="true"><path pathLength="1" d="M6 15.5c38-5.2 92-7.6 150-6.4 26 .6 52 2.2 78 4.8"/><path pathLength="1" d="M28 20.2c44-3.4 104-4.2 168-1.6"/></svg></p></div>`;
+          // v13b: what the VO adds, one refined quiet row laid out from the start (nothing shifts), each item rising in as it is said
+          + `<div class="promo-ea-pills__row is-extras">${(copy.extras || []).map((t) => `<span class="promo-ea-extra">${t}</span>`).join('<i class="promo-ea-extra__sep" aria-hidden="true"></i>')}</div>`
+          // v13 (S1): the scarcity handwritten in Bizmis orange, a hand-drawn underline under it
+          + `<div class="promo-ea-pills__row is-hand"><p class="promo-ea-hand"><span class="promo-ea-hand__text">${copy.aside || 'Only 50 spots'}!</span><svg class="promo-ea-hand__line" viewBox="0 0 240 24" preserveAspectRatio="none" aria-hidden="true"><path pathLength="1" d="M6 15.5c38-5.2 92-7.6 150-6.4 26 .6 52 2.2 78 4.8"/><path pathLength="1" d="M28 20.2c44-3.4 104-4.2 168-1.6"/></svg></p></div>`;
         slot.append(row);
       }
       if (copy.shopify && copy.morph) {
@@ -7690,7 +7690,7 @@
       const recenter = (ms = 650) => {
         if (!slot || !copy.pills) return;
         const parts = [['brand', '.promo-pass-slot__brand'], ['action', '.promo-pass-slot__action'], ['invite', '.promo-pass-slot__invite'],
-          ['ben', '.promo-ea-pills__row:not(.is-roll)'], ['roll', '.promo-ea-pills__row.is-roll']]
+          ['ben', '.promo-ea-pills__row:not(.is-extras):not(.is-hand)'], ['roll', '.promo-ea-pills__row.is-extras'], ['hand', '.promo-ea-pills__row.is-hand']]
           .map(([key, sel]) => [key, slot.querySelector(sel)]).filter(([, el]) => el);
         const last = parts.filter(([key]) => shown.has(key)).pop()?.[1];
         if (!last) return;
@@ -7741,15 +7741,18 @@
             if (pills[k]) rise(pills[k]);
             promoSfx('ea-tick', { index: k });
           }
-          const roll = slot.querySelector('.promo-ea-pill.is-roll');
+          const extras = [...slot.querySelectorAll('.promo-ea-extra')];
+          const seps = [...slot.querySelectorAll('.promo-ea-extra__sep')];
           for (const [k, mark] of (copy.extraMarks || []).entries()) {
             await take.at(mark, 'start', -80);
             if (!k) { shown.add('roll'); recenter(520); }
-            this.morphEaPill(roll, (copy.extras || [])[k] || '');
-            promoSfx('ea-morph', { index: k });
+            const item = extras[k]; const sep = seps[k - 1];
+            if (item) tweenStep(460, (e) => { item.style.opacity = e.toFixed(3); item.style.translate = `0 ${((1 - e) * 0.35).toFixed(3)}em`; item.style.filter = e < 1 ? `blur(${((1 - e) * 3).toFixed(2)}px)` : ''; }, promoEaseOut);
+            if (sep) tweenStep(300, (e) => { sep.style.opacity = e.toFixed(3); }, promoEaseOut);
+            promoSfx('ea-tick', { index: k + 3 });
           }
           await take.at('only fifty', 'start', -120);
-          if (roll) tweenStep(360, (e) => { roll.style.opacity = (1 - e).toFixed(3); }, promoEaseInOut);   // makes room: the scarcity is the last word
+          shown.add('hand'); recenter(520);
           const hand = slot.querySelector('.promo-ea-hand');
           if (hand) {
             // written left to right (a pen's reveal), then the underline is drawn in two strokes
@@ -7818,8 +7821,8 @@
       const brand = slot.querySelector('.promo-pass-slot__brand');
       const action = slot.querySelector('.promo-pass-slot__action');
       const invite = slot.querySelector('.promo-pass-slot__invite');
-      const benefits = slot.querySelector('.promo-ea-pills__row:not(.is-roll)');
-      const roll = slot.querySelector('.promo-ea-pill.is-roll');
+      const benefits = slot.querySelector('.promo-ea-pills__row:not(.is-extras):not(.is-hand)');
+      const roll = slot.querySelector('.promo-ea-pills__row.is-extras');
       const hand = slot.querySelector('.promo-ea-hand');
       const keep = [[brand, 1.14], [action, 1.12], [hand, 1.04]].filter(([el]) => el);
       if (!keep.length) return;
@@ -8265,7 +8268,7 @@
       const slam = (cell, index) => {
         promoSfx('reel-slam', { index });
         light.hitAt = performance.now();
-        tweenStep(150, (e) => { flash.style.opacity = (0.75 * (1 - e)).toFixed(3); }, (u) => u);
+        tweenStep(170, (e) => { flash.style.opacity = (0.42 * (1 - e)).toFixed(3); }, (u) => u);   // a soft flash, not a strobe
         tweenStep(480, (e, u) => { cell.t.k = 1 + 0.085 * (1 - promoBackOut(u)); }, (u) => u);
       };
       const cutTo = (cell, index) => {
@@ -8296,22 +8299,25 @@
         dev.classList.add('is-skeleton');
         Object.assign(dev.style, { left: `${-size.w / 2}px`, top: `${-size.h / 2}px` });
         tunnel.appendChild(dev);
-        return { dev, sk, x: W / 2 + Math.sin(i * 2.4) * W * 0.32, y: H / 2 + Math.cos(i * 1.7) * H * 0.28, z: -P * 0.6 - i * P * 0.62 };
+        // v13b: calm and orderly: two lanes (left / right), level, evenly spaced
+        const side = i % 2 ? 1 : -1;
+        return { dev, sk, x: W / 2 + side * W * 0.27, y: H / 2 + (i % 4 < 2 ? -1 : 1) * H * 0.035, z: -P * 0.9 - i * P * 0.55 };
       });
-      const zEnd = -P * 0.6 - flyers.length * P * 0.62 - P * 0.9;
+      const zEnd = -P * 0.9 - flyers.length * P * 0.55 - P * 0.6;
       const tunnelMs = PROMO_REEL_BEAT_MS * PROMO_REEL_TUNNEL_BEATS;
-      let lastColor = '';
-      light.rush = 1;
+      light.rush = 0.6;
+      tint(firstHero.src.color, Math.round(tunnelMs * 0.9));   // the light glides once into the first store's colour
       await tweenStep(tunnelMs, (e, u) => {
         const camZ = zEnd * e;
         flyers.forEach((f, i) => {
           const rel = f.z - camZ;
-          const o = rel > P * 0.85 ? 0 : (rel > P * 0.45 ? (P * 0.85 - rel) / (P * 0.4) : Math.min(1, (rel + P * 9) / (P * 3)));
+          // each card fades well before it would reach the camera (never a giant, distorted card)
+          const o = rel > -P * 0.15 ? 0 : (rel > -P * 0.55 ? (-P * 0.15 - rel) / (P * 0.4) : Math.min(1, (rel + P * 7) / (P * 2.5)));
           f.dev.style.transform = `translate3d(${f.x.toFixed(1)}px, ${f.y.toFixed(1)}px, ${rel.toFixed(1)}px)`;
           f.dev.style.opacity = Math.max(0, o).toFixed(3);
           f.dev.style.visibility = o <= 0.001 ? 'hidden' : '';
           f.dev.style.zIndex = String(Math.round(rel + 100000));
-          if (rel > -P * 2.2 && rel < P * 0.6 && lastColor !== f.sk.color && !f.passed) { f.passed = true; lastColor = f.sk.color; tint(f.sk.color, 140); promoSfx('reel-tick', { index: i }); }
+          if (rel > -P * 0.5 && !f.passed) { f.passed = true; promoSfx('reel-tick', { index: i }); }   // one soft tick as each card passes
         });
         // the first store comes out of the depth onto its slot (braking)
         const d = (zEnd - camZ);   // <= 0: how far behind the slot it still is
@@ -8319,9 +8325,8 @@
         firstHero.t.k = Math.max(0.0001, Math.min(1, k));
         firstHero.t.tx = (W / 2 - (firstHero.cx - cam.x)) * (1 - firstHero.t.k);
         firstHero.t.ty = (H / 2 - (firstHero.full.y + firstHero.full.h / 2)) * (1 - firstHero.t.k);
-        light.rush = 1 - u * u;
-        tunnel.style.filter = u < 0.85 ? `blur(${((1 - u) * 2.5).toFixed(2)}px)` : '';
-      }, (u) => (u < 0.5 ? 4 * u * u * u : 1 - ((-2 * u + 2) ** 3) / 2) * 0.35 + (1 - (1 - u) ** 4) * 0.65);
+        light.rush = 0.6 * (1 - u * u);
+      }, (u) => (u < 0.5 ? 4 * u * u * u : 1 - ((-2 * u + 2) ** 3) / 2) * 0.55 + (1 - (1 - u) ** 3) * 0.45);
       firstHero.t.tx = 0; firstHero.t.ty = 0; light.rush = 0;
       tunnel.remove();
       tint(firstHero.src.color, 0);
@@ -8356,12 +8361,24 @@
       const whips = seq.filter((cell) => cell.whip);
       for (const [index, cell] of whips.entries()) {
         if (!index) promoSfx('reel-quick');   // marks the quick run for the score
+        reel.querySelectorAll('.promo-reel__said:not(.is-out)').forEach((pill) => { pill.classList.add('is-out'); pill.style.opacity = '0'; });
         cutTo(cell, heroes.length + index);
+        // a short line from that store's agent, in its own language, with its words in the store's colour
+        const voice = await clerkVoice(PROMO_REEL_QUICK_VOICES[index]);
+        if (voice) {
+          const now = performance.now();
+          const src = `/promo/voice/${PROMO_REEL_QUICK_VOICES[index]}.wav`;
+          (window.__promoAudioCues = window.__promoAudioCues || []).push({ src, atMs: now + 90, fromSec: 0, endMs: now + 90 + voice.durationMs });
+          if (!document.documentElement.classList.contains('is-promo-export')) window.setTimeout(() => new Audio(src).play().catch(() => { }), 90);
+          const words = voiceWords(voice).filter((w) => !/^\[[^\]]*\]$/.test(w.text)).map((w) => [0.09 + w.startMs / 1000, w.text]);
+          if (words.length) this.playSaidPill(reel, words.map(([t, w]) => [Math.max(0.3, t), w]), { color: cell.src.color, kind: 'voice-agent', hold: 0.25, place: reelSaidSpot(cell, W, H, S) });
+        }
         await onBeat(PROMO_REEL_BEAT_MS * (PROMO_REEL_WHIP_BEATS[index] ?? 1) - 40);
       }
       // ...and "Your store", centred, on the next hit
       promoWidgetDebug('setPlaceholder', 'Ask me anything');
       this.seatReelWidget(home);
+      reel.querySelectorAll('.promo-reel__said:not(.is-out)').forEach((pill) => { pill.classList.add('is-out'); pill.style.opacity = '0'; });
       cutTo(home, heroes.length + whips.length);
       promoSfx('reel-land');
       setOpeningAvatarAction('waving');
