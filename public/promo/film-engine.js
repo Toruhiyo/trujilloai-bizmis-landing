@@ -18,11 +18,17 @@
       scarcity: '',
       label: 'Install now',
       invite: 'for Early Access benefits!',
-      aside: 'first 50 stores only!',
-      terms: ['Sets itself up', 'Free credits included', 'No credit card', '50% off when you upgrade'],
+      aside: 'Only 50 spots',
+      terms: ['Generous free credits', '50% off upgrades', 'Shape the roadmap'],
+      termMarks: ['generous', 'fifty percent', 'shape'],
+      // what the VO adds, written in quietly as it is said
+      extras: ['One-click install', 'Private until you go live', 'No commitment', 'Direct line to the founder'],
+      find: 'Find Bizmis on the Shopify App Store',
+      pills: true,   // v11: the three benefits as glass pills, then "Only 50 spots" (the VO says the rest)
+      extraMarks: ['one click', 'private', 'no commitment', 'direct line'],
       shopify: true,
       url: '',
-      vo: 'join-fifty',
+      vo: 't-ea',
     },
     none: null,
   };
@@ -38,9 +44,54 @@
     'Car parts & accessories',
     'Wine & spirits',
   ];
+  const PROMO_REEL_IN_MS = 700;
+  const PROMO_SYNC_HOLD_MS = 0;
+  const PROMO_SYNC_ORB_MS = 520;
+  const PROMO_SYNC_ORB_STAGGER_MS = 85;
+  const PROMO_SYNC_AVATAR_H = 0.7;   // the clerk's view, as a share of the canvas height
+  const PROMO_SYNC_ACTION = 'charge_up';   // crouch, two gulps of energy, release (2.4 s)
+  const PROMO_YOURSTORE_HOLD_MS = 900;
+  const PROMO_YOURSTORE_DIVE_MS = 1000;
+  const PROMO_SYNC_PARTS = [
+    { key: 'catalog', icon: 'M4 4h7v7H4zM13 4h7v7h-7zM4 13h7v7H4zM13 13h7v7h-7z', short: 'Catalog', label: 'Products catalog', sub: 'Collections and inventory', side: 'l', y: 28 },
+    { key: 'policies', icon: 'M7 3h7l4 4v14H7zM14 3v4h4M9.5 12h6M9.5 15.5h6', short: 'Policies', label: 'Policies', sub: 'Shipping and returns', side: 'l', y: 50 },
+    { key: 'discounts', icon: 'M3.5 12.5 12 4h7.5v7.5L11 20zM16 8.2h.01', short: 'Discounts', label: 'Discounts', sub: 'Current promotions', side: 'l', y: 72 },
+    { key: 'orders', icon: 'M4 8l8-4 8 4v8l-8 4-8-4zM4 8l8 4 8-4M12 12v8', short: 'Orders', label: 'Orders', sub: 'Order history', side: 'r', y: 28 },
+    { key: 'customers', icon: 'M9 11a3 3 0 1 0 0-6 3 3 0 0 0 0 6zM3.5 19c.6-3 2.8-5 5.5-5s4.9 2 5.5 5M16 11a2.6 2.6 0 1 0 0-5.2M17.5 14c1.8.5 3 2.2 3.4 5', short: 'Customers', label: 'Customers', sub: 'Sales and support records', side: 'r', y: 50 },
+    { key: 'pages', icon: 'M6 3h12v18H6zM9 7.5h6M9 11h6M9 14.5h4', short: 'Pages', label: 'Store pages', sub: 'Brand, FAQs and content', side: 'r', y: 72 },
+  ];
+  const PROMO_REEL_ORANGE_MS = 0;
+  const PROMO_REEL_REST_SCALE = 0.48;   // carousel cards at rest, as a share of their close-up size
+  const PROMO_REEL_GAP = 0.05;   // between cards at rest, x canvas height
+  const PROMO_REEL_HERO_X = 0.6;   // a close-up's centre, x canvas width
+  const PROMO_REEL_LEAD_W = 1.15;   // how far (canvas widths) the carousel travels before the first store
+  const PROMO_REEL_GROW_MS = 950;
+  const PROMO_REEL_SHRINK_MS = 820;
+  const PROMO_REEL_TYPE_ZOOM = 1.1;   // the whole phone stays in frame
+  const PROMO_REEL_TYPE_Y = 0.9;   // where the typing lands, x canvas height
+  const PROMO_REEL_DRIFT_MS = 4200;
+  const PROMO_REEL_DIVE_MS = 1300;
+  const PROMO_REEL_TRAVEL_MS = [1250, 1000, 850, 750];
+  const PROMO_REEL_LEAN_MS = 640;   // the lean-out ends before the recording changes page
+  const PROMO_REEL_OUTRO_MS = 1600;
+  const PROMO_REEL_CLOSE_GAP = 0.14;   // neighbours mostly out of frame at close-up distance   // between close-ups on the dolly, x canvas width
+  const PROMO_REEL_WIDE_MS = 2600;   // the wide look at the whole carousel
+  const PROMO_REEL_PUSH_MS = 1100;   // the push in to the first store
+  const PROMO_REEL_DOLLY_MS = 1250;   // store to store at close-up distance
+  const PROMO_REEL_WHIP_MS = 460;   // the whip's first stop; each one shorter
+  const PROMO_REEL_WHIP_SPEEDUP = 0.78;
+  const PROMO_REEL_WHIP_MIN_MS = 170;
+  const PROMO_REEL_LAND_MS = 1100;   // the rush slows onto "Your store"
+  const PROMO_REEL_ORANGE_CUT_MS = 1300;
+  const PROMO_REEL_OUT_MS = 600;
+  const PROMO_REEL_SLIDE_MS = [820, 680, 540];   // v11: store to store on the conveyor, quicker each time
+  const PROMO_REEL_HANDOFF_MS = 320;
+  const PROMO_REEL_TURN_DEG = 34;   // v11b: how far a neighbouring store turns away in the 3D carousel
+  const PROMO_REEL_DEPTH = 0.22;   // how far back it sits, x canvas width
+  const PROMO_REEL_TINT_MS = 700;   // the ambient light's glide into a store's colour   // the conveyor moves on while a store's take is still fading out
   const PROMO_PASS_FAST_MS = 2600;
-  const PROMO_PASS_READ_MS = 2900;
-  const PROMO_PASS_STEP_MS = 1900;
+  const PROMO_PASS_READ_MS = 2000;
+  const PROMO_PASS_STEP_MS = 1400;
   const PROMO_PASS_SPEEDUP = 0.8;
   const PROMO_PASS_MIN_MS = 820;
   const PROMO_PASS_FINAL_MS = 1500;
@@ -60,11 +111,15 @@
   const PROMO_EA_WRITE_MS = 1700;
   const PROMO_EA_STAMP_MS = 460;
   const PROMO_EA_BEAT_MS = 780;
-  const PROMO_EA_LOGO_LEAD_MS = 980;
-  const PROMO_EA_FLY_MS = 860;
+  const PROMO_EA_LOGO_LEAD_MS = 420;
+  const PROMO_EA_FLY_MS = 620;
   const PROMO_EA_TERM_GAP_MS = 720;
   const PROMO_EA_TERM_IN_MS = 560;
-  const PROMO_EA_HOLD_MS = 14000;
+  const PROMO_EA_HOLD_MS = 2200;
+  const PROMO_EA_CLOSE_MS = 1000;   // v13: the closing move, landing on the score's final chord
+  const PROMO_EA_FINAL_HOLD_MS = 2600;   // the lasting final frame
+  const PROMO_EA_HERO_LEAD_MS = 250;
+  const PROMO_EA_FADE_MS = 1600;
   const PROMO_SHOPIFY_BAG = 'M15.337 23.979l7.216-1.561s-2.604-17.613-2.625-17.73c-.018-.116-.114-.192-.211-.192s-1.929-.136-1.929-.136-1.275-1.274-1.439-1.411c-.045-.037-.075-.057-.121-.074l-.914 21.104h.023zM11.71 11.305s-.81-.424-1.774-.424c-1.447 0-1.504.906-1.504 1.141 0 1.232 3.24 1.715 3.24 4.629 0 2.295-1.44 3.76-3.406 3.76-2.354 0-3.54-1.465-3.54-1.465l.646-2.086s1.245 1.066 2.28 1.066c.675 0 .975-.545.975-.932 0-1.619-2.654-1.694-2.654-4.359-.034-2.237 1.571-4.416 4.827-4.416 1.257 0 1.875.361 1.875.361l-.945 2.715-.02.01zM11.17.83c.136 0 .271.038.405.135-.984.465-2.064 1.639-2.508 3.992-.656.213-1.293.405-1.889.578C7.697 3.75 8.951.84 11.17.84V.83zm1.235 2.949v.135c-.754.232-1.583.484-2.394.736.466-1.777 1.333-2.645 2.085-2.971.193.501.309 1.176.309 2.1zm.539-2.234c.694.074 1.141.867 1.429 1.755-.349.114-.735.231-1.158.366v-.252c0-.752-.096-1.371-.271-1.871v.002zm2.992 1.289c-.02 0-.06.021-.078.021s-.289.075-.714.21c-.423-1.233-1.176-2.37-2.508-2.37h-.115C12.135.209 11.669 0 11.265 0 8.159 0 6.675 3.877 6.21 5.846c-1.194.365-2.063.636-2.16.674-.675.213-.694.232-.772.87-.075.462-1.83 14.063-1.83 14.063L15.009 24l.927-21.166z';
   const PROMO_VO_ON = promoBootParams.get('vo') === '1';
   const PROMO_VO_BUDGET_S = [
@@ -75,23 +130,21 @@
     { scene: 'selling-sea', seconds: 6 },
     { scene: 'stores-end', seconds: 9 },
   ];
+  // The narrator speaks in whole takes (Claudia, Eleven v4, audio tags in the
+  // text); the picture syncs to phrases inside each take (speakTake().at()).
   const PROMO_VO = [
-    { scene: 'pain', id: 'two-places', line: 'In every online store, a sale dies in two places.' },
-    { scene: 'pain', id: 'catalog', line: 'Lost in the catalog.' },
-    { scene: 'pain', id: 'last-doubt', line: 'Or stuck on the last doubt.' },
-    { scene: 'pain', id: 'salesperson', line: 'In a physical store, a salesperson catches both.' },
-    { scene: 'pain', id: 'loses-both', line: 'Online, a chatbot replies to both. And loses both.' },
-    { scene: 'dull-sea', id: 'numbers-game', line: "Online sales is a numbers game. And a chatbot doesn't play." },
-    { scene: 'switch', id: 'change-that', line: "Let's change that." },
-    { scene: 'reveal', id: 'introducing', line: 'Introducing Bizmis.' },
-    { scene: 'reveal', id: 'sales-agent', line: "Your store's sales agent. Built to sell." },
-    { scene: 'reveal', id: 'catch-both', line: 'Now watch it catch both.', guardMs: 1600 },
-    { scene: 'pitch', id: 'narrows', line: 'It narrows. It recommends.', guardMs: 2000 },
-    { scene: 'pitch', id: 'closes', line: 'It answers the doubt. And closes.', guardMs: 2200 },
-    { scene: 'selling-sea', id: 'all-day', line: 'For every shopper. All day long.' },
-    { scene: 'stores', id: 'any-store', line: 'Any store.' },
+    { scene: 'pain', id: 't-pain', line: "Every day, shoppers walk into your store... ready to buy. Some get lost in the catalog. Clicking, comparing, scrolling... with no one there to help them choose. Others get stuck on one last question... and go looking for help. A chatbot? Here's a wall of text... go read it. A real person? The perfect answer... hours later. When the sale's already gone. Either way, they leave. Quietly. And you never find out why." },
+    { scene: 'switch', id: 't-switch', line: 'In a physical store... the best salesperson turns these moments into sales. So we built one... for your online store!' },
+    { scene: 'reveal', id: 't-reveal', line: "Meet Bizmis. Your store's new salesperson. Well... sales agent." },
+    { scene: 'rewind', id: 't-rewind-a', line: "Let's rewind." },
+    { scene: 'rewind', id: 't-rewind-b', line: 'Same store... now with Bizmis.' },
+    { scene: 'pitch', id: 't-lost', line: "When a shopper's lost in your catalog... Bizmis finds them the right one." },
+    { scene: 'pitch', id: 't-doubt', line: "And when a doubt holds them back... it answers on the spot." },
+    { scene: 'selling-sea', id: 't-sold', line: "That's how more visits... turn into sales." },
+    { scene: 'sync', id: 't-sync', line: "It all takes just one click. Your whole store, in sync. Automatically, always." },
+    { scene: 'stores', id: 't-stores', line: 'In any store, with any catalog... on any device. Type to it... or just talk to it.' },
     { scene: 'end', id: 'see-it', line: 'See it in action.', cta: 'demo' },
-    { scene: 'end', id: 'join-fifty', line: 'Run it free. No commitment, no credit card. Your feedback shapes what we build next, with a direct line to us, and a discount when you upgrade. Install to join Early Access.', cta: 'ea' },
+    { scene: 'end', id: 't-ea', line: "Install now to join Early Access! You get generous free credits, fifty percent off when you upgrade, and you shape the roadmap. It installs in one click and stays private until you go live, with no commitment, and a direct line to the founder. There are only fifty spots. Install now to secure yours.", cta: 'ea' },
     { scene: 'end', id: 'install-shopify', line: 'Install it on Shopify.', cta: 'install' },
   ];
   function ensureInviteFont() {
@@ -147,6 +200,12 @@
     }
     node.textContent = cue.id;
     node.title = cue.line;
+  }
+  // Picture events the sound design follows: the exporter writes them to
+  // markers.json (sfx) and the mixer lays each sound on its frame, so a
+  // retime never knocks the sound out of sync.
+  function promoSfx(id, extra = {}, at = performance.now()) {
+    (window.__promoSfxTimeline = window.__promoSfxTimeline || []).push({ id, at: Math.round(at), ...extra });
   }
   window.__promoVo = PROMO_VO;
   window.__promoVoBudget = PROMO_VO_BUDGET_S;
@@ -299,7 +358,11 @@
   }
 
   const PROMO_FLIP_KNOB_MS = 200;
-  const PROMO_TOGGLE_REST_MS = 1000;
+  const PROMO_FLIP_SPARKS = 18;
+  const PROMO_FLIP_POP_HOLD_MS = 650;
+  const PROMO_TOGGLE_REST_MS = 650;
+  const PROMO_RECAP_BUBBLES = ['Can I help you find something?', "That one's perfect for them."];
+  const PROMO_RECAP_STAGGER_MS = 380;
   const PROMO_OPENING_REVEAL_STORE = false;
   const PROMO_OPENING_CLOCK = true;
   const PROMO_SWITCH_MOVE_MS = 900;
@@ -308,25 +371,28 @@
   // The toggle label is 70px; the zoom was tuned on 84px.
   const PROMO_SWITCH_LABEL_GAIN = 84 / 70;
   const PROMO_SWITCH_BURST_AT_MS = 680;
-  const PROMO_SWITCH_WHITE_AT_MS = 40;
-  const PROMO_SWITCH_FADE_AT_MS = 170;
+  const PROMO_SWITCH_WHITE_AT_MS = 220;   // the label whitens once the orange is behind it (no white-on-white frame)
+  const PROMO_SWITCH_FADE_AT_MS = 460;
   const PROMO_SWITCH_FADE_MS = 380;
-  const PROMO_FLIP_BURST_MS = 600;
+  const PROMO_FLIP_BURST_MS = 760;   // the knob's fill covers the frame (ease in-out), then the logo resolves
+  const PROMO_KNOB_WARM_MS = 160;
+  const PROMO_SWITCH_CHIPS = [["Can't find it", 'Found it'], ["Can't decide", 'Compared'], ['Not sure', 'Doubt cleared']];   // the white knob turns orange before it grows
   const PROMO_FLOOD_MS = 600;
-  const PROMO_FLIP_HOLD_MS = 1350;
-  const PROMO_PITCH_LOGO_HOLD_MS = 900;
+  const PROMO_FLIP_HOLD_MS = 650;   // the logo on orange meets "Meet Bizmis" at once
+  const PROMO_PITCH_LOGO_HOLD_MS = 300;
   const PROMO_LOGO_DOCK_MS = 720;
   const PROMO_PITCH_LOGO_OUT_MS = 420;
-  const PROMO_PITCH_WORD_STAGGER_MS = 36;
-  const PROMO_PITCH_WORD_IN_MS = 180;
-  const PROMO_PITCH_REPLACE_PAUSE_MS = 1480;
-  const PROMO_PITCH_DOUBT_MS = 3500;
+  const PROMO_PITCH_WORD_STAGGER_MS = 85;   // a visible write-in, word by word
+  const PROMO_PITCH_WORD_IN_MS = 340;
+  const PROMO_PITCH_REPLACE_PAUSE_MS = 500;
+  const PROMO_PITCH_HEADLINE_HOLD_MS = 1500;
+  const PROMO_PITCH_DOUBT_MS = 1800;
   const PROMO_PITCH_POOF_MS = 1100;
   const PROMO_DOUBT_ORBIT_RATIO = 0.6;
   const PROMO_DOUBT_BUBBLE_PX = 26;
   const PROMO_TYPE_LINE_MS = 1100;
   // Quick, but readable as typing: about 26 characters a second.
-  const PROMO_FILM_TYPE_CHAR_MS = 38;
+  const PROMO_FILM_TYPE_CHAR_MS = 30;
   const PROMO_PITCH_WORD_OUT_MS = 400;
   const PROMO_PITCH_WORD_OUT_STAGGER_MS = [0, 140, 70, 210];
   const PROMO_AVATAR_MAX_SCALE = 2.5;
@@ -338,6 +404,35 @@
   const PROMO_REVEAL_BODY_SHIFT_PX = 140;
   const PROMO_AVATAR_LIFT_PX = -120;
   const PROMO_CLERK_CORNER_MS = 1080;
+  const PROMO_INSTALL_LEAD_MS = 950;
+  const PROMO_INSTALL_MORPH_MS = 220;
+  const PROMO_XSELL_SPIN_MS = 1500;
+  const PROMO_XSELL_HOLD_MS = 450;
+  const PROMO_XSELL_LAYOUT_MS = 420;
+  const PROMO_XSELL_FLY_MS = 700;
+  const PROMO_REWIND_VIDEO = '/promo/rewind/pain-rewind.mp4';
+  const PROMO_REWIND_MS = 1600;
+  const PROMO_REWIND_REVEAL_MS = 200;
+  const PROMO_INSTALL_CARD_MS = 650;
+  const PROMO_INSTALL_AIM_MS = 520;
+  const PROMO_INSTALL_RING_MS = 460;
+  const PROMO_INSTALL_CHECK_MS = 200;
+  const PROMO_INSTALL_FLY_MS = 560;
+  const PROMO_INSTALL_DONE_MS = 620;
+  const PROMO_INSTALL_ARRIVE_MS = 700;
+  const PROMO_INSTALL_GRAB_MS = 220;
+  const PROMO_INSTALL_DRAG_MS = 1400;
+  const PROMO_INSTALL_DROP_MS = 300;
+  const PROMO_INSTALL_GRIP = 0.34;   // v11: the hand holds the clerk by its body (share of the card's height)
+  // v11: the macOS pointer (black arrow, white rim), never a Windows-style one
+  // v12c: SF Symbols-like glyphs (filled, Apple's proportions): storefront and person
+  const PROMO_SF_STORE = '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M4.8 3.6h14.4l2 5.3c.1.3.1.5.1.7 0 1.6-1.3 2.8-2.9 2.8-1.2 0-2.3-.8-2.7-1.9-.4 1.1-1.5 1.9-2.7 1.9h-.1c-1.2 0-2.3-.8-2.7-1.9-.4 1.1-1.5 1.9-2.7 1.9-1.6 0-2.9-1.3-2.9-2.8 0-.2 0-.5.1-.7z"/><path fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" d="M4.6 13.6v5.6c0 .7.5 1.2 1.2 1.2h12.4c.7 0 1.2-.5 1.2-1.2v-5.6"/><path fill="currentColor" d="M10 20.4v-4.2c0-.4.3-.7.7-.7h2.6c.4 0 .7.3.7.7v4.2z"/></svg>';
+  const PROMO_PERSON_MARK = '<svg viewBox="0 0 24 24" aria-hidden="true"><circle fill="currentColor" cx="12" cy="7.4" r="4.1"/><path fill="currentColor" d="M3.9 20.1c0-4.1 3.6-6.9 8.1-6.9s8.1 2.8 8.1 6.9c0 .6-.4 1-1 1H4.9c-.6 0-1-.4-1-1z"/></svg>';
+  const PROMO_HUMAN_MARK = '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 3.2a8.8 8.8 0 0 0-7.6 13.2L3.2 20.8l4.5-1.2A8.8 8.8 0 1 0 12 3.2z"/></svg>';
+  const PROMO_HUMAN_REPLY = "Hi! So sorry for the wait. Yes, it makes a lovely gift: most people love it, and we can gift-wrap it for free. Want me to reserve one for you?";
+  const PROMO_MAC_POINTER = '<svg class="promo-mac-pointer" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 2.6v16.9l4.1-4 2.8 6.4 2.9-1.3-2.8-6.3h5.9z"/></svg>';
+  const PROMO_HAND_OPEN = '<svg class="is-open" viewBox="0 0 24 24" aria-hidden="true"><path d="M8.6 11.2V5.6a1.3 1.3 0 0 1 2.6 0v5M11.2 10.4V4.4a1.3 1.3 0 0 1 2.6 0v6M13.8 10.6V5.4a1.3 1.3 0 0 1 2.6 0v6.2M16.4 11.4V8.2a1.3 1.3 0 0 1 2.6 0v6.1c0 4-2.6 6.6-6.5 6.6-2.6 0-4.1-1.1-5.5-3l-2.7-4c-.6-.9-.3-1.9.6-2.3.7-.3 1.5 0 2 .6l1.3 1.7"/></svg>';
+  const PROMO_HAND_GRAB = '<svg class="is-grab" viewBox="0 0 24 24" aria-hidden="true"><path d="M7.4 11.4c0-1 .8-1.6 1.6-1.6s1.4.6 1.4 1.4M10.4 11c0-1 .7-1.6 1.5-1.6s1.5.6 1.5 1.5M13.4 11.2c0-.9.7-1.5 1.5-1.5s1.4.6 1.4 1.5M16.3 11.6c0-.8.7-1.4 1.4-1.4.8 0 1.4.6 1.4 1.4v2.8c0 4-2.6 6.5-6.5 6.5-2.6 0-4.1-1.1-5.4-2.9l-2-3c-.5-.8-.3-1.8.5-2.2.7-.3 1.4-.1 1.8.4l.9 1.2v-2.6"/></svg>';
   const PROMO_CLERK_CORNER_SCALE = 1.65;
   const PROMO_CLERK_CORNER_INSET_X = -110;
   const PROMO_CLERK_CORNER_INSET_Y = 52;
@@ -365,13 +460,13 @@
   const PROMO_WINDOW_HOLD_MS = 560;
   const PROMO_WINDOW_CLOSE_MS = 760;
   const PROMO_CHAT_AIM_MS = 360;
-  const PROMO_LAUNCHER_AIM_MS = 780;
-  const PROMO_WINDOW_IN_MS = 1200;
-  const PROMO_STORE_TITLE_IN_MS = 450;
-  const PROMO_STORE_TITLE_HOLD_MS = 700;
-  const PROMO_STORE_TITLE_OUT_MS = 450;
-  const PROMO_LOST_SIZE_RATIO = 0.18;
-  const PROMO_LOST_SIZE_MIN = 8;
+  const PROMO_LAUNCHER_AIM_MS = 520;
+  const PROMO_WINDOW_IN_MS = 900;
+  const PROMO_STORE_TITLE_IN_MS = 0;
+  const PROMO_STORE_TITLE_HOLD_MS = 650;
+  const PROMO_STORE_TITLE_OUT_MS = 520;
+  const PROMO_LOST_SIZE_RATIO = 0.046;   // v11: the LOST / SOLD chip text, as a share of the card width
+  const PROMO_LOST_SIZE_MIN = 5;
   const PROMO_SCALE_SNAP_CLASS_MS = 50;
   const PROMO_SCALE_WHITE_MS = 200;
   const PROMO_SCALE_HOLD_MS = 1000;
@@ -468,15 +563,15 @@
     perspective: 1600,
     cellScale: 0.52,
     baseH: 100,
-    layDownMs: 2200,
-    rampMs: 9000,
+    layDownMs: 1400,
+    rampMs: 4000,
     speedFrom: 0,
     speedTo: 2400,
     blurFrom: 900,
     blurPx: 8,
     claimLeadMs: 700,
     washMs: 2000,
-    washBlurPx: 42,
+    washBlurPx: 22,   // v9: soft rack focus; the cards still read behind the caption
     liveRows: 2,
     liveMaxSpeed: 600,
     blurStart: 0.72,
@@ -487,17 +582,17 @@
     bloomMs: 180,
     burstMs: 320,
     dissolveMs: 800,
-    fieldHoldMs: 1000,
+    fieldHoldMs: 500,
     resolveMs: 1100,
-    endHoldMs: 1000,
+    endHoldMs: 500,
     captionInMs: 350,
     captionPauseMs: 720,
     captionQuietMs: 980,
-    captionLeadMs: 1500,
-    captionHoldMs: 1000,
-    horizonMs: 1400,
+    captionLeadMs: -600,
+    captionHoldMs: 1400,
+    horizonMs: 600,
     horizonTilt: 54,
-    painFieldHoldMs: 400,
+    painFieldHoldMs: 150,
     pool: 240,
     dirX: 0.34,
     dirY: 0.94,
@@ -512,11 +607,60 @@
     ['Unattended visits', 'cost you sales.'],
     ['Every day.', 'And counting.'],
   ];
+  const GLIDE_PAIN_BEATS = GLIDE_PAIN_CAPTION.flat().length;
+  const GLIDE_SOLD_CAPTION = [
+    ['Visits turn into', 'sales.'],   // as the VO says it
+    ['Every day.', 'And counting.'],
+  ];
+
+  // v12c: the claims as one week of the merchant's store, no numbers. Each
+  // day a tall outlined column of visits rises; the orange sales fill comes up
+  // inside it. LOST: the fill never comes (a sliver on the floor). SOLD: it
+  // fills each day's visits: visits turn into sales. Painted from one clock
+  // (deterministic for export); each day lands with its own sound.
+  const PROMO_TALLY = { sold: { fill: 0.86 }, lost: { fill: 0.035 } };
+  const PROMO_WEEK = [['M', 0.56], ['T', 0.7], ['W', 0.62], ['T', 0.84], ['F', 0.74], ['S', 0.95], ['S', 0.82]];
+  function buildCartTally(kind) {
+    const wrap = document.createElement('div');
+    wrap.className = `promo-tally promo-week is-${kind}`;
+    wrap.innerHTML = `<div class="promo-week__chart"><div class="promo-week__legend"><span class="is-visits"><i></i>Visits</span><span class="is-sales"><i></i>Sales</span></div><div class="promo-week__cols">${PROMO_WEEK.map(([day, h]) => `<span class="promo-week__col" style="--h:${h}"><span class="promo-week__visits"><span class="promo-week__sales"></span></span><span class="promo-week__day">${day}</span></span>`).join('')}</div></div>`;
+    return wrap;
+  }
+  function tallyNumber(n) { return Math.round(n).toLocaleString('en-US'); }
+  // ms: time since the visual began; span: its whole life; fade: 0..1 opacity
+  function paintCartTally(wrap, kind, ms, span, fade, H) {
+    if (!wrap) return;
+    const cfg = PROMO_TALLY[kind];
+    const smooth = (x) => x * x * (3 - 2 * x);
+    const inU = Math.min(1, Math.max(0, ms / 420));
+    wrap.style.opacity = (smooth(inU) * fade).toFixed(3);
+    wrap.style.setProperty('--week-h', `${H.toFixed(1)}px`);
+    const cols = wrap._cols || (wrap._cols = [...wrap.querySelectorAll('.promo-week__col')]);
+    const n = cols.length;
+    cols.forEach((col, i) => {
+      const at = span * 0.05 + span * 0.6 * (i / (n - 1));   // one day per beat, evenly, like a clock
+      const t = ms - at;
+      const visits = col._v || (col._v = col.querySelector('.promo-week__visits'));
+      const sales = col._s || (col._s = col.querySelector('.promo-week__sales'));
+      const rise = Math.min(1, Math.max(0, t / 460));
+      const r = 1 - (1 - rise) ** 3;
+      visits.style.transform = `scaleY(${Math.max(0.0001, r).toFixed(4)})`;
+      col.style.opacity = Math.min(1, Math.max(0, t / 220)).toFixed(3);
+      // the sales fill, inside the visits column (as a share of it)
+      const ft = Math.max(0, (t - 300) / 560);
+      const f = ft <= 0 ? 0 : Math.min(1.04, 1 - Math.exp(-ft * 5.2) * Math.cos(ft * 7));   // a soft spring
+      sales.style.transform = `scaleY(${Math.max(0.0001, cfg.fill * Math.min(1, f) * (f > 1 ? f : 1)).toFixed(4)})`;
+      if (t >= 0 && col.dataset.sfx !== '1') {
+        col.dataset.sfx = '1';
+        promoSfx(kind === 'sold' ? 'week-sold' : 'week-lost', { index: i }, performance.now() - t);
+      }
+    });
+  }
 
   function captionBeatOffset(index) {
     const step = PROMO_GLIDE.captionInMs + PROMO_GLIDE.captionPauseMs;
     if (index <= 0) return 0;
-    if (index < 3) return step * index;
+    if (index < 3 || GLIDE_PAIN_BEATS <= 3) return step * index;
     return step * 2 + PROMO_GLIDE.captionInMs + PROMO_GLIDE.captionQuietMs;
   }
   const PROMO_GLIDE_NEIGHBOR_IN_MS = 1400;
@@ -560,7 +704,7 @@
     }
     const captionAnchor = claimAt;
     const captionStart = captionAnchor - PROMO_GLIDE.captionLeadMs;
-    const quietlyAt = captionBeatOffset(3);
+    const quietlyAt = captionBeatOffset(GLIDE_PAIN_BEATS - 1);
     const captionInEnd = captionStart + quietlyAt + PROMO_GLIDE.captionInMs;
     const captionHoldEnd = captionInEnd + PROMO_GLIDE.captionHoldMs;
     const captionPoofEnd = captionHoldEnd + PROMO_GLIDE.poofMs + PROMO_GLIDE.dustMs;
@@ -1311,8 +1455,38 @@
   const PROMO_CHECK_SETTLE_MS = 460;
   const PROMO_CHECK_PATH = 14;
 
-  function lostMarkSize(width) {
-    return `${Math.max(PROMO_LOST_SIZE_MIN, width * PROMO_LOST_SIZE_RATIO).toFixed(0)}px`;
+  // v11: LOST and SOLD are one light glass chip in the film's pill style: a
+  // thin ✕ + "Lost" in graphite, a thin ✓ + "Sold" in orange. The glyph draws
+  // in as the chip pops (paintCheckPop), and the card under it reacts.
+  const PROMO_MARK_X = '<span class="promo-chip-mark__glyph"><svg viewBox="0 0 12 12" aria-hidden="true"><path d="M3.5 3.5 8.5 8.5M8.5 3.5 3.5 8.5" fill="none" stroke="currentColor" stroke-linecap="round"/></svg></span><span class="promo-chip-mark__word">Lost</span>';
+  const PROMO_MARK_CHECK = '<span class="promo-chip-mark__glyph"><svg viewBox="0 0 12 12" aria-hidden="true"><path d="M2.4 6.3 4.9 8.8 9.8 3.3" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="promo-chip-mark__word">Sold</span>';
+  function fillLostMark(mark) {
+    if (!mark || mark.querySelector('.promo-chip-mark__glyph')) return mark;
+    mark.classList.add('promo-chip-mark', 'is-lost');
+    mark.innerHTML = PROMO_MARK_X;
+    return mark;
+  }
+  function fillSoldMark(mark) {
+    if (!mark || mark.querySelector('.promo-chip-mark__glyph')) return mark;
+    mark.classList.add('promo-chip-mark', 'is-sold');
+    mark.innerHTML = PROMO_MARK_CHECK;
+    return mark;
+  }
+  // 0..1 how far a stamped card has reacted (sunk / lifted)
+  function markReact(age) {
+    const u = Math.min(1, Math.max(0, (age - 80) / 560));
+    return u * u * (3 - 2 * u);
+  }
+  // the card's own reaction: a lost card greys and sinks, a sold card warms and lifts
+  function markReactFilter(kind, r) {
+    if (r <= 0.001 || kind === 'lost') return '';   // a lost card only sinks (pain is already grey; a filter bent its long shadow)
+    return kind === 'lost'
+      ? `grayscale(${(0.92 * r).toFixed(3)}) brightness(${(1 - 0.05 * r).toFixed(3)}) contrast(${(1 - 0.1 * r).toFixed(3)})`
+      : `saturate(${(1 + 0.22 * r).toFixed(3)}) sepia(${(0.1 * r).toFixed(3)}) brightness(${(1 + 0.035 * r).toFixed(3)})`;
+  }
+
+  function lostMarkSize(width, height = 0) {
+    return `${Math.max(PROMO_LOST_SIZE_MIN, Math.max(width, height * 0.66) * PROMO_LOST_SIZE_RATIO).toFixed(0)}px`;
   }
 
   function checkPopScale(t) {
@@ -1372,10 +1546,12 @@
       paintCheckPop(mark, age);
       return;
     }
-    const pop = Math.min(1, Math.max(0, age) / 260);
-    mark.style.opacity = Math.min(1, pop * 1.35).toFixed(3);
-    mark.style.transform = `translate(-50%, -50%) scale(${(0.72 + (1 - (1 - pop) ** 3) * 0.28).toFixed(3)})`;
-    if (age >= 260) mark.dataset.settled = '1';
+    // a stamp: it lands from above (1.32x) and settles with a small give
+    const pop = Math.min(1, Math.max(0, age) / 340);
+    const back = 1 + 2.2 * (pop - 1) ** 3 + 1.2 * (pop - 1) ** 2;   // ease-out-back, 0 -> 1
+    mark.style.opacity = Math.min(1, pop * 3).toFixed(3);
+    mark.style.transform = `translate(-50%, -50%) scale(${(1.32 - 0.32 * back).toFixed(3)})`;
+    if (age >= 340) mark.dataset.settled = '1';
   }
 
   function paintPainPoof(poof, seedA, seedB, age) {
@@ -1499,9 +1675,9 @@
   const PROMO_CURSOR_HOT_X = 33 * (5 / 24);
   const PROMO_CURSOR_HOT_Y = 33 * (3.2 / 24);
   const PROMO_PAIN_LINE_1 = 'Looking for something light I can take everywhere.';
-  const PROMO_PAIN_LINE_2 = "What if it's not right for me?";
-  const PROMO_PITCH_LINE_1 = 'Looking for something light I can take everywhere.';
-  const PROMO_PITCH_LINE_2 = 'Is it big enough for a weekend away?';
+  const PROMO_PAIN_LINE_2 = "Is this a good gift for a friend?";
+  const PROMO_PITCH_LINE_1 = 'A gift for a friend, under $50';   // fits the widget input whole (v8 clipped its start)
+  const PROMO_PITCH_LINE_2 = "What if she doesn't like it?";
   // The clerk's lines. Short, spoken to the shopper, never to the viewer.
   const PROMO_PITCH_CLERK_1 = 'Here are the three that fit. Let me compare them for you.';
   const PROMO_PITCH_CLERK_COMPARE = "This one's the lightest, and it packs flat. It's the one.";
@@ -1512,12 +1688,17 @@
   const PROMO_PITCH_SPEAK_2_MS = 3200;
   const PROMO_PITCH_SPEAK_UPSELL_MS = 4400;
   // One full turn of the widget's activity laser (--bizmis-laser-spin-duration).
-  const PROMO_LASER_LAP_MS = 2400;
+  const PROMO_LASER_LAP_MS = 1400;
+  const PROMO_LASER_FAST_MS = 550;
+  const PROMO_CAM_ZOOM = 1.7;
+  const PROMO_CAM_MS = 1100;
+  const PROMO_CHAPTER_CHAR_MS = 16;
   const PROMO_PAIN_ANSWER_1 = 'Thanks for reaching out! You can browse our full collection using the menu above. To narrow your search, use the filters for size, weight and category. Product details, specifications and customer reviews are available on each product page. Let me know if there\'s anything else I can help you with.';
   const PROMO_PAIN_LINKS = ['View collection', 'Size guide', 'Shipping info'];
-  const PROMO_PAIN_ANSWER_2 = "That's a great question. Recommendations vary depending on individual preferences and intended use, so we're unable to confirm suitability for a specific customer. We suggest reviewing the product description, specifications and customer reviews on the product page before purchasing. If you'd like further assistance, I can open a support ticket and a member of our team will get back to you within 1-2 business days.";
-  const PROMO_PAIN_ACTIONS = ['Open a ticket', 'No, thanks'];
+  const PROMO_PAIN_ANSWER_2 = "Thanks for your message! This product is part of our bestselling collection and makes a great gift for many occasions. Full details, including materials, dimensions and care instructions, can be found in the product description. Gift cards are also available in our online store. Please note that delivery times may vary depending on your location and the shipping method selected at checkout. For information about exchanges and refunds, please refer to our Returns Policy page. For order status updates, use the Track order link below. Our support team usually replies within 2–3 business days. Is there anything else I can help you with today?";   // v9: a real wall (it read as a normal reply)
+  const PROMO_PAIN_ACTIONS = ['Gift cards', 'Contact us'];
   const PROMO_PAIN_CHIPS = ['Track order', 'Returns', 'Contact us'];
+  const PROMO_THUMB_SVG = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7.5 10.5v9H4.8a.8.8 0 0 1-.8-.8v-7.4a.8.8 0 0 1 .8-.8h2.7zm0 0 3.6-6.2c.4-.7 1.3-1 2-.6.6.3.9 1 .8 1.7l-.6 3.6h5.1a1.6 1.6 0 0 1 1.6 1.9l-1.2 6.6a2 2 0 0 1-2 1.7H7.5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>';
   const PROMO_PAIN_MARK = '<svg viewBox="-0.9 0.55 24 24" aria-hidden="true"><path fill="currentColor" d="M5.4 3.4h11.4a3.8 3.8 0 0 1 3.8 3.8v7.1a3.8 3.8 0 0 1-3.8 3.8h-4.7L8 21.7v-3.6H5.4a3.8 3.8 0 0 1-3.8-3.8V7.2a3.8 3.8 0 0 1 3.8-3.8z"/><circle cx="8.7" cy="10.8" r="1.45" fill="var(--bot-user)"/><circle cx="14.1" cy="10.8" r="1.45" fill="var(--bot-user)"/></svg>';
   const PROMO_PAIN_SEND = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg>';
   const PROMO_PAIN_THUMB_UP = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 10v12"/><path d="M15 5.88 14 10h5.83a2 2 0 0 1 1.92 2.56l-2.33 8A2 2 0 0 1 17.5 22H4a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2h2.76a2 2 0 0 0 1.79-1.11L12 2a3.13 3.13 0 0 1 3 3.88Z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>';
@@ -1606,24 +1787,32 @@
   function scrollDullLog(log) {
     log.scrollTop = log.scrollHeight;
   }
+  // The pain opens straight on the catalog and moves fast: the viewer only
+  // needs the shape of each moment, and the narrator sets the pace.
+  // Desktop: a store with no help at all. The shopper bounces between
+  // look-alikes, finds nothing to ask, and drifts out of the window.
   const PROMO_PAIN_A = [
-    ['grid', 160],
-    ['enter', 140],
-    ['open', 1100],
-    ['back', 90],
-    ['hover-a', 380],
-    ['hover-b', 380],
-    ['open-2', 1000],
-    ['back-2', 110],
+    ['grid', 60],
+    ['enter', 80],
+    ['open', 600],
+    ['back', 60],
+    ['hover-b', 260],
   ];
-  const PROMO_PAIN_THINK_MS = 900;
+  const PROMO_PAIN_A2 = [
+    ['open-2', 560],
+    ['back-2', 60],
+    ['scroll-2', 420],
+    ['leave', 500],
+  ];
+  const PROMO_PAIN_THINK_MS = 550;
+  const PROMO_PAIN_FAST_CHAR_MS = 22;
+  const PROMO_PAIN_FAST_LINE_MS = 700;
   const PROMO_PAIN_B = [
     ['launcher', 80],
     ['panel', 140],
-    ['typed-1', PROMO_PAIN_LINE_1.length * PROMO_PAIN_TYPE_CHAR_MS],
+    ['typed-1', 0],
     ['think-1', PROMO_PAIN_THINK_MS],
-    ['answer-1', 2200],
-    ['down', 0],
+    ['answer-1', 1300],
   ];
   const PROMO_PITCH_SETTLE_MS = 700;
   const PROMO_MOMENTS_VO_MS = 280;
@@ -1947,17 +2136,203 @@
     return promoSearchParams().get('moments') !== '0';
   }
 
+  // Opacity stepped per frame (a CSS transition started in the same tick as the
+  // element's creation is not sampled by the export clock: it read as a hard cut).
+  function fadeStep(node, from, to, ms, ease = (u) => u * u * (3 - 2 * u)) {
+    return new Promise((resolve) => {
+      if (!node) { resolve(); return; }
+      node.style.transition = 'none';
+      node.style.opacity = String(from);
+      const t0 = performance.now();
+      const step = (now) => {
+        const u = Math.min(1, (now - t0) / Math.max(1, ms));
+        node.style.opacity = (from + (to - from) * ease(u)).toFixed(4);
+        if (u < 1) window.requestAnimationFrame(step); else resolve();
+      };
+      window.requestAnimationFrame(step);
+    });
+  }
+
+  function promoEaseInOut(u) { return u < 0.5 ? 4 * u * u * u : 1 - ((-2 * u + 2) ** 3) / 2; }
+  function promoEaseOut(u) { return 1 - (1 - u) ** 3; }
+
+  // Any per-frame tween (export-safe): fn(eased, raw) on every frame, the
+  // first one synchronously so nothing pops for a frame before it starts.
+  function tweenStep(ms, fn, ease = promoEaseInOut) {
+    return new Promise((resolve) => {
+      const t0 = performance.now();
+      const step = (now) => {
+        const u = Math.min(1, Math.max(0, (now - t0) / Math.max(1, ms)));
+        fn(ease(u), u);
+        if (u < 1) window.requestAnimationFrame(step); else resolve();
+      };
+      step(t0);
+    });
+  }
+
+  // One device look for the whole film: thin frosted-glass frames (translucent
+  // white rim, hairline edge, inner highlight, soft shadow), never a dark
+  // contour (operator). Sizes are the close-up's; cards scale down.
+  // v10: one glass device family for the whole film, the same as the pitch's
+  // own store window: a white glass panel with a fine light edge and a soft
+  // shadow. Desktop = a browser window (three dots), tablet = a plain panel,
+  // phone = a panel with a status bar (9:41, the island). No black bezels.
+  const PROMO_DEVICE_SPEC = {
+    phone: { aspect: 1080 / 2280, bar: 0.13, radius: 0.12 },
+    tablet: { aspect: 1620 / 2160, bar: 0, radius: 0.04 },
+    desktop: { aspect: 2880 / 1800, bar: 0.042, radius: 0.016 },
+  };
+  function promoDeviceSize(device, W, H) {
+    const spec = PROMO_DEVICE_SPEC[device] || PROMO_DEVICE_SPEC.desktop;
+    const heightFor = (w) => w / spec.aspect + spec.bar * w;
+    const maxH = H * (device === 'desktop' ? 0.84 : 0.9);
+    let w = device === 'desktop' ? W * 0.66 : maxH / heightFor(1);
+    if (heightFor(w) > maxH) w = maxH / heightFor(1);
+    return { w, h: heightFor(w) };
+  }
+  // v13 demo stores: the burst of skeleton stores (new ones, never a repeat)
+  const PROMO_REEL_BURST_MS = 2300;
+  const PROMO_REEL_BEAT_MS = 60000 / 112;   // the pitch score's tempo: every cut lands on its grid
+  const PROMO_REEL_TUNNEL_BEATS = 4;
+  const PROMO_REEL_WHIP_BEATS = [2, 2, 1, 1];
+  function promoBackOut(u) { const c1 = 1.5; const c3 = c1 + 1; return 1 + c3 * (u - 1) ** 3 + c1 * (u - 1) ** 2; }
+  const PROMO_REEL_WHIP_HOLD_MS = 900;   // a quick store holds this long (shorter each time)
+  const PROMO_REEL_SKELETONS = [
+    { device: 'desktop', color: '#4F7CFF', v: 0 }, { device: 'phone', color: '#E85D75', v: 1 }, { device: 'tablet', color: '#2BB673', v: 2 },
+    { device: 'desktop', color: '#F2994A', v: 1 }, { device: 'phone', color: '#8E6CEF', v: 0 }, { device: 'desktop', color: '#16A3B8', v: 2 },
+    { device: 'tablet', color: '#D64545', v: 0 }, { device: 'phone', color: '#B8860B', v: 2 }, { device: 'desktop', color: '#5A6B7B', v: 1 },
+    { device: 'phone', color: '#FF6FB5', v: 1 },
+  ];
+  function promoSkeletonStore(sk) {
+    const tiles = sk.device === 'desktop' ? 8 : sk.device === 'tablet' ? 6 : 4;
+    return `<div class="promo-skel is-v${sk.v}" style="--sk:${sk.color}"><i class="promo-skel__nav"><b></b><b></b><b></b></i><i class="promo-skel__hero"><b></b><b></b></i><span class="promo-skel__grid">${'<i><b></b></i>'.repeat(tiles)}</span></div>`;
+  }
+  // a store's page copy: its category in the store's colour, then what the
+  // agent does -> what the merchant gets (the benefit never breaks inside).
+  // Desktop: the title above the browser, the line centred under it. Phone
+  // and tablet: the device on the right, a column on the left.
+  function promoReelCopy(item, box, W, H, S) {
+    const copy = document.createElement('div');
+    const desk = item.device === 'desktop';
+    copy.className = `promo-reel__copy is-${desk ? 'desk' : 'col'}${item.whip ? ' is-shown' : ''}`;
+    copy.style.setProperty('--tint', item.color);
+    copy.dataset.s = String(S);
+    let k = 0;
+    const letters = (text) => text.split(' ').map((word) => `<span class="promo-reel__w">${[...word].map((c) => `<span data-k="${k++}">${c}</span>`).join('')}</span>`).join(' ');
+    const cat = item.category || '';
+    const feat = item.feat || item.does || '';
+    const ben = item.ben || '';
+    if (desk) {
+      copy.innerHTML = `<p class="promo-reel__t" style="top:${(28 * S).toFixed(1)}px">${letters(cat)}</p>`
+        + `<p class="promo-reel__fb" style="top:${(box.y + box.h + 26 * S).toFixed(1)}px"><span class="promo-reel__f">${feat}</span>${ben ? `<span class="promo-reel__arrow">→</span><span class="promo-reel__b">${ben}</span>` : ''}</p>`;
+    } else {
+      const lines = cat.includes(' & ') ? [cat.split(' & ')[0], `& ${cat.split(' & ')[1]}`] : cat.split(' ');
+      const left = 110 * S; const colW = box.x - box.w / 2 - left - 90 * S;
+      copy.dataset.colw = String(colW);
+      copy.dataset.maxh = String(box.h * 0.56);
+      copy.innerHTML = `<div class="promo-reel__col" style="left:${left.toFixed(1)}px;top:${box.y.toFixed(1)}px;width:${colW.toFixed(1)}px;height:${box.h.toFixed(1)}px">`
+        + `<p class="promo-reel__t">${lines.map(letters).join('<br>')}</p><p class="promo-reel__f">${feat}</p>${ben ? `<p class="promo-reel__b"><span class="promo-reel__arrow">→</span>${ben}</p>` : ''}</div>`;
+    }
+    return copy;
+  }
+  function fitReelCopy(copy, S) {
+    const shrink = (node, start, fits, min) => {
+      if (!node) return;
+      let fs = start; node.style.fontSize = `${fs}px`;
+      while (!fits(node) && fs > min) { fs -= Math.max(1, S); node.style.fontSize = `${fs}px`; }
+    };
+    const W = copy.parentElement?.parentElement?.clientWidth || 1920 * S;
+    if (copy.classList.contains('is-desk')) {
+      shrink(copy.querySelector('.promo-reel__t'), 150 * S, (n) => n.offsetWidth <= 1700 * S, 60 * S);
+      const fb = copy.querySelector('.promo-reel__fb');
+      shrink(fb, 34 * S, (n) => n.offsetWidth <= W * 0.92, 18 * S);
+      return;
+    }
+    const colW = Number(copy.dataset.colw); const maxH = Number(copy.dataset.maxh);
+    shrink(copy.querySelector('.promo-reel__t'), 230 * S, (n) => n.offsetWidth <= colW && n.offsetHeight <= maxH, 60 * S);
+    shrink(copy.querySelector('.promo-reel__f'), 32 * S, (n) => n.offsetWidth <= colW, 18 * S);
+    shrink(copy.querySelector('.promo-reel__b'), 40 * S, (n) => n.offsetWidth <= colW, 20 * S);
+  }
+  // the title writes in letter by letter, then the line (stepped: export-safe)
+  function revealReelCopy(copy, mode) {
+    if (!copy || copy.dataset.in === '1' || copy.classList.contains('is-shown')) return;
+    copy.dataset.in = '1';
+    if (mode === 'slam') {   // v13 (E3): the title slams in on the hit, the line follows
+      const t = copy.querySelector('.promo-reel__t');
+      const rest = copy.querySelector('.promo-reel__fb') ? [copy.querySelector('.promo-reel__fb')] : [...copy.querySelectorAll('.promo-reel__f, .promo-reel__b')];
+      copy.classList.add('is-shown');
+      t.querySelectorAll('span[data-k]').forEach((span) => { span.style.opacity = '1'; span.style.transform = 'none'; });
+      rest.forEach((node) => { node.style.opacity = '0'; });
+      tweenStep(420, (e, u) => {
+        t.style.opacity = Math.min(1, u * 3.2).toFixed(3);
+        t.style.scale = (1 + 0.2 * (1 - e)).toFixed(4);
+        t.style.filter = u < 1 ? `blur(${((1 - e) * 9).toFixed(2)}px)` : '';
+      }, promoEaseOut);
+      rest.forEach((node, k) => window.setTimeout(() => tweenStep(380, (e) => {
+        node.style.opacity = e.toFixed(3);
+        node.style.translate = `${node.classList.contains('promo-reel__fb') ? '-50%' : '0'} ${((1 - e) * 0.4).toFixed(3)}em`;
+      }, promoEaseOut), 160 + k * 110));
+      return;
+    }
+    const chars = [...copy.querySelectorAll('.promo-reel__t span[data-k]')];
+    const rest = copy.querySelector('.promo-reel__fb') ? [copy.querySelector('.promo-reel__fb')] : [...copy.querySelectorAll('.promo-reel__f, .promo-reel__b')];
+    const total = 380 + chars.length * 22 + 700;
+    copy.classList.add('is-revealing');
+    tweenStep(total, (e, raw) => {
+      const ms = raw * total;
+      chars.forEach((span, k) => {
+        const u = Math.min(1, Math.max(0, (ms - k * 22) / 460)); const v = 1 - (1 - u) ** 3;
+        span.style.opacity = v.toFixed(3);
+        span.style.transform = `translateY(${((1 - v) * 0.32).toFixed(3)}em)`;
+      });
+      rest.forEach((node, k) => {
+        const u = Math.min(1, Math.max(0, (ms - 300 - chars.length * 14 - k * 180) / 520)); const v = 1 - (1 - u) ** 3;
+        node.style.opacity = v.toFixed(3);
+        node.style.translate = `${node.classList.contains('promo-reel__fb') ? '-50%' : '0'} ${((1 - v) * 0.5).toFixed(3)}em`;   // the desktop line keeps its centring
+      });
+    }, (u) => u).then(() => copy.classList.add('is-shown'));
+  }
+  // where the shopper's words sit on a store's page (screen space, the page in view)
+  function reelSaidSpot(cell, W, H, S) {
+    const box = cell.full;
+    return (pill) => {
+      if (cell.src.device === 'desktop') {
+        Object.assign(pill.style, { left: '50%', right: 'auto', top: 'auto', bottom: `${(H - (box.y + box.h) + 44 * S).toFixed(1)}px`, translate: '-50% 0', maxWidth: `${(box.w * 0.8).toFixed(0)}px` });
+      } else {
+        const colW = box.x - box.w / 2 - 200 * S;
+        Object.assign(pill.style, { left: `${(110 * S).toFixed(1)}px`, right: 'auto', top: 'auto', bottom: `${(H - (box.y + box.h)).toFixed(1)}px`, translate: 'none', maxWidth: `${colW.toFixed(0)}px` });
+      }
+    };
+  }
+
+  function promoDevice(device, size, inner) {
+    const spec = PROMO_DEVICE_SPEC[device] || PROMO_DEVICE_SPEC.desktop;
+    const dev = document.createElement('div');
+    dev.className = `promo-dev is-${device}`;
+    const u = size.w / 100;
+    Object.assign(dev.style, { width: `${size.w}px`, height: `${size.h}px` });
+    dev.style.setProperty('--u', `${u}px`);
+    dev.style.setProperty('--bar', `${spec.bar * size.w}px`);
+    dev.style.setProperty('--radius', `${spec.radius * size.w}px`);
+    const bar = device === 'desktop'
+      ? '<div class="promo-dev__bar"><i></i><i></i><i></i></div>'
+      : device === 'phone' ? '<div class="promo-dev__status"><b>9:41</b><span class="promo-dev__island"></span><span class="promo-dev__icons"><i></i><i></i><i></i></span></div>' : '';
+    dev.innerHTML = `<div class="promo-dev__body">${bar}<div class="promo-dev__screen" style="aspect-ratio:${spec.aspect}">${inner}</div></div>`;
+    return dev;
+  }
+
   function waitMs(ms) {
     return new Promise((resolve) => {
       window.setTimeout(resolve, ms);
     });
   }
 
-  function typeOver(text, write) {
+  function typeOver(text, write, charMs = PROMO_FILM_TYPE_CHAR_MS, minMs = PROMO_TYPE_LINE_MS) {
+    promoSfx('typing', { ms: Math.max(minMs, text.length * charMs) });
     return new Promise((resolve) => {
       const started = performance.now();
       const tick = (now) => {
-        const u = Math.min(1, (now - started) / Math.max(PROMO_TYPE_LINE_MS, text.length * PROMO_FILM_TYPE_CHAR_MS));
+        const u = Math.min(1, (now - started) / Math.max(minMs, text.length * charMs));
         const count = u >= 1 ? text.length : Math.max(1, Math.round(text.length * u));
         write(text.slice(0, count));
         if (u < 1) window.requestAnimationFrame(tick);
@@ -2077,8 +2452,46 @@
     }
     return promoVoiceCache.get(id);
   }
-  ['pitch-1', 'pitch-compare', 'pitch-2', 'pitch-upsell', 'store-1', 'store-2', 'store-3', 'store-4', 'store-5', 'store-6', 'store-7']
+  ['clerk-results', 'clerk-compare', 'clerk-answer', 'clerk-upsell', 'shopper-upsell', 'clerk-upsell-done', 'store-1', 'store-2', 'store-3', 'store-4', 'store-5', 'store-6', 'store-7',
+    'shopper-doubt', ...PROMO_VO.filter((cue) => cue.id.startsWith('t-')).map((cue) => cue.id)]
     .forEach((id) => clerkVoice(id));
+
+  // The narrator's lines are generated (scripts/generate-film-voice.mjs) and
+  // logged like the clerk's, so the exporter lays them under the frames. The
+  // promise ends with the line, so a scene can wait for the narrator.
+  // A whole take: plays at once; .done ends with it, and .at(phrase, 'start' |
+  // 'end') resolves when that phrase is spoken, so picture beats land on the
+  // words instead of the words being squeezed between beats.
+  function speakTake(id) {
+    let begin;
+    const started = new Promise((resolve) => { begin = resolve; });
+    const done = (async () => {
+      markPromoVo(id);
+      const voice = await clerkVoice(id);
+      if (!voice) { begin(null); return; }
+      const src = `/promo/voice/${id}.wav`;
+      const now = performance.now();
+      (window.__promoAudioCues = window.__promoAudioCues || []).push({ src, atMs: now, fromSec: 0, endMs: now + voice.durationMs });
+      window.__promoNarratorUntil = now + voice.durationMs;
+      if (!document.documentElement.classList.contains('is-promo-export')) new Audio(src).play().catch(() => { });
+      begin({ voice, now });
+      if (!prefersReducedMotion()) await waitMs(voice.durationMs);
+    })();
+    const at = async (phrase, edge = 'start', offsetMs = 0) => {
+      const take = await started;
+      if (!take || prefersReducedMotion()) return;
+      const text = take.voice.chars.map((c) => c.char).join('');
+      const i = text.indexOf(phrase);
+      if (i < 0) return;
+      const c = take.voice.chars[edge === 'end' ? i + phrase.length - 1 : i];
+      const wait = take.now + c.startMs + (edge === 'end' ? c.durMs : 0) + offsetMs - performance.now();
+      if (wait > 0) await waitMs(wait);
+    };
+    return { done, at };
+  }
+  function speakNarrator(id) {
+    return speakTake(id).done;
+  }
 
   // Word start times (ms) from the agent's character timings.
   function voiceWords(voice) {
@@ -2148,6 +2561,7 @@
   }
 
   function emitShopper(detail) {
+    if (detail.kind === 'cart') promoSfx('cart');
     window.dispatchEvent(new CustomEvent('bizmis:shopper-event', { detail }));
   }
 
@@ -2268,7 +2682,7 @@
   const PROMO_CATALOG_PAD_Y = 28;
   const PROMO_CATALOG_TOP_GAP = 18;
   const PROMO_ROW_CLERK_LANE = 220;
-  const PROMO_COMPARE_RESERVE = 124;
+  const PROMO_COMPARE_RESERVE = 172;   // v10: room under the row for the criteria legend
   const PROMO_ROW_GAP = 20;
   // Only product images used in pain and pitch. Files live in products/images/ as promo-product-<key>.png.
   const PROMO_CLAY_TINTS = ['stone', 'sand', 'blush', 'sage', 'warm-grey'];
@@ -2297,7 +2711,7 @@
   const PROMO_CLAY_TURNS = ['m20', '0', 'p20'];
   const PROMO_CLAY_FINISHES = ['matte', 'satin'];
   const PROMO_CLAY_SCALES = [0.8, 0.86, 0.92, 0.98, 1.04, 1.1];
-  const PROMO_MOMENT_SPEC_KINDS = ['spec-bolt', 'spec-gauge', 'spec-shield'];
+  const PROMO_MOMENT_SPEC_KINDS = ['spec-star', 'spec-tag', 'spec-truck'];
   const PROMO_MOMENT_GO_INDEX = 0;
   const PROMO_MOMENT_PICK_INDEX = 5;
   const PROMO_MOMENT_OTHER_INDEX = 3;
@@ -2316,9 +2730,15 @@
   const PROMO_MOMENT_PRICE_WIDTHS = [36, 28, 42, 24, 32, 38, 26, 44, 30, 34, 40, 28];
   const PROMO_MOMENT_NEW_INDEXES = [0];
   const PROMO_MOMENT_ICONS = {
+    'spec-star': '<path d="M12 2.6l2.9 5.9 6.5.9-4.7 4.6 1.1 6.5L12 17.4l-5.8 3.1 1.1-6.5L2.6 9.4l6.5-.9z"/>',
+    'spec-tag': '<path d="M3 3h8.4l9.6 9.6-8.4 8.4L3 11.4z"/><circle cx="7.6" cy="7.6" r="1.7" fill="#fff"/>',
+    'spec-truck': '<path d="M1.8 6h12v9.6H1.8zM13.8 9.4h4.4l3.4 3.4v2.8h-7.8z"/><circle cx="6" cy="17.4" r="2.2"/><circle cx="17.6" cy="17.4" r="2.2"/>',
     'spec-bolt': '<path d="M13.2 2.2 5.4 13.2h5.2l-1.1 8.6 8.6-12.2h-5.4z"/>',
     'spec-gauge': '<path fill-rule="evenodd" d="M3.2 17.6a8.8 8.8 0 0 1 17.6 0h-3.4a5.4 5.4 0 0 0-10.8 0z"/><path d="M11.1 16.8 16.2 7.6 13.4 16.2z"/>',
     'spec-shield': '<path d="M12 2.4 20.2 5.6v6.2c0 4.4-3 7.6-8.2 9.8-5.2-2.2-8.2-5.4-8.2-9.8V5.6z"/>',
+    // v13: lightness (a feather) and easy care (a sparkle)
+    'spec-feather': '<path d="M20.4 3.6c-5.6-.4-10.4 2-12.8 6.6-1.2 2.3-1.6 4.8-1.4 7.2L3.6 20l1 1 2.6-2.6c2.4.2 4.9-.2 7.2-1.4l-2.3-.5 3.9-1.4c1.4-1.1 2.5-2.5 3.2-4.1l-2.8-.2 3.6-1.5c.6-1.8.8-3.7.4-5.7zM8.2 17.4l6.4-8.8-1.6-.4z"/>',
+    'spec-sparkle': '<path d="M10.4 3.2 12.2 8.4l5.2 1.8-5.2 1.8-1.8 5.2-1.8-5.2-5.2-1.8 5.2-1.8z"/><path d="M17.6 13.4l.9 2.5 2.5.9-2.5.9-.9 2.5-.9-2.5-2.5-.9 2.5-.9z"/>',
   };
 
   const PROMO_GRID_LIFE_MS = 4000;
@@ -2688,22 +3108,46 @@
     other: ['yes', 'no', 'yes'],
   };
 
+  // v10: the comparison reads at a glance. The criteria are named once in a
+  // legend above the row; each card carries a glass strip of the same three
+  // icons, each with its verdict (orange check = meets it, grey dash = not).
+  const PROMO_VERDICT_WORDS = { 'spec-star': 'Top rated', 'spec-tag': 'Under $50', 'spec-truck': 'Arrives Friday', 'spec-bolt': 'Power', 'spec-shield': 'Durability', 'spec-gauge': 'Efficiency', 'spec-feather': 'Lightness', 'spec-sparkle': 'Easy care' };
+  // v11b: all three already fit the ask (the narrowing did the filtering), so
+  // the comparison is product to product: three qualities, each a level of 3
+  const PROMO_VERDICT_KINDS = ['spec-shield', 'spec-feather', 'spec-sparkle'];   // v13: "the most durable, the lightest, and easy to care for"
+  const PROMO_VERDICT_LEVELS = { go: [2, 3, 1], pick: [3, 3, 3], other: [3, 1, 2] };
+  const PROMO_VERDICT_ORDER = { go: 0, pick: 1, other: 2 };
   function momentChips(role) {
-    const verdicts = PROMO_CHIP_VERDICTS[role];
-    if (!verdicts) return null;
-    const stack = document.createElement('span');
-    stack.className = 'promo-moments__chips';
-    PROMO_MOMENT_SPEC_KINDS.forEach((kind, row) => {
-      const chip = document.createElement('span');
-      chip.className = `promo-moments__chip is-${verdicts[row]}`;
-      chip.style.setProperty('--chip-delay', `${row * 140}ms`);
+    const levels = PROMO_VERDICT_LEVELS[role];
+    if (!levels) return null;
+    const strip = document.createElement('span');
+    strip.className = 'promo-verdict';
+    PROMO_VERDICT_KINDS.forEach((kind, row) => {
+      const cell = document.createElement('span');
+      cell.className = `promo-verdict__cell is-level-${levels[row]}${levels[row] === 3 ? ' is-best' : ''}`;
+      cell.style.setProperty('--verdict-delay', `${(PROMO_VERDICT_ORDER[role] || 0) * 230 + row * 110}ms`);
       const icon = document.createElement('span');
-      icon.className = 'promo-moments__chip-icon';
+      icon.className = 'promo-verdict__icon';
       icon.innerHTML = `<svg viewBox="0 0 24 24" aria-hidden="true">${PROMO_MOMENT_ICONS[kind]}</svg>`;
-      chip.append(icon, momentMark(verdicts[row]));
-      stack.appendChild(chip);
+      const mark = document.createElement('span');
+      mark.className = 'promo-verdict__meter';
+      mark.innerHTML = [1, 2, 3].map((k) => `<i class="${k <= levels[row] ? 'is-on' : ''}"></i>`).join('');
+      cell.append(icon, mark);
+      strip.appendChild(cell);
     });
-    return stack;
+    return strip;
+  }
+
+  function momentLegend() {
+    const legend = document.createElement('div');
+    legend.className = 'promo-verdict-legend';
+    PROMO_VERDICT_KINDS.forEach((kind) => {
+      const item = document.createElement('span');
+      item.className = 'promo-verdict-legend__item';
+      item.innerHTML = `<span class="promo-verdict__icon"><svg viewBox="0 0 24 24" aria-hidden="true">${PROMO_MOMENT_ICONS[kind]}</svg></span><span>${PROMO_VERDICT_WORDS[kind]}</span>`;
+      legend.appendChild(item);
+    });
+    return legend;
   }
 
   function momentCompare() {
@@ -2772,6 +3216,7 @@
     );
     board.appendChild(accessory);
     board.appendChild(momentCompare());
+    board.appendChild(momentLegend());
     const orbits = [
       ['1', '0'],
       ['2', '-0.25'],
@@ -3102,6 +3547,7 @@
   }
 
   function applyMomentPose(stage, pose, options = {}) {
+    if (!options.instant && document.documentElement.classList.contains('is-promo-pitch')) promoSfx(`pose-${pose}`);
     const board = ensureMomentBoard(stage);
     if (!board || !pose) return;
     const host = stage.closest('[data-promo-moments]');
@@ -3590,7 +4036,7 @@
   function marketingPart() {
     if (!isMarketingAd) return 'pitch';
     const part = (promoSearchParams().get('part') || 'full').trim().toLowerCase();
-    if (part === 'pain' || part === 'pitch' || part === 'full' || part === 'cta') return part;
+    if (part === 'pain' || part === 'pitch' || part === 'full' || part === 'cta' || part === 'reel') return part;   // reel: dev preview of the demo stores
     return 'full';
   }
 
@@ -3707,16 +4153,20 @@
   }
 
   function glideDepthShadow(depth) {
-    return `0 ${depth.edge.toFixed(1)}px 0 #e4e0da, 0 ${depth.drop.toFixed(1)}px ${depth.blur.toFixed(1)}px -12px rgba(28, 24, 20, ${depth.alpha.toFixed(3)})`;
+    // a thin glass card floats: soft contact shadow + a long soft drop, never a solid slab edge
+    return `0 ${(depth.edge * 0.6).toFixed(1)}px ${(depth.edge * 1.6).toFixed(1)}px rgba(28, 24, 20, 0.07), 0 ${depth.drop.toFixed(1)}px ${depth.blur.toFixed(1)}px -12px rgba(28, 24, 20, ${depth.alpha.toFixed(3)})`;
   }
 
   function applyMockupShape(node, device, width) {
-    const radius = gridMockupRadius(device, width);
-    node.style.borderRadius = `${radius.toFixed(2)}px`;
+    // the film's one device look (PROMO_DEVICE_SPEC): a thin frosted-glass frame
+    const spec = PROMO_DEVICE_SPEC[device] || PROMO_DEVICE_SPEC.desktop;
+    node.style.borderRadius = `${(spec.radius * width).toFixed(2)}px`;
     node.style.clipPath = '';
     node.style.overflow = 'hidden';
-    node.style.outline = '1px solid rgba(28, 24, 20, 0.06)';
-    node.style.outlineOffset = '-1px';
+    node.style.border = `${Math.max(1, spec.bezel * width).toFixed(2)}px solid rgba(255, 255, 255, 0.62)`;
+    node.style.background = 'linear-gradient(145deg, rgba(255, 255, 255, 0.95), rgba(236, 237, 242, 0.6)) border-box';
+    node.style.outline = '1px solid rgba(24, 24, 32, 0.09)';
+    node.style.outlineOffset = '0px';
     node.style.boxShadow = glideDepthShadow(glideDepth(width, width, 1));
   }
 
@@ -3734,7 +4184,7 @@
     return 1 - (1 - (1 - u) ** 2);
   }
 
-  function paintGlideElevation(node, cell, unit, mode, age) {
+  function paintGlideElevation(node, cell, unit, mode, age, react = 0) {
     const width = cell.w * unit;
     const height = cell.h * unit;
     const level = glideElevationLevel(mode, age);
@@ -3761,13 +4211,30 @@
       node.dataset.waving = '1';
     } else if (node.dataset.waving === '1') {
       delete node.dataset.waving;
-      node.style.outline = '1px solid rgba(28, 24, 20, 0.06)';
-      node.style.outlineOffset = '-1px';
+      node.style.outline = '1px solid rgba(24, 24, 32, 0.09)';
+      node.style.outlineOffset = '0px';
     }
-    const scale = node.dataset.cardScale || '1';
-    const lift = Number(node.dataset.cardLift) || 0;
+    const sold = mode === 'pitch';
+    const r = Math.round(react * 50) / 50;
+    const scale = (Number(node.dataset.cardScale || '1') * (1 + (sold ? 0.028 : -0.03) * r)).toFixed(4);
+    const lift = (Number(node.dataset.cardLift) || 0) + (sold ? -0.035 : 0.03) * height * r;
+    const filter = markReactFilter(sold ? 'sold' : 'lost', r);
+    if (node.dataset.react !== String(r)) { node.dataset.react = String(r); node.style.filter = filter; }
     node.style.transformOrigin = 'center bottom';
     node.style.transform = `translate3d(${(cell.x * unit).toFixed(2)}px, ${(cell.y * unit + lift).toFixed(2)}px, 0) scale(${scale})`;
+  }
+
+  // The store reel (script#promo-store-reel): live recordings of the agent on
+  // different stores, devices, avatars and modes, one vignette each.
+  function loadStoreReel() {
+    const node = document.getElementById('promo-store-reel');
+    if (!node) return [];
+    try {
+      const parsed = JSON.parse(node.textContent || '[]');
+      return Array.isArray(parsed) ? parsed.filter((item) => item && item.video) : [];
+    } catch {
+      return [];
+    }
   }
 
   function loadPromoStores() {
@@ -4031,11 +4498,12 @@
     for (let index = 0; index < computed.length; index += 1) {
       const prop = computed.item(index);
       if (prop === 'backdrop-filter' || prop === '-webkit-backdrop-filter') continue;
+      if (prop.startsWith('animation') || prop.startsWith('transition')) continue;   // a raster is a still: never replay the store's animations inside it
       let value = computed.getPropertyValue(prop);
       if (value.includes('url(') && !value.includes('data:')) value = 'none';
       css += `${prop}:${value};`;
     }
-    target.setAttribute('style', css);
+    target.setAttribute('style', `${css}animation:none;transition:none;`);
     if (source instanceof HTMLCanvasElement) {
       const img = document.createElement('img');
       img.setAttribute('style', css);
@@ -4268,7 +4736,7 @@
     const cursor = document.createElement('span');
     cursor.className = 'promo-opening__see-cursor';
     cursor.setAttribute('aria-hidden', 'true');
-    cursor.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 3.2 19.2 12.1 11.6 13.4 8.8 20.6z"/></svg>';
+    cursor.innerHTML = PROMO_MAC_POINTER;
     cta.append(button, cursor);
     if (copy.url) {
       const url = document.createElement('p');
@@ -4318,7 +4786,9 @@
       this.planeFrame = 0;
       this.glideStats = null;
       this.clerkGlow = this.ensureClerkGlow();
+      this.camera = this.ensureCamera();
       window.__promoGlideProbe = () => this.glideProbe();
+      window.__promoOpening = this;   // dev: drive single scenes from the console
       this.boundDock = () => this.fitOpeningLayout();
       this.toggle?.addEventListener('click', () => this.flip());
       promoWidget.preloadStoreStamps(this.stores);
@@ -4362,6 +4832,10 @@
         this.playEndCard();
         return;
       }
+      if (marketingPart() === 'reel') {
+        window.setTimeout(() => this.playStoreReel(loadStoreReel()), 1500);
+        return;
+      }
       if (marketingPart() !== 'pitch') this.playPain();
     }
 
@@ -4378,6 +4852,51 @@
       const frame = this.root.querySelector('[data-promo-canvas]');
       if (!frame) return { left: 0, top: 0 };
       return frame.getBoundingClientRect();
+    }
+
+    // "Sales agent" charges up while the narrator builds to "So we built it!".
+    chargeSwitch(take) {
+      if (prefersReducedMotion()) return;
+      const t0 = performance.now();
+      let end = t0 + 6000;
+      take.at('built one').then(() => { end = performance.now(); });   // v13 (W1): "Salesperson" is fully lit as "So we built one" is said
+      const step = (now) => {
+        if (this.root.classList.contains('is-on')) {
+          this.root.style.removeProperty('--switch-charge');
+          this.root.classList.remove('is-charged');
+          return;
+        }
+        const u = Math.min(1, (now - t0) / Math.max(1, end - t0));
+        this.root.style.setProperty('--switch-charge', (u * u).toFixed(3));
+        this.root.classList.toggle('is-charged', u > 0.78);
+        window.requestAnimationFrame(step);
+      };
+      window.requestAnimationFrame(step);
+    }
+
+    // The flip lands like a hit: the knob snaps and overshoots, one clean
+    // flash ring, and the whole picture punches in.
+    playFlipPop() {
+      if (!this.knob || prefersReducedMotion()) return;
+      const canvas = this.root.querySelector('[data-promo-canvas]') || this.root;
+      const frame = canvas.getBoundingClientRect();
+      const fit = canvas.clientWidth / (frame.width || 1);
+      const box = this.knob.getBoundingClientRect();
+      const pop = document.createElement('div');
+      pop.className = 'promo-flippop';
+      pop.style.left = `${((box.left + box.width / 2 - frame.left) * fit).toFixed(1)}px`;
+      pop.style.top = `${((box.top + box.height / 2 - frame.top) * fit).toFixed(1)}px`;
+      pop.style.setProperty('--pop-size', `${(box.width * fit).toFixed(1)}px`);
+      pop.innerHTML = '<span class="promo-flippop__flash"></span><span class="promo-flippop__ring"></span>';
+      this.camera?.classList.add('is-punch');
+      window.setTimeout(() => this.camera?.classList.remove('is-punch'), 420);
+      canvas.appendChild(pop);
+      this.root.classList.add('is-knob-pop');
+      promoSfx('flip-pop');
+      window.setTimeout(() => {
+        pop.remove();
+        this.root.classList.remove('is-knob-pop');
+      }, 1100);
     }
 
     pinKnobOrigin() {
@@ -4570,18 +5089,25 @@
       }
 
       this.pinKnobOrigin();
+      promoSfx('toggle');
       this.root.classList.add('is-on');
+      window.setTimeout(() => this.playFlipPop(), PROMO_FLIP_KNOB_MS);
       this.startOpeningClock();
-      markPromoVo('change-that');
+      // v10: the knob itself becomes the orange field. It warms to orange,
+      // grows from its own size until it fills the frame, and the logo
+      // resolves on it (no giant ghost label).
       window.setTimeout(() => {
-        this.root.style.setProperty('--promo-center', `${PROMO_SWITCH_MOVE_MS}ms`);
-        this.root.classList.add('is-cleared');
-        this.centerSwitchLabel();
-        window.setTimeout(() => {
-          this.scaleSwitchLabel();
-          window.setTimeout(() => this.burst(), PROMO_SWITCH_BURST_AT_MS);
-        }, PROMO_SWITCH_MOVE_MS);
-      }, PROMO_FLIP_KNOB_MS);
+        this.root.classList.add('is-cleared', 'is-knob-fill');
+        this.pinKnobOrigin();
+        const fill = this.root.querySelector('.promo-opening__fill--orange');
+        const knob = this.knob?.getBoundingClientRect();
+        const frame = this.canvasFrame();
+        if (fill && knob?.width) fill.style.setProperty('--promo-knob-s', (knob.width / Math.max(1, fill.offsetWidth || frame.width * 2.8)).toFixed(4));
+        this.fadeSwitchLabel();
+        const chips = this.root.querySelector('.promo-switch-moments');
+        if (chips) fadeStep(chips, 1, 0, 200);
+        window.setTimeout(() => this.burst(), PROMO_KNOB_WARM_MS);
+      }, PROMO_FLIP_KNOB_MS + PROMO_FLIP_POP_HOLD_MS);   // the pop lands on the switch before it clears
     }
 
     centerSwitchLabel() {
@@ -4621,7 +5147,26 @@
     }
 
     burst() {
-      this.pinLabelOrigin();
+      promoSfx('burst');
+      if (!this.root.classList.contains('is-knob-fill')) this.pinLabelOrigin();
+      else {
+        // the knob's fill, stepped per frame (a class transition was never sampled by the export clock)
+        const fill = this.root.querySelector('.promo-opening__fill--orange');
+        const k0 = Number(fill?.style.getPropertyValue('--promo-knob-s')) || 0.01;
+        if (fill) {
+          fill.style.transition = 'none';
+          const t0 = performance.now();
+          const step = (now) => {
+            const u = Math.min(1, (now - t0) / PROMO_FLIP_BURST_MS);
+            const e = u < 0.5 ? 4 * u * u * u : 1 - ((-2 * u + 2) ** 3) / 2;
+            fill.style.transform = `scale(${(k0 + (1 - k0) * e).toFixed(4)})`;
+            if (u < 1) window.requestAnimationFrame(step);
+            else { fill.style.transform = ''; fill.style.transition = ''; }
+          };
+          fill.style.transform = `scale(${k0.toFixed(4)})`;
+          window.requestAnimationFrame(step);
+        }
+      }
       this.root.classList.add('is-bursting');
       tweenAdWarmth();
       window.setTimeout(() => {
@@ -4643,7 +5188,9 @@
     }
 
     async pitch() {
-      markPromoVo('introducing');
+      promoSfx('logo-in');
+      window.setTimeout(() => promoSfx('appear'), PROMO_LOGO_DOCK_MS);
+      this.revealTake = speakTake('t-reveal');
       document.documentElement.style.setProperty('--ad-warmth', '1');
       this.releasePainStage();
       document.documentElement.classList.add('is-promo-pitch');
@@ -4655,14 +5202,18 @@
       this.armPark();
       window.setTimeout(() => {
         document.documentElement.classList.add('is-promo-clerk');
+        // the clerk springs in (it used to appear at full size in one frame)
+        const arriving = [...document.querySelectorAll('[id="bizmis-avatar-embed"]')].find((node) => !node.closest('svg'))?.closest('[data-promo-widget]');
+        arriving?.classList.add('is-arriving');
+        window.setTimeout(() => arriving?.classList.remove('is-arriving'), 900);
         armOpeningWave();
       }, PROMO_LOGO_DOCK_MS);
-      window.setTimeout(() => {
+      // the headline writes in as the narrator says it ("Your store's new salesperson"),
+      // the logo leaving just as it does: no empty beat between them
+      Promise.all([waitMs(PROMO_LOGO_DOCK_MS + PROMO_PITCH_LOGO_HOLD_MS), this.revealTake.at('Your store', 'start', -380)]).then(() => {
         this.root.classList.add('is-logo-leaving');
-      }, PROMO_LOGO_DOCK_MS + PROMO_PITCH_LOGO_HOLD_MS);
-      window.setTimeout(() => {
-        this.playPitchLine();
-      }, PROMO_LOGO_DOCK_MS + PROMO_PITCH_LOGO_HOLD_MS + PROMO_PITCH_LOGO_OUT_MS);
+        window.setTimeout(() => this.playPitchLine(), 300);   // starts as the logo is nearly gone: no empty frame, no overlap
+      });
     }
 
     playHeroWords(toFace, onDone) {
@@ -4694,7 +5245,19 @@
       showWord();
     }
 
+    // Warm the browser cache with clips that show later (detached, muted, never played).
+    preloadVideos(urls) {
+      this.preloaded = this.preloaded || new Map();
+      urls.filter(Boolean).forEach((url) => {
+        if (this.preloaded.has(url)) return;
+        const video = document.createElement('video');
+        video.muted = true; video.preload = 'auto'; video.dataset.promoIdle = '1'; video.src = url;
+        this.preloaded.set(url, video);
+      });
+    }
+
     playPitchLine() {
+      this.preloadVideos([PROMO_REWIND_VIDEO]);
       const line = this.line;
       const fromFace = this.root.querySelector('[data-promo-face-from]');
       if (!line || !fromFace) {
@@ -4706,20 +5269,25 @@
         word.style.animationDelay = `${index * PROMO_PITCH_WORD_STAGGER_MS}ms`;
       });
       line.classList.add('is-revealing');
+      promoSfx('headline');
       this.seatRevealPair();
       window.requestAnimationFrame(() => this.seatRevealPair());
       const wordsInAt = (fromWords.length - 1) * PROMO_PITCH_WORD_STAGGER_MS + PROMO_PITCH_WORD_IN_MS;
       const strikeAt = wordsInAt + PROMO_PITCH_REPLACE_PAUSE_MS;
-      window.setTimeout(() => line.classList.add('is-striking'), strikeAt);
-      window.setTimeout(() => markPromoVo('sales-agent'), strikeAt + 140);
-      window.setTimeout(() => {
-        markPromoVo('catch-both');
-        window.setTimeout(() => {
-          this.root.classList.add('is-pitch-cards');
-          if (momentsEnabled()) this.playPitchPair();
-          else this.playSeeForYourself();
-        }, promoVoGuard('catch-both'));
-      }, strikeAt + 380);
+      window.setTimeout(async () => {
+        const take = this.revealTake || speakTake('t-reveal');
+        await take.at('Well');
+        line.classList.add('is-striking');
+        promoSfx('strike');
+        // v10: the wave alone greets (no salute on top)
+        await take.done;
+        await waitMs(450);
+        // rewind to the very same store the pain started in, now with Bizmis
+        const rewind = momentsEnabled() ? this.beginRewind() : null;
+        this.root.classList.add('is-pitch-cards');
+        if (momentsEnabled()) this.playPitchPair(rewind);
+        else this.playSeeForYourself();
+      }, strikeAt);
     }
 
     async typeWidgetDraft(text) {
@@ -4811,7 +5379,7 @@
       laser.style.height = `${sizePx}px`;
       laser.style.transform = 'translate(-50%, -50%)';
       laser.style.pointerEvents = 'none';
-      laser.style.setProperty('--bizmis-laser-spin-duration', '2.4s');
+      laser.style.setProperty('--bizmis-laser-spin-duration', `${PROMO_LASER_LAP_MS / 1000}s`);
 
       const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
       svg.setAttribute('viewBox', `0 0 ${LASER_VIEWBOX} ${LASER_VIEWBOX}`);
@@ -4968,13 +5536,13 @@
     // Copy of the widget's caption (Subtitles.tsx, "progress" style), for
     // exports only: there the live agent's voice never plays, so the widget
     // has nothing to caption. Live playback keeps the widget's own captions.
-    playFilmCaption(line, speakMs, timedWords = null) {
+    playFilmCaption(line, speakMs, timedWords = null, kind = 'clerk') {
       const canvas = this.root.querySelector('[data-promo-canvas]') || this.root;
       const card = document.querySelector('.bizmis-desktop-lite-chat');
       if (!card) return;
       canvas.querySelector('[data-promo-caption]')?.remove();
       const pill = document.createElement('div');
-      pill.className = 'promo-caption';
+      pill.className = kind === 'shopper' ? 'promo-caption is-shopper' : 'promo-caption';
       pill.setAttribute('data-promo-caption', '');
       const text = document.createElement('p');
       text.className = 'promo-caption__text';
@@ -4991,9 +5559,22 @@
       pill.style.bottom = `${((frame.bottom - store.bottom) / scale + store.height / scale * 0.06).toFixed(1)}px`;
       pill.style.setProperty('--caption-zoom', zoom.toFixed(4));
       // Chunks of a few words, one line each, paced across the spoken time.
-      const words = timedWords?.length ? timedWords.map((word) => word.text) : line.split(/\s+/).filter(Boolean);
+      // Audio tags ([curious]) never show; lines break on sentence or clause
+      // ends, and no chunk is a lone word.
+      const isTag = (word) => /^\[[^\]]*\]$/.test(word);
+      timedWords = timedWords?.length ? timedWords.filter((word) => !isTag(word.text)) : null;
+      const words = timedWords?.length ? timedWords.map((word) => word.text) : line.replace(/\[[^\]]*\]\s*/g, '').split(/\s+/).filter(Boolean);
+      const chunkOf = [];
       const chunks = [];
-      for (let i = 0; i < words.length; i += 5) chunks.push(words.slice(i, i + 5));
+      let open = [];
+      words.forEach((word, index) => {
+        open.push(word);
+        const rest = words.length - index - 1;
+        const stop = /[.!?]$/.test(word) || (/[,;:…]$/.test(word) && open.length >= 3) || open.length >= 6;
+        if ((stop && rest !== 1) || rest === 0) { chunks.push(open); open = []; }
+      });
+      chunks.forEach((chunk, c) => chunk.forEach(() => chunkOf.push(c)));
+      const firstOf = chunks.map((_, c) => chunkOf.indexOf(c));
       const span = Math.max(600, speakMs);
       const starts = [];
       if (timedWords?.length) {
@@ -5018,7 +5599,7 @@
         }
         let current = 0;
         while (current + 1 < words.length && starts[current + 1] <= t) current += 1;
-        const chunk = Math.floor(current / 5);
+        const chunk = chunkOf[current] ?? 0;
         if (chunk !== shownChunk) {
           shownChunk = chunk;
           text.replaceChildren(...chunks[chunk].map((word, index) => {
@@ -5029,7 +5610,7 @@
           }));
         }
         text.querySelectorAll('.promo-caption__word').forEach((node, index) => {
-          const at = chunk * 5 + index;
+          const at = firstOf[chunk] + index;
           node.classList.toggle('is-current', at === current);
           node.classList.toggle('is-upcoming', at > current);
         });
@@ -5043,12 +5624,62 @@
     // The clerk says a recorded line: the avatar talks for exactly its
     // length, the captions follow its word timings, and the sound is logged
     // so the exporter lays it under the frames.
-    async speakClerk(id, reduced) {
+    // A camera over the whole picture (overlays appended to the canvas later
+    // stay put): built at boot, before the widget mounts, so no live node is
+    // moved mid-film. Kept apart from the canvas, whose transform the 4K
+    // export uses.
+    ensureCamera() {
+      const canvas = this.root.querySelector('[data-promo-canvas]');
+      if (!canvas) return null;
+      const existing = canvas.querySelector(':scope > [data-promo-camera]');
+      if (existing) return existing;
+      const camera = document.createElement('div');
+      camera.className = 'promo-opening__camera';
+      camera.setAttribute('data-promo-camera', '');
+      while (canvas.firstChild) camera.appendChild(canvas.firstChild);
+      canvas.appendChild(camera);
+      return camera;
+    }
+
+    // Cap-style zoom: ease into an element (kept inside the frame), or back
+    // out with no element.
+    cameraTo(target, scale = PROMO_CAM_ZOOM) {
+      const camera = this.camera;
+      if (!camera || prefersReducedMotion()) return;
+      camera.classList.add('is-moving');
+      window.clearTimeout(this.cameraTimer);
+      this.cameraTimer = window.setTimeout(() => camera.classList.remove('is-moving'), PROMO_CAM_MS + 60);
+      if (!target) {
+        camera.style.transform = 'none';
+        return;
+      }
+      const canvas = camera.parentElement;
+      const width = canvas.clientWidth;
+      const height = canvas.clientHeight;
+      const frame = canvas.getBoundingClientRect();
+      const fit = width / (frame.width || width);
+      const box = target.getBoundingClientRect();
+      const cx = (box.left + box.width / 2 - frame.left) * fit;
+      const cy = (box.top + box.height / 2 - frame.top) * fit;
+      const halfW = width / (2 * scale);
+      const halfH = height / (2 * scale);
+      const fx = Math.min(width - halfW, Math.max(halfW, cx));
+      const fy = Math.min(height - halfH, Math.max(halfH, cy));
+      camera.style.transform = `translate(${(width / 2 - scale * fx).toFixed(1)}px, ${(height / 2 - scale * fy).toFixed(1)}px) scale(${scale})`;
+    }
+
+    async speakClerk(id, reduced, cues = {}) {
       const voice = await clerkVoice(id);
       if (!voice) return;
       const durationMs = voice.durationMs;
       const src = `/promo/voice/${id}.wav`;
       const now = performance.now();
+      // picture beats on the clerk's own words
+      const said = voice.chars.map((c) => c.char).join('');
+      Object.entries(cues).forEach(([phrase, run]) => {
+        const at = said.indexOf(phrase);
+        window.setTimeout(run, reduced || at < 0 ? 0 : voice.chars[at].startMs);
+      });
       (window.__promoAudioCues = window.__promoAudioCues || []).push({ src, atMs: now, fromSec: 0, endMs: now + durationMs });
       if (!document.documentElement.classList.contains('is-promo-export')) {
         const audio = new Audio(src);
@@ -5062,10 +5693,49 @@
 
     // The shopper's line goes out: the composer empties as if sent. Nothing
     // reaches the live agent, so it never talks over the recorded clerk.
+    // The shopper calls the agent by voice: the widget's own call states
+    // (connecting spinner, then live with the hang-up button), the shopper's
+    // recorded words play, and a film caption carries them for muted viewers.
+    async speakShopperLine(id, reduced, cues = {}) {
+      const voice = await clerkVoice(id);
+      if (voice && !reduced) {   // picture beats on the shopper's own words
+        const said = voice.chars.map((c) => c.char).join('');
+        Object.entries(cues).forEach(([phrase, run]) => {
+          const at = said.indexOf(phrase);
+          window.setTimeout(run, (this._voiceLive ? 160 : 800) + (at < 0 ? 0 : voice.chars[at].startMs));
+        });
+      }
+      if (!voice || reduced) {
+        await this.sendShopperLine(voice?.text || PROMO_PITCH_LINE_2);
+        return;
+      }
+      if (!this._voiceLive) {
+        promoWidgetDebug('debugVoiceMode', { on: true, pending: true });
+        promoSfx('call-start');
+        await waitMs(500);
+        promoWidgetDebug('debugVoiceMode', { on: true, pending: false });
+        await waitMs(300);
+      } else await waitMs(160);
+      const src = `/promo/voice/${id}.wav`;
+      const began = performance.now();
+      (window.__promoAudioCues = window.__promoAudioCues || []).push({ src, atMs: began, fromSec: 0, endMs: began + voice.durationMs });
+      if (!document.documentElement.classList.contains('is-promo-export')) new Audio(src).play().catch(() => { });
+      const canvas = this.root.querySelector('[data-promo-canvas]') || this.root;
+      const spoken = voiceWords(voice).filter((w) => !/^\[[^\]]*\]$/.test(w.text)).map((w) => [w.startMs / 1000, w.text]);
+      if (spoken.length) this.playSaidPill(canvas, spoken, { color: '#F9A353', kind: 'shopper', where: 'moments' });
+      else this.playFilmCaption(voice.text, voice.durationMs, voiceWords(voice), 'shopper');
+      await waitMs(voice.durationMs);
+    }
+
     async sendShopperLine(text) {
       await this.typeShopperLine(text);
       await waitMs(240);
+      this.sendDraft();
+    }
+
+    sendDraft() {
       const draft = widgetDraftInput();
+      promoSfx('send');
       if (draft) {
         draft.setter.call(draft.input, '');
         draft.input.dispatchEvent(new Event('input', { bubbles: true }));
@@ -5077,16 +5747,20 @@
     // full lap, so it never flickers.
     async laserUntilNext(kind, reduced, ms = PROMO_LASER_LAP_MS) {
       this.paintPitchEvent({ kind });
-      await waitMs(reduced ? 40 : Math.max(PROMO_LASER_LAP_MS, ms));
+      await waitMs(reduced ? 40 : ms);
       this.clearPitchEvents();
     }
 
-    async playPitchPair() {
+    async playPitchPair(rewind = null) {
       const reduced = prefersReducedMotion();
       this.pitchCardsPlayed = true;
       promoWidgetDebug('setPlaceholder', "Ask what you're looking for");
-      this.seatClerkInStore(reduced);
-      if (!reduced) await waitMs(PROMO_CLERK_CORNER_MS);
+      if (!reduced && await this.playInstallMoment(rewind)) {
+        // the clerk is already in its corner: it arrived with the install
+      } else {
+        this.seatClerkInStore(reduced);
+        if (!reduced) await waitMs(PROMO_CLERK_CORNER_MS);
+      }
       const stage = this.momentStage();
       const host = this.root.querySelector('[data-promo-moments]');
       applyMomentPose(stage, 'grid', { instant: true });
@@ -5099,72 +5773,607 @@
       this.muteWidgetActivity(true);
       const clay = promoClayUrls();
       const product = (title, key) => ({ title, url: `https://bizmis.ai/demo/${key}`, imageUrl: clay[key] || '' });
-      const pick = product('The light one', 'sphere');
-      const sleeve = product('The sleeve', 'slab');
+      const pick = product('The favorite', 'sphere');
+      const match = product('The match', 'slab');
 
-      // Beat 1. The VO names it, then the shopper asks and the clerk leads.
-      markPromoVo('narrows');
-      promoWidgetDebug('setPlaceholder', "Ask what you're looking for");
-      if (!reduced) await waitMs(promoVoGuard('narrows'));
-      await this.sendShopperLine(PROMO_PITCH_LINE_1);
-      promoWidgetDebug('setPlaceholder', 'Ask me to compare them');
-      await this.laserUntilNext('search', reduced);
+      this.preloadVideos(loadStoreReel().flatMap((item) => [item.video, item.ambient]));   // decoded long before the reel
+      // Moment 1. The narrator names it first; then the interaction runs with
+      // no narration over it, the agent answering the instant the shopper
+      // sends (real-time, never waiting on a voice-over).
+      this.chapterMargin();   // measure now, before the camera moves
+      const widget = this.root.querySelector('[data-promo-widget]');
+      const lostTake = speakTake('t-lost');
+      lostTake.at('catalog', 'end').then(() => this.showChapter('Lost in the catalog', 'Found the right one'));
+      await lostTake.at('lost', 'start', reduced ? 0 : 120);   // the shopper is already typing as the line names them
+      if (!reduced) {
+        this.cameraTo(widget);
+        await waitMs(PROMO_CAM_MS * 0.55);
+      }
+      await this.typeShopperLine(PROMO_PITCH_LINE_1);
+      await waitMs(reduced ? 40 : 120);
+      this.sendDraft();   // sent the moment it's typed: no waiting on the narrator
+      { const canvas = this.root.querySelector('[data-promo-canvas]') || this.root;   // the sent query stays readable until the products land
+        this.playSaidPill(canvas, [[0.05, PROMO_PITCH_LINE_1]], { color: '#F9A353', kind: 'typed', where: 'moments', hold: 1.1 }); }
+      setOpeningAvatarAction('nod');   // got it
+      this.cameraTo(null);
+      // the pull-back finishes before the products rearrange (no mid-move snap)
+      await Promise.all([this.laserUntilNext('search', reduced, PROMO_LASER_FAST_MS), waitMs(reduced ? 0 : PROMO_CAM_MS)]);
       applyMomentPose(stage, 'row', { instant: reduced });
-      emitShopper({ kind: 'products', products: [product('The day one', 'capsule'), pick, product('The travel one', 'rounded-cube')] });
-      await this.speakClerk('pitch-1', reduced);
-      await this.laserUntilNext('compare', reduced);
-      applyMomentPose(stage, 'choice', { instant: reduced });
-      // The clerk reads the comparison on its own; nobody asked.
-      await this.speakClerk('pitch-compare', reduced);
+      emitShopper({ kind: 'products', products: [product('The classic', 'capsule'), pick, product('The new one', 'rounded-cube')] });
+      promoWidgetDebug('setPlaceholder', 'Ask me to compare them');
+      await lostTake.done;
+      await this.speakClerk('clerk-results', reduced, {
+        compare: () => {
+          applyMomentPose(stage, 'choice', { instant: reduced });   // v11: still "Lost in the catalog" until it's the one (v9 chips)
+        },
+      });
+      await this.speakClerk('clerk-compare', reduced, {
+        "It's the one": () => {
+          stage?.querySelector('.promo-moments__board')?.classList.add('is-decided');
+          this.resolveChapter();
+        },
+      });
       promoWidgetDebug('setPlaceholder', 'Ask anything about it');
-      await this.laserUntilNext('product', reduced);
-      applyMomentPose(stage, 'doubt', { instant: reduced });
+      await this.laserUntilNext('product', reduced, PROMO_LASER_FAST_MS);
+      const leavingBoard = stage?.querySelector('.promo-moments__board');
+      leavingBoard?.classList.add('is-leaving-choice');
+      await waitMs(reduced ? 0 : 200);
+      // a page change: a quick dissolve into the product page (the layout morph
+      // shrank the winner into a thumbnail for a frame)
+      if (!reduced && leavingBoard) await fadeStep(leavingBoard, 1, 0, 150);
+      applyMomentPose(stage, 'doubt', { instant: true });
+      // v13: the doubt scene is a voice chat from its first frame (no call
+      // connecting on screen, no hang-up): already live when the page lands
+      promoWidgetDebug('debugVoiceMode', { on: true, pending: false });
+      this._voiceLive = true;
+      if (!reduced && leavingBoard) fadeStep(leavingBoard, 0, 1, 260).then(() => { leavingBoard.style.opacity = ''; leavingBoard.style.transition = ''; });
+      window.setTimeout(() => stage?.querySelector('.promo-moments__board')?.classList.remove('is-leaving-choice'), 900);
       const board = stage?.querySelector('.promo-moments__board');
+      board?.classList.remove('is-decided');
       board?.classList.add('is-doubts-hidden');
       emitShopper({ kind: 'product', product: pick });
 
-      // Beat 2. The VO names it, then the doubt, the answer, and the upsell.
-      markPromoVo('closes');
-      if (!reduced) await waitMs(promoVoGuard('closes'));
+      // Moment 2. Named first; then the shopper asks out loud and the answer
+      // comes at once. The doubts burst as the clerk says "Perfect"; the cart
+      // only after the clerk has finished.
+      const doubtTake = speakTake('t-doubt');
+      await doubtTake.at('a doubt');
       board?.classList.remove('is-doubts-hidden');
-      await this.sendShopperLine(PROMO_PITCH_LINE_2);
-      await this.laserUntilNext('compare', reduced, PROMO_PITCH_DOUBT_MS);
-      await this.speakClerk('pitch-2', reduced);
+      doubtTake.at('holds them back', 'end').then(() => this.showChapter('Stuck on a doubt', 'Doubt cleared'));
+      await doubtTake.done;
+      await this.speakShopperLine('shopper-doubt', reduced);
+      setOpeningAvatarAction('thinking');
+      await this.laserUntilNext('compare', reduced, PROMO_LASER_FAST_MS);
+      await this.speakClerk('clerk-answer', reduced, {
+        Absolutely: () => {
+          // only the doubts go now; the cart waits for the clerk to finish
+          promoSfx('doubt-poof');
+          board?.classList.add('is-doubts-gone');
+          window.setTimeout(() => this.resolveChapter(), reduced ? 0 : PROMO_MOMENTS_VAPOR_MS * 0.6);
+        },
+      });
+      applyMomentPose(stage, 'close', { instant: reduced });
       promoWidgetDebug('setPlaceholder', 'Ask what goes with it');
-      // The doubt is gone; a beat later the shopper adds it. The clerk never adds.
-      await waitMs(reduced ? 40 : 700);
-      const cartLandMs = PROMO_MOMENTS_VAPOR_MS + PROMO_MOMENTS_CART_GAP_MS + 220;
-      if (!reduced) {
-        applyMomentPose(stage, 'close');
-        await waitMs(cartLandMs);
-      } else {
-        applyMomentPose(stage, 'close', { instant: true });
-      }
+      await waitMs(reduced ? 40 : 300);
+      setOpeningAvatarAction('thumbsup');   // the doubt is gone: into the cart
       host?.classList.add('is-cart-one');
       emitShopper({ kind: 'cart', product: pick, quantity: 1 });
-      await waitMs(reduced ? 40 : 500);
-      // The clerk looks for what goes with the pick, then recommends the
-      // sleeve while it shows beside the pick, with its own Add button.
-      await this.laserUntilNext('products', reduced);
-      applyMomentPose(stage, 'extra', { instant: reduced });
-      emitShopper({ kind: 'products', products: [sleeve] });
-      await this.speakClerk('pitch-upsell', reduced);
+      await waitMs(reduced ? 40 : 950);   // "Added" and the cart badge land inside "Stuck on a doubt"
+      this.hideChapter();
+      // Moment 3. Like a good salesperson, the clerk suggests (it doesn't
+      // push) what goes with it: only the main product at first, then a
+      // vertical carousel of the catalog spins and settles on the match,
+      // which flies into place beside it. Added once the clerk is done.
+      await this.laserUntilNext('products', reduced, PROMO_LASER_FAST_MS);
+      const spin = reduced ? null : this.spinCrossSell('slab');
+      let bundled = false;
+      const bundle = () => {
+        if (bundled) return; bundled = true;
+        applyMomentPose(stage, 'bundle', { instant: reduced });
+        host?.classList.remove('is-cart-one');
+        host?.classList.add('is-cart-two');
+        emitShopper({ kind: 'cart', product: match, quantity: 1 });
+      };
+      // the chapter is named when the clerk names the pairing, not before
+      // v13: a live, back-and-forth voice exchange: the clerk suggests and asks,
+      // the shopper says yes, the clerk confirms (the add-on lands on "add it")
+      const upsell = this.speakClerk('clerk-upsell', reduced, { pairs: () => this.showChapter('Missed add-on', 'Paired perfectly') })
+        .then(() => this.speakShopperLine('shopper-upsell', reduced, { 'add it': bundle }))
+        .then(() => this.speakClerk('clerk-upsell-done', reduced));
+      await spin?.landed;
+      await spin?.fly(() => {
+        applyMomentPose(stage, 'extra', { instant: true });   // the flight steps the morph itself
+        emitShopper({ kind: 'products', products: [match] });
+      });
+      if (!spin) {
+        applyMomentPose(stage, 'extra', { instant: true });
+        emitShopper({ kind: 'products', products: [match] });
+      }
+      await upsell;
       promoWidgetDebug('setPlaceholder', 'Ask about shipping or returns');
-      // Convinced, the shopper adds the sleeve too.
-      await waitMs(reduced ? 40 : 450);
-      applyMomentPose(stage, 'bundle', { instant: reduced });
-      host?.classList.remove('is-cart-one');
-      host?.classList.add('is-cart-two');
-      emitShopper({ kind: 'cart', product: sleeve, quantity: 1 });
-      await waitMs(reduced ? 40 : 900);
+      bundle();
+      this.resolveChapter();
+      window.setTimeout(() => setOpeningAvatarAction('bow'), 350);   // a small thank-you
+      await waitMs(reduced ? 40 : 1100);
+      this.hideChapter();
       this.painStore()?.querySelectorAll('.promo-close__veil, .promo-close__mark, .promo-glide__lost-mark, .promo-glide__veil').forEach((node) => node.remove());
+      this.painStore()?.querySelectorAll('[style*="grayscale"]').forEach((node) => { node.style.filter = ''; });
       await this.markCloseStoreSold();
       await this.rememberPitchLead();
       this.muteWidgetActivity(false);
+      promoWidgetDebug('debugVoiceMode', { on: false });
+      this._voiceLive = false;
       promoWidgetDebug('setPlaceholder', null);
       endOpeningAgent();
       await this.releaseLiveCard();
       this.playPitchConveyor();
+    }
+
+    // A chapter line above the window: the pain in grey, struck through in
+    // Bizmis orange when the clerk resolves it, rewritten as the outcome
+    // (the same move as the reveal's salesperson -> salesagent).
+    // One click: the grey store with its old chat bubble, a Shopify app card,
+    // the cursor clicks Install, the bubble becomes the clerk and the store
+    // warms up. Returns false when the stage isn't there (caller falls back).
+    // "Let's rewind." The pain plays backwards like a VHS tape (a pre-rendered
+    // clip, scripts/render-vhs-rewind.py) and slows to a stop on the pain's
+    // first store frame: the very window the pitch then installs Bizmis into.
+    // land() resolves once the tape has stopped and the live store shows.
+    beginRewind() {
+      if (prefersReducedMotion()) return null;
+      const canvas = this.root.querySelector('[data-promo-canvas]');
+      if (!canvas) return null;
+      const overlay = document.createElement('div');
+      overlay.className = 'promo-rewind';
+      overlay.innerHTML = '<video muted playsinline preload="auto"></video><span class="promo-rewind__glyph" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M11 6 3.5 12 11 18zM20.5 6 13 12l7.5 6z"/></svg></span>';
+      const video = overlay.querySelector('video');
+      video.dataset.promoIdle = '1';
+      video.dataset.promoStart = '0';
+      video.src = PROMO_REWIND_VIDEO;
+      canvas.appendChild(overlay);
+      overlay.classList.add('is-cover');   // covers the frame at once: no stray store frame before the tape starts
+      const ready = new Promise((resolve) => {
+        if (video.readyState >= 2) resolve();
+        else video.addEventListener('loadeddata', resolve, { once: true });
+        window.setTimeout(resolve, 4000);
+      });
+      const started = ready.then(() => {
+        try { video.currentTime = 0; } catch { }
+        delete video.dataset.promoIdle;
+        video.__promoOriginMs = null;
+        if (!document.documentElement.classList.contains('is-promo-export')) video.play().catch(() => { });
+        overlay.classList.add('is-in');
+        promoSfx('rewind');
+        speakTake('t-rewind-a');
+        return performance.now();
+      });
+      return {
+        land: async () => {
+          const at = await started;
+          const left = PROMO_REWIND_MS - (performance.now() - at);
+          if (left > 0) await waitMs(left);
+          this.rewindTail = speakTake('t-rewind-b');
+          promoSfx('rewind-land');
+          overlay.classList.add('is-out');
+          window.setTimeout(() => overlay.remove(), 500);
+          await waitMs(PROMO_REWIND_REVEAL_MS);
+        },
+      };
+    }
+
+    async playInstallMoment(rewind = null) {
+      const store = this.painStore();
+      const widget = this.root.querySelector('[data-promo-widget]');
+      if (!store || !widget) return false;
+      const root = document.documentElement;
+      root.style.setProperty('--ad-warmth', '0');
+      store.style.filter = ''; store.style.translate = '';
+      store.querySelectorAll('[style*="grayscale"], [style*="sepia"]').forEach((node) => { node.style.filter = ''; });
+      this.seatClerkInStore(true);
+      widget.style.transformOrigin = '100% 100%';
+      widget.classList.add('is-uninstalled');
+      const storeBox = store.getBoundingClientRect();
+      const fit = store.clientWidth / (storeBox.width || 1);
+      const local = (box) => ({ x: (box.left - storeBox.left) * fit, y: (box.top - storeBox.top) * fit, w: box.width * fit, h: box.height * fit });
+      const unit = store.clientWidth * 0.027;
+      const seat = local(widget.getBoundingClientRect());
+      // the very same "Typical Chatbot" launcher the pain's stores used
+      const bubble = document.createElement('span');
+      bubble.className = 'promo-install__bubble promo-pain__launcher';
+      bubble.innerHTML = PROMO_PAIN_MARK;
+      const size = unit * 2.5;   // the launcher at a real size (v8 read huge)
+      bubble.style.width = bubble.style.height = `${size.toFixed(1)}px`;
+      bubble.style.left = `${(seat.x + seat.w - size).toFixed(1)}px`;
+      bubble.style.top = `${(seat.y + seat.h - size).toFixed(1)}px`;
+      // v11: no install UI at all. The cursor brings the clerk in from beyond
+      // the window's right edge, already held by its body (no card yet); the
+      // clerk swings from the grip as it is carried in an arc to the corner,
+      // is dropped onto the old chatbot (which bursts), lands with a squash,
+      // and only then does its glass card form around it.
+      const cursor = document.createElement('span');
+      cursor.className = 'promo-install__cursor promo-install__cursor--hand is-grabbing';
+      cursor.innerHTML = PROMO_HAND_OPEN + PROMO_HAND_GRAB;
+      cursor.style.width = cursor.style.height = `${(unit * 2.3).toFixed(1)}px`;
+      store.append(bubble, cursor);
+      bubble.classList.add('is-in');
+      if (rewind) await rewind.land();
+      const take = this.rewindTail;
+      const arriveAt = take ? take.at('Bizmis', 'end', 0) : null;
+      const carryMs = PROMO_INSTALL_AIM_MS + PROMO_INSTALL_GRAB_MS + PROMO_INSTALL_DRAG_MS;
+      if (take) await take.at('Bizmis', 'end', -(carryMs + PROMO_INSTALL_DROP_MS + 60));
+      else await waitMs(PROMO_INSTALL_CARD_MS);
+      const hot = { x: unit * 0.95, y: unit * 0.55 };   // the hand's grip point inside its box
+      // the widget's true seat (unscaled: it sits shrunk while uninstalled)
+      const prevTransition = widget.style.transition;
+      widget.style.transition = 'none';
+      widget.classList.remove('is-uninstalled');
+      widget.style.scale = '1';
+      const trueSeat = local(widget.getBoundingClientRect());
+      // held by the body: the grip is the clerk's chest (the head sits at ~11% of the card)
+      const cardEl = widget.querySelector('.bizmis-desktop-lite-chat') || widget;
+      const card = local(cardEl.getBoundingClientRect());
+      widget.style.scale = '';
+      widget.classList.add('is-uninstalled');
+      widget.style.transition = prevTransition;
+      const pivot = { x: card.x + card.w * 0.5 - trueSeat.x, y: card.y + card.h * PROMO_INSTALL_GRIP - trueSeat.y };
+      const seatC = { x: trueSeat.x + pivot.x, y: trueSeat.y + pivot.y };
+      widget.classList.remove('is-uninstalled');
+      widget.classList.add('is-dragged');
+      widget.style.transformOrigin = `${pivot.x.toFixed(1)}px ${pivot.y.toFixed(1)}px`;
+      const lift = (x, y, k, deg) => {
+        // individual properties: they compose with the widget's own CSS transform (its corner seat)
+        widget.style.translate = `${(x - seatC.x).toFixed(1)}px ${(y - seatC.y).toFixed(1)}px`;
+        widget.style.rotate = `${deg.toFixed(2)}deg`;
+        widget.style.scale = k.toFixed(4);
+      };
+      widget.style.transition = 'none';
+      widget.style.opacity = '1';
+      // in from off the right edge, an arc through the store, down to just above the corner
+      const W = store.clientWidth; const H = store.clientHeight;
+      const drop = { x: seatC.x, y: seatC.y - trueSeat.h * 0.3 };
+      const P0 = { x: W + trueSeat.w * 0.75, y: H * 0.34 };
+      const P1 = { x: W * 0.52, y: H * 0.14 };
+      const P2 = { x: W * 0.5, y: Math.min(H * 0.62, drop.y - H * 0.04) };
+      const at = (u) => {
+        const e = u < 0.5 ? 4 * u * u * u : 1 - ((-2 * u + 2) ** 3) / 2;
+        const q = 1 - e;
+        return {
+          x: q * q * q * P0.x + 3 * q * q * e * P1.x + 3 * q * e * e * P2.x + e * e * e * drop.x,
+          y: q * q * q * P0.y + 3 * q * q * e * P1.y + 3 * q * e * e * P2.y + e * e * e * drop.y,
+        };
+      };
+      const sCarry = 0.9;
+      const pend = { th: 0, w: 0 };
+      const L = trueSeat.h * 0.45;
+      let last = null;
+      lift(P0.x, P0.y, sCarry, 0);
+      cursor.style.transition = 'none';
+      cursor.style.transform = `translate(${(P0.x - hot.x).toFixed(1)}px, ${(P0.y - hot.y).toFixed(1)}px)`;
+      cursor.classList.add('is-in');
+      cursor.style.opacity = '1';
+      promoWidgetDebug('debugDrag', { phase: 'start' });   // the widget's own held pose + drag springs (PROD physics)
+      await new Promise((resolve) => {
+        const t0 = performance.now();
+        let prev = at(0); let prevV = { x: 0, y: 0 }; let prevT = t0;
+        const step = (now) => {
+          const u = Math.min(1, (now - t0) / carryMs);
+          const p = at(u);
+          const dt = Math.max(1, now - prevT) / 1000;
+          const v = { x: (p.x - prev.x) / dt, y: (p.y - prev.y) / dt };
+          const a = { x: (v.x - prevV.x) / dt, y: (v.y - prevV.y) / dt };
+          // a pendulum hanging from the grip: th'' = -(g + ay)/L sin th - ax/L cos th - damping
+          // (fixed sub-steps: stable at any frame rate)
+          const subs = Math.max(1, Math.round(dt / 0.004));
+          const g = 2600;
+          for (let i = 0; i < subs; i += 1) {
+            const h = dt / subs;
+            const acc = -((g + a.y * 0.5) / Math.max(40, L)) * Math.sin(pend.th) - (a.x * 0.5 / Math.max(40, L)) * Math.cos(pend.th) - 2 * 0.22 * 6.2 * pend.w;
+            pend.w += acc * h; pend.th += pend.w * h;
+          }
+          pend.th = Math.max(-0.42, Math.min(0.42, pend.th));   // a lively swing, never sideways
+          lift(p.x, p.y, sCarry, (pend.th * 180) / Math.PI);
+          cursor.style.transform = `translate(${(p.x - hot.x).toFixed(1)}px, ${(p.y - hot.y).toFixed(1)}px)`;
+          const sp = storeBox.width / (W || 1);   // store px -> screen px
+          promoWidgetDebug('debugDrag', { phase: 'move', vx: v.x * sp, vy: v.y * sp });
+          prev = p; prevV = v; prevT = now; last = p;
+          if (u < 1) window.requestAnimationFrame(step); else resolve();
+        };
+        step(t0);
+        promoSfx('install-drag', { ms: carryMs });
+      });
+      const sEnd = sCarry;
+      // release: the hand opens and the clerk falls into its seat
+      promoWidgetDebug('debugDrag', { phase: 'move', vx: 0, vy: 0 });
+      cursor.classList.remove('is-grabbing');
+      promoSfx('install-release');
+      const from = last || drop;
+      await new Promise((resolve) => {
+        const t0 = performance.now();
+        const th0 = pend.th;
+        const step = (now) => {
+          const u = Math.min(1, (now - t0) / PROMO_INSTALL_DROP_MS);
+          const g = u * u;   // gravity
+          lift(from.x + (seatC.x - from.x) * u, from.y + (seatC.y - from.y) * g, sEnd + (1 - sEnd) * u, (th0 * (1 - u) * 180) / Math.PI);
+          if (u < 1) window.requestAnimationFrame(step); else resolve();
+        };
+        window.requestAnimationFrame(step);
+      });
+      if (arriveAt) await arriveAt;
+      // impact: the old chatbot bursts, the clerk squashes and settles, its
+      // card forms, and the store's colour ripples out from the corner
+      const to = { x: seat.x + seat.w - size / 2, y: seat.y + seat.h - size / 2 };
+      {   // the old chatbot pops and vanishes (stepped: CSS keyframes were never sampled)
+        bubble.style.transition = 'none'; bubble.style.animation = 'none';
+        const t0 = performance.now();
+        const pop = (now) => {
+          const u = Math.min(1, (now - t0) / 300);
+          const k = u < 0.35 ? 1 - 0.25 * (u / 0.35) : 0.75 + 0.75 * ((u - 0.35) / 0.65);
+          bubble.style.transform = `scale(${k.toFixed(3)})`; bubble.style.opacity = (u < 0.35 ? 1 : 1 - (u - 0.35) / 0.65).toFixed(3);
+          if (u < 1) window.requestAnimationFrame(pop);
+        };
+        window.requestAnimationFrame(pop);
+      }
+      const wave = document.createElement('span');
+      wave.className = 'promo-install__wave';
+      wave.style.left = `${to.x.toFixed(1)}px`;
+      wave.style.top = `${to.y.toFixed(1)}px`;
+      wave.style.setProperty('--wave', `${(Math.hypot(store.clientWidth, store.clientHeight) * 2.2).toFixed(1)}px`);
+      const ring = document.createElement('span');
+      ring.className = 'promo-install__shock';
+      ring.style.left = wave.style.left; ring.style.top = wave.style.top;
+      ring.style.setProperty('--shock', `${(size * 7).toFixed(1)}px`);
+      store.append(wave, ring);
+      promoSfx('clerk-in');
+      promoWidgetDebug('debugDrag', { phase: 'end' });
+      widget.style.transformOrigin = '50% 100%';
+      widget.classList.remove('is-dragged');
+      widget.classList.add('is-landed', 'is-forming');
+      {   // the glass card forms around the clerk (stepped)
+        const t0 = performance.now();
+        const form = (now) => {
+          const u = Math.min(1, (now - t0) / 520); const e = 1 - (1 - u) ** 3;
+          widget.style.setProperty('--chrome', e.toFixed(3));
+          if (u < 1) window.requestAnimationFrame(form); else { widget.classList.remove('is-forming'); widget.style.removeProperty('--chrome'); }
+        };
+        widget.style.setProperty('--chrome', '0');
+        window.requestAnimationFrame(form);
+      }
+      tweenAdWarmth();
+      {   // the open hand drifts up and away as it fades (a class transition was never sampled)
+        const c0 = cursor.style.transform;
+        tweenStep(420, (e) => { cursor.style.opacity = (1 - e).toFixed(3); cursor.style.transform = `${c0} translate(${(e * unit * 1.2).toFixed(1)}px, ${(-e * unit * 1.6).toFixed(1)}px)`; }, promoEaseOut);
+      }
+      await new Promise((resolve) => {
+        const t0 = performance.now();
+        const step = (now) => {
+          const t = (now - t0) / 1000;
+          // squash on contact, then a damped spring back to round
+          const sq = Math.exp(-t * 9) * Math.cos(t * 26) * 0.12;
+          widget.style.translate = '0px 0px'; widget.style.rotate = '0deg';
+          widget.style.scale = `${(1 + sq * 0.6).toFixed(4)} ${(1 - sq).toFixed(4)}`;
+          if (t < 0.6) window.requestAnimationFrame(step); else resolve();
+        };
+        window.requestAnimationFrame(step);
+      });
+      widget.style.translate = ''; widget.style.rotate = ''; widget.style.scale = '';
+      widget.style.transformOrigin = '100% 100%';
+      window.setTimeout(() => setOpeningAvatarAction('waving'), 60);   // hello, store
+      window.setTimeout(() => { wave.remove(); ring.remove(); }, 1500);
+      await waitMs(Math.max(0, PROMO_INSTALL_ARRIVE_MS - 600));
+      widget.classList.remove('is-landed');
+      cursor.remove();
+      bubble.remove();
+      return true;
+    }
+
+    // The cross-sell carousel: a column of the catalog beside the product
+    // spins (decelerating, picker ticks) and settles on the match; fly()
+    // switches the board to the pair and flies the picked card into its slot.
+    spinCrossSell(matchKey) {
+      const store = this.painStore();
+      if (!store) return null;
+      const clay = promoClayUrls();
+      const src = (key) => clay[key] || `/promo/products/images/promo-product-${key}.png`;
+      const keys = ['cone', 'dome', 'egg', 'icosahedron', 'cylinder', 'lens', 'arch', 'capsule', 'rounded-cube', matchKey, 'dodecahedron', 'squircle-slab'];
+      const pickAt = keys.indexOf(matchKey);
+      // v11: a tight column of the catalog scrolls past and eases to a stop on
+      // the match, like the agent scanning the catalog (no picker frame, no
+      // mark); it runs under the clerk's card, never over it
+      const rail = document.createElement('div');
+      rail.className = 'promo-xsell';
+      rail.innerHTML = `<div class="promo-xsell__track">${keys.map((key, i) => `<figure class="promo-xsell__card${i === pickAt ? ' is-match' : ''}"><img src="${src(key)}" alt=""><span></span><span></span></figure>`).join('')}</div>`;
+      store.appendChild(rail);
+      const track = rail.querySelector('.promo-xsell__track');
+      const cards = [...rail.querySelectorAll('.promo-xsell__card')];
+      rail.getBoundingClientRect();
+      const stepY = cards[1].offsetTop - cards[0].offsetTop;
+      const centre = (rail.clientHeight - cards[0].offsetHeight) / 2;
+      const y0 = centre + stepY * 1.5; const y1 = centre - pickAt * stepY;
+      const focus = (y) => cards.forEach((card, i) => {   // the cards near the middle read; the rest recede
+        const d = Math.abs(y + i * stepY - centre) / Math.max(1, stepY);
+        card.style.opacity = (1 - Math.min(0.62, d * 0.24)).toFixed(3);
+        card.style.scale = (1 - Math.min(0.08, d * 0.03)).toFixed(4);
+      });
+      track.style.transform = `translateY(${y0.toFixed(1)}px)`;
+      focus(y0);
+      fadeStep(rail, 0, 1, 300);
+      promoSfx('xsell-scan', { ms: PROMO_XSELL_SPIN_MS });
+      const landed = tweenStep(PROMO_XSELL_SPIN_MS, (e) => {
+        const y = y0 + (y1 - y0) * e;
+        track.style.transform = `translateY(${y.toFixed(2)}px)`;
+        focus(y);
+      }, (u) => 1 - (1 - u) ** 4).then(() => promoSfx('xsell-stop'));
+      // The product page becomes the pair: its own photo glides from the big
+      // product shot into its card, the copy re-forms around it, and the
+      // matched card carries on from the rail into the slot beside it, all
+      // stepped per frame on the live layout (nothing swaps or pops).
+      const fly = async (switchPose) => {
+        await waitMs(Math.max(0, PROMO_XSELL_HOLD_MS - 200));
+        const frame = store.getBoundingClientRect();
+        const fit = store.clientWidth / (frame.width || 1);
+        const box = (r) => ({ x: (r.left - frame.left) * fit, y: (r.top - frame.top) * fit, w: r.width * fit, h: r.height * fit });
+        const main = store.querySelector('.promo-moments__card.is-pick');
+        const mainPhoto = main?.querySelector('.promo-moments__photo');
+        const mainRest = main ? [...main.children].filter((node) => node !== mainPhoto) : [];
+        await Promise.all(mainRest.map((node) => fadeStep(node, 1, 0, 200)));   // the page's copy steps back first
+        const fromMain = mainPhoto ? box(mainPhoto.getBoundingClientRect()) : null;
+        // the photo's own look, read now (its tint and corners come from the page pose and its card)
+        const look0 = mainPhoto ? getComputedStyle(mainPhoto) : null;
+        const ghostLook = look0 ? { r0: (Number.parseFloat(look0.borderTopLeftRadius) || 0) * fit,
+          vars: ['--ad-tile', '--ad-photo', '--tint-warm', '--tint-stone', '--ad-warmth'].map((k) => [k, look0.getPropertyValue(k).trim()]).filter(([, v]) => v),
+          bg: look0.backgroundColor, filter: look0.filter } : null;
+        // its classes too: the tint is styled through the board's pose and the card's role
+        // (classes and inline custom properties: the warm tint is a --tint-warm on the card)
+        const ghostShell = main ? [main.closest('[data-promo-moments]'), main.closest('.promo-moments__board'), main].map((node) => ({ cls: node?.className || '', css: node?.getAttribute('style') || '' })) : null;
+        const fromPhoto = box(cards[pickAt].querySelector('img').getBoundingClientRect());
+        switchPose();
+        promoSfx('xsell-morph');
+        const slot = store.querySelector('.promo-moments__card.is-extra');
+        const slotPhoto = slot?.querySelector('.promo-moments__photo') || slot;
+        cards[pickAt].style.visibility = 'hidden';
+        fadeStep(rail, 1, 0, 320);
+        window.setTimeout(() => rail.remove(), 400);
+        // one flight helper: each frame, the element's natural box (still
+        // settling into the pair pose) is measured and translate/scale (which
+        // compose with the pose's own transform) put its photo on the eased path
+        const flight = (el, photo, from, arc) => {
+          if (!el || !photo || !from) return Promise.resolve();
+          let ox = 0; let oy = 0; let node = photo;
+          while (node && node !== el) { ox += node.offsetLeft; oy += node.offsetTop; node = node.offsetParent; }
+          el.style.transformOrigin = `${ox.toFixed(1)}px ${oy.toFixed(1)}px`;
+          el.style.transition = 'none';
+          el.style.animation = 'none';   // its add-on entrance (opacity 0 until late) hid the flight
+          el.style.opacity = '1';
+          return tweenStep(PROMO_XSELL_FLY_MS, (e) => {
+            el.style.translate = '0px 0px'; el.style.scale = '1';
+            const natural = box(photo.getBoundingClientRect());
+            const k = (from.w + (natural.w - from.w) * e) / Math.max(1, natural.w);
+            const x = from.x + (natural.x - from.x) * e;
+            const y = from.y + (natural.y - from.y) * e - Math.sin(e * Math.PI) * store.clientHeight * arc;
+            const local = el.offsetWidth / Math.max(1, box(el.getBoundingClientRect()).w);   // store px -> the card's own px
+            el.style.scale = k.toFixed(4);
+            el.style.translate = `${((x - natural.x) * local).toFixed(1)}px ${((y - natural.y) * local).toFixed(1)}px`;
+          }).then(() => { el.style.translate = ''; el.style.scale = ''; el.style.transformOrigin = ''; el.style.transition = ''; });
+        };
+        mainRest.forEach((node) => { node.style.opacity = ''; node.style.transition = ''; });
+        // the real card (in its pair place) fades in under a copy of its photo that glides there from the product shot
+        const ghost = mainPhoto && fromMain ? mainPhoto.cloneNode(true) : null;
+        if (ghost) {
+          Object.assign(ghost.style, { position: 'absolute', margin: '0', zIndex: '30', pointerEvents: 'none', transition: 'none', animation: 'none', transform: 'none', translate: 'none', scale: 'none',
+            overflow: 'hidden', boxSizing: 'border-box', borderRadius: `${ghostLook.r0.toFixed(1)}px`, backgroundColor: ghostLook.bg, filter: ghostLook.filter,
+            left: `${fromMain.x.toFixed(1)}px`, top: `${fromMain.y.toFixed(1)}px`, width: `${fromMain.w.toFixed(1)}px`, height: `${fromMain.h.toFixed(1)}px` });
+          // boxless copies of its board and card (display: contents), so the same rules style it
+          const shell = ghostShell.map(({ cls, css }) => { const node = document.createElement('div'); node.className = cls; node.setAttribute('style', css); Object.assign(node.style, { display: 'contents', transform: 'none', translate: 'none', scale: 'none', opacity: '1' }); return node; });
+          shell[0].appendChild(shell[1]); shell[1].appendChild(shell[2]); shell[2].appendChild(ghost);
+          ghostLook.vars.forEach(([k, v]) => ghost.style.setProperty(k, v));   // the tint's own values, whatever rule set them
+          store.appendChild(shell[0]);
+          ghost._shell = shell[0];
+        }
+        const r1 = mainPhoto ? (Number.parseFloat(getComputedStyle(mainPhoto).borderTopLeftRadius) || 0) * fit : 0;
+        if (main) { main.style.transition = 'none'; main.style.opacity = '0'; }
+        const plus = store.querySelector('.promo-moments__plus');
+        if (plus) plus.style.opacity = '0';
+        window.setTimeout(() => {
+          promoSfx('xsell-land');
+          if (main) fadeStep(main, 0, 1, 360).then(() => { main.style.opacity = ''; main.style.transition = ''; });
+          if (plus) fadeStep(plus, 0, 1, 300).then(() => { plus.style.opacity = ''; plus.style.transition = ''; });
+        }, PROMO_XSELL_FLY_MS * 0.5);
+        const glide = ghost ? tweenStep(PROMO_XSELL_FLY_MS, (e) => {
+          const to = box(mainPhoto.getBoundingClientRect());
+          ghost.style.left = `${(fromMain.x + (to.x - fromMain.x) * e).toFixed(1)}px`;
+          ghost.style.top = `${(fromMain.y + (to.y - fromMain.y) * e).toFixed(1)}px`;
+          ghost.style.width = `${(fromMain.w + (to.w - fromMain.w) * e).toFixed(1)}px`;
+          ghost.style.height = `${(fromMain.h + (to.h - fromMain.h) * e).toFixed(1)}px`;
+          ghost.style.borderRadius = `${(ghostLook.r0 + (r1 - ghostLook.r0) * e).toFixed(1)}px`;
+          ghost.style.opacity = (e < 0.72 ? 1 : Math.max(0, 1 - (e - 0.72) / 0.28)).toFixed(3);   // hands over to the real card as it lands
+        }).then(() => ghost._shell.remove()) : Promise.resolve();
+        await Promise.all([glide, flight(slot, slotPhoto, fromPhoto, 0.03)]);
+      };
+      return { landed, fly };
+    }
+
+    chapterMargin() {
+      const camera = this.camera;
+      const resting = !camera || ((!camera.style.transform || camera.style.transform === 'none') && !camera.classList.contains('is-moving'));
+      if (!resting) return this.chapterMarginAtRest || 0;
+      const canvas = this.root.querySelector('[data-promo-canvas]') || this.root;
+      const store = this.painStore()?.getBoundingClientRect();
+      if (!store) return this.chapterMarginAtRest || 0;
+      const frame = canvas.getBoundingClientRect();
+      const scale = frame.width / (canvas.offsetWidth || frame.width) || 1;
+      this.chapterMarginAtRest = (store.top - frame.top) / scale;
+      return this.chapterMarginAtRest;
+    }
+
+    showChapter(from, to) {
+      const canvas = this.root.querySelector('[data-promo-canvas]') || this.root;
+      let line = canvas.querySelector('[data-promo-chapter]');
+      if (!line) {
+        line = document.createElement('p');
+        line.className = 'promo-chapter';
+        line.setAttribute('data-promo-chapter', '');
+        canvas.appendChild(line);
+      }
+      line.classList.remove('is-in', 'is-struck');
+      line.replaceChildren();
+      // a status chip: a grey ring that resolves into a ticked orange disc
+      const mark = document.createElement('span');
+      mark.className = 'promo-chapter__mark';
+      mark.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><circle class="promo-chapter__ring" cx="12" cy="12" r="10"/><circle class="promo-chapter__disc" cx="12" cy="12" r="11"/><path class="promo-chapter__check" pathLength="1" d="M7.2 12.4l3.2 3.2 6.4-6.6"/></svg>';
+      const words = document.createElement('span');
+      words.className = 'promo-chapter__words';
+      const a = document.createElement('span');
+      a.className = 'promo-chapter__from';
+      a.textContent = from;
+      const b = document.createElement('span');
+      b.className = 'promo-chapter__to';
+      b.textContent = to;
+      words.append(a, b);
+      line.append(mark, words);
+      // Sized to the margin above the window, so it reads large without
+      // touching it. Measured with the camera at rest (it may be zooming into
+      // the widget right now): the last at-rest measure is reused.
+      // v9: the margin above the window is too thin for a readable chip, so it
+      // floats over the window's empty header band instead, centred, at a
+      // size that reads on a phone (~2.7% of the frame).
+      const margin = this.chapterMargin();
+      const frameH = canvas.offsetHeight || 1080;
+      line.style.setProperty('--chapter-mid', `${((margin || 0) + frameH * 0.052).toFixed(1)}px`);
+      line.style.fontSize = `${(frameH * 0.027).toFixed(1)}px`;
+      line.getBoundingClientRect();
+      line.classList.add('is-in');
+      promoSfx('chapter');
+      // the letters fly in from outward to their place, one after another
+      if (prefersReducedMotion()) return;
+      a.textContent = '';
+      const mid = (from.length - 1) / 2;
+      [...from].forEach((char, i) => {
+        const letter = document.createElement('span');
+        letter.className = 'promo-chapter__l';
+        letter.textContent = char;
+        const out = (i - mid) / Math.max(1, mid);
+        letter.style.setProperty('--lx', `${(out * 1.6).toFixed(2)}em`);
+        letter.style.setProperty('--ly', `${(((i * 37) % 7) - 3) * 0.12}em`);
+        letter.style.setProperty('--ld', `${i * PROMO_CHAPTER_CHAR_MS}ms`);
+        a.appendChild(letter);
+      });
+    }
+
+    // one chapter hands over to the next: the old chip leaves, the new one flies in
+    nextChapter(from, to, reduced = false) {
+      this.hideChapter();
+      window.setTimeout(() => this.showChapter(from, to), reduced ? 0 : 340);
+    }
+
+    resolveChapter() {
+      const line = this.root.querySelector('[data-promo-chapter]');
+      if (!line || line.classList.contains('is-struck')) return;
+      line.classList.add('is-struck');
+      promoSfx('chapter-tick');
+    }
+
+    hideChapter() {
+      this.root.querySelector('[data-promo-chapter]')?.classList.remove('is-in');
     }
 
     async rememberPitchLead() {
@@ -6034,7 +7243,7 @@
         onDone();
         return;
       }
-      markPromoVo('any-store');
+      speakNarrator('t-stores');
       const finalSlide = this.ensureFinalPassSlide();
       if (finalSlide && !slides.includes(finalSlide)) slides.push(finalSlide);
       const count = slides.length;
@@ -6086,6 +7295,7 @@
           this.arriveStore(store);
           this.paintPassLight(store.accent);
           // A short confirmation from the clerk on each store.
+          promoSfx('store-switch', { index });
           const line = PROMO_STORE_VOICES[index % PROMO_STORE_VOICES.length];
           window.setTimeout(() => this.playVoiceSound(line), PROMO_PASS_TITLE_MS);
         }
@@ -6198,6 +7408,8 @@
 
     // Plays a recorded clerk line with no avatar on screen (store pass).
     async playVoiceSound(id) {
+      // The clerk's store confirmations never talk over the narrator.
+      if (performance.now() < (window.__promoNarratorUntil || 0)) return;
       const voice = await clerkVoice(id);
       if (!voice) return;
       const src = `/promo/voice/${id}.wav`;
@@ -6260,7 +7472,37 @@
 
     // The camera dives into the blank page until the window is gone and the
     // frame is white, ready for the call to action. Stepped per frame.
+    // Back to "Your store" (the pitch's own window, Bizmis installed), and
+    // the camera dives into it: the Early Access card opens from inside.
+    async diveIntoYourStore() {
+      const raster = this.pitchLeadKey && this.cellRasters?.get(this.pitchLeadKey);
+      const canvas = this.root.querySelector('[data-promo-canvas]');
+      if (!raster || !canvas || prefersReducedMotion()) return;
+      const stage = document.createElement('div');
+      stage.className = 'promo-yourstore';
+      const card = document.createElement('figure');
+      card.className = 'promo-yourstore__card';
+      const img = raster.cloneNode(true);
+      const box = (img.getAttribute('viewBox') || '0 0 16 10').split(/\s+/).map(Number);
+      card.style.aspectRatio = `${box[2]} / ${box[3]}`;
+      img.removeAttribute('class');
+      img.setAttribute('width', '100%');
+      img.setAttribute('height', '100%');
+      card.append(img);
+      stage.append(card);
+      canvas.appendChild(stage);
+      stage.getBoundingClientRect();
+      stage.classList.add('is-in');
+      await waitMs(PROMO_YOURSTORE_HOLD_MS);
+      promoSfx('dive');
+      stage.classList.add('is-diving');
+      await waitMs(PROMO_YOURSTORE_DIVE_MS);
+      stage.classList.add('is-out');
+      window.setTimeout(() => stage.remove(), 700);
+    }
+
     async diveIntoFinal(slide) {
+      promoSfx('dive');
       const card = slide.querySelector('.promo-opening__slide-card');
       const meta = slide.querySelector('.promo-opening__slide-meta');
       if (!card) return;
@@ -6328,7 +7570,7 @@
         written.textContent = copy.invite;
         invite.append(written);
         slot.append(invite);
-        if (copy.aside) {
+        if (copy.aside && !copy.morph && !copy.pills) {
           const aside = document.createElement('span');
           aside.className = 'promo-pass-slot__aside';
           const mark = '50 stores';
@@ -6343,7 +7585,27 @@
           slot.append(aside);
         }
       }
-      if (copy.terms?.length) {
+      if (copy.shopify && copy.pills) {
+        const row = document.createElement('div');
+        row.className = 'promo-ea-pills';
+        row.innerHTML = `<div class="promo-ea-pills__row">${(copy.terms || []).map((t) => `<p class="promo-ea-pill is-benefit"><svg class="promo-ea-pill__check" viewBox="0 0 24 24" aria-hidden="true"><path pathLength="1" d="M5 12.5l4.4 4.4L19 7.4"/></svg><span>${t}</span></p>`).join('')}</div>`
+          // v13: what the VO adds rolls through one quiet line, word by word as it is said
+          + `<div class="promo-ea-pills__row is-roll"><p class="promo-ea-pill is-roll"><span class="promo-ea-pill__dot" aria-hidden="true"></span><span class="promo-ea-pill__text"></span></p>`
+          // v13 (S1): the scarcity handwritten in Bizmis orange, a hand-drawn underline under it (it takes the rolling line's place)
+          + `<p class="promo-ea-hand"><span class="promo-ea-hand__text">${copy.aside || 'Only 50 spots'}!</span><svg class="promo-ea-hand__line" viewBox="0 0 240 24" preserveAspectRatio="none" aria-hidden="true"><path pathLength="1" d="M6 15.5c38-5.2 92-7.6 150-6.4 26 .6 52 2.2 78 4.8"/><path pathLength="1" d="M28 20.2c44-3.4 104-4.2 168-1.6"/></svg></p></div>`;
+        slot.append(row);
+      }
+      if (copy.shopify && copy.morph) {
+        // v10: one pill that becomes each benefit as it is said, then the scarcity
+        const pill = document.createElement('p');
+        pill.className = 'promo-ea-pill';
+        pill.innerHTML = '<span class="promo-ea-pill__tick" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.4 4.4L19 7.4"/></svg></span><span class="promo-ea-pill__text"></span>';
+        const quiet = document.createElement('p');
+        quiet.className = 'promo-ea-quiet';
+        quiet.textContent = copy.quiet || '';
+        slot.append(pill, quiet);
+      }
+      if (copy.terms?.length && !copy.morph && !copy.pills) {
         const terms = document.createElement('p');
         terms.className = 'promo-pass-slot__terms';
         copy.terms.forEach((text) => {
@@ -6356,6 +7618,30 @@
           terms.append(piece);
         });
         slot.append(terms);
+      }
+      if (copy.extras?.length && !copy.morph && !copy.pills) {
+        const extras = document.createElement('p');
+        extras.className = 'promo-pass-slot__extras';
+        copy.extras.forEach((text) => {
+          const item = document.createElement('span');
+          item.className = 'promo-pass-slot__extra';
+          item.textContent = text;
+          extras.append(item);
+        });
+        slot.append(extras);
+      }
+      if (copy.find && !copy.morph && !copy.pills) {
+        const find = document.createElement('p');
+        find.className = 'promo-pass-slot__find';
+        find.append(shopifyBag(), document.createTextNode(copy.find));
+        slot.append(find);
+      }
+      if (copy.shopify) {   // the brand signs the card
+        const brand = document.createElement('img');
+        brand.className = 'promo-pass-slot__brand';
+        brand.src = '/images/bizmis-logo-full-orange-transparent.png';
+        brand.alt = 'Bizmis';
+        slot.prepend(brand);
       }
       if (copy.url) {
         const url = document.createElement('p');
@@ -6401,41 +7687,337 @@
         slot?.classList.add('is-in');
         await waitMs(80);
         this.root.classList.add('is-ea-logo');
+        promoSfx('ea-logo');
         await waitMs(PROMO_EA_LOGO_LEAD_MS);
         slot?.classList.add('is-action-in');
+        promoSfx('ea-action');
         this.root.classList.add('is-ea-in', 'is-ea-action');
         await waitMs(PROMO_EA_FLY_MS);
       } else {
         await waitMs(PROMO_PASS_SLOT_IN_MS);
         slot?.classList.add('is-in');
       }
-      markPromoVo(copy.vo);
       if (copy.shopify && slot) {
-        await waitMs(PROMO_EA_BEAT_MS);
+        // "Install now to join Early Access!" over the handwriting, the
+        // benefit pills rise in as they're said, "Only 50 spots" lands on
+        // "only fifty spots", and "Install now to secure your spot" clears to the hero.
+        const take = speakTake(copy.vo);
+        await waitMs(200);
         slot.classList.add('is-writing');
-        await waitMs(PROMO_EA_WRITE_MS + PROMO_EA_BEAT_MS);
+        promoSfx('ea-write', { ms: PROMO_EA_WRITE_MS });
+        await Promise.all([waitMs(PROMO_EA_WRITE_MS * 0.6), take.at('Early Access', 'end')]);
         slot.classList.add('is-written');
-        slot.querySelector('.promo-pass-slot__aside')?.classList.add('is-stamped');
-        await waitMs(PROMO_EA_STAMP_MS + PROMO_EA_BEAT_MS);
-        await this.playEaTerms(slot);
-        await waitMs(PROMO_EA_TERM_IN_MS + PROMO_EA_HOLD_MS + promoHoldMs());
+        if (copy.pills) {
+          // each benefit pill rises in as it is said; the scarcity lands on "only fifty"
+          const pills = [...slot.querySelectorAll('.promo-ea-pill.is-benefit')];
+          // v11: no pills: the words rise in and the tick draws itself beside them
+          const rise = (pill) => {
+            const check = pill.querySelector('.promo-ea-pill__check path');
+            if (check) { check.style.strokeDasharray = '1'; check.style.strokeDashoffset = '1'; }
+            tweenStep(520, (e) => { pill.style.opacity = Math.min(1, e * 1.6).toFixed(3); pill.style.translate = `0 ${((1 - e) * 0.4).toFixed(3)}em`; }, promoEaseOut);
+            if (check) window.setTimeout(() => tweenStep(380, (e) => { check.style.strokeDashoffset = (1 - e).toFixed(3); }, promoEaseOut), 120);
+          };
+          for (const [k, mark] of (copy.termMarks || []).entries()) {
+            await take.at(mark);
+            if (pills[k]) rise(pills[k]);
+            promoSfx('ea-tick', { index: k });
+          }
+          const roll = slot.querySelector('.promo-ea-pill.is-roll');
+          for (const [k, mark] of (copy.extraMarks || []).entries()) {
+            await take.at(mark, 'start', -80);
+            this.morphEaPill(roll, (copy.extras || [])[k] || '');
+            promoSfx('ea-morph', { index: k });
+          }
+          await take.at('only fifty', 'start', -120);
+          if (roll) tweenStep(360, (e) => { roll.style.opacity = (1 - e).toFixed(3); }, promoEaseInOut);   // makes room: the scarcity is the last word
+          const hand = slot.querySelector('.promo-ea-hand');
+          if (hand) {
+            // written left to right (a pen's reveal), then the underline is drawn in two strokes
+            const text = hand.querySelector('.promo-ea-hand__text');
+            const lines = [...hand.querySelectorAll('.promo-ea-hand__line path')];
+            lines.forEach((p) => { p.style.strokeDasharray = '1'; p.style.strokeDashoffset = '1'; });
+            hand.style.opacity = '1';
+            promoSfx('hand-write');
+            await tweenStep(820, (e) => { text.style.clipPath = `inset(-30% ${((1 - e) * 115 - 15).toFixed(2)}% -40% -10%)`; }, (u) => u * (2 - u) * 0.6 + u * 0.4);
+            promoSfx('ea-stamp');
+            await tweenStep(360, (e) => { lines[0].style.strokeDashoffset = (1 - e).toFixed(3); }, promoEaseOut);
+            if (lines[1]) tweenStep(300, (e) => { lines[1].style.strokeDashoffset = (1 - e).toFixed(3); }, promoEaseOut);
+          }
+        } else if (copy.morph) {
+          const pill = slot.querySelector('.promo-ea-pill');
+          const texts = [...(copy.terms || []), ...(copy.extras || [])];
+          const marks = [...(copy.termMarks || []), ...(copy.extraMarks || [])];
+          for (const [k, mark] of marks.entries()) {
+            await take.at(mark);
+            this.morphEaPill(pill, texts[k]);
+            promoSfx(k ? 'ea-morph' : 'ea-tick', { index: k });
+          }
+          await take.at('only fifty');
+          this.morphEaPill(pill, copy.aside || 'Only 50 spots', true);
+          promoSfx('ea-stamp');
+          window.setTimeout(() => slot.querySelector('.promo-ea-quiet')?.classList.add('is-in'), 420);
+        } else {
+          await this.playEaTerms(slot, take, copy.termMarks || []);
+          const extras = [...slot.querySelectorAll('.promo-pass-slot__extra')];
+          for (const [k, mark] of (copy.extraMarks || []).entries()) {
+            await take.at(mark);
+            extras[k]?.classList.add('is-in');
+          }
+          await take.at('only fifty');
+          slot.querySelector('.promo-pass-slot__aside')?.classList.add('is-stamped');
+          promoSfx('ea-stamp');
+        }
+        await take.at(copy.pills ? 'now to secure' : 'so install now', 'start', copy.pills ? -260 : 0);
+        slot.classList.add('is-hero');
+        this.root.classList.add('is-ea-hero');
+        promoSfx('ea-hero');
+        await take.done;
+        // v13: a closing move that lands on the music's final chord ('ea-final'
+        // marks the hit; the score is fitted to it), then a lasting final frame
+        await this.playEaClosing(slot);
+        await waitMs(PROMO_EA_FINAL_HOLD_MS + promoHoldMs());
       } else {
         await waitMs(PROMO_END_CARD_HOLD_MS + promoHoldMs());
       }
       this.depart();
     }
 
-    async playEaTerms(slot) {
+    // The end card closes: the benefits (already read) bow out, the card
+    // draws in a touch, and on the hit a warm Bizmis-orange light blooms
+    // behind "Install now" and stays. Stepped (export-safe).
+    async playEaClosing(slot) {
+      if (!slot || prefersReducedMotion()) return;
+      // v13 (C1): the card re-arranges itself into one lockup, gracefully: the
+      // benefits and the invite bow out, then the brand, "Install now" and the
+      // handwritten scarcity glide (FLIP, stepped) into a centred stack and grow
+      // a touch; on the hit, a Bizmis-orange shine runs across "Install now"
+      // and a warm light settles behind it. The last frame holds.
+      const canvas = this.root.querySelector('[data-promo-canvas]') || this.root;
+      const cb = canvas.getBoundingClientRect();
+      const fit = canvas.clientWidth / Math.max(1, cb.width);   // layout px per screen px
+      const brand = slot.querySelector('.promo-pass-slot__brand');
+      const action = slot.querySelector('.promo-pass-slot__action');
+      const invite = slot.querySelector('.promo-pass-slot__invite');
+      const benefits = slot.querySelector('.promo-ea-pills__row:not(.is-roll)');
+      const roll = slot.querySelector('.promo-ea-pill.is-roll');
+      const hand = slot.querySelector('.promo-ea-hand');
+      const keep = [[brand, 1.14], [action, 1.12], [hand, 1.04]].filter(([el]) => el);
+      if (!keep.length) return;
+      const box = (el) => { const r = el.getBoundingClientRect(); return { x: (r.left - cb.left + r.width / 2) * fit, y: (r.top - cb.top + r.height / 2) * fit, h: r.height * fit, s: el.offsetWidth / Math.max(1, r.width * fit) }; };   // s: the element's own px per canvas px
+      const from = keep.map(([el, k]) => ({ el, k, ...box(el) }));
+      // the target stack, centred on the canvas
+      const gapA = brand && action ? Math.max(0, (box(action).y - box(action).h / 2) - (box(brand).y + box(brand).h / 2)) * 1.1 : 0;
+      const gapB = action ? box(action).h * 0.42 : 0;
+      const gaps = [gapA, gapB];
+      const total = from.reduce((sum, f, i) => sum + f.h * f.k + (i ? gaps[i - 1] || 0 : 0), 0);
+      let y = canvas.clientHeight * 0.5 - total / 2;
+      const to = from.map((f, i) => { if (i) y += gaps[i - 1] || 0; const c = y + (f.h * f.k) / 2; y += f.h * f.k; return { x: canvas.clientWidth / 2, y: c }; });
+      let bloom = null;
+      if (action) {
+        bloom = document.createElement('span');
+        bloom.className = 'promo-ea-bloom';
+        bloom.setAttribute('aria-hidden', 'true');
+        action.prepend(bloom);
+      }
+      promoSfx('ea-close', { ms: PROMO_EA_CLOSE_MS });
+      // 1. what has been read bows out (soft blur, a small drift toward the action)
+      const bowOut = (el, delay, dy) => el && window.setTimeout(() => tweenStep(520, (e) => {
+        el.style.opacity = (1 - e).toFixed(3);
+        el.style.filter = `blur(${(e * 6).toFixed(2)}px)`;
+        el.style.translate = `0 ${(dy * e).toFixed(2)}em`;
+        el.style.scale = (1 - 0.06 * e).toFixed(4);
+      }, promoEaseInOut), delay);
+      bowOut(benefits, 0, -0.5);
+      bowOut(roll, 0, -0.3);
+      bowOut(invite, 120, -0.25);
+      // 2. the lockup glides into place, each piece a beat after the one above
+      await waitMs(220);
+      const glide = PROMO_EA_CLOSE_MS - 220;
+      await tweenStep(glide, (e, u) => {
+        from.forEach((f, i) => {
+          const lag = i * 0.08; const v = Math.min(1, Math.max(0, (u - lag) / (1 - 0.16)));
+          const w = v < 0.5 ? 4 * v * v * v : 1 - ((-2 * v + 2) ** 3) / 2;
+          f.el.style.translate = `${((to[i].x - f.x) * w * f.s).toFixed(2)}px ${((to[i].y - f.y) * w * f.s).toFixed(2)}px`;
+          f.el.style.scale = (1 + (f.k - 1) * w).toFixed(4);
+        });
+        if (bloom) bloom.style.opacity = (0.4 * u * u).toFixed(3);
+      }, (u) => u);
+      // 3. the hit: an orange shine runs across "Install now"; the light settles
+      promoSfx('ea-final');
+      const label = action?.querySelector('.promo-pass-slot__shopify-label');
+      if (label) {
+        label.classList.add('is-shine');
+        tweenStep(760, (e) => { label.style.backgroundPosition = `${(100 - e * 100).toFixed(2)}% 0`; }, promoEaseInOut)
+          .then(() => { label.classList.remove('is-shine'); label.style.backgroundPosition = ''; });
+      }
+      if (bloom) tweenStep(1100, (e) => { bloom.style.opacity = (0.4 + 0.3 * Math.sin(e * Math.PI) - 0.08 * e).toFixed(3); bloom.style.scale = (1 + 0.1 * e).toFixed(3); }, promoEaseOut);
+    }
+
+    // The pill's words roll over (old up and out, new up and in) while its
+    // width glides to fit, all stepped per frame (export-safe).
+    morphEaPill(pill, text, scarce = false) {
+      if (!pill) return;
+      const holder = pill.querySelector('.promo-ea-pill__text');
+      const old = holder.querySelector('.promo-ea-pill__word:not(.is-leaving)');
+      const from = pill.offsetWidth;
+      const word = document.createElement('span');
+      word.className = 'promo-ea-pill__word';
+      word.textContent = text;
+      word.style.opacity = '0';   // hidden until its turn (no frame with both texts)
+      holder.appendChild(word);
+      pill.style.width = 'auto';
+      if (old) old.style.position = 'absolute';
+      const to = pill.offsetWidth;
+      if (old) old.style.position = '';
+      const first = !pill.classList.contains('is-in');
+      pill.classList.add('is-in');
+      pill.classList.toggle('is-scarce', scarce);
+      const ms = first ? 480 : 560;
+      const t0 = performance.now();
+      if (old) old.classList.add('is-leaving');
+      const ease = (u) => 1 - (1 - u) ** 3;
+      const easeOut = ease;
+      const step = (now) => {
+        const u = Math.min(1, (now - t0) / ms); const e = ease(u);
+        // sequential: the old words roll up and out (0-40%), the pill glides to its new
+        // width (20-60%), then the new words roll up into place (50-100%): never two texts at once, never clipped
+        const out = Math.min(1, u / 0.4); const wide = Math.min(1, Math.max(0, (u - 0.2) / 0.4)); const inn = Math.min(1, Math.max(0, (u - 0.5) / 0.5));
+        pill.style.width = `${(first ? to : from + (to - from) * easeOut(wide)).toFixed(1)}px`;
+        word.style.opacity = inn.toFixed(3);
+        word.style.transform = `translateY(${((1 - easeOut(inn)) * 1.1).toFixed(3)}em)`;
+        if (old) { old.style.opacity = (1 - out).toFixed(3); old.style.transform = `translateY(${(-easeOut(out) * 1.1).toFixed(3)}em)`; }
+        if (first) pill.style.opacity = e.toFixed(3);
+        if (u < 1) window.requestAnimationFrame(step);
+        else { old?.remove(); pill.style.width = ''; }
+      };
+      step(t0);
+    }
+
+    // Each term ticks in as the narrator says it.
+    async playEaTerms(slot, take = null, marks = []) {
       const pieces = [...slot.querySelectorAll('.promo-pass-slot__piece')];
       for (let index = 0; index < pieces.length; index += 1) {
+        if (take && marks[index]) await take.at(marks[index]);
+        else if (index > 0) await waitMs(PROMO_EA_TERM_GAP_MS + PROMO_EA_BEAT_MS);
         pieces[index].classList.add('is-in');
-        if (index < pieces.length - 1) await waitMs(PROMO_EA_TERM_GAP_MS + PROMO_EA_BEAT_MS);
+        if (pieces[index].querySelector('.promo-pass-slot__tick')) promoSfx('ea-tick');
       }
+    }
+
+    // "One click... and your whole store is in sync. Automatically, always."
+    // The clerk alone at the centre; the store's Shopify parts pop out around
+    // it on "One click" and stream into it on "whole store", each one charging
+    // it up, a single release ring, then "Always in sync" under it. Fast: the scene lasts the line plus a breath.
+    async playSyncScene() {
+      if (prefersReducedMotion()) return;
+      const canvas = this.root.querySelector('[data-promo-canvas]') || this.root;
+      const scene = document.createElement('div');
+      scene.className = 'promo-sync is-orbs';
+      scene.innerHTML = `
+        <div class="promo-sync__glow"></div>
+        <div class="promo-sync__avatar" data-sync-avatar><span class="promo-sync__ring"></span></div>
+        ${PROMO_SYNC_PARTS.map((p, i) => `<div class="promo-sync__orb" data-sync-orb="${p.key}" style="--a:${(i / PROMO_SYNC_PARTS.length) * 360 - 90 + 30}deg;--i:${i}">
+          <span class="promo-sync__bead"><svg viewBox="0 0 24 24"><path d="${p.icon}"/></svg></span>
+          <span class="promo-sync__name">${p.short}</span>
+        </div>`).join('')}`;
+      canvas.appendChild(scene);
+      const seat = this.seatSyncAvatar(scene);
+      scene.classList.add('is-in');
+      fadeStep(scene, 0, 1, 650);   // out of the sold sea's orange
+      const take = speakTake('t-sync');
+      await take.at('one click');
+      scene.classList.add('is-click');
+      promoSfx('sync-flow');
+      const orbs = [...scene.querySelectorAll('[data-sync-orb]')];
+      orbs.forEach((orb, i) => window.setTimeout(() => orb.classList.add('is-out'), 60 + i * 55));
+      await take.at('whole store', 'start', -180);
+      setOpeningAvatarAction(PROMO_SYNC_ACTION);
+      const sr = scene.getBoundingClientRect();
+      const core = seat?.core || { x: sr.width / 2, y: sr.height / 2 };
+      await Promise.all(orbs.map((orb, i) => new Promise((resolve) => window.setTimeout(() => {
+        const r = orb.getBoundingClientRect();
+        const dx = core.x - (r.left - sr.left + r.width / 2); const dy = core.y - (r.top - sr.top + r.height / 2);
+        const bend = (i % 2 ? 1 : -1) * 0.22;   // a slight curve, alternating sides
+        orb.classList.add('is-flying');
+        const anim = orb.animate([
+          { transform: 'translate(0, 0) scale(1)', opacity: 1 },
+          { transform: `translate(${dx * 0.55 - dy * bend}px, ${dy * 0.55 + dx * bend}px) scale(0.6)`, opacity: 1, offset: 0.5 },
+          { transform: `translate(${dx * 0.85}px, ${dy * 0.85}px) scale(0.3)`, opacity: 0, offset: 0.82 },   // gone before it reaches the body
+          { transform: `translate(${dx}px, ${dy}px) scale(0.12)`, opacity: 0 },
+        ], { duration: PROMO_SYNC_ORB_MS, easing: 'cubic-bezier(0.55, 0, 0.75, 0.4)', fill: 'forwards' });
+        waitMs(PROMO_SYNC_ORB_MS).then(() => {   // not anim.finished: the export clock pauses animations
+          scene.style.setProperty('--charge', String((i + 1) / orbs.length));
+          scene.classList.remove('is-gulp'); scene.getBoundingClientRect(); scene.classList.add('is-gulp');
+          promoSfx('orb-absorb', { index: i });
+          resolve();
+        });
+      }, i * PROMO_SYNC_ORB_STAGGER_MS))));
+      scene.classList.add('is-charged');
+      promoSfx('sync-done');
+      // "Automatically, always.": a small glass chip writes in under the clerk,
+      // its sync glyph turning for as long as the scene holds (stepped).
+      await take.at('Automatically', 'start', -80);
+      const chip = document.createElement('div');
+      chip.className = 'promo-sync__always';
+      chip.innerHTML = `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 12a8 8 0 0 1-13.7 5.6M4 12a8 8 0 0 1 13.7-5.6"/><path d="M17.8 2.8v3.9h-3.9M6.2 21.2v-3.9h3.9"/></svg><span>Always in sync</span>`;
+      scene.appendChild(chip);
+      const glyph = chip.querySelector('svg');
+      let spinning = true;
+      const t0 = performance.now();
+      const spin = (now) => { if (!spinning) return; glyph.style.rotate = `${((now - t0) / 1600) * 360}deg`; window.requestAnimationFrame(spin); };
+      spin(t0);
+      promoSfx('ui-tick');
+      tweenStep(420, (e) => { chip.style.opacity = e.toFixed(3); chip.style.translate = `-50% ${((1 - e) * 1.2).toFixed(3)}cqh`; }, promoEaseOut);
+      await take.done;
+      window.setTimeout(() => { spinning = false; }, 900);
+      await waitMs(PROMO_SYNC_HOLD_MS);
+      // v11b: the scene leaves completely, then the stores come in (never two
+      // scenes dissolved over each other)
+      scene.classList.add('is-leaving');
+      await fadeStep(scene, 1, 0, 300);
+      this.unseatSyncAvatar(seat); scene.remove();
+    }
+
+    // The live clerk (its 3D canvas is oversampled, so it scales crisply)
+    // lifted out of its card into the scene's centre, card chrome hidden.
+    seatSyncAvatar(scene) {
+      // the live clerk, never a copy: the sea-of-cards rasters hold cloned widgets
+      const embed = [...document.querySelectorAll('[id="bizmis-avatar-embed"]')].find((node) => !node.closest('svg'));
+      const widget = embed?.closest('[data-promo-widget]');
+      const host = scene.querySelector('[data-sync-avatar]');
+      const view = embed?.querySelector('.bizmis-desktop-lite-chat .relative.z-10');
+      if (!widget || !host || !view) return null;
+      const home = widget.parentElement;
+      document.documentElement.classList.remove('is-promo-card-out', 'is-promo-live-card', 'is-promo-saying');
+      document.documentElement.classList.add('is-promo-sync-hero');
+      host.appendChild(widget);
+      Object.assign(widget.style, { top: '0px', left: '0px', right: 'auto', bottom: 'auto', margin: '0', transition: 'none', transform: 'none', transformOrigin: '0 0' });
+      const sr = scene.getBoundingClientRect(); const wr = widget.getBoundingClientRect(); const vr = view.getBoundingClientRect();
+      const scale = (sr.height * PROMO_SYNC_AVATAR_H) / Math.max(1, vr.height);
+      const ox = vr.left + vr.width / 2 - wr.left; const oy = vr.top + vr.height / 2 - wr.top;
+      const core = { x: sr.width / 2, y: sr.height * 0.58 };   // the orbs go into the chest, not the face
+      widget.style.transformOrigin = `${ox}px ${oy}px`;
+      widget.style.transform = `translate(${core.x - (wr.left - sr.left) - ox}px, ${core.y - (wr.top - sr.top) - oy}px) scale(${scale.toFixed(4)})`;
+      return { widget, home, core };
+    }
+
+    unseatSyncAvatar(seat) {
+      document.documentElement.classList.remove('is-promo-sync-hero');
+      document.documentElement.classList.add('is-promo-card-out');
+      if (!seat) return;
+      const stage = this.root.querySelector('.promo-opening__stage') || seat.home;
+      stage?.appendChild(seat.widget);
+      Object.assign(seat.widget.style, { top: '', left: '', right: '', bottom: '', margin: '', transition: '', transform: '', transformOrigin: '' });
     }
 
     playSeeForYourself() {
       endOpeningAgent();
       this.holdOrangeField();
+      const reel = loadStoreReel();
+      if (reel.length && !prefersReducedMotion()) {
+        this.playSyncScene().then(() => this.playStoreReel(reel)).then(() => this.landPassSlot());
+        return;
+      }
       this.orderPassStores();
       if (!this.stores.length || prefersReducedMotion()) {
         this.settlePassSlot();
@@ -6456,6 +8038,408 @@
         lead: this.root.querySelector('.promo-scale__lead'),
         mark: this.root.querySelector('[data-promo-end-mark]'),
       });
+    }
+
+    // One vignette at a time: what the shopper asked on the left, the live
+    // recording in its own device on the right, with its own sound.
+    // The store reel, as one continuous camera over a "world" of devices: a
+    // strip of every demo store drifts in and slows to a stop under "In any
+    // store... on any device", then the camera dives into each hero store in
+    // turn (its recording plays with its sound), passing the others on the
+    // way, faster each time. While a shopper types or speaks, the whole
+    // picture leans in toward the widget (item.zooms: [s, zoom, x%, y%] on the
+    // device). Category type lives in screen space and may overlap the
+    // devices. Ambient light in the store's colour follows a sin^2 rhythm:
+    // slow and bright mid-store, fast and dim at each hand-off.
+    // The demo stores: a fixed camera over an endless carousel of thin,
+    // Apple-like devices, each one live. The strip glides store to store
+    // (faster each time); a hero grows in place to a close-up and plays its
+    // recording (its own sound), leaning in only while the shopper types, so
+    // the typing sits bottom-centre. "Your store" is just the next card in the
+    // carousel: it comes to the centre and the camera enters it, to white.
+    async playStoreReel(items) {
+      // v13: the demo stores as pages. A burst of skeleton stores rushes past
+      // out of "Always in sync" and brakes onto the first store; then each
+      // store is its own page (only that store in view during its close-up):
+      // its category in the store's colour, what the agent does -> what the
+      // merchant gets, its live recording beside it. Store to store the page
+      // slides (no tilt), quicker each time; the ambient light takes the
+      // store's colour: brightest and slowest on a store, dimmest and fastest
+      // mid-slide (driven by the camera's speed). "Your store" lands centred.
+      const canvas = this.root.querySelector('[data-promo-canvas]') || this.root;
+      const W = canvas.clientWidth;
+      const H = canvas.clientHeight;
+      const S = W / 1920;   // the layout is drawn at 1920 and scaled
+      const reel = document.createElement('div');
+      reel.className = 'promo-reel is-world is-pages';
+      reel.innerHTML = '<div class="promo-reel__ambient" aria-hidden="true"><i></i><i></i><i></i><i></i></div><div class="promo-reel__strip"></div>';
+      const strip = reel.querySelector('.promo-reel__strip');
+      const blobs = [...reel.querySelectorAll('.promo-reel__ambient i')];
+      const heroItems = items.filter((item) => item.hero);
+      const extras = items.filter((item) => !item.hero);
+      const yours = { yours: true, device: 'desktop', color: '#F28C38', category: 'Your store' };
+      const asAmbient = (item) => ({ ...item, hero: false, video: item.ambient || item.video });
+      const order = [];
+      heroItems.forEach((hero) => order.push(hero));
+      extras.forEach((item) => order.push({ ...asAmbient(item), whip: true }));
+      order.push(yours);
+      // where a device sits in its page, at 1920x1080 (scaled)
+      const SIZES = { desktop: 1180, phone: 410, tablet: 660 };
+      const place = (item) => {
+        const spec = PROMO_DEVICE_SPEC[item.device] || PROMO_DEVICE_SPEC.desktop;
+        const w = (item.skeleton ? SIZES[item.device] * 0.74 : SIZES[item.device]) * S;
+        const h = w / spec.aspect + spec.bar * w;
+        if (item.skeleton) return { w, h, x: 0, y: (H - h) / 2 };
+        if (item.yours) return { w, h, x: W / 2, y: (H - h) / 2 };
+        if (item.device === 'desktop') return { w, h, x: W / 2, y: 205 * S };
+        return { w, h, x: (item.device === 'phone' ? 1420 : 1380) * S, y: (H - h) / 2 };
+      };
+      let px = 0;
+      const seq = order.map((item, n) => {
+        const box = place(item);
+        const pageW = item.skeleton ? W * 0.4 : W;
+        const cell = { src: item, n, full: box, hero: !!item.hero, whip: !!item.whip, yours: !!item.yours, skeleton: !!item.skeleton };
+        cell.x0 = px;
+        cell.cx = px + (item.skeleton ? pageW / 2 : box.x);   // the device's centre along the strip
+        px += pageW;
+        const inner = cell.yours
+          ? `<div class="promo-reel__blank"><div class="promo-reel__blank-brand"><span class="promo-reel__blank-mark">${PROMO_STORE_MARK}</span><b>Your store</b></div><div class="promo-reel__yours-widget"></div></div>`
+          : cell.skeleton ? promoSkeletonStore(item)
+          : cell.hero ? '<video class="is-hero" muted playsinline preload="auto"></video>' : '<video class="is-ambient" muted playsinline preload="auto"></video>';
+        cell.dev = promoDevice(item.device, box, inner);
+        if (cell.hero) cell.dev.classList.add('has-hero');
+        if (cell.skeleton) cell.dev.classList.add('is-skeleton');
+        Object.assign(cell.dev.style, { left: `${-box.w / 2}px`, top: `${box.y}px` });
+        cell.ambientVideo = cell.dev.querySelector('video.is-ambient');
+        cell.heroVideo = cell.dev.querySelector('video.is-hero');
+        [[cell.ambientVideo, item.ambient || item.video], [cell.heroVideo, item.video]].forEach(([video, src]) => {
+          if (!video || !src) return;
+          video.dataset.promoIdle = '1';
+          video.src = src;
+        });
+        if (cell.heroVideo) {
+          cell.heroVideo.addEventListener('loadeddata', () => { try { cell.heroVideo.currentTime = item.start || 0.05; } catch { } }, { once: true });
+        }
+        cell.t = { tx: 0, ty: 0, k: 1 };
+        strip.appendChild(cell.dev);
+        if (cell.hero || cell.whip) {
+          cell.copy = promoReelCopy(item, box, W, H, S);
+          Object.assign(cell.copy.style, { left: `${cell.x0}px`, width: `${W}px` });
+          strip.appendChild(cell.copy);
+        }
+        return cell;
+      });
+      canvas.appendChild(reel);
+      // the titles fit their room (never cut, never under the device): measured once the type is in
+      await document.fonts?.ready;
+      seq.forEach((cell) => { if (cell.copy) fitReelCopy(cell.copy, S); });
+      const ready = (video) => new Promise((resolve) => {
+        if (!video || video.readyState >= 2) resolve();
+        else video.addEventListener('loadeddata', resolve, { once: true });
+        window.setTimeout(resolve, 8000);
+      });
+      const roll = (video, from) => {
+        if (!video) return;
+        try { video.currentTime = from; } catch { }
+        video.dataset.promoStart = String(from);
+        delete video.dataset.promoIdle;
+        video.__promoOriginMs = null;
+        if (!document.documentElement.classList.contains('is-promo-export')) video.play().catch(() => { });
+      };
+      const park = (video) => {
+        if (!video || video.dataset.promoIdle === '1') return;
+        video.dataset.promoIdle = '1';
+        try { video.pause(); } catch { }
+      };
+      // the camera: x along the strip (px), so the page under it fills the frame
+      const cam = { x: 0 };
+      const camFor = (cell) => cell.x0 + (cell.skeleton ? cell.cx - cell.x0 - W / 2 : 0);
+      const motion = { last: performance.now(), x: 0, v: 0 };
+      const paint = () => {
+        strip.style.transform = `translateX(${(-cam.x).toFixed(2)}px)`;
+        const now = performance.now();
+        const dt = Math.max(1, now - motion.last);
+        const v = Math.abs(cam.x - motion.x) / dt * 1000;   // px per second
+        motion.v += (v - motion.v) * Math.min(1, dt / 90);   // a little smoothing
+        motion.last = now; motion.x = cam.x;
+        const blur = Math.min(6, (motion.v / W) * 1.2);
+        strip.style.filter = blur > 0.3 ? `blur(${blur.toFixed(2)}px)` : '';
+        seq.forEach((cell, i) => {
+          const t = cell.t;
+          cell.dev.style.transform = `translate3d(${(cell.cx + t.tx).toFixed(2)}px, ${t.ty.toFixed(2)}px, 0) scale(${t.k.toFixed(4)})`;
+          const sx = cell.cx - cam.x;
+          const half = (cell.full.w * t.k) / 2;
+          const onScreen = sx + half > -W * 0.05 && sx - half < W * 1.05;
+          cell.dev.style.visibility = onScreen ? '' : 'hidden';
+          if (cell.copy) cell.copy.style.visibility = (cell.x0 - cam.x) < W && (cell.x0 - cam.x) > -W ? '' : 'hidden';
+          // skeletons: a soft tick as each one crosses the centre (the rush's rhythm, braking)
+          if (cell.skeleton && !cell.ticked && sx <= W / 2) { cell.ticked = true; promoSfx('reel-tick', { index: i }); }
+          const video = cell.ambientVideo;
+          if (!video) return;
+          if (onScreen) {
+            if (video.dataset.promoIdle === '1' && !cell.live) roll(video, ((cell.src.ambientStart || 0) + (i % 5) * 1.7) % 9);
+          } else park(video);
+        });
+      };
+      const tween = (obj, to, ms, ease = promoEaseInOut) => new Promise((resolve) => {
+        const from = {}; Object.keys(to).forEach((key) => { from[key] = obj[key]; });
+        const t0 = performance.now();
+        const step = (now) => {
+          const u = Math.min(1, (now - t0) / Math.max(1, ms)); const e = ease(u);
+          Object.keys(to).forEach((key) => { obj[key] = from[key] + (to[key] - from[key]) * e; });
+          if (u < 1) window.requestAnimationFrame(step); else resolve();
+        };
+        window.requestAnimationFrame(step);
+      });
+      let painting = true;
+      const loop = () => { if (!painting || !reel.isConnected) return; paint(); window.requestAnimationFrame(loop); };
+
+      // the ambient light: its strength and its drift follow the camera
+      // (still on a store: bright and slow, never frozen; mid-slide: dim and fast)
+      const light = { phase: 0, last: performance.now(), on: true };
+      const lightLoop = (now) => {
+        if (!light.on || !reel.isConnected) return;
+        const go = Math.max(light.rush || 0, Math.min(1, motion.v / (W * 1.6)));
+        const hit = light.hitAt ? Math.exp(-(now - light.hitAt) / 380) : 0;   // each cut swells the light, then it settles
+        const curve = Math.sin((go * Math.PI) / 2) ** 2;   // a sin^n-like ease between the two states
+        light.phase += ((now - light.last) / 1000) * (0.22 + 2.4 * curve); light.last = now;
+        blobs.forEach((blob, k) => {
+          const p = light.phase * (0.42 + 0.13 * k) + k * 1.9;
+          blob.style.transform = `translate(${(Math.sin(p) * 22).toFixed(2)}%, ${(Math.cos(p * 0.83) * 16).toFixed(2)}%) scale(${(1 + 0.18 * Math.sin(p * 1.27)).toFixed(3)})`;
+        });
+        blobs.forEach((blob) => { blob.style.scale = (1 + 0.14 * hit).toFixed(3); });
+        reel.style.setProperty('--reel-glow', Math.min(1, 0.9 - 0.55 * curve + 0.05 * Math.sin(light.phase * 0.9) + 0.22 * hit).toFixed(3));
+        window.requestAnimationFrame(lightLoop);
+      };
+      let lightColor = PROMO_REEL_SKELETONS[0]?.color || '#F28C38';
+      const setLight = (from, to, p) => {
+        const mix = (c, pct, base) => `color-mix(in oklab, ${c} ${pct}%, ${base})`;
+        const blend = (pct, base) => `color-mix(in oklab, ${mix(to, pct, base)} ${(p * 100).toFixed(1)}%, ${mix(from, pct, base)})`;
+        reel.style.setProperty('--reel-a', blend(64, '#FBFAF8'));
+        reel.style.setProperty('--reel-b', blend(46, '#FFF6EC'));
+        reel.style.setProperty('--reel-c', blend(34, '#F6F2FF'));
+      };
+      const tint = (color, ms = PROMO_REEL_TINT_MS) => {
+        const from = lightColor; lightColor = color;
+        if (!ms) { setLight(color, color, 1); return; }
+        tweenStep(ms, (e) => setLight(from, color, e));
+      };
+      tint(lightColor, 0);
+
+      const firstHero = seq.find((cell) => cell.hero);
+      const home = seq.find((cell) => cell.yours);
+      // v13 (E1 + E3): everything lands on the score's beat grid (112 bpm,
+      // counted from the reel's first frame): a tunnel of new stores flies at
+      // the camera and brakes onto the first store on a hit; from there every
+      // store is a hard cut on the beat: a flash, the device punches in, its
+      // title slams; the quick ones come faster and faster; "Your store" last.
+      const t0 = performance.now();
+      const onBeat = (minMs = 0) => {   // wait for the first beat at least minMs away
+        const now = performance.now();
+        const k = Math.ceil((now + minMs - t0) / PROMO_REEL_BEAT_MS - 0.02);
+        return waitMs(Math.max(0, t0 + k * PROMO_REEL_BEAT_MS - now));
+      };
+      const flash = document.createElement('div');
+      flash.className = 'promo-reel__flash';
+      reel.appendChild(flash);
+      const slam = (cell, index) => {
+        promoSfx('reel-slam', { index });
+        light.hitAt = performance.now();
+        tweenStep(150, (e) => { flash.style.opacity = (0.75 * (1 - e)).toFixed(3); }, (u) => u);
+        tweenStep(480, (e, u) => { cell.t.k = 1 + 0.085 * (1 - promoBackOut(u)); }, (u) => u);
+      };
+      const cutTo = (cell, index) => {
+        cam.x = camFor(cell);
+        motion.x = cam.x; motion.v = 0;   // a cut, not a move: no motion blur
+        tint(cell.src.color, 0);
+        slam(cell, index);
+      };
+      cam.x = camFor(firstHero);
+      firstHero.t.k = 0.0001;
+      paint();
+      window.requestAnimationFrame(loop);
+      window.requestAnimationFrame(lightLoop);
+      // 1. the tunnel: new stores (never one we show later) fly at the camera
+      reel.classList.add('is-in');
+      fadeStep(reel, 0, 1, 200);
+      promoSfx('reel-in');
+      const tunnel = document.createElement('div');
+      tunnel.className = 'promo-reel__tunnel';
+      tunnel.style.perspective = `${(W * 0.58).toFixed(0)}px`;
+      reel.insertBefore(tunnel, strip);
+      const P = W * 0.58;
+      const flyers = PROMO_REEL_SKELETONS.map((sk, i) => {
+        const size = { w: { desktop: 1180, phone: 410, tablet: 660 }[sk.device] * S * 0.8 };
+        const spec = PROMO_DEVICE_SPEC[sk.device];
+        size.h = size.w / spec.aspect + spec.bar * size.w;
+        const dev = promoDevice(sk.device, size, promoSkeletonStore(sk));
+        dev.classList.add('is-skeleton');
+        Object.assign(dev.style, { left: `${-size.w / 2}px`, top: `${-size.h / 2}px` });
+        tunnel.appendChild(dev);
+        return { dev, sk, x: W / 2 + Math.sin(i * 2.4) * W * 0.32, y: H / 2 + Math.cos(i * 1.7) * H * 0.28, z: -P * 0.6 - i * P * 0.62 };
+      });
+      const zEnd = -P * 0.6 - flyers.length * P * 0.62 - P * 0.9;
+      const tunnelMs = PROMO_REEL_BEAT_MS * PROMO_REEL_TUNNEL_BEATS;
+      let lastColor = '';
+      light.rush = 1;
+      await tweenStep(tunnelMs, (e, u) => {
+        const camZ = zEnd * e;
+        flyers.forEach((f, i) => {
+          const rel = f.z - camZ;
+          const o = rel > P * 0.85 ? 0 : (rel > P * 0.45 ? (P * 0.85 - rel) / (P * 0.4) : Math.min(1, (rel + P * 9) / (P * 3)));
+          f.dev.style.transform = `translate3d(${f.x.toFixed(1)}px, ${f.y.toFixed(1)}px, ${rel.toFixed(1)}px)`;
+          f.dev.style.opacity = Math.max(0, o).toFixed(3);
+          f.dev.style.visibility = o <= 0.001 ? 'hidden' : '';
+          f.dev.style.zIndex = String(Math.round(rel + 100000));
+          if (rel > -P * 2.2 && rel < P * 0.6 && lastColor !== f.sk.color && !f.passed) { f.passed = true; lastColor = f.sk.color; tint(f.sk.color, 140); promoSfx('reel-tick', { index: i }); }
+        });
+        // the first store comes out of the depth onto its slot (braking)
+        const d = (zEnd - camZ);   // <= 0: how far behind the slot it still is
+        const k = P / Math.max(1, P - d);
+        firstHero.t.k = Math.max(0.0001, Math.min(1, k));
+        firstHero.t.tx = (W / 2 - (firstHero.cx - cam.x)) * (1 - firstHero.t.k);
+        firstHero.t.ty = (H / 2 - (firstHero.full.y + firstHero.full.h / 2)) * (1 - firstHero.t.k);
+        light.rush = 1 - u * u;
+        tunnel.style.filter = u < 0.85 ? `blur(${((1 - u) * 2.5).toFixed(2)}px)` : '';
+      }, (u) => (u < 0.5 ? 4 * u * u * u : 1 - ((-2 * u + 2) ** 3) / 2) * 0.35 + (1 - (1 - u) ** 4) * 0.65);
+      firstHero.t.tx = 0; firstHero.t.ty = 0; light.rush = 0;
+      tunnel.remove();
+      tint(firstHero.src.color, 0);
+      slam(firstHero, 0);
+      speakTake('t-stores');
+
+      // 2. the four stores: hard cuts on the beat
+      const heroes = seq.filter((cell) => cell.hero);
+      for (const [index, hero] of heroes.entries()) {
+        const item = hero.src;
+        if (index > 0) { await ready(hero.heroVideo); cutTo(hero, index); }
+        hero.live = true;
+        hero.dev.classList.add('is-live');
+        roll(hero.heroVideo, item.start || 0);
+        const now = performance.now();
+        (window.__promoAudioCues = window.__promoAudioCues || []).push({ src: item.video, atMs: now, fromSec: item.start || 0, endMs: now + item.dur * 1000 });
+        window.__promoNarratorUntil = Math.max(window.__promoNarratorUntil || 0, now + item.dur * 1000);
+        revealReelCopy(hero.copy, 'slam');
+        const saidLines = Array.isArray(item.said?.[0]?.[0]) ? item.said : (item.said?.length ? [item.said] : []);
+        const spot = reelSaidSpot(hero, W, H, S);
+        saidLines.forEach((line) => this.playSaidPill(reel, line, { color: item.color, kind: item.saidKind || 'shopper', hold: 0.6, place: spot }));
+        (item.keys || []).forEach(([from, to]) => window.setTimeout(() => promoSfx(item.device === 'desktop' ? 'typing' : 'tapping', { ms: Math.round((to - from) * 1000) }), from * 1000));
+        (item.sfx || []).forEach(([at, id]) => window.setTimeout(() => promoSfx(id), at * 1000));
+        // the take plays out, then the cut comes on the nearest beat (never a held frame of more than half a beat)
+        await onBeat(Math.max(0, item.dur * 1000 - PROMO_REEL_BEAT_MS * 0.5));
+        reel.querySelectorAll('.promo-reel__said:not(.is-out)').forEach((pill) => { pill.classList.add('is-out'); pill.style.opacity = '0'; });
+        park(hero.heroVideo);
+        hero.dev.classList.remove('is-live');
+      }
+
+      // 3. the quick ones: cut, cut, cut, faster each time
+      const whips = seq.filter((cell) => cell.whip);
+      for (const [index, cell] of whips.entries()) {
+        if (!index) promoSfx('reel-quick');   // marks the quick run for the score
+        cutTo(cell, heroes.length + index);
+        await onBeat(PROMO_REEL_BEAT_MS * (PROMO_REEL_WHIP_BEATS[index] ?? 1) - 40);
+      }
+      // ...and "Your store", centred, on the next hit
+      promoWidgetDebug('setPlaceholder', 'Ask me anything');
+      this.seatReelWidget(home);
+      cutTo(home, heroes.length + whips.length);
+      promoSfx('reel-land');
+      setOpeningAvatarAction('waving');
+      await onBeat(PROMO_YOURSTORE_HOLD_MS + 500);
+      promoSfx('dive');
+      reel.classList.add('is-entering');
+      const fill = Math.max(W / (home.full.w * 0.9), H / (home.full.h * 0.62)) * 1.5;
+      tween(home.t, { k: fill * 1.25, ty: H * 0.04 * fill * 1.25 }, PROMO_YOURSTORE_DIVE_MS + PROMO_REEL_OUT_MS, (u) => u * u * u);
+      await waitMs(PROMO_YOURSTORE_DIVE_MS * 0.7);
+      reel.classList.add('is-out');
+      promoSfx('reel-out');
+      fadeStep(reel, 1, 0, PROMO_REEL_OUT_MS + 200);
+      window.setTimeout(() => { light.on = false; painting = false; this.unseatReelWidget(); reel.remove(); }, PROMO_REEL_OUT_MS + 260);
+    }
+
+    // the live clerk takes its corner in the empty "Your store" (never a copy)
+    seatReelWidget(home) {
+      const holder = home?.dev.querySelector('.promo-reel__yours-widget');
+      const embed = [...document.querySelectorAll('[id="bizmis-avatar-embed"]')].find((node) => !node.closest('svg'));
+      const widget = embed?.closest('[data-promo-widget]');
+      if (!holder || !widget) return;
+      this.reelWidgetHome = { widget, parent: widget.parentElement, next: widget.nextSibling, style: widget.getAttribute('style') };
+      document.documentElement.classList.remove('is-promo-card-out', 'is-promo-sync-hero');
+      document.documentElement.classList.add('is-promo-yours', 'is-promo-live-card');   // the full card: avatar, composer, chrome
+      holder.appendChild(widget);
+      Object.assign(widget.style, { position: 'absolute', left: '0', top: '0', right: 'auto', bottom: 'auto', margin: '0', transition: 'none', transformOrigin: '0 0' });
+      // v11: the card itself (the widget box is larger than its card) sits in
+      // the store's bottom-right corner, at the holder's width
+      const card = widget.querySelector('.bizmis-desktop-lite-chat [class*="group/card"]') || widget.querySelector('.bizmis-desktop-lite-chat') || widget;
+      widget.style.transform = 'none';
+      const hb = holder.getBoundingClientRect();
+      const px = hb.width / Math.max(1, holder.offsetWidth);   // screen px per holder px (the device is scaled)
+      const cb0 = card.getBoundingClientRect();
+      const scale = hb.width / Math.max(1, cb0.width);
+      widget.style.transform = `scale(${scale.toFixed(4)})`;
+      const cb = card.getBoundingClientRect();
+      const dx = (hb.right - cb.right) / px; const dy = (hb.bottom - cb.bottom) / px;
+      widget.style.transform = `translate(${dx.toFixed(1)}px, ${dy.toFixed(1)}px) scale(${scale.toFixed(4)})`;
+    }
+
+    unseatReelWidget() {
+      const home = this.reelWidgetHome;
+      document.documentElement.classList.remove('is-promo-yours', 'is-promo-live-card');
+      if (!home) return;
+      home.parent?.insertBefore(home.widget, home.next);
+      if (home.style != null) home.widget.setAttribute('style', home.style); else home.widget.removeAttribute('style');
+      this.reelWidgetHome = null;
+    }
+
+    // "Typed, or spoken": a spoken ask shows as a listening pill (mic, then the
+    // words as they're said) just under the device, gone shortly after.
+    playSaidPill(reel, said, at) {
+      const pill = document.createElement('div');
+      pill.className = `promo-reel__said is-${at.kind || 'shopper'}${at.where ? ` is-${at.where}` : ''}`;
+      pill.style.setProperty('--tint', at.color);
+      const icon = at.kind === 'typed'
+        ? '<span class="promo-reel__said-mic is-typed"><svg viewBox="0 0 24 24"><path d="M4 7.5h16v9H4zM7 10.5h1M10 10.5h1M13 10.5h1M16 10.5h1M8 13.5h8"/></svg></span>'
+        : at.kind === 'clerk'
+        ? '<span class="promo-reel__said-mic is-clerk"><svg viewBox="0 0 24 24"><path d="M5 6.5h14a1.5 1.5 0 0 1 1.5 1.5v7a1.5 1.5 0 0 1-1.5 1.5H11l-4 3v-3H5A1.5 1.5 0 0 1 3.5 15V8A1.5 1.5 0 0 1 5 6.5z"/></svg></span>'
+        // v11: a spoken line is plain words in a pill whose edge glows (Siri-like), no badge
+        : '';
+      if (!icon) pill.classList.add('is-voice');
+      pill.innerHTML = `${icon ? '' : '<span class="promo-reel__said-halo" aria-hidden="true"></span>'}${icon}<span class="promo-reel__said-text">${said.map(([, word]) => `<span>${word}</span>`).join(' ')}</span>`;
+      if (!icon) {   // the glow turns slowly while the pill is up (stepped: export-safe)
+        const t0 = performance.now();
+        const turn = (now) => {
+          if (!pill.isConnected) return;
+          pill.style.setProperty('--glow-a', `${(210 + ((now - t0) / 1000) * 70).toFixed(1)}deg`);
+          window.requestAnimationFrame(turn);
+        };
+        turn(t0);
+      }
+      const clock = pill.querySelector('.promo-reel__live b');
+      if (clock) {
+        const t0 = performance.now() - (at.callAt ?? 4) * 1000;   // the call began a few seconds earlier
+        const tick = (now) => {
+          if (!pill.isConnected) return;
+          const sec = Math.floor((now - t0) / 1000);
+          const text = `${Math.floor(sec / 60)}:${String(sec % 60).padStart(2, '0')}`;
+          if (clock.textContent !== text) clock.textContent = text;
+          window.requestAnimationFrame(tick);
+        };
+        window.requestAnimationFrame(tick);
+      }
+      at.place?.(pill);
+      reel.appendChild(pill);
+      const words = [...pill.querySelectorAll('.promo-reel__said-text > span')];
+      pill.getBoundingClientRect();
+      window.setTimeout(() => {
+        const others = [...reel.querySelectorAll('.promo-reel__said.is-in:not(.is-out)')].filter((other) => other !== pill);
+        others.forEach((other) => { other.classList.add('is-out'); fadeStep(other, Number(other.style.opacity || 1), 0, 160); });
+        // one voice at a time: the previous line is gone before this one fades in (never two texts on top of each other)
+        window.setTimeout(() => { pill.classList.add('is-in'); fadeStep(pill, 0, 1, 260); }, others.length ? 180 : 0);
+      }, Math.max(0, (said[0][0] - 0.3) * 1000));
+      said.forEach(([t], k) => window.setTimeout(() => words[k].classList.add('is-said'), t * 1000));
+      const end = said[said.length - 1][0] + (at.hold ?? (at.where === 'moments' ? 0.35 : 1.4));   // in the store the answer follows at once
+      window.setTimeout(() => { if (!pill.classList.contains('is-out')) { pill.classList.add('is-out'); fadeStep(pill, 1, 0, 260); } }, end * 1000);
+      window.setTimeout(() => pill.remove(), end * 1000 + 600);
     }
 
     playStoreStack(onDone) {
@@ -6698,6 +8682,7 @@
         store.style.transition = '';
         store.style.transformOrigin = '';
         store.querySelectorAll('.promo-close__veil, .promo-close__mark, .promo-close__lost-mark, .promo-glide__lost-mark, .promo-glide__veil').forEach((node) => node.remove());
+        store.style.filter = ''; store.querySelectorAll('[style*="grayscale"]').forEach((node) => { node.style.filter = ''; });
       }
       this.root.classList.remove('is-close-seat');
       this.root.querySelectorAll('.promo-close__lost, .promo-close__poof').forEach((node) => node.remove());
@@ -6721,7 +8706,7 @@
         cursor.className = 'promo-pain__cursor';
         cursor.setAttribute('data-promo-pain-cursor', '');
         cursor.setAttribute('aria-hidden', 'true');
-        cursor.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 3.2 19.2 12.1 11.6 13.4 8.8 20.6z"/></svg>';
+        cursor.innerHTML = PROMO_MAC_POINTER;
         store.appendChild(cursor);
       }
       if (store.querySelector('[data-promo-pain-chat]')) return;
@@ -6748,7 +8733,7 @@
       avatar.innerHTML = PROMO_PAIN_MARK;
       const title = document.createElement('p');
       title.className = 'promo-pain__title';
-      title.textContent = 'Dull Chatbot';
+      title.textContent = 'Chatbot';
       const brand = document.createElement('div');
       brand.className = 'promo-pain__brand';
       brand.append(avatar, title);
@@ -6792,7 +8777,7 @@
       typing.innerHTML = '<i></i><i></i><i></i>';
       const footer = document.createElement('p');
       footer.className = 'promo-pain__footer';
-      footer.innerHTML = 'Powered by <b>Every Chatbot Ever</b>';
+      footer.hidden = true;
       panel.append(head, log, typing, chips, composer, footer);
       chat.append(panel, launcher);
       store.appendChild(chat);
@@ -6924,8 +8909,7 @@
       if (through === 'answer-2') {
         appendDullBot(log, PROMO_PAIN_ANSWER_2, null, PROMO_PAIN_ACTIONS);
       }
-      if (log.querySelector('.promo-pain__msg.is-bot')) appendDullCloser(log);
-      if (through === 'down') log.querySelector('[data-promo-thumb="down"]')?.classList.add('is-down');
+
       scrollDullLog(log);
     }
 
@@ -6955,7 +8939,12 @@
           : null;
       this.painCards().forEach((card) => {
         card.classList.remove('is-pain-add');
+        const wasOpen = card.classList.contains('is-pain-open');
         card.classList.toggle('is-pain-open', card === opened);
+        if (wasOpen && card !== opened && !instant) {   // stays on top while it shrinks back into the grid
+          card.classList.add('is-pain-closing');
+          window.setTimeout(() => card.classList.remove('is-pain-closing'), 900);
+        }
         card.classList.toggle('is-pain-hover', browseSlot >= 0 && card === this.painBrowseCard(browseSlot));
       });
       const chat = this.root.querySelector('[data-promo-pain-chat]');
@@ -6980,6 +8969,10 @@
         else if (browseSlot >= 0) this.placePainCursor(this.painBrowseCard(browseSlot), true, instant ? 0 : scrollDelta);
       }
       this.paintPainLog(beat);
+      if (!instant && beat === 'panel') promoSfx('panel');
+      if (!instant && beat === 'think-1') promoSfx('send');
+      if (!instant && beat === 'answer-1') promoSfx('reply');
+      if (!instant && (beat === 'open' || beat === 'open-2')) promoSfx('page');
     }
 
     whenPainRest(host) {
@@ -7018,7 +9011,6 @@
       const host = this.painHost();
       host?.setAttribute('data-promo-pain-scene', scene);
       for (const [beat, ms] of steps) {
-        if (beat === 'hover-b') markPromoVo('catalog');
         this.applyPainBeat(beat, prefersReducedMotion());
         if (beat === 'launcher' && !prefersReducedMotion()) {
           await this.aimCursorAtLauncher();
@@ -7042,7 +9034,7 @@
               input.textContent = slice;
               showInputEnd(input);
             }
-          });
+          }, PROMO_PAIN_FAST_CHAR_MS, PROMO_PAIN_FAST_LINE_MS);
           input?.classList.remove('is-live');
           continue;
         }
@@ -7113,7 +9105,6 @@
       this.painPlayed = true;
       this.startOpeningClock();
       this.openPainStage();
-      markPromoVo('two-places');
       if (prefersReducedMotion()) {
         glideLeadDevice = 'phone';
         this.glideLeadStamped = true;
@@ -7125,9 +9116,14 @@
         cursor.hidden = true;
         cursor.style.opacity = '0';
       }
+      const take = speakTake('t-pain');
+      this.painTake = take;
       await this.playStoreOpenTitle(this.mountStoreOpenTitle());
       await this.playPainSteps(PROMO_PAIN_A, 'unattended');
-      await this.playPainSteps(PROMO_PAIN_B, 'chat');
+      await take.at('Some get lost');
+      await this.playPainSteps(PROMO_PAIN_A2, 'unattended');
+      this.painLine = take.at('choose.', 'end');
+      this.painChatUsed = false;
       await this.playScaleScene();
     }
 
@@ -8161,10 +10157,10 @@
         veil.className = 'promo-glide__veil';
         const mark = document.createElement('span');
         mark.className = 'promo-glide__mark';
-        mark.innerHTML = '<svg viewBox="0 0 12 12" aria-hidden="true"><path d="M1.8 6.1 4.6 9.1 10.2 2.8" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+        fillSoldMark(mark);
         const lost = document.createElement('span');
         lost.className = 'promo-glide__lost-mark';
-        lost.textContent = 'LOST';
+        fillLostMark(lost);
         const fx = document.createElement('div');
         fx.className = 'promo-glide__fx';
         fx.append(bloom, rays, poof);
@@ -8223,7 +10219,7 @@
           text.append(row);
         });
         body.append(text, buildPainPoof());
-        caption.append(haze, body);
+        caption.append(haze, body);   // v13: the claims are words only
       }
       root.append(viewWrap, light, dofMid, dofFar, horizon, caption, field, lead);
       root._glidePool = pool;
@@ -8378,7 +10374,8 @@
         const height = cell.h * unit;
         node.style.width = `${width.toFixed(2)}px`;
         node.style.height = `${height.toFixed(2)}px`;
-        if (parts.lost) parts.lost.style.fontSize = lostMarkSize(width);
+        if (parts.lost) parts.lost.style.fontSize = lostMarkSize(width, height);
+        if (parts.mark) parts.mark.style.fontSize = lostMarkSize(width, height);
         applyMockupShape(node, cell.device, width);
         const still = parts.still;
         const video = parts.video;
@@ -8426,30 +10423,43 @@
         writePaint(parts.lost, 'opacity', '0');
         if (fx) writeHidden(fx, true);
         node.classList.remove('is-dusting');
-        paintGlideElevation(node, cell, view.span.unit, mode, null);
+        const stamping = mode !== 'pitch' && cell.key === this.glideLeadKey && this.glideLeadStampT;   // the close-up's own stamp is running
+        paintGlideElevation(node, cell, view.span.unit, mode, null, stamping ? markReact(performance.now() - this.glideLeadStampT) : 0);
         return true;
       }
       const age = leadLost ? PROMO_CHECK_SETTLE_MS + 1000 : timeMs - event.t;
+      if (event && !leadLost && age >= 0 && age < 600) {
+        const id = `${mode}|${cell.key}|${Math.round(event.t)}`;
+        this.sfxStamped = this.sfxStamped || new Set();
+        if (!this.sfxStamped.has(id)) {
+          this.sfxStamped.add(id);
+          const box = node.getBoundingClientRect();
+          const frameBox = this.root.getBoundingClientRect();
+          const x = frameBox.width ? ((box.left + box.width / 2 - frameBox.left) / frameBox.width) : 0.5;
+          promoSfx(mode === 'pitch' ? 'sold-sea' : 'lost-sea', { x: Number(x.toFixed(3)) }, performance.now() - age);
+        }
+      }
       // The close-up phone was upright; press it into the floor gently so the
       // first sea frame does not jump.
       const pressAge = mode !== 'pitch' && cell.key === this.glideLeadKey
         ? Math.max(0, timeMs) * (140 / 900)
         : age;
       if (mode === 'pitch') {
-        paintGlideStamp(parts.veil, parts.mark, age, 0.4);
+        paintGlideStamp(parts.veil, parts.mark, age, 0.42);   // v11: a lighter warm glass; the card itself warms and lifts
         writePaint(parts.lost, 'opacity', '0');
       } else {
         if (parts.lost) {
           const width = Number.parseFloat(node.style.width) || cell.w * view.span.unit;
-          const size = lostMarkSize(width);
+          const size = lostMarkSize(width, Number.parseFloat(node.style.height) || cell.h * view.span.unit);
           if (parts.lost.style.fontSize !== size) parts.lost.style.fontSize = size;
         }
-        paintGlideStamp(parts.veil, parts.lost, age, 0.82);
+        paintGlideStamp(parts.veil, parts.lost, age, 0.34);   // v11: a light frost; the card itself greys and sinks
         writePaint(parts.mark, 'opacity', '0');
       }
       if (fx) writeHidden(fx, true);
       node.classList.remove('is-dusting');
-      paintGlideElevation(node, cell, view.span.unit, mode, pressAge);
+      const reactAge = leadLost && cell.key === this.glideLeadKey && this.glideLeadStampT ? performance.now() - this.glideLeadStampT : age;
+      paintGlideElevation(node, cell, view.span.unit, mode, pressAge, markReact(reactAge));
       return true;
     }
 
@@ -8463,19 +10473,26 @@
       const show = timeMs >= marks.captionStart;
       caption.hidden = !show;
       if (!show) return;
-      if (!this.voNumbersGame && timeMs >= marks.claimAt) {
-        this.voNumbersGame = true;
-        markPromoVo('numbers-game');
-      }
       const exitSpan = Math.max(1, marks.captionPoofEnd - marks.captionHoldEnd);
       const exitU = timeMs <= marks.captionHoldEnd ? 0 : Math.min(1, (timeMs - marks.captionHoldEnd) / exitSpan);
       const exitFade = 1 - exitU;
       text.querySelectorAll('[data-caption-beat]').forEach((beat) => {
         const start = marks.captionStart + captionBeatOffset(Number(beat.dataset.captionBeat));
+        if (timeMs >= start && beat.dataset.sfx !== '1') {
+          beat.dataset.sfx = '1';
+          promoSfx('climax-beat', { index: Number(beat.dataset.captionBeat) }, performance.now() - (timeMs - start));
+        }
         const inU = Math.min(1, Math.max(0, (timeMs - start) / PROMO_GLIDE.captionInMs));
         const inEase = inU * inU * (3 - 2 * inU);
         beat.style.opacity = Math.max(0, inEase * exitFade).toFixed(3);
       });
+      const tally = caption.querySelector('.promo-tally');
+      if (tally) {
+        const span = marks.captionPoofEnd - marks.captionStart;
+        const ms = timeMs - marks.captionStart;
+        paintCartTally(tally, 'lost', ms, span, exitFade, root.clientHeight || 1080);
+        if (tally.dataset.wind !== '1') { tally.dataset.wind = '1'; promoSfx('lost-wind', { ms: span }, performance.now() - ms); }
+      }
       const hazeIn = Math.min(1, Math.max(0, (timeMs - marks.captionStart) / PROMO_GLIDE.captionInMs));
       const hazeEase = hazeIn * hazeIn * (3 - 2 * hazeIn);
       if (haze) haze.style.opacity = Math.max(0, hazeEase * exitFade).toFixed(3);
@@ -8508,7 +10525,7 @@
       }
       if (!this.voAllDay) {
         this.voAllDay = true;
-        markPromoVo('all-day');
+        promoSfx('boost');
       }
       const elapsed = timeMs - endAt;
       const settle = Math.min(1, elapsed / PROMO_GLIDE.resolveMs);
@@ -8517,8 +10534,7 @@
       verdict.style.opacity = '1';
       if (streak && streak.style.opacity !== '1') streak.style.opacity = '1';
       if (mode === 'pitch') {
-        const shown = ease < 0.82 ? 0 : (ease - 0.82) / 0.18;
-        verdict.style.opacity = shown.toFixed(3);
+        verdict.style.opacity = '0';
         verdict.style.transformOrigin = 'center center';
         verdict.style.transform = 'none';
         if (mark) {
@@ -8808,6 +10824,14 @@
       clone.style.height = `${naturalH.toFixed(1)}px`;
       clone.style.transform = `scale(${(width / naturalW).toFixed(4)}, ${(height / naturalH).toFixed(4)})`;
       clone.style.boxShadow = 'none';
+      {
+        // v10: the close-up keeps its own device corners inside the sea cell
+        // (a CSS reset squared them for a few frames: the "border that doesn't fit")
+        const leadDeviceId = cellNode.classList.contains('is-phone') ? 'phone' : cellNode.classList.contains('is-tablet') ? 'tablet' : 'desktop';
+        const leadDevice = PROMO_GRID.devices.find((item) => item.id === leadDeviceId) || PROMO_GRID.devices[0];
+        clone.style.borderRadius = `${gridMockupRadius(leadDevice, naturalW).toFixed(2)}px`;
+        clone.style.overflow = 'hidden';
+      }
       const matched = blend > 0.98;
       const wasMatched = cellNode.classList.contains('is-lead-match');
       cellNode.classList.toggle('is-lead-match', matched);
@@ -8816,12 +10840,12 @@
         cellNode.style.boxShadow = 'none';
         cellNode.style.background = 'transparent';
         cellNode.style.clipPath = 'none';
-        cellNode.style.borderRadius = '0';
         const deviceId = cellNode.classList.contains('is-phone')
           ? 'phone'
           : cellNode.classList.contains('is-tablet') ? 'tablet' : 'desktop';
         const device = PROMO_GRID.devices.find((item) => item.id === deviceId) || PROMO_GRID.devices[0];
         const curve = gridMockupRadius(device, naturalW) * (width / Math.max(1, naturalW));
+        cellNode.style.borderRadius = `${curve.toFixed(2)}px`;   // v10: its glass edge follows the device corners (was a square line)
         cellNode.querySelectorAll(':scope > .promo-glide__veil').forEach((veil) => {
           veil.style.borderRadius = `${curve.toFixed(2)}px`;
         });
@@ -8973,6 +10997,7 @@
     }
 
     emitClick() {
+      promoSfx('click');
       const root = this.root;
       window.clearTimeout(this.clickTimer);
       root.classList.remove('click');
@@ -9026,7 +11051,113 @@
       if (cursor) cursor.style.opacity = '0';
     }
 
+    // The two lost moments side by side while the narrator says what a
+    // salesperson in a physical store would have done.
+    async playLostRecap(take) {
+      const canvas = this.root.querySelector('[data-promo-canvas]') || this.root;
+      const keys = [this.painDesktopKey, this.glideLeadKey].filter((key) => key && this.cellRasters?.has(key));
+      const recap = document.createElement('div');
+      recap.className = 'promo-recap';
+      keys.forEach((key, index) => {
+        const card = document.createElement('figure');
+        card.className = `promo-recap__card ${index === 0 ? 'is-desktop' : 'is-phone'}`;
+        // the rasters are live SVG nodes used by the sea: show a copy
+        const img = this.cellRasters.get(key).cloneNode(true);
+        const box = (img.getAttribute('viewBox') || '0 0 16 10').split(/\s+/).map(Number);
+        card.style.aspectRatio = `${box[2]} / ${box[3]}`;
+        img.removeAttribute('class');
+        img.setAttribute('width', '100%');
+        img.setAttribute('height', '100%');
+        const veil = document.createElement('span');
+        veil.className = 'promo-recap__veil';
+        const lost = document.createElement('span');
+        lost.className = 'promo-recap__lost';
+        lost.textContent = 'LOST';
+        const sold = document.createElement('span');
+        sold.className = 'promo-recap__sold';
+        sold.textContent = 'SOLD';
+        // what a good salesperson on the floor would have said
+        const bubble = document.createElement('span');
+        bubble.className = 'promo-recap__bubble';
+        // the line comes from a person on the shop floor, not from the UI
+        bubble.innerHTML = `<span class="promo-recap__person" aria-hidden="true"><svg viewBox="0 0 40 40"><circle cx="20" cy="15" r="7.2"/><path d="M6.5 37c1.6-8.2 7-12.6 13.5-12.6S31.9 28.8 33.5 37z"/><path class="promo-recap__tag" d="M23.5 29.5h5.5v3.6h-5.5z"/></svg></span><span>${PROMO_RECAP_BUBBLES[index] || ''}</span>`;
+        card.append(img, veil, lost, sold, bubble);
+        recap.appendChild(card);
+      });
+      canvas.appendChild(recap);
+      recap.getBoundingClientRect();
+      recap.classList.add('is-in');
+      promoSfx('recap');
+      const cards = [...recap.querySelectorAll('.promo-recap__card')];
+      take.at('catches these').then(async () => {
+        for (const [index, card] of cards.entries()) {
+          if (index) await waitMs(PROMO_RECAP_STAGGER_MS);
+          card.classList.add('is-helped');
+          promoSfx('recap-bubble', { index });
+        }
+      });
+      take.at('into sales').then(async () => {
+        for (const [index, card] of cards.entries()) {
+          if (index) await waitMs(PROMO_RECAP_STAGGER_MS);
+          card.classList.add('is-sold');
+          promoSfx('recap-sold', { index });
+        }
+      });
+      // "So we built it!": the toggle takes over while the cards fade
+      await take.at('So we built');
+      recap.classList.add('is-out');
+      window.setTimeout(() => recap.remove(), 500);
+    }
+
+    // "Visits become sales. / Every day. / And counting." over the SOLD sea,
+    // the pain's own caption turned around.
+    async playSoldCaption(claimAt, take = null) {
+      const canvas = this.root.querySelector('[data-promo-canvas]') || this.root;
+      const caption = document.createElement('p');
+      caption.className = 'promo-sold-caption';
+      const beats = [];
+      GLIDE_SOLD_CAPTION.forEach((line) => {
+        const row = document.createElement('span');
+        row.className = 'promo-sold-caption__line';
+        line.forEach((part) => {
+          const beat = document.createElement('span');
+          beat.className = 'promo-sold-caption__beat';
+          beat.textContent = part;
+          row.append(beat);
+          beats.push(beat);
+        });
+        caption.append(row);
+      });
+      canvas.appendChild(caption);
+      // v13: the claims are words only (no chart)
+      const start = Math.max(1200, claimAt - 4400);
+      // v11b: the words land as the narrator says them ("visits", "sales."),
+      // then "Every day." and "And counting." at the pain claim's own cadence;
+      // each fades in stepped (export-safe), like the LOST claim
+      const show = (index) => {
+        const beat = beats[index];
+        if (!beat) return;
+        beat.style.transition = 'none';
+        beat.classList.add('is-in');
+        tweenStep(PROMO_GLIDE.captionInMs, (e) => { beat.style.opacity = e.toFixed(3); });
+        promoSfx('sold-beat', { index });
+      };
+      beats.forEach((beat) => { beat.style.transition = 'none'; beat.style.opacity = '0'; });
+      await Promise.all([waitMs(start), take ? take.at('visits', 'start', -60) : Promise.resolve()]);
+      show(0);
+      if (take) await take.at('sales.', 'start', -40); else await waitMs(captionBeatOffset(1));
+      show(1);
+      for (let index = 2; index < beats.length; index += 1) {
+        await waitMs(captionBeatOffset(index) - captionBeatOffset(index - 1));
+        show(index);
+      }
+      await waitMs(PROMO_GLIDE.captionHoldMs);
+      await fadeStep(caption, 1, 0, 600);
+      caption.remove();
+    }
+
     async fadeScaleToSwitch() {
+      promoSfx('switch-in');
       const center = this.root.querySelector('.promo-opening__center');
       this.root.classList.add('is-scale-out');
       if (center) {
@@ -9063,10 +11194,131 @@
       }
       await this.playScaleTimeline();
       if (marketingPart() === 'full') {
+        const take = speakTake('t-switch');
+        // v11: the physical store first: "Your best salesperson" over its
+        // three moments; on "So we built it!" the title gives way to the
+        // toggle, "Sales agent" charging, and the knob lands on "it!"
+        const title = this.showSwitchTitle();
         await this.fadeScaleToSwitch();
-        await waitMs(PROMO_TOGGLE_REST_MS);
+        this.chargeSwitch(take);
+        const moments = this.showSwitchMoments(take);
+        const walkedIn = take.at('store...', 'end', -40).then(() => this.enterSwitchStore(title));
+        Promise.all([take.at('the best', 'start', -60), walkedIn]).then(() => this.morphSwitchTitle(title));
+        take.at('into sales').then(() => moments?.resolve());
+        take.at('So we built', 'start', -160).then(() => this.swapSwitchTitle(title));
+        take.at('for your online', 'start', -220).then(() => this.writeOnlineStore(title));
+        await take.at('store!', 'end', 160 - PROMO_FLIP_KNOB_MS);
         this.flip();
+        window.setTimeout(() => { moments?.clear(); if (title?.online) fadeStep(title.online, 1, 0, 300).then(() => title.online.remove()); }, PROMO_FLIP_KNOB_MS);
       }
+    }
+
+    // v12c: the physical store first, as if we walk into it: "In a physical
+    // store" stands big at the centre and rushes past the viewer; then "The
+    // best salesperson" takes the toggle's place over its three moments.
+    showSwitchTitle() {
+      const center = this.root.querySelector('.promo-opening__center');
+      const parts = [...this.root.querySelectorAll('.promo-opening__choice--left, .promo-opening__switch, .promo-opening__choice--right')];
+      if (!center || !parts.length || prefersReducedMotion()) return null;
+      ensureInviteFont();
+      parts.forEach((node) => { node.style.transition = 'none'; node.style.opacity = '0'; });
+      const entry = document.createElement('div');
+      entry.className = 'promo-switch-entry';
+      entry.innerHTML = `<span class="promo-switch-entry__mark">${PROMO_SF_STORE}</span><span class="promo-switch-entry__words">In a physical store</span>`;
+      center.appendChild(entry);
+      const title = document.createElement('p');
+      title.className = 'promo-switch-title';
+      title.innerHTML = `<span class="promo-switch-title__mark">${PROMO_PERSON_MARK}</span><span class="promo-switch-title__words">The best salesperson</span>`;
+      title.style.opacity = '0';
+      const left = this.root.querySelector('.promo-opening__choice--left');
+      if (left) title.style.fontSize = getComputedStyle(left).fontSize;
+      center.appendChild(title);
+      const sw = this.root.querySelector('.promo-opening__switch')?.getBoundingClientRect();
+      const cb = center.getBoundingClientRect();
+      if (sw && cb.width) {
+        title.style.left = `${(((sw.left + sw.width / 2) - cb.left) / cb.width * 100).toFixed(2)}%`;
+        title.style.top = `${(((sw.top + sw.height / 2) - cb.top) / cb.height * 100).toFixed(2)}%`;
+      }
+      return { title, parts, entry, center };
+    }
+
+    // "...store": we walk in: the words rush toward the viewer and are gone
+    enterSwitchStore(state) {
+      if (!state?.entry) return;
+      const { entry } = state;
+      promoSfx('store-enter');
+      return tweenStep(520, (e) => {
+        entry.style.scale = (1 + e * e * 3.4).toFixed(4);
+        entry.style.opacity = Math.max(0, 1 - e * 1.25).toFixed(3);
+        entry.style.filter = `blur(${(e * e * 14).toFixed(2)}px)`;
+      }, (u) => u).then(() => entry.remove());
+    }
+
+    // "...the best salesperson": the title rises in where the toggle will be
+    morphSwitchTitle(state) {
+      if (!state) return;
+      const { title } = state;
+      promoSfx('chapter');
+      tweenStep(420, (e) => { title.style.opacity = e.toFixed(3); title.style.translate = `-50% calc(-50% + ${((1 - e) * 0.4).toFixed(3)}em)`; }, promoEaseOut);
+    }
+
+    // "...for your online store!": written in by hand under the toggle, "online" in orange
+    writeOnlineStore(state) {
+      if (!state) return;
+      const line = document.createElement('p');
+      line.className = 'promo-switch-online';
+      line.innerHTML = 'for your <b>online</b> store!';
+      state.center.appendChild(line);
+      const sw = this.root.querySelector('.promo-opening__switch')?.getBoundingClientRect();
+      const cb = state.center.getBoundingClientRect();
+      if (sw && cb.width) {
+        line.style.left = `${(((sw.left + sw.width / 2) - cb.left) / cb.width * 100).toFixed(2)}%`;
+        line.style.top = `${(((sw.top - sw.height * 0.95) - cb.top) / cb.height * 100).toFixed(2)}%`;
+      }
+      promoSfx('ea-write', { ms: 640 });
+      tweenStep(640, (e) => { line.style.clipPath = `inset(-45% ${((1 - e) * 100).toFixed(2)}% -45% -10%)`; }, (u) => u);
+      state.online = line;
+    }
+
+    // the title steps aside and the toggle forms in its place (stepped)
+    swapSwitchTitle(state) {
+      if (!state) return;
+      const { title, parts } = state;
+      promoSfx('switch-in');
+      tweenStep(320, (e) => {
+        title.style.opacity = (1 - e).toFixed(3);
+        title.style.translate = `-50% calc(-50% - ${(e * 0.35).toFixed(3)}em)`;
+        parts.forEach((node) => { node.style.opacity = e.toFixed(3); });
+      }, promoEaseOut).then(() => {
+        title.remove();
+        parts.forEach((node) => { node.style.opacity = ''; node.style.transition = ''; });
+      });
+    }
+
+    // "...catches both moments": the two pains appear under the toggle as
+    // grey status chips; when the knob lands they turn into their outcomes
+    // (the same chips the moments resolve later), then clear with the toggle.
+    showSwitchMoments(take) {
+      const center = this.root.querySelector('.promo-opening__center');
+      if (!center || prefersReducedMotion()) return null;
+      const row = document.createElement('div');
+      row.className = 'promo-switch-moments';
+      const chip = (from, to) => `<span class="promo-switch-moments__chip"><span class="promo-switch-moments__dot"><svg viewBox="0 0 24 24" aria-hidden="true"><path pathLength="1" d="M7.2 12.4l3.2 3.2 6.4-6.6"/></svg></span><span class="promo-switch-moments__words"><span>${from}</span><span>${to}</span></span></span>`;
+      // v10: the three shopper problems the pitch then solves one by one
+      row.innerHTML = PROMO_SWITCH_CHIPS.map(([from, to]) => chip(from, to)).join('');
+      center.appendChild(row);
+      const chips = [...row.children];
+      take.at('catches').then(() => {
+        chips.forEach((node, k) => window.setTimeout(() => { node.classList.add('is-in'); promoSfx('chapter'); }, k * 220));
+      });
+      // centred under the switch itself (the label widths differ, so the toggle's centre isn't the frame's)
+      const sw = this.root.querySelector('.promo-opening__switch')?.getBoundingClientRect();
+      const cb = center.getBoundingClientRect();
+      if (sw && cb.width) row.style.left = `${(((sw.left + sw.width / 2) - cb.left) / cb.width * 100).toFixed(2)}%`;
+      return {
+        resolve: () => chips.forEach((node, k) => window.setTimeout(() => { node.classList.add('is-struck'); promoSfx('chapter-tick'); }, k * 140)),
+        clear: () => window.setTimeout(() => { row.classList.add('is-out'); window.setTimeout(() => row.remove(), 500); }, PROMO_FLIP_POP_HOLD_MS),
+      };
     }
 
     placeOverStore(host, store) {
@@ -9099,18 +11351,19 @@
       const mark = cell?.querySelector(':scope > .promo-glide__lost-mark');
       if (!cell || !veil || !mark) return;
       cell.querySelectorAll('.promo-close__veil, .promo-close__lost-mark').forEach((node) => node.remove());
-      mark.textContent = 'LOST';
+      fillLostMark(mark);
       const width = Number.parseFloat(cell.style.width) || cell.offsetWidth;
-      mark.style.fontSize = lostMarkSize(width);
+      mark.style.fontSize = lostMarkSize(width, Number.parseFloat(cell.style.height) || cell.offsetHeight);
       veil.style.visibility = 'visible';
       mark.style.visibility = 'visible';
       veil.style.zIndex = '6';
       mark.style.zIndex = '7';
       const life = 260 + 900;
       const started = performance.now();
+      this.glideLeadStampT = started;   // the sea paints the card's sink from this moment
       await new Promise((resolve) => {
         const step = (now) => {
-          paintGlideStamp(veil, mark, now - started, 0.82);
+          paintGlideStamp(veil, mark, now - started, 0.34);
           if (now - started < life) window.requestAnimationFrame(step);
           else resolve();
         };
@@ -9123,18 +11376,23 @@
     async markCloseStoreSold() {
       const store = this.painStore();
       if (!store || prefersReducedMotion()) return;
+      promoSfx('sold');
       const veil = document.createElement('div');
       veil.className = 'promo-glide__veil promo-close__veil';
       const mark = document.createElement('span');
       mark.className = 'promo-glide__mark promo-close__mark';
-      mark.innerHTML = '<svg viewBox="0 0 12 12" aria-hidden="true"><path d="M1.8 6.1 4.6 9.1 10.2 2.8" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+      fillSoldMark(mark);
+      mark.style.fontSize = lostMarkSize((store.clientWidth || 640) * 0.72, store.clientHeight * 0.72);   // the close-up's chip: a stamp, not a banner
       store.append(veil, mark);
-      const hold = 900;
+      const hold = 380;   // a beat, not a hold
       const life = PROMO_CHECK_SETTLE_MS + hold;
       const started = performance.now();
       await new Promise((resolve) => {
         const step = (now) => {
-          paintGlideStamp(veil, mark, now - started, 0.4);
+          paintGlideStamp(veil, mark, now - started, 0.3);
+          const r = markReact(now - started);
+          store.style.filter = markReactFilter('sold', r);
+          store.style.translate = `0 ${(-r * 0.025 * (store.offsetHeight || 0)).toFixed(1)}px`;
           if (now - started < life) window.requestAnimationFrame(step);
           else resolve();
         };
@@ -9243,7 +11501,7 @@
     }
 
     async closeChatForLost() {
-      if (prefersReducedMotion()) return;
+      if (prefersReducedMotion() || this.painChatUsed === false) return;
       const store = this.visibleCloseStore();
       const chat = store?.querySelector('[data-promo-pain-chat]');
       const cursor = store?.querySelector('[data-promo-pain-cursor]');
@@ -9410,6 +11668,112 @@
     }
 
     // A finger comes in and taps the dull chatbot's circle to open it.
+    // v13: the bot offers a person ("Message us"), the chat becomes the team's
+    // inbox (a generic green chat, never a real brand), the clock races ahead,
+    // and the perfect reply lands, hours later.
+    offerHumanChat(clone) {
+      const log = clone.querySelector('[data-promo-pain-log]');
+      if (!log) return;
+      const block = document.createElement('div');
+      block.className = 'promo-pain__msg is-bot';
+      block.innerHTML = '<div class="promo-pain__bubble"><p>Want to talk to our team?</p><span class="promo-pain__handoff">Message us</span></div>';
+      log.appendChild(block);
+      fadeStep(block, 0, 1, 220);
+      scrollDullLog(log);
+      promoSfx('reply');
+    }
+
+    async tapPhoneTarget(clone, target) {
+      const cursor = clone.querySelector('[data-promo-pain-cursor]');
+      const spot = target && this.thumbSpot(target, clone);
+      if (!cursor || !spot) return;
+      cursor.hidden = false;
+      cursor.classList.add('is-thumb');
+      cursor.style.transitionDuration = '0ms';
+      cursor.style.setProperty('--pain-x', `${Math.round(spot.x + clone.clientWidth * 0.14)}px`);
+      cursor.style.setProperty('--pain-y', `${Math.round(spot.y + clone.clientHeight * 0.12)}px`);
+      cursor.getBoundingClientRect();
+      cursor.style.transitionDuration = '';
+      fadeStep(cursor, 0, 1, 140);
+      await waitMs(90);
+      await this.moveThumb(clone, spot.x, spot.y, 380);
+      cursor.classList.add('is-tapping');
+      promoSfx('click');
+      await waitMs(180);
+      cursor.classList.remove('is-tapping');
+      fadeStep(cursor, 1, 0, 200);
+    }
+
+    openHumanChat(clone) {
+      const chat = clone.querySelector('[data-promo-pain-chat]');
+      const log = clone.querySelector('[data-promo-pain-log]');
+      if (!chat || !log) return;
+      chat.classList.add('is-human');
+      const title = chat.querySelector('.promo-pain__title');
+      if (title) title.innerHTML = 'Message us<small>Typically replies in a few hours</small>';
+      const avatar = chat.querySelector('.promo-pain__avatar');
+      if (avatar) avatar.innerHTML = PROMO_HUMAN_MARK;
+      log.replaceChildren();
+      appendDullUser(log, PROMO_PAIN_LINE_2);
+      const seen = document.createElement('p');
+      seen.className = 'promo-pain__sent';
+      seen.textContent = 'Sent';
+      log.appendChild(seen);
+      fadeStep(log, 0, 1, 260);
+      scrollDullLog(log);
+    }
+
+    // the status bar's clock races ahead (9:41 -> 1:27), stepped
+    fastForwardClock(clone, ms) {
+      const times = [...clone.querySelectorAll('.promo-clip__time, .promo-dev__status b')];
+      if (!times.length) return waitMs(ms);
+      promoSfx('clock-ff', { ms });
+      const from = 9 * 60 + 41; const to = 13 * 60 + 27;
+      return tweenStep(ms, (e) => {
+        const m = Math.round(from + (to - from) * e); const h = Math.floor(m / 60) % 12 || 12;
+        const text = `${h}:${String(m % 60).padStart(2, '0')}`;
+        times.forEach((node) => { if (node.textContent !== text) node.textContent = text; });
+      }, (u) => u * u * (3 - 2 * u));
+    }
+
+    humanReplyArrives(clone) {
+      const log = clone.querySelector('[data-promo-pain-log]');
+      if (!log) return;
+      log.querySelector('.promo-pain__sent')?.remove();
+      const block = document.createElement('div');
+      block.className = 'promo-pain__msg is-bot is-human-reply';
+      block.innerHTML = `<div class="promo-pain__bubble"><p>${PROMO_HUMAN_REPLY}</p></div>`;
+      log.appendChild(block);
+      tweenStep(320, (e) => { block.style.opacity = e.toFixed(3); block.style.translate = `0 ${((1 - e) * 10).toFixed(1)}px`; }, promoEaseOut);
+      scrollDullLog(log);
+    }
+
+    // the shopper's thumb taps 👎 on the chatbot's answer
+    async tapThumbsDown(clone) {
+      const down = clone.querySelector('.promo-pain__rate [data-rate="down"]');
+      const cursor = clone.querySelector('[data-promo-pain-cursor]');
+      const spot = down && this.thumbSpot(down, clone);
+      if (!cursor || !spot) return;
+      cursor.hidden = false;
+      cursor.classList.add('is-thumb');
+      cursor.style.transitionDuration = '0ms';
+      cursor.style.opacity = '0';
+      cursor.style.setProperty('--pain-x', `${Math.round(spot.x + clone.clientWidth * 0.16)}px`);
+      cursor.style.setProperty('--pain-y', `${Math.round(spot.y + clone.clientHeight * 0.14)}px`);
+      cursor.getBoundingClientRect();
+      cursor.style.transitionDuration = '';
+      fadeStep(cursor, 0, 1, 160);
+      await waitMs(100);
+      await this.moveThumb(clone, spot.x, spot.y, 460);
+      cursor.classList.add('is-tapping');
+      promoSfx('click');
+      down.classList.add('is-on');
+      tweenStep(300, (e, u) => { down.style.scale = (1 + Math.sin(u * Math.PI) * 0.28).toFixed(3); }, (u) => u);
+      await waitMs(200);
+      cursor.classList.remove('is-tapping');
+      fadeStep(cursor, 1, 0, 220);
+    }
+
     async tapPhoneLauncher(clone) {
       const launcher = clone.querySelector('.promo-pain__launcher');
       const cursor = clone.querySelector('[data-promo-pain-cursor]');
@@ -9467,8 +11831,14 @@
         input.textContent = '';
       }
       if (through === 'think-2') appendDullThink(log);
-      if (through === 'answer-2') appendDullBot(log, PROMO_PAIN_ANSWER_2, null, PROMO_PAIN_ACTIONS);
-      if (log.querySelector('.promo-pain__msg.is-bot')) appendDullCloser(log);
+      if (through === 'answer-2') {
+        appendDullBot(log, PROMO_PAIN_ANSWER_2, null, PROMO_PAIN_ACTIONS);
+        // v11: the typical rating row under the wall of text (the shopper taps 👎)
+        const rate = document.createElement('div');
+        rate.className = 'promo-pain__rate';
+        rate.innerHTML = `<span>Was this helpful?</span><i data-rate="up">${PROMO_THUMB_SVG}</i><i data-rate="down">${PROMO_THUMB_SVG}</i>`;
+        (log.lastElementChild?.querySelector('.promo-pain__bubble') || log.lastElementChild)?.appendChild(rate);
+      }
       scrollDullLog(log);
     }
 
@@ -9486,11 +11856,54 @@
         cursor.classList.add('is-thumb');
         cursor.style.opacity = '0';
       }
-      markPromoVo('last-doubt');
-      await waitMs(500);
+      // v13: "...and go looking for help." the closed chatbot launcher is seen first:
+      // the phone pushes in toward it, then the thumb taps it on "A chatbot?"
+      const closedChat = clone.querySelector('[data-promo-pain-chat]');
+      if (closedChat) { closedChat.hidden = false; closedChat.classList.remove('is-open'); }   // the launcher waits on the product page from the start
+      const baseTf0 = clone.style.transform || '';
+      const launcher = clone.querySelector('.promo-pain__launcher');
+      if (launcher && !prefersReducedMotion()) {
+        await this.painTake?.at('looking for help', 'start', -300);
+        const pb = clone.getBoundingClientRect(); const lb = launcher.getBoundingClientRect();
+        const ox = ((lb.left + lb.width / 2 - pb.left) / (pb.width || 1)) * 100; const oy = ((lb.top + lb.height / 2 - pb.top) / (pb.height || 1)) * 100;
+        clone.style.transformOrigin = `${ox.toFixed(1)}% ${oy.toFixed(1)}%`;
+        // two soft rings call the eye to it (stepped, never WAAPI: export-safe)
+        tweenStep(1600, (e, u) => { const k = (u * 2) % 1; launcher.style.boxShadow = `0 0 0 ${(k * 14).toFixed(1)}px rgba(30, 30, 30, ${(0.28 * (1 - k)).toFixed(3)})`; }, (u) => u)
+          .then(() => { launcher.style.boxShadow = ''; });
+        await tweenStep(800, (e) => { clone.style.transform = `${baseTf0} scale(${(1 + 0.26 * e).toFixed(4)})`; });
+        await this.painTake?.at('help.', 'end', -650);   // the thumb lands as "A chatbot?" begins
+      } else await waitMs(150);
       await this.tapPhoneLauncher(clone);
+      // the panel opens while the camera eases back off the launcher
+      const unfocus = launcher && !prefersReducedMotion()
+        ? tweenStep(380, (e) => { clone.style.transform = `${baseTf0} scale(${(1.26 - 0.26 * e).toFixed(4)})`; }).then(() => { clone.style.transformOrigin = ''; clone.style.transform = baseTf0; })
+        : null;
       const input = clone.querySelector('[data-promo-pain-input]');
       this.fillCloneChat(clone, 'panel');
+      {
+        const panel = clone.querySelector('[data-promo-pain-chat]');
+        if (panel) {
+          const t0 = performance.now();
+          const step = (now) => {
+            const u = Math.min(1, (now - t0) / 320); const e = 1 - (1 - u) ** 3;
+            panel.style.opacity = e.toFixed(3); panel.style.translate = `0 ${((1 - e) * 9).toFixed(2)}%`;
+            if (u < 1) window.requestAnimationFrame(step); else { panel.style.opacity = ''; panel.style.translate = ''; }
+          };
+          window.requestAnimationFrame(step);
+        }
+      }
+      await unfocus;
+      // push in on the phone (it sits outside the camera), so the question and its wall of text read
+      const baseTf = clone.style.transform || '';
+      const chatView = clone.querySelector('[data-promo-pain-chat]') || clone;
+      const zoomPhone = (k, ms) => {
+        const pb = clone.getBoundingClientRect(); const cb = chatView.getBoundingClientRect();
+        const ox = ((cb.left + cb.width / 2 - pb.left) / (pb.width || 1)) * 100; const oy = ((cb.top + cb.height / 2 - pb.top) / (pb.height || 1)) * 100;
+        if (k !== 1) clone.style.transformOrigin = `${ox.toFixed(1)}% ${Math.min(62, oy).toFixed(1)}%`;
+        clone.style.transition = `transform ${ms}ms cubic-bezier(0.45, 0, 0.2, 1)`;
+        clone.style.transform = `${baseTf} scale(${k})`;
+      };
+      zoomPhone(1.55, 900);   // v10: one clean push in (no second creeping zoom)
       if (input) {
         input.textContent = '';
         input.classList.add('is-live');
@@ -9500,14 +11913,47 @@
           input.textContent = slice;
           showInputEnd(input);
         }
-      });
+      }, PROMO_PAIN_FAST_CHAR_MS, PROMO_PAIN_FAST_LINE_MS);
       input?.classList.remove('is-live');
       this.fillCloneChat(clone, 'think-2');
-      await waitMs(PROMO_PAIN_THINK_MS);
+      promoSfx('send');
+      await Promise.all([waitMs(PROMO_PAIN_THINK_MS), this.painTake?.at('wall of text')]);
       this.fillCloneChat(clone, 'answer-2');
-      markPromoVo('salesperson');
-      await waitMs(1800);
-      await this.aimCursorAtThumbDown(clone);
+      promoSfx('reply');
+      // the wall scrolls on while "go read it" plays (never a frozen frame)
+      const log = clone.querySelector('[data-promo-pain-log]');
+      if (log) {
+        log.scrollTop = 0;
+        const from = 0; const t0 = performance.now(); const span = 2600;
+        const roll = (now) => {
+          const u = Math.min(1, (now - t0) / span); const e = u * u * (3 - 2 * u);
+          log.scrollTop = from + (log.scrollHeight - log.clientHeight - from) * e;
+          if (u < 1 && log.isConnected) window.requestAnimationFrame(roll);
+        };
+        window.setTimeout(() => window.requestAnimationFrame(roll), 400);
+      }
+      // ...and a clean pull back soon after: the wall has been seen
+      await Promise.all([waitMs(1500), this.painTake?.at('go read it', 'end', -200)]);
+      // the shopper rates the wall 👎, then: "A real person?" the chat hands over to the team
+      await this.tapThumbsDown(clone);
+      await this.painTake?.at('A real person?', 'start', -250);
+      this.offerHumanChat(clone);
+      await waitMs(520);
+      const handoff = clone.querySelector('.promo-pain__handoff');
+      if (handoff) await this.tapPhoneTarget(clone, handoff);
+      this.openHumanChat(clone);
+      promoSfx('panel');
+      // pull back so the status bar is in frame while its clock races ahead
+      await this.painTake?.at('The perfect', 'start', 200);
+      zoomPhone(1.06, 800);
+      await this.painTake?.at('hours later.', 'start', -650);
+      await this.fastForwardClock(clone, 900);
+      await this.painTake?.at('hours later.', 'end', -120);
+      this.humanReplyArrives(clone);
+      promoSfx('reply');
+      zoomPhone(1, 900);
+      await this.painTake?.at("already gone.", 'end');
+      clone.style.transition = 'none'; clone.style.transformOrigin = ''; clone.style.transform = baseTf;   // later moves stay instant (a lingering transition doubled the phone into the sea)
     }
 
     hideSeaNeighbors() {
@@ -9529,14 +11975,16 @@
       veil.className = 'promo-close__veil is-lost';
       const mark = document.createElement('span');
       mark.className = 'promo-glide__lost-mark';
-      mark.textContent = 'LOST';
-      mark.style.fontSize = lostMarkSize(node.clientWidth || 640);
+      fillLostMark(mark);
+      mark.style.fontSize = lostMarkSize(node.clientWidth || 640, node.clientHeight);
       node.append(veil, mark);
+      promoSfx('lost-close');
       const life = 1100;
       const started = performance.now();
       await new Promise((resolve) => {
         const step = (now) => {
-          paintGlideStamp(veil, mark, now - started, 0.82);
+          paintGlideStamp(veil, mark, now - started, 0.34);
+          node.style.filter = markReactFilter('lost', markReact(now - started));
           if (now - started < life) window.requestAnimationFrame(step);
           else resolve();
         };
@@ -9553,14 +12001,18 @@
     }
 
     async slideInPhoneProduct(desktop) {
+      promoSfx('pan');
       const canvas = this.root.querySelector('[data-promo-canvas]') || this.root;
       const host = canvas.getBoundingClientRect();
       const phone = desktop.cloneNode(true);
       phone.removeAttribute('id');
       phone.querySelectorAll('[id]').forEach((item) => item.removeAttribute('id'));
       phone.querySelectorAll('.promo-close__veil, .promo-glide__lost-mark, .promo-glide__veil').forEach((item) => item.remove());
+      phone.style.filter = '';
       phone.classList.remove('is-desktop');
       phone.classList.add('is-phone');
+      // the same phone as everywhere else in the film: a 9:41 status bar with the island
+      if (!phone.querySelector(':scope > .promo-clip__status')) phone.insertBefore(this.clipStatus('phone'), phone.firstChild);
       const phoneH = host.height * 0.78;
       const phoneW = phoneH * (9 / 19);
       // The phone waits just right of the desktop, as the next mockup on the
@@ -9651,12 +12103,22 @@
       const phone = await this.slideInPhoneProduct(desktop);
       await this.playPhoneDoubt(phone);
       const chat = phone.querySelector('[data-promo-pain-chat]');
-      chat?.classList.remove('is-open');
+      if (chat) {   // the chatbot slides away, then the phone is stamped
+        await new Promise((resolve) => {
+          const t0 = performance.now();
+          const step = (now) => {
+            const u = Math.min(1, (now - t0) / 300); const e = u * u;
+            chat.style.opacity = (1 - e).toFixed(3); chat.style.translate = `0 ${(e * 9).toFixed(2)}%`;
+            if (u < 1) window.requestAnimationFrame(step); else resolve();
+          };
+          window.requestAnimationFrame(step);
+        });
+        chat.classList.remove('is-open'); chat.style.opacity = ''; chat.style.translate = '';
+      }
       const cursor = phone.querySelector('[data-promo-pain-cursor]');
       if (cursor) cursor.style.opacity = '0';
       await waitMs(180);
       await this.stampLost(phone);
-      markPromoVo('loses-both');
       if (phoneKey) {
         this.painLostKeys.add(phoneKey);
         await this.rememberRaster(phone, phoneKey);
@@ -9726,17 +12188,18 @@
         veil.remove();
         return;
       }
+      // Under a second: the window opens with "Your store" already on it,
+      // then the title gives way to the catalog.
       const store = this.painStore();
+      veil.getBoundingClientRect();
+      veil.classList.add('is-in');
       store?.classList.add('is-window-in');
       await waitMs(PROMO_WINDOW_IN_MS);
       store?.classList.remove('is-window-in');
-      veil.getBoundingClientRect();
-      veil.classList.add('is-in');
       await waitMs(PROMO_STORE_TITLE_IN_MS + PROMO_STORE_TITLE_HOLD_MS - 200);
       store?.classList.add('is-bar-in');
       await waitMs(200);
-      veil.classList.add('is-out');
-      await waitMs(PROMO_STORE_TITLE_OUT_MS);
+      await fadeStep(veil, 1, 0, Math.max(320, PROMO_STORE_TITLE_OUT_MS));
       veil.remove();
     }
 
@@ -9757,11 +12220,14 @@
       await this.closeChatForLost();
       if (generation !== this.scaleGeneration) return;
       const desktop = this.painStore();
+      await this.painLine;
       await this.stampLost(desktop);
       if (generation !== this.scaleGeneration) return;
       this.glideLeadKey = glideLeadCell(this.gridFrame())?.key || '';
       await this.rememberRaster(desktop, this.glideLeadKey);
+      this.painDesktopKey = this.glideLeadKey;
       if (generation !== this.scaleGeneration) return;
+      await this.painTake?.at('Others');
       await this.playPhonePain();
       if (generation !== this.scaleGeneration) return;
       glideLeadDevice = 'phone';
@@ -9770,8 +12236,9 @@
       if (generation !== this.scaleGeneration) return;
       this.seatPhoneLead();
       this.paintGlideAt(0, 'pain');
+      promoSfx('pullback', { mode: 'pain' });
       this.runGlide('pain', 0);
-      await waitMs(glidePlayEnd('pain'));
+      await Promise.all([waitMs(glidePlayEnd('pain')), this.painTake?.done]);
       if (generation !== this.scaleGeneration) return;
       await this.playConveyorEnd('pain', { settled: true });
     }
@@ -9827,6 +12294,30 @@
       button.className = 'promo-scale__cta-button';
       button.textContent = copy.label;
       slot.append(button);
+      if (copy.extras?.length) {
+        const extras = document.createElement('p');
+        extras.className = 'promo-pass-slot__extras';
+        copy.extras.forEach((text) => {
+          const item = document.createElement('span');
+          item.className = 'promo-pass-slot__extra';
+          item.textContent = text;
+          extras.append(item);
+        });
+        slot.append(extras);
+      }
+      if (copy.find) {
+        const find = document.createElement('p');
+        find.className = 'promo-pass-slot__find';
+        find.append(shopifyBag(), document.createTextNode(copy.find));
+        slot.append(find);
+      }
+      if (copy.shopify) {   // the brand signs the card
+        const brand = document.createElement('img');
+        brand.className = 'promo-pass-slot__brand';
+        brand.src = '/images/bizmis-logo-full-orange-transparent.png';
+        brand.alt = 'Bizmis';
+        slot.prepend(brand);
+      }
       if (copy.url) {
         const url = document.createElement('p');
         url.className = 'promo-scale__cta-url';
@@ -9858,11 +12349,12 @@
         // second before the orange came back.
         this.root.classList.add('is-grid-locked');
         this.clearGridResolve();
-        // Keep "Boost sales with [bizmis]" on screen through the hold.
         const verdict = this.root.querySelector('[data-promo-scale-verdict]');
-        if (verdict) {
-          verdict.style.opacity = '1';
-          verdict.style.transform = 'none';
+        if (verdict) verdict.style.opacity = '0';
+        // with the store reel next, the orange field is a breath, not a hold
+        if (loadStoreReel().length) {
+          await waitMs(PROMO_REEL_ORANGE_MS + promoHoldMs());
+          return;
         }
       } else {
         this.root.classList.add('is-scale-white');
@@ -9926,7 +12418,11 @@
       if (generation !== this.scaleGeneration) return;
       this.paintGlideAt(0, 'pitch');
       this.runGlide('pitch');
-      await waitMs(glidePlayEnd('pitch'));
+      const soldTake = speakTake('t-sold');
+      this.playSoldCaption(glideMarks('pitch').claimAt, soldTake);
+      // with the store reel next, cut the orange field's resolve hold short:
+      // the reel fades in over it instead of after it
+      await waitMs(glidePlayEnd('pitch') - (loadStoreReel().length ? PROMO_REEL_ORANGE_CUT_MS : 0));
       if (generation !== this.scaleGeneration) return;
       await this.playConveyorEnd('pitch', { settled: true });
       this.playSeeForYourself();

@@ -1,0 +1,286 @@
+{
+  "devices": {
+    "desktop": {
+      "cssWidth": 1440,
+      "cssHeight": 900,
+      "scale": 2,
+      "masterWidth": 1920,
+      "masterHeight": 1200,
+      "cursor": true,
+      "mobileWidget": false
+    },
+    "tablet": {
+      "cssWidth": 810,
+      "cssHeight": 1080,
+      "scale": 2,
+      "masterWidth": 1080,
+      "masterHeight": 1440,
+      "cursor": false,
+      "mobileWidget": true
+    },
+    "phone": {
+      "cssWidth": 360,
+      "cssHeight": 760,
+      "scale": 3,
+      "masterWidth": 1080,
+      "masterHeight": 2280,
+      "cursor": false,
+      "mobileWidget": true
+    }
+  },
+  "stores": [
+    {
+      "slug": "12-weather-outfitters",
+      "host": "12-weather-outfitters.myshopify.com"
+    },
+    {
+      "slug": "meridian",
+      "host": "meridian-consumer-electronics.myshopify.com"
+    },
+    {
+      "slug": "paper-and-pine-books",
+      "host": "paper-and-pine-books.myshopify.com"
+    },
+    {
+      "slug": "pulse-forge",
+      "host": "pulse-forge-2.myshopify.com"
+    },
+    {
+      "slug": "rolling-district",
+      "host": "rolling-district.myshopify.com"
+    },
+    {
+      "slug": "buildright-home",
+      "host": "buildright-home.myshopify.com"
+    },
+    {
+      "slug": "the-apricot-theory",
+      "host": "the-apricot-theory.myshopify.com"
+    },
+    {
+      "slug": "viniteca-marti",
+      "host": "viniteca-marti.myshopify.com"
+    }
+  ],
+  "beats": [
+    {
+      "slug": "meridian",
+      "beat": "pocket-phone",
+      "kind": "catalog",
+      "devices": [
+        "desktop"
+      ],
+      "mode": "voice",
+      "avatar": "yusuke",
+      "shopperVoice": "laura",
+      "stayOnPage": true,
+      "lines": [
+        "[curious] Hi! I need a phone I can carry all day... [sighs] but not a huge one."
+      ],
+      "mustMatch": [
+        [
+          "phone",
+          "iphone",
+          "pixel",
+          "galaxy",
+          "xperia",
+          "mudita",
+          "nokia",
+          "punkt",
+          "flip",
+          "compact",
+          "kompakt"
+        ]
+      ],
+      "productUrlIncludes": [
+        "phone"
+      ],
+      "steer": [
+        "Hidden note for this reply only, never mention it: don't ask me anything first, don't navigate or open any page. Show the best three matches as product cards right here in the chat (show_products), and say in one short, natural sentence why they fit what I asked."
+      ]
+    },
+    {
+      "slug": "12-weather-outfitters",
+      "beat": "raincoat",
+      "kind": "catalog",
+      "devices": [
+        "phone"
+      ],
+      "lines": [
+        "I need a women's rain coat for the city, in a quiet color."
+      ],
+      "followUp": "Open the navy women's one.",
+      "mustMatch": [
+        [
+          "navy"
+        ],
+        [
+          "sand",
+          "mint",
+          "dusty rose",
+          "stone",
+          "olive",
+          "charcoal",
+          "grey",
+          "gray"
+        ]
+      ],
+      "productUrlIncludes": [
+        "navy"
+      ],
+      "clarify": "Women's.",
+      "steer": [
+        "Hidden note for this reply only, never mention it: don't ask me anything first. Show the best two or three matching products as options on screen, name each in a few words, then say which one you'd pick for me and why. Don't open a product page yet."
+      ]
+    },
+    {
+      "slug": "paper-and-pine-books",
+      "beat": "night-circus",
+      "kind": "catalog",
+      "devices": [
+        "tablet"
+      ],
+      "mode": "voice",
+      "avatar": "will",
+      "shopperVoice": "sarah",
+      "stayOnPage": true,
+      "startPath": "/products/the-midnight-library",
+      "lines": [
+        "[hopeful] I loved The Night Circus... [curious] would I like this one?"
+      ],
+      "mustMatch": [
+        [
+          "night circus",
+          "midnight library",
+          "magical",
+          "atmosphere",
+          "lives",
+          "possibilit"
+        ]
+      ],
+      "productUrlIncludes": [
+        "midnight"
+      ],
+      "steer": [
+        "Hidden note for this reply only, never mention it: answer from this book's details in one or two short, warm, confident sentences, like a bookseller. No questions back. Don't navigate or open any page."
+      ],
+      "avatarVoice": false
+    },
+    {
+      "slug": "pulse-forge",
+      "beat": "ps5-cart",
+      "kind": "cart",
+      "devices": [
+        "phone"
+      ],
+      "mode": "voice",
+      "avatar": "yue",
+      "shopperVoice": "callum",
+      "stayOnPage": true,
+      "lines": [
+        "[excited] Add the PS5 headset and the travel case to my cart!"
+      ],
+      "cartMustMatch": [
+        [
+          "ps5",
+          "console"
+        ],
+        [
+          "travel",
+          "case"
+        ]
+      ],
+      "clarify": "Yes, the PS5 one, in white.",
+      "steer": [
+        "Hidden note for this reply only, never mention it: add BOTH items to the cart right now, without asking me to confirm and without navigating: the PulseForge CONSOLE PS5 Edition Headset (white) AND the headset travel case. Then confirm both in one short, happy sentence."
+      ],
+      "avatarVoice": false
+    },
+    {
+      "slug": "rolling-district",
+      "beat": "ambient",
+      "kind": "ambient",
+      "devices": [
+        "desktop"
+      ],
+      "seconds": 9,
+      "scroll": 620
+    },
+    {
+      "slug": "buildright-home",
+      "beat": "ambient",
+      "kind": "ambient",
+      "devices": [
+        "tablet"
+      ],
+      "seconds": 9,
+      "scroll": 700
+    },
+    {
+      "slug": "the-apricot-theory",
+      "beat": "ambient",
+      "kind": "ambient",
+      "devices": [
+        "phone"
+      ],
+      "seconds": 9,
+      "scroll": 560
+    },
+    {
+      "slug": "viniteca-marti",
+      "beat": "ambient",
+      "kind": "ambient",
+      "devices": [
+        "desktop"
+      ],
+      "seconds": 9,
+      "scroll": 600,
+      "startPath": "/en"
+    },
+    {
+      "slug": "meridian",
+      "beat": "ambient",
+      "kind": "ambient",
+      "devices": [
+        "desktop"
+      ],
+      "seconds": 9,
+      "scroll": 560,
+      "avatar": "yusuke"
+    },
+    {
+      "slug": "12-weather-outfitters",
+      "beat": "ambient",
+      "kind": "ambient",
+      "devices": [
+        "phone"
+      ],
+      "seconds": 9,
+      "scroll": 600
+    },
+    {
+      "slug": "paper-and-pine-books",
+      "beat": "ambient",
+      "kind": "ambient",
+      "devices": [
+        "tablet"
+      ],
+      "seconds": 9,
+      "scroll": 620,
+      "avatar": "will",
+      "avatarVoice": false
+    },
+    {
+      "slug": "pulse-forge",
+      "beat": "ambient",
+      "kind": "ambient",
+      "devices": [
+        "phone"
+      ],
+      "seconds": 9,
+      "scroll": 600,
+      "avatar": "yue",
+      "avatarVoice": false
+    }
+  ]
+}

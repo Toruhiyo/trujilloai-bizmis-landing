@@ -1,0 +1,222 @@
+{
+  "devices": {
+    "desktop": {
+      "cssWidth": 1440,
+      "cssHeight": 900,
+      "scale": 2,
+      "masterWidth": 1920,
+      "masterHeight": 1200,
+      "cursor": true,
+      "mobileWidget": false
+    },
+    "tablet": {
+      "cssWidth": 810,
+      "cssHeight": 1080,
+      "scale": 2,
+      "masterWidth": 1080,
+      "masterHeight": 1440,
+      "cursor": false,
+      "mobileWidget": true
+    },
+    "phone": {
+      "cssWidth": 360,
+      "cssHeight": 760,
+      "scale": 3,
+      "masterWidth": 1080,
+      "masterHeight": 2280,
+      "cursor": false,
+      "mobileWidget": true
+    }
+  },
+  "stores": [
+    {
+      "slug": "12-weather-outfitters",
+      "host": "12-weather-outfitters.myshopify.com"
+    },
+    {
+      "slug": "meridian",
+      "host": "meridian-consumer-electronics.myshopify.com"
+    },
+    {
+      "slug": "paper-and-pine-books",
+      "host": "paper-and-pine-books.myshopify.com"
+    },
+    {
+      "slug": "pulse-forge",
+      "host": "pulse-forge-2.myshopify.com"
+    },
+    {
+      "slug": "rolling-district",
+      "host": "rolling-district.myshopify.com"
+    },
+    {
+      "slug": "buildright-home",
+      "host": "buildright-home.myshopify.com"
+    },
+    {
+      "slug": "the-apricot-theory",
+      "host": "the-apricot-theory.myshopify.com"
+    },
+    {
+      "slug": "viniteca-marti",
+      "host": "viniteca-marti.myshopify.com"
+    }
+  ],
+  "beats": [
+    {
+      "slug": "12-weather-outfitters",
+      "beat": "raincoat",
+      "kind": "catalog",
+      "lines": [
+        "I need a women's rain coat for the city, in a quiet color."
+      ],
+      "followUp": "Open the navy women's one.",
+      "mustMatch": [
+        [
+          "navy"
+        ],
+        [
+          "sand",
+          "mint",
+          "dusty rose",
+          "stone",
+          "olive",
+          "charcoal",
+          "grey",
+          "gray"
+        ]
+      ],
+      "productUrlIncludes": [
+        "navy"
+      ],
+      "clarify": "Women's.",
+      "steer": [
+        "Hidden note for this reply only, never mention it: don't ask me anything first. Show the best two or three matching products as options on screen, name each in a few words, then say which one you'd pick for me and why. Don't open a product page yet."
+      ],
+      "devices": [
+        "phone"
+      ]
+    },
+    {
+      "slug": "meridian",
+      "beat": "pocket-phone",
+      "kind": "catalog",
+      "lines": [
+        "A phone I can carry all day, not a huge one."
+      ],
+      "mustMatch": [
+        [
+          "phone",
+          "iphone",
+          "pixel",
+          "galaxy",
+          "xperia",
+          "mudita",
+          "nokia",
+          "punkt",
+          "flip"
+        ]
+      ],
+      "productUrlIncludes": [
+        "iphone-15",
+        "iphone"
+      ],
+      "steer": [
+        "Hidden note for this reply only, never mention it: don't ask me anything first, don't navigate or open any page. Show the best three matches as product cards right here in the chat (show_products), and say in one short, natural sentence why they fit what I asked."
+      ],
+      "devices": [
+        "desktop"
+      ],
+      "mode": "voice",
+      "shopperVoice": "jessica",
+      "stayOnPage": true
+    },
+    {
+      "slug": "paper-and-pine-books",
+      "beat": "novel",
+      "kind": "catalog",
+      "lines": [
+        "A novel I can get lost in on a long trip.",
+        "Is it a good pick for someone who loved The Night Circus?"
+      ],
+      "followUp": "Open The Midnight Library.",
+      "mustMatch": [
+        [
+          "midnight library"
+        ],
+        [
+          "crawdads"
+        ],
+        [
+          "daisy jones"
+        ]
+      ],
+      "productUrlIncludes": [
+        "midnight-library",
+        "midnight"
+      ],
+      "clarify": "Literary fiction.",
+      "steer": [
+        "Hidden note for this reply only, never mention it: don't ask me anything first. Show the best two or three matching products as options on screen, name each in a few words, then say which one you'd pick for me and why. Don't open a product page yet.",
+        "Hidden note for this reply only, never mention it: answer from this book's details in one or two short, warm, confident sentences, like a bookseller. No questions back."
+      ],
+      "devices": [
+        "tablet"
+      ]
+    },
+    {
+      "slug": "rolling-district",
+      "beat": "bolt-pattern",
+      "kind": "catalog",
+      "lines": [
+        "I need a 5x114.3 wheel."
+      ],
+      "mustMatch": [
+        [
+          "jnc",
+          "wheel",
+          "114"
+        ]
+      ],
+      "productUrlIncludes": [
+        "jnc014"
+      ],
+      "steer": [
+        "Hidden note for this reply only, never mention it: don't ask me anything first, don't navigate or open any page. Show the best three matches as product cards right here in the chat (show_products), and say in one short, natural sentence why they fit what I asked."
+      ],
+      "devices": [
+        "desktop"
+      ],
+      "mode": "voice",
+      "shopperVoice": "archer",
+      "stayOnPage": true
+    },
+    {
+      "slug": "pulse-forge",
+      "beat": "ps5-cart",
+      "kind": "cart",
+      "lines": [
+        "A headset for a PS5, not for PC.",
+        "Add the PS5 headset and the travel case."
+      ],
+      "cartMustMatch": [
+        [
+          "ps5",
+          "console"
+        ],
+        [
+          "travel",
+          "case"
+        ]
+      ],
+      "clarify": "Yes, the PS5 one.",
+      "steer": [
+        "Hidden note for this reply only, never mention it: don't ask me anything first. Show the best two or three matching products as options on screen, name each in a few words, then say which one you'd pick for me and why. Don't open a product page yet.",
+        "Hidden note for this reply only, never mention it: add exactly what I just asked for to the cart now, without asking me to confirm. If a size or variant is needed, use the one I said, or the most common one."
+      ],
+      "devices": [
+        "phone"
+      ]
+    }
+  ]
+}

@@ -1023,7 +1023,7 @@ html.is-promo-opening.is-promo-depart .promo-opening {
   font-size: clamp(2.2rem, 8cqw, 4.4rem);
   opacity: 0;
   transform: translateY(16px);
-  transition: opacity 450ms ease, transform 450ms cubic-bezier(0.16, 1, 0.3, 1);
+  transition: opacity 520ms cubic-bezier(0.22, 1, 0.36, 1), transform 700ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .promo-store-open__brand .promo-opening__store-mark {
@@ -1045,13 +1045,17 @@ html.is-promo-opening.is-promo-depart .promo-opening {
 
 .promo-opening.is-pain.is-moments .promo-opening__store.is-desktop.is-window-in {
   transform-origin: 50% 100%;
-  animation: promo-window-in 1200ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation: promo-window-in 900ms cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
 @keyframes promo-window-in {
   0% {
     opacity: 0;
-    transform: translateY(14%) scale(0.12);
+    transform: translateY(5%) scale(0.86);
+    filter: blur(6px);
+  }
+  60% {
+    filter: blur(0);
   }
   100% {
     opacity: 1;
@@ -1071,7 +1075,7 @@ html.is-promo-opening.is-promo-depart .promo-opening {
 
 .promo-store-open.is-out {
   opacity: 0;
-  transition: opacity 450ms ease;
+  transition: opacity 520ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .promo-opening__store::before {
@@ -9217,9 +9221,11 @@ html.is-promo-still .promo-clip__product.is-compare::after {
 }
 
 .promo-opening.is-ea-card.is-pass-slot .promo-scale__end-hero {
-  top: calc(50% - 9.4rem);
+  /* sits just above the (scaled) Early Access card, and scales with it */
+  top: 29%;
   opacity: 0;
-  transform: translate(-50%, -100%) scale(5);
+  transform-origin: 50% 100%;
+  transform: translate(-50%, -100%) scale(8);
   filter: blur(18px);
 }
 
@@ -9227,7 +9233,7 @@ html.is-promo-still .promo-clip__product.is-compare::after {
 .promo-opening.is-ea-card.is-ea-in .promo-scale__end-hero,
 .promo-opening.is-ea-card.is-pass-slot.is-settled .promo-scale__end-hero {
   opacity: 1;
-  transform: translate(-50%, -100%) scale(1);
+  transform: translate(-50%, -100%) scale(1.6);
   filter: blur(0);
   transition:
     opacity 640ms ease,
@@ -9443,6 +9449,7 @@ html.is-promo-still .promo-clip__product.is-compare::after {
 }
 
 .promo-pass-slot {
+  --slot-scale: 1.6;
   position: absolute;
   left: 50%;
   top: 50%;
@@ -9456,13 +9463,13 @@ html.is-promo-still .promo-clip__product.is-compare::after {
   color: var(--ad-ink);
   pointer-events: none;
   opacity: 0;
-  transform: translate(-50%, -46%);
+  transform: translate(-50%, -46%) scale(var(--slot-scale));
   transition: opacity 700ms cubic-bezier(0.22, 1, 0.36, 1), transform 700ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .promo-pass-slot.is-in {
   opacity: 1;
-  transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%) scale(var(--slot-scale));
 }
 
 .promo-opening.is-ea-card .promo-scale,
@@ -9678,14 +9685,15 @@ html.is-promo-still .promo-clip__product.is-compare::after {
 }
 
 .promo-pass-slot__terms {
-  display: flex;
+  display: grid;
+  grid-template-columns: repeat(2, max-content);
   align-items: center;
   justify-content: center;
-  gap: 2rem;
-  margin: 4.8rem 0 0;
+  gap: 1rem 3rem;
+  margin: 4.2rem 0 0;
   color: color-mix(in srgb, var(--ad-ink) 74%, #fff);
   font-family: var(--font-heading);
-  font-size: clamp(1.15rem, 1.6vw, 1.35rem);
+  font-size: clamp(1.6rem, 2.3vw, 2.4rem);
   font-weight: 600;
   letter-spacing: -0.025em;
   line-height: 1.2;
@@ -10868,3 +10876,2155 @@ html.is-promo-final .promo-vo-debug {
   background: var(--bizmis-primary);
   pointer-events: none;
 }
+
+/* v2: the reveal's last word is Bizmis orange (the landing's own line). */
+.promo-opening__word--hot {
+  color: var(--bizmis-primary);
+}
+
+/* v2: the shopper speaks the doubt: a mic and live bars over the composer's send button. */
+.promo-voice-in {
+  position: absolute;
+  top: 50%;
+  right: 4px;
+  height: 80%;
+  transform: translateY(-50%);
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  padding: 0 0.6em;
+  border-radius: 999px;
+  background: var(--bizmis-primary);
+  color: #fff;
+  pointer-events: none;
+}
+.promo-voice-in svg {
+  width: 1em;
+  height: 1em;
+  margin-right: 0.3em;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+}
+.promo-voice-in svg rect {
+  fill: currentColor;
+  stroke: none;
+}
+.promo-voice-in i {
+  display: block;
+  width: 3px;
+  height: 60%;
+  border-radius: 2px;
+  background: currentColor;
+  transform-origin: 50% 50%;
+}
+
+/* v2: the sub-benefit tag over the pitch window: pain -> outcome. */
+.promo-pitch-tag {
+  position: absolute;
+  left: 50%;
+  top: 2%;
+  z-index: 40;
+  display: flex;
+  align-items: baseline;
+  gap: 0.45em;
+  margin: 0;
+  padding: 0.38em 0.9em;
+  border-radius: 999px;
+  background: var(--ad-white, #fff);
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.08);
+  color: var(--ad-ink);
+  font-family: var(--font-heading);
+  font-size: clamp(2rem, 3.1vw, 3.6rem);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  white-space: nowrap;
+  opacity: 0;
+  transform: translate(-50%, -0.4em);
+  transition: opacity 420ms cubic-bezier(0.22, 1, 0.36, 1), transform 420ms cubic-bezier(0.22, 1, 0.36, 1);
+  pointer-events: none;
+}
+.promo-pitch-tag.is-in {
+  opacity: 1;
+  transform: translate(-50%, 0);
+}
+.promo-pitch-tag__from {
+  color: color-mix(in srgb, var(--ad-ink) 55%, #fff);
+}
+.promo-pitch-tag__arrow,
+.promo-pitch-tag__to {
+  color: var(--bizmis-primary);
+}
+
+/* v3: the pitch chapter line above the window. The pain in grey is struck
+   in Bizmis orange and rewritten as the outcome, like the reveal. */
+.promo-chapter {
+  position: absolute;
+  left: 50%;
+  top: var(--chapter-mid, 3.5%);
+  z-index: 40;
+  display: grid;
+  margin: 0;
+  font-family: var(--font-heading);
+  font-size: clamp(1.6rem, 2.5vw, 3rem);
+  font-weight: 700;
+  letter-spacing: -0.035em;
+  line-height: 1;
+  white-space: nowrap;
+  opacity: 0;
+  transform: translate(-50%, -50%);
+  transition: opacity 360ms cubic-bezier(0.22, 1, 0.36, 1);
+  pointer-events: none;
+}
+.promo-chapter.is-in { opacity: 1; }
+.promo-chapter__from,
+.promo-chapter__to {
+  grid-area: 1 / 1;
+  justify-self: center;
+}
+.promo-chapter__from {
+  position: relative;
+  color: color-mix(in srgb, var(--ad-ink) 55%, #fff);
+  transition: opacity 280ms ease 420ms;
+}
+.promo-chapter__from::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 52%;
+  width: 0;
+  height: 0.11em;
+  min-height: 3px;
+  border-radius: 999px;
+  background: var(--bizmis-primary);
+  transform: translateY(-50%);
+  transition: width 420ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+.promo-chapter__to {
+  color: var(--bizmis-primary);
+  opacity: 0;
+  transition: opacity 360ms ease 520ms;
+}
+.promo-chapter.is-struck .promo-chapter__from::after { width: 100%; }
+.promo-chapter.is-struck .promo-chapter__from { opacity: 0; }
+.promo-chapter.is-struck .promo-chapter__to { opacity: 1; }
+
+/* v5: the switch recap: the two lost moments side by side. */
+.promo-recap {
+  position: absolute;
+  inset: 0;
+  z-index: 60;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4%;
+  background: color-mix(in srgb, var(--ad-white, #fff) 92%, transparent);
+  opacity: 0;
+  transition: opacity 600ms cubic-bezier(0.22, 1, 0.36, 1);
+  pointer-events: none;
+}
+.promo-recap.is-in { opacity: 1; }
+.promo-recap.is-out { opacity: 0; transition-duration: 450ms; }
+.promo-recap__card {
+  position: relative;
+  margin: 0;
+  height: 46%;
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.10);
+  transform: translateY(10px) scale(0.98);
+  transition: transform 900ms cubic-bezier(0.22, 1, 0.36, 1);
+  filter: grayscale(1);
+}
+.promo-recap.is-in .promo-recap__card { transform: none; }
+.promo-recap.is-catch .promo-recap__card { transform: scale(1.03); }
+.promo-recap__card svg { display: block; width: 100%; height: 100%; }
+.promo-recap__veil { position: absolute; inset: 0; background: rgba(160, 160, 160, 0.42); }
+.promo-recap__lost {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  color: rgba(90, 90, 90, 0.9);
+  font-family: var(--font-heading);
+  font-weight: 700;
+  letter-spacing: -0.04em;
+  font-size: clamp(2rem, 4.5vw, 5.2rem);
+}
+.promo-recap__card.is-phone .promo-recap__lost { font-size: clamp(1.2rem, 2.2vw, 2.6rem); }
+
+/* v5: the shopper's spoken words, captioned apart from the clerk's. */
+.promo-caption.is-shopper .promo-caption__text { color: color-mix(in srgb, var(--ad-ink) 62%, #fff); font-style: italic; }
+
+/* v5: the SOLD sea's caption, mirroring the LOST sea's. */
+.promo-sold-caption {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  z-index: 45;
+  display: grid;
+  gap: 0.15em;
+  margin: 0;
+  color: #fff;
+  font-family: var(--font-heading);
+  font-size: clamp(2.2rem, 3.4vw, 4.2rem);
+  font-weight: 700;
+  letter-spacing: -0.035em;
+  line-height: 1.05;
+  text-align: center;
+  text-shadow: 0 2px 30px rgba(120, 60, 0, 0.35);
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  transition: opacity 600ms ease;
+}
+.promo-sold-caption.is-out { opacity: 0; }
+.promo-sold-caption__line { display: block; }
+.promo-sold-caption__beat { opacity: 0; transition: opacity 350ms cubic-bezier(0.22, 1, 0.36, 1); }
+.promo-sold-caption__beat + .promo-sold-caption__beat { margin-left: 0.25em; }
+.promo-sold-caption__beat.is-in { opacity: 1; }
+
+/* v5: the end card's last beat: the terms clear and "Install now" holds as the hero, then a slow fade. */
+.promo-pass-slot__terms { transition: opacity 600ms cubic-bezier(0.22, 1, 0.36, 1), transform 700ms cubic-bezier(0.22, 1, 0.36, 1); }
+.promo-pass-slot.is-hero .promo-pass-slot__terms { opacity: 0; transform: translateY(0.6em); }
+.promo-opening.is-ea-card .promo-pass-slot { transition: opacity 700ms cubic-bezier(0.22, 1, 0.36, 1), transform 700ms cubic-bezier(0.22, 1, 0.36, 1), top 1000ms cubic-bezier(0.22, 1, 0.36, 1); }
+.promo-opening.is-ea-card.is-ea-hero .promo-pass-slot { top: 64%; }
+.promo-opening.is-ea-card .promo-scale__end-hero { transition: opacity 640ms ease, transform 860ms cubic-bezier(0.16, 1.12, 0.32, 1), filter 640ms ease, top 1000ms cubic-bezier(0.22, 1, 0.36, 1); }
+.promo-opening.is-ea-card.is-ea-hero .promo-scale__end-hero { top: 35%; }
+.promo-opening.is-ea-fade::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 200;
+  background: var(--ad-white, #fff);
+  animation: promo-ea-fade 1600ms ease-in-out both;
+  pointer-events: none;
+}
+@keyframes promo-ea-fade { from { opacity: 0; } to { opacity: 1; } }
+
+/* v5: the pitch no longer closes on "Boost sales with [bizmis]"; the SOLD sea's caption does that job. */
+.promo-scale__lead { display: none; }
+.promo-opening.is-see:not(.is-pass-slot) .promo-scale__verdict { opacity: 0 !important; }
+
+/* v6: the store reel. Live recordings, one vignette at a time, on white:
+   the shopper's ask on the left, the device on the right. */
+.promo-reel {
+  position: absolute;
+  inset: 0;
+  z-index: 70;
+  background: var(--ad-white, #fff);
+  opacity: 0;
+  transition: opacity 700ms cubic-bezier(0.22, 1, 0.36, 1);
+  pointer-events: none;
+}
+.promo-reel.is-in { opacity: 1; }
+.promo-reel.is-out { opacity: 0; }
+.promo-reel__item {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  grid-template-columns: 34% 1fr;
+  align-items: center;
+  gap: 4%;
+  padding: 0 7%;
+  opacity: 0;
+  transform: translateX(4%);
+  transition: opacity 800ms cubic-bezier(0.22, 1, 0.36, 1), transform 900ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+.promo-reel__item.is-in { opacity: 1; transform: none; }
+.promo-reel__item.is-out { opacity: 0; transform: translateX(-4%); }
+.promo-reel__text { display: grid; gap: 0.9rem; font-family: var(--font-heading); color: var(--ad-ink); }
+.promo-reel__eyebrow { margin: 0; color: var(--bizmis-primary); font-size: clamp(0.9rem, 1.05vw, 1.25rem); font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; }
+.promo-reel__store { margin: 0; font-size: clamp(2rem, 3.1vw, 3.8rem); font-weight: 700; letter-spacing: -0.035em; line-height: 1.02; }
+.promo-reel__ask { margin: 0.4rem 0 0; color: color-mix(in srgb, var(--ad-ink) 62%, #fff); font-size: clamp(1.2rem, 1.6vw, 2rem); font-weight: 500; letter-spacing: -0.02em; line-height: 1.25; }
+.promo-reel__chips { display: flex; gap: 0.6rem; margin: 0.8rem 0 0; }
+.promo-reel__chip { display: inline-flex; align-items: center; gap: 0.4em; padding: 0.35em 0.8em; border-radius: 999px; background: color-mix(in srgb, var(--ad-ink) 6%, #fff); color: color-mix(in srgb, var(--ad-ink) 75%, #fff); font-size: clamp(0.85rem, 1vw, 1.15rem); font-weight: 600; }
+.promo-reel__chip svg { width: 1.1em; height: 1.1em; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.promo-reel__device { justify-self: center; display: grid; place-items: center; height: 100%; width: 100%; }
+.promo-reel__screen { position: relative; overflow: hidden; background: #000; box-shadow: 0 30px 80px rgba(0, 0, 0, 0.14), 0 0 0 1px rgba(0, 0, 0, 0.06); }
+.promo-reel__screen video { display: block; width: 100%; height: 100%; object-fit: cover; }
+.promo-reel__item.is-desktop .promo-reel__screen { width: 100%; aspect-ratio: 16 / 10; border-radius: 14px; border-top: 26px solid #f3f3f3; }
+.promo-reel__item.is-tablet .promo-reel__screen { height: 78%; aspect-ratio: 3 / 4; border-radius: 30px; border: 12px solid #111; }
+.promo-reel__item.is-phone .promo-reel__screen { height: 84%; aspect-ratio: 1080 / 2280; border-radius: 42px; border: 10px solid #111; }
+
+/* v6: the recap turns around: a salesperson's word on each lost moment, then SOLD. */
+.promo-recap__card { overflow: visible; transition: transform 900ms cubic-bezier(0.22, 1, 0.36, 1), filter 900ms ease, box-shadow 900ms ease; }
+.promo-recap__card > svg { border-radius: 14px; overflow: hidden; }
+.promo-recap__veil { border-radius: 14px; transition: opacity 700ms ease; }
+.promo-recap__lost { transition: opacity 260ms ease, transform 260ms ease; }
+.promo-recap__sold {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  color: var(--bizmis-primary);
+  font-family: var(--font-heading);
+  font-weight: 700;
+  letter-spacing: -0.04em;
+  font-size: clamp(2rem, 4.5vw, 5.2rem);
+  opacity: 0;
+  transform: scale(1.35);
+  transition: opacity 220ms ease, transform 420ms cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.promo-recap__card.is-phone .promo-recap__sold { font-size: clamp(1.2rem, 2.2vw, 2.6rem); }
+.promo-recap__bubble {
+  position: absolute;
+  left: 50%;
+  bottom: calc(100% + 18px);
+  padding: 0.62em 1.05em;
+  border-radius: 18px;
+  background: var(--ad-white);
+  color: var(--ad-ink);
+  font-family: var(--font-heading);
+  font-weight: 600;
+  font-size: clamp(0.8rem, 1.35vw, 1.6rem);
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+  box-shadow: 0 10px 30px rgba(28, 28, 28, 0.12), 0 0 0 1px var(--ad-line);
+  transform: translateX(-50%) translateY(8px) scale(0.6);
+  transform-origin: 50% 120%;
+  opacity: 0;
+  transition: opacity 240ms ease, transform 520ms cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.promo-recap__bubble::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 100%;
+  width: 14px;
+  height: 14px;
+  background: var(--ad-white);
+  box-shadow: 1px 1px 0 var(--ad-line);
+  transform: translate(-50%, -50%) rotate(45deg);
+}
+.promo-recap__card.is-helped .promo-recap__bubble { opacity: 1; transform: translateX(-50%) translateY(0) scale(1); }
+.promo-recap__card.is-sold { filter: none; box-shadow: 0 18px 50px rgba(0, 0, 0, 0.10), 0 0 0 3px var(--bizmis-primary-ring); }
+.promo-recap__card.is-sold .promo-recap__veil { opacity: 0; }
+.promo-recap__card.is-sold .promo-recap__lost { opacity: 0; transform: scale(0.9); }
+.promo-recap__card.is-sold .promo-recap__sold { opacity: 1; transform: none; }
+
+/* v6: three Early Access terms, one column, smaller: the card reads at a glance. */
+.promo-pass-slot__terms {
+  grid-template-columns: max-content;
+  gap: 0.55rem;
+  margin-top: 3rem;
+  font-size: clamp(1.05rem, 1.45vw, 1.55rem);
+}
+
+/* v6: the chapter line becomes a status chip: grey ring + the pain, then an
+   orange disc with a drawn tick + the outcome. */
+.promo-chapter {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55em;
+  padding: 0.5em 1.05em 0.5em 0.6em;
+  border-radius: 999px;
+  background: var(--ad-white);
+  box-shadow: 0 0 0 1px var(--ad-line), 0 8px 24px var(--ad-shadow);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  transform: translate(-50%, -50%) scale(0.94);
+  transition: opacity 360ms cubic-bezier(0.22, 1, 0.36, 1), transform 520ms cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 600ms ease;
+}
+.promo-chapter.is-in { transform: translate(-50%, -50%); }
+.promo-chapter.is-struck { box-shadow: 0 0 0 1px var(--bizmis-primary-ring), 0 8px 28px var(--bizmis-primary-glow); }
+.promo-chapter__mark { display: block; width: 1.15em; height: 1.15em; flex: none; }
+.promo-chapter__mark svg { display: block; width: 100%; height: 100%; overflow: visible; }
+.promo-chapter__ring { fill: none; stroke: var(--ad-line-strong); stroke-width: 2; stroke-dasharray: 3.2 3.2; transform-origin: 12px 12px; animation: promo-chapter-ring 6s linear infinite; transition: opacity 200ms ease; }
+.promo-chapter__disc { fill: var(--bizmis-primary); transform-origin: 12px 12px; transform: scale(0); transition: transform 460ms cubic-bezier(0.34, 1.56, 0.64, 1); }
+.promo-chapter__check { fill: none; stroke: #fff; stroke-width: 2.6; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 1; stroke-dashoffset: 1; transition: stroke-dashoffset 420ms cubic-bezier(0.22, 1, 0.36, 1) 260ms; }
+.promo-chapter.is-struck .promo-chapter__ring { opacity: 0; }
+.promo-chapter.is-struck .promo-chapter__disc { transform: scale(1); }
+.promo-chapter.is-struck .promo-chapter__check { stroke-dashoffset: 0; }
+@keyframes promo-chapter-ring { to { transform: rotate(360deg); } }
+.promo-chapter__words { display: grid; overflow: hidden; }
+.promo-chapter__words > span { grid-area: 1 / 1; justify-self: start; }
+.promo-chapter__from { color: var(--ad-ink-2); transition: opacity 260ms ease, transform 420ms cubic-bezier(0.22, 1, 0.36, 1); }
+.promo-chapter__from::after { display: none; }
+.promo-chapter__to { color: var(--ad-ink); opacity: 0; transform: translateY(0.9em); transition: opacity 320ms ease 140ms, transform 520ms cubic-bezier(0.22, 1, 0.36, 1) 140ms; }
+.promo-chapter.is-struck .promo-chapter__from { opacity: 0; transform: translateY(-0.9em); }
+.promo-chapter.is-struck .promo-chapter__to { opacity: 1; transform: none; }
+
+/* v6: the reel opens on every device at once, silent, under the narrator. */
+.promo-reel__wall {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 3.2%;
+  padding: 0 6%;
+  opacity: 0;
+  transform: scale(0.96);
+  transition: opacity 800ms cubic-bezier(0.22, 1, 0.36, 1), transform 1200ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+.promo-reel__wall.is-in { opacity: 1; transform: none; }
+.promo-reel__wall.is-out { opacity: 0; transform: scale(1.04); }
+.promo-reel__mini { display: grid; place-items: center; }
+.promo-reel__mini.is-desktop .promo-reel__screen { width: clamp(220px, 34vw, 980px); aspect-ratio: 16 / 10; border-radius: 10px; border-top: 16px solid #f3f3f3; }
+.promo-reel__mini.is-tablet .promo-reel__screen { height: 46vh; aspect-ratio: 3 / 4; border-radius: 20px; border: 8px solid #111; }
+.promo-reel__mini.is-phone .promo-reel__screen { height: 54vh; aspect-ratio: 1080 / 2280; border-radius: 28px; border: 7px solid #111; }
+
+/* v6: the one-click install that opens the pitch. */
+.promo-install {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  z-index: 30;
+  display: flex;
+  align-items: center;
+  gap: 1em;
+  padding: 1.1em 1.2em 1.1em 1.1em;
+  border-radius: 1.1em;
+  background: var(--ad-white);
+  color: var(--ad-ink);
+  font-family: var(--font-heading);
+  box-shadow: 0 1.4em 3.6em rgba(28, 28, 28, 0.16), 0 0 0 1px var(--ad-line);
+  opacity: 0;
+  transform: translate(-50%, -46%) scale(0.94);
+  transition: opacity 380ms cubic-bezier(0.22, 1, 0.36, 1), transform 620ms cubic-bezier(0.34, 1.4, 0.64, 1);
+  pointer-events: none;
+}
+.promo-install.is-in { opacity: 1; transform: translate(-50%, -50%); }
+.promo-install.is-out { opacity: 0; transform: translate(-50%, -54%) scale(0.97); transition-duration: 320ms; }
+.promo-install__icon { width: 3.4em; height: 3.4em; border-radius: 0.8em; object-fit: cover; flex: none; }
+.promo-install__meta { display: grid; gap: 0.15em; margin-right: 1.6em; }
+.promo-install__name { font-size: 1.25em; font-weight: 700; letter-spacing: -0.02em; }
+.promo-install__by { color: var(--ad-ink-3); font-size: 0.9em; font-weight: 500; white-space: nowrap; }
+.promo-install__button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5em;
+  padding: 0.7em 1.15em;
+  border-radius: 0.7em;
+  background: #1a1a1a;
+  color: #fff;
+  font-weight: 650;
+  transition: transform 140ms ease, background-color 300ms ease;
+}
+.promo-install__button svg { width: 1.05em; height: 1.05em; fill: currentColor; }
+.promo-install__label { display: grid; overflow: hidden; }
+.promo-install__label > span { grid-area: 1 / 1; transition: transform 380ms cubic-bezier(0.22, 1, 0.36, 1), opacity 240ms ease; }
+.promo-install__label > span + span { opacity: 0; transform: translateY(1.1em); }
+.promo-install.is-pressed .promo-install__button { transform: scale(0.94); }
+.promo-install.is-done .promo-install__button { background: var(--bizmis-primary); }
+.promo-install.is-done .promo-install__label > span:first-child { opacity: 0; transform: translateY(-1.1em); }
+.promo-install.is-done .promo-install__label > span + span { opacity: 1; transform: none; }
+.promo-install__cursor {
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: 31;
+  color: var(--ad-ink);
+  filter: drop-shadow(0 4px 8px var(--ad-shadow));
+  opacity: 0;
+  transition: transform 820ms cubic-bezier(0.45, 0, 0.2, 1), opacity 240ms linear;
+  pointer-events: none;
+}
+.promo-install__cursor.is-in { opacity: 1; }
+.promo-install__cursor svg { display: block; width: 100%; height: 100%; fill: currentColor; stroke: #fff; stroke-width: 1.4; stroke-linejoin: round; }
+.promo-install__bubble {
+  position: absolute;
+  z-index: 9;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: #E4E4E4;
+  color: #9A9A9A;
+  opacity: 0;
+  transform: scale(0.8);
+  transition: opacity 300ms ease, transform 420ms cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.promo-install__bubble.is-in { opacity: 1; transform: none; }
+.promo-install__bubble.is-out { opacity: 0; transform: scale(0.2); transition-duration: 260ms, 320ms; }
+.promo-install__bubble svg { width: 46%; height: 46%; fill: currentColor; }
+[data-promo-widget].is-uninstalled { opacity: 0 !important; scale: 0.25; }
+[data-promo-widget].is-installing { transition: opacity 260ms ease, scale 720ms cubic-bezier(0.34, 1.56, 0.64, 1) !important; }
+
+/* v6b: the vignette grid needs a real row height, or the device heights
+   (percentages) resolve against nothing and the phone overflows the frame. */
+.promo-reel__item { grid-template-rows: minmax(0, 1fr); padding: 6% 7%; }
+.promo-reel__device { height: 100%; min-height: 0; }
+.promo-reel__text { align-self: center; gap: 1.1rem; }
+.promo-reel__store { font-size: clamp(2.2rem, 3.6vw, 4.4rem); }
+.promo-reel__ask { font-size: clamp(1.3rem, 1.9vw, 2.3rem); }
+.promo-reel__item.is-desktop .promo-reel__screen { width: auto; height: auto; max-width: 100%; max-height: 92%; aspect-ratio: 16 / 10; }
+.promo-reel__item.is-desktop .promo-reel__screen { width: 100%; }
+.promo-reel__item.is-tablet .promo-reel__screen { height: 94%; }
+.promo-reel__item.is-phone .promo-reel__screen { height: 96%; }
+
+/* v6c: the camera (Cap-style zoom into the widget while the shopper types). */
+.promo-opening__camera { position: absolute; inset: 0; transform-origin: 0 0; }
+.promo-opening__camera.is-moving { transition: transform 1100ms cubic-bezier(0.65, 0, 0.35, 1); }
+
+/* v6c: the doubts burst into white dust, not orange. */
+.promo-moments__vapor-bit,
+.promo-opening.is-pitch-cards.is-moments .promo-opening__store.is-desktop .promo-moments__vapor-bit {
+  background: var(--ad-white);
+  box-shadow: 0 0 24px 6px color-mix(in srgb, var(--ad-white) 85%, transparent);
+  filter: blur(5px);
+}
+
+/* v6c: the rewind into the same store the pain started in. */
+.promo-rewind {
+  position: absolute;
+  inset: 0;
+  z-index: 62;
+  background: var(--ad-white);
+  opacity: 0;
+  transition: opacity 360ms ease;
+  pointer-events: none;
+}
+.promo-rewind.is-in { opacity: 1; }
+.promo-rewind.is-out { opacity: 0; transition: opacity 520ms ease; }
+.promo-rewind__card {
+  position: absolute;
+  left: 50%;
+  top: 54%;
+  height: 50%;
+  margin: 0;
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.10);
+  transform: translate(-50%, -50%);
+  animation: promo-rewind-scrub 1100ms cubic-bezier(0.3, 0, 0.2, 1) both;
+}
+.promo-rewind__card > svg { display: block; width: 100%; height: 100%; }
+@keyframes promo-rewind-scrub {
+  0% { transform: translate(-44%, -50%) scale(0.95); filter: grayscale(1) blur(4px); }
+  35% { transform: translate(-53%, -50%) scale(0.97); filter: grayscale(1) blur(2.5px); }
+  70% { transform: translate(-49%, -50%) scale(0.99); filter: grayscale(1) blur(1px); }
+  100% { transform: translate(-50%, -50%) scale(1); filter: grayscale(1) blur(0); }
+}
+.promo-rewind__card.is-landing { animation: none; transform: none; filter: grayscale(1); }
+.promo-rewind__card.is-flying {
+  transition: left 900ms cubic-bezier(0.65, 0, 0.35, 1), top 900ms cubic-bezier(0.65, 0, 0.35, 1), width 900ms cubic-bezier(0.65, 0, 0.35, 1), height 900ms cubic-bezier(0.65, 0, 0.35, 1), border-radius 900ms ease, box-shadow 900ms ease;
+}
+.promo-rewind__veil { position: absolute; inset: 0; background: rgba(160, 160, 160, 0.42); transition: opacity 500ms ease; }
+.promo-rewind__lost {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  color: rgba(90, 90, 90, 0.9);
+  font-family: var(--font-heading);
+  font-weight: 700;
+  letter-spacing: -0.04em;
+  font-size: clamp(2rem, 4.5vw, 5.2rem);
+  transition: opacity 420ms ease, transform 620ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+.promo-rewind__card.is-flying .promo-rewind__veil { opacity: 0; }
+.promo-rewind__card.is-flying .promo-rewind__lost { opacity: 0; transform: scale(1.4); }
+.promo-rewind__chip {
+  position: absolute;
+  left: 50%;
+  top: 12%;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55em;
+  margin: 0;
+  padding: 0.5em 1.05em 0.5em 0.85em;
+  border-radius: 999px;
+  background: var(--ad-ink);
+  color: var(--ad-white);
+  font-family: var(--font-heading);
+  font-size: clamp(1rem, 1.5vw, 1.7rem);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  transform: translateX(-50%);
+  transition: opacity 360ms ease, transform 420ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+.promo-rewind__chip svg { width: 1.15em; height: 1.15em; fill: currentColor; }
+.promo-rewind__bar { position: relative; width: 4.2em; height: 3px; border-radius: 3px; background: color-mix(in srgb, var(--ad-white) 30%, transparent); overflow: hidden; }
+.promo-rewind__bar::after { content: ""; position: absolute; inset: 0; background: var(--ad-white); transform-origin: 0 50%; animation: promo-rewind-bar 1100ms cubic-bezier(0.3, 0, 0.2, 1) both; }
+@keyframes promo-rewind-bar { from { transform: scaleX(1); } to { transform: scaleX(0); } }
+.promo-rewind.is-rewound .promo-rewind__chip { opacity: 0; transform: translate(-50%, -0.6em); }
+
+/* v6c: the store reel, polished. Category-led; ambient light in each store's
+   colour; refined device frames; the camera inside the recording. */
+.promo-reel { background: #FBFAF8; overflow: hidden; }
+.promo-reel__ambient { position: absolute; inset: -12%; filter: blur(110px); opacity: 0.5; pointer-events: none; }
+.promo-reel__ambient i { position: absolute; display: block; border-radius: 50%; transition: background-color 1400ms ease; }
+.promo-reel__ambient i:nth-child(1) { left: 48%; top: 2%; width: 56%; height: 62%; background: var(--reel-a); animation: promo-reel-drift-a 12s ease-in-out infinite alternate; }
+.promo-reel__ambient i:nth-child(2) { left: 62%; top: 46%; width: 44%; height: 52%; background: var(--reel-b); opacity: 0.55; animation: promo-reel-drift-b 14s ease-in-out infinite alternate; }
+.promo-reel__ambient i:nth-child(3) { left: 2%; top: 52%; width: 46%; height: 50%; background: var(--reel-c); opacity: 0.3; animation: promo-reel-drift-c 16s ease-in-out infinite alternate; }
+@keyframes promo-reel-drift-a { from { transform: translate(0, 0) scale(1); } to { transform: translate(-9%, 7%) scale(1.12); } }
+@keyframes promo-reel-drift-b { from { transform: translate(0, 0) scale(1.05); } to { transform: translate(-12%, -8%) scale(0.92); } }
+@keyframes promo-reel-drift-c { from { transform: translate(0, 0) scale(0.95); } to { transform: translate(10%, -6%) scale(1.1); } }
+
+.promo-reel__item { grid-template-columns: 38% 1fr; gap: 5%; padding: 6% 7% 6% 8%; transform: translateY(2%) scale(0.985); transition: opacity 900ms cubic-bezier(0.22, 1, 0.36, 1), transform 1000ms cubic-bezier(0.22, 1, 0.36, 1); }
+.promo-reel__item.is-in { transform: none; }
+.promo-reel__item.is-out { transform: translateY(-2%) scale(0.985); }
+.promo-reel__text { gap: 0; }
+.promo-reel__chips { margin: 0 0 1.4cqw; font-size: 0.95cqw; }
+.promo-reel__chips .promo-reel__chip { font-size: 0.95cqw; }
+.promo-reel__chip { background: color-mix(in srgb, var(--ad-white) 70%, transparent); box-shadow: 0 0 0 1px color-mix(in srgb, var(--ad-ink) 8%, transparent); -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px); }
+.promo-reel__category { margin: 0; color: var(--ad-ink); font-size: 5.6cqw; font-weight: 700; letter-spacing: -0.045em; line-height: 0.95; }
+.promo-reel__ask { margin: 1.6cqw 0 0; color: var(--ad-ink-2); font-size: 1.75cqw; font-weight: 500; letter-spacing: -0.015em; line-height: 1.28; }
+.promo-reel__reply { margin: 1.6cqw 0 0; color: var(--ad-ink); font-size: 1.45cqw; font-weight: 500; letter-spacing: -0.01em; line-height: 1.35; opacity: 0; transform: translateY(0.4em); transition: opacity 500ms ease, transform 600ms cubic-bezier(0.22, 1, 0.36, 1); }
+.promo-reel__item.is-replying .promo-reel__reply { opacity: 1; transform: none; }
+.promo-reel__agent { display: block; margin-bottom: 0.45em; color: var(--bizmis-primary); font-size: 0.66em; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; }
+.promo-reel__word { opacity: 0.16; transition: opacity 200ms ease; }
+.promo-reel__word.is-said { opacity: 1; }
+
+.promo-reel__device { justify-self: center; display: grid; place-items: center; width: 100%; height: 100%; min-height: 0; }
+.promo-reel__screen,
+.promo-reel__item.is-desktop .promo-reel__screen,
+.promo-reel__item.is-tablet .promo-reel__screen,
+.promo-reel__item.is-phone .promo-reel__screen { position: relative; overflow: hidden; border: 0; border-top: 0; background: #0c0c0c; box-shadow: 0 50px 100px -20px rgba(20, 20, 20, 0.28), 0 0 0 1px rgba(0, 0, 0, 0.06); }
+.promo-reel__view { position: absolute; inset: var(--chrome, 0px) 0 0 0; overflow: hidden; transform-origin: 50% 50%; transition: transform 1100ms cubic-bezier(0.65, 0, 0.35, 1); }
+.promo-reel__screen .promo-reel__view video { display: block; width: 100%; height: 100%; object-fit: cover; }
+.promo-reel__screen:has(.promo-reel__view) { isolation: isolate; }
+.promo-reel__device.is-desktop .promo-reel__screen { --chrome: 34px; width: 100%; height: auto; max-height: 90%; aspect-ratio: 16 / 10.6; border-radius: 16px; background: var(--ad-white); }
+.promo-reel__device.is-tablet .promo-reel__screen { width: auto; height: 90%; aspect-ratio: 1080 / 1440; border-radius: 34px; outline: 12px solid #101010; outline-offset: -1px; }
+.promo-reel__device.is-phone .promo-reel__screen { width: auto; height: 92%; aspect-ratio: 1080 / 2280; border-radius: 46px; outline: 10px solid #101010; outline-offset: -1px; }
+.promo-reel__device.is-tablet .promo-reel__view { border-radius: 24px; inset: 10px; }
+.promo-reel__device.is-phone .promo-reel__view { border-radius: 38px; inset: 9px; }
+.promo-reel__chrome { position: absolute; left: 0; right: 0; top: 0; z-index: 2; display: flex; align-items: center; gap: 7px; height: 34px; padding: 0 14px; background: var(--ad-white); border-bottom: 1px solid var(--ad-line); }
+.promo-reel__chrome i { display: block; width: 10px; height: 10px; border-radius: 50%; background: #E2E2E2; }
+.promo-reel__island { position: absolute; left: 50%; top: 20px; z-index: 3; width: 28%; height: 20px; border-radius: 999px; background: #050505; transform: translateX(-50%); }
+.promo-reel__mini.is-desktop .promo-reel__screen { --chrome: 18px; border-top: 0; background: var(--ad-white); }
+.promo-reel__mini .promo-reel__chrome { height: 18px; gap: 4px; padding: 0 8px; }
+.promo-reel__mini .promo-reel__chrome i { width: 6px; height: 6px; }
+.promo-reel__mini .promo-reel__island { top: 10px; height: 10px; }
+.promo-reel__mini.is-phone .promo-reel__screen, .promo-reel__mini.is-tablet .promo-reel__screen { border: 0; outline: 7px solid #101010; outline-offset: -1px; }
+.promo-reel__mini.is-phone .promo-reel__view { inset: 6px; border-radius: 22px; }
+.promo-reel__mini.is-tablet .promo-reel__view { inset: 6px; border-radius: 14px; }
+
+/* v6d: the rewind card hands over to the live store quickly: no double image. */
+.promo-rewind.is-out .promo-rewind__card { opacity: 0; transition: opacity 200ms ease; }
+
+/* v7: "So we built one!" lands like a catch. */
+.promo-opening.is-knob-pop .promo-opening__knob { animation: promo-knob-pop 520ms cubic-bezier(0.34, 1.56, 0.64, 1); }
+@keyframes promo-knob-pop { 0% { scale: 1; } 18% { scale: 0.8; } 55% { scale: 1.22; } 100% { scale: 1; } }
+.promo-flippop { position: absolute; z-index: 30; width: 0; height: 0; pointer-events: none; }
+.promo-flippop__ring { position: absolute; left: 0; top: 0; width: var(--pop-size); height: var(--pop-size); margin: calc(var(--pop-size) / -2) 0 0 calc(var(--pop-size) / -2); border-radius: 50%; border: 6px solid var(--bizmis-primary); opacity: 0; animation: promo-pop-ring 700ms cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+.promo-flippop__ring.is-late { border-width: 3px; animation-delay: 90ms; animation-duration: 900ms; }
+@keyframes promo-pop-ring { 0% { opacity: 0.95; transform: scale(0.6); } 100% { opacity: 0; transform: scale(3.2); } }
+.promo-flippop i { position: absolute; left: 0; top: 0; width: calc(var(--pop-size) * 0.12); height: calc(var(--pop-size) * 0.12); margin: calc(var(--pop-size) * -0.06) 0 0 calc(var(--pop-size) * -0.06); border-radius: 50%; background: var(--bizmis-primary); opacity: 0; animation: promo-pop-spark 760ms cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+.promo-flippop i:nth-child(3n) { background: #FFD08A; }
+@keyframes promo-pop-spark {
+  0% { opacity: 1; transform: rotate(var(--a)) translateX(calc(var(--pop-size) * 0.4)) scale(1); }
+  100% { opacity: 0; transform: rotate(var(--a)) translateX(calc(var(--pop-size) * var(--d))) scale(0.3); }
+}
+
+/* v7: chapter letters fly in from outward to their place. */
+.promo-chapter__l { display: inline-block; white-space: pre; opacity: 0; transform: translate(var(--lx, 0), var(--ly, 0)) scale(1.7); filter: blur(6px); animation: promo-chapter-letter 460ms cubic-bezier(0.16, 1, 0.3, 1) var(--ld, 0ms) forwards; }
+@keyframes promo-chapter-letter { to { opacity: 1; transform: none; filter: blur(0); } }
+
+/* v7: the rewind is a VHS tape running the pain backwards. */
+.promo-rewind { background: var(--ad-white); }
+.promo-rewind video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.promo-rewind.is-out { opacity: 0; transition: opacity 300ms ease; }
+
+/* v7: "One click, and it sets itself up." Shopify data wiring into Bizmis. */
+.promo-sync { position: absolute; inset: 0; z-index: 68; background: radial-gradient(ellipse at 50% 50%, #FFF6EC 0%, var(--ad-white) 62%); opacity: 0; transition: opacity 600ms cubic-bezier(0.22, 1, 0.36, 1); pointer-events: none; font-family: var(--font-heading); }
+.promo-sync.is-in { opacity: 1; }
+.promo-sync.is-out { opacity: 0; transform: scale(1.04); transition: opacity 600ms ease, transform 800ms cubic-bezier(0.22, 1, 0.36, 1); }
+.promo-sync__wires { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+.promo-sync__wire { fill: none; stroke: color-mix(in srgb, var(--bizmis-primary) 22%, #EDE6DE); stroke-width: 2.5; stroke-dasharray: 1; stroke-dashoffset: 1; transition: stroke-dashoffset 700ms cubic-bezier(0.65, 0, 0.35, 1), stroke 500ms ease; }
+.promo-sync__wire.is-on { stroke-dashoffset: 0; stroke: color-mix(in srgb, var(--bizmis-primary) 55%, #F3E3D2); }
+.promo-sync__pulse { fill: none; stroke: var(--bizmis-primary); stroke-width: 4; stroke-linecap: round; stroke-dasharray: 0.08 1; stroke-dashoffset: 0.08; opacity: 0; filter: drop-shadow(0 0 6px var(--bizmis-primary)); }
+.promo-sync__pulse.is-on { opacity: 1; animation: promo-sync-pulse 1100ms cubic-bezier(0.4, 0, 0.2, 1) 300ms infinite; }
+@keyframes promo-sync-pulse { from { stroke-dashoffset: 0.08; } to { stroke-dashoffset: -1; } }
+.promo-sync__core { position: absolute; left: 50%; top: 50%; width: 9.8cqw; height: 9.8cqw; transform: translate(-50%, -50%) scale(0.8); opacity: 0; transition: transform 900ms cubic-bezier(0.34, 1.56, 0.64, 1), opacity 500ms ease; }
+.promo-sync.is-in .promo-sync__core { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+.promo-sync__core img { position: relative; width: 100%; height: 100%; border-radius: 28%; object-fit: cover; box-shadow: 0 1.6cqw 4cqw color-mix(in srgb, var(--bizmis-primary) 35%, transparent); }
+.promo-sync__halo { position: absolute; inset: -30%; border-radius: 50%; background: radial-gradient(circle, color-mix(in srgb, var(--bizmis-primary) 30%, transparent) 0%, transparent 65%); animation: promo-sync-breathe 2400ms ease-in-out infinite; }
+.promo-sync.is-done .promo-sync__halo { animation: promo-sync-flash 900ms cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+@keyframes promo-sync-breathe { 0%, 100% { transform: scale(0.9); opacity: 0.6; } 50% { transform: scale(1.08); opacity: 1; } }
+@keyframes promo-sync-flash { 0% { transform: scale(1); opacity: 1; } 100% { transform: scale(2.2); opacity: 0; } }
+.promo-sync__chip { position: absolute; top: var(--y); display: flex; align-items: center; gap: 0.9cqw; width: 22cqw; padding: 1cqw 1.2cqw; border-radius: 1.2cqw; background: color-mix(in srgb, var(--ad-white) 88%, transparent); box-shadow: 0 0 0 1px var(--ad-line), 0 1cqw 2.6cqw var(--ad-shadow); transform: translateY(-50%) translateX(var(--from, 0)); opacity: 0; transition: opacity 500ms ease calc(var(--i) * 90ms), transform 800ms cubic-bezier(0.22, 1, 0.36, 1) calc(var(--i) * 90ms), box-shadow 500ms ease; }
+.promo-sync__chip.is-l { right: 64.2%; --from: -2cqw; }
+.promo-sync__chip.is-r { left: 64.2%; --from: 2cqw; }
+.promo-sync.is-in .promo-sync__chip { opacity: 1; transform: translateY(-50%); }
+.promo-sync__chip.is-synced { box-shadow: 0 0 0 1.5px var(--bizmis-primary-ring), 0 1cqw 2.8cqw var(--bizmis-primary-glow); }
+.promo-sync__icon { display: grid; place-items: center; flex: none; width: 2.6cqw; height: 2.6cqw; border-radius: 0.8cqw; background: color-mix(in srgb, var(--bizmis-primary) 12%, var(--ad-white)); color: var(--bizmis-primary); }
+.promo-sync__icon svg { width: 55%; height: 55%; fill: currentColor; }
+.promo-sync__text { display: grid; gap: 0.15cqw; flex: 1; min-width: 0; }
+.promo-sync__text b { color: var(--ad-ink); font-size: 1.15cqw; font-weight: 650; letter-spacing: -0.01em; }
+.promo-sync__text small { color: var(--ad-ink-3); font-size: 0.85cqw; font-weight: 500; white-space: nowrap; }
+.promo-sync__tick { flex: none; display: grid; place-items: center; width: 1.7cqw; height: 1.7cqw; border-radius: 50%; background: var(--bizmis-primary); transform: scale(0); transition: transform 420ms cubic-bezier(0.34, 1.56, 0.64, 1); }
+.promo-sync__tick svg { width: 75%; height: 75%; fill: none; stroke: #fff; stroke-width: 2.8; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 1; stroke-dashoffset: 1; transition: stroke-dashoffset 380ms ease 200ms; }
+.promo-sync__chip.is-synced .promo-sync__tick { transform: scale(1); }
+.promo-sync__chip.is-synced .promo-sync__tick svg { stroke-dashoffset: 0; }
+
+/* v7: each recap line has a speaker: a salesperson on the shop floor. */
+.promo-recap__bubble { display: inline-flex; align-items: center; gap: 0.55em; padding-left: 0.5em; }
+.promo-recap__person { display: grid; place-items: center; flex: none; width: 1.9em; height: 1.9em; border-radius: 50%; background: #EFE9E2; overflow: hidden; }
+.promo-recap__person svg { width: 100%; height: 100%; fill: #A79C90; }
+.promo-recap__person .promo-recap__tag { fill: #EFE9E2; }
+
+/* v7: back to "Your store", then the camera dives in to the Early Access card. */
+.promo-yourstore { position: absolute; inset: 0; z-index: 72; background: var(--ad-white); opacity: 0; transition: opacity 500ms ease; pointer-events: none; }
+.promo-yourstore.is-in { opacity: 1; }
+.promo-yourstore.is-out { opacity: 0; transition-duration: 600ms; }
+.promo-yourstore__card { position: absolute; left: 50%; top: 52%; height: 58%; margin: 0; border-radius: 16px; overflow: hidden; box-shadow: 0 50px 100px -20px rgba(20, 20, 20, 0.25), 0 0 0 1px rgba(0, 0, 0, 0.05); transform: translate(-50%, -50%) scale(0.92); opacity: 0; transition: transform 900ms cubic-bezier(0.22, 1, 0.36, 1), opacity 600ms ease; transform-origin: 50% 58%; }
+.promo-yourstore.is-in .promo-yourstore__card { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+.promo-yourstore.is-diving .promo-yourstore__card { transform: translate(-50%, -50%) scale(4.2); opacity: 0; transition: transform 1100ms cubic-bezier(0.55, 0, 0.75, 0.25), opacity 500ms ease 650ms; }
+.promo-yourstore__card > svg { display: block; width: 100%; height: 100%; }
+
+/* v7: the reel as one continuous camera over a world of live devices. */
+.promo-reel.is-world .promo-reel__ambient { opacity: var(--reel-glow, 0.4); transition: none; }
+.promo-reel.is-world .promo-reel__ambient i { animation: none; transition: background-color 1600ms ease; }
+.promo-reel__world { position: absolute; left: 0; top: 0; width: 0; height: 0; transform-origin: 0 0; will-change: transform; }
+.promo-reel__dev { position: absolute; animation: promo-reel-bob 5.5s ease-in-out var(--bob, 0s) infinite alternate; }
+@keyframes promo-reel-bob { from { translate: 0 -0.6%; } to { translate: 0 0.6%; } }
+.promo-reel__dev .promo-reel__screen { position: absolute; inset: 0; width: 100%; height: 100%; overflow: hidden; background: #0c0c0c; box-shadow: 0 40px 90px -24px rgba(20, 20, 20, 0.30), 0 0 0 1px rgba(0, 0, 0, 0.06); }
+.promo-reel__dev.is-desktop .promo-reel__screen { --chrome: 34px; border-radius: 16px; background: var(--ad-white); }
+.promo-reel__dev.is-tablet .promo-reel__screen { border-radius: 34px; outline: 12px solid #101010; outline-offset: -1px; }
+.promo-reel__dev.is-phone .promo-reel__screen { border-radius: 46px; outline: 10px solid #101010; outline-offset: -1px; }
+.promo-reel__dev.is-tablet .promo-reel__view { inset: 10px; border-radius: 24px; }
+.promo-reel__dev.is-phone .promo-reel__view { inset: 9px; border-radius: 38px; }
+.promo-reel__dev .promo-reel__view { transform: none !important; }
+.promo-reel__dev video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.promo-reel__dev video.is-hero { opacity: 0; transition: opacity 320ms ease; }
+.promo-reel__dev.is-live video.is-hero { opacity: 1; }
+
+.promo-reel__caption { position: absolute; left: 6%; bottom: 10%; z-index: 4; max-width: 44%; pointer-events: none; }
+.promo-reel__cat { margin: 0; color: var(--ad-ink); font-family: var(--font-heading); font-size: 7.2cqw; font-weight: 700; letter-spacing: -0.05em; line-height: 0.92; text-shadow: 0 0.5cqw 3cqw color-mix(in srgb, var(--ad-white) 85%, transparent); }
+.promo-reel__cat span { display: inline-block; opacity: 0; transform: translateY(45%) rotate(4deg); filter: blur(4px); transition: opacity 420ms ease calc(var(--k) * 26ms), transform 700ms cubic-bezier(0.16, 1, 0.3, 1) calc(var(--k) * 26ms), filter 500ms ease calc(var(--k) * 26ms); }
+.promo-reel__caption.is-in .promo-reel__cat span { opacity: 1; transform: none; filter: none; }
+.promo-reel__does { margin: 0.9cqw 0 0 0.3cqw; color: color-mix(in srgb, var(--tint, var(--bizmis-primary)) 72%, var(--ad-ink)); font-family: var(--font-heading); font-size: 1.9cqw; font-weight: 600; letter-spacing: -0.02em; opacity: 0; transform: translateY(0.6em); transition: opacity 500ms ease 320ms, transform 700ms cubic-bezier(0.16, 1, 0.3, 1) 320ms; }
+.promo-reel__caption.is-in .promo-reel__does { opacity: 1; transform: none; }
+.promo-reel__caption:not(.is-in) .promo-reel__cat span { transition-delay: 0ms; transition-duration: 300ms; }
+
+/* v7b: a stronger catch on the flip. */
+.promo-flippop { z-index: 60; }
+.promo-flippop__ring { border-width: 9px; }
+.promo-flippop__ring.is-late { border-width: 4px; }
+@keyframes promo-pop-ring { 0% { opacity: 1; transform: scale(0.7); } 100% { opacity: 0; transform: scale(3.8); } }
+.promo-flippop i { width: calc(var(--pop-size) * 0.17); height: calc(var(--pop-size) * 0.17); margin: calc(var(--pop-size) * -0.085) 0 0 calc(var(--pop-size) * -0.085); animation-duration: 860ms; }
+.promo-flippop__flash { position: absolute; left: 0; top: 0; width: calc(var(--pop-size) * 2.4); height: calc(var(--pop-size) * 2.4); margin: calc(var(--pop-size) * -1.2) 0 0 calc(var(--pop-size) * -1.2); border-radius: 50%; background: radial-gradient(circle, #FFF3E0 0%, color-mix(in srgb, var(--bizmis-primary) 55%, transparent) 35%, transparent 70%); opacity: 0; animation: promo-pop-flash 520ms cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+@keyframes promo-pop-flash { 0% { opacity: 0.95; transform: scale(0.4); } 100% { opacity: 0; transform: scale(1.6); } }
+
+/* v7c: the catch has to read at a glance: bigger, brighter, longer. */
+.promo-flippop__ring { border-width: 12px; border-color: var(--bizmis-primary); box-shadow: 0 0 24px color-mix(in srgb, var(--bizmis-primary) 60%, transparent); animation-duration: 900ms; }
+.promo-flippop__ring.is-late { border-width: 5px; animation-duration: 1100ms; }
+.promo-flippop i { width: calc(var(--pop-size) * 0.3); height: calc(var(--pop-size) * 0.3); margin: calc(var(--pop-size) * -0.15) 0 0 calc(var(--pop-size) * -0.15); background: radial-gradient(circle, #FFFFFF 0%, #FFE2BF 30%, var(--bizmis-primary) 65%); box-shadow: 0 0 12px color-mix(in srgb, var(--bizmis-primary) 70%, transparent); animation-duration: 1100ms; }
+.promo-flippop i:nth-child(3n) { background: radial-gradient(circle, #FFFFFF 0%, var(--bizmis-primary) 70%); }
+@keyframes promo-pop-spark {
+  0% { opacity: 1; transform: rotate(var(--a)) translateX(calc(var(--pop-size) * 0.5)) scale(1.2); }
+  70% { opacity: 1; }
+  100% { opacity: 0; transform: rotate(var(--a)) translateX(calc(var(--pop-size) * var(--d))) scale(0.4); }
+}
+.promo-opening.is-knob-pop .promo-opening__knob { box-shadow: 0 0 0 10px color-mix(in srgb, var(--bizmis-primary) 25%, transparent), 0 0 40px color-mix(in srgb, var(--bizmis-primary) 70%, transparent); }
+
+/* v7c: while a store plays, the rest of the strip steps back. */
+.promo-reel__dev { transition: opacity 700ms ease, filter 700ms ease; }
+.promo-reel__world.is-focus .promo-reel__dev:not(.is-live) { opacity: 0.16; filter: blur(4px) saturate(0.6); }
+
+/* v8: the "Typical Chatbot" on the phone is a clean bottom sheet: symmetric,
+   covering the page (no product card or Add button peeking), with a scrim. */
+.promo-opening__store.is-phone .promo-pain__chat.is-open { left: 3cqi; right: 3cqi; bottom: 3cqi; max-width: none; }
+.promo-opening__store.is-phone .promo-pain__chat.is-open .promo-pain__panel,
+.promo-opening__store.is-phone .promo-pain__panel { flex: 0 0 84cqh; height: 84cqh; min-height: 84cqh; max-height: 84cqh; border-radius: 5cqi; }
+.promo-opening__store.is-phone:has(.promo-pain__chat.is-open)::after { content: ""; position: absolute; inset: 0; z-index: 6; background: rgba(30, 30, 30, 0.08); backdrop-filter: blur(2px); -webkit-backdrop-filter: blur(2px); border-radius: inherit; pointer-events: none; }
+.promo-pain__title { font-weight: 600; letter-spacing: -0.01em; }
+
+/* v8: "Sales agent" charges up through the line; the flip lands like a hit. */
+.promo-opening__choice--right { text-shadow: 0 0 calc(var(--switch-charge, 0) * 22px) color-mix(in srgb, var(--bizmis-primary) calc(var(--switch-charge, 0) * 90%), transparent); }
+.promo-opening__choice--right .promo-opening__choice-layer--idle { color: color-mix(in srgb, var(--bizmis-primary) calc(var(--switch-charge, 0) * 70%), var(--ad-ink-3)); }
+.promo-opening.is-charged:not(.is-on) .promo-opening__knob { animation: promo-knob-tremble 90ms linear infinite alternate; }
+@keyframes promo-knob-tremble { from { translate: -1.5px 0; } to { translate: 1.5px 0; } }
+.promo-flippop i { display: none; }
+.promo-flippop__ring { border-width: 7px; box-shadow: none; animation-duration: 650ms; }
+@keyframes promo-pop-ring { 0% { opacity: 1; transform: scale(0.8); } 100% { opacity: 0; transform: scale(3.4); } }
+.promo-flippop__flash { background: radial-gradient(circle, #FFFFFF 0%, color-mix(in srgb, var(--bizmis-primary) 45%, transparent) 40%, transparent 68%); animation-duration: 380ms; }
+.promo-opening__camera.is-punch { animation: promo-camera-punch 420ms cubic-bezier(0.2, 0.9, 0.3, 1); transform-origin: 50% 50%; }
+@keyframes promo-camera-punch { 0% { scale: 1; } 22% { scale: 1.07; } 100% { scale: 1; } }
+
+/* v8: the old chatbot launcher pops into the clerk. */
+.promo-install__bubble.promo-pain__launcher { background: var(--bot-user); color: var(--bot-user-ink); box-shadow: 0 12px 28px rgba(28, 28, 28, 0.22); }
+.promo-install__bubble.promo-pain__launcher svg { width: 50%; height: 50%; }
+.promo-install__bubble.is-morph { animation: promo-launcher-pop 360ms cubic-bezier(0.34, 1.56, 0.64, 1) forwards; }
+@keyframes promo-launcher-pop { 0% { transform: scale(1); filter: brightness(1); } 45% { transform: scale(0.72) rotate(-8deg); } 100% { transform: scale(1.35); filter: brightness(3) saturate(0); opacity: 0; } }
+.promo-install__halo { position: absolute; z-index: 8; width: var(--halo); height: var(--halo); margin: calc(var(--halo) / -2) 0 0 calc(var(--halo) / -2); border-radius: 50%; background: radial-gradient(circle, #FFF6EA 0%, color-mix(in srgb, var(--bizmis-primary) 45%, transparent) 30%, transparent 65%); pointer-events: none; animation: promo-install-halo 1300ms cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+@keyframes promo-install-halo { 0% { opacity: 0; transform: scale(0.2); } 20% { opacity: 1; } 100% { opacity: 0; transform: scale(1.25); } }
+[data-promo-widget].is-installing { transition: opacity 220ms ease, scale 820ms cubic-bezier(0.34, 1.7, 0.5, 1) !important; }
+
+/* v8: the doubts poof on "Perfect" (before the cart), the cart celebration
+   waits for the clerk, and it stays contained: the button turns to "Added"
+   and the cart icon pulses, no giant disc, no stray ring. */
+.promo-moments__board.is-doubts-gone:not(.is-reduced) .promo-moments__bubble { animation: promo-moments-vapor var(--promo-moments-vapor, 480ms) cubic-bezier(0.22, 1, 0.36, 1) var(--vapor-stagger, 0ms) forwards; }
+.promo-moments__board.is-doubts-gone:not(.is-reduced) .promo-moments__vapor-bit { animation: promo-moments-vapor-bit 980ms cubic-bezier(0.22, 1, 0.36, 1) calc(var(--vapor-stagger, 0ms) + var(--bit-delay, 0ms)) forwards; }
+.promo-moments__board.is-doubts-gone .is-bubble-1 { --vapor-stagger: 0ms; }
+.promo-moments__board.is-doubts-gone .is-bubble-2 { --vapor-stagger: 90ms; }
+.promo-moments__board.is-doubts-gone .is-bubble-3 { --vapor-stagger: 160ms; }
+.promo-moments__board.is-doubts-gone .is-bubble-4 { --vapor-stagger: 50ms; }
+.promo-moments__board.is-doubts-gone.is-pose-close .promo-moments__bubble,
+.promo-moments__board.is-doubts-gone.is-pose-close .promo-moments__vapor-bit { animation: none !important; opacity: 0 !important; }
+@keyframes promo-moments-cart-burst { 0% { opacity: 0.85; transform: scale(0.5); } 100% { opacity: 0; transform: scale(3.2); } }
+@keyframes promo-moments-cart-burst-soft { 0% { opacity: 0.7; transform: scale(0.5); } 100% { opacity: 0; transform: scale(2.6); } }
+.promo-moments__halo, .promo-moments__spark, .promo-moments__bloom { display: none !important; }
+
+/* v8: the cross-sell carousel beside the product. */
+.promo-xsell { position: absolute; right: 4%; top: 15%; bottom: 7%; z-index: 9; width: 15%; overflow: hidden; opacity: 0; transform: translateX(12%); transition: opacity 420ms ease, transform 620ms cubic-bezier(0.22, 1, 0.36, 1); -webkit-mask-image: linear-gradient(transparent, #000 22%, #000 78%, transparent); mask-image: linear-gradient(transparent, #000 22%, #000 78%, transparent); pointer-events: none; }
+.promo-xsell.is-in { opacity: 1; transform: none; }
+.promo-xsell.is-out { opacity: 0; transform: translateX(10%); transition-duration: 380ms; }
+.promo-xsell__track { display: grid; gap: 7%; will-change: transform; }
+.promo-xsell__track.is-spinning { transition: transform 1500ms cubic-bezier(0.12, 0.75, 0.18, 1); }
+.promo-xsell__card { position: relative; margin: 0; padding: 8%; border-radius: 12px; background: var(--ad-white); box-shadow: 0 0 0 1px var(--ad-line), 0 8px 22px var(--ad-shadow); transition: box-shadow 400ms ease, transform 500ms cubic-bezier(0.34, 1.56, 0.64, 1); }
+.promo-xsell__card img { display: block; width: 100%; aspect-ratio: 1; object-fit: cover; border-radius: 8px; background: var(--ad-photo); }
+.promo-xsell__card span { display: block; height: 0.55em; margin-top: 8%; border-radius: 4px; background: var(--ad-line); }
+.promo-xsell__card span + span { width: 55%; margin-top: 5%; }
+.promo-xsell__card.is-picked { box-shadow: 0 0 0 3px var(--bizmis-primary-ring), 0 14px 30px var(--bizmis-primary-glow); transform: scale(1.06); }
+.promo-xsell__flyer { position: absolute; z-index: 12; margin: 0; padding: 0; border-radius: 12px; overflow: hidden; pointer-events: none; box-shadow: 0 18px 40px rgba(28, 28, 28, 0.18); }
+.promo-xsell__flyer img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.promo-xsell__flyer span { display: none; }
+.promo-xsell__flyer.is-flying { transition: left 700ms cubic-bezier(0.65, 0, 0.35, 1), top 700ms cubic-bezier(0.65, 0, 0.35, 1), width 700ms cubic-bezier(0.65, 0, 0.35, 1), height 700ms cubic-bezier(0.65, 0, 0.35, 1), box-shadow 700ms ease; }
+.promo-xsell__flyer.is-gone { opacity: 0; transition: opacity 300ms ease; }
+.promo-moments__card.is-extra .promo-moments__photo.is-landing,
+.promo-moments__card.is-extra.is-landing { visibility: hidden; }
+
+/* v8 sync scene: the clerk alone at the centre absorbing the store's Shopify parts */
+.promo-sync.is-orbs { background: radial-gradient(ellipse at 50% 52%, #FFF4E8 0%, var(--ad-white) 60%); }
+.promo-sync.is-orbs.is-leaving { opacity: 0; transition: opacity 480ms cubic-bezier(0.4, 0, 0.2, 1); }
+.promo-sync__glow { position: absolute; left: 50%; top: 50%; width: 44cqh; height: 44cqh; translate: -50% -50%; border-radius: 50%;
+  background: radial-gradient(circle, color-mix(in srgb, var(--bizmis-primary) 34%, transparent) 0%, transparent 68%);
+  opacity: calc(0.15 + var(--charge, 0) * 0.85); scale: calc(0.8 + var(--charge, 0) * 0.45); filter: blur(2cqh);
+  transition: opacity 260ms ease, scale 320ms cubic-bezier(0.22, 1, 0.36, 1); }
+.promo-sync__avatar { position: absolute; inset: 0; }
+html.is-promo-sync-hero .promo-sync__avatar > .promo-opening__widget { position: absolute !important; opacity: 1 !important; visibility: visible !important; z-index: 2; }
+html.is-promo-sync-hero .promo-sync__avatar .bizmis-desktop-lite-chat form,
+html.is-promo-sync-hero .promo-sync__avatar .bizmis-desktop-lite-chat button,
+html.is-promo-sync-hero .promo-sync__avatar .promo-opening__stains { opacity: 0 !important; }
+html.is-promo-sync-hero .promo-sync__avatar .bizmis-desktop-lite-chat,
+html.is-promo-sync-hero .promo-sync__avatar .bizmis-desktop-lite-chat > div,
+html.is-promo-sync-hero .promo-sync__avatar .bizmis-desktop-lite-chat > div::before,
+html.is-promo-sync-hero .promo-sync__avatar .bizmis-desktop-lite-chat > div::after { background: transparent !important; box-shadow: none !important; border-color: transparent !important; backdrop-filter: none !important; }
+.promo-sync.is-gulp .promo-sync__avatar > .promo-opening__widget { animation: promo-sync-gulp 300ms cubic-bezier(0.22, 1, 0.36, 1); }
+@keyframes promo-sync-gulp { 40% { filter: brightness(1.12) drop-shadow(0 0 1.2cqh color-mix(in srgb, var(--bizmis-primary) 60%, transparent)); } }
+.promo-sync__ring { position: absolute; left: 50%; top: 50%; width: 30cqh; height: 30cqh; translate: -50% -50%; border-radius: 50%;
+  border: 0.5cqh solid var(--bizmis-primary); opacity: 0; scale: 0.6; pointer-events: none; z-index: 3; }
+.promo-sync.is-click .promo-sync__ring { animation: promo-sync-ring 620ms cubic-bezier(0.22, 1, 0.36, 1); }
+.promo-sync.is-charged .promo-sync__ring { animation: promo-sync-release 820ms cubic-bezier(0.16, 1, 0.3, 1); }
+@keyframes promo-sync-ring { 0% { opacity: 0.55; scale: 0.5; } 100% { opacity: 0; scale: 1.6; border-width: 0.1cqh; } }
+@keyframes promo-sync-release { 0% { opacity: 0.9; scale: 0.7; } 100% { opacity: 0; scale: 3.4; border-width: 0.05cqh; } }
+.promo-sync__orb { position: absolute; z-index: 4; display: flex; flex-direction: column; align-items: center; gap: 1.1cqh;
+  left: calc(50% + cos(var(--a)) * 31cqw); top: calc(50% + sin(var(--a)) * 33cqh); translate: -50% -50%;
+  opacity: 0; scale: 0.4; transition: opacity 240ms ease, scale 520ms cubic-bezier(0.34, 1.56, 0.64, 1); }
+.promo-sync__orb.is-out { opacity: 1; scale: 1; }
+.promo-sync__bead { width: 9cqh; height: 9cqh; border-radius: 50%; display: grid; place-items: center;
+  background: radial-gradient(circle at 35% 30%, #fff 0%, #FFF1E2 55%, #FBD9B6 100%);
+  box-shadow: 0 0.8cqh 2.4cqh rgba(196, 92, 20, 0.16), inset 0 -0.4cqh 0.9cqh rgba(232, 120, 40, 0.18), 0 0 0 0.12cqh rgba(232, 120, 40, 0.14); }
+.promo-sync__bead svg { width: 42%; height: 42%; fill: var(--bizmis-primary); }
+.promo-sync__name { font-size: 2.1cqh; font-weight: 600; letter-spacing: -0.01em; color: #6F6259; }
+html.is-promo-sync-hero .promo-sync__avatar .bizmis-desktop-lite-chat .relative.z-10 { -webkit-mask-image: linear-gradient(to bottom, #000 70%, transparent 97%); mask-image: linear-gradient(to bottom, #000 70%, transparent 97%); }
+
+/* v8 devices: one Apple-like look for the whole film (thin black bezel, fine metal rim, soft shadow) */
+.promo-dev { position: absolute; transform-origin: 50% 50%; will-change: transform; }
+.promo-dev__body { position: relative; width: 100%; padding: var(--bezel); border-radius: var(--radius); background: #0B0B0D;
+  box-shadow: 0 0 0 calc(var(--u) * 0.32) #C9CACE, 0 0 0 calc(var(--u) * 0.46) #9C9EA3,
+    0 calc(var(--u) * 3) calc(var(--u) * 7) calc(var(--u) * -2) rgba(24, 20, 16, 0.34), 0 calc(var(--u) * 0.6) calc(var(--u) * 1.4) rgba(24, 20, 16, 0.12),
+    inset 0 0 0 calc(var(--u) * 0.12) rgba(255, 255, 255, 0.10); }
+.promo-dev__screen { position: relative; width: 100%; overflow: hidden; border-radius: calc(var(--radius) - var(--bezel)); background: #000; isolation: isolate; }
+.promo-dev__screen video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.promo-dev__island { position: absolute; left: 50%; top: calc(var(--u) * 2.6); z-index: 3; width: 30%; height: calc(var(--u) * 8.4); border-radius: 999px; background: #000; translate: -50% 0; }
+.promo-dev.is-desktop .promo-dev__body { border-radius: var(--radius) var(--radius) calc(var(--u) * 0.5) calc(var(--u) * 0.5); }
+.promo-dev__base { position: absolute; left: -7%; right: -7%; bottom: 0; height: calc(var(--u) * 3.4); border-radius: calc(var(--u) * 0.3) calc(var(--u) * 0.3) calc(var(--u) * 2.4) calc(var(--u) * 2.4) / calc(var(--u) * 0.3) calc(var(--u) * 0.3) calc(var(--u) * 2) calc(var(--u) * 2);
+  background: linear-gradient(to bottom, #EDEEF0 0%, #D5D6DA 38%, #B8BABF 100%); box-shadow: 0 calc(var(--u) * 2.4) calc(var(--u) * 4) calc(var(--u) * -1.6) rgba(24, 20, 16, 0.32); }
+.promo-dev__base::before { content: ''; position: absolute; left: 50%; top: 0; width: 15%; height: 34%; translate: -50% 0; border-radius: 0 0 calc(var(--u) * 1) calc(var(--u) * 1); background: linear-gradient(to bottom, #A9ABB0, #C9CBCF); }
+.promo-dev video.is-hero { opacity: 0; transition: opacity 320ms ease; }
+.promo-dev.is-live video.is-hero { opacity: 1; }
+
+/* v8 carousel: fixed camera, the strip moves */
+.promo-reel.is-carousel .promo-reel__strip { position: absolute; left: 0; top: 0; width: 0; height: 100%; will-change: transform; }
+.promo-reel.is-carousel .promo-dev { opacity: calc(1 - var(--dim, 0) * 0.82); filter: blur(calc(var(--dim, 0) * 3px)) saturate(calc(1 - var(--dim, 0) * 0.4)); }
+.promo-reel.is-carousel.is-typing .promo-reel__caption { opacity: 0; transition: opacity 300ms ease; }
+.promo-reel.is-carousel .promo-reel__caption { transition: opacity 300ms ease; z-index: 6; }
+.promo-reel__yours { position: absolute; inset: 0; display: grid; place-content: center; justify-items: center; gap: calc(var(--u) * 1.6); background: #fff; color: var(--ad-ink); font-family: var(--font-heading); }
+.promo-reel__yours p { margin: 0; font-size: calc(var(--u) * 4.6); font-weight: 700; letter-spacing: -0.04em; line-height: 1; }
+.promo-reel__yours-icon { display: grid; place-items: center; width: calc(var(--u) * 9); height: calc(var(--u) * 9); border-radius: 26%; background: color-mix(in srgb, var(--bizmis-primary) 12%, #fff); }
+.promo-reel__yours-icon svg { width: 56%; height: 56%; fill: none; stroke: var(--bizmis-primary); stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
+.promo-reel.is-entering .promo-reel__yours p, .promo-reel.is-entering .promo-reel__yours-icon { opacity: 0; transition: opacity 380ms ease; }
+.promo-reel.is-carousel.is-out { background: #fff; }
+.promo-reel.is-carousel .promo-reel__caption { left: 5.5%; bottom: 9%; max-width: 34%; }
+.promo-reel.is-carousel .promo-reel__cat { font-size: 5.4cqw; }
+.promo-reel.is-carousel .promo-reel__does { font-size: 1.7cqw; }
+
+/* v8 install: an App Store-style sheet, a ring that fills, the icon arcs into the old chatbot */
+.promo-install.is-sheet { left: 50%; top: auto; bottom: 5%; width: 21em; flex-direction: column; align-items: stretch; gap: 1.1em; padding: 0.7em 1.4em 1.4em; border-radius: 1.7em;
+  background: color-mix(in srgb, #fff 88%, transparent); -webkit-backdrop-filter: blur(1.4em) saturate(1.6); backdrop-filter: blur(1.4em) saturate(1.6);
+  box-shadow: 0 1.8em 4.4em rgba(28, 24, 20, 0.22), 0 0.2em 0.6em rgba(28, 24, 20, 0.08), 0 0 0 1px rgba(28, 24, 20, 0.06);
+  transform: translate(-50%, 120%); opacity: 1; transition: transform 640ms cubic-bezier(0.22, 1.2, 0.36, 1); }
+.promo-install.is-sheet.is-in { transform: translate(-50%, 0); }
+.promo-install.is-sheet.is-out { transform: translate(-50%, 130%); opacity: 1; transition: transform 460ms cubic-bezier(0.55, 0, 0.75, 0.3); }
+.promo-install__grab { align-self: center; width: 2.6em; height: 0.3em; border-radius: 99px; background: rgba(28, 24, 20, 0.16); }
+.promo-install__app { display: flex; align-items: center; gap: 0.95em; }
+.promo-install.is-sheet .promo-install__icon { width: 4.4em; height: 4.4em; border-radius: 1.05em; box-shadow: 0 0.5em 1.2em color-mix(in srgb, var(--bizmis-primary) 34%, transparent), 0 0 0 1px rgba(0, 0, 0, 0.05); }
+.promo-install.is-sheet .promo-install__meta { margin: 0; }
+.promo-install.is-sheet .promo-install__name { font-size: 1.45em; letter-spacing: -0.03em; }
+.promo-install.is-sheet .promo-install__by { font-size: 0.95em; }
+.promo-install.is-sheet .promo-install__button { position: relative; justify-content: center; align-self: center; width: 100%; height: 2.9em; padding: 0; border-radius: 99px; background: var(--ad-ink); font-size: 1.05em;
+  transition: width 360ms cubic-bezier(0.65, 0, 0.35, 1), background-color 260ms ease, transform 140ms ease; }
+.promo-install.is-sheet .promo-install__label { display: block; transition: opacity 160ms ease; }
+.promo-install.is-sheet .promo-install__ring, .promo-install.is-sheet .promo-install__check { position: absolute; left: 50%; top: 50%; width: 2.2em; height: 2.2em; translate: -50% -50%; fill: none; opacity: 0; }
+.promo-install__ring circle { stroke: #fff; stroke-width: 2.2; stroke-linecap: round; stroke-dasharray: 1; stroke-dashoffset: 1; transform: rotate(-90deg); transform-origin: 50% 50%; }
+.promo-install__check path { stroke: #fff; stroke-width: 2.6; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 1; stroke-dashoffset: 1; }
+.promo-install.is-sheet.is-pressed .promo-install__button { transform: scale(0.95); }
+.promo-install.is-sheet.is-loading .promo-install__button { width: 2.9em; }
+.promo-install.is-sheet.is-loading .promo-install__label { opacity: 0; }
+.promo-install.is-sheet.is-loading .promo-install__ring { opacity: 1; }
+.promo-install.is-sheet.is-loading .promo-install__ring circle { stroke-dashoffset: 0; transition: stroke-dashoffset 440ms cubic-bezier(0.4, 0, 0.2, 1) 60ms; }
+.promo-install.is-sheet.is-done .promo-install__button { background: var(--bizmis-primary); }
+.promo-install.is-sheet.is-done .promo-install__ring { opacity: 0; transition: opacity 120ms ease; }
+.promo-install.is-sheet.is-done .promo-install__check { opacity: 1; }
+.promo-install.is-sheet.is-done .promo-install__check path { stroke-dashoffset: 0; transition: stroke-dashoffset 220ms cubic-bezier(0.22, 1, 0.36, 1); }
+.promo-install.is-sheet .promo-install__label > span + span { display: none; }
+.promo-install__flyer { position: absolute; z-index: 32; border-radius: 24%; pointer-events: none; transform-origin: 50% 50%;
+  box-shadow: 0 0.6em 1.6em color-mix(in srgb, var(--bizmis-primary) 50%, transparent), 0 0 2.4em color-mix(in srgb, var(--bizmis-primary) 40%, transparent); }
+.promo-install__wave { position: absolute; z-index: 7; width: var(--wave); height: var(--wave); margin: calc(var(--wave) / -2) 0 0 calc(var(--wave) / -2); border-radius: 50%; pointer-events: none;
+  background: radial-gradient(circle, transparent 0%, transparent 52%, color-mix(in srgb, #FFE3C4 70%, transparent) 60%, color-mix(in srgb, var(--bizmis-primary) 22%, transparent) 64%, transparent 70%);
+  transform: scale(0); opacity: 1; animation: promo-install-wave 1100ms cubic-bezier(0.22, 0.8, 0.36, 1) forwards; mix-blend-mode: screen; }
+@keyframes promo-install-wave { 0% { transform: scale(0); opacity: 1; } 80% { opacity: 0.9; } 100% { transform: scale(1); opacity: 0; } }
+.promo-install__shock { position: absolute; z-index: 9; width: var(--shock); height: var(--shock); margin: calc(var(--shock) / -2) 0 0 calc(var(--shock) / -2); border-radius: 50%; pointer-events: none;
+  border: 0.25em solid var(--bizmis-primary); transform: scale(0.15); opacity: 0.95; animation: promo-install-shock 620ms cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+@keyframes promo-install-shock { to { transform: scale(1); opacity: 0; border-width: 0.04em; } }
+
+/* v8b devices: thin futuristic glass frames (operator: "highly premium Apple-like thin futuristic glassmorphism", no dark contour) */
+.promo-dev__body { background: linear-gradient(145deg, rgba(255, 255, 255, 0.9) 0%, rgba(246, 246, 250, 0.62) 46%, rgba(232, 234, 240, 0.5) 100%);
+  -webkit-backdrop-filter: blur(calc(var(--u) * 1.4)) saturate(1.6); backdrop-filter: blur(calc(var(--u) * 1.4)) saturate(1.6);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.95), inset 0 calc(var(--u) * 0.25) calc(var(--u) * 0.6) rgba(255, 255, 255, 0.7),
+    0 0 0 1px rgba(24, 24, 32, 0.08), 0 calc(var(--u) * 2.6) calc(var(--u) * 7) calc(var(--u) * -2) rgba(28, 24, 20, 0.22), 0 calc(var(--u) * 0.5) calc(var(--u) * 1.2) rgba(28, 24, 20, 0.07); }
+.promo-dev__screen { box-shadow: 0 0 0 1px rgba(24, 24, 32, 0.10); }
+.promo-dev__base { background: linear-gradient(to bottom, rgba(255, 255, 255, 0.95) 0%, rgba(240, 241, 245, 0.8) 45%, rgba(222, 224, 230, 0.75) 100%);
+  -webkit-backdrop-filter: blur(calc(var(--u) * 1.2)); backdrop-filter: blur(calc(var(--u) * 1.2));
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 1), 0 0 0 1px rgba(24, 24, 32, 0.08), 0 calc(var(--u) * 2) calc(var(--u) * 4) calc(var(--u) * -1.6) rgba(28, 24, 20, 0.22); }
+.promo-dev__base::before { background: linear-gradient(to bottom, rgba(24, 24, 32, 0.10), rgba(24, 24, 32, 0.03)); }
+.promo-dev__island { display: none; }
+
+/* v9 reel polish */
+.promo-reel.is-carousel .promo-reel__strip { opacity: 0; translate: 0 2.5%; transition: opacity 700ms cubic-bezier(0.22, 1, 0.36, 1), translate 900ms cubic-bezier(0.22, 1, 0.36, 1); }
+.promo-reel.is-carousel.is-in .promo-reel__strip { opacity: 1; translate: 0 0; }
+.promo-reel.is-carousel .promo-dev { opacity: calc(1 - var(--dim, 0) * 0.9); filter: blur(calc(var(--dim, 0) * 6px)) saturate(calc(1 - var(--dim, 0) * 0.5)); }
+.promo-reel.is-carousel .promo-reel__caption:not(.is-in) .promo-reel__cat span,
+.promo-reel.is-carousel .promo-reel__caption:not(.is-in) .promo-reel__does { transition: opacity 260ms ease, transform 260ms ease, filter 260ms ease; transition-delay: 0ms; }
+.promo-dev__screen { background: #F2F2F4; }
+.promo-reel__yours { background: #fff; display: block; }
+.promo-reel__yours-shot { position: absolute; inset: 0; }
+.promo-reel__yours-shot svg { display: block; width: 100%; height: 100%; }
+.promo-reel__yours-label { position: absolute; left: 50%; top: 50%; translate: -50% -50%; display: inline-flex; align-items: center; gap: calc(var(--u) * 1.4); padding: calc(var(--u) * 1.4) calc(var(--u) * 2.6) calc(var(--u) * 1.4) calc(var(--u) * 1.6);
+  border-radius: 999px; background: color-mix(in srgb, #fff 80%, transparent); -webkit-backdrop-filter: blur(calc(var(--u) * 1.6)) saturate(1.5); backdrop-filter: blur(calc(var(--u) * 1.6)) saturate(1.5);
+  box-shadow: 0 calc(var(--u) * 1) calc(var(--u) * 3) rgba(28, 24, 20, 0.14), 0 0 0 1px rgba(24, 24, 32, 0.06); font-family: var(--font-heading); color: var(--ad-ink); transition: opacity 320ms ease; }
+.promo-reel__yours-label b { font-size: calc(var(--u) * 3.6); font-weight: 700; letter-spacing: -0.035em; line-height: 1; }
+.promo-reel__yours-label .promo-reel__yours-icon { width: calc(var(--u) * 6); height: calc(var(--u) * 6); }
+.promo-reel.is-entering .promo-reel__yours-label { opacity: 0; }
+.promo-reel.is-entering .promo-reel__yours-shot { opacity: 0; transition: opacity 520ms ease 180ms; }
+.promo-reel__said { position: absolute; z-index: 7; translate: -50% 0; display: inline-flex; align-items: center; gap: 1.1cqh; max-width: 44cqw; padding: 1.1cqh 2.2cqh 1.1cqh 1.3cqh; border-radius: 999px;
+  background: color-mix(in srgb, #fff 86%, transparent); -webkit-backdrop-filter: blur(1.4cqh) saturate(1.5); backdrop-filter: blur(1.4cqh) saturate(1.5);
+  box-shadow: 0 1.2cqh 3.2cqh rgba(28, 24, 20, 0.16), 0 0 0 1px rgba(24, 24, 32, 0.06); font-family: var(--font-heading); color: var(--ad-ink);
+  opacity: 0; transform: translateY(1.2cqh) scale(0.96); transition: opacity 320ms ease, transform 520ms cubic-bezier(0.22, 1, 0.36, 1); }
+.promo-reel__said.is-in { opacity: 1; transform: none; }
+.promo-reel__said.is-out { opacity: 0; transform: translateY(-0.6cqh); transition-duration: 420ms; }
+.promo-reel__said-mic { flex: none; display: inline-flex; align-items: center; justify-content: center; gap: 0.32cqh; width: 4.2cqh; height: 4.2cqh; border-radius: 50%; background: color-mix(in oklab, var(--tint) 85%, #000 0%); }
+.promo-reel__said-mic i { display: block; width: 0.42cqh; height: 1.2cqh; border-radius: 99px; background: #fff; animation: promo-said-wave 0.9s ease-in-out infinite; }
+.promo-reel__said-mic i:nth-child(2) { animation-delay: -0.3s; } .promo-reel__said-mic i:nth-child(3) { animation-delay: -0.6s; } .promo-reel__said-mic i:nth-child(4) { animation-delay: -0.15s; }
+@keyframes promo-said-wave { 0%, 100% { height: 0.9cqh; } 50% { height: 2.3cqh; } }
+.promo-reel__said-text { font-size: 2.5cqh; font-weight: 600; letter-spacing: -0.015em; line-height: 1.25; }
+.promo-reel__said-text > span { opacity: 0.22; transition: opacity 160ms ease; }
+.promo-reel__said-text > span.is-said { opacity: 1; }
+/* v9 sync: one glyph per Shopify part, readable labels */
+.promo-sync__bead svg { width: 46%; height: 46%; fill: none !important; stroke: var(--bizmis-primary); stroke-width: 1.9; stroke-linecap: round; stroke-linejoin: round; }
+.promo-sync__bead { width: 10cqh; height: 10cqh; }
+.promo-sync__name { font-size: 2.7cqh; color: #5E534B; }
+.promo-sync.is-orbs.is-leaving { opacity: 0; transition: opacity 560ms cubic-bezier(0.4, 0, 0.2, 1); }
+.promo-sync__ring { width: 34cqh; height: 34cqh; border-width: 0.6cqh; }
+
+/* v9 SOLD: a solid orange disc with a white check over a light warm veil (was a muddy peach wash + thin white check) */
+.promo-glide:not(.is-pain) .promo-glide__veil, .promo-close__veil:not(.is-lost) { background: rgba(255, 250, 244, 0.85); }
+.promo-glide:not(.is-pain) .promo-glide__mark, .promo-close__mark { width: 17%; box-sizing: border-box; padding: 4.4%; border-radius: 50%; background: var(--bizmis-primary); color: #fff;
+  filter: none; box-shadow: 0 0.6em 1.6em color-mix(in srgb, var(--bizmis-primary) 45%, transparent), 0 0 0 0.35em color-mix(in srgb, var(--bizmis-primary) 18%, transparent); }
+.promo-close__mark { width: 13%; padding: 3.2%; font-size: 1.4vw; }
+.promo-glide:not(.is-pain) .promo-glide__mark svg path, .promo-close__mark svg path { stroke-width: 2.2; }
+/* v9 captions: readable at 4K on a phone, steady widths */
+.promo-caption { padding: 6px 20px; background-color: rgba(255, 255, 255, 0.78); }
+.promo-caption__text { font-size: 27px; font-weight: 600; letter-spacing: -0.01em; }
+.promo-caption__word.is-current { font-weight: 600; }
+.promo-caption__word.is-upcoming { color: rgba(23, 23, 23, 0.46); }
+/* v9 chapter chip: a frosted pill over the window's header band; a solid neutral dot (the dashed ring read as a spinner) */
+.promo-chapter { background: color-mix(in srgb, #fff 90%, transparent); -webkit-backdrop-filter: blur(14px) saturate(1.4); backdrop-filter: blur(14px) saturate(1.4); box-shadow: 0 0 0 1px rgba(24, 24, 32, 0.07), 0 10px 28px rgba(28, 24, 20, 0.12); }
+.promo-chapter__ring { stroke-dasharray: none !important; animation: none !important; stroke: none; fill: #D9D6D2; }
+/* v9 cross-sell carousel: above the clerk, never over the avatar */
+.promo-xsell { right: 4.5%; top: 10%; bottom: 47%; width: 12.5%; }
+/* v9 install: no backdrop blur on the sheet (a one-frame grey block rendered through it in v8) */
+.promo-install.is-sheet { -webkit-backdrop-filter: none; backdrop-filter: none; background: #FFFFFF; }
+/* v9 rewind: opaque from its first frame; lands with a quick dissolve (less ghosting over the live store) */
+.promo-rewind.is-cover { opacity: 1; transition: none; background: #fff; }
+.promo-rewind.is-out { opacity: 0; transition: opacity 260ms ease; }
+/* v9 switch: the two moments under the toggle, resolving as it flips */
+.promo-switch-moments { position: absolute; left: 50%; top: 64%; translate: -50% 0; display: flex; gap: 1.6cqw; pointer-events: none; }
+.promo-switch-moments.is-out { opacity: 0; transition: opacity 420ms ease; }
+.promo-switch-moments__chip { display: inline-flex; align-items: center; gap: 0.55em; padding: 0.55em 1.1em 0.55em 0.65em; border-radius: 999px; background: #fff;
+  box-shadow: 0 0 0 1px var(--ad-line), 0 10px 26px var(--ad-shadow); font-family: var(--font-heading); font-size: 3.5cqh; font-weight: 600; letter-spacing: -0.02em; white-space: nowrap;
+  opacity: 0; transform: translateY(0.6em) scale(0.96); transition: opacity 380ms ease, transform 620ms cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 500ms ease; }
+.promo-switch-moments__chip.is-in { opacity: 1; transform: none; }
+.promo-switch-moments__dot { display: grid; place-items: center; width: 1.15em; height: 1.15em; border-radius: 50%; background: #D9D6D2; transition: background-color 360ms ease, transform 460ms cubic-bezier(0.34, 1.56, 0.64, 1); }
+.promo-switch-moments__dot svg { width: 100%; height: 100%; fill: none; stroke: #fff; stroke-width: 2.6; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 1; stroke-dashoffset: 1; transition: stroke-dashoffset 380ms cubic-bezier(0.22, 1, 0.36, 1) 160ms; }
+.promo-switch-moments__words { display: grid; overflow: hidden; }
+.promo-switch-moments__words > span { grid-area: 1 / 1; transition: opacity 260ms ease, transform 460ms cubic-bezier(0.22, 1, 0.36, 1); }
+.promo-switch-moments__words > span:first-child { color: var(--ad-ink-2); }
+.promo-switch-moments__words > span + span { color: var(--ad-ink); opacity: 0; transform: translateY(0.9em); }
+.promo-switch-moments__chip.is-struck { box-shadow: 0 0 0 1px var(--bizmis-primary-ring), 0 10px 28px var(--bizmis-primary-glow); }
+.promo-switch-moments__chip.is-struck .promo-switch-moments__dot { background: var(--bizmis-primary); transform: scale(1.08); }
+.promo-switch-moments__chip.is-struck .promo-switch-moments__dot svg { stroke-dashoffset: 0; }
+.promo-switch-moments__chip.is-struck .promo-switch-moments__words > span:first-child { opacity: 0; transform: translateY(-0.9em); }
+.promo-switch-moments__chip.is-struck .promo-switch-moments__words > span + span { opacity: 1; transform: none; }
+/* v9 burst: no stock rings */
+.promo-opening__wave { display: none !important; }
+
+/* v9 end card: one stable composition (brand, action, script line, stamp, benefit pills, the VO's extras), nothing clears */
+.promo-pass-slot__brand { display: block; height: 2.1vw; width: auto; margin: 0 auto 1.3vw; opacity: 0; transform: translateY(0.4em); transition: opacity 600ms ease, transform 800ms cubic-bezier(0.22, 1, 0.36, 1); }
+.promo-opening.is-ea-in .promo-pass-slot__brand, .promo-pass-slot.is-settled .promo-pass-slot__brand { opacity: 1; transform: none; }
+.promo-opening.is-ea-card .promo-pass-slot__terms { grid-template-columns: none; grid-auto-flow: column; justify-content: center; gap: 0.7vw; margin-top: 2.1vw; font-size: 1.12vw; color: var(--ad-ink); }
+.promo-opening.is-ea-card .promo-pass-slot__piece { display: inline-flex; align-items: center; gap: 0.45em; padding: 0.5em 1em 0.5em 0.75em; border-radius: 999px;
+  background: color-mix(in srgb, var(--bizmis-primary) 11%, #fff); box-shadow: 0 0 0 1px color-mix(in srgb, var(--bizmis-primary) 26%, transparent); }
+.promo-pass-slot.is-hero .promo-pass-slot__terms { opacity: 1 !important; transform: none !important; }
+.promo-opening.is-ea-card.is-ea-hero .promo-pass-slot { top: 58%; }
+.promo-opening.is-ea-card.is-ea-hero .promo-scale__end-hero { top: 29%; }
+.promo-pass-slot__extras { display: flex; justify-content: center; flex-wrap: nowrap; gap: 0; margin: 1.3vw 0 0; font-family: var(--font-heading); font-size: 0.86vw; font-weight: 500; letter-spacing: -0.005em; color: var(--ad-ink-3); white-space: nowrap; }
+.promo-pass-slot__extra { opacity: 0; transform: translateY(0.35em); transition: opacity 420ms ease, transform 600ms cubic-bezier(0.22, 1, 0.36, 1); }
+.promo-pass-slot__extra + .promo-pass-slot__extra::before { content: '·'; margin: 0 0.7em; color: var(--ad-line-strong); }
+.promo-pass-slot__extra.is-in { opacity: 1; transform: none; }
+.promo-opening.is-ea-card .promo-pass-slot__aside { margin-top: 1.1vw; padding: 0.42em 1.1em 0.46em; border: 0; border-radius: 999px; background: var(--bizmis-primary); color: #fff;
+  font-size: 1.05vw; font-weight: 700; letter-spacing: -0.005em; box-shadow: 0 0.5em 1.4em color-mix(in srgb, var(--bizmis-primary) 38%, transparent); }
+.promo-pass-slot.is-settled .promo-pass-slot__aside, .promo-opening.is-ea-card .promo-pass-slot__aside.is-stamped { transform: rotate(-3deg); }
+@keyframes promo-ea-stamp {
+  0% { opacity: 0; transform: translateY(-0.5em) rotate(-9deg) scale(1.35); }
+  62% { opacity: 1; transform: translateY(0.04em) rotate(-3deg) scale(0.96); }
+  100% { opacity: 1; transform: rotate(-3deg) scale(1); }
+}
+/* the "Install now" sheen read cheap */
+.promo-opening.is-ea-card .promo-pass-slot__action::after, .promo-opening.is-ea-card .promo-pass-slot__shopify-label::after { content: none !important; animation: none !important; }
+.promo-opening.is-ea-card .promo-pass-slot.is-in .promo-pass-slot__shopify-label { animation: none; background-position: 140% 0, 0 0; }
+.promo-opening.is-ea-card .promo-scale__end-hero { display: none !important; }
+/* v9: the white SOLD caption reads over the pale sea (a warm, soft halo; no box) */
+.promo-sold-caption { text-shadow: 0 0.04em 0.12em rgba(150, 70, 10, 0.32), 0 0 0.55em rgba(196, 98, 24, 0.42), 0 0 1.4em rgba(196, 98, 24, 0.30); }
+
+/* v9b reel: one safe slot for what is said (left column, above the caption), clear of devices and frame edges */
+.promo-reel__said { left: 5.5%; bottom: 27%; top: auto; translate: none; max-width: 36cqw; align-items: flex-start; border-radius: 2.6cqh; padding: 1.2cqh 2cqh 1.2cqh 1.2cqh; }
+.promo-reel__said-text { padding-top: 0.55cqh; }
+.promo-reel__said-mic.is-clerk { background: #fff; box-shadow: 0 0 0 0.25cqh color-mix(in oklab, var(--tint) 70%, #fff); }
+.promo-reel__said-mic.is-clerk svg { width: 54%; height: 54%; fill: color-mix(in oklab, var(--tint) 85%, #000 0%); }
+.promo-reel__said.is-clerk .promo-reel__said-text { font-weight: 500; }
+/* the reel fades in over the sync scene (no hard cut) */
+.promo-reel.is-carousel { transition: opacity 700ms cubic-bezier(0.22, 1, 0.36, 1); }
+/* "Your store": the label sits above the product row; the store stays visible while the camera pushes through it */
+.promo-reel__yours-label { top: 24%; }
+.promo-reel.is-entering .promo-reel__yours-shot { opacity: 1; transition: none; }
+
+/* v9b */
+/* the shopper's spoken question in the moments: a listening pill, bottom centre of the window */
+.promo-reel__said.is-moments { position: absolute; z-index: 10003; left: 50%; bottom: 9%; translate: -50% 0; max-width: 60cqw; }
+/* the clerk's widget card has a frosted backing: no product shows through the avatar */
+.promo-opening__store .bizmis-desktop-lite-chat [class*="group/card"] { background-color: rgba(255, 255, 255, 0.86) !important; -webkit-backdrop-filter: blur(18px) saturate(1.4) !important; backdrop-filter: blur(18px) saturate(1.4) !important; }
+/* "Visits become sales" reads in ink over the pale sea (like the pain's caption) */
+.promo-sold-caption { color: var(--ad-ink); text-shadow: 0 0 0.6em rgba(255, 255, 255, 0.9), 0 0 1.6em rgba(255, 255, 255, 0.7); }
+/* the switch: "Sales agent" charges with a glow, never a muddy tan; the toggle eases in slowly while the line plays */
+.promo-opening__choice--right .promo-opening__choice-layer--idle { color: var(--ad-ink-3) !important; }
+/* the orange fills from the knob at an even pace (no one-frame flash) */
+.promo-opening__fill--orange { transition: transform 820ms cubic-bezier(0.65, 0, 0.35, 1), opacity 1.2s cubic-bezier(0.32, 0.72, 0, 1) !important; }
+/* install: the flying icon rounds into the launcher's circle */
+.promo-install__flyer { transition: border-radius 560ms ease; }
+.promo-install__flyer.is-round { border-radius: 50%; }
+[data-promo-widget].is-arriving { animation: promo-clerk-arrive 820ms cubic-bezier(0.34, 1.56, 0.64, 1) both; }
+@keyframes promo-clerk-arrive { from { opacity: 0; scale: 0.82; translate: 0 2.5%; } to { opacity: 1; scale: 1; translate: 0 0; } }
+.promo-sync__orb { z-index: 1; }
+.promo-sync__avatar { z-index: 2; }
+.promo-rewind__glyph { position: absolute; left: 4.5%; top: 6.5%; width: 4.2cqh; height: 4.2cqh; opacity: 0.85; filter: drop-shadow(0 0.3cqh 0.8cqh rgba(0, 0, 0, 0.25)); }
+.promo-rewind__glyph svg { width: 100%; height: 100%; fill: #fff; }
+
+/* v9b end card: rows re-centre as items arrive; the badge opens its own space; a closing install line */
+.promo-opening.is-ea-card .promo-pass-slot__terms { display: flex; justify-content: center; gap: 0; }
+.promo-opening.is-ea-card .promo-pass-slot__piece { max-width: 0; padding-left: 0; padding-right: 0; margin-left: 0; overflow: hidden; white-space: nowrap; opacity: 0;
+  transition: max-width 620ms cubic-bezier(0.22, 1, 0.36, 1), padding 620ms cubic-bezier(0.22, 1, 0.36, 1), margin 620ms cubic-bezier(0.22, 1, 0.36, 1), opacity 420ms ease 160ms; }
+.promo-opening.is-ea-card .promo-pass-slot__piece.is-in { max-width: 22em; padding-left: 0.75em; padding-right: 1em; opacity: 1; }
+.promo-opening.is-ea-card .promo-pass-slot__piece.is-in + .promo-pass-slot__piece.is-in { margin-left: 0.7vw; }
+.promo-pass-slot__extra { display: inline-block; max-width: 0; overflow: hidden; white-space: nowrap; vertical-align: bottom; transition: max-width 620ms cubic-bezier(0.22, 1, 0.36, 1), opacity 420ms ease 160ms, transform 600ms cubic-bezier(0.22, 1, 0.36, 1); }
+.promo-pass-slot__extra.is-in { max-width: 20em; }
+.promo-opening.is-ea-card .promo-pass-slot__aside { max-height: 0; margin-top: 0; padding-top: 0; padding-bottom: 0; transition: max-height 520ms cubic-bezier(0.22, 1, 0.36, 1), margin 520ms cubic-bezier(0.22, 1, 0.36, 1), padding 520ms cubic-bezier(0.22, 1, 0.36, 1);
+  background: color-mix(in oklab, var(--bizmis-primary) 72%, #B4410C); }
+.promo-opening.is-ea-card .promo-pass-slot__aside.is-stamped, .promo-pass-slot.is-settled .promo-pass-slot__aside { max-height: 3em; margin-top: 1.1vw; padding-top: 0.42em; padding-bottom: 0.46em; }
+.promo-pass-slot__find { display: inline-flex; align-items: center; gap: 0.45em; margin: 1.5vw 0 0; font-family: var(--font-heading); font-size: 0.95vw; font-weight: 600; color: var(--ad-ink-2);
+  opacity: 0; transform: translateY(0.4em); transition: opacity 600ms ease, transform 800ms cubic-bezier(0.22, 1, 0.36, 1); }
+.promo-pass-slot__find svg { width: 1.1em; height: 1.1em; fill: #5E8E3E; }
+.promo-pass-slot.is-hero .promo-pass-slot__find { opacity: 1; transform: none; }
+.promo-opening.is-ea-card .promo-pass-slot, .promo-opening.is-ea-card.is-ea-hero .promo-pass-slot { top: 52.5%; }
+/* v9b: no dark pills in the mock phones (light island), normal word spacing in the sea captions */
+.promo-clip__island { background: color-mix(in srgb, var(--ad-ink) 14%, transparent) !important; }
+.promo-grid__notch { background: color-mix(in srgb, var(--ad-ink) 14%, transparent) !important; }
+.promo-glide__caption-line .promo-glide__caption-beat + .promo-glide__caption-beat { margin-left: 0 !important; }
+/* v9b compare chips: worded and readable; solid backing so the orange card keeps contrast */
+.promo-moments__chips { font-size: clamp(13px, calc(var(--card-w, 300px) * 0.062), 30px); top: 6%; right: 5%; gap: 0.4em; }
+.promo-moments__chip { padding: 0.36em 0.7em 0.36em 0.55em; background: rgba(255, 255, 255, 0.92); color: var(--ad-ink); font-family: var(--font-heading); font-weight: 600; letter-spacing: -0.01em; }
+.promo-moments__chip-word { white-space: nowrap; }
+.promo-moments__card.is-pick .promo-moments__chip { background: #fff; color: var(--ad-ink); border-color: color-mix(in srgb, var(--bizmis-primary) 45%, white); }
+.promo-moments__card.is-pick .promo-moments__chip .promo-moments__mark { color: var(--bizmis-primary); }
+/* v9c: the pressed Add -> "Added" + cart lands with the cart sound (was 1.3 s late, after the chapter had changed) */
+.promo-moments__board { --promo-close-cart-at: 300ms; }
+/* v9c sync: the release ring and the orbs stay behind the clerk (rings crossed his face); labels fade as the orbs fly */
+.promo-sync__ring { z-index: 1; top: 60%; }
+.promo-sync__orb.is-flying .promo-sync__name { opacity: 0; transition: opacity 160ms ease; }
+/* v9c */
+.promo-opening__fill--orange { transition: transform 680ms cubic-bezier(0.3, 0.7, 0.2, 1), opacity 1.2s cubic-bezier(0.32, 0.72, 0, 1) !important; }
+.promo-opening__store .bizmis-desktop-lite-chat [class*="group/card"] { background-color: rgba(255, 255, 255, 0.97) !important; }
+.promo-opening.is-pitch:not(.is-moments) .bizmis-desktop-lite-chat .relative.z-10 { -webkit-mask-image: linear-gradient(to bottom, #000 74%, transparent 98%); mask-image: linear-gradient(to bottom, #000 74%, transparent 98%); }
+.promo-rewind__glyph { width: 6cqh; height: 6cqh; opacity: 0.9; }
+.promo-rewind__glyph svg { fill: color-mix(in srgb, var(--ad-ink) 72%, transparent); }
+.promo-rewind__glyph { filter: drop-shadow(0 0 1cqh rgba(255, 255, 255, 0.9)); }
+/* v9c reel */
+.promo-reel__said { max-width: 30cqw; }
+.promo-reel__said-mic.is-typed { background: #fff; box-shadow: 0 0 0 0.25cqh rgba(24, 24, 32, 0.12); }
+.promo-reel__said-mic.is-typed svg { width: 60%; height: 60%; fill: none; stroke: var(--ad-ink-2); stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+.promo-reel.is-carousel .promo-reel__does { color: color-mix(in oklab, var(--tint, var(--bizmis-primary)) 62%, #1a1a1a); }
+.promo-pass-slot__extras { color: #6B6B6B; }
+.promo-pass-slot__find { font-size: 1.25vw; color: var(--ad-ink); }
+.promo-pass-slot__find svg { fill: var(--ad-ink); }
+/* v9d */
+html.is-promo-sync-hero .promo-sync__avatar .bizmis-desktop-lite-chat .relative.z-10,
+.promo-opening.is-pitch:not(.is-moments) .bizmis-desktop-lite-chat .relative.z-10 { -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat; -webkit-mask-size: 100% 100%; mask-size: 100% 100%; }
+.promo-reel__said.is-moments { bottom: 17%; }
+.promo-sold-caption::before { content: ''; position: absolute; inset: -40% -18%; z-index: -1; background: radial-gradient(closest-side, rgba(255, 255, 255, 0.86), rgba(255, 255, 255, 0.55) 55%, transparent); pointer-events: none; }
+.promo-moments__chip .promo-moments__mark { width: 1.05em; height: 1.05em; }
+.promo-moments__chip.is-no { opacity: 0.55; }
+/* v9d final */
+.promo-glide__caption-line .promo-glide__caption-beat + .promo-glide__caption-beat { margin-left: 0.24em !important; }
+.promo-reel.is-carousel .promo-dev { opacity: calc(1 - var(--dim, 0) * 0.95); }
+/* the badge's space is reserved from the start: nothing reflows when it lands */
+.promo-opening.is-ea-card .promo-pass-slot__aside { max-height: 3em !important; margin-top: 1.1vw !important; padding-top: 0.42em !important; padding-bottom: 0.46em !important; }
+html.is-promo-sync-hero .promo-sync__avatar .bizmis-desktop-lite-chat .relative.z-10,
+.promo-opening.is-pitch:not(.is-moments) .bizmis-desktop-lite-chat .relative.z-10 { -webkit-mask-image: linear-gradient(to bottom, #000 60%, transparent 86%); mask-image: linear-gradient(to bottom, #000 60%, transparent 86%); }
+
+/* ===== v10: the knob becomes the orange field; the logo resolves on it ===== */
+.promo-opening.is-knob-fill .promo-opening__knob {
+  background: var(--bizmis-primary) !important;
+  box-shadow: none !important;
+  transition: background-color 160ms linear;
+}
+.promo-opening.is-knob-fill .promo-opening__fill--orange {
+  transform: scale(var(--promo-knob-s, 0));
+  transition: transform 760ms cubic-bezier(0.7, 0, 0.25, 1), opacity 1.2s cubic-bezier(0.32, 0.72, 0, 1);
+}
+.promo-opening.is-knob-fill.is-bursting .promo-opening__fill--orange { transform: scale(1); }
+.promo-opening.is-knob-fill .promo-opening__wave { display: none; }
+.promo-opening.is-knob-fill .promo-opening__choice--right { transition: opacity 220ms linear !important; }
+.promo-opening.is-knob-fill .promo-opening__toggle,
+.promo-opening.is-knob-fill .promo-switch-moments { opacity: 0; transition: opacity 260ms linear 380ms; }
+/* the logo resolves: soft focus and a breath of scale, then sharp */
+.promo-opening.is-knob-fill .promo-opening__logo {
+  filter: blur(14px);
+  transform: translate(-50%, -50%) scale(0.94);
+  transition:
+    opacity 380ms linear,
+    filter 620ms cubic-bezier(0.22, 1, 0.36, 1),
+    transform 760ms cubic-bezier(0.22, 1, 0.36, 1),
+    top 720ms cubic-bezier(0.22, 1, 0.36, 1),
+    left 720ms cubic-bezier(0.22, 1, 0.36, 1),
+    width 720ms cubic-bezier(0.22, 1, 0.36, 1),
+    height 720ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+.promo-opening.is-knob-fill.is-holding .promo-opening__logo { filter: blur(0); transform: translate(-50%, -50%) scale(1); }
+
+/* ===== v10: comparison = criteria legend + per-card verdict strip ===== */
+.promo-moments__chips { display: none !important; }
+.promo-verdict {
+  position: absolute;
+  left: 50%;
+  bottom: 6%;
+  z-index: 4;
+  display: flex;
+  gap: 0.28em;
+  padding: 0.3em;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  background: rgba(255, 255, 255, 0.72);
+  box-shadow: 0 10px 24px -14px rgba(28, 24, 20, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.9);
+  -webkit-backdrop-filter: blur(16px) saturate(1.4);
+  backdrop-filter: blur(16px) saturate(1.4);
+  font-size: clamp(12px, calc(var(--row-card-w, 300px) * 0.058), 30px);
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+.promo-verdict__cell {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3em;
+  padding: 0.34em 0.5em 0.34em 0.55em;
+  border-radius: 999px;
+  color: var(--ad-ink);
+  opacity: 0;
+  transform: scale(0.8);
+  transition: opacity 240ms ease, transform 460ms cubic-bezier(0.34, 1.56, 0.64, 1);
+  transition-delay: var(--verdict-delay, 0ms);
+}
+.promo-verdict__icon { display: block; width: 1.05em; height: 1.05em; }
+.promo-verdict__icon svg { display: block; width: 100%; height: 100%; fill: currentColor; }
+.promo-verdict__mark {
+  display: grid;
+  place-items: center;
+  width: 1.1em;
+  height: 1.1em;
+  border-radius: 50%;
+}
+.promo-verdict__mark svg { width: 72%; height: 72%; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.promo-verdict__cell.is-yes .promo-verdict__mark { background: var(--bizmis-primary); }
+.promo-verdict__cell.is-yes .promo-verdict__mark svg { stroke: #fff; }
+.promo-verdict__cell.is-no { color: color-mix(in srgb, var(--ad-ink) 34%, transparent); }
+.promo-verdict__cell.is-no .promo-verdict__mark { box-shadow: inset 0 0 0 1.4px color-mix(in srgb, var(--ad-ink) 30%, transparent); }
+.promo-verdict__cell.is-no .promo-verdict__mark svg { stroke: color-mix(in srgb, var(--ad-ink) 40%, transparent); }
+.promo-moments__card.is-pick .promo-verdict__cell.is-yes { background: color-mix(in srgb, var(--bizmis-primary) 14%, transparent); }
+.is-pose-choice .promo-moments__card .promo-verdict__cell { opacity: 1; transform: none; }
+
+.promo-verdict-legend {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  z-index: 6;
+  display: none;
+  gap: 1.1em;
+  padding: 0.5em 1.1em;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.75);
+  background: rgba(255, 255, 255, 0.66);
+  box-shadow: 0 12px 30px -18px rgba(28, 24, 20, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.9);
+  -webkit-backdrop-filter: blur(18px) saturate(1.4);
+  backdrop-filter: blur(18px) saturate(1.4);
+  color: var(--ad-ink);
+  font-family: var(--font-heading);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  font-size: clamp(13px, calc(var(--row-card-w, 300px) * 0.06), 30px);
+  white-space: nowrap;
+  opacity: 0;
+  transform: translate(-50%, calc(-50% - var(--row-card-h, 420px) / 2 - var(--row-lift, 0px) - 1.9em)) scale(0.96);
+  transition: opacity 280ms ease, transform 520ms cubic-bezier(0.22, 1, 0.36, 1);
+  pointer-events: none;
+}
+.promo-verdict-legend__item { display: inline-flex; align-items: center; gap: 0.4em; }
+.promo-verdict-legend .promo-verdict__icon { width: 1em; height: 1em; color: var(--ad-ink-2, #555); }
+.promo-moments__board:not(.is-pose-grid) .promo-verdict-legend { display: inline-flex; }
+.is-pose-choice .promo-verdict-legend { opacity: 1; transform: translate(-50%, calc(-50% - var(--row-card-h, 420px) / 2 - var(--row-lift, 0px) - 1.9em)) scale(1); }
+/* the decision: the winner lifts with an orange edge, the others step back */
+.promo-moments__board.is-decided.is-pose-choice .promo-moments__card.is-go .promo-moments__photo,
+.promo-moments__board.is-decided.is-pose-choice .promo-moments__card.is-other .promo-moments__photo { opacity: 0.5; filter: saturate(0.6); transition: opacity 420ms ease, filter 420ms ease; }
+.promo-moments__board.is-decided.is-pose-choice .promo-moments__card.is-pick .promo-moments__photo {
+  box-shadow: 0 0 0 3px var(--bizmis-primary), 0 22px 44px -22px color-mix(in srgb, var(--bizmis-primary) 70%, transparent);
+  transition: box-shadow 420ms ease;
+}
+
+/* ===== v10 LOST: SOLD's graphite twin (disc + ✕, same size and stamp motion) ===== */
+.promo-glide__lost-mark,
+.promo-close__lost-mark {
+  width: 17%;
+  max-width: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.9em;
+  color: #3A3B3E;
+  line-height: 1;
+  letter-spacing: 0.2em;
+  font-weight: 700;
+}
+.promo-close__veil.is-lost,
+.promo-glide.is-pain .promo-glide__veil { background: rgba(236, 236, 237, 0.86); }
+.promo-lost__disc {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  aspect-ratio: 1;
+  box-sizing: border-box;
+  padding: 26%;
+  border-radius: 50%;
+  background: linear-gradient(180deg, #5A5B60 0%, #2E2F33 100%);
+  box-shadow:
+    0 0.9em 2.2em rgba(20, 20, 24, 0.28),
+    0 0 0 0.5em rgba(58, 59, 62, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.28);
+}
+.promo-lost__disc svg { display: block; width: 100%; height: 100%; fill: none; stroke: #fff; stroke-width: 2.2; stroke-linecap: round; }
+.promo-lost__word { padding-left: 0.2em; font-family: var(--font-heading); white-space: nowrap; }
+
+/* ===== v10 caption carts (LOST stuck at 0 / SOLD counting up) ===== */
+.promo-tally {
+  position: absolute;
+  left: 50%;
+  top: 33%;
+  z-index: 44;
+  width: 0;
+  height: 0;
+  opacity: 0;
+  pointer-events: none;
+}
+.promo-tally__item {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: calc(var(--tally-h, 1080px) * 0.085);
+  aspect-ratio: 1;
+  border-radius: 22%;
+  overflow: hidden;
+  background: #f4f1ee;
+  box-shadow: 0 10px 24px -12px rgba(30, 24, 18, 0.35), inset 0 0 0 1px rgba(255, 255, 255, 0.7);
+  opacity: 0;
+}
+.promo-tally__item img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.promo-tally__cart {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: calc(var(--tally-h, 1080px) * 0.17);
+  aspect-ratio: 1;
+  display: grid;
+  place-items: center;
+  border-radius: 30%;
+  transform: translate(-50%, -50%);
+  -webkit-backdrop-filter: blur(18px) saturate(1.5);
+  backdrop-filter: blur(18px) saturate(1.5);
+}
+.promo-tally__cart svg { width: 62%; height: 62%; }
+.promo-tally__badge {
+  position: absolute;
+  right: 4%;
+  top: 4%;
+  min-width: 1.6em;
+  padding: 0.18em 0.42em;
+  border-radius: 999px;
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: calc(var(--tally-h, 1080px) * 0.024);
+  font-variant-numeric: tabular-nums;
+  line-height: 1.15;
+  text-align: center;
+  color: #fff;
+  transform: translate(35%, -35%);
+}
+.promo-tally.is-sold .promo-tally__cart {
+  color: #fff;
+  background: linear-gradient(160deg, color-mix(in srgb, var(--bizmis-primary) 82%, white) 0%, var(--bizmis-primary) 60%, color-mix(in srgb, var(--bizmis-primary) 85%, #b4530a) 100%);
+  box-shadow: 0 30px 60px -26px color-mix(in srgb, var(--bizmis-primary) 85%, transparent), inset 0 1px 0 rgba(255, 255, 255, 0.55), inset 0 -10px 24px rgba(160, 70, 0, 0.18);
+}
+.promo-tally.is-sold .promo-tally__badge { background: #fff; color: color-mix(in srgb, var(--bizmis-primary) 80%, #6b2d00); box-shadow: 0 6px 16px -6px rgba(120, 50, 0, 0.45); }
+.promo-tally.is-lost .promo-tally__cart {
+  color: #fff;
+  background: linear-gradient(160deg, #6B6C71 0%, #3A3B3F 60%, #2A2B2E 100%);
+  box-shadow: 0 30px 60px -28px rgba(20, 20, 24, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.3);
+}
+.promo-tally.is-lost .promo-tally__badge { background: #E9E9EA; color: #4A4B4F; box-shadow: 0 6px 16px -6px rgba(0, 0, 0, 0.35); }
+.promo-tally__visits {
+  position: absolute;
+  left: 0;
+  top: calc(var(--tally-h, 1080px) * 0.125);
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.35em;
+  padding: 0.3em 0.8em;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.7);
+  -webkit-backdrop-filter: blur(14px);
+  backdrop-filter: blur(14px);
+  color: #55565B;
+  font-family: var(--font-heading);
+  font-size: calc(var(--tally-h, 1080px) * 0.022);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  transform: translateX(-50%);
+}
+.promo-tally__visits b { color: #2F3033; font-weight: 700; }
+/* the captions sit under their carts */
+.promo-glide.is-pain .promo-glide__caption { padding-top: 26cqh; }
+.promo-glide.is-pain .promo-glide__haze { top: 63%; }
+.promo-sold-caption { top: 64%; text-shadow: 0 1px 2px rgba(120, 60, 10, 0.18) !important; }
+.promo-sold-caption::before { content: none !important; display: none !important; }
+
+/* ===== v10: no bottom fades on the avatar; the charge gulp glows orange (no dark halo) ===== */
+html.is-promo-sync-hero .promo-sync__avatar .bizmis-desktop-lite-chat .relative.z-10,
+.promo-opening.is-pitch:not(.is-moments) .bizmis-desktop-lite-chat .relative.z-10 {
+  -webkit-mask-image: none !important;
+  mask-image: none !important;
+}
+.promo-sync.is-gulp .promo-sync__avatar > .promo-opening__widget { animation: none !important; filter: none !important; }
+.promo-sync.is-gulp .promo-sync__glow { animation: promo-sync-glow-gulp 320ms cubic-bezier(0.22, 1, 0.36, 1); }
+@keyframes promo-sync-glow-gulp { 40% { opacity: 1; scale: calc(0.95 + var(--charge, 0) * 0.55); } }
+
+/* ===== v10 install: glass app tile, grab hand, the dragged clerk ===== */
+.promo-install-tile {
+  position: absolute;
+  left: 9%;
+  top: 25%;
+  z-index: 30;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5em;
+  padding: 1.1em 1.3em 0.95em;
+  border-radius: 1.6em;
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  background: rgba(255, 255, 255, 0.62);
+  box-shadow: 0 1.6em 3.2em -1.6em rgba(30, 24, 18, 0.38), inset 0 1px 0 rgba(255, 255, 255, 0.95);
+  -webkit-backdrop-filter: blur(22px) saturate(1.5);
+  backdrop-filter: blur(22px) saturate(1.5);
+  opacity: 0;
+  transform: translateY(0.8em) scale(0.92);
+  transition: opacity 360ms ease, transform 620ms cubic-bezier(0.22, 1, 0.36, 1);
+  pointer-events: none;
+}
+.promo-install-tile.is-in { opacity: 1; transform: none; }
+.promo-install-tile.is-out { opacity: 0; transform: scale(0.9); transition-duration: 320ms, 420ms; }
+.promo-install-tile__icon {
+  display: block;
+  width: 4.6em;
+  aspect-ratio: 1;
+  border-radius: 24%;
+  overflow: hidden;
+  background: #fff;
+  box-shadow: 0 0.7em 1.6em -0.6em color-mix(in srgb, var(--bizmis-primary) 60%, transparent), inset 0 0 0 1px rgba(0, 0, 0, 0.04);
+  transition: transform 260ms cubic-bezier(0.22, 1, 0.36, 1), opacity 260ms ease;
+}
+.promo-install-tile__icon img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.promo-install-tile.is-lifted .promo-install-tile__icon { transform: scale(0.86); opacity: 0.35; }
+.promo-install-tile__name { font-family: var(--font-heading); font-weight: 700; font-size: 1.15em; letter-spacing: -0.02em; color: var(--ad-ink); }
+.promo-install-tile__hint { font-size: 0.78em; color: var(--ad-ink-3, #8a8a8a); white-space: nowrap; }
+.promo-install__cursor--hand { color: #111; z-index: 60; }
+.promo-install__cursor--hand svg { position: absolute; inset: 0; fill: #fff; stroke: #111; stroke-width: 1.3; stroke-linecap: round; stroke-linejoin: round; filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.22)); }
+.promo-install__cursor--hand .is-grab { opacity: 0; }
+.promo-install__cursor--hand.is-grabbing .is-grab { opacity: 1; }
+.promo-install__cursor--hand.is-grabbing .is-open { opacity: 0; }
+/* while carried: only the clerk, no card chrome; the card forms on landing */
+/* the carried clerk's opacity and scale are driven from JS (inline), never pinned here */
+.promo-opening__store [data-promo-widget].is-dragged,
+.promo-opening__store [data-promo-widget].is-landed { visibility: visible !important; transition: none !important; }
+[data-promo-widget].is-dragged .bizmis-desktop-lite-chat [class*="group/card"],
+[data-promo-widget].is-dragged .bizmis-desktop-lite-chat > div {
+  background-color: transparent !important;
+  box-shadow: none !important;
+  border-color: transparent !important;
+  -webkit-backdrop-filter: none !important;
+  backdrop-filter: none !important;
+}
+[data-promo-widget].is-dragged .bizmis-desktop-lite-chat form,
+[data-promo-widget].is-dragged .bizmis-desktop-lite-chat button { opacity: 0 !important; }
+[data-promo-widget].is-landed .bizmis-desktop-lite-chat [class*="group/card"],
+[data-promo-widget].is-landed .bizmis-desktop-lite-chat > div {
+  transition: background-color 420ms ease, box-shadow 520ms ease, border-color 420ms ease !important;
+}
+[data-promo-widget].is-landed .bizmis-desktop-lite-chat form,
+[data-promo-widget].is-landed .bizmis-desktop-lite-chat button { transition: opacity 360ms ease 180ms !important; }
+
+/* ===== v10 SOLD: orange glass with a reflection; white disc, orange check ===== */
+.promo-glide:not(.is-pain) .promo-glide__veil,
+.promo-close__veil:not(.is-lost) {
+  background:
+    linear-gradient(118deg, rgba(255, 255, 255, 0) 16%, rgba(255, 255, 255, 0.42) 31%, rgba(255, 255, 255, 0.08) 40%, rgba(255, 255, 255, 0) 52%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.28) 0%, rgba(255, 255, 255, 0) 22%),
+    linear-gradient(165deg, color-mix(in srgb, var(--bizmis-primary) 72%, white) 0%, var(--bizmis-primary) 70%, color-mix(in srgb, var(--bizmis-primary) 88%, #c25a10) 100%) !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.55), inset 0 0 0 1px rgba(255, 255, 255, 0.22);
+}
+.promo-glide:not(.is-pain) .promo-glide__mark,
+.promo-close__mark {
+  background: #fff !important;
+  color: var(--bizmis-primary) !important;
+  box-shadow: 0 0.7em 1.8em rgba(160, 70, 0, 0.32), 0 0 0 0.35em rgba(255, 255, 255, 0.28) !important;
+}
+
+/* ===== v10 cross-sell rail: a real vertical carousel behind a glass picker ===== */
+.promo-xsell {
+  top: 9% !important;
+  bottom: 9% !important;
+  width: 12.5% !important;
+  overflow: hidden;
+  -webkit-mask-image: linear-gradient(transparent 0%, #000 16%, #000 84%, transparent 100%) !important;
+  mask-image: linear-gradient(transparent 0%, #000 16%, #000 84%, transparent 100%) !important;
+}
+.promo-xsell__card {
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.94);
+  box-shadow: 0 0 0 1px rgba(28, 24, 20, 0.06), 0 10px 26px -14px rgba(28, 24, 20, 0.28);
+}
+.promo-xsell__card.is-picked { box-shadow: 0 0 0 1px rgba(28, 24, 20, 0.06), 0 18px 34px -16px color-mix(in srgb, var(--bizmis-primary) 55%, transparent); transform: scale(1.04); }
+.promo-xsell__frame {
+  position: absolute;
+  left: -2%;
+  right: -2%;
+  top: 50%;
+  aspect-ratio: 0.78;
+  transform: translateY(-50%);
+  border-radius: 18px;
+  border: 2px solid color-mix(in srgb, var(--bizmis-primary) 85%, white);
+  box-shadow: 0 0 0 6px color-mix(in srgb, var(--bizmis-primary) 14%, transparent), inset 0 1px 0 rgba(255, 255, 255, 0.7);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 260ms ease 200ms;
+}
+.promo-xsell.is-in .promo-xsell__frame { opacity: 1; }
+.promo-xsell__carry { pointer-events: none; z-index: 12 !important; }
+/* a thinner, warmer plus between the pair */
+.promo-moments__plus svg path { stroke: color-mix(in srgb, var(--bizmis-primary) 80%, #8a5a2b) !important; stroke-width: 1.4 !important; }
+
+/* ===== v10 devices: the store window's own glass family, everywhere ===== */
+.promo-dev__body {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  padding: 0 !important;
+  overflow: hidden;
+  border-radius: var(--radius) !important;
+  background: rgba(255, 255, 255, 0.96) !important;
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.8) inset,
+    0 calc(var(--u) * 2.4) calc(var(--u) * 5.6) calc(var(--u) * -2.2) rgba(28, 24, 20, 0.30),
+    0 calc(var(--u) * 0.8) calc(var(--u) * 2) calc(var(--u) * -1.1) rgba(28, 24, 20, 0.16) !important;
+}
+.promo-dev__body::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 6;
+  border-radius: inherit;
+  pointer-events: none;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.95), inset 0 0 0 calc(var(--u) * 0.12) rgba(24, 24, 32, 0.07);
+  background: linear-gradient(140deg, rgba(255, 255, 255, 0.16) 0%, rgba(255, 255, 255, 0) 38%);
+}
+.promo-dev.is-desktop .promo-dev__body { border-radius: var(--radius) !important; }
+.promo-dev__base { display: none !important; }
+.promo-dev__screen { flex: 0 0 auto; border-radius: 0 !important; box-shadow: none !important; background: #F2F2F4; }
+.promo-dev.is-tablet .promo-dev__screen { border-radius: var(--radius) !important; }
+.promo-dev__bar {
+  flex: 0 0 var(--bar);
+  display: flex;
+  align-items: center;
+  gap: calc(var(--u) * 0.75);
+  padding: 0 calc(var(--u) * 1.6);
+  border-bottom: 1px solid rgba(24, 24, 32, 0.06);
+  background: rgba(255, 255, 255, 0.98);
+}
+.promo-dev__bar i { width: calc(var(--u) * 1.05); aspect-ratio: 1; border-radius: 50%; background: #DCDCDF; }
+.promo-dev__status {
+  flex: 0 0 var(--bar);
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  padding: 0 calc(var(--u) * 8);
+  background: rgba(255, 255, 255, 0.98);
+  color: #1d1d1f;
+  font: 600 calc(var(--u) * 4.4) / 1 -apple-system, "SF Pro Text", "Inter", system-ui, sans-serif;
+  letter-spacing: -0.01em;
+}
+.promo-dev__island { display: block !important; position: static !important; translate: none !important; width: calc(var(--u) * 27); height: calc(var(--u) * 7.6); border-radius: 999px; background: #1d1d1f !important; }
+.promo-dev__icons { display: flex; justify-content: flex-end; gap: calc(var(--u) * 1.4); }
+.promo-dev__icons i { width: calc(var(--u) * 4.2); height: calc(var(--u) * 2.6); border-radius: calc(var(--u) * 0.7); background: #1d1d1f; opacity: 0.85; }
+.promo-dev__icons i:nth-child(1) { width: calc(var(--u) * 3.6); border-radius: calc(var(--u) * 0.4); }
+.promo-dev__icons i:nth-child(3) { width: calc(var(--u) * 6); }
+
+/* the ambient light: four big blobs of the store's colour, drifting (stronger than v9) */
+.promo-reel.is-world .promo-reel__ambient { inset: -18%; filter: blur(120px); opacity: var(--reel-glow, 0.6) !important; }
+.promo-reel__ambient i:nth-child(1) { left: 44%; top: 0%; width: 62%; height: 66%; background: var(--reel-a); }
+.promo-reel__ambient i:nth-child(2) { left: 64%; top: 44%; width: 48%; height: 56%; background: var(--reel-b); opacity: 0.8; }
+.promo-reel__ambient i:nth-child(3) { left: 0%; top: 48%; width: 50%; height: 54%; background: var(--reel-c); opacity: 0.6; }
+.promo-reel__ambient i:nth-child(4) { left: 14%; top: -6%; width: 40%; height: 44%; background: var(--reel-a); opacity: 0.45; }
+.promo-reel.is-carousel .promo-dev { opacity: calc(1 - var(--dim, 0) * 0.55) !important; filter: blur(calc(var(--dim, 0) * 5px)) saturate(calc(1 - var(--dim, 0) * 0.35)); }
+
+/* the whip: each store's industry, quick */
+.promo-reel__whip {
+  position: absolute;
+  left: 50%;
+  bottom: 5.5%;
+  z-index: 8;
+  color: var(--ad-ink);
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 2.6cqw;
+  letter-spacing: -0.03em;
+  white-space: nowrap;
+  opacity: 0;
+  transform: translate(-50%, 0.3em);
+  transition: opacity 120ms ease, transform 200ms cubic-bezier(0.22, 1, 0.36, 1);
+  pointer-events: none;
+}
+.promo-reel__whip.is-in { opacity: 1; transform: translate(-50%, 0); }
+
+/* "Your store": an empty canvas, its name in the middle, Bizmis in the corner */
+.promo-reel__blank { position: absolute; inset: 0; background: #fff; }
+.promo-reel__blank-brand {
+  position: absolute;
+  left: 50%;
+  top: 46%;
+  display: flex;
+  align-items: center;
+  gap: 0.45em;
+  transform: translate(-50%, -50%);
+  color: var(--ad-ink);
+  font-family: var(--font-heading);
+  font-size: calc(var(--u) * 4.2);
+  letter-spacing: -0.03em;
+}
+.promo-reel__blank-mark { display: block; width: 1.15em; height: 1.15em; color: var(--ad-ink-2, #555); }
+.promo-reel__blank-mark svg { width: 100%; height: 100%; }
+.promo-reel__yours-widget { position: absolute; right: 2.2%; bottom: 3%; width: 21%; aspect-ratio: 288 / 380; }
+html.is-promo-yours .promo-reel__yours-widget > [data-promo-widget] { opacity: 1 !important; visibility: visible !important; scale: 1 !important; }
+.promo-reel__yours-widget .bizmis-desktop-lite-chat [class*="group/card"] { background-color: rgba(255, 255, 255, 0.97) !important; -webkit-backdrop-filter: blur(18px) saturate(1.4) !important; backdrop-filter: blur(18px) saturate(1.4) !important; }
+
+/* v10: the live-call badge on a spoken line */
+.promo-reel__live {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.36em;
+  flex: 0 0 auto;
+  padding: 0.22em 0.55em 0.22em 0.45em;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--tint, #F9A353) 16%, white);
+  color: color-mix(in srgb, var(--tint, #F9A353) 70%, #3a2a1a);
+  font-size: 0.62em;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.01em;
+}
+.promo-reel__live i { width: 0.62em; height: 0.62em; border-radius: 50%; background: #FF3B30; box-shadow: 0 0 0 0 rgba(255, 59, 48, 0.5); animation: promo-live-dot 1.1s ease-out infinite; }
+@keyframes promo-live-dot { 0% { box-shadow: 0 0 0 0 rgba(255, 59, 48, 0.55); } 100% { box-shadow: 0 0 0 0.55em rgba(255, 59, 48, 0); } }
+
+/* ===== v10 CTA: one morphing benefit pill, then "Only 50 spots"; a quiet line at rest ===== */
+.promo-ea-pill {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55em;
+  justify-self: center;
+  margin: 2.2vw auto 0;
+  padding: 0.62em 1.15em 0.62em 0.75em;
+  overflow: hidden;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.85);
+  background: rgba(255, 255, 255, 0.78);
+  box-shadow: 0 1.2em 2.6em -1.4em rgba(28, 24, 20, 0.35), inset 0 1px 0 #fff;
+  -webkit-backdrop-filter: blur(18px) saturate(1.4);
+  backdrop-filter: blur(18px) saturate(1.4);
+  color: var(--ad-ink);
+  font-family: var(--font-heading);
+  font-weight: 600;
+  font-size: 1.55vw;
+  letter-spacing: -0.015em;
+  white-space: nowrap;
+  opacity: 0;
+  transition: background-color 380ms ease, color 380ms ease, box-shadow 380ms ease;
+}
+.promo-ea-pill__tick { display: grid; place-items: center; width: 1.25em; height: 1.25em; border-radius: 50%; background: var(--bizmis-primary); flex: 0 0 auto; }
+.promo-ea-pill__tick svg { width: 70%; height: 70%; fill: none; stroke: #fff; stroke-width: 2.6; stroke-linecap: round; stroke-linejoin: round; }
+.promo-ea-pill__text { position: relative; display: inline-grid; }
+.promo-ea-pill__word { grid-area: 1 / 1; display: block; }
+.promo-ea-pill__word.is-leaving { position: absolute; left: 0; top: 0; }
+.promo-ea-pill.is-scarce {
+  background: var(--bizmis-primary);
+  border-color: color-mix(in srgb, var(--bizmis-primary) 70%, white);
+  color: #fff;
+  font-weight: 700;
+  box-shadow: 0 1.2em 2.8em -1.2em color-mix(in srgb, var(--bizmis-primary) 85%, transparent), inset 0 1px 0 rgba(255, 255, 255, 0.45);
+}
+.promo-ea-pill.is-scarce .promo-ea-pill__tick { display: none; }
+.promo-ea-quiet {
+  margin: 1.1vw 0 0;
+  color: color-mix(in srgb, var(--ad-ink) 55%, transparent);
+  font-size: 1.05vw;
+  font-weight: 500;
+  letter-spacing: 0.005em;
+  text-align: center;
+  opacity: 0;
+  transform: translateY(0.4em);
+  transition: opacity 520ms ease, transform 620ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+.promo-ea-quiet.is-in { opacity: 1; transform: none; }
+
+/* ===== v10 fixes: legend under the row; strip only while comparing; bigger tile ===== */
+.promo-verdict { opacity: 0; transition: opacity 260ms ease; }
+.is-pose-choice .promo-verdict { opacity: 1; }
+.promo-verdict-legend,
+.is-pose-choice .promo-verdict-legend {
+  top: 50%;
+  transform: translate(-50%, calc(var(--row-card-h, 420px) / 2 - var(--row-lift, 0px) + 0.9em));
+}
+.promo-verdict-legend { transform: translate(-50%, calc(var(--row-card-h, 420px) / 2 - var(--row-lift, 0px) + 1.4em)); }
+.promo-install-tile { font-size: 1.15em; }
+.promo-install-tile__hint { font-size: 0.85em; }
+
+.promo-tally__item { width: calc(var(--tally-h, 1080px) * 0.11); }
+.promo-reel.is-carousel .promo-dev { opacity: calc(1 - var(--dim, 0) * 0.78) !important; filter: blur(calc(var(--dim, 0) * 7px)) saturate(calc(1 - var(--dim, 0) * 0.45)); }
+.promo-ea-pill__text { overflow: hidden; height: 1.3em; line-height: 1.3em; }
+.promo-ea-pill { font-size: 1.75vw; }
+.promo-verdict-legend,
+.is-pose-choice .promo-verdict-legend { transform: translate(-50%, calc(var(--row-card-h, 420px) / 2 - var(--row-lift, 0px) + 0.3em)); }
+.promo-dev.has-hero video.is-hero { opacity: 1 !important; }
+/* the industry labels wrap between words only */
+.promo-reel__cat { text-wrap: balance; }
+.promo-reel__cat .promo-reel__word { display: inline-block; white-space: nowrap; }
+.promo-reel__cat .promo-reel__word { opacity: 1 !important; transform: none !important; filter: none !important; transition: none !important; }
+
+/* ===== v10 QA fixes (pain) ===== */
+.promo-opening.is-pain .promo-moments__card.is-pain-closing { z-index: 6; }
+/* the open chatbot frosts the page lightly instead of greying it (it read as a dark bezel) */
+.promo-opening__store.is-phone:has(.promo-pain__chat.is-open)::after { background: rgba(255, 255, 255, 0.28) !important; }
+/* the switch chips swap words cleanly (never both at once) */
+.promo-switch-moments__chip.is-struck .promo-switch-moments__words > span:first-child { transition-duration: 140ms, 300ms; }
+.promo-switch-moments__chip.is-struck .promo-switch-moments__words > span + span { transition-delay: 150ms; }
+/* "Sales agent" charges with a finer glow (it read as blurry text) */
+.promo-opening__choice--right { text-shadow: 0 0 calc(var(--switch-charge, 0) * 9px) color-mix(in srgb, var(--bizmis-primary) calc(var(--switch-charge, 0) * 55%), transparent) !important; }
+/* one island everywhere (sea phones, the close-up, the reel devices) */
+.promo-clip__island { background: #1d1d1f !important; }
+
+/* ===== v10 QA fixes (pitch, reel, CTA) ===== */
+/* the landing card forms with --chrome stepped 0 -> 1 from JS */
+[data-promo-widget].is-forming .bizmis-desktop-lite-chat [class*="group/card"] {
+  background-color: rgba(255, 255, 255, calc(0.97 * var(--chrome, 1))) !important;
+  box-shadow: 0 calc(var(--chrome, 1) * 14px) calc(var(--chrome, 1) * 34px) -18px rgba(28, 24, 20, calc(0.3 * var(--chrome, 1))) !important;
+  border-color: rgba(255, 255, 255, calc(0.8 * var(--chrome, 1))) !important;
+  transition: none !important;
+}
+[data-promo-widget].is-forming .bizmis-desktop-lite-chat form,
+[data-promo-widget].is-forming .bizmis-desktop-lite-chat button { opacity: var(--chrome, 1) !important; transition: none !important; }
+/* leaving the comparison: strips, legend and the two others go first */
+.promo-moments__board.is-leaving-choice .promo-verdict,
+.promo-moments__board.is-leaving-choice .promo-verdict-legend { opacity: 0 !important; transition: none !important; }
+.promo-moments__board.is-leaving-choice .promo-moments__card.is-go,
+.promo-moments__board.is-leaving-choice .promo-moments__card.is-other { opacity: 0 !important; transition: opacity 180ms ease !important; }
+/* the shopper's pill always sits just above the industry label (one or two lines) */
+.promo-reel.is-carousel .promo-reel__said { bottom: calc(9% + var(--caption-h, 0px) + 2.4%) !important; }
+/* the whip's industry: small, above the devices */
+.promo-reel__whip { top: 3.4%; bottom: auto; font-size: 1.9cqw; }
+/* neighbours step back further while a store is in focus */
+.promo-reel.is-carousel .promo-dev { opacity: calc(1 - var(--dim, 0) * 0.9) !important; }
+/* "Your store": the clerk's card at a real size */
+.promo-reel__yours-widget { width: 24% !important; right: 2.6% !important; bottom: 3.4% !important; }
+/* the CTA pill reads as a pill on white */
+.promo-ea-pill { background: color-mix(in srgb, var(--ad-ink) 4%, white) !important; border-color: color-mix(in srgb, var(--ad-ink) 9%, transparent) !important; }
+/* the app tile: small and glassy */
+.promo-install-tile { font-size: 0.95em !important; background: rgba(255, 255, 255, 0.5) !important; }
+/* the cross-sell rail stops above the clerk's card */
+.promo-xsell { bottom: 35% !important; }
+.promo-reel__live { font-size: 0.78em; }
+.promo-ea-pill.is-scarce { background: var(--bizmis-primary) !important; border-color: color-mix(in srgb, var(--bizmis-primary) 70%, white) !important; color: #fff !important; }
+
+/* v11 sync: "Automatically, always." chip under the clerk */
+.promo-sync__always { position: absolute; left: 50%; top: 86%; translate: -50% 0; z-index: 5; opacity: 0;
+  display: flex; align-items: center; gap: 1.1cqh; padding: 1.1cqh 2.4cqh 1.1cqh 1.8cqh; border-radius: 999px;
+  background: rgba(255, 255, 255, 0.72); backdrop-filter: blur(1.6cqh) saturate(1.4); -webkit-backdrop-filter: blur(1.6cqh) saturate(1.4);
+  box-shadow: 0 0 0 0.1cqh rgba(255, 255, 255, 0.9) inset, 0 1.4cqh 3.2cqh -1.6cqh rgba(60, 40, 20, 0.28);
+  font-size: 2.3cqh; font-weight: 600; letter-spacing: -0.01em; color: #2A2420; white-space: nowrap; }
+.promo-sync__always svg { width: 2.6cqh; height: 2.6cqh; fill: none; stroke: var(--bizmis-primary); stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+
+/* ===== v11 CTA: three benefit pills + "Only 50 spots" (no morph) ===== */
+.promo-ea-pills { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 0.7vw 0.8vw; margin: 2.1vw auto 0; max-width: 60vw; }
+.promo-ea-pills .promo-ea-pill { margin: 0; font-size: 1.32vw; padding: 0.55em 1.05em 0.55em 0.8em; gap: 0.45em; overflow: visible; opacity: 0; transition: none; }
+.promo-ea-pill__check { width: 1.05em; height: 1.05em; fill: none; stroke: var(--bizmis-primary); stroke-width: 2.1; stroke-linecap: round; stroke-linejoin: round; flex: none; }
+.promo-ea-pills .promo-ea-pill.is-scarce { flex-basis: auto; padding: 0.55em 1.15em; font-weight: 650; }
+.promo-ea-pills .promo-ea-pill.is-benefit + .promo-ea-pill.is-scarce { margin-left: 0.2vw; }
+
+/* ===== v11 LOST / SOLD: one light glass chip (thin ✕ / ✓ + word), no disc ===== */
+.promo-chip-mark.promo-glide__lost-mark,
+.promo-chip-mark.promo-close__lost-mark,
+.promo-glide .promo-chip-mark.promo-glide__mark,
+.promo-chip-mark.promo-close__mark {
+  width: auto !important; max-width: none !important; aspect-ratio: auto !important; height: auto !important;
+  box-sizing: border-box; display: inline-flex !important; flex-direction: row !important; align-items: center; gap: 0.42em !important;
+  padding: 0.52em 1.08em 0.52em 0.78em !important; border-radius: 999px !important;
+  background: rgba(255, 255, 255, 0.76) !important;
+  -webkit-backdrop-filter: blur(0.9em) saturate(1.5); backdrop-filter: blur(0.9em) saturate(1.5);
+  box-shadow: inset 0 0 0 0.06em rgba(255, 255, 255, 0.95), 0 0 0 0.05em rgba(30, 24, 18, 0.07), 0 0.8em 2em -0.8em rgba(30, 24, 18, 0.38) !important;
+  font-family: var(--font-heading); font-weight: 600 !important; letter-spacing: -0.01em !important; line-height: 1 !important;
+  white-space: nowrap; filter: none !important; top: 46%;
+}
+.promo-chip-mark.is-lost { color: #3A3B3E !important; }
+.promo-chip-mark.is-sold { color: var(--bizmis-primary) !important; }
+.promo-chip-mark__glyph { display: block; width: 1.02em; height: 1.02em; flex: none; }
+.promo-chip-mark__glyph svg { display: block; width: 100%; height: 100%; overflow: visible; }
+.promo-chip-mark__glyph svg path { stroke-width: 1.35 !important; }
+.promo-chip-mark.is-sold .promo-chip-mark__glyph svg path { stroke-width: 1.5 !important; }
+.promo-chip-mark__word { display: block; }
+/* the veils are a light frost now: the cards themselves react */
+.promo-glide.is-pain .promo-glide__veil, .promo-close__veil.is-lost { background: rgba(240, 240, 241, 0.9) !important; }
+.promo-glide:not(.is-pain) .promo-glide__veil, .promo-close__veil:not(.is-lost) { background: linear-gradient(180deg, rgba(255, 246, 236, 0.9), color-mix(in srgb, var(--bizmis-primary) 22%, rgba(255, 246, 236, 0.9))) !important; }
+
+/* ===== v11 claims: visitor cursors on glowing paths to one checkout point ===== */
+.promo-tally.promo-flow { left: 0; top: 0; width: 100%; height: 100%; }
+.promo-flow__svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+.promo-flow__line, .promo-flow__glow { fill: none; stroke-linecap: round; opacity: 0; }
+.promo-flow__line { stroke-width: 1.7px; }
+.promo-flow__glow { stroke-width: 9px; }
+.promo-flow__cursor { opacity: 0; stroke-width: 1.3px; vector-effect: non-scaling-stroke; stroke-linejoin: round; }
+.promo-flow__ring { fill: none; stroke-width: 2px; opacity: 0; }
+.promo-flow.is-lost .promo-flow__line { stroke: rgba(58, 59, 62, 0.55); }
+.promo-flow.is-lost .promo-flow__glow { stroke: rgba(58, 59, 62, 0.08); }
+.promo-flow.is-lost .promo-flow__cursor { fill: #fff; stroke: #3A3B3E; filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.18)); }
+.promo-flow.is-sold .promo-flow__line { stroke: rgba(255, 255, 255, 0.95); }
+.promo-flow.is-sold .promo-flow__glow { stroke: rgba(255, 255, 255, 0.28); }
+.promo-flow.is-sold .promo-flow__cursor { fill: #fff; stroke: color-mix(in srgb, var(--bizmis-primary) 70%, #5a2400); filter: drop-shadow(0 2px 4px rgba(140, 60, 0, 0.3)); }
+.promo-flow.is-sold .promo-flow__ring { stroke: #fff; }
+.promo-flow__point { position: absolute; left: 50%; top: 31%; width: calc(var(--flow-h, 1080px) * 0.095); aspect-ratio: 1; translate: -50% -50%;
+  display: grid; place-items: center; border-radius: 50%; scale: calc(1 + var(--pulse, 0) * 0.08);
+  background: rgba(255, 255, 255, 0.8); -webkit-backdrop-filter: blur(16px) saturate(1.5); backdrop-filter: blur(16px) saturate(1.5);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.95), 0 0 0 1px rgba(30, 24, 18, 0.06), 0 calc(var(--flow-h, 1080px) * 0.02) calc(var(--flow-h, 1080px) * 0.045) calc(var(--flow-h, 1080px) * -0.02) rgba(30, 24, 18, 0.35); }
+.promo-flow__point svg { width: 48%; height: 48%; }
+.promo-flow.is-lost .promo-flow__point { color: #3A3B3E; }
+.promo-flow.is-sold .promo-flow__point { color: var(--bizmis-primary);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.95), 0 0 0 calc(var(--pulse, 0) * var(--flow-h, 1080px) * 0.012) color-mix(in srgb, var(--bizmis-primary) 55%, transparent),
+    0 0 calc(var(--pulse, 0) * var(--flow-h, 1080px) * 0.05) color-mix(in srgb, var(--bizmis-primary) 80%, transparent), 0 calc(var(--flow-h, 1080px) * 0.02) calc(var(--flow-h, 1080px) * 0.045) calc(var(--flow-h, 1080px) * -0.02) rgba(120, 50, 0, 0.35); }
+.promo-flow__count { position: absolute; right: -6%; top: -4%; min-width: 1.7em; padding: 0.2em 0.45em; border-radius: 999px; text-align: center;
+  font-family: var(--font-heading); font-weight: 650; font-size: calc(var(--flow-h, 1080px) * 0.019); font-variant-numeric: tabular-nums; line-height: 1.1;
+  background: var(--bizmis-primary); color: #fff; box-shadow: 0 4px 12px -4px rgba(120, 50, 0, 0.5); }
+
+/* ===== v11 SOLD claim: white words over a warm orange glow ===== */
+.promo-sold-caption { color: #fff !important; text-shadow: 0 1px 2px rgba(150, 60, 0, 0.28), 0 0 0.8em rgba(200, 90, 10, 0.35) !important; }
+.promo-sold-caption::before { inset: -70% -22% !important; background: radial-gradient(closest-side, color-mix(in srgb, var(--bizmis-primary) 92%, transparent), color-mix(in srgb, var(--bizmis-primary) 62%, transparent) 55%, transparent) !important; }
+
+/* ===== v11 chatbot: "Was this helpful? 👍 👎" under the wall of text ===== */
+.promo-pain__rate { display: flex; align-items: center; gap: 0.7em; margin-top: 0.75em; padding-top: 0.6em; border-top: 1px solid rgba(0, 0, 0, 0.07);
+  color: rgba(40, 40, 44, 0.55); font-size: 0.92em; }
+.promo-pain__rate span { margin-right: auto; }
+.promo-pain__rate i { display: grid; place-items: center; width: 1.9em; height: 1.9em; border-radius: 50%; color: rgba(40, 40, 44, 0.6); background: rgba(0, 0, 0, 0.04); }
+.promo-pain__rate i svg { width: 62%; height: 62%; }
+.promo-pain__rate i[data-rate="down"] svg { rotate: 180deg; }
+.promo-pain__rate i.is-on { color: #fff; background: #3A3B3E; }
+.promo-pain__rate i.is-on svg path { fill: rgba(255, 255, 255, 0.18); }
+
+/* ===== v11 comparison: softer, Apple-like overlays (light frost, line icons, plain tick, hairline dash) ===== */
+.promo-verdict { gap: 0.1em; padding: 0.22em 0.3em; border: 0; background: rgba(255, 255, 255, 0.56);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.75), 0 8px 22px -16px rgba(28, 24, 20, 0.32);
+  -webkit-backdrop-filter: blur(20px) saturate(1.6); backdrop-filter: blur(20px) saturate(1.6); }
+.promo-verdict__cell { gap: 0.26em; padding: 0.3em 0.45em; }
+.promo-verdict .promo-verdict__icon svg, .promo-verdict-legend .promo-verdict__icon svg { fill: none !important; stroke: currentColor; stroke-width: 1.5; stroke-linejoin: round; stroke-linecap: round; }
+.promo-verdict .promo-verdict__icon svg *, .promo-verdict-legend .promo-verdict__icon svg * { fill: none !important; }
+.promo-verdict__cell.is-yes .promo-verdict__mark { background: none; }
+.promo-verdict__cell.is-yes .promo-verdict__mark svg { stroke: var(--bizmis-primary); stroke-width: 1.7; width: 100%; height: 100%; }
+.promo-verdict__cell.is-no { color: color-mix(in srgb, var(--ad-ink) 38%, transparent); }
+.promo-verdict__cell.is-no .promo-verdict__mark { box-shadow: none; }
+.promo-verdict__cell.is-no .promo-verdict__mark svg { stroke: color-mix(in srgb, var(--ad-ink) 30%, transparent); stroke-width: 1; width: 100%; height: 100%; }
+.promo-moments__card.is-pick .promo-verdict__cell.is-yes { background: none; }
+.promo-verdict-legend { border: 0; background: rgba(255, 255, 255, 0.5); font-weight: 500; color: color-mix(in srgb, var(--ad-ink) 78%, transparent);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.7), 0 10px 26px -20px rgba(28, 24, 20, 0.35);
+  -webkit-backdrop-filter: blur(20px) saturate(1.6); backdrop-filter: blur(20px) saturate(1.6); }
+
+/* ===== v11 shopper voice (V2): plain karaoke words, the pill's edge glows ===== */
+.promo-reel__said.is-voice { isolation: isolate; background: transparent !important; border-color: transparent !important; padding: 1.25cqh 2.6cqh !important;
+  -webkit-backdrop-filter: none !important; backdrop-filter: none !important; box-shadow: 0 1.6cqh 3.6cqh -2cqh rgba(28, 24, 20, 0.35) !important; }
+.promo-reel__said.is-voice::before { content: ''; position: absolute; inset: -0.32cqh; border-radius: inherit; z-index: -1;
+  background: conic-gradient(from var(--glow-a, 210deg), #FFB46B, #FF7A59, #FFD1A1, #F9A353, #FF9A7A, #FFB46B); filter: blur(0.6cqh); opacity: 0.9; }
+.promo-reel__said.is-voice::after { content: ''; position: absolute; inset: 0; border-radius: inherit; z-index: -1; background: rgba(255, 255, 255, 0.9); }
+.promo-reel__said.is-voice .promo-reel__said-text { padding-top: 0 !important; }
+
+/* ===== v11 cross-sell: a tight scanning column under the clerk's card ===== */
+.promo-xsell { z-index: 2 !important; top: 6% !important; bottom: 6% !important; transform: none !important; transition: none !important; opacity: 0;
+  -webkit-mask-image: linear-gradient(transparent 0%, #000 14%, #000 86%, transparent 100%) !important; mask-image: linear-gradient(transparent 0%, #000 14%, #000 86%, transparent 100%) !important; }
+.promo-xsell__track { gap: 2.2% !important; transition: none !important; }
+.promo-xsell__card { padding: 6% !important; transition: none !important; }
+.promo-xsell__card.is-picked { transform: none !important; }
+.promo-xsell__frame { display: none !important; }
+
+/* v11 QA: the claims' paths read (a touch bolder, softly glowing), the point is named */
+.promo-flow__line { stroke-width: 2.2px; }
+.promo-flow__glow { stroke-width: 12px; }
+.promo-flow.is-lost .promo-flow__glow { stroke: rgba(58, 59, 62, 0.11); }
+.promo-flow.is-sold .promo-flow__glow { stroke: rgba(255, 255, 255, 0.42); }
+.promo-flow__label { position: absolute; top: calc(100% + var(--flow-h, 1080px) * 0.012); left: 50%; translate: -50% 0; white-space: nowrap;
+  font-family: var(--font-heading); font-weight: 600; font-size: calc(var(--flow-h, 1080px) * 0.017); letter-spacing: 0.01em; }
+.promo-flow.is-lost .promo-flow__label { color: rgba(58, 59, 62, 0.6); }
+.promo-flow.is-sold .promo-flow__label { color: #fff; text-shadow: 0 1px 2px rgba(150, 60, 0, 0.3); }
+
+/* v11 QA: the SOLD claim's orange glow (a v9 rule had switched ::before off), solid under the words */
+.promo-sold-caption { isolation: isolate; }
+.promo-sold-caption::before { content: '' !important; display: block !important; position: absolute; z-index: -1; pointer-events: none;
+  inset: -55% -16% !important; filter: blur(0.25em);
+  background: radial-gradient(closest-side, var(--bizmis-primary) 0%, var(--bizmis-primary) 52%, color-mix(in srgb, var(--bizmis-primary) 55%, transparent) 78%, transparent 100%) !important; }
+/* v11 QA: the cross-sell column is tight (a % gap resolved against the column height) */
+.promo-xsell__track { gap: 0.55vw !important; }
+
+.promo-ea-pills { flex-direction: column; flex-wrap: nowrap; max-width: none; gap: 0.75vw; }
+.promo-ea-pills__row { display: flex; flex-wrap: nowrap; justify-content: center; gap: 0.8vw; }
+.promo-reel__whip { z-index: 30 !important; top: 4.2% !important; padding: 0.45em 1.1em; border-radius: 999px; white-space: nowrap;
+  background: rgba(255, 255, 255, 0.78); -webkit-backdrop-filter: blur(14px) saturate(1.5); backdrop-filter: blur(14px) saturate(1.5);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.9), 0 10px 26px -14px rgba(28, 24, 20, 0.35); }
+
+/* v11 QA: the chatbot's rating row reads at film size */
+.promo-pain__rate { font-size: 1.05em; }
+.promo-pain__rate i { width: 2.2em; height: 2.2em; }
+
+/* v11 QA: SOLD claim = white words on a clean orange glass plate (the radial glow read as a lopsided blob) */
+.promo-sold-caption::before { inset: -0.32em -0.62em !important; border-radius: 0.42em; filter: none !important; opacity: var(--plate, 0);
+  scale: calc(0.96 + var(--plate, 0) * 0.04);
+  background: linear-gradient(180deg, color-mix(in srgb, var(--bizmis-primary) 82%, white) 0%, var(--bizmis-primary) 55%, color-mix(in srgb, var(--bizmis-primary) 88%, #b4530a) 100%) !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.45), 0 0.5em 1.4em -0.5em color-mix(in srgb, var(--bizmis-primary) 80%, transparent); }
+
+/* ===== v11 intro: "Your best salesperson" stands where the toggle will be ===== */
+.promo-switch-title { position: absolute; left: 50%; top: 50%; translate: -50% -50%; margin: 0; z-index: 3; display: inline-flex; align-items: center; gap: 0.45em;
+  font-family: var(--font-heading); font-weight: 700; letter-spacing: -0.035em; color: var(--ad-ink); white-space: nowrap; }
+.promo-switch-title__mark { display: grid; width: 0.95em; height: 0.95em; color: var(--ad-ink); }
+.promo-switch-title__mark svg { width: 100%; height: 100%; stroke-width: 1.8; }
+
+/* ===== v11 CTA: no pills: a drawn tick and the words; the scarcity in orange ===== */
+.promo-ea-pills .promo-ea-pill { background: none !important; border: 0 !important; box-shadow: none !important; -webkit-backdrop-filter: none !important; backdrop-filter: none !important;
+  padding: 0.2em 0.4em !important; font-size: 1.45vw; font-weight: 600; }
+.promo-ea-pills__row { gap: 2.2vw; }
+.promo-ea-pills .promo-ea-pill__check { width: 1.1em; height: 1.1em; stroke-width: 2.2; }
+.promo-ea-pills .promo-ea-pill.is-scarce { color: var(--bizmis-primary) !important; font-weight: 700; font-size: 1.6vw; letter-spacing: -0.01em; }
+
+/* v11: macOS pointer */
+.promo-mac-pointer path { fill: #111 !important; stroke: #fff; stroke-width: 1.35; stroke-linejoin: round; paint-order: stroke; }
+.promo-mac-pointer { filter: drop-shadow(0 1.5px 2px rgba(0, 0, 0, 0.28)); overflow: visible; }
+
+/* ===== v11b SOLD claim: no plate, no stain: the white words carry their own warm light ===== */
+.promo-sold-caption::before { content: none !important; display: none !important; }
+.promo-sold-caption { color: #fff !important;
+  text-shadow: 0 0 0.06em rgba(255, 150, 60, 0.95), 0 0 0.18em rgba(249, 140, 50, 0.9), 0 0 0.5em rgba(249, 150, 70, 0.75), 0 0 1.2em rgba(249, 163, 83, 0.55), 0 0 2.4em rgba(249, 163, 83, 0.35) !important; }
+.promo-sold-caption__beat { transition: none !important; }
+
+/* ===== v11b claims: macOS-style notifications + the day's figures ===== */
+.promo-tally.promo-orders { left: 0; top: 0; width: 100%; height: 100%; }
+.promo-orders__stack { position: absolute; right: calc(var(--orders-h, 1080px) * 0.035); top: calc(var(--orders-h, 1080px) * 0.04); width: calc(var(--orders-h, 1080px) * 0.36); }
+.promo-orders__note { position: absolute; left: 0; top: 0; width: 100%; box-sizing: border-box; opacity: 0; transform-origin: 50% 0;
+  display: flex; align-items: center; gap: calc(var(--orders-h, 1080px) * 0.011); padding: calc(var(--orders-h, 1080px) * 0.011) calc(var(--orders-h, 1080px) * 0.014);
+  border-radius: calc(var(--orders-h, 1080px) * 0.016);
+  background: rgba(246, 246, 247, 0.78); -webkit-backdrop-filter: blur(24px) saturate(1.8); backdrop-filter: blur(24px) saturate(1.8);
+  box-shadow: inset 0 0 0 0.5px rgba(255, 255, 255, 0.9), 0 0 0 0.5px rgba(0, 0, 0, 0.08), 0 calc(var(--orders-h, 1080px) * 0.012) calc(var(--orders-h, 1080px) * 0.03) calc(var(--orders-h, 1080px) * -0.012) rgba(0, 0, 0, 0.22);
+  font-family: -apple-system, 'SF Pro Text', var(--font-heading), sans-serif; color: #1d1d1f; }
+.promo-orders__icon { flex: none; display: grid; place-items: center; width: calc(var(--orders-h, 1080px) * 0.036); height: calc(var(--orders-h, 1080px) * 0.036);
+  border-radius: 22%; color: #fff; background: linear-gradient(180deg, #FFB067, #F28C38); box-shadow: inset 0 0 0 0.5px rgba(0, 0, 0, 0.08); }
+.promo-orders__icon svg { width: 62%; height: 62%; }
+.promo-orders.is-lost .promo-orders__icon { background: linear-gradient(180deg, #A9AAAE, #7E7F84); }
+.promo-orders__text { flex: 1; min-width: 0; display: grid; gap: 0.15em; font-size: calc(var(--orders-h, 1080px) * 0.0145); line-height: 1.2; }
+.promo-orders__head { display: flex; justify-content: space-between; gap: 1em; }
+.promo-orders__head b { font-weight: 600; }
+.promo-orders__head i { font-style: normal; color: rgba(60, 60, 67, 0.55); font-size: 0.9em; }
+.promo-orders__body { color: rgba(60, 60, 67, 0.8); white-space: nowrap; }
+.promo-orders__note.is-dim { filter: grayscale(1); }
+.promo-orders.is-lost .promo-orders__note.is-dim .promo-orders__text { opacity: 0.6; }
+.promo-orders__figures { position: absolute; left: 50%; top: 36%; translate: -50% -50%; display: flex; gap: calc(var(--orders-h, 1080px) * 0.06);
+  font-family: var(--font-heading); text-align: center; }
+.promo-orders__figure { display: grid; gap: 0.1em; }
+.promo-orders__figure b { font-size: calc(var(--orders-h, 1080px) * 0.05); font-weight: 650; letter-spacing: -0.03em; font-variant-numeric: tabular-nums; line-height: 1; }
+.promo-orders__figure span { font-size: calc(var(--orders-h, 1080px) * 0.016); font-weight: 600; letter-spacing: 0.02em; text-transform: uppercase; opacity: 0.6; }
+.promo-orders.is-lost .promo-orders__figure { color: #3A3B3E; }
+.promo-orders.is-lost .promo-orders__figure.is-sales b { color: rgba(58, 59, 62, 0.45); }
+.promo-orders.is-sold .promo-orders__figure { color: #fff; text-shadow: 0 0 0.3em rgba(249, 140, 50, 0.85), 0 0 1em rgba(249, 163, 83, 0.6); }
+
+/* ===== v11b comparison: product qualities as levels (power, durability, efficiency) ===== */
+.promo-verdict__meter { display: inline-flex; align-items: center; gap: 0.14em; }
+.promo-verdict__meter i { display: block; width: 0.26em; height: 0.72em; border-radius: 0.2em; background: color-mix(in srgb, var(--ad-ink) 16%, transparent); }
+.promo-verdict__meter i.is-on { background: color-mix(in srgb, var(--ad-ink) 62%, transparent); }
+.promo-verdict__cell.is-best .promo-verdict__meter i.is-on { background: var(--bizmis-primary); }
+.promo-verdict__cell { color: color-mix(in srgb, var(--ad-ink) 70%, transparent) !important; }
+.promo-verdict__cell.is-best { color: var(--ad-ink) !important; }
+
+/* ===== v11b shopper voice: macOS / Apple Intelligence look: a frosted rounded panel, SF type,
+   a fine multicolour edge and a soft halo (the gradient turns slowly, stepped from JS) ===== */
+.promo-reel__said.is-voice { border-radius: 2.4cqh !important; padding: 1.35cqh 2.5cqh !important; box-shadow: 0 1.4cqh 3.4cqh -2cqh rgba(28, 24, 40, 0.3) !important;
+  font-family: -apple-system, 'SF Pro Text', var(--font-heading), sans-serif; }
+.promo-reel__said.is-voice::before { inset: -0.15cqh !important; filter: none !important; opacity: 0.8 !important; border-radius: inherit;
+  background: conic-gradient(from var(--glow-a, 200deg), #3D7BFF, #BC82F3, #F5B9EA, #FF6778, #FFBA71, #8D9FFF, #3D7BFF) !important; }
+.promo-reel__said.is-voice::after { background: rgba(255, 255, 255, 0.88) !important; -webkit-backdrop-filter: blur(2cqh) saturate(1.6); backdrop-filter: blur(2cqh) saturate(1.6);
+  box-shadow: inset 0 0.1cqh 0 #fff; }
+.promo-reel__said.is-voice .promo-reel__said-text { font-weight: 500; letter-spacing: -0.012em; color: #1d1d1f; }
+.promo-reel__said.is-voice .promo-reel__said-text > span { opacity: 0.32; }
+.promo-reel__said.is-voice .promo-reel__said-text > span.is-said { opacity: 1; }
+.promo-reel__said-halo { position: absolute; inset: -0.6cqh; border-radius: 3cqh; z-index: -2; pointer-events: none; opacity: 0.42; filter: blur(1.4cqh);
+  background: conic-gradient(from var(--glow-a, 200deg), #3D7BFF, #BC82F3, #F5B9EA, #FF6778, #FFBA71, #8D9FFF, #3D7BFF); }
+
+/* ===== v11b demo stores: a 3D carousel turning in front of a locked point of view ===== */
+.promo-reel.is-carousel .promo-reel__strip { transform-style: preserve-3d; }
+.promo-reel.is-carousel .promo-dev { transform-origin: 50% 50%; backface-visibility: hidden; }
+.promo-reel__ambient i { transition: none !important; }
+
+/* v12 QA: the claims' notifications and figures read at film size */
+.promo-orders__stack { width: calc(var(--orders-h, 1080px) * 0.44); }
+.promo-orders__note { padding: calc(var(--orders-h, 1080px) * 0.013) calc(var(--orders-h, 1080px) * 0.017); gap: calc(var(--orders-h, 1080px) * 0.013); border-radius: calc(var(--orders-h, 1080px) * 0.019); }
+.promo-orders__icon { width: calc(var(--orders-h, 1080px) * 0.044); height: calc(var(--orders-h, 1080px) * 0.044); }
+.promo-orders__text { font-size: calc(var(--orders-h, 1080px) * 0.018); }
+.promo-orders__figure b { font-size: calc(var(--orders-h, 1080px) * 0.066); }
+.promo-orders__figure span { font-size: calc(var(--orders-h, 1080px) * 0.018); }
+
+/* v12 intro: "In physical stores" rolls over to "Your best salesperson" */
+.promo-switch-title { position: absolute; }
+.promo-switch-title__words { position: relative; display: inline-grid; overflow: visible; }
+.promo-switch-title__word { grid-area: 1 / 1; white-space: nowrap; }
+.promo-switch-title__mark { grid-area: auto; }
+.promo-switch-title__mark.is-next { position: absolute; left: 0; top: 50%; translate: 0 -50%; }
+
+/* ===== v12 claims: one Sales bar, no numbers ===== */
+.promo-orders__figures { flex-direction: column; align-items: center; gap: calc(var(--orders-h, 1080px) * 0.014); top: 32% !important; }
+.promo-orders__bar { position: relative; display: block; width: calc(var(--orders-h, 1080px) * 0.05); height: calc(var(--orders-h, 1080px) * 0.2);
+  border-radius: calc(var(--orders-h, 1080px) * 0.016); overflow: hidden;
+  background: rgba(255, 255, 255, 0.55); -webkit-backdrop-filter: blur(16px) saturate(1.5); backdrop-filter: blur(16px) saturate(1.5);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.85), 0 0 0 1px rgba(30, 24, 18, 0.06), 0 calc(var(--orders-h, 1080px) * 0.016) calc(var(--orders-h, 1080px) * 0.036) calc(var(--orders-h, 1080px) * -0.018) rgba(30, 24, 18, 0.28); }
+.promo-orders__bar i { position: absolute; left: 0; right: 0; bottom: 0; height: 100%; transform-origin: 50% 100%; transform: scaleY(0.02); border-radius: inherit; }
+.promo-orders.is-lost .promo-orders__bar i { background: rgba(58, 59, 62, 0.45); }
+.promo-orders.is-sold .promo-orders__bar i { background: linear-gradient(180deg, #fff 0%, #FFE6CF 100%); box-shadow: 0 0 calc(var(--orders-h, 1080px) * 0.03) rgba(249, 140, 50, 0.9); }
+.promo-orders.is-sold .promo-orders__bar { background: rgba(255, 255, 255, 0.28); box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.7), 0 0 calc(var(--orders-h, 1080px) * 0.04) rgba(249, 140, 50, 0.45); }
+.promo-orders__bar-label { font-family: var(--font-heading); font-weight: 600; font-size: calc(var(--orders-h, 1080px) * 0.018); letter-spacing: 0.06em; text-transform: uppercase; }
+.promo-orders.is-lost .promo-orders__bar-label { color: rgba(58, 59, 62, 0.6); }
+.promo-orders.is-sold .promo-orders__bar-label { color: #fff; text-shadow: 0 0 0.6em rgba(249, 140, 50, 0.9); }
+
+/* ===== v12c intro: we walk into the physical store, then meet the best salesperson ===== */
+.promo-switch-entry { position: absolute; left: 50%; top: 50%; translate: -50% -50%; z-index: 4; display: grid; justify-items: center; gap: 0.35em;
+  font-family: var(--font-heading); font-weight: 700; letter-spacing: -0.045em; color: var(--ad-ink); white-space: nowrap; font-size: 5.6vw; line-height: 1; transform-origin: 50% 50%; }
+.promo-switch-entry__mark { display: block; width: 0.9em; height: 0.9em; color: var(--bizmis-primary); }
+.promo-switch-entry__mark svg { width: 100%; height: 100%; }
+.promo-switch-title__mark svg { stroke-width: 0 !important; }
+.promo-switch-title__mark { color: var(--bizmis-primary); width: 0.85em; height: 0.85em; }
+.promo-switch-online { position: absolute; z-index: 3; translate: -50% -50%; margin: 0; white-space: nowrap; clip-path: inset(-45% 100% -45% -10%);
+  font-family: 'Caveat', cursive; font-weight: 700; font-size: 2.6vw; color: color-mix(in srgb, var(--ad-ink) 70%, transparent); rotate: -2deg; }
+.promo-switch-online b { color: var(--bizmis-primary); font-weight: 700; }
+
+/* ===== v12c claims: one week of the store, no numbers (visits columns, sales fill) ===== */
+.promo-tally.promo-week { left: 0; top: 0; width: 100%; height: 100%; }
+.promo-week__chart { position: absolute; left: 50%; top: 29%; translate: -50% -50%; width: calc(var(--week-h, 1080px) * 0.6); }
+.promo-week__legend { display: flex; justify-content: center; gap: calc(var(--week-h, 1080px) * 0.03); margin-bottom: calc(var(--week-h, 1080px) * 0.018);
+  font-family: var(--font-heading); font-weight: 600; font-size: calc(var(--week-h, 1080px) * 0.016); letter-spacing: 0.04em; text-transform: uppercase; }
+.promo-week__legend span { display: inline-flex; align-items: center; gap: 0.5em; }
+.promo-week__legend i { display: inline-block; width: 0.8em; height: 0.8em; border-radius: 0.22em; }
+.promo-week__cols { display: flex; align-items: flex-end; justify-content: space-between; height: calc(var(--week-h, 1080px) * 0.2); }
+.promo-week__col { position: relative; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; height: 100%; width: calc(var(--week-h, 1080px) * 0.05); opacity: 0; }
+.promo-week__visits { position: relative; display: block; width: 100%; height: calc(var(--h) * 100%); transform-origin: 50% 100%; transform: scaleY(0);
+  border-radius: calc(var(--week-h, 1080px) * 0.012); overflow: hidden; box-sizing: border-box; }
+.promo-week__sales { position: absolute; left: 0; right: 0; bottom: 0; height: 100%; transform-origin: 50% 100%; transform: scaleY(0); border-radius: inherit; }
+.promo-week__day { position: absolute; top: calc(100% + var(--week-h, 1080px) * 0.012); font-family: var(--font-heading); font-weight: 600; font-size: calc(var(--week-h, 1080px) * 0.016); }
+/* LOST: grey glass visits, the sales fill a sliver on the floor */
+.promo-week.is-lost .promo-week__visits { background: rgba(255, 255, 255, 0.55); box-shadow: inset 0 0 0 1.5px rgba(58, 59, 62, 0.28); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); }
+.promo-week.is-lost .promo-week__sales { background: rgba(58, 59, 62, 0.5); }
+.promo-week.is-lost .promo-week__day, .promo-week.is-lost .promo-week__legend { color: rgba(58, 59, 62, 0.62); }
+.promo-week.is-lost .promo-week__legend .is-visits i { box-shadow: inset 0 0 0 1.5px rgba(58, 59, 62, 0.4); }
+.promo-week.is-lost .promo-week__legend .is-sales i { background: rgba(58, 59, 62, 0.5); }
+/* SOLD: white glass visits, a warm orange sales fill */
+.promo-week.is-sold .promo-week__visits { background: rgba(255, 255, 255, 0.35); box-shadow: inset 0 0 0 1.5px rgba(255, 255, 255, 0.9); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); }
+.promo-week.is-sold .promo-week__sales { background: linear-gradient(180deg, color-mix(in srgb, var(--bizmis-primary) 78%, white), var(--bizmis-primary)); box-shadow: 0 0 calc(var(--week-h, 1080px) * 0.02) color-mix(in srgb, var(--bizmis-primary) 70%, transparent); }
+.promo-week.is-sold .promo-week__day, .promo-week.is-sold .promo-week__legend { color: #fff; text-shadow: 0 0.1em 0.6em color-mix(in srgb, var(--bizmis-primary) 60%, transparent); }
+.promo-week.is-sold .promo-week__legend .is-visits i { box-shadow: inset 0 0 0 1.5px #fff; }
+.promo-week.is-sold .promo-week__legend .is-sales i { background: var(--bizmis-primary); }
+
+/* ===== v12c: the shopper's voice pill in the Bizmis palette (no rainbow) ===== */
+.promo-reel__said.is-voice::before, .promo-reel__said-halo {
+  background: conic-gradient(from var(--glow-a, 200deg), #F28C38, #FFB46B, #FFE0BF, #F9A353, #FF8A5C, #FFD1A1, #F28C38) !important; }
+.promo-reel__said-halo { opacity: 0.38 !important; }
+
+/* ===== v12c SOLD claim: a soft, diffuse Bizmis-orange shadow behind the words (not a glow hugging each letter) ===== */
+.promo-sold-caption { text-shadow: 0 0.06em 0.9em rgba(242, 140, 56, 0.55), 0 0.1em 2.2em rgba(242, 140, 56, 0.4) !important; }
+
+/* ===== v12c CTA: the scarcity as a quiet line under the benefits (a hairline, then "Only 50 spots" with an orange 50) ===== */
+.promo-ea-pills .promo-ea-pill.is-scarce { color: color-mix(in srgb, var(--ad-ink) 62%, transparent) !important; font-weight: 500 !important; font-size: 1.2vw !important;
+  letter-spacing: 0.01em; padding-top: 0.9em !important; position: relative; }
+.promo-ea-pills .promo-ea-pill.is-scarce::before { content: ''; position: absolute; left: 50%; top: 0; width: 2.4em; height: 1px; translate: -50% 0;
+  background: color-mix(in srgb, var(--ad-ink) 18%, transparent); }
+.promo-ea-pills .promo-ea-pill.is-scarce b { color: var(--bizmis-primary); font-weight: 700; }
+.promo-ea-pills { gap: 1.1vw !important; }
+
+/* v12d QA: the handwritten line reads; the claims' week reads */
+.promo-switch-online { font-size: 3.3vw; }
+.promo-week__chart { width: calc(var(--week-h, 1080px) * 0.72); top: 28%; }
+.promo-week__cols { height: calc(var(--week-h, 1080px) * 0.24); }
+.promo-week__col { width: calc(var(--week-h, 1080px) * 0.062); }
+.promo-week__legend, .promo-week__day { font-size: calc(var(--week-h, 1080px) * 0.02) !important; }
+.promo-week.is-lost .promo-week__visits { box-shadow: inset 0 0 0 2px rgba(58, 59, 62, 0.42); background: rgba(255, 255, 255, 0.7); }
+.promo-week.is-lost .promo-week__sales { background: rgba(58, 59, 62, 0.62); }
+/* v12d QA: the SOLD words read over the busy sea: a denser (still diffuse) Bizmis-orange shadow */
+.promo-sold-caption { text-shadow: 0 0.04em 0.4em rgba(214, 112, 34, 0.7), 0 0.08em 1.1em rgba(242, 140, 56, 0.6), 0 0.1em 2.4em rgba(242, 140, 56, 0.45) !important; }
+.promo-week__legend { font-size: calc(var(--week-h, 1080px) * 0.019) !important; }
+/* v12e QA: the SOLD week reads over the light sea and then the orange flood: white glass columns with a warm outline, deep-orange labels */
+.promo-week.is-sold .promo-week__visits { background: rgba(255, 255, 255, 0.62) !important; box-shadow: inset 0 0 0 2px color-mix(in srgb, var(--bizmis-primary) 55%, white), 0 0.6em 1.4em -0.8em rgba(160, 70, 0, 0.35) !important; }
+.promo-week.is-sold .promo-week__day, .promo-week.is-sold .promo-week__legend { color: color-mix(in srgb, var(--bizmis-primary) 62%, #4a1e00) !important; text-shadow: 0 0 0.5em rgba(255, 255, 255, 0.9) !important; }
+.promo-week.is-sold .promo-week__legend .is-visits i { box-shadow: inset 0 0 0 1.5px color-mix(in srgb, var(--bizmis-primary) 55%, white) !important; background: #fff; }
+
+/* ===== v13 pains: the human-reply chat ("Message us", a generic green inbox) ===== */
+.promo-pain__handoff { display: inline-block; margin-top: 0.6em; padding: 0.35em 0.9em; border-radius: 999px; background: #25A35A; color: #fff; font-weight: 600; font-size: 0.92em; }
+.promo-pain__chat.is-human .promo-pain__avatar { background: #25A35A !important; color: #fff !important; }
+.promo-pain__chat.is-human .promo-pain__avatar svg { width: 60%; height: 60%; }
+.promo-pain__chat.is-human .promo-pain__title { display: grid; line-height: 1.15; }
+.promo-pain__chat.is-human .promo-pain__title small { font-size: 0.68em; font-weight: 500; color: rgba(40, 40, 44, 0.55); }
+.promo-pain__chat.is-human .promo-pain__log { background: #F1EEE8; }
+.promo-pain__chat.is-human .promo-pain__msg:not(.is-bot) .promo-pain__bubble { background: #D9F7C9 !important; color: #1d1d1f !important; }
+.promo-pain__chat.is-human .promo-pain__chips { display: none; }
+.promo-pain__sent { margin: 0.2em 0.4em 0 auto; font-size: 0.75em; color: rgba(40, 40, 44, 0.5); text-align: right; }
+.promo-pain__msg.is-human-reply .promo-pain__bubble { background: #fff !important; }
+
+/* ===== v13 claims: words only again, centred (the week chart is gone) ===== */
+.promo-glide.is-pain .promo-glide__caption { padding-top: 0 !important; }
+.promo-glide.is-pain .promo-glide__haze { top: 50% !important; }
+.promo-sold-caption { top: 50% !important; }
+.promo-tally { display: none !important; }
+
+/* ===== v13 demo stores: pages (no tilt), style-B titles, skeleton burst ===== */
+.promo-reel.is-pages .promo-reel__strip { position: absolute; left: 0; top: 0; width: 0; height: 100%; will-change: transform; }
+.promo-reel.is-pages .promo-dev { opacity: 1 !important; filter: none !important; }
+.promo-reel__copy { position: absolute; top: 0; height: 100%; pointer-events: none; z-index: 3; }
+.promo-reel__copy p { margin: 0; }
+.promo-reel__t { font-family: var(--font-heading); font-weight: 800; letter-spacing: -0.055em; line-height: 0.9; white-space: nowrap; width: max-content;
+  color: color-mix(in oklab, var(--tint) 92%, #000); }
+.promo-reel__t .promo-reel__w { display: inline-block; white-space: nowrap; }
+.promo-reel__t span[data-k] { display: inline-block; }
+.promo-reel__copy.is-desk .promo-reel__t { position: absolute; left: 50%; translate: -50% 0; }
+.promo-reel__copy.is-desk .promo-reel__fb { position: absolute; left: 50%; translate: -50% 0; white-space: nowrap; width: max-content; font-family: var(--font-heading); }
+.promo-reel__copy .promo-reel__f { font-family: var(--font-heading); font-weight: 500; line-height: 1.3; color: #55555a; white-space: nowrap; width: max-content; }
+.promo-reel__copy .promo-reel__b { font-family: var(--font-heading); font-weight: 700; line-height: 1.2; letter-spacing: -0.02em; white-space: nowrap; width: max-content;
+  color: color-mix(in oklab, var(--tint) 88%, #000); }
+.promo-reel__copy .promo-reel__arrow { color: color-mix(in oklab, var(--tint) 88%, #000); font-weight: 600; margin: 0 0.4em; }
+.promo-reel__copy.is-col .promo-reel__b .promo-reel__arrow { margin: 0 0.35em 0 0; }
+.promo-reel__copy.is-desk .promo-reel__fb .promo-reel__f, .promo-reel__copy.is-desk .promo-reel__fb .promo-reel__b { display: inline; font-size: 1em; }
+.promo-reel__col { position: absolute; display: flex; flex-direction: column; justify-content: center; }
+.promo-reel__col .promo-reel__f { margin-top: 1.05em; }
+.promo-reel__copy:not(.is-shown):not(.is-revealing) .promo-reel__t span[data-k],
+.promo-reel__copy:not(.is-shown):not(.is-revealing) .promo-reel__f,
+.promo-reel__copy:not(.is-shown):not(.is-revealing) .promo-reel__b,
+.promo-reel__copy:not(.is-shown):not(.is-revealing) .promo-reel__fb { opacity: 0; }
+/* the shopper's voice in the store's own colour */
+.promo-reel.is-pages .promo-reel__said.is-voice::before { background: conic-gradient(from var(--glow-a, 200deg), var(--tint), color-mix(in oklab, var(--tint) 40%, #fff), var(--tint), color-mix(in oklab, var(--tint) 70%, #000), color-mix(in oklab, var(--tint) 55%, #fff), var(--tint)) !important; }
+.promo-reel.is-pages .promo-reel__said-halo { background: conic-gradient(from var(--glow-a, 200deg), var(--tint), color-mix(in oklab, var(--tint) 40%, #fff), var(--tint), color-mix(in oklab, var(--tint) 70%, #000), var(--tint)) !important; }
+.promo-reel.is-pages .promo-reel__said-mic.is-typed { box-shadow: 0 0 0 0.25cqh color-mix(in oklab, var(--tint) 70%, #fff); }
+.promo-reel.is-pages .promo-reel__said-mic.is-typed svg { stroke: color-mix(in oklab, var(--tint) 85%, #000); }
+/* skeleton stores (the burst) */
+.promo-skel { position: absolute; inset: 0; background: #fff; display: flex; flex-direction: column; gap: 3.2%; padding: 3.5%; box-sizing: border-box; }
+.promo-skel b, .promo-skel i { display: block; }
+.promo-skel__nav { flex: none; height: 5%; display: flex; gap: 4%; align-items: center; }
+.promo-skel__nav b { height: 46%; width: 14%; border-radius: 99px; background: #ECECEE; }
+.promo-skel__nav b:first-child { width: 22%; height: 70%; background: color-mix(in oklab, var(--sk) 75%, #fff); }
+.promo-skel__hero { flex: none; height: 30%; border-radius: 2.4cqh; background: linear-gradient(135deg, color-mix(in oklab, var(--sk) 34%, #fff), color-mix(in oklab, var(--sk) 62%, #fff));
+  position: relative; display: flex; flex-direction: column; justify-content: center; gap: 7%; padding: 0 7%; }
+.promo-skel__hero b { height: 11%; width: 46%; border-radius: 99px; background: rgba(255, 255, 255, 0.85); }
+.promo-skel__hero b + b { width: 28%; background: color-mix(in oklab, var(--sk) 90%, #000); }
+.promo-skel__grid { flex: 1; display: grid; grid-template-columns: repeat(4, 1fr); gap: 3%; }
+.promo-dev.is-phone .promo-skel__grid, .promo-dev.is-tablet .promo-skel__grid { grid-template-columns: repeat(2, 1fr); }
+.promo-dev.is-tablet .promo-skel__grid { grid-template-columns: repeat(3, 1fr); }
+.promo-skel__grid i { border-radius: 1.4cqh; background: #F2F2F4; position: relative; }
+.promo-skel__grid i b { position: absolute; left: 10%; right: 34%; bottom: 9%; height: 7%; border-radius: 99px; background: #E2E2E5; }
+.promo-skel.is-v1 .promo-skel__hero { height: 22%; background: color-mix(in oklab, var(--sk) 18%, #fff); }
+.promo-skel.is-v1 .promo-skel__grid i:nth-child(odd) { background: color-mix(in oklab, var(--sk) 12%, #F4F4F6); }
+.promo-skel.is-v2 .promo-skel__hero { height: 40%; }
+.promo-skel.is-v2 .promo-skel__grid i:first-child { background: color-mix(in oklab, var(--sk) 22%, #fff); }
+.promo-reel.is-pages { transition: none; }
+
+/* ===== v13 CTA (S1): "Only 50 spots!" handwritten in Bizmis orange, a hand-drawn underline ===== */
+.promo-ea-hand { position: relative; margin: 0.4vw 0 0; opacity: 0; font-family: 'Caveat', cursive; font-weight: 700; font-size: 3.1vw; line-height: 1; color: var(--bizmis-primary);
+  rotate: -2.5deg; padding: 0 0.15em 0.32em; }
+.promo-ea-hand__text { display: inline-block; padding-right: 0.12em; clip-path: inset(-30% 100% -40% -10%); }
+.promo-ea-hand__line { position: absolute; left: -2%; right: -4%; bottom: 0; width: 106%; height: 0.36em; overflow: visible; }
+.promo-ea-hand__line path { fill: none; stroke: var(--bizmis-primary); stroke-width: 3.2; stroke-linecap: round; vector-effect: non-scaling-stroke; }
+.promo-ea-hand__line path + path { stroke-width: 2.4; opacity: 0.85; }
+
+/* ===== v13 CTA closing: a warm Bizmis-orange light blooms behind "Install now" on the final chord ===== */
+.promo-pass-slot__action { position: relative; isolation: isolate; }
+.promo-ea-bloom { position: absolute; left: 50%; top: 50%; width: 170%; height: 260%; translate: -50% -50%; z-index: -1; pointer-events: none; opacity: 0;
+  background: radial-gradient(ellipse at center, rgba(242, 140, 56, 0.42) 0%, rgba(242, 140, 56, 0.16) 42%, rgba(242, 140, 56, 0) 70%); filter: blur(12px); }
+
+/* ===== v13 CTA: the VO's extras roll through one quiet line (no pill), a small orange dot as its mark ===== */
+.promo-ea-pills__row.is-roll { min-height: 1.6em; }
+.promo-ea-pills .promo-ea-pill.is-roll { opacity: 0; color: color-mix(in srgb, var(--ad-ink) 58%, transparent) !important; font-weight: 500; overflow: hidden; }
+.promo-ea-pill__dot { flex: none; width: 0.42em; height: 0.42em; border-radius: 50%; background: var(--bizmis-primary); }
+.promo-ea-pills .promo-ea-pill.is-roll .promo-ea-pill__text { height: 1.3em; line-height: 1.3em; overflow: hidden; }
+.promo-ea-pills__row.is-roll { display: grid !important; place-items: center; }
+.promo-ea-pills__row.is-roll > * { grid-area: 1 / 1; }
+
+/* v13 (C1): the shine on "Install now" at the final chord (a Bizmis-orange band through the letters) */
+.promo-pass-slot__shopify-label.is-shine { color: transparent !important; -webkit-background-clip: text; background-clip: text; background-size: 320% 100%; background-position: 100% 0;
+  background-image: linear-gradient(100deg, var(--ad-ink, #232325) 0%, var(--ad-ink, #232325) 42%, #FFB066 48%, var(--bizmis-primary) 51%, #FFB066 54%, var(--ad-ink, #232325) 60%, var(--ad-ink, #232325) 100%); }
+
+/* ===== v13 (E1 + E3): the tunnel of new stores, the flash on every cut ===== */
+.promo-reel__tunnel { position: absolute; inset: 0; z-index: 2; transform-style: preserve-3d; perspective-origin: 50% 50%; pointer-events: none; }
+.promo-reel__tunnel .promo-dev { left: 0; top: 0; }
+.promo-reel__flash { position: absolute; inset: 0; z-index: 40; background: #fff; opacity: 0; pointer-events: none; }
+.promo-reel__copy.is-desk .promo-reel__t { transform-origin: 50% 60%; }
+.promo-reel__copy.is-col .promo-reel__t { transform-origin: 0% 60%; }

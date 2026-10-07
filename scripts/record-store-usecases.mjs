@@ -5,6 +5,7 @@
 // are off. Waiting stretches (loading, thinking) ease up to 2x and back.
 // The widget's sound is tapped in the page and paced with the picture.
 
+import crypto from 'node:crypto';
 import { spawn } from 'node:child_process';
 import fs from 'node:fs';
 import os from 'node:os';
@@ -12,9 +13,39 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-const SHOTS = JSON.parse(fs.readFileSync(path.join(ROOT, 'scripts/store-usecases.json'), 'utf8'));
-const OUT_DIR = path.join(ROOT, 'public/promo/stores/videos');
-const RESULTS_PATH = path.join(ROOT, 'scripts/store-usecase-results.json');
+// PROMO_USECASES / PROMO_OUT_DIR / PROMO_RESULTS pick another beat sheet and
+// output (e.g. the ad-1 store reel: scripts/store-reel.json).
+const SHOTS = JSON.parse(fs.readFileSync(path.resolve(ROOT, process.env.PROMO_USECASES || 'scripts/store-usecases.json'), 'utf8'));
+const OUT_DIR = path.resolve(ROOT, process.env.PROMO_OUT_DIR || 'public/promo/stores/videos');
+const RESULTS_PATH = path.resolve(ROOT, process.env.PROMO_RESULTS || 'scripts/store-usecase-results.json');
+// PROMO_LOCAL_WIDGET=1 serves a local widget build in place of the CDN one
+// (needed for debugVoiceMode until it ships): PROMO_WIDGET_DIST, default the
+// sibling trujilloai-bizmis-widget/dist.
+const LOCAL_WIDGET = process.env.PROMO_LOCAL_WIDGET === '1';
+const WIDGET_DIST = path.resolve(ROOT, process.env.PROMO_WIDGET_DIST || '../trujilloai-bizmis-widget/dist');
+// Preset avatars with their own voice (shopify-app app/data/presetAvatars.ts).
+const AVATARS = {
+  will: { model: 'https://cdn.bizmis.ai/common/avatars/models/will.glb?v=1', voiceId: 'bTEswxYhpv7UDkQg5VRu' },
+  yusuke: { model: 'https://cdn.bizmis.ai/common/avatars/models/yusuke.glb?v=1', voiceId: 'j210dv0vWm7fCknyQpbA' },
+  amber: { model: 'https://cdn.bizmis.ai/common/avatars/models/amber.glb?v=1', voiceId: 'FvmvwvObRqIHojkEGh5N' },
+  yue: { model: 'https://cdn.bizmis.ai/common/avatars/models/yue.glb?v=1', voiceId: 'bhJUNIXWQQ94l8eI2VUf' },
+};
+// Voice beats: the shopper's spoken line, generated once per line.
+// Never reuse a voice across the film (narrator, film shopper/clerk, avatars):
+// chris/laura/callum are used only here, each opposite its avatar's gender.
+const SHOPPER_VOICES = {
+  jessica: 'r1KmysJdVYZjJCm4mL3b', archer: 'L0Dsvb3SLTyegXwtm47J',
+  chris: 'iP95p4xoKVk53GoZ742B', laura: 'FGY2WhTYpPnrIDTdsKH5', callum: 'N2lVS1w4EtoT3dr4eOWO', sarah: 'EXAVITQu4vr4xnSDxMaL',
+};
+// Per-store CSS that fixes theme flaws in the recordings only (the themes
+// themselves are untouched): { "<host>": { "css": "..." } }.
+const STORE_FIXES = (() => {
+  const file = path.join(ROOT, 'scripts/store-reel-fixes.json');
+  try { return JSON.parse(fs.readFileSync(file, 'utf8')); } catch { return {}; }
+})();
+const SILENT_OK = { value: false };
+const spokenText = (line) => line.replace(/\[[^\]]*\]\s*/g, '').trim();
+const VOICE_CACHE = path.join(ROOT, 'scripts/store-reel-voice');
 const FFMPEG = process.env.FFMPEG || 'ffmpeg';
 const FFPROBE = process.env.FFPROBE || 'ffprobe';
 const PASSWORD = process.env.PROMO_STORE_PASSWORD || 'bizmis';
@@ -74,6 +105,7 @@ function selectedJobs() {
     if (onlyKind && beat.kind !== onlyKind) continue;
     for (const device of Object.keys(SHOTS.devices)) {
       if (onlyDevice && device !== onlyDevice) continue;
+      if (Array.isArray(beat.devices) && !beat.devices.includes(device)) continue;
       jobs.push({ beat, device, spec: SHOTS.devices[device] });
     }
   }
@@ -81,7 +113,7 @@ function selectedJobs() {
 }
 
 function fileName(job) {
-  return `${job.beat.slug}-${job.beat.beat}-${job.device}.mp4`;
+  return `${job.beat.slug}-${job.beat.beat}-${job.device}${job.beat.avatar ? `-${job.beat.avatar}` : ''}${job.beat.mode === 'voice' ? '-voice' : ''}.mp4`;
 }
 
 function loadResults() {
@@ -165,8 +197,8 @@ function installPrefs() {
 
 // The widget picks mobile mode below 768px. Tablets are wider, so the
 // recorder passes the widget's own isMobile option through its init call.
-function installMobileWidget(page) {
-  return page.addInitScript(() => {
+function installMobileWidget(page, overrides = { isMobile: true }) {
+  return page.addInitScript((extra) => {
     let api;
     Object.defineProperty(window, 'AvatarVoicechat', {
       configurable: true,
@@ -175,10 +207,102 @@ function installMobileWidget(page) {
         api = value;
         if (!value || typeof value.init !== 'function') return;
         const init = value.init.bind(value);
-        value.init = (config) => init({ ...config, isMobile: true });
+        value.init = (config) => init({ ...config, ...extra });
       },
     });
-  });
+  }, overrides);
+}
+
+async function installLocalWidget(page) {
+  for (const [file, type] of [['avatar-widget.js', 'application/javascript'], ['avatar-widget-style.css', 'text/css']]) {
+    const body = fs.readFileSync(path.join(WIDGET_DIST, file));
+    await page.route(`**/widget/${file}*`, (route) => route.fulfill({ status: 200, contentType: type, body,
+      headers: { 'access-control-allow-origin': '*' } }));
+  }
+}
+
+// The shopper's spoken line for a voice beat, generated once (ElevenLabs).
+async function shopperVoice(job, index, line) {
+  fs.mkdirSync(VOICE_CACHE, { recursive: true });
+  const tag = crypto.createHash('sha1').update(line).digest('hex').slice(0, 8);   // a changed line must not replay the old take
+  const file = path.join(VOICE_CACHE, `${job.beat.slug}-${job.beat.beat}-${job.beat.shopperVoice || 'jessica'}-${index}-${tag}.mp3`);
+  if (fs.existsSync(file)) return file;
+  const env = path.join(ROOT, '..', 'trujilloai-bizmis-project', '.env');
+  const key = process.env.ELEVENLABS_API_KEY || fs.readFileSync(env, 'utf8').split('\n')
+    .find((l) => l.startsWith('ELEVENLABS_API_KEY='))?.split('=').slice(1).join('=').trim().replace(/^['"]|['"]$/g, '');
+  const voice = SHOPPER_VOICES[job.beat.shopperVoice || 'jessica'];
+  const res = await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${voice}?output_format=mp3_44100_128`, {
+    method: 'POST', headers: { 'xi-api-key': key, 'Content-Type': 'application/json' },
+    body: JSON.stringify({ text: line, model_id: 'eleven_v4' }) });
+  if (!res.ok) throw new Error(`shopper voice ${res.status}`);
+  fs.writeFileSync(file, Buffer.from(await res.arrayBuffer()));
+  return file;
+}
+
+// A voice turn: the widget shows its real call UI (debugVoiceMode, local
+// build), the shopper's line plays through the page's Web Audio so the tap
+// records it, and the words reach the agent as a hidden message (with the
+// steer), as a transcript would.
+// No conversation history on screen: when the shopper starts a new turn,
+// every bubble already shown (the greeting included) is hidden for good.
+async function hideHistory(page) {
+  await page.evaluate(() => {
+    document.querySelectorAll('[data-floating-item-id], .bizmis-chat-panel-scroll > div')
+      .forEach((node) => node.setAttribute('data-promo-hide', ''));
+  }).catch(() => {});
+}
+
+async function speakLine(page, job, index, line, steer = '', speech = null, pace = null) {
+  const file = await shopperVoice(job, index, line);
+  const data = fs.readFileSync(file).toString('base64');
+  if (!page.__promoCallOn) {
+    page.__promoCallOn = true;
+    // the real call: the widget's own "Start voice chat" button
+    const start = page.getByRole('button', { name: 'Start voice chat' }).first();
+    await start.waitFor({ state: 'visible', timeout: 15000 });
+    const callAt = Date.now();
+    await start.click();
+    // the mobile widget asks to accept its T&C before the first call: wait for it
+    // (isVisible() doesn't wait, so the prompt used to be missed on phone/tablet)
+    const accept = page.getByRole('button', { name: /^accept$/i }).first();
+    if (await accept.waitFor({ state: 'visible', timeout: 4000 }).then(() => true).catch(() => false)) await accept.click();
+    await page.getByRole('button', { name: 'Hang up' }).first().waitFor({ state: 'visible', timeout: 20000 })
+      .catch(async () => {
+        process.stdout.write('call: no hang-up button seen\n');
+        // diagnose: what the widget shows instead
+        const shot = path.join(os.tmpdir(), `bizmis-call-${job.beat.slug}-${job.device}.png`);
+        await page.screenshot({ path: shot }).catch(() => {});
+        const buttons = await page.evaluate(() => [...document.querySelectorAll('button,[role="button"]')]
+          .filter((b) => b.closest('#bizmis-avatar-embed, [class*="bizmis"]'))
+          .map((b) => `${b.getAttribute('aria-label') || b.textContent.trim().slice(0, 30)}${b.offsetParent ? '' : ' (hidden)'}`)).catch(() => []);
+        process.stdout.write(`call debug: ${shot} buttons=${JSON.stringify(buttons)}\n`);
+      });
+    // the call opens with the agent's greeting: let it finish before the shopper speaks
+    await sleep(1500);
+    if (speech && pace) await waitForSpeechTail(speech, callAt, pace, GREETING_WAIT_MS).catch(() => {});
+    await sleep(600);
+  }
+  await hideHistory(page);
+  await page.evaluate(async ({ data }) => {
+    const bytes = Uint8Array.from(atob(data), (c) => c.charCodeAt(0));
+    const ctx = window.__promoShopperCtx || (window.__promoShopperCtx = new AudioContext());
+    const buffer = await ctx.decodeAudioData(bytes.buffer);
+    const source = ctx.createBufferSource();
+    source.buffer = buffer;
+    source.connect(ctx.destination);
+    source.start();
+    await new Promise((r) => { source.onended = r; });
+  }, { data });
+  const message = steer ? `${spokenText(line)}\n\n${steer}` : spokenText(line);
+  const why = await page.evaluate(() => ({
+    api: Boolean(window.AvatarVoicechat), fn: typeof window.AvatarVoicechat?.sendHiddenMessage,
+    voice: typeof window.AvatarVoicechat?.debugVoiceMode, debug: localStorage.getItem('bizmis-debug'),
+    scripts: [...document.scripts].map((x) => x.src).filter((x) => x.includes('widget')).slice(0, 3),
+  })).catch((error) => ({ error: String(error) }));
+  process.stdout.write(`voice turn state ${JSON.stringify(why)}\n`);
+  const sent = await sendHidden(page, message);
+  process.stdout.write(`spoke ${sent ? 'sent' : 'NOT AVAILABLE'}: "${line.slice(0, 80)}"\n`);
+  if (!sent) throw new Error('spoken line was not sent');
 }
 
 // Headless Chrome cannot record its own output, so every sound the widget
@@ -431,11 +555,45 @@ async function acceptCookies(page) {
   }).catch(() => {});
 }
 
+const VINITECA_AGE_LABEL = /s[ií],\s+s[oó]c major d'edat/i;
+
 async function confirmAgeGate(page) {
-  const confirm = page.locator('[data-age-gate-confirm]');
+  const labeled = page.getByRole('button', { name: VINITECA_AGE_LABEL });
+  const confirm = (await labeled.count()) ? labeled.first() : page.locator('[data-age-gate-confirm]');
   if (!await confirm.isVisible().catch(() => false)) return;
   await confirm.click().catch(() => {});
   await page.locator('[data-age-gate]').waitFor({ state: 'hidden', timeout: 5000 }).catch(() => {});
+}
+
+// The gate is written in the store's default language, which is Catalan, and
+// it stays hidden until the theme script opens it. Click that button before
+// switching the storefront to English, or the label is no longer on screen.
+async function confirmVinitecaAge(page) {
+  const labeled = page.getByRole('button', { name: VINITECA_AGE_LABEL });
+  const opened = await labeled.waitFor({ state: 'visible', timeout: 8000 }).then(() => true).catch(() => false);
+  if (!opened) {
+    await confirmAgeGate(page);
+    return;
+  }
+  await labeled.click();
+  await page.locator('[data-age-gate]').waitFor({ state: 'hidden', timeout: 5000 }).catch(() => {});
+}
+
+async function useEnglishStorefront(page) {
+  const lang = await page.locator('html').getAttribute('lang').catch(() => '');
+  if ((lang || '').toLowerCase().startsWith('en')) return;
+  const switched = await page.evaluate(() => {
+    const button = document.querySelector('button[name="locale_code"][value="en"]');
+    if (!button) return false;
+    button.click();
+    return true;
+  });
+  if (!switched) return;
+  await page.waitForLoadState('domcontentloaded', { timeout: 20000 }).catch(() => {});
+  await page.waitForFunction(
+    () => (document.documentElement.lang || '').toLowerCase().startsWith('en'),
+    { timeout: 15000 },
+  ).catch(() => {});
 }
 
 async function prepareWidget(page) {
@@ -509,17 +667,48 @@ function keyDelay() {
 
 // Queues a hidden steering message that the widget sends right behind the
 // shopper's next visible line. Never shown in the video.
-async function queueSteer(page, steer) {
-  if (!steer) return;
-  const queued = await page.evaluate((text) => {
+async function sendHidden(page, text, options = {}) {
+  if (!text) return false;
+  // Playwright's evaluate takes ONE argument: the two used to be passed
+  // separately, so every hidden steer and follow-up silently failed.
+  const sent = await page.evaluate(({ message, afterNext }) => {
     const api = window.AvatarVoicechat;
     if (!api || typeof api.sendHiddenMessage !== 'function') return false;
-    return api.sendHiddenMessage(text, { afterNextUserMessage: true });
-  }, steer).catch(() => false);
+    return api.sendHiddenMessage(message, afterNext ? { afterNextUserMessage: true } : {});
+  }, { message: text, afterNext: Boolean(options.afterNextUserMessage) }).catch((error) => {
+    process.stdout.write(`sendHidden error: ${String(error).slice(0, 200)}\n`);
+    return false;
+  });
+  return sent;
+}
+
+async function queueSteer(page, steer) {
+  if (!steer) return;
+  const queued = await sendHidden(page, steer, { afterNextUserMessage: true });
   process.stdout.write(`steer ${queued ? 'queued' : 'NOT AVAILABLE'}: "${steer.slice(0, 80)}"\n`);
 }
 
+// "Open the navy one" is an instruction to the clerk, not a line the shopper
+// should be seen typing. It goes out immediately, with nothing on screen.
+async function hiddenTurn(page, collector, sockets, pace, speech, job, line) {
+  pace.relax();
+  const sent = await sendHidden(page, line);
+  process.stdout.write(`hidden ${sent ? 'sent' : 'NOT AVAILABLE'}: "${line.slice(0, 80)}"\n`);
+  if (!sent) throw new Error('hidden product open was not sent');
+  await collector.ingest(page);
+  const marker = {
+    captions: collector.state.captions.length,
+    sheet: collector.state.sheet.length,
+    path: collector.state.path,
+    line: '',
+    mobileWidget: job.spec.mobileWidget,
+  };
+  const cart = await waitForTurn(page, collector, sockets, marker, pace, speech);
+  return { cart, marker };
+}
+
 async function typeLine(page, line, steer = '') {
+  await hideHistory(page);
   const composer = page.locator(COMPOSER_SELECTOR).first();
   await composer.waitFor({ state: 'visible', timeout: 20000 });
   await confirmAgeGate(page);
@@ -683,7 +872,9 @@ async function waitForTurn(page, collector, sockets, marker, pace, speech) {
     else if (!replied || isLoading(collector, sockets)) pace.hurry();
     else pace.relax();
     const quiet = Date.now() - lastReplyChange > TURN_QUIET_MS;
-    const speechDone = speechEnd > 0 && !speech.covers(Date.now()) && Date.now() - speechEnd >= SPEECH_TAIL_MS;
+    // beat.speechTailMs: a longer quiet before the turn counts as over, for
+    // replies spoken in two parts around a tool call (add to cart, then talk)
+    const speechDone = speechEnd > 0 && !speech.covers(Date.now()) && Date.now() - speechEnd >= (marker.tailMs || SPEECH_TAIL_MS);
     const navigationPending = sockets
       && sockets.leavingAt > started
       && collector.state.path === marker.path
@@ -763,7 +954,12 @@ async function waitForCartFollowThrough(page, collector, speech, pace, job) {
 
 async function shopperTurn(page, collector, sockets, pace, speech, job, line, steer = '') {
   pace.relax();
-  await typeLine(page, line, steer);
+  if (job.beat.mode === 'voice') {
+    job.voiceIndex = (job.voiceIndex || 0) + 1;
+    await speakLine(page, job, job.voiceIndex, line, steer, speech, pace);
+  } else {
+    await typeLine(page, line, steer);
+  }
   await collector.ingest(page);
   const marker = {
     captions: collector.state.captions.length,
@@ -771,6 +967,7 @@ async function shopperTurn(page, collector, sockets, pace, speech, job, line, st
     path: collector.state.path,
     line,
     mobileWidget: job.spec.mobileWidget,
+    tailMs: job.beat.speechTailMs || 0,
   };
   const cart = await waitForTurn(page, collector, sockets, marker, pace, speech);
   return { cart, marker };
@@ -789,9 +986,23 @@ function openedProduct(path, title, hints) {
   return (hints || []).some((hint) => text.includes(hint.toLowerCase()));
 }
 
+// What the clerk said and where the take went, kept in the results file.
+function transcriptOf(collector) {
+  return { captions: collector.state.captions, sheet: collector.state.sheet, trail: collector.state.trail.trim() };
+}
+
 function judge(job, collector, cart) {
   const reasons = [];
   const haystack = collector.haystack();
+  // beat.answerMustMatch: groups the clerk's reply to the LAST shopper line
+  // must cover; beat.answerDistinct { terms, min }: that reply names at least
+  // min different terms (e.g. three different phone brands)
+  if (collector.lastMarker && (job.beat.answerMustMatch || job.beat.answerDistinct)) {
+    const answer = latestReply(collector, collector.lastMarker).toLowerCase();
+    if (job.beat.answerMustMatch && !groupsMatch(answer, job.beat.answerMustMatch)) reasons.push('last answer misses required words');
+    const d = job.beat.answerDistinct;
+    if (d && d.terms.filter((term) => answer.includes(term.toLowerCase())).length < d.min) reasons.push('last answer names too few different items');
+  }
   if (collector.state.path.includes('/password')) reasons.push('password page');
   if (/something went wrong/i.test(haystack)) reasons.push('error toast');
   if (job.spec.mobileWidget) {
@@ -800,12 +1011,21 @@ function judge(job, collector, cart) {
     if (!collector.state.sawCaption) reasons.push('no captions');
     if (collector.state.captionClipped) reasons.push('captions clipped');
   }
-  if (job.beat.kind === 'catalog') {
+  if (job.beat.kind === 'opener' || job.beat.kind === 'narrow') {
+    // opener: the clerk named what the shopper is looking at; narrow: the
+    // catalog narrowed to a results page (beat.pathIncludes)
+    if (!groupsMatch(haystack, job.beat.mustMatch)) reasons.push('missing words in the reply');
+    if (job.beat.pathIncludes && !job.beat.pathIncludes.some((part) => collector.state.path.includes(part))) {
+      reasons.push(`not on a results page (${collector.state.path})`);
+    }
+  } else if (job.beat.kind === 'catalog') {
     const shown = job.beat.mustMatch.length > 1 && openedProduct(collector.state.path, collector.state.title, job.beat.productUrlIncludes)
       ? job.beat.mustMatch.slice(0, 1)
       : job.beat.mustMatch;
     if (!groupsMatch(haystack, shown)) reasons.push('missing products in the reply');
-    if (!openedProduct(collector.state.path, collector.state.title, job.beat.productUrlIncludes)) {
+    // stayOnPage beats (voice calls) show the products as cards in place: a
+    // page change would end the call.
+    if (!job.beat.stayOnPage && !openedProduct(collector.state.path, collector.state.title, job.beat.productUrlIncludes)) {
       reasons.push('product page did not open');
     }
   } else if (!cartCovers(cart, job.beat.cartMustMatch)) {
@@ -945,9 +1165,12 @@ function pacedAudioTrack(track, timeline, startMs) {
 }
 
 function writePacedAudio(chunks, timeline, startMs, endMs, framesDir) {
-  if (!chunks.length) throw new Error('no audio captured');
+  if (!chunks.length && !SILENT_OK.value) throw new Error('no audio captured');
   const audioFile = path.join(framesDir, 'audio.f32');
-  const paced = pacedAudioTrack(wallAudioTrack(chunks, startMs, endMs), timeline, startMs);
+  // ambient takes have no conversation: a silent track keeps the file shape
+  const paced = chunks.length
+    ? pacedAudioTrack(wallAudioTrack(chunks, startMs, endMs), timeline, startMs)
+    : new Float32Array(Math.ceil(timeline.duration * AUDIO_RATE));
   fs.writeFileSync(audioFile, Buffer.from(paced.buffer));
   return audioFile;
 }
@@ -1029,7 +1252,32 @@ async function recordTake(browser, job, dest) {
   const page = await context.newPage();
   await page.addInitScript(installPrefs);
   await installHiddenCursor(page);
-  if (spec.mobileWidget) await installMobileWidget(page);
+  const fixCss = [STORE_FIXES['*']?.css, STORE_FIXES[store.host]?.css].filter(Boolean).join('\n');
+  if (fixCss) {
+    await page.addInitScript((css) => {
+      const add = () => {
+        if (document.getElementById('promo-store-fix')) return;
+        const style = document.createElement('style');
+        style.id = 'promo-store-fix';
+        style.textContent = css;
+        (document.head || document.documentElement).appendChild(style);
+      };
+      if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', add);
+      else add();
+    }, fixCss);
+  }
+  const avatar = AVATARS[job.beat.avatar];
+  const widgetOverrides = {
+    ...(spec.mobileWidget ? { isMobile: true } : {}),
+    // avatarVoice: false keeps the avatar's look but the agent's default voice
+    // (the voice server rejects some preset voices as overrides); the reel
+    // then re-voices the agent in post (scripts/revoice-agent.py)
+    ...(avatar ? { avatarModelUrl: avatar.model, ...(job.beat.avatarVoice === false ? {} : { voiceId: avatar.voiceId }) } : {}),
+    // beat.widget: extra widget init options for this take, e.g. { "layout": "bar" }
+    ...(job.beat.widget || {}),
+  };
+  if (Object.keys(widgetOverrides).length) await installMobileWidget(page, widgetOverrides);
+  if (LOCAL_WIDGET) await installLocalWidget(page);
   const audioChunks = [];
   await installAudioTap(page, audioChunks);
   const pace = createPace();
@@ -1046,6 +1294,15 @@ async function recordTake(browser, job, dest) {
     if (request.isNavigationRequest() && request.frame() === page.mainFrame()) {
       sockets.leavingAt = Date.now();
     }
+  });
+  // the proactive opener's text, as the backend wrote it (resumed sessions)
+  page.on('response', (response) => {
+    if (!response.url().includes('/first-message')) return;
+    try {
+      const sent = JSON.parse(response.request().postData() || '{}');
+      process.stdout.write(`first-message asked (${sent.mode}): ${JSON.stringify(sent.session_history || '').slice(0, 900)}\n`);
+    } catch { /* ignore */ }
+    response.json().then((body) => process.stdout.write(`first-message: ${JSON.stringify(body).slice(0, 400)}\n`)).catch(() => {});
   });
   page.on('websocket', (socket) => {
     sockets.open += 1;
@@ -1065,6 +1322,11 @@ async function recordTake(browser, job, dest) {
   try {
     await unlockStore(page, store.host);
     if (page.url().includes('/password')) throw new Error('still on the password page');
+    if (store.slug === 'viniteca-marti') {
+      await confirmVinitecaAge(page);
+      await useEnglishStorefront(page);
+    }
+    if (job.beat.startPath) await page.goto(`https://${store.host}${job.beat.startPath}`, { waitUntil: 'domcontentloaded', timeout: 45000 });
     const view = await withPage(page, () => page.evaluate(() => ({ width: window.innerWidth, height: window.innerHeight })));
     if (view.width !== spec.cssWidth || view.height !== spec.cssHeight) {
       throw new Error(`viewport ${view.width}x${view.height}, wanted ${spec.cssWidth}x${spec.cssHeight}`);
@@ -1078,13 +1340,79 @@ async function recordTake(browser, job, dest) {
       if (warmup.state.widgetReady) break;
       await sleep(300);
     }
+    if (job.beat.prelude) {
+      // An earlier, unrecorded conversation (beat.prelude.lines, spoken or
+      // typed), then the shopper lands on beat.prelude.thenPath: the widget
+      // resumes the session there and opens by itself, aware of the page.
+      const early = createCollector();
+      const earlySpeech = createSpeech(audioChunks);
+      const earlyPace = createPace();
+      for (const [index, line] of job.beat.prelude.lines.entries()) {
+        await shopperTurn(page, early, sockets, earlyPace, earlySpeech, job, line, job.beat.prelude.steer?.[index] || '');
+      }
+      await sleep(job.beat.prelude.settleMs ?? 2500);
+      page.__promoCallOn = false;
+      await page.goto(`https://${store.host}${job.beat.prelude.thenPath}`, { waitUntil: 'domcontentloaded', timeout: 45000 });
+      await acceptCookies(page);
+      await sleep(400);
+      audioChunks.splice(0);
+    }
     capture = startScreencast(page, spec, framesDir);
     const speech = createSpeech(audioChunks);
     pace.hurry();
     await capture.fitScreen();
     await capture.start();
-    await waitForSpeechTail(speech, 0, pace, GREETING_WAIT_MS);
+    // an opener beat records the clerk's first words: don't wait them out here
+    if (job.beat.kind !== 'opener') await waitForSpeechTail(speech, 0, pace, GREETING_WAIT_MS);
+    SILENT_OK.value = job.beat.kind === 'ambient';
+    if (job.beat.kind === 'ambient') {
+      // a quiet take for the carousel: the store at rest with its widget, a
+      // slow eased scroll, no conversation
+      const seconds = job.beat.seconds || 9;
+      await sleep(1000);
+      await page.evaluate(({ px, ms }) => new Promise((resolve) => {
+        const t0 = performance.now(); const y0 = window.scrollY;
+        const step = (now) => {
+          const u = Math.min(1, (now - t0) / ms); const e = u < 0.5 ? 2 * u * u : 1 - ((-2 * u + 2) ** 2) / 2;
+          window.scrollTo(0, y0 + px * e);
+          if (u < 1) requestAnimationFrame(step); else resolve();
+        };
+        requestAnimationFrame(step);
+      }), { px: job.beat.scroll ?? 520, ms: Math.max(2000, seconds * 1000 - 2200) });
+      await sleep(1200);
+      await capture.stop();
+      fs.mkdirSync(OUT_DIR, { recursive: true });
+      await encode(capture.frames, audioChunks, spec, pace, framesDir, dest);
+      const info = await probe(dest);
+      return { ok: true, file: fileName(job), duration: info.duration, width: info.width, height: info.height };
+    }
     const collector = createCollector();
+    if (job.beat.kind === 'opener') {
+      // no shopper turn: the clerk speaks first (proactive, page-aware opener)
+      const started = Date.now();
+      while (Date.now() - started < (job.beat.openerWaitMs || 40000)) {
+        await collector.ingest(page);
+        const end = speech.lastEndSince(0);
+        if (end > 0 && !speech.covers(Date.now()) && Date.now() - end > TURN_QUIET_MS) break;
+        if (end > 0 || speech.covers(Date.now())) pace.relax(); else pace.hurry();
+        await sleep(300);
+      }
+      pace.relax();
+      if (job.beat.scrollAfter) {
+        await page.evaluate((px) => window.scrollBy({ top: px, behavior: 'smooth' }), job.beat.scrollAfter).catch(() => {});
+      }
+      await sleep(HOLD_AFTER_MS);
+      await capture.stop();
+      const reasons = judge(job, collector, []);
+      if (reasons.length) {
+        await page.screenshot({ path: path.join(os.tmpdir(), `bizmis-fail-${fileName(job)}.png`) }).catch(() => {});
+        throw new Error(`${reasons.join('; ')} | path=${collector.state.path} | ${collector.haystack().replace(/\s+/g, ' ').slice(0, 700)}`);
+      }
+      fs.mkdirSync(OUT_DIR, { recursive: true });
+      await encode(capture.frames, audioChunks, spec, pace, framesDir, dest);
+      const info = await probe(dest);
+      return { ok: true, file: fileName(job), duration: info.duration, width: info.width, height: info.height, transcript: transcriptOf(collector) };
+    }
     // beat.steer[i] rides hidden behind lines[i]; followUpSteer and
     // clarifySteer ride behind those lines.
     const steerFor = (index) => (Array.isArray(job.beat.steer) ? job.beat.steer[index] : '') || '';
@@ -1101,6 +1429,7 @@ async function recordTake(browser, job, dest) {
     for (let index = 0; index < job.beat.lines.length; index += 1) {
       const isLastLine = index === job.beat.lines.length - 1;
       let turn = await say(job.beat.lines[index], steerFor(index));
+      if (isLastLine) collector.lastMarker = turn.marker;
       const stillMissing = job.beat.kind === 'cart'
         ? () => !cartCovers(turn.cart, job.beat.cartMustMatch)
         : () => collector.state.path === turn.marker.path
@@ -1108,11 +1437,13 @@ async function recordTake(browser, job, dest) {
       if (isLastLine) turn = await answerIfAsked(turn, stillMissing);
       cart = turn.cart;
       const needsOpen = job.beat.kind === 'catalog'
+        && !job.beat.stayOnPage
         && isLastLine
         && job.beat.followUp
         && !onProductPage();
       if (needsOpen) {
-        turn = await answerIfAsked(await say(job.beat.followUp, job.beat.followUpSteer), () => !onProductPage());
+        turn = await hiddenTurn(page, collector, sockets, pace, speech, job, job.beat.followUp);
+        turn = await answerIfAsked(turn, () => !onProductPage());
         cart = turn.cart;
       }
     }
@@ -1162,7 +1493,7 @@ async function recordTake(browser, job, dest) {
       throw new Error(`size ${info.width}x${info.height}`);
     }
     if (!(info.duration >= 8)) throw new Error(`too short (${info.duration}s)`);
-    return { ok: true, file: fileName(job), duration: info.duration, width: info.width, height: info.height };
+    return { ok: true, file: fileName(job), duration: info.duration, width: info.width, height: info.height, transcript: transcriptOf(collector), cart: cart.map((item) => item.title) };
   } finally {
     if (capture) await capture.stop().catch(() => {});
     await context.close().catch(() => {});
@@ -1172,7 +1503,22 @@ async function recordTake(browser, job, dest) {
 
 // The screencast records the browser window, not the emulated viewport, so
 // each take gets a window of the device's exact size and pixel ratio.
-async function launchForDevice(chromium, spec) {
+// Voice takes run a real voice call; the fake microphone plays silence, so the
+// shopper's words reach the agent only as hidden text turns.
+function silentMic() {
+  const file = path.join(os.tmpdir(), 'promo-silent-mic.wav');
+  if (!fs.existsSync(file)) {
+    const rate = 48000; const seconds = 600; const data = Buffer.alloc(rate * seconds * 2);
+    const head = Buffer.alloc(44);
+    head.write('RIFF', 0); head.writeUInt32LE(36 + data.length, 4); head.write('WAVE', 8); head.write('fmt ', 12);
+    head.writeUInt32LE(16, 16); head.writeUInt16LE(1, 20); head.writeUInt16LE(1, 22); head.writeUInt32LE(rate, 24);
+    head.writeUInt32LE(rate * 2, 28); head.writeUInt16LE(2, 32); head.writeUInt16LE(16, 34); head.write('data', 36); head.writeUInt32LE(data.length, 40);
+    fs.writeFileSync(file, Buffer.concat([head, data]));
+  }
+  return file;
+}
+
+async function launchForDevice(chromium, spec, voice = false) {
   return chromium.launch({
     headless: process.env.PROMO_HEADED !== '1',
     channel: process.env.PROMO_FRAMES_CHANNEL || 'chrome',
@@ -1182,6 +1528,7 @@ async function launchForDevice(chromium, spec) {
       '--autoplay-policy=no-user-gesture-required',
       '--use-fake-ui-for-media-stream',
       '--use-fake-device-for-media-stream',
+      ...(voice ? [`--use-file-for-fake-audio-capture=${silentMic()}`] : []),
     ],
   });
 }
@@ -1204,7 +1551,7 @@ async function recordJob(chromium, job) {
   }
   let lastError = 'unknown';
   for (let attempt = 1; attempt <= MAX_TRIES; attempt += 1) {
-    const browser = await launchForDevice(chromium, job.spec);
+    const browser = await launchForDevice(chromium, job.spec, job.beat.mode === 'voice');
     try {
       const result = await recordTake(browser, job, staging);
       fs.renameSync(staging, dest);

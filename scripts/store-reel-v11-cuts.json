@@ -1,0 +1,7 @@
+{
+ "fashion": {"src": "tmp/reel-v10/revoiced/fashion.mp4", "segments": [[10.8, 13.9, 1.0, "same"], [22.3, 26.95, 1.0, "same"]]},
+ "electronics": {"src": "tmp/reel-v10/meridian-running-watch-desktop-yusuke-voice.mp4", "segments": [[55.45, 58.5, 1.22, null], [60.55, 66.0, 1.22, "same"]],
+   "shopper": {"text": "Which one lasts longest on a single charge?", "voice": "eXpIbVcVbLo8ZJQDlDnl", "at": 0.04}},
+ "books": {"src": "tmp/reel-v10/revoiced/books.mp4", "segments": [[6.45, 11.6, 1.05, "same"]]},
+ "gaming": {"src": "tmp/reel-v10/revoiced/gaming.mp4", "segments": [[83.0, 87.95, 1.2, null]]}
+}

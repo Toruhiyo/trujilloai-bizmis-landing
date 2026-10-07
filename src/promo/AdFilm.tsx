@@ -1,7 +1,10 @@
 import { useEffect } from "react";
 
-const WIDGET_SCRIPT = "https://cdn.bizmis.ai/widget/avatar-widget.js";
-const WIDGET_STYLE = "https://cdn.bizmis.ai/widget/avatar-widget-style.css";
+// `?widget=local` loads a local widget build (public/promo/widget-local, copied
+// from trujilloai-bizmis-widget/dist) for film features not yet on the CDN.
+const LOCAL_WIDGET = typeof window !== "undefined" && new URLSearchParams(window.location.search).get("widget") === "local";
+const WIDGET_SCRIPT = LOCAL_WIDGET ? "/promo/widget-local/avatar-widget.js" : "https://cdn.bizmis.ai/widget/avatar-widget.js";
+const WIDGET_STYLE = LOCAL_WIDGET ? "/promo/widget-local/avatar-widget-style.css" : "https://cdn.bizmis.ai/widget/avatar-widget-style.css";
 const INTER_STYLE = "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap";
 const FILM_STYLES = [
   INTER_STYLE,

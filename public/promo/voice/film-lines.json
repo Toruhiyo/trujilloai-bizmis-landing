@@ -1,0 +1,102 @@
+[
+  {
+    "id": "t-pain",
+    "role": "narrator",
+    "text": "[confident] Every day, shoppers walk into your store... ready to buy. [curious] Some get lost in the catalog. Clicking, comparing, scrolling... [sighs] with no one there to help them choose. [short pause] Others get stuck on one last question... and go looking for help. A chatbot? [sarcastic] Here's a wall of text... go read it. [short pause] A real person? The perfect answer... hours later. When the sale's already gone. [short pause] Either way, they leave. Quietly. And you never find out why."
+  },
+  {
+    "id": "t-switch",
+    "role": "narrator",
+    "text": "[thoughtful] In a physical store... [warm] the best salesperson turns these moments into sales. [excited] So we built one... for your online store!"
+  },
+  {
+    "id": "t-reveal",
+    "role": "narrator",
+    "text": "[warm] Meet Bizmis. Your store's new salesperson. [short pause] Well... [mischievously] sales agent."
+  },
+  {
+    "id": "t-rewind",
+    "role": "narrator",
+    "text": "[playful] Let's rewind. [short pause] Same store... [warm] now with Bizmis."
+  },
+  {
+    "id": "t-lost",
+    "role": "narrator",
+    "text": "[warm] When a shopper's lost in your catalog... [confident] Bizmis finds them the right one."
+  },
+  {
+    "id": "t-doubt",
+    "role": "narrator",
+    "text": "[warm] And when a doubt holds them back... [confident] it answers on the spot."
+  },
+  {
+    "id": "t-sold",
+    "role": "narrator",
+    "text": "[warm] That's how more visits... turn into sales."
+  },
+  {
+    "id": "t-sync",
+    "role": "narrator",
+    "text": "[warm] It all takes just one click. [confident] Your whole store, in sync. [short pause] [upbeat] Automatically, [emphatic] always."
+  },
+  {
+    "id": "t-sync-c",
+    "role": "narrator",
+    "text": "[warm] It all takes just one click. [confident] Your whole store, in sync. [short pause] [upbeat] Automatically, [emphatic] always."
+  },
+  {
+    "id": "t-sync-b",
+    "role": "narrator",
+    "text": "[warm] And it all takes just one click... [confident] your whole store... in sync. [short pause] [emphatic] Automatically... [softly] always."
+  },
+  {
+    "id": "t-sync-a",
+    "role": "narrator",
+    "text": "[warm] And it all takes just one click... [confident] your whole store, in sync. [short pause] [upbeat] Automatically. [short pause] [warm] Always."
+  },
+  {
+    "id": "t-stores",
+    "role": "narrator",
+    "text": "[warm] In any store, with any catalog... on any device. [short pause] Type to it... [playful] or just talk to it."
+  },
+  {
+    "id": "t-ea",
+    "role": "narrator",
+    "text": "[excited] Install now to join Early Access! [warm] You get generous free credits, fifty percent off when you upgrade, and you shape the roadmap. It installs in one click and stays private until you go live, with no commitment, and a direct line to the founder. [confident] There are only fifty spots. [warm] Install now to secure yours."
+  },
+  {
+    "id": "shopper-doubt",
+    "role": "shopper",
+    "text": "[curious] Is it okay for someone who's never had one?"
+  },
+  {
+    "id": "clerk-results",
+    "role": "clerk",
+    "text": "Here are three great picks. Let me compare them for you."
+  },
+  {
+    "id": "clerk-compare",
+    "role": "clerk",
+    "text": "This one's the most durable, the lightest, and easy to care for. It's the one."
+  },
+  {
+    "id": "clerk-answer",
+    "role": "clerk",
+    "text": "Absolutely! It's the one we recommend for first-timers."
+  },
+  {
+    "id": "clerk-upsell",
+    "role": "clerk",
+    "text": "Great pick! This one pairs beautifully with it. Want me to add it too?"
+  },
+  {
+    "id": "shopper-upsell",
+    "role": "shopper",
+    "text": "[happy] Oh, nice! Yes, add it."
+  },
+  {
+    "id": "clerk-upsell-done",
+    "role": "clerk",
+    "text": "Done! Both are in your cart."
+  }
+]

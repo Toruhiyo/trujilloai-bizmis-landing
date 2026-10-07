@@ -1,0 +1,95 @@
+{
+ "12-weather-outfitters.myshopify.com": {
+  "css": "/* Guard: no sideways pan on phone/tablet */\nhtml, body { overflow-x: clip; }\n/* Phone header: logo collides with the EN locale picker -> drop locale + help icons */\n@media (max-width: 480px) {\n  .header__right .locale-selector, .header__right .help-menu { display: none !important; }\n}\n/* Search grid overflows (grid--4 never collapses; 1fr tracks grow to image min-content) */\n.shop-main { min-width: 0; }\n#shop-grid.grid { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }\n@media (min-width: 768px) { #shop-grid.grid--4 { grid-template-columns: repeat(3, minmax(0, 1fr)) !important; } }\n@media (min-width: 1100px) { #shop-grid.grid--4 { grid-template-columns: repeat(4, minmax(0, 1fr)) !important; } }\n/* Home: \"New Arrivals\" section renders a heading over an EMPTY grid (big blank band) */\n.shopify-section:has(.section__header):has(.grid):not(:has(.grid > *)) { display: none !important; }\n/* Phone PDP: sticky add-to-bag bar sits under the Bizmis widget bar */\n@media (max-width: 767px) { .mobile-sticky-atb { display: none !important; } }\n/* Hero split: white 4px gutter cuts through the transparent nav (\"MEN\" sliced) */\n.image-split { background: #101418; }\n.header--transparent { background: linear-gradient(to bottom, rgba(16,20,24,.45), rgba(16,20,24,0)); }\n/* Card hover turns title brand-yellow on cream (unreadable) */\n.product-card:hover .product-card__title { color: inherit !important; }\n/* Phone search page: SEARCH pill clipped at the right edge (input min-width:auto + 36px button padding) */\n.search-form .search-form__input { min-width: 0 !important; }\n@media (max-width: 480px) { .search-form .btn { padding-left: 20px !important; padding-right: 20px !important; flex-shrink: 0; } }\n",
+  "flaws": [
+   "Phone: header logo collides with the 'EN' locale picker (header__left 186px + header__right 216px > 328px)",
+   "Phone + tablet /search: #shop-grid.grid--4 never collapses and 1fr tracks grow to image min-content -> page 619px (phone) / 1219px (tablet) wide, results and search field shifted/clipped",
+   "Phone /search: SEARCH pill clipped at right edge (input min-width:auto + 36px button padding)",
+   "Home: 'New Arrivals' (and PDP 'You might also like') render a heading over an EMPTY grid -> large blank band",
+   "Phone PDP: .mobile-sticky-atb add-to-bag bar sits under the Bizmis widget bar",
+   "Tablet/desktop home: white 4px gutter between the split hero images runs through the transparent nav ('MEN' sliced)",
+   "Card hover turns the title brand-yellow (#F2C94C) on cream: unreadable when the cursor rests on a card"
+  ],
+  "verified": true
+ },
+ "meridian-consumer-electronics.myshopify.com": {
+  "css": "/* 28px blank band above the header (--promo-height reserved for an absent promo bar); content shows through it when scrolled */\nhtml, body { --promo-height: 0px !important; }\nhtml, body { overflow-x: clip; }\n/* Visible coloured page scrollbar on the right edge (OverlayScrollbars .os-scrollbar, brand-tinted) */\n.os-scrollbar { opacity: 0 !important; visibility: hidden !important; }\nhtml, body { scrollbar-width: none; }\n/* Phone: hover action bar on cards is cramped (Quick View text clipped) and sticks on the first card */\n@media (max-width: 749px) { .product-card__actions { display: none !important; } }\n/* Phone/tablet PDP: sticky price + add-to-cart bar sits under the Bizmis widget bar */\n@media (max-width: 989px) { .pdp-sticky-bar { display: none !important; } }\n/* Header background/border only spans the 1280px container -> boxed header with off-colour gutters */\n.header:not(.is-transparent) .header__primary { background: rgba(255,255,255,.92); backdrop-filter: blur(20px); border-bottom: 1px solid var(--color-border); }\n.header__primary > .page-width { border-bottom-color: transparent !important; }\n\n/* v9: Bizmis is a sales agent, not a clerk: 'The store clerk is in.' reads 'The sales agent is in.' (same word lengths, swapped in place) */\n.hero__title-line > .hero__word:nth-child(2), .hero__title-line > .hero__word:nth-child(3) { display: inline-grid !important; grid-template-rows: auto; grid-auto-rows: 0; overflow: visible; -webkit-text-fill-color: transparent; }\n.hero__title-line > .hero__word:nth-child(2)::after, .hero__title-line > .hero__word:nth-child(3)::after { grid-area: 1 / 1; -webkit-text-fill-color: currentColor; white-space: nowrap; }\n.hero__title-line > .hero__word:nth-child(2)::after { content: 'sales'; }\n.hero__title-line > .hero__word:nth-child(3)::after { content: 'agent'; }\n\n/* v9: the in-store 'Talk to the store clerk / Install Bizmis' block is our pitch, not the merchant's */\nsection.hero-voice { display: none !important; }\n",
+  "flaws": [
+   "All devices: 28px blank band above the header (--promo-height reserved for an absent promo bar); sticky header sits at top:28px so scrolled content shows through the gap and the PDP title is crowded",
+   "All devices: red OverlayScrollbars thumb visible on the right edge",
+   "Phone: card hover action bar (Quick View + Add to Cart) cramped, 'Quick View' clipped, sticks on the first card",
+   "Phone/tablet PDP: .pdp-sticky-bar (price + Add to Cart) hidden under the widget bar",
+   "Desktop: header border only spans the 1280px container (boxed look)"
+  ],
+  "verified": true
+ },
+ "paper-and-pine-books.myshopify.com": {
+  "css": "/* Phone: page is 15-27px wider than the viewport (sideways pan) */\nhtml, body { overflow-x: clip; }\n/* Phone search: SEARCH button pushed past the right edge (input min-width:auto won't shrink) */\n.search-form__input, main form[action*=\"search\"] input { min-width: 0 !important; }\nmain form[action*=\"search\"] button { flex-shrink: 0; }\n/* Phone footer: newsletter grid column (351px) wider than the viewport -> SUBSCRIBE button runs off the right edge */\n@media (max-width: 749px) {\n  .footer__newsletter-inner { grid-template-columns: minmax(0, 1fr) !important; }\n  .footer__newsletter-input { min-width: 0 !important; width: 100% !important; }\n  .footer__newsletter-form .btn { flex-shrink: 0; }\n}\n",
+  "flaws": [
+   "Phone /search: SEARCH button pushed past the right edge (input min-width:auto), page 387px wide",
+   "Phone footer: newsletter grid column 351px > viewport -> SUBSCRIBE button runs off-screen, every page pans 15px sideways"
+  ],
+  "verified": true
+ },
+ "pulse-forge-2.myshopify.com": {
+  "css": "html, body { overflow-x: clip; }\n/* Phone: hover action bar on cards is cramped (Quick View text clipped) and sticks on the first card */\n@media (max-width: 749px) { .product-card__actions { display: none !important; } }\n/* Phone/tablet PDP: sticky price + add-to-cart bar sits under the Bizmis widget bar */\n@media (max-width: 989px) { .pdp-sticky-bar { display: none !important; } }\n/* Desktop PDP: buy box (Add to cart / Buy now) runs under the widget card -> keep it left of the widget */\n@media (min-width: 1200px) { .pdp__info { padding-right: 260px; } }\n",
+  "flaws": [
+   "Phone: card hover action bar shows clipped 'QUICK VIEW' ('CK V') on the first card",
+   "Phone/tablet PDP: .pdp-sticky-bar hidden under the widget bar (only 'D CART' visible)",
+   "Desktop PDP: ADD TO CART / BUY NOW buttons run under the widget card",
+   "Not fixed (minor): phone hero eyebrow 'GEAR UP. LEVEL UP.' and body copy are low-contrast purple/grey on the photo"
+  ],
+  "verified": true
+ },
+ "rolling-district.myshopify.com": {
+  "css": "html, body { overflow-x: clip; }\n/* Visible coloured page scrollbar on the right edge (OverlayScrollbars .os-scrollbar, brand-tinted) */\n.os-scrollbar { opacity: 0 !important; visibility: hidden !important; }\nhtml, body { scrollbar-width: none; }\n/* Phone: hover action bar on cards is cramped (Quick View text clipped) and sticks on the first card */\n@media (max-width: 749px) { .product-card__actions { display: none !important; } }\n/* Phone/tablet PDP: sticky price + add-to-cart bar sits under the Bizmis widget bar */\n@media (max-width: 989px) { .pdp-sticky-bar { display: none !important; } }\n/* Tablet/desktop logo: 1536x1024 padded wordmark squeezed into 54x36 -> unreadable; use the RD mark used on phone */\n.header__logo-img--full { display: none !important; }\n.header__logo-img--initial { display: block !important; height: 34px !important; width: auto !important; }\n/* Hero slideshow: crossfades mid-shot and lands on near-black engine/piston slides; pin the wheels slide */\n.hero__slide { opacity: 0 !important; transition: none !important; }\n.hero__slide:nth-child(4) { opacity: 1 !important; }\n.hero__nav { display: none !important; }\n\n/* v9: the in-store 'Talk to the store clerk / Install Bizmis' block is our pitch, not the merchant's */\nsection.hero-voice { display: none !important; }\n",
+  "flaws": [
+   "All devices: red OverlayScrollbars thumb on the right edge",
+   "Tablet/desktop: logo is a 1536x1024 padded wordmark squeezed to 54x36 -> unreadable dark box",
+   "Hero slideshow crossfades mid-shot (ghosted double image on desktop) and lands on near-black engine/piston slides (phone hero looked empty)",
+   "Phone: clipped 'Quick View' card hover bar",
+   "Tablet PDP: .pdp-sticky-bar hidden under the widget bar",
+   "Not fixed (minor): desktop nav items spread with very wide gaps"
+  ],
+  "verified": true
+ },
+ "buildright-home.myshopify.com": {
+  "css": "html, body { overflow-x: clip; }\n/* Visible coloured page scrollbar on the right edge (OverlayScrollbars .os-scrollbar, brand-tinted) */\n.os-scrollbar { opacity: 0 !important; visibility: hidden !important; }\nhtml, body { scrollbar-width: none; }\n/* Phone: hover action bar on cards is cramped (Quick View text clipped) and sticks on the first card */\n@media (max-width: 749px) { .product-card__actions { display: none !important; } }\n/* Phone/tablet PDP: sticky price + add-to-cart bar sits under the Bizmis widget bar */\n@media (max-width: 989px) { .pdp-sticky-bar { display: none !important; } }\n/* Header background/border only spans the 1280px container -> boxed header with off-colour gutters */\n.header:not(.is-transparent) .header__primary { background: rgba(255,255,255,.92); backdrop-filter: blur(20px); border-bottom: 1px solid var(--color-border); }\n.header__primary > .page-width { border-bottom-color: transparent !important; }\n\n/* v9: Bizmis is a sales agent, not a clerk: 'The store clerk is in.' reads 'The sales agent is in.' (same word lengths, swapped in place) */\n.hero__title-line > .hero__word:nth-child(2), .hero__title-line > .hero__word:nth-child(3) { display: inline-grid !important; grid-template-rows: auto; grid-auto-rows: 0; overflow: visible; -webkit-text-fill-color: transparent; }\n.hero__title-line > .hero__word:nth-child(2)::after, .hero__title-line > .hero__word:nth-child(3)::after { grid-area: 1 / 1; -webkit-text-fill-color: currentColor; white-space: nowrap; }\n.hero__title-line > .hero__word:nth-child(2)::after { content: 'sales'; }\n.hero__title-line > .hero__word:nth-child(3)::after { content: 'agent'; }\n\n/* v9: the in-store 'Talk to the store clerk / Install Bizmis' block is our pitch, not the merchant's */\nsection.hero-voice { display: none !important; }\n",
+  "flaws": [
+   "All devices: green OverlayScrollbars thumb on the right edge",
+   "Phone: 'Quick View' / 'Sold Out' pills overflow the card hover bar",
+   "Tablet PDP: .pdp-sticky-bar hidden under the widget bar",
+   "Desktop: scrolled header background only spans the 1280px container -> boxed header with beige gutters",
+   "NOT CSS (data): top 'drill' result 'TorqueOne Cordless Drill 18V' is SOLD OUT -> grey 'Sold Out' button instead of Add to Cart on card + PDP; restock it or avoid it in beats"
+  ],
+  "verified": true
+ },
+ "the-apricot-theory.myshopify.com": {
+  "css": "html, body { overflow-x: clip; }\n/* Search input shows the native blue webkit clear (x) button, off-brand */\ninput[type=\"search\"]::-webkit-search-cancel-button { -webkit-appearance: none; appearance: none; display: none; }\n/* Phone PDP: sticky \"ADD TO BAG — $28.00\" bar sits under the Bizmis widget bar (orange strip peeks out below it) */\n@media (max-width: 989px) { .sticky-atb { display: none !important; } }\n",
+  "flaws": [
+   "Phone /search: native blue webkit clear (x) in the search input, off-brand",
+   "Phone PDP: orange .sticky-atb bar peeks out below the widget bar",
+   "Not fixed (acceptable): phone wordmark wraps to two lines"
+  ],
+  "verified": true
+ },
+ "viniteca-marti.myshopify.com": {
+  "css": "html, body { overflow-x: clip; }\n/* Visible coloured page scrollbar on the right edge (OverlayScrollbars .os-scrollbar, brand-tinted) */\n.os-scrollbar { opacity: 0 !important; visibility: hidden !important; }\nhtml, body { scrollbar-width: none; }\n/* Phone/tablet PDP: sticky price + add-to-cart bar sits under the Bizmis widget bar */\n@media (max-width: 989px) { .pdp-sticky-bar { display: none !important; } }\n/* Header background/border only spans the 1280px container -> boxed header with off-colour gutters */\n.header:not(.is-transparent) .header__primary { background: rgba(251,248,243,.94); backdrop-filter: blur(20px); border-bottom: 1px solid var(--color-border); }\n.header__primary > .page-width { border-bottom-color: transparent !important; }\n",
+  "flaws": [
+   "Store defaults to Catalan; switching to English only sticks under /en/ (going to / reverts to Catalan). Shots taken on /en/... Recorder should navigate via /en paths after the switch",
+   "All devices: maroon OverlayScrollbars thumb on the right edge",
+   "Phone/tablet PDP: .pdp-sticky-bar under the widget bar",
+   "Desktop: header background/border only spans the container (boxed header, cream patch at right on scroll)",
+   "Not fixed (minor): large vertical gap between 'Our highlights' and 'Shop by category' on tablet"
+  ],
+  "verified": true
+ },
+ "*": {
+  "css": "/* reel: no conversation history and no greeting in the recordings, only the latest message */\n[data-promo-hide] { display: none !important; }\n[data-floating-item-id]:has(~ [data-floating-item-id] ~ [data-floating-item-id]) { display: none !important; }\n.bizmis-chat-panel-scroll > div:not(:last-child) { display: none !important; }\n",
+  "flaws": [
+   "chat history stacks on mobile/tablet",
+   "greeting names the store's configured avatar"
+  ],
+  "verified": false
+ }
+}

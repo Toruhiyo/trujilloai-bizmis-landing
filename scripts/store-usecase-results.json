@@ -1,7 +1,298 @@
 {
   "12-weather-outfitters-raincoat-desktop.mp4": {
-    "ok": false,
+    "ok": true,
     "file": "12-weather-outfitters-raincoat-desktop.mp4",
-    "error": "product page did not open | path=/search?q=%28title%3A%22Navy+City+Rain+Coat+%E2%80%94+Women%27s%22%29+OR+%28title%3A%22Sand+City+Rain+Coat+%E2%80%94+Women%27s%22%29+OR+%28title%3A%22Mint+City+Rain+Coat+%E2%80%94+Women%27s%22%29+OR+%28title%3A%22Dusty+Rose+City+Rain+Coat+%E2%80%94+Women%27s%22%29+OR+%28title%3A%22Terracotta+City+Rain+Coat+%E2%80%94+Women%27s%22%29+OR+%28title%3A%22Plum+City+Rain+Coat+%E2%80%94+Women%27s%22%29+OR+%28title%3A%22Navy+City+Rain+Coat+%E2%80%94+Men%27s%22%29+OR+%28title%3A%22Salmon+City+Rain+Coat+%E2%80%94+Women%27s%22%29+OR+%28title%3A%22Lavender+City+Rain+Coat+%E2%80%94+Women%27s%22%29+OR+%28title%3A%22Powder+Blue+City+Rain+Coat+%E2%80%94+Women%27s%22%29+OR+%28title%3A%22Navy+Rain+Trench+%E2%80%94+Women%27s%22%29+OR+%28title%3A%22Navy+City+Shell+Jacket+%E2%80%94+Women%27s%22%29+OR+%28title%3A%22Burnt+Orange+City+Rain+Coat+%E2%80%94+Women%27s%22%29+OR+%28title%3A%22Dusty+Rose+City+Rain+Coat+%E2%80%94+Men%27s%22%29+OR+%28title%3A%22Sand+City+Rain+Coat+%E2%80%94+Men%27s%22%29+OR+%28title%3A%22Mint+City+Rain+Coat+%E2%80%94+Men%27s%22%29+OR+%28title%3A%22Terracotta+City+Rain+Coat+%E2%80%94+Men%27s%22%29 | Got it, you're looking for a city rain coat in a quiet color. Before I search, are you looking for men's, women's, or unisex options? Welcome to 12 Weather Outfitters! I'm Marco, from Bizmis, I can help you find products, compare options, checkout, as well as answer shipping, returns and other questions. Just tell me what you need! Welcome to 12 Weather Outfitters! I'm Yusuke, from Bizmis, I can help you find products, compare options, checkout, as well as answer shipping, returns and other questions. Just tell me what you need! Take me to the women's Navy City Rain Coat. Which option will fit or work for my needs? Search: 17 results found for \"(title:\"Navy City Rain Coat — Women's\") OR (tit"
+    "duration": 42.166667,
+    "width": 1920,
+    "height": 1200,
+    "attempt": 1
+  },
+  "12-weather-outfitters-raincoat-phone.mp4": {
+    "ok": true,
+    "file": "12-weather-outfitters-raincoat-phone.mp4"
+  },
+  "12-weather-outfitters-raincoat-tablet.mp4": {
+    "ok": true,
+    "file": "12-weather-outfitters-raincoat-tablet.mp4",
+    "duration": 43.333333,
+    "width": 1080,
+    "height": 1440,
+    "attempt": 1
+  },
+  "12-weather-outfitters-return-tablet.mp4": {
+    "ok": true,
+    "file": "12-weather-outfitters-return-tablet.mp4",
+    "duration": 75.4,
+    "width": 1080,
+    "height": 1440,
+    "attempt": 1
+  },
+  "12-weather-outfitters-return-desktop.mp4": {
+    "ok": false,
+    "file": "12-weather-outfitters-return-desktop.mp4",
+    "error": "cart missing items (Navy City Rain Coat — Men&#39;s - M) | path=/ | Yes, you can return items if they don't fit! Let me check our return policy for you. you.Yes! You have 30 days from when you.Yes! You have 30 days from when you receive your item to return it if it doesn't fit. The item needs to be unworn, unused, with tags still attached, and in its original packaging. If you need to start a return, you can contact the store at trujillo.oriol@gmail.com. I need to find those I need to find those products first. Let me search for the men's navy rain coat and navy Chelsea boots. Now Now let me Now let me search for the navy Chelsea boots in size 9. Perfect! Perfect! I found both items. Perfect! I found both items. Let me add them to your cart: 1. Navy City Rai"
+  },
+  "12-weather-outfitters-return-phone.mp4": {
+    "ok": true,
+    "file": "12-weather-outfitters-return-phone.mp4",
+    "duration": 140.766667,
+    "width": 1080,
+    "height": 2280,
+    "attempt": 2
+  },
+  "meridian-pocket-phone-desktop.mp4": {
+    "ok": true,
+    "file": "meridian-pocket-phone-desktop.mp4"
+  },
+  "meridian-pocket-phone-tablet.mp4": {
+    "ok": true,
+    "file": "meridian-pocket-phone-tablet.mp4",
+    "duration": 40.066667,
+    "width": 1080,
+    "height": 1440,
+    "attempt": 1
+  },
+  "meridian-pocket-phone-phone.mp4": {
+    "ok": false,
+    "file": "meridian-pocket-phone-phone.mp4",
+    "error": "missing products in the reply; product page did not open | path=/search?q=apple%20iphone%2015%20128gb%20blue&type=product |  Got it! You're looking for a phone with great battery life that's compact and easy to carry. Do you have a preference between iOS (iPhone) or Android? And what's your approximate budget? Got it! You're looking for a phone with great battery life that's compact and easy to carry. Do you have a preference between iOS (iPhone) or Android? And what's your approximate budget? Got it! You're looking for a phone with great battery life that's compact and easy to carry. Do you have a preference between iOS (iPhone) or Android? And what's your approximate budget? Got it! You're looking for a phone with great battery life that's compact and easy to carry. Do you have a preference between iOS (iPhone)"
+  },
+  "meridian-watch-ship-desktop.mp4": {
+    "ok": true,
+    "file": "meridian-watch-ship-desktop.mp4",
+    "duration": 114.066667,
+    "width": 1920,
+    "height": 1200,
+    "attempt": 2
+  },
+  "meridian-watch-ship-tablet.mp4": {
+    "ok": true,
+    "file": "meridian-watch-ship-tablet.mp4",
+    "duration": 104.266667,
+    "width": 1080,
+    "height": 1440,
+    "attempt": 2
+  },
+  "meridian-watch-ship-phone.mp4": {
+    "ok": true,
+    "file": "meridian-watch-ship-phone.mp4",
+    "duration": 210.8,
+    "width": 1080,
+    "height": 2280,
+    "attempt": 1
+  },
+  "paper-and-pine-books-novel-desktop.mp4": {
+    "ok": true,
+    "file": "paper-and-pine-books-novel-desktop.mp4",
+    "duration": 75.833333,
+    "width": 1920,
+    "height": 1200,
+    "attempt": 2
+  },
+  "paper-and-pine-books-novel-tablet.mp4": {
+    "ok": true,
+    "file": "paper-and-pine-books-novel-tablet.mp4",
+    "duration": 76.3,
+    "width": 1080,
+    "height": 1440,
+    "attempt": 2
+  },
+  "paper-and-pine-books-novel-phone.mp4": {
+    "ok": false,
+    "file": "paper-and-pine-books-novel-phone.mp4",
+    "error": "viewport 368x777, wanted 360x760"
+  },
+  "paper-and-pine-books-return-book-desktop.mp4": {
+    "ok": true,
+    "file": "paper-and-pine-books-return-book-desktop.mp4",
+    "duration": 107.166667,
+    "width": 1920,
+    "height": 1200,
+    "attempt": 1
+  },
+  "paper-and-pine-books-return-book-tablet.mp4": {
+    "ok": true,
+    "file": "paper-and-pine-books-return-book-tablet.mp4",
+    "duration": 68.866667,
+    "width": 1080,
+    "height": 1440,
+    "attempt": 2
+  },
+  "paper-and-pine-books-return-book-phone.mp4": {
+    "ok": false,
+    "file": "paper-and-pine-books-return-book-phone.mp4",
+    "error": "viewport 368x777, wanted 360x760"
+  },
+  "pulse-forge-ps5-headset-desktop.mp4": {
+    "ok": true,
+    "file": "pulse-forge-ps5-headset-desktop.mp4"
+  },
+  "pulse-forge-ps5-headset-tablet.mp4": {
+    "ok": true,
+    "file": "pulse-forge-ps5-headset-tablet.mp4"
+  },
+  "pulse-forge-ps5-headset-phone.mp4": {
+    "ok": true,
+    "file": "pulse-forge-ps5-headset-phone.mp4"
+  },
+  "pulse-forge-return-headset-desktop.mp4": {
+    "ok": true,
+    "file": "pulse-forge-return-headset-desktop.mp4",
+    "duration": 93.166667,
+    "width": 1920,
+    "height": 1200,
+    "attempt": 1
+  },
+  "pulse-forge-return-headset-tablet.mp4": {
+    "ok": true,
+    "file": "pulse-forge-return-headset-tablet.mp4",
+    "duration": 82.266667,
+    "width": 1080,
+    "height": 1440,
+    "attempt": 1
+  },
+  "pulse-forge-return-headset-phone.mp4": {
+    "ok": true,
+    "file": "pulse-forge-return-headset-phone.mp4",
+    "duration": 83.633333,
+    "width": 1080,
+    "height": 2280,
+    "attempt": 2
+  },
+  "rolling-district-bolt-pattern-desktop.mp4": {
+    "ok": true,
+    "file": "rolling-district-bolt-pattern-desktop.mp4"
+  },
+  "rolling-district-bolt-pattern-tablet.mp4": {
+    "ok": true,
+    "file": "rolling-district-bolt-pattern-tablet.mp4",
+    "duration": 69.933333,
+    "width": 1080,
+    "height": 1440,
+    "attempt": 1
+  },
+  "rolling-district-bolt-pattern-phone.mp4": {
+    "ok": true,
+    "file": "rolling-district-bolt-pattern-phone.mp4",
+    "duration": 74.533333,
+    "width": 1080,
+    "height": 2280,
+    "attempt": 1
+  },
+  "rolling-district-return-fee-desktop.mp4": {
+    "ok": false,
+    "file": "rolling-district-return-fee-desktop.mp4",
+    "error": "cart missing items (empty) | path=/search?q=(title%3A%22Forged%20Titanium%20Lug%20Nut%20Set%20(20pc)%22)%20OR%20(title%3A%22Rolling%20District%20Titanium%20Wheel%20Stud%20%26%20Lug%20Nut%20Set%20%E2%80%94%2020pc%22)&type=product | Let me check the Let me check the return policy for you regarding bolt pattern issues. If you ordered If you ordered wheels with the wrong bolt pattern, you can return them within 14 days of the order date, but there's a 35% restocking fee applied to all authorized returns. You're also responsible for the return shipping costs since we don't provide return shipping labels. To avoid this fee in the future, I'd recommend double-checking your bolt pattern, size, offset, and finish before completing your purchase. I found the I found the JNC I found the JNC014 Gloss I found the JNC014 Gloss Bronze wheel at $289 and the Forged Titanium Lug Nut Set Perfect Perfect, here are both of Perfect, here a"
+  },
+  "rolling-district-return-fee-tablet.mp4": {
+    "ok": false,
+    "file": "rolling-district-return-fee-tablet.mp4",
+    "error": "cart missing items (JNC014 Gloss Bronze) | path=/products/jnc014-gloss-bronze |  Let me check the return policy for you regarding bolt pattern issues. Let me check the return policy for you regarding bolt pattern issues. Let me check the return policy for you regarding bolt pattern issues. Let me check the return policy for you regarding bolt pattern issues. Let me check the return policy for you regarding bolt pattern issues. Let me check the return policy for you regarding bolt pattern issues. Let me check the return policy for you regarding bolt pattern issues. Let me check the return policy for you regarding bolt pattern issues. Let me check the return policy for you regarding bolt pattern issues. Let me check the return policy for you regarding bolt pattern issues."
+  },
+  "rolling-district-return-fee-phone.mp4": {
+    "ok": true,
+    "file": "rolling-district-return-fee-phone.mp4",
+    "duration": 77.166667,
+    "width": 1080,
+    "height": 2280,
+    "attempt": 2
+  },
+  "buildright-home-mirror-desktop.mp4": {
+    "ok": true,
+    "file": "buildright-home-mirror-desktop.mp4"
+  },
+  "buildright-home-mirror-tablet.mp4": {
+    "ok": true,
+    "file": "buildright-home-mirror-tablet.mp4"
+  },
+  "buildright-home-mirror-phone.mp4": {
+    "ok": true,
+    "file": "buildright-home-mirror-phone.mp4"
+  },
+  "buildright-home-hook-rail-desktop.mp4": {
+    "ok": false,
+    "file": "buildright-home-hook-rail-desktop.mp4",
+    "error": "cart missing items (empty) | path=/search?q=(title%3A%22Build%20Right%20Halo%20Round%20Mirror%20%E2%80%94%2060%20cm%22)%20OR%20(title%3A%22Build%20Right%20Halo%20Round%20Mirror%20%E2%80%94%2080%20cm%22)%20OR%20(title%3A%22Build%20Right%20Home%20Forge%20Coat%20Rack%20%E2%80%94%205%20Hooks%22)%20OR%20(title%3A%22Build%20Right%20Home%20Forge%20Coat%20Rack%20%E2%80%94%208%20Hooks%22)&type=product | Found a Found a few options for you, Found a few options for you, we've got the RailWorks Wall Organizers in three sizes and the Home Forge Coat Racks with different hook counts. Which size wall are you working with? I need to I need to check the available options for those items first. Let me look up the 40 cm mirror and the 3-hook rack to get the exact product details.I found the Build Right Halo Round Mirror, 40 cm, but unfortunately it's currently out of stock. For the 3-hook rack, let me get those details as well…I'm sorry, but both items you requested are currently out of stock. The Build Right Halo Round Mirror, 40 cm and the Build Right Home Forge Coat Rack, 3 Hooks are both unavaila"
+  },
+  "buildright-home-hook-rail-tablet.mp4": {
+    "ok": false,
+    "file": "buildright-home-hook-rail-tablet.mp4",
+    "error": "cart missing items (empty) | path=/products/build-right-halo-round-mirror-40-cm |  Absolutely! Let me see what we have in hook rails for you. Absolutely! Let me see what we have in hook rails for you. Absolutely! Let me see what we have in hook rails for you. Absolutely! Let me see what we have in hook rails for you. Absolutely! Let me see what we have in hook rails for you. Absolutely! Let me see what we have in hook rails for you. Absolutely! Let me see what we have in hook rails for you. Absolutely! Let me see what we have in hook rails for you. Absolutely! Let me see what we have in hook rails for you. Absolutely! Let me see what we have in hook rails for you. Absolutely! Let me see what we have in hook rails for you. Absolutely! Let me see what we have in hook rails "
+  },
+  "buildright-home-hook-rail-phone.mp4": {
+    "ok": false,
+    "file": "buildright-home-hook-rail-phone.mp4",
+    "error": "cart missing items (empty) | path=/products/build-right-home-arc-oval-mirror-60-x-150-cm |  TAKING YOU TO Search results 2 TAKING YOU TO Search results 1 TAKING YOU TO Search results 1 Found a few options for you, we've got the RailWorks Wall Organizers in three sizes, plus the Home Forge Coat Racks if you want something with hooks. Which size were you thinking? Found a few options for you, we've got the RailWorks Wall Organizers in three sizes, plus the Home Forge Coat Racks if you want something with hooks. Which size were you thinking? Found a few options for you, we've got the RailWorks Wall Organizers in three sizes, plus the Home Forge Coat Racks if you want something with hooks. Which size were you thinking? Found a few options for you, we've got the RailWorks Wall Organize"
+  },
+  "the-apricot-theory-tint-desktop.mp4": {
+    "ok": true,
+    "file": "the-apricot-theory-tint-desktop.mp4"
+  },
+  "the-apricot-theory-tint-tablet.mp4": {
+    "ok": true,
+    "file": "the-apricot-theory-tint-tablet.mp4",
+    "duration": 73.966667,
+    "width": 1080,
+    "height": 1440,
+    "attempt": 1
+  },
+  "the-apricot-theory-tint-phone.mp4": {
+    "ok": true,
+    "file": "the-apricot-theory-tint-phone.mp4"
+  },
+  "the-apricot-theory-setting-mist-desktop.mp4": {
+    "ok": false,
+    "file": "the-apricot-theory-setting-mist-desktop.mp4",
+    "error": "cart missing items (empty) | path=/ | I'm not sure I'm not sure what \"this\" refers to! I'm not sure what \"this\" refers to! Could you tell me more about what you're looking at or trying to set up? Are you looking at a specific product, or do you need help with something else? I need to find I need to find those products first! Let me search for the tint and setting mist you mentioned. Perfect Perfect! I found the Soft Perfect! I found the Soft Focus Setting Perfect! I found the Soft Focus Setting Mist and the Apricot Theory Skin Veil Tint SPF. For the tint, I need to know which shade you'd like. The options are: Fair Warm, Light Neutral, Medium Olive, Medium-Deep Warm, or Deep / The Apricot Theory – The Apricot Theory The Apricot"
+  },
+  "the-apricot-theory-setting-mist-tablet.mp4": {
+    "ok": false,
+    "file": "the-apricot-theory-setting-mist-tablet.mp4",
+    "error": "clerk turn timed out | path=/ |  / The Apricot Theory – The Apricot Theory The Apricot Theory – The Apricot Theory / | {\"buttons\":[{\"label\":\"Turn audio off\",\"pressed\":\"true\"},{\"label\":\"Start voice chat\",\"pressed\":\"false\"}],\"captions\":0,\"embed\":\"\"}"
+  },
+  "the-apricot-theory-setting-mist-phone.mp4": {
+    "ok": false,
+    "file": "the-apricot-theory-setting-mist-phone.mp4",
+    "error": "clerk turn timed out | path=/ |  / The Apricot Theory – The Apricot Theory The Apricot Theory – The Apricot Theory / | {\"buttons\":[{\"label\":\"Turn audio off\",\"pressed\":\"true\"},{\"label\":\"Start voice chat\",\"pressed\":\"false\"}],\"captions\":0,\"embed\":\"\"}"
+  },
+  "viniteca-marti-penedes-desktop.mp4": {
+    "ok": true,
+    "file": "viniteca-marti-penedes-desktop.mp4",
+    "duration": 76.366667,
+    "width": 1920,
+    "height": 1200,
+    "attempt": 1
+  },
+  "viniteca-marti-penedes-tablet.mp4": {
+    "ok": true,
+    "file": "viniteca-marti-penedes-tablet.mp4"
+  },
+  "viniteca-marti-penedes-phone.mp4": {
+    "ok": true,
+    "file": "viniteca-marti-penedes-phone.mp4"
+  },
+  "viniteca-marti-sealed-return-desktop.mp4": {
+    "ok": true,
+    "file": "viniteca-marti-sealed-return-desktop.mp4",
+    "duration": 65.933333,
+    "width": 1920,
+    "height": 1200,
+    "attempt": 1
+  },
+  "viniteca-marti-sealed-return-tablet.mp4": {
+    "ok": true,
+    "file": "viniteca-marti-sealed-return-tablet.mp4",
+    "duration": 76.433333,
+    "width": 1080,
+    "height": 1440,
+    "attempt": 2
+  },
+  "viniteca-marti-sealed-return-phone.mp4": {
+    "ok": true,
+    "file": "viniteca-marti-sealed-return-phone.mp4",
+    "duration": 69.933333,
+    "width": 1080,
+    "height": 2280,
+    "attempt": 1
   }
 }

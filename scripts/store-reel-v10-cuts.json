@@ -1,0 +1,112 @@
+{
+ "fashion": {
+  "src": "tmp/reel-v10/revoiced/fashion.mp4",
+  "segments": [
+   [
+    10.6,
+    14.2,
+    1,
+    "same"
+   ],
+   [
+    23.3,
+    30.6,
+    1,
+    "same"
+   ]
+  ]
+ },
+ "books": {
+  "src": "tmp/reel-v10/revoiced/books.mp4",
+  "segments": [
+   [
+    2.4,
+    15.4,
+    1,
+    "same"
+   ]
+  ],
+  "shopper": null
+ },
+ "electronics": {
+  "src": "tmp/reel-v10/meridian-running-watch-desktop-yusuke-voice.mp4",
+  "shopper": "Hi! I'm looking for a smartwatch for running, around five hundred dollars. Which one lasts longest on a single charge?",
+  "segments": [
+   [
+    29.0,
+    34.5,
+    1,
+    "same"
+   ],
+   [
+    40.35,
+    41.6,
+    1,
+    "same"
+   ],
+   [
+    42.9,
+    45.25,
+    1,
+    "same"
+   ],
+   [
+    55.5,
+    58.4,
+    1,
+    "same"
+   ],
+   [
+    60.5,
+    65.95,
+    1,
+    "same"
+   ],
+   [
+    75.15,
+    79.7,
+    1,
+    "same"
+   ]
+  ]
+ },
+ "gaming": {
+  "src": "tmp/reel-v10/revoiced/gaming.mp4",
+  "shopper": "I want to start streaming! Set me up with the basics, around three hundred dollars. Perfect! Start with the mic, add it to my cart.",
+  "segments": [
+   [
+    26.8,
+    32.1,
+    1,
+    "same"
+   ],
+   [
+    35.0,
+    36.5,
+    1,
+    "same"
+   ],
+   [
+    46.6,
+    51.7,
+    1,
+    "same"
+   ],
+   [
+    56.2,
+    59.6,
+    1,
+    [
+     42.75,
+     46.15
+    ]
+   ],
+   [
+    81.3,
+    86.4,
+    1,
+    "same"
+   ]
+  ]
+ }
+}

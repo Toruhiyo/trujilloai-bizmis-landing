@@ -1,0 +1,47 @@
+{
+  "meridian-pocket-phone-desktop-will-voice.mp4": {
+    "ok": true,
+    "file": "meridian-pocket-phone-desktop-will-voice.mp4",
+    "duration": 31.9,
+    "width": 1920,
+    "height": 1200,
+    "attempt": 1
+  },
+  "12-weather-outfitters-raincoat-phone.mp4": {
+    "ok": false,
+    "file": "12-weather-outfitters-raincoat-phone.mp4",
+    "error": "product page did not open | path=/search?q=navy+city+rain+coat |  TAKING YOU TO Search results 1 TAKING YOU TO Search results 1 Found three options for you, Navy and Sand City Rain Coats in both men's and women's styles. Which fit what you're looking for? Found three options for you, Navy and Sand City Rain Coats in both men's and women's styles. Which fit what you're looking for? Found three options for you, Navy and Sand City Rain Coats in both men's and women's styles. Which fit what you're looking for? Found three options for you, Navy and Sand City Rain Coats in both men's and women's styles. Which fit what you're looking for? Found three options for you, Navy and Sand City Rain Coats in both men's and women's styles. Which fit what you're looking fo"
+  },
+  "meridian-pocket-phone-desktop-voice.mp4": {
+    "ok": true,
+    "file": "meridian-pocket-phone-desktop-voice.mp4",
+    "duration": 65.433333,
+    "width": 1920,
+    "height": 1200,
+    "attempt": 1
+  },
+  "paper-and-pine-books-novel-tablet.mp4": {
+    "ok": true,
+    "file": "paper-and-pine-books-novel-tablet.mp4",
+    "duration": 71.7,
+    "width": 1080,
+    "height": 1440,
+    "attempt": 1
+  },
+  "rolling-district-bolt-pattern-desktop-voice.mp4": {
+    "ok": true,
+    "file": "rolling-district-bolt-pattern-desktop-voice.mp4",
+    "duration": 65.533333,
+    "width": 1920,
+    "height": 1200,
+    "attempt": 1
+  },
+  "pulse-forge-ps5-cart-phone.mp4": {
+    "ok": true,
+    "file": "pulse-forge-ps5-cart-phone.mp4",
+    "duration": 68.1,
+    "width": 1080,
+    "height": 2280,
+    "attempt": 1
+  }
+}

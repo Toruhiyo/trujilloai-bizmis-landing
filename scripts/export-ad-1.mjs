@@ -34,11 +34,12 @@ function usage() {
     '  --resolution 1920x1080         or 3840x2160',
     '  --preview                      layout at 1920x1080, file is 960x540, 6fps',
     '  --frames 0-59                  inclusive range, default the whole film',
-    '  --codec ffv1|prores            default ffv1 (MKV). prores is ProRes 4444',
+    '  --codec ffv1|prores|h264       default ffv1 (MKV). prores is ProRes 4444; h264 is CRF 12 (visually lossless, small)',
     '  --out <folder>                 default tmp/ad-1-export',
     '  --url http://127.0.0.1:8080/   dev server',
     '  --verify                       export the range twice and compare frames',
     '  --resume                       keep frames already in --out and continue',
+    '  --widget local                 load public/promo/widget-local (a local widget build)',
   ].join('\n');
 }
 
@@ -140,6 +141,7 @@ function filmUrl(base, cta, part) {
   url.searchParams.set('cta', cta);
   url.searchParams.set('part', part);
   url.searchParams.set('nocover', '1');
+  if (arg('widget', '') === 'local') url.searchParams.set('widget', 'local');
   url.searchParams.delete('auto');
   return url.toString();
 }
@@ -503,6 +505,7 @@ async function exportRange(browser, options, framesDir) {
   let endedEarly = false;
   let markerRows = [];
   let audioCues = [];
+  let sfxRows = [];
   let unfinished = null;
 
   try {
@@ -540,6 +543,7 @@ async function exportRange(browser, options, framesDir) {
       }
     }
     if (!unfinished) markerRows = await page.evaluate(() => window.__promoVoTimeline || []);
+    if (!unfinished) sfxRows = await page.evaluate(() => window.__promoSfxTimeline || []);
     if (!unfinished) {
       audioCues = await page.evaluate(() => (window.__promoAudioCues || []).map((cue) => ({
         src: cue.src,
@@ -597,6 +601,8 @@ async function exportRange(browser, options, framesDir) {
     stillTimedOut,
     endedEarly,
     audioCues,
+    // Picture events the sound design follows (film-engine.js promoSfx).
+    sfx: sfxRows.map((row) => ({ ...row, frame: Math.max(0, Math.round((row.at / 1000) * exportFps)) })),
     markers: markerRows.map((row) => {
       const frame = Math.max(0, Math.round((row.at / 1000) * exportFps));
       return {
@@ -638,6 +644,9 @@ function encodeVideo(framesDir, dest, codec, startNumber, audioCues) {
   if (audio) args.push(...audio.inputs, '-filter_complex', audio.filter, '-map', '0:v', '-map', '[aout]');
   if (codec === 'prores') {
     args.push('-c:v', 'prores_ks', '-profile:v', '4', '-pix_fmt', 'yuv444p10le');
+  } else if (codec === 'h264') {
+    // visually lossless and ~10x smaller than ffv1 at 4K (the master fits on a nearly full disk)
+    args.push('-c:v', 'libx264', '-crf', '12', '-preset', 'slow', '-tune', 'film', '-pix_fmt', 'yuv420p', '-color_range', 'tv', '-g', '30');
   } else {
     args.push('-c:v', 'ffv1', '-level', '3', '-pix_fmt', 'rgb24', '-g', '1');
   }
@@ -726,6 +735,7 @@ async function captureFilm(chromium, options, framesDir) {
     stillTimedOut: [],
     markers: [],
     audioCues: [],
+    sfx: [],
     endedEarly: false,
   };
   try {
@@ -752,6 +762,7 @@ async function captureFilm(chromium, options, framesDir) {
         merged.stillTimedOut.push(...exported.stillTimedOut);
         merged.markers = exported.markers;
         merged.audioCues = exported.audioCues || [];
+        merged.sfx = exported.sfx || [];
         merged.endedEarly = exported.endedEarly;
       }
       const reachedEnd = exported.endedEarly
@@ -809,7 +820,7 @@ async function main() {
   };
   if (!['demo', 'ea', 'install', 'none'].includes(cta)) throw new Error(`Unknown cta "${cta}".`);
   if (!['full', 'pain', 'pitch'].includes(part)) throw new Error(`Unknown part "${part}".`);
-  if (!['ffv1', 'prores'].includes(codec)) throw new Error(`Unknown codec "${codec}".`);
+  if (!['ffv1', 'prores', 'h264'].includes(codec)) throw new Error(`Unknown codec "${codec}".`);
   if (options.beginFrame) {
     process.stdout.write('Capture: HeadlessExperimental.beginFrame, one composited frame at a time.\n');
   } else if ((options.quadrants || 1) > 1) {
@@ -855,6 +866,9 @@ async function main() {
         part,
         resolution: `${options.width}x${options.height}`,
         markers: visible,
+        // Every recorded line in the film (narrator, clerk, shopper), in film ms.
+        voice: (exported.audioCues || []).map((cue) => ({ src: cue.src, atMs: Math.round(cue.atMs), endMs: Math.round(cue.endMs) })),
+        sfx: exported.sfx || [],
       }, null, 2)}\n`);
       fs.writeFileSync(path.join(folder, 'report.json'), `${JSON.stringify(report, null, 2)}\n`);
       return report;
