@@ -7683,6 +7683,23 @@
         return;
       }
       const slot = this.ensurePassSlot();
+      // v13: the card stays centred on what is visible: rows still to come
+      // (invite, benefits, the rolling line) hold their place below, so the
+      // whole card glides down by half their height and back as they arrive
+      const shown = new Set(['brand', 'action']);
+      const recenter = (ms = 650) => {
+        if (!slot || !copy.pills) return;
+        const parts = [['brand', '.promo-pass-slot__brand'], ['action', '.promo-pass-slot__action'], ['invite', '.promo-pass-slot__invite'],
+          ['ben', '.promo-ea-pills__row:not(.is-roll)'], ['roll', '.promo-ea-pills__row.is-roll']]
+          .map(([key, sel]) => [key, slot.querySelector(sel)]).filter(([, el]) => el);
+        const last = parts.filter(([key]) => shown.has(key)).pop()?.[1];
+        if (!last) return;
+        const hidden = Math.max(0, slot.scrollHeight - (last.offsetTop + last.offsetHeight));
+        const to = hidden / 2; const from = parseFloat((slot.style.translate || '0 0').split(' ')[1]) || 0;
+        if (!ms) { slot.style.translate = `0 ${to.toFixed(1)}px`; return; }
+        tweenStep(ms, (e) => { slot.style.translate = `0 ${(from + (to - from) * e).toFixed(1)}px`; }, promoEaseInOut);
+      };
+      recenter(0);
       if (copy.shopify) {
         slot?.classList.add('is-in');
         await waitMs(80);
@@ -7704,6 +7721,7 @@
         const take = speakTake(copy.vo);
         await waitMs(200);
         slot.classList.add('is-writing');
+        shown.add('invite'); recenter(700);
         promoSfx('ea-write', { ms: PROMO_EA_WRITE_MS });
         await Promise.all([waitMs(PROMO_EA_WRITE_MS * 0.6), take.at('Early Access', 'end')]);
         slot.classList.add('is-written');
@@ -7719,12 +7737,14 @@
           };
           for (const [k, mark] of (copy.termMarks || []).entries()) {
             await take.at(mark);
+            if (!k) { shown.add('ben'); recenter(560); }
             if (pills[k]) rise(pills[k]);
             promoSfx('ea-tick', { index: k });
           }
           const roll = slot.querySelector('.promo-ea-pill.is-roll');
           for (const [k, mark] of (copy.extraMarks || []).entries()) {
             await take.at(mark, 'start', -80);
+            if (!k) { shown.add('roll'); recenter(520); }
             this.morphEaPill(roll, (copy.extras || [])[k] || '');
             promoSfx('ea-morph', { index: k });
           }
