@@ -197,7 +197,9 @@ const FilmPlayer = ({
         film.src = src; // native HLS
         return;
       }
-      const hls = new HlsJs();
+      // Buffer only ~20 s ahead (40 s at most): viewers who stop early never
+      // download the rest of the film.
+      const hls = new HlsJs({ maxBufferLength: 20, maxMaxBufferLength: 40 });
       hlsRef.current = hls;
       hls.on(HlsJs.Events.LEVEL_SWITCHED, (_e, data) => setPlayingHeight(hls.levels[data.level]?.height ?? null));
       return new Promise<void>((resolve) => {
@@ -214,8 +216,11 @@ const FilmPlayer = ({
   }, [capToPlayer, isHls, src]);
   useEffect(() => () => hlsRef.current?.destroy(), []);
 
+  // nextLevel, not currentLevel: playback carries on through what's already
+  // buffered and the next chunks arrive in the new quality — no stall, no
+  // lost position.
   const chooseLevel = (index: number) => {
-    if (hlsRef.current) hlsRef.current.currentLevel = index;
+    if (hlsRef.current) hlsRef.current.nextLevel = index;
     setLevel(index);
     setQualityOpen(false);
   };

@@ -83,22 +83,7 @@ export const it: Messages = {
         "Risponde per iscritto",
         "Ti manda alle FAQ",
       ],
-      agentPoints: [
-        "Accoglie ogni cliente",
-        "Parla, ascolta e mostra",
-        "Lo guida fino al pagamento",
-      ],
-    },
-    end: {
-      title: "Installa ora",
-      script: "con i vantaggi Early Access!",
-      stamp: "solo i primi 50 negozi!",
-      checks: [
-        "Si configura da solo",
-        "Crediti gratuiti inclusi",
-        "Nessuna carta di credito",
-        "50% di sconto quando fai l'upgrade",
-      ],
+      agentPoints: ["Accoglie ogni cliente", "Risponde a voce, con una voce vera", "Lo guida fino al pagamento"],
     },
     yourStore: "Il tuo negozio",
     agentAlt: "L'avatar dell'agente di vendita Bizmis",

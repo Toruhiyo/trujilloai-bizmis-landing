@@ -39,14 +39,14 @@ RENDERS = {
     # Support: listening, warm.
     "support-yusuke": ("yusuke", dict(animation="nod", animation_progress=0.35, framing="head_shoulders",
                                       mesh_colors={"Shirt_Color": ORANGE}, shirt_stamp=STAMP, expression="smile")),
-    # Personalization: the same agent, dressed for very different stores.
-    "style-teo": ("teo", dict(framing="head_shoulders", mesh_colors={"Shirt_Color": "#D1001A"}, hat_color="#D1001A", expression="smile")),
-    "style-luca": ("luca", dict(framing="head_shoulders", mesh_colors={"Shirt_Color": "#29573F"}, expression="smile")),
-    "style-kiran": ("kiran", dict(framing="head_shoulders", mesh_colors={"Shirt_Color": "#A855F7"}, expression="smile")),
-    "style-yue": ("yue", dict(framing="head_shoulders", mesh_colors={"Shirt_Color": "#701C33"}, expression="smile")),
-    "style-echo": ("echo", dict(framing="head_shoulders", mesh_colors={"Shirt_Color": "#1E293B"}, expression="smile")),
-    "style-mia": ("mia", dict(framing="head_shoulders", mesh_colors={"Shirt_Color": "#F8D34B"}, expression="smile")),
-    "style-adrian": ("adrian", dict(framing="head_shoulders", mesh_colors={"Shirt_Color": "#7FA83A"}, expression="smile")),
+    # Personalization: real avatars in many store colours, always with the Bizmis logo.
+    "style-teo": ("teo", dict(framing="head_shoulders", mesh_colors={"Shirt_Color": "#D1001A"}, hat_color="#D1001A", shirt_stamp=STAMP, expression="smile")),
+    "style-luca": ("luca", dict(framing="head_shoulders", mesh_colors={"Shirt_Color": "#29573F"}, shirt_stamp=STAMP, expression="smile")),
+    "style-kiran": ("kiran", dict(framing="head_shoulders", mesh_colors={"Shirt_Color": "#A855F7"}, shirt_stamp=STAMP, expression="smile")),
+    "style-yue": ("yue", dict(framing="head_shoulders", mesh_colors={"Shirt_Color": "#701C33"}, shirt_stamp=STAMP, expression="smile")),
+    "style-echo": ("echo", dict(framing="head_shoulders", mesh_colors={"Shirt_Color": "#1E293B"}, shirt_stamp=STAMP, expression="smile")),
+    "style-mia": ("mia", dict(framing="head_shoulders", mesh_colors={"Shirt_Color": "#D99A00"}, shirt_stamp=STAMP, expression="smile")),
+    "style-adrian": ("adrian", dict(framing="head_shoulders", mesh_colors={"Shirt_Color": "#7FA83A"}, shirt_stamp=STAMP, expression="smile")),
     "style-victor": ("victor", dict(framing="head_shoulders", mesh_colors={"Shirt_Color": ORANGE}, shirt_stamp=STAMP, expression="smile")),
 }
 

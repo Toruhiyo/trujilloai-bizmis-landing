@@ -3,12 +3,16 @@ import { Check } from "lucide-react";
 import { useMessages } from "@/i18n/LocaleProvider";
 import { cn } from "@/lib/utils";
 import AgentImage from "./AgentImage";
+import VoiceReply from "./VoiceReply";
 import Reveal, { useInView } from "./Reveal";
 import { StoreWindow } from "./clay";
 
 const CASE_MS = 4200;
 
-/** A support chat that cycles through the classic landing's support cases. */
+/**
+ * A support conversation cycling through the classic landing's cases: the
+ * shopper types, Bizmis checks the store and answers out loud.
+ */
 const SupportChat = () => {
   const messages = useMessages();
   const cases = Object.values(messages.supportDemo.cases);
@@ -34,7 +38,7 @@ const SupportChat = () => {
               <Check className="h-3.5 w-3.5" strokeWidth={3} />
               {c.action}
             </p>
-            <p className="bzl-bubble bzl-bubble-agent animate-[bzl-pop_0.5s_var(--bzl-ease)_1.1s_both]">{c.response}</p>
+            <VoiceReply transcript={c.response} seconds={5} className="animate-[bzl-pop_0.5s_var(--bzl-ease)_1.1s_both]" />
           </div>
         </div>
         <div className="flex justify-center gap-1.5 pb-4" aria-hidden="true">

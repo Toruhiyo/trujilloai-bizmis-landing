@@ -83,22 +83,7 @@ export const fr: Messages = {
         "Répond par écrit",
         "Renvoie vers la FAQ",
       ],
-      agentPoints: [
-        "Accueille chaque client",
-        "Parle, écoute et montre",
-        "Accompagne jusqu'au paiement",
-      ],
-    },
-    end: {
-      title: "Installer maintenant",
-      script: "avec les avantages Early Access !",
-      stamp: "50 premières boutiques seulement !",
-      checks: [
-        "Se configure tout seul",
-        "Crédits gratuits inclus",
-        "Sans carte bancaire",
-        "-50 % en passant à l'offre supérieure",
-      ],
+      agentPoints: ["Accueille chaque client", "Répond à voix haute, avec une vraie voix", "Accompagne jusqu'au paiement"],
     },
     yourStore: "Votre boutique",
     agentAlt: "L'avatar de l'agent de vente Bizmis",

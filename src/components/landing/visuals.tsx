@@ -2,13 +2,17 @@ import { Check, Plus } from "lucide-react";
 import { useMessages } from "@/i18n/LocaleProvider";
 import { useInView } from "./Reveal";
 import AgentImage from "./AgentImage";
+import VoiceReply from "./VoiceReply";
 import type { AgentName } from "./AgentImage";
 import { ClayCard, ClayTile, StoreWindow } from "./clay";
 
 /** The agent widget in a store window's corner. */
-export const CornerAgent = ({ name }: { name: AgentName }) => (
+export const CornerAgent = ({ name, says }: { name: AgentName; says: string }) => (
   <div className="absolute -bottom-5 -right-3 w-[30%] max-w-[170px] overflow-hidden rounded-2xl border border-[var(--bzl-border)] bg-[linear-gradient(180deg,#fff7ee,#fff)] shadow-[0_16px_40px_-14px_rgba(242,140,56,0.55)] sm:-right-6">
     <AgentImage name={name} alt="" sizes="170px" className="mx-auto w-[82%] translate-y-[8%]" />
+    <div className="relative flex justify-center border-t border-[var(--bzl-border)] bg-white py-1.5">
+      <VoiceReply transcript={says} compact className="scale-90" />
+    </div>
   </div>
 );
 
@@ -35,7 +39,7 @@ export const PickVisual = () => {
           <ClayCard shape="cube" tint="warm" />
         </div>
       </StoreWindow>
-      <CornerAgent name="style-victor" />
+      <CornerAgent name="style-victor" says={m.salesDemo.recommended} />
     </div>
   );
 };
@@ -64,7 +68,7 @@ export const BundleVisual = () => {
           </div>
         </div>
       </StoreWindow>
-      <CornerAgent name="style-mia" />
+      <CornerAgent name="style-mia" says={m.salesDemo.added} />
     </div>
   );
 };
@@ -108,7 +112,7 @@ export const OrderVisual = () => {
           </dl>
         </div>
       </StoreWindow>
-      <CornerAgent name="style-luca" />
+      <CornerAgent name="style-luca" says={m.deliveryEstimate} />
     </div>
   );
 };

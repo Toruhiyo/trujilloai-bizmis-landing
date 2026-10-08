@@ -83,22 +83,7 @@ export const ca: Messages = {
         "Respon per escrit",
         "T'envia a les FAQ",
       ],
-      agentPoints: [
-        "Saluda cada client",
-        "Parla, escolta i ensenya",
-        "El guia fins al pagament",
-      ],
-    },
-    end: {
-      title: "Instal·la ara",
-      script: "amb avantatges d'Early Access!",
-      stamp: "només les 50 primeres botigues!",
-      checks: [
-        "Es configura sola",
-        "Crèdits gratuïts inclosos",
-        "Sense targeta de crèdit",
-        "50% de descompte en millorar el pla",
-      ],
+      agentPoints: ["Saluda cada client", "Respon en veu alta, amb una veu real", "El guia fins al pagament"],
     },
     yourStore: "La teva botiga",
     agentAlt: "L'avatar de l'agent de vendes de Bizmis",

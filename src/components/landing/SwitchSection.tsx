@@ -4,6 +4,7 @@ import { useMessages } from "@/i18n/LocaleProvider";
 import { cn } from "@/lib/utils";
 import Reveal, { useInView } from "./Reveal";
 import AgentImage from "./AgentImage";
+import VoiceReply from "./VoiceReply";
 import { ClayCard, StoreWindow } from "./clay";
 
 /**
@@ -104,7 +105,9 @@ const SwitchSection = () => {
                 <div className="aspect-[4/3] overflow-hidden bg-[linear-gradient(180deg,#fff7ee,#fff)]">
                   <AgentImage name="greet-amber" alt={m.agent} sizes="230px" className="mx-auto w-[78%] translate-y-[6%]" />
                 </div>
-                <p className="border-t border-[#e5e5ea] px-3 py-2 text-xs text-[var(--bzl-fg)]">{m.agentMessage}</p>
+                <div className="border-t border-[#e5e5ea] px-3 py-2.5">
+                  <VoiceReply transcript={m.agentMessage} seconds={4} compact />
+                </div>
               </div>
             </div>
           </div>

@@ -587,3 +587,25 @@
     animation: none;
   }
 }
+
+/* Bizmis speaking: the voice-reply wave. */
+.bzl-voice-bar {
+  transform-origin: center;
+  animation: bzl-voice 0.9s var(--bzl-ease) infinite alternate;
+  animation-delay: var(--bzl-delay, 0ms);
+}
+
+@keyframes bzl-voice {
+  from {
+    transform: scaleY(0.35);
+  }
+  to {
+    transform: scaleY(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bzl-voice-bar {
+    animation: none;
+  }
+}
