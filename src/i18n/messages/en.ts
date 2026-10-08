@@ -66,6 +66,8 @@ export const en = {
     exitFullscreen: "Exit full screen",
     seek: "Seek",
     region: "Bizmis film",
+    quality: "Quality",
+    auto: "Auto",
   },
 
   /** The film-led landing (2026-10): copy follows the ad-1 film's story. */

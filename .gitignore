@@ -59,3 +59,7 @@ __pycache__/
 *.pywzzz
 # Sample cut of the hero film (local preview only; the final film is streamed).
 public/film/ad-1-sample-*.mp4
+
+# Local HLS ladders of the hero film (uploaded to the film host, not committed).
+tmp/film-hls/
+public/film/hls

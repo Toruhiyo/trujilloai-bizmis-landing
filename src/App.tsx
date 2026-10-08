@@ -29,6 +29,8 @@ import AdFilm, { isAdFilmRequest } from "./promo/AdFilm";
 
 // Archived landing: its own chunk, so the live landing never downloads it.
 const IndexV1 = lazy(() => import("./pages/IndexV1"));
+// The film-led landing, previewed at /v2 until it becomes the default.
+const FilmLanding = lazy(() => import("./pages/FilmLanding"));
 
 const queryClient = new QueryClient();
 
@@ -47,6 +49,15 @@ const publicLocalizedRoutes = () => [
     element={
       <Suspense fallback={<div className="min-h-screen studio-lighting-base" />}>
         <IndexV1 />
+      </Suspense>
+    }
+  />,
+  <Route
+    key="v2"
+    path="v2"
+    element={
+      <Suspense fallback={<div className="min-h-screen studio-lighting-base" />}>
+        <FilmLanding path="/v2" />
       </Suspense>
     }
   />,

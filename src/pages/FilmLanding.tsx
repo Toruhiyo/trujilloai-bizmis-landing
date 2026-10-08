@@ -16,13 +16,18 @@ import { setupScrollToSectionOnLoad, setupScrollToUrlUpdater } from "@/lib/utils
 import { useMessages } from "@/i18n/LocaleProvider";
 import "@/styles/film-landing.css";
 
+interface FilmLandingProps {
+  /** The route it's served on: "/" once it's the default, "/v2" until then. */
+  path?: "/" | "/v2";
+}
+
 /**
  * The film-led landing: the hero film, then the film's story told in its own
  * visual language (white canvas, Inter, clay products, orange). Built from its
  * own components and scoped styles (.bzl) so the classic landing at /v1 stays
  * exactly as it was.
  */
-const FilmLanding = () => {
+const FilmLanding = ({ path = "/" }: FilmLandingProps) => {
   const messages = useMessages();
 
   useEffect(() => {
@@ -47,7 +52,9 @@ const FilmLanding = () => {
       <Seo
         title={messages.seo.home.title}
         description={messages.seo.home.description}
-        path="/"
+        path={path}
+        // Kept out of search while it lives at /v2, so it never competes with /.
+        noIndex={path !== "/"}
         jsonLd={{
           "@context": "https://schema.org",
           "@type": "SoftwareApplication",

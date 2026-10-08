@@ -1,9 +1,10 @@
 /**
  * The ad-1 film shown in the landing hero (and later on /watch?ref=).
  *
- * `src` is a plain MP4 for now: a 1080p sample of an older cut, kept out of
- * git under public/film/. The final film will be served from a streaming
- * host (Mux HLS); point VITE_FILM_SRC at it without touching the player.
+ * `src` is an HLS ladder (4K, 1440p, 1080p, 720p, 480p, 360p) built from the
+ * 4K master by scripts/encode-film-hls.sh. Locally it's served from
+ * public/film/hls (a gitignored link to tmp/film-hls); in production
+ * VITE_FILM_SRC points at the hosted master.m3u8.
  * The ambient loop is a muted montage of the agent at work (built by
  * scripts/make-hero-film-loop.sh), small enough to ship with the
  * site.
@@ -18,7 +19,7 @@ export const HERO_FILM_ENABLED =
 
 export const HERO_FILM = {
   id: "ad-1",
-  src: import.meta.env.VITE_FILM_SRC ?? "/film/ad-1-sample-1080p.mp4",
+  src: import.meta.env.VITE_FILM_SRC ?? "/film/hls/ad-1/master.m3u8",
   /** Fallback until the film's metadata loads (seconds). */
   durationSeconds: 161,
   loop: {

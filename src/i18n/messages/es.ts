@@ -65,6 +65,8 @@ export const es: Messages = {
     exitFullscreen: "Salir de pantalla completa",
     seek: "Buscar",
     region: "Vídeo de Bizmis",
+    quality: "Calidad",
+    auto: "Auto",
   },
 
   /** The film-led landing (2026-10): copy follows the ad-1 film's story. */

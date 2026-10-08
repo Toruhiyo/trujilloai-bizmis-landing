@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
+import type Hls from "hls.js";
 import type {
   KeyboardEvent,
   MouseEvent,
@@ -10,6 +11,7 @@ import {
   Minimize2,
   Pause,
   Play,
+  Settings2,
   RotateCcw,
   Volume2,
   VolumeX,
@@ -53,12 +55,15 @@ export interface FilmPlayerLabels {
   mute: string;
   unmute: string;
   enterFullscreen: string;
+  quality: string;
+  auto: string;
   exitFullscreen: string;
   seek: string;
   region: string;
 }
 
 export interface FilmPlayerProps {
+  /** An MP4, or an HLS master playlist (.m3u8) for adaptive quality. */
   src: string;
   loop: { webm: string; mp4: string; poster: string };
   durationSeconds: number;
@@ -96,6 +101,9 @@ const formatTime = (s: number) => {
 };
 
 type WebkitVideo = HTMLVideoElement & { webkitEnterFullscreen?: () => void };
+
+/** 2160 → "4K", 1440 → "1440p", … */
+const qualityLabel = (height: number) => (height >= 2160 ? "4K" : `${height}p`);
 
 const FilmPlayer = ({
   src,
@@ -145,10 +153,77 @@ const FilmPlayer = ({
   }, []);
   useEffect(() => () => window.clearTimeout(hideTimer.current), []);
 
+  // HLS goes through hls.js, loaded on the first press of play so visitors who
+  // never watch don't download it. It sizes the stream to the player and
+  // offers the quality menu; browsers without MediaSource (old iOS) fall back
+  // to their native HLS.
+  const isHls = src.endsWith(".m3u8");
+  const hlsRef = useRef<Hls | null>(null);
+  const sourceReady = useRef<Promise<void> | null>(null);
+  const [levels, setLevels] = useState<number[]>([]); // rendition heights, hls.js order
+  const [level, setLevel] = useState(-1); // -1 = auto
+  const [playingHeight, setPlayingHeight] = useState<number | null>(null);
+  const [qualityOpen, setQualityOpen] = useState(false);
+
+  // Auto quality never streams more pixels than the player shows: the cap is
+  // the smallest rendition covering the player at the screen's pixel density
+  // plus headroom (so 4K only on big, sharp screens or in fullscreen). Recomputed on resize;
+  // a quality picked by hand from the menu is never capped.
+  const capToPlayer = useCallback(() => {
+    const hls = hlsRef.current;
+    const film = filmRef.current;
+    if (!hls || !film || !hls.levels.length) return;
+    // 25% headroom keeps the film's small UI text crisp.
+    const scale = Math.min(window.devicePixelRatio || 1, 2) * 1.25;
+    const needW = film.clientWidth * scale;
+    const needH = film.clientHeight * scale;
+    const fit = hls.levels.findIndex((l) => l.width >= needW && l.height >= needH);
+    hls.autoLevelCapping = fit === -1 ? hls.levels.length - 1 : fit;
+  }, []);
+  useEffect(() => {
+    const film = filmRef.current;
+    if (!film) return;
+    const observer = new ResizeObserver(() => capToPlayer());
+    observer.observe(film);
+    return () => observer.disconnect();
+  }, [capToPlayer]);
+
+  const ensureSource = useCallback(() => {
+    if (!isHls) return Promise.resolve();
+    sourceReady.current ??= import("hls.js").then(({ default: HlsJs }) => {
+      const film = filmRef.current;
+      if (!film) return;
+      if (!HlsJs.isSupported()) {
+        film.src = src; // native HLS
+        return;
+      }
+      const hls = new HlsJs();
+      hlsRef.current = hls;
+      hls.on(HlsJs.Events.LEVEL_SWITCHED, (_e, data) => setPlayingHeight(hls.levels[data.level]?.height ?? null));
+      return new Promise<void>((resolve) => {
+        hls.once(HlsJs.Events.MANIFEST_PARSED, () => {
+          setLevels(hls.levels.map((l) => l.height));
+          capToPlayer();
+          resolve();
+        });
+        hls.loadSource(src);
+        hls.attachMedia(film);
+      });
+    });
+    return sourceReady.current;
+  }, [capToPlayer, isHls, src]);
+  useEffect(() => () => hlsRef.current?.destroy(), []);
+
+  const chooseLevel = (index: number) => {
+    if (hlsRef.current) hlsRef.current.currentLevel = index;
+    setLevel(index);
+    setQualityOpen(false);
+  };
+
   const play = useCallback(() => {
     const film = filmRef.current;
     if (!film) return;
-    film.play().catch(() => setPhase("paused"));
+    ensureSource().then(() => film.play().catch(() => setPhase("paused")));
     setPhase("playing");
     loopRef.current?.pause();
     emit(startedRef.current ? "film_resumed" : "film_started", {
@@ -156,7 +231,7 @@ const FilmPlayer = ({
     });
     startedRef.current = true;
     wakeControls();
-  }, [emit, wakeControls]);
+  }, [emit, ensureSource, wakeControls]);
 
   const pauseInPlace = useCallback(() => {
     filmRef.current?.pause();
@@ -361,7 +436,7 @@ const FilmPlayer = ({
   };
 
   const open = phase !== "idle";
-  const showControls = open && (phase !== "playing" || controlsAwake);
+  const showControls = open && (phase !== "playing" || controlsAwake || qualityOpen);
   const progress = duration ? (time / duration) * 100 : 0;
   const bufferedPct = duration ? (buffered / duration) * 100 : 0;
   const dockButton =
@@ -401,7 +476,7 @@ const FilmPlayer = ({
         {/* The film. Only its metadata loads until the visitor presses play. */}
         <video
           ref={filmRef}
-          src={src}
+          src={isHls ? undefined : src}
           preload="metadata"
           playsInline
           onClick={togglePlay}
@@ -578,6 +653,47 @@ const FilmPlayer = ({
                   {formatTime(duration)}
                 </span>
               </div>
+
+              {levels.length > 1 && (
+                <div className="relative">
+                  <button
+                    type="button"
+                    onClick={() => setQualityOpen((o) => !o)}
+                    aria-label={labels.quality}
+                    aria-expanded={qualityOpen}
+                    className={cn(dockButton, "w-auto gap-1.5 px-2 sm:w-auto sm:px-3")}
+                  >
+                    <Settings2 className="h-5 w-5" aria-hidden="true" />
+                    <span className="hidden text-xs font-semibold tabular-nums sm:inline">
+                      {level === -1 ? `${labels.auto}${playingHeight ? ` · ${qualityLabel(playingHeight)}` : ""}` : qualityLabel(levels[level])}
+                    </span>
+                  </button>
+                  {qualityOpen && (
+                    <ul
+                      role="menu"
+                      className={cn(GLASS, "absolute bottom-full right-0 mb-2 min-w-[9rem] overflow-hidden rounded-xl p-1 text-sm text-white")}
+                    >
+                      {[-1, ...levels.map((_, i) => i).sort((a, b) => levels[b] - levels[a])].map((i) => (
+                        <li key={i}>
+                          <button
+                            type="button"
+                            role="menuitemradio"
+                            aria-checked={level === i}
+                            onClick={() => chooseLevel(i)}
+                            className={cn(
+                              "flex w-full items-center justify-between gap-4 rounded-lg px-3 py-1.5 text-left font-medium hover:bg-white/15",
+                              level === i && "bg-white/20"
+                            )}
+                          >
+                            {i === -1 ? labels.auto : qualityLabel(levels[i])}
+                            {i !== -1 && levels[i] >= 2160 && <span className="text-[10px] font-bold opacity-80">UHD</span>}
+                          </button>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </div>
+              )}
 
               <button
                 type="button"
