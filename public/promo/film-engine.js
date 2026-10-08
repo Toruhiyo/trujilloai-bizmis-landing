@@ -2197,14 +2197,10 @@
   const PROMO_REEL_WHIP_BEATS = [3, 3, 3, 3];   // v14: each quick store: its line, then the next (the run accelerates after them)
   const PROMO_REEL_QUICK_VOICES = ['quick-es', 'quick-ja', 'quick-pt', 'quick-zh'];   // biggest markets, not origins; Chinese last
   // v14: after the quick stores, new stores strobe past faster and faster (beats), barely visible, into "Your store"
-  const PROMO_REEL_STROBE_BEATS = [2.75, 2.25, 1.75, 1.5, 1.25, 1, 0.75, 0.75, 0.5, 0.5, 0.25, 0.25];
+  const PROMO_REEL_STROBE_BEATS = [2, 1.5, 1.25, 1, 1, 0.75, 0.75, 0.5, 0.5, 0.5, 0.5, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25];   // 13.5 beats, 22 stores
   // v14b: one continuous acceleration: every store is shorter than the one before (beats on the score's grid)
   const PROMO_REEL_PACE = { heroes: [8.25, 7.75, 6.75, 6], quick: [5.25, 4.5, 3.75, 3.25] };
-  const PROMO_REEL_STROBE = [
-    { device: 'desktop', color: '#5B8DEF', v: 0 }, { device: 'phone', color: '#EF6F8E', v: 1 }, { device: 'tablet', color: '#3DBE8B', v: 2 }, { device: 'desktop', color: '#F2A541', v: 1 },
-    { device: 'phone', color: '#9B7BEA', v: 0 }, { device: 'desktop', color: '#2BB3C9', v: 2 }, { device: 'tablet', color: '#E8644A', v: 0 }, { device: 'phone', color: '#C9A227', v: 2 },
-    { device: 'desktop', color: '#6C7A89', v: 1 }, { device: 'phone', color: '#F07ACB', v: 1 }, { device: 'tablet', color: '#4FA3E0', v: 0 }, { device: 'desktop', color: '#8BC34A', v: 2 },
-  ];
+  const PROMO_REEL_STROBE = [{ device: 'desktop', color: '#5B8DEF', v: 0 }, { device: 'tablet', color: '#EF6F8E', v: 1 }, { device: 'phone', color: '#3DBE8B', v: 2 }, { device: 'desktop', color: '#F2A541', v: 0 }, { device: 'tablet', color: '#9B7BEA', v: 1 }, { device: 'phone', color: '#2BB3C9', v: 2 }, { device: 'desktop', color: '#E8644A', v: 0 }, { device: 'tablet', color: '#C9A227', v: 1 }, { device: 'phone', color: '#6C7A89', v: 2 }, { device: 'desktop', color: '#F07ACB', v: 0 }, { device: 'tablet', color: '#4FA3E0', v: 1 }, { device: 'phone', color: '#8BC34A', v: 2 }, { device: 'desktop', color: '#FF8A65', v: 0 }, { device: 'tablet', color: '#7E57C2', v: 1 }, { device: 'phone', color: '#26A69A', v: 2 }, { device: 'desktop', color: '#EC407A', v: 0 }, { device: 'tablet', color: '#FFCA28', v: 1 }, { device: 'phone', color: '#5C6BC0', v: 2 }, { device: 'desktop', color: '#66BB6A', v: 0 }, { device: 'tablet', color: '#AB47BC', v: 1 }, { device: 'phone', color: '#29B6F6', v: 2 }, { device: 'desktop', color: '#FFA726', v: 0 }];
   function promoBackOut(u) { const c1 = 1.5; const c3 = c1 + 1; return 1 + c3 * (u - 1) ** 3 + c1 * (u - 1) ** 2; }
   const PROMO_REEL_WHIP_HOLD_MS = 900;   // a quick store holds this long (shorter each time)
   const PROMO_REEL_SKELETONS = [   // v13b: soft, muted store colours (the tunnel must read calm, not trippy)
