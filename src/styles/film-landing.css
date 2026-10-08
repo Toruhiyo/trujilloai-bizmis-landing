@@ -78,7 +78,7 @@
 
 .bzl-section {
   position: relative;
-  padding: clamp(5rem, 12vw, 10rem) 1rem;
+  padding: clamp(4rem, 9vw, 8rem) 1rem;
 }
 
 @media (min-width: 640px) {
@@ -552,4 +552,38 @@
 
 .bzl h1.font-heading {
   letter-spacing: -0.035em;
+}
+
+/* A chat line popping in (support cases). */
+@keyframes bzl-pop {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* Setup: store data streaming along the lines into the agent. */
+#setup svg path {
+  stroke-dasharray: 5 7;
+}
+
+.bzl-flow {
+  animation: bzl-flow 1.1s linear infinite;
+  animation-delay: var(--bzl-delay, 0ms);
+}
+
+@keyframes bzl-flow {
+  to {
+    stroke-dashoffset: -24;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bzl-flow {
+    animation: none;
+  }
 }

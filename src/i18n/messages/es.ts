@@ -69,18 +69,9 @@ export const es: Messages = {
     auto: "Auto",
   },
 
-  /** The film-led landing (2026-10): copy follows the ad-1 film's story. */
+  /** The film-led landing (/v2): copy it adds to the classic landing's messages. */
   landing: {
-    pain: {
-      kicker: "Cada día",
-      title: "Las visitas desatendidas te cuestan ventas.",
-      titleTail: "Cada día. Y suma y sigue.",
-      lead: "Los clientes entran en tu tienda listos para comprar. Algunos se pierden en el catálogo: clican, comparan, hacen scroll. Otros tienen una duda que nadie resuelve. Sin nadie que les ayude, se van.",
-      lost: "Perdida",
-    },
     switch: {
-      lead: "En una tienda física, el mejor vendedor convierte estos momentos en ventas.",
-      title: "Así que creamos uno para tu tienda online.",
       chatbot: "Chatbot típico",
       agent: "Agente de ventas",
       toggleAria: "Compara un chatbot típico con el agente de ventas de Bizmis",
@@ -98,62 +89,6 @@ export const es: Messages = {
         "Le guía hasta el pago",
       ],
     },
-    reveal: {
-      kicker: "Te presentamos Bizmis",
-      lineLead: "El mejor",
-      struck: "vendedor",
-      replacement: "agente de ventas",
-      lead: "Un agente de ventas por voz que vive en tu tienda, conoce cada producto y ayuda a cada cliente a encontrarlo, confiar y comprarlo.",
-      avatarAlt: "El avatar del agente de ventas de Bizmis",
-    },
-    story: {
-      kicker: "La misma tienda",
-      title: "Ahora con Bizmis.",
-      yourStore: "Tu tienda",
-      beats: [
-        {
-          kicker: "Encuéntralo",
-          title: "¿Perdido en el catálogo? Encuentra el producto ideal.",
-          shopper: "Necesito algo resistente y ligero.",
-          agent: "Aquí tienes tres buenas opciones. Esta es la más resistente, la más ligera y fácil de cuidar.",
-        },
-        {
-          kicker: "Confía",
-          title: "¿Una duda le frena? La resuelve al momento.",
-          shopper: "¿Va bien para alguien que nunca ha tenido uno?",
-          agent: "¡Por supuesto! Es el que recomendamos para principiantes.",
-        },
-        {
-          kicker: "Cómpralo",
-          title: "¿Listo para comprar? Llena el carrito.",
-          shopper: "¡Genial! Sí, añádelo.",
-          agent: "¡Buena elección! Este combina de maravilla. Los dos ya están en tu carrito.",
-        },
-      ],
-      soldTitle: "Así es como más visitas se convierten en ventas.",
-      sold: "Vendido",
-    },
-    more: {
-      title: "Vende. Atiende. Aprende.",
-    },
-    sync: {
-      title: "Todo con un solo clic.",
-      titleTail: "Toda tu tienda, sincronizada. Automáticamente. Siempre.",
-    },
-    stores: {
-      title: "Vendas lo que vendas,",
-      titleTail: "tu agente de Bizmis lo vende.",
-      verticals: [
-        "Cosmética y belleza",
-        "Electrónica",
-        "Ropa y moda",
-        "Libros y papelería",
-        "Gaming",
-        "Hogar y bricolaje",
-        "Recambios de coche",
-        "Vinos y licores",
-      ],
-    },
     end: {
       title: "Instala ahora",
       script: "¡con ventajas de Early Access!",
@@ -165,6 +100,8 @@ export const es: Messages = {
         "50% de descuento al mejorar tu plan",
       ],
     },
+    yourStore: "Tu tienda",
+    agentAlt: "El avatar del agente de ventas de Bizmis",
   },
 
   benefits: {

@@ -63,3 +63,6 @@ public/film/ad-1-sample-*.mp4
 # Local HLS ladders of the hero film (uploaded to the film host, not committed).
 tmp/film-hls/
 public/film/hls
+
+# Raw Blender avatar renders (web sizes live in public/landing/agents).
+tmp/avatar-renders/

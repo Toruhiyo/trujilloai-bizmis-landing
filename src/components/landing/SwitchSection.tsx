@@ -3,11 +3,13 @@ import { Check, X } from "lucide-react";
 import { useMessages } from "@/i18n/LocaleProvider";
 import { cn } from "@/lib/utils";
 import Reveal, { useInView } from "./Reveal";
-import { ClayCard, LoopVideo, StoreWindow } from "./clay";
+import AgentImage from "./AgentImage";
+import { ClayCard, StoreWindow } from "./clay";
 
 /**
- * "So we built one": the film's Typical chatbot ⟷ Sales agent toggle, live.
- * It flips to the agent on its own once seen; visitors can flip it back.
+ * "This isn't a chatbot." — the classic landing's pitch, shown with a live
+ * Typical chatbot ⟷ Sales agent toggle. It flips to the agent on its own
+ * once seen; visitors can flip it back.
  */
 const SwitchSection = () => {
   const messages = useMessages();
@@ -32,10 +34,10 @@ const SwitchSection = () => {
       <div className="bzl-wrap grid items-center gap-14 lg:grid-cols-[0.9fr_1.1fr] lg:gap-20">
         <div>
           <Reveal>
-            <p className="bzl-lead max-w-md">{m.lead}</p>
+            <h2 className="bzl-statement-sm max-w-lg">{messages.hero.pitchLead}</h2>
           </Reveal>
           <Reveal delay={100}>
-            <h2 className="bzl-statement-sm mt-5 max-w-lg">{m.title}</h2>
+            <p className="bzl-lead mt-5 max-w-lg">{messages.hero.pitchLong}</p>
           </Reveal>
 
           <Reveal delay={200} className="mt-10">
@@ -72,7 +74,7 @@ const SwitchSection = () => {
 
         <Reveal delay={150}>
           <div ref={ref} className="relative">
-            <StoreWindow label={messages.landing.story.yourStore}>
+            <StoreWindow label={messages.landing.yourStore}>
               <div className="relative grid grid-cols-3 gap-4 p-5 pb-12 sm:gap-5 sm:p-7 sm:pb-16">
                 <ClayCard shape="capsule" tint="sage" />
                 <ClayCard shape="sphere" tint="sand" />
@@ -99,7 +101,9 @@ const SwitchSection = () => {
                 )}
                 style={{ transitionTimingFunction: "var(--bzl-spring)" }}
               >
-                <LoopVideo name="/landing/avatar/agent-wave" className="aspect-[4/3] w-full object-cover object-[50%_20%]" />
+                <div className="aspect-[4/3] overflow-hidden bg-[linear-gradient(180deg,#fff7ee,#fff)]">
+                  <AgentImage name="greet-amber" alt={m.agent} sizes="230px" className="mx-auto w-[78%] translate-y-[6%]" />
+                </div>
                 <p className="border-t border-[#e5e5ea] px-3 py-2 text-xs text-[var(--bzl-fg)]">{m.agentMessage}</p>
               </div>
             </div>

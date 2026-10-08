@@ -2,13 +2,11 @@ import { useEffect } from "react";
 import { Helmet } from "react-helmet-async";
 import Hero from "@/components/Hero";
 import Seo from "@/components/Seo";
-import PainSection from "@/components/landing/PainSection";
 import SwitchSection from "@/components/landing/SwitchSection";
-import RevealSection from "@/components/landing/RevealSection";
-import StorySection from "@/components/landing/StorySection";
-import MoreSection from "@/components/landing/MoreSection";
-import SyncSection from "@/components/landing/SyncSection";
-import StoresSection from "@/components/landing/StoresSection";
+import SalesSection from "@/components/landing/SalesSection";
+import SupportSection from "@/components/landing/SupportSection";
+import InsightsSection from "@/components/landing/InsightsSection";
+import SetupSection from "@/components/landing/SetupSection";
 import CustomizeSection from "@/components/landing/CustomizeSection";
 import EndCard from "@/components/landing/EndCard";
 import FilmFooter from "@/components/landing/FilmFooter";
@@ -22,10 +20,11 @@ interface FilmLandingProps {
 }
 
 /**
- * The film-led landing: the hero film, then the film's story told in its own
- * visual language (white canvas, Inter, clay products, orange). Built from its
- * own components and scoped styles (.bzl) so the classic landing at /v1 stays
- * exactly as it was.
+ * The film-led landing: the classic landing's structure and message (pitch,
+ * sales, support, insights, setup, personalization, install) told in the ad-1
+ * film's visual language (white canvas, Inter, clay products, real avatars,
+ * orange). Built from its own components and scoped styles (.bzl) so the
+ * classic landing at /v1 stays exactly as it was.
  */
 const FilmLanding = ({ path = "/" }: FilmLandingProps) => {
   const messages = useMessages();
@@ -74,13 +73,11 @@ const FilmLanding = ({ path = "/" }: FilmLandingProps) => {
         }}
       />
       <Hero />
-      <PainSection />
       <SwitchSection />
-      <RevealSection />
-      <StorySection />
-      <MoreSection />
-      <SyncSection />
-      <StoresSection />
+      <SalesSection />
+      <SupportSection />
+      <InsightsSection />
+      <SetupSection />
       <CustomizeSection />
       <EndCard />
       <FilmFooter />

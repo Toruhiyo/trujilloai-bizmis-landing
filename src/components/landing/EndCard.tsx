@@ -9,7 +9,7 @@ import {
 } from "@/lib/bizmisUrls";
 import Reveal from "./Reveal";
 
-/** The film's closing card, live: "Install now — for Early Access benefits!" */
+/** The closing call to install, in the style of the film's end card, with the classic landing's trust notes. */
 const EndCard = () => {
   const messages = useMessages();
   const m = messages.landing.end;
@@ -79,6 +79,13 @@ const EndCard = () => {
               {messages.common.bookACall}
             </a>
           </div>
+          <p className="mt-6 flex flex-wrap justify-center gap-x-5 gap-y-1 text-sm text-[var(--bzl-faint)]">
+            <span>{messages.finalCta.cancelAnytime}</span>
+            <span aria-hidden="true">·</span>
+            <span>{messages.finalCta.gdprReady}</span>
+            <span aria-hidden="true">·</span>
+            <span>{messages.finalCta.builtForShopify}</span>
+          </p>
         </Reveal>
       </div>
     </section>

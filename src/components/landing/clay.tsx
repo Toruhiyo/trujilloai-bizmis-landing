@@ -1,4 +1,3 @@
-import { useEffect, useRef } from "react";
 import { cn } from "@/lib/utils";
 
 /**
@@ -101,50 +100,3 @@ export const StoreWindow = ({
     {children}
   </div>
 );
-
-/** The agent's chat widget, as it sits in the corner of every film store. */
-export const AgentWidget = ({ className }: { className?: string }) => (
-  <div
-    className={cn(
-      "overflow-hidden rounded-2xl border border-[#e5e5ea] bg-white shadow-[0_12px_30px_-12px_rgba(29,29,31,0.3)]",
-      className
-    )}
-  >
-    <img src="/landing/avatar/agent-wave.jpg" alt="" className="aspect-[4/5] w-full object-cover object-top" />
-  </div>
-);
-
-/**
- * A silent looping clip that plays itself while on screen (React sets `muted`
- * as a property, so `autoPlay` alone can be blocked) and holds its poster for
- * visitors who prefer reduced motion.
- */
-export const LoopVideo = ({
-  name,
-  className,
-}: {
-  /** Base path without extension: <name>.webm, <name>.mp4, <name>.jpg */
-  name: string;
-  className?: string;
-}) => {
-  const ref = useRef<HTMLVideoElement>(null);
-  useEffect(() => {
-    const v = ref.current;
-    if (!v) return;
-    v.muted = true;
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    // Plays only while on screen.
-    const observer = new IntersectionObserver(([entry]) => {
-      if (entry.isIntersecting) v.play().catch(() => undefined);
-      else v.pause();
-    });
-    observer.observe(v);
-    return () => observer.disconnect();
-  }, []);
-  return (
-    <video ref={ref} className={className} poster={`${name}.jpg`} muted loop playsInline preload="metadata" aria-hidden="true">
-      <source src={`${name}.webm`} type="video/webm" />
-      <source src={`${name}.mp4`} type="video/mp4" />
-    </video>
-  );
-};
