@@ -82,7 +82,7 @@
   const PROMO_REEL_WHIP_SPEEDUP = 0.78;
   const PROMO_REEL_WHIP_MIN_MS = 170;
   const PROMO_REEL_LAND_MS = 1100;   // the rush slows onto "Your store"
-  const PROMO_REEL_ORANGE_CUT_MS = 1300;
+  const PROMO_REEL_ORANGE_CUT_MS = 1900;   // v21: 0.6 s shorter so the reel can wait for its bar
   const PROMO_REEL_OUT_MS = 600;
   const PROMO_REEL_SLIDE_MS = [820, 680, 540];   // v11: store to store on the conveyor, quicker each time
   const PROMO_REEL_HANDOFF_MS = 320;
@@ -117,10 +117,16 @@
   const PROMO_EA_TERM_IN_MS = 560;
   const PROMO_EA_HOLD_MS = 2200;
   const PROMO_EA_CLOSE_MS = 1000;   // v13: the closing move, landing on the score's final chord
-  const PROMO_EA_FINAL_HOLD_MS = 2600;   // the lasting final frame
+  const PROMO_EA_FINAL_HOLD_MS = 3200;   // the lasting final frame (v21: the last chord rings)
   const PROMO_EA_HERO_LEAD_MS = 250;
   const PROMO_EA_FADE_MS = 1600;
-  const PROMO_PAIN_END_GAP_MS = 600;   // v18: "they leave." ... "Sale lost." (lands on the sea's first LOST stamps)
+  const PROMO_PAIN_END_GAP_MS = 600;
+  // v21: the picture follows the score (Suno v6, one song built chapter by chapter with Extend at bar
+  // lines; music time = film time + 0.9 s). Film-clock anchors (s from the film's first frame):
+  // the burst on the drop's first downbeat, the reel on the stores section's first bar, the EA
+  // close's hit on the score's final hit. Every store cut sits on one of the song's own claps.
+  const PROMO_FILM_ANCHORS = { burst: 51.50, reel: 122.02, final: 173.02 };
+  const PROMO_REEL_CUTS_S = [3.779, 7.387, 10.855, 14.074, 16.489, 17.966, 19.299, 20.509, 21.58, 22.515, 23.191, 23.835, 24.253, 24.636, 24.988, 25.33, 25.594, 25.731, 25.864, 25.998, 26.131, 26.265, 26.97];   // from the reel start: hero 1..4, 18 run cards, Your store (the song's biggest impact)   // v18: "they leave." ... "Sale lost." (lands on the sea's first LOST stamps)
   const PROMO_SHOPIFY_BAG = 'M15.337 23.979l7.216-1.561s-2.604-17.613-2.625-17.73c-.018-.116-.114-.192-.211-.192s-1.929-.136-1.929-.136-1.275-1.274-1.439-1.411c-.045-.037-.075-.057-.121-.074l-.914 21.104h.023zM11.71 11.305s-.81-.424-1.774-.424c-1.447 0-1.504.906-1.504 1.141 0 1.232 3.24 1.715 3.24 4.629 0 2.295-1.44 3.76-3.406 3.76-2.354 0-3.54-1.465-3.54-1.465l.646-2.086s1.245 1.066 2.28 1.066c.675 0 .975-.545.975-.932 0-1.619-2.654-1.694-2.654-4.359-.034-2.237 1.571-4.416 4.827-4.416 1.257 0 1.875.361 1.875.361l-.945 2.715-.02.01zM11.17.83c.136 0 .271.038.405.135-.984.465-2.064 1.639-2.508 3.992-.656.213-1.293.405-1.889.578C7.697 3.75 8.951.84 11.17.84V.83zm1.235 2.949v.135c-.754.232-1.583.484-2.394.736.466-1.777 1.333-2.645 2.085-2.971.193.501.309 1.176.309 2.1zm.539-2.234c.694.074 1.141.867 1.429 1.755-.349.114-.735.231-1.158.366v-.252c0-.752-.096-1.371-.271-1.871v.002zm2.992 1.289c-.02 0-.06.021-.078.021s-.289.075-.714.21c-.423-1.233-1.176-2.37-2.508-2.37h-.115C12.135.209 11.669 0 11.265 0 8.159 0 6.675 3.877 6.21 5.846c-1.194.365-2.063.636-2.16.674-.675.213-.694.232-.772.87-.075.462-1.83 14.063-1.83 14.063L15.009 24l.927-21.166z';
   const PROMO_VO_ON = promoBootParams.get('vo') === '1';
   const PROMO_VO_BUDGET_S = [
@@ -2343,6 +2349,13 @@
       : device === 'phone' ? '<div class="promo-dev__status"><b>9:41</b><span class="promo-dev__island"></span><span class="promo-dev__icons"><i></i><i></i><i></i></span></div>' : '';
     dev.innerHTML = `<div class="promo-dev__body">${bar}<div class="promo-dev__screen" style="aspect-ratio:${spec.aspect}">${inner}</div></div>`;
     return dev;
+  }
+
+  // the film's own clock: seconds since its first frame (set when the pain take starts)
+  function untilFilm(sec) {
+    const t0 = window.__promoFilmT0;
+    if (t0 == null) return Promise.resolve();
+    return waitMs(Math.max(0, t0 + sec * 1000 - performance.now()));
   }
 
   function waitMs(ms) {
@@ -7813,6 +7826,7 @@
         this.root.classList.add('is-ea-hero');
         promoSfx('ea-hero');
         await (copy.pills ? take.at('secure yours', 'end') : take.done);   // v18: the close starts on the last word (not the take's tail), so its hit lands on the score's last hit
+        if (marketingPart() === 'full') await untilFilm(PROMO_FILM_ANCHORS.final - PROMO_EA_CLOSE_MS / 1000);   // v21: its hit on the final hit
         // v13: a closing move that lands on the music's final chord ('ea-final'
         // marks the hit; the score is fitted to it), then a lasting final frame
         await this.playEaClosing(slot);
@@ -8280,7 +8294,9 @@
       // the camera and brakes onto the first store on a hit; from there every
       // store is a hard cut on the beat: a flash, the device punches in, its
       // title slams; the quick ones come faster and faster; "Your store" last.
+      if (marketingPart() === 'full') await untilFilm(PROMO_FILM_ANCHORS.reel);   // v21: the reel starts on the stores section's first bar
       const t0 = performance.now();
+      const cutAt = (i) => t0 + PROMO_REEL_CUTS_S[i] * 1000;   // v21: every cut on one of the song's claps
       const onBeat = (minMs = 0) => {   // wait for the first beat at least minMs away
         const now = performance.now();
         const k = Math.ceil((now + minMs - t0) / PROMO_REEL_BEAT_MS - 0.02);
@@ -8363,7 +8379,7 @@
         return { dev, sk, x: W / 2 + side * W * 0.27, y: H / 2 + (i % 4 < 2 ? -1 : 1) * H * 0.035, z: -P * 0.9 - i * P * 0.55 };
       });
       const zEnd = -P * 0.9 - flyers.length * P * 0.55 - P * 0.6;
-      const tunnelMs = PROMO_REEL_BEAT_MS * PROMO_REEL_TUNNEL_BEATS;
+      const tunnelMs = Math.max(400, cutAt(0) - performance.now());   // v21: the first store lands on its clap
       light.rush = 0.6;
       tint(firstHero.src.color, Math.round(tunnelMs * 0.9));   // the light glides once into the first store's colour
       await tweenStep(tunnelMs, (e, u) => {
@@ -8401,7 +8417,7 @@
         hero.dev.classList.add('is-live');
         roll(hero.heroVideo, item.start || 0);
         const now = performance.now();
-        const heroMs = Math.min(item.dur * 1000, (PROMO_REEL_PACE.heroes[index] ?? 6) * PROMO_REEL_BEAT_MS - 40);   // never into the next store
+        const heroMs = Math.min(item.dur * 1000, (PROMO_REEL_CUTS_S[index + 1] - PROMO_REEL_CUTS_S[index]) * 1000 - 40);   // never into the next store
         (window.__promoAudioCues = window.__promoAudioCues || []).push({ src: item.video, atMs: now, fromSec: item.start || 0, endMs: now + heroMs });
         window.__promoNarratorUntil = Math.max(window.__promoNarratorUntil || 0, now + heroMs);
         revealReelCopy(hero.copy, 'slam');
@@ -8411,7 +8427,7 @@
         (item.keys || []).forEach(([from, to]) => window.setTimeout(() => promoSfx(item.device === 'desktop' ? 'typing' : 'tapping', { ms: Math.round((to - from) * 1000) }), from * 1000));
         (item.sfx || []).forEach(([at, id]) => window.setTimeout(() => promoSfx(id), at * 1000));
         // the take plays out, then the cut comes on the nearest beat (never a held frame of more than half a beat)
-        await untilAt(hero, cutClock + (PROMO_REEL_PACE.heroes[index] ?? 6) * PROMO_REEL_BEAT_MS);
+        await untilAt(hero, cutAt(index + 1));
         reel.querySelectorAll('.promo-reel__said:not(.is-out)').forEach((pill) => { pill.classList.add('is-out'); pill.style.opacity = '0'; });
         park(hero.heroVideo);
         hero.dev.classList.remove('is-live');
@@ -8435,13 +8451,13 @@
           const src = `/promo/voice/${id}.wav`;
           const spoken = voiceWords(voice).filter((w) => !/^\[[^\]]*\]$/.test(w.text));
           const lead = Math.max(0, (spoken[0]?.startMs || 0) / 1000 - 0.03);   // the line starts the moment the store lands
-          const windowMs = beats * PROMO_REEL_BEAT_MS - 60;   // never spills into the next card
+          const windowMs = (PROMO_REEL_CUTS_S[heroes.length + index + 1] - PROMO_REEL_CUTS_S[heroes.length + index]) * 1000 - 60;   // never spills into the next card
           (window.__promoAudioCues = window.__promoAudioCues || []).push({ src, atMs: now + 40, fromSec: lead, endMs: now + 40 + Math.min(voice.durationMs - lead * 1000, windowMs) });
           if (!document.documentElement.classList.contains('is-promo-export')) window.setTimeout(() => { const a = new Audio(src); a.currentTime = lead; a.play().catch(() => { }); }, 40);
           const words = spoken.map((w) => [0.04 + w.startMs / 1000 - lead, w.text]);
           if (words.length) this.playSaidPill(reel, words.map(([t, w]) => [Math.max(0.3, t), w]), { color: cell.src.color, kind: 'voice-agent', hold: 0.15, place: reelSaidSpot(cell, W, H, S) });
         }
-        await untilAt(cell, cutClock + beats * PROMO_REEL_BEAT_MS, beats >= 1.25 && index < run.length - 1);
+        await untilAt(cell, cutAt(heroes.length + index + 1), beats >= 1.25 && index < run.length - 1);
       }
       reel.querySelectorAll('.promo-reel__said:not(.is-out)').forEach((pill) => { pill.classList.add('is-out'); pill.style.opacity = '0'; });
       // ...and they slam into "Your store", centred: one violent hit, then the CTA's calm
@@ -8454,7 +8470,7 @@
         .then(() => { strip.style.translate = ''; });
       promoSfx('reel-land');
       setOpeningAvatarAction('beckon');   // v18: "come on in" (new clip; waving is used earlier)
-      await onBeat(PROMO_YOURSTORE_HOLD_MS + 500);
+      await waitMs(PROMO_YOURSTORE_HOLD_MS + 100);   // v21: a touch shorter (the EA close then waits for the score's final hit)
       promoSfx('dive');
       reel.classList.add('is-entering');
       const fill = Math.max(W / (home.full.w * 0.9), H / (home.full.h * 0.62)) * 1.5;
@@ -9225,6 +9241,7 @@
         cursor.hidden = true;
         cursor.style.opacity = '0';
       }
+      if (marketingPart() === 'full') window.__promoFilmT0 = performance.now();   // v21: the film clock (score anchors)
       const take = speakTake('t-pain');
       this.painTake = take;
       await this.playStoreOpenTitle(this.mountStoreOpenTitle());
@@ -11317,6 +11334,7 @@
         take.at('So we built', 'start', -160).then(() => this.swapSwitchTitle(title));
         take.at('for your online', 'start', -220).then(() => this.writeOnlineStore(title));
         await take.at('store!', 'end', 160 - PROMO_FLIP_KNOB_MS);
+        await untilFilm(PROMO_FILM_ANCHORS.burst - (PROMO_FLIP_KNOB_MS + PROMO_FLIP_POP_HOLD_MS + PROMO_KNOB_WARM_MS) / 1000);   // v21: the burst lands on the drop
         this.flip();
         window.setTimeout(() => { moments?.clear(); if (title?.online) fadeStep(title.online, 1, 0, 300).then(() => title.online.remove()); }, PROMO_FLIP_KNOB_MS);
       }
@@ -12006,17 +12024,25 @@
       // in on the input while they type, out on send, in on the wall of text, out before the 👎 and the hand-off
       const baseTf = clone.style.transform || '';
       clone.style.transition = 'none';
-      const lens = { k: 1 };
-      const zoomOn = (target, k, ms) => {
-        if (target && lens.k < 1.001) {   // the focus moves only while the camera is out (no jump)
-          const pb = clone.getBoundingClientRect(); const tb = target.getBoundingClientRect();
-          const ox = ((tb.left + tb.width / 2 - pb.left) / (pb.width || 1)) * 100; const oy = ((tb.top + tb.height / 2 - pb.top) / (pb.height || 1)) * 100;
-          clone.style.transformOrigin = `${ox.toFixed(1)}% ${oy.toFixed(1)}%`;
-        }
-        const from = lens.k;
-        return tweenStep(ms, (e) => { lens.k = from + (k - from) * e; clone.style.transform = `${baseTf} scale(${lens.k.toFixed(4)})`; }, promoEaseInOut);
+      // v20: gentle and slow (operator: the v19 camera moved too much too fast): the focus glides between
+      // targets while the scale eases, instead of popping out and back in
+      const lens = { k: 1, ox: 50, oy: 50 };
+      const focusOf = (target) => {   // the target's centre in the clone's own (unscaled) percent space
+        const pb = clone.getBoundingClientRect(); const tb = target.getBoundingClientRect();
+        const cx = tb.left + tb.width / 2; const cy = tb.top + tb.height / 2;
+        const ax = pb.left + (lens.ox / 100) * pb.width; const ay = pb.top + (lens.oy / 100) * pb.height;   // the fixed point of the current zoom
+        return { ox: lens.ox + ((cx - ax) / lens.k / (pb.width / lens.k || 1)) * 100, oy: lens.oy + ((cy - ay) / lens.k / (pb.height / lens.k || 1)) * 100 };
       };
-      zoomOn(input?.closest('.promo-pain__composer, form') || input, 1.7, 700);
+      const zoomOn = (target, k, ms) => {
+        const to = target ? focusOf(target) : { ox: lens.ox, oy: lens.oy };
+        const from = { k: lens.k, ox: lens.ox, oy: lens.oy };
+        return tweenStep(ms, (e) => {
+          lens.k = from.k + (k - from.k) * e; lens.ox = from.ox + (to.ox - from.ox) * e; lens.oy = from.oy + (to.oy - from.oy) * e;
+          clone.style.transformOrigin = `${lens.ox.toFixed(2)}% ${lens.oy.toFixed(2)}%`;
+          clone.style.transform = `${baseTf} scale(${lens.k.toFixed(4)})`;
+        }, promoEaseInOut);
+      };
+      zoomOn(input?.closest('.promo-pain__composer, form') || input, 1.3, 1300);
       if (input) {
         input.textContent = '';
         input.classList.add('is-live');
@@ -12030,13 +12056,12 @@
       input?.classList.remove('is-live');
       this.fillCloneChat(clone, 'think-2');
       promoSfx('send');
-      zoomOn(null, 1, 520);   // out on send
       await Promise.all([waitMs(PROMO_PAIN_THINK_MS), this.painTake?.at('wall of text')]);
       this.fillCloneChat(clone, 'answer-2');
       promoSfx('reply');
       // the wall scrolls on while "go read it" plays (never a frozen frame)
       const log = clone.querySelector('[data-promo-pain-log]');
-      zoomOn(log, 1.5, 800);   // in on the wall of text
+      zoomOn(log, 1.25, 1100);   // the camera glides up onto the wall of text
       if (log) {
         log.scrollTop = 0;
         const from = 0; const t0 = performance.now(); const span = 2600;
@@ -12049,7 +12074,7 @@
       }
       // ...and a clean pull back soon after: the wall has been seen
       await Promise.all([waitMs(1500), this.painTake?.at('go read it', 'end', -200)]);
-      await zoomOn(null, 1, 560);   // out before the shopper acts
+      await zoomOn(null, 1, 1000);   // a slow pull back before the shopper acts
       // the shopper rates the wall 👎, then: "A real person?" the chat hands over to the team
       await this.tapThumbsDown(clone);
       await this.painTake?.at('A real person?', 'start', -250);
