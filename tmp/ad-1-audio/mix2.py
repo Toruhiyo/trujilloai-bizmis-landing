@@ -120,6 +120,9 @@ MAP = {   # event -> (sound, gain dB, kwargs)
     'reel-store': ('el12/store-enter2', -23, {'lp': 7500}), 'hand-write': ('el13/hand-write2', -18, {'lp': 6000}),
     'ea-close': ('v5_whoosh', -24, {'lp': 5000}), 'ea-final': ('v5_chime', -22, {}),
     'reel-slam': ('el13b/reel-slam', -18, {'align': 'peak', 'lp': 10000}),   # v13: every store lands on a hit
+    # v14: the whoosh into each cut, the strobe's ticks, the violent landing on "Your store"
+    'reel-pre': ('el14/pre-cut-whoosh1', -22, {'lp': 9000}), 'strobe-tick': ('el14/strobe-tick1', -27, {'lp': 9000}),
+    'yourstore-hit': ('el14/yourstore-hit', -11, {'align': 'peak'}),
 }
 BARE = os.environ.get('SEA_BASE')   # audition base: everything except the LOST/SOLD stamp sounds
 for e in ev:

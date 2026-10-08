@@ -18,7 +18,7 @@ KEY = os.environ.get('ELEVENLABS_API_KEY') or next(l.split('=', 1)[1].strip().st
 
 def tts(text, voice, dst):
     req = urllib.request.Request(f'https://api.elevenlabs.io/v1/text-to-speech/{voice}/with-timestamps?output_format=mp3_44100_192', method='POST',
-                                 data=json.dumps({'text': text, 'model_id': 'eleven_v3', 'voice_settings': {'stability': 0.5, 'similarity_boost': 0.8}}).encode(),
+                                 data=json.dumps({'text': text, 'model_id': 'eleven_v4', 'voice_settings': {'stability': 0.5, 'similarity_boost': 0.8}}).encode(),
                                  headers={'xi-api-key': KEY, 'Content-Type': 'application/json'})
     r = json.load(urllib.request.urlopen(req, timeout=180))
     import base64

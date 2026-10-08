@@ -9,7 +9,7 @@ the sound fades out before the end.
 
 Shopper words for the film's pill (said.json):
   "shopper": {text, voice, at}  re-speaks the line with a natural voice
-                                 (eleven_v3) laid over a silent span, timed
+                                 (eleven_v4) laid over a silent span, timed
                                  from the TTS alignment (as v11);
   "said": "the shopper's line"   times the shopper's own words already in the
                                  cut's audio (diarized speech-to-text, as v10).
@@ -20,13 +20,13 @@ import os, sys, json, subprocess, uuid, urllib.request, base64
 OUT = 'public/promo/stores/reel/v13'; os.makedirs(OUT, exist_ok=True)
 PUNCH = 1.035   # every other segment is framed this much tighter (centred a little low, on the widget)
 XF = 0.2; SR = 48000
-CUTS = json.load(open('scripts/store-reel-v13b-cuts.json'))
+CUTS = json.load(open(os.environ.get('CUTS', 'scripts/store-reel-v14-cuts.json')))
 ENV = os.path.join('..', 'trujilloai-bizmis-project', '.env')
 KEY = os.environ.get('ELEVENLABS_API_KEY') or next(l.split('=', 1)[1].strip().strip('"\'') for l in open(ENV) if l.startswith('ELEVENLABS_API_KEY='))
 
 def tts(text, voice, dst):
     req = urllib.request.Request(f'https://api.elevenlabs.io/v1/text-to-speech/{voice}/with-timestamps?output_format=mp3_44100_192', method='POST',
-                                 data=json.dumps({'text': text, 'model_id': 'eleven_v3', 'voice_settings': {'stability': 0.5, 'similarity_boost': 0.8}}).encode(),
+                                 data=json.dumps({'text': text, 'model_id': 'eleven_v4', 'voice_settings': {'stability': 0.5, 'similarity_boost': 0.8}}).encode(),
                                  headers={'xi-api-key': KEY, 'Content-Type': 'application/json'})
     r = json.load(urllib.request.urlopen(req, timeout=180))
     open(dst, 'wb').write(base64.b64decode(r['audio_base64']))
@@ -86,6 +86,10 @@ for name, spec in CUTS.items():
         f.append(f'{au}[sh]amix=inputs=2:normalize=0[mx]'); au = '[mx]'
         said_all[name] = [[[round(w[0] + sh['at'], 2), w[1]] for w in words]]
         print('  said:', ' '.join(w[1] for w in words))
+    for k, (vf, at) in enumerate(spec.get('voice', [])):   # v4 agent lines laid at their times (the take's own audio is off)
+        idx = len(inputs) // 2; inputs += ['-i', vf]; ms = int(at * 1000)
+        f.append(f'[{idx}:a]aresample={SR},aformat=channel_layouts=stereo,adelay={ms}|{ms},apad=whole_dur={t:.3f},atrim=0:{t:.3f}[vo{k}]')
+        f.append(f'{au}[vo{k}]amix=inputs=2:normalize=0[vm{k}]'); au = f'[vm{k}]'
     f.append(f'{au}afade=t=in:d=0.04,afade=t=out:st={t - 0.35:.3f}:d=0.35[aout]')
     dst = f'{OUT}/{name}.mp4'
     # short GOP: the film seeks these per frame (long GOPs froze Fashion in v9)

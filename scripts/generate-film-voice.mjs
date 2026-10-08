@@ -20,8 +20,8 @@ const ROLES = {
   // Claudia on Eleven v4: whole takes with audio tags ([warm], [sighs], [short pause]…) driving the read.
   narrator: { voice: 'cw0sQ4mVjT9BbISUtO51', model: 'eleven_v4', settings: { stability: 0.4, similarity_boost: 0.8 } },
   shopper: { voice: 'r1KmysJdVYZjJCm4mL3b', model: 'eleven_v4' },                  // Jessica
-  clerk: { voice: 'c6SfcYrb2t09NHXiT80T', model: 'eleven_v3_conversational',        // the live agent's voice
-    settings: { stability: 0.5, similarity_boost: 0.8, speed: 0.95 } },
+  clerk: { voice: 'c6SfcYrb2t09NHXiT80T', model: 'eleven_v4',        // the live agent's voice (every film voice on Eleven v4)
+    settings: { stability: 0.45, similarity_boost: 0.8 } },
 };
 const TAIL_MS = 180;
 

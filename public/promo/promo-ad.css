@@ -13043,3 +13043,13 @@ html.is-promo-yours .promo-reel__yours-widget > [data-promo-widget] { opacity: 1
 .promo-ea-extra__sep { display: block; width: 0.26vw; height: 0.26vw; margin: 0 0.95vw; border-radius: 50%; opacity: 0;
   background: color-mix(in srgb, var(--bizmis-primary) 70%, transparent); }
 .promo-ea-pills__row.is-hand { display: flex !important; justify-content: center; margin-top: 0.3vw; }
+
+/* ===== v14 demo stores: the light streak on each hit ===== */
+.promo-reel__streak { position: absolute; top: 0; bottom: 0; left: 0; width: 60%; z-index: 39; opacity: 0; pointer-events: none; mix-blend-mode: screen;
+  background: linear-gradient(100deg, transparent 0%, color-mix(in oklab, var(--tint, #F28C38) 45%, transparent) 38%, rgba(255, 255, 255, 0.85) 50%, color-mix(in oklab, var(--tint, #F28C38) 45%, transparent) 62%, transparent 100%);
+  filter: blur(18px); }
+
+/* ===== v14 CTA: the benefits block is wider than the card: centre its overflow (it hung 76px right) ===== */
+.promo-ea-pills { align-self: flex-start !important; width: max-content !important; max-width: none !important; margin-left: 50% !important; margin-right: 0 !important;
+  position: static !important; translate: -50% 0; }   /* no positioning: the rows keep the slot as their offset parent */
+.promo-opening.is-ea-card .promo-pass-slot, .promo-opening.is-ea-card.is-ea-hero .promo-pass-slot { top: 50% !important; }   /* v14: every CTA state centred like the final lockup */

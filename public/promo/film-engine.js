@@ -141,7 +141,7 @@
     { scene: 'pitch', id: 't-lost', line: "When a shopper's lost in your catalog... Bizmis finds them the right one." },
     { scene: 'pitch', id: 't-doubt', line: "And when a doubt holds them back... it answers on the spot." },
     { scene: 'selling-sea', id: 't-sold', line: "That's how more visits... turn into sales." },
-    { scene: 'sync', id: 't-sync', line: "It all takes just one click. Your whole store, in sync. Automatically, always." },
+    { scene: 'sync', id: 't-sync', line: "It all takes just one click. And your whole store stays in sync... automatically." },
     { scene: 'stores', id: 't-stores', line: 'In any store, with any catalog... on any device. Type to it... or just talk to it.' },
     { scene: 'end', id: 'see-it', line: 'See it in action.', cta: 'demo' },
     { scene: 'end', id: 't-ea', line: "Install now to join Early Access! You get generous free credits, fifty percent off when you upgrade, and you shape the roadmap. It installs in one click and stays private until you go live, with no commitment, and a direct line to the founder. There are only fifty spots. Install now to secure yours.", cta: 'ea' },
@@ -2194,8 +2194,17 @@
   const PROMO_REEL_BURST_MS = 2300;
   const PROMO_REEL_BEAT_MS = 60000 / 112;   // the pitch score's tempo: every cut lands on its grid
   const PROMO_REEL_TUNNEL_BEATS = 4;
-  const PROMO_REEL_WHIP_BEATS = [4, 4, 4, 3];   // v13b: room for each quick store's line
-  const PROMO_REEL_QUICK_VOICES = ['quick-es', 'quick-fr', 'quick-de', 'quick-it'];   // the quick stores speak, each in another language
+  const PROMO_REEL_WHIP_BEATS = [3, 3, 3, 3];   // v14: each quick store: its line, then the next (the run accelerates after them)
+  const PROMO_REEL_QUICK_VOICES = ['quick-es', 'quick-ja', 'quick-pt', 'quick-zh'];   // biggest markets, not origins; Chinese last
+  // v14: after the quick stores, new stores strobe past faster and faster (beats), barely visible, into "Your store"
+  const PROMO_REEL_STROBE_BEATS = [2.75, 2.25, 1.75, 1.5, 1.25, 1, 0.75, 0.75, 0.5, 0.5, 0.25, 0.25];
+  // v14b: one continuous acceleration: every store is shorter than the one before (beats on the score's grid)
+  const PROMO_REEL_PACE = { heroes: [8.25, 7.75, 6.75, 6], quick: [5.25, 4.5, 3.75, 3.25] };
+  const PROMO_REEL_STROBE = [
+    { device: 'desktop', color: '#5B8DEF', v: 0 }, { device: 'phone', color: '#EF6F8E', v: 1 }, { device: 'tablet', color: '#3DBE8B', v: 2 }, { device: 'desktop', color: '#F2A541', v: 1 },
+    { device: 'phone', color: '#9B7BEA', v: 0 }, { device: 'desktop', color: '#2BB3C9', v: 2 }, { device: 'tablet', color: '#E8644A', v: 0 }, { device: 'phone', color: '#C9A227', v: 2 },
+    { device: 'desktop', color: '#6C7A89', v: 1 }, { device: 'phone', color: '#F07ACB', v: 1 }, { device: 'tablet', color: '#4FA3E0', v: 0 }, { device: 'desktop', color: '#8BC34A', v: 2 },
+  ];
   function promoBackOut(u) { const c1 = 1.5; const c3 = c1 + 1; return 1 + c3 * (u - 1) ** 3 + c1 * (u - 1) ** 2; }
   const PROMO_REEL_WHIP_HOLD_MS = 900;   // a quick store holds this long (shorter each time)
   const PROMO_REEL_SKELETONS = [   // v13b: soft, muted store colours (the tunnel must read calm, not trippy)
@@ -7589,8 +7598,7 @@
         const row = document.createElement('div');
         row.className = 'promo-ea-pills';
         row.innerHTML = `<div class="promo-ea-pills__row">${(copy.terms || []).map((t) => `<p class="promo-ea-pill is-benefit"><svg class="promo-ea-pill__check" viewBox="0 0 24 24" aria-hidden="true"><path pathLength="1" d="M5 12.5l4.4 4.4L19 7.4"/></svg><span>${t}</span></p>`).join('')}</div>`
-          // v13b: what the VO adds, one refined quiet row laid out from the start (nothing shifts), each item rising in as it is said
-          + `<div class="promo-ea-pills__row is-extras">${(copy.extras || []).map((t) => `<span class="promo-ea-extra">${t}</span>`).join('<i class="promo-ea-extra__sep" aria-hidden="true"></i>')}</div>`
+          // v14: no extras row: the three benefits and the scarcity are the whole card (the VO says the rest)
           // v13 (S1): the scarcity handwritten in Bizmis orange, a hand-drawn underline under it
           + `<div class="promo-ea-pills__row is-hand"><p class="promo-ea-hand"><span class="promo-ea-hand__text">${copy.aside || 'Only 50 spots'}!</span><svg class="promo-ea-hand__line" viewBox="0 0 240 24" preserveAspectRatio="none" aria-hidden="true"><path pathLength="1" d="M6 15.5c38-5.2 92-7.6 150-6.4 26 .6 52 2.2 78 4.8"/><path pathLength="1" d="M28 20.2c44-3.4 104-4.2 168-1.6"/></svg></p></div>`;
         slot.append(row);
@@ -7693,9 +7701,14 @@
           ['ben', '.promo-ea-pills__row:not(.is-extras):not(.is-hand)'], ['roll', '.promo-ea-pills__row.is-extras'], ['hand', '.promo-ea-pills__row.is-hand']]
           .map(([key, sel]) => [key, slot.querySelector(sel)]).filter(([, el]) => el);
         const last = parts.filter(([key]) => shown.has(key)).pop()?.[1];
-        if (!last) return;
-        const hidden = Math.max(0, slot.scrollHeight - (last.offsetTop + last.offsetHeight));
-        const to = hidden / 2; const from = parseFloat((slot.style.translate || '0 0').split(' ')[1]) || 0;
+        const lastAll = parts[parts.length - 1]?.[1];
+        if (!last || !lastAll) return;
+        // measured on screen (the card is scaled; its rows may sit in a transformed block), in the canvas's px
+        const canvasEl = this.root.querySelector('[data-promo-canvas]') || this.root;
+        const fit = canvasEl.clientWidth / Math.max(1, canvasEl.getBoundingClientRect().width);
+        const hidden = Math.max(0, (lastAll.getBoundingClientRect().bottom - last.getBoundingClientRect().bottom) * fit);
+        const from = parseFloat((slot.style.translate || '0 0').split(' ')[1]) || 0;
+        const to = hidden / 2;
         if (!ms) { slot.style.translate = `0 ${to.toFixed(1)}px`; return; }
         tweenStep(ms, (e) => { slot.style.translate = `0 ${(from + (to - from) * e).toFixed(1)}px`; }, promoEaseInOut);
       };
@@ -7740,16 +7753,6 @@
             if (!k) { shown.add('ben'); recenter(560); }
             if (pills[k]) rise(pills[k]);
             promoSfx('ea-tick', { index: k });
-          }
-          const extras = [...slot.querySelectorAll('.promo-ea-extra')];
-          const seps = [...slot.querySelectorAll('.promo-ea-extra__sep')];
-          for (const [k, mark] of (copy.extraMarks || []).entries()) {
-            await take.at(mark, 'start', -80);
-            if (!k) { shown.add('roll'); recenter(520); }
-            const item = extras[k]; const sep = seps[k - 1];
-            if (item) tweenStep(460, (e) => { item.style.opacity = e.toFixed(3); item.style.translate = `0 ${((1 - e) * 0.35).toFixed(3)}em`; item.style.filter = e < 1 ? `blur(${((1 - e) * 3).toFixed(2)}px)` : ''; }, promoEaseOut);
-            if (sep) tweenStep(300, (e) => { sep.style.opacity = e.toFixed(3); }, promoEaseOut);
-            promoSfx('ea-tick', { index: k + 3 });
           }
           await take.at('only fifty', 'start', -120);
           shown.add('hand'); recenter(520);
@@ -7979,7 +7982,7 @@
       promoSfx('sync-done');
       // "Automatically, always.": a small glass chip writes in under the clerk,
       // its sync glyph turning for as long as the scene holds (stepped).
-      await take.at('Automatically', 'start', -80);
+      await take.at('automatically', 'start', -80);
       const chip = document.createElement('div');
       chip.className = 'promo-sync__always';
       chip.innerHTML = `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 12a8 8 0 0 1-13.7 5.6M4 12a8 8 0 0 1 13.7-5.6"/><path d="M17.8 2.8v3.9h-3.9M6.2 21.2v-3.9h3.9"/></svg><span>Always in sync</span>`;
@@ -8105,6 +8108,7 @@
       const order = [];
       heroItems.forEach((hero) => order.push(hero));
       extras.forEach((item) => order.push({ ...asAmbient(item), whip: true }));
+      PROMO_REEL_STROBE.forEach((sk) => order.push({ skeleton: true, strobe: true, ...sk }));
       order.push(yours);
       // where a device sits in its page, at 1920x1080 (scaled)
       const SIZES = { desktop: 1180, phone: 410, tablet: 660 };
@@ -8112,6 +8116,7 @@
         const spec = PROMO_DEVICE_SPEC[item.device] || PROMO_DEVICE_SPEC.desktop;
         const w = (item.skeleton ? SIZES[item.device] * 0.74 : SIZES[item.device]) * S;
         const h = w / spec.aspect + spec.bar * w;
+        if (item.strobe) { const ws = SIZES[item.device] * S * 0.92; const hs = ws / spec.aspect + spec.bar * ws; return { w: ws, h: hs, x: W / 2, y: (H - hs) / 2 }; }
         if (item.skeleton) return { w, h, x: 0, y: (H - h) / 2 };
         if (item.yours) return { w, h, x: W / 2, y: (H - h) / 2 };
         if (item.device === 'desktop') return { w, h, x: W / 2, y: 205 * S };
@@ -8120,14 +8125,14 @@
       let px = 0;
       const seq = order.map((item, n) => {
         const box = place(item);
-        const pageW = item.skeleton ? W * 0.4 : W;
-        const cell = { src: item, n, full: box, hero: !!item.hero, whip: !!item.whip, yours: !!item.yours, skeleton: !!item.skeleton };
+        const pageW = item.skeleton && !item.strobe ? W * 0.4 : W;
+        const cell = { src: item, n, full: box, hero: !!item.hero, whip: !!item.whip, yours: !!item.yours, skeleton: !!item.skeleton && !item.strobe, strobe: !!item.strobe };
         cell.x0 = px;
-        cell.cx = px + (item.skeleton ? pageW / 2 : box.x);   // the device's centre along the strip
+        cell.cx = px + (item.skeleton && !item.strobe ? pageW / 2 : box.x);   // the device's centre along the strip
         px += pageW;
         const inner = cell.yours
           ? `<div class="promo-reel__blank"><div class="promo-reel__blank-brand"><span class="promo-reel__blank-mark">${PROMO_STORE_MARK}</span><b>Your store</b></div><div class="promo-reel__yours-widget"></div></div>`
-          : cell.skeleton ? promoSkeletonStore(item)
+          : (cell.skeleton || cell.strobe) ? promoSkeletonStore(item)
           : cell.hero ? '<video class="is-hero" muted playsinline preload="auto"></video>' : '<video class="is-ambient" muted playsinline preload="auto"></video>';
         cell.dev = promoDevice(item.device, box, inner);
         if (cell.hero) cell.dev.classList.add('has-hero');
@@ -8265,11 +8270,44 @@
       const flash = document.createElement('div');
       flash.className = 'promo-reel__flash';
       reel.appendChild(flash);
-      const slam = (cell, index) => {
-        promoSfx('reel-slam', { index });
+      const streak = document.createElement('div');
+      streak.className = 'promo-reel__streak';
+      reel.appendChild(streak);
+      const slam = (cell, index, power = 1) => {
+        promoSfx(cell.strobe ? 'strobe-tick' : 'reel-slam', { index });
         light.hitAt = performance.now();
-        tweenStep(170, (e) => { flash.style.opacity = (0.42 * (1 - e)).toFixed(3); }, (u) => u);   // a soft flash, not a strobe
-        tweenStep(480, (e, u) => { cell.t.k = 1 + 0.085 * (1 - promoBackOut(u)); }, (u) => u);
+        const peak = cell.strobe ? 0.22 : 0.42;
+        tweenStep(170, (e) => { flash.style.opacity = (peak * power * (1 - e)).toFixed(3); }, (u) => u);
+        tweenStep(cell.strobe ? 260 : 480, (e, u) => { cell.t.k = 1 + 0.12 * power * (1 - promoBackOut(u)); }, (u) => u);
+        if (!cell.strobe) {   // a streak of the store's light sweeps through on the hit
+          streak.style.setProperty('--tint', cell.src.color);
+          tweenStep(300, (e) => { streak.style.opacity = (Math.sin(e * Math.PI) * 0.9).toFixed(3); streak.style.translate = `${(-60 + e * 220).toFixed(1)}% 0`; }, (u) => u);
+        }
+      };
+      // the outgoing store pushes in and blurs for a breath before each cut, a whoosh rising into it
+      const preCut = (cell) => {
+        if (!cell) return;
+        tweenStep(150, (e) => { cell.t.k = 1 + 0.06 * e * e; cell.dev.style.filter = `blur(${(e * e * 5).toFixed(2)}px)`; }, (u) => u)
+          .then(() => window.setTimeout(() => { cell.dev.style.filter = ''; cell.t.k = 1; }, 60));
+      };
+      const beatTime = (minMs, frac = 1) => {
+        const grid = PROMO_REEL_BEAT_MS * frac; const now = performance.now();
+        return t0 + Math.ceil((now + minMs - t0) / grid - 0.02) * grid;
+      };
+      let cutClock = 0;   // when the last cut landed: the next one is exactly its beats later
+      const untilAt = async (cell, at, whoosh = true) => {
+        const now = performance.now();
+        if (whoosh && at - now > 520) window.setTimeout(() => promoSfx('reel-pre'), at - now - 330);
+        if (at - now > 320) { await waitMs(at - now - 150); preCut(cell); }
+        await waitMs(Math.max(0, at - performance.now()));
+        cutClock = at;
+      };
+      const untilCut = async (cell, minMs, frac = 1, whoosh = true) => {
+        const at = beatTime(minMs, frac);
+        const now = performance.now();
+        if (whoosh && at - now > 340) window.setTimeout(() => promoSfx('reel-pre'), at - now - 330);
+        if (at - now > 160) { await waitMs(at - now - 150); preCut(cell); }
+        await waitMs(Math.max(0, at - performance.now()));
       };
       const cutTo = (cell, index) => {
         cam.x = camFor(cell);
@@ -8331,6 +8369,7 @@
       tunnel.remove();
       tint(firstHero.src.color, 0);
       slam(firstHero, 0);
+      cutClock = performance.now();
       speakTake('t-stores');
 
       // 2. the four stores: hard cuts on the beat
@@ -8351,7 +8390,7 @@
         (item.keys || []).forEach(([from, to]) => window.setTimeout(() => promoSfx(item.device === 'desktop' ? 'typing' : 'tapping', { ms: Math.round((to - from) * 1000) }), from * 1000));
         (item.sfx || []).forEach(([at, id]) => window.setTimeout(() => promoSfx(id), at * 1000));
         // the take plays out, then the cut comes on the nearest beat (never a held frame of more than half a beat)
-        await onBeat(Math.max(0, item.dur * 1000 - PROMO_REEL_BEAT_MS * 0.5));
+        await untilAt(hero, cutClock + (PROMO_REEL_PACE.heroes[index] ?? 6) * PROMO_REEL_BEAT_MS);
         reel.querySelectorAll('.promo-reel__said:not(.is-out)').forEach((pill) => { pill.classList.add('is-out'); pill.style.opacity = '0'; });
         park(hero.heroVideo);
         hero.dev.classList.remove('is-live');
@@ -8368,18 +8407,31 @@
         if (voice) {
           const now = performance.now();
           const src = `/promo/voice/${PROMO_REEL_QUICK_VOICES[index]}.wav`;
-          (window.__promoAudioCues = window.__promoAudioCues || []).push({ src, atMs: now + 90, fromSec: 0, endMs: now + 90 + voice.durationMs });
-          if (!document.documentElement.classList.contains('is-promo-export')) window.setTimeout(() => new Audio(src).play().catch(() => { }), 90);
-          const words = voiceWords(voice).filter((w) => !/^\[[^\]]*\]$/.test(w.text)).map((w) => [0.09 + w.startMs / 1000, w.text]);
-          if (words.length) this.playSaidPill(reel, words.map(([t, w]) => [Math.max(0.3, t), w]), { color: cell.src.color, kind: 'voice-agent', hold: 0.25, place: reelSaidSpot(cell, W, H, S) });
+          const spoken = voiceWords(voice).filter((w) => !/^\[[^\]]*\]$/.test(w.text));
+          const lead = Math.max(0, (spoken[0]?.startMs || 0) / 1000 - 0.03);   // the line starts the moment the store lands
+          (window.__promoAudioCues = window.__promoAudioCues || []).push({ src, atMs: now + 40, fromSec: lead, endMs: now + 40 + voice.durationMs - lead * 1000 });
+          if (!document.documentElement.classList.contains('is-promo-export')) window.setTimeout(() => { const a = new Audio(src); a.currentTime = lead; a.play().catch(() => { }); }, 40);
+          const words = spoken.map((w) => [0.04 + w.startMs / 1000 - lead, w.text]);
+          if (words.length) this.playSaidPill(reel, words.map(([t, w]) => [Math.max(0.3, t), w]), { color: cell.src.color, kind: 'voice-agent', hold: 0.15, place: reelSaidSpot(cell, W, H, S) });
         }
-        await onBeat(PROMO_REEL_BEAT_MS * (PROMO_REEL_WHIP_BEATS[index] ?? 1) - 40);
+        await untilAt(cell, cutClock + (PROMO_REEL_PACE.quick[index] ?? 3) * PROMO_REEL_BEAT_MS, index < whips.length - 1);
       }
-      // ...and "Your store", centred, on the next hit
+      // 4. new stores strobe past, faster and faster, barely visible...
+      reel.querySelectorAll('.promo-reel__said:not(.is-out)').forEach((pill) => { pill.classList.add('is-out'); pill.style.opacity = '0'; });
+      promoSfx('reel-strobe', { ms: PROMO_REEL_STROBE_BEATS.reduce((a, b) => a + b, 0) * PROMO_REEL_BEAT_MS });
+      const strobes = seq.filter((cell) => cell.strobe);
+      for (const [index, cell] of strobes.entries()) {
+        cutTo(cell, 100 + index);
+        await untilAt(cell, cutClock + (PROMO_REEL_STROBE_BEATS[index] ?? 0.25) * PROMO_REEL_BEAT_MS, false);
+      }
+      // ...and they slam into "Your store", centred: one violent hit, then the CTA's calm
       promoWidgetDebug('setPlaceholder', 'Ask me anything');
       this.seatReelWidget(home);
-      reel.querySelectorAll('.promo-reel__said:not(.is-out)').forEach((pill) => { pill.classList.add('is-out'); pill.style.opacity = '0'; });
       cutTo(home, heroes.length + whips.length);
+      slam(home, 200, 2.6);
+      promoSfx('yourstore-hit');
+      tweenStep(420, (e, u) => { strip.style.translate = `${(Math.sin(u * 50) * (1 - u) * W * 0.008).toFixed(1)}px ${(Math.cos(u * 43) * (1 - u) * H * 0.008).toFixed(1)}px`; }, (u) => u)
+        .then(() => { strip.style.translate = ''; });
       promoSfx('reel-land');
       setOpeningAvatarAction('waving');
       await onBeat(PROMO_YOURSTORE_HOLD_MS + 500);

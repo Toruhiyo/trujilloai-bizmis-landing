@@ -16,14 +16,15 @@ amb = lambda slug, device, color, category, feat, ben: {'video': f'{V8}/ambient-
                                                'color': color, 'category': category, 'feat': feat, 'ben': ben, 'hero': False, 'ambientStart': 0.6}
 fashion_words = "Women's rain coats for city trips, in quiet colors?".split()
 items = [
-    hero('fashion', ambient=f'{V8}/ambient-12-weather-outfitters.mp4', device='phone', color='#F2C94C', category='Fashion & apparel', feat='Narrows the catalog', ben='Browsers become buyers',
-         keys=[[0.1, 2.6]], saidKind='typed',
-         said=[[round(0.15 + i * (2.4 / len(fashion_words)), 2), w] for i, w in enumerate(fashion_words)]),
-    hero('electronics', ambient=f'{V8}/ambient-meridian.mp4', device='desktop', color='#D1001A', category='Consumer electronics', feat='Compares the options', ben='Undecided shoppers decide'),
     hero('books', ambient=f'{V8}/ambient-paper-and-pine-books.mp4', device='tablet', color='#2A5C42', category='Bookstores', feat="Knows what they're viewing", ben='Recommendations that sell'),
-    hero('gaming', ambient=f'{V8}/ambient-pulse-forge.mp4', device='phone', color='#A855F7', category='Gaming gear', feat='Suggests the perfect add-on', ben='Bigger baskets', sfx=[[6.9, 'cart']]),
-    amb('the-apricot-theory', 'phone', '#F7944D', 'Skincare & beauty', 'Matches the routine', 'Confident first purchases'),
+    hero('electronics', ambient=f'{V8}/ambient-meridian.mp4', device='desktop', color='#D1001A', category='Consumer electronics', feat='Compares the options', ben='Undecided shoppers decide'),
+    hero('fashion', ambient=f'{V8}/ambient-12-weather-outfitters.mp4', device='phone', color='#F2C94C', category='Fashion & apparel', feat='Narrows the catalog', ben='Browsers become buyers',
+         keys=[[0.05, 1.55]], saidKind='typed',
+         said=[[round(0.08 + i * (1.42 / len(fashion_words)), 2), w] for i, w in enumerate(fashion_words)]),
+    hero('gaming', ambient=f'{V8}/ambient-pulse-forge.mp4', device='phone', color='#A855F7', category='Gaming gear', feat='Suggests the perfect add-on', ben='Bigger baskets'),
+
     amb('buildright-home', 'tablet', '#A7C957', 'Home & DIY', 'Explains the specs', 'Fewer returns'),
+    amb('the-apricot-theory', 'phone', '#F7944D', 'Skincare & beauty', 'Matches the routine', 'Confident first purchases'),
     amb('rolling-district', 'desktop', '#E02020', 'Car parts & accessories', 'Checks the fit', 'Orders without doubts'),
     amb('viniteca-marti', 'desktop', '#701C33', 'Wine & spirits', 'Pairs it with the meal', 'More bottles per order'),
 ]

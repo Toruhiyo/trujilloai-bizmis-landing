@@ -27,7 +27,7 @@ def stt(path):
     return json.load(urllib.request.urlopen(req, timeout=300))
 def tts(text):
     req = urllib.request.Request(f'https://api.elevenlabs.io/v1/text-to-speech/{voice}?output_format=mp3_44100_192', method='POST',
-                                 data=json.dumps({'text': text, 'model_id': 'eleven_multilingual_v2', 'voice_settings': {'stability': 0.5, 'similarity_boost': 0.8}}).encode(),
+                                 data=json.dumps({'text': text, 'model_id': 'eleven_v4', 'voice_settings': {'stability': 0.5, 'similarity_boost': 0.8}}).encode(),
                                  headers={'xi-api-key': KEY, 'Content-Type': 'application/json'})
     mp3 = urllib.request.urlopen(req, timeout=180).read()
     y = np.frombuffer(subprocess.run(['ffmpeg', '-loglevel', 'error', '-i', '-', '-ac', '1', '-ar', str(SR), '-f', 'f32le', '-'], input=mp3, capture_output=True).stdout, np.float32).copy()

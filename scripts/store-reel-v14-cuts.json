@@ -1,0 +1,82 @@
+{
+ "_note": "v14b: every store shorter than the last (books 4.4, electronics 4.1, fashion 3.6, gaming 3.2); v4 voices; hard cuts + punch-in.",
+ "fashion": {
+  "src": "tmp/reel-v10/revoiced/fashion.mp4",
+  "segments": [
+   [
+    10.8,
+    13.9,
+    1.9,
+    null
+   ],
+   [
+    23.3,
+    25.3,
+    1.0,
+    null
+   ]
+  ]
+ },
+ "electronics": {
+  "src": "tmp/reel-v13/electronics-final.mp4",
+  "segments": [
+   [
+    49.3,
+    50.7,
+    1.0,
+    null
+   ],
+   [
+    53.9,
+    56.6,
+    1.0,
+    "same"
+   ]
+  ],
+  "shopper": {
+   "text": "Which one has the best battery?",
+   "voice": "eXpIbVcVbLo8ZJQDlDnl",
+   "at": 0.05
+  }
+ },
+ "books": {
+  "src": "tmp/reel-v13/revoiced/books.mp4",
+  "segments": [
+   [
+    2.0,
+    5.2,
+    1.0,
+    null
+   ],
+   [
+    8.0,
+    9.25,
+    1.0,
+    null
+   ]
+  ],
+  "voice": [
+   [
+    "tmp/reel-v13/books-voice-v14.mp3",
+    0.0
+   ]
+  ]
+ },
+ "gaming": {
+  "src": "tmp/reel-v13/revoiced/gaming.mp4",
+  "segments": [
+   [
+    31.8,
+    34.95,
+    1.0,
+    null
+   ]
+  ],
+  "voice": [
+   [
+    "tmp/reel-v13/gaming-voice-a14.mp3",
+    0.02
+   ]
+  ]
+ }
+}
