@@ -2,7 +2,12 @@
   {
     "id": "t-pain",
     "role": "narrator",
-    "text": "[confident] Every day, shoppers walk into your store... ready to buy. [curious] Some get lost in the catalog. Clicking, comparing, scrolling... [sighs] with no one there to help them choose. [short pause] Others get stuck on one last question... and go looking for help. A chatbot? [sarcastic] Here's a wall of text... go read it. [short pause] A real person? The perfect answer... hours later. When the sale's already gone. [short pause] Either way, they leave. Quietly. And you never find out why."
+    "text": "[confident] Every day, shoppers walk into your store... ready to buy. [curious] Some get lost in the catalog. Clicking, comparing, scrolling... [sighs] with no one there to help them choose. [short pause] Others get stuck on one last question... and go looking for help. A chatbot? [sarcastic] Here's a wall of text... go read it. [short pause] A real person? The perfect answer... hours later. When the sale's already gone. [short pause] Either way, they leave."
+  },
+  {
+    "id": "t-pain-end",
+    "role": "narrator",
+    "text": "[matter-of-fact] Sale lost."
   },
   {
     "id": "t-switch",
@@ -57,7 +62,7 @@
   {
     "id": "t-stores",
     "role": "narrator",
-    "text": "[confident] Any store. [excited] Any device. [excited] Any language."
+    "text": "[confident] Whatever your store sells... [warm] your Bizmis agent sells it."
   },
   {
     "id": "t-ea",

@@ -120,6 +120,7 @@
   const PROMO_EA_FINAL_HOLD_MS = 2600;   // the lasting final frame
   const PROMO_EA_HERO_LEAD_MS = 250;
   const PROMO_EA_FADE_MS = 1600;
+  const PROMO_PAIN_END_GAP_MS = 600;   // v18: "they leave." ... "Sale lost." (lands on the sea's first LOST stamps)
   const PROMO_SHOPIFY_BAG = 'M15.337 23.979l7.216-1.561s-2.604-17.613-2.625-17.73c-.018-.116-.114-.192-.211-.192s-1.929-.136-1.929-.136-1.275-1.274-1.439-1.411c-.045-.037-.075-.057-.121-.074l-.914 21.104h.023zM11.71 11.305s-.81-.424-1.774-.424c-1.447 0-1.504.906-1.504 1.141 0 1.232 3.24 1.715 3.24 4.629 0 2.295-1.44 3.76-3.406 3.76-2.354 0-3.54-1.465-3.54-1.465l.646-2.086s1.245 1.066 2.28 1.066c.675 0 .975-.545.975-.932 0-1.619-2.654-1.694-2.654-4.359-.034-2.237 1.571-4.416 4.827-4.416 1.257 0 1.875.361 1.875.361l-.945 2.715-.02.01zM11.17.83c.136 0 .271.038.405.135-.984.465-2.064 1.639-2.508 3.992-.656.213-1.293.405-1.889.578C7.697 3.75 8.951.84 11.17.84V.83zm1.235 2.949v.135c-.754.232-1.583.484-2.394.736.466-1.777 1.333-2.645 2.085-2.971.193.501.309 1.176.309 2.1zm.539-2.234c.694.074 1.141.867 1.429 1.755-.349.114-.735.231-1.158.366v-.252c0-.752-.096-1.371-.271-1.871v.002zm2.992 1.289c-.02 0-.06.021-.078.021s-.289.075-.714.21c-.423-1.233-1.176-2.37-2.508-2.37h-.115C12.135.209 11.669 0 11.265 0 8.159 0 6.675 3.877 6.21 5.846c-1.194.365-2.063.636-2.16.674-.675.213-.694.232-.772.87-.075.462-1.83 14.063-1.83 14.063L15.009 24l.927-21.166z';
   const PROMO_VO_ON = promoBootParams.get('vo') === '1';
   const PROMO_VO_BUDGET_S = [
@@ -133,7 +134,8 @@
   // The narrator speaks in whole takes (Claudia, Eleven v4, audio tags in the
   // text); the picture syncs to phrases inside each take (speakTake().at()).
   const PROMO_VO = [
-    { scene: 'pain', id: 't-pain', line: "Every day, shoppers walk into your store... ready to buy. Some get lost in the catalog. Clicking, comparing, scrolling... with no one there to help them choose. Others get stuck on one last question... and go looking for help. A chatbot? Here's a wall of text... go read it. A real person? The perfect answer... hours later. When the sale's already gone. Either way, they leave. Quietly. And you never find out why." },
+    { scene: 'pain', id: 't-pain', line: "Every day, shoppers walk into your store... ready to buy. Some get lost in the catalog. Clicking, comparing, scrolling... with no one there to help them choose. Others get stuck on one last question... and go looking for help. A chatbot? Here's a wall of text... go read it. A real person? The perfect answer... hours later. When the sale's already gone. Either way, they leave." },
+    { scene: 'pain', id: 't-pain-end', line: 'Sale lost.' },   // v18: its own take, on the sea's first LOST stamps
     { scene: 'switch', id: 't-switch', line: 'In a physical store... the best salesperson turns these moments into sales. So we built one... for your online store!' },
     { scene: 'reveal', id: 't-reveal', line: "Meet Bizmis. Your store's new salesperson. Well... sales agent." },
     { scene: 'rewind', id: 't-rewind-a', line: "Let's rewind." },
@@ -142,7 +144,7 @@
     { scene: 'pitch', id: 't-doubt', line: "And when a doubt holds them back... it answers on the spot." },
     { scene: 'selling-sea', id: 't-sold', line: "That's how more visits... turn into sales." },
     { scene: 'sync', id: 't-sync', line: "It all takes just one click. And your whole store stays in sync... automatically." },
-    { scene: 'stores', id: 't-stores', line: 'Any store. Any device. Any language.' },
+    { scene: 'stores', id: 't-stores', line: 'Whatever your store sells... your Bizmis agent sells it.' },   // v18: to the merchant (the reel shows devices and languages)
     { scene: 'end', id: 'see-it', line: 'See it in action.', cta: 'demo' },
     { scene: 'end', id: 't-ea', line: "Install now to join Early Access! You get generous free credits, fifty percent off when you upgrade, and you shape the roadmap. It installs in one click and stays private until you go live, with no commitment, and a direct line to the founder. There are only fifty spots. Install now to secure yours.", cta: 'ea' },
     { scene: 'end', id: 'install-shopify', line: 'Install it on Shopify.', cta: 'install' },
@@ -428,7 +430,7 @@
   // v12c: SF Symbols-like glyphs (filled, Apple's proportions): storefront and person
   const PROMO_SF_STORE = '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M4.8 3.6h14.4l2 5.3c.1.3.1.5.1.7 0 1.6-1.3 2.8-2.9 2.8-1.2 0-2.3-.8-2.7-1.9-.4 1.1-1.5 1.9-2.7 1.9h-.1c-1.2 0-2.3-.8-2.7-1.9-.4 1.1-1.5 1.9-2.7 1.9-1.6 0-2.9-1.3-2.9-2.8 0-.2 0-.5.1-.7z"/><path fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" d="M4.6 13.6v5.6c0 .7.5 1.2 1.2 1.2h12.4c.7 0 1.2-.5 1.2-1.2v-5.6"/><path fill="currentColor" d="M10 20.4v-4.2c0-.4.3-.7.7-.7h2.6c.4 0 .7.3.7.7v4.2z"/></svg>';
   const PROMO_PERSON_MARK = '<svg viewBox="0 0 24 24" aria-hidden="true"><circle fill="currentColor" cx="12" cy="7.4" r="4.1"/><path fill="currentColor" d="M3.9 20.1c0-4.1 3.6-6.9 8.1-6.9s8.1 2.8 8.1 6.9c0 .6-.4 1-1 1H4.9c-.6 0-1-.4-1-1z"/></svg>';
-  const PROMO_HUMAN_MARK = '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 3.2a8.8 8.8 0 0 0-7.6 13.2L3.2 20.8l4.5-1.2A8.8 8.8 0 1 0 12 3.2z"/></svg>';
+  const PROMO_HUMAN_MARK = '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8.6" r="4.1" fill="currentColor"/><path fill="currentColor" d="M3.8 21c.6-4.4 4-7.2 8.2-7.2s7.6 2.8 8.2 7.2z"/></svg>';   // v18: a person, not a chat bubble
   const PROMO_HUMAN_REPLY = "Hi! So sorry for the wait. Yes, it makes a lovely gift: most people love it, and we can gift-wrap it for free. Want me to reserve one for you?";
   const PROMO_MAC_POINTER = '<svg class="promo-mac-pointer" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 2.6v16.9l4.1-4 2.8 6.4 2.9-1.3-2.8-6.3h5.9z"/></svg>';
   const PROMO_HAND_OPEN = '<svg class="is-open" viewBox="0 0 24 24" aria-hidden="true"><path d="M8.6 11.2V5.6a1.3 1.3 0 0 1 2.6 0v5M11.2 10.4V4.4a1.3 1.3 0 0 1 2.6 0v6M13.8 10.6V5.4a1.3 1.3 0 0 1 2.6 0v6.2M16.4 11.4V8.2a1.3 1.3 0 0 1 2.6 0v6.1c0 4-2.6 6.6-6.5 6.6-2.6 0-4.1-1.1-5.5-3l-2.7-4c-.6-.9-.3-1.9.6-2.3.7-.3 1.5 0 2 .6l1.3 1.7"/></svg>';
@@ -11783,7 +11785,7 @@
       if (!log) return;
       const block = document.createElement('div');
       block.className = 'promo-pain__msg is-bot';
-      block.innerHTML = '<div class="promo-pain__bubble"><p>Want to talk to our team?</p><span class="promo-pain__handoff">Message us</span></div>';
+      block.innerHTML = '<div class="promo-pain__bubble"><p>Want to talk to a real person?</p><span class="promo-pain__handoff">Talk to a person</span></div>';
       log.appendChild(block);
       fadeStep(block, 0, 1, 220);
       scrollDullLog(log);
@@ -11817,7 +11819,7 @@
       if (!chat || !log) return;
       chat.classList.add('is-human');
       const title = chat.querySelector('.promo-pain__title');
-      if (title) title.innerHTML = 'Message us<small>Typically replies in a few hours</small>';
+      if (title) title.innerHTML = 'Emma, customer support<small>Typically replies in a few hours</small>';   // v18: obviously a person
       const avatar = chat.querySelector('.promo-pain__avatar');
       if (avatar) avatar.innerHTML = PROMO_HUMAN_MARK;
       log.replaceChildren();
@@ -12000,17 +12002,21 @@
         }
       }
       await unfocus;
-      // push in on the phone (it sits outside the camera), so the question and its wall of text read
+      // v18: the camera follows the shopper (stepped tweens: export-safe; CSS transitions are not sampled):
+      // in on the input while they type, out on send, in on the wall of text, out before the 👎 and the hand-off
       const baseTf = clone.style.transform || '';
-      const chatView = clone.querySelector('[data-promo-pain-chat]') || clone;
-      const zoomPhone = (k, ms) => {
-        const pb = clone.getBoundingClientRect(); const cb = chatView.getBoundingClientRect();
-        const ox = ((cb.left + cb.width / 2 - pb.left) / (pb.width || 1)) * 100; const oy = ((cb.top + cb.height / 2 - pb.top) / (pb.height || 1)) * 100;
-        if (k !== 1) clone.style.transformOrigin = `${ox.toFixed(1)}% ${Math.min(62, oy).toFixed(1)}%`;
-        clone.style.transition = `transform ${ms}ms cubic-bezier(0.45, 0, 0.2, 1)`;
-        clone.style.transform = `${baseTf} scale(${k})`;
+      clone.style.transition = 'none';
+      const lens = { k: 1 };
+      const zoomOn = (target, k, ms) => {
+        if (target && lens.k < 1.001) {   // the focus moves only while the camera is out (no jump)
+          const pb = clone.getBoundingClientRect(); const tb = target.getBoundingClientRect();
+          const ox = ((tb.left + tb.width / 2 - pb.left) / (pb.width || 1)) * 100; const oy = ((tb.top + tb.height / 2 - pb.top) / (pb.height || 1)) * 100;
+          clone.style.transformOrigin = `${ox.toFixed(1)}% ${oy.toFixed(1)}%`;
+        }
+        const from = lens.k;
+        return tweenStep(ms, (e) => { lens.k = from + (k - from) * e; clone.style.transform = `${baseTf} scale(${lens.k.toFixed(4)})`; }, promoEaseInOut);
       };
-      zoomPhone(1.55, 900);   // v10: one clean push in (no second creeping zoom)
+      zoomOn(input?.closest('.promo-pain__composer, form') || input, 1.7, 700);
       if (input) {
         input.textContent = '';
         input.classList.add('is-live');
@@ -12024,11 +12030,13 @@
       input?.classList.remove('is-live');
       this.fillCloneChat(clone, 'think-2');
       promoSfx('send');
+      zoomOn(null, 1, 520);   // out on send
       await Promise.all([waitMs(PROMO_PAIN_THINK_MS), this.painTake?.at('wall of text')]);
       this.fillCloneChat(clone, 'answer-2');
       promoSfx('reply');
       // the wall scrolls on while "go read it" plays (never a frozen frame)
       const log = clone.querySelector('[data-promo-pain-log]');
+      zoomOn(log, 1.5, 800);   // in on the wall of text
       if (log) {
         log.scrollTop = 0;
         const from = 0; const t0 = performance.now(); const span = 2600;
@@ -12041,6 +12049,7 @@
       }
       // ...and a clean pull back soon after: the wall has been seen
       await Promise.all([waitMs(1500), this.painTake?.at('go read it', 'end', -200)]);
+      await zoomOn(null, 1, 560);   // out before the shopper acts
       // the shopper rates the wall 👎, then: "A real person?" the chat hands over to the team
       await this.tapThumbsDown(clone);
       await this.painTake?.at('A real person?', 'start', -250);
@@ -12050,15 +12059,12 @@
       if (handoff) await this.tapPhoneTarget(clone, handoff);
       this.openHumanChat(clone);
       promoSfx('panel');
-      // pull back so the status bar is in frame while its clock races ahead
-      await this.painTake?.at('The perfect', 'start', 200);
-      zoomPhone(1.06, 800);
+      // the camera stays out: the status bar's clock is in frame while it races ahead
       await this.painTake?.at('hours later.', 'start', -650);
       await this.fastForwardClock(clone, 900);
       await this.painTake?.at('hours later.', 'end', -120);
       this.humanReplyArrives(clone);
       promoSfx('reply');
-      zoomPhone(1, 900);
       await this.painTake?.at("already gone.", 'end');
       clone.style.transition = 'none'; clone.style.transformOrigin = ''; clone.style.transform = baseTf;   // later moves stay instant (a lingering transition doubled the phone into the sea)
     }
@@ -12345,7 +12351,10 @@
       this.paintGlideAt(0, 'pain');
       promoSfx('pullback', { mode: 'pain' });
       this.runGlide('pain', 0);
-      await Promise.all([waitMs(glidePlayEnd('pain')), this.painTake?.done]);
+      const saleLost = (this.painTake?.done || Promise.resolve())
+        .then(() => waitMs(PROMO_PAIN_END_GAP_MS))
+        .then(() => (generation === this.scaleGeneration ? speakTake('t-pain-end').done : null));
+      await Promise.all([waitMs(glidePlayEnd('pain')), saleLost]);
       if (generation !== this.scaleGeneration) return;
       await this.playConveyorEnd('pain', { settled: true });
     }

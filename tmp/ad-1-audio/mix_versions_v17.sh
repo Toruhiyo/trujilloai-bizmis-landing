@@ -11,4 +11,5 @@ for ts in ${=TAKES}; do
   echo "== $TAG"
   EXPORT_DIR=$EXP SCORE=music/${NAME}-${k}-score.wav CLIMAX=none $PY master.py $TAG 2>&1 | tail -2
   $RES_PY resolve_push.py ~/Movies/ad-1-resolve/$TAG/manifest.json 2>&1 | tail -2
+  $RES_PY resolve_markers.py $EXP "ad-1 $TAG" 2>&1 | head -1   # jog points: chapters + key moments
 done
