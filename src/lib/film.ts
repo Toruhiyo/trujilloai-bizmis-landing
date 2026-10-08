@@ -2,9 +2,9 @@
  * The ad-1 film shown in the landing hero (and later on /watch?ref=).
  *
  * `src` is an HLS ladder (4K, 1440p, 1080p, 720p, 480p, 360p) built from the
- * 4K master by scripts/encode-film-hls.sh. Locally it's served from
- * public/film/hls (a gitignored link to tmp/film-hls); in production
- * VITE_FILM_SRC points at the hosted master.m3u8.
+ * 4K master by scripts/encode-film-hls.sh and hosted on Vercel Blob under a
+ * versioned prefix (film/<film>/<cut>/), so a new cut never collides with a
+ * cached one. VITE_FILM_SRC overrides it (e.g. a local ladder).
  * The ambient loop is a muted montage of the agent at work (built by
  * scripts/make-hero-film-loop.sh), small enough to ship with the
  * site.
@@ -19,7 +19,9 @@ export const HERO_FILM_ENABLED =
 
 export const HERO_FILM = {
   id: "ad-1",
-  src: import.meta.env.VITE_FILM_SRC ?? "/film/hls/ad-1/master.m3u8",
+  src:
+    import.meta.env.VITE_FILM_SRC ??
+    "https://8josk2l8la4zszeg.public.blob.vercel-storage.com/film/ad-1/b431/master.m3u8",
   /** Fallback until the film's metadata loads (seconds). */
   durationSeconds: 161,
   loop: {
