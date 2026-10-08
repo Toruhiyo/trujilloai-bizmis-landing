@@ -1,52 +1,68 @@
 import { useEffect, useState } from "react";
-import { Check } from "lucide-react";
+import { FileSearch, PackageSearch, Truck } from "lucide-react";
 import { useMessages } from "@/i18n/LocaleProvider";
-import { cn } from "@/lib/utils";
-import AgentImage from "./AgentImage";
-import VoiceReply from "./VoiceReply";
 import Reveal, { useInView } from "./Reveal";
-import { StoreWindow } from "./clay";
+import { SentMessage } from "./BizmisWidget";
+import { StoreWithWidget } from "./visuals";
+import { ClayTile } from "./clay";
 
-const CASE_MS = 4200;
+// Each case plays the real widget's sequence: the shopper's message, the
+// agent working (tool on its laser), then speaking with captions.
+const STEP_MS = [1600, 1700, 3600];
+// The widget's tool icon for each support case.
+const TOOLS = {
+  returnPolicy: FileSearch,
+  orderTracking: PackageSearch,
+  shippingTime: Truck,
+  changeAddress: PackageSearch,
+  cancelOrder: PackageSearch,
+  warranty: FileSearch,
+  startReturn: PackageSearch,
+} as const;
 
 /**
- * A support conversation cycling through the classic landing's cases: the
- * shopper types, Bizmis checks the store and answers out loud.
+ * A support moment cycling through the classic landing's cases, as the real
+ * widget plays it: the shopper's message floats above the card, the agent
+ * works the store (tool on its laser), then answers out loud — rings behind
+ * the avatar and the words as captions at the page's foot.
  */
 const SupportChat = () => {
   const messages = useMessages();
-  const cases = Object.values(messages.supportDemo.cases);
+  const keys = Object.keys(messages.supportDemo.cases) as (keyof typeof messages.supportDemo.cases)[];
   const [ref, inView] = useInView<HTMLDivElement>(0.4);
-  const [i, setI] = useState(0);
+  const [pos, setPos] = useState({ i: 0, step: 0 });
   useEffect(() => {
     if (!inView || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    const t = window.setInterval(() => setI((n) => (n + 1) % cases.length), CASE_MS);
-    return () => window.clearInterval(t);
-  }, [inView, cases.length]);
-  const c = cases[i];
+    const t = window.setTimeout(
+      () => setPos((p) => (p.step < 2 ? { ...p, step: p.step + 1 } : { i: (p.i + 1) % keys.length, step: 0 })),
+      STEP_MS[pos.step]
+    );
+    return () => window.clearTimeout(t);
+  }, [inView, pos, keys.length]);
+  const key = keys[pos.i];
+  const c = messages.supportDemo.cases[key];
+  const state = pos.step === 0 ? "idle" : pos.step === 1 ? "working" : "speaking";
   return (
     <div ref={ref}>
-      <StoreWindow label={messages.landing.yourStore}>
-        <div className="grid grid-cols-[96px_1fr] gap-4 p-5 sm:grid-cols-[140px_1fr] sm:gap-6 sm:p-7">
-          <div className="self-end overflow-hidden rounded-2xl bg-[linear-gradient(180deg,#fff7ee,#fff)]">
-            <AgentImage name="support-yusuke" alt="" sizes="140px" className="mx-auto w-[92%] translate-y-[6%]" />
-          </div>
-          {/* key: each case re-mounts, so its three steps play in again */}
-          <div key={i} className="min-h-[13rem] space-y-3 sm:min-h-[12rem]">
-            <p className="bzl-bubble bzl-bubble-shopper w-fit animate-[bzl-pop_0.5s_var(--bzl-ease)_both]">{c.quote}</p>
-            <p className="flex w-fit animate-[bzl-pop_0.5s_var(--bzl-ease)_0.6s_both] items-center gap-1.5 rounded-full bg-[var(--bzl-orange-wash)] px-3 py-1 text-xs font-semibold text-[var(--bzl-orange-dark)]">
-              <Check className="h-3.5 w-3.5" strokeWidth={3} />
-              {c.action}
-            </p>
-            <VoiceReply transcript={c.response} seconds={5} className="animate-[bzl-pop_0.5s_var(--bzl-ease)_1.1s_both]" />
+      <StoreWithWidget
+        agent="support-yusuke"
+        state={state}
+        tool={TOOLS[key]}
+        above={pos.step === 0 ? <SentMessage text={c.quote.replace(/^"|"$/g, "")} /> : undefined}
+        caption={pos.step === 2 ? c.response : undefined}
+      >
+        <div className="grid grid-cols-[1fr_1fr] gap-5 p-5 pb-16 pr-[17%] sm:p-7 sm:pb-20 sm:pr-[19%]">
+          <ClayTile shape="egg" tint="blush" />
+          <div className="space-y-2.5 pt-1">
+            <div className="bzl-tile-line w-4/5" />
+            <div className="bzl-tile-line w-2/5" />
+            <div className="h-4 w-14 rounded-md bg-[#d9d4cc]" />
+            <div className="bzl-tile-line w-full" />
+            <div className="bzl-tile-line w-3/4" />
+            <div className="mt-3 h-8 rounded-xl bg-[var(--bzl-fg)]/85" />
           </div>
         </div>
-        <div className="flex justify-center gap-1.5 pb-4" aria-hidden="true">
-          {cases.map((_, k) => (
-            <i key={k} className={cn("h-1.5 rounded-full transition-all duration-500", k === i ? "w-5 bg-[var(--bzl-orange)]" : "w-1.5 bg-[#dcdce0]")} />
-          ))}
-        </div>
-      </StoreWindow>
+      </StoreWithWidget>
     </div>
   );
 };

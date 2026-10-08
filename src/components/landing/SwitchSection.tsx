@@ -1,27 +1,63 @@
 import { useEffect, useState } from "react";
-import { Check, X } from "lucide-react";
+import { Check, MessageCircle, X } from "lucide-react";
 import { useMessages } from "@/i18n/LocaleProvider";
 import { cn } from "@/lib/utils";
 import Reveal, { useInView } from "./Reveal";
-import AgentImage from "./AgentImage";
-import VoiceReply from "./VoiceReply";
+import BizmisWidget, { Captions } from "./BizmisWidget";
 import { ClayCard, StoreWindow } from "./clay";
+import type { ClayShape } from "./clay";
+
+const GRID: { shape: ClayShape; tint: "sage" | "sand" | "stone" | "blush" | "warm" }[] = [
+  { shape: "capsule", tint: "sage" },
+  { shape: "sphere", tint: "sand" },
+  { shape: "cube", tint: "warm" },
+  { shape: "dome", tint: "blush" },
+  { shape: "torus", tint: "stone" },
+  { shape: "cone", tint: "sage" },
+];
+
+/** A typical chatbot, for the comparison: launcher + text panel. Not Bizmis. */
+const TypicalChatbot = ({ greeting, reply }: { greeting: string; reply: string }) => (
+  <div className="w-[230px]">
+    <div className="overflow-hidden rounded-xl border border-neutral-300 bg-white shadow-lg">
+      <div className="flex items-center gap-2 bg-neutral-700 px-3 py-2.5 text-xs font-semibold text-white">
+        <MessageCircle className="h-3.5 w-3.5" />
+        Chat
+      </div>
+      <div className="space-y-2 p-3 text-[11px] leading-snug text-neutral-700">
+        <p className="w-fit rounded-lg bg-neutral-100 px-2.5 py-1.5">{greeting}</p>
+        <p className="w-fit rounded-lg bg-neutral-100 px-2.5 py-1.5">{reply}</p>
+        {["FAQ", "Shipping", "Returns"].map((l) => (
+          <p key={l} className="w-fit rounded-md border border-neutral-300 px-2 py-1 text-neutral-500 underline">
+            {l}
+          </p>
+        ))}
+        <div className="mt-1 h-7 rounded-md border border-neutral-300" />
+      </div>
+    </div>
+    <span className="ml-auto mt-3 grid h-12 w-12 place-items-center rounded-full bg-neutral-700 text-white shadow-lg">
+      <MessageCircle className="h-5 w-5" />
+    </span>
+  </div>
+);
 
 /**
- * "This isn't a chatbot." — the classic landing's pitch, shown with a live
- * Typical chatbot ⟷ Sales agent toggle. It flips to the agent on its own
- * once seen; visitors can flip it back.
+ * "This isn't a chatbot." — the film's Chatbot ⟷ Sales agent switch, big and
+ * colour-led: chatbot is a cold grey world (the store drains to greyscale,
+ * a text chat panel in the corner); sales agent floods the section with the
+ * Bizmis orange and the real widget speaks, captions at the page's foot.
+ * It flips to the agent on its own once seen; visitors can flip it back.
  */
 const SwitchSection = () => {
   const messages = useMessages();
   const m = messages.landing.switch;
-  const [ref, inView] = useInView<HTMLDivElement>(0.45);
+  const [ref, inView] = useInView<HTMLElement>(0.4);
   const [agent, setAgent] = useState(false);
   const [touched, setTouched] = useState(false);
 
   useEffect(() => {
     if (!inView || touched) return;
-    const t = window.setTimeout(() => setAgent(true), 1100);
+    const t = window.setTimeout(() => setAgent(true), 1600);
     return () => window.clearTimeout(t);
   }, [inView, touched]);
 
@@ -30,87 +66,106 @@ const SwitchSection = () => {
     setAgent((a) => !a);
   };
 
+  const corner = agent ? (
+    <BizmisWidget agent="greet-amber" state="speaking" placeholder={messages.landing.widget.placeholder} />
+  ) : (
+    <TypicalChatbot greeting={m.chatbotMessage} reply={m.chatbotReply} />
+  );
+
   return (
-    <section className="bzl-section">
-      <div className="bzl-wrap grid items-center gap-14 lg:grid-cols-[0.9fr_1.1fr] lg:gap-20">
-        <div>
-          <Reveal>
-            <h2 className="bzl-statement-sm max-w-lg">{messages.hero.pitchLead}</h2>
-          </Reveal>
-          <Reveal delay={100}>
-            <p className="bzl-lead mt-5 max-w-lg">{messages.hero.pitchLong}</p>
-          </Reveal>
+    <section ref={ref} className="relative overflow-hidden px-4 py-[clamp(4rem,9vw,7rem)] sm:px-6">
+      {/* The two worlds; the switch cuts between them. */}
+      <div aria-hidden="true" className="absolute inset-0 bg-[linear-gradient(160deg,#ececee,#d8d8dc)]" />
+      <div aria-hidden="true" className={cn("absolute inset-0 studio-lighting-base transition-opacity duration-500", agent ? "opacity-100" : "opacity-0")}>
+        <div className="absolute inset-0 studio-radial-light" />
+      </div>
 
-          <Reveal delay={200} className="mt-10">
-            <div className="flex items-center gap-4 text-[0.9375rem] font-semibold">
-              <span className={cn("transition-colors duration-300", agent ? "text-[var(--bzl-faint)]" : "text-[var(--bzl-fg)]")}>
-                {m.chatbot}
-              </span>
-              <button
-                type="button"
-                role="switch"
-                aria-checked={agent}
-                aria-label={m.toggleAria}
-                onClick={flip}
-                className="bzl-toggle focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[var(--bzl-orange)]/40"
-              />
-              <span className={cn("transition-colors duration-300", agent ? "text-[var(--bzl-orange-dark)]" : "text-[var(--bzl-faint)]")}>
-                {m.agent}
-              </span>
-            </div>
-            <ul className="mt-6 space-y-2.5">
-              {(agent ? m.agentPoints : m.chatbotPoints).map((p) => (
-                <li key={p} className="flex items-center gap-3 text-[var(--bzl-muted)]">
-                  {agent ? (
-                    <Check className="h-4 w-4 text-[var(--bzl-orange-strong)]" strokeWidth={3} />
-                  ) : (
-                    <X className="h-4 w-4 text-[var(--bzl-faint)]" strokeWidth={3} />
-                  )}
-                  {p}
-                </li>
-              ))}
-            </ul>
-          </Reveal>
-        </div>
+      <div className="bzl-wrap relative text-center">
+        <Reveal>
+          <h2 className="bzl-statement transition-colors duration-500" style={{ color: agent ? "#fff" : undefined }}>
+            {messages.hero.pitchLead}
+          </h2>
+        </Reveal>
 
-        <Reveal delay={150}>
-          <div ref={ref} className="relative">
-            <StoreWindow label={messages.landing.yourStore}>
-              <div className="relative grid grid-cols-3 gap-4 p-5 pb-12 sm:gap-5 sm:p-7 sm:pb-16">
-                <ClayCard shape="capsule" tint="sage" />
-                <ClayCard shape="sphere" tint="sand" />
-                <ClayCard shape="cube" tint="stone" />
-              </div>
-            </StoreWindow>
-            {/* The corner widget: a text box, or the agent. */}
-            <div className="absolute -bottom-6 -right-4 w-[40%] max-w-[230px] sm:-right-8">
-              <div
+        {/* The switch, at the film's scale */}
+        <Reveal delay={120}>
+          <div className="mt-10 flex flex-wrap items-center justify-center gap-x-6 gap-y-3 text-[clamp(1.75rem,4.6vw,4rem)] font-bold tracking-[-0.03em]">
+            <button
+              type="button"
+              onClick={() => agent && flip()}
+              className={cn("transition-colors duration-500", agent ? "text-white/45" : "text-[var(--bzl-fg)]")}
+            >
+              {m.chatbot}
+            </button>
+            <button
+              type="button"
+              role="switch"
+              aria-checked={agent}
+              aria-label={m.toggleAria}
+              onClick={flip}
+              className={cn(
+                "relative h-[1.3em] w-[2.6em] flex-shrink-0 rounded-full transition-colors duration-500 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-white/60",
+                agent ? "bg-white/35 shadow-[inset_0_1px_0_rgba(255,255,255,0.5)]" : "bg-[#c8c8cd]"
+              )}
+            >
+              <span
                 className={cn(
-                  "rounded-2xl border border-[#e5e5ea] bg-white p-3 shadow-[0_16px_40px_-14px_rgba(29,29,31,0.35)] transition-all duration-500",
-                  agent ? "pointer-events-none translate-y-3 opacity-0" : "opacity-100"
-                )}
-              >
-                <p className="text-[11px] font-semibold text-[var(--bzl-faint)]">Chat</p>
-                <p className="mt-2 rounded-xl bg-[var(--bzl-card)] px-3 py-2 text-xs text-[var(--bzl-fg)]">{m.chatbotMessage}</p>
-                <p className="mt-1.5 rounded-xl bg-[var(--bzl-card)] px-3 py-2 text-xs text-[var(--bzl-muted)]">{m.chatbotReply}</p>
-                <div className="mt-2 h-7 rounded-lg border border-[#e5e5ea]" />
-              </div>
-              <div
-                className={cn(
-                  "absolute inset-x-0 bottom-0 overflow-hidden rounded-2xl border border-[#e5e5ea] bg-white shadow-[0_16px_40px_-14px_rgba(242,140,56,0.55)] transition-all duration-700",
-                  agent ? "opacity-100" : "pointer-events-none translate-y-3 opacity-0"
+                  "absolute top-[0.1em] h-[1.1em] w-[1.1em] rounded-full shadow-[0_4px_14px_rgba(0,0,0,0.22)] transition-all duration-500",
+                  agent ? "left-[1.4em] bg-[var(--bzl-orange-strong)] ring-[0.12em] ring-white" : "left-[0.1em] bg-white"
                 )}
                 style={{ transitionTimingFunction: "var(--bzl-spring)" }}
-              >
-                <div className="aspect-[4/3] overflow-hidden bg-[linear-gradient(180deg,#fff7ee,#fff)]">
-                  <AgentImage name="greet-amber" alt={m.agent} sizes="230px" className="mx-auto w-[78%] translate-y-[6%]" />
-                </div>
-                <div className="border-t border-[#e5e5ea] px-3 py-2.5">
-                  <VoiceReply transcript={m.agentMessage} seconds={4} compact />
-                </div>
+              />
+            </button>
+            <button
+              type="button"
+              onClick={() => !agent && flip()}
+              className={cn("transition-colors duration-500", agent ? "text-white" : "text-[var(--bzl-faint)]")}
+            >
+              {m.agent}
+            </button>
+          </div>
+        </Reveal>
+
+        <Reveal delay={200}>
+          <ul className="mt-6 flex flex-wrap justify-center gap-x-8 gap-y-2 text-base font-semibold">
+            {(agent ? m.agentPoints : m.chatbotPoints).map((p) => (
+              <li key={p} className={cn("flex items-center gap-2 transition-colors duration-500", agent ? "text-white" : "text-[var(--bzl-muted)]")}>
+                {agent ? <Check className="h-4 w-4" strokeWidth={3} /> : <X className="h-4 w-4" strokeWidth={3} />}
+                {p}
+              </li>
+            ))}
+          </ul>
+        </Reveal>
+
+        {/* The same store, two worlds */}
+        <Reveal delay={260} className="relative mx-auto mt-14 max-w-[980px] text-left">
+          <StoreWindow label={messages.landing.yourStore}>
+            <div className={cn("transition-[filter] duration-500", agent ? "grayscale-0" : "grayscale")}>
+              <div className="grid grid-cols-3 gap-4 p-5 pb-24 sm:gap-6 sm:p-8 sm:pb-28 md:pr-[330px]">
+                {GRID.map((g) => (
+                  <ClayCard key={g.shape} shape={g.shape} tint={g.tint} />
+                ))}
               </div>
             </div>
+            {/* The real widget's captions sit at the foot of the page. */}
+            {agent && (
+              <div className="absolute inset-x-0 bottom-5 hidden justify-center px-4 md:flex md:pr-[330px]">
+                <Captions text={m.agentMessage} className="text-sm sm:text-lg" />
+              </div>
+            )}
+          </StoreWindow>
+
+          {/* The corner: a chatbot, or Bizmis */}
+          <div key={agent ? "agent" : "bot"} className="bzl-corner absolute bottom-6 right-4 hidden md:block lg:right-6">
+            {corner}
           </div>
+          <div className="absolute bottom-3 right-3 origin-bottom-right scale-[0.6] md:hidden">{corner}</div>
+        </Reveal>
+
+        <Reveal delay={120}>
+          <p className="bzl-lead mx-auto mt-12 max-w-2xl transition-colors duration-500" style={{ color: agent ? "rgba(255,255,255,0.9)" : undefined }}>
+            {messages.hero.pitchLong}
+          </p>
         </Reveal>
       </div>
     </section>

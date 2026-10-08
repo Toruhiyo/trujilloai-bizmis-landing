@@ -87,6 +87,14 @@ export const ca: Messages = {
     },
     yourStore: "La teva botiga",
     agentAlt: "L'avatar de l'agent de vendes de Bizmis",
+    /** UI text of the real widget, as it appears in the mockups. */
+    widget: {
+      placeholder: "Ajuda'm a trobar el producte ideal.",
+      takingYouTo: "Et porto a",
+      addingToCart: "Afegint al carretó",
+      searchResults: "Resultats de la cerca",
+      bundle: "Esfera + Llosa",
+    },
   },
 
   benefits: {

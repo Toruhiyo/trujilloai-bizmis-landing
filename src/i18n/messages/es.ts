@@ -87,6 +87,14 @@ export const es: Messages = {
     },
     yourStore: "Tu tienda",
     agentAlt: "El avatar del agente de ventas de Bizmis",
+    /** UI text of the real widget, as it appears in the mockups. */
+    widget: {
+      placeholder: "Ayúdame a encontrar el producto ideal.",
+      takingYouTo: "Te llevo a",
+      addingToCart: "Añadiendo al carrito",
+      searchResults: "Resultados de búsqueda",
+      bundle: "Esfera + Losa",
+    },
   },
 
   benefits: {
