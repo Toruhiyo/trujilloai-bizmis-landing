@@ -19,7 +19,7 @@ items = [
     hero('books', ambient=f'{V8}/ambient-paper-and-pine-books.mp4', device='tablet', color='#2A5C42', category='Bookstores', feat="Knows what they're viewing", ben='Recommendations that sell'),
     hero('electronics', ambient=f'{V8}/ambient-meridian.mp4', device='desktop', color='#D1001A', category='Consumer electronics', feat='Compares the options', ben='Undecided shoppers decide'),
     hero('fashion', ambient=f'{V8}/ambient-12-weather-outfitters.mp4', device='phone', color='#F2C94C', category='Fashion & apparel', feat='Narrows the catalog', ben='Browsers become buyers',
-         keys=[[0.05, 1.55]], saidKind='typed',
+         keys=[[0.03, 1.5]], saidKind='typed',
          said=[[round(0.08 + i * (1.42 / len(fashion_words)), 2), w] for i, w in enumerate(fashion_words)]),
     hero('gaming', ambient=f'{V8}/ambient-pulse-forge.mp4', device='phone', color='#A855F7', category='Gaming gear', feat='Suggests the perfect add-on', ben='Bigger baskets'),
 

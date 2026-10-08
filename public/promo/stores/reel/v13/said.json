@@ -1,32 +1,5 @@
 {
- "electronics": [
-  [
-   [
-    0.05,
-    "Which"
-   ],
-   [
-    0.37,
-    "one"
-   ],
-   [
-    0.53,
-    "has"
-   ],
-   [
-    0.73,
-    "the"
-   ],
-   [
-    0.89,
-    "best"
-   ],
-   [
-    1.09,
-    "battery?"
-   ]
-  ]
- ],
+ "electronics": [],
  "books": [],
  "gaming": [],
  "fashion": []

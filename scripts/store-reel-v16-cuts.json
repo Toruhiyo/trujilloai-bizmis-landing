@@ -1,0 +1,65 @@
+{
+ "_note": "v16 hero cuts: one punchy beat each, shorter every store (books 3.2, electronics 2.7, fashion 2.15, gaming 1.9); v4 voices; hard cuts + punch-in.",
+ "books": {
+  "src": "tmp/reel-v13/revoiced/books.mp4",
+  "segments": [
+   [
+    2.0,
+    5.2,
+    1.0,
+    null
+   ]
+  ],
+  "voice": [
+   [
+    "tmp/reel-v13/books-voice-v16.mp3",
+    0.0
+   ]
+  ]
+ },
+ "electronics": {
+  "src": "tmp/reel-v13/electronics-final.mp4",
+  "segments": [
+   [
+    53.9,
+    56.6,
+    1.0,
+    "same"
+   ]
+  ]
+ },
+ "fashion": {
+  "src": "tmp/reel-v10/revoiced/fashion.mp4",
+  "segments": [
+   [
+    10.8,
+    13.9,
+    2.0,
+    null
+   ],
+   [
+    23.3,
+    23.9,
+    1.0,
+    null
+   ]
+  ]
+ },
+ "gaming": {
+  "src": "tmp/reel-v13/revoiced/gaming.mp4",
+  "segments": [
+   [
+    34.8,
+    36.7,
+    1.0,
+    null
+   ]
+  ],
+  "voice": [
+   [
+    "tmp/reel-v13/gaming-voice-v16.mp3",
+    0.02
+   ]
+  ]
+ }
+}

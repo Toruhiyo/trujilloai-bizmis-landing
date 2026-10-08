@@ -22,7 +22,7 @@
   {
     "id": "t-lost",
     "role": "narrator",
-    "text": "[warm] When a shopper's lost in your catalog... [confident] Bizmis finds them the right one."
+    "text": "[warm] When a shopper's lost in your catalog... [confident] your Bizmis sales agent finds them the right one."
   },
   {
     "id": "t-doubt",
@@ -57,7 +57,7 @@
   {
     "id": "t-stores",
     "role": "narrator",
-    "text": "[warm] In any store, with any catalog... on any device. [short pause] Type to it... [playful] or just talk to it."
+    "text": "[confident] Any store. [excited] Any device. [excited] Any language."
   },
   {
     "id": "t-ea",
