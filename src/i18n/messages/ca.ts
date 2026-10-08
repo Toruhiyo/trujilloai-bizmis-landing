@@ -54,6 +54,19 @@ export const ca: Messages = {
     avatarAlt: "Assistent de vendes digital atenent clients",
   },
 
+  film: {
+    watch: "Mira el vídeo",
+    replay: "Torna a veure",
+    play: "Reprodueix",
+    pause: "Pausa",
+    mute: "Silencia",
+    unmute: "Activa el so",
+    enterFullscreen: "Pantalla completa",
+    exitFullscreen: "Surt de la pantalla completa",
+    seek: "Cerca",
+    region: "Vídeo de Bizmis",
+  },
+
   benefits: {
     sales: {
       badge: "Més vendes",

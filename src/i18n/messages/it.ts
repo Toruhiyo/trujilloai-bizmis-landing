@@ -54,6 +54,19 @@ export const it: Messages = {
     avatarAlt: "Assistente alle vendite digitale che aiuta i clienti",
   },
 
+  film: {
+    watch: "Guarda il film",
+    replay: "Riguarda",
+    play: "Riproduci",
+    pause: "Pausa",
+    mute: "Disattiva audio",
+    unmute: "Attiva audio",
+    enterFullscreen: "Schermo intero",
+    exitFullscreen: "Esci da schermo intero",
+    seek: "Cerca",
+    region: "Film di Bizmis",
+  },
+
   benefits: {
     sales: {
       badge: "Più vendite",

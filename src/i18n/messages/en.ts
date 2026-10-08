@@ -55,6 +55,19 @@ export const en = {
     avatarAlt: "Digital sales assistant helping customers",
   },
 
+  film: {
+    watch: "Watch the film",
+    replay: "Replay",
+    play: "Play",
+    pause: "Pause",
+    mute: "Mute",
+    unmute: "Unmute",
+    enterFullscreen: "Full screen",
+    exitFullscreen: "Exit full screen",
+    seek: "Seek",
+    region: "Bizmis film",
+  },
+
   benefits: {
     sales: {
       badge: "Boost Sales",

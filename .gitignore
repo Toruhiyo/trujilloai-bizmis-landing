@@ -57,3 +57,5 @@ __pycache__/
 *.pywzz
 *.pyzzz
 *.pywzzz
+# Sample cut of the hero film (local preview only; the final film is streamed).
+public/film/ad-1-sample-*.mp4

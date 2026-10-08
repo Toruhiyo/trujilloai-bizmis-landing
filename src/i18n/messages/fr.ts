@@ -54,6 +54,19 @@ export const fr: Messages = {
     avatarAlt: "Assistant de vente numérique aidant des clients",
   },
 
+  film: {
+    watch: "Regarder le film",
+    replay: "Revoir",
+    play: "Lecture",
+    pause: "Pause",
+    mute: "Couper le son",
+    unmute: "Activer le son",
+    enterFullscreen: "Plein écran",
+    exitFullscreen: "Quitter le plein écran",
+    seek: "Rechercher",
+    region: "Film Bizmis",
+  },
+
   benefits: {
     sales: {
       badge: "Plus de ventes",

@@ -265,6 +265,31 @@ All colors MUST be HSL.
     background: var(--studio-horizon-meniscus-right);
   }
 
+  /* Film-led hero: the same studio, with the horizon lowered so the film
+     screen stands on the floor instead of being cut by the horizon line. */
+  .film-stage-horizon {
+    background: linear-gradient(to bottom,
+        transparent 0%,
+        transparent 68%,
+        hsl(25 95% 58% / 0.2) 72%,
+        hsl(25 95% 52% / 0.36) 78%,
+        hsl(25 95% 46% / 0.3) 86%,
+        hsl(25 95% 52% / 0.16) 94%,
+        transparent 100%);
+  }
+
+  .film-stage-meniscus {
+    background:
+      radial-gradient(ellipse 40% 12% at 12% 78%,
+        hsl(25 95% 52% / 0.35) 0%,
+        hsl(25 95% 46% / 0.3) 50%,
+        transparent 100%),
+      radial-gradient(ellipse 40% 12% at 88% 78%,
+        hsl(25 95% 52% / 0.35) 0%,
+        hsl(25 95% 46% / 0.3) 50%,
+        transparent 100%);
+  }
+
   .studio-ambient-overlay {
     background: linear-gradient(135deg,
         hsl(30 90% 72% / 0.1) 0%,

@@ -1,7 +1,5 @@
 import { useEffect } from "react";
-import Hero from "@/components/Hero";
 import HeroV1 from "@/components/v1/HeroV1";
-import { HERO_FILM_ENABLED } from "@/lib/film";
 import Benefits from "@/components/Benefits";
 import Setup from "@/components/Setup";
 import Customization from "@/components/Customization";
@@ -14,7 +12,14 @@ import {
 } from "@/lib/utils/scroll";
 import { useMessages } from "@/i18n/LocaleProvider";
 
-const Index = () => {
+/**
+ * The landing as it was before the film-led hero (archived at /v1).
+ * Only the hero is frozen here; the sections below are shared with the
+ * live landing — copy one into components/v1/ before redesigning it if
+ * /v1 should keep the old version. Lazy-loaded and noindex, so it costs
+ * the live landing nothing and never competes with it in search.
+ */
+const IndexV1 = () => {
   const messages = useMessages();
 
   useEffect(() => {
@@ -42,26 +47,10 @@ const Index = () => {
       <Seo
         title={messages.seo.home.title}
         description={messages.seo.home.description}
-        path="/"
-        jsonLd={{
-          "@context": "https://schema.org",
-          "@type": "SoftwareApplication",
-          name: "Bizmis",
-          description: messages.seo.home.jsonLdDescription,
-          url: "https://www.bizmis.ai",
-          applicationCategory: "BusinessApplication",
-          operatingSystem: "Web",
-          offers: { "@type": "Offer", availability: "https://schema.org/PreOrder" },
-          publisher: {
-            "@type": "Organization",
-            name: "Bizmis",
-            url: "https://www.bizmis.ai",
-            logo: "https://bizmis.ai/favicon.svg",
-            sameAs: ["https://twitter.com/bizmis_ai"],
-          },
-        }}
+        path="/v1"
+        noIndex
       />
-      {HERO_FILM_ENABLED ? <Hero /> : <HeroV1 />}
+      <HeroV1 />
       <Benefits />
       <Setup />
       <Customization />
@@ -71,4 +60,4 @@ const Index = () => {
   );
 };
 
-export default Index;
+export default IndexV1;

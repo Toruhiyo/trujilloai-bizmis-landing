@@ -1,3 +1,4 @@
+import { lazy, Suspense } from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -26,6 +27,9 @@ import { LocaleProvider } from "./i18n/LocaleProvider";
 import { DEFAULT_LOCALE } from "./i18n/locales";
 import AdFilm, { isAdFilmRequest } from "./promo/AdFilm";
 
+// Archived landing: its own chunk, so the live landing never downloads it.
+const IndexV1 = lazy(() => import("./pages/IndexV1"));
+
 const queryClient = new QueryClient();
 
 /**
@@ -37,6 +41,15 @@ const queryClient = new QueryClient();
  */
 const publicLocalizedRoutes = () => [
   <Route key="index" index element={<Index />} />,
+  <Route
+    key="v1"
+    path="v1"
+    element={
+      <Suspense fallback={<div className="min-h-screen studio-lighting-base" />}>
+        <IndexV1 />
+      </Suspense>
+    }
+  />,
   <Route key="faqs" path="faqs" element={<FAQs />} />,
   <Route key="contact" path="contact" element={<Contact />} />,
   <Route key="early-access" path="early-access" element={<EarlyAccess />} />,

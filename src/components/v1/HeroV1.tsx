@@ -11,10 +11,10 @@ import {
   openBizmisDemoStore,
   openBizmisShopifyAppListing,
 } from "@/lib/bizmisUrls";
-import Navbar from "./Navbar";
+import Navbar from "@/components/Navbar";
 import { useLocaleHref, useMessages } from "@/i18n/LocaleProvider";
 
-const Hero = () => {
+const HeroV1 = () => {
   const posthog = usePostHog();
   const messages = useMessages();
   const href = useLocaleHref();
@@ -397,4 +397,4 @@ const Hero = () => {
   );
 };
 
-export default Hero;
+export default HeroV1;
