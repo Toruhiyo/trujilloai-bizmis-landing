@@ -177,7 +177,7 @@ const Hero = () => {
               variant="outline"
               size="lg"
               asChild
-              className="h-12 w-full max-w-md border-white/30 bg-white/10 px-6 text-base text-white hover:bg-white/20 hover:text-white sm:w-auto sm:h-16 sm:text-lg [&_svg]:pointer-events-auto"
+              className="h-12 w-full max-w-md border-white/40 bg-white/15 shadow-[inset_0_1px_0_rgba(255,255,255,0.45)] backdrop-blur-xl px-6 text-base text-white hover:bg-white/20 hover:text-white sm:w-auto sm:h-16 sm:text-lg [&_svg]:pointer-events-auto"
             >
               <a
                 href={BIZMIS_DEMO_STORE_URL}

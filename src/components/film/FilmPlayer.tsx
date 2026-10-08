@@ -78,6 +78,13 @@ export interface FilmPlayerProps {
 }
 
 const CONTROLS_IDLE_MS = 2500;
+
+/**
+ * Frosted warm glass for every control. The light tint keeps white icons
+ * legible over the film's white frames as well as over the orange stage.
+ */
+const GLASS =
+  "border border-white/40 bg-[hsl(24_70%_30%/0.28)] backdrop-blur-xl backdrop-saturate-150 shadow-[inset_0_1px_0_rgba(255,255,255,0.45),inset_0_-1px_0_rgba(255,255,255,0.08),0_12px_40px_-12px_hsl(25_95%_25%/0.45)]";
 const SEEK_STEP_S = 5;
 const QUARTILES = [25, 50, 75];
 
@@ -358,7 +365,7 @@ const FilmPlayer = ({
   const progress = duration ? (time / duration) * 100 : 0;
   const bufferedPct = duration ? (buffered / duration) * 100 : 0;
   const dockButton =
-    "flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-xl text-primary transition-colors hover:bg-primary/10 sm:h-11 sm:w-11";
+    "flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-xl text-white drop-shadow-[0_1px_3px_rgba(0,0,0,0.25)] transition-colors hover:bg-white/15 sm:h-11 sm:w-11";
 
   return (
     <div
@@ -376,16 +383,16 @@ const FilmPlayer = ({
         className
       )}
     >
-      {/* The screen. */}
+      {/* The screen, set in a frosted glass bezel. */}
       <div
         className={cn(
-          "relative aspect-video w-full overflow-hidden bg-white",
-          "rounded-2xl border-2 border-white/40 sm:rounded-[28px]",
-          "shadow-[0_30px_90px_-25px_hsl(25_95%_38%/0.55),0_10px_30px_-12px_hsl(25_95%_30%/0.35)]",
+          "rounded-[22px] border border-white/50 bg-white/15 p-1.5 backdrop-blur-xl sm:rounded-[38px] sm:p-2.5",
+          "shadow-[inset_0_1px_0_rgba(255,255,255,0.6),0_30px_90px_-25px_hsl(25_95%_38%/0.55),0_10px_30px_-12px_hsl(25_95%_30%/0.3)]",
           "group-focus-visible/film:ring-4 group-focus-visible/film:ring-white/70",
           fullscreen && "w-[min(100%,calc((100vh-10rem)*16/9))]"
         )}
       >
+      <div className="relative aspect-video w-full overflow-hidden rounded-2xl bg-white sm:rounded-[28px]">
         {/* The film. Only its metadata loads until the visitor presses play. */}
         <video
           ref={filmRef}
@@ -414,19 +421,24 @@ const FilmPlayer = ({
           <source src={loop.mp4} type="video/mp4" />
         </video>
 
-        {/* Idle: "Watch the film", styled like the hero's Install button. */}
+        {/* Idle: a glass play button, nothing else. */}
         {!open && (
           <button
             type="button"
             onClick={play}
             aria-label={labels.watch}
-            className="group/play absolute inset-0 flex items-center justify-center bg-gradient-to-t from-primary/25 via-transparent to-transparent focus-visible:outline-none"
+            className="group/play absolute inset-0 flex items-center justify-center focus-visible:outline-none"
           >
-            <span className="flex items-center gap-2.5 rounded-xl border-2 border-white/20 bg-white py-1.5 pl-1.5 pr-4 font-heading text-sm font-semibold text-primary shadow-brand transition-all duration-300 group-hover/play:scale-105 group-hover/play:shadow-lg group-focus-visible/play:ring-4 group-focus-visible/play:ring-white/70 sm:gap-3.5 sm:rounded-2xl sm:py-2 sm:pl-2 sm:pr-6 sm:text-xl">
-              <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-white sm:h-12 sm:w-12 sm:rounded-xl">
-                <Play className="ml-0.5 h-4 w-4 fill-current sm:h-6 sm:w-6" aria-hidden="true" />
-              </span>
-              {labels.watch}
+            <span
+              className={cn(
+                GLASS,
+                "flex h-16 w-16 items-center justify-center rounded-full text-white transition-all duration-300 group-hover/play:scale-110 group-hover/play:bg-[hsl(24_70%_30%/0.38)] group-focus-visible/play:ring-4 group-focus-visible/play:ring-white/60 sm:h-24 sm:w-24"
+              )}
+            >
+              <Play
+                className="ml-1 h-7 w-7 fill-current drop-shadow-[0_2px_6px_rgba(0,0,0,0.25)] sm:ml-1.5 sm:h-10 sm:w-10"
+                aria-hidden="true"
+              />
             </span>
           </button>
         )}
@@ -437,14 +449,14 @@ const FilmPlayer = ({
             type="button"
             onClick={play}
             aria-label={labels.play}
-            className="absolute left-1/2 top-1/2 flex h-14 w-14 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-2xl border-2 border-white/20 bg-white text-primary shadow-brand transition-transform hover:scale-105 sm:h-20 sm:w-20"
+            className={cn(GLASS, "absolute left-1/2 top-1/2 flex h-14 w-14 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full text-white transition-transform hover:scale-110 sm:h-20 sm:w-20")}
           >
-            <Play className="ml-1 h-6 w-6 fill-current sm:h-8 sm:w-8" aria-hidden="true" />
+            <Play className="ml-1 h-6 w-6 fill-current drop-shadow-[0_2px_6px_rgba(0,0,0,0.25)] sm:h-8 sm:w-8" aria-hidden="true" />
           </button>
         )}
         {phase === "playing" && waiting && (
           <Loader2
-            className="pointer-events-none absolute left-1/2 top-1/2 h-10 w-10 -translate-x-1/2 -translate-y-1/2 animate-spin text-primary/60"
+            className="pointer-events-none absolute left-1/2 top-1/2 h-10 w-10 -translate-x-1/2 -translate-y-1/2 animate-spin text-white drop-shadow-[0_2px_6px_rgba(0,0,0,0.3)]"
             aria-hidden="true"
           />
         )}
@@ -467,12 +479,14 @@ const FilmPlayer = ({
           />
         )}
       </div>
+      </div>
 
       {/* The dock: floats across the screen's bottom edge (inside it in fullscreen). */}
       {open && (
         <div
           className={cn(
-            "absolute left-1/2 z-10 flex w-[calc(100%-1.5rem)] max-w-3xl -translate-x-1/2 items-center gap-1 rounded-2xl border-2 border-white/20 bg-white/95 p-1 shadow-brand backdrop-blur-md transition-all duration-300 sm:gap-1.5 sm:p-1.5",
+            "absolute left-1/2 z-10 flex w-[calc(100%-1.5rem)] max-w-3xl -translate-x-1/2 items-center gap-1 rounded-2xl p-1 transition-all duration-300 sm:gap-1.5 sm:p-1.5",
+            GLASS,
             fullscreen ? "bottom-6 sm:bottom-10" : "bottom-0 translate-y-1/2",
             showControls ? "opacity-100" : "pointer-events-none opacity-0 sm:translate-y-[60%]"
           )}
@@ -515,13 +529,13 @@ const FilmPlayer = ({
               value={muted ? 0 : volume}
               onChange={(e) => setFilmVolume(Number(e.target.value))}
               aria-label={labels.mute}
-              className="hidden w-0 cursor-pointer accent-primary opacity-0 transition-all duration-300 group-hover/volume:mr-2 group-hover/volume:w-16 group-hover/volume:opacity-100 md:block"
+              className="hidden w-0 cursor-pointer accent-white opacity-0 transition-all duration-300 group-hover/volume:mr-2 group-hover/volume:w-16 group-hover/volume:opacity-100 md:block"
             />
           </div>
 
           {/* Timeline */}
           <div className="flex min-w-0 flex-1 items-center gap-2.5 px-1 sm:px-2">
-            <span className="hidden text-xs font-medium tabular-nums text-neutral-600 sm:block sm:text-sm">
+            <span className="hidden text-xs font-medium tabular-nums text-white drop-shadow-[0_1px_3px_rgba(0,0,0,0.25)] sm:block sm:text-sm">
               {formatTime(time)}
             </span>
             <div
@@ -539,24 +553,24 @@ const FilmPlayer = ({
               onPointerLeave={() => setHover(null)}
               className="group/timeline relative h-6 min-w-0 flex-1 cursor-pointer touch-none"
             >
-              <div className="absolute inset-x-0 top-1/2 h-1.5 -translate-y-1/2 overflow-hidden rounded-full bg-primary/15 transition-[height] group-hover/timeline:h-2">
-                <div className="absolute inset-y-0 left-0 bg-primary/20" style={{ width: `${bufferedPct}%` }} />
-                <div className="absolute inset-y-0 left-0 rounded-full bg-primary" style={{ width: `${progress}%` }} />
+              <div className="absolute inset-x-0 top-1/2 h-1.5 -translate-y-1/2 overflow-hidden rounded-full bg-white/25 transition-[height] group-hover/timeline:h-2">
+                <div className="absolute inset-y-0 left-0 bg-white/25" style={{ width: `${bufferedPct}%` }} />
+                <div className="absolute inset-y-0 left-0 rounded-full bg-white" style={{ width: `${progress}%` }} />
               </div>
               <div
-                className="absolute top-1/2 h-3.5 w-3.5 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-white bg-primary shadow-brand opacity-0 transition-opacity group-hover/timeline:opacity-100"
+                className="absolute top-1/2 h-3.5 w-3.5 -translate-x-1/2 -translate-y-1/2 rounded-full bg-white shadow-[0_2px_8px_rgba(0,0,0,0.3)] opacity-0 transition-opacity group-hover/timeline:opacity-100"
                 style={{ left: `${progress}%` }}
               />
               {hover && (
                 <div
-                  className="pointer-events-none absolute -top-9 -translate-x-1/2 rounded-lg bg-white px-2 py-0.5 text-xs font-semibold tabular-nums text-primary shadow-brand"
+                  className={cn(GLASS, "pointer-events-none absolute -top-10 -translate-x-1/2 rounded-lg px-2 py-0.5 text-xs font-semibold tabular-nums text-white")}
                   style={{ left: `${hover.x * 100}%` }}
                 >
                   {formatTime(hover.t)}
                 </div>
               )}
             </div>
-            <span className="hidden text-xs font-medium tabular-nums text-neutral-400 sm:block sm:text-sm">
+            <span className="hidden text-xs font-medium tabular-nums text-white/70 drop-shadow-[0_1px_3px_rgba(0,0,0,0.25)] sm:block sm:text-sm">
               {formatTime(duration)}
             </span>
           </div>
@@ -579,7 +593,7 @@ const FilmPlayer = ({
             target="_blank"
             rel="noopener noreferrer"
             onClick={(e) => cta.onClick(e, "film_controls")}
-            className="flex h-9 flex-shrink-0 items-center gap-1.5 rounded-xl bg-primary px-3 font-heading text-sm font-semibold text-primary-foreground shadow-soft transition-shadow hover:shadow-brand sm:h-11 sm:gap-2 sm:px-5 sm:text-base"
+            className="flex h-9 flex-shrink-0 items-center gap-1.5 rounded-xl border border-white/60 bg-white/85 px-3 font-heading text-sm font-semibold text-primary shadow-[inset_0_1px_0_rgba(255,255,255,0.8)] backdrop-blur-md transition-colors hover:bg-white sm:h-11 sm:gap-2 sm:px-5 sm:text-base"
           >
             <FaShopify className="h-4 w-4 sm:h-5 sm:w-5" aria-hidden="true" />
             {cta.label}
