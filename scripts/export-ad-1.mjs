@@ -10,6 +10,7 @@ const FPS = 30;
 let exportFps = FPS;
 const FRAME_CAP = 6000;
 const CAPTURE_CHUNK = 3600;
+const STREAM_CHUNK = Number(process.env.STREAM_CHUNK || 400);   // --stream: frames on disk at once
 const LAYOUT_WIDTH = 1920;
 const LAYOUT_HEIGHT = 1080;
 const QUAD_WIDTH = 1920;
@@ -40,6 +41,7 @@ function usage() {
     '  --verify                       export the range twice and compare frames',
     '  --resume                       keep frames already in --out and continue',
     '  --widget local                 load public/promo/widget-local (a local widget build)',
+    '  --stream                       h264 only: feed each finished chunk to the encoder and drop its PNGs (a 4K run on a nearly full disk)',
   ].join('\n');
 }
 
@@ -665,6 +667,36 @@ function encodeVideo(framesDir, dest, codec, startNumber, audioCues) {
   });
 }
 
+// --stream: one h264 encoder fed PNG frames in order through a pipe; each frame
+// is dropped from disk once the encoder has it (the run never holds the film)
+function openStream(dest) {
+  const child = spawn(process.env.FFMPEG || 'ffmpeg', ['-y', '-f', 'image2pipe', '-framerate', String(exportFps), '-c:v', 'png', '-i', '-',
+    '-c:v', 'libx264', '-crf', '12', '-preset', 'slow', '-tune', 'film', '-pix_fmt', 'yuv420p', '-color_range', 'tv', '-g', '30', '-an', dest],
+  { stdio: ['pipe', 'ignore', 'pipe'] });
+  let err = '';
+  child.stderr.on('data', (chunk) => { err += chunk.toString(); if (err.length > 20000) err = err.slice(-8000); });
+  const done = new Promise((resolve, reject) => {
+    child.on('error', reject);
+    child.on('exit', (code) => (code === 0 ? resolve() : reject(new Error(err.split('\n').slice(-12).join('\n')))));
+  });
+  let next = null;
+  const write = (buf) => new Promise((resolve) => { if (child.stdin.write(buf)) resolve(); else child.stdin.once('drain', resolve); });
+  return {
+    async feed(framesDir, from, to) {
+      if (next === null) next = from;
+      for (let frame = Math.max(next, from); frame <= to; frame += 1) {
+        const file = path.join(framesDir, `frame-${String(frame).padStart(6, '0')}.png`);
+        if (!fs.existsSync(file)) throw new Error(`--stream: frame ${frame} is missing`);
+        await write(fs.readFileSync(file));
+        fs.rmSync(file, { force: true });
+        next = frame + 1;
+      }
+      process.stdout.write(`streamed frames ${from} to ${to}\n`);
+    },
+    async close() { child.stdin.end(); await done; },
+  };
+}
+
 function hashFile(file) {
   return crypto.createHash('sha256').update(fs.readFileSync(file)).digest('hex');
 }
@@ -740,8 +772,9 @@ async function captureFilm(chromium, options, framesDir) {
   };
   try {
     while (cursor <= FRAME_CAP) {
+      const chunk = options.stream ? STREAM_CHUNK : CAPTURE_CHUNK;
       const chunkEnd = options.scale > 1
-        ? Math.min(hardEnd ?? FRAME_CAP, cursor + CAPTURE_CHUNK - 1)
+        ? Math.min(hardEnd ?? FRAME_CAP, cursor + chunk - 1)
         : (hardEnd ?? FRAME_CAP);
       if (options.scale > 1) process.stdout.write(`capture ${cursor} to ${chunkEnd}\n`);
       const exported = await exportRange(browser, { ...options, from: cursor, to: chunkEnd }, framesDir);
@@ -764,6 +797,7 @@ async function captureFilm(chromium, options, framesDir) {
         merged.audioCues = exported.audioCues || [];
         merged.sfx = exported.sfx || [];
         merged.endedEarly = exported.endedEarly;
+        if (options.stream) await options.stream.feed(framesDir, cursor, exported.last);
       }
       const reachedEnd = exported.endedEarly
         || exported.last < cursor
@@ -833,12 +867,17 @@ async function main() {
       if (!resume) fs.rmSync(folder, { recursive: true, force: true });
       fs.mkdirSync(framesDir, { recursive: true });
       if (resume && !range) options.from = firstGap(framesDir);
-      const exported = await captureFilm(chromium, options, framesDir);
-      const sequenceFrom = resume && fs.existsSync(path.join(framesDir, 'frame-000000.png')) ? 0 : options.from;
-      const visible = exported.markers.filter((marker) => marker.frame >= sequenceFrom && marker.frame <= exported.last);
       const ext = codec === 'prores' ? 'mov' : 'mkv';
       const video = path.join(folder, `ad-1-${part}-${cta}-${options.width}x${options.height}.${ext}`);
-      if (exported.last >= sequenceFrom) {
+      if (hasFlag('stream')) {
+        if (codec !== 'h264') throw new Error('--stream needs --codec h264');
+        options.stream = openStream(video);
+      }
+      const exported = await captureFilm(chromium, options, framesDir);
+      const sequenceFrom = options.stream ? options.from : (resume && fs.existsSync(path.join(framesDir, 'frame-000000.png')) ? 0 : options.from);
+      const visible = exported.markers.filter((marker) => marker.frame >= sequenceFrom && marker.frame <= exported.last);
+      if (options.stream) await options.stream.close();
+      else if (exported.last >= sequenceFrom) {
         await encodeVideo(framesDir, video, codec, sequenceFrom, exported.audioCues);
       }
       const count = exported.last >= sequenceFrom ? exported.last - sequenceFrom + 1 : 0;
