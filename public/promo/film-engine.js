@@ -82,7 +82,7 @@
   const PROMO_REEL_WHIP_SPEEDUP = 0.78;
   const PROMO_REEL_WHIP_MIN_MS = 170;
   const PROMO_REEL_LAND_MS = 1100;   // the rush slows onto "Your store"
-  const PROMO_REEL_ORANGE_CUT_MS = 1900;   // v21: 0.6 s shorter so the reel can wait for its bar
+  const PROMO_REEL_ORANGE_CUT_MS = 2300;   // v21: 1 s shorter so the reel always waits for its bar (never late)
   const PROMO_REEL_OUT_MS = 600;
   const PROMO_REEL_SLIDE_MS = [820, 680, 540];   // v11: store to store on the conveyor, quicker each time
   const PROMO_REEL_HANDOFF_MS = 320;
@@ -7826,10 +7826,11 @@
         this.root.classList.add('is-ea-hero');
         promoSfx('ea-hero');
         await (copy.pills ? take.at('secure yours', 'end') : take.done);   // v18: the close starts on the last word (not the take's tail), so its hit lands on the score's last hit
-        if (marketingPart() === 'full') await untilFilm(PROMO_FILM_ANCHORS.final - PROMO_EA_CLOSE_MS / 1000);   // v21: its hit on the final hit
+        const finalAt = marketingPart() === 'full' && window.__promoFilmT0 != null ? window.__promoFilmT0 + PROMO_FILM_ANCHORS.final * 1000 : null;
+        if (finalAt != null) await untilFilm(PROMO_FILM_ANCHORS.final - PROMO_EA_CLOSE_MS / 1000);   // v21: its hit on the final hit
         // v13: a closing move that lands on the music's final chord ('ea-final'
         // marks the hit; the score is fitted to it), then a lasting final frame
-        await this.playEaClosing(slot);
+        await this.playEaClosing(slot, finalAt);
         await waitMs(PROMO_EA_FINAL_HOLD_MS + promoHoldMs());
       } else {
         await waitMs(PROMO_END_CARD_HOLD_MS + promoHoldMs());
@@ -7840,7 +7841,7 @@
     // The end card closes: the benefits (already read) bow out, the card
     // draws in a touch, and on the hit a warm Bizmis-orange light blooms
     // behind "Install now" and stays. Stepped (export-safe).
-    async playEaClosing(slot) {
+    async playEaClosing(slot, finalAt = null) {
       if (!slot || prefersReducedMotion()) return;
       // v13 (C1): the card re-arranges itself into one lockup, gracefully: the
       // benefits and the invite bow out, then the brand, "Install now" and the
@@ -7887,7 +7888,7 @@
       bowOut(invite, 120, -0.25);
       // 2. the lockup glides into place, each piece a beat after the one above
       await waitMs(220);
-      const glide = PROMO_EA_CLOSE_MS - 220;
+      const glide = finalAt != null ? Math.max(300, finalAt - performance.now()) : PROMO_EA_CLOSE_MS - 220;   // v21: ends exactly on the score's final hit
       await tweenStep(glide, (e, u) => {
         from.forEach((f, i) => {
           const lag = i * 0.08; const v = Math.min(1, Math.max(0, (u - lag) / (1 - 0.16)));
@@ -8294,8 +8295,10 @@
       // the camera and brakes onto the first store on a hit; from there every
       // store is a hard cut on the beat: a flash, the device punches in, its
       // title slams; the quick ones come faster and faster; "Your store" last.
-      if (marketingPart() === 'full') await untilFilm(PROMO_FILM_ANCHORS.reel);   // v21: the reel starts on the stores section's first bar
-      const t0 = performance.now();
+      const anchored = marketingPart() === 'full' && window.__promoFilmT0 != null;
+      if (anchored) await untilFilm(PROMO_FILM_ANCHORS.reel);   // v21: the reel starts on the stores section's first bar
+      // the cuts count from the anchor itself, not from the frame the wait resumed on (the export clock steps per frame)
+      const t0 = anchored ? window.__promoFilmT0 + PROMO_FILM_ANCHORS.reel * 1000 : performance.now();
       const cutAt = (i) => t0 + PROMO_REEL_CUTS_S[i] * 1000;   // v21: every cut on one of the song's claps
       const onBeat = (minMs = 0) => {   // wait for the first beat at least minMs away
         const now = performance.now();
@@ -8470,7 +8473,7 @@
         .then(() => { strip.style.translate = ''; });
       promoSfx('reel-land');
       setOpeningAvatarAction('beckon');   // v18: "come on in" (new clip; waving is used earlier)
-      await waitMs(PROMO_YOURSTORE_HOLD_MS + 100);   // v21: a touch shorter (the EA close then waits for the score's final hit)
+      await waitMs(PROMO_YOURSTORE_HOLD_MS - 300);   // v21: shorter, so the EA close always waits for the score's final hit (never late)
       promoSfx('dive');
       reel.classList.add('is-entering');
       const fill = Math.max(W / (home.full.w * 0.9), H / (home.full.h * 0.62)) * 1.5;
