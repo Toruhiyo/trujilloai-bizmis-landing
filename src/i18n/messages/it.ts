@@ -72,7 +72,7 @@ export const it: Messages = {
   /** The film-led landing (/v2): copy it adds to the classic landing's messages. */
   landing: {
     switch: {
-      chatbot: "Chatbot tipico",
+      chatbot: "Chatbot",
       agent: "Agente di vendita",
       toggleAria: "Confronta un chatbot tipico con l'agente di vendita Bizmis",
       chatbotMessage: "Ciao! Come posso aiutarti oggi?",
