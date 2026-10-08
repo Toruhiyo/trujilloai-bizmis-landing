@@ -81,7 +81,7 @@ const Hero = () => {
   return (
     <section
       id="hero"
-      className="relative studio-lighting-base flex flex-col overflow-hidden"
+      className="relative studio-lighting-base flex h-[100svh] min-h-[540px] flex-col overflow-hidden"
     >
       {/* 3D Studio Lighting System */}
       <div className="absolute inset-0 studio-radial-light" />
@@ -112,9 +112,11 @@ const Hero = () => {
 
       <Navbar />
 
-      <div className="relative z-10 container mx-auto px-4 sm:px-6 pt-24 sm:pt-32 lg:pt-[clamp(6rem,13vh,8rem)] pb-16 sm:pb-24">
+      {/* One screen tall at any size: headline and CTAs keep their height, the
+          film takes the rest (sized as 16:9 within it via container units). */}
+      <div className="relative z-10 container mx-auto flex min-h-0 w-full flex-1 flex-col justify-center px-4 sm:px-6 pt-[clamp(4.25rem,9vh,6rem)] pb-[clamp(0.75rem,2.5vh,2rem)]">
         {/* Headline */}
-        <div className="mx-auto max-w-6xl text-center">
+        <div className="mx-auto max-w-6xl flex-none text-center">
           <a
             href={href("/early-access")}
             onClick={handleEarlyAccessClick}
@@ -142,11 +144,11 @@ const Hero = () => {
             />
           </a>
 
-          <h1 className="mt-5 text-4xl xs:text-5xl sm:text-6xl lg:text-[clamp(3.25rem,4.6vw,4.5rem)] font-heading font-bold text-white leading-[1.05]">
+          <h1 className="mt-[clamp(0.75rem,2vh,1.25rem)] text-[clamp(2rem,min(9vw,5.4vh),3.75rem)] lg:text-[clamp(2.5rem,min(4.6vw,7vh),4.5rem)] font-heading font-bold text-white leading-[1.05]">
             {messages.hero.titleLine1}{" "}
             <span className="block lg:inline">{messages.hero.titleLine2}</span>
           </h1>
-          <p className="mt-3 text-lg xs:text-xl sm:text-2xl xl:text-3xl font-heading font-medium text-white/75">
+          <p className="mt-[clamp(0.25rem,1vh,0.75rem)] text-[clamp(1rem,min(4.6vw,2.7vh),1.5rem)] xl:text-[clamp(1.25rem,3vh,1.875rem)] font-heading font-medium text-white/75">
             {messages.hero.subtitleLead}{" "}
             <span className="font-semibold text-white">{messages.hero.subtitleFind}</span>,{" "}
             <span className="font-semibold text-white">{messages.hero.subtitleTrust}</span>
@@ -156,7 +158,10 @@ const Hero = () => {
         </div>
 
         {/* The film, standing on the studio floor like the v1 avatar did */}
-        <div className="relative mx-auto mt-10 max-w-[1200px] sm:mt-12">
+        <div className="mt-[clamp(0.75rem,2.5vh,2rem)] flex min-h-0 flex-1 items-center justify-center [container-type:size] max-h-[min(calc((100vw-2rem-1.25rem)*9/16+1.25rem),695px)] sm:max-h-[min(calc((100vw-3rem-1.25rem)*9/16+1.25rem),695px)]">
+          {/* max-h: never taller than the film itself, so on tall narrow screens
+              the spare height goes to the margins instead of around the film. */}
+        <div className="relative w-[min(100cqw,calc((100cqh-1.25rem)*16/9+1.25rem),1200px)]">
           <div
             aria-hidden="true"
             className="absolute -bottom-8 left-1/2 h-16 w-[108%] -translate-x-1/2 bg-[radial-gradient(closest-side,hsl(25_95%_38%/0.45),hsl(25_95%_45%/0.18)_55%,transparent)] sm:-bottom-12 sm:h-24"
@@ -175,15 +180,16 @@ const Hero = () => {
             onEvent={handleFilmEvent}
           />
         </div>
+        </div>
 
         {/* CTA section, under the film */}
-        <div className="mx-auto mt-12 max-w-4xl text-center sm:mt-16">
-          <div className="flex flex-col items-center gap-3 sm:flex-row sm:justify-center sm:gap-4">
+        <div className="mx-auto mt-[clamp(0.75rem,2.5vh,2rem)] w-full max-w-4xl flex-none text-center">
+          <div className="flex items-stretch justify-center gap-2.5 sm:gap-4">
             <Button
               variant="hero"
               size="xl"
               asChild
-              className="group flex w-full max-w-md items-center gap-3 h-14 px-6 text-lg sm:w-auto sm:h-16 sm:px-7 [&_svg]:pointer-events-auto"
+              className="group flex flex-1 items-center gap-2 h-12 px-4 text-base sm:flex-none sm:gap-3 sm:h-[clamp(3rem,6.5vh,4rem)] sm:px-7 sm:text-lg [&_svg]:pointer-events-auto"
             >
               <a
                 href={BIZMIS_SHOPIFY_APP_LISTING_URL}
@@ -191,7 +197,7 @@ const Hero = () => {
                 rel="noopener noreferrer"
                 onClick={(e) => handleShopifyInstallClick(e)}
               >
-                <FaShopify className="!w-7 !h-7 text-primary" />
+                <FaShopify className="!w-6 !h-6 sm:!w-7 sm:!h-7 text-primary" />
                 <span className="font-semibold">{messages.common.installNow}</span>
                 <ArrowRight className="!w-5 !h-5 group-hover:translate-x-1 transition-transform" />
               </a>
@@ -201,7 +207,7 @@ const Hero = () => {
               variant="outline"
               size="lg"
               asChild
-              className="h-12 w-full max-w-md border-white/40 bg-white/15 shadow-[inset_0_1px_0_rgba(255,255,255,0.45)] backdrop-blur-xl px-6 text-base text-white hover:bg-white/20 hover:text-white sm:w-auto sm:h-16 sm:text-lg [&_svg]:pointer-events-auto"
+              className="h-12 flex-1 sm:flex-none sm:h-[clamp(3rem,6.5vh,4rem)] border-white/40 bg-white/15 shadow-[inset_0_1px_0_rgba(255,255,255,0.45)] backdrop-blur-xl px-4 text-base text-white hover:bg-white/20 hover:text-white sm:px-6 sm:text-lg [&_svg]:pointer-events-auto"
             >
               <a
                 href={BIZMIS_DEMO_STORE_URL}
@@ -215,7 +221,7 @@ const Hero = () => {
             </Button>
           </div>
 
-          <div className="mt-4 flex flex-wrap items-center justify-center gap-x-2 gap-y-1 text-xs text-white/70 sm:text-sm">
+          <div className="mt-[clamp(0.5rem,1.5vh,1rem)] flex flex-wrap items-center justify-center gap-x-2 gap-y-0.5 text-[11px] text-white/70 sm:text-sm">
             <span>
               {messages.hero.ratherTalk}{" "}
               <a

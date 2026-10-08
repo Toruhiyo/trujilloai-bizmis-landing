@@ -1,17 +1,20 @@
 #!/bin/zsh
 # Build the hero's ambient loop (public/film/ad-1-loop.*) from a film export:
-# a montage of the Bizmis agent at work in the demo store (products → pick →
-# details → cart → bundle → sold → sea of sold cards), sped up, crossfaded
-# between beats and back into its own start so it loops seamlessly.
+# the Bizmis agent presented big (logo → avatar → "Your store salesagent."),
+# then its pitch in the demo store (pick → details → cart → bundle → sold →
+# sea of sold cards), crossfaded between beats and back into its own start
+# so it loops seamlessly.
 #
-#   zsh scripts/make-hero-film-loop.sh <film.mkv|mp4> ["start-end start-end ..."]
+#   zsh scripts/make-hero-film-loop.sh <film.mkv|mp4> ["start-end[@speed] ..."]
 #
 # Segment times are film seconds; re-pick them for each new cut of the film.
+# A segment plays at SPEED unless it carries its own @speed (text beats at
+# @1 so they stay readable).
 set -e
 cd "$(dirname "$0")/.."
 IN=$1
-SEGS=(${=${2:-"64.0-66.5 70.0-74.5 79.5-83.0 89.0-92.5 96.0-101.0 103.0-108.5"}})
-SPEED=1.5   # montage playback speed
+SEGS=(${=${2:-"49.4-56.3@1 70.0-74.5 79.5-83.0 89.0-92.5 96.0-101.0 103.0-107.5"}})
+SPEED=1.5   # default playback speed of a segment
 XF=0.35     # crossfade between beats (s, after speed-up)
 LX=0.6      # crossfade from the end back into the start (s)
 OUT=public/film/ad-1-loop
@@ -19,10 +22,12 @@ TMP=$(mktemp -d)
 
 inputs=(); chain=""; prev=""; off=0
 for i in {1..${#SEGS}}; do
-  a=${SEGS[$i]%-*}; b=${SEGS[$i]#*-}
+  seg=${SEGS[$i]}; sp=$SPEED
+  if [[ $seg == *@* ]]; then sp=${seg#*@}; seg=${seg%@*}; fi
+  a=${seg%-*}; b=${seg#*-}
   inputs+=(-ss $a -t $(awk "BEGIN{print $b-$a}") -i $IN)
-  chain+="[$((i-1)):v]scale=1600:900:flags=lanczos,fps=30,format=yuv420p,setpts=(PTS-STARTPTS)/${SPEED}[s$i];"
-  len=$(awk "BEGIN{print ($b-$a)/$SPEED}")
+  chain+="[$((i-1)):v]scale=1600:900:flags=lanczos,fps=30,format=yuv420p,setpts=(PTS-STARTPTS)/${sp}[s$i];"
+  len=$(awk "BEGIN{print ($b-$a)/$sp}")
   if [[ $i == 1 ]]; then prev="s1"; off=$len
   else
     off=$(awk "BEGIN{print $off-$XF}")
