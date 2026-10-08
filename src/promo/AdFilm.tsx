@@ -5,6 +5,10 @@ import { useEffect } from "react";
 const LOCAL_WIDGET = typeof window !== "undefined" && new URLSearchParams(window.location.search).get("widget") === "local";
 const WIDGET_SCRIPT = LOCAL_WIDGET ? "/promo/widget-local/avatar-widget.js" : "https://cdn.bizmis.ai/widget/avatar-widget.js";
 const WIDGET_STYLE = LOCAL_WIDGET ? "/promo/widget-local/avatar-widget-style.css" : "https://cdn.bizmis.ai/widget/avatar-widget-style.css";
+// The local build also plays its own animations GLB (film-only clips like
+// `beckon`); the widget defaults to the CDN copy. Absolute on purpose: the
+// widget resolves relative paths against rootUrl (the CDN).
+const LOCAL_ANIMATIONS_URL = "/promo/widget-local/assets/models/avatar-animations.glb";
 const INTER_STYLE = "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap";
 const FILM_STYLES = [
   INTER_STYLE,
@@ -122,6 +126,7 @@ function mountWidget(options: PromoWidgetMount = {}) {
   api.init({
     containerId: "bizmis-avatar-embed",
     rootUrl: "https://cdn.bizmis.ai/widget",
+    ...(LOCAL_WIDGET ? { avatarAnimationsUrl: new URL(LOCAL_ANIMATIONS_URL, window.location.origin).href } : {}),
     apiUrl: "https://api.trujillo.ai",
     websocketUrl: "wss://api.trujillo.ai",
     language: "en",

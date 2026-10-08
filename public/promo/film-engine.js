@@ -8453,7 +8453,7 @@
       tweenStep(420, (e, u) => { strip.style.translate = `${(Math.sin(u * 50) * (1 - u) * W * 0.008).toFixed(1)}px ${(Math.cos(u * 43) * (1 - u) * H * 0.008).toFixed(1)}px`; }, (u) => u)
         .then(() => { strip.style.translate = ''; });
       promoSfx('reel-land');
-      setOpeningAvatarAction('waving');
+      setOpeningAvatarAction('beckon');   // v18: "come on in" (new clip; waving is used earlier)
       await onBeat(PROMO_YOURSTORE_HOLD_MS + 500);
       promoSfx('dive');
       reel.classList.add('is-entering');
