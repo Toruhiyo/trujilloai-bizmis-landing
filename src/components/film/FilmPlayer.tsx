@@ -18,15 +18,15 @@ import { FaShopify } from "react-icons/fa";
 import { cn } from "@/lib/utils";
 
 /**
- * Hero film player (Clay-style controls, Framer-style states), dressed in the
- * landing's own button language: a white "Watch the film" pill, and a white
- * control dock with orange icons that floats across the bottom edge of the
- * screen, half on the film and half on the hero stage.
+ * Hero film player (Clay-style controls, Framer-style states), in frosted
+ * glass: a glass play button over the loop, a glass bezel around the screen,
+ * and a glass control bar inside the frame with the CTA beside it.
  *
  * - idle:    a short muted ambient loop plays behind the "Watch the film"
  *            pill. Nothing of the film is downloaded beyond its metadata.
- * - playing: the film plays in place with sound; the dock (scrub, volume,
- *            time, fullscreen, CTA) hides while the pointer rests.
+ * - playing: the film plays in place with sound; the control bar (scrub,
+ *            volume, time, fullscreen) hides while the pointer rests, the
+ *            CTA stays.
  * - paused:  the film holds its frame (pause button or a click on the film).
  * - ended:   the film holds its closing frame — the "Install now" CTA — and
  *            that area of the frame becomes a real link.
@@ -378,7 +378,7 @@ const FilmPlayer = ({
       data-phase={phase}
       className={cn(
         "group/film relative w-full outline-none select-none",
-        fullscreen && "flex h-full items-center justify-center studio-lighting-base p-4 pb-28 sm:p-8 sm:pb-32",
+        fullscreen && "h-full bg-black",
         phase === "playing" && !showControls && "cursor-none",
         className
       )}
@@ -389,10 +389,15 @@ const FilmPlayer = ({
           "rounded-[22px] border border-white/50 bg-white/15 p-1.5 backdrop-blur-xl sm:rounded-[38px] sm:p-2.5",
           "shadow-[inset_0_1px_0_rgba(255,255,255,0.6),0_30px_90px_-25px_hsl(25_95%_38%/0.55),0_10px_30px_-12px_hsl(25_95%_30%/0.3)]",
           "group-focus-visible/film:ring-4 group-focus-visible/film:ring-white/70",
-          fullscreen && "w-[min(100%,calc((100vh-10rem)*16/9))]"
+          fullscreen && "h-full rounded-none border-0 bg-black p-0 shadow-none backdrop-blur-none sm:rounded-none sm:p-0"
         )}
       >
-      <div className="relative aspect-video w-full overflow-hidden rounded-2xl bg-white sm:rounded-[28px]">
+      <div
+        className={cn(
+          "relative aspect-video w-full overflow-hidden rounded-2xl bg-white sm:rounded-[28px]",
+          fullscreen && "aspect-auto h-full rounded-none bg-black sm:rounded-none"
+        )}
+      >
         {/* The film. Only its metadata loads until the visitor presses play. */}
         <video
           ref={filmRef}
@@ -478,128 +483,130 @@ const FilmPlayer = ({
             className="absolute rounded-3xl ring-primary/0 transition-all duration-300 hover:bg-primary/[0.06] hover:ring-2 hover:ring-primary/40"
           />
         )}
-      </div>
-      </div>
 
-      {/* The dock: floats across the screen's bottom edge (inside it in fullscreen). */}
-      {open && (
-        <div
-          className={cn(
-            "absolute left-1/2 z-10 flex w-[calc(100%-1.5rem)] max-w-3xl -translate-x-1/2 items-center gap-1 rounded-2xl p-1 transition-all duration-300 sm:gap-1.5 sm:p-1.5",
-            GLASS,
-            fullscreen ? "bottom-6 sm:bottom-10" : "bottom-0 translate-y-1/2",
-            showControls ? "opacity-100" : "pointer-events-none opacity-0 sm:translate-y-[60%]"
-          )}
-        >
-          <button
-            type="button"
-            onClick={togglePlay}
-            aria-label={
-              phase === "playing" ? labels.pause : phase === "ended" ? labels.replay : labels.play
-            }
-            className={dockButton}
-          >
-            {phase === "playing" ? (
-              <Pause className="h-5 w-5 fill-current" aria-hidden="true" />
-            ) : phase === "ended" ? (
-              <RotateCcw className="h-5 w-5" aria-hidden="true" />
-            ) : (
-              <Play className="ml-0.5 h-5 w-5 fill-current" aria-hidden="true" />
-            )}
-          </button>
-
-          <div className="group/volume hidden items-center sm:flex">
-            <button
-              type="button"
-              onClick={toggleMute}
-              aria-label={muted ? labels.unmute : labels.mute}
-              className={dockButton}
-            >
-              {muted || volume === 0 ? (
-                <VolumeX className="h-5 w-5" aria-hidden="true" />
-              ) : (
-                <Volume2 className="h-5 w-5" aria-hidden="true" />
-              )}
-            </button>
-            <input
-              type="range"
-              min={0}
-              max={1}
-              step={0.05}
-              value={muted ? 0 : volume}
-              onChange={(e) => setFilmVolume(Number(e.target.value))}
-              aria-label={labels.mute}
-              className="hidden w-0 cursor-pointer accent-white opacity-0 transition-all duration-300 group-hover/volume:mr-2 group-hover/volume:w-16 group-hover/volume:opacity-100 md:block"
-            />
-          </div>
-
-          {/* Timeline */}
-          <div className="flex min-w-0 flex-1 items-center gap-2.5 px-1 sm:px-2">
-            <span className="hidden text-xs font-medium tabular-nums text-white drop-shadow-[0_1px_3px_rgba(0,0,0,0.25)] sm:block sm:text-sm">
-              {formatTime(time)}
-            </span>
+        {/* Controls, inside the frame. The CTA stays up for the whole film;
+            the rest hides while the pointer rests. */}
+        {open && (
+          <div className="absolute inset-x-2 bottom-2 z-10 flex items-center gap-2 sm:inset-x-4 sm:bottom-4 sm:gap-3">
             <div
-              ref={timelineRef}
-              role="slider"
-              tabIndex={-1}
-              aria-label={labels.seek}
-              aria-valuemin={0}
-              aria-valuemax={Math.round(duration)}
-              aria-valuenow={Math.round(time)}
-              aria-valuetext={`${formatTime(time)} / ${formatTime(duration)}`}
-              onPointerDown={onTimelineDown}
-              onPointerMove={onTimelineMove}
-              onPointerUp={onTimelineUp}
-              onPointerLeave={() => setHover(null)}
-              className="group/timeline relative h-6 min-w-0 flex-1 cursor-pointer touch-none"
-            >
-              <div className="absolute inset-x-0 top-1/2 h-1.5 -translate-y-1/2 overflow-hidden rounded-full bg-white/25 transition-[height] group-hover/timeline:h-2">
-                <div className="absolute inset-y-0 left-0 bg-white/25" style={{ width: `${bufferedPct}%` }} />
-                <div className="absolute inset-y-0 left-0 rounded-full bg-white" style={{ width: `${progress}%` }} />
-              </div>
-              <div
-                className="absolute top-1/2 h-3.5 w-3.5 -translate-x-1/2 -translate-y-1/2 rounded-full bg-white shadow-[0_2px_8px_rgba(0,0,0,0.3)] opacity-0 transition-opacity group-hover/timeline:opacity-100"
-                style={{ left: `${progress}%` }}
-              />
-              {hover && (
-                <div
-                  className={cn(GLASS, "pointer-events-none absolute -top-10 -translate-x-1/2 rounded-lg px-2 py-0.5 text-xs font-semibold tabular-nums text-white")}
-                  style={{ left: `${hover.x * 100}%` }}
-                >
-                  {formatTime(hover.t)}
-                </div>
+              className={cn(
+                GLASS,
+                "flex min-w-0 flex-1 items-center gap-1 rounded-2xl p-1 transition-opacity duration-300 sm:gap-1.5 sm:p-1.5",
+                showControls ? "opacity-100" : "pointer-events-none opacity-0"
               )}
+            >
+              <button
+                type="button"
+                onClick={togglePlay}
+                aria-label={
+                  phase === "playing" ? labels.pause : phase === "ended" ? labels.replay : labels.play
+                }
+                className={dockButton}
+              >
+                {phase === "playing" ? (
+                  <Pause className="h-5 w-5 fill-current" aria-hidden="true" />
+                ) : phase === "ended" ? (
+                  <RotateCcw className="h-5 w-5" aria-hidden="true" />
+                ) : (
+                  <Play className="ml-0.5 h-5 w-5 fill-current" aria-hidden="true" />
+                )}
+              </button>
+
+              <div className="group/volume hidden items-center sm:flex">
+                <button
+                  type="button"
+                  onClick={toggleMute}
+                  aria-label={muted ? labels.unmute : labels.mute}
+                  className={dockButton}
+                >
+                  {muted || volume === 0 ? (
+                    <VolumeX className="h-5 w-5" aria-hidden="true" />
+                  ) : (
+                    <Volume2 className="h-5 w-5" aria-hidden="true" />
+                  )}
+                </button>
+                <input
+                  type="range"
+                  min={0}
+                  max={1}
+                  step={0.05}
+                  value={muted ? 0 : volume}
+                  onChange={(e) => setFilmVolume(Number(e.target.value))}
+                  aria-label={labels.mute}
+                  className="hidden w-0 cursor-pointer accent-white opacity-0 transition-all duration-300 group-hover/volume:mr-2 group-hover/volume:w-16 group-hover/volume:opacity-100 md:block"
+                />
+              </div>
+
+              {/* Timeline */}
+              <div className="flex min-w-0 flex-1 items-center gap-2.5 px-1 sm:px-2">
+                <span className="hidden text-xs font-medium tabular-nums text-white drop-shadow-[0_1px_3px_rgba(0,0,0,0.25)] sm:block sm:text-sm">
+                  {formatTime(time)}
+                </span>
+                <div
+                  ref={timelineRef}
+                  role="slider"
+                  tabIndex={-1}
+                  aria-label={labels.seek}
+                  aria-valuemin={0}
+                  aria-valuemax={Math.round(duration)}
+                  aria-valuenow={Math.round(time)}
+                  aria-valuetext={`${formatTime(time)} / ${formatTime(duration)}`}
+                  onPointerDown={onTimelineDown}
+                  onPointerMove={onTimelineMove}
+                  onPointerUp={onTimelineUp}
+                  onPointerLeave={() => setHover(null)}
+                  className="group/timeline relative h-6 min-w-0 flex-1 cursor-pointer touch-none"
+                >
+                  <div className="absolute inset-x-0 top-1/2 h-1.5 -translate-y-1/2 overflow-hidden rounded-full bg-white/25 transition-[height] group-hover/timeline:h-2">
+                    <div className="absolute inset-y-0 left-0 bg-white/25" style={{ width: `${bufferedPct}%` }} />
+                    <div className="absolute inset-y-0 left-0 rounded-full bg-white" style={{ width: `${progress}%` }} />
+                  </div>
+                  <div
+                    className="absolute top-1/2 h-3.5 w-3.5 -translate-x-1/2 -translate-y-1/2 rounded-full bg-white shadow-[0_2px_8px_rgba(0,0,0,0.3)] opacity-0 transition-opacity group-hover/timeline:opacity-100"
+                    style={{ left: `${progress}%` }}
+                  />
+                  {hover && (
+                    <div
+                      className={cn(GLASS, "pointer-events-none absolute -top-10 -translate-x-1/2 rounded-lg px-2 py-0.5 text-xs font-semibold tabular-nums text-white")}
+                      style={{ left: `${hover.x * 100}%` }}
+                    >
+                      {formatTime(hover.t)}
+                    </div>
+                  )}
+                </div>
+                <span className="hidden text-xs font-medium tabular-nums text-white/70 drop-shadow-[0_1px_3px_rgba(0,0,0,0.25)] sm:block sm:text-sm">
+                  {formatTime(duration)}
+                </span>
+              </div>
+
+              <button
+                type="button"
+                onClick={toggleFullscreen}
+                aria-label={fullscreen ? labels.exitFullscreen : labels.enterFullscreen}
+                className={dockButton}
+              >
+                {fullscreen ? (
+                  <Minimize2 className="h-5 w-5" aria-hidden="true" />
+                ) : (
+                  <Maximize2 className="h-5 w-5" aria-hidden="true" />
+                )}
+              </button>
             </div>
-            <span className="hidden text-xs font-medium tabular-nums text-white/70 drop-shadow-[0_1px_3px_rgba(0,0,0,0.25)] sm:block sm:text-sm">
-              {formatTime(duration)}
-            </span>
+
+              <a
+                href={cta.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={(e) => cta.onClick(e, "film_controls")}
+                className="flex h-9 flex-shrink-0 items-center gap-1 rounded-xl border border-white/60 bg-white/85 px-2.5 font-heading text-xs font-semibold text-primary shadow-[inset_0_1px_0_rgba(255,255,255,0.8),0_12px_40px_-12px_hsl(25_95%_25%/0.45)] backdrop-blur-xl transition-colors hover:bg-white sm:h-14 sm:gap-2 sm:rounded-2xl sm:px-6 sm:text-base"
+              >
+                <FaShopify className="h-3.5 w-3.5 sm:h-5 sm:w-5" aria-hidden="true" />
+                {cta.label}
+              </a>
           </div>
-
-          <button
-            type="button"
-            onClick={toggleFullscreen}
-            aria-label={fullscreen ? labels.exitFullscreen : labels.enterFullscreen}
-            className={dockButton}
-          >
-            {fullscreen ? (
-              <Minimize2 className="h-5 w-5" aria-hidden="true" />
-            ) : (
-              <Maximize2 className="h-5 w-5" aria-hidden="true" />
-            )}
-          </button>
-
-          <a
-            href={cta.href}
-            target="_blank"
-            rel="noopener noreferrer"
-            onClick={(e) => cta.onClick(e, "film_controls")}
-            className="flex h-9 flex-shrink-0 items-center gap-1.5 rounded-xl border border-white/60 bg-white/85 px-3 font-heading text-sm font-semibold text-primary shadow-[inset_0_1px_0_rgba(255,255,255,0.8)] backdrop-blur-md transition-colors hover:bg-white sm:h-11 sm:gap-2 sm:px-5 sm:text-base"
-          >
-            <FaShopify className="h-4 w-4 sm:h-5 sm:w-5" aria-hidden="true" />
-            {cta.label}
-          </a>
-        </div>
-      )}
+        )}
+      </div>
+      </div>
     </div>
   );
 };

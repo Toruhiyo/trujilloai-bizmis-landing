@@ -19,8 +19,8 @@ import type { FilmEvent } from "./film/FilmPlayer";
 import { useLocaleHref, useMessages } from "@/i18n/LocaleProvider";
 
 /**
- * Film-led hero: a compact headline + CTAs over the studio lighting, then
- * the ad-1 film as the dominant element. The previous side-by-side hero
+ * Film-led hero: a compact headline over the studio lighting, the ad-1 film
+ * as the dominant element, and the CTAs under it. The previous side-by-side hero
  * lives on at /v1 (components/v1/HeroV1.tsx).
  */
 const Hero = () => {
@@ -113,7 +113,7 @@ const Hero = () => {
       <Navbar />
 
       <div className="relative z-10 container mx-auto px-4 sm:px-6 pt-24 sm:pt-32 lg:pt-[clamp(6rem,13vh,8rem)] pb-16 sm:pb-24">
-        {/* Headline + CTAs */}
+        {/* Headline */}
         <div className="mx-auto max-w-6xl text-center">
           <a
             href={href("/early-access")}
@@ -153,8 +153,32 @@ const Hero = () => {
             {messages.hero.subtitleConnector}{" "}
             <span className="font-semibold text-white">{messages.hero.subtitleBuy}</span>
           </p>
+        </div>
 
-          <div className="mt-7 flex flex-col items-center gap-3 sm:flex-row sm:justify-center sm:gap-4">
+        {/* The film, standing on the studio floor like the v1 avatar did */}
+        <div className="relative mx-auto mt-10 max-w-[1200px] sm:mt-12">
+          <div
+            aria-hidden="true"
+            className="absolute -bottom-8 left-1/2 h-16 w-[108%] -translate-x-1/2 bg-[radial-gradient(closest-side,hsl(25_95%_38%/0.45),hsl(25_95%_45%/0.18)_55%,transparent)] sm:-bottom-12 sm:h-24"
+          />
+          <FilmPlayer
+            src={HERO_FILM.src}
+            loop={HERO_FILM.loop}
+            durationSeconds={HERO_FILM.durationSeconds}
+            endFrameCta={HERO_FILM.endFrameCta}
+            labels={messages.film}
+            cta={{
+              label: messages.common.installNow,
+              href: BIZMIS_SHOPIFY_APP_LISTING_URL,
+              onClick: (e, location) => handleShopifyInstallClick(e, location),
+            }}
+            onEvent={handleFilmEvent}
+          />
+        </div>
+
+        {/* CTA section, under the film */}
+        <div className="mx-auto mt-12 max-w-4xl text-center sm:mt-16">
+          <div className="flex flex-col items-center gap-3 sm:flex-row sm:justify-center sm:gap-4">
             <Button
               variant="hero"
               size="xl"
@@ -217,27 +241,6 @@ const Hero = () => {
               </button>
             </span>
           </div>
-        </div>
-
-        {/* The film, standing on the studio floor like the v1 avatar did */}
-        <div className="relative mx-auto mt-10 max-w-[1200px] sm:mt-12">
-          <div
-            aria-hidden="true"
-            className="absolute -bottom-8 left-1/2 h-16 w-[108%] -translate-x-1/2 bg-[radial-gradient(closest-side,hsl(25_95%_38%/0.45),hsl(25_95%_45%/0.18)_55%,transparent)] sm:-bottom-12 sm:h-24"
-          />
-          <FilmPlayer
-            src={HERO_FILM.src}
-            loop={HERO_FILM.loop}
-            durationSeconds={HERO_FILM.durationSeconds}
-            endFrameCta={HERO_FILM.endFrameCta}
-            labels={messages.film}
-            cta={{
-              label: messages.common.installNow,
-              href: BIZMIS_SHOPIFY_APP_LISTING_URL,
-              onClick: (e, location) => handleShopifyInstallClick(e, location),
-            }}
-            onEvent={handleFilmEvent}
-          />
         </div>
       </div>
     </section>
