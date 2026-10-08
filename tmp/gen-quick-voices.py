@@ -2,15 +2,15 @@
 written like the film's other voice lines (public/promo/voice/<id>.wav + .json)."""
 import json, base64, subprocess, urllib.request
 KEY = next(l.split('=', 1)[1].strip().strip('"\'') for l in open('../trujilloai-bizmis-project/.env') if l.startswith('ELEVENLABS_API_KEY='))
-LINES = {   # id: (voice, text)   one word each: the quick stores fly past (biggest markets, Chinese last)
-    'quick-es': ('pFZP5JQG7iQjIQuC4Bku', '[excited] ¡Perfecto!'),     # Lily, Home & DIY (US / LatAm)
-    'quick-ja': ('XrExE9yKIg1WjnnlVkGX', '[excited] ぴったり！'),      # Matilda, Skincare (Japan)
-    'quick-pt': ('cjVigY5qzO86Huf0OWal', '[excited] Perfeito!'),      # Eric, car parts (Brazil)
-    'quick-zh': ('CwhRBWXzGAHq8TQ4Fs17', '[excited] 完美！'),           # Roger, wine (China)
+LINES = {   # id: (voice, text)   v18: a different short line each (shorter every store), biggest markets, Chinese last
+    'quick-es': ('pFZP5JQG7iQjIQuC4Bku', '[excited] ¡Gran elección!'),   # Lily, Home & DIY (US / LatAm): "Great choice!"
+    'quick-ja': ('XrExE9yKIg1WjnnlVkGX', '[excited] おすすめです！'),     # Matilda, Skincare (Japan): "I recommend it!"
+    'quick-pt': ('cjVigY5qzO86Huf0OWal', 'Serve!'),                     # Eric, car parts (Brazil): "It fits!"
+    'quick-zh': ('CwhRBWXzGAHq8TQ4Fs17', '[excited] 干杯！'),             # Roger, wine (China): "Cheers!"
 }
 for id_, (voice, text) in LINES.items():
     req = urllib.request.Request(f'https://api.elevenlabs.io/v1/text-to-speech/{voice}/with-timestamps?output_format=mp3_44100_192', method='POST',
-                                 data=json.dumps({'text': text, 'model_id': 'eleven_v4', 'voice_settings': {'stability': 0.35, 'similarity_boost': 0.8, 'speed': 1.12}}).encode(),
+                                 data=json.dumps({'text': text, 'model_id': 'eleven_v4', 'voice_settings': {'stability': 0.35, 'similarity_boost': 0.8, 'speed': 1.15}}).encode(),
                                  headers={'xi-api-key': KEY, 'Content-Type': 'application/json'})
     r = json.load(urllib.request.urlopen(req, timeout=180))
     mp3 = f'tmp/{id_}.mp3'; open(mp3, 'wb').write(base64.b64decode(r['audio_base64']))

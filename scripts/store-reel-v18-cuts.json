@@ -1,0 +1,65 @@
+{
+ "_note": "v18 hero cuts, in the film's story order (fashion = lost in the catalog, electronics = compare, books, gaming = cross-sell), each shorter than the last: fashion 3.19 (6 beats), electronics 2.95 (5.5), books 2.8 (5.25, the v16 take: v4 ignores speed), gaming 1.9 (4); v4 voices; hard cuts + punch-in.",
+ "books": {
+  "src": "tmp/reel-v13/revoiced/books.mp4",
+  "segments": [
+   [
+    2.0,
+    5.2,
+    1.0,
+    null
+   ]
+  ],
+  "voice": [
+   [
+    "tmp/reel-v13/books-voice-v16.mp3",
+    0.0
+   ]
+  ]
+ },
+ "electronics": {
+  "src": "tmp/reel-v13/electronics-final.mp4",
+  "segments": [
+   [
+    53.9,
+    56.85,
+    1.0,
+    "same"
+   ]
+  ]
+ },
+ "fashion": {
+  "src": "tmp/reel-v10/revoiced/fashion.mp4",
+  "segments": [
+   [
+    10.8,
+    13.9,
+    1.6,
+    null
+   ],
+   [
+    23.3,
+    24.55,
+    1.0,
+    null
+   ]
+  ]
+ },
+ "gaming": {
+  "src": "tmp/reel-v13/revoiced/gaming.mp4",
+  "segments": [
+   [
+    34.8,
+    36.7,
+    1.0,
+    null
+   ]
+  ],
+  "voice": [
+   [
+    "tmp/reel-v13/gaming-voice-v16.mp3",
+    0.02
+   ]
+  ]
+ }
+}

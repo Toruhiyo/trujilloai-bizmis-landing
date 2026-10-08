@@ -2194,12 +2194,29 @@
   const PROMO_REEL_BURST_MS = 2300;
   const PROMO_REEL_BEAT_MS = 60000 / 112;   // the pitch score's tempo: every cut lands on its grid
   const PROMO_REEL_TUNNEL_BEATS = 7;   // v16: the narrator's "Any store. Any device. Any language." fills the tunnel, before any store speaks
-  const PROMO_REEL_WHIP_BEATS = [3, 3, 3, 3];   // v14: each quick store: its line, then the next (the run accelerates after them)
   const PROMO_REEL_QUICK_VOICES = ['quick-es', 'quick-ja', 'quick-pt', 'quick-zh'];   // biggest markets, not origins; Chinese last
   // v14: after the quick stores, new stores strobe past faster and faster (beats), barely visible, into "Your store"
-  const PROMO_REEL_STROBE_BEATS = [1.5, 1.25, 1, 0.75, 0.75, 0.5, 0.5, 0.5, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25];   // 9.25 beats, 18 stores
   // v14b: one continuous acceleration: every store is shorter than the one before (beats on the score's grid)
-  const PROMO_REEL_PACE = { heroes: [6, 5, 4, 3.5], quick: [3, 2.5, 2, 1.75] };   // v16: steeper, from the start
+  const PROMO_REEL_PACE = { heroes: [6, 5.5, 5.25, 4] };   // v18: the film's story order (fashion, electronics, books, gaming), each shorter than the last
+  // v18: one accelerating run after the heroes: the quick stores speak (a different line each), real stores flash
+  // between them, and only at the very end a few skeletons blur into "Your store". [kind, index, beats]
+  const PROMO_REEL_RUN = [
+    ['quick', 0, 2.5], ['flash', 0, 2.25], ['quick', 1, 2], ['flash', 1, 1.75], ['quick', 2, 1.5], ['flash', 2, 1.25], ['quick', 3, 1.25],
+    ['flash', 3, 0.75], ['skeleton', 0, 0.75],
+    ['flash', 4, 0.5], ['skeleton', 1, 0.5], ['flash', 5, 0.5], ['skeleton', 2, 0.5],
+    ['flash', 6, 0.25], ['skeleton', 3, 0.25], ['flash', 7, 0.25], ['skeleton', 4, 0.25], ['flash', 8, 0.25],
+  ];   // 17.25 beats: the reel runs one beat longer than v16
+  const PROMO_REEL_FLASH = [   // stills of the demo stores' own recordings (other pages, other devices)
+    { img: '/promo/stores/reel/v18/flash-meridian-watch-ship-tablet.jpg', device: 'tablet', color: '#D1001A' },
+    { img: '/promo/stores/reel/v18/flash-12-weather-outfitters-return-desktop.jpg', device: 'desktop', color: '#F2C94C' },
+    { img: '/promo/stores/reel/v18/flash-pulse-forge-ps5-headset-phone.jpg', device: 'phone', color: '#A855F7' },
+    { img: '/promo/stores/reel/v18/flash-rolling-district-bolt-pattern-desktop.jpg', device: 'desktop', color: '#E02020' },
+    { img: '/promo/stores/reel/v18/flash-paper-and-pine-books-return-book-tablet.jpg', device: 'tablet', color: '#2A5C42' },
+    { img: '/promo/stores/reel/v18/flash-buildright-home-mirror-phone.jpg', device: 'phone', color: '#A7C957' },
+    { img: '/promo/stores/reel/v18/flash-home-apricot.jpg', device: 'desktop', color: '#F7944D' },
+    { img: '/promo/stores/reel/v18/flash-12-weather-outfitters-raincoat-phone.jpg', device: 'phone', color: '#F2C94C' },
+    { img: '/promo/stores/reel/v18/flash-home-viniteca.jpg', device: 'desktop', color: '#701C33' },
+  ];
   const PROMO_REEL_STROBE = [{ device: 'desktop', color: '#5B8DEF', v: 0 }, { device: 'tablet', color: '#EF6F8E', v: 1 }, { device: 'phone', color: '#3DBE8B', v: 2 }, { device: 'desktop', color: '#F2A541', v: 0 }, { device: 'tablet', color: '#9B7BEA', v: 1 }, { device: 'phone', color: '#2BB3C9', v: 2 }, { device: 'desktop', color: '#E8644A', v: 0 }, { device: 'tablet', color: '#C9A227', v: 1 }, { device: 'phone', color: '#6C7A89', v: 2 }, { device: 'desktop', color: '#F07ACB', v: 0 }, { device: 'tablet', color: '#4FA3E0', v: 1 }, { device: 'phone', color: '#8BC34A', v: 2 }, { device: 'desktop', color: '#FF8A65', v: 0 }, { device: 'tablet', color: '#7E57C2', v: 1 }, { device: 'phone', color: '#26A69A', v: 2 }, { device: 'desktop', color: '#EC407A', v: 0 }, { device: 'tablet', color: '#FFCA28', v: 1 }, { device: 'phone', color: '#5C6BC0', v: 2 }, { device: 'desktop', color: '#66BB6A', v: 0 }, { device: 'tablet', color: '#AB47BC', v: 1 }, { device: 'phone', color: '#29B6F6', v: 2 }, { device: 'desktop', color: '#FFA726', v: 0 }];
   function promoBackOut(u) { const c1 = 1.5; const c3 = c1 + 1; return 1 + c3 * (u - 1) ** 3 + c1 * (u - 1) ** 2; }
   const PROMO_REEL_WHIP_HOLD_MS = 900;   // a quick store holds this long (shorter each time)
@@ -7793,7 +7810,7 @@
         slot.classList.add('is-hero');
         this.root.classList.add('is-ea-hero');
         promoSfx('ea-hero');
-        await take.done;
+        await (copy.pills ? take.at('secure yours', 'end') : take.done);   // v18: the close starts on the last word (not the take's tail), so its hit lands on the score's last hit
         // v13: a closing move that lands on the music's final chord ('ea-final'
         // marks the hit; the score is fitted to it), then a lasting final frame
         await this.playEaClosing(slot);
@@ -8103,8 +8120,11 @@
       const asAmbient = (item) => ({ ...item, hero: false, video: item.ambient || item.video });
       const order = [];
       heroItems.forEach((hero) => order.push(hero));
-      extras.forEach((item) => order.push({ ...asAmbient(item), whip: true }));
-      PROMO_REEL_STROBE.forEach((sk) => order.push({ skeleton: true, strobe: true, ...sk }));
+      PROMO_REEL_RUN.forEach(([kind, i, beats]) => {
+        if (kind === 'quick' && extras[i]) order.push({ ...asAmbient(extras[i]), whip: true, quick: i, beats });
+        else if (kind === 'flash' && PROMO_REEL_FLASH[i]) order.push({ ...PROMO_REEL_FLASH[i], flash: true, strobe: true, beats });
+        else if (kind === 'skeleton' && PROMO_REEL_STROBE[i]) order.push({ ...PROMO_REEL_STROBE[i], skeleton: true, strobe: true, beats });
+      });
       order.push(yours);
       // where a device sits in its page, at 1920x1080 (scaled)
       const SIZES = { desktop: 1180, phone: 410, tablet: 660 };
@@ -8128,6 +8148,7 @@
         px += pageW;
         const inner = cell.yours
           ? `<div class="promo-reel__blank"><div class="promo-reel__blank-brand"><span class="promo-reel__blank-mark">${PROMO_STORE_MARK}</span><b>Your store</b></div><div class="promo-reel__yours-widget"></div></div>`
+          : item.flash ? `<img class="promo-reel__flash-shot" src="${item.img}" alt="" decoding="sync">`
           : (cell.skeleton || cell.strobe) ? promoSkeletonStore(item)
           : cell.hero ? '<video class="is-hero" muted playsinline preload="auto"></video>' : '<video class="is-ambient" muted playsinline preload="auto"></video>';
         cell.dev = promoDevice(item.device, box, inner);
@@ -8270,12 +8291,13 @@
       streak.className = 'promo-reel__streak';
       reel.appendChild(streak);
       const slam = (cell, index, power = 1) => {
-        promoSfx(cell.strobe ? 'strobe-tick' : 'reel-slam', { index });
+        const soft = cell.strobe && !(cell.src.beats >= 1);   // v18: the run's slower flashes still hit like a store
+        promoSfx(soft ? 'strobe-tick' : 'reel-slam', { index });
         light.hitAt = performance.now();
-        const peak = cell.strobe ? 0.22 : 0.42;
+        const peak = soft ? 0.22 : 0.42;
         tweenStep(170, (e) => { flash.style.opacity = (peak * power * (1 - e)).toFixed(3); }, (u) => u);
-        tweenStep(cell.strobe ? 260 : 480, (e, u) => { cell.t.k = 1 + 0.12 * power * (1 - promoBackOut(u)); }, (u) => u);
-        if (!cell.strobe) {   // a streak of the store's light sweeps through on the hit
+        tweenStep(soft ? 260 : 480, (e, u) => { cell.t.k = 1 + 0.12 * power * (1 - promoBackOut(u)); }, (u) => u);
+        if (!soft) {   // a streak of the store's light sweeps through on the hit
           streak.style.setProperty('--tint', cell.src.color);
           tweenStep(300, (e) => { streak.style.opacity = (Math.sin(e * Math.PI) * 0.9).toFixed(3); streak.style.translate = `${(-60 + e * 220).toFixed(1)}% 0`; }, (u) => u);
         }
@@ -8377,8 +8399,9 @@
         hero.dev.classList.add('is-live');
         roll(hero.heroVideo, item.start || 0);
         const now = performance.now();
-        (window.__promoAudioCues = window.__promoAudioCues || []).push({ src: item.video, atMs: now, fromSec: item.start || 0, endMs: now + item.dur * 1000 });
-        window.__promoNarratorUntil = Math.max(window.__promoNarratorUntil || 0, now + item.dur * 1000);
+        const heroMs = Math.min(item.dur * 1000, (PROMO_REEL_PACE.heroes[index] ?? 6) * PROMO_REEL_BEAT_MS - 40);   // never into the next store
+        (window.__promoAudioCues = window.__promoAudioCues || []).push({ src: item.video, atMs: now, fromSec: item.start || 0, endMs: now + heroMs });
+        window.__promoNarratorUntil = Math.max(window.__promoNarratorUntil || 0, now + heroMs);
         revealReelCopy(hero.copy, 'slam');
         const saidLines = Array.isArray(item.said?.[0]?.[0]) ? item.said : (item.said?.length ? [item.said] : []);
         const spot = reelSaidSpot(hero, W, H, S);
@@ -8392,39 +8415,37 @@
         hero.dev.classList.remove('is-live');
       }
 
-      // 3. the quick ones: cut, cut, cut, faster each time
-      const whips = seq.filter((cell) => cell.whip);
-      for (const [index, cell] of whips.entries()) {
-        if (!index) promoSfx('reel-quick');   // marks the quick run for the score
+      // 3. the run: one accelerating ladder (PROMO_REEL_RUN): the quick stores speak, each in its own
+      // language and its own line; real stores flash between them; a few skeletons blur in at the end
+      const run = seq.filter((cell) => cell.whip || cell.strobe);
+      const runBeats = (from) => run.slice(from).reduce((sum, cell) => sum + cell.src.beats, 0);
+      let strobing = false;
+      for (const [index, cell] of run.entries()) {
+        const beats = cell.src.beats;
+        if (!index) promoSfx('reel-quick');   // marks the run for the score
+        if (!strobing && beats < 1) { strobing = true; promoSfx('reel-strobe', { ms: runBeats(index) * PROMO_REEL_BEAT_MS }); }
         reel.querySelectorAll('.promo-reel__said:not(.is-out)').forEach((pill) => { pill.classList.add('is-out'); pill.style.opacity = '0'; });
-        cutTo(cell, heroes.length + index);
-        // a short line from that store's agent, in its own language, with its words in the store's colour
-        const voice = await clerkVoice(PROMO_REEL_QUICK_VOICES[index]);
+        cutTo(cell, cell.whip ? heroes.length + cell.src.quick : 100 + index);
+        const id = cell.whip ? PROMO_REEL_QUICK_VOICES[cell.src.quick] : null;
+        const voice = id ? await clerkVoice(id) : null;
         if (voice) {
           const now = performance.now();
-          const src = `/promo/voice/${PROMO_REEL_QUICK_VOICES[index]}.wav`;
+          const src = `/promo/voice/${id}.wav`;
           const spoken = voiceWords(voice).filter((w) => !/^\[[^\]]*\]$/.test(w.text));
           const lead = Math.max(0, (spoken[0]?.startMs || 0) / 1000 - 0.03);   // the line starts the moment the store lands
-          const windowMs = (PROMO_REEL_PACE.quick[index] ?? 2) * PROMO_REEL_BEAT_MS - 60;   // never spills into the next store's line
+          const windowMs = beats * PROMO_REEL_BEAT_MS - 60;   // never spills into the next card
           (window.__promoAudioCues = window.__promoAudioCues || []).push({ src, atMs: now + 40, fromSec: lead, endMs: now + 40 + Math.min(voice.durationMs - lead * 1000, windowMs) });
           if (!document.documentElement.classList.contains('is-promo-export')) window.setTimeout(() => { const a = new Audio(src); a.currentTime = lead; a.play().catch(() => { }); }, 40);
           const words = spoken.map((w) => [0.04 + w.startMs / 1000 - lead, w.text]);
           if (words.length) this.playSaidPill(reel, words.map(([t, w]) => [Math.max(0.3, t), w]), { color: cell.src.color, kind: 'voice-agent', hold: 0.15, place: reelSaidSpot(cell, W, H, S) });
         }
-        await untilAt(cell, cutClock + (PROMO_REEL_PACE.quick[index] ?? 3) * PROMO_REEL_BEAT_MS, index < whips.length - 1);
+        await untilAt(cell, cutClock + beats * PROMO_REEL_BEAT_MS, beats >= 1.25 && index < run.length - 1);
       }
-      // 4. new stores strobe past, faster and faster, barely visible...
       reel.querySelectorAll('.promo-reel__said:not(.is-out)').forEach((pill) => { pill.classList.add('is-out'); pill.style.opacity = '0'; });
-      promoSfx('reel-strobe', { ms: PROMO_REEL_STROBE_BEATS.reduce((a, b) => a + b, 0) * PROMO_REEL_BEAT_MS });
-      const strobes = seq.filter((cell) => cell.strobe);
-      for (const [index, cell] of strobes.entries()) {
-        cutTo(cell, 100 + index);
-        await untilAt(cell, cutClock + (PROMO_REEL_STROBE_BEATS[index] ?? 0.25) * PROMO_REEL_BEAT_MS, false);
-      }
       // ...and they slam into "Your store", centred: one violent hit, then the CTA's calm
       promoWidgetDebug('setPlaceholder', 'Ask me anything');
       this.seatReelWidget(home);
-      cutTo(home, heroes.length + whips.length);
+      cutTo(home, heroes.length + PROMO_REEL_QUICK_VOICES.length);
       slam(home, 200, 2.6);
       promoSfx('yourstore-hit');
       tweenStep(420, (e, u) => { strip.style.translate = `${(Math.sin(u * 50) * (1 - u) * W * 0.008).toFixed(1)}px ${(Math.cos(u * 43) * (1 - u) * H * 0.008).toFixed(1)}px`; }, (u) => u)
