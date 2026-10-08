@@ -1,0 +1,555 @@
+/* Film-led landing (2026-10): the ad-1 film's visual language.
+   Everything is scoped under .bzl, the landing's root, so the classic landing
+   (/v1) and every other page keep their own styles untouched. */
+
+.bzl {
+  --bzl-bg: #ffffff;
+  --bzl-fg: #2a2a2a;
+  --bzl-ink-2: #5a5a5a;
+  --bzl-muted: #6e6e73;
+  --bzl-faint: #8e8e8e;
+  --bzl-card: #f5f5f7;
+  --bzl-tile: #f2f2f2;
+  --bzl-border: #e6e6e6;
+  --bzl-border-strong: #d4d4d4;
+  --bzl-orange: #f9a353;
+  --bzl-orange-strong: #f28c38;
+  --bzl-orange-dark: #ec7709;
+  --bzl-orange-wash: #fff4e8;
+  --bzl-radius-card: 24px;
+  --bzl-radius-window: 22px;
+  --bzl-spring: cubic-bezier(0.22, 1.35, 0.36, 1);
+  --bzl-ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --bzl-font: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --bzl-script: "Caveat", cursive;
+
+  background: var(--bzl-bg);
+  color: var(--bzl-fg);
+  font-family: var(--bzl-font);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ---------- Type ---------- */
+
+.bzl-kicker {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--bzl-orange-dark);
+}
+
+.bzl-statement {
+  font-weight: 700;
+  letter-spacing: -0.035em;
+  line-height: 1.04;
+  font-size: clamp(2.25rem, 5.6vw, 4.75rem);
+  color: var(--bzl-fg);
+  text-wrap: balance;
+}
+
+.bzl-statement-sm {
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1.08;
+  font-size: clamp(1.75rem, 3.6vw, 3rem);
+  color: var(--bzl-fg);
+  text-wrap: balance;
+}
+
+.bzl-tail {
+  color: var(--bzl-faint);
+}
+
+.bzl-lead {
+  font-size: clamp(1.0625rem, 1.5vw, 1.3125rem);
+  line-height: 1.5;
+  color: var(--bzl-muted);
+  text-wrap: pretty;
+}
+
+.bzl-script {
+  font-family: var(--bzl-script);
+  font-weight: 600;
+  color: var(--bzl-orange-strong);
+}
+
+/* ---------- Layout ---------- */
+
+.bzl-section {
+  position: relative;
+  padding: clamp(5rem, 12vw, 10rem) 1rem;
+}
+
+@media (min-width: 640px) {
+  .bzl-section {
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+  }
+}
+
+.bzl-wrap {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* ---------- Reveal on scroll ---------- */
+
+.bzl-reveal {
+  opacity: 0;
+  transform: translateY(28px);
+  transition:
+    opacity 0.9s var(--bzl-ease),
+    transform 0.9s var(--bzl-ease);
+  transition-delay: var(--bzl-delay, 0ms);
+}
+
+.bzl-reveal.is-in {
+  opacity: 1;
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bzl-reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}
+
+/* ---------- Store window (the film's "Your store" mockup) ---------- */
+
+.bzl-window {
+  position: relative;
+  border-radius: var(--bzl-radius-window);
+  background: #fff;
+  border: 1px solid var(--bzl-border);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.8) inset,
+    0 30px 70px -28px rgba(28, 24, 20, 0.28),
+    0 10px 24px -14px rgba(28, 24, 20, 0.16);
+  overflow: hidden;
+}
+
+.bzl-window::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.55);
+  background: linear-gradient(140deg, rgba(255, 255, 255, 0.16), rgba(255, 255, 255, 0) 45%);
+}
+
+.bzl-window-bar {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid var(--bzl-border);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--bzl-fg);
+}
+
+.bzl-dots {
+  display: flex;
+  gap: 6px;
+  margin-right: 0.5rem;
+}
+
+.bzl-dots i {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--bzl-border-strong);
+}
+
+/* Glow around a store, tinted per vertical (--bzl-glow). */
+.bzl-glow {
+  box-shadow:
+    0 0 0 1px color-mix(in oklab, var(--bzl-glow, var(--bzl-orange)) 35%, transparent),
+    0 24px 90px -10px color-mix(in oklab, var(--bzl-glow, var(--bzl-orange)) 55%, transparent);
+}
+
+/* ---------- Clay product tiles ---------- */
+
+.bzl-tile {
+  position: relative;
+  border-radius: 14px;
+  background: var(--bzl-tile);
+  aspect-ratio: 1;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  transition:
+    box-shadow 0.5s var(--bzl-ease),
+    transform 0.5s var(--bzl-spring),
+    background 0.5s var(--bzl-ease);
+}
+
+.bzl-tile img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  mix-blend-mode: multiply;
+}
+
+.bzl-tile.is-picked {
+  background: var(--bzl-orange-wash);
+  box-shadow: 0 0 0 2px var(--bzl-orange), 0 16px 40px -14px rgba(242, 140, 56, 0.6);
+  transform: scale(1.04);
+}
+
+.bzl-tile-line {
+  height: 7px;
+  border-radius: 4px;
+  background: #e8e8ed;
+}
+
+/* ---------- Chat bubbles ---------- */
+
+.bzl-bubble {
+  max-width: 30rem;
+  border-radius: 20px;
+  padding: 0.75rem 1rem;
+  font-size: 0.9375rem;
+  line-height: 1.45;
+}
+
+.bzl-bubble-shopper {
+  margin-left: auto;
+  background: var(--bzl-fg);
+  color: #fff;
+  border-bottom-right-radius: 6px;
+}
+
+.bzl-bubble-agent {
+  background: var(--bzl-card);
+  color: var(--bzl-fg);
+  border-bottom-left-radius: 6px;
+}
+
+/* ---------- Buttons ---------- */
+
+.bzl-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  height: 3.25rem;
+  padding: 0 1.5rem;
+  border-radius: 14px;
+  font-weight: 600;
+  font-size: 1.0625rem;
+  letter-spacing: -0.01em;
+  transition:
+    transform 0.4s var(--bzl-spring),
+    box-shadow 0.3s var(--bzl-ease),
+    background 0.3s var(--bzl-ease);
+}
+
+.bzl-btn:hover {
+  transform: translateY(-1px) scale(1.02);
+}
+
+.bzl-btn-primary {
+  background: linear-gradient(180deg, var(--bzl-orange) 0%, var(--bzl-orange-strong) 100%);
+  color: #fff;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.35),
+    0 14px 34px -12px rgba(236, 119, 9, 0.6);
+}
+
+.bzl-btn-ghost {
+  background: var(--bzl-card);
+  color: var(--bzl-fg);
+}
+
+.bzl-btn-ghost:hover {
+  background: #ececf0;
+}
+
+/* ---------- Pain: the tilted sea of lost store cards ---------- */
+
+.bzl-sea {
+  position: relative;
+  height: clamp(320px, 46vw, 560px);
+  perspective: 1400px;
+  overflow: hidden;
+  -webkit-mask-image: radial-gradient(ellipse 70% 75% at 50% 45%, #000 45%, transparent 100%);
+  mask-image: radial-gradient(ellipse 70% 75% at 50% 45%, #000 45%, transparent 100%);
+}
+
+.bzl-sea-plane {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 1500px;
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 22px;
+  transform: translate(-50%, -50%) rotateX(52deg) rotateZ(-24deg);
+  transform-style: preserve-3d;
+  animation: bzl-sea-drift 40s linear infinite alternate;
+}
+
+@keyframes bzl-sea-drift {
+  from {
+    transform: translate(-50%, -50%) rotateX(52deg) rotateZ(-24deg) translateY(-30px);
+  }
+  to {
+    transform: translate(-50%, -50%) rotateX(52deg) rotateZ(-24deg) translateY(30px);
+  }
+}
+
+.bzl-sea-card {
+  position: relative;
+  border-radius: 12px;
+  background: #fff;
+  border: 1px solid var(--bzl-border);
+  padding: 10px;
+  filter: grayscale(1);
+}
+
+.bzl-lost {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  background: rgba(240, 240, 241, 0.72);
+  border-radius: inherit;
+  opacity: 0;
+  transition: opacity 0.5s var(--bzl-ease);
+  transition-delay: var(--bzl-delay, 0ms);
+}
+
+.bzl-lost span {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35em;
+  padding: 0.35em 0.85em;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.76);
+  -webkit-backdrop-filter: blur(0.9em) saturate(1.5);
+  backdrop-filter: blur(0.9em) saturate(1.5);
+  box-shadow: 0 6px 16px -8px rgba(0, 0, 0, 0.25);
+  font-size: 1.15rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: #3a3b3e;
+  transform: scale(1.35);
+  transition: transform 0.6s var(--bzl-spring);
+  transition-delay: var(--bzl-delay, 0ms);
+}
+
+.is-in .bzl-lost {
+  opacity: 1;
+}
+
+.is-in .bzl-lost span {
+  transform: scale(1);
+}
+
+/* ---------- Switch: chatbot ⟷ sales agent toggle ---------- */
+
+.bzl-toggle {
+  position: relative;
+  width: 58px;
+  height: 32px;
+  border-radius: 999px;
+  background: #e5e5ea;
+  transition: background 0.4s var(--bzl-ease);
+}
+
+.bzl-toggle::after {
+  content: "";
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.18);
+  transition: transform 0.5s var(--bzl-spring);
+}
+
+.bzl-toggle[aria-checked="true"] {
+  background: var(--bzl-orange);
+}
+
+.bzl-toggle[aria-checked="true"]::after {
+  transform: translateX(26px);
+}
+
+/* ---------- Reveal: "salesperson." struck, then swapped for "salesagent." ---------- */
+
+.bzl-swap {
+  display: inline-grid;
+}
+
+.bzl-swap > * {
+  grid-area: 1 / 1;
+}
+
+.bzl-strike {
+  position: relative;
+  justify-self: start;
+  transition: opacity 0.28s var(--bzl-ease) 1.15s;
+}
+
+.bzl-strike::after {
+  content: "";
+  position: absolute;
+  left: -2%;
+  right: -2%;
+  top: 56%;
+  height: max(0.11em, 4px);
+  border-radius: 1em;
+  background: var(--bzl-orange);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.52s var(--bzl-ease) 0.6s;
+}
+
+.is-in .bzl-strike {
+  opacity: 0;
+}
+
+.is-in .bzl-strike::after {
+  transform: scaleX(1);
+}
+
+.bzl-replace {
+  justify-self: start;
+  color: var(--bzl-orange-strong);
+  opacity: 0;
+  transform: translateY(0.3em);
+  transition:
+    opacity 0.36s var(--bzl-ease) 1.25s,
+    transform 0.7s var(--bzl-spring) 1.25s;
+}
+
+.is-in .bzl-replace {
+  opacity: 1;
+  transform: none;
+}
+
+/* ---------- Story: sold check ---------- */
+
+.bzl-check {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  background: color-mix(in oklab, var(--bzl-orange) 22%, transparent);
+  opacity: 0;
+  transition: opacity 0.5s var(--bzl-ease) 0.6s;
+}
+
+.bzl-check svg {
+  width: 34%;
+  height: 34%;
+  stroke: #fff;
+  stroke-width: 3;
+  fill: none;
+  filter: drop-shadow(0 6px 14px rgba(236, 119, 9, 0.5));
+  stroke-dasharray: 60;
+  stroke-dashoffset: 60;
+  transition: stroke-dashoffset 0.6s var(--bzl-ease) 0.9s;
+}
+
+.is-in .bzl-check {
+  opacity: 1;
+}
+
+.is-in .bzl-check svg {
+  stroke-dashoffset: 0;
+}
+
+/* ---------- Stores marquee ---------- */
+
+.bzl-marquee {
+  display: flex;
+  gap: 28px;
+  width: max-content;
+  animation: bzl-marquee 60s linear infinite;
+}
+
+.bzl-marquee:hover {
+  animation-play-state: paused;
+}
+
+@keyframes bzl-marquee {
+  to {
+    transform: translateX(calc(-50% - 14px));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bzl-marquee,
+  .bzl-sea-plane {
+    animation: none;
+  }
+}
+
+.bzl-vertical-label {
+  font-weight: 800;
+  font-size: 1.125rem;
+  letter-spacing: -0.01em;
+  text-transform: uppercase;
+  background: linear-gradient(180deg, var(--bzl-glow), color-mix(in oklab, var(--bzl-glow) 62%, #000));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.bzl-vertical-label::after {
+  content: "";
+  display: block;
+  width: 2.25rem;
+  height: 4px;
+  margin-top: 0.4rem;
+  border-radius: 2px;
+  background: var(--bzl-glow);
+}
+
+/* ---------- End card ---------- */
+
+.bzl-stamp {
+  display: inline-block;
+  padding: 0.3rem 0.9rem;
+  border: 1.5px solid var(--bzl-orange);
+  border-radius: 10px;
+  color: var(--bzl-orange-strong);
+  font-size: 0.9375rem;
+  font-weight: 600;
+  background: #fff;
+  box-shadow: 0 8px 20px -10px rgba(242, 140, 56, 0.6);
+  transform: rotate(-5deg);
+}
+
+/* The hero and navbar inside the film landing speak the film's Inter too. */
+.bzl h1,
+.bzl h2,
+.bzl h3,
+.bzl h4,
+.bzl p,
+.bzl li,
+.bzl a,
+.bzl button,
+.bzl span,
+.bzl figcaption,
+.bzl .font-heading,
+.bzl .font-body {
+  font-family: var(--bzl-font);
+}
+
+.bzl .bzl-script {
+  font-family: var(--bzl-script);
+}
+
+.bzl h1.font-heading {
+  letter-spacing: -0.035em;
+}

@@ -68,6 +68,96 @@ export const en = {
     region: "Bizmis film",
   },
 
+  /** The film-led landing (2026-10): copy follows the ad-1 film's story. */
+  landing: {
+    pain: {
+      kicker: "Every day",
+      title: "Unattended visits cost you sales.",
+      titleTail: "Every day. And counting.",
+      lead: "Shoppers walk into your store ready to buy. Some get lost in the catalog, clicking, comparing, scrolling. Others have one doubt no one answers. With no one there to help, they leave.",
+      lost: "Lost",
+    },
+    switch: {
+      lead: "In a physical store, the best salesperson turns these moments into sales.",
+      title: "So we built one for your online store.",
+      chatbot: "Typical chatbot",
+      agent: "Sales agent",
+      toggleAria: "Compare a typical chatbot with the Bizmis sales agent",
+      chatbotMessage: "Hi! How can I help you today?",
+      chatbotReply: "Here are some links that might help.",
+      agentMessage: "Looking for a gift? Tell me who it's for and I'll find the right one.",
+      chatbotPoints: ["Waits to be asked", "Replies in text", "Sends you to the FAQ"],
+      agentPoints: ["Greets every shopper", "Talks, listens and shows", "Guides them to checkout"],
+    },
+    reveal: {
+      kicker: "Meet Bizmis",
+      lineLead: "Your store",
+      struck: "salesperson.",
+      replacement: "salesagent.",
+      lead: "A voice-first sales agent that lives in your store, knows every product, and helps every shopper find it, trust it and buy it.",
+      avatarAlt: "The Bizmis sales agent avatar",
+    },
+    story: {
+      kicker: "Same store",
+      title: "Now with Bizmis.",
+      yourStore: "Your store",
+      beats: [
+        {
+          kicker: "Find it",
+          title: "Lost in the catalog? It finds the right one.",
+          shopper: "I need something durable, and light.",
+          agent: "Here are three great picks. This one's the most durable, the lightest, and easy to care for.",
+        },
+        {
+          kicker: "Trust it",
+          title: "A doubt holds them back? It answers on the spot.",
+          shopper: "Is it okay for someone who's never had one?",
+          agent: "Absolutely! It's the one we recommend for first-timers.",
+        },
+        {
+          kicker: "Buy it",
+          title: "Ready to buy? It fills the cart.",
+          shopper: "Oh, nice! Yes, add it.",
+          agent: "Great pick! This one pairs beautifully with it. Both are in your cart.",
+        },
+      ],
+      soldTitle: "That's how more visits turn into sales.",
+      sold: "Sold",
+    },
+    more: {
+      title: "It sells. It supports. It learns.",
+    },
+    sync: {
+      title: "It all takes one click.",
+      titleTail: "Your whole store, in sync. Automatically. Always.",
+    },
+    stores: {
+      title: "Whatever your store sells,",
+      titleTail: "your Bizmis agent sells it.",
+      verticals: [
+        "Skincare & Beauty",
+        "Consumer Electronics",
+        "Clothing & Apparel",
+        "Books & Stationery",
+        "Gaming Gear",
+        "Home & DIY",
+        "Car Parts & Accessories",
+        "Wine & Spirits",
+      ],
+    },
+    end: {
+      title: "Install now",
+      script: "for Early Access benefits!",
+      stamp: "first 50 stores only!",
+      checks: [
+        "Sets itself up",
+        "Free credits included",
+        "No credit card",
+        "50% off when you upgrade",
+      ],
+    },
+  },
+
   benefits: {
     sales: {
       badge: "Boost Sales",

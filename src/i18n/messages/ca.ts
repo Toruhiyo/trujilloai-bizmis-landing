@@ -67,6 +67,104 @@ export const ca: Messages = {
     region: "Vídeo de Bizmis",
   },
 
+  /** The film-led landing (2026-10): copy follows the ad-1 film's story. */
+  landing: {
+    pain: {
+      kicker: "Cada dia",
+      title: "Les visites desateses et costen vendes.",
+      titleTail: "Cada dia. I suma i segueix.",
+      lead: "Els clients entren a la teva botiga a punt per comprar. Alguns es perden al catàleg: cliquen, comparen, fan scroll. D'altres tenen un dubte que ningú resol. Sense ningú que els ajudi, marxen.",
+      lost: "Perduda",
+    },
+    switch: {
+      lead: "En una botiga física, el millor venedor converteix aquests moments en vendes.",
+      title: "Així que n'hem creat un per a la teva botiga online.",
+      chatbot: "Xatbot típic",
+      agent: "Agent de vendes",
+      toggleAria: "Compara un xatbot típic amb l'agent de vendes de Bizmis",
+      chatbotMessage: "Hola! En què et puc ajudar avui?",
+      chatbotReply: "Aquí tens alguns enllaços que et poden ajudar.",
+      agentMessage: "Busques un regal? Digues-me per a qui és i trobaré el que toca.",
+      chatbotPoints: [
+        "Espera que li preguntin",
+        "Respon per escrit",
+        "T'envia a les FAQ",
+      ],
+      agentPoints: [
+        "Saluda cada client",
+        "Parla, escolta i ensenya",
+        "El guia fins al pagament",
+      ],
+    },
+    reveal: {
+      kicker: "Et presentem Bizmis",
+      lineLead: "El millor",
+      struck: "venedor",
+      replacement: "agent de vendes",
+      lead: "Un agent de vendes per veu que viu a la teva botiga, coneix cada producte i ajuda cada client a trobar-lo, a confiar-hi i a comprar-lo.",
+      avatarAlt: "L'avatar de l'agent de vendes de Bizmis",
+    },
+    story: {
+      kicker: "La mateixa botiga",
+      title: "Ara amb Bizmis.",
+      yourStore: "La teva botiga",
+      beats: [
+        {
+          kicker: "Troba'l",
+          title: "Perdut al catàleg? Troba el que toca.",
+          shopper: "Necessito alguna cosa resistent i lleugera.",
+          agent: "Aquí tens tres bones opcions. Aquesta és la més resistent, la més lleugera i fàcil de cuidar.",
+        },
+        {
+          kicker: "Confia",
+          title: "Un dubte el frena? El resol a l'instant.",
+          shopper: "Va bé per a algú que no n'ha tingut mai cap?",
+          agent: "I tant! És el que recomanem per començar.",
+        },
+        {
+          kicker: "Compra'l",
+          title: "A punt per comprar? Omple el carretó.",
+          shopper: "Genial! Sí, afegeix-lo.",
+          agent: "Bona tria! Aquest hi combina de meravella. Tots dos ja són al teu carretó.",
+        },
+      ],
+      soldTitle: "Així és com més visites es converteixen en vendes.",
+      sold: "Venut",
+    },
+    more: {
+      title: "Ven. Atén. Aprèn.",
+    },
+    sync: {
+      title: "Tot amb un sol clic.",
+      titleTail: "Tota la teva botiga, sincronitzada. Automàticament. Sempre.",
+    },
+    stores: {
+      title: "Vengui el que vengui la teva botiga,",
+      titleTail: "el teu agent de Bizmis ho ven.",
+      verticals: [
+        "Cosmètica i bellesa",
+        "Electrònica",
+        "Roba i moda",
+        "Llibres i papereria",
+        "Gaming",
+        "Llar i bricolatge",
+        "Recanvis de cotxe",
+        "Vins i licors",
+      ],
+    },
+    end: {
+      title: "Instal·la ara",
+      script: "amb avantatges d'Early Access!",
+      stamp: "només les 50 primeres botigues!",
+      checks: [
+        "Es configura sola",
+        "Crèdits gratuïts inclosos",
+        "Sense targeta de crèdit",
+        "50% de descompte en millorar el pla",
+      ],
+    },
+  },
+
   benefits: {
     sales: {
       badge: "Més vendes",
