@@ -67,7 +67,7 @@ ROOT = os.path.abspath(os.path.join(HERE, '..', '..'))
 VOICE_CLIPS = []
 for c in M.get('voice', []):
     f = os.path.join(ROOT, 'public', c['src'].lstrip('/')); d = (c['endMs'] - c['atMs']) / 1000
-    x = load(f, 0, d)
+    x = load(f, c.get('fromSec', 0) or None, d)   # honour a cue's start offset (e.g. the quick stores' lines)
     if not len(x): continue
     fi, fo = int(0.15 * SR), int(0.25 * SR)
     x[:fi] *= np.linspace(0, 1, min(fi, len(x)))[:, None]; x[-fo:] *= np.linspace(1, 0, min(fo, len(x)))[:, None]

@@ -906,7 +906,7 @@ async function main() {
         resolution: `${options.width}x${options.height}`,
         markers: visible,
         // Every recorded line in the film (narrator, clerk, shopper), in film ms.
-        voice: (exported.audioCues || []).map((cue) => ({ src: cue.src, atMs: Math.round(cue.atMs), endMs: Math.round(cue.endMs) })),
+        voice: (exported.audioCues || []).map((cue) => ({ src: cue.src, atMs: Math.round(cue.atMs), endMs: Math.round(cue.endMs), fromSec: cue.fromSec || 0 })),
         sfx: exported.sfx || [],
       }, null, 2)}\n`);
       fs.writeFileSync(path.join(folder, 'report.json'), `${JSON.stringify(report, null, 2)}\n`);

@@ -8405,7 +8405,8 @@
           const src = `/promo/voice/${PROMO_REEL_QUICK_VOICES[index]}.wav`;
           const spoken = voiceWords(voice).filter((w) => !/^\[[^\]]*\]$/.test(w.text));
           const lead = Math.max(0, (spoken[0]?.startMs || 0) / 1000 - 0.03);   // the line starts the moment the store lands
-          (window.__promoAudioCues = window.__promoAudioCues || []).push({ src, atMs: now + 40, fromSec: lead, endMs: now + 40 + voice.durationMs - lead * 1000 });
+          const windowMs = (PROMO_REEL_PACE.quick[index] ?? 2) * PROMO_REEL_BEAT_MS - 60;   // never spills into the next store's line
+          (window.__promoAudioCues = window.__promoAudioCues || []).push({ src, atMs: now + 40, fromSec: lead, endMs: now + 40 + Math.min(voice.durationMs - lead * 1000, windowMs) });
           if (!document.documentElement.classList.contains('is-promo-export')) window.setTimeout(() => { const a = new Audio(src); a.currentTime = lead; a.play().catch(() => { }); }, 40);
           const words = spoken.map((w) => [0.04 + w.startMs / 1000 - lead, w.text]);
           if (words.length) this.playSaidPill(reel, words.map(([t, w]) => [Math.max(0.3, t), w]), { color: cell.src.color, kind: 'voice-agent', hold: 0.15, place: reelSaidSpot(cell, W, H, S) });
