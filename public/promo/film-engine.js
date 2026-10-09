@@ -46,12 +46,13 @@
   ];
   const PROMO_REEL_IN_MS = 700;
   const PROMO_SYNC_HOLD_MS = 0;
-  const PROMO_SYNC_PRESS_LEAD_MS = 60;   // the press (and its click) lands on the narrator's "click" of "one click"
-  const PROMO_SYNC_FOLD_LEAD_MS = 90;   // the Installed button folds into the clerk on "whole store"
-  const PROMO_SYNC_TILE_STAGGER_MS = 45;
-  const PROMO_SYNC_LINE_DRAW_MS = 420;
-  const PROMO_SYNC_STREAM_MS = 640;   // one burst particle's run from a tile into the clerk (lands on "in sync")
-  const PROMO_SYNC_HEART_DY = 0.08;   // the lines land on the shirt, this far (x canvas height) under the seat's centre
+  const PROMO_SYNC_PRESS_DELAY_MS = 60;   // the press (and its click) on the onset of "click" (1.58 s, measured; the take's timing says 1.52)
+  const PROMO_SYNC_FOLD_LEAD_MS = 40;   // the Installed button folds into the clerk on "whole store" (2.83 s)
+  const PROMO_SYNC_TILE_STAGGER_MS = 25;   // the orbs popping out after the fold
+  const PROMO_SYNC_ABSORB_LEAD_MS = 60;   // the first orb leaves on "stays"...
+  const PROMO_SYNC_ORB_MS = 460;
+  const PROMO_SYNC_ORB_STAGGER_MS = 45;   // ...the last one goes in on "sync"
+  const PROMO_SYNC_HEART_DY = 0.08;   // the orbs go into the shirt, this far (x canvas height) under the seat's centre
   const PROMO_SYNC_AVATAR_H = 0.7;   // the clerk's view, as a share of the canvas height
   const PROMO_SYNC_ACTION = 'charge_up';   // crouch, two gulps of energy, release (2.4 s)
   const PROMO_YOURSTORE_HOLD_MS = 900;
@@ -7987,9 +7988,9 @@
     // comes in, the film's pointer glides to it and presses it on "click" (press, peach
     // bloom, click), the button morphs Install -> progress ring -> check -> "Installed",
     // then folds into the clerk's chest: the clerk appears and the store's six areas
-    // pop out as the film's peach orbs. Fine dashed lines (the landing's Setup flow)
-    // carry soft sparks into the clerk, each orb ticks as its spark lands, the dashes
-    // keep flowing, and "Always in sync" writes in on "automatically".
+    // pop out as the film's peach orbs. On "stays in sync" the orbs fly into the clerk's
+    // chest one after another (a peach glow pulse per orb, the last on "sync"), and
+    // "Always in sync" writes in on "automatically".
     // Stepped per frame only (tweenStep, one rAF loop on performance.now): export-safe.
     async playSyncScene() {
       if (prefersReducedMotion()) return;
@@ -7999,12 +8000,10 @@
       const tick = '<svg viewBox="0 0 24 24" aria-hidden="true"><path pathLength="1" d="M6.4 12.6l3.6 3.6 7.6-7.8"/></svg>';
       scene.innerHTML = `
         <div class="promo-sync__glow"></div>
-        <svg class="promo-sync__wires" aria-hidden="true"></svg>
         <span class="promo-sync__ring"></span>
         <div class="promo-sync__avatar" data-sync-avatar></div>
         ${PROMO_SYNC_PARTS.map((p) => `<div class="promo-sync__tile" data-sync-tile="${p.key}" style="left:${p.x * 100}%;top:${p.y * 100}%">
           <span class="promo-sync__app"><svg viewBox="0 0 24 24" aria-hidden="true">${p.glyph}</svg></span>
-          <span class="promo-sync__badge">${tick}</span>
           <span class="promo-sync__label">${p.label}</span>
         </div>`).join('')}
         <div class="promo-sync__install">
@@ -8027,7 +8026,7 @@
       const fill = $('.promo-sync__fill'); const gloss = $('.promo-sync__gloss'); const aura = $('.promo-sync__aura'); const focus = $('.promo-sync__focus');
       const faceIn = $('.promo-sync__face.is-install'); const faceDone = $('.promo-sync__face.is-done');
       const progress = $('.promo-sync__progress'); const arc = progress.lastElementChild; const check = $('.promo-sync__check');
-      const pointer = $('.promo-sync__pointer'); const glow = $('.promo-sync__glow'); const ring = $('.promo-sync__ring'); const wires = $('.promo-sync__wires');
+      const pointer = $('.promo-sync__pointer'); const glow = $('.promo-sync__glow'); const ring = $('.promo-sync__ring');
       const tiles = [...scene.querySelectorAll('[data-sync-tile]')];
       const clamp01 = (v) => Math.min(1, Math.max(0, v));
       const lerp = (a, b, u) => a + (b - a) * u;
@@ -8039,78 +8038,40 @@
       const core = seat ? { x: seat.core.x / Math.max(1, sr.width), y: seat.core.y / Math.max(1, sr.height) } : { x: 0.5, y: 0.58 };
       const W = scene.clientWidth; const H = scene.clientHeight;   // layout px (the pointer, the pill's width)
 
-      // the lines: one curve from each tile into the clerk, under the clerk (it runs into the body)
-      const VH = 1000; const VW = (VH * W) / Math.max(1, H);
-      wires.setAttribute('viewBox', `0 0 ${VW.toFixed(1)} ${VH}`);
-      const NS = 'http://www.w3.org/2000/svg';
-      const el = (tag, attrs, parent) => { const n = document.createElementNS(NS, tag); Object.entries(attrs).forEach(([k, v]) => n.setAttribute(k, String(v))); parent.appendChild(n); return n; };
-      const blur = el('filter', { id: 'promo-sync-soft', x: '-50%', y: '-50%', width: '200%', height: '200%' }, el('defs', {}, wires));
-      el('feGaussianBlur', { stdDeviation: 6 }, blur);
-      // each line leaves its tile level and enters the clerk's shirt level (an S, never across a label)
-      const cx = core.x * VW; const cy = (core.y + PROMO_SYNC_HEART_DY) * VH;
-      const lines = PROMO_SYNC_PARTS.map((p) => {
-        const x0 = p.x * VW; const y0 = p.y * VH;
-        const d = `M${x0.toFixed(1)} ${y0.toFixed(1)}C${lerp(x0, cx, 0.45).toFixed(1)} ${y0.toFixed(1)} ${lerp(x0, cx, 0.6).toFixed(1)} ${cy.toFixed(1)} ${cx.toFixed(1)} ${cy.toFixed(1)}`;
-        const g = el('g', { class: 'promo-sync__line' }, wires);
-        const base = el('path', { d, class: 'is-base' }, g);   // a fine dashed line (the v2 landing's Setup flow)
-        const shine = el('path', { d, pathLength: 1, class: 'is-shine-glow', filter: 'url(#promo-sync-soft)' }, g);
-        const sheen = el('path', { d, pathLength: 1, class: 'is-shine' }, g);
-        const sparks = [0, 1, 2].map(() => ({ glow: el('circle', { r: 10, class: 'is-spark-glow', filter: 'url(#promo-sync-soft)' }, g), dot: el('circle', { r: 3.6, class: 'is-spark' }, g) }));
-        return { base, shine, sheen, sparks, len: base.getTotalLength(), start: Infinity, landAt: null };
-      });
+      const heart = { x: core.x, y: core.y + PROMO_SYNC_HEART_DY };   // where the orbs go in: the shirt
 
-      // one rAF loop for everything continuous: the lines, the sparks, the glow, the chip's glyph
-      const st = { live: true, settled: false, flashAt: -1e9, chip: null, chipAt: 0 };
-      const land = (i) => {
-        const badge = tiles[i].querySelector('.promo-sync__badge'); const app = tiles[i].querySelector('.promo-sync__app');
-        const path = badge.querySelector('path');
-        promoSfx('order-in', { index: i });
-        tweenStep(480, (e, u) => { badge.style.opacity = clamp01(u * 4).toFixed(3); badge.style.scale = backOut(u).toFixed(4); }, linear);
-        tweenStep(420, (e) => { path.style.strokeDashoffset = (1 - e).toFixed(4); }, promoEaseOut);
-        tweenStep(520, (e, u) => { app.style.scale = (1 + 0.07 * Math.sin(u * Math.PI)).toFixed(4); }, linear);
-      };
+      // one rAF loop for everything continuous: the clerk's glow (a peach pulse per absorbed
+      // orb, charging up as they go in) and the chip's turning glyph
+      const st = { live: true, absorbed: 0, absorbAt: -1e9, flashAt: -1e9, chip: null, chipAt: 0 };
       const loop = (now) => {
         if (!st.live) return;
-        let landed = 0; let pulse = Math.exp(-Math.max(0, now - st.flashAt) / 320);
-        lines.forEach((line, i) => {
-          const t = now - line.start;
-          if (t < 0) return;
-          const drawn = promoEaseInOut(clamp01(t / PROMO_SYNC_LINE_DRAW_MS));
-          // the dashes flow into the clerk, always (as on the landing's Setup section)
-          line.base.style.opacity = (0.6 * drawn).toFixed(3);
-          line.base.style.strokeDashoffset = (-t * 0.05).toFixed(2);
-          // the burst: three sparks run in, gathering speed into the clerk
-          line.sparks.forEach((s, k) => {
-            const u = (t - 100 - k * 150) / PROMO_SYNC_STREAM_MS;
-            const on = u > 0 && u < 1;
-            const a = on ? Math.sin(Math.PI * u) ** 0.6 : 0;
-            if (on) {
-              const pt = line.base.getPointAtLength(line.len * u ** 1.6);
-              [s.glow, s.dot].forEach((c) => { c.setAttribute('cx', pt.x.toFixed(1)); c.setAttribute('cy', pt.y.toFixed(1)); });
-            }
-            s.glow.style.opacity = (0.75 * a).toFixed(3); s.dot.style.opacity = a.toFixed(3);
-            if (k === 0 && u >= 0.9 && line.landAt == null) { line.landAt = now; land(i); }
-          });
-          if (line.landAt == null) return;
-          landed += 1;
-          pulse = Math.max(pulse, Math.exp(-(now - line.landAt) / 280));
-          // settled: a soft light keeps running in along the line (staggered, calm)
-          const ph = (((now - line.landAt - 260 - i * 230) % 1900) + 1900) % 1900 / 1900;
-          const live = now - line.landAt > 260 + i * 230 ? 1 : 0;
-          const off = (0.18 - ph * ph * (3 - 2 * ph) * 1.18).toFixed(4);
-          line.sheen.style.strokeDashoffset = off; line.shine.style.strokeDashoffset = off;
-          line.sheen.style.opacity = String(0.95 * live); line.shine.style.opacity = String(0.8 * live);
-        });
-        const charge = landed / lines.length;
-        glow.style.opacity = (0.16 + 0.42 * charge + 0.32 * pulse + (st.settled ? 0.05 * Math.sin(now / 700) : 0)).toFixed(3);
-        glow.style.scale = (0.82 + 0.3 * charge + 0.1 * pulse).toFixed(4);
-        if (landed === lines.length && !st.settled) {
-          st.settled = true;
-          promoSfx('sync-done');
-          tweenStep(1000, (e) => { ring.style.opacity = (0.5 * (1 - e)).toFixed(3); ring.style.scale = lerp(0.7, 2.6, e).toFixed(4); }, promoEaseOut);
-        }
+        const pulse = Math.max(Math.exp(-Math.max(0, now - st.flashAt) / 320), Math.exp(-Math.max(0, now - st.absorbAt) / 260));
+        const charge = st.absorbed / tiles.length;
+        glow.style.opacity = (0.16 + 0.42 * charge + 0.34 * pulse + (charge === 1 ? 0.05 * Math.sin(now / 700) : 0)).toFixed(3);
+        glow.style.scale = (0.82 + 0.3 * charge + 0.12 * pulse).toFixed(4);
         if (st.chip) st.chip.style.rotate = `${(((now - st.chipAt) / 1700) * 360).toFixed(2)}deg`;
         window.requestAnimationFrame(loop);
+      };
+      // one orb flies into the clerk's chest: a slight curve, gathering speed, shrinking,
+      // gone just before it reaches the body; the clerk glows as it takes it in
+      const absorb = (i) => {
+        const tile = tiles[i]; const p = PROMO_SYNC_PARTS[i]; const label = tile.querySelector('.promo-sync__label');
+        const dx = (heart.x - p.x) * W; const dy = (heart.y - p.y) * H;
+        // curve outward (never across the face): the top orbs swing down beside the head
+        const bend = (p.x < 0.5 ? 1 : -1) * (p.y < 0.4 ? 0.34 : 0.14);
+        let taken = false;
+        return tweenStep(PROMO_SYNC_ORB_MS, (e, u) => {
+          const arc = Math.sin(Math.PI * e) * bend;
+          tile.style.translate = `calc(-50% + ${(dx * e - dy * arc).toFixed(1)}px) calc(-50% + ${(dy * e + dx * arc).toFixed(1)}px)`;
+          tile.style.scale = lerp(1, 0.28, e).toFixed(4);
+          tile.style.opacity = (1 - clamp01((e - 0.62) / 0.3)).toFixed(3);
+          label.style.opacity = (1 - clamp01(u / 0.3)).toFixed(3);
+          if (!taken && e >= 0.86) {
+            taken = true;
+            st.absorbed += 1; st.absorbAt = performance.now();
+            promoSfx('order-in', { index: i });
+          }
+        }, (u) => u * u * (1.6 - 0.6 * u));   // eases in: the clerk pulls it in
       };
 
       // the opening state: the button alone (the clerk and the tiles come out of it)
@@ -8148,7 +8109,7 @@
 
       // 2. the press, on "one click": the button gives, the light answers
       await take.at('one click');
-      await take.at('click', 'start', -PROMO_SYNC_PRESS_LEAD_MS);
+      await take.at('click', 'start', PROMO_SYNC_PRESS_DELAY_MS);
       promoSfx('click');
       tweenStep(320, (e, u) => {
         const d = u < 0.28 ? quintOut(u / 0.28) : 1 - promoEaseInOut((u - 0.28) / 0.72);
@@ -8160,11 +8121,11 @@
       tweenStep(1100, (e, u) => { aura.style.opacity = (0.3 + 0.55 * Math.sin(Math.min(1, u * 2.4) * Math.PI / 2) * (1 - 0.5 * clamp01((u - 0.4) / 0.6))).toFixed(3); }, linear);
       waitMs(180).then(() => tweenStep(520, (e) => { tipAt(aim.x + e * H * 0.05, aim.y + e * H * 0.075); pointer.style.opacity = (1 - e).toFixed(3); }, promoEaseInOut));
       // 3. Install -> progress ring -> check -> Installed
-      await waitMs(80);
-      tweenStep(160, (e) => { faceIn.style.opacity = (1 - e).toFixed(3); faceIn.style.scale = (1 - 0.1 * e).toFixed(4); }, promoEaseOut);
-      await tweenStep(260, (e) => { pill.style.width = `${lerp(wInstall, tall, e).toFixed(1)}px`; }, promoEaseInOut);
-      tweenStep(140, (e) => { progress.style.opacity = e.toFixed(3); }, promoEaseOut);
-      await tweenStep(380, (e, u) => { arc.style.strokeDashoffset = (1 - e).toFixed(4); progress.style.rotate = `${(-90 + 240 * u).toFixed(2)}deg`; }, promoEaseInOut);
+      await waitMs(60);
+      tweenStep(150, (e) => { faceIn.style.opacity = (1 - e).toFixed(3); faceIn.style.scale = (1 - 0.1 * e).toFixed(4); }, promoEaseOut);
+      await tweenStep(230, (e) => { pill.style.width = `${lerp(wInstall, tall, e).toFixed(1)}px`; }, promoEaseInOut);
+      tweenStep(130, (e) => { progress.style.opacity = e.toFixed(3); }, promoEaseOut);
+      await tweenStep(320, (e, u) => { arc.style.strokeDashoffset = (1 - e).toFixed(4); progress.style.rotate = `${(-90 + 240 * u).toFixed(2)}deg`; }, promoEaseInOut);
       promoSfx('install');
       tweenStep(220, (e) => { progress.style.opacity = (1 - e).toFixed(3); progress.style.scale = (1 + 0.18 * e).toFixed(4); }, promoEaseOut);
       tweenStep(260, (e) => { fill.style.opacity = e.toFixed(3); }, promoEaseOut);
@@ -8172,8 +8133,8 @@
       check.style.opacity = '1';
       tweenStep(420, (e, u) => { checkPath.style.strokeDashoffset = (1 - promoEaseOut(clamp01(u / 0.75))).toFixed(4); check.style.scale = lerp(0.6, 1, backOut(u)).toFixed(4); }, linear);
       tweenStep(380, (e, u) => { pill.style.scale = (1 + 0.06 * Math.sin(u * Math.PI)).toFixed(4); }, linear);
-      await waitMs(100);
-      await tweenStep(300, (e, u) => {
+      await waitMs(70);
+      await tweenStep(270, (e, u) => {
         pill.style.width = `${lerp(tall, wDone, e).toFixed(1)}px`;
         check.style.opacity = (1 - clamp01(u * 2.6)).toFixed(3);
         fill.style.opacity = (1 - clamp01(u * 2.2)).toFixed(3);   // back to the white pill, its tick now in a small disc
@@ -8184,7 +8145,7 @@
 
       // 4. "Installed" folds into the clerk's chest: the clerk arrives, the tiles spring out
       await take.at('whole store', 'start', -PROMO_SYNC_FOLD_LEAD_MS);
-      await waitMs(Math.max(0, installedAt + 180 - performance.now()));   // "Installed" always reads
+      await waitMs(Math.max(0, installedAt + 140 - performance.now()));   // "Installed" always reads
       const foldAt = performance.now();
       promoSfx('install-fly');
       tweenStep(380, (e, u) => {
@@ -8198,23 +8159,27 @@
       });
       tiles.forEach((tile, i) => {
         const p = PROMO_SYNC_PARTS[i];
-        // each tile springs out from the clerk's side of its own place (never across the clerk)
-        const dx = (core.x - p.x) * 40; const dy = (core.y + PROMO_SYNC_HEART_DY - p.y) * 40;
+        // each orb pops out just on the clerk's side of its own place (never across the clerk)
+        const dx = (heart.x - p.x) * 15; const dy = (heart.y - p.y) * 15;
         const label = tile.querySelector('.promo-sync__label');
-        waitMs(240 + i * PROMO_SYNC_TILE_STAGGER_MS).then(() => tweenStep(680, (e, u) => {
+        waitMs(120 + i * PROMO_SYNC_TILE_STAGGER_MS).then(() => tweenStep(420, (e, u) => {
           const k = backOut(u);
           tile.style.translate = `calc(-50% + ${((1 - k) * dx).toFixed(3)}cqw) calc(-50% + ${((1 - k) * dy).toFixed(3)}cqh)`;
           tile.style.scale = lerp(0.35, 1, quintOut(u)).toFixed(4);
           tile.style.opacity = clamp01(u * 4).toFixed(3);
-          label.style.opacity = clamp01((u - 0.45) / 0.4).toFixed(3);
+          label.style.opacity = clamp01((u - 0.35) / 0.4).toFixed(3);
         }, linear));
-        lines[i].start = foldAt + 460 + i * PROMO_SYNC_TILE_STAGGER_MS;
       });
       await take.at('whole store');
       setOpeningAvatarAction(PROMO_SYNC_ACTION);
-      await waitMs(Math.max(0, lines[0].start + 120 - performance.now()));
+      // "stays in sync": the orbs go into the clerk one after another, the last on "sync"
+      await take.at('stays', 'start', -PROMO_SYNC_ABSORB_LEAD_MS);
+      await waitMs(Math.max(0, foldAt + 560 - performance.now()));   // never before every orb is out
       promoSfx('sync-flow');
       promoSfx('orb-absorb', { index: 0 });   // one charge-up for the whole stream
+      await Promise.all(tiles.map((tile, i) => waitMs(i * PROMO_SYNC_ORB_STAGGER_MS).then(() => absorb(i))));
+      promoSfx('sync-done');
+      tweenStep(1000, (e) => { ring.style.opacity = (0.5 * (1 - e)).toFixed(3); ring.style.scale = lerp(0.7, 2.6, e).toFixed(4); }, promoEaseOut);
 
       // 5. "automatically": a small glass chip writes in under the clerk, its glyph turning
       await take.at('automatically', 'start', -80);

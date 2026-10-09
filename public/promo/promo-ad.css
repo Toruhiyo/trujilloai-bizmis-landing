@@ -12613,32 +12613,21 @@ html.is-promo-yours .promo-reel__yours-widget > [data-promo-widget] { opacity: 1
 .promo-sync__always svg { width: 2.6cqh; height: 2.6cqh; fill: none; stroke: var(--bizmis-primary); stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
 
 /* ===== v22 sync: the "one click" Install (pointer, press, progress, Installed) folding into
-   the clerk, then the store's areas as the film's peach orbs, wired into it by fine dashed
-   lines (the v2 landing's Setup flow). The film's own language: white canvas, peach glows,
-   Bizmis orange accents, ink type. Every motion is stepped in film-engine.js
-   (playSyncScene); nothing here transitions or animates. ===== */
+   the clerk, then the store's areas as the film's peach orbs, absorbed into it one after
+   another. The film's own language: white canvas, peach glows, Bizmis orange accents, ink
+   type. Every motion is stepped in film-engine.js (playSyncScene); nothing here
+   transitions or animates. ===== */
 .promo-sync.is-install { transition: none; }
 .promo-sync.is-install .promo-sync__glow { width: 56cqh; height: 56cqh; translate: -50% -50%; z-index: 0; opacity: 0.16; scale: 0.82; transition: none; }
-.promo-sync.is-install .promo-sync__wires { z-index: 1; }
 .promo-sync.is-install .promo-sync__avatar { z-index: 2; }
 .promo-sync.is-install .promo-sync__ring { z-index: 1; width: 30cqh; height: 30cqh; border: 0.3cqh solid color-mix(in srgb, var(--bizmis-primary) 55%, #fff); opacity: 0; scale: 0.7; animation: none; }
-.promo-sync__line path { fill: none; stroke-linecap: round; }
-.promo-sync__line .is-base { stroke: var(--bizmis-primary); stroke-width: 2.2; stroke-dasharray: 7 9; opacity: 0; }
-.promo-sync__line .is-shine, .promo-sync__line .is-shine-glow { display: none; }
-.promo-sync__line .is-spark { fill: #fff; opacity: 0; }
-.promo-sync__line .is-spark-glow { fill: var(--bizmis-primary); opacity: 0; }
 /* the store's areas: the film's peach orbs (thin orange outline glyphs, grey labels) */
-.promo-sync__tile { position: absolute; z-index: 3; width: 10cqh; height: 10cqh; translate: -50% -50%; opacity: 0; }
+.promo-sync__tile { position: absolute; z-index: 1; width: 10cqh;   /* under the clerk: absorbed orbs slip into its body */ height: 10cqh; translate: -50% -50%; opacity: 0; }
 .promo-sync__app { position: absolute; inset: 0; display: grid; place-items: center; border-radius: 50%;
   background: radial-gradient(circle at 35% 30%, #fff 0%, #FFF1E2 55%, #FBD9B6 100%);
   box-shadow: 0 0.8cqh 2.4cqh rgba(196, 92, 20, 0.16), inset 0 -0.4cqh 0.9cqh rgba(232, 120, 40, 0.18), 0 0 0 0.12cqh rgba(232, 120, 40, 0.14); }
 .promo-sync__app svg { width: 46%; height: 46%; overflow: visible; fill: none; stroke: var(--bizmis-primary); stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
 .promo-sync__app svg .is-dot { fill: var(--bizmis-primary); stroke: none; }
-/* synced: a small orange tick disc, as on the film's "Found it" chips */
-.promo-sync__badge { position: absolute; z-index: 2; right: -0.4cqh; bottom: -0.2cqh; width: 3.2cqh; height: 3.2cqh; display: grid; place-items: center; border-radius: 50%;
-  background: var(--bizmis-primary); opacity: 0; box-shadow: 0 0 0 0.3cqh #fff, 0 0.5cqh 1.2cqh rgba(196, 92, 20, 0.28); }
-.promo-sync__badge svg { width: 66%; height: 66%; fill: none; stroke: #fff; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
-.promo-sync__badge path { stroke-dasharray: 1; stroke-dashoffset: 1; }
 .promo-sync__label { position: absolute; left: 50%; top: calc(100% + 1.1cqh); translate: -50% 0; opacity: 0; white-space: nowrap;
   font-size: 2.7cqh; font-weight: 600; letter-spacing: -0.01em; line-height: 1.2; color: #5E534B; }
 /* the Install button: the landing's white "Install Now" pill, Bizmis-orange bag and words, a peach bloom behind (the EA lockup's) */
