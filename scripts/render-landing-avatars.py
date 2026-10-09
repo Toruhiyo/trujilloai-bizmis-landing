@@ -24,7 +24,7 @@ from marketing.render import render_avatar  # noqa: E402
 
 RAW = ROOT / "tmp/avatar-renders"
 WEB = ROOT / "public/landing/agents"
-# Selected T wordmark, tightly framed at the vector master's native resolution.
+# Original illustration with the selected T wordmark, tightly framed.
 # Keep the existing chest placement and scale; only the branding changes.
 STAMP = str(ROOT / "scripts/assets/bizmis-logo-white-tight.png")
 LOGO = dict(shirt_stamp=STAMP, shirt_stamp_scale=1.15)
@@ -102,7 +102,7 @@ def main() -> None:
     RAW.mkdir(parents=True, exist_ok=True)
     for name in names:
         avatar, kwargs = RENDERS[name]
-        # A changed Bizmis wordmark must invalidate the baked shirt render.
+        # A changed Bizmis logo must invalidate the baked shirt render.
         stamp_key = (
             "-" + hashlib.sha256(Path(STAMP).read_bytes()).hexdigest()[:12]
             if kwargs.get("shirt_stamp") == STAMP else ""
