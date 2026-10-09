@@ -309,6 +309,13 @@ for i in range(L):
     a = 0.15 if want[i] < cur else 0.022
     cur += (want[i] - cur) * a; g[i] = cur
 duck = np.interp(tt, np.arange(L) / 100.0, g)
+# v21: the Bizmis drop must be OBVIOUS: a breath before it (the music dips over the last beat),
+# the drop a touch louder, and the voice duck kept shallow for its first bars (it used to bury it)
+if burst and COMPOSED:
+    beat = 60 / 112.3; dip = float(os.environ.get('DROP_DIP', '8')); lift = float(os.environ.get('DROP_LIFT', '3'))
+    duck = np.where((tt >= burst) & (tt < burst + 4 * beat), np.maximum(duck, -1.5), duck)
+    duck = np.where((tt >= burst + 4 * beat) & (tt < burst + 12 * beat), np.maximum(duck, -7.0), duck)
+    duck = duck + np.interp(tt, [0, burst - beat, burst - 0.03, burst, burst + 4 * beat, burst + 8 * beat, DUR], [0, 0, -dip, lift, lift, 0, 0])
 fade = np.interp(tt, [0, DUR - (0.35 if COMPOSED else 1.2), DUR], [0, 0, -40])   # the cue resolves on its own; this only cleans the last frame
 music *= db(duck + fade)[:, None].astype(np.float32)
 if (os.environ.get('CLIMAX_DUCK') or CLIMAX.startswith('bed:')) and CLIMAX_BEATS:   # the score steps back under the climax
