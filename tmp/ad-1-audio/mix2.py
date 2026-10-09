@@ -247,6 +247,7 @@ if pitch_path and burst and COMPOSED:
     q = qm[first:].copy()
     rel = lambda k: next((T(e) for e in ev if e['id'] == k), None)
     rw, ins, sold_t, reel_t = rel('rewind'), rel('install'), rel('sold'), rel('reel-in')
+    if rw and ins and not (0 < ins - rw < 10): ins = None   # v22: only the install right after the rewind (the sync scene's 'install' is not it)
     sync_t = next((v['atMs'] / 1000 for v in M['voice'] if 't-sync' in v.get('src', '')), None)
     if rw and ins and ins > rw:   # "Let's rewind": the score itself tape-stops, then comes back in on the install
         a0, stop = int((rw - burst) * SR), int(0.75 * SR)
