@@ -108,6 +108,8 @@ export const ca: Messages = {
     },
     /** The film's end-card scarcity line. */
     onlySpots: "Només 50 places!",
+    /** The personalization carousel. */
+    carousel: { label: "Tria un avatar", prev: "Avatar anterior", next: "Avatar següent" },
     yourStore: "La teva botiga",
     agentAlt: "L'avatar de l'agent de vendes de Bizmis",
     /** UI text of the real widget, as it appears in the mockups. */

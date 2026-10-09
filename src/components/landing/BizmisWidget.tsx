@@ -4,6 +4,7 @@ import { AudioLines, Navigation, ShoppingCart, Volume2, X } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 import AgentImage from "./AgentImage";
+import LiveAvatar from "./LiveAvatar";
 import type { AgentName } from "./AgentImage";
 
 /**
@@ -138,11 +139,20 @@ const BizmisWidget = ({
   tool,
   placeholder = "Help me find the right product.",
   above,
+  live,
+  talking,
   className,
   style,
 }: {
   agent: AgentName;
   state?: WidgetState;
+  /**
+   * The real widget's live 3D avatar (its CDN model name, e.g. "amber"), in
+   * place of the static render — which stays as the fallback and placeholder.
+   */
+  live?: string;
+  /** Mouth moving (live avatar only); defaults to the speaking state. */
+  talking?: boolean;
   /** Icon at the tip of the working laser (the tool being used). */
   tool?: LucideIcon;
   placeholder?: string;
@@ -152,6 +162,14 @@ const BizmisWidget = ({
   style?: CSSProperties;
 }) => {
   const Tool = tool;
+  const still = (
+    <AgentImage
+      name={agent}
+      alt=""
+      sizes="160px"
+      className="absolute bottom-0 left-1/2 h-[224px] w-auto -translate-x-1/2"
+    />
+  );
   return (
     <div className={cn("bzw relative w-[288px]", className)} style={style}>
       {above && (
@@ -206,12 +224,17 @@ const BizmisWidget = ({
               </span>
             </span>
           )}
-          <AgentImage
-            name={agent}
-            alt=""
-            sizes="160px"
-            className="absolute bottom-0 left-1/2 h-[224px] w-auto -translate-x-1/2"
-          />
+          {live ? (
+            <div className="absolute inset-0">
+              <LiveAvatar
+                model={live}
+                speaking={talking ?? state === "speaking"}
+                fallback={still}
+              />
+            </div>
+          ) : (
+            still
+          )}
         </div>
 
         {/* Composer */}
@@ -256,10 +279,13 @@ export const Captions = ({
   text,
   msPerWord = 320,
   className,
+  onSpeaking,
 }: {
   text: string;
   msPerWord?: number;
   className?: string;
+  /** True while a line is being spoken, false in the pause after it. */
+  onSpeaking?: (speaking: boolean) => void;
 }) => {
   const all = text.split(/\s+/);
   const chunks: string[][] = [];
@@ -281,6 +307,10 @@ export const Captions = ({
   }, [text, msPerWord]);
   const words = chunks[pos.chunk] ?? [];
   const i = pos.word;
+  const speaking = i <= words.length;
+  useEffect(() => {
+    onSpeaking?.(speaking);
+  }, [speaking, onSpeaking]);
   return (
     <p
       className={cn(

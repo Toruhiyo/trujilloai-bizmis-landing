@@ -1,23 +1,22 @@
-import { useEffect, useState } from "react";
 import type { CSSProperties } from "react";
 import { AudioLines, UserRound } from "lucide-react";
-import { cn } from "@/lib/utils";
 import { useMessages } from "@/i18n/LocaleProvider";
-import AgentImage from "./AgentImage";
+import AvatarCarousel from "./AvatarCarousel";
+import type { CarouselAvatar } from "./AvatarCarousel";
 import FeatureCard from "./FeatureCard";
-import Reveal, { useInView } from "./Reveal";
+import Reveal from "./Reveal";
 
-// Real Bizmis avatars, each dressed for a different kind of store.
-const LINEUP = [
-  { name: "style-victor", tint: "#f28c38" },
-  { name: "style-teo", tint: "#d1001a" },
-  { name: "style-luca", tint: "#29573f" },
-  { name: "style-kiran", tint: "#a855f7" },
-  { name: "style-yue", tint: "#701c33" },
-  { name: "style-echo", tint: "#1e293b" },
-  { name: "style-mia", tint: "#e8b800" },
-  { name: "style-adrian", tint: "#7fa83a" },
-] as const;
+// Real Bizmis avatars, each dressed in a different store's colour, Bizmis logo on the shirt.
+const LINEUP: readonly CarouselAvatar[] = [
+  { name: "style-victor", label: "Victor", tint: "#f28c38" },
+  { name: "style-teo", label: "Teo", tint: "#d1001a" },
+  { name: "style-luca", label: "Luca", tint: "#29573f" },
+  { name: "style-kiran", label: "Kiran", tint: "#a855f7" },
+  { name: "style-yue", label: "Yue", tint: "#701c33" },
+  { name: "style-echo", label: "Echo", tint: "#1e293b" },
+  { name: "style-mia", label: "Mia", tint: "#e8b800" },
+  { name: "style-adrian", label: "Adrian", tint: "#7fa83a" },
+];
 
 const Waveform = () => (
   <span className="flex h-5 items-center gap-[3px]" aria-hidden="true">
@@ -32,28 +31,12 @@ const Waveform = () => (
 );
 
 /**
- * Personalization — "Make It Truly Yours": appearance and voice. The line-up
- * idles (each avatar breathing on its own beat) while a spotlight walks the
- * grid, one look stepping forward at a time.
+ * Personalization — "Make It Truly Yours": appearance and voice, with the
+ * avatars shown one at a time in a carousel, each in its store's colour.
  */
 const CustomizeSection = () => {
   const messages = useMessages();
   const m = messages.customization;
-  const [ref, inView] = useInView<HTMLDivElement>(0.3);
-  const [spot, setSpot] = useState(-1);
-
-  useEffect(() => {
-    if (
-      !inView ||
-      window.matchMedia("(prefers-reduced-motion: reduce)").matches
-    )
-      return;
-    const t = window.setInterval(
-      () => setSpot((s) => (s + 1) % LINEUP.length),
-      1400,
-    );
-    return () => window.clearInterval(t);
-  }, [inView]);
 
   return (
     <section className="bzl-section">
@@ -73,7 +56,7 @@ const CustomizeSection = () => {
           <Reveal delay={150}>
             <p className="bzl-lead mt-5 max-w-lg">{m.lead}</p>
           </Reveal>
-          <div className="mt-10 grid items-start gap-3 sm:grid-cols-2">
+          <div className="mt-10 grid max-w-md items-start gap-3">
             <Reveal delay={220}>
               <FeatureCard
                 icon={UserRound}
@@ -97,33 +80,9 @@ const CustomizeSection = () => {
           </div>
         </div>
 
-        <div ref={ref} className="grid grid-cols-4 gap-3 sm:gap-4">
-          {LINEUP.map((a, i) => (
-            <Reveal key={a.name} delay={i * 70}>
-              <div className="bzl-idle" style={{ "--i": i } as CSSProperties}>
-                <div
-                  className={cn(
-                    "relative aspect-[3/4] overflow-hidden rounded-2xl transition-[transform,box-shadow] duration-700",
-                    spot === i
-                      ? "-translate-y-2 scale-[1.04] shadow-[0_26px_40px_-22px_rgba(28,24,20,0.55)]"
-                      : "shadow-[0_14px_30px_-20px_rgba(28,24,20,0.45)]",
-                  )}
-                  style={{
-                    background: `linear-gradient(180deg, color-mix(in oklab, ${a.tint} ${spot === i ? 30 : 14}%, #fff8f0), #fffcf8)`,
-                    transitionTimingFunction: "var(--bzl-spring)",
-                  }}
-                >
-                  <AgentImage
-                    name={a.name}
-                    alt=""
-                    sizes="(min-width: 1024px) 160px, 24vw"
-                    className="absolute left-1/2 top-[4%] w-[78%] -translate-x-1/2"
-                  />
-                </div>
-              </div>
-            </Reveal>
-          ))}
-        </div>
+        <Reveal delay={120}>
+          <AvatarCarousel avatars={LINEUP} />
+        </Reveal>
       </div>
     </section>
   );

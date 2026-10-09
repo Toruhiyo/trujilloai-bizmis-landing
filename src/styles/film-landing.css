@@ -787,18 +787,6 @@
   .bzl-obsolete-strike { transition: none; }
 }
 
-/* Personalization line-up: each avatar breathing on its own beat. */
-.bzl-idle {
-  animation: bzl-idle 5.6s ease-in-out infinite;
-  animation-delay: calc(var(--i) * -0.7s);
-}
-@keyframes bzl-idle {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-5px); }
-}
-@media (prefers-reduced-motion: reduce) {
-  .bzl-idle { animation: none; }
-}
 
 /* "Early Access", handwritten (as in the film's end card): in the hero badge
    (white) and in the shared navbar — reached through html.bzl-page, which only

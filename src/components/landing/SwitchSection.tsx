@@ -63,6 +63,8 @@ const SwitchSection = () => {
   const [agent, setAgent] = useState(false);
   const [touched, setTouched] = useState(false);
   const [hovering, setHovering] = useState(false);
+  // The live avatar's mouth follows the captions: talking per line, still between.
+  const [talking, setTalking] = useState(true);
 
   useEffect(() => {
     if (!inView || touched || hovering) return;
@@ -215,11 +217,14 @@ const SwitchSection = () => {
                     <Captions
                       text={m.agentMessage}
                       className="text-sm lg:text-lg"
+                      onSpeaking={setTalking}
                     />
                   </div>
                   <div className="bzl-corner absolute bottom-3 right-3 z-10 origin-bottom-right scale-[0.62] sm:bottom-4 sm:right-4 sm:scale-[0.78] lg:scale-[0.9]">
                     <BizmisWidget
                       agent="greet-amber"
+                      live="amber"
+                      talking={talking}
                       state="speaking"
                       placeholder={messages.landing.widget.placeholder}
                     />
