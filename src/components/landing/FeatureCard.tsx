@@ -1,6 +1,7 @@
 import { useState } from "react";
 import type { ReactNode } from "react";
 import type { LucideIcon } from "lucide-react";
+import type { AnimatedIcon } from "./AnimatedIcons";
 import { cn } from "@/lib/utils";
 
 /**
@@ -16,7 +17,7 @@ const FeatureCard = ({
   badge,
   className,
 }: {
-  icon: LucideIcon;
+  icon: LucideIcon | AnimatedIcon;
   title: string;
   /** A short line under the title while closed (e.g. a tagline). */
   front?: ReactNode;
@@ -41,7 +42,7 @@ const FeatureCard = ({
       onBlur={() => setHover(false)}
       onClick={() => setPinned((p) => !p)}
       className={cn(
-        "group relative flex w-full flex-col rounded-[20px] p-4 text-left ring-1 transition-[background-color,box-shadow,transform] duration-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--bzl-orange)] sm:p-5",
+        "group relative flex w-full flex-col rounded-[20px] px-4 py-3 text-left ring-1 transition-[background-color,box-shadow,transform] duration-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--bzl-orange)] sm:px-5 sm:py-3.5",
         "bg-white",
         open
           ? "-translate-y-0.5 ring-[color-mix(in_oklab,var(--bzl-orange)_28%,transparent)] shadow-[0_22px_44px_-28px_rgba(236,119,9,0.45)]"
@@ -59,7 +60,7 @@ const FeatureCard = ({
               : "bg-[var(--bzl-orange-wash)] text-[var(--bzl-orange-strong)]",
           )}
         >
-          <Icon className="h-5 w-5" strokeWidth={2} />
+          <Icon className="h-5 w-5" />
         </span>
         <span
           className={cn(

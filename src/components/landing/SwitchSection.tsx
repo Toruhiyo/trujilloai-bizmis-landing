@@ -6,6 +6,7 @@ import Reveal, { useInView } from "./Reveal";
 import BizmisWidget, { Captions } from "./BizmisWidget";
 import { ClayCard, StoreWindow } from "./clay";
 import TypicalChatbot from "./TypicalChatbot";
+import ObsoleteWord from "./ObsoleteWord";
 import type { ClayShape } from "./clay";
 
 const GRID: {
@@ -21,31 +22,6 @@ const GRID: {
   { shape: "slab", tint: "sand" },
   { shape: "lens", tint: "warm" },
 ];
-
-/**
- * "Chatbot", set as obsolete tech: an old terminal's pixel font, letters
- * knocked off their baseline like a failing sign, one dead letter flickering.
- * Once the sales agent wins, the word slumps further, greys out and is struck.
- */
-const ChatbotWord = ({ text, beaten }: { text: string; beaten: boolean }) => (
-  <span
-    className={cn("bzl-obsolete relative inline-block", beaten && "is-beaten")}
-  >
-    <span className="sr-only">{text}</span>
-    <span aria-hidden="true">
-      {[...text].map((ch, i) => (
-        <span
-          key={i}
-          className="bzl-obsolete-ch"
-          style={{ "--i": i, "--n": text.length } as CSSProperties}
-        >
-          {ch}
-        </span>
-      ))}
-    </span>
-    <span aria-hidden="true" className="bzl-obsolete-strike" />
-  </span>
-);
 
 /** Patience left after each reply, and the shopper's face at that point. */
 const PATIENCE = [
@@ -204,7 +180,7 @@ const SwitchSection = () => {
               onClick={() => agent && flip()}
               className="transition-colors duration-500"
             >
-              <ChatbotWord text={m.chatbot} beaten={agent} />
+              <ObsoleteWord text={m.chatbot} beaten={agent} />
             </button>
             <button
               type="button"
@@ -289,7 +265,7 @@ const SwitchSection = () => {
               label={messages.landing.yourStore}
               // on wide screens the window takes the height the section has left and,
               // like a real browser, shows the top of a longer page: nothing is squeezed
-              className="md:h-[clamp(260px,calc(85svh-28.8rem),600px)]"
+              className="md:h-[clamp(236px,calc(85svh-30.2rem),600px)]"
             >
               <div
                 className={cn(

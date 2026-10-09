@@ -1,22 +1,22 @@
 import { useRef } from "react";
 import type { CSSProperties } from "react";
-import { AudioLines, UserRound } from "lucide-react";
 import { useMessages } from "@/i18n/LocaleProvider";
 import AvatarCarousel from "./AvatarCarousel";
 import type { CarouselAvatar } from "./AvatarCarousel";
 import FeatureCard from "./FeatureCard";
+import { AvatarIcon, VoiceIcon } from "./AnimatedIcons";
 import Reveal from "./Reveal";
 
-// Real Bizmis avatars, each dressed in a different store's colour, Bizmis logo on the shirt.
+// Real Bizmis avatars, each wearing a (fictional, AI-generated) store's logo; the tint is the logo's accent.
 const LINEUP: readonly CarouselAvatar[] = [
   { name: "style-victor", label: "Victor", tint: "#f28c38" },
-  { name: "style-teo", label: "Teo", tint: "#d1001a" },
-  { name: "style-luca", label: "Luca", tint: "#29573f" },
-  { name: "style-kiran", label: "Kiran", tint: "#a855f7" },
-  { name: "style-yue", label: "Yue", tint: "#701c33" },
-  { name: "style-echo", label: "Echo", tint: "#1e293b" },
-  { name: "style-mia", label: "Mia", tint: "#e8b800" },
-  { name: "style-adrian", label: "Adrian", tint: "#7fa83a" },
+  { name: "style-teo", label: "Teo", tint: "#ff5a5f" },
+  { name: "style-luca", label: "Luca", tint: "#3b6ea8" },
+  { name: "style-kiran", label: "Kiran", tint: "#b04bc9" },
+  { name: "style-yue", label: "Yue", tint: "#d4a84a" },
+  { name: "style-echo", label: "Echo", tint: "#4c6488" },
+  { name: "style-mia", label: "Mia", tint: "#f07a1a" },
+  { name: "style-adrian", label: "Adrian", tint: "#8fd42f" },
 ];
 
 const Waveform = () => (
@@ -41,7 +41,10 @@ const CustomizeSection = () => {
   const section = useRef<HTMLElement>(null);
 
   return (
-    <section ref={section} className="bzl-section bzl-screen relative overflow-hidden">
+    <section
+      ref={section}
+      className="bzl-section bzl-screen relative overflow-hidden"
+    >
       {/* the carousel's ambient light, in the current avatar's colour (driven by AvatarCarousel) */}
       <div
         aria-hidden="true"
@@ -83,14 +86,14 @@ const CustomizeSection = () => {
           <div className="mt-10 grid max-w-md items-start gap-3">
             <Reveal delay={220}>
               <FeatureCard
-                icon={UserRound}
+                icon={AvatarIcon}
                 title={m.avatar.title}
                 body={m.avatar.body}
               />
             </Reveal>
             <Reveal delay={320}>
               <FeatureCard
-                icon={AudioLines}
+                icon={VoiceIcon}
                 title={m.voiceCloning.title}
                 badge={
                   <span className="rounded-full bg-[color-mix(in_oklab,var(--bzl-orange)_16%,#fff)] px-2.5 py-0.5 text-[11px] font-semibold uppercase tracking-[0.12em] text-[var(--bzl-orange-dark)]">

@@ -362,7 +362,7 @@ export const MobileWidget = ({
   placeholder?: string;
   above?: ReactNode;
 }) => (
-  <div className="bzw absolute inset-x-2 bottom-2 z-20">
+  <div className="bzw absolute inset-x-3 bottom-3 z-20">
     {above && (
       <div className="absolute bottom-full left-0 right-0 mb-2 flex flex-col items-stretch gap-2">
         {above}

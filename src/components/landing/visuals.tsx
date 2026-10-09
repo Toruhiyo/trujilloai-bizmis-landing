@@ -51,7 +51,7 @@ export const StoreWithWidget = ({
         </div>
       )}
       <div
-        className={`absolute bottom-3 right-3 z-10 origin-bottom-right ${device === "tablet" ? "scale-[0.42] sm:scale-[0.5]" : "scale-[0.5] sm:scale-[0.62]"}`}
+        className={`absolute bottom-3 right-3 z-10 origin-bottom-right ${device === "tablet" ? "" : "scale-[0.5] sm:scale-[0.62]"}`}
       >
         <BizmisWidget
           agent={agent}

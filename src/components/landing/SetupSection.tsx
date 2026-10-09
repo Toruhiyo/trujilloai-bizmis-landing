@@ -1,6 +1,17 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { CSSProperties } from "react";
-import { FaBolt, FaBox, FaGlobe, FaPercent, FaShieldAlt, FaShopify, FaShoppingCart, FaSync, FaTag, FaUsers } from "react-icons/fa";
+import {
+  FaBolt,
+  FaBox,
+  FaGlobe,
+  FaPercent,
+  FaShieldAlt,
+  FaShopify,
+  FaShoppingCart,
+  FaSync,
+  FaTag,
+  FaUsers,
+} from "react-icons/fa";
 import { useMessages } from "@/i18n/LocaleProvider";
 import AgentImage from "./AgentImage";
 import Reveal, { useInView } from "./Reveal";
@@ -48,7 +59,7 @@ const SetupSection = () => {
           dur: prev[i]?.dur ?? 2.2 + Math.random() * 1.6,
           delay: prev[i]?.delay ?? Math.random() * 2,
         };
-      })
+      }),
     );
   }, []);
 
@@ -68,7 +79,10 @@ const SetupSection = () => {
   }, [measure]);
 
   return (
-    <section id="setup" className="bzl-section bzl-screen relative overflow-hidden bg-[linear-gradient(180deg,#fff,#fff8f0_45%,#fff)]">
+    <section
+      id="setup"
+      className="bzl-section bzl-screen relative overflow-hidden bg-[linear-gradient(180deg,#fff,#fff8f0_45%,#fff)]"
+    >
       {/* the classic landing's warm glow around the section's edges */}
       <div aria-hidden="true" className="pointer-events-none absolute inset-0">
         <div className="absolute -left-48 top-[10%] h-[45%] w-96 rounded-[50%] bg-[rgba(249,163,83,0.28)] blur-[80px]" />
@@ -90,7 +104,10 @@ const SetupSection = () => {
         </div>
 
         <div ref={ref} className="mx-auto mt-[4svh] max-w-5xl">
-          <div ref={box} className="relative flex items-center justify-between gap-6 sm:gap-12">
+          <div
+            ref={box}
+            className="relative flex items-center justify-between gap-6 sm:gap-12"
+          >
             {/* the wiring, behind the cards and the avatar */}
             <svg
               aria-hidden="true"
@@ -121,16 +138,21 @@ const SetupSection = () => {
                         strokeWidth={3}
                         strokeLinecap="round"
                         className="bzl-spark"
-                        style={{ "--dur": `${l.dur}s`, "--bzl-delay": `${0.8 + l.delay}s` } as CSSProperties}
+                        style={
+                          {
+                            "--dur": `${l.dur}s`,
+                            "--bzl-delay": `${0.8 + l.delay}s`,
+                          } as CSSProperties
+                        }
                       />
                     )}
                   </g>
-                ) : null
+                ) : null,
               )}
             </svg>
 
             {/* Your Shopify store data */}
-            <Reveal className="relative z-10 w-full max-w-[min(26rem,58%)] rounded-[26px] border border-[color-mix(in_oklab,var(--bzl-orange)_22%,transparent)] bg-white/75 p-3 shadow-[0_30px_70px_-40px_rgba(236,119,9,0.45)] backdrop-blur-md sm:p-4">
+            <Reveal className="relative z-10 w-full max-w-[min(20rem,52%)] rounded-[26px] border border-[color-mix(in_oklab,var(--bzl-orange)_22%,transparent)] bg-white/75 p-3 shadow-[0_30px_70px_-40px_rgba(236,119,9,0.45)] backdrop-blur-md sm:p-4">
               <p className="flex items-center justify-center gap-2 pb-3 pt-1 text-sm font-semibold text-[var(--bzl-orange-dark)] sm:text-base">
                 <FaShopify className="h-4 w-4 sm:h-5 sm:w-5" />
                 {setup.storeDataTitle}
@@ -145,7 +167,10 @@ const SetupSection = () => {
                       className="group relative flex h-[clamp(2.4rem,5.4svh,3.5rem)] items-center gap-3 overflow-hidden rounded-2xl bg-[color-mix(in_oklab,var(--bzl-orange)_11%,#fff)] px-3.5 shadow-[0_4px_20px_-4px_rgba(28,24,20,0.06),0_2px_8px_-2px_rgba(242,140,56,0.1)] transition-transform duration-300 hover:scale-[1.02]"
                     >
                       {/* the classic cards' Shopify watermark */}
-                      <FaShopify aria-hidden="true" className="absolute -right-1 top-1/2 h-10 w-10 -translate-y-1/2 text-[var(--bzl-orange)] opacity-[0.12] transition-opacity group-hover:opacity-20" />
+                      <FaShopify
+                        aria-hidden="true"
+                        className="absolute -right-1 top-1/2 h-10 w-10 -translate-y-1/2 text-[var(--bzl-orange)] opacity-[0.12] transition-opacity group-hover:opacity-20"
+                      />
                       <Icon className="relative h-[1.05rem] w-[1.05rem] flex-shrink-0 text-[color-mix(in_oklab,var(--bzl-orange-strong)_75%,transparent)] transition-colors group-hover:text-[var(--bzl-orange-strong)]" />
                       <span className="relative min-w-0 truncate text-[15px] font-semibold tracking-[-0.01em] text-[var(--bzl-fg)] sm:text-base">
                         {card.title}
@@ -157,14 +182,39 @@ const SetupSection = () => {
             </Reveal>
 
             {/* the agent, charging up with every pulse */}
-            <Reveal delay={150} className="relative z-10 mr-[4%] flex flex-shrink-0 justify-center">
-              <div ref={target} className="relative h-[clamp(14rem,40svh,26rem)]">
-                <span aria-hidden="true" className="bzl-charge-aura absolute left-1/2 top-1/2 aspect-square w-[150%] rounded-full" />
-                <span aria-hidden="true" className="bzl-charge-aura is-wide absolute left-1/2 top-1/2 aspect-square w-[200%] rounded-full" />
-                <div aria-hidden="true" className="absolute inset-x-[-25%] bottom-[-3%] h-[10%] rounded-[50%] bg-[radial-gradient(closest-side,rgba(236,119,9,0.3),transparent)]" />
-                <AgentImage name="setup-will" alt={messages.landing.agentAlt} sizes="300px" className="relative h-full w-auto" />
-                {/* the same render, glowing orange, breathing in and out */}
-                <AgentImage name="setup-will" alt="" sizes="300px" className="bzl-charge-glow absolute inset-0 h-full w-auto" />
+            <Reveal
+              delay={150}
+              className="relative z-10 mr-[4%] flex flex-shrink-0 justify-center"
+            >
+              <div
+                ref={target}
+                className="relative h-[clamp(14rem,40svh,26rem)]"
+              >
+                <span
+                  aria-hidden="true"
+                  className="bzl-charge-aura absolute left-1/2 top-1/2 aspect-square w-[150%] rounded-full"
+                />
+                <span
+                  aria-hidden="true"
+                  className="bzl-charge-aura is-wide absolute left-1/2 top-1/2 aspect-square w-[200%] rounded-full"
+                />
+                <div
+                  aria-hidden="true"
+                  className="absolute inset-x-[-25%] bottom-[-3%] h-[10%] rounded-[50%] bg-[radial-gradient(closest-side,rgba(236,119,9,0.3),transparent)]"
+                />
+                {/* a warm halo around the silhouette, breathing in and out behind the render */}
+                <AgentImage
+                  name="setup-will"
+                  alt=""
+                  sizes="300px"
+                  className="bzl-charge-glow absolute inset-0 h-full w-auto"
+                />
+                <AgentImage
+                  name="setup-will"
+                  alt={messages.landing.agentAlt}
+                  sizes="300px"
+                  className="relative h-full w-auto"
+                />
               </div>
             </Reveal>
           </div>

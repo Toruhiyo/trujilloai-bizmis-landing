@@ -119,15 +119,17 @@
 
 /* ---------- Store window (the film's "Your store" mockup) ---------- */
 
+/* the desktop browser window, in the same thin frosted-glass shell as the film's devices */
 .bzl-window {
   position: relative;
   border-radius: var(--bzl-radius-window);
   background: #fff;
-  border: 1px solid var(--bzl-border);
+  border: 1px solid rgb(255 255 255 / 0.9);
   box-shadow:
-    0 1px 0 rgba(255, 255, 255, 0.8) inset,
-    0 30px 70px -28px rgba(28, 24, 20, 0.28),
-    0 10px 24px -14px rgba(28, 24, 20, 0.16);
+    0 0 0 6px rgb(255 255 255 / 0.55),
+    0 0 0 6.5px rgb(28 24 20 / 0.06),
+    0 3px 8px rgb(28 24 20 / 0.1),
+    0 38px 88px -30px rgb(28 24 20 / 0.3);
   overflow: hidden;
 }
 
@@ -723,70 +725,52 @@
   }
 }
 
-/* ── "Chatbot", set as obsolete tech ─────────────────────────────────────
-   An old terminal's pixel font, letters knocked off their baseline like a
-   failing sign, one dead letter flickering. Beaten by the sales agent, the
-   letters slump further and the word is struck through. */
-.bzl .bzl-obsolete,
-.bzl .bzl-obsolete * {
-  font-family: "VT323", ui-monospace, monospace;
-}
-.bzl .bzl-obsolete {
-  font-weight: 400;
-  font-size: 1.5em;
+/* ── "Chatbot" as a worn-out sign with an OBSOLETE tag (ObsoleteWord) ── */
+.bzl-obs {
+  position: relative;
+  display: inline-block;
   line-height: 1;
-  letter-spacing: 0.01em;
-  color: #74747a;
+  color: #4a4a4f;
   transition: color 0.5s ease;
 }
-.bzl .bzl-obsolete.is-beaten {
-  color: rgb(255 255 255 / 0.5);
-}
-.bzl-obsolete-ch {
+.bzl-obs.is-beaten { color: rgb(255 255 255 / 0.6); }
+.bzl-obs-c {
   display: inline-block;
-  transform: translateY(var(--y, 0)) rotate(var(--r, 0deg));
-  transition: transform 0.9s var(--bzl-spring);
-  transition-delay: calc(var(--i) * 45ms);
+  position: relative;
+  transform-origin: 50% 50%;
+  will-change: transform;
+  text-shadow: 0 0.045em 0.05em rgb(0 0 0 / 0.14);
 }
-.bzl-obsolete-ch:nth-child(1) { --y: 0em; --r: -2deg; }
-.bzl-obsolete-ch:nth-child(2) { --y: 0.03em; --r: 3deg; }
-.bzl-obsolete-ch:nth-child(3) { --y: -0.02em; --r: -4deg; }
-.bzl-obsolete-ch:nth-child(4) { --y: 0.06em; --r: 5deg; }
-.bzl-obsolete-ch:nth-child(5) { --y: 0em; --r: -1deg; }
-.bzl-obsolete-ch:nth-child(6) { --y: 0.04em; --r: 4deg; animation: bzl-dead-letter 4.2s steps(1) infinite; }
-.bzl-obsolete-ch:nth-child(7) { --y: 0.12em; --r: 14deg; }
-.bzl-obsolete.is-beaten .bzl-obsolete-ch {
-  transform: translateY(calc(var(--y, 0em) * 2.5 + 0.06em)) rotate(calc(var(--r, 0deg) * 2));
-}
-@keyframes bzl-dead-letter {
-  0%, 100% { opacity: 1; }
-  7% { opacity: 0.15; }
-  9% { opacity: 1; }
-  51% { opacity: 0.3; }
-  53% { opacity: 1; }
-  55% { opacity: 0.1; }
-  58% { opacity: 1; }
-}
-.bzl-obsolete-strike {
+.bzl-obs.is-beaten .bzl-obs-c { text-shadow: 0 0.045em 0.06em rgb(120 50 0 / 0.22); }
+/* nails stay on the wall, even when their letter falls */
+.bzl-obs-nail {
   position: absolute;
-  left: -5%;
-  right: -5%;
-  top: 56%;
-  height: 0.07em;
-  border-radius: 999px;
-  background: rgb(255 255 255 / 0.85);
-  transform: rotate(-4deg) scaleX(0);
-  transform-origin: left center;
-  transition: transform 0.45s ease 0.35s;
+  width: 0.075em;
+  height: 0.075em;
+  margin: -0.0375em 0 0 -0.0375em;
+  border-radius: 50%;
+  background: #8e8e93;
+  box-shadow: 0 0.02em 0.02em rgb(0 0 0 / 0.3);
+  pointer-events: none;
 }
-.bzl-obsolete.is-beaten .bzl-obsolete-strike {
-  transform: rotate(-4deg) scaleX(1);
+.bzl-obs.is-beaten .bzl-obs-nail { background: rgb(255 255 255 / 0.92); }
+.bzl .bzl-obs-tag {
+  position: absolute;
+  right: -1.15em;
+  top: -0.78em;
+  rotate: 4deg;
+  font-family: "VT323", ui-monospace, monospace;
+  font-weight: 400;
+  font-size: 0.34em;
+  letter-spacing: 0.06em;
+  padding: 0.1em 0.45em;
+  border-radius: 0.3em;
+  background: #6e6e73;
+  color: #fff;
+  white-space: nowrap;
+  transition: background 0.4s, rotate 0.7s var(--bzl-spring);
 }
-@media (prefers-reduced-motion: reduce) {
-  .bzl-obsolete-ch { animation: none !important; transition: none; }
-  .bzl-obsolete-strike { transition: none; }
-}
-
+.bzl-obs.is-beaten .bzl-obs-tag { background: #2b2520; rotate: 9deg; }
 
 /* "Early Access", handwritten (as in the film's end card): in the hero badge
    (white) and in the shared navbar — reached through html.bzl-page, which only
@@ -892,12 +876,12 @@
 /* the agent charging up: an aura and an orange glow over the render, breathing every 2 s */
 .bzl-charge-aura {
   translate: -50% -50%;
-  background: radial-gradient(circle, rgba(242, 140, 56, 0.45) 0%, rgba(242, 140, 56, 0.16) 42%, transparent 70%);
+  background: radial-gradient(circle, rgba(249, 163, 83, 0.32) 0%, rgba(249, 163, 83, 0.12) 42%, transparent 70%);
   animation: bzl-aura 2s ease-in-out infinite;
   pointer-events: none;
 }
 .bzl-charge-aura.is-wide {
-  background: radial-gradient(circle, rgba(242, 140, 56, 0.24) 0%, rgba(242, 140, 56, 0.08) 50%, transparent 74%);
+  background: radial-gradient(circle, rgba(249, 163, 83, 0.16) 0%, rgba(249, 163, 83, 0.06) 50%, transparent 74%);
   animation-delay: 0.12s;
 }
 @keyframes bzl-aura {
@@ -906,14 +890,16 @@
   70% { opacity: 0; scale: 1.08; }
 }
 .bzl-charge-glow {
-  filter: sepia(1) saturate(7) hue-rotate(-14deg) brightness(1.08);
+  /* only the halo shows: the render itself sits on top of this copy */
+  filter: brightness(0) invert(0.62) sepia(1) saturate(9) hue-rotate(-12deg) blur(6px)
+    drop-shadow(0 0 18px rgb(249 163 83 / 0.9));
   animation: bzl-glow 2s ease-in-out infinite;
   pointer-events: none;
 }
 @keyframes bzl-glow {
-  0%, 100% { opacity: 0; }
-  35% { opacity: 0.55; }
-  70% { opacity: 0; }
+  0%, 100% { opacity: 0; scale: 1; }
+  35% { opacity: 0.85; scale: 1.035; }
+  70% { opacity: 0; scale: 1.05; }
 }
 @media (prefers-reduced-motion: reduce) {
   .bzl-wire { animation: none; stroke-dashoffset: 0; }
@@ -927,4 +913,156 @@
 @keyframes bzw-ring-mobile {
   0%, 100% { opacity: 0.55; scale: 1; }
   50% { opacity: 0.15; scale: 1.18; }
+}
+
+/* ── Devices, as the ad-1 film draws them: a thin frosted-glass shell ── */
+.bzl-device {
+  --lift: 28px;
+  --blur: 64px;
+  --ambient: rgb(28 24 20 / 0.2);
+  background: rgb(255 255 255 / 0.72);
+  border: 1.5px solid rgb(255 255 255 / 0.75);
+  box-shadow:
+    inset 0 1.5px 0 rgb(255 255 255 / 0.92),
+    inset 0 -1.5px 5px rgb(28 24 20 / 0.12),
+    inset 0 0 12px rgb(255 255 255 / 0.4),
+    0 3px 8px rgb(28 24 20 / 0.1),
+    0 var(--lift) var(--blur) var(--ambient);
+  -webkit-backdrop-filter: blur(28px) saturate(1.7);
+  backdrop-filter: blur(28px) saturate(1.7);
+}
+/* the sheen across the top of the glass */
+.bzl-device::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  border-radius: inherit;
+  pointer-events: none;
+  background: linear-gradient(180deg, rgb(255 255 255 / 0.5), transparent 22%);
+}
+.bzl-device.is-phone { --lift: 22px; --blur: 50px; --ambient: rgb(28 24 20 / 0.24); }
+.bzl-device.is-tablet { --lift: 28px; --blur: 64px; --ambient: rgb(28 24 20 / 0.2); }
+
+/* ── Grain: the hero's film grain, as a cheap tiled noise that flickers like film ── */
+.bzl-grain { position: relative; isolation: isolate; }
+.bzl-grain::before {
+  content: "";
+  position: absolute;
+  inset: -50%;
+  z-index: 0;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 1.1 -0.18'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+  background-size: 220px 220px;
+  mix-blend-mode: soft-light;
+  opacity: var(--grain, 0.55);
+  animation: bzl-grain 0.9s steps(5) infinite;
+}
+.bzl-grain > * { position: relative; z-index: 1; }
+@keyframes bzl-grain {
+  0% { translate: 0 0; } 20% { translate: -3% 2%; } 40% { translate: 2% -3%; }
+  60% { translate: -2% -1%; } 80% { translate: 3% 2%; } 100% { translate: 0 0; }
+}
+
+/* ── Clay panels: the benefits as big, soft, tinted cards (clay.com-like) ── */
+.bzl-panel {
+  border-radius: clamp(1.75rem, 3vw, 2.75rem);
+  background: var(--panel, #fdeee0);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.7), 0 30px 60px -48px rgb(120 60 20 / 0.45);
+  overflow: hidden;
+}
+.bzl-panel.t-peach { --panel: linear-gradient(160deg, #fff3e7, #fde3cc); }
+.bzl-panel.t-butter { --panel: linear-gradient(160deg, #fffaeb, #fcefc7); }
+.bzl-panel.t-blush { --panel: linear-gradient(160deg, #fff4f0, #fbe1d9); }
+.bzl-panel.t-sand { --panel: linear-gradient(160deg, #fdf8f1, #f3e6d4); }
+.bzl-panel.t-apricot { --panel: linear-gradient(160deg, #fff6ec, #fbdcc0); }
+.bzl-panel { background: var(--panel); }
+@media (min-width: 768px) and (min-height: 560px) {
+  .bzl .bzl-sub.is-panel { align-content: stretch; }
+}
+
+/* ── The icon tile: soft white glass with a warm inner glow ── */
+.bzl-icon-tile {
+  background: linear-gradient(160deg, rgb(255 255 255 / 0.95), rgb(255 255 255 / 0.7));
+  box-shadow: inset 0 1px 0 #fff, 0 0 0 1px rgb(242 140 56 / 0.12), 0 10px 24px -12px rgb(236 119 9 / 0.45);
+}
+
+/* ── Animated icons (SF-Symbols-like: draw, bounce, pulse, wiggle, variable colour) ── */
+.bzl-ai * { transform-box: fill-box; }
+.bzl-ai { --cycle: 4.2s; }
+/* find */
+.bzl-ai-find .lens { transform-origin: 40% 40%; animation: ai-search var(--cycle) ease-in-out infinite; }
+.bzl-ai-find .tick { stroke-dasharray: 1; stroke-dashoffset: 1; animation: ai-draw var(--cycle) ease-out infinite; }
+@keyframes ai-search { 0%, 40%, 100% { translate: 0 0; } 10% { translate: -1.5px -1px; } 20% { translate: 1.5px 0.5px; } 30% { translate: -0.5px 1px; } }
+@keyframes ai-draw { 0%, 36% { stroke-dashoffset: 1; } 52%, 92% { stroke-dashoffset: 0; } 100% { stroke-dashoffset: 1; } }
+/* cart */
+.bzl-ai-cart .item { animation: ai-drop var(--cycle) cubic-bezier(.5, 0, .9, .5) infinite; }
+.bzl-ai-cart .cart { transform-origin: 50% 100%; animation: ai-squash var(--cycle) ease-out infinite; }
+.bzl-ai-cart .badge { transform-origin: center; animation: ai-pop var(--cycle) cubic-bezier(.3, 1.6, .5, 1) infinite; }
+@keyframes ai-drop { 0% { translate: 0 -6px; opacity: 0; } 8% { opacity: 1; } 22% { translate: 0 5px; opacity: 1; } 26%, 100% { translate: 0 5px; opacity: 0; } }
+@keyframes ai-squash { 0%, 21%, 40%, 100% { scale: 1 1; } 26% { scale: 1.06 0.9; } 32% { scale: 0.98 1.04; } }
+@keyframes ai-pop { 0%, 28% { scale: 0; } 36% { scale: 1.2; } 42%, 90% { scale: 1; } 100% { scale: 0; } }
+/* loyalty */
+.bzl-ai-loyalty .heart { transform-origin: center; animation: ai-beat var(--cycle) ease-in-out infinite; }
+.bzl-ai-loyalty .ring { stroke-dasharray: 1; animation: ai-ring var(--cycle) ease-in-out infinite; }
+.bzl-ai-loyalty .ring-head { animation: ai-fade-in var(--cycle) ease-in-out infinite; }
+@keyframes ai-beat { 0%, 30%, 100% { scale: 1; } 8% { scale: 1.22; } 15% { scale: 1; } 22% { scale: 1.14; } }
+@keyframes ai-ring { 0%, 30% { stroke-dashoffset: 1; } 55%, 92% { stroke-dashoffset: 0; } 100% { stroke-dashoffset: 1; } }
+@keyframes ai-fade-in { 0%, 50% { opacity: 0; } 56%, 92% { opacity: 1; } 100% { opacity: 0; } }
+/* clock */
+.bzl-ai-clock .minute { transform-origin: 0% 50%; animation: ai-spin-min var(--cycle) cubic-bezier(.6, 0, .2, 1) infinite; }
+.bzl-ai-clock .hour { transform-origin: 50% 100%; animation: ai-spin-hour var(--cycle) cubic-bezier(.6, 0, .2, 1) infinite; }
+@keyframes ai-spin-min { 0% { rotate: 0deg; } 40%, 100% { rotate: 720deg; } }
+@keyframes ai-spin-hour { 0% { rotate: 0deg; } 40%, 100% { rotate: 60deg; } }
+/* book */
+.bzl-ai-book .page { transform-origin: 0% 50%; animation: ai-page var(--cycle) ease-in-out infinite; }
+@keyframes ai-page { 0%, 6% { scale: 1 1; } 22% { scale: -1 1; } 26%, 100% { scale: -1 1; opacity: 0; } }
+/* care */
+.bzl-ai-care .heart { transform-origin: center; animation: ai-pop-beat var(--cycle) ease-out infinite; }
+@keyframes ai-pop-beat { 0%, 6% { scale: 0; } 16% { scale: 1.25; } 22% { scale: 1; } 30% { scale: 1.15; } 36%, 92% { scale: 1; } 100% { scale: 0; } }
+/* replay */
+.bzl-ai-replay .play { transform-origin: center; animation: ai-play var(--cycle) ease-in-out infinite; }
+.bzl-ai-replay .wave path { transform-origin: 50% 50%; animation: ai-bars var(--cycle) ease-in-out infinite; }
+.bzl-ai-replay .wave path:nth-child(2) { animation-delay: .08s; } .bzl-ai-replay .wave path:nth-child(3) { animation-delay: .16s; }
+.bzl-ai-replay .wave path:nth-child(4) { animation-delay: .24s; } .bzl-ai-replay .wave path:nth-child(5) { animation-delay: .32s; }
+@keyframes ai-play { 0%, 12% { scale: 1; opacity: 1; } 20%, 88% { scale: 0.4; opacity: 0; } 100% { scale: 1; opacity: 1; } }
+@keyframes ai-bars { 0%, 14% { opacity: 0; scale: 1 0.2; } 22% { opacity: 1; scale: 1 1; } 32% { scale: 1 0.45; } 42% { scale: 1 1.1; } 52% { scale: 1 0.6; } 62%, 84% { opacity: 1; scale: 1 1; } 92%, 100% { opacity: 0; scale: 1 0.2; } }
+/* tag */
+.bzl-ai-tag .tag { transform-origin: 25% 25%; animation: ai-swing var(--cycle) ease-in-out infinite; }
+.bzl-ai-tag .label { stroke-dasharray: 5; stroke-dashoffset: 5; animation: ai-label var(--cycle) ease-out infinite; }
+.bzl-ai-tag .l2 { animation-delay: .15s; }
+@keyframes ai-swing { 0%, 34%, 100% { rotate: 0deg; } 8% { rotate: -14deg; } 16% { rotate: 9deg; } 24% { rotate: -4deg; } }
+@keyframes ai-label { 0%, 30% { stroke-dashoffset: 5; } 44%, 90% { stroke-dashoffset: 0; } 100% { stroke-dashoffset: 5; } }
+/* chart */
+.bzl-ai-chart .bar { transform-origin: 50% 100%; animation: ai-grow var(--cycle) cubic-bezier(.3, 1.4, .5, 1) infinite; }
+.bzl-ai-chart .b2 { animation-delay: .12s; } .bzl-ai-chart .b3 { animation-delay: .24s; }
+.bzl-ai-chart .trend { stroke-dasharray: 1; stroke-dashoffset: 1; animation: ai-draw var(--cycle) ease-out infinite; }
+@keyframes ai-grow { 0%, 4% { scale: 1 0.1; } 22%, 92% { scale: 1 1; } 100% { scale: 1 0.1; } }
+/* avatar */
+.bzl-ai-avatar .spark { transform-origin: center; animation: ai-sparkle var(--cycle) ease-out infinite; }
+@keyframes ai-sparkle { 0%, 10% { scale: 0; rotate: -45deg; } 22% { scale: 1.3; rotate: 0deg; } 30%, 88% { scale: 1; } 100% { scale: 0; } }
+/* voice */
+.bzl-ai-voice .v { transform-origin: 50% 50%; animation: ai-voice 1.4s ease-in-out infinite; }
+.bzl-ai-voice .v2 { animation-delay: .12s; } .bzl-ai-voice .v3 { animation-delay: .24s; }
+.bzl-ai-voice .v4 { animation-delay: .36s; } .bzl-ai-voice .v5 { animation-delay: .48s; }
+@keyframes ai-voice { 0%, 100% { scale: 1 0.55; opacity: 0.55; } 50% { scale: 1 1; opacity: 1; } }
+/* trend */
+.bzl-ai-trend .line { stroke-dasharray: 1; stroke-dashoffset: 1; animation: ai-draw-early var(--cycle) ease-out infinite; }
+.bzl-ai-trend .head { animation: ai-head var(--cycle) cubic-bezier(.3, 1.6, .5, 1) infinite; }
+@keyframes ai-draw-early { 0% { stroke-dashoffset: 0; } 6% { stroke-dashoffset: 1; } 30%, 100% { stroke-dashoffset: 0; } }
+@keyframes ai-head { 0% { opacity: 1; } 6%, 24% { opacity: 0; translate: -2px 2px; } 32%, 100% { opacity: 1; translate: 0 0; } }
+/* headset */
+.bzl-ai-headset .w { transform-origin: 50% 50%; animation: ai-voice 1.2s ease-in-out infinite; }
+.bzl-ai-headset .w2 { animation-delay: .15s; } .bzl-ai-headset .w3 { animation-delay: .3s; }
+/* idea */
+.bzl-ai-idea .rays { animation: ai-rays var(--cycle) ease-out infinite; }
+.bzl-ai-idea .bulb { animation: ai-glow var(--cycle) ease-out infinite; }
+@keyframes ai-rays { 0%, 10% { opacity: 0; scale: 0.7; } 20% { opacity: 1; scale: 1.08; } 28%, 86% { opacity: 1; scale: 1; } 100% { opacity: 0; } }
+@keyframes ai-glow { 0%, 10% { fill: transparent; } 20%, 86% { fill: rgb(249 163 83 / 0.35); } 100% { fill: transparent; } }
+.bzl-ai-idea .rays { transform-origin: 50% 60%; }
+
+@media (prefers-reduced-motion: reduce) {
+  .bzl-grain::before { animation: none; }
+  .bzl-ai, .bzl-ai * { animation: none !important; }
+  .bzl-ai .tick, .bzl-ai .trend, .bzl-ai .line, .bzl-ai .ring, .bzl-ai .label { stroke-dashoffset: 0; }
 }
