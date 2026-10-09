@@ -8136,10 +8136,12 @@
       await waitMs(70);
       await tweenStep(270, (e, u) => {
         pill.style.width = `${lerp(tall, wDone, e).toFixed(1)}px`;
-        check.style.opacity = (1 - clamp01(u * 2.6)).toFixed(3);
-        fill.style.opacity = (1 - clamp01(u * 2.2)).toFixed(3);   // back to the white pill, its tick now in a small disc
-        faceDone.style.opacity = clamp01((u - 0.55) / 0.45).toFixed(3);   // only once the pill is wide enough (never clipped)
-        faceDone.style.scale = lerp(0.94, 1, promoEaseOut(clamp01((u - 0.55) / 0.45))).toFixed(4);
+        // widens still orange with its check, then crossfades straight into the white "Installed" (never an empty frame)
+        const x = clamp01((u - 0.55) / 0.45);
+        check.style.opacity = (1 - clamp01((u - 0.55) / 0.3)).toFixed(3);
+        fill.style.opacity = (1 - x).toFixed(3);
+        faceDone.style.opacity = x.toFixed(3);   // only once the pill is wide enough (never clipped)
+        faceDone.style.scale = lerp(0.94, 1, promoEaseOut(x)).toFixed(4);
       }, promoEaseInOut);
       const installedAt = performance.now();
 
