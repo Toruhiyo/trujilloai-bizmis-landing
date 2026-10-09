@@ -83,6 +83,15 @@ export const en = {
       shopper: "Your shopper",
       chatbotOutcome: ["Can't find it", "Doubts it", "Leaves"],
       agentOutcome: ["Finds it", "Trusts it", "Buys it"],
+      /** The shopper's patience while using the chatbot: it drains with every reply. */
+      patience: {
+        label: "Shopper patience",
+        reading: "+{s} s of reading",
+        stages: ["Reading a wall of text…", "Skimming. Still no answer.", "Opening a competitor's tab…", "Typing \"talk to a human\"…", "Gone."],
+        leftTitle: "The shopper left.",
+        leftBody: "Sale lost. Nobody noticed.",
+        cta: "Try the sales agent",
+      },
       /** The typical chatbot, interactive: verbose, dull, useless to sell. */
       bot: {
         title: "Chatbot",

@@ -47,6 +47,91 @@ const ChatbotWord = ({ text, beaten }: { text: string; beaten: boolean }) => (
   </span>
 );
 
+/** Patience left after each reply, and the shopper's face at that point. */
+const PATIENCE = [
+  { left: 72, face: "😐" },
+  { left: 50, face: "😑" },
+  { left: 32, face: "😒" },
+  { left: 14, face: "😩" },
+  { left: 0, face: "💨" },
+] as const;
+
+/**
+ * The shopper's patience, top-left of the store: drains with every chatbot
+ * reply, the face sours and the caption escalates until they're gone.
+ */
+const PatienceMeter = ({ replies }: { replies: number }) => {
+  const p = useMessages().landing.switch.patience;
+  const step = Math.min(replies, PATIENCE.length) - 1;
+  const { left, face } = PATIENCE[step];
+  return (
+    <div className="bzl-corner absolute left-3 top-[52px] z-10 w-[min(290px,calc(100%-24px))] rounded-2xl border border-[#e6e6e6] bg-white/90 px-3.5 py-3 font-[Inter,system-ui,sans-serif] shadow-[0_12px_30px_-14px_rgba(32,36,44,0.35)] backdrop-blur sm:left-4">
+      <div className="flex items-center gap-2.5">
+        <span
+          key={face}
+          aria-hidden="true"
+          className="bzl-pop text-[2rem] leading-none"
+        >
+          {face}
+        </span>
+        <div className="min-w-0 flex-1">
+          <p className="text-[10.5px] font-semibold uppercase tracking-[0.12em] text-[#8e8e93]">
+            {p.label}
+          </p>
+          <div
+            className="mt-1.5 h-2 overflow-hidden rounded-full bg-[#ececee]"
+            role="meter"
+            aria-label={p.label}
+            aria-valuemin={0}
+            aria-valuemax={100}
+            aria-valuenow={left}
+          >
+            <div
+              className="h-full rounded-full transition-[width,background-color] duration-700"
+              style={{
+                width: `${left}%`,
+                background:
+                  left > 45 ? "#8e8e93" : left > 20 ? "#c0843f" : "#c4453c",
+              }}
+            />
+          </div>
+        </div>
+      </div>
+      <p
+        key={step}
+        className="bzl-pop mt-2 text-[13px] font-medium leading-snug text-[#5a5a5a]"
+      >
+        {p.stages[step]}
+      </p>
+    </div>
+  );
+};
+
+/** Patience gone: the shopper left the store. The only way out is the sales agent. */
+const ShopperLeft = ({ onTry }: { onTry: () => void }) => {
+  const p = useMessages().landing.switch.patience;
+  return (
+    <div className="bzl-corner absolute inset-x-0 bottom-0 top-[44px] z-[15] grid place-items-center bg-[rgba(214,214,218,0.72)] px-4 pb-[52%] font-[Inter,system-ui,sans-serif] backdrop-blur-[2px] sm:pb-0 sm:pr-[360px]">
+      <div className="text-center">
+        <p aria-hidden="true" className="text-5xl">
+          👋
+        </p>
+        <p className="mt-3 text-2xl font-bold tracking-[-0.03em] text-[#2a2a2a]">
+          {p.leftTitle}
+        </p>
+        <p className="mt-1 text-[15px] text-[#6e6e73]">{p.leftBody}</p>
+        <button
+          type="button"
+          onClick={onTry}
+          className="mt-5 rounded-full bg-[var(--bzl-orange-strong)] px-5 py-2.5 text-sm font-semibold text-white shadow-[0_12px_26px_-12px_rgba(236,119,9,0.8)] transition hover:brightness-105 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-white/70"
+        >
+          {p.cta} →
+        </button>
+      </div>
+    </div>
+  );
+};
+
 /**
  * "This isn't a chatbot." — the film's Chatbot ⟷ Sales agent switch, big and
  * colour-led: chatbot is a cold grey world (the store drains to greyscale and
@@ -72,8 +157,12 @@ const SwitchSection = () => {
     return () => window.clearTimeout(t);
   }, [inView, touched, hovering]);
 
+  // How many walls of text the shopper has sat through; patience drains with each.
+  const [replies, setReplies] = useState(0);
+
   const flip = () => {
     setTouched(true);
+    setReplies(0);
     setAgent((a) => !a);
   };
 
@@ -231,10 +320,15 @@ const SwitchSection = () => {
                   </div>
                 </>
               ) : (
-                <TypicalChatbot
-                  onInteract={() => setTouched(true)}
-                  className="bzl-corner absolute bottom-3 right-3 z-10 h-[min(460px,calc(100%-64px))] w-[min(340px,calc(100%-24px))] sm:bottom-4 sm:right-4"
-                />
+                <>
+                  {replies > 0 && <PatienceMeter replies={replies} />}
+                  {replies >= PATIENCE.length && <ShopperLeft onTry={flip} />}
+                  <TypicalChatbot
+                    onInteract={() => setTouched(true)}
+                    onReply={() => setReplies((r) => r + 1)}
+                    className="bzl-corner absolute bottom-3 right-3 z-20 h-[min(460px,calc(100%-64px))] w-[min(340px,calc(100%-24px))] sm:bottom-4 sm:right-4"
+                  />
+                </>
               )}
             </StoreWindow>
           </div>

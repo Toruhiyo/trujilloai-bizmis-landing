@@ -82,6 +82,15 @@ export const es: Messages = {
       shopper: "Tu cliente",
       chatbotOutcome: ["No lo encuentra", "Duda", "Se va"],
       agentOutcome: ["Lo encuentra", "Confía", "Lo compra"],
+      /** The shopper's patience while using the chatbot: it drains with every reply. */
+      patience: {
+        label: "Paciencia del cliente",
+        reading: "+{s} s de lectura",
+        stages: ["Leyendo un muro de texto…", "Leyendo en diagonal. Sigue sin respuesta.", "Abriendo la web de la competencia…", "Escribiendo \"quiero hablar con una persona\"…", "Se fue."],
+        leftTitle: "El cliente se fue.",
+        leftBody: "Venta perdida. Nadie se dio cuenta.",
+        cta: "Prueba el agente de ventas",
+      },
       /** The typical chatbot, interactive: verbose, dull, useless to sell. */
       bot: {
         title: "Chatbot",

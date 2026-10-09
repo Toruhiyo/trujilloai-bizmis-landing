@@ -806,3 +806,17 @@
 .bzl-page [data-nav="/early-access"]:not(.text-white):not([class*="text-white/"]) {
   color: #ec7709;
 }
+
+/* The dull chatbot: "+38 s of reading" floats up off each reply, then fades. */
+.bzl-read-chip {
+  animation: bzl-read-chip 2.4s ease-out both;
+}
+@keyframes bzl-read-chip {
+  0% { opacity: 0; translate: 0 6px; scale: 0.9; }
+  12% { opacity: 1; translate: 0 -100%; scale: 1; }
+  70% { opacity: 1; translate: 0 calc(-100% - 10px); }
+  100% { opacity: 0; translate: 0 calc(-100% - 26px); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .bzl-read-chip { animation-duration: 0.01ms; opacity: 0; }
+}

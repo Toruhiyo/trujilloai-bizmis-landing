@@ -82,6 +82,15 @@ export const ca: Messages = {
       shopper: "El teu client",
       chatbotOutcome: ["No ho troba", "Dubta", "Se'n va"],
       agentOutcome: ["Ho troba", "Hi confia", "Ho compra"],
+      /** The shopper's patience while using the chatbot: it drains with every reply. */
+      patience: {
+        label: "Paciència del client",
+        reading: "+{s} s de lectura",
+        stages: ["Llegint un mur de text…", "Llegint en diagonal. Encara sense resposta.", "Obrint la web de la competència…", "Escrivint \"vull parlar amb una persona\"…", "Se n'ha anat."],
+        leftTitle: "El client se n'ha anat.",
+        leftBody: "Venda perduda. Ningú se n'ha adonat.",
+        cta: "Prova l'agent de vendes",
+      },
       /** The typical chatbot, interactive: verbose, dull, useless to sell. */
       bot: {
         title: "Xatbot",

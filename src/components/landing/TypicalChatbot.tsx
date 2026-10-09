@@ -73,11 +73,17 @@ const Thumb = ({ down }: { down?: boolean }) => (
 const TypicalChatbot = ({
   className,
   onInteract,
+  onReply,
 }: {
   className?: string;
   onInteract?: () => void;
+  /** Each bot reply, with the seconds it would take a shopper to read it. */
+  onReply?: (readSeconds: number) => void;
 }) => {
-  const bot = useMessages().landing.switch.bot;
+  const sw = useMessages().landing.switch;
+  const bot = sw.bot;
+  // "+38 s of reading", floating up off each reply
+  const [chip, setChip] = useState<{ id: number; s: number } | null>(null);
   const [open, setOpen] = useState(true);
   const [log, setLog] = useState<Msg[]>(() => [
     { id: 0, from: "bot", text: bot.greeting },
@@ -118,10 +124,13 @@ const TypicalChatbot = ({
     timer.current = window.setTimeout(
       () => {
         setTyping(false);
-        setLog((l) => [
-          ...l,
-          { id: nextId.current++, from: "bot", ...answer[intent] },
-        ]);
+        const id = nextId.current++;
+        setLog((l) => [...l, { id, from: "bot", ...answer[intent] }]);
+        // at a skimming 200 words a minute
+        const words = answer[intent].text.split(/\s+/).length;
+        const secs = Math.max(3, Math.round((words / 200) * 60));
+        setChip({ id, s: secs });
+        onReply?.(secs);
       },
       1300 + Math.random() * 700,
     );
@@ -160,6 +169,15 @@ const TypicalChatbot = ({
         className,
       )}
     >
+      {chip && (
+        <span
+          key={chip.id}
+          aria-hidden="true"
+          className="bzl-read-chip pointer-events-none absolute -top-2 left-5 z-10 rounded-full bg-[#3a3a3a] px-2.5 py-1 text-[12px] font-semibold text-white shadow-[0_8px_18px_-8px_rgba(0,0,0,0.5)]"
+        >
+          {sw.patience.reading.replace("{s}", String(chip.s))}
+        </span>
+      )}
       {open ? (
         <div className="flex h-full w-full flex-col overflow-hidden rounded-[18px] border border-[#e6e6e6] bg-white shadow-[0_18px_50px_rgba(32,36,44,0.16)]">
           {/* header */}
