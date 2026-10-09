@@ -343,3 +343,78 @@ export const Captions = ({
     </p>
   );
 };
+
+/**
+ * The real widget on a phone (trujilloai-bizmis-widget MobileLiteChat, "bar"
+ * layout): a floating glass bar at the foot of the screen with its drag
+ * handle, the avatar's head in a circle (a ring pulses while it speaks), the
+ * Volume toggle, the typed placeholder and the call button. Banners and
+ * captions stack above it, as on the real thing.
+ */
+export const MobileWidget = ({
+  agent,
+  speaking = false,
+  placeholder = "Help me find the right product.",
+  above,
+}: {
+  agent: AgentName;
+  speaking?: boolean;
+  placeholder?: string;
+  above?: ReactNode;
+}) => (
+  <div className="bzw absolute inset-x-2 bottom-2 z-20">
+    {above && (
+      <div className="absolute bottom-full left-0 right-0 mb-2 flex flex-col items-stretch gap-2">
+        {above}
+      </div>
+    )}
+    <div className="bzw-card relative rounded-3xl border pt-4">
+      <span
+        aria-hidden="true"
+        className="absolute left-1/2 top-1.5 h-1 w-8 -translate-x-1/2 rounded-full bg-black/15"
+      />
+      <div className="flex items-center gap-1.5 px-2 pb-2">
+        <span className="relative h-[42px] w-[42px] flex-shrink-0">
+          {speaking && (
+            <span
+              aria-hidden="true"
+              className="bzw-ring-mobile absolute inset-0 rounded-full border-2"
+              style={{ borderColor: ORANGE }}
+            />
+          )}
+          <span
+            className="absolute inset-0 overflow-hidden rounded-full"
+            style={{ background: `color-mix(in oklab, ${ORANGE} 16%, #fff)` }}
+          >
+            <AgentImage
+              name={agent}
+              alt=""
+              sizes="80px"
+              className="absolute left-1/2 top-[-14%] w-[135%] -translate-x-1/2"
+            />
+          </span>
+        </span>
+        <span
+          aria-hidden="true"
+          className="grid h-8 w-8 flex-shrink-0 place-items-center rounded-full border"
+          style={{
+            borderColor: `color-mix(in oklab, ${ORANGE} 30%, transparent)`,
+            background: `color-mix(in oklab, ${ORANGE} 14%, transparent)`,
+            color: ORANGE,
+          }}
+        >
+          <Volume2 className="h-4 w-4" />
+        </span>
+        <span className="min-w-0 flex-1 truncate px-1 text-sm text-neutral-400">
+          <Typewriter text={placeholder} />
+        </span>
+        <span
+          className="grid h-8 w-8 flex-shrink-0 place-items-center rounded-full text-white shadow-sm"
+          style={{ background: ORANGE }}
+        >
+          <AudioLines className="h-3.5 w-3.5" strokeWidth={2.5} />
+        </span>
+      </div>
+    </div>
+  </div>
+);

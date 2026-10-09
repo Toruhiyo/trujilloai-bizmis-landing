@@ -29,6 +29,11 @@ WEB = ROOT / "public/landing/agents"
 # wrap-around ceiling clamps it.
 STAMP = str(ROOT / "scripts/assets/bizmis-logo-white-tight.png")
 LOGO = dict(shirt_stamp=STAMP, shirt_stamp_scale=1.15)
+
+
+def store_logo(name: str) -> dict:
+    """A fictional merchant's logo (scripts/make-store-logos.py), to show the agent wearing the store's brand."""
+    return dict(shirt_stamp=str(ROOT / f"scripts/assets/store-logos/{name}.png"), shirt_stamp_scale=1.15)
 ORANGE = "#F28C38"
 WIDTHS = (360, 720, 1080)
 FALLBACK_W = 360  # PNG only at one small size: AVIF/WebP cover nearly every browser
@@ -44,15 +49,15 @@ RENDERS = {
     # Support: listening, warm.
     "support-yusuke": ("yusuke", dict(animation="nod", animation_progress=0.35, framing="head_shoulders",
                                       mesh_colors={"Shirt_Color": ORANGE}, **LOGO, expression="smile")),
-    # Personalization: real avatars in many store colours, always with the Bizmis logo.
-    "style-teo": ("teo", dict(framing="head_shoulders", mesh_colors={"Shirt_Color": "#D1001A"}, hat_color="#D1001A", **LOGO, expression="smile")),
-    "style-luca": ("luca", dict(framing="head_shoulders", mesh_colors={"Shirt_Color": "#29573F"}, **LOGO, expression="smile")),
-    "style-kiran": ("kiran", dict(framing="head_shoulders", mesh_colors={"Shirt_Color": "#A855F7"}, **LOGO, expression="smile")),
-    "style-yue": ("yue", dict(framing="head_shoulders", mesh_colors={"Shirt_Color": "#701C33"}, **LOGO, expression="smile")),
-    "style-echo": ("echo", dict(framing="head_shoulders", mesh_colors={"Shirt_Color": "#1E293B"}, **LOGO,
+    # Personalization: real avatars in many store colours, each wearing a (fictional) store's logo; Victor keeps Bizmis's.
+    "style-teo": ("teo", dict(framing="head_shoulders", mesh_colors={"Shirt_Color": "#D1001A"}, hat_color="#D1001A", **store_logo("rally"), expression="smile")),
+    "style-luca": ("luca", dict(framing="head_shoulders", mesh_colors={"Shirt_Color": "#29573F"}, **store_logo("atlas"), expression="smile")),
+    "style-kiran": ("kiran", dict(framing="head_shoulders", mesh_colors={"Shirt_Color": "#A855F7"}, **store_logo("bloom"), expression="smile")),
+    "style-yue": ("yue", dict(framing="head_shoulders", mesh_colors={"Shirt_Color": "#701C33"}, **store_logo("lumen"), expression="smile")),
+    "style-echo": ("echo", dict(framing="head_shoulders", mesh_colors={"Shirt_Color": "#1E293B"}, **store_logo("ferro"),
                                 shirt_stamp_offset_y=-0.08, expression="smile")),  # logo below the beard
-    "style-mia": ("mia", dict(framing="head_shoulders", mesh_colors={"Shirt_Color": "#D99A00"}, **LOGO, expression="smile")),
-    "style-adrian": ("adrian", dict(framing="head_shoulders", mesh_colors={"Shirt_Color": "#7FA83A"}, **LOGO, expression="smile")),
+    "style-mia": ("mia", dict(framing="head_shoulders", mesh_colors={"Shirt_Color": "#D99A00"}, **store_logo("papaya"), expression="smile")),
+    "style-adrian": ("adrian", dict(framing="head_shoulders", mesh_colors={"Shirt_Color": "#7FA83A"}, **store_logo("nordkap"), expression="smile")),
     "style-victor": ("victor", dict(framing="head_shoulders", mesh_colors={"Shirt_Color": ORANGE}, **LOGO, expression="smile")),
 }
 

@@ -867,3 +867,64 @@
     padding-block: clamp(0.75rem, 2.5svh, 2rem);
   }
 }
+
+
+/* ── Setup: the classic diagram's wiring and charge, in the film's style ── */
+.bzl-wire {
+  stroke-dasharray: 1000;
+  stroke-dashoffset: 1000;
+  animation: bzl-wire 1.1s var(--bzl-ease) var(--bzl-delay, 0ms) forwards;
+}
+@keyframes bzl-wire { to { stroke-dashoffset: 0; } }
+/* a short bright spark running down each wire on its own rhythm */
+.bzl-spark {
+  stroke-dasharray: 34 966;
+  stroke-dashoffset: 1000;
+  opacity: 0;
+  animation: bzl-spark var(--dur, 3s) cubic-bezier(0.45, 0, 0.6, 1) var(--bzl-delay, 0s) infinite;
+}
+@keyframes bzl-spark {
+  0% { stroke-dashoffset: 1000; opacity: 0; }
+  8% { opacity: 1; }
+  80% { opacity: 1; }
+  100% { stroke-dashoffset: 0; opacity: 0; }
+}
+/* the agent charging up: an aura and an orange glow over the render, breathing every 2 s */
+.bzl-charge-aura {
+  translate: -50% -50%;
+  background: radial-gradient(circle, rgba(242, 140, 56, 0.45) 0%, rgba(242, 140, 56, 0.16) 42%, transparent 70%);
+  animation: bzl-aura 2s ease-in-out infinite;
+  pointer-events: none;
+}
+.bzl-charge-aura.is-wide {
+  background: radial-gradient(circle, rgba(242, 140, 56, 0.24) 0%, rgba(242, 140, 56, 0.08) 50%, transparent 74%);
+  animation-delay: 0.12s;
+}
+@keyframes bzl-aura {
+  0%, 100% { opacity: 0; scale: 0.5; }
+  35% { opacity: 1; scale: 1; }
+  70% { opacity: 0; scale: 1.08; }
+}
+.bzl-charge-glow {
+  filter: sepia(1) saturate(7) hue-rotate(-14deg) brightness(1.08);
+  animation: bzl-glow 2s ease-in-out infinite;
+  pointer-events: none;
+}
+@keyframes bzl-glow {
+  0%, 100% { opacity: 0; }
+  35% { opacity: 0.55; }
+  70% { opacity: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .bzl-wire { animation: none; stroke-dashoffset: 0; }
+  .bzl-spark, .bzl-charge-aura, .bzl-charge-glow { animation: none; opacity: 0; }
+}
+
+/* the mobile widget's speaking ring: breathes around the avatar's head */
+.bzw-ring-mobile {
+  animation: bzw-ring-mobile 1.4s ease-in-out infinite;
+}
+@keyframes bzw-ring-mobile {
+  0%, 100% { opacity: 0.55; scale: 1; }
+  50% { opacity: 0.15; scale: 1.18; }
+}

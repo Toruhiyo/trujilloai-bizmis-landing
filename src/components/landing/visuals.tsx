@@ -3,10 +3,17 @@ import { Check, Search } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import { useMessages } from "@/i18n/LocaleProvider";
 import { useInView } from "./Reveal";
-import BizmisWidget, { Captions, NavBanner } from "./BizmisWidget";
+import BizmisWidget, {
+  Captions,
+  MobileWidget,
+  NavBanner,
+} from "./BizmisWidget";
 import type { WidgetState } from "./BizmisWidget";
 import type { AgentName } from "./AgentImage";
 import { ClayCard, ClayTile, StoreWindow } from "./clay";
+import { PhoneFrame, TabletFrame } from "./devices";
+
+const STORE_URL = "yourstore.com";
 
 /**
  * A store page with the real Bizmis widget floating in its corner, as it does
@@ -22,6 +29,7 @@ export const StoreWithWidget = ({
   tool,
   above,
   caption,
+  device = "desktop",
 }: {
   children: ReactNode;
   agent: AgentName;
@@ -29,21 +37,34 @@ export const StoreWithWidget = ({
   tool?: LucideIcon;
   above?: ReactNode;
   caption?: string;
+  /** A desktop browser window, or a tablet (the real widget keeps its desktop card from 768px up). */
+  device?: "desktop" | "tablet";
 }) => {
   const m = useMessages();
-  return (
-    <StoreWindow label={m.landing.yourStore}>
+  const Frame = device === "tablet" ? TabletFrame : null;
+  const inner = (
+    <>
       {children}
       {caption && (
         <div className="absolute inset-x-0 bottom-4 flex justify-center px-4 pr-[38%] sm:pr-[34%]">
           <Captions text={caption} className="text-[11px] sm:text-sm" />
         </div>
       )}
-      <div className="absolute bottom-3 right-3 z-10 origin-bottom-right scale-[0.5] sm:scale-[0.62]">
-        <BizmisWidget agent={agent} state={state} tool={tool} above={above} placeholder={m.landing.widget.placeholder} />
+      <div
+        className={`absolute bottom-3 right-3 z-10 origin-bottom-right ${device === "tablet" ? "scale-[0.42] sm:scale-[0.5]" : "scale-[0.5] sm:scale-[0.62]"}`}
+      >
+        <BizmisWidget
+          agent={agent}
+          state={state}
+          tool={tool}
+          above={above}
+          placeholder={m.landing.widget.placeholder}
+        />
       </div>
-    </StoreWindow>
+    </>
   );
+  if (Frame) return <Frame url={STORE_URL}>{inner}</Frame>;
+  return <StoreWindow label={m.landing.yourStore}>{inner}</StoreWindow>;
 };
 
 /** Convert: the agent searches the catalog and takes the shopper to the results. */
@@ -75,44 +96,61 @@ export const PickVisual = () => {
   );
 };
 
-/** Upsell: the pairing goes into the cart. */
+/**
+ * Upsell, on a phone: a mobile product page, the agent's "Adding to cart"
+ * banner and captions above the real mobile widget bar.
+ */
 export const BundleVisual = () => {
   const m = useMessages();
   const [ref, inView] = useInView<HTMLDivElement>(0.5);
   return (
     <div ref={ref}>
-      <StoreWithWidget
-        agent="style-mia"
-        state="speaking"
-        above={
-          inView ? (
-            <NavBanner
-              heading={m.landing.widget.addingToCart}
-              target={m.landing.widget.bundle}
-              cart
-            />
-          ) : undefined
-        }
+      <PhoneFrame
+        url={STORE_URL}
+        className="h-[min(600px,calc(100svh-var(--bzl-head,12rem)-5rem))] max-h-[600px] min-h-[420px]"
       >
-        {/* a product page: the pair on the left, the details on the right (where the widget floats) */}
-        <div className="grid grid-cols-[1.25fr_1fr] gap-5 p-5 pb-10 sm:gap-7 sm:p-7 sm:pb-12">
-          <div className="flex items-center gap-2 sm:gap-3">
-            <ClayCard shape="sphere" picked className="w-1/2" />
-            <span className="text-xl font-light text-[color-mix(in_oklab,var(--bzl-orange)_80%,#8a5a2b)]">
-              +
-            </span>
-            <ClayCard shape="slab" tint="warm" picked={inView} className="w-1/2" />
+        <div className="space-y-3 px-4 pt-3">
+          <ClayTile shape="sphere" tint="sand" className="w-full" />
+          <div aria-hidden="true" className="space-y-2">
+            <div className="bzl-tile-line h-3 w-3/4" />
+            <div className="bzl-tile-line w-1/3" />
           </div>
-          <div aria-hidden="true" className="space-y-2.5 pt-2">
-            <div className="bzl-tile-line h-3 w-4/5" />
-            <div className="bzl-tile-line w-2/5" />
-            <div className="bzl-tile-line mt-4 w-full" />
-            <div className="bzl-tile-line w-11/12" />
-            <div className="bzl-tile-line w-3/4" />
-            <div className="mt-4 h-7 w-3/5 rounded-full bg-[color-mix(in_oklab,var(--bzl-orange)_35%,#fff)]" />
+          <div className="flex items-center gap-2.5 rounded-xl bg-[var(--bzl-card)] p-2">
+            <ClayTile
+              shape="slab"
+              tint="warm"
+              picked={inView}
+              className="w-12 flex-shrink-0 rounded-lg"
+            />
+            <div aria-hidden="true" className="flex-1 space-y-1.5">
+              <div className="bzl-tile-line w-2/3" />
+              <div className="bzl-tile-line w-1/3" />
+            </div>
           </div>
         </div>
-      </StoreWithWidget>
+        <MobileWidget
+          agent="style-mia"
+          speaking
+          placeholder={m.landing.widget.placeholder}
+          above={
+            inView ? (
+              <>
+                <NavBanner
+                  heading={m.landing.widget.addingToCart}
+                  target={m.landing.widget.bundle}
+                  cart
+                />
+                <div className="flex justify-center">
+                  <Captions
+                    text={m.landing.switch.agentMessage}
+                    className="text-[11px]"
+                  />
+                </div>
+              </>
+            ) : undefined
+          }
+        />
+      </PhoneFrame>
     </div>
   );
 };
@@ -125,6 +163,7 @@ export const OrderVisual = () => {
       agent="style-luca"
       state="speaking"
       caption={m.deliveryEstimate}
+      device="tablet"
     >
       <div className="p-5 pb-16 sm:p-7 sm:pb-20">
         <div className="flex items-center gap-3">

@@ -248,7 +248,7 @@ const AvatarCarousel = ({
     >
       <div
         ref={stage}
-        className="relative mx-auto aspect-[6/5] w-full max-w-[580px] cursor-grab touch-pan-y active:cursor-grabbing"
+        className="relative mx-auto aspect-square w-full max-w-[min(580px,72svh)] cursor-grab touch-pan-y active:cursor-grabbing"
         onPointerDown={onPointerDown}
         onPointerMove={onPointerMove}
         onPointerUp={onPointerUp}
@@ -268,10 +268,10 @@ const AvatarCarousel = ({
           className="absolute bottom-[3%] left-1/2 h-[7%] w-[44%] -translate-x-1/2 rounded-[50%] bg-[radial-gradient(closest-side,rgba(28,24,20,0.22),transparent)]"
         />
 
-        {/* the name, huge and tinted, behind the ring: it slides and fades with its avatar */}
+        {/* the name, huge and tinted, above the heads: it slides and fades with its avatar */}
         <div
           aria-hidden="true"
-          className="pointer-events-none absolute inset-x-0 top-[2%] h-[40%] overflow-hidden"
+          className="pointer-events-none absolute inset-x-0 top-0 h-[25%] overflow-hidden"
         >
           {avatars.map((a, i) => {
             let off = mod(i - pos, n);
@@ -281,7 +281,7 @@ const AvatarCarousel = ({
             return (
               <span
                 key={a.name}
-                className="absolute left-1/2 top-0 whitespace-nowrap text-[clamp(4.5rem,11vw,9rem)] font-extrabold leading-none tracking-[-0.06em]"
+                className="absolute left-1/2 top-0 whitespace-nowrap text-[clamp(3rem,min(7.5vw,11svh),6.5rem)] font-extrabold leading-[0.9] tracking-[-0.06em]"
                 style={{
                   transform: `translateX(calc(-50% + ${off * -18}%))`,
                   opacity: o,
@@ -316,7 +316,7 @@ const AvatarCarousel = ({
                 key={a.name}
                 data-off={Math.round(off)}
                 aria-hidden={abs > 0.5}
-                className="absolute bottom-[5%] h-[84%] origin-bottom"
+                className="absolute bottom-[4%] h-[72%] origin-bottom"
                 style={{
                   left: `${50 + off * SPACING * 100}%`,
                   transform: `translateX(-50%) scale(${scale})`,

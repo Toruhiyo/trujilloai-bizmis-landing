@@ -287,23 +287,22 @@ const SwitchSection = () => {
           >
             <StoreWindow
               label={messages.landing.yourStore}
-              // on wide screens the store takes whatever height the section has left
-              className="md:flex md:h-[clamp(180px,calc(85svh-28.8rem),560px)] md:flex-col"
+              // on wide screens the window takes the height the section has left and,
+              // like a real browser, shows the top of a longer page: nothing is squeezed
+              className="md:h-[clamp(260px,calc(85svh-28.8rem),600px)]"
             >
               <div
                 className={cn(
-                  "transition-[filter] duration-500 md:min-h-0 md:flex-1",
+                  "transition-[filter] duration-500",
                   agent ? "grayscale-0" : "grayscale",
                 )}
               >
-                <div className="grid grid-cols-2 gap-4 p-5 sm:grid-cols-4 sm:gap-6 sm:p-8 md:h-full md:grid-rows-2 md:gap-[clamp(0.75rem,2svh,1.5rem)] md:p-[clamp(1rem,2.6svh,2rem)]">
+                <div className="grid grid-cols-2 gap-4 p-5 sm:grid-cols-4 sm:gap-6 sm:p-8">
                   {GRID.map((g) => (
                     <ClayCard
                       key={g.shape}
                       shape={g.shape}
                       tint={g.tint}
-                      className="md:flex md:min-h-0 md:flex-col"
-                      tileClassName="md:min-h-0 md:flex-1 md:aspect-auto md:[&>img]:object-contain"
                     />
                   ))}
                 </div>
