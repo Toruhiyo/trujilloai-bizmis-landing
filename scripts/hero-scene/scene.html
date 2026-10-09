@@ -1,0 +1,231 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8" />
+<title>Hero loop scene</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" />
+<style>
+  /* The /v2 hero loop (BIZ-423), frame-addressable: window.renderFrame(f) draws frame f of N (24 fps).
+     The real Bizmis widget, big: its card with the agent (avatar frames from scripts/hero-avatar-anim.py),
+     composer, volume toggle, its speaking / working states, captions, the shopper's sent message,
+     a product shortlist and the "Adding to cart" banner. ?layout=wide (1920×1080: the bottom fifth is
+     left clear for the page's copy) or ?layout=tall (1080×2160, phones: the bottom quarter is left clear for the copy). */
+  :root { --orange: #f28c38; --ink: #2a2520; --w: "Plus Jakarta Sans", Inter, system-ui, sans-serif; }
+  html, body { margin: 0; background: #000; }
+  #stage { position: relative; overflow: hidden; font-family: var(--w);
+    background: radial-gradient(60% 70% at 72% 50%, hsl(35 95% 76%) 0%, hsl(32 95% 66%) 45%, hsl(28 92% 57%) 100%); }
+  .wide #stage { width: 1920px; height: 1080px; }
+  .tall #stage { width: 1080px; height: 2160px; background: radial-gradient(80% 55% at 50% 70%, hsl(35 95% 76%) 0%, hsl(32 95% 66%) 45%, hsl(28 92% 57%) 100%); }
+  .abs { position: absolute; }
+  #cam { position: absolute; inset: 0; transform-origin: 50% 40%; }
+  /* the widget's glass, as in avatar-widget-style.css (scaled) */
+  .glass { border: 2px solid rgb(255 255 255 / .8); background-color: rgb(255 255 255 / .55);
+    background-image: linear-gradient(150deg, rgb(255 255 255 / .51), rgb(255 255 255 / 0));
+    -webkit-backdrop-filter: blur(40px) saturate(1.25); backdrop-filter: blur(40px) saturate(1.25); }
+  #card { border-radius: 34px; box-shadow: 0 60px 120px -50px rgb(120 45 0 / .55), 0 8px 30px -10px rgb(120 45 0 / .25); }
+  #cardshadow { border-radius: 50%; background: radial-gradient(closest-side, rgb(150 55 0 / .35), transparent); }
+  #stagewrap { overflow: hidden; border-radius: 34px 34px 0 0; }
+  #avatar { position: absolute; }
+  #vol { border-radius: 50%; display: grid; place-items: center; color: var(--orange); border: 2px solid color-mix(in oklab, var(--orange) 30%, transparent); background: color-mix(in oklab, var(--orange) 14%, transparent); }
+  #composer { border-radius: 40px; border: 2px solid rgb(0 0 0 / .1); background: rgb(255 255 255 / .6); display: flex; align-items: center; box-sizing: border-box; }
+  #composer .ph { flex: 1; color: #a3a3a3; font-weight: 500; white-space: nowrap; overflow: hidden; }
+  #call { border-radius: 50%; display: grid; place-items: center; color: #fff; background: var(--orange); box-shadow: 0 4px 10px rgb(0 0 0 / .12); flex: none; }
+  .glow { border-radius: 50%; background: radial-gradient(circle, rgb(242 140 56 / .32) 0%, transparent 70%); }
+  .ring { border-radius: 50%; border: 4px solid rgb(242 140 56 / .34); box-sizing: border-box; }
+  #laser { border-radius: 50%; background: conic-gradient(from 0deg, rgb(242 140 56 / 0) 0deg, rgb(242 140 56 / 0) 135deg, rgb(242 140 56 / .6) 360deg);
+    -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 7px), #000 calc(100% - 5px)); mask: radial-gradient(farthest-side, transparent calc(100% - 7px), #000 calc(100% - 5px)); }
+  #tool { border-radius: 50%; background: #fff; color: var(--orange); display: grid; place-items: center; box-shadow: 0 4px 14px rgb(0 0 0 / .18); }
+  #caps { border-radius: 28px; display: flex; flex-wrap: wrap; justify-content: center; gap: 0 .3em; font-weight: 700; color: var(--ink); box-sizing: border-box; box-shadow: 0 20px 50px -24px rgb(120 45 0 / .45); }
+  #caps i { font-style: normal; opacity: .3; }
+  #caps i.on { opacity: 1; } #caps i.now { opacity: 1; text-shadow: 0 0 18px rgb(242 140 56 / .7); }
+  #sent { border-radius: 30px 30px 8px 30px; background: var(--orange); color: #fff; font-weight: 700; box-shadow: 0 18px 40px -16px rgb(150 55 0 / .6); }
+  .prod { border-radius: 28px; display: flex; align-items: center; box-sizing: border-box; box-shadow: 0 30px 60px -28px rgb(120 45 0 / .55); background: rgb(255 255 255 / .86); border: 2px solid #fff; }
+  .prod .img { flex: none; border-radius: 20px; background: linear-gradient(160deg, #fbf3ea, #f1e1cf); display: grid; place-items: center; }
+  .prod .img img { width: 78%; height: 78%; max-width: 78%; max-height: 78%; object-fit: contain; filter: drop-shadow(0 8px 8px rgb(120 50 0 / .25)); }
+  .prod b { display: block; color: var(--ink); font-weight: 800; letter-spacing: -.01em; }
+  .prod span { color: #c25f0e; font-weight: 800; }
+  .prod small { display: block; color: #8a7b6e; font-weight: 600; }
+  .prod .pick { position: absolute; inset: -8px; border-radius: 34px; border: 5px solid var(--orange); opacity: 0; }
+  .prod .check { position: absolute; right: -16px; top: -16px; border-radius: 50%; background: var(--orange); border: 5px solid #fff; display: grid; place-items: center; color: #fff; }
+  #banner { border-radius: 28px; display: flex; align-items: center; box-sizing: border-box; box-shadow: 0 30px 60px -28px rgb(120 45 0 / .55); }
+  #banner .ic { flex: none; border-radius: 18px; background: color-mix(in oklab, var(--orange) 14%, #fff); display: grid; place-items: center; color: var(--orange); }
+  #banner .t { flex: 1; min-width: 0; line-height: 1.2; }
+  #banner .t small { display: block; color: var(--orange); font-weight: 800; letter-spacing: .08em; text-transform: uppercase; }
+  #banner .t b { display: block; color: var(--ink); font-weight: 800; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  #banner svg.cd { flex: none; }
+  #fly { position: absolute; object-fit: contain; filter: drop-shadow(0 12px 12px rgb(120 50 0 / .3)); }
+  svg.i { display: block; }
+</style>
+</head>
+<body>
+<div id="stage"><div id="cam">
+  <div class="abs" id="cardshadow"></div>
+  <div class="abs glass" id="card"></div>
+  <div class="abs glow" id="glow"></div>
+  <div class="abs ring" id="r1"></div><div class="abs ring" id="r2"></div>
+  <div class="abs" id="stagewrap"><img id="avatar" alt="" style="visibility:hidden" onload="this.style.visibility='visible'" onerror="this.style.visibility='hidden'" /></div>
+  <div class="abs" id="laser"></div>
+  <div class="abs" id="tool"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg></div>
+  <div class="abs" id="vol"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4.702a.705.705 0 0 0-1.203-.498L6.413 7.587A1.4 1.4 0 0 1 5.416 8H3a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h2.416a1.4 1.4 0 0 1 .997.413l3.383 3.384A.705.705 0 0 0 11 19.298z"/><path d="M16 9a5 5 0 0 1 0 6"/><path d="M19.364 18.364a9 9 0 0 0 0-12.728"/></svg></div>
+  <div class="abs" id="composer"><span class="ph" id="ph"></span><span id="call"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M2 10v3"/><path d="M6 6v11"/><path d="M10 3v18"/><path d="M14 8v7"/><path d="M18 5v13"/><path d="M22 10v3"/></svg></span></div>
+  <div class="abs glass" id="caps"></div>
+  <div class="abs" id="sent">A gift for my sister? She loves ceramics.</div>
+  <div class="abs prod" id="p0"><span class="img"><img src="p-capsule-b.webp" alt="" /></span><span class="tx"><b>Pebble Vase</b><small>Hand-glazed · 24 cm</small><span>$48</span></span><span class="pick"></span><span class="check"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span></div>
+  <div class="abs prod" id="p1"><span class="img"><img src="p-dome-c.webp" alt="" /></span><span class="tx"><b>Dome Lamp</b><small>Stoneware · warm light</small><span>$96</span></span><span class="pick"></span></div>
+  <div class="abs prod" id="p2"><span class="img"><img src="p-torus-b.webp" alt="" /></span><span class="tx"><b>Ring Planter</b><small>For small succulents</small><span>$39</span></span><span class="pick"></span></div>
+  <img id="fly" src="p-capsule-b.webp" alt="" />
+  <div class="abs glass" id="banner"><span class="ic"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="21" r="1"/><circle cx="19" cy="21" r="1"/><path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"/></svg></span><span class="t"><small>Adding to cart</small><b>Pebble Vase</b></span><svg class="cd" viewBox="0 0 40 40"><circle cx="20" cy="20" r="16" fill="none" stroke="rgb(242 140 56 / .22)" stroke-width="5"/><circle id="cdarc" cx="20" cy="20" r="16" fill="none" stroke="#f28c38" stroke-width="5" stroke-linecap="round" pathLength="100" stroke-dasharray="100" transform="rotate(-90 20 20)"/></svg></div>
+</div></div>
+<script>
+  const N = 336; // 14 s at 24 fps
+  const q = new URLSearchParams(location.search);
+  const layout = q.get("layout") || "wide";
+  document.documentElement.className = layout;
+  const FRAMES = q.get("frames") || "../../tmp/hero-anim/frames2";
+  const PLACEHOLDER = "Ask me anything…";
+  const CAPS = [[110, 176, "Lovely! These three are handmade,"], [180, 244, "and they all ship by Friday."]];
+
+  // geometry (px in the stage); the widget card is the real 288×296 card at k×
+  const L = layout === "wide"
+    ? { k: 2.15, card: { x: 750, y: 112 }, w: 590, h: 740, prods: { x: 380, y: 230, w: 340, gap: 146 }, sent: { left: 1372, y: 200 }, banner: { x: 1372, y: 590, w: 380 }, font: 0.9 }
+    : { k: 3.0, card: { x: 140, y: 540 }, w: 800, h: 980, prods: { x: 80, y: 250, w: 300, gap: 0, row: true, h: 260 }, sent: { right: 1000, y: 330 }, banner: { x: 140, y: 410, w: 800 }, font: 1.15 };
+
+  const $ = (id) => document.getElementById(id);
+  const clamp = (v, a = 0, b = 1) => Math.min(b, Math.max(a, v));
+  const ramp = (f, a, b) => clamp((f - a) / (b - a));
+  const ease = (t) => t * t * (3 - 2 * t);
+  const spring = (t) => (t <= 0 ? 0 : t >= 1.6 ? 1 : 1 - Math.exp(-6 * t) * Math.cos(9 * t));
+  const box = (el, x, y, w, h) => Object.assign(el.style, { left: `${x}px`, top: `${y}px`, width: `${w}px`, height: `${h}px` });
+  const win = (f, a, b, fin = 8, fout = 10) => Math.min(ease(ramp(f, a, a + fin)), 1 - ease(ramp(f, b - fout, b)));
+
+  function layoutStatic() {
+    const { card, w, h, k } = L;
+    const comp = 46 * k;                         // composer pill height
+    const pad = 12 * k;
+    box($("card"), card.x, card.y, w, h);
+    box($("cardshadow"), card.x - 40, card.y + h - 40, w + 80, 120);
+    box($("vol"), card.x + w - 8 * k - 34 * k, card.y + 8 * k, 34 * k, 34 * k);
+    $("vol").querySelector("svg").style.width = $("vol").querySelector("svg").style.height = `${16 * k}px`;
+    box($("composer"), card.x + pad, card.y + h - pad - comp, w - 2 * pad, comp);
+    Object.assign($("composer").style, { padding: `0 ${6 * k}px 0 ${16 * k}px`, gap: `${8 * k}px` });
+    $("ph").style.fontSize = `${14 * k}px`;
+    $("ph").textContent = PLACEHOLDER;
+    box($("call"), 0, 0, 34 * k, 34 * k); $("call").style.position = "static";
+    $("call").querySelector("svg").style.width = $("call").querySelector("svg").style.height = `${15 * k}px`;
+    // the agent's stage: the card above the composer
+    const st = { x: card.x, y: card.y, w, h: h - comp - pad * 1.2 };
+    box($("stagewrap"), st.x, st.y, st.w, st.h);
+    const ah = st.h * 1.18, aw = ah * (1100 / 1200);
+    box($("avatar"), (st.w - aw) / 2, st.h - ah * 0.9, aw, ah);
+    L.head = { x: card.x + w / 2, y: st.y + st.h - ah * 0.9 + ah * 0.27 };
+    const tool = $("tool");
+    box(tool, 0, 0, 30 * k, 30 * k);
+    tool.querySelector("svg").style.width = tool.querySelector("svg").style.height = `${15 * k}px`;
+    // captions, just above the composer
+    const cw = w - 2 * pad - 20;
+    Object.assign($("caps").style, { left: `${card.x + pad + 10}px`, top: `${card.y + h - pad - comp - 30 - 34 * k}px`, width: `${cw}px`, padding: `${7 * k}px ${12 * k}px`, fontSize: `${15.5 * k * L.font * 0.72}px`, lineHeight: 1.3 });
+    // shopper's message
+    const s = $("sent");
+    Object.assign(s.style, { fontSize: `${30 * L.font}px`, padding: "22px 30px", maxWidth: layout === "wide" ? "380px" : "560px", top: `${L.sent.y}px` });
+    if (L.sent.left != null) Object.assign(s.style, { left: `${L.sent.left}px`, borderRadius: "30px 30px 30px 8px" });
+    else s.style.right = `${(layout === "wide" ? 1920 : 1080) - L.sent.right}px`;
+    // products
+    for (let i = 0; i < 3; i++) {
+      const p = $(`p${i}`);
+      const pw = L.prods.w, ph = L.prods.h || 128;
+      const x = L.prods.row ? L.prods.x + i * (pw + 20) : L.prods.x;
+      const y = L.prods.row ? L.prods.y : L.prods.y + i * L.prods.gap;
+      box(p, x, y, pw, ph);
+      Object.assign(p.style, { padding: layout === "wide" ? "16px" : "18px", gap: "18px", flexDirection: layout === "wide" ? "row" : "column", textAlign: layout === "wide" ? "left" : "center" });
+      const im = p.querySelector(".img"); const s_ = layout === "wide" ? 96 : 130; box(im, 0, 0, s_, s_); im.style.position = "static";
+      Object.assign(im.querySelector("img").style, { width: `${s_ * 0.78}px`, height: `${s_ * 0.78}px` });
+      p.querySelector("b").style.fontSize = `${layout === "wide" ? 23 : 24}px`;
+      p.querySelector("small").style.fontSize = `${layout === "wide" ? 18 : 18}px`;
+      p.querySelector("span.tx > span").style.fontSize = `${layout === "wide" ? 24 : 24}px`;
+      const ck = p.querySelector(".check"); if (ck) { box(ck, 0, 0, 56, 56); Object.assign(ck.style, { left: "auto", top: "-18px", right: "-18px" }); ck.querySelector("svg").style.width = ck.querySelector("svg").style.height = "26px"; }
+      L[`p${i}`] = { x: x + pw / 2, y: y + ph / 2 };
+    }
+    const b = $("banner");
+    box(b, L.banner.x, L.banner.y, L.banner.w, 116);
+    Object.assign(b.style, { padding: "0 20px", gap: "18px" });
+    box(b.querySelector(".ic"), 0, 0, 72, 72); b.querySelector(".ic").style.position = "static";
+    b.querySelector(".ic svg").style.width = b.querySelector(".ic svg").style.height = "34px";
+    b.querySelector(".t small").style.fontSize = "15px"; b.querySelector(".t b").style.fontSize = layout === "wide" ? "23px" : "26px";
+    b.querySelector("svg.cd").style.width = b.querySelector("svg.cd").style.height = "52px";
+  }
+
+  async function renderFrame(f) {
+    const { k } = L;
+    const ph = (f / N) * Math.PI * 2;
+    $("cam").style.transform = `scale(${1.035 - 0.035 * Math.cos(ph)}) translate(${(-6 * Math.sin(ph)).toFixed(2)}px, ${(4 * Math.sin(ph * 2)).toFixed(2)}px)`;
+    const av = $("avatar");
+    const src = `${FRAMES}/f_${String(f).padStart(4, "0")}.png`;
+    if (av.getAttribute("src") !== src) { av.setAttribute("src", src); await av.decode().catch(() => {}); }
+
+    // speaking: glow + two rings around the head (the widget's speaking state)
+    const speak = Math.max(win(f, 104, 246), win(f, 252, 296));
+    const H = L.head;
+    const gs = 170 * k * (1 + 0.04 * Math.sin(f / 4));
+    box($("glow"), H.x - gs / 2, H.y - gs / 2, gs, gs); $("glow").style.opacity = speak;
+    ["r1", "r2"].forEach((id, i) => {
+      const p = ((f + i * 26) % 52) / 52; const r = 120 * k * (0.8 + 0.65 * p);
+      box($(id), H.x - r / 2, H.y - r / 2, r, r); $(id).style.opacity = speak * 0.9 * (1 - p);
+    });
+
+    // working: the laser orbiting the head with the search tool at its tip (while it thinks)
+    const work = win(f, 34, 104, 8, 8);
+    const ls = 150 * k;
+    const rot = (f / 58) * 360;
+    box($("laser"), H.x - ls / 2, H.y - ls / 2, ls, ls); Object.assign($("laser").style, { opacity: work, transform: `rotate(${rot}deg)` });
+    const tr = rot * Math.PI / 180, ts = 30 * k;
+    box($("tool"), H.x + Math.sin(tr) * ls / 2 - ts / 2, H.y - Math.cos(tr) * ls / 2 - ts / 2, ts, ts); $("tool").style.opacity = work;
+
+    // captions: one chunk at a time, spoken words solid, the current one glowing
+    const c = CAPS.find(([a, b]) => f >= a - 4 && f < b + 2);
+    const caps = $("caps");
+    if (c) {
+      const [a, b, text] = c; const words = text.split(" ");
+      const k_ = Math.floor(((f - a) / (b - 10 - a)) * words.length);
+      caps.innerHTML = words.map((w, j) => `<i class="${j < k_ ? "on" : j === k_ ? "now" : ""}">${w}</i>`).join(" ");
+      caps.style.opacity = Math.min(ease(ramp(f, a - 4, a + 2)), 1 - ease(ramp(f, b - 4, b + 2)));
+    } else caps.style.opacity = 0;
+
+    // the shopper's message, sent: rises in, floats up and away
+    const st = ease(ramp(f, 4, 16)), sa = ease(ramp(f, 52, 70));
+    Object.assign($("sent").style, { opacity: st * (1 - sa), transform: `translateY(${(1 - st) * 30 - sa * 60}px) scale(${0.96 + 0.04 * st})` });
+
+    // the shortlist pops in while it talks; the first one is picked and flies to the cart
+    const out = ease(ramp(f, 296, 316));
+    for (let i = 0; i < 3; i++) {
+      const p = $(`p${i}`);
+      const sp = spring((f - (124 + i * 10)) / 13);
+      const picked = i === 0;
+      const pickT = ease(ramp(f, 208, 218));
+      const gone = picked ? ease(ramp(f, 236, 246)) : 0;
+      const dim = picked ? 0 : pickT;
+      const bob = Math.sin((f + i * 17) / 15) * 4;
+      let o = clamp(sp) * (1 - out) * (1 - gone) * (1 - 0.5 * dim);
+      if (f < 124 + i * 10) o = 0;
+      Object.assign(p.style, { opacity: o, transform: `translate(${(1 - clamp(sp)) * 60}px, ${bob}px) scale(${(0.8 + 0.2 * sp) * (picked ? 1 + 0.04 * pickT * (1 - gone) : 1 - 0.04 * dim)})` });
+      p.querySelector(".pick").style.opacity = picked ? pickT * (1 - gone) : 0;
+      const ck = p.querySelector(".check"); if (ck) ck.style.transform = `scale(${spring((f - 212) / 10)})`;
+    }
+    // "Adding to cart" with its countdown, as the widget shows it
+    const bIn = spring((f - 240) / 12) * (1 - out);
+    Object.assign($("banner").style, { opacity: clamp(bIn), transform: `translateY(${(1 - clamp(bIn)) * 24}px) scale(${0.92 + 0.08 * clamp(bIn)})` });
+    $("cdarc").style.strokeDashoffset = 100 * ease(ramp(f, 248, 300));
+    // the picked product flies into the banner
+    const ft = ramp(f, 236, 252);
+    const p0 = L.p0, bx = L.banner.x + 56, by = L.banner.y + 58;
+    const fx = p0.x + (bx - p0.x) * ease(ft), fy = p0.y + (by - p0.y) * ease(ft) - Math.sin(ft * Math.PI) * 80;
+    const fs = 110 - 50 * ft;
+    Object.assign($("fly").style, { left: `${fx - fs / 2}px`, top: `${fy - fs / 2}px`, width: `${fs}px`, height: `${fs}px`, opacity: f >= 236 && f < 252 ? 1 : 0 });
+  }
+
+  layoutStatic();
+  window.renderFrame = renderFrame;
+  window.N = N;
+  renderFrame(Number(q.get("f") || 0));
+</script>
+</body>
+</html>

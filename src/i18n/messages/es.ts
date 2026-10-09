@@ -67,6 +67,7 @@ export const es: Messages = {
     region: "Vídeo de Bizmis",
     quality: "Calidad",
     auto: "Auto",
+    close: "Cerrar el vídeo",
   },
 
   /** The film-led landing (/v2): copy it adds to the classic landing's messages. */

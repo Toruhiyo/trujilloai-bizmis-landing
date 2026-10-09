@@ -35,3 +35,31 @@ export const HERO_FILM = {
    */
   endFrameCta: { left: 0.37, top: 0.43, width: 0.26, height: 0.23 },
 } as const;
+
+/**
+ * The hero's own silent loop (BIZ-423), made for the hero rather than cut
+ * from the film: the real widget, big, with its agent listening, searching,
+ * talking (captions) and adding a product to the cart. It fills the hero:
+ * `wide` from lg up (its left side kept clear for the copy), `tall` (1:2) on
+ * phones (its top third kept clear). The avatar is rendered in Blender by
+ * scripts/hero-avatar-anim.py, the widget around it by scripts/hero-scene,
+ * recorded by scripts/capture-hero-loop.mjs, encoded by scripts/encode-hero-loop.sh.
+ */
+export const HERO_LOOP = {
+  wide: {
+    poster: "/hero/loop-wide-poster.jpg",
+    aspect: 16 / 9,
+    rungs: [
+      { height: 720, mp4: "/hero/loop-wide-720.mp4", webm: "/hero/loop-wide-720.webm" },
+      { height: 1080, mp4: "/hero/loop-wide-1080.mp4", webm: "/hero/loop-wide-1080.webm" },
+    ],
+  },
+  tall: {
+    poster: "/hero/loop-tall-poster.jpg",
+    aspect: 1 / 2,
+    rungs: [
+      { height: 1280, mp4: "/hero/loop-tall-1280.mp4", webm: "/hero/loop-tall-1280.webm" },
+      { height: 1920, mp4: "/hero/loop-tall-1920.mp4", webm: "/hero/loop-tall-1920.webm" },
+    ],
+  },
+};
