@@ -56,21 +56,21 @@
   const PROMO_SYNC_ACTION = 'charge_up';   // crouch, two gulps of energy, release (2.4 s)
   const PROMO_YOURSTORE_HOLD_MS = 900;
   const PROMO_YOURSTORE_DIVE_MS = 1000;
-  // v22 sync: the store's Shopify areas as Apple-like icon tiles around the clerk.
-  // x/y: the tile's centre as a share of the canvas. glyph: SF-Symbols-like strokes
-  // on a 24-unit grid (our own drawings, not Shopify's assets).
+  // v22 sync: the store's Shopify areas as the film's peach orbs around the clerk.
+  // x/y: the orb's centre as a share of the canvas (the v9 ring, Catalog and Website
+  // on top). glyph: thin SF-Symbols-like strokes on a 24-unit grid (our own drawings).
   const PROMO_SYNC_PARTS = [
-    { key: 'catalog', label: 'Catalog', x: 0.3, y: 0.27,
+    { key: 'catalog', label: 'Catalog', x: 0.345, y: 0.215,
       glyph: '<rect x="3.5" y="3.5" width="7" height="7" rx="2"/><rect x="13.5" y="3.5" width="7" height="7" rx="2"/><rect x="3.5" y="13.5" width="7" height="7" rx="2"/><path d="M13.5 13.5h3.9l3.4 3.4-3.9 3.9-3.4-3.4z"/><circle class="is-dot" cx="15.6" cy="15.6" r="1"/>' },
-    { key: 'website', label: 'Website', x: 0.7, y: 0.27,
+    { key: 'website', label: 'Website', x: 0.655, y: 0.215,
       glyph: '<rect x="2.75" y="4" width="18.5" height="16" rx="3.2"/><path d="M2.75 8.7h18.5"/><circle class="is-dot" cx="5.7" cy="6.35" r=".8"/><circle class="is-dot" cx="8.1" cy="6.35" r=".8"/><circle class="is-dot" cx="10.5" cy="6.35" r=".8"/><rect x="6" y="11.6" width="5.2" height="5.2" rx="1.2"/><path d="M14 12.6h4M14 15.8h2.6"/>' },
-    { key: 'customers', label: 'Customers', x: 0.235, y: 0.55,
+    { key: 'customers', label: 'Customers', x: 0.19, y: 0.5,
       glyph: '<circle cx="9.2" cy="8.3" r="3.4"/><path d="M3.1 19.8c.5-3.5 3-5.8 6.1-5.8s5.6 2.3 6.1 5.8"/><path d="M15.3 5.1a3.2 3.2 0 0 1 .2 6.3"/><path d="M17.6 14.4c1.9.7 3.1 2.6 3.4 5.4"/>' },
-    { key: 'policies', label: 'Policies', x: 0.765, y: 0.55,
+    { key: 'policies', label: 'Policies', x: 0.81, y: 0.5,
       glyph: '<path d="M14.2 3H7.6a2.1 2.1 0 0 0-2.1 2.1v13.8A2.1 2.1 0 0 0 7.6 21h8.8a2.1 2.1 0 0 0 2.1-2.1V7.3z"/><path d="M14.2 3v3c0 .7.6 1.3 1.3 1.3h3"/><path d="M8.9 10.6h4.2"/><path d="M8.9 15.3l2.1 2.1 4-4.2"/>' },
-    { key: 'orders', label: 'Orders', x: 0.3, y: 0.83,
+    { key: 'orders', label: 'Orders', x: 0.345, y: 0.785,
       glyph: '<path d="M12 2.9l7.9 4.2v9.8L12 21.1l-7.9-4.2V7.1z"/><path d="M4.3 7.2 12 11.3l7.7-4.1M12 11.3v9.6"/><path d="M8.1 5 16 9.2"/>' },
-    { key: 'discounts', label: 'Discounts', x: 0.7, y: 0.83,
+    { key: 'discounts', label: 'Discounts', x: 0.655, y: 0.785,
       glyph: '<path d="M3.5 11.6V5.3c0-1 .8-1.8 1.8-1.8h6.3c.5 0 .9.2 1.3.5l7.5 7.5c.7.7.7 1.8 0 2.5l-6.4 6.4c-.7.7-1.8.7-2.5 0L4 12.9c-.3-.4-.5-.8-.5-1.3z"/><circle class="is-dot" cx="7.6" cy="7.6" r="1.15"/><path d="M10.6 15.7l4.8-4.8"/><circle cx="11.2" cy="11.4" r="1"/><circle cx="14.8" cy="15.1" r="1"/>' },
   ];
   const PROMO_REEL_ORANGE_MS = 0;
@@ -7983,19 +7983,19 @@
     }
 
     // "It all takes just one click. And your whole store stays in sync... automatically."
-    // v22: the click is shown. A Shopify "Install" button comes in, a macOS pointer
-    // glides to it and presses it on "one click" (press, glow, focus ring, click),
-    // the button morphs Install -> progress ring -> check -> "Installed", then folds
-    // into the clerk's chest: the clerk appears and the store's six areas spring out
-    // as Apple-like icon tiles. Light runs along a line from every tile into the
-    // clerk (each tile ticks as its line lands), the scene settles (soft pulses keep
-    // running in along the lines) and "Always in sync" writes in on "automatically".
+    // v22: the click is shown. The landing's white "Install" pill (orange Shopify bag)
+    // comes in, the film's pointer glides to it and presses it on "click" (press, peach
+    // bloom, click), the button morphs Install -> progress ring -> check -> "Installed",
+    // then folds into the clerk's chest: the clerk appears and the store's six areas
+    // pop out as the film's peach orbs. Fine dashed lines (the landing's Setup flow)
+    // carry soft sparks into the clerk, each orb ticks as its spark lands, the dashes
+    // keep flowing, and "Always in sync" writes in on "automatically".
     // Stepped per frame only (tweenStep, one rAF loop on performance.now): export-safe.
     async playSyncScene() {
       if (prefersReducedMotion()) return;
       const canvas = this.root.querySelector('[data-promo-canvas]') || this.root;
       const scene = document.createElement('div');
-      scene.className = 'promo-sync is-install';
+      scene.className = 'promo-sync is-orbs is-install';
       const tick = '<svg viewBox="0 0 24 24" aria-hidden="true"><path pathLength="1" d="M6.4 12.6l3.6 3.6 7.6-7.8"/></svg>';
       scene.innerHTML = `
         <div class="promo-sync__glow"></div>
@@ -8015,7 +8015,7 @@
             <span class="promo-sync__face is-install"><svg class="promo-sync__bag" viewBox="0 0 24 24" aria-hidden="true"><path d="${PROMO_SHOPIFY_BAG}"/></svg><span>Install</span></span>
             <svg class="promo-sync__progress" viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="13.5"/><circle pathLength="1" cx="20" cy="20" r="13.5"/></svg>
             <span class="promo-sync__check">${tick}</span>
-            <span class="promo-sync__face is-done">${tick}<span>Installed</span></span>
+            <span class="promo-sync__face is-done"><span class="promo-sync__disc">${tick}</span><span>Installed</span></span>
             <span class="promo-sync__gloss"></span>
           </span>
         </div>
@@ -8052,10 +8052,10 @@
         const x0 = p.x * VW; const y0 = p.y * VH;
         const d = `M${x0.toFixed(1)} ${y0.toFixed(1)}C${lerp(x0, cx, 0.45).toFixed(1)} ${y0.toFixed(1)} ${lerp(x0, cx, 0.6).toFixed(1)} ${cy.toFixed(1)} ${cx.toFixed(1)} ${cy.toFixed(1)}`;
         const g = el('g', { class: 'promo-sync__line' }, wires);
-        const base = el('path', { d, pathLength: 1, class: 'is-base' }, g);
+        const base = el('path', { d, class: 'is-base' }, g);   // a fine dashed line (the v2 landing's Setup flow)
         const shine = el('path', { d, pathLength: 1, class: 'is-shine-glow', filter: 'url(#promo-sync-soft)' }, g);
         const sheen = el('path', { d, pathLength: 1, class: 'is-shine' }, g);
-        const sparks = [0, 1, 2].map(() => ({ glow: el('circle', { r: 14, class: 'is-spark-glow', filter: 'url(#promo-sync-soft)' }, g), dot: el('circle', { r: 5.5, class: 'is-spark' }, g) }));
+        const sparks = [0, 1, 2].map(() => ({ glow: el('circle', { r: 10, class: 'is-spark-glow', filter: 'url(#promo-sync-soft)' }, g), dot: el('circle', { r: 3.6, class: 'is-spark' }, g) }));
         return { base, shine, sheen, sparks, len: base.getTotalLength(), start: Infinity, landAt: null };
       });
 
@@ -8076,8 +8076,9 @@
           const t = now - line.start;
           if (t < 0) return;
           const drawn = promoEaseInOut(clamp01(t / PROMO_SYNC_LINE_DRAW_MS));
-          line.base.style.strokeDasharray = `${drawn.toFixed(4)} 1`;
-          line.base.style.opacity = drawn > 0.002 ? '1' : '0';   // a zero dash still paints its round cap
+          // the dashes flow into the clerk, always (as on the landing's Setup section)
+          line.base.style.opacity = (0.6 * drawn).toFixed(3);
+          line.base.style.strokeDashoffset = (-t * 0.05).toFixed(2);
           // the burst: three sparks run in, gathering speed into the clerk
           line.sparks.forEach((s, k) => {
             const u = (t - 100 - k * 150) / PROMO_SYNC_STREAM_MS;
@@ -8175,6 +8176,7 @@
       await tweenStep(300, (e, u) => {
         pill.style.width = `${lerp(tall, wDone, e).toFixed(1)}px`;
         check.style.opacity = (1 - clamp01(u * 2.6)).toFixed(3);
+        fill.style.opacity = (1 - clamp01(u * 2.2)).toFixed(3);   // back to the white pill, its tick now in a small disc
         faceDone.style.opacity = clamp01((u - 0.55) / 0.45).toFixed(3);   // only once the pill is wide enough (never clipped)
         faceDone.style.scale = lerp(0.94, 1, promoEaseOut(clamp01((u - 0.55) / 0.45))).toFixed(4);
       }, promoEaseInOut);
@@ -8218,7 +8220,7 @@
       await take.at('automatically', 'start', -80);
       const chip = document.createElement('div');
       chip.className = 'promo-sync__always';
-      chip.innerHTML = `<span class="promo-sync__always-glyph"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19.5 12a7.5 7.5 0 0 1-12.9 5.2M4.5 12a7.5 7.5 0 0 1 12.9-5.2"/><path d="M17.6 3.4v3.7h-3.7M6.4 20.6v-3.7h3.7"/></svg></span><span>Always in sync</span>`;
+      chip.innerHTML = `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19.5 12a7.5 7.5 0 0 1-12.9 5.2M4.5 12a7.5 7.5 0 0 1 12.9-5.2"/><path d="M17.6 3.4v3.7h-3.7M6.4 20.6v-3.7h3.7"/></svg><span>Always in sync</span>`;
       scene.appendChild(chip);
       st.chip = chip.querySelector('svg'); st.chipAt = performance.now();
       promoSfx('ui-tick');
