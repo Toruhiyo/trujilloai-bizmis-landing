@@ -24,7 +24,7 @@ from marketing.render import render_avatar  # noqa: E402
 
 RAW = ROOT / "tmp/avatar-renders"
 WEB = ROOT / "public/landing/agents"
-# Original illustration with the selected T wordmark, tightly framed.
+# Original illustration with the selected S2-C wordmark, tightly framed.
 # Keep the existing chest placement and scale; only the branding changes.
 STAMP = str(ROOT / "scripts/assets/bizmis-logo-white-tight.png")
 LOGO = dict(shirt_stamp=STAMP, shirt_stamp_scale=1.15)

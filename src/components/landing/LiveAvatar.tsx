@@ -22,7 +22,7 @@ import { cn } from "@/lib/utils";
 const CDN = "https://cdn.bizmis.ai/common/avatars/models";
 /** Same file and version as the widget (trujilloai-bizmis-widget avatar-ui-utils.ts). */
 const ANIMATIONS_URL = `${CDN}/avatar-animations.glb?v=561`;
-/** Original illustration with the selected T wordmark, shared with the static shirt renders. */
+/** Original illustration with the selected S2-C wordmark, shared with the static shirt renders. */
 const LOGO_STAMP_URL = "/landing/bizmis-shirt-stamp.png";
 /**
  * Stamp size/placement in the widget's units, tuned by eye to match the static

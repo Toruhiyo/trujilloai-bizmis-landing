@@ -54,7 +54,7 @@ const EMAIL_BANNER_WAVEFORM_H_PX = 128;
 const EMAIL_BANNER_WAVEFORM_DISPLAY_H_PX = 120;
 /** Fixed banner height — logos pinned to the top row, the big "Early Access Invite" title block vertically centered below them. */
 const EMAIL_BANNER_H_PX = 188;
-/** Original illustration with the selected T wordmark in the header strip (right). */
+/** Original illustration with the selected S2-C wordmark in the header strip (right). */
 const EMAIL_BANNER_BIZMIS_WORDMARK_PX = 132;
 const EMAIL_BANNER_PAD_X_PX = 24;
 /** Top padding for the logo row (logos sit at the top edge so they never overlap the centered title). */
