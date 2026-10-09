@@ -396,10 +396,10 @@ ${combinedImageHtml}
 </tr>`;
 
   // #1 All-mail: a solid branded band — a table-cell bgcolor, which Outlook
-  // honors — gives a real visual anchor that survives image-blocking AND Word.
+  // honors — keeps the store title readable even when images are blocked.
   const bandRow = `<tr>
 <td bgcolor="${FOREGROUND_HEX}" align="center" style="background-color:${FOREGROUND_HEX};padding:26px 32px;">
-${buildTitleBandHtml(storeName)}
+${buildTitleBandHtml(storeName, baseUrl)}
 </td>
 </tr>`;
 
@@ -478,11 +478,10 @@ ${innerRows}
  * Title for the all-mail branded band (#1): `<Store> × bizmis` on a dark band,
  * with the `EARLY ACCESS INVITE` eyebrow beneath. Renders on the dark
  * `FOREGROUND_HEX` band, so the store name is white and `bizmis` keeps the brand
- * orange (which would vanish on a light band). Real text — no image — so it
- * survives both image-blocking and Outlook's Word engine. The store-name accent
- * is fixed (the per-lead accent can't be baked into a single Instantly template).
+ * orange. The selected wordmark is a transparent PNG for email compatibility;
+ * its alt text provides the name when images are blocked.
  */
-function buildTitleBandHtml(storeName: string): string {
+function buildTitleBandHtml(storeName: string, baseUrl: string): string {
   const c = EARLY_ACCESS_EMAIL_COPY;
   const base = `font-family:${SYSTEM_FONT_STACK};font-size:22px;font-weight:700;line-height:1.3;letter-spacing:-0.005em;`;
   const sep = `${base}font-weight:400;color:${MUTED_LIGHT_HEX};`;
@@ -490,7 +489,7 @@ function buildTitleBandHtml(storeName: string): string {
   return `<p style="margin:0;text-align:center;${base}color:#ffffff;">` +
     `${storeName}` +
     `<span style="${sep}">&nbsp;${escapeHtml(c.inviteTitleBrandLeadSeparator)}&nbsp;</span>` +
-    `<span style="${base}color:${BIZMIS_PRIMARY_HEX};">${escapeHtml(c.inviteTitleBrandLead)}</span>` +
+    `<img src="${escapeAttr(absUrl(baseUrl, "/images/bizmis-wordmark-orange-tight.png"))}" alt="${escapeAttr(c.inviteTitleBrandLead)}" width="88" height="23" style="display:inline-block;width:88px;height:auto;vertical-align:middle;border:0;" />` +
     `</p>` +
     `<p style="margin:8px 0 0 0;text-align:center;${eyebrow}">${escapeHtml(c.inviteTitleEyebrow)}</p>`;
 }

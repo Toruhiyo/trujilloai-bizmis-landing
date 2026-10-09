@@ -18,11 +18,11 @@ const HEIGHT_CLASSES: Record<LogoSize, string> = {
   lg: "h-10 sm:h-12",
 };
 
-const FULL_LOGO_MASK_URL = "/images/bizmis-logo-full-white-transparent.png";
-const AVATAR_MASK_URL = "/images/bizmis-logo-white-transparent.png";
+const FULL_LOGO_MASK_URL = "/images/bizmis-logo-full-white-transparent.svg";
+const LETTER_MASK_URL = "/images/bizmis-logo-white-transparent.svg";
 
 const FULL_LOGO_ASPECT = "1948 / 640";
-const AVATAR_ASPECT = "1 / 1";
+const LETTER_ASPECT = "1 / 1";
 
 const VARIANT_TINT: Record<LogoVariant, string> = {
   white: "#ffffff",
@@ -38,8 +38,8 @@ const Logo = ({
   onClick,
 }: LogoProps) => {
   const Component = onClick ? "button" : "div";
-  const maskUrl = showText ? FULL_LOGO_MASK_URL : AVATAR_MASK_URL;
-  const aspectRatio = showText ? FULL_LOGO_ASPECT : AVATAR_ASPECT;
+  const maskUrl = showText ? FULL_LOGO_MASK_URL : LETTER_MASK_URL;
+  const aspectRatio = showText ? FULL_LOGO_ASPECT : LETTER_ASPECT;
   const color = tintColor ?? VARIANT_TINT[variant];
 
   return (

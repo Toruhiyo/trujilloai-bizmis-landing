@@ -11,6 +11,7 @@ that looks sharp, plus a small 360 px PNG fallback and a tiny blurred placeholde
 (<name>-lqip.webp) shown while the real image loads on slow connections.
 """
 import json
+import hashlib
 import sys
 from pathlib import Path
 
@@ -23,10 +24,8 @@ from marketing.render import render_avatar  # noqa: E402
 
 RAW = ROOT / "tmp/avatar-renders"
 WEB = ROOT / "public/landing/agents"
-# The v1 white wordmark, trimmed to its ink and at full resolution: the studio's
-# 308 px copy carries ~20% transparent padding, which printed the logo small and
-# soft. 1.15 is the largest a wordmark this wide can be before the renderer's
-# wrap-around ceiling clamps it.
+# Selected T wordmark, tightly framed at the vector master's native resolution.
+# Keep the existing chest placement and scale; only the branding changes.
 STAMP = str(ROOT / "scripts/assets/bizmis-logo-white-tight.png")
 LOGO = dict(shirt_stamp=STAMP, shirt_stamp_scale=1.15)
 
@@ -103,7 +102,12 @@ def main() -> None:
     RAW.mkdir(parents=True, exist_ok=True)
     for name in names:
         avatar, kwargs = RENDERS[name]
-        out = RAW / f"{name}.png"
+        # A changed Bizmis wordmark must invalidate the baked shirt render.
+        stamp_key = (
+            "-" + hashlib.sha256(Path(STAMP).read_bytes()).hexdigest()[:12]
+            if kwargs.get("shirt_stamp") == STAMP else ""
+        )
+        out = RAW / f"{name}{stamp_key}.png"
         if not out.exists():
             kwargs = {"resolution": 2048, **kwargs}
             render_avatar(avatar, str(out), **kwargs)

@@ -46,7 +46,7 @@ const FilmFooter = () => {
         <div className="grid gap-10 md:grid-cols-5">
           <div className="md:col-span-2">
             <img
-              src="/images/bizmis-logo-full-orange-transparent.png"
+              src="/images/bizmis-logo-full-orange-transparent.svg"
               alt="Bizmis"
               className="h-7 w-auto"
             />
