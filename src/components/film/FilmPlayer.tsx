@@ -1,4 +1,11 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import {
+  forwardRef,
+  useCallback,
+  useEffect,
+  useImperativeHandle,
+  useRef,
+  useState,
+} from "react";
 import type Hls from "hls.js";
 import type {
   KeyboardEvent,
@@ -35,6 +42,11 @@ import { cn } from "@/lib/utils";
  *
  * Clicking anywhere outside the player while the film is open returns it to
  * the ambient loop; the play button then resumes where it stopped.
+ *
+ * `bare`: the hero's own loop stands in for the ambient one. The player then
+ * has no loop or idle button of its own: the hero starts it through the ref
+ * (`play()`, from its play CTA) and hears back through `onClose` when the
+ * viewer clicks off or presses Escape, so it can go back to its loop.
  */
 
 type Phase = "idle" | "playing" | "paused" | "ended";
@@ -80,6 +92,21 @@ export interface FilmPlayerProps {
   };
   onEvent?: (event: FilmEvent, props?: Record<string, unknown>) => void;
   className?: string;
+  /** No ambient loop or idle play button: the parent opens and closes it (see `FilmPlayerHandle`). */
+  bare?: boolean;
+  /** The film went back to idle (click-off or Escape). */
+  onClose?: () => void;
+  /** Fill the parent edge to edge (no bezel, the film letterboxed on black): the hero becomes the player. */
+  fill?: boolean;
+}
+
+export interface FilmPlayerHandle {
+  /** Start or resume the film (call it from the click that asked for it). */
+  play: () => void;
+  /** Pause and return to idle. */
+  close: () => void;
+  /** Go fullscreen (phones: the film fills the screen when turned). Call it from a click. */
+  fullscreen: () => void;
 }
 
 const CONTROLS_IDLE_MS = 2500;
@@ -105,7 +132,7 @@ type WebkitVideo = HTMLVideoElement & { webkitEnterFullscreen?: () => void };
 /** 2160 → "4K", 1440 → "1440p", … */
 const qualityLabel = (height: number) => (height >= 2160 ? "4K" : `${height}p`);
 
-const FilmPlayer = ({
+const FilmPlayer = forwardRef<FilmPlayerHandle, FilmPlayerProps>(({
   src,
   loop,
   durationSeconds,
@@ -114,7 +141,10 @@ const FilmPlayer = ({
   cta,
   onEvent,
   className,
-}: FilmPlayerProps) => {
+  bare = false,
+  onClose,
+  fill = false,
+}, ref) => {
   const rootRef = useRef<HTMLDivElement>(null);
   const filmRef = useRef<HTMLVideoElement>(null);
   const loopRef = useRef<HTMLVideoElement>(null);
@@ -251,14 +281,19 @@ const FilmPlayer = ({
     emit("film_paused", { reason: "control", at_seconds: Math.round(time) });
   }, [emit, time]);
 
-  const backToLoop = useCallback(() => {
-    filmRef.current?.pause();
-    setPhase("idle");
-    if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-      loopRef.current?.play().catch(() => undefined);
-    }
-    emit("film_paused", { reason: "click_off", at_seconds: Math.round(time) });
-  }, [emit, time]);
+  const backToLoop = useCallback(
+    (reason: "click_off" | "escape" = "click_off") => {
+      if (document.fullscreenElement) document.exitFullscreen().catch(() => undefined);
+      filmRef.current?.pause();
+      setPhase("idle");
+      if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+        loopRef.current?.play().catch(() => undefined);
+      }
+      emit("film_paused", { reason, at_seconds: Math.round(time) });
+      onClose?.();
+    },
+    [emit, onClose, time],
+  );
 
   const replay = useCallback(() => {
     const film = filmRef.current;
@@ -270,6 +305,28 @@ const FilmPlayer = ({
     setPhase("playing");
     wakeControls();
   }, [emit, wakeControls]);
+
+  useImperativeHandle(
+    ref,
+    () => ({
+      play: () => {
+        if (phaseRef.current === "ended") replay();
+        else play();
+        rootRef.current?.focus({ preventScroll: true });
+      },
+      close: () => {
+        if (phaseRef.current !== "idle") backToLoop("escape");
+      },
+      fullscreen: () => {
+        const root = rootRef.current;
+        const video = filmRef.current as WebkitVideo | null;
+        if (document.fullscreenElement) return;
+        if (root?.requestFullscreen) root.requestFullscreen().catch(() => undefined);
+        else video?.webkitEnterFullscreen?.(); // iOS Safari: only the <video> can go fullscreen
+      },
+    }),
+    [play, replay, backToLoop],
+  );
 
   const togglePlay = useCallback(() => {
     if (phase === "playing") pauseInPlace();
@@ -357,9 +414,16 @@ const FilmPlayer = ({
       if (document.fullscreenElement) return;
       if (rootRef.current && !rootRef.current.contains(e.target as Node)) backToLoop();
     };
+    const onEsc = (e: globalThis.KeyboardEvent) => {
+      if (bare && e.key === "Escape" && !document.fullscreenElement) backToLoop("escape");
+    };
     document.addEventListener("pointerdown", onDown);
-    return () => document.removeEventListener("pointerdown", onDown);
-  }, [phase, backToLoop]);
+    document.addEventListener("keydown", onEsc);
+    return () => {
+      document.removeEventListener("pointerdown", onDown);
+      document.removeEventListener("keydown", onEsc);
+    };
+  }, [phase, backToLoop, bare]);
 
   useEffect(() => {
     const onChange = () => setFullscreen(document.fullscreenElement === rootRef.current);
@@ -465,7 +529,7 @@ const FilmPlayer = ({
       data-phase={phase}
       className={cn(
         "group/film relative w-full outline-none select-none",
-        fullscreen && "h-full bg-black",
+        (fullscreen || fill) && "h-full bg-black",
         phase === "playing" && !showControls && "cursor-none",
         className
       )}
@@ -476,13 +540,13 @@ const FilmPlayer = ({
           "rounded-[22px] border border-white/50 bg-white/15 p-1.5 backdrop-blur-xl sm:rounded-[38px] sm:p-2.5",
           "shadow-[inset_0_1px_0_rgba(255,255,255,0.6),0_30px_90px_-25px_hsl(25_95%_38%/0.55),0_10px_30px_-12px_hsl(25_95%_30%/0.3)]",
           "group-focus-visible/film:ring-4 group-focus-visible/film:ring-white/70",
-          fullscreen && "h-full rounded-none border-0 bg-black p-0 shadow-none backdrop-blur-none sm:rounded-none sm:p-0"
+          (fullscreen || fill) && "h-full rounded-none border-0 bg-black p-0 shadow-none backdrop-blur-none sm:rounded-none sm:p-0"
         )}
       >
       <div
         className={cn(
           "relative aspect-video w-full overflow-hidden rounded-2xl bg-white sm:rounded-[28px]",
-          fullscreen && "aspect-auto h-full rounded-none bg-black sm:rounded-none"
+          (fullscreen || fill) && "aspect-auto h-full rounded-none bg-black sm:rounded-none"
         )}
       >
         {/* The film. Only its metadata loads until the visitor presses play. */}
@@ -495,7 +559,8 @@ const FilmPlayer = ({
           className="absolute inset-0 h-full w-full object-contain"
         />
 
-        {/* Ambient loop (idle state). */}
+        {/* Ambient loop (idle state); a bare player leaves the loop to its host. */}
+        {!bare && (
         <video
           ref={loopRef}
           poster={loop.poster}
@@ -512,9 +577,10 @@ const FilmPlayer = ({
           <source src={loop.webm} type="video/webm" />
           <source src={loop.mp4} type="video/mp4" />
         </video>
+        )}
 
         {/* Idle: a glass play button, nothing else. */}
-        {!open && (
+        {!open && !bare && (
           <button
             type="button"
             onClick={play}
@@ -743,6 +809,7 @@ const FilmPlayer = ({
       </div>
     </div>
   );
-};
+});
+FilmPlayer.displayName = "FilmPlayer";
 
 export default FilmPlayer;

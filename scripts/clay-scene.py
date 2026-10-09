@@ -585,4 +585,5 @@ def main():
     render(out, a.w, a.h, a.samples)
 
 
-main()
+if __name__ == "__main__":
+    main()
