@@ -133,6 +133,13 @@ const FilmPlayer = ({
   const [muted, setMuted] = useState(false);
   const [volume, setVolume] = useState(1);
   const [waiting, setWaiting] = useState(false);
+  // Only show the spinner for a real stall, not every brief "waiting" blip.
+  const [stalled, setStalled] = useState(false);
+  useEffect(() => {
+    if (!waiting) return setStalled(false);
+    const t = window.setTimeout(() => setStalled(true), 250);
+    return () => window.clearTimeout(t);
+  }, [waiting]);
   const [fullscreen, setFullscreen] = useState(false);
   const [controlsAwake, setControlsAwake] = useState(true);
   const [hover, setHover] = useState<{ x: number; t: number } | null>(null);
@@ -539,12 +546,18 @@ const FilmPlayer = ({
             <Play className="ml-1 h-6 w-6 fill-current drop-shadow-[0_2px_6px_rgba(0,0,0,0.25)] sm:h-8 sm:w-8" aria-hidden="true" />
           </button>
         )}
-        {phase === "playing" && waiting && (
-          <Loader2
-            className="pointer-events-none absolute left-1/2 top-1/2 h-10 w-10 -translate-x-1/2 -translate-y-1/2 animate-spin text-white drop-shadow-[0_2px_6px_rgba(0,0,0,0.3)]"
-            aria-hidden="true"
-          />
-        )}
+        {/* Buffering. Centred by its wrapper so the spinner's own transform is
+            free for the rotation (animate-spin overwrites transform), and kept
+            mounted — fading in/out — so the rotation never restarts. */}
+        <div
+          aria-hidden="true"
+          className={cn(
+            "pointer-events-none absolute inset-0 flex items-center justify-center transition-opacity duration-300",
+            phase === "playing" && stalled ? "opacity-100" : "opacity-0"
+          )}
+        >
+          <Loader2 className="h-10 w-10 animate-spin text-white drop-shadow-[0_2px_6px_rgba(0,0,0,0.3)]" />
+        </div>
 
         {/* Ended: the film's own "Install now" becomes a link. */}
         {phase === "ended" && (
