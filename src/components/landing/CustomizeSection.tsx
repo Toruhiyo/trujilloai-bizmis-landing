@@ -117,7 +117,7 @@ const CustomizeSection = () => {
                     name={a.name}
                     alt=""
                     sizes="(min-width: 1024px) 160px, 24vw"
-                    className="absolute left-1/2 top-[7%] w-[84%] -translate-x-1/2"
+                    className="absolute left-1/2 top-[4%] w-[78%] -translate-x-1/2"
                   />
                 </div>
               </div>
