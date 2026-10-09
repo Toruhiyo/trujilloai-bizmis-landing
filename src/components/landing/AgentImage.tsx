@@ -31,17 +31,24 @@ const AgentImage = ({
   imgClassName?: string;
 }) => {
   const [loaded, setLoaded] = useState(false);
-  const [w, h] = manifest[name];
-  const set = (ext: string) => WIDTHS.map((width) => `${BASE}/${name}-${width}.${ext} ${width}w`).join(", ");
+  // an avatar not rendered yet (missing from the manifest) gets a square placeholder instead of crashing the page
+  const [w, h] = manifest[name] ?? [1, 1];
+  const set = (ext: string) =>
+    WIDTHS.map((width) => `${BASE}/${name}-${width}.${ext} ${width}w`).join(
+      ", ",
+    );
   return (
-    <div className={cn("relative", className)} style={{ aspectRatio: `${w} / ${h}` }}>
+    <div
+      className={cn("relative", className)}
+      style={{ aspectRatio: `${w} / ${h}` }}
+    >
       <img
         src={`${BASE}/${name}-lqip.webp`}
         alt=""
         aria-hidden="true"
         className={cn(
           "absolute inset-0 h-full w-full scale-[1.03] object-contain blur-xl transition-opacity duration-700",
-          loaded ? "opacity-0" : "opacity-100"
+          loaded ? "opacity-0" : "opacity-100",
         )}
       />
       <picture>
@@ -58,7 +65,7 @@ const AgentImage = ({
           className={cn(
             "relative h-full w-full object-contain transition-opacity duration-700",
             loaded ? "opacity-100" : "opacity-0",
-            imgClassName
+            imgClassName,
           )}
         />
       </picture>

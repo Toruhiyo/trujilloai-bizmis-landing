@@ -16,7 +16,7 @@ export const useInView = <T extends Element>(threshold = 0.25) => {
           observer.disconnect();
         }
       },
-      { threshold }
+      { threshold },
     );
     observer.observe(el);
     return () => observer.disconnect();
@@ -35,7 +35,12 @@ interface RevealProps {
  * Fades and lifts its content in when it enters the viewport, and sets
  * `is-in` so CSS-driven moments inside (strikes, checks, stamps) can play.
  */
-const Reveal = ({ as: Tag = "div", delay = 0, className, children }: RevealProps) => {
+const Reveal = ({
+  as: Tag = "div",
+  delay = 0,
+  className,
+  children,
+}: RevealProps) => {
   const [ref, inView] = useInView<HTMLElement>();
   return (
     <Tag

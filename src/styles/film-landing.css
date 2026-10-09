@@ -568,27 +568,6 @@
   }
 }
 
-/* Setup: store data streaming along the lines into the agent. */
-#setup svg path {
-  stroke-dasharray: 5 7;
-}
-
-.bzl-flow {
-  animation: bzl-flow 1.1s linear infinite;
-  animation-delay: var(--bzl-delay, 0ms);
-}
-
-@keyframes bzl-flow {
-  to {
-    stroke-dashoffset: -24;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .bzl-flow {
-    animation: none;
-  }
-}
 
 /* ---------- The real Bizmis widget (mockups) ----------
    Values from trujilloai-bizmis-widget: DesktopLiteChat card, glass tokens,
@@ -860,18 +839,22 @@
   animation: bzl-wire 1.1s var(--bzl-ease) var(--bzl-delay, 0ms) forwards;
 }
 @keyframes bzl-wire { to { stroke-dashoffset: 0; } }
-/* a short bright spark running down each wire on its own rhythm */
-.bzl-spark {
-  stroke-dasharray: 34 966;
-  stroke-dashoffset: 1000;
-  opacity: 0;
-  animation: bzl-spark var(--dur, 3s) cubic-bezier(0.45, 0, 0.6, 1) var(--bzl-delay, 0s) infinite;
+/* energy streaming along each wire, card → agent: two comets per wire, on a
+   seamless loop (the dash period divides the path, so it never restarts) */
+.bzl-flow {
+  stroke-dasharray: 64 436;
+  animation: bzl-flow var(--dur, 3s) linear var(--bzl-delay, 0s) infinite;
 }
-@keyframes bzl-spark {
-  0% { stroke-dashoffset: 1000; opacity: 0; }
-  8% { opacity: 1; }
-  80% { opacity: 1; }
-  100% { stroke-dashoffset: 0; opacity: 0; }
+.bzl-flow.is-halo { filter: blur(5px); stroke-dasharray: 104 396; }
+@keyframes bzl-flow {
+  from { stroke-dashoffset: 1000; }
+  to { stroke-dashoffset: 0; }
+}
+/* the bright core sits in the middle of its halo */
+.bzl-flow:not(.is-halo) { animation-name: bzl-flow-core; }
+@keyframes bzl-flow-core {
+  from { stroke-dashoffset: 980; }
+  to { stroke-dashoffset: -20; }
 }
 /* the agent charging up: an aura and an orange glow over the render, breathing every 2 s */
 .bzl-charge-aura {
@@ -889,21 +872,31 @@
   35% { opacity: 1; scale: 1; }
   70% { opacity: 0; scale: 1.08; }
 }
-.bzl-charge-glow {
-  /* only the halo shows: the render itself sits on top of this copy */
-  filter: brightness(0) invert(0.62) sepia(1) saturate(9) hue-rotate(-12deg) blur(6px)
-    drop-shadow(0 0 18px rgb(249 163 83 / 0.9));
-  animation: bzl-glow 2s ease-in-out infinite;
+/* the charge lands on the agent: warm light on the silhouette (soft-light, so
+   skin, shirt and trousers keep their own colours) and a rim of light, both
+   breathing with the aura */
+.bzl-charge-light {
+  background: radial-gradient(120% 80% at 50% 38%, rgb(255 196 120 / 0.95), rgb(249 150 70 / 0.7) 55%, rgb(236 119 9 / 0.5));
+  mix-blend-mode: soft-light;
+  animation: bzl-charge-light 2s ease-in-out infinite;
   pointer-events: none;
 }
-@keyframes bzl-glow {
-  0%, 100% { opacity: 0; scale: 1; }
-  35% { opacity: 0.85; scale: 1.035; }
-  70% { opacity: 0; scale: 1.05; }
+@keyframes bzl-charge-light {
+  0%, 100% { opacity: 0.12; }
+  35% { opacity: 0.95; }
+  70% { opacity: 0.12; }
+}
+.bzl-charge-rim { animation: bzl-charge-rim 2s ease-in-out infinite; }
+@keyframes bzl-charge-rim {
+  0%, 100% { filter: drop-shadow(0 0 0 rgb(249 163 83 / 0)); }
+  35% { filter: drop-shadow(0 0 10px rgb(249 163 83 / 0.55)) drop-shadow(0 0 2px rgb(255 214 160 / 0.7)); }
+  70% { filter: drop-shadow(0 0 0 rgb(249 163 83 / 0)); }
 }
 @media (prefers-reduced-motion: reduce) {
   .bzl-wire { animation: none; stroke-dashoffset: 0; }
-  .bzl-spark, .bzl-charge-aura, .bzl-charge-glow { animation: none; opacity: 0; }
+  .bzl-flow, .bzl-charge-aura { animation: none; opacity: 0; }
+  .bzl-charge-light { animation: none; opacity: 0.4; }
+  .bzl-charge-rim { animation: none; }
 }
 
 /* the mobile widget's speaking ring: breathes around the avatar's head */
@@ -1066,3 +1059,31 @@
   .bzl-ai, .bzl-ai * { animation: none !important; }
   .bzl-ai .tick, .bzl-ai .trend, .bzl-ai .line, .bzl-ai .ring, .bzl-ai .label { stroke-dashoffset: 0; }
 }
+
+/* ── Benefit illustrations: a floating glass card, calm looping motion ── */
+/* the panels' ink: one deep tone of each panel's colour, for its benefit illustration */
+.bzl-panel.t-peach { --ink: #d0661f; }
+.bzl-panel.t-butter { --ink: #c28a06; }
+.bzl-panel.t-blush { --ink: #cf5a4e; }
+.bzl-art { display: block; width: 100%; height: auto; overflow: visible; color: var(--ink, #d0661f); --cycle: 6s; }
+.bzl-art * { transform-box: fill-box; }
+/* convert: one passer-by after another becomes a shopper, bag in hand */
+.bzl-art-convert .buyer { transform-origin: 50% 100%; animation: art-buyer var(--cycle) cubic-bezier(.3, 1.5, .5, 1) infinite; animation-delay: calc(var(--i) * 0.32s); }
+.bzl-art-convert .bag { transform-origin: 50% 0%; animation: art-bag var(--cycle) ease-in-out infinite; animation-delay: calc(var(--i) * 0.32s); }
+@keyframes art-buyer { 0%, 6% { scale: 0.6; opacity: 0; } 14% { scale: 1.06; opacity: 1; } 19%, 84% { scale: 1; opacity: 1; } 92%, 100% { scale: 0.85; opacity: 0; } }
+@keyframes art-bag { 0%, 16% { rotate: 0deg; } 22% { rotate: 14deg; } 28% { rotate: -9deg; } 34% { rotate: 5deg; } 40%, 100% { rotate: 0deg; } }
+/* upsell: things drop into the cart, the cart dips under each one */
+.bzl-art-upsell .box { opacity: 0; animation: art-drop var(--cycle) cubic-bezier(.3, 1.35, .55, 1) infinite; }
+.bzl-art-upsell .b1 { animation-delay: .45s; }
+.bzl-art-upsell .b2 { animation-delay: .9s; }
+.bzl-art-upsell .cart { animation: art-dip var(--cycle) ease-out infinite; }
+@keyframes art-drop { 0%, 4% { translate: 0 -70px; opacity: 0; } 8% { opacity: 1; } 16%, 82% { translate: 0 0; opacity: 1; } 90%, 100% { translate: 0 0; opacity: 0; } }
+/* a dip as each box lands (at ~12%, ~19.5% and ~27% of the cycle) */
+@keyframes art-dip { 0%, 10% { translate: 0 0; } 12.5% { translate: 0 2.5px; } 16% { translate: 0 0; } 20% { translate: 0 2.5px; } 23.5% { translate: 0 0; } 27.5% { translate: 0 3px; } 32%, 100% { translate: 0 0; } }
+/* retain: the card collects a stamp per visit; the last one is a heart */
+.bzl-art-retain .stamp { transform-origin: center; opacity: 0; animation: art-stamp var(--cycle) cubic-bezier(.3, 1.7, .5, 1) infinite; animation-delay: calc(var(--i) * 0.42s); }
+@keyframes art-stamp { 0%, 4% { scale: 1.8; rotate: -14deg; opacity: 0; } 10% { scale: 1; rotate: 0deg; opacity: 1; } 76% { scale: 1; opacity: 1; } 84%, 100% { scale: 1; opacity: 0; } }
+@media (prefers-reduced-motion: reduce) {
+  .bzl-art * { animation: none !important; opacity: 1 !important; }
+}
+

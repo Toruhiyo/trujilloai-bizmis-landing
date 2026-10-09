@@ -2,7 +2,6 @@ import { useEffect } from "react";
 import { Helmet } from "react-helmet-async";
 import Hero from "@/components/Hero";
 import Seo from "@/components/Seo";
-import SwitchSection from "@/components/landing/SwitchSection";
 import SalesSection from "@/components/landing/SalesSection";
 import SupportSection from "@/components/landing/SupportSection";
 import InsightsSection from "@/components/landing/InsightsSection";
@@ -94,7 +93,7 @@ const FilmLanding = ({ path = "/" }: FilmLandingProps) => {
         }}
       />
       <Hero />
-      <SwitchSection />
+      {/* "This isn't a chatbot" (SwitchSection) is hidden: the hero covers it now */}
       <SalesSection />
       <SupportSection />
       <InsightsSection />

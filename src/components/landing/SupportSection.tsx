@@ -115,7 +115,9 @@ const SupportSection = () => {
               </h2>
             </Reveal>
             <Reveal delay={160}>
-              <p className="bzl-lead mt-[2svh] max-w-lg md:!text-[clamp(0.95rem,2svh,1.15rem)]">{s.leadLong}</p>
+              <p className="bzl-lead mt-[2svh] max-w-lg md:!text-[clamp(0.95rem,2svh,1.15rem)]">
+                {s.leadLong}
+              </p>
             </Reveal>
             <Reveal delay={240}>
               <div className="mt-[2.6svh] flex flex-wrap gap-2">
@@ -148,7 +150,7 @@ const SupportSection = () => {
           </div>
           <Reveal
             delay={120}
-            className="mx-auto w-full max-w-[min(560px,calc((100svh-9rem)*1.25))]"
+            className="relative mx-auto w-full max-w-[min(560px,calc((100svh-9rem)*1.25))]"
           >
             <SupportChat />
           </Reveal>

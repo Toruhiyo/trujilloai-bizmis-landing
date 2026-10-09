@@ -40,7 +40,7 @@ const InsightsSection = () => {
               ))}
             </ul>
           </div>
-          <Reveal delay={120}>
+          <Reveal delay={120} className="relative">
             <SessionReplay />
           </Reveal>
         </div>

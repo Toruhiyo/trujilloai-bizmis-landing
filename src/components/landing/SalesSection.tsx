@@ -9,14 +9,16 @@ import {
   TrendIcon,
 } from "./AnimatedIcons";
 import type { AnimatedIcon } from "./AnimatedIcons";
+import BenefitArt from "./BenefitArt";
+import type { BenefitKind } from "./BenefitArt";
 import Reveal from "./Reveal";
 import { useStickyHead } from "./useStickyHead";
 import { BundleVisual, OrderVisual, PickVisual } from "./visuals";
 
 /**
  * One sub-benefit as a clay panel (a big soft tinted card with film grain):
- * its animated icon — the quick confirmation of the benefit — over the copy on
- * one side, the device mockup showing it on the other.
+ * its animated icon, the copy and an illustration of the benefit's outcome on
+ * one side, the device mockup showing the feature on the other.
  */
 export const Pillar = ({
   index,
@@ -26,6 +28,7 @@ export const Pillar = ({
   visual,
   icon,
   tint,
+  art,
 }: {
   index: number;
   kicker: string;
@@ -34,6 +37,8 @@ export const Pillar = ({
   visual: ReactNode;
   icon: AnimatedIcon;
   tint: string;
+  /** the benefit's illustration, drawn on the panel under the copy */
+  art: BenefitKind;
 }) => (
   <div className="bzl-sub is-panel">
     <div
@@ -55,12 +60,15 @@ export const Pillar = ({
         <Reveal delay={180}>
           <p className="bzl-lead mt-4 max-w-lg">{body}</p>
         </Reveal>
+        <Reveal delay={240}>
+          <BenefitArt kind={art} className="mt-[clamp(1.25rem,4svh,2.75rem)]" />
+        </Reveal>
       </div>
       <Reveal
         delay={120}
         className={cn(
           // as wide as the remaining height allows, so the mockup always fits the screen
-          "mx-auto w-full max-w-[min(560px,calc((100svh-var(--bzl-head,12rem)-7rem)*1.3))]",
+          "relative mx-auto w-full max-w-[min(560px,calc((100svh-var(--bzl-head,12rem)-7rem)*1.3))]",
           index % 2 === 1 && "lg:order-1",
         )}
       >
@@ -70,10 +78,10 @@ export const Pillar = ({
   </div>
 );
 
-const PILLARS: { icon: AnimatedIcon; tint: string }[] = [
-  { icon: FindIcon, tint: "t-peach" },
-  { icon: CartPlusIcon, tint: "t-butter" },
-  { icon: LoyaltyIcon, tint: "t-blush" },
+const PILLARS: { icon: AnimatedIcon; tint: string; art: BenefitKind }[] = [
+  { icon: FindIcon, tint: "t-peach", art: "convert" },
+  { icon: CartPlusIcon, tint: "t-butter", art: "upsell" },
+  { icon: LoyaltyIcon, tint: "t-blush", art: "retain" },
 ];
 
 /** Boost Sales — "Convert. Upsell. Retain." with the classic landing's three pillars. */
@@ -134,6 +142,7 @@ const SalesSection = () => {
               visual={visuals[i]}
               icon={PILLARS[i].icon}
               tint={PILLARS[i].tint}
+              art={PILLARS[i].art}
             />
           ))}
         </div>

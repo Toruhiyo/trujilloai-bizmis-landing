@@ -2,22 +2,33 @@ import { useRef } from "react";
 import type { CSSProperties } from "react";
 import { useMessages } from "@/i18n/LocaleProvider";
 import AvatarCarousel from "./AvatarCarousel";
+import manifest from "./agents-manifest.json";
 import type { CarouselAvatar } from "./AvatarCarousel";
 import FeatureCard from "./FeatureCard";
 import { AvatarIcon, VoiceIcon } from "./AnimatedIcons";
 import Reveal from "./Reveal";
 
-// Real Bizmis avatars, each wearing a (fictional, AI-generated) store's logo; the tint is the logo's accent.
+// Real Bizmis avatars, each wearing a (fictional, AI-generated) store's logo: either a vivid shirt
+// with a one-colour logo, or a neutral shirt (white, black, oat) with a multicolour one. The tint is
+// the store's colour (the shirt's, or the logo's on a neutral shirt) and tints the ambient light
+// while that avatar is on stage. Ordered so neighbours never share a hue.
 const LINEUP: readonly CarouselAvatar[] = [
-  { name: "style-victor", label: "Victor", tint: "#f28c38" },
-  { name: "style-teo", label: "Teo", tint: "#ff5a5f" },
-  { name: "style-luca", label: "Luca", tint: "#3b6ea8" },
-  { name: "style-kiran", label: "Kiran", tint: "#b04bc9" },
-  { name: "style-yue", label: "Yue", tint: "#d4a84a" },
-  { name: "style-echo", label: "Echo", tint: "#4c6488" },
-  { name: "style-mia", label: "Mia", tint: "#f07a1a" },
-  { name: "style-adrian", label: "Adrian", tint: "#8fd42f" },
+  { name: "style-victor", label: "Victor", tint: "#2563eb" },
+  { name: "style-teo", label: "Teo", tint: "#ef4444" },
+  { name: "style-yusuke", label: "Yusuke", tint: "#65a30d" },
+  { name: "style-marc", label: "Marc", tint: "#7c3aed" },
+  { name: "style-luca", label: "Luca", tint: "#eab308" },
+  { name: "style-mia", label: "Mia", tint: "#0ea5e9" },
+  { name: "style-kiran", label: "Kiran", tint: "#e5487f" },
+  { name: "style-yue", label: "Yue", tint: "#047857" },
+  { name: "style-echo", label: "Echo", tint: "#e53935" },
+  { name: "style-amber", label: "Amber", tint: "#d946ef" },
+  { name: "style-will", label: "Will", tint: "#10b981" },
+  { name: "style-adrian", label: "Adrian", tint: "#c0168f" },
 ];
+
+// only avatars that have been rendered (an avatar added here before its render lands is skipped)
+const SHOWN = LINEUP.filter((a) => a.name in manifest);
 
 const Waveform = () => (
   <span className="flex h-5 items-center gap-[3px]" aria-hidden="true">
@@ -108,7 +119,7 @@ const CustomizeSection = () => {
         </div>
 
         <Reveal delay={120}>
-          <AvatarCarousel avatars={LINEUP} ambient={section} />
+          <AvatarCarousel avatars={SHOWN} ambient={section} />
         </Reveal>
       </div>
     </section>

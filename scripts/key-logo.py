@@ -31,6 +31,7 @@ alpha = alpha.filter(ImageFilter.MinFilter(3))
 
 out = img.copy()
 out.putalpha(alpha)
-out = out.crop(alpha.getbbox())
+# trim to the mark, ignoring faint specks the generator leaves in the background
+out = out.crop(alpha.point(lambda v: 255 if v > 96 else 0).getbbox())
 out.save(dst, optimize=True)
 print(dst, out.size, "bg", bg)

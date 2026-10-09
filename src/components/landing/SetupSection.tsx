@@ -23,10 +23,11 @@ type Line = { d: string; dur: number; delay: number };
 
 /**
  * Setup — the classic landing's diagram, in the film's style: your Shopify
- * store data as soft orange cards, each wired to the agent by a thick, warm
- * line with light travelling along it, and the agent charging up with every
- * pulse (an orange glow and aura breathing in and out). The lines are drawn
- * from the real positions of the cards and the avatar, so they always land.
+ * store data as soft orange cards, each joined to the agent by one thin warm
+ * line with glowing energy streaming along it, card → agent, without a break,
+ * and the agent charging up (warm light on the silhouette, an aura breathing
+ * out). The lines are drawn from the real positions of the cards and the
+ * avatar, so they always land.
  */
 const SetupSection = () => {
   const messages = useMessages();
@@ -37,6 +38,7 @@ const SetupSection = () => {
   const target = useRef<HTMLDivElement>(null);
   const [lines, setLines] = useState<Line[]>([]);
   const [size, setSize] = useState({ w: 0, h: 0 });
+  const [ends, setEnds] = useState({ x1: 0, x2: 1 });
 
   // wire each card to the avatar's chest, from the real layout
   const measure = useCallback(() => {
@@ -46,6 +48,8 @@ const SetupSection = () => {
     const x2 = t.left + t.width * 0.5 - b.left;
     const y2 = t.top + t.height * 0.5 - b.top;
     setSize({ w: b.width, h: b.height });
+    const first = cards.current[0]?.getBoundingClientRect();
+    if (first) setEnds({ x1: first.right - b.left, x2 });
     setLines((prev) =>
       cards.current.map((el, i) => {
         const r = el?.getBoundingClientRect();
@@ -116,39 +120,83 @@ const SetupSection = () => {
               height={size.h}
               viewBox={`0 0 ${size.w || 1} ${size.h || 1}`}
             >
-              {lines.map((l, i) =>
-                l.d ? (
-                  <g key={i}>
-                    <path
-                      d={l.d}
-                      pathLength={1000}
-                      fill="none"
-                      stroke="rgba(242,140,56,0.38)"
-                      strokeWidth={5}
-                      strokeLinecap="round"
-                      className={inView ? "bzl-wire" : "opacity-0"}
-                      style={{ "--bzl-delay": `${i * 120}ms` } as CSSProperties}
-                    />
-                    {inView && (
+              <defs>
+                {/* the lines rise out of the cards and dissolve into the agent */}
+                <linearGradient
+                  id="setup-fade"
+                  gradientUnits="userSpaceOnUse"
+                  x1={ends.x1}
+                  x2={ends.x2}
+                  y1="0"
+                  y2="0"
+                >
+                  <stop offset="0" stopColor="#fff" stopOpacity="0" />
+                  <stop offset="0.1" stopColor="#fff" />
+                  <stop offset="0.8" stopColor="#fff" />
+                  <stop offset="1" stopColor="#fff" stopOpacity="0" />
+                </linearGradient>
+                <mask id="setup-mask" maskUnits="userSpaceOnUse">
+                  <rect
+                    width={size.w || 1}
+                    height={size.h || 1}
+                    fill="url(#setup-fade)"
+                  />
+                </mask>
+                {/* warmer and stronger toward the agent, as the energy gathers */}
+                <linearGradient
+                  id="setup-line"
+                  gradientUnits="userSpaceOnUse"
+                  x1={ends.x1}
+                  x2={ends.x2}
+                  y1="0"
+                  y2="0"
+                >
+                  <stop offset="0" stopColor="rgb(249 163 83 / 0.2)" />
+                  <stop offset="1" stopColor="rgb(242 140 56 / 0.42)" />
+                </linearGradient>
+              </defs>
+              <g mask="url(#setup-mask)">
+                {lines.map((l, i) =>
+                  l.d ? (
+                    <g key={i}>
                       <path
                         d={l.d}
                         pathLength={1000}
                         fill="none"
-                        stroke="rgba(255,255,255,0.95)"
-                        strokeWidth={3}
+                        stroke="url(#setup-line)"
+                        strokeWidth={2.6}
                         strokeLinecap="round"
-                        className="bzl-spark"
-                        style={
-                          {
-                            "--dur": `${l.dur}s`,
-                            "--bzl-delay": `${0.8 + l.delay}s`,
-                          } as CSSProperties
-                        }
+                        className={inView ? "bzl-wire" : "opacity-0"}
+                        style={{ "--bzl-delay": `${i * 120}ms` } as CSSProperties}
                       />
-                    )}
-                  </g>
-                ) : null,
-              )}
+                      {/* the energy: soft glowing capsules streaming card → agent, without a break */}
+                      {inView &&
+                        ["bzl-flow is-halo", "bzl-flow"].map((cls) => (
+                          <path
+                            key={cls}
+                            d={l.d}
+                            pathLength={1000}
+                            fill="none"
+                            stroke={
+                              cls === "bzl-flow"
+                                ? "rgb(255 247 236)"
+                                : "rgb(249 146 52 / 0.7)"
+                            }
+                            strokeWidth={cls === "bzl-flow" ? 3.4 : 10}
+                            strokeLinecap="round"
+                            className={cls}
+                            style={
+                              {
+                                "--dur": `${l.dur}s`,
+                                "--bzl-delay": `${-l.delay}s`,
+                              } as CSSProperties
+                            }
+                          />
+                        ))}
+                    </g>
+                  ) : null,
+                )}
+              </g>
             </svg>
 
             {/* Your Shopify store data */}
@@ -202,18 +250,22 @@ const SetupSection = () => {
                   aria-hidden="true"
                   className="absolute inset-x-[-25%] bottom-[-3%] h-[10%] rounded-[50%] bg-[radial-gradient(closest-side,rgba(236,119,9,0.3),transparent)]"
                 />
-                {/* a warm halo around the silhouette, breathing in and out behind the render */}
-                <AgentImage
-                  name="setup-will"
-                  alt=""
-                  sizes="300px"
-                  className="bzl-charge-glow absolute inset-0 h-full w-auto"
-                />
                 <AgentImage
                   name="setup-will"
                   alt={messages.landing.agentAlt}
                   sizes="300px"
-                  className="relative h-full w-auto"
+                  className="bzl-charge-rim relative h-full w-auto"
+                />
+                {/* the charge lands on the agent: warm light masked to the silhouette, breathing with the aura */}
+                <span
+                  aria-hidden="true"
+                  className="bzl-charge-light absolute inset-0"
+                  style={{
+                    WebkitMaskImage: "url(/landing/agents/setup-will-720.webp)",
+                    maskImage: "url(/landing/agents/setup-will-720.webp)",
+                    WebkitMaskSize: "100% 100%",
+                    maskSize: "100% 100%",
+                  }}
                 />
               </div>
             </Reveal>

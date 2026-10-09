@@ -21,6 +21,21 @@ const THROW = 0.32;
 
 const mod = (a: number, n: number) => ((a % n) + n) % n;
 
+/** #rrggbb → [L, C, h°] in OKLCH. */
+const toOklch = (hex: string) => {
+  const [r, g, b] = [1, 3, 5].map((i) => {
+    const c = parseInt(hex.slice(i, i + 2), 16) / 255;
+    return c <= 0.04045 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4;
+  });
+  const l = Math.cbrt(0.4122214708 * r + 0.5363325363 * g + 0.0514459929 * b);
+  const m = Math.cbrt(0.2119034982 * r + 0.6806995451 * g + 0.1073969566 * b);
+  const s = Math.cbrt(0.0883024619 * r + 0.2817188376 * g + 0.6299787005 * b);
+  const L = 0.2104542553 * l + 0.793617785 * m - 0.0040720468 * s;
+  const A = 1.9779984951 * l - 2.428592205 * m + 0.4505937099 * s;
+  const B = 0.0259040371 * l + 0.7827717662 * m - 0.808675766 * s;
+  return [L, Math.hypot(A, B), ((Math.atan2(B, A) * 180) / Math.PI + 360) % 360];
+};
+
 /**
  * One avatar at a time, its neighbours peeking in smaller on either side; the
  * spotlight takes the current avatar's shirt colour. The ring is the control:
@@ -124,56 +139,69 @@ const AvatarCarousel = ({
     return () => window.clearInterval(timer);
   }, [inView, goTo]);
 
-  // the ambient light, running while the carousel is in view
+  // The ambient light, running while the carousel is in view, on the same
+  // rhythm as the names (both follow the ring itself). It blends between
+  // neighbours with the ring's position, in OKLCH so the in-between colours
+  // stay as vivid as the ends (an RGB mix of, say, red and green passes
+  // through a muddy brown). Only the light takes the avatar's colour: the
+  // section's text and UI keep the page's palette.
   useEffect(() => {
     const el = ambient?.current;
     if (!el || !inView) return;
     const still = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const lch = avatars.map((a) => toOklch(a.tint));
     let phase = 0;
     let last = performance.now();
     let lastActive = Math.round(x.current);
-    let hitAt = last;
+    let hitAt = -1e9;
     let frame = 0;
     const loop = (now: number) => {
       const dt = Math.min(0.05, (now - last) / 1000);
       last = now;
       const pos = x.current;
       const i0 = Math.floor(pos);
-      const frac = pos - i0;
-      const c0 = avatars[mod(i0, n)].tint;
-      const c1 = avatars[mod(i0 + 1, n)].tint;
+      const [l0, c0, h0] = lch[mod(i0, n)];
+      const [l1, c1, h1] = lch[mod(i0 + 1, n)];
+      const f = pos - i0;
+      // the shorter way round the hue wheel
+      const dh = ((((h1 - h0) % 360) + 540) % 360) - 180;
       el.style.setProperty(
         "--amb-color",
-        `color-mix(in oklab, ${c1} ${(frac * 100).toFixed(1)}%, ${c0})`,
+        `oklch(${(l0 + (l1 - l0) * f).toFixed(4)} ${(c0 + (c1 - c0) * f).toFixed(4)} ${(h0 + dh * f).toFixed(2)})`,
       );
       if (Math.round(pos) !== lastActive) {
         lastActive = Math.round(pos);
-        hitAt = now;
+            hitAt = now;
       }
       if (!still) {
         const go = Math.min(1, Math.abs(v.current) / 3);
         const curve = Math.sin((go * Math.PI) / 2) ** 2;
-        const hit = Math.exp(-(now - hitAt) / 420);
-        phase += dt * (0.35 + 2.6 * curve);
-        const breath = Math.sin(now / 900) ** 2;
+        // a soft swell on each new avatar: eases in over 0.35 s, out over ~0.8 s
+        const t = (now - hitAt) / 1000;
+        const hit =
+          t < 0.35
+            ? Math.sin(((t / 0.35) * Math.PI) / 2)
+            : Math.exp(-(t - 0.35) / 0.8);
+        phase += dt * (0.35 + 2.2 * curve);
+        const breath = Math.sin(now / 1100) ** 2;
         const glow = Math.min(
           1,
-          0.5 - 0.28 * curve + 0.22 * breath + 0.5 * hit,
+          0.46 - 0.2 * curve + 0.24 * breath + 0.38 * hit,
         );
         el.style.setProperty("--amb-glow", glow.toFixed(3));
-        for (let k = 1; k <= 3; k++) {
-          const ph = phase * (0.42 + 0.13 * k) + k * 1.9;
+        for (let j = 1; j <= 3; j++) {
+          const ph = phase * (0.42 + 0.13 * j) + j * 1.9;
           el.style.setProperty(
-            `--amb-x${k}`,
+            `--amb-x${j}`,
             `${(Math.sin(ph) * 22).toFixed(2)}%`,
           );
           el.style.setProperty(
-            `--amb-y${k}`,
+            `--amb-y${j}`,
             `${(Math.cos(ph * 0.83) * 16).toFixed(2)}%`,
           );
           el.style.setProperty(
-            `--amb-s${k}`,
-            (1 + 0.18 * Math.sin(ph * 1.27) + 0.16 * hit).toFixed(3),
+            `--amb-s${j}`,
+            (1 + 0.18 * Math.sin(ph * 1.27) + 0.12 * hit).toFixed(3),
           );
         }
       } else {
