@@ -46,19 +46,32 @@
   ];
   const PROMO_REEL_IN_MS = 700;
   const PROMO_SYNC_HOLD_MS = 0;
-  const PROMO_SYNC_ORB_MS = 520;
-  const PROMO_SYNC_ORB_STAGGER_MS = 85;
+  const PROMO_SYNC_PRESS_LEAD_MS = 60;   // the press (and its click) lands on the narrator's "click" of "one click"
+  const PROMO_SYNC_FOLD_LEAD_MS = 90;   // the Installed button folds into the clerk on "whole store"
+  const PROMO_SYNC_TILE_STAGGER_MS = 45;
+  const PROMO_SYNC_LINE_DRAW_MS = 420;
+  const PROMO_SYNC_STREAM_MS = 640;   // one burst particle's run from a tile into the clerk (lands on "in sync")
+  const PROMO_SYNC_HEART_DY = 0.08;   // the lines land on the shirt, this far (x canvas height) under the seat's centre
   const PROMO_SYNC_AVATAR_H = 0.7;   // the clerk's view, as a share of the canvas height
   const PROMO_SYNC_ACTION = 'charge_up';   // crouch, two gulps of energy, release (2.4 s)
   const PROMO_YOURSTORE_HOLD_MS = 900;
   const PROMO_YOURSTORE_DIVE_MS = 1000;
+  // v22 sync: the store's Shopify areas as Apple-like icon tiles around the clerk.
+  // x/y: the tile's centre as a share of the canvas. glyph: SF-Symbols-like strokes
+  // on a 24-unit grid (our own drawings, not Shopify's assets).
   const PROMO_SYNC_PARTS = [
-    { key: 'catalog', icon: 'M4 4h7v7H4zM13 4h7v7h-7zM4 13h7v7H4zM13 13h7v7h-7z', short: 'Catalog', label: 'Products catalog', sub: 'Collections and inventory', side: 'l', y: 28 },
-    { key: 'policies', icon: 'M7 3h7l4 4v14H7zM14 3v4h4M9.5 12h6M9.5 15.5h6', short: 'Policies', label: 'Policies', sub: 'Shipping and returns', side: 'l', y: 50 },
-    { key: 'discounts', icon: 'M3.5 12.5 12 4h7.5v7.5L11 20zM16 8.2h.01', short: 'Discounts', label: 'Discounts', sub: 'Current promotions', side: 'l', y: 72 },
-    { key: 'orders', icon: 'M4 8l8-4 8 4v8l-8 4-8-4zM4 8l8 4 8-4M12 12v8', short: 'Orders', label: 'Orders', sub: 'Order history', side: 'r', y: 28 },
-    { key: 'customers', icon: 'M9 11a3 3 0 1 0 0-6 3 3 0 0 0 0 6zM3.5 19c.6-3 2.8-5 5.5-5s4.9 2 5.5 5M16 11a2.6 2.6 0 1 0 0-5.2M17.5 14c1.8.5 3 2.2 3.4 5', short: 'Customers', label: 'Customers', sub: 'Sales and support records', side: 'r', y: 50 },
-    { key: 'pages', icon: 'M6 3h12v18H6zM9 7.5h6M9 11h6M9 14.5h4', short: 'Pages', label: 'Store pages', sub: 'Brand, FAQs and content', side: 'r', y: 72 },
+    { key: 'catalog', label: 'Catalog', x: 0.3, y: 0.27,
+      glyph: '<rect x="3.5" y="3.5" width="7" height="7" rx="2"/><rect x="13.5" y="3.5" width="7" height="7" rx="2"/><rect x="3.5" y="13.5" width="7" height="7" rx="2"/><path d="M13.5 13.5h3.9l3.4 3.4-3.9 3.9-3.4-3.4z"/><circle class="is-dot" cx="15.6" cy="15.6" r="1"/>' },
+    { key: 'website', label: 'Website', x: 0.7, y: 0.27,
+      glyph: '<rect x="2.75" y="4" width="18.5" height="16" rx="3.2"/><path d="M2.75 8.7h18.5"/><circle class="is-dot" cx="5.7" cy="6.35" r=".8"/><circle class="is-dot" cx="8.1" cy="6.35" r=".8"/><circle class="is-dot" cx="10.5" cy="6.35" r=".8"/><rect x="6" y="11.6" width="5.2" height="5.2" rx="1.2"/><path d="M14 12.6h4M14 15.8h2.6"/>' },
+    { key: 'customers', label: 'Customers', x: 0.235, y: 0.55,
+      glyph: '<circle cx="9.2" cy="8.3" r="3.4"/><path d="M3.1 19.8c.5-3.5 3-5.8 6.1-5.8s5.6 2.3 6.1 5.8"/><path d="M15.3 5.1a3.2 3.2 0 0 1 .2 6.3"/><path d="M17.6 14.4c1.9.7 3.1 2.6 3.4 5.4"/>' },
+    { key: 'policies', label: 'Policies', x: 0.765, y: 0.55,
+      glyph: '<path d="M14.2 3H7.6a2.1 2.1 0 0 0-2.1 2.1v13.8A2.1 2.1 0 0 0 7.6 21h8.8a2.1 2.1 0 0 0 2.1-2.1V7.3z"/><path d="M14.2 3v3c0 .7.6 1.3 1.3 1.3h3"/><path d="M8.9 10.6h4.2"/><path d="M8.9 15.3l2.1 2.1 4-4.2"/>' },
+    { key: 'orders', label: 'Orders', x: 0.3, y: 0.83,
+      glyph: '<path d="M12 2.9l7.9 4.2v9.8L12 21.1l-7.9-4.2V7.1z"/><path d="M4.3 7.2 12 11.3l7.7-4.1M12 11.3v9.6"/><path d="M8.1 5 16 9.2"/>' },
+    { key: 'discounts', label: 'Discounts', x: 0.7, y: 0.83,
+      glyph: '<path d="M3.5 11.6V5.3c0-1 .8-1.8 1.8-1.8h6.3c.5 0 .9.2 1.3.5l7.5 7.5c.7.7.7 1.8 0 2.5l-6.4 6.4c-.7.7-1.8.7-2.5 0L4 12.9c-.3-.4-.5-.8-.5-1.3z"/><circle class="is-dot" cx="7.6" cy="7.6" r="1.15"/><path d="M10.6 15.7l4.8-4.8"/><circle cx="11.2" cy="11.4" r="1"/><circle cx="14.8" cy="15.1" r="1"/>' },
   ];
   const PROMO_REEL_ORANGE_MS = 0;
   const PROMO_REEL_REST_SCALE = 0.48;   // carousel cards at rest, as a share of their close-up size
@@ -125,8 +138,8 @@
   // lines; music time = film time + 0.9 s). Film-clock anchors (s from the film's first frame):
   // the burst on the drop's first downbeat, the reel on the stores section's first bar, the EA
   // close's hit on the score's final hit. Every store cut sits on one of the song's own claps.
-  const PROMO_FILM_ANCHORS = { burst: 51.50, reel: 122.02, final: 173.02 };
-  const PROMO_REEL_CUTS_S = [3.779, 7.387, 10.855, 14.074, 16.489, 17.966, 19.299, 20.509, 21.58, 22.515, 23.191, 23.835, 24.253, 24.636, 24.988, 25.33, 25.594, 25.731, 25.864, 25.998, 26.131, 26.265, 26.97];   // from the reel start: hero 1..4, 18 run cards, Your store (the song's biggest impact)   // v18: "they leave." ... "Sale lost." (lands on the sea's first LOST stamps)
+  const PROMO_FILM_ANCHORS = { burst: 49.23, reel: 119.72, final: 168.82 };   // v22: the calm score (the band lands as "...store!" ends)
+  const PROMO_REEL_CUTS_S = [3.802, 7.024, 10.228, 13.322, 15.462, 16.922, 18.007, 19.075, 20.016, 20.814, 21.481, 22.14, 22.555, 22.808, 23.06, 23.226, 23.359, 23.493, 23.626, 23.76, 23.876, 23.992, 24.184];   // from the reel start: hero 1..4, 18 run cards, Your store (the song's biggest impact)   // v18: "they leave." ... "Sale lost." (lands on the sea's first LOST stamps)
   const PROMO_SHOPIFY_BAG = 'M15.337 23.979l7.216-1.561s-2.604-17.613-2.625-17.73c-.018-.116-.114-.192-.211-.192s-1.929-.136-1.929-.136-1.275-1.274-1.439-1.411c-.045-.037-.075-.057-.121-.074l-.914 21.104h.023zM11.71 11.305s-.81-.424-1.774-.424c-1.447 0-1.504.906-1.504 1.141 0 1.232 3.24 1.715 3.24 4.629 0 2.295-1.44 3.76-3.406 3.76-2.354 0-3.54-1.465-3.54-1.465l.646-2.086s1.245 1.066 2.28 1.066c.675 0 .975-.545.975-.932 0-1.619-2.654-1.694-2.654-4.359-.034-2.237 1.571-4.416 4.827-4.416 1.257 0 1.875.361 1.875.361l-.945 2.715-.02.01zM11.17.83c.136 0 .271.038.405.135-.984.465-2.064 1.639-2.508 3.992-.656.213-1.293.405-1.889.578C7.697 3.75 8.951.84 11.17.84V.83zm1.235 2.949v.135c-.754.232-1.583.484-2.394.736.466-1.777 1.333-2.645 2.085-2.971.193.501.309 1.176.309 2.1zm.539-2.234c.694.074 1.141.867 1.429 1.755-.349.114-.735.231-1.158.366v-.252c0-.752-.096-1.371-.271-1.871v.002zm2.992 1.289c-.02 0-.06.021-.078.021s-.289.075-.714.21c-.423-1.233-1.176-2.37-2.508-2.37h-.115C12.135.209 11.669 0 11.265 0 8.159 0 6.675 3.877 6.21 5.846c-1.194.365-2.063.636-2.16.674-.675.213-.694.232-.772.87-.075.462-1.83 14.063-1.83 14.063L15.009 24l.927-21.166z';
   const PROMO_VO_ON = promoBootParams.get('vo') === '1';
   const PROMO_VO_BUDGET_S = [
@@ -4073,7 +4086,7 @@
   function marketingPart() {
     if (!isMarketingAd) return 'pitch';
     const part = (promoSearchParams().get('part') || 'full').trim().toLowerCase();
-    if (part === 'pain' || part === 'pitch' || part === 'full' || part === 'cta' || part === 'reel') return part;   // reel: dev preview of the demo stores
+    if (part === 'pain' || part === 'pitch' || part === 'full' || part === 'cta' || part === 'reel' || part === 'sync') return part;   // reel: dev preview of the demo stores; sync: the one-click / always-in-sync scene alone
     return 'full';
   }
 
@@ -4843,6 +4856,11 @@
             this.playEndCard();
             return;
           }
+          if (marketingPart() === 'sync') {
+            const ended = () => { window.__promoExportEnded = true; };
+            this.playSyncDev().then(ended, ended);
+            return;
+          }
           if (marketingPart() === 'pitch') {
             this.flip();
             return;
@@ -4871,6 +4889,10 @@
       }
       if (marketingPart() === 'reel') {
         window.setTimeout(() => this.playStoreReel(loadStoreReel()), 1500);
+        return;
+      }
+      if (marketingPart() === 'sync') {
+        window.setTimeout(() => this.playSyncDev(), 1500);
         return;
       }
       if (marketingPart() !== 'pitch') this.playPain();
@@ -7960,77 +7982,253 @@
       }
     }
 
-    // "One click... and your whole store is in sync. Automatically, always."
-    // The clerk alone at the centre; the store's Shopify parts pop out around
-    // it on "One click" and stream into it on "whole store", each one charging
-    // it up, a single release ring, then "Always in sync" under it. Fast: the scene lasts the line plus a breath.
+    // "It all takes just one click. And your whole store stays in sync... automatically."
+    // v22: the click is shown. A Shopify "Install" button comes in, a macOS pointer
+    // glides to it and presses it on "one click" (press, glow, focus ring, click),
+    // the button morphs Install -> progress ring -> check -> "Installed", then folds
+    // into the clerk's chest: the clerk appears and the store's six areas spring out
+    // as Apple-like icon tiles. Light runs along a line from every tile into the
+    // clerk (each tile ticks as its line lands), the scene settles (soft pulses keep
+    // running in along the lines) and "Always in sync" writes in on "automatically".
+    // Stepped per frame only (tweenStep, one rAF loop on performance.now): export-safe.
     async playSyncScene() {
       if (prefersReducedMotion()) return;
       const canvas = this.root.querySelector('[data-promo-canvas]') || this.root;
       const scene = document.createElement('div');
-      scene.className = 'promo-sync is-orbs';
+      scene.className = 'promo-sync is-install';
+      const tick = '<svg viewBox="0 0 24 24" aria-hidden="true"><path pathLength="1" d="M6.4 12.6l3.6 3.6 7.6-7.8"/></svg>';
       scene.innerHTML = `
         <div class="promo-sync__glow"></div>
-        <div class="promo-sync__avatar" data-sync-avatar><span class="promo-sync__ring"></span></div>
-        ${PROMO_SYNC_PARTS.map((p, i) => `<div class="promo-sync__orb" data-sync-orb="${p.key}" style="--a:${(i / PROMO_SYNC_PARTS.length) * 360 - 90 + 30}deg;--i:${i}">
-          <span class="promo-sync__bead"><svg viewBox="0 0 24 24"><path d="${p.icon}"/></svg></span>
-          <span class="promo-sync__name">${p.short}</span>
-        </div>`).join('')}`;
+        <svg class="promo-sync__wires" aria-hidden="true"></svg>
+        <span class="promo-sync__ring"></span>
+        <div class="promo-sync__avatar" data-sync-avatar></div>
+        ${PROMO_SYNC_PARTS.map((p) => `<div class="promo-sync__tile" data-sync-tile="${p.key}" style="left:${p.x * 100}%;top:${p.y * 100}%">
+          <span class="promo-sync__app"><svg viewBox="0 0 24 24" aria-hidden="true">${p.glyph}</svg></span>
+          <span class="promo-sync__badge">${tick}</span>
+          <span class="promo-sync__label">${p.label}</span>
+        </div>`).join('')}
+        <div class="promo-sync__install">
+          <span class="promo-sync__aura"></span>
+          <span class="promo-sync__focus"></span>
+          <span class="promo-sync__pill">
+            <span class="promo-sync__fill"></span>
+            <span class="promo-sync__face is-install"><svg class="promo-sync__bag" viewBox="0 0 24 24" aria-hidden="true"><path d="${PROMO_SHOPIFY_BAG}"/></svg><span>Install</span></span>
+            <svg class="promo-sync__progress" viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="13.5"/><circle pathLength="1" cx="20" cy="20" r="13.5"/></svg>
+            <span class="promo-sync__check">${tick}</span>
+            <span class="promo-sync__face is-done">${tick}<span>Installed</span></span>
+            <span class="promo-sync__gloss"></span>
+          </span>
+        </div>
+        <span class="promo-sync__pointer">${PROMO_MAC_POINTER}</span>`;
       canvas.appendChild(scene);
       const seat = this.seatSyncAvatar(scene);
-      scene.classList.add('is-in');
-      fadeStep(scene, 0, 1, 650);   // out of the sold sea's orange
-      const take = speakTake('t-sync');
-      await take.at('one click');
-      scene.classList.add('is-click');
-      promoSfx('sync-flow');
-      const orbs = [...scene.querySelectorAll('[data-sync-orb]')];
-      orbs.forEach((orb, i) => window.setTimeout(() => orb.classList.add('is-out'), 60 + i * 55));
-      await take.at('whole store', 'start', -180);
-      setOpeningAvatarAction(PROMO_SYNC_ACTION);
+      const $ = (sel) => scene.querySelector(sel);
+      const host = $('[data-sync-avatar]'); const install = $('.promo-sync__install'); const pill = $('.promo-sync__pill');
+      const fill = $('.promo-sync__fill'); const gloss = $('.promo-sync__gloss'); const aura = $('.promo-sync__aura'); const focus = $('.promo-sync__focus');
+      const faceIn = $('.promo-sync__face.is-install'); const faceDone = $('.promo-sync__face.is-done');
+      const progress = $('.promo-sync__progress'); const arc = progress.lastElementChild; const check = $('.promo-sync__check');
+      const pointer = $('.promo-sync__pointer'); const glow = $('.promo-sync__glow'); const ring = $('.promo-sync__ring'); const wires = $('.promo-sync__wires');
+      const tiles = [...scene.querySelectorAll('[data-sync-tile]')];
+      const clamp01 = (v) => Math.min(1, Math.max(0, v));
+      const lerp = (a, b, u) => a + (b - a) * u;
+      const backOut = (u) => 1 + 2.4 * (u - 1) ** 3 + 1.4 * (u - 1) ** 2;   // a soft spring (slight overshoot)
+      const quintOut = (u) => 1 - (1 - u) ** 5;
+      const linear = (u) => u;
+      // the clerk's chest (seatSyncAvatar), as shares of the scene
       const sr = scene.getBoundingClientRect();
-      const core = seat?.core || { x: sr.width / 2, y: sr.height / 2 };
-      await Promise.all(orbs.map((orb, i) => new Promise((resolve) => window.setTimeout(() => {
-        const r = orb.getBoundingClientRect();
-        const dx = core.x - (r.left - sr.left + r.width / 2); const dy = core.y - (r.top - sr.top + r.height / 2);
-        const bend = (i % 2 ? 1 : -1) * 0.22;   // a slight curve, alternating sides
-        orb.classList.add('is-flying');
-        const anim = orb.animate([
-          { transform: 'translate(0, 0) scale(1)', opacity: 1 },
-          { transform: `translate(${dx * 0.55 - dy * bend}px, ${dy * 0.55 + dx * bend}px) scale(0.6)`, opacity: 1, offset: 0.5 },
-          { transform: `translate(${dx * 0.85}px, ${dy * 0.85}px) scale(0.3)`, opacity: 0, offset: 0.82 },   // gone before it reaches the body
-          { transform: `translate(${dx}px, ${dy}px) scale(0.12)`, opacity: 0 },
-        ], { duration: PROMO_SYNC_ORB_MS, easing: 'cubic-bezier(0.55, 0, 0.75, 0.4)', fill: 'forwards' });
-        waitMs(PROMO_SYNC_ORB_MS).then(() => {   // not anim.finished: the export clock pauses animations
-          scene.style.setProperty('--charge', String((i + 1) / orbs.length));
-          scene.classList.remove('is-gulp'); scene.getBoundingClientRect(); scene.classList.add('is-gulp');
-          promoSfx('orb-absorb', { index: i });
-          resolve();
+      const core = seat ? { x: seat.core.x / Math.max(1, sr.width), y: seat.core.y / Math.max(1, sr.height) } : { x: 0.5, y: 0.58 };
+      const W = scene.clientWidth; const H = scene.clientHeight;   // layout px (the pointer, the pill's width)
+
+      // the lines: one curve from each tile into the clerk, under the clerk (it runs into the body)
+      const VH = 1000; const VW = (VH * W) / Math.max(1, H);
+      wires.setAttribute('viewBox', `0 0 ${VW.toFixed(1)} ${VH}`);
+      const NS = 'http://www.w3.org/2000/svg';
+      const el = (tag, attrs, parent) => { const n = document.createElementNS(NS, tag); Object.entries(attrs).forEach(([k, v]) => n.setAttribute(k, String(v))); parent.appendChild(n); return n; };
+      const blur = el('filter', { id: 'promo-sync-soft', x: '-50%', y: '-50%', width: '200%', height: '200%' }, el('defs', {}, wires));
+      el('feGaussianBlur', { stdDeviation: 6 }, blur);
+      // each line leaves its tile level and enters the clerk's shirt level (an S, never across a label)
+      const cx = core.x * VW; const cy = (core.y + PROMO_SYNC_HEART_DY) * VH;
+      const lines = PROMO_SYNC_PARTS.map((p) => {
+        const x0 = p.x * VW; const y0 = p.y * VH;
+        const d = `M${x0.toFixed(1)} ${y0.toFixed(1)}C${lerp(x0, cx, 0.45).toFixed(1)} ${y0.toFixed(1)} ${lerp(x0, cx, 0.6).toFixed(1)} ${cy.toFixed(1)} ${cx.toFixed(1)} ${cy.toFixed(1)}`;
+        const g = el('g', { class: 'promo-sync__line' }, wires);
+        const base = el('path', { d, pathLength: 1, class: 'is-base' }, g);
+        const shine = el('path', { d, pathLength: 1, class: 'is-shine-glow', filter: 'url(#promo-sync-soft)' }, g);
+        const sheen = el('path', { d, pathLength: 1, class: 'is-shine' }, g);
+        const sparks = [0, 1, 2].map(() => ({ glow: el('circle', { r: 14, class: 'is-spark-glow', filter: 'url(#promo-sync-soft)' }, g), dot: el('circle', { r: 5.5, class: 'is-spark' }, g) }));
+        return { base, shine, sheen, sparks, len: base.getTotalLength(), start: Infinity, landAt: null };
+      });
+
+      // one rAF loop for everything continuous: the lines, the sparks, the glow, the chip's glyph
+      const st = { live: true, settled: false, flashAt: -1e9, chip: null, chipAt: 0 };
+      const land = (i) => {
+        const badge = tiles[i].querySelector('.promo-sync__badge'); const app = tiles[i].querySelector('.promo-sync__app');
+        const path = badge.querySelector('path');
+        promoSfx('order-in', { index: i });
+        tweenStep(480, (e, u) => { badge.style.opacity = clamp01(u * 4).toFixed(3); badge.style.scale = backOut(u).toFixed(4); }, linear);
+        tweenStep(420, (e) => { path.style.strokeDashoffset = (1 - e).toFixed(4); }, promoEaseOut);
+        tweenStep(520, (e, u) => { app.style.scale = (1 + 0.07 * Math.sin(u * Math.PI)).toFixed(4); }, linear);
+      };
+      const loop = (now) => {
+        if (!st.live) return;
+        let landed = 0; let pulse = Math.exp(-Math.max(0, now - st.flashAt) / 320);
+        lines.forEach((line, i) => {
+          const t = now - line.start;
+          if (t < 0) return;
+          const drawn = promoEaseInOut(clamp01(t / PROMO_SYNC_LINE_DRAW_MS));
+          line.base.style.strokeDasharray = `${drawn.toFixed(4)} 1`;
+          line.base.style.opacity = drawn > 0.002 ? '1' : '0';   // a zero dash still paints its round cap
+          // the burst: three sparks run in, gathering speed into the clerk
+          line.sparks.forEach((s, k) => {
+            const u = (t - 100 - k * 150) / PROMO_SYNC_STREAM_MS;
+            const on = u > 0 && u < 1;
+            const a = on ? Math.sin(Math.PI * u) ** 0.6 : 0;
+            if (on) {
+              const pt = line.base.getPointAtLength(line.len * u ** 1.6);
+              [s.glow, s.dot].forEach((c) => { c.setAttribute('cx', pt.x.toFixed(1)); c.setAttribute('cy', pt.y.toFixed(1)); });
+            }
+            s.glow.style.opacity = (0.75 * a).toFixed(3); s.dot.style.opacity = a.toFixed(3);
+            if (k === 0 && u >= 0.9 && line.landAt == null) { line.landAt = now; land(i); }
+          });
+          if (line.landAt == null) return;
+          landed += 1;
+          pulse = Math.max(pulse, Math.exp(-(now - line.landAt) / 280));
+          // settled: a soft light keeps running in along the line (staggered, calm)
+          const ph = (((now - line.landAt - 260 - i * 230) % 1900) + 1900) % 1900 / 1900;
+          const live = now - line.landAt > 260 + i * 230 ? 1 : 0;
+          const off = (0.18 - ph * ph * (3 - 2 * ph) * 1.18).toFixed(4);
+          line.sheen.style.strokeDashoffset = off; line.shine.style.strokeDashoffset = off;
+          line.sheen.style.opacity = String(0.95 * live); line.shine.style.opacity = String(0.8 * live);
         });
-      }, i * PROMO_SYNC_ORB_STAGGER_MS))));
-      scene.classList.add('is-charged');
-      promoSfx('sync-done');
-      // "Automatically, always.": a small glass chip writes in under the clerk,
-      // its sync glyph turning for as long as the scene holds (stepped).
+        const charge = landed / lines.length;
+        glow.style.opacity = (0.16 + 0.42 * charge + 0.32 * pulse + (st.settled ? 0.05 * Math.sin(now / 700) : 0)).toFixed(3);
+        glow.style.scale = (0.82 + 0.3 * charge + 0.1 * pulse).toFixed(4);
+        if (landed === lines.length && !st.settled) {
+          st.settled = true;
+          promoSfx('sync-done');
+          tweenStep(1000, (e) => { ring.style.opacity = (0.5 * (1 - e)).toFixed(3); ring.style.scale = lerp(0.7, 2.6, e).toFixed(4); }, promoEaseOut);
+        }
+        if (st.chip) st.chip.style.rotate = `${(((now - st.chipAt) / 1700) * 360).toFixed(2)}deg`;
+        window.requestAnimationFrame(loop);
+      };
+
+      // the opening state: the button alone (the clerk and the tiles come out of it)
+      const tall = pill.offsetHeight; const pad = tall * 0.46;
+      const wInstall = faceIn.offsetWidth + pad * 2; const wDone = faceDone.offsetWidth + pad * 2;
+      pill.style.width = `${wInstall.toFixed(1)}px`;
+      const tipAt = (x, y) => { pointer.style.left = `${x.toFixed(1)}px`; pointer.style.top = `${y.toFixed(1)}px`; };
+      const from = { x: W * 0.665, y: H * 0.9 }; const aim = { x: W * 0.5 + wInstall * 0.18, y: H * 0.5 + tall * 0.16 };
+      tipAt(from.x, from.y);
+      host.style.opacity = '0';
+      host.style.transformOrigin = `${(core.x * 100).toFixed(2)}% ${(core.y * 100).toFixed(2)}%`;
+      glow.style.left = `${(core.x * 100).toFixed(2)}%`; glow.style.top = `${(core.y * 100).toFixed(2)}%`;
+      ring.style.left = `${(core.x * 100).toFixed(2)}%`; ring.style.top = `${((core.y + PROMO_SYNC_HEART_DY) * 100).toFixed(2)}%`;
+      scene.classList.add('is-in');
+      fadeStep(scene, 0, 1, 450);   // out of the sold sea's orange
+      const take = speakTake('t-sync');
+      loop(performance.now());
+
+      // 1. the Install button comes in; the pointer glides to it
+      promoSfx('appear');
+      tweenStep(680, (e, u) => {
+        install.style.opacity = clamp01(u * 2.2).toFixed(3);
+        install.style.scale = lerp(0.88, 1, e).toFixed(4);
+        install.style.translate = `-50% calc(-50% + ${((1 - e) * 2.6).toFixed(3)}cqh)`;
+      }, quintOut);
+      tweenStep(800, (e) => { aura.style.opacity = (0.3 * e).toFixed(3); }, promoEaseOut);
+      await waitMs(380);
+      tweenStep(220, (e) => { pointer.style.opacity = e.toFixed(3); }, promoEaseOut);
+      await tweenStep(820, (e, u) => {
+        tipAt(lerp(from.x, aim.x, e) + Math.sin(e * Math.PI) * W * 0.018, lerp(from.y, aim.y, e));
+        const hover = promoEaseInOut(clamp01((u - 0.7) / 0.3));   // the button lifts as the pointer arrives
+        pill.style.scale = (1 + 0.025 * hover).toFixed(4);
+        gloss.style.opacity = (0.06 * hover).toFixed(3);
+      }, (u) => 1 - (1 - u) ** 3.2);
+
+      // 2. the press, on "one click": the button gives, the light answers
+      await take.at('one click');
+      await take.at('click', 'start', -PROMO_SYNC_PRESS_LEAD_MS);
+      promoSfx('click');
+      tweenStep(320, (e, u) => {
+        const d = u < 0.28 ? quintOut(u / 0.28) : 1 - promoEaseInOut((u - 0.28) / 0.72);
+        pill.style.scale = (u < 0.28 ? lerp(1.025, 0.965, d) : lerp(1, 0.965, d)).toFixed(4);
+        pointer.style.scale = (1 - 0.12 * d).toFixed(4);
+        gloss.style.opacity = (0.2 * d).toFixed(3);
+      }, linear);
+      tweenStep(720, (e) => { focus.style.opacity = (0.55 * (1 - e)).toFixed(3); focus.style.inset = `${(-0.5 - 3.6 * e).toFixed(3)}cqh`; }, promoEaseOut);
+      tweenStep(1100, (e, u) => { aura.style.opacity = (0.3 + 0.55 * Math.sin(Math.min(1, u * 2.4) * Math.PI / 2) * (1 - 0.5 * clamp01((u - 0.4) / 0.6))).toFixed(3); }, linear);
+      waitMs(180).then(() => tweenStep(520, (e) => { tipAt(aim.x + e * H * 0.05, aim.y + e * H * 0.075); pointer.style.opacity = (1 - e).toFixed(3); }, promoEaseInOut));
+      // 3. Install -> progress ring -> check -> Installed
+      await waitMs(80);
+      tweenStep(160, (e) => { faceIn.style.opacity = (1 - e).toFixed(3); faceIn.style.scale = (1 - 0.1 * e).toFixed(4); }, promoEaseOut);
+      await tweenStep(260, (e) => { pill.style.width = `${lerp(wInstall, tall, e).toFixed(1)}px`; }, promoEaseInOut);
+      tweenStep(140, (e) => { progress.style.opacity = e.toFixed(3); }, promoEaseOut);
+      await tweenStep(380, (e, u) => { arc.style.strokeDashoffset = (1 - e).toFixed(4); progress.style.rotate = `${(-90 + 240 * u).toFixed(2)}deg`; }, promoEaseInOut);
+      promoSfx('install');
+      tweenStep(220, (e) => { progress.style.opacity = (1 - e).toFixed(3); progress.style.scale = (1 + 0.18 * e).toFixed(4); }, promoEaseOut);
+      tweenStep(260, (e) => { fill.style.opacity = e.toFixed(3); }, promoEaseOut);
+      const checkPath = check.querySelector('path');
+      check.style.opacity = '1';
+      tweenStep(420, (e, u) => { checkPath.style.strokeDashoffset = (1 - promoEaseOut(clamp01(u / 0.75))).toFixed(4); check.style.scale = lerp(0.6, 1, backOut(u)).toFixed(4); }, linear);
+      tweenStep(380, (e, u) => { pill.style.scale = (1 + 0.06 * Math.sin(u * Math.PI)).toFixed(4); }, linear);
+      await waitMs(100);
+      await tweenStep(300, (e, u) => {
+        pill.style.width = `${lerp(tall, wDone, e).toFixed(1)}px`;
+        check.style.opacity = (1 - clamp01(u * 2.6)).toFixed(3);
+        faceDone.style.opacity = clamp01((u - 0.55) / 0.45).toFixed(3);   // only once the pill is wide enough (never clipped)
+        faceDone.style.scale = lerp(0.94, 1, promoEaseOut(clamp01((u - 0.55) / 0.45))).toFixed(4);
+      }, promoEaseInOut);
+      const installedAt = performance.now();
+
+      // 4. "Installed" folds into the clerk's chest: the clerk arrives, the tiles spring out
+      await take.at('whole store', 'start', -PROMO_SYNC_FOLD_LEAD_MS);
+      await waitMs(Math.max(0, installedAt + 180 - performance.now()));   // "Installed" always reads
+      const foldAt = performance.now();
+      promoSfx('install-fly');
+      tweenStep(380, (e, u) => {
+        install.style.translate = `calc(-50% + ${((core.x - 0.5) * 100 * e).toFixed(3)}cqw) calc(-50% + ${((core.y + PROMO_SYNC_HEART_DY - 0.5) * 100 * e).toFixed(3)}cqh)`;
+        install.style.scale = lerp(1, 0.14, e).toFixed(4);
+        install.style.opacity = (1 - clamp01((u - 0.2) / 0.6)).toFixed(3);
+      }, promoEaseInOut);
+      waitMs(250).then(() => {   // the clerk only once "Installed" has nearly gone (never a ghost behind it)
+        st.flashAt = performance.now();
+        tweenStep(480, (e) => { host.style.opacity = e.toFixed(3); host.style.scale = lerp(0.9, 1, e).toFixed(4); }, quintOut);
+      });
+      tiles.forEach((tile, i) => {
+        const p = PROMO_SYNC_PARTS[i];
+        // each tile springs out from the clerk's side of its own place (never across the clerk)
+        const dx = (core.x - p.x) * 40; const dy = (core.y + PROMO_SYNC_HEART_DY - p.y) * 40;
+        const label = tile.querySelector('.promo-sync__label');
+        waitMs(240 + i * PROMO_SYNC_TILE_STAGGER_MS).then(() => tweenStep(680, (e, u) => {
+          const k = backOut(u);
+          tile.style.translate = `calc(-50% + ${((1 - k) * dx).toFixed(3)}cqw) calc(-50% + ${((1 - k) * dy).toFixed(3)}cqh)`;
+          tile.style.scale = lerp(0.35, 1, quintOut(u)).toFixed(4);
+          tile.style.opacity = clamp01(u * 4).toFixed(3);
+          label.style.opacity = clamp01((u - 0.45) / 0.4).toFixed(3);
+        }, linear));
+        lines[i].start = foldAt + 460 + i * PROMO_SYNC_TILE_STAGGER_MS;
+      });
+      await take.at('whole store');
+      setOpeningAvatarAction(PROMO_SYNC_ACTION);
+      await waitMs(Math.max(0, lines[0].start + 120 - performance.now()));
+      promoSfx('sync-flow');
+      promoSfx('orb-absorb', { index: 0 });   // one charge-up for the whole stream
+
+      // 5. "automatically": a small glass chip writes in under the clerk, its glyph turning
       await take.at('automatically', 'start', -80);
       const chip = document.createElement('div');
       chip.className = 'promo-sync__always';
-      chip.innerHTML = `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 12a8 8 0 0 1-13.7 5.6M4 12a8 8 0 0 1 13.7-5.6"/><path d="M17.8 2.8v3.9h-3.9M6.2 21.2v-3.9h3.9"/></svg><span>Always in sync</span>`;
+      chip.innerHTML = `<span class="promo-sync__always-glyph"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19.5 12a7.5 7.5 0 0 1-12.9 5.2M4.5 12a7.5 7.5 0 0 1 12.9-5.2"/><path d="M17.6 3.4v3.7h-3.7M6.4 20.6v-3.7h3.7"/></svg></span><span>Always in sync</span>`;
       scene.appendChild(chip);
-      const glyph = chip.querySelector('svg');
-      let spinning = true;
-      const t0 = performance.now();
-      const spin = (now) => { if (!spinning) return; glyph.style.rotate = `${((now - t0) / 1600) * 360}deg`; window.requestAnimationFrame(spin); };
-      spin(t0);
+      st.chip = chip.querySelector('svg'); st.chipAt = performance.now();
       promoSfx('ui-tick');
-      tweenStep(420, (e) => { chip.style.opacity = e.toFixed(3); chip.style.translate = `-50% ${((1 - e) * 1.2).toFixed(3)}cqh`; }, promoEaseOut);
+      tweenStep(460, (e) => { chip.style.opacity = e.toFixed(3); chip.style.translate = `-50% ${((1 - e) * 1.4).toFixed(3)}cqh`; chip.style.scale = lerp(0.94, 1, e).toFixed(4); }, quintOut);
       await take.done;
-      window.setTimeout(() => { spinning = false; }, 900);
       await waitMs(PROMO_SYNC_HOLD_MS);
       // v11b: the scene leaves completely, then the stores come in (never two
       // scenes dissolved over each other)
-      scene.classList.add('is-leaving');
       await fadeStep(scene, 1, 0, 300);
+      st.live = false;
       this.unseatSyncAvatar(seat); scene.remove();
     }
 
@@ -8064,6 +8262,19 @@
       const stage = this.root.querySelector('.promo-opening__stage') || seat.home;
       stage?.appendChild(seat.widget);
       Object.assign(seat.widget.style, { top: '', left: '', right: '', bottom: '', margin: '', transition: '', transform: '', transformOrigin: '' });
+    }
+
+    // part=sync (dev): the scene alone, from the same state the film reaches it in
+    // (agent ended, orange field held behind), then stop.
+    async playSyncDev() {
+      endOpeningAgent();
+      document.documentElement.style.setProperty('--ad-warmth', '1');
+      document.documentElement.classList.add('is-promo-pitch');
+      this.root.classList.add('is-pitch');
+      this.parkWidget();   // the film has the clerk docked in the stage by now
+      this.holdOrangeField();
+      await waitMs(400);
+      await this.playSyncScene();
     }
 
     playSeeForYourself() {
@@ -11336,7 +11547,7 @@
         take.at('into sales').then(() => moments?.resolve());
         take.at('So we built', 'start', -160).then(() => this.swapSwitchTitle(title));
         take.at('for your online', 'start', -220).then(() => this.writeOnlineStore(title));
-        await take.at('store!', 'end', 160 - PROMO_FLIP_KNOB_MS);
+        await take.at('for your online', 'start');   // v22: the flip may start on "store!" so the burst lands as the word ends (the drop)
         await untilFilm(PROMO_FILM_ANCHORS.burst - (PROMO_FLIP_KNOB_MS + PROMO_FLIP_POP_HOLD_MS + PROMO_KNOB_WARM_MS) / 1000);   // v21: the burst lands on the drop
         this.flip();
         window.setTimeout(() => { moments?.clear(); if (title?.online) fadeStep(title.online, 1, 0, 300).then(() => title.online.remove()); }, PROMO_FLIP_KNOB_MS);

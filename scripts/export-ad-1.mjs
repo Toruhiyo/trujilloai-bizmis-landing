@@ -31,7 +31,7 @@ function usage() {
   return [
     'Usage: node scripts/export-ad-1.mjs [options]',
     '  --cta demo|ea|install|none     default install',
-    '  --part full|pain|pitch         default full',
+    '  --part full|pain|pitch|sync    default full',
     '  --resolution 1920x1080         or 3840x2160',
     '  --preview                      layout at 1920x1080, file is 960x540, 6fps',
     '  --frames 0-59                  inclusive range, default the whole film',
@@ -853,7 +853,7 @@ async function main() {
     preview,
   };
   if (!['demo', 'ea', 'install', 'none'].includes(cta)) throw new Error(`Unknown cta "${cta}".`);
-  if (!['full', 'pain', 'pitch'].includes(part)) throw new Error(`Unknown part "${part}".`);
+  if (!['full', 'pain', 'pitch', 'sync'].includes(part)) throw new Error(`Unknown part "${part}".`);
   if (!['ffv1', 'prores', 'h264'].includes(codec)) throw new Error(`Unknown codec "${codec}".`);
   if (options.beginFrame) {
     process.stdout.write('Capture: HeadlessExperimental.beginFrame, one composited frame at a time.\n');

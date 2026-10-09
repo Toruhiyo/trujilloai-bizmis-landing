@@ -3,7 +3,7 @@ music): every cut sits exactly on a detected clap; gaps never grow (continuous a
 hero / quick-voice windows keep their minimum lengths; "Your store" lands on the take's
 biggest impact. Times are relative to the reel start (= the extension's first sample).
   venv/python cuts_from_claps.py <take.mp3> [out.json]"""
-import sys, json, numpy as np, librosa, scipy.signal as ss
+import os, sys, json, numpy as np, librosa, scipy.signal as ss
 f = sys.argv[1]; BEAT = 60 / 112.3
 MINS = [3.2, 3.0, 2.85, 1.95] + [1.35, 0.15, 1.0, 0.15, 0.75, 0.12, 0.62] + [0.1] * 11   # 4 heroes, quick/flash x7, 11 more cards
 TARGET = [6, 5.5, 5.25, 4, 2.5, 2.25, 2, 1.75, 1.5, 1.25, 1.25, 0.75, 0.75, 0.5, 0.5, 0.5, 0.5, 0.25, 0.25, 0.25, 0.25, 0.25]
@@ -14,7 +14,7 @@ t = np.arange(len(env)) * hop / sr
 pk, pr = ss.find_peaks(env, height=np.percentile(env, 80), distance=int(0.05 * sr / hop)); pt = t[pk]; ph = pr['peak_heights'] / pr['peak_heights'].max()
 rms = librosa.feature.rms(y=y, hop_length=256)[0]; rt = np.arange(len(rms)) * 256 / sr
 lo = librosa.onset.onset_strength(y=y, sr=sr, hop_length=256, fmax=250)
-win = (rt > 20) & (rt < 29); imp = float(rt[win][np.argmax((lo[:len(rt)] * rms)[win])])   # the biggest low-end hit around the planned Your store
+IW = [float(x) for x in os.environ.get("IMPACT_WIN", "20,29").split(",")]; win = (rt > IW[0]) & (rt < IW[1]); imp = float(rt[win][np.argmax((lo[:len(rt)] * rms)[win])])   # the biggest low-end hit around the planned Your store
 first = 7 * BEAT   # the tunnel's length (first hero lands here)
 c0 = pt[np.argmin(np.abs(pt - first) - 0.3 * ph)]
 cuts = [float(c0)]; prev_gap = 99
