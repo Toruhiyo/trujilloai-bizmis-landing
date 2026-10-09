@@ -2,12 +2,12 @@
   {
     "id": "t-pain",
     "role": "narrator",
-    "text": "[confident] Every day, shoppers walk into your store... ready to buy. [curious] Some get lost in the catalog. Clicking, comparing, scrolling... [sighs] with no one there to help them choose. [short pause] Others get stuck on one last question... and go looking for help. A chatbot? [sarcastic] Here's a wall of text... go read it. [short pause] A real person? The perfect answer... hours later. When the sale's already gone. [short pause] Either way, they leave."
+    "text": "[matter-of-fact] Every day, shoppers walk into your store... ready to buy. [wry] Some get lost in the catalog. Clicking, comparing, scrolling... [deadpan] with no one there to help them choose. [short pause] Others get stuck on one last question... and go looking for help. [wry] A chatbot? [dry] Here's a wall of text... go read it. [short pause] [wry] A real person? The perfect answer... [deadpan] hours later. When the sale's already gone. [short pause] [matter-of-fact] Either way, they leave."
   },
   {
     "id": "t-pain-end",
     "role": "narrator",
-    "text": "[matter-of-fact] Sale lost."
+    "text": "[deadpan] Sale lost."
   },
   {
     "id": "t-switch",
@@ -67,7 +67,7 @@
   {
     "id": "t-ea",
     "role": "narrator",
-    "text": "[excited] Install now to join Early Access! [warm] You get generous free credits, fifty percent off when you upgrade, and you shape the roadmap. It installs in one click and stays private until you go live, with no commitment, and a direct line to the founder. [confident] There are only fifty spots. [warm] Install now to secure yours."
+    "text": "[upbeat] Install now to join Early Access! [warm] Generous free credits, fifty percent off upgrades, and you shape the roadmap. [confident] Only fifty spots. [warm] Secure yours."
   },
   {
     "id": "shopper-doubt",

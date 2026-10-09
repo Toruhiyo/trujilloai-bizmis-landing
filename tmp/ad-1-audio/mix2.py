@@ -163,6 +163,22 @@ for e in ev:
         else:
             stamp_cue(bus, t, stamps.sold_hit(SOLD_SFX), -18 + rnd.uniform(-5, 0), pan, label=k)
         continue
+    # v23: the sales-bar climaxes. ✕ chips clip the rim (and, in the pain, settle on the floor), ✓ marks land in the bar
+    if k in ('mark-hit', 'mark-miss', 'mark-floor'):
+        burst_t = next((T(x) for x in ev if x['id'] == 'burst'), None)
+        pain = burst_t is None or t < burst_t
+        last = globals().setdefault('mark_last', {})
+        if t - last.get(k, -1) < (0.06 if k == 'mark-hit' and not pain else 0.09): continue
+        last[k] = t; pan = rnd.uniform(-0.35, 0.35)
+        if k == 'mark-miss': cue(bus, t, 'el15/chip-miss1', -27 + rnd.uniform(-3, 0), lp=9000, pan=pan, track='UI')
+        elif k == 'mark-floor': cue(bus, t, 'el15/chip-floor1', -29 + rnd.uniform(-3, 0), lp=7000, pan=pan, track='UI')
+        elif pain: cue(bus, t, 'el15/pain-hit', -21, lp=6000, pan=pan, track='UI')
+        else: cue(bus, t, 'el15/sold-drop1', -25 + rnd.uniform(-2, 0), rate=min(1.22, 1 + 0.006 * e.get('index', 0)), lp=10000, pan=pan, track='UI')
+        continue
+    if k == 'bar-exit':
+        cue(bus, t, 'el15/bar-rise1', -17, align='peak', lp=9000, track='Whooshes'); continue
+    if k == 'bar-widen':
+        cue(bus, t, 'el15/bar-widen1', -15, lp=9000, track='Whooshes'); continue
     if k in MAP:
         name, g, kw = MAP[k]
         track = 'UI' if k in ('click', 'send', 'reply', 'panel', 'page', 'toggle', 'cart', 'appear', 'pose-choice', 'pose-bundle', 'ea-tick', 'switch-in') \

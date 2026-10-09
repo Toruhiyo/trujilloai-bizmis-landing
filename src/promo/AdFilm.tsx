@@ -9,7 +9,9 @@ const WIDGET_STYLE = LOCAL_WIDGET ? "/promo/widget-local/avatar-widget-style.css
 // `beckon`); the widget defaults to the CDN copy. Absolute on purpose: the
 // widget resolves relative paths against rootUrl (the CDN).
 const LOCAL_ANIMATIONS_URL = "/promo/widget-local/assets/models/avatar-animations.glb";
-const INTER_STYLE = "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap";
+// The v2 landing's type: Inter (400-800) for everything, Caveat for the handwritten lines.
+// Must match index.html's link byte for byte (loadStylesheet dedupes by href).
+const INTER_STYLE = "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Caveat:wght@600;700&display=swap";
 const FILM_STYLES = [
   INTER_STYLE,
   "/promo/promo-host.css",

@@ -31,7 +31,7 @@ function usage() {
   return [
     'Usage: node scripts/export-ad-1.mjs [options]',
     '  --cta demo|ea|install|none     default install',
-    '  --part full|pain|pitch|sync    default full',
+    '  --part full|pain|pitch|sync|reel|cta  default full (sync: the scene + its hand-off into the reel; reel: sync + the whole reel)',
     '  --resolution 1920x1080         or 3840x2160',
     '  --preview                      layout at 1920x1080, file is 960x540, 6fps',
     '  --frames 0-59                  inclusive range, default the whole film',
@@ -552,6 +552,8 @@ async function exportRange(browser, options, framesDir) {
         atMs: cue.atMs,
         fromSec: cue.fromSec,
         endMs: cue.endMs == null ? window.__promoClock.now() : cue.endMs,
+        fadeIn: cue.fadeIn,
+        fadeOut: cue.fadeOut,
       })));
     }
   } finally {
@@ -633,7 +635,8 @@ function audioCueArgs(cues, startNumber) {
     const seconds = ((cue.endMs - cue.atMs) / 1000).toFixed(3);
     inputs.push('-ss', String(cue.fromSec), '-t', seconds, '-i', cue.file);
     const delay = Math.max(0, Math.round(cue.atMs - offsetMs));
-    chains.push(`[${index + 1}:a]afade=t=in:d=0.15,afade=t=out:st=${Math.max(0, seconds - 0.25).toFixed(3)}:d=0.25,adelay=${delay}|${delay}[a${index}]`);
+    const fadeIn = cue.fadeIn ?? 0.15; const fadeOut = cue.fadeOut ?? 0.25;   // a clipped quick-store line fades out short
+    chains.push(`[${index + 1}:a]afade=t=in:d=${fadeIn},afade=t=out:st=${Math.max(0, seconds - fadeOut).toFixed(3)}:d=${fadeOut},adelay=${delay}|${delay}[a${index}]`);
   });
   const mix = `${usable.map((_, index) => `[a${index}]`).join('')}amix=inputs=${usable.length}:normalize=0[aout]`;
   return { inputs, filter: `${chains.join(';')};${mix}` };
@@ -853,7 +856,7 @@ async function main() {
     preview,
   };
   if (!['demo', 'ea', 'install', 'none'].includes(cta)) throw new Error(`Unknown cta "${cta}".`);
-  if (!['full', 'pain', 'pitch', 'sync'].includes(part)) throw new Error(`Unknown part "${part}".`);
+  if (!['full', 'pain', 'pitch', 'sync', 'reel', 'cta', 'climax-pain', 'climax-pitch'].includes(part)) throw new Error(`Unknown part "${part}".`);
   if (!['ffv1', 'prores', 'h264'].includes(codec)) throw new Error(`Unknown codec "${codec}".`);
   if (options.beginFrame) {
     process.stdout.write('Capture: HeadlessExperimental.beginFrame, one composited frame at a time.\n');
@@ -906,7 +909,7 @@ async function main() {
         resolution: `${options.width}x${options.height}`,
         markers: visible,
         // Every recorded line in the film (narrator, clerk, shopper), in film ms.
-        voice: (exported.audioCues || []).map((cue) => ({ src: cue.src, atMs: Math.round(cue.atMs), endMs: Math.round(cue.endMs), fromSec: cue.fromSec || 0 })),
+        voice: (exported.audioCues || []).map((cue) => ({ src: cue.src, atMs: Math.round(cue.atMs), endMs: Math.round(cue.endMs), fromSec: cue.fromSec || 0, ...(cue.fadeOut != null ? { fadeIn: cue.fadeIn, fadeOut: cue.fadeOut } : {}) })),
         sfx: exported.sfx || [],
       }, null, 2)}\n`);
       fs.writeFileSync(path.join(folder, 'report.json'), `${JSON.stringify(report, null, 2)}\n`);

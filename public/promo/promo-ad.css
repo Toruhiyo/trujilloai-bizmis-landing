@@ -365,7 +365,7 @@ html.is-promo-opening.is-promo-depart .promo-opening {
 }
 
 .promo-opening__choice-layer--hot {
-  color: var(--bizmis-primary);
+  color: var(--promo-orange-ink);
   transition: opacity 200ms linear, color 0ms linear;
 }
 
@@ -973,7 +973,7 @@ html.is-promo-opening.is-promo-depart .promo-opening {
 
 .promo-opening__agent {
   opacity: 0;
-  color: var(--bizmis-primary);
+  color: var(--promo-orange-ink);
   white-space: pre;
 }
 
@@ -1195,7 +1195,7 @@ html.is-promo-opening.is-promo-depart .promo-opening {
 
 .promo-opening.is-pain-loop .promo-opening__store > :not(.promo-opening__browser):not(.promo-pain__chat),
 .promo-opening.is-pain-loop .promo-opening__browser-pill {
-  filter: grayscale(1);
+  filter: var(--promo-pain-filter);
 }
 
 .promo-opening.is-pain-loop .promo-opening__store::before {
@@ -1363,7 +1363,7 @@ html.is-promo-opening.is-promo-depart .promo-opening {
   border-color: var(--ad-red);
   border-width: 1px;
   box-shadow: none;
-  filter: grayscale(1);
+  filter: var(--promo-pain-filter);
 }
 
 .promo-scale__tile.is-husk.is-lit .promo-scale__window {
@@ -2131,35 +2131,52 @@ html.is-promo-opening.is-promo-depart .promo-opening {
   display: none;
 }
 
+/* v24: a premium touch indicator (Apple-demo style): a soft translucent fingertip with a white
+   rim; the press (--tap-scale, --tap-down) and its ripple (--tap-ring, --tap-ring-o) are stepped
+   per frame in film-engine.js (pressTouch / moveThumb / liftTouch), never CSS-animated */
 .promo-pain__cursor.is-thumb {
-  width: 28px;
-  height: 28px;
+  width: 34px;
+  height: 34px;
+  margin: -3px 0 0 -3px;
   border-radius: 50%;
-  background: color-mix(in srgb, var(--ad-ink) 55%, transparent);
+  background: radial-gradient(circle, rgba(74, 67, 61, 0.15) 0%, rgba(74, 67, 61, 0.21) 60%, rgba(54, 48, 43, 0.3) 100%);
+  box-shadow:
+    inset 0 0 0 2px rgba(255, 255, 255, 0.9),
+    0 0 0 1px rgba(28, 24, 20, 0.12),
+    0 4px 12px -4px rgba(28, 24, 20, 0.26);
+  -webkit-backdrop-filter: blur(1.5px) saturate(1.2);
+  backdrop-filter: blur(1.5px) saturate(1.2);
+  /* the press scales about the fingertip's own centre (the scale property would also scale the translate) */
+  transform: translate(var(--pain-x, -28px), var(--pain-y, 42%)) scale(var(--tap-scale, 1));
   filter: none;
+}
+
+.promo-pain__cursor.is-thumb::before {
+  content: "";
+  position: absolute;
+  inset: 4px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(46, 40, 35, 0.34) 0%, rgba(46, 40, 35, 0.14) 70%, rgba(46, 40, 35, 0) 100%);
+  opacity: var(--tap-down, 0);
 }
 
 .promo-pain__cursor.is-thumb::after {
   content: "";
   position: absolute;
-  inset: 0;
+  inset: -1px;
   border-radius: 50%;
-  background: inherit;
-  opacity: 0;
-  transform: scale(1);
+  border: 2px solid rgba(74, 66, 59, 0.5);
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.7);
+  opacity: var(--tap-ring-o, 0);
+  transform: scale(var(--tap-ring, 1));
 }
 
 .promo-pain__cursor.is-thumb.is-tapping {
-  background: color-mix(in srgb, var(--ad-ink) 75%, transparent);
+  background: radial-gradient(circle, rgba(74, 67, 61, 0.15) 0%, rgba(74, 67, 61, 0.21) 60%, rgba(54, 48, 43, 0.3) 100%);
 }
 
 .promo-pain__cursor.is-thumb.is-tapping::after {
-  animation: promo-tap-ring 320ms ease-out both;
-}
-
-@keyframes promo-tap-ring {
-  from { opacity: 0.55; transform: scale(1); }
-  to { opacity: 0; transform: scale(2.2); }
+  animation: none;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -2312,7 +2329,7 @@ html.is-promo-opening.is-promo-depart .promo-opening {
   color: var(--bot-user-ink);
   display: grid;
   place-items: center;
-  box-shadow: 0 12px 28px rgba(28, 28, 28, 0.22);
+  box-shadow: 0 12px 28px rgba(28, 24, 20, 0.22);
   cursor: pointer;
 }
 
@@ -2900,7 +2917,7 @@ html.is-promo-opening.is-promo-depart .promo-opening {
    grey, then one multiply layer tints the whole image, so backdrop, product
    and shadow share the tile colour with no cutout edge. */
 .promo-opening img[src*="/products/images/promo-product-"] {
-  filter: grayscale(1);
+  filter: var(--promo-pain-filter);
 }
 
 .promo-moments__photo::after,
@@ -2926,7 +2943,7 @@ html.is-promo-opening.is-promo-depart .promo-opening {
   overflow: hidden;
   border-radius: 12em;
   background: var(--ad-tile, var(--ad-photo));
-  filter: grayscale(calc(1 - var(--ad-warmth)));
+  filter: grayscale(calc(1 - var(--ad-warmth))) sepia(calc(0.1 * (1 - var(--ad-warmth)))) hue-rotate(calc(-12deg * (1 - var(--ad-warmth))));
 }
 
 .promo-moments__glyph {
@@ -5449,7 +5466,7 @@ html.is-promo-still .is-pose-choice:not(.is-settled):not(.is-reduced) .promo-mom
 }
 
 .promo-opening__word--sell {
-  color: var(--bizmis-primary);
+  color: var(--promo-orange-ink);
 }
 
 .promo-opening__see,
@@ -6753,7 +6770,7 @@ html.is-promo-cover .promo-cover,
 .promo-grid__cell.is-lost .promo-grid__lead-still,
 .promo-grid__cell.is-lost .promo-grid__screen,
 .promo-grid__cell.is-lost [data-promo-pain-chat] {
-  filter: saturate(0);
+  filter: var(--promo-pain-filter);
   opacity: 0.55;
 }
 
@@ -6820,7 +6837,7 @@ html.is-promo-cover .promo-cover,
 
 .promo-opening.is-grid:not(.is-pitch) .promo-grid__lead > :not(.promo-opening__browser),
 .promo-opening.is-grid:not(.is-pitch) .promo-grid__lead .promo-opening__browser-pill {
-  filter: saturate(0) !important;
+  filter: var(--promo-pain-filter) !important;
 }
 
 .promo-grid__screen {
@@ -6870,8 +6887,8 @@ html.is-promo-cover .promo-cover,
   height: 14px;
   margin-top: 8px;
   background:
-    linear-gradient(#ddd, #ddd) 0 0 / 62% 3px no-repeat,
-    linear-gradient(#e4e4e4, #e4e4e4) 0 7px / 40% 3px no-repeat;
+    linear-gradient(#E0D9D2, #E0D9D2) 0 0 / 62% 3px no-repeat,
+    linear-gradient(#E8E2DC, #E8E2DC) 0 7px / 40% 3px no-repeat;
 }
 
 .promo-grid__cursor {
@@ -7697,7 +7714,7 @@ html.is-promo-still .promo-clip__product.is-compare::after {
   background: var(--ad-tile, var(--ad-photo));
   border-radius: 18px;
   overflow: hidden;
-  filter: grayscale(1);
+  filter: var(--promo-pain-filter);
 }
 
 .promo-clip__price {
@@ -8694,7 +8711,7 @@ html.is-promo-still .promo-clip__product.is-compare::after {
   color: #fff;
   opacity: 0;
   pointer-events: none;
-  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.28));
+  filter: drop-shadow(0 1px 2px rgba(28, 24, 20, 0.28));
 }
 
 .promo-close__poof {
@@ -8740,7 +8757,7 @@ html.is-promo-still .promo-clip__product.is-compare::after {
   max-width: 86%;
   margin: 0;
   text-align: center;
-  color: #8A8A8A;
+  color: var(--promo-pain-grey);
   font-family: var(--font-heading);
   font-weight: 700;
   letter-spacing: -0.04em;
@@ -8955,6 +8972,61 @@ html.is-promo-still .promo-clip__product.is-compare::after {
 
 .promo-glide.is-pitch .promo-glide__field {
   background: var(--bizmis-primary);
+}
+
+/* v26 (E4): the claims' sales lane (film-engine.js paintSalesBar). One wide
+   white glass lane centred behind the caption, rising from the bottom edge,
+   "Sales" at its base; one flat bar inside it (grey in the pain, Bizmis
+   orange in the pitch); the marks on one canvas. Geometry, shadows and
+   colours are written per frame from the sea's clock: no transitions here. */
+.promo-salesbar {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  pointer-events: none;
+  transition: none;
+}
+.promo-salesbar[hidden] { display: none; }
+.promo-salesbar__haze {
+  position: absolute;
+  background: radial-gradient(closest-side, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0.72) 45%, rgba(255, 255, 255, 0.32) 75%, rgba(255, 255, 255, 0) 100%);
+}
+.promo-salesbar__track,
+.promo-salesbar__col {
+  position: absolute;
+  box-sizing: border-box;
+}
+.promo-salesbar__track {
+  background: rgba(255, 255, 255, 0.86);
+}
+.promo-salesbar__col {
+  overflow: hidden;
+}
+.promo-salesbar__col[hidden] { display: none; }
+.promo-salesbar__fill {   /* a subtle lighter top edge, no gloss */
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.28), rgba(255, 255, 255, 0));
+}
+.promo-salesbar__label {
+  position: absolute;
+  margin: 0;
+  text-align: center;
+  white-space: nowrap;
+  font-family: var(--font-heading);
+  font-weight: 600;
+  letter-spacing: 0;
+  color: rgba(59, 54, 50, 0.72);
+}
+.promo-salesbar__label.is-on { color: #fff; }
+.promo-salesbar__motes {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
 }
 
 .promo-opening.is-wash-covered .promo-glide__sheet {
@@ -9615,7 +9687,7 @@ html.is-promo-still .promo-clip__product.is-compare::after {
   font-size: clamp(2.55rem, 4.4vw, 3.25rem);
   letter-spacing: 0.01em;
   line-height: 1.15;
-  color: var(--bizmis-primary);
+  color: var(--promo-orange-ink);
   transform: rotate(-1.5deg);
   white-space: nowrap;
 }
@@ -9649,7 +9721,7 @@ html.is-promo-still .promo-clip__product.is-compare::after {
   border: 2px solid var(--bizmis-primary);
   border-radius: 9px;
   background: #fff;
-  color: var(--bizmis-primary);
+  color: var(--promo-orange-ink);
   font-family: var(--font-heading);
   font-size: 1.02rem;
   font-weight: 500;
@@ -10409,7 +10481,7 @@ html.is-promo-clip.is-clip-moment.is-clip-tablet .bizmis-viewport-portal-root {
   border-radius: 24px;
   background-color: rgba(255, 255, 255, 0.55);
   background-image: linear-gradient(150deg, rgba(255, 255, 255, 0.51) 0%, rgba(255, 255, 255, 0) 100%);
-  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.9) inset, 0 20px 48px -24px rgba(0, 0, 0, 0.28);
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.9) inset, 0 20px 48px -24px rgba(28, 24, 20, 0.28);
   -webkit-backdrop-filter: blur(24px) saturate(1.25);
   backdrop-filter: blur(24px) saturate(1.25);
   pointer-events: none;
@@ -10426,8 +10498,8 @@ html.is-promo-clip.is-clip-moment.is-clip-tablet .bizmis-viewport-portal-root {
 
 .promo-caption__text {
   margin: 0;
-  color: rgb(23, 23, 23);
-  font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  color: var(--ad-ink);
+  font-family: var(--font-heading);
   font-size: 20px;
   font-weight: 500;
   line-height: 1.25;
@@ -10738,7 +10810,7 @@ html.is-promo-final .promo-vo-debug {
   align-items: center;
   height: 7%;
   padding: 0 2.4%;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  border-bottom: 1px solid rgba(28, 24, 20, 0.05);
   opacity: var(--final-chrome, 1);
 }
 
@@ -10797,7 +10869,7 @@ html.is-promo-final .promo-vo-debug {
 }
 
 .promo-opening__slide.is-final .promo-opening__slide-sector {
-  color: var(--bizmis-primary) !important;
+  color: var(--promo-orange-ink) !important;
 }
 
 /* Cross-sell pair: a clear gap, and a large plus at its exact middle. */
@@ -10879,7 +10951,7 @@ html.is-promo-final .promo-vo-debug {
 
 /* v2: the reveal's last word is Bizmis orange (the landing's own line). */
 .promo-opening__word--hot {
-  color: var(--bizmis-primary);
+  color: var(--promo-orange-ink);
 }
 
 /* v2: the shopper speaks the doubt: a mic and live bars over the composer's send button. */
@@ -10934,7 +11006,7 @@ html.is-promo-final .promo-vo-debug {
   padding: 0.38em 0.9em;
   border-radius: 999px;
   background: var(--ad-white, #fff);
-  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 6px 24px rgba(28, 24, 20, 0.08);
   color: var(--ad-ink);
   font-family: var(--font-heading);
   font-size: clamp(2rem, 3.1vw, 3.6rem);
@@ -10955,7 +11027,7 @@ html.is-promo-final .promo-vo-debug {
 }
 .promo-pitch-tag__arrow,
 .promo-pitch-tag__to {
-  color: var(--bizmis-primary);
+  color: var(--promo-orange-ink);
 }
 
 /* v3: the pitch chapter line above the window. The pain in grey is struck
@@ -11003,7 +11075,7 @@ html.is-promo-final .promo-vo-debug {
   transition: width 420ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 .promo-chapter__to {
-  color: var(--bizmis-primary);
+  color: var(--promo-orange-ink);
   opacity: 0;
   transition: opacity 360ms ease 520ms;
 }
@@ -11033,7 +11105,7 @@ html.is-promo-final .promo-vo-debug {
   height: 46%;
   border-radius: 14px;
   overflow: hidden;
-  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.10);
+  box-shadow: 0 18px 50px rgba(28, 24, 20, 0.10);
   transform: translateY(10px) scale(0.98);
   transition: transform 900ms cubic-bezier(0.22, 1, 0.36, 1);
   filter: grayscale(1);
@@ -11041,13 +11113,13 @@ html.is-promo-final .promo-vo-debug {
 .promo-recap.is-in .promo-recap__card { transform: none; }
 .promo-recap.is-catch .promo-recap__card { transform: scale(1.03); }
 .promo-recap__card svg { display: block; width: 100%; height: 100%; }
-.promo-recap__veil { position: absolute; inset: 0; background: rgba(160, 160, 160, 0.42); }
+.promo-recap__veil { position: absolute; inset: 0; background: rgba(164, 157, 150, 0.42); }
 .promo-recap__lost {
   position: absolute;
   inset: 0;
   display: grid;
   place-items: center;
-  color: rgba(90, 90, 90, 0.9);
+  color: rgba(94, 87, 81, 0.9);
   font-family: var(--font-heading);
   font-weight: 700;
   letter-spacing: -0.04em;
@@ -11135,14 +11207,14 @@ html.is-promo-final .promo-vo-debug {
 .promo-reel__item.is-in { opacity: 1; transform: none; }
 .promo-reel__item.is-out { opacity: 0; transform: translateX(-4%); }
 .promo-reel__text { display: grid; gap: 0.9rem; font-family: var(--font-heading); color: var(--ad-ink); }
-.promo-reel__eyebrow { margin: 0; color: var(--bizmis-primary); font-size: clamp(0.9rem, 1.05vw, 1.25rem); font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; }
+.promo-reel__eyebrow { margin: 0; color: var(--promo-orange-ink); font-size: clamp(0.9rem, 1.05vw, 1.25rem); font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; }
 .promo-reel__store { margin: 0; font-size: clamp(2rem, 3.1vw, 3.8rem); font-weight: 700; letter-spacing: -0.035em; line-height: 1.02; }
 .promo-reel__ask { margin: 0.4rem 0 0; color: color-mix(in srgb, var(--ad-ink) 62%, #fff); font-size: clamp(1.2rem, 1.6vw, 2rem); font-weight: 500; letter-spacing: -0.02em; line-height: 1.25; }
 .promo-reel__chips { display: flex; gap: 0.6rem; margin: 0.8rem 0 0; }
 .promo-reel__chip { display: inline-flex; align-items: center; gap: 0.4em; padding: 0.35em 0.8em; border-radius: 999px; background: color-mix(in srgb, var(--ad-ink) 6%, #fff); color: color-mix(in srgb, var(--ad-ink) 75%, #fff); font-size: clamp(0.85rem, 1vw, 1.15rem); font-weight: 600; }
 .promo-reel__chip svg { width: 1.1em; height: 1.1em; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
 .promo-reel__device { justify-self: center; display: grid; place-items: center; height: 100%; width: 100%; }
-.promo-reel__screen { position: relative; overflow: hidden; background: #000; box-shadow: 0 30px 80px rgba(0, 0, 0, 0.14), 0 0 0 1px rgba(0, 0, 0, 0.06); }
+.promo-reel__screen { position: relative; overflow: hidden; background: #000; box-shadow: 0 30px 80px rgba(28, 24, 20, 0.14), 0 0 0 1px rgba(28, 24, 20, 0.06); }
 .promo-reel__screen video { display: block; width: 100%; height: 100%; object-fit: cover; }
 .promo-reel__item.is-desktop .promo-reel__screen { width: 100%; aspect-ratio: 16 / 10; border-radius: 14px; border-top: 26px solid #f3f3f3; }
 .promo-reel__item.is-tablet .promo-reel__screen { height: 78%; aspect-ratio: 3 / 4; border-radius: 30px; border: 12px solid #111; }
@@ -11158,7 +11230,7 @@ html.is-promo-final .promo-vo-debug {
   inset: 0;
   display: grid;
   place-items: center;
-  color: var(--bizmis-primary);
+  color: var(--promo-orange-ink);
   font-family: var(--font-heading);
   font-weight: 700;
   letter-spacing: -0.04em;
@@ -11181,7 +11253,7 @@ html.is-promo-final .promo-vo-debug {
   font-size: clamp(0.8rem, 1.35vw, 1.6rem);
   letter-spacing: -0.01em;
   white-space: nowrap;
-  box-shadow: 0 10px 30px rgba(28, 28, 28, 0.12), 0 0 0 1px var(--ad-line);
+  box-shadow: 0 10px 30px rgba(28, 24, 20, 0.12), 0 0 0 1px var(--ad-line);
   transform: translateX(-50%) translateY(8px) scale(0.6);
   transform-origin: 50% 120%;
   opacity: 0;
@@ -11199,7 +11271,7 @@ html.is-promo-final .promo-vo-debug {
   transform: translate(-50%, -50%) rotate(45deg);
 }
 .promo-recap__card.is-helped .promo-recap__bubble { opacity: 1; transform: translateX(-50%) translateY(0) scale(1); }
-.promo-recap__card.is-sold { filter: none; box-shadow: 0 18px 50px rgba(0, 0, 0, 0.10), 0 0 0 3px var(--bizmis-primary-ring); }
+.promo-recap__card.is-sold { filter: none; box-shadow: 0 18px 50px rgba(28, 24, 20, 0.10), 0 0 0 3px var(--bizmis-primary-ring); }
 .promo-recap__card.is-sold .promo-recap__veil { opacity: 0; }
 .promo-recap__card.is-sold .promo-recap__lost { opacity: 0; transform: scale(0.9); }
 .promo-recap__card.is-sold .promo-recap__sold { opacity: 1; transform: none; }
@@ -11280,7 +11352,7 @@ html.is-promo-final .promo-vo-debug {
   background: var(--ad-white);
   color: var(--ad-ink);
   font-family: var(--font-heading);
-  box-shadow: 0 1.4em 3.6em rgba(28, 28, 28, 0.16), 0 0 0 1px var(--ad-line);
+  box-shadow: 0 1.4em 3.6em rgba(28, 24, 20, 0.16), 0 0 0 1px var(--ad-line);
   opacity: 0;
   transform: translate(-50%, -46%) scale(0.94);
   transition: opacity 380ms cubic-bezier(0.22, 1, 0.36, 1), transform 620ms cubic-bezier(0.34, 1.4, 0.64, 1);
@@ -11330,8 +11402,8 @@ html.is-promo-final .promo-vo-debug {
   display: grid;
   place-items: center;
   border-radius: 50%;
-  background: #E4E4E4;
-  color: #9A9A9A;
+  background: #E9E4DF;
+  color: var(--promo-faint);
   opacity: 0;
   transform: scale(0.8);
   transition: opacity 300ms ease, transform 420ms cubic-bezier(0.34, 1.56, 0.64, 1);
@@ -11386,7 +11458,7 @@ html.is-promo-final .promo-vo-debug {
   margin: 0;
   border-radius: 14px;
   overflow: hidden;
-  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.10);
+  box-shadow: 0 18px 50px rgba(28, 24, 20, 0.10);
   transform: translate(-50%, -50%);
   animation: promo-rewind-scrub 1100ms cubic-bezier(0.3, 0, 0.2, 1) both;
 }
@@ -11401,13 +11473,13 @@ html.is-promo-final .promo-vo-debug {
 .promo-rewind__card.is-flying {
   transition: left 900ms cubic-bezier(0.65, 0, 0.35, 1), top 900ms cubic-bezier(0.65, 0, 0.35, 1), width 900ms cubic-bezier(0.65, 0, 0.35, 1), height 900ms cubic-bezier(0.65, 0, 0.35, 1), border-radius 900ms ease, box-shadow 900ms ease;
 }
-.promo-rewind__veil { position: absolute; inset: 0; background: rgba(160, 160, 160, 0.42); transition: opacity 500ms ease; }
+.promo-rewind__veil { position: absolute; inset: 0; background: rgba(164, 157, 150, 0.42); transition: opacity 500ms ease; }
 .promo-rewind__lost {
   position: absolute;
   inset: 0;
   display: grid;
   place-items: center;
-  color: rgba(90, 90, 90, 0.9);
+  color: rgba(94, 87, 81, 0.9);
   font-family: var(--font-heading);
   font-weight: 700;
   letter-spacing: -0.04em;
@@ -11464,7 +11536,7 @@ html.is-promo-final .promo-vo-debug {
 .promo-reel__ask { margin: 1.6cqw 0 0; color: var(--ad-ink-2); font-size: 1.75cqw; font-weight: 500; letter-spacing: -0.015em; line-height: 1.28; }
 .promo-reel__reply { margin: 1.6cqw 0 0; color: var(--ad-ink); font-size: 1.45cqw; font-weight: 500; letter-spacing: -0.01em; line-height: 1.35; opacity: 0; transform: translateY(0.4em); transition: opacity 500ms ease, transform 600ms cubic-bezier(0.22, 1, 0.36, 1); }
 .promo-reel__item.is-replying .promo-reel__reply { opacity: 1; transform: none; }
-.promo-reel__agent { display: block; margin-bottom: 0.45em; color: var(--bizmis-primary); font-size: 0.66em; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; }
+.promo-reel__agent { display: block; margin-bottom: 0.45em; color: var(--promo-orange-ink); font-size: 0.66em; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; }
 .promo-reel__word { opacity: 0.16; transition: opacity 200ms ease; }
 .promo-reel__word.is-said { opacity: 1; }
 
@@ -11472,7 +11544,7 @@ html.is-promo-final .promo-vo-debug {
 .promo-reel__screen,
 .promo-reel__item.is-desktop .promo-reel__screen,
 .promo-reel__item.is-tablet .promo-reel__screen,
-.promo-reel__item.is-phone .promo-reel__screen { position: relative; overflow: hidden; border: 0; border-top: 0; background: #0c0c0c; box-shadow: 0 50px 100px -20px rgba(20, 20, 20, 0.28), 0 0 0 1px rgba(0, 0, 0, 0.06); }
+.promo-reel__item.is-phone .promo-reel__screen { position: relative; overflow: hidden; border: 0; border-top: 0; background: #0c0c0c; box-shadow: 0 50px 100px -20px rgba(20, 20, 20, 0.28), 0 0 0 1px rgba(28, 24, 20, 0.06); }
 .promo-reel__view { position: absolute; inset: var(--chrome, 0px) 0 0 0; overflow: hidden; transform-origin: 50% 50%; transition: transform 1100ms cubic-bezier(0.65, 0, 0.35, 1); }
 .promo-reel__screen .promo-reel__view video { display: block; width: 100%; height: 100%; object-fit: cover; }
 .promo-reel__screen:has(.promo-reel__view) { isolation: isolate; }
@@ -11560,7 +11632,7 @@ html.is-promo-final .promo-vo-debug {
 .promo-yourstore { position: absolute; inset: 0; z-index: 72; background: var(--ad-white); opacity: 0; transition: opacity 500ms ease; pointer-events: none; }
 .promo-yourstore.is-in { opacity: 1; }
 .promo-yourstore.is-out { opacity: 0; transition-duration: 600ms; }
-.promo-yourstore__card { position: absolute; left: 50%; top: 52%; height: 58%; margin: 0; border-radius: 16px; overflow: hidden; box-shadow: 0 50px 100px -20px rgba(20, 20, 20, 0.25), 0 0 0 1px rgba(0, 0, 0, 0.05); transform: translate(-50%, -50%) scale(0.92); opacity: 0; transition: transform 900ms cubic-bezier(0.22, 1, 0.36, 1), opacity 600ms ease; transform-origin: 50% 58%; }
+.promo-yourstore__card { position: absolute; left: 50%; top: 52%; height: 58%; margin: 0; border-radius: 16px; overflow: hidden; box-shadow: 0 50px 100px -20px rgba(20, 20, 20, 0.25), 0 0 0 1px rgba(28, 24, 20, 0.05); transform: translate(-50%, -50%) scale(0.92); opacity: 0; transition: transform 900ms cubic-bezier(0.22, 1, 0.36, 1), opacity 600ms ease; transform-origin: 50% 58%; }
 .promo-yourstore.is-in .promo-yourstore__card { transform: translate(-50%, -50%) scale(1); opacity: 1; }
 .promo-yourstore.is-diving .promo-yourstore__card { transform: translate(-50%, -50%) scale(4.2); opacity: 0; transition: transform 1100ms cubic-bezier(0.55, 0, 0.75, 0.25), opacity 500ms ease 650ms; }
 .promo-yourstore__card > svg { display: block; width: 100%; height: 100%; }
@@ -11571,7 +11643,7 @@ html.is-promo-final .promo-vo-debug {
 .promo-reel__world { position: absolute; left: 0; top: 0; width: 0; height: 0; transform-origin: 0 0; will-change: transform; }
 .promo-reel__dev { position: absolute; animation: promo-reel-bob 5.5s ease-in-out var(--bob, 0s) infinite alternate; }
 @keyframes promo-reel-bob { from { translate: 0 -0.6%; } to { translate: 0 0.6%; } }
-.promo-reel__dev .promo-reel__screen { position: absolute; inset: 0; width: 100%; height: 100%; overflow: hidden; background: #0c0c0c; box-shadow: 0 40px 90px -24px rgba(20, 20, 20, 0.30), 0 0 0 1px rgba(0, 0, 0, 0.06); }
+.promo-reel__dev .promo-reel__screen { position: absolute; inset: 0; width: 100%; height: 100%; overflow: hidden; background: #0c0c0c; box-shadow: 0 40px 90px -24px rgba(20, 20, 20, 0.30), 0 0 0 1px rgba(28, 24, 20, 0.06); }
 .promo-reel__dev.is-desktop .promo-reel__screen { --chrome: 34px; border-radius: 16px; background: var(--ad-white); }
 .promo-reel__dev.is-tablet .promo-reel__screen { border-radius: 34px; outline: 12px solid #101010; outline-offset: -1px; }
 .promo-reel__dev.is-phone .promo-reel__screen { border-radius: 46px; outline: 10px solid #101010; outline-offset: -1px; }
@@ -11625,7 +11697,7 @@ html.is-promo-final .promo-vo-debug {
 
 /* v8: "Sales agent" charges up through the line; the flip lands like a hit. */
 .promo-opening__choice--right { text-shadow: 0 0 calc(var(--switch-charge, 0) * 22px) color-mix(in srgb, var(--bizmis-primary) calc(var(--switch-charge, 0) * 90%), transparent); }
-.promo-opening__choice--right .promo-opening__choice-layer--idle { color: color-mix(in srgb, var(--bizmis-primary) calc(var(--switch-charge, 0) * 70%), var(--ad-ink-3)); }
+.promo-opening__choice--right .promo-opening__choice-layer--idle { color: color-mix(in srgb, var(--promo-orange-ink) calc(var(--switch-charge, 0) * 70%), var(--ad-ink-3)); }
 .promo-opening.is-charged:not(.is-on) .promo-opening__knob { animation: promo-knob-tremble 90ms linear infinite alternate; }
 @keyframes promo-knob-tremble { from { translate: -1.5px 0; } to { translate: 1.5px 0; } }
 .promo-flippop i { display: none; }
@@ -11636,7 +11708,7 @@ html.is-promo-final .promo-vo-debug {
 @keyframes promo-camera-punch { 0% { scale: 1; } 22% { scale: 1.07; } 100% { scale: 1; } }
 
 /* v8: the old chatbot launcher pops into the clerk. */
-.promo-install__bubble.promo-pain__launcher { background: var(--bot-user); color: var(--bot-user-ink); box-shadow: 0 12px 28px rgba(28, 28, 28, 0.22); }
+.promo-install__bubble.promo-pain__launcher { background: var(--bot-user); color: var(--bot-user-ink); box-shadow: 0 12px 28px rgba(28, 24, 20, 0.22); }
 .promo-install__bubble.promo-pain__launcher svg { width: 50%; height: 50%; }
 .promo-install__bubble.is-morph { animation: promo-launcher-pop 360ms cubic-bezier(0.34, 1.56, 0.64, 1) forwards; }
 @keyframes promo-launcher-pop { 0% { transform: scale(1); filter: brightness(1); } 45% { transform: scale(0.72) rotate(-8deg); } 100% { transform: scale(1.35); filter: brightness(3) saturate(0); opacity: 0; } }
@@ -11670,7 +11742,7 @@ html.is-promo-final .promo-vo-debug {
 .promo-xsell__card span { display: block; height: 0.55em; margin-top: 8%; border-radius: 4px; background: var(--ad-line); }
 .promo-xsell__card span + span { width: 55%; margin-top: 5%; }
 .promo-xsell__card.is-picked { box-shadow: 0 0 0 3px var(--bizmis-primary-ring), 0 14px 30px var(--bizmis-primary-glow); transform: scale(1.06); }
-.promo-xsell__flyer { position: absolute; z-index: 12; margin: 0; padding: 0; border-radius: 12px; overflow: hidden; pointer-events: none; box-shadow: 0 18px 40px rgba(28, 28, 28, 0.18); }
+.promo-xsell__flyer { position: absolute; z-index: 12; margin: 0; padding: 0; border-radius: 12px; overflow: hidden; pointer-events: none; box-shadow: 0 18px 40px rgba(28, 24, 20, 0.18); }
 .promo-xsell__flyer img { display: block; width: 100%; height: 100%; object-fit: cover; }
 .promo-xsell__flyer span { display: none; }
 .promo-xsell__flyer.is-flying { transition: left 700ms cubic-bezier(0.65, 0, 0.35, 1), top 700ms cubic-bezier(0.65, 0, 0.35, 1), width 700ms cubic-bezier(0.65, 0, 0.35, 1), height 700ms cubic-bezier(0.65, 0, 0.35, 1), box-shadow 700ms ease; }
@@ -11753,7 +11825,7 @@ html.is-promo-sync-hero .promo-sync__avatar .bizmis-desktop-lite-chat .relative.
 .promo-install.is-sheet.is-out { transform: translate(-50%, 130%); opacity: 1; transition: transform 460ms cubic-bezier(0.55, 0, 0.75, 0.3); }
 .promo-install__grab { align-self: center; width: 2.6em; height: 0.3em; border-radius: 99px; background: rgba(28, 24, 20, 0.16); }
 .promo-install__app { display: flex; align-items: center; gap: 0.95em; }
-.promo-install.is-sheet .promo-install__icon { width: 4.4em; height: 4.4em; border-radius: 1.05em; box-shadow: 0 0.5em 1.2em color-mix(in srgb, var(--bizmis-primary) 34%, transparent), 0 0 0 1px rgba(0, 0, 0, 0.05); }
+.promo-install.is-sheet .promo-install__icon { width: 4.4em; height: 4.4em; border-radius: 1.05em; box-shadow: 0 0.5em 1.2em color-mix(in srgb, var(--bizmis-primary) 34%, transparent), 0 0 0 1px rgba(28, 24, 20, 0.05); }
 .promo-install.is-sheet .promo-install__meta { margin: 0; }
 .promo-install.is-sheet .promo-install__name { font-size: 1.45em; letter-spacing: -0.03em; }
 .promo-install.is-sheet .promo-install__by { font-size: 0.95em; }
@@ -11787,12 +11859,12 @@ html.is-promo-sync-hero .promo-sync__avatar .bizmis-desktop-lite-chat .relative.
 .promo-dev__body { background: linear-gradient(145deg, rgba(255, 255, 255, 0.9) 0%, rgba(246, 246, 250, 0.62) 46%, rgba(232, 234, 240, 0.5) 100%);
   -webkit-backdrop-filter: blur(calc(var(--u) * 1.4)) saturate(1.6); backdrop-filter: blur(calc(var(--u) * 1.4)) saturate(1.6);
   box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.95), inset 0 calc(var(--u) * 0.25) calc(var(--u) * 0.6) rgba(255, 255, 255, 0.7),
-    0 0 0 1px rgba(24, 24, 32, 0.08), 0 calc(var(--u) * 2.6) calc(var(--u) * 7) calc(var(--u) * -2) rgba(28, 24, 20, 0.22), 0 calc(var(--u) * 0.5) calc(var(--u) * 1.2) rgba(28, 24, 20, 0.07); }
-.promo-dev__screen { box-shadow: 0 0 0 1px rgba(24, 24, 32, 0.10); }
+    0 0 0 1px rgba(28, 24, 20, 0.08), 0 calc(var(--u) * 2.6) calc(var(--u) * 7) calc(var(--u) * -2) rgba(28, 24, 20, 0.22), 0 calc(var(--u) * 0.5) calc(var(--u) * 1.2) rgba(28, 24, 20, 0.07); }
+.promo-dev__screen { box-shadow: 0 0 0 1px rgba(28, 24, 20, 0.10); }
 .promo-dev__base { background: linear-gradient(to bottom, rgba(255, 255, 255, 0.95) 0%, rgba(240, 241, 245, 0.8) 45%, rgba(222, 224, 230, 0.75) 100%);
   -webkit-backdrop-filter: blur(calc(var(--u) * 1.2)); backdrop-filter: blur(calc(var(--u) * 1.2));
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 1), 0 0 0 1px rgba(24, 24, 32, 0.08), 0 calc(var(--u) * 2) calc(var(--u) * 4) calc(var(--u) * -1.6) rgba(28, 24, 20, 0.22); }
-.promo-dev__base::before { background: linear-gradient(to bottom, rgba(24, 24, 32, 0.10), rgba(24, 24, 32, 0.03)); }
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 1), 0 0 0 1px rgba(28, 24, 20, 0.08), 0 calc(var(--u) * 2) calc(var(--u) * 4) calc(var(--u) * -1.6) rgba(28, 24, 20, 0.22); }
+.promo-dev__base::before { background: linear-gradient(to bottom, rgba(28, 24, 20, 0.10), rgba(28, 24, 20, 0.03)); }
 .promo-dev__island { display: none; }
 
 /* v9 reel polish */
@@ -11801,20 +11873,20 @@ html.is-promo-sync-hero .promo-sync__avatar .bizmis-desktop-lite-chat .relative.
 .promo-reel.is-carousel .promo-dev { opacity: calc(1 - var(--dim, 0) * 0.9); filter: blur(calc(var(--dim, 0) * 6px)) saturate(calc(1 - var(--dim, 0) * 0.5)); }
 .promo-reel.is-carousel .promo-reel__caption:not(.is-in) .promo-reel__cat span,
 .promo-reel.is-carousel .promo-reel__caption:not(.is-in) .promo-reel__does { transition: opacity 260ms ease, transform 260ms ease, filter 260ms ease; transition-delay: 0ms; }
-.promo-dev__screen { background: #F2F2F4; }
+.promo-dev__screen { background: var(--promo-pain-field); }
 .promo-reel__yours { background: #fff; display: block; }
 .promo-reel__yours-shot { position: absolute; inset: 0; }
 .promo-reel__yours-shot svg { display: block; width: 100%; height: 100%; }
 .promo-reel__yours-label { position: absolute; left: 50%; top: 50%; translate: -50% -50%; display: inline-flex; align-items: center; gap: calc(var(--u) * 1.4); padding: calc(var(--u) * 1.4) calc(var(--u) * 2.6) calc(var(--u) * 1.4) calc(var(--u) * 1.6);
   border-radius: 999px; background: color-mix(in srgb, #fff 80%, transparent); -webkit-backdrop-filter: blur(calc(var(--u) * 1.6)) saturate(1.5); backdrop-filter: blur(calc(var(--u) * 1.6)) saturate(1.5);
-  box-shadow: 0 calc(var(--u) * 1) calc(var(--u) * 3) rgba(28, 24, 20, 0.14), 0 0 0 1px rgba(24, 24, 32, 0.06); font-family: var(--font-heading); color: var(--ad-ink); transition: opacity 320ms ease; }
+  box-shadow: 0 calc(var(--u) * 1) calc(var(--u) * 3) rgba(28, 24, 20, 0.14), 0 0 0 1px rgba(28, 24, 20, 0.06); font-family: var(--font-heading); color: var(--ad-ink); transition: opacity 320ms ease; }
 .promo-reel__yours-label b { font-size: calc(var(--u) * 3.6); font-weight: 700; letter-spacing: -0.035em; line-height: 1; }
 .promo-reel__yours-label .promo-reel__yours-icon { width: calc(var(--u) * 6); height: calc(var(--u) * 6); }
 .promo-reel.is-entering .promo-reel__yours-label { opacity: 0; }
 .promo-reel.is-entering .promo-reel__yours-shot { opacity: 0; transition: opacity 520ms ease 180ms; }
 .promo-reel__said { position: absolute; z-index: 7; translate: -50% 0; display: inline-flex; align-items: center; gap: 1.1cqh; max-width: 44cqw; padding: 1.1cqh 2.2cqh 1.1cqh 1.3cqh; border-radius: 999px;
   background: color-mix(in srgb, #fff 86%, transparent); -webkit-backdrop-filter: blur(1.4cqh) saturate(1.5); backdrop-filter: blur(1.4cqh) saturate(1.5);
-  box-shadow: 0 1.2cqh 3.2cqh rgba(28, 24, 20, 0.16), 0 0 0 1px rgba(24, 24, 32, 0.06); font-family: var(--font-heading); color: var(--ad-ink);
+  box-shadow: 0 1.2cqh 3.2cqh rgba(28, 24, 20, 0.16), 0 0 0 1px rgba(28, 24, 20, 0.06); font-family: var(--font-heading); color: var(--ad-ink);
   opacity: 0; transform: translateY(1.2cqh) scale(0.96); transition: opacity 320ms ease, transform 520ms cubic-bezier(0.22, 1, 0.36, 1); }
 .promo-reel__said.is-in { opacity: 1; transform: none; }
 .promo-reel__said.is-out { opacity: 0; transform: translateY(-0.6cqh); transition-duration: 420ms; }
@@ -11844,7 +11916,7 @@ html.is-promo-sync-hero .promo-sync__avatar .bizmis-desktop-lite-chat .relative.
 .promo-caption__word.is-current { font-weight: 600; }
 .promo-caption__word.is-upcoming { color: rgba(23, 23, 23, 0.46); }
 /* v9 chapter chip: a frosted pill over the window's header band; a solid neutral dot (the dashed ring read as a spinner) */
-.promo-chapter { background: color-mix(in srgb, #fff 90%, transparent); -webkit-backdrop-filter: blur(14px) saturate(1.4); backdrop-filter: blur(14px) saturate(1.4); box-shadow: 0 0 0 1px rgba(24, 24, 32, 0.07), 0 10px 28px rgba(28, 24, 20, 0.12); }
+.promo-chapter { background: color-mix(in srgb, #fff 90%, transparent); -webkit-backdrop-filter: blur(14px) saturate(1.4); backdrop-filter: blur(14px) saturate(1.4); box-shadow: 0 0 0 1px rgba(28, 24, 20, 0.07), 0 10px 28px rgba(28, 24, 20, 0.12); }
 .promo-chapter__ring { stroke-dasharray: none !important; animation: none !important; stroke: none; fill: #D9D6D2; }
 /* v9 cross-sell carousel: above the clerk, never over the avatar */
 .promo-xsell { right: 4.5%; top: 10%; bottom: 47%; width: 12.5%; }
@@ -11932,7 +12004,7 @@ html.is-promo-sync-hero .promo-sync__avatar .bizmis-desktop-lite-chat .relative.
 @keyframes promo-clerk-arrive { from { opacity: 0; scale: 0.82; translate: 0 2.5%; } to { opacity: 1; scale: 1; translate: 0 0; } }
 .promo-sync__orb { z-index: 1; }
 .promo-sync__avatar { z-index: 2; }
-.promo-rewind__glyph { position: absolute; left: 4.5%; top: 6.5%; width: 4.2cqh; height: 4.2cqh; opacity: 0.85; filter: drop-shadow(0 0.3cqh 0.8cqh rgba(0, 0, 0, 0.25)); }
+.promo-rewind__glyph { position: absolute; left: 4.5%; top: 6.5%; width: 4.2cqh; height: 4.2cqh; opacity: 0.85; filter: drop-shadow(0 0.3cqh 0.8cqh rgba(28, 24, 20, 0.25)); }
 .promo-rewind__glyph svg { width: 100%; height: 100%; fill: #fff; }
 
 /* v9b end card: rows re-centre as items arrive; the badge opens its own space; a closing install line */
@@ -11975,7 +12047,7 @@ html.is-promo-sync-hero .promo-sync__avatar .bizmis-desktop-lite-chat .relative.
 .promo-rewind__glyph { filter: drop-shadow(0 0 1cqh rgba(255, 255, 255, 0.9)); }
 /* v9c reel */
 .promo-reel__said { max-width: 30cqw; }
-.promo-reel__said-mic.is-typed { background: #fff; box-shadow: 0 0 0 0.25cqh rgba(24, 24, 32, 0.12); }
+.promo-reel__said-mic.is-typed { background: #fff; box-shadow: 0 0 0 0.25cqh rgba(28, 24, 20, 0.12); }
 .promo-reel__said-mic.is-typed svg { width: 60%; height: 60%; fill: none; stroke: var(--ad-ink-2); stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
 .promo-reel.is-carousel .promo-reel__does { color: color-mix(in oklab, var(--tint, var(--bizmis-primary)) 62%, #1a1a1a); }
 .promo-pass-slot__extras { color: #6B6B6B; }
@@ -12122,13 +12194,13 @@ html.is-promo-sync-hero .promo-sync__avatar .bizmis-desktop-lite-chat .relative.
   flex-direction: column;
   align-items: center;
   gap: 0.9em;
-  color: #3A3B3E;
+  color: var(--promo-pain-ink);
   line-height: 1;
   letter-spacing: 0.2em;
   font-weight: 700;
 }
 .promo-close__veil.is-lost,
-.promo-glide.is-pain .promo-glide__veil { background: rgba(236, 236, 237, 0.86); }
+.promo-glide.is-pain .promo-glide__veil { background: rgb(var(--promo-pain-veil-rgb) / 0.86); }
 .promo-lost__disc {
   display: grid;
   place-items: center;
@@ -12140,7 +12212,7 @@ html.is-promo-sync-hero .promo-sync__avatar .bizmis-desktop-lite-chat .relative.
   background: linear-gradient(180deg, #5A5B60 0%, #2E2F33 100%);
   box-shadow:
     0 0.9em 2.2em rgba(20, 20, 24, 0.28),
-    0 0 0 0.5em rgba(58, 59, 62, 0.12),
+    0 0 0 0.5em rgba(59, 54, 50, 0.12),
     inset 0 1px 0 rgba(255, 255, 255, 0.28);
 }
 .promo-lost__disc svg { display: block; width: 100%; height: 100%; fill: none; stroke: #fff; stroke-width: 2.2; stroke-linecap: round; }
@@ -12211,7 +12283,7 @@ html.is-promo-sync-hero .promo-sync__avatar .bizmis-desktop-lite-chat .relative.
   background: linear-gradient(160deg, #6B6C71 0%, #3A3B3F 60%, #2A2B2E 100%);
   box-shadow: 0 30px 60px -28px rgba(20, 20, 24, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.3);
 }
-.promo-tally.is-lost .promo-tally__badge { background: #E9E9EA; color: #4A4B4F; box-shadow: 0 6px 16px -6px rgba(0, 0, 0, 0.35); }
+.promo-tally.is-lost .promo-tally__badge { background: #E9E9EA; color: #4A4B4F; box-shadow: 0 6px 16px -6px rgba(28, 24, 20, 0.35); }
 .promo-tally__visits {
   position: absolute;
   left: 0;
@@ -12279,7 +12351,7 @@ html.is-promo-sync-hero .promo-sync__avatar .bizmis-desktop-lite-chat .relative.
   border-radius: 24%;
   overflow: hidden;
   background: #fff;
-  box-shadow: 0 0.7em 1.6em -0.6em color-mix(in srgb, var(--bizmis-primary) 60%, transparent), inset 0 0 0 1px rgba(0, 0, 0, 0.04);
+  box-shadow: 0 0.7em 1.6em -0.6em color-mix(in srgb, var(--bizmis-primary) 60%, transparent), inset 0 0 0 1px rgba(28, 24, 20, 0.04);
   transition: transform 260ms cubic-bezier(0.22, 1, 0.36, 1), opacity 260ms ease;
 }
 .promo-install-tile__icon img { width: 100%; height: 100%; object-fit: cover; display: block; }
@@ -12287,7 +12359,7 @@ html.is-promo-sync-hero .promo-sync__avatar .bizmis-desktop-lite-chat .relative.
 .promo-install-tile__name { font-family: var(--font-heading); font-weight: 700; font-size: 1.15em; letter-spacing: -0.02em; color: var(--ad-ink); }
 .promo-install-tile__hint { font-size: 0.78em; color: var(--ad-ink-3, #8a8a8a); white-space: nowrap; }
 .promo-install__cursor--hand { color: #111; z-index: 60; }
-.promo-install__cursor--hand svg { position: absolute; inset: 0; fill: #fff; stroke: #111; stroke-width: 1.3; stroke-linecap: round; stroke-linejoin: round; filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.22)); }
+.promo-install__cursor--hand svg { position: absolute; inset: 0; fill: #fff; stroke: #111; stroke-width: 1.3; stroke-linecap: round; stroke-linejoin: round; filter: drop-shadow(0 2px 3px rgba(28, 24, 20, 0.22)); }
 .promo-install__cursor--hand .is-grab { opacity: 0; }
 .promo-install__cursor--hand.is-grabbing .is-grab { opacity: 1; }
 .promo-install__cursor--hand.is-grabbing .is-open { opacity: 0; }
@@ -12385,12 +12457,12 @@ html.is-promo-sync-hero .promo-sync__avatar .bizmis-desktop-lite-chat .relative.
   z-index: 6;
   border-radius: inherit;
   pointer-events: none;
-  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.95), inset 0 0 0 calc(var(--u) * 0.12) rgba(24, 24, 32, 0.07);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.95), inset 0 0 0 calc(var(--u) * 0.12) rgba(28, 24, 20, 0.07);
   background: linear-gradient(140deg, rgba(255, 255, 255, 0.16) 0%, rgba(255, 255, 255, 0) 38%);
 }
 .promo-dev.is-desktop .promo-dev__body { border-radius: var(--radius) !important; }
 .promo-dev__base { display: none !important; }
-.promo-dev__screen { flex: 0 0 auto; border-radius: 0 !important; box-shadow: none !important; background: #F2F2F4; }
+.promo-dev__screen { flex: 0 0 auto; border-radius: 0 !important; box-shadow: none !important; background: var(--promo-pain-field); }
 .promo-dev.is-tablet .promo-dev__screen { border-radius: var(--radius) !important; }
 .promo-dev__bar {
   flex: 0 0 var(--bar);
@@ -12398,7 +12470,7 @@ html.is-promo-sync-hero .promo-sync__avatar .bizmis-desktop-lite-chat .relative.
   align-items: center;
   gap: calc(var(--u) * 0.75);
   padding: 0 calc(var(--u) * 1.6);
-  border-bottom: 1px solid rgba(24, 24, 32, 0.06);
+  border-bottom: 1px solid rgba(28, 24, 20, 0.06);
   background: rgba(255, 255, 255, 0.98);
 }
 .promo-dev__bar i { width: calc(var(--u) * 1.05); aspect-ratio: 1; border-radius: 50%; background: #DCDCDF; }
@@ -12605,12 +12677,12 @@ html.is-promo-yours .promo-reel__yours-widget > [data-promo-widget] { opacity: 1
 .promo-ea-pill.is-scarce { background: var(--bizmis-primary) !important; border-color: color-mix(in srgb, var(--bizmis-primary) 70%, white) !important; color: #fff !important; }
 
 /* v11 sync: "Automatically, always." chip under the clerk */
-.promo-sync__always { position: absolute; left: 50%; top: 86%; translate: -50% 0; z-index: 5; opacity: 0;
-  display: flex; align-items: center; gap: 1.1cqh; padding: 1.1cqh 2.4cqh 1.1cqh 1.8cqh; border-radius: 999px;
+.promo-sync__always { position: absolute; left: 50%; top: 83.5%; translate: -50% 0; z-index: 5; opacity: 0;   /* v24: 1.5x (phone-legible) */
+  display: flex; align-items: center; gap: 1.5cqh; padding: 1.55cqh 3.4cqh 1.55cqh 2.6cqh; border-radius: 999px;
   background: rgba(255, 255, 255, 0.72); backdrop-filter: blur(1.6cqh) saturate(1.4); -webkit-backdrop-filter: blur(1.6cqh) saturate(1.4);
-  box-shadow: 0 0 0 0.1cqh rgba(255, 255, 255, 0.9) inset, 0 1.4cqh 3.2cqh -1.6cqh rgba(60, 40, 20, 0.28);
-  font-size: 2.3cqh; font-weight: 600; letter-spacing: -0.01em; color: #2A2420; white-space: nowrap; }
-.promo-sync__always svg { width: 2.6cqh; height: 2.6cqh; fill: none; stroke: var(--bizmis-primary); stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+  box-shadow: 0 0 0 0.12cqh rgba(255, 255, 255, 0.9) inset, 0 0 0 0.1cqh rgba(60, 40, 20, 0.06), 0 1.8cqh 4cqh -2cqh rgba(60, 40, 20, 0.3);
+  font-size: 3.45cqh; font-weight: 600; letter-spacing: -0.015em; color: #2A2420; white-space: nowrap; }
+.promo-sync__always svg { width: 3.8cqh; height: 3.8cqh; fill: none; stroke: var(--bizmis-primary); stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
 
 /* ===== v22 sync: the "one click" Install (pointer, press, progress, Installed) folding into
    the clerk, then the store's areas as the film's peach orbs, absorbed into it one after
@@ -12622,14 +12694,14 @@ html.is-promo-yours .promo-reel__yours-widget > [data-promo-widget] { opacity: 1
 .promo-sync.is-install .promo-sync__avatar { z-index: 2; }
 .promo-sync.is-install .promo-sync__ring { z-index: 1; width: 30cqh; height: 30cqh; border: 0.3cqh solid color-mix(in srgb, var(--bizmis-primary) 55%, #fff); opacity: 0; scale: 0.7; animation: none; }
 /* the store's areas: the film's peach orbs (thin orange outline glyphs, grey labels) */
-.promo-sync__tile { position: absolute; z-index: 1; width: 10cqh;   /* under the clerk: absorbed orbs slip into its body */ height: 10cqh; translate: -50% -50%; opacity: 0; }
+.promo-sync__tile { position: absolute; z-index: 1; width: 12cqh;   /* under the clerk: absorbed orbs slip into its body; v24: 1.2x */ height: 12cqh; translate: -50% -50%; opacity: 0; }
 .promo-sync__app { position: absolute; inset: 0; display: grid; place-items: center; border-radius: 50%;
   background: radial-gradient(circle at 35% 30%, #fff 0%, #FFF1E2 55%, #FBD9B6 100%);
   box-shadow: 0 0.8cqh 2.4cqh rgba(196, 92, 20, 0.16), inset 0 -0.4cqh 0.9cqh rgba(232, 120, 40, 0.18), 0 0 0 0.12cqh rgba(232, 120, 40, 0.14); }
 .promo-sync__app svg { width: 46%; height: 46%; overflow: visible; fill: none; stroke: var(--bizmis-primary); stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
 .promo-sync__app svg .is-dot { fill: var(--bizmis-primary); stroke: none; }
-.promo-sync__label { position: absolute; left: 50%; top: calc(100% + 1.1cqh); translate: -50% 0; opacity: 0; white-space: nowrap;
-  font-size: 2.7cqh; font-weight: 600; letter-spacing: -0.01em; line-height: 1.2; color: #5E534B; }
+.promo-sync__label { position: absolute; left: 50%; top: calc(100% + 1.4cqh); translate: -50% 0; opacity: 0; white-space: nowrap;   /* v24: 1.5x (phone-legible) */
+  font-size: 4.05cqh; font-weight: 600; letter-spacing: -0.02em; line-height: 1.15; color: #4A4039; }
 /* the Install button: the landing's white "Install Now" pill, Bizmis-orange bag and words, a peach bloom behind (the EA lockup's) */
 .promo-sync__install { position: absolute; left: 50%; top: 50%; z-index: 5; translate: -50% -50%; opacity: 0; }
 .promo-sync__aura { position: absolute; left: 50%; top: 50%; width: 190%; height: 330%; translate: -50% -50%; opacity: 0; pointer-events: none;
@@ -12640,7 +12712,7 @@ html.is-promo-yours .promo-reel__yours-widget > [data-promo-widget] { opacity: 1
 .promo-sync__fill { position: absolute; inset: 0; border-radius: inherit; opacity: 0; background: linear-gradient(180deg, #F9A353 0%, #F28C38 100%); }
 .promo-sync__gloss { position: absolute; inset: 0; z-index: 3; border-radius: inherit; background: #F28C38; opacity: 0; }
 .promo-sync__face { position: absolute; left: 50%; top: 50%; z-index: 2; translate: -50% -50%; display: flex; align-items: center; gap: 1.5cqh; white-space: nowrap;
-  font-size: 4.6cqh; font-weight: 600; letter-spacing: -0.02em; line-height: 1; color: #F28C38; }
+  font-size: 4.6cqh; font-weight: 600; letter-spacing: -0.02em; line-height: 1; color: var(--promo-orange-ink); }
 .promo-sync__face.is-done { opacity: 0; gap: 1.3cqh; color: var(--ad-ink); }
 .promo-sync__bag { flex: none; width: 4.8cqh; height: 4.8cqh; margin-top: -0.35cqh; fill: #F28C38; overflow: visible; }
 .promo-sync__disc { flex: none; display: grid; place-items: center; width: 4.4cqh; height: 4.4cqh; border-radius: 50%; background: var(--bizmis-primary); }
@@ -12679,7 +12751,7 @@ html.is-promo-yours .promo-reel__yours-widget > [data-promo-widget] { opacity: 1
   font-family: var(--font-heading); font-weight: 600 !important; letter-spacing: -0.01em !important; line-height: 1 !important;
   white-space: nowrap; filter: none !important; top: 46%;
 }
-.promo-chip-mark.is-lost { color: #3A3B3E !important; }
+.promo-chip-mark.is-lost { color: var(--promo-pain-ink) !important; }
 .promo-chip-mark.is-sold { color: var(--bizmis-primary) !important; }
 .promo-chip-mark__glyph { display: block; width: 1.02em; height: 1.02em; flex: none; }
 .promo-chip-mark__glyph svg { display: block; width: 100%; height: 100%; overflow: visible; }
@@ -12698,9 +12770,9 @@ html.is-promo-yours .promo-reel__yours-widget > [data-promo-widget] { opacity: 1
 .promo-flow__glow { stroke-width: 9px; }
 .promo-flow__cursor { opacity: 0; stroke-width: 1.3px; vector-effect: non-scaling-stroke; stroke-linejoin: round; }
 .promo-flow__ring { fill: none; stroke-width: 2px; opacity: 0; }
-.promo-flow.is-lost .promo-flow__line { stroke: rgba(58, 59, 62, 0.55); }
-.promo-flow.is-lost .promo-flow__glow { stroke: rgba(58, 59, 62, 0.08); }
-.promo-flow.is-lost .promo-flow__cursor { fill: #fff; stroke: #3A3B3E; filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.18)); }
+.promo-flow.is-lost .promo-flow__line { stroke: rgba(59, 54, 50, 0.55); }
+.promo-flow.is-lost .promo-flow__glow { stroke: rgba(59, 54, 50, 0.08); }
+.promo-flow.is-lost .promo-flow__cursor { fill: #fff; stroke: var(--promo-pain-ink); filter: drop-shadow(0 2px 3px rgba(28, 24, 20, 0.18)); }
 .promo-flow.is-sold .promo-flow__line { stroke: rgba(255, 255, 255, 0.95); }
 .promo-flow.is-sold .promo-flow__glow { stroke: rgba(255, 255, 255, 0.28); }
 .promo-flow.is-sold .promo-flow__cursor { fill: #fff; stroke: color-mix(in srgb, var(--bizmis-primary) 70%, #5a2400); filter: drop-shadow(0 2px 4px rgba(140, 60, 0, 0.3)); }
@@ -12710,7 +12782,7 @@ html.is-promo-yours .promo-reel__yours-widget > [data-promo-widget] { opacity: 1
   background: rgba(255, 255, 255, 0.8); -webkit-backdrop-filter: blur(16px) saturate(1.5); backdrop-filter: blur(16px) saturate(1.5);
   box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.95), 0 0 0 1px rgba(30, 24, 18, 0.06), 0 calc(var(--flow-h, 1080px) * 0.02) calc(var(--flow-h, 1080px) * 0.045) calc(var(--flow-h, 1080px) * -0.02) rgba(30, 24, 18, 0.35); }
 .promo-flow__point svg { width: 48%; height: 48%; }
-.promo-flow.is-lost .promo-flow__point { color: #3A3B3E; }
+.promo-flow.is-lost .promo-flow__point { color: var(--promo-pain-ink); }
 .promo-flow.is-sold .promo-flow__point { color: var(--bizmis-primary);
   box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.95), 0 0 0 calc(var(--pulse, 0) * var(--flow-h, 1080px) * 0.012) color-mix(in srgb, var(--bizmis-primary) 55%, transparent),
     0 0 calc(var(--pulse, 0) * var(--flow-h, 1080px) * 0.05) color-mix(in srgb, var(--bizmis-primary) 80%, transparent), 0 calc(var(--flow-h, 1080px) * 0.02) calc(var(--flow-h, 1080px) * 0.045) calc(var(--flow-h, 1080px) * -0.02) rgba(120, 50, 0, 0.35); }
@@ -12723,13 +12795,13 @@ html.is-promo-yours .promo-reel__yours-widget > [data-promo-widget] { opacity: 1
 .promo-sold-caption::before { inset: -70% -22% !important; background: radial-gradient(closest-side, color-mix(in srgb, var(--bizmis-primary) 92%, transparent), color-mix(in srgb, var(--bizmis-primary) 62%, transparent) 55%, transparent) !important; }
 
 /* ===== v11 chatbot: "Was this helpful? 👍 👎" under the wall of text ===== */
-.promo-pain__rate { display: flex; align-items: center; gap: 0.7em; margin-top: 0.75em; padding-top: 0.6em; border-top: 1px solid rgba(0, 0, 0, 0.07);
-  color: rgba(40, 40, 44, 0.55); font-size: 0.92em; }
+.promo-pain__rate { display: flex; align-items: center; gap: 0.7em; margin-top: 0.75em; padding-top: 0.6em; border-top: 1px solid rgba(28, 24, 20, 0.07);
+  color: rgba(46, 40, 35, 0.55); font-size: 0.92em; }
 .promo-pain__rate span { margin-right: auto; }
-.promo-pain__rate i { display: grid; place-items: center; width: 1.9em; height: 1.9em; border-radius: 50%; color: rgba(40, 40, 44, 0.6); background: rgba(0, 0, 0, 0.04); }
+.promo-pain__rate i { display: grid; place-items: center; width: 1.9em; height: 1.9em; border-radius: 50%; color: rgba(46, 40, 35, 0.6); background: rgba(28, 24, 20, 0.04); }
 .promo-pain__rate i svg { width: 62%; height: 62%; }
 .promo-pain__rate i[data-rate="down"] svg { rotate: 180deg; }
-.promo-pain__rate i.is-on { color: #fff; background: #3A3B3E; }
+.promo-pain__rate i.is-on { color: #fff; background: var(--promo-pain-ink); }
 .promo-pain__rate i.is-on svg path { fill: rgba(255, 255, 255, 0.18); }
 
 /* ===== v11 comparison: softer, Apple-like overlays (light frost, line icons, plain tick, hairline dash) ===== */
@@ -12768,11 +12840,11 @@ html.is-promo-yours .promo-reel__yours-widget > [data-promo-widget] { opacity: 1
 /* v11 QA: the claims' paths read (a touch bolder, softly glowing), the point is named */
 .promo-flow__line { stroke-width: 2.2px; }
 .promo-flow__glow { stroke-width: 12px; }
-.promo-flow.is-lost .promo-flow__glow { stroke: rgba(58, 59, 62, 0.11); }
+.promo-flow.is-lost .promo-flow__glow { stroke: rgba(59, 54, 50, 0.11); }
 .promo-flow.is-sold .promo-flow__glow { stroke: rgba(255, 255, 255, 0.42); }
 .promo-flow__label { position: absolute; top: calc(100% + var(--flow-h, 1080px) * 0.012); left: 50%; translate: -50% 0; white-space: nowrap;
   font-family: var(--font-heading); font-weight: 600; font-size: calc(var(--flow-h, 1080px) * 0.017); letter-spacing: 0.01em; }
-.promo-flow.is-lost .promo-flow__label { color: rgba(58, 59, 62, 0.6); }
+.promo-flow.is-lost .promo-flow__label { color: rgba(59, 54, 50, 0.6); }
 .promo-flow.is-sold .promo-flow__label { color: #fff; text-shadow: 0 1px 2px rgba(150, 60, 0, 0.3); }
 
 /* v11 QA: the SOLD claim's orange glow (a v9 rule had switched ::before off), solid under the words */
@@ -12810,11 +12882,11 @@ html.is-promo-yours .promo-reel__yours-widget > [data-promo-widget] { opacity: 1
   padding: 0.2em 0.4em !important; font-size: 1.45vw; font-weight: 600; }
 .promo-ea-pills__row { gap: 2.2vw; }
 .promo-ea-pills .promo-ea-pill__check { width: 1.1em; height: 1.1em; stroke-width: 2.2; }
-.promo-ea-pills .promo-ea-pill.is-scarce { color: var(--bizmis-primary) !important; font-weight: 700; font-size: 1.6vw; letter-spacing: -0.01em; }
+.promo-ea-pills .promo-ea-pill.is-scarce { color: var(--promo-orange-ink) !important; font-weight: 700; font-size: 1.6vw; letter-spacing: -0.01em; }
 
 /* v11: macOS pointer */
 .promo-mac-pointer path { fill: #111 !important; stroke: #fff; stroke-width: 1.35; stroke-linejoin: round; paint-order: stroke; }
-.promo-mac-pointer { filter: drop-shadow(0 1.5px 2px rgba(0, 0, 0, 0.28)); overflow: visible; }
+.promo-mac-pointer { filter: drop-shadow(0 1.5px 2px rgba(28, 24, 20, 0.28)); overflow: visible; }
 
 /* ===== v11b SOLD claim: no plate, no stain: the white words carry their own warm light ===== */
 .promo-sold-caption::before { content: none !important; display: none !important; }
@@ -12829,12 +12901,12 @@ html.is-promo-yours .promo-reel__yours-widget > [data-promo-widget] { opacity: 1
   display: flex; align-items: center; gap: calc(var(--orders-h, 1080px) * 0.011); padding: calc(var(--orders-h, 1080px) * 0.011) calc(var(--orders-h, 1080px) * 0.014);
   border-radius: calc(var(--orders-h, 1080px) * 0.016);
   background: rgba(246, 246, 247, 0.78); -webkit-backdrop-filter: blur(24px) saturate(1.8); backdrop-filter: blur(24px) saturate(1.8);
-  box-shadow: inset 0 0 0 0.5px rgba(255, 255, 255, 0.9), 0 0 0 0.5px rgba(0, 0, 0, 0.08), 0 calc(var(--orders-h, 1080px) * 0.012) calc(var(--orders-h, 1080px) * 0.03) calc(var(--orders-h, 1080px) * -0.012) rgba(0, 0, 0, 0.22);
+  box-shadow: inset 0 0 0 0.5px rgba(255, 255, 255, 0.9), 0 0 0 0.5px rgba(28, 24, 20, 0.08), 0 calc(var(--orders-h, 1080px) * 0.012) calc(var(--orders-h, 1080px) * 0.03) calc(var(--orders-h, 1080px) * -0.012) rgba(28, 24, 20, 0.22);
   font-family: -apple-system, 'SF Pro Text', var(--font-heading), sans-serif; color: #1d1d1f; }
 .promo-orders__icon { flex: none; display: grid; place-items: center; width: calc(var(--orders-h, 1080px) * 0.036); height: calc(var(--orders-h, 1080px) * 0.036);
-  border-radius: 22%; color: #fff; background: linear-gradient(180deg, #FFB067, #F28C38); box-shadow: inset 0 0 0 0.5px rgba(0, 0, 0, 0.08); }
+  border-radius: 22%; color: #fff; background: linear-gradient(180deg, #FFB067, #F28C38); box-shadow: inset 0 0 0 0.5px rgba(28, 24, 20, 0.08); }
 .promo-orders__icon svg { width: 62%; height: 62%; }
-.promo-orders.is-lost .promo-orders__icon { background: linear-gradient(180deg, #A9AAAE, #7E7F84); }
+.promo-orders.is-lost .promo-orders__icon { background: linear-gradient(180deg, #ADA6A0, #827B75); }
 .promo-orders__text { flex: 1; min-width: 0; display: grid; gap: 0.15em; font-size: calc(var(--orders-h, 1080px) * 0.0145); line-height: 1.2; }
 .promo-orders__head { display: flex; justify-content: space-between; gap: 1em; }
 .promo-orders__head b { font-weight: 600; }
@@ -12847,8 +12919,8 @@ html.is-promo-yours .promo-reel__yours-widget > [data-promo-widget] { opacity: 1
 .promo-orders__figure { display: grid; gap: 0.1em; }
 .promo-orders__figure b { font-size: calc(var(--orders-h, 1080px) * 0.05); font-weight: 650; letter-spacing: -0.03em; font-variant-numeric: tabular-nums; line-height: 1; }
 .promo-orders__figure span { font-size: calc(var(--orders-h, 1080px) * 0.016); font-weight: 600; letter-spacing: 0.02em; text-transform: uppercase; opacity: 0.6; }
-.promo-orders.is-lost .promo-orders__figure { color: #3A3B3E; }
-.promo-orders.is-lost .promo-orders__figure.is-sales b { color: rgba(58, 59, 62, 0.45); }
+.promo-orders.is-lost .promo-orders__figure { color: var(--promo-pain-ink); }
+.promo-orders.is-lost .promo-orders__figure.is-sales b { color: rgba(59, 54, 50, 0.45); }
 .promo-orders.is-sold .promo-orders__figure { color: #fff; text-shadow: 0 0 0.3em rgba(249, 140, 50, 0.85), 0 0 1em rgba(249, 163, 83, 0.6); }
 
 /* ===== v11b comparison: product qualities as levels (power, durability, efficiency) ===== */
@@ -12861,13 +12933,13 @@ html.is-promo-yours .promo-reel__yours-widget > [data-promo-widget] { opacity: 1
 
 /* ===== v11b shopper voice: macOS / Apple Intelligence look: a frosted rounded panel, SF type,
    a fine multicolour edge and a soft halo (the gradient turns slowly, stepped from JS) ===== */
-.promo-reel__said.is-voice { border-radius: 2.4cqh !important; padding: 1.35cqh 2.5cqh !important; box-shadow: 0 1.4cqh 3.4cqh -2cqh rgba(28, 24, 40, 0.3) !important;
-  font-family: -apple-system, 'SF Pro Text', var(--font-heading), sans-serif; }
+.promo-reel__said.is-voice { border-radius: 2.4cqh !important; padding: 1.35cqh 2.5cqh !important; box-shadow: 0 1.4cqh 3.4cqh -2cqh rgba(28, 24, 20, 0.3) !important;
+  font-family: var(--font-heading); }
 .promo-reel__said.is-voice::before { inset: -0.15cqh !important; filter: none !important; opacity: 0.8 !important; border-radius: inherit;
   background: conic-gradient(from var(--glow-a, 200deg), #3D7BFF, #BC82F3, #F5B9EA, #FF6778, #FFBA71, #8D9FFF, #3D7BFF) !important; }
 .promo-reel__said.is-voice::after { background: rgba(255, 255, 255, 0.88) !important; -webkit-backdrop-filter: blur(2cqh) saturate(1.6); backdrop-filter: blur(2cqh) saturate(1.6);
   box-shadow: inset 0 0.1cqh 0 #fff; }
-.promo-reel__said.is-voice .promo-reel__said-text { font-weight: 500; letter-spacing: -0.012em; color: #1d1d1f; }
+.promo-reel__said.is-voice .promo-reel__said-text { font-weight: 500; letter-spacing: -0.012em; color: var(--ad-ink); }
 .promo-reel__said.is-voice .promo-reel__said-text > span { opacity: 0.32; }
 .promo-reel__said.is-voice .promo-reel__said-text > span.is-said { opacity: 1; }
 .promo-reel__said-halo { position: absolute; inset: -0.6cqh; border-radius: 3cqh; z-index: -2; pointer-events: none; opacity: 0.42; filter: blur(1.4cqh);
@@ -12900,11 +12972,11 @@ html.is-promo-yours .promo-reel__yours-widget > [data-promo-widget] { opacity: 1
   background: rgba(255, 255, 255, 0.55); -webkit-backdrop-filter: blur(16px) saturate(1.5); backdrop-filter: blur(16px) saturate(1.5);
   box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.85), 0 0 0 1px rgba(30, 24, 18, 0.06), 0 calc(var(--orders-h, 1080px) * 0.016) calc(var(--orders-h, 1080px) * 0.036) calc(var(--orders-h, 1080px) * -0.018) rgba(30, 24, 18, 0.28); }
 .promo-orders__bar i { position: absolute; left: 0; right: 0; bottom: 0; height: 100%; transform-origin: 50% 100%; transform: scaleY(0.02); border-radius: inherit; }
-.promo-orders.is-lost .promo-orders__bar i { background: rgba(58, 59, 62, 0.45); }
+.promo-orders.is-lost .promo-orders__bar i { background: rgba(59, 54, 50, 0.45); }
 .promo-orders.is-sold .promo-orders__bar i { background: linear-gradient(180deg, #fff 0%, #FFE6CF 100%); box-shadow: 0 0 calc(var(--orders-h, 1080px) * 0.03) rgba(249, 140, 50, 0.9); }
 .promo-orders.is-sold .promo-orders__bar { background: rgba(255, 255, 255, 0.28); box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.7), 0 0 calc(var(--orders-h, 1080px) * 0.04) rgba(249, 140, 50, 0.45); }
 .promo-orders__bar-label { font-family: var(--font-heading); font-weight: 600; font-size: calc(var(--orders-h, 1080px) * 0.018); letter-spacing: 0.06em; text-transform: uppercase; }
-.promo-orders.is-lost .promo-orders__bar-label { color: rgba(58, 59, 62, 0.6); }
+.promo-orders.is-lost .promo-orders__bar-label { color: rgba(59, 54, 50, 0.6); }
 .promo-orders.is-sold .promo-orders__bar-label { color: #fff; text-shadow: 0 0 0.6em rgba(249, 140, 50, 0.9); }
 
 /* ===== v12c intro: we walk into the physical store, then meet the best salesperson ===== */
@@ -12916,7 +12988,37 @@ html.is-promo-yours .promo-reel__yours-widget > [data-promo-widget] { opacity: 1
 .promo-switch-title__mark { color: var(--bizmis-primary); width: 0.85em; height: 0.85em; }
 .promo-switch-online { position: absolute; z-index: 3; translate: -50% -50%; margin: 0; white-space: nowrap; clip-path: inset(-45% 100% -45% -10%);
   font-family: 'Caveat', cursive; font-weight: 700; font-size: 2.6vw; color: color-mix(in srgb, var(--ad-ink) 70%, transparent); rotate: -2deg; }
-.promo-switch-online b { color: var(--bizmis-primary); font-weight: 700; }
+.promo-switch-online b { color: var(--promo-orange-ink); font-weight: 700; }
+
+/* ===== v23 switch: "In a physical store" and its three moments read as one centred block (a comfortable gap, not touching) ===== */
+.promo-switch-entry { top: 41.5%; }
+
+/* ===== v23 pitch: the typed ask is the widget's own sent bubble (DesktopLiteChat submittedMessage), sized to the card from JS ===== */
+.promo-sent-bubble { position: absolute; z-index: 10003; box-sizing: border-box; margin: 0; pointer-events: none; transform-origin: 50% 50%;
+  background: var(--bizmis-primary); color: #fff; font-weight: 400; line-height: 1.625; width: max-content; white-space: normal; overflow-wrap: break-word; }
+
+/* ===== v23 captions: the agent's words take the glowing voice look; the shopper's voice goes neutral ===== */
+.promo-caption.is-agent { isolation: isolate; font-size: 27px; padding: 0.5em 1em; border-radius: 0.95em; border-color: transparent;
+  background: transparent; background-image: none; -webkit-backdrop-filter: none; backdrop-filter: none;
+  box-shadow: 0 0.5em 1.25em -0.75em rgba(28, 24, 20, 0.3); }
+.promo-caption.is-agent::before { content: ''; position: absolute; inset: -0.06em; border-radius: inherit; z-index: -1; opacity: 0.8;
+  background: conic-gradient(from var(--glow-a, 200deg), #F28C38, #FFB46B, #FFE0BF, #F9A353, #FF8A5C, #FFD1A1, #F28C38); }
+.promo-caption.is-agent::after { content: ''; position: absolute; inset: 0; border-radius: inherit; z-index: -1; background: rgba(255, 255, 255, 0.88);
+  -webkit-backdrop-filter: blur(0.75em) saturate(1.6); backdrop-filter: blur(0.75em) saturate(1.6); box-shadow: inset 0 0.04em 0 #fff; }
+.promo-caption__halo { position: absolute; inset: -0.22em; border-radius: 1.1em; z-index: -2; pointer-events: none; opacity: 0.38; filter: blur(0.52em);
+  background: conic-gradient(from var(--glow-a, 200deg), #F28C38, #FFB46B, #FFE0BF, #F9A353, #FF8A5C, #FFD1A1, #F28C38); }
+.promo-caption.is-agent .promo-caption__text { font-family: var(--font-heading); font-weight: 500; letter-spacing: -0.012em; color: var(--ad-ink); }
+.promo-caption.is-agent .promo-caption__word { padding: 0.05em 0.1em; font-weight: 500; color: var(--ad-ink); opacity: 1; }
+.promo-caption.is-agent .promo-caption__word.is-upcoming { opacity: 0.32; }
+/* the shopper's spoken words: a plain frosted pill (the widget's subtitle look), grey words turning ink, no brand colour */
+.promo-reel__said.is-voice.is-shopper { box-shadow: 0 2.2cqh 4.4cqh -2.4cqh rgba(28, 24, 20, 0.26) !important; font-family: var(--font-heading); }
+.promo-reel__said.is-voice.is-shopper::before { inset: -1px !important; opacity: 1 !important; filter: none !important; background: rgba(255, 255, 255, 0.85) !important;
+  box-shadow: 0 0 0 1px rgba(43, 37, 32, 0.07); }
+.promo-reel__said.is-voice.is-shopper::after { background: rgba(255, 255, 255, 0.8) !important; background-image: linear-gradient(150deg, rgba(255, 255, 255, 0.5) 0%, rgba(255, 255, 255, 0) 100%) !important; }
+.promo-reel__said.is-voice.is-shopper .promo-reel__said-halo { display: none !important; }
+.promo-reel__said.is-voice.is-shopper .promo-reel__said-text { font-weight: 600; letter-spacing: -0.01em; color: var(--ad-ink); }
+.promo-reel__said.is-voice.is-shopper .promo-reel__said-text > span { opacity: 1 !important; color: rgba(43, 37, 32, 0.4); }
+.promo-reel__said.is-voice.is-shopper .promo-reel__said-text > span.is-said { color: var(--ad-ink); }
 
 /* ===== v12c claims: one week of the store, no numbers (visits columns, sales fill) ===== */
 .promo-tally.promo-week { left: 0; top: 0; width: 100%; height: 100%; }
@@ -12932,11 +13034,11 @@ html.is-promo-yours .promo-reel__yours-widget > [data-promo-widget] { opacity: 1
 .promo-week__sales { position: absolute; left: 0; right: 0; bottom: 0; height: 100%; transform-origin: 50% 100%; transform: scaleY(0); border-radius: inherit; }
 .promo-week__day { position: absolute; top: calc(100% + var(--week-h, 1080px) * 0.012); font-family: var(--font-heading); font-weight: 600; font-size: calc(var(--week-h, 1080px) * 0.016); }
 /* LOST: grey glass visits, the sales fill a sliver on the floor */
-.promo-week.is-lost .promo-week__visits { background: rgba(255, 255, 255, 0.55); box-shadow: inset 0 0 0 1.5px rgba(58, 59, 62, 0.28); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); }
-.promo-week.is-lost .promo-week__sales { background: rgba(58, 59, 62, 0.5); }
-.promo-week.is-lost .promo-week__day, .promo-week.is-lost .promo-week__legend { color: rgba(58, 59, 62, 0.62); }
-.promo-week.is-lost .promo-week__legend .is-visits i { box-shadow: inset 0 0 0 1.5px rgba(58, 59, 62, 0.4); }
-.promo-week.is-lost .promo-week__legend .is-sales i { background: rgba(58, 59, 62, 0.5); }
+.promo-week.is-lost .promo-week__visits { background: rgba(255, 255, 255, 0.55); box-shadow: inset 0 0 0 1.5px rgba(59, 54, 50, 0.28); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); }
+.promo-week.is-lost .promo-week__sales { background: rgba(59, 54, 50, 0.5); }
+.promo-week.is-lost .promo-week__day, .promo-week.is-lost .promo-week__legend { color: rgba(59, 54, 50, 0.62); }
+.promo-week.is-lost .promo-week__legend .is-visits i { box-shadow: inset 0 0 0 1.5px rgba(59, 54, 50, 0.4); }
+.promo-week.is-lost .promo-week__legend .is-sales i { background: rgba(59, 54, 50, 0.5); }
 /* SOLD: white glass visits, a warm orange sales fill */
 .promo-week.is-sold .promo-week__visits { background: rgba(255, 255, 255, 0.35); box-shadow: inset 0 0 0 1.5px rgba(255, 255, 255, 0.9); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); }
 .promo-week.is-sold .promo-week__sales { background: linear-gradient(180deg, color-mix(in srgb, var(--bizmis-primary) 78%, white), var(--bizmis-primary)); box-shadow: 0 0 calc(var(--week-h, 1080px) * 0.02) color-mix(in srgb, var(--bizmis-primary) 70%, transparent); }
@@ -12957,7 +13059,7 @@ html.is-promo-yours .promo-reel__yours-widget > [data-promo-widget] { opacity: 1
   letter-spacing: 0.01em; padding-top: 0.9em !important; position: relative; }
 .promo-ea-pills .promo-ea-pill.is-scarce::before { content: ''; position: absolute; left: 50%; top: 0; width: 2.4em; height: 1px; translate: -50% 0;
   background: color-mix(in srgb, var(--ad-ink) 18%, transparent); }
-.promo-ea-pills .promo-ea-pill.is-scarce b { color: var(--bizmis-primary); font-weight: 700; }
+.promo-ea-pills .promo-ea-pill.is-scarce b { color: var(--promo-orange-ink); font-weight: 700; }
 .promo-ea-pills { gap: 1.1vw !important; }
 
 /* v12d QA: the handwritten line reads; the claims' week reads */
@@ -12966,8 +13068,8 @@ html.is-promo-yours .promo-reel__yours-widget > [data-promo-widget] { opacity: 1
 .promo-week__cols { height: calc(var(--week-h, 1080px) * 0.24); }
 .promo-week__col { width: calc(var(--week-h, 1080px) * 0.062); }
 .promo-week__legend, .promo-week__day { font-size: calc(var(--week-h, 1080px) * 0.02) !important; }
-.promo-week.is-lost .promo-week__visits { box-shadow: inset 0 0 0 2px rgba(58, 59, 62, 0.42); background: rgba(255, 255, 255, 0.7); }
-.promo-week.is-lost .promo-week__sales { background: rgba(58, 59, 62, 0.62); }
+.promo-week.is-lost .promo-week__visits { box-shadow: inset 0 0 0 2px rgba(59, 54, 50, 0.42); background: rgba(255, 255, 255, 0.7); }
+.promo-week.is-lost .promo-week__sales { background: rgba(59, 54, 50, 0.62); }
 /* v12d QA: the SOLD words read over the busy sea: a denser (still diffuse) Bizmis-orange shadow */
 .promo-sold-caption { text-shadow: 0 0.04em 0.4em rgba(214, 112, 34, 0.7), 0 0.08em 1.1em rgba(242, 140, 56, 0.6), 0 0.1em 2.4em rgba(242, 140, 56, 0.45) !important; }
 .promo-week__legend { font-size: calc(var(--week-h, 1080px) * 0.019) !important; }
@@ -12981,11 +13083,11 @@ html.is-promo-yours .promo-reel__yours-widget > [data-promo-widget] { opacity: 1
 .promo-pain__chat.is-human .promo-pain__avatar { background: #25A35A !important; color: #fff !important; }
 .promo-pain__chat.is-human .promo-pain__avatar svg { width: 60%; height: 60%; }
 .promo-pain__chat.is-human .promo-pain__title { display: grid; line-height: 1.15; }
-.promo-pain__chat.is-human .promo-pain__title small { font-size: 0.68em; font-weight: 500; color: rgba(40, 40, 44, 0.55); }
+.promo-pain__chat.is-human .promo-pain__title small { font-size: 0.68em; font-weight: 500; color: rgba(46, 40, 35, 0.55); }
 .promo-pain__chat.is-human .promo-pain__log { background: #F1EEE8; }
 .promo-pain__chat.is-human .promo-pain__msg:not(.is-bot) .promo-pain__bubble { background: #D9F7C9 !important; color: #1d1d1f !important; }
 .promo-pain__chat.is-human .promo-pain__chips { display: none; }
-.promo-pain__sent { margin: 0.2em 0.4em 0 auto; font-size: 0.75em; color: rgba(40, 40, 44, 0.5); text-align: right; }
+.promo-pain__sent { margin: 0.2em 0.4em 0 auto; font-size: 0.75em; color: rgba(46, 40, 35, 0.5); text-align: right; }
 .promo-pain__msg.is-human-reply .promo-pain__bubble { background: #fff !important; }
 
 /* ===== v13 claims: words only again, centred (the week chart is gone) ===== */
@@ -13035,7 +13137,7 @@ html.is-promo-yours .promo-reel__yours-widget > [data-promo-widget] { opacity: 1
 .promo-skel__grid { flex: 1; display: grid; grid-template-columns: repeat(4, 1fr); gap: 3%; }
 .promo-dev.is-phone .promo-skel__grid, .promo-dev.is-tablet .promo-skel__grid { grid-template-columns: repeat(2, 1fr); }
 .promo-dev.is-tablet .promo-skel__grid { grid-template-columns: repeat(3, 1fr); }
-.promo-skel__grid i { border-radius: 1.4cqh; background: #F2F2F4; position: relative; }
+.promo-skel__grid i { border-radius: 1.4cqh; background: var(--promo-pain-field); position: relative; }
 .promo-skel__grid i b { position: absolute; left: 10%; right: 34%; bottom: 9%; height: 7%; border-radius: 99px; background: #E2E2E5; }
 .promo-skel.is-v1 .promo-skel__hero { height: 22%; background: color-mix(in oklab, var(--sk) 18%, #fff); }
 .promo-skel.is-v1 .promo-skel__grid i:nth-child(odd) { background: color-mix(in oklab, var(--sk) 12%, #F4F4F6); }
@@ -13044,11 +13146,11 @@ html.is-promo-yours .promo-reel__yours-widget > [data-promo-widget] { opacity: 1
 .promo-reel.is-pages { transition: none; }
 
 /* ===== v13 CTA (S1): "Only 50 spots!" handwritten in Bizmis orange, a hand-drawn underline ===== */
-.promo-ea-hand { position: relative; margin: 0.4vw 0 0; opacity: 0; font-family: 'Caveat', cursive; font-weight: 700; font-size: 3.1vw; line-height: 1; color: var(--bizmis-primary);
+.promo-ea-hand { position: relative; margin: 0.4vw 0 0; opacity: 0; font-family: 'Caveat', cursive; font-weight: 700; font-size: 3.1vw; line-height: 1; color: var(--promo-orange-ink);
   rotate: -2.5deg; padding: 0 0.15em 0.32em; }
 .promo-ea-hand__text { display: inline-block; padding-right: 0.12em; clip-path: inset(-30% 100% -40% -10%); }
 .promo-ea-hand__line { position: absolute; left: -2%; right: -4%; bottom: 0; width: 106%; height: 0.36em; overflow: visible; }
-.promo-ea-hand__line path { fill: none; stroke: var(--bizmis-primary); stroke-width: 3.2; stroke-linecap: round; vector-effect: non-scaling-stroke; }
+.promo-ea-hand__line path { fill: none; stroke: var(--promo-orange-strong); stroke-width: 3.2; stroke-linecap: round; vector-effect: non-scaling-stroke; }
 .promo-ea-hand__line path + path { stroke-width: 2.4; opacity: 0.85; }
 
 /* ===== v13 CTA closing: a warm Bizmis-orange light blooms behind "Install now" on the final chord ===== */
@@ -13066,7 +13168,7 @@ html.is-promo-yours .promo-reel__yours-widget > [data-promo-widget] { opacity: 1
 
 /* v13 (C1): the shine on "Install now" at the final chord (a Bizmis-orange band through the letters) */
 .promo-pass-slot__shopify-label.is-shine { color: transparent !important; -webkit-background-clip: text; background-clip: text; background-size: 320% 100%; background-position: 100% 0;
-  background-image: linear-gradient(100deg, var(--ad-ink, #232325) 0%, var(--ad-ink, #232325) 42%, #FFB066 48%, var(--bizmis-primary) 51%, #FFB066 54%, var(--ad-ink, #232325) 60%, var(--ad-ink, #232325) 100%); }
+  background-image: linear-gradient(100deg, var(--ad-ink, #2b2520) 0%, var(--ad-ink, #2b2520) 42%, #FFB066 48%, var(--bizmis-primary) 51%, #FFB066 54%, var(--ad-ink, #2b2520) 60%, var(--ad-ink, #2b2520) 100%); }
 
 /* ===== v13 (E1 + E3): the tunnel of new stores, the flash on every cut ===== */
 .promo-reel__tunnel { position: absolute; inset: 0; z-index: 2; transform-style: preserve-3d; perspective-origin: 50% 50%; pointer-events: none; }
@@ -13080,7 +13182,7 @@ html.is-promo-yours .promo-reel__yours-widget > [data-promo-widget] { opacity: 1
 .promo-pain__chat.is-human .promo-pain__avatar { background: #6E9C84 !important; }
 .promo-pain__chat.is-human .promo-pain__log { background: var(--bot-panel, #FAFAF9) !important; }
 .promo-pain__chat.is-human .promo-pain__msg:not(.is-bot) .promo-pain__bubble { background: var(--bot-user, #2B2B2D) !important; color: var(--bot-user-ink, #fff) !important; }
-.promo-pain__msg.is-human-reply .promo-pain__bubble { background: #fff !important; box-shadow: inset 0 0 0 1px rgba(40, 40, 44, 0.08); }
+.promo-pain__msg.is-human-reply .promo-pain__bubble { background: #fff !important; box-shadow: inset 0 0 0 1px rgba(46, 40, 35, 0.08); }
 
 /* ===== v13b CTA: the VO's extras as one refined quiet row (hairline dots), laid out from the start ===== */
 .promo-ea-pills__row.is-extras { display: flex !important; align-items: center; justify-content: center; gap: 0 !important; margin-top: -0.2vw; }
@@ -13099,6 +13201,48 @@ html.is-promo-yours .promo-reel__yours-widget > [data-promo-widget] { opacity: 1
 .promo-ea-pills { align-self: flex-start !important; width: max-content !important; max-width: none !important; margin-left: 50% !important; margin-right: 0 !important;
   position: static !important; translate: -50% 0; }   /* no positioning: the rows keep the slot as their offset parent */
 .promo-opening.is-ea-card .promo-pass-slot, .promo-opening.is-ea-card.is-ea-hero .promo-pass-slot { top: 50% !important; }   /* v14: every CTA state centred like the final lockup */
+.promo-opening.is-ea-card .promo-pass-slot { transform: translate(-50%, -50%) scale(var(--slot-scale)); transition: opacity 700ms cubic-bezier(0.22, 1, 0.36, 1); }   /* v23: the EA block never moves on its own (no late CSS rise); its rows enter in place */
 
 /* v18: the run's real-store flashes (stills of the demo stores' own recordings) */
 .promo-dev__screen .promo-reel__flash-shot { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: top center; display: block; }
+
+/* ===== v23 pain: Emma's chat, WhatsApp-like in the film's palette (cream, soft greys, sage + peach; never WhatsApp green) ===== */
+.promo-pain__chat.is-human .promo-pain__panel { background: #F3EEE6 !important; }
+.promo-pain__chat.is-human .promo-pain__head { background: #FCFAF6 !important; border-bottom: 1px solid rgba(70, 58, 44, 0.08) !important; }
+.promo-pain__chat.is-human .promo-pain__brand { gap: 0.7em; }
+.promo-pain__chat.is-human .promo-pain__brand::before { content: ""; flex: none; width: 0.5em; height: 0.5em; margin: 0 0.05em 0 0.3em; border-left: 0.13em solid #77736D; border-bottom: 0.13em solid #77736D; border-radius: 0.06em; rotate: 45deg; }
+.promo-pain__chat.is-human .promo-pain__avatar { background: #F3D9C4 !important; overflow: hidden; box-shadow: 0 0 0 0.12em #fff, 0 0.25em 0.6em -0.25em rgba(90, 55, 30, 0.4); }
+.promo-pain__chat.is-human .promo-pain__avatar svg { width: 100% !important; height: 100% !important; display: block; }
+.promo-opening__store.is-phone .promo-pain__chat.is-human .promo-pain__avatar { width: 12.5cqi; height: 12.5cqi; }
+.promo-opening__store.is-phone .promo-pain__chat.is-human .promo-pain__brand { font-size: 4.4cqi; }
+.promo-pain__chat.is-human .promo-pain__title { display: grid; gap: 0.12em; font-size: 1.12em; font-weight: 650; letter-spacing: -0.015em; color: #2b2520; line-height: 1.1; }
+.promo-pain__chat.is-human .promo-pain__title small { font-size: 0.66em; font-weight: 450; letter-spacing: 0; color: rgba(46, 40, 35, 0.52); }
+.promo-opening__store .promo-pain__chat.is-human .promo-pain__log {
+  gap: 0.55em;
+  background-color: #F3EEE6 !important;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 120'%3E%3Cg fill='none' stroke='%237D6F5E' stroke-opacity='.1' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 30c-6-4-9-7-9-10.5a4.5 4.5 0 0 1 9-1.5 4.5 4.5 0 0 1 9 1.5C29 23 26 26 20 30z'/%3E%3Cpath d='M82 10l2.2 4.6 5 .7-3.6 3.5.9 5-4.5-2.4-4.5 2.4.9-5-3.6-3.5 5-.7z'/%3E%3Cpath d='M52 50h18a4 4 0 0 1 4 4v8a4 4 0 0 1-4 4h-10l-5 4v-4h-3a4 4 0 0 1-4-4v-8a4 4 0 0 1 4-4z'/%3E%3Cpath d='M10 84h16v13H10zM8 79h20v5H8zM18 79v18M18 79c-3-5-8-4-6-1 1 1 4 1 6 1zm0 0c3-5 8-4 6-1-1 1-4 1-6 1z'/%3E%3Cpath d='M88 86h16l-1.5 15h-13zM92 86v-2a4 4 0 0 1 8 0v2'/%3E%3Cpath d='M110 38c-7 0-11 4-11 11 5-1 9-5 11-11zM99 49l5-5'/%3E%3Ccircle cx='40' cy='106' r='2'/%3E%3Ccircle cx='66' cy='96' r='1.4'/%3E%3Ccircle cx='38' cy='60' r='1.6'/%3E%3C/g%3E%3C/svg%3E") !important;
+  background-size: 34cqi 34cqi !important;
+}
+.promo-pain__day { align-self: center; margin: 0.15em 0 0.2em; padding: 0.32em 0.85em; border-radius: 999px; background: rgba(255, 255, 255, 0.88); box-shadow: 0 1px 0 rgba(70, 58, 44, 0.06);
+  font-family: var(--font-heading); font-size: 0.72em; font-weight: 550; letter-spacing: 0.01em; color: #827A70; flex-shrink: 0; }
+.promo-opening__store.is-phone .promo-pain__day { font-size: 2.7cqi; }
+.promo-pain__lapse { display: inline-flex; align-items: center; gap: 0.45em; margin: 0.4em 0; background: #FBE6D6; color: #9A5E3E; font-variant-numeric: tabular-nums; box-shadow: 0 0.2em 0.6em -0.3em rgba(150, 90, 50, 0.35); }
+.promo-opening__store.is-phone .promo-pain__lapse { font-size: 3.1cqi; }
+.promo-pain__lapse svg { width: 1.15em; height: 1.15em; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.promo-pain__lapse time { min-width: 4.6em; }
+.promo-pain__wa { display: flex; flex-shrink: 0; max-width: 82%; }
+.promo-pain__wa.is-out { align-self: flex-end; }
+.promo-pain__wa.is-in { align-self: flex-start; }
+.promo-pain__wa > p { position: relative; margin: 0; padding: 0.42em 0.62em 0.36em; border-radius: 0.75em; line-height: 1.38; color: #1F2421;
+  box-shadow: 0 1px 0.5px rgba(60, 45, 30, 0.1); }
+.promo-pain__wa.is-out > p { background: #DDEBE1; border-top-right-radius: 0.12em; }
+.promo-pain__wa.is-in > p { background: #fff; border-top-left-radius: 0.12em; }
+.promo-pain__wa > p::before { content: ""; position: absolute; top: 0; width: 0.55em; height: 0.7em; background: inherit; }
+.promo-pain__wa.is-out > p::before { right: -0.5em; clip-path: polygon(0 0, 100% 0, 0 100%); }
+.promo-pain__wa.is-in > p::before { left: -0.5em; clip-path: polygon(0 0, 100% 0, 100% 100%); }
+.promo-pain__meta { float: right; display: inline-flex; align-items: center; gap: 0.28em; margin: 0.62em -0.12em -0.2em 0.9em; font-size: 0.68em; line-height: 1; color: rgba(45, 55, 50, 0.48); font-variant-numeric: tabular-nums; }
+.promo-pain__meta svg { width: 1.45em; height: 0.9em; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+.promo-pain__wa.is-read .promo-pain__meta svg { stroke: #4F9A78; }
+.promo-pain__chat.is-human .promo-pain__composer { background: #fff !important; border-color: transparent !important; box-shadow: 0 0.3em 0.8em -0.45em rgba(70, 50, 30, 0.3); }
+.promo-pain__chat.is-human .promo-pain__send { background: #6E9C84 !important; color: #fff !important; }
+.promo-opening__store.is-phone .promo-pain__chat.is-human .promo-pain__composer { margin-bottom: 2.6cqi; }
