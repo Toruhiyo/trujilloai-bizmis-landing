@@ -1,8 +1,23 @@
 import type { CSSProperties, MouseEvent } from "react";
 import { usePostHog } from "posthog-js/react";
-import { FaBolt, FaBox, FaGlobe, FaPercent, FaShieldAlt, FaShopify, FaShoppingCart, FaSync, FaTag, FaUsers } from "react-icons/fa";
+import {
+  FaBolt,
+  FaBox,
+  FaCheck,
+  FaGlobe,
+  FaPercent,
+  FaShieldAlt,
+  FaShopify,
+  FaShoppingCart,
+  FaSync,
+  FaTag,
+  FaUsers,
+} from "react-icons/fa";
 import { useMessages } from "@/i18n/LocaleProvider";
-import { BIZMIS_SHOPIFY_APP_LISTING_URL, openBizmisShopifyAppListing } from "@/lib/bizmisUrls";
+import {
+  BIZMIS_SHOPIFY_APP_LISTING_URL,
+  openBizmisShopifyAppListing,
+} from "@/lib/bizmisUrls";
 import AgentImage from "./AgentImage";
 import Reveal, { useInView } from "./Reveal";
 
@@ -24,11 +39,17 @@ const SetupSection = () => {
   const install = (e: MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault();
     openBizmisShopifyAppListing();
-    posthog.capture("cta_clicked", { cta_type: "get_started", location: "setup" });
+    posthog.capture("cta_clicked", {
+      cta_type: "get_started",
+      location: "setup",
+    });
   };
 
   return (
-    <section id="setup" className="bzl-section overflow-hidden bg-[linear-gradient(180deg,#fff,#fff8f0_45%,#fff)]">
+    <section
+      id="setup"
+      className="bzl-section overflow-hidden bg-[linear-gradient(180deg,#fff,#fff8f0_45%,#fff)]"
+    >
       <div className="bzl-wrap">
         <div className="mx-auto max-w-3xl text-center">
           <Reveal>
@@ -42,29 +63,41 @@ const SetupSection = () => {
           </Reveal>
         </div>
 
-        <div ref={ref} className="relative mt-16 grid items-center gap-8 md:grid-cols-[minmax(0,1fr)_minmax(100px,0.5fr)_minmax(0,0.7fr)] md:gap-0">
-          {/* Your Shopify store data */}
-          <Reveal className="rounded-[var(--bzl-radius-card)] border border-[var(--bzl-border)] bg-white/80 p-4 shadow-[0_24px_60px_-34px_rgba(28,24,20,0.35)] backdrop-blur sm:p-5">
-            <p className="flex items-center justify-center gap-2 pb-3 text-sm font-semibold text-[var(--bzl-orange-dark)]">
-              <FaShopify className="h-4 w-4" />
+        <div
+          ref={ref}
+          className="relative mt-16 grid items-center gap-8 md:grid-cols-[minmax(0,0.8fr)_minmax(120px,0.7fr)_minmax(0,0.7fr)] md:gap-0"
+        >
+          {/* Your Shopify store data: each source ticks over as it syncs */}
+          <Reveal className="rounded-[28px] border border-white/70 bg-white/70 p-3 shadow-[0_30px_70px_-38px_rgba(28,24,20,0.4),inset_0_1px_0_rgba(255,255,255,0.9)] backdrop-blur-md sm:p-4">
+            <p className="flex items-center gap-2 px-2 pb-3 pt-1 text-xs font-semibold uppercase tracking-[0.14em] text-[var(--bzl-muted)]">
+              <FaShopify className="h-4 w-4 text-[var(--bzl-orange-strong)]" />
               {setup.storeDataTitle}
             </p>
-            <ul className="space-y-2">
+            <ul className="grid gap-1.5">
               {setup.dataCards.map((card, i) => {
                 const Icon = ICONS[i];
+                const delay = { transitionDelay: `${300 + i * 220}ms` };
                 return (
-                  <li key={card.title} className="flex items-center gap-3 rounded-xl bg-[var(--bzl-card)] px-3 py-2.5">
-                    <span className="grid h-8 w-8 flex-shrink-0 place-items-center rounded-lg bg-white text-[var(--bzl-orange-strong)] shadow-sm">
-                      <Icon className="h-3.5 w-3.5" />
+                  <li
+                    key={card.title}
+                    className="flex h-14 items-center gap-3.5 rounded-2xl bg-[var(--bzl-card)] px-3"
+                  >
+                    <span className="grid h-9 w-9 flex-shrink-0 place-items-center rounded-xl bg-[linear-gradient(145deg,var(--bzl-orange),var(--bzl-orange-strong))] text-white shadow-[0_6px_14px_-6px_rgba(236,119,9,0.7)]">
+                      <Icon className="h-4 w-4" />
                     </span>
-                    <span className="min-w-0">
-                      <span className="block text-sm font-semibold text-[var(--bzl-fg)]">{card.title}</span>
-                      <span className="block truncate text-xs text-[var(--bzl-muted)]">{card.description}</span>
+                    <span className="min-w-0 truncate text-[15px] font-semibold tracking-[-0.01em] text-[var(--bzl-fg)]">
+                      {card.title}
                     </span>
                     <span
-                      className={`ml-auto h-2 w-2 flex-shrink-0 rounded-full transition-colors duration-500 ${inView ? "bg-[var(--bzl-orange)]" : "bg-[#dcdce0]"}`}
-                      style={{ transitionDelay: `${300 + i * 200}ms` }}
-                    />
+                      className={`ml-auto grid h-6 w-6 flex-shrink-0 place-items-center rounded-full transition-all duration-500 ${
+                        inView
+                          ? "scale-100 bg-[var(--bzl-orange)] text-white"
+                          : "scale-75 bg-[#e6e6ea] text-transparent"
+                      }`}
+                      style={delay}
+                    >
+                      <FaCheck className="h-2.5 w-2.5" />
+                    </span>
                   </li>
                 );
               })}
@@ -97,9 +130,20 @@ const SetupSection = () => {
             })}
           </svg>
 
-          <Reveal delay={150} className="relative mx-auto w-[62%] max-w-[300px] md:mx-0 md:-ml-[6%] md:w-full">
-            <div aria-hidden="true" className="absolute inset-x-[-20%] bottom-[-4%] h-[14%] rounded-[50%] bg-[radial-gradient(closest-side,rgba(236,119,9,0.28),transparent)]" />
-            <AgentImage name="setup-will" alt={messages.landing.agentAlt} sizes="(min-width: 768px) 300px, 60vw" className="relative" />
+          <Reveal
+            delay={150}
+            className="relative mx-auto w-[62%] max-w-[300px] md:mx-0 md:-ml-[6%] md:w-full"
+          >
+            <div
+              aria-hidden="true"
+              className="absolute inset-x-[-20%] bottom-[-4%] h-[14%] rounded-[50%] bg-[radial-gradient(closest-side,rgba(236,119,9,0.28),transparent)]"
+            />
+            <AgentImage
+              name="setup-will"
+              alt={messages.landing.agentAlt}
+              sizes="(min-width: 768px) 300px, 60vw"
+              className="relative"
+            />
           </Reveal>
         </div>
 
@@ -116,11 +160,19 @@ const SetupSection = () => {
               </span>
             ))}
           </div>
-          <a href={BIZMIS_SHOPIFY_APP_LISTING_URL} target="_blank" rel="noopener noreferrer" onClick={install} className="bzl-btn bzl-btn-primary mt-8">
+          <a
+            href={BIZMIS_SHOPIFY_APP_LISTING_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={install}
+            className="bzl-btn bzl-btn-primary mt-8"
+          >
             <FaShopify className="h-5 w-5" aria-hidden="true" />
             {messages.common.installBizmisOnShopify}
           </a>
-          <p className="mt-3 text-sm text-[var(--bzl-faint)]">{setup.ctaNote}</p>
+          <p className="mt-3 text-sm text-[var(--bzl-faint)]">
+            {setup.ctaNote}
+          </p>
         </Reveal>
       </div>
     </section>

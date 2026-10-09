@@ -78,12 +78,10 @@ export const ca: Messages = {
       chatbotMessage: "Hola! En què et puc ajudar avui?",
       chatbotReply: "Aquí tens alguns enllaços que et poden ajudar.",
       agentMessage: "Busques un regal? Digues-me per a qui és i trobaré el que toca.",
-      chatbotPoints: [
-        "Espera que li preguntin",
-        "Respon per escrit",
-        "T'envia a les FAQ",
-      ],
-      agentPoints: ["Saluda cada client", "Respon en veu alta, amb una veu real", "El guia fins al pagament"],
+      /** What the shopper does: with a chatbot, then with the Bizmis sales agent. */
+      shopper: "El teu client",
+      chatbotOutcome: ["No ho troba", "Dubta", "Se'n va"],
+      agentOutcome: ["Ho troba", "Hi confia", "Ho compra"],
     },
     yourStore: "La teva botiga",
     agentAlt: "L'avatar de l'agent de vendes de Bizmis",

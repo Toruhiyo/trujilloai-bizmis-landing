@@ -721,3 +721,80 @@
     transform: none;
   }
 }
+
+/* ── "Chatbot", set as obsolete tech ─────────────────────────────────────
+   An old terminal's pixel font, letters knocked off their baseline like a
+   failing sign, one dead letter flickering. Beaten by the sales agent, the
+   letters slump further and the word is struck through. */
+.bzl .bzl-obsolete,
+.bzl .bzl-obsolete * {
+  font-family: "VT323", ui-monospace, monospace;
+}
+.bzl .bzl-obsolete {
+  font-weight: 400;
+  font-size: 1.5em;
+  line-height: 1;
+  letter-spacing: 0.01em;
+  color: #74747a;
+  transition: color 0.5s ease;
+}
+.bzl .bzl-obsolete.is-beaten {
+  color: rgb(255 255 255 / 0.5);
+}
+.bzl-obsolete-ch {
+  display: inline-block;
+  transform: translateY(var(--y, 0)) rotate(var(--r, 0deg));
+  transition: transform 0.9s var(--bzl-spring);
+  transition-delay: calc(var(--i) * 45ms);
+}
+.bzl-obsolete-ch:nth-child(1) { --y: 0em; --r: -2deg; }
+.bzl-obsolete-ch:nth-child(2) { --y: 0.03em; --r: 3deg; }
+.bzl-obsolete-ch:nth-child(3) { --y: -0.02em; --r: -4deg; }
+.bzl-obsolete-ch:nth-child(4) { --y: 0.06em; --r: 5deg; }
+.bzl-obsolete-ch:nth-child(5) { --y: 0em; --r: -1deg; }
+.bzl-obsolete-ch:nth-child(6) { --y: 0.04em; --r: 4deg; animation: bzl-dead-letter 4.2s steps(1) infinite; }
+.bzl-obsolete-ch:nth-child(7) { --y: 0.12em; --r: 14deg; }
+.bzl-obsolete.is-beaten .bzl-obsolete-ch {
+  transform: translateY(calc(var(--y, 0em) * 2.5 + 0.06em)) rotate(calc(var(--r, 0deg) * 2));
+}
+@keyframes bzl-dead-letter {
+  0%, 100% { opacity: 1; }
+  7% { opacity: 0.15; }
+  9% { opacity: 1; }
+  51% { opacity: 0.3; }
+  53% { opacity: 1; }
+  55% { opacity: 0.1; }
+  58% { opacity: 1; }
+}
+.bzl-obsolete-strike {
+  position: absolute;
+  left: -5%;
+  right: -5%;
+  top: 56%;
+  height: 0.07em;
+  border-radius: 999px;
+  background: rgb(255 255 255 / 0.85);
+  transform: rotate(-4deg) scaleX(0);
+  transform-origin: left center;
+  transition: transform 0.45s ease 0.35s;
+}
+.bzl-obsolete.is-beaten .bzl-obsolete-strike {
+  transform: rotate(-4deg) scaleX(1);
+}
+@media (prefers-reduced-motion: reduce) {
+  .bzl-obsolete-ch { animation: none !important; transition: none; }
+  .bzl-obsolete-strike { transition: none; }
+}
+
+/* Personalization line-up: each avatar breathing on its own beat. */
+.bzl-idle {
+  animation: bzl-idle 5.6s ease-in-out infinite;
+  animation-delay: calc(var(--i) * -0.7s);
+}
+@keyframes bzl-idle {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-5px); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .bzl-idle { animation: none; }
+}

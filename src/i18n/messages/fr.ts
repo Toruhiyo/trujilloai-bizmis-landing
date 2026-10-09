@@ -78,12 +78,10 @@ export const fr: Messages = {
       chatbotMessage: "Bonjour ! Comment puis-je vous aider ?",
       chatbotReply: "Voici quelques liens qui pourraient vous aider.",
       agentMessage: "Vous cherchez un cadeau ? Dites-moi pour qui, je trouve le bon.",
-      chatbotPoints: [
-        "Attend qu'on lui parle",
-        "Répond par écrit",
-        "Renvoie vers la FAQ",
-      ],
-      agentPoints: ["Accueille chaque client", "Répond à voix haute, avec une vraie voix", "Accompagne jusqu'au paiement"],
+      /** What the shopper does: with a chatbot, then with the Bizmis sales agent. */
+      shopper: "Votre client",
+      chatbotOutcome: ["Ne trouve pas", "Hésite", "Part"],
+      agentOutcome: ["Le trouve", "S'y fie", "L'achète"],
     },
     yourStore: "Votre boutique",
     agentAlt: "L'avatar de l'agent de vente Bizmis",
