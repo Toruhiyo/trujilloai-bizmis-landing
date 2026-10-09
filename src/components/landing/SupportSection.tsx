@@ -1,10 +1,18 @@
 import { useEffect, useState } from "react";
-import { FileSearch, PackageSearch, Truck } from "lucide-react";
+import {
+  BookOpenText,
+  Clock,
+  FileSearch,
+  HeartHandshake,
+  PackageSearch,
+  Truck,
+} from "lucide-react";
 import { useMessages } from "@/i18n/LocaleProvider";
 import Reveal, { useInView } from "./Reveal";
 import { SentMessage } from "./BizmisWidget";
 import { StoreWithWidget } from "./visuals";
 import { ClayTile } from "./clay";
+import FeatureCard from "./FeatureCard";
 
 // Each case plays the real widget's sequence: the shopper's message, the
 // agent working (tool on its laser), then speaking with captions.
@@ -28,30 +36,46 @@ const TOOLS = {
  */
 const SupportChat = () => {
   const messages = useMessages();
-  const keys = Object.keys(messages.supportDemo.cases) as (keyof typeof messages.supportDemo.cases)[];
+  const keys = Object.keys(
+    messages.supportDemo.cases,
+  ) as (keyof typeof messages.supportDemo.cases)[];
   const [ref, inView] = useInView<HTMLDivElement>(0.4);
   const [pos, setPos] = useState({ i: 0, step: 0 });
   useEffect(() => {
-    if (!inView || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    if (
+      !inView ||
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches
+    )
+      return;
     const t = window.setTimeout(
-      () => setPos((p) => (p.step < 2 ? { ...p, step: p.step + 1 } : { i: (p.i + 1) % keys.length, step: 0 })),
-      STEP_MS[pos.step]
+      () =>
+        setPos((p) =>
+          p.step < 2
+            ? { ...p, step: p.step + 1 }
+            : { i: (p.i + 1) % keys.length, step: 0 },
+        ),
+      STEP_MS[pos.step],
     );
     return () => window.clearTimeout(t);
   }, [inView, pos, keys.length]);
   const key = keys[pos.i];
   const c = messages.supportDemo.cases[key];
-  const state = pos.step === 0 ? "idle" : pos.step === 1 ? "working" : "speaking";
+  const state =
+    pos.step === 0 ? "idle" : pos.step === 1 ? "working" : "speaking";
   return (
     <div ref={ref}>
       <StoreWithWidget
         agent="support-yusuke"
         state={state}
         tool={TOOLS[key]}
-        above={pos.step === 0 ? <SentMessage text={c.quote.replace(/^"|"$/g, "")} /> : undefined}
+        above={
+          pos.step === 0 ? (
+            <SentMessage text={c.quote.replace(/^"|"$/g, "")} />
+          ) : undefined
+        }
         caption={pos.step === 2 ? c.response : undefined}
       >
-        <div className="grid grid-cols-[1fr_1fr] gap-5 p-5 pb-16 pr-[17%] sm:p-7 sm:pb-20 sm:pr-[19%]">
+        <div className="grid grid-cols-[1fr_1fr] gap-5 p-5 pb-16 sm:p-7 sm:pb-20">
           <ClayTile shape="egg" tint="blush" />
           <div className="space-y-2.5 pt-1">
             <div className="bzl-tile-line w-4/5" />
@@ -68,6 +92,8 @@ const SupportChat = () => {
 };
 
 /** Customer Support — "Save hours on support. Earn loyal customers." */
+const CAPABILITY_ICONS = [Clock, BookOpenText, HeartHandshake];
+
 const SupportSection = () => {
   const s = useMessages().benefits.support;
   return (
@@ -90,8 +116,15 @@ const SupportSection = () => {
             </Reveal>
             <Reveal delay={240}>
               <div className="mt-8 flex flex-wrap gap-2">
-                {[s.outcomes.saveHours, s.outcomes.betterReviews, s.outcomes.repeatSales].map((o) => (
-                  <span key={o} className="rounded-full border border-[var(--bzl-border)] bg-white px-4 py-1.5 text-sm font-semibold text-[var(--bzl-ink-2)]">
+                {[
+                  s.outcomes.saveHours,
+                  s.outcomes.betterReviews,
+                  s.outcomes.repeatSales,
+                ].map((o) => (
+                  <span
+                    key={o}
+                    className="rounded-full border border-[var(--bzl-border)] bg-white px-4 py-1.5 text-sm font-semibold text-[var(--bzl-ink-2)]"
+                  >
                     {o}
                   </span>
                 ))}
@@ -103,14 +136,15 @@ const SupportSection = () => {
           </Reveal>
         </div>
 
-        <div className="mt-20 grid gap-5 md:grid-cols-3">
+        <div className="mt-20 grid items-start gap-5 md:grid-cols-3">
           {s.capabilities.map((c, i) => (
             <Reveal key={c.title} delay={i * 110}>
-              <article className="h-full rounded-[var(--bzl-radius-card)] bg-white p-7 shadow-[0_18px_44px_-30px_rgba(28,24,20,0.35)] ring-1 ring-[var(--bzl-border)]">
-                <p className="text-sm font-semibold text-[var(--bzl-orange-dark)]">{c.tagline}</p>
-                <h3 className="mt-3 text-xl font-bold tracking-[-0.02em] text-[var(--bzl-fg)]">{c.title}</h3>
-                <p className="mt-2 leading-relaxed text-[var(--bzl-muted)]">{c.body}</p>
-              </article>
+              <FeatureCard
+                icon={CAPABILITY_ICONS[i]}
+                title={c.title}
+                front={c.tagline}
+                body={c.body}
+              />
             </Reveal>
           ))}
         </div>

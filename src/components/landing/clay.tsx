@@ -24,11 +24,11 @@ export type ClayShape = keyof typeof CLAY;
 
 /** Tile tints sampled from the film's catalog. */
 export const TINT = {
-  stone: "#e4dfd6",
+  stone: "#e8e0d4",
   sand: "#e8dcc8",
   blush: "#e8d5d0",
-  sage: "#d5ddd4",
-  warm: "#e3e0db",
+  sage: "#e0ddcb",
+  warm: "#e8ddd0",
   orange: "#f5c391",
 } as const;
 
@@ -87,12 +87,33 @@ export const StoreWindow = ({
         <i />
         <i />
       </span>
-      <svg viewBox="0 0 24 24" className="h-4 w-4 text-neutral-500" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true">
-        <path d="M4 10h16v10H4zM3 10l2-6h14l2 6M9 20v-5h6v5" strokeLinejoin="round" />
+      <svg
+        viewBox="0 0 24 24"
+        className="h-4 w-4 text-[var(--bzl-faint)]"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.8"
+        aria-hidden="true"
+      >
+        <path
+          d="M4 10h16v10H4zM3 10l2-6h14l2 6M9 20v-5h6v5"
+          strokeLinejoin="round"
+        />
       </svg>
       {label}
-      <svg viewBox="0 0 24 24" className="ml-auto h-4 w-4 text-neutral-500" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true">
-        <path d="M3 4h2l2.4 11h11L21 7H6" strokeLinejoin="round" strokeLinecap="round" />
+      <svg
+        viewBox="0 0 24 24"
+        className="ml-auto h-4 w-4 text-[var(--bzl-faint)]"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.8"
+        aria-hidden="true"
+      >
+        <path
+          d="M3 4h2l2.4 11h11L21 7H6"
+          strokeLinejoin="round"
+          strokeLinecap="round"
+        />
         <circle cx="9" cy="19.5" r="1.3" />
         <circle cx="17" cy="19.5" r="1.3" />
       </svg>

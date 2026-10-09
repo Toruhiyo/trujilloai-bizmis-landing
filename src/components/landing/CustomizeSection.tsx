@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react";
 import type { CSSProperties } from "react";
+import { AudioLines, UserRound } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useMessages } from "@/i18n/LocaleProvider";
 import AgentImage from "./AgentImage";
+import FeatureCard from "./FeatureCard";
 import Reveal, { useInView } from "./Reveal";
 
 // Real Bizmis avatars, each dressed for a different kind of store.
@@ -71,28 +73,26 @@ const CustomizeSection = () => {
           <Reveal delay={150}>
             <p className="bzl-lead mt-5 max-w-lg">{m.lead}</p>
           </Reveal>
-          <div className="mt-10 space-y-6">
+          <div className="mt-10 grid items-start gap-3 sm:grid-cols-2">
             <Reveal delay={220}>
-              <div className="border-l-2 border-[var(--bzl-orange)] pl-5">
-                <h3 className="text-lg font-bold tracking-[-0.02em] text-[var(--bzl-fg)]">
-                  {m.avatar.title}
-                </h3>
-                <p className="mt-1 text-[var(--bzl-muted)]">{m.avatar.body}</p>
-              </div>
+              <FeatureCard
+                icon={UserRound}
+                title={m.avatar.title}
+                body={m.avatar.body}
+              />
             </Reveal>
             <Reveal delay={320}>
-              <div className="border-l-2 border-[var(--bzl-orange)] pl-5">
-                <h3 className="flex items-center gap-3 text-lg font-bold tracking-[-0.02em] text-[var(--bzl-fg)]">
-                  {m.voiceCloning.title}
-                  <Waveform />
+              <FeatureCard
+                icon={AudioLines}
+                title={m.voiceCloning.title}
+                badge={
                   <span className="rounded-full bg-[color-mix(in_oklab,var(--bzl-orange)_16%,#fff)] px-2.5 py-0.5 text-[11px] font-semibold uppercase tracking-[0.12em] text-[var(--bzl-orange-dark)]">
                     {messages.common.soon}
                   </span>
-                </h3>
-                <p className="mt-1 text-[var(--bzl-muted)]">
-                  {m.voiceCloning.body}
-                </p>
-              </div>
+                }
+                front={<Waveform />}
+                body={m.voiceCloning.body}
+              />
             </Reveal>
           </div>
         </div>
@@ -109,7 +109,7 @@ const CustomizeSection = () => {
                       : "shadow-[0_14px_30px_-20px_rgba(28,24,20,0.45)]",
                   )}
                   style={{
-                    background: `linear-gradient(180deg, color-mix(in oklab, ${a.tint} ${spot === i ? 30 : 14}%, #fff), #fff)`,
+                    background: `linear-gradient(180deg, color-mix(in oklab, ${a.tint} ${spot === i ? 30 : 14}%, #fff8f0), #fffcf8)`,
                     transitionTimingFunction: "var(--bzl-spring)",
                   }}
                 >

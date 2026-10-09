@@ -1,6 +1,10 @@
+import { ChartNoAxesColumnIncreasing, PlayCircle, Tags } from "lucide-react";
 import { useMessages } from "@/i18n/LocaleProvider";
+import FeatureCard from "./FeatureCard";
 import Reveal from "./Reveal";
 import SessionReplay from "./SessionReplay";
+
+const ICONS = [PlayCircle, Tags, ChartNoAxesColumnIncreasing];
 
 /** Store Insights — "Learn. Tune. Grow.", with the classic landing's conversation replays. */
 const InsightsSection = () => {
@@ -18,13 +22,10 @@ const InsightsSection = () => {
           <Reveal delay={160}>
             <p className="bzl-lead mt-5 max-w-lg">{ins.lead}</p>
           </Reveal>
-          <ul className="mt-8 space-y-5">
+          <ul className="mt-8 grid items-start gap-3">
             {ins.features.map((f, i) => (
               <Reveal as="li" key={f.title} delay={220 + i * 90}>
-                <div className="border-l-2 border-[var(--bzl-orange)] pl-5">
-                  <h3 className="font-bold tracking-[-0.02em] text-[var(--bzl-fg)]">{f.title}</h3>
-                  <p className="mt-1 text-[var(--bzl-muted)]">{f.body}</p>
-                </div>
+                <FeatureCard icon={ICONS[i]} title={f.title} body={f.body} />
               </Reveal>
             ))}
           </ul>

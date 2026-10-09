@@ -27,7 +27,10 @@ const Typewriter = ({ text }: { text: string }) => {
   const [n, setN] = useState(0);
   useEffect(() => {
     setN(0);
-    const t = window.setInterval(() => setN((v) => (v >= text.length ? v : v + 1)), 24);
+    const t = window.setInterval(
+      () => setN((v) => (v >= text.length ? v : v + 1)),
+      24,
+    );
     return () => window.clearInterval(t);
   }, [text]);
   return <>{text.slice(0, n)}</>;
@@ -48,7 +51,10 @@ export const NavBanner = ({
   const [left, setLeft] = useState(seconds);
   useEffect(() => {
     setLeft(seconds);
-    const t = window.setInterval(() => setLeft((v) => (v <= 1 ? seconds : v - 1)), 1000);
+    const t = window.setInterval(
+      () => setLeft((v) => (v <= 1 ? seconds : v - 1)),
+      1000,
+    );
     return () => window.clearInterval(t);
   }, [seconds]);
   const Icon = cart ? ShoppingCart : Navigation;
@@ -60,21 +66,40 @@ export const NavBanner = ({
       style={{
         borderColor: `color-mix(in oklab, ${ORANGE} 30%, transparent)`,
         background: `linear-gradient(135deg, color-mix(in oklab, ${ORANGE} 16%, transparent) 0%, color-mix(in oklab, ${ORANGE} 5%, transparent) 55%, color-mix(in oklab, ${ORANGE} 10%, transparent) 100%)`,
-        boxShadow: "0 12px 28px -16px rgb(0 0 0 / 0.3)",
+        boxShadow: "0 12px 28px -16px rgb(28 24 20 / 0.3)",
       }}
     >
-      <span className="grid h-6 w-6 flex-shrink-0 place-items-center rounded-full" style={{ background: `color-mix(in oklab, ${ORANGE} 14%, transparent)`, color: ORANGE }}>
+      <span
+        className="grid h-6 w-6 flex-shrink-0 place-items-center rounded-full"
+        style={{
+          background: `color-mix(in oklab, ${ORANGE} 14%, transparent)`,
+          color: ORANGE,
+        }}
+      >
         <Icon className="h-3 w-3" strokeWidth={2.25} />
       </span>
       <span className="min-w-0 flex-1">
-        <span className="block text-[9px] font-semibold uppercase tracking-wider opacity-90" style={{ color: ORANGE }}>
+        <span
+          className="block text-[9px] font-semibold uppercase tracking-wider opacity-90"
+          style={{ color: ORANGE }}
+        >
           {heading}
         </span>
-        <span className="block truncate text-xs font-semibold text-[#171717]">{target}</span>
+        <span className="block truncate text-xs font-semibold text-[#171717]">
+          {target}
+        </span>
       </span>
       <span className="relative grid h-[26px] w-[26px] flex-shrink-0 place-items-center">
         <svg viewBox="0 0 26 26" className="absolute inset-0 -rotate-90">
-          <circle cx="13" cy="13" r={r} fill="none" stroke={ORANGE} strokeOpacity="0.25" strokeWidth="2.5" />
+          <circle
+            cx="13"
+            cy="13"
+            r={r}
+            fill="none"
+            stroke={ORANGE}
+            strokeOpacity="0.25"
+            strokeWidth="2.5"
+          />
           <circle
             cx="13"
             cy="13"
@@ -129,13 +154,21 @@ const BizmisWidget = ({
   const Tool = tool;
   return (
     <div className={cn("bzw relative w-[288px]", className)} style={style}>
-      {above && <div className="absolute bottom-full left-0 right-0 z-20 mb-2.5 flex flex-col gap-2.5">{above}</div>}
+      {above && (
+        <div className="absolute bottom-full left-0 right-0 z-20 mb-2.5 flex flex-col gap-2.5">
+          {above}
+        </div>
+      )}
 
       <div className="bzw-card relative h-[296px] rounded-xl border">
         {/* Volume toggle, top-right (always visible on the real card) */}
         <span
           className="absolute right-2 top-2 z-10 grid h-8 w-8 place-items-center rounded-full border"
-          style={{ borderColor: `color-mix(in oklab, ${ORANGE} 30%, transparent)`, background: `color-mix(in oklab, ${ORANGE} 14%, transparent)`, color: ORANGE }}
+          style={{
+            borderColor: `color-mix(in oklab, ${ORANGE} 30%, transparent)`,
+            background: `color-mix(in oklab, ${ORANGE} 14%, transparent)`,
+            color: ORANGE,
+          }}
           aria-hidden="true"
         >
           <Volume2 className="h-4 w-4" />
@@ -144,18 +177,27 @@ const BizmisWidget = ({
         {/* Avatar stage */}
         <div className="relative h-[230px] overflow-visible">
           {state === "speaking" && (
-            <span aria-hidden="true" className="pointer-events-none absolute left-1/2 top-[44%] -translate-x-1/2 -translate-y-1/2">
+            <span
+              aria-hidden="true"
+              className="pointer-events-none absolute left-1/2 top-[44%] -translate-x-1/2 -translate-y-1/2"
+            >
               <span className="bzw-glow absolute left-1/2 top-1/2 h-[198px] w-[198px] -translate-x-1/2 -translate-y-1/2 rounded-full" />
               <span className="bzw-ring absolute left-1/2 top-1/2 h-[144px] w-[144px] -translate-x-1/2 -translate-y-1/2 rounded-full border-2" />
               <span className="bzw-ring absolute left-1/2 top-1/2 h-[144px] w-[144px] -translate-x-1/2 -translate-y-1/2 rounded-full border-2 [animation-delay:1.1s]" />
             </span>
           )}
           {state === "working" && (
-            <span aria-hidden="true" className="pointer-events-none absolute left-1/2 top-[44%] h-[200px] w-[200px] -translate-x-1/2 -translate-y-1/2">
+            <span
+              aria-hidden="true"
+              className="pointer-events-none absolute left-1/2 top-[44%] h-[200px] w-[200px] -translate-x-1/2 -translate-y-1/2"
+            >
               <span className="bzw-spinner absolute inset-0">
                 <span className="bzw-laser absolute inset-0 rounded-full" />
                 {Tool && (
-                  <span className="absolute left-1/2 top-0 grid h-7 w-7 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full bg-white shadow" style={{ color: ORANGE }}>
+                  <span
+                    className="absolute left-1/2 top-0 grid h-7 w-7 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full bg-white shadow"
+                    style={{ color: ORANGE }}
+                  >
                     <span className="bzw-upright grid place-items-center">
                       <Tool className="h-3.5 w-3.5" strokeWidth={2.25} />
                     </span>
@@ -164,7 +206,12 @@ const BizmisWidget = ({
               </span>
             </span>
           )}
-          <AgentImage name={agent} alt="" sizes="160px" className="absolute bottom-0 left-1/2 h-[224px] w-auto -translate-x-1/2" />
+          <AgentImage
+            name={agent}
+            alt=""
+            sizes="160px"
+            className="absolute bottom-0 left-1/2 h-[224px] w-auto -translate-x-1/2"
+          />
         </div>
 
         {/* Composer */}
@@ -174,11 +221,20 @@ const BizmisWidget = ({
               {state === "call" ? "" : <Typewriter text={placeholder} />}
             </span>
             {state === "call" ? (
-              <span className="grid h-8 w-8 place-items-center rounded-full" style={{ background: "hsl(0 0% 3.9% / 0.12)", color: "hsl(0 0% 3.9% / 0.62)" }}>
+              <span
+                className="grid h-8 w-8 place-items-center rounded-full"
+                style={{
+                  background: "hsl(0 0% 3.9% / 0.12)",
+                  color: "hsl(0 0% 3.9% / 0.62)",
+                }}
+              >
                 <X className="h-4 w-4" strokeWidth={2.5} />
               </span>
             ) : (
-              <span className="grid h-8 w-8 place-items-center rounded-full text-white shadow-sm" style={{ background: ORANGE }}>
+              <span
+                className="grid h-8 w-8 place-items-center rounded-full text-white shadow-sm"
+                style={{ background: ORANGE }}
+              >
                 <AudioLines className="h-3.5 w-3.5" strokeWidth={2.5} />
               </span>
             )}
@@ -196,7 +252,15 @@ export default BizmisWidget;
  * chunk (≤ 8 words) at a time, spoken words solid with the current one bold
  * and glowing, upcoming words faded — timed like speech, then the next chunk.
  */
-export const Captions = ({ text, msPerWord = 320, className }: { text: string; msPerWord?: number; className?: string }) => {
+export const Captions = ({
+  text,
+  msPerWord = 320,
+  className,
+}: {
+  text: string;
+  msPerWord?: number;
+  className?: string;
+}) => {
   const all = text.split(/\s+/);
   const chunks: string[][] = [];
   for (let k = 0; k < all.length; k += 8) chunks.push(all.slice(k, k + 8));
@@ -210,7 +274,7 @@ export const Captions = ({ text, msPerWord = 320, className }: { text: string; m
           if (p.word < len + 2) return { ...p, word: p.word + 1 }; // hold the finished line briefly
           return { chunk: (p.chunk + 1) % chunks.length, word: 0 };
         }),
-      msPerWord
+      msPerWord,
     );
     return () => window.clearInterval(t);
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -218,12 +282,29 @@ export const Captions = ({ text, msPerWord = 320, className }: { text: string; m
   const words = chunks[pos.chunk] ?? [];
   const i = pos.word;
   return (
-    <p className={cn("bzw-caption w-fit max-w-[46rem] rounded-3xl px-4 py-1 text-center font-medium leading-snug text-[#171717]", className)}>
+    <p
+      className={cn(
+        "bzw-caption w-fit max-w-[46rem] rounded-3xl px-4 py-1 text-center font-medium leading-snug text-[#171717]",
+        className,
+      )}
+    >
       <span className="sr-only">{text}</span>
       <span aria-hidden="true">
         {words.map((w, k) => (
-          <span key={`${pos.chunk}-${k}`} className={cn("relative transition-opacity duration-200", k < i - 1 ? "opacity-100" : k === i - 1 ? "font-bold" : "opacity-50")}>
-            {k === i - 1 && <span className="bzw-word-glow absolute inset-x-[-0.3em] inset-y-[-0.2em] -z-10 rounded-full" />}
+          <span
+            key={`${pos.chunk}-${k}`}
+            className={cn(
+              "relative transition-opacity duration-200",
+              k < i - 1
+                ? "opacity-100"
+                : k === i - 1
+                  ? "font-bold"
+                  : "opacity-50",
+            )}
+          >
+            {k === i - 1 && (
+              <span className="bzw-word-glow absolute inset-x-[-0.3em] inset-y-[-0.2em] -z-10 rounded-full" />
+            )}
             {w}
             {k < words.length - 1 ? " " : ""}
           </span>

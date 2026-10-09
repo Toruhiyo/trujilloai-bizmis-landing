@@ -13,7 +13,7 @@ import Reveal from "./Reveal";
 
 /**
  * The classic landing's Early Access offer, composed like the film's closing
- * card: the brand mark, one big statement, the perks as a row of orange
+ * card: one big statement, the perks as a row of orange
  * checks, and a handwritten line with its underline — then the CTAs.
  */
 const EndCard = () => {
@@ -27,11 +27,17 @@ const EndCard = () => {
   const install = (e: MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault();
     openBizmisShopifyAppListing();
-    posthog.capture("cta_clicked", { cta_type: "get_started", location: "early_access_card" });
+    posthog.capture("cta_clicked", {
+      cta_type: "get_started",
+      location: "early_access_card",
+    });
   };
 
   const claim = () => {
-    posthog.capture("cta_clicked", { cta_type: "claim_early_bird", location: "early_access_card" });
+    posthog.capture("cta_clicked", {
+      cta_type: "claim_early_bird",
+      location: "early_access_card",
+    });
     navigate(href("/pricing"));
   };
 
@@ -43,12 +49,12 @@ const EndCard = () => {
       />
       <div className="bzl-wrap relative">
         <Reveal>
-          <img src="/images/bizmis-logo-full-orange-transparent.png" alt="Bizmis" className="mx-auto h-8 w-auto sm:h-9" />
-        </Reveal>
-        <Reveal delay={100}>
-          <p className="bzl-kicker mt-8">{ea.badge}</p>
+          <p className="bzl-kicker">{ea.badge}</p>
           <h2 className="mt-3 text-[clamp(2.8rem,7.4vw,5.8rem)] font-bold leading-[1.02] tracking-[-0.045em] text-black">
-            {ea.titleLead} <span className="text-[var(--bzl-orange-strong)]">{ea.titleHighlight}</span>
+            {ea.titleLead}{" "}
+            <span className="text-[var(--bzl-orange-strong)]">
+              {ea.titleHighlight}
+            </span>
           </h2>
         </Reveal>
         <Reveal delay={200}>
@@ -60,12 +66,25 @@ const EndCard = () => {
             {ea.perks.map((perk) => (
               <li key={perk.title}>
                 <p className="flex items-center justify-center gap-2 text-lg font-semibold text-[var(--bzl-fg)]">
-                  <svg viewBox="0 0 24 24" className="h-5 w-5 flex-shrink-0" fill="none" stroke="var(--bzl-orange-strong)" strokeWidth="2.2" aria-hidden="true">
-                    <path d="M5 12.5l4.4 4.4L19 7.4" strokeLinecap="round" strokeLinejoin="round" />
+                  <svg
+                    viewBox="0 0 24 24"
+                    className="h-5 w-5 flex-shrink-0"
+                    fill="none"
+                    stroke="var(--bzl-orange-strong)"
+                    strokeWidth="2.2"
+                    aria-hidden="true"
+                  >
+                    <path
+                      d="M5 12.5l4.4 4.4L19 7.4"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
                   </svg>
                   {perk.title}
                 </p>
-                <p className="mt-1 text-sm text-[var(--bzl-muted)]">{perk.caption}</p>
+                <p className="mt-1 text-sm text-[var(--bzl-muted)]">
+                  {perk.caption}
+                </p>
               </li>
             ))}
           </ul>
@@ -73,11 +92,28 @@ const EndCard = () => {
 
         <Reveal delay={440}>
           <p className="bzl-script relative mx-auto mt-12 inline-block -rotate-[2.5deg] text-[clamp(2rem,3.6vw,2.8rem)] leading-none">
-            {ea.limitedSpots}
+            {messages.landing.onlySpots}
             {/* the film's hand-drawn underline */}
-            <svg viewBox="0 0 300 18" preserveAspectRatio="none" className="absolute -bottom-3 left-0 h-3 w-full" fill="none" aria-hidden="true">
-              <path d="M4 12 C 70 4, 160 3, 296 9" stroke="var(--bzl-orange-strong)" strokeWidth="3.2" strokeLinecap="round" />
-              <path d="M30 15 C 110 9, 190 9, 270 13" stroke="var(--bzl-orange-strong)" strokeWidth="2.4" strokeLinecap="round" opacity="0.85" />
+            <svg
+              viewBox="0 0 300 18"
+              preserveAspectRatio="none"
+              className="absolute -bottom-3 left-0 h-3 w-full"
+              fill="none"
+              aria-hidden="true"
+            >
+              <path
+                d="M4 12 C 70 4, 160 3, 296 9"
+                stroke="var(--bzl-orange-strong)"
+                strokeWidth="3.2"
+                strokeLinecap="round"
+              />
+              <path
+                d="M30 15 C 110 9, 190 9, 270 13"
+                stroke="var(--bzl-orange-strong)"
+                strokeWidth="2.4"
+                strokeLinecap="round"
+                opacity="0.85"
+              />
             </svg>
           </p>
         </Reveal>
@@ -95,7 +131,11 @@ const EndCard = () => {
               <FaShopify className="h-5 w-5" aria-hidden="true" />
               {messages.common.installOnShopify}
             </a>
-            <button type="button" onClick={claim} className="bzl-btn bzl-btn-ghost">
+            <button
+              type="button"
+              onClick={claim}
+              className="bzl-btn bzl-btn-ghost"
+            >
               {ea.cta}
               <ArrowRight className="h-4 w-4" aria-hidden="true" />
             </button>
@@ -111,7 +151,12 @@ const EndCard = () => {
               href={BIZMIS_BOOK_A_CALL_GENERAL_URL}
               target="_blank"
               rel="noopener noreferrer"
-              onClick={() => posthog.capture("cta_clicked", { cta_type: "book_a_call", location: "early_access_card" })}
+              onClick={() =>
+                posthog.capture("cta_clicked", {
+                  cta_type: "book_a_call",
+                  location: "early_access_card",
+                })
+              }
               className="underline underline-offset-2 hover:text-[var(--bzl-orange-dark)]"
             >
               {messages.common.bookACall}

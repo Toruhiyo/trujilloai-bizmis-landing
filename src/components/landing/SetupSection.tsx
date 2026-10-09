@@ -92,7 +92,7 @@ const SetupSection = () => {
                       className={`ml-auto grid h-6 w-6 flex-shrink-0 place-items-center rounded-full transition-all duration-500 ${
                         inView
                           ? "scale-100 bg-[var(--bzl-orange)] text-white"
-                          : "scale-75 bg-[#e6e6ea] text-transparent"
+                          : "scale-75 bg-[#efe5d9] text-transparent"
                       }`}
                       style={delay}
                     >

@@ -45,7 +45,7 @@ const Hero = () => {
 
   const handleShopifyInstallClick = (
     e: MouseEvent<HTMLAnchorElement>,
-    location = "hero"
+    location = "hero",
   ) => {
     e.preventDefault();
     openBizmisShopifyAppListing();
@@ -73,9 +73,13 @@ const Hero = () => {
 
   const handleFilmEvent = useCallback(
     (event: FilmEvent, props?: Record<string, unknown>) => {
-      posthog.capture(event, { film_id: HERO_FILM.id, location: "hero", ...props });
+      posthog.capture(event, {
+        film_id: HERO_FILM.id,
+        location: "hero",
+        ...props,
+      });
     },
-    [posthog]
+    [posthog],
   );
 
   return (
@@ -130,13 +134,19 @@ const Hero = () => {
               <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-white/80" />
             </span>
             <span className="font-medium">
-              <span className="text-white/90">{messages.hero.badgeLabel}</span>
+              <span className="bzl-hand text-white">
+                {messages.hero.badgeLabel}
+              </span>
               <span className="text-white/45" aria-hidden="true">
                 {" "}
                 ·{" "}
               </span>
-              <span className="text-white/70 sm:hidden">{messages.hero.badgeDetailShort}</span>
-              <span className="hidden text-white/70 sm:inline">{messages.hero.badgeDetailLong}</span>
+              <span className="text-white/70 sm:hidden">
+                {messages.hero.badgeDetailShort}
+              </span>
+              <span className="hidden text-white/70 sm:inline">
+                {messages.hero.badgeDetailLong}
+              </span>
             </span>
             <ArrowRight
               className="h-3 w-3 text-white/45 transition-transform group-hover:translate-x-0.5 group-hover:text-white/65 sm:h-3.5 sm:w-3.5"
@@ -150,10 +160,17 @@ const Hero = () => {
           </h1>
           <p className="mt-[clamp(0.25rem,1vh,0.75rem)] text-[clamp(1rem,min(4.6vw,2.7vh),1.5rem)] xl:text-[clamp(1.25rem,3vh,1.875rem)] font-heading font-medium text-white/75">
             {messages.hero.subtitleLead}{" "}
-            <span className="font-semibold text-white">{messages.hero.subtitleFind}</span>,{" "}
-            <span className="font-semibold text-white">{messages.hero.subtitleTrust}</span>
+            <span className="font-semibold text-white">
+              {messages.hero.subtitleFind}
+            </span>
+            ,{" "}
+            <span className="font-semibold text-white">
+              {messages.hero.subtitleTrust}
+            </span>
             {messages.hero.subtitleConnector}{" "}
-            <span className="font-semibold text-white">{messages.hero.subtitleBuy}</span>
+            <span className="font-semibold text-white">
+              {messages.hero.subtitleBuy}
+            </span>
           </p>
         </div>
 
@@ -161,25 +178,26 @@ const Hero = () => {
         <div className="mt-[clamp(0.75rem,2.5vh,2rem)] flex min-h-0 flex-1 items-center justify-center [container-type:size] max-h-[min(calc((100vw-2rem-1.25rem)*9/16+1.25rem),695px)] sm:max-h-[min(calc((100vw-3rem-1.25rem)*9/16+1.25rem),695px)]">
           {/* max-h: never taller than the film itself, so on tall narrow screens
               the spare height goes to the margins instead of around the film. */}
-        <div className="relative w-[min(100cqw,calc((100cqh-1.25rem)*16/9+1.25rem),1200px)]">
-          <div
-            aria-hidden="true"
-            className="absolute -bottom-8 left-1/2 h-16 w-[108%] -translate-x-1/2 bg-[radial-gradient(closest-side,hsl(25_95%_38%/0.45),hsl(25_95%_45%/0.18)_55%,transparent)] sm:-bottom-12 sm:h-24"
-          />
-          <FilmPlayer
-            src={HERO_FILM.src}
-            loop={HERO_FILM.loop}
-            durationSeconds={HERO_FILM.durationSeconds}
-            endFrameCta={HERO_FILM.endFrameCta}
-            labels={messages.film}
-            cta={{
-              label: messages.common.installNow,
-              href: BIZMIS_SHOPIFY_APP_LISTING_URL,
-              onClick: (e, location) => handleShopifyInstallClick(e, location),
-            }}
-            onEvent={handleFilmEvent}
-          />
-        </div>
+          <div className="relative w-[min(100cqw,calc((100cqh-1.25rem)*16/9+1.25rem),1200px)]">
+            <div
+              aria-hidden="true"
+              className="absolute -bottom-8 left-1/2 h-16 w-[108%] -translate-x-1/2 bg-[radial-gradient(closest-side,hsl(25_95%_38%/0.45),hsl(25_95%_45%/0.18)_55%,transparent)] sm:-bottom-12 sm:h-24"
+            />
+            <FilmPlayer
+              src={HERO_FILM.src}
+              loop={HERO_FILM.loop}
+              durationSeconds={HERO_FILM.durationSeconds}
+              endFrameCta={HERO_FILM.endFrameCta}
+              labels={messages.film}
+              cta={{
+                label: messages.common.installNow,
+                href: BIZMIS_SHOPIFY_APP_LISTING_URL,
+                onClick: (e, location) =>
+                  handleShopifyInstallClick(e, location),
+              }}
+              onEvent={handleFilmEvent}
+            />
+          </div>
         </div>
 
         {/* CTA section, under the film */}
@@ -198,7 +216,9 @@ const Hero = () => {
                 onClick={(e) => handleShopifyInstallClick(e)}
               >
                 <FaShopify className="!w-6 !h-6 sm:!w-7 sm:!h-7 text-primary" />
-                <span className="font-semibold">{messages.common.installNow}</span>
+                <span className="font-semibold">
+                  {messages.common.installNow}
+                </span>
                 <ArrowRight className="!w-5 !h-5 group-hover:translate-x-1 transition-transform" />
               </a>
             </Button>

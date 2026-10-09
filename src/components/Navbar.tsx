@@ -180,6 +180,7 @@ const Navbar = () => {
                 {desktopNavItems.map((item) => (
                   <button
                     key={item.label}
+                    data-nav={item.href}
                     onClick={() => handleNavigation(item.href)}
                     className={`font-medium transition-colors duration-300 hover:opacity-80 ${navLinkClassName(item.href)}`}
                   >
@@ -275,6 +276,7 @@ const Navbar = () => {
               {navItems.map((item) => (
                 <button
                   key={item.label}
+                  data-nav={item.href}
                   onClick={() => handleNavigation(item.href)}
                   className={`block w-full rounded-xl px-3 py-2.5 text-left text-sm font-medium transition-colors hover:bg-primary/10 hover:text-primary ${
                     isActiveRoute(item.href)

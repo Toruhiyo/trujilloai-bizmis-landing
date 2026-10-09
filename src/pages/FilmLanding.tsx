@@ -10,7 +10,10 @@ import SetupSection from "@/components/landing/SetupSection";
 import CustomizeSection from "@/components/landing/CustomizeSection";
 import EndCard from "@/components/landing/EndCard";
 import FilmFooter from "@/components/landing/FilmFooter";
-import { setupScrollToSectionOnLoad, setupScrollToUrlUpdater } from "@/lib/utils/scroll";
+import {
+  setupScrollToSectionOnLoad,
+  setupScrollToUrlUpdater,
+} from "@/lib/utils/scroll";
 import { useMessages } from "@/i18n/LocaleProvider";
 import "@/styles/film-landing.css";
 
@@ -29,9 +32,20 @@ interface FilmLandingProps {
 const FilmLanding = ({ path = "/" }: FilmLandingProps) => {
   const messages = useMessages();
 
+  // Lets the film landing's scoped CSS reach the shared navbar (outside .bzl),
+  // e.g. the handwritten "Early Access" link, without touching other pages.
+  useEffect(() => {
+    document.documentElement.classList.add("bzl-page");
+    return () => document.documentElement.classList.remove("bzl-page");
+  }, []);
+
   useEffect(() => {
     const cleanupScrollToSection = setupScrollToSectionOnLoad();
-    const cleanupUrlUpdater = setupScrollToUrlUpdater(["hero", "benefits", "setup"]);
+    const cleanupUrlUpdater = setupScrollToUrlUpdater([
+      "hero",
+      "benefits",
+      "setup",
+    ]);
     return () => {
       cleanupScrollToSection();
       cleanupUrlUpdater();
@@ -42,7 +56,11 @@ const FilmLanding = ({ path = "/" }: FilmLandingProps) => {
     <div className="bzl min-h-screen">
       <Helmet>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
+        <link
+          rel="preconnect"
+          href="https://fonts.gstatic.com"
+          crossOrigin=""
+        />
         <link
           rel="stylesheet"
           href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Caveat:wght@600;700&family=VT323&display=swap"
@@ -62,7 +80,10 @@ const FilmLanding = ({ path = "/" }: FilmLandingProps) => {
           url: "https://www.bizmis.ai",
           applicationCategory: "BusinessApplication",
           operatingSystem: "Web",
-          offers: { "@type": "Offer", availability: "https://schema.org/PreOrder" },
+          offers: {
+            "@type": "Offer",
+            availability: "https://schema.org/PreOrder",
+          },
           publisher: {
             "@type": "Organization",
             name: "Bizmis",
