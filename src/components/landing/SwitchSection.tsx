@@ -169,7 +169,7 @@ const SwitchSection = () => {
   return (
     <section
       ref={ref}
-      className="relative overflow-hidden px-4 py-[clamp(4rem,9vw,7rem)] sm:px-6"
+      className="bzl-screen relative overflow-hidden px-4 py-[clamp(4rem,9vw,7rem)] sm:px-6"
     >
       {/* The two worlds; the switch cuts between them. */}
       <div
@@ -198,7 +198,7 @@ const SwitchSection = () => {
 
         {/* The switch, at the film's scale */}
         <Reveal delay={120}>
-          <div className="mt-10 flex flex-wrap items-center justify-center gap-x-6 gap-y-3 text-[clamp(1.75rem,4.6vw,4rem)] font-bold tracking-[-0.03em]">
+          <div className="mt-[3svh] flex flex-wrap items-center justify-center gap-x-6 gap-y-3 text-[clamp(1.75rem,min(4.6vw,7svh),4rem)] font-bold tracking-[-0.03em]">
             <button
               type="button"
               onClick={() => agent && flip()}
@@ -246,7 +246,7 @@ const SwitchSection = () => {
         <Reveal delay={200}>
           <p
             className={cn(
-              "mt-8 text-xs font-semibold uppercase tracking-[0.18em] transition-colors duration-500",
+              "mt-[2.6svh] text-xs font-semibold uppercase tracking-[0.18em] transition-colors duration-500",
               agent ? "text-white/75" : "text-[#8e8e93]",
             )}
           >
@@ -255,7 +255,7 @@ const SwitchSection = () => {
           <p
             key={agent ? "agent" : "bot"}
             className={cn(
-              "bzl-pop mt-2 flex flex-wrap items-center justify-center gap-x-4 gap-y-1 text-[clamp(1.25rem,2.4vw,1.9rem)] font-bold tracking-[-0.025em]",
+              "bzl-pop mt-2 flex flex-wrap items-center justify-center gap-x-4 gap-y-1 text-[clamp(1.25rem,min(2.4vw,3.6svh),1.9rem)] font-bold tracking-[-0.025em]",
               agent ? "text-white" : "text-[#8d8d93]",
             )}
           >
@@ -279,22 +279,32 @@ const SwitchSection = () => {
         {/* The same store, two worlds */}
         <Reveal
           delay={260}
-          className="relative mx-auto mt-14 max-w-[980px] text-left"
+          className="relative mx-auto mt-[4.5svh] max-w-[980px] text-left"
         >
           <div
             onPointerEnter={() => setHovering(true)}
             onPointerLeave={() => setHovering(false)}
           >
-            <StoreWindow label={messages.landing.yourStore}>
+            <StoreWindow
+              label={messages.landing.yourStore}
+              // on wide screens the store takes whatever height the section has left
+              className="md:flex md:h-[clamp(180px,calc(85svh-28.8rem),560px)] md:flex-col"
+            >
               <div
                 className={cn(
-                  "transition-[filter] duration-500",
+                  "transition-[filter] duration-500 md:min-h-0 md:flex-1",
                   agent ? "grayscale-0" : "grayscale",
                 )}
               >
-                <div className="grid grid-cols-2 gap-4 p-5 sm:grid-cols-4 sm:gap-6 sm:p-8">
+                <div className="grid grid-cols-2 gap-4 p-5 sm:grid-cols-4 sm:gap-6 sm:p-8 md:h-full md:grid-rows-2 md:gap-[clamp(0.75rem,2svh,1.5rem)] md:p-[clamp(1rem,2.6svh,2rem)]">
                   {GRID.map((g) => (
-                    <ClayCard key={g.shape} shape={g.shape} tint={g.tint} />
+                    <ClayCard
+                      key={g.shape}
+                      shape={g.shape}
+                      tint={g.tint}
+                      className="md:flex md:min-h-0 md:flex-col"
+                      tileClassName="md:min-h-0 md:flex-1 md:aspect-auto md:[&>img]:object-contain"
+                    />
                   ))}
                 </div>
               </div>
@@ -358,7 +368,7 @@ const SwitchSection = () => {
 
         <Reveal delay={120}>
           <p
-            className="bzl-lead mx-auto mt-12 max-w-2xl transition-colors duration-500"
+            className="bzl-lead mx-auto mt-[3.5svh] max-w-4xl transition-colors duration-500 md:!text-[clamp(0.95rem,1.9svh,1.15rem)]"
             style={{ color: agent ? "rgba(255,255,255,0.9)" : "#6e6e73" }}
           >
             {messages.hero.pitchLong}

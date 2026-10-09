@@ -1,6 +1,5 @@
 import { useState } from "react";
 import type { ReactNode } from "react";
-import { Plus } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -43,9 +42,10 @@ const FeatureCard = ({
       onClick={() => setPinned((p) => !p)}
       className={cn(
         "group relative flex w-full flex-col rounded-[20px] p-4 text-left ring-1 transition-[background-color,box-shadow,transform] duration-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--bzl-orange)] sm:p-5",
+        "bg-white",
         open
-          ? "bg-[var(--bzl-orange-wash)] ring-[color-mix(in_oklab,var(--bzl-orange)_45%,transparent)] shadow-[0_22px_44px_-28px_rgba(236,119,9,0.55)]"
-          : "bg-white ring-[var(--bzl-border)] shadow-[0_16px_38px_-30px_rgba(28,24,20,0.35)]",
+          ? "-translate-y-0.5 ring-[color-mix(in_oklab,var(--bzl-orange)_28%,transparent)] shadow-[0_22px_44px_-28px_rgba(236,119,9,0.45)]"
+          : "ring-[var(--bzl-border)] shadow-[0_16px_38px_-30px_rgba(28,24,20,0.35)] hover:-translate-y-0.5",
         className,
       )}
       style={{ transitionTimingFunction: "var(--bzl-ease)" }}
@@ -61,18 +61,14 @@ const FeatureCard = ({
         >
           <Icon className="h-5 w-5" strokeWidth={2} />
         </span>
-        <span className="flex min-w-0 flex-1 flex-wrap items-center gap-2 text-[17px] font-bold leading-tight tracking-[-0.02em] text-[var(--bzl-fg)]">
-          {title}
-          {badge}
-        </span>
         <span
-          aria-hidden="true"
           className={cn(
-            "grid h-7 w-7 flex-shrink-0 place-items-center rounded-full text-[var(--bzl-faint)] transition-transform duration-500",
-            open && "rotate-45 text-[var(--bzl-orange-dark)]",
+            "flex min-w-0 flex-1 flex-wrap items-center gap-2 text-[17px] font-bold leading-tight tracking-[-0.02em] transition-colors duration-500",
+            open ? "text-[var(--bzl-orange-dark)]" : "text-[var(--bzl-fg)]",
           )}
         >
-          <Plus className="h-4 w-4" strokeWidth={2.4} />
+          {title}
+          {badge}
         </span>
       </span>
       {front && (

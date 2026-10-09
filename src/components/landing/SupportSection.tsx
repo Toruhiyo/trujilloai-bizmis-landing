@@ -83,7 +83,7 @@ const SupportChat = () => {
             <div className="h-4 w-14 rounded-md bg-[#d9d4cc]" />
             <div className="bzl-tile-line w-full" />
             <div className="bzl-tile-line w-3/4" />
-            <div className="mt-3 h-8 rounded-xl bg-[var(--bzl-fg)]/85" />
+            <div className="mt-3 h-8 rounded-xl bg-[color-mix(in_oklab,var(--bzl-fg)_85%,transparent)]" />
           </div>
         </div>
       </StoreWithWidget>
@@ -97,7 +97,7 @@ const CAPABILITY_ICONS = [Clock, BookOpenText, HeartHandshake];
 const SupportSection = () => {
   const s = useMessages().benefits.support;
   return (
-    <section className="bzl-section bg-[linear-gradient(180deg,#fff,#fbfaf8_25%,#fbfaf8_75%,#fff)]">
+    <section className="bzl-section bzl-screen bg-[linear-gradient(180deg,#fff,#fdf9f4_25%,#fdf9f4_75%,#fff)]">
       <div className="bzl-wrap">
         <div className="grid items-center gap-14 lg:grid-cols-2 lg:gap-20">
           <div>
@@ -105,17 +105,17 @@ const SupportSection = () => {
               <p className="bzl-kicker">{s.badge}</p>
             </Reveal>
             <Reveal delay={80}>
-              <h2 className="bzl-statement-sm mt-4">
+              <h2 className="bzl-statement-sm mt-3">
                 {s.titleLine1}
                 <br />
                 <span className="bzl-tail">{s.titleLine2}</span>
               </h2>
             </Reveal>
             <Reveal delay={160}>
-              <p className="bzl-lead mt-5 max-w-lg">{s.leadLong}</p>
+              <p className="bzl-lead mt-[2.2svh] max-w-lg">{s.leadLong}</p>
             </Reveal>
             <Reveal delay={240}>
-              <div className="mt-8 flex flex-wrap gap-2">
+              <div className="mt-[2.6svh] flex flex-wrap gap-2">
                 {[
                   s.outcomes.saveHours,
                   s.outcomes.betterReviews,
@@ -130,24 +130,20 @@ const SupportSection = () => {
                 ))}
               </div>
             </Reveal>
+            {/* its three capabilities, as cards: title up front, the detail on demand */}
+            <div className="mt-[3.2svh] grid max-w-lg items-start gap-2.5">
+              {s.capabilities.map((c, i) => (
+                <Reveal key={c.title} delay={300 + i * 90}>
+                  <FeatureCard icon={CAPABILITY_ICONS[i]} title={c.title} body={c.body} />
+                </Reveal>
+              ))}
+            </div>
           </div>
-          <Reveal delay={120} className="mx-auto w-full max-w-[560px]">
+          <Reveal delay={120} className="mx-auto w-full max-w-[min(560px,calc((100svh-9rem)*1.25))]">
             <SupportChat />
           </Reveal>
         </div>
 
-        <div className="mt-20 grid items-start gap-5 md:grid-cols-3">
-          {s.capabilities.map((c, i) => (
-            <Reveal key={c.title} delay={i * 110}>
-              <FeatureCard
-                icon={CAPABILITY_ICONS[i]}
-                title={c.title}
-                front={c.tagline}
-                body={c.body}
-              />
-            </Reveal>
-          ))}
-        </div>
       </div>
     </section>
   );

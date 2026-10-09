@@ -57,14 +57,16 @@ export const ClayCard = ({
   tint,
   picked,
   className,
+  tileClassName,
 }: {
   shape: ClayShape;
   tint?: keyof typeof TINT;
   picked?: boolean;
   className?: string;
+  tileClassName?: string;
 }) => (
   <div className={cn("space-y-2", className)}>
-    <ClayTile shape={shape} tint={tint} picked={picked} />
+    <ClayTile shape={shape} tint={tint} picked={picked} className={tileClassName} />
     <div className="bzl-tile-line w-3/4" />
     <div className="bzl-tile-line w-1/3" />
   </div>

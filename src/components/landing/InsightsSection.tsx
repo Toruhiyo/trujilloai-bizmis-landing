@@ -10,7 +10,7 @@ const ICONS = [PlayCircle, Tags, ChartNoAxesColumnIncreasing];
 const InsightsSection = () => {
   const ins = useMessages().benefits.insights;
   return (
-    <section className="bzl-section">
+    <section className="bzl-section bzl-screen">
       <div className="bzl-wrap grid items-center gap-14 lg:grid-cols-[0.85fr_1.15fr] lg:gap-20">
         <div>
           <Reveal>
@@ -20,9 +20,9 @@ const InsightsSection = () => {
             <h2 className="bzl-statement-sm mt-4">{ins.title}</h2>
           </Reveal>
           <Reveal delay={160}>
-            <p className="bzl-lead mt-5 max-w-lg">{ins.lead}</p>
+            <p className="bzl-lead mt-[2.2svh] max-w-lg">{ins.lead}</p>
           </Reveal>
-          <ul className="mt-8 grid items-start gap-3">
+          <ul className="mt-[3.2svh] grid max-w-lg items-start gap-2.5">
             {ins.features.map((f, i) => (
               <Reveal as="li" key={f.title} delay={220 + i * 90}>
                 <FeatureCard icon={ICONS[i]} title={f.title} body={f.body} />

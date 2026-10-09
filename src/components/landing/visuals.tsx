@@ -94,17 +94,23 @@ export const BundleVisual = () => {
           ) : undefined
         }
       >
-        <div className="flex items-center gap-4 p-6 pb-12 sm:gap-6 sm:p-8 sm:pb-14">
-          <ClayCard shape="sphere" picked className="w-1/2" />
-          <span className="text-2xl font-light text-[color-mix(in_oklab,var(--bzl-orange)_80%,#8a5a2b)]">
-            +
-          </span>
-          <ClayCard
-            shape="slab"
-            tint="warm"
-            picked={inView}
-            className="w-1/2"
-          />
+        {/* a product page: the pair on the left, the details on the right (where the widget floats) */}
+        <div className="grid grid-cols-[1.25fr_1fr] gap-5 p-5 pb-10 sm:gap-7 sm:p-7 sm:pb-12">
+          <div className="flex items-center gap-2 sm:gap-3">
+            <ClayCard shape="sphere" picked className="w-1/2" />
+            <span className="text-xl font-light text-[color-mix(in_oklab,var(--bzl-orange)_80%,#8a5a2b)]">
+              +
+            </span>
+            <ClayCard shape="slab" tint="warm" picked={inView} className="w-1/2" />
+          </div>
+          <div aria-hidden="true" className="space-y-2.5 pt-2">
+            <div className="bzl-tile-line h-3 w-4/5" />
+            <div className="bzl-tile-line w-2/5" />
+            <div className="bzl-tile-line mt-4 w-full" />
+            <div className="bzl-tile-line w-11/12" />
+            <div className="bzl-tile-line w-3/4" />
+            <div className="mt-4 h-7 w-3/5 rounded-full bg-[color-mix(in_oklab,var(--bzl-orange)_35%,#fff)]" />
+          </div>
         </div>
       </StoreWithWidget>
     </div>

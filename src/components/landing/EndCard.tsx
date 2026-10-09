@@ -42,7 +42,7 @@ const EndCard = () => {
   };
 
   return (
-    <section className="bzl-section relative overflow-hidden text-center">
+    <section className="bzl-section bzl-screen relative overflow-hidden text-center">
       <div
         aria-hidden="true"
         className="pointer-events-none absolute left-1/2 top-1/2 h-[680px] w-[980px] max-w-[150vw] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(closest-side,rgba(249,163,83,0.2),rgba(255,255,255,0))]"
@@ -50,7 +50,7 @@ const EndCard = () => {
       <div className="bzl-wrap relative">
         <Reveal>
           <p className="bzl-kicker">{ea.badge}</p>
-          <h2 className="mt-3 text-[clamp(2.8rem,7.4vw,5.8rem)] font-bold leading-[1.02] tracking-[-0.045em] text-black">
+          <h2 className="mt-3 text-[clamp(2.8rem,min(7.4vw,10svh),5.8rem)] font-bold leading-[1.02] tracking-[-0.045em] text-black">
             {ea.titleLead}{" "}
             <span className="text-[var(--bzl-orange-strong)]">
               {ea.titleHighlight}
@@ -62,7 +62,7 @@ const EndCard = () => {
         </Reveal>
 
         <Reveal delay={320}>
-          <ul className="mx-auto mt-12 grid max-w-4xl gap-x-10 gap-y-6 sm:grid-cols-3">
+          <ul className="mx-auto mt-[5svh] grid max-w-4xl gap-x-10 gap-y-6 sm:grid-cols-3">
             {ea.perks.map((perk) => (
               <li key={perk.title}>
                 <p className="flex items-center justify-center gap-2 text-lg font-semibold text-[var(--bzl-fg)]">
@@ -91,7 +91,7 @@ const EndCard = () => {
         </Reveal>
 
         <Reveal delay={440}>
-          <p className="bzl-script relative mx-auto mt-12 inline-block -rotate-[2.5deg] text-[clamp(2rem,3.6vw,2.8rem)] leading-none">
+          <p className="bzl-script relative mx-auto mt-[5svh] inline-block -rotate-[2.5deg] text-[clamp(2rem,3.6vw,2.8rem)] leading-none">
             {messages.landing.onlySpots}
             {/* the film's hand-drawn underline */}
             <svg
@@ -119,7 +119,7 @@ const EndCard = () => {
         </Reveal>
 
         <Reveal delay={540}>
-          <div className="mt-12 flex flex-wrap items-center justify-center gap-3">
+          <div className="mt-[5svh] flex flex-wrap items-center justify-center gap-3">
             <a
               href={BIZMIS_SHOPIFY_APP_LISTING_URL}
               target="_blank"

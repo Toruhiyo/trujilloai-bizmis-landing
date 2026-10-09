@@ -43,7 +43,7 @@
   font-weight: 700;
   letter-spacing: -0.035em;
   line-height: 1.04;
-  font-size: clamp(2.25rem, 5.6vw, 4.75rem);
+  font-size: clamp(2.25rem, min(5.6vw, 8.6svh), 4.75rem);
   color: var(--bzl-fg);
   text-wrap: balance;
 }
@@ -52,7 +52,7 @@
   font-weight: 700;
   letter-spacing: -0.03em;
   line-height: 1.08;
-  font-size: clamp(1.75rem, 3.6vw, 3rem);
+  font-size: clamp(1.75rem, min(3.6vw, 5.6svh), 3rem);
   color: var(--bzl-fg);
   text-wrap: balance;
 }
@@ -62,7 +62,7 @@
 }
 
 .bzl-lead {
-  font-size: clamp(1.0625rem, 1.5vw, 1.3125rem);
+  font-size: clamp(1rem, min(1.5vw, 2.35svh), 1.3125rem);
   line-height: 1.5;
   color: var(--bzl-muted);
   text-wrap: pretty;
@@ -819,4 +819,51 @@
 }
 @media (prefers-reduced-motion: reduce) {
   .bzl-read-chip { animation-duration: 0.01ms; opacity: 0; }
+}
+
+
+/* ── One screen per section (tablet and up, and tall enough to make sense) ──
+   .bzl-screen: the section fills the viewport under the fixed nav and centres
+   its content. .bzl-stack: a section of sub-benefits — its head (.bzl-head)
+   sticks under the nav and each .bzl-sub fills the space left below it
+   (--bzl-head is measured by useStickyHead). */
+.bzl { --bzl-nav: 4rem; }
+@media (min-width: 768px) and (min-height: 560px) {
+  .bzl .bzl-screen {
+    min-height: 100svh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding-top: calc(var(--bzl-nav) + clamp(1rem, 3.5svh, 3rem));
+    padding-bottom: clamp(1rem, 3.5svh, 3rem);
+  }
+  .bzl .bzl-stack { padding-top: 0; padding-bottom: clamp(1rem, 3svh, 2.5rem); }
+  .bzl .bzl-head {
+    position: sticky;
+    top: 0;
+    z-index: 30;
+    padding-top: calc(var(--bzl-nav) + clamp(0.75rem, 2.5svh, 2rem));
+    padding-bottom: clamp(0.75rem, 2svh, 1.5rem);
+    background: #fff;
+    /* full-bleed white behind the head, past the content column */
+    box-shadow: 0 0 0 100vmax #fff;
+    clip-path: inset(0 -100vmax -2rem);
+  }
+  /* a soft edge under the head, so content slides beneath it instead of being cut */
+  .bzl .bzl-head::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 100%;
+    height: 2rem;
+    background: linear-gradient(180deg, #fff, rgb(255 255 255 / 0));
+    pointer-events: none;
+  }
+  .bzl .bzl-sub {
+    min-height: calc(100svh - var(--bzl-head, 12rem));
+    display: grid;
+    align-content: center;
+    padding-block: clamp(0.75rem, 2.5svh, 2rem);
+  }
 }

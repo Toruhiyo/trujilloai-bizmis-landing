@@ -1,3 +1,4 @@
+import { useRef } from "react";
 import type { CSSProperties } from "react";
 import { AudioLines, UserRound } from "lucide-react";
 import { useMessages } from "@/i18n/LocaleProvider";
@@ -37,10 +38,33 @@ const Waveform = () => (
 const CustomizeSection = () => {
   const messages = useMessages();
   const m = messages.customization;
+  const section = useRef<HTMLElement>(null);
 
   return (
-    <section className="bzl-section">
-      <div className="bzl-wrap grid items-center gap-14 lg:grid-cols-[0.85fr_1.15fr] lg:gap-20">
+    <section ref={section} className="bzl-section bzl-screen relative overflow-hidden">
+      {/* the carousel's ambient light, in the current avatar's colour (driven by AvatarCarousel) */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0"
+        style={{ opacity: "var(--amb-glow, 0.6)" }}
+      >
+        {[
+          "right-[-8%] top-[-12%] h-[85%] w-[52%]",
+          "right-[22%] bottom-[-18%] h-[72%] w-[42%]",
+          "right-[2%] bottom-[2%] h-[60%] w-[34%]",
+        ].map((pos, k) => (
+          <div
+            key={pos}
+            className={`absolute rounded-full blur-3xl ${pos}`}
+            style={{
+              background:
+                "radial-gradient(closest-side, color-mix(in oklab, var(--amb-color, #f28c38) 78%, transparent), color-mix(in oklab, var(--amb-color, #f28c38) 22%, transparent) 55%, transparent 75%)",
+              transform: `translate(var(--amb-x${k + 1}, 0), var(--amb-y${k + 1}, 0)) scale(var(--amb-s${k + 1}, 1))`,
+            }}
+          />
+        ))}
+      </div>
+      <div className="bzl-wrap relative grid items-center gap-14 lg:grid-cols-[0.85fr_1.15fr] lg:gap-20">
         <div>
           <Reveal>
             <p className="bzl-kicker">{m.badge}</p>
@@ -81,7 +105,7 @@ const CustomizeSection = () => {
         </div>
 
         <Reveal delay={120}>
-          <AvatarCarousel avatars={LINEUP} />
+          <AvatarCarousel avatars={LINEUP} ambient={section} />
         </Reveal>
       </div>
     </section>
