@@ -365,7 +365,7 @@ html.is-promo-opening.is-promo-depart .promo-opening {
 }
 
 .promo-opening__choice-layer--hot {
-  color: var(--promo-orange-ink);
+  color: var(--promo-orange);
   transition: opacity 200ms linear, color 0ms linear;
 }
 
@@ -973,7 +973,7 @@ html.is-promo-opening.is-promo-depart .promo-opening {
 
 .promo-opening__agent {
   opacity: 0;
-  color: var(--promo-orange-ink);
+  color: var(--promo-orange);
   white-space: pre;
 }
 
@@ -5466,7 +5466,7 @@ html.is-promo-still .is-pose-choice:not(.is-settled):not(.is-reduced) .promo-mom
 }
 
 .promo-opening__word--sell {
-  color: var(--promo-orange-ink);
+  color: var(--promo-orange);
 }
 
 .promo-opening__see,
@@ -9029,6 +9029,22 @@ html.is-promo-still .promo-clip__product.is-compare::after {
   height: 100%;
 }
 
+/* v24b: the seas' verdict tints. A LOST card takes the pain grey; a SOLD card
+   (and a pain buyer) the warm Bizmis tint. Multiplied, so the card's own
+   detail reads through; the strength is painted from the sea's clock
+   (paintGlideStamp), so no transitions here. */
+.promo-opening .promo-glide.is-pain .promo-glide__veil {
+  background: #B4AFA7 !important;
+  box-shadow: none !important;
+  mix-blend-mode: multiply;
+}
+.promo-opening .promo-glide:not(.is-pain) .promo-glide__veil,
+.promo-opening .promo-glide.is-pain .promo-glide__cell.is-sold-tint .promo-glide__veil {
+  background: linear-gradient(165deg, color-mix(in srgb, var(--bizmis-primary) 55%, #fff) 0%, color-mix(in srgb, var(--bizmis-primary) 85%, #fff) 100%) !important;
+  box-shadow: none !important;
+  mix-blend-mode: multiply;
+}
+
 .promo-opening.is-wash-covered .promo-glide__sheet {
   visibility: hidden;
 }
@@ -9687,7 +9703,7 @@ html.is-promo-still .promo-clip__product.is-compare::after {
   font-size: clamp(2.55rem, 4.4vw, 3.25rem);
   letter-spacing: 0.01em;
   line-height: 1.15;
-  color: var(--promo-orange-ink);
+  color: var(--promo-orange);
   transform: rotate(-1.5deg);
   white-space: nowrap;
 }
@@ -9721,7 +9737,7 @@ html.is-promo-still .promo-clip__product.is-compare::after {
   border: 2px solid var(--bizmis-primary);
   border-radius: 9px;
   background: #fff;
-  color: var(--promo-orange-ink);
+  color: var(--promo-orange);
   font-family: var(--font-heading);
   font-size: 1.02rem;
   font-weight: 500;
@@ -10869,7 +10885,7 @@ html.is-promo-final .promo-vo-debug {
 }
 
 .promo-opening__slide.is-final .promo-opening__slide-sector {
-  color: var(--promo-orange-ink) !important;
+  color: var(--promo-orange) !important;
 }
 
 /* Cross-sell pair: a clear gap, and a large plus at its exact middle. */
@@ -10951,7 +10967,7 @@ html.is-promo-final .promo-vo-debug {
 
 /* v2: the reveal's last word is Bizmis orange (the landing's own line). */
 .promo-opening__word--hot {
-  color: var(--promo-orange-ink);
+  color: var(--promo-orange);
 }
 
 /* v2: the shopper speaks the doubt: a mic and live bars over the composer's send button. */
@@ -11027,7 +11043,7 @@ html.is-promo-final .promo-vo-debug {
 }
 .promo-pitch-tag__arrow,
 .promo-pitch-tag__to {
-  color: var(--promo-orange-ink);
+  color: var(--promo-orange);
 }
 
 /* v3: the pitch chapter line above the window. The pain in grey is struck
@@ -11075,7 +11091,7 @@ html.is-promo-final .promo-vo-debug {
   transition: width 420ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 .promo-chapter__to {
-  color: var(--promo-orange-ink);
+  color: var(--promo-orange);
   opacity: 0;
   transition: opacity 360ms ease 520ms;
 }
@@ -11230,7 +11246,7 @@ html.is-promo-final .promo-vo-debug {
   inset: 0;
   display: grid;
   place-items: center;
-  color: var(--promo-orange-ink);
+  color: var(--promo-orange);
   font-family: var(--font-heading);
   font-weight: 700;
   letter-spacing: -0.04em;
@@ -11697,7 +11713,7 @@ html.is-promo-final .promo-vo-debug {
 
 /* v8: "Sales agent" charges up through the line; the flip lands like a hit. */
 .promo-opening__choice--right { text-shadow: 0 0 calc(var(--switch-charge, 0) * 22px) color-mix(in srgb, var(--bizmis-primary) calc(var(--switch-charge, 0) * 90%), transparent); }
-.promo-opening__choice--right .promo-opening__choice-layer--idle { color: color-mix(in srgb, var(--promo-orange-ink) calc(var(--switch-charge, 0) * 70%), var(--ad-ink-3)); }
+.promo-opening__choice--right .promo-opening__choice-layer--idle { color: color-mix(in srgb, var(--promo-orange) calc(var(--switch-charge, 0) * 70%), var(--ad-ink-3)); }
 .promo-opening.is-charged:not(.is-on) .promo-opening__knob { animation: promo-knob-tremble 90ms linear infinite alternate; }
 @keyframes promo-knob-tremble { from { translate: -1.5px 0; } to { translate: 1.5px 0; } }
 .promo-flippop i { display: none; }
@@ -12712,9 +12728,9 @@ html.is-promo-yours .promo-reel__yours-widget > [data-promo-widget] { opacity: 1
 .promo-sync__fill { position: absolute; inset: 0; border-radius: inherit; opacity: 0; background: linear-gradient(180deg, #F9A353 0%, #F28C38 100%); }
 .promo-sync__gloss { position: absolute; inset: 0; z-index: 3; border-radius: inherit; background: #F28C38; opacity: 0; }
 .promo-sync__face { position: absolute; left: 50%; top: 50%; z-index: 2; translate: -50% -50%; display: flex; align-items: center; gap: 1.5cqh; white-space: nowrap;
-  font-size: 4.6cqh; font-weight: 600; letter-spacing: -0.02em; line-height: 1; color: var(--promo-orange-ink); }
+  font-size: 4.6cqh; font-weight: 600; letter-spacing: -0.02em; line-height: 1; color: var(--promo-orange); }
 .promo-sync__face.is-done { opacity: 0; gap: 1.3cqh; color: var(--ad-ink); }
-.promo-sync__bag { flex: none; width: 4.8cqh; height: 4.8cqh; margin-top: -0.35cqh; fill: #F28C38; overflow: visible; }
+.promo-sync__bag { flex: none; width: 4.8cqh; height: 4.8cqh; margin-top: -0.35cqh; fill: var(--promo-orange); overflow: visible; }
 .promo-sync__disc { flex: none; display: grid; place-items: center; width: 4.4cqh; height: 4.4cqh; border-radius: 50%; background: var(--bizmis-primary); }
 .promo-sync__disc svg { width: 64%; height: 64%; fill: none; stroke: #fff; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
 .promo-sync__progress { position: absolute; left: 50%; top: 50%; z-index: 2; width: 8.4cqh; height: 8.4cqh; margin: -4.2cqh 0 0 -4.2cqh; opacity: 0; fill: none; stroke-width: 3; stroke-linecap: round; }
@@ -12882,7 +12898,7 @@ html.is-promo-yours .promo-reel__yours-widget > [data-promo-widget] { opacity: 1
   padding: 0.2em 0.4em !important; font-size: 1.45vw; font-weight: 600; }
 .promo-ea-pills__row { gap: 2.2vw; }
 .promo-ea-pills .promo-ea-pill__check { width: 1.1em; height: 1.1em; stroke-width: 2.2; }
-.promo-ea-pills .promo-ea-pill.is-scarce { color: var(--promo-orange-ink) !important; font-weight: 700; font-size: 1.6vw; letter-spacing: -0.01em; }
+.promo-ea-pills .promo-ea-pill.is-scarce { color: var(--promo-orange) !important; font-weight: 700; font-size: 1.6vw; letter-spacing: -0.01em; }
 
 /* v11: macOS pointer */
 .promo-mac-pointer path { fill: #111 !important; stroke: #fff; stroke-width: 1.35; stroke-linejoin: round; paint-order: stroke; }
@@ -12988,7 +13004,7 @@ html.is-promo-yours .promo-reel__yours-widget > [data-promo-widget] { opacity: 1
 .promo-switch-title__mark { color: var(--bizmis-primary); width: 0.85em; height: 0.85em; }
 .promo-switch-online { position: absolute; z-index: 3; translate: -50% -50%; margin: 0; white-space: nowrap; clip-path: inset(-45% 100% -45% -10%);
   font-family: 'Caveat', cursive; font-weight: 700; font-size: 2.6vw; color: color-mix(in srgb, var(--ad-ink) 70%, transparent); rotate: -2deg; }
-.promo-switch-online b { color: var(--promo-orange-ink); font-weight: 700; }
+.promo-switch-online b { color: var(--promo-orange); font-weight: 700; }
 
 /* ===== v23 switch: "In a physical store" and its three moments read as one centred block (a comfortable gap, not touching) ===== */
 .promo-switch-entry { top: 41.5%; }
@@ -12997,19 +13013,26 @@ html.is-promo-yours .promo-reel__yours-widget > [data-promo-widget] { opacity: 1
 .promo-sent-bubble { position: absolute; z-index: 10003; box-sizing: border-box; margin: 0; pointer-events: none; transform-origin: 50% 50%;
   background: var(--bizmis-primary); color: #fff; font-weight: 400; line-height: 1.625; width: max-content; white-space: normal; overflow-wrap: break-word; }
 
-/* ===== v23 captions: the agent's words take the glowing voice look; the shopper's voice goes neutral ===== */
-.promo-caption.is-agent { isolation: isolate; font-size: 27px; padding: 0.5em 1em; border-radius: 0.95em; border-color: transparent;
+/* ===== v24 captions: the agent speaks in a Siri-like panel: calm frosted white glass, a hairline
+   edge that shimmers warm-to-cool in low-saturation pastels (turned slowly by --glow-a, stepped),
+   a faint matching bloom, crisp ink words revealed gently (per-word fade, frame-stepped in
+   playFilmCaption). No brand-orange ring. The shopper's pill stays neutral and italic. ===== */
+.promo-caption.is-agent { --siri: conic-gradient(from var(--glow-a, 200deg), #F6C6A2, #EFC0D3, #CEC6EE, #B3D0EE, #C6E2D6, #F3DDB6, #F6C6A2);
+  isolation: isolate; font-size: 27px; padding: 0.52em 1.05em; border-radius: 1.05em; border-color: transparent;
   background: transparent; background-image: none; -webkit-backdrop-filter: none; backdrop-filter: none;
-  box-shadow: 0 0.5em 1.25em -0.75em rgba(28, 24, 20, 0.3); }
-.promo-caption.is-agent::before { content: ''; position: absolute; inset: -0.06em; border-radius: inherit; z-index: -1; opacity: 0.8;
-  background: conic-gradient(from var(--glow-a, 200deg), #F28C38, #FFB46B, #FFE0BF, #F9A353, #FF8A5C, #FFD1A1, #F28C38); }
-.promo-caption.is-agent::after { content: ''; position: absolute; inset: 0; border-radius: inherit; z-index: -1; background: rgba(255, 255, 255, 0.88);
-  -webkit-backdrop-filter: blur(0.75em) saturate(1.6); backdrop-filter: blur(0.75em) saturate(1.6); box-shadow: inset 0 0.04em 0 #fff; }
-.promo-caption__halo { position: absolute; inset: -0.22em; border-radius: 1.1em; z-index: -2; pointer-events: none; opacity: 0.38; filter: blur(0.52em);
-  background: conic-gradient(from var(--glow-a, 200deg), #F28C38, #FFB46B, #FFE0BF, #F9A353, #FF8A5C, #FFD1A1, #F28C38); }
-.promo-caption.is-agent .promo-caption__text { font-family: var(--font-heading); font-weight: 500; letter-spacing: -0.012em; color: var(--ad-ink); }
+  box-shadow: 0 0.6em 1.5em -0.9em rgba(28, 24, 20, 0.22), 0 0 0 0.5px rgba(43, 37, 32, 0.05); }
+.promo-caption.is-agent::before { content: ''; position: absolute; inset: 0; border-radius: inherit; z-index: 1; pointer-events: none; opacity: 0.9;
+  padding: 1.5px; background: var(--siri);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor;
+  mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0); }
+.promo-caption.is-agent::after { content: ''; position: absolute; inset: 0; border-radius: inherit; z-index: -1;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.86) 0%, rgba(255, 255, 255, 0.74) 100%);
+  -webkit-backdrop-filter: blur(1.1em) saturate(1.1); backdrop-filter: blur(1.1em) saturate(1.1); box-shadow: inset 0 0.05em 0 rgba(255, 255, 255, 0.95); }
+.promo-caption__halo { position: absolute; inset: -0.3em; border-radius: 1.3em; z-index: -2; pointer-events: none; opacity: 0.22; filter: blur(0.75em);
+  background: conic-gradient(from var(--glow-a, 200deg), #F6C6A2, #EFC0D3, #CEC6EE, #B3D0EE, #C6E2D6, #F3DDB6, #F6C6A2); }
+.promo-caption.is-agent .promo-caption__text { position: relative; z-index: 2; font-family: var(--font-heading); font-weight: 500; letter-spacing: -0.012em; color: var(--ad-ink); }
 .promo-caption.is-agent .promo-caption__word { padding: 0.05em 0.1em; font-weight: 500; color: var(--ad-ink); opacity: 1; }
-.promo-caption.is-agent .promo-caption__word.is-upcoming { opacity: 0.32; }
+.promo-caption.is-agent .promo-caption__word.is-upcoming { opacity: 0.3; }
 /* the shopper's spoken words: a plain frosted pill (the widget's subtitle look), grey words turning ink, no brand colour */
 .promo-reel__said.is-voice.is-shopper { box-shadow: 0 2.2cqh 4.4cqh -2.4cqh rgba(28, 24, 20, 0.26) !important; font-family: var(--font-heading); }
 .promo-reel__said.is-voice.is-shopper::before { inset: -1px !important; opacity: 1 !important; filter: none !important; background: rgba(255, 255, 255, 0.85) !important;
@@ -13059,7 +13082,7 @@ html.is-promo-yours .promo-reel__yours-widget > [data-promo-widget] { opacity: 1
   letter-spacing: 0.01em; padding-top: 0.9em !important; position: relative; }
 .promo-ea-pills .promo-ea-pill.is-scarce::before { content: ''; position: absolute; left: 50%; top: 0; width: 2.4em; height: 1px; translate: -50% 0;
   background: color-mix(in srgb, var(--ad-ink) 18%, transparent); }
-.promo-ea-pills .promo-ea-pill.is-scarce b { color: var(--promo-orange-ink); font-weight: 700; }
+.promo-ea-pills .promo-ea-pill.is-scarce b { color: var(--promo-orange); font-weight: 700; }
 .promo-ea-pills { gap: 1.1vw !important; }
 
 /* v12d QA: the handwritten line reads; the claims' week reads */
@@ -13146,11 +13169,11 @@ html.is-promo-yours .promo-reel__yours-widget > [data-promo-widget] { opacity: 1
 .promo-reel.is-pages { transition: none; }
 
 /* ===== v13 CTA (S1): "Only 50 spots!" handwritten in Bizmis orange, a hand-drawn underline ===== */
-.promo-ea-hand { position: relative; margin: 0.4vw 0 0; opacity: 0; font-family: 'Caveat', cursive; font-weight: 700; font-size: 3.1vw; line-height: 1; color: var(--promo-orange-ink);
+.promo-ea-hand { position: relative; margin: 0.4vw 0 0; opacity: 0; font-family: 'Caveat', cursive; font-weight: 700; font-size: 3.1vw; line-height: 1; color: var(--promo-orange);
   rotate: -2.5deg; padding: 0 0.15em 0.32em; }
 .promo-ea-hand__text { display: inline-block; padding-right: 0.12em; clip-path: inset(-30% 100% -40% -10%); }
 .promo-ea-hand__line { position: absolute; left: -2%; right: -4%; bottom: 0; width: 106%; height: 0.36em; overflow: visible; }
-.promo-ea-hand__line path { fill: none; stroke: var(--promo-orange-strong); stroke-width: 3.2; stroke-linecap: round; vector-effect: non-scaling-stroke; }
+.promo-ea-hand__line path { fill: none; stroke: var(--promo-orange); stroke-width: 3.2; stroke-linecap: round; vector-effect: non-scaling-stroke; }
 .promo-ea-hand__line path + path { stroke-width: 2.4; opacity: 0.85; }
 
 /* ===== v13 CTA closing: a warm Bizmis-orange light blooms behind "Install now" on the final chord ===== */
@@ -13246,3 +13269,22 @@ html.is-promo-yours .promo-reel__yours-widget > [data-promo-widget] { opacity: 1
 .promo-pain__chat.is-human .promo-pain__composer { background: #fff !important; border-color: transparent !important; box-shadow: 0 0.3em 0.8em -0.45em rgba(70, 50, 30, 0.3); }
 .promo-pain__chat.is-human .promo-pain__send { background: #6E9C84 !important; color: #fff !important; }
 .promo-opening__store.is-phone .promo-pain__chat.is-human .promo-pain__composer { margin-bottom: 2.6cqi; }
+
+/* ===== v24 rewind: clean and unmistakable. The pain races backwards (pre-rendered, clean
+   shutter smear) inside a floating "player" frame on a soft warm field; a frosted ◀◀ disc and a
+   scrubber whose playhead runs back with the tape. All motion is frame-stepped from JS
+   (driveRewindChrome); no VHS bands, grain or OSD. ===== */
+.promo-rewind.is-cover, .promo-rewind { background: radial-gradient(ellipse 80% 70% at 50% 46%, #f6f3ef 0%, #e9e4de 100%); }
+.promo-rewind__screen { position: absolute; inset: 0; overflow: hidden; background: #fff; transform-origin: 50% 46%; }
+.promo-rewind .promo-rewind__glyph { position: relative; left: auto; top: auto; flex: none; display: grid; place-items: center;
+  width: 4.8cqh; height: 4.8cqh; border-radius: 50%; opacity: 1; filter: none;
+  background: rgba(255, 255, 255, 0.78); -webkit-backdrop-filter: blur(1.6cqh) saturate(1.15); backdrop-filter: blur(1.6cqh) saturate(1.15);
+  box-shadow: 0 0.6cqh 1.6cqh -0.6cqh rgba(28, 24, 20, 0.24), inset 0 0.1cqh 0 rgba(255, 255, 255, 0.95), 0 0 0 1px rgba(28, 24, 20, 0.06); }
+.promo-rewind .promo-rewind__glyph svg { width: 54%; height: 54%; margin-left: -6%; fill: var(--ad-ink); }
+.promo-rewind__scrub { position: absolute; left: 50%; bottom: 2.6%; translate: -50% 0; display: flex; align-items: center; gap: 1.6cqh; width: 46cqw; opacity: 0;
+  font-family: var(--font-heading); }
+.promo-rewind__time { flex: none; min-width: 4.6ch; font-size: 2.1cqh; font-weight: 600; letter-spacing: 0.01em; font-variant-numeric: tabular-nums; color: var(--ad-ink-2, #5c5249); }
+.promo-rewind__track { position: relative; flex: 1; height: 0.5cqh; border-radius: 99px; background: rgba(43, 37, 32, 0.14); }
+.promo-rewind__track i { position: absolute; inset: 0; border-radius: inherit; background: rgba(43, 37, 32, 0.62); transform-origin: 0 50%; }
+.promo-rewind__track b { position: absolute; top: 50%; width: 1.7cqh; height: 1.7cqh; translate: -50% -50%; border-radius: 50%; background: #fff;
+  box-shadow: 0 0.3cqh 0.9cqh rgba(28, 24, 20, 0.3), 0 0 0 1px rgba(28, 24, 20, 0.08); }

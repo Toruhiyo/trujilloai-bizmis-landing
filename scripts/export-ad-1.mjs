@@ -208,7 +208,7 @@ async function bootPage(browser, options) {
     reducedMotion: 'no-preference',
   });
   const page = await context.newPage();
-  page.setDefaultTimeout(90000);
+  page.setDefaultTimeout(Number(process.env.EXPORT_TIMEOUT_MS) || 90000);   // a busy machine needs longer
   await page.goto(filmUrl(options.url, options.cta, options.part), { waitUntil: 'domcontentloaded' });
   if (options.beginFrame) {
     const client = await context.newCDPSession(page);

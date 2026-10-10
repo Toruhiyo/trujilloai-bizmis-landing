@@ -21,14 +21,14 @@
       aside: 'Only 50 spots',
       terms: ['Generous free credits', '50% off upgrades', 'Shape the roadmap'],
       // v24: the short take ("Install now to join Early Access! Generous free credits, fifty percent off
-      // upgrades, and you shape the roadmap. Only fifty spots. Secure yours.", 10.5 s). Each mark is a phrase
+      // upgrades, and you shape the roadmap. Only fifty spots. Secure yours by installing now.", 11.38 s). Each mark is a phrase
       // of the take's alignment; its offset (ms) puts the beat on the word as measured by STT (scribe_v1:
-      // Generous 2.60, 50% 4.26, shape 6.30, Only 7.56, Secure 9.22, yours ends 10.06), each pill rising 80 ms ahead
+      // Generous 2.60, 50% 4.26, shape 6.30, Only 7.60, Secure 9.08, now ends 10.92), each pill rising 80 ms ahead
       termMarks: ['Generous', 'fifty percent', 'shape'],
       termOffsets: [-40, 100, -20],
-      handMark: ['Only fifty', 'start', -80],   // the pen starts 120 ms before "Only"
-      heroMark: ['Secure yours', 'start', -240],
-      closeMark: ['Secure yours', 'end', -20],   // the closing lockup starts after "Secure yours."
+      handMark: ['Only fifty', 'start', -307],   // the pen starts 120 ms before "Only" (the alignment runs 187 ms late here)
+      heroMark: ['Secure yours', 'start', -540],   // 260 ms before "Secure" (the alignment runs 280 ms late here)
+      closeMark: ['installing now', 'end', -40],   // the closing lockup starts after "...by installing now."
       find: 'Find Bizmis on the Shopify App Store',
       pills: true,   // v11: the three benefits as glass pills, then "Only 50 spots" (v24: the card is exactly what the VO says)
       shopify: true,
@@ -115,6 +115,9 @@
   const PROMO_REEL_TURN_DEG = 34;   // v11b: how far a neighbouring store turns away in the 3D carousel
   const PROMO_REEL_DEPTH = 0.22;   // how far back it sits, x canvas width
   const PROMO_REEL_TINT_MS = 700;   // the ambient light's glide into a store's colour   // the conveyor moves on while a store's take is still fading out
+  // v24 light law (operator): every card window [cut_i, cut_i+1] on the cuts' own clock: the light peaks mid-card
+  // (still), dims to its trough at each cut (where the motion peaks) and crossfades colour through the trough
+  const PROMO_REEL_LAW = { edgeMs: 520, floor: 0.12, glowLo: 0.26, glowHi: 1, push: 0.07, slide: 0.06, homeMs: 1300 };
   const PROMO_PASS_FAST_MS = 2600;
   const PROMO_PASS_READ_MS = 2000;
   const PROMO_PASS_STEP_MS = 1400;
@@ -153,7 +156,7 @@
   // close's hit on the score's final hit. Every store cut sits on one of the song's own claps.
   // v23: reel 119.72 -> 119.45 (the sync scene now ends 0.5 s after its take and hands straight over),
   // final 168.82 -> 166.40 (the reel is 2.15 s shorter): both to be re-snapped by the music re-fit
-  const PROMO_FILM_ANCHORS = { burst: 50.376, reel: 122.976, final: 159.194 };   // v23c: the v22 song, -1 stores bar, +1 pitch bar (music 107.044-109.180 repeated), -5 closing bars (145.624-156.340), score at offset +0.25
+  const PROMO_FILM_ANCHORS = { burst: 50.376, reel: 122.976, final: 161.342 };   // v24: the v22 song, -1 stores bar, +1 pitch bar (music 107.044-109.180 repeated), -4 closing bars (144.022-152.590), score at offset +0.25
   // v23: from the reel start (s): [0] the tunnel lands on hero 1; [1..3] heroes 2..4 (each window = its line + 0.1 s);
   // [4..21] the run's 18 cards, one accelerating ladder (quick stores 1.0 / 0.8 / 0.62 / 0.55 s, their voices clipped
   // with a short fade); [22] "Your store". The music re-fit may snap any of these to a clap; the ladder reads its
@@ -184,7 +187,7 @@
     { scene: 'sync', id: 't-sync', line: "It all takes just one click. And your whole store stays in sync... automatically." },
     { scene: 'stores', id: 't-stores', line: 'Whatever your store sells... your Bizmis agent sells it.' },   // v18: to the merchant (the reel shows devices and languages)
     { scene: 'end', id: 'see-it', line: 'See it in action.', cta: 'demo' },
-    { scene: 'end', id: 't-ea', line: 'Install now to join Early Access! Generous free credits, fifty percent off upgrades, and you shape the roadmap. Only fifty spots. Secure yours.', cta: 'ea' },   // v24: the short take
+    { scene: 'end', id: 't-ea', line: 'Install now to join Early Access! Generous free credits, fifty percent off upgrades, and you shape the roadmap. Only fifty spots. Secure yours by installing now.', cta: 'ea' },   // v24: the short take
     { scene: 'end', id: 'install-shopify', line: 'Install it on Shopify.', cta: 'install' },
   ];
   function ensureInviteFont() {
@@ -450,9 +453,22 @@
   const PROMO_XSELL_HOLD_MS = 450;
   const PROMO_XSELL_LAYOUT_MS = 420;
   const PROMO_XSELL_FLY_MS = 700;
-  const PROMO_REWIND_VIDEO = '/promo/rewind/pain-rewind.mp4';
+  // v24: a clean, unmistakable rewind (scripts/render-vhs-rewind.py --clean): the pain races
+  // backwards and settles on the first store frame by SCRUB_MS; the DOM adds the shrinking
+  // "player" frame, the ◀◀ glyph and a scrubber whose playhead runs back with the tape.
+  const PROMO_REWIND_VIDEO = '/promo/rewind/pain-rewind-clean.mp4';
   const PROMO_REWIND_MS = 1600;
   const PROMO_REWIND_REVEAL_MS = 200;
+  const PROMO_REWIND_SCRUB = { from: 58.3, to: 1.2, ms: 1300 };   // tape seconds: MUST match the clip's --from/--to/--scrub
+  // the clip's tape speed (spin-up, run, slow-down): MUST match ease_clean() in the render script
+  function promoRewindEase(u) {
+    const A = 0.14; const D = 0.34; const V = 1 / (A / 2 + (1 - A - D) + D / 2);
+    if (u <= 0) return 0;
+    if (u >= 1) return 1;
+    if (u < A) return V * u * u / (2 * A);
+    if (u < 1 - D) return V * (A / 2 + (u - A));
+    return 1 - V * (1 - u) * (1 - u) / (2 * D);
+  }
   const PROMO_INSTALL_CARD_MS = 650;
   const PROMO_INSTALL_AIM_MS = 520;
   const PROMO_INSTALL_RING_MS = 460;
@@ -1244,14 +1260,16 @@
     return (h >>> 0) / 4294967296;
   }
 
-  // Each card stamps at a random point inside its own time on screen, so
-  // cards that enter together still land apart, and a fast card still lands
-  // before it leaves the frame.
+  // v24b: a card stamps just after it comes into view, so the verdicts keep
+  // pace with the camera (accelerating with it) and there is never a stretch
+  // of unstamped cards. The cards already on screen when the glide starts
+  // ripple through over the slow first second instead of all at once.
   function glideStampAt(cell, entry, exit, mode) {
     const u = glideHashUnit(cell.row, cell.col, mode === 'pitch' ? 71 : 29);
+    const ripple = glideEventStart() + 120 + 1250 * u;
+    if (entry <= glideEventStart() + 1) return ripple;
     const dwell = Math.max(120, exit - entry);
-    const offset = Math.min(dwell * (0.08 + 0.5 * u), 180 + 2600 * u);
-    return entry + offset;
+    return Math.max(Math.min(ripple, entry + 120), entry + Math.min(dwell * (0.01 + 0.05 * u), 20 + 140 * u));
   }
 
   function glideKeepsStamp(cell, mode) {
@@ -1265,14 +1283,15 @@
     return mode === 'pain' && glideHashUnit(cell.row, cell.col, 211) < PROMO_SALES_BAR.painShare;
   }
 
+  // v24b: "in view" = the card's leading edge has come into the frame (an
+  // eighth of it), so a card takes its verdict as it slides in, at the pace
+  // the camera brings it, not once its centre is well inside
   function glideMiddle(cell, cam, unit, frame) {
     const screen = glideCellScreen(cell, cam, unit, frame);
-    const insetX = frame.width * 0.05;
-    const insetY = frame.height * 0.06;
-    return screen.cx > insetX
-      && screen.cx < frame.width - insetX
-      && screen.cy > insetY
-      && screen.cy < frame.height - insetY;
+    return screen.x + screen.w * 0.12 < frame.width
+      && screen.x + screen.w * 0.88 > 0
+      && screen.y + screen.h * 0.12 < frame.height
+      && screen.y + screen.h * 0.88 > 0;
   }
 
   function glideMiddleAt(cell, frame, mode, timeMs) {
@@ -1328,7 +1347,8 @@
     for (let time = glideEventStart(); time < end; time += PROMO_GLIDE.stepMs) {
       const view = glideCells(time, frame, mode);
       view.cells.forEach((cell) => {
-        if (seen.has(cell.key) || !glideKeepsStamp(cell, mode)) return;
+        const sells = glideSells(cell, mode);   // v24b: the pain's buyers turn warm (no LOST)
+        if (seen.has(cell.key) || (!sells && !glideKeepsStamp(cell, mode))) return;
         if (!glideMiddle(cell, view.span.cam, view.span.unit, frame)) return;
         seen.add(cell.key);
         const entry = glideMiddleEntry(cell, frame, mode, time) ?? time;
@@ -1338,6 +1358,7 @@
           key: cell.key,
           row: cell.row,
           col: cell.col,
+          sold: sells || undefined,
         });
       });
     }
@@ -1469,7 +1490,7 @@
         const stamped = stamp != null && stamp <= t0 + 250;   // stamped, or stamping as its mark lifts off
         const fit = pitch
           ? (hit ? stamped : !stamped)
-          : (hit ? glideSells(cell, 'pain') : stamped);
+          : (hit ? glideSells(cell, 'pain') : stamped && !glideSells(cell, 'pain'));
         picks.push({ cell, screen, fit });
       });
       const fits = picks.filter((pick) => pick.fit);
@@ -2576,6 +2597,25 @@
     });
   }
 
+  // v24 reel light law: where time t (ms) sits in one card window [a, b]. edge: 0 at both cuts, 1 past edgeMs
+  // (sin^2, its half-width min(len / 2, edgeMs): a 0.12 s strobe window is one pure sin^2 bell, a 3 s hero a long
+  // bright plateau); bell = edge with a gentle peak at the window's centre (the light). go: the motion's progress
+  // 0..1 across the window, its speed (floor + 1 - edge) / norm: fastest at the cuts, near-still mid-card.
+  function promoReelPhase(t, a, b, edgeMs, floor) {
+    const len = Math.max(1, b - a);
+    const x = Math.min(len, Math.max(0, t - a));
+    const u = x / len;
+    const h = Math.min(len / 2, edgeMs);
+    const d = Math.min(x, len - x);
+    const edge = d >= h ? 1 : Math.sin((Math.PI / 2) * (d / h)) ** 2;
+    const g = (s) => s / 2 + (h / (2 * Math.PI)) * Math.sin((Math.PI * s) / h);   // the integral of cos^2 over one edge
+    // the floor (never frozen) dips to half at the centre, so the stillest moment is exactly mid-card
+    const f = (s) => floor * (s - (0.5 * len / Math.PI) * (1 - Math.cos((Math.PI * s) / len)));
+    const norm = f(len) + h;
+    const go = (f(x) + (x <= h ? g(x) : (x < len - h ? h / 2 : h - g(len - x)))) / norm;
+    return { u, x, len, h, edge, bell: edge * (0.86 + 0.14 * Math.sin(Math.PI * u)), go, speed: (floor * (1 - 0.5 * Math.sin(Math.PI * u)) + 1 - edge) / norm };
+  }
+
   // One device look for the whole film: thin frosted-glass frames (translucent
   // white rim, hairline edge, inner highlight, soft shadow), never a dark
   // contour (operator). Sizes are the close-up's; cards scale down.
@@ -2635,22 +2675,52 @@
     'tonewood': { device: 'tablet', color: '#8E2A3A', video: '/promo/stores/reel/v23/tonewood-tablet-home.mp4', img: '/promo/stores/reel/v23/tonewood-tablet-home.jpg' },
     'saltline': { device: 'desktop', color: '#14A0B2', video: '/promo/stores/reel/v23/saltline-desktop-home.mp4', img: '/promo/stores/reel/v23/saltline-desktop-home.jpg' },
   };
-  // the run's cards (skeleton slots 0..4 in order, then the three spares on the run's last flashes)
-  const PROMO_REEL_CARDS = ['fetch-and-fern', 'little-timber', 'outsole', 'copperleaf', 'tonewood', 'ridgeline-supply', 'inkwell', 'spokehaus'].map((slug) => ({ slug, ...PROMO_REEL_STORES_V23[slug] }));
+  // v24: 22 unique demo stores, no brand twice in the reel, none of the 4 heroes' or the 4 quick stores' brands
+  // (public/promo/stores/reel/v24/manifest.json): 3.2 s theme-style home-page loops (never the catalog), the jpg is each one's poster.
+  // Colours follow a plan (tmp/demo-stores-v24/_plan/colour-plan.json): the tunnel in light, fresh tones; the run in saturated
+  // jewel tones, pinks alternating with deep cools, landing on Your store orange (every neighbour >= 35 CIEDE2000 apart).
+  const PROMO_REEL_STORES_V24 = {
+    'halcyon-optics': { device: 'desktop', color: '#C8B6F0', video: '/promo/stores/reel/v24/halcyon-optics-desktop-home.mp4', img: '/promo/stores/reel/v24/halcyon-optics-desktop-home.jpg' },
+    'kumo-tea': { device: 'phone', color: '#5BC76B', video: '/promo/stores/reel/v24/kumo-tea-phone-home.mp4', img: '/promo/stores/reel/v24/kumo-tea-phone-home.jpg' },
+    'sora-ceramics': { device: 'tablet', color: '#B07A9A', video: '/promo/stores/reel/v24/sora-ceramics-tablet-home.mp4', img: '/promo/stores/reel/v24/sora-ceramics-tablet-home.jpg' },
+    'powderline': { device: 'desktop', color: '#9ED8E8', video: '/promo/stores/reel/v24/powderline-desktop-home.mp4', img: '/promo/stores/reel/v24/powderline-desktop-home.jpg' },
+    'tidewater': { device: 'phone', color: '#F2705A', video: '/promo/stores/reel/v24/tidewater-phone-home.mp4', img: '/promo/stores/reel/v24/tidewater-phone-home.jpg' },
+    'maison-cacao': { device: 'desktop', color: '#2BBFA4', video: '/promo/stores/reel/v24/maison-cacao-desktop-home.mp4', img: '/promo/stores/reel/v24/maison-cacao-desktop-home.jpg' },
+    'liora': { device: 'tablet', color: '#E597A8', video: '/promo/stores/reel/v24/liora-tablet-home.mp4', img: '/promo/stores/reel/v24/liora-tablet-home.jpg' },
+    'grindline': { device: 'phone', color: '#1A7FC4', video: '/promo/stores/reel/v24/grindline-phone-home.mp4', img: '/promo/stores/reel/v24/grindline-phone-home.jpg' },
+    'kettle-and-crow': { device: 'phone', color: '#B8306A', video: '/promo/stores/reel/v24/kettle-and-crow-phone-home.mp4', img: '/promo/stores/reel/v24/kettle-and-crow-phone-home.jpg' },
+    'northpeak': { device: 'phone', color: '#2A4FD6', video: '/promo/stores/reel/v24/northpeak-phone-home.mp4', img: '/promo/stores/reel/v24/northpeak-phone-home.jpg' },
+    'saltline': { device: 'desktop', color: '#10A7B8', video: '/promo/stores/reel/v24/saltline-desktop-home.mp4', img: '/promo/stores/reel/v24/saltline-desktop-home.jpg' },
+    'ridgeline-supply': { device: 'desktop', color: '#0E6185', video: '/promo/stores/reel/v24/ridgeline-supply-desktop-home.mp4', img: '/promo/stores/reel/v24/ridgeline-supply-desktop-home.jpg' },
+    'nest-and-nook': { device: 'tablet', color: '#86C2A2', video: '/promo/stores/reel/v24/nest-and-nook-tablet-home.mp4', img: '/promo/stores/reel/v24/nest-and-nook-tablet-home.jpg' },
+    'atelier-noor': { device: 'desktop', color: '#A4408F', video: '/promo/stores/reel/v24/atelier-noor-desktop-home.mp4', img: '/promo/stores/reel/v24/atelier-noor-desktop-home.jpg' },
+    'little-timber': { device: 'tablet', color: '#3A9FE6', video: '/promo/stores/reel/v24/little-timber-tablet-home.mp4', img: '/promo/stores/reel/v24/little-timber-tablet-home.jpg' },
+    'inkwell': { device: 'tablet', color: '#22407C', video: '/promo/stores/reel/v24/inkwell-tablet-home.mp4', img: '/promo/stores/reel/v24/inkwell-tablet-home.jpg' },
+    'leaf-and-loam': { device: 'tablet', color: '#139E6E', video: '/promo/stores/reel/v24/leaf-and-loam-tablet-home.mp4', img: '/promo/stores/reel/v24/leaf-and-loam-tablet-home.jpg' },
+    'spokehaus': { device: 'phone', color: '#EE3F87', video: '/promo/stores/reel/v24/spokehaus-phone-home.mp4', img: '/promo/stores/reel/v24/spokehaus-phone-home.jpg' },
+    'juniper-linen': { device: 'desktop', color: '#8E9FE8', video: '/promo/stores/reel/v24/juniper-linen-desktop-home.mp4', img: '/promo/stores/reel/v24/juniper-linen-desktop-home.jpg' },
+    'tonewood': { device: 'tablet', color: '#5E2A63', video: '/promo/stores/reel/v24/tonewood-tablet-home.mp4', img: '/promo/stores/reel/v24/tonewood-tablet-home.jpg' },
+    'fetch-and-fern': { device: 'desktop', color: '#138A86', video: '/promo/stores/reel/v24/fetch-and-fern-desktop-home.mp4', img: '/promo/stores/reel/v24/fetch-and-fern-desktop-home.jpg' },
+    'petal-and-post': { device: 'phone', color: '#D63BC0', video: '/promo/stores/reel/v24/petal-and-post-phone-home.mp4', img: '/promo/stores/reel/v24/petal-and-post-phone-home.jpg' },
+  };
+  // the run's cards: 0..4 take the skeleton slots in order, 5..13 take all nine flash slots in order, so the run plays
+  // (flash, skeleton): kettle-and-crow, northpeak, saltline, ridgeline-supply, nest-and-nook, atelier-noor, little-timber, inkwell,
+  // leaf-and-loam, spokehaus, juniper-linen, tonewood, fetch-and-fern, petal-and-post (between the four quick stores at the start)
+  const PROMO_REEL_CARDS = ['nest-and-nook', 'little-timber', 'leaf-and-loam', 'juniper-linen', 'fetch-and-fern', 'kettle-and-crow', 'northpeak', 'saltline', 'ridgeline-supply', 'atelier-noor', 'inkwell', 'spokehaus', 'tonewood', 'petal-and-post'].map((slug) => ({ slug, ...PROMO_REEL_STORES_V24[slug] }));
   // the tunnel's flyers (they replace PROMO_REEL_SKELETONS 0..7; the skeleton colours stay as the fallback light)
-  const PROMO_REEL_TUNNEL_CARDS = ['atelier-noor', 'leaf-and-loam', 'nest-and-nook', 'halcyon-optics', 'kettle-and-crow', 'saltline', 'liora', 'northpeak'].map((slug) => ({ slug, ...PROMO_REEL_STORES_V23[slug] }));
+  const PROMO_REEL_TUNNEL_CARDS = ['halcyon-optics', 'kumo-tea', 'sora-ceramics', 'powderline', 'tidewater', 'maison-cacao', 'liora', 'grindline'].map((slug) => ({ slug, ...PROMO_REEL_STORES_V24[slug] }));
   const PROMO_REEL_SOFT_S = 0.5;   // a run card shorter than this hits soft (the strobe's tick, no streak)
   const PROMO_REEL_QUICK_FADE_S = 0.12;   // a quick store's voice fades out this long at its cut
-  const PROMO_REEL_FLASH = [   // stills of the demo stores' own recordings (other pages, other devices)
-    { img: '/promo/stores/reel/v18/flash-meridian-watch-ship-tablet.jpg', device: 'tablet', color: '#D1001A' },
-    { img: '/promo/stores/reel/v18/flash-12-weather-outfitters-return-desktop.jpg', device: 'desktop', color: '#F2C94C' },
-    { img: '/promo/stores/reel/v18/flash-pulse-forge-ps5-headset-phone.jpg', device: 'phone', color: '#A855F7' },
-    { img: '/promo/stores/reel/v18/flash-rolling-district-bolt-pattern-desktop.jpg', device: 'desktop', color: '#E02020' },
-    { img: '/promo/stores/reel/v18/flash-paper-and-pine-books-return-book-tablet.jpg', device: 'tablet', color: '#2A5C42' },
-    { img: '/promo/stores/reel/v18/flash-buildright-home-mirror-phone.jpg', device: 'phone', color: '#A7C957' },
-    { img: '/promo/stores/reel/v18/flash-home-apricot.jpg', device: 'desktop', color: '#F7944D' },
-    { img: '/promo/stores/reel/v18/flash-12-weather-outfitters-raincoat-phone.jpg', device: 'phone', color: '#F2C94C' },
-    { img: '/promo/stores/reel/v18/flash-home-viniteca.jpg', device: 'desktop', color: '#701C33' },
+  const PROMO_REEL_FLASH = [   // v24: fallback stills only (PROMO_REEL_CARDS fill every flash slot): the same v24 store each slot shows, never a hero or quick store
+    { img: '/promo/stores/reel/v24/kettle-and-crow-phone-home.jpg', device: 'phone', color: '#B8306A' },
+    { img: '/promo/stores/reel/v24/northpeak-phone-home.jpg', device: 'phone', color: '#2A4FD6' },
+    { img: '/promo/stores/reel/v24/saltline-desktop-home.jpg', device: 'desktop', color: '#10A7B8' },
+    { img: '/promo/stores/reel/v24/ridgeline-supply-desktop-home.jpg', device: 'desktop', color: '#0E6185' },
+    { img: '/promo/stores/reel/v24/atelier-noor-desktop-home.jpg', device: 'desktop', color: '#A4408F' },
+    { img: '/promo/stores/reel/v24/inkwell-tablet-home.jpg', device: 'tablet', color: '#22407C' },
+    { img: '/promo/stores/reel/v24/spokehaus-phone-home.jpg', device: 'phone', color: '#EE3F87' },
+    { img: '/promo/stores/reel/v24/tonewood-tablet-home.jpg', device: 'tablet', color: '#5E2A63' },
+    { img: '/promo/stores/reel/v24/petal-and-post-phone-home.jpg', device: 'phone', color: '#D63BC0' },
   ];
   const PROMO_REEL_STROBE = [{ device: 'desktop', color: '#5B8DEF', v: 0 }, { device: 'tablet', color: '#EF6F8E', v: 1 }, { device: 'phone', color: '#3DBE8B', v: 2 }, { device: 'desktop', color: '#F2A541', v: 0 }, { device: 'tablet', color: '#9B7BEA', v: 1 }, { device: 'phone', color: '#2BB3C9', v: 2 }, { device: 'desktop', color: '#E8644A', v: 0 }, { device: 'tablet', color: '#C9A227', v: 1 }, { device: 'phone', color: '#6C7A89', v: 2 }, { device: 'desktop', color: '#F07ACB', v: 0 }, { device: 'tablet', color: '#4FA3E0', v: 1 }, { device: 'phone', color: '#8BC34A', v: 2 }, { device: 'desktop', color: '#FF8A65', v: 0 }, { device: 'tablet', color: '#7E57C2', v: 1 }, { device: 'phone', color: '#26A69A', v: 2 }, { device: 'desktop', color: '#EC407A', v: 0 }, { device: 'tablet', color: '#FFCA28', v: 1 }, { device: 'phone', color: '#5C6BC0', v: 2 }, { device: 'desktop', color: '#66BB6A', v: 0 }, { device: 'tablet', color: '#AB47BC', v: 1 }, { device: 'phone', color: '#29B6F6', v: 2 }, { device: 'desktop', color: '#FFA726', v: 0 }];
   function promoBackOut(u) { const c1 = 1.5; const c3 = c1 + 1; return 1 + c3 * (u - 1) ** 3 + c1 * (u - 1) ** 2; }
@@ -6049,7 +6119,7 @@
       pill.setAttribute('data-promo-caption', '');
       const text = document.createElement('p');
       text.className = 'promo-caption__text';
-      if (kind !== 'shopper') {   // v23: the agent's words carry the glowing orange edge (was the shopper's voice look); it turns slowly (stepped)
+      if (kind !== 'shopper') {   // v24: the agent's words sit in a Siri-like glass panel; its pastel edge turns slowly (stepped)
         const halo = document.createElement('span');
         halo.className = 'promo-caption__halo';
         halo.setAttribute('aria-hidden', 'true');
@@ -6129,6 +6199,10 @@
           const at = firstOf[chunk] + index;
           node.classList.toggle('is-current', at === current);
           node.classList.toggle('is-upcoming', at > current);
+          if (kind !== 'shopper') {   // v24: each word eases from faint to ink over ~240 ms (Siri-like, frame-stepped)
+            const r = Math.min(1, Math.max(0, (t - (starts[at] ?? 0)) / 240));
+            node.style.opacity = (0.3 + 0.7 * r * r * (3 - 2 * r)).toFixed(3);
+          }
         });
         window.requestAnimationFrame(step);
       };
@@ -6498,7 +6572,10 @@
       if (!canvas) return null;
       const overlay = document.createElement('div');
       overlay.className = 'promo-rewind';
-      overlay.innerHTML = '<video muted playsinline preload="auto"></video><span class="promo-rewind__glyph" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M11 6 3.5 12 11 18zM20.5 6 13 12l7.5 6z"/></svg></span>';
+      overlay.innerHTML = '<div class="promo-rewind__screen"><video muted playsinline preload="auto"></video></div>'
+        // v24b: the ◀◀ lives in the player chrome under the frame, never over the picture
+        + '<div class="promo-rewind__scrub" aria-hidden="true"><span class="promo-rewind__glyph"><svg viewBox="0 0 24 24"><path class="is-a" d="M11.2 6.2 3.6 12l7.6 5.8z"/><path class="is-b" d="M20.4 6.2 12.8 12l7.6 5.8z"/></svg></span>'
+        + '<span class="promo-rewind__time">0:00</span><span class="promo-rewind__track"><i></i><b></b></span></div>';
       const video = overlay.querySelector('video');
       video.dataset.promoIdle = '1';
       video.dataset.promoStart = '0';
@@ -6518,7 +6595,9 @@
         overlay.classList.add('is-in');
         promoSfx('rewind');
         speakTake('t-rewind-a');
-        return performance.now();
+        const at = performance.now();
+        this.driveRewindChrome(overlay, at);
+        return at;
       });
       return {
         land: async () => {
@@ -6527,11 +6606,60 @@
           if (left > 0) await waitMs(left);
           this.rewindTail = speakTake('t-rewind-b');
           promoSfx('rewind-land');
-          overlay.classList.add('is-out');
-          window.setTimeout(() => overlay.remove(), 500);
+          // the tape has stopped on the very store the pitch shows: dissolve into it (stepped)
+          fadeStep(overlay, 1, 0, 260).then(() => overlay.remove());
           await waitMs(PROMO_REWIND_REVEAL_MS);
         },
       };
+    }
+
+    // v24 rewind chrome, frame-stepped from the tape's start: the picture shrinks into a
+    // floating "player" frame while it races back (and grows back to full bleed as it lands),
+    // a frosted ◀◀ disc pulses its two chevrons, and a scrubber's playhead + timecode run
+    // back in step with the clip (same ease as the render).
+    driveRewindChrome(overlay, at) {
+      const screen = overlay.querySelector('.promo-rewind__screen');
+      const glyph = overlay.querySelector('.promo-rewind__glyph');
+      const [chevA, chevB] = overlay.querySelectorAll('.promo-rewind__glyph path');
+      const scrub = overlay.querySelector('.promo-rewind__scrub');
+      const fill = overlay.querySelector('.promo-rewind__track i');
+      const head = overlay.querySelector('.promo-rewind__track b');
+      const time = overlay.querySelector('.promo-rewind__time');
+      const { from, to, ms } = PROMO_REWIND_SCRUB;
+      const out = (u) => 1 - (1 - u) ** 3;
+      const io = (u) => (u < 0.5 ? 4 * u * u * u : 1 - ((-2 * u + 2) ** 3) / 2);
+      const clamp = (u) => Math.min(1, Math.max(0, u));
+      const SHRINK = 0.84;
+      const frame = (now) => {
+        if (!overlay.isConnected) return;
+        const c = now - at;
+        const into = out(clamp(c / 260));
+        const back = io(clamp((c - ms - 20) / (PROMO_REWIND_MS - ms - 20)));
+        const k = into * (1 - back);   // 0 = full bleed, 1 = the floating frame
+        if (screen) {
+          screen.style.scale = (1 - (1 - SHRINK) * k).toFixed(4);
+          screen.style.borderRadius = `${(1.8 * k).toFixed(3)}cqh`;
+          screen.style.boxShadow = `0 ${(2.6 * k).toFixed(2)}cqh ${(7 * k).toFixed(2)}cqh rgba(28, 24, 20, ${(0.22 * k).toFixed(3)}), 0 0 0 1px rgba(28, 24, 20, ${(0.06 * k).toFixed(3)})`;
+        }
+        const show = clamp(c / 180) * (1 - clamp((c - ms + 120) / 220));
+        if (glyph) {
+          glyph.style.scale = (0.86 + 0.14 * out(clamp(c / 260))).toFixed(4);
+          const beat = (c / 1000) * 5.2 * Math.PI * 2;   // the two chevrons chase leftward
+          if (chevA) chevA.style.opacity = (0.62 + 0.38 * (0.5 + 0.5 * Math.cos(beat))).toFixed(3);
+          if (chevB) chevB.style.opacity = (0.62 + 0.38 * (0.5 + 0.5 * Math.cos(beat - 1.6))).toFixed(3);
+        }
+        const tape = from - (from - to) * promoRewindEase(c / ms);
+        const p = clamp(tape / from) * 0.94 + 0.03;
+        if (scrub) scrub.style.opacity = (show * Math.min(1, k * 1.4)).toFixed(3);
+        if (fill) fill.style.scale = `${p.toFixed(4)} 1`;
+        if (head) head.style.left = `${(p * 100).toFixed(2)}%`;
+        if (time) {
+          const sec = Math.max(0, Math.round(tape));
+          time.textContent = `0:${String(sec).padStart(2, '0')}`;
+        }
+        window.requestAnimationFrame(frame);
+      };
+      frame(performance.now());
     }
 
     async playInstallMoment(rewind = null) {
@@ -8007,7 +8135,7 @@
       const sector = document.createElement('p');
       sector.className = 'promo-opening__slide-sector';
       sector.textContent = 'Your store';
-      sector.style.color = 'var(--promo-orange-ink)';
+      sector.style.color = 'var(--promo-orange)';
       meta.appendChild(sector);
       const card = document.createElement('div');
       card.className = 'promo-opening__slide-card promo-pass-final';
@@ -9046,22 +9174,32 @@
       const camFor = (cell) => cell.x0 + (cell.skeleton ? cell.cx - cell.x0 - W / 2 : 0);
       const motion = { last: performance.now(), x: 0, v: 0 };
       const paint = () => {
-        strip.style.transform = `translateX(${(-cam.x).toFixed(2)}px)`;
-        const now = performance.now();
-        const dt = Math.max(1, now - motion.last);
-        const v = Math.abs(cam.x - motion.x) / dt * 1000;   // px per second
-        motion.v += (v - motion.v) * Math.min(1, dt / 90);   // a little smoothing
-        motion.last = now; motion.x = cam.x;
-        const blur = Math.min(6, (motion.v / W) * 1.2);
+        // v24 light law: the cut clock alone picks the card on screen, its camera push and the light, in the same
+        // frame (never a timer or a transition): the light can never lag or lead its card
+        const L = lawAt(performance.now());
+        if (L.cell && L.w !== motion.w) { cam.x = camFor(L.cell); motion.w = L.w; }
+        const camX = cam.x + L.off;
+        strip.style.transform = `translateX(${(-camX).toFixed(2)}px)`;
+        const blur = Math.min(3, (L.vx / W) * 2.4);   // a touch of motion blur where the camera is fastest (the cuts)
         strip.style.filter = blur > 0.3 ? `blur(${blur.toFixed(2)}px)` : '';
+        if (light.on) {
+          reel.style.setProperty('--reel-glow', L.glow.toFixed(3));
+          setLight(L.from, L.to, L.p);
+          blobs.forEach((blob, j) => {   // the light's drift: on the same law (still mid-card, fastest at the cuts)
+            const q = L.phi * (0.6 + 0.16 * j) + j * 1.9;
+            blob.style.transform = `translate(${(Math.sin(q) * 22).toFixed(2)}%, ${(Math.cos(q * 0.83) * 16).toFixed(2)}%) scale(${(1 + 0.1 * L.bell + 0.08 * Math.sin(q * 1.27)).toFixed(3)})`;
+          });
+        }
+        reel.__law = L;   // (the light probe reads it)
         seq.forEach((cell, i) => {
           const t = cell.t;
-          cell.dev.style.transform = `translate3d(${(cell.cx + t.tx).toFixed(2)}px, ${t.ty.toFixed(2)}px, 0) scale(${t.k.toFixed(4)})`;
-          const sx = cell.cx - cam.x;
-          const half = (cell.full.w * t.k) / 2;
+          const kk = t.k * (cell === L.cell ? L.k : (cell === firstHero && L.w < 0 ? L.k0 : 1));
+          cell.dev.style.transform = `translate3d(${(cell.cx + t.tx).toFixed(2)}px, ${t.ty.toFixed(2)}px, 0) scale(${kk.toFixed(4)})`;
+          const sx = cell.cx - camX;
+          const half = (cell.full.w * kk) / 2;
           const onScreen = sx + half > -W * 0.05 && sx - half < W * 1.05;
           cell.dev.style.visibility = onScreen ? '' : 'hidden';
-          if (cell.copy) cell.copy.style.visibility = (cell.x0 - cam.x) < W && (cell.x0 - cam.x) > -W ? '' : 'hidden';
+          if (cell.copy) cell.copy.style.visibility = (cell.x0 - camX) < W && (cell.x0 - camX) > -W ? '' : 'hidden';
           // skeletons: a soft tick as each one crosses the centre (the rush's rhythm, braking)
           if (cell.skeleton && !cell.ticked && sx <= W / 2) { cell.ticked = true; promoSfx('reel-tick', { index: i }); }
           const video = cell.ambientVideo;
@@ -9084,37 +9222,21 @@
       let painting = true;
       const loop = () => { if (!painting || !reel.isConnected) return; paint(); window.requestAnimationFrame(loop); };
 
-      // the ambient light: its strength and its drift follow the camera
-      // (still on a store: bright and slow, never frozen; mid-slide: dim and fast)
-      const light = { phase: 0, last: performance.now(), on: true };
-      const lightLoop = (now) => {
-        if (!light.on || !reel.isConnected) return;
-        const go = Math.max(light.rush || 0, Math.min(1, motion.v / (W * 1.6)));
-        const hit = light.hitAt ? Math.exp(-(now - light.hitAt) / 380) : 0;   // each cut swells the light, then it settles
-        const curve = Math.sin((go * Math.PI) / 2) ** 2;   // a sin^n-like ease between the two states
-        light.phase += ((now - light.last) / 1000) * (0.22 + 2.4 * curve); light.last = now;
-        blobs.forEach((blob, k) => {
-          const p = light.phase * (0.42 + 0.13 * k) + k * 1.9;
-          blob.style.transform = `translate(${(Math.sin(p) * 22).toFixed(2)}%, ${(Math.cos(p * 0.83) * 16).toFixed(2)}%) scale(${(1 + 0.18 * Math.sin(p * 1.27)).toFixed(3)})`;
-        });
-        blobs.forEach((blob) => { blob.style.scale = (1 + 0.14 * hit).toFixed(3); });
-        reel.style.setProperty('--reel-glow', Math.min(1, 0.9 - 0.55 * curve + 0.05 * Math.sin(light.phase * 0.9) + 0.22 * hit).toFixed(3));
-        window.requestAnimationFrame(lightLoop);
-      };
-      let lightColor = PROMO_REEL_SKELETONS[0]?.color || '#F28C38';
+      // the ambient light (v24): painted by paint() from the cut clock (lawAt below), never by its own timer
+      const light = { on: true, key: '' };
+      const tunnelColor = flyers[0]?.sk.color || PROMO_REEL_SKELETONS[0]?.color || '#F28C38';
       const setLight = (from, to, p) => {
+        const key = `${from}|${to}|${p.toFixed(3)}`;
+        if (key === light.key) return;
+        light.key = key;
         const mix = (c, pct, base) => `color-mix(in oklab, ${c} ${pct}%, ${base})`;
         const blend = (pct, base) => `color-mix(in oklab, ${mix(to, pct, base)} ${(p * 100).toFixed(1)}%, ${mix(from, pct, base)})`;
         reel.style.setProperty('--reel-a', blend(64, '#FBFAF8'));
         reel.style.setProperty('--reel-b', blend(46, '#FFF6EC'));
         reel.style.setProperty('--reel-c', blend(34, '#F6F2FF'));
       };
-      const tint = (color, ms = PROMO_REEL_TINT_MS) => {
-        const from = lightColor; lightColor = color;
-        if (!ms) { setLight(color, color, 1); return; }
-        tweenStep(ms, (e) => setLight(from, color, e));
-      };
-      tint(lightColor, 0);
+      setLight(tunnelColor, tunnelColor, 0);
+      reel.style.setProperty('--reel-glow', String(PROMO_REEL_LAW.glowLo));
 
       const firstHero = seq.find((cell) => cell.hero);
       const home = seq.find((cell) => cell.yours);
@@ -9141,24 +9263,43 @@
       const streak = document.createElement('div');
       streak.className = 'promo-reel__streak';
       reel.appendChild(streak);
-      const slam = (cell, index, power = 1) => {
+      // v24 light law: one clock for the cut, the camera and the light. Window -1 is the tunnel [t0, cut 0], then
+      // seq[w] owns [cut w, cut w+1] ("Your store" the last PROMO_REEL_LAW.homeMs). Per window (promoReelPhase):
+      // light = lo + (hi - lo) * bell (brightest mid-card, its trough on the cuts); the camera's whip (in from the
+      // right, held, out to the left), the card's push and the light's drift all ride go (fastest at the cuts,
+      // near-still mid-card); the colour crosses from one store to the next through the trough, half on each side
+      // of the cut, so everywhere else it is the colour of the card on screen.
+      const lawEnd = (w) => (w < seq.length - 1 ? cutAt(w + 1) : cutAt(w) + PROMO_REEL_LAW.homeMs);
+      const lawColor = (w) => (w < 0 ? tunnelColor : (seq[w]?.src.color || '#F28C38'));
+      reel.__lawColors = seq.map((cell, w) => lawColor(w));   // (the light probe reads it)
+      const lawAt = (now) => {
+        const { edgeMs, floor, glowLo, glowHi, push, slide } = PROMO_REEL_LAW;
+        let w = -1;
+        while (w + 1 < seq.length && now >= cutAt(w + 1)) w += 1;
+        const ph = promoReelPhase(now, w < 0 ? t0 : cutAt(w), lawEnd(w), edgeMs, floor);
+        const cell = w >= 0 ? seq[w] : null;
+        const at = ph.go - 0.5;
+        const amp = slide * W * Math.min(1.5, Math.max(0.7, (ph.len / 600) ** 0.35));   // the whip's reach: a little longer on a long card, shorter in the strobe
+        // the tunnel flies on its own (the first store comes out of it already on its window's start mark, so it keeps
+        // moving through its cut); "Your store" only arrives (its dive follows)
+        const lat = w < 0 ? -0.5 : (cell.yours ? Math.min(0, at) : at);
+        const moving = !(w < 0 || (cell.yours && at > 0));
+        let from = lawColor(w); let to = from; let p = 0;
+        if (w >= 0 && ph.x < ph.h) { from = lawColor(w - 1); to = lawColor(w); p = 0.5 + 0.5 * Math.sin((Math.PI / 2) * (ph.x / ph.h)); }
+        else if (w < seq.length - 1 && ph.len - ph.x < ph.h) { to = lawColor(w + 1); p = 0.5 - 0.5 * Math.sin((Math.PI / 2) * ((ph.len - ph.x) / ph.h)); }
+        return {
+          w, cell, t: now, t0, a: w < 0 ? t0 : cutAt(w), b: lawEnd(w), u: ph.u, bell: ph.bell, phi: w + ph.go,
+          glow: glowLo + (glowHi - glowLo) * ph.bell,
+          off: amp * lat, vx: moving ? amp * ph.speed * 1000 : 0,
+          k: cell?.yours ? 1 : 1 + push * at, k0: 1 - push / 2,
+          from, to, p,
+        };
+      };
+      const slam = (cell, index) => {   // v24: the hit is the cut's sound only (the light law owns the picture: no flash, no punch)
         const soft = cell.strobe && (cell.win ?? 1) < PROMO_REEL_SOFT_S;   // v18: the run's slower flashes still hit like a store
         promoSfx(soft ? 'strobe-tick' : 'reel-slam', { index });
-        light.hitAt = performance.now();
-        const peak = soft ? 0.22 : 0.42;
-        tweenStep(170, (e) => { flash.style.opacity = Math.min(0.78, peak * power * (1 - e)).toFixed(3); }, (u) => u);   // v23: even the "Your store" hit never whites out a frame
-        tweenStep(soft ? 260 : 480, (e, u) => { cell.t.k = 1 + 0.12 * power * (1 - promoBackOut(u)); }, (u) => u);
-        if (!soft) {   // a streak of the store's light sweeps through on the hit
-          streak.style.setProperty('--tint', cell.src.color);
-          tweenStep(300, (e) => { streak.style.opacity = (Math.sin(e * Math.PI) * 0.9).toFixed(3); streak.style.translate = `${(-60 + e * 220).toFixed(1)}% 0`; }, (u) => u);
-        }
       };
-      // the outgoing store pushes in and blurs for a breath before each cut, a whoosh rising into it
-      const preCut = (cell) => {
-        if (!cell) return;
-        tweenStep(150, (e) => { cell.t.k = 1 + 0.06 * e * e; cell.dev.style.filter = `blur(${(e * e * 5).toFixed(2)}px)`; }, (u) => u)
-          .then(() => window.setTimeout(() => { cell.dev.style.filter = ''; cell.t.k = 1; }, 60));
-      };
+      const preCut = () => { };   // v24: the outgoing push is the light law's (paint), not a tween before the cut
       const beatTime = (minMs, frac = 1) => {
         const grid = PROMO_REEL_BEAT_MS * frac; const now = performance.now();
         return t0 + Math.ceil((now + minMs - t0) / grid - 0.02) * grid;
@@ -9178,17 +9319,14 @@
         if (at - now > 160) { await waitMs(at - now - 150); preCut(cell); }
         await waitMs(Math.max(0, at - performance.now()));
       };
-      const cutTo = (cell, index) => {
-        cam.x = camFor(cell);
-        motion.x = cam.x; motion.v = 0;   // a cut, not a move: no motion blur
-        tint(cell.src.color, 0);
+      const cutTo = (cell, index) => {   // v24: the camera and the light are already on this card (paint follows the cut clock)
         slam(cell, index);
+        paint();
       };
       cam.x = camFor(firstHero);
       firstHero.t.k = 0.0001;
       paint();
       window.requestAnimationFrame(loop);
-      window.requestAnimationFrame(lightLoop);
       // 1. the tunnel: new stores (never one we show later) fly at the camera
       reel.classList.add('is-in');
       // v23: the reel crossfades in over the held sync scene (which pushes in and goes once covered): never a blank frame
@@ -9212,9 +9350,8 @@
       flyers.forEach((f, i) => roll(f.video, (i * 0.4) % 3.2));   // v23: the new stores play as they fly (deterministic: the export clock seeks them)
       const zEnd = -P * 0.9 - flyers.length * P * 0.55 - P * 0.6;   // (unchanged: the first store still lands on its clap)
       const tunnelMs = Math.max(400, cutAt(0) - performance.now());   // v21: the first store lands on its clap
-      light.rush = 0.6;
-      tint(firstHero.src.color, Math.round(tunnelMs * 0.9));   // the light glides once into the first store's colour
-      await tweenStep(tunnelMs, (e, u) => {
+      // v24 light law: the tunnel's light (its first store's colour) and its crossfade into the first hero are paint()'s
+      await tweenStep(tunnelMs, (e) => {
         const camZ = zEnd * e;
         tun.camZ = camZ;
         flyers.forEach((f, i) => {
@@ -9227,18 +9364,17 @@
           f.dev.style.zIndex = String(Math.round(rel + 100000));
           if (rel > -P * 0.5 && !f.passed) { f.passed = true; promoSfx('reel-tick', { index: i }); }   // one soft tick as each card passes
         });
-        // the first store comes out of the depth onto its slot (braking)
+        // the first store comes out of the depth onto its slot (v24: still rushing on the clap, the law settles it)
         const d = (zEnd - camZ);   // <= 0: how far behind the slot it still is
         const k = P / Math.max(1, P - d);
         firstHero.t.k = Math.max(0.0001, Math.min(1, k));
         firstHero.t.tx = (W / 2 - (firstHero.cx - cam.x)) * (1 - firstHero.t.k);
         firstHero.t.ty = (H / 2 - (firstHero.full.y + firstHero.full.h / 2)) * (1 - firstHero.t.k);
-        light.rush = 0.6 * (1 - u * u);
-      }, (u) => (u < 0.5 ? 4 * u * u * u : 1 - ((-2 * u + 2) ** 3) / 2) * 0.55 + (1 - (1 - u) ** 3) * 0.45);
-      firstHero.t.tx = 0; firstHero.t.ty = 0; light.rush = 0;
+      }, (u) => 0.4 * (1 - (1 - u) ** 3) + 0.6 * u ** 4);   // v24 law: quick off the sync, a calmer glide mid-tunnel, fastest into the cut
+      firstHero.t.tx = 0; firstHero.t.ty = 0;
       tunnel.remove();
-      tint(firstHero.src.color, 0);
       slam(firstHero, 0);
+      paint();
       cutClock = performance.now();
 
       // 2. the four stores: hard cuts on the beat
@@ -9286,7 +9422,7 @@
           // v23: the window is the card's, not the line's: the voice is clipped at the cut with a short fade-out
           const windowMs = cell.win * 1000 - 40;   // never spills into the next card
           const clipMs = Math.min(voice.durationMs - lead * 1000, windowMs);
-          (window.__promoAudioCues = window.__promoAudioCues || []).push({ src, atMs: now + 20, fromSec: lead, endMs: now + 20 + clipMs, fadeIn: 0.02, fadeOut: Math.min(PROMO_REEL_QUICK_FADE_S, clipMs / 3000) });
+          (window.__promoAudioCues = window.__promoAudioCues || []).push({ src, atMs: now + 20, fromSec: lead, endMs: now + 20 + clipMs, fadeIn: 0.02, fadeOut: clipMs < voice.durationMs - lead * 1000 ? Math.min(PROMO_REEL_QUICK_FADE_S, clipMs / 3000) : 0.02 });   // v24: a line that fits its card (each take is cut to fit) plays whole, no fade into its last word
           if (!document.documentElement.classList.contains('is-promo-export')) window.setTimeout(() => { const a = new Audio(src); a.currentTime = lead; a.play().catch(() => { }); window.setTimeout(() => a.pause(), clipMs); }, 20);
           const words = spoken.map((w) => [0.04 + w.startMs / 1000 - lead, w.text]);
           if (words.length) this.playSaidPill(reel, words.map(([t, w]) => [Math.max(Math.min(0.3, cell.win * 0.2), t), w]), { color: cell.src.color, kind: 'voice-agent', hold: 0.15, place: reelSaidSpot(cell, W, H, S) });   // v23: in early on the shorter cards
@@ -11380,6 +11516,7 @@
         || this.painLostKeys?.has(cell.key)
       );
       if (!event && !leadLost) {
+        if (node.classList.contains('is-sold-tint')) node.classList.remove('is-sold-tint');
         writePaint(parts.veil, 'opacity', '0');
         writePaint(parts.mark, 'opacity', '0');
         writePaint(parts.lost, 'opacity', '0');
@@ -11398,7 +11535,7 @@
           const box = node.getBoundingClientRect();
           const frameBox = this.root.getBoundingClientRect();
           const x = frameBox.width ? ((box.left + box.width / 2 - frameBox.left) / frameBox.width) : 0.5;
-          promoSfx(mode === 'pitch' ? 'sold-sea' : 'lost-sea', { x: Number(x.toFixed(3)) }, performance.now() - age);
+          promoSfx(mode === 'pitch' || event.sold ? 'sold-sea' : 'lost-sea', { x: Number(x.toFixed(3)) }, performance.now() - age);
         }
       }
       // The close-up phone was upright; press it into the floor gently so the
@@ -11406,22 +11543,25 @@
       const pressAge = mode !== 'pitch' && cell.key === this.glideLeadKey
         ? Math.max(0, timeMs) * (140 / 900)
         : age;
-      if (mode === 'pitch') {
-        paintGlideStamp(parts.veil, parts.mark, age, 0.42);   // v11: a lighter warm glass; the card itself warms and lifts
+      const buyer = mode !== 'pitch' && !!event?.sold && !leadLost;   // v24b: a pain buyer warms like a sold card
+      if (node.classList.contains('is-sold-tint') !== buyer) node.classList.toggle('is-sold-tint', buyer);
+      if (mode === 'pitch' || buyer) {
+        paintGlideStamp(parts.veil, mode === 'pitch' ? parts.mark : null, age, 0.58);   // v24b: the warm SOLD tint (multiply, promo-ad.css); the card warms and lifts
         writePaint(parts.lost, 'opacity', '0');
+        if (buyer) writePaint(parts.mark, 'opacity', '0');
       } else {
         if (parts.lost) {
           const width = Number.parseFloat(node.style.width) || cell.w * view.span.unit;
           const size = lostMarkSize(width, Number.parseFloat(node.style.height) || cell.h * view.span.unit);
           if (parts.lost.style.fontSize !== size) parts.lost.style.fontSize = size;
         }
-        paintGlideStamp(parts.veil, parts.lost, age, 0.34);   // v11: a light frost; the card itself greys and sinks
+        paintGlideStamp(parts.veil, parts.lost, age, 0.82);   // v24b: the pain-grey LOST tint (multiply, promo-ad.css); the card sinks
         writePaint(parts.mark, 'opacity', '0');
       }
       if (fx) writeHidden(fx, true);
       node.classList.remove('is-dusting');
       const reactAge = leadLost && cell.key === this.glideLeadKey && this.glideLeadStampT ? performance.now() - this.glideLeadStampT : age;
-      paintGlideElevation(node, cell, view.span.unit, mode, pressAge, markReact(reactAge));
+      paintGlideElevation(node, cell, view.span.unit, buyer ? 'pitch' : mode, pressAge, markReact(reactAge));
       return true;
     }
 
@@ -13570,6 +13710,41 @@
     // with the shopper's cursor caught mid-stroke; it browses (stroke, hover, stroke, hover) and
     // ends on the card the 'enter' beat aims at, so the pain's own steps carry on seamlessly.
     // Stepped per frame (tweenStep on performance.now): export-safe.
+    // v24 opening (<1 s): the desktop window rises and settles from slightly below, its
+    // shadow blooming in, while the catalogue's tiles cascade up row by row. Frame 0 is
+    // already a third of the way in (a window on its way, never a white frame). Inline
+    // individual properties only (they compose with the CSS transforms) and all cleared after.
+    async playStoreEntrance(store, cards, cols) {
+      if (!store) return;
+      const MS = 780; const U0 = 0.2;
+      const base = getComputedStyle(store).boxShadow;
+      const keep = base && base !== 'none' ? `${base}, ` : '';
+      const tiles = cards.slice(0, cols * 3);
+      const lift = store.clientHeight * 0.03;
+      const out = (u) => 1 - (1 - u) ** 3;
+      const settle = (u) => 1 - (1 - u) ** 4;   // the window lands softer than the tiles
+      await tweenStep(MS * (1 - U0), (e, u) => {
+        const k = U0 + (1 - U0) * u;
+        const w = settle(k);
+        store.style.translate = `0 ${((1 - w) * store.clientHeight * 0.075).toFixed(2)}px`;
+        store.style.scale = (0.945 + 0.055 * w).toFixed(4);
+        store.style.opacity = Math.min(1, 0.25 + 0.75 * out(Math.min(1, k * 1.6))).toFixed(4);
+        // the shadow blooms wide while it travels, then tightens into its resting one
+        const bloom = Math.sin(Math.PI * Math.min(1, k * 1.15));
+        store.style.boxShadow = `${keep}0 ${(2.4 + 2.2 * bloom).toFixed(2)}vh ${(7 * bloom + 1).toFixed(2)}vh rgba(28, 24, 20, ${(0.16 * bloom).toFixed(3)})`;
+        tiles.forEach((tile, i) => {
+          const row = Math.floor(i / cols); const col = i % cols;
+          const d = (row * 0.16 + col * 0.05);   // a diagonal cascade, top-left first
+          const t = Math.min(1, Math.max(0, (k - d) / 0.5));
+          const s = out(t);
+          tile.style.translate = `0 ${((1 - s) * lift).toFixed(2)}px`;
+          tile.style.opacity = (0.15 + 0.85 * s).toFixed(4);
+        });
+      }, (u) => u);
+      store.style.translate = ''; store.style.scale = ''; store.style.opacity = ''; store.style.boxShadow = '';
+      tiles.forEach((tile) => { tile.style.translate = ''; tile.style.opacity = ''; });
+    }
+
     async playStoreBrowseOpen(totalMs) {
       const store = this.painStore();
       const cursor = this.root.querySelector('[data-promo-pain-cursor]');
@@ -13602,6 +13777,7 @@
       const place = (p) => { cursor.style.setProperty('--pain-x', `${p.x.toFixed(1)}px`); cursor.style.setProperty('--pain-y', `${p.y.toFixed(1)}px`); };
       const hover = (card) => cards.forEach((node) => node.classList.toggle('is-pain-hover', node === card));
       const strokeEase = (u) => (u < 0.5 ? 4 * u * u * u : 1 - ((-2 * u + 2) ** 3) / 2) * 0.7 + (1 - (1 - u) ** 2) * 0.3;
+      this.playStoreEntrance(store, cards, cols);   // v24: the window rises in (frame 0 already mid-motion) while the cursor browses
       for (const [index, [a, b, ms, kind, u0]] of legs.entries()) {
         const span = ms * (1 - u0);
         const dx = b.x - a.x; const dy = b.y - a.y;

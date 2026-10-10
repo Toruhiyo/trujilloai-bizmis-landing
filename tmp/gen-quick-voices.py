@@ -3,14 +3,17 @@ written like the film's other voice lines (public/promo/voice/<id>.wav + .json).
 import json, base64, subprocess, urllib.request
 KEY = next(l.split('=', 1)[1].strip().strip('"\'') for l in open('../trujilloai-bizmis-project/.env') if l.startswith('ELEVENLABS_API_KEY='))
 LINES = {   # id: (voice, text)   v18: a different short line each (shorter every store), biggest markets, Chinese last
-    'quick-es': ('pFZP5JQG7iQjIQuC4Bku', '[excited] ¡Gran elección!'),   # Lily, Home & DIY (US / LatAm): "Great choice!"
-    'quick-ja': ('XrExE9yKIg1WjnnlVkGX', '[excited] おすすめです！'),     # Matilda, Skincare (Japan): "I recommend it!"
-    'quick-pt': ('cjVigY5qzO86Huf0OWal', 'Serve!'),                     # Eric, car parts (Brazil): "It fits!"
-    'quick-zh': ('CwhRBWXzGAHq8TQ4Fs17', '[excited] 干杯！'),             # Roger, wine (China): "Cheers!"
+    # v24: shorter native reads so each line fits its card window (0.93 / 0.67 / 0.54 / 0.41 s) whole, ~60+ ms of air.
+    # The installed takes were picked from several candidates each (scribe_v1 gate) and trimmed to the speech
+    # (lead-in silence cut, chars re-anchored to the onset): re-running this plain loop will NOT reproduce that.
+    'quick-es': ('pFZP5JQG7iQjIQuC4Bku', '[fast] ¡Genial!'),             # Lily, Home & DIY (US / LatAm): "Great!" (was "¡Gran elección!")
+    'quick-ja': ('XrExE9yKIg1WjnnlVkGX', '[fast] いいね！'),              # Matilda, Skincare (Japan): "Nice!" (was "おすすめです！")
+    'quick-pt': ('cjVigY5qzO86Huf0OWal', '[very fast] Boa!'),           # Eric, car parts (Brazil): "Nice one!" (was "Serve!")
+    'quick-zh': ('CwhRBWXzGAHq8TQ4Fs17', '[quick, clipped] 干杯！'),     # Roger, wine (China): "Cheers!"
 }
 for id_, (voice, text) in LINES.items():
     req = urllib.request.Request(f'https://api.elevenlabs.io/v1/text-to-speech/{voice}/with-timestamps?output_format=mp3_44100_192', method='POST',
-                                 data=json.dumps({'text': text, 'model_id': 'eleven_v4', 'voice_settings': {'stability': 0.35, 'similarity_boost': 0.8, 'speed': 1.15}}).encode(),
+                                 data=json.dumps({'text': text, 'model_id': 'eleven_v4', 'voice_settings': {'stability': 0.35, 'similarity_boost': 0.8, 'speed': 1.2}}).encode(),
                                  headers={'xi-api-key': KEY, 'Content-Type': 'application/json'})
     r = json.load(urllib.request.urlopen(req, timeout=180))
     mp3 = f'tmp/{id_}.mp3'; open(mp3, 'wb').write(base64.b64decode(r['audio_base64']))
