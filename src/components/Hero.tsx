@@ -28,18 +28,20 @@ const IRIS_MS = 950;
 const easeInOut = (t: number) => (t < 0.5 ? 4 * t * t * t : 1 - (-2 * t + 2) ** 3 / 2);
 
 /**
- * The /v2 hero, video first (BIZ-423). A silent loop fills it: the real Bizmis
- * widget, big, with its agent at work (it hears a shopper, searches, talks
- * with captions, recommends, adds to the cart), and it keeps playing for as
- * long as the visitor stays. The copy is short and sits over it; the loop's
- * first frame shows at once, so a slow connection still gets a finished hero.
+ * The /v2 hero, video first (BIZ-423). A silent loop fills it: a store (a
+ * desktop browser; a phone on phones) with the real Bizmis widget at work in
+ * its corner, in the film's three beats: it finds the shopper the right
+ * products, takes them to one and clears their doubts, and puts it in the cart
+ * with an add-on. It plays for as long as the visitor stays; its first frame
+ * shows at once, so a slow connection still gets a finished hero.
  *
- * Play (the round button, or a click on the scene) turns the whole hero into
- * the film: it opens from the play button as a widening circle with a glowing
- * edge while the orange scene blurs and pushes back, so the jump from the
- * brand's orange to the film's own colours reads as a move into the film.
- * Close (✕, Escape, or a click outside the hero) runs it back into the loop;
- * play again resumes where it stopped.
+ * The copy sits in one glass card over the mockup, and the subtitle's "Find
+ * it, Trust it, Buy it" lights up with the beat on screen. The mockup is the
+ * play control: hovering it brings up the play button, a click turns the
+ * whole hero into the film, opening from the play button as a widening circle
+ * with a glowing edge while the orange scene blurs and pushes back. Close
+ * (✕, Escape, or a click outside the hero) runs it back into the loop; play
+ * again resumes where it stopped.
  */
 const Hero = () => {
   const posthog = usePostHog();
@@ -107,12 +109,14 @@ const Hero = () => {
   );
   useEffect(() => () => cancelAnimationFrame(iris.current.frame), []);
 
-  const openFilm = (e: MouseEvent<HTMLElement>, from: "play_button" | "scene") => {
+  const openFilm = (e: MouseEvent<HTMLElement>, from: "scene") => {
     const box = hero.current?.getBoundingClientRect();
     if (!box) return;
-    const target = (e.currentTarget as HTMLElement).getBoundingClientRect();
-    const cx = from === "play_button" ? target.left + target.width / 2 - box.left : e.clientX - box.left;
-    const cy = from === "play_button" ? target.top + target.height / 2 - box.top : e.clientY - box.top;
+    // the iris opens from the play button (shown over the mockup)
+    const btn = (e.currentTarget as HTMLElement).querySelector("[data-play]") ?? e.currentTarget;
+    const target = btn.getBoundingClientRect();
+    const cx = target.left + target.width / 2 - box.left;
+    const cy = target.top + target.height / 2 - box.top;
     const far = Math.max(Math.hypot(cx, cy), Math.hypot(box.width - cx, cy), Math.hypot(cx, box.height - cy), Math.hypot(box.width - cx, box.height - cy));
     iris.current = { ...iris.current, cx, cy };
     posthog.capture("cta_clicked", { cta_type: "watch_film", location: "hero", from });
@@ -129,21 +133,6 @@ const Hero = () => {
     runIris(0, () => setIrisOpen(false));
   }, [runIris]);
 
-  const playButton = (big: boolean) => (
-    <button
-      type="button"
-      onClick={(e) => openFilm(e, "play_button")}
-      aria-label={messages.film.watch}
-      className={cn(
-        GLASS,
-        "flex flex-shrink-0 items-center justify-center rounded-full text-white transition-all duration-300 hover:scale-105 hover:bg-[hsl(24_70%_30%/0.34)] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-white/60",
-        big ? "h-[4.5rem] w-[4.5rem]" : "h-14 w-14",
-      )}
-    >
-      <Play className={cn("fill-current drop-shadow-[0_2px_6px_rgba(0,0,0,0.25)]", big ? "ml-1 h-7 w-7" : "ml-0.5 h-6 w-6")} aria-hidden="true" />
-    </button>
-  );
-
   const installButton = (big: boolean) => (
     <Button
       variant="hero"
@@ -151,7 +140,7 @@ const Hero = () => {
       asChild
       className={cn(
         "group flex items-center gap-3 [&_svg]:pointer-events-auto",
-        big ? "h-[4.5rem] px-7 text-lg" : "h-14 flex-1 px-4 text-base",
+        big ? "h-16 px-6 text-lg" : "h-12 flex-1 px-4 text-base",
       )}
     >
       <a href={BIZMIS_SHOPIFY_APP_LISTING_URL} target="_blank" rel="noopener noreferrer" onClick={(e) => handleShopifyInstallClick(e)}>
@@ -165,17 +154,41 @@ const Hero = () => {
     </Button>
   );
 
+  // the subtitle's Find it / Trust it / Buy it light up with the loop's three beats (24 fps frames)
+  const [beat, setBeat] = useState(0);
+  const onLoopTime = useCallback((t: number) => {
+    const f = t * 24;
+    setBeat(f >= 34 && f < 164 ? 1 : f >= 164 && f < 244 ? 2 : f >= 244 && f < 302 ? 3 : 0);
+  }, []);
+  const beatWord = (n: number, text: string) => (
+    <span
+      className={cn(
+        "relative font-semibold text-white transition-[color,text-shadow] duration-300",
+        beat === n && "text-[hsl(40_100%_88%)] [text-shadow:0_0_18px_hsl(35_100%_70%/0.9)]",
+      )}
+    >
+      {text}
+      <span
+        aria-hidden="true"
+        className={cn(
+          "absolute inset-x-0 -bottom-0.5 h-[3px] origin-left rounded-full bg-white/90 transition-transform duration-500",
+          beat === n ? "scale-x-100" : "scale-x-0",
+        )}
+      />
+    </span>
+  );
+
   return (
     <section
       id="hero"
       ref={hero}
-      className="relative h-[100svh] min-h-[560px] overflow-hidden studio-lighting-base"
+      className="relative h-[100svh] min-h-[600px] overflow-hidden studio-lighting-base"
     >
       {/* what shows before the loop's first frame arrives */}
       <div className="absolute inset-0 studio-radial-light" />
       <div className="absolute inset-0 studio-ambient-overlay" />
 
-      {/* the loop: it pushes back and blurs as the film opens */}
+      {/* the loop: a store with the widget at work. It pushes back and blurs as the film opens */}
       <div
         className={cn(
           "absolute inset-0 transition-[transform,filter] duration-[950ms] ease-[cubic-bezier(.65,0,.35,1)]",
@@ -185,23 +198,36 @@ const Hero = () => {
         <HeroLoop
           sources={HERO_LOOP.wide}
           paused={irisOpen}
+          onTime={onLoopTime}
           className="absolute inset-0 hidden lg:block"
-          mediaClassName="object-cover object-[50%_35%]"
+          mediaClassName="object-cover object-[50%_45%]"
         />
         <HeroLoop
           sources={HERO_LOOP.tall}
           paused={irisOpen}
+          onTime={onLoopTime}
           className="absolute inset-0 lg:hidden"
-          mediaClassName="object-cover object-[50%_30%]"
+          mediaClassName="object-cover object-[50%_100%]"
         />
-        {/* the scene itself plays the film when clicked (the widget's side of the frame) */}
+        {/* the mockup is the play control: hovering it brings up the play button, a click plays the film */}
         <button
           type="button"
-          tabIndex={-1}
-          aria-hidden="true"
           onClick={(e) => openFilm(e, "scene")}
-          className="absolute inset-x-0 top-[12%] bottom-[34%] cursor-pointer lg:bottom-[24%]"
-        />
+          aria-label={messages.film.watch}
+          className="group/scene absolute inset-x-0 bottom-0 top-[30%] cursor-pointer focus-visible:outline-none lg:top-[6%]"
+        >
+          <span
+            data-play
+            className={cn(
+              GLASS,
+              "absolute left-1/2 top-[42%] flex h-20 w-20 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full text-white transition-all duration-300 lg:top-[44%] lg:h-24 lg:w-24",
+              "scale-90 opacity-0 group-hover/scene:scale-100 group-hover/scene:opacity-100 group-focus-visible/scene:scale-100 group-focus-visible/scene:opacity-100 group-focus-visible/scene:ring-4 group-focus-visible/scene:ring-white/60",
+              "[@media(hover:none)]:scale-100 [@media(hover:none)]:opacity-90",
+            )}
+          >
+            <Play className="ml-1 h-8 w-8 fill-current drop-shadow-[0_2px_6px_rgba(0,0,0,0.25)] lg:h-10 lg:w-10" aria-hidden="true" />
+          </span>
+        </button>
       </div>
 
       {/* grain, as on the rest of the landing */}
@@ -209,33 +235,32 @@ const Hero = () => {
         <filter id="hero-noise">
           <feTurbulence type="fractalNoise" baseFrequency="0.50" numOctaves="3" stitchTiles="stitch" />
         </filter>
-        <rect width="100%" height="100%" filter="url(#hero-noise)" opacity="0.32" />
+        <rect width="100%" height="100%" filter="url(#hero-noise)" opacity="0.28" />
       </svg>
 
       <div className={cn("relative z-20 transition-opacity duration-500", filmOpen && "pointer-events-none opacity-0")}>
         <Navbar />
       </div>
 
-      {/* the copy: a lower third over a soft scrim; the loop does the showing */}
-      <div
-        aria-hidden="true"
-        className={cn(
-          "pointer-events-none absolute inset-x-0 bottom-0 z-[2] h-[46%] bg-[linear-gradient(to_top,hsl(24_85%_38%/0.62),hsl(26_90%_45%/0.28)_45%,transparent)] transition-opacity duration-500 lg:h-[40%]",
-          filmOpen && "opacity-0",
-        )}
-      />
+      {/* the copy: one glass card over the mockup (bottom-left on desktop, under the nav on phones), the CTAs beside it */}
       <div
         className={cn(
-          "pointer-events-none absolute inset-x-0 bottom-0 z-10 transition-all duration-500",
-          filmOpen && "translate-y-4 opacity-0",
+          "pointer-events-none absolute inset-x-0 top-[4.25rem] z-10 transition-all duration-500 lg:bottom-[clamp(1.5rem,4svh,3rem)] lg:top-auto",
+          filmOpen && "translate-y-3 opacity-0",
         )}
       >
-        <div className="container mx-auto flex flex-col gap-4 px-4 pb-[max(1.25rem,env(safe-area-inset-bottom))] sm:px-6 lg:flex-row lg:items-end lg:justify-between lg:gap-10 lg:pb-[clamp(1.75rem,5svh,3.5rem)]">
-          <div className="pointer-events-auto min-w-0">
+        <div className="container mx-auto flex flex-col gap-3 px-3 sm:px-6 lg:flex-row lg:items-end lg:gap-6">
+          {/* eyebrow, title, subtitle: nothing else in the card */}
+          <div
+            className={cn(
+              "pointer-events-auto w-full rounded-[26px] border border-white/45 p-4 text-white sm:p-5 lg:max-w-[min(34rem,42vw)] lg:rounded-[30px] lg:p-7",
+              "bg-[linear-gradient(150deg,hsl(28_85%_52%/0.55),hsl(24_80%_40%/0.42))] shadow-[inset_0_1px_0_rgba(255,255,255,0.45),0_30px_80px_-30px_hsl(24_90%_25%/0.65)] backdrop-blur-2xl backdrop-saturate-150",
+            )}
+          >
             <a
               href={href("/early-access")}
               onClick={handleEarlyAccessClick}
-              className="group inline-flex items-center gap-2 rounded-full border border-white/25 bg-white/[0.1] px-3 py-1.5 text-xs text-white/90 backdrop-blur-sm transition-colors hover:bg-white/[0.16] hover:text-white sm:text-sm"
+              className="group inline-flex items-center gap-2 rounded-full border border-white/25 bg-white/[0.12] px-3 py-1 text-xs text-white/90 transition-colors hover:bg-white/[0.2] hover:text-white sm:text-sm"
             >
               <span className="relative flex h-1.5 w-1.5 flex-shrink-0" aria-hidden="true">
                 <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-white/70 opacity-50" />
@@ -246,40 +271,35 @@ const Hero = () => {
                 <span className="text-white/50" aria-hidden="true">
                   {" "}·{" "}
                 </span>
-                <span className="text-white/80 lg:hidden">{messages.hero.badgeDetailShort}</span>
-                <span className="hidden text-white/80 lg:inline">{messages.hero.badgeDetailLong}</span>
+                <span className="text-white/85 lg:hidden">{messages.hero.badgeDetailShort}</span>
+                <span className="hidden text-white/85 lg:inline">{messages.hero.badgeDetailLong}</span>
               </span>
-              <ArrowRight className="h-3 w-3 text-white/55 transition-transform group-hover:translate-x-0.5" aria-hidden="true" />
+              <ArrowRight className="h-3 w-3 text-white/60 transition-transform group-hover:translate-x-0.5" aria-hidden="true" />
             </a>
-            <h1 className="mt-2.5 font-heading text-[clamp(2rem,8.6vw,2.75rem)] font-bold leading-[1.02] tracking-[-0.025em] text-white drop-shadow-[0_2px_24px_rgba(120,45,0,0.35)] lg:mt-3 lg:text-[clamp(2.75rem,min(4.6vw,8.5svh),5rem)]">
+            <h1 className="mt-2.5 font-heading text-[clamp(1.75rem,7.6vw,2.4rem)] font-bold leading-[1.04] tracking-[-0.025em] lg:mt-3.5 lg:text-[clamp(2.4rem,min(3.6vw,6.6svh),3.75rem)]">
               {messages.hero.titleLine1} <span className="lg:block">{messages.hero.titleLine2}</span>
             </h1>
-            <p className="mt-1.5 font-heading text-[0.95rem] font-medium text-white/85 lg:mt-2 lg:text-[clamp(1.1rem,1.6vw,1.5rem)]">
-              {messages.hero.subtitleLead}{" "}
-              <span className="font-semibold text-white">{messages.hero.subtitleFind}</span>,{" "}
-              <span className="font-semibold text-white">{messages.hero.subtitleTrust}</span>
-              {messages.hero.subtitleConnector}{" "}
-              <span className="font-semibold text-white">{messages.hero.subtitleBuy}</span>
+            <p className="mt-1.5 font-heading text-[0.95rem] font-medium text-white/85 lg:mt-2.5 lg:text-[clamp(1.05rem,1.4vw,1.35rem)]">
+              {messages.hero.subtitleLead} {beatWord(1, messages.hero.subtitleFind)},{" "}
+              {beatWord(2, messages.hero.subtitleTrust)}
+              {messages.hero.subtitleConnector} {beatWord(3, messages.hero.subtitleBuy)}
             </p>
           </div>
-          <div className="pointer-events-auto flex flex-shrink-0 flex-col gap-2 lg:items-end">
-            <div className="flex items-center gap-3">
-              <div className="flex flex-1 lg:hidden">{installButton(false)}</div>
-              <div className="hidden lg:flex">{installButton(true)}</div>
-              <span className="lg:hidden">{playButton(false)}</span>
-              <span className="hidden lg:inline-flex">{playButton(true)}</span>
-            </div>
-            <div className="hidden flex-wrap items-center gap-x-2 gap-y-1 text-sm text-white/80 lg:flex">
-              <a href={BIZMIS_DEMO_STORE_URL} target="_blank" rel="noopener noreferrer" onClick={handleViewDemoClick} className="inline-flex items-center gap-1.5 text-white/90 underline-offset-2 hover:text-white hover:underline">
+          {/* the CTAs, outside the card */}
+          <div className="pointer-events-auto flex flex-col gap-2 lg:pb-1">
+            <div className="flex w-full lg:hidden">{installButton(false)}</div>
+            <div className="hidden lg:flex">{installButton(true)}</div>
+            <div className="hidden w-fit flex-wrap items-center gap-x-3 gap-y-1 rounded-full border border-white/35 bg-[hsl(24_80%_40%/0.5)] px-4 py-1.5 text-sm text-white shadow-[0_12px_30px_-14px_hsl(24_90%_25%/0.6)] backdrop-blur-xl lg:flex">
+              <a href={BIZMIS_DEMO_STORE_URL} target="_blank" rel="noopener noreferrer" onClick={handleViewDemoClick} className="inline-flex items-center gap-1.5 font-semibold hover:underline">
                 <PlayCircle className="h-4 w-4" aria-hidden="true" />
                 {messages.common.liveDemo}
               </a>
-              <span className="text-white/50" aria-hidden="true">
+              <span className="text-white/60" aria-hidden="true">
                 ·
               </span>
-              <span>
+              <span className="text-white/90">
                 {messages.hero.ratherTalk}{" "}
-                <a href={BIZMIS_BOOK_A_CALL_GENERAL_URL} target="_blank" rel="noopener noreferrer" onClick={handleBookACallClick} className="text-white/90 underline underline-offset-2 hover:text-white">
+                <a href={BIZMIS_BOOK_A_CALL_GENERAL_URL} target="_blank" rel="noopener noreferrer" onClick={handleBookACallClick} className="font-semibold text-white underline underline-offset-2">
                   {messages.common.bookACall}
                 </a>
               </span>

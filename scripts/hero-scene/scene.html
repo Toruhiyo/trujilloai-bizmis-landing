@@ -3,226 +3,344 @@
 <head>
 <meta charset="utf-8" />
 <title>Hero loop scene</title>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Inter:wght@500;600;700;800&display=swap" />
 <style>
   /* The /v2 hero loop (BIZ-423), frame-addressable: window.renderFrame(f) draws frame f of N (24 fps).
-     The real Bizmis widget, big: its card with the agent (avatar frames from scripts/hero-avatar-anim.py),
-     composer, volume toggle, its speaking / working states, captions, the shopper's sent message,
-     a product shortlist and the "Adding to cart" banner. ?layout=wide (1920×1080: the bottom fifth is
-     left clear for the page's copy) or ?layout=tall (1080×2160, phones: the bottom quarter is left clear for the copy). */
-  :root { --orange: #f28c38; --ink: #2a2520; --w: "Plus Jakarta Sans", Inter, system-ui, sans-serif; }
+     A store, with the real Bizmis widget at work on it, in three beats (as in the ad-1 film):
+       Find it  — the shopper asks; the widget searches; the catalogue narrows to three picks.
+       Trust it — "Taking you to" the product; the agent clears the doubts; the facts light up.
+       Buy it   — "Adding to cart" with a gift box; the cart badge bumps; the cart confirms.
+     ?layout=wide: a desktop browser (1920×1080), widget bottom-right; the page's copy card overlaps
+     the bottom-left. ?layout=tall: a phone (1080×2160) with the mobile widget bar; the copy card
+     overlaps the top. Avatar frames come from scripts/hero-avatar-anim.py. */
+  :root { --orange: #f28c38; --deep: #ec7709; --ink: #2a2520; --muted: #8a7b6e; --w: "Plus Jakarta Sans", Inter, system-ui, sans-serif; --s: Inter, system-ui, sans-serif; }
   html, body { margin: 0; background: #000; }
-  #stage { position: relative; overflow: hidden; font-family: var(--w);
-    background: radial-gradient(60% 70% at 72% 50%, hsl(35 95% 76%) 0%, hsl(32 95% 66%) 45%, hsl(28 92% 57%) 100%); }
+  #stage { position: relative; overflow: hidden; background: radial-gradient(70% 70% at 60% 45%, hsl(35 95% 74%) 0%, hsl(32 95% 64%) 50%, hsl(28 92% 56%) 100%); }
   .wide #stage { width: 1920px; height: 1080px; }
-  .tall #stage { width: 1080px; height: 2160px; background: radial-gradient(80% 55% at 50% 70%, hsl(35 95% 76%) 0%, hsl(32 95% 66%) 45%, hsl(28 92% 57%) 100%); }
+  .tall #stage { width: 1080px; height: 2160px; }
+  #cam { position: absolute; inset: 0; }
   .abs { position: absolute; }
-  #cam { position: absolute; inset: 0; transform-origin: 50% 40%; }
-  /* the widget's glass, as in avatar-widget-style.css (scaled) */
-  .glass { border: 2px solid rgb(255 255 255 / .8); background-color: rgb(255 255 255 / .55);
-    background-image: linear-gradient(150deg, rgb(255 255 255 / .51), rgb(255 255 255 / 0));
-    -webkit-backdrop-filter: blur(40px) saturate(1.25); backdrop-filter: blur(40px) saturate(1.25); }
-  #card { border-radius: 34px; box-shadow: 0 60px 120px -50px rgb(120 45 0 / .55), 0 8px 30px -10px rgb(120 45 0 / .25); }
-  #cardshadow { border-radius: 50%; background: radial-gradient(closest-side, rgb(150 55 0 / .35), transparent); }
-  #stagewrap { overflow: hidden; border-radius: 34px 34px 0 0; }
+  /* the device: a thin frosted-glass shell, as in the film */
+  #device { border-radius: 34px; background: linear-gradient(160deg, rgb(255 255 255 / .55), rgb(255 255 255 / .28)); border: 1.5px solid rgb(255 255 255 / .85);
+    box-shadow: inset 0 1px 0 #fff, 0 60px 120px -50px rgb(120 45 0 / .6), 0 10px 30px -10px rgb(120 45 0 / .25); }
+  .tall #device { border-radius: 78px; }
+  #screen { overflow: hidden; background: #fffdfb; border-radius: 24px; font-family: var(--s); color: var(--ink); }
+  .tall #screen { border-radius: 64px; }
+  /* store chrome */
+  .bar { position: absolute; left: 0; right: 0; top: 0; display: flex; align-items: center; border-bottom: 1px solid #f1e8de; background: #fff; }
+  .dots { display: flex; gap: 9px; } .dots i { width: 13px; height: 13px; border-radius: 50%; background: #ece1d5; }
+  .url { position: absolute; left: 50%; transform: translateX(-50%); display: flex; align-items: center; gap: 8px; border-radius: 99px; background: #f6f0ea; color: #7b6e63; font-weight: 600; }
+  .hdr { position: absolute; left: 0; right: 0; display: flex; align-items: center; background: #fff; border-bottom: 1px solid #f3ebe2; }
+  .logo { font-family: var(--w); font-weight: 800; letter-spacing: -.04em; color: var(--ink); }
+  .logo b { color: #b5643a; }
+  .nav { display: flex; gap: 30px; color: #6f6359; font-weight: 600; }
+  .icons { margin-left: auto; display: flex; align-items: center; gap: 26px; color: var(--ink); }
+  .cart { position: relative; }
+  .cart .badge { position: absolute; right: -12px; top: -10px; border-radius: 99px; background: var(--orange); color: #fff; font-weight: 800; display: grid; place-items: center; border: 3px solid #fff; box-sizing: border-box; }
+  /* views */
+  .view { position: absolute; left: 0; right: 0; bottom: 0; }
+  .ttl { font-family: var(--w); font-weight: 800; letter-spacing: -.035em; }
+  .sub { color: var(--muted); font-weight: 500; }
+  .pc { position: absolute; }
+  .pc .tile { border-radius: 20px; background: linear-gradient(160deg, #f8f1ea, #efe2d3); display: grid; place-items: center; overflow: hidden; position: relative; }
+  .pc .tile img { width: 62%; height: 72%; object-fit: contain; filter: drop-shadow(0 14px 12px rgb(120 60 20 / .22)); }
+  .pc b { display: block; font-weight: 700; margin-top: 12px; }
+  .pc span.p { color: #b25a14; font-weight: 800; }
+  .pc .ring { position: absolute; inset: -7px; border-radius: 26px; border: 4px solid var(--orange); box-shadow: 0 0 0 6px rgb(242 140 56 / .18); opacity: 0; }
+  .pc .chip { position: absolute; left: 12px; top: 12px; padding: 6px 12px; border-radius: 99px; background: var(--orange); color: #fff; font-weight: 800; font-size: 14px; display: flex; align-items: center; gap: 6px; box-shadow: 0 6px 14px -6px rgb(150 60 0 / .6); }
+  .pdp .img { position: absolute; border-radius: 26px; background: linear-gradient(160deg, #f8f1ea, #efe2d3); display: grid; place-items: center; }
+  .pdp .img img { width: 52%; height: 70%; object-fit: contain; filter: drop-shadow(0 26px 22px rgb(120 60 20 / .25)); }
+  .stars { color: #f2a33a; letter-spacing: 2px; }
+  .fact { display: flex; align-items: center; gap: 14px; border-radius: 16px; border: 2px solid #f1e6da; background: #fff; font-weight: 600; position: relative; }
+  .fact .ic { border-radius: 12px; background: #fdf1e5; color: var(--deep); display: grid; place-items: center; flex: none; }
+  .fact .glow { position: absolute; inset: -4px; border-radius: 19px; border: 3px solid var(--orange); box-shadow: 0 0 24px rgb(242 140 56 / .45); opacity: 0; }
+  .atc { border-radius: 18px; background: var(--ink); color: #fff; display: flex; align-items: center; justify-content: center; gap: 12px; font-weight: 700; font-family: var(--w); }
+  #toast { border-radius: 22px; background: #fff; box-shadow: 0 30px 60px -24px rgb(80 40 10 / .45), 0 0 0 1px #f1e6da; display: flex; align-items: center; box-sizing: border-box; }
+  #toast .th { border-radius: 14px; background: linear-gradient(160deg, #f8f1ea, #efe2d3); display: grid; place-items: center; flex: none; }
+  #toast .th img { width: 76%; height: 76%; object-fit: contain; }
+  #toast .ok { border-radius: 50%; background: var(--orange); color: #fff; display: grid; place-items: center; flex: none; }
+  /* the widget (avatar-widget-style.css, scaled) */
+  .glass { border: 2px solid rgb(255 255 255 / .85); background-color: rgb(255 255 255 / .62); background-image: linear-gradient(150deg, rgb(255 255 255 / .55), rgb(255 255 255 / 0));
+    -webkit-backdrop-filter: blur(30px) saturate(1.25); backdrop-filter: blur(30px) saturate(1.25); box-shadow: 0 30px 70px -30px rgb(80 40 10 / .45), 0 4px 14px -6px rgb(80 40 10 / .18); }
+  #wcard { border-radius: 22px; font-family: var(--w); }
+  #wstage { overflow: hidden; border-radius: 22px 22px 0 0; }
   #avatar { position: absolute; }
-  #vol { border-radius: 50%; display: grid; place-items: center; color: var(--orange); border: 2px solid color-mix(in oklab, var(--orange) 30%, transparent); background: color-mix(in oklab, var(--orange) 14%, transparent); }
-  #composer { border-radius: 40px; border: 2px solid rgb(0 0 0 / .1); background: rgb(255 255 255 / .6); display: flex; align-items: center; box-sizing: border-box; }
-  #composer .ph { flex: 1; color: #a3a3a3; font-weight: 500; white-space: nowrap; overflow: hidden; }
-  #call { border-radius: 50%; display: grid; place-items: center; color: #fff; background: var(--orange); box-shadow: 0 4px 10px rgb(0 0 0 / .12); flex: none; }
-  .glow { border-radius: 50%; background: radial-gradient(circle, rgb(242 140 56 / .32) 0%, transparent 70%); }
-  .ring { border-radius: 50%; border: 4px solid rgb(242 140 56 / .34); box-sizing: border-box; }
-  #laser { border-radius: 50%; background: conic-gradient(from 0deg, rgb(242 140 56 / 0) 0deg, rgb(242 140 56 / 0) 135deg, rgb(242 140 56 / .6) 360deg);
-    -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 7px), #000 calc(100% - 5px)); mask: radial-gradient(farthest-side, transparent calc(100% - 7px), #000 calc(100% - 5px)); }
+  #vol, #mvol { border-radius: 50%; display: grid; place-items: center; color: var(--orange); border: 2px solid color-mix(in oklab, var(--orange) 30%, transparent); background: color-mix(in oklab, var(--orange) 14%, transparent); }
+  #composer { border-radius: 26px; border: 2px solid rgb(0 0 0 / .08); background: rgb(255 255 255 / .7); display: flex; align-items: center; box-sizing: border-box; }
+  .ph { flex: 1; color: #a3a3a3; font-weight: 500; white-space: nowrap; overflow: hidden; font-family: var(--w); }
+  .call { border-radius: 50%; display: grid; place-items: center; color: #fff; background: var(--orange); box-shadow: 0 4px 10px rgb(0 0 0 / .12); flex: none; }
+  .gl { border-radius: 50%; background: radial-gradient(circle, rgb(242 140 56 / .34) 0%, transparent 70%); }
+  .rg { border-radius: 50%; border: 4px solid rgb(242 140 56 / .36); box-sizing: border-box; }
+  #laser { border-radius: 50%; background: conic-gradient(from 0deg, rgb(242 140 56 / 0) 0deg, rgb(242 140 56 / 0) 135deg, rgb(242 140 56 / .65) 360deg);
+    -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 6px), #000 calc(100% - 4px)); mask: radial-gradient(farthest-side, transparent calc(100% - 6px), #000 calc(100% - 4px)); }
   #tool { border-radius: 50%; background: #fff; color: var(--orange); display: grid; place-items: center; box-shadow: 0 4px 14px rgb(0 0 0 / .18); }
-  #caps { border-radius: 28px; display: flex; flex-wrap: wrap; justify-content: center; gap: 0 .3em; font-weight: 700; color: var(--ink); box-sizing: border-box; box-shadow: 0 20px 50px -24px rgb(120 45 0 / .45); }
-  #caps i { font-style: normal; opacity: .3; }
-  #caps i.on { opacity: 1; } #caps i.now { opacity: 1; text-shadow: 0 0 18px rgb(242 140 56 / .7); }
-  #sent { border-radius: 30px 30px 8px 30px; background: var(--orange); color: #fff; font-weight: 700; box-shadow: 0 18px 40px -16px rgb(150 55 0 / .6); }
-  .prod { border-radius: 28px; display: flex; align-items: center; box-sizing: border-box; box-shadow: 0 30px 60px -28px rgb(120 45 0 / .55); background: rgb(255 255 255 / .86); border: 2px solid #fff; }
-  .prod .img { flex: none; border-radius: 20px; background: linear-gradient(160deg, #fbf3ea, #f1e1cf); display: grid; place-items: center; }
-  .prod .img img { width: 78%; height: 78%; max-width: 78%; max-height: 78%; object-fit: contain; filter: drop-shadow(0 8px 8px rgb(120 50 0 / .25)); }
-  .prod b { display: block; color: var(--ink); font-weight: 800; letter-spacing: -.01em; }
-  .prod span { color: #c25f0e; font-weight: 800; }
-  .prod small { display: block; color: #8a7b6e; font-weight: 600; }
-  .prod .pick { position: absolute; inset: -8px; border-radius: 34px; border: 5px solid var(--orange); opacity: 0; }
-  .prod .check { position: absolute; right: -16px; top: -16px; border-radius: 50%; background: var(--orange); border: 5px solid #fff; display: grid; place-items: center; color: #fff; }
-  #banner { border-radius: 28px; display: flex; align-items: center; box-sizing: border-box; box-shadow: 0 30px 60px -28px rgb(120 45 0 / .55); }
-  #banner .ic { flex: none; border-radius: 18px; background: color-mix(in oklab, var(--orange) 14%, #fff); display: grid; place-items: center; color: var(--orange); }
-  #banner .t { flex: 1; min-width: 0; line-height: 1.2; }
-  #banner .t small { display: block; color: var(--orange); font-weight: 800; letter-spacing: .08em; text-transform: uppercase; }
-  #banner .t b { display: block; color: var(--ink); font-weight: 800; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  #banner svg.cd { flex: none; }
-  #fly { position: absolute; object-fit: contain; filter: drop-shadow(0 12px 12px rgb(120 50 0 / .3)); }
+  #mbar { border-radius: 40px; display: flex; align-items: center; box-sizing: border-box; font-family: var(--w); }
+  #mhead { position: relative; flex: none; }
+  #mface { position: absolute; inset: 0; border-radius: 50%; overflow: hidden; background: color-mix(in oklab, var(--orange) 16%, #fff); }
+  #mface img { position: absolute; }
+  #mhalo { position: absolute; inset: 0; border-radius: 50%; border: 4px solid var(--orange); }
+  #caps { border-radius: 24px; display: flex; flex-wrap: wrap; justify-content: center; gap: 0 .3em; font-weight: 700; color: var(--ink); box-sizing: border-box; font-family: var(--w); }
+  #caps i { font-style: normal; opacity: .3; } #caps i.on { opacity: 1; } #caps i.now { opacity: 1; text-shadow: 0 0 16px rgb(242 140 56 / .7); }
+  #sent { border-radius: 26px 26px 8px 26px; background: var(--orange); color: #fff; font-weight: 700; font-family: var(--w); box-shadow: 0 18px 40px -16px rgb(150 55 0 / .6); box-sizing: border-box; }
+  #caps, .bn { background-color: rgb(255 255 255 / .9); }
+  .bn { border-radius: 22px; display: flex; align-items: center; box-sizing: border-box; font-family: var(--w); }
+  .bn .ic { flex: none; border-radius: 14px; background: color-mix(in oklab, var(--orange) 14%, #fff); display: grid; place-items: center; color: var(--orange); }
+  .bn .t { flex: 1; min-width: 0; line-height: 1.2; }
+  .bn .t small { display: block; color: var(--orange); font-weight: 800; letter-spacing: .08em; text-transform: uppercase; }
+  .bn .t b { display: block; color: var(--ink); font-weight: 800; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   svg.i { display: block; }
 </style>
 </head>
 <body>
 <div id="stage"><div id="cam">
-  <div class="abs" id="cardshadow"></div>
-  <div class="abs glass" id="card"></div>
-  <div class="abs glow" id="glow"></div>
-  <div class="abs ring" id="r1"></div><div class="abs ring" id="r2"></div>
-  <div class="abs" id="stagewrap"><img id="avatar" alt="" style="visibility:hidden" onload="this.style.visibility='visible'" onerror="this.style.visibility='hidden'" /></div>
-  <div class="abs" id="laser"></div>
-  <div class="abs" id="tool"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg></div>
-  <div class="abs" id="vol"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4.702a.705.705 0 0 0-1.203-.498L6.413 7.587A1.4 1.4 0 0 1 5.416 8H3a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h2.416a1.4 1.4 0 0 1 .997.413l3.383 3.384A.705.705 0 0 0 11 19.298z"/><path d="M16 9a5 5 0 0 1 0 6"/><path d="M19.364 18.364a9 9 0 0 0 0-12.728"/></svg></div>
-  <div class="abs" id="composer"><span class="ph" id="ph"></span><span id="call"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M2 10v3"/><path d="M6 6v11"/><path d="M10 3v18"/><path d="M14 8v7"/><path d="M18 5v13"/><path d="M22 10v3"/></svg></span></div>
-  <div class="abs glass" id="caps"></div>
-  <div class="abs" id="sent">A gift for my sister? She loves ceramics.</div>
-  <div class="abs prod" id="p0"><span class="img"><img src="p-capsule-b.webp" alt="" /></span><span class="tx"><b>Pebble Vase</b><small>Hand-glazed · 24 cm</small><span>$48</span></span><span class="pick"></span><span class="check"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span></div>
-  <div class="abs prod" id="p1"><span class="img"><img src="p-dome-c.webp" alt="" /></span><span class="tx"><b>Dome Lamp</b><small>Stoneware · warm light</small><span>$96</span></span><span class="pick"></span></div>
-  <div class="abs prod" id="p2"><span class="img"><img src="p-torus-b.webp" alt="" /></span><span class="tx"><b>Ring Planter</b><small>For small succulents</small><span>$39</span></span><span class="pick"></span></div>
-  <img id="fly" src="p-capsule-b.webp" alt="" />
-  <div class="abs glass" id="banner"><span class="ic"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="21" r="1"/><circle cx="19" cy="21" r="1"/><path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"/></svg></span><span class="t"><small>Adding to cart</small><b>Pebble Vase</b></span><svg class="cd" viewBox="0 0 40 40"><circle cx="20" cy="20" r="16" fill="none" stroke="rgb(242 140 56 / .22)" stroke-width="5"/><circle id="cdarc" cx="20" cy="20" r="16" fill="none" stroke="#f28c38" stroke-width="5" stroke-linecap="round" pathLength="100" stroke-dasharray="100" transform="rotate(-90 20 20)"/></svg></div>
+  <div class="abs" id="device"></div>
+  <div class="abs" id="screen"></div>
 </div></div>
 <script>
   const N = 336; // 14 s at 24 fps
   const q = new URLSearchParams(location.search);
   const layout = q.get("layout") || "wide";
   document.documentElement.className = layout;
+  const WIDE = layout === "wide";
   const FRAMES = q.get("frames") || "../../tmp/hero-anim/frames2";
-  const PLACEHOLDER = "Ask me anything…";
-  const CAPS = [[110, 176, "Lovely! These three are handmade,"], [180, 244, "and they all ship by Friday."]];
 
-  // geometry (px in the stage); the widget card is the real 288×296 card at k×
-  const L = layout === "wide"
-    ? { k: 2.15, card: { x: 750, y: 112 }, w: 590, h: 740, prods: { x: 380, y: 230, w: 340, gap: 146 }, sent: { left: 1372, y: 200 }, banner: { x: 1372, y: 590, w: 380 }, font: 0.9 }
-    : { k: 3.0, card: { x: 140, y: 540 }, w: 800, h: 980, prods: { x: 80, y: 250, w: 300, gap: 0, row: true, h: 260 }, sent: { right: 1000, y: 330 }, banner: { x: 140, y: 410, w: 800 }, font: 1.15 };
+  const ICON = {
+    lock: '<path d="M7 11V7a5 5 0 0 1 10 0v4"/><rect x="4" y="11" width="16" height="10" rx="2"/>',
+    search: '<circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/>',
+    cart: '<circle cx="8" cy="21" r="1"/><circle cx="19" cy="21" r="1"/><path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"/>',
+    vol: '<path d="M11 4.702a.705.705 0 0 0-1.203-.498L6.413 7.587A1.4 1.4 0 0 1 5.416 8H3a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h2.416a1.4 1.4 0 0 1 .997.413l3.383 3.384A.705.705 0 0 0 11 19.298z"/><path d="M16 9a5 5 0 0 1 0 6"/><path d="M19.364 18.364a9 9 0 0 0 0-12.728"/>',
+    audio: '<path d="M2 10v3"/><path d="M6 6v11"/><path d="M10 3v18"/><path d="M14 8v7"/><path d="M18 5v13"/><path d="M22 10v3"/>',
+    nav: '<polygon points="3 11 22 2 13 21 11 13 3 11"/>',
+    truck: '<path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2"/><path d="M15 18H9"/><path d="M19 18h2a1 1 0 0 0 1-1v-3.65a1 1 0 0 0-.22-.624l-3.48-4.35A1 1 0 0 0 17.52 8H14"/><circle cx="17" cy="18" r="2"/><circle cx="7" cy="18" r="2"/>',
+    gift: '<rect x="3" y="8" width="18" height="4" rx="1"/><path d="M12 8v13"/><path d="M19 12v7a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-7"/><path d="M7.5 8a2.5 2.5 0 0 1 0-5A4.8 8 0 0 1 12 8a4.8 8 0 0 1 4.5-5 2.5 2.5 0 0 1 0 5"/>',
+    hand: '<path d="M18 11V6a2 2 0 0 0-4 0v1M14 10V4a2 2 0 0 0-4 0v2M10 10.5V6a2 2 0 0 0-4 0v8"/><path d="M18 8a2 2 0 1 1 4 0v6a8 8 0 0 1-8 8h-2c-2.8 0-4.5-.86-5.99-2.34l-3.6-3.6a2 2 0 0 1 2.83-2.82L7 15"/>',
+    check: '<path d="M20 6 9 17l-5-5"/>',
+    spark: '<path d="M12 3l1.9 5.8L20 11l-6.1 2.2L12 19l-1.9-5.8L4 11l6.1-2.2z"/>',
+  };
+  const ic = (n, size, sw = 2.2) => `<svg class="i" width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="${sw}" stroke-linecap="round" stroke-linejoin="round">${ICON[n]}</svg>`;
 
+  // the shop
+  const PRODUCTS = [
+    { img: "p-tall-cylinder", name: "Column Vase", price: 64 },
+    { img: "p-capsule-b", name: "Pebble Vase", price: 48, pick: true },
+    { img: "p-cone-b", name: "Cone Candle", price: 22 },
+    { img: "p-dome-c", name: "Dome Lamp", price: 96, pick: true },
+    { img: "p-slab-b", name: "Slab Tray", price: 34 },
+    { img: "p-sphere-b", name: "Orb Bowl", price: 29 },
+    { img: "p-egg", name: "Egg Vessel", price: 42 },
+    { img: "p-torus-b", name: "Ring Planter", price: 39, pick: true },
+  ];
+  const SHOWN = WIDE ? PRODUCTS : [PRODUCTS[2], PRODUCTS[1], PRODUCTS[3], PRODUCTS[7]];
+  const CAPS = [[104, 138, "Lovely! These three are handmade."], [182, 240, "The vase ships by Friday, gift-wrapped."]];
+
+  // geometry (px); the screen is the device's inner area
+  const G = WIDE ? {
+    device: { x: 140, y: 56, w: 1640, h: 958 }, pad: 10, k: 1.75,
+    bar: 56, hdr: 76,
+    card: { w: 288 * 1.75, h: 296 * 1.75 },
+  } : {
+    device: { x: 90, y: 600, w: 900, h: 1500 }, pad: 12, k: 3.0,
+    bar: 120, hdr: 104,
+  };
+  const S = { x: G.device.x + G.pad, y: G.device.y + G.pad, w: G.device.w - 2 * G.pad, h: G.device.h - 2 * G.pad };
   const $ = (id) => document.getElementById(id);
+  const box = (el, x, y, w, h) => Object.assign(el.style, { left: `${x}px`, top: `${y}px`, width: w == null ? "" : `${w}px`, height: h == null ? "" : `${h}px` });
   const clamp = (v, a = 0, b = 1) => Math.min(b, Math.max(a, v));
   const ramp = (f, a, b) => clamp((f - a) / (b - a));
   const ease = (t) => t * t * (3 - 2 * t);
   const spring = (t) => (t <= 0 ? 0 : t >= 1.6 ? 1 : 1 - Math.exp(-6 * t) * Math.cos(9 * t));
-  const box = (el, x, y, w, h) => Object.assign(el.style, { left: `${x}px`, top: `${y}px`, width: `${w}px`, height: `${h}px` });
   const win = (f, a, b, fin = 8, fout = 10) => Math.min(ease(ramp(f, a, a + fin)), 1 - ease(ramp(f, b - fout, b)));
 
-  function layoutStatic() {
-    const { card, w, h, k } = L;
-    const comp = 46 * k;                         // composer pill height
-    const pad = 12 * k;
-    box($("card"), card.x, card.y, w, h);
-    box($("cardshadow"), card.x - 40, card.y + h - 40, w + 80, 120);
-    box($("vol"), card.x + w - 8 * k - 34 * k, card.y + 8 * k, 34 * k, 34 * k);
-    $("vol").querySelector("svg").style.width = $("vol").querySelector("svg").style.height = `${16 * k}px`;
-    box($("composer"), card.x + pad, card.y + h - pad - comp, w - 2 * pad, comp);
-    Object.assign($("composer").style, { padding: `0 ${6 * k}px 0 ${16 * k}px`, gap: `${8 * k}px` });
-    $("ph").style.fontSize = `${14 * k}px`;
-    $("ph").textContent = PLACEHOLDER;
-    box($("call"), 0, 0, 34 * k, 34 * k); $("call").style.position = "static";
-    $("call").querySelector("svg").style.width = $("call").querySelector("svg").style.height = `${15 * k}px`;
-    // the agent's stage: the card above the composer
-    const st = { x: card.x, y: card.y, w, h: h - comp - pad * 1.2 };
-    box($("stagewrap"), st.x, st.y, st.w, st.h);
-    const ah = st.h * 1.18, aw = ah * (1100 / 1200);
-    box($("avatar"), (st.w - aw) / 2, st.h - ah * 0.9, aw, ah);
-    L.head = { x: card.x + w / 2, y: st.y + st.h - ah * 0.9 + ah * 0.27 };
-    const tool = $("tool");
-    box(tool, 0, 0, 30 * k, 30 * k);
-    tool.querySelector("svg").style.width = tool.querySelector("svg").style.height = `${15 * k}px`;
-    // captions, just above the composer
-    const cw = w - 2 * pad - 20;
-    Object.assign($("caps").style, { left: `${card.x + pad + 10}px`, top: `${card.y + h - pad - comp - 30 - 34 * k}px`, width: `${cw}px`, padding: `${7 * k}px ${12 * k}px`, fontSize: `${15.5 * k * L.font * 0.72}px`, lineHeight: 1.3 });
-    // shopper's message
-    const s = $("sent");
-    Object.assign(s.style, { fontSize: `${30 * L.font}px`, padding: "22px 30px", maxWidth: layout === "wide" ? "380px" : "560px", top: `${L.sent.y}px` });
-    if (L.sent.left != null) Object.assign(s.style, { left: `${L.sent.left}px`, borderRadius: "30px 30px 30px 8px" });
-    else s.style.right = `${(layout === "wide" ? 1920 : 1080) - L.sent.right}px`;
-    // products
-    for (let i = 0; i < 3; i++) {
-      const p = $(`p${i}`);
-      const pw = L.prods.w, ph = L.prods.h || 128;
-      const x = L.prods.row ? L.prods.x + i * (pw + 20) : L.prods.x;
-      const y = L.prods.row ? L.prods.y : L.prods.y + i * L.prods.gap;
-      box(p, x, y, pw, ph);
-      Object.assign(p.style, { padding: layout === "wide" ? "16px" : "18px", gap: "18px", flexDirection: layout === "wide" ? "row" : "column", textAlign: layout === "wide" ? "left" : "center" });
-      const im = p.querySelector(".img"); const s_ = layout === "wide" ? 96 : 130; box(im, 0, 0, s_, s_); im.style.position = "static";
-      Object.assign(im.querySelector("img").style, { width: `${s_ * 0.78}px`, height: `${s_ * 0.78}px` });
-      p.querySelector("b").style.fontSize = `${layout === "wide" ? 23 : 24}px`;
-      p.querySelector("small").style.fontSize = `${layout === "wide" ? 18 : 18}px`;
-      p.querySelector("span.tx > span").style.fontSize = `${layout === "wide" ? 24 : 24}px`;
-      const ck = p.querySelector(".check"); if (ck) { box(ck, 0, 0, 56, 56); Object.assign(ck.style, { left: "auto", top: "-18px", right: "-18px" }); ck.querySelector("svg").style.width = ck.querySelector("svg").style.height = "26px"; }
-      L[`p${i}`] = { x: x + pw / 2, y: y + ph / 2 };
+  function build() {
+    box($("device"), G.device.x, G.device.y, G.device.w, G.device.h);
+    const scr = $("screen");
+    box(scr, S.x, S.y, S.w, S.h);
+    const top = G.bar + G.hdr;
+    scr.innerHTML = `
+      <div class="bar" style="height:${G.bar}px; padding:0 ${WIDE ? 24 : 48}px; ${WIDE ? "" : "align-items:flex-start; padding-top:22px;"}">
+        ${WIDE ? '<span class="dots"><i></i><i></i><i></i></span>' : `<span style="font:700 32px var(--w)">9:41</span>`}
+        <span class="url" style="height:${WIDE ? 34 : 50}px; padding:0 ${WIDE ? 22 : 30}px; font-size:${WIDE ? 16 : 24}px; ${WIDE ? "" : "top:62px;"}">${ic("lock", WIDE ? 14 : 20)}kilnhaus.com</span>
+      </div>
+      <div class="hdr" style="top:${G.bar}px; height:${G.hdr}px; padding:0 ${WIDE ? 40 : 48}px; gap:${WIDE ? 70 : 0}px">
+        <span class="logo" style="font-size:${WIDE ? 30 : 44}px">kiln<b>haus</b></span>
+        ${WIDE ? '<span class="nav" style="font-size:18px"><span>Shop</span><span>Vases</span><span>Lamps</span><span>Gifts</span></span>' : ""}
+        <span class="icons">${ic("search", WIDE ? 24 : 38)}<span class="cart">${ic("cart", WIDE ? 26 : 40)}<span class="badge" id="badge" style="min-width:${WIDE ? 26 : 40}px; height:${WIDE ? 26 : 40}px; font-size:${WIDE ? 13 : 20}px; padding:0 4px">2</span></span></span>
+      </div>
+      <div class="view" id="list" style="top:${top}px"></div>
+      <div class="view pdp" id="pdp" style="top:${top}px"></div>
+      <div class="abs" id="toast"></div>
+      <div class="abs" id="ovl"></div>`;
+
+    // the listing
+    const list = $("list");
+    const cols = WIDE ? 4 : 2, cw = WIDE ? 230 : 380, ch = WIDE ? 190 : 330, gap = WIDE ? 22 : 28, gx = WIDE ? 40 : 48, gy = WIDE ? 104 : 150;
+    list.innerHTML = `<div class="ttl" style="position:absolute; left:${gx}px; top:${WIDE ? 32 : 40}px; font-size:${WIDE ? 34 : 54}px">Handmade ceramics</div>
+      <div class="sub" style="position:absolute; left:${gx}px; top:${WIDE ? 76 : 106}px; font-size:${WIDE ? 17 : 26}px">Small batches, glazed by hand</div>` +
+      SHOWN.map((p, i) => `<div class="pc" id="pc${i}" style="left:${gx + (i % cols) * (cw + gap)}px; top:${gy + Math.floor(i / cols) * (ch + (WIDE ? 98 : 140))}px; width:${cw}px">
+        <div class="tile" style="height:${ch}px"><img src="${p.img}.webp" alt="" style="width:${cw * 0.62}px; height:${ch * 0.72}px" />${p.pick ? `<span class="chip" style="opacity:0; ${WIDE ? "" : "font-size:22px; padding:8px 16px;"}">${ic("spark", WIDE ? 14 : 20, 2.4)}Picked for you</span>` : ""}</div>
+        <span class="ring"></span>
+        <b style="font-size:${WIDE ? 18 : 28}px">${p.name}</b><span class="p" style="font-size:${WIDE ? 17 : 26}px">$${p.price}</span></div>`).join("");
+
+    // the product page
+    const pdp = $("pdp");
+    const ix = WIDE ? 40 : 48, iy = WIDE ? 34 : 40, isz = WIDE ? 520 : S.w - 96, ih = WIDE ? 520 : 520;
+    const fx = WIDE ? 600 : 48, fy = WIDE ? 40 : iy + ih + 36, fw = WIDE ? 430 : S.w - 96;
+    const fact = (id, i, t) => `<div class="fact" id="${id}" style="height:${WIDE ? 54 : 80}px; padding:0 ${WIDE ? 14 : 22}px; font-size:${WIDE ? 17 : 27}px; margin-top:${WIDE ? 12 : 16}px"><span class="ic" style="width:${WIDE ? 34 : 50}px; height:${WIDE ? 34 : 50}px">${ic(i, WIDE ? 19 : 28)}</span>${t}<span class="glow"></span></div>`;
+    pdp.innerHTML = `<div class="img" style="left:${ix}px; top:${iy}px; width:${isz}px; height:${ih}px"><img src="p-capsule-b.webp" alt="" style="width:${Math.min(isz, ih) * 0.5}px; height:${ih * 0.72}px" /></div>
+      <div style="position:absolute; left:${fx}px; top:${fy}px; width:${fw}px">
+        <div class="sub" style="font-size:${WIDE ? 15 : 24}px">Shop / Vases</div>
+        <div class="ttl" style="font-size:${WIDE ? 48 : 60}px; margin-top:${WIDE ? 8 : 6}px">Pebble Vase</div>
+        <div style="display:flex; align-items:center; gap:14px; margin-top:${WIDE ? 10 : 8}px; font-size:${WIDE ? 17 : 26}px; color:var(--muted); font-weight:600"><span class="stars">★★★★★</span>4.9 · 127 reviews</div>
+        <div class="ttl" style="font-size:${WIDE ? 34 : 48}px; margin-top:${WIDE ? 14 : 10}px; color:#b25a14">$48</div>
+        ${fact("f0", "truck", "Ships by Friday")}${fact("f1", "gift", "Gift wrap available")}${WIDE ? fact("f2", "hand", "Glazed by hand, one of a kind") : ""}
+        <div class="atc" id="atc" style="height:${WIDE ? 60 : 88}px; margin-top:${WIDE ? 22 : 24}px; font-size:${WIDE ? 19 : 30}px">${ic("cart", WIDE ? 22 : 34)}<span id="atcl">Add to cart</span></div>
+      </div>`;
+
+    // the cart toast (top of the page)
+    const t = $("toast");
+    const tw = WIDE ? 440 : S.w - 96, th = WIDE ? 104 : 150;
+    box(t, WIDE ? S.w - tw - 24 : 48, top + (WIDE ? 18 : 24), tw, th);
+    Object.assign(t.style, { padding: `0 ${WIDE ? 16 : 24}px`, gap: `${WIDE ? 14 : 20}px`, fontFamily: "var(--w)" });
+    const ts = WIDE ? 64 : 96;
+    t.innerHTML = `<span class="ok" style="width:${WIDE ? 34 : 50}px; height:${WIDE ? 34 : 50}px">${ic("check", WIDE ? 18 : 26, 3.2)}</span>
+      <span style="flex:1; min-width:0"><b style="display:block; font-size:${WIDE ? 19 : 29}px">Added to cart</b><span style="color:var(--muted); font-weight:600; font-size:${WIDE ? 15 : 23}px">Pebble Vase + gift box · $56</span></span>
+      <span class="th" style="width:${ts}px; height:${ts}px"><img src="p-capsule-b.webp" alt="" /></span><span class="th" style="width:${ts}px; height:${ts}px"><img src="p-rounded-cube.webp" alt="" /></span>`;
+
+    // the widget: desktop card bottom-right, or the mobile bar at the bottom
+    const ovl = $("ovl");
+    ovl.style.inset = "0";
+    if (WIDE) {
+      const k = G.k, cw2 = G.card.w, ch2 = G.card.h;
+      const cx = S.w - 22 - cw2, cy = S.h - 22 - ch2;
+      const comp = 44 * k, pad = 12 * k, sth = ch2 - comp - pad * 1.2;
+      G.w = { cx, cy, cw: cw2, ch: ch2, sth, k };
+      ovl.innerHTML = `<div class="abs glass" id="wcard" style="left:${cx}px; top:${cy}px; width:${cw2}px; height:${ch2}px"></div>
+        <div class="abs gl" id="gl"></div><div class="abs rg" id="r1"></div><div class="abs rg" id="r2"></div>
+        <div class="abs" id="wstage" style="left:${cx}px; top:${cy}px; width:${cw2}px; height:${sth}px"><img id="avatar" alt="" /></div>
+        <div class="abs" id="laser"></div><div class="abs" id="tool" style="width:${28 * k}px; height:${28 * k}px">${ic("search", 14 * k, 2.4)}</div>
+        <div class="abs" id="vol" style="left:${cx + cw2 - 8 * k - 32 * k}px; top:${cy + 8 * k}px; width:${32 * k}px; height:${32 * k}px">${ic("vol", 16 * k)}</div>
+        <div class="abs" id="composer" style="left:${cx + pad}px; top:${cy + ch2 - pad - comp}px; width:${cw2 - 2 * pad}px; height:${comp}px; padding:0 ${6 * k}px 0 ${16 * k}px; gap:${8 * k}px"><span class="ph" style="font-size:${14 * k}px">Ask me anything…</span><span class="call" style="width:${32 * k}px; height:${32 * k}px">${ic("audio", 14 * k, 2.6)}</span></div>
+        <div class="abs glass" id="caps"></div><div class="abs" id="sent">A gift for my sister? She loves ceramics.</div>
+        <div class="abs glass bn" id="b0"></div><div class="abs glass bn" id="b1"></div>`;
+      const ah = sth * 1.16, aw = ah * (1100 / 1200);
+      box($("avatar"), (cw2 - aw) / 2, sth - ah * 0.9, aw, ah);
+      G.head = { x: cx + cw2 / 2, y: cy + sth - ah * 0.9 + ah * 0.27 };
+      Object.assign($("caps").style, { left: `${cx}px`, bottom: `${S.h - cy + 16}px`, width: `${cw2}px`, padding: "14px 22px", fontSize: "23px", lineHeight: 1.3 });
+      Object.assign($("sent").style, { right: `${S.w - (cx + cw2)}px`, top: `${cy - 100}px`, fontSize: "21px", padding: "16px 22px", maxWidth: "440px" });
+      for (const id of ["b0", "b1"]) { const b = $(id); box(b, cx, cy - 104, cw2, 88); Object.assign(b.style, { padding: "0 18px", gap: "16px" }); }
+    } else {
+      const k = G.k, bw = S.w - 48, bh = 54 * k, bx = 24, by = S.h - 28 - bh;
+      const hs = 42 * k;
+      ovl.innerHTML = `<div class="abs glass" id="mbar" style="left:${bx}px; top:${by}px; width:${bw}px; height:${bh}px; padding:${8 * k}px ${8 * k}px; gap:${6 * k}px">
+          <span id="mhead" style="width:${hs}px; height:${hs}px"><span id="mhalo"></span><span id="mface"><img id="avatar" alt="" /></span><span id="laser" class="abs" style="inset:-14px"></span></span>
+          <span id="mvol" style="width:${32 * k}px; height:${32 * k}px; flex:none">${ic("vol", 16 * k)}</span>
+          <span class="ph" style="font-size:${14 * k}px; padding:0 ${4 * k}px">Ask me anything…</span>
+          <span class="call" style="width:${32 * k}px; height:${32 * k}px">${ic("audio", 14 * k, 2.6)}</span></div>
+        <div class="abs glass" id="caps"></div><div class="abs" id="sent">A gift for my sister? She loves ceramics.</div>
+        <div class="abs glass bn" id="b0"></div><div class="abs glass bn" id="b1"></div>`;
+      const fw = hs * 2.7, fh = fw * (1200 / 1100);
+      box($("avatar"), hs / 2 - fw * 0.5, hs / 2 - fh * 0.33, fw, fh);
+      Object.assign($("caps").style, { left: "48px", width: `${S.w - 96}px`, top: `${by - 150}px`, padding: "20px 28px", fontSize: "34px", lineHeight: 1.3 });
+      Object.assign($("sent").style, { right: "40px", top: `${by - 150}px`, fontSize: "32px", padding: "22px 30px", maxWidth: "640px" });
+      for (const id of ["b0", "b1"]) { const b = $(id); box(b, 40, by - 160, S.w - 80, 126); Object.assign(b.style, { padding: "0 26px", gap: "22px" }); }
     }
-    const b = $("banner");
-    box(b, L.banner.x, L.banner.y, L.banner.w, 116);
-    Object.assign(b.style, { padding: "0 20px", gap: "18px" });
-    box(b.querySelector(".ic"), 0, 0, 72, 72); b.querySelector(".ic").style.position = "static";
-    b.querySelector(".ic svg").style.width = b.querySelector(".ic svg").style.height = "34px";
-    b.querySelector(".t small").style.fontSize = "15px"; b.querySelector(".t b").style.fontSize = layout === "wide" ? "23px" : "26px";
-    b.querySelector("svg.cd").style.width = b.querySelector("svg.cd").style.height = "52px";
+    const bnr = (id, icon, label, title) => {
+      const z = WIDE ? 1 : 1.5;
+      $(id).innerHTML = `<span class="ic" style="width:${56 * z}px; height:${56 * z}px">${ic(icon, 26 * z)}</span><span class="t"><small style="font-size:${13 * z}px">${label}</small><b style="font-size:${21 * z}px">${title}</b></span>
+        <svg class="i" width="${44 * z}" height="${44 * z}" viewBox="0 0 40 40"><circle cx="20" cy="20" r="16" fill="none" stroke="rgb(242 140 56 / .22)" stroke-width="5"/><circle class="cd" cx="20" cy="20" r="16" fill="none" stroke="#f28c38" stroke-width="5" stroke-linecap="round" pathLength="100" stroke-dasharray="100" transform="rotate(-90 20 20)"/></svg>`;
+    };
+    bnr("b0", "nav", "Taking you to", "Pebble Vase");
+    bnr("b1", "cart", "Adding to cart", "Pebble Vase + gift box");
   }
 
   async function renderFrame(f) {
-    const { k } = L;
     const ph = (f / N) * Math.PI * 2;
-    $("cam").style.transform = `scale(${1.035 - 0.035 * Math.cos(ph)}) translate(${(-6 * Math.sin(ph)).toFixed(2)}px, ${(4 * Math.sin(ph * 2)).toFixed(2)}px)`;
+    $("cam").style.transformOrigin = WIDE ? "62% 55%" : "50% 70%";
+    $("cam").style.transform = `scale(${1.02 - 0.02 * Math.cos(ph)})`;
+
+    // avatar frame
     const av = $("avatar");
     const src = `${FRAMES}/f_${String(f).padStart(4, "0")}.png`;
     if (av.getAttribute("src") !== src) { av.setAttribute("src", src); await av.decode().catch(() => {}); }
 
-    // speaking: glow + two rings around the head (the widget's speaking state)
-    const speak = Math.max(win(f, 104, 246), win(f, 252, 296));
-    const H = L.head;
-    const gs = 170 * k * (1 + 0.04 * Math.sin(f / 4));
-    box($("glow"), H.x - gs / 2, H.y - gs / 2, gs, gs); $("glow").style.opacity = speak;
-    ["r1", "r2"].forEach((id, i) => {
-      const p = ((f + i * 26) % 52) / 52; const r = 120 * k * (0.8 + 0.65 * p);
-      box($(id), H.x - r / 2, H.y - r / 2, r, r); $(id).style.opacity = speak * 0.9 * (1 - p);
+    // views: listing ↔ product page
+    const toPdp = ease(ramp(f, 164, 178)), back = ease(ramp(f, 302, 324));
+    const pdpOn = toPdp * (1 - back);
+    Object.assign($("list").style, { opacity: 1 - pdpOn, transform: `translateX(${-40 * pdpOn}px)` });
+    Object.assign($("pdp").style, { opacity: pdpOn, transform: `translateX(${40 * (1 - pdpOn)}px)` });
+
+    // Find it: the catalogue narrows to three picks
+    const fade = 1 - ease(ramp(f, 300, 320));
+    const narrow = ease(ramp(f, 66, 92)) * fade;
+    SHOWN.forEach((p, i) => {
+      const el = $(`pc${i}`);
+      const hit = p.pick ? clamp(spring((f - (84 + i * 3)) / 12)) * fade : 0;
+      el.style.opacity = p.pick ? 1 : 1 - 0.78 * narrow;
+      el.style.filter = p.pick ? "none" : `saturate(${1 - narrow}) blur(${2 * narrow}px)`;
+      const press = p.name === "Pebble Vase" ? 0.04 * win(f, 150, 166, 4, 6) : 0;
+      el.style.transform = `scale(${p.pick ? 1 + 0.03 * hit + press : 1 - 0.04 * narrow})`;
+      el.querySelector(".ring").style.opacity = hit;
+      const chip = el.querySelector(".chip"); if (chip) { chip.style.opacity = hit; chip.style.transform = `scale(${0.8 + 0.2 * hit})`; }
     });
 
-    // working: the laser orbiting the head with the search tool at its tip (while it thinks)
-    const work = win(f, 34, 104, 8, 8);
-    const ls = 150 * k;
-    const rot = (f / 58) * 360;
-    box($("laser"), H.x - ls / 2, H.y - ls / 2, ls, ls); Object.assign($("laser").style, { opacity: work, transform: `rotate(${rot}deg)` });
-    const tr = rot * Math.PI / 180, ts = 30 * k;
-    box($("tool"), H.x + Math.sin(tr) * ls / 2 - ts / 2, H.y - Math.cos(tr) * ls / 2 - ts / 2, ts, ts); $("tool").style.opacity = work;
+    // Trust it: the facts light up as the agent says them
+    $("f0").querySelector(".glow").style.opacity = win(f, 196, 300, 6, 14);
+    $("f1").querySelector(".glow").style.opacity = win(f, 214, 300, 6, 14);
 
-    // captions: one chunk at a time, spoken words solid, the current one glowing
+    // Buy it: the button, the badge, the toast
+    const press = win(f, 246, 254, 2, 4);
+    const added = f >= 252 && f < 302;
+    $("atc").style.transform = `scale(${1 - 0.04 * press})`;
+    $("atc").style.background = added ? "#2f8f4e" : "var(--ink)";
+    $("atcl").textContent = added ? "Added" : "Add to cart";
+    const bd = clamp(spring((f - 256) / 10)) * (1 - ease(ramp(f, 304, 316)));
+    $("badge").style.transform = `scale(${bd})`;
+    const tIn = clamp(spring((f - 262) / 12)) * (1 - ease(ramp(f, 296, 310)));
+    Object.assign($("toast").style, { opacity: tIn, transform: `translateY(${(1 - tIn) * -20}px)` });
+
+    // the widget: working (search laser) while it thinks, speaking (glow, rings) while it talks
+    const work = win(f, 34, 104, 8, 8), speak = win(f, 104, 246);
+    if (WIDE) {
+      const { k } = G.w, H = G.head;
+      const gs = 150 * k * (1 + 0.04 * Math.sin(f / 4));
+      box($("gl"), H.x - gs / 2, H.y - gs / 2, gs, gs); $("gl").style.opacity = speak;
+      ["r1", "r2"].forEach((id, i) => { const p = ((f + i * 26) % 52) / 52; const r = 110 * k * (0.8 + 0.65 * p); box($(id), H.x - r / 2, H.y - r / 2, r, r); $(id).style.opacity = speak * 0.9 * (1 - p); });
+      const ls = 140 * k, rot = (f / 58) * 360, tr = (rot * Math.PI) / 180, ts = 28 * k;
+      box($("laser"), H.x - ls / 2, H.y - ls / 2, ls, ls); Object.assign($("laser").style, { opacity: work, transform: `rotate(${rot}deg)` });
+      box($("tool"), H.x + Math.sin(tr) * ls / 2 - ts / 2, H.y - Math.cos(tr) * ls / 2 - ts / 2, ts, ts); $("tool").style.opacity = work;
+    } else {
+      const b = 0.5 + 0.5 * Math.sin(f / 3);
+      $("mhalo").style.opacity = speak * (0.35 + 0.4 * b);
+      $("mhalo").style.transform = `scale(${1 + 0.1 * b})`;
+      Object.assign($("laser").style, { opacity: work, transform: `rotate(${(f / 58) * 360}deg)` });
+    }
+
+    // captions
     const c = CAPS.find(([a, b]) => f >= a - 4 && f < b + 2);
     const caps = $("caps");
+    let co = 0;
     if (c) {
-      const [a, b, text] = c; const words = text.split(" ");
+      const [a, b, text] = c, words = text.split(" ");
       const k_ = Math.floor(((f - a) / (b - 10 - a)) * words.length);
       caps.innerHTML = words.map((w, j) => `<i class="${j < k_ ? "on" : j === k_ ? "now" : ""}">${w}</i>`).join(" ");
-      caps.style.opacity = Math.min(ease(ramp(f, a - 4, a + 2)), 1 - ease(ramp(f, b - 4, b + 2)));
-    } else caps.style.opacity = 0;
-
-    // the shopper's message, sent: rises in, floats up and away
-    const st = ease(ramp(f, 4, 16)), sa = ease(ramp(f, 52, 70));
-    Object.assign($("sent").style, { opacity: st * (1 - sa), transform: `translateY(${(1 - st) * 30 - sa * 60}px) scale(${0.96 + 0.04 * st})` });
-
-    // the shortlist pops in while it talks; the first one is picked and flies to the cart
-    const out = ease(ramp(f, 296, 316));
-    for (let i = 0; i < 3; i++) {
-      const p = $(`p${i}`);
-      const sp = spring((f - (124 + i * 10)) / 13);
-      const picked = i === 0;
-      const pickT = ease(ramp(f, 208, 218));
-      const gone = picked ? ease(ramp(f, 236, 246)) : 0;
-      const dim = picked ? 0 : pickT;
-      const bob = Math.sin((f + i * 17) / 15) * 4;
-      let o = clamp(sp) * (1 - out) * (1 - gone) * (1 - 0.5 * dim);
-      if (f < 124 + i * 10) o = 0;
-      Object.assign(p.style, { opacity: o, transform: `translate(${(1 - clamp(sp)) * 60}px, ${bob}px) scale(${(0.8 + 0.2 * sp) * (picked ? 1 + 0.04 * pickT * (1 - gone) : 1 - 0.04 * dim)})` });
-      p.querySelector(".pick").style.opacity = picked ? pickT * (1 - gone) : 0;
-      const ck = p.querySelector(".check"); if (ck) ck.style.transform = `scale(${spring((f - 212) / 10)})`;
+      co = Math.min(ease(ramp(f, a - 4, a + 2)), 1 - ease(ramp(f, b - 4, b + 2)));
     }
-    // "Adding to cart" with its countdown, as the widget shows it
-    const bIn = spring((f - 240) / 12) * (1 - out);
-    Object.assign($("banner").style, { opacity: clamp(bIn), transform: `translateY(${(1 - clamp(bIn)) * 24}px) scale(${0.92 + 0.08 * clamp(bIn)})` });
-    $("cdarc").style.strokeDashoffset = 100 * ease(ramp(f, 248, 300));
-    // the picked product flies into the banner
-    const ft = ramp(f, 236, 252);
-    const p0 = L.p0, bx = L.banner.x + 56, by = L.banner.y + 58;
-    const fx = p0.x + (bx - p0.x) * ease(ft), fy = p0.y + (by - p0.y) * ease(ft) - Math.sin(ft * Math.PI) * 80;
-    const fs = 110 - 50 * ft;
-    Object.assign($("fly").style, { left: `${fx - fs / 2}px`, top: `${fy - fs / 2}px`, width: `${fs}px`, height: `${fs}px`, opacity: f >= 236 && f < 252 ? 1 : 0 });
+
+    // the shopper's message, then the widget's banners (with their countdowns)
+    const st = ease(ramp(f, 4, 14)), sa = ease(ramp(f, 52, 66));
+    Object.assign($("sent").style, { opacity: st * (1 - sa), transform: `translateY(${(1 - st) * 24 - sa * 40}px)` });
+    let bo = 0;
+    [["b0", 140, 178, 146, 172], ["b1", 244, 300, 250, 292]].forEach(([id, a, b, c0, c1]) => {
+      const o = win(f, a, b, 8, 10);
+      bo = Math.max(bo, o);
+      Object.assign($(id).style, { opacity: o, transform: `translateY(${(1 - o) * 18}px) scale(${0.94 + 0.06 * o})` });
+      $(id).querySelector(".cd").style.strokeDashoffset = 100 * ease(ramp(f, c0, c1));
+    });
+    // the message, captions and banners share one spot above the widget: they take turns
+    caps.style.opacity = Math.min(co, 1 - bo);
   }
 
-  layoutStatic();
+  build();
   window.renderFrame = renderFrame;
   window.N = N;
   renderFrame(Number(q.get("f") || 0));

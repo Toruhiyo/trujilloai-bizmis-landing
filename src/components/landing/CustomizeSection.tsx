@@ -11,12 +11,9 @@ import Reveal from "./Reveal";
 // Real Bizmis avatars, each wearing a (fictional, AI-generated) store's logo: either a vivid shirt
 // with a one-colour logo, or a neutral shirt (white, black, oat) with a multicolour one. The tint is
 // the store's colour (the shirt's, or the logo's on a neutral shirt) and tints the ambient light
-// while that avatar is on stage. Ordered so neighbours never share a hue.
+// while that avatar is on stage. Ordered so neighbours never share a hue; it opens on Luca's
+// soft yellow (a blue first frame sat too hard against the warm page).
 const LINEUP: readonly CarouselAvatar[] = [
-  { name: "style-victor", label: "Victor", tint: "#2563eb" },
-  { name: "style-teo", label: "Teo", tint: "#ef4444" },
-  { name: "style-yusuke", label: "Yusuke", tint: "#65a30d" },
-  { name: "style-marc", label: "Marc", tint: "#7c3aed" },
   { name: "style-luca", label: "Luca", tint: "#eab308" },
   { name: "style-mia", label: "Mia", tint: "#0ea5e9" },
   { name: "style-kiran", label: "Kiran", tint: "#e5487f" },
@@ -25,6 +22,10 @@ const LINEUP: readonly CarouselAvatar[] = [
   { name: "style-amber", label: "Amber", tint: "#d946ef" },
   { name: "style-will", label: "Will", tint: "#10b981" },
   { name: "style-adrian", label: "Adrian", tint: "#c0168f" },
+  { name: "style-victor", label: "Victor", tint: "#2563eb" },
+  { name: "style-teo", label: "Teo", tint: "#ef4444" },
+  { name: "style-yusuke", label: "Yusuke", tint: "#65a30d" },
+  { name: "style-marc", label: "Marc", tint: "#7c3aed" },
 ];
 
 // only avatars that have been rendered (an avatar added here before its render lands is skipped)

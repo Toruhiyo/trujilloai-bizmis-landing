@@ -36,12 +36,15 @@ const HeroLoop = ({
   paused = false,
   className,
   mediaClassName,
+  onTime,
 }: {
   sources: HeroLoopSources;
   paused?: boolean;
   className?: string;
   /** object-fit / object-position for the still and the video */
   mediaClassName?: string;
+  /** the loop's playback position (s), every frame while it plays: lets the page sync to it */
+  onTime?: (seconds: number) => void;
 }) => {
   const box = useRef<HTMLDivElement>(null);
   const video = useRef<HTMLVideoElement>(null);
@@ -51,9 +54,30 @@ const HeroLoop = ({
   const pausedRef = useRef(paused);
   pausedRef.current = paused;
 
+  // a loop that isn't shown (the other layout's) loads nothing
   useEffect(() => {
-    if (box.current) setRung(pickRung(sources, box.current));
+    const el = box.current;
+    if (!el) return;
+    const pick = () => setRung((now) => (el.clientWidth === 0 ? null : now ?? pickRung(sources, el)));
+    pick();
+    window.addEventListener("resize", pick);
+    return () => window.removeEventListener("resize", pick);
   }, [sources]);
+
+  // report the playback position every frame while it plays
+  const onTimeRef = useRef(onTime);
+  onTimeRef.current = onTime;
+  useEffect(() => {
+    const v = video.current;
+    if (!v || !rung) return;
+    let frame = 0;
+    const tick = () => {
+      if (!v.paused) onTimeRef.current?.(v.currentTime);
+      frame = requestAnimationFrame(tick);
+    };
+    frame = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(frame);
+  }, [rung]);
 
   // play only while on screen and while the film is closed
   useEffect(() => {
