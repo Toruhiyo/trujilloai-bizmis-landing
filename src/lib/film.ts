@@ -21,9 +21,9 @@ export const HERO_FILM = {
   id: "ad-1",
   src:
     import.meta.env.VITE_FILM_SRC ??
-    "https://8josk2l8la4zszeg.public.blob.vercel-storage.com/film/ad-1/b431/master.m3u8",
+    "https://8josk2l8la4zszeg.public.blob.vercel-storage.com/film/ad-1/v23c/master.m3u8",
   /** Fallback until the film's metadata loads (seconds). */
-  durationSeconds: 161,
+  durationSeconds: 162,
   loop: {
     webm: "/film/ad-1-loop.webm",
     mp4: "/film/ad-1-loop.mp4",
@@ -33,7 +33,7 @@ export const HERO_FILM = {
    * Where the film's own "Install now" button sits on its closing frame, as
    * fractions of the frame. On that frame the area becomes a real link.
    */
-  endFrameCta: { left: 0.37, top: 0.43, width: 0.26, height: 0.23 },
+  endFrameCta: { left: 0.285, top: 0.37, width: 0.43, height: 0.13 },
 } as const;
 
 /**
