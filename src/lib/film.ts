@@ -21,9 +21,9 @@ export const HERO_FILM = {
   id: "ad-1",
   src:
     import.meta.env.VITE_FILM_SRC ??
-    "https://8josk2l8la4zszeg.public.blob.vercel-storage.com/film/ad-1/v23c-vo/master.m3u8",
+    "https://8josk2l8la4zszeg.public.blob.vercel-storage.com/film/ad-1/v24/master.m3u8",
   /** Fallback until the film's metadata loads (seconds). */
-  durationSeconds: 162,
+  durationSeconds: 163,
   loop: {
     webm: "/film/ad-1-loop.webm",
     mp4: "/film/ad-1-loop.mp4",

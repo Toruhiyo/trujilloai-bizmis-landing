@@ -156,7 +156,7 @@
   // close's hit on the score's final hit. Every store cut sits on one of the song's own claps.
   // v23: reel 119.72 -> 119.45 (the sync scene now ends 0.5 s after its take and hands straight over),
   // final 168.82 -> 166.40 (the reel is 2.15 s shorter): both to be re-snapped by the music re-fit
-  const PROMO_FILM_ANCHORS = { burst: 50.376, reel: 122.976, final: 161.342 };   // v24: the v22 song, -1 stores bar, +1 pitch bar (music 107.044-109.180 repeated), -4 closing bars (144.022-152.590), score at offset +0.25
+  const PROMO_FILM_ANCHORS = { burst: 50.376, reel: 120.84, final: 159.206 };   // v24 final: the v22 song, -1 stores bar, -4 closing bars (144.022-152.590), score at offset +0.25 (the sync scene now hands straight to the reel)
   // v23: from the reel start (s): [0] the tunnel lands on hero 1; [1..3] heroes 2..4 (each window = its line + 0.1 s);
   // [4..21] the run's 18 cards, one accelerating ladder (quick stores 1.0 / 0.8 / 0.62 / 0.55 s, their voices clipped
   // with a short fade); [22] "Your store". The music re-fit may snap any of these to a clap; the ladder reads its
