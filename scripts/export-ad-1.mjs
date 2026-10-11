@@ -34,6 +34,7 @@ function usage() {
     '  --part full|pain|pitch|sync|reel|cta  default full (sync: the scene + its hand-off into the reel; reel: sync + the whole reel)',
     '  --resolution 1920x1080         or 3840x2160',
     '  --preview                      layout at 1920x1080, file is 960x540, 6fps',
+    '  --fps 30                       with --preview: the preview frame rate (default 6; 30 for a smooth pace review)',
     '  --frames 0-59                  inclusive range, default the whole film',
     '  --codec ffv1|prores|h264       default ffv1 (MKV). prores is ProRes 4444; h264 is CRF 12 (visually lossless, small)',
     '  --out <folder>                 default tmp/ad-1-export',
@@ -830,7 +831,7 @@ async function main() {
     ? { width: 960, height: 540 }
     : parseResolution(arg('resolution', '1920x1080'));
   captureAttempts = preview ? 1 : CAPTURE_ATTEMPTS;
-  exportFps = preview ? 6 : FPS;
+  exportFps = preview ? Number(arg('fps', '6')) || 6 : FPS;   // --preview --fps 30: a smooth 960x540 review cut
   const capture = preview
     ? { viewportWidth: 1920, viewportHeight: 1080, scale: 0.5, quadrants: 1, beginFrame: false }
     : captureSetup(resolution.width, resolution.height);

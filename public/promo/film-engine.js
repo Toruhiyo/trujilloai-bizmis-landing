@@ -20,14 +20,13 @@
       invite: 'for Early Access benefits!',
       aside: 'Only 50 spots',
       terms: ['Generous free credits', '50% off upgrades', 'Shape the roadmap'],
-      // v24: the short take ("Install now to join Early Access! Generous free credits, fifty percent off
-      // upgrades, and you shape the roadmap. Only fifty spots. Secure yours by installing now.", 11.38 s). Each mark is a phrase
-      // of the take's alignment; its offset (ms) puts the beat on the word as measured by STT (scribe_v1:
-      // Generous 2.60, 50% 4.26, shape 6.30, Only 7.60, Secure 9.08, now ends 10.92), each pill rising 80 ms ahead
+      // v25: the brisk take (same words, [quickly], 9.94 s, was 11.38). Its chars are re-anchored onto the STT words
+      // (scribe_v1: Generous 2.28, fifty percent 3.62, shape 5.44, Only 6.64, Secure 7.96, now ends 9.50), so each
+      // offset is the beat's own lead on its word: each pill rising 80 ms ahead
       termMarks: ['Generous', 'fifty percent', 'shape'],
-      termOffsets: [-40, 100, -20],
-      handMark: ['Only fifty', 'start', -307],   // the pen starts 120 ms before "Only" (the alignment runs 187 ms late here)
-      heroMark: ['Secure yours', 'start', -540],   // 260 ms before "Secure" (the alignment runs 280 ms late here)
+      termOffsets: [-80, -80, -80],
+      handMark: ['Only fifty', 'start', -120],   // the pen starts 120 ms before "Only"
+      heroMark: ['Secure yours', 'start', -260],   // 260 ms before "Secure"
       closeMark: ['installing now', 'end', -40],   // the closing lockup starts after "...by installing now."
       find: 'Find Bizmis on the Shopify App Store',
       pills: true,   // v11: the three benefits as glass pills, then "Only 50 spots" (v24: the card is exactly what the VO says)
@@ -50,16 +49,16 @@
     'Wine & spirits',
   ];
   const PROMO_REEL_IN_MS = 700;
-  const PROMO_SYNC_HOLD_MS = 100;   // v23: after the take, before the hand-off (the reel's anchor may hold it a little longer, alive)
-  const PROMO_SYNC_HANDOFF_MS = 460;   // the reel crossfades in over the sync scene (never an empty frame)
+  const PROMO_SYNC_HOLD_MS = 240;   // v25: after "automatically" ends (was 100 after the take's 0.36 s silent tail), before the hand-off (the reel's anchor may hold it a little longer, alive)
+  const PROMO_SYNC_HANDOFF_MS = 380;   // the reel crossfades in over the sync scene (never an empty frame) (v25: was 460)
   const PROMO_REEL_TUNNEL_SCALE = 1.15;   // v24: tunnel cards (x their close-up size; was 0.8)
   const PROMO_REEL_TUNNEL_NEAR = 1.5;   // v24: the nearest card's starting depth (x perspective; was 0.9): it is still there when the clerk lands in it
   const PROMO_REEL_TUNNEL_TILT = 12;   // v24: the lanes angle in (deg), outer edges nearer, like a corridor
   const PROMO_REEL_DOCK_AT = { x: 0.872, y: 0.744, h: 0.26 };   // v24: the widget's clerk in a desktop store recording (share of its screen)
   const PROMO_SYNC_MORPH_MS = 520;   // v23b: the checked Install disc swells and softens into the clerk's glow...
   const PROMO_SYNC_RISE_MS = 380;   // ...while the clerk rises out of it (fully there ~0.4 s after the check)
-  const PROMO_SYNC_PRESS_DELAY_MS = 60;   // the press (and its click) on the onset of "click" (1.58 s, measured; the take's timing says 1.52)
-  const PROMO_SYNC_FOLD_LEAD_MS = 40;   // the Installed button folds into the clerk on "whole store" (2.83 s)
+  const PROMO_SYNC_PRESS_DELAY_MS = 0;   // the press (and its click) on the onset of "click" (v25: 1.18 s; the take's chars are on the STT words)
+  const PROMO_SYNC_FOLD_LEAD_MS = 40;   // the Installed button folds into the clerk on "whole store" (v25: 2.18 s)
   const PROMO_SYNC_TILE_STAGGER_MS = 25;   // the orbs popping out after the fold
   const PROMO_SYNC_ABSORB_LEAD_MS = 60;   // the first orb leaves on "stays"...
   const PROMO_SYNC_ORB_MS = 460;
@@ -67,8 +66,8 @@
   const PROMO_SYNC_HEART_DY = 0.08;   // the orbs go into the shirt, this far (x canvas height) under the seat's centre
   const PROMO_SYNC_AVATAR_H = 0.7;   // the clerk's view, as a share of the canvas height
   const PROMO_SYNC_ACTION = 'charge_up';   // crouch, two gulps of energy, release (2.4 s)
-  const PROMO_YOURSTORE_HOLD_MS = 900;
-  const PROMO_YOURSTORE_DIVE_MS = 1000;
+  const PROMO_YOURSTORE_HOLD_MS = 650;   // v25: was 900 (the landing holds 350 ms, was 600, before its dive)
+  const PROMO_YOURSTORE_DIVE_MS = 650;   // v25: was 1000
   // v22 sync: the store's Shopify areas as the film's peach orbs around the clerk.
   // x/y: the orb's centre as a share of the canvas (the v9 ring, Catalog and Website
   // on top). glyph: thin SF-Symbols-like strokes on a 24-unit grid (our own drawings).
@@ -109,7 +108,7 @@
   const PROMO_REEL_WHIP_MIN_MS = 170;
   const PROMO_REEL_LAND_MS = 1100;   // the rush slows onto "Your store"
   const PROMO_REEL_ORANGE_CUT_MS = 2300;   // v21: 1 s shorter so the reel always waits for its bar (never late)
-  const PROMO_REEL_OUT_MS = 600;
+  const PROMO_REEL_OUT_MS = 420;   // v25: was 600 ("Your store"'s dive fades the reel into the end card)
   const PROMO_REEL_SLIDE_MS = [820, 680, 540];   // v11: store to store on the conveyor, quicker each time
   const PROMO_REEL_HANDOFF_MS = 320;
   const PROMO_REEL_TURN_DEG = 34;   // v11b: how far a neighbouring store turns away in the 3D carousel
@@ -135,28 +134,29 @@
   const PROMO_PASS_TITLE_MS = 420;
   const PROMO_PASS_SLOW_MS = 4800;
   const PROMO_PASS_SLOT_IN_MS = 420;
-  const PROMO_PHONE_PAN_MS = 820;
+  const PROMO_PHONE_PAN_MS = 680;   // v25 pace: 820 -> 680 (the pain's pan from the desktop to the phone)
   const PROMO_SOLD_WAVE_MS = 700;
   const PROMO_EA_WRITE_MS = 1700;
   const PROMO_EA_STAMP_MS = 460;
   const PROMO_EA_BEAT_MS = 780;
-  const PROMO_EA_LOGO_LEAD_MS = 420;
-  const PROMO_EA_FLY_MS = 620;
+  const PROMO_EA_LOGO_LEAD_MS = 280;   // v25: was 420
+  const PROMO_EA_FLY_MS = 400;   // v25: was 620 (the VO starts while "Install now" is still settling)
   const PROMO_EA_TERM_GAP_MS = 720;
   const PROMO_EA_TERM_IN_MS = 560;
   const PROMO_EA_HOLD_MS = 2200;
-  const PROMO_EA_CLOSE_MS = 1000;   // v13: the closing move, landing on the score's final chord
-  const PROMO_EA_FINAL_HOLD_MS = 3200;   // the lasting final frame (v21: the last chord rings)
+  const PROMO_EA_CLOSE_MS = 800;   // v13: the closing move, landing on the score's final chord (v25: was 1000)
+  const PROMO_EA_FINAL_HOLD_MS = 1900;   // the lasting final frame (v21: the last chord rings; v25: was 3200, the film ends ~2.7 s after "installing now")
   const PROMO_EA_HERO_LEAD_MS = 250;
   const PROMO_EA_FADE_MS = 1600;
-  const PROMO_PAIN_END_GAP_MS = 300;
+  const PROMO_PAIN_END_GAP_MS = 150;   // v25 pace: 300 -> 150
+  const PROMO_PAIN_BROWSE_PACE = 0.8;   // v25 pace: the opening browse runs at 0.8 of its v24 span
   // v21: the picture follows the score (Suno v6, one song built chapter by chapter with Extend at bar
   // lines; music time = film time + 0.9 s). Film-clock anchors (s from the film's first frame):
   // the burst on the drop's first downbeat, the reel on the stores section's first bar, the EA
   // close's hit on the score's final hit. Every store cut sits on one of the song's own claps.
   // v23: reel 119.72 -> 119.45 (the sync scene now ends 0.5 s after its take and hands straight over),
   // final 168.82 -> 166.40 (the reel is 2.15 s shorter): both to be re-snapped by the music re-fit
-  const PROMO_FILM_ANCHORS = { burst: 50.376, reel: 120.84, final: 159.206 };   // v24 final: the v22 song, -1 stores bar, -4 closing bars (144.022-152.590), score at offset +0.25 (the sync scene now hands straight to the reel)
+  const PROMO_FILM_ANCHORS = { burst: 37.405, reel: 90.69, final: 124.76 };   // v25 (faster pace): the v23 song minus 2 pain cuts (2.995-11.622, 20.77-25.054), 2 pitch cuts (52.941-61.51, 92.044-100.624) and 6 closing bars (143.476-156.34); score at offset +0.25
   // v23: from the reel start (s): [0] the tunnel lands on hero 1; [1..3] heroes 2..4 (each window = its line + 0.1 s);
   // [4..21] the run's 18 cards, one accelerating ladder (quick stores 1.0 / 0.8 / 0.62 / 0.55 s, their voices clipped
   // with a short fade); [22] "Your store". The music re-fit may snap any of these to a clap; the ladder reads its
@@ -175,17 +175,17 @@
   // The narrator speaks in whole takes (Claudia, Eleven v4, audio tags in the
   // text); the picture syncs to phrases inside each take (speakTake().at()).
   const PROMO_VO = [
-    { scene: 'pain', id: 't-pain', line: "Every day, shoppers walk into your store... ready to buy. Some get lost in the catalog. Clicking, comparing, scrolling... with no one there to help them choose. Others get stuck on one last question... and go looking for help. A chatbot? Here's a wall of text... go read it. A real person? The perfect answer... hours later. When the sale's already gone. Either way, they leave." },
+    { scene: 'pain', id: 't-pain', line: "Every day, shoppers walk into your store ready to buy. Some get lost in the catalog, clicking, comparing, scrolling, with no one there to help them choose. Others get stuck on one last question and go looking for help. A chatbot? Here's a wall of text, go read it. A real person? The perfect answer, hours later, when the sale's already gone. Either way, they leave." },   // v25: the brisk take (eleven_v4, speed 1.12)
     { scene: 'pain', id: 't-pain-end', line: 'Sale lost.' },   // v18: its own take, on the sea's first LOST stamps
-    { scene: 'switch', id: 't-switch', line: 'In a physical store... the best salesperson turns these moments into sales. So we built one... for your online store!' },
+    { scene: 'switch', id: 't-switch', line: 'In a physical store, the best salesperson turns these moments into sales. So we built one, for your online store!' },
     { scene: 'reveal', id: 't-reveal', line: "Meet Bizmis. Your store's new salesperson. Well... sales agent." },
     { scene: 'rewind', id: 't-rewind-a', line: "Let's rewind." },
-    { scene: 'rewind', id: 't-rewind-b', line: 'Same store... now with Bizmis.' },
-    { scene: 'pitch', id: 't-lost', line: "When a shopper's lost in your catalog... your Bizmis sales agent finds them the right one." },
-    { scene: 'pitch', id: 't-doubt', line: "And when a doubt holds them back... it answers on the spot." },
-    { scene: 'selling-sea', id: 't-sold', line: "That's how more visits... turn into sales." },
-    { scene: 'sync', id: 't-sync', line: "It all takes just one click. And your whole store stays in sync... automatically." },
-    { scene: 'stores', id: 't-stores', line: 'Whatever your store sells... your Bizmis agent sells it.' },   // v18: to the merchant (the reel shows devices and languages)
+    { scene: 'rewind', id: 't-rewind-b', line: 'Same store, now with Bizmis.' },
+    { scene: 'pitch', id: 't-lost', line: "When a shopper's lost in your catalog, your Bizmis sales agent finds them the right one." },
+    { scene: 'pitch', id: 't-doubt', line: "And when a doubt holds them back, it answers on the spot." },
+    { scene: 'selling-sea', id: 't-sold', line: "That's how more visits turn into sales." },
+    { scene: 'sync', id: 't-sync', line: "It all takes just one click. And your whole store stays in sync, automatically." },
+    { scene: 'stores', id: 't-stores', line: 'Whatever your store sells, your Bizmis agent sells it.' },   // v18: to the merchant (the reel shows devices and languages)
     { scene: 'end', id: 'see-it', line: 'See it in action.', cta: 'demo' },
     { scene: 'end', id: 't-ea', line: 'Install now to join Early Access! Generous free credits, fifty percent off upgrades, and you shape the roadmap. Only fifty spots. Secure yours by installing now.', cta: 'ea' },   // v24: the short take
     { scene: 'end', id: 'install-shopify', line: 'Install it on Shopify.', cta: 'install' },
@@ -402,7 +402,7 @@
 
   const PROMO_FLIP_KNOB_MS = 200;
   const PROMO_FLIP_SPARKS = 18;
-  const PROMO_FLIP_POP_HOLD_MS = 650;
+  const PROMO_FLIP_POP_HOLD_MS = 450;   // v25: 650 -> 450 (the faster cut)
   const PROMO_TOGGLE_REST_MS = 650;
   const PROMO_RECAP_BUBBLES = ['Can I help you find something?', "That one's perfect for them."];
   const PROMO_RECAP_STAGGER_MS = 380;
@@ -417,12 +417,12 @@
   const PROMO_SWITCH_WHITE_AT_MS = 220;   // the label whitens once the orange is behind it (no white-on-white frame)
   const PROMO_SWITCH_FADE_AT_MS = 460;
   const PROMO_SWITCH_FADE_MS = 380;
-  const PROMO_FLIP_BURST_MS = 760;   // the knob's fill covers the frame (ease in-out), then the logo resolves
-  const PROMO_KNOB_WARM_MS = 160;
+  const PROMO_FLIP_BURST_MS = 560;   // v25: 760 -> 560. the knob's fill covers the frame (ease in-out), then the logo resolves
+  const PROMO_KNOB_WARM_MS = 120;   // v25: 160 -> 120
   const PROMO_SWITCH_CHIPS = [["Can't find it", 'Found it'], ["Can't decide", 'Compared'], ['Not sure', 'Doubt cleared']];   // the white knob turns orange before it grows
   const PROMO_FLOOD_MS = 600;
-  const PROMO_FLIP_HOLD_MS = 650;   // the logo on orange meets "Meet Bizmis" at once
-  const PROMO_PITCH_LOGO_HOLD_MS = 300;
+  const PROMO_FLIP_HOLD_MS = 250;   // v25: 650 -> 250. the logo on orange meets "Meet Bizmis" at once
+  const PROMO_PITCH_LOGO_HOLD_MS = 150;   // v25: 300 -> 150
   const PROMO_LOGO_DOCK_MS = 720;
   const PROMO_PITCH_LOGO_OUT_MS = 420;
   const PROMO_PITCH_WORD_STAGGER_MS = 85;   // a visible write-in, word by word
@@ -470,14 +470,14 @@
     return 1 - V * (1 - u) * (1 - u) / (2 * D);
   }
   const PROMO_INSTALL_CARD_MS = 650;
-  const PROMO_INSTALL_AIM_MS = 520;
+  const PROMO_INSTALL_AIM_MS = 400;   // v25: 520 -> 400 (the carry lands on the brisk take's "Bizmis")
   const PROMO_INSTALL_RING_MS = 460;
   const PROMO_INSTALL_CHECK_MS = 200;
   const PROMO_INSTALL_FLY_MS = 560;
   const PROMO_INSTALL_DONE_MS = 620;
-  const PROMO_INSTALL_ARRIVE_MS = 700;
-  const PROMO_INSTALL_GRAB_MS = 220;
-  const PROMO_INSTALL_DRAG_MS = 1400;
+  const PROMO_INSTALL_ARRIVE_MS = 600;   // v25: 700 -> 600 (t-lost follows the squash at once)
+  const PROMO_INSTALL_GRAB_MS = 180;   // v25: 220 -> 180
+  const PROMO_INSTALL_DRAG_MS = 800;   // v25: 1400 -> 800
   const PROMO_INSTALL_DROP_MS = 300;
   const PROMO_INSTALL_GRIP = 0.34;   // v11: the hand holds the clerk by its body (share of the card's height)
   // v11: the macOS pointer (black arrow, white rim), never a Windows-style one
@@ -522,7 +522,7 @@
   const PROMO_PAIN_CARD_H = 200;
   const PROMO_STORE_MARK = '<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round"><path d="M3.6 10.2 6.1 4.8h11.8l2.5 5.4"/><path d="M4.4 10.2h15.2V19.6H4.4z"/><path d="M10.1 19.6V14h3.8v5.6"/></svg>';
   const PROMO_PAIN_PAD = 24;
-  const PROMO_PAIN_SCROLL_MS = 860;
+  const PROMO_PAIN_SCROLL_MS = 580;   // v25 pace: 860 -> 580 (the pain board's scroll + the desktop cursor's moves)
   const PROMO_PAIN_TYPE_CHAR_MS = 38;
   const PROMO_PAIN_EXIT_MS = 420;
   const PROMO_WINDOW_AIM_MS = 1600;
@@ -668,6 +668,26 @@
     dirY: 0.94,
     stepMs: 36,
   };
+  // v25 (pace): the pain sea runs on its own, ~35-45% tighter clock (same beats, same easing); the
+  // pitch sea keeps PROMO_GLIDE. glidePace(mode, key) reads these for 'pain' and PROMO_GLIDE otherwise.
+  const PROMO_GLIDE_PAIN = {
+    layDownMs: 1000,       // 1400: the pull-back from the stamped phone
+    rampMs: 2800,          // 4000: the camera's run-up
+    captionAt: 3100,       // 5300 (glideEnd - claimLeadMs - captionLeadMs): "Unattended visits..." lands
+    captionInMs: 250,      // 350
+    captionPauseMs: 420,   // 720
+    captionQuietMs: 560,   // 980
+    captionOutMs: 700,     // 1780 (poofMs + dustMs): the caption's exit
+    horizonMs: 300,        // 600
+    painFieldHoldMs: 100,  // 150
+    washMs: 1100,          // 2000
+    rippleMs: 900,         // 1250: the cards already on screen stamp over the first beat
+    neighborInMs: 1000,    // 1400 (PROMO_GLIDE_NEIGHBOR_IN_MS): the sea opens out of the close-up
+    neighborDelayMs: 650,  // 900
+  };
+  function glidePace(mode, key) {
+    return mode === 'pain' && key in PROMO_GLIDE_PAIN ? PROMO_GLIDE_PAIN[key] : PROMO_GLIDE[key];
+  }
   const GLIDE_CART = {
     desktop: { x: 0.9, y: 0.16 },
     tablet: { x: 0.88, y: 0.14 },
@@ -678,6 +698,7 @@
     ['Every day.', 'And counting.'],
   ];
   const GLIDE_PAIN_BEATS = GLIDE_PAIN_CAPTION.flat().length;
+  const PROMO_SOLD_BEAT_GAP_MS = 560;   // v25: "Every day." / "And counting." land this far apart (after "sales.")
   const GLIDE_SOLD_CAPTION = [
     ['Visits turn into', 'sales.'],   // as the VO says it
     ['Every day.', 'And counting.'],
@@ -727,23 +748,24 @@
     });
   }
 
-  function captionBeatOffset(index) {
-    const step = PROMO_GLIDE.captionInMs + PROMO_GLIDE.captionPauseMs;
+  function captionBeatOffset(index, mode) {
+    const step = glidePace(mode, 'captionInMs') + glidePace(mode, 'captionPauseMs');
     if (index <= 0) return 0;
     if (index < 3 || GLIDE_PAIN_BEATS <= 3) return step * index;
-    return step * 2 + PROMO_GLIDE.captionInMs + PROMO_GLIDE.captionQuietMs;
+    return step * 2 + glidePace(mode, 'captionInMs') + glidePace(mode, 'captionQuietMs');
   }
   const PROMO_GLIDE_NEIGHBOR_IN_MS = 1400;
 
   // 0..1 reveal of a sea card around the close-up. Cards further from the
   // lead wait a little longer, so the sea opens outward.
-  function glideNeighborIn(cell, lead, timeMs) {
+  function glideNeighborIn(cell, lead, timeMs, mode) {
     if (!lead) return 1;
     const dx = (cell.x + cell.w / 2) - (lead.x + lead.w / 2);
     const dy = (cell.y + cell.h / 2) - (lead.y + lead.h / 2);
     const dist = Math.hypot(dx, dy) / PROMO_GLIDE.baseH;
-    const delay = Math.min(900, 120 + dist * 260);
-    const u = Math.min(1, Math.max(0, (timeMs - delay) / PROMO_GLIDE_NEIGHBOR_IN_MS));
+    const pain = mode === 'pain';   // v25: the pain sea opens out faster (its own pace)
+    const delay = pain ? Math.min(PROMO_GLIDE_PAIN.neighborDelayMs, 90 + dist * 190) : Math.min(900, 120 + dist * 260);
+    const u = Math.min(1, Math.max(0, (timeMs - delay) / (pain ? PROMO_GLIDE_PAIN.neighborInMs : PROMO_GLIDE_NEIGHBOR_IN_MS)));
     return u * u * (3 - 2 * u);
   }
   const glideRows = new Map();
@@ -773,18 +795,21 @@
         playEnd: fieldEnd + PROMO_GLIDE.resolveMs + PROMO_GLIDE.endHoldMs,
       };
     }
-    const captionAnchor = claimAt;
-    const captionStart = captionAnchor - PROMO_GLIDE.captionLeadMs;
-    const quietlyAt = captionBeatOffset(GLIDE_PAIN_BEATS - 1);
-    const captionInEnd = captionStart + quietlyAt + PROMO_GLIDE.captionInMs;
+    // v25 (pace): the pain sea on its own clock (PROMO_GLIDE_PAIN)
+    const P = PROMO_GLIDE_PAIN;
+    const painLaydown = P.layDownMs;
+    const painGlideEnd = painLaydown + P.rampMs;
+    const captionStart = P.captionAt;
+    const quietlyAt = captionBeatOffset(GLIDE_PAIN_BEATS - 1, 'pain');
+    const captionInEnd = captionStart + quietlyAt + P.captionInMs;
     const captionHoldEnd = captionInEnd + PROMO_SALES_BAR.painHoldMs;   // v26: the sales lane plays out under the held caption
-    const captionPoofEnd = captionHoldEnd + PROMO_GLIDE.poofMs + PROMO_GLIDE.dustMs;
-    const horizonEnd = captionPoofEnd + PROMO_GLIDE.horizonMs;
-    const fieldEnd = horizonEnd + PROMO_GLIDE.painFieldHoldMs;
+    const captionPoofEnd = captionHoldEnd + P.captionOutMs;
+    const horizonEnd = captionPoofEnd + P.horizonMs;
+    const fieldEnd = horizonEnd + P.painFieldHoldMs;
     return {
-      laydown,
-      glideEnd,
-      claimAt,
+      laydown: painLaydown,
+      glideEnd: painGlideEnd,
+      claimAt: painGlideEnd - PROMO_GLIDE.claimLeadMs,
       captionStart,
       captionInEnd,
       captionHoldEnd,
@@ -799,8 +824,8 @@
     return glideMarks(mode || 'pitch').playEnd;
   }
 
-  function glideArrive(timeMs) {
-    const u = Math.min(1, Math.max(0, timeMs / PROMO_GLIDE.layDownMs));
+  function glideArrive(timeMs, mode) {
+    const u = Math.min(1, Math.max(0, timeMs / glidePace(mode, 'layDownMs')));
     return u * u * (3 - 2 * u);
   }
 
@@ -891,17 +916,17 @@
     // v24: the pitch field is laid by the sales bar's widen (salesBarMarks), not a fade
     if (mode !== 'pain') return timeMs >= PROMO_SALES_BAR.pitchWiden + PROMO_SALES_BAR.widenMs ? 1 : 0;
     const start = mode === 'pain' ? marks.captionPoofEnd : marks.claimAt;
-    const u = Math.min(1, Math.max(0, (timeMs - start) / PROMO_GLIDE.washMs));
+    const u = Math.min(1, Math.max(0, (timeMs - start) / glidePace(mode, 'washMs')));
     return u * u * (3 - 2 * u);
   }
 
-  function glideSpeed(glideMs) {
-    const u = Math.min(1, Math.max(0, glideMs / PROMO_GLIDE.rampMs));
+  function glideSpeed(glideMs, mode) {
+    const u = Math.min(1, Math.max(0, glideMs / glidePace(mode, 'rampMs')));
     return PROMO_GLIDE.speedFrom + (PROMO_GLIDE.speedTo - PROMO_GLIDE.speedFrom) * glideRamp(u);
   }
 
-  function glideDistance(glideMs) {
-    const span = PROMO_GLIDE.rampMs;
+  function glideDistance(glideMs, mode) {
+    const span = glidePace(mode, 'rampMs');
     const from = PROMO_GLIDE.speedFrom;
     const to = PROMO_GLIDE.speedTo;
     const elapsed = Math.max(0, glideMs);
@@ -913,14 +938,14 @@
     return (from * elapsed + (to - from) * span * glideRampDistance(u)) / 1000;
   }
 
-  function glideCamera(timeMs) {
+  function glideCamera(timeMs, mode) {
     const glideMs = Math.max(0, timeMs);
-    const dist = glideDistance(glideMs);
+    const dist = glideDistance(glideMs, mode);
     const len = Math.hypot(PROMO_GLIDE.dirX, PROMO_GLIDE.dirY) || 1;
     return {
       x: dist * PROMO_GLIDE.dirX / len,
       y: dist * PROMO_GLIDE.dirY / len,
-      speed: glideSpeed(glideMs),
+      speed: glideSpeed(glideMs, mode),
     };
   }
 
@@ -1019,8 +1044,8 @@
     return line;
   }
 
-  function glideSpan(timeMs, frame) {
-    const cam = glideCamera(timeMs);
+  function glideSpan(timeMs, frame, mode) {
+    const cam = glideCamera(timeMs, mode);
     const unit = glideUnit(frame);
     const padX = frame.width * 0.12;
     const padY = frame.height * 0.12;
@@ -1051,7 +1076,7 @@
 
   function glideCells(timeMs, frame, mode) {
     glideActiveTilt = glideTiltAt(timeMs, mode || 'pitch') * Math.PI / 180;
-    const span = glideSpan(timeMs, frame);
+    const span = glideSpan(timeMs, frame, mode);
     const pitch = glidePitch();
     const row0 = Math.floor(span.minY / pitch) - 1;
     const row1 = Math.floor(span.maxY / pitch) + 1;
@@ -1244,8 +1269,8 @@
     return match ? `/promo/sea-of-cards/${tone}/images/promo-still-${match[1]}.jpg` : '';
   }
 
-  function glideEventStart() {
-    return PROMO_GLIDE.layDownMs;
+  function glideEventStart(mode) {
+    return glidePace(mode, 'layDownMs');
   }
 
   // Integer hash (lowbias32). wallSeededUnit is linear in its inputs, so
@@ -1266,8 +1291,8 @@
   // ripple through over the slow first second instead of all at once.
   function glideStampAt(cell, entry, exit, mode) {
     const u = glideHashUnit(cell.row, cell.col, mode === 'pitch' ? 71 : 29);
-    const ripple = glideEventStart() + 120 + 1250 * u;
-    if (entry <= glideEventStart() + 1) return ripple;
+    const ripple = glideEventStart(mode) + 120 + (mode === 'pain' ? PROMO_GLIDE_PAIN.rippleMs : 1250) * u;
+    if (entry <= glideEventStart(mode) + 1) return ripple;
     const dwell = Math.max(120, exit - entry);
     return Math.max(Math.min(ripple, entry + 120), entry + Math.min(dwell * (0.01 + 0.05 * u), 20 + 140 * u));
   }
@@ -1297,14 +1322,14 @@
   function glideMiddleAt(cell, frame, mode, timeMs) {
     const previous = glideActiveTilt;
     glideActiveTilt = glideTiltAt(timeMs, mode) * Math.PI / 180;
-    const hit = glideMiddle(cell, glideCamera(timeMs), glideUnit(frame), frame);
+    const hit = glideMiddle(cell, glideCamera(timeMs, mode), glideUnit(frame), frame);
     glideActiveTilt = previous;
     return hit;
   }
 
   function glideMiddleEntry(cell, frame, mode, now) {
     if (!glideMiddleAt(cell, frame, mode, now)) return null;
-    const start = glideEventStart();
+    const start = glideEventStart(mode);
     if (glideMiddleAt(cell, frame, mode, start)) return start;
     let lo = start;
     let hi = now;
@@ -1344,7 +1369,7 @@
     // Keep stamping for as long as the sea is on screen, not only through the
     // ramp: the camera is fastest after it, under the caption.
     const end = glideMarks(mode).playEnd;
-    for (let time = glideEventStart(); time < end; time += PROMO_GLIDE.stepMs) {
+    for (let time = glideEventStart(mode); time < end; time += PROMO_GLIDE.stepMs) {
       const view = glideCells(time, frame, mode);
       view.cells.forEach((cell) => {
         const sells = glideSells(cell, mode);   // v24b: the pain's buyers turn warm (no LOST)
@@ -1392,23 +1417,24 @@
     radius: 28 / 720,    // rounded top corners, share of the frame height
     inMs: 600,
     inLift: 60 / 720,    // the lane rises this far (share of the height) as it fades in
-    painInAfter: 180,    // after the pain caption's last beat has landed
-    painFlowDelay: 150,
-    painFlowMs: 1450,
+    painInAfter: 60,     // after the pain caption's last beat has landed (v25 pace: 180 -> 60)
+    painInMs: 420,       // v25: the pain lane's own rise (the shared inMs was 600)
+    painFlowDelay: 80,   // v25: 150 -> 80
+    painFlowMs: 900,     // v25: 1450 -> 900
     painMarks: 21,       // every 7th (from the 4th) is a ✓; the ✕s pile up on the floor
-    painHoldMs: 2900,    // the pain caption's hold (was 1400): the marks play out under it
-    painOutMs: 900,
+    painHoldMs: 2100,    // the pain caption's hold (was 1400; v24 2900; v25 pace 2100): the marks play out under it
+    painOutMs: 600,      // v25: 900 -> 600
     painBase: 0.06,      // the grey stub, share of the frame height ...
     painGain: 0.07,      // ... plus this once every ✓ has landed
-    pitchIn: 5200,       // "And counting." lands ~5070 (t-sold "sales." + the pain's cadence)
-    pitchFlowFrom: 5350,
-    pitchFlowMs: 1400,
+    pitchIn: 2950,       // v25: 5200 -> 2950. "And counting." lands ~2780 (t-sold "sales." + the brisk pitch cadence)
+    pitchFlowFrom: 3100,   // v25: 5350 -> 3100
+    pitchFlowMs: 1050,     // v25: 1400 -> 1050
     pitchMarks: 44,
     pitchHit: 0.94,
-    pitchExit: 6950,     // the fill leaves the frame top (v23b: -300 ms, the music fit)
-    exitMs: 500,
-    pitchWiden: 7200,    // ... then widens into the whole frame
-    widenMs: 600,
+    pitchExit: 4350,     // v25: 6950 -> 4350. the fill leaves the frame top (v23b: -300 ms, the music fit)
+    exitMs: 420,         // v25: 500 -> 420
+    pitchWiden: 4600,    // v25: 7200 -> 4600. ... then widens into the whole frame
+    widenMs: 480,        // v25: 600 -> 480
     landMs: 240,         // a ✓'s share of the level eases in over this
     painShare: 0.1,      // the pain's buyers: this share of its cards sells (no LOST)
   };
@@ -1515,7 +1541,7 @@
       marks.push({
         hit,
         at,
-        dur: 620 + 180 * h(7),
+        dur: pitch ? 500 + 140 * h(7) : 470 + 130 * h(7),   // v25: the pitch's marks fly quicker (the shorter climax); v25 pain: 620 + 180 -> 470 + 130 (the brisk pain)
         sx: from.x,
         sy: from.y,
         key: from.key,
@@ -1545,7 +1571,7 @@
       }
       return sum;
     };
-    const enter = (t) => 1 - (1 - salesClamp((t - m.in) / B.inMs)) ** 3;
+    const enter = (t) => 1 - (1 - salesClamp((t - m.in) / (pitch ? B.inMs : B.painInMs))) ** 3;
     // the bar's height, share of the frame height (> 1: past the frame top)
     const level = (t) => {
       const e = enter(t);
@@ -1724,7 +1750,7 @@
   }
 
   function painInView(screen, frame, timeMs) {
-    const arrive = glideArrive(timeMs);
+    const arrive = glideArrive(timeMs, 'pain');
     const insetX = (1 - arrive) * frame.width * 0.1 + frame.width * 0.035;
     const insetY = (1 - arrive) * frame.height * 0.08 + frame.height * 0.03;
     return screen.cx > insetX
@@ -1736,7 +1762,7 @@
   function painScreenAt(cell, timeMs, frame) {
     const previous = glideActiveTilt;
     glideActiveTilt = glideTiltAt(timeMs, 'pain') * Math.PI / 180;
-    const screen = glideCellScreen(cell, glideCamera(timeMs), glideUnit(frame), frame);
+    const screen = glideCellScreen(cell, glideCamera(timeMs, 'pain'), glideUnit(frame), frame);
     glideActiveTilt = previous;
     return screen;
   }
@@ -1764,7 +1790,7 @@
     if (cell.poofEntry == null) {
       const entry = painEntryTime(cell, frame, timeMs);
       if (entry == null) return { age: null, opacity: 1 };
-      const speed = glideSpeed(entry);
+      const speed = glideSpeed(entry, 'pain');
       const haste = Math.min(1, Math.max(0, (speed - 280) / (PROMO_GLIDE.speedTo - 280)));
       const seed = wallSeededUnit(cell.row * 19 + 3, cell.col * 11 + 7);
       cell.poofEntry = entry;
@@ -2116,9 +2142,9 @@
   const PROMO_PITCH_SPEAK_UPSELL_MS = 4400;
   // One full turn of the widget's activity laser (--bizmis-laser-spin-duration).
   const PROMO_LASER_LAP_MS = 1400;
-  const PROMO_LASER_FAST_MS = 550;
+  const PROMO_LASER_FAST_MS = 400;   // v25: 550 -> 400
   const PROMO_CAM_ZOOM = 1.7;
-  const PROMO_CAM_MS = 1100;
+  const PROMO_CAM_MS = 800;   // v25: 1100 -> 800 (MUST match .promo-opening__camera.is-moving in promo-ad.css)
   const PROMO_CHAPTER_CHAR_MS = 16;
   const PROMO_PAIN_ANSWER_1 = 'Thanks for reaching out! You can browse our full collection using the menu above. To narrow your search, use the filters for size, weight and category. Product details, specifications and customer reviews are available on each product page. Let me know if there\'s anything else I can help you with.';
   const PROMO_PAIN_LINKS = ['View collection', 'Size guide', 'Shipping info'];
@@ -2218,22 +2244,22 @@
   // needs the shape of each moment, and the narrator sets the pace.
   // Desktop: a store with no help at all. The shopper bounces between
   // look-alikes, finds nothing to ask, and drifts out of the window.
-  const PROMO_PAIN_A = [
+  const PROMO_PAIN_A = [   // v25 pace: ~30% tighter (was 60 / 80 / 600 / 60 / 260)
     ['grid', 60],
-    ['enter', 80],
-    ['open', 600],
-    ['back', 60],
-    ['hover-b', 260],
+    ['enter', 60],
+    ['open', 420],
+    ['back', 40],
+    ['hover-b', 180],
   ];
-  const PROMO_PAIN_A2 = [
-    ['open-2', 560],
-    ['back-2', 60],
-    ['scroll-2', 420],
-    ['leave', 500],
+  const PROMO_PAIN_A2 = [   // v25 pace: was 560 / 60 / 420 / 500
+    ['open-2', 390],
+    ['back-2', 40],
+    ['scroll-2', 290],
+    ['leave', 350],
   ];
   const PROMO_PAIN_THINK_MS = 550;
-  const PROMO_PAIN_FAST_CHAR_MS = 22;
-  const PROMO_PAIN_FAST_LINE_MS = 700;
+  const PROMO_PAIN_FAST_CHAR_MS = 18;   // v25 pace: 22 -> 18
+  const PROMO_PAIN_FAST_LINE_MS = 560;   // v25 pace: 700 -> 560
   const PROMO_PAIN_B = [
     ['launcher', 80],
     ['panel', 140],
@@ -5854,7 +5880,7 @@
         promoSfx('strike');
         // v10: the wave alone greets (no salute on top)
         await take.done;
-        await waitMs(450);
+        await waitMs(200);   // v25: 450 -> 200
         // rewind to the very same store the pain started in, now with Bizmis
         const rewind = momentsEnabled() ? this.beginRewind() : null;
         this.root.classList.add('is-pitch-cards');
@@ -6464,7 +6490,7 @@
       await this.laserUntilNext('product', reduced, PROMO_LASER_FAST_MS);
       const leavingBoard = stage?.querySelector('.promo-moments__board');
       leavingBoard?.classList.add('is-leaving-choice');
-      await waitMs(reduced ? 0 : 200);
+      await waitMs(reduced ? 0 : 120);   // v25: 200 -> 120
       // a page change: a quick dissolve into the product page (the layout morph
       // shrank the winner into a thumbnail for a frame)
       if (!reduced && leavingBoard) await fadeStep(leavingBoard, 1, 0, 150);
@@ -6501,11 +6527,11 @@
       });
       applyMomentPose(stage, 'close', { instant: reduced });
       promoWidgetDebug('setPlaceholder', 'Ask what goes with it');
-      await waitMs(reduced ? 40 : 300);
+      await waitMs(reduced ? 40 : 150);   // v25: 300 -> 150
       setOpeningAvatarAction('thumbsup');   // the doubt is gone: into the cart
       host?.classList.add('is-cart-one');
       emitShopper({ kind: 'cart', product: pick, quantity: 1 });
-      await waitMs(reduced ? 40 : 950);   // "Added" and the cart badge land inside "Stuck on a doubt"
+      await waitMs(reduced ? 40 : 450);   // v25: 950 -> 450. "Added" and the cart badge land inside "Stuck on a doubt"
       this.hideChapter();
       // Moment 3. Like a good salesperson, the clerk suggests (it doesn't
       // push) what goes with it: only the main product at first, then a
@@ -6540,8 +6566,8 @@
       promoWidgetDebug('setPlaceholder', 'Ask about shipping or returns');
       bundle();
       this.resolveChapter();
-      window.setTimeout(() => setOpeningAvatarAction('bow'), 350);   // a small thank-you
-      await waitMs(reduced ? 40 : 1100);
+      window.setTimeout(() => setOpeningAvatarAction('bow'), 200);   // a small thank-you (v25: 350 -> 200)
+      await waitMs(reduced ? 40 : 300);   // v25: 1100 -> 300
       this.hideChapter();
       this.painStore()?.querySelectorAll('.promo-close__veil, .promo-close__mark, .promo-glide__lost-mark, .promo-glide__veil').forEach((node) => node.remove());
       this.painStore()?.querySelectorAll('[style*="grayscale"]').forEach((node) => { node.style.filter = ''; });
@@ -8459,10 +8485,10 @@
             lines.forEach((p) => { p.style.strokeDasharray = '1'; p.style.strokeDashoffset = '1'; });
             hand.style.opacity = '1';
             promoSfx('hand-write');
-            await tweenStep(820, (e) => { text.style.clipPath = `inset(-30% ${((1 - e) * 115 - 15).toFixed(2)}% -40% -10%)`; }, (u) => u * (2 - u) * 0.6 + u * 0.4);
+            await tweenStep(680, (e) => { text.style.clipPath = `inset(-30% ${((1 - e) * 115 - 15).toFixed(2)}% -40% -10%)`; }, (u) => u * (2 - u) * 0.6 + u * 0.4);   // v25: was 820
             promoSfx('ea-stamp');
-            await tweenStep(360, (e) => { lines[0].style.strokeDashoffset = (1 - e).toFixed(3); }, promoEaseOut);
-            if (lines[1]) tweenStep(300, (e) => { lines[1].style.strokeDashoffset = (1 - e).toFixed(3); }, promoEaseOut);
+            await tweenStep(300, (e) => { lines[0].style.strokeDashoffset = (1 - e).toFixed(3); }, promoEaseOut);   // v25: was 360
+            if (lines[1]) tweenStep(260, (e) => { lines[1].style.strokeDashoffset = (1 - e).toFixed(3); }, promoEaseOut);
           }
         } else if (copy.morph) {
           const pill = slot.querySelector('.promo-ea-pill');
@@ -8748,9 +8774,9 @@
         install.style.translate = `-50% calc(-50% + ${((1 - e) * 2.6).toFixed(3)}cqh)`;
       }, quintOut);
       tweenStep(700, (e) => { aura.style.opacity = (0.3 * e).toFixed(3); }, promoEaseOut);
-      await waitMs(260);
+      await waitMs(200);   // v25: was 260
       tweenStep(200, (e) => { pointer.style.opacity = e.toFixed(3); }, promoEaseOut);
-      await tweenStep(780, (e, u) => {
+      await tweenStep(680, (e, u) => {   // v25: was 780 (the pointer is on the button ~0.3 s before "click", 1.18 s)
         tipAt(lerp(from.x, aim.x, e) + Math.sin(e * Math.PI) * W * 0.018, lerp(from.y, aim.y, e));
         const hover = promoEaseInOut(clamp01((u - 0.7) / 0.3));   // the button lifts as the pointer arrives
         pill.style.scale = (1 + 0.025 * hover).toFixed(4);
@@ -8853,8 +8879,7 @@
       st.chip = chip.querySelector('svg'); st.chipAt = performance.now();
       promoSfx('ui-tick');
       tweenStep(460, (e) => { chip.style.opacity = e.toFixed(3); chip.style.translate = `-50% ${((1 - e) * 1.4).toFixed(3)}cqh`; chip.style.scale = lerp(0.94, 1, e).toFixed(4); }, quintOut);
-      await take.done;
-      await waitMs(PROMO_SYNC_HOLD_MS);
+      await take.at('automatically', 'end', PROMO_SYNC_HOLD_MS);   // v25: on the word's end, not the take's silent tail
       // v23: the scene never fades to an empty frame on its own: it holds (alive) until the next
       // scene is over it, then leave() pushes it in and removes it under the reel's crossfade
       let gone = false;
@@ -9245,7 +9270,7 @@
       // the camera and brakes onto the first store on a hit; from there every
       // store is a hard cut on the beat: a flash, the device punches in, its
       // title slams; the quick ones come faster and faster; "Your store" last.
-      const anchored = marketingPart() === 'full' && window.__promoFilmT0 != null;
+      const anchored = marketingPart() === 'full' && window.__promoFilmT0 != null && PROMO_FILM_ANCHORS.reel > 0;   // reel <= 0: unanchored (measuring the natural timeline)
       if (anchored) await untilFilm(PROMO_FILM_ANCHORS.reel);   // v21: the reel starts on the stores section's first bar
       // the cuts count from the anchor itself, not from the frame the wait resumed on (the export clock steps per frame)
       const t0 = anchored ? window.__promoFilmT0 + PROMO_FILM_ANCHORS.reel * 1000 : performance.now();
@@ -9887,7 +9912,7 @@
     openPainStage() {
       this.root.style.setProperty('--promo-pain-ease', PROMO_PAIN_EASE);
       this.root.style.setProperty('--promo-pain-open', `${PROMO_PAIN_SCROLL_MS}ms`);
-      this.root.style.setProperty('--promo-pain-card', '720ms');
+      this.root.style.setProperty('--promo-pain-card', '480ms');   // v25 pace: 720 -> 480 (a card opening / closing)
       this.root.style.setProperty('--promo-pain-exit', `${PROMO_PAIN_EXIT_MS}ms`);
       this.ensureMoments();
       const openingStore = this.painStore();
@@ -10216,11 +10241,11 @@
       this.painTake = take;
       // v24 hook: no title card, no fade from white: frame 0 is the store, composed, with the
       // shopper's cursor already browsing it (same span as the old title, so no cue moves)
-      await this.playStoreBrowseOpen(PROMO_WINDOW_IN_MS + PROMO_STORE_TITLE_IN_MS + PROMO_STORE_TITLE_HOLD_MS + Math.max(320, PROMO_STORE_TITLE_OUT_MS) + PROMO_PAIN_A[0][1]);
+      await this.playStoreBrowseOpen(Math.round(PROMO_PAIN_BROWSE_PACE * (PROMO_WINDOW_IN_MS + PROMO_STORE_TITLE_IN_MS + PROMO_STORE_TITLE_HOLD_MS + Math.max(320, PROMO_STORE_TITLE_OUT_MS) + PROMO_PAIN_A[0][1])));   // v25 pace: 2130 -> 1700 ms
       await this.playPainSteps(PROMO_PAIN_A.slice(1), 'unattended');
-      await take.at('Some get lost');
+      await take.at('comparing', 'start', -100);   // v25: the second card opens on "comparing" (the brisk take's beats)
       await this.playPainSteps(PROMO_PAIN_A2, 'unattended');
-      this.painLine = take.at('choose.', 'end', -300);   // v23b: STT "choose." ends 10.92 s; the .json's end runs ~0.36 s late
+      this.painLine = take.at('choose.', 'end', 60);   // v25: the take's chars are re-timed onto the STT words ("choose." ends 8.30 s)
       this.painChatUsed = false;
       await this.playScaleScene();
     }
@@ -11682,7 +11707,7 @@
         this.inkSoldCaption(bar, frame, region);
       }
       // the sounds the score lands on
-      fire('bar-in', m.in, { ms: B.inMs });
+      fire('bar-in', m.in, { ms: pitch ? B.inMs : B.painInMs });
       data.marks.forEach((mark) => {
         if (mark.hit) fire('mark-hit', mark.at + mark.dur, { index: mark.hitIndex, mark: mark.index }, `hit-${mark.index}`);
         else fire('mark-miss', mark.at + mark.dur * 0.78, { index: mark.missIndex, mark: mark.index }, `miss-${mark.index}`);
@@ -11875,12 +11900,12 @@
       const exitU = timeMs <= marks.captionHoldEnd ? 0 : Math.min(1, (timeMs - marks.captionHoldEnd) / exitSpan);
       const exitFade = 1 - exitU;
       text.querySelectorAll('[data-caption-beat]').forEach((beat) => {
-        const start = marks.captionStart + captionBeatOffset(Number(beat.dataset.captionBeat));
+        const start = marks.captionStart + captionBeatOffset(Number(beat.dataset.captionBeat), 'pain');
         if (timeMs >= start && beat.dataset.sfx !== '1') {
           beat.dataset.sfx = '1';
           promoSfx('climax-beat', { index: Number(beat.dataset.captionBeat) }, performance.now() - (timeMs - start));
         }
-        const inU = Math.min(1, Math.max(0, (timeMs - start) / PROMO_GLIDE.captionInMs));
+        const inU = Math.min(1, Math.max(0, (timeMs - start) / PROMO_GLIDE_PAIN.captionInMs));
         const inEase = inU * inU * (3 - 2 * inU);
         beat.style.opacity = Math.max(0, inEase * exitFade).toFixed(3);
       });
@@ -11891,7 +11916,7 @@
         paintCartTally(tally, 'lost', ms, span, exitFade, root.clientHeight || 1080);
         if (tally.dataset.wind !== '1') { tally.dataset.wind = '1'; promoSfx('lost-wind', { ms: span }, performance.now() - ms); }
       }
-      const hazeIn = Math.min(1, Math.max(0, (timeMs - marks.captionStart) / PROMO_GLIDE.captionInMs));
+      const hazeIn = Math.min(1, Math.max(0, (timeMs - marks.captionStart) / PROMO_GLIDE_PAIN.captionInMs));
       const hazeEase = hazeIn * hazeIn * (3 - 2 * hazeIn);
       if (haze) haze.style.opacity = Math.max(0, hazeEase * exitFade).toFixed(3);
       if (poof) poof.style.opacity = '0';
@@ -12018,7 +12043,7 @@
         const filter = blur ? `blur(${blur}px)` : '';
         if (sheet.style.filter !== filter) sheet.style.filter = filter;
       }
-      const arrive = options.reduced ? 1 : glideArrive(time);
+      const arrive = options.reduced ? 1 : glideArrive(time, mode);
       const tiltNode = root.querySelector('.promo-glide__tilt');
       if (tiltNode) {
         const tilt = PROMO_GLIDE.tilt * arrive;
@@ -12111,7 +12136,7 @@
         // The sea grows out of the close-up: neighbours fade in as the camera
         // pulls back, nearest last-to-first outward, so there is no cut.
         if (item.cell.key !== this.glideLeadKey && time < PROMO_GLIDE_NEIGHBOR_IN_MS + 900) {
-          const u = glideNeighborIn(item.cell, leadCell, time);
+          const u = glideNeighborIn(item.cell, leadCell, time, mode);
           slot.cell.style.opacity = u >= 1 ? '' : u.toFixed(3);
         } else if (item.cell.key !== this.glideLeadKey && slot.cell.style.opacity) {
           slot.cell.style.opacity = '';
@@ -12532,7 +12557,7 @@
       });
       canvas.appendChild(caption);
       // v13: the claims are words only (no chart)
-      const start = Math.max(1200, claimAt - 4400);
+      const start = Math.max(600, claimAt - 4400);   // v25: 1200 -> 600 (the brisk take says "visits" at ~0.76 s)
       // v11b: the words land as the narrator says them ("visits", "sales."),
       // then "Every day." and "And counting." at the pain claim's own cadence;
       // each fades in stepped (export-safe), like the LOST claim
@@ -12552,7 +12577,7 @@
         if (take) await take.at('sales.', 'start', -40); else await waitMs(captionBeatOffset(1));
         show(1);
         for (let index = 2; index < beats.length; index += 1) {
-          await waitMs(captionBeatOffset(index) - captionBeatOffset(index - 1));
+          await waitMs(PROMO_SOLD_BEAT_GAP_MS);   // v25: the pitch's own brisk cadence (was the pain's 1070 / 1330 ms)
           show(index);
         }
         await waitMs(PROMO_GLIDE.captionHoldMs);
@@ -12620,7 +12645,7 @@
         await this.fadeScaleToSwitch();
         this.chargeSwitch(take);
         const moments = this.showSwitchMoments(take);
-        const walkedIn = take.at('store...', 'end', -40).then(() => this.enterSwitchStore(title));
+        const walkedIn = take.at('store,', 'end', -40).then(() => this.enterSwitchStore(title));   // v25: the brisk take reads "store," (was "store...")
         Promise.all([take.at('the best', 'start', -60), walkedIn]).then(() => this.morphSwitchTitle(title));
         take.at('into sales').then(() => moments?.resolve());
         take.at('So we built', 'start', -160).then(() => { this.swapSwitchTitle(title); moments?.exit(); });   // v23: the outcomes bow out as the toggle takes the stage (it stands alone)
@@ -12817,7 +12842,7 @@
       fillSoldMark(mark);
       mark.style.fontSize = lostMarkSize((store.clientWidth || 640) * 0.72, store.clientHeight * 0.72);   // the close-up's chip: a stamp, not a banner
       store.append(veil, mark);
-      const hold = 380;   // a beat, not a hold
+      const hold = 120;   // a beat, not a hold (v25: 380 -> 120)
       const life = PROMO_CHECK_SETTLE_MS + hold;
       const started = performance.now();
       await new Promise((resolve) => {
@@ -13139,13 +13164,13 @@
       cursor.style.setProperty('--pain-x', `${Math.round(spot.x + clone.clientWidth * 0.14)}px`);
       cursor.style.setProperty('--pain-y', `${Math.round(spot.y + clone.clientHeight * 0.12)}px`);
       cursor.getBoundingClientRect();
-      fadeStep(cursor, 0, 1, 140);
-      await waitMs(90);
-      await this.moveThumb(clone, spot.x, spot.y, 380);
+      fadeStep(cursor, 0, 1, 120);
+      await waitMs(70);
+      await this.moveThumb(clone, spot.x, spot.y, 320);   // v25 pace: 90 + 380 -> 70 + 320
       this.pressTouch(cursor);
       promoSfx('click');
-      await waitMs(60);
-      await this.liftTouch(cursor, 120);   // v24: lifted before the chat changes under it (same 180 ms as before)
+      await waitMs(50);
+      await this.liftTouch(cursor, 100);   // v24: lifted before the chat changes under it (v25: 150 ms)
     }
 
     openHumanChat(clone) {
@@ -13218,15 +13243,15 @@
       cursor.style.setProperty('--pain-x', `${Math.round(spot.x + clone.clientWidth * 0.16)}px`);
       cursor.style.setProperty('--pain-y', `${Math.round(spot.y + clone.clientHeight * 0.14)}px`);
       cursor.getBoundingClientRect();
-      fadeStep(cursor, 0, 1, 160);
-      await waitMs(100);
-      await this.moveThumb(clone, spot.x, spot.y, 460);
+      fadeStep(cursor, 0, 1, 140);
+      await waitMs(80);
+      await this.moveThumb(clone, spot.x, spot.y, 380);   // v25 pace: 100 + 460 -> 80 + 380
       this.pressTouch(cursor);
       promoSfx('click');
       down.classList.add('is-on');
-      tweenStep(300, (e, u) => { down.style.scale = (1 + Math.sin(u * Math.PI) * 0.28).toFixed(3); }, (u) => u);
-      await waitMs(80);
-      await this.liftTouch(cursor, 120);   // v24: same 200 ms as before
+      tweenStep(260, (e, u) => { down.style.scale = (1 + Math.sin(u * Math.PI) * 0.28).toFixed(3); }, (u) => u);
+      await waitMs(60);
+      await this.liftTouch(cursor, 100);   // v24: same 200 ms as before (v25: 160 ms)
     }
 
     async tapPhoneLauncher(clone) {
@@ -13242,13 +13267,13 @@
       cursor.style.setProperty('--pain-y', `${Math.round(spot.y - clone.clientHeight * 0.16)}px`);
       cursor.getBoundingClientRect();
       cursor.style.setProperty('--tap-scale', '1.12');
-      fadeStep(cursor, 0, 1, 160);
-      await waitMs(120);
-      await this.moveThumb(clone, spot.x, spot.y, 520);
+      fadeStep(cursor, 0, 1, 140);
+      await waitMs(90);
+      await this.moveThumb(clone, spot.x, spot.y, 420);   // v25 pace: 120 + 520 -> 90 + 420
       this.pressTouch(cursor);
       this.emitClick();
-      await waitMs(80);
-      await this.liftTouch(cursor, 120);   // v24: gone before the panel opens (same 200 ms as before)
+      await waitMs(60);
+      await this.liftTouch(cursor, 100);   // v24: gone before the panel opens (v25: 160 ms)
     }
 
     // v24: the fingertip glides in (stepped, a slight arc) and settles onto the glass as it arrives
@@ -13352,24 +13377,24 @@
       if (closedChat) { closedChat.hidden = false; closedChat.classList.remove('is-open'); }   // the launcher waits on the product page from the start
       const launcher = clone.querySelector('.promo-pain__launcher');
       if (launcher && !prefersReducedMotion()) {
-        await this.painTake?.at('looking for help', 'start', -300);
+        await this.painTake?.at('looking for help', 'start', -200);   // v25 STT: "looking" 11.02 s
         // stepped, never WAAPI: export-safe
-        tweenStep(1600, (e, u) => { const k = (u * 2) % 1; launcher.style.boxShadow = `0 0 0 ${(k * 14).toFixed(1)}px rgba(30, 30, 30, ${(0.28 * (1 - k)).toFixed(3)})`; }, (u) => u)
+        tweenStep(1200, (e, u) => { const k = (u * 2) % 1; launcher.style.boxShadow = `0 0 0 ${(k * 14).toFixed(1)}px rgba(30, 30, 30, ${(0.28 * (1 - k)).toFixed(3)})`; }, (u) => u)
           .then(() => { launcher.style.boxShadow = ''; });
-        await this.painTake?.at('help.', 'end', -340);   // the thumb lands as "A chatbot?" begins (v23b STT: "help." ends 15.36 s, "A chatbot?" 15.96 s)
+        await this.painTake?.at('A chatbot?', 'start', -570);   // the thumb lands as "A chatbot?" begins (v25 STT: "A" 12.14 s; the tap's press ~510 ms in)
       } else await waitMs(150);
       await this.tapPhoneLauncher(clone);
       const input = clone.querySelector('[data-promo-pain-input]');
       this.fillCloneChat(clone, 'panel');
       const sheet = clone.querySelector('[data-promo-pain-chat]');
       if (sheet) {   // the panel rises in (stepped), and is settled before the camera measures it
-        await tweenStep(320, (e) => { sheet.style.opacity = e.toFixed(3); sheet.style.translate = `0 ${((1 - e) * 9).toFixed(2)}%`; }, promoEaseOut);
+        await tweenStep(240, (e) => { sheet.style.opacity = e.toFixed(3); sheet.style.translate = `0 ${((1 - e) * 9).toFixed(2)}%`; }, promoEaseOut);   // v25 pace: 320 -> 240
         sheet.style.opacity = ''; sheet.style.translate = '';
       }
       // v23: ONE camera move: as the shopper starts typing, the phone glides in until the chat panel fills
       // the frame, and it holds through the bot's wall, the hand-off and Emma's reply; playPhonePain
       // pulls back as the chat closes
-      const zoom = this.zoomPhoneToChat(clone, 1500);
+      const zoom = this.zoomPhoneToChat(clone, 1200);   // v25 pace: 1500 -> 1200
       if (input) {
         input.textContent = '';
         input.classList.add('is-live');
@@ -13383,7 +13408,7 @@
       input?.classList.remove('is-live');
       this.fillCloneChat(clone, 'think-2');
       promoSfx('send');
-      await Promise.all([waitMs(250), this.painTake?.at('wall of text', 'start', -80)]);   // v23: the wall lands on "wall" (v23b STT 17.56 s), a short think
+      await Promise.all([waitMs(200), this.painTake?.at('wall of text', 'start', -120)]);   // v23: the wall lands on "wall" (v25 STT 13.54 s), a short think
       this.fillCloneChat(clone, 'answer-2');
       promoSfx('reply');
       // the wall rolls on while "go read it" plays (never a frozen frame); the camera holds
@@ -13392,35 +13417,35 @@
         log.scrollTop = 0;
         const t0 = performance.now();
         const roll = (now) => {
-          const u = Math.min(1, Math.max(0, (now - t0 - 200) / 900)); const e = u * u * (3 - 2 * u);
+          const u = Math.min(1, Math.max(0, (now - t0 - 150) / 750)); const e = u * u * (3 - 2 * u);   // v25 pace: 200 + 900 -> 150 + 750
           log.scrollTop = (log.scrollHeight - log.clientHeight) * e;
           if (u < 1 && log.isConnected) window.requestAnimationFrame(roll);
         };
         window.requestAnimationFrame(roll);
       }
       await zoom;
-      // the shopper rates the wall 👎 as "go read it" ends (v23b STT: "it." ends 19.22 s; the tap lands ~540 ms after it starts)
-      await this.painTake?.at('go read it', 'end', -540);
+      // the shopper rates the wall 👎 as "go read it" ends (v25 STT: "it." ends 14.86 s; the tap lands ~460 ms after it starts)
+      await this.painTake?.at('go read it', 'end', -560);
       await this.tapThumbsDown(clone);
       // "A real person?" (v23b STT: "A" ~19.8 s, "person?" 20.36-20.78 s): the offer pops in the beat
       // before, the thumb taps "Talk to a person" on "person?", and Emma's chat opens as the word ends
-      await this.painTake?.at('A real person?', 'start', -250);
+      await this.painTake?.at('A real person?', 'start', -340);   // v25 STT: "A" 15.38 s, "person?" 15.68-16.04 s
       this.offerHumanChat(clone);
-      await this.painTake?.at('A real person?', 'start', 40);
+      await this.painTake?.at('person?', 'start', -390);   // the tap's press lands on "person?" (~390 ms in)
       const handoff = clone.querySelector('.promo-pain__handoff');
       if (handoff) await this.tapPhoneTarget(clone, handoff);
-      await this.painTake?.at('A real person?', 'start', 900);
+      await this.painTake?.at('person?', 'end');
       this.openHumanChat(clone);
       promoSfx('panel');
       // "The perfect answer... hours later.": the clock races, the reply lands as "later" ends
-      // (v23b STT: "hours" 22.92 s, "later" ends 23.58 s; the .json's end runs ~0.22 s late)
-      await this.painTake?.at('hours later.', 'start', -700);
-      await this.fastForwardClock(clone, 900);
-      await this.painTake?.at('hours later.', 'end', -300);
+      // (v25 STT: "hours" 17.92 s, "later" ends 18.52 s; the v25 text reads "hours later, when...")
+      await this.painTake?.at('hours later', 'start', -740);
+      await this.fastForwardClock(clone, 800);   // v25 pace: 900 -> 800
+      await this.painTake?.at('hours later', 'end', -240);
       this.humanReplyArrives(clone);
       promoSfx('reply');
-      // "...already gone.": the shopper closes the chat, the thumb on the ✕ as "gone." ends (v23b STT 25.22 s)
-      await this.painTake?.at('already gone.', 'end', -620);
+      // "...already gone.": the shopper closes the chat, the thumb on the ✕ as "gone." ends (v25 STT 19.82 s; press ~390 ms in)
+      await this.painTake?.at('already gone.', 'end', -560);
       const close = clone.querySelector('.promo-pain__chat.is-open .promo-pain__close');
       if (close) await this.tapPhoneTarget(clone, close);
     }
@@ -13480,7 +13505,7 @@
       mark.style.fontSize = lostMarkSize(node.clientWidth || 640, node.clientHeight);
       node.append(veil, mark);
       promoSfx('lost-close');
-      const life = 1100;
+      const life = 680;   // v25 pace: 1100 -> 680 (landed at 340 ms, the card sunk by 640 ms)
       const started = performance.now();
       await new Promise((resolve) => {
         const step = (now) => {
@@ -13604,12 +13629,12 @@
       const phone = await this.slideInPhoneProduct(desktop);
       await this.playPhoneDoubt(phone);
       const chat = phone.querySelector('[data-promo-pain-chat]');
-      const reframe = this.unzoomPhoneChat(800);   // v23: the camera pulls back to the regular framing as the chat closes
+      const reframe = this.unzoomPhoneChat(560);   // v23: the camera pulls back to the regular framing as the chat closes (v25 pace: 800 -> 560)
       if (chat) {   // the chatbot slides away, then the phone is stamped
         await new Promise((resolve) => {
           const t0 = performance.now();
           const step = (now) => {
-            const u = Math.min(1, (now - t0) / 300); const e = u * u;
+            const u = Math.min(1, (now - t0) / 220); const e = u * u;   // v25 pace: 300 -> 220
             chat.style.opacity = (1 - e).toFixed(3); chat.style.translate = `0 ${(e * 9).toFixed(2)}%`;
             if (u < 1) window.requestAnimationFrame(step); else resolve();
           };
@@ -13620,7 +13645,7 @@
       await reframe;
       const cursor = phone.querySelector('[data-promo-pain-cursor]');
       if (cursor) cursor.style.opacity = '0';
-      await waitMs(120);
+      await waitMs(80);   // v25 pace: 120 -> 80
       await this.stampLost(phone);
       if (phoneKey) {
         this.painLostKeys.add(phoneKey);
@@ -13716,7 +13741,7 @@
     // individual properties only (they compose with the CSS transforms) and all cleared after.
     async playStoreEntrance(store, cards, cols) {
       if (!store) return;
-      const MS = 780; const U0 = 0.2;
+      const MS = 640; const U0 = 0.2;   // v25 pace: 780 -> 640
       const base = getComputedStyle(store).boxShadow;
       const keep = base && base !== 'none' ? `${base}, ` : '';
       const tiles = cards.slice(0, cols * 3);
@@ -13761,11 +13786,12 @@
       const [c1, c2, c3] = [cards[1], cards[2], cards[3]];
       const target = this.painBrowseCard(0) || cards[cols + 1];
       // [from, to, ms, kind, start u]: strokes are quick and slightly curved, hovers are slow drifts
+      const pace = Math.min(1, totalMs / 2130);   // v25: the legs keep their shape at the brisker browse
       const legs = [
-        [at(c3, 0.6, 0.74), at(c2, 0.58, 0.42), 640, 'stroke', 0.36],
-        [at(c2, 0.58, 0.42), at(c2, 0.46, 0.5), 540, 'hover', 0],
-        [at(c2, 0.46, 0.5), at(c1, 0.6, 0.4), 500, 'stroke', 0],
-        [at(c1, 0.6, 0.4), at(c1, 0.5, 0.47), 300, 'hover', 0],
+        [at(c3, 0.6, 0.74), at(c2, 0.58, 0.42), 640 * pace, 'stroke', 0.36],
+        [at(c2, 0.58, 0.42), at(c2, 0.46, 0.5), 540 * pace, 'hover', 0],
+        [at(c2, 0.46, 0.5), at(c1, 0.6, 0.4), 500 * pace, 'stroke', 0],
+        [at(c1, 0.6, 0.4), at(c1, 0.5, 0.47), 300 * pace, 'hover', 0],
         [at(c1, 0.5, 0.47), at(target, 0.55, 0.34), 0, 'stroke', 0],
       ];
       const fixed = legs.slice(0, -1).reduce((sum, [, , ms, , u0]) => sum + ms * (1 - u0), 0);

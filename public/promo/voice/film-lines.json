@@ -2,22 +2,24 @@
   {
     "id": "t-pain",
     "role": "narrator",
-    "text": "[matter-of-fact] Every day, shoppers walk into your store... ready to buy. [wry] Some get lost in the catalog. Clicking, comparing, scrolling... [deadpan] with no one there to help them choose. [short pause] Others get stuck on one last question... and go looking for help. [wry] A chatbot? [dry] Here's a wall of text... go read it. [short pause] [wry] A real person? The perfect answer... [deadpan] hours later. When the sale's already gone. [short pause] [matter-of-fact] Either way, they leave."
+    "text": "[matter-of-fact] [quickly] Every day, shoppers walk into your store ready to buy. Some get lost in the catalog, clicking, comparing, scrolling, with no one there to help them choose. Others get stuck on one last question and go looking for help. [wry] A chatbot? [dry] Here's a wall of text, go read it. A real person? The perfect answer, [deadpan] hours later, when the sale's already gone. Either way, they leave.",
+    "speed": 1.12
   },
   {
     "id": "t-pain-end",
     "role": "narrator",
-    "text": "[deadpan] Sale lost."
+    "text": "[deadpan] [quickly] Sale lost.",
+    "speed": 1.12
   },
   {
     "id": "t-switch",
     "role": "narrator",
-    "text": "[thoughtful] In a physical store... [warm] the best salesperson turns these moments into sales. [excited] So we built one... for your online store!"
+    "text": "[thoughtful] [quickly] In a physical store, the best salesperson turns these moments into sales. [excited] So we built one, for your online store!"
   },
   {
     "id": "t-reveal",
     "role": "narrator",
-    "text": "[warm] Meet Bizmis. Your store's new salesperson. [short pause] Well... [mischievously] sales agent."
+    "text": "[warm] [quickly] Meet Bizmis. Your store's new salesperson. Well... [mischievously] sales agent."
   },
   {
     "id": "t-rewind",
@@ -27,22 +29,22 @@
   {
     "id": "t-lost",
     "role": "narrator",
-    "text": "[warm] When a shopper's lost in your catalog... [confident] your Bizmis sales agent finds them the right one."
+    "text": "[warm] [quickly] When a shopper's lost in your catalog, your Bizmis sales agent finds them the right one."
   },
   {
     "id": "t-doubt",
     "role": "narrator",
-    "text": "[warm] And when a doubt holds them back... [confident] it answers on the spot."
+    "text": "[warm] [quickly] And when a doubt holds them back, it answers on the spot."
   },
   {
     "id": "t-sold",
     "role": "narrator",
-    "text": "[warm] That's how more visits... turn into sales."
+    "text": "[warm] [quickly] That's how more visits turn into sales."
   },
   {
     "id": "t-sync",
     "role": "narrator",
-    "text": "[warm] It all takes just one click. [confident] And your whole store stays in sync... automatically."
+    "text": "[warm] [quickly] It all takes just one click. And your whole store stays in sync, automatically."
   },
   {
     "id": "t-sync-c",
@@ -62,46 +64,46 @@
   {
     "id": "t-stores",
     "role": "narrator",
-    "text": "[confident] Whatever your store sells... [warm] your Bizmis agent sells it."
+    "text": "[confident] [quickly] Whatever your store sells, your Bizmis agent sells it."
   },
   {
     "id": "t-ea",
     "role": "narrator",
-    "text": "[upbeat] Install now to join Early Access! [warm] Generous free credits, fifty percent off upgrades, and you shape the roadmap. [confident] Only fifty spots. [warm] Secure yours by installing now."
+    "text": "[upbeat] [quickly] Install now to join Early Access! Generous free credits, fifty percent off upgrades, and you shape the roadmap. Only fifty spots. Secure yours by installing now."
   },
   {
     "id": "shopper-doubt",
     "role": "shopper",
-    "text": "[curious] Is it okay for someone who's never had one?"
+    "text": "[curious] [quickly] Is it okay for someone who's never had one?"
   },
   {
     "id": "clerk-results",
     "role": "clerk",
-    "text": "Here are three great picks. Let me compare them for you."
+    "text": "[quickly] Here are three great picks. Let me compare them for you."
   },
   {
     "id": "clerk-compare",
     "role": "clerk",
-    "text": "This one's the most durable, the lightest, and easy to care for. It's the one."
+    "text": "[quickly] This one's the most durable, the lightest, and easy to care for. It's the one."
   },
   {
     "id": "clerk-answer",
     "role": "clerk",
-    "text": "Absolutely! It's the one we recommend for first-timers."
+    "text": "[quickly] Absolutely! It's the one we recommend for first-timers."
   },
   {
     "id": "clerk-upsell",
     "role": "clerk",
-    "text": "Great pick! This one pairs beautifully with it. Want me to add it too?"
+    "text": "[quickly] Great pick! This one pairs beautifully with it. Want me to add it too?"
   },
   {
     "id": "shopper-upsell",
     "role": "shopper",
-    "text": "[happy] Oh, nice! Yes, add it."
+    "text": "[happy] [quickly] Oh, nice! Yes, add it."
   },
   {
     "id": "clerk-upsell-done",
     "role": "clerk",
-    "text": "Done! Both are in your cart."
+    "text": "[quickly] Done! Both are in your cart."
   }
 ]

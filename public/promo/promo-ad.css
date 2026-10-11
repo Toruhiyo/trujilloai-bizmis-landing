@@ -11444,7 +11444,7 @@ html.is-promo-final .promo-vo-debug {
 
 /* v6c: the camera (Cap-style zoom into the widget while the shopper types). */
 .promo-opening__camera { position: absolute; inset: 0; transform-origin: 0 0; }
-.promo-opening__camera.is-moving { transition: transform 1100ms cubic-bezier(0.65, 0, 0.35, 1); }
+.promo-opening__camera.is-moving { transition: transform 800ms cubic-bezier(0.65, 0, 0.35, 1); }   /* v25: 1100 -> 800 = PROMO_CAM_MS */
 
 /* v6c: the doubts burst into white dust, not orange. */
 .promo-moments__vapor-bit,
@@ -12088,7 +12088,7 @@ html.is-promo-sync-hero .promo-sync__avatar .bizmis-desktop-lite-chat .relative.
 .promo-opening.is-knob-fill .promo-opening__knob {
   background: var(--bizmis-primary) !important;
   box-shadow: none !important;
-  transition: background-color 160ms linear;
+  transition: background-color 120ms linear;   /* v25: = PROMO_KNOB_WARM_MS */
 }
 .promo-opening.is-knob-fill .promo-opening__fill--orange {
   transform: scale(var(--promo-knob-s, 0));
