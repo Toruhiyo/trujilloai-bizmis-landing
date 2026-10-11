@@ -248,6 +248,11 @@ async function bootPage(browser, options) {
 const QUAD_ORIGINS = ['0% 0%', '100% 0%', '0% 100%', '100% 100%'];
 const CAPTURE_ATTEMPTS = 4;
 let captureAttempts = CAPTURE_ATTEMPTS;
+// EXPORT_HOLE_SKIP="from-to[,from-to]": frames where the unpainted-block heuristic is a known false positive
+// (e.g. the dull sea's near-white blurred cards meeting white gaps); the two-capture stability check still runs
+const HOLE_SKIP = (process.env.EXPORT_HOLE_SKIP || '').split(',').filter(Boolean).map((r) => r.split('-').map(Number));
+let currentFrame = -1;
+const holeCheck = (file) => !HOLE_SKIP.some(([a, b]) => currentFrame >= a && currentFrame <= b) && frameHasHole(file);
 const DIFF_CHANNEL = 18;
 const DIFF_FRACTION = 0.0025;
 
@@ -396,7 +401,7 @@ async function captureStable(page, dest, timeoutMs) {
     await grabPng(page, left);
     await grabPng(page, right);
     const differ = framesDiffer(left, right);
-    const hole = frameHasHole(left);
+    const hole = holeCheck(left);
     if (!differ && !hole) {
       fs.renameSync(left, dest);
       fs.rmSync(right, { force: true });
@@ -420,6 +425,7 @@ function stitchQuadrants(parts, dest) {
 }
 
 async function writeFrame(page, frame, framesDir, timeoutMs, quadrants) {
+  currentFrame = frame;
   let timedOut = false;
   for (let attempt = 0; attempt < 2; attempt += 1) {
     const result = await page.evaluate((timeout) => window.__promoClock.settle(timeout), timeoutMs);
@@ -445,7 +451,7 @@ async function writeFrame(page, frame, framesDir, timeoutMs, quadrants) {
     }
     const stitched = `${file}.stitch.png`;
     stitchQuadrants(parts, stitched);
-    if (frameHasHole(stitched)) {
+    if (holeCheck(stitched)) {
       fs.rmSync(stitched, { force: true });
       throw new Error('unpainted block');
     }
@@ -876,9 +882,13 @@ async function main() {
       if (hasFlag('stream')) {
         if (codec !== 'h264') throw new Error('--stream needs --codec h264');
         options.stream = openStream(video);
+        if (resume && options.from > 0 && fs.existsSync(path.join(framesDir, 'frame-000000.png'))) {
+          await options.stream.feed(framesDir, 0, options.from - 1);   // a resumed stream starts with the frames already captured
+          options.streamFrom = 0;
+        }
       }
       const exported = await captureFilm(chromium, options, framesDir);
-      const sequenceFrom = options.stream ? options.from : (resume && fs.existsSync(path.join(framesDir, 'frame-000000.png')) ? 0 : options.from);
+      const sequenceFrom = options.stream ? (options.streamFrom ?? options.from) : (resume && fs.existsSync(path.join(framesDir, 'frame-000000.png')) ? 0 : options.from);
       const visible = exported.markers.filter((marker) => marker.frame >= sequenceFrom && marker.frame <= exported.last);
       if (options.stream) await options.stream.close();
       else if (exported.last >= sequenceFrom) {
