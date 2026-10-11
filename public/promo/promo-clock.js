@@ -159,7 +159,12 @@
       const startSec = Number(video.dataset.promoStart) || 0;
       const localSec = startSec + Math.max(0, (filmMs - video.__promoOriginMs) / 1000);
       const frameCount = Math.max(1, Math.round(video.duration * VIDEO_FPS));
-      const frame = Math.floor(localSec * VIDEO_FPS) % frameCount;
+      // data-promo-hold (the store reel's cards): a clip shorter than its card holds its last frame, never wraps back
+      // to its first (the start itself still wraps into the clip); every other video loops as before
+      const base = Math.floor(startSec * VIDEO_FPS);
+      const frame = video.dataset.promoHold === '1'
+        ? Math.min(frameCount - 1, Math.floor(localSec * VIDEO_FPS) - (base - (base % frameCount)))
+        : Math.floor(localSec * VIDEO_FPS) % frameCount;
       const next = Math.min(frame / VIDEO_FPS, Math.max(0, video.duration - 1 / VIDEO_FPS));
       if (Math.abs((video.currentTime || 0) - next) > 0.0005) {
         try {

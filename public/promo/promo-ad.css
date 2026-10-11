@@ -12050,7 +12050,15 @@ html.is-promo-sync-hero .promo-sync__avatar .bizmis-desktop-lite-chat .relative.
 .promo-moments__card.is-pick .promo-moments__chip { background: #fff; color: var(--ad-ink); border-color: color-mix(in srgb, var(--bizmis-primary) 45%, white); }
 .promo-moments__card.is-pick .promo-moments__chip .promo-moments__mark { color: var(--bizmis-primary); }
 /* v9c: the pressed Add -> "Added" + cart lands with the cart sound (was 1.3 s late, after the chapter had changed) */
-.promo-moments__board { --promo-close-cart-at: 300ms; }
+.promo-moments__board { --promo-close-cart-at: 130ms; }   /* v25b: 300 -> 130, the press lands with the cart sound (pose + 100 ms) */
+/* v25b: the store bar's cart (outside the board) still read the root's 1620 ms, so the celebration
+   started (Add -> Added), froze, and the cart pop + badge resumed 1.3 s later. One continuous motion:
+   the cart pops as "Added" lands (its tick), the badge 220 ms after. */
+.promo-opening__store-bar { --promo-close-cart-at: 300ms; }
+/* v25b: the burst's first keyframe (an orange dot, opacity .85) was back-filled through its delay, so the
+   cart looked "already celebrating" from the pose change, then held. It now shows only once it fires. */
+.is-pose-close:not(.is-settled):not(.is-reduced) .promo-moments__cart-burst,
+.is-pose-bundle:not(.is-settled):not(.is-reduced) .promo-moments__cart-burst { animation-fill-mode: forwards; }
 /* v9c sync: the release ring and the orbs stay behind the clerk (rings crossed his face); labels fade as the orbs fly */
 .promo-sync__ring { z-index: 1; top: 60%; }
 .promo-sync__orb.is-flying .promo-sync__name { opacity: 0; transition: opacity 160ms ease; }
@@ -13086,7 +13094,7 @@ html.is-promo-yours .promo-reel__yours-widget > [data-promo-widget] { opacity: 1
 .promo-ea-pills { gap: 1.1vw !important; }
 
 /* v12d QA: the handwritten line reads; the claims' week reads */
-.promo-switch-online { font-size: 3.3vw; }
+.promo-switch-online { font-size: 3.3vw; padding: 0.12em 0.22em; line-height: 1.25; overflow: visible; }   /* v25b: room for the Caveat swashes and the "!" (it was clipped at the box edge) */
 .promo-week__chart { width: calc(var(--week-h, 1080px) * 0.72); top: 28%; }
 .promo-week__cols { height: calc(var(--week-h, 1080px) * 0.24); }
 .promo-week__col { width: calc(var(--week-h, 1080px) * 0.062); }
@@ -13266,6 +13274,11 @@ html.is-promo-yours .promo-reel__yours-widget > [data-promo-widget] { opacity: 1
 .promo-pain__meta { float: right; display: inline-flex; align-items: center; gap: 0.28em; margin: 0.62em -0.12em -0.2em 0.9em; font-size: 0.68em; line-height: 1; color: rgba(45, 55, 50, 0.48); font-variant-numeric: tabular-nums; }
 .promo-pain__meta svg { width: 1.45em; height: 0.9em; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
 .promo-pain__wa.is-read .promo-pain__meta svg { stroke: #4F9A78; }
+/* v25b: the ticks read at phone size: larger, bolder, higher-contrast grey; read = a calm WhatsApp-like blue
+   (the one accent allowed in the pain). Each check pops on its own (popHumanTick, stepped). */
+.promo-pain__meta svg.promo-pain__ticks { width: 2.05em; height: 1.25em; overflow: visible; stroke: #66736D; stroke-width: 1.9; margin-left: 0.22em; transform-origin: 0% 55%; }   /* v25b: a gap from the time, and the read pop is anchored at the ticks' left end (it grows into the bubble's padding, away from the time), so the pair never touches "AM" */
+.promo-pain__ticks .promo-pain__tick { transform-box: fill-box; transform-origin: 50% 60%; }
+.promo-pain__wa.is-read .promo-pain__meta svg.promo-pain__ticks { stroke: #4FA3E0; }
 .promo-pain__chat.is-human .promo-pain__composer { background: #fff !important; border-color: transparent !important; box-shadow: 0 0.3em 0.8em -0.45em rgba(70, 50, 30, 0.3); }
 .promo-pain__chat.is-human .promo-pain__send { background: #6E9C84 !important; color: #fff !important; }
 .promo-opening__store.is-phone .promo-pain__chat.is-human .promo-pain__composer { margin-bottom: 2.6cqi; }

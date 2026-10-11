@@ -116,7 +116,9 @@
   const PROMO_REEL_TINT_MS = 700;   // the ambient light's glide into a store's colour   // the conveyor moves on while a store's take is still fading out
   // v24 light law (operator): every card window [cut_i, cut_i+1] on the cuts' own clock: the light peaks mid-card
   // (still), dims to its trough at each cut (where the motion peaks) and crossfades colour through the trough
-  const PROMO_REEL_LAW = { edgeMs: 520, floor: 0.12, glowLo: 0.26, glowHi: 1, push: 0.07, slide: 0.06, homeMs: 1300 };
+  // v25b (operator): the cards move OUTWARD like the tunnel (toward the viewer), never sideways: depth = the page's
+  // reach in depth per window (its scale runs 1/(1+D) -> 1/(1-D) on the law's go), fade = its dip at each cut
+  const PROMO_REEL_LAW = { edgeMs: 520, floor: 0.12, glowLo: 0.26, glowHi: 1, depth: 0.12, fade: 0.3, homeMs: 1300 };
   const PROMO_PASS_FAST_MS = 2600;
   const PROMO_PASS_READ_MS = 2000;
   const PROMO_PASS_STEP_MS = 1400;
@@ -144,6 +146,7 @@
   const PROMO_EA_TERM_GAP_MS = 720;
   const PROMO_EA_TERM_IN_MS = 560;
   const PROMO_EA_HOLD_MS = 2200;
+  const PROMO_EA_GLIDE_SLACK_S = 0.8;   // v25: the close's glide may run this much longer to reach the score's final hit
   const PROMO_EA_CLOSE_MS = 800;   // v13: the closing move, landing on the score's final chord (v25: was 1000)
   const PROMO_EA_FINAL_HOLD_MS = 1900;   // the lasting final frame (v21: the last chord rings; v25: was 3200, the film ends ~2.7 s after "installing now")
   const PROMO_EA_HERO_LEAD_MS = 250;
@@ -156,12 +159,14 @@
   // close's hit on the score's final hit. Every store cut sits on one of the song's own claps.
   // v23: reel 119.72 -> 119.45 (the sync scene now ends 0.5 s after its take and hands straight over),
   // final 168.82 -> 166.40 (the reel is 2.15 s shorter): both to be re-snapped by the music re-fit
-  const PROMO_FILM_ANCHORS = { burst: 37.405, reel: 90.69, final: 124.76 };   // v25 (faster pace): the v23 song minus 2 pain cuts (2.995-11.622, 20.77-25.054), 2 pitch cuts (52.941-61.51, 92.044-100.624) and 6 closing bars (143.476-156.34); score at offset +0.25
+  // v25: the score composed to the v25 timeline (Suno v6, tmp/ad-1-audio/music_edit_v25.py: film = song + 0.03 s):
+  // drop 36.20, stores' first clap 90.128, the closing hit 124.882 (song s)
+  const PROMO_FILM_ANCHORS = { burst: 36.23, reel: 90.158, final: 124.912 };
   // v23: from the reel start (s): [0] the tunnel lands on hero 1; [1..3] heroes 2..4 (each window = its line + 0.1 s);
   // [4..21] the run's 18 cards, one accelerating ladder (quick stores 1.0 / 0.8 / 0.62 / 0.55 s, their voices clipped
   // with a short fade); [22] "Your store". The music re-fit may snap any of these to a clap; the ladder reads its
   // windows from here (PROMO_REEL_RUN only names the cards).
-  const PROMO_REEL_CUTS_S = [3.802, 7.024, 10.115, 13.325, 15.212, 16.141, 16.939, 17.612, 18.277, 18.814, 19.345, 19.751, 20.146, 20.419, 20.672, 20.924, 21.09, 21.223, 21.357, 21.49, 21.624, 21.743, 22.048];   // v23: on the trimmed song's claps (tmp/ad-1-audio/music/suno/v23-stores-cuts.json)
+  const PROMO_REEL_CUTS_S = [3.802, 7.024, 10.063, 13.241, 15.191, 16.164, 16.968, 17.63, 18.292, 18.94, 19.493, 19.915, 20.326, 20.611, 20.874, 21.136, 21.309, 21.447, 21.586, 21.724, 21.863, 21.989, 22.306];   // v25: the approved ladder fitted to the v25 score's claps, "Your store" on the stores section's hit (tmp/ad-1-audio/cuts_v25.py)
   const PROMO_SHOPIFY_BAG = 'M15.337 23.979l7.216-1.561s-2.604-17.613-2.625-17.73c-.018-.116-.114-.192-.211-.192s-1.929-.136-1.929-.136-1.275-1.274-1.439-1.411c-.045-.037-.075-.057-.121-.074l-.914 21.104h.023zM11.71 11.305s-.81-.424-1.774-.424c-1.447 0-1.504.906-1.504 1.141 0 1.232 3.24 1.715 3.24 4.629 0 2.295-1.44 3.76-3.406 3.76-2.354 0-3.54-1.465-3.54-1.465l.646-2.086s1.245 1.066 2.28 1.066c.675 0 .975-.545.975-.932 0-1.619-2.654-1.694-2.654-4.359-.034-2.237 1.571-4.416 4.827-4.416 1.257 0 1.875.361 1.875.361l-.945 2.715-.02.01zM11.17.83c.136 0 .271.038.405.135-.984.465-2.064 1.639-2.508 3.992-.656.213-1.293.405-1.889.578C7.697 3.75 8.951.84 11.17.84V.83zm1.235 2.949v.135c-.754.232-1.583.484-2.394.736.466-1.777 1.333-2.645 2.085-2.971.193.501.309 1.176.309 2.1zm.539-2.234c.694.074 1.141.867 1.429 1.755-.349.114-.735.231-1.158.366v-.252c0-.752-.096-1.371-.271-1.871v.002zm2.992 1.289c-.02 0-.06.021-.078.021s-.289.075-.714.21c-.423-1.233-1.176-2.37-2.508-2.37h-.115C12.135.209 11.669 0 11.265 0 8.159 0 6.675 3.877 6.21 5.846c-1.194.365-2.063.636-2.16.674-.675.213-.694.232-.772.87-.075.462-1.83 14.063-1.83 14.063L15.009 24l.927-21.166z';
   const PROMO_VO_ON = promoBootParams.get('vo') === '1';
   const PROMO_VO_BUDGET_S = [
@@ -497,7 +502,9 @@
     + '<path fill="#B9584A" d="M42.6 55.6q5.5 5.6 11 0-5.5 1.8-11 0z"/><path fill="#fff" d="M43.5 55.9q4.6 1.3 9.2 0l-.5.9q-4.1 1.1-8.2 0z"/>'
     + '<path fill="none" stroke="#3F3D42" stroke-width="2.2" stroke-linecap="round" d="M30.6 45.5C29.2 15.6 66.8 15.6 65.4 45.5"/><rect x="27.6" y="42" width="6.6" height="10.6" rx="3.3" fill="#3F3D42"/>'
     + '<path fill="none" stroke="#3F3D42" stroke-width="1.4" stroke-linecap="round" d="M31.2 52.2c.4 6.6 4.2 8.4 8.6 8.2"/><circle cx="40.8" cy="60.3" r="1.8" fill="#5E8A73"/><circle cx="64" cy="51.6" r="1.1" fill="#E0B266"/></g></svg>';
-  const PROMO_HUMAN_TICKS = '<svg viewBox="0 0 18 11" aria-hidden="true"><path d="M1.2 6.2 4.4 9.4 11.2 1.6M7.6 8.6l.8.8 8.4-7.8"/></svg>';   // v23: sent / read ticks
+  // v23: sent / read ticks. v25b: two separate checks (sent = the first alone, delivered = the second pops in,
+  // read = both turn blue), each popped per frame (popHumanTick)
+  const PROMO_HUMAN_TICKS = '<svg class="promo-pain__ticks" viewBox="0 0 18 11" aria-hidden="true"><path class="promo-pain__tick is-sent" d="M1.2 6.2 4.4 9.4 11.2 1.6"/><path class="promo-pain__tick is-delivered" d="M7.6 8.6l.8.8 8.4-7.8"/></svg>';
   const PROMO_HUMAN_CLOCK = '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5.2l3.4 2"/></svg>';
   const PROMO_HUMAN_REPLY = "Hi! So sorry for the wait. Yes, it makes a lovely gift: most people love it, and we can gift-wrap it for free. Want me to reserve one for you?";
   const PROMO_MAC_POINTER = '<svg class="promo-mac-pointer" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 2.6v16.9l4.1-4 2.8 6.4 2.9-1.3-2.8-6.3h5.9z"/></svg>';
@@ -1933,6 +1940,7 @@
   // the card's own reaction: a lost card greys and sinks, a sold card warms and lifts
   function markReactFilter(kind, r) {
     if (r <= 0.001 || kind === 'lost') return '';   // a lost card only sinks (pain is already grey; a filter bent its long shadow)
+    if (kind === 'buyer') return `brightness(${(1 + 0.04 * r).toFixed(3)})`;   // v25b: a pain buyer only brightens (no sepia/saturate warmth)
     return kind === 'lost'
       ? `grayscale(${(0.92 * r).toFixed(3)}) brightness(${(1 - 0.05 * r).toFixed(3)}) contrast(${(1 - 0.1 * r).toFixed(3)})`
       : `saturate(${(1 + 0.22 * r).toFixed(3)}) sepia(${(0.1 * r).toFixed(3)}) brightness(${(1 + 0.035 * r).toFixed(3)})`;
@@ -2143,6 +2151,7 @@
   // One full turn of the widget's activity laser (--bizmis-laser-spin-duration).
   const PROMO_LASER_LAP_MS = 1400;
   const PROMO_LASER_FAST_MS = 400;   // v25: 550 -> 400
+  const PROMO_DOUBT_LASER_MS = 320;   // v25b: the doubt-cleared beat's loading laps, ~20% shorter
   const PROMO_CAM_ZOOM = 1.7;
   const PROMO_CAM_MS = 800;   // v25: 1100 -> 800 (MUST match .promo-opening__camera.is-moving in promo-ad.css)
   const PROMO_CHAPTER_CHAR_MS = 16;
@@ -2623,6 +2632,41 @@
     });
   }
 
+  // the tunnel's camera glide (v24 law: quick off the sync, a calmer glide mid-tunnel, fastest into the cut) and a
+  // flyer's opacity at depth rel (each card fades well before it would reach the camera: never a giant, distorted card)
+  function promoReelTunnelGlide(u) { return 0.4 * (1 - (1 - u) ** 3) + 0.6 * u ** 4; }
+  function promoReelFlyerFade(rel, P) {
+    const o = rel > -P * 0.15 ? 0 : (rel > -P * 0.55 ? (-P * 0.15 - rel) / (P * 0.4) : Math.min(1, (rel + P * 7) / (P * 2.5)));
+    return Math.max(0, o);
+  }
+
+  // v25b: a weighted average of #rrggbb colours in OKLab (the light's colour-mix space), back to #rrggbb: the tunnel's
+  // light is every flying store's colour weighted by how near (big, opaque) it is, so it follows the nearest one smoothly
+  function promoOklabMix(colors, weights) {
+    const lin = (c) => (c <= 0.04045 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4);
+    const gam = (c) => (c <= 0.0031308 ? 12.92 * c : 1.055 * c ** (1 / 2.4) - 0.055);
+    let L = 0; let A = 0; let B = 0; let sum = 0;
+    colors.forEach((hex, i) => {
+      const wt = weights[i] || 0;
+      if (!(wt > 0) || !/^#[0-9a-f]{6}$/i.test(hex || '')) return;
+      const [r, g, b] = [1, 3, 5].map((k) => lin(parseInt(hex.slice(k, k + 2), 16) / 255));
+      const l = Math.cbrt(0.4122214708 * r + 0.5363325363 * g + 0.0514459929 * b);
+      const m = Math.cbrt(0.2119034982 * r + 0.6806995451 * g + 0.1073969566 * b);
+      const s = Math.cbrt(0.0883024619 * r + 0.2817188376 * g + 0.6299787005 * b);
+      L += wt * (0.2104542553 * l + 0.7936177850 * m - 0.0040720468 * s);
+      A += wt * (1.9779984951 * l - 2.4285922050 * m + 0.4505937099 * s);
+      B += wt * (0.0259040371 * l + 0.7827717662 * m - 0.8086757660 * s);
+      sum += wt;
+    });
+    if (!sum) return colors[0];
+    L /= sum; A /= sum; B /= sum;
+    const l = (L + 0.3963377774 * A + 0.2158037573 * B) ** 3;
+    const m = (L - 0.1055613458 * A - 0.0638541728 * B) ** 3;
+    const s = (L - 0.0894841775 * A - 1.2914855480 * B) ** 3;
+    const rgb = [4.0767416621 * l - 3.3077115913 * m + 0.2309699292 * s, -1.2684380046 * l + 2.6097574011 * m - 0.3413193965 * s, -0.0041960863 * l - 0.7034186147 * m + 1.7076147010 * s];
+    return `#${rgb.map((c) => Math.round(Math.min(1, Math.max(0, gam(Math.max(0, c)))) * 255).toString(16).padStart(2, '0')).join('')}`;
+  }
+
   // v24 reel light law: where time t (ms) sits in one card window [a, b]. edge: 0 at both cuts, 1 past edgeMs
   // (sin^2, its half-width min(len / 2, edgeMs): a 0.12 s strobe window is one pure sin^2 bell, a 3 s hero a long
   // bright plateau); bell = edge with a gentle peak at the window's centre (the light). go: the motion's progress
@@ -2666,7 +2710,9 @@
   const PROMO_REEL_BURST_MS = 2300;
   const PROMO_REEL_BEAT_MS = 60000 / 112;   // the pitch score's tempo: every cut lands on its grid
   const PROMO_REEL_TUNNEL_BEATS = 7;   // v16: the narrator's "Any store. Any device. Any language." fills the tunnel, before any store speaks
-  const PROMO_REEL_QUICK_VOICES = ['quick-es', 'quick-ja', 'quick-pt', 'quick-zh'];   // biggest markets, not origins; Chinese last
+  // v25b (operator: es, de, fr, ja): Home & DIY "¡Genial!" (Lily), Skincare "いいね！" (Matilda), Wine "Santé !" (Roger), Car parts "Toll!" (Eric);
+  // es and ja keep the two longer windows (their lines need them), wine and car parts swapped places in the store-reel JSON
+  const PROMO_REEL_QUICK_VOICES = ['quick-es', 'quick-ja', 'quick-fr', 'quick-de'];
   // v14: after the quick stores, new stores strobe past faster and faster (beats), barely visible, into "Your store"
   // v14b: one continuous acceleration: every store is shorter than the one before (beats on the score's grid)
   const PROMO_REEL_PACE = { heroes: [6, 5.5, 5.25, 4] };   // v18: the film's story order (fashion, electronics, books, gaming), each shorter than the last
@@ -4734,7 +4780,7 @@
 
   function glideElevationLevel(mode, age) {
     if (age == null || age < 0) return 1;
-    if (mode === 'pitch') {
+    if (mode === 'pitch' || mode === 'buyer') {
       // A click up: fast rise, small overshoot, settle high.
       const u = Math.min(1, age / 300);
       const rise = 1 - (1 - u) ** 3;
@@ -4763,12 +4809,15 @@
     }
     // A sold card sends one fine orange line out from its edge, which
     // drifts outward and fades: a hairline, not a band.
-    const waveAge = mode === 'pitch' && age != null ? age : -1;
+    // v25b: a pain buyer (no Bizmis yet) sends the same line in a neutral warm grey, never orange.
+    const waveAge = (mode === 'pitch' || mode === 'buyer') && age != null ? age : -1;
     if (waveAge >= 0 && waveAge < PROMO_SOLD_WAVE_MS) {
       const u = waveAge / PROMO_SOLD_WAVE_MS;
       const reach = width * 0.05 * (1 - (1 - u) ** 3);
       const alpha = 0.75 * (1 - u) ** 1.4;
-      node.style.outline = `1.5px solid rgba(247, 162, 82, ${alpha.toFixed(3)})`;
+      node.style.outline = mode === 'buyer'
+        ? `1.5px solid rgba(132, 122, 110, ${(alpha * 0.7).toFixed(3)})`
+        : `1.5px solid rgba(247, 162, 82, ${alpha.toFixed(3)})`;
       node.style.outlineOffset = `${reach.toFixed(1)}px`;
       node.dataset.waving = '1';
     } else if (node.dataset.waving === '1') {
@@ -4776,11 +4825,11 @@
       node.style.outline = '1px solid rgba(24, 24, 32, 0.09)';
       node.style.outlineOffset = '0px';
     }
-    const sold = mode === 'pitch';
+    const sold = mode === 'pitch' || mode === 'buyer';
     const r = Math.round(react * 50) / 50;
     const scale = (Number(node.dataset.cardScale || '1') * (1 + (sold ? 0.028 : -0.03) * r)).toFixed(4);
     const lift = (Number(node.dataset.cardLift) || 0) + (sold ? -0.035 : 0.03) * height * r;
-    const filter = markReactFilter(sold ? 'sold' : 'lost', r);
+    const filter = markReactFilter(mode === 'buyer' ? 'buyer' : sold ? 'sold' : 'lost', r);
     if (node.dataset.react !== String(r)) { node.dataset.react = String(r); node.style.filter = filter; }
     node.style.transformOrigin = 'center bottom';
     node.style.transform = `translate3d(${(cell.x * unit).toFixed(2)}px, ${(cell.y * unit + lift).toFixed(2)}px, 0) scale(${scale})`;
@@ -6487,13 +6536,13 @@
         },
       });
       promoWidgetDebug('setPlaceholder', 'Ask anything about it');
-      await this.laserUntilNext('product', reduced, PROMO_LASER_FAST_MS);
+      await this.laserUntilNext('product', reduced, PROMO_DOUBT_LASER_MS);   // v25b: the doubt beat ~22% tighter (400 -> 320)
       const leavingBoard = stage?.querySelector('.promo-moments__board');
       leavingBoard?.classList.add('is-leaving-choice');
-      await waitMs(reduced ? 0 : 120);   // v25: 200 -> 120
+      await waitMs(reduced ? 0 : 90);   // v25: 200 -> 120 (v25b: 90)
       // a page change: a quick dissolve into the product page (the layout morph
       // shrank the winner into a thumbnail for a frame)
-      if (!reduced && leavingBoard) await fadeStep(leavingBoard, 1, 0, 150);
+      if (!reduced && leavingBoard) await fadeStep(leavingBoard, 1, 0, 120);   // v25b: 150 -> 120
       applyMomentPose(stage, 'doubt', { instant: true });
       // v13: the doubt scene is a voice chat from its first frame (no call
       // connecting on screen, no hang-up): already live when the page lands
@@ -6516,28 +6565,28 @@
       await doubtTake.done;
       await this.speakShopperLine('shopper-doubt', reduced);
       setOpeningAvatarAction('thinking');
-      await this.laserUntilNext('compare', reduced, PROMO_LASER_FAST_MS);
+      await this.laserUntilNext('compare', reduced, PROMO_DOUBT_LASER_MS);   // v25b: 400 -> 320
       await this.speakClerk('clerk-answer', reduced, {
         Absolutely: () => {
           // only the doubts go now; the cart waits for the clerk to finish
           promoSfx('doubt-poof');
           board?.classList.add('is-doubts-gone');
-          window.setTimeout(() => this.resolveChapter(), reduced ? 0 : PROMO_MOMENTS_VAPOR_MS * 0.6);
+          window.setTimeout(() => this.resolveChapter(), reduced ? 0 : PROMO_MOMENTS_VAPOR_MS * 0.45);   // v25b: "Doubt cleared" a touch sooner after the poof (0.6 -> 0.45)
         },
       });
       applyMomentPose(stage, 'close', { instant: reduced });
       promoWidgetDebug('setPlaceholder', 'Ask what goes with it');
-      await waitMs(reduced ? 40 : 150);   // v25: 300 -> 150
+      await waitMs(reduced ? 40 : 100);   // v25: 300 -> 150 (v25b: 100)
       setOpeningAvatarAction('thumbsup');   // the doubt is gone: into the cart
       host?.classList.add('is-cart-one');
       emitShopper({ kind: 'cart', product: pick, quantity: 1 });
-      await waitMs(reduced ? 40 : 450);   // v25: 950 -> 450. "Added" and the cart badge land inside "Stuck on a doubt"
+      await waitMs(reduced ? 40 : 300);   // v25: 950 -> 450 (v25b: 300; the Added -> cart pop -> badge celebration plays through, store-bar --promo-close-cart-at). "Added" and the cart badge land inside "Stuck on a doubt"
       this.hideChapter();
       // Moment 3. Like a good salesperson, the clerk suggests (it doesn't
       // push) what goes with it: only the main product at first, then a
       // vertical carousel of the catalog spins and settles on the match,
       // which flies into place beside it. Added once the clerk is done.
-      await this.laserUntilNext('products', reduced, PROMO_LASER_FAST_MS);
+      await this.laserUntilNext('products', reduced, PROMO_DOUBT_LASER_MS);   // v25b: 400 -> 320
       const spin = reduced ? null : this.spinCrossSell('slab');
       let bundled = false;
       const bundle = () => {
@@ -8482,13 +8531,35 @@
             // written left to right (a pen's reveal), then the underline is drawn in two strokes
             const text = hand.querySelector('.promo-ea-hand__text');
             const lines = [...hand.querySelectorAll('.promo-ea-hand__line path')];
-            lines.forEach((p) => { p.style.strokeDasharray = '1'; p.style.strokeDashoffset = '1'; });
+            // v25b: the strokes drew on displaced (pathLength="1" + non-scaling-stroke inside a
+            // non-uniformly stretched viewBox lays Chrome's dashes out in the wrong space, so stray
+            // fragments showed first). Rebuild each path in the svg's own CSS-px space (identity
+            // viewBox, no stretch, no non-scaling-stroke) and dash it by its real length, so every
+            // frame of the reveal is the stroke growing from its start, in its final place.
+            const lineSvg = hand.querySelector('.promo-ea-hand__line');
+            const lw = lineSvg?.clientWidth || 0;
+            const lh = lineSvg?.clientHeight || 0;
+            if (lineSvg && lw > 0 && lh > 0) {
+              const sx = lw / 240;
+              const sy = lh / 24;
+              lineSvg.setAttribute('viewBox', `0 0 ${lw.toFixed(2)} ${lh.toFixed(2)}`);
+              lines.forEach((p) => {
+                if (!p.dataset.d0) p.dataset.d0 = p.getAttribute('d');
+                let k = 0;
+                p.setAttribute('d', p.dataset.d0.replace(/-?\d*\.?\d+/g, (n) => (Number(n) * (k++ % 2 ? sy : sx)).toFixed(3)));
+                p.removeAttribute('pathLength');
+                p.style.vectorEffect = 'none';
+              });
+            }
+            const lens = lines.map((p) => { try { return p.getTotalLength() || 1; } catch { return 1; } });
+            const dash = (p, i, v) => { p.style.strokeDashoffset = (v * lens[i]).toFixed(2); };
+            lines.forEach((p, i) => { p.style.strokeDasharray = `${lens[i].toFixed(2)} ${(lens[i] + 50).toFixed(2)}`; dash(p, i, 1); });
             hand.style.opacity = '1';
             promoSfx('hand-write');
             await tweenStep(680, (e) => { text.style.clipPath = `inset(-30% ${((1 - e) * 115 - 15).toFixed(2)}% -40% -10%)`; }, (u) => u * (2 - u) * 0.6 + u * 0.4);   // v25: was 820
             promoSfx('ea-stamp');
-            await tweenStep(300, (e) => { lines[0].style.strokeDashoffset = (1 - e).toFixed(3); }, promoEaseOut);   // v25: was 360
-            if (lines[1]) tweenStep(260, (e) => { lines[1].style.strokeDashoffset = (1 - e).toFixed(3); }, promoEaseOut);
+            await tweenStep(300, (e) => { dash(lines[0], 0, 1 - e); }, promoEaseOut);   // v25: was 360
+            if (lines[1]) tweenStep(260, (e) => { dash(lines[1], 1, 1 - e); }, promoEaseOut);
           }
         } else if (copy.morph) {
           const pill = slot.querySelector('.promo-ea-pill');
@@ -8523,7 +8594,7 @@
         // v21: its hit on the final hit. v24: the take is ~9 s shorter, so until the music re-fit moves
         // the anchor the finished card simply holds here (settled, nothing pending); an anchor already
         // passed resolves at once and the close plays at its own pace (glide >= 300 ms)
-        if (finalAt != null) await untilFilm(PROMO_FILM_ANCHORS.final - PROMO_EA_CLOSE_MS / 1000);
+        if (finalAt != null) await untilFilm(PROMO_FILM_ANCHORS.final - PROMO_EA_CLOSE_MS / 1000 - PROMO_EA_GLIDE_SLACK_S);   // v25: up to PROMO_EA_GLIDE_SLACK_S of waiting goes into a longer glide (no still hold)
         // v13: a closing move that lands on the music's final chord ('ea-final'
         // marks the hit; the score is fitted to it), then a lasting final frame
         await this.playEaClosing(slot, finalAt);
@@ -9138,6 +9209,13 @@
         if (cell.heroVideo) {
           cell.heroVideo.addEventListener('loadeddata', () => { try { cell.heroVideo.currentTime = item.start || 0.05; } catch { } }, { once: true });
         }
+        // v25b: where a run / quick card's clip starts; its idle video waits there (pre-seeked), so a card's first frame is
+        // never the recording's frame 0 (a cookie box, an empty widget) shown for a frame while the seek catches up
+        cell.rollAt = item.card ? (item.start || 0) : ((item.ambientStart || 0) + (n % 5) * 1.7) % 9;
+        if (cell.ambientVideo) {
+          const video = cell.ambientVideo;
+          video.addEventListener('loadeddata', () => { try { video.currentTime = Number.isFinite(video.duration) && video.duration > 0 ? cell.rollAt % video.duration : cell.rollAt; } catch { } }, { once: true });
+        }
         cell.t = { tx: 0, ty: 0, k: 1 };
         strip.appendChild(cell.dev);
         if (cell.hero || cell.whip) {
@@ -9156,10 +9234,11 @@
         else video.addEventListener('loadeddata', resolve, { once: true });
         window.setTimeout(resolve, 8000);
       });
-      const roll = (video, from) => {
+      const roll = (video, from, hold = false) => {   // v25b: hold = a card's clip holds its last frame past its end (never wraps to its first)
         if (!video) return;
         try { video.currentTime = from; } catch { }
         video.dataset.promoStart = String(from);
+        if (hold) video.dataset.promoHold = '1';
         delete video.dataset.promoIdle;
         video.__promoOriginMs = null;
         if (!document.documentElement.classList.contains('is-promo-export')) video.play().catch(() => { });
@@ -9204,8 +9283,12 @@
         const L = lawAt(performance.now());
         if (L.cell && L.w !== motion.w) { cam.x = camFor(L.cell); motion.w = L.w; }
         const camX = cam.x + L.off;
-        strip.style.transform = `translateX(${(-camX).toFixed(2)}px)`;
-        const blur = Math.min(3, (L.vx / W) * 2.4);   // a touch of motion blur where the camera is fastest (the cuts)
+        // v25b: the page (title + device) moves in depth, scaled about the frame's centre (L.K, never sideways),
+        // and dips (L.vis) through each cut: the outgoing one rushes past the viewer, the next one comes out of the depth
+        strip.style.transformOrigin = '0 0';
+        strip.style.transform = `translate(${(W / 2).toFixed(2)}px, ${(H / 2).toFixed(2)}px) scale(${L.K.toFixed(4)}) translate(${(-camX - W / 2).toFixed(2)}px, ${(-H / 2).toFixed(2)}px)`;
+        strip.style.opacity = L.vis < 0.999 ? L.vis.toFixed(3) : '';
+        const blur = Math.min(2.4, (L.vx / W) * 1.6);   // a touch of motion blur where the move is fastest (the cuts)
         strip.style.filter = blur > 0.3 ? `blur(${blur.toFixed(2)}px)` : '';
         if (light.on) {
           reel.style.setProperty('--reel-glow', L.glow.toFixed(3));
@@ -9220,8 +9303,8 @@
           const t = cell.t;
           const kk = t.k * (cell === L.cell ? L.k : (cell === firstHero && L.w < 0 ? L.k0 : 1));
           cell.dev.style.transform = `translate3d(${(cell.cx + t.tx).toFixed(2)}px, ${t.ty.toFixed(2)}px, 0) scale(${kk.toFixed(4)})`;
-          const sx = cell.cx - camX;
-          const half = (cell.full.w * kk) / 2;
+          const sx = W / 2 + L.K * (cell.cx - camX - W / 2);   // (v25b: on screen, after the page's depth scale)
+          const half = (cell.full.w * kk * L.K) / 2;
           const onScreen = sx + half > -W * 0.05 && sx - half < W * 1.05;
           cell.dev.style.visibility = onScreen ? '' : 'hidden';
           if (cell.copy) cell.copy.style.visibility = (cell.x0 - camX) < W && (cell.x0 - camX) > -W ? '' : 'hidden';
@@ -9230,7 +9313,7 @@
           const video = cell.ambientVideo;
           if (!video) return;
           if (onScreen) {
-            if (video.dataset.promoIdle === '1' && !cell.live) roll(video, cell.src.card ? (cell.src.start || 0) : ((cell.src.ambientStart || 0) + (i % 5) * 1.7) % 9);
+            if (video.dataset.promoIdle === '1' && !cell.live) roll(video, cell.rollAt, true);
           } else park(video);
         });
       };
@@ -9290,33 +9373,64 @@
       reel.appendChild(streak);
       // v24 light law: one clock for the cut, the camera and the light. Window -1 is the tunnel [t0, cut 0], then
       // seq[w] owns [cut w, cut w+1] ("Your store" the last PROMO_REEL_LAW.homeMs). Per window (promoReelPhase):
-      // light = lo + (hi - lo) * bell (brightest mid-card, its trough on the cuts); the camera's whip (in from the
-      // right, held, out to the left), the card's push and the light's drift all ride go (fastest at the cuts,
+      // light = lo + (hi - lo) * bell (brightest mid-card, its trough on the cuts); the page's depth move (v25b: out of
+      // the depth, held, then past the viewer; was a sideways whip), its dip and the light's drift all ride go (fastest at the cuts,
       // near-still mid-card); the colour crosses from one store to the next through the trough, half on each side
       // of the cut, so everywhere else it is the colour of the card on screen.
       const lawEnd = (w) => (w < seq.length - 1 ? cutAt(w + 1) : cutAt(w) + PROMO_REEL_LAW.homeMs);
-      const lawColor = (w) => (w < 0 ? tunnelColor : (seq[w]?.src.color || '#F28C38'));
+      // v25b (operator): the tunnel's light is the colour of the store nearest the viewer, frame by frame: every flyer
+      // (and the first hero coming out of the depth) weighs in by its on-screen area x opacity, to the 4th power, so
+      // the nearest one owns ~90% of the light and each hand-over is a quick (~0.15 s) but continuous glide. The
+      // camera's depth is a pure function of the clock (the tunnel tween's own glide), so the light never lags a card.
+      const tunLight = { t0: 0, ms: 0, zEnd: 0 };
+      const tunnelLightAt = (now) => {
+        const u = tunLight.ms ? Math.min(1, Math.max(0, (now - tunLight.t0) / tunLight.ms)) : 0;
+        const camZ = tunLight.zEnd * promoReelTunnelGlide(u);
+        const colors = []; const weights = [];
+        flyers.forEach((f) => {
+          const rel = f.z - camZ;
+          const k = P / Math.max(1, P - rel);
+          colors.push(f.sk.color); weights.push((k * k * promoReelFlyerFade(rel, P)) ** 4);
+        });
+        if (tunLight.ms) {
+          const k = Math.min(1, P / Math.max(1, P - (tunLight.zEnd - camZ)));
+          colors.push(firstHero.src.color); weights.push((k * k) ** 4);
+        }
+        return promoOklabMix(colors, weights) || tunnelColor;
+      };
+      // (the tunnel's colour at a time past cut 0 is its colour on the cut: the hand-over into the first hero stays continuous)
+      const lawColor = (w, now) => (w < 0 ? tunnelLightAt(Math.min(now ?? cutAt(0), cutAt(0))) : (seq[w]?.src.color || '#F28C38'));
       reel.__lawColors = seq.map((cell, w) => lawColor(w));   // (the light probe reads it)
       const lawAt = (now) => {
-        const { edgeMs, floor, glowLo, glowHi, push, slide } = PROMO_REEL_LAW;
+        const { edgeMs, floor, glowLo, glowHi, depth, fade } = PROMO_REEL_LAW;
         let w = -1;
         while (w + 1 < seq.length && now >= cutAt(w + 1)) w += 1;
         const ph = promoReelPhase(now, w < 0 ? t0 : cutAt(w), lawEnd(w), edgeMs, floor);
         const cell = w >= 0 ? seq[w] : null;
         const at = ph.go - 0.5;
-        const amp = slide * W * Math.min(1.5, Math.max(0.7, (ph.len / 600) ** 0.35));   // the whip's reach: a little longer on a long card, shorter in the strobe
+        // v25b: the move is outward (the tunnel's direction), never sideways: the page rides go in depth, z = 2 D lat in
+        // [-D, D], seen through a perspective K = 1 / (1 - z): it comes out of the depth at 1/(1+D), is near-still at 1
+        // mid-card and rushes at the viewer to 1/(1-D) into the cut (perspective: accelerating as it nears). D, the
+        // reach, is a little longer on a long card, shorter in the strobe; the tunnel's window holds the first hero on
+        // its own window's start mark (the same card, so no jump at cut 0).
+        const reach = (len) => depth * Math.min(1.5, Math.max(0.7, (len / 600) ** 0.35));
+        const D = reach(w < 0 ? cutAt(1) - cutAt(0) : ph.len);
         // the tunnel flies on its own (the first store comes out of it already on its window's start mark, so it keeps
         // moving through its cut); "Your store" only arrives (its dive follows)
         const lat = w < 0 ? -0.5 : (cell.yours ? Math.min(0, at) : at);
         const moving = !(w < 0 || (cell.yours && at > 0));
-        let from = lawColor(w); let to = from; let p = 0;
-        if (w >= 0 && ph.x < ph.h) { from = lawColor(w - 1); to = lawColor(w); p = 0.5 + 0.5 * Math.sin((Math.PI / 2) * (ph.x / ph.h)); }
-        else if (w < seq.length - 1 && ph.len - ph.x < ph.h) { to = lawColor(w + 1); p = 0.5 - 0.5 * Math.sin((Math.PI / 2) * ((ph.len - ph.x) / ph.h)); }
+        const z = 2 * D * lat;
+        const K = 1 / (1 - z);
+        // dips with the light: (1 - fade) on the cut (shallower on the short strobe cards), whole past edgeMs
+        const vis = moving ? 1 - fade * Math.min(1, ph.len / 600) * (1 - ph.edge) : 1;
+        let from = lawColor(w, now); let to = from; let p = 0;
+        if (w >= 0 && ph.x < ph.h) { from = lawColor(w - 1, now); to = lawColor(w, now); p = 0.5 + 0.5 * Math.sin((Math.PI / 2) * (ph.x / ph.h)); }
+        else if (w < seq.length - 1 && ph.len - ph.x < ph.h) { to = lawColor(w + 1, now); p = 0.5 - 0.5 * Math.sin((Math.PI / 2) * ((ph.len - ph.x) / ph.h)); }
         return {
           w, cell, t: now, t0, a: w < 0 ? t0 : cutAt(w), b: lawEnd(w), u: ph.u, bell: ph.bell, phi: w + ph.go,
           glow: glowLo + (glowHi - glowLo) * ph.bell,
-          off: amp * lat, vx: moving ? amp * ph.speed * 1000 : 0,
-          k: cell?.yours ? 1 : 1 + push * at, k0: 1 - push / 2,
+          off: 0, K, D, vis, vx: moving ? ((2 * D) / (1 - z) ** 2) * ph.speed * 1000 * (W / 2) : 0,   // vx: the frame edge's speed (px/s)
+          k: 1, k0: 1,
           from, to, p,
         };
       };
@@ -9375,14 +9489,15 @@
       flyers.forEach((f, i) => roll(f.video, (i * 0.4) % 3.2));   // v23: the new stores play as they fly (deterministic: the export clock seeks them)
       const zEnd = -P * 0.9 - flyers.length * P * 0.55 - P * 0.6;   // (unchanged: the first store still lands on its clap)
       const tunnelMs = Math.max(400, cutAt(0) - performance.now());   // v21: the first store lands on its clap
-      // v24 light law: the tunnel's light (its first store's colour) and its crossfade into the first hero are paint()'s
+      // v24 light law: the tunnel's light and its crossfade into the first hero are paint()'s (v25b: the nearest store's
+      // colour, from the same glide on the same clock: tunLight)
+      Object.assign(tunLight, { t0: performance.now(), ms: tunnelMs, zEnd });
       await tweenStep(tunnelMs, (e) => {
         const camZ = zEnd * e;
         tun.camZ = camZ;
         flyers.forEach((f, i) => {
           const rel = f.z - camZ;
-          // each card fades well before it would reach the camera (never a giant, distorted card)
-          const o = rel > -P * 0.15 ? 0 : (rel > -P * 0.55 ? (-P * 0.15 - rel) / (P * 0.4) : Math.min(1, (rel + P * 7) / (P * 2.5)));
+          const o = promoReelFlyerFade(rel, P);   // each card fades well before it would reach the camera
           f.dev.style.transform = `translate3d(${f.x.toFixed(1)}px, ${f.y.toFixed(1)}px, ${rel.toFixed(1)}px) rotateY(${f.rot.toFixed(2)}deg)`;
           f.dev.style.opacity = Math.max(0, o).toFixed(3);
           f.dev.style.visibility = o <= 0.001 ? 'hidden' : '';
@@ -9395,7 +9510,7 @@
         firstHero.t.k = Math.max(0.0001, Math.min(1, k));
         firstHero.t.tx = (W / 2 - (firstHero.cx - cam.x)) * (1 - firstHero.t.k);
         firstHero.t.ty = (H / 2 - (firstHero.full.y + firstHero.full.h / 2)) * (1 - firstHero.t.k);
-      }, (u) => 0.4 * (1 - (1 - u) ** 3) + 0.6 * u ** 4);   // v24 law: quick off the sync, a calmer glide mid-tunnel, fastest into the cut
+      }, promoReelTunnelGlide);   // v24 law: quick off the sync, a calmer glide mid-tunnel, fastest into the cut
       firstHero.t.tx = 0; firstHero.t.ty = 0;
       tunnel.remove();
       slam(firstHero, 0);
@@ -9409,7 +9524,7 @@
         if (index > 0) { await ready(hero.heroVideo); cutTo(hero, index); }
         hero.live = true;
         hero.dev.classList.add('is-live');
-        roll(hero.heroVideo, item.start || 0);
+        roll(hero.heroVideo, item.start || 0, true);   // v25b: a take shorter than its window holds its last frame
         const now = performance.now();
         const heroMs = Math.min(item.dur * 1000, (cutS(index + 1) - cutS(index)) * 1000 - 40);   // never into the next store
         (window.__promoAudioCues = window.__promoAudioCues || []).push({ src: item.video, atMs: now, fromSec: item.start || 0, endMs: now + heroMs });
@@ -11568,12 +11683,18 @@
       const pressAge = mode !== 'pitch' && cell.key === this.glideLeadKey
         ? Math.max(0, timeMs) * (140 / 900)
         : age;
-      const buyer = mode !== 'pitch' && !!event?.sold && !leadLost;   // v24b: a pain buyer warms like a sold card
-      if (node.classList.contains('is-sold-tint') !== buyer) node.classList.toggle('is-sold-tint', buyer);
-      if (mode === 'pitch' || buyer) {
-        paintGlideStamp(parts.veil, mode === 'pitch' ? parts.mark : null, age, 0.58);   // v24b: the warm SOLD tint (multiply, promo-ad.css); the card warms and lifts
+      // v25b: a pain buyer is a sale WITHOUT Bizmis: no orange anywhere. It keeps its own
+      // (untinted) card, lifts, and sends a soft neutral ring out; the grey LOST cards around it
+      // are what makes it read as the one that bought.
+      const buyer = mode !== 'pitch' && !!event?.sold && !leadLost;
+      if (node.classList.contains('is-sold-tint')) node.classList.remove('is-sold-tint');
+      if (buyer) {
+        writePaint(parts.veil, 'opacity', '0');
         writePaint(parts.lost, 'opacity', '0');
-        if (buyer) writePaint(parts.mark, 'opacity', '0');
+        writePaint(parts.mark, 'opacity', '0');
+      } else if (mode === 'pitch') {
+        paintGlideStamp(parts.veil, parts.mark, age, 0.58);   // v24b: the warm SOLD tint (multiply, promo-ad.css); the card warms and lifts
+        writePaint(parts.lost, 'opacity', '0');
       } else {
         if (parts.lost) {
           const width = Number.parseFloat(node.style.width) || cell.w * view.span.unit;
@@ -11586,7 +11707,7 @@
       if (fx) writeHidden(fx, true);
       node.classList.remove('is-dusting');
       const reactAge = leadLost && cell.key === this.glideLeadKey && this.glideLeadStampT ? performance.now() - this.glideLeadStampT : age;
-      paintGlideElevation(node, cell, view.span.unit, buyer ? 'pitch' : mode, pressAge, markReact(reactAge));
+      paintGlideElevation(node, cell, view.span.unit, buyer ? 'buyer' : mode, pressAge, markReact(reactAge));
       return true;
     }
 
@@ -12720,7 +12841,9 @@
         line.style.top = `${(((sw.top - sw.height * 0.95) - cb.top) / cb.height * 100).toFixed(2)}%`;
       }
       promoSfx('ea-write', { ms: 640 });
-      tweenStep(640, (e) => { line.style.clipPath = `inset(-45% ${((1 - e) * 100).toFixed(2)}% -45% -10%)`; }, (u) => u);
+      // v25b: the pen's reveal ends past the box (the "!" overhangs it) and then lifts the clip
+      tweenStep(640, (e) => { line.style.clipPath = `inset(-60% ${((1 - e) * 112 - 12).toFixed(2)}% -60% -12%)`; }, (u) => u)
+        .then(() => { line.style.clipPath = 'none'; });
       state.online = line;
     }
 
@@ -13187,9 +13310,46 @@
       const day = document.createElement('p');
       day.className = 'promo-pain__day';
       day.textContent = 'Today';
-      log.append(day, this.humanBubble('out', PROMO_PAIN_LINE_2, '9:41 AM'));
+      const out = this.humanBubble('out', PROMO_PAIN_LINE_2, '9:41 AM');
+      log.append(day, out);
       fadeStep(log, 0, 1, 260);
       scrollDullLog(log);
+      // v25b: sent (one grey check pops in), then delivered (the second pops in beside it); read comes
+      // later (readHumanTicks, as the clock lands). Scheduled inside the scene's own wait: no added time.
+      const sent = out.querySelector('.promo-pain__tick.is-sent');
+      const delivered = out.querySelector('.promo-pain__tick.is-delivered');
+      if (sent) sent.style.opacity = '0';
+      if (delivered) delivered.style.opacity = '0';
+      if (prefersReducedMotion()) { if (sent) sent.style.opacity = ''; if (delivered) delivered.style.opacity = ''; return; }
+      if (sent) waitMs(200).then(() => this.popHumanTick(sent));
+      if (delivered) waitMs(640).then(() => this.popHumanTick(delivered));
+    }
+
+    // v25b: a crisp WhatsApp-like pop (stepped): in from 0.3x, overshoot 1.35x, settle to 1x
+    popHumanTick(node, ms = 260) {
+      if (!node) return Promise.resolve();
+      return tweenStep(ms, (e, u) => {
+        const up = Math.min(1, u / 0.5); const down = Math.max(0, (u - 0.5) / 0.5);
+        const s = u < 0.5 ? 0.3 + 1.05 * (1 - (1 - up) ** 2) : 1.35 - 0.35 * (1 - (1 - down) ** 2);
+        node.style.opacity = Math.min(1, u * 4).toFixed(3);
+        node.style.transform = `scale(${s.toFixed(3)})`;
+      }, (u) => u).then(() => { node.style.opacity = ''; node.style.transform = ''; });
+    }
+
+    // v25b: Emma has read it: both checks turn read-blue with one pop of the pair (before her reply)
+    readHumanTicks(clone) {
+      const outs = [...(clone?.querySelectorAll('.promo-pain__wa.is-out') || [])].filter((node) => !node.classList.contains('is-read'));
+      outs.forEach((node) => {
+        node.querySelectorAll('.promo-pain__tick').forEach((tick) => { tick.style.opacity = ''; tick.style.transform = ''; });
+        node.classList.add('is-read');
+        const ticks = node.querySelector('.promo-pain__ticks');
+        if (ticks && !prefersReducedMotion()) {
+          tweenStep(240, (e, u) => {
+            const s = u < 0.45 ? 1 + 0.26 * (1 - (1 - u / 0.45) ** 2) : 1.26 - 0.26 * (1 - (1 - (u - 0.45) / 0.55) ** 2);
+            ticks.style.transform = `scale(${s.toFixed(3)})`;
+          }, (u) => u).then(() => { ticks.style.transform = ''; });
+        }
+      });
     }
 
     // the status bar's clock races ahead (9:41 -> 1:27), stepped; v23: and so does a time pill in
@@ -13222,7 +13382,7 @@
     humanReplyArrives(clone) {
       const log = clone.querySelector('[data-promo-pain-log]');
       if (!log) return;
-      log.querySelectorAll('.promo-pain__wa.is-out').forEach((node) => node.classList.add('is-read'));   // the ticks turn: read, at last
+      this.readHumanTicks(clone);   // the ticks turn: read, at last (v25b: normally already read as the clock lands)
       const block = this.humanBubble('in', PROMO_HUMAN_REPLY, '1:27 PM');
       log.appendChild(block);
       tweenStep(320, (e) => { block.style.opacity = e.toFixed(3); block.style.translate = `0 ${((1 - e) * 10).toFixed(1)}px`; }, promoEaseOut);
@@ -13441,6 +13601,7 @@
       // (v25 STT: "hours" 17.92 s, "later" ends 18.52 s; the v25 text reads "hours later, when...")
       await this.painTake?.at('hours later', 'start', -740);
       await this.fastForwardClock(clone, 800);   // v25 pace: 900 -> 800
+      this.readHumanTicks(clone);   // v25b: read (blue) as the clock lands, a beat before her reply (no added time)
       await this.painTake?.at('hours later', 'end', -240);
       this.humanReplyArrives(clone);
       promoSfx('reply');
