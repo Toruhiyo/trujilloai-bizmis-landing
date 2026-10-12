@@ -118,7 +118,7 @@
   // (still), dims to its trough at each cut (where the motion peaks) and crossfades colour through the trough
   // v25b (operator): the cards move OUTWARD like the tunnel (toward the viewer), never sideways: depth = the page's
   // reach in depth per window (its scale runs 1/(1+D) -> 1/(1-D) on the law's go), fade = its dip at each cut
-  const PROMO_REEL_LAW = { edgeMs: 520, floor: 0.12, glowLo: 0.26, glowHi: 1, depth: 0.12, fade: 0.3, homeMs: 1300 };
+  const PROMO_REEL_LAW = { edgeMs: 520, floor: 0.12, glowLo: 0.26, glowHi: 1, depth: 0, fade: 0.3, homeMs: 1300 };   // v26 (operator): depth 0.12 -> 0: the stores hold still (the per-card depth push read as shaking); only "Your store" hits
   const PROMO_PASS_FAST_MS = 2600;
   const PROMO_PASS_READ_MS = 2000;
   const PROMO_PASS_STEP_MS = 1400;
@@ -146,7 +146,7 @@
   const PROMO_EA_TERM_GAP_MS = 720;
   const PROMO_EA_TERM_IN_MS = 560;
   const PROMO_EA_HOLD_MS = 2200;
-  const PROMO_EA_GLIDE_SLACK_S = 1.4;   // v25: the close's glide may run this much longer to reach the score's final hit (v26: 0.8 -> 1.4, the v21 score's hit comes 1.26 s after the natural close)
+  const PROMO_EA_GLIDE_SLACK_S = 3.0;   // v25: the close's glide may run this much longer to reach the score's final hit (v26: 0.8 -> 1.4, the v21 score's hit comes 1.26 s after the natural close; v27: 1.4 -> 3.0, the glide spans the score's breakdown into its final hit)
   const PROMO_EA_CLOSE_MS = 800;   // v13: the closing move, landing on the score's final chord (v25: was 1000)
   const PROMO_EA_FINAL_HOLD_MS = 1900;   // the lasting final frame (v21: the last chord rings; v25: was 3200, the film ends ~2.7 s after "installing now")
   const PROMO_EA_HERO_LEAD_MS = 250;
@@ -162,12 +162,12 @@
   // v26: the v21 score itself (Suno v6, ~112 bpm): its own pain take and drop (seam 41.2), then stores / EA sections
   // extended from it at the v25 timings (tmp/ad-1-audio/music/suno/v26/v26h-ea2.wav: film = song - 4.975 s):
   // drop 41.181, the stores section's first clap 95.216, the closing hit 130.148 (song s)
-  const PROMO_FILM_ANCHORS = { burst: 36.206, reel: 90.241, final: 125.173 };
+  const PROMO_FILM_ANCHORS = { burst: 36.206, reel: 90.241, final: 126.53 };   // v27: the v21 song at film = song - 16.19 (drop on the burst), its regenerated stores section from the reel, ending hit 142.72
   // v23: from the reel start (s): [0] the tunnel lands on hero 1; [1..3] heroes 2..4 (each window = its line + 0.1 s);
   // [4..21] the run's 18 cards, one accelerating ladder (quick stores 1.0 / 0.8 / 0.62 / 0.55 s, their voices clipped
   // with a short fade); [22] "Your store". The music re-fit may snap any of these to a clap; the ladder reads its
   // windows from here (PROMO_REEL_RUN only names the cards).
-  const PROMO_REEL_CUTS_S = [3.747, 6.963, 10.054, 13.235, 15.185, 16.097, 16.907, 17.578, 18.213, 18.747, 19.281, 19.688, 20.094, 20.37, 20.628, 20.879, 21.044, 21.188, 21.31, 21.432, 21.554, 21.676, 21.999];   // v26: the approved ladder on the v21-based score's claps, "Your store" on its impact (tmp/ad-1-audio/cuts_v25.py)
+  const PROMO_REEL_CUTS_S = [3.849, 7.079, 10.17, 13.378, 15.328, 16.21, 16.98, 17.656, 18.196, 18.736, 19.267, 19.667, 20.053, 20.272, 20.491, 20.71, 20.921, 21.034, 21.148, 21.261, 21.374, 21.487, 21.819];   // v27: the approved ladder on the v27 score's claps, "Your store" on its loudest hit (tmp/ad-1-audio/cuts_v25.py)
   const PROMO_SHOPIFY_BAG = 'M15.337 23.979l7.216-1.561s-2.604-17.613-2.625-17.73c-.018-.116-.114-.192-.211-.192s-1.929-.136-1.929-.136-1.275-1.274-1.439-1.411c-.045-.037-.075-.057-.121-.074l-.914 21.104h.023zM11.71 11.305s-.81-.424-1.774-.424c-1.447 0-1.504.906-1.504 1.141 0 1.232 3.24 1.715 3.24 4.629 0 2.295-1.44 3.76-3.406 3.76-2.354 0-3.54-1.465-3.54-1.465l.646-2.086s1.245 1.066 2.28 1.066c.675 0 .975-.545.975-.932 0-1.619-2.654-1.694-2.654-4.359-.034-2.237 1.571-4.416 4.827-4.416 1.257 0 1.875.361 1.875.361l-.945 2.715-.02.01zM11.17.83c.136 0 .271.038.405.135-.984.465-2.064 1.639-2.508 3.992-.656.213-1.293.405-1.889.578C7.697 3.75 8.951.84 11.17.84V.83zm1.235 2.949v.135c-.754.232-1.583.484-2.394.736.466-1.777 1.333-2.645 2.085-2.971.193.501.309 1.176.309 2.1zm.539-2.234c.694.074 1.141.867 1.429 1.755-.349.114-.735.231-1.158.366v-.252c0-.752-.096-1.371-.271-1.871v.002zm2.992 1.289c-.02 0-.06.021-.078.021s-.289.075-.714.21c-.423-1.233-1.176-2.37-2.508-2.37h-.115C12.135.209 11.669 0 11.265 0 8.159 0 6.675 3.877 6.21 5.846c-1.194.365-2.063.636-2.16.674-.675.213-.694.232-.772.87-.075.462-1.83 14.063-1.83 14.063L15.009 24l.927-21.166z';
   const PROMO_VO_ON = promoBootParams.get('vo') === '1';
   const PROMO_VO_BUDGET_S = [
