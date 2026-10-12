@@ -162,7 +162,7 @@
   // v26: the v21 score itself (Suno v6, ~112 bpm): its own pain take and drop (seam 41.2), then stores / EA sections
   // extended from it at the v25 timings (tmp/ad-1-audio/music/suno/v26/v26h-ea2.wav: film = song - 4.975 s):
   // drop 41.181, the stores section's first clap 95.216, the closing hit 130.148 (song s)
-  const PROMO_FILM_ANCHORS = { burst: 36.206, reel: 90.241, final: 126.53 };   // v27: the v21 song at film = song - 16.19 (drop on the burst), its regenerated stores section from the reel, ending hit 142.72
+  const PROMO_FILM_ANCHORS = { burst: 0, reel: 0, final: 0 };   // v30: unanchored. The picture keeps its natural timing and the score is written to it (tmp/ad-1-audio/music/suno/v30)
   // v23: from the reel start (s): [0] the tunnel lands on hero 1; [1..3] heroes 2..4 (each window = its line + 0.1 s);
   // [4..21] the run's 18 cards, one accelerating ladder (quick stores 1.0 / 0.8 / 0.62 / 0.55 s, their voices clipped
   // with a short fade); [22] "Your store". The music re-fit may snap any of these to a clap; the ladder reads its
