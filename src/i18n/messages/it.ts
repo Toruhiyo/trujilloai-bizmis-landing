@@ -52,7 +52,7 @@ export const it: Messages = {
     customWebsites: "siti su misura",
     ratherTalk: "Preferisci parlarne?",
     avatarAlt: "Assistente alle vendite digitale che aiuta i clienti",
-    agentHello: "Ciao, sono Bizmis!",
+    agentHello: "Ciao! Sono il tuo agente di vendita Bizmis.",
     agentInvite: "Premi play e guardami vendere!",
   },
 

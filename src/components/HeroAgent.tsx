@@ -54,7 +54,10 @@ const Placeholder = () => {
   return <>{PLACEHOLDERS[at.i].slice(0, at.n)}</>;
 };
 
-type Step = { line: string[]; gesture?: string; invite?: boolean };
+/** The pointing clip lasts 3 s: the invite is spoken across it, so the agent talks while it points. */
+const POINT_MS = 2900;
+
+type Step = { line: string[]; gesture?: string; invite?: boolean; msPerWord?: number };
 
 const HeroAgent = ({
   paused = false,
@@ -73,7 +76,12 @@ const HeroAgent = ({
   const steps = useMemo<Step[]>(
     () => [
       { line: words(messages.hero.agentHello), gesture: "waving" },
-      { line: words(messages.hero.agentInvite), gesture: POINT_AT_PLAY, invite: true },
+      {
+        line: words(messages.hero.agentInvite),
+        gesture: POINT_AT_PLAY,
+        invite: true,
+        msPerWord: Math.max(MS_PER_WORD, POINT_MS / words(messages.hero.agentInvite).length),
+      },
     ],
     [messages],
   );
@@ -105,7 +113,7 @@ const HeroAgent = ({
             setGesture({ name: s.gesture, key: Date.now() });
           }
           setAt({ step, word: word + 1 });
-          return run(step, word + 1, MS_PER_WORD);
+          return run(step, word + 1, s.msPerWord ?? MS_PER_WORD);
         }
         setAt({ step, word: Infinity });
         // the hello is said once; after it, the agent keeps pointing at play

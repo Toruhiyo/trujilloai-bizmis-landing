@@ -54,7 +54,7 @@ export const en = {
     ratherTalk: "Rather talk it through?",
     avatarAlt: "Digital sales assistant helping customers",
     /** The hero agent's two lines: a hello, then (pointing at play) the invite. */
-    agentHello: "Hi, I'm Bizmis!",
+    agentHello: "Hi! I'm your Bizmis sales agent.",
     agentInvite: "Press play and watch me sell!",
   },
 

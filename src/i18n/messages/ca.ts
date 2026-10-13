@@ -52,7 +52,7 @@ export const ca: Messages = {
     customWebsites: "webs a mida",
     ratherTalk: "Prefereixes que en parlem?",
     avatarAlt: "Assistent de vendes digital atenent clients",
-    agentHello: "Hola, sóc Bizmis!",
+    agentHello: "Hola! Sóc el teu agent de vendes Bizmis.",
     agentInvite: "Prem play i mira'm vendre!",
   },
 
