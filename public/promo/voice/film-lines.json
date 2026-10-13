@@ -2,7 +2,7 @@
   {
     "id": "t-pain",
     "role": "narrator",
-    "text": "[playful] [quickly] Every day, shoppers walk into your store ready to buy. [amused] Some get lost in the catalog, clicking, comparing, scrolling, with no one there to help them choose. Others get stuck on one last question and go looking for help. [wry] A chatbot? [eye-roll] Here's a wall of text, go read it. [hopeful] A real person? The perfect answer, [mock-dramatic] hours later, when the sale's already gone. [playful] Either way, they leave.",
+    "text": "[playful] [quickly] Every day, shoppers walk into your store ready to buy. [exasperated] [playful] Some get lost in the catalog, [rapid-fire] clicking, comparing, scrolling, [dramatic] with no one there to help them choose! Others get stuck on one last question and go looking for help. [wry] A chatbot? [eye-roll] Here's a wall of text, go read it. [hopeful] A real person? The perfect answer, [mock-dramatic] hours later, when the sale's already gone. [playful] Either way, they leave.",
     "speed": 1.12
   },
   {
@@ -69,7 +69,7 @@
   {
     "id": "t-ea",
     "role": "narrator",
-    "text": "[upbeat] [quickly] Install now to join Early Access! Generous free credits, fifty percent off upgrades, and you shape the roadmap. Only fifty spots. Secure yours by installing now."
+    "text": "[upbeat] [quickly] Install now to join Early Access! Generous free credits, fifty percent off upgrades, and you shape the roadmap. Only fifty spots. [energetic] [confident] Secure yours by installing now!"
   },
   {
     "id": "shopper-doubt",

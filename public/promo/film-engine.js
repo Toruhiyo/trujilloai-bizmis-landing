@@ -2711,7 +2711,7 @@
   const PROMO_REEL_BURST_MS = 2300;
   const PROMO_REEL_BEAT_MS = 60000 / 112;   // the pitch score's tempo: every cut lands on its grid
   const PROMO_REEL_TUNNEL_BEATS = 7;   // v16: the narrator's "Any store. Any device. Any language." fills the tunnel, before any store speaks
-  // v25b (operator: es, de, fr, ja): Home & DIY "¡Genial!" (Lily), Skincare "いいね！" (Matilda), Wine "Santé !" (Roger), Car parts "Toll!" (Eric);
+  // v25b (operator: es, de, fr, ja): Home & DIY "¡Genial!" (Lily), Skincare "いいね！" (Matilda), Wine "Santé !" (Roger), Car parts "Toll!" (Eric); v30 (operator: "the TOLL! one is horrible"): its store is now Copperleaf cookware;
   // es and ja keep the two longer windows (their lines need them), wine and car parts swapped places in the store-reel JSON
   const PROMO_REEL_QUICK_VOICES = ['quick-es', 'quick-ja', 'quick-fr', 'quick-de'];
   // v14: after the quick stores, new stores strobe past faster and faster (beats), barely visible, into "Your store"
@@ -2755,24 +2755,24 @@
   const PROMO_REEL_STORES_V24 = {
     'halcyon-optics': { device: 'desktop', color: '#C8B6F0', video: '/promo/stores/reel/v24/halcyon-optics-desktop-home.mp4', img: '/promo/stores/reel/v24/halcyon-optics-desktop-home.jpg' },
     'kumo-tea': { device: 'phone', color: '#5BC76B', video: '/promo/stores/reel/v24/kumo-tea-phone-home.mp4', img: '/promo/stores/reel/v24/kumo-tea-phone-home.jpg' },
-    'sora-ceramics': { device: 'tablet', color: '#B07A9A', video: '/promo/stores/reel/v24/sora-ceramics-tablet-home.mp4', img: '/promo/stores/reel/v24/sora-ceramics-tablet-home.jpg' },
+    'sora-ceramics': { device: 'tablet', color: '#B07A9A', video: '/promo/stores/reel/v30/sora-ceramics-tablet-home.mp4', img: '/promo/stores/reel/v30/sora-ceramics-tablet-home.jpg' },
     'powderline': { device: 'desktop', color: '#9ED8E8', video: '/promo/stores/reel/v24/powderline-desktop-home.mp4', img: '/promo/stores/reel/v24/powderline-desktop-home.jpg' },
     'tidewater': { device: 'phone', color: '#F2705A', video: '/promo/stores/reel/v24/tidewater-phone-home.mp4', img: '/promo/stores/reel/v24/tidewater-phone-home.jpg' },
     'maison-cacao': { device: 'desktop', color: '#2BBFA4', video: '/promo/stores/reel/v24/maison-cacao-desktop-home.mp4', img: '/promo/stores/reel/v24/maison-cacao-desktop-home.jpg' },
-    'liora': { device: 'tablet', color: '#E597A8', video: '/promo/stores/reel/v24/liora-tablet-home.mp4', img: '/promo/stores/reel/v24/liora-tablet-home.jpg' },
+    'liora': { device: 'tablet', color: '#E597A8', video: '/promo/stores/reel/v30/liora-tablet-home.mp4', img: '/promo/stores/reel/v30/liora-tablet-home.jpg' },
     'grindline': { device: 'phone', color: '#1A7FC4', video: '/promo/stores/reel/v24/grindline-phone-home.mp4', img: '/promo/stores/reel/v24/grindline-phone-home.jpg' },
     'kettle-and-crow': { device: 'phone', color: '#B8306A', video: '/promo/stores/reel/v24/kettle-and-crow-phone-home.mp4', img: '/promo/stores/reel/v24/kettle-and-crow-phone-home.jpg' },
     'northpeak': { device: 'phone', color: '#2A4FD6', video: '/promo/stores/reel/v24/northpeak-phone-home.mp4', img: '/promo/stores/reel/v24/northpeak-phone-home.jpg' },
     'saltline': { device: 'desktop', color: '#10A7B8', video: '/promo/stores/reel/v24/saltline-desktop-home.mp4', img: '/promo/stores/reel/v24/saltline-desktop-home.jpg' },
     'ridgeline-supply': { device: 'desktop', color: '#0E6185', video: '/promo/stores/reel/v24/ridgeline-supply-desktop-home.mp4', img: '/promo/stores/reel/v24/ridgeline-supply-desktop-home.jpg' },
-    'nest-and-nook': { device: 'tablet', color: '#86C2A2', video: '/promo/stores/reel/v24/nest-and-nook-tablet-home.mp4', img: '/promo/stores/reel/v24/nest-and-nook-tablet-home.jpg' },
+    'nest-and-nook': { device: 'tablet', color: '#86C2A2', video: '/promo/stores/reel/v30/nest-and-nook-tablet-home.mp4', img: '/promo/stores/reel/v30/nest-and-nook-tablet-home.jpg' },
     'atelier-noor': { device: 'desktop', color: '#A4408F', video: '/promo/stores/reel/v24/atelier-noor-desktop-home.mp4', img: '/promo/stores/reel/v24/atelier-noor-desktop-home.jpg' },
-    'little-timber': { device: 'tablet', color: '#3A9FE6', video: '/promo/stores/reel/v24/little-timber-tablet-home.mp4', img: '/promo/stores/reel/v24/little-timber-tablet-home.jpg' },
-    'inkwell': { device: 'tablet', color: '#22407C', video: '/promo/stores/reel/v24/inkwell-tablet-home.mp4', img: '/promo/stores/reel/v24/inkwell-tablet-home.jpg' },
-    'leaf-and-loam': { device: 'tablet', color: '#139E6E', video: '/promo/stores/reel/v24/leaf-and-loam-tablet-home.mp4', img: '/promo/stores/reel/v24/leaf-and-loam-tablet-home.jpg' },
+    'little-timber': { device: 'tablet', color: '#3A9FE6', video: '/promo/stores/reel/v30/little-timber-tablet-home.mp4', img: '/promo/stores/reel/v30/little-timber-tablet-home.jpg' },
+    'inkwell': { device: 'tablet', color: '#22407C', video: '/promo/stores/reel/v30/inkwell-tablet-home.mp4', img: '/promo/stores/reel/v30/inkwell-tablet-home.jpg' },
+    'leaf-and-loam': { device: 'tablet', color: '#139E6E', video: '/promo/stores/reel/v30/leaf-and-loam-tablet-home.mp4', img: '/promo/stores/reel/v30/leaf-and-loam-tablet-home.jpg' },
     'spokehaus': { device: 'phone', color: '#EE3F87', video: '/promo/stores/reel/v24/spokehaus-phone-home.mp4', img: '/promo/stores/reel/v24/spokehaus-phone-home.jpg' },
     'juniper-linen': { device: 'desktop', color: '#8E9FE8', video: '/promo/stores/reel/v24/juniper-linen-desktop-home.mp4', img: '/promo/stores/reel/v24/juniper-linen-desktop-home.jpg' },
-    'tonewood': { device: 'tablet', color: '#5E2A63', video: '/promo/stores/reel/v24/tonewood-tablet-home.mp4', img: '/promo/stores/reel/v24/tonewood-tablet-home.jpg' },
+    'tonewood': { device: 'tablet', color: '#5E2A63', video: '/promo/stores/reel/v30/tonewood-tablet-home.mp4', img: '/promo/stores/reel/v30/tonewood-tablet-home.jpg' },
     'fetch-and-fern': { device: 'desktop', color: '#138A86', video: '/promo/stores/reel/v24/fetch-and-fern-desktop-home.mp4', img: '/promo/stores/reel/v24/fetch-and-fern-desktop-home.jpg' },
     'petal-and-post': { device: 'phone', color: '#D63BC0', video: '/promo/stores/reel/v24/petal-and-post-phone-home.mp4', img: '/promo/stores/reel/v24/petal-and-post-phone-home.jpg' },
   };
@@ -2790,9 +2790,9 @@
     { img: '/promo/stores/reel/v24/saltline-desktop-home.jpg', device: 'desktop', color: '#10A7B8' },
     { img: '/promo/stores/reel/v24/ridgeline-supply-desktop-home.jpg', device: 'desktop', color: '#0E6185' },
     { img: '/promo/stores/reel/v24/atelier-noor-desktop-home.jpg', device: 'desktop', color: '#A4408F' },
-    { img: '/promo/stores/reel/v24/inkwell-tablet-home.jpg', device: 'tablet', color: '#22407C' },
+    { img: '/promo/stores/reel/v30/inkwell-tablet-home.jpg', device: 'tablet', color: '#22407C' },
     { img: '/promo/stores/reel/v24/spokehaus-phone-home.jpg', device: 'phone', color: '#EE3F87' },
-    { img: '/promo/stores/reel/v24/tonewood-tablet-home.jpg', device: 'tablet', color: '#5E2A63' },
+    { img: '/promo/stores/reel/v30/tonewood-tablet-home.jpg', device: 'tablet', color: '#5E2A63' },
     { img: '/promo/stores/reel/v24/petal-and-post-phone-home.jpg', device: 'phone', color: '#D63BC0' },
   ];
   const PROMO_REEL_STROBE = [{ device: 'desktop', color: '#5B8DEF', v: 0 }, { device: 'tablet', color: '#EF6F8E', v: 1 }, { device: 'phone', color: '#3DBE8B', v: 2 }, { device: 'desktop', color: '#F2A541', v: 0 }, { device: 'tablet', color: '#9B7BEA', v: 1 }, { device: 'phone', color: '#2BB3C9', v: 2 }, { device: 'desktop', color: '#E8644A', v: 0 }, { device: 'tablet', color: '#C9A227', v: 1 }, { device: 'phone', color: '#6C7A89', v: 2 }, { device: 'desktop', color: '#F07ACB', v: 0 }, { device: 'tablet', color: '#4FA3E0', v: 1 }, { device: 'phone', color: '#8BC34A', v: 2 }, { device: 'desktop', color: '#FF8A65', v: 0 }, { device: 'tablet', color: '#7E57C2', v: 1 }, { device: 'phone', color: '#26A69A', v: 2 }, { device: 'desktop', color: '#EC407A', v: 0 }, { device: 'tablet', color: '#FFCA28', v: 1 }, { device: 'phone', color: '#5C6BC0', v: 2 }, { device: 'desktop', color: '#66BB6A', v: 0 }, { device: 'tablet', color: '#AB47BC', v: 1 }, { device: 'phone', color: '#29B6F6', v: 2 }, { device: 'desktop', color: '#FFA726', v: 0 }];
@@ -2916,9 +2916,17 @@
     dev.style.setProperty('--radius', `${spec.radius * size.w}px`);
     const bar = device === 'desktop'
       ? '<div class="promo-dev__bar"><i></i><i></i><i></i></div>'
-      : device === 'phone' ? '<div class="promo-dev__status"><b>9:41</b><span class="promo-dev__island"></span><span class="promo-dev__icons"><i></i><i></i><i></i></span></div>' : '';
+      : device === 'phone' ? '<div class="promo-dev__status"><b>9:41</b><span class="promo-dev__island"></span><span class="promo-dev__icons">' + promoStatusIcons('phone') + '</span></div>' : '';   // v30: the real status icons (were three grey dashes)
     dev.innerHTML = `<div class="promo-dev__body">${bar}<div class="promo-dev__screen" style="aspect-ratio:${spec.aspect}">${inner}</div></div>`;
     return dev;
+  }
+
+  // iOS-style status icons (cellular, Wi-Fi, battery), shared by every phone and tablet mockup in the film
+  function promoStatusIcons(device) {
+    const cellular = '<svg viewBox="0 0 15 11" aria-hidden="true"><rect x="0.4" y="7.2" width="2" height="3.2" rx="0.6"/><rect x="3.6" y="5" width="2" height="5.4" rx="0.6"/><rect x="6.8" y="2.6" width="2" height="7.8" rx="0.6"/><rect x="10" y="0.5" width="2" height="9.9" rx="0.6" opacity="0.28"/></svg>';
+    const wifi = '<svg viewBox="0 0 15 11" aria-hidden="true"><path d="M1.2 4.2a8 8 0 0 1 12.6 0" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round"/><path d="M3.4 6.5a5 5 0 0 1 8.2 0" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round"/><circle cx="7.5" cy="9.2" r="0.95"/></svg>';
+    const battery = '<svg viewBox="0 0 26 12" aria-hidden="true"><rect x="0.6" y="0.6" width="21.2" height="10.8" rx="3.1" fill="none" stroke="currentColor" stroke-width="1.1" opacity="0.55"/><rect x="2.1" y="2.1" width="14.2" height="7.8" rx="1.5"/><path d="M23.2 4c.7.35 1.15 1 1.15 2s-.45 1.65-1.15 2" fill="currentColor" opacity="0.45"/></svg>';
+    return device === 'tablet' ? wifi + battery : cellular + wifi + battery;
   }
 
   // the film's own clock: seconds since its first frame (set when the pain take starts)
@@ -11178,10 +11186,7 @@
     }
 
     clipStatusIcons(device) {
-      const cellular = '<svg viewBox="0 0 15 11" aria-hidden="true"><rect x="0.4" y="7.2" width="2" height="3.2" rx="0.6"/><rect x="3.6" y="5" width="2" height="5.4" rx="0.6"/><rect x="6.8" y="2.6" width="2" height="7.8" rx="0.6"/><rect x="10" y="0.5" width="2" height="9.9" rx="0.6" opacity="0.28"/></svg>';
-      const wifi = '<svg viewBox="0 0 15 11" aria-hidden="true"><path d="M1.2 4.2a8 8 0 0 1 12.6 0" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round"/><path d="M3.4 6.5a5 5 0 0 1 8.2 0" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round"/><circle cx="7.5" cy="9.2" r="0.95"/></svg>';
-      const battery = '<svg viewBox="0 0 26 12" aria-hidden="true"><rect x="0.6" y="0.6" width="21.2" height="10.8" rx="3.1" fill="none" stroke="currentColor" stroke-width="1.1" opacity="0.55"/><rect x="2.1" y="2.1" width="14.2" height="7.8" rx="1.5"/><path d="M23.2 4c.7.35 1.15 1 1.15 2s-.45 1.65-1.15 2" fill="currentColor" opacity="0.45"/></svg>';
-      return device === 'tablet' ? wifi + battery : cellular + wifi + battery;
+      return promoStatusIcons(device);
     }
 
     mountDeviceChrome(store, device) {
