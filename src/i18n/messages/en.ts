@@ -164,10 +164,11 @@ export const en = {
       compareCaption: "This one's lighter, and it's in stock in your size.",
       buyCaption: "Done, it's in your cart. Shall I take you to checkout?",
     },
-    /** The closing card: the title is the install button; the note is handwritten. */
+    /** The closing card, as the film's: the title is the install button, then the handwritten invite and, apart, the note. */
     endCard: {
       install: "Install now",
-      note: "Early Access perks apply automatically to the first 50 installs!",
+      invite: "for Early Access benefits!",
+      note: "Applied on install. Only 50 spots!",
     },
     /** Setup on /v2: the title alone, a plain line under it, and the opening's install button states. */
     setup: {

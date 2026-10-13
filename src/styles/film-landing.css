@@ -1227,10 +1227,8 @@
 }
 .is-in .bzl-cta-underline path { stroke-dashoffset: 0; }
 /* the handwritten note, a little askew, as if added by hand */
-.bzl .bzl-end-note { position: relative; rotate: -3deg; font-weight: 700; font-size: clamp(1.6rem, 2.3vw, 2.1rem); line-height: 1.05; }
-@media (min-width: 1280px) {
-  .bzl .bzl-end-note { position: absolute; rotate: -6deg; }
-}
+.bzl .bzl-end-invite { rotate: -2deg; font-weight: 700; font-size: clamp(2.1rem, 4.6vw, 3.6rem); line-height: 1.05; }
+.bzl .bzl-end-note { position: relative; rotate: -3deg; font-weight: 700; font-size: clamp(1.8rem, 3.2vw, 2.6rem); line-height: 1.05; }
 @media (prefers-reduced-motion: reduce) {
   .bzl-cta-title-text { animation: none; }
   .bzl-cta-underline path { transition: none; stroke-dashoffset: 0; }

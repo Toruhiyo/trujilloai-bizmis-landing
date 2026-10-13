@@ -162,10 +162,11 @@ export const it: Messages = {
       compareCaption: "Questo è più leggero, ed è disponibile nella tua taglia.",
       buyCaption: "Fatto, è nel carrello. Ti porto al checkout?",
     },
-    /** The closing card: the title is the install button; the note is handwritten. */
+    /** The closing card, as the film's: the title is the install button, then the handwritten invite and, apart, the note. */
     endCard: {
       install: "Installa ora",
-      note: "I vantaggi Early Access si applicano da soli alle prime 50 installazioni!",
+      invite: "per i vantaggi Early Access!",
+      note: "Applicati all'installazione. Solo 50 posti!",
     },
     setup: {
       title: "Installazione con un clic",

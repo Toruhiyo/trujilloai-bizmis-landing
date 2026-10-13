@@ -162,10 +162,11 @@ export const ca: Messages = {
       compareCaption: "Aquest és més lleuger, i el tenen a la teva talla.",
       buyCaption: "Fet, ja és a la cistella. Et porto al pagament?",
     },
-    /** The closing card: the title is the install button; the note is handwritten. */
+    /** The closing card, as the film's: the title is the install button, then the handwritten invite and, apart, the note. */
     endCard: {
       install: "Instal·la ara",
-      note: "Els avantatges d'Early Access s'apliquen sols a les 50 primeres instal·lacions!",
+      invite: "per als avantatges d'Early Access!",
+      note: "S'apliquen en instal·lar. Només 50 places!",
     },
     setup: {
       title: "Instal·lació amb un clic",
