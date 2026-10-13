@@ -125,8 +125,6 @@ export type LiveAvatarProps = {
   onStatus?: (status: "loading" | "live" | "still") => void;
   /** Bizmis logo on the shirt, like the static renders (default true). */
   logo?: boolean;
-  /** Random blinks (default true). */
-  blinks?: boolean;
   /** "smile" matches the static renders; "default" is the widget's neutral face. */
   expression?: "default" | "smile";
   /** The static render, shown until (and instead of) the live avatar. */
@@ -142,7 +140,6 @@ const LiveAvatar = ({
   onStatus,
   logo = true,
   expression = "smile",
-  blinks = true,
   fallback,
   className,
 }: LiveAvatarProps) => {
@@ -253,7 +250,6 @@ const LiveAvatar = ({
                 speaking={speaking}
                 gesture={gesture}
                 expression={expression}
-                blinks={blinks}
                 active={active}
                 overscanTop={OVERSCAN_TOP}
                 figureFraction={FIGURE_FRACTION}

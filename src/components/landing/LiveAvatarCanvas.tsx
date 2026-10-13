@@ -70,11 +70,9 @@ export type LiveAvatarCanvasProps = {
   /** Vertical stamp offset, fraction of the texture (positive = up), as in the widget. */
   stampOffsetY: number;
   speaking: boolean;
-  /** A one-shot body gesture (a clip name, e.g. "beckon"); a new `key` plays it again. */
+  /** A one-shot body gesture (a clip name, e.g. "beckon", or "a|b" for the first one present); a new `key` plays it again. */
   gesture?: { name: string; key: number } | null;
   expression: AvatarExpression;
-  /** Random blinks (off for faces whose resting eyes are closed arcs, which a blink erases). */
-  blinks?: boolean;
   /** Render loop on/off (offscreen or hidden tab = off). */
   active: boolean;
   /** How far the canvas bleeds above the box, as a fraction of the box height. */
@@ -163,7 +161,6 @@ const Avatar = ({
   speaking,
   gesture,
   expression,
-  blinks = true,
   overscanTop,
   figureFraction,
   onReady,
@@ -178,6 +175,10 @@ const Avatar = ({
     copy.traverse((child) => {
       const mesh = child as THREE.Mesh;
       if (mesh.isMesh && isShirtMeshName(child.name) && !Array.isArray(mesh.material)) mesh.material = mesh.material.clone();
+      // A cloned skinned mesh keeps a bounding sphere that no longer matches
+      // where it is drawn, so three culled the small ones (Yusuke's eyes
+      // never showed). The figure is always in view: never cull its parts.
+      if (mesh.isMesh) mesh.frustumCulled = false;
     });
     return copy;
   }, [cached]);
@@ -335,7 +336,8 @@ const Avatar = ({
   // A requested gesture plays once, then idle/talk take over again.
   useEffect(() => {
     if (!gesture) return;
-    const name = names.find((n) => n === gesture.name);
+    // "a|b": the first of these clips the animations file has
+    const name = gesture.name.split("|").find((n) => names.includes(n));
     if (!name) return;
     crossTo(actions[name], true);
     setOneShot(name);
@@ -419,11 +421,9 @@ const Avatar = ({
         const i = dict[key];
         let target: number;
         let speed = MORPH_TARGET_LERP_SPEED;
-        // The smile already closes the eyes into arcs: a blink on top of it
-        // shuts them out of sight, and visemes on top of it bare the teeth.
-        // So no blinks while smiling, and the smile gives way while talking.
+        // Visemes on top of the smile bare the teeth: the smile gives way while talking.
         if (key === "eyeBlinkLeft" || key === "eyeBlinkRight") {
-          target = blinks && blink.current && !face.smile ? 1 : 0;
+          target = blink.current ? 1 : 0;
           speed = BLINK_LERP_SPEED;
         } else if (VISEMES.includes(key)) {
           target = speaking && key === mouth.current ? 1 : 0;

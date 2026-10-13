@@ -10,10 +10,9 @@ import LiveAvatar from "./landing/LiveAvatar";
  * store (trujilloai-bizmis-widget DesktopLiteChat "card" layout: Volume toggle,
  * the avatar stage with its speaking glow and rings, the composer with its
  * typed placeholder and call button), with the live 3D avatar in the Bizmis
- * shirt. It talks to the visitor in the widget's captions, never in chat
- * bubbles: hello, what it does (each of "find it", "trust it", "buy it" lights
- * the hero subtitle's word as it is spoken), then it presents the play button
- * at the centre of the hero and asks them to press it.
+ * shirt. It says hello once, then points at the play button (three beats of
+ * the shared "pointing" clip) while it asks the visitor to press it, and again
+ * every few seconds. It talks in the widget's captions, never in chat bubbles.
  *
  * Renders the card and the captions as siblings, each placed by its className
  * in the parent (the store page): on the real widget the captions are a pill
@@ -22,27 +21,18 @@ import LiveAvatar from "./landing/LiveAvatar";
  * avatar canvas stays sharp.
  */
 
-type Word = { text: string; beat: number };
-
-/** "I help [1:find it], …" → words, each with the beat (0 = none) it lights. */
-const parseLine = (line: string): Word[] => {
-  const words: Word[] = [];
-  for (const m of line.matchAll(/\[(\d):([^\]]+)\](\S*)|(\S+)/g)) {
-    if (m[4]) {
-      words.push({ text: m[4], beat: 0 });
-      continue;
-    }
-    const part = m[2].split(" ");
-    part.forEach((text, k) => words.push({ text: k === part.length - 1 ? text + m[3] : text, beat: Number(m[1]) }));
-  }
-  return words;
-};
+const words = (line: string) => line.split(/\s+/);
 
 /** Speech pace, and how long each line stays up after its last word. */
 const MS_PER_WORD = 300;
 const HOLD_MS = 1300;
-/** After "press play": the invite rests on screen before the agent starts over. */
-const INVITE_REST_MS = 6000;
+/** After "press play": the invite rests on screen before the agent points again. */
+const INVITE_REST_MS = 5000;
+/**
+ * The gesture toward play: the shared clip that points (to the avatar's right,
+ * the visitor's left, where play is), or presenting until that clip is live.
+ */
+const POINT_AT_PLAY = "pointing_right|presenting_left";
 const START_DELAY_MS = 500;
 /** A load slower than this and the agent starts over the still render anyway. */
 const LIVE_WAIT_MS = 15000;
@@ -67,19 +57,16 @@ const Placeholder = () => {
   return <>{PLACEHOLDERS[at.i].slice(0, at.n)}</>;
 };
 
-type Step = { line: Word[]; gesture?: string; invite?: boolean };
+type Step = { line: string[]; gesture?: string; invite?: boolean };
 
 const HeroAgent = ({
   paused = false,
-  onBeat,
   onInvite,
   cardClassName,
   captionClassName,
 }: {
   /** Hold the agent still and quiet (the film is open). */
   paused?: boolean;
-  /** The beat of the word being spoken: 1 find it, 2 trust it, 3 buy it, 0 none. */
-  onBeat?: (beat: number) => void;
   /** True while the agent asks for the play button (it can call out). */
   onInvite?: (inviting: boolean) => void;
   cardClassName?: string;
@@ -88,15 +75,14 @@ const HeroAgent = ({
   const messages = useMessages();
   const steps = useMemo<Step[]>(
     () => [
-      { line: parseLine(messages.hero.agentHello), gesture: "waving" },
-      { line: parseLine(messages.hero.agentPitch) },
-      { line: parseLine(messages.hero.agentInvite), gesture: "presenting_left", invite: true },
+      { line: words(messages.hero.agentHello), gesture: "waving" },
+      { line: words(messages.hero.agentInvite), gesture: POINT_AT_PLAY, invite: true },
     ],
     [messages],
   );
   const still = typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   // where the agent is: the step, and how many of its words are spoken
-  const [at, setAt] = useState({ step: still ? 2 : 0, word: still ? Infinity : 0 });
+  const [at, setAt] = useState({ step: still ? 1 : 0, word: still ? Infinity : 0 });
   const [gesture, setGesture] = useState<{ name: string; key: number } | null>(null);
   const cycle = useRef(0);
   // start talking once the live avatar is up (its greeting wave is the first
@@ -118,15 +104,16 @@ const HeroAgent = ({
         const s = steps[step];
         if (word < s.line.length) {
           // the first hello rides the avatar's own greeting wave
-          if (word === 0 && s.gesture && !(step === 0 && cycle.current === 0)) {
+          if (word === 0 && s.gesture && cycle.current > 0) {
             setGesture({ name: s.gesture, key: Date.now() });
           }
           setAt({ step, word: word + 1 });
           return run(step, word + 1, MS_PER_WORD);
         }
         setAt({ step, word: Infinity });
-        const next = (step + 1) % steps.length;
-        if (next === 0) cycle.current += 1;
+        // the hello is said once; after it, the agent keeps pointing at play
+        const next = Math.min(step + 1, steps.length - 1);
+        cycle.current += 1;
         run(next, 0, s.invite ? INVITE_REST_MS : HOLD_MS);
       }, delay);
     };
@@ -138,8 +125,6 @@ const HeroAgent = ({
   const { line, invite } = steps[at.step];
   const started = at.word > 0;
   const speaking = !paused && !still && Number.isFinite(at.word) && at.word <= line.length;
-  const beat = speaking ? (line[at.word - 1]?.beat ?? 0) : 0;
-  useEffect(() => onBeat?.(beat), [beat, onBeat]);
   const inviting = Boolean(invite) && started && !paused;
   useEffect(() => onInvite?.(inviting), [inviting, onInvite]);
 
@@ -168,8 +153,6 @@ const HeroAgent = ({
               <LiveAvatar
                 model="yusuke"
                 expression="default"
-                // Yusuke's resting eyes are closed arcs: a blink would erase them
-                blinks={false}
                 speaking={speaking}
                 gesture={paused ? null : gesture}
                 onStatus={setAvatar}
@@ -207,7 +190,7 @@ const HeroAgent = ({
           captionClassName,
         )}
       >
-        <span className="sr-only">{line.map((w) => w.text).join(" ")}</span>
+        <span className="sr-only">{line.join(" ")}</span>
         <span aria-hidden="true">
           {line.map((w, k) => (
             <span
@@ -215,7 +198,7 @@ const HeroAgent = ({
               className={cn("relative", k < at.word - 1 ? "opacity-100" : k === at.word - 1 ? "font-bold" : "opacity-50")}
             >
               {k === at.word - 1 && <span className="bzw-word-glow absolute inset-x-[-0.3em] inset-y-[-0.2em] -z-10 rounded-full" />}
-              {w.text}
+              {w}
               {k < line.length - 1 ? " " : ""}
             </span>
           ))}

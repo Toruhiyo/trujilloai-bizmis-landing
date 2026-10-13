@@ -53,11 +53,9 @@ export const en = {
     customWebsites: "custom websites",
     ratherTalk: "Rather talk it through?",
     avatarAlt: "Digital sales assistant helping customers",
-    /** The hero agent's lines; [n:…] marks the words that light Find it (1), Trust it (2), Buy it (3). */
-    agentHello: "Hi! I'm Bizmis, your store's sales agent.",
-    agentPitch: "I help every shopper [1:find it], [2:trust it], and [3:buy it].",
-    agentInvite: "Want to see me at work? Press play.",
-    agentPlaceholder: "Press play to watch me sell",
+    /** The hero agent's two lines: a hello, then (pointing at play) the invite. */
+    agentHello: "Hi, I'm Bizmis!",
+    agentInvite: "Press play and watch me sell!",
   },
 
   film: {

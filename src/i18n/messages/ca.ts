@@ -52,10 +52,8 @@ export const ca: Messages = {
     customWebsites: "webs a mida",
     ratherTalk: "Prefereixes que en parlem?",
     avatarAlt: "Assistent de vendes digital atenent clients",
-    agentHello: "Hola! Sóc Bizmis, l'agent de vendes de la teva botiga.",
-    agentPitch: "Ajudo cada client a [1:trobar-ho], [2:confiar-hi] i [3:comprar-ho].",
-    agentInvite: "Vols veure'm en acció? Prem play.",
-    agentPlaceholder: "Prem play i mira'm vendre",
+    agentHello: "Hola, sóc Bizmis!",
+    agentInvite: "Prem play i mira'm vendre!",
   },
 
   film: {

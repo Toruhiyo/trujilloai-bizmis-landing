@@ -106,7 +106,7 @@ const Hero = () => {
   );
   useEffect(() => () => cancelAnimationFrame(iris.current.frame), []);
 
-  const openFilm = (e: MouseEvent<HTMLElement>, from: "agent") => {
+  const openFilm = (e: MouseEvent<HTMLElement>, from: "agent" | "hero") => {
     const box = hero.current?.getBoundingClientRect();
     if (!box) return;
     // the iris opens from the play button
@@ -123,6 +123,13 @@ const Hero = () => {
     // on a phone the 16:9 film would be a strip across a portrait screen: go fullscreen
     if (window.matchMedia("(max-width: 1023px) and (pointer: coarse)").matches) film.current?.fullscreen();
     runIris(far + 160);
+  };
+  // any click on the hero plays the film, except on its links, buttons and the nav
+  const onHeroClick = (e: MouseEvent<HTMLElement>) => {
+    if (filmOpen || irisOpen) return;
+    const el = e.target as HTMLElement;
+    if (el.closest("a, button, input, nav, header, [data-film-layer]")) return;
+    openFilm(e, "hero");
   };
   // the film closed itself (click-off, Escape) or the ✕ asked it to: run the iris back
   const onFilmClosed = useCallback(() => {
@@ -151,33 +158,16 @@ const Hero = () => {
     </Button>
   );
 
-  // the subtitle's Find it / Trust it / Buy it light up as the agent says them
-  const [beat, setBeat] = useState(0);
-  // the play button calls out while the agent asks for it
+  // the play button calls out while the agent points at it
   const [inviting, setInviting] = useState(false);
-  const beatWord = (n: number, text: string) => (
-    <span
-      className={cn(
-        "relative font-semibold text-white transition-[color,text-shadow] duration-300",
-        beat === n && "text-[hsl(40_100%_88%)] [text-shadow:0_0_18px_hsl(35_100%_70%/0.9)]",
-      )}
-    >
-      {text}
-      <span
-        aria-hidden="true"
-        className={cn(
-          "absolute inset-x-0 -bottom-0.5 h-[3px] origin-left rounded-full bg-white/90 transition-transform duration-500",
-          beat === n ? "scale-x-100" : "scale-x-0",
-        )}
-      />
-    </span>
-  );
+  const strong = (text: string) => <span className="font-semibold text-white">{text}</span>;
 
   return (
     <section
       id="hero"
       ref={hero}
-      className="relative h-[100svh] min-h-[600px] overflow-hidden studio-lighting-base"
+      onClick={onHeroClick}
+      className={cn("relative h-[100svh] min-h-[600px] overflow-hidden studio-lighting-base", !filmOpen && "cursor-pointer")}
     >
       {/* the studio stage */}
       <div className="absolute inset-0 studio-radial-light" />
@@ -233,8 +223,8 @@ const Hero = () => {
             </span>
           </div>
           {/* the store's landing: its hero section is the copy and the CTAs, with play at its centre */}
-          <div className="absolute inset-x-0 bottom-[20em] top-[5.6em] flex flex-col px-[1.4em] pt-[1.4em] lg:bottom-[22%] lg:justify-center lg:px-[3.2em] lg:pt-0">
-            <div className="flex w-full flex-col gap-3 text-white [text-shadow:0_1px_16px_hsl(24_90%_35%/0.35)] lg:w-[min(36rem,38vw)] lg:gap-4">
+          <div className="absolute inset-x-0 bottom-[20em] top-[5.6em] flex flex-col px-[1.4em] pt-[1.4em] lg:bottom-[2em] lg:justify-center lg:px-[3.6em] lg:pt-0">
+            <div className="flex w-full flex-col gap-3 text-white [text-shadow:0_1px_16px_hsl(24_90%_35%/0.35)] lg:w-[min(40rem,40vw)] lg:gap-5">
               <div>
                   <a
                     href={href("/early-access")}
@@ -255,13 +245,13 @@ const Hero = () => {
                     </span>
                     <ArrowRight className="h-3 w-3 text-white/60 transition-transform group-hover:translate-x-0.5" aria-hidden="true" />
                   </a>
-                  <h1 className="mt-2.5 font-heading text-[clamp(1.75rem,7.6vw,2.4rem)] font-bold leading-[1.04] tracking-[-0.025em] lg:mt-3.5 lg:text-[clamp(2.4rem,min(3.6vw,6.6svh),3.75rem)]">
+                  <h1 className="mt-2.5 font-heading text-[clamp(1.75rem,7.6vw,2.4rem)] font-bold leading-[1.04] tracking-[-0.025em] lg:mt-3.5 lg:text-[clamp(2.6rem,min(4.3vw,7.6svh),4.75rem)]">
                     {messages.hero.titleLine1} <span className="lg:block">{messages.hero.titleLine2}</span>
                   </h1>
-                  <p className="mt-1.5 font-heading text-[0.95rem] font-medium text-white/85 lg:mt-2.5 lg:text-[clamp(1.05rem,1.4vw,1.35rem)]">
-                    {messages.hero.subtitleLead} {beatWord(1, messages.hero.subtitleFind)},{" "}
-                    {beatWord(2, messages.hero.subtitleTrust)}
-                    {messages.hero.subtitleConnector} {beatWord(3, messages.hero.subtitleBuy)}
+                  <p className="mt-1.5 font-heading text-[0.95rem] font-medium text-white/85 lg:mt-2.5 lg:text-[clamp(1.1rem,1.55vw,1.5rem)]">
+                    {messages.hero.subtitleLead} {strong(messages.hero.subtitleFind)},{" "}
+                    {strong(messages.hero.subtitleTrust)}
+                    {messages.hero.subtitleConnector} {strong(messages.hero.subtitleBuy)}
                   </p>
               </div>
               <div className="flex flex-col gap-2 [text-shadow:none] lg:gap-3">
@@ -310,7 +300,6 @@ const Hero = () => {
               phones the real widget shows none) */}
           <HeroAgent
             paused={irisOpen}
-            onBeat={setBeat}
             onInvite={setInviting}
             cardClassName="absolute bottom-[0.9em] right-[0.9em] lg:bottom-[1.2em] lg:right-[1.2em]"
             captionClassName="absolute bottom-[1.6em] left-1/2 hidden -translate-x-1/2 text-[1.15em] lg:block"
@@ -319,7 +308,7 @@ const Hero = () => {
       </div>
 
       {/* the film: the whole hero is the player, revealed through the iris */}
-      <div ref={irisBox} className={cn("absolute inset-0 z-30", !irisOpen && "invisible")}>
+      <div ref={irisBox} data-film-layer className={cn("absolute inset-0 z-30 cursor-auto", !irisOpen && "invisible")}>
         <div
           aria-hidden={!filmOpen}
           className="absolute inset-0 bg-black"
