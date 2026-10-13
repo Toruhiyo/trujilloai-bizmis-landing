@@ -14,8 +14,6 @@ import {
 } from "react-icons/fa";
 import { cn } from "@/lib/utils";
 import { useMessages } from "@/i18n/LocaleProvider";
-import AgentImage from "./AgentImage";
-import LiveAvatar from "./LiveAvatar";
 import Reveal, { useInView } from "./Reveal";
 
 // Same order as messages.setup.dataCards (as on the classic landing).
@@ -31,14 +29,24 @@ const SYNC_AT = 1550;
 const CARD_EVERY = 360;
 /** After the opening, the agent charges up again every so often. */
 const RECHARGE_EVERY = 10000;
-const CHARGE_MS = 2400;
+/** The charge-up clip (scripts/setup-charge-anim.py): 92 frames at 24 fps. */
+const CHARGE_MS = 3830;
+const CHARGE = {
+  poster: "/landing/setup/charge-poster.webp",
+  webm: "/landing/setup/charge.webm",
+  // Safari only plays transparent video as HEVC with alpha
+  hevc: "/landing/setup/charge.mov",
+};
+const isSafari = () =>
+  typeof navigator !== "undefined" && /^((?!chrome|chromium|android|crios|fxios|edg).)*safari/i.test(navigator.userAgent);
 
 /**
  * Setup on /v2: one click and the store is wired to the agent. When the
  * section comes into view a cursor clicks the Install button, the button turns
  * into "Syncing your store", the store's data cards sync one by one (each one's
  * wire draws to the agent as it ticks), and once the last one lands the agent
- * (the live 3D Will, full figure) charges up with it. After that, round sparks
+ * (Will, full figure, in a rendered anime-style charge-up: squeezed eyes,
+ * gritted teeth, a shout on the burst) charges up with it. After that, round sparks
  * of energy keep travelling every wire, card → agent, and the agent recharges
  * every few seconds. The wires are drawn from the real positions of the cards
  * and the agent, so they always land. Reduced motion shows the end state.
@@ -57,8 +65,10 @@ const SetupSection = () => {
   const [button, setButton] = useState({ x: 0, y: 0 });
   const [phase, setPhase] = useState<Phase>("idle");
   const [synced, setSynced] = useState(0);
-  const [charge, setCharge] = useState<{ name: string; key: number } | null>(null);
+  const video = useRef<HTMLVideoElement>(null);
   const [charging, setCharging] = useState(false);
+  const [src, setSrc] = useState<string | null>(null);
+  useEffect(() => setSrc(isSafari() ? CHARGE.hevc : CHARGE.webm), []);
 
   // wire each card to the agent's chest, from the real layout
   const measure = useCallback(() => {
@@ -107,7 +117,11 @@ const SetupSection = () => {
   }, [measure]);
 
   const chargeUp = useCallback(() => {
-    setCharge({ name: "charge_up", key: Date.now() });
+    const v = video.current;
+    if (v) {
+      v.currentTime = 0;
+      v.play().catch(() => undefined);
+    }
     setCharging(true);
     window.setTimeout(() => setCharging(false), CHARGE_MS);
   }, []);
@@ -352,23 +366,19 @@ const SetupSection = () => {
                   aria-hidden="true"
                   className="absolute inset-x-[-25%] bottom-[-3%] h-[10%] rounded-[50%] bg-[radial-gradient(closest-side,rgba(236,119,9,0.3),transparent)]"
                 />
-                <div className={cn("absolute inset-0", charging && "bzl-charge-rim")}>
-                  <LiveAvatar
-                    model="will"
-                    fullBody
-                    greet={false}
-                    shirtColor="#F9A353"
-                    gesture={charge}
-                    fallback={
-                      <AgentImage
-                        name="setup-will"
-                        alt={messages.landing.agentAlt}
-                        sizes="300px"
-                        className="absolute inset-0 h-full w-full object-contain"
-                      />
-                    }
-                  />
-                </div>
+                {/* the charge-up, anime style (a rendered clip: squeezed eyes, gritted teeth, a shout on the burst) */}
+                <video
+                  ref={video}
+                  key={src ?? "poster"}
+                  aria-label={messages.landing.agentAlt}
+                  muted
+                  playsInline
+                  preload="auto"
+                  poster={CHARGE.poster}
+                  className={cn("absolute inset-0 h-full w-full object-contain", charging && "bzl-charge-rim")}
+                >
+                  {src && <source src={src} type={src.endsWith(".mov") ? 'video/mp4; codecs="hvc1"' : "video/webm"} />}
+                </video>
               </div>
             </Reveal>
           </div>
