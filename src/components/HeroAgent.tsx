@@ -11,9 +11,10 @@ import "@/styles/hero-agent.css";
  * store (trujilloai-bizmis-widget DesktopLiteChat "card" layout: Volume toggle,
  * the avatar stage with its speaking glow and rings, the composer with its
  * typed placeholder and call button), with the live 3D avatar in the Bizmis
- * shirt. It says hello once, then points at the play button (three beats of
- * the shared "pointing" clip) while it asks the visitor to press it, and again
- * every few seconds. It talks in the widget's captions, never in chat bubbles.
+ * shirt. It says hello once, then takes turns: one line on what it does, and
+ * the invite, spoken while it points at the play button (the pointing clip's
+ * jabs land on "Press play"). It talks in the widget's captions, never in
+ * chat bubbles.
  *
  * Renders the card and the captions as siblings, each placed by its className
  * in the parent (the store page): on the real widget the captions are a pill
@@ -55,10 +56,15 @@ const Placeholder = () => {
   return <>{PLACEHOLDERS[at.i].slice(0, at.n)}</>;
 };
 
-/** The pointing clip lasts 3 s: the invite is spoken across it, so the agent talks while it points. */
-const POINT_MS = 2900;
+/**
+ * The invite rides the pointing clip (3 s, jabs at ~0.72 / 1.14 / 1.56 s): the
+ * gesture starts first and "Press play" lands on the first jabs, a word every
+ * 420 ms, so the agent talks while it points.
+ */
+const POINT_LEAD_MS = 600;
+const POINT_WORD_MS = 420;
 
-type Step = { line: string[]; gesture?: string; invite?: boolean; msPerWord?: number };
+type Step = { line: string[]; gesture?: string; invite?: boolean; msPerWord?: number; leadMs?: number };
 
 const HeroAgent = ({
   paused = false,
@@ -77,18 +83,20 @@ const HeroAgent = ({
   const steps = useMemo<Step[]>(
     () => [
       { line: words(messages.hero.agentHello), gesture: "waving" },
+      { line: words(messages.hero.agentPitch) },
       {
         line: words(messages.hero.agentInvite),
         gesture: POINT_AT_PLAY,
         invite: true,
-        msPerWord: Math.max(MS_PER_WORD, POINT_MS / words(messages.hero.agentInvite).length),
+        msPerWord: POINT_WORD_MS,
+        leadMs: POINT_LEAD_MS,
       },
     ],
     [messages],
   );
   const still = typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   // where the agent is: the step, and how many of its words are spoken
-  const [at, setAt] = useState({ step: still ? 1 : 0, word: still ? Infinity : 0 });
+  const [at, setAt] = useState({ step: still ? 2 : 0, word: still ? Infinity : 0 });
   const [gesture, setGesture] = useState<{ name: string; key: number } | null>(null);
   const cycle = useRef(0);
   // start talking once the live avatar is up (its greeting wave is the first
@@ -105,20 +113,22 @@ const HeroAgent = ({
     if (paused || still || !ready) return;
     let timer = 0;
     // one word per tick; a finished line holds, then the next step starts
-    const run = (step: number, word: number, delay: number) => {
+    const run = (step: number, word: number, delay: number, led = false) => {
       timer = window.setTimeout(() => {
         const s = steps[step];
         if (word < s.line.length) {
           // the first hello rides the avatar's own greeting wave
-          if (word === 0 && s.gesture && cycle.current > 0) {
+          if (word === 0 && !led && s.gesture && cycle.current > 0) {
             setGesture({ name: s.gesture, key: Date.now() });
+            // the gesture leads, so its beats land on the first words
+            if (s.leadMs) return run(step, 0, s.leadMs, true);
           }
           setAt({ step, word: word + 1 });
           return run(step, word + 1, s.msPerWord ?? MS_PER_WORD);
         }
         setAt({ step, word: Infinity });
-        // the hello is said once; after it, the agent keeps pointing at play
-        const next = Math.min(step + 1, steps.length - 1);
+        // the hello is said once; after it, what it does and the invite take turns
+        const next = step === steps.length - 1 ? 1 : step + 1;
         cycle.current += 1;
         run(next, 0, s.invite ? INVITE_REST_MS : HOLD_MS);
       }, delay);

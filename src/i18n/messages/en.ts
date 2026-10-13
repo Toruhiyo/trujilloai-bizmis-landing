@@ -53,8 +53,9 @@ export const en = {
     customWebsites: "custom websites",
     ratherTalk: "Rather talk it through?",
     avatarAlt: "Digital sales assistant helping customers",
-    /** The hero agent's two lines: a hello, then (pointing at play) the invite. */
+    /** The hero agent's lines: a hello, what it does, then (pointing at play) the invite. */
     agentHello: "Hi! I'm your Bizmis sales agent.",
+    agentPitch: "I help every shopper find the right product, trust it and buy it.",
     agentInvite: "Press play and watch me sell!",
   },
 
@@ -167,6 +168,14 @@ export const en = {
     endCard: {
       install: "Install now",
       note: "Early Access perks apply automatically to the first 50 installs!",
+    },
+    /** Setup on /v2: the title alone, a plain line under it, and the opening's install button states. */
+    setup: {
+      title: "One-Click Setup",
+      lead: "Click install on Shopify. Your agent reads your products, policies, discounts and orders on its own, and starts selling a few minutes later.",
+      install: "Install",
+      syncing: "Syncing your store",
+      synced: "Synced",
     },
   },
 

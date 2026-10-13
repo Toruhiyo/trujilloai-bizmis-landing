@@ -53,6 +53,7 @@ export const ca: Messages = {
     ratherTalk: "Prefereixes que en parlem?",
     avatarAlt: "Assistent de vendes digital atenent clients",
     agentHello: "Hola! Sóc el teu agent de vendes Bizmis.",
+    agentPitch: "Ajudo cada client a trobar el producte adequat, confiar-hi i comprar-lo.",
     agentInvite: "Prem play i mira'm vendre!",
   },
 
@@ -165,6 +166,13 @@ export const ca: Messages = {
     endCard: {
       install: "Instal·la ara",
       note: "Els avantatges d'Early Access s'apliquen sols a les 50 primeres instal·lacions!",
+    },
+    setup: {
+      title: "Instal·lació amb un clic",
+      lead: "Fes clic a instal·lar a Shopify. El teu agent llegeix pel seu compte els productes, les polítiques, els descomptes i les comandes, i en pocs minuts ja ven.",
+      install: "Instal·lar",
+      syncing: "Sincronitzant la botiga",
+      synced: "Sincronitzada",
     },
   },
 

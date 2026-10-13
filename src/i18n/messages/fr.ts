@@ -53,6 +53,7 @@ export const fr: Messages = {
     ratherTalk: "Vous préférez en discuter ?",
     avatarAlt: "Assistant de vente numérique aidant des clients",
     agentHello: "Bonjour ! Je suis votre agent commercial Bizmis.",
+    agentPitch: "J'aide chaque client à trouver le bon produit, à s'y fier et à l'acheter.",
     agentInvite: "Appuyez sur play et regardez-moi vendre !",
   },
 
@@ -165,6 +166,13 @@ export const fr: Messages = {
     endCard: {
       install: "Installer maintenant",
       note: "Les avantages Early Access s'appliquent tout seuls aux 50 premières installations !",
+    },
+    setup: {
+      title: "Installation en un clic",
+      lead: "Cliquez sur installer dans Shopify. Votre agent lit vos produits, vos politiques, vos remises et vos commandes tout seul, et quelques minutes plus tard il vend déjà.",
+      install: "Installer",
+      syncing: "Synchronisation de votre boutique",
+      synced: "Synchronisée",
     },
   },
 
