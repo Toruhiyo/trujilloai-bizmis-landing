@@ -21,9 +21,7 @@ export const HERO_FILM = {
   id: "ad-1",
   src:
     import.meta.env.VITE_FILM_SRC ??
-    // TEMPORARY (2026-10-12): the Vercel Blob store is suspended, so the ladder is served from the ops CDN
-    // under invite-cards/_film/ (the only public prefix there). Move back to Blob (film/ad-1/<cut>/) once it is unblocked.
-    "https://go.bizmis.ai/invite-cards/_film/ad-1/v30/master.m3u8",
+    "https://8josk2l8la4zszeg.public.blob.vercel-storage.com/film/ad-1/v31/master.m3u8",
   /** Fallback until the film's metadata loads (seconds). */
   durationSeconds: 127,
   loop: {
