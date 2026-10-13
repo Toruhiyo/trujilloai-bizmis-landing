@@ -121,8 +121,8 @@ export type LiveAvatarProps = {
   speaking?: boolean;
   /** A one-shot body gesture (clip name, e.g. "beckon"); a new `key` plays it again. */
   gesture?: { name: string; key: number } | null;
-  /** Whether the live avatar is on screen (false while the static render shows). */
-  onLiveChange?: (live: boolean) => void;
+  /** "live" once the 3D avatar is drawn, "still" when only the static render will show, "loading" before either. */
+  onStatus?: (status: "loading" | "live" | "still") => void;
   /** Bizmis logo on the shirt, like the static renders (default true). */
   logo?: boolean;
   /** "smile" matches the static renders; "default" is the widget's neutral face. */
@@ -137,7 +137,7 @@ const LiveAvatar = ({
   shirtColor = "#F28C38",
   speaking = false,
   gesture = null,
-  onLiveChange,
+  onStatus,
   logo = true,
   expression = "smile",
   fallback,
@@ -209,7 +209,8 @@ const LiveAvatar = ({
   );
 
   const live = wants3d && ready;
-  useEffect(() => onLiveChange?.(live), [live, onLiveChange]);
+  const status = live ? "live" : reducedMotion || capable === false || failed ? "still" : "loading";
+  useEffect(() => onStatus?.(status), [status, onStatus]);
   // Keep drawing until the first frame lands (even just outside the viewport),
   // then only while visible.
   const active = pageVisible && (inView || !ready);
