@@ -130,7 +130,41 @@ export const it: Messages = {
       takingYouTo: "Ti porto a",
       addingToCart: "Aggiunta al carrello",
       searchResults: "Risultati della ricerca",
-      bundle: "Sfera + Lastra",
+      cartItem: "Sfera",
+    },
+    /** Boost Sales on /v2: one promise, proven in the three moments a sale gets lost (the hero's find it / trust it / buy it). */
+    sales: {
+      title: "Più visite che finiscono in un acquisto.",
+      lead:
+        "La maggior parte delle vendite si perde in tre momenti: il cliente non trova il prodotto, non è sicuro che sia quello giusto, o si arrende sulla strada del checkout. Bizmis c'è in tutti e tre, per testo o a voce.",
+      panels: [
+        {
+          eyebrow: "Lo trovano",
+          title: "Ogni ricerca finisce sul prodotto giusto",
+          body:
+            "Il cliente scrive o dice cosa cerca. Bizmis fa le domande di un buon commesso (occasione, budget, taglia), cerca nel tuo vero catalogo e apre il prodotto, o una pagina con proprio quelle scelte. Chi torna viene salutato per nome, con consigli basati su quello che ha già comprato.",
+        },
+        {
+          eyebrow: "Si fidano",
+          title: "I dubbi risolti prima che se ne vadano",
+          body:
+            "Conosce ogni variante, taglia, livello di stock e campo personalizzato, confronta due o tre prodotti fianco a fianco e segue le tue regole di vendita, come confermare la taglia prima di consigliare. Su una scheda prodotto sa già di quale prodotto si tratta.",
+        },
+        {
+          eyebrow: "Lo comprano",
+          title: "Il carrello si riempie, la vendita si chiude",
+          body:
+            "Quando il cliente dice sì, aggiunge al carrello del tuo negozio e il contatore si aggiorna subito. Se un'opzione è esaurita lo dice e ne propone un'altra. Poi lo porta al carrello o al checkout, e riprende la conversazione su ogni pagina.",
+        },
+      ],
+      /** What the agent says (captions) in the trust and buy mockups. */
+      compareCaption: "Questo è più leggero, ed è disponibile nella tua taglia.",
+      buyCaption: "Fatto, è nel carrello. Ti porto al checkout?",
+    },
+    /** The closing card: the title is the install button; the note is handwritten. */
+    endCard: {
+      install: "Installa ora",
+      note: "I vantaggi Early Access si applicano da soli alle prime 50 installazioni!",
     },
   },
 
@@ -598,7 +632,7 @@ export const it: Messages = {
       "cart-management": {
         question: "Bizmis gestisce i carrelli o recupera quelli abbandonati?",
         answer:
-          "Al momento no. La gestione del carrello è disattivata di proposito mentre affiniamo lo schema di conferma vocale esplicita necessario per le azioni di scrittura. Bizmis può consigliare prodotti e accompagnare al checkout, ma non aggiunge, rimuove né modifica articoli nel carrello. Potrebbe cambiare in una versione futura.",
+          "Il carrello sì. Quando il cliente dice sì, Bizmis aggiunge gli articoli al carrello del tuo negozio e il contatore si aggiorna subito. Segnala le opzioni esaurite, propone un'alternativa e può portare il cliente al carrello o al checkout. Non invia email di carrello abbandonato, ma riprende la conversazione da dove si era fermata quando il cliente cambia pagina.",
       },
       "feels-human": {
         question: "L'assistente sembrerà umano?",

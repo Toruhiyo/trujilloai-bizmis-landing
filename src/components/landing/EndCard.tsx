@@ -1,9 +1,8 @@
 import type { MouseEvent } from "react";
-import { useNavigate } from "react-router-dom";
 import { usePostHog } from "posthog-js/react";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, CalendarDays } from "lucide-react";
 import { FaShopify } from "react-icons/fa";
-import { useLocaleHref, useMessages } from "@/i18n/LocaleProvider";
+import { useMessages } from "@/i18n/LocaleProvider";
 import {
   BIZMIS_BOOK_A_CALL_GENERAL_URL,
   BIZMIS_SHOPIFY_APP_LISTING_URL,
@@ -12,17 +11,18 @@ import {
 import Reveal from "./Reveal";
 
 /**
- * The classic landing's Early Access offer, composed like the film's closing
- * card: one big statement, the perks as a row of orange
- * checks, and a handwritten line with its underline — then the CTAs.
+ * The close, composed like the ad-1 film's end card: the title IS the call to
+ * action ("Install now", a light sweeping across it), and a handwritten note
+ * floating beside it says the Early Access perks need no claiming: they apply
+ * on their own to the first 50 installs. Then the perks, and a quiet way to
+ * talk to us first.
  */
 const EndCard = () => {
   const messages = useMessages();
   const ea = messages.earlyAccessCard;
   const cta = messages.finalCta;
+  const end = messages.landing.endCard;
   const posthog = usePostHog();
-  const navigate = useNavigate();
-  const href = useLocaleHref();
 
   const install = (e: MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault();
@@ -31,14 +31,6 @@ const EndCard = () => {
       cta_type: "get_started",
       location: "early_access_card",
     });
-  };
-
-  const claim = () => {
-    posthog.capture("cta_clicked", {
-      cta_type: "claim_early_bird",
-      location: "early_access_card",
-    });
-    navigate(href("/pricing"));
   };
 
   return (
@@ -50,15 +42,82 @@ const EndCard = () => {
       <div className="bzl-wrap relative">
         <Reveal>
           <p className="bzl-kicker">{ea.badge}</p>
-          <h2 className="mt-3 text-[clamp(2.8rem,min(7.4vw,10svh),5.8rem)] font-bold leading-[1.02] tracking-[-0.045em] text-black">
-            {ea.titleLead}{" "}
-            <span className="text-[var(--bzl-orange-strong)]">
-              {ea.titleHighlight}
-            </span>
-          </h2>
         </Reveal>
+
+        {/* the title is the button */}
+        <Reveal delay={80} className="relative mx-auto mt-4 w-fit">
+          <div className="relative">
+            <h2 className="text-[clamp(3rem,min(8.4vw,12svh),6.75rem)] font-bold leading-[1.02] tracking-[-0.045em]">
+              <a
+                href={BIZMIS_SHOPIFY_APP_LISTING_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={install}
+                aria-label={cta.installAria}
+                className="bzl-cta-title group inline-flex items-center gap-[0.22em] rounded-[0.3em] px-[0.12em] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[var(--bzl-orange)]/40"
+              >
+                <FaShopify
+                  aria-hidden="true"
+                  className="h-[0.74em] w-[0.74em] flex-shrink-0 text-[var(--bzl-fg)] transition-colors duration-300 group-hover:text-[#5e8e3e]"
+                />
+                <span className="bzl-cta-title-text">{end.install}</span>
+                <span
+                  aria-hidden="true"
+                  className="grid h-[0.66em] w-[0.66em] flex-shrink-0 place-items-center rounded-full bg-[linear-gradient(180deg,var(--bzl-orange),var(--bzl-orange-strong))] text-white shadow-[0_14px_30px_-12px_rgba(236,119,9,0.7)] transition-transform duration-500 group-hover:translate-x-[0.12em]"
+                  style={{ transitionTimingFunction: "var(--bzl-spring)" }}
+                >
+                  <ArrowRight
+                    className="h-[0.4em] w-[0.4em]"
+                    strokeWidth={2.6}
+                  />
+                </span>
+              </a>
+            </h2>
+            {/* the hand-drawn underline under the button-title */}
+            <svg
+              viewBox="0 0 300 18"
+              preserveAspectRatio="none"
+              className="bzl-cta-underline pointer-events-none absolute -bottom-[0.35rem] left-[6%] h-3 w-[88%]"
+              fill="none"
+              aria-hidden="true"
+            >
+              <path
+                d="M4 12 C 70 4, 160 3, 296 9"
+                stroke="var(--bzl-orange-strong)"
+                strokeWidth="3.2"
+                strokeLinecap="round"
+                pathLength={1}
+              />
+            </svg>
+          </div>
+          {/* the handwritten note, floating beside the title (under it on a phone) */}
+          <p className="bzl-hand bzl-end-note mx-auto mt-7 max-w-[19rem] text-[clamp(1.6rem,2.3vw,2.1rem)] leading-[1.05] text-[var(--bzl-orange-dark)] xl:absolute xl:left-[calc(100%+1.5rem)] xl:top-[-1.4rem] xl:mt-0 xl:w-[16rem] xl:max-w-none xl:text-left">
+            <svg
+              viewBox="0 0 60 40"
+              fill="none"
+              aria-hidden="true"
+              className="absolute -left-16 top-10 hidden h-10 w-14 text-[var(--bzl-orange-strong)] xl:block"
+            >
+              <path
+                d="M56 6 C 40 4, 18 10, 8 30"
+                stroke="currentColor"
+                strokeWidth="2.6"
+                strokeLinecap="round"
+              />
+              <path
+                d="M4 20 L 8 31 L 18 26"
+                stroke="currentColor"
+                strokeWidth="2.6"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+            {end.note}
+          </p>
+        </Reveal>
+
         <Reveal delay={200}>
-          <p className="bzl-lead mx-auto mt-5 max-w-2xl">{ea.lead}</p>
+          <p className="bzl-lead mx-auto mt-6 max-w-2xl xl:mt-8">{ea.lead}</p>
         </Reveal>
 
         <Reveal delay={320}>
@@ -91,77 +150,32 @@ const EndCard = () => {
         </Reveal>
 
         <Reveal delay={440}>
-          <p className="bzl-script relative mx-auto mt-[5svh] inline-block -rotate-[2.5deg] text-[clamp(2rem,3.6vw,2.8rem)] leading-none">
-            {messages.landing.onlySpots}
-            {/* the film's hand-drawn underline */}
-            <svg
-              viewBox="0 0 300 18"
-              preserveAspectRatio="none"
-              className="absolute -bottom-3 left-0 h-3 w-full"
-              fill="none"
-              aria-hidden="true"
-            >
-              <path
-                d="M4 12 C 70 4, 160 3, 296 9"
-                stroke="var(--bzl-orange-strong)"
-                strokeWidth="3.2"
-                strokeLinecap="round"
-              />
-              <path
-                d="M30 15 C 110 9, 190 9, 270 13"
-                stroke="var(--bzl-orange-strong)"
-                strokeWidth="2.4"
-                strokeLinecap="round"
-                opacity="0.85"
-              />
-            </svg>
-          </p>
-        </Reveal>
-
-        <Reveal delay={540}>
-          <div className="mt-[5svh] flex flex-wrap items-center justify-center gap-3">
-            <a
-              href={BIZMIS_SHOPIFY_APP_LISTING_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-              onClick={install}
-              aria-label={cta.installAria}
-              className="bzl-btn bzl-btn-primary"
-            >
-              <FaShopify className="h-5 w-5" aria-hidden="true" />
-              {messages.common.installOnShopify}
-            </a>
-            <button
-              type="button"
-              onClick={claim}
-              className="bzl-btn bzl-btn-ghost"
-            >
-              {ea.cta}
-              <ArrowRight className="h-4 w-4" aria-hidden="true" />
-            </button>
-          </div>
-          <p className="mt-6 flex flex-wrap justify-center gap-x-4 gap-y-1 text-sm text-[var(--bzl-faint)]">
-            <span>{cta.cancelAnytime}</span>
-            <span aria-hidden="true">·</span>
-            <span>{cta.gdprReady}</span>
-            <span aria-hidden="true">·</span>
-            <span>{cta.builtForShopify}</span>
-            <span aria-hidden="true">·</span>
+          <div className="mt-[5svh] flex flex-col items-center gap-4">
+            {/* the secondary way in: talk to us first */}
             <a
               href={BIZMIS_BOOK_A_CALL_GENERAL_URL}
               target="_blank"
               rel="noopener noreferrer"
+              aria-label={cta.bookCallAria}
               onClick={() =>
                 posthog.capture("cta_clicked", {
                   cta_type: "book_a_call",
                   location: "early_access_card",
                 })
               }
-              className="underline underline-offset-2 hover:text-[var(--bzl-orange-dark)]"
+              className="bzl-btn bzl-btn-ghost h-11 px-5 text-[0.9375rem]"
             >
+              <CalendarDays className="h-4 w-4" aria-hidden="true" />
               {messages.common.bookACall}
             </a>
-          </p>
+            <p className="flex flex-wrap justify-center gap-x-4 gap-y-1 text-sm text-[var(--bzl-faint)]">
+              <span>{cta.cancelAnytime}</span>
+              <span aria-hidden="true">·</span>
+              <span>{cta.gdprReady}</span>
+              <span aria-hidden="true">·</span>
+              <span>{cta.builtForShopify}</span>
+            </p>
+          </div>
         </Reveal>
       </div>
     </section>

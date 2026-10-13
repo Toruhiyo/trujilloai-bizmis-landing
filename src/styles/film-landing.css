@@ -78,19 +78,28 @@
 
 .bzl-section {
   position: relative;
-  padding: clamp(4rem, 9vw, 8rem) 1rem;
+  padding: clamp(4rem, 9vw, 8rem) 0;
+}
+
+/* The navbar's own container (Tailwind's `container mx-auto px-4 sm:px-6`,
+   max 1400px), so every section's edges line up with the nav's logo and its
+   buttons. */
+.bzl-wrap {
+  width: 100%;
+  margin-inline: auto;
+  padding-inline: 1rem;
 }
 
 @media (min-width: 640px) {
-  .bzl-section {
-    padding-left: 1.5rem;
-    padding-right: 1.5rem;
+  .bzl-wrap {
+    padding-inline: 1.5rem;
   }
 }
 
-.bzl-wrap {
-  max-width: 1200px;
-  margin: 0 auto;
+@media (min-width: 1400px) {
+  .bzl-wrap {
+    max-width: 1400px;
+  }
 }
 
 /* ---------- Reveal on scroll ---------- */
@@ -824,12 +833,15 @@
   .bzl .bzl-head {
     position: sticky;
     top: 0;
-    z-index: 30;
+    /* above the panels sliding under it, but BELOW the site navbar: the nav
+       lives inside the hero in a z-20 layer, so anything here at z >= 20
+       paints over the fixed nav once you scroll past the hero */
+    z-index: 10;
     padding-top: calc(var(--bzl-nav) + clamp(0.75rem, 2.5svh, 2rem));
     padding-bottom: clamp(0.75rem, 2svh, 1.5rem);
-    background: #fff;
-    /* full-bleed white behind the head, past the content column */
-    box-shadow: 0 0 0 100vmax #fff;
+    background: var(--band, #fff);
+    /* full-bleed band colour behind the head, past the content column */
+    box-shadow: 0 0 0 100vmax var(--band, #fff);
     clip-path: inset(0 -100vmax -2rem);
   }
   /* a soft edge under the head, so content slides beneath it instead of being cut */
@@ -840,7 +852,7 @@
     right: 0;
     top: 100%;
     height: 2rem;
-    background: linear-gradient(180deg, #fff, rgb(255 255 255 / 0));
+    background: linear-gradient(180deg, var(--band, #fff), transparent);
     pointer-events: none;
   }
   .bzl .bzl-sub {
@@ -977,27 +989,14 @@
   60% { translate: -2% -1%; } 80% { translate: 3% 2%; } 100% { translate: 0 0; }
 }
 
-/* ── Clay panels: the benefits as big, soft, tinted cards (clay.com-like) ── */
-.bzl-panel {
-  border-radius: clamp(1.75rem, 3vw, 2.75rem);
-  background: var(--panel, #fdeee0);
-  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.7), 0 30px 60px -48px rgb(120 60 20 / 0.45);
-  overflow: hidden;
-}
-.bzl-panel.t-peach { --panel: linear-gradient(160deg, #fff3e7, #fde3cc); }
-.bzl-panel.t-butter { --panel: linear-gradient(160deg, #fffaeb, #fcefc7); }
-.bzl-panel.t-blush { --panel: linear-gradient(160deg, #fff4f0, #fbe1d9); }
-.bzl-panel.t-sand { --panel: linear-gradient(160deg, #fdf8f1, #f3e6d4); }
-.bzl-panel.t-apricot { --panel: linear-gradient(160deg, #fff6ec, #fbdcc0); }
-.bzl-panel { background: var(--panel); }
-@media (min-width: 768px) and (min-height: 560px) {
-  .bzl .bzl-sub.is-panel { align-content: stretch; }
-}
 
 /* ── The icon tile: soft white glass with a warm inner glow ── */
 .bzl-icon-tile {
   background: linear-gradient(160deg, rgb(255 255 255 / 0.95), rgb(255 255 255 / 0.7));
-  box-shadow: inset 0 1px 0 #fff, 0 0 0 1px rgb(242 140 56 / 0.12), 0 10px 24px -12px rgb(236 119 9 / 0.45);
+  box-shadow:
+    inset 0 1px 0 #fff,
+    0 0 0 1px color-mix(in oklab, var(--acc, #f28c38) 14%, transparent),
+    0 10px 24px -12px color-mix(in oklab, var(--acc-ink, #ec7709) 50%, transparent);
 }
 
 /* ── Animated icons (SF-Symbols-like: draw, bounce, pulse, wiggle, variable colour) ── */
@@ -1071,7 +1070,7 @@
 .bzl-ai-idea .rays { animation: ai-rays var(--cycle) ease-out infinite; }
 .bzl-ai-idea .bulb { animation: ai-glow var(--cycle) ease-out infinite; }
 @keyframes ai-rays { 0%, 10% { opacity: 0; scale: 0.7; } 20% { opacity: 1; scale: 1.08; } 28%, 86% { opacity: 1; scale: 1; } 100% { opacity: 0; } }
-@keyframes ai-glow { 0%, 10% { fill: transparent; } 20%, 86% { fill: rgb(249 163 83 / 0.35); } 100% { fill: transparent; } }
+@keyframes ai-glow { 0%, 10% { fill: transparent; } 20%, 86% { fill: color-mix(in oklab, currentColor 35%, transparent); } 100% { fill: transparent; } }
 .bzl-ai-idea .rays { transform-origin: 50% 60%; }
 
 @media (prefers-reduced-motion: reduce) {
@@ -1080,30 +1079,159 @@
   .bzl-ai .tick, .bzl-ai .trend, .bzl-ai .line, .bzl-ai .ring, .bzl-ai .label { stroke-dashoffset: 0; }
 }
 
-/* ── Benefit illustrations: a floating glass card, calm looping motion ── */
-/* the panels' ink: one deep tone of each panel's colour, for its benefit illustration */
-.bzl-panel.t-peach { --ink: #d0661f; }
-.bzl-panel.t-butter { --ink: #c28a06; }
-.bzl-panel.t-blush { --ink: #cf5a4e; }
-.bzl-art { display: block; width: 100%; height: auto; overflow: visible; color: var(--ink, #d0661f); --cycle: 6s; }
-.bzl-art * { transform-box: fill-box; }
-/* convert: one passer-by after another becomes a shopper, bag in hand */
-.bzl-art-convert .buyer { transform-origin: 50% 100%; animation: art-buyer var(--cycle) cubic-bezier(.3, 1.5, .5, 1) infinite; animation-delay: calc(var(--i) * 0.32s); }
-.bzl-art-convert .bag { transform-origin: 50% 0%; animation: art-bag var(--cycle) ease-in-out infinite; animation-delay: calc(var(--i) * 0.32s); }
-@keyframes art-buyer { 0%, 6% { scale: 0.6; opacity: 0; } 14% { scale: 1.06; opacity: 1; } 19%, 84% { scale: 1; opacity: 1; } 92%, 100% { scale: 0.85; opacity: 0; } }
-@keyframes art-bag { 0%, 16% { rotate: 0deg; } 22% { rotate: 14deg; } 28% { rotate: -9deg; } 34% { rotate: 5deg; } 40%, 100% { rotate: 0deg; } }
-/* upsell: things drop into the cart, the cart dips under each one */
-.bzl-art-upsell .box { opacity: 0; animation: art-drop var(--cycle) cubic-bezier(.3, 1.35, .55, 1) infinite; }
-.bzl-art-upsell .b1 { animation-delay: .45s; }
-.bzl-art-upsell .b2 { animation-delay: .9s; }
-.bzl-art-upsell .cart { animation: art-dip var(--cycle) ease-out infinite; }
-@keyframes art-drop { 0%, 4% { translate: 0 -70px; opacity: 0; } 8% { opacity: 1; } 16%, 82% { translate: 0 0; opacity: 1; } 90%, 100% { translate: 0 0; opacity: 0; } }
-/* a dip as each box lands (at ~12%, ~19.5% and ~27% of the cycle) */
-@keyframes art-dip { 0%, 10% { translate: 0 0; } 12.5% { translate: 0 2.5px; } 16% { translate: 0 0; } 20% { translate: 0 2.5px; } 23.5% { translate: 0 0; } 27.5% { translate: 0 3px; } 32%, 100% { translate: 0 0; } }
-/* retain: the card collects a stamp per visit; the last one is a heart */
-.bzl-art-retain .stamp { transform-origin: center; opacity: 0; animation: art-stamp var(--cycle) cubic-bezier(.3, 1.7, .5, 1) infinite; animation-delay: calc(var(--i) * 0.42s); }
-@keyframes art-stamp { 0%, 4% { scale: 1.8; rotate: -14deg; opacity: 0; } 10% { scale: 1; rotate: 0deg; opacity: 1; } 76% { scale: 1; opacity: 1; } 84%, 100% { scale: 1; opacity: 0; } }
-@media (prefers-reduced-motion: reduce) {
-  .bzl-art * { animation: none !important; opacity: 1 !important; }
+/* ── Pillars: one warm colour family per benefit ──
+   Each pillar (Boost Sales, Customer Support, Store Insights) is a full-bleed
+   band in its own warm tint with the hero's film grain over it. Its header and
+   all its sub-benefits live on that band, with no card around the group: what
+   ties a sub-benefit to its parent is the shared ground and the shared accent.
+     --band-bg  the band's ground (a warm gradient)
+     --acc      the accent: icons, active states, dots
+     --acc-ink  the accent as text (eyebrows, labels), dark enough to read
+     --acc-soft a light fill of the accent (icon wells)                     */
+.bzl-pillar.p-sales {
+  --band-bg:
+    radial-gradient(ellipse 70% 55% at 50% 0%, rgb(255 214 170 / 0.55), transparent 70%),
+    linear-gradient(180deg, #fff3e7 0%, #ffe9d6 100%);
+  --acc: #f28c38;
+  --acc-ink: #c25a0b;
+  --acc-soft: #ffe1c6;
+}
+.bzl-pillar.p-support {
+  --band-bg:
+    radial-gradient(ellipse 70% 55% at 85% 10%, rgb(255 196 178 / 0.5), transparent 70%),
+    linear-gradient(180deg, #fff1ec 0%, #fde3da 100%);
+  --acc: #e0684a;
+  --acc-ink: #b0432b;
+  --acc-soft: #ffd9cd;
+}
+.bzl-pillar.p-insights {
+  --band-bg:
+    radial-gradient(ellipse 70% 55% at 15% 10%, rgb(255 222 150 / 0.5), transparent 70%),
+    linear-gradient(180deg, #fff7e3 0%, #fdedc9 100%);
+  --acc: #d99a1c;
+  --acc-ink: #8f620a;
+  --acc-soft: #fbe6b4;
 }
 
+/* the band: full-bleed, warm, grainy. The hero's grain (the same fractal
+   noise at the same scale) made to read on a light ground: grey, contrast
+   stretched, multiplied in lightly. */
+.bzl-band {
+  position: relative;
+  isolation: isolate;
+  background: var(--band-bg);
+}
+.bzl-band::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='256' height='256'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.5' numOctaves='3' stitchTiles='stitch'/><feColorMatrix type='saturate' values='0'/><feComponentTransfer><feFuncR type='linear' slope='2.4' intercept='-0.3'/><feFuncG type='linear' slope='2.4' intercept='-0.3'/><feFuncB type='linear' slope='2.4' intercept='-0.3'/><feFuncA type='linear' slope='0' intercept='1'/></feComponentTransfer></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+  background-size: 256px 256px;
+  mix-blend-mode: multiply;
+  opacity: var(--grain-strength, 0.16);
+}
+.bzl-band > * { position: relative; z-index: 1; }
+
+/* the pillar's labels in its accent */
+.bzl-pillar .bzl-kicker { color: var(--acc-ink); }
+/* a pillar's second line steps back in its own family, not in grey */
+.bzl-pillar .bzl-tail { color: color-mix(in oklab, var(--acc-ink) 48%, #b3a497); }
+
+/* the pillar's name, as its header badge */
+.bzl-pillar-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.3rem 0.95rem 0.3rem 0.3rem;
+  border-radius: 999px;
+  background: rgb(255 255 255 / 0.62);
+  box-shadow:
+    inset 0 0 0 1px color-mix(in oklab, var(--acc) 20%, transparent),
+    0 8px 22px -16px color-mix(in oklab, var(--acc-ink) 60%, transparent);
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--acc-ink);
+  white-space: nowrap;
+}
+.bzl-pillar-chip-icon {
+  display: grid;
+  place-items: center;
+  width: 1.85rem;
+  height: 1.85rem;
+  border-radius: 999px;
+  background: var(--acc-soft);
+  color: var(--acc-ink);
+}
+.bzl-pillar-chip-icon svg { width: 1rem; height: 1rem; }
+
+/* a sub-benefit's eyebrow: a short stroke in the accent, then its line */
+.bzl-sub-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+.bzl-sub-eyebrow::before {
+  content: "";
+  width: 1.5rem;
+  height: 2px;
+  border-radius: 2px;
+  background: var(--acc);
+}
+
+/* the store's cart count ticking up as the agent adds the item */
+.bzl-cart-pop { animation: bzl-cart-pop 0.55s var(--bzl-spring) both; }
+@keyframes bzl-cart-pop {
+  0% { scale: 0.4; }
+  60% { scale: 1.3; }
+  100% { scale: 1; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .bzl-cart-pop { animation: none; }
+}
+
+/* ── The close: the title is the install button (as on the film's end card) ──
+   ink type with a light sweeping across it, as the film's "Install now" */
+.bzl-cta-title-text {
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+  background-image:
+    linear-gradient(108deg, transparent 0%, transparent 40%, rgb(255 255 255 / 0.2) 46%, rgb(255 255 255 / 0.95) 50%, rgb(255 255 255 / 0.2) 54%, transparent 60%, transparent 100%),
+    linear-gradient(var(--bzl-fg), var(--bzl-fg));
+  background-size: 280% 100%, 100% 100%;
+  background-position: 140% 0, 0 0;
+  background-repeat: no-repeat;
+  -webkit-background-clip: text;
+  background-clip: text;
+  padding-block: 0.06em 0.12em;
+  animation: bzl-cta-metal 4.2s cubic-bezier(0.45, 0.05, 0.2, 1) infinite;
+  transition: background-image 0.3s;
+}
+.bzl-cta-title:hover .bzl-cta-title-text {
+  background-image:
+    linear-gradient(108deg, transparent 0%, transparent 40%, rgb(255 255 255 / 0.2) 46%, rgb(255 255 255 / 0.95) 50%, rgb(255 255 255 / 0.2) 54%, transparent 60%, transparent 100%),
+    linear-gradient(var(--bzl-orange-dark), var(--bzl-orange-dark));
+}
+@keyframes bzl-cta-metal {
+  0% { background-position: 140% 0, 0 0; }
+  62%, 100% { background-position: -40% 0, 0 0; }
+}
+/* the underline draws itself once the card is in, and again on hover */
+.bzl-cta-underline path {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  transition: stroke-dashoffset 0.9s var(--bzl-ease) 0.5s;
+}
+.is-in .bzl-cta-underline path { stroke-dashoffset: 0; }
+/* the handwritten note, a little askew, as if added by hand */
+.bzl .bzl-end-note { position: relative; rotate: -3deg; font-weight: 700; font-size: clamp(1.6rem, 2.3vw, 2.1rem); line-height: 1.05; }
+@media (min-width: 1280px) {
+  .bzl .bzl-end-note { position: absolute; rotate: -6deg; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .bzl-cta-title-text { animation: none; }
+  .bzl-cta-underline path { transition: none; stroke-dashoffset: 0; }
+}

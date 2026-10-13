@@ -132,7 +132,41 @@ export const en = {
       takingYouTo: "Taking you to",
       addingToCart: "Adding to cart",
       searchResults: "Search results",
-      bundle: "Sphere + Slab",
+      cartItem: "Sphere",
+    },
+    /** Boost Sales on /v2: one promise, proven in the three moments a sale gets lost (the hero's find it / trust it / buy it). */
+    sales: {
+      title: "More visits end in a purchase.",
+      lead:
+        "Most sales are lost in three moments: a shopper can't find the product, isn't sure it's the right one, or gives up on the way to checkout. Bizmis is there for all three, by text or by voice.",
+      panels: [
+        {
+          eyebrow: "They find it",
+          title: "Every search ends on the right product",
+          body:
+            "Shoppers type or say what they need. Bizmis asks what a good clerk would (occasion, budget, size), searches your real catalog and opens the product, or a page with exactly those picks. Returning customers get greeted by name, with suggestions shaped by what they bought before.",
+        },
+        {
+          eyebrow: "They trust it",
+          title: "Doubts get answered before they leave",
+          body:
+            "It knows every variant, size, stock level and custom field, compares two or three products side by side, and follows your sales rules, like checking the size before it recommends. Open a product page and it already knows which product the shopper is looking at.",
+        },
+        {
+          eyebrow: "They buy it",
+          title: "The cart fills up, the sale closes",
+          body:
+            "Once the shopper says yes, it adds to your store's own cart and the count updates right away. If an option's out of stock, it says so and offers another. Then it takes them to the cart or checkout, and picks the conversation up on every page along the way.",
+        },
+      ],
+      /** What the agent says (captions) in the trust and buy mockups. */
+      compareCaption: "This one's lighter, and it's in stock in your size.",
+      buyCaption: "Done, it's in your cart. Shall I take you to checkout?",
+    },
+    /** The closing card: the title is the install button; the note is handwritten. */
+    endCard: {
+      install: "Install now",
+      note: "Early Access perks apply automatically to the first 50 installs!",
     },
   },
 
@@ -594,7 +628,7 @@ export const en = {
       "cart-management": {
         question: "Does Bizmis manage carts or recover abandoned carts?",
         answer:
-          "Not currently. Cart management is intentionally disabled while we tune the explicit voice-confirmation pattern needed for write actions. Bizmis can recommend products and walk shoppers toward checkout, but it won't add, remove, or modify cart items on their behalf. This may change in a future release.",
+          "Yes for the cart. Once the shopper says yes, Bizmis adds items to your store's own cart, and the cart count updates right away. It flags out-of-stock options, offers an alternative, and can take the shopper to the cart or checkout. It doesn't send abandoned-cart emails, but it picks up the conversation where it left off as the shopper moves between pages.",
       },
       "feels-human": {
         question: "Will the assistant feel human?",

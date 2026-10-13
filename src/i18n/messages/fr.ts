@@ -130,7 +130,41 @@ export const fr: Messages = {
       takingYouTo: "Je vous emmène à",
       addingToCart: "Ajout au panier",
       searchResults: "Résultats de recherche",
-      bundle: "Sphère + Dalle",
+      cartItem: "Sphère",
+    },
+    /** Boost Sales on /v2: one promise, proven in the three moments a sale gets lost (the hero's find it / trust it / buy it). */
+    sales: {
+      title: "Plus de visites qui finissent en achat.",
+      lead:
+        "La plupart des ventes se perdent à trois moments : le client ne trouve pas le produit, n'est pas sûr que ce soit le bon, ou abandonne en route vers le paiement. Bizmis est là aux trois, par écrit ou à la voix.",
+      panels: [
+        {
+          eyebrow: "Ils le trouvent",
+          title: "Chaque recherche mène au bon produit",
+          body:
+            "Le client écrit ou dit ce qu'il cherche. Bizmis pose les questions d'un bon vendeur (occasion, budget, taille), cherche dans votre vrai catalogue et ouvre le produit, ou une page avec exactement ces choix. Les clients qui reviennent sont accueillis par leur prénom, avec des suggestions basées sur leurs achats passés.",
+        },
+        {
+          eyebrow: "Ils lui font confiance",
+          title: "Les doutes levés avant qu'ils partent",
+          body:
+            "Il connaît chaque variante, taille, niveau de stock et champ personnalisé, compare deux ou trois produits côte à côte et suit vos règles de vente, comme vérifier la taille avant de recommander. Sur une fiche produit, il sait déjà de quel produit il s'agit.",
+        },
+        {
+          eyebrow: "Ils l'achètent",
+          title: "Le panier se remplit, la vente se conclut",
+          body:
+            "Dès que le client dit oui, il ajoute au panier de votre propre boutique et le compteur se met à jour tout de suite. Si une option est en rupture, il le dit et en propose une autre. Puis il l'emmène au panier ou au paiement, et reprend la conversation sur chaque page.",
+        },
+      ],
+      /** What the agent says (captions) in the trust and buy mockups. */
+      compareCaption: "Celui-ci est plus léger, et il existe dans votre taille.",
+      buyCaption: "C'est fait, il est dans votre panier. Je vous emmène au paiement ?",
+    },
+    /** The closing card: the title is the install button; the note is handwritten. */
+    endCard: {
+      install: "Installer maintenant",
+      note: "Les avantages Early Access s'appliquent tout seuls aux 50 premières installations !",
     },
   },
 
@@ -600,7 +634,7 @@ export const fr: Messages = {
       "cart-management": {
         question: "Bizmis gère-t-il les paniers ou récupère-t-il les paniers abandonnés ?",
         answer:
-          "Pas pour l'instant. La gestion du panier est volontairement désactivée le temps d'affiner le schéma de confirmation vocale explicite requis pour les actions d'écriture. Bizmis peut recommander des produits et accompagner vers le paiement, mais il n'ajoute, ne supprime ni ne modifie aucun article du panier. Cela pourra évoluer dans une prochaine version.",
+          "Pour le panier, oui. Dès que le client dit oui, Bizmis ajoute les articles au panier de votre propre boutique et le compteur se met à jour tout de suite. Il signale les options en rupture, propose une alternative et peut emmener le client au panier ou au paiement. Il n'envoie pas d'e-mails de panier abandonné, mais reprend la conversation là où elle s'était arrêtée quand le client change de page.",
       },
       "feels-human": {
         question: "L'assistant paraîtra-t-il humain ?",

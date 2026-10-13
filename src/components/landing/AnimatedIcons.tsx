@@ -223,7 +223,8 @@ export const IconTile = ({
 }) => (
   <span
     className={cn(
-      "bzl-icon-tile relative grid flex-shrink-0 place-items-center text-[var(--bzl-orange-strong)]",
+      // the pillar's accent inside a pillar band, Bizmis orange elsewhere
+      "bzl-icon-tile relative grid flex-shrink-0 place-items-center text-[var(--acc,var(--bzl-orange-strong))]",
       size === "sm" && "h-10 w-10 rounded-xl [&_svg]:h-5 [&_svg]:w-5",
       size === "md" && "h-14 w-14 rounded-[18px] [&_svg]:h-7 [&_svg]:w-7",
       size === "lg" && "h-16 w-16 rounded-[20px] [&_svg]:h-8 [&_svg]:w-8",

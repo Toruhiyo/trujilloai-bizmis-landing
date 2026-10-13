@@ -41,7 +41,7 @@ const FilmFooter = () => {
   ];
 
   return (
-    <footer className="border-t border-[var(--bzl-border)] bg-white px-4 py-14 sm:px-6">
+    <footer className="border-t border-[var(--bzl-border)] bg-white py-14">
       <div className="bzl-wrap">
         <div className="grid gap-10 md:grid-cols-5">
           <div className="md:col-span-2">

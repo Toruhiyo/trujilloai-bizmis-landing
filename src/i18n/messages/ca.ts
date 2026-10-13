@@ -130,7 +130,41 @@ export const ca: Messages = {
       takingYouTo: "Et porto a",
       addingToCart: "Afegint al carretó",
       searchResults: "Resultats de la cerca",
-      bundle: "Esfera + Llosa",
+      cartItem: "Esfera",
+    },
+    /** Boost Sales on /v2: one promise, proven in the three moments a sale gets lost (the hero's find it / trust it / buy it). */
+    sales: {
+      title: "Més visites que acaben en compra.",
+      lead:
+        "La majoria de vendes es perden en tres moments: el client no troba el producte, no està segur que sigui el bo o es rendeix de camí al pagament. Bizmis hi és en tots tres, per text o per veu.",
+      panels: [
+        {
+          eyebrow: "El troben",
+          title: "Cada cerca acaba al producte correcte",
+          body:
+            "El client escriu o diu què necessita. Bizmis pregunta el que preguntaria un bon dependent (ocasió, pressupost, talla), cerca al teu catàleg real i obre el producte, o una pàgina amb just aquestes opcions. Als clients que tornen els saluda pel nom i els recomana segons el que ja han comprat.",
+        },
+        {
+          eyebrow: "S'hi refien",
+          title: "Els dubtes resolts abans que marxin",
+          body:
+            "Coneix cada variant, talla, nivell d'estoc i camp personalitzat, compara dos o tres productes un al costat de l'altre i segueix les teves regles de venda, com confirmar la talla abans de recomanar. En una fitxa de producte, ja sap quin producte s'està mirant.",
+        },
+        {
+          eyebrow: "El compren",
+          title: "La cistella s'omple i la venda es tanca",
+          body:
+            "Quan el client diu que sí, afegeix a la cistella de la teva pròpia botiga i el comptador s'actualitza a l'instant. Si una opció està esgotada, ho diu i n'ofereix una altra. Després el porta a la cistella o al pagament, i reprèn la conversa a cada pàgina.",
+        },
+      ],
+      /** What the agent says (captions) in the trust and buy mockups. */
+      compareCaption: "Aquest és més lleuger, i el tenen a la teva talla.",
+      buyCaption: "Fet, ja és a la cistella. Et porto al pagament?",
+    },
+    /** The closing card: the title is the install button; the note is handwritten. */
+    endCard: {
+      install: "Instal·la ara",
+      note: "Els avantatges d'Early Access s'apliquen sols a les 50 primeres instal·lacions!",
     },
   },
 
@@ -600,7 +634,7 @@ export const ca: Messages = {
       "cart-management": {
         question: "Bizmis gestiona cistelles o recupera cistelles abandonades?",
         answer:
-          "Ara mateix no. La gestió de cistella està desactivada expressament mentre afinem el patró de confirmació per veu que necessiten les accions d'escriptura. Bizmis pot recomanar productes i acompanyar cap al checkout, però no afegeix, elimina ni modifica articles de la cistella. Això pot canviar en una versió futura.",
+          "La cistella, sí. Quan el client diu que sí, Bizmis afegeix articles a la cistella de la teva pròpia botiga i el comptador s'actualitza a l'instant. Avisa si una opció està esgotada, n'ofereix una alternativa i pot portar el client a la cistella o al pagament. No envia correus de cistella abandonada, però reprèn la conversa on l'havia deixat quan el client canvia de pàgina.",
       },
       "feels-human": {
         question: "L'assistent semblarà humà?",

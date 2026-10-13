@@ -1,18 +1,13 @@
 import { useEffect, useState } from "react";
 import { FileSearch, PackageSearch, Truck } from "lucide-react";
-import {
-  BookIcon,
-  CareIcon,
-  ClockIcon,
-  HeadsetIcon,
-  IconTile,
-} from "./AnimatedIcons";
+import { BookIcon, CareIcon, ClockIcon, HeadsetIcon } from "./AnimatedIcons";
 import { useMessages } from "@/i18n/LocaleProvider";
 import Reveal, { useInView } from "./Reveal";
 import { SentMessage } from "./BizmisWidget";
 import { StoreWithWidget } from "./visuals";
 import { ClayTile } from "./clay";
 import FeatureCard from "./FeatureCard";
+import PillarChip from "./PillarChip";
 
 // Each case plays the real widget's sequence: the shopper's message, the
 // agent working (tool on its laser), then speaking with captions.
@@ -91,24 +86,25 @@ const SupportChat = () => {
   );
 };
 
-/** Customer Support — "Save hours on support. Earn loyal customers." */
+/**
+ * Customer Support — "Save hours on support. Earn loyal customers." One band
+ * in the Support colours (coral and terracotta): the header, its outcomes and
+ * its three numbered capabilities all carry the pillar's accent.
+ */
 const CAPABILITY_ICONS = [ClockIcon, BookIcon, CareIcon];
 
 const SupportSection = () => {
   const s = useMessages().benefits.support;
   return (
-    <section className="bzl-section bzl-screen bg-[linear-gradient(180deg,#fff,#fdf9f4_25%,#fdf9f4_75%,#fff)]">
+    <section className="bzl-section bzl-screen bzl-band bzl-pillar p-support">
       <div className="bzl-wrap">
-        <div className="bzl-panel bzl-grain t-apricot grid items-center gap-10 p-6 sm:p-10 lg:grid-cols-2 lg:gap-14 lg:p-[clamp(1.75rem,3.5svh,3.25rem)]">
+        <div className="grid grid-cols-[minmax(0,1fr)] items-center gap-10 lg:grid-cols-2 lg:gap-20">
           <div>
             <Reveal>
-              <p className="bzl-kicker inline-flex items-center gap-2.5">
-                <IconTile icon={HeadsetIcon} size="sm" />
-                {s.badge}
-              </p>
+              <PillarChip icon={HeadsetIcon} label={s.badge} />
             </Reveal>
             <Reveal delay={80}>
-              <h2 className="bzl-statement-sm mt-3">
+              <h2 className="bzl-statement-sm mt-[clamp(1rem,2.6svh,1.5rem)]">
                 {s.titleLine1}
                 <br />
                 <span className="bzl-tail">{s.titleLine2}</span>
@@ -128,8 +124,12 @@ const SupportSection = () => {
                 ].map((o) => (
                   <span
                     key={o}
-                    className="rounded-full border border-[var(--bzl-border)] bg-white px-4 py-1.5 text-sm font-semibold text-[var(--bzl-ink-2)]"
+                    className="inline-flex items-center gap-2 rounded-full bg-white/70 px-3.5 py-1.5 text-sm font-semibold text-[var(--bzl-ink-2)] ring-1 ring-[color:color-mix(in_oklab,var(--acc)_22%,transparent)]"
                   >
+                    <span
+                      aria-hidden="true"
+                      className="h-1.5 w-1.5 rounded-full bg-[var(--acc)]"
+                    />
                     {o}
                   </span>
                 ))}

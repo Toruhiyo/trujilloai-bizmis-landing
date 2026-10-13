@@ -1,148 +1,95 @@
 import type { ReactNode } from "react";
 import { useMessages } from "@/i18n/LocaleProvider";
 import { cn } from "@/lib/utils";
-import {
-  CartPlusIcon,
-  FindIcon,
-  IconTile,
-  LoyaltyIcon,
-  TrendIcon,
-} from "./AnimatedIcons";
-import type { AnimatedIcon } from "./AnimatedIcons";
-import BenefitArt from "./BenefitArt";
-import type { BenefitKind } from "./BenefitArt";
+import { TrendIcon } from "./AnimatedIcons";
+import PillarChip from "./PillarChip";
 import Reveal from "./Reveal";
-import { useStickyHead } from "./useStickyHead";
-import { BundleVisual, OrderVisual, PickVisual } from "./visuals";
+import { BuyVisual, CompareVisual, PickVisual } from "./visuals";
 
 /**
- * One sub-benefit as a clay panel (a big soft tinted card with film grain):
- * its animated icon, the copy and an illustration of the benefit's outcome on
- * one side, the device mockup showing the feature on the other.
+ * One sub-benefit, straight on its pillar's band (no card of its own): a
+ * quiet eyebrow in the pillar's accent, the copy on one side and the device
+ * mockup showing the feature on the other, alternating sides down the band.
  */
-export const Pillar = ({
+const SubBenefit = ({
   index,
   kicker,
   title,
   body,
   visual,
-  icon,
-  tint,
-  art,
 }: {
   index: number;
   kicker: string;
   title: string;
   body: string;
   visual: ReactNode;
-  icon: AnimatedIcon;
-  tint: string;
-  /** the benefit's illustration, drawn on the panel under the copy */
-  art: BenefitKind;
 }) => (
-  <div className="bzl-sub is-panel">
-    <div
-      className={cn(
-        "bzl-panel bzl-grain grid items-center gap-10 p-6 sm:p-10 lg:grid-cols-2 lg:gap-16 lg:p-[clamp(2rem,4svh,3.5rem)]",
-        tint,
-      )}
-    >
-      <div className={cn(index % 2 === 1 && "lg:order-2")}>
-        <Reveal>
-          <IconTile icon={icon} size="lg" />
-        </Reveal>
-        <Reveal delay={60}>
-          <p className="bzl-kicker mt-6">{kicker}</p>
-        </Reveal>
-        <Reveal delay={120}>
-          <h3 className="bzl-statement-sm mt-3">{title}</h3>
-        </Reveal>
-        <Reveal delay={180}>
-          <p className="bzl-lead mt-4 max-w-lg">{body}</p>
-        </Reveal>
-        <Reveal delay={240}>
-          <BenefitArt kind={art} className="mt-[clamp(1.25rem,4svh,2.75rem)]" />
-        </Reveal>
-      </div>
-      <Reveal
-        delay={120}
-        className={cn(
-          // as wide as the remaining height allows, so the mockup always fits the screen
-          "relative mx-auto w-full max-w-[min(560px,calc((100svh-var(--bzl-head,12rem)-7rem)*1.3))]",
-          index % 2 === 1 && "lg:order-1",
-        )}
-      >
-        {visual}
+  <div className="grid grid-cols-[minmax(0,1fr)] items-center gap-10 lg:grid-cols-2 lg:gap-20">
+    <div className={cn(index % 2 === 1 && "lg:order-2")}>
+      <Reveal>
+        <p className="bzl-kicker bzl-sub-eyebrow">{kicker}</p>
+      </Reveal>
+      <Reveal delay={80}>
+        <h3 className="bzl-statement-sm mt-4">{title}</h3>
+      </Reveal>
+      <Reveal delay={160}>
+        <p className="bzl-lead mt-4 max-w-lg">{body}</p>
       </Reveal>
     </div>
+    <Reveal
+      delay={120}
+      className={cn(
+        // never taller than the screen under the nav
+        "relative mx-auto w-full max-w-[min(580px,calc((100svh-8rem)*1.3))]",
+        index % 2 === 1 && "lg:order-1",
+      )}
+    >
+      {visual}
+    </Reveal>
   </div>
 );
 
-const PILLARS: { icon: AnimatedIcon; tint: string; art: BenefitKind }[] = [
-  { icon: FindIcon, tint: "t-peach", art: "convert" },
-  { icon: CartPlusIcon, tint: "t-butter", art: "upsell" },
-  { icon: LoyaltyIcon, tint: "t-blush", art: "retain" },
-];
-
-/** Boost Sales — "Convert. Upsell. Retain." with the classic landing's three pillars. */
+/**
+ * Boost Sales — one promise ("More visits end in a purchase"), proven in the
+ * three moments a sale gets lost, the hero's find it / trust it / buy it. All
+ * on one band in the Sales colours (Bizmis orange and apricot, with the
+ * hero's grain). Its copy lives in `landing.sales` (the classic landing keeps
+ * `benefits.sales`).
+ */
 const SalesSection = () => {
-  const sales = useMessages().benefits.sales;
-  const { section, head, extra, stuck } = useStickyHead<
-    HTMLElement,
-    HTMLDivElement
-  >();
+  const messages = useMessages();
+  const badge = messages.benefits.sales.badge;
+  const sales = messages.landing.sales;
   const visuals = [
-    <PickVisual key="pick" />,
-    <BundleVisual key="bundle" />,
-    <OrderVisual key="order" />,
+    <PickVisual key="find" />,
+    <CompareVisual key="trust" />,
+    <BuyVisual key="buy" />,
   ];
   return (
-    <section id="benefits" ref={section} className="bzl-section bzl-stack">
+    <section id="benefits" className="bzl-section bzl-band bzl-pillar p-sales">
       <div className="bzl-wrap">
-        {/* the section's title stays put while its three benefits pass under it;
-            the subtitle folds away once it sticks */}
-        <div ref={head} className="bzl-head text-center">
+        <div className="text-center">
           <Reveal>
-            <p className="bzl-kicker inline-flex items-center gap-2.5">
-              <IconTile icon={TrendIcon} size="sm" />
-              {sales.badge}
-            </p>
+            <PillarChip icon={TrendIcon} label={badge} />
           </Reveal>
           <Reveal delay={80}>
-            <h2 className="mt-3 text-[clamp(2rem,min(4.4vw,6.4svh),3.75rem)] font-bold leading-[1.04] tracking-[-0.04em] text-[var(--bzl-fg)]">
+            <h2 className="mt-5 text-[clamp(2.25rem,min(4.8vw,7svh),4rem)] font-bold leading-[1.04] tracking-[-0.04em] text-[var(--bzl-fg)]">
               {sales.title}
             </h2>
           </Reveal>
-          <div
-            ref={extra}
-            className="grid transition-[grid-template-rows,opacity] duration-500"
-            style={{
-              gridTemplateRows: stuck ? "0fr" : "1fr",
-              opacity: stuck ? 0 : 1,
-              transitionTimingFunction: "var(--bzl-ease)",
-            }}
-          >
-            <div className="overflow-hidden">
-              <Reveal delay={160}>
-                <p className="bzl-lead mx-auto max-w-4xl pt-3">
-                  {sales.leadLong}
-                </p>
-              </Reveal>
-            </div>
-          </div>
+          <Reveal delay={160}>
+            <p className="bzl-lead mx-auto mt-4 max-w-3xl">{sales.lead}</p>
+          </Reveal>
         </div>
-        <div className="mt-16 space-y-8 md:mt-0 md:space-y-0">
-          {sales.pillars.map((p, i) => (
-            <Pillar
+        <div className="mt-16 space-y-20 md:mt-[clamp(4rem,10svh,7rem)] md:space-y-[clamp(5rem,14svh,9rem)]">
+          {sales.panels.map((p, i) => (
+            <SubBenefit
               key={p.title}
               index={i}
-              kicker={p.subtitle}
+              kicker={p.eyebrow}
               title={p.title}
               body={p.body}
               visual={visuals[i]}
-              icon={PILLARS[i].icon}
-              tint={PILLARS[i].tint}
-              art={PILLARS[i].art}
             />
           ))}
         </div>
