@@ -119,6 +119,10 @@ export type LiveAvatarProps = {
   shirtColor?: string;
   /** Talking clip + lip movement while true. */
   speaking?: boolean;
+  /** A one-shot body gesture (clip name, e.g. "beckon"); a new `key` plays it again. */
+  gesture?: { name: string; key: number } | null;
+  /** Whether the live avatar is on screen (false while the static render shows). */
+  onLiveChange?: (live: boolean) => void;
   /** Bizmis logo on the shirt, like the static renders (default true). */
   logo?: boolean;
   /** "smile" matches the static renders; "default" is the widget's neutral face. */
@@ -132,6 +136,8 @@ const LiveAvatar = ({
   model,
   shirtColor = "#F28C38",
   speaking = false,
+  gesture = null,
+  onLiveChange,
   logo = true,
   expression = "smile",
   fallback,
@@ -203,6 +209,7 @@ const LiveAvatar = ({
   );
 
   const live = wants3d && ready;
+  useEffect(() => onLiveChange?.(live), [live, onLiveChange]);
   // Keep drawing until the first frame lands (even just outside the viewport),
   // then only while visible.
   const active = pageVisible && (inView || !ready);
@@ -240,6 +247,7 @@ const LiveAvatar = ({
                 stampScale={LOGO_STAMP_SCALE}
                 stampOffsetY={LOGO_STAMP_OFFSET_Y}
                 speaking={speaking}
+                gesture={gesture}
                 expression={expression}
                 active={active}
                 overscanTop={OVERSCAN_TOP}

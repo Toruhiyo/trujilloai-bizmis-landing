@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { MouseEvent } from "react";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Play, PlayCircle, X } from "lucide-react";
+import { ArrowRight, PlayCircle, X } from "lucide-react";
 import { FaShopify } from "react-icons/fa";
 import { usePostHog } from "posthog-js/react";
 import {
@@ -11,10 +11,10 @@ import {
   openBizmisDemoStore,
   openBizmisShopifyAppListing,
 } from "@/lib/bizmisUrls";
-import { HERO_FILM, HERO_LOOP } from "@/lib/film";
+import { HERO_FILM } from "@/lib/film";
 import { cn } from "@/lib/utils";
 import Navbar from "./Navbar";
-import HeroLoop from "./HeroLoop";
+import HeroAgent from "./HeroAgent";
 import FilmPlayer from "./film/FilmPlayer";
 import type { FilmEvent, FilmPlayerHandle } from "./film/FilmPlayer";
 import { useLocaleHref, useMessages } from "@/i18n/LocaleProvider";
@@ -28,19 +28,16 @@ const IRIS_MS = 950;
 const easeInOut = (t: number) => (t < 0.5 ? 4 * t * t * t : 1 - (-2 * t + 2) ** 3 / 2);
 
 /**
- * The /v2 hero, video first (BIZ-423). A silent loop fills it: a store (a
- * desktop browser; a phone on phones) with the real Bizmis widget at work in
- * its corner, in the film's three beats: it finds the shopper the right
- * products, takes them to one and clears their doubts, and puts it in the cart
- * with an add-on. It plays for as long as the visitor stays; its first frame
- * shows at once, so a slow connection still gets a finished hero.
+ * The /v2 hero (BIZ-423): the Bizmis agent, in a hero-sized version of the
+ * real widget, invites the visitor to watch the film. It says hello, says it
+ * helps every shopper find it, trust it and buy it (the subtitle's words light
+ * up as it says them), then beckons and asks them to press play; the widget's
+ * composer is the play button.
  *
- * The copy sits in one glass card over the mockup, and the subtitle's "Find
- * it, Trust it, Buy it" lights up with the beat on screen. The mockup is the
- * play control: hovering it brings up the play button, a click turns the
- * whole hero into the film, opening from the play button as a widening circle
- * with a glowing edge while the orange scene blurs and pushes back. Close
- * (✕, Escape, or a click outside the hero) runs it back into the loop; play
+ * The copy sits in one glass card (eyebrow, title, subtitle), the CTAs outside
+ * it. Play turns the whole hero into the film, opening from the play button
+ * as a widening circle with a glowing edge while the stage blurs and pushes
+ * back. Close (✕, Escape, or a click outside the hero) runs it back; play
  * again resumes where it stopped.
  */
 const Hero = () => {
@@ -109,10 +106,10 @@ const Hero = () => {
   );
   useEffect(() => () => cancelAnimationFrame(iris.current.frame), []);
 
-  const openFilm = (e: MouseEvent<HTMLElement>, from: "scene") => {
+  const openFilm = (e: MouseEvent<HTMLElement>, from: "agent") => {
     const box = hero.current?.getBoundingClientRect();
     if (!box) return;
-    // the iris opens from the play button (shown over the mockup)
+    // the iris opens from the play button
     const btn = (e.currentTarget as HTMLElement).querySelector("[data-play]") ?? e.currentTarget;
     const target = btn.getBoundingClientRect();
     const cx = target.left + target.width / 2 - box.left;
@@ -154,12 +151,8 @@ const Hero = () => {
     </Button>
   );
 
-  // the subtitle's Find it / Trust it / Buy it light up with the loop's three beats (24 fps frames)
+  // the subtitle's Find it / Trust it / Buy it light up as the agent says them
   const [beat, setBeat] = useState(0);
-  const onLoopTime = useCallback((t: number) => {
-    const f = t * 24;
-    setBeat(f >= 34 && f < 164 ? 1 : f >= 164 && f < 244 ? 2 : f >= 244 && f < 302 ? 3 : 0);
-  }, []);
   const beatWord = (n: number, text: string) => (
     <span
       className={cn(
@@ -184,50 +177,26 @@ const Hero = () => {
       ref={hero}
       className="relative h-[100svh] min-h-[600px] overflow-hidden studio-lighting-base"
     >
-      {/* what shows before the loop's first frame arrives */}
+      {/* the studio stage */}
       <div className="absolute inset-0 studio-radial-light" />
       <div className="absolute inset-0 studio-ambient-overlay" />
 
-      {/* the loop: a store with the widget at work. It pushes back and blurs as the film opens */}
+      {/* the agent, inviting the visitor to press play. It pushes back and blurs as the film opens */}
       <div
         className={cn(
           "absolute inset-0 transition-[transform,filter] duration-[950ms] ease-[cubic-bezier(.65,0,.35,1)]",
           filmOpen && "scale-[1.08] blur-[14px] brightness-110",
         )}
       >
-        <HeroLoop
-          sources={HERO_LOOP.wide}
+        <HeroAgent
           paused={irisOpen}
-          onTime={onLoopTime}
-          className="absolute inset-0 hidden lg:block"
-          mediaClassName="object-cover object-[50%_45%]"
+          onBeat={setBeat}
+          onPlay={(e) => openFilm(e, "agent")}
+          className={cn(
+            "absolute bottom-[3svh] left-1/2 -translate-x-1/2 text-[min(4.6vw,2.4svh)]",
+            "lg:bottom-auto lg:left-auto lg:right-[max(5vw,calc((100vw-80rem)/2+3rem))] lg:top-1/2 lg:-translate-y-[45%] lg:translate-x-0 lg:text-[clamp(16px,min(1.75vw,3svh),30px)]",
+          )}
         />
-        <HeroLoop
-          sources={HERO_LOOP.tall}
-          paused={irisOpen}
-          onTime={onLoopTime}
-          className="absolute inset-0 lg:hidden"
-          mediaClassName="object-cover object-[50%_100%]"
-        />
-        {/* the mockup is the play control: hovering it brings up the play button, a click plays the film */}
-        <button
-          type="button"
-          onClick={(e) => openFilm(e, "scene")}
-          aria-label={messages.film.watch}
-          className="group/scene absolute inset-x-0 bottom-0 top-[30%] cursor-pointer focus-visible:outline-none lg:top-[6%]"
-        >
-          <span
-            data-play
-            className={cn(
-              GLASS,
-              "absolute left-1/2 top-[42%] flex h-20 w-20 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full text-white transition-all duration-300 lg:top-[44%] lg:h-24 lg:w-24",
-              "scale-90 opacity-0 group-hover/scene:scale-100 group-hover/scene:opacity-100 group-focus-visible/scene:scale-100 group-focus-visible/scene:opacity-100 group-focus-visible/scene:ring-4 group-focus-visible/scene:ring-white/60",
-              "[@media(hover:none)]:scale-100 [@media(hover:none)]:opacity-90",
-            )}
-          >
-            <Play className="ml-1 h-8 w-8 fill-current drop-shadow-[0_2px_6px_rgba(0,0,0,0.25)] lg:h-10 lg:w-10" aria-hidden="true" />
-          </span>
-        </button>
       </div>
 
       {/* grain, as on the rest of the landing */}
@@ -242,7 +211,7 @@ const Hero = () => {
         <Navbar />
       </div>
 
-      {/* the copy: one glass card over the mockup (bottom-left on desktop, under the nav on phones), the CTAs beside it */}
+      {/* the copy: one glass card (bottom-left on desktop, under the nav on phones), the CTAs beside it */}
       <div
         className={cn(
           "pointer-events-none absolute inset-x-0 top-[4.25rem] z-10 transition-all duration-500 lg:bottom-[clamp(1.5rem,4svh,3rem)] lg:top-auto",

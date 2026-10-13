@@ -70,6 +70,8 @@ export type LiveAvatarCanvasProps = {
   /** Vertical stamp offset, fraction of the texture (positive = up), as in the widget. */
   stampOffsetY: number;
   speaking: boolean;
+  /** A one-shot body gesture (a clip name, e.g. "beckon"); a new `key` plays it again. */
+  gesture?: { name: string; key: number } | null;
   expression: AvatarExpression;
   /** Render loop on/off (offscreen or hidden tab = off). */
   active: boolean;
@@ -157,6 +159,7 @@ const Avatar = ({
   stampScale,
   stampOffsetY,
   speaking,
+  gesture,
   expression,
   overscanTop,
   figureFraction,
@@ -187,7 +190,8 @@ const Avatar = ({
 
   /** Waist-up band of the idle pose, in world units: drives the framing. */
   const [band, setBand] = useState<{ bottom: number; height: number; x: number } | null>(null);
-  const [greeting, setGreeting] = useState(Boolean(waveName));
+  /** The one-shot clip playing (the greeting wave first), during which idle/talk wait. */
+  const [oneShot, setOneShot] = useState<string | null>(waveName ?? null);
   const current = useRef<THREE.AnimationAction | null>(null);
   const stampDone = useRef(!stampUrl);
   const readySent = useRef(false);
@@ -315,7 +319,7 @@ const Avatar = ({
     const wave = waveName ? actions[waveName] : undefined;
     if (wave) crossTo(wave, true);
     const onFinished = (event: { action: THREE.AnimationAction }) => {
-      if (waveName && event.action === actions[waveName]) setGreeting(false);
+      if (event.action.loop === THREE.LoopOnce) setOneShot(null);
     };
     mixer.addEventListener("finished", onFinished);
     return () => {
@@ -325,12 +329,22 @@ const Avatar = ({
     };
   }, [scene, actions, mixer, idleName, waveName]);
 
-  // Idle loop, or the talking loop while speaking (after the greeting).
+  // A requested gesture plays once, then idle/talk take over again.
   useEffect(() => {
-    if (greeting && waveName) return;
+    if (!gesture) return;
+    const name = names.find((n) => n === gesture.name);
+    if (!name) return;
+    crossTo(actions[name], true);
+    setOneShot(name);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [gesture?.key]);
+
+  // Idle loop, or the talking loop while speaking (after any one-shot).
+  useEffect(() => {
+    if (oneShot) return;
     const name = speaking && talkName ? talkName : idleName;
     crossTo(name ? actions[name] : undefined, false);
-  }, [speaking, greeting, actions, idleName, talkName, waveName]);
+  }, [speaking, oneShot, actions, idleName, talkName]);
 
   // Frame the waist-up figure bottom-centre in the box, same height as the static render.
   useLayoutEffect(() => {
