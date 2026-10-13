@@ -11,20 +11,15 @@ import {
   Search,
   ShoppingCart,
   User,
-  Volume2,
   X,
   Check,
 } from "lucide-react";
 import { useMessages } from "@/i18n/LocaleProvider";
 import { cn } from "@/lib/utils";
 import { formatDuration, timeStringToSeconds } from "@/lib/utils/time";
-import {
-  saleGiftSessionReplayData,
-  saleLoyalCustomerSessionReplayData,
-  supportFailedRequestSessionReplayData,
-  supportPolicyQuestionSessionReplayData,
-} from "@/data/session-replays";
 import type { SessionReplayData } from "@/data/session-replays";
+import { REPLAY_SESSIONS } from "./replaySessions";
+import type { ReplaySession } from "./replaySessions";
 
 /**
  * The classic landing's conversation replays (TabbedSessionReplay +
@@ -34,52 +29,10 @@ import type { SessionReplayData } from "@/data/session-replays";
  * live chat), its lines lighting up as the audio reaches them.
  */
 
-const SESSIONS: { id: string; data: SessionReplayData }[] = [
-  { id: "sale", data: saleGiftSessionReplayData },
-  { id: "sale-loyal", data: saleLoyalCustomerSessionReplayData },
-  { id: "support-success", data: supportPolicyQuestionSessionReplayData },
-  { id: "support-failed", data: supportFailedRequestSessionReplayData },
-];
-
 const WAVE = [
   30, 45, 60, 35, 50, 40, 65, 25, 55, 70, 35, 45, 30, 60, 40, 50, 35, 45, 55,
   40, 60, 35, 50, 45, 40, 55, 30, 65, 40, 50, 35, 45, 60, 30, 55, 40, 50, 35,
   45, 60,
-];
-
-const GIFT_RESULTS = [
-  {
-    name: "Cozy Candle Set",
-    description: "Scented • €35",
-    image: "/images/benefit-3-session-replay-cozy-candle-set.png",
-  },
-  {
-    name: "Artisan Candles",
-    description: "Natural Wax • €28",
-    image: "/images/benefit-3-session-replay-candles.png",
-  },
-  {
-    name: "Insulated Mug",
-    description: "Ceramic • €18",
-    image: "/images/benefit-3-session-replay-insulated-mug.png",
-  },
-];
-const COFFEE_RESULTS = [
-  {
-    name: "French Press",
-    description: "Borosilicate • €45",
-    image: "/images/benefit-3-session-replay-french-press.png",
-  },
-  {
-    name: "Copper Travel Mug",
-    description: "Insulated • €32",
-    image: "/images/benefit-3-session-replay-insulated-travel-mug.png",
-  },
-  {
-    name: "Ethiopian Beans",
-    description: "Premium Roast • €25",
-    image: "/images/benefit-3-session-replay-ethiopian-beans.png",
-  },
 ];
 
 const fmt = (t: number) =>
@@ -205,14 +158,12 @@ const CallAudio = ({
   );
 };
 
-const ReplayCard = ({ data }: { data: SessionReplayData }) => {
+const ReplayCard = ({ session }: { session: ReplaySession }) => {
+  const { data, agent } = session;
   const m = useMessages().sessionReplay;
   const [focused, setFocused] = useState<string | null>(null);
   const refs = useRef<Record<string, HTMLDivElement | null>>({});
   const listRef = useRef<HTMLDivElement>(null);
-  const coffee = data.conversations.some((c) =>
-    /coffee|french press|subscription|beans/i.test(c.content),
-  );
 
   const onTime = useCallback(
     (t: number, playing: boolean) => {
@@ -327,9 +278,9 @@ const ReplayCard = ({ data }: { data: SessionReplayData }) => {
                       {c.time}
                     </span>
                   </p>
-                  {c.content === "Product Search" && (
+                  {c.content === "Product Search" && session.searchResults && (
                     <div className="mt-3 grid grid-cols-3 gap-2">
-                      {(coffee ? COFFEE_RESULTS : GIFT_RESULTS).map((p) => (
+                      {session.searchResults.map((p) => (
                         <div
                           key={p.name}
                           className="rounded-xl bg-white p-2 ring-1 ring-[var(--bzl-border)]"
@@ -350,16 +301,38 @@ const ReplayCard = ({ data }: { data: SessionReplayData }) => {
                       ))}
                     </div>
                   )}
-                  {c.content === "Policy Lookup" && (
+                  {c.content === "Policy Lookup" && session.policyNote && (
                     <p className="mt-2 text-xs text-[var(--bzl-muted)]">
-                      Shipping coverage · Rural Alaska · Not serviceable
+                      {session.policyNote}
                     </p>
                   )}
                   {c.content === "Add to Cart" && (
-                    <p className="mt-2 flex items-center gap-1.5 text-xs font-semibold text-[var(--bzl-orange-dark)]">
-                      <Check className="h-3.5 w-3.5" strokeWidth={3} />
-                      Item added to cart
-                    </p>
+                    <div className="mt-3 grid gap-2">
+                      {(session.cartItems ?? []).map((p) => (
+                        <div
+                          key={p.name}
+                          className="flex items-center gap-3 rounded-xl bg-white p-2 pr-3 ring-1 ring-[var(--bzl-border)]"
+                        >
+                          <img
+                            src={p.image}
+                            alt={p.name}
+                            loading="lazy"
+                            className="h-12 w-12 flex-shrink-0 rounded-lg object-cover"
+                          />
+                          <div className="min-w-0 flex-1">
+                            <p className="truncate text-[13px] font-semibold text-[var(--bzl-fg)]">
+                              {p.name}
+                            </p>
+                            <p className="truncate text-[11px] text-[var(--bzl-muted)]">
+                              {p.description}
+                            </p>
+                          </div>
+                          <span className="grid h-6 w-6 flex-shrink-0 place-items-center rounded-full bg-[var(--bzl-orange-wash)] text-[var(--bzl-orange-dark)]">
+                            <Check className="h-3.5 w-3.5" strokeWidth={3} />
+                          </span>
+                        </div>
+                      ))}
+                    </div>
                   )}
                 </div>
               ) : (
@@ -371,9 +344,10 @@ const ReplayCard = ({ data }: { data: SessionReplayData }) => {
                 >
                   {c.type === "agent" && (
                     <img
-                      src="/landing/agents/support-yusuke-360.webp"
-                      alt=""
-                      className="h-7 w-7 flex-shrink-0 rounded-full bg-[var(--bzl-orange-wash)] object-cover object-[50%_12%]"
+                      src={agent.image}
+                      alt={agent.name}
+                      loading="lazy"
+                      className="h-7 w-7 flex-shrink-0 rounded-full bg-[var(--bzl-orange-wash)] object-cover"
                     />
                   )}
                   <div
@@ -385,12 +359,6 @@ const ReplayCard = ({ data }: { data: SessionReplayData }) => {
                       ring(c.id),
                     )}
                   >
-                    {c.type === "agent" && (
-                      <Volume2
-                        className="mb-0.5 mr-1.5 inline h-3.5 w-3.5 text-[var(--bzl-orange-dark)]"
-                        aria-hidden="true"
-                      />
-                    )}
                     {c.content}
                     <span className="mt-0.5 block text-[10px] text-[var(--bzl-faint)]">
                       {c.time}
@@ -414,9 +382,6 @@ const ReplayCard = ({ data }: { data: SessionReplayData }) => {
           className="pointer-events-none absolute inset-x-0 bottom-0 h-14 bg-gradient-to-t from-white to-transparent"
         />
       </div>
-      <p className="mt-2 text-center text-[11px] text-[var(--bzl-faint)]">
-        {m.transcriptNote}
-      </p>
     </div>
   );
 };
@@ -429,12 +394,14 @@ const SessionReplay = () => {
     "support-success": m.tabTooltips.supportSuccess,
     "support-failed": m.tabTooltips.supportFailed,
   };
-  const [active, setActive] = useState(SESSIONS[0].id);
-  const data = SESSIONS.find((s) => s.id === active)?.data ?? SESSIONS[0].data;
+  const [active, setActive] = useState(REPLAY_SESSIONS[0].id);
+  const session =
+    REPLAY_SESSIONS.find((s) => s.id === active) ?? REPLAY_SESSIONS[0];
   return (
-    <div className="w-full min-w-0">
+    // a touch narrower than its column, still flush with the page's right edge
+    <div className="w-full min-w-0 max-w-[41rem] lg:ml-auto">
       <div className="mb-4 flex gap-1.5 overflow-x-auto pb-1" role="tablist">
-        {SESSIONS.map((s) => {
+        {REPLAY_SESSIONS.map((s) => {
           const on = s.id === active;
           return (
             <button
@@ -468,7 +435,7 @@ const SessionReplay = () => {
           );
         })}
       </div>
-      <ReplayCard key={active} data={data} />
+      <ReplayCard key={active} session={session} />
     </div>
   );
 };

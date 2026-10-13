@@ -1,5 +1,4 @@
 import { useRef } from "react";
-import type { CSSProperties } from "react";
 import { useMessages } from "@/i18n/LocaleProvider";
 import AvatarCarousel from "./AvatarCarousel";
 import manifest from "./agents-manifest.json";
@@ -30,18 +29,6 @@ const LINEUP: readonly CarouselAvatar[] = [
 
 // only avatars that have been rendered (an avatar added here before its render lands is skipped)
 const SHOWN = LINEUP.filter((a) => a.name in manifest);
-
-const Waveform = () => (
-  <span className="flex h-5 items-center gap-[3px]" aria-hidden="true">
-    {[5, 11, 16, 9, 14, 6, 12, 18, 8, 13, 5].map((h, i) => (
-      <i
-        key={i}
-        className="w-[3px] animate-pulse rounded-full bg-[var(--bzl-orange)]"
-        style={{ height: h, animationDelay: `${i * 90}ms` } as CSSProperties}
-      />
-    ))}
-  </span>
-);
 
 /**
  * Personalization — "Make It Truly Yours": appearance and voice, with the
@@ -112,7 +99,6 @@ const CustomizeSection = () => {
                     {messages.common.soon}
                   </span>
                 }
-                front={<Waveform />}
                 body={m.voiceCloning.body}
               />
             </Reveal>
