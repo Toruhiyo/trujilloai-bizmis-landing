@@ -183,93 +183,6 @@ const Hero = () => {
       <div className="absolute inset-0 studio-radial-light" />
       <div className="absolute inset-0 studio-ambient-overlay" />
 
-      {/* the stage: a store with the Bizmis widget embedded, and the play button at the centre.
-          It pushes back and blurs as the film opens */}
-      <div
-        className={cn(
-          "absolute inset-0 transition-[transform,filter] duration-[950ms] ease-[cubic-bezier(.65,0,.35,1)]",
-          filmOpen && "scale-[1.08] blur-[14px] brightness-110",
-        )}
-      >
-        {/* any store, desktop: a glass browser window, mostly see-through, its page only sketched */}
-        <div
-          aria-hidden="true"
-          className={cn(
-            "absolute inset-x-2 bottom-2 top-[46svh] overflow-hidden rounded-[1em] border border-white/45 bg-white/[0.07] text-[min(3.2vw,1.7svh)] shadow-[inset_0_1px_0_rgba(255,255,255,0.5),0_40px_100px_-50px_hsl(24_90%_25%/0.55)]",
-            "lg:inset-x-auto lg:bottom-[2.5svh] lg:left-1/2 lg:top-[4.75rem] lg:w-[min(96vw,1560px)] lg:-translate-x-1/2 lg:text-[clamp(14px,min(1.2vw,2.2svh),22px)]",
-          )}
-        >
-          <div className="flex h-[2.4em] items-center border-b border-white/30 bg-white/[0.14] px-[1em]">
-            <span className="flex gap-[0.4em]">
-              {[0, 1, 2].map((k) => (
-                <span key={k} className="h-[0.6em] w-[0.6em] rounded-full bg-white/55" />
-              ))}
-            </span>
-            <span className="mx-auto rounded-full bg-white/25 px-[1.2em] py-[0.2em] text-[0.75em] font-medium text-white/80">yourstore.com</span>
-            <span className="w-[2.6em]" />
-          </div>
-          <div className="flex h-[3.2em] items-center gap-[1.5em] border-b border-white/20 px-[1.6em]">
-            <span className="h-[1.1em] w-[5em] rounded-full bg-white/35" />
-            <span className="ml-auto hidden gap-[1.2em] sm:flex">
-              {[0, 1, 2, 3].map((k) => (
-                <span key={k} className="h-[0.55em] w-[3.2em] rounded-full bg-white/25" />
-              ))}
-            </span>
-            <span className="ml-auto flex gap-[0.8em] sm:ml-[2em]">
-              <span className="h-[1.1em] w-[1.1em] rounded-full border-2 border-white/35" />
-              <span className="h-[1.1em] w-[1.1em] rounded-[0.3em] border-2 border-white/35" />
-            </span>
-          </div>
-          <div className="absolute inset-x-[1.6em] bottom-[1.6em] top-[62%] hidden grid-cols-4 gap-[1.2em] lg:grid">
-            {[0, 1, 2, 3].map((k) => (
-              <span key={k} className="rounded-[0.8em] border border-white/25 bg-white/[0.06]" />
-            ))}
-          </div>
-          <div className="absolute inset-x-[1.2em] bottom-[1.2em] top-[7em] grid grid-cols-2 gap-[0.9em] lg:hidden">
-            {[0, 1, 2, 3].map((k) => (
-              <span key={k} className="rounded-[0.8em] border border-white/25 bg-white/[0.06]" />
-            ))}
-          </div>
-        </div>
-
-        {/* the widget, embedded bottom-right of the store, and its captions (bottom centre of the page; on phones
-            the real widget shows none) */}
-        <div
-          className={cn(
-            "pointer-events-none absolute inset-x-2 bottom-2 top-[46svh] text-[min(3.2vw,1.7svh)]",
-            "lg:inset-x-auto lg:bottom-[2.5svh] lg:left-1/2 lg:top-[4.75rem] lg:w-[min(96vw,1560px)] lg:-translate-x-1/2 lg:text-[clamp(14px,min(1.2vw,2.2svh),22px)]",
-          )}
-        >
-          <HeroAgent
-            paused={irisOpen}
-            onBeat={setBeat}
-            onInvite={setInviting}
-            cardClassName="absolute bottom-[0.9em] right-[0.9em] lg:bottom-[1.2em] lg:right-[1.2em]"
-            captionClassName="absolute bottom-[1.6em] left-1/2 hidden -translate-x-1/2 text-[1.15em] lg:block"
-          />
-        </div>
-
-        {/* play, at the centre of the hero (on phones, between the store's header and the widget): the agent points the visitor to it */}
-        <button
-          type="button"
-          onClick={(e) => openFilm(e, "agent")}
-          aria-label={messages.film.watch}
-          className="group/play absolute left-1/2 top-[60svh] -translate-x-1/2 -translate-y-1/2 rounded-full focus-visible:outline-none lg:top-1/2"
-        >
-          <span
-            data-play
-            className={cn(
-              GLASS,
-              "relative flex h-20 w-20 items-center justify-center rounded-full text-white transition-transform duration-500 group-hover/play:scale-110 group-focus-visible/play:ring-4 group-focus-visible/play:ring-white/60 lg:h-28 lg:w-28",
-              inviting && "bza-invite scale-110",
-            )}
-          >
-            <span aria-hidden="true" className="bza-play-ring absolute inset-0 rounded-full" />
-            <Play className="ml-1.5 h-8 w-8 fill-current drop-shadow-[0_2px_6px_rgba(0,0,0,0.25)] lg:h-12 lg:w-12" aria-hidden="true" />
-          </span>
-        </button>
-      </div>
-
       {/* grain, as on the rest of the landing */}
       <svg className="pointer-events-none absolute inset-0 z-[1] h-full w-full mix-blend-overlay" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
         <filter id="hero-noise">
@@ -282,70 +195,126 @@ const Hero = () => {
         <Navbar />
       </div>
 
-      {/* the copy: one glass card over the store's left side (under the nav on phones), the CTAs under it */}
+      {/* the stage: any store's landing, desktop, as a glass browser window, mostly see-through, whose
+          hero section carries the copy and the CTAs, with the Bizmis widget embedded bottom-right and play
+          at the centre. It pushes back and blurs as the film opens */}
       <div
         className={cn(
-          "pointer-events-none absolute inset-x-0 top-[4.25rem] z-10 transition-all duration-500",
-          "lg:inset-x-auto lg:left-[max(calc(2vw+2.5rem),calc((100vw-1560px)/2+3rem))] lg:top-[calc(50%+1.5rem)] lg:w-[min(34rem,36vw)] lg:-translate-y-1/2",
-          filmOpen && "opacity-0",
+          "absolute inset-0 z-10 transition-[transform,filter] duration-[950ms] ease-[cubic-bezier(.65,0,.35,1)]",
+          filmOpen && "pointer-events-none scale-[1.08] blur-[14px] brightness-110",
         )}
       >
-        <div className="flex flex-col gap-3 px-3 sm:px-6 lg:gap-4 lg:px-0">
-          {/* eyebrow, title, subtitle: nothing else in the card */}
-          <div
-            className={cn(
-              "pointer-events-auto w-full rounded-[26px] border border-white/45 p-4 text-white sm:p-5 lg:rounded-[30px] lg:p-7",
-              "bg-[linear-gradient(150deg,hsl(28_85%_52%/0.55),hsl(24_80%_40%/0.42))] shadow-[inset_0_1px_0_rgba(255,255,255,0.45),0_30px_80px_-30px_hsl(24_90%_25%/0.65)] backdrop-blur-2xl backdrop-saturate-150",
-            )}
-          >
-            <a
-              href={href("/early-access")}
-              onClick={handleEarlyAccessClick}
-              className="group inline-flex items-center gap-2 rounded-full border border-white/25 bg-white/[0.12] px-3 py-1 text-xs text-white/90 transition-colors hover:bg-white/[0.2] hover:text-white sm:text-sm"
-            >
-              <span className="relative flex h-1.5 w-1.5 flex-shrink-0" aria-hidden="true">
-                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-white/70 opacity-50" />
-                <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-white/80" />
-              </span>
-              <span className="font-medium">
-                <span className="bzl-hand text-white">{messages.hero.badgeLabel}</span>
-                <span className="text-white/50" aria-hidden="true">
-                  {" "}·{" "}
-                </span>
-                <span className="text-white/85 lg:hidden">{messages.hero.badgeDetailShort}</span>
-                <span className="hidden text-white/85 lg:inline">{messages.hero.badgeDetailLong}</span>
-              </span>
-              <ArrowRight className="h-3 w-3 text-white/60 transition-transform group-hover:translate-x-0.5" aria-hidden="true" />
-            </a>
-            <h1 className="mt-2.5 font-heading text-[clamp(1.75rem,7.6vw,2.4rem)] font-bold leading-[1.04] tracking-[-0.025em] lg:mt-3.5 lg:text-[clamp(2.4rem,min(3.6vw,6.6svh),3.75rem)]">
-              {messages.hero.titleLine1} <span className="lg:block">{messages.hero.titleLine2}</span>
-            </h1>
-            <p className="mt-1.5 font-heading text-[0.95rem] font-medium text-white/85 lg:mt-2.5 lg:text-[clamp(1.05rem,1.4vw,1.35rem)]">
-              {messages.hero.subtitleLead} {beatWord(1, messages.hero.subtitleFind)},{" "}
-              {beatWord(2, messages.hero.subtitleTrust)}
-              {messages.hero.subtitleConnector} {beatWord(3, messages.hero.subtitleBuy)}
-            </p>
+        <div
+          className={cn(
+            "absolute inset-x-2 bottom-2 top-[4.25rem] rounded-[1em] border border-white/45 bg-white/[0.07] text-[min(3.2vw,1.7svh)] shadow-[inset_0_1px_0_rgba(255,255,255,0.5),0_40px_100px_-50px_hsl(24_90%_25%/0.55)]",
+            "lg:inset-x-auto lg:bottom-[2.5svh] lg:left-1/2 lg:top-[4.75rem] lg:w-[min(96vw,1560px)] lg:-translate-x-1/2 lg:text-[clamp(14px,min(1.2vw,2.2svh),22px)]",
+          )}
+        >
+          {/* the browser's bar and the store's header, only sketched */}
+          <div aria-hidden="true" className="flex h-[2.4em] items-center rounded-t-[1em] border-b border-white/30 bg-white/[0.14] px-[1em]">
+            <span className="flex gap-[0.4em]">
+              {[0, 1, 2].map((k) => (
+                <span key={k} className="h-[0.6em] w-[0.6em] rounded-full bg-white/55" />
+              ))}
+            </span>
+            <span className="mx-auto rounded-full bg-white/25 px-[1.2em] py-[0.2em] text-[0.75em] font-medium text-white/80">yourstore.com</span>
+            <span className="w-[2.6em]" />
           </div>
-          {/* the CTAs, outside the card */}
-          <div className="pointer-events-auto flex flex-col gap-2">
-            <div className="flex w-full lg:hidden">{installButton(false)}</div>
-            <div className="hidden lg:flex">{installButton(true)}</div>
-            <div className="hidden w-fit flex-wrap items-center gap-x-3 gap-y-1 rounded-full border border-white/35 bg-[hsl(24_80%_40%/0.5)] px-4 py-1.5 text-sm text-white shadow-[0_12px_30px_-14px_hsl(24_90%_25%/0.6)] backdrop-blur-xl lg:flex">
-              <a href={BIZMIS_DEMO_STORE_URL} target="_blank" rel="noopener noreferrer" onClick={handleViewDemoClick} className="inline-flex items-center gap-1.5 font-semibold hover:underline">
-                <PlayCircle className="h-4 w-4" aria-hidden="true" />
-                {messages.common.liveDemo}
-              </a>
-              <span className="text-white/60" aria-hidden="true">
-                ·
-              </span>
-              <span className="text-white/90">
-                {messages.hero.ratherTalk}{" "}
-                <a href={BIZMIS_BOOK_A_CALL_GENERAL_URL} target="_blank" rel="noopener noreferrer" onClick={handleBookACallClick} className="font-semibold text-white underline underline-offset-2">
-                  {messages.common.bookACall}
-                </a>
-              </span>
+          <div aria-hidden="true" className="flex h-[3.2em] items-center gap-[1.5em] border-b border-white/20 px-[1.6em]">
+            <span className="h-[1.1em] w-[5em] rounded-full bg-white/35" />
+            <span className="ml-auto hidden gap-[1.2em] lg:flex">
+              {[0, 1, 2, 3].map((k) => (
+                <span key={k} className="h-[0.55em] w-[3.2em] rounded-full bg-white/25" />
+              ))}
+            </span>
+            <span className="ml-auto flex gap-[0.8em] lg:ml-[2em]">
+              <span className="h-[1.1em] w-[1.1em] rounded-full border-2 border-white/35" />
+              <span className="h-[1.1em] w-[1.1em] rounded-[0.3em] border-2 border-white/35" />
+            </span>
+          </div>
+          {/* the store's landing: its hero section is the copy and the CTAs, with play at its centre */}
+          <div className="absolute inset-x-0 bottom-[20em] top-[5.6em] flex flex-col px-[1.4em] pt-[1.4em] lg:bottom-[22%] lg:justify-center lg:px-[3.2em] lg:pt-0">
+            <div className="flex w-full flex-col gap-3 text-white [text-shadow:0_1px_16px_hsl(24_90%_35%/0.35)] lg:w-[min(36rem,38vw)] lg:gap-4">
+              <div>
+                  <a
+                    href={href("/early-access")}
+                    onClick={handleEarlyAccessClick}
+                    className="group inline-flex items-center gap-2 rounded-full border border-white/25 bg-white/[0.12] px-3 py-1 text-xs text-white/90 transition-colors hover:bg-white/[0.2] hover:text-white sm:text-sm"
+                  >
+                    <span className="relative flex h-1.5 w-1.5 flex-shrink-0" aria-hidden="true">
+                      <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-white/70 opacity-50" />
+                      <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-white/80" />
+                    </span>
+                    <span className="font-medium">
+                      <span className="bzl-hand text-white">{messages.hero.badgeLabel}</span>
+                      <span className="text-white/50" aria-hidden="true">
+                        {" "}·{" "}
+                      </span>
+                      <span className="text-white/85 lg:hidden">{messages.hero.badgeDetailShort}</span>
+                      <span className="hidden text-white/85 lg:inline">{messages.hero.badgeDetailLong}</span>
+                    </span>
+                    <ArrowRight className="h-3 w-3 text-white/60 transition-transform group-hover:translate-x-0.5" aria-hidden="true" />
+                  </a>
+                  <h1 className="mt-2.5 font-heading text-[clamp(1.75rem,7.6vw,2.4rem)] font-bold leading-[1.04] tracking-[-0.025em] lg:mt-3.5 lg:text-[clamp(2.4rem,min(3.6vw,6.6svh),3.75rem)]">
+                    {messages.hero.titleLine1} <span className="lg:block">{messages.hero.titleLine2}</span>
+                  </h1>
+                  <p className="mt-1.5 font-heading text-[0.95rem] font-medium text-white/85 lg:mt-2.5 lg:text-[clamp(1.05rem,1.4vw,1.35rem)]">
+                    {messages.hero.subtitleLead} {beatWord(1, messages.hero.subtitleFind)},{" "}
+                    {beatWord(2, messages.hero.subtitleTrust)}
+                    {messages.hero.subtitleConnector} {beatWord(3, messages.hero.subtitleBuy)}
+                  </p>
+              </div>
+              <div className="flex flex-col gap-2 [text-shadow:none] lg:gap-3">
+                <div className="flex w-full lg:hidden">{installButton(false)}</div>
+                <div className="hidden lg:flex">{installButton(true)}</div>
+                <div className="hidden flex-wrap items-center gap-x-3 gap-y-1 text-sm text-white [text-shadow:0_1px_10px_hsl(24_90%_30%/0.45)] lg:flex">
+                  <a href={BIZMIS_DEMO_STORE_URL} target="_blank" rel="noopener noreferrer" onClick={handleViewDemoClick} className="inline-flex items-center gap-1.5 font-semibold hover:underline">
+                    <PlayCircle className="h-4 w-4" aria-hidden="true" />
+                    {messages.common.liveDemo}
+                  </a>
+                  <span className="text-white/60" aria-hidden="true">
+                    ·
+                  </span>
+                  <span className="text-white/90">
+                    {messages.hero.ratherTalk}{" "}
+                    <a href={BIZMIS_BOOK_A_CALL_GENERAL_URL} target="_blank" rel="noopener noreferrer" onClick={handleBookACallClick} className="font-semibold text-white underline underline-offset-2">
+                      {messages.common.bookACall}
+                    </a>
+                  </span>
+                </div>
+              </div>
             </div>
+
+            {/* play: the agent points the visitor to it */}
+            <button
+              type="button"
+              onClick={(e) => openFilm(e, "agent")}
+              aria-label={messages.film.watch}
+              className="group/play m-auto rounded-full focus-visible:outline-none lg:absolute lg:left-1/2 lg:top-1/2 lg:m-0 lg:-translate-x-1/2 lg:-translate-y-1/2"
+            >
+              <span
+                data-play
+                className={cn(
+                  GLASS,
+                  "relative flex h-[4.5rem] w-[4.5rem] items-center justify-center rounded-full text-white transition-transform duration-500 group-hover/play:scale-110 group-focus-visible/play:ring-4 group-focus-visible/play:ring-white/60 lg:h-28 lg:w-28",
+                  inviting && "bza-invite scale-110",
+                )}
+              >
+                <span aria-hidden="true" className="bza-play-ring absolute inset-0 rounded-full" />
+                <Play className="ml-1.5 h-7 w-7 fill-current drop-shadow-[0_2px_6px_rgba(0,0,0,0.25)] lg:h-12 lg:w-12" aria-hidden="true" />
+              </span>
+            </button>
           </div>
+
+          {/* the Bizmis widget, embedded bottom-right, and its captions (bottom centre of the page; on
+              phones the real widget shows none) */}
+          <HeroAgent
+            paused={irisOpen}
+            onBeat={setBeat}
+            onInvite={setInviting}
+            cardClassName="absolute bottom-[0.9em] right-[0.9em] lg:bottom-[1.2em] lg:right-[1.2em]"
+            captionClassName="absolute bottom-[1.6em] left-1/2 hidden -translate-x-1/2 text-[1.15em] lg:block"
+          />
         </div>
       </div>
 

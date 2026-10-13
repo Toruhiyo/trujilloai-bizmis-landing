@@ -167,6 +167,9 @@ const HeroAgent = ({
             <div className="absolute inset-0">
               <LiveAvatar
                 model="yusuke"
+                expression="default"
+                // Yusuke's resting eyes are closed arcs: a blink would erase them
+                blinks={false}
                 speaking={speaking}
                 gesture={paused ? null : gesture}
                 onStatus={setAvatar}

@@ -73,6 +73,8 @@ export type LiveAvatarCanvasProps = {
   /** A one-shot body gesture (a clip name, e.g. "beckon"); a new `key` plays it again. */
   gesture?: { name: string; key: number } | null;
   expression: AvatarExpression;
+  /** Random blinks (off for faces whose resting eyes are closed arcs, which a blink erases). */
+  blinks?: boolean;
   /** Render loop on/off (offscreen or hidden tab = off). */
   active: boolean;
   /** How far the canvas bleeds above the box, as a fraction of the box height. */
@@ -161,6 +163,7 @@ const Avatar = ({
   speaking,
   gesture,
   expression,
+  blinks = true,
   overscanTop,
   figureFraction,
   onReady,
@@ -416,14 +419,17 @@ const Avatar = ({
         const i = dict[key];
         let target: number;
         let speed = MORPH_TARGET_LERP_SPEED;
+        // The smile already closes the eyes into arcs: a blink on top of it
+        // shuts them out of sight, and visemes on top of it bare the teeth.
+        // So no blinks while smiling, and the smile gives way while talking.
         if (key === "eyeBlinkLeft" || key === "eyeBlinkRight") {
-          target = blink.current ? 1 : 0;
+          target = blinks && blink.current && !face.smile ? 1 : 0;
           speed = BLINK_LERP_SPEED;
         } else if (VISEMES.includes(key)) {
           target = speaking && key === mouth.current ? 1 : 0;
           if (speaking) speed = target ? MORPH_TARGET_LERP_SPEED_FAST : MORPH_TARGET_LERP_SPEED_MEDIUM;
         } else {
-          target = face[key] ?? 0;
+          target = speaking ? 0 : (face[key] ?? 0);
         }
         influences[i] = THREE.MathUtils.lerp(influences[i], target, speed);
       }
