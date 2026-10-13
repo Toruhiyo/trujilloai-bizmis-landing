@@ -28,11 +28,8 @@ const MS_PER_WORD = 300;
 const HOLD_MS = 1300;
 /** After "press play": the invite rests on screen before the agent points again. */
 const INVITE_REST_MS = 5000;
-/**
- * The gesture toward play: the shared clip that points (to the avatar's right,
- * the visitor's left, where play is), or presenting until that clip is live.
- */
-const POINT_AT_PLAY = "pointing_right|presenting_left";
+/** The gesture toward play: the shared clip pointing to the avatar's right, the visitor's left, where play is. */
+const POINT_AT_PLAY = "pointing_right";
 const START_DELAY_MS = 500;
 /** A load slower than this and the agent starts over the still render anyway. */
 const LIVE_WAIT_MS = 15000;
