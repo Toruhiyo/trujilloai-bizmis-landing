@@ -4,6 +4,7 @@ import { cn } from "@/lib/utils";
 import { useMessages } from "@/i18n/LocaleProvider";
 import AgentImage from "./landing/AgentImage";
 import LiveAvatar from "./landing/LiveAvatar";
+import "@/styles/hero-agent.css";
 
 /**
  * The hero's agent (BIZ-423): the real Bizmis widget's card, as it sits on a
@@ -135,12 +136,12 @@ const HeroAgent = ({
 
   return (
     <>
-      <div className={cn("bzw w-[18em]", cardClassName)}>
+      <div className={cn("bzw bza w-[18em]", cardClassName)}>
         <div className="bzw-card relative h-[18.5em] rounded-[0.75em] border">
           {/* Volume toggle, top-right */}
           <span
             aria-hidden="true"
-            className="absolute right-[0.5em] top-[0.5em] z-10 grid h-[2em] w-[2em] place-items-center rounded-full border border-[#f28c38]/30 bg-[#f28c38]/[0.14] text-[#f28c38]"
+            className="absolute right-[0.5em] top-[0.5em] z-10 grid h-[2em] w-[2em] place-items-center rounded-full border border-primary/30 bg-primary/[0.14] text-primary"
           >
             <Volume2 className="h-[1em] w-[1em]" />
           </span>
@@ -157,6 +158,8 @@ const HeroAgent = ({
             <div className="absolute inset-0">
               <LiveAvatar
                 model="yusuke"
+                // the Bizmis orange (the landing's --primary), not the film's deeper orange
+                shirtColor="#F9A353"
                 expression="default"
                 speaking={speaking}
                 gesture={paused ? null : gesture}
@@ -179,7 +182,7 @@ const HeroAgent = ({
               <span className="min-w-0 flex-1 truncate text-[0.875em] text-neutral-400">
                 <Placeholder />
               </span>
-              <span className="grid h-[2em] w-[2em] place-items-center rounded-full bg-[#f28c38] text-white shadow-sm">
+              <span className="grid h-[2em] w-[2em] place-items-center rounded-full bg-primary text-white shadow-sm">
                 <AudioLines className="h-[0.875em] w-[0.875em]" strokeWidth={2.5} />
               </span>
             </div>
@@ -190,7 +193,7 @@ const HeroAgent = ({
       {/* The widget's captions: spoken words solid, the current one bold and glowing */}
       <p
         className={cn(
-          "bzw bzw-caption w-max max-w-[min(30em,calc(100vw-2rem))] rounded-[1.5em] px-[1em] py-[0.25em] text-center font-medium leading-snug text-[#171717] transition-opacity duration-300",
+          "bzw bza bzw-caption w-max max-w-[min(30em,calc(100vw-2rem))] rounded-[1.5em] px-[1em] py-[0.25em] text-center font-medium leading-snug text-[#171717] transition-opacity duration-300",
           !started && "opacity-0",
           captionClassName,
         )}

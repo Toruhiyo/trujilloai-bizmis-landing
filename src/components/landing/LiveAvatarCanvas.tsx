@@ -72,6 +72,10 @@ export type LiveAvatarCanvasProps = {
   speaking: boolean;
   /** A one-shot body gesture (a clip name, e.g. "beckon", or "a|b" for the first one present); a new `key` plays it again. */
   gesture?: { name: string; key: number } | null;
+  /** Show the legs too (default: head and upper body, like the widget card). */
+  fullBody?: boolean;
+  /** Greet with a one-shot wave on mount (default true). */
+  greet?: boolean;
   expression: AvatarExpression;
   /** Render loop on/off (offscreen or hidden tab = off). */
   active: boolean;
@@ -160,6 +164,8 @@ const Avatar = ({
   stampOffsetY,
   speaking,
   gesture,
+  fullBody = false,
+  greet = true,
   expression,
   overscanTop,
   figureFraction,
@@ -195,7 +201,7 @@ const Avatar = ({
   /** Waist-up band of the idle pose, in world units: drives the framing. */
   const [band, setBand] = useState<{ bottom: number; height: number; x: number } | null>(null);
   /** The one-shot clip playing (the greeting wave first), during which idle/talk wait. */
-  const [oneShot, setOneShot] = useState<string | null>(waveName ?? null);
+  const [oneShot, setOneShot] = useState<string | null>(greet ? (waveName ?? null) : null);
   const current = useRef<THREE.AnimationAction | null>(null);
   const stampDone = useRef(!stampUrl);
   const readySent = useRef(false);
@@ -213,15 +219,15 @@ const Avatar = ({
     return list;
   }, [scene]);
 
-  // Body groups: head + upper body, like the widget card.
+  // Body groups: head + upper body, like the widget card (or all of it).
   useLayoutEffect(() => {
     scene.traverse((child) => {
       const name = child.name.toUpperCase();
       if (BODY_GROUPS.some((g) => name.startsWith(g))) {
-        child.visible = VISIBLE_BODY_GROUPS.some((g) => name.startsWith(g));
+        child.visible = fullBody || VISIBLE_BODY_GROUPS.some((g) => name.startsWith(g));
       }
     });
-  }, [scene]);
+  }, [scene, fullBody]);
 
   // Material lighting (widget: hairSpecular; shirt/skin multipliers are 1).
   useLayoutEffect(() => {
@@ -307,7 +313,7 @@ const Avatar = ({
   };
 
   // Measure the idle pose once (it fixes the framing, so a wave or a talk
-  // gesture never re-zooms), then greet with a one-shot wave.
+  // gesture never re-zooms), then greet with a one-shot wave (unless not to).
   useEffect(() => {
     const idle = idleName ? actions[idleName] : undefined;
     if (idle) {
@@ -320,7 +326,7 @@ const Avatar = ({
     }
     idle?.stop();
     current.current = null;
-    const wave = waveName ? actions[waveName] : undefined;
+    const wave = greet && waveName ? actions[waveName] : undefined;
     if (wave) crossTo(wave, true);
     const onFinished = (event: { action: THREE.AnimationAction }) => {
       if (event.action.loop === THREE.LoopOnce) setOneShot(null);
@@ -331,7 +337,7 @@ const Avatar = ({
       mixer.stopAllAction();
       current.current = null;
     };
-  }, [scene, actions, mixer, idleName, waveName]);
+  }, [scene, actions, mixer, idleName, waveName, greet]);
 
   // A requested gesture plays once, then idle/talk take over again.
   useEffect(() => {

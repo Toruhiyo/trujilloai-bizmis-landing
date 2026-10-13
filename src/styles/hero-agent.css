@@ -1,0 +1,13 @@
+/* The hero agent (HeroAgent) wears the Bizmis orange (the landing's --primary,
+   #f9a353), not the film's deeper #f28c38 the shared widget styles use. */
+.bza .bzw-glow {
+  background: radial-gradient(circle, hsl(var(--primary) / 0.32) 0%, transparent 70%);
+}
+
+.bza .bzw-ring {
+  border-color: hsl(var(--primary) / 0.35);
+}
+
+.bza .bzw-word-glow {
+  background: radial-gradient(closest-side, hsl(var(--primary) / 0.4), transparent);
+}

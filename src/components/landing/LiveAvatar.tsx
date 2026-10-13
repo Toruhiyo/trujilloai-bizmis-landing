@@ -123,6 +123,10 @@ export type LiveAvatarProps = {
   gesture?: { name: string; key: number } | null;
   /** "live" once the 3D avatar is drawn, "still" when only the static render will show, "loading" before either. */
   onStatus?: (status: "loading" | "live" | "still") => void;
+  /** The whole figure, legs included (default: waist-up, like the widget card). */
+  fullBody?: boolean;
+  /** Greet with a wave when it appears (default true). */
+  greet?: boolean;
   /** Bizmis logo on the shirt, like the static renders (default true). */
   logo?: boolean;
   /** "smile" matches the static renders; "default" is the widget's neutral face. */
@@ -138,6 +142,8 @@ const LiveAvatar = ({
   speaking = false,
   gesture = null,
   onStatus,
+  fullBody = false,
+  greet = true,
   logo = true,
   expression = "smile",
   fallback,
@@ -249,6 +255,8 @@ const LiveAvatar = ({
                 stampOffsetY={LOGO_STAMP_OFFSET_Y}
                 speaking={speaking}
                 gesture={gesture}
+                fullBody={fullBody}
+                greet={greet}
                 expression={expression}
                 active={active}
                 overscanTop={OVERSCAN_TOP}
