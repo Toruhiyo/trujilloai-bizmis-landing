@@ -6,9 +6,11 @@ I'm Oriol. I built Bizmis for that moment. It's a voice-first store associate fo
 
 ![Bizmis running on {{lead_brand}}](https://www.bizmis.ai/invite-cards/{{lead_handle}}/email/mockup.png){% endif %}
 
-Early Access is free for the first 50 stores, with no commitment. It [installs in one click](https://apps.shopify.com/bizmis?ref={{lead_handle}}&code={{access_code}}&utm_source=bizmis-cold-email&utm_medium=email&utm_campaign={{utm_campaign}}&utm_content={{lead_handle}}), stays in private mode so only your Shopify admins can see it until you turn it on, nothing renews, and if it doesn't sell more for you, you uninstall it and we're done.
+And here's a 2-minute video of it working on a store like yours: [watch it here](https://www.bizmis.ai/?ref={{lead_handle}}&utm_source=bizmis-cold-email&utm_medium=email&utm_campaign={{utm_campaign}}&utm_content=film-f)
 
-If you'd rather see it live first, [grab 30 minutes here](https://calendly.com/oriol-bizmis/bizmis-onboarding?ref={{lead_handle}}&utm_source=bizmis-cold-email&utm_medium=email&utm_campaign={{utm_campaign}}&utm_content={{lead_handle}}). And if the store isn't your side of things, no problem, just point me to whoever runs it.
+Early Access is free for the first 50 stores, with no commitment. It installs in one click, stays in private mode so only your Shopify admins can see it until you turn it on, nothing renews, and if it doesn't sell more for you, you uninstall it and we're done.
+
+If it looks like a fit, just hit reply and I'll set it up with you. And if the store isn't your side of things, no problem, just point me to whoever runs it.
 
 Oriol
 Founder, Bizmis · [bizmis.ai](https://www.bizmis.ai "color:#8F7856;text-decoration:none")
