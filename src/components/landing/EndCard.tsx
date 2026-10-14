@@ -9,13 +9,12 @@ import {
   openBizmisShopifyAppListing,
 } from "@/lib/bizmisUrls";
 import Reveal from "./Reveal";
-import "@/styles/end-card.css";
 
 /**
  * The close, composed like the ad-1 film's end card: the title IS the call to
  * action ("Install now", in ink with a light sweeping across it, the Shopify
  * bag in the same ink), the handwritten "for Early Access benefits!" right
- * under it with a hand-drawn arrow note that they apply on install, the film's
+ * under it, the film's
  * perks in one row and the quieter extras under them, then by hand "Only 50
  * spots!", and a quiet way to talk to us.
  */
@@ -41,15 +40,6 @@ const EndCard = () => {
         className="pointer-events-none absolute left-1/2 top-1/2 h-[680px] w-[980px] max-w-[150vw] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(closest-side,rgba(249,163,83,0.11),rgba(255,255,255,0))]"
       />
       <div className="bzl-wrap relative">
-        {/* the Bizmis logo over the title, as on the film's end card */}
-        <Reveal>
-          <img
-            src="/images/bizmis-logo-full-orange-transparent.svg"
-            alt="Bizmis"
-            className="mx-auto mb-[2.4svh] h-[clamp(1.6rem,2.6vw,2.25rem)] w-auto"
-          />
-        </Reveal>
-
         {/* the title is the button */}
         <Reveal className="relative mx-auto w-fit">
           <h2 className="text-[clamp(3rem,min(8.4vw,12svh),6.75rem)] font-bold leading-[1.02] tracking-[-0.045em]">
@@ -84,22 +74,9 @@ const EndCard = () => {
           </svg>
         </Reveal>
 
-        {/* the Early Access invite, by hand, right under the title, and the arrow note on it */}
-        <Reveal delay={120} className="relative mx-auto mt-[2.4svh] w-fit">
+        {/* the Early Access invite, by hand, right under the title */}
+        <Reveal delay={120} className="mx-auto mt-[2.4svh] w-fit">
           <p className="bzl-hand bzl-end-invite mx-auto text-[hsl(var(--primary))]">{end.invite}</p>
-          <div className="bzl-end-applied mt-2 flex flex-col items-center lg:absolute lg:left-[calc(100%+0.6rem)] lg:top-[-1.3em] lg:mt-0 lg:items-start">
-            {/* phones: the note under the invite, its arrow pointing up */}
-            <svg viewBox="0 0 40 46" className="bzl-end-arrow h-9 w-8 lg:hidden" fill="none" aria-hidden="true">
-              <path d="M22 44 C 12 32, 26 18, 18 4" pathLength={1} />
-              <path d="M10 11 L 18 3 L 25 11" pathLength={1} />
-            </svg>
-            <p className="bzl-hand bzl-end-applied-text text-[hsl(var(--primary))]">{end.applied}</p>
-            {/* desktop: the note up and to the right, its arrow curling back down to the invite */}
-            <svg viewBox="0 0 90 60" className="bzl-end-arrow -mt-1 hidden h-[3.4rem] w-[5.2rem] lg:block" fill="none" aria-hidden="true">
-              <path d="M70 4 C 72 34, 46 52, 8 48" pathLength={1} />
-              <path d="M18 38 L 7 48 L 19 56" pathLength={1} />
-            </svg>
-          </div>
         </Reveal>
 
         {/* the film's perks, in one row */}
