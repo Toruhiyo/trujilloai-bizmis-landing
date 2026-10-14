@@ -7,7 +7,7 @@
   white-space: nowrap;
 }
 .bzl-end-arrow path {
-  stroke: var(--bzl-fg);
+  stroke: hsl(var(--primary));
   stroke-width: 2.4;
   stroke-linecap: round;
   stroke-linejoin: round;

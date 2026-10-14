@@ -796,7 +796,7 @@
 }
 /* Orange on the white bar; over the orange hero it keeps the nav's white. */
 .bzl-page [data-nav="/early-access"]:not(.text-white):not([class*="text-white/"]) {
-  color: #ec7709;
+  color: hsl(var(--primary));
 }
 
 /* The dull chatbot: "+38 s of reading" floats up off each reply, then fades. */

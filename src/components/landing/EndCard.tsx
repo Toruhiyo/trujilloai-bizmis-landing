@@ -38,7 +38,7 @@ const EndCard = () => {
     <section className="bzl-section bzl-screen relative overflow-hidden text-center">
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute left-1/2 top-1/2 h-[680px] w-[980px] max-w-[150vw] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(closest-side,rgba(249,163,83,0.2),rgba(255,255,255,0))]"
+        className="pointer-events-none absolute left-1/2 top-1/2 h-[680px] w-[980px] max-w-[150vw] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(closest-side,rgba(249,163,83,0.11),rgba(255,255,255,0))]"
       />
       <div className="bzl-wrap relative">
         {/* the Bizmis logo over the title, as on the film's end card */}
@@ -76,7 +76,7 @@ const EndCard = () => {
           >
             <path
               d="M4 12 C 70 4, 160 3, 296 9"
-              stroke="var(--bzl-orange-strong)"
+              stroke="hsl(var(--primary))"
               strokeWidth="3.2"
               strokeLinecap="round"
               pathLength={1}
@@ -86,14 +86,14 @@ const EndCard = () => {
 
         {/* the Early Access invite, by hand, right under the title, and the arrow note on it */}
         <Reveal delay={120} className="relative mx-auto mt-[2.4svh] w-fit">
-          <p className="bzl-hand bzl-end-invite mx-auto text-[var(--bzl-orange-strong)]">{end.invite}</p>
+          <p className="bzl-hand bzl-end-invite mx-auto text-[hsl(var(--primary))]">{end.invite}</p>
           <div className="bzl-end-applied mt-2 flex flex-col items-center lg:absolute lg:left-[calc(100%+0.6rem)] lg:top-[-1.3em] lg:mt-0 lg:items-start">
             {/* phones: the note under the invite, its arrow pointing up */}
             <svg viewBox="0 0 40 46" className="bzl-end-arrow h-9 w-8 lg:hidden" fill="none" aria-hidden="true">
               <path d="M22 44 C 12 32, 26 18, 18 4" pathLength={1} />
               <path d="M10 11 L 18 3 L 25 11" pathLength={1} />
             </svg>
-            <p className="bzl-hand bzl-end-applied-text text-[var(--bzl-fg)]">{end.applied}</p>
+            <p className="bzl-hand bzl-end-applied-text text-[hsl(var(--primary))]">{end.applied}</p>
             {/* desktop: the note up and to the right, its arrow curling back down to the invite */}
             <svg viewBox="0 0 90 60" className="bzl-end-arrow -mt-1 hidden h-[3.4rem] w-[5.2rem] lg:block" fill="none" aria-hidden="true">
               <path d="M70 4 C 72 34, 46 52, 8 48" pathLength={1} />
@@ -111,7 +111,7 @@ const EndCard = () => {
                   viewBox="0 0 24 24"
                   className="h-5 w-5 flex-shrink-0"
                   fill="none"
-                  stroke="var(--bzl-orange-strong)"
+                  stroke="hsl(var(--primary))"
                   strokeWidth="2.2"
                   aria-hidden="true"
                 >
@@ -134,7 +134,7 @@ const EndCard = () => {
 
         {/* by hand, apart from the perks: 50 spots only */}
         <Reveal delay={360} className="relative mx-auto mt-[4.5svh] w-fit">
-          <p className="bzl-hand bzl-end-note text-[var(--bzl-orange-strong)]">{end.note}</p>
+          <p className="bzl-hand bzl-end-note text-[hsl(var(--primary))]">{end.note}</p>
           <svg
             viewBox="0 0 300 16"
             preserveAspectRatio="none"
@@ -142,8 +142,8 @@ const EndCard = () => {
             fill="none"
             aria-hidden="true"
           >
-            <path d="M3 11 C 80 5, 190 4, 297 8" stroke="var(--bzl-orange-strong)" strokeWidth="2.6" strokeLinecap="round" />
-            <path d="M40 14 C 120 10, 200 10, 262 12" stroke="var(--bzl-orange-strong)" strokeWidth="1.8" strokeLinecap="round" opacity="0.7" />
+            <path d="M3 11 C 80 5, 190 4, 297 8" stroke="hsl(var(--primary))" strokeWidth="2.6" strokeLinecap="round" />
+            <path d="M40 14 C 120 10, 200 10, 262 12" stroke="hsl(var(--primary))" strokeWidth="1.8" strokeLinecap="round" opacity="0.7" />
           </svg>
         </Reveal>
 
