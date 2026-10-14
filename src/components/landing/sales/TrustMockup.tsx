@@ -10,8 +10,8 @@ import { PhoneFrame } from "../devices";
 import { STORE_URL } from "../visuals";
 import type { Messages } from "@/i18n/messages/en";
 import { bump, easeOutBack, useScene } from "./hooks";
-import { Sentinel } from "./shared";
-import type { MockupProps } from "./shared";
+import { Sentinel } from "./scene";
+import type { MockupProps } from "./scene";
 
 /** The scene's timeline (ms): typing, send, weighing the four (one card every `card`), the pick, the answer. */
 const T = { type: 350, send: 1300, compare: 1650, card: 560, pick: 4050, speak: 4150 };

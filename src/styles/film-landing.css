@@ -1294,15 +1294,14 @@
 .bzl-mk .mk-thin { stroke-width: var(--mk-thin); }
 .bzl-mk .mk-dot { fill: var(--mk-line); stroke-width: var(--mk-thin); }
 .bzl-mk .mk-tint { fill: var(--mk-tint); stroke: none; }
-.bzl-mk .mk-label {
+/* labels: handwritten in marker, like the Sales funnel's (Caveat, bold) */
+.bzl-mk .mk-hand {
   fill: var(--mk-ink);
-  font-family: var(--bzl-font);
-  font-size: 16px;
-  font-weight: 600;
-  letter-spacing: -0.01em;
+  font-family: var(--bzl-script, "Caveat", cursive);
+  font-size: 26px;
+  font-weight: 700;
 }
-.bzl-mk .mk-label.is-strong { font-weight: 700; }
-.bzl-mk .mk-label.is-big { font-size: 20px; font-weight: 700; letter-spacing: -0.02em; }
+.bzl-mk .mk-hand.is-big { font-size: 32px; }
 
 /* ── Support store demo (support/SupportStore.tsx): the shopper's question typed
    in the widget's composer, a blinking caret while they type ── */

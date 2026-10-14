@@ -2,7 +2,7 @@ import { useMessages } from "@/i18n/LocaleProvider";
 import { cn } from "@/lib/utils";
 import FunnelFlow from "./funnel/FunnelFlow";
 import { useScene } from "./hooks";
-import { Sentinel } from "./shared";
+import { Sentinel } from "./scene";
 
 /** The payoff's timeline: the bad funnel, the three stages fixed in turn, the sales piling up, the finale. */
 const DURATION = 8600;

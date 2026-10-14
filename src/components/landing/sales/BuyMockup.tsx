@@ -8,8 +8,8 @@ import { TabletFrame } from "../devices";
 import { STORE_URL } from "../visuals";
 import type { Messages } from "@/i18n/messages/en";
 import { bump, easeOutBack, useMedia, useScene } from "./hooks";
-import { Sentinel } from "./shared";
-import type { MockupProps } from "./shared";
+import { Sentinel } from "./scene";
+import type { MockupProps } from "./scene";
 
 const PERKS = [Truck, RotateCcw];
 const PRICE = 48;

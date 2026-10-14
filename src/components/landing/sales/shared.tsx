@@ -1,29 +1,12 @@
-import { forwardRef } from "react";
 import type { ComponentType } from "react";
 import { cn } from "@/lib/utils";
 import BuyMockup from "./BuyMockup";
+import type { Clock, MockupProps } from "./scene";
 import FindMockup from "./FindMockup";
 import TrustMockup from "./TrustMockup";
 
-/**
- * The box a scene's timeline watches (useScene): it covers the scene, and
- * `off` hides it, which the loop reads as "out of view" (reset to the start).
- * The scene's root needs `position: relative`.
- */
-export const Sentinel = forwardRef<HTMLSpanElement, { off?: boolean }>(({ off }, ref) => (
-  <span ref={ref} hidden={off} aria-hidden="true" className="pointer-events-none absolute inset-0" />
-));
-Sentinel.displayName = "Sentinel";
-
-/** A beat's clock (one useScene shared by its mockup and its funnel): ms along its timeline. */
-export type Clock = { t: number };
-/** What a mockup takes: its own loop gated by `play`, or its beat's shared `clock` instead. */
-export type MockupProps = {
-  play?: boolean;
-  clock?: Clock;
-  /** Its beat is the one showing: mount the live 3D heads (default true; a pinned stage passes false for the others). */
-  active?: boolean;
-};
+export { Sentinel } from "./scene";
+export type { Clock, MockupProps } from "./scene";
 
 /** The three moments, in title order: find it, trust it, buy it. */
 const MOCKUPS: ComponentType<MockupProps>[] = [

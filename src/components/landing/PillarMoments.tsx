@@ -8,8 +8,9 @@ import { span, useRewindLoop } from "./useRewindLoop";
  * "blueprint drawn with a marker" line art straight on the band. Thick round
  * strokes that draw themselves in, no fills, no gradients, no glows, bouncy
  * squash-and-stretch on the small parts and a little doodle on the payoff;
- * labels in the page's sans. The marker's ink comes from CSS variables
- * (--mk-line, --mk-ink, --mk-tint on .bzl-mk, film-landing.css), set from
+ * labels handwritten in marker (Caveat), written on at a pen's pace. The
+ * marker's ink comes from CSS variables (--mk-line, --mk-ink, --mk-tint on
+ * .bzl-mk, film-landing.css), set from
  * the pillar's own colours so it reads on its band and on every palette.
  *
  * Timing: a useRewindLoop timeline. It plays from its start the moment it
@@ -78,6 +79,42 @@ const Sparkle = ({ x, y, k, size = 10, spin = 0 }: { x: number; y: number; k: nu
   );
 };
 
+/* ── Handwriting: labels written on in marker (Caveat, bold), like the Sales
+   funnel's: left to right at a pen's pace, driven by the loop's t, so they
+   un-write on the rewind. ── */
+
+/** How long writing `text` takes: a steady pen, a little quicker for short words. */
+const writeMs = (text: string) => 160 + text.length * 30;
+/** The pen's pace: off the mark gently, steady, easing at the end. */
+const pen = (k: number) => {
+  const x = clamp01(k);
+  return x < 0.15 ? (x / 0.15) ** 2 * 0.1 : 0.1 + 0.9 * (1 - (1 - (x - 0.15) / 0.85) ** 1.6);
+};
+/** How much of `text` is written at `t` when the pen starts at `from` (0 → 1). */
+const writing = (text: string, t: number, from: number) => pen((t - from) / writeMs(text));
+/** The written-so-far part: a left-to-right reveal of the text's own box. */
+const reveal = (k: number) => (k >= 1 ? undefined : `inset(-30% ${((1 - k) * 100).toFixed(2)}% -30% -8%)`);
+
+/** A handwritten label, written on as `k` goes 0 → 1. */
+const Hand = ({
+  k,
+  className,
+  children,
+  ...at
+}: {
+  k: number;
+  className?: string;
+  children: string;
+  x: number;
+  y: number;
+  textAnchor?: "start" | "middle" | "end";
+}) =>
+  k <= 0 ? null : (
+    <text {...at} className={cn("mk-hand", className)} style={{ clipPath: reveal(k) }}>
+      {children}
+    </text>
+  );
+
 /* ── Support: the inbox that empties itself ──────────────────────────────── */
 
 const RW = 480; // the drawing's box (viewBox units ≈ px at desktop)
@@ -141,7 +178,7 @@ export const SupportRelief = ({ className }: { className?: string }) => {
 
   // the badge: a drawn pill, bouncing as the pile tops out and as it empties
   const badgeText = r.waiting.replace("{n}", String(count));
-  const bw = 26 + badgeText.length * 8.4;
+  const bw = 32 + badgeText.length * 8.3; // Caveat runs about 8 units a character here
   const bx = RW - 4 - bw;
   const bump =
     0.14 * hump(span(t, PILE_MS - 60, PILE_MS + 340)) + 0.14 * hump(span(t, MELT_END - 40, MELT_END + 360));
@@ -151,7 +188,7 @@ export const SupportRelief = ({ className }: { className?: string }) => {
   const cy = 132;
   const ring = easeOut(span(t, MELT_END, MELT_END + 520));
   const tick = easeOut(span(t, MELT_END + 380, MELT_END + 700));
-  const words = span(t, MELT_END + 520, MELT_END + 900);
+  const doneAt = MELT_END + 560;
 
   return (
     <div
@@ -180,16 +217,17 @@ export const SupportRelief = ({ className }: { className?: string }) => {
         </defs>
 
         {/* the head: the inbox's name, and its count in a drawn badge */}
-        <text x={4} y={27} className="mk-label">
+        <Hand k={writing(r.label, t, 0)} x={4} y={30}>
           {r.label}
-        </text>
+        </Hand>
         <g
           transform={`translate(${f(bx + bw / 2)} 22) scale(${f(1 + bump)} ${f(1 - bump * 0.7)}) translate(${f(-(bx + bw / 2))} -22)`}
         >
-          <path className="mk-mid" d={rrect(bx, 6, bw, 32, 16, 3)} />
-          <text x={bx + bw / 2} y={27.5} textAnchor="middle" className="mk-label is-strong">
+          <path className="mk-mid" d={rrect(bx, 4, bw, 36, 18, 3)} {...drawn(easeOut(span(t, 0, 380)))} />
+          {/* written once; the count then just changes its digits */}
+          <Hand k={writing(badgeText, t, 200)} x={bx + bw / 2} y={30} textAnchor="middle">
             {badgeText}
-          </text>
+          </Hand>
         </g>
 
         {/* the pile */}
@@ -243,14 +281,9 @@ export const SupportRelief = ({ className }: { className?: string }) => {
           d={`M${cx - 21} ${cy + 1} L${cx - 6} ${cy + 16} L${cx + 23} ${cy - 15}`}
           {...drawn(tick)}
         />
-        <g
-          opacity={f(clamp01(words * 1.6))}
-          transform={`translate(${cx} ${cy + 80}) scale(${f(mix(0.7, 1, spring(words)))}) translate(${-cx} ${-(cy + 80)})`}
-        >
-          <text x={cx} y={cy + 86} textAnchor="middle" className="mk-label is-big">
-            {r.done}
-          </text>
-        </g>
+        <Hand k={writing(r.done, t, doneAt)} x={cx} y={cy + 92} textAnchor="middle" className="is-big">
+          {r.done}
+        </Hand>
         <Sparkle x={cx + 76} y={cy - 38} k={span(t, MELT_END + 640, MELT_END + 1040)} />
         <Sparkle x={cx - 78} y={cy - 22} k={span(t, MELT_END + 760, MELT_END + 1160)} size={8} spin={45} />
         <Sparkle x={cx + 64} y={cy + 36} k={span(t, MELT_END + 880, MELT_END + 1280)} size={7} />
@@ -294,7 +327,7 @@ const segments = HEIGHTS.flatMap((h, c) => Array.from({ length: h }, (_, k) => (
 
 const SORT_AT = 1300; // the noise sorts itself
 const AHA_AT = 2450; // the answer lights up
-const CLARITY_MS = AHA_AT + 2100;
+const CLARITY_MS = AHA_AT + 2300; // room for a long top ask to finish writing
 
 /** A restless wobble while it's noise, from the time itself (so it runs backwards on the rewind too). */
 const jitter = (t: number, period: number, phase: number, amp = 1) => {
@@ -341,7 +374,7 @@ export const InsightsClarity = ({ className }: { className?: string }) => {
   const trend = easeInOut(span(t, AHA_AT + 150, AHA_AT + 900));
   const head = easeOut(span(t, AHA_AT + 860, AHA_AT + 1060));
   const box = easeOut(span(t, AHA_AT + 950, AHA_AT + 1350));
-  const words = span(t, AHA_AT + 1150, AHA_AT + 1450);
+  const askAt = AHA_AT + 1150;
   const pointer = easeOut(span(t, AHA_AT + 1250, AHA_AT + 1500));
 
   const tops = COLS.map((x, c) => [x, BASE - barH(c) - 18] as const);
@@ -352,7 +385,7 @@ export const InsightsClarity = ({ className }: { className?: string }) => {
   const arm = (a: number) => `${f(px + Math.cos(ang + a) * 15)} ${f(py + Math.sin(ang + a) * 15)}`;
 
   // the callout, to the left of the answer's peak
-  const cw = 26 + cl.topAsk.length * 8.2;
+  const cw = 32 + cl.topAsk.length * 8.3;
   const cxr = px - 42;
   const cxl = cxr - cw;
   const topBarSq = hump(aha);
@@ -379,9 +412,9 @@ export const InsightsClarity = ({ className }: { className?: string }) => {
           return (
             <g key={`b${i}`} transform={`translate(${f(tx + 20)} ${f(ty + 15)}) scale(${f(s)}) translate(-20 -15)`}>
               <path className="mk-mid" d={`${rrect(0, 0, 40, 28, 10, 20 + i)} M10 28 L6 37 L18 28`} />
-              <text x={20} y={20.5} textAnchor="middle" className="mk-label is-strong">
+              <Hand k={clamp01(kIn * 1.6)} x={20} y={22} textAnchor="middle">
                 ?
-              </text>
+              </Hand>
             </g>
           );
         })}
@@ -462,16 +495,10 @@ export const InsightsClarity = ({ className }: { className?: string }) => {
         <path className="mk-mid is-trend" d={`M${arm(Math.PI - 0.55)} L${f(px)} ${f(py)} L${arm(Math.PI + 0.55)}`} {...drawn(head)} />
 
         {/* the callout: the top ask, in a drawn box pointing at the peak */}
-        <path className="mk-thin" d={rrect(cxl, 6, cw, 34, 12, 9)} {...drawn(box)} />
-        <text
-          x={(cxl + cxr) / 2}
-          y={28.5}
-          textAnchor="middle"
-          className="mk-label is-strong"
-          opacity={f(words)}
-        >
+        <path className="mk-thin" d={rrect(cxl, 4, cw, 38, 13, 9)} {...drawn(box)} />
+        <Hand k={writing(cl.topAsk, t, askAt)} x={(cxl + cxr) / 2} y={30} textAnchor="middle">
           {cl.topAsk}
-        </text>
+        </Hand>
         <path className="mk-thin" d={`M${f(cxr + 4)} 26 Q${f(px - 14)} 26 ${f(px - 10)} ${f(py - 12)}`} {...drawn(pointer)} />
         <g opacity={f(clamp01(span(t, AHA_AT + 1450, AHA_AT + 1600) * 3))}>
           {(() => {

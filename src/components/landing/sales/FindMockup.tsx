@@ -10,8 +10,8 @@ import { BrowserFrame, PhoneFrame } from "../devices";
 import { STORE_URL } from "../visuals";
 import type { Messages } from "@/i18n/messages/en";
 import { bump, easeInOut, useMedia, useScene } from "./hooks";
-import { Sentinel } from "./shared";
-import type { MockupProps } from "./shared";
+import { Sentinel } from "./scene";
+import type { MockupProps } from "./scene";
 
 /** The store's catalog: fifteen clay products (shape, tile tint). */
 const CATALOG: [ClayShape, keyof typeof TINT][] = [
