@@ -3,66 +3,94 @@ import type { CSSProperties } from "react";
 import { Check, ShoppingBag } from "lucide-react";
 import { cn } from "@/lib/utils";
 import AgentPin from "./AgentPin";
-import { BAG, END, GATES, RAMP, STAGES, flows, ksAt, makeShoppers, rand, rate, startsFor } from "./model";
+import {
+  CHAMBERS,
+  FALL,
+  HOP,
+  PEEL,
+  SPOUT,
+  boundsFor,
+  halfAtU,
+  ksAt,
+  leakU,
+  makeShoppers,
+  sAt,
+  startsFor,
+  uAt,
+} from "./model";
 
-/** The status pills' row over the stages (px). */
-const PILLS_H = 36;
-/** A buyer's trip down the spout into the bag (s). */
-const HOP = 0.45;
-/** The fix moment's celebration (ms), from when the stage starts turning. */
-const BURST = 1400;
-/** The payoff's finale: how long before the end the bag bursts (ms). */
-const FINALE = 1400;
+export type FunnelCopy = { problems: string[]; solutions: string[] };
 
-type Geo = { W: number; H: number; cy: number; half: number; r: number; R: number; f: number[]; x0: number; xEnd: number };
+const clamp = (v: number, a = 0, b = 1) => Math.min(b, Math.max(a, v));
+const smooth = (k: number) => {
+  const x = clamp(k);
+  return x * x * (3 - 2 * x);
+};
+/** A springy 0 → 1 (overshoots a little, settles). */
+const spring = (k: number) => (k <= 0 ? 0 : k >= 1 ? 1 : 1 - Math.exp(-6 * k) * Math.cos(9 * k));
+/** A 0 → 1 → 0 bump over [0, 1]. */
+const hump = (k: number) => (k <= 0 || k >= 1 ? 0 : Math.sin(Math.PI * k));
 
-const geometry = (W: number, H: number, k: number[]): Geo => {
-  const top = PILLS_H + 8;
-  const band = Math.max(80, H - top);
-  const half = band * 0.4;
+/** The funnel drawing itself in as a beat starts (ms). */
+const REVEAL = 650;
+/** The fix: the head stamped on, the circle scribbled round it, the chamber redrawn, the doodles (ms). */
+const STAMP = 360;
+const CIRCLE = 520;
+const REDRAW = 760;
+const DOODLE = 1100;
+
+/** The layout (px), from the stage box's size. */
+type Geo = {
+  W: number;
+  H: number;
+  /** The labels' row. */
+  top: number;
+  cy: number;
+  /** The mouth's half-height. */
+  h0: number;
+  x0: number;
+  run: number;
+  /** The shoppers' radius. */
+  r: number;
+  /** The marker's width for the details (dots' rings, doodles, the bag). */
+  lw: number;
+  /** The funnel's outline: the thickest marker. */
+  ow: number;
+  /** The bag. */
+  bx: number;
+  by: number;
+  R: number;
+  /** The heads' size. */
+  head: number;
+};
+
+const geometry = (W: number, H: number): Geo => {
+  const top = Math.round(clamp(H * 0.15, 26, 40));
+  const R = clamp(H * 0.09, 15, 25);
+  const bx = W - R * 1.75 - 2;
+  const xEnd = bx - R * 2.2;
+  const x0 = 10;
+  const run = xEnd - x0;
+  const avail = H - top;
+  const h0 = Math.min(avail * 0.29, run * 0.18);
+  const cy = top + 10 + h0;
   return {
     W,
     H,
-    cy: top + band * 0.46,
-    half,
-    r: Math.min(11, Math.max(5, band * 0.05)),
-    R: Math.min(30, Math.max(17, half * 0.42)),
-    f: flows(k),
-    x0: STAGES[0][0] * W,
-    xEnd: END * W,
+    top,
+    cy,
+    h0,
+    x0,
+    run,
+    r: clamp(h0 * 0.072, 2.8, 4.4),
+    lw: clamp(h0 * 0.072, 2.6, 5),
+    ow: clamp(h0 * 0.115, 4, 7.5) * (W < 480 ? 0.85 : 1),
+    bx,
+    by: cy,
+    R,
+    head: Math.round(clamp(h0 * 0.44, 22, 32)),
   };
 };
-
-/**
- * The funnel's half-height at x (px): ALWAYS converging, from the wide mouth
- * on the left to the narrow spout on the right. A steady taper, times each
- * stage's share of the shoppers still in it (stepping down at each stage's
- * end, smoothly): both only ever shrink, so the funnel never flares. Past
- * the end, the spout keeps its width into the bag.
- */
-const halfAt = (g: Geo, x: number) => {
-  const u = Math.min(1, Math.max(0, (x - g.x0) / (g.xEnd - g.x0)));
-  const taper = 1 - 0.48 * u;
-  const seg = (j: number) => 0.5 + 0.5 * g.f[j];
-  const blend = g.W * 0.03;
-  let s = seg(0);
-  GATES.forEach((gx, i) => {
-    const t = Math.min(1, Math.max(0, (Math.min(x, g.xEnd) - (gx * g.W - blend)) / (2 * blend)));
-    s += (seg(i + 1) - seg(i)) * t * t * (3 - 2 * t);
-  });
-  return Math.max(g.r * 1.6, g.half * taper * s);
-};
-
-const smooth = (a: number, b: number, x: number) => {
-  const k = Math.min(1, Math.max(0, (x - a) / (b - a)));
-  return k * k * (3 - 2 * k);
-};
-const backOut = (k: number) => {
-  const c = 2.2;
-  return k <= 0 ? 0 : k >= 1 ? 1 : 1 + (c + 1) * (k - 1) ** 3 + c * (k - 1) ** 2;
-};
-
-export type FunnelCopy = { problems: string[]; solutions: string[] };
 
 /** Any CSS colour as [r, g, b, a], via the canvas's own colour parser. */
 const rgbaOf = (ctx: CanvasRenderingContext2D, color: string): number[] => {
@@ -73,55 +101,56 @@ const rgbaOf = (ctx: CanvasRenderingContext2D, color: string): number[] => {
   const n = v.match(/[\d.]+/g)?.map(Number) ?? [0, 0, 0];
   return [n[0], n[1], n[2], n[3] ?? 1];
 };
-const mix = (a: number[], b: number[], k: number) =>
-  `rgb(${a
-    .slice(0, 3)
-    .map((v, i) => Math.round(v + (b[i] - v) * k))
-    .join(" ")})`;
+const rgba = (c: number[], a: number) => `rgb(${c[0]} ${c[1]} ${c[2]} / ${clamp(a * (c[3] ?? 1)).toFixed(3)})`;
+const mixc = (a: number[], b: number[], k: number) => a.map((v, i) => v + (b[i] - v) * k);
 
 /**
- * The funnel's colours, from CSS variables on .sl-fn (a palette can restyle
- * it). The shoppers' mood is their colour: dim and grey when a stage fails
- * them (`--fn-sad`), warm gold when Bizmis helps (`--fn-glad`), brightest
- * and glowing as they buy (`--fn-buy`, `--fn-glow`).
+ * The hand's wobble: a smooth, FIXED offset for a point `s` along a stroke
+ * (`seed` tells strokes apart). It depends on where, never on when, so the
+ * drawing never boils as it moves.
  */
-const palette = (el: HTMLElement, ctx: CanvasRenderingContext2D) => {
+const wobble = (s: number, seed: number) =>
+  Math.sin(s * 0.11 + seed * 1.7) * 0.55 + Math.sin(s * 0.037 + seed * 4.1) * 0.85 + Math.sin(s * 0.23 + seed) * 0.25;
+
+/**
+ * The drawing's inks, from CSS variables on .sl-fn (a palette can restyle
+ * it): the marker (`--fn-line`, white), the shoppers (`--fn-dot`), the ones
+ * bought (`--fn-buy`, a light cream). Nothing dark anywhere.
+ */
+const readPalette = (el: HTMLElement, ctx: CanvasRenderingContext2D) => {
   const cs = getComputedStyle(el);
   const v = (name: string, fallback: string) => cs.getPropertyValue(name).trim() || fallback;
   return {
-    sad: rgbaOf(ctx, v("--fn-sad", "rgb(128 112 102)")),
-    glad: rgbaOf(ctx, v("--fn-glad", "rgb(255 226 150)")),
-    buy: rgbaOf(ctx, v("--fn-buy", "rgb(255 251 236)")),
-    glow: v("--fn-glow", "rgb(255 236 170)"),
-    burst: v("--fn-burst", "white"),
-    channel: v("--fn-channel", "rgb(255 255 255 / 0.1)"),
-    fixed: v("--fn-fixed", "rgb(255 255 255 / 0.3)"),
-    rim: v("--fn-rim", "rgb(255 255 255 / 0.85)"),
-    rimBad: v("--fn-rim-bad", "rgb(255 255 255 / 0.4)"),
-    shade: v("--fn-shade", "rgb(110 38 0 / 0.2)"),
+    line: rgbaOf(ctx, v("--fn-line", "white")),
+    dot: rgbaOf(ctx, v("--fn-dot", "white")),
+    buy: rgbaOf(ctx, v("--fn-buy", "rgb(255 244 205)")),
   };
 };
+type Palette = ReturnType<typeof readPalette>;
 
 /**
- * The flow: the store's traffic as a stream of shoppers (round dots) pouring
- * through a real funnel on the band, wide at the mouth, converging to the
- * spout over the order bag. Their COLOUR is how they feel: in a stage Bizmis
- * hasn't fixed they're dim, grey and drifting, and many drop out through the
- * leak in its floor and fade; in a fixed stage they're warm gold, bigger and
- * lively; the ones who buy glow brightest as they pour down the spout into
- * the bag, which bounces, glows and sparkles. Never lossless: a fixed stage
- * still loses a few.
+ * The flow, as a playful marker drawing in white on the band: one funnel of
+ * three chambers (the stages), always converging from the straight mouth to
+ * the spout over the order bag. The store's shoppers stream through it as
+ * white dots in calm lanes. Each chamber has a leak, a gap in its floor:
+ * the shoppers it loses go hollow, drop out of it and fade, a waterfall
+ * whose thickness IS the stage's loss. A bad stage also chokes its exit.
  *
- * The hero is the fix: when Bizmis fixes the beat's stage, its agent (the
- * real head render) lands in the leak with a shockwave and a burst of
- * sparkles, the stage floods with light and turns warm, the shoppers in it
- * jump and light up, and its status pill flips big from the problem to the
- * solution. Earlier fixes stay quietly fixed; later stages stay poor.
+ * The fix, drawn: the beat's chamber at full ink (the others at ~40%); its
+ * agent's head is stamped onto the leak and circled with a scribble, a pen
+ * redraws the chamber as its exit widens (the next entries follow, and a
+ * double arrow marks the wider exit), little "pop" strokes and a star
+ * doodle burst out, the leak shrinks to a slit, the waterfall thins to a
+ * trickle, the label flips from the problem to the solution,
+ * and the shoppers in the fixed chamber bounce along. More of them reach
+ * the bag, which squashes as each lands, and grows rays as orders keep
+ * coming. Earlier fixes stay as they are; later stages keep leaking. Never
+ * lossless.
  *
  * `focus` 0–2 is a beat (its stage fixed at `fixAt`, the ones before it
- * already fixed, the rest still bad); 3 is the payoff (the bad funnel fixed
- * stage by stage, then the bag bursts). All drawn from `t` (ms), so it plays
- * backwards as well as forwards.
+ * already fixed, the rest still bad); 3 is the payoff (the bad funnel,
+ * fixed stage by stage in quick succession). All drawn from `t` (ms), so it
+ * plays backwards as well as forwards.
  */
 const FunnelFlow = ({
   t,
@@ -140,19 +169,19 @@ const FunnelFlow = ({
 }) => {
   const wrap = useRef<HTMLDivElement>(null);
   const canvas = useRef<HTMLCanvasElement>(null);
+  const pal = useRef<{ key: string; c: Palette } | null>(null);
   const [size, setSize] = useState({ W: 0, H: 0 });
   const payoff = focus >= 3;
   const starts = useMemo(() => startsFor(focus, fixAt), [focus, fixAt]);
   const shoppers = useMemo(() => makeShoppers(duration, starts), [duration, starts]);
-  const buyers = useMemo(() => shoppers.filter((s) => s.out === 3).sort((a, b) => a.sold - b.sold), [shoppers]);
-  const k = ksAt(t, starts);
-  const geo = geometry(size.W, size.H, k);
-  const sec = t / 1000;
-  const finale = payoff ? (t - (duration - FINALE)) / 1000 : -1;
-  /** 0..1 through each stage's fix celebration (only the beat's own stage, or all three in the payoff). */
-  const burst = starts.map((s, i) =>
-    payoff || i === focus ? Math.min(1, Math.max(0, (t - (s + RAMP * 0.3)) / BURST)) : 0,
+  const arrivals = useMemo(
+    () => shoppers.filter((s) => s.out === 3).map((s) => s.exit + HOP).sort((a, b) => a - b),
+    [shoppers],
   );
+  const k = ksAt(t, starts);
+  const bounds = boundsFor(k);
+  const geo = geometry(size.W, size.H);
+  const sec = t / 1000;
 
   useLayoutEffect(() => {
     const el = wrap.current;
@@ -165,22 +194,17 @@ const FunnelFlow = ({
     return () => ro.disconnect();
   }, []);
 
-  // the bag: a bounce and a glow for each buyer landing in it
-  let bounce = 0;
-  let glow = 0;
-  for (const s of buyers) {
-    const age = sec - (s.sold + HOP);
-    if (age < -HOP) break;
-    if (age < 0) continue;
-    if (age < 0.4) bounce += (1 - age / 0.4) * 0.2;
-    glow += Math.exp(-age / 0.6);
+  // the bag: a squash as each order lands; rays as they keep coming
+  let squash = 0;
+  let heat = 0;
+  for (const at of arrivals) {
+    const age = sec - at;
+    if (age < 0) break;
+    if (age < 0.45) squash += Math.exp(-age * 9) * Math.cos(age * 22) * 0.1;
+    heat += Math.exp(-age / 2.6);
   }
-  if (finale > 0) {
-    bounce += finale < 0.7 ? Math.sin((finale / 0.7) * Math.PI) * 0.5 : 0;
-    glow += 2 * Math.min(1, finale / 0.4);
-  }
-  bounce = Math.min(0.55, bounce);
-  glow = Math.min(2.5, glow);
+  squash = clamp(squash, -0.12, 0.16);
+  const bagScale = { x: 1 + squash, y: 1 - squash * 0.9 };
 
   useLayoutEffect(() => {
     const cv = canvas.current;
@@ -196,302 +220,369 @@ const FunnelFlow = ({
     }
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     ctx.clearRect(0, 0, W, H);
-    const c = palette(el, ctx);
+    const key = `${W}x${H}`;
+    if (pal.current?.key !== key) pal.current = { key, c: readPalette(el, ctx) };
+    const c = pal.current.c;
     const g = geo;
-    const { cy, r, x0, xEnd } = g;
-    const bx = BAG * W;
-    const spout = bx - g.R * 0.85;
-    const step = 3;
-
-    // a beat's own stage: a soft light pooling behind it
-    if (!payoff) {
-      const [a, b] = STAGES[focus];
-      const mx = ((a + b) / 2) * W;
-      const rad = (b - a) * W * 0.9;
-      const pool = ctx.createRadialGradient(mx, cy, rad * 0.1, mx, cy, rad);
-      pool.addColorStop(0, "rgb(255 255 255 / 0.28)");
-      pool.addColorStop(1, "rgb(255 255 255 / 0)");
-      ctx.fillStyle = pool;
-      ctx.fillRect(mx - rad, cy - rad, rad * 2, rad * 2);
-    }
-
-    // ── the funnel: glass, converging; brighter where a stage is fixed (it sweeps through) ──
-    const outline = () => {
-      ctx.beginPath();
-      ctx.moveTo(x0, cy - halfAt(g, x0));
-      for (let x = x0; x <= spout; x += step) ctx.lineTo(x, cy - halfAt(g, x));
-      for (let x = spout; x >= x0; x -= step) ctx.lineTo(x, cy + halfAt(g, x));
-      ctx.closePath();
-    };
-    const fixedTo = (i: number) => STAGES[i][0] * W + (STAGES[i][1] - STAGES[i][0]) * W * k[i];
-    ctx.save();
-    outline();
-    ctx.clip();
-    ctx.fillStyle = c.channel;
-    ctx.fillRect(0, 0, W, H);
-    ctx.fillStyle = c.fixed;
-    STAGES.forEach(([a], i) => {
-      if (k[i] > 0) ctx.fillRect(a * W, 0, fixedTo(i) - a * W + (k[i] >= 1 ? 1 : 0), H);
-    });
-    if (k[2] >= 1) ctx.fillRect(STAGES[2][1] * W, 0, W, H);
-    // the fix moment: the stage floods with light
-    STAGES.forEach(([a, b], i) => {
-      const e = burst[i];
-      if (e <= 0 || e >= 1) return;
-      const fl = ctx.createLinearGradient(a * W, 0, b * W, 0);
-      const al = 0.75 * Math.sin(Math.PI * Math.min(1, e * 1.6)) * (payoff ? 0.7 : 1);
-      fl.addColorStop(0, `rgb(255 255 255 / ${(al * 0.4).toFixed(3)})`);
-      fl.addColorStop(0.5, `rgb(255 255 255 / ${al.toFixed(3)})`);
-      fl.addColorStop(1, `rgb(255 255 255 / ${(al * 0.4).toFixed(3)})`);
-      ctx.fillStyle = fl;
-      ctx.fillRect(a * W, 0, (b - a) * W, H);
-    });
-    ctx.restore();
-
-    // the rim: solid where fixed, faint and dashed where it leaks; each stage's leak a gap in the floor
-    const holeMax = Math.max(24, r * 3.4);
-    const holes = GATES.map((gx, i) => ({ x: gx * W, w: holeMax * ((1 - rate(i, k[i])) / 0.7) }));
-    const fixedAt = (x: number) => {
-      const i = STAGES.findIndex(([a, b]) => x >= a * W - 1 && x <= b * W + 1);
-      return i < 0 ? k[2] >= 1 : k[i] > 0 && x <= fixedTo(i);
-    };
+    const { cy, h0, r, lw, ow } = g;
+    const X = (u: number) => g.x0 + u * g.run;
+    const half = (u: number) => h0 * halfAtU(u, bounds);
+    const floorAt = (u: number) => cy + half(u);
+    const xEnd = X(1);
+    const ink = (a: number) => rgba(c.line, a);
+    const amp = 0.45;
     ctx.lineCap = "round";
-    const rim = (sign: 1 | -1, from: number, to: number) => {
-      let x = from;
-      while (x < to) {
-        const good = fixedAt(x);
-        let nx = x;
-        while (nx < to && fixedAt(nx) === good) nx += step;
-        nx = Math.min(nx, to);
-        ctx.strokeStyle = good ? c.rim : c.rimBad;
-        ctx.lineWidth = good ? 2.4 : 1.6;
-        ctx.setLineDash(good ? [] : [4, 5]);
-        ctx.beginPath();
-        for (let px = x; px <= nx; px += step) ctx.lineTo(px, cy + sign * halfAt(g, px));
-        ctx.stroke();
-        x = nx;
-      }
-      ctx.setLineDash([]);
-    };
-    rim(-1, x0, spout);
-    let from = x0;
-    for (const h of [...holes, { x: spout + holeMax, w: 0 }]) {
-      const to = Math.min(h.x - h.w / 2, spout);
-      if (to > from) rim(1, from, to);
-      from = h.x + h.w / 2;
-    }
-    // the mouth: a straight edge, the funnel's widest point
-    ctx.strokeStyle = k[0] > 0.5 ? c.rim : c.rimBad;
-    ctx.lineWidth = 2;
-    ctx.beginPath();
-    ctx.moveTo(x0, cy - halfAt(g, x0));
-    ctx.lineTo(x0, cy + halfAt(g, x0));
-    ctx.stroke();
+    ctx.lineJoin = "round";
+    /** How far the outline has drawn itself in (u), as the beat starts. */
+    const reveal = 1.06 * smooth(t / REVEAL);
 
-    // ── the shoppers: their colour, glow, size and motion are their mood ──
-    const dot = (x: number, y: number, rr: number, rgb: string, alpha: number, shine: number) => {
-      if (alpha <= 0.01) return;
-      ctx.globalAlpha = alpha;
-      if (shine > 0) {
-        ctx.shadowColor = c.glow;
-        ctx.shadowBlur = rr * 2.2 * shine;
-      }
-      ctx.fillStyle = rgb;
-      ctx.beginPath();
-      ctx.arc(x, y, rr, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.shadowBlur = 0;
-      if (shine > 0) {
-        // a little highlight: lively
-        ctx.globalAlpha = alpha * 0.7 * Math.min(1, shine);
-        ctx.fillStyle = "rgb(255 255 255)";
-        ctx.beginPath();
-        ctx.arc(x - rr * 0.32, y - rr * 0.32, rr * 0.28, 0, Math.PI * 2);
-        ctx.fill();
-      }
-      ctx.globalAlpha = 1;
+    /** Each stage's leak: where it is, and how wide it's open now. */
+    const leaks = [0, 1, 2].map((i) => {
+      const u = leakU(i);
+      const cw = (CHAMBERS[i][1] - CHAMBERS[i][0]) * g.run;
+      const open = Math.min(cw * 0.16, 20);
+      const slit = ow * 0.5;
+      return { u, x: X(u), open, gap: open + (slit - open) * k[i] };
+    });
+    /** A lost shopper's drop point across a leak, `kk` fixed: the wide gap, or the slit past the head. */
+    const dropX = (i: number, spread: number, kk: number) => {
+      const L = leaks[i];
+      const wide = L.x + spread * L.open * 0.75;
+      const slit = L.x + g.head * 0.5 + lw + 2 + spread * 1.2;
+      return wide + (slit - wide) * kk;
     };
+
+    // ── the outline, in marker: per chamber, the top and the floor (broken at the leak) ──
+    const stroke = (side: 1 | -1, u0: number, u1: number) => {
+      const hi = Math.min(u1, reveal);
+      if (hi <= u0) return;
+      const steps = Math.max(2, Math.ceil(((hi - u0) * g.run) / 4));
+      ctx.beginPath();
+      for (let n = 0; n <= steps; n++) {
+        const u = u0 + ((hi - u0) * n) / steps;
+        const x = X(u);
+        ctx.lineTo(x, cy + side * half(u) + amp * wobble(x, side > 0 ? 3 : 7));
+      }
+      ctx.stroke();
+    };
+    const sectionK = (i: number) => (i < 3 ? k[i] : Math.min(k[0], k[1], k[2]));
+    for (let i = 0; i < 4; i++) {
+      const [a, b] = i < 3 ? CHAMBERS[i] : SPOUT;
+      const kk = sectionK(i);
+      // full ink everywhere (overlapping ends stay seamless); a fixed stage's marker is bolder
+      ctx.strokeStyle = ink(1);
+      ctx.lineWidth = ow * (0.72 + 0.28 * kk);
+      stroke(-1, a, b);
+      if (i < 3) {
+        const L = leaks[i];
+        stroke(1, a, L.u - L.gap / g.run);
+        stroke(1, L.u + L.gap / g.run, b);
+      } else stroke(1, a, b);
+    }
+    // the mouth: straight (well, by hand)
+    if (reveal > 0) {
+      ctx.strokeStyle = ink(1);
+      ctx.lineWidth = ow * (0.72 + 0.28 * k[0]);
+      const m = smooth(reveal / 0.08);
+      ctx.beginPath();
+      for (let n = 0; n <= 12; n++) {
+        const y = cy - h0 + 2 * h0 * m * (n / 12);
+        ctx.lineTo(g.x0 + amp * wobble(y, 11), y);
+      }
+      ctx.stroke();
+    }
+    // the seams between chambers: a light dashed scribble
+    ctx.lineWidth = Math.max(1.5, lw * 0.4);
+    ctx.setLineDash([lw * 0.9, lw * 1.6]);
+    for (const [i, u] of [CHAMBERS[1][0], CHAMBERS[2][0], SPOUT[0]].entries()) {
+      if (u > reveal) continue;
+      const hh = half(u) - ow * 1.2;
+      ctx.strokeStyle = ink(0.45 + 0.35 * k[i]);
+      ctx.beginPath();
+      ctx.moveTo(X(u), cy - hh);
+      ctx.lineTo(X(u) + 1, cy + hh);
+      ctx.stroke();
+    }
+    ctx.setLineDash([]);
+
+    // ── the fix, drawn ──
+    for (let i = 0; i < 3; i++) {
+      const since = t - starts[i];
+      if (!(since > 0)) continue;
+      const L = leaks[i];
+      const fy = floorAt(L.u);
+      const hr = g.head * 0.5;
+      const [a, b] = CHAMBERS[i];
+      // a pen retraces the chamber's new outline as its exit widens
+      const e = since / REDRAW;
+      if (e < 1.2) {
+        const pen = a + (b - a) * smooth(Math.min(1, e));
+        ctx.strokeStyle = ink(1);
+        ctx.lineWidth = ow * (1.15 - 0.15 * smooth((e - 1) / 0.2));
+        stroke(-1, a, pen);
+        stroke(1, a, Math.min(pen, L.u - L.gap / g.run));
+        stroke(1, L.u + L.gap / g.run, pen);
+      }
+      // the scribbled circle round the agent: a loop and a bit, like circling it on paper
+      const ce = smooth((since - 80) / CIRCLE);
+      if (ce > 0) {
+        ctx.strokeStyle = ink(0.95);
+        ctx.lineWidth = Math.max(1.8, lw * 0.6);
+        ctx.beginPath();
+        const turns = 2.25 * Math.PI * ce;
+        for (let n = 0; n <= 48; n++) {
+          const th = -Math.PI * 0.75 + (turns * n) / 48;
+          const rr = hr + lw * 0.9 + 2 + (n / 48) * lw * 0.9 + Math.sin(th * 3 + i) * 1.2;
+          ctx.lineTo(L.x + Math.cos(th) * rr, fy + Math.sin(th) * rr * 0.96);
+        }
+        ctx.stroke();
+      }
+      // the wider exit: a double arrow drawn across it
+      const ae = smooth((since - 250) / 500);
+      if (ae > 0) {
+        const x = X(b) - ow * 1.8;
+        const hh = (half(b) - ow * 1.6) * ae;
+        if (hh > 2) {
+          ctx.strokeStyle = ink(0.95);
+          ctx.lineWidth = Math.max(1.8, lw * 0.6);
+          const head = Math.min(hh * 0.5, lw * 1.6 + 2);
+          ctx.beginPath();
+          ctx.moveTo(x, cy - hh);
+          ctx.lineTo(x + 0.8, cy + hh);
+          for (const s of [-1, 1]) {
+            ctx.moveTo(x - head * 0.8, cy + s * (hh - head));
+            ctx.lineTo(x, cy + s * hh);
+            ctx.lineTo(x + head * 0.8, cy + s * (hh - head));
+          }
+          ctx.stroke();
+        }
+      }
+      // the pop: little strokes bursting out round the head, and a star doodle
+      const de = (since - STAMP * 0.7) / DOODLE;
+      if (de > 0 && de < 1) {
+        const out = smooth(de / 0.35);
+        const gone = smooth((de - 0.55) / 0.45);
+        ctx.strokeStyle = ink(1 - gone);
+        ctx.lineWidth = Math.max(2, lw * 0.7);
+        for (let j = 0; j < 5; j++) {
+          const th = Math.PI * (1.05 + j * 0.225);
+          const r0 = hr + lw * 2.6 + out * lw * 1.2;
+          const r1 = r0 + lw * (0.6 + 1.8 * out) * (1 - gone * 0.6);
+          ctx.beginPath();
+          ctx.moveTo(L.x + Math.cos(th) * r0, fy + Math.sin(th) * r0);
+          ctx.lineTo(L.x + Math.cos(th) * r1, fy + Math.sin(th) * r1);
+          ctx.stroke();
+        }
+        const sx = L.x + hr + lw * 4;
+        const sy = fy - hr - lw * 4.5 - out * lw;
+        star(ctx, sx, sy, (lw * 1.6 + 2) * spring(de / 0.45) * (1 - gone), de * 2);
+      }
+    }
+
+    // ── the shoppers: white dots in their lanes (bouncing along once their stage is fixed); the lost ones hollow ──
+    const pad = r * 1.6 + ow;
+    const laneY = (u: number, lane: number) => cy + lane * Math.max(0, half(u) - pad);
+    const blob = (x: number, y: number, rx: number, ry: number, col: number[], alpha: number) => {
+      if (alpha <= 0.01) return;
+      ctx.fillStyle = rgba(col, alpha);
+      ctx.beginPath();
+      ctx.ellipse(x, y, rx, ry, 0, 0, Math.PI * 2);
+      ctx.fill();
+    };
+    const ring = (x: number, y: number, rx: number, ry: number, w: number, alpha: number) => {
+      if (alpha <= 0.01) return;
+      ctx.strokeStyle = ink(alpha);
+      ctx.lineWidth = w;
+      ctx.beginPath();
+      ctx.ellipse(x, y, rx, ry, 0, 0, Math.PI * 2);
+      ctx.stroke();
+    };
+    /** Which chamber `u` is in (3 past the last). */
+    const stageAt = (u: number) => (u < CHAMBERS[1][0] ? 0 : u < CHAMBERS[2][0] ? 1 : u < SPOUT[0] ? 2 : 3);
+    const ringW = Math.max(1.6, lw * 0.5);
     for (const s of shoppers) {
       const age = sec - s.at;
-      if (age < 0) continue;
-      const rr = r * (0.88 + s.size * 0.24);
-      const lostAt = s.out < 3 ? s.gate[s.out] : Infinity;
-      if (sec >= lostAt) {
-        // lost: grey and dim, it slips out through the leak and fades away
-        const dt = sec - lostAt;
-        if (dt > 1.4) continue;
-        const gx = GATES[s.out] * W;
-        const y0 = cy + s.lane * Math.max(0, halfAt(g, gx) - rr * 1.3);
-        const x = gx + (s.phase - 0.4) * 22 * dt;
-        const y = y0 + 0.5 * (g.H * 1.5) * dt * dt;
-        const fade = Math.min(1, Math.max(0, (g.H - y) / 24)) * (1 - Math.max(0, dt - 0.8) / 0.6);
-        dot(x, y, rr * (0.85 - 0.25 * Math.min(1, dt)), mix(c.sad, c.sad, 0), 0.75 * fade, 0);
+      if (age <= 0) continue;
+      const enter = (x: number) => clamp((x - g.x0) / (r * 4));
+      if (s.out < 3) {
+        const i = s.out;
+        const kk = ksAt(s.exit * 1000, starts)[i];
+        const xd = dropX(i, s.spread, kk);
+        const ud = (xd - g.x0) / g.run;
+        const td = s.at + sAt(ud, s.v);
+        if (sec < td) {
+          // it slides down to the leak, going hollow as it goes
+          const u = uAt(age, s.v);
+          const x = X(u);
+          if (x < g.x0 + r) continue;
+          const span = Math.min(PEEL * (ud - CHAMBERS[i][0]), 0.2);
+          const p = smooth((u - (ud - span)) / span);
+          const y = laneY(u, s.lane) + (floorAt(ud) - laneY(u, s.lane)) * p * p;
+          const hollow = smooth(p / 0.6);
+          blob(x, y, r, r, c.dot, enter(x) * (1 - hollow));
+          ring(x, y, r * 1.1, r * 1.1, ringW, enter(x) * hollow);
+          continue;
+        }
+        // lost: a hollow circle dropping out, stretching as it speeds up, thinning and fading
+        const p = (sec - td) / FALL;
+        if (p >= 1) continue;
+        const y0 = floorAt(ud);
+        const D = H - y0 + r * 4;
+        const x = xd + (1 - (1 - p) ** 2) * (3 + 5 * (1 - kk));
+        const y = y0 + D * (0.4 * p + 0.6 * p * p);
+        const st = 0.25 * p;
+        ring(x, y, r * 1.15 * (1 - st * 0.4), r * 1.15 * (1 + st), ringW * (1 - 0.5 * p), 1 - smooth((p - 0.35) / 0.65));
         continue;
       }
-      if (sec < s.sold) {
-        const x = age * s.v * W;
-        if (x < x0 + rr * 0.5) continue;
-        const passed = s.gate.filter((gt) => sec >= gt).length;
-        // how its current stage treats it: 0 failed (grey) … 1 helped (gold); through all three, buying
-        const m = passed >= 3 ? 1 : k[passed];
-        const jump = passed < 3 ? Math.sin(Math.PI * burst[passed]) : 0;
-        const hop = Math.abs(Math.sin(Math.PI * (age * 2.2 + s.phase))) * rr * (0.1 + 0.8 * m) + jump * rr * 2.2;
-        const drift = (1 - m) * Math.sin(sec * 2.4 + s.phase * 9) * rr * 0.5;
-        const y = cy + s.lane * Math.max(0, halfAt(g, x) - rr * 1.4) - hop + drift;
-        const enter = Math.min(1, Math.max(0, (x - x0) / (rr * 2)));
-        const color = passed >= 3 ? mix(c.glad, c.buy, 0.6) : mix(c.sad, c.glad, m);
-        dot(x, y, rr * (0.86 + 0.2 * m + 0.25 * jump), color, enter * (0.7 + 0.3 * m), m * (passed >= 3 ? 1.3 : 0.8) + jump);
+      if (sec < s.exit) {
+        const u = uAt(age, s.v);
+        const x = X(u);
+        if (x < g.x0 + r) continue;
+        // in a fixed chamber they bounce along: a hop, squashed at each landing
+        const fk = stageAt(u) < 3 ? k[stageAt(u)] : 0;
+        const ph = (age * 2.3 + s.spread * 0.5 + 2) % 1;
+        const hop = Math.sin(Math.PI * ph);
+        const land = 1 - smooth(Math.min(ph, 1 - ph) / 0.12);
+        const sq = 0.22 * land * fk;
+        blob(x, laneY(u, s.lane) - hop * r * 1.3 * fk + sq * r, r * (1 + sq), r * (1 - sq), c.dot, enter(x));
         continue;
       }
-      // a buyer: brightest, down the spout into the bag
-      const p = (sec - s.sold) / HOP;
-      if (p > 1) continue;
-      const fy = cy + s.lane * Math.max(0, halfAt(g, xEnd) - rr * 1.4);
-      const x = xEnd + (bx - xEnd) * p;
-      const y = fy + (cy - fy) * p;
-      dot(x, y, rr * (1.15 - 0.5 * p * p), mix(c.buy, c.buy, 0), 1, 1.6);
+      // bought: out of the spout, a little arc, into the bag
+      const p = (sec - s.exit) / HOP;
+      if (p >= 1) continue;
+      const y0 = laneY(1, s.lane);
+      const x = xEnd + (g.bx - xEnd) * p;
+      const y = y0 + (g.by - y0) * smooth(p) - hump(p) * r * 2.5;
+      const sv = 0.18 * hump(p);
+      blob(x, y, r * (1 - sv), r * (1 + sv), mixc(c.dot, c.buy, smooth(p / 0.4)), 1 - smooth((p - 0.8) / 0.2));
     }
 
-    // the fix moment, the hero: a shockwave and a burst of sparkles from the agent
-    STAGES.forEach((_, i) => {
-      const e = burst[i];
-      if (e <= 0 || e >= 1) return;
-      const scale = payoff ? 0.7 : 1;
-      const px = GATES[i] * W;
-      const py = cy + halfAt(g, px);
-      const ease = 1 - (1 - e) ** 3;
-      for (const [d, w] of [
-        [0, 3],
-        [0.18, 2],
-      ]) {
-        const ee = Math.max(0, (e - d) / (1 - d));
-        if (ee <= 0) continue;
-        ctx.strokeStyle = c.burst;
-        ctx.globalAlpha = 0.9 * (1 - ee);
-        ctx.lineWidth = w;
+    // ── the bag: a marker circle that squashes as orders land, a ring per order, rays as they keep coming ──
+    ctx.save();
+    ctx.translate(g.bx, g.by);
+    ctx.scale(bagScale.x, bagScale.y);
+    ctx.strokeStyle = ink(1);
+    ctx.lineWidth = lw * 0.9;
+    ctx.beginPath();
+    for (let n = 0; n <= 40; n++) {
+      const th = -Math.PI / 2 + (Math.PI * 2.08 * n) / 40;
+      const rr = g.R + Math.sin(th * 2 + 1) * 0.8 + (n / 40) * 1.2;
+      ctx.lineTo(Math.cos(th) * rr, Math.sin(th) * rr);
+    }
+    ctx.stroke();
+    ctx.restore();
+    for (const at of arrivals) {
+      const age = sec - at;
+      if (age < 0) break;
+      if (age > 0.55) continue;
+      const e = age / 0.55;
+      ctx.strokeStyle = rgba(c.buy, 0.6 * (1 - e) ** 1.5);
+      ctx.lineWidth = Math.max(1.5, lw * 0.45) * (1 - e * 0.5);
+      ctx.beginPath();
+      ctx.arc(g.bx, g.by, g.R + lw + e * g.R * 0.45, 0, Math.PI * 2);
+      ctx.stroke();
+    }
+    const fullness = smooth(heat / 26);
+    if (fullness > 0.02) {
+      const n = 12;
+      ctx.strokeStyle = rgba(c.buy, 0.95);
+      ctx.lineWidth = Math.max(2, lw * 0.6);
+      const shown = n * fullness;
+      for (let j = 0; j < Math.ceil(shown); j++) {
+        const grow = clamp(shown - j);
+        const a = -Math.PI / 2 + (j / n) * Math.PI * 2;
+        const r0 = g.R + lw * 1.6 + 2;
+        const r1 = r0 + (lw * 1.2 + 3) * grow;
         ctx.beginPath();
-        ctx.arc(px, py, (14 + (1 - (1 - ee) ** 3) * g.half * 0.95) * scale, 0, Math.PI * 2);
+        ctx.moveTo(g.bx + Math.cos(a) * r0, g.by + Math.sin(a) * r0);
+        ctx.lineTo(g.bx + Math.cos(a) * r1, g.by + Math.sin(a) * r1);
         ctx.stroke();
       }
-      ctx.globalAlpha = 1;
-      for (let j = 0; j < 22; j++) {
-        const a = (j / 22) * Math.PI * 2 + i;
-        const dd = (16 + ease * (g.half * 0.7 + (j % 3) * 10)) * scale;
-        star(ctx, px + Math.cos(a) * dd, py + Math.sin(a) * dd * 0.8, (j % 2 ? 3 : 4.6) * scale, j % 3 ? c.burst : c.glow, 1 - e);
-      }
-    });
-
-    // the bag's glow, and a sparkle ring for each buyer landing
-    if (glow > 0.02) {
-      const rad = g.R * (1.6 + glow * 0.8);
-      const halo = ctx.createRadialGradient(bx, cy, g.R * 0.5, bx, cy, rad);
-      halo.addColorStop(0, c.glow);
-      halo.addColorStop(1, "rgb(255 255 255 / 0)");
-      ctx.globalAlpha = Math.min(0.85, 0.4 * glow);
-      ctx.fillStyle = halo;
-      ctx.beginPath();
-      ctx.arc(bx, cy, rad, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.globalAlpha = 1;
-    }
-    buyers.forEach((s, n) => {
-      const age = sec - (s.sold + HOP);
-      if (age < 0 || age > 0.7) return;
-      const e = age / 0.7;
-      ctx.strokeStyle = c.burst;
-      ctx.globalAlpha = 0.8 * (1 - e);
-      ctx.lineWidth = 2;
-      ctx.beginPath();
-      ctx.arc(bx, cy, g.R * (1 + e * 0.9), 0, Math.PI * 2);
-      ctx.stroke();
-      ctx.globalAlpha = 1;
-      for (let j = 0; j < 6; j++) {
-        const a = (j / 6) * Math.PI * 2 + rand(n, 30) * 6;
-        const d = g.R * (1.1 + 1.3 * e);
-        star(ctx, bx + Math.cos(a) * d, cy + Math.sin(a) * d, (j % 2 ? 2.4 : 3.4) * (1 - e * 0.5), j % 2 ? c.glow : c.burst, 1 - e);
-      }
-    });
-    // the payoff's finale: the bag bursts
-    if (finale > 0) {
-      const f = Math.min(1, finale / 1.2);
-      ctx.strokeStyle = c.burst;
-      ctx.globalAlpha = 0.85 * (1 - f);
-      ctx.lineWidth = 3;
-      ctx.beginPath();
-      ctx.arc(bx, cy, g.R + f * W * 0.2, 0, Math.PI * 2);
-      ctx.stroke();
-      ctx.globalAlpha = 1;
-      for (let j = 0; j < 40; j++) {
-        const a = Math.PI * 2 * rand(j, 90);
-        const v = 90 + 170 * rand(j, 92);
-        star(ctx, bx + Math.cos(a) * v * finale, cy + Math.sin(a) * v * finale + 80 * finale * finale, j % 3 ? 3.2 : 4.4, j % 2 ? c.glow : c.burst, Math.max(0, 1 - f));
-      }
     }
 
-    // a beat: the rest of the funnel steps back a little; its stage and the bag stay bright
+    // ── a beat: the other stages at ~40%; its own and the bag at full ink ──
     if (!payoff) {
-      const [a, b] = STAGES[focus];
-      const spots = [
-        [a - 0.01, b + 0.015],
-        [END - 0.02, 1.2],
-      ];
-      const edge = 0.035;
+      const [a, b] = CHAMBERS[focus];
+      const lo = X(a) - ow;
+      const hi = X(b) + ow;
+      const soft = 8;
       const dim = ctx.createLinearGradient(0, 0, W, 0);
-      for (let i = 0; i <= 60; i++) {
-        const u = i / 60;
-        let lit = 0;
-        for (const [p, q] of spots) lit = Math.max(lit, smooth(p - edge, p + edge, u) * (1 - smooth(q - edge, q + edge, u)));
-        dim.addColorStop(u, `rgb(0 0 0 / ${(0.34 * (1 - lit)).toFixed(3)})`);
-      }
+      const stops: [number, number][] = [
+        [0, 0.6],
+        [lo - soft, 0.6],
+        [lo + soft, 0],
+        [hi - soft, 0],
+        [hi + soft, 0.6],
+        [xEnd - 4, 0.45],
+        [xEnd + 10, 0],
+        [W, 0],
+      ];
+      for (const [x, al] of stops) dim.addColorStop(clamp(x / W), `rgb(0 0 0 / ${al})`);
       ctx.globalCompositeOperation = "destination-out";
       ctx.fillStyle = dim;
       ctx.fillRect(0, 0, W, H);
       ctx.globalCompositeOperation = "source-over";
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [t, size, shoppers, buyers]);
+  }, [t, size, shoppers]);
 
   const W = size.W;
+  const X = (u: number) => geo.x0 + u * geo.run;
 
   return (
     <div className={cn("sl-flow", payoff ? "is-payoff" : `is-focus-${focus}`, className)} aria-hidden="true">
       <div ref={wrap} className="sl-flow-stage">
         <canvas ref={canvas} className="sl-flow-canvas" />
         {W > 0 &&
-          STAGES.map(([a, z], i) => {
-            const fixed = k[i];
-            const hero = payoff || i === focus;
-            // the hero's pill flips big at the fix, then stays a little larger
-            const e = burst[i];
-            const flip = e > 0 && e < 1 ? Math.sin(Math.PI * Math.min(1, e * 1.4)) : 0;
-            const scale = hero ? (fixed >= 0.5 ? 1.08 + 0.35 * flip * (payoff ? 0.6 : 1) : 1.04) : 0.92;
+          CHAMBERS.map(([a, b], i) => {
+            const since = t - starts[i] - 120;
+            const e = smooth(since / 300);
+            const pop = since > 0 && since < 600 ? Math.sin((since / 600) * Math.PI) * 0.18 : 0;
+            const dim = !payoff && i !== focus;
             return (
               <span
                 key={i}
-                className={cn("sl-flow-pill", fixed >= 0.5 ? "is-fixed" : "is-bad", hero ? "is-hero" : "is-dim")}
-                style={{ left: ((a + z) / 2) * W, scale: `${scale}` }}
+                className={cn("sl-flow-label", e >= 0.5 && "is-fixed", dim && "is-dim")}
+                style={{
+                  left: X(a),
+                  width: X(b) - X(a),
+                  height: geo.top,
+                  opacity: smooth(t / 300) * (dim ? 0.4 : 1),
+                  transform: `scale(${1 + pop})`,
+                }}
               >
-                <span className="sl-flow-pill-dot" style={{ scale: `${fixed >= 0.5 ? backOut(Math.min(1, (fixed - 0.5) * 2)) : 1}` }}>
-                  {fixed >= 0.5 && <Check strokeWidth={3.2} />}
+                <span className="sl-flow-label-text" style={{ opacity: 1 - e, translate: `0 ${-8 * e}px` }}>
+                  {copy.problems[i]}
                 </span>
-                {fixed >= 0.5 ? copy.solutions[i] : copy.problems[i]}
+                <span className="sl-flow-label-text is-solution" style={{ opacity: e, translate: `0 ${8 * (1 - e)}px` }}>
+                  <Check className="sl-flow-label-check" strokeWidth={3.4} />
+                  {copy.solutions[i]}
+                </span>
               </span>
             );
           })}
         {W > 0 &&
-          GATES.map((gx, i) => {
-            const p = (t - starts[i]) / 560;
-            if (!(p > 0)) return null;
-            const x = gx * W;
+          CHAMBERS.map((_, i) => {
+            // the agent, stamped onto the leak: in big, pressed down with a squash, settled
+            const q = (t - starts[i]) / STAMP;
+            if (!(q > 0)) return null;
+            const u = leakU(i);
+            const s = q < 1 ? 1.6 - 0.6 * spring(q) : 1;
+            const sq = q > 0.25 && q < 1.6 ? 0.2 * Math.exp(-3.5 * (q - 0.25)) * Math.cos(6 * (q - 0.25)) : 0;
             return (
               <AgentPin
                 key={i}
                 stage={i}
-                on
-                focus={payoff || i === focus}
-                size={Math.round(Math.max(26, Math.min(38, geo.half * 0.5)))}
+                size={geo.head}
                 className={cn("sl-flow-pin", !payoff && i !== focus && "is-dim")}
-                style={{ left: x, top: geo.cy + halfAt(geo, x), scale: `${backOut(Math.min(1, p))}` } as CSSProperties}
+                style={
+                  {
+                    left: X(u),
+                    top: geo.cy + geo.h0 * halfAtU(u, bounds),
+                    opacity: clamp(q * 3),
+                    transform: `translate(-50%, -50%) scale(${s * (1 + sq)}, ${s * (1 - sq)})`,
+                  } as CSSProperties
+                }
               />
             );
           })}
@@ -500,16 +591,15 @@ const FunnelFlow = ({
             className="sl-flow-bag"
             style={
               {
-                left: BAG * W,
-                top: geo.cy,
+                left: geo.bx,
+                top: geo.by,
                 width: geo.R * 2,
                 height: geo.R * 2,
-                scale: `${1 + bounce}`,
-                "--glow": glow.toFixed(3),
+                transform: `translate(-50%, -50%) scale(${bagScale.x}, ${bagScale.y})`,
               } as CSSProperties
             }
           >
-            <ShoppingBag strokeWidth={2.3} />
+            <ShoppingBag strokeWidth={2.6} />
           </span>
         )}
       </div>
@@ -517,19 +607,16 @@ const FunnelFlow = ({
   );
 };
 
-/** A little four-point sparkle. */
-const star = (ctx: CanvasRenderingContext2D, x: number, y: number, s: number, color: string, alpha: number) => {
-  if (alpha <= 0.01) return;
-  ctx.globalAlpha = alpha;
-  ctx.fillStyle = color;
+/** A little hand-drawn star doodle (five points), outlined in marker. */
+const star = (ctx: CanvasRenderingContext2D, x: number, y: number, s: number, spin: number) => {
+  if (s <= 0.5) return;
   ctx.beginPath();
-  ctx.moveTo(x, y - s * 1.6);
-  ctx.quadraticCurveTo(x, y, x + s * 1.6, y);
-  ctx.quadraticCurveTo(x, y, x, y + s * 1.6);
-  ctx.quadraticCurveTo(x, y, x - s * 1.6, y);
-  ctx.quadraticCurveTo(x, y, x, y - s * 1.6);
-  ctx.fill();
-  ctx.globalAlpha = 1;
+  for (let n = 0; n <= 10; n++) {
+    const a = -Math.PI / 2 + spin * 0.4 + (n * Math.PI) / 5;
+    const rr = n % 2 ? s * 0.45 : s;
+    ctx.lineTo(x + Math.cos(a) * rr, y + Math.sin(a) * rr);
+  }
+  ctx.stroke();
 };
 
 export default FunnelFlow;

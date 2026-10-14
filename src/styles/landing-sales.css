@@ -473,7 +473,7 @@
   --fn-h: clamp(130px, calc(100svh - 30rem), 230px);
 }
 .sl-c.is-pinned .sl-pay .sl-fn {
-  --fn-h: clamp(280px, calc(100svh - 20rem), 400px);
+  --fn-h: clamp(260px, calc(100svh - 22rem), 340px);
 }
 
 /* stacked (no room to pin) */
@@ -524,33 +524,19 @@
 }
 
 /* ═════════ The funnel at scale (sales/funnel) ═════════
-   On the band, in glass: round shoppers whose faces are the measure. The
-   canvas reads its colours from these variables, so a palette can restyle it. */
+   A playful marker drawing in white straight on the band (no card, no
+   fills, no glows): a funnel of three chambers, white shoppers flowing
+   through, the lost ones dropping out of each chamber's leak as hollow
+   circles, one small label per chamber. The canvas reads its inks from these
+   variables, so a palette can restyle it. Nothing dark anywhere. */
 .sl-fn {
   --fn-h: 230px;
-  --fn-body: white;
-  --fn-joy: hsl(var(--primary));
-  /* the shoppers' mood, as colour: failed (dim grey), helped (warm gold), buying (brightest, glowing) */
-  --fn-sad: rgb(128 112 102);
-  --fn-glad: rgb(255 226 150);
-  --fn-buy: rgb(255 251 236);
-  --fn-glow: rgb(255 236 170);
-  --fn-burst: white;
-  --fn-channel: rgb(255 255 255 / 0.1);
-  --fn-fixed: rgb(255 255 255 / 0.3);
-  --fn-rim: rgb(255 255 255 / 0.85);
-  --fn-rim-bad: rgb(255 255 255 / 0.42);
-  --fn-shade: rgb(110 38 0 / 0.2);
+  --fn-line: white;
+  --fn-dot: white;
+  --fn-buy: rgb(255 244 205);
+  --fn-ink: white;
   position: relative;
-  padding: 0.75rem 1rem 0.6rem;
-  border-radius: 1.6rem;
-  background: linear-gradient(160deg, rgb(255 255 255 / 0.16), rgb(255 255 255 / 0.06));
-  box-shadow:
-    inset 0 0 0 1px rgb(255 255 255 / 0.3),
-    0 30px 60px -42px rgb(110 38 0 / 0.65);
-  -webkit-backdrop-filter: blur(10px);
-  backdrop-filter: blur(10px);
-  color: var(--fn-body);
+  color: var(--fn-ink);
 }
 .sl-flow {
   position: relative;
@@ -567,116 +553,75 @@
   height: 100%;
   pointer-events: none;
 }
-/* each stage's status: the problem in glass, then (fixed) a white pill with the primary check */
-.sl-flow-pill {
+/* one small label per chamber, in the section's sans: the problem, then (fixed) the solution, ticked */
+.sl-flow-label {
   position: absolute;
   top: 0;
   z-index: 3;
-  display: inline-flex;
+  display: grid;
   align-items: center;
-  gap: 0.35rem;
-  max-width: 24%;
-  padding: 0.26rem 0.6rem 0.26rem 0.3rem;
-  border-radius: 999px;
-  translate: -50% 0;
-  background: rgb(255 255 255 / 0.16);
-  box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.32);
-  font-size: 0.72rem;
+  justify-items: center;
+  font-size: 0.8rem;
   font-weight: 600;
   line-height: 1.1;
-  color: rgb(255 255 255 / 0.85);
-  transition: opacity 0.3s ease;
+  text-align: center;
+  color: var(--fn-ink);
+  transform-origin: 50% 70%;
 }
-.sl-flow-pill-dot {
-  display: grid;
-  flex-shrink: 0;
-  place-items: center;
-  width: 1rem;
-  height: 1rem;
-  border-radius: 999px;
-  box-shadow: inset 0 0 0 1.5px rgb(255 255 255 / 0.6);
-  color: var(--fn-body);
+.sl-flow-label-text {
+  grid-area: 1 / 1;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  max-width: 100%;
+  white-space: nowrap;
+  opacity: 0.92;
 }
-.sl-flow-pill-dot svg {
-  width: 0.62rem;
-  height: 0.62rem;
-}
-.sl-flow-pill.is-fixed {
-  background: var(--fn-body);
-  box-shadow: 0 8px 18px -8px rgb(110 38 0 / 0.5);
-  color: var(--bzl-fg);
-}
-.sl-flow-pill.is-fixed .sl-flow-pill-dot {
-  background: hsl(var(--primary));
-  box-shadow: none;
-}
-.sl-flow-pill.is-dim {
-  opacity: 0.6;
-}
-/* the beat's own stage: its pill leads, and flips big at the fix */
-.sl-flow-pill.is-hero {
-  z-index: 4;
-  font-size: 0.8rem;
+.sl-flow-label-text.is-solution {
   font-weight: 700;
+  opacity: 1;
 }
-@media (min-width: 640px) {
-  .sl-flow-pill.is-hero {
-    max-width: 36%;
-    white-space: nowrap;
-  }
-}
-.sl-flow-pill.is-hero.is-fixed {
-  box-shadow:
-    0 0 0 3px rgb(255 255 255 / 0.35),
-    0 10px 24px -8px rgb(110 38 0 / 0.55);
-}
-@media (max-width: 479px) {
-  .sl-flow-pill {
-    max-width: 25.5%;
-    padding-right: 0.4rem;
-    font-size: 0.62rem;
-  }
-  .sl-flow-pill-dot {
-    width: 0.8rem;
-    height: 0.8rem;
-  }
-}
-/* the agent plugging a stage's leak */
-.sl-flow-pin {
-  position: absolute;
-  z-index: 3;
-  translate: -50% -50%;
-  border-radius: 50%;
-  box-shadow:
-    0 0 0 2.5px var(--fn-body),
-    0 0 0 6px rgb(255 255 255 / 0.25),
-    0 8px 18px -6px rgb(110 38 0 / 0.55);
+.sl-flow-label-check {
+  flex-shrink: 0;
+  width: 1em;
+  height: 1em;
 }
 .sl-flow-pin.is-dim {
-  opacity: 0.65;
+  opacity: 0.4;
 }
-/* the order bag at the funnel's mouth: it bounces and glows as buyers land */
+/* narrow chambers: smaller, and free to wrap onto two lines */
+@media (max-width: 479px) {
+  .sl-flow-label {
+    padding-inline: 3px;
+    font-size: 0.66rem;
+  }
+  .sl-flow-label-text {
+    white-space: normal;
+    text-wrap: balance;
+  }
+}
+/* the agent: a round stamp on a stage's leak, ringed in white */
+.sl-flow-pin {
+  position: absolute;
+  z-index: 4;
+  border-radius: 50%;
+  box-shadow: 0 0 0 2.5px var(--fn-ink);
+  transition: opacity 0.4s ease;
+}
+/* the order bag's icon (its circle is drawn on the canvas, in marker) */
 .sl-flow-bag {
-  --glow: 0;
   position: absolute;
   z-index: 3;
   display: grid;
   place-items: center;
-  border-radius: 50%;
-  translate: -50% -50%;
-  background: var(--fn-body);
-  color: var(--fn-joy);
-  box-shadow:
-    0 0 0 calc(4px + var(--glow) * 3px) rgb(255 255 255 / 0.25),
-    0 0 calc(var(--glow) * 22px) calc(var(--glow) * 6px) rgb(255 240 210 / 0.6),
-    0 8px 18px -8px rgb(110 38 0 / 0.6);
+  color: var(--fn-ink);
 }
 .sl-flow-bag svg {
-  width: 48%;
-  height: 48%;
+  width: 54%;
+  height: 54%;
 }
 
-/* ═════════ The payoff: the whole funnel fixed, the bag bursting ═════════ */
+/* ═════════ The payoff: the whole funnel fixed, the bag glowing ═════════ */
 .sl-pay-box {
   padding-bottom: 0.9rem;
 }
@@ -868,7 +813,7 @@
   .sl-c-show,
   .sl-c-funnel-slot,
   .sl-buy-perk,
-  .sl-flow-pill {
+  .sl-flow-label {
     transition: none !important;
   }
   .bzw-caret {
@@ -922,4 +867,20 @@
 /* the rail (A) sits on the light band: its funnel gets a primary ground so the glass reads */
 .sl-a .sl-fn {
   background: hsl(var(--primary));
+}
+
+/* the docked bar's trend icon: drawn in full (its loop could catch it mid-draw, a tiny stroke at this size) */
+.sl-c .pi-dock-icon .bzl-ai-trend .line {
+  animation: none;
+  stroke-dashoffset: 0;
+}
+.sl-c .pi-dock-icon .bzl-ai-trend .head {
+  animation: none;
+  opacity: 1;
+  transform: none;
+}
+.sl-c .pi-dock-icon svg {
+  width: 62%;
+  height: 62%;
+  stroke-width: 2.6;
 }

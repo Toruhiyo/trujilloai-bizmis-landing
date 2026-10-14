@@ -7,58 +7,96 @@
  * and the funnel still narrows: better, never lossless. Shapes only: no
  * figure from it is ever printed, and none is a claim.
  *
- * The shoppers are a deterministic stream: shopper `i` arrives at a fixed
- * time, at a fixed speed, and its fate at each stage is fixed by the stage's
- * rate at the moment it gets there. So any moment of the timeline can be
- * drawn from `t` alone, forwards or backwards (the rewind).
+ * Everything here is in the funnel's own units (x: 0 → 1 across the stage
+ * box, heights: fractions of the mouth), so the drawing only scales it.
+ * The shoppers are a deterministic stream: shopper `i` enters at a fixed
+ * time and lane, and its fate at each stage is fixed by that stage's pass
+ * rate at the moment it would reach the stage's leak. So any moment of the
+ * timeline is drawn from `t` alone, forwards or backwards (the rewind).
  */
-/** A stage without Bizmis: big leaks. */
-export const BAD = [0.32, 0.3, 0.34];
-/** A stage with Bizmis: far better, never lossless. */
-export const GOOD = [0.84, 0.8, 0.86];
+
+/** A stage's pass rate without Bizmis: a big leak. */
+export const BAD = [0.42, 0.44, 0.46];
+/** With Bizmis: far better, never lossless. */
+export const GOOD = [0.87, 0.86, 0.88];
 
 /** The pass rate of stage `g`, `k` (0 → 1) of the way fixed. */
 export const rate = (g: number, k: number) => BAD[g] + (GOOD[g] - BAD[g]) * k;
 
-/** How many of the visitors are left after each stage: [visits, fit, decided, ordered]. */
-export const flows = (k: number[]) => {
-  const out = [1];
-  for (let g = 0; g < 3; g++) out.push(out[g] * rate(g, k[g] ?? 0));
-  return out;
+/**
+ * The shape (x as fractions of the funnel's run, from the mouth to the
+ * spout's end; heights as fractions of the mouth's half-height): one funnel
+ * of three chambers side by side, then the spout. Each chamber narrows from
+ * its entry to its exit; how much is how well it works: a bad stage chokes
+ * its exit, a fixed one opens it up (the next chambers' entries follow).
+ * Always converging (exit < entry), never fully open.
+ */
+export const CHAMBERS: [number, number][] = [
+  [0, 0.3],
+  [0.3, 0.6],
+  [0.6, 0.88],
+];
+export const SPOUT: [number, number] = [0.88, 1];
+/** A chamber's exit as a share of its entry: choked (bad) → opened up (fixed). */
+const EXIT_BAD = [0.6, 0.6, 0.62];
+const EXIT_GOOD = [0.9, 0.9, 0.9];
+/** The spout's half-height, as a share of the last chamber's exit. */
+const SPOUT_K = 0.8;
+/** Where each chamber's leak (the gap in its floor) sits, along the chamber. */
+export const LEAK_AT = 0.6;
+
+/** The half-heights at the mouth and at each chamber's exit, each stage `k` (0 → 1) fixed. */
+export const boundsFor = (k: number[]) => {
+  const b = [1];
+  for (let g = 0; g < 3; g++) b.push(b[g] * (EXIT_BAD[g] + (EXIT_GOOD[g] - EXIT_BAD[g]) * (k[g] ?? 0)));
+  return b;
 };
 
-/** Where each stage starts and ends (fractions of the width), and where orders leave for the sales. */
-export const STAGES: [number, number][] = [
-  [0.02, 0.25],
-  [0.25, 0.49],
-  [0.49, 0.73],
-];
-export const GATES = STAGES.map(([, b]) => b);
-/** Where the stream ends and buyers jump for the order bag, and the bag's centre. */
-export const END = 0.8;
-export const BAG = 0.91;
+/** The funnel's half-height (fraction of the mouth's) at `u` along its run, for `bounds`: only ever shrinks. */
+export const halfAtU = (u: number, b: number[]) => {
+  for (let i = 0; i < 3; i++) {
+    const [lo, hi] = CHAMBERS[i];
+    if (u <= hi) return b[i] + (b[i + 1] - b[i]) * (Math.max(0, u - lo) / (hi - lo));
+  }
+  // the shoulder into the spout, then the spout
+  const k = Math.min(1, (u - SPOUT[0]) / 0.03);
+  return b[3] * (1 - (1 - SPOUT_K) * k * k * (3 - 2 * k));
+};
 
-/** Shoppers per second, how long before 0 the stream starts (so it's full at 0), seconds to cross the width. */
-const RATE = 6.6;
-const WARM = 3.6;
-const CROSS = 3.1;
-/** How long a stage takes to be fixed (ms). */
-export const RAMP = 1000;
+/** Shoppers per second, seconds before 0 the stream starts (so it's full at 0). */
+const RATE = 17;
+/** The lanes across the stream (top → floor), and the order shoppers take them in. */
+const LANES = [-0.78, -0.39, 0, 0.39, 0.78];
+const LANE_ORDER = [0, 3, 1, 4, 2];
+const WARM = 6;
+/** Seconds to cross the run. */
+const CROSS = 3.2;
+/** How long a lost shopper's slide to the leak takes, at most (fraction of a chamber). */
+export const PEEL = 0.7;
+/** A fall from the leak to the floor of the box (s). */
+export const FALL = 1.35;
+/** A buyer's hop from the spout into the bag (s). */
+export const HOP = 0.42;
+
+/** How long a stage's leak takes to choke once its agent lands (ms). */
+export const RAMP = 600;
+/** The agent's drop onto the leak (ms), ending as it lands. */
+export const DROP = 380;
 
 const ease = (k: number) => (k <= 0 ? 0 : k >= 1 ? 1 : k < 0.5 ? 4 * k * k * k : 1 - (-2 * k + 2) ** 3 / 2);
 
 /**
- * When each stage gets fixed (ms on the timeline). A beat (`focus` 0–2): the
- * stages before it are fixed already, its own gets fixed at `fixAt`, the
- * ones after it stay bad. The payoff (3): from the bad funnel, all three
- * fixed one after another.
+ * When each stage's agent lands on its leak (ms on the timeline). A beat
+ * (`focus` 0–2): the stages before it are fixed already, its own lands at
+ * `fixAt`, the ones after it stay bad. The payoff (3): from the bad funnel,
+ * all three land one after another, quickly.
  */
 export const startsFor = (focus: number, fixAt = 1500) =>
   focus >= 3
-    ? [1000, 1600, 2200]
+    ? [1300, 1750, 2200]
     : [0, 1, 2].map((g) => (g < focus ? -Infinity : g === focus ? fixAt : Infinity));
 
-/** How far each stage's fix is at `t` (ms): 0 → 1. */
+/** How far each stage's fix is at `t` (ms): 0 → 1, over RAMP from the landing. */
 export const ksAt = (t: number, starts: number[]) => starts.map((s) => ease((t - s) / RAMP));
 
 /** A stable 0..1 random number for (i, j). */
@@ -70,48 +108,50 @@ export const rand = (i: number, j: number) => {
   return (s >>> 0) / 4294967296;
 };
 
+/** Where (u) a shopper is `s` seconds after entering at speed factor `v`; > 1 is past the spout. */
+export const uAt = (s: number, v: number) => Math.max(0, (s * v) / CROSS);
+/** When (s after entering) a shopper at speed `v` reaches `u`. */
+export const sAt = (u: number, v: number) => (u * CROSS) / v;
+
+/** Where a chamber's leak is (u). */
+export const leakU = (g: number) => CHAMBERS[g][0] + (CHAMBERS[g][1] - CHAMBERS[g][0]) * LEAK_AT;
+
 export type Shopper = {
-  /** Arrival (s on the timeline; negative = already on its way at 0). */
+  /** When it enters at the mouth (s on the timeline; negative = already on its way at 0). */
   at: number;
-  /** Speed, in widths per second. */
+  /** Speed factor (≈ 1). */
   v: number;
-  /** Lane across the stream, -1..1. */
+  /** Lane across the stream, -1..1 (top → floor). */
   lane: number;
-  phase: number;
-  size: number;
+  /** Where across the leak it drops, -1..1, if lost. */
+  spread: number;
   /** The stage it's lost at (0–2), or 3 if it buys. */
   out: number;
-  /** When it reaches each stage's end, and jumps for the bag (s). */
-  gate: number[];
-  sold: number;
+  /** When it reaches the leak it's lost at (s), or the spout's end (a buyer). */
+  exit: number;
 };
 
-/** The stream for a timeline of `duration` ms with the given fix starts. */
+/** The stream for a timeline of `duration` ms with the given landing times. */
 export const makeShoppers = (duration: number, starts: number[]): Shopper[] => {
   const n = Math.ceil((WARM + duration / 1000 + 1) * RATE);
   const list: Shopper[] = [];
   for (let i = 0; i < n; i++) {
-    const at = i / RATE - WARM + (rand(i, 1) - 0.5) * 0.1;
-    const v = (1 / CROSS) * (0.88 + rand(i, 2) * 0.24);
-    const gate = GATES.map((g) => at + g / v);
+    const at = i / RATE - WARM + (rand(i, 1) - 0.5) * 0.04;
+    const v = 0.985 + rand(i, 2) * 0.03;
+    // calm lanes, taken in turn: an orderly stream that tightens as the funnel narrows
+    const lane = LANES[LANE_ORDER[i % LANES.length]];
     let out = 3;
+    let exit = at + sAt(1, v);
     for (let g = 0; g < 3; g++) {
-      const k = ksAt(gate[g] * 1000, starts)[g];
+      const when = at + sAt(leakU(g), v);
+      const k = ksAt(when * 1000, starts)[g];
       if (rand(i, 10 + g) >= rate(g, k)) {
         out = g;
+        exit = when;
         break;
       }
     }
-    list.push({
-      at,
-      v,
-      lane: (rand(i, 3) * 2 - 1) * 0.85,
-      phase: rand(i, 4),
-      size: rand(i, 5),
-      out,
-      gate,
-      sold: at + END / v,
-    });
+    list.push({ at, v, lane, spread: rand(i, 5) * 2 - 1, out, exit });
   }
   return list;
 };

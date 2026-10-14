@@ -9,13 +9,14 @@ const DURATION = 8600;
 
 /**
  * The pillar's payoff, in the funnel's own language and without a single
- * figure: the one bad funnel (every stage grey and leaking, a trickle of
- * sales), then discovery, decision and checkout fixed one after another,
- * each turning warm as its agent plugs its leak and its pill flips to the
- * solution. Sales pour into the Sales box, each one a ✓ with a pop, until
- * a shower of them overflows it. Still some losses, still a funnel: better,
- * not magic. A rewind loop (useScene; `play: false` holds
- * it at the start). Reduced motion shows the finished, golden funnel.
+ * figure: the one bad funnel (every chamber choked and leaking, a trickle
+ * of orders), then discovery, decision and checkout fixed one after another
+ * in quick succession, each stamped by its agent, its exit opening up and
+ * its waterfall of lost shoppers thinning to a trickle, until the stream
+ * into the bag is thick and the ring of ticks round it fills in. Still
+ * some losses, still a funnel: better, not magic. A rewind loop (useScene;
+ * `play: false` holds it at the start). Reduced motion shows the finished
+ * funnel.
  */
 const SalesPayoff = ({ play, className }: { play?: boolean; className?: string }) => {
   const s = useMessages().landing.sales;
