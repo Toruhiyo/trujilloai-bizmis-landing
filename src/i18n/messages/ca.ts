@@ -175,7 +175,7 @@ export const ca: Messages = {
     },
     setup: {
       title: "Instal·lació amb un clic",
-      lead: "Fes clic a instal·lar a Shopify. El teu agent llegeix pel seu compte els productes, les polítiques, els descomptes i les comandes, i en pocs minuts ja ven.",
+      lead: "Instal·la'l. El teu agent aprèn la teva botiga i ven en pocs minuts.",
       install: "Instal·lar",
       syncing: "Sincronitzant la botiga",
       synced: "Sincronitzada",

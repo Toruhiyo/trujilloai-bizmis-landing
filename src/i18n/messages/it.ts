@@ -175,7 +175,7 @@ export const it: Messages = {
     },
     setup: {
       title: "Installazione con un clic",
-      lead: "Clicca su installa in Shopify. Il tuo agente legge da solo prodotti, policy, sconti e ordini, e dopo pochi minuti sta già vendendo.",
+      lead: "Installalo. Il tuo agente impara il tuo negozio e vende in pochi minuti.",
       install: "Installa",
       syncing: "Sincronizzazione del negozio",
       synced: "Sincronizzato",

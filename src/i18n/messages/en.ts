@@ -178,7 +178,7 @@ export const en = {
     /** Setup on /v2: the title alone, a plain line under it, and the opening's install button states. */
     setup: {
       title: "One-Click Setup",
-      lead: "Click install on Shopify. Your agent reads your products, policies, discounts and orders on its own, and starts selling a few minutes later.",
+      lead: "Install it. Your agent learns your store and starts selling in minutes.",
       install: "Install",
       syncing: "Syncing your store",
       synced: "Synced",
