@@ -133,34 +133,60 @@ export const fr: Messages = {
       searchResults: "Résultats de recherche",
       cartItem: "Sphère",
     },
-    /** Boost Sales on /v2: one promise, proven in the three moments a sale gets lost (the hero's find it / trust it / buy it). */
+    /** Boost Sales on /v2: the title stays on screen while each sub-benefit lights up its part (find it / trust it / buy it). */
     sales: {
-      title: "Plus de visites qui finissent en achat.",
-      lead:
-        "La plupart des ventes se perdent à trois moments : le client ne trouve pas le produit, n'est pas sûr que ce soit le bon, ou abandonne en route vers le paiement. Bizmis est là aux trois, par écrit ou à la voix.",
+      titleLead: "Vos clients",
+      titleParts: ["Le trouvent.", "S'y fient.", "L'achètent."],
+      /** One per title part: a short merchant-side benefit and one line. */
       panels: [
-        {
-          eyebrow: "Ils le trouvent",
-          title: "Chaque recherche mène au bon produit",
-          body:
-            "Le client écrit ou dit ce qu'il cherche. Bizmis pose les questions d'un bon vendeur (occasion, budget, taille), cherche dans votre vrai catalogue et ouvre le produit, ou une page avec exactement ces choix. Les clients qui reviennent sont accueillis par leur prénom, avec des suggestions basées sur leurs achats passés.",
-        },
-        {
-          eyebrow: "Ils lui font confiance",
-          title: "Les doutes levés avant qu'ils partent",
-          body:
-            "Il connaît chaque variante, taille, niveau de stock et champ personnalisé, compare deux ou trois produits côte à côte et suit vos règles de vente, comme vérifier la taille avant de recommander. Sur une fiche produit, il sait déjà de quel produit il s'agit.",
-        },
-        {
-          eyebrow: "Ils l'achètent",
-          title: "Le panier se remplit, la vente se conclut",
-          body:
-            "Dès que le client dit oui, il ajoute au panier de votre propre boutique et le compteur se met à jour tout de suite. Si une option est en rupture, il le dit et en propose une autre. Puis il l'emmène au panier ou au paiement, et reprend la conversation sur chaque page.",
-        },
+        { title: "Chaque recherche devient une vente", body: "Il réduit votre catalogue aux quelques produits qui conviennent." },
+        { title: "Les indécis passent à l'achat", body: "Il compare les options et défend le meilleur choix." },
+        { title: "Plus de paniers payés", body: "Il ajoute au panier et les guide jusqu'au paiement." },
       ],
-      /** What the agent says (captions) in the trust and buy mockups. */
-      compareCaption: "Celui-ci est plus léger, et il existe dans votre taille.",
-      buyCaption: "C'est fait, il est dans votre panier. Je vous emmène au paiement ?",
+      /** The mockups: what the shopper says, then what the agent says (captions). */
+      findQuery: "Un cadeau pour ma sœur, moins de 50 €",
+      findCaption: "En voici trois qu'elle va adorer.",
+      compareQuery: "Lequel je prends ?",
+      compareCaption: "Celui-ci. C'est le plus léger, et votre taille est en stock.",
+      bestMatch: "Meilleur choix",
+      buyCaption: "C'est fait, il est dans votre panier. On passe au paiement ?",
+      /** The pillar's moment: the store's sales climbing (currency is an ISO code for Intl). */
+      pulse: { label: "Ventes du jour", order: "Nouvelle commande", currency: "EUR" },
+    },
+    support: {
+      title: "Moins de tickets.",
+      titleTail: "Des clients plus heureux.",
+      lead: "Il répond en quelques secondes, jour et nuit, avec la chaleur de votre meilleur vendeur.",
+      capabilities: [
+        { title: "Toujours là", body: "Chaque question reçoit une réponse dès qu'elle est posée." },
+        { title: "Connaît votre boutique", body: "Il répond à partir de vos propres politiques et de votre catalogue." },
+        { title: "Sent l'humeur", body: "Il apaise les clients mécontents avant qu'ils ne laissent un mauvais avis." },
+      ],
+      relief: {
+        label: "Boîte support",
+        waiting: "{n} en attente",
+        done: "Tout est traité",
+        tickets: ["Où est ma commande ?", "Je peux le retourner ?", "Livrez-vous au Canada ?", "Taille M ou L ?", "Changer mon adresse", "C'est en stock ?"],
+      },
+    },
+    insights: {
+      title: "Voyez ce qui vend.",
+      titleTail: "Corrigez le reste.",
+      lead: "Chaque conversation devient une prochaine étape claire.",
+      features: [
+        { title: "Replays de session", body: "Écoutez le moment exact où un client a hésité." },
+        { title: "Chats tagués tout seuls", body: "Les questions se regroupent seules, et une correction évite de nombreux tickets." },
+        { title: "Insights du tunnel", body: "Voyez quelles corrections rapportent en premier." },
+      ],
+      clarity: {
+        snippets: ["Livraison au Canada ?", "Taille M ou L ?", "Retours ?", "Emballage cadeau ?"],
+        topAsk: "Question n°1 : la livraison",
+      },
+    },
+    customize: {
+      lead: "Choisissez son look et mettez votre logo sur son t-shirt.",
+      avatar: { title: "Votre avatar", body: "Choisissez un visage qui colle à votre marque." },
+      voice: { title: "Votre voix", body: "Clonez-la pour qu'il parle comme vous." },
     },
     /** The closing card, as the film's: the title is the install button, then the handwritten invite and, apart, the note. */
     endCard: {

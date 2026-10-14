@@ -135,34 +135,65 @@ export const en = {
       searchResults: "Search results",
       cartItem: "Sphere",
     },
-    /** Boost Sales on /v2: one promise, proven in the three moments a sale gets lost (the hero's find it / trust it / buy it). */
+    /** Boost Sales on /v2: the title stays on screen while each sub-benefit lights up its part (find it / trust it / buy it). */
     sales: {
-      title: "More visits end in a purchase.",
-      lead:
-        "Most sales are lost in three moments: a shopper can't find the product, isn't sure it's the right one, or gives up on the way to checkout. Bizmis is there for all three, by text or by voice.",
+      titleLead: "Shoppers",
+      titleParts: ["Find it.", "Trust it.", "Buy it."],
+      /** One per title part: a short merchant-side benefit and one line. */
       panels: [
-        {
-          eyebrow: "They find it",
-          title: "Every search ends on the right product",
-          body:
-            "Shoppers type or say what they need. Bizmis asks what a good clerk would (occasion, budget, size), searches your real catalog and opens the product, or a page with exactly those picks. Returning customers get greeted by name, with suggestions shaped by what they bought before.",
-        },
-        {
-          eyebrow: "They trust it",
-          title: "Doubts get answered before they leave",
-          body:
-            "It knows every variant, size, stock level and custom field, compares two or three products side by side, and follows your sales rules, like checking the size before it recommends. Open a product page and it already knows which product the shopper is looking at.",
-        },
-        {
-          eyebrow: "They buy it",
-          title: "The cart fills up, the sale closes",
-          body:
-            "Once the shopper says yes, it adds to your store's own cart and the count updates right away. If an option's out of stock, it says so and offers another. Then it takes them to the cart or checkout, and picks the conversation up on every page along the way.",
-        },
+        { title: "Searches turn into sales", body: "It narrows your catalog down to the few that fit." },
+        { title: "Doubters become buyers", body: "It compares the options and backs the best fit." },
+        { title: "More carts reach checkout", body: "It adds to your cart and walks them to pay." },
       ],
-      /** What the agent says (captions) in the trust and buy mockups. */
-      compareCaption: "This one's lighter, and it's in stock in your size.",
-      buyCaption: "Done, it's in your cart. Shall I take you to checkout?",
+      /** The mockups: what the shopper says, then what the agent says (captions). */
+      findQuery: "A gift for my sister, under $50",
+      findCaption: "Here are three she'll love.",
+      compareQuery: "Which one should I get?",
+      compareCaption: "This one. It's the lightest, and your size is in stock.",
+      bestMatch: "Best match",
+      buyCaption: "Done, it's in your cart. Want to check out?",
+      /** The pillar's moment: the store's sales climbing (currency is an ISO code for Intl). */
+      pulse: { label: "Sales today", order: "New order", currency: "USD" },
+    },
+    /** Customer Support on /v2: a short promise, the inbox that empties itself, and three capabilities. */
+    support: {
+      title: "Fewer tickets.",
+      titleTail: "Happier customers.",
+      lead: "Answers in seconds, day or night, as warmly as your best clerk.",
+      capabilities: [
+        { title: "Always on", body: "Every question gets answered the moment it's asked." },
+        { title: "Knows your store", body: "It answers from your own policies and catalog." },
+        { title: "Reads the mood", body: "It calms upset shoppers before they leave a bad review." },
+      ],
+      /** The pillar's animation: a support inbox piling up, then emptying. */
+      relief: {
+        label: "Support inbox",
+        waiting: "{n} waiting",
+        done: "All caught up",
+        tickets: ["Where's my order?", "Can I return this?", "Ships to Canada?", "Size M or L?", "Change my address", "Is it in stock?"],
+      },
+    },
+    /** Store Insights on /v2: a short promise, noise that turns into a chart, and three features. */
+    insights: {
+      title: "See what sells.",
+      titleTail: "Fix what doesn't.",
+      lead: "Every conversation becomes a clear next step.",
+      features: [
+        { title: "Session replays", body: "Hear the exact moment a shopper hesitated." },
+        { title: "Auto-tagged chats", body: "Questions group themselves, so one fix stops many tickets." },
+        { title: "Funnel insights", body: "See which fixes pay off first." },
+      ],
+      /** The pillar's animation: scattered questions that sort into a rising chart. */
+      clarity: {
+        snippets: ["Ships to Canada?", "Size M or L?", "Returns?", "Gift wrap?"],
+        topAsk: "Top ask: shipping",
+      },
+    },
+    /** Personalization on /v2. */
+    customize: {
+      lead: "Pick its look and put your logo on its shirt.",
+      avatar: { title: "Your avatar", body: "Choose a face that fits your brand." },
+      voice: { title: "Your voice", body: "Clone yours so it sounds like you." },
     },
     /** The closing card, as the film's: the title is the install button, then the handwritten invite and, apart, the note. */
     endCard: {

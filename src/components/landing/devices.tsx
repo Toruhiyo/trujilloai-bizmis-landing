@@ -12,7 +12,7 @@ import { cn } from "@/lib/utils";
  */
 
 /** Scales a fixed-width virtual screen to the width it's given. */
-const VirtualScreen = ({
+export const VirtualScreen = ({
   width,
   children,
   className,
@@ -168,6 +168,50 @@ export const TabletFrame = ({
         <div className="relative flex h-full flex-col">
           <StatusBar className="h-[30px] pt-1 text-[13px]" />
           <AddressPill label={url} className="w-[340px]" />
+          <div className="relative min-h-0 flex-1">{children}</div>
+        </div>
+      </VirtualScreen>
+    </div>
+  </div>
+);
+
+/**
+ * A desktop browser window (16 : 10) in the same glass shell: the traffic
+ * lights and the URL pill on top, then the page, laid out at `width` pt
+ * (default 1180, a laptop) and scaled to fit, so the widget on it keeps its
+ * real size relative to the store.
+ */
+export const BrowserFrame = ({
+  children,
+  url,
+  width = 1180,
+  className,
+}: {
+  children: ReactNode;
+  url: string;
+  width?: number;
+  className?: string;
+}) => (
+  <div
+    className={cn(
+      "bzl-device is-browser relative mx-auto aspect-[16/10] rounded-[1.35rem] p-[0.45rem]",
+      className,
+    )}
+  >
+    <div className="relative h-full overflow-hidden rounded-[0.95rem] bg-white">
+      <VirtualScreen width={width}>
+        <div className="relative flex h-full flex-col">
+          <div
+            aria-hidden="true"
+            className="flex h-[52px] flex-shrink-0 items-center gap-2 border-b border-[#f1e9df] px-5"
+          >
+            <span className="flex gap-[7px]">
+              <i className="h-3 w-3 rounded-full bg-[#ecdccb]" />
+              <i className="h-3 w-3 rounded-full bg-[#ecdccb]" />
+              <i className="h-3 w-3 rounded-full bg-[#ecdccb]" />
+            </span>
+            <AddressPill label={url} className="h-8 w-[360px]" />
+          </div>
           <div className="relative min-h-0 flex-1">{children}</div>
         </div>
       </VirtualScreen>

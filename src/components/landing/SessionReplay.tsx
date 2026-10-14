@@ -254,11 +254,55 @@ const ReplayCard = ({ session }: { session: ReplaySession }) => {
       <div className="relative mt-4">
         <div
           ref={listRef}
-          className="relative max-h-[min(22rem,max(9rem,calc(100svh-33rem)))] space-y-3 overflow-y-auto pb-10 pr-1"
+          // inner room on every side (cancelled by the negative margin) so a
+          // highlighted card's ring and glow never get clipped by the scroll box
+          className="relative -mx-3 -mt-2 max-h-[min(22.5rem,max(9.5rem,calc(100svh-32.5rem)))] space-y-3 overflow-y-auto px-3 pb-10 pt-2"
         >
           {data.conversations.map((c) => (
             <div key={c.id} ref={(el) => (refs.current[c.id] = el)}>
-              {c.type === "event" ? (
+              {c.type === "event" && c.content === "Add to Cart" ? (
+                // the cart event as a compact chip: content-width, centred like an event
+                <div className="flex justify-center">
+                  <div
+                    className={cn(
+                      "inline-flex max-w-full flex-col gap-2 rounded-2xl border border-[var(--bzl-border)] bg-[#fffaf4] p-2 pr-2.5 transition-all duration-500",
+                      ring(c.id),
+                    )}
+                  >
+                    <p className="flex items-center gap-1.5 px-1 pt-0.5 text-xs font-semibold text-[var(--bzl-fg)]">
+                      <ShoppingCart className="h-3.5 w-3.5 text-[var(--bzl-orange-dark)]" />
+                      {c.content}
+                      <span className="ml-3 font-normal text-[var(--bzl-faint)]">
+                        {c.time}
+                      </span>
+                    </p>
+                    {(session.cartItems ?? []).map((p) => (
+                      <div
+                        key={p.name}
+                        className="flex min-w-0 items-center gap-2.5 rounded-xl bg-white p-1.5 pr-2 ring-1 ring-[var(--bzl-border)]"
+                      >
+                        <img
+                          src={p.image}
+                          alt={p.name}
+                          loading="lazy"
+                          className="h-9 w-9 flex-shrink-0 rounded-lg object-cover"
+                        />
+                        <div className="min-w-0">
+                          <p className="truncate text-[13px] font-semibold leading-tight text-[var(--bzl-fg)]">
+                            {p.name}
+                          </p>
+                          <p className="truncate text-[11px] text-[var(--bzl-muted)]">
+                            {p.description}
+                          </p>
+                        </div>
+                        <span className="ml-1 grid h-5 w-5 flex-shrink-0 place-items-center rounded-full bg-[var(--bzl-orange-wash)] text-[var(--bzl-orange-dark)]">
+                          <Check className="h-3 w-3" strokeWidth={3} />
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ) : c.type === "event" ? (
                 <div
                   className={cn(
                     "rounded-2xl border border-[var(--bzl-border)] bg-[#fffaf4] p-3.5 transition-all duration-500",
@@ -268,8 +312,6 @@ const ReplayCard = ({ session }: { session: ReplaySession }) => {
                   <p className="flex items-center gap-2 text-sm font-semibold text-[var(--bzl-fg)]">
                     {c.content === "Policy Lookup" ? (
                       <FileSearch className="h-4 w-4 text-[var(--bzl-orange-dark)]" />
-                    ) : c.content === "Add to Cart" ? (
-                      <ShoppingCart className="h-4 w-4 text-[var(--bzl-orange-dark)]" />
                     ) : (
                       <Search className="h-4 w-4 text-[var(--bzl-orange-dark)]" />
                     )}
@@ -305,34 +347,6 @@ const ReplayCard = ({ session }: { session: ReplaySession }) => {
                     <p className="mt-2 text-xs text-[var(--bzl-muted)]">
                       {session.policyNote}
                     </p>
-                  )}
-                  {c.content === "Add to Cart" && (
-                    <div className="mt-3 grid gap-2">
-                      {(session.cartItems ?? []).map((p) => (
-                        <div
-                          key={p.name}
-                          className="flex items-center gap-3 rounded-xl bg-white p-2 pr-3 ring-1 ring-[var(--bzl-border)]"
-                        >
-                          <img
-                            src={p.image}
-                            alt={p.name}
-                            loading="lazy"
-                            className="h-12 w-12 flex-shrink-0 rounded-lg object-cover"
-                          />
-                          <div className="min-w-0 flex-1">
-                            <p className="truncate text-[13px] font-semibold text-[var(--bzl-fg)]">
-                              {p.name}
-                            </p>
-                            <p className="truncate text-[11px] text-[var(--bzl-muted)]">
-                              {p.description}
-                            </p>
-                          </div>
-                          <span className="grid h-6 w-6 flex-shrink-0 place-items-center rounded-full bg-[var(--bzl-orange-wash)] text-[var(--bzl-orange-dark)]">
-                            <Check className="h-3.5 w-3.5" strokeWidth={3} />
-                          </span>
-                        </div>
-                      ))}
-                    </div>
                   )}
                 </div>
               ) : (

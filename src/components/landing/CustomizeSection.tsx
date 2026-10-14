@@ -37,6 +37,7 @@ const SHOWN = LINEUP.filter((a) => a.name in manifest);
 const CustomizeSection = () => {
   const messages = useMessages();
   const m = messages.customization;
+  const c = messages.landing.customize;
   const section = useRef<HTMLElement>(null);
 
   return (
@@ -80,26 +81,26 @@ const CustomizeSection = () => {
             </h2>
           </Reveal>
           <Reveal delay={150}>
-            <p className="bzl-lead mt-5 max-w-lg">{m.lead}</p>
+            <p className="bzl-lead mt-4 max-w-md">{c.lead}</p>
           </Reveal>
-          <div className="mt-10 grid max-w-md items-start gap-3">
+          <div className="mt-8 grid max-w-md items-start gap-2.5">
             <Reveal delay={220}>
               <FeatureCard
                 icon={AvatarIcon}
-                title={m.avatar.title}
-                body={m.avatar.body}
+                title={c.avatar.title}
+                body={c.avatar.body}
               />
             </Reveal>
             <Reveal delay={320}>
               <FeatureCard
                 icon={VoiceIcon}
-                title={m.voiceCloning.title}
+                title={c.voice.title}
                 badge={
                   <span className="rounded-full bg-[color-mix(in_oklab,var(--bzl-orange)_16%,#fff)] px-2.5 py-0.5 text-[11px] font-semibold uppercase tracking-[0.12em] text-[var(--bzl-orange-dark)]">
                     {messages.common.soon}
                   </span>
                 }
-                body={m.voiceCloning.body}
+                body={c.voice.body}
               />
             </Reveal>
           </div>

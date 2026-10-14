@@ -141,6 +141,7 @@ const BizmisWidget = ({
   above,
   live,
   talking,
+  shirtColor = "#F9A353",
   className,
   style,
 }: {
@@ -153,6 +154,8 @@ const BizmisWidget = ({
   live?: string;
   /** Mouth moving (live avatar only); defaults to the speaking state. */
   talking?: boolean;
+  /** The live avatar's shirt (default: the Bizmis outfit's orange). */
+  shirtColor?: string;
   /** Icon at the tip of the working laser (the tool being used). */
   tool?: LucideIcon;
   placeholder?: string;
@@ -228,6 +231,7 @@ const BizmisWidget = ({
             <div className="absolute inset-0">
               <LiveAvatar
                 model={live}
+                shirtColor={shirtColor}
                 speaking={talking ?? state === "speaking"}
                 fallback={still}
               />
@@ -344,21 +348,111 @@ export const Captions = ({
   );
 };
 
+/** The preset avatars' head renders (Bizmis outfit), as the widget's head circle shows them. */
+const HEAD_CDN = "https://cdn.bizmis.ai/common/avatars/images";
+
+/**
+ * The widget's head circle (AvatarHeadCircle): the avatar's head on a faint
+ * disc. A ring pulses while it speaks; while it works, the activity laser
+ * orbits the circle. Uses the preset's own head render (Bizmis shirt), so the
+ * face is framed the way the real widget frames it instead of a cropped
+ * waist-up still.
+ */
+export const HeadCircle = ({
+  head,
+  size,
+  speaking = false,
+  working = false,
+  className,
+}: {
+  /** The preset avatar id on the CDN, e.g. "mia". */
+  head: string;
+  size: number;
+  speaking?: boolean;
+  working?: boolean;
+  className?: string;
+}) => (
+  <span
+    className={cn("relative block flex-shrink-0", className)}
+    style={{ width: size, height: size }}
+  >
+    {working && (
+      <span
+        aria-hidden="true"
+        className="pointer-events-none absolute -inset-[5px]"
+      >
+        <span className="bzw-spinner absolute inset-0">
+          <span className="bzw-laser absolute inset-0 rounded-full" />
+        </span>
+      </span>
+    )}
+    {speaking && (
+      <span
+        aria-hidden="true"
+        className="bzw-ring-mobile absolute inset-0 rounded-full border-2"
+        style={{ borderColor: ORANGE }}
+      />
+    )}
+    <span
+      className="absolute inset-0 overflow-hidden rounded-full"
+      style={{ background: `color-mix(in oklab, ${ORANGE} 12%, #f4efe9)` }}
+    >
+      <img
+        src={`${HEAD_CDN}/${head}.png`}
+        alt=""
+        loading="lazy"
+        decoding="async"
+        draggable={false}
+        className="absolute left-1/2 top-[4%] w-[118%] max-w-none -translate-x-1/2"
+      />
+    </span>
+  </span>
+);
+
+/** The widget's Volume toggle (voice on): accent ring, soft accent fill. */
+const AudioToggle = () => (
+  <span
+    aria-hidden="true"
+    className="grid h-8 w-8 flex-shrink-0 place-items-center rounded-full border"
+    style={{
+      borderColor: `color-mix(in oklab, ${ORANGE} 30%, transparent)`,
+      background: `color-mix(in oklab, ${ORANGE} 14%, transparent)`,
+      color: ORANGE,
+    }}
+  >
+    <Volume2 className="h-4 w-4" />
+  </span>
+);
+
+/** The call button: the bar's one accent control. */
+const CallButton = () => (
+  <span
+    aria-hidden="true"
+    className="grid h-8 w-8 flex-shrink-0 place-items-center rounded-full text-white shadow-sm"
+    style={{ background: ORANGE }}
+  >
+    <AudioLines className="h-3.5 w-3.5" strokeWidth={2.5} />
+  </span>
+);
+
 /**
  * The real widget on a phone (trujilloai-bizmis-widget MobileLiteChat, "bar"
  * layout): a floating glass bar at the foot of the screen with its drag
- * handle, the avatar's head in a circle (a ring pulses while it speaks), the
- * Volume toggle, the typed placeholder and the call button. Banners and
+ * handle, the avatar's head in a 42px circle (a ring pulses while it speaks),
+ * the Volume toggle, the typed placeholder and the call button. Banners and
  * captions stack above it, as on the real thing.
  */
 export const MobileWidget = ({
-  agent,
+  head,
   speaking = false,
+  working = false,
   placeholder = "Help me find the right product.",
   above,
 }: {
-  agent: AgentName;
+  /** The preset avatar id on the CDN, e.g. "mia". */
+  head: string;
   speaking?: boolean;
+  working?: boolean;
   placeholder?: string;
   above?: ReactNode;
 }) => (
@@ -374,47 +468,65 @@ export const MobileWidget = ({
         className="absolute left-1/2 top-1.5 h-1 w-8 -translate-x-1/2 rounded-full bg-black/15"
       />
       <div className="flex items-center gap-1.5 px-2 pb-2">
-        <span className="relative h-[42px] w-[42px] flex-shrink-0">
-          {speaking && (
-            <span
-              aria-hidden="true"
-              className="bzw-ring-mobile absolute inset-0 rounded-full border-2"
-              style={{ borderColor: ORANGE }}
-            />
-          )}
-          <span
-            className="absolute inset-0 overflow-hidden rounded-full"
-            style={{ background: `color-mix(in oklab, ${ORANGE} 16%, #fff)` }}
-          >
-            <AgentImage
-              name={agent}
-              alt=""
-              sizes="80px"
-              className="absolute left-1/2 top-[-14%] w-[135%] -translate-x-1/2"
-            />
-          </span>
-        </span>
-        <span
-          aria-hidden="true"
-          className="grid h-8 w-8 flex-shrink-0 place-items-center rounded-full border"
-          style={{
-            borderColor: `color-mix(in oklab, ${ORANGE} 30%, transparent)`,
-            background: `color-mix(in oklab, ${ORANGE} 14%, transparent)`,
-            color: ORANGE,
-          }}
-        >
-          <Volume2 className="h-4 w-4" />
-        </span>
+        <HeadCircle
+          head={head}
+          size={42}
+          speaking={speaking}
+          working={working}
+        />
+        <AudioToggle />
         <span className="min-w-0 flex-1 truncate px-1 text-sm text-neutral-400">
           <Typewriter text={placeholder} />
         </span>
-        <span
-          className="grid h-8 w-8 flex-shrink-0 place-items-center rounded-full text-white shadow-sm"
-          style={{ background: ORANGE }}
-        >
-          <AudioLines className="h-3.5 w-3.5" strokeWidth={2.5} />
-        </span>
+        <CallButton />
       </div>
+    </div>
+  </div>
+);
+
+/**
+ * The real widget's desktop "bar" layout (DesktopLiteChat, layout "bar"): a
+ * glass pill centred on the page's bottom edge, the 88px head capping its
+ * left end (overhanging the pill by the same amount top, bottom and left),
+ * the Volume toggle, the typed placeholder and the call button. The overlay
+ * stack (banners, the shopper's sent message) sits above it, right-aligned
+ * and at most 22rem wide, as on the real thing. Lay it out in a box that is
+ * as wide as the bar should be.
+ */
+export const BarWidget = ({
+  head,
+  speaking = false,
+  working = false,
+  placeholder = "Help me find the right product.",
+  above,
+  className,
+}: {
+  head: string;
+  speaking?: boolean;
+  working?: boolean;
+  placeholder?: string;
+  above?: ReactNode;
+  className?: string;
+}) => (
+  <div className={cn("bzw relative flex flex-col items-stretch gap-2.5", className)}>
+    {above && (
+      <div className="ml-auto flex w-full max-w-[22rem] flex-col gap-2.5">
+        {above}
+      </div>
+    )}
+    <div className="bzw-card bzw-bar relative flex items-center gap-1.5 rounded-full border px-2 py-1.5">
+      <HeadCircle
+        head={head}
+        size={88}
+        speaking={speaking}
+        working={working}
+        className="relative z-10 -my-[26px] -ml-[25px]"
+      />
+      <AudioToggle />
+      <span className="min-w-0 flex-1 truncate px-2 py-2 text-sm leading-5 text-neutral-400">
+        <Typewriter text={placeholder} />
+      </span>
+      <CallButton />
     </div>
   </div>
 );

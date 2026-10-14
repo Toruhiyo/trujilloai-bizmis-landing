@@ -8,6 +8,7 @@ import { StoreWithWidget } from "./visuals";
 import { ClayTile } from "./clay";
 import FeatureCard from "./FeatureCard";
 import PillarChip from "./PillarChip";
+import { SupportRelief } from "./PillarMoments";
 
 // Each case plays the real widget's sequence: the shopper's message, the
 // agent working (tool on its laser), then speaking with captions.
@@ -87,58 +88,41 @@ const SupportChat = () => {
 };
 
 /**
- * Customer Support — "Save hours on support. Earn loyal customers." One band
- * in the Support colours (coral and terracotta): the header, its outcomes and
- * its three numbered capabilities all carry the pillar's accent.
+ * Customer Support: "Fewer tickets. Happier customers." One band in the
+ * Support colours (coral and terracotta), laid out mirrored from Insights
+ * (the widget on the left on desktop). Its feel-it moment is the inbox that
+ * empties itself; the three capabilities are cards, the detail on demand.
  */
 const CAPABILITY_ICONS = [ClockIcon, BookIcon, CareIcon];
 
 const SupportSection = () => {
-  const s = useMessages().benefits.support;
+  const messages = useMessages();
+  const s = messages.landing.support;
   return (
     <section className="bzl-section bzl-screen bzl-band bzl-pillar p-support">
       <div className="bzl-wrap">
-        <div className="grid grid-cols-[minmax(0,1fr)] items-center gap-10 lg:grid-cols-2 lg:gap-20">
-          <div>
+        <div className="grid grid-cols-[minmax(0,1fr)] items-center gap-10 lg:grid-cols-[1.05fr_0.95fr] lg:gap-20">
+          <div className="lg:order-2">
             <Reveal>
-              <PillarChip icon={HeadsetIcon} label={s.badge} />
+              <PillarChip icon={HeadsetIcon} label={messages.benefits.support.badge} />
             </Reveal>
             <Reveal delay={80}>
               <h2 className="bzl-statement-sm mt-[clamp(1rem,2.6svh,1.5rem)]">
-                {s.titleLine1}
+                {s.title}
                 <br />
-                <span className="bzl-tail">{s.titleLine2}</span>
+                <span className="bzl-tail">{s.titleTail}</span>
               </h2>
             </Reveal>
-            <Reveal delay={160}>
-              <p className="bzl-lead mt-[2svh] max-w-lg md:!text-[clamp(0.95rem,2svh,1.15rem)]">
-                {s.leadLong}
-              </p>
+            <Reveal delay={140}>
+              <p className="bzl-lead mt-[1.6svh] max-w-md">{s.lead}</p>
             </Reveal>
-            <Reveal delay={240}>
-              <div className="mt-[2.6svh] flex flex-wrap gap-2">
-                {[
-                  s.outcomes.saveHours,
-                  s.outcomes.betterReviews,
-                  s.outcomes.repeatSales,
-                ].map((o) => (
-                  <span
-                    key={o}
-                    className="inline-flex items-center gap-2 rounded-full bg-white/70 px-3.5 py-1.5 text-sm font-semibold text-[var(--bzl-ink-2)] ring-1 ring-[color:color-mix(in_oklab,var(--acc)_22%,transparent)]"
-                  >
-                    <span
-                      aria-hidden="true"
-                      className="h-1.5 w-1.5 rounded-full bg-[var(--acc)]"
-                    />
-                    {o}
-                  </span>
-                ))}
-              </div>
+            <Reveal delay={200}>
+              <SupportRelief className="mt-[2.6svh] max-w-lg" />
             </Reveal>
             {/* its three capabilities, as cards: title up front, the detail on demand */}
-            <div className="mt-[2.6svh] grid max-w-lg items-start gap-2">
+            <div className="mt-[2.2svh] grid max-w-lg items-start gap-2">
               {s.capabilities.map((c, i) => (
-                <Reveal key={c.title} delay={300 + i * 90}>
+                <Reveal key={c.title} delay={280 + i * 90}>
                   <FeatureCard
                     icon={CAPABILITY_ICONS[i]}
                     title={c.title}
@@ -150,7 +134,7 @@ const SupportSection = () => {
           </div>
           <Reveal
             delay={120}
-            className="relative mx-auto w-full max-w-[min(560px,calc((100svh-9rem)*1.25))]"
+            className="relative mx-auto w-full max-w-[min(560px,calc((100svh-9rem)*1.25))] lg:order-1"
           >
             <SupportChat />
           </Reveal>

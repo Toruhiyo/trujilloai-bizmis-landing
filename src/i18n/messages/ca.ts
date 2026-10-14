@@ -133,34 +133,60 @@ export const ca: Messages = {
       searchResults: "Resultats de la cerca",
       cartItem: "Esfera",
     },
-    /** Boost Sales on /v2: one promise, proven in the three moments a sale gets lost (the hero's find it / trust it / buy it). */
+    /** Boost Sales on /v2: the title stays on screen while each sub-benefit lights up its part (find it / trust it / buy it). */
     sales: {
-      title: "Més visites que acaben en compra.",
-      lead:
-        "La majoria de vendes es perden en tres moments: el client no troba el producte, no està segur que sigui el bo o es rendeix de camí al pagament. Bizmis hi és en tots tres, per text o per veu.",
+      titleLead: "Els clients",
+      titleParts: ["Ho troben.", "Hi confien.", "Ho compren."],
+      /** One per title part: a short merchant-side benefit and one line. */
       panels: [
-        {
-          eyebrow: "El troben",
-          title: "Cada cerca acaba al producte correcte",
-          body:
-            "El client escriu o diu què necessita. Bizmis pregunta el que preguntaria un bon dependent (ocasió, pressupost, talla), cerca al teu catàleg real i obre el producte, o una pàgina amb just aquestes opcions. Als clients que tornen els saluda pel nom i els recomana segons el que ja han comprat.",
-        },
-        {
-          eyebrow: "S'hi refien",
-          title: "Els dubtes resolts abans que marxin",
-          body:
-            "Coneix cada variant, talla, nivell d'estoc i camp personalitzat, compara dos o tres productes un al costat de l'altre i segueix les teves regles de venda, com confirmar la talla abans de recomanar. En una fitxa de producte, ja sap quin producte s'està mirant.",
-        },
-        {
-          eyebrow: "El compren",
-          title: "La cistella s'omple i la venda es tanca",
-          body:
-            "Quan el client diu que sí, afegeix a la cistella de la teva pròpia botiga i el comptador s'actualitza a l'instant. Si una opció està esgotada, ho diu i n'ofereix una altra. Després el porta a la cistella o al pagament, i reprèn la conversa a cada pàgina.",
-        },
+        { title: "Cada cerca, una venda", body: "Redueix el catàleg als pocs productes que encaixen." },
+        { title: "Menys dubtes, més compres", body: "Compara les opcions i defensa la millor." },
+        { title: "Més carretons arriben a pagar", body: "Afegeix al carretó i els acompanya a pagar." },
       ],
-      /** What the agent says (captions) in the trust and buy mockups. */
-      compareCaption: "Aquest és més lleuger, i el tenen a la teva talla.",
-      buyCaption: "Fet, ja és a la cistella. Et porto al pagament?",
+      /** The mockups: what the shopper says, then what the agent says (captions). */
+      findQuery: "Un regal per a la meva germana, menys de 50 €",
+      findCaption: "Aquí en tens tres que li encantaran.",
+      compareQuery: "Quin m'emporto?",
+      compareCaption: "Aquest. És el més lleuger i queda la teva talla.",
+      bestMatch: "El millor",
+      buyCaption: "Fet, ja és al carretó. Anem a pagar?",
+      /** The pillar's moment: the store's sales climbing (currency is an ISO code for Intl). */
+      pulse: { label: "Vendes d'avui", order: "Nova comanda", currency: "EUR" },
+    },
+    support: {
+      title: "Menys tiquets.",
+      titleTail: "Clients més feliços.",
+      lead: "Respon en segons, de dia o de nit, amb la calidesa del teu millor dependent.",
+      capabilities: [
+        { title: "Sempre disponible", body: "Cada pregunta té resposta al moment." },
+        { title: "Coneix la teva botiga", body: "Respon amb les teves polítiques i el teu catàleg." },
+        { title: "Llegeix l'ànim", body: "Calma els clients molestos abans que deixin una mala ressenya." },
+      ],
+      relief: {
+        label: "Safata de suport",
+        waiting: "{n} esperant",
+        done: "Tot al dia",
+        tickets: ["On és la meva comanda?", "Puc tornar-ho?", "Envieu al Canadà?", "Talla M o L?", "Canviar l'adreça", "Hi ha estoc?"],
+      },
+    },
+    insights: {
+      title: "Mira què ven.",
+      titleTail: "Arregla la resta.",
+      lead: "Cada conversa es converteix en un pas següent clar.",
+      features: [
+        { title: "Repeticions de sessió", body: "Escolta el moment exacte en què un client va dubtar." },
+        { title: "Xats etiquetats sols", body: "Les preguntes s'agrupen soles, i un sol arranjament evita molts tiquets." },
+        { title: "Insights de l'embut", body: "Mira quins arranjaments rendeixen abans." },
+      ],
+      clarity: {
+        snippets: ["Envieu al Canadà?", "Talla M o L?", "Devolucions?", "Embolcall de regal?"],
+        topAsk: "El més preguntat: enviaments",
+      },
+    },
+    customize: {
+      lead: "Tria el seu aspecte i posa el teu logo a la seva samarreta.",
+      avatar: { title: "El teu avatar", body: "Tria una cara que encaixi amb la teva marca." },
+      voice: { title: "La teva veu", body: "Clona-la perquè soni com tu." },
     },
     /** The closing card, as the film's: the title is the install button, then the handwritten invite and, apart, the note. */
     endCard: {

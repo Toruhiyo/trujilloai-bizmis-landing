@@ -133,34 +133,60 @@ export const es: Messages = {
       searchResults: "Resultados de búsqueda",
       cartItem: "Esfera",
     },
-    /** Boost Sales on /v2: one promise, proven in the three moments a sale gets lost (the hero's find it / trust it / buy it). */
+    /** Boost Sales on /v2: the title stays on screen while each sub-benefit lights up its part (find it / trust it / buy it). */
     sales: {
-      title: "Más visitas que terminan en compra.",
-      lead:
-        "La mayoría de ventas se pierden en tres momentos: el cliente no encuentra el producto, no está seguro de que sea el adecuado o se rinde de camino al pago. Bizmis está en los tres, por texto o por voz.",
+      titleLead: "Tus clientes",
+      titleParts: ["Lo encuentran.", "Confían.", "Lo compran."],
+      /** One per title part: a short merchant-side benefit and one line. */
       panels: [
-        {
-          eyebrow: "Lo encuentran",
-          title: "Cada búsqueda acaba en el producto correcto",
-          body:
-            "El cliente escribe o dice lo que necesita. Bizmis pregunta lo que preguntaría un buen dependiente (ocasión, presupuesto, talla), busca en tu catálogo real y abre el producto, o una página con justo esas opciones. A los clientes que vuelven los saluda por su nombre y les recomienda según lo que ya compraron.",
-        },
-        {
-          eyebrow: "Confían",
-          title: "Las dudas se resuelven antes de que se vayan",
-          body:
-            "Conoce cada variante, talla, nivel de stock y campo personalizado, compara dos o tres productos lado a lado y sigue tus reglas de venta, como confirmar la talla antes de recomendar. Si el cliente abre una ficha de producto, ya sabe qué producto está mirando.",
-        },
-        {
-          eyebrow: "Lo compran",
-          title: "El carrito se llena y la venta se cierra",
-          body:
-            "Cuando el cliente dice que sí, añade al carrito de tu propia tienda y el contador se actualiza al momento. Si una opción está agotada, lo dice y ofrece otra. Luego lo lleva al carrito o al pago, y retoma la conversación en cada página del camino.",
-        },
+        { title: "Cada búsqueda, una venta", body: "Reduce tu catálogo a los pocos que encajan." },
+        { title: "Menos dudas, más compras", body: "Compara las opciones y defiende la mejor." },
+        { title: "Más carritos llegan al pago", body: "Añade al carrito y acompaña al cliente a pagar." },
       ],
-      /** What the agent says (captions) in the trust and buy mockups. */
-      compareCaption: "Este es más ligero y lo tienen en tu talla.",
-      buyCaption: "Listo, ya está en tu carrito. ¿Te llevo al pago?",
+      /** The mockups: what the shopper says, then what the agent says (captions). */
+      findQuery: "Un regalo para mi hermana, menos de 50 €",
+      findCaption: "Aquí tienes tres que le van a encantar.",
+      compareQuery: "¿Cuál me llevo?",
+      compareCaption: "Este. Es el más ligero y queda en tu talla.",
+      bestMatch: "El mejor",
+      buyCaption: "Hecho, ya está en tu carrito. ¿Vamos a pagar?",
+      /** The pillar's moment: the store's sales climbing (currency is an ISO code for Intl). */
+      pulse: { label: "Ventas de hoy", order: "Nuevo pedido", currency: "EUR" },
+    },
+    support: {
+      title: "Menos tickets.",
+      titleTail: "Clientes más felices.",
+      lead: "Responde en segundos, de día o de noche, con la calidez de tu mejor dependiente.",
+      capabilities: [
+        { title: "Siempre disponible", body: "Cada pregunta tiene respuesta en el momento." },
+        { title: "Conoce tu tienda", body: "Responde con tus propias políticas y tu catálogo." },
+        { title: "Lee el ánimo", body: "Calma a los clientes molestos antes de que dejen una mala reseña." },
+      ],
+      relief: {
+        label: "Bandeja de soporte",
+        waiting: "{n} esperando",
+        done: "Todo al día",
+        tickets: ["¿Dónde está mi pedido?", "¿Puedo devolverlo?", "¿Enviáis a Canadá?", "¿Talla M o L?", "Cambiar mi dirección", "¿Hay stock?"],
+      },
+    },
+    insights: {
+      title: "Mira qué vende.",
+      titleTail: "Arregla lo que no.",
+      lead: "Cada conversación se convierte en un siguiente paso claro.",
+      features: [
+        { title: "Repeticiones de sesión", body: "Escucha el momento exacto en que un cliente dudó." },
+        { title: "Chats etiquetados solos", body: "Las preguntas se agrupan solas, así un solo arreglo evita muchos tickets." },
+        { title: "Insights del embudo", body: "Mira qué arreglos rinden antes." },
+      ],
+      clarity: {
+        snippets: ["¿Enviáis a Canadá?", "¿Talla M o L?", "¿Devoluciones?", "¿Envoltorio de regalo?"],
+        topAsk: "Lo más preguntado: envíos",
+      },
+    },
+    customize: {
+      lead: "Elige su aspecto y pon tu logo en su camiseta.",
+      avatar: { title: "Tu avatar", body: "Elige una cara que encaje con tu marca." },
+      voice: { title: "Tu voz", body: "Clónala para que suene como tú." },
     },
     /** The closing card, as the film's: the title is the install button, then the handwritten invite and, apart, the note. */
     endCard: {

@@ -1097,17 +1097,21 @@
   --acc-soft: #ffe1c6;
 }
 .bzl-pillar.p-support {
+  /* rosier than Sales' peach: coral light from the widget's side (left) */
   --band-bg:
-    radial-gradient(ellipse 70% 55% at 85% 10%, rgb(255 196 178 / 0.5), transparent 70%),
-    linear-gradient(180deg, #fff1ec 0%, #fde3da 100%);
+    radial-gradient(ellipse 60% 60% at 18% 30%, rgb(255 178 158 / 0.55), transparent 70%),
+    radial-gradient(ellipse 50% 45% at 92% 95%, rgb(250 160 150 / 0.28), transparent 70%),
+    linear-gradient(180deg, #fff0ec 0%, #fbdcd3 100%);
   --acc: #e0684a;
   --acc-ink: #b0432b;
   --acc-soft: #ffd9cd;
 }
 .bzl-pillar.p-insights {
+  /* golden, a clear step away from Sales' peach and Support's coral */
   --band-bg:
-    radial-gradient(ellipse 70% 55% at 15% 10%, rgb(255 222 150 / 0.5), transparent 70%),
-    linear-gradient(180deg, #fff7e3 0%, #fdedc9 100%);
+    radial-gradient(ellipse 60% 60% at 82% 35%, rgb(255 214 110 / 0.5), transparent 70%),
+    radial-gradient(ellipse 50% 45% at 8% 90%, rgb(250 220 140 / 0.35), transparent 70%),
+    linear-gradient(180deg, #fff9e6 0%, #fcecb8 100%);
   --acc: #d99a1c;
   --acc-ink: #8f620a;
   --acc-soft: #fbe6b4;
@@ -1232,4 +1236,310 @@
 @media (prefers-reduced-motion: reduce) {
   .bzl-cta-title-text { animation: none; }
   .bzl-cta-underline path { transition: none; stroke-dashoffset: 0; }
+}
+
+/* ── Pillar moments: each benefit felt in ~3.5 s (PillarMoments.tsx) ──
+   Both play once on scroll-in; reduced motion shows the resolved frame. */
+.bzl-relief,
+.bzl-clarity {
+  position: relative;
+  overflow: hidden;
+  border-radius: 22px;
+  background: rgb(255 255 255 / 0.72);
+  box-shadow:
+    inset 0 0 0 1px color-mix(in oklab, var(--acc, #f28c38) 18%, transparent),
+    0 18px 40px -30px color-mix(in oklab, var(--acc-ink, #c25a0b) 70%, transparent);
+  backdrop-filter: blur(6px);
+}
+
+/* Support: the inbox that empties itself */
+.bzl-relief {
+  --calm: #4f9468;
+  --calm-wash: #e4f2e6;
+  padding: 0.85rem 1rem 0.6rem;
+  transition: background-color 0.9s var(--bzl-ease);
+}
+.bzl-relief.is-on:not(.is-calm) { background: color-mix(in oklab, var(--acc-soft, #ffd9cd) 34%, rgb(255 255 255 / 0.75)); }
+.bzl-relief-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--bzl-ink-2);
+}
+.bzl-relief-label { display: inline-flex; align-items: center; gap: 0.45rem; }
+.bzl-relief-led {
+  width: 0.45rem;
+  height: 0.45rem;
+  border-radius: 999px;
+  background: var(--acc, #e0684a);
+  transition: background-color 0.6s;
+}
+.bzl-relief.is-on:not(.is-calm) .bzl-relief-led { animation: bzl-led 0.9s ease-in-out infinite; }
+@keyframes bzl-led { 50% { opacity: 0.35; } }
+.bzl-relief-count {
+  border-radius: 999px;
+  padding: 0.2rem 0.6rem;
+  font-variant-numeric: tabular-nums;
+  background: var(--acc, #e0684a);
+  color: #fff;
+  transition: background-color 0.6s, color 0.6s;
+}
+.bzl-relief.is-calm .bzl-relief-led { background: var(--calm); }
+.bzl-relief.is-calm .bzl-relief-count { background: var(--calm-wash); color: var(--calm); }
+.bzl-relief-stage { position: relative; height: 122px; margin-top: 0.35rem; }
+/* a ticket's slot on the stack: full-width pills of one width, so the ones
+   behind hide exactly under the one in front and only their edges show */
+.bzl-tk-slot {
+  position: absolute;
+  left: 50%;
+  bottom: 6px;
+  width: min(100%, 17rem);
+  transform-origin: 50% 100%;
+  transition: transform 0.38s var(--bzl-spring), opacity 0.3s;
+}
+.bzl-tk {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0.5rem 0.75rem 0.5rem 0.5rem;
+  border-radius: 14px;
+  background: #fff;
+  box-shadow:
+    0 0 0 1px rgb(28 24 20 / 0.06),
+    0 10px 20px -12px rgb(120 50 30 / 0.5);
+  font-size: 0.78rem;
+  font-weight: 600;
+  white-space: nowrap;
+  color: var(--bzl-fg);
+  opacity: 0;
+  rotate: var(--r);
+  transition: background-color 0.35s, rotate 0.35s;
+}
+.bzl-tk-text { flex: 1; transition: opacity 0.25s; }
+/* behind the front ticket: a blank edge, its words hidden, a shade darker */
+.bzl-tk-slot.is-behind .bzl-tk { background: color-mix(in oklab, var(--acc-soft, #ffd9cd) 45%, #fff); }
+.bzl-tk-slot.is-behind .bzl-tk-text,
+.bzl-tk-slot.is-behind .bzl-tk-dot,
+.bzl-tk-slot.is-behind .bzl-tk-unread { opacity: 0; }
+.bzl-tk-dot {
+  flex-shrink: 0;
+  width: 1.2rem;
+  height: 1.2rem;
+  border-radius: 999px;
+  background: radial-gradient(circle at 35% 30%, #fff 0 18%, color-mix(in oklab, var(--acc, #e0684a) 55%, #fff) 20%);
+  transition: opacity 0.25s;
+}
+.bzl-tk-unread {
+  flex-shrink: 0;
+  width: 0.45rem;
+  height: 0.45rem;
+  border-radius: 999px;
+  background: var(--acc, #e0684a);
+  transition: opacity 0.25s;
+}
+.bzl-tk-check {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  border-radius: inherit;
+  background: var(--calm);
+  color: #fff;
+  opacity: 0;
+}
+.bzl-tk-check svg { width: 0.95rem; height: 0.95rem; }
+.bzl-tk-slot.is-in .bzl-tk { animation: bzl-tk-in 0.42s var(--bzl-spring) both; }
+.bzl-tk-slot.is-out .bzl-tk { animation: bzl-tk-out 0.6s var(--bzl-ease) forwards; }
+.bzl-tk-slot.is-out .bzl-tk-check { animation: bzl-tk-check 0.6s var(--bzl-ease) forwards; }
+@keyframes bzl-tk-in {
+  from { opacity: 0; translate: 0 34px; scale: 0.92; }
+  to { opacity: 1; translate: 0 0; scale: 1; }
+}
+@keyframes bzl-tk-out {
+  0% { opacity: 1; translate: 0 0; scale: 1; filter: blur(0); }
+  35% { opacity: 1; translate: 0 0; scale: 1.03; filter: blur(0); rotate: 0deg; }
+  100% { opacity: 0; translate: 0 -18px; scale: 0.6; filter: blur(6px); rotate: 0deg; }
+}
+@keyframes bzl-tk-check {
+  0% { opacity: 0; }
+  25%, 100% { opacity: 1; }
+}
+.bzl-relief-calm {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  opacity: 0;
+  transform: scale(0.85);
+  transition: opacity 0.7s var(--bzl-ease), transform 0.9s var(--bzl-spring);
+}
+.bzl-relief.is-calm .bzl-relief-calm { opacity: 1; transform: none; }
+.bzl-relief-check {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 3rem;
+  height: 3rem;
+  border-radius: 999px;
+  background: var(--calm);
+  color: #fff;
+  box-shadow: 0 10px 24px -10px color-mix(in oklab, var(--calm) 80%, transparent);
+}
+.bzl-relief-check svg { width: 1.5rem; height: 1.5rem; }
+.bzl-relief-check::after {
+  content: "";
+  position: absolute;
+  inset: -6px;
+  border-radius: inherit;
+  box-shadow: 0 0 0 6px color-mix(in oklab, var(--calm) 18%, transparent);
+  animation: bzl-breathe 3.2s ease-in-out infinite;
+}
+@keyframes bzl-breathe {
+  0%, 100% { transform: scale(0.92); opacity: 0.4; }
+  50% { transform: scale(1.12); opacity: 1; }
+}
+.bzl-relief-done { font-size: 0.85rem; font-weight: 700; letter-spacing: -0.01em; color: var(--calm); }
+
+/* Insights: noise that sorts itself into an answer */
+.bzl-clarity { padding: 0.6rem 0.75rem 0.35rem; }
+.bzl-clarity-stage { --seg-w: 30px; position: relative; height: 150px; }
+.bzl-clarity-snip {
+  position: absolute;
+  padding: 0.25rem 0.6rem;
+  border-radius: 999px 999px 999px 4px;
+  background: #fff;
+  box-shadow: 0 0 0 1px rgb(28 24 20 / 0.07), 0 6px 14px -8px rgb(28 24 20 / 0.3);
+  font-size: 0.72rem;
+  font-weight: 600;
+  white-space: nowrap;
+  color: var(--bzl-muted);
+  opacity: 0;
+  transition: opacity 0.45s, transform 0.6s var(--bzl-ease), filter 0.6s;
+}
+.bzl-clarity.is-noise .bzl-clarity-snip {
+  animation: bzl-snip-in 0.4s var(--bzl-spring) calc(var(--i) * 190ms) both, bzl-jit 1.6s ease-in-out calc(var(--i) * -0.4s) infinite;
+}
+@keyframes bzl-snip-in { from { opacity: 0; scale: 0.7; } to { opacity: 1; scale: 1; } }
+.bzl-clarity.is-sort .bzl-clarity-snip,
+.bzl-clarity.is-aha .bzl-clarity-snip { opacity: 0; transform: scale(0.6) translateY(20px); filter: blur(4px); }
+.bzl-clarity-dot {
+  position: absolute;
+  width: 9px;
+  height: 9px;
+  border-radius: 999px;
+  background: #cdbfb1;
+  opacity: 0;
+  transition:
+    left 0.85s var(--bzl-spring) var(--d),
+    top 0.85s var(--bzl-spring) var(--d),
+    width 0.5s var(--bzl-ease) var(--d),
+    height 0.5s var(--bzl-ease) var(--d),
+    border-radius 0.5s var(--bzl-ease) var(--d),
+    background-color 0.6s var(--bzl-ease) var(--d),
+    box-shadow 0.6s,
+    opacity 0.4s;
+}
+.bzl-clarity-dot:nth-child(3n) { background: #e3c99a; }
+.bzl-clarity-dot:nth-child(4n) { background: #b9aa9b; }
+.bzl-clarity:not(.is-idle) .bzl-clarity-dot { opacity: 1; }
+.bzl-clarity.is-noise .bzl-clarity-dot { animation: bzl-jit var(--j) ease-in-out var(--jd) infinite; }
+@keyframes bzl-jit {
+  0%, 100% { translate: 0 0; }
+  25% { translate: 3px -4px; }
+  50% { translate: -3px 2px; }
+  75% { translate: 2px 4px; }
+}
+.bzl-clarity.is-sort .bzl-clarity-dot,
+.bzl-clarity.is-aha .bzl-clarity-dot {
+  width: var(--seg-w);
+  height: 10px;
+  border-radius: 4px;
+  background: color-mix(in oklab, var(--acc, #d99a1c) 45%, #fff);
+}
+/* the extra noise just fades out when the rest sorts itself */
+.bzl-clarity.is-sort .bzl-clarity-dot.is-noise,
+.bzl-clarity.is-aha .bzl-clarity-dot.is-noise { width: 9px; height: 9px; border-radius: 999px; opacity: 0; scale: 0.3; transition: opacity 0.5s, scale 0.5s; }
+.bzl-clarity.is-aha .bzl-clarity-dot.is-top {
+  background: var(--acc, #d99a1c);
+  box-shadow: 0 0 14px 1px color-mix(in oklab, var(--acc, #d99a1c) 55%, transparent);
+}
+.bzl-clarity-base {
+  position: absolute;
+  left: 4%;
+  right: 4%;
+  height: 1px;
+  background: color-mix(in oklab, var(--acc-ink, #8f620a) 22%, transparent);
+  opacity: 0;
+  transition: opacity 0.6s 0.4s;
+}
+.bzl-clarity.is-sort .bzl-clarity-base,
+.bzl-clarity.is-aha .bzl-clarity-base { opacity: 1; }
+.bzl-clarity-line {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+}
+.bzl-clarity-line polyline {
+  fill: none;
+  stroke: var(--acc-ink, #8f620a);
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+}
+/* the trend line draws left to right (a wipe: dashes don't survive the non-scaling stroke) */
+.bzl-clarity-line {
+  clip-path: inset(0 100% 0 0);
+  transition: clip-path 0.9s var(--bzl-ease);
+}
+.bzl-clarity.is-aha .bzl-clarity-line { clip-path: inset(-10px -10px -10px -10px); }
+.bzl-clarity-peak {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  margin: -5px 0 0 -5px;
+  border-radius: 999px;
+  background: var(--acc-ink, #8f620a);
+  opacity: 0;
+  scale: 0;
+  transition: opacity 0.3s 0.75s, scale 0.5s var(--bzl-spring) 0.75s;
+}
+.bzl-clarity-peak::after {
+  content: "";
+  position: absolute;
+  inset: -6px;
+  border-radius: inherit;
+  background: color-mix(in oklab, var(--acc, #d99a1c) 45%, transparent);
+  animation: bzl-breathe 2.4s ease-in-out infinite;
+}
+.bzl-clarity.is-aha .bzl-clarity-peak { opacity: 1; scale: 1; }
+.bzl-clarity-callout {
+  position: absolute;
+  padding: 0.3rem 0.7rem;
+  border-radius: 999px;
+  background: var(--bzl-fg);
+  color: #fff;
+  font-size: 0.75rem;
+  font-weight: 700;
+  white-space: nowrap;
+  opacity: 0;
+  transform: translateY(6px) scale(0.9);
+  transform-origin: right center;
+  transition: opacity 0.4s 0.95s, transform 0.6s var(--bzl-spring) 0.95s;
+}
+.bzl-clarity.is-aha .bzl-clarity-callout { opacity: 1; transform: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  .bzl-relief, .bzl-relief *, .bzl-clarity, .bzl-clarity * { transition: none !important; animation: none !important; }
+  .bzl-relief .bzl-tk-slot { display: none; }
 }
