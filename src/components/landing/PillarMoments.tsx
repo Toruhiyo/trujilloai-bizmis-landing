@@ -1,354 +1,491 @@
-import { useRef } from "react";
-import type { CSSProperties } from "react";
-import { Check } from "lucide-react";
+import { useId, useRef } from "react";
 import { useMessages } from "@/i18n/LocaleProvider";
 import { cn } from "@/lib/utils";
 import { span, useRewindLoop } from "./useRewindLoop";
 
 /**
- * Each benefit pillar's "feel it" moment: a short animation (about 4 s) that
- * plays from its start the moment it scrolls into view, holds on the resolved
- * frame, rewinds (the same timeline, fast, backwards) and plays again
- * (useRewindLoop). Every frame is derived from the loop's time `t`, so the
- * rewind is the animation itself in reverse. Leaving the view resets it.
- * Reduced motion shows the final, resolved frame. The static look lives in
- * film-landing.css (.bzl-relief-*, .bzl-clarity-*); the motion lives here.
+ * Each benefit pillar's "feel it" moment, drawn like the Sales funnel: flat
+ * "blueprint drawn with a marker" line art straight on the band. Thick round
+ * strokes that draw themselves in, no fills, no gradients, no glows, bouncy
+ * squash-and-stretch on the small parts and a little doodle on the payoff;
+ * labels in the page's sans. The marker's ink comes from CSS variables
+ * (--mk-line, --mk-ink, --mk-tint on .bzl-mk, film-landing.css), set from
+ * the pillar's own colours so it reads on its band and on every palette.
+ *
+ * Timing: a useRewindLoop timeline. It plays from its start the moment it
+ * scrolls into view, rewinds straight away (the same frames, fast,
+ * backwards) and plays again; leaving the view resets it. Every frame is
+ * derived from the loop's time `t`. Reduced motion shows the final frame.
  */
 
 const clamp01 = (x: number) => Math.min(1, Math.max(0, x));
-const easeOut = (x: number) => 1 - Math.pow(1 - x, 3);
+const easeOut = (x: number) => 1 - Math.pow(1 - clamp01(x), 3);
+const easeIn = (x: number) => Math.pow(clamp01(x), 2);
 const easeInOut = (x: number) =>
-  x < 0.5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2;
+  x <= 0 ? 0 : x >= 1 ? 1 : x < 0.5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2;
 /** A spring-like settle: overshoots a little, then lands. */
 const easeBack = (x: number, s = 1.7) =>
   x <= 0 ? 0 : x >= 1 ? 1 : 1 + (s + 1) * Math.pow(x - 1, 3) + s * Math.pow(x - 1, 2);
+/** A springy 0 → 1 with a wobble, for things that pop. */
+const spring = (k: number) => (k <= 0 ? 0 : k >= 1 ? 1 : 1 - Math.exp(-6 * k) * Math.cos(9 * k));
+/** 0 → 1 → 0 over [0, 1]: a squash's bump. */
+const hump = (k: number) => (k <= 0 || k >= 1 ? 0 : Math.sin(Math.PI * k));
 const mix = (a: number, b: number, k: number) => a + (b - a) * k;
+const f = (n: number) => n.toFixed(2);
+
+/** The hand: a FIXED tiny offset per point (never per frame, so nothing boils). */
+const hand = (seed: number, k: number) => Math.sin(seed * 12.9898 + k * 78.233) * 0.6;
+
+/** A rounded rectangle as one marker stroke, a hair off true. */
+const rrect = (x: number, y: number, w: number, h: number, r: number, seed = 0) => {
+  const j = (k: number) => hand(seed, k);
+  return (
+    `M${f(x + r + j(1))} ${f(y + j(2))} H${f(x + w - r + j(3))} Q${f(x + w)} ${f(y)} ${f(x + w + j(4))} ${f(y + r)} ` +
+    `V${f(y + h - r + j(5))} Q${f(x + w)} ${f(y + h)} ${f(x + w - r + j(6))} ${f(y + h + j(7))} ` +
+    `H${f(x + r + j(8))} Q${f(x)} ${f(y + h)} ${f(x + j(9))} ${f(y + h - r)} V${f(y + r + j(10))} ` +
+    `Q${f(x)} ${f(y)} ${f(x + r + j(1))} ${f(y + j(2))}`
+  );
+};
+
+/** A hand-drawn circle: one loop that runs a little past its start. */
+const loop = (cx: number, cy: number, r: number, seed = 0) => {
+  const pts: string[] = [];
+  const n = 56;
+  for (let i = 0; i <= n; i++) {
+    const a = -Math.PI / 2 + (i / n) * Math.PI * 2 * 1.07;
+    const rr = r + Math.sin(a * 3 + seed) * 0.9 - (i / n) * 2.4;
+    pts.push(`${f(cx + Math.cos(a) * rr)} ${f(cy + Math.sin(a) * rr)}`);
+  }
+  return `M${pts.join(" L")}`;
+};
+
+/** A stroke drawing itself in (k: 0 → 1), via a unit dash. */
+const drawn = (k: number) => ({
+  pathLength: 1,
+  strokeDasharray: "1 1",
+  strokeDashoffset: f(1 - clamp01(k)),
+  opacity: k > 0 ? 1 : 0,
+});
+
+/** A little sparkle scribble that pops in with a spring (k: 0 → 1). */
+const Sparkle = ({ x, y, k, size = 10, spin = 0 }: { x: number; y: number; k: number; size?: number; spin?: number }) => {
+  if (k <= 0) return null;
+  const s = spring(k);
+  return (
+    <g transform={`translate(${f(x)} ${f(y)}) rotate(${f(spin + 25 * (1 - s))}) scale(${f(s)} ${f(s * (1 + 0.25 * hump(k)))})`}>
+      <path className="mk-thin" d={`M0 ${-size} V${size} M${-size} 0 H${size}`} />
+    </g>
+  );
+};
 
 /* ── Support: the inbox that empties itself ──────────────────────────────── */
 
-// a slight tilt per ticket, so the stack reads as a pile, not a list
-const TILTS = [-1.5, 1, -0.5, 1.5, -1, 0.5, -1.5, 1, -0.5] as const;
-const N = TILTS.length;
+const RW = 480; // the drawing's box (viewBox units ≈ px at desktop)
+const RH = 256;
+const N = 9; // tickets
+const TILTS = [-1, 0.8, -0.4, 1, -0.7, 0.4, -1, 0.7, -0.4] as const; // a pile, not a list
+const LINES = [150, 118, 168, 104, 140, 126, 158, 112, 134] as const; // each ticket's "text"
 const PEAK = 48; // the count the inbox climbs to while the pile grows
 const ARRIVE_MS = 130; // a new ticket lands this often
 const PILE_MS = ARRIVE_MS * N; // the pile is complete
-const IN_MS = 420; // a ticket's landing
+const IN_MS = 440; // a ticket's landing
 const MELT_AT = 1700; // Bizmis starts answering
-const RESOLVE_MS = 170; // and clears one ticket this often, from the front
-const OUT_MS = 600; // a ticket turning into a check and dissolving
-const MELT_END = MELT_AT + RESOLVE_MS * N; // the last ticket is cleared
-const CALM_MS = 900; // the calm check settling
-const RELIEF_MS = MELT_END + CALM_MS + 200;
+const RESOLVE_MS = 170; // and ticks one off this often, from the front
+const OUT_MS = 620; // a ticket ticked and swept away
+const MELT_END = MELT_AT + RESOLVE_MS * N; // the last one is gone
+const RELIEF_MS = MELT_END + 1500; // the calm check draws, the sparkles pop
 const landedAt = (i: number) => i * ARRIVE_MS;
 const outAt = (i: number) => MELT_AT + (N - 1 - i) * RESOLVE_MS;
-// the stack: the newest three read as a cascade (each older one shows its
-// whole line above the next), the rest compress into a pile of edges behind
+// the pile: the front ticket, then each older one peeking out above the next
+const TK_W = 316;
+const TK_H = 46;
+const BOTTOM = 246; // the front ticket's bottom edge
 const READABLE = 3;
-const LINE_Y = 27; // px a readable ticket sits above the one in front
-const EDGE_Y = 6; // px each ticket deeper in the pile sits above the next
-const DEPTH_S = 0.03; // and how much smaller each step back is
+const LINE_Y = 27; // a readable ticket peeks out this much above the one in front
+const EDGE_Y = 7; // deeper in the pile, only an edge
 const liftY = (depth: number) =>
-  depth <= READABLE - 1
-    ? depth * LINE_Y
-    : (READABLE - 1) * LINE_Y + (depth - READABLE + 1) * EDGE_Y;
+  depth <= READABLE - 1 ? depth * LINE_Y : (READABLE - 1) * LINE_Y + (depth - READABLE + 1) * EDGE_Y;
 
-/** How much ticket `j` is on the pile at `t` (0 → 1 as it lands, back to 0 as it's cleared). */
+/** How much ticket `j` is on the pile at `t` (0 → 1 as it lands, back to 0 as it's swept away). */
 const presence = (j: number, t: number) =>
   easeBack(span(t, landedAt(j), landedAt(j) + 380), 1.2) *
-  (1 - easeOut(span(t, outAt(j) + 120, outAt(j) + 500)));
+  (1 - easeOut(span(t, outAt(j) + 220, outAt(j) + 560)));
 
 /**
- * Relief: support tickets land one after another on a growing stack of
- * notifications (newest in front; older ones pushed back and up, the first
- * few still readable, the rest a pile of edges) while the waiting count
- * climbs. Then Bizmis clears them from the front, each turning into a check
- * and dissolving, the count drains to zero, and a calm check settles in their
- * place.
+ * Relief: support tickets (outlined cards, a line of "text" each) land one
+ * after another on a growing pile while the drawn badge counts them up.
+ * Then Bizmis ticks them off from the front, each swept away, the count
+ * drains to zero, and a big check draws itself in a circle: "All caught up",
+ * with a few sparkles.
  */
 export const SupportRelief = ({ className }: { className?: string }) => {
   const r = useMessages().landing.support.relief;
   const ref = useRef<HTMLDivElement>(null);
-  const { t, active } = useRewindLoop(ref, {
-    duration: RELIEF_MS,
-    rewind: 900,
-    threshold: 0.45,
-    tick: 0,
-  });
+  const uid = useId().replace(/:/g, "");
+  const { t } = useRewindLoop(ref, { duration: RELIEF_MS, hold: 0, rewind: 900, rest: 450, threshold: 0.45, tick: 0 });
 
   const count =
     t < PILE_MS
       ? Math.round(PEAK * easeOut(t / PILE_MS))
       : t < MELT_AT
         ? PEAK
-        : // drains with the pile, so it reads 0 only as the last ticket goes
-          Math.round(PEAK * Math.pow(1 - span(t, MELT_AT, MELT_END), 1.5));
-  const calm = t >= MELT_END;
-  const calmK = span(t, MELT_END, MELT_END + CALM_MS);
-  const pres = TILTS.map((_, j) => presence(j, t));
+        : Math.round(PEAK * Math.pow(1 - span(t, MELT_AT, MELT_END), 1.5));
+  const pres = Array.from({ length: N }, (_, j) => presence(j, t));
+  const depthOf = (i: number) => {
+    let d = 0;
+    for (let j = i + 1; j < N; j++) d += pres[j];
+    return d;
+  };
+  const kInOf = (i: number) => span(t, landedAt(i), landedAt(i) + IN_MS);
+  const topOf = (i: number) => BOTTOM - TK_H - liftY(depthOf(i)) + 40 * (1 - easeBack(kInOf(i)));
+
+  // the badge: a drawn pill, bouncing as the pile tops out and as it empties
+  const badgeText = r.waiting.replace("{n}", String(count));
+  const bw = 26 + badgeText.length * 8.4;
+  const bx = RW - 4 - bw;
+  const bump =
+    0.14 * hump(span(t, PILE_MS - 60, PILE_MS + 340)) + 0.14 * hump(span(t, MELT_END - 40, MELT_END + 360));
+
+  // the calm: a check in a circle, drawing itself, then the words and sparkles
+  const cx = RW / 2;
+  const cy = 132;
+  const ring = easeOut(span(t, MELT_END, MELT_END + 520));
+  const tick = easeOut(span(t, MELT_END + 380, MELT_END + 700));
+  const words = span(t, MELT_END + 520, MELT_END + 900);
 
   return (
     <div
       ref={ref}
       role="img"
       aria-label={`${r.label}: ${r.done}`}
-      className={cn("bzl-relief", (active || t > 0) && !calm && "is-on", calm && "is-calm", className)}
+      className={cn("bzl-relief bzl-mk", className)}
     >
-      <div className="bzl-relief-head" aria-hidden="true">
-        <span className="bzl-relief-label">
-          <span className="bzl-relief-led" />
+      <svg viewBox={`0 0 ${RW} ${RH}`} aria-hidden="true">
+        <defs>
+          {TILTS.map((_, i) => {
+            // a ticket shows only above the one in front of it
+            let clipY = 1000;
+            for (let j = i + 1; j < N; j++) {
+              if (pres[j] >= 0.5 && span(t, outAt(j), outAt(j) + OUT_MS) < 0.45) {
+                clipY = topOf(j) - 5;
+                break;
+              }
+            }
+            return (
+              <clipPath key={i} id={`${uid}-tk${i}`}>
+                <rect x={-200} y={-200} width={RW + 400} height={clipY + 200} />
+              </clipPath>
+            );
+          })}
+        </defs>
+
+        {/* the head: the inbox's name, and its count in a drawn badge */}
+        <text x={4} y={27} className="mk-label">
           {r.label}
-        </span>
-        <span className="bzl-relief-count">
-          {r.waiting.replace("{n}", String(count))}
-        </span>
-      </div>
-      <div className="bzl-relief-stage" aria-hidden="true">
+        </text>
+        <g
+          transform={`translate(${f(bx + bw / 2)} 22) scale(${f(1 + bump)} ${f(1 - bump * 0.7)}) translate(${f(-(bx + bw / 2))} -22)`}
+        >
+          <path className="mk-mid" d={rrect(bx, 6, bw, 32, 16, 3)} />
+          <text x={bx + bw / 2} y={27.5} textAnchor="middle" className="mk-label is-strong">
+            {badgeText}
+          </text>
+        </g>
+
+        {/* the pile */}
         {TILTS.map((tilt, i) => {
-          // how deep in the pile: the tickets on it in front of this one
-          let depth = 0;
-          for (let j = i + 1; j < N; j++) depth += pres[j];
-          const behind = clamp01(depth - (READABLE - 1));
-          // landing: rises in from below with a little spring
-          const kIn = span(t, landedAt(i), landedAt(i) + IN_MS);
-          const sIn = easeBack(kIn);
-          // clearing: a beat as a check, then up and away into a blur
+          const kIn = kInOf(i);
+          if (kIn <= 0) return null;
+          const depth = depthOf(i);
           const kOut = span(t, outAt(i), outAt(i) + OUT_MS);
-          const beat = clamp01(kOut / 0.35);
-          const away = easeInOut(clamp01((kOut - 0.35) / 0.65));
-          const opacity = easeOut(clamp01(kIn * 1.6)) * (1 - away);
-          const y = 34 * (1 - sIn) - 18 * away;
-          const scale = (0.92 + 0.08 * sIn) * mix(1 + 0.03 * beat, 0.6, away);
+          const ticked = clamp01(kOut / 0.42);
+          const away = easeIn(clamp01((kOut - 0.42) / 0.58));
+          const opacity = clamp01(kIn * 2.2) * (1 - away) * clamp01(8 - depth);
+          if (opacity <= 0.001) return null;
+          const w = TK_W - Math.min(depth, 8) * 7;
+          const x = cx - w / 2;
+          const y = topOf(i);
+          const my = y + TK_H / 2;
+          // landing squash: wide and low as it lands, then springs back
+          const sq = hump(clamp01(kIn * 1.25 - 0.1));
+          const sx = 1 + 0.07 * sq;
+          const sy = 1 - 0.16 * sq;
+          const content = 1 - ticked;
           return (
-            <span
-              key={i}
-              className="bzl-tk-slot"
-              style={{
-                zIndex: i + 1,
-                transform: `translateX(-50%) translateY(${(-liftY(depth)).toFixed(2)}px) scale(${(1 - depth * DEPTH_S).toFixed(4)})`,
-                opacity: clamp01(8 - depth),
-              }}
-            >
-              <span
-                className="bzl-tk"
-                style={
-                  {
-                    "--behind": behind.toFixed(3),
-                    opacity,
-                    transform: `translateY(${y.toFixed(2)}px) scale(${scale.toFixed(4)}) rotate(${(tilt * (1 - beat)).toFixed(2)}deg)`,
-                    filter: away > 0 ? `blur(${(6 * away).toFixed(2)}px)` : undefined,
-                  } as CSSProperties
+            <g key={i} clipPath={`url(#${uid}-tk${i})`} opacity={f(opacity)}>
+              <g
+                transform={
+                  `translate(${f(260 * away)} ${f(-20 * away)}) rotate(${f(tilt + 14 * away)} ${f(cx)} ${f(my)}) ` +
+                  `translate(${f(cx)} ${f(y + TK_H)}) scale(${f(sx)} ${f(sy)}) translate(${f(-cx)} ${f(-(y + TK_H))})`
                 }
               >
-                <span className="bzl-tk-dot" style={{ opacity: 1 - behind }} />
-                <span className="bzl-tk-text" style={{ opacity: 1 - behind }}>
-                  {r.tickets[i % r.tickets.length]}
-                </span>
-                <span className="bzl-tk-unread" style={{ opacity: 1 - behind }} />
-                <span className="bzl-tk-check" style={{ opacity: clamp01(kOut / 0.25) }}>
-                  <Check strokeWidth={3} />
-                </span>
-              </span>
-            </span>
+                <path className="mk-main" d={rrect(x, y, w, TK_H, 13, i)} />
+                <g opacity={f(content)}>
+                  <circle className="mk-thin" cx={x + 25} cy={my} r={8.5} />
+                  <path className="mk-mid" d={`M${f(x + 46)} ${f(my + hand(i, 3) * 0.6)} H${f(x + 46 + Math.min(LINES[i], w - 96))}`} />
+                  <circle className="mk-dot" cx={x + w - 24} cy={my} r={5} />
+                </g>
+                {/* ticked off: a big tick drawn across the card */}
+                <path
+                  className="mk-main"
+                  d={`M${f(cx - 24)} ${f(my + 1)} L${f(cx - 7)} ${f(my + 15)} L${f(cx + 26)} ${f(my - 15)}`}
+                  {...drawn(ticked)}
+                />
+              </g>
+            </g>
           );
         })}
-        <span
-          className="bzl-relief-calm"
-          style={{
-            opacity: easeOut(clamp01(calmK * 1.3)),
-            transform: `scale(${(0.85 + 0.15 * easeBack(calmK)).toFixed(4)})`,
-          }}
+
+        {/* all caught up */}
+        <path className="mk-main" d={loop(cx, cy, 46, 2)} {...drawn(ring)} />
+        <path
+          className="mk-main is-heavy"
+          d={`M${cx - 21} ${cy + 1} L${cx - 6} ${cy + 16} L${cx + 23} ${cy - 15}`}
+          {...drawn(tick)}
+        />
+        <g
+          opacity={f(clamp01(words * 1.6))}
+          transform={`translate(${cx} ${cy + 80}) scale(${f(mix(0.7, 1, spring(words)))}) translate(${-cx} ${-(cy + 80)})`}
         >
-          <span className="bzl-relief-check">
-            <Check strokeWidth={2.6} />
-          </span>
-          <span className="bzl-relief-done">{r.done}</span>
-        </span>
-      </div>
+          <text x={cx} y={cy + 86} textAnchor="middle" className="mk-label is-big">
+            {r.done}
+          </text>
+        </g>
+        <Sparkle x={cx + 76} y={cy - 38} k={span(t, MELT_END + 640, MELT_END + 1040)} />
+        <Sparkle x={cx - 78} y={cy - 22} k={span(t, MELT_END + 760, MELT_END + 1160)} size={8} spin={45} />
+        <Sparkle x={cx + 64} y={cy + 36} k={span(t, MELT_END + 880, MELT_END + 1280)} size={7} />
+      </svg>
     </div>
   );
 };
 
 /* ── Insights: noise that sorts itself into an answer ─────────────────────── */
 
-const COLS = [20, 40, 60, 80]; // column centres, % of the stage
+const CW = 480;
+const CH = 240;
+const BASE = 214; // the chart's baseline
+const COLS = [96, 192, 288, 384]; // column centres
 const HEIGHTS = [2, 3, 4, 6]; // a rising chart; the last column is the answer
-const STAGE = 150; // px
-const BASE = 12; // the baseline's distance from the bottom
-const STEP = 13; // a segment plus its gap
+const STEP = 22; // one dot's worth of bar
+const BAR_W = 54;
+const barH = (c: number) => HEIGHTS[c] * STEP;
+const TOP_C = COLS.length - 1;
 
-// where each dot starts, scattered (left %, top px)
+// where each dot starts, scattered (x, y)
 const SCATTER = [
-  [8, 22], [27, 96], [71, 14], [90, 58], [47, 40], [14, 70], [62, 102],
-  [35, 12], [82, 104], [55, 72], [4, 108], [76, 44], [40, 84], [22, 46],
-  [93, 18],
+  [38, 30], [130, 134], [341, 20], [432, 82], [226, 56], [67, 98], [298, 144],
+  [168, 16], [394, 150], [264, 102], [20, 152], [365, 62], [192, 120], [106, 64],
+  [446, 26],
 ] as const;
-// extra noise that only lives in the scatter, then fades away (left %, top px)
+// extra noise that only lives in the scatter, then fades away
 const NOISE = [
-  [18, 118], [31, 30], [44, 128], [67, 60], [86, 84], [11, 50], [58, 20],
-  [74, 124], [50, 96], [96, 112],
+  [86, 168], [149, 42], [211, 182], [322, 86], [413, 120], [53, 70], [278, 28],
+  [355, 176], [240, 136], [460, 160],
 ] as const;
-// where each question floats while it's still noise (left %, top px)
-const SNIPPETS = [
-  [3, 4],
-  [55, 0],
-  [24, 56],
-  [60, 88],
+// the shoppers' questions, as little bubbles, while it's still noise
+const BUBBLES = [
+  [30, 6],
+  [262, 0],
+  [118, 82],
+  [292, 112],
 ] as const;
-// the dots' greys while they're noise
-const GREYS = ["#cdbfb1", "#e3c99a", "#b9aa9b"] as const;
-const SORTED = "color-mix(in oklab, var(--acc, #d99a1c) 45%, #fff)";
 
-const segments = HEIGHTS.flatMap((h, c) =>
-  Array.from({ length: h }, (_, k) => ({ c, k })),
-);
-const colTop = (c: number) => STAGE - BASE - HEIGHTS[c] * STEP;
+const segments = HEIGHTS.flatMap((h, c) => Array.from({ length: h }, (_, k) => ({ c, k })));
 
-const SNIP_EVERY = 190; // the questions pop in one after another
-const SORT_AT = 1300; // the noise starts sorting itself
+const SORT_AT = 1300; // the noise sorts itself
 const AHA_AT = 2450; // the answer lights up
-const CLARITY_MS = AHA_AT + 1750;
+const CLARITY_MS = AHA_AT + 2100;
 
-/** A restless wobble, from the time itself (so it runs backwards on the rewind too). */
+/** A restless wobble while it's noise, from the time itself (so it runs backwards on the rewind too). */
 const jitter = (t: number, period: number, phase: number, amp = 1) => {
   const a = 2 * Math.PI * (t / period + phase);
   return [3 * Math.sin(a) * amp, 4 * Math.sin(a * 2 + 1.3) * amp] as const;
 };
 
+/** An outlined bar standing on the baseline, open at the bottom. */
+const bar = (cx: number, h: number) => {
+  const x = cx - BAR_W / 2;
+  const y = BASE - h;
+  const rr = Math.min(9, h / 2);
+  return `M${f(x)} ${BASE} V${f(y + rr)} Q${f(x)} ${f(y)} ${f(x + rr)} ${f(y)} H${f(x + BAR_W - rr)} Q${f(x + BAR_W)} ${f(y)} ${f(x + BAR_W)} ${f(y + rr)} V${BASE}`;
+};
+
+/** A five-point star, outlined. */
+const star = (r: number) => {
+  const pts: string[] = [];
+  for (let i = 0; i < 10; i++) {
+    const a = -Math.PI / 2 + (i * Math.PI) / 5;
+    const rr = i % 2 ? r * 0.45 : r;
+    pts.push(`${f(Math.cos(a) * rr)} ${f(Math.sin(a) * rr)}`);
+  }
+  return `M${pts.join(" L")} Z`;
+};
+
 /**
- * Clarity: scattered questions and dots jitter like noise, then fly into a
- * clean rising chart; the tallest bar lights up and names the top ask.
+ * Clarity: outlined dots and little question bubbles jitter like noise, then
+ * fly into a drawn bar chart; the bars grow, a marker trend arrow climbs
+ * over them, and a drawn callout names the top ask, with a star doodle.
  */
 export const InsightsClarity = ({ className }: { className?: string }) => {
   const cl = useMessages().landing.insights.clarity;
   const ref = useRef<HTMLDivElement>(null);
-  const { t } = useRewindLoop(ref, {
-    duration: CLARITY_MS,
-    rewind: 900,
-    threshold: 0.45,
-    tick: 0,
-  });
-  const tops = COLS.map((x, c) => `${x},${colTop(c) - 7}`).join(" ");
-  const shown = span(t, 0, 400); // the noise fading in
+  const uid = useId().replace(/:/g, "");
+  const { t } = useRewindLoop(ref, { duration: CLARITY_MS, hold: 0, rewind: 900, rest: 450, threshold: 0.45, tick: 0 });
+
+  const shown = span(t, 0, 400);
   const fadeNoise = span(t, SORT_AT, SORT_AT + 500);
-  const aha = span(t, AHA_AT, AHA_AT + 450);
-  const line = easeInOut(span(t, AHA_AT, AHA_AT + 900));
-  const peak = span(t, AHA_AT + 750, AHA_AT + 1250);
-  const callout = span(t, AHA_AT + 950, AHA_AT + 1550);
+  const growOf = (c: number) => easeBack(span(t, SORT_AT + 260 + c * 110, SORT_AT + 960 + c * 110), 1.4);
+  const base = easeOut(span(t, SORT_AT, SORT_AT + 520));
+  const aha = span(t, AHA_AT, AHA_AT + 420);
+  const hatch = easeOut(span(t, AHA_AT, AHA_AT + 520));
+  const trend = easeInOut(span(t, AHA_AT + 150, AHA_AT + 900));
+  const head = easeOut(span(t, AHA_AT + 860, AHA_AT + 1060));
+  const box = easeOut(span(t, AHA_AT + 950, AHA_AT + 1350));
+  const words = span(t, AHA_AT + 1150, AHA_AT + 1450);
+  const pointer = easeOut(span(t, AHA_AT + 1250, AHA_AT + 1500));
+
+  const tops = COLS.map((x, c) => [x, BASE - barH(c) - 18] as const);
+  const [px, py] = tops[TOP_C];
+  // the trend arrow's head, along its last segment
+  const [qx, qy] = tops[TOP_C - 1];
+  const ang = Math.atan2(py - qy, px - qx);
+  const arm = (a: number) => `${f(px + Math.cos(ang + a) * 15)} ${f(py + Math.sin(ang + a) * 15)}`;
+
+  // the callout, to the left of the answer's peak
+  const cw = 26 + cl.topAsk.length * 8.2;
+  const cxr = px - 42;
+  const cxl = cxr - cw;
+  const topBarSq = hump(aha);
+
   return (
-    <div
-      ref={ref}
-      role="img"
-      aria-label={cl.topAsk}
-      className={cn("bzl-clarity", className)}
-    >
-      <div className="bzl-clarity-stage" aria-hidden="true">
-        {cl.snippets.map((s, i) => {
-          const kIn = span(t, i * SNIP_EVERY, i * SNIP_EVERY + 400);
-          const out = easeInOut(span(t, SORT_AT, SORT_AT + 600));
-          const [jx, jy] = jitter(t, 1600, i * 0.25);
-          const [sx, sy] = SNIPPETS[i % SNIPPETS.length];
+    <div ref={ref} role="img" aria-label={cl.topAsk} className={cn("bzl-clarity bzl-mk", className)}>
+      <svg viewBox={`0 0 ${CW} ${CH}`} aria-hidden="true">
+        <defs>
+          <clipPath id={`${uid}-top`}>
+            <rect x={COLS[TOP_C] - BAR_W / 2 + 4} y={BASE - barH(TOP_C) + 4} width={BAR_W - 8} height={barH(TOP_C) - 4} />
+          </clipPath>
+        </defs>
+
+        {/* the noise: questions in little bubbles, and stray dots */}
+        {BUBBLES.map(([x, y], i) => {
+          const kIn = span(t, i * 190, i * 190 + 420);
+          if (kIn <= 0) return null;
+          const fly = easeInOut(span(t, SORT_AT + i * 40, SORT_AT + 600 + i * 40));
+          const [jx, jy] = jitter(t, 1600, i * 0.25, 1 - fly);
+          const tx = mix(x, COLS[TOP_C] - 20, fly) + jx;
+          const ty = mix(y, BASE - barH(TOP_C) * 0.5, fly) + jy;
+          const s = spring(kIn) * (1 - 0.85 * fly);
+          if (s <= 0.02 || fly >= 1) return null;
           return (
-            <span
-              key={s}
-              className="bzl-clarity-snip"
-              style={{
-                left: `${sx}%`,
-                top: `${sy}px`,
-                opacity: clamp01(kIn * 1.5) * (1 - out),
-                transform: `translate(${jx.toFixed(2)}px, ${(jy + 20 * out).toFixed(2)}px) scale(${((0.7 + 0.3 * easeBack(kIn)) * (1 - 0.4 * out)).toFixed(4)})`,
-                filter: out > 0 ? `blur(${(4 * out).toFixed(2)}px)` : undefined,
-              }}
-            >
-              {s}
-            </span>
+            <g key={`b${i}`} transform={`translate(${f(tx + 20)} ${f(ty + 15)}) scale(${f(s)}) translate(-20 -15)`}>
+              <path className="mk-mid" d={`${rrect(0, 0, 40, 28, 10, 20 + i)} M10 28 L6 37 L18 28`} />
+              <text x={20} y={20.5} textAnchor="middle" className="mk-label is-strong">
+                ?
+              </text>
+            </g>
           );
         })}
         {NOISE.map(([x, y], i) => {
+          const o = shown * (1 - fadeNoise);
+          if (o <= 0) return null;
           const [jx, jy] = jitter(t, 900 + (i % 4) * 270, (i % 5) * 0.21);
           return (
-            <span
+            <circle
               key={`n${i}`}
-              className="bzl-clarity-dot"
-              style={{
-                left: `${x}%`,
-                top: `${y}px`,
-                background: GREYS[i % GREYS.length],
-                opacity: shown * (1 - fadeNoise),
-                transform: `translate(${jx.toFixed(2)}px, ${jy.toFixed(2)}px) scale(${(1 - 0.7 * fadeNoise).toFixed(3)})`,
-              }}
+              className="mk-thin"
+              cx={f(x + jx)}
+              cy={f(y + jy)}
+              r={f(5.5 * (1 - 0.7 * fadeNoise))}
+              opacity={f(o)}
             />
           );
         })}
+
+        {/* the chart: a baseline, and bars that grow as the dots fly in */}
+        <path className="mk-mid" d={`M24 ${BASE} H${CW - 24}`} {...drawn(base)} />
+        {COLS.map((x, c) => {
+          const g = growOf(c);
+          if (g <= 0) return null;
+          const isTop = c === TOP_C;
+          const sx = isTop ? 1 - 0.06 * topBarSq : 1;
+          const sy = isTop ? 1 + 0.08 * topBarSq : 1;
+          return (
+            <g key={`bar${c}`} transform={`translate(${x} ${BASE}) scale(${f(sx)} ${f(sy)}) translate(${-x} ${-BASE})`}>
+              {isTop && aha > 0 && (
+                <path d={`${bar(x, barH(c) * g)} Z`} className="mk-tint" opacity={f(aha)} />
+              )}
+              <path className="mk-main" d={bar(x, barH(c) * g)} />
+            </g>
+          );
+        })}
+        {/* the answer, hatched in */}
+        <g clipPath={`url(#${uid}-top)`}>
+          {[0, 1, 2, 3, 4, 5, 6].map((k) => {
+            const x0 = COLS[TOP_C] - BAR_W / 2;
+            const y0 = BASE - 10 - k * 21;
+            return (
+              <path
+                key={k}
+                className="mk-thin"
+                d={`M${x0} ${y0} L${x0 + BAR_W} ${y0 - BAR_W * 0.55}`}
+                {...drawn(clamp01(hatch * 7 - k))}
+              />
+            );
+          })}
+        </g>
+
+        {/* the dots, flying into their bars */}
         {segments.map(({ c, k }, i) => {
           const [sx, sy] = SCATTER[i % SCATTER.length];
           const d = SORT_AT + (c * 4 + k) * 35;
-          const move = easeBack(span(t, d, d + 850), 1.1); // flies into place, with a little spring
-          const shape = easeInOut(span(t, d, d + 500)); // dot → bar segment
+          const move = easeBack(span(t, d, d + 760), 1.1);
+          const gone = span(t, d + 560, d + 820); // absorbed into the bar
+          const o = shown * (1 - gone);
+          if (o <= 0) return null;
           const [jx, jy] = jitter(t, 1100 + (i % 5) * 230, (i % 7) * 0.17, 1 - span(t, d, d + 200));
-          const isTop = c === COLS.length - 1;
-          const bg = `color-mix(in oklab, ${SORTED} ${(shape * 100).toFixed(1)}%, ${GREYS[i % GREYS.length]})`;
+          const tx = mix(sx, COLS[c], move);
+          const ty = mix(sy, BASE - (k + 0.5) * STEP, move);
           return (
-            <span
+            <circle
               key={`${c}-${k}`}
-              className="bzl-clarity-dot"
-              style={{
-                left: `calc(${mix(sx, COLS[c], move).toFixed(3)}% - ${move.toFixed(4)} * var(--seg-w) / 2)`,
-                top: `${mix(sy, STAGE - BASE - (k + 1) * STEP, move).toFixed(2)}px`,
-                width: `calc(9px + (var(--seg-w) - 9px) * ${shape.toFixed(4)})`,
-                height: `${(9 + shape).toFixed(2)}px`,
-                borderRadius: `${(999 - 995 * shape).toFixed(1)}px`,
-                background: isTop
-                  ? `color-mix(in oklab, var(--acc, #d99a1c) ${(aha * 100).toFixed(1)}%, ${bg})`
-                  : bg,
-                boxShadow:
-                  isTop && aha > 0
-                    ? `0 0 ${(14 * aha).toFixed(1)}px 1px color-mix(in oklab, var(--acc, #d99a1c) ${(55 * aha).toFixed(1)}%, transparent)`
-                    : undefined,
-                opacity: shown,
-                transform: `translate(${jx.toFixed(2)}px, ${jy.toFixed(2)}px)`,
-              }}
+              className={k % 3 === 1 ? "mk-dot" : "mk-thin"}
+              cx={f(tx + jx)}
+              cy={f(ty + jy)}
+              r={f(6 * (1 - 0.6 * gone))}
+              opacity={f(o)}
             />
           );
         })}
-        <svg
-          className="bzl-clarity-line"
-          viewBox={`0 0 100 ${STAGE}`}
-          preserveAspectRatio="none"
-          style={{
-            clipPath: `inset(-10px ${((1 - line) * 100).toFixed(2)}% -10px -10px)`,
-            opacity: line > 0 ? 1 : 0,
-          }}
-        >
-          <polyline points={tops} />
-        </svg>
-        <span
-          className="bzl-clarity-peak"
-          style={{
-            left: `${COLS[COLS.length - 1]}%`,
-            top: `${colTop(COLS.length - 1) - 7}px`,
-            opacity: clamp01(peak * 1.7),
-            scale: easeBack(peak).toFixed(4),
-          }}
-        />
-        <span
-          className="bzl-clarity-callout"
-          style={{
-            right: `calc(${100 - COLS[COLS.length - 1]}% + 1.6rem)`,
-            top: "6px",
-            opacity: clamp01(callout * 1.5),
-            transform: `translateY(${(6 * (1 - easeBack(callout))).toFixed(2)}px) scale(${(0.9 + 0.1 * easeBack(callout)).toFixed(4)})`,
-          }}
+
+        {/* the trend: a marker arrow climbing over the bars */}
+        <path className="mk-mid is-trend" d={`M${tops.map(([x, y]) => `${x} ${y}`).join(" L")}`} {...drawn(trend)} />
+        <path className="mk-mid is-trend" d={`M${arm(Math.PI - 0.55)} L${f(px)} ${f(py)} L${arm(Math.PI + 0.55)}`} {...drawn(head)} />
+
+        {/* the callout: the top ask, in a drawn box pointing at the peak */}
+        <path className="mk-thin" d={rrect(cxl, 6, cw, 34, 12, 9)} {...drawn(box)} />
+        <text
+          x={(cxl + cxr) / 2}
+          y={28.5}
+          textAnchor="middle"
+          className="mk-label is-strong"
+          opacity={f(words)}
         >
           {cl.topAsk}
-        </span>
-        <span
-          className="bzl-clarity-base"
-          style={{
-            bottom: `${BASE - 4}px`,
-            opacity: span(t, SORT_AT + 400, SORT_AT + 1000),
-          }}
-        />
-      </div>
+        </text>
+        <path className="mk-thin" d={`M${f(cxr + 4)} 26 Q${f(px - 14)} 26 ${f(px - 10)} ${f(py - 12)}`} {...drawn(pointer)} />
+        <g opacity={f(clamp01(span(t, AHA_AT + 1450, AHA_AT + 1600) * 3))}>
+          {(() => {
+            const k = span(t, AHA_AT + 1450, AHA_AT + 1850);
+            const s = spring(k);
+            return (
+              <g transform={`translate(${f(px + 42)} ${f(py - 30)}) rotate(${f(-20 * (1 - s))}) scale(${f(s * (1 + 0.2 * hump(k)))} ${f(s)})`}>
+                <path className="mk-thin" d={star(12)} />
+              </g>
+            );
+          })()}
+        </g>
+        <Sparkle x={px + 20} y={py - 52} k={span(t, AHA_AT + 1600, AHA_AT + 1950)} size={6} />
+      </svg>
     </div>
   );
 };

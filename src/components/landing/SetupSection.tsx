@@ -62,7 +62,6 @@ const SetupSection = () => {
   const target = useRef<HTMLDivElement>(null);
   const [lines, setLines] = useState<Line[]>([]);
   const [size, setSize] = useState({ w: 0, h: 0 });
-  const [ends, setEnds] = useState({ x1: 0, x2: 1 });
   const [button, setButton] = useState({ x: 0, y: 0 });
   const video = useRef<HTMLVideoElement>(null);
   const [src, setSrc] = useState<string | null>(null);
@@ -79,7 +78,6 @@ const SetupSection = () => {
     const first = cards.current[0]?.getBoundingClientRect();
     const last = cards.current[cards.current.length - 1]?.getBoundingClientRect();
     if (first && last) {
-      setEnds({ x1: first.right - b.left, x2 });
       // the Install button sits in the gap between the cards and the agent
       setButton({ x: (first.right + t.left) / 2 - b.left, y: (first.top + last.bottom) / 2 - b.top });
     }
@@ -183,28 +181,8 @@ const SetupSection = () => {
               height={size.h}
               viewBox={`0 0 ${size.w || 1} ${size.h || 1}`}
             >
-              <defs>
-                {/* the lines rise out of the cards and dissolve into the agent */}
-                <linearGradient id="setup-fade" gradientUnits="userSpaceOnUse" x1={ends.x1} x2={ends.x2} y1="0" y2="0">
-                  <stop offset="0" stopColor="#fff" stopOpacity="0" />
-                  <stop offset="0.08" stopColor="#fff" />
-                  <stop offset="0.84" stopColor="#fff" />
-                  <stop offset="1" stopColor="#fff" stopOpacity="0" />
-                </linearGradient>
-                <mask id="setup-mask" maskUnits="userSpaceOnUse">
-                  <rect width={size.w || 1} height={size.h || 1} fill="url(#setup-fade)" />
-                </mask>
-                {/* warmer and stronger toward the agent, as the energy gathers */}
-                <linearGradient id="setup-line" gradientUnits="userSpaceOnUse" x1={ends.x1} x2={ends.x2} y1="0" y2="0">
-                  <stop offset="0" stopColor="rgb(249 163 83 / 0.2)" />
-                  <stop offset="1" stopColor="rgb(249 163 83 / 0.42)" />
-                </linearGradient>
-                <radialGradient id="setup-spark-halo">
-                  <stop offset="0" stopColor="rgb(249 163 83 / 0.75)" />
-                  <stop offset="1" stopColor="rgb(249 163 83 / 0)" />
-                </radialGradient>
-              </defs>
-              <g mask="url(#setup-mask)">
+              {/* marker line art (as the Sales funnel): flat primary strokes, solid dots for the energy */}
+              <g className="bzl-setup-wires">
                 {lines.map((l, i) =>
                   l.d ? (
                     <g key={i}>
@@ -213,25 +191,13 @@ const SetupSection = () => {
                         d={l.d}
                         pathLength={1000}
                         fill="none"
-                        stroke="url(#setup-line)"
-                        strokeWidth={2.6}
-                        strokeLinecap="round"
-                        className={synced > i ? "bzl-wire" : "opacity-0"}
+                        className={cn("bzl-setup-wire", synced > i ? "bzl-wire" : "opacity-0")}
                       />
-                      {/* the energy: round sparks travelling card → agent, two per wire */}
+                      {/* the energy: solid marker dots travelling card → agent, two per wire */}
                       {phase === "done" &&
                         [0, 0.5].map((offset) => (
                           <g key={offset}>
-                            <circle r={12} fill="url(#setup-spark-halo)">
-                              <animateMotion
-                                dur={`${l.dur}s`}
-                                begin={`${-(l.delay + offset * l.dur)}s`}
-                                repeatCount="indefinite"
-                              >
-                                <mpath href={`#setup-wire-${i}`} />
-                              </animateMotion>
-                            </circle>
-                            <circle r={3.6} fill="rgb(255 247 236)">
+                            <circle r={1} className="bzl-setup-spark">
                               <animateMotion
                                 dur={`${l.dur}s`}
                                 begin={`${-(l.delay + offset * l.dur)}s`}

@@ -871,6 +871,28 @@
   animation: bzl-wire 1.1s var(--bzl-ease) var(--bzl-delay, 0ms) forwards;
 }
 @keyframes bzl-wire { to { stroke-dashoffset: 0; } }
+/* the wires as marker line art (the Sales funnel's style): flat, round-capped
+   strokes in a light primary, the energy as solid primary dots riding them.
+   --setup-wire / --setup-spark let a palette retune them. */
+.bzl-setup-wires {
+  --setup-wire: color-mix(in oklab, hsl(var(--primary)) 62%, #fff);
+  --setup-spark: hsl(var(--primary));
+}
+.bzl-setup-wire {
+  fill: none;
+  stroke: var(--setup-wire);
+  stroke-width: 6px;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.bzl-setup-spark {
+  r: 6.5px;
+  fill: var(--setup-spark);
+}
+@media (max-width: 639px) {
+  .bzl-setup-wire { stroke-width: 4px; }
+  .bzl-setup-spark { r: 5px; }
+}
 /* energy streaming along each wire, card → agent: two comets per wire, on a
    seamless loop (the dash period divides the path, so it never restarts) */
 .bzl-flow {
@@ -1238,232 +1260,55 @@
   .bzl-cta-underline path { transition: none; stroke-dashoffset: 0; }
 }
 
-/* ── Pillar moments: each benefit felt in ~4 s (PillarMoments.tsx) ──
-   Each plays from its start on scroll-in, holds, rewinds and plays again
-   (useRewindLoop). The motion is computed from the loop's time in the
-   component (inline styles), so these rules are the static look only;
-   reduced motion shows the resolved frame. */
-.bzl-relief,
-.bzl-clarity {
+/* ── Pillar moments (PillarMoments.tsx): flat marker line art on the band,
+   in the Sales funnel's style. The motion is computed from the loop's time
+   in the component; these rules are the ink and the stroke weights.
+   The ink: white reads only on the saturated Sales band, so on the light
+   Support / Insights bands the marker takes the pillar's own ink (a palette
+   retunes it through --acc / --acc-ink, or by setting --mk-* directly). ── */
+.bzl-mk {
+  --mk-line: color-mix(in oklab, var(--acc-ink, #c25a0b) 78%, var(--acc, #f9a353));
+  --mk-ink: var(--acc-ink, #c25a0b);
+  --mk-tint: rgb(255 255 255 / 0.5);
+  --mk-main: 6.5px;
+  --mk-mid: 4.5px;
+  --mk-thin: 3.5px;
   position: relative;
-  overflow: hidden;
-  border-radius: 22px;
-  background: rgb(255 255 255 / 0.72);
-  box-shadow:
-    inset 0 0 0 1px color-mix(in oklab, var(--acc, #f28c38) 18%, transparent),
-    0 18px 40px -30px color-mix(in oklab, var(--acc-ink, #c25a0b) 70%, transparent);
-  backdrop-filter: blur(6px);
 }
-
-/* Support: the inbox that empties itself */
-.bzl-relief {
-  --calm: #4f9468;
-  --calm-wash: #e4f2e6;
-  padding: 0.85rem 1rem 0.6rem;
-  transition: background-color 0.9s var(--bzl-ease);
-}
-.bzl-relief.is-on:not(.is-calm) { background: color-mix(in oklab, var(--acc-soft, #ffd9cd) 34%, rgb(255 255 255 / 0.75)); }
-.bzl-relief-head {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 0.75rem;
-  font-size: 0.75rem;
-  font-weight: 600;
-  color: var(--bzl-ink-2);
-}
-.bzl-relief-label { display: inline-flex; align-items: center; gap: 0.45rem; }
-.bzl-relief-led {
-  width: 0.45rem;
-  height: 0.45rem;
-  border-radius: 999px;
-  background: var(--acc, #e0684a);
-  transition: background-color 0.6s;
-}
-.bzl-relief.is-on:not(.is-calm) .bzl-relief-led { animation: bzl-led 0.9s ease-in-out infinite; }
-@keyframes bzl-led { 50% { opacity: 0.35; } }
-.bzl-relief-count {
-  border-radius: 999px;
-  padding: 0.2rem 0.6rem;
-  font-variant-numeric: tabular-nums;
-  background: var(--acc, #e0684a);
-  color: #fff;
-  transition: background-color 0.6s, color 0.6s;
-}
-.bzl-relief.is-calm .bzl-relief-led { background: var(--calm); }
-.bzl-relief.is-calm .bzl-relief-count { background: var(--calm-wash); color: var(--calm); }
-.bzl-relief-stage { position: relative; height: 122px; margin-top: 0.35rem; }
-/* a ticket's slot on the stack: full-width pills of one width, so the ones
-   behind hide exactly under the one in front and only their edges show */
-.bzl-tk-slot {
-  position: absolute;
-  left: 50%;
-  bottom: 6px;
-  width: min(100%, 17rem);
-  transform-origin: 50% 100%;
-}
-.bzl-tk {
-  --behind: 0;
-  position: relative;
-  display: flex;
-  align-items: center;
-  gap: 0.55rem;
-  padding: 0.5rem 0.75rem 0.5rem 0.5rem;
-  border-radius: 14px;
-  /* behind the front ticket: a blank edge, a shade darker */
-  background: color-mix(in oklab, var(--acc-soft, #ffd9cd) calc(var(--behind) * 45%), #fff);
-  box-shadow:
-    0 0 0 1px rgb(28 24 20 / 0.06),
-    0 10px 20px -12px rgb(120 50 30 / 0.5);
-  font-size: 0.78rem;
-  font-weight: 600;
-  white-space: nowrap;
-  color: var(--bzl-fg);
-  opacity: 0;
-}
-.bzl-tk-text { flex: 1; }
-.bzl-tk-dot {
-  flex-shrink: 0;
-  width: 1.2rem;
-  height: 1.2rem;
-  border-radius: 999px;
-  background: radial-gradient(circle at 35% 30%, #fff 0 18%, color-mix(in oklab, var(--acc, #e0684a) 55%, #fff) 20%);
-}
-.bzl-tk-unread {
-  flex-shrink: 0;
-  width: 0.45rem;
-  height: 0.45rem;
-  border-radius: 999px;
-  background: var(--acc, #e0684a);
-}
-.bzl-tk-check {
-  position: absolute;
-  inset: 0;
-  display: grid;
-  place-items: center;
-  border-radius: inherit;
-  background: var(--calm);
-  color: #fff;
-  opacity: 0;
-}
-.bzl-tk-check svg { width: 0.95rem; height: 0.95rem; }
-.bzl-relief-calm {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 0.45rem;
-  opacity: 0;
-}
-.bzl-relief-check {
-  position: relative;
-  display: grid;
-  place-items: center;
-  width: 3rem;
-  height: 3rem;
-  border-radius: 999px;
-  background: var(--calm);
-  color: #fff;
-  box-shadow: 0 10px 24px -10px color-mix(in oklab, var(--calm) 80%, transparent);
-}
-.bzl-relief-check svg { width: 1.5rem; height: 1.5rem; }
-.bzl-relief-check::after {
-  content: "";
-  position: absolute;
-  inset: -6px;
-  border-radius: inherit;
-  box-shadow: 0 0 0 6px color-mix(in oklab, var(--calm) 18%, transparent);
-  animation: bzl-breathe 3.2s ease-in-out infinite;
-}
-@keyframes bzl-breathe {
-  0%, 100% { transform: scale(0.92); opacity: 0.4; }
-  50% { transform: scale(1.12); opacity: 1; }
-}
-.bzl-relief-done { font-size: 0.85rem; font-weight: 700; letter-spacing: -0.01em; color: var(--calm); }
-
-/* Insights: noise that sorts itself into an answer */
-.bzl-clarity { padding: 0.6rem 0.75rem 0.35rem; }
-.bzl-clarity-stage { --seg-w: 30px; position: relative; height: 150px; }
-.bzl-clarity-snip {
-  position: absolute;
-  padding: 0.25rem 0.6rem;
-  border-radius: 999px 999px 999px 4px;
-  background: #fff;
-  box-shadow: 0 0 0 1px rgb(28 24 20 / 0.07), 0 6px 14px -8px rgb(28 24 20 / 0.3);
-  font-size: 0.72rem;
-  font-weight: 600;
-  white-space: nowrap;
-  color: var(--bzl-muted);
-  opacity: 0;
-}
-.bzl-clarity-dot {
-  position: absolute;
-  width: 9px;
-  height: 9px;
-  border-radius: 999px;
-  background: #cdbfb1;
-  opacity: 0;
-}
-.bzl-clarity-base {
-  position: absolute;
-  left: 4%;
-  right: 4%;
-  height: 1px;
-  background: color-mix(in oklab, var(--acc-ink, #8f620a) 22%, transparent);
-  opacity: 0;
-}
-.bzl-clarity-line {
-  position: absolute;
-  inset: 0;
+.bzl-mk svg {
+  display: block;
   width: 100%;
-  height: 100%;
+  height: auto;
   overflow: visible;
-  pointer-events: none;
 }
-.bzl-clarity-line polyline {
+.bzl-mk path,
+.bzl-mk circle {
   fill: none;
-  stroke: var(--acc-ink, #8f620a);
-  stroke-width: 2;
+  stroke: var(--mk-line);
   stroke-linecap: round;
   stroke-linejoin: round;
-  vector-effect: non-scaling-stroke;
 }
-.bzl-clarity-peak {
-  position: absolute;
-  width: 10px;
-  height: 10px;
-  margin: -5px 0 0 -5px;
-  border-radius: 999px;
-  background: var(--acc-ink, #8f620a);
-  opacity: 0;
-  scale: 0;
+.bzl-mk .mk-main { stroke-width: var(--mk-main); }
+.bzl-mk .mk-main.is-heavy { stroke-width: calc(var(--mk-main) * 1.15); }
+.bzl-mk .mk-mid { stroke-width: var(--mk-mid); }
+.bzl-mk .mk-thin { stroke-width: var(--mk-thin); }
+.bzl-mk .mk-dot { fill: var(--mk-line); stroke-width: var(--mk-thin); }
+.bzl-mk .mk-tint { fill: var(--mk-tint); stroke: none; }
+.bzl-mk .mk-label {
+  fill: var(--mk-ink);
+  font-family: var(--bzl-font);
+  font-size: 16px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
 }
-.bzl-clarity-peak::after {
-  content: "";
-  position: absolute;
-  inset: -6px;
-  border-radius: inherit;
-  background: color-mix(in oklab, var(--acc, #d99a1c) 45%, transparent);
-  animation: bzl-breathe 2.4s ease-in-out infinite;
-}
-.bzl-clarity-callout {
-  position: absolute;
-  padding: 0.3rem 0.7rem;
-  border-radius: 999px;
-  background: var(--bzl-fg);
-  color: #fff;
-  font-size: 0.75rem;
-  font-weight: 700;
-  white-space: nowrap;
-  opacity: 0;
-  transform-origin: right center;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .bzl-relief, .bzl-relief *, .bzl-clarity, .bzl-clarity * { transition: none !important; animation: none !important; }
-  .bzl-relief .bzl-tk-slot { display: none; }
+.bzl-mk .mk-label.is-strong { font-weight: 700; }
+.bzl-mk .mk-label.is-big { font-size: 20px; font-weight: 700; letter-spacing: -0.02em; }
+/* palette 3 puts Insights on espresso: the primary as the marker, cream type */
+.bzl[data-palette="3"] .p-insights .bzl-clarity.bzl-mk {
+  --mk-line: #f9a353;
+  --mk-ink: #fff4e8;
+  --mk-tint: rgb(249 163 83 / 0.18);
+  background: none;
 }
 
 /* ── Support store demo (support/SupportStore.tsx): the shopper's question typed
