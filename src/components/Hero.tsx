@@ -151,7 +151,7 @@ const Hero = () => {
         <FaShopify className={cn("text-primary", big ? "!h-8 !w-8" : "!h-6 !w-6")} />
         <span className="flex-1 text-left">
           <span className="block font-semibold">{messages.common.installNow}</span>
-          {big && <span className="block text-sm font-normal opacity-80">{messages.hero.installSubline}</span>}
+          {big && <span className="block text-sm font-normal opacity-80">{messages.landing.installSubline}</span>}
         </span>
         <ArrowRight className="!h-5 !w-5 transition-transform group-hover:translate-x-1" />
       </a>
@@ -245,10 +245,10 @@ const Hero = () => {
                     </span>
                     <ArrowRight className="h-3 w-3 text-white/60 transition-transform group-hover:translate-x-0.5" aria-hidden="true" />
                   </a>
-                  <h1 className="mt-2.5 font-heading text-[clamp(1.75rem,7.6vw,2.4rem)] font-bold leading-[1.04] tracking-[-0.025em] lg:mt-3.5 lg:text-[clamp(2.6rem,min(4.3vw,7.6svh),4.75rem)]">
+                  <h1 className="mt-2.5 text-balance font-heading text-[clamp(1.75rem,7.6vw,2.4rem)] font-bold leading-[1.04] tracking-[-0.025em] lg:mt-3.5 lg:text-[clamp(2.6rem,min(4.3vw,7.6svh),4.75rem)]">
                     {messages.hero.titleLine1} <span className="lg:block">{messages.hero.titleLine2}</span>
                   </h1>
-                  <p className="mt-1.5 font-heading text-[0.95rem] font-medium text-white/85 lg:mt-2.5 lg:text-[clamp(1.1rem,1.55vw,1.5rem)]">
+                  <p className="mt-1.5 text-balance font-heading text-[0.95rem] font-medium text-white/85 lg:mt-2.5 lg:text-[clamp(1.1rem,1.55vw,1.5rem)]">
                     {messages.hero.subtitleLead} {strong(messages.hero.subtitleFind)},{" "}
                     {strong(messages.hero.subtitleTrust)}
                     {messages.hero.subtitleConnector} {strong(messages.hero.subtitleBuy)}
@@ -301,8 +301,8 @@ const Hero = () => {
           <HeroAgent
             paused={irisOpen}
             onInvite={setInviting}
-            cardClassName="absolute bottom-[0.9em] right-[0.9em] lg:bottom-[1.2em] lg:right-[1.2em]"
-            captionClassName="absolute bottom-[1.6em] left-1/2 hidden -translate-x-1/2 text-[1.15em] lg:block"
+            cardClassName="absolute bottom-[1.2em] right-[1.2em] lg:bottom-[2em] lg:right-[2.4em]"
+            captionClassName="absolute bottom-[2.2em] left-1/2 hidden -translate-x-1/2 text-[1.15em] lg:block"
           />
         </div>
       </div>

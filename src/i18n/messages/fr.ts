@@ -75,6 +75,8 @@ export const fr: Messages = {
 
   /** The film-led landing (/v2): copy it adds to the classic landing's messages. */
   landing: {
+    /** Under the hero's Install button (the classic landing keeps hero.installSubline). */
+    installSubline: "Installation en un clic, prête tout de suite",
     switch: {
       chatbot: "Chatbot",
       agent: "Agent de vente",
