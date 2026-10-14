@@ -18,7 +18,7 @@
 /** A stage's pass rate without Bizmis: a big leak. */
 export const BAD = [0.25, 0.26, 0.28];
 /** With Bizmis: far better, never lossless. */
-export const GOOD = [0.95, 0.95, 0.96];
+export const GOOD = [0.88, 0.87, 0.88];
 
 /** The pass rate of stage `g`, `k` (0 → 1) of the way fixed. */
 export const rate = (g: number, k: number) => BAD[g] + (GOOD[g] - BAD[g]) * k;
@@ -39,7 +39,7 @@ export const CHAMBERS: [number, number][] = [
 export const SPOUT: [number, number] = [0.88, 1];
 /** A chamber's exit as a share of its entry: choked (bad) → opened up (fixed). */
 const EXIT_BAD = [0.55, 0.55, 0.58];
-const EXIT_GOOD = [0.93, 0.93, 0.93];
+const EXIT_GOOD = [0.8, 0.8, 0.8];
 /** The spout's half-height, as a share of the last chamber's exit. */
 const SPOUT_K = 0.8;
 /** Where each chamber's leak (the gap in its floor) sits, along the chamber. */

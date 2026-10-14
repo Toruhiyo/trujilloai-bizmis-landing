@@ -130,13 +130,13 @@ type Palette = ReturnType<typeof readPalette>;
 
 /** The labels' handwriting (ms): problems written on as a beat starts, one after another; at a fix, the strike, then the solution and its tick. */
 const WRITE_AT = 150;
-const WRITE_STAGGER = 170;
+const WRITE_STAGGER = 120;
 const STRIKE_AT = 140;
 const STRIKE = 260;
 const SOLVE_AT = 640;
 const TICK = 260;
 /** How long writing `text` takes: a steady pen, a little quicker for short words. */
-const writeMs = (text: string) => 220 + text.length * 38;
+const writeMs = (text: string) => 160 + text.length * 30;
 /** The pen's pace: off the mark gently, steady, easing at the end. */
 const pen = (k: number) => {
   const x = clamp(k);
