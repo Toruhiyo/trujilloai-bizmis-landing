@@ -133,7 +133,7 @@ async function recordDevice(browser, device) {
   const spec = DEVICES[device];
   const page = await browser.newPage({
     viewport: { width: spec.width, height: spec.height },
-    deviceScaleFactor: 1,
+    deviceScaleFactor: Number(process.env[`PROMO_STILL_SCALE_${device.toUpperCase()}`] || process.env.PROMO_STILL_SCALE || 1),   // v33: hi-res stills for the 4K sea
   });
   await page.emulateMedia({ reducedMotion: 'no-preference' });
   if (STILLS_ONLY) {
@@ -198,7 +198,7 @@ async function recordDevice(browser, device) {
       })));
       const still = seaAsset(clip.key, 'still').disk;
       fs.mkdirSync(path.dirname(still), { recursive: true });
-      await page.screenshot({ path: still, type: 'jpeg', quality: 72, timeout: 15000 });
+      await page.screenshot({ path: still, type: 'jpeg', quality: Number(process.env.PROMO_STILL_QUALITY || 72), timeout: 30000 });
       process.stdout.write(`wrote promo-still-${clip.key}.jpg\n`);
       continue;
     }

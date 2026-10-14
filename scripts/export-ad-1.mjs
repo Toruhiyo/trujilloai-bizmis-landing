@@ -145,6 +145,10 @@ function filmUrl(base, cta, part) {
   url.searchParams.set('part', part);
   url.searchParams.set('nocover', '1');
   if (arg('widget', '') === 'local') url.searchParams.set('widget', 'local');
+  // v33: a 4K frame is the 1920x1080 layout scaled 2x (quadrants), so canvases the film paints itself (the sea of cards)
+  // must rasterize at 2x or they are stretched from 1080p
+  const res = arg('resolution', '').match(/^(\d+)x(\d+)$/);
+  if (res && Number(res[1]) / 1920 >= 2) url.searchParams.set('raster', String(Math.floor(Number(res[1]) / 1920)));
   url.searchParams.delete('auto');
   return url.toString();
 }

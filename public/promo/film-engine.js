@@ -162,6 +162,8 @@
   // v26: the v21 score itself (Suno v6, ~112 bpm): its own pain take and drop (seam 41.2), then stores / EA sections
   // extended from it at the v25 timings (tmp/ad-1-audio/music/suno/v26/v26h-ea2.wav: film = song - 4.975 s):
   // drop 41.181, the stores section's first clap 95.216, the closing hit 130.148 (song s)
+  // v33: canvases the film paints itself rasterize at this factor (2 in a 4K export, whose layout is 1080p scaled 2x)
+  const PROMO_RASTER_SCALE = Math.max(1, Number(new URLSearchParams(location.search).get('raster')) || 1);
   const PROMO_FILM_ANCHORS = { burst: 0, reel: 0, final: 0 };   // v30: unanchored. The picture keeps its natural timing and the score is written to it (tmp/ad-1-audio/music/suno/v30)
   // v23: from the reel start (s): [0] the tunnel lands on hero 1; [1..3] heroes 2..4 (each window = its line + 0.1 s);
   // [4..21] the run's 18 cards, one accelerating ladder (quick stores 1.0 / 0.8 / 0.62 / 0.55 s, their voices clipped
@@ -1887,7 +1889,7 @@
   function releaseHeldVideo(video, still) {
     if (!video || !still || video.dataset.still === '1' || !video.videoWidth) return;
     const canvas = document.createElement('canvas');
-    const width = Math.min(480, video.videoWidth);
+    const width = Math.min(480 * PROMO_RASTER_SCALE, video.videoWidth);   // v33: x2 in 4K (a 480 px still was stretched in the sea)
     const height = Math.max(1, Math.round(width * video.videoHeight / Math.max(1, video.videoWidth)));
     canvas.width = width;
     canvas.height = height;
@@ -2711,7 +2713,7 @@
   const PROMO_REEL_BURST_MS = 2300;
   const PROMO_REEL_BEAT_MS = 60000 / 112;   // the pitch score's tempo: every cut lands on its grid
   const PROMO_REEL_TUNNEL_BEATS = 7;   // v16: the narrator's "Any store. Any device. Any language." fills the tunnel, before any store speaks
-  // v25b (operator: es, de, fr, ja): Home & DIY "¡Genial!" (Lily), Skincare "いいね！" (Matilda), Wine "Santé !" (Roger), Car parts "Toll!" (Eric); v30 (operator: "the TOLL! one is horrible"): its store is now Copperleaf cookware;
+  // v25b (operator: es, de, fr, ja): Home & DIY "¡Genial!" (Lily), Skincare "いいね！" (Matilda), Wine "Santé !" (Roger), Car parts "Toll!" (Eric); v30 (operator: "the TOLL! one is horrible"): its store is now Copperleaf cookware; v33: its line is "Wunderbar!" ("Toll!" read as English);
   // es and ja keep the two longer windows (their lines need them), wine and car parts swapped places in the store-reel JSON
   const PROMO_REEL_QUICK_VOICES = ['quick-es', 'quick-ja', 'quick-fr', 'quick-de'];
   // v14: after the quick stores, new stores strobe past faster and faster (beats), barely visible, into "Your store"
@@ -5204,7 +5206,7 @@
   function paintGlideStill(canvas, url, cssW, cssH, pain, fill) {
     const img = glideDecodedStills.get(url);
     if (!canvas || !img || !img.naturalWidth || cssW < 2 || cssH < 2) return;
-    const dpr = Math.min(3, window.devicePixelRatio || 1);
+    const dpr = Math.min(4, (window.devicePixelRatio || 1) * PROMO_RASTER_SCALE);   // v33: x2 in a 4K export (its layout is 1080p scaled 2x)
     const w = Math.max(1, Math.round(cssW * dpr));
     const h = Math.max(1, Math.round(cssH * dpr));
     const key = `${url}|${w}x${h}|${pain ? 'pain' : 'pitch'}|${fill ? 'fill' : 'cover'}`;
@@ -9569,7 +9571,8 @@
           const spoken = voiceWords(voice).filter((w) => !/^\[[^\]]*\]$/.test(w.text));
           const lead = Math.max(0, (spoken[0]?.startMs || 0) / 1000 - 0.03);   // the line starts the moment the store lands
           // v23: the window is the card's, not the line's: the voice is clipped at the cut with a short fade-out
-          const windowMs = cell.win * 1000 - 40;   // never spills into the next card
+          const lastQuick = cell.src.quick === PROMO_REEL_QUICK_VOICES.length - 1;   // v33: the last quick store's "Wunderbar!" runs whole into the strobe blur
+          const windowMs = (lastQuick ? Math.max(cell.win, voice.durationMs / 1000 + 0.05) : cell.win) * 1000 - 40;   // never spills into the next card (but the last)
           const clipMs = Math.min(voice.durationMs - lead * 1000, windowMs);
           (window.__promoAudioCues = window.__promoAudioCues || []).push({ src, atMs: now + 20, fromSec: lead, endMs: now + 20 + clipMs, fadeIn: 0.02, fadeOut: clipMs < voice.durationMs - lead * 1000 ? Math.min(PROMO_REEL_QUICK_FADE_S, clipMs / 3000) : 0.02 });   // v24: a line that fits its card (each take is cut to fit) plays whole, no fade into its last word
           if (!document.documentElement.classList.contains('is-promo-export')) window.setTimeout(() => { const a = new Audio(src); a.currentTime = lead; a.play().catch(() => { }); window.setTimeout(() => a.pause(), clipMs); }, 20);
