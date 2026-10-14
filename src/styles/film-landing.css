@@ -1080,20 +1080,19 @@
 .bzl-ai-voice .v2 { animation-delay: .12s; } .bzl-ai-voice .v3 { animation-delay: .24s; }
 .bzl-ai-voice .v4 { animation-delay: .36s; } .bzl-ai-voice .v5 { animation-delay: .48s; }
 @keyframes ai-voice { 0%, 100% { scale: 1 0.55; opacity: 0.55; } 50% { scale: 1 1; opacity: 1; } }
-/* trend */
-.bzl-ai-trend .line { stroke-dasharray: 1; stroke-dashoffset: 1; animation: ai-draw-early var(--cycle) ease-out infinite; }
-.bzl-ai-trend .head { animation: ai-head var(--cycle) cubic-bezier(.3, 1.6, .5, 1) infinite; }
-@keyframes ai-draw-early { 0% { stroke-dashoffset: 0; } 6% { stroke-dashoffset: 1; } 30%, 100% { stroke-dashoffset: 0; } }
-@keyframes ai-head { 0% { opacity: 1; } 6%, 24% { opacity: 0; translate: -2px 2px; } 32%, 100% { opacity: 1; translate: 0 0; } }
-/* headset */
-.bzl-ai-headset .w { transform-origin: 50% 50%; animation: ai-voice 1.2s ease-in-out infinite; }
-.bzl-ai-headset .w2 { animation-delay: .15s; } .bzl-ai-headset .w3 { animation-delay: .3s; }
-/* idea */
-.bzl-ai-idea .rays { animation: ai-rays var(--cycle) ease-out infinite; }
+/* trend: drawn again from its start, quickly, then held complete for most of the cycle */
+.bzl-ai-trend .line { stroke-dasharray: 1; stroke-dashoffset: 0; animation: ai-redraw var(--cycle) ease-out infinite; }
+.bzl-ai-trend .head { transform-origin: 100% 0%; animation: ai-head var(--cycle) cubic-bezier(.3, 1.6, .5, 1) infinite; }
+@keyframes ai-redraw { 0%, 84% { stroke-dashoffset: 0; } 86% { stroke-dashoffset: 1; } 98%, 100% { stroke-dashoffset: 0; } }
+@keyframes ai-head { 0%, 84% { opacity: 1; scale: 1; } 86%, 94% { opacity: 0; scale: 0.6; } 100% { opacity: 1; scale: 1; } }
+/* headset: the earcups pulse once, gently */
+.bzl-ai-headset .cup { transform-origin: 50% 50%; animation: ai-cup var(--cycle) ease-in-out infinite; }
+@keyframes ai-cup { 0%, 70%, 100% { scale: 1; } 78% { scale: 1.12; } 86% { scale: 1; } }
+/* idea: the bulb glows and its rays flash, then rest lit */
+.bzl-ai-idea .rays { transform-origin: 50% 60%; animation: ai-rays var(--cycle) ease-out infinite; }
 .bzl-ai-idea .bulb { animation: ai-glow var(--cycle) ease-out infinite; }
-@keyframes ai-rays { 0%, 10% { opacity: 0; scale: 0.7; } 20% { opacity: 1; scale: 1.08; } 28%, 86% { opacity: 1; scale: 1; } 100% { opacity: 0; } }
-@keyframes ai-glow { 0%, 10% { fill: transparent; } 20%, 86% { fill: color-mix(in oklab, currentColor 35%, transparent); } 100% { fill: transparent; } }
-.bzl-ai-idea .rays { transform-origin: 50% 60%; }
+@keyframes ai-rays { 0%, 70%, 100% { opacity: 1; scale: 1; } 76% { opacity: 0.2; scale: 0.8; } 84% { opacity: 1; scale: 1.1; } 90% { scale: 1; } }
+@keyframes ai-glow { 0%, 70%, 100% { fill: transparent; } 80%, 90% { fill: color-mix(in oklab, currentColor 30%, transparent); } }
 
 @media (prefers-reduced-motion: reduce) {
   .bzl-grain::before { animation: none; }

@@ -1,12 +1,15 @@
-/* PillarIntro (src/components/landing/PillarIntro.tsx): a pillar's title,
-   big on arrival, morphing into the section's sticky docked header.
-   Driven by --pi-e (0 → 1) on .pi, set from the scroll. */
+/* PillarIntro (src/components/landing/PillarIntro.tsx): a pillar's big
+   title, scrolling away with the page, and the section's sticky docked bar,
+   which slides in as the big name passes under the nav. No morph, no runway:
+   each big piece fades (--pi-o, 1 → 0, set from the scroll) as it reaches
+   the bar's line; the bar is switched by .is-docked on a short timed
+   transition, so no scroll position ever shows it half-drawn. */
 
 .pi {
   --pi-nav: var(--bzl-nav, 4rem);
   --pi-dock-h: 4rem;
-  --pi-e: 0;
-  --pi-bar: color-mix(in oklab, var(--acc-soft, #fff3e7) 82%, transparent);
+  --pi-bar: color-mix(in oklab, var(--acc-soft, #fff3e7) 96%, transparent);
+  --pi-ease: cubic-bezier(0.22, 1, 0.36, 1);
   position: relative;
   /* the big title never widens the page; clip, unlike hidden, keeps sticky working */
   overflow-x: clip;
@@ -17,25 +20,33 @@
   }
 }
 
-/* the header: sticky under the nav for the whole section */
+/* ── The bar: sticky under the nav for the whole section. It takes no room
+   in the flow (the big title starts at the section's top, under it). ── */
 .pi-head {
   position: sticky;
   top: var(--pi-nav);
   z-index: 20;
   isolation: isolate;
+  margin-bottom: calc(-1 * var(--pi-dock-h));
+  pointer-events: none;
 }
-/* its bar fades in as the title docks */
 .pi-head::before {
   content: "";
   position: absolute;
   inset: 0;
   z-index: -1;
   background: var(--pi-bar);
-  -webkit-backdrop-filter: blur(14px) saturate(1.2);
-  backdrop-filter: blur(14px) saturate(1.2);
-  box-shadow: 0 1px 0 color-mix(in oklab, var(--acc, #f28c38) 18%, transparent);
-  opacity: clamp(0, calc((var(--pi-e) - 0.55) * 2.23), 1);
-  pointer-events: none;
+  -webkit-backdrop-filter: blur(16px) saturate(1.2);
+  backdrop-filter: blur(16px) saturate(1.2);
+  box-shadow: 0 1px 0 color-mix(in oklab, var(--acc, #f28c38) 22%, transparent);
+  opacity: 0;
+  transition: opacity 0.22s ease;
+}
+.pi.is-docked .pi-head {
+  pointer-events: auto;
+}
+.pi.is-docked .pi-head::before {
+  opacity: 1;
 }
 
 .pi-dock {
@@ -44,9 +55,25 @@
   justify-content: center;
   gap: 1rem;
   min-height: 3.5rem;
-  padding: 0.55rem 1rem;
-  /* in only at the end of the morph, once the flying title has landed on it */
-  opacity: clamp(0, calc((var(--pi-e) - 0.9) * 10), 1);
+  padding: 0.6rem 1rem;
+}
+/* its contents slide in from just under the nav, the label first, the line a beat after */
+.pi-dock > * {
+  opacity: 0;
+  transform: translateY(-0.45rem);
+  transition:
+    opacity 0.2s ease,
+    transform 0.3s var(--pi-ease);
+}
+.pi.is-docked .pi-dock > * {
+  opacity: 1;
+  transform: none;
+  transition:
+    opacity 0.28s ease,
+    transform 0.42s var(--pi-ease);
+}
+.pi.is-docked .pi-dock > :nth-child(2) {
+  transition-delay: 0.05s;
 }
 .pi-dock-chip {
   flex-shrink: 0;
@@ -60,27 +87,104 @@
   }
 }
 
-/* the big title: one screen tall, centred under the nav */
-.pi-big {
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: 0;
-  height: calc(100svh - var(--pi-nav));
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding-inline: 1rem;
-  pointer-events: none;
-  opacity: clamp(0, calc((1 - var(--pi-e)) * 10), 1);
+/* docked: the name as a strong label, then the line's compact form */
+.pi-dock.is-named {
+  gap: clamp(0.8rem, 2vw, 1.6rem);
 }
-.pi-big-inner,
-.pi-still {
+.pi-dock-name {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  gap: 0.5em;
+  font-size: clamp(1.15rem, min(2vw, 4svh), 1.85rem);
+  font-weight: 800;
+  letter-spacing: -0.035em;
+  line-height: 1;
+  white-space: nowrap;
+  color: var(--pi-name-color, var(--bzl-fg));
+}
+@media (max-width: 767px) {
+  .pi-dock.is-named {
+    flex-direction: column;
+    gap: 0.4rem;
+  }
+}
+
+/* ── The pillar's icon, in its disc: one glyph, the same in both states ──
+   The disc and the glyph scale together (the glyph is 54% of the disc) and
+   the stroke is one weight in the 24 grid, so big and docked read as the
+   same mark. The icons' loops are off here: they rest complete. */
+.pi-icon,
+.pi-dock-icon {
+  display: grid;
+  flex-shrink: 0;
+  place-items: center;
+  aspect-ratio: 1;
+  border-radius: 999px;
+  background: var(--pi-icon-bg, #fff);
+  color: var(--pi-icon-fg, #a84f0c);
+}
+.pi-icon {
+  width: clamp(3.6rem, 9svh, 5.25rem);
+}
+.pi-dock-icon {
+  width: 1.6em;
+}
+.pi-icon svg,
+.pi-dock-icon svg {
+  display: block;
+  width: 54%;
+  height: 54%;
+  stroke-width: 2;
+}
+.pi .pi-icon svg.bzl-ai,
+.pi .pi-icon svg.bzl-ai *,
+.pi .pi-dock-icon svg.bzl-ai,
+.pi .pi-dock-icon svg.bzl-ai * {
+  animation: none;
+  stroke-dashoffset: 0;
+  opacity: 1;
+  scale: none;
+}
+/* docking, the icon lands with a small pop */
+.pi.is-docked .pi-dock-icon {
+  animation: pi-pop 0.5s var(--pi-ease) both;
+}
+@keyframes pi-pop {
+  0% {
+    transform: scale(0.6);
+  }
+  100% {
+    transform: none;
+  }
+}
+
+/* ── The big title: in the flow, the section's opening ── */
+.pi-big {
+  position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: clamp(1rem, 3svh, 2rem);
+  justify-content: center;
+  gap: clamp(0.7rem, 2.2svh, 1.4rem);
+  min-height: clamp(19rem, 56svh, 42rem);
+  padding: calc(var(--pi-dock-h) * 0.5) 1rem clamp(1rem, 3svh, 2.5rem);
   text-align: center;
+}
+/* each piece fades as it nears the nav (settling a touch smaller); once the
+   bar is in, whatever is left of them fades out (the crossfade) */
+.pi-fade {
+  opacity: var(--pi-o, 1);
+  transform: scale(calc(0.95 + 0.05 * var(--pi-o, 1)));
+  transition: opacity 0.18s linear;
+}
+.pi.is-docked .pi-fade {
+  opacity: 0;
+  transition: opacity 0.24s ease;
+}
+.pi.is-still .pi-fade {
+  transform: none;
+  transition: none;
 }
 .pi-title {
   max-width: 14ch;
@@ -97,110 +201,54 @@
   }
 }
 
-/* the named entrance (default): icon, the pillar's name huge, its line under it */
-.pi-big-inner.is-named {
-  gap: clamp(0.6rem, 2svh, 1.4rem);
-}
-.pi-icon {
-  display: grid;
-  place-items: center;
-  width: clamp(3.4rem, 9svh, 5rem);
-  aspect-ratio: 1;
-  border-radius: 999px;
-  background: var(--pi-icon-bg, var(--acc-soft, #ffe1c6));
-  color: var(--pi-icon-fg, var(--acc-ink, #c25a0b));
-}
-.pi-icon svg,
-.pi-dock-icon svg {
-  width: 52%;
-  height: 52%;
-}
+/* the name: huge, always one line (PillarIntro caps it to the width it has, --pi-fit) */
 .pi-name {
-  max-width: 12ch;
-  font-size: clamp(3.4rem, min(11vw, 17svh), 11rem);
+  --pi-name-size: clamp(3.4rem, min(9vw, 15.5svh), 9.5rem);
+  align-self: stretch;
+  font-size: calc(var(--pi-name-size) * var(--pi-fit, 1));
   font-weight: 800;
   letter-spacing: -0.05em;
-  line-height: 0.92;
+  line-height: 1;
+  white-space: nowrap;
   color: var(--pi-name-color, var(--bzl-fg));
-  text-wrap: balance;
+}
+.pi-name-text {
+  display: inline-block;
+  /* the tight tracking's last letter, and descenders, inside the box */
+  padding: 0 0.04em 0.06em;
 }
 .pi-line {
   max-width: 22ch;
-  font-size: clamp(1.45rem, min(3.9vw, 6.4svh), 3.6rem);
+  font-size: clamp(1.4rem, min(3.6vw, 6svh), 3.3rem);
   font-weight: 700;
   letter-spacing: -0.035em;
-  line-height: 1.08;
+  line-height: 1.1;
   color: var(--pi-line-color, var(--acc-ink, var(--bzl-fg)));
   text-wrap: balance;
 }
 @media (max-width: 639px) {
   .pi-name {
-    font-size: clamp(3rem, 16vw, 4.6rem);
+    --pi-name-size: clamp(2.6rem, 15vw, 4.4rem);
   }
   .pi-line {
-    font-size: clamp(1.3rem, 6.6vw, 1.8rem);
+    font-size: clamp(1.3rem, 6.4vw, 1.8rem);
   }
-}
-/* docked: the name as a strong label, then the line's compact form */
-.pi-dock.is-named {
-  gap: clamp(0.8rem, 2vw, 1.6rem);
-}
-.pi-dock-name {
-  display: inline-flex;
-  flex-shrink: 0;
-  align-items: center;
-  gap: 0.55rem;
-  font-size: clamp(1.15rem, min(2.1vw, 4.2svh), 2rem);
-  font-weight: 800;
-  letter-spacing: -0.035em;
-  line-height: 1;
-  white-space: nowrap;
-  color: var(--pi-name-color, var(--bzl-fg));
-}
-.pi-dock-icon {
-  display: grid;
-  place-items: center;
-  width: 1.55em;
-  aspect-ratio: 1;
-  border-radius: 999px;
-  background: var(--pi-icon-bg, var(--acc-soft, #ffe1c6));
-  color: var(--pi-icon-fg, var(--acc-ink, #c25a0b));
-}
-@media (max-width: 767px) {
-  .pi-dock.is-named {
-    flex-direction: column;
-    gap: 0.35rem;
+  .pi-big {
+    min-height: clamp(17rem, 52svh, 28rem);
   }
 }
 
-/* the morph: each element flies to its docked twin */
-.pi-big .pi-morph {
-  display: inline-block;
-  transform-origin: center;
-  transform: translate(calc(var(--pi-dx, 0px) * var(--pi-ex, 0)), calc(var(--pi-dy, 0px) * var(--pi-ey, 0)))
-    scale(calc(1 + (var(--pi-s, 1) - 1) * var(--pi-es, 0)));
-  will-change: transform;
-}
-.pi-big .pi-lone {
-  opacity: clamp(0, calc(1 - var(--pi-e) * 2.2), 1);
-}
-
-/* the runway: exactly the scroll the morph takes (PillarIntro's HOLD + SHRINK,
-   0.78 screens), so the content arrives right under the bar as it docks */
-.pi-runway {
-  height: 78svh;
-  pointer-events: none;
-}
 .pi-body {
   position: relative;
 }
 
-/* reduced motion: the big title, still, then the header once it's passed */
-.pi.is-still .pi-still {
-  justify-content: center;
-  min-height: calc(72svh - var(--pi-nav));
-  padding: 3rem 1rem;
+/* reduced motion: no settle, no slide; the bar simply switches */
+.pi.is-still .pi-head::before,
+.pi.is-still .pi-dock > *,
+.pi.is-still.is-docked .pi-dock > * {
+  transition: none;
+  transform: none;
 }
-.pi.is-still .pi-dock {
-  opacity: var(--pi-e);
+.pi.is-still.is-docked .pi-dock-icon {
+  animation: none;
 }

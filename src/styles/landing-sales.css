@@ -206,7 +206,11 @@
   --pi-name-color: #fff;
   --pi-line-color: #fff;
   --pi-icon-bg: #fff;
-  --pi-icon-fg: hsl(var(--primary));
+  /* the burnt primary on the white disc: the glyph crisp at any size */
+  --pi-icon-fg: #a84f0c;
+}
+.sl-c .pi-icon {
+  box-shadow: 0 14px 34px -18px rgb(150 58 0 / 0.55);
 }
 .sl-c .pi-name {
   text-shadow: 0 18px 50px rgb(150 58 0 / 0.25);
@@ -254,8 +258,46 @@
 }
 @media (min-width: 1024px) {
   .sl-c .pi-dock .sl-title.is-line {
-    font-size: clamp(1.6rem, min(2.6vw, 5svh), 2.6rem);
+    font-size: clamp(1.5rem, min(2.4vw, 4.6svh), 2.4rem);
   }
+}
+/* the part being shown is underlined in white marker (drawn in once the bar
+   is in); the parts already shown keep theirs, calmer; the next ones have none */
+.sl-c .pi-dock .sl-title-text {
+  position: relative;
+}
+.sl-title-mark {
+  position: absolute;
+  left: -0.05em;
+  bottom: -0.2em;
+  width: calc(100% + 0.1em);
+  height: 0.32em;
+  overflow: visible;
+  fill: none;
+  stroke: #fff;
+  stroke-width: max(2.5px, 0.12em);
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  pointer-events: none;
+  clip-path: inset(-80% 104% -80% -6%);
+  transition:
+    clip-path 0.3s var(--bzl-ease),
+    opacity 0.45s var(--bzl-ease);
+}
+.sl-title-mark path {
+  vector-effect: non-scaling-stroke;
+}
+.pi.is-docked .sl-title-part.is-on .sl-title-mark,
+.pi.is-docked .sl-title-part.is-done .sl-title-mark {
+  clip-path: inset(-80% -6% -80% -6%);
+}
+.pi.is-docked .sl-title-part.is-on .sl-title-mark {
+  transition:
+    clip-path 0.6s cubic-bezier(0.65, 0, 0.35, 1) 0.18s,
+    opacity 0.45s var(--bzl-ease);
+}
+.sl-title-part.is-done .sl-title-mark {
+  opacity: 0.5;
 }
 
 /* pinned: a tall track, one sticky screen inside it, under the docked title */
@@ -721,6 +763,7 @@
 @media (prefers-reduced-motion: reduce) {
   .sl-title-part,
   .sl-title-text,
+  .sl-title-mark,
   .sl-a-sub,
   .sl-c-copy,
   .sl-c-show,
@@ -857,20 +900,4 @@
 /* the rail (A) sits on the light band: its funnel gets a primary ground so the glass reads */
 .sl-a .sl-fn {
   background: hsl(var(--primary));
-}
-
-/* the docked bar's trend icon: drawn in full (its loop could catch it mid-draw, a tiny stroke at this size) */
-.sl-c .pi-dock-icon .bzl-ai-trend .line {
-  animation: none;
-  stroke-dashoffset: 0;
-}
-.sl-c .pi-dock-icon .bzl-ai-trend .head {
-  animation: none;
-  opacity: 1;
-  transform: none;
-}
-.sl-c .pi-dock-icon svg {
-  width: 62%;
-  height: 62%;
-  stroke-width: 2.6;
 }

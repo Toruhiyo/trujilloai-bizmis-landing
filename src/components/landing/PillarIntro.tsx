@@ -4,19 +4,19 @@ import { cn } from "@/lib/utils";
 import "@/styles/pillar-intro.css";
 
 /**
- * PillarIntro: a pillar's entrance, driven by the scroll. When the pillar is
- * reached its NAME (the benefit, e.g. "Boost Sales") stands huge, its icon
- * above it and its supporting line under it; as the visitor scrolls on,
- * each piece shrinks and flies up to dock as the section's sticky bar: the
- * name as a strong label, the line's compact form beside it. The children
- * scroll in under it, and the bar stays to the end of the section. With
- * prefers-reduced-motion: the big entrance sits still at the top and the
- * docked bar appears once it's scrolled past (no morph).
+ * PillarIntro: a pillar's entrance and its sticky docked bar.
  *
- * CHANGED (round 2): the default pattern is now `name` (+ `icon`, `line`).
- * Fully backward compatible: without `name`, `title` (+ `chip`) renders and
- * morphs exactly as before, so compositions built on `title`/`docked` with
- * their own `data-morph` keys (pillar/BenefitIntro) keep working.
+ * On arrival the pillar's NAME (the benefit, e.g. "Boost Sales") stands huge
+ * on one line, its icon in a disc above it and its supporting line under it.
+ * Nothing morphs: the big title scrolls away with the page, each piece
+ * fading (and settling a touch smaller) as it nears the nav. The moment the
+ * big name passes into the bar's place the docked bar ([icon] Name | line)
+ * slides in while what's left of the big title fades out: one short timed
+ * crossfade, so no scroll position shows either half-drawn, and nothing is
+ * ever read through the bar. There's no runway: the content follows the big
+ * title in the flow and arrives under the bar, which stays to the end of
+ * the section. With prefers-reduced-motion: the same, without the settle,
+ * the slide or the fades (the bar simply switches).
  *
  *   <PillarIntro
  *     name="Boost Sales"                            // huge, then the docked label
@@ -29,19 +29,14 @@ import "@/styles/pillar-intro.css";
  *   </PillarIntro>
  *
  * - `name` / `icon` / `line`: the entrance. The name is the heading (an <h2>
- *   unless `as` says otherwise). Sizes: .pi-name (up to ~11vw) and .pi-line,
- *   or `nameClassName` / `lineClassName`. In the bar: .pi-dock-name (icon +
+ *   unless `as` says otherwise), always one line: its size (.pi-name) is
+ *   capped to the width it has (--pi-fit). In the bar: .pi-dock-name (icon +
  *   name, a strong label) then the docked line; on phones they stack.
- * - Legacy: `title` (big, ~9vw, `titleClassName`) with `chip` above it; the
- *   bar shows `docked` (default: `title`, small) with the chip on desktop.
- * - The morph: elements sharing a `data-morph="key"` in the big entrance
- *   and in the bar fly from one to the other (translate + scale, then a
- *   crossfade); the name and icon are keyed for you ("pi-name", "pi-icon").
- *   A line (or legacy title) with no keyed parts flies whole onto the
- *   docked form; big elements with no partner shrink toward the bar and fade.
+ * - Legacy: `title` (big, `titleClassName`) with `chip` above it; the bar
+ *   shows `docked` (default: `title`) with the chip on desktop.
  * - The root publishes `--pi-dock-h` (the bar's height) so pinned children
  *   can sit right under it (`top: calc(nav + var(--pi-dock-h))`), and
- *   `--pi-e` (0 → 1, the morph's progress; --pi-ex/-ey/-es pace its parts).
+ *   `.is-docked` while the bar shows.
  */
 export type PillarIntroProps = {
   /** The pillar's name, the benefit ("Boost Sales"): huge on arrival, the docked bar's label. */
@@ -68,25 +63,7 @@ export type PillarIntroProps = {
   children?: ReactNode;
 };
 
-/** Scroll (in screen heights, after the header sticks) the big title holds, then takes to dock; .pi-runway is their sum. */
-const HOLD = 0.16;
-const SHRINK = 0.62;
-
-const ease = (k: number) => (k < 0.5 ? 4 * k * k * k : 1 - (-2 * k + 2) ** 3 / 2);
-
-/**
- * The morph's progress, split so a stacked title unstacks cleanly: words
- * slide sideways into their row early (x), shrink a little ahead (scale),
- * and the lines close up last (y).
- */
-const setMorph = (el: HTMLElement, k: number) => {
-  // every piece lands by 90%; the last 10% is the crossfade onto the docked bar
-  const m = Math.min(1, k / 0.9);
-  el.style.setProperty("--pi-e", k.toFixed(4));
-  el.style.setProperty("--pi-ex", Math.pow(m, 0.55).toFixed(4));
-  el.style.setProperty("--pi-es", Math.min(1, k / 0.8).toFixed(4));
-  el.style.setProperty("--pi-ey", Math.pow(m, 1.3).toFixed(4));
-};
+const clamp01 = (v: number) => Math.min(1, Math.max(0, v));
 
 const prefersReduced = () =>
   typeof window !== "undefined" && window.matchMedia?.("(prefers-reduced-motion: reduce)").matches === true;
@@ -114,73 +91,59 @@ const PillarIntro = ({
   const big = useRef<HTMLDivElement>(null);
   const dock = useRef<HTMLDivElement>(null);
   const [reduced] = useState(prefersReduced);
-  const [isDocked, setDocked] = useState(reduced);
-  const e = useRef(reduced ? 1 : 0);
+  const [isDocked, setDocked] = useState(false);
 
-  // measure where each big element has to fly to dock, and the header's height
+  // publish the bar's height, and keep the big name on one line (its size capped to the width it has)
+  useLayoutEffect(() => {
+    const r = root.current;
+    const b = big.current;
+    const d = dock.current;
+    if (!r || !b || !d) return;
+    const measure = () => {
+      r.style.setProperty("--pi-dock-h", `${d.offsetHeight}px`);
+      const n = b.querySelector<HTMLElement>(".pi-name");
+      const text = n?.firstElementChild as HTMLElement | null;
+      if (!n || !text) return;
+      n.style.setProperty("--pi-fit", "1");
+      const need = text.offsetWidth; // layout width (the fade's settle scale doesn't count)
+      const room = n.clientWidth;
+      if (need > room && need > 0) n.style.setProperty("--pi-fit", (room / need - 0.005).toFixed(4));
+    };
+    measure();
+    const ro = new ResizeObserver(measure);
+    ro.observe(d);
+    ro.observe(b);
+    document.fonts?.ready.then(measure).catch(() => {});
+    return () => ro.disconnect();
+  }, []);
+
+  // the scroll: fade each big piece as it nears the nav; dock once the name passes into the bar's place
   useLayoutEffect(() => {
     const r = root.current;
     const h = head.current;
     const b = big.current;
     const d = dock.current;
-    if (!r || !h || !d) return;
-    const measure = () => {
-      r.style.setProperty("--pi-dock-h", `${d.offsetHeight}px`);
-      if (!b || reduced) return;
-      setMorph(r, 0);
-      const pairs: [HTMLElement, HTMLElement | null][] = Array.from(
-        b.querySelectorAll<HTMLElement>("[data-morph]"),
-      ).map((el) => [el, d.querySelector<HTMLElement>(`[data-morph="${el.dataset.morph}"]`)]);
-      // a line (or legacy title) with no keyed parts flies whole onto the docked form
-      const into = d.querySelector<HTMLElement>(".pi-dock-main");
-      for (const whole of b.querySelectorAll<HTMLElement>(".pi-line, .pi-title")) {
-        if (!whole.querySelector("[data-morph]") && !whole.hasAttribute("data-morph")) pairs.push([whole, into]);
-      }
-      const home = d.getBoundingClientRect();
-      for (const [el, to] of pairs) {
-        const a = el.getBoundingClientRect();
-        const t = to?.getBoundingClientRect();
-        const has = !!t && t.width > 0 && t.height > 0;
-        const tx = has ? t.left + t.width / 2 : home.left + home.width / 2;
-        const ty = has ? t.top + t.height / 2 : home.top + home.height / 2;
-        const s = has ? Math.min(t.height / a.height, t.width / a.width) : 0.25;
-        el.style.setProperty("--pi-dx", `${(tx - (a.left + a.width / 2)).toFixed(1)}px`);
-        el.style.setProperty("--pi-dy", `${(ty - (a.top + a.height / 2)).toFixed(1)}px`);
-        el.style.setProperty("--pi-s", s.toFixed(4));
-        el.classList.add("pi-morph");
-        el.classList.toggle("pi-lone", !has);
-      }
-      setMorph(r, e.current);
-    };
-    measure();
-    const ro = new ResizeObserver(measure);
-    ro.observe(d);
-    if (b) ro.observe(b);
-    document.fonts?.ready.then(measure).catch(() => {});
-    return () => ro.disconnect();
-  }, [reduced]);
-
-  // the scroll drives the morph
-  useLayoutEffect(() => {
-    const r = root.current;
-    const h = head.current;
-    if (!r || !h) return;
+    if (!r || !h || !b || !d) return;
     let frame = 0;
     const update = () => {
       frame = 0;
-      const top = parseFloat(getComputedStyle(h).top) || 0;
-      const y = top - r.getBoundingClientRect().top; // > 0 once the header sticks
       const vh = window.innerHeight;
-      let k: number;
-      if (reduced) {
-        const still = r.querySelector<HTMLElement>(".pi-still");
-        k = still && still.getBoundingClientRect().bottom < top + (dock.current?.offsetHeight ?? 0) ? 1 : 0;
-      } else k = ease(Math.min(1, Math.max(0, (y - HOLD * vh) / (SHRINK * vh))));
-      if (Math.abs(k - e.current) > 0.0005 || k === 0 || k === 1) {
-        e.current = k;
-        setMorph(r, k);
+      const box = r.getBoundingClientRect();
+      if (box.top > vh || box.bottom < 0) {
+        if (box.top > vh) setDocked(false);
+        return;
       }
-      setDocked(k >= 0.999);
+      const nav = parseFloat(getComputedStyle(h).top) || 0;
+      const bar = d.offsetHeight;
+      let dockNow = false;
+      for (const el of b.querySelectorAll<HTMLElement>(".pi-fade")) {
+        const a = el.getBoundingClientRect();
+        // fully shown until it nears the bar; gone by the time its top reaches the nav
+        el.style.setProperty("--pi-o", clamp01((a.top - nav) / (bar + a.height * 0.45)).toFixed(3));
+        // the bar comes in as the name's top passes into it (the big pieces then crossfade out)
+        if (el.classList.contains("pi-key")) dockNow = a.top < nav + bar * 0.6;
+      }
+      setDocked(dockNow);
     };
     const onScroll = () => {
       if (!frame) frame = requestAnimationFrame(update);
@@ -193,34 +156,8 @@ const PillarIntro = ({
       window.removeEventListener("resize", onScroll);
       if (frame) cancelAnimationFrame(frame);
     };
-  }, [reduced]);
+  }, []);
 
-  const bigBlock = (
-    <div ref={big} className={reduced ? "pi-still" : "pi-big"}>
-      {named ? (
-        <div className="pi-big-inner is-named">
-          {icon && (
-            <span className="pi-icon" data-morph="pi-icon" aria-hidden="true">
-              {icon}
-            </span>
-          )}
-          <Tag className={cn("pi-name", nameClassName)}>
-            <span data-morph="pi-name">{name}</span>
-          </Tag>
-          {line && <div className={cn("pi-line", lineClassName)}>{line}</div>}
-        </div>
-      ) : (
-        <div className="pi-big-inner">
-          {chip && (
-            <span className="pi-chip" data-morph="pi-chip">
-              {chip}
-            </span>
-          )}
-          <Tag className={cn("pi-title", titleClassName)}>{title}</Tag>
-        </div>
-      )}
-    </div>
-  );
   const compact =
     typeof docked === "function" ? docked({ docked: isDocked }) : (docked ?? (named ? line : title));
 
@@ -228,32 +165,41 @@ const PillarIntro = ({
     <div
       ref={root}
       className={cn("pi", reduced && "is-still", isDocked && "is-docked", className)}
-      style={{ "--pi-e": reduced ? 1 : 0, ...(accent ? { "--pi-bar": accent } : {}) } as CSSProperties}
+      style={accent ? ({ "--pi-bar": accent } as CSSProperties) : undefined}
     >
-      {reduced && bigBlock}
       <div ref={head} className="pi-head">
         <div ref={dock} className={cn("pi-dock", named && "is-named", dockClassName)} aria-hidden="true">
           {named ? (
             <span className="pi-dock-name">
-              {icon && (
-                <span className="pi-dock-icon" data-morph="pi-icon">
-                  {icon}
-                </span>
-              )}
-              <span data-morph="pi-name">{name}</span>
+              {icon && <span className="pi-dock-icon">{icon}</span>}
+              <span className="pi-dock-label">{name}</span>
             </span>
           ) : (
-            chip && (
-              <span className="pi-dock-chip" data-morph="pi-chip">
-                {chip}
-              </span>
-            )
+            chip && <span className="pi-dock-chip">{chip}</span>
           )}
           {compact && <div className="pi-dock-main">{compact}</div>}
         </div>
-        {!reduced && bigBlock}
       </div>
-      {!reduced && <div className="pi-runway" aria-hidden="true" />}
+      <div ref={big} className={cn("pi-big", named && "is-named")}>
+        {named ? (
+          <>
+            {icon && (
+              <span className="pi-icon pi-fade" aria-hidden="true">
+                {icon}
+              </span>
+            )}
+            <Tag className={cn("pi-name pi-fade pi-key", nameClassName)}>
+              <span className="pi-name-text">{name}</span>
+            </Tag>
+            {line && <div className={cn("pi-line pi-fade", lineClassName)}>{line}</div>}
+          </>
+        ) : (
+          <>
+            {chip && <span className="pi-chip pi-fade">{chip}</span>}
+            <Tag className={cn("pi-title pi-fade pi-key", titleClassName)}>{title}</Tag>
+          </>
+        )}
+      </div>
       <div className="pi-body">{children}</div>
     </div>
   );

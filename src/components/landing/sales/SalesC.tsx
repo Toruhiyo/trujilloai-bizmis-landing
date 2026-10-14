@@ -13,15 +13,16 @@ import { trustTimeline } from "./TrustMockup";
 
 /** Find, trust, buy, then the payoff. */
 const STEPS = 4;
-/** The docked bar's ground: the band's orange, frosted. */
-const BAR = "color-mix(in oklab, #ef8632 88%, transparent)";
+/** The docked bar's ground: the band's own orange (its middle stop), barely frosted. */
+const BAR = "color-mix(in oklab, #f0913e 95%, transparent)";
 
 /**
  * Variant C, "the stage": bold Bizmis orange. It opens on the pillar's
  * name, huge ("Boost Sales", PillarIntro), with "Shoppers Find it. Trust
- * it. Buy it." under it; both dock as the section's sticky bar as you
- * scroll, the name as its label, the part being shown lit. Under it, one pinned screen: on the left, the
- * part's funnel stage and benefit over the at-scale funnel (the whole
+ * it. Buy it." under it; as it scrolls away the section's sticky bar
+ * slides in, the name as its label, the part being shown lit and
+ * underlined in marker (the parts already shown keep a calmer underline).
+ * Under it, one pinned screen: on the left, the part's funnel stage and benefit over the at-scale funnel (the whole
  * store's shoppers, that stage improving); on the right, the one
  * conversation on its device: find, trust, buy. The funnel is one story:
  * it starts bad, each beat fixes its own stage on top of the ones before,
@@ -75,7 +76,7 @@ const Pinned = () => {
         line={<BigLine />}
         lineClassName="sl-big"
         accent={BAR}
-        docked={<SalesTitle active={lit} layout="line" as="p" className="sl-c-title" />}
+        docked={<SalesTitle active={lit} layout="line" as="p" marks className="sl-c-title" />}
       >
         <div ref={track} className="sl-c-track">
           <div className="sl-c-pin">
@@ -149,7 +150,7 @@ const Stacked = () => {
         line={<BigLine />}
         lineClassName="sl-big"
         accent={BAR}
-        docked={<SalesTitle active={lit} layout="line" as="p" className="sl-bar-title" />}
+        docked={<SalesTitle active={lit} layout="line" as="p" marks className="sl-bar-title" />}
       >
         <div className="bzl-wrap sl-c-list">
           {s.panels.map((p, i) => (

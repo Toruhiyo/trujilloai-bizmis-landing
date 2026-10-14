@@ -8,15 +8,17 @@ import { cn } from "@/lib/utils";
  * none; the parts before it are also marked done). `stack` sets each part on
  * its own line (the rail); `line` keeps it to one line (a header bar);
  * `big` is the pillar's entrance (PillarIntro), every part kept whole on
- * its line. Each piece carries a `data-morph` key, so PillarIntro flies the
- * big title's pieces onto the docked bar's. How a lit part looks is up to
- * the variant's CSS (.sl-title in landing-sales.css).
+ * its line. How a lit part looks is up to
+ * the variant's CSS (.sl-title in landing-sales.css). `marks` draws a marker
+ * underline under each part (.sl-title-mark), which the CSS shows on the lit
+ * part and, calmer, on the parts already shown.
  */
 const SalesTitle = ({
   active,
   layout,
   as: Tag = "h2",
   fills,
+  marks,
   className,
 }: {
   active: number | "all" | null;
@@ -25,6 +27,8 @@ const SalesTitle = ({
   as?: "h2" | "p" | "span";
   /** Progress under each part, 0–1 (as --fill), for a layout that draws it. */
   fills?: number[];
+  /** A marker underline under each part (shown by the CSS on the lit and done parts). */
+  marks?: boolean;
   className?: string;
 }) => {
   const s = useMessages().landing.sales;
@@ -33,13 +37,12 @@ const SalesTitle = ({
       className={cn("sl-title", `is-${layout}`, className)}
       aria-hidden={Tag !== "h2" || undefined}
     >
-      <span className="sl-title-lead" data-morph="sl-lead">
+      <span className="sl-title-lead">
         {s.titleLead}
       </span>{" "}
       {s.titleParts.map((part, i) => (
         <span key={part}>
           <span
-            data-morph={`sl-part-${i}`}
             className={cn(
               "sl-title-part",
               active === "all" || active === i
@@ -50,7 +53,14 @@ const SalesTitle = ({
             )}
             style={fills ? ({ "--fill": fills[i] ?? 0 } as CSSProperties) : undefined}
           >
-            <span className="sl-title-text">{part}</span>
+            <span className="sl-title-text">
+              {part}
+              {marks && (
+                <svg className="sl-title-mark" viewBox="0 0 100 10" preserveAspectRatio="none" aria-hidden="true">
+                  <path d="M1.5 7.2C24 4.6 58 3.6 98.5 5.4" />
+                </svg>
+              )}
+            </span>
           </span>
           {i < s.titleParts.length - 1 ? " " : ""}
         </span>

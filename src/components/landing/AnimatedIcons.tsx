@@ -177,24 +177,30 @@ export const VoiceIcon: AnimatedIcon = ({ className }) => (
   </Svg>
 );
 
+/*
+ * The three benefit icons (Sales, Support, Insights) open their pillars, in a
+ * disc above the pillar's name and in its docked bar (PillarIntro), so they
+ * are drawn as one set: the same 2px stroke, an optical box of about 18 x 18
+ * centred on the grid's 12/12, no part thinner or tighter than the others,
+ * and complete at rest (their motions only ever start from, and return to,
+ * the full drawing; PillarIntro turns them off).
+ */
+
 /** Sales (benefit): the line climbs and its arrow lands. */
 export const TrendIcon: AnimatedIcon = ({ className }) => (
   <Svg name="trend" className={className}>
-    <path className="line" pathLength={1} d="M3 17.5l5.5-5.5 4 3.5L20 7.5" />
-    <path className="head" d="M15 7.5h5v5" />
+    <path className="line" pathLength={1} d="M2.75 17.5 9 11.25l4 4 8.25-8.25" />
+    <path className="head" d="M15 7h6.25v6.25" />
   </Svg>
 );
 
-/** Support (benefit): the headset's sound waves pulse. */
+/** Support (benefit): a headset, its mic at the cheek; the earcups pulse. */
 export const HeadsetIcon: AnimatedIcon = ({ className }) => (
   <Svg name="headset" className={className}>
-    <path d="M4.5 14v-2a7.5 7.5 0 0 1 15 0v2" />
-    <rect x="3" y="13.5" width="4" height="6" rx="1.5" />
-    <rect x="17" y="13.5" width="4" height="6" rx="1.5" />
-    <path d="M19 19.5c0 1.5-2 2.5-5 2.5" />
-    <path className="w w1" d="M10 15.5v2" />
-    <path className="w w2" d="M12 14.5v4" />
-    <path className="w w3" d="M14 15.5v2" />
+    <path d="M4 14v-2a8 8 0 0 1 16 0v2" />
+    <rect className="cup" x="3" y="12.5" width="4.25" height="6.5" rx="2" />
+    <rect className="cup" x="16.75" y="12.5" width="4.25" height="6.5" rx="2" />
+    <path d="M18.9 19v.25A2.75 2.75 0 0 1 16.15 22H13.5" />
   </Svg>
 );
 
@@ -203,10 +209,11 @@ export const IdeaIcon: AnimatedIcon = ({ className }) => (
   <Svg name="idea" className={className}>
     <path
       className="bulb"
-      d="M9 17.5h6M9.8 20.5h4.4M12 3.5a5.5 5.5 0 0 0-3.3 9.9c.6.5.8 1.1.8 1.8v.3h5v-.3c0-.7.3-1.3.8-1.8A5.5 5.5 0 0 0 12 3.5z"
+      d="M12 5a5.25 5.25 0 0 0-3.1 9.5c.55.42.85.95.85 1.6V16.5h4.5v-.4c0-.65.3-1.18.85-1.6A5.25 5.25 0 0 0 12 5z"
     />
+    <path d="M9.75 19h4.5M10.75 21.5h2.5" />
     <g className="rays">
-      <path d="M12 .8v.9M4.2 4.2l.7.7M19.8 4.2l-.7.7M1.5 11h1M21.5 11h1" />
+      <path d="M12 1.5v1M4.6 4.1l.75.75M19.4 4.1l-.75.75M2.5 10.25h1M20.5 10.25h1" />
     </g>
   </Svg>
 );
