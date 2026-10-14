@@ -4,11 +4,14 @@ import { useMessages } from "@/i18n/LocaleProvider";
 import AgentImage from "./AgentImage";
 import type { AgentName } from "./AgentImage";
 import { useInView } from "./Reveal";
+import { useRewindLoop } from "./useRewindLoop";
 
 export type CarouselAvatar = { name: AgentName; label: string; tint: string };
 
 /** One step every AUTOPLAY_MS while untouched and in view. */
 const AUTOPLAY_MS = 1900;
+/** How long the ring takes to spin back to the first avatar at the end of a pass. */
+const REWIND_MS = 1500;
 /** After the visitor lets go, wait this long before the carousel moves on its own again. */
 const RESUME_AFTER_MS = 4000;
 /** Distance between neighbours, as a share of the stage width. */
@@ -41,7 +44,10 @@ const toOklch = (hex: string) => {
  * spotlight takes the current avatar's shirt colour. The ring is the control:
  * drag it (it follows the finger 1:1), flick it (it carries on with inertia and
  * springs onto the nearest avatar), tap a neighbour, or use the arrow keys.
- * Left alone in view, it steps on with a brisk rhythm. Wraps around.
+ * Left alone in view, it steps on with a brisk rhythm, from the first avatar
+ * every time it comes into view: after the last one it holds, spins back fast
+ * to the first (a rewind) and steps through again (useRewindLoop); leaving the
+ * view resets it. If the visitor moves the ring, it carries on from there.
  *
  * The ambient light is the film's demo-store light: blobs in the current
  * avatar's colour (blended continuously between neighbours as the ring moves)
@@ -121,23 +127,71 @@ const AvatarCarousel = ({
     [tick],
   );
 
-  // a calm rhythm while untouched and in view
-  useEffect(() => {
-    if (
-      !inView ||
-      window.matchMedia("(prefers-reduced-motion: reduce)").matches
-    )
-      return;
-    const timer = window.setInterval(() => {
-      if (
-        dragging.current ||
-        performance.now() - lastTouch.current < RESUME_AFTER_MS
-      )
+  // A brisk rhythm while untouched and in view: one pass through the lineup
+  // on the loop's timeline, then a rewind (the ring spins back through every
+  // avatar, fast) and again. The ring follows the timeline's index, shifted by
+  // wherever the visitor last left it.
+  const [held, setHeld] = useState(false);
+  const holdTimer = useRef<number>();
+  const offset = useRef(0);
+  const resync = useRef(false);
+  const holdOn = useCallback(() => {
+    setHeld(true);
+    window.clearTimeout(holdTimer.current);
+    holdTimer.current = window.setTimeout(() => {
+      resync.current = true;
+      setHeld(false);
+    }, RESUME_AFTER_MS);
+  }, []);
+  useEffect(() => () => window.clearTimeout(holdTimer.current), []);
+  const reduced = useRef(
+    typeof window !== "undefined" &&
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches,
+  ).current;
+  const last = n - 1;
+  const onFrame = useCallback(
+    (time: number, rewinding: boolean) => {
+      if (reduced || dragging.current) return;
+      const step = Math.min(last, Math.floor(time / AUTOPLAY_MS));
+      if (resync.current) {
+        resync.current = false;
+        offset.current = Math.round(target.current) - step;
+      }
+      if (rewinding) {
+        // the ring itself runs backwards with the timeline
+        const p = offset.current + Math.min(last, time / AUTOPLAY_MS);
+        x.current = p;
+        target.current = p;
+        v.current = 0;
+        setPos(p);
         return;
-      goTo(Math.round(target.current) + 1, false);
-    }, AUTOPLAY_MS);
-    return () => window.clearInterval(timer);
-  }, [inView, goTo]);
+      }
+      const to = offset.current + step;
+      if (to !== target.current) goTo(to, false);
+    },
+    [reduced, last, goTo],
+  );
+  const loop = useRewindLoop(ref, {
+    duration: last * AUTOPLAY_MS + 600,
+    hold: AUTOPLAY_MS,
+    rewind: REWIND_MS,
+    rest: 700,
+    threshold: 0.35,
+    // the ring is driven from onFrame: re-render only when a pass starts
+    tick: 60_000,
+    onFrame,
+    paused: held,
+  });
+  // out of view: back to the first avatar, ready for the next visit
+  useEffect(() => {
+    if (loop.active) return;
+    offset.current = 0;
+    resync.current = false;
+    x.current = 0;
+    target.current = 0;
+    v.current = 0;
+    setPos(0);
+  }, [loop.active]);
 
   // The ambient light, running while the carousel is in view, on the same
   // rhythm as the names (both follow the ring itself). It blends between
@@ -219,6 +273,7 @@ const AvatarCarousel = ({
     if (e.button !== 0) return;
     dragging.current = true;
     lastTouch.current = performance.now();
+    holdOn();
     drag.current = {
       startX: e.clientX,
       startPos: x.current,
@@ -242,6 +297,7 @@ const AvatarCarousel = ({
     if (!dragging.current) return;
     dragging.current = false;
     lastTouch.current = performance.now();
+    holdOn();
     const s = drag.current.samples;
     const first = s[0];
     const last = s[s.length - 1];
@@ -270,8 +326,14 @@ const AvatarCarousel = ({
       tabIndex={0}
       className="relative select-none rounded-3xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--bzl-orange)]"
       onKeyDown={(e) => {
-        if (e.key === "ArrowRight") goTo(Math.round(target.current) + 1, true);
-        if (e.key === "ArrowLeft") goTo(Math.round(target.current) - 1, true);
+        if (e.key === "ArrowRight") {
+          holdOn();
+          goTo(Math.round(target.current) + 1, true);
+        }
+        if (e.key === "ArrowLeft") {
+          holdOn();
+          goTo(Math.round(target.current) - 1, true);
+        }
       }}
     >
       <div
