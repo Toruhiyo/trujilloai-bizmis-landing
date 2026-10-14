@@ -154,7 +154,6 @@ export const ca: Messages = {
       buyCaption: "Sí, surt avui i la devolució és gratuïta. Anem a pagar?",
       cart: { title: "El teu carretó", subtotal: "Subtotal", checkout: "Pagar", perks: ["Surt avui", "Devolució gratuïta"], placed: "Comanda feta" },
       funnel: {
-        eyebrow: "Tota la botiga, tot el dia",
         problems: ["No el troba", "Indecís", "No n'està segur"],
         solutions: ["Trobat", "Comparat", "Dubte resolt"],
       },

@@ -162,7 +162,6 @@ export const en = {
       cart: { title: "Your cart", subtotal: "Subtotal", checkout: "Checkout", perks: ["Ships today", "Free returns"], placed: "Order placed" },
       /** The at-scale funnel beside each moment: the whole store's shoppers, one funnel fixed stage by stage (illustrative, no figures). */
       funnel: {
-        eyebrow: "Your whole store, all day",
         /** Each stage's status, as the film's pills: the problem (grey), then fixed by Bizmis (orange check). */
         problems: ["Can't find it", "Can't decide", "Not sure"],
         solutions: ["Found it", "Compared", "Doubt cleared"],

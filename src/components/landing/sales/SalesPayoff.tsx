@@ -24,7 +24,6 @@ const SalesPayoff = ({ play, className }: { play?: boolean; className?: string }
     <div className={cn("sl-pay relative", className)}>
       <Sentinel ref={sentinel} off={off} />
       <div className="sl-fn sl-pay-box">
-        <span className="sl-fn-eyebrow">{s.funnel.eyebrow}</span>
         <FunnelFlow t={t} duration={DURATION} focus={3} copy={s.funnel} />
       </div>
     </div>

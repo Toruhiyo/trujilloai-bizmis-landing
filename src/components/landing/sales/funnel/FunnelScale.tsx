@@ -26,7 +26,6 @@ const FunnelScale = ({
   const f = useMessages().landing.sales.funnel;
   return (
     <div className={cn("sl-fn relative", className)} data-focus={focus}>
-      <span className="sl-fn-eyebrow">{f.eyebrow}</span>
       <FunnelFlow t={t} duration={duration} focus={focus} fixAt={fixAt} copy={f} />
     </div>
   );

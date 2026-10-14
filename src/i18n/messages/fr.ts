@@ -154,7 +154,6 @@ export const fr: Messages = {
       buyCaption: "Oui, il part aujourd'hui et le retour est gratuit. On passe au paiement ?",
       cart: { title: "Votre panier", subtotal: "Sous-total", checkout: "Paiement", perks: ["Expédié aujourd'hui", "Retours gratuits"], placed: "Commande passée" },
       funnel: {
-        eyebrow: "Toute votre boutique, toute la journée",
         problems: ["Introuvable", "Indécis", "Pas sûr"],
         solutions: ["Trouvé", "Comparé", "Doute levé"],
       },

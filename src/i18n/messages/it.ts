@@ -154,7 +154,6 @@ export const it: Messages = {
       buyCaption: "Sì, parte oggi e il reso è gratuito. Andiamo al pagamento?",
       cart: { title: "Il tuo carrello", subtotal: "Subtotale", checkout: "Pagamento", perks: ["Spedito oggi", "Reso gratuito"], placed: "Ordine effettuato" },
       funnel: {
-        eyebrow: "Tutto il negozio, tutto il giorno",
         problems: ["Non lo trova", "Indeciso", "Non è sicuro"],
         solutions: ["Trovato", "Confrontato", "Dubbio chiarito"],
       },
