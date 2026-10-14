@@ -1,6 +1,6 @@
 /**
  * Hex equivalents of `src/index.css` :root HSL tokens (email, inline SVG, etc.).
- * Marketing often cites #FD912A; in-app `bg-primary` uses `--primary` (29 93% 65%).
+ * The Bizmis primary is #F9A353 = `--primary` (29 93% 65%), everywhere.
  */
 export const BIZMIS_PRIMARY_HEX = "#F9A353";
 export const BIZMIS_PRIMARY_LIGHT_HEX = "#FBBD84";

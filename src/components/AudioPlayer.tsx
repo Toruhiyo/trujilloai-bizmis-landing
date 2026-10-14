@@ -23,8 +23,8 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({
     const wavesurfer = WaveSurfer.create({
       container: waveformRef.current,
       waveColor: "hsl(35 30% 82%)", // border color from project
-      progressColor: "#FD912A",
-      cursorColor: "#FD912A",
+      progressColor: "#F9A353",
+      cursorColor: "#F9A353",
       barWidth: 3,
       barGap: 2,
       barRadius: 3,

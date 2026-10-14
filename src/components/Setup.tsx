@@ -21,7 +21,7 @@ import { useMessages } from "@/i18n/LocaleProvider";
 // Constants for connector styling
 const CONNECTOR_ANIMATION_DURATION = 0.5;
 const CONNECTOR_Z_INDEX = -1;
-const CONNECTOR_COLOR = "rgba(253, 145, 42, 0.25)";
+const CONNECTOR_COLOR = "rgba(249, 163, 83, 0.25)";
 
 // Per-tier connector geometry — desktop curves looked over-bowed at mobile
 // widths because the inflection offset and stroke were fixed in pixels.
@@ -256,7 +256,7 @@ const Setup = () => {
                       <div
                         key={index}
                         id={`card-${index}`}
-                        className="group relative bg-primary/10 backdrop-blur-sm rounded-lg sm:rounded-2xl p-1.5 xs:p-2.5 sm:p-4 lg:p-3.5 shadow-[0_4px_20px_-2px_rgba(0,0,0,0.06),0_2px_8px_-2px_rgba(253,145,42,0.06)] hover:scale-[1.02] transition-all duration-300 overflow-hidden"
+                        className="group relative bg-primary/10 backdrop-blur-sm rounded-lg sm:rounded-2xl p-1.5 xs:p-2.5 sm:p-4 lg:p-3.5 shadow-[0_4px_20px_-2px_rgba(0,0,0,0.06),0_2px_8px_-2px_rgba(249,163,83,0.06)] hover:scale-[1.02] transition-all duration-300 overflow-hidden"
                       >
                         {/* Shopify Icon Watermark — hidden on the most compact tier
                             so the simplified cards stay clean (icon + title only). */}
@@ -300,7 +300,7 @@ const Setup = () => {
                             top: "50%",
                             transform: `translate(-50%, -50%) scale(${0.5 + pulse * 0.5})`,
                             background:
-                              "radial-gradient(circle, rgba(253,145,42,0.5) 0%, rgba(253,145,42,0.2) 40%, transparent 70%)",
+                              "radial-gradient(circle, rgba(249,163,83,0.5) 0%, rgba(249,163,83,0.2) 40%, transparent 70%)",
                             opacity: pulse,
                             transition: `opacity ${HEARTBEAT_FADE_DURATION_MS}ms ease-in-out, transform ${HEARTBEAT_FADE_DURATION_MS}ms ease-in-out`,
                             zIndex: 1,
@@ -313,7 +313,7 @@ const Setup = () => {
                             top: "50%",
                             transform: `translate(-50%, -50%) scale(${0.4 + pulse * 0.6})`,
                             background:
-                              "radial-gradient(circle, rgba(253,145,42,0.3) 0%, rgba(253,145,42,0.1) 50%, transparent 75%)",
+                              "radial-gradient(circle, rgba(249,163,83,0.3) 0%, rgba(249,163,83,0.1) 50%, transparent 75%)",
                             opacity: pulse * 0.7,
                             transition: `opacity ${HEARTBEAT_FADE_DURATION_MS}ms ease-in-out, transform ${HEARTBEAT_FADE_DURATION_MS}ms ease-in-out`,
                             zIndex: 1,

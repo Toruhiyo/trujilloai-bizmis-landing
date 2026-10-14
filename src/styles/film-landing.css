@@ -4,7 +4,7 @@
 
 .bzl {
   --bzl-bg: #ffffff;
-  --bzl-fg: #2b2520;
+  --bzl-fg: #3b2416;
   --bzl-ink-2: #5c5249;
   --bzl-muted: #75695e;
   --bzl-faint: #9b8d80;
@@ -778,7 +778,7 @@
   white-space: nowrap;
   transition: background 0.4s, rotate 0.7s var(--bzl-spring);
 }
-.bzl-obs.is-beaten .bzl-obs-tag { background: #2b2520; rotate: 9deg; }
+.bzl-obs.is-beaten .bzl-obs-tag { background: var(--bzl-fg); rotate: 9deg; }
 
 /* "Early Access", handwritten (as in the film's end card): in the hero badge
    (white) and in the shared navbar — reached through html.bzl-page, which only
@@ -1267,8 +1267,8 @@
    Support / Insights bands the marker takes the pillar's own ink (a palette
    retunes it through --acc / --acc-ink, or by setting --mk-* directly). ── */
 .bzl-mk {
-  --mk-line: color-mix(in oklab, var(--acc-ink, #c25a0b) 78%, var(--acc, #f9a353));
-  --mk-ink: var(--acc-ink, #c25a0b);
+  --mk-line: var(--acc-ink, #a84f0c);
+  --mk-ink: var(--acc-ink, #a84f0c);
   --mk-tint: rgb(255 255 255 / 0.5);
   --mk-main: 6.5px;
   --mk-mid: 4.5px;
@@ -1325,7 +1325,7 @@
    label, the promise beside it), in the pillar's own colours. ── */
 .bzp-section { padding-bottom: clamp(1.5rem, 5svh, 4rem); }
 .bzp {
-  --pi-name-color: color-mix(in oklab, var(--acc-ink) 86%, var(--bzl-fg));
+  --pi-name-color: var(--acc-ink, #a84f0c); /* the burnt primary */
   --pi-line-color: var(--bzl-ink-2);
 }
 .bzp .pi-icon {

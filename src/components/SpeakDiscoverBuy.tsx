@@ -581,7 +581,7 @@ const SpeakDiscoverBuy = () => {
                     <div
                       className={`relative w-full min-w-0 max-w-full rounded-xl border transition-all duration-500 ${
                         promoted
-                          ? "bg-white border-primary/40 shadow-[0_8px_24px_-4px_rgba(253,145,42,0.45)] -mt-2"
+                          ? "bg-white border-primary/40 shadow-[0_8px_24px_-4px_rgba(249,163,83,0.45)] -mt-2"
                           : "bg-white/95 border-primary/25 shadow-[0_6px_18px_-2px_rgba(0,0,0,0.18)]"
                       }`}
                       style={{ animation: promoteAnimation(promoted) }}
@@ -820,8 +820,8 @@ const SpeakDiscoverBuy = () => {
                     <div
                       className={`relative rounded-2xl border transition-all duration-500 hover:scale-105 w-28 sm:w-44 md:w-48 ${
                         promoted
-                          ? "bg-white border-primary/40 shadow-[0_16px_48px_-8px_rgba(253,145,42,0.55),0_40px_80px_-20px_rgba(0,0,0,0.35)] -mt-3 sm:-mt-4"
-                          : "bg-white/95 border-primary/25 shadow-[0_12px_36px_-4px_rgba(0,0,0,0.28),0_32px_64px_-12px_rgba(253,145,42,0.28)]"
+                          ? "bg-white border-primary/40 shadow-[0_16px_48px_-8px_rgba(249,163,83,0.55),0_40px_80px_-20px_rgba(0,0,0,0.35)] -mt-3 sm:-mt-4"
+                          : "bg-white/95 border-primary/25 shadow-[0_12px_36px_-4px_rgba(0,0,0,0.28),0_32px_64px_-12px_rgba(249,163,83,0.28)]"
                       }`}
                       style={{ animation: promoteAnimation(promoted) }}
                     >

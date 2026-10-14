@@ -22,10 +22,10 @@ export const hslFromCssVar = (name: string): string => {
 /**
  * Canonical Bizmis orange / cream hex palette for canvas-confetti. Hex parses
  * reliably on canvas; dynamic hsl(var...) strings caused mint/incorrect hues in production.
- * Anchored to design token `--primary` ≈ #FD912A.
+ * Anchored to design token `--primary` = #F9A353 (hsl(29 93% 65%)).
  */
 export const BIZMIS_CONFETTI_HEX = [
-  "#FD912A",
+  "#F9A353",
   "#D9710F",
   "#FFB366",
   "#FFC889",

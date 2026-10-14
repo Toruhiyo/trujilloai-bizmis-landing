@@ -82,7 +82,7 @@ const TabbedSessionReplay: React.FC<TabbedSessionReplayProps> = ({
                 isActive
                   ? {
                       boxShadow:
-                        "0 0 0 1px rgba(253, 145, 42, 0.3), 0 0 20px rgba(253, 145, 42, 0.2), 0 0 40px rgba(253, 145, 42, 0.12)",
+                        "0 0 0 1px rgba(249, 163, 83, 0.3), 0 0 20px rgba(249, 163, 83, 0.2), 0 0 40px rgba(249, 163, 83, 0.12)",
                     }
                   : undefined
               }

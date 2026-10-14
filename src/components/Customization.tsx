@@ -265,13 +265,13 @@ const Customization = () => {
                     <div className="absolute h-full aspect-square bg-primary/15 rounded-full scale-0 group-hover:scale-100 transition-all duration-1000 ease-out group-hover:delay-100 delay-500 blur-sm"></div>
 
                     {/* Outer flower outline with glow */}
-                    <div className="absolute h-full aspect-square border-2 border-primary/30 rounded-full scale-0 group-hover:scale-100 transition-all duration-700 ease-out group-hover:delay-0 delay-200 shadow-[0_0_20px_rgba(253,145,42,0.3)] group-hover:shadow-[0_0_30px_rgba(253,145,42,0.4)]"></div>
+                    <div className="absolute h-full aspect-square border-2 border-primary/30 rounded-full scale-0 group-hover:scale-100 transition-all duration-700 ease-out group-hover:delay-0 delay-200 shadow-[0_0_20px_rgba(249,163,83,0.3)] group-hover:shadow-[0_0_30px_rgba(249,163,83,0.4)]"></div>
 
                     {/* Middle flower outline with glow */}
-                    <div className="absolute h-4/5 aspect-square border-2 border-primary/40 rounded-full scale-0 group-hover:scale-100 transition-all duration-700 ease-out group-hover:delay-100 delay-300 shadow-[0_0_15px_rgba(253,145,42,0.4)] group-hover:shadow-[0_0_25px_rgba(253,145,42,0.5)]"></div>
+                    <div className="absolute h-4/5 aspect-square border-2 border-primary/40 rounded-full scale-0 group-hover:scale-100 transition-all duration-700 ease-out group-hover:delay-100 delay-300 shadow-[0_0_15px_rgba(249,163,83,0.4)] group-hover:shadow-[0_0_25px_rgba(249,163,83,0.5)]"></div>
 
                     {/* Inner flower outline with glow */}
-                    <div className="absolute h-3/5 aspect-square border-2 border-primary/50 rounded-full scale-0 group-hover:scale-100 transition-all duration-700 ease-out group-hover:delay-200 delay-400 shadow-[0_0_10px_rgba(253,145,42,0.5)] group-hover:shadow-[0_0_25px_rgba(253,145,42,0.6)]"></div>
+                    <div className="absolute h-3/5 aspect-square border-2 border-primary/50 rounded-full scale-0 group-hover:scale-100 transition-all duration-700 ease-out group-hover:delay-200 delay-400 shadow-[0_0_10px_rgba(249,163,83,0.5)] group-hover:shadow-[0_0_25px_rgba(249,163,83,0.6)]"></div>
                   </div>
 
                   {/* Default image — capped per tier so it doesn't dominate

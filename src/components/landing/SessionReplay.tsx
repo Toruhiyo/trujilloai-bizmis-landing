@@ -244,7 +244,7 @@ const ReplayCard = ({ session }: { session: ReplaySession }) => {
             className={cn(
               "mt-1 text-xs font-bold uppercase tracking-wider",
               data.success
-                ? "text-[hsl(var(--primary))]"
+                ? "text-[var(--bzl-orange-dark)]"
                 : "text-[var(--bzl-faint)]",
             )}
           >
@@ -261,7 +261,7 @@ const ReplayCard = ({ session }: { session: ReplaySession }) => {
           <User className="h-3 w-3" />
           {data.customer.name || m.anonymousCustomer}
           {data.customer.isLoyal && (
-            <span className="rounded-full bg-[var(--bzl-orange-wash)] px-1.5 py-0.5 font-semibold text-[hsl(var(--primary))]">
+            <span className="rounded-full bg-[var(--bzl-orange-wash)] px-1.5 py-0.5 font-semibold text-[var(--bzl-orange-dark)]">
               {m.vip}
             </span>
           )}
@@ -466,7 +466,7 @@ const SessionReplay = () => {
               className={cn(
                 "relative flex flex-shrink-0 items-center gap-1.5 rounded-full px-3.5 py-2 text-sm font-semibold transition-all duration-300",
                 on
-                  ? "bg-white text-[hsl(var(--primary))] shadow-[0_8px_22px_-10px_rgba(249,163,83,0.55)] ring-1 ring-[color-mix(in_oklab,hsl(var(--primary))_40%,transparent)]"
+                  ? "bg-white text-[var(--bzl-orange-dark)] shadow-[0_8px_22px_-10px_rgba(249,163,83,0.55)] ring-1 ring-[color-mix(in_oklab,hsl(var(--primary))_40%,transparent)]"
                   : "text-[var(--bzl-muted)] hover:text-[var(--bzl-fg)]",
               )}
             >
@@ -479,7 +479,7 @@ const SessionReplay = () => {
                 <X className="h-3.5 w-3.5" strokeWidth={3} />
               )}
               {s.data.customer.name && (
-                <span className="rounded-full bg-[var(--bzl-orange-wash)] px-1.5 text-[10px] text-[hsl(var(--primary))]">
+                <span className="rounded-full bg-[var(--bzl-orange-wash)] px-1.5 text-[10px] text-[var(--bzl-orange-dark)]">
                   {m.vip}
                 </span>
               )}

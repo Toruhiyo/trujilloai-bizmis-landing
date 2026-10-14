@@ -132,12 +132,12 @@ const PHASE_TO_STEP: Record<Phase, number> = {
 const STEP_HIGHLIGHT_TRANSITION_MS = 450;
 
 const SOLVED_PARTICLES = [
-  { x: -28, y: -32, size: 6, delay: 0, color: "#FD912A" },
+  { x: -28, y: -32, size: 6, delay: 0, color: "#F9A353" },
   { x: 30, y: -26, size: 5, delay: 40, color: "#FDB34A" },
-  { x: -20, y: 28, size: 5, delay: 80, color: "#FD912A" },
+  { x: -20, y: 28, size: 5, delay: 80, color: "#F9A353" },
   { x: 26, y: 30, size: 4, delay: 60, color: "#FDB34A" },
   { x: -36, y: 4, size: 4, delay: 100, color: "#FDC97A" },
-  { x: 38, y: -4, size: 5, delay: 20, color: "#FD912A" },
+  { x: 38, y: -4, size: 5, delay: 20, color: "#F9A353" },
   { x: 0, y: -38, size: 4, delay: 70, color: "#FDB34A" },
   { x: 0, y: 36, size: 3, delay: 110, color: "#FDC97A" },
 ];

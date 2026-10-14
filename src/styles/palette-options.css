@@ -7,7 +7,7 @@
    Type rule: on orange / saturated surfaces the type is WHITE (the hero, the
    Sales band and its docked bar, the filled primary Install Now); dark warm
    ink only on light cream / white surfaces. Accent TEXT on the creams uses a
-   burnt primary (#A84F0C / #8A4510), which passes AA there; the Early Access
+   burnt primary (#A84F0C, the one burnt), which passes AA there; the Early Access
    handwriting keeps the film's light primary.
 
    Wiring: the palette sets --pal-* tokens (plus the landing's own --bzl-*,
@@ -20,13 +20,6 @@
 
 .bzl[data-palette] {
   background: var(--bzl-bg);
-  /* the app-wide tokens still carry the old #FD912A (29 98% 58%): on the
-     landing, focus rings, the buttons' brand shadows and the warm gradient
-     take the true primary instead */
-  --ring: var(--primary);
-  --shadow-brand: 0 12px 35px -8px hsl(var(--primary) / 0.4);
-  --shadow-soft: 0 6px 25px -6px hsl(var(--primary) / 0.25);
-  --gradient-warm: hsl(var(--primary));
 }
 
 /* ── Hero: the studio behind the glass store window (type stays white) ── */
@@ -146,7 +139,7 @@
     radial-gradient(ellipse 60% 60% at 18% 30%, rgb(255 212 170 / 0.55), transparent 70%),
     linear-gradient(180deg, #ffebd8 0%, #fddcbc 100%);
   --pal-support-acc: #f9a353;
-  --pal-support-ink: #8a4510;
+  --pal-support-ink: #a84f0c;
   --pal-support-soft: var(--bzl-primary-soft);
 
   /* lighter still: the widget's own light */
@@ -154,7 +147,7 @@
     radial-gradient(ellipse 60% 60% at 82% 35%, rgb(255 226 196 / 0.6), transparent 70%),
     linear-gradient(180deg, #fff4e8 0%, #ffeedd 100%);
   --pal-insights-acc: #f9a353;
-  --pal-insights-ink: #8a4510;
+  --pal-insights-ink: #a84f0c;
   --pal-insights-soft: var(--bzl-primary-soft);
 
   --pal-setup-bg: linear-gradient(180deg, #fff8f0, #fff1e3 45%, #fff8f0);
@@ -181,7 +174,7 @@
    The handwriting accepts the primary's lower contrast on white (2.0:1, large
    script): it is the film's look. */
 .bzl[data-palette="1"] #setup + section + section {
-  --bzl-fg: #2b2520;
+  --bzl-fg: #3b2416; /* the one dark ink (was #2b2520) */
   --bzl-muted: #75695e;
   --bzl-faint: #9b8d80;
   --bzl-card: #faf4ed;
