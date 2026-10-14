@@ -75,8 +75,8 @@ const ClassicIndex = () => {
 const FilmLanding = lazy(() => import("./FilmLanding"));
 
 /**
- * "/" — the film-led landing when HERO_FILM_ENABLED (dev, or VITE_HERO_FILM=1),
- * otherwise the classic landing, untouched.
+ * "/" — the film-led landing (the same as /v2), unless a build turns it off
+ * with VITE_HERO_FILM=0; then the classic landing, untouched.
  */
 const Index = () =>
   HERO_FILM_ENABLED ? (

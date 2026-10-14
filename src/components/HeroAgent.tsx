@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useMemo, useRef, useState, type CSSProperties } from "react";
 import { AudioLines, Volume2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useMessages } from "@/i18n/LocaleProvider";
@@ -144,6 +144,22 @@ const HeroAgent = ({
   const inviting = Boolean(invite) && started && !paused;
   useEffect(() => onInvite?.(inviting), [inviting, onInvite]);
 
+  // The captions never wrap: a line wider than the page shrinks to fit instead
+  // (a transform, so the pill keeps its place; Tailwind's translate composes it)
+  const captionRef = useRef<HTMLParagraphElement>(null);
+  const [fit, setFit] = useState(1);
+  useLayoutEffect(() => {
+    const el = captionRef.current;
+    if (!el) return;
+    const measure = () => {
+      const box = (el.offsetParent as HTMLElement | null)?.clientWidth ?? window.innerWidth;
+      setFit(Math.min(1, ((box - 32) / el.offsetWidth) * 0.97));
+    };
+    measure();
+    window.addEventListener("resize", measure);
+    return () => window.removeEventListener("resize", measure);
+  }, [at.step, messages]);
+
   return (
     <>
       <div className={cn("bzw bza w-[18em]", cardClassName)}>
@@ -202,8 +218,10 @@ const HeroAgent = ({
 
       {/* The widget's captions: spoken words solid, the current one bold and glowing */}
       <p
+        ref={captionRef}
+        style={{ "--tw-scale-x": fit, "--tw-scale-y": fit } as CSSProperties}
         className={cn(
-          "bzw bza bzw-caption w-max max-w-[min(30em,calc(100vw-2rem))] rounded-[1.5em] px-[1em] py-[0.25em] text-center font-medium leading-snug text-[#171717] transition-opacity duration-300",
+          "bzw bza bzw-caption w-max origin-bottom whitespace-nowrap rounded-[1.5em] px-[1em] py-[0.25em] text-center font-medium leading-snug text-[#171717] transition-opacity duration-300",
           !started && "opacity-0",
           captionClassName,
         )}

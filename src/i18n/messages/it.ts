@@ -166,7 +166,12 @@ export const it: Messages = {
     endCard: {
       install: "Installa ora",
       invite: "per i vantaggi Early Access!",
-      note: "Applicati all'installazione. Solo 50 posti!",
+      /** The hand-drawn note, with an arrow to the invite. */
+      applied: "Applicati all'installazione",
+      note: "Solo 50 posti!",
+      /** The ad-1 film's Early Access perks, then the quieter extras under them. */
+      perks: ["Crediti gratuiti generosi", "50% di sconto sugli upgrade", "Decidi la roadmap con noi"],
+      extras: ["Nessuna carta", "Nessun vincolo", "Linea diretta con il fondatore"],
     },
     setup: {
       title: "Installazione con un clic",

@@ -9,17 +9,18 @@ import {
   openBizmisShopifyAppListing,
 } from "@/lib/bizmisUrls";
 import Reveal from "./Reveal";
+import "@/styles/end-card.css";
 
 /**
  * The close, composed like the ad-1 film's end card: the title IS the call to
  * action ("Install now", in ink with a light sweeping across it, the Shopify
  * bag in the same ink), the handwritten "for Early Access benefits!" right
- * under it, the perks in one row, and apart from them, again by hand, that the
- * perks apply on install and only for 50 spots. Then a quiet way to talk to us.
+ * under it with a hand-drawn arrow note that they apply on install, the film's
+ * perks in one row and the quieter extras under them, then by hand "Only 50
+ * spots!", and a quiet way to talk to us.
  */
 const EndCard = () => {
   const messages = useMessages();
-  const ea = messages.earlyAccessCard;
   const cta = messages.finalCta;
   const end = messages.landing.endCard;
   const posthog = usePostHog();
@@ -74,18 +75,29 @@ const EndCard = () => {
           </svg>
         </Reveal>
 
-        {/* the Early Access invite, by hand, right under the title */}
-        <Reveal delay={120}>
-          <p className="bzl-hand bzl-end-invite mx-auto mt-[2.4svh] text-[clamp(2rem,4.4vw,3.4rem)] leading-[1.05] text-[var(--bzl-orange-strong)]">
-            {end.invite}
-          </p>
+        {/* the Early Access invite, by hand, right under the title, and the arrow note on it */}
+        <Reveal delay={120} className="relative mx-auto mt-[2.4svh] w-fit">
+          <p className="bzl-hand bzl-end-invite mx-auto text-[var(--bzl-orange-strong)]">{end.invite}</p>
+          <div className="bzl-end-applied mt-2 flex flex-col items-center lg:absolute lg:left-[calc(100%+0.6rem)] lg:top-[-1.3em] lg:mt-0 lg:items-start">
+            {/* phones: the note under the invite, its arrow pointing up */}
+            <svg viewBox="0 0 40 46" className="bzl-end-arrow h-9 w-8 lg:hidden" fill="none" aria-hidden="true">
+              <path d="M22 44 C 12 32, 26 18, 18 4" pathLength={1} />
+              <path d="M10 11 L 18 3 L 25 11" pathLength={1} />
+            </svg>
+            <p className="bzl-hand bzl-end-applied-text text-[var(--bzl-fg)]">{end.applied}</p>
+            {/* desktop: the note up and to the right, its arrow curling back down to the invite */}
+            <svg viewBox="0 0 90 60" className="bzl-end-arrow -mt-1 hidden h-[3.4rem] w-[5.2rem] lg:block" fill="none" aria-hidden="true">
+              <path d="M70 4 C 72 34, 46 52, 8 48" pathLength={1} />
+              <path d="M18 38 L 7 48 L 19 56" pathLength={1} />
+            </svg>
+          </div>
         </Reveal>
 
-        {/* the perks, in one row */}
+        {/* the film's perks, in one row */}
         <Reveal delay={240}>
           <ul className="mx-auto mt-[5svh] flex max-w-4xl flex-col items-center justify-center gap-x-10 gap-y-3 sm:flex-row sm:flex-wrap">
-            {ea.perks.map((perk) => (
-              <li key={perk.title} className="flex items-center gap-2 text-lg font-semibold text-[var(--bzl-fg)]">
+            {end.perks.map((perk) => (
+              <li key={perk} className="flex items-center gap-2 text-lg font-semibold text-[var(--bzl-fg)] md:text-xl">
                 <svg
                   viewBox="0 0 24 24"
                   className="h-5 w-5 flex-shrink-0"
@@ -96,17 +108,24 @@ const EndCard = () => {
                 >
                   <path d="M5 12.5l4.4 4.4L19 7.4" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
-                {perk.title}
+                {perk}
+              </li>
+            ))}
+          </ul>
+          {/* and the quieter extras */}
+          <ul className="mx-auto mt-4 flex max-w-3xl flex-col items-center justify-center gap-x-3 gap-y-0.5 text-[0.9375rem] text-[var(--bzl-muted)] sm:flex-row sm:flex-wrap">
+            {end.extras.map((extra, i) => (
+              <li key={extra} className="flex items-center gap-3">
+                {i > 0 && <span aria-hidden="true" className="hidden text-[var(--bzl-faint)] sm:inline">·</span>}
+                {extra}
               </li>
             ))}
           </ul>
         </Reveal>
 
-        {/* apart from the perks: they apply on install, 50 spots only */}
+        {/* by hand, apart from the perks: 50 spots only */}
         <Reveal delay={360} className="relative mx-auto mt-[4.5svh] w-fit">
-          <p className="bzl-hand bzl-end-note text-[clamp(1.7rem,3vw,2.4rem)] leading-[1.05] text-[var(--bzl-orange-strong)]">
-            {end.note}
-          </p>
+          <p className="bzl-hand bzl-end-note text-[var(--bzl-orange-strong)]">{end.note}</p>
           <svg
             viewBox="0 0 300 16"
             preserveAspectRatio="none"
@@ -138,13 +157,6 @@ const EndCard = () => {
               <CalendarDays className="h-4 w-4" aria-hidden="true" />
               {messages.common.bookACall}
             </a>
-            <p className="flex flex-wrap justify-center gap-x-4 gap-y-1 text-sm text-[var(--bzl-faint)]">
-              <span>{cta.cancelAnytime}</span>
-              <span aria-hidden="true">·</span>
-              <span>{cta.gdprReady}</span>
-              <span aria-hidden="true">·</span>
-              <span>{cta.builtForShopify}</span>
-            </p>
           </div>
         </Reveal>
       </div>

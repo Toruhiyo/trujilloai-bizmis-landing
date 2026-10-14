@@ -166,7 +166,12 @@ export const ca: Messages = {
     endCard: {
       install: "Instal·la ara",
       invite: "per als avantatges d'Early Access!",
-      note: "S'apliquen en instal·lar. Només 50 places!",
+      /** The hand-drawn note, with an arrow to the invite. */
+      applied: "S'apliquen en instal·lar",
+      note: "Només 50 places!",
+      /** The ad-1 film's Early Access perks, then the quieter extras under them. */
+      perks: ["Crèdits gratuïts generosos", "50% de descompte en millorar el pla", "Decideix el full de ruta amb nosaltres"],
+      extras: ["Sense targeta", "Sense compromís", "Línia directa amb el fundador"],
     },
     setup: {
       title: "Instal·lació amb un clic",

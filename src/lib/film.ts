@@ -12,12 +12,11 @@
  * site.
  */
 /**
- * The film-led hero ships dark: on in dev, and in a build only with
- * VITE_HERO_FILM=1 (set it once the final film is hosted). Until then
- * production keeps the previous hero, which also lives at /v1.
+ * The film-led landing is the official "/" (also previewed at /v2). A build
+ * with VITE_HERO_FILM=0 falls back to the classic landing, which also lives
+ * at /v1.
  */
-export const HERO_FILM_ENABLED =
-  import.meta.env.DEV || import.meta.env.VITE_HERO_FILM === "1";
+export const HERO_FILM_ENABLED = import.meta.env.VITE_HERO_FILM !== "0";
 
 export const HERO_FILM = {
   id: "ad-1",

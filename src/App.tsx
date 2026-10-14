@@ -29,7 +29,7 @@ import AdFilm, { isAdFilmRequest } from "./promo/AdFilm";
 
 // Archived landing: its own chunk, so the live landing never downloads it.
 const IndexV1 = lazy(() => import("./pages/IndexV1"));
-// The film-led landing, previewed at /v2 until it becomes the default.
+// The film-led landing: "/" renders it too; /v2 keeps it at a stable URL.
 const FilmLanding = lazy(() => import("./pages/FilmLanding"));
 
 const queryClient = new QueryClient();
