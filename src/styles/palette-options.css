@@ -152,7 +152,7 @@
 
   --pal-setup-bg: linear-gradient(180deg, #fff8f0, #fff1e3 45%, #fff8f0);
   --pal-custom-bg: #fff8f0;
-  --pal-end-bg: radial-gradient(ellipse 70% 60% at 50% 55%, #ffe4ca 0%, #fff8f0 75%);
+  --pal-end-bg: #ffffff; /* the film's end card (see "Early Access, as in the film") */
   --pal-footer-bg: #3b2416;
 }
 /* the footer: the family's deepest step, light type */
@@ -454,14 +454,40 @@
 
   --pal-setup-bg: linear-gradient(180deg, #fffcf8, #fff4e8 45%, #fffcf8);
   --pal-custom-bg: #fffcf8;
-  /* the close gathers the three siblings */
-  --pal-end-bg:
-    radial-gradient(ellipse 34% 40% at 22% 60%, rgb(255 153 113 / 0.2), transparent 70%),
-    radial-gradient(ellipse 40% 45% at 50% 45%, rgb(249 163 83 / 0.22), transparent 70%),
-    radial-gradient(ellipse 34% 40% at 78% 60%, rgb(230 175 64 / 0.2), transparent 70%),
-    #fffcf8;
+  --pal-end-bg: #ffffff; /* the film's end card (see "Early Access, as in the film") */
   --pal-footer-bg: #fffcf8;
 }
+
+/* ═════════════ Early Access, as in the film (palettes 1 and 4) ═════════════
+   The ad-1 film's end card: pure white, one soft warm glow, the ink "Install
+   now" with its Shopify bag, and everything handwritten (the invite, the
+   arrow note, "Only 50 spots!", the underlines) plus the perk ticks in the
+   light Bizmis orange, the primary itself; perks in ink, extras muted. The
+   Early Access handwriting elsewhere (the nav link on the light bar) follows.
+   The handwriting accepts the primary's lower contrast on white (2.0:1, large
+   script): it is the film's look. */
+.bzl[data-palette="1"] #setup + section + section,
+.bzl[data-palette="4"] #setup + section + section {
+  --bzl-fg: #2b2520;
+  --bzl-muted: #75695e;
+  --bzl-faint: #9b8d80;
+  --bzl-card: #faf4ed;
+  --bzl-orange-strong: hsl(var(--primary));
+}
+/* the film's glow: soft, warm, barely there */
+.bzl[data-palette="1"] #setup + section + section > [aria-hidden="true"]:first-child,
 .bzl[data-palette="4"] #setup + section + section > [aria-hidden="true"]:first-child {
-  opacity: 0;
+  opacity: 0.55;
+}
+.bzl[data-palette="1"] .bzl-end-applied-text,
+.bzl[data-palette="4"] .bzl-end-applied-text {
+  color: hsl(var(--primary));
+}
+.bzl[data-palette="1"] .bzl-end-arrow path,
+.bzl[data-palette="4"] .bzl-end-arrow path {
+  stroke: hsl(var(--primary));
+}
+.bzl[data-palette="1"] #site-navbar.fixed [data-nav="/early-access"]:not(.text-white):not([class*="text-white/"]),
+.bzl[data-palette="4"] #site-navbar.fixed [data-nav="/early-access"]:not(.text-white):not([class*="text-white/"]) {
+  color: hsl(var(--primary));
 }
