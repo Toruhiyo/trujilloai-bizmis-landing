@@ -80,7 +80,7 @@ const BuyMockup = ({ play, clock, active = true }: MockupProps) => {
             <span className="ml-auto flex items-center gap-4">
               <span className="bzl-tile-line w-10" />
               <span className="bzl-tile-line w-12" />
-              <span className="relative grid h-9 w-9 place-items-center rounded-full bg-[#ffe6cf] text-[var(--bzl-fg)]">
+              <span className="relative grid h-9 w-9 place-items-center rounded-full bg-[var(--bzl-primary-soft,#ffe7d0)] text-[var(--bzl-fg)]">
                 <ShoppingCart className="h-4 w-4" strokeWidth={2} />
                 <span className="absolute -right-1.5 -top-1.5 grid h-[18px] min-w-[18px] place-items-center rounded-full bg-[hsl(var(--primary))] px-1 text-[10px] font-bold tabular-nums text-white">
                   1

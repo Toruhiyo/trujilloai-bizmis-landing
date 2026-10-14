@@ -61,7 +61,7 @@ const CustomizeSection = () => {
             className={`absolute rounded-full blur-3xl ${pos}`}
             style={{
               background:
-                "radial-gradient(closest-side, color-mix(in oklab, var(--amb-color, #f28c38) 78%, transparent), color-mix(in oklab, var(--amb-color, #f28c38) 22%, transparent) 55%, transparent 75%)",
+                "radial-gradient(closest-side, color-mix(in oklab, var(--amb-color, hsl(var(--primary))) 78%, transparent), color-mix(in oklab, var(--amb-color, hsl(var(--primary))) 22%, transparent) 55%, transparent 75%)",
               transform: `translate(var(--amb-x${k + 1}, 0), var(--amb-y${k + 1}, 0)) scale(var(--amb-s${k + 1}, 1))`,
             }}
           />
@@ -96,7 +96,7 @@ const CustomizeSection = () => {
                 icon={VoiceIcon}
                 title={c.voice.title}
                 badge={
-                  <span className="rounded-full bg-[color-mix(in_oklab,var(--bzl-orange)_16%,#fff)] px-2.5 py-0.5 text-[11px] font-semibold uppercase tracking-[0.12em] text-[var(--bzl-orange-dark)]">
+                  <span className="rounded-full bg-[var(--bzl-primary-soft,var(--bzl-orange-wash))] px-2.5 py-0.5 text-[11px] font-semibold uppercase tracking-[0.12em] text-[var(--bzl-orange-dark)]">
                     {messages.common.soon}
                   </span>
                 }

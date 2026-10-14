@@ -152,7 +152,7 @@ export type LiveAvatarProps = {
 
 const LiveAvatar = ({
   model,
-  shirtColor = "#F28C38",
+  shirtColor = "#F9A353",
   speaking = false,
   gesture = null,
   onStatus,

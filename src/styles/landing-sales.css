@@ -146,7 +146,7 @@
 }
 .sl-c .bzl-pillar-chip-icon {
   background: #fff;
-  color: #e2701b;
+  color: hsl(var(--primary));
 }
 .sl-c .sl-title,
 .sl-c .sl-title-lead {
@@ -190,7 +190,7 @@
   padding-inline: 0.45rem;
   border-radius: 999px;
   background: var(--acc-ink);
-  color: var(--bzl-orange-dark, #c25a0b);
+  color: var(--bzl-orange-dark, #a84f0c);
   letter-spacing: 0.06em;
   font-variant-numeric: tabular-nums;
 }
@@ -199,7 +199,7 @@
 }
 .sl-c .sl-copy-kicker-num {
   background: #fff;
-  color: #d4660f;
+  color: var(--bzl-orange-dark, #a84f0c);
 }
 /* the entrance: the pillar's name, huge, white on the orange; its line under it, every part lit */
 .sl-c .pi {
@@ -622,7 +622,7 @@
   font-size: 11px;
   font-weight: 700;
   white-space: nowrap;
-  box-shadow: 0 6px 14px -6px rgb(194 90 11 / 0.6);
+  box-shadow: 0 6px 14px -6px rgb(168 79 12 / 0.45);
   opacity: 0;
   translate: -50% 0;
 }

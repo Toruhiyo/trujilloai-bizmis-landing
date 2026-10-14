@@ -20,6 +20,13 @@
 
 .bzl[data-palette] {
   background: var(--bzl-bg);
+  /* the app-wide tokens still carry the old #FD912A (29 98% 58%): on the
+     landing, focus rings, the buttons' brand shadows and the warm gradient
+     take the true primary instead */
+  --ring: var(--primary);
+  --shadow-brand: 0 12px 35px -8px hsl(var(--primary) / 0.4);
+  --shadow-soft: 0 6px 25px -6px hsl(var(--primary) / 0.25);
+  --gradient-warm: hsl(var(--primary));
 }
 
 /* ── Hero: the studio behind the glass store window (type stays white) ── */
@@ -115,6 +122,12 @@
   --bzl-orange-strong: #a84f0c;
   --bzl-orange-dark: #a84f0c;
   --bzl-orange-wash: #fff1e3;
+  /* one soft primary fill for every icon disc / soft chip (was #ffe7d0, #ffe4ca, #ffe6cf) */
+  --bzl-primary-soft: #ffe7d0;
+  /* the app's shadcn ink (#32281B, the nav links) → the palette's ink */
+  --foreground: 22.7 45.7% 15.9%; /* #3b2416, as --bzl-fg */
+  --card-foreground: 22.7 45.7% 15.9%;
+  --popover-foreground: 22.7 45.7% 15.9%;
 
   --pal-hero-bg: linear-gradient(135deg, #fbb06a 0%, #f9a353 45%, #ec8a34 100%);
   --pal-hero-light: radial-gradient(ellipse 80% 60% at 50% 45%, rgb(255 214 170 / 0.7) 0%, rgb(251 186 122 / 0.45) 30%, rgb(249 163 83 / 0.25) 60%, rgb(232 128 40 / 0.2) 100%);
@@ -134,7 +147,7 @@
     linear-gradient(180deg, #ffebd8 0%, #fddcbc 100%);
   --pal-support-acc: #f9a353;
   --pal-support-ink: #8a4510;
-  --pal-support-soft: #ffe7d0;
+  --pal-support-soft: var(--bzl-primary-soft);
 
   /* lighter still: the widget's own light */
   --pal-insights-bg:
@@ -142,7 +155,7 @@
     linear-gradient(180deg, #fff4e8 0%, #ffeedd 100%);
   --pal-insights-acc: #f9a353;
   --pal-insights-ink: #8a4510;
-  --pal-insights-soft: #ffe4ca;
+  --pal-insights-soft: var(--bzl-primary-soft);
 
   --pal-setup-bg: linear-gradient(180deg, #fff8f0, #fff1e3 45%, #fff8f0);
   --pal-custom-bg: #fff8f0;
