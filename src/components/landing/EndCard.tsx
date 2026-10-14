@@ -41,6 +41,15 @@ const EndCard = () => {
         className="pointer-events-none absolute left-1/2 top-1/2 h-[680px] w-[980px] max-w-[150vw] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(closest-side,rgba(249,163,83,0.2),rgba(255,255,255,0))]"
       />
       <div className="bzl-wrap relative">
+        {/* the Bizmis logo over the title, as on the film's end card */}
+        <Reveal>
+          <img
+            src="/images/bizmis-logo-full-orange-transparent.svg"
+            alt="Bizmis"
+            className="mx-auto mb-[2.4svh] h-[clamp(1.6rem,2.6vw,2.25rem)] w-auto"
+          />
+        </Reveal>
+
         {/* the title is the button */}
         <Reveal className="relative mx-auto w-fit">
           <h2 className="text-[clamp(3rem,min(8.4vw,12svh),6.75rem)] font-bold leading-[1.02] tracking-[-0.045em]">
