@@ -5,8 +5,8 @@
 #
 #   zsh scripts/encode-film-hls.sh <master.mkv> <out dir>   (e.g. tmp/film-hls/ad-1)
 #
-# Upload the whole <out dir> to the film host and point VITE_FILM_SRC at
-# <host>/<out dir name>/master.m3u8.
+# Publish it with scripts/publish-film-hls.sh (cdn.bizmis.ai/media/film/<film>/<cut>/)
+# and point HERO_FILM.src (src/lib/film.ts) at its master.m3u8.
 # Each rung is quality-targeted (CRF) with a bitrate cap, so the film's flat
 # UI scenes stay small while the busy store reel keeps its detail.
 set -e
