@@ -7,6 +7,7 @@ import {
   useState,
 } from "react";
 import type Hls from "hls.js";
+
 import type {
   KeyboardEvent,
   MouseEvent,
@@ -25,6 +26,9 @@ import {
 } from "lucide-react";
 import { FaShopify } from "react-icons/fa";
 import { cn } from "@/lib/utils";
+
+/** The bitrate auto quality assumes for a rendition, at most this many times its average. */
+const PEAK_OVER_AVERAGE = 2.5;
 
 /**
  * Hero film player (Clay-style controls, Framer-style states), in frosted
@@ -235,12 +239,25 @@ const FilmPlayer = forwardRef<FilmPlayerHandle, FilmPlayerProps>(({
         return;
       }
       // Buffer only ~20 s ahead (40 s at most): viewers who stop early never
-      // download the rest of the film.
-      const hls = new HlsJs({ maxBufferLength: 20, maxMaxBufferLength: 40 });
+      // download the rest of the film. Auto quality starts from a broadband
+      // guess (3 Mbps, not hls.js's 0.5).
+      const hls = new HlsJs({
+        maxBufferLength: 20,
+        maxMaxBufferLength: 40,
+        abrEwmaDefaultEstimate: 3_000_000,
+      });
       hlsRef.current = hls;
       hls.on(HlsJs.Events.LEVEL_SWITCHED, (_e, data) => setPlayingHeight(hls.levels[data.level]?.height ?? null));
       return new Promise<void>((resolve) => {
         hls.once(HlsJs.Events.MANIFEST_PARSED, () => {
+          // The ladder's BANDWIDTH is its peak, 3-4x its average (short busy
+          // shots spike), and hls.js judges a rendition by that peak until its
+          // buffer is deep: a normal connection never got past 720p. Cap the
+          // peak it assumes at 2.5x the average.
+          for (const l of hls.levels) {
+            const avg = l.averageBitrate;
+            if (avg && l.bitrate > avg * PEAK_OVER_AVERAGE) (l as { bitrate: number }).bitrate = Math.round(avg * PEAK_OVER_AVERAGE);
+          }
           setLevels(hls.levels.map((l) => l.height));
           capToPlayer();
           resolve();
