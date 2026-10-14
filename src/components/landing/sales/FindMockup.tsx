@@ -146,7 +146,7 @@ const FindMockup = ({ play }: { play?: boolean }) => {
         {/* the agent's words, as the widget's captions at the page's foot */}
         {narrowed && (
           <div className="absolute bottom-6 left-0 flex w-[856px] justify-center">
-            <Captions text={s.findCaption} className="text-base" />
+            <Captions text={s.findCaption} className="text-[22px]" />
           </div>
         )}
 

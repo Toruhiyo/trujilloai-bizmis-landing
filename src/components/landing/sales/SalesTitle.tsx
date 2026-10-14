@@ -5,8 +5,8 @@ import { cn } from "@/lib/utils";
 /**
  * The pillar's title, "Shoppers / Find it. / Trust it. / Buy it.", with the
  * part being shown lit (`active`: 0–2, or "all" for the payoff, or null for
- * none). `stack` sets each part on its own line (the rail); `line` keeps it
- * to one line (a header bar). How a lit part looks is up to the variant's
+ * none; the parts before it are also marked done). `stack` sets each part on
+ * its own line (the rail); `line` keeps it to one line (a header bar). How a lit part looks is up to the variant's
  * CSS (.sl-title in landing-sales.css).
  */
 const SalesTitle = ({
@@ -36,7 +36,11 @@ const SalesTitle = ({
           <span
             className={cn(
               "sl-title-part",
-              active === "all" || active === i ? "is-on" : "is-off",
+              active === "all" || active === i
+                ? "is-on"
+                : typeof active === "number" && i < active
+                  ? "is-off is-done"
+                  : "is-off",
             )}
             style={fills ? ({ "--fill": fills[i] ?? 0 } as CSSProperties) : undefined}
           >

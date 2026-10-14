@@ -37,20 +37,34 @@ export const PanelCopy = ({
   title,
   body,
   index,
+  kicker,
   className,
   as: Tag = "h3",
 }: {
   title: string;
   body: string;
   index?: number;
+  /** A word over the title (its funnel stage), after the number if there is one. */
+  kicker?: string;
   className?: string;
   as?: "h3" | "p";
 }) => (
   <div className={cn("sl-copy", className)}>
-    {index !== undefined && (
-      <span className="sl-copy-num" aria-hidden="true">
-        {String(index + 1).padStart(2, "0")}
+    {kicker !== undefined ? (
+      <span className="sl-copy-kicker">
+        {index !== undefined && (
+          <span className="sl-copy-kicker-num" aria-hidden="true">
+            {String(index + 1).padStart(2, "0")}
+          </span>
+        )}
+        {kicker}
       </span>
+    ) : (
+      index !== undefined && (
+        <span className="sl-copy-num" aria-hidden="true">
+          {String(index + 1).padStart(2, "0")}
+        </span>
+      )
     )}
     <Tag className="sl-copy-title">{title}</Tag>
     <p className="sl-copy-body">{body}</p>

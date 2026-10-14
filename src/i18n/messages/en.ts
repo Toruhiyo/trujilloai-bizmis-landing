@@ -139,19 +139,36 @@ export const en = {
     sales: {
       titleLead: "Shoppers",
       titleParts: ["Find it.", "Trust it.", "Buy it."],
+      /** Each part's stage of the sales funnel (the kicker over its words). */
+      stages: ["Discovery", "Decision", "Checkout"],
       /** One per title part: a short merchant-side benefit and one line. */
       panels: [
-        { title: "Searches turn into sales", body: "It narrows your catalog down to the few that fit." },
-        { title: "Doubters become buyers", body: "It compares the options and backs the best fit." },
-        { title: "More carts reach checkout", body: "It adds to your cart and walks them to pay." },
+        { title: "More shoppers find a fit", body: "It narrows your whole catalog to the few that fit." },
+        { title: "Doubts turn into decisions", body: "It compares, advises and answers every doubt." },
+        { title: "Carts turn into orders", body: "It clears last-minute questions and walks them to checkout." },
       ],
+      /** The words over the payoff, every part lit. */
+      payoff: { kicker: "All together", title: "More orders, every day", body: "Every stage works harder, for every shopper at once." },
       /** The mockups: what the shopper says, then what the agent says (captions). */
       findQuery: "A gift for my sister, under $50",
-      findCaption: "Here are three she'll love.",
+      findCaption: "Here are three she will love.",
       compareQuery: "Which one should I get?",
-      compareCaption: "This one. It's the lightest, and your size is in stock.",
+      compareCaption: "This one. It is the lightest and the best reviewed.",
       bestMatch: "Best match",
-      buyCaption: "Done, it's in your cart. Want to check out?",
+      decided: "Added to cart",
+      buyQuery: "Will it arrive by Friday?",
+      buyCaption: "Yes, it ships today and returns are free. Ready to check out?",
+      /** The store's cart in the Buy it mockup. */
+      cart: { title: "Your cart", subtotal: "Subtotal", checkout: "Checkout", perks: ["Ships today", "Free returns"], placed: "Order placed" },
+      /** The at-scale funnel under the words: the whole store's shoppers, without and with Bizmis (illustrative, no figures). */
+      funnel: {
+        eyebrow: "Your whole store, all day",
+        without: "Without",
+        with: "With Bizmis",
+        steps: ["Visits", "Found a fit", "Decided", "Ordered"],
+        left: "Left",
+        note: "Illustrative",
+      },
       /** The pillar's moment: the store's sales climbing (currency is an ISO code for Intl). */
       pulse: { label: "Sales today", order: "New order", currency: "USD" },
     },
@@ -209,10 +226,24 @@ export const en = {
     /** Setup on /v2: the title alone, a plain line under it, and the opening's install button states. */
     setup: {
       title: "One-Click Setup",
-      lead: "Install it. Your agent learns your store and starts selling in minutes.",
+      lead: "One click and your agent's selling right away. Change anything in your store and it already knows.",
       install: "Install",
-      syncing: "Syncing your store",
-      synced: "Synced",
+      live: "Live",
+      syncedNow: "Synced just now",
+      instant: "Live instantly",
+      alwaysSynced: "Always in sync",
+      changes: { price: "New price", stock: "Sold out", product: "New", policy: "Free returns" },
+      admin: "Shopify admin",
+      agent: "Your agent",
+      products: ["Sphere", "Torus", "Capsule"],
+      newProduct: "Lens",
+      returns30: "30-day returns",
+      returns60: "60-day returns",
+      inStock: "in stock",
+      others: "Other tools",
+      readyIn: "Ready in",
+      days: "days",
+      steps: ["Train the bot", "Upload FAQs", "Map the catalog", "Test and tweak"],
     },
   },
 

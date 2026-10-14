@@ -1,5 +1,5 @@
 import type { CSSProperties } from "react";
-import { Check, Feather, PackageCheck, Ruler, X } from "lucide-react";
+import { Check, Feather, ShieldCheck, ShoppingCart, Star, X } from "lucide-react";
 import { localeTag, useLocale, useMessages } from "@/i18n/LocaleProvider";
 import { cn } from "@/lib/utils";
 import { Captions, MobileWidget, SentMessage } from "../BizmisWidget";
@@ -9,11 +9,11 @@ import { PhoneFrame } from "../devices";
 import { STORE_URL } from "../visuals";
 import { useBeats, useOnScreen } from "./hooks";
 
-/** idle, the shopper asks, the agent weighs all four, one gets picked. */
-const BEATS = [1100, 1700, 2600, 4800];
+/** idle, the shopper asks, the agent weighs all four, one gets picked, the shopper decides. */
+const BEATS = [1100, 1700, 2600, 2300, 3400];
 
-/** What the agent checks on each product: weight, the shopper's size, stock. */
-const SPECS = [Feather, Ruler, PackageCheck];
+/** What the agent weighs on each product: weight, reviews, warranty. */
+const SPECS = [Feather, Star, ShieldCheck];
 
 const PRODUCTS: {
   shape: ClayShape;
@@ -24,16 +24,16 @@ const PRODUCTS: {
   { shape: "capsule", tint: "sage", price: 42, fits: [false, true, true] },
   { shape: "sphere", tint: "sand", price: 48, fits: [true, true, true] },
   { shape: "cube", tint: "warm", price: 39, fits: [true, false, true] },
-  { shape: "egg", tint: "blush", price: 56, fits: [false, true, false] },
+  { shape: "egg", tint: "blush", price: 56, fits: [false, false, true] },
 ];
 const BEST = 1;
 
 /**
- * "They trust it", on a phone: the shopper asks which one to get, the agent
- * weighs four products on what matters to them (weight, their size, stock;
- * each gets a tick or a cross), and one is picked as the best match, said
- * out loud in the widget's captions. The real mobile widget bar, with the
- * avatar's head in its circle.
+ * "They trust it" (the decision), on a phone: the shopper asks which one to
+ * get, the agent weighs four products like an expert would (weight, reviews,
+ * warranty; each gets a tick or a cross), backs the best match out loud in
+ * the widget's captions, and the shopper decides: it goes in the cart. The
+ * real mobile widget bar, with the avatar's head in its circle.
  */
 const TrustMockup = ({ play }: { play?: boolean }) => {
   const m = useMessages();
@@ -43,7 +43,8 @@ const TrustMockup = ({ play }: { play?: boolean }) => {
   const beat = useBeats(BEATS, play ?? onScreen);
   const asked = beat >= 1;
   const comparing = beat === 2;
-  const picked = beat === 3;
+  const picked = beat >= 3;
+  const decided = beat === 4;
   const money = new Intl.NumberFormat(localeTag(locale), {
     style: "currency",
     currency: s.pulse.currency,
@@ -111,6 +112,15 @@ const TrustMockup = ({ play }: { play?: boolean }) => {
                   <span className="sl-trust-badge" aria-hidden={!picked}>
                     <Check className="h-3 w-3" strokeWidth={3} />
                     {s.bestMatch}
+                  </span>
+                )}
+                {best && (
+                  <span
+                    className={cn("sl-trust-added", decided && "is-on")}
+                    aria-hidden={!decided}
+                  >
+                    <ShoppingCart className="h-3 w-3" strokeWidth={2.5} />
+                    {s.decided}
                   </span>
                 )}
               </div>
