@@ -97,6 +97,82 @@
   }
 }
 
+/* the named entrance (default): icon, the pillar's name huge, its line under it */
+.pi-big-inner.is-named {
+  gap: clamp(0.6rem, 2svh, 1.4rem);
+}
+.pi-icon {
+  display: grid;
+  place-items: center;
+  width: clamp(3.4rem, 9svh, 5rem);
+  aspect-ratio: 1;
+  border-radius: 999px;
+  background: var(--pi-icon-bg, var(--acc-soft, #ffe1c6));
+  color: var(--pi-icon-fg, var(--acc-ink, #c25a0b));
+}
+.pi-icon svg,
+.pi-dock-icon svg {
+  width: 52%;
+  height: 52%;
+}
+.pi-name {
+  max-width: 12ch;
+  font-size: clamp(3.4rem, min(11vw, 17svh), 11rem);
+  font-weight: 800;
+  letter-spacing: -0.05em;
+  line-height: 0.92;
+  color: var(--pi-name-color, var(--bzl-fg));
+  text-wrap: balance;
+}
+.pi-line {
+  max-width: 22ch;
+  font-size: clamp(1.45rem, min(3.9vw, 6.4svh), 3.6rem);
+  font-weight: 700;
+  letter-spacing: -0.035em;
+  line-height: 1.08;
+  color: var(--pi-line-color, var(--acc-ink, var(--bzl-fg)));
+  text-wrap: balance;
+}
+@media (max-width: 639px) {
+  .pi-name {
+    font-size: clamp(3rem, 16vw, 4.6rem);
+  }
+  .pi-line {
+    font-size: clamp(1.3rem, 6.6vw, 1.8rem);
+  }
+}
+/* docked: the name as a strong label, then the line's compact form */
+.pi-dock.is-named {
+  gap: clamp(0.8rem, 2vw, 1.6rem);
+}
+.pi-dock-name {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  gap: 0.55rem;
+  font-size: clamp(1.15rem, min(2.1vw, 4.2svh), 2rem);
+  font-weight: 800;
+  letter-spacing: -0.035em;
+  line-height: 1;
+  white-space: nowrap;
+  color: var(--pi-name-color, var(--bzl-fg));
+}
+.pi-dock-icon {
+  display: grid;
+  place-items: center;
+  width: 1.55em;
+  aspect-ratio: 1;
+  border-radius: 999px;
+  background: var(--pi-icon-bg, var(--acc-soft, #ffe1c6));
+  color: var(--pi-icon-fg, var(--acc-ink, #c25a0b));
+}
+@media (max-width: 767px) {
+  .pi-dock.is-named {
+    flex-direction: column;
+    gap: 0.35rem;
+  }
+}
+
 /* the morph: each element flies to its docked twin */
 .pi-big .pi-morph {
   display: inline-block;

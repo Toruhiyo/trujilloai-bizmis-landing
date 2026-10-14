@@ -59,13 +59,13 @@ const SalesTitle = ({
   );
 };
 
-/** The title as plain text, for the one heading screen readers get. */
-export const SalesHeading = () => {
+/** The title as plain text for screen readers: the heading, or (`as="p"`) the line under a visible heading. */
+export const SalesHeading = ({ as: Tag = "h2" }: { as?: "h2" | "p" }) => {
   const s = useMessages().landing.sales;
   return (
-    <h2 className="sr-only">
+    <Tag className="sr-only">
       {s.titleLead} {s.titleParts.join(" ")}
-    </h2>
+    </Tag>
   );
 };
 

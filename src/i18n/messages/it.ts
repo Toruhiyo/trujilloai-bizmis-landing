@@ -155,9 +155,11 @@ export const it: Messages = {
       cart: { title: "Il tuo carrello", subtotal: "Subtotale", checkout: "Pagamento", perks: ["Spedito oggi", "Reso gratuito"], placed: "Ordine effettuato" },
       funnel: {
         eyebrow: "Tutto il negozio, tutto il giorno",
-        steps: ["Visite", "Trovano", "Decidono", "Ordinano"],
+        problems: ["Non lo trova", "Indeciso", "Non è sicuro"],
+        solutions: ["Trovato", "Confrontato", "Dubbio chiarito"],
+        sales: "Vendite",
       },
-      pulse: { label: "Vendite di oggi", currency: "EUR" },
+      pulse: { currency: "EUR" },
     },
     support: {
       title: "Meno ticket.",

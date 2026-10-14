@@ -3,7 +3,7 @@ import { useMessages } from "@/i18n/LocaleProvider";
 import Reveal from "./Reveal";
 import { ClayTile } from "./clay";
 import FeatureCard from "./FeatureCard";
-import PillarChip from "./PillarChip";
+import BenefitIntro from "./pillar/BenefitIntro";
 import { SupportRelief } from "./PillarMoments";
 import SupportStore from "./support/SupportStore";
 
@@ -30,58 +30,49 @@ const SupportChat = () => (
 );
 
 /**
- * Customer Support: "Fewer tickets. Happier customers." One band in the
- * Support colours (coral and terracotta), laid out mirrored from Insights
- * (the widget on the left on desktop). Its feel-it moment is the inbox that
- * empties itself; the three capabilities are cards, the detail on demand.
+ * Customer Support: "Customer Support", huge, with its promise "Fewer
+ * tickets. Happier customers." under it (BenefitIntro / PillarIntro), which
+ * docks as the section's sticky bar as you scroll; then, under the bar, one
+ * screen in the Support colours (coral and terracotta), laid out mirrored
+ * from Insights (the widget on the left on desktop): the lead, the inbox
+ * that empties itself, and the three capabilities as cards.
  */
 const CAPABILITY_ICONS = [ClockIcon, BookIcon, CareIcon];
 
 const SupportSection = () => {
   const messages = useMessages();
   const s = messages.landing.support;
+  const promise = `${s.title} ${s.titleTail}`;
   return (
-    <section className="bzl-section bzl-screen bzl-band bzl-pillar p-support">
-      <div className="bzl-wrap">
-        <div className="grid grid-cols-[minmax(0,1fr)] items-center gap-10 lg:grid-cols-[1.05fr_0.95fr] lg:gap-20">
-          <div className="lg:order-2">
-            <Reveal>
-              <PillarChip icon={HeadsetIcon} label={messages.benefits.support.badge} />
-            </Reveal>
-            <Reveal delay={80}>
-              <h2 className="bzl-statement-sm mt-[clamp(1rem,2.6svh,1.5rem)]">
-                {s.title}
-                <br />
-                <span className="bzl-tail">{s.titleTail}</span>
-              </h2>
-            </Reveal>
-            <Reveal delay={140}>
-              <p className="bzl-lead mt-[1.6svh] max-w-md">{s.lead}</p>
-            </Reveal>
-            <Reveal delay={200}>
-              <SupportRelief className="mt-[2.6svh] max-w-lg" />
-            </Reveal>
-            {/* its three capabilities, as cards: title up front, the detail on demand */}
-            <div className="mt-[2.2svh] grid max-w-lg items-start gap-2">
-              {s.capabilities.map((c, i) => (
-                <Reveal key={c.title} delay={280 + i * 90}>
-                  <FeatureCard
-                    icon={CAPABILITY_ICONS[i]}
-                    title={c.title}
-                    body={c.body}
-                  />
-                </Reveal>
-              ))}
+    <section className="bzl-band bzl-pillar p-support bzp-section">
+      <BenefitIntro icon={<HeadsetIcon />} name={messages.benefits.support.badge} promise={promise}>
+        <div className="bzl-wrap">
+          <div className="grid grid-cols-[minmax(0,1fr)] items-center gap-10 lg:grid-cols-[1.05fr_0.95fr] lg:gap-20">
+            <div className="lg:order-2">
+              <Reveal>
+                <p className="bzl-lead max-w-md">{s.lead}</p>
+              </Reveal>
+              <Reveal delay={80}>
+                <SupportRelief className="mt-[2.6svh] max-w-lg" />
+              </Reveal>
+              {/* its three capabilities, as cards: title up front, the detail on demand */}
+              <div className="mt-[2.2svh] grid max-w-lg items-start gap-2">
+                {s.capabilities.map((c, i) => (
+                  <Reveal key={c.title} delay={160 + i * 90}>
+                    <FeatureCard icon={CAPABILITY_ICONS[i]} title={c.title} body={c.body} />
+                  </Reveal>
+                ))}
+              </div>
             </div>
+            <Reveal
+              delay={120}
+              className="relative mx-auto w-full max-w-[min(560px,calc((100svh-12rem)*1.25))] lg:order-1"
+            >
+              <SupportChat />
+            </Reveal>
           </div>
-          <Reveal
-            delay={120}
-            className="relative mx-auto w-full max-w-[min(560px,calc((100svh-9rem)*1.25))] lg:order-1"
-          >
-            <SupportChat />
-          </Reveal>
         </div>
-      </div>
+      </BenefitIntro>
     </section>
   );
 };

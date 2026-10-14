@@ -15,8 +15,13 @@ export const Sentinel = forwardRef<HTMLSpanElement, { off?: boolean }>(({ off },
 ));
 Sentinel.displayName = "Sentinel";
 
+/** A beat's clock (one useScene shared by its mockup and its funnel): ms along its timeline. */
+export type Clock = { t: number };
+/** What a mockup takes: its own loop gated by `play`, or its beat's shared `clock` instead. */
+export type MockupProps = { play?: boolean; clock?: Clock };
+
 /** The three moments, in title order: find it, trust it, buy it. */
-const MOCKUPS: ComponentType<{ play?: boolean }>[] = [
+const MOCKUPS: ComponentType<MockupProps>[] = [
   FindMockup,
   TrustMockup,
   BuyMockup,
@@ -29,16 +34,18 @@ const DEVICE_CLASS = ["sl-dev-find", "sl-dev-trust", "sl-dev-buy"];
 export const Device = ({
   index,
   play,
+  clock,
   className,
 }: {
   index: number;
   play?: boolean;
+  clock?: Clock;
   className?: string;
 }) => {
   const Mockup = MOCKUPS[index];
   return (
     <div className={cn("sl-dev", DEVICE_CLASS[index], className)}>
-      <Mockup play={play} />
+      <Mockup play={play} clock={clock} />
     </div>
   );
 };

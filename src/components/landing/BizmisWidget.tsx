@@ -21,7 +21,8 @@ import type { AgentName } from "./AgentImage";
 
 export type WidgetState = "idle" | "speaking" | "working" | "call";
 
-const ORANGE = "#f28c38";
+/** The true Bizmis primary (#F9A353), as the real widget themes it. */
+const ORANGE = "hsl(var(--primary))";
 
 /** The widget's typed placeholder: one character every 24 ms. */
 const Typewriter = ({ text }: { text: string }) => {
@@ -78,7 +79,7 @@ const ComposerButton = ({ draft, press = 0 }: { draft?: string; press?: number }
 
 /** The composer pill's border: the accent while the shopper types in it. */
 const composerBorder = (draft?: string) =>
-  draft !== undefined ? "border-[color:color-mix(in_oklab,#f28c38_45%,transparent)]" : "border-black/10";
+  draft !== undefined ? "border-[color:hsl(var(--primary)/0.55)]" : "border-black/10";
 
 /** "Taking you to …" / "Adding to cart …" with its countdown ring. */
 export const NavBanner = ({
@@ -476,8 +477,12 @@ export const Captions = ({
   );
 };
 
-/** The preset avatars' head renders (Bizmis outfit), as the widget's head circle shows them. */
-const HEAD_CDN = "https://cdn.bizmis.ai/common/avatars/images";
+/**
+ * The preset avatars' head renders, as the widget's head circle shows them:
+ * the landing's own copies in the true Bizmis shirt (#F9A353) with its logo
+ * (the app CDN's heads wear an older, redder orange).
+ */
+const HEAD_CDN = "/landing/heads";
 
 /**
  * The widget's head circle (AvatarHeadCircle): the avatar's head on a faint

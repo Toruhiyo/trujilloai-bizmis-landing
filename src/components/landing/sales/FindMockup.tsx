@@ -8,8 +8,10 @@ import { CLAY, TINT } from "../clay";
 import type { ClayShape } from "../clay";
 import { BrowserFrame, PhoneFrame } from "../devices";
 import { STORE_URL } from "../visuals";
+import type { Messages } from "@/i18n/messages/en";
 import { bump, easeInOut, useMedia, useScene } from "./hooks";
 import { Sentinel } from "./shared";
+import type { MockupProps } from "./shared";
 
 /** The store's catalog: fifteen clay products (shape, tile tint). */
 const CATALOG: [ClayShape, keyof typeof TINT][] = [
@@ -72,20 +74,33 @@ const T = { type: 450, send: 1650, work: 1950, narrow: 3700, speak: 4650 };
 const MS_PER_WORD = 300;
 
 /**
+ * The scene's length, and when its funnel stage gets fixed: as the catalog
+ * narrows to the three that fit (shared with the beat's funnel, one clock).
+ */
+export const findTimeline = (s: Messages["landing"]["sales"]) => ({
+  duration: T.speak + captionLength(s.findCaption, MS_PER_WORD) + 500,
+  fixAt: T.narrow + 300,
+});
+
+/**
  * "They find it", on a desktop store (a phone on small screens): the shopper
  * types their ask in the Bizmis widget's bar and sends it, the agent searches
  * the catalog (its search tool on the laser, the "Taking you to" banner),
  * fifteen products narrow down to three candidates with the best one picked,
  * and the agent says so out loud (captions). Everything follows the scene's
- * time `t` (useScene), so it rewinds as it played. The agent wears the
+ * time `t` (its own useScene, or its beat's shared clock), so it rewinds as
+ * it played. The agent wears the
  * Bizmis outfit (the live 3D avatar on desktop, its render as the fallback).
  */
-const FindMockup = ({ play }: { play?: boolean }) => {
+const FindMockup = ({ play, clock }: MockupProps) => {
   const m = useMessages();
   const s = m.landing.sales;
   const phone = useMedia("(max-width: 639px)");
   const speakLen = captionLength(s.findCaption, MS_PER_WORD);
-  const { t, sentinel, off } = useScene(T.speak + speakLen + 500, play);
+  // its own loop, unless its beat's clock drives it (with the funnel beside it)
+  const own = useScene(findTimeline(s).duration, clock ? false : play);
+  const t = clock ? clock.t : own.t;
+  const sentinel = clock ? undefined : <Sentinel ref={own.sentinel} off={own.off} />;
   const L = phone ? PHONE : DESKTOP;
 
   const typing = t >= T.type - 200 && t < T.send;
@@ -126,7 +141,7 @@ const FindMockup = ({ play }: { play?: boolean }) => {
         style={{ ...L.heading, opacity: heading }}
       >
         <span className="bzl-tile-line h-3.5 w-40" />
-        <span className="rounded-full bg-[var(--bzl-orange-wash)] px-2.5 py-0.5 text-xs font-semibold text-[var(--bzl-orange-dark)]">
+        <span className="rounded-full bg-[hsl(var(--primary))] px-2.5 py-0.5 text-xs font-semibold text-white">
           3
         </span>
       </div>
@@ -157,9 +172,9 @@ const FindMockup = ({ play }: { play?: boolean }) => {
                 background: TINT[tint],
                 boxShadow:
                   ring > 0
-                    ? `0 0 0 ${3 * ring}px var(--bzl-orange), 0 22px 44px -18px rgb(242 140 56 / ${0.75 * ring})`
+                    ? `0 0 0 ${3 * ring}px hsl(var(--primary)), 0 22px 44px -18px hsl(var(--primary) / ${0.75 * ring})`
                     : scan > 0
-                      ? `0 0 0 3px rgb(242 140 56 / ${0.6 * scan}), 0 12px 26px -12px rgb(242 140 56 / ${0.6 * scan})`
+                      ? `0 0 0 3px hsl(var(--primary) / ${0.6 * scan}), 0 12px 26px -12px hsl(var(--primary) / ${0.6 * scan})`
                       : undefined,
               }}
             >
@@ -178,7 +193,7 @@ const FindMockup = ({ play }: { play?: boolean }) => {
   if (phone)
     return (
       <div className="sl-find relative">
-        <Sentinel ref={sentinel} off={off} />
+        {sentinel}
         <PhoneFrame url={STORE_URL} className="w-full">
           <div
             aria-hidden="true"
@@ -211,7 +226,7 @@ const FindMockup = ({ play }: { play?: boolean }) => {
 
   return (
     <div className="sl-find relative">
-      <Sentinel ref={sentinel} off={off} />
+      {sentinel}
       <BrowserFrame url={STORE_URL}>
         {/* the store's own header */}
         <div

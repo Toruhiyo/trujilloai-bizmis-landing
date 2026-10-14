@@ -4,46 +4,65 @@ import { cn } from "@/lib/utils";
 import "@/styles/pillar-intro.css";
 
 /**
- * PillarIntro: a pillar's benefit title as its scroll-driven entrance. When
- * the pillar is reached its title stands BIG, filling the screen with the
- * pillar chip above it; as the visitor scrolls on it shrinks and flies up
- * to dock as the section's sticky compact header, while the sub-benefits
- * (`children`) scroll in under it. The header stays docked to the end of the
- * section. With prefers-reduced-motion: the big title sits still at the top
- * and the docked header appears once it's scrolled past (no morph).
+ * PillarIntro: a pillar's entrance, driven by the scroll. When the pillar is
+ * reached its NAME (the benefit, e.g. "Boost Sales") stands huge, its icon
+ * above it and its supporting line under it; as the visitor scrolls on,
+ * each piece shrinks and flies up to dock as the section's sticky bar: the
+ * name as a strong label, the line's compact form beside it. The children
+ * scroll in under it, and the bar stays to the end of the section. With
+ * prefers-reduced-motion: the big entrance sits still at the top and the
+ * docked bar appears once it's scrolled past (no morph).
+ *
+ * CHANGED (round 2): the default pattern is now `name` (+ `icon`, `line`).
+ * Fully backward compatible: without `name`, `title` (+ `chip`) renders and
+ * morphs exactly as before, so compositions built on `title`/`docked` with
+ * their own `data-morph` keys (pillar/BenefitIntro) keep working.
  *
  *   <PillarIntro
- *     chip={<PillarChip icon={HeadsetIcon} label={b.support.badge} />}
- *     title={<>Fewer tickets. <span className="tail">Happier customers.</span></>}
- *     docked={({ docked }) => <MyCompactTitle />}   // optional
- *     accent="rgb(255 240 236 / 0.86)"              // optional: the docked bar's ground
+ *     name="Boost Sales"                            // huge, then the docked label
+ *     icon={<TrendIcon />}                          // optional, in a disc
+ *     line={<SalesTitle … />}                       // optional supporting line
+ *     docked={({ docked }) => <SalesTitle … />}     // optional: the line's docked form (defaults to `line`)
+ *     accent="color-mix(…)"                         // optional: the docked bar's ground
  *   >
  *     …the sub-benefits…
  *   </PillarIntro>
  *
- * - `title`: the big title (rendered in an <h2> unless `as` says otherwise).
- * - `docked`: the header's compact form, a node or a render prop receiving
- *   `{ docked }` (true once the morph has landed). Defaults to `title`, small.
- *   The chip sits to its left (desktop only).
- * - The morph: an element in the big title and one in the docked form that
- *   share a `data-morph="key"` fly from one to the other (translate + scale,
- *   then a crossfade), e.g. each part of a title; big elements without a
- *   partner shrink toward the header and fade. With no `data-morph` at all,
- *   the whole title flies to the whole docked form.
- * - Styling: `titleClassName` sizes the big title (default up to ~9vw);
- *   the root publishes `--pi-dock-h` (the docked header's height) so pinned
- *   children can sit right under it (`top: calc(nav + var(--pi-dock-h))`),
- *   and `--pi-e` (0 → 1, the morph's progress).
+ * - `name` / `icon` / `line`: the entrance. The name is the heading (an <h2>
+ *   unless `as` says otherwise). Sizes: .pi-name (up to ~11vw) and .pi-line,
+ *   or `nameClassName` / `lineClassName`. In the bar: .pi-dock-name (icon +
+ *   name, a strong label) then the docked line; on phones they stack.
+ * - Legacy: `title` (big, ~9vw, `titleClassName`) with `chip` above it; the
+ *   bar shows `docked` (default: `title`, small) with the chip on desktop.
+ * - The morph: elements sharing a `data-morph="key"` in the big entrance
+ *   and in the bar fly from one to the other (translate + scale, then a
+ *   crossfade); the name and icon are keyed for you ("pi-name", "pi-icon").
+ *   A line (or legacy title) with no keyed parts flies whole onto the
+ *   docked form; big elements with no partner shrink toward the bar and fade.
+ * - The root publishes `--pi-dock-h` (the bar's height) so pinned children
+ *   can sit right under it (`top: calc(nav + var(--pi-dock-h))`), and
+ *   `--pi-e` (0 → 1, the morph's progress; --pi-ex/-ey/-es pace its parts).
  */
 export type PillarIntroProps = {
+  /** The pillar's name, the benefit ("Boost Sales"): huge on arrival, the docked bar's label. */
+  name?: ReactNode;
+  /** The pillar's icon (e.g. an AnimatedIcon element), in a disc above the name and beside it docked. */
+  icon?: ReactNode;
+  /** The supporting line under the name. */
+  line?: ReactNode;
+  /** Legacy: the big title when there's no `name` (with `name`, read as `line`). */
+  title?: ReactNode;
+  /** Legacy: a chip above the big title (and left of the docked one on desktop), when there's no `name`. */
   chip?: ReactNode;
-  title: ReactNode;
+  /** The line's (or legacy title's) docked form: a node, or a render prop given `{ docked }`. */
   docked?: ReactNode | ((state: { docked: boolean }) => ReactNode);
   /** The docked bar's ground (any CSS background); defaults to a glass of the pillar's soft accent. */
   accent?: string;
-  /** The big title's element: "h2" (default), or "p"/"div" when the page has its heading elsewhere. */
+  /** The heading's element (the name, or the legacy title): "h2" (default), or "p"/"div" when the page has it elsewhere. */
   as?: "h2" | "p" | "div";
   className?: string;
+  nameClassName?: string;
+  lineClassName?: string;
   titleClassName?: string;
   dockClassName?: string;
   children?: ReactNode;
@@ -73,16 +92,23 @@ const prefersReduced = () =>
   typeof window !== "undefined" && window.matchMedia?.("(prefers-reduced-motion: reduce)").matches === true;
 
 const PillarIntro = ({
-  chip,
+  name,
+  icon,
+  line: lineProp,
   title,
+  chip,
   docked,
   accent,
   as: Tag = "h2",
   className,
+  nameClassName,
+  lineClassName,
   titleClassName,
   dockClassName,
   children,
 }: PillarIntroProps) => {
+  const named = name !== undefined && name !== null;
+  const line = named ? (lineProp ?? title) : undefined;
   const root = useRef<HTMLDivElement>(null);
   const head = useRef<HTMLDivElement>(null);
   const big = useRef<HTMLDivElement>(null);
@@ -102,13 +128,13 @@ const PillarIntro = ({
       r.style.setProperty("--pi-dock-h", `${d.offsetHeight}px`);
       if (!b || reduced) return;
       setMorph(r, 0);
-      let pairs: [HTMLElement, HTMLElement | null][] = Array.from(
+      const pairs: [HTMLElement, HTMLElement | null][] = Array.from(
         b.querySelectorAll<HTMLElement>("[data-morph]"),
       ).map((el) => [el, d.querySelector<HTMLElement>(`[data-morph="${el.dataset.morph}"]`)]);
-      if (!pairs.length) {
-        const whole = b.querySelector<HTMLElement>(".pi-title");
-        const into = d.querySelector<HTMLElement>(".pi-dock-main");
-        if (whole) pairs = [[whole, into]];
+      // a line (or legacy title) with no keyed parts flies whole onto the docked form
+      const into = d.querySelector<HTMLElement>(".pi-dock-main");
+      for (const whole of b.querySelectorAll<HTMLElement>(".pi-line, .pi-title")) {
+        if (!whole.querySelector("[data-morph]") && !whole.hasAttribute("data-morph")) pairs.push([whole, into]);
       }
       const home = d.getBoundingClientRect();
       for (const [el, to] of pairs) {
@@ -171,17 +197,32 @@ const PillarIntro = ({
 
   const bigBlock = (
     <div ref={big} className={reduced ? "pi-still" : "pi-big"}>
-      <div className="pi-big-inner">
-        {chip && (
-          <span className="pi-chip" data-morph="pi-chip">
-            {chip}
-          </span>
-        )}
-        <Tag className={cn("pi-title", titleClassName)}>{title}</Tag>
-      </div>
+      {named ? (
+        <div className="pi-big-inner is-named">
+          {icon && (
+            <span className="pi-icon" data-morph="pi-icon" aria-hidden="true">
+              {icon}
+            </span>
+          )}
+          <Tag className={cn("pi-name", nameClassName)}>
+            <span data-morph="pi-name">{name}</span>
+          </Tag>
+          {line && <div className={cn("pi-line", lineClassName)}>{line}</div>}
+        </div>
+      ) : (
+        <div className="pi-big-inner">
+          {chip && (
+            <span className="pi-chip" data-morph="pi-chip">
+              {chip}
+            </span>
+          )}
+          <Tag className={cn("pi-title", titleClassName)}>{title}</Tag>
+        </div>
+      )}
     </div>
   );
-  const compact = typeof docked === "function" ? docked({ docked: isDocked }) : (docked ?? title);
+  const compact =
+    typeof docked === "function" ? docked({ docked: isDocked }) : (docked ?? (named ? line : title));
 
   return (
     <div
@@ -191,13 +232,24 @@ const PillarIntro = ({
     >
       {reduced && bigBlock}
       <div ref={head} className="pi-head">
-        <div ref={dock} className={cn("pi-dock", dockClassName)} aria-hidden="true">
-          {chip && (
-            <span className="pi-dock-chip" data-morph="pi-chip">
-              {chip}
+        <div ref={dock} className={cn("pi-dock", named && "is-named", dockClassName)} aria-hidden="true">
+          {named ? (
+            <span className="pi-dock-name">
+              {icon && (
+                <span className="pi-dock-icon" data-morph="pi-icon">
+                  {icon}
+                </span>
+              )}
+              <span data-morph="pi-name">{name}</span>
             </span>
+          ) : (
+            chip && (
+              <span className="pi-dock-chip" data-morph="pi-chip">
+                {chip}
+              </span>
+            )
           )}
-          <div className="pi-dock-main">{compact}</div>
+          {compact && <div className="pi-dock-main">{compact}</div>}
         </div>
         {!reduced && bigBlock}
       </div>

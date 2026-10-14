@@ -6,14 +6,28 @@ import { BarWidget, Captions, NavBanner, SentMessage, captionChunks, captionLeng
 import { ClayTile } from "../clay";
 import { TabletFrame } from "../devices";
 import { STORE_URL } from "../visuals";
+import type { Messages } from "@/i18n/messages/en";
 import { bump, easeOutBack, useMedia, useScene } from "./hooks";
 import { Sentinel } from "./shared";
+import type { MockupProps } from "./shared";
 
 const PERKS = [Truck, RotateCcw];
 const PRICE = 48;
 /** The scene's timeline (ms): typing, send, a beat of thought, the answer. */
 const T = { type: 350, send: 1300, work: 1600, speak: 2250 };
 const MS_PER_WORD = 280;
+
+/**
+ * The scene's beats: checkout once the whole answer is out (both lines),
+ * then the order; its funnel stage gets fixed as the first line of the
+ * answer clears the doubt (shared with the beat's funnel, one clock).
+ */
+export const buyTimeline = (s: Messages["landing"]["sales"]) => {
+  const go = T.speak + captionLength(s.buyCaption, MS_PER_WORD) - 500;
+  const placed = go + 1500;
+  const first = captionChunks(s.buyCaption)[0]?.length ?? 8;
+  return { go, placed, first, duration: placed + 1700, fixAt: T.speak + (first + 1) * MS_PER_WORD };
+};
 
 /**
  * "They buy it" (checkout), on a tablet with the widget in its BAR layout (a
@@ -23,20 +37,19 @@ const MS_PER_WORD = 280;
  * agent answers out loud, every word of it (ships today, free returns, each
  * lighting up on the page as it's said), takes them to checkout, and the
  * cart becomes a placed order instead of an abandoned one. Follows the
- * scene's time (useScene), so it rewinds as it played.
+ * scene's time (its own useScene, or its beat's shared clock), so it
+ * rewinds as it played.
  */
-const BuyMockup = ({ play }: { play?: boolean }) => {
+const BuyMockup = ({ play, clock }: MockupProps) => {
   const m = useMessages();
   const s = m.landing.sales;
   const locale = useLocale();
   const portrait = useMedia("(max-width: 639px)");
-  const speakLen = captionLength(s.buyCaption, MS_PER_WORD);
-  // checkout once the whole answer is out (both lines), then the order
-  const go = T.speak + speakLen - 500;
-  const placed = go + 1500;
-  const { t, sentinel, off } = useScene(placed + 1700, play);
+  const { go, placed, first, duration } = buyTimeline(s);
+  // its own loop, unless its beat's clock drives it (with the funnel beside it)
+  const own = useScene(duration, clock ? false : play);
+  const t = clock ? clock.t : own.t;
   // the perks light as the first line gets to them (about its middle and its end)
-  const first = captionChunks(s.buyCaption)[0]?.length ?? 8;
   const perkAt = [T.speak + Math.round(first * 0.5) * MS_PER_WORD, T.speak + first * MS_PER_WORD];
 
   const typing = t >= T.type - 200 && t < T.send;
@@ -54,7 +67,7 @@ const BuyMockup = ({ play }: { play?: boolean }) => {
 
   return (
     <div className="sl-buy relative">
-      <Sentinel ref={sentinel} off={off} />
+      {!clock && <Sentinel ref={own.sentinel} off={own.off} />}
       <TabletFrame url={STORE_URL} portrait={portrait}>
         <div className="relative h-full px-7 pt-3">
           {/* the store's own header, with its cart */}
@@ -69,7 +82,7 @@ const BuyMockup = ({ play }: { play?: boolean }) => {
               <span className="bzl-tile-line w-12" />
               <span className="relative grid h-9 w-9 place-items-center rounded-full bg-[#ffe6cf] text-[var(--bzl-fg)]">
                 <ShoppingCart className="h-4 w-4" strokeWidth={2} />
-                <span className="absolute -right-1.5 -top-1.5 grid h-[18px] min-w-[18px] place-items-center rounded-full bg-[var(--bzl-orange-strong)] px-1 text-[10px] font-bold tabular-nums text-white">
+                <span className="absolute -right-1.5 -top-1.5 grid h-[18px] min-w-[18px] place-items-center rounded-full bg-[hsl(var(--primary))] px-1 text-[10px] font-bold tabular-nums text-white">
                   1
                 </span>
               </span>
@@ -134,7 +147,7 @@ const BuyMockup = ({ play }: { play?: boolean }) => {
                     "sl-buy-button mt-4 flex h-10 items-center justify-center gap-2 rounded-xl text-[13px] font-semibold text-white",
                     t >= go && "is-go",
                   )}
-                  style={{ boxShadow: `0 0 0 ${6 * bump(t, placed - 600, 600)}px rgb(242 140 56 / 0.35)` }}
+                  style={{ boxShadow: `0 0 0 ${6 * bump(t, placed - 600, 600)}px hsl(var(--primary) / 0.4)` }}
                 >
                   <Lock className="h-3.5 w-3.5" strokeWidth={2.4} />
                   {s.cart.checkout}
@@ -151,7 +164,7 @@ const BuyMockup = ({ play }: { play?: boolean }) => {
                   <Check className="h-6 w-6" strokeWidth={3} />
                 </span>
                 <span className="text-[15px] font-bold text-[var(--bzl-fg)]">{s.cart.placed}</span>
-                <span className="text-[13px] font-semibold tabular-nums text-[var(--bzl-orange-dark)]">
+                <span className="text-[13px] font-semibold tabular-nums text-[var(--bzl-fg)]">
                   {money.format(PRICE)}
                 </span>
               </div>

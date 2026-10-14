@@ -41,10 +41,13 @@ export const useOnScreen = <T extends Element>(threshold = 0.35) => {
 
 /**
  * A scene's timeline (see useRewindLoop): it plays from its start when its
- * sentinel (a box over the scene, see <Sentinel>) comes into view, holds,
- * rewinds fast, rests and plays again; leaving resets it. Pass `play: false`
+ * sentinel (a box over the scene, see <Sentinel>) comes into view, then
+ * rewinds fast right away (no hold: the hook's default), and plays again;
+ * leaving resets it. Pass `play: false`
  * to hide the sentinel, which counts as out of view: a pinned stage uses it
- * so each beat starts over the moment it becomes the active one. Renders
+ * so each beat starts over the moment it becomes the active one. A beat's
+ * mockup and funnel share one scene (one clock), so they rewind together.
+ * Renders
  * every frame by default (tick 0), since the scenes derive motion from `t`.
  */
 export const useScene = (
@@ -55,9 +58,7 @@ export const useScene = (
   const sentinel = useRef<HTMLSpanElement>(null);
   const loop = useRewindLoop(sentinel, {
     duration,
-    hold: 2200,
     rewind: 1000,
-    rest: 450,
     threshold: 0.3,
     tick: 0,
     ...opts,

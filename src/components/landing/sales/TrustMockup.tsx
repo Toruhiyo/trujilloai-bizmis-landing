@@ -8,12 +8,20 @@ import { ClayTile } from "../clay";
 import type { ClayShape, TINT } from "../clay";
 import { PhoneFrame } from "../devices";
 import { STORE_URL } from "../visuals";
+import type { Messages } from "@/i18n/messages/en";
 import { bump, easeOutBack, useScene } from "./hooks";
 import { Sentinel } from "./shared";
+import type { MockupProps } from "./shared";
 
 /** The scene's timeline (ms): typing, send, weighing the four (one card every `card`), the pick, the answer. */
 const T = { type: 350, send: 1300, compare: 1650, card: 560, pick: 4050, speak: 4150 };
 const MS_PER_WORD = 280;
+
+/** The scene's length, and when its funnel stage gets fixed: as the agent picks the one (shared with the beat's funnel). */
+export const trustTimeline = (s: Messages["landing"]["sales"]) => ({
+  duration: T.speak + captionLength(s.compareCaption, MS_PER_WORD) + 400,
+  fixAt: T.pick,
+});
 
 /** What the agent weighs on each product: weight, reviews, warranty. */
 const SPECS = [Feather, Star, ShieldCheck];
@@ -37,16 +45,19 @@ const BEST = 1;
  * warranty; each gets a tick or a cross), backs the best match out loud in
  * the widget's captions, and the shopper decides: it goes in the cart. The
  * real mobile widget bar, with the avatar's head in its circle; the shopper
- * types the question in it. Follows the scene's time (useScene), so it
+ * types the question in it. Follows the scene's time (its own useScene, or
+ * its beat's shared clock), so it
  * rewinds as it played.
  */
-const TrustMockup = ({ play }: { play?: boolean }) => {
+const TrustMockup = ({ play, clock }: MockupProps) => {
   const m = useMessages();
   const s = m.landing.sales;
   const locale = useLocale();
   const speakLen = captionLength(s.compareCaption, MS_PER_WORD);
   const decideAt = T.speak + speakLen - 900;
-  const { t, sentinel, off } = useScene(T.speak + speakLen + 400, play);
+  // its own loop, unless its beat's clock drives it (with the funnel beside it)
+  const own = useScene(trustTimeline(s).duration, clock ? false : play);
+  const t = clock ? clock.t : own.t;
   const typing = t >= T.type - 200 && t < T.send;
   const draft = typing ? typed(s.compareQuery, t, T.type, 32) : undefined;
   const press = span(t, T.send - 170, T.send + 60);
@@ -64,7 +75,7 @@ const TrustMockup = ({ play }: { play?: boolean }) => {
 
   return (
     <div className="sl-trust relative">
-      <Sentinel ref={sentinel} off={off} />
+      {!clock && <Sentinel ref={own.sentinel} off={own.off} />}
       <PhoneFrame url={STORE_URL} className="w-full">
         {/* the store's page heading */}
         <div aria-hidden="true" className="space-y-2 px-5 pt-4">
@@ -86,9 +97,9 @@ const TrustMockup = ({ play }: { play?: boolean }) => {
                     opacity: best ? 1 : 1 - 0.6 * pick,
                     transform: `scale(${best ? 1 + 0.04 * lift : 1 - 0.03 * pick})`,
                     boxShadow: best && picked
-                      ? `0 0 0 ${2 * pick}px var(--bzl-orange), 0 18px 34px -18px rgb(236 119 9 / ${0.65 * pick})`
+                      ? `0 0 0 ${2 * pick}px hsl(var(--primary)), 0 18px 34px -18px hsl(var(--primary) / ${0.65 * pick})`
                       : scan > 0
-                        ? `0 0 0 2px rgb(242 140 56 / ${0.55 * scan})`
+                        ? `0 0 0 2px hsl(var(--primary) / ${0.55 * scan})`
                         : undefined,
                   } as CSSProperties
                 }

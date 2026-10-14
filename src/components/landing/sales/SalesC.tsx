@@ -1,13 +1,15 @@
 import { useMessages } from "@/i18n/LocaleProvider";
 import { cn } from "@/lib/utils";
 import { TrendIcon } from "../AnimatedIcons";
-import PillarChip from "../PillarChip";
 import PillarIntro from "../PillarIntro";
+import { buyTimeline } from "./BuyMockup";
+import { findTimeline } from "./FindMockup";
 import FunnelScale from "./funnel/FunnelScale";
-import { useActivePanel, useMedia, usePinProgress } from "./hooks";
+import { useActivePanel, useMedia, usePinProgress, useScene } from "./hooks";
 import SalesPayoff from "./SalesPayoff";
 import SalesTitle, { SalesHeading } from "./SalesTitle";
-import { Device, PanelCopy } from "./shared";
+import { Device, PanelCopy, Sentinel } from "./shared";
+import { trustTimeline } from "./TrustMockup";
 
 /** Find, trust, buy, then the payoff. */
 const STEPS = 4;
@@ -15,16 +17,20 @@ const STEPS = 4;
 const BAR = "color-mix(in oklab, #ef8632 88%, transparent)";
 
 /**
- * Variant C, "the stage": bold Bizmis orange. It opens on the title, big
- * ("Shoppers Find it. Trust it. Buy it.", PillarIntro), which docks as the
- * section's sticky header as you scroll, a bar under each part filling as
- * you go through its moment. Under it, one pinned screen: on the left, the
+ * Variant C, "the stage": bold Bizmis orange. It opens on the pillar's
+ * name, huge ("Boost Sales", PillarIntro), with "Shoppers Find it. Trust
+ * it. Buy it." under it; both dock as the section's sticky bar as you
+ * scroll, the name as its label and a bar under each part filling as you
+ * go through its moment. Under it, one pinned screen: on the left, the
  * part's funnel stage and benefit over the at-scale funnel (the whole
  * store's shoppers, that stage improving); on the right, the one
- * conversation on its device: find, trust, buy. Each beat plays from its
- * start the moment it becomes the active one, and loops with a rewind.
- * Then the payoff: all three stages improving together, the funnel pouring
- * its orders into the day's sales. Without the room to pin (phones, short
+ * conversation on its device: find, trust, buy. The funnel is one story:
+ * it starts bad, each beat fixes its own stage on top of the ones before,
+ * the moment its agent solves it in the mockup (each beat's mockup and
+ * funnel share one clock). Each beat plays from its start the moment it
+ * becomes the active one, and loops with a rewind.
+ * Then the payoff: all three stages improving together, the funnel's
+ * stream turning golden and its bag overflowing with orders. Without the room to pin (phones, short
  * screens), the moments stack under the docked title instead, each with
  * its own funnel.
  */
@@ -33,31 +39,44 @@ const SalesC = () => {
   return pin ? <Pinned /> : <Stacked />;
 };
 
-/** The big title (PillarIntro's `title`): every part lit. */
-const BigTitle = () => <SalesTitle active="all" layout="big" as="span" />;
+const TIMELINES = [findTimeline, trustTimeline, buyTimeline];
 
-const Chip = () => {
-  const m = useMessages();
-  return <PillarChip icon={TrendIcon} label={m.benefits.sales.badge} />;
+/**
+ * A beat's one clock: its mockup and its funnel both run on it (same
+ * duration, same rewind), so the pair plays and rewinds as one. Its
+ * sentinel goes over the beat; `play: false` holds it at the start.
+ */
+const useBeat = (i: number, play?: boolean) => {
+  const s = useMessages().landing.sales;
+  const tl = TIMELINES[i](s);
+  const scene = useScene(tl.duration, play);
+  return { ...scene, duration: tl.duration, fixAt: tl.fixAt };
 };
 
+/** The supporting line under the pillar's name on arrival: every part lit. */
+const BigLine = () => <SalesTitle active="all" layout="big" as="span" />;
+
 const Pinned = () => {
-  const s = useMessages().landing.sales;
+  const m = useMessages();
+  const s = m.landing.sales;
+  const name = m.benefits.sales.badge;
   const [track, progress] = usePinProgress<HTMLDivElement>();
   const step = Math.min(STEPS - 1, Math.floor(progress * STEPS));
   const payoff = step === 3;
   const lit = payoff ? "all" : step;
   // how far through its own quarter each part's bar is
   const fill = (i: number) => Math.min(1, Math.max(0, progress * STEPS - i));
+  const beats = [useBeat(0, step === 0), useBeat(1, step === 1), useBeat(2, step === 2)];
+  const f = Math.min(step, 2);
 
   return (
     <section id="benefits" className="sl sl-c is-pinned bzl-band bzl-pillar p-sales">
-      <SalesHeading />
+      <SalesHeading as="p" />
       <PillarIntro
-        as="div"
-        chip={<Chip />}
-        title={<BigTitle />}
-        titleClassName="sl-big"
+        name={name}
+        icon={<TrendIcon />}
+        line={<BigLine />}
+        lineClassName="sl-big"
         accent={BAR}
         docked={<SalesTitle active={lit} layout="line" as="p" fills={[0, 1, 2].map(fill)} className="sl-c-title" />}
       >
@@ -84,8 +103,14 @@ const Pinned = () => {
                   />
                 </div>
                 <div className="sl-c-funnel-slot">
-                  {/* a new stage starts its funnel over */}
-                  <FunnelScale key={Math.min(step, 2)} focus={Math.min(step, 2)} play={!payoff} className="sl-c-funnel" />
+                  {/* the active beat's funnel, on the same clock as its mockup */}
+                  <FunnelScale
+                    focus={f}
+                    t={beats[f].t}
+                    duration={beats[f].duration}
+                    fixAt={beats[f].fixAt}
+                    className="sl-c-funnel"
+                  />
                 </div>
               </div>
               <div className="sl-c-shows">
@@ -95,7 +120,8 @@ const Pinned = () => {
                     className={cn("sl-c-show", step === i && "is-on", step > i && "is-past")}
                     aria-hidden={step !== i}
                   >
-                    <Device index={i} play={step === i} />
+                    <Sentinel ref={beats[i].sentinel} off={beats[i].off} />
+                    <Device index={i} clock={beats[i]} />
                   </div>
                 ))}
                 <div className={cn("sl-c-show is-payoff", payoff && "is-on")} aria-hidden={!payoff}>
@@ -111,26 +137,36 @@ const Pinned = () => {
 };
 
 const Stacked = () => {
-  const s = useMessages().landing.sales;
+  const m = useMessages();
+  const s = m.landing.sales;
+  const name = m.benefits.sales.badge;
   const { active, setRef } = useActivePanel(0.55);
   const lit = active >= 3 ? "all" : active;
+  const beats = [useBeat(0), useBeat(1), useBeat(2)];
   return (
     <section id="benefits" className="sl sl-c is-stacked bzl-band bzl-pillar p-sales">
-      <SalesHeading />
+      <SalesHeading as="p" />
       <PillarIntro
-        as="div"
-        chip={<Chip />}
-        title={<BigTitle />}
-        titleClassName="sl-big"
+        name={name}
+        icon={<TrendIcon />}
+        line={<BigLine />}
+        lineClassName="sl-big"
         accent={BAR}
         docked={<SalesTitle active={lit} layout="line" as="p" className="sl-bar-title" />}
       >
         <div className="bzl-wrap sl-c-list">
           {s.panels.map((p, i) => (
-            <div key={p.title} ref={setRef(i)} className="sl-c-item">
+            <div key={p.title} ref={setRef(i)} className="sl-c-item relative">
+              <Sentinel ref={beats[i].sentinel} off={beats[i].off} />
               <PanelCopy index={i} kicker={s.stages[i]} title={p.title} body={p.body} className="sl-c-copy is-on" />
-              <Device index={i} />
-              <FunnelScale focus={i} className="sl-c-funnel" />
+              <Device index={i} clock={beats[i]} />
+              <FunnelScale
+                focus={i}
+                t={beats[i].t}
+                duration={beats[i].duration}
+                fixAt={beats[i].fixAt}
+                className="sl-c-funnel"
+              />
             </div>
           ))}
           <div ref={setRef(3)} className="sl-c-item is-payoff">
