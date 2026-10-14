@@ -668,9 +668,10 @@
 /* the tablet's bar: centred, grown the same way */
 .sl-buy-bar {
   --ui: max(1, min(1.5, calc(0.82 / var(--vs, 1))));
-  width: min(480px, calc(92% / var(--ui)));
+  /* room on the left for the head capping the bar (it overhangs the pill) */
+  width: min(480px, calc(86% / var(--ui)));
   transform-origin: center bottom;
-  transform: translateX(-50%) scale(var(--ui));
+  transform: translateX(calc(-50% + 12px)) scale(var(--ui));
 }
 /* the caret while the shopper types in the widget's bar */
 .bzw-caret {
@@ -839,47 +840,124 @@
   }
 }
 
-/* ═════════ The agent's voice, made obvious (BizmisWidget VoiceWave) ═════════
-   Bold bars in the Bizmis primary, each on its own rhythm, in the composer
-   while the agent speaks. */
-.bzw-wave {
-  display: inline-flex;
-  align-items: center;
-  gap: 3.5px;
-  height: 1.85em;
-  vertical-align: middle;
+/* ═════════ The agent's voice, made obvious (BizmisWidget HeadPulse) ═════════
+   The real widget's speaking pulse around its small head circle (bar and
+   mobile layouts), pushed so it can't be missed: a breathing glow, three
+   rings expanding out of the circle, and the widget's own rim ring, all in
+   the Bizmis primary. Mounted always, faded in only while words are said. */
+.bzw-hpulse {
+  --reach: 1.85;
+  --bw: 3px;
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.28s ease;
 }
-.bzw-wave i {
-  display: block;
-  width: 5px;
-  height: 100%;
-  border-radius: 999px;
-  background: hsl(var(--primary));
-  transform-origin: center;
-  animation: bzw-wave calc(0.5s + (var(--i) * 37ms) % 0.32s) ease-in-out calc(var(--i) * -97ms) infinite alternate;
+.bzw-hpulse.is-small {
+  --reach: 2.5;
+  --bw: 2.5px;
 }
-.bzw-wave i:nth-child(3n) {
-  opacity: 0.8;
+.bzw-hpulse.is-small .bzw-hpulse-glow {
+  inset: -80%;
+  background: radial-gradient(
+    circle,
+    hsl(var(--primary) / 0.75) 0%,
+    hsl(var(--primary) / 0.42) 32%,
+    hsl(var(--primary) / 0.14) 55%,
+    transparent 70%
+  );
 }
-@keyframes bzw-wave {
+.bzw-hpulse.is-on {
+  opacity: 1;
+}
+.bzw-hpulse-glow {
+  position: absolute;
+  inset: -58%;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    hsl(var(--primary) / 0.6) 0%,
+    hsl(var(--primary) / 0.32) 34%,
+    hsl(var(--primary) / 0.1) 55%,
+    transparent 70%
+  );
+  animation: bzw-hpulse-glow 1.1s ease-in-out infinite alternate;
+}
+.bzw-hpulse-ring,
+.bzw-hpulse-rim {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: var(--bw) solid hsl(var(--primary));
+}
+.bzw-hpulse-ring {
+  opacity: 0;
+  animation: bzw-hpulse-ring 1.5s cubic-bezier(0.22, 0.61, 0.36, 1) infinite;
+}
+.bzw-hpulse-ring:nth-child(3) {
+  animation-delay: 0.5s;
+}
+.bzw-hpulse-ring:nth-child(4) {
+  animation-delay: 1s;
+}
+.bzw-hpulse-rim {
+  inset: calc(var(--bw) * -1);
+  animation: bzw-hpulse-rim 0.7s ease-in-out infinite alternate;
+  box-shadow: 0 0 14px 2px hsl(var(--primary) / 0.55);
+}
+@keyframes bzw-hpulse-glow {
+  from {
+    opacity: 0.7;
+    scale: 0.9;
+  }
+  to {
+    opacity: 1;
+    scale: 1.1;
+  }
+}
+@keyframes bzw-hpulse-ring {
   0% {
-    transform: scaleY(0.18);
+    opacity: 1;
+    scale: 1;
   }
-  45% {
-    transform: scaleY(1);
-  }
-  70% {
-    transform: scaleY(0.45);
+  55% {
+    opacity: 0.6;
   }
   100% {
-    transform: scaleY(0.85);
+    opacity: 0;
+    scale: var(--reach);
+  }
+}
+@keyframes bzw-hpulse-rim {
+  from {
+    opacity: 1;
+    scale: 1;
+  }
+  to {
+    opacity: 0.6;
+    scale: 1.08;
   }
 }
 @media (prefers-reduced-motion: reduce) {
-  .bzw-wave i {
+  .bzw-hpulse-glow,
+  .bzw-hpulse-ring,
+  .bzw-hpulse-rim {
     animation: none;
-    transform: scaleY(0.6);
   }
+  .bzw-hpulse-ring:nth-child(2) {
+    opacity: 0.5;
+    scale: 1.3;
+  }
+}
+
+/* the card's speaking rings in the true primary, as the real widget draws
+   them (theme-border-primary), not film-landing's faint tint */
+.sl .bzw-card .bzw-ring {
+  border-color: hsl(var(--primary) / 0.85);
+}
+.sl .bzw-card .bzw-glow {
+  background: radial-gradient(circle, hsl(var(--primary) / 0.36) 0%, transparent 70%);
 }
 
 /* the rail (A) sits on the light band: its funnel gets a primary ground so the glass reads */

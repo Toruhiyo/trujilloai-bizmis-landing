@@ -35,6 +35,14 @@ const FIGURE_FRACTION = 224 / 230;
 /** Canvas bleed beyond the box, so a hair tuft or a raised hand is never flat-cut. */
 const OVERSCAN_TOP = 0.25;
 const OVERSCAN_X = 0.15;
+/**
+ * Head-only mode (the widget's HEAD body group, as in its bar and head
+ * circle): the canvas bleeds this far past the box on every side (fraction of
+ * the box), so hair and ears spill instead of being flat-cut, and the skull
+ * (HEAD_Head) is framed at HEAD_FRACTION of the box height, centred.
+ */
+const HEAD_OVERSCAN = 0.35;
+const HEAD_FRACTION = 0.82;
 const NEAR_MARGIN = "200px";
 const CROSSFADE_MS = 500;
 
@@ -125,6 +133,12 @@ export type LiveAvatarProps = {
   onStatus?: (status: "loading" | "live" | "still") => void;
   /** The whole figure, legs included (default: waist-up, like the widget card). */
   fullBody?: boolean;
+  /**
+   * Only the HEAD body group is drawn (face, eyes, brows, mouth, teeth, nose,
+   * hair: every HEAD_* mesh; torso, arms and legs hidden), framed on the head
+   * and centred in the box, like the widget's bar / head circle. Opt-in.
+   */
+  headOnly?: boolean;
   /** Greet with a wave when it appears (default true). */
   greet?: boolean;
   /** Bizmis logo on the shirt, like the static renders (default true). */
@@ -143,6 +157,7 @@ const LiveAvatar = ({
   gesture = null,
   onStatus,
   fullBody = false,
+  headOnly = false,
   greet = true,
   logo = true,
   expression = "smile",
@@ -235,10 +250,14 @@ const LiveAvatar = ({
           aria-hidden="true"
           className="pointer-events-none absolute"
           style={{
-            top: `${-OVERSCAN_TOP * 100}%`,
-            bottom: 0,
-            left: `${-OVERSCAN_X * 100}%`,
-            right: `${-OVERSCAN_X * 100}%`,
+            ...(headOnly
+              ? { inset: `${-HEAD_OVERSCAN * 100}%` }
+              : {
+                  top: `${-OVERSCAN_TOP * 100}%`,
+                  bottom: 0,
+                  left: `${-OVERSCAN_X * 100}%`,
+                  right: `${-OVERSCAN_X * 100}%`,
+                }),
             opacity: live ? 1 : 0,
             transition: `opacity ${CROSSFADE_MS}ms ease`,
           }}
@@ -256,11 +275,12 @@ const LiveAvatar = ({
                 speaking={speaking}
                 gesture={gesture}
                 fullBody={fullBody}
+                headOnly={headOnly}
                 greet={greet}
                 expression={expression}
                 active={active}
-                overscanTop={OVERSCAN_TOP}
-                figureFraction={FIGURE_FRACTION}
+                overscanTop={headOnly ? HEAD_OVERSCAN : OVERSCAN_TOP}
+                figureFraction={headOnly ? HEAD_FRACTION : FIGURE_FRACTION}
                 onReady={onReady}
                 onError={onError}
               />

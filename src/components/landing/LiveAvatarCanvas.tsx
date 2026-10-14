@@ -34,6 +34,10 @@ const STAMP_CANVAS_SIZE = 512;
 const STAMP_FRACTION = 0.45;
 
 const VISIBLE_BODY_GROUPS = ["HEAD_", "UPPERBODY_"];
+/** The widget's HEAD-only body group (its bar / head circle). */
+const HEAD_BODY_GROUPS = ["HEAD_"];
+/** The skull mesh the head-only framing centres on (hair volume varies per avatar). */
+const HEAD_FRAME_MESH = "HEAD_Head";
 const BODY_GROUPS = [...VISIBLE_BODY_GROUPS, "LOWERBODY_"];
 const VISEMES = ["A", "B", "C", "D", "E", "F", "G", "H", "X"];
 const MOUTH_SHAPES = ["A", "E", "B", "F", "C", "D", "G", "H"];
@@ -74,6 +78,12 @@ export type LiveAvatarCanvasProps = {
   gesture?: { name: string; key: number } | null;
   /** Show the legs too (default: head and upper body, like the widget card). */
   fullBody?: boolean;
+  /**
+   * Draw only the HEAD body group (every HEAD_* mesh) and frame the head:
+   * the skull centred in the box at `figureFraction` of its height, with the
+   * canvas bleeding `overscanTop` of the box past every side.
+   */
+  headOnly?: boolean;
   /** Greet with a one-shot wave on mount (default true). */
   greet?: boolean;
   expression: AvatarExpression;
@@ -165,6 +175,7 @@ const Avatar = ({
   speaking,
   gesture,
   fullBody = false,
+  headOnly = false,
   greet = true,
   expression,
   overscanTop,
@@ -219,15 +230,17 @@ const Avatar = ({
     return list;
   }, [scene]);
 
-  // Body groups: head + upper body, like the widget card (or all of it).
+  // Body groups: head + upper body, like the widget card (or all of it, or
+  // only the head, like the widget's bar).
   useLayoutEffect(() => {
+    const shown = headOnly ? HEAD_BODY_GROUPS : fullBody ? BODY_GROUPS : VISIBLE_BODY_GROUPS;
     scene.traverse((child) => {
       const name = child.name.toUpperCase();
       if (BODY_GROUPS.some((g) => name.startsWith(g))) {
-        child.visible = fullBody || VISIBLE_BODY_GROUPS.some((g) => name.startsWith(g));
+        child.visible = shown.some((g) => name.startsWith(g));
       }
     });
-  }, [scene, fullBody]);
+  }, [scene, fullBody, headOnly]);
 
   // Material lighting (widget: hairSpecular; shirt/skin multipliers are 1).
   useLayoutEffect(() => {
@@ -320,7 +333,9 @@ const Avatar = ({
       idle.reset().play();
       mixer.update(0);
     }
-    const box = measureVisible(scene);
+    // (bones live outside the head mesh: pose the whole scene before measuring it alone)
+    scene.updateMatrixWorld(true);
+    const box = measureVisible(headOnly ? (scene.getObjectByName(HEAD_FRAME_MESH) ?? scene) : scene);
     if (!box.isEmpty()) {
       setBand({ bottom: box.min.y, height: box.max.y - box.min.y, x: (box.min.x + box.max.x) / 2 });
     }
@@ -337,7 +352,7 @@ const Avatar = ({
       mixer.stopAllAction();
       current.current = null;
     };
-  }, [scene, actions, mixer, idleName, waveName, greet]);
+  }, [scene, actions, mixer, idleName, waveName, greet, headOnly]);
 
   // A requested gesture plays once, then idle/talk take over again.
   useEffect(() => {
@@ -357,20 +372,21 @@ const Avatar = ({
     crossTo(name ? actions[name] : undefined, false);
   }, [speaking, oneShot, actions, idleName, talkName]);
 
-  // Frame the waist-up figure bottom-centre in the box, same height as the static render.
+  // Frame the waist-up figure bottom-centre in the box, same height as the
+  // static render (or, head-only, the skull centred in the box).
   useLayoutEffect(() => {
     if (!band || !size.height) return;
-    const boxHeight = size.height / (1 + overscanTop);
+    const boxHeight = size.height / (headOnly ? 1 + 2 * overscanTop : 1 + overscanTop);
     const figurePx = boxHeight * figureFraction;
     const visibleHeight = (band.height * size.height) / figurePx;
     const distance = visibleHeight / (2 * Math.tan(THREE.MathUtils.degToRad(CAMERA_FOV / 2)));
     camera.fov = CAMERA_FOV;
-    camera.position.set(band.x, band.bottom + visibleHeight / 2, distance);
+    camera.position.set(band.x, headOnly ? band.bottom + band.height / 2 : band.bottom + visibleHeight / 2, distance);
     camera.rotation.set(0, 0, 0);
     camera.near = Math.max(0.1, distance - 5);
     camera.far = distance + 5;
     camera.updateProjectionMatrix();
-  }, [band, size.height, size.width, camera, overscanTop, figureFraction]);
+  }, [band, size.height, size.width, camera, overscanTop, figureFraction, headOnly]);
 
   // Random blinks, as in the widget.
   useEffect(() => {

@@ -171,7 +171,7 @@ const BuyMockup = ({ play, clock, active = true }: MockupProps) => {
             </div>
           </div>
 
-          <div className="sl-buy-bar absolute bottom-5 left-1/2">
+          <div className="sl-buy-bar absolute bottom-10 left-1/2">
             {/* the agent's words, centred over the bar */}
             {speaking && (
               <div className="mb-3 flex justify-center">
