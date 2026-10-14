@@ -1,0 +1,160 @@
+/* The film look (?look=film): the landing aligned to the ad-1 film, for
+   comparison with today's look (the default stays untouched: every rule here
+   is keyed on .bzl[data-look="film"], set by FilmLanding.tsx).
+
+   The film's system: a WHITE / very light cream canvas with generous space,
+   dark ink Inter headlines, the Bizmis primary #F9A353 as the ACCENT (icons,
+   ticks, highlights, the widget, the Caveat handwriting) and for ONE bold
+   moment; glass devices, clay products, real 3D avatars; soft warm glows
+   instead of full-bleed colour. So: the hero, Support, Insights, Setup,
+   Customize, the end card and the footer sit on white / cream with at most
+   one soft glow each; the Sales band stays the single saturated beat (its
+   orange, its white marker funnel, its white type). The grain stays only
+   there. Layout, copy and animations are unchanged.
+
+   Loaded after palette-options.css, so equal-specificity rules here win. */
+
+.bzl[data-look="film"] {
+  --film-ink: #3b2416; /* the one dark ink (the film's "Install now") */
+  --film-glow: rgb(249 163 83 / 0.14);
+  --bzl-bg: #ffffff;
+
+  /* the hero: a white stage under a soft pool of primary light */
+  --pal-hero-bg: linear-gradient(180deg, #ffffff 0%, #fffaf4 62%, #fff3e6 100%);
+  --pal-hero-light: radial-gradient(ellipse 52% 50% at 56% 58%, rgb(249 163 83 / 0.26) 0%, rgb(249 163 83 / 0.09) 48%, transparent 76%);
+  --pal-hero-ambient: transparent;
+  --pal-nav-bg: rgb(255 255 255 / 0.9);
+  --pal-nav-line: #f3e6d8;
+
+  /* the light sections: white / cream, one soft glow each */
+  --pal-support-bg:
+    radial-gradient(ellipse 46% 52% at 16% 42%, var(--film-glow), transparent 72%),
+    #ffffff;
+  --pal-insights-bg:
+    radial-gradient(ellipse 46% 52% at 84% 40%, var(--film-glow), transparent 72%),
+    #fffcf8;
+  --pal-setup-bg: #ffffff;
+  --pal-custom-bg: #fffcf8;
+  --pal-end-bg: #ffffff;
+  --pal-footer-bg: #fffaf4;
+  --pal-support-soft: #fff1e3;
+  --pal-insights-soft: #fff1e3;
+}
+
+/* ── Hero: white canvas, ink type, the primary as the accent ── */
+.bzl[data-look="film"] #hero > svg.mix-blend-overlay {
+  opacity: 0; /* no grain on white */
+}
+.bzl[data-look="film"] #hero [class*="text-shadow:0_1px_16px"],
+.bzl[data-look="film"] #hero [class*="text-shadow:0_1px_10px"] {
+  color: var(--film-ink);
+  text-shadow: none;
+}
+.bzl[data-look="film"] #hero [class*="text-shadow:0_1px_16px"] .text-white,
+.bzl[data-look="film"] #hero [class*="text-shadow:0_1px_10px"] .text-white {
+  color: var(--film-ink);
+}
+.bzl[data-look="film"] #hero [class*="text-shadow:0_1px_16px"] [class*="text-white/"],
+.bzl[data-look="film"] #hero [class*="text-shadow:0_1px_10px"] [class*="text-white/"],
+.bzl[data-look="film"] #hero [class*="text-white/80"]:not(.bzw *) {
+  color: var(--bzl-ink-2);
+}
+/* the Early Access badge: a light pill, the handwriting in the primary */
+.bzl[data-look="film"] #hero [class*="text-shadow:0_1px_16px"] a[class*="bg-white/[0.12]"] {
+  border-color: rgb(59 36 22 / 0.12);
+  background-color: rgb(255 255 255 / 0.8);
+}
+.bzl[data-look="film"] #hero [class*="text-shadow:0_1px_16px"] a[class*="bg-white/[0.12]"] [class*="bg-white/"] {
+  background-color: hsl(var(--primary));
+}
+.bzl[data-look="film"] #hero [class*="text-shadow:0_1px_16px"] .bzl-hand {
+  color: hsl(var(--primary));
+}
+/* the glass browser window on white: a frosted pane with ink hairlines */
+.bzl[data-look="film"] #hero [class*="border-white/"]:not(.bzw *):not(#site-navbar, #site-navbar *) {
+  border-color: rgb(59 36 22 / 0.1);
+}
+.bzl[data-look="film"] #hero [class*="bg-white/[0.07]"] {
+  background-color: rgb(255 255 255 / 0.55);
+  box-shadow:
+    inset 0 1px 0 #fff,
+    0 40px 100px -50px rgb(150 80 20 / 0.3);
+}
+.bzl[data-look="film"] #hero [class*="bg-white/[0.14]"] {
+  background-color: rgb(255 255 255 / 0.6);
+}
+.bzl[data-look="film"] #hero [class*="bg-white/"]:not(.bzw *):not([class*="bg-white/[0.07]"]):not([class*="bg-white/[0.14]"]):not(a):not(a *):not(#site-navbar, #site-navbar *) {
+  background-color: rgb(59 36 22 / 0.08);
+}
+/* the Install button: white with a hairline, as on the film's canvas */
+.bzl[data-look="film"] #hero a.bg-white.text-primary {
+  box-shadow:
+    0 0 0 1px rgb(59 36 22 / 0.08),
+    0 12px 32px -14px rgb(249 163 83 / 0.55);
+}
+/* play: a filled primary disc, white glyph (as the widget's own controls) */
+.bzl[data-look="film"] #hero [data-play] {
+  background: hsl(var(--primary));
+  border-color: rgb(255 255 255 / 0.7);
+}
+
+/* ── The nav over the white hero: ink links, primary logo, Install Now filled primary ── */
+.bzl[data-look="film"] #site-navbar:not(.fixed) .text-white,
+.bzl[data-look="film"] #site-navbar:not(.fixed) [class*="text-white/"],
+.bzl[data-look="film"] #site-navbar:not(.fixed) [data-nav] {
+  color: var(--film-ink);
+}
+.bzl[data-look="film"] #site-navbar:not(.fixed) [data-nav="/early-access"] {
+  color: hsl(var(--primary));
+}
+.bzl[data-look="film"] #site-navbar:not(.fixed) [aria-label="Bizmis"] > span {
+  background-color: hsl(var(--primary)) !important;
+}
+.bzl[data-look="film"] #site-navbar:not(.fixed) a.border-white {
+  border-color: transparent;
+  background-color: hsl(var(--primary));
+  color: #fff;
+}
+.bzl[data-look="film"] #site-navbar:not(.fixed) a.border-white svg {
+  color: #fff;
+}
+
+/* ── Support and Insights: white, ink names and promises, primary accents ── */
+.bzl[data-look="film"] .bzl-pillar.p-support,
+.bzl[data-look="film"] .bzl-pillar.p-insights {
+  --grain-strength: 0;
+  --acc: hsl(var(--primary));
+  --acc-ink: var(--bzl-orange-dark);
+}
+.bzl[data-look="film"] .bzl-pillar.p-support .pi,
+.bzl[data-look="film"] .bzl-pillar.p-insights .pi {
+  --pi-name-color: var(--film-ink);
+  --pi-line-color: var(--film-ink);
+  --pi-icon-bg: #fff1e3;
+  --pi-icon-fg: hsl(var(--primary));
+  --pi-bar: rgb(255 255 255 / 0.88);
+}
+.bzl[data-look="film"] .bzl-pillar.p-support .pi-head::before,
+.bzl[data-look="film"] .bzl-pillar.p-insights .pi-head::before {
+  box-shadow: 0 1px 0 rgb(59 36 22 / 0.08);
+}
+.bzl[data-look="film"] .bzl-pillar.p-support .bzp-dock-line,
+.bzl[data-look="film"] .bzl-pillar.p-insights .bzp-dock-line {
+  color: var(--film-ink);
+}
+/* the marker moments on white: primary strokes, burnt handwriting (legible small) */
+.bzl[data-look="film"] .bzl-pillar .bzl-mk {
+  --mk-line: hsl(var(--primary));
+  --mk-ink: var(--bzl-orange-dark);
+  --mk-tint: rgb(249 163 83 / 0.12);
+}
+
+/* ── The footer: cream, ink type (the film ends on white) ── */
+.bzl[data-look="film"] > footer {
+  --bzl-fg: var(--film-ink);
+  --bzl-muted: #6b4a33;
+  --bzl-faint: #7a5a42;
+  --bzl-border: #f3e6d8;
+  --bzl-orange-dark: #a84f0c;
+  border-top: 1px solid #f3e6d8;
+}

@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import { Helmet } from "react-helmet-async";
+import { useLocation } from "react-router-dom";
 import Hero from "@/components/Hero";
 import Seo from "@/components/Seo";
 import SalesSection from "@/components/landing/SalesSection";
@@ -16,6 +17,8 @@ import {
 import { useMessages } from "@/i18n/LocaleProvider";
 import "@/styles/film-landing.css";
 import "@/styles/palette-options.css";
+// ?look=film: the comparison look aligned to the ad-1 film (keyed on data-look="film")
+import "@/styles/look-film.css";
 
 interface FilmLandingProps {
   /** The route it's served on: "/" once it's the default, "/v2" until then. */
@@ -31,6 +34,8 @@ interface FilmLandingProps {
  */
 const FilmLanding = ({ path = "/" }: FilmLandingProps) => {
   const messages = useMessages();
+  // ?look=film switches on the film-aligned look (look-film.css) for comparison
+  const look = new URLSearchParams(useLocation().search).get("look") === "film" ? "film" : undefined;
 
   // Lets the film landing's scoped CSS reach the shared navbar (outside .bzl),
   // e.g. the handwritten "Early Access" link, without touching other pages.
@@ -54,7 +59,7 @@ const FilmLanding = ({ path = "/" }: FilmLandingProps) => {
 
   // the page's palette, "Bizmis Mono" (palette-options.css)
   return (
-    <div className="bzl min-h-screen" data-palette="1">
+    <div className="bzl min-h-screen" data-palette="1" data-look={look}>
       <Helmet>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link
