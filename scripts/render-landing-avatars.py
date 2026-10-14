@@ -37,7 +37,9 @@ def store_logo(name: str) -> dict:
     to transparency with scripts/key-logo.py: coined names, no real brands.
     """
     return dict(shirt_stamp=str(ROOT / f"scripts/assets/store-logos/{name}.png"), shirt_stamp_scale=1.15)
-ORANGE = "#F28C38"
+# The true Bizmis primary (the app's hsl(var(--primary)), the widget's colour), not the film's
+# deeper #F28C38.
+ORANGE = "#F9A353"
 WIDTHS = (360, 720, 1080)
 FALLBACK_W = 360  # PNG only at one small size: AVIF/WebP cover nearly every browser
 
@@ -102,9 +104,10 @@ def main() -> None:
     RAW.mkdir(parents=True, exist_ok=True)
     for name in names:
         avatar, kwargs = RENDERS[name]
-        # A changed Bizmis logo must invalidate the baked shirt render.
+        # A changed Bizmis logo or shirt colour must invalidate the baked shirt render.
         stamp_key = (
             "-" + hashlib.sha256(Path(STAMP).read_bytes()).hexdigest()[:12]
+            + "-" + kwargs.get("mesh_colors", {}).get("Shirt_Color", "").lstrip("#").lower()
             if kwargs.get("shirt_stamp") == STAMP else ""
         )
         out = RAW / f"{name}{stamp_key}.png"

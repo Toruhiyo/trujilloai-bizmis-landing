@@ -324,7 +324,7 @@ const AvatarCarousel = ({
       aria-roledescription="carousel"
       aria-label={t.label}
       tabIndex={0}
-      className="relative select-none rounded-3xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--bzl-orange)]"
+      className="relative select-none rounded-3xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[hsl(var(--primary))]"
       onKeyDown={(e) => {
         if (e.key === "ArrowRight") {
           holdOn();

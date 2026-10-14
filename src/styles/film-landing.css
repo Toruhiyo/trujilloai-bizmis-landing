@@ -599,7 +599,7 @@
 }
 
 .bzw-glow {
-  background: radial-gradient(circle, rgba(242, 140, 56, 0.3) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(249, 163, 83, 0.3) 0%, transparent 70%);
   animation: bzw-glow 2.2s ease-in-out infinite alternate;
 }
 
@@ -615,7 +615,7 @@
 }
 
 .bzw-ring {
-  border-color: rgba(242, 140, 56, 0.3);
+  border-color: rgba(249, 163, 83, 0.3);
   animation: bzw-ring 2.2s ease-out infinite;
 }
 
@@ -633,7 +633,7 @@
 /* Agent-activity laser: a comet tail sweeping 225°, spinning every 2.4 s,
    with the tool's icon riding upright at its tip. */
 .bzw-laser {
-  background: conic-gradient(from 0deg, rgba(242, 140, 56, 0) 0deg, rgba(242, 140, 56, 0) 135deg, rgba(242, 140, 56, 0.55) 360deg);
+  background: conic-gradient(from 0deg, rgba(249, 163, 83, 0) 0deg, rgba(249, 163, 83, 0) 135deg, rgba(249, 163, 83, 0.55) 360deg);
   -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 3px), #000 calc(100% - 2px));
   mask: radial-gradient(farthest-side, transparent calc(100% - 3px), #000 calc(100% - 2px));
 }
@@ -682,7 +682,7 @@
 }
 
 .bzw-word-glow {
-  background: radial-gradient(closest-side, rgba(242, 140, 56, 0.35), transparent);
+  background: radial-gradient(closest-side, rgba(249, 163, 83, 0.35), transparent);
   filter: blur(4px);
 }
 
@@ -1474,10 +1474,54 @@
   height: 1.05em;
   margin-left: 1px;
   vertical-align: -0.15em;
-  background: #f28c38;
+  background: hsl(var(--primary));
   animation: bzs-caret 0.9s steps(1) infinite;
 }
 @keyframes bzs-caret { 50% { opacity: 0; } }
 @media (prefers-reduced-motion: reduce) {
   .bzs-caret { animation: none; }
+}
+
+/* ── Benefit pillar entrances (pillar/BenefitIntro.tsx on PillarIntro's named
+   pattern): Support and Insights open on their NAME, huge, icon above and
+   promise under it, docking as the section's sticky bar (name as a strong
+   label, the promise beside it), in the pillar's own colours. ── */
+.bzp-section { padding-bottom: clamp(1.5rem, 5svh, 4rem); }
+.bzp {
+  --pi-name-color: color-mix(in oklab, var(--acc-ink) 86%, var(--bzl-fg));
+  --pi-line-color: var(--bzl-ink-2);
+}
+.bzp .pi-icon {
+  box-shadow:
+    inset 0 0 0 1px color-mix(in oklab, var(--acc) 22%, transparent),
+    0 10px 26px -16px color-mix(in oklab, var(--acc-ink) 70%, transparent);
+}
+.bzp .pi-line { font-weight: 600; }
+/* docked: the promise beside the name, set off by a rule in the pillar's colour */
+.bzp-dock-line {
+  display: block;
+  font-size: clamp(0.95rem, min(1.5vw, 2.8svh), 1.4rem);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+  color: var(--bzl-ink-2);
+  text-wrap: balance;
+}
+@media (min-width: 768px) {
+  .bzp-dock-line {
+    padding-left: clamp(0.8rem, 1.6vw, 1.4rem);
+    border-left: 2px solid color-mix(in oklab, var(--acc) 40%, transparent);
+  }
+}
+@media (max-width: 767px) {
+  .bzp-dock-line { font-size: 0.95rem; text-align: center; }
+}
+
+/* under the bar: the content fills the rest of the screen */
+.bzp-body {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: calc(100svh - var(--pi-nav) - var(--pi-dock-h));
+  padding-block: clamp(1.25rem, 4svh, 3rem);
 }

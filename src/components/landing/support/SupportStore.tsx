@@ -28,7 +28,8 @@ import { span, typed, useRewindLoop } from "../useRewindLoop";
  * time-driven (those stay as they are for the other sections).
  */
 
-const ORANGE = "#f28c38";
+/** The true Bizmis primary (hsl(var(--primary))), as the real widget paints its UI. */
+const ORANGE = "#F9A353";
 
 // The widget's tool icon for each support case.
 const TOOLS: Record<string, LucideIcon> = {
@@ -201,7 +202,7 @@ const WidgetCard = ({
         <div
           className={cn(
             "flex h-[44px] items-center rounded-2xl border bg-white/60 py-1.5 pl-4 pr-1.5 transition-colors duration-200",
-            typing ? "border-[color:color-mix(in_oklab,#f28c38_45%,transparent)]" : "border-black/10",
+            typing ? "border-[color:color-mix(in_oklab,#F9A353_45%,transparent)]" : "border-black/10",
           )}
         >
           <span className="min-w-0 flex-1 truncate text-sm" data-testid="support-composer">

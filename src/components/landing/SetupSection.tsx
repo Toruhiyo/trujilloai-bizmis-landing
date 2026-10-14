@@ -197,11 +197,11 @@ const SetupSection = () => {
                 {/* warmer and stronger toward the agent, as the energy gathers */}
                 <linearGradient id="setup-line" gradientUnits="userSpaceOnUse" x1={ends.x1} x2={ends.x2} y1="0" y2="0">
                   <stop offset="0" stopColor="rgb(249 163 83 / 0.2)" />
-                  <stop offset="1" stopColor="rgb(242 140 56 / 0.42)" />
+                  <stop offset="1" stopColor="rgb(249 163 83 / 0.42)" />
                 </linearGradient>
                 <radialGradient id="setup-spark-halo">
-                  <stop offset="0" stopColor="rgb(249 146 52 / 0.75)" />
-                  <stop offset="1" stopColor="rgb(249 146 52 / 0)" />
+                  <stop offset="0" stopColor="rgb(249 163 83 / 0.75)" />
+                  <stop offset="1" stopColor="rgb(249 163 83 / 0)" />
                 </radialGradient>
               </defs>
               <g mask="url(#setup-mask)">
@@ -249,8 +249,8 @@ const SetupSection = () => {
             </svg>
 
             {/* Your Shopify store data, syncing card by card */}
-            <Reveal className="relative z-10 w-full max-w-[min(20rem,52%)] rounded-[26px] border border-[color-mix(in_oklab,var(--bzl-orange)_22%,transparent)] bg-white/75 p-3 shadow-[0_30px_70px_-40px_rgba(236,119,9,0.45)] backdrop-blur-md sm:p-4">
-              <p className="flex items-center justify-center gap-2 pb-3 pt-1 text-sm font-semibold text-[var(--bzl-orange-dark)] sm:text-base">
+            <Reveal className="relative z-10 w-full max-w-[min(20rem,52%)] rounded-[26px] border border-[color-mix(in_oklab,hsl(var(--primary))_22%,transparent)] bg-white/75 p-3 shadow-[0_30px_70px_-40px_rgba(249,163,83,0.45)] backdrop-blur-md sm:p-4">
+              <p className="flex items-center justify-center gap-2 pb-3 pt-1 text-sm font-semibold text-[hsl(var(--primary))] sm:text-base">
                 <FaShopify className="h-4 w-4 sm:h-5 sm:w-5" />
                 {setup.storeDataTitle}
               </p>
@@ -263,23 +263,23 @@ const SetupSection = () => {
                       key={card.title}
                       ref={(el) => (cards.current[i] = el)}
                       className={cn(
-                        "group relative flex h-[clamp(2.4rem,5.4svh,3.5rem)] items-center gap-3 overflow-hidden rounded-2xl px-3.5 shadow-[0_4px_20px_-4px_rgba(28,24,20,0.06),0_2px_8px_-2px_rgba(242,140,56,0.1)] transition-[background-color,opacity,transform] duration-500",
-                        on ? "bg-[color-mix(in_oklab,var(--bzl-orange)_11%,#fff)] opacity-100" : "bg-white/70 opacity-60",
+                        "group relative flex h-[clamp(2.4rem,5.4svh,3.5rem)] items-center gap-3 overflow-hidden rounded-2xl px-3.5 shadow-[0_4px_20px_-4px_rgba(28,24,20,0.06),0_2px_8px_-2px_rgba(249,163,83,0.1)] transition-[background-color,opacity,transform] duration-500",
+                        on ? "bg-[color-mix(in_oklab,hsl(var(--primary))_11%,#fff)] opacity-100" : "bg-white/70 opacity-60",
                       )}
                     >
                       {/* the classic cards' Shopify watermark */}
                       <FaShopify
                         aria-hidden="true"
-                        className="absolute -right-1 top-1/2 h-10 w-10 -translate-y-1/2 text-[var(--bzl-orange)] opacity-[0.12]"
+                        className="absolute -right-1 top-1/2 h-10 w-10 -translate-y-1/2 text-[hsl(var(--primary))] opacity-[0.12]"
                       />
-                      <Icon className="relative h-[1.05rem] w-[1.05rem] flex-shrink-0 text-[color-mix(in_oklab,var(--bzl-orange-strong)_75%,transparent)]" />
+                      <Icon className="relative h-[1.05rem] w-[1.05rem] flex-shrink-0 text-[color-mix(in_oklab,hsl(var(--primary))_75%,transparent)]" />
                       <span className="relative min-w-0 flex-1 truncate text-[15px] font-semibold tracking-[-0.01em] text-[var(--bzl-fg)] sm:text-base">
                         {card.title}
                       </span>
                       <span
                         aria-hidden="true"
                         className={cn(
-                          "relative grid h-5 w-5 flex-shrink-0 place-items-center rounded-full bg-[var(--bzl-orange-strong)] text-white transition-[opacity,transform] duration-300",
+                          "relative grid h-5 w-5 flex-shrink-0 place-items-center rounded-full bg-[hsl(var(--primary))] text-white transition-[opacity,transform] duration-300",
                           on ? "scale-100 opacity-100" : "scale-50 opacity-0",
                         )}
                       >
@@ -303,11 +303,11 @@ const SetupSection = () => {
             >
               <span
                 className={cn(
-                  "flex items-center gap-2 whitespace-nowrap rounded-full px-4 py-2.5 text-sm font-semibold shadow-[0_14px_30px_-12px_rgba(236,119,9,0.6)] transition-[transform,background-color,color] duration-200 sm:text-base",
+                  "flex items-center gap-2 whitespace-nowrap rounded-full px-4 py-2.5 text-sm font-semibold shadow-[0_14px_30px_-12px_rgba(249,163,83,0.6)] transition-[transform,background-color,color] duration-200 sm:text-base",
                   phase === "press" ? "scale-90" : "scale-100",
                   phase === "syncing" || phase === "done"
-                    ? "bg-white text-[var(--bzl-orange-dark)] ring-1 ring-[color-mix(in_oklab,var(--bzl-orange)_35%,transparent)]"
-                    : "bg-[var(--bzl-orange-strong)] text-white",
+                    ? "bg-white text-[hsl(var(--primary))] ring-1 ring-[color-mix(in_oklab,hsl(var(--primary))_35%,transparent)]"
+                    : "bg-[hsl(var(--primary))] text-white",
                 )}
               >
                 {phase === "syncing" ? (
@@ -353,7 +353,7 @@ const SetupSection = () => {
                 />
                 <div
                   aria-hidden="true"
-                  className="absolute inset-x-[-25%] bottom-[-3%] h-[10%] rounded-[50%] bg-[radial-gradient(closest-side,rgba(236,119,9,0.3),transparent)]"
+                  className="absolute inset-x-[-25%] bottom-[-3%] h-[10%] rounded-[50%] bg-[radial-gradient(closest-side,rgba(249,163,83,0.3),transparent)]"
                 />
                 {/* the charge-up, anime style (a rendered clip: squeezed eyes, gritted teeth, a shout on the burst) */}
                 <video

@@ -133,7 +133,7 @@ const CallAudio = ({
         type="button"
         onClick={toggle}
         aria-label={playing ? "Pause" : "Play"}
-        className="grid h-10 w-10 flex-shrink-0 place-items-center rounded-full bg-[linear-gradient(180deg,var(--bzl-orange),var(--bzl-orange-strong))] text-white shadow-[0_8px_18px_-8px_rgba(236,119,9,0.7)]"
+        className="grid h-10 w-10 flex-shrink-0 place-items-center rounded-full bg-[linear-gradient(180deg,hsl(var(--primary)),hsl(var(--primary)))] text-white shadow-[0_8px_18px_-8px_rgba(249,163,83,0.7)]"
       >
         {playing ? (
           <Pause className="h-4 w-4 fill-current" />
@@ -146,7 +146,7 @@ const CallAudio = ({
           {wave.map((h, i) => (
             <i
               key={i}
-              className="flex-1 rounded-full bg-[var(--bzl-orange-strong)] transition-opacity duration-300"
+              className="flex-1 rounded-full bg-[hsl(var(--primary))] transition-opacity duration-300"
               style={{
                 height: `${h}%`,
                 opacity: i < progress * wave.length ? 0.9 : 0.22,
@@ -166,10 +166,10 @@ const CallAudio = ({
             return (
               <span
                 key={m.time}
-                className="pointer-events-none absolute top-0 h-full w-px bg-[var(--bzl-orange-dark)]"
+                className="pointer-events-none absolute top-0 h-full w-px bg-[hsl(var(--primary))]"
                 style={{ left: `${(m.time / duration) * 100}%` }}
               >
-                <span className="absolute -left-2.5 -top-2 grid h-5 w-5 place-items-center rounded-full border-2 border-white bg-[var(--bzl-orange-dark)] text-white">
+                <span className="absolute -left-2.5 -top-2 grid h-5 w-5 place-items-center rounded-full border-2 border-white bg-[hsl(var(--primary))] text-white">
                   <Icon className="h-2.5 w-2.5" />
                 </span>
               </span>
@@ -222,7 +222,7 @@ const ReplayCard = ({ session }: { session: ReplaySession }) => {
 
   const ring = (id: string) =>
     focused === id
-      ? "ring-2 ring-[var(--bzl-orange)] shadow-[0_10px_30px_-12px_rgba(236,119,9,0.6)]"
+      ? "ring-2 ring-[hsl(var(--primary))] shadow-[0_10px_30px_-12px_rgba(249,163,83,0.6)]"
       : "";
 
   return (
@@ -231,7 +231,7 @@ const ReplayCard = ({ session }: { session: ReplaySession }) => {
         className={cn(
           "mb-5 h-1 rounded-full",
           data.success
-            ? "bg-[linear-gradient(90deg,var(--bzl-orange),transparent)]"
+            ? "bg-[linear-gradient(90deg,hsl(var(--primary)),transparent)]"
             : "bg-[linear-gradient(90deg,#c9c9ce,transparent)]",
         )}
       />
@@ -244,7 +244,7 @@ const ReplayCard = ({ session }: { session: ReplaySession }) => {
             className={cn(
               "mt-1 text-xs font-bold uppercase tracking-wider",
               data.success
-                ? "text-[var(--bzl-orange-dark)]"
+                ? "text-[hsl(var(--primary))]"
                 : "text-[var(--bzl-faint)]",
             )}
           >
@@ -261,7 +261,7 @@ const ReplayCard = ({ session }: { session: ReplaySession }) => {
           <User className="h-3 w-3" />
           {data.customer.name || m.anonymousCustomer}
           {data.customer.isLoyal && (
-            <span className="rounded-full bg-[var(--bzl-orange-wash)] px-1.5 py-0.5 font-semibold text-[var(--bzl-orange-dark)]">
+            <span className="rounded-full bg-[color-mix(in_oklab,hsl(var(--primary))_14%,#fff)] px-1.5 py-0.5 font-semibold text-[hsl(var(--primary))]">
               {m.vip}
             </span>
           )}
@@ -308,7 +308,7 @@ const ReplayCard = ({ session }: { session: ReplaySession }) => {
                     )}
                   >
                     <p className="flex items-center gap-1.5 px-1 pt-0.5 text-xs font-semibold text-[var(--bzl-fg)]">
-                      <ShoppingCart className="h-3.5 w-3.5 text-[var(--bzl-orange-dark)]" />
+                      <ShoppingCart className="h-3.5 w-3.5 text-[hsl(var(--primary))]" />
                       {c.content}
                       <span className="ml-3 font-normal text-[var(--bzl-faint)]">
                         {c.time}
@@ -333,7 +333,7 @@ const ReplayCard = ({ session }: { session: ReplaySession }) => {
                             {p.description}
                           </p>
                         </div>
-                        <span className="ml-1 grid h-5 w-5 flex-shrink-0 place-items-center rounded-full bg-[var(--bzl-orange-wash)] text-[var(--bzl-orange-dark)]">
+                        <span className="ml-1 grid h-5 w-5 flex-shrink-0 place-items-center rounded-full bg-[color-mix(in_oklab,hsl(var(--primary))_14%,#fff)] text-[hsl(var(--primary))]">
                           <Check className="h-3 w-3" strokeWidth={3} />
                         </span>
                       </div>
@@ -349,9 +349,9 @@ const ReplayCard = ({ session }: { session: ReplaySession }) => {
                 >
                   <p className="flex items-center gap-2 text-sm font-semibold text-[var(--bzl-fg)]">
                     {c.content === "Policy Lookup" ? (
-                      <FileSearch className="h-4 w-4 text-[var(--bzl-orange-dark)]" />
+                      <FileSearch className="h-4 w-4 text-[hsl(var(--primary))]" />
                     ) : (
-                      <Search className="h-4 w-4 text-[var(--bzl-orange-dark)]" />
+                      <Search className="h-4 w-4 text-[hsl(var(--primary))]" />
                     )}
                     {c.content}
                     <span className="ml-auto text-xs font-normal text-[var(--bzl-faint)]">
@@ -399,14 +399,14 @@ const ReplayCard = ({ session }: { session: ReplaySession }) => {
                       src={agent.image}
                       alt={agent.name}
                       loading="lazy"
-                      className="h-7 w-7 flex-shrink-0 rounded-full bg-[var(--bzl-orange-wash)] object-cover"
+                      className="h-7 w-7 flex-shrink-0 rounded-full bg-[color-mix(in_oklab,hsl(var(--primary))_14%,#fff)] object-cover"
                     />
                   )}
                   <div
                     className={cn(
                       "max-w-[78%] rounded-2xl px-3.5 py-2 text-sm transition-all duration-500",
                       c.type === "agent"
-                        ? "rounded-bl-md bg-[var(--bzl-orange-wash)] text-[var(--bzl-fg)]"
+                        ? "rounded-bl-md bg-[color-mix(in_oklab,hsl(var(--primary))_14%,#fff)] text-[var(--bzl-fg)]"
                         : "rounded-br-md bg-[var(--bzl-card)] text-[var(--bzl-fg)]",
                       ring(c.id),
                     )}
@@ -421,7 +421,7 @@ const ReplayCard = ({ session }: { session: ReplaySession }) => {
             </div>
           ))}
           <div className="flex flex-col items-center pt-4 text-center">
-            <span className="grid h-10 w-10 place-items-center rounded-full bg-[var(--bzl-orange-wash)] text-[var(--bzl-orange-dark)]">
+            <span className="grid h-10 w-10 place-items-center rounded-full bg-[color-mix(in_oklab,hsl(var(--primary))_14%,#fff)] text-[hsl(var(--primary))]">
               <Phone className="h-4 w-4" />
             </span>
             <p className="mt-2 text-xs text-[var(--bzl-muted)]">
@@ -466,7 +466,7 @@ const SessionReplay = () => {
               className={cn(
                 "relative flex flex-shrink-0 items-center gap-1.5 rounded-full px-3.5 py-2 text-sm font-semibold transition-all duration-300",
                 on
-                  ? "bg-white text-[var(--bzl-orange-dark)] shadow-[0_8px_22px_-10px_rgba(236,119,9,0.55)] ring-1 ring-[color-mix(in_oklab,var(--bzl-orange)_40%,transparent)]"
+                  ? "bg-white text-[hsl(var(--primary))] shadow-[0_8px_22px_-10px_rgba(249,163,83,0.55)] ring-1 ring-[color-mix(in_oklab,hsl(var(--primary))_40%,transparent)]"
                   : "text-[var(--bzl-muted)] hover:text-[var(--bzl-fg)]",
               )}
             >
@@ -479,7 +479,7 @@ const SessionReplay = () => {
                 <X className="h-3.5 w-3.5" strokeWidth={3} />
               )}
               {s.data.customer.name && (
-                <span className="rounded-full bg-[var(--bzl-orange-wash)] px-1.5 text-[10px] text-[var(--bzl-orange-dark)]">
+                <span className="rounded-full bg-[color-mix(in_oklab,hsl(var(--primary))_14%,#fff)] px-1.5 text-[10px] text-[hsl(var(--primary))]">
                   {m.vip}
                 </span>
               )}
