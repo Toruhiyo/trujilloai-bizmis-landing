@@ -2,7 +2,7 @@
   {
     "id": "t-pain",
     "role": "narrator",
-    "text": "[playful] [quickly] Every day, shoppers walk into your store ready to buy. [exasperated] [playful] Some get lost in the catalog, [rapid-fire] clicking, comparing, scrolling, [dramatic] with no one there to help them choose! Others get stuck on one last question and go looking for help. [wry] A chatbot? [eye-roll] Here's a wall of text, go read it. [hopeful] A real person? The perfect answer, [mock-dramatic] hours later, when the sale's already gone. [playful] Either way, they leave.",
+    "text": "[playful] [quickly] Every day, shoppers walk into your store ready to buy. [exasperated] [playful] Some get lost in the catalog, [rapid-fire] clicking, comparing, scrolling, [dramatic] with no one there to help them choose! Others get stuck on one last question and go looking for help. [sarcastic] [quickly] A chatbot? Here's a wall of text, go read it. [ironic] [quickly] A real person? A reply... hours later, when the sale's already gone. [playful] Either way, they leave.",
     "speed": 1.12
   },
   {
@@ -94,7 +94,7 @@
   {
     "id": "clerk-upsell",
     "role": "clerk",
-    "text": "[quickly] Great pick! This one pairs beautifully with it. Want me to add it too?"
+    "text": "[quickly] Great pick! This one goes hand in hand with it. Want me to add it too?"
   },
   {
     "id": "shopper-upsell",

@@ -183,7 +183,7 @@
   // The narrator speaks in whole takes (Claudia, Eleven v4, audio tags in the
   // text); the picture syncs to phrases inside each take (speakTake().at()).
   const PROMO_VO = [
-    { scene: 'pain', id: 't-pain', line: "Every day, shoppers walk into your store ready to buy. Some get lost in the catalog, clicking, comparing, scrolling, with no one there to help them choose. Others get stuck on one last question and go looking for help. A chatbot? Here's a wall of text, go read it. A real person? The perfect answer, hours later, when the sale's already gone. Either way, they leave." },   // v25: the brisk take (eleven_v4, speed 1.12)
+    { scene: 'pain', id: 't-pain', line: "Every day, shoppers walk into your store ready to buy. Some get lost in the catalog, clicking, comparing, scrolling, with no one there to help them choose. Others get stuck on one last question and go looking for help. A chatbot? Here's a wall of text, go read it. A real person? A reply... hours later, when the sale's already gone. Either way, they leave." },   // v25: the brisk take (eleven_v4, speed 1.12); v34: a sarcastic chatbot + reply segment spliced in
     { scene: 'pain', id: 't-pain-end', line: 'Sale lost.' },   // v18: its own take, on the sea's first LOST stamps
     { scene: 'switch', id: 't-switch', line: 'In a physical store, the best salesperson turns these moments into sales. So we built one, for your online store!' },
     { scene: 'reveal', id: 't-reveal', line: "Meet Bizmis. Your store's new salesperson. Well... sales agent." },
@@ -412,6 +412,9 @@
   const PROMO_FLIP_SPARKS = 18;
   const PROMO_FLIP_POP_HOLD_MS = 450;   // v25: 650 -> 450 (the faster cut)
   const PROMO_TOGGLE_REST_MS = 650;
+  const LEAD_WRAP = '[data-promo-lead-wrap]';   // v34: the pitch's lead copy sits in a class-carrying, box-less wrapper
+  const PROMO_LIVE_CARD_OUT_MS = 420;
+  const PROMO_PITCH_HANDOFF_MS = 400;   // v34: the close-up's dissolve into the pitch sea's lead card   // the live widget card's fade out (html.is-promo-card-out)
   const PROMO_RECAP_BUBBLES = ['Can I help you find something?', "That one's perfect for them."];
   const PROMO_RECAP_STAGGER_MS = 380;
   const PROMO_OPENING_REVEAL_STORE = false;
@@ -2134,7 +2137,7 @@
     'moment-upsell-b': { action: 'thinking' },
   };
   const PROMO_MOMENT_TAKE_HEROES = {
-    b: { go: 'cone', pick: 'cylinder', other: 'dome', extra: 'slab' },
+    b: { go: 'cone', pick: 'cylinder', other: 'dome', extra: 'cradle' },
   };
   const PROMO_CURSOR_HOT_X = 33 * (5 / 24);
   const PROMO_CURSOR_HOT_Y = 33 * (3.2 / 24);
@@ -3322,10 +3325,11 @@
     dodecahedron: { family: 'pointed', tint: 'blush' },
     'rounded-tetrahedron': { family: 'pointed', tint: 'warm-grey' },
     slab: { family: 'flat', tint: 'sand' },
+    cradle: { family: 'flat', tint: 'sand' },   // v34: the cross-sell match, a puck with a hollow the sphere fits
     lens: { family: 'flat', tint: 'sage' },
     'squircle-slab': { family: 'flat', tint: 'blush' },
   };
-  const PROMO_CLAY_KINDS = Object.keys(PROMO_CATALOG).filter((kind) => PROMO_CLAY_TINTS.includes(PROMO_CATALOG[kind].tint));
+  const PROMO_CLAY_KINDS = Object.keys(PROMO_CATALOG).filter((kind) => kind !== 'cradle' && PROMO_CLAY_TINTS.includes(PROMO_CATALOG[kind].tint));   // the cradle is only ever the match
   const PROMO_CLAY_TURNS = ['m20', '0', 'p20'];
   const PROMO_CLAY_FINISHES = ['matte', 'satin'];
   const PROMO_CLAY_SCALES = [0.8, 0.86, 0.92, 0.98, 1.04, 1.1];
@@ -3335,7 +3339,7 @@
   const PROMO_MOMENT_OTHER_INDEX = 3;
   const PROMO_COMPARE_SHAPES = { go: 'capsule', pick: 'sphere', other: 'rounded-cube' };
   const PROMO_COMPARE_TINTS = { go: 'sage', pick: 'apricot', other: 'stone' };
-  const PROMO_ACCESSORY_OBJECT_SCALE = 1.08;
+  const PROMO_ACCESSORY_OBJECT_SCALE = 1;   // v34: the match draws at the favourite's scale, so the sphere fits the cradle's hollow exactly (was 1.08 for the slab)
   const PROMO_TINT_FILE = {
     sphere: { stone: 'sphere-b' },
     capsule: { stone: 'capsule' },
@@ -3527,7 +3531,7 @@
 
   function accessoryLook() {
     return {
-      kind: 'slab',
+      kind: 'cradle',
       turn: '0',
       finish: 'matte',
       scale: 1,
@@ -6508,7 +6512,7 @@
       const clay = promoClayUrls();
       const product = (title, key) => ({ title, url: `https://bizmis.ai/demo/${key}`, imageUrl: clay[key] || '' });
       const pick = product('The favorite', 'sphere');
-      const match = product('The match', 'slab');
+      const match = product('The match', 'cradle');
 
       this.preloadVideos(loadStoreReel().flatMap((item) => [item.video, item.ambient]));   // decoded long before the reel
       // Moment 1. The narrator names it first; then the interaction runs with
@@ -6598,7 +6602,7 @@
       // vertical carousel of the catalog spins and settles on the match,
       // which flies into place beside it. Added once the clerk is done.
       await this.laserUntilNext('products', reduced, PROMO_DOUBT_LASER_MS);   // v25b: 400 -> 320
-      const spin = reduced ? null : this.spinCrossSell('slab');
+      const spin = reduced ? null : this.spinCrossSell('cradle');
       let bundled = false;
       const bundle = () => {
         if (bundled) return; bundled = true;
@@ -6610,7 +6614,7 @@
       // the chapter is named when the clerk names the pairing, not before
       // v13: a live, back-and-forth voice exchange: the clerk suggests and asks,
       // the shopper says yes, the clerk confirms (the add-on lands on "add it")
-      const upsell = this.speakClerk('clerk-upsell', reduced, { pairs: () => this.showChapter('Missed add-on', 'Paired perfectly') })
+      const upsell = this.speakClerk('clerk-upsell', reduced, { 'hand in hand': () => this.showChapter('Missed add-on', 'Paired perfectly') })
         .then(() => this.speakShopperLine('shopper-upsell', reduced, { 'add it': bundle }))
         .then(() => this.speakClerk('clerk-upsell-done', reduced));
       await spin?.landed;
@@ -6632,13 +6636,16 @@
       this.painStore()?.querySelectorAll('.promo-close__veil, .promo-close__mark, .promo-glide__lost-mark, .promo-glide__veil').forEach((node) => node.remove());
       this.painStore()?.querySelectorAll('[style*="grayscale"]').forEach((node) => { node.style.filter = ''; });
       await this.markCloseStoreSold();
+      // v34: the clerk stays live through the beat before the pull-back (it used to freeze on a still and fade
+      // onto it for 420 ms); the still is the last live frame, pinned as the camera starts, so nothing freezes
+      if (!reduced) await waitMs(PROMO_LIVE_CARD_OUT_MS);
       await this.rememberPitchLead();
       this.muteWidgetActivity(false);
       promoWidgetDebug('debugVoiceMode', { on: false });
       this._voiceLive = false;
       promoWidgetDebug('setPlaceholder', null);
       endOpeningAgent();
-      await this.releaseLiveCard();
+      await this.releaseLiveCard({ instant: true });
       this.playPitchConveyor();
     }
 
@@ -7343,11 +7350,13 @@
       }, 940);
     }
 
-    async releaseLiveCard() {
+    // instant: the card's still is already pinned in the store (the pitch's pull-back), so it goes at once
+    async releaseLiveCard({ instant = false } = {}) {
       const widget = this.root.querySelector('[data-promo-widget]');
       const stage = this.root.querySelector('.promo-opening__stage');
+      if (instant && widget) widget.style.transition = 'none';
       document.documentElement.classList.add('is-promo-card-out');
-      if (!prefersReducedMotion()) await waitMs(420);
+      if (!instant && !prefersReducedMotion()) await waitMs(PROMO_LIVE_CARD_OUT_MS);
       if (widget && stage && widget.parentElement !== stage) stage.appendChild(widget);
       if (widget) {
         widget.style.top = '';
@@ -11293,6 +11302,8 @@
       clone.querySelectorAll('[id]').forEach((node) => node.removeAttribute('id'));
       clone.classList.remove('is-belt-stage');
       clone.removeAttribute('style');
+      // v34: keep the close-up's SOLD tint on the copy, or it pops off on frame one
+      if (mode === 'pitch') clone.style.filter = store.style.filter;   // the lift is matched by dissolveCloseStore
       const rect = store.getBoundingClientRect();
       clone.dataset.naturalW = String(rect.width || store.offsetWidth || 0);
       clone.dataset.naturalH = String(rect.height || store.offsetHeight || 0);
@@ -11434,8 +11445,9 @@
       field.setAttribute('data-promo-grid-field', '');
       const lead = document.createElement('div');
       lead.className = 'promo-glide__lead';
-      const pitchRaster = mode === 'pitch' && this.pitchLeadKey && this.cellRasters?.has(this.pitchLeadKey);
-      const clone = (mode === 'pain' && this.cellRasters?.size) || pitchRaster ? null : this.gridLeadNode(mode);
+      // v34: the pitch's pull-back starts on a DOM copy of the close-up too (its raster only takes over once the
+      // copy has faded), so the first frame of the sea is the close-up's last frame, not a re-drawing of it
+      const clone = mode === 'pain' && this.cellRasters?.size ? null : this.gridLeadNode(mode);
       if (clone) lead.append(clone);
       const viewWrap = document.createElement('div');
       viewWrap.className = 'promo-glide__view';
@@ -11471,7 +11483,7 @@
       root.append(viewWrap, light, dofMid, dofFar, horizon, caption, field, lead);
       root._glidePool = pool;
       wall.append(root);
-      if (store && !this.glideKeepStore) store.style.visibility = 'hidden';
+      if (store && !this.glideKeepStore && !this.pitchHandoff) store.style.visibility = 'hidden';   // v34: the pitch's live store dissolves into the sea instead
       const start = storeBox && storeBox.width > 40
         ? {
           x: storeBox.left - wallBox.left,
@@ -12191,7 +12203,8 @@
         if (!this.glideZoomFrom) {
           const closeW = this.glideCloseRect?.w || faceW;
           const closeH = this.glideCloseRect?.h || faceH;
-          const cover = Math.max(closeW / faceW, closeH / faceH);
+          // v34: the pitch's lead copy is width-fitted, so its zoom matches widths (frame one = the close-up)
+          const cover = mode === 'pitch' ? closeW / faceW : Math.max(closeW / faceW, closeH / faceH);
           this.glideZoomFrom = cover;
           this.glideZoomFromY = cover;
           this.glideAnchor = null;
@@ -12280,7 +12293,7 @@
             node.style.visibility = 'hidden';
           });
         } else if (item.cell.key === this.glideLeadKey) {
-          const covered = arrive < 0.98 && slot.cell.querySelector(':scope > .promo-opening__store');
+          const covered = arrive < 0.98 && slot.cell.querySelector(`:scope > .promo-opening__store, :scope > ${LEAD_WRAP} > .promo-opening__store`);
           if (covered) {
             delete slot.cell.dataset.leadOpen;
           } else if (slot.cell.dataset.leadOpen !== '1') {
@@ -12306,6 +12319,7 @@
       const leadNode = (root._glidePool || []).find((item) => item.cell.dataset.key === this.glideLeadKey)?.cell;
       this.measureGlideAnchor(root, leadNode);
       this.placeGlideLead(root, leadNode, arrive);
+      if (mode === 'pitch' && this.pitchHandoff) this.dissolveCloseStore(leadNode, time);   // v34: after the anchor is measured
       if (mode === 'pain') this.paintPainCaption(root, options.reduced ? marks.captionHoldEnd - 120 : time);
       this.paintSalesBar(root, time, mode, frame, options.reduced);   // v24: the claims' sales bar
       const horizon = root.querySelector('.promo-glide__horizon');
@@ -12333,7 +12347,9 @@
       if (box.width < 8 || box.height < 8) return;
       const originX = box.left - host.left + box.width / 2;
       const originY = box.top - host.top + box.height / 2;
-      const cover = Math.max(this.glideCloseRect.w / box.width, this.glideCloseRect.h / box.height);
+      const cover = root.classList.contains('is-pain')
+        ? Math.max(this.glideCloseRect.w / box.width, this.glideCloseRect.h / box.height)
+        : this.glideCloseRect.w / box.width;   // v34: see paintGlideAt (the pitch copy is width-fitted)
       this.glideZoomFrom = cover;
       this.glideZoomFromY = cover;
       this.glideAnchor = { x: originX, y: originY };
@@ -12347,9 +12363,10 @@
 
     placeGlideLead(root, cellNode, arrive) {
       const lead = root.querySelector('.promo-glide__lead');
-      const clone = root.querySelector('.promo-glide__cell > .promo-opening__store')
+      const clone = root.querySelector(`.promo-glide__cell > .promo-opening__store, .promo-glide__cell > ${LEAD_WRAP} > .promo-opening__store`)
         || lead?.querySelector('.promo-opening__store');
       if (!clone) return;
+      const carrier = clone.parentElement?.matches(LEAD_WRAP) ? clone.parentElement : clone;   // v34: the pitch copy moves with its wrapper
       const fadeStart = 0.96;
       const fadeEnd = 0.99;
       if (!cellNode || cellNode.hidden || arrive >= fadeEnd) {
@@ -12366,7 +12383,7 @@
         this.placeLeadShade(null, 0);
         return;
       }
-      if (clone.parentElement !== cellNode) cellNode.appendChild(clone);
+      if (carrier.parentElement !== cellNode) cellNode.appendChild(carrier);
       const width = parseFloat(cellNode.style.width) || cellNode.offsetWidth;
       const height = parseFloat(cellNode.style.height) || cellNode.offsetHeight;
       const naturalW = Number(clone.dataset.naturalW) || width;
@@ -12377,7 +12394,14 @@
       clone.style.zIndex = '2';
       clone.style.width = `${naturalW.toFixed(1)}px`;
       clone.style.height = `${naturalH.toFixed(1)}px`;
-      clone.style.transform = `scale(${(width / naturalW).toFixed(4)}, ${(height / naturalH).toFixed(4)})`;
+      if (root.classList.contains('is-pain')) {
+        clone.style.transform = `scale(${(width / naturalW).toFixed(4)}, ${(height / naturalH).toFixed(4)})`;
+      } else {
+        // v34: the pitch copy keeps the close-up's proportions (uniform, width-fitted, centred in the card), so
+        // it registers with the live store dissolving over it instead of being squashed to the card's shape
+        const fit = width / naturalW;
+        clone.style.transform = `translate(0px, ${((height - naturalH * fit) / 2).toFixed(2)}px) scale(${fit.toFixed(4)})`;
+      }
       clone.style.boxShadow = 'none';
       {
         // v10: the close-up keeps its own device corners inside the sea cell
@@ -12461,6 +12485,49 @@
       shade.style.top = `${(box.top - hostBox.top).toFixed(2)}px`;
       shade.style.width = `${box.width.toFixed(2)}px`;
       shade.style.height = `${box.height.toFixed(2)}px`;
+    }
+
+    // v34: the pitch's pull-back starts on the live close-up itself: it rides the lead card for the first
+    // PROMO_PITCH_HANDOFF_MS of the camera move and dissolves into the card's copy, so the hand-off has no cut
+    dissolveCloseStore(leadNode, time) {
+      const store = this.painStore();
+      const u = Math.min(1, Math.max(0, time / PROMO_PITCH_HANDOFF_MS));
+      const copy = leadNode && !leadNode.hidden ? leadNode.querySelector(':scope > .promo-opening__store') : null;
+      const ready = copy && copy.style.visibility !== 'hidden';
+      if (!store || u >= 1 || !ready) {
+        if (store) {
+          store.style.visibility = 'hidden';
+          store.style.opacity = '';
+          store.style.transform = '';
+        }
+        if (copy) copy.style.translate = '';
+        this.root.classList.remove('is-close-seat');
+        this.closeStoreHome = null;
+        this.pitchHandoff = false;
+        return;
+      }
+      this.root.classList.add('is-close-seat');
+      // screen px per px inside the lead card (the sea is zoomed in at first)
+      const cardBox = leadNode.getBoundingClientRect();
+      const perPx = cardBox.width / (parseFloat(leadNode.style.width) || leadNode.offsetWidth || cardBox.width);
+      if (!this.closeStoreHome) {
+        // frame one: the live store untransformed, and how far its copy sits from it
+        store.style.transform = 'none';
+        copy.style.translate = '';
+        const home = store.getBoundingClientRect();
+        const first = copy.getBoundingClientRect();
+        this.closeStoreHome = { left: home.left, top: home.top, width: home.width, fixX: home.left - first.left, fixY: home.top - first.top };
+      }
+      const home = this.closeStoreHome;
+      const e = u * u * (3 - 2 * u);
+      // the copy starts exactly on the live store and eases into its own place in the card...
+      copy.style.translate = `${(home.fixX * (1 - e) / perPx).toFixed(2)}px ${(home.fixY * (1 - e) / perPx).toFixed(2)}px`;
+      // ...and the live store rides the copy's box while it dissolves into it
+      const box = copy.getBoundingClientRect();
+      store.style.transition = 'none';
+      store.style.transformOrigin = '0 0';
+      store.style.transform = `translate(${(box.left - home.left).toFixed(2)}px, ${(box.top - home.top).toFixed(2)}px) scale(${(box.width / home.width).toFixed(4)})`;
+      store.style.opacity = (1 - e).toFixed(3);
     }
 
     releaseCloseStore() {
@@ -12921,7 +12988,7 @@
     }
 
     visibleCloseStore() {
-      const seated = this.root.querySelector('.promo-glide__cell > .promo-opening__store');
+      const seated = this.root.querySelector(`.promo-glide__cell > .promo-opening__store, .promo-glide__cell > ${LEAD_WRAP} > .promo-opening__store`);
       if (seated && seated.style.visibility !== 'hidden') return seated;
       return this.root.querySelector('.promo-glide__lead .promo-opening__store') || this.painStore();
     }
@@ -12930,7 +12997,7 @@
       const root = this.root.querySelector('[data-promo-glide]');
       const pooled = (root?._glidePool || []).find((item) => item.cell.dataset.key === this.glideLeadKey)?.cell;
       if (pooled) return pooled;
-      return this.root.querySelector('.promo-glide__cell > .promo-opening__store')?.parentElement || null;
+      return this.root.querySelector(`.promo-glide__cell > .promo-opening__store, .promo-glide__cell > ${LEAD_WRAP} > .promo-opening__store`)?.closest('.promo-glide__cell') || null;
     }
 
     async poofCloseStore(voice) {
@@ -14204,6 +14271,8 @@
       this.painLostKeys = new Set();
       if (pitchRaster && this.pitchLeadKey) this.cellRasters.set(this.pitchLeadKey, pitchRaster);
       this.captureGlideClose('pitch');
+      this.closeStoreHome = null;
+      this.pitchHandoff = true;   // v34: see dissolveCloseStore
       if (!this.pitchCardsPlayed) await this.markCloseStoreSold();
       if (generation !== this.scaleGeneration) return;
       this.revealScaleLayer();
