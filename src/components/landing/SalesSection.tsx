@@ -1,5 +1,3 @@
-import { useLocation } from "react-router-dom";
-import SalesA from "./sales/SalesA";
 import SalesC from "./sales/SalesC";
 import "@/styles/landing-sales.css";
 
@@ -9,19 +7,10 @@ import "@/styles/landing-sales.css";
  * its funnel stage (discovery, decision, checkout), shown on a device with
  * the real Bizmis widget and, beside it, that stage improving across the
  * whole store's traffic; the pillar ends on all three improving at once,
- * the funnel pouring its orders into the day's sales. Copy in
- * `landing.sales` (the classic landing keeps `benefits.sales`).
- *
- * The stage (C, one pinned screen in bold orange) is the layout; ?sales=a
- * keeps the sticky rail reachable.
+ * the funnel pouring its orders into the bag. Copy in `landing.sales` (the
+ * classic landing keeps `benefits.sales`). The layout is the stage (SalesC):
+ * one pinned screen in bold orange.
  */
-const VARIANTS = { a: SalesA, c: SalesC } as const;
-
-const SalesSection = () => {
-  const { search } = useLocation();
-  const key = new URLSearchParams(search).get("sales")?.toLowerCase();
-  const Variant = VARIANTS[key as keyof typeof VARIANTS] ?? SalesC;
-  return <Variant />;
-};
+const SalesSection = () => <SalesC />;
 
 export default SalesSection;
