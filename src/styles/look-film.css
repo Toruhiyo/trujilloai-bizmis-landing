@@ -102,12 +102,74 @@
 .bzl[data-look="film"] #hero [class*="bg-white/"]:not(.bzw *):not([class*="bg-white/[0.07]"]):not([class*="bg-white/[0.14]"]):not(a):not(a *):not(#site-navbar, #site-navbar *) {
   background-color: rgb(59 36 22 / 0.08);
 }
-/* the Install button: white with a hairline, as on the film's canvas; its label in ink, the bag primary */
-.bzl[data-look="film"] #hero a.bg-white.text-primary {
+/* the Install button: the hero's one loud thing. White, ink label, the bag in primary, as on the
+   film's canvas; what calls the eye is its border: a thin primary line with a band of light
+   running around it, and a warm lift */
+@property --bzh-angle {
+  syntax: "<angle>";
+  initial-value: 0deg;
+  inherits: false;
+}
+.bzl[data-look="film"] #hero a.bzh-install.bg-white.text-primary {
+  position: relative;
+  isolation: isolate;
+  background: #fff;
   color: var(--film-ink);
+  border: 0;
   box-shadow:
-    0 0 0 1px rgb(59 36 22 / 0.08),
-    0 12px 32px -14px rgb(249 163 83 / 0.55);
+    inset 0 0 0 1.5px rgb(249 163 83 / 0.55),
+    0 16px 36px -16px rgb(249 163 83 / 0.6);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.bzl[data-look="film"] #hero a.bzh-install.bg-white.text-primary svg:first-child {
+  color: hsl(var(--primary));
+}
+.bzl[data-look="film"] #hero a.bzh-install.bg-white.text-primary .opacity-80 {
+  opacity: 0.72;
+}
+/* the running light: a conic sweep masked to a 2px ring on the button's edge */
+.bzl[data-look="film"] #hero a.bzh-install.bg-white.text-primary::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 2px;
+  background: conic-gradient(
+    from var(--bzh-angle),
+    transparent 0deg 250deg,
+    hsl(var(--primary)) 300deg,
+    #ffd3a6 330deg,
+    hsl(var(--primary)) 345deg,
+    transparent 360deg
+  );
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0);
+  animation: bzh-run 3.2s linear infinite;
+  pointer-events: none;
+}
+@keyframes bzh-run {
+  to { --bzh-angle: 360deg; }
+}
+.bzl[data-look="film"] #hero a.bzh-install.bg-white.text-primary:hover {
+  transform: translateY(-1px);
+  box-shadow:
+    inset 0 0 0 1.5px hsl(var(--primary)),
+    0 20px 40px -16px rgb(249 163 83 / 0.75);
+}
+@media (prefers-reduced-motion: reduce) {
+  .bzl[data-look="film"] #hero a.bzh-install.bg-white.text-primary::before { animation: none; display: none; }
+  .bzl[data-look="film"] #hero a.bzh-install.bg-white.text-primary { box-shadow: inset 0 0 0 2px hsl(var(--primary)), 0 16px 36px -16px rgb(249 163 83 / 0.6); }
+}
+/* the secondary ways in stay quiet: muted ink, regular weight */
+.bzl[data-look="film"] #hero .bzh-secondary,
+.bzl[data-look="film"] #hero .bzh-secondary a,
+.bzl[data-look="film"] #hero .bzh-secondary span {
+  color: rgb(59 36 22 / 0.62);
+  text-shadow: none;
+}
+.bzl[data-look="film"] #hero .bzh-secondary a:hover {
+  color: var(--film-ink);
 }
 /* play: a filled primary disc, white glyph (as the widget's own controls) */
 .bzl[data-look="film"] #hero [data-play] {

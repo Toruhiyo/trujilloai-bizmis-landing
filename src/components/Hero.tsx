@@ -143,7 +143,7 @@ const Hero = () => {
       size="xl"
       asChild
       className={cn(
-        "group flex items-center gap-3 [&_svg]:pointer-events-auto",
+        "bzh-install group flex items-center gap-3 [&_svg]:pointer-events-auto",
         big ? "h-16 px-6 text-lg" : "h-12 flex-1 px-4 text-base",
       )}
     >
@@ -224,7 +224,7 @@ const Hero = () => {
           </div>
           {/* the store's landing: its hero section is the copy and the CTAs, with play at its centre */}
           <div className="absolute inset-x-0 bottom-[20em] top-[5.6em] flex flex-col px-[1.4em] pt-[1.4em] lg:bottom-[2em] lg:justify-center lg:px-[3.6em] lg:pt-0">
-            <div className="flex w-full flex-col gap-3 text-white [text-shadow:0_1px_16px_hsl(24_90%_35%/0.35)] lg:w-[min(40rem,40vw)] lg:gap-5">
+            <div className="flex w-full flex-col items-center gap-3 text-center text-white [text-shadow:0_1px_16px_hsl(24_90%_35%/0.35)] lg:w-[min(40rem,40vw)] lg:items-start lg:gap-5 lg:text-left">
               <div>
                   <a
                     href={href("/early-access")}
@@ -254,11 +254,12 @@ const Hero = () => {
                     {messages.hero.subtitleConnector} {strong(messages.hero.subtitleBuy)}
                   </p>
               </div>
-              <div className="flex flex-col gap-2 [text-shadow:none] lg:gap-3">
+              <div className="flex w-full flex-col items-center gap-2 [text-shadow:none] lg:w-auto lg:items-start lg:gap-0">
                 <div className="flex w-full lg:hidden">{installButton(false)}</div>
                 <div className="hidden lg:flex">{installButton(true)}</div>
-                <div className="hidden flex-wrap items-center gap-x-3 gap-y-1 text-sm text-white [text-shadow:0_1px_10px_hsl(24_90%_30%/0.45)] lg:flex">
-                  <a href={BIZMIS_DEMO_STORE_URL} target="_blank" rel="noopener noreferrer" onClick={handleViewDemoClick} className="inline-flex items-center gap-1.5 font-semibold hover:underline">
+                {/* the secondary ways in: quieter, and a clear step away from the install */}
+                <div className="bzh-secondary hidden flex-wrap items-center gap-x-3 gap-y-1 text-[0.8125rem] text-white/75 [text-shadow:0_1px_10px_hsl(24_90%_30%/0.45)] lg:mt-6 lg:flex">
+                  <a href={BIZMIS_DEMO_STORE_URL} target="_blank" rel="noopener noreferrer" onClick={handleViewDemoClick} className="inline-flex items-center gap-1.5 font-medium hover:underline">
                     <PlayCircle className="h-4 w-4" aria-hidden="true" />
                     {messages.common.liveDemo}
                   </a>
@@ -267,7 +268,7 @@ const Hero = () => {
                   </span>
                   <span className="text-white/90">
                     {messages.hero.ratherTalk}{" "}
-                    <a href={BIZMIS_BOOK_A_CALL_GENERAL_URL} target="_blank" rel="noopener noreferrer" onClick={handleBookACallClick} className="font-semibold text-white underline underline-offset-2">
+                    <a href={BIZMIS_BOOK_A_CALL_GENERAL_URL} target="_blank" rel="noopener noreferrer" onClick={handleBookACallClick} className="font-medium underline underline-offset-2">
                       {messages.common.bookACall}
                     </a>
                   </span>
@@ -301,7 +302,7 @@ const Hero = () => {
           <HeroAgent
             paused={irisOpen}
             onInvite={setInviting}
-            cardClassName="absolute bottom-[1.2em] right-[1.2em] lg:bottom-[2em] lg:right-[2.4em]"
+            cardClassName="absolute bottom-[1.2em] left-1/2 -translate-x-1/2 lg:bottom-[2em] lg:left-auto lg:right-[2.4em] lg:translate-x-0"
             captionClassName="absolute bottom-[2.2em] left-1/2 hidden -translate-x-1/2 text-[1.15em] lg:block"
           />
         </div>
