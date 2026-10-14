@@ -1,6 +1,8 @@
-/* The film look (?look=film): the landing aligned to the ad-1 film, for
-   comparison with today's look (the default stays untouched: every rule here
-   is keyed on .bzl[data-look="film"], set by FilmLanding.tsx).
+/* The film look: the landing aligned to the ad-1 film. It's the page's only
+   look: FilmLanding.tsx always sets data-look="film" on the .bzl root, and
+   every rule here is keyed on it, layered over film-landing.css and
+   palette-options.css. How each section opens, and how sections are told
+   apart on the white canvas, is the opener system (openers.css, ?open=1..6).
 
    The film's system: a WHITE / very light cream canvas with generous space,
    dark ink Inter headlines, the Bizmis primary #F9A353 as the ACCENT (icons,
@@ -12,11 +14,23 @@
    orange, its white marker funnel, its white type). The grain stays only
    there. Layout, copy and animations are unchanged.
 
+   TWO colours only, beyond white / cream (and product / device realism, and
+   white on the Sales orange): the dark ink #3B2416 and the primary #F9A353.
+   No burnt orange: small accent text is ink; large accents, icons, fills and
+   the handwriting are the primary.
+
    Loaded after palette-options.css, so equal-specificity rules here win. */
 
 .bzl[data-look="film"] {
   --film-ink: #3b2416; /* the one dark ink (the film's "Install now") */
   --film-glow: rgb(249 163 83 / 0.14);
+  /* the two accents: small accent text in ink, large accents / icons in the primary */
+  --bzl-orange-dark: var(--film-ink);
+  --bzl-orange-strong: hsl(var(--primary));
+  /* secondary text: the ink itself, lighter (not separate browns) */
+  --bzl-ink-2: rgb(59 36 22 / 0.84);
+  --bzl-muted: rgb(59 36 22 / 0.74);
+  --bzl-faint: rgb(59 36 22 / 0.62);
   --bzl-bg: #ffffff;
 
   /* the hero: a white stage under a soft pool of primary light */
@@ -78,7 +92,7 @@
   background-color: rgb(255 255 255 / 0.55);
   box-shadow:
     inset 0 1px 0 #fff,
-    0 40px 100px -50px rgb(150 80 20 / 0.3);
+    0 40px 100px -50px rgb(249 163 83 / 0.45);
 }
 .bzl[data-look="film"] #hero [class*="bg-white/[0.14]"] {
   background-color: rgb(255 255 255 / 0.6);
@@ -86,8 +100,9 @@
 .bzl[data-look="film"] #hero [class*="bg-white/"]:not(.bzw *):not([class*="bg-white/[0.07]"]):not([class*="bg-white/[0.14]"]):not(a):not(a *):not(#site-navbar, #site-navbar *) {
   background-color: rgb(59 36 22 / 0.08);
 }
-/* the Install button: white with a hairline, as on the film's canvas */
+/* the Install button: white with a hairline, as on the film's canvas; its label in ink, the bag primary */
 .bzl[data-look="film"] #hero a.bg-white.text-primary {
+  color: var(--film-ink);
   box-shadow:
     0 0 0 1px rgb(59 36 22 / 0.08),
     0 12px 32px -14px rgb(249 163 83 / 0.55);
@@ -96,6 +111,7 @@
 .bzl[data-look="film"] #hero [data-play] {
   background: hsl(var(--primary));
   border-color: rgb(255 255 255 / 0.7);
+  box-shadow: 0 18px 40px -16px rgb(249 163 83 / 0.8);
 }
 
 /* ── The nav over the white hero: ink links, primary logo, Install Now filled primary ── */
@@ -124,13 +140,37 @@
 .bzl[data-look="film"] .bzl-pillar.p-insights {
   --grain-strength: 0;
   --acc: hsl(var(--primary));
-  --acc-ink: var(--bzl-orange-dark);
+  --acc-ink: var(--film-ink);
+}
+/* the feature cards' icons: primary glyphs on cream discs (open: white on the primary, as before) */
+.bzl[data-look="film"] .bzl-pillar button[aria-expanded="false"] > span:first-child > span:first-child,
+.bzl[data-look="film"] #setup ~ section button[aria-expanded="false"] > span:first-child > span:first-child {
+  background-color: #fff1e3;
+  color: hsl(var(--primary));
+}
+/* Sales: its icon disc keeps white, the glyph in the primary (no burnt) */
+.bzl[data-look="film"] .sl-c .pi {
+  --pi-icon-fg: hsl(var(--primary));
+}
+.bzl[data-look="film"] .sl-c .pi-icon {
+  box-shadow: 0 14px 34px -18px rgb(59 36 22 / 0.4);
+}
+/* the Trust mockup's "Best match" pill: a primary shadow, not a burnt one */
+.bzl[data-look="film"] .sl-trust-badge {
+  box-shadow: 0 6px 14px -6px rgb(249 163 83 / 0.7);
+}
+/* the end card's "Install now" hovers to the primary (it's huge) */
+.bzl[data-look="film"] #setup + section + section {
+  --bzl-orange-dark: hsl(var(--primary));
+  --bzl-fg: var(--film-ink);
+  --bzl-muted: rgb(59 36 22 / 0.74);
+  --bzl-faint: rgb(59 36 22 / 0.62);
 }
 .bzl[data-look="film"] .bzl-pillar.p-support .pi,
 .bzl[data-look="film"] .bzl-pillar.p-insights .pi {
   --pi-name-color: var(--film-ink);
   --pi-line-color: var(--film-ink);
-  --pi-icon-bg: #fff1e3;
+  --pi-icon-bg: #ffffff; /* white disc, primary glyph */
   --pi-icon-fg: hsl(var(--primary));
   --pi-bar: rgb(255 255 255 / 0.88);
 }
@@ -142,19 +182,22 @@
 .bzl[data-look="film"] .bzl-pillar.p-insights .bzp-dock-line {
   color: var(--film-ink);
 }
-/* the marker moments on white: primary strokes, burnt handwriting (legible small) */
+/* the marker moments on white: primary strokes and primary handwriting, as
+   the film writes; the writing a size up so the lighter ink still reads */
 .bzl[data-look="film"] .bzl-pillar .bzl-mk {
   --mk-line: hsl(var(--primary));
-  --mk-ink: var(--bzl-orange-dark);
+  --mk-ink: hsl(var(--primary));
   --mk-tint: rgb(249 163 83 / 0.12);
 }
+.bzl[data-look="film"] .bzl-pillar .bzl-mk .mk-hand { font-size: 29px; }
+.bzl[data-look="film"] .bzl-pillar .bzl-mk .mk-hand.is-big { font-size: 35px; }
 
 /* ── The footer: cream, ink type (the film ends on white) ── */
 .bzl[data-look="film"] > footer {
   --bzl-fg: var(--film-ink);
-  --bzl-muted: #6b4a33;
-  --bzl-faint: #7a5a42;
+  --bzl-muted: rgb(59 36 22 / 0.74);
+  --bzl-faint: rgb(59 36 22 / 0.62);
   --bzl-border: #f3e6d8;
-  --bzl-orange-dark: #a84f0c;
+  --bzl-orange-dark: var(--film-ink);
   border-top: 1px solid #f3e6d8;
 }

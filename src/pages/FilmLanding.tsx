@@ -17,8 +17,11 @@ import {
 import { useMessages } from "@/i18n/LocaleProvider";
 import "@/styles/film-landing.css";
 import "@/styles/palette-options.css";
-// ?look=film: the comparison look aligned to the ad-1 film (keyed on data-look="film")
+// the film look, the page's only look (keyed on data-look="film")
 import "@/styles/look-film.css";
+// how sections open and are told apart: the opener systems (data-open, ?open=1..6)
+import "@/styles/openers.css";
+import PillarStrip from "@/components/landing/openers/PillarStrip";
 
 interface FilmLandingProps {
   /** The route it's served on: "/" once it's the default, "/v2" until then. */
@@ -34,8 +37,9 @@ interface FilmLandingProps {
  */
 const FilmLanding = ({ path = "/" }: FilmLandingProps) => {
   const messages = useMessages();
-  // ?look=film switches on the film-aligned look (look-film.css) for comparison
-  const look = new URLSearchParams(useLocation().search).get("look") === "film" ? "film" : undefined;
+  // the opener system (openers.css): ?open=1..6, 1 by default
+  const openParam = new URLSearchParams(useLocation().search).get("open") ?? "1";
+  const open = /^[1-6]$/.test(openParam) ? openParam : "1";
 
   // Lets the film landing's scoped CSS reach the shared navbar (outside .bzl),
   // e.g. the handwritten "Early Access" link, without touching other pages.
@@ -59,7 +63,7 @@ const FilmLanding = ({ path = "/" }: FilmLandingProps) => {
 
   // the page's palette, "Bizmis Mono" (palette-options.css)
   return (
-    <div className="bzl min-h-screen" data-palette="1" data-look={look}>
+    <div className="bzl min-h-screen" data-palette="1" data-look="film" data-open={open}>
       <Helmet>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link
@@ -101,9 +105,20 @@ const FilmLanding = ({ path = "/" }: FilmLandingProps) => {
       />
       <Hero />
       {/* "This isn't a chatbot" (SwitchSection) is hidden: the hero covers it now */}
-      <SalesSection />
-      <SupportSection />
-      <InsightsSection />
+      {/* system 6 gathers the three benefits under one sticky segmented header */}
+      {open === "6" ? (
+        <PillarStrip>
+          <SalesSection />
+          <SupportSection />
+          <InsightsSection />
+        </PillarStrip>
+      ) : (
+        <>
+          <SalesSection />
+          <SupportSection />
+          <InsightsSection />
+        </>
+      )}
       <SetupSection />
       <CustomizeSection />
       <EndCard />
