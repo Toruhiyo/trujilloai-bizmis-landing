@@ -1,0 +1,76 @@
+{
+  "_doc": "Lines for scripts/generate-replay-audio.mjs: the Store Insights session replays voiced on ElevenLabs eleven_v4. `text` is what gets spoken (leading [tags] steer the read and are stripped from the transcript); the transcript in src/components/landing/replaySessions.ts must stay identical to the tag-free text. Agent voices are the Shopify app's preset avatar voices (trujilloai-bizmis-shopify-app/app/data/presetAvatars.ts).",
+  "voices": {
+    "amber": { "id": "FvmvwvObRqIHojkEGh5N", "name": "Chicadi (Amber's preset voice)" },
+    "will": { "id": "bTEswxYhpv7UDkQg5VRu", "name": "Sevan Bomar (Will's preset voice)" },
+    "yue": { "id": "bhJUNIXWQQ94l8eI2VUf", "name": "Amy (Yue's preset voice)" },
+    "yusuke": { "id": "j210dv0vWm7fCknyQpbA", "name": "Hinata (Yusuke's preset voice)" },
+    "shopper-mark": { "id": "UgBBYS2sOqTuMpoF3BR0", "name": "Mark - Natural Conversations (young American male)" },
+    "shopper-angela": { "id": "FUfBrNit0NNZAwb58KWH", "name": "Angela - Conversational (middle-aged American female)" },
+    "shopper-archer": { "id": "L0Dsvb3SLTyegXwtm47J", "name": "Archer (middle-aged British male)" },
+    "shopper-nichalia": { "id": "XfNU2rGpBa01ckF309OY", "name": "Nichalia Schwartz (young American female)" }
+  },
+  "sessions": [
+    {
+      "id": "sale",
+      "agent": "amber",
+      "customer": "shopper-mark",
+      "lines": [
+        { "id": "1", "role": "customer", "text": "[curious] Hi! I'm looking for a birthday gift for my sister." },
+        { "id": "2", "role": "agent", "text": "[warm] [quickly] Lovely! I'll pull a few sure-wins. Cozy or practical? Any preference or budget?" },
+        { "id": "3", "role": "event", "label": "Product Search" },
+        { "id": "4", "role": "customer", "text": "[thoughtful] Could you compare the Candle Set and the Insulated Mug? Small apartment, under €50." },
+        { "id": "5", "role": "agent", "text": "[confident] [quickly] I'd pick the Cozy Candle Set. Space-friendly, clean scents, gift wrap available, and it ships in 2 days." },
+        { "id": "6", "role": "customer", "text": "[excited] Perfect, let's do the Candle Set. Add gift wrap and a note: \"Happy Birthday!\"" },
+        { "id": "7", "role": "event", "label": "Add to Cart" },
+        { "id": "8", "role": "customer", "text": "[grateful] Thanks, this was super helpful!" },
+        { "id": "9", "role": "agent", "text": "[warm] [upbeat] My pleasure! I'm here anytime. Enjoy the celebration!" }
+      ]
+    },
+    {
+      "id": "sale-loyal",
+      "agent": "will",
+      "customer": "shopper-angela",
+      "lines": [
+        { "id": "1", "role": "customer", "text": "[upbeat] Hi! Time for my monthly coffee subscription renewal, and I'm running low!" },
+        { "id": "2", "role": "agent", "text": "[warm] [quickly] Jane! Great to see you back. How are those Ethiopian beans working out? Ready for your usual Premium Roast subscription?" },
+        { "id": "3", "role": "customer", "text": "[enthusiastic] They're amazing! Yes, definitely the subscription again, but I've been eyeing that French press you mentioned last month." },
+        { "id": "4", "role": "agent", "text": "[warm] [quickly] Perfect! I added the Borosilicate French Press to your favorites. It'll pair beautifully with your Ethiopian beans. Let me bundle everything." },
+        { "id": "5", "role": "event", "label": "Product Search" },
+        { "id": "6", "role": "customer", "text": "[hopeful] Excellent! Could we also add that insulated travel mug? My morning commute coffee keeps getting cold." },
+        { "id": "7", "role": "event", "label": "Add to Cart" },
+        { "id": "8", "role": "agent", "text": "[upbeat] [quickly] Done! Premium Coffee Subscription, French Press, and Copper Travel Mug. Same address on Oak Street?" },
+        { "id": "9", "role": "customer", "text": "[grateful] Perfect! You always remember my preferences. Thanks for keeping my coffee ritual going strong!" },
+        { "id": "10", "role": "agent", "text": "[warm] [quickly] That's what I'm here for! Your subscription renews today, equipment ships Wednesday. Enjoy your perfect morning brew!" }
+      ]
+    },
+    {
+      "id": "support-success",
+      "agent": "yue",
+      "customer": "shopper-archer",
+      "lines": [
+        { "id": "1", "role": "customer", "text": "[curious] Hi! Do you ship internationally? I'm in Canada and want to order." },
+        { "id": "2", "role": "agent", "text": "[warm] Absolutely! Let me check our international shipping details for you." },
+        { "id": "3", "role": "event", "label": "Policy Lookup" },
+        { "id": "4", "role": "agent", "text": "[upbeat] [quickly] Great news! We ship to Canada in 5 to 7 business days. Free shipping over $75, otherwise $12." },
+        { "id": "5", "role": "customer", "text": "[relieved] Perfect! What about customs or duties?" },
+        { "id": "6", "role": "agent", "text": "[reassuring] [quickly] All customs forms are handled by us. Duties may apply based on local Canadian rates." },
+        { "id": "7", "role": "customer", "text": "[grateful] Excellent! Thank you for the quick help!" }
+      ]
+    },
+    {
+      "id": "support-failed",
+      "agent": "yusuke",
+      "customer": "shopper-nichalia",
+      "lines": [
+        { "id": "1", "role": "customer", "text": "[hopeful] Hi! I want to order candles as a gift to my friend in rural Alaska. Can you ship there?" },
+        { "id": "2", "role": "agent", "text": "[helpful] Let me check our shipping coverage for that area right away." },
+        { "id": "3", "role": "event", "label": "Policy Lookup" },
+        { "id": "4", "role": "agent", "text": "[apologetic] I'm sorry, but we don't currently ship to remote areas in Alaska due to logistics constraints. Only major cities are covered." },
+        { "id": "5", "role": "customer", "text": "[frustrated] Seriously? It's still the US! Isn't there any way to make this work?" },
+        { "id": "6", "role": "agent", "text": "[empathetic] I understand your frustration, but our carriers don't service remote Alaskan locations. There's no override option available." },
+        { "id": "7", "role": "customer", "text": "[disappointed] This is so disappointing. I guess I'll have to find another company." }
+      ]
+    }
+  ]
+}

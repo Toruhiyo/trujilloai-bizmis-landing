@@ -1,0 +1,617 @@
+{
+ "sale": {
+  "duration": 35.33,
+  "at": {
+   "1": 0.47,
+   "2": 3.85,
+   "3": 9.09,
+   "4": 10.18,
+   "5": 15.88,
+   "6": 22.32,
+   "7": 27.4,
+   "8": 28.45,
+   "9": 30.87
+  },
+  "wave": [
+   71,
+   62,
+   100,
+   64,
+   69,
+   93,
+   58,
+   83,
+   53,
+   67,
+   18,
+   71,
+   84,
+   86,
+   68,
+   90,
+   76,
+   61,
+   91,
+   41,
+   84,
+   70,
+   88,
+   80,
+   60,
+   72,
+   72,
+   50,
+   83,
+   67,
+   65,
+   18,
+   66,
+   87,
+   68,
+   81,
+   93,
+   61,
+   89,
+   27
+  ],
+  "lines": {
+   "1": {
+    "role": "customer",
+    "text": "Hi! I'm looking for a birthday gift for my sister.",
+    "take": 1,
+    "sim": 1,
+    "duration": 3.12
+   },
+   "2": {
+    "role": "agent",
+    "text": "Lovely! I'll pull a few sure-wins. Cozy or practical? Any preference or budget?",
+    "take": 1,
+    "sim": 1,
+    "duration": 5.1
+   },
+   "4": {
+    "role": "customer",
+    "text": "Could you compare the Candle Set and the Insulated Mug? Small apartment, under €50.",
+    "take": 1,
+    "sim": 1,
+    "duration": 5.48
+   },
+   "5": {
+    "role": "agent",
+    "text": "I'd pick the Cozy Candle Set. Space-friendly, clean scents, gift wrap available, and it ships in 2 days.",
+    "take": 1,
+    "sim": 1,
+    "duration": 6.12
+   },
+   "6": {
+    "role": "customer",
+    "text": "Perfect, let's do the Candle Set. Add gift wrap and a note: \"Happy Birthday!\"",
+    "take": 1,
+    "sim": 1,
+    "duration": 4.92
+   },
+   "8": {
+    "role": "customer",
+    "text": "Thanks, this was super helpful!",
+    "take": 1,
+    "sim": 1,
+    "duration": 2.14
+   },
+   "9": {
+    "role": "agent",
+    "text": "My pleasure! I'm here anytime. Enjoy the celebration!",
+    "take": 1,
+    "sim": 1,
+    "duration": 3.84
+   }
+  },
+  "verify": [
+   {
+    "id": "1",
+    "cue": 0.47,
+    "heard": 0.52,
+    "delta": 0.05,
+    "speaker": "speaker_0"
+   },
+   {
+    "id": "2",
+    "cue": 3.85,
+    "heard": 3.9,
+    "delta": 0.05,
+    "speaker": "speaker_1"
+   },
+   {
+    "id": "4",
+    "cue": 10.18,
+    "heard": 10.22,
+    "delta": 0.04,
+    "speaker": "speaker_0"
+   },
+   {
+    "id": "5",
+    "cue": 15.88,
+    "heard": 15.92,
+    "delta": 0.04,
+    "speaker": "speaker_1"
+   },
+   {
+    "id": "6",
+    "cue": 22.32,
+    "heard": 22.36,
+    "delta": 0.04,
+    "speaker": "speaker_0"
+   },
+   {
+    "id": "8",
+    "cue": 28.45,
+    "heard": 28.48,
+    "delta": 0.03,
+    "speaker": "speaker_0"
+   },
+   {
+    "id": "9",
+    "cue": 30.87,
+    "heard": 30.92,
+    "delta": 0.05,
+    "speaker": "speaker_1"
+   }
+  ]
+ },
+ "sale-loyal": {
+  "duration": 53.83,
+  "at": {
+   "1": 0.47,
+   "2": 5.32,
+   "3": 12.13,
+   "4": 19.34,
+   "5": 26.96,
+   "6": 28.07,
+   "7": 34.26,
+   "8": 35.19,
+   "9": 40.98,
+   "10": 47.06
+  },
+  "wave": [
+   67,
+   88,
+   61,
+   84,
+   84,
+   79,
+   63,
+   88,
+   59,
+   100,
+   76,
+   47,
+   47,
+   45,
+   58,
+   83,
+   64,
+   78,
+   59,
+   67,
+   39,
+   82,
+   83,
+   67,
+   64,
+   28,
+   76,
+   65,
+   64,
+   65,
+   51,
+   83,
+   48,
+   79,
+   83,
+   76,
+   78,
+   70,
+   73,
+   51
+  ],
+  "lines": {
+   "1": {
+    "role": "customer",
+    "text": "Hi! Time for my monthly coffee subscription renewal, and I'm running low!",
+    "take": 1,
+    "sim": 1,
+    "duration": 4.59
+   },
+   "2": {
+    "role": "agent",
+    "text": "Jane! Great to see you back. How are those Ethiopian beans working out? Ready for your usual Premium Roast subscription?",
+    "take": 1,
+    "sim": 1,
+    "duration": 6.49
+   },
+   "3": {
+    "role": "customer",
+    "text": "They're amazing! Yes, definitely the subscription again, but I've been eyeing that French press you mentioned last month.",
+    "take": 1,
+    "sim": 1,
+    "duration": 7.05
+   },
+   "4": {
+    "role": "agent",
+    "text": "Perfect! I added the Borosilicate French Press to your favorites. It'll pair beautifully with your Ethiopian beans. Let me bundle everything.",
+    "take": 1,
+    "sim": 1,
+    "duration": 7.44
+   },
+   "6": {
+    "role": "customer",
+    "text": "Excellent! Could we also add that insulated travel mug? My morning commute coffee keeps getting cold.",
+    "take": 1,
+    "sim": 1,
+    "duration": 6.03
+   },
+   "8": {
+    "role": "agent",
+    "text": "Done! Premium Coffee Subscription, French Press, and Copper Travel Mug. Same address on Oak Street?",
+    "take": 1,
+    "sim": 1,
+    "duration": 5.49
+   },
+   "9": {
+    "role": "customer",
+    "text": "Perfect! You always remember my preferences. Thanks for keeping my coffee ritual going strong!",
+    "take": 1,
+    "sim": 1,
+    "duration": 5.88
+   },
+   "10": {
+    "role": "agent",
+    "text": "That's what I'm here for! Your subscription renews today, equipment ships Wednesday. Enjoy your perfect morning brew!",
+    "take": 1,
+    "sim": 1,
+    "duration": 6.13
+   }
+  },
+  "verify": [
+   {
+    "id": "1",
+    "cue": 0.47,
+    "heard": 0.5,
+    "delta": 0.03,
+    "speaker": "speaker_0"
+   },
+   {
+    "id": "2",
+    "cue": 5.32,
+    "heard": 5.36,
+    "delta": 0.04,
+    "speaker": "speaker_1"
+   },
+   {
+    "id": "3",
+    "cue": 12.13,
+    "heard": 12.18,
+    "delta": 0.05,
+    "speaker": "speaker_0"
+   },
+   {
+    "id": "4",
+    "cue": 19.34,
+    "heard": 19.38,
+    "delta": 0.04,
+    "speaker": "speaker_1"
+   },
+   {
+    "id": "6",
+    "cue": 28.07,
+    "heard": 28.12,
+    "delta": 0.05,
+    "speaker": "speaker_0"
+   },
+   {
+    "id": "8",
+    "cue": 35.19,
+    "heard": 35.24,
+    "delta": 0.05,
+    "speaker": "speaker_1"
+   },
+   {
+    "id": "9",
+    "cue": 40.98,
+    "heard": 41,
+    "delta": 0.02,
+    "speaker": "speaker_0"
+   },
+   {
+    "id": "10",
+    "cue": 47.06,
+    "heard": 47.1,
+    "delta": 0.04,
+    "speaker": "speaker_1"
+   }
+  ]
+ },
+ "support-success": {
+  "duration": 28.69,
+  "at": {
+   "1": 0.47,
+   "2": 4.91,
+   "3": 8.84,
+   "4": 9.75,
+   "5": 17.05,
+   "6": 20.52,
+   "7": 25.62
+  },
+  "wave": [
+   46,
+   52,
+   75,
+   56,
+   100,
+   61,
+   60,
+   72,
+   64,
+   94,
+   68,
+   43,
+   18,
+   69,
+   62,
+   77,
+   69,
+   60,
+   53,
+   66,
+   77,
+   71,
+   57,
+   48,
+   59,
+   65,
+   72,
+   67,
+   91,
+   73,
+   58,
+   52,
+   74,
+   60,
+   42,
+   47,
+   70,
+   59,
+   62,
+   18
+  ],
+  "lines": {
+   "1": {
+    "role": "customer",
+    "text": "Hi! Do you ship internationally? I'm in Canada and want to order.",
+    "take": 1,
+    "sim": 1,
+    "duration": 4.18
+   },
+   "2": {
+    "role": "agent",
+    "text": "Absolutely! Let me check our international shipping details for you.",
+    "take": 1,
+    "sim": 1,
+    "duration": 3.79
+   },
+   "4": {
+    "role": "agent",
+    "text": "Great news! We ship to Canada in 5 to 7 business days. Free shipping over $75, otherwise $12.",
+    "take": 1,
+    "sim": 1,
+    "duration": 6.96
+   },
+   "5": {
+    "role": "customer",
+    "text": "Perfect! What about customs or duties?",
+    "take": 1,
+    "sim": 1,
+    "duration": 3.31
+   },
+   "6": {
+    "role": "agent",
+    "text": "All customs forms are handled by us. Duties may apply based on local Canadian rates.",
+    "take": 1,
+    "sim": 1,
+    "duration": 4.74
+   },
+   "7": {
+    "role": "customer",
+    "text": "Excellent! Thank you for the quick help!",
+    "take": 1,
+    "sim": 1,
+    "duration": 2.45
+   }
+  },
+  "verify": [
+   {
+    "id": "1",
+    "cue": 0.47,
+    "heard": 0.5,
+    "delta": 0.03,
+    "speaker": "speaker_0"
+   },
+   {
+    "id": "2",
+    "cue": 4.91,
+    "heard": 4.96,
+    "delta": 0.05,
+    "speaker": "speaker_1"
+   },
+   {
+    "id": "4",
+    "cue": 9.75,
+    "heard": 9.8,
+    "delta": 0.05,
+    "speaker": "speaker_1"
+   },
+   {
+    "id": "5",
+    "cue": 17.05,
+    "heard": 17.1,
+    "delta": 0.05,
+    "speaker": "speaker_0"
+   },
+   {
+    "id": "6",
+    "cue": 20.52,
+    "heard": 20.58,
+    "delta": 0.06,
+    "speaker": "speaker_1"
+   },
+   {
+    "id": "7",
+    "cue": 25.62,
+    "heard": 25.66,
+    "delta": 0.04,
+    "speaker": "speaker_0"
+   }
+  ]
+ },
+ "support-failed": {
+  "duration": 36.8,
+  "at": {
+   "1": 0.49,
+   "2": 6.35,
+   "3": 9.43,
+   "4": 10.32,
+   "5": 19.01,
+   "6": 24.01,
+   "7": 31.84
+  },
+  "wave": [
+   47,
+   69,
+   72,
+   66,
+   57,
+   61,
+   66,
+   68,
+   61,
+   69,
+   18,
+   61,
+   62,
+   58,
+   74,
+   60,
+   47,
+   64,
+   90,
+   31,
+   56,
+   49,
+   73,
+   47,
+   82,
+   39,
+   71,
+   50,
+   75,
+   63,
+   73,
+   43,
+   100,
+   64,
+   40,
+   54,
+   43,
+   71,
+   92,
+   26
+  ],
+  "lines": {
+   "1": {
+    "role": "customer",
+    "text": "Hi! I want to order candles as a gift to my friend in rural Alaska. Can you ship there?",
+    "take": 1,
+    "sim": 1,
+    "duration": 5.64
+   },
+   "2": {
+    "role": "agent",
+    "text": "Let me check our shipping coverage for that area right away.",
+    "take": 1,
+    "sim": 1,
+    "duration": 2.92
+   },
+   "4": {
+    "role": "agent",
+    "text": "I'm sorry, but we don't currently ship to remote areas in Alaska due to logistics constraints. Only major cities are covered.",
+    "take": 1,
+    "sim": 1,
+    "duration": 8.23
+   },
+   "5": {
+    "role": "customer",
+    "text": "Seriously? It's still the US! Isn't there any way to make this work?",
+    "take": 1,
+    "sim": 1,
+    "duration": 4.8
+   },
+   "6": {
+    "role": "agent",
+    "text": "I understand your frustration, but our carriers don't service remote Alaskan locations. There's no override option available.",
+    "take": 1,
+    "sim": 1,
+    "duration": 7.69
+   },
+   "7": {
+    "role": "customer",
+    "text": "This is so disappointing. I guess I'll have to find another company.",
+    "take": 1,
+    "sim": 1,
+    "duration": 4.26
+   }
+  },
+  "verify": [
+   {
+    "id": "1",
+    "cue": 0.49,
+    "heard": 0.54,
+    "delta": 0.05,
+    "speaker": "speaker_0"
+   },
+   {
+    "id": "2",
+    "cue": 6.35,
+    "heard": 6.38,
+    "delta": 0.03,
+    "speaker": "speaker_1"
+   },
+   {
+    "id": "4",
+    "cue": 10.32,
+    "heard": 10.36,
+    "delta": 0.04,
+    "speaker": "speaker_1"
+   },
+   {
+    "id": "5",
+    "cue": 19.01,
+    "heard": 19.06,
+    "delta": 0.05,
+    "speaker": "speaker_0"
+   },
+   {
+    "id": "6",
+    "cue": 24.01,
+    "heard": 23.96,
+    "delta": -0.05,
+    "speaker": "speaker_1"
+   },
+   {
+    "id": "7",
+    "cue": 31.84,
+    "heard": 31.88,
+    "delta": 0.04,
+    "speaker": "speaker_0"
+   }
+  ]
+ }
+}

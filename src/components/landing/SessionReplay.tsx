@@ -38,47 +38,74 @@ const WAVE = [
 const fmt = (t: number) =>
   `${Math.floor(t / 60)}:${String(Math.floor(t % 60)).padStart(2, "0")}`;
 
-/** The recorded call: play/pause, waveform with event markers, playhead. */
+/** The recorded call: play/pause, waveform with event markers, playhead.
+ * The audio only starts on the play button; while it plays the playhead and
+ * the transcript follow `audio.currentTime` every frame, and it stops when the
+ * card goes away (another session picked, or the replay closed). */
 const CallAudio = ({
   data,
+  wave = WAVE,
   onTime,
 }: {
   data: SessionReplayData;
+  /** Bar heights (%), the call's real loudness. */
+  wave?: number[];
   onTime: (t: number, playing: boolean) => void;
 }) => {
   const audioRef = useRef<HTMLAudioElement>(null);
   const [playing, setPlaying] = useState(false);
-  const [duration, setDuration] = useState(data.durationSeconds || 78);
+  const [duration, setDuration] = useState(
+    data.totalDurationSeconds || data.durationSeconds || 78,
+  );
   const [time, setTime] = useState(0);
+  const onTimeRef = useRef(onTime);
+  onTimeRef.current = onTime;
 
   useEffect(() => {
     const a = audioRef.current;
     if (!a) return;
+    let raf = 0;
     const meta = () => Number.isFinite(a.duration) && setDuration(a.duration);
     const tick = () => {
       setTime(a.currentTime);
-      onTime(a.currentTime, !a.paused);
+      onTimeRef.current(a.currentTime, !a.paused);
+    };
+    const frame = () => {
+      tick();
+      raf = requestAnimationFrame(frame);
     };
     const end = () => {
+      cancelAnimationFrame(raf);
       setPlaying(false);
+      a.currentTime = 0;
       setTime(0);
-      onTime(0, false);
+      onTimeRef.current(0, false);
     };
-    const onPlay = () => setPlaying(true);
-    const onPause = () => setPlaying(false);
+    const onPlay = () => {
+      setPlaying(true);
+      cancelAnimationFrame(raf);
+      raf = requestAnimationFrame(frame);
+    };
+    const onPause = () => {
+      cancelAnimationFrame(raf);
+      setPlaying(false);
+      tick();
+    };
     a.addEventListener("play", onPlay);
     a.addEventListener("pause", onPause);
     a.addEventListener("loadedmetadata", meta);
-    a.addEventListener("timeupdate", tick);
+    a.addEventListener("seeked", tick);
     a.addEventListener("ended", end);
     return () => {
+      cancelAnimationFrame(raf);
+      a.pause();
       a.removeEventListener("play", onPlay);
       a.removeEventListener("pause", onPause);
       a.removeEventListener("loadedmetadata", meta);
-      a.removeEventListener("timeupdate", tick);
+      a.removeEventListener("seeked", tick);
       a.removeEventListener("ended", end);
     };
-  }, [onTime]);
+  }, []);
 
   const toggle = () => {
     const a = audioRef.current;
@@ -91,15 +118,17 @@ const CallAudio = ({
     const a = audioRef.current;
     if (!a) return;
     const r = e.currentTarget.getBoundingClientRect();
-    a.currentTime = ((e.clientX - r.left) / r.width) * duration;
+    const f = Math.min(1, Math.max(0, (e.clientX - r.left) / r.width));
+    a.currentTime = f * duration;
     setTime(a.currentTime);
-    onTime(a.currentTime, !a.paused);
+    onTimeRef.current(a.currentTime, !a.paused);
   };
 
   const progress = duration ? time / duration : 0;
   return (
     <div className="flex items-center gap-3 rounded-2xl bg-[var(--bzl-card)] p-3 sm:p-4">
-      <audio ref={audioRef} src={data.audioUrl} preload="metadata" />
+      {/* nothing loads until play: the call's length is known up front */}
+      <audio ref={audioRef} src={data.audioUrl} preload="none" />
       <button
         type="button"
         onClick={toggle}
@@ -114,13 +143,13 @@ const CallAudio = ({
       </button>
       <div className="relative h-12 flex-1 cursor-pointer" onClick={seek}>
         <div className="pointer-events-none absolute inset-0 flex items-center gap-[3px] px-1">
-          {WAVE.map((h, i) => (
+          {wave.map((h, i) => (
             <i
               key={i}
               className="flex-1 rounded-full bg-[var(--bzl-orange-strong)] transition-opacity duration-300"
               style={{
                 height: `${h}%`,
-                opacity: i <= progress * WAVE.length ? 0.9 : 0.22,
+                opacity: i < progress * wave.length ? 0.9 : 0.22,
               }}
             />
           ))}
@@ -162,29 +191,33 @@ const ReplayCard = ({ session }: { session: ReplaySession }) => {
   const { data, agent } = session;
   const m = useMessages().sessionReplay;
   const [focused, setFocused] = useState<string | null>(null);
+  const focusedRef = useRef<string | null>(null);
   const refs = useRef<Record<string, HTMLDivElement | null>>({});
   const listRef = useRef<HTMLDivElement>(null);
 
+  // the bubble the call has reached: its cue (the first word heard, or the
+  // moment the agent's tool fires) is the last one at or before `t`
   const onTime = useCallback(
     (t: number, playing: boolean) => {
-      if (!playing) return setFocused(null);
       let id: string | null = null;
-      for (const c of data.conversations) {
-        if (timeStringToSeconds(c.time) <= t) id = c.id;
-        else break;
-      }
-      if (id && id !== focused) {
-        setFocused(id);
-        const el = refs.current[id];
-        const list = listRef.current;
-        if (el && list)
-          list.scrollTo({
-            top: el.offsetTop - list.clientHeight / 2 + el.clientHeight / 2,
-            behavior: "smooth",
-          });
-      }
+      if (playing || t > 0)
+        for (const c of data.conversations) {
+          if ((session.cues[c.id] ?? timeStringToSeconds(c.time)) <= t)
+            id = c.id;
+          else break;
+        }
+      if (id === focusedRef.current) return;
+      focusedRef.current = id;
+      setFocused(id);
+      const el = id ? refs.current[id] : null;
+      const list = listRef.current;
+      if (el && list)
+        list.scrollTo({
+          top: el.offsetTop - list.clientHeight / 2 + el.clientHeight / 2,
+          behavior: "smooth",
+        });
     },
-    [data.conversations, focused],
+    [data.conversations, session.cues],
   );
 
   const ring = (id: string) =>
@@ -248,7 +281,12 @@ const ReplayCard = ({ session }: { session: ReplaySession }) => {
       </div>
 
       <div className="mt-4">
-        <CallAudio key={data.audioUrl} data={data} onTime={onTime} />
+        <CallAudio
+          key={data.audioUrl}
+          data={data}
+          wave={session.wave}
+          onTime={onTime}
+        />
       </div>
 
       <div className="relative mt-4">
