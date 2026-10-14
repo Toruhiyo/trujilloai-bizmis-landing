@@ -1,26 +1,20 @@
-/* Palette exploration for the film landing (/ and /v2): ?palette=1..4 sets
-   data-palette on the .bzl root (FilmLanding.tsx). No param = today's look,
-   untouched: every rule here is keyed on .bzl[data-palette].
+/* The film landing's palette: "Bizmis Mono" (chosen 2026-10-14 from four
+   options), one hue family from the Bizmis primary #F9A353 (hsl(29 93% 65%)):
+   cream → peach → primary → burnt ink, the pillars told apart by tint depth.
+   FilmLanding.tsx sets data-palette="1" on the .bzl root; every rule here is
+   keyed on it, so the underlying landing styles stay intact underneath.
 
-   The anchor in every option is the Bizmis primary, #F9A353 (hsl(29 93% 65%),
-   oklch(0.786 0.139 61)): the logo, the widget, the avatars' shirts.
+   Type rule: on orange / saturated surfaces the type is WHITE (the hero, the
+   Sales band and its docked bar, the filled primary Install Now); dark warm
+   ink only on light cream / white surfaces. Accent TEXT on the creams uses a
+   burnt primary (#A84F0C / #8A4510), which passes AA there; the Early Access
+   handwriting keeps the film's light primary.
 
-   Type rule (all options): on orange / saturated surfaces the type is WHITE,
-   as today (the hero, the Sales band and its docked bar, the filled primary
-   Install Now); dark warm ink only on light cream / white surfaces. Accent
-   TEXT on the creams uses a burnt primary (#A84F0C / #8A4510), which passes AA
-   there, instead of #EC7709 / #F28C38 (2.4–2.9:1).
-
-   Wiring: each palette sets --pal-* tokens (plus the landing's own --bzl-*,
+   Wiring: the palette sets --pal-* tokens (plus the landing's own --bzl-*,
    --acc*, --band-bg); the shared block maps them onto the hero, the three
    pillar bands, Setup, Customize, the end card and the footer. The Sales
    band only gets its ground (--band-bg): its type and the funnel keep their
-   own (white) styling, owned by landing-sales.css.
-
-     1  Bizmis Mono      one hue, depth only: cream → peach → primary → burnt ink
-     2  Cream Studio     cream canvas + sand panels, ONE saturated moment (Sales)
-     3  Ember & Espresso primary light against deep espresso, alternating
-     4  Brand Siblings   the three pillars as OKLCH siblings of #F9A353 */
+   own (white) styling, owned by landing-sales.css. */
 
 /* ═════════════════════════ Shared mapping ═════════════════════════ */
 
@@ -165,300 +159,7 @@
   border-top-color: transparent;
 }
 
-/* ═════════════════════ 2 · Cream Studio ═════════════════════
-   The widget's key light (#FFFAF2) as the canvas everywhere, the hero
-   included: the avatar in its orange shirt is the colour, under a pool of
-   primary light, with ink type (a light surface). Support and Insights are
-   calm sand panels (#F6EDE2) floating on the canvas, told apart by layout and
-   icon, with primary accents. ONE saturated moment: Sales, a primary panel
-   with its white type. The close is calm cream again. */
-.bzl[data-palette="2"] {
-  --bzl-bg: #fffaf2;
-  --bzl-fg: #2e1d12;
-  --bzl-ink-2: #4f3a2c;
-  --bzl-muted: #6b5646;
-  --bzl-faint: #7d6858;
-  --bzl-card: #f7efe5;
-  --bzl-tile: #f3e9dc;
-  --bzl-border: #ece0d1;
-  --bzl-border-strong: #e0d0bd;
-  --bzl-orange-strong: #a84f0c;
-  --bzl-orange-dark: #a84f0c;
-  --bzl-orange-wash: #fff1e3;
-
-  --pal-hero-bg: linear-gradient(170deg, #fffaf2 0%, #fff3e6 55%, #ffead6 100%);
-  --pal-hero-light: radial-gradient(ellipse 62% 58% at 54% 58%, rgb(249 163 83 / 0.34) 0%, rgb(249 163 83 / 0.12) 48%, transparent 76%);
-  --pal-hero-ambient: transparent;
-  --pal-nav-bg: rgb(255 250 242 / 0.92);
-  --pal-nav-line: #ece0d1;
-
-  /* the one saturated moment */
-  --pal-sales-bg:
-    radial-gradient(ellipse 60% 55% at 72% 40%, rgb(255 205 150 / 0.55), transparent 70%),
-    radial-gradient(ellipse 50% 60% at 10% 100%, rgb(214 92 10 / 0.42), transparent 70%),
-    linear-gradient(165deg, #f9a353 0%, #f28c38 45%, #e6761f 100%);
-
-  --pal-support-bg: linear-gradient(180deg, #f7eee3, #f4e9dc);
-  --pal-support-acc: #f9a353;
-  --pal-support-ink: #8a4510;
-  --pal-support-soft: #ffe6cc;
-  --pal-insights-bg: linear-gradient(180deg, #f7eee3, #f4e9dc);
-  --pal-insights-acc: #f9a353;
-  --pal-insights-ink: #8a4510;
-  --pal-insights-soft: #ffe6cc;
-
-  --pal-setup-bg: #fffaf2;
-  --pal-custom-bg: #fffaf2;
-  --pal-end-bg: radial-gradient(ellipse 55% 50% at 50% 45%, rgb(249 163 83 / 0.16), transparent 72%), #fffaf2;
-  --pal-footer-bg: #fffaf2;
-}
-/* the hero on cream (a light surface): ink type, the glass window's chrome in ink */
-.bzl[data-palette="2"] #hero [class*="text-shadow:0_1px_16px"],
-.bzl[data-palette="2"] #hero [class*="text-shadow:0_1px_10px"] {
-  color: #2e1d12;
-  text-shadow: none;
-}
-.bzl[data-palette="2"] #hero [class*="text-shadow:0_1px_16px"] .text-white,
-.bzl[data-palette="2"] #hero [class*="text-shadow:0_1px_10px"] .text-white {
-  color: #2e1d12;
-}
-.bzl[data-palette="2"] #hero [class*="text-shadow:0_1px_16px"] [class*="text-white/"],
-.bzl[data-palette="2"] #hero [class*="text-shadow:0_1px_10px"] [class*="text-white/"],
-.bzl[data-palette="2"] #hero [class*="text-white/80"]:not(.bzw *) {
-  color: #4f3a2c;
-}
-.bzl[data-palette="2"] #hero [class*="text-shadow:0_1px_16px"] a[class*="bg-white/[0.12]"] {
-  border-color: rgb(46 29 18 / 0.14);
-  background-color: rgb(255 255 255 / 0.6);
-}
-.bzl[data-palette="2"] #hero [class*="text-shadow:0_1px_16px"] a[class*="bg-white/[0.12]"] [class*="bg-white/"] {
-  background-color: #f9a353;
-}
-.bzl[data-palette="2"] #hero [class*="border-white/"]:not(.bzw *):not(#site-navbar, #site-navbar *) {
-  border-color: rgb(46 29 18 / 0.12);
-}
-.bzl[data-palette="2"] #hero [class*="bg-white/[0.07]"] {
-  background-color: rgb(255 255 255 / 0.4);
-  box-shadow: inset 0 1px 0 #fff, 0 40px 100px -50px rgb(150 80 20 / 0.35);
-}
-.bzl[data-palette="2"] #hero [class*="bg-white/"]:not(.bzw *):not([class*="bg-white/[0.07]"]):not(a):not(a *):not(#site-navbar, #site-navbar *) {
-  background-color: rgb(46 29 18 / 0.1);
-}
-.bzl[data-palette="2"] #hero [class*="bg-white/[0.14]"] {
-  background-color: rgb(255 255 255 / 0.5);
-}
-/* play: a filled primary disc, white glyph (as the widget's own controls) */
-.bzl[data-palette="2"] #hero [data-play] {
-  background: #f9a353;
-  border-color: rgb(255 255 255 / 0.7);
-}
-/* the nav over the cream hero: ink links, primary logo, Install Now as the filled primary button */
-.bzl[data-palette="2"] #site-navbar:not(.fixed) .text-white,
-.bzl[data-palette="2"] #site-navbar:not(.fixed) [class*="text-white/"],
-.bzl[data-palette="2"] #site-navbar:not(.fixed) [data-nav] {
-  color: #2e1d12;
-}
-.bzl[data-palette="2"] #site-navbar:not(.fixed) [data-nav="/early-access"] {
-  color: #a84f0c;
-}
-.bzl[data-palette="2"] #site-navbar:not(.fixed) [aria-label="Bizmis"] > span {
-  background-color: #f9a353 !important;
-}
-.bzl[data-palette="2"] #site-navbar:not(.fixed) a.border-white,
-.bzl[data-palette="2"] #site-navbar:not(.fixed) a.border-white svg {
-  border-color: transparent;
-  background-color: hsl(var(--primary));
-  color: #fff;
-}
-.bzl[data-palette="2"] #site-navbar:not(.fixed) a.border-white svg {
-  background-color: transparent;
-}
-/* the pillars as panels on the canvas */
-.bzl[data-palette="2"] .bzl-pillar {
-  margin: 0.75rem clamp(0.5rem, 1.2vw, 1.25rem);
-  border-radius: clamp(24px, 3vw, 40px);
-  box-shadow: inset 0 0 0 1px #ece0d1;
-  /* clip, not hidden: keeps the sticky headers sticky */
-  overflow: clip;
-}
-.bzl[data-palette="2"] .bzl-pillar.p-sales {
-  box-shadow: none;
-}
-.bzl[data-palette="2"] #setup + section + section > [aria-hidden="true"]:first-child {
-  opacity: 0;
-}
-
-/* ═════════════════════ 3 · Ember & Espresso ═════════════════════
-   The classic landing's dark "enterprise" ground (hsl(25 30% 7%)) and the
-   widget's deepest ink (#1A1410), lit by the primary as a stage light. The
-   page alternates: espresso hero (the avatar glowing in its orange, white
-   type), the ember Sales band (white type), peach light for Support,
-   espresso again for Insights, cream for Setup and Customize, espresso for
-   the close. On espresso the primary itself reads as text (8.5:1). */
-.bzl[data-palette="3"] {
-  --bzl-bg: #fffaf3;
-  --bzl-fg: #2a1d14;
-  --bzl-ink-2: #4f3a2c;
-  --bzl-muted: #6b5646;
-  --bzl-faint: #7d6858;
-  --bzl-card: #fbf1e6;
-  --bzl-tile: #f6ebde;
-  --bzl-border: #efe2d3;
-  --bzl-border-strong: #e3d0bc;
-  --bzl-orange-strong: #a84f0c;
-  --bzl-orange-dark: #a84f0c;
-  --bzl-orange-wash: #fff1e3;
-
-  --pal-hero-bg: linear-gradient(150deg, #2c1f16 0%, #1c140e 55%, #140e0a 100%);
-  --pal-hero-light:
-    radial-gradient(ellipse 46% 52% at 62% 62%, rgb(249 163 83 / 0.42) 0%, rgb(249 163 83 / 0.14) 45%, transparent 75%),
-    radial-gradient(ellipse 40% 40% at 20% 30%, rgb(249 163 83 / 0.1), transparent 70%);
-  --pal-hero-ambient: transparent;
-  --pal-nav-bg: rgb(255 250 243 / 0.9);
-  --pal-nav-line: #efe2d3;
-
-  /* ember: the primary deepening into burnt orange */
-  --pal-sales-bg:
-    radial-gradient(ellipse 60% 55% at 72% 40%, rgb(255 205 150 / 0.45), transparent 70%),
-    radial-gradient(ellipse 55% 60% at 10% 100%, rgb(150 60 5 / 0.45), transparent 70%),
-    linear-gradient(165deg, #f9a353 0%, #ee8732 45%, #d96a14 100%);
-
-  --pal-support-bg:
-    radial-gradient(ellipse 60% 60% at 18% 30%, rgb(255 214 176 / 0.55), transparent 70%),
-    linear-gradient(180deg, #fff4e8 0%, #ffe6cf 100%);
-  --pal-support-acc: #f9a353;
-  --pal-support-ink: #8a4510;
-  --pal-support-soft: #ffe4ca;
-
-  --pal-insights-bg:
-    radial-gradient(ellipse 55% 55% at 78% 38%, rgb(249 163 83 / 0.2), transparent 70%),
-    radial-gradient(ellipse 45% 45% at 8% 92%, rgb(249 163 83 / 0.1), transparent 70%),
-    linear-gradient(180deg, #211811 0%, #1a120d 100%);
-  --pal-insights-acc: #f9a353;
-  --pal-insights-ink: #8a4510;
-  --pal-insights-soft: #ffe4ca;
-
-  --pal-setup-bg: linear-gradient(180deg, #fffaf3, #fff1e3 45%, #fffaf3);
-  --pal-custom-bg: #fffaf3;
-  --pal-end-bg:
-    radial-gradient(ellipse 50% 50% at 50% 45%, rgb(249 163 83 / 0.22), transparent 72%),
-    linear-gradient(180deg, #1c140e, #140e0a);
-  --pal-footer-bg: #110c08;
-}
-/* hero on espresso: the brand logo in its primary, the URL pill dark enough for its type */
-.bzl[data-palette="3"] #site-navbar:not(.fixed) [aria-label="Bizmis"] > span {
-  background-color: #f9a353 !important;
-}
-.bzl[data-palette="3"] #hero span[class*="bg-white/25"][class*="text-white/80"] {
-  background-color: rgb(255 244 232 / 0.1);
-  color: #fff4e8;
-}
-.bzl[data-palette="3"] #hero [class*="text-shadow:0_1px_16px"],
-.bzl[data-palette="3"] #hero [class*="text-shadow:0_1px_10px"] {
-  text-shadow: 0 1px 18px rgb(0 0 0 / 0.35);
-}
-.bzl[data-palette="3"] #hero .studio-ambient-overlay + svg {
-  opacity: 0.55;
-}
-/* Insights on espresso: the band's own type in cream and primary; the cards stay light */
-.bzl[data-palette="3"] .p-insights::before {
-  mix-blend-mode: screen;
-  opacity: 0.06;
-}
-.bzl[data-palette="3"] .p-insights .pi {
-  --pi-name-color: #fff4e8;
-  --pi-line-color: #e9d6c3;
-  --pi-icon-bg: rgb(249 163 83 / 0.16);
-  --pi-icon-fg: #f9a353;
-  --pi-bar: rgb(28 20 14 / 0.88);
-}
-.bzl[data-palette="3"] .p-insights .pi-head::before {
-  box-shadow: 0 1px 0 rgb(249 163 83 / 0.22);
-}
-.bzl[data-palette="3"] .p-insights .bzp-dock-line {
-  color: #e9d6c3;
-}
-.bzl[data-palette="3"] .p-insights .bzl-lead {
-  color: #d9c6b3;
-}
-.bzl[data-palette="3"] .p-insights .bzl-clarity {
-  background: #fff8f0;
-}
-/* the close and the footer on espresso: light type */
-.bzl[data-palette="3"] #setup + section + section,
-.bzl[data-palette="3"] > footer {
-  --bzl-fg: #fff4e8;
-  --bzl-muted: #d9c6b3;
-  --bzl-faint: #b8a38f;
-  --bzl-card: #33251b;
-  --bzl-border: rgb(255 244 232 / 0.12);
-  --bzl-orange-strong: #f9a353;
-  --bzl-orange-dark: #f9a353;
-}
-.bzl[data-palette="3"] #setup + section + section .bzl-btn-ghost:hover {
-  background: #3d2d21;
-}
-.bzl[data-palette="3"] #setup + section + section > [aria-hidden="true"]:first-child {
-  opacity: 0;
-}
-.bzl[data-palette="3"] > footer {
-  border-top-color: transparent;
-}
-
-/* ═════════════════════ 4 · Brand Siblings ═════════════════════
-   Today's three-pillar idea, recalibrated: the three hues are the primary
-   and two siblings at its exact OKLCH lightness and chroma (L 0.786,
-   C 0.139), ±20° of hue: peach-rose #FF9971 (h 41) for Support, apricot
-   #F9A353 (h 61, the brand) for Sales, amber #E6AF40 (h 81) for Insights.
-   Their bands are the same siblings at L 0.96, their text inks at L 0.48,
-   so they read as one family instead of unrelated coral and honey. Hero and
-   Sales stay the saturated apricot with white type. */
-.bzl[data-palette="4"] {
-  --bzl-bg: #fffcf8;
-  --bzl-fg: #2b2520;
-  --bzl-ink-2: #5c5249;
-  --bzl-muted: #6b5f55;
-  --bzl-faint: #6e6258;
-  --bzl-orange-strong: #a84f0c;
-  --bzl-orange-dark: #a84f0c;
-
-  --pal-hero-bg: linear-gradient(135deg, #feb977 0%, #f9a353 45%, #ec8732 100%);
-  --pal-hero-light: radial-gradient(ellipse 80% 60% at 50% 45%, rgb(255 214 170 / 0.7) 0%, rgb(251 186 122 / 0.45) 30%, rgb(249 163 83 / 0.25) 60%, rgb(232 128 40 / 0.2) 100%);
-  --pal-hero-ambient: transparent;
-  --pal-nav-bg: rgb(255 252 248 / 0.9);
-  --pal-nav-line: #efe4d8;
-
-  /* apricot, h 61: the brand itself */
-  --pal-sales-bg:
-    radial-gradient(ellipse 60% 55% at 72% 40%, rgb(255 214 170 / 0.5), transparent 70%),
-    radial-gradient(ellipse 50% 60% at 10% 100%, rgb(214 100 20 / 0.42), transparent 70%),
-    linear-gradient(165deg, #f9a353 0%, #f1903c 45%, #e57b22 100%);
-
-  /* peach-rose, h 41 */
-  --pal-support-bg:
-    radial-gradient(ellipse 60% 60% at 18% 30%, rgb(255 153 113 / 0.3), transparent 70%),
-    radial-gradient(ellipse 50% 45% at 92% 95%, rgb(255 153 113 / 0.16), transparent 70%),
-    linear-gradient(180deg, #fff2ec 0%, #ffe3d6 100%);
-  --pal-support-acc: #ff9971;
-  --pal-support-ink: #924324;
-  --pal-support-soft: #ffe0d3;
-
-  /* amber, h 81 */
-  --pal-insights-bg:
-    radial-gradient(ellipse 60% 60% at 82% 35%, rgb(230 175 64 / 0.28), transparent 70%),
-    radial-gradient(ellipse 50% 45% at 8% 90%, rgb(230 175 64 / 0.16), transparent 70%),
-    linear-gradient(180deg, #fef6e7 0%, #fbe9c9 100%);
-  --pal-insights-acc: #e6af40;
-  --pal-insights-ink: #7e5500;
-  --pal-insights-soft: #fbe8c4;
-
-  --pal-setup-bg: linear-gradient(180deg, #fffcf8, #fff4e8 45%, #fffcf8);
-  --pal-custom-bg: #fffcf8;
-  --pal-end-bg: #ffffff; /* the film's end card (see "Early Access, as in the film") */
-  --pal-footer-bg: #fffcf8;
-}
-
-/* ═════════════ Early Access, as in the film (palettes 1 and 4) ═════════════
+/* ═════════════ Early Access, as in the film  ═════════════
    The ad-1 film's end card: pure white, one soft warm glow, the ink "Install
    now" with its Shopify bag, and everything handwritten (the invite, the
    arrow note, "Only 50 spots!", the underlines) plus the perk ticks in the
@@ -466,8 +167,7 @@
    Early Access handwriting elsewhere (the nav link on the light bar) follows.
    The handwriting accepts the primary's lower contrast on white (2.0:1, large
    script): it is the film's look. */
-.bzl[data-palette="1"] #setup + section + section,
-.bzl[data-palette="4"] #setup + section + section {
+.bzl[data-palette="1"] #setup + section + section {
   --bzl-fg: #2b2520;
   --bzl-muted: #75695e;
   --bzl-faint: #9b8d80;
@@ -475,19 +175,15 @@
   --bzl-orange-strong: hsl(var(--primary));
 }
 /* the film's glow: soft, warm, barely there */
-.bzl[data-palette="1"] #setup + section + section > [aria-hidden="true"]:first-child,
-.bzl[data-palette="4"] #setup + section + section > [aria-hidden="true"]:first-child {
+.bzl[data-palette="1"] #setup + section + section > [aria-hidden="true"]:first-child {
   opacity: 0.55;
 }
-.bzl[data-palette="1"] .bzl-end-applied-text,
-.bzl[data-palette="4"] .bzl-end-applied-text {
+.bzl[data-palette="1"] .bzl-end-applied-text {
   color: hsl(var(--primary));
 }
-.bzl[data-palette="1"] .bzl-end-arrow path,
-.bzl[data-palette="4"] .bzl-end-arrow path {
+.bzl[data-palette="1"] .bzl-end-arrow path {
   stroke: hsl(var(--primary));
 }
-.bzl[data-palette="1"] #site-navbar.fixed [data-nav="/early-access"]:not(.text-white):not([class*="text-white/"]),
-.bzl[data-palette="4"] #site-navbar.fixed [data-nav="/early-access"]:not(.text-white):not([class*="text-white/"]) {
+.bzl[data-palette="1"] #site-navbar.fixed [data-nav="/early-access"]:not(.text-white):not([class*="text-white/"]) {
   color: hsl(var(--primary));
 }

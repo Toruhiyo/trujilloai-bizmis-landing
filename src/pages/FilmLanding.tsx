@@ -1,6 +1,5 @@
 import { useEffect } from "react";
 import { Helmet } from "react-helmet-async";
-import { useLocation } from "react-router-dom";
 import Hero from "@/components/Hero";
 import Seo from "@/components/Seo";
 import SalesSection from "@/components/landing/SalesSection";
@@ -32,10 +31,6 @@ interface FilmLandingProps {
  */
 const FilmLanding = ({ path = "/" }: FilmLandingProps) => {
   const messages = useMessages();
-  // Palette exploration: ?palette=1..4 swaps the page's colours (palette-options.css); none = today's.
-  const { search } = useLocation();
-  const palette = new URLSearchParams(search).get("palette");
-  const paletteAttr = palette && /^[1-4]$/.test(palette) ? palette : undefined;
 
   // Lets the film landing's scoped CSS reach the shared navbar (outside .bzl),
   // e.g. the handwritten "Early Access" link, without touching other pages.
@@ -57,8 +52,9 @@ const FilmLanding = ({ path = "/" }: FilmLandingProps) => {
     };
   }, []);
 
+  // the page's palette, "Bizmis Mono" (palette-options.css)
   return (
-    <div className="bzl min-h-screen" data-palette={paletteAttr}>
+    <div className="bzl min-h-screen" data-palette="1">
       <Helmet>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link

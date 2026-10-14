@@ -1303,13 +1303,6 @@
 }
 .bzl-mk .mk-label.is-strong { font-weight: 700; }
 .bzl-mk .mk-label.is-big { font-size: 20px; font-weight: 700; letter-spacing: -0.02em; }
-/* palette 3 puts Insights on espresso: the primary as the marker, cream type */
-.bzl[data-palette="3"] .p-insights .bzl-clarity.bzl-mk {
-  --mk-line: #f9a353;
-  --mk-ink: #fff4e8;
-  --mk-tint: rgb(249 163 83 / 0.18);
-  background: none;
-}
 
 /* ── Support store demo (support/SupportStore.tsx): the shopper's question typed
    in the widget's composer, a blinking caret while they type ── */
