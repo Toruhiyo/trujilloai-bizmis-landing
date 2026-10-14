@@ -2,9 +2,11 @@
  * The ad-1 film shown in the landing hero (and later on /watch?ref=).
  *
  * `src` is an HLS ladder (4K, 1440p, 1080p, 720p, 480p, 360p) built from the
- * 4K master by scripts/encode-film-hls.sh and hosted on Vercel Blob under a
- * versioned prefix (film/<film>/<cut>/), so a new cut never collides with a
- * cached one. VITE_FILM_SRC overrides it (e.g. a local ladder).
+ * 4K master by scripts/encode-film-hls.sh and hosted on the ops CDN
+ * (go.bizmis.ai, S3 + CloudFront; bizmis-operations/scripts/marketing/upload_film_hls.py)
+ * under a versioned prefix (invite-cards/_film/<film>/<cut>/), so a new cut never
+ * collides with a cached one. Not on Vercel Blob: the free plan's quotas blocked the
+ * store twice (2026-10). VITE_FILM_SRC overrides it (e.g. a local ladder).
  * The ambient loop is a muted montage of the agent at work (built by
  * scripts/make-hero-film-loop.sh), small enough to ship with the
  * site.
@@ -21,7 +23,7 @@ export const HERO_FILM = {
   id: "ad-1",
   src:
     import.meta.env.VITE_FILM_SRC ??
-    "https://8josk2l8la4zszeg.public.blob.vercel-storage.com/film/ad-1/v33/master.m3u8",
+    "https://go.bizmis.ai/invite-cards/_film/ad-1/v33/master.m3u8",
   /** Fallback until the film's metadata loads (seconds). */
   durationSeconds: 127,
   loop: {
