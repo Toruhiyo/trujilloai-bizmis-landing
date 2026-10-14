@@ -1,36 +1,51 @@
-import type { CSSProperties } from "react";
 import { Check, Lock, RotateCcw, ShoppingCart, Truck } from "lucide-react";
 import { localeTag, useLocale, useMessages } from "@/i18n/LocaleProvider";
 import { cn } from "@/lib/utils";
-import { BarWidget, Captions, NavBanner, SentMessage } from "../BizmisWidget";
+import { span, typed } from "../useRewindLoop";
+import { BarWidget, Captions, NavBanner, SentMessage, captionChunks, captionLength } from "../BizmisWidget";
 import { ClayTile } from "../clay";
 import { TabletFrame } from "../devices";
 import { STORE_URL } from "../visuals";
-import { useBeats, useOnScreen } from "./hooks";
+import { bump, easeOutBack, useMedia, useScene } from "./hooks";
+import { Sentinel } from "./shared";
 
-/** idle in the cart, the last-minute question, the answer, off to checkout, the order placed. */
-const BEATS = [1200, 1700, 3300, 2300, 3600];
 const PERKS = [Truck, RotateCcw];
 const PRICE = 48;
+/** The scene's timeline (ms): typing, send, a beat of thought, the answer. */
+const T = { type: 350, send: 1300, work: 1600, speak: 2250 };
+const MS_PER_WORD = 280;
 
 /**
  * "They buy it" (checkout), on a tablet with the widget in its BAR layout (a
- * glass pill centred on the page's foot, the head capping its left end): the
- * shopper has it in the cart but stalls on a last-minute question (will it
- * arrive in time?). The agent answers out loud (ships today, free returns,
- * each lighting up on the page), takes them to checkout, and the cart
- * becomes a placed order instead of an abandoned one.
+ * glass pill centred on the page's foot, the head capping its left end; the
+ * tablet stands up on phones): the shopper has it in the cart but stalls on
+ * a last-minute question, typed into the bar (will it arrive in time?). The
+ * agent answers out loud, every word of it (ships today, free returns, each
+ * lighting up on the page as it's said), takes them to checkout, and the
+ * cart becomes a placed order instead of an abandoned one. Follows the
+ * scene's time (useScene), so it rewinds as it played.
  */
 const BuyMockup = ({ play }: { play?: boolean }) => {
   const m = useMessages();
   const s = m.landing.sales;
   const locale = useLocale();
-  const [ref, onScreen] = useOnScreen<HTMLDivElement>(0.4);
-  const beat = useBeats(BEATS, play ?? onScreen);
-  const asking = beat === 1;
-  const answered = beat >= 2;
-  const going = beat === 3;
-  const placed = beat === 4;
+  const portrait = useMedia("(max-width: 639px)");
+  const speakLen = captionLength(s.buyCaption, MS_PER_WORD);
+  // checkout once the whole answer is out (both lines), then the order
+  const go = T.speak + speakLen - 500;
+  const placed = go + 1500;
+  const { t, sentinel, off } = useScene(placed + 1700, play);
+  // the perks light as the first line gets to them (about its middle and its end)
+  const first = captionChunks(s.buyCaption)[0]?.length ?? 8;
+  const perkAt = [T.speak + Math.round(first * 0.5) * MS_PER_WORD, T.speak + first * MS_PER_WORD];
+
+  const typing = t >= T.type - 200 && t < T.send;
+  const draft = typing ? typed(s.buyQuery, t, T.type, 30) : undefined;
+  const press = span(t, T.send - 170, T.send + 60);
+  const sent = span(t, T.send, T.speak + 900);
+  const speaking = t >= T.speak && t < go;
+  const going = t >= go && t < placed;
+  const done = span(t, placed, placed + 450);
   const money = new Intl.NumberFormat(localeTag(locale), {
     style: "currency",
     currency: s.pulse.currency,
@@ -38,8 +53,9 @@ const BuyMockup = ({ play }: { play?: boolean }) => {
   });
 
   return (
-    <div ref={ref} className="sl-buy">
-      <TabletFrame url={STORE_URL}>
+    <div className="sl-buy relative">
+      <Sentinel ref={sentinel} off={off} />
+      <TabletFrame url={STORE_URL} portrait={portrait}>
         <div className="relative h-full px-7 pt-3">
           {/* the store's own header, with its cart */}
           <div
@@ -61,7 +77,10 @@ const BuyMockup = ({ play }: { play?: boolean }) => {
           </div>
 
           {/* the cart page */}
-          <div className="mt-5 grid grid-cols-[1fr_250px] gap-7" aria-hidden="true">
+          <div
+            className={cn("mt-5 grid gap-7", portrait ? "grid-cols-1 gap-5" : "grid-cols-[1fr_250px]")}
+            aria-hidden="true"
+          >
             <div>
               <div className="text-[17px] font-bold tracking-tight text-[var(--bzl-fg)]">
                 {s.cart.title}
@@ -78,24 +97,28 @@ const BuyMockup = ({ play }: { play?: boolean }) => {
                   {money.format(PRICE)}
                 </div>
               </div>
-              {/* what the agent just answered, lighting up on the page */}
+              {/* what the agent says, lighting up on the page as it's said */}
               <div className="mt-4 flex flex-wrap gap-2">
-                {PERKS.map((Icon, i) => (
-                  <span
-                    key={i}
-                    className={cn("sl-buy-perk", answered && "is-on")}
-                    style={{ "--i": i } as CSSProperties}
-                  >
-                    <Icon className="h-3.5 w-3.5" strokeWidth={2.25} />
-                    {s.cart.perks[i]}
-                  </span>
-                ))}
+                {PERKS.map((Icon, i) => {
+                  const on = span(t, perkAt[i], perkAt[i] + 300);
+                  const pop = bump(t, perkAt[i], 520);
+                  return (
+                    <span
+                      key={i}
+                      className={cn("sl-buy-perk", on > 0.5 && "is-on")}
+                      style={{ scale: `${1 + 0.12 * pop}` }}
+                    >
+                      <Icon className="h-3.5 w-3.5" strokeWidth={2.25} />
+                      {s.cart.perks[i]}
+                    </span>
+                  );
+                })}
               </div>
             </div>
 
             {/* the order summary, then the placed order */}
-            <div className={cn("sl-buy-summary", placed && "is-placed")}>
-              <div className="sl-buy-summary-body">
+            <div className={cn("sl-buy-summary", portrait && "mt-0")}>
+              <div className="sl-buy-summary-body" style={{ opacity: 1 - done }}>
                 <div className="flex items-center justify-between text-[13px] text-[var(--bzl-muted)]">
                   <span>{s.cart.subtotal}</span>
                   <span className="font-semibold tabular-nums text-[var(--bzl-fg)]">
@@ -109,15 +132,22 @@ const BuyMockup = ({ play }: { play?: boolean }) => {
                 <div
                   className={cn(
                     "sl-buy-button mt-4 flex h-10 items-center justify-center gap-2 rounded-xl text-[13px] font-semibold text-white",
-                    going && "is-pressing",
+                    t >= go && "is-go",
                   )}
+                  style={{ boxShadow: `0 0 0 ${6 * bump(t, placed - 600, 600)}px rgb(242 140 56 / 0.35)` }}
                 >
                   <Lock className="h-3.5 w-3.5" strokeWidth={2.4} />
                   {s.cart.checkout}
                 </div>
               </div>
-              <div className="sl-buy-done">
-                <span className="sl-buy-done-check">
+              <div
+                className="sl-buy-done"
+                style={{ opacity: Math.min(1, done * 2), scale: `${0.92 + 0.08 * easeOutBack(done)}` }}
+              >
+                <span
+                  className="sl-buy-done-check"
+                  style={{ scale: `${0.4 + 0.6 * easeOutBack(span(t, placed + 120, placed + 620))}` }}
+                >
                   <Check className="h-6 w-6" strokeWidth={3} />
                 </span>
                 <span className="text-[15px] font-bold text-[var(--bzl-fg)]">{s.cart.placed}</span>
@@ -128,24 +158,34 @@ const BuyMockup = ({ play }: { play?: boolean }) => {
             </div>
           </div>
 
-          {/* the agent's words, centred over the bar */}
-          {(beat === 2 || going) && (
-            <div className="absolute inset-x-0 bottom-[140px] flex justify-center px-8">
-              <Captions text={s.buyCaption} className="text-sm" />
-            </div>
-          )}
-
-          <div className="absolute bottom-5 left-1/2 w-[480px] -translate-x-1/2">
+          <div className="sl-buy-bar absolute bottom-5 left-1/2">
+            {/* the agent's words, centred over the bar */}
+            {speaking && (
+              <div className="mb-3 flex justify-center">
+                <Captions
+                  text={s.buyCaption}
+                  at={t - T.speak}
+                  msPerWord={MS_PER_WORD}
+                  className="sl-cap sl-cap-buy"
+                />
+              </div>
+            )}
             <BarWidget
               head="luca"
-              speaking={beat === 2}
-              working={going}
+              speaking={speaking}
+              working={(t >= T.work && t < T.speak) || going}
               placeholder={m.landing.widget.placeholder}
+              draft={draft}
+              press={press}
               above={
-                asking ? (
-                  <SentMessage text={s.buyQuery} />
+                sent > 0 && sent < 1 ? (
+                  <SentMessage text={s.buyQuery} k={sent} />
                 ) : going ? (
-                  <NavBanner heading={m.landing.widget.takingYouTo} target={s.cart.checkout} />
+                  <NavBanner
+                    heading={m.landing.widget.takingYouTo}
+                    target={s.cart.checkout}
+                    progress={span(t, go, placed)}
+                  />
                 ) : undefined
               }
             />

@@ -155,13 +155,9 @@ export const ca: Messages = {
       cart: { title: "El teu carretó", subtotal: "Subtotal", checkout: "Pagar", perks: ["Surt avui", "Devolució gratuïta"], placed: "Comanda feta" },
       funnel: {
         eyebrow: "Tota la botiga, tot el dia",
-        without: "Sense",
-        with: "Amb Bizmis",
         steps: ["Visites", "Troben", "Decideixen", "Compren"],
-        left: "Marxen",
-        note: "Il·lustratiu",
       },
-      pulse: { label: "Vendes d'avui", order: "Nova comanda", currency: "EUR" },
+      pulse: { label: "Vendes d'avui", currency: "EUR" },
     },
     support: {
       title: "Menys tiquets.",

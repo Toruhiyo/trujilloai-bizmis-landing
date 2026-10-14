@@ -3,7 +3,7 @@ import { cn } from "@/lib/utils";
 import { TrendIcon } from "../AnimatedIcons";
 import PillarChip from "../PillarChip";
 import { useActivePanel } from "./hooks";
-import SalesPulse from "./SalesPulse";
+import SalesPayoff from "./SalesPayoff";
 import SalesTitle, { SalesHeading } from "./SalesTitle";
 import { Device, PanelCopy } from "./shared";
 
@@ -11,7 +11,8 @@ import { Device, PanelCopy } from "./shared";
  * Variant A, "the rail": an editorial split. On the left, the title stands
  * stacked and sticky the whole way down, the part being shown lit, with that
  * moment's benefit under it. On the right, big devices scroll past, one per
- * moment, and then the payoff: the day's sales surging, every part lit.
+ * moment, and then the payoff: the whole funnel improving and pouring its
+ * orders into the day's sales, every part lit.
  * On phones the title rides a slim sticky bar and each device gets its own
  * words.
  */
@@ -60,7 +61,7 @@ const SalesA = () => {
             </div>
           ))}
           <div ref={setRef(3)} className="sl-a-panel is-payoff">
-            <SalesPulse />
+            <SalesPayoff />
           </div>
         </div>
       </div>

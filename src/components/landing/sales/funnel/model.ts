@@ -1,94 +1,117 @@
-import { useEffect, useRef, useState } from "react";
-
 /**
  * The at-scale funnel's (illustrative) model: of every shopper who visits,
  * how many find a fit (discovery), how many of those decide (decision) and
  * how many of those carts become orders (checkout), without Bizmis and with
- * it. Shapes only: no figure is ever printed, and none is a claim.
+ * it. Shapes only: no figure from it is ever printed, and none is a claim.
+ *
+ * The shoppers are a deterministic stream: shopper `i` arrives at a fixed
+ * time, at a fixed speed, and its fate at each stage is fixed by the stage's
+ * rate at the moment it gets there. So any moment of the timeline can be
+ * drawn from `t` alone, forwards or backwards (the rewind).
  */
-export const BASE = [0.4, 0.36, 0.52];
-export const BOOST = [0.64, 0.58, 0.8];
+export const BASE = [0.45, 0.4, 0.5];
+export const BOOST = [0.9, 0.86, 0.92];
 
-/** The pass rate of stage `i` with Bizmis `k` (0 → 1) of the way in. */
-export const rate = (i: number, k: number) => BASE[i] + (BOOST[i] - BASE[i]) * k;
+/** The pass rate of stage `g` with Bizmis `k` (0 → 1) of the way in. */
+export const rate = (g: number, k: number) => BASE[g] + (BOOST[g] - BASE[g]) * k;
 
 /** How many of the visitors are left after each stage: [visits, fit, decided, ordered]. */
 export const flows = (k: number[]) => {
   const out = [1];
-  for (let i = 0; i < 3; i++) out.push(out[i] * rate(i, k[i] ?? 0));
+  for (let g = 0; g < 3; g++) out.push(out[g] * rate(g, k[g] ?? 0));
   return out;
 };
 
-/** Ease `cur` toward `target` (exponential, `tau` seconds). */
-export const approach = (cur: number, target: number, dt: number, tau = 0.55) =>
-  target + (cur - target) * Math.exp(-dt / tau);
+/** Where the three stages end (fractions of the width), and the orders bag. */
+export const GATES = [0.25, 0.5, 0.74];
+export const BAG = 0.93;
 
-/** What a concept gets: Bizmis on each stage (0 → 1), the stage in focus (3 = all), and whether it plays. */
-export type ConceptProps = {
-  boost: number[];
-  focus: number;
-  play: boolean;
-  reduced: boolean;
-  steps: string[];
-  left: string;
-};
+/** Shoppers per second, how long before 0 the stream starts (so it's full at 0), seconds to cross the width. */
+const RATE = 5.2;
+const WARM = 4.4;
+const CROSS = 3.7;
+/** How long a stage takes to improve (ms). */
+export const RAMP = 900;
+/** How long an order takes to pour from the bag into the sales (s, payoff only). */
+export const POUR = 0.62;
 
-/** Without Bizmis, then with it (a beat to see the leaks first), on a loop while it plays. */
-const OFF_MS = 1600;
-const ON_MS = 5600;
+const ease = (k: number) => (k <= 0 ? 0 : k >= 1 ? 1 : k < 0.5 ? 4 * k * k * k : 1 - (-2 * k + 2) ** 3 / 2);
 
 /**
- * The funnel's switch: "with Bizmis" on a loop (off for a breath, then on)
- * while it plays, restarting off each time the focus moves or it comes back on
- * screen; a click takes it over until then. Reduced motion rests on "with". With
- * Bizmis on, every stage up to the focus is plugged.
+ * When each stage starts improving (ms on the timeline): in a beat only its
+ * own stage (`focus` 0–2) does, in the payoff (3) all three, one after another.
  */
-export const useFunnelSwitch = (focus: number, play: boolean, reduced: boolean) => {
-  const [on, setOn] = useState(reduced);
-  const [manual, setManual] = useState<boolean | null>(null);
-  // a new stage (or coming back on screen) starts over, without Bizmis first
-  useEffect(() => {
-    setManual(null);
-    setOn(reduced);
-  }, [focus, reduced, play]);
-  useEffect(() => {
-    if (manual !== null || reduced || !play) return;
-    const t = window.setTimeout(() => setOn((v) => !v), on ? ON_MS : OFF_MS);
-    return () => window.clearTimeout(t);
-  }, [on, manual, reduced, play]);
-  const value = manual ?? on;
-  const boost = [0, 1, 2].map((i) => (value && (focus >= 3 || i <= focus) ? 1 : 0));
-  return { on: value, set: setManual, boost };
+export const startsFor = (focus: number) =>
+  focus >= 3 ? [1100, 1650, 2200] : [0, 1, 2].map((g) => (g === focus ? 1500 : Infinity));
+
+/** How far stage improvements are at `t` (ms): 0 → 1 each. */
+export const ksAt = (t: number, starts: number[]) => starts.map((s) => ease((t - s) / RAMP));
+
+/** A stable 0..1 random number for (i, j). */
+export const rand = (i: number, j: number) => {
+  let s = (i * 374761393 + j * 668265263 + 1442695041) >>> 0;
+  s = Math.imul(s ^ (s >>> 13), 1274126177);
+  s = Math.imul(s ^ (s >>> 16), 2246822519);
+  s ^= s >>> 13;
+  return (s >>> 0) / 4294967296;
 };
 
-/** A value per stage that eases toward its target each frame (for canvas / SVG loops). */
-export const useEased = (target: number[]) => {
-  const cur = useRef(target.slice());
-  const tgt = useRef(target);
-  tgt.current = target;
-  const step = (dt: number) => {
-    let moving = false;
-    cur.current = cur.current.map((c, i) => {
-      const n = approach(c, tgt.current[i], dt);
-      if (Math.abs(n - tgt.current[i]) > 0.002) moving = true;
-      return Math.abs(n - tgt.current[i]) > 0.002 ? n : tgt.current[i];
+export type Shopper = {
+  /** Arrival (s on the timeline; negative = already on its way at 0). */
+  at: number;
+  /** Speed, in widths per second. */
+  v: number;
+  /** Lane across the stream, -1..1. */
+  lane: number;
+  /** Hop phase, size jitter. */
+  phase: number;
+  size: number;
+  /** The stage it leaves at (0–2), or 3 if it orders. */
+  out: number;
+  /** When it reaches each stage's end and the bag (s). */
+  gate: number[];
+  bag: number;
+};
+
+/** The stream for a timeline of `duration` ms with the given improvement starts. */
+export const makeShoppers = (duration: number, starts: number[]): Shopper[] => {
+  const n = Math.ceil((WARM + duration / 1000 + 1) * RATE);
+  const list: Shopper[] = [];
+  for (let i = 0; i < n; i++) {
+    const at = i / RATE - WARM + (rand(i, 1) - 0.5) * 0.08;
+    const v = (1 / CROSS) * (0.86 + rand(i, 2) * 0.28);
+    const gate = GATES.map((g) => at + g / v);
+    let out = 3;
+    for (let g = 0; g < 3; g++) {
+      const k = ksAt(gate[g] * 1000, starts)[g];
+      if (rand(i, 10 + g) >= rate(g, k)) {
+        out = g;
+        break;
+      }
+    }
+    list.push({
+      at,
+      v,
+      lane: (rand(i, 3) * 2 - 1) * 0.9,
+      phase: rand(i, 4),
+      size: rand(i, 5),
+      out,
+      gate,
+      bag: at + BAG / v,
     });
-    return moving;
-  };
-  return { cur, tgt, step };
+  }
+  return list;
 };
 
-/** A seeded random stream, so the crowd and the flow look the same on every load. */
-export const seeded = (seed: number) => {
-  let s = seed >>> 0;
-  return () => {
-    s = (s + 0x6d2b79f5) >>> 0;
-    let t = s;
-    t = Math.imul(t ^ (t >>> 15), t | 1);
-    t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
-    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
-  };
-};
+/** Order values the payoff adds up as they land (any of them, in turn). */
+const AMOUNTS = [64, 118, 89, 42, 76, 135, 58, 97, 71, 104];
+
+/** The orders landing in the sales (payoff): when (s) and how much, in order. */
+export const landings = (shoppers: Shopper[]) =>
+  shoppers
+    .map((s, i) => ({ at: s.bag + POUR, amount: AMOUNTS[i % AMOUNTS.length], out: s.out }))
+    .filter((l) => l.out === 3 && l.at >= 0)
+    .sort((a, b) => a.at - b.at);
 
 /** The agent working each stage: the real Bizmis head renders, one per mockup. */
 export const STAGE_HEADS = ["amber", "mia", "luca"];

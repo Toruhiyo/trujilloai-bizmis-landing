@@ -155,13 +155,9 @@ export const it: Messages = {
       cart: { title: "Il tuo carrello", subtotal: "Subtotale", checkout: "Pagamento", perks: ["Spedito oggi", "Reso gratuito"], placed: "Ordine effettuato" },
       funnel: {
         eyebrow: "Tutto il negozio, tutto il giorno",
-        without: "Senza",
-        with: "Con Bizmis",
         steps: ["Visite", "Trovano", "Decidono", "Ordinano"],
-        left: "Escono",
-        note: "Illustrativo",
       },
-      pulse: { label: "Vendite di oggi", order: "Nuovo ordine", currency: "EUR" },
+      pulse: { label: "Vendite di oggi", currency: "EUR" },
     },
     support: {
       title: "Meno ticket.",

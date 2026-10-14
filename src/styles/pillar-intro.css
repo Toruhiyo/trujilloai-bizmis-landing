@@ -1,0 +1,129 @@
+/* PillarIntro (src/components/landing/PillarIntro.tsx): a pillar's title,
+   big on arrival, morphing into the section's sticky docked header.
+   Driven by --pi-e (0 → 1) on .pi, set from the scroll. */
+
+.pi {
+  --pi-nav: var(--bzl-nav, 4rem);
+  --pi-dock-h: 4rem;
+  --pi-e: 0;
+  --pi-bar: color-mix(in oklab, var(--acc-soft, #fff3e7) 82%, transparent);
+  position: relative;
+  /* the big title never widens the page; clip, unlike hidden, keeps sticky working */
+  overflow-x: clip;
+}
+@media (max-width: 767px) {
+  .pi {
+    --pi-nav: 49px;
+  }
+}
+
+/* the header: sticky under the nav for the whole section */
+.pi-head {
+  position: sticky;
+  top: var(--pi-nav);
+  z-index: 20;
+  isolation: isolate;
+}
+/* its bar fades in as the title docks */
+.pi-head::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: var(--pi-bar);
+  -webkit-backdrop-filter: blur(14px) saturate(1.2);
+  backdrop-filter: blur(14px) saturate(1.2);
+  box-shadow: 0 1px 0 color-mix(in oklab, var(--acc, #f28c38) 18%, transparent);
+  opacity: clamp(0, calc((var(--pi-e) - 0.55) * 2.23), 1);
+  pointer-events: none;
+}
+
+.pi-dock {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  min-height: 3.5rem;
+  padding: 0.55rem 1rem;
+  /* in only at the end of the morph, once the flying title has landed on it */
+  opacity: clamp(0, calc((var(--pi-e) - 0.9) * 10), 1);
+}
+.pi-dock-chip {
+  flex-shrink: 0;
+}
+.pi-dock-main {
+  min-width: 0;
+}
+@media (max-width: 1023px) {
+  .pi-dock-chip {
+    display: none;
+  }
+}
+
+/* the big title: one screen tall, centred under the nav */
+.pi-big {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: calc(100svh - var(--pi-nav));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-inline: 1rem;
+  pointer-events: none;
+  opacity: clamp(0, calc((1 - var(--pi-e)) * 10), 1);
+}
+.pi-big-inner,
+.pi-still {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: clamp(1rem, 3svh, 2rem);
+  text-align: center;
+}
+.pi-title {
+  max-width: 14ch;
+  font-size: clamp(2.9rem, min(9vw, 14svh), 9rem);
+  font-weight: 700;
+  letter-spacing: -0.045em;
+  line-height: 0.98;
+  color: var(--bzl-fg);
+  text-wrap: balance;
+}
+@media (max-width: 639px) {
+  .pi-title {
+    font-size: clamp(2.6rem, 13.5vw, 4rem);
+  }
+}
+
+/* the morph: each element flies to its docked twin */
+.pi-big .pi-morph {
+  display: inline-block;
+  transform-origin: center;
+  transform: translate(calc(var(--pi-dx, 0px) * var(--pi-ex, 0)), calc(var(--pi-dy, 0px) * var(--pi-ey, 0)))
+    scale(calc(1 + (var(--pi-s, 1) - 1) * var(--pi-es, 0)));
+  will-change: transform;
+}
+.pi-big .pi-lone {
+  opacity: clamp(0, calc(1 - var(--pi-e) * 2.2), 1);
+}
+
+/* the runway: the big title's screen, then the content scrolls in as it docks */
+.pi-runway {
+  height: calc(100svh + 38svh - var(--pi-nav) - var(--pi-dock-h));
+  pointer-events: none;
+}
+.pi-body {
+  position: relative;
+}
+
+/* reduced motion: the big title, still, then the header once it's passed */
+.pi.is-still .pi-still {
+  justify-content: center;
+  min-height: calc(72svh - var(--pi-nav));
+  padding: 3rem 1rem;
+}
+.pi.is-still .pi-dock {
+  opacity: var(--pi-e);
+}

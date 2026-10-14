@@ -160,17 +160,13 @@ export const en = {
       buyCaption: "Yes, it ships today and returns are free. Ready to check out?",
       /** The store's cart in the Buy it mockup. */
       cart: { title: "Your cart", subtotal: "Subtotal", checkout: "Checkout", perks: ["Ships today", "Free returns"], placed: "Order placed" },
-      /** The at-scale funnel under the words: the whole store's shoppers, without and with Bizmis (illustrative, no figures). */
+      /** The at-scale funnel beside each moment: the whole store's shoppers, that stage improving (illustrative, no figures). */
       funnel: {
         eyebrow: "Your whole store, all day",
-        without: "Without",
-        with: "With Bizmis",
         steps: ["Visits", "Found a fit", "Decided", "Ordered"],
-        left: "Left",
-        note: "Illustrative",
       },
-      /** The pillar's moment: the store's sales climbing (currency is an ISO code for Intl). */
-      pulse: { label: "Sales today", order: "New order", currency: "USD" },
+      /** The payoff's sales, fed by the funnel (currency is an ISO code for Intl). */
+      pulse: { label: "Sales today", currency: "USD" },
     },
     /** Customer Support on /v2: a short promise, the inbox that empties itself, and three capabilities. */
     support: {

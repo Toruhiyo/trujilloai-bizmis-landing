@@ -6,8 +6,11 @@ import { cn } from "@/lib/utils";
  * The pillar's title, "Shoppers / Find it. / Trust it. / Buy it.", with the
  * part being shown lit (`active`: 0–2, or "all" for the payoff, or null for
  * none; the parts before it are also marked done). `stack` sets each part on
- * its own line (the rail); `line` keeps it to one line (a header bar). How a lit part looks is up to the variant's
- * CSS (.sl-title in landing-sales.css).
+ * its own line (the rail); `line` keeps it to one line (a header bar);
+ * `big` is the pillar's entrance (PillarIntro), every part kept whole on
+ * its line. Each piece carries a `data-morph` key, so PillarIntro flies the
+ * big title's pieces onto the docked bar's. How a lit part looks is up to
+ * the variant's CSS (.sl-title in landing-sales.css).
  */
 const SalesTitle = ({
   active,
@@ -17,9 +20,9 @@ const SalesTitle = ({
   className,
 }: {
   active: number | "all" | null;
-  layout: "stack" | "line";
-  /** "p" for a visual copy of a title that's already on the page (it's hidden from screen readers). */
-  as?: "h2" | "p";
+  layout: "stack" | "line" | "big";
+  /** "p" / "span" for a visual copy of a title that's already on the page (hidden from screen readers). */
+  as?: "h2" | "p" | "span";
   /** Progress under each part, 0–1 (as --fill), for a layout that draws it. */
   fills?: number[];
   className?: string;
@@ -28,12 +31,15 @@ const SalesTitle = ({
   return (
     <Tag
       className={cn("sl-title", `is-${layout}`, className)}
-      aria-hidden={Tag === "p" || undefined}
+      aria-hidden={Tag !== "h2" || undefined}
     >
-      <span className="sl-title-lead">{s.titleLead} </span>
+      <span className="sl-title-lead" data-morph="sl-lead">
+        {s.titleLead}
+      </span>{" "}
       {s.titleParts.map((part, i) => (
         <span key={part}>
           <span
+            data-morph={`sl-part-${i}`}
             className={cn(
               "sl-title-part",
               active === "all" || active === i

@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import type { ReactNode } from "react";
+import type { CSSProperties, ReactNode } from "react";
 import { cn } from "@/lib/utils";
 
 /**
@@ -11,7 +11,11 @@ import { cn } from "@/lib/utils";
  * the Bizmis widget — keeps its true proportions instead of being squeezed.
  */
 
-/** Scales a fixed-width virtual screen to the width it's given. */
+/**
+ * Scales a fixed-width virtual screen to the width it's given. The scale is
+ * published as --vs on the screen, so text on it can hold a legible size on
+ * screen however small the device gets: e.g. `font-size: max(14px, calc(11px / var(--vs)))`.
+ */
 export const VirtualScreen = ({
   width,
   children,
@@ -44,7 +48,8 @@ export const VirtualScreen = ({
           height: scale ? `${100 / scale}%` : "100%",
           transform: `scale(${scale || 1})`,
           visibility: scale ? "visible" : "hidden",
-        }}
+          "--vs": scale || 1,
+        } as CSSProperties}
       >
         {children}
       </div>
@@ -147,24 +152,31 @@ export const PhoneFrame = ({
   </div>
 );
 
-/** A tablet in landscape (4 : 3), in the film's glass shell; its screen lays out at 760 pt so the store stays readable at this size. */
+/**
+ * A tablet in landscape (4 : 3), in the film's glass shell; its screen lays
+ * out at 760 pt so the store stays readable at this size. `portrait` stands
+ * it up (3 : 4, laid out at 600 pt), for narrow screens.
+ */
 export const TabletFrame = ({
   children,
   url,
+  portrait = false,
   className,
 }: {
   children: ReactNode;
   url: string;
+  portrait?: boolean;
   className?: string;
 }) => (
   <div
     className={cn(
-      "bzl-device is-tablet relative mx-auto aspect-[1024/768] rounded-[1.7rem] p-[0.5rem]",
+      "bzl-device is-tablet relative mx-auto rounded-[1.7rem] p-[0.5rem]",
+      portrait ? "aspect-[768/1024]" : "aspect-[1024/768]",
       className,
     )}
   >
     <div className="relative h-full overflow-hidden rounded-[1.25rem] bg-white">
-      <VirtualScreen width={760}>
+      <VirtualScreen width={portrait ? 600 : 760}>
         <div className="relative flex h-full flex-col">
           <StatusBar className="h-[30px] pt-1 text-[13px]" />
           <AddressPill label={url} className="w-[340px]" />

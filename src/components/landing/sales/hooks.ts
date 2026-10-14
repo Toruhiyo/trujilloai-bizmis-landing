@@ -1,4 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
+import { useRewindLoop } from "../useRewindLoop";
+import type { RewindLoopOptions } from "../useRewindLoop";
 
 const query = "(prefers-reduced-motion: reduce)";
 
@@ -38,26 +40,42 @@ export const useOnScreen = <T extends Element>(threshold = 0.35) => {
 };
 
 /**
- * A mockup's beats: steps through `durations` (ms each) on a loop while
- * `play` is true, from the first beat every time it starts again. With
- * reduced motion it rests on the last beat (the outcome), without moving.
+ * A scene's timeline (see useRewindLoop): it plays from its start when its
+ * sentinel (a box over the scene, see <Sentinel>) comes into view, holds,
+ * rewinds fast, rests and plays again; leaving resets it. Pass `play: false`
+ * to hide the sentinel, which counts as out of view: a pinned stage uses it
+ * so each beat starts over the moment it becomes the active one. Renders
+ * every frame by default (tick 0), since the scenes derive motion from `t`.
  */
-export const useBeats = (durations: number[], play: boolean) => {
-  const reduced = useReducedMotion();
-  const last = durations.length - 1;
-  const [beat, setBeat] = useState(0);
-  useEffect(() => {
-    if (!play) setBeat(0);
-  }, [play]);
-  useEffect(() => {
-    if (!play || reduced) return;
-    const t = window.setTimeout(
-      () => setBeat((b) => (b + 1) % durations.length),
-      durations[beat],
-    );
-    return () => window.clearTimeout(t);
-  }, [beat, play, reduced, durations]);
-  return reduced ? last : beat;
+export const useScene = (
+  duration: number,
+  play?: boolean,
+  opts: Omit<RewindLoopOptions, "duration"> = {},
+) => {
+  const sentinel = useRef<HTMLSpanElement>(null);
+  const loop = useRewindLoop(sentinel, {
+    duration,
+    hold: 2200,
+    rewind: 1000,
+    rest: 450,
+    threshold: 0.3,
+    tick: 0,
+    ...opts,
+  });
+  return { ...loop, sentinel, off: play === false };
+};
+
+/** Ease in and out (smoothstep-ish cubic). */
+export const easeInOut = (k: number) => (k < 0.5 ? 4 * k * k * k : 1 - (-2 * k + 2) ** 3 / 2);
+/** Ease out with a little overshoot: a pop. */
+export const easeOutBack = (k: number) => {
+  const c = 1.9;
+  return k <= 0 ? 0 : k >= 1 ? 1 : 1 + (c + 1) * (k - 1) ** 3 + c * (k - 1) ** 2;
+};
+/** A 0 → 1 → 0 bump centred at `at + dur / 2`, `dur` ms long. */
+export const bump = (t: number, at: number, dur: number) => {
+  const k = (t - at) / dur;
+  return k <= 0 || k >= 1 ? 0 : Math.sin(Math.PI * k);
 };
 
 /**
@@ -108,8 +126,9 @@ export const useActivePanel = (line = 0.45) => {
 };
 
 /**
- * For a pinned section (a tall track with a sticky stage inside): how far
- * the stage has been scrolled through, 0 → 1.
+ * For a pinned section (a tall track with a sticky stage as its first
+ * child): how far the stage has been scrolled through, 0 → 1. Honours the
+ * stage's own sticky `top` (e.g. under a docked header).
  */
 export const usePinProgress = <T extends HTMLElement>() => {
   const ref = useRef<T>(null);
@@ -121,8 +140,10 @@ export const usePinProgress = <T extends HTMLElement>() => {
       const el = ref.current;
       if (!el) return;
       const r = el.getBoundingClientRect();
-      const travel = r.height - window.innerHeight;
-      setProgress(travel > 0 ? Math.min(1, Math.max(0, -r.top / travel)) : 0);
+      const pin = el.firstElementChild as HTMLElement | null;
+      const top = pin ? parseFloat(getComputedStyle(pin).top) || 0 : 0;
+      const travel = r.height - (pin ? pin.offsetHeight : window.innerHeight);
+      setProgress(travel > 0 ? Math.min(1, Math.max(0, (top - r.top) / travel)) : 0);
     };
     const onScroll = () => {
       if (!frame) frame = requestAnimationFrame(check);

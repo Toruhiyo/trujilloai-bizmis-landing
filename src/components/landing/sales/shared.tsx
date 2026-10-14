@@ -1,8 +1,19 @@
+import { forwardRef } from "react";
 import type { ComponentType } from "react";
 import { cn } from "@/lib/utils";
 import BuyMockup from "./BuyMockup";
 import FindMockup from "./FindMockup";
 import TrustMockup from "./TrustMockup";
+
+/**
+ * The box a scene's timeline watches (useScene): it covers the scene, and
+ * `off` hides it, which the loop reads as "out of view" (reset to the start).
+ * The scene's root needs `position: relative`.
+ */
+export const Sentinel = forwardRef<HTMLSpanElement, { off?: boolean }>(({ off }, ref) => (
+  <span ref={ref} hidden={off} aria-hidden="true" className="pointer-events-none absolute inset-0" />
+));
+Sentinel.displayName = "Sentinel";
 
 /** The three moments, in title order: find it, trust it, buy it. */
 const MOCKUPS: ComponentType<{ play?: boolean }>[] = [

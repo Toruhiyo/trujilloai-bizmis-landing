@@ -2,15 +2,18 @@ import type { CSSProperties } from "react";
 import { Check, Feather, ShieldCheck, ShoppingCart, Star, X } from "lucide-react";
 import { localeTag, useLocale, useMessages } from "@/i18n/LocaleProvider";
 import { cn } from "@/lib/utils";
-import { Captions, MobileWidget, SentMessage } from "../BizmisWidget";
+import { span, typed } from "../useRewindLoop";
+import { Captions, MobileWidget, SentMessage, captionLength } from "../BizmisWidget";
 import { ClayTile } from "../clay";
 import type { ClayShape, TINT } from "../clay";
 import { PhoneFrame } from "../devices";
 import { STORE_URL } from "../visuals";
-import { useBeats, useOnScreen } from "./hooks";
+import { bump, easeOutBack, useScene } from "./hooks";
+import { Sentinel } from "./shared";
 
-/** idle, the shopper asks, the agent weighs all four, one gets picked, the shopper decides. */
-const BEATS = [1100, 1700, 2600, 2300, 3400];
+/** The scene's timeline (ms): typing, send, weighing the four (one card every `card`), the pick, the answer. */
+const T = { type: 350, send: 1300, compare: 1650, card: 560, pick: 4050, speak: 4150 };
+const MS_PER_WORD = 280;
 
 /** What the agent weighs on each product: weight, reviews, warranty. */
 const SPECS = [Feather, Star, ShieldCheck];
@@ -33,18 +36,26 @@ const BEST = 1;
  * get, the agent weighs four products like an expert would (weight, reviews,
  * warranty; each gets a tick or a cross), backs the best match out loud in
  * the widget's captions, and the shopper decides: it goes in the cart. The
- * real mobile widget bar, with the avatar's head in its circle.
+ * real mobile widget bar, with the avatar's head in its circle; the shopper
+ * types the question in it. Follows the scene's time (useScene), so it
+ * rewinds as it played.
  */
 const TrustMockup = ({ play }: { play?: boolean }) => {
   const m = useMessages();
   const s = m.landing.sales;
   const locale = useLocale();
-  const [ref, onScreen] = useOnScreen<HTMLDivElement>(0.4);
-  const beat = useBeats(BEATS, play ?? onScreen);
-  const asked = beat >= 1;
-  const comparing = beat === 2;
-  const picked = beat >= 3;
-  const decided = beat === 4;
+  const speakLen = captionLength(s.compareCaption, MS_PER_WORD);
+  const decideAt = T.speak + speakLen - 900;
+  const { t, sentinel, off } = useScene(T.speak + speakLen + 400, play);
+  const typing = t >= T.type - 200 && t < T.send;
+  const draft = typing ? typed(s.compareQuery, t, T.type, 32) : undefined;
+  const press = span(t, T.send - 170, T.send + 60);
+  const sent = span(t, T.send, T.compare + 1500);
+  const comparing = t >= T.compare && t < T.pick;
+  const pick = span(t, T.pick, T.pick + 450);
+  const picked = t >= T.pick;
+  const speaking = t >= T.speak;
+  const decided = span(t, decideAt, decideAt + 420);
   const money = new Intl.NumberFormat(localeTag(locale), {
     style: "currency",
     currency: s.pulse.currency,
@@ -52,7 +63,8 @@ const TrustMockup = ({ play }: { play?: boolean }) => {
   });
 
   return (
-    <div ref={ref} className="sl-trust">
+    <div className="sl-trust relative">
+      <Sentinel ref={sentinel} off={off} />
       <PhoneFrame url={STORE_URL} className="w-full">
         {/* the store's page heading */}
         <div aria-hidden="true" className="space-y-2 px-5 pt-4">
@@ -62,16 +74,24 @@ const TrustMockup = ({ play }: { play?: boolean }) => {
         <div className="grid grid-cols-2 gap-3 px-4 pt-4">
           {PRODUCTS.map((p, i) => {
             const best = i === BEST;
+            const at = T.compare + i * T.card;
+            const scan = bump(t, at, 700);
+            const lift = best ? easeOutBack(pick) : pick;
             return (
               <div
                 key={i}
-                className={cn(
-                  "sl-trust-card relative rounded-2xl p-2.5",
-                  comparing && "is-scan",
-                  (comparing || picked) && "is-marked",
-                  picked && (best ? "is-best" : "is-out"),
-                )}
-                style={{ "--i": i } as CSSProperties}
+                className={cn("sl-trust-card relative rounded-2xl p-2.5", best && picked && "is-best")}
+                style={
+                  {
+                    opacity: best ? 1 : 1 - 0.6 * pick,
+                    transform: `scale(${best ? 1 + 0.04 * lift : 1 - 0.03 * pick})`,
+                    boxShadow: best && picked
+                      ? `0 0 0 ${2 * pick}px var(--bzl-orange), 0 18px 34px -18px rgb(236 119 9 / ${0.65 * pick})`
+                      : scan > 0
+                        ? `0 0 0 2px rgb(242 140 56 / ${0.55 * scan})`
+                        : undefined,
+                  } as CSSProperties
+                }
               >
                 <ClayTile
                   shape={p.shape}
@@ -87,6 +107,7 @@ const TrustMockup = ({ play }: { play?: boolean }) => {
                 <ul className="mt-2.5 space-y-1.5" aria-hidden="true">
                   {SPECS.map((Icon, k) => {
                     const ok = p.fits[k];
+                    const mark = easeOutBack(span(t, at + 220 + k * 110, at + 520 + k * 110));
                     return (
                       <li key={k} className="flex items-center gap-1.5">
                         <Icon className="h-3.5 w-3.5 flex-shrink-0 text-[#b3a497]" strokeWidth={2} />
@@ -96,7 +117,7 @@ const TrustMockup = ({ play }: { play?: boolean }) => {
                             "sl-trust-mark grid h-4 w-4 flex-shrink-0 place-items-center rounded-full",
                             ok ? "is-ok" : "is-no",
                           )}
-                          style={{ "--k": k } as CSSProperties}
+                          style={{ opacity: Math.min(1, mark * 2), transform: `scale(${0.4 + 0.6 * mark})` }}
                         >
                           {ok ? (
                             <Check className="h-2.5 w-2.5" strokeWidth={3.5} />
@@ -109,15 +130,26 @@ const TrustMockup = ({ play }: { play?: boolean }) => {
                   })}
                 </ul>
                 {best && (
-                  <span className="sl-trust-badge" aria-hidden={!picked}>
+                  <span
+                    className="sl-trust-badge"
+                    aria-hidden={!picked}
+                    style={(() => {
+                      const k = easeOutBack(span(t, T.pick + 150, T.pick + 500));
+                      return { opacity: Math.min(1, k * 2), scale: `${0.6 + 0.4 * k}` };
+                    })()}
+                  >
                     <Check className="h-3 w-3" strokeWidth={3} />
                     {s.bestMatch}
                   </span>
                 )}
                 {best && (
                   <span
-                    className={cn("sl-trust-added", decided && "is-on")}
-                    aria-hidden={!decided}
+                    className="sl-trust-added"
+                    aria-hidden={decided === 0}
+                    style={(() => {
+                      const k = easeOutBack(decided);
+                      return { opacity: Math.min(1, k * 2), scale: `${0.7 + 0.3 * k}`, translate: `-50% ${6 * (1 - k)}px` };
+                    })()}
                   >
                     <ShoppingCart className="h-3 w-3" strokeWidth={2.5} />
                     {s.decided}
@@ -129,16 +161,23 @@ const TrustMockup = ({ play }: { play?: boolean }) => {
         </div>
         <MobileWidget
           head="mia"
-          speaking={picked}
+          speaking={speaking && t < T.speak + speakLen - 2 * MS_PER_WORD}
           working={comparing}
           placeholder={m.landing.widget.placeholder}
+          draft={draft}
+          press={press}
           above={
-            picked ? (
+            speaking ? (
               <div className="flex justify-center">
-                <Captions text={s.compareCaption} className="text-[13px]" />
+                <Captions
+                  text={s.compareCaption}
+                  at={t - T.speak}
+                  msPerWord={MS_PER_WORD}
+                  className="sl-cap sl-cap-phone"
+                />
               </div>
-            ) : asked ? (
-              <SentMessage text={s.compareQuery} />
+            ) : sent > 0 && sent < 1 ? (
+              <SentMessage text={s.compareQuery} k={sent} className="sl-sent" />
             ) : undefined
           }
         />
