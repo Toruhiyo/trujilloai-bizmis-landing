@@ -1,6 +1,6 @@
 import { useLayoutEffect, useMemo, useRef, useState } from "react";
 import type { CSSProperties } from "react";
-import { Check, ShoppingBag } from "lucide-react";
+import { ShoppingBag } from "lucide-react";
 import { cn } from "@/lib/utils";
 import AgentPin from "./AgentPin";
 import {
@@ -128,6 +128,43 @@ const readPalette = (el: HTMLElement, ctx: CanvasRenderingContext2D) => {
 };
 type Palette = ReturnType<typeof readPalette>;
 
+/** The labels' handwriting (ms): problems written on as a beat starts, one after another; at a fix, the strike, then the solution and its tick. */
+const WRITE_AT = 150;
+const WRITE_STAGGER = 170;
+const STRIKE_AT = 140;
+const STRIKE = 260;
+const SOLVE_AT = 640;
+const TICK = 260;
+/** How long writing `text` takes: a steady pen, a little quicker for short words. */
+const writeMs = (text: string) => 220 + text.length * 38;
+/** The pen's pace: off the mark gently, steady, easing at the end. */
+const pen = (k: number) => {
+  const x = clamp(k);
+  return x < 0.15 ? (x / 0.15) ** 2 * 0.1 : 0.1 + 0.9 * (1 - (1 - (x - 0.15) / 0.85) ** 1.6);
+};
+/** The written-so-far part of a word: a left-to-right reveal. */
+const reveal = (k: number) => (k >= 1 ? undefined : `inset(-30% ${((1 - k) * 100).toFixed(2)}% -30% -8%)`);
+
+/** Text widths in the handwriting, measured once per word, size and font state. */
+let measureCtx: CanvasRenderingContext2D | null = null;
+const widths = new Map<string, number>();
+const SCRIPT = '"Caveat", cursive';
+/** The largest size (px, ≤ `max`) at which `text` fits `w` px in the handwriting. */
+const fitSize = (text: string, max: number, w: number) => {
+  if (typeof document === "undefined") return max;
+  const ready = document.fonts?.check?.(`700 20px ${SCRIPT}`) ? 1 : 0;
+  const key = `${ready}|${max}|${text}`;
+  let tw = widths.get(key);
+  if (tw === undefined) {
+    measureCtx ??= document.createElement("canvas").getContext("2d");
+    if (!measureCtx) return max;
+    measureCtx.font = `700 ${max}px ${SCRIPT}`;
+    tw = measureCtx.measureText(text).width;
+    widths.set(key, tw);
+  }
+  return tw <= w ? max : Math.max(10, Math.floor((max * w) / tw));
+};
+
 /**
  * The flow, as a playful marker drawing in white on the band: one funnel of
  * three chambers (the stages), always converging from the straight mouth to
@@ -141,7 +178,7 @@ type Palette = ReturnType<typeof readPalette>;
  * redraws the chamber as its exit widens (the next entries follow, and a
  * double arrow marks the wider exit), little "pop" strokes and a star
  * doodle burst out, the leak shrinks to a slit, the waterfall thins to a
- * trickle, the label flips from the problem to the solution,
+ * trickle, the label's problem is struck through and the solution written in its place,
  * and the shoppers in the fixed chamber bounce along. More of them reach
  * the bag, which squashes as each lands, and grows rays as orders keep
  * coming. Earlier fixes stay as they are; later stages keep leaking. Never
@@ -182,6 +219,14 @@ const FunnelFlow = ({
   const bounds = boundsFor(k);
   const geo = geometry(size.W, size.H);
   const sec = t / 1000;
+  // one size for all three labels: the largest at which every problem and solution (with its tick) fits its chamber
+  const labelSize = Math.round(clamp(geo.top * 0.78, 18, 28));
+  const labelRoom = Math.max(40, Math.min(...CHAMBERS.map(([a, b]) => b - a)) * geo.run - 8);
+  const labelFit = Math.min(
+    labelSize,
+    ...copy.problems.map((p) => fitSize(p, labelSize, labelRoom)),
+    ...copy.solutions.map((p) => fitSize(p, labelSize, labelRoom - labelSize * 0.95)),
+  );
 
   useLayoutEffect(() => {
     const el = wrap.current;
@@ -535,29 +580,46 @@ const FunnelFlow = ({
         <canvas ref={canvas} className="sl-flow-canvas" />
         {W > 0 &&
           CHAMBERS.map(([a, b], i) => {
-            const since = t - starts[i] - 120;
-            const e = smooth(since / 300);
-            const pop = since > 0 && since < 600 ? Math.sin((since / 600) * Math.PI) * 0.18 : 0;
+            // the label, written in marker: the problem written on as the beat starts; at the fix, struck
+            // through, then the solution written in its place and ticked. Earlier fixes: written already.
+            const since = t - starts[i];
             const dim = !payoff && i !== focus;
+            const fixed = starts[i] === -Infinity;
+            const problem = copy.problems[i];
+            const solution = copy.solutions[i];
+            const writeP = fixed ? 1 : pen((t - (WRITE_AT + i * WRITE_STAGGER)) / writeMs(problem));
+            const strike = pen((since - STRIKE_AT) / STRIKE);
+            const away = smooth((since - STRIKE_AT - STRIKE - 60) / 200);
+            const writeS = fixed ? 1 : pen((since - SOLVE_AT) / writeMs(solution));
+            const tick = fixed ? 1 : pen((since - SOLVE_AT - writeMs(solution) - 40) / TICK);
             return (
               <span
                 key={i}
-                className={cn("sl-flow-label", e >= 0.5 && "is-fixed", dim && "is-dim")}
-                style={{
-                  left: X(a),
-                  width: X(b) - X(a),
-                  height: geo.top,
-                  opacity: smooth(t / 300) * (dim ? 0.4 : 1),
-                  transform: `scale(${1 + pop})`,
-                }}
+                className={cn("sl-flow-label", writeS > 0 && "is-fixed", dim && "is-dim")}
+                style={{ left: X(a), width: X(b) - X(a), height: geo.top, fontSize: labelFit }}
               >
-                <span className="sl-flow-label-text" style={{ opacity: 1 - e, translate: `0 ${-8 * e}px` }}>
-                  {copy.problems[i]}
-                </span>
-                <span className="sl-flow-label-text is-solution" style={{ opacity: e, translate: `0 ${8 * (1 - e)}px` }}>
-                  <Check className="sl-flow-label-check" strokeWidth={3.4} />
-                  {copy.solutions[i]}
-                </span>
+                {away < 1 && (
+                  <span className="sl-flow-label-text" style={{ opacity: 1 - away }}>
+                    <span className="sl-flow-write" style={{ clipPath: reveal(writeP) }}>
+                      {problem}
+                    </span>
+                    {strike > 0 && (
+                      <svg className="sl-flow-strike" viewBox="0 0 100 20" preserveAspectRatio="none" aria-hidden="true">
+                        <path d="M-2 13 C 20 9, 40 12, 60 9 S 90 8, 102 6" pathLength={1} strokeDasharray="1 1" strokeDashoffset={1 - strike} />
+                      </svg>
+                    )}
+                  </span>
+                )}
+                {writeS > 0 && (
+                  <span className="sl-flow-label-text is-solution">
+                    <span className="sl-flow-write" style={{ clipPath: reveal(writeS) }}>
+                      {solution}
+                    </span>
+                    <svg className="sl-flow-tick" viewBox="0 0 24 24" aria-hidden="true">
+                      <path d="M4 13.5 L9.5 19 L21 5" pathLength={1} strokeDasharray="1 1" strokeDashoffset={1 - tick} />
+                    </svg>
+                  </span>
+                )}
               </span>
             );
           })}

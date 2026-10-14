@@ -553,7 +553,8 @@
   height: 100%;
   pointer-events: none;
 }
-/* one small label per chamber, in the section's sans: the problem, then (fixed) the solution, ticked */
+/* one label per chamber, written in marker (the page's script): the problem, struck through at the
+   fix, then the solution written in its place and ticked. Sized by FunnelFlow to fit its chamber. */
 .sl-flow-label {
   position: absolute;
   top: 0;
@@ -561,44 +562,61 @@
   display: grid;
   align-items: center;
   justify-items: center;
-  font-size: 0.8rem;
-  font-weight: 600;
-  line-height: 1.1;
+  font-size: 1.5rem;
+  line-height: 1;
   text-align: center;
   color: var(--fn-ink);
-  transform-origin: 50% 70%;
+  transition: opacity 0.4s ease;
+}
+/* (two classes: beats the landing's `.bzl span` font rule) */
+.sl-fn .sl-flow-label-text,
+.sl-fn .sl-flow-write {
+  font-family: var(--bzl-script, "Caveat", cursive);
+  font-weight: 700;
 }
 .sl-flow-label-text {
+  position: relative;
   grid-area: 1 / 1;
   display: inline-flex;
   align-items: center;
-  gap: 0.3rem;
-  max-width: 100%;
+  gap: 0.12em;
   white-space: nowrap;
-  opacity: 0.92;
 }
-.sl-flow-label-text.is-solution {
-  font-weight: 700;
-  opacity: 1;
+.sl-flow-write {
+  display: inline-block;
+  padding-bottom: 0.08em;
 }
-.sl-flow-label-check {
+.sl-flow-strike,
+.sl-flow-tick {
+  overflow: visible;
+  fill: none;
+  stroke: var(--fn-ink);
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+/* the strike: a quick marker stroke across the problem */
+.sl-flow-strike {
+  position: absolute;
+  left: -4%;
+  top: 24%;
+  width: 108%;
+  height: 0.5em;
+  stroke-width: max(2.5px, 0.14em);
+}
+.sl-flow-strike path {
+  vector-effect: non-scaling-stroke;
+}
+/* the tick, drawn after the solution */
+.sl-flow-tick {
   flex-shrink: 0;
-  width: 1em;
-  height: 1em;
+  width: 0.85em;
+  height: 0.85em;
+  stroke-width: 3.8;
+  translate: 0 -0.05em;
 }
+.sl-flow-label.is-dim,
 .sl-flow-pin.is-dim {
   opacity: 0.4;
-}
-/* narrow chambers: smaller, and free to wrap onto two lines */
-@media (max-width: 479px) {
-  .sl-flow-label {
-    padding-inline: 3px;
-    font-size: 0.66rem;
-  }
-  .sl-flow-label-text {
-    white-space: normal;
-    text-wrap: balance;
-  }
 }
 /* the agent: a round stamp on a stage's leak, ringed in white */
 .sl-flow-pin {
