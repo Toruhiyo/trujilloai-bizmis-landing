@@ -473,7 +473,7 @@
   --fn-h: clamp(130px, calc(100svh - 30rem), 230px);
 }
 .sl-c.is-pinned .sl-pay .sl-fn {
-  --fn-h: clamp(300px, calc(100svh - 19rem), 440px);
+  --fn-h: clamp(280px, calc(100svh - 20rem), 400px);
 }
 
 /* stacked (no room to pin) */
@@ -498,7 +498,7 @@
   margin-inline: auto;
 }
 .sl-c.is-stacked .sl-pay .sl-fn {
-  --fn-h: 300px;
+  --fn-h: 260px;
 }
 .sl-c.is-stacked .sl-pay {
   width: 100%;
@@ -519,33 +519,42 @@
     max-width: 920px;
   }
   .sl-c.is-stacked .sl-pay .sl-fn {
-    --fn-h: 380px;
+    --fn-h: 320px;
   }
 }
 
 /* ═════════ The funnel at scale (sales/funnel) ═════════
-   In the ad-1 film's language: a white card, the problem world grey, the
-   fixed stages warm in the Bizmis primary, status pills, × and ✓ marks. */
+   On the band, in glass: round shoppers whose faces are the measure. The
+   canvas reads its colours from these variables, so a palette can restyle it. */
 .sl-fn {
   --fn-h: 230px;
+  --fn-body: white;
+  --fn-ink: var(--bzl-fg);
+  --fn-joy: hsl(var(--primary));
+  --fn-channel: rgb(255 255 255 / 0.12);
+  --fn-fixed: rgb(255 255 255 / 0.3);
+  --fn-rim: rgb(255 255 255 / 0.8);
+  --fn-rim-bad: rgb(255 255 255 / 0.42);
+  --fn-shade: rgb(110 38 0 / 0.2);
   position: relative;
-  padding: 0.85rem 1rem 0.7rem;
+  padding: 0.85rem 1rem 0.6rem;
   border-radius: 1.6rem;
-  background: rgb(255 255 255 / 0.94);
+  background: linear-gradient(160deg, rgb(255 255 255 / 0.16), rgb(255 255 255 / 0.06));
   box-shadow:
-    inset 0 1px 0 #fff,
-    0 0 0 1px rgb(255 255 255 / 0.7),
-    0 34px 70px -40px rgb(110 38 0 / 0.6);
-  color: var(--bzl-fg);
+    inset 0 0 0 1px rgb(255 255 255 / 0.3),
+    0 30px 60px -42px rgb(110 38 0 / 0.65);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  color: var(--fn-body);
 }
 .sl-fn-eyebrow {
   display: block;
-  margin-bottom: 0.4rem;
-  font-size: 0.7rem;
+  margin-bottom: 0.45rem;
+  font-size: 0.72rem;
   font-weight: 700;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: var(--bzl-muted);
+  color: rgb(255 255 255 / 0.88);
 }
 .sl-flow {
   position: relative;
@@ -562,7 +571,7 @@
   height: 100%;
   pointer-events: none;
 }
-/* each stage's status, as the film's pills: grey dot (the problem) → orange check (fixed) */
+/* each stage's status: the problem in glass, then (fixed) a white pill with the primary check */
 .sl-flow-pill {
   position: absolute;
   top: 0;
@@ -571,20 +580,16 @@
   align-items: center;
   gap: 0.35rem;
   max-width: 24%;
-  padding: 0.28rem 0.6rem 0.28rem 0.32rem;
+  padding: 0.26rem 0.6rem 0.26rem 0.3rem;
   border-radius: 999px;
   translate: -50% 0;
-  background: #fff;
-  box-shadow:
-    0 0 0 1px rgb(28 24 20 / 0.07),
-    0 6px 14px -8px rgb(28 24 20 / 0.3);
+  background: rgb(255 255 255 / 0.16);
+  box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.32);
   font-size: 0.72rem;
   font-weight: 600;
   line-height: 1.1;
-  color: #8a8077;
-  transition:
-    opacity 0.3s ease,
-    color 0.25s ease;
+  color: rgb(255 255 255 / 0.85);
+  transition: opacity 0.3s ease;
 }
 .sl-flow-pill-dot {
   display: grid;
@@ -593,24 +598,24 @@
   width: 1rem;
   height: 1rem;
   border-radius: 999px;
-  background: #e4ddd5;
-  color: #fff;
+  box-shadow: inset 0 0 0 1.5px rgb(255 255 255 / 0.6);
+  color: var(--fn-body);
 }
 .sl-flow-pill-dot svg {
   width: 0.62rem;
   height: 0.62rem;
 }
 .sl-flow-pill.is-fixed {
+  background: var(--fn-body);
+  box-shadow: 0 8px 18px -8px rgb(110 38 0 / 0.5);
   color: var(--bzl-fg);
-  box-shadow:
-    0 0 0 1.5px hsl(var(--primary) / 0.55),
-    0 8px 18px -8px hsl(var(--primary) / 0.7);
 }
 .sl-flow-pill.is-fixed .sl-flow-pill-dot {
   background: hsl(var(--primary));
+  box-shadow: none;
 }
 .sl-flow-pill.is-dim {
-  opacity: 0.55;
+  opacity: 0.6;
 }
 @media (max-width: 479px) {
   .sl-flow-pill {
@@ -630,40 +635,35 @@
   translate: -50% -50%;
   border-radius: 50%;
   box-shadow:
-    0 0 0 2.5px hsl(var(--primary)),
-    0 0 0 6px hsl(var(--primary) / 0.22),
-    0 8px 18px -6px rgb(110 38 0 / 0.5);
+    0 0 0 2.5px var(--fn-body),
+    0 0 0 6px rgb(255 255 255 / 0.25),
+    0 8px 18px -6px rgb(110 38 0 / 0.55);
 }
 .sl-flow-pin.is-dim {
-  opacity: 0.6;
+  opacity: 0.65;
 }
-/* the Sales box: glass, its orange base labelled, glowing as sales land */
-.sl-flow-sales {
+/* the order bag at the funnel's mouth: it bounces and glows as buyers land */
+.sl-flow-bag {
   --glow: 0;
   position: absolute;
-  z-index: 1;
-  display: flex;
-  align-items: flex-end;
-  border-radius: 1rem;
-  background: linear-gradient(180deg, rgb(255 255 255 / 0.4), rgb(255 246 236 / 0.95));
-  box-shadow:
-    inset 0 0 0 1px rgb(28 24 20 / 0.06),
-    0 0 calc(var(--glow) * 18px) calc(var(--glow) * 4px) hsl(var(--primary) / 0.45),
-    0 14px 30px -18px rgb(28 24 20 / 0.35);
-  overflow: hidden;
-}
-.sl-flow-sales-bar {
+  z-index: 3;
   display: grid;
   place-items: center;
-  width: 100%;
-  height: var(--bar);
-  background: hsl(var(--primary));
-  font-size: 0.78rem;
-  font-weight: 700;
-  color: #fff;
+  border-radius: 50%;
+  translate: -50% -50%;
+  background: var(--fn-body);
+  color: var(--fn-joy);
+  box-shadow:
+    0 0 0 calc(4px + var(--glow) * 3px) rgb(255 255 255 / 0.25),
+    0 0 calc(var(--glow) * 22px) calc(var(--glow) * 6px) rgb(255 240 210 / 0.6),
+    0 8px 18px -8px rgb(110 38 0 / 0.6);
+}
+.sl-flow-bag svg {
+  width: 48%;
+  height: 48%;
 }
 
-/* ═════════ The payoff: the whole funnel, fixed, the Sales box overflowing ═════════ */
+/* ═════════ The payoff: the whole funnel fixed, the bag bursting ═════════ */
 .sl-pay-box {
   padding-bottom: 0.9rem;
 }
@@ -861,4 +861,52 @@
   .bzw-caret {
     animation: none !important;
   }
+}
+
+/* ═════════ The agent's voice, made obvious (BizmisWidget VoiceWave) ═════════
+   Bold bars in the Bizmis primary, each on its own rhythm, in the composer
+   while the agent speaks. */
+.bzw-wave {
+  display: inline-flex;
+  align-items: center;
+  gap: 3.5px;
+  height: 1.85em;
+  vertical-align: middle;
+}
+.bzw-wave i {
+  display: block;
+  width: 5px;
+  height: 100%;
+  border-radius: 999px;
+  background: hsl(var(--primary));
+  transform-origin: center;
+  animation: bzw-wave calc(0.5s + (var(--i) * 37ms) % 0.32s) ease-in-out calc(var(--i) * -97ms) infinite alternate;
+}
+.bzw-wave i:nth-child(3n) {
+  opacity: 0.8;
+}
+@keyframes bzw-wave {
+  0% {
+    transform: scaleY(0.18);
+  }
+  45% {
+    transform: scaleY(1);
+  }
+  70% {
+    transform: scaleY(0.45);
+  }
+  100% {
+    transform: scaleY(0.85);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .bzw-wave i {
+    animation: none;
+    transform: scaleY(0.6);
+  }
+}
+
+/* the rail (A) sits on the light band: its funnel gets a primary ground so the glass reads */
+.sl-a .sl-fn {
+  background: hsl(var(--primary));
 }

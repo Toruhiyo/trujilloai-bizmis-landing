@@ -29,12 +29,14 @@ export const flows = (k: number[]) => {
 
 /** Where each stage starts and ends (fractions of the width), and where orders leave for the sales. */
 export const STAGES: [number, number][] = [
-  [0.02, 0.26],
-  [0.26, 0.5],
-  [0.5, 0.74],
+  [0.02, 0.25],
+  [0.25, 0.49],
+  [0.49, 0.73],
 ];
 export const GATES = STAGES.map(([, b]) => b);
-export const END = 0.76;
+/** Where the stream ends and buyers jump for the order bag, and the bag's centre. */
+export const END = 0.8;
+export const BAG = 0.91;
 
 /** Shoppers per second, how long before 0 the stream starts (so it's full at 0), seconds to cross the width. */
 const RATE = 6.6;
@@ -79,7 +81,7 @@ export type Shopper = {
   size: number;
   /** The stage it's lost at (0–2), or 3 if it buys. */
   out: number;
-  /** When it reaches each stage's end, and the sales (s). */
+  /** When it reaches each stage's end, and jumps for the bag (s). */
   gate: number[];
   sold: number;
 };
@@ -116,6 +118,3 @@ export const makeShoppers = (duration: number, starts: number[]): Shopper[] => {
 
 /** The agent working each stage: the real Bizmis head renders, one per mockup. */
 export const STAGE_HEADS = ["amber", "mia", "luca"];
-
-/** The true Bizmis primary (hsl(var(--primary)) = #F9A353), for the canvas, which can't read CSS variables. */
-export const PRIMARY = "#F9A353";

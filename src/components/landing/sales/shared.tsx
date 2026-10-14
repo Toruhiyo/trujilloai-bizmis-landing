@@ -18,7 +18,12 @@ Sentinel.displayName = "Sentinel";
 /** A beat's clock (one useScene shared by its mockup and its funnel): ms along its timeline. */
 export type Clock = { t: number };
 /** What a mockup takes: its own loop gated by `play`, or its beat's shared `clock` instead. */
-export type MockupProps = { play?: boolean; clock?: Clock };
+export type MockupProps = {
+  play?: boolean;
+  clock?: Clock;
+  /** Its beat is the one showing: mount the live 3D heads (default true; a pinned stage passes false for the others). */
+  active?: boolean;
+};
 
 /** The three moments, in title order: find it, trust it, buy it. */
 const MOCKUPS: ComponentType<MockupProps>[] = [
@@ -35,17 +40,19 @@ export const Device = ({
   index,
   play,
   clock,
+  active = true,
   className,
 }: {
   index: number;
   play?: boolean;
   clock?: Clock;
+  active?: boolean;
   className?: string;
 }) => {
   const Mockup = MOCKUPS[index];
   return (
     <div className={cn("sl-dev", DEVICE_CLASS[index], className)}>
-      <Mockup play={play} clock={clock} />
+      <Mockup play={play} clock={clock} active={active} />
     </div>
   );
 };

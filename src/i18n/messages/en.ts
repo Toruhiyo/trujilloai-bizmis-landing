@@ -166,8 +166,6 @@ export const en = {
         /** Each stage's status, as the film's pills: the problem (grey), then fixed by Bizmis (orange check). */
         problems: ["Can't find it", "Can't decide", "Not sure"],
         solutions: ["Found it", "Compared", "Doubt cleared"],
-        /** The box the sales drop into. */
-        sales: "Sales",
       },
       /** The store's currency in the mockups' prices (an ISO code for Intl). */
       pulse: { currency: "USD" },

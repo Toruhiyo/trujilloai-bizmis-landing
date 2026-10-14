@@ -157,7 +157,6 @@ export const ca: Messages = {
         eyebrow: "Tota la botiga, tot el dia",
         problems: ["No el troba", "Indecís", "No n'està segur"],
         solutions: ["Trobat", "Comparat", "Dubte resolt"],
-        sales: "Vendes",
       },
       pulse: { currency: "EUR" },
     },

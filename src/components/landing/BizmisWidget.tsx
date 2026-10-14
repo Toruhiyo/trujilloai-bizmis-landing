@@ -43,8 +43,10 @@ const Typewriter = ({ text }: { text: string }) => {
  * the shopper is typing, with the caret. An empty draft is a focused, empty
  * bar (caret only).
  */
-const ComposerText = ({ placeholder, draft }: { placeholder: string; draft?: string }) =>
-  draft === undefined ? (
+const ComposerText = ({ placeholder, draft, voice }: { placeholder: string; draft?: string; voice?: boolean }) =>
+  voice && draft === undefined ? (
+    <VoiceWave />
+  ) : draft === undefined ? (
     <span className="text-neutral-400">
       <Typewriter text={placeholder} />
     </span>
@@ -74,6 +76,20 @@ const ComposerButton = ({ draft, press = 0 }: { draft?: string; press?: number }
     ) : (
       <AudioLines className="h-3.5 w-3.5" strokeWidth={2.5} />
     )}
+  </span>
+);
+
+/**
+ * The agent's voice, made obvious: a bold waveform in the composer while it
+ * speaks (bars in the Bizmis primary, each on its own rhythm), in place of
+ * the placeholder. Drive `voice` from the captions' timing (captionVoice) so
+ * it moves exactly while words are being said.
+ */
+export const VoiceWave = ({ bars = 9, className }: { bars?: number; className?: string }) => (
+  <span className={cn("bzw-wave", className)} aria-hidden="true">
+    {Array.from({ length: bars }, (_, i) => (
+      <i key={i} style={{ "--i": i } as CSSProperties} />
+    ))}
   </span>
 );
 
@@ -231,6 +247,7 @@ const BizmisWidget = ({
   placeholder = "Help me find the right product.",
   draft,
   press,
+  voice,
   above,
   live,
   talking,
@@ -256,6 +273,8 @@ const BizmisWidget = ({
   draft?: string;
   /** 0..1, the send button being tapped. */
   press?: number;
+  /** The agent's voice is audible (waveform in the composer); defaults to `talking`, else the speaking state. */
+  voice?: boolean;
   /** The widget's overlay stack above the card (banner, sent message). */
   above?: ReactNode;
   className?: string;
@@ -333,7 +352,15 @@ const BizmisWidget = ({
             )}
           >
             <span className="bzw-composer min-w-0 flex-1 truncate text-sm">
-              {state === "call" ? "" : <ComposerText placeholder={placeholder} draft={draft} />}
+              {state === "call" ? (
+                ""
+              ) : (
+                <ComposerText
+                  placeholder={placeholder}
+                  draft={draft}
+                  voice={voice ?? talking ?? state === "speaking"}
+                />
+              )}
             </span>
             {state === "call" ? (
               <span
@@ -384,6 +411,15 @@ const CAPTION_HOLD = 2;
 /** How long `text` takes to say as captions (ms): every chunk, with its hold. */
 export const captionLength = (text: string, msPerWord = 320) =>
   captionChunks(text).reduce((sum, c) => sum + (c.length + CAPTION_HOLD + 1) * msPerWord, 0);
+
+/** True while a word is being said `at` ms into the captions (not in the pauses between lines): drives the voice waveform and the lips. */
+export const captionVoice = (text: string, at: number, msPerWord = 320) => {
+  if (at < 0) return false;
+  const chunks = captionChunks(text);
+  if (at >= captionLength(text, msPerWord)) return false;
+  const pos = captionAt(chunks, at, msPerWord);
+  return pos.word <= (chunks[pos.chunk]?.length ?? 0);
+};
 
 /** Where the captions are `at` ms in: which chunk, and how many of its words are out (the last one being said). */
 const captionAt = (chunks: string[][], at: number, msPerWord: number) => {
@@ -485,62 +521,102 @@ export const Captions = ({
 const HEAD_CDN = "/landing/heads";
 
 /**
+ * How the live (waist-up) avatar is framed so only its head fills the
+ * circle, like the real widget's HEAD-only camera (AvatarHeadCircle): an
+ * oversized box, in circle sizes, centred on the head.
+ */
+const HEAD_BOX = { w: 2.6, h: 2.05, headY: 0.36 };
+
+/**
  * The widget's head circle (AvatarHeadCircle): the avatar's head on a faint
  * disc. A ring pulses while it speaks; while it works, the activity laser
- * orbits the circle. Uses the preset's own head render (Bizmis shirt), so the
- * face is framed the way the real widget frames it instead of a cropped
- * waist-up still.
+ * orbits the circle. With `live`, the real 3D avatar (LiveAvatar, Bizmis
+ * shirt) framed to its head, blinking and moving its lips while it
+ * `speaking`, as the real widget's bar does; the preset's head render
+ * (Bizmis shirt) shows until it's drawn, or instead of it (no WebGL,
+ * reduced motion). Only mount `live` where it plays: each one is a canvas.
  */
 export const HeadCircle = ({
   head,
   size,
   speaking = false,
   working = false,
+  live = false,
   className,
 }: {
-  /** The preset avatar id on the CDN, e.g. "mia". */
+  /** The preset avatar id, e.g. "mia" (also its live model's name). */
   head: string;
   size: number;
   speaking?: boolean;
   working?: boolean;
+  /** The live 3D head instead of the still. */
+  live?: boolean;
   className?: string;
-}) => (
-  <span
-    className={cn("relative block flex-shrink-0", className)}
-    style={{ width: size, height: size }}
-  >
-    {working && (
-      <span
-        aria-hidden="true"
-        className="pointer-events-none absolute -inset-[5px]"
-      >
-        <span className="bzw-spinner absolute inset-0">
-          <span className="bzw-laser absolute inset-0 rounded-full" />
-        </span>
-      </span>
-    )}
-    {speaking && (
-      <span
-        aria-hidden="true"
-        className="bzw-ring-mobile absolute inset-0 rounded-full border-2"
-        style={{ borderColor: ORANGE }}
-      />
-    )}
+}) => {
+  const [drawn, setDrawn] = useState(false);
+  const showLive = live && drawn;
+  const box = { w: size * HEAD_BOX.w, h: size * HEAD_BOX.h };
+  return (
     <span
-      className="absolute inset-0 overflow-hidden rounded-full"
-      style={{ background: `color-mix(in oklab, ${ORANGE} 12%, #f4efe9)` }}
+      className={cn("relative block flex-shrink-0", className)}
+      style={{ width: size, height: size }}
     >
-      <img
-        src={`${HEAD_CDN}/${head}.png`}
-        alt=""
-        loading="lazy"
-        decoding="async"
-        draggable={false}
-        className="absolute left-1/2 top-[4%] w-[118%] max-w-none -translate-x-1/2"
-      />
+      {working && (
+        <span
+          aria-hidden="true"
+          className="pointer-events-none absolute -inset-[5px]"
+        >
+          <span className="bzw-spinner absolute inset-0">
+            <span className="bzw-laser absolute inset-0 rounded-full" />
+          </span>
+        </span>
+      )}
+      {speaking && (
+        <span
+          aria-hidden="true"
+          className="bzw-ring-mobile absolute inset-0 rounded-full border-2"
+          style={{ borderColor: ORANGE }}
+        />
+      )}
+      <span
+        className="absolute inset-0 overflow-hidden rounded-full"
+        style={{ background: `color-mix(in oklab, ${ORANGE} 12%, #f4efe9)` }}
+      >
+        <img
+          src={`${HEAD_CDN}/${head}.png`}
+          alt=""
+          loading="lazy"
+          decoding="async"
+          draggable={false}
+          className="absolute left-1/2 top-[4%] w-[118%] max-w-none -translate-x-1/2"
+          style={{ opacity: showLive ? 0 : 1, transition: "opacity 0.4s ease" }}
+        />
+        {live && (
+          <span
+            aria-hidden="true"
+            className="absolute"
+            style={{
+              width: box.w,
+              height: box.h,
+              left: (size - box.w) / 2,
+              top: size / 2 - box.h * HEAD_BOX.headY,
+            }}
+          >
+            <LiveAvatar
+              model={head}
+              shirtColor="#F9A353"
+              expression="default"
+              greet={false}
+              speaking={speaking}
+              onStatus={(st) => setDrawn(st === "live")}
+              fallback={null}
+            />
+          </span>
+        )}
+      </span>
     </span>
-  </span>
-);
+  );
+};
 
 /** The widget's Volume toggle (voice on): accent ring, soft accent fill. */
 const AudioToggle = () => (
@@ -571,12 +647,16 @@ export const MobileWidget = ({
   placeholder = "Help me find the right product.",
   draft,
   press,
+  live = false,
   above,
 }: {
-  /** The preset avatar id on the CDN, e.g. "mia". */
+  /** The preset avatar id, e.g. "mia". */
   head: string;
+  /** The agent's voice is audible: lips, ring and the composer's waveform. */
   speaking?: boolean;
   working?: boolean;
+  /** The live 3D head in the circle (mount it only where it plays). */
+  live?: boolean;
   placeholder?: string;
   /** What the shopper is typing (caret shown); undefined shows the placeholder. */
   draft?: string;
@@ -596,15 +676,10 @@ export const MobileWidget = ({
         className="absolute left-1/2 top-1.5 h-1 w-8 -translate-x-1/2 rounded-full bg-black/15"
       />
       <div className="flex items-center gap-1.5 px-2 pb-2">
-        <HeadCircle
-          head={head}
-          size={42}
-          speaking={speaking}
-          working={working}
-        />
+        <HeadCircle head={head} size={42} speaking={speaking} working={working} live={live} />
         <AudioToggle />
         <span className="bzw-composer min-w-0 flex-1 truncate px-1 text-sm">
-          <ComposerText placeholder={placeholder} draft={draft} />
+          <ComposerText placeholder={placeholder} draft={draft} voice={speaking} />
         </span>
         <ComposerButton draft={draft} press={press} />
       </div>
@@ -628,12 +703,16 @@ export const BarWidget = ({
   placeholder = "Help me find the right product.",
   draft,
   press,
+  live = false,
   above,
   className,
 }: {
   head: string;
+  /** The agent's voice is audible: lips, ring and the composer's waveform. */
   speaking?: boolean;
   working?: boolean;
+  /** The live 3D head capping the bar (mount it only where it plays). */
+  live?: boolean;
   placeholder?: string;
   /** What the shopper is typing (caret shown); undefined shows the placeholder. */
   draft?: string;
@@ -659,11 +738,12 @@ export const BarWidget = ({
         size={88}
         speaking={speaking}
         working={working}
+        live={live}
         className="relative z-10 -my-[26px] -ml-[25px]"
       />
       <AudioToggle />
       <span className="bzw-composer min-w-0 flex-1 truncate px-2 py-2 text-sm leading-5">
-        <ComposerText placeholder={placeholder} draft={draft} />
+        <ComposerText placeholder={placeholder} draft={draft} voice={speaking} />
       </span>
       <ComposerButton draft={draft} press={press} />
     </div>

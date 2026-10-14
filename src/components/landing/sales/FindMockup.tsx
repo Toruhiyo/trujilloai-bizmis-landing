@@ -3,7 +3,7 @@ import { Search } from "lucide-react";
 import { useMessages } from "@/i18n/LocaleProvider";
 import { cn } from "@/lib/utils";
 import { span, typed } from "../useRewindLoop";
-import BizmisWidget, { Captions, MobileWidget, NavBanner, SentMessage, captionLength } from "../BizmisWidget";
+import BizmisWidget, { Captions, MobileWidget, NavBanner, SentMessage, captionLength, captionVoice } from "../BizmisWidget";
 import { CLAY, TINT } from "../clay";
 import type { ClayShape } from "../clay";
 import { BrowserFrame, PhoneFrame } from "../devices";
@@ -92,7 +92,7 @@ export const findTimeline = (s: Messages["landing"]["sales"]) => ({
  * it played. The agent wears the
  * Bizmis outfit (the live 3D avatar on desktop, its render as the fallback).
  */
-const FindMockup = ({ play, clock }: MockupProps) => {
+const FindMockup = ({ play, clock, active = true }: MockupProps) => {
   const m = useMessages();
   const s = m.landing.sales;
   const phone = useMedia("(max-width: 639px)");
@@ -110,6 +110,8 @@ const FindMockup = ({ play, clock }: MockupProps) => {
   const working = t >= T.work && t < T.speak;
   const banner = t >= T.work + 150 && t < T.narrow + 150;
   const speaking = t >= T.speak;
+  // the voice: exactly while words are being said (waveform, lips)
+  const voice = captionVoice(s.findCaption, t - T.speak, MS_PER_WORD);
   const heading = span(t, T.narrow + 700, T.narrow + 1000);
   const best = span(t, T.narrow + 1000, T.narrow + 1300);
 
@@ -208,7 +210,8 @@ const FindMockup = ({ play, clock }: MockupProps) => {
           {catalog}
           <MobileWidget
             head="amber"
-            speaking={speaking}
+            live={active}
+            speaking={voice}
             working={working}
             placeholder={m.landing.widget.placeholder}
             draft={draft}
@@ -256,9 +259,9 @@ const FindMockup = ({ play, clock }: MockupProps) => {
         <div className="sl-find-widget absolute bottom-6 right-6 z-10">
           <BizmisWidget
             agent="greet-amber"
-            live="amber"
+            live={active ? "amber" : undefined}
             state={working ? "working" : speaking ? "speaking" : "idle"}
-            talking={speaking && t < T.speak + speakLen - 2 * MS_PER_WORD}
+            talking={voice}
             tool={Search}
             placeholder={m.landing.widget.placeholder}
             draft={draft}

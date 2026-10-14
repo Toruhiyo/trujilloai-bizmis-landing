@@ -3,7 +3,7 @@ import { Check, Feather, ShieldCheck, ShoppingCart, Star, X } from "lucide-react
 import { localeTag, useLocale, useMessages } from "@/i18n/LocaleProvider";
 import { cn } from "@/lib/utils";
 import { span, typed } from "../useRewindLoop";
-import { Captions, MobileWidget, SentMessage, captionLength } from "../BizmisWidget";
+import { Captions, MobileWidget, SentMessage, captionLength, captionVoice } from "../BizmisWidget";
 import { ClayTile } from "../clay";
 import type { ClayShape, TINT } from "../clay";
 import { PhoneFrame } from "../devices";
@@ -49,7 +49,7 @@ const BEST = 1;
  * its beat's shared clock), so it
  * rewinds as it played.
  */
-const TrustMockup = ({ play, clock }: MockupProps) => {
+const TrustMockup = ({ play, clock, active = true }: MockupProps) => {
   const m = useMessages();
   const s = m.landing.sales;
   const locale = useLocale();
@@ -172,7 +172,8 @@ const TrustMockup = ({ play, clock }: MockupProps) => {
         </div>
         <MobileWidget
           head="mia"
-          speaking={speaking && t < T.speak + speakLen - 2 * MS_PER_WORD}
+          speaking={captionVoice(s.compareCaption, t - T.speak, MS_PER_WORD)}
+          live={active}
           working={comparing}
           placeholder={m.landing.widget.placeholder}
           draft={draft}

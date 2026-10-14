@@ -121,7 +121,7 @@ const Pinned = () => {
                     aria-hidden={step !== i}
                   >
                     <Sentinel ref={beats[i].sentinel} off={beats[i].off} />
-                    <Device index={i} clock={beats[i]} />
+                    <Device index={i} clock={beats[i]} active={step === i} />
                   </div>
                 ))}
                 <div className={cn("sl-c-show is-payoff", payoff && "is-on")} aria-hidden={!payoff}>

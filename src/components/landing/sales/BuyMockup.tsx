@@ -2,7 +2,7 @@ import { Check, Lock, RotateCcw, ShoppingCart, Truck } from "lucide-react";
 import { localeTag, useLocale, useMessages } from "@/i18n/LocaleProvider";
 import { cn } from "@/lib/utils";
 import { span, typed } from "../useRewindLoop";
-import { BarWidget, Captions, NavBanner, SentMessage, captionChunks, captionLength } from "../BizmisWidget";
+import { BarWidget, Captions, NavBanner, SentMessage, captionChunks, captionLength, captionVoice } from "../BizmisWidget";
 import { ClayTile } from "../clay";
 import { TabletFrame } from "../devices";
 import { STORE_URL } from "../visuals";
@@ -40,7 +40,7 @@ export const buyTimeline = (s: Messages["landing"]["sales"]) => {
  * scene's time (its own useScene, or its beat's shared clock), so it
  * rewinds as it played.
  */
-const BuyMockup = ({ play, clock }: MockupProps) => {
+const BuyMockup = ({ play, clock, active = true }: MockupProps) => {
   const m = useMessages();
   const s = m.landing.sales;
   const locale = useLocale();
@@ -185,7 +185,8 @@ const BuyMockup = ({ play, clock }: MockupProps) => {
             )}
             <BarWidget
               head="luca"
-              speaking={speaking}
+              live={active}
+              speaking={speaking && captionVoice(s.buyCaption, t - T.speak, MS_PER_WORD)}
               working={(t >= T.work && t < T.speak) || going}
               placeholder={m.landing.widget.placeholder}
               draft={draft}

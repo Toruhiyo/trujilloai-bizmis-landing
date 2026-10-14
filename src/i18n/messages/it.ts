@@ -157,7 +157,6 @@ export const it: Messages = {
         eyebrow: "Tutto il negozio, tutto il giorno",
         problems: ["Non lo trova", "Indeciso", "Non è sicuro"],
         solutions: ["Trovato", "Confrontato", "Dubbio chiarito"],
-        sales: "Vendite",
       },
       pulse: { currency: "EUR" },
     },
