@@ -1116,6 +1116,17 @@
 @keyframes bi-flare { 0%, 64%, 100% { scale: 1; } 72% { scale: 1.14; } 82% { scale: 1; } }
 @keyframes bi-flicker { 0%, 62%, 80%, 100% { opacity: 1; } 65% { opacity: 0.2; } 68% { opacity: 1; } 71% { opacity: 0.35; } 74% { opacity: 1; } }
 
+/* plug: it pushes into its socket (up a touch), lands, and a spark of power jumps out */
+.bzl-bi-plug .plug { animation: bi-plug var(--cycle) ease-in-out infinite; }
+.bzl-bi-plug .spark { opacity: 0; transform-origin: 0% 100%; animation: bi-spark var(--cycle) ease-out infinite; }
+@keyframes bi-plug { 0%, 62%, 100% { translate: 0 0; } 70% { translate: 0 -1.4px; } 76% { translate: 0 0.3px; } 82% { translate: 0 0; } }
+@keyframes bi-spark { 0%, 70% { opacity: 0; scale: 0.4; } 76% { opacity: 1; scale: 1.15; } 84% { opacity: 1; scale: 1; } 94%, 100% { opacity: 0; scale: 0.9; } }
+/* shirt: your logo stamps on (pops in), the shirt sways once as it lands; at rest the logo is on */
+.bzl-bi-shirt .shirt { transform-origin: 50% 0%; animation: bi-sway var(--cycle) ease-in-out infinite; }
+.bzl-bi-shirt .logo { transform-origin: 50% 50%; animation: bi-stamp var(--cycle) cubic-bezier(.3, 1.6, .5, 1) infinite; }
+@keyframes bi-sway { 0%, 66%, 100% { rotate: 0deg; } 72% { rotate: -5deg; } 79% { rotate: 3deg; } 86% { rotate: 0deg; } }
+@keyframes bi-stamp { 0%, 62% { scale: 1; opacity: 1; } 64% { scale: 0; opacity: 0; } 70% { scale: 1.35; opacity: 1; } 78%, 100% { scale: 1; opacity: 1; } }
+
 @media (prefers-reduced-motion: reduce) {
   .bzl-grain::before { animation: none; }
   .bzl-ai, .bzl-ai *, .bzl-bi, .bzl-bi * { animation: none !important; }
@@ -1380,78 +1391,58 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
-  min-height: calc(100svh - var(--pi-nav) - var(--pi-dock-h));
   padding-block: clamp(1.25rem, 4svh, 3rem);
 }
 
-/* ── Customer Support's screen (SupportSection.tsx): the stage (the store and
-   its result, the inbox emptying) beside one compact column (the lead and
-   the three capabilities). Phones: lead, stage, capabilities. ── */
+/* ── Customer Support's screen (SupportSection.tsx): on top, side by side,
+   the store with the widget answering (the mockup) and the support inbox
+   emptying itself (its result, drawn in marker straight on the screen, no
+   card), the lead over the drawing; below them, the three capabilities in
+   one row. Phones: lead, mockup, drawing, capabilities stacked. Sized from
+   the screen's height, so the whole section fits one screen (openers.css). ── */
 .bzs-grid {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
-  grid-template-areas: "lead" "stage" "caps";
-  gap: 1.75rem;
+  grid-template-areas: "lead" "store" "relief" "caps";
+  align-items: center;
+  gap: 1.5rem;
 }
-.bzs-stage { grid-area: stage; position: relative; }
+.bzs-store { grid-area: store; position: relative; }
+.bzs-result { grid-area: relief; position: relative; }
 .bzs-lead { grid-area: lead; }
-.bzs-lead .bzl-lead { max-width: 30rem; }
+.bzs-lead .bzl-lead { max-width: 32rem; }
 .bzs-caps {
   grid-area: caps;
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   align-items: start;
   gap: 0.5rem;
-  max-width: 32rem;
-}
-/* the result: the inbox as a card, the marker drawing on paper */
-.bzs-result {
-  position: relative;
-  z-index: 3;
-  margin-top: 0.9rem;
 }
 .bzs-relief {
-  padding: 0.7rem 0.9rem 0.45rem;
-  border-radius: 20px;
-  /* the tickets leave the inbox at its edge, never over the page */
-  overflow: hidden;
-  background: #fff;
-  box-shadow:
-    0 0 0 1px rgb(59 36 22 / 0.07),
-    0 22px 48px -26px rgb(59 36 22 / 0.42);
+  width: 100%;
+  max-width: 30rem;
+  margin-inline: auto;
 }
-/* from tablets: the inbox card laid over the store's top corner, the store sunk under it */
-@media (min-width: 640px) {
-  .bzs-stage {
-    --bzs-lift: clamp(3.5rem, 9svh, 5.75rem);
-    padding-top: var(--bzs-lift);
-    max-width: 46rem;
-    margin-inline: auto;
-    width: 100%;
-  }
-  .bzs-store { width: 77%; }
-  .bzs-result {
-    position: absolute;
-    top: 0;
-    right: 0;
-    width: 50%;
-    margin: 0;
-  }
-}
-/* desktop: two columns, the compact column centred on the stage */
-@media (min-width: 1024px) {
+@media (min-width: 768px) {
   .bzs-grid {
-    grid-template-columns: minmax(0, 1.45fr) minmax(0, 0.85fr);
-    grid-template-rows: 1fr auto auto 1fr;
-    grid-template-areas: "stage ." "stage lead" "stage caps" "stage .";
-    column-gap: clamp(2.5rem, 5vw, 5.5rem);
-    row-gap: 0;
+    grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+    grid-template-rows: auto auto auto;
+    grid-template-areas: "store lead" "store relief" "caps caps";
+    column-gap: clamp(1.75rem, 4vw, 4rem);
+    row-gap: clamp(0.75rem, 2.4svh, 1.75rem);
   }
-  .bzs-stage {
-    align-self: center;
-    /* never taller than the screen under the bar */
-    max-width: min(100%, calc((100svh - var(--pi-nav, 4rem) - var(--pi-dock-h, 4rem) - 7rem) * 1.52));
-    margin-inline: 0;
+  .bzs-store {
+    justify-self: end;
+    width: 100%;
+    /* the mockup takes the height the screen leaves it (title, the cards' row, the gaps) */
+    max-width: clamp(19rem, calc((100svh - 23rem) * 1.42), 40rem);
   }
-  .bzs-lead { margin-bottom: clamp(1rem, 3svh, 1.75rem); }
-  .bzs-lead .bzl-lead { font-size: clamp(1.1rem, min(1.55vw, 2.6svh), 1.4rem); }
+  .bzs-lead { align-self: end; }
+  .bzs-result { align-self: start; }
+  .bzs-relief { margin-inline: 0; max-width: min(100%, clamp(16rem, calc((100svh - 26rem) * 1.9), 30rem)); }
+  .bzs-caps {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: clamp(0.5rem, 1.2vw, 1rem);
+  }
+  .bzs-lead .bzl-lead { font-size: clamp(1.05rem, min(1.4vw, 2.5svh), 1.3rem); }
 }

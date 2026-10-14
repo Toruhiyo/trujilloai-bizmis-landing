@@ -184,12 +184,6 @@
 .bzl[data-palette="1"] #setup + section + section > [aria-hidden="true"]:first-child {
   opacity: 0.55;
 }
-.bzl[data-palette="1"] .bzl-end-applied-text {
-  color: hsl(var(--primary));
-}
-.bzl[data-palette="1"] .bzl-end-arrow path {
-  stroke: hsl(var(--primary));
-}
 .bzl[data-palette="1"] #site-navbar.fixed [data-nav="/early-access"]:not(.text-white):not([class*="text-white/"]) {
   color: hsl(var(--primary));
 }

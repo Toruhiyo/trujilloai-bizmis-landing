@@ -1,359 +1,434 @@
-/* Opener systems (?open=1..6, data-open on the .bzl root, FilmLanding.tsx):
-   how each section OPENS and how sections are TOLD APART on the film look's
-   white canvas. The content and its animations are the same in all six;
-   only the openers (PillarIntro's big title and docked bar, the sections'
-   heads) and the separation change.
+/* Opener approaches (?open=1..5, data-open on the .bzl root, FilmLanding.tsx):
+   how sections OPEN and how they're TOLD APART, under the page's rules:
+   - only Boost Sales (the long pinned section, three beats) has an opener
+     screen and a sticky title bar (PillarIntro); no sticky bars elsewhere;
+   - every other content section (Customer Support, Store Insights, One-Click
+     Setup, Personalization) is ONE screen: its title inline at its top
+     (openers/SectionHead), its content sized from the screen's height so the
+     whole fits; if it truly can't, the section grows (never clips); on tall
+     screens the content keeps its size and is centred (no huge empty zones).
 
-   1  Scroll-away title + alternating canvas (today): the big name scrolls
-      away, the docked bar slides in; white and a warm cream take turns,
-      feathered (no lines).
-   2  Chapter header + stage panels: no full-screen moment; a compact,
-      left-aligned opener (icon, name, promise) at the top of each section,
-      which sits in a big rounded cream panel inset on the white canvas; a
-      slim docked bar.
-   3  Film title card + curtain: each pillar opens like a scene in ad-1, a
-      full-screen card with the name centred under its icon; the content
-      rises over it like a curtain (rounded top, soft shadow), the card
-      easing back as it's covered. Sections overlap the one before with the
-      same rounded edge.
-   4  Sticky side rail: the pillar's icon, name and promise pinned in a left
-      rail while its content scrolls on the right; the rail hands over to
-      the next pillar at the boundary; hairline separators.
-   5  Marker chapters: a hand-drawn circle with the chapter number, the name
-      WRITTEN ON in marker handwriting as it enters; marker strokes between
-      sections, generous white space.
-   6  One pillar strip: the three benefits under one sticky segmented header
-      (Boost Sales | Customer Support | Store Insights) that lights the one
-      being read; compact openers; hairlines elsewhere. */
+   1  Scenes          each section a full-screen scene, its title inline at the top-left;
+                      white and cream alternate, screen by screen
+   2  Overview        one screen presents the three benefits together (a table of contents,
+                      each clickable); then each is a screen with a small inline title
+   3  Side index      a slim fixed index on the left edge (a dot per section, the current one
+                      its icon and name); white screens over hairlines
+   4  Marker titles   the names WRITTEN ON in marker handwriting, the icon, a marker underline;
+                      marker strokes between the screens
+   5  Scene pills     as in the film's mockups: each screen opens on a small pill (icon +
+                      name), its promise the big centred line; white and a warm white alternate */
 
 .bzl[data-look="film"] {
   --op-ink: var(--film-ink, #3b2416);
   --op-hair: #f0e3d6;
   --op-cream: #fff8f0;
-  --op-panel: #fffaf4;
+  --op-nav: var(--bzl-nav, 4rem);
+  --sh-pad-x: 1rem;
   --op-wave: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 160 40'><path d='M10 24 C 26 10, 40 34, 58 21 S 90 9, 106 22 S 138 32, 150 16' fill='none' stroke='%23F9A353' stroke-width='6' stroke-linecap='round' stroke-linejoin='round'/></svg>");
   --op-arrow: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 60 72'><path d='M31 6 C 21 18, 41 30, 29 54' fill='none' stroke='%23F9A353' stroke-width='6' stroke-linecap='round'/><path d='M17 42 L29 57 L43 44' fill='none' stroke='%23F9A353' stroke-width='6' stroke-linecap='round' stroke-linejoin='round'/></svg>");
-  --op-circle: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><path d='M52 7 C 25 6, 8 25, 9 50 C 10 76, 30 93, 54 92 C 78 91, 93 72, 92 48 C 91 26, 74 9, 47 11' fill='none' stroke='%23F9A353' stroke-width='5' stroke-linecap='round'/></svg>");
-  --op-circle-white: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><path d='M52 7 C 25 6, 8 25, 9 50 C 10 76, 30 93, 54 92 C 78 91, 93 72, 92 48 C 91 26, 74 9, 47 11' fill='none' stroke='white' stroke-width='5' stroke-linecap='round'/></svg>");
+}
+@media (min-width: 640px) {
+  .bzl[data-look="film"] {
+    --sh-pad-x: 1.5rem;
+  }
+}
+@media (max-width: 767px) {
+  .bzl[data-look="film"] {
+    --op-nav: 49px;
+  }
 }
 
-/* the sections that follow the benefits */
-/* (Setup is #setup, Customize the section after it, the end card the one after that) */
+/* ═══════════ Shared: one screen per section (all but Boost Sales) ═══════════ */
+.bzl[data-look="film"] :where(.p-support, .p-insights, #setup, #setup + section) {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: 100svh;
+  padding: calc(var(--op-nav) + clamp(0.75rem, 3svh, 2.25rem)) 0 clamp(1rem, 3.5svh, 2.5rem);
+}
+/* the content keeps its natural size on tall screens (no stretching gaps) */
+.bzl[data-look="film"] :where(.p-support, .p-insights) .bzp-body {
+  padding-block: 0;
+}
+/* Personalization's carousel: from the screen's height */
+.bzl[data-look="film"] #setup + section [aria-roledescription="carousel"] > div:first-child {
+  max-width: clamp(17rem, calc(100svh - 17rem), 36rem);
+}
+/* Store Insights: the replay's transcript gives up height first on shorter screens */
+.bzl[data-look="film"] .p-insights [class*="overflow-y-auto"] {
+  max-height: min(22.5rem, max(7rem, calc(100svh - 38.75rem)));
+}
+/* and its clarity drawing scales with the screen's height */
+.bzl[data-look="film"] .p-insights .bzl-clarity {
+  max-width: min(32rem, max(15rem, calc((100svh - 30rem) * 1.5)));
+}
+.bzl[data-look="film"] .p-insights .bzp-body ul {
+  margin-top: clamp(0.75rem, 2svh, 1.5rem);
+}
+/* One-Click Setup: the lead sits right under the title */
+.bzl[data-look="film"] #setup .bzl-lead {
+  margin-top: 0;
+}
 
-/* ════════════ 1 · Scroll-away title + alternating canvas ════════════ */
+/* ── the inline section title (openers/SectionHead), outside Boost Sales ── */
+/* inside a PillarIntro (Boost Sales) it's only structure: PillarIntro styles its pieces */
+:where(.bzl .pi .sh, .bzl .pi .sh-text) {
+  display: contents;
+}
+/* (real specificity: the page's base styles show every svg as a block) */
+.bzl .sh :is(.sh-kicker, .sh-ghost, .sh-mark) {
+  display: none;
+}
+.bzl[data-look="film"] .sh:not(.pi .sh) {
+  position: relative;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  column-gap: clamp(0.8rem, 1.4vw, 1.25rem);
+  align-items: center;
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto clamp(1rem, 3.5svh, 2.5rem);
+  padding: 0 var(--sh-pad-x);
+  text-align: left;
+}
+.bzl[data-look="film"] .sh:not(.pi .sh) .sh-text {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.3rem;
+  min-width: 0;
+}
+.bzl[data-look="film"] .sh:not(.pi .sh) .sh-icon {
+  display: grid;
+  place-items: center;
+  width: clamp(2.75rem, 6svh, 3.5rem);
+  aspect-ratio: 1;
+  border-radius: 999px;
+  background: #fff;
+  color: hsl(var(--primary));
+  box-shadow: 0 0 0 1px rgb(59 36 22 / 0.06), 0 10px 24px -18px rgb(59 36 22 / 0.45);
+}
+.bzl[data-look="film"] .sh:not(.pi .sh) .sh-icon svg {
+  width: 54%;
+  height: 54%;
+}
+.bzl[data-look="film"] .sh:not(.pi .sh) .sh-name {
+  font-size: clamp(1.8rem, min(3.3vw, 6svh), 3.1rem);
+  font-weight: 800;
+  letter-spacing: -0.045em;
+  line-height: 1.02;
+  color: var(--op-ink);
+}
+.bzl[data-look="film"] .sh:not(.pi .sh) .sh-promise {
+  font-size: clamp(1rem, min(1.5vw, 2.7svh), 1.35rem);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1.25;
+  color: var(--bzl-ink-2);
+}
+@media (max-width: 639px) {
+  .bzl[data-look="film"] .sh:not(.pi .sh) {
+    grid-template-columns: minmax(0, 1fr);
+    row-gap: 0.75rem;
+  }
+}
+
+/* ═══════════ 1 · Scenes ═══════════ */
 .bzl[data-look="film"][data-open="1"] {
-  --op-feather: clamp(72px, 13vh, 150px);
-  --op-cream-band: linear-gradient(180deg, #ffffff 0, var(--op-cream) var(--op-feather), var(--op-cream) calc(100% - var(--op-feather)), #ffffff 100%);
   --pal-support-bg: radial-gradient(ellipse 46% 52% at 16% 42%, var(--film-glow), transparent 72%), #ffffff;
-  --pal-insights-bg: radial-gradient(ellipse 46% 52% at 84% 40%, var(--film-glow), transparent 72%), var(--op-cream-band);
+  --pal-insights-bg: radial-gradient(ellipse 46% 52% at 84% 40%, var(--film-glow), transparent 72%), var(--op-cream);
   --pal-setup-bg: #ffffff;
-  --pal-custom-bg: var(--op-cream-band);
+  --pal-custom-bg: var(--op-cream);
   --pal-end-bg: #ffffff;
   --pal-footer-bg: var(--op-cream);
 }
-.bzl[data-look="film"][data-open="1"] .bzl-pillar.p-insights .pi {
-  --pi-bar: rgb(255 248 240 / 0.92);
-}
 
-/* ════════════ 2 · Chapter header + stage panels ════════════ */
+/* ═══════════ 2 · Benefits overview ═══════════ */
 .bzl[data-look="film"][data-open="2"] {
-  --op-gutter: clamp(8px, 1.3vw, 22px);
-  --op-radius: clamp(22px, 2.6vw, 40px);
-  --pal-support-bg: radial-gradient(ellipse 46% 52% at 16% 42%, var(--film-glow), transparent 72%), var(--op-panel);
-  --pal-insights-bg: radial-gradient(ellipse 46% 52% at 84% 40%, var(--film-glow), transparent 72%), var(--op-panel);
-  --pal-setup-bg: var(--op-panel);
-  --pal-custom-bg: var(--op-panel);
-  --pal-end-bg: var(--op-panel);
-  --pal-footer-bg: #ffffff;
-}
-.bzl[data-look="film"][data-open="2"] :where(.bzl-pillar, #setup, #setup + section, #setup + section + section) {
-  margin: var(--op-gutter) var(--op-gutter) 0;
-  border-radius: var(--op-radius);
-  /* clip, not hidden: keeps the sticky bars sticky */
-  overflow: clip;
-  box-shadow:
-    inset 0 0 0 1px var(--op-hair),
-    0 34px 80px -64px rgb(59 36 22 / 0.4);
-}
-.bzl[data-look="film"][data-open="2"] :where(.bzl-pillar.p-sales) {
-  box-shadow: 0 34px 80px -56px rgb(249 163 83 / 0.7);
-}
-.bzl[data-look="film"][data-open="2"] :where(#setup + section + section) {
-  margin-bottom: var(--op-gutter);
-}
-.bzl[data-look="film"][data-open="2"] > footer {
-  border-top: 0;
-}
-.bzl[data-look="film"][data-open="2"] .bzl-pillar:is(.p-support, .p-insights) .pi {
-  --pi-bar: rgb(255 250 244 / 0.94);
-}
-/* the opener: a compact chapter header, left-aligned on the content's own column */
-.bzl[data-look="film"][data-open="2"] .pi .pi-big {
-  display: grid;
-  grid-template-columns: auto minmax(0, 1fr);
-  column-gap: clamp(0.9rem, 1.6vw, 1.4rem);
-  row-gap: 0.35rem;
-  align-items: center;
-  justify-items: start;
-  width: 100%;
-  max-width: 1400px;
-  min-height: 0;
-  margin-inline: auto;
-  padding: clamp(2.25rem, 6svh, 4.5rem) 1rem clamp(0.5rem, 2svh, 1.5rem);
-  text-align: left;
-}
-@media (min-width: 640px) {
-  .bzl[data-look="film"][data-open="2"] .pi .pi-big {
-    padding-inline: 1.5rem;
-  }
-}
-.bzl[data-look="film"][data-open="2"] .pi .pi-icon {
-  grid-row: span 2;
-  width: clamp(3rem, 6.5svh, 4.25rem);
-}
-.bzl[data-look="film"][data-open="2"] .pi .pi-name {
-  align-self: end;
-  font-size: clamp(2.1rem, min(4.2vw, 8svh), 4rem);
-}
-.bzl[data-look="film"][data-open="2"] .pi .pi-line {
-  max-width: none;
-  font-size: clamp(1.05rem, min(1.7vw, 3svh), 1.5rem);
-  font-weight: 600;
-  letter-spacing: -0.02em;
-}
-/* the slim docked bar */
-.bzl[data-look="film"][data-open="2"] .pi .pi-dock {
-  min-height: 2.75rem;
-  padding-block: 0.4rem;
-}
-.bzl[data-look="film"][data-open="2"] .pi .pi-dock-name {
-  font-size: clamp(1rem, 1.5vw, 1.35rem);
-}
-
-/* ════════════ 3 · Film title card + curtain ════════════ */
-.bzl[data-look="film"][data-open="3"] {
-  --op-curtain-r: clamp(24px, 3vw, 44px);
   --pal-support-bg: radial-gradient(ellipse 46% 52% at 16% 42%, var(--film-glow), transparent 72%), #ffffff;
   --pal-insights-bg: radial-gradient(ellipse 46% 52% at 84% 40%, var(--film-glow), transparent 72%), #ffffff;
+  --pal-setup-bg: #ffffff;
+  --pal-custom-bg: #ffffff;
 }
-/* no docked bar: the title card is the opener */
-.bzl[data-look="film"][data-open="3"] .pi {
-  --pi-dock-h: 0px !important;
-  timeline-scope: --op-curtain;
-}
-.bzl[data-look="film"][data-open="3"] .pi .pi-head {
-  display: none;
-}
-/* the card: a full screen, the name centred under its icon; it stays while the content rises over it */
-.bzl[data-look="film"][data-open="3"] .pi .pi-big {
-  position: sticky;
-  top: var(--pi-nav);
-  z-index: 0;
-  min-height: calc(100svh - var(--pi-nav));
-  padding-block: 2rem;
-}
-.bzl[data-look="film"][data-open="3"] .pi .pi-fade {
-  opacity: 1 !important;
-  transform: none !important;
-}
-/* the content: a sheet rising over the card */
-.bzl[data-look="film"][data-open="3"] .pi .pi-body {
-  z-index: 1;
-  border-radius: var(--op-curtain-r) var(--op-curtain-r) 0 0;
-  background: var(--band-bg, #fff);
-  box-shadow: 0 -30px 70px -46px rgb(59 36 22 / 0.35);
-  view-timeline-name: --op-curtain;
-}
-.bzl[data-look="film"][data-open="3"] .bzl-pillar.p-sales .pi .pi-body {
-  box-shadow: 0 -30px 70px -40px rgb(120 60 10 / 0.35);
-}
-@keyframes op-card-back {
-  from { transform: none; opacity: 1; }
-  to { transform: scale(0.92) translateY(-3%); opacity: 0.35; }
-}
-@supports (animation-timeline: view()) {
-  .bzl[data-look="film"][data-open="3"] .pi .pi-big {
-    animation: op-card-back linear both;
-    animation-timeline: --op-curtain;
-    animation-range: entry 0% entry 100%;
-  }
-}
-/* Setup, Customize and the end card come in the same way: a rounded edge over the section before */
-.bzl[data-look="film"][data-open="3"] :where(.p-support, .p-insights, #setup, #setup + section, #setup + section + section) {
-  margin-top: calc(-1 * var(--op-curtain-r));
-  border-radius: var(--op-curtain-r) var(--op-curtain-r) 0 0;
-  overflow: clip;
-  box-shadow: 0 -30px 70px -50px rgb(59 36 22 / 0.3);
-}
-.bzl[data-look="film"][data-open="3"] :where(#setup, #setup + section, #setup + section + section) {
-  position: relative;
-  z-index: 1;
-}
-
-/* ════════════ 4 · Sticky side rail ════════════ */
-.bzl[data-look="film"][data-open="4"] {
-  --op-rail: clamp(15rem, 21vw, 19rem);
-}
-.bzl[data-look="film"][data-open="4"] :where(.p-support, .p-insights, #setup, #setup + section, #setup + section + section) {
+.bzl[data-look="film"][data-open="2"] :where(.p-insights, #setup, #setup + section, #setup + section + section) {
   border-top: 1px solid var(--op-hair);
 }
-@media (min-width: 1024px) {
-  .bzl[data-look="film"][data-open="4"] .pi {
-    --pi-dock-h: 0px !important;
-    display: grid;
-    grid-template-columns: var(--op-rail) minmax(0, 1fr);
-  }
-  .bzl[data-look="film"][data-open="4"] .pi .pi-head {
-    display: none;
-  }
-  .bzl[data-look="film"][data-open="4"] .pi .pi-big {
-    grid-column: 1;
-    grid-row: 1;
-    position: sticky;
-    top: calc(var(--pi-nav) + clamp(1.5rem, 5svh, 3rem));
-    align-self: start;
-    align-items: flex-start;
-    min-height: 0;
-    gap: 0.9rem;
-    padding: clamp(2rem, 6svh, 3.5rem) 0 2rem clamp(1.25rem, 3vw, 3rem);
-    text-align: left;
-  }
-  .bzl[data-look="film"][data-open="4"] .pi .pi-fade {
-    opacity: 1 !important;
-    transform: none !important;
-  }
-  .bzl[data-look="film"][data-open="4"] .pi .pi-icon {
-    width: 3.4rem;
-  }
-  .bzl[data-look="film"][data-open="4"] .pi .pi-name {
-    align-self: auto;
-    font-size: clamp(1.9rem, 2.6vw, 2.7rem);
-    line-height: 1.02;
-    white-space: normal;
-  }
-  .bzl[data-look="film"][data-open="4"] .pi .pi-line {
-    max-width: 14ch;
-    font-size: clamp(1.05rem, 1.45vw, 1.35rem);
-    font-weight: 600;
-    letter-spacing: -0.02em;
-    line-height: 1.25;
-  }
-  /* a hairline down the rail's edge */
-  .bzl[data-look="film"][data-open="4"] .pi .pi-body {
-    grid-column: 2;
-    grid-row: 1;
-    border-left: 1px solid var(--op-hair);
-  }
-  .bzl[data-look="film"][data-open="4"] .bzl-pillar.p-sales .pi .pi-body {
-    border-left-color: rgb(255 255 255 / 0.3);
+.bov {
+  display: flex;
+  align-items: center;
+  min-height: 100svh;
+  padding: calc(var(--op-nav) + 2rem) var(--sh-pad-x, 1rem) 2rem;
+  background:
+    radial-gradient(ellipse 60% 50% at 50% 55%, rgb(249 163 83 / 0.12), transparent 72%),
+    #ffffff;
+}
+.bov-list {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: clamp(1.25rem, 4svh, 2.5rem);
+  width: 100%;
+  max-width: 1400px;
+  margin-inline: auto;
+}
+@media (min-width: 900px) {
+  .bov-list {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: clamp(1.25rem, 3vw, 3rem);
   }
 }
-/* phones and tablets: the rail becomes a compact header (as in 2), the docked bar stays */
+.bov-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: clamp(0.6rem, 1.8svh, 1rem);
+  padding: clamp(1.5rem, 4svh, 2.75rem) 1.25rem;
+  border-radius: 32px;
+  text-align: center;
+  transition: background-color 0.3s ease, transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.bov-item:hover {
+  background: #fff8f0;
+  transform: translateY(-4px);
+}
+.bov-num {
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  color: rgb(59 36 22 / 0.55);
+}
+.bov-icon {
+  display: grid;
+  place-items: center;
+  width: clamp(5rem, 13svh, 7.5rem);
+  aspect-ratio: 1;
+  border-radius: 999px;
+  background: #fff;
+  color: hsl(var(--primary));
+  box-shadow: 0 0 0 1px rgb(59 36 22 / 0.06), 0 22px 50px -30px rgb(249 163 83 / 0.9);
+}
+.bov-icon svg {
+  width: 52%;
+  height: 52%;
+}
+.bov-name {
+  font-size: clamp(1.9rem, min(3.4vw, 6.4svh), 3.2rem);
+  font-weight: 800;
+  letter-spacing: -0.045em;
+  line-height: 1.02;
+  color: var(--op-ink);
+}
+.bov-promise {
+  max-width: 18ch;
+  font-size: clamp(1.05rem, min(1.6vw, 2.8svh), 1.4rem);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1.25;
+  color: var(--bzl-ink-2);
+}
+/* Boost Sales: no opener screen of its own here (the overview opened it), a compact title; its bar stays */
+.bzl[data-look="film"][data-open="2"] .p-sales .pi-big {
+  min-height: 0;
+  padding-top: clamp(2.5rem, 7svh, 5rem);
+}
+.bzl[data-look="film"][data-open="2"] .p-sales .pi-icon {
+  display: none;
+}
+.bzl[data-look="film"][data-open="2"] .p-sales .pi-name {
+  --pi-name-size: clamp(2.4rem, min(5vw, 9svh), 4.75rem);
+}
+.bzl[data-look="film"][data-open="2"] .p-sales .pi-line {
+  font-size: clamp(1.1rem, min(2vw, 3.4svh), 1.75rem);
+}
+
+/* ═══════════ 3 · Side index ═══════════ */
+.bzl[data-look="film"][data-open="3"] {
+  --pal-support-bg: radial-gradient(ellipse 46% 52% at 16% 42%, var(--film-glow), transparent 72%), #ffffff;
+  --pal-insights-bg: radial-gradient(ellipse 46% 52% at 84% 40%, var(--film-glow), transparent 72%), #ffffff;
+  --pal-setup-bg: #ffffff;
+  --pal-custom-bg: #ffffff;
+}
+.bzl[data-look="film"][data-open="3"] :where(.p-insights, #setup, #setup + section, #setup + section + section) {
+  border-top: 1px solid var(--op-hair);
+}
+.sx {
+  position: fixed;
+  top: 50%;
+  left: 0.6rem;
+  z-index: 40;
+  translate: -120% -50%;
+  opacity: 0;
+  transition: translate 0.5s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.3s ease;
+  pointer-events: none;
+}
+.sx.is-shown {
+  translate: 0 -50%;
+  opacity: 1;
+  pointer-events: auto;
+}
+.sx-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+.sx-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.15rem;
+  border-radius: 999px;
+}
+.sx-dot {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 1.9rem;
+  aspect-ratio: 1;
+  border-radius: 999px;
+  color: transparent;
+  transition: color 0.3s ease;
+}
+.sx-dot::before {
+  content: "";
+  grid-area: 1 / 1;
+  width: 0.5rem;
+  aspect-ratio: 1;
+  border-radius: 999px;
+  background: rgb(59 36 22 / 0.22);
+  transition: width 0.4s cubic-bezier(0.22, 1, 0.36, 1), background-color 0.3s ease, box-shadow 0.3s ease;
+}
+.sx-dot svg {
+  grid-area: 1 / 1;
+  position: relative;
+  width: 1rem;
+  height: 1rem;
+}
+.sx-item.is-done .sx-dot::before {
+  background: hsl(var(--primary));
+}
+.sx-item.is-on .sx-dot {
+  color: hsl(var(--primary));
+}
+.sx-item.is-on .sx-dot::before {
+  width: 1.9rem;
+  background: #fff;
+  box-shadow: 0 0 0 1px rgb(59 36 22 / 0.08), 0 8px 18px -10px rgb(59 36 22 / 0.45);
+}
+.sx-label {
+  padding: 0.2rem 0.6rem;
+  border-radius: 999px;
+  background: rgb(255 255 255 / 0.92);
+  box-shadow: 0 0 0 1px rgb(59 36 22 / 0.06);
+  font-size: 0.8rem;
+  font-weight: 700;
+  white-space: nowrap;
+  color: var(--op-ink);
+  opacity: 0;
+  translate: -0.4rem 0;
+  transition: opacity 0.25s ease, translate 0.35s ease;
+}
+/* the names show on hover (the current one is its icon), so they never sit over a section's content */
+.sx:hover .sx-label {
+  opacity: 1;
+  translate: 0 0;
+}
+.sx-item:not(.is-on) .sx-label {
+  color: rgb(59 36 22 / 0.7);
+}
 @media (max-width: 1023px) {
-  .bzl[data-look="film"][data-open="4"] .pi .pi-big {
-    min-height: 0;
-    align-items: flex-start;
-    padding: 2.5rem 1rem 1rem;
-    text-align: left;
+  .sx {
+    display: none;
   }
-  .bzl[data-look="film"][data-open="4"] .pi .pi-name {
-    font-size: clamp(2rem, 9vw, 2.8rem);
-  }
-  .bzl[data-look="film"][data-open="4"] .pi .pi-line {
-    font-size: 1.1rem;
+}
+/* the index sits in the page's left gutter: keep the content clear of it */
+@media (min-width: 1024px) {
+  .bzl[data-look="film"][data-open="3"] :where(.p-sales, .p-support, .p-insights, #setup, #setup + section) {
+    padding-left: 2.75rem;
   }
 }
 
-/* ════════════ 5 · Marker chapters ════════════ */
-.bzl[data-look="film"][data-open="5"] {
-  counter-reset: op-ch;
-  --op-gap: clamp(2.5rem, 9vh, 6.5rem);
+/* ═══════════ 4 · Marker titles ═══════════ */
+.bzl[data-look="film"][data-open="4"] {
+  --op-gap: clamp(2rem, 7svh, 5rem);
   --pal-support-bg: radial-gradient(ellipse 46% 52% at 16% 42%, var(--film-glow), transparent 72%), #ffffff;
   --pal-insights-bg: radial-gradient(ellipse 46% 52% at 84% 40%, var(--film-glow), transparent 72%), #ffffff;
+  --pal-setup-bg: #ffffff;
   --pal-custom-bg: #ffffff;
   --pal-footer-bg: #ffffff;
 }
-.bzl[data-look="film"][data-open="5"] .bzl-pillar {
-  counter-increment: op-ch;
-}
-/* the chapter mark: the number in a hand-drawn circle, in place of the icon */
-.bzl[data-look="film"][data-open="5"] .pi .pi-icon {
-  display: none;
-}
-.bzl[data-look="film"][data-open="5"] .pi .pi-big::before {
-  content: counter(op-ch, decimal-leading-zero);
-  display: grid;
-  place-items: center;
-  width: clamp(4.5rem, 10svh, 6rem);
-  aspect-ratio: 1;
-  background: var(--op-circle) center / contain no-repeat;
+/* the name, in marker handwriting, written on as the screen enters; a marker underline drawn under it */
+.bzl[data-look="film"][data-open="4"] .sh:not(.pi .sh) .sh-name {
+  position: relative;
+  width: fit-content;
+  padding-bottom: 0.12em;
   font-family: var(--bzl-script, "Caveat", cursive);
-  font-size: clamp(2.1rem, 5svh, 2.9rem);
+  font-size: clamp(2.6rem, min(4.8vw, 8.5svh), 4.6rem);
   font-weight: 700;
-  line-height: 1;
+  letter-spacing: -0.01em;
   color: hsl(var(--primary));
 }
-.bzl[data-look="film"][data-open="5"] .bzl-pillar.p-sales .pi .pi-big::before {
-  background-image: var(--op-circle-white);
-  color: #fff;
-}
-/* the name, in marker handwriting (the text span too: .bzl span sets the sans) */
-.bzl[data-look="film"][data-open="5"] .pi .pi-name .pi-name-text {
+.bzl[data-look="film"][data-open="4"] .sh .sh-name .sh-name-text {
   font-family: var(--bzl-script, "Caveat", cursive);
 }
-.bzl[data-look="film"][data-open="5"] .pi .pi-name {
+.bzl[data-look="film"][data-open="4"] .pi .pi-name .pi-name-text {
+  font-family: var(--bzl-script, "Caveat", cursive);
+}
+.bzl[data-look="film"][data-open="4"] .p-sales .pi-name {
   font-family: var(--bzl-script, "Caveat", cursive);
   font-weight: 700;
   letter-spacing: -0.01em;
-  --pi-name-size: clamp(4rem, min(10.5vw, 18svh), 11rem);
 }
-.bzl[data-look="film"][data-open="5"] .bzl-pillar:is(.p-support, .p-insights) .pi {
-  --pi-name-color: hsl(var(--primary));
-}
-.bzl[data-look="film"][data-open="5"] .pi .pi-dock-label {
+.bzl[data-look="film"][data-open="4"] .p-sales .pi-dock-label {
   font-family: var(--bzl-script, "Caveat", cursive);
   font-size: 1.25em;
   letter-spacing: 0;
 }
-/* written on as it enters (scroll-driven, so it un-writes scrolling back), the circle drawn round the number */
+.bzl[data-look="film"][data-open="4"] .sh:not(.pi .sh) .sh-mark {
+  position: absolute;
+  left: -2%;
+  bottom: -0.05em;
+  display: block;
+  width: 104%;
+  height: 0.22em;
+  overflow: visible;
+}
+.bzl[data-look="film"][data-open="4"] .sh .sh-mark path {
+  fill: none;
+  stroke: hsl(var(--primary));
+  stroke-width: 6;
+  stroke-linecap: round;
+  vector-effect: non-scaling-stroke;
+  stroke-dasharray: 1 1;
+}
 @keyframes op-write {
   from { clip-path: inset(-20% 100% -30% -2%); }
   to { clip-path: inset(-20% -2% -30% -2%); }
 }
-@keyframes op-mark {
-  from { opacity: 0; transform: rotate(-35deg) scale(0.6); }
-  to { opacity: 1; transform: none; }
+@keyframes op-underline {
+  from { stroke-dashoffset: 1; }
+  to { stroke-dashoffset: 0; }
 }
 @supports (animation-timeline: view()) {
-  .bzl[data-look="film"][data-open="5"] .pi .pi-name-text {
+  .bzl[data-look="film"][data-open="4"] .sh .sh-name .sh-name-text {
     animation: op-write linear both;
     animation-timeline: view();
-    animation-range: entry 40% cover 42%;
+    animation-range: entry 40% cover 35%;
   }
-  .bzl[data-look="film"][data-open="5"] .pi .pi-big::before {
-    animation: op-mark linear both;
+  .bzl[data-look="film"][data-open="4"] .sh .sh-mark path {
+    animation: op-underline linear both;
     animation-timeline: view();
-    animation-range: entry 0% cover 30%;
+    animation-range: cover 18% cover 40%;
   }
 }
-/* the kickers of Setup and Customize, handwritten too */
-.bzl[data-look="film"][data-open="5"] .bzl-kicker {
-  font-family: var(--bzl-script, "Caveat", cursive);
-  font-size: clamp(1.6rem, 2.4vw, 2.1rem);
-  font-weight: 700;
-  letter-spacing: 0;
-  text-transform: none;
-  color: hsl(var(--primary));
+/* marker strokes between the screens */
+.bzl[data-look="film"][data-open="4"] :where(.p-support, .p-insights, #setup, #setup + section, #setup + section + section) {
+  position: relative;
 }
-/* marker strokes between sections, in generous white space */
-.bzl[data-look="film"][data-open="5"] :where(.p-support, .p-insights, #setup, #setup + section, #setup + section + section) {
-  margin-top: var(--op-gap);
-}
-.bzl[data-look="film"][data-open="5"] :where(.p-support, .p-insights, #setup, #setup + section, #setup + section + section)::after {
+.bzl[data-look="film"][data-open="4"] :where(.p-insights, #setup, #setup + section, #setup + section + section)::after {
   content: "";
   position: absolute;
   z-index: 3;
-  top: clamp(0.25rem, 1.5vh, 1rem);
+  top: calc(-1 * clamp(14px, 1.6vw, 20px));
   left: 50%;
   width: clamp(110px, 11vw, 160px);
   aspect-ratio: 4;
@@ -361,7 +436,8 @@
   background: var(--op-wave) center / contain no-repeat;
   pointer-events: none;
 }
-.bzl[data-look="film"][data-open="5"] :where(.p-insights, #setup + section)::after {
+.bzl[data-look="film"][data-open="4"] :where(#setup, #setup + section + section)::after {
+  top: calc(-1 * clamp(22px, 2.4vw, 30px));
   width: clamp(34px, 3.4vw, 46px);
   aspect-ratio: 60 / 72;
   background-image: var(--op-arrow);
@@ -370,158 +446,74 @@
   from { clip-path: inset(-20% 100% -20% -10%); }
   to { clip-path: inset(-20% -10% -20% -10%); }
 }
-@keyframes op-draw-down {
-  from { clip-path: inset(-10% -20% 100% -20%); }
-  to { clip-path: inset(-10% -20% -10% -20%); }
-}
 @supports (animation-timeline: view()) {
-  .bzl[data-look="film"][data-open="5"] :where(.p-support, .p-insights, #setup, #setup + section, #setup + section + section)::after {
+  .bzl[data-look="film"][data-open="4"] :where(.p-insights, #setup, #setup + section, #setup + section + section)::after {
     animation: op-draw linear both;
     animation-timeline: view();
-    animation-range: entry 20% cover 30%;
-  }
-  .bzl[data-look="film"][data-open="5"] :where(.p-insights, #setup + section)::after {
-    animation-name: op-draw-down;
+    animation-range: entry 0% entry 80%;
   }
 }
 
-/* ════════════ 6 · One pillar strip ════════════ */
-.bzl[data-look="film"][data-open="6"] {
+/* ═══════════ 5 · Scene pills ═══════════ */
+.bzl[data-look="film"][data-open="5"] {
+  --op-warm: #fffaf4;
   --pal-support-bg: radial-gradient(ellipse 46% 52% at 16% 42%, var(--film-glow), transparent 72%), #ffffff;
-  --pal-insights-bg: radial-gradient(ellipse 46% 52% at 84% 40%, var(--film-glow), transparent 72%), #fffcf8;
+  --pal-insights-bg: radial-gradient(ellipse 46% 52% at 84% 40%, var(--film-glow), transparent 72%), var(--op-warm);
+  --pal-setup-bg: #ffffff;
+  --pal-custom-bg: var(--op-warm);
+  --pal-footer-bg: var(--op-warm);
 }
-.bzl[data-look="film"][data-open="6"] :where(#setup, #setup + section, #setup + section + section) {
-  border-top: 1px solid var(--op-hair);
+.bzl[data-look="film"][data-open="5"] .sh:not(.pi .sh) {
+  grid-template-columns: minmax(0, 1fr) auto auto minmax(0, 1fr);
+  row-gap: clamp(0.8rem, 2.2svh, 1.25rem);
+  column-gap: 0;
+  text-align: center;
 }
-.op-strip {
-  position: sticky;
-  top: var(--bzl-nav, 4rem);
-  z-index: 25;
-  background: rgb(255 255 255 / 0.92);
-  -webkit-backdrop-filter: blur(16px) saturate(1.2);
-  backdrop-filter: blur(16px) saturate(1.2);
-  box-shadow: 0 1px 0 var(--op-hair);
+.bzl[data-look="film"][data-open="5"] .sh:not(.pi .sh) .sh-text {
+  display: contents;
 }
-@media (max-width: 767px) {
-  .op-strip {
-    top: 49px;
-  }
+/* the pill, as the film labels its scenes: the icon and the name, small, one white capsule
+   (two halves that meet seamlessly: the icon's and the name's) */
+.bzl[data-look="film"][data-open="5"] .sh:not(.pi .sh) :is(.sh-icon, .sh-name) {
+  grid-row: 1;
+  height: 2.6rem;
+  background: #fff;
+  filter: drop-shadow(0 8px 14px rgb(59 36 22 / 0.1));
 }
-.op-strip-inner {
-  display: flex;
-  justify-content: center;
-  gap: clamp(0.25rem, 1.5vw, 1.5rem);
-  max-width: 1400px;
-  margin-inline: auto;
-  padding: 0.45rem 1rem;
+.bzl[data-look="film"][data-open="5"] .sh:not(.pi .sh) .sh-icon {
+  grid-column: 2;
+  width: auto;
+  aspect-ratio: auto;
+  padding: 0 0.15rem 0 0.75rem;
+  border-radius: 999px 0 0 999px;
+  box-shadow: inset 1px 0 0 var(--op-hair), inset 0 1px 0 var(--op-hair), inset 0 -1px 0 var(--op-hair);
 }
-.op-seg {
-  position: relative;
+.bzl[data-look="film"][data-open="5"] .sh:not(.pi .sh) .sh-icon svg {
+  width: 1.25rem;
+  height: 1.25rem;
+}
+.bzl[data-look="film"][data-open="5"] .sh:not(.pi .sh) .sh-name {
+  grid-column: 3;
   display: inline-flex;
   align-items: center;
-  gap: 0.55rem;
-  padding: 0.55rem 0.95rem 0.7rem;
-  border-radius: 999px;
-  font-size: clamp(0.95rem, 1.3vw, 1.15rem);
+  padding: 0 1.1rem 0 0.45rem;
+  border-radius: 0 999px 999px 0;
+  box-shadow: inset -1px 0 0 var(--op-hair), inset 0 1px 0 var(--op-hair), inset 0 -1px 0 var(--op-hair);
+  font-size: clamp(0.95rem, 1.2vw, 1.05rem);
   font-weight: 700;
-  letter-spacing: -0.02em;
+  letter-spacing: -0.01em;
   white-space: nowrap;
-  color: rgb(59 36 22 / 0.5);
-  transition: color 0.3s ease, background-color 0.3s ease;
 }
-.op-seg:hover {
-  color: var(--op-ink, #3b2416);
-}
-.op-seg.is-done {
-  color: rgb(59 36 22 / 0.68);
-}
-.op-seg.is-on {
-  color: var(--op-ink, #3b2416);
-  background: #fff4e8;
-}
-.op-seg-icon {
-  display: grid;
-  place-items: center;
-  width: 1.7em;
-  aspect-ratio: 1;
-  border-radius: 999px;
-  background: #fff;
-  color: hsl(var(--primary));
-  box-shadow: 0 0 0 1px var(--op-hair);
-}
-.op-seg-icon svg {
-  width: 56%;
-  height: 56%;
-}
-.op-seg-icon svg.bzl-ai,
-.op-seg-icon svg.bzl-ai * {
-  animation: none;
-  stroke-dashoffset: 0;
-}
-.op-seg.is-on .op-seg-icon {
-  background: hsl(var(--primary));
-  color: #fff;
-  box-shadow: none;
-}
-/* how far through the benefit: a primary bar under its segment */
-.op-seg-bar {
-  position: absolute;
-  left: 1rem;
-  right: 1rem;
-  bottom: 0.3rem;
-  height: 3px;
-  border-radius: 3px;
-  background: hsl(var(--primary));
-  transform-origin: left center;
-  opacity: 0;
-}
-.op-seg.is-on .op-seg-bar,
-.op-seg.is-done .op-seg-bar {
-  opacity: 1;
-}
-.op-seg.is-done .op-seg-bar {
-  opacity: 0.35;
-}
-@media (max-width: 639px) {
-  .op-seg {
-    padding: 0.5rem 0.6rem 0.65rem;
-    font-size: 0.85rem;
-  }
-  .op-seg:not(.is-on) .op-seg-label {
-    display: none;
-  }
-}
-/* under the strip: no docked bars (the strip is the bar), compact centred openers */
-.bzl[data-look="film"][data-open="6"] .op-pillars .pi {
-  --pi-dock-h: var(--op-strip-h, 3.5rem) !important;
-}
-.bzl[data-look="film"][data-open="6"] .op-pillars .pi .pi-head {
-  display: none;
-}
-.bzl[data-look="film"][data-open="6"] .op-pillars .pi .pi-big {
-  min-height: 0;
-  padding: clamp(3rem, 9svh, 6rem) 1rem clamp(1rem, 3svh, 2rem);
-}
-.bzl[data-look="film"][data-open="6"] .op-pillars .pi .pi-fade {
-  opacity: 1 !important;
-  transform: none !important;
-}
-.bzl[data-look="film"][data-open="6"] .op-pillars .pi .pi-icon {
-  display: none;
-}
-.bzl[data-look="film"][data-open="6"] .op-pillars .pi .pi-name {
-  --pi-name-size: clamp(2.6rem, min(5.5vw, 10svh), 5.25rem);
-}
-.bzl[data-look="film"][data-open="6"] .op-pillars .pi .pi-line {
-  font-size: clamp(1.15rem, min(2vw, 3.6svh), 1.75rem);
-  font-weight: 600;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .bzl[data-look="film"] .pi .pi-big,
-  .bzl[data-look="film"] .pi .pi-big::before,
-  .bzl[data-look="film"] .pi .pi-name-text,
-  .bzl[data-look="film"] :where(section)::after {
-    animation: none !important;
-  }
+/* the promise: the screen's big, centred line */
+.bzl[data-look="film"][data-open="5"] .sh:not(.pi .sh) .sh-promise {
+  grid-row: 2;
+  grid-column: 1 / -1;
+  justify-self: center;
+  max-width: 24ch;
+  font-size: clamp(1.9rem, min(3.6vw, 6.6svh), 3.4rem);
+  font-weight: 800;
+  letter-spacing: -0.045em;
+  line-height: 1.04;
+  color: var(--op-ink);
+  text-wrap: balance;
 }

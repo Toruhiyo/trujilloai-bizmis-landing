@@ -113,7 +113,7 @@
 /* ── The pillar's icon, in its disc: one glyph, the same in both states ──
    The disc and the glyph scale together (the glyph is 54% of the disc) and
    the stroke is one weight in the 24 grid, so big and docked read as the
-   same mark. The icons' loops are off here: they rest complete. */
+   same mark. */
 .pi-icon,
 .pi-dock-icon {
   display: grid;
@@ -136,15 +136,6 @@
   width: 54%;
   height: 54%;
   stroke-width: 2;
-}
-.pi .pi-icon svg.bzl-ai,
-.pi .pi-icon svg.bzl-ai *,
-.pi .pi-dock-icon svg.bzl-ai,
-.pi .pi-dock-icon svg.bzl-ai * {
-  animation: none;
-  stroke-dashoffset: 0;
-  opacity: 1;
-  scale: none;
 }
 /* docking, the icon lands with a small pop */
 .pi.is-docked .pi-dock-icon {

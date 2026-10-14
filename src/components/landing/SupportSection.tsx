@@ -30,19 +30,12 @@ const SupportChat = () => (
 );
 
 /**
- * Customer Support: "Customer Support", huge, with its promise "Fewer
- * tickets. Happier customers." under it (BenefitIntro / PillarIntro), which
- * docks as the section's sticky bar as you scroll; then, under the bar, one
- * screen in two columns, mirrored from Insights (the demo on the left on
- * desktop):
- * - the stage: the store with the widget answering a shopper, and the
- *   support inbox emptying itself as its result, a card laid over the
- *   store's top corner (under it on phones), so the two read as cause and
- *   effect;
- * - beside it, one compact column: the lead, then the three capabilities as
- *   cards, centred on the stage.
- * On phones: the lead, the stage, the capabilities. Layout: .bzs-* in
- * film-landing.css.
+ * Customer Support: its section header (index 02, the headset, "Customer
+ * Support", "Fewer tickets. Happier customers.", BenefitIntro), then one
+ * screen that reads cause → effect → why: the store with the widget
+ * answering a shopper; the support inbox emptying itself, drawn in marker
+ * straight on the panel; then the lead and the three capabilities as cards.
+ * Layout: .bzs-* in film-landing.css.
  */
 const CAPABILITY_ICONS = [ClockIcon, BookIcon, CareIcon];
 
@@ -52,17 +45,16 @@ const SupportSection = () => {
   const promise = `${s.title} ${s.titleTail}`;
   return (
     <section className="bzl-band bzl-pillar p-support bzp-section">
-      <BenefitIntro icon={<HeadsetIcon />} name={messages.benefits.support.badge} promise={promise}>
+      <BenefitIntro index="02" icon={<HeadsetIcon />} name={messages.benefits.support.badge} promise={promise}>
         <div className="bzl-wrap">
           <div className="bzs-grid">
-            <div className="bzs-stage">
-              <Reveal delay={120} className="bzs-store">
-                <SupportChat />
-              </Reveal>
-              <Reveal delay={260} className="bzs-result">
-                <SupportRelief className="bzs-relief" />
-              </Reveal>
-            </div>
+            <Reveal delay={120} className="bzs-store">
+              <SupportChat />
+            </Reveal>
+            {/* the result: the inbox emptying, a free marker drawing beside the store */}
+            <Reveal delay={260} className="bzs-result">
+              <SupportRelief className="bzs-relief" />
+            </Reveal>
             <Reveal className="bzs-lead">
               <p className="bzl-lead">{s.lead}</p>
             </Reveal>

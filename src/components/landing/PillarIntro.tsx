@@ -2,6 +2,7 @@ import { useLayoutEffect, useRef, useState } from "react";
 import type { CSSProperties, ReactNode } from "react";
 import { cn } from "@/lib/utils";
 import "@/styles/pillar-intro.css";
+import SectionHead from "./openers/SectionHead";
 
 /**
  * PillarIntro: a pillar's entrance and its sticky docked bar.
@@ -28,7 +29,8 @@ import "@/styles/pillar-intro.css";
  *     …the sub-benefits…
  *   </PillarIntro>
  *
- * - `name` / `icon` / `line`: the entrance. The name is the heading (an <h2>
+ * - `name` / `icon` / `line` (+ `index`): the entrance, rendered as the
+ *   section header every section shares (openers/SectionHead). The name is the heading (an <h2>
  *   unless `as` says otherwise), always one line: its size (.pi-name) is
  *   capped to the width it has (--pi-fit). In the bar: .pi-dock-name (icon +
  *   name, a strong label) then the docked line; on phones they stack.
@@ -41,6 +43,8 @@ import "@/styles/pillar-intro.css";
 export type PillarIntroProps = {
   /** The pillar's name, the benefit ("Boost Sales"): huge on arrival, the docked bar's label. */
   name?: ReactNode;
+  /** The section's place in the page's sequence ("01"), for the header variants that show it. */
+  index?: string;
   /** The pillar's icon (e.g. an AnimatedIcon element), in a disc above the name and beside it docked. */
   icon?: ReactNode;
   /** The supporting line under the name. */
@@ -70,6 +74,7 @@ const prefersReduced = () =>
 
 const PillarIntro = ({
   name,
+  index,
   icon,
   line: lineProp,
   title,
@@ -182,17 +187,17 @@ const PillarIntro = ({
       </div>
       <div ref={big} className={cn("pi-big", named && "is-named")}>
         {named ? (
-          <>
-            {icon && (
-              <span className="pi-icon pi-fade" aria-hidden="true">
-                {icon}
-              </span>
-            )}
-            <Tag className={cn("pi-name pi-fade pi-key", nameClassName)}>
-              <span className="pi-name-text">{name}</span>
-            </Tag>
-            {line && <div className={cn("pi-line pi-fade", lineClassName)}>{line}</div>}
-          </>
+          // the section header (openers/SectionHead), the same markup as every section's
+          <SectionHead
+            index={index ?? ""}
+            icon={icon}
+            name={name}
+            promise={line}
+            as={Tag}
+            iconClassName="pi-icon pi-fade"
+            nameClassName={cn("pi-name pi-fade pi-key", nameClassName)}
+            promiseClassName={cn("pi-line pi-fade", lineClassName)}
+          />
         ) : (
           <>
             {chip && <span className="pi-chip pi-fade">{chip}</span>}

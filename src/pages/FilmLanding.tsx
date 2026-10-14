@@ -19,9 +19,13 @@ import "@/styles/film-landing.css";
 import "@/styles/palette-options.css";
 // the film look, the page's only look (keyed on data-look="film")
 import "@/styles/look-film.css";
-// how sections open and are told apart: the opener systems (data-open, ?open=1..6)
+// how sections open and are told apart: the opener approaches (data-open, ?open=1..5)
 import "@/styles/openers.css";
-import PillarStrip from "@/components/landing/openers/PillarStrip";
+import BenefitsOverview from "@/components/landing/openers/BenefitsOverview";
+import SideIndex from "@/components/landing/openers/SideIndex";
+
+/** The opener approach shown without ?open (openers.css). */
+const DEFAULT_OPEN = "5";
 
 interface FilmLandingProps {
   /** The route it's served on: "/" once it's the default, "/v2" until then. */
@@ -37,9 +41,9 @@ interface FilmLandingProps {
  */
 const FilmLanding = ({ path = "/" }: FilmLandingProps) => {
   const messages = useMessages();
-  // the opener system (openers.css): ?open=1..6, 1 by default
-  const openParam = new URLSearchParams(useLocation().search).get("open") ?? "1";
-  const open = /^[1-6]$/.test(openParam) ? openParam : "1";
+  // the opener approach (openers.css): ?open=1..5, see DEFAULT_OPEN
+  const openParam = new URLSearchParams(useLocation().search).get("open") ?? DEFAULT_OPEN;
+  const open = /^[1-5]$/.test(openParam) ? openParam : DEFAULT_OPEN;
 
   // Lets the film landing's scoped CSS reach the shared navbar (outside .bzl),
   // e.g. the handwritten "Early Access" link, without touching other pages.
@@ -105,20 +109,12 @@ const FilmLanding = ({ path = "/" }: FilmLandingProps) => {
       />
       <Hero />
       {/* "This isn't a chatbot" (SwitchSection) is hidden: the hero covers it now */}
-      {/* system 6 gathers the three benefits under one sticky segmented header */}
-      {open === "6" ? (
-        <PillarStrip>
-          <SalesSection />
-          <SupportSection />
-          <InsightsSection />
-        </PillarStrip>
-      ) : (
-        <>
-          <SalesSection />
-          <SupportSection />
-          <InsightsSection />
-        </>
-      )}
+      {/* approach 2 presents the three benefits together first; approach 3 adds the side index */}
+      {open === "2" && <BenefitsOverview />}
+      {open === "3" && <SideIndex />}
+      <SalesSection />
+      <SupportSection />
+      <InsightsSection />
       <SetupSection />
       <CustomizeSection />
       <EndCard />

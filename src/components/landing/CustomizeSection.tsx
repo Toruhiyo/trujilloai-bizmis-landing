@@ -4,7 +4,8 @@ import AvatarCarousel from "./AvatarCarousel";
 import manifest from "./agents-manifest.json";
 import type { CarouselAvatar } from "./AvatarCarousel";
 import FeatureCard from "./FeatureCard";
-import { AvatarIcon, VoiceIcon } from "./AnimatedIcons";
+import { AvatarIcon, ShirtIcon, VoiceIcon } from "./AnimatedIcons";
+import SectionHead from "./openers/SectionHead";
 import Reveal from "./Reveal";
 
 // Real Bizmis avatars, each wearing a (fictional, AI-generated) store's logo: either a vivid shirt
@@ -67,21 +68,22 @@ const CustomizeSection = () => {
           />
         ))}
       </div>
+      {/* the section header, as every section's (index 05, the shirt, "Personalization", "Make It Truly Yours") */}
+      <SectionHead
+        index="05"
+        icon={<ShirtIcon />}
+        name={m.badge}
+        promise={
+          <>
+            {m.titleLead} <span className="text-[var(--bzl-orange-strong)]">{m.titleHighlight}</span>
+          </>
+        }
+        className="relative"
+      />
       <div className="bzl-wrap relative grid items-center gap-14 lg:grid-cols-[0.85fr_1.15fr] lg:gap-20">
         <div>
           <Reveal>
-            <p className="bzl-kicker">{m.badge}</p>
-          </Reveal>
-          <Reveal delay={80}>
-            <h2 className="bzl-statement-sm mt-4">
-              {m.titleLead}{" "}
-              <span className="text-[var(--bzl-orange-strong)]">
-                {m.titleHighlight}
-              </span>
-            </h2>
-          </Reveal>
-          <Reveal delay={150}>
-            <p className="bzl-lead mt-4 max-w-md">{c.lead}</p>
+            <p className="bzl-lead max-w-md">{c.lead}</p>
           </Reveal>
           <div className="mt-8 grid max-w-md items-start gap-2.5">
             <Reveal delay={220}>

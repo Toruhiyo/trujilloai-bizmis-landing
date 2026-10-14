@@ -15,6 +15,8 @@ import {
 import { cn } from "@/lib/utils";
 import { useMessages } from "@/i18n/LocaleProvider";
 import Reveal from "./Reveal";
+import { PlugIcon } from "./AnimatedIcons";
+import SectionHead from "./openers/SectionHead";
 import { phaseAt, useRewindLoop } from "./useRewindLoop";
 
 // Same order as messages.setup.dataCards (as on the classic landing).
@@ -158,16 +160,13 @@ const SetupSection = () => {
         <div className="absolute -top-40 left-[20%] h-56 w-[60%] rounded-[50%] bg-[rgba(249,163,83,0.18)] blur-[80px]" />
       </div>
 
+      {/* the section header, as every section's (index 04, the plug, "One-Click Setup", "Plug and Play") */}
+      <SectionHead index="04" icon={<PlugIcon />} name={copy.title} promise={setup.badge} className="relative" />
+
       <div className="bzl-wrap relative">
         <div className="mx-auto max-w-3xl text-center">
           <Reveal>
-            <p className="bzl-kicker">{setup.badge}</p>
-          </Reveal>
-          <Reveal delay={80}>
-            <h2 className="bzl-statement-sm mt-3">{copy.title}</h2>
-          </Reveal>
-          <Reveal delay={160}>
-            <p className="bzl-lead mx-auto mt-[2svh] max-w-2xl">{copy.lead}</p>
+            <p className="bzl-lead mx-auto max-w-2xl">{copy.lead}</p>
           </Reveal>
         </div>
 

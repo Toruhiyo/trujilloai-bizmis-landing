@@ -22,7 +22,7 @@ const InsightsSection = () => {
   const promise = `${ins.title} ${ins.titleTail}`;
   return (
     <section className="bzl-band bzl-pillar p-insights bzp-section">
-      <BenefitIntro icon={<IdeaIcon />} name={messages.benefits.insights.badge} promise={promise}>
+      <BenefitIntro index="03" icon={<IdeaIcon />} name={messages.benefits.insights.badge} promise={promise}>
         <div className="bzl-wrap">
           <div className="grid grid-cols-[minmax(0,1fr)] items-center gap-10 lg:grid-cols-[0.85fr_1.15fr] lg:gap-20">
             <div>

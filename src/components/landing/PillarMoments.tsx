@@ -159,7 +159,10 @@ export const SupportRelief = ({ className }: { className?: string }) => {
   const r = useMessages().landing.support.relief;
   const ref = useRef<HTMLDivElement>(null);
   const uid = useId().replace(/:/g, "");
-  const { t } = useRewindLoop(ref, { duration: RELIEF_MS, hold: 0, rewind: 900, rest: 450, threshold: 0.45, tick: 0 });
+  const { t, rewinding, cycle } = useRewindLoop(ref, { duration: RELIEF_MS, hold: 0, rewind: 900, rest: 450, threshold: 0.45, tick: 0 });
+  // the inbox's head (its name, the badge) is written once, on the first play; after that it stays
+  // through every rewind and reset, so the drawing never goes blank between loops
+  const kept = cycle > 1 || rewinding;
 
   const count =
     t < PILE_MS
@@ -217,15 +220,15 @@ export const SupportRelief = ({ className }: { className?: string }) => {
         </defs>
 
         {/* the head: the inbox's name, and its count in a drawn badge */}
-        <Hand k={writing(r.label, t, 0)} x={4} y={30}>
+        <Hand k={kept ? 1 : writing(r.label, t, 0)} x={4} y={30}>
           {r.label}
         </Hand>
         <g
           transform={`translate(${f(bx + bw / 2)} 22) scale(${f(1 + bump)} ${f(1 - bump * 0.7)}) translate(${f(-(bx + bw / 2))} -22)`}
         >
-          <path className="mk-mid" d={rrect(bx, 4, bw, 36, 18, 3)} {...drawn(easeOut(span(t, 0, 380)))} />
+          <path className="mk-mid" d={rrect(bx, 4, bw, 36, 18, 3)} {...drawn(kept ? 1 : easeOut(span(t, 0, 380)))} />
           {/* written once; the count then just changes its digits */}
-          <Hand k={writing(badgeText, t, 200)} x={bx + bw / 2} y={30} textAnchor="middle">
+          <Hand k={kept ? 1 : writing(badgeText, t, 200)} x={bx + bw / 2} y={30} textAnchor="middle">
             {badgeText}
           </Hand>
         </g>
@@ -253,7 +256,7 @@ export const SupportRelief = ({ className }: { className?: string }) => {
             <g key={i} clipPath={`url(#${uid}-tk${i})`} opacity={f(opacity)}>
               <g
                 transform={
-                  `translate(${f(260 * away)} ${f(-20 * away)}) rotate(${f(tilt + 14 * away)} ${f(cx)} ${f(my)}) ` +
+                  `translate(${f(150 * away)} ${f(-26 * away)}) rotate(${f(tilt + 12 * away)} ${f(cx)} ${f(my)}) ` +
                   `translate(${f(cx)} ${f(y + TK_H)}) scale(${f(sx)} ${f(sy)}) translate(${f(-cx)} ${f(-(y + TK_H))})`
                 }
               >

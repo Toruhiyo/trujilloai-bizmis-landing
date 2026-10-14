@@ -71,6 +71,7 @@ const Pinned = () => {
     <section id="benefits" className="sl sl-c is-pinned bzl-band bzl-pillar p-sales">
       <SalesHeading as="p" />
       <PillarIntro
+        index="01"
         name={name}
         icon={<TrendIcon />}
         line={<BigLine />}
@@ -145,6 +146,7 @@ const Stacked = () => {
     <section id="benefits" className="sl sl-c is-stacked bzl-band bzl-pillar p-sales">
       <SalesHeading as="p" />
       <PillarIntro
+        index="01"
         name={name}
         icon={<TrendIcon />}
         line={<BigLine />}

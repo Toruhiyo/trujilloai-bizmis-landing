@@ -178,7 +178,7 @@ export const VoiceIcon: AnimatedIcon = ({ className }) => (
 );
 
 /*
- * The three benefit icons (Sales, Support, Insights) open their pillars, in a
+ * The section icons (Sales, Support, Insights, Setup, Personalization) open their sections, in a
  * disc above the pillar's name and in its docked bar (PillarIntro), so they
  * are drawn as one set, in the marker's hand: one thick round stroke, an
  * optical box of about 18 x 18 centred on the grid's 12/12. Each loops a
@@ -237,6 +237,29 @@ export const IdeaIcon: AnimatedIcon = ({ className }) => (
       <path className="ray r1" d="M12 1.5v1" />
       <path className="ray r2" d="M4.6 4.1l.75.75M19.4 4.1l-.75.75" />
       <path className="ray r3" d="M2.5 10.25h1M20.5 10.25h1" />
+    </g>
+  </BenefitSvg>
+);
+
+/** One-Click Setup: the plug pushes into its socket and a spark of power jumps out. */
+export const PlugIcon: AnimatedIcon = ({ className }) => (
+  <BenefitSvg name="plug" className={className}>
+    <g className="plug">
+      <path d="M9.5 3.5v4M14.5 3.5v4" />
+      <path d="M7 7.5h10v3.25a5 5 0 0 1-10 0z" />
+      <path d="M12 15.75v2.5" />
+    </g>
+    <path className="cord" d="M12 18.25c0 2 1.6 2.75 3.4 2.75H19" />
+    <path className="spark" d="M19.4 2.6l-1.9 3h2.3l-1.9 3" />
+  </BenefitSvg>
+);
+
+/** Personalization: a shirt, and your logo stamped on it (it pops, the shirt sways). */
+export const ShirtIcon: AnimatedIcon = ({ className }) => (
+  <BenefitSvg name="shirt" className={className}>
+    <g className="shirt">
+      <path d="M8.75 3.5 4.5 5.75 2.75 10l3.25 1.5V20.5h12V11.5L21.25 10 19.5 5.75 15.25 3.5c-.5 1.45-1.75 2.25-3.25 2.25S9.25 4.95 8.75 3.5z" />
+      <path className="logo" d="M12 10.6l.95 1.95 2.1.3-1.52 1.48.36 2.1L12 15.43l-1.89 1-.36-2.1-1.52-1.48 2.1-.3z" />
     </g>
   </BenefitSvg>
 );
