@@ -180,42 +180,65 @@ export const VoiceIcon: AnimatedIcon = ({ className }) => (
 /*
  * The three benefit icons (Sales, Support, Insights) open their pillars, in a
  * disc above the pillar's name and in its docked bar (PillarIntro), so they
- * are drawn as one set: the same 2px stroke, an optical box of about 18 x 18
- * centred on the grid's 12/12, no part thinner or tighter than the others,
- * and complete at rest (their motions only ever start from, and return to,
- * the full drawing; PillarIntro turns them off).
+ * are drawn as one set, in the marker's hand: one thick round stroke, an
+ * optical box of about 18 x 18 centred on the grid's 12/12. Each loops a
+ * short, quiet motion (film-landing.css, .bzl-bi-*): the trend line flows up
+ * through its arrow, the headset speaks into its mic, the bulb lights and
+ * its rays flicker. Most of the cycle they rest complete; reduced motion
+ * shows the rest pose. They carry their own class (bzl-bi, not bzl-ai), so
+ * their loops and weight are theirs wherever they sit.
  */
+const BenefitSvg = ({ children, className, name }: { children: ReactNode; className?: string; name: string }) => (
+  <svg
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth={2.3}
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    aria-hidden="true"
+    className={cn("bzl-bi overflow-visible", `bzl-bi-${name}`, className)}
+  >
+    {children}
+  </svg>
+);
 
-/** Sales (benefit): the line climbs and its arrow lands. */
+/** Sales (benefit): the line flows up through its arrow, which lifts as it lands. */
 export const TrendIcon: AnimatedIcon = ({ className }) => (
-  <Svg name="trend" className={className}>
+  <BenefitSvg name="trend" className={className}>
+    {/* the line's track: hidden under the line at rest, it keeps the shape while the line flows */}
+    <path className="track" d="M2.75 17.5 9 11.25l4 4 8.25-8.25" />
     <path className="line" pathLength={1} d="M2.75 17.5 9 11.25l4 4 8.25-8.25" />
     <path className="head" d="M15 7h6.25v6.25" />
-  </Svg>
+  </BenefitSvg>
 );
 
-/** Support (benefit): a headset, its mic at the cheek; the earcups pulse. */
+/** Support (benefit): a headset that speaks: sound waves pulse from its mic. */
 export const HeadsetIcon: AnimatedIcon = ({ className }) => (
-  <Svg name="headset" className={className}>
+  <BenefitSvg name="headset" className={className}>
     <path d="M4 14v-2a8 8 0 0 1 16 0v2" />
-    <rect className="cup" x="3" y="12.5" width="4.25" height="6.5" rx="2" />
-    <rect className="cup" x="16.75" y="12.5" width="4.25" height="6.5" rx="2" />
+    <rect x="3" y="12.5" width="4.25" height="6.5" rx="2" />
+    <rect x="16.75" y="12.5" width="4.25" height="6.5" rx="2" />
     <path d="M18.9 19v.25A2.75 2.75 0 0 1 16.15 22H13.5" />
-  </Svg>
+    <path className="wave w1" d="M11.1 20.7a1.9 1.9 0 0 0 0 2.6" />
+    <path className="wave w2" d="M9.4 19.95a3.3 3.3 0 0 0 0 4.1" />
+  </BenefitSvg>
 );
 
-/** Insights (benefit): the bulb lights and its rays flash. */
+/** Insights (benefit): the bulb lights up and its rays flicker. */
 export const IdeaIcon: AnimatedIcon = ({ className }) => (
-  <Svg name="idea" className={className}>
+  <BenefitSvg name="idea" className={className}>
     <path
       className="bulb"
       d="M12 5a5.25 5.25 0 0 0-3.1 9.5c.55.42.85.95.85 1.6V16.5h4.5v-.4c0-.65.3-1.18.85-1.6A5.25 5.25 0 0 0 12 5z"
     />
     <path d="M9.75 19h4.5M10.75 21.5h2.5" />
     <g className="rays">
-      <path d="M12 1.5v1M4.6 4.1l.75.75M19.4 4.1l-.75.75M2.5 10.25h1M20.5 10.25h1" />
+      <path className="ray r1" d="M12 1.5v1" />
+      <path className="ray r2" d="M4.6 4.1l.75.75M19.4 4.1l-.75.75" />
+      <path className="ray r3" d="M2.5 10.25h1M20.5 10.25h1" />
     </g>
-  </Svg>
+  </BenefitSvg>
 );
 
 /** The tile an animated icon sits in: a soft glass square with a warm tint. */

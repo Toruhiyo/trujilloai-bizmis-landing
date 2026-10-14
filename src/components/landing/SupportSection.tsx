@@ -33,9 +33,16 @@ const SupportChat = () => (
  * Customer Support: "Customer Support", huge, with its promise "Fewer
  * tickets. Happier customers." under it (BenefitIntro / PillarIntro), which
  * docks as the section's sticky bar as you scroll; then, under the bar, one
- * screen in the Support colours (coral and terracotta), laid out mirrored
- * from Insights (the widget on the left on desktop): the lead, the inbox
- * that empties itself, and the three capabilities as cards.
+ * screen in two columns, mirrored from Insights (the demo on the left on
+ * desktop):
+ * - the stage: the store with the widget answering a shopper, and the
+ *   support inbox emptying itself as its result, a card laid over the
+ *   store's top corner (under it on phones), so the two read as cause and
+ *   effect;
+ * - beside it, one compact column: the lead, then the three capabilities as
+ *   cards, centred on the stage.
+ * On phones: the lead, the stage, the capabilities. Layout: .bzs-* in
+ * film-landing.css.
  */
 const CAPABILITY_ICONS = [ClockIcon, BookIcon, CareIcon];
 
@@ -47,29 +54,26 @@ const SupportSection = () => {
     <section className="bzl-band bzl-pillar p-support bzp-section">
       <BenefitIntro icon={<HeadsetIcon />} name={messages.benefits.support.badge} promise={promise}>
         <div className="bzl-wrap">
-          <div className="grid grid-cols-[minmax(0,1fr)] items-center gap-10 lg:grid-cols-[1.05fr_0.95fr] lg:gap-20">
-            <div className="lg:order-2">
-              <Reveal>
-                <p className="bzl-lead max-w-md">{s.lead}</p>
+          <div className="bzs-grid">
+            <div className="bzs-stage">
+              <Reveal delay={120} className="bzs-store">
+                <SupportChat />
               </Reveal>
-              <Reveal delay={80}>
-                <SupportRelief className="mt-[2.6svh] max-w-lg" />
+              <Reveal delay={260} className="bzs-result">
+                <SupportRelief className="bzs-relief" />
               </Reveal>
-              {/* its three capabilities, as cards: title up front, the detail on demand */}
-              <div className="mt-[2.2svh] grid max-w-lg items-start gap-2">
-                {s.capabilities.map((c, i) => (
-                  <Reveal key={c.title} delay={160 + i * 90}>
-                    <FeatureCard icon={CAPABILITY_ICONS[i]} title={c.title} body={c.body} />
-                  </Reveal>
-                ))}
-              </div>
             </div>
-            <Reveal
-              delay={120}
-              className="relative mx-auto w-full max-w-[min(560px,calc((100svh-12rem)*1.25))] lg:order-1"
-            >
-              <SupportChat />
+            <Reveal className="bzs-lead">
+              <p className="bzl-lead">{s.lead}</p>
             </Reveal>
+            {/* its three capabilities, as cards: title up front, the detail on demand */}
+            <div className="bzs-caps">
+              {s.capabilities.map((c, i) => (
+                <Reveal key={c.title} delay={160 + i * 90}>
+                  <FeatureCard icon={CAPABILITY_ICONS[i]} title={c.title} body={c.body} />
+                </Reveal>
+              ))}
+            </div>
           </div>
         </div>
       </BenefitIntro>

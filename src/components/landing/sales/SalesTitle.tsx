@@ -11,7 +11,7 @@ import { cn } from "@/lib/utils";
  * its line. How a lit part looks is up to
  * the variant's CSS (.sl-title in landing-sales.css). `marks` draws a marker
  * underline under each part (.sl-title-mark), which the CSS shows on the lit
- * part and, calmer, on the parts already shown.
+ * part only.
  */
 const SalesTitle = ({
   active,
@@ -27,7 +27,7 @@ const SalesTitle = ({
   as?: "h2" | "p" | "span";
   /** Progress under each part, 0–1 (as --fill), for a layout that draws it. */
   fills?: number[];
-  /** A marker underline under each part (shown by the CSS on the lit and done parts). */
+  /** A marker underline under each part (shown by the CSS on the lit part only). */
   marks?: boolean;
   className?: string;
 }) => {

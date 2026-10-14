@@ -1080,23 +1080,45 @@
 .bzl-ai-voice .v2 { animation-delay: .12s; } .bzl-ai-voice .v3 { animation-delay: .24s; }
 .bzl-ai-voice .v4 { animation-delay: .36s; } .bzl-ai-voice .v5 { animation-delay: .48s; }
 @keyframes ai-voice { 0%, 100% { scale: 1 0.55; opacity: 0.55; } 50% { scale: 1 1; opacity: 1; } }
-/* trend: drawn again from its start, quickly, then held complete for most of the cycle */
-.bzl-ai-trend .line { stroke-dasharray: 1; stroke-dashoffset: 0; animation: ai-redraw var(--cycle) ease-out infinite; }
-.bzl-ai-trend .head { transform-origin: 100% 0%; animation: ai-head var(--cycle) cubic-bezier(.3, 1.6, .5, 1) infinite; }
-@keyframes ai-redraw { 0%, 84% { stroke-dashoffset: 0; } 86% { stroke-dashoffset: 1; } 98%, 100% { stroke-dashoffset: 0; } }
-@keyframes ai-head { 0%, 84% { opacity: 1; scale: 1; } 86%, 94% { opacity: 0; scale: 0.6; } 100% { opacity: 1; scale: 1; } }
-/* headset: the earcups pulse once, gently */
-.bzl-ai-headset .cup { transform-origin: 50% 50%; animation: ai-cup var(--cycle) ease-in-out infinite; }
-@keyframes ai-cup { 0%, 70%, 100% { scale: 1; } 78% { scale: 1.12; } 86% { scale: 1; } }
-/* idea: the bulb glows and its rays flash, then rest lit */
-.bzl-ai-idea .rays { transform-origin: 50% 60%; animation: ai-rays var(--cycle) ease-out infinite; }
-.bzl-ai-idea .bulb { animation: ai-glow var(--cycle) ease-out infinite; }
-@keyframes ai-rays { 0%, 70%, 100% { opacity: 1; scale: 1; } 76% { opacity: 0.2; scale: 0.8; } 84% { opacity: 1; scale: 1.1; } 90% { scale: 1; } }
-@keyframes ai-glow { 0%, 70%, 100% { fill: transparent; } 80%, 90% { fill: color-mix(in oklab, currentColor 30%, transparent); } }
+/* ── The benefit icons (AnimatedIcons: TrendIcon, HeadsetIcon, IdeaIcon) ──
+   One set in the marker's hand, wherever they sit (the pillar openers and
+   their docked bars): a thick round stroke (beats .pi-icon svg's weight), a
+   4.4s loop whose motion lives in its last third; the rest of the cycle, and
+   reduced motion, show the complete drawing. */
+.bzl .bzl-bi { --cycle: 4.4s; stroke-width: 2.3; }
+.bzl-bi * { transform-box: fill-box; }
+/* trend: the line flows up through its arrow (out at the head, back in from the start); the head lifts as it lands */
+.bzl-bi-trend .track { opacity: 0.22; }
+.bzl-bi-trend .line { stroke-dasharray: 1 2; stroke-dashoffset: 0; animation: bi-flow var(--cycle) infinite; }
+.bzl-bi-trend .head { transform-origin: 100% 0%; animation: bi-lift var(--cycle) ease-in-out infinite; }
+@keyframes bi-flow {
+  0%, 62% { stroke-dashoffset: 0; animation-timing-function: cubic-bezier(.5, 0, .9, .6); }
+  68% { stroke-dashoffset: -1; }
+  68.1% { stroke-dashoffset: -2; animation-timing-function: cubic-bezier(.2, .7, .3, 1); }
+  80%, 100% { stroke-dashoffset: -3; }
+}
+@keyframes bi-lift { 0%, 63%, 100% { translate: 0 0; } 68% { translate: 0.9px -0.9px; } 73% { translate: 0 0; } 80% { translate: 1.1px -1.1px; } 87% { translate: 0 0; } }
+/* headset: it speaks: two sound waves pulse from the mic, a few syllables, then quiet */
+.bzl-bi-headset .wave { opacity: 0; transform-origin: 100% 50%; animation: bi-speak var(--cycle) ease-in-out infinite; }
+.bzl-bi-headset .w2 { animation-delay: 0.12s; }
+@keyframes bi-speak {
+  0%, 58% { opacity: 0; scale: 0.7; }
+  63% { opacity: 1; scale: 1; } 68% { opacity: 0.35; scale: 0.88; }
+  73% { opacity: 1; scale: 1; } 78% { opacity: 0.4; scale: 0.9; }
+  84% { opacity: 1; scale: 1; } 92%, 100% { opacity: 0; scale: 0.75; }
+}
+/* idea: the bulb lights up, its rays flicker and flare, then it rests (outline and rays) */
+.bzl-bi-idea .bulb { animation: bi-glow var(--cycle) ease-out infinite; }
+.bzl-bi-idea .rays { transform-origin: 50% 60%; animation: bi-flare var(--cycle) ease-out infinite; }
+.bzl-bi-idea .ray { animation: bi-flicker var(--cycle) linear infinite; }
+.bzl-bi-idea .r2 { animation-delay: 0.08s; } .bzl-bi-idea .r3 { animation-delay: 0.16s; }
+@keyframes bi-glow { 0%, 62%, 100% { fill: transparent; } 68%, 86% { fill: color-mix(in oklab, currentColor 32%, transparent); } }
+@keyframes bi-flare { 0%, 64%, 100% { scale: 1; } 72% { scale: 1.14; } 82% { scale: 1; } }
+@keyframes bi-flicker { 0%, 62%, 80%, 100% { opacity: 1; } 65% { opacity: 0.2; } 68% { opacity: 1; } 71% { opacity: 0.35; } 74% { opacity: 1; } }
 
 @media (prefers-reduced-motion: reduce) {
   .bzl-grain::before { animation: none; }
-  .bzl-ai, .bzl-ai * { animation: none !important; }
+  .bzl-ai, .bzl-ai *, .bzl-bi, .bzl-bi * { animation: none !important; }
   .bzl-ai .tick, .bzl-ai .trend, .bzl-ai .line, .bzl-ai .ring, .bzl-ai .label { stroke-dashoffset: 0; }
 }
 
@@ -1360,4 +1382,76 @@
   justify-content: center;
   min-height: calc(100svh - var(--pi-nav) - var(--pi-dock-h));
   padding-block: clamp(1.25rem, 4svh, 3rem);
+}
+
+/* ── Customer Support's screen (SupportSection.tsx): the stage (the store and
+   its result, the inbox emptying) beside one compact column (the lead and
+   the three capabilities). Phones: lead, stage, capabilities. ── */
+.bzs-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-areas: "lead" "stage" "caps";
+  gap: 1.75rem;
+}
+.bzs-stage { grid-area: stage; position: relative; }
+.bzs-lead { grid-area: lead; }
+.bzs-lead .bzl-lead { max-width: 30rem; }
+.bzs-caps {
+  grid-area: caps;
+  display: grid;
+  align-items: start;
+  gap: 0.5rem;
+  max-width: 32rem;
+}
+/* the result: the inbox as a card, the marker drawing on paper */
+.bzs-result {
+  position: relative;
+  z-index: 3;
+  margin-top: 0.9rem;
+}
+.bzs-relief {
+  padding: 0.7rem 0.9rem 0.45rem;
+  border-radius: 20px;
+  /* the tickets leave the inbox at its edge, never over the page */
+  overflow: hidden;
+  background: #fff;
+  box-shadow:
+    0 0 0 1px rgb(59 36 22 / 0.07),
+    0 22px 48px -26px rgb(59 36 22 / 0.42);
+}
+/* from tablets: the inbox card laid over the store's top corner, the store sunk under it */
+@media (min-width: 640px) {
+  .bzs-stage {
+    --bzs-lift: clamp(3.5rem, 9svh, 5.75rem);
+    padding-top: var(--bzs-lift);
+    max-width: 46rem;
+    margin-inline: auto;
+    width: 100%;
+  }
+  .bzs-store { width: 77%; }
+  .bzs-result {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 50%;
+    margin: 0;
+  }
+}
+/* desktop: two columns, the compact column centred on the stage */
+@media (min-width: 1024px) {
+  .bzs-grid {
+    grid-template-columns: minmax(0, 1.45fr) minmax(0, 0.85fr);
+    grid-template-rows: 1fr auto auto 1fr;
+    grid-template-areas: "stage ." "stage lead" "stage caps" "stage .";
+    column-gap: clamp(2.5rem, 5vw, 5.5rem);
+    row-gap: 0;
+  }
+  .bzs-stage {
+    align-self: center;
+    /* never taller than the screen under the bar */
+    max-width: min(100%, calc((100svh - var(--pi-nav, 4rem) - var(--pi-dock-h, 4rem) - 7rem) * 1.52));
+    margin-inline: 0;
+  }
+  .bzs-lead { margin-bottom: clamp(1rem, 3svh, 1.75rem); }
+  .bzs-lead .bzl-lead { font-size: clamp(1.1rem, min(1.55vw, 2.6svh), 1.4rem); }
 }

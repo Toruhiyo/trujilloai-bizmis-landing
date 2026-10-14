@@ -261,8 +261,8 @@
     font-size: clamp(1.5rem, min(2.4vw, 4.6svh), 2.4rem);
   }
 }
-/* the part being shown is underlined in white marker (drawn in once the bar
-   is in); the parts already shown keep theirs, calmer; the next ones have none */
+/* only the part being shown is underlined in white marker (drawn in once the
+   bar is in); it lifts off when the next part takes over */
 .sl-c .pi-dock .sl-title-text {
   position: relative;
 }
@@ -287,17 +287,13 @@
 .sl-title-mark path {
   vector-effect: non-scaling-stroke;
 }
-.pi.is-docked .sl-title-part.is-on .sl-title-mark,
-.pi.is-docked .sl-title-part.is-done .sl-title-mark {
+.pi.is-docked .sl-title-part.is-on .sl-title-mark {
   clip-path: inset(-80% -6% -80% -6%);
 }
 .pi.is-docked .sl-title-part.is-on .sl-title-mark {
   transition:
     clip-path 0.6s cubic-bezier(0.65, 0, 0.35, 1) 0.18s,
     opacity 0.45s var(--bzl-ease);
-}
-.sl-title-part.is-done .sl-title-mark {
-  opacity: 0.5;
 }
 
 /* pinned: a tall track, one sticky screen inside it, under the docked title */

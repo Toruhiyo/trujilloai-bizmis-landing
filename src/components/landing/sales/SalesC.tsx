@@ -21,7 +21,7 @@ const BAR = "color-mix(in oklab, #f0913e 95%, transparent)";
  * name, huge ("Boost Sales", PillarIntro), with "Shoppers Find it. Trust
  * it. Buy it." under it; as it scrolls away the section's sticky bar
  * slides in, the name as its label, the part being shown lit and
- * underlined in marker (the parts already shown keep a calmer underline).
+ * underlined in marker (only the part being shown).
  * Under it, one pinned screen: on the left, the part's funnel stage and benefit over the at-scale funnel (the whole
  * store's shoppers, that stage improving); on the right, the one
  * conversation on its device: find, trust, buy. The funnel is one story:
