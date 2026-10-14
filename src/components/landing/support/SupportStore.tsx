@@ -239,7 +239,6 @@ const SupportStore = ({ agent, children }: { agent: AgentName; children: ReactNo
   const ref = useRef<HTMLDivElement>(null);
   const loop = useRewindLoop(ref, {
     duration: DEMO_MS,
-    hold: 2000,
     rewind: 1300,
     rest: 450,
     threshold: 0.4,

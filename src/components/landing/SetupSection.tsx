@@ -31,7 +31,7 @@ const CARD_EVERY = 160;
 /** The charge-up clip (scripts/setup-charge-anim.py): 92 frames at 24 fps. */
 const CHARGE_MS = 3830;
 /** After the charge, the sparks keep flowing a while before the rewind. */
-const FLOW_MS = 1600;
+const FLOW_MS = 600;
 const CHARGE = {
   poster: "/landing/setup/charge-poster.webp",
   webm: "/landing/setup/charge.webm",
@@ -121,7 +121,7 @@ const SetupSection = () => {
     },
     [doneAt],
   );
-  const loop = useRewindLoop(ref, { duration: doneAt + CHARGE_MS + FLOW_MS, hold: 1200, rewind: 1100, threshold: 0.3, onFrame });
+  const loop = useRewindLoop(ref, { duration: doneAt + CHARGE_MS + FLOW_MS, rewind: 1100, threshold: 0.3, onFrame });
   const phase = phaseAt<Phase>(loop.t, [
     ["idle", 0],
     ["cursor", CURSOR_AT],

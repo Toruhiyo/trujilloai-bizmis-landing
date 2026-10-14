@@ -70,7 +70,6 @@ export const SupportRelief = ({ className }: { className?: string }) => {
   const ref = useRef<HTMLDivElement>(null);
   const { t, active } = useRewindLoop(ref, {
     duration: RELIEF_MS,
-    hold: 2000,
     rewind: 900,
     threshold: 0.45,
     tick: 0,
@@ -224,7 +223,6 @@ export const InsightsClarity = ({ className }: { className?: string }) => {
   const ref = useRef<HTMLDivElement>(null);
   const { t } = useRewindLoop(ref, {
     duration: CLARITY_MS,
-    hold: 2200,
     rewind: 900,
     threshold: 0.45,
     tick: 0,

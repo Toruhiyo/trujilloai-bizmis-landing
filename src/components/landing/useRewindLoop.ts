@@ -2,9 +2,9 @@ import { useEffect, useRef, useState, type RefObject } from "react";
 
 /**
  * Drives a landing animation as a loop the viewer always sees from its start:
- * it plays forward from 0 the moment its element comes into view, holds on the
- * end, rewinds (the timeline runs backwards, fast, like a tape), rests on the
- * start, and plays again. Leaving the view stops it and resets it to 0, so the
+ * it plays forward from 0 the moment its element comes into view, rewinds as
+ * soon as it lands (the timeline runs backwards, fast, like a tape), rests on
+ * the start, and plays again. Leaving the view stops it and resets it to 0, so the
  * next visit starts from the beginning too.
  *
  * Components read `t` (ms along their own timeline, going back down while
@@ -17,7 +17,7 @@ import { useEffect, useRef, useState, type RefObject } from "react";
 export type RewindLoopOptions = {
   /** Length of the forward timeline (ms). */
   duration: number;
-  /** Pause on the finished state before rewinding (ms). */
+  /** Pause on the finished state before rewinding (ms); none by default: it rewinds as it lands. */
   hold?: number;
   /** How long the rewind takes (ms): faster than the forward play. */
   rewind?: number;
@@ -49,7 +49,7 @@ const prefersReducedMotion = () =>
 
 export function useRewindLoop(
   ref: RefObject<Element | null>,
-  { duration, hold = 2200, rewind = 900, rest = 500, threshold = 0.35, tick = 1000 / 30, onFrame, paused = false }: RewindLoopOptions,
+  { duration, hold = 0, rewind = 900, rest = 500, threshold = 0.35, tick = 1000 / 30, onFrame, paused = false }: RewindLoopOptions,
 ): RewindLoop {
   const reduced = useRef(prefersReducedMotion()).current;
   const [state, setState] = useState<RewindLoop>({
