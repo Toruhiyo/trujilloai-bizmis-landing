@@ -276,36 +276,6 @@
   height: 100%;
   padding-block: clamp(0.75rem, 3svh, 2rem);
 }
-/* under each part, a bar that fills as you scroll through its moment */
-.sl-c-title .sl-title-part {
-  position: relative;
-  padding-bottom: 0.22em;
-}
-.sl-c-title .sl-title-text {
-  position: relative;
-  display: inline-block;
-}
-.sl-c-title .sl-title-text::before,
-.sl-c-title .sl-title-text::after {
-  content: "";
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: -0.2em;
-  height: 4px;
-  border-radius: 4px;
-  background: rgb(255 255 255 / 0.24);
-}
-.sl-c-title .sl-title-text::after {
-  background: #fff;
-  transform-origin: left center;
-  transform: scaleX(var(--fill, 0));
-  transition: transform 0.15s linear;
-}
-/* done parts keep a calmer bar, the lit one a bright one */
-.sl-c-title .is-done .sl-title-text::after {
-  background: rgb(255 255 255 / 0.72);
-}
 .sl-c-body {
   display: grid;
   grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);

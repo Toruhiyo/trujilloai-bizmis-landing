@@ -20,8 +20,7 @@ const BAR = "color-mix(in oklab, #ef8632 88%, transparent)";
  * Variant C, "the stage": bold Bizmis orange. It opens on the pillar's
  * name, huge ("Boost Sales", PillarIntro), with "Shoppers Find it. Trust
  * it. Buy it." under it; both dock as the section's sticky bar as you
- * scroll, the name as its label and a bar under each part filling as you
- * go through its moment. Under it, one pinned screen: on the left, the
+ * scroll, the name as its label, the part being shown lit. Under it, one pinned screen: on the left, the
  * part's funnel stage and benefit over the at-scale funnel (the whole
  * store's shoppers, that stage improving); on the right, the one
  * conversation on its device: find, trust, buy. The funnel is one story:
@@ -64,8 +63,6 @@ const Pinned = () => {
   const step = Math.min(STEPS - 1, Math.floor(progress * STEPS));
   const payoff = step === 3;
   const lit = payoff ? "all" : step;
-  // how far through its own quarter each part's bar is
-  const fill = (i: number) => Math.min(1, Math.max(0, progress * STEPS - i));
   const beats = [useBeat(0, step === 0), useBeat(1, step === 1), useBeat(2, step === 2)];
   const f = Math.min(step, 2);
 
@@ -78,7 +75,7 @@ const Pinned = () => {
         line={<BigLine />}
         lineClassName="sl-big"
         accent={BAR}
-        docked={<SalesTitle active={lit} layout="line" as="p" fills={[0, 1, 2].map(fill)} className="sl-c-title" />}
+        docked={<SalesTitle active={lit} layout="line" as="p" className="sl-c-title" />}
       >
         <div ref={track} className="sl-c-track">
           <div className="sl-c-pin">
