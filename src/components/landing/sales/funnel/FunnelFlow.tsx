@@ -31,7 +31,7 @@ const spring = (k: number) => (k <= 0 ? 0 : k >= 1 ? 1 : 1 - Math.exp(-6 * k) * 
 /** A 0 → 1 → 0 bump over [0, 1]. */
 const hump = (k: number) => (k <= 0 || k >= 1 ? 0 : Math.sin(Math.PI * k));
 
-/** The funnel drawing itself in as a beat starts (ms). */
+/** The funnel drawing itself in, the first time it plays (ms). */
 const REVEAL = 650;
 /** The fix: the head stamped on, the circle scribbled round it, the chamber redrawn, the doodles (ms). */
 const STAMP = 360;
@@ -207,6 +207,7 @@ const FunnelFlow = ({
   const wrap = useRef<HTMLDivElement>(null);
   const canvas = useRef<HTMLCanvasElement>(null);
   const pal = useRef<{ key: string; c: Palette } | null>(null);
+  const drawn = useRef(false);
   const [size, setSize] = useState({ W: 0, H: 0 });
   const payoff = focus >= 3;
   const starts = useMemo(() => startsFor(focus, fixAt), [focus, fixAt]);
@@ -278,14 +279,15 @@ const FunnelFlow = ({
     const amp = 0.45;
     ctx.lineCap = "round";
     ctx.lineJoin = "round";
-    /** How far the outline has drawn itself in (u), as the beat starts. */
-    const reveal = 1.06 * smooth(t / REVEAL);
+    /** How far the outline has drawn itself in (u): once, the first time the funnel plays; after that it stays drawn through every rewind and replay. */
+    if (t >= REVEAL) drawn.current = true;
+    const reveal = drawn.current ? 1.06 : 1.06 * smooth(t / REVEAL);
 
     /** Each stage's leak: where it is, and how wide it's open now. */
     const leaks = [0, 1, 2].map((i) => {
       const u = leakU(i);
       const cw = (CHAMBERS[i][1] - CHAMBERS[i][0]) * g.run;
-      const open = Math.min(cw * 0.16, 20);
+      const open = Math.min(cw * 0.19, 24);
       const slit = ow * 0.5;
       return { u, x: X(u), open, gap: open + (slit - open) * k[i] };
     });
@@ -460,10 +462,11 @@ const FunnelFlow = ({
           const u = uAt(age, s.v);
           const x = X(u);
           if (x < g.x0 + r) continue;
-          const span = Math.min(PEEL * (ud - CHAMBERS[i][0]), 0.2);
+          const span = Math.min(PEEL * (ud - CHAMBERS[i][0]), 0.13);
           const p = smooth((u - (ud - span)) / span);
           const y = laneY(u, s.lane) + (floorAt(ud) - laneY(u, s.lane)) * p * p;
-          const hollow = smooth(p / 0.6);
+          // solid as it enters (the full stream at the mouth), hollow only as it nears the leak
+          const hollow = smooth((p - 0.35) / 0.5);
           blob(x, y, r, r, c.dot, enter(x) * (1 - hollow));
           ring(x, y, r * 1.1, r * 1.1, ringW, enter(x) * hollow);
           continue;

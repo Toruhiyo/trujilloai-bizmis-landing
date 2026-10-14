@@ -16,9 +16,9 @@
  */
 
 /** A stage's pass rate without Bizmis: a big leak. */
-export const BAD = [0.42, 0.44, 0.46];
+export const BAD = [0.25, 0.26, 0.28];
 /** With Bizmis: far better, never lossless. */
-export const GOOD = [0.87, 0.86, 0.88];
+export const GOOD = [0.95, 0.95, 0.96];
 
 /** The pass rate of stage `g`, `k` (0 → 1) of the way fixed. */
 export const rate = (g: number, k: number) => BAD[g] + (GOOD[g] - BAD[g]) * k;
@@ -38,12 +38,12 @@ export const CHAMBERS: [number, number][] = [
 ];
 export const SPOUT: [number, number] = [0.88, 1];
 /** A chamber's exit as a share of its entry: choked (bad) → opened up (fixed). */
-const EXIT_BAD = [0.6, 0.6, 0.62];
-const EXIT_GOOD = [0.9, 0.9, 0.9];
+const EXIT_BAD = [0.55, 0.55, 0.58];
+const EXIT_GOOD = [0.93, 0.93, 0.93];
 /** The spout's half-height, as a share of the last chamber's exit. */
 const SPOUT_K = 0.8;
 /** Where each chamber's leak (the gap in its floor) sits, along the chamber. */
-export const LEAK_AT = 0.6;
+export const LEAK_AT = 0.64;
 
 /** The half-heights at the mouth and at each chamber's exit, each stage `k` (0 → 1) fixed. */
 export const boundsFor = (k: number[]) => {
@@ -64,10 +64,10 @@ export const halfAtU = (u: number, b: number[]) => {
 };
 
 /** Shoppers per second, seconds before 0 the stream starts (so it's full at 0). */
-const RATE = 17;
+const RATE = 26;
 /** The lanes across the stream (top → floor), and the order shoppers take them in. */
-const LANES = [-0.78, -0.39, 0, 0.39, 0.78];
-const LANE_ORDER = [0, 3, 1, 4, 2];
+const LANES = [-0.84, -0.56, -0.28, 0, 0.28, 0.56, 0.84];
+const LANE_ORDER = [0, 4, 1, 5, 2, 6, 3];
 const WARM = 6;
 /** Seconds to cross the run. */
 const CROSS = 3.2;
