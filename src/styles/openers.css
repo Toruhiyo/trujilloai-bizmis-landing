@@ -40,7 +40,7 @@
 }
 
 /* ═══════════ Shared: one screen per section (all but Boost Sales) ═══════════ */
-.bzl[data-look="film"] :where(.p-support, .p-insights, #setup, #setup + section) {
+.bzl[data-look="film"]:not([data-open="0"]) :where(.p-support, .p-insights, #setup, #setup + section) {
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -48,26 +48,26 @@
   padding: calc(var(--op-nav) + clamp(0.75rem, 3svh, 2.25rem)) 0 clamp(1rem, 3.5svh, 2.5rem);
 }
 /* the content keeps its natural size on tall screens (no stretching gaps) */
-.bzl[data-look="film"] :where(.p-support, .p-insights) .bzp-body {
+.bzl[data-look="film"]:not([data-open="0"]) :where(.p-support, .p-insights) .bzp-body {
   padding-block: 0;
 }
 /* Personalization's carousel: from the screen's height */
-.bzl[data-look="film"] #setup + section [aria-roledescription="carousel"] > div:first-child {
+.bzl[data-look="film"]:not([data-open="0"]) #setup + section [aria-roledescription="carousel"] > div:first-child {
   max-width: clamp(17rem, calc(100svh - 17rem), 36rem);
 }
 /* Store Insights: the replay's transcript gives up height first on shorter screens */
-.bzl[data-look="film"] .p-insights [class*="overflow-y-auto"] {
+.bzl[data-look="film"]:not([data-open="0"]) .p-insights [class*="overflow-y-auto"] {
   max-height: min(22.5rem, max(7rem, calc(100svh - 38.75rem)));
 }
 /* and its clarity drawing scales with the screen's height */
-.bzl[data-look="film"] .p-insights .bzl-clarity {
+.bzl[data-look="film"]:not([data-open="0"]) .p-insights .bzl-clarity {
   max-width: min(32rem, max(15rem, calc((100svh - 30rem) * 1.5)));
 }
-.bzl[data-look="film"] .p-insights .bzp-body ul {
+.bzl[data-look="film"]:not([data-open="0"]) .p-insights .bzp-body ul {
   margin-top: clamp(0.75rem, 2svh, 1.5rem);
 }
 /* One-Click Setup: the lead sits right under the title */
-.bzl[data-look="film"] #setup .bzl-lead {
+.bzl[data-look="film"]:not([data-open="0"]) #setup .bzl-lead {
   margin-top: 0;
 }
 
@@ -80,7 +80,7 @@
 .bzl .sh :is(.sh-kicker, .sh-ghost, .sh-mark) {
   display: none;
 }
-.bzl[data-look="film"] .sh:not(.pi .sh) {
+.bzl[data-look="film"]:not([data-open="0"]) .sh:not(.pi .sh) {
   position: relative;
   display: grid;
   grid-template-columns: auto minmax(0, 1fr);
@@ -92,14 +92,14 @@
   padding: 0 var(--sh-pad-x);
   text-align: left;
 }
-.bzl[data-look="film"] .sh:not(.pi .sh) .sh-text {
+.bzl[data-look="film"]:not([data-open="0"]) .sh:not(.pi .sh) .sh-text {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   gap: 0.3rem;
   min-width: 0;
 }
-.bzl[data-look="film"] .sh:not(.pi .sh) .sh-icon {
+.bzl[data-look="film"]:not([data-open="0"]) .sh:not(.pi .sh) .sh-icon {
   display: grid;
   place-items: center;
   width: clamp(2.75rem, 6svh, 3.5rem);
@@ -109,18 +109,18 @@
   color: hsl(var(--primary));
   box-shadow: 0 0 0 1px rgb(59 36 22 / 0.06), 0 10px 24px -18px rgb(59 36 22 / 0.45);
 }
-.bzl[data-look="film"] .sh:not(.pi .sh) .sh-icon svg {
+.bzl[data-look="film"]:not([data-open="0"]) .sh:not(.pi .sh) .sh-icon svg {
   width: 54%;
   height: 54%;
 }
-.bzl[data-look="film"] .sh:not(.pi .sh) .sh-name {
+.bzl[data-look="film"]:not([data-open="0"]) .sh:not(.pi .sh) .sh-name {
   font-size: clamp(1.8rem, min(3.3vw, 6svh), 3.1rem);
   font-weight: 800;
   letter-spacing: -0.045em;
   line-height: 1.02;
   color: var(--op-ink);
 }
-.bzl[data-look="film"] .sh:not(.pi .sh) .sh-promise {
+.bzl[data-look="film"]:not([data-open="0"]) .sh:not(.pi .sh) .sh-promise {
   font-size: clamp(1rem, min(1.5vw, 2.7svh), 1.35rem);
   font-weight: 600;
   letter-spacing: -0.02em;
@@ -128,10 +128,29 @@
   color: var(--bzl-ink-2);
 }
 @media (max-width: 639px) {
-  .bzl[data-look="film"] .sh:not(.pi .sh) {
+  .bzl[data-look="film"]:not([data-open="0"]) .sh:not(.pi .sh) {
     grid-template-columns: minmax(0, 1fr);
     row-gap: 0.75rem;
   }
+}
+
+/* ═══════════ 0 · The default: big scroll-away titles + docked bars ═══════════
+   The three pillars open with PillarIntro (the name huge, its icon and
+   promise; the docked bar slides in as it scrolls away); Setup and
+   Personalization keep their own headers; white and a warm cream alternate,
+   feathered (no lines). */
+.bzl[data-look="film"][data-open="0"] {
+  --op-feather: clamp(72px, 13vh, 150px);
+  --op-cream-band: linear-gradient(180deg, #ffffff 0, var(--op-cream) var(--op-feather), var(--op-cream) calc(100% - var(--op-feather)), #ffffff 100%);
+  --pal-support-bg: radial-gradient(ellipse 46% 52% at 16% 42%, var(--film-glow), transparent 72%), #ffffff;
+  --pal-insights-bg: radial-gradient(ellipse 46% 52% at 84% 40%, var(--film-glow), transparent 72%), var(--op-cream-band);
+  --pal-setup-bg: #ffffff;
+  --pal-custom-bg: var(--op-cream-band);
+  --pal-end-bg: #ffffff;
+  --pal-footer-bg: var(--op-cream);
+}
+.bzl[data-look="film"][data-open="0"] .bzl-pillar.p-insights .pi {
+  --pi-bar: rgb(255 248 240 / 0.92);
 }
 
 /* ═══════════ 1 · Scenes ═══════════ */

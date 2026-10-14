@@ -17,6 +17,7 @@ import { useMessages } from "@/i18n/LocaleProvider";
 import Reveal from "./Reveal";
 import { PlugIcon } from "./AnimatedIcons";
 import SectionHead from "./openers/SectionHead";
+import { useOpener } from "./openers/OpenerContext";
 import { phaseAt, useRewindLoop } from "./useRewindLoop";
 
 // Same order as messages.setup.dataCards (as on the classic landing).
@@ -146,6 +147,7 @@ const SetupSection = () => {
     return () => ro.disconnect();
   }, [measure]);
 
+  const opener = useOpener();
   const label = phase === "done" ? copy.synced : phase === "syncing" ? copy.syncing : copy.install;
 
   return (
@@ -160,13 +162,26 @@ const SetupSection = () => {
         <div className="absolute -top-40 left-[20%] h-56 w-[60%] rounded-[50%] bg-[rgba(249,163,83,0.18)] blur-[80px]" />
       </div>
 
-      {/* the section header, as every section's (index 04, the plug, "One-Click Setup", "Plug and Play") */}
-      <SectionHead index="04" icon={<PlugIcon />} name={copy.title} promise={setup.badge} className="relative" />
+      {/* the one-screen approaches (?open=1..5): the section header, as every section's */}
+      {opener !== "0" && (
+        <SectionHead index="04" icon={<PlugIcon />} name={copy.title} promise={setup.badge} className="relative" />
+      )}
 
       <div className="bzl-wrap relative">
         <div className="mx-auto max-w-3xl text-center">
-          <Reveal>
-            <p className="bzl-lead mx-auto max-w-2xl">{copy.lead}</p>
+          {/* by default: its own centred header, the kicker over the title */}
+          {opener === "0" && (
+            <>
+              <Reveal>
+                <p className="bzl-kicker">{setup.badge}</p>
+              </Reveal>
+              <Reveal delay={80}>
+                <h2 className="bzl-statement-sm mt-3">{copy.title}</h2>
+              </Reveal>
+            </>
+          )}
+          <Reveal delay={opener === "0" ? 160 : 0}>
+            <p className={cn("bzl-lead mx-auto max-w-2xl", opener === "0" && "mt-[2svh]")}>{copy.lead}</p>
           </Reveal>
         </div>
 

@@ -23,9 +23,14 @@ import "@/styles/look-film.css";
 import "@/styles/openers.css";
 import BenefitsOverview from "@/components/landing/openers/BenefitsOverview";
 import SideIndex from "@/components/landing/openers/SideIndex";
+import { OpenerContext } from "@/components/landing/openers/OpenerContext";
 
-/** The opener approach shown without ?open (openers.css). */
-const DEFAULT_OPEN = "5";
+/**
+ * The opener approach shown without ?open: "0", the pillars' big scroll-away
+ * titles and docked bars (PillarIntro); ?open=1..5 shows the one-screen
+ * approaches under comparison (openers.css).
+ */
+const DEFAULT_OPEN = "0";
 
 interface FilmLandingProps {
   /** The route it's served on: "/" once it's the default, "/v2" until then. */
@@ -41,9 +46,10 @@ interface FilmLandingProps {
  */
 const FilmLanding = ({ path = "/" }: FilmLandingProps) => {
   const messages = useMessages();
-  // the opener approach (openers.css): ?open=1..5, see DEFAULT_OPEN
-  const openParam = new URLSearchParams(useLocation().search).get("open") ?? DEFAULT_OPEN;
-  const open = /^[1-5]$/.test(openParam) ? openParam : DEFAULT_OPEN;
+  // the opener approach: ?open=1..5, else DEFAULT_OPEN
+  const openParam =
+    new URLSearchParams(useLocation().search).get("open") ?? DEFAULT_OPEN;
+  const open = /^[0-5]$/.test(openParam) ? openParam : DEFAULT_OPEN;
 
   // Lets the film landing's scoped CSS reach the shared navbar (outside .bzl),
   // e.g. the handwritten "Early Access" link, without touching other pages.
@@ -67,59 +73,66 @@ const FilmLanding = ({ path = "/" }: FilmLandingProps) => {
 
   // the page's palette, "Bizmis Mono" (palette-options.css)
   return (
-    <div className="bzl min-h-screen" data-palette="1" data-look="film" data-open={open}>
-      <Helmet>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link
-          rel="preconnect"
-          href="https://fonts.gstatic.com"
-          crossOrigin=""
-        />
-        <link
-          rel="stylesheet"
-          href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Caveat:wght@600;700&family=VT323&display=swap"
-        />
-      </Helmet>
-      <Seo
-        title={messages.seo.home.title}
-        description={messages.seo.home.description}
-        path={path}
-        // Kept out of search while it lives at /v2, so it never competes with /.
-        noIndex={path !== "/"}
-        jsonLd={{
-          "@context": "https://schema.org",
-          "@type": "SoftwareApplication",
-          name: "Bizmis",
-          description: messages.seo.home.jsonLdDescription,
-          url: "https://www.bizmis.ai",
-          applicationCategory: "BusinessApplication",
-          operatingSystem: "Web",
-          offers: {
-            "@type": "Offer",
-            availability: "https://schema.org/PreOrder",
-          },
-          publisher: {
-            "@type": "Organization",
+    <OpenerContext.Provider value={open}>
+      <div
+        className="bzl min-h-screen"
+        data-palette="1"
+        data-look="film"
+        data-open={open}
+      >
+        <Helmet>
+          <link rel="preconnect" href="https://fonts.googleapis.com" />
+          <link
+            rel="preconnect"
+            href="https://fonts.gstatic.com"
+            crossOrigin=""
+          />
+          <link
+            rel="stylesheet"
+            href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Caveat:wght@600;700&family=VT323&display=swap"
+          />
+        </Helmet>
+        <Seo
+          title={messages.seo.home.title}
+          description={messages.seo.home.description}
+          path={path}
+          // Kept out of search while it lives at /v2, so it never competes with /.
+          noIndex={path !== "/"}
+          jsonLd={{
+            "@context": "https://schema.org",
+            "@type": "SoftwareApplication",
             name: "Bizmis",
+            description: messages.seo.home.jsonLdDescription,
             url: "https://www.bizmis.ai",
-            logo: "https://bizmis.ai/favicon.svg",
-            sameAs: ["https://twitter.com/bizmis_ai"],
-          },
-        }}
-      />
-      <Hero />
-      {/* "This isn't a chatbot" (SwitchSection) is hidden: the hero covers it now */}
-      {/* approach 2 presents the three benefits together first; approach 3 adds the side index */}
-      {open === "2" && <BenefitsOverview />}
-      {open === "3" && <SideIndex />}
-      <SalesSection />
-      <SupportSection />
-      <InsightsSection />
-      <SetupSection />
-      <CustomizeSection />
-      <EndCard />
-      <FilmFooter />
-    </div>
+            applicationCategory: "BusinessApplication",
+            operatingSystem: "Web",
+            offers: {
+              "@type": "Offer",
+              availability: "https://schema.org/PreOrder",
+            },
+            publisher: {
+              "@type": "Organization",
+              name: "Bizmis",
+              url: "https://www.bizmis.ai",
+              logo: "https://bizmis.ai/favicon.svg",
+              sameAs: ["https://twitter.com/bizmis_ai"],
+            },
+          }}
+        />
+        <Hero />
+        {/* "This isn't a chatbot" (SwitchSection) is hidden: the hero covers it now */}
+        {/* approach 2 presents the three benefits together first; approach 3 adds the side index */}
+        {open === "2" && <BenefitsOverview />}
+        {open === "3" && <SideIndex />}
+        <SalesSection />
+        <SupportSection />
+        <InsightsSection />
+        <SetupSection />
+        <CustomizeSection />
+        <EndCard />
+        <FilmFooter />
+      </div>
+    </OpenerContext.Provider>
   );
 };
 
