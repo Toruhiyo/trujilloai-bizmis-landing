@@ -65,7 +65,7 @@ type Geo = {
 };
 
 const geometry = (W: number, H: number): Geo => {
-  const top = Math.round(clamp(H * 0.15, 26, 40));
+  const top = Math.round(clamp(H * 0.18, 30, 48));
   const R = clamp(H * 0.09, 15, 25);
   const bx = W - R * 1.75 - 2;
   const xEnd = bx - R * 2.2;
@@ -91,6 +91,13 @@ const geometry = (W: number, H: number): Geo => {
     head: Math.round(clamp(h0 * 0.44, 22, 32)),
   };
 };
+
+/**
+ * The funnel's half-height (px) at `u`: the model's shape, never pinched
+ * thinner than the marker can draw as an open pipe (a constant floor, so it
+ * still only ever narrows).
+ */
+const halfPx = (g: Geo, u: number, bounds: number[]) => Math.max(g.h0 * halfAtU(u, bounds), g.ow * 1.25 + g.r);
 
 /** Any CSS colour as [r, g, b, a], via the canvas's own colour parser. */
 const rgbaOf = (ctx: CanvasRenderingContext2D, color: string): number[] => {
@@ -134,7 +141,7 @@ const WRITE_STAGGER = 120;
 const STRIKE_AT = 140;
 const STRIKE = 260;
 const SOLVE_AT = 640;
-const TICK = 260;
+const TICK = 300;
 /** How long writing `text` takes: a steady pen, a little quicker for short words. */
 const writeMs = (text: string) => 160 + text.length * 30;
 /** The pen's pace: off the mark gently, steady, easing at the end. */
@@ -149,21 +156,85 @@ const reveal = (k: number) => (k >= 1 ? undefined : `inset(-30% ${((1 - k) * 100
 let measureCtx: CanvasRenderingContext2D | null = null;
 const widths = new Map<string, number>();
 const SCRIPT = '"Caveat", cursive';
-/** The largest size (px, ≤ `max`) at which `text` fits `w` px in the handwriting. */
-const fitSize = (text: string, max: number, w: number) => {
-  if (typeof document === "undefined") return max;
+/** `text`'s width (px) in the handwriting at `size` px. */
+const textWidth = (text: string, size: number) => {
+  if (typeof document === "undefined") return text.length * size * 0.42;
   const ready = document.fonts?.check?.(`700 20px ${SCRIPT}`) ? 1 : 0;
-  const key = `${ready}|${max}|${text}`;
+  const key = `${ready}|${text}`;
   let tw = widths.get(key);
   if (tw === undefined) {
     measureCtx ??= document.createElement("canvas").getContext("2d");
-    if (!measureCtx) return max;
-    measureCtx.font = `700 ${max}px ${SCRIPT}`;
+    if (!measureCtx) return text.length * size * 0.42;
+    measureCtx.font = `700 100px ${SCRIPT}`;
     tw = measureCtx.measureText(text).width;
     widths.set(key, tw);
   }
-  return tw <= w ? max : Math.max(10, Math.floor((max * w) / tw));
+  return (tw * size) / 100;
 };
+/** The room the tick after a solved label takes, beyond the word (em). */
+const TICK_ROOM = 1.12;
+/** A label's box width at `size`: its longer state (the problem, or the solution and its tick). */
+const labelWidth = (problem: string, solution: string, size: number) =>
+  Math.max(textWidth(problem, size), textWidth(solution, size) + TICK_ROOM * size);
+
+/**
+ * Where the three labels go and how big: the beat's own label big (it may
+ * spill past its chamber), the other two smaller, pushed aside so none
+ * overlap and all stay inside the box; in the payoff all three equal, each
+ * in its own share of the width.
+ */
+const layoutLabels = (
+  copy: FunnelCopy,
+  centers: number[],
+  W: number,
+  big: number,
+  focus: number,
+): { left: number; width: number; size: number }[] => {
+  const gap = 8;
+  const w = (i: number, size: number) => labelWidth(copy.problems[i], copy.solutions[i], size);
+  const fit = (i: number, size: number, room: number) => {
+    const ww = w(i, size);
+    return ww <= room ? size : Math.max(10, Math.floor((size * room) / ww));
+  };
+  if (focus >= 3) {
+    const mids = [0, (centers[0] + centers[1]) / 2, (centers[1] + centers[2]) / 2, W];
+    const size = Math.min(...[0, 1, 2].map((i) => fit(i, big, mids[i + 1] - mids[i] - gap)));
+    return [0, 1, 2].map((i) => {
+      const width = w(i, size);
+      const left = clamp(centers[i] - width / 2, mids[i] + (i ? gap / 2 : 0), mids[i + 1] - width - gap / 2);
+      return { left, width, size };
+    });
+  }
+  const out: { left: number; width: number; size: number }[] = [];
+  const fSize = fit(focus, big, W * 0.5);
+  const fW = w(focus, fSize);
+  out[focus] = { left: clamp(centers[focus] - fW / 2, 0, W - fW), width: fW, size: fSize };
+  // the labels on one side of the beat's own: one smaller size that fits them all together in [from, to]
+  const small = Math.round(big * 0.6);
+  const side = (idx: number[], from: number, to: number) => {
+    if (!idx.length) return;
+    const room = to - from - gap * (idx.length - 1);
+    const need = idx.reduce((sum, i) => sum + w(i, small), 0);
+    const size = need <= room ? small : Math.max(10, Math.floor((small * room) / need));
+    const pos = idx.map((i) => ({ i, width: w(i, size), left: centers[i] - w(i, size) / 2 }));
+    // as centred over their chambers as they can be, inside [from, to], never overlapping
+    let x = from;
+    for (const p of pos) {
+      p.left = Math.max(p.left, x);
+      x = p.left + p.width + gap;
+    }
+    x = to;
+    for (const p of [...pos].reverse()) {
+      p.left = Math.min(p.left, x - p.width);
+      x = p.left - gap;
+    }
+    for (const p of pos) out[p.i] = { left: p.left, width: p.width, size };
+  };
+  side([0, 1, 2].filter((i) => i < focus), 0, out[focus].left - gap);
+  side([0, 1, 2].filter((i) => i > focus), out[focus].left + fW + gap, W);
+  return out;
+};
+
 
 /**
  * The flow, as a playful marker drawing in white on the band: one funnel of
@@ -221,12 +292,13 @@ const FunnelFlow = ({
   const geo = geometry(size.W, size.H);
   const sec = t / 1000;
   // one size for all three labels: the largest at which every problem and solution (with its tick) fits its chamber
-  const labelSize = Math.round(clamp(geo.top * 0.78, 18, 28));
-  const labelRoom = Math.max(40, Math.min(...CHAMBERS.map(([a, b]) => b - a)) * geo.run - 8);
-  const labelFit = Math.min(
-    labelSize,
-    ...copy.problems.map((p) => fitSize(p, labelSize, labelRoom)),
-    ...copy.solutions.map((p) => fitSize(p, labelSize, labelRoom - labelSize * 0.95)),
+  // the labels: the beat's own big (desktop ~36px), the others smaller; all fitting, none overlapping
+  const labels = layoutLabels(
+    copy,
+    CHAMBERS.map(([a, b]) => geo.x0 + ((a + b) / 2) * geo.run),
+    size.W,
+    Math.round(clamp(geo.top * 0.9, 20, 36)),
+    focus,
   );
 
   useLayoutEffect(() => {
@@ -272,7 +344,7 @@ const FunnelFlow = ({
     const g = geo;
     const { cy, h0, r, lw, ow } = g;
     const X = (u: number) => g.x0 + u * g.run;
-    const half = (u: number) => h0 * halfAtU(u, bounds);
+    const half = (u: number) => halfPx(g, u, bounds);
     const floorAt = (u: number) => cy + half(u);
     const xEnd = X(1);
     const ink = (a: number) => rgba(c.line, a);
@@ -287,7 +359,8 @@ const FunnelFlow = ({
     const leaks = [0, 1, 2].map((i) => {
       const u = leakU(i);
       const cw = (CHAMBERS[i][1] - CHAMBERS[i][0]) * g.run;
-      const open = Math.min(cw * 0.19, 24);
+      // the leak (and so the waterfall) scales with the stage itself: more traffic, same stage
+      const open = clamp(half(u) * 0.42, 5, Math.min(cw * 0.22, 30));
       const slit = ow * 0.5;
       return { u, x: X(u), open, gap: open + (slit - open) * k[i] };
     });
@@ -427,8 +500,12 @@ const FunnelFlow = ({
     }
 
     // ── the shoppers: white dots in their lanes (bouncing along once their stage is fixed); the lost ones hollow ──
-    const pad = r * 1.6 + ow;
-    const laneY = (u: number, lane: number) => cy + lane * Math.max(0, half(u) - pad);
+    // lanes always spread over most of the chamber (they never collapse into a crowd in a narrow one)
+    const padFor = (hh: number) => Math.min(r * 1.6 + ow, hh * 0.3);
+    const laneY = (u: number, lane: number) => {
+      const hh = half(u);
+      return cy + lane * Math.max(0, hh - padFor(hh));
+    };
     const blob = (x: number, y: number, rx: number, ry: number, col: number[], alpha: number) => {
       if (alpha <= 0.01) return;
       ctx.fillStyle = rgba(col, alpha);
@@ -582,9 +659,9 @@ const FunnelFlow = ({
       <div ref={wrap} className="sl-flow-stage">
         <canvas ref={canvas} className="sl-flow-canvas" />
         {W > 0 &&
-          CHAMBERS.map(([a, b], i) => {
+          CHAMBERS.map((_, i) => {
             // the label, written in marker: the problem written on as the beat starts; at the fix, struck
-            // through, then the solution written in its place and ticked. Earlier fixes: written already.
+            // through, then the solution written in its place and ticked. Earlier fixes: done already.
             const since = t - starts[i];
             const dim = !payoff && i !== focus;
             const fixed = starts[i] === -Infinity;
@@ -595,11 +672,12 @@ const FunnelFlow = ({
             const away = smooth((since - STRIKE_AT - STRIKE - 60) / 200);
             const writeS = fixed ? 1 : pen((since - SOLVE_AT) / writeMs(solution));
             const tick = fixed ? 1 : pen((since - SOLVE_AT - writeMs(solution) - 40) / TICK);
+            const L = labels[i];
             return (
               <span
                 key={i}
                 className={cn("sl-flow-label", writeS > 0 && "is-fixed", dim && "is-dim")}
-                style={{ left: X(a), width: X(b) - X(a), height: geo.top, fontSize: labelFit }}
+                style={{ left: L.left, width: L.width, height: geo.top, fontSize: L.size }}
               >
                 {away < 1 && (
                   <span className="sl-flow-label-text" style={{ opacity: 1 - away }}>
@@ -619,7 +697,7 @@ const FunnelFlow = ({
                       {solution}
                     </span>
                     <svg className="sl-flow-tick" viewBox="0 0 24 24" aria-hidden="true">
-                      <path d="M4 13.5 L9.5 19 L21 5" pathLength={1} strokeDasharray="1 1" strokeDashoffset={1 - tick} />
+                      <path d="M3.5 13.5 L9.5 19.5 L21.5 4.5" pathLength={1} strokeDasharray="1 1" strokeDashoffset={1 - tick} />
                     </svg>
                   </span>
                 )}
@@ -643,7 +721,7 @@ const FunnelFlow = ({
                 style={
                   {
                     left: X(u),
-                    top: geo.cy + geo.h0 * halfAtU(u, bounds),
+                    top: geo.cy + halfPx(geo, u, bounds),
                     opacity: clamp(q * 3),
                     transform: `translate(-50%, -50%) scale(${s * (1 + sq)}, ${s * (1 - sq)})`,
                   } as CSSProperties

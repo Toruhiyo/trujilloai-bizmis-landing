@@ -446,7 +446,8 @@
   pointer-events: none;
 }
 /* one label per chamber, written in marker (the page's script): the problem, struck through at the
-   fix, then the solution written in its place and ticked. Sized by FunnelFlow to fit its chamber. */
+   fix, then the solution written in its place and ticked. Placed and sized by FunnelFlow (the beat's
+   own big, the others smaller, none overlapping). */
 .sl-flow-label {
   position: absolute;
   top: 0;
@@ -498,13 +499,14 @@
 .sl-flow-strike path {
   vector-effect: non-scaling-stroke;
 }
-/* the tick, drawn after the solution */
+/* solved: a bold marker tick drawn after the solution */
 .sl-flow-tick {
   flex-shrink: 0;
-  width: 0.85em;
-  height: 0.85em;
-  stroke-width: 3.8;
-  translate: 0 -0.05em;
+  width: 0.95em;
+  height: 0.95em;
+  margin-left: 0.1em;
+  stroke-width: 4.2;
+  translate: 0 -0.06em;
 }
 .sl-flow-label.is-dim,
 .sl-flow-pin.is-dim {

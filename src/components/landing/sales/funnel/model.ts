@@ -16,7 +16,7 @@
  */
 
 /** A stage's pass rate without Bizmis: a big leak. */
-export const BAD = [0.25, 0.26, 0.28];
+export const BAD = [0.28, 0.28, 0.3];
 /** With Bizmis: far better, never lossless. */
 export const GOOD = [0.88, 0.87, 0.88];
 
@@ -37,8 +37,13 @@ export const CHAMBERS: [number, number][] = [
   [0.6, 0.88],
 ];
 export const SPOUT: [number, number] = [0.88, 1];
-/** A chamber's exit as a share of its entry: choked (bad) → opened up (fixed). */
-const EXIT_BAD = [0.55, 0.55, 0.58];
+/**
+ * A chamber's exit as a share of its entry: choked (bad) → opened up (fixed).
+ * A stage's own shape: only its own fix changes it. Upstream fixes only scale
+ * it as a whole (its entry is the previous exit), close to the extra traffic
+ * they send it, so it reads "same stage, more shoppers", never "worse".
+ */
+const EXIT_BAD = [0.38, 0.38, 0.4];
 const EXIT_GOOD = [0.8, 0.8, 0.8];
 /** The spout's half-height, as a share of the last chamber's exit. */
 const SPOUT_K = 0.8;
