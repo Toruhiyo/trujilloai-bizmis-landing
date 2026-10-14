@@ -68,7 +68,7 @@ export type PillarIntroProps = {
   children?: ReactNode;
 };
 
-/** Scroll (in screen heights, after the header sticks) the big title holds, then takes to dock. */
+/** Scroll (in screen heights, after the header sticks) the big title holds, then takes to dock; .pi-runway is their sum. */
 const HOLD = 0.16;
 const SHRINK = 0.62;
 

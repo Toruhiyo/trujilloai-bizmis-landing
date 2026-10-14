@@ -185,9 +185,10 @@
   opacity: clamp(0, calc(1 - var(--pi-e) * 2.2), 1);
 }
 
-/* the runway: the big title's screen, then the content scrolls in as it docks */
+/* the runway: exactly the scroll the morph takes (PillarIntro's HOLD + SHRINK,
+   0.78 screens), so the content arrives right under the bar as it docks */
 .pi-runway {
-  height: calc(100svh + 38svh - var(--pi-nav) - var(--pi-dock-h));
+  height: 78svh;
   pointer-events: none;
 }
 .pi-body {
