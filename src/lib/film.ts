@@ -30,9 +30,11 @@ export const HERO_FILM = {
     poster: "/film/ad-1-loop-poster.jpg",
   },
   /**
-   * Where the film's own "Install now" button sits on its closing frame, as
-   * fractions of the frame. On that frame the area becomes a real link.
+   * The film's closing "Install now" (the Shopify bag and the title), as
+   * fractions of the frame, measured on the v34 cut's last frame (ink bounds
+   * 1150,842 → 2694,1042 of 3840x2160). When the film ends, a real bordered
+   * button is drawn around exactly this, so the title becomes a button in place.
    */
-  endFrameCta: { left: 0.285, top: 0.37, width: 0.43, height: 0.13 },
+  endFrameCta: { left: 0.2995, top: 0.3898, width: 0.4021, height: 0.0926 },
 } as const;
 

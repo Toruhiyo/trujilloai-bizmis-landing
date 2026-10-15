@@ -11,3 +11,55 @@
 .bza .bzw-word-glow {
   background: radial-gradient(closest-side, hsl(var(--primary) / 0.4), transparent);
 }
+
+/* The film's end: a real button drawn around the film's own closing "Install now" (FilmPlayer).
+   It fades and settles in as the film lands on its last frame, then calls with the same running
+   border light as the hero's Install button. */
+@property --bzf-angle {
+  syntax: "<angle>";
+  initial-value: 0deg;
+  inherits: false;
+}
+.bzf-end-cta {
+  z-index: 5;
+  isolation: isolate;
+  box-shadow:
+    inset 0 0 0 2px rgb(249 163 83 / 0.7),
+    0 18px 44px -18px rgb(249 163 83 / 0.65);
+  animation: bzf-end-in 0.6s cubic-bezier(.2, .8, .2, 1) both;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+}
+.bzf-end-cta::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 3px;
+  background: conic-gradient(from var(--bzf-angle), transparent 0deg 250deg, hsl(var(--primary)) 300deg, #ffd3a6 330deg, hsl(var(--primary)) 345deg, transparent 360deg);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0);
+  animation: bzf-end-run 3.2s linear 0.6s infinite;
+  pointer-events: none;
+}
+.bzf-end-cta:hover {
+  transform: translateY(-2px) scale(1.015);
+  background-color: rgb(249 163 83 / 0.06);
+  box-shadow:
+    inset 0 0 0 3px hsl(var(--primary)),
+    0 0 0 8px rgb(249 163 83 / 0.14),
+    0 26px 54px -18px rgb(249 163 83 / 0.85);
+}
+.bzf-end-cta:hover::before { animation-duration: 1.4s; }
+.bzf-end-cta:focus-visible { outline: none; box-shadow: inset 0 0 0 3px hsl(var(--primary)), 0 0 0 8px rgb(249 163 83 / 0.3); }
+@keyframes bzf-end-in {
+  from { opacity: 0; transform: scale(1.06); }
+  to { opacity: 1; transform: scale(1); }
+}
+@keyframes bzf-end-run {
+  to { --bzf-angle: 360deg; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .bzf-end-cta { animation: none; }
+  .bzf-end-cta::before { display: none; }
+}

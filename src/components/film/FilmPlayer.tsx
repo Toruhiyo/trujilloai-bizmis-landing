@@ -24,7 +24,6 @@ import {
   Volume2,
   VolumeX,
 } from "lucide-react";
-import { FaShopify } from "react-icons/fa";
 import { cn } from "@/lib/utils";
 
 /** The bitrate auto quality assumes for a rendition, at most this many times its average. */
@@ -33,16 +32,15 @@ const PEAK_OVER_AVERAGE = 2.5;
 /**
  * Hero film player (Clay-style controls, Framer-style states), in frosted
  * glass: a glass play button over the loop, a glass bezel around the screen,
- * and a glass control bar inside the frame with the CTA beside it.
+ * and a glass control bar inside the frame.
  *
  * - idle:    a short muted ambient loop plays behind the "Watch the film"
  *            pill. Nothing of the film is downloaded beyond its metadata.
  * - playing: the film plays in place with sound; the control bar (scrub,
- *            volume, time, fullscreen) hides while the pointer rests, the
- *            CTA stays.
+ *            volume, time, fullscreen) hides while the pointer rests.
  * - paused:  the film holds its frame (pause button or a click on the film).
- * - ended:   the film holds its closing frame — the "Install now" CTA — and
- *            that area of the frame becomes a real link.
+ * - ended:   the film holds its closing frame, "Install now", and a real
+ *            bordered button is drawn around that title, in place.
  *
  * Clicking anywhere outside the player while the film is open returns it to
  * the ambient loop; the play button then resumes where it stopped.
@@ -151,6 +149,28 @@ const FilmPlayer = forwardRef<FilmPlayerHandle, FilmPlayerProps>(({
 }, ref) => {
   const rootRef = useRef<HTMLDivElement>(null);
   const filmRef = useRef<HTMLVideoElement>(null);
+  // where the picture actually sits inside the <video> (object-contain letterboxes it), in px
+  const [picture, setPicture] = useState({ left: 0, top: 0, width: 0, height: 0 });
+  useEffect(() => {
+    const film = filmRef.current;
+    if (!film) return;
+    const measure = () => {
+      const w = film.clientWidth;
+      const h = film.clientHeight;
+      const aspect = film.videoWidth && film.videoHeight ? film.videoWidth / film.videoHeight : 16 / 9;
+      const pw = Math.min(w, h * aspect);
+      const ph = pw / aspect;
+      setPicture({ left: (w - pw) / 2, top: (h - ph) / 2, width: pw, height: ph });
+    };
+    measure();
+    const ro = new ResizeObserver(measure);
+    ro.observe(film);
+    film.addEventListener("loadedmetadata", measure);
+    return () => {
+      ro.disconnect();
+      film.removeEventListener("loadedmetadata", measure);
+    };
+  }, []);
   const loopRef = useRef<HTMLVideoElement>(null);
   const timelineRef = useRef<HTMLDivElement>(null);
   const hideTimer = useRef<number>();
@@ -642,8 +662,9 @@ const FilmPlayer = forwardRef<FilmPlayerHandle, FilmPlayerProps>(({
           <Loader2 className="h-10 w-10 animate-spin text-white drop-shadow-[0_2px_6px_rgba(0,0,0,0.3)]" />
         </div>
 
-        {/* Ended: the film's own "Install now" becomes a link. */}
-        {phase === "ended" && (
+        {/* Ended: the film's own "Install now" becomes a button in place: a bordered frame drawn
+            around the title (the type is the film's own pixels, so nothing shifts) */}
+        {phase === "ended" && picture.width > 0 && (
           <a
             href={cta.href}
             target="_blank"
@@ -651,17 +672,18 @@ const FilmPlayer = forwardRef<FilmPlayerHandle, FilmPlayerProps>(({
             onClick={(e) => cta.onClick(e, "film_end_frame")}
             aria-label={cta.label}
             style={{
-              left: `${endFrameCta.left * 100}%`,
-              top: `${endFrameCta.top * 100}%`,
-              width: `${endFrameCta.width * 100}%`,
-              height: `${endFrameCta.height * 100}%`,
+              left: picture.left + (endFrameCta.left - 0.026) * picture.width,
+              top: picture.top + (endFrameCta.top - 0.04) * picture.height,
+              width: (endFrameCta.width + 0.052) * picture.width,
+              height: (endFrameCta.height + 0.08) * picture.height,
+              borderRadius: 0.22 * (endFrameCta.height + 0.08) * picture.height,
             }}
-            className="absolute rounded-3xl ring-primary/0 transition-all duration-300 hover:bg-primary/[0.06] hover:ring-2 hover:ring-primary/40"
+            className="bzf-end-cta absolute"
           />
         )}
 
-        {/* Controls, inside the frame. The CTA stays up for the whole film;
-            the rest hides while the pointer rests. */}
+        {/* Controls, inside the frame; they hide while the pointer rests. The install comes
+            at the end, on the film's own closing title. */}
         {open && (
           <div className="absolute inset-x-2 bottom-2 z-10 flex items-center gap-2 sm:inset-x-4 sm:bottom-4 sm:gap-3">
             <div
@@ -810,16 +832,6 @@ const FilmPlayer = forwardRef<FilmPlayerHandle, FilmPlayerProps>(({
               </button>
             </div>
 
-              <a
-                href={cta.href}
-                target="_blank"
-                rel="noopener noreferrer"
-                onClick={(e) => cta.onClick(e, "film_controls")}
-                className="flex h-9 flex-shrink-0 items-center gap-1 rounded-xl border border-white/60 bg-white/85 px-2.5 font-heading text-xs font-semibold text-primary shadow-[inset_0_1px_0_rgba(255,255,255,0.8),0_12px_40px_-12px_hsl(25_95%_25%/0.45)] backdrop-blur-xl transition-colors hover:bg-white sm:h-14 sm:gap-2 sm:rounded-2xl sm:px-6 sm:text-base"
-              >
-                <FaShopify className="h-3.5 w-3.5 sm:h-5 sm:w-5" aria-hidden="true" />
-                {cta.label}
-              </a>
           </div>
         )}
       </div>
