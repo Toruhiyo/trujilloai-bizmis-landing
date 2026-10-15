@@ -1277,19 +1277,23 @@
   0% { background-position: 140% 0, 0 0; }
   62%, 100% { background-position: -40% 0, 0 0; }
 }
-/* the underline draws itself once the card is in, and again on hover */
+/* the underline only appears on hover (or keyboard focus): it draws itself in, and undraws on leave */
 .bzl-cta-underline path {
   stroke-dasharray: 1;
   stroke-dashoffset: 1;
-  transition: stroke-dashoffset 0.9s var(--bzl-ease) 0.5s;
+  transition: stroke-dashoffset 0.35s var(--bzl-ease);
 }
-.is-in .bzl-cta-underline path { stroke-dashoffset: 0; }
+.bzl-cta-wrap:hover .bzl-cta-underline path,
+.bzl-cta-wrap:focus-within .bzl-cta-underline path {
+  stroke-dashoffset: 0;
+  transition-duration: 0.55s;
+}
 /* the handwritten note, a little askew, as if added by hand */
 .bzl .bzl-end-invite { rotate: -2deg; font-weight: 700; font-size: clamp(2.1rem, 4.6vw, 3.6rem); line-height: 1.05; }
 .bzl .bzl-end-note { position: relative; rotate: -3deg; font-weight: 700; font-size: clamp(1.8rem, 3.2vw, 2.6rem); line-height: 1.05; }
 @media (prefers-reduced-motion: reduce) {
   .bzl-cta-title-text { animation: none; }
-  .bzl-cta-underline path { transition: none; stroke-dashoffset: 0; }
+  .bzl-cta-underline path { transition: none; }
 }
 
 /* ── Pillar moments (PillarMoments.tsx): flat marker line art on the band,

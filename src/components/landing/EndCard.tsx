@@ -40,8 +40,8 @@ const EndCard = () => {
         className="pointer-events-none absolute left-1/2 top-1/2 h-[680px] w-[980px] max-w-[150vw] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(closest-side,rgba(249,163,83,0.11),rgba(255,255,255,0))]"
       />
       <div className="bzl-wrap relative">
-        {/* the title is the button */}
-        <Reveal className="relative mx-auto w-fit">
+        {/* the title is the button (its hand-drawn underline appears on hover) */}
+        <Reveal className="bzl-cta-wrap relative mx-auto w-fit">
           <h2 className="text-[clamp(3rem,min(8.4vw,12svh),6.75rem)] font-bold leading-[1.02] tracking-[-0.045em]">
             <a
               href={BIZMIS_SHOPIFY_APP_LISTING_URL}
