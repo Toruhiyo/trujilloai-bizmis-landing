@@ -21,7 +21,7 @@ export const HERO_FILM = {
   id: "ad-1",
   src:
     import.meta.env.VITE_FILM_SRC ??
-    "https://cdn.bizmis.ai/media/film/ad-1/v33/master.m3u8",
+    "https://cdn.bizmis.ai/media/film/ad-1/v34/master.m3u8",
   /** Fallback until the film's metadata loads (seconds). */
   durationSeconds: 127,
   loop: {
