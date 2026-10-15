@@ -69,7 +69,7 @@
   {
     "id": "t-ea",
     "role": "narrator",
-    "text": "[upbeat] [quickly] Install now to join Early Access! Generous free credits, fifty percent off upgrades, and you shape the roadmap. Only fifty spots. [warm] [upbeat] Secure yours by installing now!"
+    "text": "[upbeat] [quickly] Install now to join Early Access! Generous free credits, fifty percent off upgrades, and you shape the roadmap. Only fifty spots! [confident] [building] Secure yours by installing NOW!"
   },
   {
     "id": "shopper-doubt",
@@ -94,7 +94,7 @@
   {
     "id": "clerk-upsell",
     "role": "clerk",
-    "text": "[quickly] Great pick! This one goes hand in hand with it. Want me to add it too?"
+    "text": "[quickly] Great pick! This one was made to go with it. Want me to add it too?"
   },
   {
     "id": "shopper-upsell",

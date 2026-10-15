@@ -195,7 +195,7 @@
     { scene: 'sync', id: 't-sync', line: "It all takes just one click. And your whole store stays in sync, automatically." },
     { scene: 'stores', id: 't-stores', line: 'Whatever your store sells, your Bizmis agent sells it.' },   // v18: to the merchant (the reel shows devices and languages)
     { scene: 'end', id: 'see-it', line: 'See it in action.', cta: 'demo' },
-    { scene: 'end', id: 't-ea', line: 'Install now to join Early Access! Generous free credits, fifty percent off upgrades, and you shape the roadmap. Only fifty spots. Secure yours by installing now.', cta: 'ea' },   // v24: the short take
+    { scene: 'end', id: 't-ea', line: 'Install now to join Early Access! Generous free credits, fifty percent off upgrades, and you shape the roadmap. Only fifty spots. Secure yours by installing now!', cta: 'ea' },   // v24: the short take (v35: a powerful close)
     { scene: 'end', id: 'install-shopify', line: 'Install it on Shopify.', cta: 'install' },
   ];
   function ensureInviteFont() {
@@ -2647,6 +2647,90 @@
     return Math.max(0, o);
   }
 
+  // v35: a brief flair on each demo store's widget as its card lands: the widget's own pixels lift out (a copy of that
+  // region, scaled up, with a glow and a ring in the store's colour) while a gloss sweeps across it, then it settles back
+  // exactly where it was. Stepped on the film clock (export-safe); the overlay is removed when it ends.
+  const PROMO_REEL_WIDGET_THEME = {"halcyon-optics":"#5B45B8","kumo-tea":"#2E8A3E","sora-ceramics":"#8A4F72","powderline":"#1F7E9A","tidewater":"#E0553D","maison-cacao":"#3B2117","liora":"#B85A70","grindline":"#1A7FC4","kettle-and-crow":"#B8306A","northpeak":"#2A4FD6","saltline":"#0E8F9E","ridgeline-supply":"#0E6185","nest-and-nook":"#3F8E68","atelier-noor":"#A4408F","little-timber":"#2A86CC","inkwell":"#22407C","leaf-and-loam":"#139E6E","spokehaus":"#EE3F87","juniper-linen":"#4C5FC4","tonewood":"#7A3A80","fetch-and-fern":"#138A86","petal-and-post":"#C02FA8"};
+  // where each recording's widget sits, as fractions of the video frame (x0, y0, x1, y1)
+  const PROMO_REEL_WIDGET_BOX = {
+    'v24-desktop': [0.76, 0.597, 0.985, 0.963], 'v24-phone': [0.028, 0.91, 0.978, 0.983], 'v30-tablet': [0.025, 0.93, 0.975, 0.99],
+    'ambient-buildright-home': [0.03, 0.905, 0.97, 0.975], 'ambient-the-apricot-theory': [0.03, 0.905, 0.97, 0.972],
+    'ambient-viniteca-marti': [0.787, 0.632, 0.985, 0.966], 'copperleaf-desktop-home': [0.757, 0.593, 0.968, 0.96],
+    fashion: [0.03, 0.93, 0.97, 0.99], electronics: [0.785, 0.62, 1, 0.95], books: [0.03, 0.895, 0.86, 0.965], gaming: [0.04, 0.915, 0.96, 0.985],
+  };
+  const PROMO_FLAIR_LIFT = 0.1;
+  function promoWidgetBox(src) {
+    const name = String(src || '').split('/').pop().replace(/\.mp4$/, '');
+    if (PROMO_REEL_WIDGET_BOX[name]) return PROMO_REEL_WIDGET_BOX[name];
+    if (/\/v(24|35)\//.test(src) && /-(phone|desktop)-/.test(name)) return /-phone-/.test(name) ? PROMO_REEL_WIDGET_BOX['v24-phone'] : PROMO_REEL_WIDGET_BOX['v24-desktop'];   // v35: re-recorded, same layout
+    if (/\/v(30|35)\//.test(src) && /-tablet-/.test(name)) return PROMO_REEL_WIDGET_BOX['v30-tablet'];
+    return null;
+  }
+  function promoWidgetFlair(video, src, color, ms, host) {
+    const frac = promoWidgetBox(src);
+    if (!frac || !video || !host || !color || prefersReducedMotion() || ms < 160) return Promise.resolve();
+    const vw = video.videoWidth; const vh = video.videoHeight;
+    if (!vw || !vh) return Promise.resolve();
+    // the video's box in the host's (untransformed) coordinates
+    let x = 0; let y = 0; let node = video;
+    while (node && node !== host) { x += node.offsetLeft; y += node.offsetTop; node = node.offsetParent; }
+    if (node !== host) return Promise.resolve();
+    const [x0, y0, x1, y1] = frac;
+    const box = { x: x + x0 * video.offsetWidth, y: y + y0 * video.offsetHeight, w: (x1 - x0) * video.offsetWidth, h: (y1 - y0) * video.offsetHeight };
+    const bar = box.h < box.w * 0.3;
+    const z = Math.max(box.w, box.h) / 330;   // the glow's size follows the widget's
+    const wrap = document.createElement('div');
+    wrap.className = 'promo-flair';
+    Object.assign(wrap.style, { position: 'absolute', left: `${box.x.toFixed(1)}px`, top: `${box.y.toFixed(1)}px`, width: `${box.w.toFixed(1)}px`, height: `${box.h.toFixed(1)}px`,
+      borderRadius: `${(bar ? box.h / 2 : Math.min(box.w, box.h) * 0.07).toFixed(1)}px`, overflow: 'hidden', zIndex: '40', pointerEvents: 'none', transformOrigin: '50% 50%', opacity: '0' });
+    const canvas = document.createElement('canvas');
+    canvas.width = Math.max(2, Math.round((x1 - x0) * vw)); canvas.height = Math.max(2, Math.round((y1 - y0) * vh));
+    Object.assign(canvas.style, { position: 'absolute', left: '0', top: '0', width: '100%', height: '100%' });
+    const band = document.createElement('i');
+    Object.assign(band.style, { position: 'absolute', top: '-50%', bottom: '-50%', width: '45%',
+      background: 'linear-gradient(100deg, transparent 0%, rgba(255,255,255,0) 20%, rgba(255,255,255,.9) 50%, rgba(255,255,255,0) 80%, transparent 100%)' });
+    wrap.append(canvas, band);
+    host.appendChild(wrap);
+    const ctx = canvas.getContext('2d');
+    const n = parseInt(color.slice(1), 16); const rgb = `${n >> 16},${(n >> 8) & 255},${n & 255}`;
+    return tweenStep(ms, (_, u) => {
+      const lift = Math.sin(Math.PI * u);
+      try { ctx.drawImage(video, x0 * vw, y0 * vh, canvas.width, canvas.height, 0, 0, canvas.width, canvas.height); } catch { }
+      wrap.style.opacity = '1';
+      wrap.style.transform = `scale(${(1 + PROMO_FLAIR_LIFT * lift).toFixed(4)})`;
+      wrap.style.boxShadow = `0 ${(10 * z * lift).toFixed(1)}px ${(34 * z * lift).toFixed(1)}px rgba(${rgb},${(0.5 * lift).toFixed(3)}), 0 0 0 ${(4.5 * z * lift).toFixed(1)}px rgba(${rgb},${(0.95 * lift).toFixed(3)}), 0 0 ${(56 * z * lift).toFixed(1)}px rgba(${rgb},${(0.55 * lift).toFixed(3)})`;
+      band.style.left = `${(-50 + Math.min(1, u / 0.8) * 160).toFixed(1)}%`;
+    }, (u) => u).then(() => wrap.remove());
+  }
+
+  // v35: a hero take whose widget transcript doesn't match its voice: the bubbles' area is covered in the page's own
+  // colour and one agent bubble shows the spoken line, word by word on the voice (item.bubble: words [[s, w]], cover
+  // [x0, y0, x1, y1] as fractions of the video, bg)
+  function promoHeroBubble(video, host, spec) {
+    if (!video || !host || !spec) return null;
+    let x = 0; let y = 0; let node = video;
+    while (node && node !== host) { x += node.offsetLeft; y += node.offsetTop; node = node.offsetParent; }
+    if (node !== host) return null;
+    const vw = video.offsetWidth; const vh = video.offsetHeight;
+    const [x0, y0, x1, y1] = spec.cover;
+    const cover = document.createElement('div');
+    cover.className = 'promo-hero-bubble';
+    Object.assign(cover.style, { position: 'absolute', left: `${(x + x0 * vw).toFixed(1)}px`, top: `${(y + y0 * vh).toFixed(1)}px`, width: `${((x1 - x0) * vw).toFixed(1)}px`,
+      height: `${((y1 - y0) * vh).toFixed(1)}px`, background: spec.bg, zIndex: '30', pointerEvents: 'none' });
+    const bubble = document.createElement('div');
+    const u = vw / 100;   // the widget's bubble, in the phone's own proportions
+    Object.assign(bubble.style, { position: 'absolute', left: `${(3 * u).toFixed(1)}px`, right: `${(3 * u).toFixed(1)}px`, bottom: `${(1.2 * u).toFixed(1)}px`,
+      padding: `${(3.2 * u).toFixed(1)}px ${(4.2 * u).toFixed(1)}px`, borderRadius: `${(3.4 * u).toFixed(1)}px`, background: '#121216', border: `${Math.max(1, 0.25 * u).toFixed(1)}px solid rgba(255,255,255,.16)`,
+      color: '#F4F4F6', font: `400 ${(4.3 * u).toFixed(1)}px/1.35 Inter, -apple-system, sans-serif`, opacity: '0' });
+    const spans = spec.words.map(([, w]) => { const sp = document.createElement('span'); sp.textContent = `${w} `; sp.style.opacity = '0'; return sp; });
+    bubble.append(...spans);
+    cover.append(bubble);
+    host.appendChild(cover);
+    const t0 = performance.now();
+    spec.words.forEach(([at], i) => window.setTimeout(() => { bubble.style.opacity = '1'; spans[i].style.opacity = '1'; }, Math.max(0, at * 1000 - (performance.now() - t0))));
+    return cover;
+  }
+
   // v25b: a weighted average of #rrggbb colours in OKLab (the light's colour-mix space), back to #rrggbb: the tunnel's
   // light is every flying store's colour weighted by how near (big, opaque) it is, so it follows the nearest one smoothly
   function promoOklabMix(colors, weights) {
@@ -2758,29 +2842,30 @@
   // (public/promo/stores/reel/v24/manifest.json): 3.2 s theme-style home-page loops (never the catalog), the jpg is each one's poster.
   // Colours follow a plan (tmp/demo-stores-v24/_plan/colour-plan.json): the tunnel in light, fresh tones; the run in saturated
   // jewel tones, pinks alternating with deep cools, landing on Your store orange (every neighbour >= 35 CIEDE2000 apart).
+  // v35: every store re-recorded with the agent visibly talking (stores/reel/v35, same 3.2 s loops)
   const PROMO_REEL_STORES_V24 = {
-    'halcyon-optics': { device: 'desktop', color: '#C8B6F0', video: '/promo/stores/reel/v24/halcyon-optics-desktop-home.mp4', img: '/promo/stores/reel/v24/halcyon-optics-desktop-home.jpg' },
-    'kumo-tea': { device: 'phone', color: '#5BC76B', video: '/promo/stores/reel/v24/kumo-tea-phone-home.mp4', img: '/promo/stores/reel/v24/kumo-tea-phone-home.jpg' },
-    'sora-ceramics': { device: 'tablet', color: '#B07A9A', video: '/promo/stores/reel/v30/sora-ceramics-tablet-home.mp4', img: '/promo/stores/reel/v30/sora-ceramics-tablet-home.jpg' },
-    'powderline': { device: 'desktop', color: '#9ED8E8', video: '/promo/stores/reel/v24/powderline-desktop-home.mp4', img: '/promo/stores/reel/v24/powderline-desktop-home.jpg' },
-    'tidewater': { device: 'phone', color: '#F2705A', video: '/promo/stores/reel/v24/tidewater-phone-home.mp4', img: '/promo/stores/reel/v24/tidewater-phone-home.jpg' },
-    'maison-cacao': { device: 'desktop', color: '#2BBFA4', video: '/promo/stores/reel/v24/maison-cacao-desktop-home.mp4', img: '/promo/stores/reel/v24/maison-cacao-desktop-home.jpg' },
-    'liora': { device: 'tablet', color: '#E597A8', video: '/promo/stores/reel/v30/liora-tablet-home.mp4', img: '/promo/stores/reel/v30/liora-tablet-home.jpg' },
-    'grindline': { device: 'phone', color: '#1A7FC4', video: '/promo/stores/reel/v24/grindline-phone-home.mp4', img: '/promo/stores/reel/v24/grindline-phone-home.jpg' },
-    'kettle-and-crow': { device: 'phone', color: '#B8306A', video: '/promo/stores/reel/v24/kettle-and-crow-phone-home.mp4', img: '/promo/stores/reel/v24/kettle-and-crow-phone-home.jpg' },
-    'northpeak': { device: 'phone', color: '#2A4FD6', video: '/promo/stores/reel/v24/northpeak-phone-home.mp4', img: '/promo/stores/reel/v24/northpeak-phone-home.jpg' },
-    'saltline': { device: 'desktop', color: '#10A7B8', video: '/promo/stores/reel/v24/saltline-desktop-home.mp4', img: '/promo/stores/reel/v24/saltline-desktop-home.jpg' },
-    'ridgeline-supply': { device: 'desktop', color: '#0E6185', video: '/promo/stores/reel/v24/ridgeline-supply-desktop-home.mp4', img: '/promo/stores/reel/v24/ridgeline-supply-desktop-home.jpg' },
-    'nest-and-nook': { device: 'tablet', color: '#86C2A2', video: '/promo/stores/reel/v30/nest-and-nook-tablet-home.mp4', img: '/promo/stores/reel/v30/nest-and-nook-tablet-home.jpg' },
-    'atelier-noor': { device: 'desktop', color: '#A4408F', video: '/promo/stores/reel/v24/atelier-noor-desktop-home.mp4', img: '/promo/stores/reel/v24/atelier-noor-desktop-home.jpg' },
-    'little-timber': { device: 'tablet', color: '#3A9FE6', video: '/promo/stores/reel/v30/little-timber-tablet-home.mp4', img: '/promo/stores/reel/v30/little-timber-tablet-home.jpg' },
-    'inkwell': { device: 'tablet', color: '#22407C', video: '/promo/stores/reel/v30/inkwell-tablet-home.mp4', img: '/promo/stores/reel/v30/inkwell-tablet-home.jpg' },
-    'leaf-and-loam': { device: 'tablet', color: '#139E6E', video: '/promo/stores/reel/v30/leaf-and-loam-tablet-home.mp4', img: '/promo/stores/reel/v30/leaf-and-loam-tablet-home.jpg' },
-    'spokehaus': { device: 'phone', color: '#EE3F87', video: '/promo/stores/reel/v24/spokehaus-phone-home.mp4', img: '/promo/stores/reel/v24/spokehaus-phone-home.jpg' },
-    'juniper-linen': { device: 'desktop', color: '#8E9FE8', video: '/promo/stores/reel/v24/juniper-linen-desktop-home.mp4', img: '/promo/stores/reel/v24/juniper-linen-desktop-home.jpg' },
-    'tonewood': { device: 'tablet', color: '#5E2A63', video: '/promo/stores/reel/v30/tonewood-tablet-home.mp4', img: '/promo/stores/reel/v30/tonewood-tablet-home.jpg' },
-    'fetch-and-fern': { device: 'desktop', color: '#138A86', video: '/promo/stores/reel/v24/fetch-and-fern-desktop-home.mp4', img: '/promo/stores/reel/v24/fetch-and-fern-desktop-home.jpg' },
-    'petal-and-post': { device: 'phone', color: '#D63BC0', video: '/promo/stores/reel/v24/petal-and-post-phone-home.mp4', img: '/promo/stores/reel/v24/petal-and-post-phone-home.jpg' },
+    'halcyon-optics': { device: 'desktop', color: '#C8B6F0', video: '/promo/stores/reel/v35/halcyon-optics-desktop-home.mp4', img: '/promo/stores/reel/v35/halcyon-optics-desktop-home.jpg' },
+    'kumo-tea': { device: 'phone', color: '#5BC76B', video: '/promo/stores/reel/v35/kumo-tea-phone-home.mp4', img: '/promo/stores/reel/v35/kumo-tea-phone-home.jpg' },
+    'sora-ceramics': { device: 'tablet', color: '#B07A9A', video: '/promo/stores/reel/v35/sora-ceramics-tablet-home.mp4', img: '/promo/stores/reel/v35/sora-ceramics-tablet-home.jpg' },
+    'powderline': { device: 'desktop', color: '#9ED8E8', video: '/promo/stores/reel/v35/powderline-desktop-home.mp4', img: '/promo/stores/reel/v35/powderline-desktop-home.jpg' },
+    'tidewater': { device: 'phone', color: '#F2705A', video: '/promo/stores/reel/v35/tidewater-phone-home.mp4', img: '/promo/stores/reel/v35/tidewater-phone-home.jpg' },
+    'maison-cacao': { device: 'desktop', color: '#2BBFA4', video: '/promo/stores/reel/v35/maison-cacao-desktop-home.mp4', img: '/promo/stores/reel/v35/maison-cacao-desktop-home.jpg' },
+    'liora': { device: 'tablet', color: '#E597A8', video: '/promo/stores/reel/v35/liora-tablet-home.mp4', img: '/promo/stores/reel/v35/liora-tablet-home.jpg' },
+    'grindline': { device: 'phone', color: '#1A7FC4', video: '/promo/stores/reel/v35/grindline-phone-home.mp4', img: '/promo/stores/reel/v35/grindline-phone-home.jpg' },
+    'kettle-and-crow': { device: 'phone', color: '#B8306A', video: '/promo/stores/reel/v35/kettle-and-crow-phone-home.mp4', img: '/promo/stores/reel/v35/kettle-and-crow-phone-home.jpg', voice: 'quick-ko', category: 'Food & drink', feat: 'Matches it to their taste', ben: 'Repeat customers' },
+    'northpeak': { device: 'phone', color: '#2A4FD6', video: '/promo/stores/reel/v35/northpeak-phone-home.mp4', img: '/promo/stores/reel/v35/northpeak-phone-home.jpg', voice: 'quick-zh', category: 'Health & wellness', feat: 'Explains every ingredient', ben: 'Trust that converts' },
+    'saltline': { device: 'desktop', color: '#10A7B8', video: '/promo/stores/reel/v35/saltline-desktop-home.mp4', img: '/promo/stores/reel/v35/saltline-desktop-home.jpg', voice: 'quick-pt', category: 'Sports & outdoors', feat: 'Picks the right fit', ben: 'Fewer exchanges' },
+    'ridgeline-supply': { device: 'desktop', color: '#0E6185', video: '/promo/stores/reel/v35/ridgeline-supply-desktop-home.mp4', img: '/promo/stores/reel/v35/ridgeline-supply-desktop-home.jpg' },
+    'nest-and-nook': { device: 'tablet', color: '#86C2A2', video: '/promo/stores/reel/v35/nest-and-nook-tablet-home.mp4', img: '/promo/stores/reel/v35/nest-and-nook-tablet-home.jpg' },
+    'atelier-noor': { device: 'desktop', color: '#A4408F', video: '/promo/stores/reel/v35/atelier-noor-desktop-home.mp4', img: '/promo/stores/reel/v35/atelier-noor-desktop-home.jpg' },
+    'little-timber': { device: 'tablet', color: '#3A9FE6', video: '/promo/stores/reel/v35/little-timber-tablet-home.mp4', img: '/promo/stores/reel/v35/little-timber-tablet-home.jpg' },
+    'inkwell': { device: 'tablet', color: '#22407C', video: '/promo/stores/reel/v35/inkwell-tablet-home.mp4', img: '/promo/stores/reel/v35/inkwell-tablet-home.jpg' },
+    'leaf-and-loam': { device: 'tablet', color: '#139E6E', video: '/promo/stores/reel/v35/leaf-and-loam-tablet-home.mp4', img: '/promo/stores/reel/v35/leaf-and-loam-tablet-home.jpg' },
+    'spokehaus': { device: 'phone', color: '#EE3F87', video: '/promo/stores/reel/v35/spokehaus-phone-home.mp4', img: '/promo/stores/reel/v35/spokehaus-phone-home.jpg' },
+    'juniper-linen': { device: 'desktop', color: '#8E9FE8', video: '/promo/stores/reel/v35/juniper-linen-desktop-home.mp4', img: '/promo/stores/reel/v35/juniper-linen-desktop-home.jpg' },
+    'tonewood': { device: 'tablet', color: '#5E2A63', video: '/promo/stores/reel/v35/tonewood-tablet-home.mp4', img: '/promo/stores/reel/v35/tonewood-tablet-home.jpg' },
+    'fetch-and-fern': { device: 'desktop', color: '#138A86', video: '/promo/stores/reel/v35/fetch-and-fern-desktop-home.mp4', img: '/promo/stores/reel/v35/fetch-and-fern-desktop-home.jpg' },
+    'petal-and-post': { device: 'phone', color: '#D63BC0', video: '/promo/stores/reel/v35/petal-and-post-phone-home.mp4', img: '/promo/stores/reel/v35/petal-and-post-phone-home.jpg' },
   };
   // the run's cards: 0..4 take the skeleton slots in order, 5..13 take all nine flash slots in order, so the run plays
   // (flash, skeleton): kettle-and-crow, northpeak, saltline, ridgeline-supply, nest-and-nook, atelier-noor, little-timber, inkwell,
@@ -2820,7 +2905,7 @@
   function promoReelCopy(item, box, W, H, S) {
     const copy = document.createElement('div');
     const desk = item.device === 'desktop';
-    copy.className = `promo-reel__copy is-${desk ? 'desk' : 'col'}${item.whip ? ' is-shown' : ''}`;
+    copy.className = `promo-reel__copy is-${desk ? 'desk' : 'col'}${item.whip || item.voice ? ' is-shown' : ''}`;
     copy.style.setProperty('--tint', item.color);
     copy.dataset.s = String(S);
     let k = 0;
@@ -5134,6 +5219,7 @@
     if (source instanceof HTMLCanvasElement) {
       const img = document.createElement('img');
       img.setAttribute('style', css);
+      img.dataset.promoCanvasStill = '1';   // v35: the pitch's lead copy swaps it back for a live mirror of the canvas
       try {
         img.src = source.toDataURL('image/png');
       } catch (error) {
@@ -6615,7 +6701,7 @@
       // the chapter is named when the clerk names the pairing, not before
       // v13: a live, back-and-forth voice exchange: the clerk suggests and asks,
       // the shopper says yes, the clerk confirms (the add-on lands on "add it")
-      const upsell = this.speakClerk('clerk-upsell', reduced, { 'hand in hand': () => this.showChapter('Missed add-on', 'Paired perfectly') })
+      const upsell = this.speakClerk('clerk-upsell', reduced, { 'made to go': () => this.showChapter('Missed add-on', 'Paired perfectly') })
         .then(() => this.speakShopperLine('shopper-upsell', reduced, { 'add it': bundle }))
         .then(() => this.speakClerk('clerk-upsell-done', reduced));
       await spin?.landed;
@@ -9196,7 +9282,8 @@
         const spec = PROMO_DEVICE_SPEC[item.device] || PROMO_DEVICE_SPEC.desktop;
         const w = (item.skeleton ? SIZES[item.device] * 0.74 : SIZES[item.device]) * S;
         const h = w / spec.aspect + spec.bar * w;
-        if (item.strobe) { const ws = SIZES[item.device] * S * 0.92; const hs = ws / spec.aspect + spec.bar * ws; return { w: ws, h: hs, x: W / 2, y: (H - hs) / 2 }; }
+        if (item.strobe && !item.voice) { const ws = SIZES[item.device] * S * 0.92;   // v35: a voiced run card is laid out like a quick store
+           const hs = ws / spec.aspect + spec.bar * ws; return { w: ws, h: hs, x: W / 2, y: (H - hs) / 2 }; }
         if (item.skeleton) return { w, h, x: 0, y: (H - h) / 2 };
         if (item.yours) return { w, h, x: W / 2, y: (H - h) / 2 };
         if (item.device === 'desktop') return { w, h, x: W / 2, y: 205 * S };
@@ -9239,7 +9326,7 @@
         }
         cell.t = { tx: 0, ty: 0, k: 1 };
         strip.appendChild(cell.dev);
-        if (cell.hero || cell.whip) {
+        if (cell.hero || cell.whip || item.voice) {   // v35: the voiced run cards carry their industry and line too
           cell.copy = promoReelCopy(item, box, W, H, S);
           Object.assign(cell.copy.style, { left: `${cell.x0}px`, width: `${W}px` });
           strip.appendChild(cell.copy);
@@ -9520,6 +9607,7 @@
           const rel = f.z - camZ;
           const o = promoReelFlyerFade(rel, P);   // each card fades well before it would reach the camera
           f.dev.style.transform = `translate3d(${f.x.toFixed(1)}px, ${f.y.toFixed(1)}px, ${rel.toFixed(1)}px) rotateY(${f.rot.toFixed(2)}deg)`;
+          if (f.video && !f.flair && f !== dock && rel > -P * 1.7) { f.flair = true; promoWidgetFlair(f.video, f.sk.video, PROMO_REEL_WIDGET_THEME[f.sk.slug], 560, f.dev); }   // v35: each store's widget catches the eye as it nears
           f.dev.style.opacity = Math.max(0, o).toFixed(3);
           f.dev.style.visibility = o <= 0.001 ? 'hidden' : '';
           f.dev.style.zIndex = String(Math.round(rel + 100000));
@@ -9551,6 +9639,21 @@
         (window.__promoAudioCues = window.__promoAudioCues || []).push({ src: item.video, atMs: now, fromSec: item.start || 0, endMs: now + heroMs });
         window.__promoNarratorUntil = Math.max(window.__promoNarratorUntil || 0, now + heroMs);
         revealReelCopy(hero.copy, 'slam');
+        promoWidgetFlair(hero.heroVideo, item.video, item.color, Math.min(1100, heroMs * 0.45), hero.dev);   // v35: the widget catches the eye
+        const heroBubble = item.bubble ? promoHeroBubble(hero.heroVideo, hero.dev, item.bubble) : null;   // v35: one bubble, the voice's words
+        if (item.agentSay) (async () => {   // v35: the store's agent speaks as its results land (inside the take's window)
+          const id = item.agentSay.id; const voice = await clerkVoice(id);
+          if (!voice) return;
+          const wait = item.agentSay.at * 1000 - (performance.now() - now);
+          if (wait > 0) await waitMs(wait);
+          const t0 = performance.now();
+          const clipMs = Math.min(voice.durationMs, heroMs - (t0 - now) - 40);
+          if (clipMs < 200) return;
+          (window.__promoAudioCues = window.__promoAudioCues || []).push({ src: `/promo/voice/${id}.wav`, atMs: t0, fromSec: 0, endMs: t0 + clipMs, fadeIn: 0.01, fadeOut: 0.03 });
+          if (!document.documentElement.classList.contains('is-promo-export')) { const a = new Audio(`/promo/voice/${id}.wav`); a.play().catch(() => { }); }
+          const words = voiceWords(voice).filter((w) => !/^\[[^\]]*\]$/.test(w.text)).map((w) => [0.04 + w.startMs / 1000, w.text]);
+          if (words.length) this.playSaidPill(reel, words, { color: item.color, kind: 'voice-agent', hold: 0.15, place: spot });
+        })();
         const saidLines = Array.isArray(item.said?.[0]?.[0]) ? item.said : (item.said?.length ? [item.said] : []);
         const spot = reelSaidSpot(hero, W, H, S);
         saidLines.forEach((line) => this.playSaidPill(reel, line, { color: item.color, kind: item.saidKind || 'shopper', hold: 0.6, place: spot }));
@@ -9559,6 +9662,7 @@
         // the take plays out, then the cut comes on the nearest beat (never a held frame of more than half a beat)
         await untilAt(hero, cutAt(index + 1));
         reel.querySelectorAll('.promo-reel__said:not(.is-out)').forEach((pill) => { pill.classList.add('is-out'); pill.style.opacity = '0'; });
+        heroBubble?.remove();
         park(hero.heroVideo);
         hero.dev.classList.remove('is-live');
       }
@@ -9573,7 +9677,8 @@
         if (!strobing && cell.win < PROMO_REEL_SOFT_S) { strobing = true; promoSfx('reel-strobe', { ms: Math.round((cutS(heroes.length + run.length) - cutS(heroes.length + index)) * 1000) }); }
         reel.querySelectorAll('.promo-reel__said:not(.is-out)').forEach((pill) => { pill.classList.add('is-out'); pill.style.opacity = '0'; });
         cutTo(cell, cell.whip ? heroes.length + cell.src.quick : 100 + index);
-        const id = cell.whip ? PROMO_REEL_QUICK_VOICES[cell.src.quick] : null;
+        if (cell.whip || cell.src.voice) promoWidgetFlair(cell.ambientVideo, cell.src.video, PROMO_REEL_WIDGET_THEME[cell.src.slug] || cell.src.color, Math.min(900, cell.win * 900), cell.dev);   // v35
+        const id = cell.whip ? PROMO_REEL_QUICK_VOICES[cell.src.quick] : (cell.src.voice || null);   // v35: the voiced run cards speak in their window
         const voice = id ? await clerkVoice(id) : null;
         if (voice) {
           const now = performance.now();
@@ -11305,6 +11410,25 @@
       clone.removeAttribute('style');
       // v34: keep the close-up's SOLD tint on the copy, or it pops off on frame one
       if (mode === 'pitch') clone.style.filter = store.style.filter;   // the lift is matched by dissolveCloseStore
+      // v35: the clerk stays video through the pull-back: each canvas still in the copy's widget becomes a canvas the
+      // sea mirrors from the live clerk every frame until the card lands, so the image it ends on is its last frame
+      this.leadMirror = null;
+      if (mode === 'pitch') {
+        const live = document.querySelector('.bizmis-desktop-lite-chat canvas');
+        // the copy's stills, and the live store's own (it rides on top while it dissolves into the copy)
+        const stills = [...clone.querySelectorAll('[data-promo-widget-still] img[data-promo-canvas-still]'), ...store.querySelectorAll('[data-promo-widget-still] img[data-promo-canvas-still]')];
+        if (live && stills.length) {
+          this.leadMirror = stills.map((img) => {
+            const mirror = document.createElement('canvas');
+            mirror.width = live.width; mirror.height = live.height;
+            mirror.setAttribute('style', img.getAttribute('style') || '');
+            const ctx = mirror.getContext('2d');
+            try { ctx.drawImage(live, 0, 0); } catch { }
+            img.replaceWith(mirror);
+            return { ctx, live, w: mirror.width, h: mirror.height };
+          });
+        }
+      }
       const rect = store.getBoundingClientRect();
       clone.dataset.naturalW = String(rect.width || store.offsetWidth || 0);
       clone.dataset.naturalH = String(rect.height || store.offsetHeight || 0);
@@ -12321,6 +12445,10 @@
       this.measureGlideAnchor(root, leadNode);
       this.placeGlideLead(root, leadNode, arrive);
       if (mode === 'pitch' && this.pitchHandoff) this.dissolveCloseStore(leadNode, time);   // v34: after the anchor is measured
+      if (mode === 'pitch' && this.leadMirror) {   // v35: the clerk is video until the card is in its place
+        if (arrive < 0.995) this.leadMirror.forEach((m) => { try { m.ctx.clearRect(0, 0, m.w, m.h); m.ctx.drawImage(m.live, 0, 0, m.w, m.h); } catch { } });
+        else this.leadMirror = null;   // landed: the last frame stays
+      }
       if (mode === 'pain') this.paintPainCaption(root, options.reduced ? marks.captionHoldEnd - 120 : time);
       this.paintSalesBar(root, time, mode, frame, options.reduced);   // v24: the claims' sales bar
       const horizon = root.querySelector('.promo-glide__horizon');
@@ -12368,8 +12496,11 @@
         || lead?.querySelector('.promo-opening__store');
       if (!clone) return;
       const carrier = clone.parentElement?.matches(LEAD_WRAP) ? clone.parentElement : clone;   // v34: the pitch copy moves with its wrapper
-      const fadeStart = 0.96;
-      const fadeEnd = 0.99;
+      // v35: the pitch keeps its copy (its clerk mirrored live until the card lands) as the card's final image, instead of
+      // fading to the raster taken before the pull-back
+      const keepCopy = !root.classList.contains('is-pain');
+      const fadeStart = keepCopy ? 2 : 0.96;
+      const fadeEnd = keepCopy ? 3 : 0.99;
       if (!cellNode || cellNode.hidden || arrive >= fadeEnd) {
         clone.style.visibility = 'hidden';
         clone.style.opacity = '0';
