@@ -901,10 +901,10 @@
 .sl-c.sl-g2.is-pinned {
   padding: 0;
 }
-/* four stretches of scroll: find, trust, buy, the payoff (each timeline maps onto its own) */
+/* four stretches of scroll: find, trust, buy, then the payoff (1.8 of a beat's; each timeline maps onto its own) */
 .sl-g2-track {
   position: relative;
-  height: 600svh;
+  height: 720svh;
 }
 .sl-g2-pin {
   position: sticky;
@@ -977,6 +977,7 @@
   opacity: 0;
   transition: opacity 0.25s ease;
 }
+/* (hidden as well as undrawn when off: a fully offset dash still leaves its round cap as a dot) */
 .sl-g2-cone-side {
   fill: none;
   stroke: #fff;
@@ -984,7 +985,10 @@
   stroke-linecap: round;
   stroke-dasharray: 1 1;
   stroke-dashoffset: 1;
-  transition: stroke-dashoffset 0.25s ease;
+  opacity: 0;
+  transition:
+    stroke-dashoffset 0.25s ease,
+    opacity 0s linear 0.25s;
 }
 .sl-g2-cone.is-on .sl-g2-cone-fill {
   opacity: 1;
@@ -992,7 +996,10 @@
 }
 .sl-g2-cone.is-on .sl-g2-cone-side {
   stroke-dashoffset: 0;
-  transition: stroke-dashoffset 0.55s cubic-bezier(0.65, 0, 0.35, 1) 0.1s;
+  opacity: 1;
+  transition:
+    stroke-dashoffset 0.55s cubic-bezier(0.65, 0, 0.35, 1) 0.1s,
+    opacity 0s linear 0.1s;
 }
 .sl-g2-copy {
   position: absolute;

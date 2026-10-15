@@ -798,7 +798,13 @@ const FunnelFlow = ({
                       {solution}
                     </span>
                     <svg className="sl-flow-tick" viewBox="0 0 24 24" aria-hidden="true">
-                      <path d="M3.5 13.5 L9.5 19.5 L21.5 4.5" pathLength={1} strokeDasharray="1 1" strokeDashoffset={1 - tick} />
+                      <path
+                        d="M3.5 13.5 L9.5 19.5 L21.5 4.5"
+                        pathLength={1}
+                        strokeDasharray="1 1"
+                        strokeDashoffset={1 - tick}
+                        opacity={tick > 0 ? 1 : 0}
+                      />
                     </svg>
                     {party > 0 && (
                       <svg

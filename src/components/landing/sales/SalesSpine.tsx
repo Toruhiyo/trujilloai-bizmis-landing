@@ -38,6 +38,9 @@ const SalesSpine = () => {
   return pin ? <Pinned /> : <Stacked />;
 };
 
+/** The payoff's stretch of scroll, in beats' stretches; the whole track's. */
+const PAYOFF_SPAN = 1.8;
+const SPAN = 3 + PAYOFF_SPAN;
 /** Of a beat's stretch of scroll: a short lead-in, then its timeline, then a hold on its fixed state. */
 const LEAD = 0.05;
 const RUN = 0.75;
@@ -150,10 +153,10 @@ const Pinned = () => {
   const { win } = useSalesProto();
   const tls = useBeatTimelines();
   const [track, progress] = usePinProgress<HTMLDivElement>();
-  // four stretches of the track: find, trust, buy, then the payoff
-  const seg = Math.min(3.9999, progress * 4);
-  const step = Math.floor(seg);
-  const local = seg - step;
+  // four stretches of the track: find, trust, buy, then the payoff (longer: three fixes, each given time)
+  const x = Math.min(SPAN - 0.0001, progress * SPAN);
+  const step = Math.min(3, Math.floor(x));
+  const local = step < 3 ? x - step : (x - 3) / PAYOFF_SPAN;
   const payoff = step === 3;
   // where the scroll puts each beat; its clock is pulled there, rewound there, and plays on by itself at rest
   const at = (i: number) => (step > i ? tls[i].duration : step < i ? 0 : timeAt(local, tls[i].duration));

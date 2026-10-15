@@ -275,6 +275,9 @@ export const useScrollPlay = (target: number, duration: number, active: boolean)
       setT(tgt.current);
       return;
     }
+    // becoming the active beat: start where the scroll puts it
+    cur.current = tgt.current;
+    setT(tgt.current);
     let raf = 0;
     let last = performance.now();
     let prev = tgt.current;

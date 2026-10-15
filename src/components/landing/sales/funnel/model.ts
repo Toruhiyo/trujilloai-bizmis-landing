@@ -94,11 +94,12 @@ const ease = (k: number) => (k <= 0 ? 0 : k >= 1 ? 1 : k < 0.5 ? 4 * k * k * k :
  * When each stage's agent lands on its leak (ms on the timeline). A beat
  * (`focus` 0–2): the stages before it are fixed already, its own lands at
  * `fixAt`, the ones after it stay bad. The payoff (3): from the bad funnel,
- * all three land one after another, each given a moment to be seen.
+ * all three land one after another, each with time for the bad state to be
+ * seen, the fix, and the stage held fixed, before the next.
  */
 export const startsFor = (focus: number, fixAt = 1500) =>
   focus >= 3
-    ? [1300, 2900, 4500]
+    ? [1600, 4800, 8000]
     : [0, 1, 2].map((g) => (g < focus ? -Infinity : g === focus ? fixAt : Infinity));
 
 /** How far each stage's fix is at `t` (ms): 0 → 1, over RAMP from the landing. */
