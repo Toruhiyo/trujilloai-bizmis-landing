@@ -41,8 +41,8 @@ export const useOnScreen = <T extends Element>(threshold = 0.35) => {
 
 /**
  * A scene's timeline (see useRewindLoop): it plays from its start when its
- * sentinel (a box over the scene, see <Sentinel>) comes into view, then
- * rewinds fast right away (no hold: the hook's default), and plays again;
+ * sentinel (a box over the scene, see <Sentinel>) comes into view, holds
+ * its result (the hook's default hold), rewinds fast, and plays again;
  * leaving resets it. Pass `play: false`
  * to hide the sentinel, which counts as out of view: a pinned stage uses it
  * so each beat starts over the moment it becomes the active one. A beat's
@@ -248,14 +248,20 @@ export const useRewinding = (t: number, linger = 420) => {
   return on;
 };
 
+/** At rest on a beat's fixed state: how long it's shown before the beat rewinds and replays (ms). */
+export const FIXED_HOLD = 2600;
+/** The rewind back to a beat's start, at rest (ms). */
+const REWIND = 1000;
+
 /**
  * A beat's clock, half scroll, half time (ms along a timeline of `duration`):
  * the scroll sets `target` (where the scroll position maps on the timeline).
  * Scrolling on pulls the clock up to it at once; scrolling back rewinds it to
- * it (a quick ease, never a jump); and whenever the scroll rests, it plays on
- * by itself at 1× until the end of its timeline (the fixed state), and holds
- * there. Inactive (`active: false`), it simply sits on `target`.
- * Reduced motion: it sits on the end.
+ * it (a quick ease, never a jump). Whenever the scroll rests, the beat plays
+ * on by itself at 1×: to the end of its timeline (the fixed state), holds it
+ * FIXED_HOLD so it can be read, rewinds to the beat's start, and plays again,
+ * looping while the scroll rests. Inactive (`active: false`), it simply sits
+ * on `target`. Reduced motion: it sits on the end.
  */
 export const useScrollPlay = (target: number, duration: number, active: boolean) => {
   const reduced = useReducedMotion();
@@ -272,18 +278,45 @@ export const useScrollPlay = (target: number, duration: number, active: boolean)
     let raf = 0;
     let last = performance.now();
     let prev = tgt.current;
+    let phase: "play" | "hold" | "rewind" = "play";
+    let since = 0;
+    let from = 0;
     const loop = (now: number) => {
       raf = requestAnimationFrame(loop);
       const dt = Math.min(100, now - last);
       last = now;
       const target = tgt.current;
       let next = cur.current;
-      if (target < prev - 0.5 && target < next) {
-        // scrolling back: rewind to where the scroll is, quickly
-        next = Math.max(target, next + (target - next) * 0.28 - dt * 0.5);
-      } else {
-        // at rest or scrolling on: play on at 1x, pulled up to the scroll
+      if (target > prev + 0.5) {
+        // scrolling on: pulled up to the scroll (and playing on past it)
+        phase = "play";
         next = Math.min(duration, Math.max(target, next + dt));
+      } else if (target < prev - 0.5 && target < next) {
+        // scrolling back: rewound to where the scroll is, quickly
+        phase = "play";
+        next = Math.max(target, next + (target - next) * 0.28 - dt * 0.5);
+      } else if (phase === "play") {
+        // at rest: on at 1x to the fixed state
+        next = Math.min(duration, next + dt);
+        if (next >= duration) {
+          phase = "hold";
+          since = now;
+        }
+      } else if (phase === "hold") {
+        // the fixed state, held so it can be read
+        if (now - since >= FIXED_HOLD) {
+          phase = "rewind";
+          since = now;
+          from = next;
+        }
+      } else {
+        // back to the beat's start (eased, like a tape), then it plays again
+        const k = Math.min(1, (now - since) / REWIND);
+        next = from * (1 - (k < 0.5 ? 2 * k * k : 1 - (-2 * k + 2) ** 2 / 2));
+        if (k >= 1) {
+          next = 0;
+          phase = "play";
+        }
       }
       prev = target;
       if (next !== cur.current) {
