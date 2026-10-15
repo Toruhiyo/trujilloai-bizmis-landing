@@ -8,6 +8,7 @@ import AgentImage from "../AgentImage";
 import type { AgentName } from "../AgentImage";
 import { StoreWindow } from "../clay";
 import { span, typed, useRewindLoop } from "../useRewindLoop";
+import { RewindIcon } from "../RewindSign";
 
 /**
  * The Support section's store mockup: a store page with the real Bizmis
@@ -281,6 +282,8 @@ const SupportStore = ({ agent, children }: { agent: AgentName; children: ReactNo
             above={sentK > 0 && sentK < 1 ? <Sent text={quote} k={sentK} /> : undefined}
           />
         </div>
+        {/* ◀◀ while the case rewinds */}
+        <RewindIcon on={loop.rewinding} />
       </StoreWindow>
     </div>
   );

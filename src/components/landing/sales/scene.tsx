@@ -1,6 +1,6 @@
 import { forwardRef } from "react";
 
-/* The pieces a beat's mockup and funnel share with SalesC. Kept apart from
+/* The pieces a beat's mockup and funnel share with the section. Kept apart from
    shared.tsx, which imports the mockups: importing it back from a mockup was a
    cycle that could crash the section on load. */
 

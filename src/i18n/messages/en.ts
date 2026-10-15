@@ -160,6 +160,12 @@ export const en = {
       decided: "Added to cart",
       buyQuery: "Will it arrive by Friday?",
       buyCaption: "Yes, it ships today and returns are free. Ready to check out?",
+      /** The flipped beat copy (?copy=flip): the problem first, struck through at the fix, then the fix. No figures. */
+      flip: [
+        { problem: "Shoppers who can't find it leave.", fix: "Bizmis narrows your whole catalog to the few that fit." },
+        { problem: "Unanswered doubts kill the sale.", fix: "Bizmis compares, advises and clears every doubt." },
+        { problem: "Last-minute questions empty carts.", fix: "Bizmis answers them and walks shoppers to checkout." },
+      ],
       /** The one-shopper variant (?case=one): the same shopper and gift from Find through Trust to Buy. */
       caseOne: {
         compareQuery: "Which of the three would she like best?",
@@ -174,11 +180,15 @@ export const en = {
         /** Each stage's status, as the film's pills: the problem (grey), then fixed by Bizmis (orange check). */
         problems: ["Can't find it", "Can't decide", "Not sure"],
         solutions: ["Found it", "Compared", "Doubt cleared"],
-        /** Prototype marks (?visits, ?win): the dots are visits; the win against the loss, in handwriting (no figures). */
-        visitors: "Visitors",
+        /** The word at the open mouth, with its arrow: the dots are store visits. */
         visits: "visits",
-        lost: "lost",
-        sold: "sold",
+      },
+      /** ?win=4..6: the metrics merchants know, drawn moving the right way as stages get fixed (no figures). */
+      metrics: {
+        conversion: "Conversion rate",
+        orders: "Orders",
+        abandoned: "Abandoned checkouts",
+        ordersToday: "Orders today",
         before: "before",
         after: "after",
       },
@@ -189,7 +199,7 @@ export const en = {
     support: {
       title: "Fewer tickets.",
       titleTail: "Happier customers.",
-      /** The area as a small label over the outcome (?struct=A|B|C). */
+      /** The area as a small label over the outcome (the pillar openers, ?open=1..5). */
       area: "Support",
       lead: "Answers in seconds, day or night, as warmly as your best clerk.",
       capabilities: [
@@ -209,7 +219,7 @@ export const en = {
     insights: {
       title: "See what sells.",
       titleTail: "Fix what doesn't.",
-      /** The area as a small label over the outcome (?struct=A|B|C). */
+      /** The area as a small label over the outcome (the pillar openers, ?open=1..5). */
       area: "Insights",
       lead: "Every conversation becomes a clear next step.",
       features: [
@@ -223,11 +233,7 @@ export const en = {
         topAsk: "Top ask: shipping",
       },
     },
-    /** Structure option B (?struct=B): the handwritten kicker over the merged Support + Insights screen. */
-    proof: {
-      kicker: "And it doesn't just sell.",
-    },
-    /** Structure options D to G (?struct=D..G): Boost Sales's area label, small over its outcome. */
+    /** Boost Sales's area label, small over its outcome (the pillar openers, ?open=1..5). */
     salesArea: "Sales",
     /** Personalization on /v2. */
     customize: {

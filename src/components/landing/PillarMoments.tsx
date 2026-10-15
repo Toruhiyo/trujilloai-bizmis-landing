@@ -2,6 +2,7 @@ import { useId, useRef } from "react";
 import { useMessages } from "@/i18n/LocaleProvider";
 import { cn } from "@/lib/utils";
 import { span, useRewindLoop } from "./useRewindLoop";
+import { RewindMark } from "./RewindSign";
 
 /**
  * Each benefit pillar's "feel it" moment, drawn like the Sales funnel: flat
@@ -291,6 +292,8 @@ export const SupportRelief = ({ className }: { className?: string }) => {
         <Sparkle x={cx - 78} y={cy - 22} k={span(t, MELT_END + 760, MELT_END + 1160)} size={8} spin={45} />
         <Sparkle x={cx + 64} y={cy + 36} k={span(t, MELT_END + 880, MELT_END + 1280)} size={7} />
       </svg>
+      {/* ◀◀ while it rewinds */}
+      <RewindMark on={rewinding} at="tc" />
     </div>
   );
 };
@@ -366,7 +369,7 @@ export const InsightsClarity = ({ className }: { className?: string }) => {
   const cl = useMessages().landing.insights.clarity;
   const ref = useRef<HTMLDivElement>(null);
   const uid = useId().replace(/:/g, "");
-  const { t } = useRewindLoop(ref, { duration: CLARITY_MS, hold: 0, rewind: 900, rest: 450, threshold: 0.45, tick: 0 });
+  const { t, rewinding } = useRewindLoop(ref, { duration: CLARITY_MS, hold: 0, rewind: 900, rest: 450, threshold: 0.45, tick: 0 });
 
   const shown = span(t, 0, 400);
   const fadeNoise = span(t, SORT_AT, SORT_AT + 500);
@@ -516,6 +519,8 @@ export const InsightsClarity = ({ className }: { className?: string }) => {
         </g>
         <Sparkle x={px + 20} y={py - 52} k={span(t, AHA_AT + 1600, AHA_AT + 1950)} size={6} />
       </svg>
+      {/* ◀◀ while it rewinds */}
+      <RewindMark on={rewinding} at="tl" />
     </div>
   );
 };

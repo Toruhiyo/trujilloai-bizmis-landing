@@ -19,27 +19,19 @@ import "@/styles/film-landing.css";
 import "@/styles/palette-options.css";
 // the film look, the page's only look (keyed on data-look="film")
 import "@/styles/look-film.css";
-// how sections open and are told apart: the opener approaches (data-open, ?open=1..5)
-import "@/styles/openers.css";
-import BenefitsOverview from "@/components/landing/openers/BenefitsOverview";
-import SideIndex from "@/components/landing/openers/SideIndex";
-import { OpenerContext } from "@/components/landing/openers/OpenerContext";
-// the page-structure options under comparison (?struct=A|B|C, structs.css)
-import "@/styles/structs.css";
-import "@/styles/opener-heroes.css";
-import ProofSection from "@/components/landing/ProofSection";
+// how the pillar openers hand over to their content (?open=1..5, pillar/OpenerContext)
 import {
+  OpenerContext,
   PillarAreaContext,
-  StructContext,
-} from "@/components/landing/openers/StructContext";
-import type { Struct } from "@/components/landing/openers/StructContext";
+} from "@/components/landing/pillar/OpenerContext";
+import type { Opener } from "@/components/landing/pillar/OpenerContext";
 
 /**
- * The opener approach shown without ?open: "0", the pillars' big scroll-away
- * titles and docked bars (PillarIntro); ?open=1..5 shows the one-screen
- * approaches under comparison (openers.css).
+ * The opener shown without ?open: "0", the pillars' big scroll-away names and
+ * docked bars (PillarIntro); ?open=1..5 shows the opener-to-content
+ * transitions under comparison (pillar/OpenerContext, pillar-transitions.css).
  */
-const DEFAULT_OPEN = "0";
+const DEFAULT_OPEN: Opener = "0";
 
 interface FilmLandingProps {
   /** The route it's served on: "/" once it's the default, "/v2" until then. */
@@ -55,15 +47,10 @@ interface FilmLandingProps {
  */
 const FilmLanding = ({ path = "/" }: FilmLandingProps) => {
   const messages = useMessages();
-  const search = new URLSearchParams(useLocation().search);
-  // the opener approach: ?open=1..5, else DEFAULT_OPEN
-  const openParam = search.get("open") ?? DEFAULT_OPEN;
-  const open = /^[0-5]$/.test(openParam) ? openParam : DEFAULT_OPEN;
-  // the page-structure option: ?struct=A..G (StructContext); without it, the page as it is
-  const structParam = (search.get("struct") ?? "").toUpperCase();
-  const struct: Struct = /^[A-G]$/.test(structParam)
-    ? (structParam as Struct)
-    : "";
+  // the opener transition: ?open=1..5, else DEFAULT_OPEN
+  const openParam =
+    new URLSearchParams(useLocation().search).get("open") ?? DEFAULT_OPEN;
+  const open = /^[0-5]$/.test(openParam) ? (openParam as Opener) : DEFAULT_OPEN;
 
   // Lets the film landing's scoped CSS reach the shared navbar (outside .bzl),
   // e.g. the handwritten "Early Access" link, without touching other pages.
@@ -93,7 +80,6 @@ const FilmLanding = ({ path = "/" }: FilmLandingProps) => {
         data-palette="1"
         data-look="film"
         data-open={open}
-        data-struct={struct || undefined}
       >
         <Helmet>
           <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -136,24 +122,12 @@ const FilmLanding = ({ path = "/" }: FilmLandingProps) => {
         />
         <Hero />
         {/* "This isn't a chatbot" (SwitchSection) is hidden: the hero covers it now */}
-        {/* approach 2 presents the three benefits together first; approach 3 adds the side index */}
-        {open === "2" && <BenefitsOverview />}
-        {open === "3" && <SideIndex />}
-        {/* ?struct: A and C reshape Support and Insights; B merges them into one proof screen;
-            D..G redesign all three pillars' openers (Sales' area label comes from here) */}
-        <StructContext.Provider value={struct}>
-          <PillarAreaContext.Provider value={messages.landing.salesArea}>
-            <SalesSection />
-          </PillarAreaContext.Provider>
-          {struct === "B" ? (
-            <ProofSection />
-          ) : (
-            <>
-              <SupportSection />
-              <InsightsSection />
-            </>
-          )}
-        </StructContext.Provider>
+        {/* Boost Sales' small area label, for the transitions (the Sales files stay as they are) */}
+        <PillarAreaContext.Provider value={messages.landing.salesArea}>
+          <SalesSection />
+        </PillarAreaContext.Provider>
+        <SupportSection />
+        <InsightsSection />
         <SetupSection />
         <CustomizeSection />
         <EndCard />

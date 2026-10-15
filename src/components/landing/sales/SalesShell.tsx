@@ -6,31 +6,37 @@ import { TrendIcon } from "../AnimatedIcons";
 import PillarIntro from "../PillarIntro";
 import { buyTimeline } from "./BuyMockup";
 import { findTimeline } from "./FindMockup";
-import { useScene } from "./hooks";
 import SalesTitle, { SalesHeading } from "./SalesTitle";
 import { trustTimeline } from "./TrustMockup";
 import { useSalesCopy } from "./proto";
 
-/* What the grouping prototypes (?grp=2..4, SalesSection) share with the
-   stage (SalesC): the pillar's opener and docked bar, and a beat's clock. */
+/* What the section (SalesSpine) builds on: the pillar's opener and docked
+   bar, the beats' timelines, a live size. */
 
 /** The docked bar's ground: the band's own orange (its middle stop), barely frosted. */
 const BAR = "color-mix(in oklab, #f0913e 95%, transparent)";
 
 const TIMELINES = [findTimeline, trustTimeline, buyTimeline];
 
+/** After a beat's fix lands: its solution written and ticked, and a beat of celebration (ms). */
+const FIXED = 2300;
+
 /**
- * A beat's one clock: its mockup and its funnel both run on it (same
- * duration, same rewind), so the pair plays and rewinds as one. Its
- * sentinel goes over the beat; `play: false` holds it at the start.
+ * Each beat's timeline: how long it is (ms) and when its stage gets fixed.
+ * It always ends on the stage fixed (FIXED after the fix lands). The section
+ * maps its scroll onto these, so a beat's mockup and funnel move with the
+ * scroll as one, back and forth.
  */
-export const useBeat = (i: number, play?: boolean) => {
+export const useBeatTimelines = () => {
   const s = useSalesCopy();
-  const tl = TIMELINES[i](s);
-  const scene = useScene(tl.duration, play);
-  return { ...scene, duration: tl.duration, fixAt: tl.fixAt };
+  return TIMELINES.map((tl) => {
+    const x = tl(s);
+    return { duration: Math.max(x.duration, x.fixAt + FIXED), fixAt: x.fixAt };
+  });
 };
-export type Beat = ReturnType<typeof useBeat>;
+/** A beat at a moment: where it is on its timeline (`t`, ms), its length and its fix. */
+export type Beat = { t: number; duration: number; fixAt: number };
+
 
 /**
  * The section in the orange band: "Boost Sales" huge with "Shoppers Find

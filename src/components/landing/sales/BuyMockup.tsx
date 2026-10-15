@@ -10,7 +10,7 @@ import type { Messages } from "@/i18n/messages/en";
 import { bump, easeOutBack, useMedia, useScene } from "./hooks";
 import { Sentinel } from "./scene";
 import type { MockupProps } from "./scene";
-import { useSalesCopy, useSalesProto } from "./proto";
+import { useSalesCopy } from "./proto";
 
 const PERKS = [Truck, RotateCcw];
 const PRICE = 48;
@@ -44,7 +44,6 @@ export const buyTimeline = (s: Messages["landing"]["sales"]) => {
 const BuyMockup = ({ play, clock, active = true }: MockupProps) => {
   const m = useMessages();
   const s = useSalesCopy();
-  const { one } = useSalesProto();
   const locale = useLocale();
   const portrait = useMedia("(max-width: 639px)");
   const { go, placed, first, duration } = buyTimeline(s);
@@ -186,7 +185,7 @@ const BuyMockup = ({ play, clock, active = true }: MockupProps) => {
               </div>
             )}
             <BarWidget
-              head={one ? "amber" : "luca"}
+              head="amber"
               live={active}
               speaking={speaking && captionVoice(s.buyCaption, t - T.speak, MS_PER_WORD)}
               working={(t >= T.work && t < T.speak) || going}

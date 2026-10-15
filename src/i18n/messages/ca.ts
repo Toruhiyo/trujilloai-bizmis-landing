@@ -154,6 +154,12 @@ export const ca: Messages = {
       decided: "Al carretó",
       buyQuery: "Arriba abans de divendres?",
       buyCaption: "Sí, surt avui i la devolució és gratuïta. Anem a pagar?",
+      /** The flipped beat copy (?copy=flip): the problem first, struck through at the fix, then the fix. No figures. */
+      flip: [
+        { problem: "Qui no ho troba, se'n va.", fix: "Bizmis redueix tot el teu catàleg als pocs que encaixen." },
+        { problem: "Els dubtes sense resposta maten la venda.", fix: "Bizmis compara, aconsella i resol cada dubte." },
+        { problem: "Les preguntes d'última hora buiden carrets.", fix: "Bizmis les respon i acompanya el client fins al pagament." },
+      ],
       /** The one-shopper variant (?case=one): the same shopper and gift from Find through Trust to Buy. */
       caseOne: {
         compareQuery: "Quin dels tres li agradarà més?",
@@ -165,11 +171,15 @@ export const ca: Messages = {
       funnel: {
         problems: ["No el troba", "Indecís", "No n'està segur"],
         solutions: ["Trobat", "Comparat", "Dubte resolt"],
-        /** Prototype marks (?visits, ?win): the dots are visits; the win against the loss, in handwriting (no figures). */
-        visitors: "Visites",
+        /** The word at the open mouth, with its arrow: the dots are store visits. */
         visits: "visites",
-        lost: "perdudes",
-        sold: "venudes",
+      },
+      /** ?win=4..6: the metrics merchants know, drawn moving the right way as stages get fixed (no figures). */
+      metrics: {
+        conversion: "Taxa de conversió",
+        orders: "Comandes",
+        abandoned: "Pagaments abandonats",
+        ordersToday: "Comandes d'avui",
         before: "abans",
         after: "després",
       },
@@ -178,7 +188,7 @@ export const ca: Messages = {
     support: {
       title: "Menys tiquets.",
       titleTail: "Clients més feliços.",
-      /** The area as a small label over the outcome (?struct=A|B|C). */
+      /** The area as a small label over the outcome (the pillar openers, ?open=1..5). */
       area: "Atenció al client",
       lead: "Respon en segons, de dia o de nit, amb la calidesa del teu millor dependent.",
       capabilities: [
@@ -196,7 +206,7 @@ export const ca: Messages = {
     insights: {
       title: "Mira què ven.",
       titleTail: "Arregla la resta.",
-      /** The area as a small label over the outcome (?struct=A|B|C). */
+      /** The area as a small label over the outcome (the pillar openers, ?open=1..5). */
       area: "Dades de la botiga",
       lead: "Cada conversa es converteix en un pas següent clar.",
       features: [
@@ -209,11 +219,7 @@ export const ca: Messages = {
         topAsk: "El més preguntat: enviaments",
       },
     },
-    /** Structure option B (?struct=B): the handwritten kicker over the merged Support + Insights screen. */
-    proof: {
-      kicker: "I no només ven.",
-    },
-    /** Structure options D to G (?struct=D..G): Boost Sales's area label, small over its outcome. */
+    /** Boost Sales's area label, small over its outcome (the pillar openers, ?open=1..5). */
     salesArea: "Vendes",
     customize: {
       lead: "Tria el seu aspecte i posa el teu logo a la seva samarreta.",

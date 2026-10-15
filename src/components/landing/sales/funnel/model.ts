@@ -161,5 +161,32 @@ export const makeShoppers = (duration: number, starts: number[]): Shopper[] => {
   return list;
 };
 
-/** The agent working each stage: the real Bizmis head renders, one per mockup. */
-export const STAGE_HEADS = ["amber", "mia", "luca"];
+
+/**
+ * The stream in a window of real time: the shoppers who enter between
+ * `from` and `to` (s), each one's fate fixed by the pass rate of every stage
+ * at the moment it would reach that stage's leak, with the fixes landing at
+ * `starts` (real ms). An endless stream, so it keeps flowing whatever the
+ * scroll does, and only obeys a fix from the moment it lands.
+ */
+export const shoppersBetween = (from: number, to: number, starts: number[]): Shopper[] => {
+  const list: Shopper[] = [];
+  for (let i = Math.floor(from * RATE); i <= Math.ceil(to * RATE); i++) {
+    const at = i / RATE + (rand(i, 1) - 0.5) * 0.04;
+    const v = 0.985 + rand(i, 2) * 0.03;
+    const lane = LANES[LANE_ORDER[((i % LANES.length) + LANES.length) % LANES.length]];
+    let out = 3;
+    let exit = at + sAt(1, v);
+    for (let g = 0; g < 3; g++) {
+      const when = at + sAt(leakU(g), v);
+      const k = ksAt(when * 1000, starts)[g];
+      if (rand(i, 10 + g) >= rate(g, k)) {
+        out = g;
+        exit = when;
+        break;
+      }
+    }
+    list.push({ at, v, lane, spread: rand(i, 5) * 2 - 1, out, exit });
+  }
+  return list;
+};

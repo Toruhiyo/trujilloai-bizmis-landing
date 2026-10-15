@@ -12,9 +12,9 @@ import type { Messages } from "@/i18n/messages/en";
 import { bump, easeOutBack, useScene } from "./hooks";
 import { Sentinel } from "./scene";
 import type { MockupProps } from "./scene";
-import { useSalesCopy, useSalesProto } from "./proto";
+import { useSalesCopy } from "./proto";
 
-/** The scene's timeline (ms): typing, send, weighing the four (one card every `card`), the pick, the answer. */
+/** The scene's timeline (ms): typing, send, weighing the three (one card every `card`), the pick, the answer. */
 const T = { type: 350, send: 1300, compare: 1650, card: 560, pick: 4050, speak: 4150 };
 const MS_PER_WORD = 280;
 
@@ -27,28 +27,22 @@ export const trustTimeline = (s: Messages["landing"]["sales"]) => ({
 /** What the agent weighs on each product: weight, reviews, warranty. */
 const SPECS = [Feather, Star, ShieldCheck];
 
+/** The three the agent found in Find it (its picks, best first), compared: one shopper's one gift. */
 const PRODUCTS: {
   shape: ClayShape;
   tint: keyof typeof TINT;
   price: number;
   fits: [boolean, boolean, boolean];
 }[] = [
-  { shape: "capsule", tint: "sage", price: 42, fits: [false, true, true] },
-  { shape: "sphere", tint: "sand", price: 48, fits: [true, true, true] },
-  { shape: "cube", tint: "warm", price: 39, fits: [true, false, true] },
-  { shape: "egg", tint: "blush", price: 56, fits: [false, false, true] },
-];
-const BEST = 1;
-/** ?case=one: the three Find it narrowed the catalog to (its picks, best first), compared. */
-const PRODUCTS_ONE: typeof PRODUCTS = [
   { shape: "sphere", tint: "sand", price: 48, fits: [true, true, true] },
   { shape: "torus", tint: "blush", price: 44, fits: [true, false, true] },
   { shape: "capsule", tint: "stone", price: 42, fits: [false, true, true] },
 ];
+const BEST = 0;
 
 /**
  * "They trust it" (the decision), on a phone: the shopper asks which one to
- * get, the agent weighs four products like an expert would (weight, reviews,
+ * get, the agent weighs the three it found like an expert would (weight, reviews,
  * warranty; each gets a tick or a cross), backs the best match out loud in
  * the widget's captions, and the shopper decides: it goes in the cart. The
  * real mobile widget bar, with the avatar's head in its circle; the shopper
@@ -59,9 +53,8 @@ const PRODUCTS_ONE: typeof PRODUCTS = [
 const TrustMockup = ({ play, clock, active = true }: MockupProps) => {
   const m = useMessages();
   const s = useSalesCopy();
-  const { one } = useSalesProto();
-  const products = one ? PRODUCTS_ONE : PRODUCTS;
-  const bestAt = one ? 0 : BEST;
+  const products = PRODUCTS;
+  const bestAt = BEST;
   const locale = useLocale();
   const speakLen = captionLength(s.compareCaption, MS_PER_WORD);
   const decideAt = T.speak + speakLen - 900;
@@ -186,7 +179,7 @@ const TrustMockup = ({ play, clock, active = true }: MockupProps) => {
           })}
         </div>
         <MobileWidget
-          head={one ? "amber" : "mia"}
+          head="amber"
           speaking={captionVoice(s.compareCaption, t - T.speak, MS_PER_WORD)}
           live={active}
           working={comparing}

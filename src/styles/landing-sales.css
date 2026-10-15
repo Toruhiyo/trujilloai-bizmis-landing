@@ -893,22 +893,18 @@
   background: radial-gradient(circle, hsl(var(--primary) / 0.36) 0%, transparent 70%);
 }
 
-/* the rail (A) sits on the light band: its funnel gets a primary ground so the glass reads */
-.sl-a .sl-fn {
-  background: hsl(var(--primary));
-}
 
-/* ═════════ Grouping prototypes (?grp=2..4, SalesSection) ═════════
-   All three keep the stage's band, opener and docked bar (.sl-c via
-   SalesShell); only how Find it / Trust it / Buy it are grouped changes. */
 
-/* ── 2: the funnel as the spine (SalesSpine) ── */
+/* ═════════ The funnel as the spine (SalesSpine) ═════════
+   The stage's band, opener and docked bar (.sl-c via SalesShell); the
+   funnel big in the middle, each part's device popping out of its stage. */
 .sl-c.sl-g2.is-pinned {
   padding: 0;
 }
+/* four stretches of scroll: find, trust, buy, the payoff (each timeline maps onto its own) */
 .sl-g2-track {
   position: relative;
-  height: 520svh;
+  height: 600svh;
 }
 .sl-g2-pin {
   position: sticky;
@@ -1071,317 +1067,201 @@
   --fn-h: 260px;
 }
 
-/* ── 3: the journey path (SalesJourney) ── */
-.sl-c.sl-g3 {
-  --g3-step: clamp(90px, 10vw, 160px);
-  padding-bottom: clamp(3rem, 8vw, 6rem);
-}
-.sl-g3-wrap {
-  position: relative;
-  padding-top: clamp(4.5rem, 10svh, 6.5rem);
-}
-.sl-g3-line {
-  position: absolute;
-  left: 0;
-  top: 0;
-  z-index: 0;
-  overflow: visible;
-  pointer-events: none;
-}
-/* the route ahead, dotted; the line already drawn, in thick white marker */
-.sl-g3-route {
-  fill: none;
-  stroke: rgb(255 255 255 / 0.4);
-  stroke-width: 3;
-  stroke-dasharray: 1 11;
-  stroke-linecap: round;
-}
-.sl-g3-ink {
-  fill: none;
-  stroke: #fff;
-  stroke-width: 6;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-}
-.sl-g3-cols {
-  position: relative;
-  z-index: 1;
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: clamp(2.5rem, 4.5vw, 5rem);
-  align-items: start;
-}
-.sl-g3-col {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  gap: 1.1rem;
-  transition: opacity 0.5s var(--bzl-ease);
-}
-.sl-g3.is-wide .sl-g3-col.is-1 {
-  margin-top: var(--g3-step);
-}
-.sl-g3.is-wide .sl-g3-col.is-2 {
-  margin-top: calc(var(--g3-step) * 2);
-}
-.sl-g3-col.is-ahead,
-.sl-g3-end.is-ahead {
-  opacity: 0.4;
-}
-/* a stop on the line: a white disc with the part's number (still ahead: an empty ring) */
-.sl-g3-node {
-  position: relative;
-  z-index: 2;
-  display: grid;
-  place-items: center;
-  align-self: flex-start;
-  flex-shrink: 0;
-  width: 3rem;
-  height: 3rem;
-  border-radius: 50%;
-  background: #fff;
-  color: #a84f0c;
-  font-size: 0.95rem;
-  font-weight: 800;
-  letter-spacing: 0.04em;
-  box-shadow: 0 0 0 7px rgb(255 255 255 / 0.22);
-  transition:
-    transform 0.5s cubic-bezier(0.34, 1.5, 0.6, 1),
-    background-color 0.35s ease,
-    color 0.35s ease,
-    box-shadow 0.35s ease;
-}
-.is-ahead > .sl-g3-node,
-.is-ahead .sl-g3-node {
-  background: #f0913e;
-  color: #fff;
-  box-shadow: inset 0 0 0 3px #fff;
-}
-.sl-g3-col.is-here > .sl-g3-node {
-  transform: scale(1.15);
-}
-.sl-g3-node.is-bag svg {
-  width: 1.35rem;
-  height: 1.35rem;
-}
-.sl-g3 .sl-copy-kicker {
-  margin-bottom: 0.5rem;
-}
-.sl-g3 .sl-copy-title {
-  font-size: clamp(1.4rem, min(1.9vw, 4svh), 2.05rem);
-}
-.sl-g3-dev {
-  margin-top: 0.4rem;
-}
-.sl-g3 .sl-g3-dev .sl-dev-find,
-.sl-g3 .sl-g3-dev .sl-dev-buy {
-  max-width: none;
-}
-.sl-g3 .sl-g3-dev .sl-dev-trust {
-  max-width: min(250px, 78%);
-}
-.sl-g3-fn {
-  --fn-h: clamp(120px, 17svh, 160px);
-}
-.sl-g3-end {
-  position: relative;
-  z-index: 1;
-  display: grid;
-  grid-template-columns: minmax(0, 4fr) minmax(0, 7fr);
-  gap: clamp(2rem, 4vw, 4rem);
-  align-items: center;
-  margin-top: clamp(7rem, 16svh, 10rem);
-  transition: opacity 0.5s var(--bzl-ease);
-}
-.sl-g3-end-words {
-  display: flex;
-  flex-direction: column;
-  gap: 1.1rem;
-  align-items: flex-start;
-}
-.sl-g3-pay .sl-fn {
-  --fn-h: clamp(240px, 38svh, 330px);
-}
-/* one column: the line down the left gutter, a stop beside each part */
-.sl-g3.is-narrow .sl-g3-cols {
-  grid-template-columns: minmax(0, 1fr);
-  gap: 4rem;
-  padding-left: 2.9rem;
-}
-.sl-g3.is-narrow .sl-g3-node {
-  position: absolute;
-  left: -2.9rem;
-  top: 0;
-  width: 2.3rem;
-  height: 2.3rem;
-  font-size: 0.78rem;
-  box-shadow: 0 0 0 5px rgb(255 255 255 / 0.22);
-}
-.sl-g3.is-narrow .sl-g3-end {
-  grid-template-columns: minmax(0, 1fr);
-  margin-top: 4rem;
-  padding-left: 2.9rem;
-}
-.sl-g3.is-narrow .sl-g3-fn {
-  --fn-h: 170px;
-}
-.sl-g3.is-narrow .sl-g3-pay .sl-fn {
-  --fn-h: 240px;
-}
-.sl-g3.is-narrow .sl-g3-dev .sl-dev-find {
-  max-width: 240px;
-}
-@media (min-width: 640px) {
-  .sl-g3.is-narrow .sl-g3-dev .sl-dev-find {
-    max-width: none;
-  }
-}
-
-/* ── 4: stacking cards (SalesStack) ── */
-.sl-c.sl-g4 {
-  padding-bottom: clamp(3rem, 10svh, 7rem);
-}
-.sl-g4-deck {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  gap: clamp(2.5rem, 14svh, 9rem);
-  /* room under the deck, so the payoff card stays on top a while before the deck leaves */
-  padding-block: 1.25rem 30svh;
-}
-/* where the first card sticks (read by SalesStack) */
-.sl-g4-probe {
-  position: absolute;
-  left: 0;
-  top: calc(var(--sl-nav) + var(--pi-dock-h, 4rem) + 1rem);
-  width: 0;
-  height: 0;
-  visibility: hidden;
-}
-.sl-g4-card {
-  --g4-bg: linear-gradient(160deg, #f8a85c 0%, #f08c39 100%);
-  position: sticky;
-  top: calc(var(--sl-nav) + var(--pi-dock-h, 4rem) + 1rem + var(--i, 0) * 14px);
-  border-radius: clamp(1.25rem, 2.2vw, 2rem);
-  background: var(--g4-bg);
-  box-shadow:
-    inset 0 0 0 1.5px rgb(255 255 255 / 0.4),
-    0 -14px 36px -22px rgb(110 40 0 / 0.5),
-    0 40px 80px -44px rgb(110 40 0 / 0.55);
-  overflow: hidden;
-  transform-origin: 50% 0;
-  transform: scale(calc(1 - var(--cover, 0) * 0.045));
-}
-.sl-g4-card.is-1 {
-  --g4-bg: linear-gradient(160deg, #f6a052 0%, #ec8331 100%);
-}
-.sl-g4-card.is-2 {
-  --g4-bg: linear-gradient(160deg, #f4994a 0%, #e77b28 100%);
-}
-.sl-g4-card.is-payoff {
-  --g4-bg:
-    radial-gradient(ellipse 60% 70% at 70% 45%, rgb(255 205 150 / 0.4), transparent 70%),
-    linear-gradient(160deg, #f29143 0%, #df6f1d 100%);
-}
-/* covered: it settles back and dims under the card on top */
-.sl-g4-card::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: 5;
-  border-radius: inherit;
-  background: rgb(110 40 0 / calc(var(--cover, 0) * 0.3));
-  pointer-events: none;
-}
-.sl-g4-inner {
-  position: relative;
-  display: grid;
-  grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
-  align-items: center;
-  gap: clamp(2rem, 4vw, 4rem);
-  min-height: calc(100svh - var(--sl-nav) - var(--pi-dock-h, 4rem) - 4.75rem);
-  padding: clamp(1.25rem, 3.5svh, 2.75rem) clamp(1.5rem, 3vw, 3rem);
-}
-.sl-g4-side {
-  display: flex;
-  flex-direction: column;
-  gap: clamp(1rem, 4svh, 2.5rem);
-  min-width: 0;
-}
-.sl-g4-fn {
-  --fn-h: clamp(130px, calc(100svh - 32rem), 220px);
-}
-.sl-g4-dev {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 0;
-}
-.sl-g4 .sl-g4-dev .sl-dev-find {
-  max-width: min(100%, calc((100svh - 18rem) * 1.6));
-}
-.sl-g4 .sl-g4-dev .sl-dev-trust {
-  max-width: min(300px, calc((100svh - 17rem) * 0.462));
-}
-.sl-g4 .sl-g4-dev .sl-dev-buy {
-  max-width: min(100%, calc((100svh - 18rem) * 1.333));
-}
-.sl-g4-card.is-payoff .sl-g4-inner {
-  grid-template-columns: minmax(0, 4fr) minmax(0, 7fr);
-}
-.sl-g4-pay .sl-fn {
-  --fn-h: clamp(240px, calc(100svh - 24rem), 360px);
-}
-/* one column (phones, tablets): words, device, funnel; a card taller than the screen sticks by its bottom */
-@media (max-width: 1023px), (max-height: 639px) {
-  .sl-g4-inner,
-  .sl-g4-card.is-payoff .sl-g4-inner {
-    grid-template-columns: minmax(0, 1fr);
-    gap: 1.5rem;
-    min-height: 0;
-  }
-  .sl-g4-side {
-    display: contents;
-  }
-  .sl-g4-copy {
-    order: 1;
-  }
-  .sl-g4-dev {
-    order: 2;
-  }
-  .sl-g4-fn {
-    order: 3;
-    --fn-h: 180px;
-  }
-  .sl-g4 .sl-g4-dev .sl-dev-find,
-  .sl-g4 .sl-g4-dev .sl-dev-trust {
-    max-width: 250px;
-  }
-  .sl-g4 .sl-g4-dev .sl-dev-buy {
-    max-width: 100%;
-  }
-  .sl-g4-pay .sl-fn {
-    --fn-h: 240px;
-  }
-}
-@media (min-width: 640px) and (max-width: 1023px) {
-  .sl-g4 .sl-g4-dev .sl-dev-find {
-    max-width: 100%;
-  }
-}
-
 @media (prefers-reduced-motion: reduce) {
   .sl-g2-callout,
   .sl-g2-copy,
   .sl-g2-funnel,
   .sl-g2-cone-fill,
   .sl-g2-cone-side,
-  .sl-g3-col,
-  .sl-g3-end,
-  .sl-g3-node {
+  .sl-dev-rewind,
+  .sl-flow-rewind {
     transition: none !important;
   }
-  .sl-g4-card {
-    transform: none;
-  }
+}
+
+/* ── ?copy=flip: the problem struck through in marker, then the fix written in (BeatCopy) ── */
+.sl-flip-problem {
+  transition: opacity 0.3s ease;
+}
+.sl-flip-text {
+  background-image: linear-gradient(#fff, #fff);
+  background-repeat: no-repeat;
+  background-position: 0 58%;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+}
+.sl-c .sl-flip-fix {
+  margin-top: 0.55rem;
+  max-width: 30rem;
+  font-family: var(--bzl-script, "Caveat", cursive);
+  font-size: clamp(1.45rem, min(2.2vw, 4svh), 2.2rem);
+  font-weight: 700;
+  line-height: 1.12;
+  color: #fff;
+  text-wrap: balance;
+}
+
+/* the fixed moment: the solution underlined with a marker swoosh (FunnelFlow) */
+.sl-flow-label {
+  transform-origin: 50% 70%;
+}
+.sl-flow-swoosh {
+  position: absolute;
+  left: -4%;
+  bottom: -0.22em;
+  width: 108%;
+  height: 0.32em;
+  overflow: visible;
+  fill: none;
+  stroke: var(--fn-ink);
+  stroke-width: max(2.5px, 0.11em);
+  stroke-linecap: round;
+}
+.sl-flow-swoosh path {
+  vector-effect: non-scaling-stroke;
+}
+
+/* the agent's stamp: its head in the stage's pose, ringed in white, the stage's action as a badge */
+.sl-fn-pin {
+  display: block;
+}
+.sl-flow-pin {
+  box-shadow: none;
+  border-radius: 0;
+}
+.sl-fn-head {
+  position: relative;
+  display: block;
+  overflow: hidden;
+  border-radius: 50%;
+  background: color-mix(in oklab, #f9a353 12%, #f4efe9);
+  box-shadow: 0 0 0 2.5px var(--fn-ink, #fff);
+}
+.sl-fn-head img {
+  position: absolute;
+  max-width: none;
+}
+.sl-fn-badge {
+  position: absolute;
+  right: -34%;
+  bottom: -26%;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: #fff;
+  color: #c45f12;
+  box-shadow: 0 0 0 2px #f08c39;
+}
+.sl-fn-badge svg {
+  width: 60%;
+  height: 60%;
+}
+
+/* scrolled back: the marker ◀◀ over the funnel (FunnelFlow), the player's ◀◀ over the device */
+.sl-flow-rewind {
+  position: absolute;
+  z-index: 7;
+  overflow: visible;
+  fill: #fff;
+  stroke: #fff;
+  stroke-width: 3.2;
+  stroke-linejoin: round;
+  filter: drop-shadow(0 0 14px rgb(190 80 0 / 0.55));
+  opacity: 0;
+  transform: translate(-50%, -50%) scale(0.85);
+  transition:
+    opacity 0.2s ease,
+    transform 0.3s var(--bzl-ease);
+  pointer-events: none;
+}
+.sl-flow-rewind.is-on {
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1);
+}
+.sl-dev-rewind {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  z-index: 9;
+  display: grid;
+  place-items: center;
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: rgb(28 24 20 / 0.55);
+  color: #fff;
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  box-shadow: 0 10px 30px -12px rgb(28 24 20 / 0.5);
+  opacity: 0;
+  transform: translate(-50%, -50%) scale(0.8);
+  transition:
+    opacity 0.18s ease,
+    transform 0.25s var(--bzl-ease);
+  pointer-events: none;
+}
+.sl-dev-rewind.is-on {
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1);
+}
+.sl-dev-rewind svg {
+  width: 30px;
+  height: 30px;
+  translate: -2px 0;
+}
+
+/* ?win=4..6: the metrics, in the funnel's marker (Metrics) */
+.sl-met {
+  display: block;
+  width: 100%;
+  max-width: 330px;
+  margin-top: clamp(0.75rem, 2.5svh, 1.5rem);
+  overflow: visible;
+}
+.sl-met path {
+  fill: none;
+  stroke: #fff;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  transition: opacity 0.3s ease;
+}
+.sl-met .sl-met-ink {
+  stroke-width: 3.6;
+}
+.sl-met .sl-met-ink.is-bold {
+  stroke-width: 5;
+}
+.sl-met .sl-met-thin {
+  stroke-width: 2;
+  opacity: 0.8;
+}
+.sl-met .sl-met-soft {
+  stroke-width: 2.5;
+  opacity: 0.6;
+}
+.sl-met .sl-met-ghost {
+  stroke-width: 3;
+  stroke-dasharray: 4 7;
+  opacity: 0.55;
+}
+.sl-met-dot {
+  fill: #fff;
+}
+.sl-met-label {
+  fill: #fff;
+  font-family: var(--bzl-script, "Caveat", cursive);
+  font-size: 21px;
+  font-weight: 700;
+}
+.sl-met-label.is-small {
+  font-size: 17px;
+  opacity: 0.85;
+}
+.sl-g2-met.is-payoff {
+  margin-inline: auto;
+  margin-top: 0.6rem;
+  max-width: 250px;
+}
+.sl-g2-met.is-payoff[viewBox="0 0 640 96"] {
+  max-width: 620px;
 }

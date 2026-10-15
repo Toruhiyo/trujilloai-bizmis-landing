@@ -2,7 +2,7 @@
    look: FilmLanding.tsx always sets data-look="film" on the .bzl root, and
    every rule here is keyed on it, layered over film-landing.css and
    palette-options.css. How each section opens, and how sections are told
-   apart on the white canvas, is the opener system (openers.css, ?open=1..6).
+   apart on the white canvas: white and a warm cream alternating (below).
 
    The film's system: a WHITE / very light cream canvas with generous space,
    dark ink Inter headlines, the Bizmis primary #F9A353 as the ACCENT (icons,
@@ -275,4 +275,22 @@
   --bzl-border: #f3e6d8;
   --bzl-orange-dark: var(--film-ink);
   border-top: 1px solid #f3e6d8;
+}
+
+/* ── How sections are told apart: white and a warm cream alternate,
+   feathered (no lines); the pillars open with PillarIntro, Setup and
+   Personalization with their own headers ── */
+.bzl[data-look="film"] {
+  --op-cream: #fff8f0;
+  --op-feather: clamp(72px, 13vh, 150px);
+  --op-cream-band: linear-gradient(180deg, #ffffff 0, var(--op-cream) var(--op-feather), var(--op-cream) calc(100% - var(--op-feather)), #ffffff 100%);
+  --pal-support-bg: radial-gradient(ellipse 46% 52% at 16% 42%, var(--film-glow), transparent 72%), #ffffff;
+  --pal-insights-bg: radial-gradient(ellipse 46% 52% at 84% 40%, var(--film-glow), transparent 72%), var(--op-cream-band);
+  --pal-setup-bg: #ffffff;
+  --pal-custom-bg: var(--op-cream-band);
+  --pal-end-bg: #ffffff;
+  --pal-footer-bg: var(--op-cream);
+}
+.bzl[data-look="film"] .bzl-pillar.p-insights .pi {
+  --pi-bar: rgb(255 248 240 / 0.92);
 }

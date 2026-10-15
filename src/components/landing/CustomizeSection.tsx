@@ -1,13 +1,10 @@
 import { useRef } from "react";
 import { useMessages } from "@/i18n/LocaleProvider";
-import { cn } from "@/lib/utils";
 import AvatarCarousel from "./AvatarCarousel";
 import manifest from "./agents-manifest.json";
 import type { CarouselAvatar } from "./AvatarCarousel";
 import FeatureCard from "./FeatureCard";
-import { AvatarIcon, ShirtIcon, VoiceIcon } from "./AnimatedIcons";
-import SectionHead from "./openers/SectionHead";
-import { useOpener } from "./openers/OpenerContext";
+import { AvatarIcon, VoiceIcon } from "./AnimatedIcons";
 import Reveal from "./Reveal";
 
 // Real Bizmis avatars, each wearing a (fictional, AI-generated) store's logo: either a vivid shirt
@@ -42,7 +39,6 @@ const CustomizeSection = () => {
   const m = messages.customization;
   const c = messages.landing.customize;
   const section = useRef<HTMLElement>(null);
-  const opener = useOpener();
 
   return (
     <section
@@ -71,45 +67,22 @@ const CustomizeSection = () => {
           />
         ))}
       </div>
-      {/* the one-screen approaches (?open=1..5): the section header, as every section's */}
-      {opener !== "0" && (
-        <SectionHead
-          index="05"
-          icon={<ShirtIcon />}
-          name={m.badge}
-          promise={
-            <>
+      <div className="bzl-wrap relative grid items-center gap-14 lg:grid-cols-[0.85fr_1.15fr] lg:gap-20">
+        <div>
+          {/* its own header, the kicker over the title */}
+          <Reveal>
+            <p className="bzl-kicker">{m.badge}</p>
+          </Reveal>
+          <Reveal delay={80}>
+            <h2 className="bzl-statement-sm mt-4">
               {m.titleLead}{" "}
               <span className="text-[var(--bzl-orange-strong)]">
                 {m.titleHighlight}
               </span>
-            </>
-          }
-          className="relative"
-        />
-      )}
-      <div className="bzl-wrap relative grid items-center gap-14 lg:grid-cols-[0.85fr_1.15fr] lg:gap-20">
-        <div>
-          {/* by default: its own header, the kicker over the title */}
-          {opener === "0" && (
-            <>
-              <Reveal>
-                <p className="bzl-kicker">{m.badge}</p>
-              </Reveal>
-              <Reveal delay={80}>
-                <h2 className="bzl-statement-sm mt-4">
-                  {m.titleLead}{" "}
-                  <span className="text-[var(--bzl-orange-strong)]">
-                    {m.titleHighlight}
-                  </span>
-                </h2>
-              </Reveal>
-            </>
-          )}
-          <Reveal delay={opener === "0" ? 150 : 0}>
-            <p className={cn("bzl-lead max-w-md", opener === "0" && "mt-4")}>
-              {c.lead}
-            </p>
+            </h2>
+          </Reveal>
+          <Reveal delay={150}>
+            <p className="bzl-lead mt-4 max-w-md">{c.lead}</p>
           </Reveal>
           <div className="mt-8 grid max-w-md items-start gap-2.5">
             <Reveal delay={220}>

@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
+import { useRewindLoop } from "../useRewindLoop";
 import type { RewindLoopOptions } from "../useRewindLoop";
-import { useScrollClock } from "./useScrollClock";
 
 const query = "(prefers-reduced-motion: reduce)";
 
@@ -56,8 +56,7 @@ export const useScene = (
   opts: Omit<RewindLoopOptions, "duration"> = {},
 ) => {
   const sentinel = useRef<HTMLSpanElement>(null);
-  // the rewind loop, on a clock that speeds up while the page scrolls fast (useScrollClock)
-  const loop = useScrollClock(sentinel, {
+  const loop = useRewindLoop(sentinel, {
     duration,
     rewind: 1000,
     threshold: 0.3,
@@ -175,5 +174,76 @@ export const useMedia = (q: string) => {
     mq.addEventListener?.("change", update);
     return () => mq.removeEventListener?.("change", update);
   }, [q]);
+  return on;
+};
+
+/**
+ * How far an element has been scrolled through, 0 → 1: 0 as its top
+ * reaches `from` (share of the screen's height, from the top), 1 as its
+ * bottom reaches `to`. Live with the scroll.
+ */
+export const useScrollThrough = <T extends HTMLElement>(from = 0.85, to = 0.55) => {
+  const ref = useRef<T>(null);
+  const [p, setP] = useState(0);
+  useEffect(() => {
+    let frame = 0;
+    const check = () => {
+      frame = 0;
+      const el = ref.current;
+      if (!el) return;
+      const r = el.getBoundingClientRect();
+      const vh = window.innerHeight;
+      const a = r.top - vh * from;
+      const b = r.bottom - vh * to;
+      setP(Math.min(1, Math.max(0, -a / Math.max(1, b - a))));
+    };
+    const onScroll = () => {
+      if (!frame) frame = requestAnimationFrame(check);
+    };
+    check();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+      if (frame) cancelAnimationFrame(frame);
+    };
+  }, [from, to]);
+  return [ref, p] as const;
+};
+
+/** A clock in real ms that runs while `on` (rAF), for motion that keeps going whatever the scroll does. */
+export const useNow = (on = true) => {
+  const [now, setNow] = useState(0);
+  useEffect(() => {
+    if (!on) return;
+    let raf = 0;
+    const loop = (t: number) => {
+      setNow(t);
+      raf = requestAnimationFrame(loop);
+    };
+    raf = requestAnimationFrame(loop);
+    return () => cancelAnimationFrame(raf);
+  }, [on]);
+  return now;
+};
+
+/**
+ * True for a moment whenever `t` goes backwards (scrolled back), so the
+ * rewind can be shown (◀◀): on while it falls, and `linger` ms after.
+ */
+export const useRewinding = (t: number, linger = 420) => {
+  const last = useRef(t);
+  const [on, setOn] = useState(false);
+  const timer = useRef(0);
+  useEffect(() => {
+    if (t < last.current - 1) {
+      setOn(true);
+      window.clearTimeout(timer.current);
+      timer.current = window.setTimeout(() => setOn(false), linger);
+    }
+    last.current = t;
+  }, [t, linger]);
+  useEffect(() => () => window.clearTimeout(timer.current), []);
   return on;
 };

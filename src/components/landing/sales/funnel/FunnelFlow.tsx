@@ -2,11 +2,10 @@ import { useLayoutEffect, useMemo, useRef, useState } from "react";
 import type { CSSProperties } from "react";
 import { ShoppingBag } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { useSalesProto } from "../proto";
+import { useNow } from "../hooks";
 import AgentPin from "./AgentPin";
 import {
   CHAMBERS,
-  rand,
   FALL,
   HOP,
   PEEL,
@@ -15,7 +14,7 @@ import {
   halfAtU,
   ksAt,
   leakU,
-  makeShoppers,
+  shoppersBetween,
   sAt,
   startsFor,
   uAt,
@@ -24,13 +23,8 @@ import {
 export type FunnelCopy = {
   problems: string[];
   solutions: string[];
-  /** Prototype marks (?visits, ?win): handwritten words, never figures. */
-  visitors?: string;
+  /** The word at the open mouth: the dots are store visits. */
   visits?: string;
-  lost?: string;
-  sold?: string;
-  before?: string;
-  after?: string;
 };
 
 const clamp = (v: number, a = 0, b = 1) => Math.min(b, Math.max(a, v));
@@ -77,7 +71,7 @@ type Geo = {
 };
 
 /** Room left of the open mouth, where the visits stream in from outside (px). */
-const leadFor = (W: number, wide = false) => (wide ? clamp(W * 0.11, 40, 104) : clamp(W * 0.05, 16, 56));
+const leadFor = (W: number) => clamp(W * 0.07, 26, 80);
 
 const geometry = (W: number, H: number, lead = leadFor(W)): Geo => {
   const top = Math.round(clamp(H * 0.18, 30, 48));
@@ -306,6 +300,7 @@ const FunnelFlow = ({
   focus,
   fixAt,
   copy,
+  rewind = false,
   className,
 }: {
   t: number;
@@ -313,6 +308,8 @@ const FunnelFlow = ({
   focus: number;
   fixAt?: number;
   copy: FunnelCopy;
+  /** Scrolled back: the marker ◀◀ over the funnel. */
+  rewind?: boolean;
   className?: string;
 }) => {
   const wrap = useRef<HTMLDivElement>(null);
@@ -322,16 +319,30 @@ const FunnelFlow = ({
   const [size, setSize] = useState({ W: 0, H: 0 });
   const payoff = focus >= 3;
   const starts = useMemo(() => startsFor(focus, fixAt), [focus, fixAt]);
-  const shoppers = useMemo(() => makeShoppers(duration, starts), [duration, starts]);
-  const arrivals = useMemo(
-    () => shoppers.filter((s) => s.out === 3).map((s) => s.exit + HOP).sort((a, b) => a - b),
-    [shoppers],
-  );
+  // Two clocks. The fix (stamp, label, chamber, leak) follows `t`, the scroll; the stream of visits
+  // flows on in real time (`now`), obeying each fix from the real moment the scroll lands it.
+  const now = useNow();
+  const born = useRef<number | null>(null);
+  if (born.current === null && now > 0) born.current = now;
+  const real = useRef({ key: "", at: [] as number[] });
+  const key = `${focus}|${fixAt}`;
+  if (real.current.key !== key) real.current = { key, at: starts.map((st) => (st === -Infinity ? -Infinity : Infinity)) };
+  starts.forEach((st, i) => {
+    if (!Number.isFinite(st)) return;
+    const at = real.current.at;
+    if (t >= st && at[i] === Infinity) at[i] = now;
+    else if (t < st) at[i] = Infinity;
+  });
+  const realStarts = real.current.at;
+  const sec = now / 1000;
+  const shoppers = shoppersBetween(sec - 6.5, sec + 0.3, realStarts);
+  const arrivals = shoppers
+    .filter((s) => s.out === 3)
+    .map((s) => s.exit + HOP)
+    .sort((a, b) => a - b);
   const k = ksAt(t, starts);
   const bounds = boundsFor(k);
-  const proto = useSalesProto();
-  const geo = geometry(size.W, size.H, leadFor(size.W, proto.visits === 2));
-  const sec = t / 1000;
+  const geo = geometry(size.W, size.H);
   // one size for all three labels: the largest at which every problem and solution (with its tick) fits its chamber
   // the labels: the beat's own big (desktop ~36px), the others smaller; all fitting, none overlapping
   const labels = layoutLabels(
@@ -363,11 +374,7 @@ const FunnelFlow = ({
     heat += Math.exp(-age / 2.6);
   }
   squash = clamp(squash, -0.12, 0.16);
-  // ?win=3: the bag itself grows as the orders pile in
-  let sold = 0;
-  for (const at of arrivals) if (at >= 0 && at <= sec) sold++;
-  const grow = proto.win === 3 ? 1 + 0.9 * smooth(sold / 110) : 1;
-  const bagScale = { x: (1 + squash) * grow, y: (1 - squash * 0.9) * grow };
+  const bagScale = { x: 1 + squash, y: 1 - squash * 0.9 };
 
   useLayoutEffect(() => {
     const cv = canvas.current;
@@ -397,8 +404,9 @@ const FunnelFlow = ({
     ctx.lineCap = "round";
     ctx.lineJoin = "round";
     /** How far the outline has drawn itself in (u): once, the first time the funnel plays; after that it stays drawn through every rewind and replay. */
-    if (t >= REVEAL) drawn.current = true;
-    const reveal = drawn.current ? 1.06 : 1.06 * smooth(t / REVEAL);
+    const life = now - (born.current ?? now);
+    if (life >= REVEAL) drawn.current = true;
+    const reveal = drawn.current ? 1.06 : 1.06 * smooth(life / REVEAL);
 
     /** Each stage's leak: where it is, and how wide it's open now. */
     const leaks = [0, 1, 2].map((i) => {
@@ -574,31 +582,14 @@ const FunnelFlow = ({
     const uOf = (age: number, v: number) => (age >= 0 ? uAt(age, v) : -uAt(-age, v));
     /** How long before the mouth a shopper shows (s): from the box's left edge. */
     const pre = (v: number) => sAt(g.x0 / g.run, v);
-    /** ?visits=2: a visitor glyph (a head and shoulders) that turns into a dot as it comes in. */
-    const glyphs = proto.visits === 2;
-    const visit = (x: number, y: number, rx: number, ry: number, col: number[], alpha: number) => {
-      if (!glyphs || x > g.x0 + r * 3) return blob(x, y, rx, ry, col, alpha);
-      const m = smooth((x - (g.x0 - r * 3)) / (r * 6));
-      const q = 1.3;
-      if (m < 1) {
-        const a = alpha * (1 - m);
-        blob(x, y - r * 1.05 * q, r * 0.72 * q, r * 0.72 * q, col, a);
-        if (a > 0.01) {
-          ctx.fillStyle = rgba(col, a);
-          ctx.beginPath();
-          ctx.ellipse(x, y + r * 1.15 * q, r * 1.3 * q, r * 1.05 * q, 0, Math.PI, Math.PI * 2);
-          ctx.fill();
-        }
-      }
-      blob(x, y, rx * m, ry * m, col, alpha * m);
-    };
+    const visit = blob;
     for (const s of shoppers) {
       const age = sec - s.at;
       if (age <= -pre(s.v)) continue;
       const enter = (x: number) => clamp(x / (r * 6));
       if (s.out < 3) {
         const i = s.out;
-        const kk = ksAt(s.exit * 1000, starts)[i];
+        const kk = ksAt(s.exit * 1000, realStarts)[i];
         const xd = dropX(i, s.spread, kk);
         const ud = (xd - g.x0) / g.run;
         const td = s.at + sAt(ud, s.v);
@@ -625,7 +616,7 @@ const FunnelFlow = ({
         const y = y0 + D * (0.4 * p + 0.6 * p * p);
         const st = 0.25 * p;
         // sealed: the ones already lost before the agent landed clear away at once (the change is instant)
-        const gone = s.exit * 1000 < starts[i] ? smooth((t - starts[i]) / 220) : 0;
+        const gone = s.exit * 1000 < realStarts[i] ? smooth((now - realStarts[i]) / 220) : 0;
         ring(x, y, r * 1.15 * (1 - st * 0.4), r * 1.15 * (1 + st), ringW * (1 - 0.5 * p), (1 - smooth((p - 0.35) / 0.65)) * (1 - gone));
         continue;
       }
@@ -719,150 +710,43 @@ const FunnelFlow = ({
       ctx.globalCompositeOperation = "source-over";
     }
 
-    // ── prototype marks (?visits, ?win), in the same white marker, never a figure ──
-    const fs = Math.round(clamp(g.top * 0.62, 14, 26));
-    const write = (text: string, x: number, y: number, size = fs, align: CanvasTextAlign = "left", alpha = 1) => {
-      ctx.font = `700 ${size}px ${SCRIPT}`;
-      ctx.textAlign = align;
+    // ── "visits": the word written by the open mouth (over it; under it where the labels need the room),
+    // its arrow sweeping round the lip and into the stream ──
+    if (copy.visits && reveal > 0.2) {
+      const fs = Math.round(clamp(g.top * 0.62, 15, 26));
+      const below = W < 560;
+      const s1 = below ? -1 : 1;
+      ctx.font = `700 ${fs}px ${SCRIPT}`;
+      ctx.textAlign = "left";
       ctx.textBaseline = "alphabetic";
-      ctx.fillStyle = ink(alpha);
-      ctx.fillText(text, x, y);
-      return ctx.measureText(text).width;
-    };
-    /** Hand tally marks (fours struck through by a fifth), at most what fits in `room` px; returns the width used. */
-    const tally = (n: number, x: number, y: number, h: number, room: number) => {
-      const step = h * 0.34;
-      const group = step * 4 + h * 0.55;
-      const max = Math.max(0, Math.floor(room / group) * 5 + Math.min(4, Math.floor((room % group) / step)));
-      const shown = Math.min(n, max);
-      ctx.strokeStyle = ink(0.95);
-      ctx.lineWidth = Math.max(1.8, lw * 0.55);
-      let cx = x;
-      for (let j = 0; j < shown; j++) {
-        const inGroup = j % 5;
-        if (inGroup === 4) {
-          ctx.beginPath();
-          ctx.moveTo(cx - step * 4.25, y - h * 0.22);
-          ctx.lineTo(cx - step * 0.1, y - h * 0.82);
-          ctx.stroke();
-          cx += h * 0.55;
-          continue;
-        }
-        const wv = wobble(j * 13, 5) * 0.6;
-        ctx.beginPath();
-        ctx.moveTo(cx + wv, y);
-        ctx.lineTo(cx - wv * 0.5, y - h);
-        ctx.stroke();
-        cx += step;
-      }
-      return cx - x;
-    };
-    const tLost = shoppers.reduce((n, q) => n + (q.out < 3 && q.exit >= 0 && q.exit <= sec ? 1 : 0), 0);
-    const mouthFloor = cy + half(0);
-    if (proto.visits === 1 && copy.visitors) {
-      // a handwritten "Visitors" under the mouth, its arrow curling up into it
-      const ty = Math.min(H - 4, mouthFloor + fs * 1.55);
-      const tw = write(copy.visitors, 2, ty);
+      ctx.fillStyle = ink(1);
+      const tx = 2;
+      const ty = below ? cy + half(0) + ow * 1.6 + fs * 0.95 : cy - half(0) - ow * 1.6 - fs * 0.15;
+      ctx.fillText(copy.visits, tx, ty);
+      const tw = ctx.measureText(copy.visits).width;
       ctx.strokeStyle = ink(0.95);
       ctx.lineWidth = Math.max(2, lw * 0.6);
-      const sx = 2 + Math.min(tw * 0.35, g.x0 * 0.6);
-      const sy = ty - fs * 0.95;
-      const ex = g.x0 + r * 4;
-      const ey = cy + half(0) * 0.35;
+      const sx = tx + tw + fs * 0.25;
+      const sy = ty - fs * 0.35;
+      const ex = g.x0 + Math.max(r * 5, fs * 0.9);
+      const ey = cy - s1 * half(0) * 0.42;
+      const c2x = ex - fs * 0.6;
+      const c2y = ey - s1 * fs * 1.3;
       ctx.beginPath();
       ctx.moveTo(sx, sy);
-      ctx.bezierCurveTo(sx - fs * 0.2, ey + (sy - ey) * 0.3, g.x0 - fs * 0.6, ey, ex, ey);
+      ctx.bezierCurveTo(sx + fs * 1.3, sy - s1 * fs * 0.2, c2x, c2y, ex, ey);
       ctx.stroke();
+      // the arrowhead: two strokes back from the tip, along the curve's last direction
+      const ang = Math.atan2(ey - c2y, ex - c2x);
+      const hl = fs * 0.42;
       ctx.beginPath();
-      ctx.moveTo(ex - fs * 0.38, ey - fs * 0.28);
+      ctx.moveTo(ex - Math.cos(ang - 0.5) * hl, ey - Math.sin(ang - 0.5) * hl);
       ctx.lineTo(ex, ey);
-      ctx.lineTo(ex - fs * 0.38, ey + fs * 0.28);
+      ctx.lineTo(ex - Math.cos(ang + 0.5) * hl, ey - Math.sin(ang + 0.5) * hl);
       ctx.stroke();
-    }
-    if (proto.visits === 3 && copy.visits) {
-      // a hand tally of the visits coming in, under the mouth: it never stops
-      const n = Math.floor(shoppers.reduce((m, q) => m + (q.at >= 0 && q.at <= sec ? 1 : 0), 0) / 10);
-      const ty = Math.min(H - 4, mouthFloor + fs * 1.5);
-      const tw = write(copy.visits, 2, ty);
-      tally(n, 2 + tw + fs * 0.4, ty, fs * 0.85, Math.max(0, leaks[0].x - leaks[0].open - (2 + tw + fs * 0.6)));
-    }
-    if (proto.win === 1) {
-      // the lost pile up in heaps under each leak, hollow circles; the sold fill the bag
-      for (let i = 0; i < 3; i++) {
-        let n = 0;
-        for (const q of shoppers) if (q.out === i && q.exit >= 0 && q.exit + FALL * 0.8 <= sec) n++;
-        const L = leaks[i];
-        const d = r * 2.35;
-        let row = 0;
-        let inRow = 0;
-        const cap = (j: number) => Math.max(1, 7 - j);
-        // one circle in the heap for every few lost
-        for (let j = 0; j < Math.min(Math.ceil(n / 3), 27); j++) {
-          if (inRow >= cap(row)) {
-            row++;
-            inRow = 0;
-          }
-          const c0 = cap(row);
-          const x = L.x + (inRow - (c0 - 1) / 2) * d + (row % 2 ? d * 0.15 : 0) + (rand(j, i + 40) - 0.5) * r;
-          const y = H - r * 1.4 - row * d * 0.86;
-          ring(x, y, r * 1.1, r * 1.1, ringW, 0.85);
-          inRow++;
-        }
-      }
-      const level = smooth(sold / 70);
-      if (level > 0.01) {
-        ctx.save();
-        ctx.beginPath();
-        ctx.arc(g.bx, g.by, g.R * grow - lw * 0.6, 0, Math.PI * 2);
-        ctx.clip();
-        const top = g.by + g.R * grow - 2 * g.R * grow * level;
-        ctx.fillStyle = rgba(c.line, 0.42);
-        ctx.beginPath();
-        ctx.moveTo(g.bx - g.R * 2, g.by + g.R * 2);
-        for (let n = 0; n <= 16; n++) {
-          const x = g.bx - g.R * 2 + (n / 16) * g.R * 4;
-          ctx.lineTo(x, top + Math.sin(n * 0.9 + sec * 5) * 1.6);
-        }
-        ctx.lineTo(g.bx + g.R * 2, g.by + g.R * 2);
-        ctx.fill();
-        ctx.restore();
-      }
-    }
-    if (proto.win === 2 && copy.lost && copy.sold) {
-      // two hand tallies along the bottom: what's lost (under the leaks) against what's sold (by the bag)
-      const ty = H - 6;
-      const h = fs * 0.8;
-      const lx = leaks[0].x + leaks[0].open + fs * 0.6;
-      const lw0 = write(copy.lost, lx, ty);
-      tally(Math.floor(tLost / 8), lx + lw0 + fs * 0.35, ty, h, leaks[1].x - leaks[1].open - (lx + lw0 + fs * 0.6));
-      const sx = leaks[2].x + leaks[2].open + fs * 0.6;
-      const sw = write(copy.sold, sx, ty);
-      tally(Math.floor(sold / 8), sx + sw + fs * 0.35, ty, h, W - 4 - (sx + sw + fs * 0.35));
-    }
-    if (proto.win === 3 && copy.before && copy.after) {
-      // "before": the small bag the leaky funnel filled; "after": this one, growing
-      const R2 = g.R * 0.62;
-      const bx2 = g.bx;
-      const by2 = Math.min(H - R2 - 6, g.by + g.R * grow + R2 + fs * 1.1);
-      ctx.strokeStyle = ink(0.75);
-      ctx.lineWidth = Math.max(1.6, lw * 0.5);
-      ctx.setLineDash([lw * 0.9, lw * 1.1]);
-      ctx.beginPath();
-      ctx.arc(bx2, by2, R2, 0, Math.PI * 2);
-      ctx.stroke();
-      ctx.setLineDash([]);
-      ctx.save();
-      ctx.beginPath();
-      ctx.arc(bx2, by2, R2 - 1, 0, Math.PI * 2);
-      ctx.clip();
-      ctx.fillStyle = rgba(c.buy, 0.5);
-      ctx.fillRect(bx2 - R2, by2 + R2 * 0.55, R2 * 2, R2);
-      ctx.restore();
-      write(copy.before, bx2 - R2 - fs * 0.3, by2 + fs * 0.3, Math.round(fs * 0.85), "right", 0.85);
-      write(copy.after, g.bx, g.by - g.R * grow - lw * 2.8, fs, "center");
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [t, size, shoppers]);
+  }, [t, size, now]);
 
   const W = size.W;
   const X = (u: number) => geo.x0 + u * geo.run;
@@ -885,12 +769,20 @@ const FunnelFlow = ({
             const away = smooth((since - STRIKE_AT - STRIKE - 60) / 200);
             const writeS = fixed ? 1 : pen((since - SOLVE_AT) / writeMs(solution));
             const tick = fixed ? 1 : pen((since - SOLVE_AT - writeMs(solution) - 40) / TICK);
+            // the fixed moment: once ticked, the solution is underlined with a swoosh and pops
+            const party = fixed ? 0 : pen((since - SOLVE_AT - writeMs(solution) - 40 - TICK - 60) / 420);
             const L = labels[i];
             return (
               <span
                 key={i}
                 className={cn("sl-flow-label", writeS > 0 && "is-fixed", dim && "is-dim")}
-                style={{ left: L.left, width: L.width, height: geo.top, fontSize: L.size }}
+                style={{
+                  left: L.left,
+                  width: L.width,
+                  height: geo.top,
+                  fontSize: L.size,
+                  scale: party > 0 && party < 1 ? `${1 + 0.1 * Math.sin(Math.PI * party)}` : undefined,
+                }}
               >
                 {away < 1 && (
                   <span className="sl-flow-label-text" style={{ opacity: 1 - away }}>
@@ -912,36 +804,33 @@ const FunnelFlow = ({
                     <svg className="sl-flow-tick" viewBox="0 0 24 24" aria-hidden="true">
                       <path d="M3.5 13.5 L9.5 19.5 L21.5 4.5" pathLength={1} strokeDasharray="1 1" strokeDashoffset={1 - tick} />
                     </svg>
+                    {party > 0 && (
+                      <svg
+                        className="sl-flow-swoosh"
+                        viewBox="0 0 100 12"
+                        preserveAspectRatio="none"
+                        aria-hidden="true"
+                        style={{ clipPath: `inset(-50% ${((1 - party) * 100).toFixed(1)}% -50% -5%)` }}
+                      >
+                        <path d="M2 8 C 30 3.5, 62 3, 98 6.5" />
+                      </svg>
+                    )}
                   </span>
                 )}
               </span>
             );
           })}
-        {W > 0 &&
-          CHAMBERS.map((_, i) => {
-            // the agent, stamped onto the leak: in big, pressed down with a squash, settled
-            const q = (t - starts[i]) / STAMP;
-            if (!(q > 0)) return null;
-            const u = leakU(i);
-            const s = q < 1 ? 1.6 - 0.6 * spring(q) : 1;
-            const sq = q > 0.25 && q < 1.6 ? 0.2 * Math.exp(-3.5 * (q - 0.25)) * Math.cos(6 * (q - 0.25)) : 0;
-            return (
-              <AgentPin
-                key={i}
-                stage={i}
-                size={geo.head}
-                className={cn("sl-flow-pin", !payoff && i !== focus && "is-dim")}
-                style={
-                  {
-                    left: X(u),
-                    top: geo.cy + halfPx(geo, u, bounds),
-                    opacity: clamp(q * 3),
-                    transform: `translate(-50%, -50%) scale(${s * (1 + sq)}, ${s * (1 - sq)})`,
-                  } as CSSProperties
-                }
-              />
-            );
-          })}
+        {W > 0 && <Seals t={t} starts={starts} focus={focus} geo={geo} bounds={bounds} />}
+        {/* scrolled back: a marker ◀◀ over the funnel, while it rewinds */}
+        <svg
+          className={cn("sl-flow-rewind", rewind && "is-on")}
+          viewBox="0 0 64 36"
+          style={{ left: "50%", top: geo.cy, width: Math.round(geo.h0 * 1.25) }}
+          aria-hidden="true"
+        >
+          <path d="M30.5 5.5 C 24 10.5, 15.5 15, 6.5 18.2 C 15 21.5, 23.5 26, 30.2 30.8 C 29.6 22.5, 29.8 13.5, 30.5 5.5 Z" />
+          <path d="M57.5 5.2 C 51 10.2, 42.5 14.8, 33.5 18 C 42 21.4, 50.5 26.2, 57.3 30.6 C 56.7 22.3, 56.9 13.4, 57.5 5.2 Z" />
+        </svg>
         {W > 0 && (
           <span
             className="sl-flow-bag"
@@ -960,6 +849,55 @@ const FunnelFlow = ({
         )}
       </div>
     </div>
+  );
+};
+
+/**
+ * The seals: on each leak, as its fix lands (`starts`), the store's one agent
+ * in that stage's pose, pressed down with a squash and tilted its own way,
+ * the stage's action (search, compare, cart) landing on it as a badge.
+ */
+const Seals = ({
+  t,
+  starts,
+  focus,
+  geo,
+  bounds,
+}: {
+  t: number;
+  starts: number[];
+  focus: number;
+  geo: Geo;
+  bounds: number[];
+}) => {
+  const payoff = focus >= 3;
+  return (
+    <>
+      {CHAMBERS.map((_, i) => {
+        const q = (t - starts[i]) / STAMP;
+        if (!(q > 0)) return null;
+        const u = leakU(i);
+        const s = q < 1 ? 1.6 - 0.6 * spring(q) : 1;
+        const sq = q > 0.25 && q < 1.6 ? 0.2 * Math.exp(-3.5 * (q - 0.25)) * Math.cos(6 * (q - 0.25)) : 0;
+        return (
+          <AgentPin
+            key={i}
+            stage={i}
+            size={geo.head}
+            badge={clamp(q * 1.6 - 0.8)}
+            className={cn("sl-flow-pin", !payoff && i !== focus && "is-dim")}
+            style={
+              {
+                left: geo.x0 + u * geo.run,
+                top: geo.cy + halfPx(geo, u, bounds),
+                opacity: clamp(q * 3),
+                transform: `translate(-50%, -50%) scale(${s * (1 + sq)}, ${s * (1 - sq)})`,
+              } as CSSProperties
+            }
+          />
+        );
+      })}
+    </>
   );
 };
 

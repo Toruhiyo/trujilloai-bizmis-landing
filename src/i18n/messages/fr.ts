@@ -154,6 +154,12 @@ export const fr: Messages = {
       decided: "Dans le panier",
       buyQuery: "Il arrive avant vendredi ?",
       buyCaption: "Oui, il part aujourd'hui et le retour est gratuit. On passe au paiement ?",
+      /** The flipped beat copy (?copy=flip): the problem first, struck through at the fix, then the fix. No figures. */
+      flip: [
+        { problem: "Qui ne trouve pas, s'en va.", fix: "Bizmis réduit tout votre catalogue aux quelques produits qui conviennent." },
+        { problem: "Les doutes sans réponse tuent la vente.", fix: "Bizmis compare, conseille et lève chaque doute." },
+        { problem: "Les questions de dernière minute vident les paniers.", fix: "Bizmis y répond et accompagne l'acheteur jusqu'au paiement." },
+      ],
       /** The one-shopper variant (?case=one): the same shopper and gift from Find through Trust to Buy. */
       caseOne: {
         compareQuery: "Lequel des trois lui plaira le plus ?",
@@ -165,11 +171,15 @@ export const fr: Messages = {
       funnel: {
         problems: ["Introuvable", "Indécis", "Pas sûr"],
         solutions: ["Trouvé", "Comparé", "Doute levé"],
-        /** Prototype marks (?visits, ?win): the dots are visits; the win against the loss, in handwriting (no figures). */
-        visitors: "Visiteurs",
+        /** The word at the open mouth, with its arrow: the dots are store visits. */
         visits: "visites",
-        lost: "perdues",
-        sold: "vendues",
+      },
+      /** ?win=4..6: the metrics merchants know, drawn moving the right way as stages get fixed (no figures). */
+      metrics: {
+        conversion: "Taux de conversion",
+        orders: "Commandes",
+        abandoned: "Paiements abandonnés",
+        ordersToday: "Commandes du jour",
         before: "avant",
         after: "après",
       },
@@ -178,7 +188,7 @@ export const fr: Messages = {
     support: {
       title: "Moins de tickets.",
       titleTail: "Des clients plus heureux.",
-      /** The area as a small label over the outcome (?struct=A|B|C). */
+      /** The area as a small label over the outcome (the pillar openers, ?open=1..5). */
       area: "Service client",
       lead: "Il répond en quelques secondes, jour et nuit, avec la chaleur de votre meilleur vendeur.",
       capabilities: [
@@ -196,7 +206,7 @@ export const fr: Messages = {
     insights: {
       title: "Voyez ce qui vend.",
       titleTail: "Corrigez le reste.",
-      /** The area as a small label over the outcome (?struct=A|B|C). */
+      /** The area as a small label over the outcome (the pillar openers, ?open=1..5). */
       area: "Données de la boutique",
       lead: "Chaque conversation devient une prochaine étape claire.",
       features: [
@@ -209,11 +219,7 @@ export const fr: Messages = {
         topAsk: "Question n°1 : la livraison",
       },
     },
-    /** Structure option B (?struct=B): the handwritten kicker over the merged Support + Insights screen. */
-    proof: {
-      kicker: "Et il ne fait pas que vendre.",
-    },
-    /** Structure options D to G (?struct=D..G): Boost Sales's area label, small over its outcome. */
+    /** Boost Sales's area label, small over its outcome (the pillar openers, ?open=1..5). */
     salesArea: "Ventes",
     customize: {
       lead: "Choisissez son look et mettez votre logo sur son t-shirt.",
