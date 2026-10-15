@@ -144,7 +144,7 @@ const Hero = () => {
       asChild
       className={cn(
         "bzh-install group flex items-center gap-3 [&_svg]:pointer-events-auto",
-        big ? "h-16 px-6 text-lg" : "h-12 flex-1 px-4 text-base",
+        big ? "h-[4.75rem] gap-4 px-7 text-lg" : "h-14 flex-1 px-5 text-base",
       )}
     >
       <a href={BIZMIS_SHOPIFY_APP_LISTING_URL} target="_blank" rel="noopener noreferrer" onClick={(e) => handleShopifyInstallClick(e)}>
