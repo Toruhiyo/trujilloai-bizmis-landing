@@ -71,9 +71,13 @@ type Geo = {
 };
 
 /** Room left of the open mouth, where the visits stream in from outside (px). */
-const leadFor = (W: number) => clamp(W * 0.07, 26, 80);
+/** The "visits" word's size, from the stage box's height (as its labels'). */
+const visitsSize = (H: number) => Math.round(clamp(Math.round(clamp(H * 0.18, 30, 48)) * 0.62, 15, 26));
+/** Room before the open mouth: the word "visits", then its arrow into the mouth (or a little, without it). */
+const leadFor = (W: number, H: number, word?: string) =>
+  word ? Math.min(W * 0.3, textWidth(word, visitsSize(H)) + visitsSize(H) * 2 + 8) : clamp(W * 0.05, 16, 56);
 
-const geometry = (W: number, H: number, lead = leadFor(W)): Geo => {
+const geometry = (W: number, H: number, lead = leadFor(W, H)): Geo => {
   const top = Math.round(clamp(H * 0.18, 30, 48));
   const R = clamp(H * 0.09, 15, 25);
   const bx = W - R * 1.75 - 2;
@@ -114,8 +118,8 @@ const halfPx = (g: Geo, u: number, bounds: number[]) => Math.max(g.h0 * halfAtU(
  * span and centre, the labels' row, the funnel's centre line, its top edge
  * over each chamber (stages fixed by `k`, 0 → 1 each), the mouth and the bag.
  */
-export const funnelAnchors = (W: number, H: number, k: number[] = [0, 0, 0]) => {
-  const g = geometry(W, H);
+export const funnelAnchors = (W: number, H: number, k: number[] = [0, 0, 0], visits?: string) => {
+  const g = geometry(W, H, leadFor(W, H, visits));
   const b = boundsFor(k);
   const X = (u: number) => g.x0 + u * g.run;
   return {
@@ -342,7 +346,7 @@ const FunnelFlow = ({
     .sort((a, b) => a - b);
   const k = ksAt(t, starts);
   const bounds = boundsFor(k);
-  const geo = geometry(size.W, size.H);
+  const geo = geometry(size.W, size.H, leadFor(size.W, size.H, copy.visits));
   // one size for all three labels: the largest at which every problem and solution (with its tick) fits its chamber
   // the labels: the beat's own big (desktop ~36px), the others smaller; all fitting, none overlapping
   const labels = layoutLabels(
@@ -586,7 +590,8 @@ const FunnelFlow = ({
     for (const s of shoppers) {
       const age = sec - s.at;
       if (age <= -pre(s.v)) continue;
-      const enter = (x: number) => clamp(x / (r * 6));
+      // they come into view just before the mouth, clear of the "visits" word and its arrow
+      const enter = (x: number) => clamp((x - (g.x0 - r * 7)) / (r * 5));
       if (s.out < 3) {
         const i = s.out;
         const kk = ksAt(s.exit * 1000, realStarts)[i];
@@ -710,39 +715,30 @@ const FunnelFlow = ({
       ctx.globalCompositeOperation = "source-over";
     }
 
-    // ── "visits": the word written by the open mouth (over it; under it where the labels need the room),
-    // its arrow sweeping round the lip and into the stream ──
+    // ── "visits": the word left of the open mouth, centred on it, a straight marker arrow pointing in ──
     if (copy.visits && reveal > 0.2) {
-      const fs = Math.round(clamp(g.top * 0.62, 15, 26));
-      const below = W < 560;
-      const s1 = below ? -1 : 1;
+      const fs = visitsSize(H);
       ctx.font = `700 ${fs}px ${SCRIPT}`;
       ctx.textAlign = "left";
-      ctx.textBaseline = "alphabetic";
+      ctx.textBaseline = "middle";
       ctx.fillStyle = ink(1);
-      const tx = 2;
-      const ty = below ? cy + half(0) + ow * 1.6 + fs * 0.95 : cy - half(0) - ow * 1.6 - fs * 0.15;
-      ctx.fillText(copy.visits, tx, ty);
+      // Caveat sits a touch high on its middle line
+      ctx.fillText(copy.visits, 2, cy + fs * 0.06);
       const tw = ctx.measureText(copy.visits).width;
       ctx.strokeStyle = ink(0.95);
-      ctx.lineWidth = Math.max(2, lw * 0.6);
-      const sx = tx + tw + fs * 0.25;
-      const sy = ty - fs * 0.35;
-      const ex = g.x0 + Math.max(r * 5, fs * 0.9);
-      const ey = cy - s1 * half(0) * 0.42;
-      const c2x = ex - fs * 0.6;
-      const c2y = ey - s1 * fs * 1.3;
+      ctx.lineWidth = Math.max(2.2, lw * 0.62);
+      const sx = 2 + tw + fs * 0.35;
+      const ex = g.x0 + r * 1.5;
+      // nearly straight: the faintest hand along it
       ctx.beginPath();
-      ctx.moveTo(sx, sy);
-      ctx.bezierCurveTo(sx + fs * 1.3, sy - s1 * fs * 0.2, c2x, c2y, ex, ey);
+      ctx.moveTo(sx, cy + 0.6);
+      ctx.quadraticCurveTo((sx + ex) / 2, cy - 1.1, ex, cy);
       ctx.stroke();
-      // the arrowhead: two strokes back from the tip, along the curve's last direction
-      const ang = Math.atan2(ey - c2y, ex - c2x);
-      const hl = fs * 0.42;
+      const hl = Math.min(fs * 0.42, (ex - sx) * 0.45);
       ctx.beginPath();
-      ctx.moveTo(ex - Math.cos(ang - 0.5) * hl, ey - Math.sin(ang - 0.5) * hl);
-      ctx.lineTo(ex, ey);
-      ctx.lineTo(ex - Math.cos(ang + 0.5) * hl, ey - Math.sin(ang + 0.5) * hl);
+      ctx.moveTo(ex - hl, cy - hl * 0.62);
+      ctx.lineTo(ex, cy);
+      ctx.lineTo(ex - hl * 0.95, cy + hl * 0.66);
       ctx.stroke();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -825,7 +821,7 @@ const FunnelFlow = ({
         <svg
           className={cn("sl-flow-rewind", rewind && "is-on")}
           viewBox="0 0 64 36"
-          style={{ left: "50%", top: geo.cy, width: Math.round(geo.h0 * 1.25) }}
+          style={{ left: 2, top: 2, width: Math.round(clamp(geo.top * 1.15, 34, 52)) }}
           aria-hidden="true"
         >
           <path d="M30.5 5.5 C 24 10.5, 15.5 15, 6.5 18.2 C 15 21.5, 23.5 26, 30.2 30.8 C 29.6 22.5, 29.8 13.5, 30.5 5.5 Z" />

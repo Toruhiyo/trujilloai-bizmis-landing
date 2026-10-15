@@ -51,6 +51,7 @@ const SupportSection = () => {
         name={messages.benefits.support.badge}
         promise={promise}
         area={s.area}
+        motif="support"
         outcome={[s.title, s.titleTail]}
       >
         <div className="bzl-wrap">

@@ -221,9 +221,12 @@ export const SupportRelief = ({ className }: { className?: string }) => {
         </defs>
 
         {/* the head: the inbox's name, and its count in a drawn badge */}
-        <Hand k={kept ? 1 : writing(r.label, t, 0)} x={4} y={30}>
-          {r.label}
-        </Hand>
+        {/* (it steps aside while the rewind sign shows at the top left) */}
+        <g style={{ transform: `translateX(${rewinding ? 70 : 0}px)`, transition: "transform 0.25s ease" }}>
+          <Hand k={kept ? 1 : writing(r.label, t, 0)} x={4} y={30}>
+            {r.label}
+          </Hand>
+        </g>
         <g
           transform={`translate(${f(bx + bw / 2)} 22) scale(${f(1 + bump)} ${f(1 - bump * 0.7)}) translate(${f(-(bx + bw / 2))} -22)`}
         >
@@ -293,7 +296,7 @@ export const SupportRelief = ({ className }: { className?: string }) => {
         <Sparkle x={cx + 64} y={cy + 36} k={span(t, MELT_END + 880, MELT_END + 1280)} size={7} />
       </svg>
       {/* ◀◀ while it rewinds */}
-      <RewindMark on={rewinding} at="tc" />
+      <RewindMark on={rewinding} />
     </div>
   );
 };
@@ -520,7 +523,7 @@ export const InsightsClarity = ({ className }: { className?: string }) => {
         <Sparkle x={px + 20} y={py - 52} k={span(t, AHA_AT + 1600, AHA_AT + 1950)} size={6} />
       </svg>
       {/* ◀◀ while it rewinds */}
-      <RewindMark on={rewinding} at="tl" />
+      <RewindMark on={rewinding} />
     </div>
   );
 };

@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 import { cn } from "@/lib/utils";
 import PillarIntro from "../PillarIntro";
+import type { Motif } from "./OpenerDesign";
 
 /**
  * A benefit section's opening for Customer Support and Store Insights:
@@ -9,10 +10,10 @@ import PillarIntro from "../PillarIntro";
  * bar slides in (the name as a label, the promise beside it), and the
  * content follows under the bar.
  *
- * With the opener transitions under comparison (?open=1..5, pillar/
- * OpenerContext) the opener shows the OUTCOME big (`outcome`, the promise a
- * sentence a line) under the small area label (`area`), and hands over to
- * the content as that option does.
+ * With the opener designs under comparison (?open=1..6, pillar/OpenerDesign)
+ * the opener shows the OUTCOME big (`outcome`, the promise a sentence a
+ * line) with the small area label (`area`) and the pillar's drawings
+ * (`motif`).
  */
 const BenefitIntro = ({
   index,
@@ -21,6 +22,7 @@ const BenefitIntro = ({
   promise,
   area,
   outcome,
+  motif,
   className,
   children,
 }: {
@@ -29,10 +31,12 @@ const BenefitIntro = ({
   icon: ReactNode;
   name: string;
   promise: string;
-  /** The small area label for the transitions ("Support"). */
+  /** The small area label for the opener designs ("Support"). */
   area?: string;
-  /** The promise, a sentence a line, for the transitions. */
+  /** The promise, a sentence a line, for the opener designs. */
   outcome?: string[];
+  /** The pillar, for the designs' drawings. */
+  motif?: Motif;
   className?: string;
   children: ReactNode;
 }) => (
@@ -43,6 +47,7 @@ const BenefitIntro = ({
     line={promise}
     area={area}
     outcome={outcome}
+    motif={motif}
     docked={<span className="bzp-dock-line">{promise}</span>}
     className={cn("bzp", className)}
   >

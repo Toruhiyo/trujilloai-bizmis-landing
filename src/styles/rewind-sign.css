@@ -1,15 +1,16 @@
 /* The rewind sign (RewindSign.tsx): on only while a loop rewinds. */
 
-/* in marker: the moment's ink, drawn in, in its parent's bottom-right corner */
+/* in marker: the moment's ink, drawn in, at the drawing's top left */
 .bzl .bzl-rw-mark {
   position: absolute;
-  right: 0;
-  bottom: 0;
-  width: clamp(2.75rem, 12%, 4rem);
+  top: 0;
+  left: 0;
+  width: clamp(2.5rem, 11%, 3.6rem);
   height: auto;
   overflow: visible;
   opacity: 0;
   transform: scale(0.8);
+  transform-origin: 0 0;
   transition: opacity 0.18s ease, transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
   pointer-events: none;
 }
@@ -23,19 +24,6 @@
   stroke-dashoffset: 1;
   transition: stroke-dashoffset 0.28s ease-out;
 }
-/* where the drawing is busy at the bottom right: the top left */
-.bzl .bzl-rw-mark.is-tl {
-  top: 0;
-  right: auto;
-  bottom: auto;
-  left: 0;
-}
-.bzl .bzl-rw-mark.is-tc {
-  top: 0;
-  right: auto;
-  bottom: auto;
-  left: calc(50% - clamp(1.375rem, 6%, 2rem));
-}
 .bzl .bzl-rw-mark path + path {
   transition-delay: 0.08s;
 }
@@ -47,30 +35,41 @@
   stroke-dashoffset: 0;
 }
 
-/* the UI sign: a frosted ink disc, white glyph, centred over the mockup */
+/* the UI sign: a small frosted ink disc, white glyph, at the screen's top left */
 .bzl-rw-icon {
   position: absolute;
-  top: 50%;
-  left: 50%;
+  top: 0.75rem;
+  left: 0.75rem;
   z-index: 30;
   display: grid;
   place-items: center;
-  width: clamp(3rem, 12%, 4.5rem);
+  width: 2.4rem;
   aspect-ratio: 1;
   border-radius: 999px;
-  background: rgb(59 36 22 / 0.55);
+  background: rgb(59 36 22 / 0.6);
   color: #fff;
   -webkit-backdrop-filter: blur(8px);
   backdrop-filter: blur(8px);
-  box-shadow: 0 12px 30px -14px rgb(59 36 22 / 0.6);
+  box-shadow: 0 10px 24px -12px rgb(59 36 22 / 0.6);
   opacity: 0;
-  transform: translate(-50%, -50%) scale(0.85);
+  transform: scale(0.8);
+  transform-origin: 0 0;
   transition: opacity 0.18s ease, transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
   pointer-events: none;
 }
 .bzl-rw-icon.is-on {
   opacity: 1;
-  transform: translate(-50%, -50%);
+  transform: none;
+}
+/* the store window: on its screen, under the window's bar */
+.bzl-rw-icon.is-store {
+  top: 3.6rem;
+  left: 1rem;
+}
+/* Setup's sync: just above the store data's card, at its left */
+.bzl-rw-icon.is-setup {
+  top: -2.9rem;
+  left: 0;
 }
 
 @media (prefers-reduced-motion: reduce) {

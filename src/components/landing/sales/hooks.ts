@@ -247,3 +247,52 @@ export const useRewinding = (t: number, linger = 420) => {
   useEffect(() => () => window.clearTimeout(timer.current), []);
   return on;
 };
+
+/**
+ * A beat's clock, half scroll, half time (ms along a timeline of `duration`):
+ * the scroll sets `target` (where the scroll position maps on the timeline).
+ * Scrolling on pulls the clock up to it at once; scrolling back rewinds it to
+ * it (a quick ease, never a jump); and whenever the scroll rests, it plays on
+ * by itself at 1× until the end of its timeline (the fixed state), and holds
+ * there. Inactive (`active: false`), it simply sits on `target`.
+ * Reduced motion: it sits on the end.
+ */
+export const useScrollPlay = (target: number, duration: number, active: boolean) => {
+  const reduced = useReducedMotion();
+  const [t, setT] = useState(target);
+  const tgt = useRef(target);
+  const cur = useRef(target);
+  tgt.current = target;
+  useEffect(() => {
+    if (!active || reduced) {
+      cur.current = tgt.current;
+      setT(tgt.current);
+      return;
+    }
+    let raf = 0;
+    let last = performance.now();
+    let prev = tgt.current;
+    const loop = (now: number) => {
+      raf = requestAnimationFrame(loop);
+      const dt = Math.min(100, now - last);
+      last = now;
+      const target = tgt.current;
+      let next = cur.current;
+      if (target < prev - 0.5 && target < next) {
+        // scrolling back: rewind to where the scroll is, quickly
+        next = Math.max(target, next + (target - next) * 0.28 - dt * 0.5);
+      } else {
+        // at rest or scrolling on: play on at 1x, pulled up to the scroll
+        next = Math.min(duration, Math.max(target, next + dt));
+      }
+      prev = target;
+      if (next !== cur.current) {
+        cur.current = next;
+        setT(next);
+      }
+    };
+    raf = requestAnimationFrame(loop);
+    return () => cancelAnimationFrame(raf);
+  }, [active, reduced, duration]);
+  return reduced ? (active ? duration : target) : active ? t : target;
+};

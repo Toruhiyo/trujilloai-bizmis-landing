@@ -283,7 +283,7 @@ const SupportStore = ({ agent, children }: { agent: AgentName; children: ReactNo
           />
         </div>
         {/* ◀◀ while the case rewinds */}
-        <RewindIcon on={loop.rewinding} />
+        <RewindIcon on={loop.rewinding} className="is-store" />
       </StoreWindow>
     </div>
   );

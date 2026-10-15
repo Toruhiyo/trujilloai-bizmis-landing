@@ -6,7 +6,7 @@ import BeatCopy from "./BeatCopy";
 import FunnelFlow, { funnelAnchors } from "./funnel/FunnelFlow";
 import FunnelScale from "./funnel/FunnelScale";
 import { ksAt, startsFor } from "./funnel/model";
-import { useActivePanel, useMedia, usePinProgress, useRewinding, useScrollThrough } from "./hooks";
+import { useActivePanel, useMedia, usePinProgress, useRewinding, useScrollPlay, useScrollThrough } from "./hooks";
 import Metrics from "./Metrics";
 import { useSalesProto } from "./proto";
 import SalesPayoff, { PAYOFF_DURATION } from "./SalesPayoff";
@@ -48,8 +48,8 @@ const timeAt = (p: number, duration: number) => Math.min(1, Math.max(0, (p - LEA
 const fixedAt = (focus: number, t: number, fixAt?: number) => ksAt(t, startsFor(focus, fixAt)).map((v) => Math.min(1, v));
 
 /** The device's own rewind sign (◀◀ in a clean disc, as a player shows it), while it rewinds. */
-const DeviceRewind = ({ on }: { on: boolean }) => (
-  <span className={cn("sl-dev-rewind", on && "is-on")} aria-hidden="true">
+const DeviceRewind = ({ on, index }: { on: boolean; index: number }) => (
+  <span className={cn("sl-dev-rewind", `is-dev-${index}`, on && "is-on")} aria-hidden="true">
     <Rewind strokeWidth={0} fill="currentColor" />
   </span>
 );
@@ -57,14 +57,14 @@ const DeviceRewind = ({ on }: { on: boolean }) => (
 const clamp = (v: number, a: number, b: number) => Math.min(b, Math.max(a, v));
 
 /** The pinned stage's layout (px) for a W x H stage: the funnel, each beat's callout, its words and its cone. */
-const layout = (W: number, H: number, payoff: boolean, extra = 0) => {
+const layout = (W: number, H: number, payoff: boolean, extra = 0, visits?: string) => {
   const pad = 12;
   const fnH = payoff ? Math.min(clamp(H * 0.56, 240, 420), H - 170 - extra - pad) : clamp(H * 0.3, 165, 250);
   const fnW = Math.min(W, fnH * (payoff ? 2.9 : 4.6));
   const fnLeft = (W - fnW) / 2;
   const top = payoff ? 170 + extra : 0;
   const fnTop = payoff ? top + Math.max(0, (H - top - fnH) / 2) : H - fnH - pad;
-  const a = funnelAnchors(fnW, fnH);
+  const a = funnelAnchors(fnW, fnH, undefined, visits);
   const gap = clamp(H * 0.075, 34, 64);
   const areaTop = pad + 4;
   const areaBottom = H - clamp(H * 0.3, 165, 250) - pad - gap;
@@ -155,16 +155,20 @@ const Pinned = () => {
   const step = Math.floor(seg);
   const local = seg - step;
   const payoff = step === 3;
-  const beats = tls.map((tl, i) => ({
-    ...tl,
-    t: step > i ? tl.duration : step < i ? 0 : timeAt(local, tl.duration),
-  }));
-  const payT = payoff ? timeAt(local, PAYOFF_DURATION) : 0;
+  // where the scroll puts each beat; its clock is pulled there, rewound there, and plays on by itself at rest
+  const at = (i: number) => (step > i ? tls[i].duration : step < i ? 0 : timeAt(local, tls[i].duration));
+  const ts = [
+    useScrollPlay(at(0), tls[0].duration, step === 0),
+    useScrollPlay(at(1), tls[1].duration, step === 1),
+    useScrollPlay(at(2), tls[2].duration, step === 2),
+  ];
+  const beats = tls.map((tl, i) => ({ ...tl, t: ts[i] }));
+  const payT = useScrollPlay(payoff ? timeAt(local, PAYOFF_DURATION) : 0, PAYOFF_DURATION, payoff);
   // one value that only falls when the scroll goes back (a step back, or back within a step)
   const rewinding = useRewinding(step * 1e5 + (payoff ? payT : beats[step].t));
   const [stage, { W, H }] = useSize<HTMLDivElement>();
   // room under the payoff's words for its metric (?win)
-  const L = layout(W, H, payoff, win ? (win === 6 ? 110 : 165) : 0);
+  const L = layout(W, H, payoff, win ? (win === 6 ? 110 : 165) : 0, s.funnel.visits);
   const f = Math.min(step, 2);
   const clock = payoff
     ? { t: payT, duration: PAYOFF_DURATION, fixAt: undefined }
@@ -188,7 +192,7 @@ const Pinned = () => {
                   style={{ left: b.x, top: b.y, width: b.w, height: b.h, transformOrigin: b.origin }}
                 >
                   <Device index={i} clock={beats[i]} active={step === i} />
-                  <DeviceRewind on={rewinding && step === i} />
+                  <DeviceRewind index={i} on={rewinding && step === i} />
                 </div>
               ))}
               {s.panels.map((p, i) => (
@@ -225,10 +229,11 @@ const Pinned = () => {
 
 /** A stacked beat: its words, its funnel, and its device hanging off its own stage by the cone; its timeline follows its own scroll through the screen. */
 const StackedBeat = ({ i, setRef }: { i: number; setRef: (el: HTMLElement | null) => void }) => {
+  const s = useMessages().landing.sales;
   const { win } = useSalesProto();
   const tl = useBeatTimelines()[i];
   const [item, p] = useScrollThrough<HTMLDivElement>(0.8, 0.75);
-  const beat = { ...tl, t: timeAt(p, tl.duration) };
+  const beat = { ...tl, t: useScrollPlay(timeAt(p, tl.duration), tl.duration, p > 0 && p < 1) };
   const rewinding = useRewinding(beat.t);
   const fn = useRef<HTMLDivElement>(null);
   const dev = useRef<HTMLDivElement>(null);
@@ -242,7 +247,7 @@ const StackedBeat = ({ i, setRef }: { i: number; setRef: (el: HTMLElement | null
       const frame =
         dev.current?.querySelector(".bzl-device")?.getBoundingClientRect() ?? dev.current?.getBoundingClientRect();
       if (!fr || !frame) return;
-      const ch = funnelAnchors(fr.width, fr.height).chambers[i];
+      const ch = funnelAnchors(fr.width, fr.height, undefined, s.funnel.visits).chambers[i];
       const ox = fr.left - r.left;
       const inset = Math.min(18, frame.width * 0.08);
       setCone({
@@ -272,7 +277,7 @@ const StackedBeat = ({ i, setRef }: { i: number; setRef: (el: HTMLElement | null
       {cone && <Cone stage={cone.to} device={cone.from} on className="is-static" />}
       <div ref={dev} className="sl-g2-s-dev relative">
         <Device index={i} clock={beat} />
-        <DeviceRewind on={rewinding} />
+        <DeviceRewind index={i} on={rewinding} />
       </div>
     </div>
   );
@@ -282,7 +287,7 @@ const StackedPayoff = ({ setRef }: { setRef: (el: HTMLElement | null) => void })
   const s = useMessages().landing.sales;
   const { win } = useSalesProto();
   const [item, p] = useScrollThrough<HTMLDivElement>(0.8, 0.85);
-  const t = timeAt(p, PAYOFF_DURATION);
+  const t = useScrollPlay(timeAt(p, PAYOFF_DURATION), PAYOFF_DURATION, p > 0 && p < 1);
   const rewinding = useRewinding(t);
   return (
     <div

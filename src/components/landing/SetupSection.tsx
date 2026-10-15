@@ -175,7 +175,7 @@ const SetupSection = () => {
 
         <div ref={ref} className="relative mx-auto mt-[4svh] max-w-5xl">
           {/* ◀◀ while the setup rewinds */}
-          <RewindIcon on={loop.rewinding} />
+          <RewindIcon on={loop.rewinding} className="is-setup" />
           <div ref={box} className="relative flex items-center justify-between gap-6 sm:gap-12">
             {/* the wiring, behind the cards and the agent */}
             <svg

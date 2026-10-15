@@ -1166,9 +1166,10 @@
   stroke: #fff;
   stroke-width: 3.2;
   stroke-linejoin: round;
-  filter: drop-shadow(0 0 14px rgb(190 80 0 / 0.55));
+  filter: drop-shadow(0 0 10px rgb(190 80 0 / 0.5));
   opacity: 0;
-  transform: translate(-50%, -50%) scale(0.85);
+  transform: scale(0.85);
+  transform-origin: 0 0;
   transition:
     opacity 0.2s ease,
     transform 0.3s var(--bzl-ease);
@@ -1176,17 +1177,18 @@
 }
 .sl-flow-rewind.is-on {
   opacity: 1;
-  transform: translate(-50%, -50%) scale(1);
+  transform: none;
 }
+/* the device's: at the top-left corner of its screen (each frame's own inset) */
 .sl-dev-rewind {
   position: absolute;
-  left: 50%;
-  top: 50%;
+  left: 3.5%;
+  top: 13%;
   z-index: 9;
   display: grid;
   place-items: center;
-  width: 64px;
-  height: 64px;
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
   background: rgb(28 24 20 / 0.55);
   color: #fff;
@@ -1194,20 +1196,29 @@
   backdrop-filter: blur(8px);
   box-shadow: 0 10px 30px -12px rgb(28 24 20 / 0.5);
   opacity: 0;
-  transform: translate(-50%, -50%) scale(0.8);
+  transform: scale(0.8);
+  transform-origin: 0 0;
   transition:
     opacity 0.18s ease,
     transform 0.25s var(--bzl-ease);
   pointer-events: none;
 }
+.sl-dev-rewind.is-dev-1 {
+  left: 9%;
+  top: 8.5%;
+}
+.sl-dev-rewind.is-dev-2 {
+  left: 4%;
+  top: 9.5%;
+}
 .sl-dev-rewind.is-on {
   opacity: 1;
-  transform: translate(-50%, -50%) scale(1);
+  transform: none;
 }
 .sl-dev-rewind svg {
-  width: 30px;
-  height: 30px;
-  translate: -2px 0;
+  width: 20px;
+  height: 20px;
+  translate: -1px 0;
 }
 
 /* ?win=4..6: the metrics, in the funnel's marker (Metrics) */

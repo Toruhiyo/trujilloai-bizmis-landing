@@ -1,0 +1,306 @@
+/* The pillar openers' static designs under comparison (?open=1..6; PillarIntro
+   .pi-od, pillar/OpenerDesign.tsx). The OUTCOME is the hero, the AREA a small
+   label; the film look: ink (white on the Sales orange) and the primary as
+   the accent (white on the orange), marker and handwriting as the accent.
+   Each scrolls away and docks the bar as the default does. */
+
+.pi-od {
+  --od-ink: var(--pi-name-color, var(--film-ink, #3b2416));
+  --od-accent: hsl(var(--primary));
+  --od-faint: color-mix(in oklab, var(--od-ink) 66%, transparent);
+}
+.p-sales .pi-od {
+  --od-accent: #fff;
+}
+.pi-od .pi-big {
+  min-height: clamp(26rem, 80svh, 54rem);
+}
+
+/* ── shared ── */
+.od {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: clamp(0.8rem, 2.4svh, 1.5rem);
+  width: 100%;
+}
+.od-area {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  line-height: 1;
+  text-transform: uppercase;
+  color: var(--od-faint);
+}
+.od-area-icon {
+  display: grid;
+  place-items: center;
+  width: 2rem;
+  aspect-ratio: 1;
+  border-radius: 999px;
+  background: var(--pi-icon-bg, #fff);
+  color: var(--pi-icon-fg, hsl(var(--primary)));
+  box-shadow: 0 0 0 1px rgb(59 36 22 / 0.06), 0 8px 20px -14px rgb(59 36 22 / 0.5);
+}
+.od-area-icon svg {
+  width: 56%;
+  height: 56%;
+}
+.od-area.is-pill {
+  padding: 0.3rem 0.95rem 0.3rem 0.3rem;
+  border-radius: 999px;
+  background: rgb(255 255 255 / 0.86);
+  box-shadow: 0 0 0 1px rgb(59 36 22 / 0.07), 0 10px 24px -18px rgb(59 36 22 / 0.5);
+}
+.p-sales .od-area.is-pill {
+  background: rgb(255 255 255 / 0.16);
+  box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.4);
+}
+.od-outcome {
+  margin: 0;
+  font-size: clamp(2.8rem, min(6.8vw, 12svh), 7.5rem);
+  font-weight: 800;
+  letter-spacing: -0.05em;
+  line-height: 0.96;
+  color: var(--od-ink);
+}
+/* a one-line outcome ("Boost Sales") stands as big as today's names */
+.od-outcome:has(> .od-l:only-child) {
+  font-size: clamp(3.4rem, min(9.5vw, 16svh), 10rem);
+}
+.od-l {
+  display: block;
+}
+.pi-od .od-sub {
+  max-width: none;
+}
+
+/* ═══════════ 1 · Editorial ═══════════
+   Left-aligned, the area as a running head over a hairline, the chapter
+   number at its end; a short primary bar closes the outcome. */
+.pi-od1 .pi-big {
+  align-items: stretch;
+  text-align: left;
+}
+.od1 {
+  align-items: flex-start;
+  gap: clamp(1.25rem, 4.5svh, 3rem);
+  max-width: 1400px;
+  margin-inline: auto;
+  padding-inline: 1rem;
+}
+.od1-head {
+  display: flex;
+  align-items: center;
+  gap: 1.1rem;
+  width: 100%;
+}
+.od1-rule {
+  flex: 1;
+  height: 1px;
+  background: color-mix(in oklab, var(--od-ink) 22%, transparent);
+}
+.od1-num {
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  font-variant-numeric: tabular-nums;
+  color: var(--od-faint);
+}
+.od1 .od-outcome {
+  font-size: clamp(3rem, min(8vw, 14svh), 9rem);
+  letter-spacing: -0.06em;
+  line-height: 0.92;
+}
+.od1 .od-outcome:has(> .od-l:only-child) {
+  font-size: clamp(3.4rem, min(10vw, 17svh), 11rem);
+}
+.od1 .od-outcome::after {
+  content: "";
+  display: block;
+  width: clamp(3rem, 5vw, 4.5rem);
+  height: 5px;
+  margin-top: clamp(1.1rem, 3.5svh, 2.25rem);
+  border-radius: 999px;
+  background: var(--od-accent);
+}
+.od1 .od-sub {
+  text-align: left;
+}
+@media (min-width: 640px) {
+  .od1 { padding-inline: 1.5rem; }
+}
+
+/* ═══════════ 2 · Marked ═══════════
+   Centred, one key word circled in marker. */
+.od-key {
+  position: relative;
+  display: inline-block;
+  margin-inline: 0.14em;
+}
+.od-loop {
+  position: absolute;
+  top: -0.17em;
+  left: -0.3em;
+  width: calc(100% + 0.6em);
+  height: calc(100% + 0.34em);
+  overflow: visible;
+  pointer-events: none;
+}
+.od-loop path {
+  fill: none;
+  stroke: var(--od-accent);
+  stroke-width: 7px;
+  stroke-linecap: round;
+  vector-effect: non-scaling-stroke;
+}
+
+/* ═══════════ 3 · Backdrop ═══════════
+   The outcome over a large, faint marker drawing of the pillar. */
+.od3 {
+  isolation: isolate;
+}
+.od-backdrop {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  z-index: -1;
+  width: min(1240px, 98vw);
+  height: auto;
+  overflow: visible;
+  opacity: 0.2;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+.p-sales .od-backdrop {
+  opacity: 0.26;
+}
+.od-backdrop path,
+.od-backdrop rect,
+.od-backdrop circle {
+  fill: none;
+  stroke: var(--od-accent);
+  stroke-width: 10;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.od-backdrop .is-dot {
+  fill: var(--od-accent);
+}
+
+/* ═══════════ 4 · Handwritten ═══════════
+   Two lines: the first set, the second written in marker handwriting. */
+.od4 .od-outcome {
+  line-height: 0.95;
+}
+.pi-od .od-hand {
+  margin-top: -0.02em;
+  font-family: var(--bzl-script, "Caveat", cursive);
+  font-size: 1.1em;
+  font-weight: 700;
+  letter-spacing: -0.005em;
+  line-height: 0.95;
+  color: var(--od-accent);
+  transform: rotate(-2.5deg);
+}
+
+/* ═══════════ 5 · Chapter ═══════════
+   The chapter number huge in marker handwriting, the outcome beside it,
+   set off by a primary rule. */
+.pi-od5 .pi-big {
+  align-items: stretch;
+  text-align: left;
+}
+.od5 {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  column-gap: clamp(1.5rem, 4vw, 4.5rem);
+  max-width: 1280px;
+  margin-inline: auto;
+  padding-inline: 1.5rem;
+}
+.pi-od .od5-num {
+  font-family: var(--bzl-script, "Caveat", cursive);
+  font-size: clamp(7rem, min(19vw, 34svh), 18rem);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 0.8;
+  color: var(--od-accent);
+}
+.od5-copy {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: clamp(0.8rem, 2.4svh, 1.5rem);
+  padding-left: clamp(1.25rem, 3vw, 3rem);
+  border-left: 3px solid color-mix(in oklab, var(--od-accent) 50%, transparent);
+}
+.od5 .od-outcome {
+  font-size: clamp(2.6rem, min(5.8vw, 11svh), 6.5rem);
+}
+.od5 .od-outcome:has(> .od-l:only-child) {
+  font-size: clamp(3rem, min(8vw, 14svh), 8.5rem);
+}
+.od5 .od-sub {
+  text-align: left;
+}
+
+/* ═══════════ 6 · Glyph ═══════════
+   Minimal: the pillar's icon as a large marker drawing, the outcome quiet. */
+.od6 {
+  gap: clamp(1rem, 3svh, 1.9rem);
+}
+.od6-glyph svg {
+  display: block;
+  width: clamp(5.5rem, 17svh, 9.5rem);
+  height: auto;
+  overflow: visible;
+}
+.od-glyph path,
+.od-glyph rect,
+.od-glyph circle {
+  fill: none;
+  stroke: var(--od-accent);
+  stroke-width: 5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.od-glyph .is-thin {
+  stroke-width: 3.5;
+}
+.od-glyph .is-dot {
+  fill: var(--od-accent);
+}
+.od6 .od-outcome {
+  font-size: clamp(2.4rem, min(5.4vw, 9.5svh), 6rem);
+  font-weight: 700;
+  letter-spacing: -0.045em;
+}
+.od6 .od-outcome:has(> .od-l:only-child) {
+  font-size: clamp(3rem, min(7.5vw, 13svh), 8rem);
+}
+
+/* ── phones ── */
+@media (max-width: 639px) {
+  .pi-od .pi-big { min-height: clamp(22rem, 72svh, 34rem); }
+  .od-outcome,
+  .od1 .od-outcome,
+  .od5 .od-outcome,
+  .od6 .od-outcome { font-size: min(10.5vw, 2.9rem); }
+  .od-outcome:has(> .od-l:only-child),
+  .od1 .od-outcome:has(> .od-l:only-child),
+  .od5 .od-outcome:has(> .od-l:only-child),
+  .od6 .od-outcome:has(> .od-l:only-child) { font-size: clamp(2.6rem, 15vw, 4.4rem); }
+  .od5 {
+    grid-template-columns: minmax(0, 1fr);
+    row-gap: 0.75rem;
+    padding-inline: 1rem;
+  }
+  .pi-od .od5-num { font-size: clamp(5rem, 30vw, 7.5rem); }
+  .od5-copy { padding-left: 1rem; }
+}

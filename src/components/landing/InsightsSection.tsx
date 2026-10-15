@@ -28,6 +28,7 @@ const InsightsSection = () => {
         name={messages.benefits.insights.badge}
         promise={promise}
         area={ins.area}
+        motif="insights"
         outcome={[ins.title, ins.titleTail]}
       >
         <div className="bzl-wrap">

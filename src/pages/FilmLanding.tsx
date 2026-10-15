@@ -19,7 +19,7 @@ import "@/styles/film-landing.css";
 import "@/styles/palette-options.css";
 // the film look, the page's only look (keyed on data-look="film")
 import "@/styles/look-film.css";
-// how the pillar openers hand over to their content (?open=1..5, pillar/OpenerContext)
+// the pillar openers' designs under comparison (?open=1..6, pillar/OpenerContext)
 import {
   OpenerContext,
   PillarAreaContext,
@@ -28,8 +28,8 @@ import type { Opener } from "@/components/landing/pillar/OpenerContext";
 
 /**
  * The opener shown without ?open: "0", the pillars' big scroll-away names and
- * docked bars (PillarIntro); ?open=1..5 shows the opener-to-content
- * transitions under comparison (pillar/OpenerContext, pillar-transitions.css).
+ * docked bars (PillarIntro); ?open=1..6 shows the opener designs under
+ * comparison (pillar/OpenerDesign, pillar-openers.css).
  */
 const DEFAULT_OPEN: Opener = "0";
 
@@ -47,10 +47,10 @@ interface FilmLandingProps {
  */
 const FilmLanding = ({ path = "/" }: FilmLandingProps) => {
   const messages = useMessages();
-  // the opener transition: ?open=1..5, else DEFAULT_OPEN
+  // the opener design: ?open=1..6, else DEFAULT_OPEN
   const openParam =
     new URLSearchParams(useLocation().search).get("open") ?? DEFAULT_OPEN;
-  const open = /^[0-5]$/.test(openParam) ? (openParam as Opener) : DEFAULT_OPEN;
+  const open = /^[0-6]$/.test(openParam) ? (openParam as Opener) : DEFAULT_OPEN;
 
   // Lets the film landing's scoped CSS reach the shared navbar (outside .bzl),
   // e.g. the handwritten "Early Access" link, without touching other pages.

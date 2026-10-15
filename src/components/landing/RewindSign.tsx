@@ -14,9 +14,9 @@ import "@/styles/rewind-sign.css";
  * - RewindIcon: a clean UI sign, for the device and widget mockups: the
  *   icon in a frosted ink disc, centred over the mockup, like a player's.
  */
-export const RewindMark = ({ on, at = "br", className }: { on: boolean; at?: "br" | "tl" | "tc"; className?: string }) => (
+export const RewindMark = ({ on, className }: { on: boolean; className?: string }) => (
   <svg
-    className={cn("bzl-rw-mark", at !== "br" && `is-${at}`, on && "is-on", className)}
+    className={cn("bzl-rw-mark", on && "is-on", className)}
     viewBox="0 0 64 36"
     aria-hidden="true"
   >

@@ -12,13 +12,14 @@ import "@/styles/landing-sales.css";
  * (find on desktop, trust on a phone, buy on a tablet), the same agent
  * sealing each stage's leak, and the pillar ends on all three fixed, the
  * orders pouring into the bag. Copy in `landing.sales` (the classic landing
- * keeps `benefits.sales`). Prototype switches (sales/proto.tsx): ?win=4..6
- * (a metric moving the right way), ?copy=flip (each beat's problem struck
- * through, then its fix).
+ * keeps `benefits.sales`). Prototype switch (sales/proto.tsx): ?copy=flip
+ * (each beat's problem struck through, then its fix). The ?win metrics are
+ * parked, not read.
  */
 const SalesSection = () => {
   const q = new URLSearchParams(useLocation().search);
-  const win = Number(q.get("win")) || 0;
+  // ?win is parked (the metrics stay in sales/Metrics.tsx for later): copy first
+  const win = 0;
   const flip = q.get("copy") === "flip";
   const proto = useMemo(() => ({ win, flip }), [win, flip]);
   return (
