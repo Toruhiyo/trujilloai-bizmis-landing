@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { useRewindLoop } from "../useRewindLoop";
 import type { RewindLoopOptions } from "../useRewindLoop";
+import { useScrollClock } from "./useScrollClock";
 
 const query = "(prefers-reduced-motion: reduce)";
 
@@ -56,7 +56,8 @@ export const useScene = (
   opts: Omit<RewindLoopOptions, "duration"> = {},
 ) => {
   const sentinel = useRef<HTMLSpanElement>(null);
-  const loop = useRewindLoop(sentinel, {
+  // the rewind loop, on a clock that speeds up while the page scrolls fast (useScrollClock)
+  const loop = useScrollClock(sentinel, {
     duration,
     rewind: 1000,
     threshold: 0.3,

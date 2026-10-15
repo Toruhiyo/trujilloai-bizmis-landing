@@ -1,0 +1,360 @@
+/* Page-structure options (?struct=A|B|C, data-struct on the .bzl root,
+   FilmLanding.tsx / openers/StructContext.ts). The hierarchy in all three:
+   the AREA a small label ("Support"), the OUTCOME the big line ("Fewer
+   tickets. Happier customers."), then the content; Support and Insights
+   carry proof points, not sub-benefits. Boost Sales keeps its opener and
+   sticky bar; Setup, Personalization, the end card and the footer are as
+   they are.
+
+   A  One rhythm       Support and Insights each ONE screen: the head, the lead and the
+                       capability cards beside one visual (the store / the session replay)
+   B  Proof            Support and Insights merged into ONE screen, two halves (ProofSection)
+   C  Outcome-first    each opens on its outcome, huge, over its marker moment, then its
+                       content screen
+
+   Screens are sized from the viewport's height: the whole fits one screen;
+   if it truly can't (a short screen) the section grows, never clips; on tall
+   screens the content keeps its size and is centred. */
+
+.bzl[data-struct] {
+  --st-nav: var(--op-nav, var(--bzl-nav, 4rem));
+  --st-ink: var(--film-ink, #3b2416);
+  --st-primary: hsl(var(--primary));
+}
+
+/* ═══════════ The head (openers/OutcomeHead.tsx) ═══════════ */
+.bzl .oh {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: clamp(0.6rem, 1.6svh, 1rem);
+  min-width: 0;
+}
+.bzl .oh.is-center {
+  align-items: center;
+  text-align: center;
+}
+/* the area: a small label, its icon in a white disc */
+.bzl .oh-area {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  line-height: 1;
+  color: rgb(59 36 22 / 0.78);
+}
+.bzl .oh-icon {
+  display: grid;
+  place-items: center;
+  width: 2.25rem;
+  aspect-ratio: 1;
+  border-radius: 999px;
+  background: #fff;
+  color: hsl(var(--primary));
+  box-shadow: 0 0 0 1px rgb(59 36 22 / 0.06), 0 10px 24px -16px rgb(59 36 22 / 0.45);
+}
+.bzl .oh-icon svg {
+  width: 56%;
+  height: 56%;
+}
+/* the outcome: the big line, one sentence a line */
+.bzl .oh-outcome {
+  margin: 0;
+  font-weight: 800;
+  letter-spacing: -0.045em;
+  line-height: 1.02;
+  color: var(--film-ink, #3b2416);
+  text-wrap: balance;
+}
+.bzl .oh-lead,
+.bzl .oh-tail {
+  display: block;
+}
+.bzl .oh-tail {
+  position: relative;
+  width: fit-content;
+  max-width: 100%;
+}
+.bzl .oh.is-center .oh-tail {
+  margin-inline: auto;
+}
+.bzl .oh-tail-text {
+  position: relative;
+  z-index: 1;
+}
+/* the marker stroke under the outcome's second half, drawn on arrival */
+.bzl .oh-mark {
+  position: absolute;
+  left: -0.04em;
+  right: -0.04em;
+  bottom: -0.1em;
+  width: calc(100% + 0.08em);
+  height: 0.24em;
+  overflow: visible;
+}
+.bzl .oh-mark path {
+  fill: none;
+  stroke: hsl(var(--primary));
+  /* in the drawing's own units: it scales with the line's size (the dash needs no non-scaling stroke) */
+  stroke-width: 9;
+  stroke-linecap: round;
+  stroke-dasharray: 1 1;
+  stroke-dashoffset: 1;
+  transition: stroke-dashoffset 0.9s cubic-bezier(0.65, 0, 0.35, 1) 0.35s;
+}
+.bzl .oh.is-in .oh-mark path {
+  stroke-dashoffset: 0;
+}
+@media (prefers-reduced-motion: reduce) {
+  .bzl .oh-mark path {
+    transition: none;
+    stroke-dashoffset: 0;
+  }
+}
+.bzl .oh-md .oh-outcome {
+  font-size: clamp(1.75rem, min(2.9vw, 5.2svh), 2.9rem);
+}
+.bzl .oh-lg .oh-outcome {
+  font-size: clamp(2.1rem, min(4.1vw, 7.2svh), 4.1rem);
+}
+.bzl .oh-xl {
+  gap: clamp(0.9rem, 2.4svh, 1.6rem);
+}
+.bzl .oh-xl .oh-area {
+  font-size: 0.9rem;
+}
+.bzl .oh-xl .oh-icon {
+  width: 2.75rem;
+}
+.bzl .oh-xl .oh-outcome {
+  font-size: clamp(2.6rem, min(7vw, 10.5svh), 7.25rem);
+  letter-spacing: -0.05em;
+  line-height: 0.98;
+}
+@media (max-width: 639px) {
+  .bzl .oh-lg .oh-outcome { font-size: min(10vw, 2.6rem); }
+  .bzl .oh-md .oh-outcome { font-size: min(9vw, 2.3rem); }
+  .bzl .oh-xl .oh-outcome { font-size: min(9vw, 3rem); }
+}
+
+/* ═══════════ A, and C's content screen: one screen ═══════════ */
+.bzl[data-struct] .st-screen {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: 100svh;
+  padding: calc(var(--st-nav) + clamp(1rem, 4svh, 3rem)) 0 clamp(1.5rem, 5svh, 3.5rem);
+}
+.bzl[data-struct] .st-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-areas: "head" "visual" "lead" "caps";
+  gap: 1.5rem;
+  align-items: center;
+}
+.bzl[data-struct] .st-visual { position: relative; min-width: 0; }
+/* phones: the head, the visual, then the lead and the cards */
+@media (max-width: 899px) {
+  .bzl[data-struct] .st-copy { display: contents; }
+  .bzl[data-struct] .st-copy > .oh { grid-area: head; }
+  .bzl[data-struct] .st-leadbox { grid-area: lead; }
+  .bzl[data-struct] .st-caps { grid-area: caps; }
+  .bzl[data-struct] .st-visual { grid-area: visual; }
+}
+.bzl[data-struct] .st-lead {
+  max-width: 30rem;
+  color: var(--bzl-ink-2);
+}
+.bzl[data-struct] .st-caps {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  align-items: start;
+  gap: 0.5rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+@media (min-width: 900px) {
+  .bzl[data-struct] .st-grid {
+    grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+    column-gap: clamp(2.5rem, 5vw, 6rem);
+  }
+  .bzl[data-struct] .st-copy {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: clamp(0.9rem, 2.6svh, 1.75rem);
+    min-width: 0;
+  }
+  .bzl[data-struct] .st-copy > * { width: 100%; }
+  .bzl[data-struct] .st-copy > .oh { width: auto; }
+  .bzl[data-struct] .st-caps {
+    max-width: 27rem;
+    margin-top: clamp(0rem, 1svh, 0.75rem);
+  }
+  .bzl[data-struct] .st-lead {
+    font-size: clamp(1.05rem, min(1.4vw, 2.5svh), 1.3rem);
+  }
+  /* the visual takes the height the screen leaves it */
+  .bzl[data-struct] .st-store {
+    justify-self: end;
+    width: 100%;
+    max-width: clamp(22rem, calc((100svh - 13rem) * 1.42), 46rem);
+  }
+  .bzl[data-struct] .st-replay {
+    justify-self: end;
+    width: 100%;
+    max-width: 44rem;
+  }
+}
+/* the session replay: its transcript gives up height first on shorter screens */
+.bzl[data-struct] .st-replay [class*="overflow-y-auto"] {
+  max-height: min(20rem, max(7rem, calc(100svh - 37rem)));
+}
+
+/* ═══════════ C · the outcome opener ═══════════ */
+.bzl[data-struct="C"] .st-opener {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(1.5rem, 5svh, 3.5rem);
+  min-height: 100svh;
+  padding: calc(var(--st-nav) + clamp(1rem, 4svh, 3rem)) 1rem clamp(1.5rem, 5svh, 3.5rem);
+}
+.bzl[data-struct="C"] .st-feel {
+  width: 100%;
+  max-width: min(40rem, calc((100svh - 25rem) * 1.85));
+  min-width: min(100%, 18rem);
+}
+/* the content follows close behind its opener */
+.bzl[data-struct="C"] .so-content {
+  min-height: 0;
+  padding-top: clamp(1rem, 4svh, 3rem);
+}
+.bzl[data-struct="C"] .so-content .oh-area {
+  font-size: 0.8rem;
+}
+
+/* ═══════════ B · Support and Insights on one proof screen ═══════════ */
+.bzl[data-struct="B"] .st-proof {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: 100svh;
+  padding: calc(var(--st-nav) + clamp(0.75rem, 3svh, 2.25rem)) 0 clamp(1.5rem, 5svh, 3.5rem);
+  background:
+    radial-gradient(ellipse 40% 46% at 22% 56%, var(--film-glow), transparent 72%),
+    radial-gradient(ellipse 40% 46% at 78% 56%, var(--film-glow), transparent 72%),
+    #ffffff;
+}
+.bzl .st-proof-kicker {
+  margin: 0 0 clamp(1rem, 3.5svh, 2.5rem);
+  text-align: center;
+  font-family: var(--bzl-script, "Caveat", cursive);
+  font-size: clamp(1.9rem, min(3vw, 5svh), 2.75rem);
+  font-weight: 700;
+  line-height: 1;
+  color: hsl(var(--primary));
+}
+.bzl .st-halves {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 3rem;
+}
+.bzl .st-half {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: clamp(1rem, 3svh, 1.75rem);
+  min-width: 0;
+}
+.bzl .st-half-art {
+  width: 100%;
+  max-width: min(30rem, calc((100svh - 31rem) * 1.85));
+  min-width: min(100%, 15rem);
+}
+.bzl .st-divider {
+  display: none;
+}
+.bzl .st-proofs {
+  display: grid;
+  gap: clamp(0.5rem, 1.4svh, 0.85rem);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  max-width: 30rem;
+}
+.bzl .st-proof-item {
+  display: grid;
+  grid-template-columns: 2.25rem minmax(0, 1fr);
+  align-items: center;
+  gap: 0.8rem;
+}
+.bzl .st-proof-icon {
+  display: grid;
+  place-items: center;
+  width: 2.25rem;
+  aspect-ratio: 1;
+  border-radius: 0.7rem;
+  background: #fff1e3;
+  color: hsl(var(--primary));
+}
+.bzl .st-proof-text {
+  font-size: 0.95rem;
+  line-height: 1.35;
+  color: var(--bzl-muted);
+}
+.bzl .st-proof-text b {
+  font-weight: 700;
+  color: var(--film-ink, #3b2416);
+}
+@media (min-width: 900px) {
+  .bzl .st-halves {
+    grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+    column-gap: clamp(2rem, 4vw, 4.5rem);
+  }
+  /* a marker stroke between the halves */
+  .bzl .st-divider {
+    display: block;
+    width: 18px;
+    align-self: stretch;
+    opacity: 0.45;
+  }
+  .bzl .st-divider svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+  }
+  .bzl .st-divider path {
+    fill: none;
+    stroke: hsl(var(--primary));
+    stroke-width: 5px;
+    stroke-linecap: round;
+    vector-effect: non-scaling-stroke;
+  }
+}
+@media (max-width: 899px) {
+  .bzl .st-half + .st-divider + .st-half {
+    padding-top: 2.5rem;
+    border-top: 2px dashed rgb(249 163 83 / 0.35);
+  }
+  .bzl .st-half-art { max-width: 100%; }
+}
+/* the halves' proof points line up, whatever their drawings' heights */
+@media (min-width: 900px) {
+  .bzl .st-proofs { margin-top: auto; }
+}
+/* C's content screen: its head is the area label alone, so the lead reads as the screen's line */
+.bzl[data-struct="C"] .so-content .st-lead {
+  max-width: 32rem;
+  font-size: clamp(1.35rem, min(2.2vw, 3.8svh), 2rem);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1.2;
+  color: var(--film-ink, #3b2416);
+}

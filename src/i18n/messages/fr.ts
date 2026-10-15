@@ -154,16 +154,32 @@ export const fr: Messages = {
       decided: "Dans le panier",
       buyQuery: "Il arrive avant vendredi ?",
       buyCaption: "Oui, il part aujourd'hui et le retour est gratuit. On passe au paiement ?",
+      /** The one-shopper variant (?case=one): the same shopper and gift from Find through Trust to Buy. */
+      caseOne: {
+        compareQuery: "Lequel des trois lui plaira le plus ?",
+        compareCaption: "Celui-ci. Le mieux noté des trois.",
+        buyQuery: "Il arrive avant son anniversaire vendredi ?",
+        buyCaption: "Oui, il part aujourd'hui et le retour est gratuit. On passe au paiement ?",
+      },
       cart: { title: "Votre panier", subtotal: "Sous-total", checkout: "Paiement", perks: ["Expédié aujourd'hui", "Retours gratuits"], placed: "Commande passée" },
       funnel: {
         problems: ["Introuvable", "Indécis", "Pas sûr"],
         solutions: ["Trouvé", "Comparé", "Doute levé"],
+        /** Prototype marks (?visits, ?win): the dots are visits; the win against the loss, in handwriting (no figures). */
+        visitors: "Visiteurs",
+        visits: "visites",
+        lost: "perdues",
+        sold: "vendues",
+        before: "avant",
+        after: "après",
       },
       pulse: { currency: "EUR" },
     },
     support: {
       title: "Moins de tickets.",
       titleTail: "Des clients plus heureux.",
+      /** The area as a small label over the outcome (?struct=A|B|C). */
+      area: "Service client",
       lead: "Il répond en quelques secondes, jour et nuit, avec la chaleur de votre meilleur vendeur.",
       capabilities: [
         { title: "Toujours là", body: "Chaque question reçoit une réponse dès qu'elle est posée." },
@@ -180,6 +196,8 @@ export const fr: Messages = {
     insights: {
       title: "Voyez ce qui vend.",
       titleTail: "Corrigez le reste.",
+      /** The area as a small label over the outcome (?struct=A|B|C). */
+      area: "Données de la boutique",
       lead: "Chaque conversation devient une prochaine étape claire.",
       features: [
         { title: "Replays de session", body: "Écoutez le moment exact où un client a hésité." },
@@ -191,6 +209,12 @@ export const fr: Messages = {
         topAsk: "Question n°1 : la livraison",
       },
     },
+    /** Structure option B (?struct=B): the handwritten kicker over the merged Support + Insights screen. */
+    proof: {
+      kicker: "Et il ne fait pas que vendre.",
+    },
+    /** Structure options D to G (?struct=D..G): Boost Sales's area label, small over its outcome. */
+    salesArea: "Ventes",
     customize: {
       lead: "Choisissez son look et mettez votre logo sur son t-shirt.",
       avatar: { title: "Votre avatar", body: "Choisissez un visage qui colle à votre marque." },

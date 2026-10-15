@@ -154,16 +154,32 @@ export const es: Messages = {
       decided: "En el carrito",
       buyQuery: "¿Llega antes del viernes?",
       buyCaption: "Sí, sale hoy y la devolución es gratis. ¿Vamos a pagar?",
+      /** The one-shopper variant (?case=one): the same shopper and gift from Find through Trust to Buy. */
+      caseOne: {
+        compareQuery: "¿Cuál de los tres le gustará más?",
+        compareCaption: "Este. Es el mejor valorado de los tres.",
+        buyQuery: "¿Llega antes de su cumpleaños, el viernes?",
+        buyCaption: "Sí, sale hoy y la devolución es gratis. ¿Vamos a pagar?",
+      },
       cart: { title: "Tu carrito", subtotal: "Subtotal", checkout: "Pagar", perks: ["Sale hoy", "Devolución gratis"], placed: "Pedido realizado" },
       funnel: {
         problems: ["No lo encuentra", "No se decide", "No está seguro"],
         solutions: ["Lo encontró", "Comparado", "Duda resuelta"],
+        /** Prototype marks (?visits, ?win): the dots are visits; the win against the loss, in handwriting (no figures). */
+        visitors: "Visitas",
+        visits: "visitas",
+        lost: "perdidas",
+        sold: "vendidas",
+        before: "antes",
+        after: "después",
       },
       pulse: { currency: "EUR" },
     },
     support: {
       title: "Menos tickets.",
       titleTail: "Clientes más felices.",
+      /** The area as a small label over the outcome (?struct=A|B|C). */
+      area: "Atención al cliente",
       lead: "Responde en segundos, de día o de noche, con la calidez de tu mejor dependiente.",
       capabilities: [
         { title: "Siempre disponible", body: "Cada pregunta tiene respuesta en el momento." },
@@ -180,6 +196,8 @@ export const es: Messages = {
     insights: {
       title: "Mira qué vende.",
       titleTail: "Arregla lo que no.",
+      /** The area as a small label over the outcome (?struct=A|B|C). */
+      area: "Datos de tu tienda",
       lead: "Cada conversación se convierte en un siguiente paso claro.",
       features: [
         { title: "Repeticiones de sesión", body: "Escucha el momento exacto en que un cliente dudó." },
@@ -191,6 +209,12 @@ export const es: Messages = {
         topAsk: "Lo más preguntado: envíos",
       },
     },
+    /** Structure option B (?struct=B): the handwritten kicker over the merged Support + Insights screen. */
+    proof: {
+      kicker: "Y no solo vende.",
+    },
+    /** Structure options D to G (?struct=D..G): Boost Sales's area label, small over its outcome. */
+    salesArea: "Ventas",
     customize: {
       lead: "Elige su aspecto y pon tu logo en su camiseta.",
       avatar: { title: "Tu avatar", body: "Elige una cara que encaje con tu marca." },

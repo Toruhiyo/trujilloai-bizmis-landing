@@ -5,7 +5,8 @@ import { useScene } from "./hooks";
 import { Sentinel } from "./scene";
 
 /** The payoff's timeline: the bad funnel, the three stages fixed in turn, the sales piling up, the finale. */
-const DURATION = 8600;
+export const PAYOFF_DURATION = 10400;
+const DURATION = PAYOFF_DURATION;
 
 /**
  * The pillar's payoff, in the funnel's own language and without a single

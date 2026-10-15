@@ -17,8 +17,8 @@
 
 /** A stage's pass rate without Bizmis: a big leak. */
 export const BAD = [0.28, 0.28, 0.3];
-/** With Bizmis: far better, never lossless. */
-export const GOOD = [0.88, 0.87, 0.88];
+/** With Bizmis: the leak sealed, only a few still lost; never lossless. */
+export const GOOD = [0.94, 0.93, 0.94];
 
 /** The pass rate of stage `g`, `k` (0 → 1) of the way fixed. */
 export const rate = (g: number, k: number) => BAD[g] + (GOOD[g] - BAD[g]) * k;
@@ -83,8 +83,8 @@ export const FALL = 1.35;
 /** A buyer's hop from the spout into the bag (s). */
 export const HOP = 0.42;
 
-/** How long a stage's leak takes to choke once its agent lands (ms). */
-export const RAMP = 600;
+/** How long a stage's leak takes to seal once its agent lands (ms): a snap, the change is instant. */
+export const RAMP = 90;
 /** The agent's drop onto the leak (ms), ending as it lands. */
 export const DROP = 380;
 
@@ -94,11 +94,11 @@ const ease = (k: number) => (k <= 0 ? 0 : k >= 1 ? 1 : k < 0.5 ? 4 * k * k * k :
  * When each stage's agent lands on its leak (ms on the timeline). A beat
  * (`focus` 0–2): the stages before it are fixed already, its own lands at
  * `fixAt`, the ones after it stay bad. The payoff (3): from the bad funnel,
- * all three land one after another, quickly.
+ * all three land one after another, each given a moment to be seen.
  */
 export const startsFor = (focus: number, fixAt = 1500) =>
   focus >= 3
-    ? [1300, 1750, 2200]
+    ? [1300, 2900, 4500]
     : [0, 1, 2].map((g) => (g < focus ? -Infinity : g === focus ? fixAt : Infinity));
 
 /** How far each stage's fix is at `t` (ms): 0 → 1, over RAMP from the landing. */

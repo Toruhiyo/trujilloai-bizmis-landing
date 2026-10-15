@@ -154,16 +154,32 @@ export const it: Messages = {
       decided: "Nel carrello",
       buyQuery: "Arriva entro venerdì?",
       buyCaption: "Sì, parte oggi e il reso è gratuito. Andiamo al pagamento?",
+      /** The one-shopper variant (?case=one): the same shopper and gift from Find through Trust to Buy. */
+      caseOne: {
+        compareQuery: "Quale dei tre le piacerà di più?",
+        compareCaption: "Questo. È il più apprezzato dei tre.",
+        buyQuery: "Arriva prima del suo compleanno, venerdì?",
+        buyCaption: "Sì, parte oggi e il reso è gratuito. Andiamo al pagamento?",
+      },
       cart: { title: "Il tuo carrello", subtotal: "Subtotale", checkout: "Pagamento", perks: ["Spedito oggi", "Reso gratuito"], placed: "Ordine effettuato" },
       funnel: {
         problems: ["Non lo trova", "Indeciso", "Non è sicuro"],
         solutions: ["Trovato", "Confrontato", "Dubbio chiarito"],
+        /** Prototype marks (?visits, ?win): the dots are visits; the win against the loss, in handwriting (no figures). */
+        visitors: "Visitatori",
+        visits: "visite",
+        lost: "perse",
+        sold: "vendute",
+        before: "prima",
+        after: "dopo",
       },
       pulse: { currency: "EUR" },
     },
     support: {
       title: "Meno ticket.",
       titleTail: "Clienti più felici.",
+      /** The area as a small label over the outcome (?struct=A|B|C). */
+      area: "Assistenza",
       lead: "Risponde in pochi secondi, giorno e notte, con il calore del tuo miglior commesso.",
       capabilities: [
         { title: "Sempre attivo", body: "Ogni domanda riceve risposta nel momento in cui arriva." },
@@ -180,6 +196,8 @@ export const it: Messages = {
     insights: {
       title: "Scopri cosa vende.",
       titleTail: "Sistema il resto.",
+      /** The area as a small label over the outcome (?struct=A|B|C). */
+      area: "Dati del negozio",
       lead: "Ogni conversazione diventa un passo successivo chiaro.",
       features: [
         { title: "Replay delle sessioni", body: "Ascolta il momento esatto in cui un cliente ha esitato." },
@@ -191,6 +209,12 @@ export const it: Messages = {
         topAsk: "Domanda n.1: spedizioni",
       },
     },
+    /** Structure option B (?struct=B): the handwritten kicker over the merged Support + Insights screen. */
+    proof: {
+      kicker: "E non si limita a vendere.",
+    },
+    /** Structure options D to G (?struct=D..G): Boost Sales's area label, small over its outcome. */
+    salesArea: "Vendite",
     customize: {
       lead: "Scegli il suo aspetto e metti il tuo logo sulla sua maglietta.",
       avatar: { title: "Il tuo avatar", body: "Scegli un volto adatto al tuo brand." },

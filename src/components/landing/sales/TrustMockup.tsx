@@ -12,6 +12,7 @@ import type { Messages } from "@/i18n/messages/en";
 import { bump, easeOutBack, useScene } from "./hooks";
 import { Sentinel } from "./scene";
 import type { MockupProps } from "./scene";
+import { useSalesCopy, useSalesProto } from "./proto";
 
 /** The scene's timeline (ms): typing, send, weighing the four (one card every `card`), the pick, the answer. */
 const T = { type: 350, send: 1300, compare: 1650, card: 560, pick: 4050, speak: 4150 };
@@ -38,6 +39,12 @@ const PRODUCTS: {
   { shape: "egg", tint: "blush", price: 56, fits: [false, false, true] },
 ];
 const BEST = 1;
+/** ?case=one: the three Find it narrowed the catalog to (its picks, best first), compared. */
+const PRODUCTS_ONE: typeof PRODUCTS = [
+  { shape: "sphere", tint: "sand", price: 48, fits: [true, true, true] },
+  { shape: "torus", tint: "blush", price: 44, fits: [true, false, true] },
+  { shape: "capsule", tint: "stone", price: 42, fits: [false, true, true] },
+];
 
 /**
  * "They trust it" (the decision), on a phone: the shopper asks which one to
@@ -51,7 +58,10 @@ const BEST = 1;
  */
 const TrustMockup = ({ play, clock, active = true }: MockupProps) => {
   const m = useMessages();
-  const s = m.landing.sales;
+  const s = useSalesCopy();
+  const { one } = useSalesProto();
+  const products = one ? PRODUCTS_ONE : PRODUCTS;
+  const bestAt = one ? 0 : BEST;
   const locale = useLocale();
   const speakLen = captionLength(s.compareCaption, MS_PER_WORD);
   const decideAt = T.speak + speakLen - 900;
@@ -83,15 +93,20 @@ const TrustMockup = ({ play, clock, active = true }: MockupProps) => {
           <div className="bzl-tile-line w-1/4" />
         </div>
         <div className="grid grid-cols-2 gap-3 px-4 pt-4">
-          {PRODUCTS.map((p, i) => {
-            const best = i === BEST;
+          {products.map((p, i) => {
+            const best = i === bestAt;
             const at = T.compare + i * T.card;
             const scan = bump(t, at, 700);
             const lift = best ? easeOutBack(pick) : pick;
             return (
               <div
                 key={i}
-                className={cn("sl-trust-card relative rounded-2xl p-2.5", best && picked && "is-best")}
+                className={cn(
+                  "sl-trust-card relative rounded-2xl p-2.5",
+                  best && picked && "is-best",
+                  // three candidates: the last one centred on its own row
+                  products.length === 3 && i === 2 && "col-span-2 mx-auto w-[calc(50%-0.375rem)]",
+                )}
                 style={
                   {
                     opacity: best ? 1 : 1 - 0.6 * pick,
@@ -171,7 +186,7 @@ const TrustMockup = ({ play, clock, active = true }: MockupProps) => {
           })}
         </div>
         <MobileWidget
-          head="mia"
+          head={one ? "amber" : "mia"}
           speaking={captionVoice(s.compareCaption, t - T.speak, MS_PER_WORD)}
           live={active}
           working={comparing}

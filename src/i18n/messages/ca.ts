@@ -154,16 +154,32 @@ export const ca: Messages = {
       decided: "Al carretó",
       buyQuery: "Arriba abans de divendres?",
       buyCaption: "Sí, surt avui i la devolució és gratuïta. Anem a pagar?",
+      /** The one-shopper variant (?case=one): the same shopper and gift from Find through Trust to Buy. */
+      caseOne: {
+        compareQuery: "Quin dels tres li agradarà més?",
+        compareCaption: "Aquest. És el més ben valorat dels tres.",
+        buyQuery: "Arriba abans del seu aniversari, divendres?",
+        buyCaption: "Sí, surt avui i la devolució és gratuïta. Anem a pagar?",
+      },
       cart: { title: "El teu carretó", subtotal: "Subtotal", checkout: "Pagar", perks: ["Surt avui", "Devolució gratuïta"], placed: "Comanda feta" },
       funnel: {
         problems: ["No el troba", "Indecís", "No n'està segur"],
         solutions: ["Trobat", "Comparat", "Dubte resolt"],
+        /** Prototype marks (?visits, ?win): the dots are visits; the win against the loss, in handwriting (no figures). */
+        visitors: "Visites",
+        visits: "visites",
+        lost: "perdudes",
+        sold: "venudes",
+        before: "abans",
+        after: "després",
       },
       pulse: { currency: "EUR" },
     },
     support: {
       title: "Menys tiquets.",
       titleTail: "Clients més feliços.",
+      /** The area as a small label over the outcome (?struct=A|B|C). */
+      area: "Atenció al client",
       lead: "Respon en segons, de dia o de nit, amb la calidesa del teu millor dependent.",
       capabilities: [
         { title: "Sempre disponible", body: "Cada pregunta té resposta al moment." },
@@ -180,6 +196,8 @@ export const ca: Messages = {
     insights: {
       title: "Mira què ven.",
       titleTail: "Arregla la resta.",
+      /** The area as a small label over the outcome (?struct=A|B|C). */
+      area: "Dades de la botiga",
       lead: "Cada conversa es converteix en un pas següent clar.",
       features: [
         { title: "Repeticions de sessió", body: "Escolta el moment exacte en què un client va dubtar." },
@@ -191,6 +209,12 @@ export const ca: Messages = {
         topAsk: "El més preguntat: enviaments",
       },
     },
+    /** Structure option B (?struct=B): the handwritten kicker over the merged Support + Insights screen. */
+    proof: {
+      kicker: "I no només ven.",
+    },
+    /** Structure options D to G (?struct=D..G): Boost Sales's area label, small over its outcome. */
+    salesArea: "Vendes",
     customize: {
       lead: "Tria el seu aspecte i posa el teu logo a la seva samarreta.",
       avatar: { title: "El teu avatar", body: "Tria una cara que encaixi amb la teva marca." },

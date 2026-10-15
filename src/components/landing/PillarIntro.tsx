@@ -1,8 +1,10 @@
-import { useLayoutEffect, useRef, useState } from "react";
+import { useContext, useLayoutEffect, useRef, useState } from "react";
 import type { CSSProperties, ReactNode } from "react";
 import { cn } from "@/lib/utils";
 import "@/styles/pillar-intro.css";
 import SectionHead from "./openers/SectionHead";
+import OpenerHero from "./openers/OpenerHero";
+import { PillarAreaContext, isOpenerVariant, useStruct } from "./openers/StructContext";
 
 /**
  * PillarIntro: a pillar's entrance and its sticky docked bar.
@@ -39,6 +41,11 @@ import SectionHead from "./openers/SectionHead";
  * - The root publishes `--pi-dock-h` (the bar's height) so pinned children
  *   can sit right under it (`top: calc(nav + var(--pi-dock-h))`), and
  *   `.is-docked` while the bar shows.
+ * - With ?struct=D..G (openers/StructContext) the entrance is redesigned
+ *   (openers/OpenerHero): the OUTCOME is the hero (`outcome`, a sentence a
+ *   line; by default the `name`) and the AREA a small label (`area`; by
+ *   default PillarAreaContext); `moment` is the pillar's marker drawing for
+ *   the split opener. The docked bar is unchanged.
  */
 export type PillarIntroProps = {
   /** The pillar's name, the benefit ("Boost Sales"): huge on arrival, the docked bar's label. */
@@ -64,6 +71,12 @@ export type PillarIntroProps = {
   lineClassName?: string;
   titleClassName?: string;
   dockClassName?: string;
+  /** ?struct=D..G: the outcome, the opener's hero, a sentence a line (default: the `name`). */
+  outcome?: string[];
+  /** ?struct=D..G: the area label, small (default: PillarAreaContext). */
+  area?: ReactNode;
+  /** ?struct=E: the pillar's marker moment beside the outcome. */
+  moment?: ReactNode;
   children?: ReactNode;
 };
 
@@ -87,9 +100,16 @@ const PillarIntro = ({
   lineClassName,
   titleClassName,
   dockClassName,
+  outcome,
+  area,
+  moment,
   children,
 }: PillarIntroProps) => {
   const named = name !== undefined && name !== null;
+  const struct = useStruct();
+  const areaCtx = useContext(PillarAreaContext);
+  const heroLines = outcome ?? (typeof name === "string" ? [name] : undefined);
+  const variant = named && heroLines && isOpenerVariant(struct) ? struct : null;
   const line = named ? (lineProp ?? title) : undefined;
   const root = useRef<HTMLDivElement>(null);
   const head = useRef<HTMLDivElement>(null);
@@ -145,8 +165,15 @@ const PillarIntro = ({
         const a = el.getBoundingClientRect();
         // fully shown until it nears the bar; gone by the time its top reaches the nav
         el.style.setProperty("--pi-o", clamp01((a.top - nav) / (bar + a.height * 0.45)).toFixed(3));
-        // the bar comes in as the name's top passes into it (the big pieces then crossfade out)
-        if (el.classList.contains("pi-key")) dockNow = a.top < nav + bar * 0.6;
+      }
+      // the bar comes in as the name's top passes into it (the big pieces then crossfade out)
+      const key = b.querySelector<HTMLElement>(".pi-key");
+      if (key) {
+        const a = key.getBoundingClientRect();
+        dockNow = a.top < nav + bar * 0.6;
+        // ?struct=F: the line shrinks as it rises from mid-screen into the bar
+        if (key.classList.contains("pi-shrink"))
+          key.style.setProperty("--pi-k", clamp01(1 - (a.top - nav) / (vh * 0.5)).toFixed(3));
       }
       setDocked(dockNow);
     };
@@ -169,7 +196,7 @@ const PillarIntro = ({
   return (
     <div
       ref={root}
-      className={cn("pi", reduced && "is-still", isDocked && "is-docked", className)}
+      className={cn("pi", variant && `pi-v pi-v-${variant.toLowerCase()}`, reduced && "is-still", isDocked && "is-docked", className)}
       style={accent ? ({ "--pi-bar": accent } as CSSProperties) : undefined}
     >
       <div ref={head} className="pi-head">
@@ -186,7 +213,18 @@ const PillarIntro = ({
         </div>
       </div>
       <div ref={big} className={cn("pi-big", named && "is-named")}>
-        {named ? (
+        {variant && heroLines ? (
+          <OpenerHero
+            variant={variant}
+            area={area ?? areaCtx}
+            icon={icon}
+            outcome={heroLines}
+            line={outcome ? undefined : line}
+            lineClassName={lineClassName}
+            moment={moment}
+            as={Tag}
+          />
+        ) : named ? (
           // the section header (openers/SectionHead), the same markup as every section's
           <SectionHead
             index={index ?? ""}

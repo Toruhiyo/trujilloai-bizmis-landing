@@ -10,6 +10,7 @@ import SalesPayoff from "./SalesPayoff";
 import SalesTitle, { SalesHeading } from "./SalesTitle";
 import { Device, PanelCopy, Sentinel } from "./shared";
 import { trustTimeline } from "./TrustMockup";
+import { useSalesCopy } from "./proto";
 
 /** Find, trust, buy, then the payoff. */
 const STEPS = 4;
@@ -47,7 +48,7 @@ const TIMELINES = [findTimeline, trustTimeline, buyTimeline];
  * sentinel goes over the beat; `play: false` holds it at the start.
  */
 const useBeat = (i: number, play?: boolean) => {
-  const s = useMessages().landing.sales;
+  const s = useSalesCopy();
   const tl = TIMELINES[i](s);
   const scene = useScene(tl.duration, play);
   return { ...scene, duration: tl.duration, fixAt: tl.fixAt };
@@ -77,7 +78,7 @@ const Pinned = () => {
         line={<BigLine />}
         lineClassName="sl-big"
         accent={BAR}
-        docked={<SalesTitle active={lit} layout="line" as="p" marks className="sl-c-title" />}
+        docked={<SalesTitle active={lit} layout="line" as="p" marks={!payoff} className="sl-c-title" />}
       >
         <div ref={track} className="sl-c-track">
           <div className="sl-c-pin">
@@ -152,7 +153,7 @@ const Stacked = () => {
         line={<BigLine />}
         lineClassName="sl-big"
         accent={BAR}
-        docked={<SalesTitle active={lit} layout="line" as="p" marks className="sl-bar-title" />}
+        docked={<SalesTitle active={lit} layout="line" as="p" marks={active < 3} className="sl-bar-title" />}
       >
         <div className="bzl-wrap sl-c-list">
           {s.panels.map((p, i) => (

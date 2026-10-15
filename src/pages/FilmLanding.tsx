@@ -24,6 +24,15 @@ import "@/styles/openers.css";
 import BenefitsOverview from "@/components/landing/openers/BenefitsOverview";
 import SideIndex from "@/components/landing/openers/SideIndex";
 import { OpenerContext } from "@/components/landing/openers/OpenerContext";
+// the page-structure options under comparison (?struct=A|B|C, structs.css)
+import "@/styles/structs.css";
+import "@/styles/opener-heroes.css";
+import ProofSection from "@/components/landing/ProofSection";
+import {
+  PillarAreaContext,
+  StructContext,
+} from "@/components/landing/openers/StructContext";
+import type { Struct } from "@/components/landing/openers/StructContext";
 
 /**
  * The opener approach shown without ?open: "0", the pillars' big scroll-away
@@ -46,10 +55,15 @@ interface FilmLandingProps {
  */
 const FilmLanding = ({ path = "/" }: FilmLandingProps) => {
   const messages = useMessages();
+  const search = new URLSearchParams(useLocation().search);
   // the opener approach: ?open=1..5, else DEFAULT_OPEN
-  const openParam =
-    new URLSearchParams(useLocation().search).get("open") ?? DEFAULT_OPEN;
+  const openParam = search.get("open") ?? DEFAULT_OPEN;
   const open = /^[0-5]$/.test(openParam) ? openParam : DEFAULT_OPEN;
+  // the page-structure option: ?struct=A..G (StructContext); without it, the page as it is
+  const structParam = (search.get("struct") ?? "").toUpperCase();
+  const struct: Struct = /^[A-G]$/.test(structParam)
+    ? (structParam as Struct)
+    : "";
 
   // Lets the film landing's scoped CSS reach the shared navbar (outside .bzl),
   // e.g. the handwritten "Early Access" link, without touching other pages.
@@ -79,6 +93,7 @@ const FilmLanding = ({ path = "/" }: FilmLandingProps) => {
         data-palette="1"
         data-look="film"
         data-open={open}
+        data-struct={struct || undefined}
       >
         <Helmet>
           <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -124,9 +139,21 @@ const FilmLanding = ({ path = "/" }: FilmLandingProps) => {
         {/* approach 2 presents the three benefits together first; approach 3 adds the side index */}
         {open === "2" && <BenefitsOverview />}
         {open === "3" && <SideIndex />}
-        <SalesSection />
-        <SupportSection />
-        <InsightsSection />
+        {/* ?struct: A and C reshape Support and Insights; B merges them into one proof screen;
+            D..G redesign all three pillars' openers (Sales' area label comes from here) */}
+        <StructContext.Provider value={struct}>
+          <PillarAreaContext.Provider value={messages.landing.salesArea}>
+            <SalesSection />
+          </PillarAreaContext.Provider>
+          {struct === "B" ? (
+            <ProofSection />
+          ) : (
+            <>
+              <SupportSection />
+              <InsightsSection />
+            </>
+          )}
+        </StructContext.Provider>
         <SetupSection />
         <CustomizeSection />
         <EndCard />

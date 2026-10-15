@@ -1,4 +1,4 @@
-import type { ComponentType } from "react";
+import type { ComponentType, CSSProperties } from "react";
 import { cn } from "@/lib/utils";
 import BuyMockup from "./BuyMockup";
 import type { Clock, MockupProps } from "./scene";
@@ -47,6 +47,7 @@ export const PanelCopy = ({
   index,
   kicker,
   className,
+  style,
   as: Tag = "h3",
 }: {
   title: string;
@@ -55,9 +56,10 @@ export const PanelCopy = ({
   /** A word over the title (its funnel stage), after the number if there is one. */
   kicker?: string;
   className?: string;
+  style?: CSSProperties;
   as?: "h3" | "p";
 }) => (
-  <div className={cn("sl-copy", className)}>
+  <div className={cn("sl-copy", className)} style={style}>
     {kicker !== undefined ? (
       <span className="sl-copy-kicker">
         {index !== undefined && (

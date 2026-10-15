@@ -160,6 +160,13 @@ export const en = {
       decided: "Added to cart",
       buyQuery: "Will it arrive by Friday?",
       buyCaption: "Yes, it ships today and returns are free. Ready to check out?",
+      /** The one-shopper variant (?case=one): the same shopper and gift from Find through Trust to Buy. */
+      caseOne: {
+        compareQuery: "Which of the three would she like best?",
+        compareCaption: "This one. It is the best reviewed of the three.",
+        buyQuery: "Will it arrive before her birthday on Friday?",
+        buyCaption: "Yes, it ships today and returns are free. Ready to check out?",
+      },
       /** The store's cart in the Buy it mockup. */
       cart: { title: "Your cart", subtotal: "Subtotal", checkout: "Checkout", perks: ["Ships today", "Free returns"], placed: "Order placed" },
       /** The at-scale funnel beside each moment: the whole store's shoppers, one funnel fixed stage by stage (illustrative, no figures). */
@@ -167,6 +174,13 @@ export const en = {
         /** Each stage's status, as the film's pills: the problem (grey), then fixed by Bizmis (orange check). */
         problems: ["Can't find it", "Can't decide", "Not sure"],
         solutions: ["Found it", "Compared", "Doubt cleared"],
+        /** Prototype marks (?visits, ?win): the dots are visits; the win against the loss, in handwriting (no figures). */
+        visitors: "Visitors",
+        visits: "visits",
+        lost: "lost",
+        sold: "sold",
+        before: "before",
+        after: "after",
       },
       /** The store's currency in the mockups' prices (an ISO code for Intl). */
       pulse: { currency: "USD" },
@@ -175,6 +189,8 @@ export const en = {
     support: {
       title: "Fewer tickets.",
       titleTail: "Happier customers.",
+      /** The area as a small label over the outcome (?struct=A|B|C). */
+      area: "Support",
       lead: "Answers in seconds, day or night, as warmly as your best clerk.",
       capabilities: [
         { title: "Always on", body: "Every question gets answered the moment it's asked." },
@@ -193,6 +209,8 @@ export const en = {
     insights: {
       title: "See what sells.",
       titleTail: "Fix what doesn't.",
+      /** The area as a small label over the outcome (?struct=A|B|C). */
+      area: "Insights",
       lead: "Every conversation becomes a clear next step.",
       features: [
         { title: "Session replays", body: "Hear the exact moment a shopper hesitated." },
@@ -205,6 +223,12 @@ export const en = {
         topAsk: "Top ask: shipping",
       },
     },
+    /** Structure option B (?struct=B): the handwritten kicker over the merged Support + Insights screen. */
+    proof: {
+      kicker: "And it doesn't just sell.",
+    },
+    /** Structure options D to G (?struct=D..G): Boost Sales's area label, small over its outcome. */
+    salesArea: "Sales",
     /** Personalization on /v2. */
     customize: {
       lead: "Pick its look and put your logo on its shirt.",

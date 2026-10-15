@@ -6,6 +6,8 @@ import FeatureCard from "./FeatureCard";
 import BenefitIntro from "./pillar/BenefitIntro";
 import { SupportRelief } from "./PillarMoments";
 import SupportStore from "./support/SupportStore";
+import OutcomeHead from "./openers/OutcomeHead";
+import { useStruct } from "./openers/StructContext";
 
 /**
  * The support moment: a store page with the real widget, cycling through the
@@ -39,13 +41,83 @@ const SupportChat = () => (
  */
 const CAPABILITY_ICONS = [ClockIcon, BookIcon, CareIcon];
 
+/**
+ * The structure options (?struct=A|C, structs.css): the area a small label,
+ * the outcome the big line. A: one screen, the head, lead and capabilities
+ * beside the store (the one visual). C: an opener (the outcome huge over the
+ * inbox emptying), then the content screen. (B merges Support and Insights:
+ * ProofSection.)
+ */
+const SupportStruct = ({ struct }: { struct: "A" | "C" }) => {
+  const s = useMessages().landing.support;
+  const caps = (
+    <div className="st-caps">
+      {s.capabilities.map((c, i) => (
+        <Reveal key={c.title} delay={160 + i * 90}>
+          <FeatureCard icon={CAPABILITY_ICONS[i]} title={c.title} body={c.body} />
+        </Reveal>
+      ))}
+    </div>
+  );
+  if (struct === "A")
+    return (
+      <section className="bzl-band bzl-pillar p-support st-screen st-a">
+        <div className="bzl-wrap st-grid">
+          <div className="st-copy">
+            <OutcomeHead area={s.area} icon={<HeadsetIcon />} lead={s.title} tail={s.titleTail} />
+            <Reveal delay={80} className="st-leadbox">
+              <p className="bzl-lead st-lead">{s.lead}</p>
+            </Reveal>
+            {caps}
+          </div>
+          <Reveal delay={120} className="st-visual st-store">
+            <SupportChat />
+          </Reveal>
+        </div>
+      </section>
+    );
+  return (
+    <section className="bzl-band bzl-pillar p-support st-c so-support">
+      <div className="st-opener">
+        <OutcomeHead area={s.area} icon={<HeadsetIcon />} lead={s.title} tail={s.titleTail} size="xl" center />
+        <Reveal delay={200} className="st-feel">
+          <SupportRelief />
+        </Reveal>
+      </div>
+      <div className="so-content st-screen">
+        <div className="bzl-wrap st-grid">
+          <div className="st-copy">
+            <OutcomeHead area={s.area} icon={<HeadsetIcon />} as="p" />
+            <Reveal delay={80} className="st-leadbox">
+              <p className="bzl-lead st-lead">{s.lead}</p>
+            </Reveal>
+            {caps}
+          </div>
+          <Reveal delay={120} className="st-visual st-store">
+            <SupportChat />
+          </Reveal>
+        </div>
+      </div>
+    </section>
+  );
+};
+
 const SupportSection = () => {
   const messages = useMessages();
+  const struct = useStruct();
+  if (struct === "A" || struct === "C") return <SupportStruct struct={struct} />;
   const s = messages.landing.support;
   const promise = `${s.title} ${s.titleTail}`;
   return (
     <section className="bzl-band bzl-pillar p-support bzp-section">
-      <BenefitIntro index="02" icon={<HeadsetIcon />} name={messages.benefits.support.badge} promise={promise}>
+      <BenefitIntro
+        index="02"
+        icon={<HeadsetIcon />}
+        name={messages.benefits.support.badge}
+        promise={promise}
+        outcome={[s.title, s.titleTail]}
+        moment={<SupportRelief />}
+      >
         <div className="bzl-wrap">
           <div className="bzs-grid">
             <Reveal delay={120} className="bzs-store">

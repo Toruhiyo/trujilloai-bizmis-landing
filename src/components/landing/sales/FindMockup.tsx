@@ -12,6 +12,7 @@ import type { Messages } from "@/i18n/messages/en";
 import { bump, easeInOut, useMedia, useScene } from "./hooks";
 import { Sentinel } from "./scene";
 import type { MockupProps } from "./scene";
+import { useSalesCopy } from "./proto";
 
 /** The store's catalog: fifteen clay products (shape, tile tint). */
 const CATALOG: [ClayShape, keyof typeof TINT][] = [
@@ -94,7 +95,7 @@ export const findTimeline = (s: Messages["landing"]["sales"]) => ({
  */
 const FindMockup = ({ play, clock, active = true }: MockupProps) => {
   const m = useMessages();
-  const s = m.landing.sales;
+  const s = useSalesCopy();
   const phone = useMedia("(max-width: 639px)");
   const speakLen = captionLength(s.findCaption, MS_PER_WORD);
   // its own loop, unless its beat's clock drives it (with the funnel beside it)
