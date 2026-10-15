@@ -2843,6 +2843,7 @@
   // Colours follow a plan (tmp/demo-stores-v24/_plan/colour-plan.json): the tunnel in light, fresh tones; the run in saturated
   // jewel tones, pinks alternating with deep cools, landing on Your store orange (every neighbour >= 35 CIEDE2000 apart).
   // v35: every store re-recorded with the agent visibly talking (stores/reel/v35, same 3.2 s loops)
+  // v35: run cards open 1.3 s into their loop, where the agent is already talking (they flash by in < 1 s)
   const PROMO_REEL_STORES_V24 = {
     'halcyon-optics': { device: 'desktop', color: '#C8B6F0', video: '/promo/stores/reel/v35/halcyon-optics-desktop-home.mp4', img: '/promo/stores/reel/v35/halcyon-optics-desktop-home.jpg' },
     'kumo-tea': { device: 'phone', color: '#5BC76B', video: '/promo/stores/reel/v35/kumo-tea-phone-home.mp4', img: '/promo/stores/reel/v35/kumo-tea-phone-home.jpg' },
@@ -2852,20 +2853,20 @@
     'maison-cacao': { device: 'desktop', color: '#2BBFA4', video: '/promo/stores/reel/v35/maison-cacao-desktop-home.mp4', img: '/promo/stores/reel/v35/maison-cacao-desktop-home.jpg' },
     'liora': { device: 'tablet', color: '#E597A8', video: '/promo/stores/reel/v35/liora-tablet-home.mp4', img: '/promo/stores/reel/v35/liora-tablet-home.jpg' },
     'grindline': { device: 'phone', color: '#1A7FC4', video: '/promo/stores/reel/v35/grindline-phone-home.mp4', img: '/promo/stores/reel/v35/grindline-phone-home.jpg' },
-    'kettle-and-crow': { device: 'phone', color: '#B8306A', video: '/promo/stores/reel/v35/kettle-and-crow-phone-home.mp4', img: '/promo/stores/reel/v35/kettle-and-crow-phone-home.jpg', voice: 'quick-ko', category: 'Food & drink', feat: 'Matches it to their taste', ben: 'Repeat customers' },
-    'northpeak': { device: 'phone', color: '#2A4FD6', video: '/promo/stores/reel/v35/northpeak-phone-home.mp4', img: '/promo/stores/reel/v35/northpeak-phone-home.jpg', voice: 'quick-zh', category: 'Health & wellness', feat: 'Explains every ingredient', ben: 'Trust that converts' },
-    'saltline': { device: 'desktop', color: '#10A7B8', video: '/promo/stores/reel/v35/saltline-desktop-home.mp4', img: '/promo/stores/reel/v35/saltline-desktop-home.jpg', voice: 'quick-pt', category: 'Sports & outdoors', feat: 'Picks the right fit', ben: 'Fewer exchanges' },
-    'ridgeline-supply': { device: 'desktop', color: '#0E6185', video: '/promo/stores/reel/v35/ridgeline-supply-desktop-home.mp4', img: '/promo/stores/reel/v35/ridgeline-supply-desktop-home.jpg' },
-    'nest-and-nook': { device: 'tablet', color: '#86C2A2', video: '/promo/stores/reel/v35/nest-and-nook-tablet-home.mp4', img: '/promo/stores/reel/v35/nest-and-nook-tablet-home.jpg' },
-    'atelier-noor': { device: 'desktop', color: '#A4408F', video: '/promo/stores/reel/v35/atelier-noor-desktop-home.mp4', img: '/promo/stores/reel/v35/atelier-noor-desktop-home.jpg' },
-    'little-timber': { device: 'tablet', color: '#3A9FE6', video: '/promo/stores/reel/v35/little-timber-tablet-home.mp4', img: '/promo/stores/reel/v35/little-timber-tablet-home.jpg' },
-    'inkwell': { device: 'tablet', color: '#22407C', video: '/promo/stores/reel/v35/inkwell-tablet-home.mp4', img: '/promo/stores/reel/v35/inkwell-tablet-home.jpg' },
-    'leaf-and-loam': { device: 'tablet', color: '#139E6E', video: '/promo/stores/reel/v35/leaf-and-loam-tablet-home.mp4', img: '/promo/stores/reel/v35/leaf-and-loam-tablet-home.jpg' },
-    'spokehaus': { device: 'phone', color: '#EE3F87', video: '/promo/stores/reel/v35/spokehaus-phone-home.mp4', img: '/promo/stores/reel/v35/spokehaus-phone-home.jpg' },
-    'juniper-linen': { device: 'desktop', color: '#8E9FE8', video: '/promo/stores/reel/v35/juniper-linen-desktop-home.mp4', img: '/promo/stores/reel/v35/juniper-linen-desktop-home.jpg' },
-    'tonewood': { device: 'tablet', color: '#5E2A63', video: '/promo/stores/reel/v35/tonewood-tablet-home.mp4', img: '/promo/stores/reel/v35/tonewood-tablet-home.jpg' },
-    'fetch-and-fern': { device: 'desktop', color: '#138A86', video: '/promo/stores/reel/v35/fetch-and-fern-desktop-home.mp4', img: '/promo/stores/reel/v35/fetch-and-fern-desktop-home.jpg' },
-    'petal-and-post': { device: 'phone', color: '#D63BC0', video: '/promo/stores/reel/v35/petal-and-post-phone-home.mp4', img: '/promo/stores/reel/v35/petal-and-post-phone-home.jpg' },
+    'kettle-and-crow': { start: 1.3, device: 'phone', color: '#B8306A', video: '/promo/stores/reel/v35/kettle-and-crow-phone-home.mp4', img: '/promo/stores/reel/v35/kettle-and-crow-phone-home.jpg', voice: 'quick-ko', category: 'Food & drink', feat: 'Matches it to their taste', ben: 'Repeat customers' },
+    'northpeak': { start: 1.3, device: 'phone', color: '#2A4FD6', video: '/promo/stores/reel/v35/northpeak-phone-home.mp4', img: '/promo/stores/reel/v35/northpeak-phone-home.jpg', voice: 'quick-zh', category: 'Health & wellness', feat: 'Explains every ingredient', ben: 'Trust that converts' },
+    'saltline': { start: 1.3, device: 'desktop', color: '#10A7B8', video: '/promo/stores/reel/v35/saltline-desktop-home.mp4', img: '/promo/stores/reel/v35/saltline-desktop-home.jpg', voice: 'quick-pt', category: 'Sports & outdoors', feat: 'Picks the right fit', ben: 'Fewer exchanges' },
+    'ridgeline-supply': { start: 1.3, device: 'desktop', color: '#0E6185', video: '/promo/stores/reel/v35/ridgeline-supply-desktop-home.mp4', img: '/promo/stores/reel/v35/ridgeline-supply-desktop-home.jpg' },
+    'nest-and-nook': { start: 1.3, device: 'tablet', color: '#86C2A2', video: '/promo/stores/reel/v35/nest-and-nook-tablet-home.mp4', img: '/promo/stores/reel/v35/nest-and-nook-tablet-home.jpg' },
+    'atelier-noor': { start: 1.3, device: 'desktop', color: '#A4408F', video: '/promo/stores/reel/v35/atelier-noor-desktop-home.mp4', img: '/promo/stores/reel/v35/atelier-noor-desktop-home.jpg' },
+    'little-timber': { start: 1.3, device: 'tablet', color: '#3A9FE6', video: '/promo/stores/reel/v35/little-timber-tablet-home.mp4', img: '/promo/stores/reel/v35/little-timber-tablet-home.jpg' },
+    'inkwell': { start: 1.3, device: 'tablet', color: '#22407C', video: '/promo/stores/reel/v35/inkwell-tablet-home.mp4', img: '/promo/stores/reel/v35/inkwell-tablet-home.jpg' },
+    'leaf-and-loam': { start: 1.3, device: 'tablet', color: '#139E6E', video: '/promo/stores/reel/v35/leaf-and-loam-tablet-home.mp4', img: '/promo/stores/reel/v35/leaf-and-loam-tablet-home.jpg' },
+    'spokehaus': { start: 1.3, device: 'phone', color: '#EE3F87', video: '/promo/stores/reel/v35/spokehaus-phone-home.mp4', img: '/promo/stores/reel/v35/spokehaus-phone-home.jpg' },
+    'juniper-linen': { start: 1.3, device: 'desktop', color: '#8E9FE8', video: '/promo/stores/reel/v35/juniper-linen-desktop-home.mp4', img: '/promo/stores/reel/v35/juniper-linen-desktop-home.jpg' },
+    'tonewood': { start: 1.3, device: 'tablet', color: '#5E2A63', video: '/promo/stores/reel/v35/tonewood-tablet-home.mp4', img: '/promo/stores/reel/v35/tonewood-tablet-home.jpg' },
+    'fetch-and-fern': { start: 1.3, device: 'desktop', color: '#138A86', video: '/promo/stores/reel/v35/fetch-and-fern-desktop-home.mp4', img: '/promo/stores/reel/v35/fetch-and-fern-desktop-home.jpg' },
+    'petal-and-post': { start: 1.3, device: 'phone', color: '#D63BC0', video: '/promo/stores/reel/v35/petal-and-post-phone-home.mp4', img: '/promo/stores/reel/v35/petal-and-post-phone-home.jpg' },
   };
   // the run's cards: 0..4 take the skeleton slots in order, 5..13 take all nine flash slots in order, so the run plays
   // (flash, skeleton): kettle-and-crow, northpeak, saltline, ridgeline-supply, nest-and-nook, atelier-noor, little-timber, inkwell,
