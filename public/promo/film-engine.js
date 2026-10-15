@@ -27,7 +27,7 @@
       termOffsets: [-80, -80, -80],
       handMark: ['Only fifty', 'start', -120],   // the pen starts 120 ms before "Only"
       heroMark: ['Secure yours', 'start', -260],   // 260 ms before "Secure"
-      closeMark: ['installing now', 'end', -40],   // the closing lockup starts after "...by installing now."
+      closeMark: ['Secure yours', 'end', 1000],   // the closing lockup starts after "...by installing now." (v35: anchored on "Secure yours", which stays at 8.92 s in every take, so the close keeps the v33/v34 moment the score's last hit is fitted to; the v35 read shouts "NOW!" in capitals, which the old anchor never found)
       find: 'Find Bizmis on the Shopify App Store',
       pills: true,   // v11: the three benefits as glass pills, then "Only 50 spots" (v24: the card is exactly what the VO says)
       shopify: true,
