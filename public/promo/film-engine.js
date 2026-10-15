@@ -413,6 +413,7 @@
   const PROMO_FLIP_POP_HOLD_MS = 450;   // v25: 650 -> 450 (the faster cut)
   const PROMO_TOGGLE_REST_MS = 650;
   const LEAD_WRAP = '[data-promo-lead-wrap]';   // v34: the pitch's lead copy sits in a class-carrying, box-less wrapper
+  const PROMO_PAIN_CLOSE_LEAD_MS = 1040;   // v34: the chat-close tap starts this long before "Either way" (as in v25-v33)
   const PROMO_LIVE_CARD_OUT_MS = 420;
   const PROMO_PITCH_HANDOFF_MS = 400;   // v34: the close-up's dissolve into the pitch sea's lead card   // the live widget card's fade out (html.is-promo-card-out)
   const PROMO_RECAP_BUBBLES = ['Can I help you find something?', "That one's perfect for them."];
@@ -13683,8 +13684,13 @@
       promoSfx('reply');
       // "...already gone.": the shopper closes the chat, the thumb on the ✕ as "gone." ends (v25 STT 19.82 s; press ~390 ms in)
       await this.painTake?.at('already gone.', 'end', -560);
+      const tapAt = performance.now();
       const close = clone.querySelector('.promo-pain__chat.is-open .promo-pain__close');
       if (close) await this.tapPhoneTarget(clone, close);
+      // v34: the sarcastic read says "gone." 0.84 s sooner, but everything after the pain (and the score fitted to
+      // it) is timed off this beat: hold until the moment the v25-v33 take reached it, 1040 ms before "Either way"
+      // (unchanged in both takes). A no-op for a take that ends "gone." where those did.
+      await this.painTake?.at('Either way', 'start', -PROMO_PAIN_CLOSE_LEAD_MS + (performance.now() - tapAt));
     }
 
     // v23: the phone pain's one zoom: the chat panel fills the frame (scale from the panel's box vs the
