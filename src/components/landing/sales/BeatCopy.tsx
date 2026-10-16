@@ -2,9 +2,9 @@ import type { CSSProperties } from "react";
 import { useSalesCopy, useSalesProto } from "./proto";
 import BeatAlt from "./beatcopy/BeatAlt";
 import BeatSwap from "./beatcopy/BeatSwap";
+import BeatHL from "./beatcopy/BeatHL";
 import { plain } from "./beatcopy/parts";
-import { SWAPS, SWAP_FROM, useBeatStyle } from "./beatcopy/style";
-import RewindTape from "./beatcopy/RewindTape";
+import { HLS, HL_FROM, SWAPS, SWAP_FROM, useBeatStyle } from "./beatcopy/style";
 import { PanelCopy } from "./shared";
 
 const clamp = (v: number) => Math.min(1, Math.max(0, v));
@@ -19,13 +19,13 @@ const pen = (k: number) => {
  * (PanelCopy). With ?copy=flip: the problem, said plainly, then at the fix
  * (on the beat's clock, `t` against `fixAt`, as the funnel's label does) a
  * marker stroke strikes it through and the fix is written in under it.
- * Every look sits in a RewindTape: while the beat's clock runs backwards,
- * the words take an analog tape-rewind look (the funnel and devices show ◀◀).
+ * The words rewind with the clock as they are, no tape look of their own
+ * (the analog rewind look, beatcopy/RewindTape, belongs to the devices).
  */
 const BeatCopy = ({ t, className, style, ...rest }: Props) => (
-  <RewindTape t={t} className={className} style={style}>
+  <div className={className} style={style}>
     <BeatWords t={t} {...rest} />
-  </RewindTape>
+  </div>
 );
 
 type Props = {
@@ -38,7 +38,7 @@ type Props = {
   numbered?: boolean;
 };
 
-/** The words themselves, in the look the URL picks (placement goes on the RewindTape around them). */
+/** The words themselves, in the look the URL picks (placement goes on the box around them). */
 const BeatWords = ({
   index,
   t,
@@ -57,6 +57,9 @@ const BeatWords = ({
         body={s.panels[index].body}
       />
     );
+  // ?beat=6a..6e: the polished highlighters, the shared opening never moving (beatcopy/BeatHL)
+  if (look >= HL_FROM)
+    return <BeatHL look={HLS[look - HL_FROM]} index={index} t={t} fixAt={fixAt} numbered={numbered} />;
   // ?beat=5a..5e: the headline swaps, each loss's and win's core highlighted (beatcopy/BeatSwap)
   if (look >= SWAP_FROM)
     return (

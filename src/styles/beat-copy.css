@@ -634,3 +634,118 @@
     font-size: 2.05rem;
   }
 }
+
+/* ── 6a..6e · Polished highlighters (beatcopy/BeatHL): the shared opening set once, never moved; only the core changes ── */
+.bch-chipbox {
+  display: inline-grid;
+}
+/* both chips in one cell: the box is as wide as the wider, so the kicker never rewraps */
+.bch-chipbox > .bc5-chip {
+  grid-area: 1 / 1;
+  justify-self: start;
+}
+.bch-chipbox > .bc5-chip.is-off {
+  visibility: hidden;
+}
+.sl-c .bch-head {
+  font-size: clamp(1.7rem, min(2.7vw, 5svh), 2.75rem);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+  color: #fff;
+  text-wrap: wrap;
+}
+.bch-box {
+  position: relative;
+  display: block;
+}
+/* line 1: the opening, set once (a grid only for the fallback of two different openings) */
+.bch-pre {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  font-weight: 600;
+}
+.bch-pre > span {
+  grid-area: 1 / 1;
+}
+/* line 2: the core, right-aligned to the block's edge; the loss's and the win's in one cell (as tall as the taller) */
+.bch-cores {
+  display: grid;
+}
+.bch-layer {
+  position: relative;
+  z-index: 1;
+  display: block;
+  text-align: right;
+  text-wrap: balance;
+}
+.bch-cores.is-stacked > .bch-layer {
+  grid-area: 1 / 1;
+}
+.bch-lead {
+  color: #fff;
+}
+.bch-core {
+  font-weight: 800;
+}
+.bch-core.is-ink {
+  color: var(--bc-ink);
+}
+.bch-w {
+  white-space: nowrap;
+}
+.bch-wb {
+  display: inline-block;
+  white-space: nowrap;
+}
+/* the marks, under the words */
+.bch-marks {
+  position: absolute;
+  z-index: 0;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+}
+.bch-band.is-muted {
+  fill: rgb(59 36 22 / 0.24);
+}
+.bch-band.is-bright {
+  fill: #ffd9b3;
+}
+.bch-band.is-muted-low {
+  fill: rgb(59 36 22 / 0.3);
+}
+.bch-band.is-bright-low {
+  fill: #ffe3c6;
+}
+.bch-strike {
+  fill: none;
+  stroke: #fff;
+  stroke-linecap: round;
+}
+.bch-caret {
+  fill: #fff;
+}
+/* c · the win, handwritten (two classes: beats the landing's `.bzl span` font rule) */
+.bch .bch-hand {
+  font-family: var(--bzl-script, "Caveat", cursive);
+  font-size: 1.3em;
+  font-weight: 700;
+  letter-spacing: 0;
+  line-height: 0.9;
+}
+.bch .bch-hand span {
+  font-family: inherit;
+}
+
+@media (max-width: 767px) {
+  .sl-c .bch-head {
+    font-size: 1.65rem;
+  }
+}
+.bch-marks.is-over {
+  z-index: 2;
+}
