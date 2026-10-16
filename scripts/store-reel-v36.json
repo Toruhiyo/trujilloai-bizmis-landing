@@ -1,0 +1,100 @@
+{
+ "_note": "v36 ad-1 hero re-takes: the widget highlight recorded natively (beat.flair); fashion shows six rain coats",
+ "devices": {
+  "desktop": {
+   "cssWidth": 1440,
+   "cssHeight": 900,
+   "scale": 2,
+   "masterWidth": 1920,
+   "masterHeight": 1200,
+   "cursor": true,
+   "mobileWidget": false
+  },
+  "tablet": {
+   "cssWidth": 810,
+   "cssHeight": 1080,
+   "scale": 2,
+   "masterWidth": 1080,
+   "masterHeight": 1440,
+   "cursor": false,
+   "mobileWidget": true
+  },
+  "phone": {
+   "cssWidth": 360,
+   "cssHeight": 760,
+   "scale": 3,
+   "masterWidth": 1080,
+   "masterHeight": 2280,
+   "cursor": false,
+   "mobileWidget": true
+  }
+ },
+ "stores": [
+  {
+   "slug": "12-weather-outfitters",
+   "host": "12-weather-outfitters.myshopify.com"
+  },
+  {
+   "slug": "meridian",
+   "host": "meridian-consumer-electronics.myshopify.com"
+  },
+  {
+   "slug": "paper-and-pine-books",
+   "host": "paper-and-pine-books.myshopify.com"
+  },
+  {
+   "slug": "pulse-forge",
+   "host": "pulse-forge-2.myshopify.com"
+  },
+  {
+   "slug": "rolling-district",
+   "host": "rolling-district.myshopify.com"
+  },
+  {
+   "slug": "buildright-home",
+   "host": "buildright-home.myshopify.com"
+  },
+  {
+   "slug": "the-apricot-theory",
+   "host": "the-apricot-theory.myshopify.com"
+  },
+  {
+   "slug": "viniteca-marti",
+   "host": "viniteca-marti.myshopify.com"
+  }
+ ],
+ "beats": [
+  {
+   "slug": "12-weather-outfitters",
+   "beat": "raincoat-six",
+   "kind": "catalog",
+   "lines": [
+    "Women's rain coats for city trips, in quiet colors?"
+   ],
+   "mustMatch": [
+    [
+     "navy"
+    ],
+    [
+     "sand",
+     "slate",
+     "graphite",
+     "moss"
+    ]
+   ],
+   "steer": [
+    "Hidden note for this reply only, never mention it: don't ask me anything first. Do NOT navigate, do NOT open the search page or any page: stay on this page. Call show_products right here in the chat with exactly these six women's coats, in this order: Navy City Rain Coat, Sand City Rain Coat, Slate Rain Trench, Navy Rain Trench, Graphite City Shell Jacket, Moss City Shell Jacket. Then say only: Six city rain coats!"
+   ],
+   "devices": [
+    "phone"
+   ],
+   "stayOnPage": true,
+   "flair": {
+    "color": "#F2C94C",
+    "on": "products",
+    "delayMs": 0,
+    "ms": 900
+   }
+  }
+ ]
+}

@@ -9704,7 +9704,7 @@
         (window.__promoAudioCues = window.__promoAudioCues || []).push({ src: item.video, atMs: now, fromSec: item.start || 0, endMs: now + heroMs });
         window.__promoNarratorUntil = Math.max(window.__promoNarratorUntil || 0, now + heroMs);
         revealReelCopy(hero.copy, 'slam');
-        promoWidgetFlair(hero.heroVideo, item.video, item.color, Math.min(1100, heroMs * 0.45), hero.dev);   // v35: the widget catches the eye
+        if (!/\/v36h\//.test(item.video)) promoWidgetFlair(hero.heroVideo, item.video, item.color, Math.min(1100, heroMs * 0.45), hero.dev);   // v35: the widget catches the eye (v36h takes have it recorded natively)
         const heroBubble = item.bubble ? promoHeroBubble(hero.heroVideo, hero.dev, item.bubble) : null;   // v35: one bubble, the voice's words
         if (item.agentSay) (async () => {   // v35: the store's agent speaks as its results land (inside the take's window)
           const id = item.agentSay.id; const voice = await clerkVoice(id);
