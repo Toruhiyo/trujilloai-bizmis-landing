@@ -501,13 +501,23 @@
 }
 /* (two classes: beats the landing's `.bzl span` font rule) */
 .sl-fn .sl-flow-label-text,
+.sl-fn .sl-flow-line,
 .sl-fn .sl-flow-write {
   font-family: var(--bzl-script, "Caveat", cursive);
   font-weight: 700;
 }
+/* a state (problem or solution): one line, or two balanced ones on a narrow funnel (FunnelFlow wraps
+   them), each written and struck on its own, the tick after the last */
 .sl-flow-label-text {
   position: relative;
   grid-area: 1 / 1;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  white-space: nowrap;
+}
+.sl-flow-line {
+  position: relative;
   display: inline-flex;
   align-items: center;
   gap: 0.12em;

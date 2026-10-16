@@ -189,11 +189,33 @@ const pen = (k: number) => {
 };
 /** The written-so-far part of a word: a left-to-right reveal. */
 const reveal = (k: number) => (k >= 1 ? undefined : `inset(-30% ${((1 - k) * 100).toFixed(2)}% -30% -8%)`);
+/** Line `j`'s own 0 → 1 of a pen stroke `k` (0 → 1) over all of `lines`, written one after another (shared by length). */
+const lineK = (k: number, lines: string[], j: number) => {
+  if (lines.length < 2) return k;
+  const len = (s: string) => Math.max(1, s.length);
+  const total = lines.reduce((sum, l) => sum + len(l), 0);
+  const before = lines.slice(0, j).reduce((sum, l) => sum + len(l), 0);
+  return clamp((k * total - before) / len(lines[j]));
+};
 
 /** Text widths in the handwriting, measured once per word, size and font state. */
 let measureCtx: CanvasRenderingContext2D | null = null;
 const widths = new Map<string, number>();
 const SCRIPT = '"Caveat", cursive';
+/**
+ * Bumped whenever a web font finishes loading: the widths measured before
+ * (in a fallback face, even when the check passed before the font's
+ * stylesheet was in) are dropped and the labels laid out again.
+ */
+let fontEpoch = 0;
+if (typeof document !== "undefined" && document.fonts) {
+  const bump = () => {
+    fontEpoch++;
+    widths.clear();
+  };
+  document.fonts.addEventListener?.("loadingdone", bump);
+  document.fonts.ready?.then(bump);
+}
 /** `text`'s width (px) in the handwriting at `size` px. */
 const textWidth = (text: string, size: number) => {
   if (typeof document === "undefined") return text.length * size * 0.42;
@@ -209,68 +231,269 @@ const textWidth = (text: string, size: number) => {
   }
   return (tw * size) / 100;
 };
-/** The room the tick after a solved label takes, beyond the word (em). */
-const TICK_ROOM = 1.12;
-/** A label's box width at `size`: its longer state (the problem, or the solution and its tick). */
-const labelWidth = (problem: string, solution: string, size: number) =>
-  Math.max(textWidth(problem, size), textWidth(solution, size) + TICK_ROOM * size);
+/** The room the tick after a solved label takes, beyond the word (em): the gap, its margin and the tick itself (CSS). */
+const TICK_ROOM = 1.2;
+/** A written line's height (em): line-height 1 and the write's 0.08em underhang (CSS). */
+const LINE = 1.08;
+/** The smallest the labels get: the beat's own (and the payoff's), the others (px). Below that they wrap instead. */
+const MIN_BIG = 16;
+const MIN_SMALL = 13;
+/** The size a beat's own label leaves its others room for, if it can (px). */
+const COMFY_SMALL = 15;
+/** Wrapping onto two lines only pays when it makes a label at least this much bigger than one line would. */
+const WRAP_GAIN = 1.15;
+/** How much of its chamber a label must stay over (of the chamber, or of the label if that's the narrower). */
+const OVER = 0.35;
 
 /**
- * Where the three labels go and how big: the beat's own label big (it may
- * spill past its chamber), the other two smaller, pushed aside so none
- * overlap and all stay inside the box; in the payoff all three equal, each
- * in its own share of the width.
+ * `text` on one line, or split in two at the word break that balances the
+ * lines best (`tail` em more on the last line: the tick). Its lines and its
+ * width (px) at `size`.
+ */
+const linesFor = (text: string, size: number, tail: number, wrap: boolean) => {
+  const one = { lines: [text], width: textWidth(text, size) + tail * size };
+  const words = text.split(" ");
+  if (!wrap || words.length < 2) return one;
+  let best = one;
+  for (let n = 1; n < words.length; n++) {
+    const a = words.slice(0, n).join(" ");
+    const b = words.slice(n).join(" ");
+    const width = Math.max(textWidth(a, size), textWidth(b, size) + tail * size);
+    if (best === one || width < best.width) best = { lines: [a, b], width };
+  }
+  return best;
+};
+
+export type LabelBox = {
+  left: number;
+  width: number;
+  /** The box's height: the labels' row, or the two lines if taller. */
+  height: number;
+  size: number;
+  problem: string[];
+  solution: string[];
+};
+
+/**
+ * One label at `size`, on one line or (`wrap`) on up to two balanced ones:
+ * its box is as wide as its longer state (the problem, or the solution and
+ * its tick); a state that fits that width on one line stays on one.
+ */
+const shapeLabel = (problem: string, solution: string, size: number, wrap: boolean, row: number) => {
+  const p2 = linesFor(problem, size, 0, wrap);
+  const s2 = linesFor(solution, size, TICK_ROOM, wrap);
+  const width = Math.max(p2.width, s2.width);
+  const p1 = linesFor(problem, size, 0, false);
+  const s1 = linesFor(solution, size, TICK_ROOM, false);
+  const p = p1.width <= width + 0.5 ? p1 : p2;
+  const s = s1.width <= width + 0.5 ? s1 : s2;
+  const lines = Math.max(p.lines.length, s.lines.length);
+  const content = lines * LINE * size;
+  return {
+    width,
+    size,
+    height: Math.max(row, content),
+    /** Where its ink ends (px from the top): centred in the labels' row, or from the top if taller. */
+    bottom: content <= row ? (row + content) / 2 : content,
+    problem: p.lines,
+    solution: s.lines,
+    wraps: lines > 1,
+  };
+};
+type Shaped = ReturnType<typeof shapeLabel>;
+
+/**
+ * Lefts for boxes of `widths` (in order, `gaps` between them) inside
+ * [0, W], as close to their `centers` as they can be (weighted least
+ * squares: the isotonic regression of the wanted lefts), never overlapping.
+ * Null when they don't fit side by side.
+ */
+const pack = (widths: number[], gaps: number[], centers: number[], weights: number[], W: number) => {
+  const n = widths.length;
+  const offs: number[] = [];
+  let o = 0;
+  for (let i = 0; i < n; i++) {
+    offs.push(o);
+    o += widths[i] + (gaps[i] ?? 0);
+  }
+  const span = offs[n - 1] + widths[n - 1];
+  if (span > W) return null;
+  // pool adjacent violators over y = left - offset (non-decreasing)
+  const blocks: { y: number; w: number; n: number }[] = [];
+  for (let i = 0; i < n; i++) {
+    blocks.push({ y: centers[i] - widths[i] / 2 - offs[i], w: weights[i], n: 1 });
+    while (blocks.length > 1 && blocks[blocks.length - 2].y > blocks[blocks.length - 1].y) {
+      const b = blocks.pop()!;
+      const a = blocks[blocks.length - 1];
+      a.y = (a.y * a.w + b.y * b.w) / (a.w + b.w);
+      a.w += b.w;
+      a.n += b.n;
+    }
+  }
+  const lefts: number[] = [];
+  for (const b of blocks) for (let j = 0; j < b.n; j++) lefts.push(clamp(b.y, 0, W - span) + offs[lefts.length]);
+  return lefts;
+};
+
+/**
+ * Where the three labels go and how big. A beat: its own label big (it may
+ * spill past its chamber), the other two smaller; the payoff: all three at
+ * one size. Each as big as it fits, never smaller than readable: on a narrow
+ * funnel a label wraps onto two balanced lines instead. All side by side
+ * in the box, none overlapping, the beat's own (the payoff's, all three)
+ * still over its own chamber (`spans`), all clear of the drawing below
+ * (`room`: how far down a label may reach over [x0, x1]).
  */
 const layoutLabels = (
   copy: FunnelCopy,
-  centers: number[],
+  spans: [number, number][],
   W: number,
+  row: number,
   big: number,
   focus: number,
-): { left: number; width: number; size: number }[] => {
-  const gap = 8;
-  const w = (i: number, size: number) => labelWidth(copy.problems[i], copy.solutions[i], size);
-  const fit = (i: number, size: number, room: number) => {
-    const ww = w(i, size);
-    return ww <= room ? size : Math.max(10, Math.floor((size * room) / ww));
-  };
-  if (focus >= 3) {
-    const mids = [0, (centers[0] + centers[1]) / 2, (centers[1] + centers[2]) / 2, W];
-    const size = Math.min(...[0, 1, 2].map((i) => fit(i, big, mids[i + 1] - mids[i] - gap)));
-    return [0, 1, 2].map((i) => {
-      const width = w(i, size);
-      const left = clamp(centers[i] - width / 2, mids[i] + (i ? gap / 2 : 0), mids[i + 1] - width - gap / 2);
-      return { left, width, size };
+  room: (x0: number, x1: number) => number,
+): LabelBox[] => {
+  const idx = [0, 1, 2];
+  const centers = spans.map(([a, b]) => (a + b) / 2);
+  const gapFor = (a: number, b: number) => Math.max(10, Math.round(0.4 * Math.min(a, b)));
+  const shape = (i: number, size: number, wrap: boolean) => shapeLabel(copy.problems[i], copy.solutions[i], size, wrap, row);
+  /** The three placed, or null if they don't fit (`loose`: any drift from their chambers, and no height check). */
+  const place = (ls: Shaped[], loose = false) => {
+    const weights = idx.map((i) => (i === focus ? 6 : 1));
+    const gaps = [gapFor(ls[0].size, ls[1].size), gapFor(ls[1].size, ls[2].size)];
+    // each wants its chamber's centre, or the nearest spot from it where it clears the drawing (e.g. off the mouth's lips)
+    const wanted = idx.map((i) => {
+      const w = ls[i].width;
+      const c = clamp(centers[i], w / 2, W - w / 2);
+      if (loose || ls[i].bottom <= room(c - w / 2, c + w / 2)) return c;
+      for (let d = 2; d < W; d += 2)
+        for (const x of [c + d, c - d])
+          if (x >= w / 2 && x <= W - w / 2 && ls[i].bottom <= room(x - w / 2, x + w / 2)) return x;
+      return c;
     });
-  }
-  const out: { left: number; width: number; size: number }[] = [];
-  const fSize = fit(focus, big, W * 0.5);
-  const fW = w(focus, fSize);
-  out[focus] = { left: clamp(centers[focus] - fW / 2, 0, W - fW), width: fW, size: fSize };
-  // the labels on one side of the beat's own: one smaller size that fits them all together in [from, to]
-  const small = Math.round(big * 0.6);
-  const side = (idx: number[], from: number, to: number) => {
-    if (!idx.length) return;
-    const room = to - from - gap * (idx.length - 1);
-    const need = idx.reduce((sum, i) => sum + w(i, small), 0);
-    const size = need <= room ? small : Math.max(10, Math.floor((small * room) / need));
-    const pos = idx.map((i) => ({ i, width: w(i, size), left: centers[i] - w(i, size) / 2 }));
-    // as centred over their chambers as they can be, inside [from, to], never overlapping
-    let x = from;
-    for (const p of pos) {
-      p.left = Math.max(p.left, x);
-      x = p.left + p.width + gap;
+    const lefts = pack(
+      ls.map((l) => l.width),
+      gaps,
+      wanted,
+      weights,
+      W,
+    );
+    if (!lefts) return null;
+    if (loose) return lefts;
+    for (const i of idx) {
+      const l = ls[i];
+      // the beat's own (the payoff's, all three) still over its own chamber (a beat's others may be pushed
+      // aside); every one's ink clear of the funnel below
+      const [a, b] = spans[i];
+      const own = focus >= 3 || i === focus;
+      if (own && Math.min(b, lefts[i] + l.width) - Math.max(a, lefts[i]) < Math.min(b - a, l.width) * OVER) return null;
+      if (l.bottom > room(lefts[i], lefts[i] + l.width)) return null;
     }
-    x = to;
-    for (const p of [...pos].reverse()) {
-      p.left = Math.min(p.left, x - p.width);
-      x = p.left - gap;
-    }
-    for (const p of pos) out[p.i] = { left: p.left, width: p.width, size };
+    return lefts;
   };
-  side([0, 1, 2].filter((i) => i < focus), 0, out[focus].left - gap);
-  side([0, 1, 2].filter((i) => i > focus), out[focus].left + fW + gap, W);
-  return out;
+  /** The biggest size in [min, max] at which `make(size, wrap)` places, on one line or wrapped (only if wrapping gains enough). */
+  const fit = (max: number, min: number, make: (size: number, wrap: boolean[]) => Shaped[], wrapsFor: (n: number) => boolean[][]) => {
+    let wrapped: { size: number; ls: Shaped[]; lefts: number[] } | null = null;
+    for (let size = Math.round(max); size >= min; size--) {
+      for (const combo of wrapsFor(size)) {
+        const ls = make(size, combo);
+        const lefts = place(ls);
+        if (!lefts) continue;
+        const flat = !ls.some((l) => l.wraps);
+        if (flat) return wrapped && wrapped.size >= size * WRAP_GAIN ? wrapped : { size, ls, lefts };
+        if (!wrapped) wrapped = { size, ls, lefts };
+        break;
+      }
+    }
+    return wrapped;
+  };
+  /** The wrap choices for the labels in `who`, the fewest wraps first. */
+  const combos = (who: number[]) => {
+    const out: boolean[][] = [];
+    for (let m = 0; m < 1 << who.length; m++) {
+      const w = [false, false, false];
+      who.forEach((i, j) => (w[i] = !!(m & (1 << j))));
+      out.push(w);
+    }
+    const count = (w: boolean[]) => w.filter(Boolean).length;
+    return out.sort((a, b) => count(a) - count(b));
+  };
+  const box = (ls: Shaped[], lefts: number[]): LabelBox[] =>
+    ls.map((l, i) => ({ left: lefts[i], width: l.width, height: l.height, size: l.size, problem: l.problem, solution: l.solution }));
+
+  if (focus >= 3) {
+    const all = combos(idx);
+    const got = fit(big, MIN_BIG, (size, wrap) => idx.map((i) => shape(i, size, wrap[i])), () => all);
+    if (got) return box(got.ls, got.lefts);
+  } else {
+    const others = idx.filter((i) => i !== focus);
+    const small = Math.round(big * 0.6);
+    // the beat's own first, leaving the others room at a comfortable size (or, if it must, at the smallest),
+    // wrapped; then the others as big as the rest of the room lets them
+    for (const least of [Math.max(MIN_SMALL, Math.min(small, COMFY_SMALL)), MIN_SMALL]) {
+      const own = fit(
+        big,
+        MIN_BIG,
+        (size, wrap) => idx.map((i) => (i === focus ? shape(i, size, wrap[i]) : shape(i, least, true))),
+        () => combos([focus]),
+      );
+      if (!own) continue;
+      const mine = own.ls[focus];
+      const rest = fit(
+        Math.min(small, mine.size),
+        MIN_SMALL,
+        (size, wrap) => idx.map((i) => (i === focus ? mine : shape(i, size, wrap[i]))),
+        () => combos(others),
+      );
+      if (rest) return box(rest.ls, rest.lefts);
+    }
+  }
+  // a last resort (a box too narrow for readable labels): everything wrapped, as big as fits side by side
+  for (let size = big; size > 6; size--) {
+    const ls = idx.map((i) => shape(i, focus >= 3 || i === focus ? size : Math.max(6, Math.round(size * 0.75)), true));
+    const lefts = place(ls, true);
+    if (lefts) return box(ls, lefts);
+  }
+  const ls = idx.map((i) => shape(i, 6, true));
+  return box(ls, idx.map((i) => clamp(centers[i] - ls[i].width / 2, 0, W - ls[i].width)));
+};
+
+/**
+ * How far down (px from the top) a label may reach over [x0, x1] and stay
+ * clear of the drawing: the funnel's top edge (at its widest, every stage
+ * fixed), the mouth's flared lips, the "visits" word, the bag and its rays.
+ */
+const labelRoom = (g: Geo, visits?: string) => {
+  const open = boundsFor([1, 1, 1]);
+  const fl = Math.min(g.x0 * 0.6, g.ow * 2.4);
+  const xEnd = g.x0 + g.run;
+  const bagTop = g.by - g.R - (g.lw * 2.8 + 5);
+  const edge = (x: number) => {
+    let y = g.H + 20;
+    if (x >= g.x0 - fl - g.ow && x <= xEnd) {
+      const u = clamp((x - g.x0) / g.run);
+      y = g.cy - halfPx(g, u, open) - (x < g.x0 ? fl * 0.7 : 0) - g.ow * 0.5 - 1.5;
+    } else if (x < g.x0 - fl - g.ow && visits) y = g.cy - visitsSize(g.H) * 0.62;
+    if (x > xEnd) y = Math.min(y, g.cy - halfPx(g, 1, open) - g.ow * 0.5 - 1.5);
+    if (Math.abs(x - g.bx) <= g.R + g.lw * 2.8 + 5) y = Math.min(y, bagTop);
+    return y - 2;
+  };
+  // sampled every few px, with a sparse table so any span's minimum is one lookup
+  const step = 3;
+  const lim: number[] = [];
+  for (let x = 0; x <= g.W + step; x += step) lim.push(edge(x));
+  const table = [lim];
+  for (let p = 1; 1 << p <= lim.length; p++) {
+    const prev = table[p - 1];
+    const half = 1 << (p - 1);
+    table.push(prev.slice(0, lim.length - (1 << p) + 1).map((v, j) => Math.min(v, prev[j + half])));
+  }
+  return (x0: number, x1: number) => {
+    const a = clamp(Math.floor(x0 / step), 0, lim.length - 1);
+    const b = clamp(Math.ceil(x1 / step), a, lim.length - 1);
+    const p = Math.floor(Math.log2(b - a + 1));
+    return Math.min(table[p][a], table[p][b - (1 << p) + 1]);
+  };
 };
 
 
@@ -347,14 +570,23 @@ const FunnelFlow = ({
   const k = ksAt(t, starts);
   const bounds = boundsFor(k);
   const geo = geometry(size.W, size.H, leadFor(size.W, size.H, copy.visits));
-  // one size for all three labels: the largest at which every problem and solution (with its tick) fits its chamber
-  // the labels: the beat's own big (desktop ~36px), the others smaller; all fitting, none overlapping
-  const labels = layoutLabels(
-    copy,
-    CHAMBERS.map(([a, b]) => geo.x0 + ((a + b) / 2) * geo.run),
-    size.W,
-    Math.round(clamp(geo.top * 0.9, 20, 36)),
-    focus,
+  // the labels: the beat's own big (desktop ~36px), the others smaller (the payoff's all one size); all
+  // fitting, none overlapping, wrapping onto two lines on a narrow funnel (re-laid out once the font is in)
+  const fontReady = typeof document !== "undefined" && !!document.fonts?.check?.(`700 20px ${SCRIPT}`);
+  const fonts = `${fontReady}|${fontEpoch}`;
+  const labels = useMemo(
+    () =>
+      layoutLabels(
+        copy,
+        CHAMBERS.map(([a, b]) => [geo.x0 + a * geo.run, geo.x0 + b * geo.run] as [number, number]),
+        size.W,
+        geo.top,
+        Math.round(clamp(geo.top * 0.9, 20, 36)),
+        focus,
+        labelRoom(geo, copy.visits),
+      ),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [copy, size.W, size.H, focus, fonts],
   );
 
   useLayoutEffect(() => {
@@ -768,6 +1000,8 @@ const FunnelFlow = ({
             // the fixed moment: once ticked, the solution is underlined with a swoosh and pops
             const party = fixed ? 0 : pen((since - SOLVE_AT - writeMs(solution) - 40 - TICK - 60) / 420);
             const L = labels[i];
+            const pl = L.problem;
+            const sl = L.solution;
             return (
               <span
                 key={i}
@@ -775,37 +1009,51 @@ const FunnelFlow = ({
                 style={{
                   left: L.left,
                   width: L.width,
-                  height: geo.top,
+                  height: L.height,
                   fontSize: L.size,
                   scale: party > 0 && party < 1 ? `${1 + 0.1 * Math.sin(Math.PI * party)}` : undefined,
                 }}
               >
                 {away < 1 && (
                   <span className="sl-flow-label-text" style={{ opacity: 1 - away }}>
-                    <span className="sl-flow-write" style={{ clipPath: reveal(writeP) }}>
-                      {problem}
-                    </span>
-                    {strike > 0 && (
-                      <svg className="sl-flow-strike" viewBox="0 0 100 20" preserveAspectRatio="none" aria-hidden="true">
-                        <path d="M-2 13 C 20 9, 40 12, 60 9 S 90 8, 102 6" pathLength={1} strokeDasharray="1 1" strokeDashoffset={1 - strike} />
-                      </svg>
-                    )}
+                    {pl.map((line, j) => {
+                      // two lines: written (and struck) one after the other, each its share of the pen
+                      const st = lineK(strike, pl, j);
+                      return (
+                        <span key={j} className="sl-flow-line">
+                          <span className="sl-flow-write" style={{ clipPath: reveal(lineK(writeP, pl, j)) }}>
+                            {line}
+                          </span>
+                          {st > 0 && (
+                            <svg className="sl-flow-strike" viewBox="0 0 100 20" preserveAspectRatio="none" aria-hidden="true">
+                              <path d="M-2 13 C 20 9, 40 12, 60 9 S 90 8, 102 6" pathLength={1} strokeDasharray="1 1" strokeDashoffset={1 - st} />
+                            </svg>
+                          )}
+                        </span>
+                      );
+                    })}
                   </span>
                 )}
                 {writeS > 0 && (
                   <span className="sl-flow-label-text is-solution">
-                    <span className="sl-flow-write" style={{ clipPath: reveal(writeS) }}>
-                      {solution}
-                    </span>
-                    <svg className="sl-flow-tick" viewBox="0 0 24 24" aria-hidden="true">
-                      <path
-                        d="M3.5 13.5 L9.5 19.5 L21.5 4.5"
-                        pathLength={1}
-                        strokeDasharray="1 1"
-                        strokeDashoffset={1 - tick}
-                        opacity={tick > 0 ? 1 : 0}
-                      />
-                    </svg>
+                    {sl.map((line, j) => (
+                      <span key={j} className="sl-flow-line">
+                        <span className="sl-flow-write" style={{ clipPath: reveal(lineK(writeS, sl, j)) }}>
+                          {line}
+                        </span>
+                        {j === sl.length - 1 && (
+                          <svg className="sl-flow-tick" viewBox="0 0 24 24" aria-hidden="true">
+                            <path
+                              d="M3.5 13.5 L9.5 19.5 L21.5 4.5"
+                              pathLength={1}
+                              strokeDasharray="1 1"
+                              strokeDashoffset={1 - tick}
+                              opacity={tick > 0 ? 1 : 0}
+                            />
+                          </svg>
+                        )}
+                      </span>
+                    ))}
                     {party > 0 && (
                       <svg
                         className="sl-flow-swoosh"
