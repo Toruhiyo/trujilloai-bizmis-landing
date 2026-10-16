@@ -1,0 +1,431 @@
+/* ?beat=1..6: the alternative looks for a beat's loss → win words (sales/beatcopy/BeatAlt).
+   On the orange band: white type; ink (#3B2416) only on white surfaces; primary #F9A353. */
+
+.sl-c .bc {
+  --bc-ink: #3b2416;
+  --bc-primary: #f9a353;
+  --bc-strike-w: 2.5px;
+  color: #fff;
+}
+.bc-word {
+  white-space: nowrap;
+}
+/* a thin marker strike swept over every line (one per line) */
+.bc-strike {
+  background-image: linear-gradient(currentColor, currentColor);
+  background-repeat: no-repeat;
+  background-position: 0 56%;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+}
+.bc-strike.is-thick {
+  --bc-strike-w: 0.1em;
+}
+.sl-c .bc-label {
+  display: block;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgb(255 255 255 / 0.78);
+}
+.sl-c .bc-kicker {
+  flex-wrap: wrap;
+  row-gap: 0.4rem;
+  margin-bottom: 1rem;
+  font-size: 0.82rem;
+  letter-spacing: 0.1em;
+  color: #fff;
+}
+.bc-check {
+  display: inline-grid;
+  place-items: center;
+  flex: none;
+  width: 1.55rem;
+  height: 1.55rem;
+  border-radius: 50%;
+  background: var(--bc-primary);
+  color: #fff;
+}
+.bc-check svg {
+  width: 0.95rem;
+  height: 0.95rem;
+}
+
+/* ── 1 · Ledger ── */
+.bc1-rows {
+  display: grid;
+  gap: 1.1rem;
+}
+.bc1-row {
+  padding-left: 1rem;
+  border-left: 3px solid rgb(255 255 255 / 0.4);
+}
+.bc1-row.is-win {
+  border-left-color: #fff;
+}
+.bc1-row .bc-label {
+  margin-bottom: 0.35rem;
+}
+.bc1-loss {
+  font-size: clamp(1.02rem, min(1.35vw, 2.4svh), 1.2rem);
+  font-weight: 500;
+  line-height: 1.4;
+  color: rgb(255 255 255 / 0.92);
+  text-wrap: pretty;
+}
+.bc1-win {
+  font-size: clamp(1.6rem, min(2.5vw, 4.6svh), 2.45rem);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1.08;
+  color: #fff;
+  text-wrap: balance;
+}
+
+/* ── 2 · Before / after cards ── */
+.bc2-stack {
+  display: grid;
+}
+.bc2-card {
+  position: relative;
+  border-radius: 18px;
+  padding: 1rem 1.15rem 1.1rem;
+  transform-origin: 50% 0;
+}
+.bc2-card.is-loss {
+  background: rgb(255 255 255 / 0.14);
+  box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.42);
+}
+.bc2-card .bc-label {
+  margin-bottom: 0.4rem;
+}
+.bc2-loss {
+  font-size: clamp(1rem, min(1.3vw, 2.3svh), 1.15rem);
+  font-weight: 500;
+  line-height: 1.4;
+  color: #fff;
+  text-wrap: pretty;
+}
+.bc2-card.is-loss {
+  padding-right: 3.6rem;
+}
+/* the marker X, to the card's right */
+.bc2-x {
+  position: absolute;
+  right: 0.9rem;
+  top: calc(50% - 1.2rem);
+  width: 2.4rem;
+  height: 2.4rem;
+  overflow: visible;
+  pointer-events: none;
+}
+.bc2-x path {
+  fill: none;
+  stroke: #fff;
+  stroke-width: 4.5;
+  stroke-linecap: round;
+  stroke-dasharray: 1;
+}
+.bc2-card.is-win {
+  z-index: 1;
+  margin-top: -0.75rem;
+  margin-left: clamp(0.5rem, 1.6vw, 1.5rem);
+  background: #fff;
+  box-shadow:
+    0 18px 40px -16px rgb(120 50 0 / 0.5),
+    0 2px 6px rgb(120 50 0 / 0.12);
+  color: var(--bc-ink);
+}
+.bc2-win-head {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  margin-bottom: 0.5rem;
+}
+.sl-c .bc2-card.is-win .bc-label {
+  margin: 0;
+  color: #a84f0c;
+}
+.bc2-win {
+  font-size: clamp(1.35rem, min(2vw, 3.8svh), 1.95rem);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1.12;
+  color: var(--bc-ink);
+  text-wrap: balance;
+}
+
+/* ── 3 · Marker annotation ── */
+.bc3-loss {
+  max-width: 26rem;
+  font-size: clamp(1rem, min(1.3vw, 2.3svh), 1.15rem);
+  font-weight: 500;
+  line-height: 1.4;
+  color: rgb(255 255 255 / 0.92);
+  text-wrap: pretty;
+}
+.bc3-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.35rem;
+  margin-top: 0.2rem;
+}
+/* the letters are spans: they keep the hand (.bzl span sets Inter) */
+.bzl .bc3-win span {
+  font-family: inherit;
+}
+.bc3-arrow {
+  flex: none;
+  width: 2.6rem;
+  height: 3.8rem;
+  overflow: visible;
+}
+.bc3-arrow path {
+  fill: none;
+  stroke: #fff;
+  stroke-width: 2.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 1;
+}
+.sl-c .bc3-win {
+  padding-top: 1.6rem;
+  font-family: var(--bzl-script, "Caveat", cursive);
+  font-size: clamp(1.9rem, min(2.9vw, 5.2svh), 2.8rem);
+  font-weight: 700;
+  line-height: 0.98;
+  color: #fff;
+  text-wrap: balance;
+}
+
+/* ── 4 · Speech bubble ── */
+.bc4-bubble {
+  position: relative;
+  margin: 0 0 1.4rem;
+  padding: 0.85rem 1.1rem 1rem;
+  border-radius: 20px 20px 20px 6px;
+  background: rgb(255 255 255 / 0.15);
+  box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.38);
+}
+/* the tail, down to the left */
+.bc4-bubble::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -11px;
+  width: 18px;
+  height: 12px;
+  background: rgb(255 255 255 / 0.15);
+  clip-path: polygon(0 0, 100% 0, 0 100%);
+}
+.bc4-bubble .bc-label {
+  margin-bottom: 0.35rem;
+}
+.bc4-quote {
+  font-size: clamp(1rem, min(1.3vw, 2.3svh), 1.15rem);
+  font-weight: 500;
+  font-style: italic;
+  line-height: 1.4;
+  color: #fff;
+  text-wrap: pretty;
+}
+.bc4-quote::before {
+  content: "\201C";
+}
+.bc4-quote::after {
+  content: "\201D";
+}
+.bc4-answer-head {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  margin-bottom: 0.5rem;
+}
+.sl-c .bc4-answer-head .bc-label {
+  color: #fff;
+}
+.bc4-answer .bc-check {
+  background: #fff;
+  color: #a84f0c;
+}
+.bc4-win {
+  font-size: clamp(1.6rem, min(2.5vw, 4.6svh), 2.45rem);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1.08;
+  color: #fff;
+  text-wrap: balance;
+}
+
+/* ── 5 · Headline swap ── */
+.bc5-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  margin-left: 0.15rem;
+  padding: 0.2rem 0.6rem;
+  border-radius: 999px;
+  box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.55);
+  font-size: 0.72rem;
+  letter-spacing: 0.06em;
+  text-transform: none;
+  color: rgb(255 255 255 / 0.85);
+}
+.bc5-chip.is-fixed {
+  background: #fff;
+  box-shadow: none;
+  color: #a84f0c;
+}
+.bc5-chip svg {
+  width: 0.85rem;
+  height: 0.85rem;
+}
+.bc5-slot {
+  display: grid;
+}
+.bc5-line {
+  grid-area: 1 / 1;
+  font-size: clamp(1.7rem, min(2.7vw, 5svh), 2.75rem);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1.08;
+  color: #fff;
+  text-wrap: balance;
+}
+
+/* ── 6 · Stage card (white, tethered to its device) ── */
+.bc.is-card {
+  position: relative;
+}
+.bc6-card {
+  position: relative;
+  padding: 1.1rem 1.3rem 1.25rem;
+  border-radius: 22px;
+  background: #fff;
+  box-shadow:
+    0 22px 50px -20px rgb(120 50 0 / 0.55),
+    0 2px 8px rgb(120 50 0 / 0.12);
+  color: var(--bc-ink);
+}
+/* the notch, pointing at the device (or, stacked, down to the funnel) */
+.bc6-notch {
+  position: absolute;
+  width: 18px;
+  height: 18px;
+  background: #fff;
+  border-radius: 3px;
+  transform: rotate(45deg);
+}
+.is-dev-left .bc6-notch {
+  left: -8px;
+  top: calc(50% - 9px);
+}
+.is-dev-right .bc6-notch {
+  right: -8px;
+  top: calc(50% - 9px);
+}
+.is-dev-below .bc6-notch {
+  left: calc(50% - 9px);
+  bottom: -8px;
+}
+.bc6-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.45rem 0.6rem;
+  margin-bottom: 0.8rem;
+}
+.bc6-num {
+  display: inline-grid;
+  place-items: center;
+  min-width: 2.1rem;
+  height: 1.45rem;
+  padding-inline: 0.45rem;
+  border-radius: 999px;
+  background: var(--bc-primary);
+  color: #fff;
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  font-variant-numeric: tabular-nums;
+}
+.bc6-name {
+  font-size: 0.82rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--bc-ink);
+}
+.bc6-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  margin-left: auto;
+  padding: 0.2rem 0.6rem;
+  border-radius: 999px;
+  box-shadow: inset 0 0 0 1px rgb(59 36 22 / 0.22);
+  font-size: 0.74rem;
+  font-weight: 600;
+  color: rgb(59 36 22 / 0.62);
+}
+.bc6-chip.is-fixed {
+  background: var(--bc-primary);
+  box-shadow: none;
+  color: #fff;
+}
+.bc6-chip svg {
+  width: 0.85rem;
+  height: 0.85rem;
+}
+.bc6-loss {
+  --bc-strike-w: 2.5px;
+  font-size: clamp(0.98rem, min(1.25vw, 2.3svh), 1.1rem);
+  font-weight: 500;
+  line-height: 1.42;
+  color: rgb(59 36 22 / 0.82);
+  text-wrap: pretty;
+}
+.bc6-loss .bc-strike {
+  background-image: linear-gradient(var(--bc-primary), var(--bc-primary));
+}
+.bc6-grow {
+  display: grid;
+}
+.bc6-grow-in {
+  min-height: 0;
+  overflow: hidden;
+}
+.bc6-win {
+  padding-top: 0.75rem;
+  font-size: clamp(1.4rem, min(2.15vw, 4svh), 2.1rem);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1.14;
+  color: var(--bc-ink);
+  text-wrap: balance;
+}
+/* the marker swiped behind the win, a band low on every line */
+.bc6-mark {
+  background-image: linear-gradient(rgb(249 163 83 / 0.6), rgb(249 163 83 / 0.6));
+  background-repeat: no-repeat;
+  background-position: 0 92%;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+}
+
+/* phones (stacked): a touch smaller, full width */
+@media (max-width: 767px) {
+  .bc1-win,
+  .bc4-win,
+  .bc5-line {
+    font-size: 1.65rem;
+  }
+  .sl-c .bc3-win {
+    font-size: 2.15rem;
+  }
+  .bc2-win,
+  .bc6-win {
+    font-size: 1.4rem;
+  }
+}

@@ -162,6 +162,14 @@ export const ca: Messages = {
         { problem: "Els teus clients indecisos marxen a comparar i acaben comprant a un altre.", fix: "Els seus dubtes es resolen al moment, així que decideixen i et compren a tu." },
         { problem: "Els clients arriben al pagament, els sorgeix un últim dubte i marxen.", fix: "Les preguntes d'última hora es responen al pagament, i la comanda surt." },
       ],
+      /** ?beat=1..6: the small labels of the alternative loss → win looks. */
+      flipLabels: { lose: "Perds", win: "Guanyes", you: "Tu, avui", withBizmis: "Amb Bizmis" },
+      /** ?beat=4: each loss as the merchant says it (the speech bubble). */
+      flipQuote: [
+        "Els clients es cansen de buscar al meu catàleg i compren el mateix a la competència.",
+        "Els meus clients indecisos marxen a comparar i acaben comprant a un altre.",
+        "Els clients arriben al pagament, els sorgeix un últim dubte i marxen.",
+      ],
       /** The one-shopper variant (?case=one): the same shopper and gift from Find through Trust to Buy. */
       caseOne: {
         compareQuery: "Quin dels tres li agradarà més?",

@@ -1,6 +1,8 @@
 import type { CSSProperties } from "react";
 import { cn } from "@/lib/utils";
 import { useSalesCopy, useSalesProto } from "./proto";
+import BeatAlt from "./beatcopy/BeatAlt";
+import { useBeatStyle } from "./beatcopy/style";
 import { PanelCopy } from "./shared";
 
 const clamp = (v: number) => Math.min(1, Math.max(0, v));
@@ -34,6 +36,7 @@ const BeatCopy = ({
 }) => {
   const s = useSalesCopy();
   const { flip } = useSalesProto();
+  const look = useBeatStyle();
   if (!flip)
     return (
       <PanelCopy
@@ -45,12 +48,17 @@ const BeatCopy = ({
         style={style}
       />
     );
+  // ?beat=1..6: an alternative look for the same loss → win (beatcopy/BeatAlt)
+  if (look > 0)
+    return (
+      <BeatAlt variant={look} index={index} t={t} fixAt={fixAt} numbered={numbered} className={className} style={style} />
+    );
   const { problem, fix } = s.flip[index];
   const since = t - fixAt;
   const strike = pen((since - 140) / 300);
   const write = pen((since - 560) / (240 + fix.length * 22));
   return (
-    <div className={cn("sl-copy sl-flip", className)} style={style}>
+    <div className={cn("sl-copy sl-flip", className)} style={style} data-since={Math.round(since)}>
       <span className="sl-copy-kicker">
         {numbered && (
           <span className="sl-copy-kicker-num" aria-hidden="true">

@@ -162,6 +162,14 @@ export const es: Messages = {
         { problem: "Tus clientes indecisos se van a comparar y acaban comprando a otro.", fix: "Sus dudas se resuelven al momento, así que deciden y te compran a ti." },
         { problem: "Los clientes llegan al pago, les surge una última duda y se van.", fix: "Las preguntas de última hora se responden en el pago, y el pedido sale." },
       ],
+      /** ?beat=1..6: the small labels of the alternative loss → win looks. */
+      flipLabels: { lose: "Pierdes", win: "Ganas", you: "Tú, hoy", withBizmis: "Con Bizmis" },
+      /** ?beat=4: each loss as the merchant says it (the speech bubble). */
+      flipQuote: [
+        "Los clientes se cansan de buscar en mi catálogo y compran lo mismo a la competencia.",
+        "Mis clientes indecisos se van a comparar y acaban comprando a otro.",
+        "Los clientes llegan al pago, les surge una última duda y se van.",
+      ],
       /** The one-shopper variant (?case=one): the same shopper and gift from Find through Trust to Buy. */
       caseOne: {
         compareQuery: "¿Cuál de los tres le gustará más?",

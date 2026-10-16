@@ -168,6 +168,14 @@ export const en = {
         { problem: "Your hesitant shoppers leave to compare, and become someone else's customers.", fix: "Their doubts get answered on the spot, so they decide and buy from you." },
         { problem: "Shoppers get to checkout, hit one last doubt, and walk away.", fix: "Last-minute questions get answered at checkout, and the order goes through." },
       ],
+      /** ?beat=1..6: the small labels of the alternative loss → win looks. */
+      flipLabels: { lose: "You lose", win: "You win", you: "You, today", withBizmis: "With Bizmis" },
+      /** ?beat=4: each loss as the merchant says it (the speech bubble). */
+      flipQuote: [
+        "Shoppers give up searching my catalog, then buy the same products from a competitor.",
+        "My hesitant shoppers leave to compare, and become someone else's customers.",
+        "Shoppers get to checkout, hit one last doubt, and walk away.",
+      ],
       /** The one-shopper variant (?case=one): the same shopper and gift from Find through Trust to Buy. */
       caseOne: {
         compareQuery: "Which of the three would she like best?",
