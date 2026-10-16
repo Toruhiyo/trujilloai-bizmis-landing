@@ -180,7 +180,7 @@ export const es: Messages = {
       cart: { title: "Tu carrito", subtotal: "Subtotal", checkout: "Pagar", perks: ["Sale hoy", "Devolución gratis"], placed: "Pedido realizado" },
       funnel: {
         problems: ["Se cansó de buscar", "Se fue a comparar", "Se fue"],
-        solutions: ["Lo encontró rápido", "Eligió aquí", "Pagado"],
+        solutions: ["Lo encontró rápido", "Decidió aquí", "Lo compró"],
         /** The word at the open mouth, with its arrow: the dots are store visits. */
         visits: "visitas",
       },

@@ -189,7 +189,7 @@ export const en = {
       funnel: {
         /** Each stage's status, as the film's pills: the problem (grey), then fixed by Bizmis (orange check). */
         problems: ["Gave up looking", "Left to compare", "Walked away"],
-        solutions: ["Found it fast", "Chose here", "Paid"],
+        solutions: ["Found it fast", "Decided here", "Bought it"],
         /** The word at the open mouth, with its arrow: the dots are store visits. */
         visits: "visits",
       },
