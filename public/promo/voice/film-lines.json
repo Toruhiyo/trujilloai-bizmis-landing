@@ -104,6 +104,6 @@
   {
     "id": "clerk-upsell-done",
     "role": "clerk",
-    "text": "[quickly] Done! Both are in your cart."
+    "text": "[quickly] Done! Anything else before checkout?"
   }
 ]

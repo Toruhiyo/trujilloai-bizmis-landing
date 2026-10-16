@@ -6609,7 +6609,7 @@
       this.chapterMargin();   // measure now, before the camera moves
       const widget = this.root.querySelector('[data-promo-widget]');
       const lostTake = speakTake('t-lost');
-      lostTake.at('catalog', 'end').then(() => this.showChapter('Lost in the catalog', 'Found the right one'));
+      lostTake.at('catalog', 'end').then(() => this.showChapter('Gave up looking', 'Found it fast'));   // v36: merchant pains -> wins, the landing's funnel
       await lostTake.at('lost', 'start', reduced ? 0 : 120);   // the shopper is already typing as the line names them
       if (!reduced) {
         this.cameraTo(widget);
@@ -6628,14 +6628,15 @@
       promoWidgetDebug('setPlaceholder', 'Ask me to compare them');
       await lostTake.done;
       await this.speakClerk('clerk-results', reduced, {
+        three: () => this.resolveChapter(),   // v36: the picks are in: found it fast
         compare: () => {
-          applyMomentPose(stage, 'choice', { instant: reduced });   // v11: still "Lost in the catalog" until it's the one (v9 chips)
+          applyMomentPose(stage, 'choice', { instant: reduced });
+          this.nextChapter('Off to compare', 'Compared here', reduced);   // v36: spans the comparison and the doubt
         },
       });
       await this.speakClerk('clerk-compare', reduced, {
         "It's the one": () => {
           stage?.querySelector('.promo-moments__board')?.classList.add('is-decided');
-          this.resolveChapter();
         },
       });
       promoWidgetDebug('setPlaceholder', 'Ask anything about it');
@@ -6664,7 +6665,6 @@
       const doubtTake = speakTake('t-doubt');
       await doubtTake.at('a doubt');
       board?.classList.remove('is-doubts-hidden');
-      doubtTake.at('holds them back', 'end').then(() => this.showChapter('Stuck on a doubt', 'Doubt cleared'));
       await doubtTake.done;
       await this.speakShopperLine('shopper-doubt', reduced);
       setOpeningAvatarAction('thinking');
@@ -6674,7 +6674,7 @@
           // only the doubts go now; the cart waits for the clerk to finish
           promoSfx('doubt-poof');
           board?.classList.add('is-doubts-gone');
-          window.setTimeout(() => this.resolveChapter(), reduced ? 0 : PROMO_MOMENTS_VAPOR_MS * 0.45);   // v25b: "Doubt cleared" a touch sooner after the poof (0.6 -> 0.45)
+          window.setTimeout(() => this.resolveChapter(), reduced ? 0 : PROMO_MOMENTS_VAPOR_MS * 0.45);   // v36: "Compared here" once the doubt is gone (v25b: 0.6 -> 0.45 after the poof)
         },
       });
       applyMomentPose(stage, 'close', { instant: reduced });
@@ -6698,13 +6698,15 @@
         host?.classList.remove('is-cart-one');
         host?.classList.add('is-cart-two');
         emitShopper({ kind: 'cart', product: match, quantity: 1 });
+        this.resolveChapter();   // v36: added more
       };
       // the chapter is named when the clerk names the pairing, not before
       // v13: a live, back-and-forth voice exchange: the clerk suggests and asks,
       // the shopper says yes, the clerk confirms (the add-on lands on "add it")
-      const upsell = this.speakClerk('clerk-upsell', reduced, { 'made to go': () => this.showChapter('Missed add-on', 'Paired perfectly') })
+      const upsell = this.speakClerk('clerk-upsell', reduced, { 'made to go': () => this.showChapter('Stopped at one', 'Added more') })
         .then(() => this.speakShopperLine('shopper-upsell', reduced, { 'add it': bundle }))
-        .then(() => this.speakClerk('clerk-upsell-done', reduced));
+        // v36: the basket stays open ("Anything else before checkout?"): the sale lands on the SOLD stamp
+        .then(() => this.speakClerk('clerk-upsell-done', reduced, { Done: () => this.nextChapter('Walked away', 'Paid', reduced) }));
       await spin?.landed;
       await spin?.fly(() => {
         applyMomentPose(stage, 'extra', { instant: true });   // the flight steps the morph itself
@@ -6717,16 +6719,16 @@
       await upsell;
       promoWidgetDebug('setPlaceholder', 'Ask about shipping or returns');
       bundle();
-      this.resolveChapter();
       window.setTimeout(() => setOpeningAvatarAction('bow'), 200);   // a small thank-you (v25: 350 -> 200)
       await waitMs(reduced ? 40 : 300);   // v25: 1100 -> 300
-      this.hideChapter();
       this.painStore()?.querySelectorAll('.promo-close__veil, .promo-close__mark, .promo-glide__lost-mark, .promo-glide__veil').forEach((node) => node.remove());
       this.painStore()?.querySelectorAll('[style*="grayscale"]').forEach((node) => { node.style.filter = ''; });
+      window.setTimeout(() => this.resolveChapter(), reduced ? 0 : 160);   // v36: paid, as the stamp lands
       await this.markCloseStoreSold();
       // v34: the clerk stays live through the beat before the pull-back (it used to freeze on a still and fade
       // onto it for 420 ms); the still is the last live frame, pinned as the camera starts, so nothing freezes
       if (!reduced) await waitMs(PROMO_LIVE_CARD_OUT_MS);
+      this.hideChapter();   // v36: "Paid" goes as the camera pulls back
       await this.rememberPitchLead();
       this.muteWidgetActivity(false);
       promoWidgetDebug('debugVoiceMode', { on: false });
