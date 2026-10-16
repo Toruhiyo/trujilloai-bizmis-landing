@@ -189,6 +189,55 @@
     "delayMs": 0,
     "ms": 900
    }
+  },
+  {
+   "slug": "buildright-home",
+   "beat": "ambient36",
+   "kind": "ambient",
+   "devices": [
+    "tablet"
+   ],
+   "seconds": 9,
+   "scroll": 700,
+   "flair": {
+    "color": "#A7C957",
+    "on": "ready",
+    "delayMs": 2600,
+    "ms": 900
+   }
+  },
+  {
+   "slug": "the-apricot-theory",
+   "beat": "ambient36",
+   "kind": "ambient",
+   "devices": [
+    "phone"
+   ],
+   "seconds": 9,
+   "scroll": 560,
+   "flair": {
+    "color": "#F59E8B",
+    "on": "ready",
+    "delayMs": 2600,
+    "ms": 900
+   }
+  },
+  {
+   "slug": "viniteca-marti",
+   "beat": "ambient36",
+   "kind": "ambient",
+   "devices": [
+    "desktop"
+   ],
+   "seconds": 9,
+   "scroll": 600,
+   "startPath": "/en",
+   "flair": {
+    "color": "#701C33",
+    "on": "ready",
+    "delayMs": 2600,
+    "ms": 900
+   }
   }
  ]
 }

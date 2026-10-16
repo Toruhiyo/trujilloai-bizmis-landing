@@ -413,7 +413,8 @@
   const PROMO_FLIP_POP_HOLD_MS = 450;   // v25: 650 -> 450 (the faster cut)
   const PROMO_TOGGLE_REST_MS = 650;
   const LEAD_WRAP = '[data-promo-lead-wrap]';   // v34: the pitch's lead copy sits in a class-carrying, box-less wrapper
-  const PROMO_PAIN_CLOSE_LEAD_MS = 1040;   // v34: the chat-close tap starts this long before "Either way" (as in v25-v33)
+  const PROMO_PAIN_CLOSE_LEAD_MS = 1040;
+  const PROMO_PAIN_CLOSE_TAP_MS = 560;   // v36: tapPhoneTarget's length (70 + 320 + 50 + 100 ms, frame-rounded): the ✕ tap ends on the close   // v34: the chat-close tap starts this long before "Either way" (as in v25-v33)
   const PROMO_LIVE_CARD_OUT_MS = 420;
   const PROMO_PITCH_HANDOFF_MS = 400;   // v34: the close-up's dissolve into the pitch sea's lead card   // the live widget card's fade out (html.is-promo-card-out)
   const PROMO_RECAP_BUBBLES = ['Can I help you find something?', "That one's perfect for them."];
@@ -2701,6 +2702,211 @@
       wrap.style.boxShadow = `0 ${(10 * z * lift).toFixed(1)}px ${(34 * z * lift).toFixed(1)}px rgba(${rgb},${(0.5 * lift).toFixed(3)}), 0 0 0 ${(4.5 * z * lift).toFixed(1)}px rgba(${rgb},${(0.95 * lift).toFixed(3)}), 0 0 ${(56 * z * lift).toFixed(1)}px rgba(${rgb},${(0.55 * lift).toFixed(3)})`;
       band.style.left = `${(-50 + Math.min(1, u / 0.8) * 160).toFixed(1)}%`;
     }, (u) => u).then(() => wrap.remove());
+  }
+
+
+  // v36e: the old chatbot disintegrates into fine dust and smoke (operator: "dusting-smoke, super premium"). Its own
+  // pixels (circle + mark, rasterized at device resolution) become a few thousand grains; a soft front sweeps through
+  // it releasing them; each grain flares warm-white for an instant, then cools to a warm grey dust that drifts on a
+  // gentle turbulence and fades, while soft smoke billows up under the grains. Stepped on the film clock (canvas,
+  // seeded: the export renders it identically every time); nothing waits on it.
+  //   style 1: disintegrate (sweep from the impact, wind up and to the left)
+  //   style 2: smoke (tiny grains, more billowing smoke rising)
+  //   style 3: implode (a brief inward pull and rim glow, then a burst of fine dust that slows and hangs as it fades)
+  const PROMO_VAPOR_STYLE = Number(promoSearchParams().get('vapor') || 1);
+  // v36f (operator: "more smoke and less dust, way smaller particles"): styles 4 and 5 are smoke-first: hair-fine
+  // grains that live only a moment, then a soft plume (many small puffs born along the dissolving front) that billows
+  // up and to the right, out past the window's edge and away from the clerk (4), or curls up and melts in place (5).
+  // The canvas sits beside the store window (in its parent), so the smoke can leave the window.
+  function promoSmokeVanish(store, bubble, style = 4) {
+    if (!store || !bubble || prefersReducedMotion()) { if (bubble) bubble.style.opacity = '0'; return Promise.resolve(); }
+    const host = store.parentElement || store;
+    const size = bubble.offsetWidth || 60;
+    const bx = (parseFloat(bubble.style.left) || 0) + store.offsetLeft; const by = (parseFloat(bubble.style.top) || 0) + store.offsetTop;
+    const dpr = Math.min(3, window.devicePixelRatio || 1);
+    const W = size * 7; const H = size * 7; const ox = bx + size / 2 - W * (style === 4 ? 0.36 : 0.5); const oy = by + size / 2 - H * 0.8;
+    const canvas = document.createElement('canvas');
+    canvas.className = 'promo-install__dust';
+    canvas.width = Math.round(W * dpr); canvas.height = Math.round(H * dpr);
+    Object.assign(canvas.style, { position: 'absolute', left: `${ox.toFixed(1)}px`, top: `${oy.toFixed(1)}px`, width: `${W.toFixed(1)}px`, height: `${H.toFixed(1)}px`, pointerEvents: 'none', zIndex: '6' });
+    const cs = getComputedStyle(bubble);
+    const fill = cs.backgroundColor; const ink = cs.color; const dot = cs.getPropertyValue('--bot-user').trim() || fill;
+    const S = Math.max(8, Math.round(size * dpr));
+    const src = document.createElement('canvas'); src.width = S; src.height = S;
+    const g = src.getContext('2d');
+    g.fillStyle = fill; g.beginPath(); g.arc(S / 2, S / 2, S / 2, 0, Math.PI * 2); g.fill();
+    const svg = bubble.querySelector('svg');
+    if (svg) {
+      const r = svg.getBoundingClientRect(); const rb = bubble.getBoundingClientRect(); const k = S / (rb.width || S);
+      g.save(); g.translate((r.left - rb.left) * k, (r.top - rb.top) * k); g.scale((r.width * k) / 24, (r.width * k) / 24); g.translate(0.9, -0.55);
+      g.fillStyle = ink; g.fill(new Path2D('M5.4 3.4h11.4a3.8 3.8 0 0 1 3.8 3.8v7.1a3.8 3.8 0 0 1-3.8 3.8h-4.7L8 21.7v-3.6H5.4a3.8 3.8 0 0 1-3.8-3.8V7.2a3.8 3.8 0 0 1 3.8-3.8z'));
+      g.fillStyle = dot; [[8.7, 10.8], [14.1, 10.8]].forEach(([x, y]) => { g.beginPath(); g.arc(x, y, 1.45, 0, Math.PI * 2); g.fill(); });
+      g.restore();
+    }
+    const img = g.getImageData(0, 0, S, S).data;
+    const hash = (n) => { const x = Math.sin(n * 127.1 + 311.7) * 43758.5453; return x - Math.floor(x); };
+    const dirX = style === 4 ? 0.55 : 0.08;   // the plume's lean (to the right for 4, straight up for 5)
+    // hair-fine grains: the launcher's pixels at ~1.5 device px, gone within half a second
+    const step = Math.max(1, S / 150);
+    const grains = []; let n = 0;
+    for (let y = step / 2; y < S; y += step) for (let x = step / 2; x < S; x += step) {
+      const o = (Math.floor(y) * S + Math.floor(x)) * 4; if (img[o + 3] < 40) continue;
+      n += 1; const u = x / S; const v = y / S;
+      grains.push({ x0: bx - ox + u * size, y0: by - oy + v * size, r: img[o], g: img[o + 1], b: img[o + 2],
+        release: Math.hypot(u - 0.5, v - 0.05) * 260 + hash(n) * 90, life: 260 + hash(n + 3.1) * 300,
+        vx: (u - 0.5) * size * 0.5 + dirX * size * 0.6 * hash(n + 5.7), vy: -size * (0.3 + 0.7 * hash(n + 9.3)), ph: hash(n + 2.2) * 6.28, sz: (step * 1.05) / dpr });
+    }
+    // the smoke: puffs born along the dissolving front, small at first, swelling, rising, curling, thinning out
+    const puffs = Array.from({ length: style === 4 ? 46 : 40 }, (_, k) => {
+      const a = hash(k + 101) * Math.PI * 2; const rr = Math.sqrt(hash(k + 103)) * 0.42;
+      const u = 0.5 + Math.cos(a) * rr; const v = 0.5 + Math.sin(a) * rr;
+      return { x: bx - ox + u * size, y: by - oy + v * size, born: Math.hypot(u - 0.5, v - 0.05) * 260 + hash(k + 107) * 120,
+        life: (style === 4 ? 1300 : 1700) + hash(k + 109) * 700, r0: size * (0.1 + 0.08 * hash(k + 113)), grow: size * (style === 4 ? 0.75 : 0.6) * (0.6 + 0.8 * hash(k + 127)),
+        rise: size * (style === 4 ? 3.1 : 2.4) * (0.55 + 0.6 * hash(k + 131)), lean: size * dirX * 3.2 * (0.5 + hash(k + 137)),
+        curl: size * 0.22 * (hash(k + 139) - 0.5), ph: hash(k + 149) * 6.28, a: 0.16 + 0.14 * hash(k + 151), light: hash(k + 157) };
+    });
+    host.appendChild(canvas);
+    bubble.style.transition = 'none'; bubble.style.animation = 'none'; bubble.style.opacity = '0';
+    const ctx = canvas.getContext('2d');
+    const total = Math.max(...grains.map((q) => q.release + q.life), ...puffs.map((q) => q.born + q.life));
+    return tweenStep(total, (_, uu) => {
+      const t = uu * total;
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0); ctx.clearRect(0, 0, W, H);
+      grains.forEach((q) => {
+        const tau = (t - q.release) / 1000; let x = q.x0; let y = q.y0; let a = 1; let r = q.r; let gg = q.g; let b = q.b;
+        if (tau > 0) {
+          const v = (tau * 1000) / q.life; if (v >= 1) return;
+          x += q.vx * tau + Math.sin(tau * 9 + q.ph) * size * 0.04; y += q.vy * tau;
+          const flare = Math.max(0, 1 - tau / 0.07); const cool = Math.min(1, tau / 0.2);
+          r = r + (214 - r) * cool + (255 - r) * flare * 0.8; gg = gg + (208 - gg) * cool + (246 - gg) * flare * 0.8; b = b + (200 - b) * cool + (232 - b) * flare * 0.8;
+          a = (1 - v) ** 1.4;
+        }
+        ctx.fillStyle = `rgba(${Math.min(255, r) | 0},${Math.min(255, gg) | 0},${Math.min(255, b) | 0},${a.toFixed(3)})`;
+        ctx.fillRect(x - q.sz / 2, y - q.sz / 2, q.sz, q.sz);
+      });
+      ctx.save(); ctx.filter = `blur(${(size * 0.07).toFixed(1)}px)`;
+      puffs.forEach((q) => {
+        const v = (t - q.born) / q.life; if (v <= 0 || v >= 1) return;
+        const e = 1 - (1 - v) ** 2; const rise = q.rise * (v ** 0.85);
+        const cx = q.x + q.lean * v ** 1.2 + Math.sin(v * 4.2 + q.ph) * q.curl * (0.4 + v);
+        const cy = q.y - rise;
+        const rad = q.r0 + q.grow * e;
+        const a = q.a * Math.min(1, v / 0.12) * (1 - v) ** 1.6;
+        const c = q.light > 0.6 ? [236, 232, 226] : [204, 197, 189];
+        const grd = ctx.createRadialGradient(cx, cy, 0, cx, cy, rad);
+        grd.addColorStop(0, `rgba(${c[0]},${c[1]},${c[2]},${a.toFixed(3)})`);
+        grd.addColorStop(0.55, `rgba(${c[0]},${c[1]},${c[2]},${(a * 0.45).toFixed(3)})`);
+        grd.addColorStop(1, `rgba(${c[0]},${c[1]},${c[2]},0)`);
+        ctx.fillStyle = grd; ctx.beginPath(); ctx.arc(cx, cy, rad, 0, Math.PI * 2); ctx.fill();
+      });
+      ctx.restore();
+    }, (x) => x).then(() => canvas.remove());
+  }
+
+  function promoDustVanish(store, bubble, style = 1) {
+    if (!store || !bubble || prefersReducedMotion()) { if (bubble) bubble.style.opacity = '0'; return Promise.resolve(); }
+    const size = bubble.offsetWidth || 60;
+    const bx = parseFloat(bubble.style.left) || 0; const by = parseFloat(bubble.style.top) || 0;
+    const dpr = Math.min(3, window.devicePixelRatio || 1);
+    // the canvas spans the room the dust needs (mostly up and to the left of the corner launcher)
+    const W = size * 8; const H = size * 6; const ox = bx + size - W + size * 1.2; const oy = by + size - H + size * 0.8;
+    const canvas = document.createElement('canvas');
+    canvas.className = 'promo-install__dust';
+    canvas.width = Math.round(W * dpr); canvas.height = Math.round(H * dpr);
+    Object.assign(canvas.style, { position: 'absolute', left: `${ox.toFixed(1)}px`, top: `${oy.toFixed(1)}px`, width: `${W.toFixed(1)}px`, height: `${H.toFixed(1)}px`, pointerEvents: 'none', zIndex: '9' });
+    // the launcher's pixels: its fill, its mark, its two dots
+    const cs = getComputedStyle(bubble);
+    const fill = cs.backgroundColor; const ink = cs.color; const dot = cs.getPropertyValue('--bot-user').trim() || fill;
+    const src = document.createElement('canvas'); const S = Math.max(8, Math.round(size * dpr));
+    src.width = S; src.height = S;
+    const g = src.getContext('2d');
+    g.fillStyle = fill; g.beginPath(); g.arc(S / 2, S / 2, S / 2, 0, Math.PI * 2); g.fill();
+    const svg = bubble.querySelector('svg');
+    if (svg) {
+      const r = svg.getBoundingClientRect(); const rb = bubble.getBoundingClientRect(); const k = S / (rb.width || S);
+      const sx = (r.left - rb.left) * k; const sy = (r.top - rb.top) * k; const sw = r.width * k;
+      g.save(); g.translate(sx, sy); g.scale(sw / 24, sw / 24); g.translate(0.9, -0.55);
+      g.fillStyle = ink; g.fill(new Path2D('M5.4 3.4h11.4a3.8 3.8 0 0 1 3.8 3.8v7.1a3.8 3.8 0 0 1-3.8 3.8h-4.7L8 21.7v-3.6H5.4a3.8 3.8 0 0 1-3.8-3.8V7.2a3.8 3.8 0 0 1 3.8-3.8z'));
+      g.fillStyle = dot; [[8.7, 10.8], [14.1, 10.8]].forEach(([x, y]) => { g.beginPath(); g.arc(x, y, 1.45, 0, Math.PI * 2); g.fill(); });
+      g.restore();
+    }
+    const img = g.getImageData(0, 0, S, S).data;
+    const hash = (n) => { const x = Math.sin(n * 127.1 + 311.7) * 43758.5453; return x - Math.floor(x); };
+    const step = Math.max(1, S / (style === 2 ? 70 : 62));
+    const grains = [];
+    let n = 0;
+    for (let y = step / 2; y < S; y += step) {
+      for (let x = step / 2; x < S; x += step) {
+        const o = (Math.floor(y) * S + Math.floor(x)) * 4;
+        if (img[o + 3] < 40) continue;
+        n += 1;
+        const u = x / S; const v = y / S;   // 0..1 inside the launcher
+        const h1 = hash(n); const h2 = hash(n + 7.3); const h3 = hash(n + 13.1); const h4 = hash(n + 21.7);
+        // release: a soft front from the impact (top centre) outward, with a ragged edge
+        const front = Math.hypot(u - 0.5, v - 0.05);
+        const release = style === 3 ? 90 + h1 * 60 : front * 300 + h1 * 110;
+        let vx; let vy; let burst;
+        if (style === 3) { const a = Math.atan2(v - 0.5, u - 0.5); burst = (0.8 + 1.6 * h2) * size; vx = Math.cos(a); vy = Math.sin(a); }
+        else { burst = (0.25 + 0.5 * h2) * size; const a = Math.atan2(v - 0.05, u - 0.5); vx = Math.cos(a); vy = Math.sin(a); }
+        grains.push({ x0: bx - ox + (x / S) * size, y0: by - oy + (y / S) * size, r: img[o], g: img[o + 1], b: img[o + 2],
+          release, life: (style === 2 ? 650 : 850) + h3 * 650, burst, vx, vy,
+          wind: (style === 2 ? 1.3 : 2.2 + 1.8 * h4) * size, lift: (style === 2 ? 2.6 : 1.4) * size * (0.6 + 0.8 * h2),
+          ph: h4 * Math.PI * 2, sz: step / dpr });
+      }
+    }
+    // smoke: soft puffs rising out of the launcher
+    const puffs = Array.from({ length: style === 2 ? 16 : 9 }, (_, k) => ({ x: bx - ox + size * (0.2 + 0.6 * hash(k + 40)), y: by - oy + size * (0.25 + 0.6 * hash(k + 50)),
+      delay: 40 + hash(k + 60) * 260, life: 1100 + hash(k + 70) * 700, rise: size * (style === 2 ? 2.4 : 1.5) * (0.6 + 0.6 * hash(k + 80)),
+      drift: -size * (style === 2 ? 0.8 : 1.6) * (0.4 + 0.8 * hash(k + 90)), grow: size * (style === 2 ? 1.5 : 1.1) * (0.7 + 0.6 * hash(k + 100)), a: style === 2 ? 0.2 : 0.12 }));
+    store.appendChild(canvas);
+    bubble.style.transition = 'none'; bubble.style.animation = 'none'; bubble.style.opacity = '0';
+    const ctx = canvas.getContext('2d');
+    const total = Math.max(...grains.map((q) => q.release + q.life), ...puffs.map((q) => q.delay + q.life));
+    const dust = [196, 188, 179];   // warm grey dust
+    return tweenStep(total, (_, uu) => {
+      const t = uu * total;
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      ctx.clearRect(0, 0, W, H);
+      // smoke under the grains
+      ctx.save(); ctx.filter = `blur(${(size * 0.12).toFixed(1)}px)`;
+      puffs.forEach((q) => {
+        const v = (t - q.delay) / q.life; if (v <= 0 || v >= 1) return;
+        const e = 1 - (1 - v) ** 2.2; const rad = size * 0.35 + q.grow * e;
+        const cx = q.x + q.drift * e + Math.sin(v * 5 + q.delay) * size * 0.08; const cy = q.y - q.rise * e;
+        const a = q.a * Math.sin(Math.PI * Math.min(1, v * 1.25)) * (1 - v);
+        const grd = ctx.createRadialGradient(cx, cy, 0, cx, cy, rad);
+        grd.addColorStop(0, `rgba(${dust[0]},${dust[1]},${dust[2]},${a.toFixed(3)})`); grd.addColorStop(1, `rgba(${dust[0]},${dust[1]},${dust[2]},0)`);
+        ctx.fillStyle = grd; ctx.beginPath(); ctx.arc(cx, cy, rad, 0, Math.PI * 2); ctx.fill();
+      });
+      ctx.restore();
+      // the grains
+      const pull = style === 3 ? Math.sin(Math.PI * Math.min(1, t / 140)) : 0;   // implode: a brief inward pull
+      grains.forEach((q) => {
+        const tau = (t - q.release) / 1000;
+        let x = q.x0; let y = q.y0; let r = q.r; let gg = q.g; let b = q.b; let a = 1; let sz = q.sz;
+        if (style === 3 && tau < 0) { const cx = bx - ox + size / 2; const cy = by - oy + size / 2; x += (cx - x) * 0.12 * pull; y += (cy - y) * 0.12 * pull; }
+        if (tau > 0) {
+          const v = Math.min(1, (tau * 1000) / q.life);
+          if (v >= 1) return;
+          const out = q.burst * (1 - Math.exp(-tau / (style === 3 ? 0.12 : 0.22)));
+          const windE = q.wind * tau ** 1.35; const liftE = q.lift * tau ** 1.25;
+          const turb = size * 0.18 * tau;
+          x += q.vx * out - windE * 0.62 + Math.sin(tau * 6.1 + q.ph + q.y0 * 0.05) * turb;
+          y += q.vy * out - liftE + Math.cos(tau * 5.3 + q.ph * 1.7 + q.x0 * 0.05) * turb;
+          // a warm-white flare at the edge as it lets go, cooling into dust
+          const flare = Math.max(0, 1 - tau / 0.09);
+          const cool = Math.min(1, tau / 0.35);
+          const mix = (c0, d) => c0 + (d - c0) * cool;
+          r = mix(q.r, dust[0]) + (255 - mix(q.r, dust[0])) * flare * 0.85;
+          gg = mix(q.g, dust[1]) + (244 - mix(q.g, dust[1])) * flare * 0.85;
+          b = mix(q.b, dust[2]) + (226 - mix(q.b, dust[2])) * flare * 0.85;
+          a = (1 - v) ** 1.6;
+          sz = q.sz * (1 - 0.55 * v);
+        }
+        ctx.fillStyle = `rgba(${r | 0},${gg | 0},${b | 0},${a.toFixed(3)})`;
+        ctx.fillRect(x - sz / 2, y - sz / 2, sz, sz);
+      });
+    }, (x) => x).then(() => canvas.remove());
   }
 
   // v35: a hero take whose widget transcript doesn't match its voice: the bubbles' area is covered in the page's own
@@ -6991,65 +7197,8 @@
       // impact: the old chatbot bursts, the clerk squashes and settles, its
       // card forms, and the store's colour ripples out from the corner
       const to = { x: seat.x + seat.w - size / 2, y: seat.y + seat.h - size / 2 };
-      {   // v36d (operator: "apply the same effect than the doubt clearing vaporized bubbles"): the old chatbot
-        // vaporizes exactly as the doubts do (promo-moments-vapor + promo-moments-vapor-bit, same keyframes and times):
-        // it flashes Bizmis orange with a glow, swells and blurs away, and six white vapour bits drift out of it.
-        // Stepped on the film clock (CSS keyframes are never sampled by the export); nothing waits on it.
-        bubble.style.transition = 'none'; bubble.style.animation = 'none';
-        promoSfx('old-vapor');
-        const bw = bubble.offsetWidth || size;
-        const cx = parseFloat(bubble.style.left) + bw / 2; const cy = parseFloat(bubble.style.top) + bw / 2;
-        const fill = getComputedStyle(bubble).backgroundColor; const ink = getComputedStyle(bubble).color;
-        const ease = (x) => 1 - (1 - x) ** 4;   // ~ cubic-bezier(0.22, 1, 0.36, 1), per keyframe segment as CSS does
-        const lerp = (a, b, x) => a + (b - a) * x;
-        const bits = [];
-        for (let bit = 0; bit < 6; bit += 1) {
-          const node = document.createElement('span');
-          node.className = 'promo-install__vapor-bit';
-          const d = bw * 0.9;   // the doubts' 3.1 rem bits on a ~3.4 rem bubble
-          const angle = (bit / 6) * Math.PI * 2 + 0.55;
-          const dist = bw * (0.62 + (bit % 3) * 0.37);
-          Object.assign(node.style, { position: 'absolute', left: `${(cx - d / 2).toFixed(1)}px`, top: `${(cy - d / 2).toFixed(1)}px`, width: `${d.toFixed(1)}px`, height: `${d.toFixed(1)}px`,
-            borderRadius: '50%', background: '#fff', boxShadow: '0 0 24px 6px rgba(255,255,255,0.85)', pointerEvents: 'none', opacity: '0', zIndex: '10' });
-          bits.push({ node, dx: Math.cos(angle) * dist, dy: Math.sin(angle) * dist, delay: bit * 40 });
-          store.append(node);
-        }
-        const VAPOR = PROMO_MOMENTS_VAPOR_MS; const BIT = 980;
-        const span = Math.max(VAPOR, ...bits.map((b) => b.delay + BIT));
-        tweenStep(span, (_, u) => {
-          const ms = u * span;
-          // promo-moments-vapor: 0% -> 20% (orange flash, glow, 1.18) -> 100% (gone: blur 22 px, scale 2.4)
-          const v = Math.min(1, ms / VAPOR);
-          if (v < 0.2) {
-            const x = ease(v / 0.2);
-            bubble.style.opacity = lerp(1, 0.9, x).toFixed(3);
-            bubble.style.filter = `blur(${lerp(0, 1, x).toFixed(2)}px)`;
-            bubble.style.transform = `scale(${lerp(1, 1.18, x).toFixed(3)})`;
-            bubble.style.background = `color-mix(in srgb, var(--bizmis-primary) ${(x * 100).toFixed(1)}%, ${fill})`;
-            bubble.style.color = `color-mix(in srgb, transparent ${(x * 100).toFixed(1)}%, ${ink})`;
-            bubble.style.boxShadow = `0 0 ${(22 * x).toFixed(1)}px ${(10 * x).toFixed(1)}px color-mix(in srgb, var(--bizmis-primary) ${(60 * x).toFixed(1)}%, transparent)`;
-          } else {
-            const x = ease((v - 0.2) / 0.8);
-            bubble.style.opacity = lerp(0.9, 0, x).toFixed(3);
-            bubble.style.filter = `blur(${lerp(1, 22, x).toFixed(2)}px)`;
-            bubble.style.transform = `scale(${lerp(1.18, 2.4, x).toFixed(3)})`;
-            bubble.style.background = `color-mix(in srgb, var(--bizmis-primary) ${lerp(100, 55, x).toFixed(1)}%, transparent)`;
-            bubble.style.color = 'transparent';
-            bubble.style.boxShadow = `0 0 ${lerp(22, 48, x).toFixed(1)}px ${lerp(10, 22, x).toFixed(1)}px color-mix(in srgb, var(--bizmis-primary) ${lerp(60, 0, x).toFixed(1)}%, transparent)`;
-          }
-          // promo-moments-vapor-bit: 0% -> 24% (out a little, 0.82) -> 100% (out, scale 1.9, blur 22 px, gone)
-          bits.forEach((b) => {
-            const w = Math.min(1, Math.max(0, (ms - b.delay) / BIT));
-            let o; let k; let r; let bl;
-            if (w < 0.24) { const x = ease(w / 0.24); o = lerp(0, 0.82, x); k = lerp(0, 0.22, x); r = lerp(0.3, 1, x); bl = lerp(2, 8, x); }
-            else { const x = ease((w - 0.24) / 0.76); o = lerp(0.82, 0, x); k = lerp(0.22, 1, x); r = lerp(1, 1.9, x); bl = lerp(8, 22, x); }
-            if (w <= 0) o = 0;
-            b.node.style.opacity = o.toFixed(3);
-            b.node.style.transform = `translate(${(b.dx * k).toFixed(1)}px, ${(b.dy * k).toFixed(1)}px) scale(${r.toFixed(3)})`;
-            b.node.style.filter = `blur(${bl.toFixed(1)}px)`;
-          });
-        }, (x) => x).then(() => { bits.forEach((b) => b.node.remove()); bubble.style.opacity = '0'; });
-      }
+      promoSfx('old-vapor');
+      (PROMO_VAPOR_STYLE >= 4 ? promoSmokeVanish : promoDustVanish)(store, bubble, PROMO_VAPOR_STYLE);   // v36e/f (operator: "dusting-smoke, super premium"; "more smoke and less dust")
       const wave = document.createElement('span');
       wave.className = 'promo-install__wave';
       wave.style.left = `${to.x.toFixed(1)}px`;
@@ -9385,7 +9534,8 @@
         }
         // v25b: where a run / quick card's clip starts; its idle video waits there (pre-seeked), so a card's first frame is
         // never the recording's frame 0 (a cookie box, an empty widget) shown for a frame while the seek catches up
-        cell.rollAt = item.card ? (item.start || 0) : ((item.ambientStart || 0) + (n % 5) * 1.7) % 9;
+        // v36: item.rollAt pins a run card's in-point (its native widget highlight peaks just after its cut-in)
+        cell.rollAt = item.card ? (item.start || 0) : (item.rollAt != null ? item.rollAt : ((item.ambientStart || 0) + (n % 5) * 1.7) % 9);
         if (cell.ambientVideo) {
           const video = cell.ambientVideo;
           video.addEventListener('loadeddata', () => { try { video.currentTime = Number.isFinite(video.duration) && video.duration > 0 ? cell.rollAt % video.duration : cell.rollAt; } catch { } }, { once: true });
@@ -13878,8 +14028,11 @@
       await this.painTake?.at('hours later', 'end', -240);
       this.humanReplyArrives(clone);
       promoSfx('reply');
-      // "...already gone.": the shopper closes the chat, the thumb on the ✕ as "gone." ends (v25 STT 19.82 s; press ~390 ms in)
-      await this.painTake?.at('already gone.', 'end', -560);
+      // "...already gone.": the shopper closes the chat. v36 (operator: it froze between the tap and the close): the
+      // thumb taps the ✕ so the tap ENDS where the close starts (1040 ms before "Either way"), not on "gone." 1.1 s
+      // earlier; the close itself, and everything after it, keeps its moment
+      await this.painTake?.at('already gone.', 'end');
+      await this.painTake?.at('Either way', 'start', -PROMO_PAIN_CLOSE_LEAD_MS - PROMO_PAIN_CLOSE_TAP_MS);
       const tapAt = performance.now();
       const close = clone.querySelector('.promo-pain__chat.is-open .promo-pain__close');
       if (close) await this.tapPhoneTarget(clone, close);
