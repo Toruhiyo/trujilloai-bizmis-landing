@@ -31,7 +31,7 @@ import type { Opener } from "@/components/landing/pillar/OpenerContext";
  * docked bars (PillarIntro); ?open=1..6 shows the opener designs under
  * comparison (pillar/OpenerDesign, pillar-openers.css).
  */
-const DEFAULT_OPEN: Opener = "0";
+const DEFAULT_OPEN: Opener = "5"; // the chapter opener (chosen 2026-10-16); ?open=0 shows the previous big-name opener
 
 interface FilmLandingProps {
   /** The route it's served on: "/" once it's the default, "/v2" until then. */
