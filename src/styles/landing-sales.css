@@ -544,6 +544,8 @@
   height: 0.5em;
   stroke-width: max(2.5px, 0.14em);
 }
+/* an even marker line however wide the word; drawn on by a clip (FunnelFlow), never a dash: with a
+   non-scaling stroke Chrome lays a pathLength dash out in screen px, so it stopped short on wide words */
 .sl-flow-strike path {
   vector-effect: non-scaling-stroke;
 }

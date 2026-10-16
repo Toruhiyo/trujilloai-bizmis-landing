@@ -189,6 +189,13 @@ const pen = (k: number) => {
 };
 /** The written-so-far part of a word: a left-to-right reveal. */
 const reveal = (k: number) => (k >= 1 ? undefined : `inset(-30% ${((1 - k) * 100).toFixed(2)}% -30% -8%)`);
+/**
+ * The struck-so-far part of a strike, also a left-to-right reveal (its box spans the whole line,
+ * so at 1 it crosses every letter). Not a dash on the path: with the strike's non-scaling stroke,
+ * Chrome lays a `pathLength`-normalised dash out in screen px (~the viewBox's 104 units), so on a
+ * line wider than that the stroke stopped partway (or broke into dashes).
+ */
+const strikeClip = (k: number) => (k >= 1 ? undefined : `inset(-150% ${((1 - k) * 100).toFixed(2)}% -150% -10%)`);
 /** Line `j`'s own 0 → 1 of a pen stroke `k` (0 → 1) over all of `lines`, written one after another (shared by length). */
 const lineK = (k: number, lines: string[], j: number) => {
   if (lines.length < 2) return k;
@@ -1025,8 +1032,14 @@ const FunnelFlow = ({
                             {line}
                           </span>
                           {st > 0 && (
-                            <svg className="sl-flow-strike" viewBox="0 0 100 20" preserveAspectRatio="none" aria-hidden="true">
-                              <path d="M-2 13 C 20 9, 40 12, 60 9 S 90 8, 102 6" pathLength={1} strokeDasharray="1 1" strokeDashoffset={1 - st} />
+                            <svg
+                              className="sl-flow-strike"
+                              viewBox="0 0 100 20"
+                              preserveAspectRatio="none"
+                              aria-hidden="true"
+                              style={{ clipPath: strikeClip(st) }}
+                            >
+                              <path d="M-2 13 C 20 9, 40 12, 60 9 S 90 8, 102 6" />
                             </svg>
                           )}
                         </span>
