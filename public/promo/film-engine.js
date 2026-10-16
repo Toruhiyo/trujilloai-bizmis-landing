@@ -6637,12 +6637,14 @@
       await this.speakClerk('clerk-compare', reduced, {
         "It's the one": () => {
           stage?.querySelector('.promo-moments__board')?.classList.add('is-decided');
+          this.resolveChapter();   // v36b: the compare moment is its own again
         },
       });
       promoWidgetDebug('setPlaceholder', 'Ask anything about it');
       await this.laserUntilNext('product', reduced, PROMO_DOUBT_LASER_MS);   // v25b: the doubt beat ~22% tighter (400 -> 320)
       const leavingBoard = stage?.querySelector('.promo-moments__board');
       leavingBoard?.classList.add('is-leaving-choice');
+      this.hideChapter();
       await waitMs(reduced ? 0 : 90);   // v25: 200 -> 120 (v25b: 90)
       // a page change: a quick dissolve into the product page (the layout morph
       // shrank the winner into a thumbnail for a frame)
@@ -6665,6 +6667,7 @@
       const doubtTake = speakTake('t-doubt');
       await doubtTake.at('a doubt');
       board?.classList.remove('is-doubts-hidden');
+      doubtTake.at('holds them back', 'end').then(() => this.showChapter('Left unsure', 'Added to cart'));   // v36b
       await doubtTake.done;
       await this.speakShopperLine('shopper-doubt', reduced);
       setOpeningAvatarAction('thinking');
@@ -6674,8 +6677,7 @@
           // only the doubts go now; the cart waits for the clerk to finish
           promoSfx('doubt-poof');
           board?.classList.add('is-doubts-gone');
-          window.setTimeout(() => this.resolveChapter(), reduced ? 0 : PROMO_MOMENTS_VAPOR_MS * 0.45);   // v36: "Compared here" once the doubt is gone (v25b: 0.6 -> 0.45 after the poof)
-        },
+                  },
       });
       applyMomentPose(stage, 'close', { instant: reduced });
       promoWidgetDebug('setPlaceholder', 'Ask what goes with it');
@@ -6683,13 +6685,14 @@
       setOpeningAvatarAction('thumbsup');   // the doubt is gone: into the cart
       host?.classList.add('is-cart-one');
       emitShopper({ kind: 'cart', product: pick, quantity: 1 });
+      this.resolveChapter();   // v36b: added to cart
       await waitMs(reduced ? 40 : 300);   // v25: 950 -> 450 (v25b: 300; the Added -> cart pop -> badge celebration plays through, store-bar --promo-close-cart-at). "Added" and the cart badge land inside "Stuck on a doubt"
-      this.hideChapter();
       // Moment 3. Like a good salesperson, the clerk suggests (it doesn't
       // push) what goes with it: only the main product at first, then a
       // vertical carousel of the catalog spins and settles on the match,
       // which flies into place beside it. Added once the clerk is done.
       await this.laserUntilNext('products', reduced, PROMO_DOUBT_LASER_MS);   // v25b: 400 -> 320
+      this.hideChapter();   // v36b: "Added to cart" reads through the beat, then makes way for the cross-sell
       const spin = reduced ? null : this.spinCrossSell('cradle');
       let bundled = false;
       const bundle = () => {
@@ -6986,16 +6989,51 @@
       // impact: the old chatbot bursts, the clerk squashes and settles, its
       // card forms, and the store's colour ripples out from the corner
       const to = { x: seat.x + seat.w - size / 2, y: seat.y + seat.h - size / 2 };
-      {   // the old chatbot pops and vanishes (stepped: CSS keyframes were never sampled)
+      {   // v36b (operator: "Dust"): the old chatbot disintegrates: it breaks into fine grains of itself that the impact
+        // blows away into the store, greying and blurring as they drift (stepped on the film clock; nothing waits on it)
         bubble.style.transition = 'none'; bubble.style.animation = 'none';
+        promoSfx('old-dust');
+        const N = 17;   // N x N grains (fine)
+        const bw = bubble.offsetWidth || size; const bh = bubble.offsetHeight || size;
+        const hash = (i) => { const x = Math.sin(i * 127.1 + 311.7) * 43758.5453; return x - Math.floor(x); };
+        const grains = [];
+        // the grains drift behind the clerk's card, over the store
+        const under = store.contains(widget) ? String(Math.max(1, (parseInt(getComputedStyle(widget).zIndex, 10) || 2) - 1)) : '';
+        for (let gy = 0; gy < N; gy += 1) {
+          for (let gx = 0; gx < N; gx += 1) {
+            const cx = (gx + 0.5) / N; const cy = (gy + 0.5) / N;
+            if ((cx - 0.5) ** 2 + (cy - 0.5) ** 2 > 0.3) continue;   // the launcher is round: no empty corner grains
+            const grain = bubble.cloneNode(true);
+            grain.classList.add('promo-install__grain');
+            const pad = 0.4;   // a hair of overlap, so the intact launcher shows no seams on its first frame
+            grain.style.clipPath = `inset(${((gy / N) * 100 - pad).toFixed(2)}% ${((1 - (gx + 1) / N) * 100 - pad).toFixed(2)}% ${((1 - (gy + 1) / N) * 100 - pad).toFixed(2)}% ${((gx / N) * 100 - pad).toFixed(2)}%)`;
+            grain.style.pointerEvents = 'none';
+            if (under) grain.style.zIndex = under;
+            const k = gy * N + gx;
+            // blown from the impact (the clerk lands on top) out and up into the store, a wind towards the upper left
+            const dx = cx - 0.5; const dy = cy - 0.15;
+            const len = Math.hypot(dx, dy) || 1;
+            const push = (1.1 + 1.9 * hash(k)) * bw;
+            grains.push({ node: grain, tx: (dx / len) * push * 0.55 - bw * (2.0 + 2.4 * hash(k + 7)), ty: (dy / len) * push * 0.35 - bh * (0.9 + 1.4 * hash(k + 13)),
+              rot: (hash(k + 29) - 0.5) * 220, delay: 40 + (1 - cy) * 120 + hash(k + 41) * 90, life: 420 + hash(k + 53) * 260, ox: (cx * 100).toFixed(1), oy: (cy * 100).toFixed(1) });
+            store.append(grain);
+          }
+        }
+        bubble.style.opacity = '0';
         const t0 = performance.now();
-        const pop = (now) => {
-          const u = Math.min(1, (now - t0) / 300);
-          const k = u < 0.35 ? 1 - 0.25 * (u / 0.35) : 0.75 + 0.75 * ((u - 0.35) / 0.65);
-          bubble.style.transform = `scale(${k.toFixed(3)})`; bubble.style.opacity = (u < 0.35 ? 1 : 1 - (u - 0.35) / 0.65).toFixed(3);
-          if (u < 1) window.requestAnimationFrame(pop);
-        };
-        window.requestAnimationFrame(pop);
+        const span = Math.max(...grains.map((g) => g.delay + g.life));
+        tweenStep(span, (_, u) => {
+          const ms = u * span;
+          grains.forEach((g) => {
+            const v = Math.min(1, Math.max(0, (ms - g.delay) / g.life));
+            const e = 1 - (1 - v) ** 2.2;
+            g.node.style.transformOrigin = `${g.ox}% ${g.oy}%`;
+            g.node.style.transform = `translate(${(g.tx * e).toFixed(1)}px, ${(g.ty * e).toFixed(1)}px) rotate(${(g.rot * e).toFixed(1)}deg) scale(${(1 - 0.55 * e).toFixed(3)})`;
+            g.node.style.opacity = (v <= 0 ? 1 : Math.max(0, 1 - v ** 1.4)).toFixed(3);
+            g.node.style.filter = v <= 0 ? '' : `grayscale(${Math.min(1, v * 2.2).toFixed(2)}) contrast(${(1 - 0.65 * Math.min(1, v * 1.1)).toFixed(3)}) brightness(${(1 + 0.7 * v).toFixed(2)}) blur(${(2.2 * v).toFixed(2)}px)`;
+          });
+        }, (x) => x).then(() => grains.forEach((g) => g.node.remove()));
+        void t0;
       }
       const wave = document.createElement('span');
       wave.className = 'promo-install__wave';
@@ -7190,14 +7228,18 @@
     }
 
     showChapter(from, to) {
+      // v36b: the chip belongs to the mockup (inside the camera): pinned to the store window's top centre, it zooms
+      // with the window instead of floating over the zoomed view
+      const store = this.painStore();
       const canvas = this.root.querySelector('[data-promo-canvas]') || this.root;
-      let line = canvas.querySelector('[data-promo-chapter]');
+      const host = store || canvas;
+      let line = this.root.querySelector('[data-promo-chapter]');
       if (!line) {
         line = document.createElement('p');
         line.className = 'promo-chapter';
         line.setAttribute('data-promo-chapter', '');
-        canvas.appendChild(line);
       }
+      if (line.parentElement !== host) host.appendChild(line);
       line.classList.remove('is-in', 'is-struck');
       line.replaceChildren();
       // a status chip: a grey ring that resolves into a ticked orange disc
@@ -7220,10 +7262,16 @@
       // v9: the margin above the window is too thin for a readable chip, so it
       // floats over the window's empty header band instead, centred, at a
       // size that reads on a phone (~2.7% of the frame).
-      const margin = this.chapterMargin();
-      const frameH = canvas.offsetHeight || 1080;
-      line.style.setProperty('--chapter-mid', `${((margin || 0) + frameH * 0.052).toFixed(1)}px`);
-      line.style.fontSize = `${(frameH * 0.027).toFixed(1)}px`;
+      if (store) {   // v36b: in the window's own units (v36: 55 px below its top, 29 px type, on a 929 px window)
+        const h = store.offsetHeight || 929;
+        line.style.setProperty('--chapter-mid', `${(h * 0.0592).toFixed(1)}px`);
+        line.style.fontSize = `${(h * 0.0314).toFixed(1)}px`;
+      } else {
+        const margin = this.chapterMargin();
+        const frameH = canvas.offsetHeight || 1080;
+        line.style.setProperty('--chapter-mid', `${((margin || 0) + frameH * 0.052).toFixed(1)}px`);
+        line.style.fontSize = `${(frameH * 0.027).toFixed(1)}px`;
+      }
       line.getBoundingClientRect();
       line.classList.add('is-in');
       promoSfx('chapter');
