@@ -20,7 +20,7 @@ import "@/styles/landing-sales.css";
 const PROTO = { win: 0, flip: true };
 
 const SalesSection = () => {
-  // ?beat=1..6: an alternative look for the beats' loss → win words (absent: today's)
+  // ?beat=1..6, 5a..5e: an alternative look for the beats' loss → win words (absent: today's)
   const [beat] = useState(readBeatStyle);
   return (
     <SalesProtoProvider value={PROTO}>

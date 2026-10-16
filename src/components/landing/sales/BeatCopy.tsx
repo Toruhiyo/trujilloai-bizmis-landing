@@ -2,7 +2,9 @@ import type { CSSProperties } from "react";
 import { cn } from "@/lib/utils";
 import { useSalesCopy, useSalesProto } from "./proto";
 import BeatAlt from "./beatcopy/BeatAlt";
-import { useBeatStyle } from "./beatcopy/style";
+import BeatSwap from "./beatcopy/BeatSwap";
+import { plain } from "./beatcopy/parts";
+import { SWAPS, SWAP_FROM, useBeatStyle } from "./beatcopy/style";
 import { PanelCopy } from "./shared";
 
 const clamp = (v: number) => Math.min(1, Math.max(0, v));
@@ -48,12 +50,19 @@ const BeatCopy = ({
         style={style}
       />
     );
+  // ?beat=5a..5e: the headline swaps, each loss's and win's core highlighted (beatcopy/BeatSwap)
+  if (look >= SWAP_FROM)
+    return (
+      <BeatSwap look={SWAPS[look - SWAP_FROM]} index={index} t={t} fixAt={fixAt} numbered={numbered} className={className} style={style} />
+    );
   // ?beat=1..6: an alternative look for the same loss → win (beatcopy/BeatAlt)
   if (look > 0)
     return (
       <BeatAlt variant={look} index={index} t={t} fixAt={fixAt} numbered={numbered} className={className} style={style} />
     );
-  const { problem, fix } = s.flip[index];
+  // the core marks ([[…]]) are for the headline swaps: plain here
+  const problem = plain(s.flip[index].problem);
+  const fix = plain(s.flip[index].fix);
   const since = t - fixAt;
   const strike = pen((since - 140) / 300);
   const write = pen((since - 560) / (240 + fix.length * 22));

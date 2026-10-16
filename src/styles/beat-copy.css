@@ -429,3 +429,208 @@
     font-size: 1.4rem;
   }
 }
+
+/* ── 5a..5e · Headline swaps (beatcopy/BeatSwap): one slot, the loss's and the win's core highlighted ── */
+.bcs-slot {
+  position: relative;
+}
+.bcs-layer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+}
+.sl-c .bcs-head {
+  font-size: clamp(1.7rem, min(2.7vw, 5svh), 2.75rem);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+  color: #fff;
+  text-wrap: balance;
+}
+/* the rest of the sentence, lighter: the core carries it */
+.bcs-rest {
+  font-weight: 600;
+}
+.bcs-rest.is-win {
+  opacity: 0.86;
+}
+.bcs-core {
+  font-weight: 800;
+}
+/* a marker band swept along the core, line after line (slice: one strip across the lines) */
+.bcs-band {
+  background-image: linear-gradient(#fff, #fff);
+  background-repeat: no-repeat;
+  -webkit-box-decoration-break: slice;
+  box-decoration-break: slice;
+}
+.bcs-band.is-strike {
+  background-position: 0 58%;
+}
+.bcs-band.is-under {
+  background-image: linear-gradient(rgb(255 255 255 / 0.42), rgb(255 255 255 / 0.42));
+  background-position: 0 94%;
+}
+
+/* b · split-flap: every word a flap; the cores on tiles (dark for the loss, white for the win) */
+.bcs-b-word {
+  display: inline-block;
+  white-space: nowrap;
+  transform-origin: 50% 50%;
+  backface-visibility: hidden;
+}
+.bcs-b-rest {
+  font-weight: 600;
+}
+.bcs-layer.is-win .bcs-b-rest {
+  opacity: 0.88;
+}
+.bcs-flap {
+  position: relative;
+  display: inline-block;
+  margin-right: 0.08em;
+  padding: 0 0.12em 0.04em;
+  border-radius: 0.14em;
+  line-height: 1.12;
+  font-weight: 800;
+}
+.bcs-flap:last-child {
+  margin-right: 0;
+}
+/* the flap's hinge, across its middle */
+.bcs-flap::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  height: 1.5px;
+  background: rgb(0 0 0 / 0.14);
+}
+.bcs-flap.is-loss {
+  --bc-strike-w: 0.08em;
+  background: rgb(59 36 22 / 0.34);
+  color: #fff;
+}
+.bcs-flap.is-win {
+  background: #fff;
+  color: var(--bc-ink);
+  box-shadow: 0 6px 14px -8px rgb(120 50 0 / 0.55);
+}
+
+/* c · big core: the core is the headline, the full sentence small under it */
+.sl-c .bcs-c-big {
+  font-size: clamp(2rem, min(3.4vw, 6.2svh), 3.4rem);
+  font-weight: 800;
+  letter-spacing: -0.035em;
+  line-height: 1.02;
+  color: #fff;
+  text-wrap: balance;
+}
+.sl-c .bcs-c-sent {
+  max-width: 28rem;
+  margin-top: 0.75rem;
+  font-size: clamp(0.98rem, min(1.25vw, 2.3svh), 1.12rem);
+  font-weight: 500;
+  line-height: 1.42;
+  color: rgb(255 255 255 / 0.88);
+  text-wrap: pretty;
+}
+.bcs-c-core {
+  font-weight: 800;
+  color: #fff;
+}
+.bcs-c-core.is-win {
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 0.18em;
+}
+
+/* d · highlighter: muted on the loss's core, bright on the win's (its words turn ink under it) */
+.bcs-hl {
+  background-repeat: no-repeat;
+  background-position: 0 62%;
+  -webkit-box-decoration-break: slice;
+  box-decoration-break: slice;
+}
+.bcs-hl.is-grey {
+  background-image: linear-gradient(rgb(59 36 22 / 0.26), rgb(59 36 22 / 0.26));
+}
+.bcs-hl.is-bright {
+  background-image: linear-gradient(#ffe2c2, #ffe2c2);
+}
+.bcs-hl-ink {
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-box-decoration-break: slice;
+  box-decoration-break: slice;
+  color: transparent;
+}
+
+/* e · stamp: a hand-drawn ✗ on the loss's core; the win's circled, with a ✓ */
+.bcs-nowrap {
+  white-space: nowrap;
+}
+/* in the line, right after the core: its room is kept, so it never covers a word */
+.bcs-stamp {
+  display: inline-grid;
+  place-items: center;
+  width: 0.92em;
+  height: 0.92em;
+  margin-left: 0.2em;
+  vertical-align: -0.14em;
+  border-radius: 50%;
+  pointer-events: none;
+}
+.bcs-stamp svg {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+.bcs-stamp path {
+  fill: none;
+  stroke-width: 4.2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 1;
+}
+.bcs-stamp.is-x {
+  box-shadow: inset 0 0 0 3px #fff;
+  background: rgb(59 36 22 / 0.22);
+}
+.bcs-stamp.is-x path {
+  stroke: #fff;
+}
+.bcs-stamp.is-check {
+  background: #fff;
+  box-shadow: 0 8px 18px -8px rgb(120 50 0 / 0.6);
+}
+.bcs-stamp.is-check path {
+  stroke: #a84f0c;
+}
+.bcs-lasso {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+}
+.bcs-lasso path {
+  fill: none;
+  stroke: #fff;
+  stroke-width: 3.2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 1;
+}
+
+@media (max-width: 767px) {
+  .sl-c .bcs-head {
+    font-size: 1.65rem;
+  }
+  .sl-c .bcs-c-big {
+    font-size: 2.05rem;
+  }
+}
