@@ -6633,7 +6633,7 @@
         three: () => this.resolveChapter(),   // v36: the picks are in: found it fast
         compare: () => {
           applyMomentPose(stage, 'choice', { instant: reduced });
-          this.nextChapter('Left to compare', 'Chose here', reduced);   // v36b (operator pick): the compare moment
+          this.nextChapter('Left to compare', 'Decided here', reduced);   // v36b (operator pick): the compare moment
         },
       });
       await this.speakClerk('clerk-compare', reduced, {
@@ -6669,7 +6669,7 @@
       const doubtTake = speakTake('t-doubt');
       await doubtTake.at('a doubt');
       board?.classList.remove('is-doubts-hidden');
-      doubtTake.at('holds them back', 'end').then(() => this.showChapter('Left unsure', 'Added to cart'));   // v36b
+      doubtTake.at('holds them back', 'end').then(() => this.showChapter('Kept wondering', 'Added to cart'));   // v36b
       await doubtTake.done;
       await this.speakShopperLine('shopper-doubt', reduced);
       setOpeningAvatarAction('thinking');
@@ -6708,10 +6708,10 @@
       // the chapter is named when the clerk names the pairing, not before
       // v13: a live, back-and-forth voice exchange: the clerk suggests and asks,
       // the shopper says yes, the clerk confirms (the add-on lands on "add it")
-      const upsell = this.speakClerk('clerk-upsell', reduced, { 'made to go': () => this.showChapter('Stopped at one', 'Added more') })
+      const upsell = this.speakClerk('clerk-upsell', reduced, { 'made to go': () => this.showChapter('Small basket', 'Kept adding') })
         .then(() => this.speakShopperLine('shopper-upsell', reduced, { 'add it': bundle }))
         // v36: the basket stays open ("Anything else before checkout?"): the sale lands on the SOLD stamp
-        .then(() => this.speakClerk('clerk-upsell-done', reduced, { Done: () => this.nextChapter('Walked away', 'Paid', reduced) }));
+        .then(() => this.speakClerk('clerk-upsell-done', reduced, { Done: () => this.nextChapter('Abandoned the cart', 'Bought it', reduced) }));
       await spin?.landed;
       await spin?.fly(() => {
         applyMomentPose(stage, 'extra', { instant: true });   // the flight steps the morph itself
