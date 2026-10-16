@@ -53,7 +53,7 @@ export const ca: Messages = {
     ratherTalk: "Prefereixes que en parlem?",
     avatarAlt: "Assistent de vendes digital atenent clients",
     agentHello: "Hola! Sóc el teu agent de vendes Bizmis.",
-    agentPitch: "Ajudo cada client a trobar el producte adequat, confiar-hi i comprar-lo.",
+    agentPitch: "Entenc el que necessita cada client, resolc els seus dubtes i et guanyo la venda.",
     agentInvite: "Prem play i mira'm vendre!",
   },
 
@@ -75,6 +75,8 @@ export const ca: Messages = {
 
   /** The film-led landing (/v2): copy it adds to the classic landing's messages. */
   landing: {
+    /** The hero's line under the title (the classic keeps hero.subtitle*): the last part is the merchant's win, highlighted. */
+    heroLine: ["Entén necessitats.", "Resol dubtes.", "Guanya vendes."],
     /** Under the hero's Install button (the classic landing keeps hero.installSubline). */
     installSubline: "Instal·lació amb un clic, a punt a l'instant",
     switch: {
@@ -137,8 +139,8 @@ export const ca: Messages = {
     },
     /** Boost Sales on /v2: the title stays on screen while each sub-benefit lights up its part (find it / trust it / buy it). */
     sales: {
-      titleLead: "Els clients",
-      titleParts: ["Ho troben.", "Hi confien.", "Ho compren."],
+      titleLead: "",
+      titleParts: ["Entén necessitats.", "Resol dubtes.", "Guanya vendes."],
       stages: ["Descoberta", "Decisió", "Pagament"],
       panels: [
         { title: "Més clients troben el que busquen", body: "Redueix el catàleg als pocs productes que encaixen." },

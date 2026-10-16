@@ -160,7 +160,6 @@ const Hero = () => {
 
   // the play button calls out while the agent points at it
   const [inviting, setInviting] = useState(false);
-  const strong = (text: string) => <span className="font-semibold text-white">{text}</span>;
 
   return (
     <section
@@ -249,9 +248,13 @@ const Hero = () => {
                     {messages.hero.titleLine1} <span className="lg:block">{messages.hero.titleLine2}</span>
                   </h1>
                   <p className="mt-1.5 text-balance font-heading text-[0.95rem] font-medium text-white/85 lg:mt-2.5 lg:text-[clamp(1.1rem,1.55vw,1.5rem)]">
-                    {messages.hero.subtitleLead} {strong(messages.hero.subtitleFind)},{" "}
-                    {strong(messages.hero.subtitleTrust)}
-                    {messages.hero.subtitleConnector} {strong(messages.hero.subtitleBuy)}
+                    {messages.landing.heroLine.map((part, k, all) =>
+                      k === all.length - 1 ? (
+                        <span key={part} className="bzh-win">{part}</span>
+                      ) : (
+                        <span key={part}>{part} </span>
+                      ),
+                    )}
                   </p>
               </div>
               <div className="flex w-full flex-col items-center gap-2 [text-shadow:none] lg:w-auto lg:items-start lg:gap-0">

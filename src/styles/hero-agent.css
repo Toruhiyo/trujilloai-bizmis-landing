@@ -63,3 +63,32 @@
   .bzf-end-cta { animation: none; }
   .bzf-end-cta::before { display: none; }
 }
+
+/* The hero's line: "Match needs. Clear doubts. Win sales." — the merchant's win, "Win sales.", in bold ink
+   with a hand-drawn primary marker stroke drawing itself under it */
+.bzh-win {
+  position: relative;
+  display: inline-block;
+  font-weight: 700;
+  color: var(--film-ink, #3b2416);
+  white-space: nowrap;
+}
+.bzh-win::after {
+  content: "";
+  position: absolute;
+  left: -0.06em;
+  right: -0.06em;
+  bottom: -0.1em;
+  height: 0.16em;
+  border-radius: 999px;
+  background: hsl(var(--primary));
+  transform: rotate(-1.2deg) scaleX(0);
+  transform-origin: left center;
+  animation: bzh-win-draw 0.7s cubic-bezier(.65, 0, .35, 1) 0.9s forwards;
+}
+@keyframes bzh-win-draw {
+  to { transform: rotate(-1.2deg) scaleX(1); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .bzh-win::after { animation: none; transform: rotate(-1.2deg) scaleX(1); }
+}

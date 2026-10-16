@@ -64,7 +64,7 @@ export const SalesShell = ({
         lineClassName="sl-big"
         accent={BAR}
         // the payoff lights every part, with no underline (a mark only ever points at one part)
-        docked={<SalesTitle active={lit} layout="line" as="p" marks={lit !== "all"} className="sl-c-title" />}
+        docked={<SalesTitle active={lit} layout="line" as="p" marks className="sl-c-title" />}
       >
         {children}
       </PillarIntro>

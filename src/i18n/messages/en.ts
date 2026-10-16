@@ -55,7 +55,7 @@ export const en = {
     avatarAlt: "Digital sales assistant helping customers",
     /** The hero agent's lines: a hello, what it does, then (pointing at play) the invite. */
     agentHello: "Hi! I'm your Bizmis sales agent.",
-    agentPitch: "I help every shopper find the right product, trust it and buy it.",
+    agentPitch: "I match every shopper's needs, clear their doubts and win you the sale.",
     agentInvite: "Press play and watch me sell!",
   },
 
@@ -77,6 +77,8 @@ export const en = {
 
   /** The film-led landing (/v2): copy it adds to the classic landing's messages. */
   landing: {
+    /** The hero's line under the title (the classic keeps hero.subtitle*): the last part is the merchant's win, highlighted. */
+    heroLine: ["Match needs.", "Clear doubts.", "Win sales."],
     /** Under the hero's Install button (the classic landing keeps hero.installSubline). */
     installSubline: "One-click install, ready right away",
     switch: {
@@ -139,8 +141,8 @@ export const en = {
     },
     /** Boost Sales on /v2: the title stays on screen while each sub-benefit lights up its part (find it / trust it / buy it). */
     sales: {
-      titleLead: "Shoppers",
-      titleParts: ["Find it.", "Trust it.", "Buy it."],
+      titleLead: "",
+      titleParts: ["Match needs.", "Clear doubts.", "Win sales."],
       /** Each part's stage of the sales funnel (the kicker over its words). */
       stages: ["Discovery", "Decision", "Checkout"],
       /** One per title part: a short merchant-side benefit and one line. */

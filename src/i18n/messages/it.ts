@@ -53,7 +53,7 @@ export const it: Messages = {
     ratherTalk: "Preferisci parlarne?",
     avatarAlt: "Assistente alle vendite digitale che aiuta i clienti",
     agentHello: "Ciao! Sono il tuo agente di vendita Bizmis.",
-    agentPitch: "Aiuto ogni cliente a trovare il prodotto giusto, fidarsi e comprarlo.",
+    agentPitch: "Capisco i bisogni di ogni cliente, sciolgo i suoi dubbi e ti porto la vendita.",
     agentInvite: "Premi play e guardami vendere!",
   },
 
@@ -75,6 +75,8 @@ export const it: Messages = {
 
   /** The film-led landing (/v2): copy it adds to the classic landing's messages. */
   landing: {
+    /** The hero's line under the title (the classic keeps hero.subtitle*): the last part is the merchant's win, highlighted. */
+    heroLine: ["Capisci i bisogni.", "Sciogli i dubbi.", "Conquista vendite."],
     /** Under the hero's Install button (the classic landing keeps hero.installSubline). */
     installSubline: "Installazione con un clic, pronta subito",
     switch: {
@@ -137,8 +139,8 @@ export const it: Messages = {
     },
     /** Boost Sales on /v2: the title stays on screen while each sub-benefit lights up its part (find it / trust it / buy it). */
     sales: {
-      titleLead: "I clienti",
-      titleParts: ["Lo trovano.", "Si fidano.", "Lo comprano."],
+      titleLead: "",
+      titleParts: ["Capisci i bisogni.", "Sciogli i dubbi.", "Conquista vendite."],
       stages: ["Scoperta", "Decisione", "Pagamento"],
       panels: [
         { title: "Più clienti trovano quello giusto", body: "Riduce il catalogo ai pochi prodotti giusti." },

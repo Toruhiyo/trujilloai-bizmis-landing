@@ -3,7 +3,7 @@ import { useMessages } from "@/i18n/LocaleProvider";
 import { cn } from "@/lib/utils";
 
 /**
- * The pillar's title, "Shoppers / Find it. / Trust it. / Buy it.", with the
+ * The pillar's title, "Match needs. Clear doubts. Win sales.", with the
  * part being shown lit (`active`: 0–2, or "all" for the payoff, or null for
  * none; the parts before it are also marked done). `stack` sets each part on
  * its own line (the rail); `line` keeps it to one line (a header bar);
@@ -37,9 +37,11 @@ const SalesTitle = ({
       className={cn("sl-title", `is-${layout}`, className)}
       aria-hidden={Tag !== "h2" || undefined}
     >
-      <span className="sl-title-lead">
-        {s.titleLead}
-      </span>{" "}
+      {s.titleLead && (
+        <>
+          <span className="sl-title-lead">{s.titleLead}</span>{" "}
+        </>
+      )}
       {s.titleParts.map((part, i) => (
         <span key={part}>
           <span
@@ -55,7 +57,8 @@ const SalesTitle = ({
           >
             <span className="sl-title-text">
               {part}
-              {marks && (
+              {/* on the payoff ("all") only the last part, the win, keeps its underline */}
+              {marks && (active !== "all" || i === s.titleParts.length - 1) && (
                 <svg className="sl-title-mark" viewBox="0 0 100 10" preserveAspectRatio="none" aria-hidden="true">
                   <path d="M1.5 7.2C24 4.6 58 3.6 98.5 5.4" />
                 </svg>
@@ -74,7 +77,7 @@ export const SalesHeading = ({ as: Tag = "h2" }: { as?: "h2" | "p" }) => {
   const s = useMessages().landing.sales;
   return (
     <Tag className="sr-only">
-      {s.titleLead} {s.titleParts.join(" ")}
+      {[s.titleLead, ...s.titleParts].filter(Boolean).join(" ")}
     </Tag>
   );
 };
