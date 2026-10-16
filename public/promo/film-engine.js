@@ -6633,7 +6633,7 @@
         three: () => this.resolveChapter(),   // v36: the picks are in: found it fast
         compare: () => {
           applyMomentPose(stage, 'choice', { instant: reduced });
-          this.nextChapter('Off to compare', 'Compared here', reduced);   // v36: spans the comparison and the doubt
+          this.nextChapter('Left to compare', 'Chose here', reduced);   // v36b (operator pick): the compare moment
         },
       });
       await this.speakClerk('clerk-compare', reduced, {
