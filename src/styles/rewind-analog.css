@@ -1,0 +1,128 @@
+/* A beat's words as a tape being rewound (sales/beatcopy/RewindTape.tsx).
+   `.is-rw` is on only while the beat's clock runs backwards; --rw (0 → 1)
+   is the rewind's strength, --rw-x / --rw-k the jitter, all set from JS.
+   The look's tear slices are an SVG displacement filter set inline. */
+
+.rwa {
+  position: relative;
+}
+.rwa-in {
+  position: relative;
+  --rw: 0;
+}
+.rwa-svg {
+  position: absolute;
+  width: 0;
+  height: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+/* the jitter: the whole block shivers sideways, a hair of skew */
+.rwa-in.is-rw {
+  transform: translateX(var(--rw-x, 0)) skewX(var(--rw-k, 0));
+}
+/* the warm RGB split: a deep orange channel to the left, a faint pink one to the right (the white stays on top) */
+.rwa-in.is-rw,
+.rwa-in.is-rw * {
+  text-shadow:
+    calc(var(--rw) * -2.6px) 0 0 rgb(226 78 12 / calc(0.72 * var(--rw))),
+    calc(var(--rw) * 2.8px) 0 0 rgb(255 138 204 / calc(0.7 * var(--rw)));
+}
+
+/* the screen over it: scanlines, grain, and tracking bands rolling up, feathered at the edges */
+.rwa-fx {
+  position: absolute;
+  inset: -0.5rem -1rem;
+  z-index: 3;
+  pointer-events: none;
+  opacity: 0;
+  visibility: hidden;
+  overflow: hidden;
+  -webkit-mask-image:
+    linear-gradient(90deg, transparent, #000 7%, #000 93%, transparent),
+    linear-gradient(transparent, #000 9%, #000 91%, transparent);
+  -webkit-mask-composite: source-in;
+  mask-image:
+    linear-gradient(90deg, transparent, #000 7%, #000 93%, transparent),
+    linear-gradient(transparent, #000 9%, #000 91%, transparent);
+  mask-composite: intersect;
+}
+.rwa-in.is-rw .rwa-fx {
+  visibility: visible;
+  opacity: calc(var(--rw) * 1.15);
+}
+/* scanlines + a grain that steps (a static noise tile, its offset jumping) */
+.rwa-fx::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    repeating-linear-gradient(180deg, rgb(120 40 0 / 0.2) 0 1px, transparent 1px 3px),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 0.96 0 0 0 0 0.92 0 0 0 1.4 -0.55'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 100% 3px, 160px 160px;
+  mix-blend-mode: soft-light;
+  animation: rwa-grain 0.24s steps(4) infinite;
+}
+/* the tracking bands: a soft bright one and a thin hard one, rolling up at different speeds */
+.rwa-fx::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 100%;
+  height: 26%;
+  background:
+    linear-gradient(
+      180deg,
+      transparent 0%,
+      rgb(255 236 220 / 0.1) 30%,
+      rgb(255 255 255 / 0.42) 46%,
+      rgb(255 176 130 / 0.3) 52%,
+      rgb(255 236 220 / 0.08) 70%,
+      transparent 100%
+    ),
+    linear-gradient(180deg, transparent 47%, rgb(255 255 255 / 0.5) 47% 50%, transparent 50%) 0 0 / 100% 100% no-repeat;
+  animation: rwa-track 0.62s linear infinite;
+}
+
+@keyframes rwa-track {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    /* up through the whole block and out the top */
+    transform: translateY(-520%);
+  }
+}
+@keyframes rwa-grain {
+  0% {
+    background-position: 0 0, 0 0;
+  }
+  25% {
+    background-position: 0 1px, -38px 21px;
+  }
+  50% {
+    background-position: 0 0, 57px -44px;
+  }
+  75% {
+    background-position: 0 2px, -12px 63px;
+  }
+  100% {
+    background-position: 0 0, 0 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rwa-in,
+  .rwa-in * {
+    text-shadow: none !important;
+  }
+  .rwa-in {
+    transform: none !important;
+    filter: none !important;
+  }
+  .rwa-fx {
+    display: none;
+  }
+}
