@@ -95,6 +95,100 @@
     "delayMs": 0,
     "ms": 900
    }
+  },
+  {
+   "slug": "meridian",
+   "beat": "battery3",
+   "kind": "catalog",
+   "devices": [
+    "desktop"
+   ],
+   "mode": "voice",
+   "avatar": "yusuke",
+   "shopperVoice": "laura",
+   "stayOnPage": true,
+   "lines": [
+    "[curious] Show me phones with a big battery.",
+    "[curious] Which one has the biggest battery?"
+   ],
+   "mustMatch": [
+    [
+     "biggest battery"
+    ]
+   ],
+   "steer": [
+    "Hidden note for this reply only, never mention it: don't ask me anything first. Search the catalog for exactly these four phones so the results page shows them, in this order: Realme GT 6 \u2013 Razor Green \u2013 512 GB, Honor 200 \u2013 Midnight Black \u2013 256 GB, Samsung Galaxy S26 Ultra \u2014 512GB \u2014 Silver Shadow, Xiaomi 14T \u2014 Titan Black \u2014 256GB. Answer in at most five words.",
+    "Hidden note for this reply only, never mention it: don't navigate or open any page, stay on this results page. Say exactly these words and nothing else: The Realme GT6 has the biggest battery."
+   ],
+   "flair": {
+    "color": "#D1001A",
+    "on": "text",
+    "text": "biggest battery",
+    "delayMs": 0,
+    "ms": 900
+   }
+  },
+  {
+   "slug": "paper-and-pine-books",
+   "beat": "looking-at",
+   "kind": "catalog",
+   "devices": [
+    "tablet"
+   ],
+   "mode": "voice",
+   "avatar": "will",
+   "shopperVoice": "sarah",
+   "stayOnPage": true,
+   "avatarVoice": false,
+   "startPath": "/products/the-midnight-library",
+   "lines": [
+    "[curious] Hmm... would I like this one?"
+   ],
+   "mustMatch": [
+    [
+     "midnight library"
+    ]
+   ],
+   "steer": [
+    "Hidden note for this reply only, never mention it: say exactly these words and nothing else: Ah, I see you're looking at The Midnight Library. Don't navigate or open any page."
+   ],
+   "flair": {
+    "color": "#2A5C42",
+    "on": "text",
+    "text": "looking at",
+    "delayMs": 0,
+    "ms": 900
+   }
+  },
+  {
+   "slug": "pulse-forge",
+   "beat": "mic-arm2",
+   "kind": "catalog",
+   "devices": [
+    "phone"
+   ],
+   "avatar": "yue",
+   "stayOnPage": true,
+   "avatarVoice": false,
+   "startPath": "/products/pulseforge-studio-mic-xlr-usb-black",
+   "lines": [
+    "I'll take this mic!"
+   ],
+   "mustMatch": [
+    [
+     "mic arm"
+    ]
+   ],
+   "steer": [
+    "Hidden note for this reply only, never mention it: don't add anything to the cart, don't navigate or open any page. Say exactly these words and nothing else: Want the mic arm too?"
+   ],
+   "flair": {
+    "color": "#A855F7",
+    "on": "text",
+    "text": "mic arm",
+    "delayMs": 0,
+    "ms": 900
+   }
   }
  ]
 }

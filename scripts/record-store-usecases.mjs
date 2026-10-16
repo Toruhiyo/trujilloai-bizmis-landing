@@ -231,6 +231,15 @@ function installFlair(cfg) {
     const times = cfg.times || 1;
     const fire = () => setTimeout(() => flair(), cfg.delayMs || 0);
     if (cfg.on === 'ready') { const wait = () => (target() ? fire() : setTimeout(wait, 100)); wait(); return; }
+    // 'text': fires as the agent's own words (cfg.text, any case) first show in the widget
+    if (cfg.on === 'text') {
+      const want = String(cfg.text || '').toLowerCase();
+      const watch = setInterval(() => {
+        const seen = [...document.querySelectorAll(roots)].map((n) => n.textContent || '').join(' ').toLowerCase();
+        if (seen.includes(want)) { clearInterval(watch); fire(); }
+      }, 40);
+      return;
+    }
     const watch = setInterval(() => {
       if (fired >= times) { clearInterval(watch); return; }
       if (document.querySelector(roots.split(', ').map((r) => `${r} [class*="group/carousel"]`).join(', '))) { clearInterval(watch); fire(); }
