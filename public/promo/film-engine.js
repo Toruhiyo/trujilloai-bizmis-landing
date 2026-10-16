@@ -2713,7 +2713,7 @@
   //   style 1: disintegrate (sweep from the impact, wind up and to the left)
   //   style 2: smoke (tiny grains, more billowing smoke rising)
   //   style 3: implode (a brief inward pull and rim glow, then a burst of fine dust that slows and hangs as it fades)
-  const PROMO_VAPOR_STYLE = Number(promoSearchParams().get('vapor') || 1);
+  const PROMO_VAPOR_STYLE = Number(promoSearchParams().get('vapor') || 4);   // v36g: smoke-first plume (4) is the film's
   // v36f (operator: "more smoke and less dust, way smaller particles"): styles 4 and 5 are smoke-first: hair-fine
   // grains that live only a moment, then a soft plume (many small puffs born along the dissolving front) that billows
   // up and to the right, out past the window's edge and away from the clerk (4), or curls up and melts in place (5).
@@ -2744,26 +2744,27 @@
       g.restore();
     }
     const img = g.getImageData(0, 0, S, S).data;
+    const base = (fill.match(/\d+(\.\d+)?/g) || [40, 40, 40]).slice(0, 3).map(Number);   // the launcher's fill, the smoke's first tone
     const hash = (n) => { const x = Math.sin(n * 127.1 + 311.7) * 43758.5453; return x - Math.floor(x); };
     const dirX = style === 4 ? 0.55 : 0.08;   // the plume's lean (to the right for 4, straight up for 5)
     // hair-fine grains: the launcher's pixels at ~1.5 device px, gone within half a second
-    const step = Math.max(1, S / 150);
+    const step = Math.max(1, S / 280);   // v36g (operator: particles too big, too slow): a hair-fine sparkle, not crumbs
     const grains = []; let n = 0;
     for (let y = step / 2; y < S; y += step) for (let x = step / 2; x < S; x += step) {
       const o = (Math.floor(y) * S + Math.floor(x)) * 4; if (img[o + 3] < 40) continue;
       n += 1; const u = x / S; const v = y / S;
       grains.push({ x0: bx - ox + u * size, y0: by - oy + v * size, r: img[o], g: img[o + 1], b: img[o + 2],
-        release: Math.hypot(u - 0.5, v - 0.05) * 260 + hash(n) * 90, life: 260 + hash(n + 3.1) * 300,
-        vx: (u - 0.5) * size * 0.5 + dirX * size * 0.6 * hash(n + 5.7), vy: -size * (0.3 + 0.7 * hash(n + 9.3)), ph: hash(n + 2.2) * 6.28, sz: (step * 1.05) / dpr });
+        release: hash(n) * 50, life: 110 + hash(n + 3.1) * 110,
+        vx: (u - 0.5) * size * 1.4 + dirX * size * 0.6 * hash(n + 5.7), vy: -size * (0.6 + 1.0 * hash(n + 9.3)), ph: hash(n + 2.2) * 6.28, sz: (step * 0.9) / dpr });
     }
     // the smoke: puffs born along the dissolving front, small at first, swelling, rising, curling, thinning out
     const puffs = Array.from({ length: style === 4 ? 46 : 40 }, (_, k) => {
       const a = hash(k + 101) * Math.PI * 2; const rr = Math.sqrt(hash(k + 103)) * 0.42;
       const u = 0.5 + Math.cos(a) * rr; const v = 0.5 + Math.sin(a) * rr;
-      return { x: bx - ox + u * size, y: by - oy + v * size, born: Math.hypot(u - 0.5, v - 0.05) * 260 + hash(k + 107) * 120,
+      return { x: bx - ox + u * size, y: by - oy + v * size, born: hash(k + 107) * (k < 18 ? 40 : 160),
         life: (style === 4 ? 1300 : 1700) + hash(k + 109) * 700, r0: size * (0.1 + 0.08 * hash(k + 113)), grow: size * (style === 4 ? 0.75 : 0.6) * (0.6 + 0.8 * hash(k + 127)),
         rise: size * (style === 4 ? 3.1 : 2.4) * (0.55 + 0.6 * hash(k + 131)), lean: size * dirX * 3.2 * (0.5 + hash(k + 137)),
-        curl: size * 0.22 * (hash(k + 139) - 0.5), ph: hash(k + 149) * 6.28, a: 0.16 + 0.14 * hash(k + 151), light: hash(k + 157) };
+        curl: size * 0.22 * (hash(k + 139) - 0.5), ph: hash(k + 149) * 6.28, a: (k < 18 ? 0.34 : 0.16) + 0.12 * hash(k + 151), light: hash(k + 157) };
     });
     host.appendChild(canvas);
     bubble.style.transition = 'none'; bubble.style.animation = 'none'; bubble.style.opacity = '0';
@@ -2772,6 +2773,13 @@
     return tweenStep(total, (_, uu) => {
       const t = uu * total;
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0); ctx.clearRect(0, 0, W, H);
+      const m = Math.min(1, t / 150);
+      if (m < 1) {
+        const e = 1 - (1 - m) ** 2; const k = size * (1 + 0.3 * e);
+        ctx.save(); ctx.globalAlpha = (1 - m) ** 1.5; ctx.filter = `blur(${(size * 0.12 * e).toFixed(1)}px)`;
+        ctx.drawImage(src, bx - ox + size / 2 - k / 2, by - oy + size / 2 - k / 2 - size * 0.1 * e, k, k);
+        ctx.restore();
+      }
       grains.forEach((q) => {
         const tau = (t - q.release) / 1000; let x = q.x0; let y = q.y0; let a = 1; let r = q.r; let gg = q.g; let b = q.b;
         if (tau > 0) {
@@ -2791,8 +2799,11 @@
         const cx = q.x + q.lean * v ** 1.2 + Math.sin(v * 4.2 + q.ph) * q.curl * (0.4 + v);
         const cy = q.y - rise;
         const rad = q.r0 + q.grow * e;
-        const a = q.a * Math.min(1, v / 0.12) * (1 - v) ** 1.6;
-        const c = q.light > 0.6 ? [236, 232, 226] : [204, 197, 189];
+        const a = q.a * Math.min(1, v / 0.04) * (1 - v) ** 1.6;
+        // born in the launcher's own dark tone, lightening to a warm grey smoke within ~0.3 s
+        const end = q.light > 0.6 ? [236, 232, 226] : [204, 197, 189];
+        const lt = Math.min(1, (t - q.born) / 300);
+        const c = end.map((e2, i) => base[i] + (e2 - base[i]) * lt);
         const grd = ctx.createRadialGradient(cx, cy, 0, cx, cy, rad);
         grd.addColorStop(0, `rgba(${c[0]},${c[1]},${c[2]},${a.toFixed(3)})`);
         grd.addColorStop(0.55, `rgba(${c[0]},${c[1]},${c[2]},${(a * 0.45).toFixed(3)})`);
