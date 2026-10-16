@@ -207,32 +207,32 @@ export const en = {
       /** The store's currency in the mockups' prices (an ISO code for Intl). */
       pulse: { currency: "USD" },
     },
-    /** Customer Support on /v2: a short promise, the inbox that empties itself, and three capabilities. */
+    /** Customer Support on /v2: a short promise, questions answered live by voice, and three capabilities. */
     support: {
       title: "Fewer tickets.",
       titleTail: "Happier customers.",
-      /** The area as a small label over the outcome (the pillar openers, ?open=1..5). */
-      area: "Support",
+      /** The area's full name, the chapter eyebrow over the outcome (the pillar openers, ?open=1..6). */
+      area: "Customer Support",
       lead: "Answers in seconds, day or night, as warmly as your best clerk.",
       capabilities: [
         { title: "Always on", body: "Every question gets answered the moment it's asked." },
         { title: "Knows your store", body: "It answers from your own policies and catalog." },
         { title: "Reads the mood", body: "It calms upset shoppers before they leave a bad review." },
       ],
-      /** The pillar's animation: a support inbox piling up, then emptying. */
-      relief: {
-        label: "Support inbox",
-        waiting: "{n} waiting",
-        done: "All caught up",
-        tickets: ["Where's my order?", "Can I return this?", "Ships to Canada?", "Size M or L?", "Change my address", "Is it in stock?"],
+      /** The pillar's animation: shoppers' questions answered live, by voice (one heads for the support email and never gets there). */
+      live: {
+        label: "Shoppers ask, Bizmis answers out loud",
+        questions: ["Where's my order?", "Does it run small?", "Can I return it?", "Ships to Canada?"],
+        email: "Support email",
+        done: "Answered on the spot",
       },
     },
     /** Store Insights on /v2: a short promise, noise that turns into a chart, and three features. */
     insights: {
       title: "See what sells.",
       titleTail: "Fix what doesn't.",
-      /** The area as a small label over the outcome (the pillar openers, ?open=1..5). */
-      area: "Insights",
+      /** The area's full name, the chapter eyebrow over the outcome (the pillar openers, ?open=1..6). */
+      area: "Store Insights",
       lead: "Every conversation becomes a clear next step.",
       features: [
         { title: "Session replays", body: "Hear the exact moment a shopper hesitated." },
@@ -245,7 +245,7 @@ export const en = {
         topAsk: "Top ask: shipping",
       },
     },
-    /** Boost Sales's area label, small over its outcome (the pillar openers, ?open=1..5). */
+    /** Boost Sales's area, the chapter eyebrow over its outcome (its outcome is already "Boost Sales"). */
     salesArea: "Sales",
     /** Personalization on /v2. */
     customize: {

@@ -52,7 +52,7 @@ const WORK_MS = 1750; // the agent works the store
 const SPEECH_MAX = 4700; // the answer's whole speech fits in this
 const WORDS_PER_LINE = 8; // captions show one line (≤ 8 words) at a time
 const LINE_HOLD = 2; // each finished line holds this many word-beats
-const DEMO_MS = TYPE_AT + TYPE_MAX + SEND_GAP + WORK_MS + SPEECH_MAX + 500;
+export const DEMO_MS = TYPE_AT + TYPE_MAX + SEND_GAP + WORK_MS + SPEECH_MAX + 500;
 
 type Line = { words: string[]; at: number };
 
@@ -234,18 +234,33 @@ const WidgetCard = ({
  * The store page with the support demo playing in the widget. `children` is
  * the store's own page content.
  */
-const SupportStore = ({ agent, children }: { agent: AgentName; children: ReactNode }) => {
+const SupportStore = ({
+  agent,
+  children,
+  clock,
+}: {
+  agent: AgentName;
+  children: ReactNode;
+  /**
+   * Driven from outside (e.g. the pinned section's scroll): the time along
+   * DEMO_MS, whether it's rewinding, and which case (its replays count).
+   * Without it the store runs its own rewind loop.
+   */
+  clock?: { t: number; rewinding: boolean; replay: number };
+}) => {
   const m = useMessages();
   const cases = m.supportDemo.cases;
   const keys = Object.keys(cases) as (keyof typeof cases)[];
   const ref = useRef<HTMLDivElement>(null);
-  const loop = useRewindLoop(ref, {
+  const own = useRewindLoop(ref, {
     duration: DEMO_MS,
     rewind: 1300,
     rest: 450,
     threshold: 0.4,
     tick: 0,
+    paused: clock !== undefined,
   });
+  const loop = clock ? { t: clock.t, rewinding: clock.rewinding, cycle: clock.replay + 1 } : own;
   const t = loop.t;
   // one case per loop, from the first every time it comes into view
   const key = keys[Math.max(0, loop.cycle - 1) % keys.length];

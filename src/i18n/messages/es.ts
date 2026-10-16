@@ -198,7 +198,7 @@ export const es: Messages = {
     support: {
       title: "Menos tickets.",
       titleTail: "Clientes más felices.",
-      /** The area as a small label over the outcome (the pillar openers, ?open=1..5). */
+      /** The area's full name, the chapter eyebrow over the outcome (the pillar openers, ?open=1..6). */
       area: "Atención al cliente",
       lead: "Responde en segundos, de día o de noche, con la calidez de tu mejor dependiente.",
       capabilities: [
@@ -206,17 +206,17 @@ export const es: Messages = {
         { title: "Conoce tu tienda", body: "Responde con tus propias políticas y tu catálogo." },
         { title: "Lee el ánimo", body: "Calma a los clientes molestos antes de que dejen una mala reseña." },
       ],
-      relief: {
-        label: "Bandeja de soporte",
-        waiting: "{n} esperando",
-        done: "Todo al día",
-        tickets: ["¿Dónde está mi pedido?", "¿Puedo devolverlo?", "¿Enviáis a Canadá?", "¿Talla M o L?", "Cambiar mi dirección", "¿Hay stock?"],
+      live: {
+        label: "Los clientes preguntan y Bizmis responde en voz alta",
+        questions: ["¿Dónde está mi pedido?", "¿Viene pequeño?", "¿Puedo devolverlo?", "¿Enviáis a Canadá?"],
+        email: "Email de soporte",
+        done: "Respondido al momento",
       },
     },
     insights: {
       title: "Mira qué vende.",
       titleTail: "Arregla lo que no.",
-      /** The area as a small label over the outcome (the pillar openers, ?open=1..5). */
+      /** The area's full name, the chapter eyebrow over the outcome (the pillar openers, ?open=1..6). */
       area: "Datos de tu tienda",
       lead: "Cada conversación se convierte en un siguiente paso claro.",
       features: [
@@ -229,7 +229,7 @@ export const es: Messages = {
         topAsk: "Lo más preguntado: envíos",
       },
     },
-    /** Boost Sales's area label, small over its outcome (the pillar openers, ?open=1..5). */
+    /** Boost Sales's area, the chapter eyebrow over its outcome (its outcome is already "Boost Sales"). */
     salesArea: "Ventas",
     customize: {
       lead: "Elige su aspecto y pon tu logo en su camiseta.",

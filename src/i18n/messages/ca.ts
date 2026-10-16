@@ -198,7 +198,7 @@ export const ca: Messages = {
     support: {
       title: "Menys tiquets.",
       titleTail: "Clients més feliços.",
-      /** The area as a small label over the outcome (the pillar openers, ?open=1..5). */
+      /** The area's full name, the chapter eyebrow over the outcome (the pillar openers, ?open=1..6). */
       area: "Atenció al client",
       lead: "Respon en segons, de dia o de nit, amb la calidesa del teu millor dependent.",
       capabilities: [
@@ -206,17 +206,17 @@ export const ca: Messages = {
         { title: "Coneix la teva botiga", body: "Respon amb les teves polítiques i el teu catàleg." },
         { title: "Llegeix l'ànim", body: "Calma els clients molestos abans que deixin una mala ressenya." },
       ],
-      relief: {
-        label: "Safata de suport",
-        waiting: "{n} esperant",
-        done: "Tot al dia",
-        tickets: ["On és la meva comanda?", "Puc tornar-ho?", "Envieu al Canadà?", "Talla M o L?", "Canviar l'adreça", "Hi ha estoc?"],
+      live: {
+        label: "Els clients pregunten i Bizmis respon en veu alta",
+        questions: ["On és la meva comanda?", "Va petit de talla?", "Puc tornar-ho?", "Envieu al Canadà?"],
+        email: "Correu de suport",
+        done: "Resposta a l'instant",
       },
     },
     insights: {
       title: "Mira què ven.",
       titleTail: "Arregla la resta.",
-      /** The area as a small label over the outcome (the pillar openers, ?open=1..5). */
+      /** The area's full name, the chapter eyebrow over the outcome (the pillar openers, ?open=1..6). */
       area: "Dades de la botiga",
       lead: "Cada conversa es converteix en un pas següent clar.",
       features: [
@@ -229,7 +229,7 @@ export const ca: Messages = {
         topAsk: "El més preguntat: enviaments",
       },
     },
-    /** Boost Sales's area label, small over its outcome (the pillar openers, ?open=1..5). */
+    /** Boost Sales's area, the chapter eyebrow over its outcome (its outcome is already "Boost Sales"). */
     salesArea: "Vendes",
     customize: {
       lead: "Tria el seu aspecte i posa el teu logo a la seva samarreta.",

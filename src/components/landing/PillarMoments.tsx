@@ -1,4 +1,4 @@
-import { useId, useRef } from "react";
+import { useId, useLayoutEffect, useRef, useState, type ReactNode, type Ref } from "react";
 import { useMessages } from "@/i18n/LocaleProvider";
 import { cn } from "@/lib/utils";
 import { span, useRewindLoop } from "./useRewindLoop";
@@ -116,188 +116,358 @@ const Hand = ({
     </text>
   );
 
-/* ── Support: the inbox that empties itself ──────────────────────────────── */
-
-const RW = 480; // the drawing's box (viewBox units ≈ px at desktop)
-const RH = 256;
-const N = 9; // tickets
-const TILTS = [-1, 0.8, -0.4, 1, -0.7, 0.4, -1, 0.7, -0.4] as const; // a pile, not a list
-const LINES = [150, 118, 168, 104, 140, 126, 158, 112, 134] as const; // each ticket's "text"
-const PEAK = 48; // the count the inbox climbs to while the pile grows
-const ARRIVE_MS = 130; // a new ticket lands this often
-const PILE_MS = ARRIVE_MS * N; // the pile is complete
-const IN_MS = 440; // a ticket's landing
-const MELT_AT = 1700; // Bizmis starts answering
-const RESOLVE_MS = 170; // and ticks one off this often, from the front
-const OUT_MS = 620; // a ticket ticked and swept away
-const MELT_END = MELT_AT + RESOLVE_MS * N; // the last one is gone
-const RELIEF_MS = MELT_END + 1500; // the calm check draws, the sparkles pop
-const landedAt = (i: number) => i * ARRIVE_MS;
-const outAt = (i: number) => MELT_AT + (N - 1 - i) * RESOLVE_MS;
-// the pile: the front ticket, then each older one peeking out above the next
-const TK_W = 316;
-const TK_H = 46;
-const BOTTOM = 246; // the front ticket's bottom edge
-const READABLE = 3;
-const LINE_Y = 27; // a readable ticket peeks out this much above the one in front
-const EDGE_Y = 7; // deeper in the pile, only an edge
-const liftY = (depth: number) =>
-  depth <= READABLE - 1 ? depth * LINE_Y : (READABLE - 1) * LINE_Y + (depth - READABLE + 1) * EDGE_Y;
-
-/** How much ticket `j` is on the pile at `t` (0 → 1 as it lands, back to 0 as it's swept away). */
-const presence = (j: number, t: number) =>
-  easeBack(span(t, landedAt(j), landedAt(j) + 380), 1.2) *
-  (1 - easeOut(span(t, outAt(j) + 220, outAt(j) + 560)));
+/* ── Support: questions answered live, by voice ──────────────────────────── */
 
 /**
- * Relief: support tickets (outlined cards, a line of "text" each) land one
- * after another on a growing pile while the drawn badge counts them up.
- * Then Bizmis ticks them off from the front, each swept away, the count
- * drains to zero, and a big check draws itself in a circle: "All caught up",
- * with a few sparkles.
+ * The handwriting's real widths (in the drawing's units), so the bubbles fit
+ * their words in whatever size the page's look sets: measured off hidden
+ * probes of the same texts (a <g> of <text>s in the SVG), again once the
+ * marker font is in.
  */
-export const SupportRelief = ({ className }: { className?: string }) => {
-  const r = useMessages().landing.support.relief;
-  const ref = useRef<HTMLDivElement>(null);
-  const uid = useId().replace(/:/g, "");
-  const { t, rewinding, cycle } = useRewindLoop(ref, { duration: RELIEF_MS, hold: 0, rewind: 900, rest: 450, threshold: 0.45, tick: 0 });
-  // the inbox's head (its name, the badge) is written once, on the first play; after that it stays
-  // through every rewind and reset, so the drawing never goes blank between loops
-  const kept = cycle > 1 || rewinding;
+const useProbeWidths = (key: string) => {
+  const probes = useRef<SVGGElement>(null);
+  const [w, setW] = useState<number[]>([]);
+  useLayoutEffect(() => {
+    let live = true;
+    const measure = () => {
+      const g = probes.current;
+      if (!g || !live) return;
+      setW(Array.from(g.querySelectorAll("text"), (el) => el.getComputedTextLength()));
+    };
+    measure();
+    document.fonts?.load("700 24px Caveat").then(measure).catch(() => undefined);
+    return () => {
+      live = false;
+    };
+  }, [key]);
+  return [w, probes] as const;
+};
 
-  const count =
-    t < PILE_MS
-      ? Math.round(PEAK * easeOut(t / PILE_MS))
-      : t < MELT_AT
-        ? PEAK
-        : Math.round(PEAK * Math.pow(1 - span(t, MELT_AT, MELT_END), 1.5));
-  const pres = Array.from({ length: N }, (_, j) => presence(j, t));
-  const depthOf = (i: number) => {
-    let d = 0;
-    for (let j = i + 1; j < N; j++) d += pres[j];
-    return d;
+const LW = 480; // the drawing's box (viewBox units ≈ px at desktop)
+const LH = 256;
+const AGENT = { x: 50, y: 108 }; // the agent's head (headset on), at the left
+const LANE_Y = 192; // where answered questions settle, in a row
+const ENV = { x: 404, y: 190, w: 80, h: 54 }; // the support email, at the right
+const ROW_A = 28; // question bubbles' centres, two staggered rows up top
+const ROW_B = 84;
+const Q_H = 40;
+const SLOT_W = 46;
+const SLOT_H = 34;
+const Q_WRITE = 560; // shoppers write fast
+const ANSWER_AFTER = 720; // the agent starts talking once the question's up
+const WAVE_MS = 520; // one ripple of voice, from the agent to the bubble
+const VOICE_MS = 900; // how long the agent talks to one question
+const CONVERT_AFTER = 480; // the voice reaches it: the bubble turns into a check
+const CONVERT_MS = 540;
+
+/** The four questions: when each pops up, where, and the slot its check settles in. */
+type Question = { at: number; x: number; y: number; slot: number; ticket?: boolean };
+const QUESTIONS: readonly Question[] = [
+  { at: 300, x: 215, y: ROW_A, slot: 126 },
+  { at: 1000, x: 338, y: ROW_B, slot: 182 },
+  { at: 1950, x: 330, y: ROW_A, slot: 294, ticket: true }, // the ticket that never was
+  { at: 3150, x: 200, y: ROW_B, slot: 238 },
+];
+const answerAt = (i: number) => QUESTIONS[i].at + ANSWER_AFTER + (QUESTIONS[i].ticket ? 80 : 0);
+const convertAt = (i: number) => answerAt(i) + CONVERT_AFTER;
+// the ticket: it heads for the support email, and is answered on the way
+const TK = 2;
+const FLY_AT = QUESTIONS[TK].at + 600;
+const FLY_END = FLY_AT + 800;
+const CATCH_AT = convertAt(TK);
+const OPEN_AT = FLY_AT + 220; // the envelope opens for it
+const CLOSE_AT = CATCH_AT + 60; // and closes again, empty
+const DONE_AT = convertAt(QUESTIONS.length - 1) + 420;
+export const LIVE_MS = DONE_AT + 1050;
+
+/** How much the agent is talking at `t` (0 → 1, mouth opening and closing). */
+const talking = (t: number) => {
+  const on = QUESTIONS.some((_, i) => t > answerAt(i) && t < answerAt(i) + VOICE_MS);
+  return on ? Math.abs(Math.sin(t / 62)) : 0;
+};
+
+/**
+ * The agent's voice toward a point, while it answers (from `from`): a
+ * speaking glyph at its mouth (three arcs, pulsing out) and ripples
+ * travelling to the bubble.
+ */
+const Voice = ({ t, from, to }: { t: number; from: number; to: readonly [number, number] }) => {
+  const dx = to[0] - AGENT.x;
+  const dy = to[1] - AGENT.y;
+  const a = Math.atan2(dy, dx);
+  const reach = Math.max(80, Math.hypot(dx, dy) - 26);
+  const on = span(t, from - 40, from + 120) * (1 - span(t, from + VOICE_MS - 120, from + VOICE_MS));
+  if (on <= 0) return null;
+  const arc = (r: number, s: number) => {
+    const pt = (ang: number) => `${f(AGENT.x + Math.cos(ang) * r)} ${f(AGENT.y + Math.sin(ang) * r)}`;
+    return `M${pt(a - s)} A${f(r)} ${f(r)} 0 0 1 ${pt(a + s)}`;
   };
-  const kInOf = (i: number) => span(t, landedAt(i), landedAt(i) + IN_MS);
-  const topOf = (i: number) => BOTTOM - TK_H - liftY(depthOf(i)) + 40 * (1 - easeBack(kInOf(i)));
+  return (
+    <g>
+      {/* the speaking glyph: ))) at the mouth, each arc pulsing in turn */}
+      {[0, 1, 2].map((j) => {
+        const beat = 0.5 + 0.5 * Math.sin((t - from) / 95 - j * 1.1);
+        return (
+          <path
+            key={`g${j}`}
+            className={j === 1 ? "mk-main" : "mk-mid"}
+            d={arc(44 + j * 12 + 2 * beat, 0.34 - j * 0.04)}
+            opacity={f(on * (0.55 + 0.45 * beat))}
+          />
+        );
+      })}
+      {/* ripples on their way to the question */}
+      {[0, 1, 2].map((j) => {
+        const p = span(t, from + j * 150, from + j * 150 + WAVE_MS);
+        if (p <= 0 || p >= 1) return null;
+        const r = mix(82, reach, easeOut(p));
+        return <path key={`r${j}`} className="mk-mid" d={arc(r, Math.min(0.3, 24 / r))} opacity={f(Math.min(1, p * 5) * (1 - Math.pow(p, 2.5)))} />;
+      })}
+    </g>
+  );
+};
 
-  // the badge: a drawn pill, bouncing as the pile tops out and as it empties
-  const badgeText = r.waiting.replace("{n}", String(count));
-  const bw = 32 + badgeText.length * 8.3; // Caveat runs about 8 units a character here
-  const bx = RW - 4 - bw;
-  const bump =
-    0.14 * hump(span(t, PILE_MS - 60, PILE_MS + 340)) + 0.14 * hump(span(t, MELT_END - 40, MELT_END + 360));
+/** Where question `i`'s bubble is at `t` (before it turns into a check), and its tilt. */
+const bubbleAt = (i: number, w: number, t: number) => {
+  const q = QUESTIONS[i];
+  const x = Math.min(LW - w / 2 - 4, Math.max(102 + w / 2, q.x));
+  if (!q.ticket) return { x, y: q.y, tilt: 0, fly: 0 };
+  const fly = easeIn(span(Math.min(t, CATCH_AT), FLY_AT, FLY_END));
+  // caught: a little wobble where it stopped
+  const caught = span(t, CATCH_AT, CATCH_AT + 360);
+  return {
+    x: mix(x, ENV.x, fly),
+    y: mix(q.y, ENV.y - ENV.h / 2 - 18, fly) - 22 * Math.sin(Math.PI * fly) * 0.6,
+    tilt: 14 * fly - 10 * hump(caught) * Math.sin(caught * Math.PI * 3),
+    fly,
+  };
+};
 
-  // the calm: a check in a circle, drawing itself, then the words and sparkles
-  const cx = RW / 2;
-  const cy = 132;
-  const ring = easeOut(span(t, MELT_END, MELT_END + 520));
-  const tick = easeOut(span(t, MELT_END + 380, MELT_END + 700));
-  const doneAt = MELT_END + 560;
+type LiveCopy = { label: string; questions: readonly string[]; email: string; done: string };
+
+/**
+ * The drawing at a given time `t` (ms along LIVE_MS). Shoppers' questions pop
+ * up in handwritten bubbles; the agent (a head with a headset) answers each
+ * out loud: ripples of voice reach the bubble, which turns into a happy check
+ * and settles in a row. One question heads for the support email instead (a
+ * ticket in the making), is answered mid-flight and never gets there: the
+ * envelope closes again, empty. Then: "Answered on the spot".
+ */
+export const SupportLiveDrawing = ({
+  t,
+  copy,
+  kept,
+}: {
+  t: number;
+  copy: LiveCopy;
+  /** Keep the agent and the envelope drawn (after the first play), so the drawing never goes blank. */
+  kept: boolean;
+}) => {
+  // the agent: a head with a headset, a smile, talking while it answers
+  const agent = kept ? 1 : easeOut(span(t, 0, 520));
+  const headset = kept ? 1 : easeOut(span(t, 180, 620));
+  const talk = talking(t);
+  const { x: ax, y: ay } = AGENT;
+
+  // the support email: an envelope that opens for the ticket and closes again, empty
+  const env = kept ? 1 : easeOut(span(t, 160, 640));
+  const open = easeOut(span(t, OPEN_AT, OPEN_AT + 260)) * (1 - easeInOut(span(t, CLOSE_AT, CLOSE_AT + 320)));
+  const shake = span(t, CLOSE_AT + 200, CLOSE_AT + 760);
+  const ex = ENV.x - ENV.w / 2;
+  const ey = ENV.y - ENV.h / 2;
+  const flapY = mix(ey + ENV.h * 0.56, ey - ENV.h * 0.36, open);
+
+  const [widths, probes] = useProbeWidths([...copy.questions, copy.done, copy.email].join("|"));
+  const bubbleW = (i: number) => (widths[i] ?? copy.questions[i].length * 11) + 30;
+  const doneW = widths[copy.questions.length] ?? copy.done.length * 15;
+  const emailW = widths[copy.questions.length + 1] ?? copy.email.length * 10;
+  const emailX = Math.min(ENV.x, LW - emailW / 2 - 2);
+  const doneX = 288;
+  const doneY = 64;
 
   return (
-    <div
-      ref={ref}
-      role="img"
-      aria-label={`${r.label}: ${r.done}`}
-      className={cn("bzl-relief bzl-mk", className)}
-    >
-      <svg viewBox={`0 0 ${RW} ${RH}`} aria-hidden="true">
-        <defs>
-          {TILTS.map((_, i) => {
-            // a ticket shows only above the one in front of it
-            let clipY = 1000;
-            for (let j = i + 1; j < N; j++) {
-              if (pres[j] >= 0.5 && span(t, outAt(j), outAt(j) + OUT_MS) < 0.45) {
-                clipY = topOf(j) - 5;
-                break;
-              }
+    <svg viewBox={`0 0 ${LW} ${LH}`} aria-hidden="true">
+      {/* hidden probes: the words' widths, for the bubbles */}
+      <g ref={probes} visibility="hidden">
+        {copy.questions.map((q, i) => (
+          <text key={i} className="mk-hand is-q">
+            {q}
+          </text>
+        ))}
+        <text className="mk-hand is-big">{copy.done}</text>
+        <text className="mk-hand is-small">{copy.email}</text>
+      </g>
+      {/* the agent */}
+      <path className="mk-main" d={loop(ax, ay, 25, 5)} {...drawn(agent)} />
+      <path
+        className="mk-mid"
+        d={`M${ax - 30} ${ay + 2} C${ax - 33} ${ay - 46} ${ax + 33} ${ay - 46} ${ax + 30} ${ay + 2}`}
+        {...drawn(headset)}
+      />
+      {headset > 0.6 && (
+        <g opacity={f(clamp01((headset - 0.6) / 0.4))}>
+          <path className="mk-mid" d={rrect(ax - 36, ay - 8, 11, 20, 5, 4)} />
+          <path className="mk-mid" d={rrect(ax + 25, ay - 8, 11, 20, 5, 6)} />
+          <path className="mk-thin" d={`M${ax + 31} ${ay + 12} Q${ax + 31} ${ay + 27} ${ax + 14} ${ay + 26}`} />
+          <circle className="mk-dot" cx={ax + 12} cy={ay + 26} r={3.2} />
+        </g>
+      )}
+      {agent > 0.5 && (
+        <g opacity={f(clamp01((agent - 0.5) * 2))}>
+          <circle className="mk-dot" cx={ax - 9} cy={ay - 4} r={2.4} />
+          <circle className="mk-dot" cx={ax + 8} cy={ay - 4} r={2.4} />
+          {/* a smile, that opens as it talks */}
+          <path
+            className="mk-thin"
+            d={
+              `M${ax - 8} ${ay + 8} Q${ax} ${f(ay + 15 + 6 * talk)} ${ax + 8} ${ay + 8}` +
+              (talk > 0.08 ? ` Q${ax} ${f(ay + 10 - 1.5 * talk)} ${ax - 8} ${ay + 8}` : "")
             }
-            return (
-              <clipPath key={i} id={`${uid}-tk${i}`}>
-                <rect x={-200} y={-200} width={RW + 400} height={clipY + 200} />
-              </clipPath>
-            );
-          })}
-        </defs>
-
-        {/* the head: the inbox's name, and its count in a drawn badge */}
-        {/* (it steps aside while the rewind sign shows at the top left) */}
-        <g style={{ transform: `translateX(${rewinding ? 70 : 0}px)`, transition: "transform 0.25s ease" }}>
-          <Hand k={kept ? 1 : writing(r.label, t, 0)} x={4} y={30}>
-            {r.label}
-          </Hand>
+          />
         </g>
-        <g
-          transform={`translate(${f(bx + bw / 2)} 22) scale(${f(1 + bump)} ${f(1 - bump * 0.7)}) translate(${f(-(bx + bw / 2))} -22)`}
-        >
-          <path className="mk-mid" d={rrect(bx, 4, bw, 36, 18, 3)} {...drawn(kept ? 1 : easeOut(span(t, 0, 380)))} />
-          {/* written once; the count then just changes its digits */}
-          <Hand k={kept ? 1 : writing(badgeText, t, 200)} x={bx + bw / 2} y={30} textAnchor="middle">
-            {badgeText}
-          </Hand>
-        </g>
+      )}
 
-        {/* the pile */}
-        {TILTS.map((tilt, i) => {
-          const kIn = kInOf(i);
-          if (kIn <= 0) return null;
-          const depth = depthOf(i);
-          const kOut = span(t, outAt(i), outAt(i) + OUT_MS);
-          const ticked = clamp01(kOut / 0.42);
-          const away = easeIn(clamp01((kOut - 0.42) / 0.58));
-          const opacity = clamp01(kIn * 2.2) * (1 - away) * clamp01(8 - depth);
-          if (opacity <= 0.001) return null;
-          const w = TK_W - Math.min(depth, 8) * 7;
-          const x = cx - w / 2;
-          const y = topOf(i);
-          const my = y + TK_H / 2;
-          // landing squash: wide and low as it lands, then springs back
-          const sq = hump(clamp01(kIn * 1.25 - 0.1));
-          const sx = 1 + 0.07 * sq;
-          const sy = 1 - 0.16 * sq;
-          const content = 1 - ticked;
-          return (
-            <g key={i} clipPath={`url(#${uid}-tk${i})`} opacity={f(opacity)}>
-              <g
-                transform={
-                  `translate(${f(150 * away)} ${f(-26 * away)}) rotate(${f(tilt + 12 * away)} ${f(cx)} ${f(my)}) ` +
-                  `translate(${f(cx)} ${f(y + TK_H)}) scale(${f(sx)} ${f(sy)}) translate(${f(-cx)} ${f(-(y + TK_H))})`
-                }
-              >
-                <path className="mk-main" d={rrect(x, y, w, TK_H, 13, i)} />
-                <g opacity={f(content)}>
-                  <circle className="mk-thin" cx={x + 25} cy={my} r={8.5} />
-                  <path className="mk-mid" d={`M${f(x + 46)} ${f(my + hand(i, 3) * 0.6)} H${f(x + 46 + Math.min(LINES[i], w - 96))}`} />
-                  <circle className="mk-dot" cx={x + w - 24} cy={my} r={5} />
-                </g>
-                {/* ticked off: a big tick drawn across the card */}
-                <path
-                  className="mk-main"
-                  d={`M${f(cx - 24)} ${f(my + 1)} L${f(cx - 7)} ${f(my + 15)} L${f(cx + 26)} ${f(my - 15)}`}
-                  {...drawn(ticked)}
-                />
-              </g>
-            </g>
-          );
-        })}
-
-        {/* all caught up */}
-        <path className="mk-main" d={loop(cx, cy, 46, 2)} {...drawn(ring)} />
+      {/* the support email: it stays empty */}
+      <g
+        transform={`rotate(${f(5 * hump(shake) * Math.sin(shake * Math.PI * 4))} ${ENV.x} ${ENV.y + ENV.h / 2})`}
+      >
+        <path className="mk-main" d={rrect(ex, ey, ENV.w, ENV.h, 8, 7)} {...drawn(env)} />
+        {/* open: the pocket's seams show under the lifted flap */}
+        {open > 0.02 && (
+          <path
+            className="mk-thin"
+            d={`M${ex + 5} ${ey + 4} L${ENV.x} ${f(ey + ENV.h * 0.5)} L${ex + ENV.w - 5} ${ey + 4}`}
+            opacity={f(clamp01(open * 2))}
+          />
+        )}
         <path
-          className="mk-main is-heavy"
-          d={`M${cx - 21} ${cy + 1} L${cx - 6} ${cy + 16} L${cx + 23} ${cy - 15}`}
-          {...drawn(tick)}
+          className="mk-mid"
+          d={`M${ex + 4} ${ey + 3} L${ENV.x} ${f(flapY)} L${ex + ENV.w - 4} ${ey + 3}`}
+          {...drawn(kept ? 1 : easeOut(span(t, 420, 800)))}
         />
-        <Hand k={writing(r.done, t, doneAt)} x={cx} y={cy + 92} textAnchor="middle" className="is-big">
-          {r.done}
-        </Hand>
-        <Sparkle x={cx + 76} y={cy - 38} k={span(t, MELT_END + 640, MELT_END + 1040)} />
-        <Sparkle x={cx - 78} y={cy - 22} k={span(t, MELT_END + 760, MELT_END + 1160)} size={8} spin={45} />
-        <Sparkle x={cx + 64} y={cy + 36} k={span(t, MELT_END + 880, MELT_END + 1280)} size={7} />
-      </svg>
-      {/* ◀◀ while it rewinds */}
-      <RewindMark on={rewinding} />
-    </div>
+      </g>
+      <Hand k={kept ? 1 : writing(copy.email, t, 600)} x={emailX} y={ENV.y + ENV.h / 2 + 30} textAnchor="middle" className="is-small">
+        {copy.email}
+      </Hand>
+
+      {/* the voice, rippling out to each question */}
+      {QUESTIONS.map((_, i) => {
+        const tgt = bubbleAt(i, bubbleW(i), Math.min(t, convertAt(i)));
+        return <Voice key={`v${i}`} t={t} from={answerAt(i)} to={[tgt.x, tgt.y]} />;
+      })}
+
+      {/* the questions: written in a bubble, answered, a check settling in the row */}
+      {QUESTIONS.map((q, i) => {
+        const pop = span(t, q.at, q.at + 440);
+        if (pop <= 0) return null;
+        const text = copy.questions[i] ?? "";
+        const W = bubbleW(i);
+        const b = bubbleAt(i, W, t);
+        const kc = span(t, convertAt(i), convertAt(i) + CONVERT_MS);
+        const m = easeInOut(kc);
+        const shrink = easeInOut(span(kc, 0.08, 0.55));
+        const w = mix(W, SLOT_W, shrink);
+        const h = mix(Q_H, SLOT_H, shrink);
+        // it hops from where it was answered down into its slot
+        const cx = mix(b.x, q.slot, m);
+        const cy = mix(b.y, LANE_Y, m) - 34 * hump(kc);
+        const tilt = b.tilt * (1 - m);
+        const s = spring(pop);
+        // landing squash
+        const land = hump(span(t, convertAt(i) + CONVERT_MS * 0.85, convertAt(i) + CONVERT_MS + 260));
+        const sx = s * (1 + 0.14 * land);
+        const sy = s * (1 - 0.2 * land);
+        const x0 = cx - w / 2;
+        const y0 = cy - h / 2;
+        const tail = `M${f(x0 + 15)} ${f(y0 + h)} L${f(x0 + 9)} ${f(y0 + h + 9)} L${f(x0 + 25)} ${f(y0 + h)}`;
+        const check = easeOut(span(kc, 0.35, 0.85));
+        // a ticket in the making: speed lines while it flies
+        const speed = q.ticket && t < CATCH_AT ? clamp01(b.fly * 3) * (1 - kc) : 0;
+        return (
+          <g
+            key={`q${i}`}
+            transform={
+              `translate(${f(x0 + 15)} ${f(y0 + h + 9)}) rotate(${f(tilt)}) scale(${f(sx)} ${f(sy)}) ` +
+              `translate(${f(-(x0 + 15))} ${f(-(y0 + h + 9))})`
+            }
+          >
+            {speed > 0.02 && (
+              <g opacity={f(speed)}>
+                <path className="mk-thin" d={`M${f(x0 - 10)} ${f(y0 + 6)} l-22 -14`} />
+                <path className="mk-thin" d={`M${f(x0 - 12)} ${f(y0 + h - 8)} l-28 -16`} />
+              </g>
+            )}
+            <path className="mk-mid" d={`${rrect(x0, y0, w, h, Math.min(14, h / 2), 20 + i)} ${tail}`} />
+            {kc < 0.25 && (
+              <g opacity={f(1 - kc / 0.25)}>
+                <Hand k={pen(span(t, q.at + 100, q.at + 100 + Q_WRITE))} x={cx} y={cy + 8} textAnchor="middle" className="is-q">
+                  {text}
+                </Hand>
+              </g>
+            )}
+            <path
+              className="mk-mid"
+              d={`M${f(cx - 10)} ${f(cy + 1)} L${f(cx - 3)} ${f(cy + 8)} L${f(cx + 11)} ${f(cy - 8)}`}
+              {...drawn(check)}
+            />
+          </g>
+        );
+      })}
+
+      {/* answered on the spot */}
+      <Hand k={writing(copy.done, t, DONE_AT)} x={doneX} y={doneY} textAnchor="middle" className="is-big">
+        {copy.done}
+      </Hand>
+      <Sparkle x={doneX + doneW / 2 + 18} y={doneY - 30} k={span(t, DONE_AT + 520, DONE_AT + 900)} />
+      <Sparkle x={doneX - doneW / 2 - 18} y={doneY - 14} k={span(t, DONE_AT + 640, DONE_AT + 1020)} size={8} spin={45} />
+    </svg>
+  );
+};
+
+const LiveFrame = ({
+  className,
+  copy,
+  children,
+  rewinding,
+  frameRef,
+}: {
+  className?: string;
+  copy: LiveCopy;
+  children: ReactNode;
+  rewinding: boolean;
+  frameRef?: Ref<HTMLDivElement>;
+}) => (
+  <div ref={frameRef} role="img" aria-label={`${copy.label}: ${copy.done}`} className={cn("bzl-live bzl-mk", className)}>
+    {children}
+    {/* ◀◀ while it rewinds */}
+    <RewindMark on={rewinding} />
+  </div>
+);
+
+/** On its own clock: plays when it comes into view, holds the end, rewinds, plays again. */
+const SupportLiveLoop = ({ className }: { className?: string }) => {
+  const copy = useMessages().landing.support.live;
+  const ref = useRef<HTMLDivElement>(null);
+  const { t, rewinding, cycle } = useRewindLoop(ref, { duration: LIVE_MS, hold: 2600, rewind: 900, rest: 450, threshold: 0.45, tick: 0 });
+  return (
+    <LiveFrame className={className} copy={copy} rewinding={rewinding} frameRef={ref}>
+      <SupportLiveDrawing t={t} copy={copy} kept={cycle > 1 || rewinding} />
+    </LiveFrame>
+  );
+};
+
+/**
+ * Support's moment, "questions answered live" (see SupportLiveDrawing). Left
+ * alone it runs its own rewind loop; given `t` (ms along LIVE_MS, e.g. from
+ * the pinned section's scroll) it just shows that frame.
+ */
+export const SupportLive = ({ className, t, rewinding = false }: { className?: string; t?: number; rewinding?: boolean }) => {
+  const copy = useMessages().landing.support.live;
+  if (t === undefined) return <SupportLiveLoop className={className} />;
+  return (
+    <LiveFrame className={className} copy={copy} rewinding={rewinding}>
+      <SupportLiveDrawing t={t} copy={copy} kept={false} />
+    </LiveFrame>
   );
 };
 
@@ -336,7 +506,7 @@ const segments = HEIGHTS.flatMap((h, c) => Array.from({ length: h }, (_, k) => (
 
 const SORT_AT = 1300; // the noise sorts itself
 const AHA_AT = 2450; // the answer lights up
-const CLARITY_MS = AHA_AT + 2300; // room for a long top ask to finish writing
+export const CLARITY_MS = AHA_AT + 2300; // room for a long top ask to finish writing
 
 /** A restless wobble while it's noise, from the time itself (so it runs backwards on the rewind too). */
 const jitter = (t: number, period: number, phase: number, amp = 1) => {
@@ -367,12 +537,32 @@ const star = (r: number) => {
  * Clarity: outlined dots and little question bubbles jitter like noise, then
  * fly into a drawn bar chart; the bars grow, a marker trend arrow climbs
  * over them, and a drawn callout names the top ask, with a star doodle.
+ * Left alone it runs its own rewind loop; given `t` it shows that frame.
  */
-export const InsightsClarity = ({ className }: { className?: string }) => {
+export const InsightsClarity = ({
+  className,
+  t: at,
+  rewinding: rewindingAt = false,
+}: {
+  className?: string;
+  /** Driven from outside (ms along CLARITY_MS, e.g. the pinned section's scroll); else its own rewind loop. */
+  t?: number;
+  rewinding?: boolean;
+}) => {
   const cl = useMessages().landing.insights.clarity;
   const ref = useRef<HTMLDivElement>(null);
   const uid = useId().replace(/:/g, "");
-  const { t, rewinding } = useRewindLoop(ref, { duration: CLARITY_MS, hold: 0, rewind: 900, rest: 450, threshold: 0.45, tick: 0 });
+  const own = useRewindLoop(ref, {
+    duration: CLARITY_MS,
+    hold: 0,
+    rewind: 900,
+    rest: 450,
+    threshold: 0.45,
+    tick: 0,
+    paused: at !== undefined,
+  });
+  const t = at ?? own.t;
+  const rewinding = at !== undefined ? rewindingAt : own.rewinding;
 
   const shown = span(t, 0, 400);
   const fadeNoise = span(t, SORT_AT, SORT_AT + 500);

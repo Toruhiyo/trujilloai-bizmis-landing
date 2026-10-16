@@ -1338,6 +1338,12 @@
   font-weight: 700;
 }
 .bzl-mk .mk-hand.is-big { font-size: 32px; }
+.bzl-mk .mk-hand.is-q { font-size: 21px; }
+.bzl-mk .mk-hand.is-small { font-size: 19px; }
+/* the film look writes a size up (look-film.css): the shoppers' questions and
+   the envelope's label follow it, a step under its regular handwriting */
+.bzl[data-look="film"] .bzl-pillar .bzl-mk .mk-hand.is-q { font-size: 25px; }
+.bzl[data-look="film"] .bzl-pillar .bzl-mk .mk-hand.is-small { font-size: 23px; }
 
 /* ── Support store demo (support/SupportStore.tsx): the shopper's question typed
    in the widget's composer, a blinking caret while they type ── */
@@ -1390,6 +1396,27 @@
   .bzp-dock-line { font-size: 0.95rem; text-align: center; }
 }
 
+/* ── Pinned (desktop, BenefitIntro's Pinned): the section is one screen,
+   sticky under the nav while the page scrolls through its track: the
+   opener compact at the top, the content in the room left (scaled down to
+   fit if it must, .bzp-fit), the scroll driving its animations. ── */
+.bzp-section:has(> .bzp.is-pinned) { padding-bottom: 0; }
+.bzp-track { position: relative; }
+.bzp-pin {
+  position: sticky;
+  top: var(--bzl-nav, 4rem);
+  display: flex;
+  flex-direction: column;
+  gap: clamp(0.5rem, 2.4svh, 1.75rem);
+  height: calc(100svh - var(--bzl-nav, 4rem));
+  padding-block: clamp(0.6rem, 3svh, 2.25rem) clamp(0.5rem, 2.4svh, 1.5rem);
+  overflow: hidden;
+}
+.bzp-open { flex: none; width: 100%; }
+/* the content sits centred in the room it has (top-aligned when it fills it) */
+.bzp-stage { position: relative; display: flex; flex-direction: column; justify-content: center; flex: 1; min-height: 0; }
+.bzp-fit { transform-origin: 50% 0; }
+
 /* under the bar: the content fills the rest of the screen */
 .bzp-body {
   display: flex;
@@ -1399,20 +1426,20 @@
 }
 
 /* ── Customer Support's screen (SupportSection.tsx): on top, side by side,
-   the store with the widget answering (the mockup) and the support inbox
-   emptying itself (its result, drawn in marker straight on the screen, no
-   card), the lead over the drawing; below them, the three capabilities in
+   the store with the widget answering (the mockup) and shoppers' questions
+   answered live by voice (its result, drawn in marker straight on the
+   screen, no card), the lead over the drawing; below them, the three capabilities in
    one row. Phones: lead, mockup, drawing, capabilities stacked. Sized from
    the screen's height, so the whole section fits one screen (openers.css). ── */
 .bzs-grid {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
-  grid-template-areas: "lead" "store" "relief" "caps";
+  grid-template-areas: "lead" "store" "live" "caps";
   align-items: center;
   gap: 1.5rem;
 }
 .bzs-store { grid-area: store; position: relative; }
-.bzs-result { grid-area: relief; position: relative; }
+.bzs-result { grid-area: live; position: relative; }
 .bzs-lead { grid-area: lead; }
 .bzs-lead .bzl-lead { max-width: 32rem; }
 .bzs-caps {
@@ -1422,7 +1449,7 @@
   align-items: start;
   gap: 0.5rem;
 }
-.bzs-relief {
+.bzs-live {
   width: 100%;
   max-width: 30rem;
   margin-inline: auto;
@@ -1431,7 +1458,7 @@
   .bzs-grid {
     grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
     grid-template-rows: auto auto auto;
-    grid-template-areas: "store lead" "store relief" "caps caps";
+    grid-template-areas: "store lead" "store live" "caps caps";
     column-gap: clamp(1.75rem, 4vw, 4rem);
     row-gap: clamp(0.75rem, 2.4svh, 1.75rem);
   }
@@ -1443,10 +1470,73 @@
   }
   .bzs-lead { align-self: end; }
   .bzs-result { align-self: start; }
-  .bzs-relief { margin-inline: 0; max-width: min(100%, clamp(16rem, calc((100svh - 26rem) * 1.9), 30rem)); }
+  .bzs-live { margin-inline: 0; max-width: min(100%, clamp(16rem, calc((100svh - 26rem) * 1.9), 30rem)); }
   .bzs-caps {
     grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: clamp(0.5rem, 1.2vw, 1rem);
   }
   .bzs-lead .bzl-lead { font-size: clamp(1.05rem, min(1.4vw, 2.5svh), 1.3rem); }
+  /* pinned: the mockup takes the height left under the compact opener (about
+     a fifth of the screen with the nav) and the cards' row */
+  .bzs-grid.is-pinned { row-gap: clamp(0.6rem, 2svh, 1.4rem); }
+  .bzs-grid.is-pinned .bzs-store {
+    max-width: clamp(18rem, calc((100svh - 4rem - 24svh - 6rem) * 1.42), 46rem);
+  }
+  .bzs-grid.is-pinned .bzs-live {
+    max-width: min(100%, clamp(15rem, calc((100svh - 4rem - 24svh - 13rem) * 1.75), 30rem));
+  }
 }
+
+/* ── Store Insights' screen (InsightsSection.tsx): the lead, the chart moment
+   (noise sorting itself into a chart, in marker), the conversation replays,
+   the three features. Phones and tablets: stacked. Desktop: the lead and
+   the chart beside the replays; pinned (one screen), the features in a row
+   under them and the replay's transcript as tall as the screen allows. ── */
+.bzi-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-areas: "lead" "chart" "feats" "replay";
+  align-items: center;
+  gap: 1.5rem;
+}
+.bzi-lead { grid-area: lead; }
+.bzi-chart { grid-area: chart; }
+.bzi-clarity { max-width: 32rem; }
+.bzi-feats {
+  grid-area: feats;
+  display: grid;
+  align-items: start;
+  gap: 0.5rem;
+  max-width: 32rem;
+}
+.bzi-replay { grid-area: replay; position: relative; }
+@media (min-width: 1024px) {
+  .bzi-grid {
+    grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
+    grid-template-areas: "lead replay" "chart replay" "feats replay";
+    column-gap: 5rem;
+    row-gap: 2.2svh;
+  }
+  .bzi-grid.is-pinned {
+    grid-template-areas: "lead replay" "chart replay" "feats feats";
+    grid-template-rows: auto 1fr auto;
+    column-gap: clamp(2rem, 5vw, 5rem);
+    row-gap: clamp(0.6rem, 2svh, 1.4rem);
+  }
+  .bzi-grid.is-pinned .bzi-lead { align-self: end; }
+  .bzi-grid.is-pinned .bzi-chart { align-self: start; }
+  .bzi-grid.is-pinned .bzi-clarity {
+    max-width: min(100%, clamp(15rem, calc((100svh - 4rem - 24svh - 12rem) * 2), 32rem));
+  }
+  .bzi-grid.is-pinned .bzi-feats {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: clamp(0.5rem, 1.2vw, 1rem);
+    max-width: none;
+  }
+  .bzi-grid.is-pinned .bzi-lead .bzl-lead { font-size: clamp(1.05rem, min(1.4vw, 2.5svh), 1.3rem); }
+  /* the replay's transcript: the room the screen leaves it (the card's head and player take the rest) */
+  .bzi-grid.is-pinned .bzi-replay .overflow-y-auto {
+    max-height: max(6rem, calc(100svh - 4rem - 24svh - 27rem));
+  }
+}
+

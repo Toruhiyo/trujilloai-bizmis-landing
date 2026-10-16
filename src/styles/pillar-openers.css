@@ -25,21 +25,23 @@
   gap: clamp(0.8rem, 2.4svh, 1.5rem);
   width: 100%;
 }
+/* the eyebrow: the area's full name ("Customer Support") with its icon in a
+   disc, clearly readable, still well under the outcome */
 .od-area {
   display: inline-flex;
   align-items: center;
-  gap: 0.6rem;
-  font-size: 0.78rem;
-  font-weight: 700;
-  letter-spacing: 0.16em;
+  gap: 0.7rem;
+  font-size: clamp(0.95rem, min(1.25vw, 2.3svh), 1.25rem);
+  font-weight: 800;
+  letter-spacing: 0.1em;
   line-height: 1;
   text-transform: uppercase;
-  color: var(--od-faint);
+  color: color-mix(in oklab, var(--od-ink) 88%, transparent);
 }
 .od-area-icon {
   display: grid;
   place-items: center;
-  width: 2rem;
+  width: clamp(2.5rem, min(3.2vw, 5.6svh), 3.1rem);
   aspect-ratio: 1;
   border-radius: 999px;
   background: var(--pi-icon-bg, #fff);
@@ -283,6 +285,35 @@
 }
 .od6 .od-outcome:has(> .od-l:only-child) {
   font-size: clamp(3rem, min(7.5vw, 13svh), 8rem);
+}
+
+/* ── Pinned (BenefitIntro's one-screen sections): the opener compact at the
+   top of the screen: the chapter number, the eyebrow and the outcome in one
+   band about a sixth of the screen tall, the content under it. ── */
+.bzp.is-pinned .od {
+  gap: clamp(0.4rem, 1.4svh, 0.9rem);
+}
+.bzp.is-pinned .od5 {
+  justify-content: start;
+  max-width: none;
+  margin-inline: 0;
+  padding-inline: 0;
+  column-gap: clamp(1rem, 2.2vw, 2.25rem);
+}
+.bzp.is-pinned .od5-num {
+  font-size: clamp(4.4rem, min(9vw, 16svh), 9rem);
+}
+.bzp.is-pinned .od5-copy {
+  gap: clamp(0.45rem, 1.4svh, 0.85rem);
+  padding-left: clamp(1rem, 2vw, 1.75rem);
+}
+.bzp.is-pinned .od-outcome,
+.bzp.is-pinned .od5 .od-outcome {
+  font-size: clamp(1.9rem, min(3.6vw, 6.2svh), 4rem);
+  line-height: 1;
+}
+.bzp.is-pinned .od1 .od-outcome::after {
+  display: none;
 }
 
 /* ── phones ── */

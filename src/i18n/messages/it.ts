@@ -198,25 +198,25 @@ export const it: Messages = {
     support: {
       title: "Meno ticket.",
       titleTail: "Clienti più felici.",
-      /** The area as a small label over the outcome (the pillar openers, ?open=1..5). */
-      area: "Assistenza",
+      /** The area's full name, the chapter eyebrow over the outcome (the pillar openers, ?open=1..6). */
+      area: "Assistenza clienti",
       lead: "Risponde in pochi secondi, giorno e notte, con il calore del tuo miglior commesso.",
       capabilities: [
         { title: "Sempre attivo", body: "Ogni domanda riceve risposta nel momento in cui arriva." },
         { title: "Conosce il tuo negozio", body: "Risponde con le tue policy e il tuo catalogo." },
         { title: "Legge l'umore", body: "Calma i clienti arrabbiati prima che lascino una recensione negativa." },
       ],
-      relief: {
-        label: "Inbox assistenza",
-        waiting: "{n} in attesa",
-        done: "Tutto risolto",
-        tickets: ["Dov'è il mio ordine?", "Posso restituirlo?", "Spedite in Canada?", "Taglia M o L?", "Cambia il mio indirizzo", "È disponibile?"],
+      live: {
+        label: "I clienti chiedono, Bizmis risponde a voce",
+        questions: ["Dov'è il mio ordine?", "Veste piccolo?", "Posso restituirlo?", "Spedite in Canada?"],
+        email: "Email assistenza",
+        done: "Risposto all'istante",
       },
     },
     insights: {
       title: "Scopri cosa vende.",
       titleTail: "Sistema il resto.",
-      /** The area as a small label over the outcome (the pillar openers, ?open=1..5). */
+      /** The area's full name, the chapter eyebrow over the outcome (the pillar openers, ?open=1..6). */
       area: "Dati del negozio",
       lead: "Ogni conversazione diventa un passo successivo chiaro.",
       features: [
@@ -229,7 +229,7 @@ export const it: Messages = {
         topAsk: "Domanda n.1: spedizioni",
       },
     },
-    /** Boost Sales's area label, small over its outcome (the pillar openers, ?open=1..5). */
+    /** Boost Sales's area, the chapter eyebrow over its outcome (its outcome is already "Boost Sales"). */
     salesArea: "Vendite",
     customize: {
       lead: "Scegli il suo aspetto e metti il tuo logo sulla sua maglietta.",
