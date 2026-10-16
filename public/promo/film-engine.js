@@ -2843,30 +2843,32 @@
   // Colours follow a plan (tmp/demo-stores-v24/_plan/colour-plan.json): the tunnel in light, fresh tones; the run in saturated
   // jewel tones, pinks alternating with deep cools, landing on Your store orange (every neighbour >= 35 CIEDE2000 apart).
   // v35: every store re-recorded with the agent visibly talking (stores/reel/v35, same 3.2 s loops)
+  // v36: re-recorded again with the widget highlight drawn natively in each page (stores/reel/v36): the tunnel
+  // clips run longer (up to 5.5 s, they never wrap on screen) with each one's highlight in its last second in view
   // v35: run cards open 1.3 s into their loop, where the agent is already talking (they flash by in < 1 s)
   const PROMO_REEL_STORES_V24 = {
-    'halcyon-optics': { device: 'desktop', color: '#C8B6F0', video: '/promo/stores/reel/v35/halcyon-optics-desktop-home.mp4', img: '/promo/stores/reel/v35/halcyon-optics-desktop-home.jpg' },
-    'kumo-tea': { device: 'phone', color: '#5BC76B', video: '/promo/stores/reel/v35/kumo-tea-phone-home.mp4', img: '/promo/stores/reel/v35/kumo-tea-phone-home.jpg' },
-    'sora-ceramics': { device: 'tablet', color: '#B07A9A', video: '/promo/stores/reel/v35/sora-ceramics-tablet-home.mp4', img: '/promo/stores/reel/v35/sora-ceramics-tablet-home.jpg' },
-    'powderline': { device: 'desktop', color: '#9ED8E8', video: '/promo/stores/reel/v35/powderline-desktop-home.mp4', img: '/promo/stores/reel/v35/powderline-desktop-home.jpg' },
-    'tidewater': { device: 'phone', color: '#F2705A', video: '/promo/stores/reel/v35/tidewater-phone-home.mp4', img: '/promo/stores/reel/v35/tidewater-phone-home.jpg' },
-    'maison-cacao': { device: 'desktop', color: '#2BBFA4', video: '/promo/stores/reel/v35/maison-cacao-desktop-home.mp4', img: '/promo/stores/reel/v35/maison-cacao-desktop-home.jpg' },
-    'liora': { device: 'tablet', color: '#E597A8', video: '/promo/stores/reel/v35/liora-tablet-home.mp4', img: '/promo/stores/reel/v35/liora-tablet-home.jpg' },
-    'grindline': { device: 'phone', color: '#1A7FC4', video: '/promo/stores/reel/v35/grindline-phone-home.mp4', img: '/promo/stores/reel/v35/grindline-phone-home.jpg' },
-    'kettle-and-crow': { start: 1.3, device: 'phone', color: '#B8306A', video: '/promo/stores/reel/v35/kettle-and-crow-phone-home.mp4', img: '/promo/stores/reel/v35/kettle-and-crow-phone-home.jpg', voice: 'quick-ko', category: 'Food & drink', feat: 'Matches it to their taste', ben: 'Repeat customers' },
-    'northpeak': { start: 1.3, device: 'phone', color: '#2A4FD6', video: '/promo/stores/reel/v35/northpeak-phone-home.mp4', img: '/promo/stores/reel/v35/northpeak-phone-home.jpg', voice: 'quick-zh', category: 'Health & wellness', feat: 'Explains every ingredient', ben: 'Trust that converts' },
-    'saltline': { start: 1.3, device: 'desktop', color: '#10A7B8', video: '/promo/stores/reel/v35/saltline-desktop-home.mp4', img: '/promo/stores/reel/v35/saltline-desktop-home.jpg', voice: 'quick-pt', category: 'Sports & outdoors', feat: 'Picks the right fit', ben: 'Fewer exchanges' },
-    'ridgeline-supply': { start: 1.3, device: 'desktop', color: '#0E6185', video: '/promo/stores/reel/v35/ridgeline-supply-desktop-home.mp4', img: '/promo/stores/reel/v35/ridgeline-supply-desktop-home.jpg' },
-    'nest-and-nook': { start: 1.3, device: 'tablet', color: '#86C2A2', video: '/promo/stores/reel/v35/nest-and-nook-tablet-home.mp4', img: '/promo/stores/reel/v35/nest-and-nook-tablet-home.jpg' },
-    'atelier-noor': { start: 1.3, device: 'desktop', color: '#A4408F', video: '/promo/stores/reel/v35/atelier-noor-desktop-home.mp4', img: '/promo/stores/reel/v35/atelier-noor-desktop-home.jpg' },
-    'little-timber': { start: 1.3, device: 'tablet', color: '#3A9FE6', video: '/promo/stores/reel/v35/little-timber-tablet-home.mp4', img: '/promo/stores/reel/v35/little-timber-tablet-home.jpg' },
-    'inkwell': { start: 1.3, device: 'tablet', color: '#22407C', video: '/promo/stores/reel/v35/inkwell-tablet-home.mp4', img: '/promo/stores/reel/v35/inkwell-tablet-home.jpg' },
-    'leaf-and-loam': { start: 1.3, device: 'tablet', color: '#139E6E', video: '/promo/stores/reel/v35/leaf-and-loam-tablet-home.mp4', img: '/promo/stores/reel/v35/leaf-and-loam-tablet-home.jpg' },
-    'spokehaus': { start: 1.3, device: 'phone', color: '#EE3F87', video: '/promo/stores/reel/v35/spokehaus-phone-home.mp4', img: '/promo/stores/reel/v35/spokehaus-phone-home.jpg' },
-    'juniper-linen': { start: 1.3, device: 'desktop', color: '#8E9FE8', video: '/promo/stores/reel/v35/juniper-linen-desktop-home.mp4', img: '/promo/stores/reel/v35/juniper-linen-desktop-home.jpg' },
-    'tonewood': { start: 1.3, device: 'tablet', color: '#5E2A63', video: '/promo/stores/reel/v35/tonewood-tablet-home.mp4', img: '/promo/stores/reel/v35/tonewood-tablet-home.jpg' },
-    'fetch-and-fern': { start: 1.3, device: 'desktop', color: '#138A86', video: '/promo/stores/reel/v35/fetch-and-fern-desktop-home.mp4', img: '/promo/stores/reel/v35/fetch-and-fern-desktop-home.jpg' },
-    'petal-and-post': { start: 1.3, device: 'phone', color: '#D63BC0', video: '/promo/stores/reel/v35/petal-and-post-phone-home.mp4', img: '/promo/stores/reel/v35/petal-and-post-phone-home.jpg' },
+    'halcyon-optics': { device: 'desktop', color: '#C8B6F0', video: '/promo/stores/reel/v36/halcyon-optics-desktop-home.mp4', img: '/promo/stores/reel/v36/halcyon-optics-desktop-home.jpg' },
+    'kumo-tea': { device: 'phone', color: '#5BC76B', video: '/promo/stores/reel/v36/kumo-tea-phone-home.mp4', img: '/promo/stores/reel/v36/kumo-tea-phone-home.jpg' },
+    'sora-ceramics': { device: 'tablet', color: '#B07A9A', video: '/promo/stores/reel/v36/sora-ceramics-tablet-home.mp4', img: '/promo/stores/reel/v36/sora-ceramics-tablet-home.jpg' },
+    'powderline': { device: 'desktop', color: '#9ED8E8', video: '/promo/stores/reel/v36/powderline-desktop-home.mp4', img: '/promo/stores/reel/v36/powderline-desktop-home.jpg' },
+    'tidewater': { device: 'phone', color: '#F2705A', video: '/promo/stores/reel/v36/tidewater-phone-home.mp4', img: '/promo/stores/reel/v36/tidewater-phone-home.jpg' },
+    'maison-cacao': { device: 'desktop', color: '#2BBFA4', video: '/promo/stores/reel/v36/maison-cacao-desktop-home.mp4', img: '/promo/stores/reel/v36/maison-cacao-desktop-home.jpg' },
+    'liora': { device: 'tablet', color: '#E597A8', video: '/promo/stores/reel/v36/liora-tablet-home.mp4', img: '/promo/stores/reel/v36/liora-tablet-home.jpg' },
+    'grindline': { device: 'phone', color: '#1A7FC4', video: '/promo/stores/reel/v36/grindline-phone-home.mp4', img: '/promo/stores/reel/v36/grindline-phone-home.jpg' },
+    'kettle-and-crow': { start: 1.3, device: 'phone', color: '#B8306A', video: '/promo/stores/reel/v36/kettle-and-crow-phone-home.mp4', img: '/promo/stores/reel/v36/kettle-and-crow-phone-home.jpg', voice: 'quick-ko', category: 'Food & drink', feat: 'Matches it to their taste', ben: 'Repeat customers' },
+    'northpeak': { start: 1.3, device: 'phone', color: '#2A4FD6', video: '/promo/stores/reel/v36/northpeak-phone-home.mp4', img: '/promo/stores/reel/v36/northpeak-phone-home.jpg', voice: 'quick-zh', category: 'Health & wellness', feat: 'Explains every ingredient', ben: 'Trust that converts' },
+    'saltline': { start: 1.3, device: 'desktop', color: '#10A7B8', video: '/promo/stores/reel/v36/saltline-desktop-home.mp4', img: '/promo/stores/reel/v36/saltline-desktop-home.jpg', voice: 'quick-pt', category: 'Sports & outdoors', feat: 'Picks the right fit', ben: 'Fewer exchanges' },
+    'ridgeline-supply': { start: 1.3, device: 'desktop', color: '#0E6185', video: '/promo/stores/reel/v36/ridgeline-supply-desktop-home.mp4', img: '/promo/stores/reel/v36/ridgeline-supply-desktop-home.jpg' },
+    'nest-and-nook': { start: 1.3, device: 'tablet', color: '#86C2A2', video: '/promo/stores/reel/v36/nest-and-nook-tablet-home.mp4', img: '/promo/stores/reel/v36/nest-and-nook-tablet-home.jpg' },
+    'atelier-noor': { start: 1.3, device: 'desktop', color: '#A4408F', video: '/promo/stores/reel/v36/atelier-noor-desktop-home.mp4', img: '/promo/stores/reel/v36/atelier-noor-desktop-home.jpg' },
+    'little-timber': { start: 1.3, device: 'tablet', color: '#3A9FE6', video: '/promo/stores/reel/v36/little-timber-tablet-home.mp4', img: '/promo/stores/reel/v36/little-timber-tablet-home.jpg' },
+    'inkwell': { start: 1.3, device: 'tablet', color: '#22407C', video: '/promo/stores/reel/v36/inkwell-tablet-home.mp4', img: '/promo/stores/reel/v36/inkwell-tablet-home.jpg' },
+    'leaf-and-loam': { start: 1.3, device: 'tablet', color: '#139E6E', video: '/promo/stores/reel/v36/leaf-and-loam-tablet-home.mp4', img: '/promo/stores/reel/v36/leaf-and-loam-tablet-home.jpg' },
+    'spokehaus': { start: 1.3, device: 'phone', color: '#EE3F87', video: '/promo/stores/reel/v36/spokehaus-phone-home.mp4', img: '/promo/stores/reel/v36/spokehaus-phone-home.jpg' },
+    'juniper-linen': { start: 1.3, device: 'desktop', color: '#8E9FE8', video: '/promo/stores/reel/v36/juniper-linen-desktop-home.mp4', img: '/promo/stores/reel/v36/juniper-linen-desktop-home.jpg' },
+    'tonewood': { start: 1.3, device: 'tablet', color: '#5E2A63', video: '/promo/stores/reel/v36/tonewood-tablet-home.mp4', img: '/promo/stores/reel/v36/tonewood-tablet-home.jpg' },
+    'fetch-and-fern': { start: 1.3, device: 'desktop', color: '#138A86', video: '/promo/stores/reel/v36/fetch-and-fern-desktop-home.mp4', img: '/promo/stores/reel/v36/fetch-and-fern-desktop-home.jpg' },
+    'petal-and-post': { start: 1.3, device: 'phone', color: '#D63BC0', video: '/promo/stores/reel/v36/petal-and-post-phone-home.mp4', img: '/promo/stores/reel/v36/petal-and-post-phone-home.jpg' },
   };
   // the run's cards: 0..4 take the skeleton slots in order, 5..13 take all nine flash slots in order, so the run plays
   // (flash, skeleton): kettle-and-crow, northpeak, saltline, ridgeline-supply, nest-and-nook, atelier-noor, little-timber, inkwell,
@@ -6989,51 +6991,64 @@
       // impact: the old chatbot bursts, the clerk squashes and settles, its
       // card forms, and the store's colour ripples out from the corner
       const to = { x: seat.x + seat.w - size / 2, y: seat.y + seat.h - size / 2 };
-      {   // v36b (operator: "Dust"): the old chatbot disintegrates: it breaks into fine grains of itself that the impact
-        // blows away into the store, greying and blurring as they drift (stepped on the film clock; nothing waits on it)
+      {   // v36d (operator: "apply the same effect than the doubt clearing vaporized bubbles"): the old chatbot
+        // vaporizes exactly as the doubts do (promo-moments-vapor + promo-moments-vapor-bit, same keyframes and times):
+        // it flashes Bizmis orange with a glow, swells and blurs away, and six white vapour bits drift out of it.
+        // Stepped on the film clock (CSS keyframes are never sampled by the export); nothing waits on it.
         bubble.style.transition = 'none'; bubble.style.animation = 'none';
-        promoSfx('old-dust');
-        const N = 17;   // N x N grains (fine)
-        const bw = bubble.offsetWidth || size; const bh = bubble.offsetHeight || size;
-        const hash = (i) => { const x = Math.sin(i * 127.1 + 311.7) * 43758.5453; return x - Math.floor(x); };
-        const grains = [];
-        // the grains drift behind the clerk's card, over the store
-        const under = store.contains(widget) ? String(Math.max(1, (parseInt(getComputedStyle(widget).zIndex, 10) || 2) - 1)) : '';
-        for (let gy = 0; gy < N; gy += 1) {
-          for (let gx = 0; gx < N; gx += 1) {
-            const cx = (gx + 0.5) / N; const cy = (gy + 0.5) / N;
-            if ((cx - 0.5) ** 2 + (cy - 0.5) ** 2 > 0.3) continue;   // the launcher is round: no empty corner grains
-            const grain = bubble.cloneNode(true);
-            grain.classList.add('promo-install__grain');
-            const pad = 0.4;   // a hair of overlap, so the intact launcher shows no seams on its first frame
-            grain.style.clipPath = `inset(${((gy / N) * 100 - pad).toFixed(2)}% ${((1 - (gx + 1) / N) * 100 - pad).toFixed(2)}% ${((1 - (gy + 1) / N) * 100 - pad).toFixed(2)}% ${((gx / N) * 100 - pad).toFixed(2)}%)`;
-            grain.style.pointerEvents = 'none';
-            if (under) grain.style.zIndex = under;
-            const k = gy * N + gx;
-            // blown from the impact (the clerk lands on top) out and up into the store, a wind towards the upper left
-            const dx = cx - 0.5; const dy = cy - 0.15;
-            const len = Math.hypot(dx, dy) || 1;
-            const push = (1.1 + 1.9 * hash(k)) * bw;
-            grains.push({ node: grain, tx: (dx / len) * push * 0.55 - bw * (2.0 + 2.4 * hash(k + 7)), ty: (dy / len) * push * 0.35 - bh * (0.9 + 1.4 * hash(k + 13)),
-              rot: (hash(k + 29) - 0.5) * 220, delay: 40 + (1 - cy) * 120 + hash(k + 41) * 90, life: 420 + hash(k + 53) * 260, ox: (cx * 100).toFixed(1), oy: (cy * 100).toFixed(1) });
-            store.append(grain);
-          }
+        promoSfx('old-vapor');
+        const bw = bubble.offsetWidth || size;
+        const cx = parseFloat(bubble.style.left) + bw / 2; const cy = parseFloat(bubble.style.top) + bw / 2;
+        const fill = getComputedStyle(bubble).backgroundColor; const ink = getComputedStyle(bubble).color;
+        const ease = (x) => 1 - (1 - x) ** 4;   // ~ cubic-bezier(0.22, 1, 0.36, 1), per keyframe segment as CSS does
+        const lerp = (a, b, x) => a + (b - a) * x;
+        const bits = [];
+        for (let bit = 0; bit < 6; bit += 1) {
+          const node = document.createElement('span');
+          node.className = 'promo-install__vapor-bit';
+          const d = bw * 0.9;   // the doubts' 3.1 rem bits on a ~3.4 rem bubble
+          const angle = (bit / 6) * Math.PI * 2 + 0.55;
+          const dist = bw * (0.62 + (bit % 3) * 0.37);
+          Object.assign(node.style, { position: 'absolute', left: `${(cx - d / 2).toFixed(1)}px`, top: `${(cy - d / 2).toFixed(1)}px`, width: `${d.toFixed(1)}px`, height: `${d.toFixed(1)}px`,
+            borderRadius: '50%', background: '#fff', boxShadow: '0 0 24px 6px rgba(255,255,255,0.85)', pointerEvents: 'none', opacity: '0', zIndex: '10' });
+          bits.push({ node, dx: Math.cos(angle) * dist, dy: Math.sin(angle) * dist, delay: bit * 40 });
+          store.append(node);
         }
-        bubble.style.opacity = '0';
-        const t0 = performance.now();
-        const span = Math.max(...grains.map((g) => g.delay + g.life));
+        const VAPOR = PROMO_MOMENTS_VAPOR_MS; const BIT = 980;
+        const span = Math.max(VAPOR, ...bits.map((b) => b.delay + BIT));
         tweenStep(span, (_, u) => {
           const ms = u * span;
-          grains.forEach((g) => {
-            const v = Math.min(1, Math.max(0, (ms - g.delay) / g.life));
-            const e = 1 - (1 - v) ** 2.2;
-            g.node.style.transformOrigin = `${g.ox}% ${g.oy}%`;
-            g.node.style.transform = `translate(${(g.tx * e).toFixed(1)}px, ${(g.ty * e).toFixed(1)}px) rotate(${(g.rot * e).toFixed(1)}deg) scale(${(1 - 0.55 * e).toFixed(3)})`;
-            g.node.style.opacity = (v <= 0 ? 1 : Math.max(0, 1 - v ** 1.4)).toFixed(3);
-            g.node.style.filter = v <= 0 ? '' : `grayscale(${Math.min(1, v * 2.2).toFixed(2)}) contrast(${(1 - 0.65 * Math.min(1, v * 1.1)).toFixed(3)}) brightness(${(1 + 0.7 * v).toFixed(2)}) blur(${(2.2 * v).toFixed(2)}px)`;
+          // promo-moments-vapor: 0% -> 20% (orange flash, glow, 1.18) -> 100% (gone: blur 22 px, scale 2.4)
+          const v = Math.min(1, ms / VAPOR);
+          if (v < 0.2) {
+            const x = ease(v / 0.2);
+            bubble.style.opacity = lerp(1, 0.9, x).toFixed(3);
+            bubble.style.filter = `blur(${lerp(0, 1, x).toFixed(2)}px)`;
+            bubble.style.transform = `scale(${lerp(1, 1.18, x).toFixed(3)})`;
+            bubble.style.background = `color-mix(in srgb, var(--bizmis-primary) ${(x * 100).toFixed(1)}%, ${fill})`;
+            bubble.style.color = `color-mix(in srgb, transparent ${(x * 100).toFixed(1)}%, ${ink})`;
+            bubble.style.boxShadow = `0 0 ${(22 * x).toFixed(1)}px ${(10 * x).toFixed(1)}px color-mix(in srgb, var(--bizmis-primary) ${(60 * x).toFixed(1)}%, transparent)`;
+          } else {
+            const x = ease((v - 0.2) / 0.8);
+            bubble.style.opacity = lerp(0.9, 0, x).toFixed(3);
+            bubble.style.filter = `blur(${lerp(1, 22, x).toFixed(2)}px)`;
+            bubble.style.transform = `scale(${lerp(1.18, 2.4, x).toFixed(3)})`;
+            bubble.style.background = `color-mix(in srgb, var(--bizmis-primary) ${lerp(100, 55, x).toFixed(1)}%, transparent)`;
+            bubble.style.color = 'transparent';
+            bubble.style.boxShadow = `0 0 ${lerp(22, 48, x).toFixed(1)}px ${lerp(10, 22, x).toFixed(1)}px color-mix(in srgb, var(--bizmis-primary) ${lerp(60, 0, x).toFixed(1)}%, transparent)`;
+          }
+          // promo-moments-vapor-bit: 0% -> 24% (out a little, 0.82) -> 100% (out, scale 1.9, blur 22 px, gone)
+          bits.forEach((b) => {
+            const w = Math.min(1, Math.max(0, (ms - b.delay) / BIT));
+            let o; let k; let r; let bl;
+            if (w < 0.24) { const x = ease(w / 0.24); o = lerp(0, 0.82, x); k = lerp(0, 0.22, x); r = lerp(0.3, 1, x); bl = lerp(2, 8, x); }
+            else { const x = ease((w - 0.24) / 0.76); o = lerp(0.82, 0, x); k = lerp(0.22, 1, x); r = lerp(1, 1.9, x); bl = lerp(8, 22, x); }
+            if (w <= 0) o = 0;
+            b.node.style.opacity = o.toFixed(3);
+            b.node.style.transform = `translate(${(b.dx * k).toFixed(1)}px, ${(b.dy * k).toFixed(1)}px) scale(${r.toFixed(3)})`;
+            b.node.style.filter = `blur(${bl.toFixed(1)}px)`;
           });
-        }, (x) => x).then(() => grains.forEach((g) => g.node.remove()));
-        void t0;
+        }, (x) => x).then(() => { bits.forEach((b) => b.node.remove()); bubble.style.opacity = '0'; });
       }
       const wave = document.createElement('span');
       wave.className = 'promo-install__wave';
@@ -9645,7 +9660,7 @@
       promoSfx('reel-in');
       speakTake('t-stores');   // v16: the narrator speaks over the tunnel only (never over a store's own voice)
       reel.insertBefore(tunnel, strip);
-      flyers.forEach((f, i) => roll(f.video, (i * 0.4) % 3.2));   // v23: the new stores play as they fly (deterministic: the export clock seeks them)
+      flyers.forEach((f, i) => roll(f.video, i * 0.2, true));   // v23: the new stores play as they fly (deterministic: the export clock seeks them); v36: staggered 0.2 s, never wrapping (the native highlight is timed to each card)
       const zEnd = -P * 0.9 - flyers.length * P * 0.55 - P * 0.6;   // (unchanged: the first store still lands on its clap)
       const tunnelMs = Math.max(400, cutAt(0) - performance.now());   // v21: the first store lands on its clap
       // v24 light law: the tunnel's light and its crossfade into the first hero are paint()'s (v25b: the nearest store's
@@ -9658,7 +9673,6 @@
           const rel = f.z - camZ;
           const o = promoReelFlyerFade(rel, P);   // each card fades well before it would reach the camera
           f.dev.style.transform = `translate3d(${f.x.toFixed(1)}px, ${f.y.toFixed(1)}px, ${rel.toFixed(1)}px) rotateY(${f.rot.toFixed(2)}deg)`;
-          if (f.video && !f.flair && f !== dock && rel > -P * 1.7) { f.flair = true; promoWidgetFlair(f.video, f.sk.video, PROMO_REEL_WIDGET_THEME[f.sk.slug], 560, f.dev); }   // v35: each store's widget catches the eye as it nears
           f.dev.style.opacity = Math.max(0, o).toFixed(3);
           f.dev.style.visibility = o <= 0.001 ? 'hidden' : '';
           f.dev.style.zIndex = String(Math.round(rel + 100000));
@@ -9728,7 +9742,7 @@
         if (!strobing && cell.win < PROMO_REEL_SOFT_S) { strobing = true; promoSfx('reel-strobe', { ms: Math.round((cutS(heroes.length + run.length) - cutS(heroes.length + index)) * 1000) }); }
         reel.querySelectorAll('.promo-reel__said:not(.is-out)').forEach((pill) => { pill.classList.add('is-out'); pill.style.opacity = '0'; });
         cutTo(cell, cell.whip ? heroes.length + cell.src.quick : 100 + index);
-        if (cell.whip || cell.src.voice) promoWidgetFlair(cell.ambientVideo, cell.src.video, PROMO_REEL_WIDGET_THEME[cell.src.slug] || cell.src.color, Math.min(900, cell.win * 900), cell.dev);   // v35
+        // v36: the demo stores' highlight is in their own recordings now (no overlay)
         const id = cell.whip ? PROMO_REEL_QUICK_VOICES[cell.src.quick] : (cell.src.voice || null);   // v35: the voiced run cards speak in their window
         const voice = id ? await clerkVoice(id) : null;
         if (voice) {

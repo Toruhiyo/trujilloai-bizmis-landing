@@ -13302,5 +13302,5 @@ html.is-promo-yours .promo-reel__yours-widget > [data-promo-widget] { opacity: 1
 .promo-rewind__track i { position: absolute; inset: 0; border-radius: inherit; background: rgba(43, 37, 32, 0.62); transform-origin: 0 50%; }
 .promo-rewind__track b { position: absolute; top: 50%; width: 1.7cqh; height: 1.7cqh; translate: -50% -50%; border-radius: 50%; background: #fff;
   box-shadow: 0 0.3cqh 0.9cqh rgba(28, 24, 20, 0.3), 0 0 0 1px rgba(28, 24, 20, 0.08); }
-/* v36b: the old chatbot's dust grains are stepped per frame on the film clock: no CSS motion of their own */
-.promo-install__grain { transition: none !important; animation: none !important; }
+/* v36d: the old chatbot's vapour bits are stepped per frame on the film clock: no CSS motion of their own */
+.promo-install__vapor-bit { transition: none !important; animation: none !important; }
