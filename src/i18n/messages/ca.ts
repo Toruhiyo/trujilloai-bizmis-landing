@@ -156,11 +156,11 @@ export const ca: Messages = {
       decided: "Al carretó",
       buyQuery: "Arriba abans de divendres?",
       buyCaption: "Sí, surt avui i la devolució és gratuïta. Anem a pagar?",
-      /** The flipped beat copy (?copy=flip): the problem first, struck through at the fix, then the fix. No figures. */
+      /** Each beat's words: the merchant's loss, struck through at the fix, then the win written in. No figures. */
       flip: [
-        { problem: "Qui no ho troba, se'n va.", fix: "Bizmis redueix tot el teu catàleg als pocs que encaixen." },
-        { problem: "Els dubtes sense resposta maten la venda.", fix: "Bizmis compara, aconsella i resol cada dubte." },
-        { problem: "Les preguntes d'última hora buiden carrets.", fix: "Bizmis les respon i acompanya el client fins al pagament." },
+        { problem: "Els clients es cansen de buscar al teu catàleg i compren el mateix a la competència.", fix: "Els teus clients veuen les seves millors opcions en segons, mentre encara tenen ganes de comprar." },
+        { problem: "Els teus clients indecisos marxen a comparar i acaben comprant a un altre.", fix: "Els seus dubtes es resolen al moment, així que decideixen i et compren a tu." },
+        { problem: "Els clients arriben al pagament, els sorgeix un últim dubte i marxen.", fix: "Les preguntes d'última hora es responen al pagament, i la comanda surt." },
       ],
       /** The one-shopper variant (?case=one): the same shopper and gift from Find through Trust to Buy. */
       caseOne: {
@@ -171,8 +171,8 @@ export const ca: Messages = {
       },
       cart: { title: "El teu carretó", subtotal: "Subtotal", checkout: "Pagar", perks: ["Surt avui", "Devolució gratuïta"], placed: "Comanda feta" },
       funnel: {
-        problems: ["No el troba", "Indecís", "No n'està segur"],
-        solutions: ["Trobat", "Comparat", "Dubte resolt"],
+        problems: ["Es va cansar de buscar", "Va anar a comparar", "Se'n va anar"],
+        solutions: ["Trobat de seguida", "Comparat aquí", "Pagat"],
         /** The word at the open mouth, with its arrow: the dots are store visits. */
         visits: "visites",
       },

@@ -156,11 +156,11 @@ export const fr: Messages = {
       decided: "Dans le panier",
       buyQuery: "Il arrive avant vendredi ?",
       buyCaption: "Oui, il part aujourd'hui et le retour est gratuit. On passe au paiement ?",
-      /** The flipped beat copy (?copy=flip): the problem first, struck through at the fix, then the fix. No figures. */
+      /** Each beat's words: the merchant's loss, struck through at the fix, then the win written in. No figures. */
       flip: [
-        { problem: "Qui ne trouve pas, s'en va.", fix: "Bizmis réduit tout votre catalogue aux quelques produits qui conviennent." },
-        { problem: "Les doutes sans réponse tuent la vente.", fix: "Bizmis compare, conseille et lève chaque doute." },
-        { problem: "Les questions de dernière minute vident les paniers.", fix: "Bizmis y répond et accompagne l'acheteur jusqu'au paiement." },
+        { problem: "Les acheteurs se lassent de chercher dans votre catalogue, puis achètent les mêmes produits chez un concurrent.", fix: "Vos acheteurs voient leurs meilleures options en quelques secondes, quand ils ont encore envie d'acheter." },
+        { problem: "Vos acheteurs hésitants partent comparer et deviennent les clients d'un autre.", fix: "Leurs doutes sont levés sur-le-champ, alors ils se décident et achètent chez vous." },
+        { problem: "Les acheteurs arrivent au paiement, un dernier doute surgit, et ils s'en vont.", fix: "Les questions de dernière minute trouvent réponse au paiement, et la commande passe." },
       ],
       /** The one-shopper variant (?case=one): the same shopper and gift from Find through Trust to Buy. */
       caseOne: {
@@ -171,8 +171,8 @@ export const fr: Messages = {
       },
       cart: { title: "Votre panier", subtotal: "Sous-total", checkout: "Paiement", perks: ["Expédié aujourd'hui", "Retours gratuits"], placed: "Commande passée" },
       funnel: {
-        problems: ["Introuvable", "Indécis", "Pas sûr"],
-        solutions: ["Trouvé", "Comparé", "Doute levé"],
+        problems: ["A abandonné", "Parti comparer", "Parti"],
+        solutions: ["Trouvé vite", "Comparé ici", "Payé"],
         /** The word at the open mouth, with its arrow: the dots are store visits. */
         visits: "visites",
       },

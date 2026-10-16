@@ -156,11 +156,11 @@ export const it: Messages = {
       decided: "Nel carrello",
       buyQuery: "Arriva entro venerdì?",
       buyCaption: "Sì, parte oggi e il reso è gratuito. Andiamo al pagamento?",
-      /** The flipped beat copy (?copy=flip): the problem first, struck through at the fix, then the fix. No figures. */
+      /** Each beat's words: the merchant's loss, struck through at the fix, then the win written in. No figures. */
       flip: [
-        { problem: "Chi non lo trova, se ne va.", fix: "Bizmis riduce tutto il tuo catalogo ai pochi che fanno al caso." },
-        { problem: "I dubbi senza risposta uccidono la vendita.", fix: "Bizmis confronta, consiglia e scioglie ogni dubbio." },
-        { problem: "Le domande dell'ultimo minuto svuotano i carrelli.", fix: "Bizmis risponde e accompagna il cliente fino al pagamento." },
+        { problem: "I clienti si stancano di cercare nel tuo catalogo e comprano gli stessi prodotti da un concorrente.", fix: "I clienti vedono le loro opzioni migliori in pochi secondi, finché hanno ancora voglia di comprare." },
+        { problem: "I tuoi clienti indecisi vanno a confrontare e diventano clienti di un altro.", fix: "I loro dubbi trovano risposta subito, così decidono e comprano da te." },
+        { problem: "I clienti arrivano al pagamento, hanno un ultimo dubbio e se ne vanno.", fix: "Le domande dell'ultimo minuto trovano risposta al pagamento, e l'ordine va a buon fine." },
       ],
       /** The one-shopper variant (?case=one): the same shopper and gift from Find through Trust to Buy. */
       caseOne: {
@@ -171,8 +171,8 @@ export const it: Messages = {
       },
       cart: { title: "Il tuo carrello", subtotal: "Subtotale", checkout: "Pagamento", perks: ["Spedito oggi", "Reso gratuito"], placed: "Ordine effettuato" },
       funnel: {
-        problems: ["Non lo trova", "Indeciso", "Non è sicuro"],
-        solutions: ["Trovato", "Confrontato", "Dubbio chiarito"],
+        problems: ["Ha smesso di cercare", "Andato a confrontare", "Se n'è andato"],
+        solutions: ["Trovato subito", "Confrontato qui", "Pagato"],
         /** The word at the open mouth, with its arrow: the dots are store visits. */
         visits: "visite",
       },

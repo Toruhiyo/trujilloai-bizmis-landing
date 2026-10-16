@@ -156,11 +156,11 @@ export const es: Messages = {
       decided: "En el carrito",
       buyQuery: "¿Llega antes del viernes?",
       buyCaption: "Sí, sale hoy y la devolución es gratis. ¿Vamos a pagar?",
-      /** The flipped beat copy (?copy=flip): the problem first, struck through at the fix, then the fix. No figures. */
+      /** Each beat's words: the merchant's loss, struck through at the fix, then the win written in. No figures. */
       flip: [
-        { problem: "Quien no lo encuentra, se va.", fix: "Bizmis reduce todo tu catálogo a los pocos que encajan." },
-        { problem: "Las dudas sin respuesta matan la venta.", fix: "Bizmis compara, aconseja y resuelve cada duda." },
-        { problem: "Las preguntas de última hora vacían carritos.", fix: "Bizmis las responde y lleva al cliente hasta el pago." },
+        { problem: "Los clientes se cansan de buscar en tu catálogo y compran lo mismo a la competencia.", fix: "Tus clientes ven sus mejores opciones en segundos, mientras aún tienen ganas de comprar." },
+        { problem: "Tus clientes indecisos se van a comparar y acaban comprando a otro.", fix: "Sus dudas se resuelven al momento, así que deciden y te compran a ti." },
+        { problem: "Los clientes llegan al pago, les surge una última duda y se van.", fix: "Las preguntas de última hora se responden en el pago, y el pedido sale." },
       ],
       /** The one-shopper variant (?case=one): the same shopper and gift from Find through Trust to Buy. */
       caseOne: {
@@ -171,8 +171,8 @@ export const es: Messages = {
       },
       cart: { title: "Tu carrito", subtotal: "Subtotal", checkout: "Pagar", perks: ["Sale hoy", "Devolución gratis"], placed: "Pedido realizado" },
       funnel: {
-        problems: ["No lo encuentra", "No se decide", "No está seguro"],
-        solutions: ["Lo encontró", "Comparado", "Duda resuelta"],
+        problems: ["Se cansó de buscar", "Fue a comparar", "Se fue"],
+        solutions: ["Lo encontró rápido", "Comparado aquí", "Pagado"],
         /** The word at the open mouth, with its arrow: the dots are store visits. */
         visits: "visitas",
       },

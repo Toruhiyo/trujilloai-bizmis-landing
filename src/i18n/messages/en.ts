@@ -162,11 +162,11 @@ export const en = {
       decided: "Added to cart",
       buyQuery: "Will it arrive by Friday?",
       buyCaption: "Yes, it ships today and returns are free. Ready to check out?",
-      /** The flipped beat copy (?copy=flip): the problem first, struck through at the fix, then the fix. No figures. */
+      /** Each beat's words: the merchant's loss, struck through at the fix, then the win written in. No figures. */
       flip: [
-        { problem: "Shoppers who can't find it leave.", fix: "Bizmis narrows your whole catalog to the few that fit." },
-        { problem: "Unanswered doubts kill the sale.", fix: "Bizmis compares, advises and clears every doubt." },
-        { problem: "Last-minute questions empty carts.", fix: "Bizmis answers them and walks shoppers to checkout." },
+        { problem: "Shoppers give up searching your catalog, then buy the same products from a competitor.", fix: "Shoppers get your best matches in seconds, while they're still ready to buy." },
+        { problem: "Your hesitant shoppers leave to compare, and become someone else's customers.", fix: "Their doubts get answered on the spot, so they decide and buy from you." },
+        { problem: "Shoppers get to checkout, hit one last doubt, and walk away.", fix: "Last-minute questions get answered at checkout, and the order goes through." },
       ],
       /** The one-shopper variant (?case=one): the same shopper and gift from Find through Trust to Buy. */
       caseOne: {
@@ -180,8 +180,8 @@ export const en = {
       /** The at-scale funnel beside each moment: the whole store's shoppers, one funnel fixed stage by stage (illustrative, no figures). */
       funnel: {
         /** Each stage's status, as the film's pills: the problem (grey), then fixed by Bizmis (orange check). */
-        problems: ["Can't find it", "Can't decide", "Not sure"],
-        solutions: ["Found it", "Compared", "Doubt cleared"],
+        problems: ["Gave up looking", "Off to compare", "Walked away"],
+        solutions: ["Found it fast", "Compared here", "Paid"],
         /** The word at the open mouth, with its arrow: the dots are store visits. */
         visits: "visits",
       },
