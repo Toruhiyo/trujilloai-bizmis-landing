@@ -180,8 +180,8 @@ export const en = {
       /** The at-scale funnel beside each moment: the whole store's shoppers, one funnel fixed stage by stage (illustrative, no figures). */
       funnel: {
         /** Each stage's status, as the film's pills: the problem (grey), then fixed by Bizmis (orange check). */
-        problems: ["Gave up looking", "Off to compare", "Walked away"],
-        solutions: ["Found it fast", "Compared here", "Paid"],
+        problems: ["Gave up looking", "Left to compare", "Walked away"],
+        solutions: ["Found it fast", "Chose here", "Paid"],
         /** The word at the open mouth, with its arrow: the dots are store visits. */
         visits: "visits",
       },
