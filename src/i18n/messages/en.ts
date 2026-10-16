@@ -166,9 +166,9 @@ export const en = {
        * [[…]] marks each sentence's core (what hurts in the loss, what pays in the win): one per sentence,
        * highlighted by the headline swaps (?beat=5a..5e); keep the marks around the equivalent words when translating. */
       flip: [
-        { problem: "Shoppers give up searching your catalog, then [[buy the same products from a competitor]].", fix: "Shoppers get [[your best matches in seconds]], while they're still ready to buy." },
-        { problem: "Your hesitant shoppers leave to compare, and [[become someone else's customers]].", fix: "Their doubts get answered on the spot, so they [[decide and buy from you]]." },
-        { problem: "Shoppers get to checkout, hit one last doubt, and [[walk away]].", fix: "Last-minute questions get answered at checkout, and [[the order goes through]]." },
+        { problem: "Visitors browsing your catalog [[tire out and give up]].", fix: "Visitors browsing your catalog [[find products worth buying, fast]]." },
+        { problem: "Shoppers comparing options [[freeze and walk away]].", fix: "Shoppers comparing options [[choose with confidence]]." },
+        { problem: "Buyers ready to buy [[hesitate and hold off]].", fix: "Buyers ready to buy [[commit and check out]]." },
       ],
       /** ?beat=1..6: the small labels of the alternative loss → win looks. */
       flipLabels: { lose: "You lose", win: "You win", you: "You, today", withBizmis: "With Bizmis" },

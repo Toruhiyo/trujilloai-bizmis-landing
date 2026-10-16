@@ -158,9 +158,9 @@ export const ca: Messages = {
       buyCaption: "Sí, surt avui i la devolució és gratuïta. Anem a pagar?",
       /** Each beat's words: the merchant's loss, struck through at the fix, then the win written in. No figures. */
       flip: [
-        { problem: "Els clients es cansen de buscar al teu catàleg i [[compren el mateix a la competència]].", fix: "Els teus clients veuen [[les seves millors opcions en segons]], mentre encara tenen ganes de comprar." },
-        { problem: "Els teus clients indecisos marxen a comparar i [[acaben comprant a un altre]].", fix: "Els seus dubtes es resolen al moment, així que [[decideixen i et compren a tu]]." },
-        { problem: "Els clients arriben al pagament, els sorgeix un últim dubte i [[marxen]].", fix: "Les preguntes d'última hora es responen al pagament, i [[la comanda surt]]." },
+        { problem: "Els visitants que recorren el teu catàleg [[es cansen i abandonen]].", fix: "Els visitants que recorren el teu catàleg [[troben ràpid productes que valen la pena]]." },
+        { problem: "Els clients que comparen opcions [[es bloquegen i marxen]].", fix: "Els clients que comparen opcions [[trien amb seguretat]]." },
+        { problem: "Els compradors a punt de comprar [[dubten i es frenen]].", fix: "Els compradors a punt de comprar [[es decideixen i passen al pagament]]." },
       ],
       /** ?beat=1..6: the small labels of the alternative loss → win looks. */
       flipLabels: { lose: "Perds", win: "Guanyes", you: "Tu, avui", withBizmis: "Amb Bizmis" },

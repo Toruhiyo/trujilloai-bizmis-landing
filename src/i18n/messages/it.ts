@@ -158,9 +158,9 @@ export const it: Messages = {
       buyCaption: "Sì, parte oggi e il reso è gratuito. Andiamo al pagamento?",
       /** Each beat's words: the merchant's loss, struck through at the fix, then the win written in. No figures. */
       flip: [
-        { problem: "I clienti si stancano di cercare nel tuo catalogo e [[comprano gli stessi prodotti da un concorrente]].", fix: "I clienti vedono [[le loro opzioni migliori in pochi secondi]], finché hanno ancora voglia di comprare." },
-        { problem: "I tuoi clienti indecisi vanno a confrontare e [[diventano clienti di un altro]].", fix: "I loro dubbi trovano risposta subito, così [[decidono e comprano da te]]." },
-        { problem: "I clienti arrivano al pagamento, hanno un ultimo dubbio e [[se ne vanno]].", fix: "Le domande dell'ultimo minuto trovano risposta al pagamento, e [[l'ordine va a buon fine]]." },
+        { problem: "I visitatori che sfogliano il tuo catalogo [[si stancano e mollano]].", fix: "I visitatori che sfogliano il tuo catalogo [[trovano subito prodotti che valgono l'acquisto]]." },
+        { problem: "I clienti che confrontano le opzioni [[si bloccano e se ne vanno]].", fix: "I clienti che confrontano le opzioni [[scelgono con sicurezza]]." },
+        { problem: "I clienti pronti a comprare [[esitano e rimandano]].", fix: "I clienti pronti a comprare [[si decidono e vanno al pagamento]]." },
       ],
       /** ?beat=1..6: the small labels of the alternative loss → win looks. */
       flipLabels: { lose: "Perdi", win: "Vinci", you: "Tu, oggi", withBizmis: "Con Bizmis" },
