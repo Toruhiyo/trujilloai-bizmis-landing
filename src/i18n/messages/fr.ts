@@ -147,7 +147,7 @@ export const fr: Messages = {
         { title: "Les doutes deviennent des décisions", body: "Il compare, conseille et répond à chaque doute." },
         { title: "Les paniers deviennent des commandes", body: "Il lève les dernières questions et les guide jusqu'au paiement." },
       ],
-      payoff: { kicker: "Au total", title: "Plus de commandes, chaque jour", body: "Chaque étape rapporte plus, pour chaque client à la fois." },
+      payoff: { kicker: "Au total", title: "Plus de ventes avec les mêmes visites.", body: "Sans lassitude. Sans blocage. Sans hésitation." },
       findQuery: "Un cadeau pour ma sœur, moins de 50 €",
       findCaption: "En voici trois qu'elle va adorer.",
       compareQuery: "Lequel je prends ?",
@@ -188,7 +188,7 @@ export const fr: Messages = {
       metrics: {
         conversion: "Taux de conversion",
         orders: "Commandes",
-        abandoned: "Paiements abandonnés",
+        abandoned: "Paniers abandonnés",
         ordersToday: "Commandes du jour",
         before: "avant",
         after: "après",

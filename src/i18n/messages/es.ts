@@ -147,7 +147,7 @@ export const es: Messages = {
         { title: "Las dudas se vuelven decisiones", body: "Compara, aconseja y responde cada duda." },
         { title: "Los carritos se vuelven pedidos", body: "Resuelve las dudas de última hora y los lleva al pago." },
       ],
-      payoff: { kicker: "Todo junto", title: "Más pedidos, cada día", body: "Cada etapa rinde más, con cada cliente a la vez." },
+      payoff: { kicker: "Todo junto", title: "Más ventas con las mismas visitas.", body: "Sin cansancio. Sin bloqueos. Sin dudas." },
       findQuery: "Un regalo para mi hermana, menos de 50 €",
       findCaption: "Aquí tienes tres que le van a encantar.",
       compareQuery: "¿Cuál me llevo?",
@@ -188,7 +188,7 @@ export const es: Messages = {
       metrics: {
         conversion: "Tasa de conversión",
         orders: "Pedidos",
-        abandoned: "Pagos abandonados",
+        abandoned: "Carritos abandonados",
         ordersToday: "Pedidos de hoy",
         before: "antes",
         after: "después",

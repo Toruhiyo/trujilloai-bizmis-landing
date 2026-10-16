@@ -785,14 +785,15 @@
   }
 }
 
-/* ═════════ The agent's voice, made obvious (BizmisWidget HeadPulse) ═════════
+/* ═════════ The agent's voice (BizmisWidget HeadPulse) ═════════
    The real widget's speaking pulse around its small head circle (bar and
-   mobile layouts), pushed so it can't be missed: a breathing glow, three
-   rings expanding out of the circle, and the widget's own rim ring, all in
-   the Bizmis primary. Mounted always, faded in only while words are said. */
+   mobile layouts), as fine as the real one draws it: a faint breathing glow,
+   three hairline rings expanding out of the circle, and the widget's own thin
+   rim ring, all in the Bizmis primary. Mounted always, faded in only while
+   words are said. */
 .bzw-hpulse {
-  --reach: 1.85;
-  --bw: 3px;
+  --reach: 1.75;
+  --bw: 1.5px;
   position: absolute;
   inset: 0;
   pointer-events: none;
@@ -800,31 +801,23 @@
   transition: opacity 0.28s ease;
 }
 .bzw-hpulse.is-small {
-  --reach: 2.5;
-  --bw: 2.5px;
+  --reach: 2.1;
+  --bw: 1.25px;
 }
 .bzw-hpulse.is-small .bzw-hpulse-glow {
-  inset: -80%;
-  background: radial-gradient(
-    circle,
-    hsl(var(--primary) / 0.75) 0%,
-    hsl(var(--primary) / 0.42) 32%,
-    hsl(var(--primary) / 0.14) 55%,
-    transparent 70%
-  );
+  inset: -42%;
 }
 .bzw-hpulse.is-on {
   opacity: 1;
 }
 .bzw-hpulse-glow {
   position: absolute;
-  inset: -58%;
+  inset: -30%;
   border-radius: 50%;
   background: radial-gradient(
     circle,
-    hsl(var(--primary) / 0.6) 0%,
-    hsl(var(--primary) / 0.32) 34%,
-    hsl(var(--primary) / 0.1) 55%,
+    hsl(var(--primary) / 0.3) 0%,
+    hsl(var(--primary) / 0.14) 42%,
     transparent 70%
   );
   animation: bzw-hpulse-glow 1.1s ease-in-out infinite alternate;
@@ -834,7 +827,7 @@
   position: absolute;
   inset: 0;
   border-radius: 50%;
-  border: var(--bw) solid hsl(var(--primary));
+  border: var(--bw) solid hsl(var(--primary) / 0.75);
 }
 .bzw-hpulse-ring {
   opacity: 0;
@@ -848,8 +841,9 @@
 }
 .bzw-hpulse-rim {
   inset: calc(var(--bw) * -1);
+  border-color: hsl(var(--primary) / 0.9);
   animation: bzw-hpulse-rim 0.7s ease-in-out infinite alternate;
-  box-shadow: 0 0 14px 2px hsl(var(--primary) / 0.55);
+  box-shadow: 0 0 5px 0 hsl(var(--primary) / 0.35);
 }
 @keyframes bzw-hpulse-glow {
   from {
@@ -863,11 +857,11 @@
 }
 @keyframes bzw-hpulse-ring {
   0% {
-    opacity: 1;
+    opacity: 0.85;
     scale: 1;
   }
   55% {
-    opacity: 0.6;
+    opacity: 0.45;
   }
   100% {
     opacity: 0;
@@ -1042,6 +1036,33 @@
 .sl-g2-copy.is-payoff .sl-copy-body {
   margin-inline: auto;
 }
+/* the payoff's metric card, beside the funnel (SalesSpine's layout), in with the payoff */
+.sl-g2-card {
+  position: absolute;
+  z-index: 4;
+  opacity: 0;
+  transform: translateY(14px);
+  transition:
+    opacity 0.3s var(--bzl-ease),
+    transform 0.6s var(--bzl-ease),
+    left 0.8s var(--bzl-ease),
+    top 0.8s var(--bzl-ease);
+  pointer-events: none;
+}
+.sl-g2-card.is-on {
+  opacity: 1;
+  transform: none;
+  transition-delay: 0.35s;
+}
+.sl-g2-met.is-card {
+  max-width: none;
+  margin: 0;
+}
+/* stacked: over the funnel, centred */
+.sl-pay-card.is-card {
+  width: min(100%, 300px);
+  margin: 0.25rem auto 1.25rem;
+}
 /* stacked: each beat's funnel, its device hanging off its stage */
 .sl-c.sl-g2.is-stacked {
   padding-bottom: clamp(3rem, 8vw, 5rem);
@@ -1089,10 +1110,10 @@
 @media (prefers-reduced-motion: reduce) {
   .sl-g2-callout,
   .sl-g2-copy,
+  .sl-g2-card,
   .sl-g2-funnel,
   .sl-g2-cone-fill,
   .sl-g2-cone-side,
-  .sl-dev-rewind,
   .sl-flow-rewind {
     transition: none !important;
   }
@@ -1176,7 +1197,7 @@
   height: 60%;
 }
 
-/* scrolled back: the marker ◀◀ over the funnel (FunnelFlow), the player's ◀◀ over the device */
+/* scrolled back: the marker ◀◀ over the funnel (FunnelFlow) */
 .sl-flow-rewind {
   position: absolute;
   z-index: 7;
@@ -1198,46 +1219,78 @@
   opacity: 1;
   transform: none;
 }
-/* the device's: at the top-left corner of its screen (each frame's own inset) */
-.sl-dev-rewind {
-  position: absolute;
-  left: 3.5%;
-  top: 13%;
-  z-index: 9;
-  display: grid;
-  place-items: center;
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  background: rgb(28 24 20 / 0.55);
-  color: #fff;
-  -webkit-backdrop-filter: blur(8px);
-  backdrop-filter: blur(8px);
-  box-shadow: 0 10px 30px -12px rgb(28 24 20 / 0.5);
-  opacity: 0;
-  transform: scale(0.8);
-  transform-origin: 0 0;
-  transition:
-    opacity 0.18s ease,
-    transform 0.25s var(--bzl-ease);
-  pointer-events: none;
+/* the device's: its screen goes analog while it rewinds, a tape being rewound (RewindScreen; the look's
+   base is rewind-analog.css's .rwa-fx, retuned here for a lit white screen instead of words on the band) */
+.rws,
+.rws-in {
+  position: relative;
+  width: 100%;
+  height: 100%;
 }
-.sl-dev-rewind.is-dev-1 {
-  left: 9%;
-  top: 8.5%;
+.rws-in {
+  --rw: 0;
+  /* the screen's own white (the frame's), so the filter works on an opaque picture: its channel split
+     would darken anything see-through */
+  background: #fff;
 }
-.sl-dev-rewind.is-dev-2 {
-  left: 4%;
-  top: 9.5%;
+/* the white runs on past the edges (clipped by the screen's rounded box), so the split and the tear
+   slices pull white in at the sides, never a coloured strip */
+.rws-in.is-rw {
+  box-shadow: 0 0 0 28px #fff;
+  transform: translate(var(--rw-x, 0), var(--rw-y, 0));
 }
-.sl-dev-rewind.is-on {
-  opacity: 1;
-  transform: none;
+.rws .rwa-fx {
+  inset: 0;
+  -webkit-mask-image: none;
+  mask-image: none;
 }
-.sl-dev-rewind svg {
-  width: 20px;
-  height: 20px;
-  translate: -1px 0;
+.rws-in.is-rw .rwa-fx {
+  visibility: visible;
+  opacity: min(1, calc(var(--rw) * 1.2));
+}
+/* scanlines that read on white, the grain over them */
+.rws .rwa-fx::before {
+  background:
+    repeating-linear-gradient(180deg, rgb(40 22 10 / 0.1) 0 1px, transparent 1px 3px),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.3 0 0 0 0 0.22 0 0 0 0 0.16 0 0 0 0.7 -0.32'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 100% 3px, 160px 160px;
+  mix-blend-mode: multiply;
+  opacity: 0.85;
+}
+/* the tracking bands: a soft smeared one (a shade, a bright line through it) and a thin hard one, rolling up */
+.rws .rwa-fx::after {
+  height: 16%;
+  background:
+    linear-gradient(
+      180deg,
+      transparent 0%,
+      rgb(60 36 20 / 0.08) 25%,
+      rgb(60 36 20 / 0.2) 42%,
+      rgb(255 255 255 / 0.85) 47%,
+      rgb(255 214 190 / 0.6) 51%,
+      rgb(60 36 20 / 0.16) 58%,
+      transparent 100%
+    ),
+    linear-gradient(180deg, transparent 80%, rgb(40 22 10 / 0.35) 80% 82%, transparent 82%) 0 0 / 100% 100% no-repeat;
+  animation-name: rws-track;
+  animation-duration: 0.7s;
+}
+@keyframes rws-track {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(-725%);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .rws-in {
+    transform: none !important;
+    filter: none !important;
+  }
+  .rws .rwa-fx {
+    display: none;
+  }
 }
 
 /* ?win=4..6: the metrics, in the funnel's marker (Metrics) */

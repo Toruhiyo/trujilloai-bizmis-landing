@@ -147,7 +147,7 @@ export const ca: Messages = {
         { title: "Els dubtes es tornen decisions", body: "Compara, aconsella i respon cada dubte." },
         { title: "Els carretons es tornen comandes", body: "Resol els dubtes d'última hora i els porta a pagar." },
       ],
-      payoff: { kicker: "Tot plegat", title: "Més comandes, cada dia", body: "Cada etapa rendeix més, amb cada client alhora." },
+      payoff: { kicker: "Tot plegat", title: "Més vendes amb les mateixes visites.", body: "Sense cansament. Sense bloquejos. Sense dubtes." },
       findQuery: "Un regal per a la meva germana, menys de 50 €",
       findCaption: "Aquí en tens tres que li encantaran.",
       compareQuery: "Quin m'emporto?",
@@ -188,7 +188,7 @@ export const ca: Messages = {
       metrics: {
         conversion: "Taxa de conversió",
         orders: "Comandes",
-        abandoned: "Pagaments abandonats",
+        abandoned: "Cistelles abandonades",
         ordersToday: "Comandes d'avui",
         before: "abans",
         after: "després",

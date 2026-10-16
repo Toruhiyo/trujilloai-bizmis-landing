@@ -152,7 +152,7 @@ export const en = {
         { title: "Carts turn into orders", body: "It clears last-minute questions and walks them to checkout." },
       ],
       /** The words over the payoff, every part lit. */
-      payoff: { kicker: "All together", title: "More orders, every day", body: "Every stage works harder, for every shopper at once." },
+      payoff: { kicker: "All together", title: "More sales from the same visits.", body: "No fatigue. No paralysis. No hesitation." },
       /** The mockups: what the shopper says, then what the agent says (captions). */
       findQuery: "A gift for my sister, under $50",
       findCaption: "Here are three she will love.",
@@ -199,7 +199,7 @@ export const en = {
       metrics: {
         conversion: "Conversion rate",
         orders: "Orders",
-        abandoned: "Abandoned checkouts",
+        abandoned: "Abandoned carts",
         ordersToday: "Orders today",
         before: "before",
         after: "after",

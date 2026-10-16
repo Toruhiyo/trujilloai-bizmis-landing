@@ -1,5 +1,4 @@
 import { useLayoutEffect, useRef, useState } from "react";
-import { Rewind } from "lucide-react";
 import { useMessages } from "@/i18n/LocaleProvider";
 import { cn } from "@/lib/utils";
 import BeatCopy from "./BeatCopy";
@@ -8,6 +7,7 @@ import FunnelScale from "./funnel/FunnelScale";
 import { ksAt, startsFor } from "./funnel/model";
 import { useActivePanel, useMedia, usePinProgress, useRewinding, useScrollPlay, useScrollThrough } from "./hooks";
 import Metrics from "./Metrics";
+import RewindScreen from "./RewindScreen";
 import { useSalesProto } from "./proto";
 import SalesPayoff, { PAYOFF_DURATION } from "./SalesPayoff";
 import { DEVICE_ASPECT, SalesShell, useBeatTimelines, useSize } from "./SalesShell";
@@ -22,13 +22,15 @@ import { Device, PanelCopy } from "./shared";
  * the whole store are one drawing. It's one shopper's journey with the
  * store's one agent, who seals each stage's leak as it solves it in the
  * device; the fixes add up (one funnel, never lossless); then the devices
- * fold back into the funnel and it grows for the payoff, its bag filling.
+ * fold back into the funnel and it grows for the payoff, its bag filling,
+ * with the merchant's metric card beside it turning the right way at each fix.
  *
  * Driven by the scroll's position, not by time: each beat (and the payoff)
  * has its own stretch of the pinned track, and its timeline (typing, the
  * agent's answer, the stage's fix, its solution written and ticked) maps
  * onto that stretch, ending on a hold on the fixed state, so it's always
- * reached; scrolling back rewinds it (with a ◀◀ while it does). The visits
+ * reached; scrolling back rewinds it (the device's screen goes analog, a
+ * tape rewinding, and the funnel shows its marker ◀◀ while it does). The visits
  * keep flowing in real time. Phones (and short screens): the beats stack,
  * each funnel with its device hanging off its stage, each mapped to its own
  * scroll through the screen.
@@ -50,27 +52,34 @@ const timeAt = (p: number, duration: number) => Math.min(1, Math.max(0, (p - LEA
 /** How far each stage is fixed (0 → 1) in beat `focus` (3: the payoff) at `t`: for the metrics. */
 const fixedAt = (focus: number, t: number, fixAt?: number) => ksAt(t, startsFor(focus, fixAt)).map((v) => Math.min(1, v));
 
-/** The device's own rewind sign (◀◀ in a clean disc, as a player shows it), while it rewinds. */
-const DeviceRewind = ({ on, index }: { on: boolean; index: number }) => (
-  <span className={cn("sl-dev-rewind", `is-dev-${index}`, on && "is-on")} aria-hidden="true">
-    <Rewind strokeWidth={0} fill="currentColor" />
-  </span>
-);
-
 const clamp = (v: number, a: number, b: number) => Math.min(b, Math.max(a, v));
 
+/** The funnel's box, width : height, the payoff's: the beats' funnels keep it too, scaled down to fit under the device. */
+const FUNNEL_ASPECT = 2.9;
+/** A beat's funnel's height for an H px stage (a little more of it than a flat funnel took, so its narrower box still reads). */
+const beatFnH = (H: number) => clamp(H * 0.36, 180, 300);
+/** The metric card's height : width (Metrics' card, 168 / 330). */
+const CARD_ASPECT = 168 / 330;
+
 /** The pinned stage's layout (px) for a W x H stage: the funnel, each beat's callout, its words and its cone. */
-const layout = (W: number, H: number, payoff: boolean, extra = 0, visits?: string) => {
+const layout = (W: number, H: number, payoff: boolean, visits?: string) => {
   const pad = 12;
-  const fnH = payoff ? Math.min(clamp(H * 0.56, 240, 420), H - 170 - extra - pad) : clamp(H * 0.3, 165, 250);
-  const fnW = Math.min(W, fnH * (payoff ? 2.9 : 4.6));
-  const fnLeft = (W - fnW) / 2;
-  const top = payoff ? 170 + extra : 0;
+  // the payoff's metric card, beside the funnel (right of it), the two centred together
+  const cardW = clamp(W * 0.24, 230, 320);
+  const cardGap = clamp(W * 0.03, 24, 48);
+  // one shape for the funnel in every beat and the payoff (FUNNEL_ASPECT): a beat's is only smaller, never flatter
+  const fnH0 = payoff ? Math.min(clamp(H * 0.56, 240, 420), H - 170 - pad) : beatFnH(H);
+  const fnW = Math.min(payoff ? W - cardW - cardGap : W, fnH0 * FUNNEL_ASPECT);
+  const fnH = fnW / FUNNEL_ASPECT;
+  const fnLeft = payoff ? (W - fnW - cardGap - cardW) / 2 : (W - fnW) / 2;
+  const top = payoff ? 170 : 0;
   const fnTop = payoff ? top + Math.max(0, (H - top - fnH) / 2) : H - fnH - pad;
   const a = funnelAnchors(fnW, fnH, undefined, visits);
+  // level with the funnel's run (its centre line), wherever the funnel is
+  const card = { left: fnLeft + fnW + cardGap, top: fnTop + a.cy - (cardW * CARD_ASPECT) / 2, width: cardW };
   const gap = clamp(H * 0.075, 34, 64);
   const areaTop = pad + 4;
-  const areaBottom = H - clamp(H * 0.3, 165, 250) - pad - gap;
+  const areaBottom = H - beatFnH(H) - pad - gap;
   const cgap = clamp(W * 0.035, 28, 56);
   const beats = [0, 1, 2].map((i) => {
     const A = DEVICE_ASPECT[i];
@@ -109,7 +118,7 @@ const layout = (W: number, H: number, payoff: boolean, extra = 0, visits?: strin
       },
     };
   });
-  return { fnH, fnW, fnLeft, fnTop, beats };
+  return { fnH, fnW, fnLeft, fnTop, beats, card };
 };
 
 /**
@@ -170,8 +179,7 @@ const Pinned = () => {
   // one value that only falls when the scroll goes back (a step back, or back within a step)
   const rewinding = useRewinding(step * 1e5 + (payoff ? payT : beats[step].t));
   const [stage, { W, H }] = useSize<HTMLDivElement>();
-  // room under the payoff's words for its metric (?win)
-  const L = layout(W, H, payoff, win ? (win === 6 ? 110 : 165) : 0, s.funnel.visits);
+  const L = layout(W, H, payoff, s.funnel.visits);
   const f = Math.min(step, 2);
   const clock = payoff
     ? { t: payT, duration: PAYOFF_DURATION, fixAt: undefined }
@@ -194,8 +202,9 @@ const Pinned = () => {
                   aria-hidden={step !== i}
                   style={{ left: b.x, top: b.y, width: b.w, height: b.h, transformOrigin: b.origin }}
                 >
-                  <Device index={i} clock={beats[i]} active={step === i} />
-                  <DeviceRewind index={i} on={rewinding && step === i} />
+                  <RewindScreen on={rewinding && step === i}>
+                    <Device index={i} clock={beats[i]} active={step === i} />
+                  </RewindScreen>
                 </div>
               ))}
               {s.panels.map((p, i) => (
@@ -210,7 +219,10 @@ const Pinned = () => {
               ))}
               <div className={cn("sl-g2-copy is-payoff", payoff && "is-on")}>
                 <PanelCopy kicker={s.payoff.kicker} title={s.payoff.title} body={s.payoff.body} />
-                {win > 0 && <Metrics variant={win} k={payoff ? k : [0, 0, 0]} focus={3} className="sl-g2-met is-payoff" />}
+              </div>
+              {/* the payoff's win in the metrics a merchant watches, turning with each fix (direction only) */}
+              <div className={cn("sl-g2-card", payoff && "is-on")} style={{ left: L.card.left, top: L.card.top, width: L.card.width }}>
+                <Metrics variant={4} k={payoff ? k : [0, 0, 0]} focus={3} className="sl-g2-met is-card" />
               </div>
               <div className="sl-fn sl-g2-funnel" style={{ left: L.fnLeft, top: L.fnTop, width: L.fnW, height: L.fnH }}>
                 <FunnelFlow
@@ -279,8 +291,9 @@ const StackedBeat = ({ i, setRef }: { i: number; setRef: (el: HTMLElement | null
       </div>
       {cone && <Cone stage={cone.to} device={cone.from} on className="is-static" />}
       <div ref={dev} className="sl-g2-s-dev relative">
-        <Device index={i} clock={beat} />
-        <DeviceRewind index={i} on={rewinding} />
+        <RewindScreen on={rewinding}>
+          <Device index={i} clock={beat} />
+        </RewindScreen>
       </div>
     </div>
   );
@@ -288,7 +301,6 @@ const StackedBeat = ({ i, setRef }: { i: number; setRef: (el: HTMLElement | null
 
 const StackedPayoff = ({ setRef }: { setRef: (el: HTMLElement | null) => void }) => {
   const s = useMessages().landing.sales;
-  const { win } = useSalesProto();
   const [item, p] = useScrollThrough<HTMLDivElement>(0.8, 0.85);
   const t = useScrollPlay(timeAt(p, PAYOFF_DURATION), PAYOFF_DURATION, p > 0 && p < 1);
   const rewinding = useRewinding(t);
@@ -301,7 +313,6 @@ const StackedPayoff = ({ setRef }: { setRef: (el: HTMLElement | null) => void })
       className="sl-g2-item is-payoff"
     >
       <PanelCopy kicker={s.payoff.kicker} title={s.payoff.title} body={s.payoff.body} className="sl-c-copy is-on" />
-      {win > 0 && <Metrics variant={win} k={fixedAt(3, t)} focus={3} className="sl-g2-met" />}
       <SalesPayoff t={t} rewind={rewinding} />
     </div>
   );

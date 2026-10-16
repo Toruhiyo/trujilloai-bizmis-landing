@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { createContext, useContext, useEffect, useRef, useState } from "react";
 import type { CSSProperties, ReactNode } from "react";
 import { cn } from "@/lib/utils";
 
@@ -10,6 +10,13 @@ import { cn } from "@/lib/utils";
  * scaled down to fit, like a screenshot, so whatever sits on it — the store,
  * the Bizmis widget — keeps its true proportions instead of being squeezed.
  */
+
+/**
+ * A look laid over a device's screen (its content only, inside the glass
+ * shell), e.g. the sales mockups' analog rewind: a wrapper the frames put
+ * round their screen. Wrappers reset it for anything nested inside.
+ */
+export const ScreenFx = createContext<((screen: ReactNode) => ReactNode) | null>(null);
 
 /**
  * Scales a fixed-width virtual screen to the width it's given. The scale is
@@ -36,7 +43,8 @@ export const VirtualScreen = ({
     ro.observe(el);
     return () => ro.disconnect();
   }, [width]);
-  return (
+  const fx = useContext(ScreenFx);
+  const screen = (
     <div
       ref={box}
       className={cn("relative h-full w-full overflow-hidden", className)}
@@ -55,6 +63,7 @@ export const VirtualScreen = ({
       </div>
     </div>
   );
+  return fx ? fx(screen) : screen;
 };
 
 const StatusBar = ({ className }: { className?: string }) => (

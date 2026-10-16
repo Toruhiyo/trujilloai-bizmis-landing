@@ -6,7 +6,7 @@ import { useMessages } from "@/i18n/LocaleProvider";
  * The section's prototype switches, read from the URL by SalesSection:
  * - `win` (?win=4..6): a metric merchants know, moving the right way as the
  *   stages get fixed (direction only, never a figure): 4 a marker analytics
- *   card (conversion rate, orders, abandoned checkouts), 5 a conversion
+ *   card (conversion rate, orders, abandoned carts), 5 a conversion
  *   gauge, 6 an "orders today" sparkline with a before/after strip at the
  *   payoff. 0: none.
  * - `flip` (?copy=flip): each beat's words are its problem, struck through

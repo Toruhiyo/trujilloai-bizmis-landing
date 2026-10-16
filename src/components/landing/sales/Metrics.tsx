@@ -7,7 +7,9 @@ import { cn } from "@/lib/utils";
  * figures: we have none). `k` is how far each stage is fixed (0 → 1); the
  * stage being shown (`focus`, 3 for the payoff) is drawn at full ink.
  *  4: a store-analytics card: conversion rate and orders bend up, abandoned
- *     checkouts bend down, each as its stage gets fixed;
+ *     carts bend down, each as its stage gets fixed (in a beat); at the
+ *     payoff (`focus` 3), every line turns a notch further at every fix, so
+ *     the three fixes add up in each (the payoff always shows this card);
  *  5: a conversion-rate gauge, its needle swinging up a notch per fix, the
  *     old reading left as a dashed ghost;
  *  6: an "orders today" sparkline that steepens with every fix; at the
@@ -45,6 +47,9 @@ const head = (x: number, y: number, a: number, s = 7) =>
     x - Math.cos(a + 0.55) * s
   ).toFixed(1)} ${(y - Math.sin(a + 0.55) * s).toFixed(1)}`;
 
+/** Where each fix's step starts on the payoff card's lines (point index along a line). */
+const PAYOFF_KNEES = [2, 5, 8];
+
 const Card = ({ k, focus, labels, className }: { k: number[]; focus: number; labels: string[]; className?: string }) => {
   const W = 330;
   const H = 168;
@@ -59,11 +64,18 @@ const Card = ({ k, focus, labels, className }: { k: number[]; focus: number; lab
       {rows.map((r) => {
         const y0 = 34 + r * 48;
         const up = r < 2;
-        const kk = k[r];
+        const all = focus >= 3;
+        // in a beat its own stage's fix; at the payoff, any fix so far
+        const kk = all ? Math.min(1, k[0] + k[1] + k[2]) : k[r];
         const pts: [number, number][] = [];
         for (let j = 0; j < 12; j++) {
           const x = 168 + j * 10;
-          const bend = j >= 6 ? ((j - 5) / 6) * 20 * kk : 0;
+          // the payoff: a step per fix (from j 2, 5, 8), each lifting the rest of the line a notch
+          const bend = all
+            ? PAYOFF_KNEES.reduce((b, kn, i) => b + Math.min(1, Math.max(0, (j - kn) / 3)) * 8 * k[i], 0)
+            : j >= 6
+              ? ((j - 5) / 6) * 20 * kk
+              : 0;
           pts.push([x, y0 + wob(j, r) * 1.6 + (up ? -bend : bend) + (up ? 2 : -2)]);
         }
         const [ex, ey] = pts[pts.length - 1];
