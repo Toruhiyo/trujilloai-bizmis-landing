@@ -179,8 +179,8 @@ export const ca: Messages = {
       },
       cart: { title: "El teu carretó", subtotal: "Subtotal", checkout: "Pagar", perks: ["Surt avui", "Devolució gratuïta"], placed: "Comanda feta" },
       funnel: {
-        problems: ["Es va cansar de buscar", "Va marxar a comparar", "Va abandonar el carretó"],
-        solutions: ["Trobat de seguida", "Decidit aquí", "L'ha comprat"],
+        problems: ["Es cansen de buscar", "Marxen a comparar", "Abandonen el carretó"],
+        solutions: ["Ho troben de seguida", "Decideixen aquí", "Compren"],
         /** The word at the open mouth, with its arrow: the dots are store visits. */
         visits: "visites",
       },

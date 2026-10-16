@@ -179,8 +179,8 @@ export const it: Messages = {
       },
       cart: { title: "Il tuo carrello", subtotal: "Subtotale", checkout: "Pagamento", perks: ["Spedito oggi", "Reso gratuito"], placed: "Ordine effettuato" },
       funnel: {
-        problems: ["Ha smesso di cercare", "Andato a confrontare", "Carrello abbandonato"],
-        solutions: ["Trovato subito", "Deciso qui", "Comprato"],
+        problems: ["Smettono di cercare", "Vanno a confrontare", "Abbandonano il carrello"],
+        solutions: ["Trovano subito", "Decidono qui", "Comprano"],
         /** The word at the open mouth, with its arrow: the dots are store visits. */
         visits: "visite",
       },
