@@ -64,17 +64,41 @@ def cue(bus, t, name, gain=0, align='onset', rate=1.0, lp=None, dur=None, pan=0.
 voice = np.zeros((N, 2), np.float32)
 v = load(VIDEO)[:N]; voice[:len(v)] = v
 spans = [(c['atMs'] / 1000, c['endMs'] / 1000) for c in M.get('voice', [])]
-ROOT = os.path.abspath(os.path.join(HERE, '..', '..'))
+# the recordings the film actually played: the export's own checkout (EXP = <repo>/tmp/<export>), never this
+# checkout's public/ (it can hold older, longer takes; clipped to the new cue windows they cut lines mid-word)
+PUB = os.environ.get('VOICE_PUBLIC') or next((d for d in (os.path.join(EXP, '..', '..', 'public'), os.path.join(HERE, '..', '..', 'public')) if os.path.isdir(os.path.join(d, 'promo', 'voice'))))
 VOICE_CLIPS = []
 for c in M.get('voice', []):
-    f = os.path.join(ROOT, 'public', c['src'].lstrip('/')); d = (c['endMs'] - c['atMs']) / 1000
+    f = os.path.join(PUB, c['src'].lstrip('/')); d = (c['endMs'] - c['atMs']) / 1000
     x = load(f, c.get('fromSec', 0) or None, d)   # honour a cue's start offset (e.g. the quick stores' lines)
     if not len(x): continue
-    fi, fo = int(0.15 * SR), int(0.25 * SR)
-    x[:fi] *= np.linspace(0, 1, min(fi, len(x)))[:, None]; x[-fo:] *= np.linspace(1, 0, min(fo, len(x)))[:, None]
+    # like the exporter's afade: the fade-out sits at the end of the CUE window, past the recording's end (fading
+    # the recording's own last 0.25 s clipped every line's last word on the Resolve voice tracks)
+    n = int(round(d * SR)); x = np.concatenate([x, np.zeros((max(0, n - len(x)), 2), np.float32)])[:n]
+    fi = min(len(x), int((c.get('fadeIn') if c.get('fadeIn') is not None else 0.15) * SR)); fo = min(len(x), int((c.get('fadeOut') if c.get('fadeOut') is not None else 0.25) * SR))
+    if fi: x[:fi] *= np.linspace(0, 1, fi)[:, None]
+    if fo: x[len(x) - fo:] *= np.linspace(1, 0, fo)[:, None]
     base = os.path.basename(f)[:-4]
     track = 'Narrator' if base.startswith('n-') else 'Shopper' if base.startswith('shopper') else 'Clerk'
     VOICE_CLIPS.append((c['atMs'] / 1000, track, base, x * db(2)))
+
+# v32 (operator: "the FX, music and video volume well adjusted and leveled"): every line at one speech level.
+# Each line's active-speech RMS (20 ms frames within 30 dB of its peak) is brought to the lines' median, at most
+# +-6 dB, on the mix's voice bus and on its Resolve clip alike (VOICE_LEVEL=0 turns it off).
+def speech_db(x):
+    m = x.mean(1); fr = m[:len(m) // 960 * 960].reshape(-1, 960); p = (fr ** 2).mean(1)
+    if not len(p) or p.max() <= 0: return None
+    act = p[p > p.max() * 10 ** (-30 / 10)]; return 10 * np.log10(act.mean() + 1e-12)
+if os.environ.get('VOICE_LEVEL', '1') != '0' and VOICE_CLIPS:
+    lv = [speech_db(x) for _, _, _, x in VOICE_CLIPS]; target = float(np.median([v for v in lv if v is not None]))
+    for k, ((t0, track, base, x), l) in enumerate(zip(VOICE_CLIPS, lv)):
+        if l is None: continue
+        g = float(np.clip(target - l, -6, 6)); gl = db(g)
+        VOICE_CLIPS[k] = (t0, track, base, x * gl)
+        i, n = int(round(t0 * SR)), len(x); r = min(n // 2, int(0.03 * SR))
+        env = np.full(n, gl, np.float32); env[:r] = np.linspace(1, gl, r); env[n - r:] = np.linspace(gl, 1, r)
+        j = min(N, i + n); voice[i:j] *= env[:j - i, None]
+        if abs(g) >= 1: print(f'voice level {base}: {g:+.1f} dB')
 
 # --- SFX from the picture's own events
 bus = np.zeros((N, 2), np.float32)
@@ -99,9 +123,9 @@ MAP = {   # event -> (sound, gain dB, kwargs)
     'ea-stamp': ('v5_stamp', -15, {'lp': 3000}), 'ea-tick': ('v5_pop', -16, {}), 'ea-hero': ('v5_chime', -17, {}),
     'call-start': ('v5_toggle', -17, {'lp': 3000}),
     'recap-bubble': ('v5_pop', -20, {}), 'chapter': ('el8/label-in1', -19, {'lp': 6000}), 'chapter-tick': ('el8/label-tick', -18, {'lp': 5500}),
-    'doubt-poof': ('el8/bubble-poof2', -14, {'lp': 7000}), 'flip-pop': ('el9/flip-hit', -9, {'lp': 9000}),
+    'doubt-poof': ('el16/vapor-doubt3', -12, {'lp': 9000}), 'flip-pop': ('el9/flip-hit', -9, {'lp': 9000}),
     'sync-flow': ('el8/sync-flow1', -17, {'lp': 6000}), 'sync-done': ('el8/sync-done2', -12, {}), 'install': ('v5_pop', -17, {}),
-    'clerk-in': ('el9/install-morph', -12, {'lp': 9000}), 'install-fly': ('v5_whoosh', -17, {'lp': 6000}), 'carousel-tick': ('el9/carousel-tick', -16, {'lp': 8000}),
+    'clerk-in': ('el9/install-morph', -12, {'lp': 9000}), 'old-vapor': ('el16/vapor-chatbot1', -16, {'lp': 10000}), 'install-fly': ('v5_whoosh', -17, {'lp': 6000}), 'carousel-tick': ('el9/carousel-tick', -16, {'lp': 8000}),
     'xsell-land': ('el9/carousel-tick1', -20, {'align': 'peak', 'lp': 8000}), 'reel-in': ('el13b/reel-rush1', -19, {'lp': 9000}),   # v13: the tunnel's rush 'reel-switch': ('v5_swish', -21, {'lp': 3200}),
     'reel-out': ('v5_whoosh', -20, {}),
     'rewind': ('el8/vhs-rewind', -10, {'lp': 9000}), 'rewind-land': ('v5_whoosh', -18, {}),
@@ -126,14 +150,28 @@ MAP = {   # event -> (sound, gain dB, kwargs)
     'yourstore-hit': ('el14/yourstore-hit', -11, {'align': 'peak'}),
 }
 BARE = os.environ.get('SEA_BASE')   # audition base: everything except the LOST/SOLD stamp sounds
+PITCH_DONE = next((T(x) for x in ev if x['id'] in ('bar-widen', 'bar-widen-end') and x.get('mode', 'pitch') == 'pitch' and (not next((y for y in ev if y['id'] == 'burst'), None) or T(x) > T(next(y for y in ev if y['id'] == 'burst')))), None)   # v23c: the pitch sea's sales go quiet once its orange takes the frame
 for e in ev:
     t = T(e); k = e['id']
+    if PITCH_DONE is not None and t >= PITCH_DONE and k in ('sold-sea', 'order-in', 'mark-hit', 'mark-miss', 'week-sold'): continue
     if BARE and k in ('lost-close', 'sold', 'climax-beat', 'sold-beat', 'lost-sea', 'sold-sea'): continue
     if k == 'lost-wind':   # a low desolate wind under the empty cart, faded in and out
         w = sfx('el10/wind'); need = max(1.0, e.get('ms', 6000) / 1000); w = w[:int(need * SR)].copy()
         fi = int(0.9 * SR); fo = int(1.4 * SR); w[:fi] *= np.linspace(0, 1, min(fi, len(w)))[:, None]; w[-fo:] *= np.linspace(1, 0, min(fo, len(w)))[:, None]
         w = sosfilt(butter(2, 2500, 'low', fs=SR, output='sos'), w, axis=0) * (db(-26) / max(1e-6, np.abs(w).max()))
         place(bus, w, t); CLIPS.append((t, 'Whooshes', 'lost-wind', w)); continue
+    if os.environ.get('STORE_CLAPS') and k in ('reel-slam', 'yourstore-hit', 'reel-tick', 'strobe-tick'):   # v30: every store lands on a clap, exactly on its cut
+        # v32 (operator): ONE clap sound for EVERY card: the tunnel's first cards (reel-tick), the heroes and quick stores
+        # (reel-slam), the super-fast strobe (strobe-tick) and "Your store"; shorter on the dense runs so they stay clean
+        hit = os.environ.get('STORE_HIT', 'v33-hits/softimpact')   # v33: the operator's pick (D: a soft deep thump with an airy shimmer tail)
+        if k in ('reel-tick', 'strobe-tick'):
+            cue(bus, t, hit, -8 if k == 'reel-tick' else -9, align='peak', dur=float(os.environ.get('TICK_DUR', '0.35')) if k == 'reel-tick' else float(os.environ.get('STROBE_DUR', '0.2')), track='Stamps & hits'); continue   # v33: fuller tails (operator: too dry/short)
+        gap = t - globals().get('slam_last', -9); globals()['slam_last'] = t
+        if gap >= 0.05:   # one clap per cut (the "Your store" frame carries two slams and the hit)
+            ys = any(x['id'] == 'yourstore-hit' and abs(T(x) - t) < 0.05 for x in ev)
+            cue(bus, t, hit, -2 if ys else -4, align='peak', track='Stamps & hits')
+        continue   # v33: the hit is the ONLY store sound (the old el14 'Your store' slam is gone too)
+    if os.environ.get('STORE_CLAPS') and k in ('reel-pre', 'reel-in', 'reel-land'): continue   # v33 (operator: the old store sounds were still there): no whooshes, rush or landing thud in the store run
     if k == 'clerk-in':   # v10: the dropped clerk lands (a soft thud) as its card forms
         cue(bus, t, 'el10/land', -15, lp=6000, track='Whooshes')
     if k in ('typing', 'tapping'):   # the keys (or a phone's taps) run exactly as long as the text types
@@ -255,7 +293,7 @@ if pain_path and burst:
     if climax and os.environ.get('CLIMAX_MUSIC', 'keep') == 'cut':
         n = min(n, int((climax + 0.5) * SR))   # silence under "Unattended visits cost you sales..."
     else: climax = None
-    seg = pm[:n].copy(); f = min(n, int((0.6 if climax else 1.4) * SR)); seg[n - f:n] *= np.linspace(1, 0, f)[:, None] ** 1.5
+    seg = pm[:n].copy(); f = min(n, int((0.6 if climax else float(os.environ.get('PAIN_TAIL_FADE', '1.4'))) * SR)); seg[n - f:n] *= np.linspace(1, 0, f)[:, None] ** 1.5   # v25: PAIN_TAIL_FADE=0.1 (the score runs into the drop: no held breath)
     music[:n] += seg
 if pitch_path and burst and COMPOSED:
     qm = load(os.path.join(MEDIA, pitch_path)); a = np.abs(qm).max(1)
@@ -300,13 +338,19 @@ if mpath:
     if burst:
         b = int(burst * SR); pain = sosfilt(butter(2, 2600, 'low', fs=SR, output='sos'), music[:b], axis=0)   # behind a wall, but still audible on laptops
         music[:b] = pain * db(-2)
+if os.environ.get('STORE_CLAPS'):   # v31: the score dips 4 dB under each store hit (its first 120 ms) so every hit punches through
+    duck = np.ones(N, np.float32); a, r = int(0.008 * SR), int(0.06 * SR)
+    for t in sorted({round(T(e), 3) for e in ev if e['id'] in ('reel-slam', 'yourstore-hit')}):
+        i = int(t * SR); env = np.concatenate([np.linspace(1, db(-4), a), np.full(int(0.12 * SR), db(-4)), np.linspace(db(-4), 1, r)]).astype(np.float32)
+        j = max(0, i - a); k = min(N, j + len(env)); duck[j:k] = np.minimum(duck[j:k], env[:k - j])
+    music *= duck[:, None]
 if CLIMAX_BEATS and not BARE and not COMPOSED and os.environ.get('CLIMAX_MUSIC', 'keep') != 'cut':   # the composed score writes its own climax
     music = stamps.music_sink(music, CLIMAX_BEATS) if CLIMAX == 'sink' else stamps.music_dip(music, CLIMAX_BEATS)
 tt = np.arange(N) / SR
 # Sidechain duck from the voice stem itself (narrator, clerk, shopper AND the store
 # recordings): while anyone speaks, the music sits GAP dB under the voice, with a
 # fast attack and a slow release; between lines it comes back to its own level.
-GAP = float(os.environ.get('DUCK_GAP', '12'))
+GAP = float(os.environ.get('DUCK_GAP', '10'))   # v32: 10 dB (was 12; the CTA's music was buried 17 dB under)
 hop = SR // 100
 def env_db(x, smooth_s):
     m = x.mean(1) if x.ndim == 2 else x
@@ -335,7 +379,10 @@ if burst and COMPOSED:
     duck = np.where((tt >= burst + 4 * beat) & (tt < burst + 12 * beat), np.maximum(duck, -7.0), duck)
     duck = duck + np.interp(tt, [0, burst - beat, burst - 0.03, burst, burst + 4 * beat, burst + 8 * beat, DUR], [0, 0, -dip, lift, lift, 0, 0])
 fade = np.interp(tt, [0, DUR - (0.35 if COMPOSED else 1.2), DUR], [0, 0, -40])   # the cue resolves on its own; this only cleans the last frame
-music *= db(duck + fade)[:, None].astype(np.float32)
+stores_lift = np.zeros_like(tt)
+if os.environ.get('STORE_CLAPS') and reel_in and reel_out:   # v32: the store run is the film's peak: its groove 2 dB up (it sat 3.5 dB under the sync scene)
+    stores_lift = np.interp(tt, [0, reel_in - 0.3, reel_in + 0.3, reel_out - 0.3, reel_out + 0.3, DUR], [0, 0, 2.0, 2.0, 0, 0])
+music *= db(duck + fade + stores_lift)[:, None].astype(np.float32)
 if (os.environ.get('CLIMAX_DUCK') or CLIMAX.startswith('bed:')) and CLIMAX_BEATS:   # the score steps back under the climax
     d = float(os.environ.get('CLIMAX_DUCK', '14')); c0, c1 = CLIMAX_BEATS[0] - 0.5, CLIMAX_BEATS[-1] + 2.4
     curve = np.interp(tt, [0, c0 - 0.6, c0, c1, c1 + 1.2, DUR], [0, 0, -d, -d, 0, 0])
