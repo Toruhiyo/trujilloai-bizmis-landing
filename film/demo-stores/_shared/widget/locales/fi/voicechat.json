@@ -1,0 +1,240 @@
+{
+  "VOICECHAT_CLAIM": "Jutellaan. Autan sinua.",
+  "VOICECHAT_BUTTON": "Äänichat",
+  "VOICECHAT_INSTRUCTIONS": "Keskeytä puhumalla",
+  "END_CALL": "Lopeta",
+  "CONNECTING": "Odota muutama sekunti ...",
+  "CONNECTING_BUTTON": "Yhdistetään",
+  "CLICK_TO_SPEAK": "Napsauta ja puhu",
+  "CLICK_TO_END": "Lopeta napsauttamalla",
+  "TALK_TO_INTERRUPT": "Keskeytä puhumalla",
+  "CONNECTING_HINT": "Odota hetki",
+  "LISTENING_ACTIVE": "Kuuntelen ...",
+  "TRY_VOICE_EXPERIENCE": "Kokeile minua, olen uusi!",
+  "TERMS_ACCEPT": "Hyväksy",
+  "TERMS_DECLINE": "Takaisin",
+  "TERMS_ACCEPTANCE_WITH_LINK": "Jatka hyväksymällä [käyttöehdot]({{termsUrl}}).",
+  "POC_DISCLAIMER": {
+    "TITLE": "Proof of Concept",
+    "MESSAGE": "Tämä äänichatin prototyyppi on tarkoitettu vain esittelemään ideaa, eikä se vastaa lopullisen ratkaisun tai tuotteen laatua. Viiveitä, virheitä ja muita ongelmia voi esiintyä.<br/>Tärkeimmät ominaisuudet: <strong>Itsenäinen liikkuminen sivustolla</strong>, <strong>Tekstin korostus</strong> ja <strong>Lomakkeiden täyttö</strong>."
+  },
+  "GREETING": {
+    "1": "Hei! Tervetuloa äänichattiin. Miten voin auttaa sinua tänään?",
+    "2": "Moi! Olen täällä auttamassa kaikessa, mitä tarvitset.",
+    "3": "Päivää! Miten voin olla avuksi tänään?",
+    "4": "Tervetuloa! Kerro, mitä tarvitset, niin autan parhaani mukaan.",
+    "5": "Puheavustajasi on täällä. Autan mielelläni!",
+    "DEFAULT": "Hei! Mitä saisi olla tänään?"
+  },
+  "RESUME_GREETING": {
+    "1": "Hei, olen taas täällä! Jatketaan siitä, mihin jäimme.",
+    "2": "Selvä, jatketaan!",
+    "3": "Olen yhä täällä! Mitä olimmekaan katsomassa?",
+    "DEFAULT": "No niin, mihin jäimmekään?"
+  },
+  "FEEDBACK_TITLE": "Millainen kokemus oli?",
+  "FEEDBACK_THUMBS_UP": "Hyvä",
+  "FEEDBACK_THUMBS_DOWN": "Voisi olla parempi",
+  "FEEDBACK_ERROR": "Palautteen lähetys ei onnistunut",
+  "FEEDBACK_SUCCESS": "Kiitos palautteestasi!",
+  "ERROR_GENERIC": "Äänichatin käynnistys ei onnistunut",
+  "MOBILE_TAP_AVATAR_TO_START": "Napauta ja puhu",
+  "MOBILE_TAP_AVATAR_TO_CANCEL": "Yhdistetään ...",
+  "MOBILE_TAP_AVATAR_TO_END_CALL": "Lopeta napauttamalla",
+  "HINT_LABEL": "Kokeile sanoa",
+  "HINTS_DEFAULT": [
+    "Etsin lahjaa kumppanilleni, voitko auttaa?",
+    "Mitä on nyt alennuksessa?",
+    "Mikä sopii parhaiten herkälle iholle?",
+    "Voinko palauttaa tämän, jos koko ei ole oikea?",
+    "Vertaile nämä kaksi puolestani"
+  ],
+  "CHAT_INPUT_PLACEHOLDER": "Kysy tuotteista, toimituksesta tai tilauksestasi.",
+  "CHAT_CONNECTING_PLACEHOLDER": "Yhdistetään … voit jo kirjoittaa.",
+  "CHAT_MESSAGE_SENDING": "Lähetetään …",
+  "CHAT_MESSAGE_FAILED_RETRY": "Ei lähetetty. Yritä uudelleen napauttamalla.",
+  "CHAT_EVENT_PRODUCTS_SHOWN": "Sinulle näytetyt tuotteet",
+  "CHAT_EVENT_SEARCH_RESULTS": "Tulokset haulle ”{{query}}”",
+  "CHAT_EVENT_PRODUCT_OPENED": "Tuote avattu",
+  "CHAT_EVENT_ADDED_TO_CART": "Lisätty koriin",
+  "CHAT_EVENT_CART_OPENED": "Kori avattu",
+  "CHAT_EVENT_CHECKOUT_OPENED": "Kassa avattu",
+  "CHAT_EVENT_SEARCHED_FOR": "Haku ”{{query}}”",
+  "CHAT_EVENT_PAGE_OPENED": "Sivu avattu",
+  "CHAT_VOICE_TOGGLE_ON": "Aloita puhe",
+  "CHAT_VOICE_TOGGLE_OFF": "Lopeta puhe",
+  "CHAT_CALL_START": "Aloita puhechat",
+  "CHAT_CALL_END": "Katkaise puhelu",
+  "CHAT_LAUNCHER_TITLE": "Aloita chat",
+  "CHAT_NEW_SESSION": "Uusi istunto",
+  "CHAT_HIDE_PANEL": "Takaisin avatariin",
+  "CHAT_SEND": "Lähetä",
+  "CHAT_EMPTY_HINT": "Aloita keskustelu lähettämällä viesti.",
+  "CHAT_COLLAPSE": "Kutista",
+  "CHAT_EXPAND": "Laajenna",
+  "MIC_RECOVERY_DISMISS": "Sulje",
+  "NAVIGATION_TAKING_YOU_TO": "Siirrytään kohteeseen",
+  "NAVIGATION_TARGET_SEARCH": "Hakutulokset",
+  "NAVIGATION_TARGET_GENERIC": "Toinen sivu",
+  "TEXT_CHAT_INSTRUCTIONS": "Vaihda puheeseen",
+  "MOBILE_TYPE_INSTEAD": "... tai kirjoita",
+  "CLOSE_WIDGET": "Sulje",
+  "REOPEN_WIDGET": "Avaa avustaja uudelleen",
+  "CHAT_LITE_SHOW_HISTORY": "Istunnon historia",
+  "CHAT_LITE_HIDE_HISTORY": "Piilota keskustelu",
+  "CHAT_LITE_BACK_TO_VOICE": "Takaisin puhetilaan",
+  "CHAT_LITE_GO_TO_VOICE": "Siirry puhetilaan",
+  "CHAT_LITE_CONVERSATION": "Keskustelu",
+  "CHAT_LITE_PIN_TRANSCRIPT": "Kiinnitä keskustelu",
+  "CHAT_LITE_UNPIN_TRANSCRIPT": "Irrota keskustelu",
+  "UNIFIED_PROMPTS": {
+    "DISCOVERY": "Auta minua löytämään oikea tuote.",
+    "COMPARISON": "Vertaa parhaita vaihtoehtoja puolestani.",
+    "GUIDANCE": "Sopiiko tämä minulle tai tarpeisiini?",
+    "RETURNS": "Millainen palautuskäytäntö on?",
+    "FAQ": "Voitko vastata ostoksia koskevaan kysymykseen?"
+  },
+  "MIC_PRIMER": "Valitse \"Salli\", niin kuulen sinut",
+  "MIC_NEEDED": "Salli mikrofoni, niin voit puhua",
+  "ENABLE_MIC_HINT_BROWSER": "Salli mikrofoni sivun käyttöoikeuksissa",
+  "ENABLE_MIC_HINT_OS": "Salli mikrofoni laitteen asetuksissa",
+  "DEGRADED_VOICE_SWITCHED_HINT_BROWSER": "Mikrofonin käyttö on estetty, joten vaihdoin sinut chattiin. Puhun edelleen ääneen. Jos haluat puhua, salli mikrofoni sivun käyttöoikeuksissa.",
+  "DEGRADED_VOICE_SWITCHED_HINT_OS": "Mikrofonin käyttö on estetty, joten vaihdoin sinut chattiin. Puhun edelleen ääneen. Jos haluat puhua, salli mikrofoni laitteen asetuksissa.",
+  "DEGRADED_VOICE_BLOCKED_HINT_BROWSER": "Mikrofonin käyttö on estetty. Puhun edelleen ääneen. Jos haluat puhua, salli mikrofoni sivun käyttöoikeuksissa.",
+  "DEGRADED_VOICE_BLOCKED_HINT_OS": "Mikrofonin käyttö on estetty. Puhun edelleen ääneen. Jos haluat puhua, salli mikrofoni laitteen asetuksissa.",
+  "USE_TEXT_CHAT": "Käytä tekstichattia",
+  "OR": "TAI",
+  "MIC_BLOCKED_HINT": "Salli mikrofoni sivun käyttöoikeuksissa",
+  "MIC_OS_BLOCKED_HINT": "Salli mikrofoni laitteen asetuksissa",
+  "CONTROLS": {
+    "MICROPHONE": {
+      "MUTE": "Mykistä mikrofoni",
+      "UNMUTE": "Poista mykistys",
+      "MUTED": "Mikrofoni mykistetty",
+      "UNMUTED": "Mikrofoni käytössä"
+    },
+    "SUBTITLES": {
+      "ENABLE": "Näytä tekstitys",
+      "DISABLE": "Piilota tekstitys",
+      "ENABLED": "Tekstitys päällä",
+      "DISABLED": "Tekstitys pois"
+    },
+    "MUTE_MICROPHONE": "Mykistä mikrofoni",
+    "UNMUTE_MICROPHONE": "Poista mykistys",
+    "ENABLE_CAPTIONS": "Näytä tekstitys",
+    "DISABLE_CAPTIONS": "Piilota tekstitys"
+  },
+  "ERRORS": {
+    "UNKNOWN_ERROR": {
+      "NAME": "Odottamaton virhe",
+      "INSTRUCTIONS": "Yritä uudelleen tai ota yhteyttä tukeen, jos ongelma jatkuu."
+    },
+    "NETWORK_ERROR": {
+      "NAME": "Yhteysvirhe",
+      "INSTRUCTIONS": "Tarkista internetyhteytesi ja yritä uudelleen."
+    },
+    "API_ERROR": {
+      "NAME": "Tiedonsiirtovirhe",
+      "INSTRUCTIONS": "Palveluun yhdistämisessä oli ongelma. Yritä myöhemmin uudelleen."
+    },
+    "WEBSOCKET_ERROR": {
+      "NAME": "WebSocket-yhteysvirhe",
+      "INSTRUCTIONS": "Puhepalveluun ei saada yhteyttä. Tarkista yhteytesi."
+    },
+    "CONNECTION_TIMEOUT": {
+      "NAME": "Yhteyden aikakatkaisu",
+      "INSTRUCTIONS": "Yhteys kesti liian kauan. Yritä uudelleen."
+    },
+    "AUTHENTICATION_ERROR": {
+      "NAME": "Kirjautumisvirhe",
+      "INSTRUCTIONS": "Kirjaudu sisään uudelleen."
+    },
+    "MICROPHONE_ACCESS_DENIED": {
+      "NAME": "Mikrofoni tarvitaan",
+      "INSTRUCTIONS": "Salli se tämän sivun selainoikeuksissa."
+    },
+    "MICROPHONE_BLOCKED": {
+      "NAME": "Mikrofoni estetty",
+      "INSTRUCTIONS": "Salli se tämän sivun selainoikeuksissa."
+    },
+    "MICROPHONE_OS_BLOCKED": {
+      "NAME": "Mikrofoni estetty",
+      "INSTRUCTIONS": "Salli se laitteen asetuksissa tälle selaimelle."
+    },
+    "MICROPHONE_NOT_READABLE": {
+      "NAME": "Mikrofonivirhe",
+      "INSTRUCTIONS": "Mikrofonin ääntä ei voitu lukea. Tarkista mikrofoni tai kokeile toista."
+    },
+    "AUDIO_RECORDING_ERROR": {
+      "NAME": "Tallennusvirhe",
+      "INSTRUCTIONS": "Ääntä ei voitu tallentaa. Tarkista mikrofoni tai kokeile toista."
+    },
+    "SERVER_ERROR": {
+      "NAME": "Palvelinvirhe",
+      "INSTRUCTIONS": "Tiimimme on saanut tiedon asiasta."
+    },
+    "QUOTA_EXCEEDED": {
+      "NAME": "Käyttöraja täynnä",
+      "INSTRUCTIONS": "Olet saavuttanut käyttörajasi. Yritä myöhemmin uudelleen."
+    },
+    "HIGH_DEMAND": {
+      "NAME": "Ruuhkaa",
+      "INSTRUCTIONS": "Palvelussa on nyt ruuhkaa. Yritä hetken kuluttua uudelleen."
+    },
+    "HTTP": {
+      "400_BAD_REQUEST": {
+        "NAME": "Virheellinen pyyntö",
+        "INSTRUCTIONS": "Yritä uudelleen kelvollisilla tiedoilla."
+      },
+      "401_UNAUTHORIZED": {
+        "NAME": "Kirjautuminen vaaditaan",
+        "INSTRUCTIONS": "Kirjaudu sisään, niin voit jatkaa tämän ominaisuuden käyttöä."
+      },
+      "403_FORBIDDEN": {
+        "NAME": "Ei käyttöoikeutta",
+        "INSTRUCTIONS": "Sinulla ei ole oikeutta tähän ominaisuuteen."
+      },
+      "403_FORBIDDEN_GEO_LOCATION_BLOCKED": {
+        "NAME": "Sijainti estetty",
+        "INSTRUCTIONS": "Äänichat ei ole käytettävissä tästä sijainnista."
+      },
+      "404_NOT_FOUND": {
+        "NAME": "Palvelua ei löytynyt",
+        "INSTRUCTIONS": "Pyydettyä palvelua ei löytynyt."
+      },
+      "408_TIMEOUT": {
+        "NAME": "Pyynnön aikakatkaisu",
+        "INSTRUCTIONS": "Palvelimen vastaus kesti liian kauan. Yritä myöhemmin uudelleen."
+      },
+      "409_CONFLICT": {
+        "NAME": "Ristiriita palvelussa",
+        "INSTRUCTIONS": "Nykyisen tilan kanssa syntyi ristiriita. Yritä uudelleen."
+      },
+      "422_UNPROCESSABLE_ENTITY": {
+        "NAME": "Virheellinen muoto",
+        "INSTRUCTIONS": "Pyyntöä ei voitu käsitellä. Yritä uudelleen."
+      },
+      "429_RATE_LIMIT": {
+        "NAME": "Liikaa pyyntöjä",
+        "INSTRUCTIONS": "Odota hetki ennen uutta yritystä."
+      },
+      "500_SERVER_ERROR": {
+        "NAME": "Palvelinvirhe",
+        "INSTRUCTIONS": "Yritä myöhemmin uudelleen."
+      },
+      "502_BAD_GATEWAY": {
+        "NAME": "Palvelu ei ole käytettävissä",
+        "INSTRUCTIONS": "Yritä myöhemmin uudelleen."
+      },
+      "503_SERVICE_UNAVAILABLE": {
+        "NAME": "Palvelu on tilapäisesti poissa käytöstä",
+        "INSTRUCTIONS": "Yritä myöhemmin uudelleen."
+      },
+      "504_GATEWAY_TIMEOUT": {
+        "NAME": "Palvelun aikakatkaisu",
+        "INSTRUCTIONS": "Palvelun vastaus kesti liian kauan. Yritä myöhemmin uudelleen."
+      }
+    }
+  },
+  "LANGUAGE_NOT_SUPPORTED": "Kieltä ei tueta äänichatissa."
+}

@@ -1,0 +1,240 @@
+{
+  "VOICECHAT_CLAIM": "Pojďme si promluvit. Poradím vám.",
+  "VOICECHAT_BUTTON": "Hlasový chat",
+  "VOICECHAT_INSTRUCTIONS": "Mluvte a přerušíte mě",
+  "END_CALL": "Ukončit hovor",
+  "CONNECTING": "Chvilku strpení...",
+  "CONNECTING_BUTTON": "Připojuji",
+  "CLICK_TO_SPEAK": "Klikněte a mluvte",
+  "CLICK_TO_END": "Klikněte pro ukončení",
+  "TALK_TO_INTERRUPT": "Mluvte a přerušíte mě",
+  "CONNECTING_HINT": "Chvilku strpení",
+  "LISTENING_ACTIVE": "Poslouchám...",
+  "TRY_VOICE_EXPERIENCE": "Vyzkoušejte mě, jsem novinka!",
+  "TERMS_ACCEPT": "Souhlasím",
+  "TERMS_DECLINE": "Zpět",
+  "TERMS_ACCEPTANCE_WITH_LINK": "Pro pokračování přijměte [Podmínky]({{termsUrl}}).",
+  "POC_DISCLAIMER": {
+    "TITLE": "Proof-of-Concept",
+    "MESSAGE": "Tento prototyp hlasového chatu má pouze ukázat samotný koncept a nepředstavuje výslednou kvalitu řešení ani produktu. Může docházet ke zpožděním, chybám a dalším potížím.<br/>Hlavní funkce: <strong>Samostatná navigace po webu</strong>, <strong>Zvýrazňování textu</strong> a <strong>Vyplňování formulářů</strong>."
+  },
+  "GREETING": {
+    "1": "Dobrý den! Vítejte v hlasovém chatu. S čím vám dnes mohu pomoci?",
+    "2": "Zdravím vás! Jsem tu pro vás, se vším, co budete potřebovat.",
+    "3": "Vítejte! S čím vám dnes mohu posloužit?",
+    "4": "Jsem tady pro vás! Řekněte mi, co hledáte, a udělám, co bude v mých silách.",
+    "5": "Hlasový asistent k službám! S čím vám pomůžu?",
+    "DEFAULT": "Dobrý den! Co pro vás dnes můžu udělat?"
+  },
+  "RESUME_GREETING": {
+    "1": "Tak jsem zpátky! Navážeme tam, kde jsme skončili.",
+    "2": "Dobře, pokračujeme!",
+    "3": "Pořád jsem tu! Na co jsme se to dívali?",
+    "DEFAULT": "Tak kde jsme to skončili?"
+  },
+  "FEEDBACK_TITLE": "Jak se vám povídalo?",
+  "FEEDBACK_THUMBS_UP": "Dobré",
+  "FEEDBACK_THUMBS_DOWN": "Mohlo být lepší",
+  "FEEDBACK_ERROR": "Zpětnou vazbu se nepodařilo odeslat",
+  "FEEDBACK_SUCCESS": "Děkujeme za zpětnou vazbu!",
+  "ERROR_GENERIC": "Hlasový chat se nepodařilo spustit",
+  "MOBILE_TAP_AVATAR_TO_START": "Klepněte a mluvte",
+  "MOBILE_TAP_AVATAR_TO_CANCEL": "Připojuji...",
+  "MOBILE_TAP_AVATAR_TO_END_CALL": "Klepnutím ukončíte",
+  "HINT_LABEL": "Zkuste říct",
+  "HINTS_DEFAULT": [
+    "Hledám dárek pro partnera, poradíte mi?",
+    "Co je teď ve slevě?",
+    "Který je nejlepší na citlivou pleť?",
+    "Můžu to vrátit, když mi to nesedne?",
+    "Porovnejte mi tyhle dva"
+  ],
+  "CHAT_INPUT_PLACEHOLDER": "Zeptejte se na produkty, dopravu nebo svou objednávku.",
+  "CHAT_CONNECTING_PLACEHOLDER": "Připojuji… psát můžete už teď.",
+  "CHAT_MESSAGE_SENDING": "Odesílám…",
+  "CHAT_MESSAGE_FAILED_RETRY": "Neodesláno. Klepnutím to zkusíte znovu.",
+  "CHAT_EVENT_PRODUCTS_SHOWN": "Zobrazené produkty",
+  "CHAT_EVENT_SEARCH_RESULTS": "Výsledky pro „{{query}}“",
+  "CHAT_EVENT_PRODUCT_OPENED": "Otevřený produkt",
+  "CHAT_EVENT_ADDED_TO_CART": "Přidáno do košíku",
+  "CHAT_EVENT_CART_OPENED": "Otevřený košík",
+  "CHAT_EVENT_CHECKOUT_OPENED": "Otevřená pokladna",
+  "CHAT_EVENT_SEARCHED_FOR": "Hledání „{{query}}“",
+  "CHAT_EVENT_PAGE_OPENED": "Otevřená stránka",
+  "CHAT_VOICE_TOGGLE_ON": "Spustit hlas",
+  "CHAT_VOICE_TOGGLE_OFF": "Ukončit hlas",
+  "CHAT_CALL_START": "Spustit hlasový chat",
+  "CHAT_CALL_END": "Zavěsit",
+  "CHAT_LAUNCHER_TITLE": "Začít psaný chat",
+  "CHAT_NEW_SESSION": "Nová relace",
+  "CHAT_HIDE_PANEL": "Zpět na avatara",
+  "CHAT_SEND": "Odeslat",
+  "CHAT_EMPTY_HINT": "Odešlete zprávu a začneme si povídat.",
+  "CHAT_COLLAPSE": "Sbalit",
+  "CHAT_EXPAND": "Rozbalit",
+  "MIC_RECOVERY_DISMISS": "Zavřít",
+  "NAVIGATION_TAKING_YOU_TO": "Přesouvám vás na",
+  "NAVIGATION_TARGET_SEARCH": "Výsledky vyhledávání",
+  "NAVIGATION_TARGET_GENERIC": "Jiná stránka",
+  "TEXT_CHAT_INSTRUCTIONS": "Přepnout na hlas",
+  "MOBILE_TYPE_INSTEAD": "...nebo pište",
+  "CLOSE_WIDGET": "Zavřít",
+  "REOPEN_WIDGET": "Znovu otevřít asistenta",
+  "CHAT_LITE_SHOW_HISTORY": "Historie sezení",
+  "CHAT_LITE_HIDE_HISTORY": "Skrýt konverzaci",
+  "CHAT_LITE_BACK_TO_VOICE": "Zpět do hlasového režimu",
+  "CHAT_LITE_GO_TO_VOICE": "Přejít do hlasového režimu",
+  "CHAT_LITE_CONVERSATION": "Konverzace",
+  "CHAT_LITE_PIN_TRANSCRIPT": "Připnout konverzaci",
+  "CHAT_LITE_UNPIN_TRANSCRIPT": "Odepnout konverzaci",
+  "UNIFIED_PROMPTS": {
+    "DISCOVERY": "Pomozte mi najít správný produkt.",
+    "COMPARISON": "Porovnejte pro mě nejlepší možnosti.",
+    "GUIDANCE": "Bude mi to sedět nebo vyhovovat mým potřebám?",
+    "RETURNS": "Jaké jsou podmínky vrácení?",
+    "FAQ": "Můžete mi odpovědět na otázku ohledně nakupování?"
+  },
+  "MIC_PRIMER": "Zvolte \"Povolit\" a uslyším vás",
+  "MIC_NEEDED": "Povolte mikrofon, ať si můžeme povídat hlasem",
+  "ENABLE_MIC_HINT_BROWSER": "Povolte mikrofon v oprávněních stránky",
+  "ENABLE_MIC_HINT_OS": "Povolte mikrofon v nastavení zařízení",
+  "DEGRADED_VOICE_SWITCHED_HINT_BROWSER": "Přístup k mikrofonu je blokovaný, tak vás přepínám do chatu. Nahlas mluvit budu dál; abyste mohli mluvit i vy, povolte mikrofon v oprávněních stránky.",
+  "DEGRADED_VOICE_SWITCHED_HINT_OS": "Přístup k mikrofonu je blokovaný, tak vás přepínám do chatu. Nahlas mluvit budu dál; abyste mohli mluvit i vy, povolte mikrofon v nastavení zařízení.",
+  "DEGRADED_VOICE_BLOCKED_HINT_BROWSER": "Přístup k mikrofonu je blokovaný. Nahlas mluvit budu dál; abyste mohli mluvit i vy, povolte mikrofon v oprávněních stránky.",
+  "DEGRADED_VOICE_BLOCKED_HINT_OS": "Přístup k mikrofonu je blokovaný. Nahlas mluvit budu dál; abyste mohli mluvit i vy, povolte mikrofon v nastavení zařízení.",
+  "USE_TEXT_CHAT": "Použít psaný chat",
+  "OR": "NEBO",
+  "MIC_BLOCKED_HINT": "Povolte mikrofon v oprávněních stránky",
+  "MIC_OS_BLOCKED_HINT": "Povolte mikrofon v nastavení zařízení",
+  "CONTROLS": {
+    "MICROPHONE": {
+      "MUTE": "Ztlumit mikrofon",
+      "UNMUTE": "Zapnout mikrofon",
+      "MUTED": "Mikrofon ztlumen",
+      "UNMUTED": "Mikrofon aktivní"
+    },
+    "SUBTITLES": {
+      "ENABLE": "Zapnout titulky",
+      "DISABLE": "Vypnout titulky",
+      "ENABLED": "Titulky zapnuty",
+      "DISABLED": "Titulky vypnuty"
+    },
+    "MUTE_MICROPHONE": "Ztlumit mikrofon",
+    "UNMUTE_MICROPHONE": "Zapnout mikrofon",
+    "ENABLE_CAPTIONS": "Zapnout titulky",
+    "DISABLE_CAPTIONS": "Vypnout titulky"
+  },
+  "ERRORS": {
+    "UNKNOWN_ERROR": {
+      "NAME": "Neočekávaná chyba",
+      "INSTRUCTIONS": "Zkuste to prosím znovu, a pokud potíže potrvají, kontaktujte podporu."
+    },
+    "NETWORK_ERROR": {
+      "NAME": "Chyba připojení k síti",
+      "INSTRUCTIONS": "Zkontrolujte prosím připojení k internetu a zkuste to znovu."
+    },
+    "API_ERROR": {
+      "NAME": "Chyba komunikace s API",
+      "INSTRUCTIONS": "Při připojování ke službě nastal problém. Zkuste to prosím později."
+    },
+    "WEBSOCKET_ERROR": {
+      "NAME": "Chyba připojení WebSocket",
+      "INSTRUCTIONS": "K hlasové službě se nelze připojit. Zkontrolujte prosím své připojení."
+    },
+    "CONNECTION_TIMEOUT": {
+      "NAME": "Vypršel čas připojení",
+      "INSTRUCTIONS": "Připojení vypršelo. Zkuste to prosím znovu."
+    },
+    "AUTHENTICATION_ERROR": {
+      "NAME": "Chyba ověření",
+      "INSTRUCTIONS": "Přihlaste se prosím znovu."
+    },
+    "MICROPHONE_ACCESS_DENIED": {
+      "NAME": "Je potřeba mikrofon",
+      "INSTRUCTIONS": "Povolte ho v oprávněních prohlížeče pro tuto stránku."
+    },
+    "MICROPHONE_BLOCKED": {
+      "NAME": "Mikrofon je blokovaný",
+      "INSTRUCTIONS": "Povolte ho v oprávněních prohlížeče pro tuto stránku."
+    },
+    "MICROPHONE_OS_BLOCKED": {
+      "NAME": "Mikrofon je blokovaný",
+      "INSTRUCTIONS": "Povolte ho v nastavení zařízení pro tento prohlížeč."
+    },
+    "MICROPHONE_NOT_READABLE": {
+      "NAME": "Chyba mikrofonu",
+      "INSTRUCTIONS": "Data z mikrofonu se nepodařilo načíst. Zkontrolujte prosím mikrofon nebo zkuste jiný."
+    },
+    "AUDIO_RECORDING_ERROR": {
+      "NAME": "Chyba nahrávání zvuku",
+      "INSTRUCTIONS": "Zvuk se nepodařilo nahrát. Zkontrolujte prosím mikrofon nebo zkuste jiný."
+    },
+    "SERVER_ERROR": {
+      "NAME": "Chyba serveru",
+      "INSTRUCTIONS": "Náš tým už o tom ví."
+    },
+    "QUOTA_EXCEEDED": {
+      "NAME": "Dosažen limit využití",
+      "INSTRUCTIONS": "Dosáhli jste limitu využití. Zkuste to prosím později."
+    },
+    "HIGH_DEMAND": {
+      "NAME": "Vysoký zájem",
+      "INSTRUCTIONS": "O naši službu je právě velký zájem. Zkuste to prosím za chvíli."
+    },
+    "HTTP": {
+      "400_BAD_REQUEST": {
+        "NAME": "Neplatný požadavek",
+        "INSTRUCTIONS": "Zkuste to prosím znovu s platnými parametry."
+      },
+      "401_UNAUTHORIZED": {
+        "NAME": "Je vyžadováno přihlášení",
+        "INSTRUCTIONS": "Pro další používání této funkce se prosím přihlaste."
+      },
+      "403_FORBIDDEN": {
+        "NAME": "Přístup odepřen",
+        "INSTRUCTIONS": "K této funkci nemáte oprávnění."
+      },
+      "403_FORBIDDEN_GEO_LOCATION_BLOCKED": {
+        "NAME": "Poloha je blokovaná",
+        "INSTRUCTIONS": "Hlasový chat není z tohoto místa dostupný."
+      },
+      "404_NOT_FOUND": {
+        "NAME": "Služba nenalezena",
+        "INSTRUCTIONS": "Požadovanou službu se nepodařilo najít."
+      },
+      "408_TIMEOUT": {
+        "NAME": "Vypršel čas požadavku",
+        "INSTRUCTIONS": "Serveru odpověď trvala příliš dlouho. Zkuste to prosím později."
+      },
+      "409_CONFLICT": {
+        "NAME": "Konflikt služby",
+        "INSTRUCTIONS": "Došlo ke konfliktu s aktuálním stavem. Zkuste to prosím znovu."
+      },
+      "422_UNPROCESSABLE_ENTITY": {
+        "NAME": "Neplatný formát požadavku",
+        "INSTRUCTIONS": "Požadavek nebylo možné zpracovat. Zkuste to prosím znovu."
+      },
+      "429_RATE_LIMIT": {
+        "NAME": "Příliš mnoho požadavků",
+        "INSTRUCTIONS": "Chvilku prosím počkejte a zkuste to znovu."
+      },
+      "500_SERVER_ERROR": {
+        "NAME": "Chyba serveru",
+        "INSTRUCTIONS": "Zkuste to prosím později."
+      },
+      "502_BAD_GATEWAY": {
+        "NAME": "Služba není dostupná",
+        "INSTRUCTIONS": "Zkuste to prosím později."
+      },
+      "503_SERVICE_UNAVAILABLE": {
+        "NAME": "Služba je dočasně nedostupná",
+        "INSTRUCTIONS": "Zkuste to prosím později."
+      },
+      "504_GATEWAY_TIMEOUT": {
+        "NAME": "Vypršel čas služby",
+        "INSTRUCTIONS": "Službě odpověď trvala příliš dlouho. Zkuste to prosím později."
+      }
+    }
+  },
+  "LANGUAGE_NOT_SUPPORTED": "Tento jazyk není v hlasovém chatu podporován."
+}

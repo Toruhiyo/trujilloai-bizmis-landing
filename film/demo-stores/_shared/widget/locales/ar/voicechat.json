@@ -1,0 +1,240 @@
+{
+  "VOICECHAT_CLAIM": "لنتحدث. سأساعدك.",
+  "VOICECHAT_BUTTON": "محادثة صوتية",
+  "VOICECHAT_INSTRUCTIONS": "تحدّث للمقاطعة",
+  "END_CALL": "إنهاء المكالمة",
+  "CONNECTING": "انتظر بضع ثوانٍ...",
+  "CONNECTING_BUTTON": "جارٍ الاتصال",
+  "CLICK_TO_SPEAK": "انقر للتحدث",
+  "CLICK_TO_END": "انقر للإنهاء",
+  "TALK_TO_INTERRUPT": "تحدّث للمقاطعة",
+  "CONNECTING_HINT": "انتظر لحظات قليلة",
+  "LISTENING_ACTIVE": "أستمع إليك...",
+  "TRY_VOICE_EXPERIENCE": "جرّبني، أنا جديد!",
+  "TERMS_ACCEPT": "موافق",
+  "TERMS_DECLINE": "رجوع",
+  "TERMS_ACCEPTANCE_WITH_LINK": "وافق على [الشروط والأحكام]({{termsUrl}}) للمتابعة.",
+  "POC_DISCLAIMER": {
+    "TITLE": "نموذج أولي",
+    "MESSAGE": "الغرض من هذا النموذج الأولي للمحادثة الصوتية هو عرض الفكرة فقط، وهو لا يمثل الجودة النهائية للحل أو المنتج. قد تحدث تأخيرات وأخطاء ومشكلات أخرى.<br/>أبرز المزايا: <strong>التنقل التلقائي في الموقع</strong>، <strong>تمييز النصوص</strong> و<strong>تعبئة النماذج</strong>."
+  },
+  "GREETING": {
+    "1": "مرحبًا! أهلًا بك في المحادثة الصوتية. كيف يمكنني مساعدتك اليوم؟",
+    "2": "أهلًا بك! أنا هنا لمساعدتك في أي شيء تحتاجه.",
+    "3": "تحية طيبة! كيف يمكنني خدمتك اليوم؟",
+    "4": "أهلًا وسهلًا! أخبرني بما تحتاجه وسأبذل قصارى جهدي لمساعدتك.",
+    "5": "المساعد الصوتي في خدمتك! جاهز للمساعدة!",
+    "DEFAULT": "مرحبًا! ماذا تودّ اليوم؟"
+  },
+  "RESUME_GREETING": {
+    "1": "عدتُ من جديد! لنكمل من حيث توقفنا.",
+    "2": "حسنًا، لنكمل!",
+    "3": "ما زلت هنا! ماذا كنا نتصفح؟",
+    "DEFAULT": "إذًا، أين وصلنا؟"
+  },
+  "FEEDBACK_TITLE": "كيف كانت تجربتك؟",
+  "FEEDBACK_THUMBS_UP": "جيدة",
+  "FEEDBACK_THUMBS_DOWN": "يمكن أن تكون أفضل",
+  "FEEDBACK_ERROR": "تعذّر إرسال الملاحظات",
+  "FEEDBACK_SUCCESS": "شكرًا لملاحظاتك!",
+  "ERROR_GENERIC": "تعذّر بدء المحادثة الصوتية",
+  "MOBILE_TAP_AVATAR_TO_START": "انقر وتحدّث",
+  "MOBILE_TAP_AVATAR_TO_CANCEL": "جارٍ الاتصال...",
+  "MOBILE_TAP_AVATAR_TO_END_CALL": "انقر للإنهاء",
+  "HINT_LABEL": "جرّب أن تقول",
+  "HINTS_DEFAULT": [
+    "أبحث عن هدية لشريكي، هل يمكنك مساعدتي؟",
+    "ما العروض المتاحة الآن؟",
+    "أيهما أفضل للبشرة الحساسة؟",
+    "هل يمكنني إرجاعه إذا لم يناسبني المقاس؟",
+    "قارن لي بين هذين المنتجين"
+  ],
+  "CHAT_INPUT_PLACEHOLDER": "اسأل عن المنتجات أو الشحن أو طلبك.",
+  "CHAT_CONNECTING_PLACEHOLDER": "جارٍ الاتصال… يمكنك الكتابة من الآن.",
+  "CHAT_MESSAGE_SENDING": "جارٍ الإرسال…",
+  "CHAT_MESSAGE_FAILED_RETRY": "لم يتم الإرسال. انقر للمحاولة مجددًا.",
+  "CHAT_EVENT_PRODUCTS_SHOWN": "منتجات عُرضت عليك",
+  "CHAT_EVENT_SEARCH_RESULTS": "نتائج «{{query}}»",
+  "CHAT_EVENT_PRODUCT_OPENED": "تم فتح المنتج",
+  "CHAT_EVENT_ADDED_TO_CART": "أُضيف إلى السلة",
+  "CHAT_EVENT_CART_OPENED": "تم فتح السلة",
+  "CHAT_EVENT_CHECKOUT_OPENED": "تم فتح صفحة الدفع",
+  "CHAT_EVENT_SEARCHED_FOR": "بحث عن «{{query}}»",
+  "CHAT_EVENT_PAGE_OPENED": "تم فتح الصفحة",
+  "CHAT_VOICE_TOGGLE_ON": "بدء الصوت",
+  "CHAT_VOICE_TOGGLE_OFF": "إنهاء الصوت",
+  "CHAT_CALL_START": "بدء محادثة صوتية",
+  "CHAT_CALL_END": "إنهاء المكالمة",
+  "CHAT_LAUNCHER_TITLE": "ابدأ محادثة كتابية",
+  "CHAT_NEW_SESSION": "جلسة جديدة",
+  "CHAT_HIDE_PANEL": "العودة إلى الأفاتار",
+  "CHAT_SEND": "إرسال",
+  "CHAT_EMPTY_HINT": "أرسل رسالة لبدء المحادثة.",
+  "CHAT_COLLAPSE": "طيّ",
+  "CHAT_EXPAND": "توسيع",
+  "MIC_RECOVERY_DISMISS": "إغلاق",
+  "NAVIGATION_TAKING_YOU_TO": "سآخذك إلى",
+  "NAVIGATION_TARGET_SEARCH": "نتائج البحث",
+  "NAVIGATION_TARGET_GENERIC": "صفحة أخرى",
+  "TEXT_CHAT_INSTRUCTIONS": "التبديل إلى الصوت",
+  "MOBILE_TYPE_INSTEAD": "...أو اكتب بدلًا من ذلك",
+  "CLOSE_WIDGET": "إغلاق",
+  "REOPEN_WIDGET": "إعادة فتح المساعد",
+  "CHAT_LITE_SHOW_HISTORY": "سجل الجلسة",
+  "CHAT_LITE_HIDE_HISTORY": "إخفاء المحادثة",
+  "CHAT_LITE_BACK_TO_VOICE": "العودة إلى الوضع الصوتي",
+  "CHAT_LITE_GO_TO_VOICE": "الانتقال إلى الوضع الصوتي",
+  "CHAT_LITE_CONVERSATION": "المحادثة",
+  "CHAT_LITE_PIN_TRANSCRIPT": "تثبيت المحادثة",
+  "CHAT_LITE_UNPIN_TRANSCRIPT": "إلغاء تثبيت المحادثة",
+  "UNIFIED_PROMPTS": {
+    "DISCOVERY": "ساعدني في العثور على المنتج المناسب.",
+    "COMPARISON": "قارن لي بين أفضل الخيارات.",
+    "GUIDANCE": "هل سيلائمني هذا المنتج أو يناسب احتياجاتي؟",
+    "RETURNS": "ما سياسة الإرجاع؟",
+    "FAQ": "هل يمكنك الإجابة عن سؤال حول التسوق؟"
+  },
+  "MIC_PRIMER": "اختر \"السماح\" حتى أتمكن من سماعك",
+  "MIC_NEEDED": "اسمح بالميكروفون للتحدث صوتيًا",
+  "ENABLE_MIC_HINT_BROWSER": "اسمح بالميكروفون في أذونات الصفحة",
+  "ENABLE_MIC_HINT_OS": "اسمح بالميكروفون في إعدادات جهازك",
+  "DEGRADED_VOICE_SWITCHED_HINT_BROWSER": "الميكروفون محظور، لذلك نقلتك إلى المحادثة الكتابية. سأظل أتحدث بصوت مسموع - وللتحدث معي، اسمح بالميكروفون في أذونات الصفحة.",
+  "DEGRADED_VOICE_SWITCHED_HINT_OS": "الميكروفون محظور، لذلك نقلتك إلى المحادثة الكتابية. سأظل أتحدث بصوت مسموع - وللتحدث معي، اسمح بالميكروفون في إعدادات جهازك.",
+  "DEGRADED_VOICE_BLOCKED_HINT_BROWSER": "الميكروفون محظور. سأظل أتحدث بصوت مسموع - وللتحدث معي، اسمح بالميكروفون في أذونات الصفحة.",
+  "DEGRADED_VOICE_BLOCKED_HINT_OS": "الميكروفون محظور. سأظل أتحدث بصوت مسموع - وللتحدث معي، اسمح بالميكروفون في إعدادات جهازك.",
+  "USE_TEXT_CHAT": "استخدم المحادثة الكتابية",
+  "OR": "أو",
+  "MIC_BLOCKED_HINT": "اسمح بالميكروفون في أذونات الصفحة",
+  "MIC_OS_BLOCKED_HINT": "اسمح بالميكروفون في إعدادات جهازك",
+  "CONTROLS": {
+    "MICROPHONE": {
+      "MUTE": "كتم الميكروفون",
+      "UNMUTE": "إلغاء كتم الميكروفون",
+      "MUTED": "الميكروفون مكتوم",
+      "UNMUTED": "الميكروفون نشط"
+    },
+    "SUBTITLES": {
+      "ENABLE": "تفعيل الترجمة",
+      "DISABLE": "إيقاف الترجمة",
+      "ENABLED": "الترجمة مفعّلة",
+      "DISABLED": "الترجمة متوقفة"
+    },
+    "MUTE_MICROPHONE": "كتم الميكروفون",
+    "UNMUTE_MICROPHONE": "إلغاء كتم الميكروفون",
+    "ENABLE_CAPTIONS": "تفعيل الترجمة",
+    "DISABLE_CAPTIONS": "إيقاف الترجمة"
+  },
+  "ERRORS": {
+    "UNKNOWN_ERROR": {
+      "NAME": "خطأ غير متوقع",
+      "INSTRUCTIONS": "يرجى المحاولة مرة أخرى أو التواصل مع الدعم إذا استمرت المشكلة."
+    },
+    "NETWORK_ERROR": {
+      "NAME": "خطأ في الاتصال بالشبكة",
+      "INSTRUCTIONS": "يرجى التحقق من اتصالك بالإنترنت والمحاولة مرة أخرى."
+    },
+    "API_ERROR": {
+      "NAME": "خطأ في الاتصال بواجهة البرمجة",
+      "INSTRUCTIONS": "حدثت مشكلة أثناء الاتصال بالخدمة. يرجى المحاولة لاحقًا."
+    },
+    "WEBSOCKET_ERROR": {
+      "NAME": "خطأ في اتصال WebSocket",
+      "INSTRUCTIONS": "تعذّر الاتصال بالخدمة الصوتية. يرجى التحقق من اتصالك."
+    },
+    "CONNECTION_TIMEOUT": {
+      "NAME": "انتهت مهلة الاتصال",
+      "INSTRUCTIONS": "انتهت مهلة الاتصال. يرجى المحاولة مرة أخرى."
+    },
+    "AUTHENTICATION_ERROR": {
+      "NAME": "خطأ في المصادقة",
+      "INSTRUCTIONS": "يرجى تسجيل الدخول مرة أخرى."
+    },
+    "MICROPHONE_ACCESS_DENIED": {
+      "NAME": "الميكروفون مطلوب",
+      "INSTRUCTIONS": "اسمح به في أذونات المتصفح لهذه الصفحة."
+    },
+    "MICROPHONE_BLOCKED": {
+      "NAME": "الميكروفون محظور",
+      "INSTRUCTIONS": "اسمح به في أذونات المتصفح لهذه الصفحة."
+    },
+    "MICROPHONE_OS_BLOCKED": {
+      "NAME": "الميكروفون محظور",
+      "INSTRUCTIONS": "اسمح به في إعدادات جهازك لهذا المتصفح."
+    },
+    "MICROPHONE_NOT_READABLE": {
+      "NAME": "خطأ في الميكروفون",
+      "INSTRUCTIONS": "تعذّرت قراءة بيانات الميكروفون. يرجى التحقق من الميكروفون أو تجربة ميكروفون آخر."
+    },
+    "AUDIO_RECORDING_ERROR": {
+      "NAME": "خطأ في تسجيل الصوت",
+      "INSTRUCTIONS": "تعذّر تسجيل الصوت. يرجى التحقق من الميكروفون أو تجربة ميكروفون آخر."
+    },
+    "SERVER_ERROR": {
+      "NAME": "خطأ في الخادم",
+      "INSTRUCTIONS": "تم إبلاغ فريقنا بالأمر."
+    },
+    "QUOTA_EXCEEDED": {
+      "NAME": "تم بلوغ حد الاستخدام",
+      "INSTRUCTIONS": "لقد وصلت إلى حد الاستخدام. يرجى المحاولة لاحقًا."
+    },
+    "HIGH_DEMAND": {
+      "NAME": "إقبال كبير",
+      "INSTRUCTIONS": "هناك إقبال كبير على خدمتنا حاليًا. يرجى المحاولة بعد قليل."
+    },
+    "HTTP": {
+      "400_BAD_REQUEST": {
+        "NAME": "طلب غير صالح",
+        "INSTRUCTIONS": "يرجى المحاولة مرة أخرى ببيانات صحيحة."
+      },
+      "401_UNAUTHORIZED": {
+        "NAME": "المصادقة مطلوبة",
+        "INSTRUCTIONS": "يرجى تسجيل الدخول لمتابعة استخدام هذه الميزة."
+      },
+      "403_FORBIDDEN": {
+        "NAME": "تم رفض الوصول",
+        "INSTRUCTIONS": "ليس لديك إذن للوصول إلى هذه الميزة."
+      },
+      "403_FORBIDDEN_GEO_LOCATION_BLOCKED": {
+        "NAME": "الموقع الجغرافي محظور",
+        "INSTRUCTIONS": "المحادثة الصوتية غير متاحة من هذا الموقع."
+      },
+      "404_NOT_FOUND": {
+        "NAME": "الخدمة غير موجودة",
+        "INSTRUCTIONS": "تعذّر العثور على الخدمة المطلوبة."
+      },
+      "408_TIMEOUT": {
+        "NAME": "انتهت مهلة الطلب",
+        "INSTRUCTIONS": "استغرق الخادم وقتًا طويلًا للرد. يرجى المحاولة لاحقًا."
+      },
+      "409_CONFLICT": {
+        "NAME": "تعارض في الخدمة",
+        "INSTRUCTIONS": "حدث تعارض مع الحالة الحالية. يرجى المحاولة مرة أخرى."
+      },
+      "422_UNPROCESSABLE_ENTITY": {
+        "NAME": "صيغة الطلب غير صالحة",
+        "INSTRUCTIONS": "تعذّرت معالجة الطلب. يرجى المحاولة مرة أخرى."
+      },
+      "429_RATE_LIMIT": {
+        "NAME": "طلبات كثيرة جدًا",
+        "INSTRUCTIONS": "يرجى الانتظار لحظة قبل المحاولة مرة أخرى."
+      },
+      "500_SERVER_ERROR": {
+        "NAME": "خطأ في الخادم",
+        "INSTRUCTIONS": "يرجى المحاولة لاحقًا."
+      },
+      "502_BAD_GATEWAY": {
+        "NAME": "الخدمة غير متاحة",
+        "INSTRUCTIONS": "يرجى المحاولة لاحقًا."
+      },
+      "503_SERVICE_UNAVAILABLE": {
+        "NAME": "الخدمة غير متاحة مؤقتًا",
+        "INSTRUCTIONS": "يرجى المحاولة لاحقًا."
+      },
+      "504_GATEWAY_TIMEOUT": {
+        "NAME": "انتهت مهلة الخدمة",
+        "INSTRUCTIONS": "استغرقت الخدمة وقتًا طويلًا للرد. يرجى المحاولة لاحقًا."
+      }
+    }
+  },
+  "LANGUAGE_NOT_SUPPORTED": "اللغة غير مدعومة في المحادثة الصوتية."
+}

@@ -1,0 +1,240 @@
+{
+  "VOICECHAT_CLAIM": "Hadi konuşalım. Size yardımcı olayım.",
+  "VOICECHAT_BUTTON": "Sesli sohbet",
+  "VOICECHAT_INSTRUCTIONS": "Sözümü kesmek için konuşun",
+  "END_CALL": "Görüşmeyi bitir",
+  "CONNECTING": "Birkaç saniye bekleyin...",
+  "CONNECTING_BUTTON": "Bağlanıyor",
+  "CLICK_TO_SPEAK": "Konuşmak için tıklayın",
+  "CLICK_TO_END": "Bitirmek için tıklayın",
+  "TALK_TO_INTERRUPT": "Sözümü kesmek için konuşun",
+  "CONNECTING_HINT": "Birkaç saniye bekleyin",
+  "LISTENING_ACTIVE": "Dinliyorum...",
+  "TRY_VOICE_EXPERIENCE": "Beni deneyin, yeniyim!",
+  "TERMS_ACCEPT": "Kabul et",
+  "TERMS_DECLINE": "Geri dön",
+  "TERMS_ACCEPTANCE_WITH_LINK": "Devam etmek için [Şartlar ve Koşullar]({{termsUrl}})'ı kabul edin.",
+  "POC_DISCLAIMER": {
+    "TITLE": "Konsept denemesi",
+    "MESSAGE": "Bu sesli sohbet prototipinin amacı yalnızca konsepti göstermektir; nihai bir çözümün ya da ürünün kalitesini yansıtmaz. Gecikmeler, hatalar ve başka sorunlar yaşanabilir.<br/>Öne çıkan özellikler: <strong>Otomatik site içi gezinme</strong>, <strong>Metin vurgulama</strong> ve <strong>Form doldurma</strong>."
+  },
+  "GREETING": {
+    "1": "Merhaba! Sesli sohbete hoş geldiniz. Bugün size nasıl yardımcı olabilirim?",
+    "2": "Merhaba! İhtiyacınız olan her konuda buradayım.",
+    "3": "Selam! Bugün size nasıl yardımcı olabilirim?",
+    "4": "Hoş geldiniz! Ne aradığınızı söyleyin, elimden gelenin en iyisini yapayım.",
+    "5": "Sesli asistanınız hizmetinizde! Yardıma hazırım!",
+    "DEFAULT": "Merhaba! Bugün ne bakmıştınız?"
+  },
+  "RESUME_GREETING": {
+    "1": "Geri döndüm! Kaldığımız yerden devam edelim.",
+    "2": "Tamam, devam edelim!",
+    "3": "Hâlâ buradayım! Neye bakıyorduk?",
+    "DEFAULT": "Peki, nerede kalmıştık?"
+  },
+  "FEEDBACK_TITLE": "Deneyiminiz nasıldı?",
+  "FEEDBACK_THUMBS_UP": "İyiydi",
+  "FEEDBACK_THUMBS_DOWN": "Daha iyi olabilir",
+  "FEEDBACK_ERROR": "Geri bildirim gönderilemedi",
+  "FEEDBACK_SUCCESS": "Geri bildiriminiz için teşekkürler!",
+  "ERROR_GENERIC": "Sesli sohbet başlatılamadı",
+  "MOBILE_TAP_AVATAR_TO_START": "Dokun ve konuş",
+  "MOBILE_TAP_AVATAR_TO_CANCEL": "Bağlanıyor...",
+  "MOBILE_TAP_AVATAR_TO_END_CALL": "Bitirmek için dokun",
+  "HINT_LABEL": "Şunu söylemeyi deneyin",
+  "HINTS_DEFAULT": [
+    "Sevgilime hediye arıyorum, yardım eder misin?",
+    "Şu anda indirimde ne var?",
+    "Hassas ciltler için hangisi daha iyi?",
+    "Bedeni olmazsa iade edebilir miyim?",
+    "Bu ikisini benim için karşılaştır"
+  ],
+  "CHAT_INPUT_PLACEHOLDER": "Ürünler, kargo ya da siparişiniz hakkında sorun.",
+  "CHAT_CONNECTING_PLACEHOLDER": "Bağlanıyor… şimdiden yazmaya başlayabilirsiniz.",
+  "CHAT_MESSAGE_SENDING": "Gönderiliyor…",
+  "CHAT_MESSAGE_FAILED_RETRY": "Gönderilemedi. Yeniden denemek için dokunun.",
+  "CHAT_EVENT_PRODUCTS_SHOWN": "Size gösterilen ürünler",
+  "CHAT_EVENT_SEARCH_RESULTS": "“{{query}}” sonuçları",
+  "CHAT_EVENT_PRODUCT_OPENED": "Ürün açıldı",
+  "CHAT_EVENT_ADDED_TO_CART": "Sepete eklendi",
+  "CHAT_EVENT_CART_OPENED": "Sepet açıldı",
+  "CHAT_EVENT_CHECKOUT_OPENED": "Ödeme açıldı",
+  "CHAT_EVENT_SEARCHED_FOR": "“{{query}}” araması",
+  "CHAT_EVENT_PAGE_OPENED": "Sayfa açıldı",
+  "CHAT_VOICE_TOGGLE_ON": "Sesi başlat",
+  "CHAT_VOICE_TOGGLE_OFF": "Sesi bitir",
+  "CHAT_CALL_START": "Sesli sohbeti başlat",
+  "CHAT_CALL_END": "Aramayı bitir",
+  "CHAT_LAUNCHER_TITLE": "Yazılı sohbet başlat",
+  "CHAT_NEW_SESSION": "Yeni oturum",
+  "CHAT_HIDE_PANEL": "Avatara dön",
+  "CHAT_SEND": "Gönder",
+  "CHAT_EMPTY_HINT": "Sohbeti başlatmak için bir mesaj gönderin.",
+  "CHAT_COLLAPSE": "Daralt",
+  "CHAT_EXPAND": "Genişlet",
+  "MIC_RECOVERY_DISMISS": "Kapat",
+  "NAVIGATION_TAKING_YOU_TO": "Sizi şuraya götürüyorum",
+  "NAVIGATION_TARGET_SEARCH": "Arama sonuçları",
+  "NAVIGATION_TARGET_GENERIC": "Başka bir sayfa",
+  "TEXT_CHAT_INSTRUCTIONS": "Sese geç",
+  "MOBILE_TYPE_INSTEAD": "...ya da yazın",
+  "CLOSE_WIDGET": "Kapat",
+  "REOPEN_WIDGET": "Asistanı yeniden aç",
+  "CHAT_LITE_SHOW_HISTORY": "Oturum geçmişi",
+  "CHAT_LITE_HIDE_HISTORY": "Sohbeti gizle",
+  "CHAT_LITE_BACK_TO_VOICE": "Ses moduna dön",
+  "CHAT_LITE_GO_TO_VOICE": "Ses moduna geç",
+  "CHAT_LITE_CONVERSATION": "Sohbet",
+  "CHAT_LITE_PIN_TRANSCRIPT": "Sohbeti sabitle",
+  "CHAT_LITE_UNPIN_TRANSCRIPT": "Sohbetin sabitlemesini kaldır",
+  "UNIFIED_PROMPTS": {
+    "DISCOVERY": "Doğru ürünü bulmama yardım et.",
+    "COMPARISON": "Benim için en iyi seçenekleri karşılaştır.",
+    "GUIDANCE": "Bu bana uyar mı veya ihtiyaçlarımı karşılar mı?",
+    "RETURNS": "İade politikası nedir?",
+    "FAQ": "Alışverişle ilgili bir soruyu yanıtlayabilir misin?"
+  },
+  "MIC_PRIMER": "Sizi duyabilmem için \"İzin ver\"i seçin",
+  "MIC_NEEDED": "Sesli konuşmak için mikrofona izin verin",
+  "ENABLE_MIC_HINT_BROWSER": "Sayfa izinlerinden mikrofona izin verin",
+  "ENABLE_MIC_HINT_OS": "Cihaz ayarlarından mikrofona izin verin",
+  "DEGRADED_VOICE_SWITCHED_HINT_BROWSER": "Mikrofon erişimi engelli, bu yüzden sizi yazılı sohbete aldım. Yine de sesli yanıt vereceğim - konuşmak için sayfa izinlerinden mikrofona izin verin.",
+  "DEGRADED_VOICE_SWITCHED_HINT_OS": "Mikrofon erişimi engelli, bu yüzden sizi yazılı sohbete aldım. Yine de sesli yanıt vereceğim - konuşmak için cihaz ayarlarınızdan mikrofona izin verin.",
+  "DEGRADED_VOICE_BLOCKED_HINT_BROWSER": "Mikrofon erişimi engelli. Yine de sesli yanıt vereceğim - konuşmak için sayfa izinlerinden mikrofona izin verin.",
+  "DEGRADED_VOICE_BLOCKED_HINT_OS": "Mikrofon erişimi engelli. Yine de sesli yanıt vereceğim - konuşmak için cihaz ayarlarınızdan mikrofona izin verin.",
+  "USE_TEXT_CHAT": "Yazılı sohbet",
+  "OR": "VEYA",
+  "MIC_BLOCKED_HINT": "Sayfa izinlerinden mikrofona izin verin",
+  "MIC_OS_BLOCKED_HINT": "Cihaz ayarlarından mikrofona izin verin",
+  "CONTROLS": {
+    "MICROPHONE": {
+      "MUTE": "Mikrofonu kapat",
+      "UNMUTE": "Mikrofonu aç",
+      "MUTED": "Mikrofon kapalı",
+      "UNMUTED": "Mikrofon açık"
+    },
+    "SUBTITLES": {
+      "ENABLE": "Altyazıları aç",
+      "DISABLE": "Altyazıları kapat",
+      "ENABLED": "Altyazılar açık",
+      "DISABLED": "Altyazılar kapalı"
+    },
+    "MUTE_MICROPHONE": "Mikrofonu kapat",
+    "UNMUTE_MICROPHONE": "Mikrofonu aç",
+    "ENABLE_CAPTIONS": "Altyazıları aç",
+    "DISABLE_CAPTIONS": "Altyazıları kapat"
+  },
+  "ERRORS": {
+    "UNKNOWN_ERROR": {
+      "NAME": "Beklenmeyen hata",
+      "INSTRUCTIONS": "Lütfen tekrar deneyin; sorun sürerse destek ekibiyle iletişime geçin."
+    },
+    "NETWORK_ERROR": {
+      "NAME": "Ağ bağlantısı hatası",
+      "INSTRUCTIONS": "Lütfen internet bağlantınızı kontrol edip tekrar deneyin."
+    },
+    "API_ERROR": {
+      "NAME": "API iletişim hatası",
+      "INSTRUCTIONS": "Servise bağlanırken bir sorun oluştu. Lütfen daha sonra tekrar deneyin."
+    },
+    "WEBSOCKET_ERROR": {
+      "NAME": "WebSocket bağlantı hatası",
+      "INSTRUCTIONS": "Ses servisine bağlanılamadı. Lütfen bağlantınızı kontrol edin."
+    },
+    "CONNECTION_TIMEOUT": {
+      "NAME": "Bağlantı zaman aşımı",
+      "INSTRUCTIONS": "Bağlantı zaman aşımına uğradı. Lütfen tekrar deneyin."
+    },
+    "AUTHENTICATION_ERROR": {
+      "NAME": "Kimlik doğrulama hatası",
+      "INSTRUCTIONS": "Lütfen tekrar giriş yapın."
+    },
+    "MICROPHONE_ACCESS_DENIED": {
+      "NAME": "Mikrofon gerekli",
+      "INSTRUCTIONS": "Bu sayfanın tarayıcı izinlerinden mikrofona izin verin."
+    },
+    "MICROPHONE_BLOCKED": {
+      "NAME": "Mikrofon engelli",
+      "INSTRUCTIONS": "Bu sayfanın tarayıcı izinlerinden mikrofona izin verin."
+    },
+    "MICROPHONE_OS_BLOCKED": {
+      "NAME": "Mikrofon engelli",
+      "INSTRUCTIONS": "Bu tarayıcı için cihaz ayarlarınızdan mikrofona izin verin."
+    },
+    "MICROPHONE_NOT_READABLE": {
+      "NAME": "Mikrofon hatası",
+      "INSTRUCTIONS": "Mikrofon verisi okunamadı. Lütfen mikrofonunuzu kontrol edin veya başka bir mikrofon deneyin."
+    },
+    "AUDIO_RECORDING_ERROR": {
+      "NAME": "Ses kaydı hatası",
+      "INSTRUCTIONS": "Ses kaydedilemedi. Lütfen mikrofonunuzu kontrol edin veya başka bir mikrofon deneyin."
+    },
+    "SERVER_ERROR": {
+      "NAME": "Sunucu hatası",
+      "INSTRUCTIONS": "Ekibimiz durumdan haberdar edildi."
+    },
+    "QUOTA_EXCEEDED": {
+      "NAME": "Kullanım sınırına ulaşıldı",
+      "INSTRUCTIONS": "Kullanım sınırınıza ulaştınız. Lütfen daha sonra tekrar deneyin."
+    },
+    "HIGH_DEMAND": {
+      "NAME": "Yoğun ilgi",
+      "INSTRUCTIONS": "Servisimize şu anda yoğun ilgi var. Lütfen birazdan tekrar deneyin."
+    },
+    "HTTP": {
+      "400_BAD_REQUEST": {
+        "NAME": "Geçersiz istek",
+        "INSTRUCTIONS": "Lütfen geçerli bilgilerle tekrar deneyin."
+      },
+      "401_UNAUTHORIZED": {
+        "NAME": "Giriş gerekli",
+        "INSTRUCTIONS": "Bu özelliği kullanmaya devam etmek için lütfen giriş yapın."
+      },
+      "403_FORBIDDEN": {
+        "NAME": "Erişim reddedildi",
+        "INSTRUCTIONS": "Bu özelliğe erişim izniniz yok."
+      },
+      "403_FORBIDDEN_GEO_LOCATION_BLOCKED": {
+        "NAME": "Konum engelli",
+        "INSTRUCTIONS": "Sesli sohbet bu konumdan kullanılamıyor."
+      },
+      "404_NOT_FOUND": {
+        "NAME": "Servis bulunamadı",
+        "INSTRUCTIONS": "İstenen servis bulunamadı."
+      },
+      "408_TIMEOUT": {
+        "NAME": "İstek zaman aşımına uğradı",
+        "INSTRUCTIONS": "Sunucu yanıt vermekte çok gecikti. Lütfen daha sonra tekrar deneyin."
+      },
+      "409_CONFLICT": {
+        "NAME": "Servis çakışması",
+        "INSTRUCTIONS": "Mevcut durumla bir çakışma oluştu. Lütfen tekrar deneyin."
+      },
+      "422_UNPROCESSABLE_ENTITY": {
+        "NAME": "Geçersiz istek biçimi",
+        "INSTRUCTIONS": "İstek işlenemedi. Lütfen tekrar deneyin."
+      },
+      "429_RATE_LIMIT": {
+        "NAME": "Çok fazla istek",
+        "INSTRUCTIONS": "Tekrar denemeden önce lütfen biraz bekleyin."
+      },
+      "500_SERVER_ERROR": {
+        "NAME": "Sunucu hatası",
+        "INSTRUCTIONS": "Lütfen daha sonra tekrar deneyin."
+      },
+      "502_BAD_GATEWAY": {
+        "NAME": "Servis kullanılamıyor",
+        "INSTRUCTIONS": "Lütfen daha sonra tekrar deneyin."
+      },
+      "503_SERVICE_UNAVAILABLE": {
+        "NAME": "Servis geçici olarak kullanılamıyor",
+        "INSTRUCTIONS": "Lütfen daha sonra tekrar deneyin."
+      },
+      "504_GATEWAY_TIMEOUT": {
+        "NAME": "Servis zaman aşımı",
+        "INSTRUCTIONS": "Servis yanıt vermekte çok gecikti. Lütfen daha sonra tekrar deneyin."
+      }
+    }
+  },
+  "LANGUAGE_NOT_SUPPORTED": "Bu dil sesli sohbette desteklenmiyor."
+}

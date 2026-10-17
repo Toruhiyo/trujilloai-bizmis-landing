@@ -1,0 +1,240 @@
+{
+  "VOICECHAT_CLAIM": "La oss prate. Jeg hjelper deg.",
+  "VOICECHAT_BUTTON": "Stemmechat",
+  "VOICECHAT_INSTRUCTIONS": "Snakk for å avbryte",
+  "END_CALL": "Avslutt",
+  "CONNECTING": "Vent noen sekunder ...",
+  "CONNECTING_BUTTON": "Kobler til",
+  "CLICK_TO_SPEAK": "Klikk for å snakke",
+  "CLICK_TO_END": "Klikk for å avslutte",
+  "TALK_TO_INTERRUPT": "Snakk for å avbryte",
+  "CONNECTING_HINT": "Vent et øyeblikk",
+  "LISTENING_ACTIVE": "Jeg lytter ...",
+  "TRY_VOICE_EXPERIENCE": "Prøv meg, jeg er ny!",
+  "TERMS_ACCEPT": "Godta",
+  "TERMS_DECLINE": "Tilbake",
+  "TERMS_ACCEPTANCE_WITH_LINK": "Godta [vilkårene]({{termsUrl}}) for å fortsette.",
+  "POC_DISCLAIMER": {
+    "TITLE": "Proof of Concept",
+    "MESSAGE": "Denne stemmechatten er en prototype som bare skal vise konseptet, og den gjenspeiler ikke den endelige kvaliteten på en løsning eller et produkt. Forsinkelser, feil og andre problemer kan forekomme.<br/>Nøkkelfunksjoner: <strong>Selvstendig navigering på nettet</strong>, <strong>Utheving av tekst</strong> og <strong>Utfylling av skjemaer</strong>."
+  },
+  "GREETING": {
+    "1": "Hei! Velkommen til stemmechatten. Hva kan jeg hjelpe deg med i dag?",
+    "2": "Hei der! Jeg er her og hjelper deg med det du trenger.",
+    "3": "God dag! Hva kan jeg hjelpe deg med i dag?",
+    "4": "Velkommen! Bare si hva du trenger, så hjelper jeg deg.",
+    "5": "Stemmeassistenten din er klar. Jeg hjelper deg gjerne!",
+    "DEFAULT": "Hei! Hva kan jeg hjelpe med i dag?"
+  },
+  "RESUME_GREETING": {
+    "1": "Hei, jeg er tilbake! Vi fortsetter der vi slapp.",
+    "2": "Greit, la oss fortsette!",
+    "3": "Jeg er her fortsatt! Hva var det vi så på?",
+    "DEFAULT": "Så, hvor var vi?"
+  },
+  "FEEDBACK_TITLE": "Hvordan var opplevelsen?",
+  "FEEDBACK_THUMBS_UP": "Bra",
+  "FEEDBACK_THUMBS_DOWN": "Kan bli bedre",
+  "FEEDBACK_ERROR": "Tilbakemeldingen ble ikke sendt",
+  "FEEDBACK_SUCCESS": "Takk for tilbakemeldingen!",
+  "ERROR_GENERIC": "Stemmechatten kunne ikke starte",
+  "MOBILE_TAP_AVATAR_TO_START": "Trykk og snakk",
+  "MOBILE_TAP_AVATAR_TO_CANCEL": "Kobler til ...",
+  "MOBILE_TAP_AVATAR_TO_END_CALL": "Trykk for å avslutte",
+  "HINT_LABEL": "Prøv å si",
+  "HINTS_DEFAULT": [
+    "Jeg trenger en gave til partneren min, kan du hjelpe?",
+    "Hva er på salg akkurat nå?",
+    "Hvilken er best for sensitiv hud?",
+    "Kan jeg returnere den hvis den ikke passer?",
+    "Sammenlign disse to for meg"
+  ],
+  "CHAT_INPUT_PLACEHOLDER": "Spør om produkter, frakt eller bestillingen din.",
+  "CHAT_CONNECTING_PLACEHOLDER": "Kobler til … du kan begynne å skrive.",
+  "CHAT_MESSAGE_SENDING": "Sender …",
+  "CHAT_MESSAGE_FAILED_RETRY": "Ikke sendt. Trykk for å prøve igjen.",
+  "CHAT_EVENT_PRODUCTS_SHOWN": "Produkter du ble vist",
+  "CHAT_EVENT_SEARCH_RESULTS": "Resultater for «{{query}}»",
+  "CHAT_EVENT_PRODUCT_OPENED": "Produkt åpnet",
+  "CHAT_EVENT_ADDED_TO_CART": "Lagt i handlekorgen",
+  "CHAT_EVENT_CART_OPENED": "Handlekorg åpnet",
+  "CHAT_EVENT_CHECKOUT_OPENED": "Kassen åpnet",
+  "CHAT_EVENT_SEARCHED_FOR": "Søkte etter «{{query}}»",
+  "CHAT_EVENT_PAGE_OPENED": "Side åpnet",
+  "CHAT_VOICE_TOGGLE_ON": "Start stemme",
+  "CHAT_VOICE_TOGGLE_OFF": "Avslutt stemme",
+  "CHAT_CALL_START": "Start talechat",
+  "CHAT_CALL_END": "Legg på",
+  "CHAT_LAUNCHER_TITLE": "Start en chat",
+  "CHAT_NEW_SESSION": "Ny økt",
+  "CHAT_HIDE_PANEL": "Tilbake til avataren",
+  "CHAT_SEND": "Send",
+  "CHAT_EMPTY_HINT": "Send en melding for å starte samtalen.",
+  "CHAT_COLLAPSE": "Slå sammen",
+  "CHAT_EXPAND": "Utvid",
+  "MIC_RECOVERY_DISMISS": "Lukk",
+  "NAVIGATION_TAKING_YOU_TO": "Jeg tar deg til",
+  "NAVIGATION_TARGET_SEARCH": "Søkeresultater",
+  "NAVIGATION_TARGET_GENERIC": "En annen side",
+  "TEXT_CHAT_INSTRUCTIONS": "Bytt til stemme",
+  "MOBILE_TYPE_INSTEAD": "... eller skriv i stedet",
+  "CLOSE_WIDGET": "Lukk",
+  "REOPEN_WIDGET": "Åpne assistenten igjen",
+  "CHAT_LITE_SHOW_HISTORY": "Økthistorikk",
+  "CHAT_LITE_HIDE_HISTORY": "Skjul samtale",
+  "CHAT_LITE_BACK_TO_VOICE": "Tilbake til stemmemodus",
+  "CHAT_LITE_GO_TO_VOICE": "Bytt til stemmemodus",
+  "CHAT_LITE_CONVERSATION": "Samtale",
+  "CHAT_LITE_PIN_TRANSCRIPT": "Fest samtalen",
+  "CHAT_LITE_UNPIN_TRANSCRIPT": "Løsne samtalen",
+  "UNIFIED_PROMPTS": {
+    "DISCOVERY": "Hjelp meg med å finne riktig produkt.",
+    "COMPARISON": "Sammenlign de beste alternativene for meg.",
+    "GUIDANCE": "Vil dette passe eller fungere for mine behov?",
+    "RETURNS": "Hva er returreglene?",
+    "FAQ": "Kan du svare på et spørsmål om shopping?"
+  },
+  "MIC_PRIMER": "Velg \"Tillat\" så jeg kan høre deg",
+  "MIC_NEEDED": "Gi tilgang til mikrofonen for å snakke",
+  "ENABLE_MIC_HINT_BROWSER": "Tillat mikrofonen i tillatelsene for siden",
+  "ENABLE_MIC_HINT_OS": "Tillat mikrofonen i enhetsinnstillingene",
+  "DEGRADED_VOICE_SWITCHED_HINT_BROWSER": "Tilgangen til mikrofonen er blokkert, så jeg byttet deg til chatten. Jeg snakker fortsatt høyt. Vil du snakke selv, tillat mikrofonen i tillatelsene for siden.",
+  "DEGRADED_VOICE_SWITCHED_HINT_OS": "Tilgangen til mikrofonen er blokkert, så jeg byttet deg til chatten. Jeg snakker fortsatt høyt. Vil du snakke selv, tillat mikrofonen i enhetsinnstillingene.",
+  "DEGRADED_VOICE_BLOCKED_HINT_BROWSER": "Tilgangen til mikrofonen er blokkert. Jeg snakker fortsatt høyt. Vil du snakke selv, tillat mikrofonen i tillatelsene for siden.",
+  "DEGRADED_VOICE_BLOCKED_HINT_OS": "Tilgangen til mikrofonen er blokkert. Jeg snakker fortsatt høyt. Vil du snakke selv, tillat mikrofonen i enhetsinnstillingene.",
+  "USE_TEXT_CHAT": "Bruk tekstchat",
+  "OR": "ELLER",
+  "MIC_BLOCKED_HINT": "Tillat mikrofonen i tillatelsene for siden",
+  "MIC_OS_BLOCKED_HINT": "Tillat mikrofonen i enhetsinnstillingene",
+  "CONTROLS": {
+    "MICROPHONE": {
+      "MUTE": "Slå av mikrofonen",
+      "UNMUTE": "Slå på mikrofonen",
+      "MUTED": "Mikrofonen er av",
+      "UNMUTED": "Mikrofonen er på"
+    },
+    "SUBTITLES": {
+      "ENABLE": "Slå på undertekster",
+      "DISABLE": "Slå av undertekster",
+      "ENABLED": "Undertekster på",
+      "DISABLED": "Undertekster av"
+    },
+    "MUTE_MICROPHONE": "Slå av mikrofonen",
+    "UNMUTE_MICROPHONE": "Slå på mikrofonen",
+    "ENABLE_CAPTIONS": "Slå på undertekster",
+    "DISABLE_CAPTIONS": "Slå av undertekster"
+  },
+  "ERRORS": {
+    "UNKNOWN_ERROR": {
+      "NAME": "Uventet feil",
+      "INSTRUCTIONS": "Prøv igjen, eller kontakt kundeservice hvis problemet vedvarer."
+    },
+    "NETWORK_ERROR": {
+      "NAME": "Tilkoblingsfeil",
+      "INSTRUCTIONS": "Sjekk internettforbindelsen din og prøv igjen."
+    },
+    "API_ERROR": {
+      "NAME": "Kommunikasjonsfeil",
+      "INSTRUCTIONS": "Det oppsto et problem med tilkoblingen til tjenesten. Prøv igjen senere."
+    },
+    "WEBSOCKET_ERROR": {
+      "NAME": "WebSocket-tilkoblingsfeil",
+      "INSTRUCTIONS": "Får ikke kontakt med stemmetjenesten. Sjekk forbindelsen din."
+    },
+    "CONNECTION_TIMEOUT": {
+      "NAME": "Tidsavbrudd",
+      "INSTRUCTIONS": "Tilkoblingen tok for lang tid. Prøv igjen."
+    },
+    "AUTHENTICATION_ERROR": {
+      "NAME": "Innloggingsfeil",
+      "INSTRUCTIONS": "Logg inn på nytt."
+    },
+    "MICROPHONE_ACCESS_DENIED": {
+      "NAME": "Mikrofon kreves",
+      "INSTRUCTIONS": "Tillat den i nettleserens tillatelser for denne siden."
+    },
+    "MICROPHONE_BLOCKED": {
+      "NAME": "Mikrofonen er blokkert",
+      "INSTRUCTIONS": "Tillat den i nettleserens tillatelser for denne siden."
+    },
+    "MICROPHONE_OS_BLOCKED": {
+      "NAME": "Mikrofonen er blokkert",
+      "INSTRUCTIONS": "Tillat den i enhetsinnstillingene for denne nettleseren."
+    },
+    "MICROPHONE_NOT_READABLE": {
+      "NAME": "Mikrofonfeil",
+      "INSTRUCTIONS": "Kunne ikke lese data fra mikrofonen. Sjekk mikrofonen, eller prøv en annen."
+    },
+    "AUDIO_RECORDING_ERROR": {
+      "NAME": "Opptaksfeil",
+      "INSTRUCTIONS": "Kunne ikke ta opp lyd. Sjekk mikrofonen, eller prøv en annen."
+    },
+    "SERVER_ERROR": {
+      "NAME": "Serverfeil",
+      "INSTRUCTIONS": "Teamet vårt er varslet."
+    },
+    "QUOTA_EXCEEDED": {
+      "NAME": "Bruksgrensen er nådd",
+      "INSTRUCTIONS": "Du har nådd bruksgrensen din. Prøv igjen senere."
+    },
+    "HIGH_DEMAND": {
+      "NAME": "Stor pågang",
+      "INSTRUCTIONS": "Det er stor pågang i tjenesten nå. Prøv igjen om litt."
+    },
+    "HTTP": {
+      "400_BAD_REQUEST": {
+        "NAME": "Ugyldig forespørsel",
+        "INSTRUCTIONS": "Prøv igjen med gyldige opplysninger."
+      },
+      "401_UNAUTHORIZED": {
+        "NAME": "Innlogging kreves",
+        "INSTRUCTIONS": "Logg inn for å fortsette å bruke denne funksjonen."
+      },
+      "403_FORBIDDEN": {
+        "NAME": "Ingen tilgang",
+        "INSTRUCTIONS": "Du har ikke tilgang til denne funksjonen."
+      },
+      "403_FORBIDDEN_GEO_LOCATION_BLOCKED": {
+        "NAME": "Stedet er blokkert",
+        "INSTRUCTIONS": "Stemmechatten er ikke tilgjengelig fra dette stedet."
+      },
+      "404_NOT_FOUND": {
+        "NAME": "Fant ikke tjenesten",
+        "INSTRUCTIONS": "Den forespurte tjenesten ble ikke funnet."
+      },
+      "408_TIMEOUT": {
+        "NAME": "Tidsavbrudd for forespørselen",
+        "INSTRUCTIONS": "Serveren brukte for lang tid på å svare. Prøv igjen senere."
+      },
+      "409_CONFLICT": {
+        "NAME": "Konflikt i tjenesten",
+        "INSTRUCTIONS": "Det oppsto en konflikt med gjeldende tilstand. Prøv igjen."
+      },
+      "422_UNPROCESSABLE_ENTITY": {
+        "NAME": "Ugyldig format",
+        "INSTRUCTIONS": "Forespørselen kunne ikke behandles. Prøv igjen."
+      },
+      "429_RATE_LIMIT": {
+        "NAME": "For mange forespørsler",
+        "INSTRUCTIONS": "Vent et øyeblikk før du prøver igjen."
+      },
+      "500_SERVER_ERROR": {
+        "NAME": "Serverfeil",
+        "INSTRUCTIONS": "Prøv igjen senere."
+      },
+      "502_BAD_GATEWAY": {
+        "NAME": "Tjenesten er utilgjengelig",
+        "INSTRUCTIONS": "Prøv igjen senere."
+      },
+      "503_SERVICE_UNAVAILABLE": {
+        "NAME": "Tjenesten er midlertidig utilgjengelig",
+        "INSTRUCTIONS": "Prøv igjen senere."
+      },
+      "504_GATEWAY_TIMEOUT": {
+        "NAME": "Tidsavbrudd i tjenesten",
+        "INSTRUCTIONS": "Tjenesten brukte for lang tid på å svare. Prøv igjen senere."
+      }
+    }
+  },
+  "LANGUAGE_NOT_SUPPORTED": "Språket støttes ikke i stemmechatten."
+}

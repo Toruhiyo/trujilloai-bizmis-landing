@@ -5,8 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "sync:promo-film": "node scripts/sync-promo-film.mjs",
-    "export:ad-1": "node scripts/export-ad-1.mjs",
+    "export:ad-1": "node film/scripts/export-ad-1.mjs",
     "sync:leads-to-landing": "node ../bizmis-operations/scripts/invite-cards/sync-leads-to-landing.mjs",
     "build": "vite build",
     "build:dev": "vite build --mode development",

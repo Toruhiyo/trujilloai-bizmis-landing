@@ -466,7 +466,7 @@
   const PROMO_XSELL_HOLD_MS = 450;
   const PROMO_XSELL_LAYOUT_MS = 420;
   const PROMO_XSELL_FLY_MS = 700;
-  // v24: a clean, unmistakable rewind (scripts/render-vhs-rewind.py --clean): the pain races
+  // v24: a clean, unmistakable rewind (film/scripts/render-vhs-rewind.py --clean): the pain races
   // backwards and settles on the first store frame by SCRUB_MS; the DOM adds the shrinking
   // "player" frame, the ◀◀ glyph and a scrubber whose playhead runs back with the tape.
   const PROMO_REWIND_VIDEO = '/promo/rewind/pain-rewind-clean.mp4';
@@ -3368,7 +3368,7 @@
   }
 
   // The clerk's lines, recorded once from the live agent through the real
-  // widget (scripts/capture-clerk-voice.mjs): public/promo/voice/<id>.wav
+  // widget (film/scripts/capture-clerk-voice.mjs): public/promo/voice/<id>.wav
   // with the agent's own character timings in <id>.json.
   const promoVoiceCache = new Map();
   function clerkVoice(id) {
@@ -3383,7 +3383,7 @@
     'shopper-doubt', ...PROMO_VO.filter((cue) => cue.id.startsWith('t-')).map((cue) => cue.id)]
     .forEach((id) => clerkVoice(id));
 
-  // The narrator's lines are generated (scripts/generate-film-voice.mjs) and
+  // The narrator's lines are generated (film/scripts/generate-film-voice.mjs) and
   // logged like the clerk's, so the exporter lays them under the frames. The
   // promise ends with the line, so a scene can wait for the narrator.
   // A whole take: plays at once; .done ends with it, and .at(phrase, 'start' |
@@ -6968,7 +6968,7 @@
     // the cursor clicks Install, the bubble becomes the clerk and the store
     // warms up. Returns false when the stage isn't there (caller falls back).
     // "Let's rewind." The pain plays backwards like a VHS tape (a pre-rendered
-    // clip, scripts/render-vhs-rewind.py) and slows to a stop on the pain's
+    // clip, film/scripts/render-vhs-rewind.py) and slows to a stop on the pain's
     // first store frame: the very window the pitch then installs Bizmis into.
     // land() resolves once the tape has stopped and the live store shows.
     beginRewind() {

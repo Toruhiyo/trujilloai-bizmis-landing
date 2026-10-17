@@ -1,0 +1,240 @@
+{
+  "VOICECHAT_CLAIM": "Låt oss prata. Jag hjälper dig.",
+  "VOICECHAT_BUTTON": "Röstchatt",
+  "VOICECHAT_INSTRUCTIONS": "Prata för att avbryta",
+  "END_CALL": "Avsluta",
+  "CONNECTING": "Vänta några sekunder ...",
+  "CONNECTING_BUTTON": "Ansluter",
+  "CLICK_TO_SPEAK": "Klicka för att prata",
+  "CLICK_TO_END": "Klicka för att avsluta",
+  "TALK_TO_INTERRUPT": "Prata för att avbryta",
+  "CONNECTING_HINT": "Vänta ett ögonblick",
+  "LISTENING_ACTIVE": "Jag lyssnar ...",
+  "TRY_VOICE_EXPERIENCE": "Testa mig, jag är ny!",
+  "TERMS_ACCEPT": "Godkänn",
+  "TERMS_DECLINE": "Tillbaka",
+  "TERMS_ACCEPTANCE_WITH_LINK": "Godkänn [villkoren]({{termsUrl}}) för att fortsätta.",
+  "POC_DISCLAIMER": {
+    "TITLE": "Proof of Concept",
+    "MESSAGE": "Den här röstchatten är en prototyp som bara ska visa konceptet och motsvarar inte den slutliga kvaliteten på en lösning eller produkt. Fördröjningar, buggar och andra problem kan förekomma.<br/>Viktiga funktioner: <strong>Självständig navigering på webben</strong>, <strong>Markering av text</strong> och <strong>Ifyllning av formulär</strong>."
+  },
+  "GREETING": {
+    "1": "Hej! Välkommen till röstchatten. Vad kan jag hjälpa dig med i dag?",
+    "2": "Hej där! Jag finns här och hjälper dig med det du behöver.",
+    "3": "God dag! Vad kan jag stå till tjänst med i dag?",
+    "4": "Välkommen! Säg vad du behöver, så hjälper jag dig.",
+    "5": "Din röstassistent är på plats. Jag hjälper gärna till!",
+    "DEFAULT": "Hej! Vad kan jag hjälpa till med i dag?"
+  },
+  "RESUME_GREETING": {
+    "1": "Hej, jag är tillbaka! Vi fortsätter där vi slutade.",
+    "2": "Okej, då fortsätter vi!",
+    "3": "Jag är kvar! Vad var det vi tittade på?",
+    "DEFAULT": "Nå, var var vi?"
+  },
+  "FEEDBACK_TITLE": "Hur var din upplevelse?",
+  "FEEDBACK_THUMBS_UP": "Bra",
+  "FEEDBACK_THUMBS_DOWN": "Kan bli bättre",
+  "FEEDBACK_ERROR": "Feedbacken skickades inte",
+  "FEEDBACK_SUCCESS": "Tack för din feedback!",
+  "ERROR_GENERIC": "Röstchatten kunde inte starta",
+  "MOBILE_TAP_AVATAR_TO_START": "Tryck och prata",
+  "MOBILE_TAP_AVATAR_TO_CANCEL": "Ansluter ...",
+  "MOBILE_TAP_AVATAR_TO_END_CALL": "Tryck för att avsluta",
+  "HINT_LABEL": "Testa att säga",
+  "HINTS_DEFAULT": [
+    "Jag behöver en present till min partner, kan du hjälpa mig?",
+    "Vad är på rea just nu?",
+    "Vilken är bäst för känslig hud?",
+    "Kan jag returnera den om den inte passar?",
+    "Jämför de här två åt mig"
+  ],
+  "CHAT_INPUT_PLACEHOLDER": "Fråga om produkter, frakt eller din order.",
+  "CHAT_CONNECTING_PLACEHOLDER": "Ansluter … du kan börja skriva redan nu.",
+  "CHAT_MESSAGE_SENDING": "Skickar …",
+  "CHAT_MESSAGE_FAILED_RETRY": "Skickades inte. Tryck för att försöka igen.",
+  "CHAT_EVENT_PRODUCTS_SHOWN": "Produkter du fick se",
+  "CHAT_EVENT_SEARCH_RESULTS": "Resultat för ”{{query}}”",
+  "CHAT_EVENT_PRODUCT_OPENED": "Produkt öppnad",
+  "CHAT_EVENT_ADDED_TO_CART": "Tillagd i varukorgen",
+  "CHAT_EVENT_CART_OPENED": "Varukorg öppnad",
+  "CHAT_EVENT_CHECKOUT_OPENED": "Kassan öppnad",
+  "CHAT_EVENT_SEARCHED_FOR": "Sökte på ”{{query}}”",
+  "CHAT_EVENT_PAGE_OPENED": "Sida öppnad",
+  "CHAT_VOICE_TOGGLE_ON": "Starta röst",
+  "CHAT_VOICE_TOGGLE_OFF": "Avsluta röst",
+  "CHAT_CALL_START": "Starta röstchatt",
+  "CHAT_CALL_END": "Lägg på",
+  "CHAT_LAUNCHER_TITLE": "Starta en chatt",
+  "CHAT_NEW_SESSION": "Ny session",
+  "CHAT_HIDE_PANEL": "Tillbaka till avataren",
+  "CHAT_SEND": "Skicka",
+  "CHAT_EMPTY_HINT": "Skicka ett meddelande för att starta samtalet.",
+  "CHAT_COLLAPSE": "Fäll ihop",
+  "CHAT_EXPAND": "Fäll ut",
+  "MIC_RECOVERY_DISMISS": "Stäng",
+  "NAVIGATION_TAKING_YOU_TO": "Jag tar dig till",
+  "NAVIGATION_TARGET_SEARCH": "Sökresultat",
+  "NAVIGATION_TARGET_GENERIC": "En annan sida",
+  "TEXT_CHAT_INSTRUCTIONS": "Byt till röst",
+  "MOBILE_TYPE_INSTEAD": "... eller skriv i stället",
+  "CLOSE_WIDGET": "Stäng",
+  "REOPEN_WIDGET": "Öppna assistenten igen",
+  "CHAT_LITE_SHOW_HISTORY": "Sessionshistorik",
+  "CHAT_LITE_HIDE_HISTORY": "Dölj samtal",
+  "CHAT_LITE_BACK_TO_VOICE": "Tillbaka till röstläget",
+  "CHAT_LITE_GO_TO_VOICE": "Byt till röstläget",
+  "CHAT_LITE_CONVERSATION": "Samtal",
+  "CHAT_LITE_PIN_TRANSCRIPT": "Fäst samtalet",
+  "CHAT_LITE_UNPIN_TRANSCRIPT": "Lossa samtalet",
+  "UNIFIED_PROMPTS": {
+    "DISCOVERY": "Hjälp mig att hitta rätt produkt.",
+    "COMPARISON": "Jämför de bästa alternativen åt mig.",
+    "GUIDANCE": "Passar det här eller fungerar det för mina behov?",
+    "RETURNS": "Vad är returpolicyn?",
+    "FAQ": "Kan du svara på en fråga om shopping?"
+  },
+  "MIC_PRIMER": "Välj \"Tillåt\" så att jag kan höra dig",
+  "MIC_NEEDED": "Ge tillgång till mikrofonen för att prata",
+  "ENABLE_MIC_HINT_BROWSER": "Tillåt mikrofonen i sidans behörigheter",
+  "ENABLE_MIC_HINT_OS": "Tillåt mikrofonen i enhetens inställningar",
+  "DEGRADED_VOICE_SWITCHED_HINT_BROWSER": "Mikrofonen är blockerad, så jag har växlat till chatten. Jag pratar fortfarande högt. Vill du prata själv, tillåt mikrofonen i sidans behörigheter.",
+  "DEGRADED_VOICE_SWITCHED_HINT_OS": "Mikrofonen är blockerad, så jag har växlat till chatten. Jag pratar fortfarande högt. Vill du prata själv, tillåt mikrofonen i enhetens inställningar.",
+  "DEGRADED_VOICE_BLOCKED_HINT_BROWSER": "Mikrofonen är blockerad. Jag pratar fortfarande högt. Vill du prata själv, tillåt mikrofonen i sidans behörigheter.",
+  "DEGRADED_VOICE_BLOCKED_HINT_OS": "Mikrofonen är blockerad. Jag pratar fortfarande högt. Vill du prata själv, tillåt mikrofonen i enhetens inställningar.",
+  "USE_TEXT_CHAT": "Använd textchatt",
+  "OR": "ELLER",
+  "MIC_BLOCKED_HINT": "Tillåt mikrofonen i sidans behörigheter",
+  "MIC_OS_BLOCKED_HINT": "Tillåt mikrofonen i enhetens inställningar",
+  "CONTROLS": {
+    "MICROPHONE": {
+      "MUTE": "Stäng av mikrofonen",
+      "UNMUTE": "Slå på mikrofonen",
+      "MUTED": "Mikrofonen är avstängd",
+      "UNMUTED": "Mikrofonen är på"
+    },
+    "SUBTITLES": {
+      "ENABLE": "Slå på undertexter",
+      "DISABLE": "Stäng av undertexter",
+      "ENABLED": "Undertexter på",
+      "DISABLED": "Undertexter av"
+    },
+    "MUTE_MICROPHONE": "Stäng av mikrofonen",
+    "UNMUTE_MICROPHONE": "Slå på mikrofonen",
+    "ENABLE_CAPTIONS": "Slå på undertexter",
+    "DISABLE_CAPTIONS": "Stäng av undertexter"
+  },
+  "ERRORS": {
+    "UNKNOWN_ERROR": {
+      "NAME": "Oväntat fel",
+      "INSTRUCTIONS": "Försök igen eller kontakta supporten om problemet kvarstår."
+    },
+    "NETWORK_ERROR": {
+      "NAME": "Anslutningsfel",
+      "INSTRUCTIONS": "Kontrollera din internetanslutning och försök igen."
+    },
+    "API_ERROR": {
+      "NAME": "Kommunikationsfel",
+      "INSTRUCTIONS": "Det gick inte att ansluta till tjänsten. Försök igen senare."
+    },
+    "WEBSOCKET_ERROR": {
+      "NAME": "WebSocket-anslutningsfel",
+      "INSTRUCTIONS": "Det går inte att nå rösttjänsten. Kontrollera din anslutning."
+    },
+    "CONNECTION_TIMEOUT": {
+      "NAME": "Anslutningen tog för lång tid",
+      "INSTRUCTIONS": "Tiden för anslutningen gick ut. Försök igen."
+    },
+    "AUTHENTICATION_ERROR": {
+      "NAME": "Inloggningsfel",
+      "INSTRUCTIONS": "Logga in igen."
+    },
+    "MICROPHONE_ACCESS_DENIED": {
+      "NAME": "Mikrofon behövs",
+      "INSTRUCTIONS": "Tillåt den i webbläsarens behörigheter för den här sidan."
+    },
+    "MICROPHONE_BLOCKED": {
+      "NAME": "Mikrofonen är blockerad",
+      "INSTRUCTIONS": "Tillåt den i webbläsarens behörigheter för den här sidan."
+    },
+    "MICROPHONE_OS_BLOCKED": {
+      "NAME": "Mikrofonen är blockerad",
+      "INSTRUCTIONS": "Tillåt den i enhetens inställningar för den här webbläsaren."
+    },
+    "MICROPHONE_NOT_READABLE": {
+      "NAME": "Mikrofonfel",
+      "INSTRUCTIONS": "Det gick inte att läsa data från mikrofonen. Kontrollera mikrofonen eller testa en annan."
+    },
+    "AUDIO_RECORDING_ERROR": {
+      "NAME": "Inspelningsfel",
+      "INSTRUCTIONS": "Det gick inte att spela in ljud. Kontrollera mikrofonen eller testa en annan."
+    },
+    "SERVER_ERROR": {
+      "NAME": "Serverfel",
+      "INSTRUCTIONS": "Vårt team har blivit meddelat."
+    },
+    "QUOTA_EXCEEDED": {
+      "NAME": "Användningsgränsen är nådd",
+      "INSTRUCTIONS": "Du har nått din användningsgräns. Försök igen senare."
+    },
+    "HIGH_DEMAND": {
+      "NAME": "Hög belastning",
+      "INSTRUCTIONS": "Tjänsten har hög belastning just nu. Försök igen om en liten stund."
+    },
+    "HTTP": {
+      "400_BAD_REQUEST": {
+        "NAME": "Ogiltig begäran",
+        "INSTRUCTIONS": "Försök igen med giltiga uppgifter."
+      },
+      "401_UNAUTHORIZED": {
+        "NAME": "Inloggning krävs",
+        "INSTRUCTIONS": "Logga in för att fortsätta använda funktionen."
+      },
+      "403_FORBIDDEN": {
+        "NAME": "Åtkomst nekad",
+        "INSTRUCTIONS": "Du har inte behörighet till den här funktionen."
+      },
+      "403_FORBIDDEN_GEO_LOCATION_BLOCKED": {
+        "NAME": "Platsen är blockerad",
+        "INSTRUCTIONS": "Röstchatten är inte tillgänglig från den här platsen."
+      },
+      "404_NOT_FOUND": {
+        "NAME": "Tjänsten hittades inte",
+        "INSTRUCTIONS": "Den begärda tjänsten kunde inte hittas."
+      },
+      "408_TIMEOUT": {
+        "NAME": "Begäran tog för lång tid",
+        "INSTRUCTIONS": "Servern tog för lång tid på sig att svara. Försök igen senare."
+      },
+      "409_CONFLICT": {
+        "NAME": "Konflikt i tjänsten",
+        "INSTRUCTIONS": "Det uppstod en konflikt med det aktuella läget. Försök igen."
+      },
+      "422_UNPROCESSABLE_ENTITY": {
+        "NAME": "Ogiltigt format",
+        "INSTRUCTIONS": "Begäran kunde inte behandlas. Försök igen."
+      },
+      "429_RATE_LIMIT": {
+        "NAME": "För många förfrågningar",
+        "INSTRUCTIONS": "Vänta en stund innan du försöker igen."
+      },
+      "500_SERVER_ERROR": {
+        "NAME": "Serverfel",
+        "INSTRUCTIONS": "Försök igen senare."
+      },
+      "502_BAD_GATEWAY": {
+        "NAME": "Tjänsten är inte tillgänglig",
+        "INSTRUCTIONS": "Försök igen senare."
+      },
+      "503_SERVICE_UNAVAILABLE": {
+        "NAME": "Tjänsten är tillfälligt otillgänglig",
+        "INSTRUCTIONS": "Försök igen senare."
+      },
+      "504_GATEWAY_TIMEOUT": {
+        "NAME": "Tjänsten svarade inte i tid",
+        "INSTRUCTIONS": "Tjänsten tog för lång tid på sig att svara. Försök igen senare."
+      }
+    }
+  },
+  "LANGUAGE_NOT_SUPPORTED": "Språket stöds inte i röstchatten."
+}

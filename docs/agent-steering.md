@@ -9,7 +9,7 @@ This is a widget debug feature. It is off on every live store and only turns on 
 Either of these:
 
 - `AvatarVoicechat.init({ ..., debug: true })`. The ad-1 film does this in `src/promo/AdFilm.tsx`.
-- `localStorage["bizmis-debug"] = "1"` before the widget loads. The store recorder does this in `installPrefs` (`scripts/record-store-usecases.mjs`), so it works on the real Shopify stores without touching the app embed.
+- `localStorage["bizmis-debug"] = "1"` before the widget loads. The store recorder does this in `installPrefs` (`film/scripts/record-store-usecases.mjs`), so it works on the real Shopify stores without touching the app embed.
 
 With debug off, both calls below return `false` and do nothing.
 
@@ -53,7 +53,7 @@ On a widget build without the debug API, the film falls back to rewriting the ou
 
 ## Demo store videos
 
-`scripts/store-usecases.json` beats take optional steers:
+`film/scripts/store-usecases.json` beats take optional steers:
 
 - `steer`: an array aligned with `lines`. `steer[i]` rides hidden behind `lines[i]`. Use `""` for no steer.
 - `followUpSteer`: rides behind `followUp`.

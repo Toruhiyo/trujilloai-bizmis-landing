@@ -1,0 +1,240 @@
+{
+  "VOICECHAT_CLAIM": "Yuk, ngobrol. Aku bantu kamu.",
+  "VOICECHAT_BUTTON": "Obrolan suara",
+  "VOICECHAT_INSTRUCTIONS": "Bicara untuk menyela",
+  "END_CALL": "Akhiri",
+  "CONNECTING": "Tunggu sebentar ya...",
+  "CONNECTING_BUTTON": "Menyambungkan",
+  "CLICK_TO_SPEAK": "Klik untuk bicara",
+  "CLICK_TO_END": "Klik untuk mengakhiri",
+  "TALK_TO_INTERRUPT": "Bicara untuk menyela",
+  "CONNECTING_HINT": "Tunggu sebentar ya",
+  "LISTENING_ACTIVE": "Mendengarkan...",
+  "TRY_VOICE_EXPERIENCE": "Coba aku, aku masih baru!",
+  "TERMS_ACCEPT": "Setuju",
+  "TERMS_DECLINE": "Kembali",
+  "TERMS_ACCEPTANCE_WITH_LINK": "Setujui [Syarat & Ketentuan]({{termsUrl}}) untuk lanjut.",
+  "POC_DISCLAIMER": {
+    "TITLE": "Purwarupa Konsep",
+    "MESSAGE": "Purwarupa obrolan suara ini hanya untuk memperlihatkan konsepnya dan tidak mewakili kualitas akhir sebuah solusi atau produk. Keterlambatan, bug, dan masalah lain bisa saja terjadi.<br/>Fitur utama: <strong>Navigasi web otomatis</strong>, <strong>Penyorotan teks</strong>, dan <strong>Pengisian formulir</strong>."
+  },
+  "GREETING": {
+    "1": "Halo! Selamat datang di obrolan suara. Ada yang bisa aku bantu hari ini?",
+    "2": "Hai! Aku di sini untuk bantu apa pun yang kamu butuhkan.",
+    "3": "Halo! Apa yang bisa aku bantu sekarang?",
+    "4": "Selamat datang! Bilang saja apa yang kamu cari, aku bantu sebisaku.",
+    "5": "Asisten suara siap membantu! Tinggal bilang saja!",
+    "DEFAULT": "Halo! Lagi cari apa hari ini?"
+  },
+  "RESUME_GREETING": {
+    "1": "Aku balik lagi! Kita lanjut dari tadi ya.",
+    "2": "Oke, kita lanjut!",
+    "3": "Masih di sini! Tadi kita lagi lihat apa ya?",
+    "DEFAULT": "Nah, tadi sampai mana ya?"
+  },
+  "FEEDBACK_TITLE": "Bagaimana pengalamanmu?",
+  "FEEDBACK_THUMBS_UP": "Bagus",
+  "FEEDBACK_THUMBS_DOWN": "Perlu diperbaiki",
+  "FEEDBACK_ERROR": "Masukan gagal dikirim",
+  "FEEDBACK_SUCCESS": "Terima kasih atas masukanmu!",
+  "ERROR_GENERIC": "Obrolan suara tidak bisa dimulai",
+  "MOBILE_TAP_AVATAR_TO_START": "Ketuk & bicara",
+  "MOBILE_TAP_AVATAR_TO_CANCEL": "Menyambungkan...",
+  "MOBILE_TAP_AVATAR_TO_END_CALL": "Ketuk untuk selesai",
+  "HINT_LABEL": "Coba bilang",
+  "HINTS_DEFAULT": [
+    "Aku cari hadiah untuk pasanganku, bisa bantu?",
+    "Apa saja yang lagi diskon sekarang?",
+    "Mana yang paling cocok untuk kulit sensitif?",
+    "Kalau ukurannya tidak pas, bisa dikembalikan?",
+    "Bandingkan dua produk ini dong"
+  ],
+  "CHAT_INPUT_PLACEHOLDER": "Tanya soal produk, pengiriman, atau pesananmu.",
+  "CHAT_CONNECTING_PLACEHOLDER": "Menyambungkan… kamu sudah bisa mengetik.",
+  "CHAT_MESSAGE_SENDING": "Mengirim…",
+  "CHAT_MESSAGE_FAILED_RETRY": "Belum terkirim. Ketuk untuk coba lagi.",
+  "CHAT_EVENT_PRODUCTS_SHOWN": "Produk yang ditampilkan",
+  "CHAT_EVENT_SEARCH_RESULTS": "Hasil untuk “{{query}}”",
+  "CHAT_EVENT_PRODUCT_OPENED": "Produk dibuka",
+  "CHAT_EVENT_ADDED_TO_CART": "Ditambahkan ke keranjang",
+  "CHAT_EVENT_CART_OPENED": "Keranjang dibuka",
+  "CHAT_EVENT_CHECKOUT_OPENED": "Checkout dibuka",
+  "CHAT_EVENT_SEARCHED_FOR": "Mencari “{{query}}”",
+  "CHAT_EVENT_PAGE_OPENED": "Halaman dibuka",
+  "CHAT_VOICE_TOGGLE_ON": "Mulai suara",
+  "CHAT_VOICE_TOGGLE_OFF": "Akhiri suara",
+  "CHAT_CALL_START": "Mulai obrolan suara",
+  "CHAT_CALL_END": "Akhiri panggilan",
+  "CHAT_LAUNCHER_TITLE": "Mulai obrolan teks",
+  "CHAT_NEW_SESSION": "Sesi baru",
+  "CHAT_HIDE_PANEL": "Kembali ke avatar",
+  "CHAT_SEND": "Kirim",
+  "CHAT_EMPTY_HINT": "Kirim pesan untuk memulai obrolan.",
+  "CHAT_COLLAPSE": "Ciutkan",
+  "CHAT_EXPAND": "Perluas",
+  "MIC_RECOVERY_DISMISS": "Tutup",
+  "NAVIGATION_TAKING_YOU_TO": "Mengantar kamu ke",
+  "NAVIGATION_TARGET_SEARCH": "Hasil pencarian",
+  "NAVIGATION_TARGET_GENERIC": "Halaman lain",
+  "TEXT_CHAT_INSTRUCTIONS": "Beralih ke suara",
+  "MOBILE_TYPE_INSTEAD": "...atau ketik saja",
+  "CLOSE_WIDGET": "Tutup",
+  "REOPEN_WIDGET": "Buka lagi asisten",
+  "CHAT_LITE_SHOW_HISTORY": "Riwayat sesi",
+  "CHAT_LITE_HIDE_HISTORY": "Sembunyikan percakapan",
+  "CHAT_LITE_BACK_TO_VOICE": "Kembali ke mode suara",
+  "CHAT_LITE_GO_TO_VOICE": "Ke mode suara",
+  "CHAT_LITE_CONVERSATION": "Percakapan",
+  "CHAT_LITE_PIN_TRANSCRIPT": "Sematkan percakapan",
+  "CHAT_LITE_UNPIN_TRANSCRIPT": "Lepas sematan percakapan",
+  "UNIFIED_PROMPTS": {
+    "DISCOVERY": "Bantu saya menemukan produk yang tepat.",
+    "COMPARISON": "Bandingkan pilihan terbaik untuk saya.",
+    "GUIDANCE": "Apakah ini akan pas atau sesuai dengan kebutuhan saya?",
+    "RETURNS": "Apa kebijakan pengembaliannya?",
+    "FAQ": "Bisakah Anda menjawab pertanyaan tentang belanja?"
+  },
+  "MIC_PRIMER": "Pilih \"Izinkan\" supaya aku bisa mendengarmu",
+  "MIC_NEEDED": "Izinkan mikrofon untuk ngobrol lewat suara",
+  "ENABLE_MIC_HINT_BROWSER": "Izinkan mikrofon di izin halaman",
+  "ENABLE_MIC_HINT_OS": "Izinkan mikrofon di pengaturan perangkat",
+  "DEGRADED_VOICE_SWITCHED_HINT_BROWSER": "Akses mikrofon diblokir, jadi aku pindahkan kamu ke obrolan teks. Aku tetap menjawab dengan suara. Supaya bisa bicara, izinkan mikrofon di izin halaman.",
+  "DEGRADED_VOICE_SWITCHED_HINT_OS": "Akses mikrofon diblokir, jadi aku pindahkan kamu ke obrolan teks. Aku tetap menjawab dengan suara. Supaya bisa bicara, izinkan mikrofon di pengaturan perangkat.",
+  "DEGRADED_VOICE_BLOCKED_HINT_BROWSER": "Akses mikrofon diblokir. Aku tetap menjawab dengan suara. Supaya bisa bicara, izinkan mikrofon di izin halaman.",
+  "DEGRADED_VOICE_BLOCKED_HINT_OS": "Akses mikrofon diblokir. Aku tetap menjawab dengan suara. Supaya bisa bicara, izinkan mikrofon di pengaturan perangkat.",
+  "USE_TEXT_CHAT": "Pakai obrolan teks",
+  "OR": "ATAU",
+  "MIC_BLOCKED_HINT": "Izinkan mikrofon di izin halaman",
+  "MIC_OS_BLOCKED_HINT": "Izinkan mikrofon di pengaturan perangkat",
+  "CONTROLS": {
+    "MICROPHONE": {
+      "MUTE": "Matikan mikrofon",
+      "UNMUTE": "Nyalakan mikrofon",
+      "MUTED": "Mikrofon mati",
+      "UNMUTED": "Mikrofon aktif"
+    },
+    "SUBTITLES": {
+      "ENABLE": "Aktifkan subtitel",
+      "DISABLE": "Matikan subtitel",
+      "ENABLED": "Subtitel aktif",
+      "DISABLED": "Subtitel mati"
+    },
+    "MUTE_MICROPHONE": "Matikan mikrofon",
+    "UNMUTE_MICROPHONE": "Nyalakan mikrofon",
+    "ENABLE_CAPTIONS": "Aktifkan subtitel",
+    "DISABLE_CAPTIONS": "Matikan subtitel"
+  },
+  "ERRORS": {
+    "UNKNOWN_ERROR": {
+      "NAME": "Terjadi kesalahan",
+      "INSTRUCTIONS": "Silakan coba lagi atau hubungi dukungan jika masalahnya berlanjut."
+    },
+    "NETWORK_ERROR": {
+      "NAME": "Kesalahan koneksi jaringan",
+      "INSTRUCTIONS": "Periksa koneksi internetmu lalu coba lagi."
+    },
+    "API_ERROR": {
+      "NAME": "Kesalahan komunikasi API",
+      "INSTRUCTIONS": "Ada masalah saat menghubungkan ke layanan. Silakan coba lagi nanti."
+    },
+    "WEBSOCKET_ERROR": {
+      "NAME": "Kesalahan koneksi WebSocket",
+      "INSTRUCTIONS": "Tidak bisa terhubung ke layanan suara. Periksa koneksimu."
+    },
+    "CONNECTION_TIMEOUT": {
+      "NAME": "Koneksi habis waktu",
+      "INSTRUCTIONS": "Koneksi kehabisan waktu. Silakan coba lagi."
+    },
+    "AUTHENTICATION_ERROR": {
+      "NAME": "Kesalahan autentikasi",
+      "INSTRUCTIONS": "Silakan masuk kembali."
+    },
+    "MICROPHONE_ACCESS_DENIED": {
+      "NAME": "Mikrofon dibutuhkan",
+      "INSTRUCTIONS": "Izinkan lewat izin browser untuk halaman ini."
+    },
+    "MICROPHONE_BLOCKED": {
+      "NAME": "Mikrofon diblokir",
+      "INSTRUCTIONS": "Izinkan lewat izin browser untuk halaman ini."
+    },
+    "MICROPHONE_OS_BLOCKED": {
+      "NAME": "Mikrofon diblokir",
+      "INSTRUCTIONS": "Izinkan lewat pengaturan perangkat untuk browser ini."
+    },
+    "MICROPHONE_NOT_READABLE": {
+      "NAME": "Kesalahan mikrofon",
+      "INSTRUCTIONS": "Data mikrofon tidak bisa dibaca. Periksa mikrofonmu atau coba mikrofon lain."
+    },
+    "AUDIO_RECORDING_ERROR": {
+      "NAME": "Kesalahan perekaman audio",
+      "INSTRUCTIONS": "Audio tidak bisa direkam. Periksa mikrofonmu atau coba mikrofon lain."
+    },
+    "SERVER_ERROR": {
+      "NAME": "Kesalahan server",
+      "INSTRUCTIONS": "Tim kami sudah diberi tahu."
+    },
+    "QUOTA_EXCEEDED": {
+      "NAME": "Batas pemakaian tercapai",
+      "INSTRUCTIONS": "Kamu sudah mencapai batas pemakaian. Silakan coba lagi nanti."
+    },
+    "HIGH_DEMAND": {
+      "NAME": "Sedang ramai",
+      "INSTRUCTIONS": "Layanan kami sedang ramai. Silakan coba lagi sebentar lagi."
+    },
+    "HTTP": {
+      "400_BAD_REQUEST": {
+        "NAME": "Permintaan tidak valid",
+        "INSTRUCTIONS": "Silakan coba lagi dengan data yang benar."
+      },
+      "401_UNAUTHORIZED": {
+        "NAME": "Perlu masuk",
+        "INSTRUCTIONS": "Silakan masuk untuk terus memakai fitur ini."
+      },
+      "403_FORBIDDEN": {
+        "NAME": "Akses ditolak",
+        "INSTRUCTIONS": "Kamu tidak punya izin untuk memakai fitur ini."
+      },
+      "403_FORBIDDEN_GEO_LOCATION_BLOCKED": {
+        "NAME": "Lokasi diblokir",
+        "INSTRUCTIONS": "Obrolan suara tidak tersedia dari lokasi ini."
+      },
+      "404_NOT_FOUND": {
+        "NAME": "Layanan tidak ditemukan",
+        "INSTRUCTIONS": "Layanan yang diminta tidak ditemukan."
+      },
+      "408_TIMEOUT": {
+        "NAME": "Permintaan habis waktu",
+        "INSTRUCTIONS": "Server terlalu lama merespons. Silakan coba lagi nanti."
+      },
+      "409_CONFLICT": {
+        "NAME": "Konflik layanan",
+        "INSTRUCTIONS": "Ada konflik dengan kondisi saat ini. Silakan coba lagi."
+      },
+      "422_UNPROCESSABLE_ENTITY": {
+        "NAME": "Format permintaan tidak valid",
+        "INSTRUCTIONS": "Permintaan tidak bisa diproses. Silakan coba lagi."
+      },
+      "429_RATE_LIMIT": {
+        "NAME": "Terlalu banyak permintaan",
+        "INSTRUCTIONS": "Tunggu sebentar sebelum mencoba lagi."
+      },
+      "500_SERVER_ERROR": {
+        "NAME": "Kesalahan server",
+        "INSTRUCTIONS": "Silakan coba lagi nanti."
+      },
+      "502_BAD_GATEWAY": {
+        "NAME": "Layanan tidak tersedia",
+        "INSTRUCTIONS": "Silakan coba lagi nanti."
+      },
+      "503_SERVICE_UNAVAILABLE": {
+        "NAME": "Layanan sementara tidak tersedia",
+        "INSTRUCTIONS": "Silakan coba lagi nanti."
+      },
+      "504_GATEWAY_TIMEOUT": {
+        "NAME": "Layanan habis waktu",
+        "INSTRUCTIONS": "Layanan terlalu lama merespons. Silakan coba lagi nanti."
+      }
+    }
+  },
+  "LANGUAGE_NOT_SUPPORTED": "Bahasa ini belum didukung untuk obrolan suara."
+}

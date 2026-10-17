@@ -1,0 +1,1602 @@
+[
+ {
+  "slug": "fetch-and-fern",
+  "brand": "Fetch & Fern",
+  "vertical": "Pet Supplies",
+  "sub": "Dog & cat beds, leashes, treats",
+  "device": "desktop",
+  "layout": "split",
+  "avatar": "luca",
+  "colors": {
+   "primary": "#1F7A6C",
+   "onPrimary": "#FFFFFF",
+   "accent": "#F2A65A",
+   "bg": "#F8F4EC",
+   "surface": "#FFFFFF",
+   "tile": "#F3EDE1",
+   "ink": "#1D2B28",
+   "muted": "#5E6B66",
+   "bar": "#1F7A6C",
+   "barInk": "#FFFFFF"
+  },
+  "fonts": {
+   "display": "Fraunces",
+   "displayWeight": 600,
+   "body": "DM Sans",
+   "q": "family=Fraunces:opsz,wght@9..144,500;9..144,600&family=DM+Sans:wght@400;500;600;700"
+  },
+  "logo": {
+   "mark": "<ellipse cx='7.5' cy='13' rx='2.6' ry='3.3'/><ellipse cx='12.5' cy='7.5' rx='2.6' ry='3.4'/><ellipse cx='19.5' cy='7.5' rx='2.6' ry='3.4'/><ellipse cx='24.5' cy='13' rx='2.6' ry='3.3'/><path d='M16 14.5c5.2 0 8.5 4.2 8.5 8.2 0 3.6-3.6 5.8-8.5 5.8s-8.5-2.2-8.5-5.8c0-4 3.3-8.2 8.5-8.2z'/><path d='M16 17.5v9M16 21l-3-2.4M16 23.6l3-2.4' stroke='var(--bg)' stroke-width='1.3' fill='none' stroke-linecap='round'/>",
+   "word": "Fetch <i>&amp;</i> Fern",
+   "wordCss": "font-family:Fraunces;font-weight:600;font-size:25px;letter-spacing:-.01em"
+  },
+  "announcement": "Free shipping over $50 · 30-night bed trial",
+  "nav": [
+   "Dogs",
+   "Cats",
+   "Beds",
+   "Walk",
+   "Treats",
+   "Sale"
+  ],
+  "hero": {
+   "eyebrow": "The comfort edit",
+   "title": "Good things for <em>good dogs.</em>",
+   "sub": "Orthopedic beds, rope leashes and slow-baked treats, made in small batches.",
+   "cta": "Shop beds",
+   "cta2": "Shop treats",
+   "img": "hero",
+   "pos": "60% 50%"
+  },
+  "section": "Bestsellers",
+  "products": [
+   {
+    "img": "p-1",
+    "name": "Cloud Donut Bed",
+    "price": "$89",
+    "badge": "Bestseller",
+    "rating": 4.9,
+    "reviews": 1284
+   },
+   {
+    "img": "p-2",
+    "name": "Braided Rope Leash",
+    "price": "$36",
+    "rating": 4.8,
+    "reviews": 512
+   },
+   {
+    "img": "p-3",
+    "name": "Speckled Ceramic Bowl",
+    "price": "$28",
+    "rating": 4.9,
+    "reviews": 377
+   },
+   {
+    "img": "p-4",
+    "name": "Wild Salmon Bites",
+    "price": "$14",
+    "badge": "New",
+    "rating": 4.7,
+    "reviews": 208
+   },
+   {
+    "img": "p-5",
+    "name": "Felted Wool Cat Cave",
+    "price": "$64",
+    "rating": 4.8,
+    "reviews": 141
+   },
+   {
+    "img": "p-6",
+    "name": "Carrot Squeaker",
+    "price": "$12",
+    "rating": 4.6,
+    "reviews": 96
+   }
+  ],
+  "pick": 0,
+  "question": "Which bed fits a 30 kg lab?"
+ },
+ {
+  "slug": "kettle-and-crow",
+  "brand": "Kettle & Crow",
+  "vertical": "Coffee Roasters",
+  "sub": "Specialty beans & brew gear",
+  "device": "phone",
+  "layout": "fullbleed",
+  "avatar": "kiran",
+  "colors": {
+   "primary": "#C8932B",
+   "onPrimary": "#1E1612",
+   "accent": "#E9D3A8",
+   "bg": "#F3ECE2",
+   "surface": "#FFFFFF",
+   "tile": "#EBDDC8",
+   "ink": "#1E1612",
+   "muted": "#6E5E50",
+   "bar": "#1E1612",
+   "barInk": "#E9D3A8",
+   "header": "#1E1612",
+   "headerInk": "#F3ECE2"
+  },
+  "fonts": {
+   "display": "Bricolage Grotesque",
+   "displayWeight": 700,
+   "body": "Inter",
+   "q": "family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700;12..96,800&family=Inter:wght@400;500;600;700"
+  },
+  "logo": {
+   "mark": "<path d='M3 21.5c3.2-.6 6-3.2 8-7.4C13 9.7 16.2 6.5 21 6.5c2.9 0 5 1.4 6 3.4l3.6.7-3.4 1.7c-.2 6.6-4.7 11.7-11.7 12.6l-2.6 4.1-.6-4C8.2 25 5.3 23.8 3 21.5z'/><circle cx='22.4' cy='10.6' r='1.3' fill='var(--hbg)'/>",
+   "word": "Kettle &amp; Crow",
+   "wordCss": "font-family:'Bricolage Grotesque';font-weight:800;font-size:21px;letter-spacing:-.02em"
+  },
+  "announcement": "Roasted Mondays · ships Tuesday",
+  "nav": [
+   "Coffee",
+   "Brew gear",
+   "Subscriptions",
+   "Wholesale"
+  ],
+  "hero": {
+   "eyebrow": "Fresh roast every Monday",
+   "title": "Roasted slow. <em>Poured slower.</em>",
+   "sub": "Single-origin beans and the gear to brew them right.",
+   "cta": "Shop coffee",
+   "img": "hero",
+   "pos": "50% 40%"
+  },
+  "chips": [
+   "Espresso",
+   "Filter",
+   "Decaf",
+   "Gear",
+   "Gifts"
+  ],
+  "section": "This week's roasts",
+  "products": [
+   {
+    "img": "p-1",
+    "name": "Night Owl Espresso",
+    "price": "$19",
+    "badge": "Bestseller",
+    "rating": 4.9,
+    "reviews": 932
+   },
+   {
+    "img": "p-2",
+    "name": "Guji Natural, Ethiopia",
+    "price": "$22",
+    "badge": "New roast",
+    "rating": 4.8,
+    "reviews": 214
+   },
+   {
+    "img": "p-3",
+    "name": "Ceramic V60 Dripper",
+    "price": "$28",
+    "rating": 4.8,
+    "reviews": 401
+   },
+   {
+    "img": "p-4",
+    "name": "Gooseneck Pour Kettle",
+    "price": "$68",
+    "rating": 4.7,
+    "reviews": 188
+   },
+   {
+    "img": "p-5",
+    "name": "Glass Server 600 ml",
+    "price": "$32",
+    "rating": 4.7,
+    "reviews": 120
+   },
+   {
+    "img": "p-6",
+    "name": "Stoneware Cup",
+    "price": "$24",
+    "rating": 4.9,
+    "reviews": 75
+   }
+  ],
+  "pick": 1,
+  "question": "Fruity beans for a V60?"
+ },
+ {
+  "slug": "liora",
+  "brand": "Liora",
+  "vertical": "Fine Jewelry",
+  "sub": "14k gold earrings, rings, necklaces",
+  "device": "tablet",
+  "layout": "editorial",
+  "avatar": "mia",
+  "colors": {
+   "primary": "#B86E78",
+   "onPrimary": "#FFFFFF",
+   "accent": "#B08D57",
+   "bg": "#FBF7F4",
+   "surface": "#FFFFFF",
+   "tile": "#F5E8E3",
+   "ink": "#2B2523",
+   "muted": "#7A6A66",
+   "bar": "#2B2523",
+   "barInk": "#F5E8E3"
+  },
+  "fonts": {
+   "display": "Cormorant Garamond",
+   "displayWeight": 500,
+   "body": "Jost",
+   "q": "family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Jost:wght@400;500;600"
+  },
+  "logo": {
+   "mark": "<circle cx='16' cy='19.5' r='8.6' fill='none' stroke='currentColor' stroke-width='2.2'/><path d='M16 2.5l4.2 3.9L16 11l-4.2-4.6z'/>",
+   "word": "LIORA",
+   "wordCss": "font-family:'Cormorant Garamond';font-weight:600;font-size:27px;letter-spacing:.32em"
+  },
+  "announcement": "Complimentary engraving & gift wrap",
+  "nav": [
+   "Earrings",
+   "Necklaces",
+   "Rings",
+   "Bracelets",
+   "Bridal"
+  ],
+  "hero": {
+   "eyebrow": "Fine jewelry · 14k solid gold",
+   "title": "Made to be worn <em>every day.</em>",
+   "sub": "Recycled gold and ethically sourced stones, finished by hand.",
+   "cta": "Shop new arrivals",
+   "img": "hero",
+   "pos": "50% 55%"
+  },
+  "section": "New arrivals",
+  "products": [
+   {
+    "img": "p-1",
+    "name": "Bold Gold Hoops",
+    "price": "$240",
+    "badge": "Bestseller",
+    "rating": 4.9,
+    "reviews": 642
+   },
+   {
+    "img": "p-2",
+    "name": "Pearl Drop Necklace",
+    "price": "$185",
+    "rating": 4.9,
+    "reviews": 318
+   },
+   {
+    "img": "p-3",
+    "name": "Oval Signet Ring",
+    "price": "$210",
+    "rating": 4.8,
+    "reviews": 205
+   },
+   {
+    "img": "p-4",
+    "name": "Diamond Tennis Bracelet",
+    "price": "$1,450",
+    "rating": 5.0,
+    "reviews": 88
+   },
+   {
+    "img": "p-5",
+    "name": "Solitaire Ring 0.5 ct",
+    "price": "$1,890",
+    "badge": "Bridal",
+    "rating": 5.0,
+    "reviews": 64
+   },
+   {
+    "img": "p-6",
+    "name": "Pavé Stacking Band",
+    "price": "$320",
+    "rating": 4.8,
+    "reviews": 131
+   }
+  ],
+  "pick": 0,
+  "question": "Are the hoops solid 14k gold?"
+ },
+ {
+  "slug": "ridgeline-supply",
+  "brand": "Ridgeline Supply Co.",
+  "vertical": "Outdoor & Camping",
+  "sub": "Packs, shelter, sleep systems",
+  "device": "desktop",
+  "layout": "fullbleed",
+  "avatar": "teo",
+  "colors": {
+   "primary": "#E2662F",
+   "onPrimary": "#FFFFFF",
+   "accent": "#F2C94C",
+   "bg": "#F1EFEA",
+   "surface": "#FFFFFF",
+   "tile": "#E6E4DF",
+   "ink": "#1E2B24",
+   "muted": "#5F6A63",
+   "bar": "#1E2B24",
+   "barInk": "#F1EFEA",
+   "header": "#1E2B24",
+   "headerInk": "#F1EFEA"
+  },
+  "fonts": {
+   "display": "Oswald",
+   "displayWeight": 600,
+   "body": "Inter",
+   "q": "family=Oswald:wght@500;600;700&family=Inter:wght@400;500;600;700"
+  },
+  "logo": {
+   "mark": "<path d='M1.5 27 11 11l5 8 5-12 9.5 20z'/><path d='M11 11l2.6 4.4-2.6-1.4-2.4 2.2zM21 7l2.8 5.8L21 11l-2.2 2.4z' fill='var(--hbg)' opacity='.85'/>",
+   "word": "RIDGELINE <small>SUPPLY CO.</small>",
+   "wordCss": "font-family:Oswald;font-weight:600;font-size:24px;letter-spacing:.06em"
+  },
+  "announcement": "Free returns for 60 days · Lifetime repairs",
+  "nav": [
+   "Packs",
+   "Shelter",
+   "Sleep",
+   "Camp kitchen",
+   "Jackets",
+   "Sale"
+  ],
+  "hero": {
+   "eyebrow": "Fall 26 field gear",
+   "title": "Built for the <em>long way up.</em>",
+   "sub": "Packs, shelter and layers tested on real ridgelines.",
+   "cta": "Shop camp",
+   "cta2": "Shop jackets",
+   "img": "hero",
+   "pos": "50% 62%"
+  },
+  "section": "Trail-tested favourites",
+  "products": [
+   {
+    "img": "p-1",
+    "name": "Trailhead 28L Pack",
+    "price": "$149",
+    "badge": "Bestseller",
+    "rating": 4.8,
+    "reviews": 1102
+   },
+   {
+    "img": "p-3",
+    "name": "Alpine Sleep Pad",
+    "price": "$79",
+    "rating": 4.7,
+    "reviews": 486
+   },
+   {
+    "img": "p-4",
+    "name": "Storm Lantern",
+    "price": "$45",
+    "rating": 4.8,
+    "reviews": 233
+   },
+   {
+    "img": "p-5",
+    "name": "Summit Down Hoodie",
+    "price": "$229",
+    "badge": "New",
+    "rating": 4.9,
+    "reviews": 167
+   },
+   {
+    "img": "p-2",
+    "name": "Steel Camp Mug",
+    "price": "$22",
+    "rating": 4.8,
+    "reviews": 590
+   },
+   {
+    "img": "p-6",
+    "name": "Ridge Down Jacket",
+    "price": "$199",
+    "rating": 4.7,
+    "reviews": 214
+   }
+  ],
+  "pick": 1,
+  "question": "Does this pad fit my tent?"
+ },
+ {
+  "slug": "little-timber",
+  "brand": "Little Timber",
+  "vertical": "Wooden Toys",
+  "sub": "Heirloom toys for little ones",
+  "device": "tablet",
+  "layout": "split",
+  "avatar": "will",
+  "colors": {
+   "primary": "#3C8DDB",
+   "onPrimary": "#FFFFFF",
+   "accent": "#F4B942",
+   "bg": "#FFF8EE",
+   "surface": "#FFFFFF",
+   "tile": "#F7EEDF",
+   "ink": "#22324A",
+   "muted": "#66738A",
+   "bar": "#F4B942",
+   "barInk": "#22324A"
+  },
+  "fonts": {
+   "display": "Fredoka",
+   "displayWeight": 600,
+   "body": "Nunito",
+   "q": "family=Fredoka:wght@500;600;700&family=Nunito:wght@400;600;700;800"
+  },
+  "logo": {
+   "mark": "<path d='M3.5 25a12.5 12.5 0 0 1 25 0' fill='none' stroke='#E8604C' stroke-width='3.4'/><path d='M8.5 25a7.5 7.5 0 0 1 15 0' fill='none' stroke='#F4B942' stroke-width='3.4'/><path d='M13.3 25a2.7 2.7 0 0 1 5.4 0' fill='none' stroke='#3C8DDB' stroke-width='3.4'/>",
+   "word": "little timber",
+   "wordCss": "font-family:Fredoka;font-weight:600;font-size:25px;letter-spacing:-.01em"
+  },
+  "announcement": "Free gift wrap on every order",
+  "nav": [
+   "Stackers",
+   "Trains",
+   "Blocks",
+   "Ride-ons",
+   "Gifts"
+  ],
+  "hero": {
+   "eyebrow": "Heirloom wooden toys",
+   "title": "Play that lasts <em>for years.</em>",
+   "sub": "Natural beech, water-based paints, made to be passed down.",
+   "cta": "Shop by age",
+   "img": "hero",
+   "pos": "40% 60%"
+  },
+  "section": "Most loved",
+  "products": [
+   {
+    "img": "p-1",
+    "name": "Rainbow Stacker",
+    "price": "$42",
+    "badge": "Bestseller",
+    "rating": 4.9,
+    "reviews": 2140
+   },
+   {
+    "img": "p-2",
+    "name": "Little Express Train",
+    "price": "$38",
+    "rating": 4.8,
+    "reviews": 712
+   },
+   {
+    "img": "p-3",
+    "name": "Building Block Set",
+    "price": "$34",
+    "rating": 4.9,
+    "reviews": 655
+   },
+   {
+    "img": "p-5",
+    "name": "Rocking Pony",
+    "price": "$129",
+    "badge": "New",
+    "rating": 4.8,
+    "reviews": 98
+   },
+   {
+    "img": "p-6",
+    "name": "Pull-Along Duck",
+    "price": "$26",
+    "rating": 4.9,
+    "reviews": 403
+   },
+   {
+    "img": "p-7",
+    "name": "Shape Sorter Box",
+    "price": "$32",
+    "rating": 4.8,
+    "reviews": 287
+   }
+  ],
+  "pick": 2,
+  "question": "What suits a 2-year-old?"
+ },
+ {
+  "slug": "leaf-and-loam",
+  "brand": "Leaf & Loam",
+  "vertical": "Houseplants",
+  "sub": "Plants, pots & care",
+  "device": "phone",
+  "layout": "card",
+  "avatar": "yue",
+  "colors": {
+   "primary": "#3F7A3D",
+   "onPrimary": "#FFFFFF",
+   "accent": "#C8734B",
+   "bg": "#EEF1E8",
+   "surface": "#FFFFFF",
+   "tile": "#E3E7DC",
+   "ink": "#1F2B1E",
+   "muted": "#5E6B5B",
+   "bar": "#3F7A3D",
+   "barInk": "#FFFFFF"
+  },
+  "fonts": {
+   "display": "DM Serif Display",
+   "displayWeight": 400,
+   "body": "Manrope",
+   "q": "family=DM+Serif+Display&family=Manrope:wght@400;500;600;700;800"
+  },
+  "logo": {
+   "mark": "<path d='M16 2.5c7.4 5.2 9.6 12.6 6.4 18.6C20.3 25 16 27.5 16 27.5s-4.3-2.5-6.4-6.4C6.4 15.1 8.6 7.7 16 2.5z'/><path d='M16 8v19.5M16 14l-3.2-2.6M16 19l3.4-2.8' stroke='var(--bg)' stroke-width='1.3' fill='none' stroke-linecap='round'/>",
+   "word": "Leaf &amp; Loam",
+   "wordCss": "font-family:'DM Serif Display';font-size:24px"
+  },
+  "announcement": "Free pot with every plant this week",
+  "nav": [
+   "Plants",
+   "Pots",
+   "Care",
+   "Gifts"
+  ],
+  "hero": {
+   "eyebrow": "Free pot with every plant",
+   "title": "Bring the <em>outside in.</em>",
+   "sub": "Healthy houseplants, delivered in their forever pots.",
+   "cta": "Shop plants",
+   "img": "hero",
+   "pos": "50% 30%"
+  },
+  "chips": [
+   "Low light",
+   "Pet safe",
+   "Large",
+   "Hanging",
+   "Succulents"
+  ],
+  "section": "Easy-care favourites",
+  "products": [
+   {
+    "img": "p-1",
+    "name": "Monstera Deliciosa",
+    "price": "$48",
+    "badge": "Bestseller",
+    "rating": 4.9,
+    "reviews": 1320
+   },
+   {
+    "img": "p-2",
+    "name": "Snake Plant",
+    "price": "$36",
+    "badge": "Low light",
+    "rating": 4.9,
+    "reviews": 984
+   },
+   {
+    "img": "p-3",
+    "name": "Fiddle Leaf Fig",
+    "price": "$64",
+    "rating": 4.7,
+    "reviews": 512
+   },
+   {
+    "img": "p-4",
+    "name": "Hanging Pothos",
+    "price": "$32",
+    "rating": 4.8,
+    "reviews": 430
+   },
+   {
+    "img": "p-5",
+    "name": "Succulent Trio",
+    "price": "$28",
+    "rating": 4.8,
+    "reviews": 301
+   },
+   {
+    "img": "p-6",
+    "name": "Amber Glass Mister",
+    "price": "$18",
+    "rating": 4.6,
+    "reviews": 77
+   }
+  ],
+  "pick": 1,
+  "question": "Which plant handles low light?"
+ },
+ {
+  "slug": "copperleaf",
+  "brand": "Copperleaf",
+  "vertical": "Cookware & Kitchen",
+  "sub": "Copper, cast iron, knives",
+  "device": "desktop",
+  "layout": "fullbleed",
+  "avatar": "marc",
+  "colors": {
+   "primary": "#A9542D",
+   "onPrimary": "#FFFFFF",
+   "accent": "#D9A66B",
+   "bg": "#F6F2EE",
+   "surface": "#FFFFFF",
+   "tile": "#ECE8E4",
+   "ink": "#22201E",
+   "muted": "#6B6560",
+   "bar": "#22201E",
+   "barInk": "#E8D3BF"
+  },
+  "fonts": {
+   "display": "Playfair Display",
+   "displayWeight": 600,
+   "body": "Lato",
+   "q": "family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500&family=Lato:wght@400;700;900"
+  },
+  "logo": {
+   "mark": "<circle cx='16' cy='16' r='13.2' fill='none' stroke='currentColor' stroke-width='2'/><path d='M9.5 22.5c0-7.4 5-12.4 13-13 0 7.5-5 13-13 13z'/><path d='M10.5 21.5l7.5-7.5' stroke='var(--hbg)' stroke-width='1.2'/>",
+   "word": "Copperleaf",
+   "wordCss": "font-family:'Playfair Display';font-weight:600;font-style:italic;font-size:27px"
+  },
+  "announcement": "Lifetime warranty on all cookware",
+  "nav": [
+   "Cookware",
+   "Cast iron",
+   "Knives",
+   "Bakeware",
+   "Tools",
+   "Gifts"
+  ],
+  "hero": {
+   "eyebrow": "The copper collection",
+   "title": "Cook like <em>you mean it.</em>",
+   "sub": "Hand-hammered copper and enameled cast iron for a lifetime of dinners.",
+   "cta": "Shop cookware",
+   "cta2": "Find your pan",
+   "img": "hero",
+   "pos": "60% 60%"
+  },
+  "section": "Kitchen essentials",
+  "products": [
+   {
+    "img": "p-1",
+    "name": "Hammered Copper Sauté Pan",
+    "price": "$189",
+    "badge": "Bestseller",
+    "rating": 4.9,
+    "reviews": 812
+   },
+   {
+    "img": "p-2",
+    "name": "Enameled Dutch Oven 5.5 qt",
+    "price": "$245",
+    "rating": 4.9,
+    "reviews": 1206
+   },
+   {
+    "img": "p-3",
+    "name": "Carbon Steel Chef Knife",
+    "price": "$129",
+    "rating": 4.8,
+    "reviews": 377
+   },
+   {
+    "img": "p-5",
+    "name": "Copper Tea Kettle",
+    "price": "$149",
+    "badge": "New",
+    "rating": 4.7,
+    "reviews": 92
+   },
+   {
+    "img": "p-4",
+    "name": "Nesting Mixing Bowls",
+    "price": "$59",
+    "rating": 4.8,
+    "reviews": 264
+   }
+  ],
+  "pick": 0,
+  "question": "Is this pan induction-ready?"
+ },
+ {
+  "slug": "northpeak",
+  "brand": "Northpeak Nutrition",
+  "vertical": "Sports Nutrition",
+  "sub": "Protein, pre-workout, recovery",
+  "device": "phone",
+  "layout": "dark",
+  "avatar": "adrian",
+  "colors": {
+   "primary": "#2747D6",
+   "onPrimary": "#FFFFFF",
+   "accent": "#7CF3D6",
+   "bg": "#F2F4F8",
+   "surface": "#FFFFFF",
+   "tile": "#E4E8EF",
+   "ink": "#0E1530",
+   "muted": "#5B6378",
+   "bar": "#2747D6",
+   "barInk": "#FFFFFF",
+   "header": "#0E1530",
+   "headerInk": "#FFFFFF",
+   "widgetMode": "dark"
+  },
+  "fonts": {
+   "display": "Barlow Condensed",
+   "displayWeight": 800,
+   "body": "Barlow",
+   "q": "family=Barlow+Condensed:ital,wght@0,700;0,800;1,800&family=Barlow:wght@400;500;600;700"
+  },
+  "logo": {
+   "mark": "<path d='M2 27 12.5 6.5l5.6 10.2 3.6-6L30 27z'/><path d='M12.5 6.5l3 5.5-3-1.6-2.8 2.4z' fill='var(--hbg)'/>",
+   "word": "NORTHPEAK",
+   "wordCss": "font-family:'Barlow Condensed';font-weight:800;font-style:italic;font-size:26px;letter-spacing:.02em"
+  },
+  "announcement": "Subscribe & save 15% · free shipping",
+  "nav": [
+   "Protein",
+   "Pre-workout",
+   "Recovery",
+   "Bundles"
+  ],
+  "hero": {
+   "eyebrow": "Clean fuel · third-party tested",
+   "title": "Train harder. <em>Recover faster.</em>",
+   "sub": "Isolate, pre-workout and essentials with nothing to hide.",
+   "cta": "Shop protein",
+   "img": "hero",
+   "pos": "50% 60%"
+  },
+  "chips": [
+   "Protein",
+   "Pre-workout",
+   "Vegan",
+   "Bars",
+   "Bundles"
+  ],
+  "section": "Top sellers",
+  "products": [
+   {
+    "img": "p-1",
+    "name": "Whey Isolate · Vanilla",
+    "price": "$54",
+    "badge": "Bestseller",
+    "rating": 4.8,
+    "reviews": 3410
+   },
+   {
+    "img": "p-4",
+    "name": "Ignite Pre-Workout",
+    "price": "$39",
+    "rating": 4.7,
+    "reviews": 1288
+   },
+   {
+    "img": "p-2",
+    "name": "Pro Shaker 700 ml",
+    "price": "$14",
+    "rating": 4.8,
+    "reviews": 902
+   },
+   {
+    "img": "p-3",
+    "name": "Magnesium + Zinc",
+    "price": "$22",
+    "rating": 4.7,
+    "reviews": 455
+   },
+   {
+    "img": "p-6",
+    "name": "Insulated Bottle",
+    "price": "$28",
+    "rating": 4.8,
+    "reviews": 214
+   },
+   {
+    "img": "p-5",
+    "name": "Protein Bars ×12",
+    "price": "$32",
+    "badge": "New",
+    "rating": 4.6,
+    "reviews": 187
+   }
+  ],
+  "pick": 0,
+  "question": "Which whey if I'm lactose intolerant?"
+ },
+ {
+  "slug": "halcyon-optics",
+  "brand": "Halcyon Optics",
+  "vertical": "Eyewear",
+  "sub": "Sunglasses & optical frames",
+  "device": "desktop",
+  "layout": "split",
+  "avatar": "amber",
+  "colors": {
+   "primary": "#6B4BD1",
+   "onPrimary": "#FFFFFF",
+   "accent": "#F5B5A3",
+   "bg": "#F6F4FB",
+   "surface": "#FFFFFF",
+   "tile": "#ECE8F6",
+   "ink": "#1C1A2E",
+   "muted": "#615D78",
+   "bar": "#1C1A2E",
+   "barInk": "#DCD3FA"
+  },
+  "fonts": {
+   "display": "Syne",
+   "displayWeight": 700,
+   "body": "Inter",
+   "q": "family=Syne:wght@600;700;800&family=Inter:wght@400;500;600;700"
+  },
+  "logo": {
+   "mark": "<circle cx='8.6' cy='17' r='5.8' fill='none' stroke='currentColor' stroke-width='2.4'/><circle cx='23.4' cy='17' r='5.8' fill='none' stroke='currentColor' stroke-width='2.4'/><path d='M14.4 16.2c1-1.6 2.2-1.6 3.2 0' fill='none' stroke='currentColor' stroke-width='2.2'/>",
+   "word": "halcyon",
+   "wordCss": "font-family:Syne;font-weight:800;font-size:27px;letter-spacing:-.02em"
+  },
+  "announcement": "Free prescription lenses on frames over $120",
+  "nav": [
+   "Sunglasses",
+   "Optical",
+   "Blue light",
+   "Try at home",
+   "Lenses"
+  ],
+  "hero": {
+   "eyebrow": "Prescription ready",
+   "title": "See the summer <em>differently.</em>",
+   "sub": "Hand-polished acetate frames with lenses made to your prescription.",
+   "cta": "Shop sunglasses",
+   "cta2": "Try 5 at home",
+   "img": "hero",
+   "pos": "50% 55%"
+  },
+  "section": "New season frames",
+  "products": [
+   {
+    "img": "p-1",
+    "name": "Marlow · Tortoise",
+    "price": "$145",
+    "badge": "Bestseller",
+    "rating": 4.9,
+    "reviews": 821
+   },
+   {
+    "img": "p-2",
+    "name": "Vega Aviator · Gold",
+    "price": "$165",
+    "rating": 4.8,
+    "reviews": 402
+   },
+   {
+    "img": "p-3",
+    "name": "Hale Optical · Black",
+    "price": "$125",
+    "rating": 4.8,
+    "reviews": 633
+   },
+   {
+    "img": "p-4",
+    "name": "Lila Cat-Eye",
+    "price": "$145",
+    "badge": "New",
+    "rating": 4.9,
+    "reviews": 117
+   },
+   {
+    "img": "p-5",
+    "name": "Clarity Crystal Optical",
+    "price": "$125",
+    "rating": 4.7,
+    "reviews": 289
+   },
+   {
+    "img": "p-6",
+    "name": "Leather Fold Case",
+    "price": "$35",
+    "rating": 4.8,
+    "reviews": 96
+   }
+  ],
+  "pick": 2,
+  "question": "Can I add my prescription?"
+ },
+ {
+  "slug": "nest-and-nook",
+  "brand": "Nest & Nook",
+  "vertical": "Baby & Nursery",
+  "sub": "Muslins, knits, feeding",
+  "device": "tablet",
+  "layout": "editorial",
+  "avatar": "luca",
+  "colors": {
+   "primary": "#6E9E7F",
+   "onPrimary": "#FFFFFF",
+   "accent": "#E8C2B3",
+   "bg": "#FBF8F2",
+   "surface": "#FFFFFF",
+   "tile": "#F3EDE2",
+   "ink": "#2F3A33",
+   "muted": "#6E7A72",
+   "bar": "#E9F1EA",
+   "barInk": "#3F5E4A"
+  },
+  "fonts": {
+   "display": "Quicksand",
+   "displayWeight": 700,
+   "body": "Nunito Sans",
+   "q": "family=Quicksand:wght@500;600;700&family=Nunito+Sans:wght@400;600;700"
+  },
+  "logo": {
+   "mark": "<path d='M3 15.5h26a13 13 0 0 1-26 0z'/><ellipse cx='16' cy='9.6' rx='4' ry='5' fill='#E8C2B3'/><path d='M6.5 19.5h19M8.5 23h15' stroke='var(--bg)' stroke-width='1.2' opacity='.7'/>",
+   "word": "nest &amp; nook",
+   "wordCss": "font-family:Quicksand;font-weight:700;font-size:25px;letter-spacing:-.01em"
+  },
+  "announcement": "Organic cotton · free returns · gift registry",
+  "nav": [
+   "Nursery",
+   "Swaddles",
+   "Feeding",
+   "Knits",
+   "Registry"
+  ],
+  "hero": {
+   "eyebrow": "Organic cotton essentials",
+   "title": "Soft starts for <em>little ones.</em>",
+   "sub": "Gentle muslins, knits and feeding sets in calming tones.",
+   "cta": "Shop the nursery",
+   "img": "hero",
+   "pos": "50% 60%"
+  },
+  "section": "Nursery favourites",
+  "products": [
+   {
+    "img": "p-1",
+    "name": "Muslin Swaddle Set",
+    "price": "$42",
+    "badge": "Bestseller",
+    "rating": 4.9,
+    "reviews": 1803
+   },
+   {
+    "img": "p-2",
+    "name": "Knitted Bunny",
+    "price": "$34",
+    "rating": 4.9,
+    "reviews": 744
+   },
+   {
+    "img": "p-3",
+    "name": "Cotton Burp Cloths ×3",
+    "price": "$24",
+    "rating": 4.8,
+    "reviews": 512
+   },
+   {
+    "img": "p-4",
+    "name": "Suction Bowl & Spoon",
+    "price": "$22",
+    "badge": "New",
+    "rating": 4.7,
+    "reviews": 230
+   },
+   {
+    "img": "p-5",
+    "name": "Beech Teether & Booties",
+    "price": "$36",
+    "rating": 4.8,
+    "reviews": 187
+   },
+   {
+    "img": "p-6",
+    "name": "Knit Bow Booties",
+    "price": "$28",
+    "rating": 4.8,
+    "reviews": 141
+   }
+  ],
+  "pick": 0,
+  "question": "Is the muslin pre-washed?"
+ },
+ {
+  "slug": "outsole",
+  "brand": "Outsole",
+  "vertical": "Sneakers",
+  "sub": "Limited-run sneakers",
+  "device": "phone",
+  "layout": "bold",
+  "avatar": "yusuke",
+  "colors": {
+   "primary": "#E63946",
+   "onPrimary": "#FFFFFF",
+   "accent": "#141414",
+   "bg": "#F4F2EF",
+   "surface": "#FFFFFF",
+   "tile": "#E8E6E3",
+   "ink": "#141414",
+   "muted": "#66625E",
+   "bar": "#141414",
+   "barInk": "#FFFFFF"
+  },
+  "fonts": {
+   "display": "Anton",
+   "displayWeight": 400,
+   "body": "Inter",
+   "q": "family=Anton&family=Inter:wght@400;500;600;700;800"
+  },
+  "logo": {
+   "mark": "<path d='M8.5 23 14 9h17l-5.5 14z'/><path d='M1 23l3.2-8h4.2l-3.2 8zM4.6 14l1.6-4h4.2l-1.6 4z' opacity='.9'/>",
+   "word": "OUTSOLE",
+   "wordCss": "font-family:Anton;font-size:25px;letter-spacing:.04em"
+  },
+  "announcement": "Drop 07 · limited pairs · free returns",
+  "nav": [
+   "New",
+   "Court",
+   "Running",
+   "Skate",
+   "Archive"
+  ],
+  "hero": {
+   "eyebrow": "Drop 07 is live",
+   "title": "Made to be <em>worn out.</em>",
+   "sub": "Court, trail and street silhouettes in limited runs.",
+   "cta": "Shop the drop",
+   "img": "p-4",
+   "pos": "50% 50%"
+  },
+  "chips": [
+   "New in",
+   "Court",
+   "Running",
+   "Skate",
+   "Sale"
+  ],
+  "section": "Drop 07",
+  "products": [
+   {
+    "img": "p-4",
+    "name": "Retro Suede · Red",
+    "price": "$120",
+    "badge": "Just dropped",
+    "rating": 4.9,
+    "reviews": 312
+   },
+   {
+    "img": "p-2",
+    "name": "Trail Runner · Black",
+    "price": "$135",
+    "rating": 4.8,
+    "reviews": 584
+   },
+   {
+    "img": "p-1",
+    "name": "Court Low · White/Red",
+    "price": "$110",
+    "badge": "Bestseller",
+    "rating": 4.9,
+    "reviews": 1207
+   },
+   {
+    "img": "p-5",
+    "name": "Knit Runner · Mint",
+    "price": "$130",
+    "rating": 4.7,
+    "reviews": 266
+   },
+   {
+    "img": "p-3",
+    "name": "Canvas Low · Cream",
+    "price": "$85",
+    "rating": 4.8,
+    "reviews": 703
+   },
+   {
+    "img": "p-6",
+    "name": "Skate Suede · Brown",
+    "price": "$95",
+    "rating": 4.7,
+    "reviews": 198
+   }
+  ],
+  "pick": 1,
+  "question": "Do the trail runners fit wide feet?"
+ },
+ {
+  "slug": "inkwell",
+  "brand": "Inkwell & Co.",
+  "vertical": "Stationery",
+  "sub": "Notebooks, pens, inks",
+  "device": "tablet",
+  "layout": "split",
+  "avatar": "matt",
+  "colors": {
+   "primary": "#1F3A6E",
+   "onPrimary": "#FFFFFF",
+   "accent": "#C9A45C",
+   "bg": "#F7F3EA",
+   "surface": "#FFFFFF",
+   "tile": "#F1EBDD",
+   "ink": "#1B2233",
+   "muted": "#626877",
+   "bar": "#1F3A6E",
+   "barInk": "#F1E3C3"
+  },
+  "fonts": {
+   "display": "Libre Baskerville",
+   "displayWeight": 700,
+   "body": "Work Sans",
+   "q": "family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Work+Sans:wght@400;500;600;700"
+  },
+  "logo": {
+   "mark": "<path d='M16 2 25.5 13.5 19 29h-6L6.5 13.5z'/><circle cx='16' cy='13' r='1.9' fill='var(--bg)'/><path d='M16 15v12' stroke='var(--bg)' stroke-width='1.3'/>",
+   "word": "Inkwell <i>&amp; Co.</i>",
+   "wordCss": "font-family:'Libre Baskerville';font-weight:700;font-size:22px"
+  },
+  "announcement": "Free monogramming on notebooks",
+  "nav": [
+   "Notebooks",
+   "Pens",
+   "Inks",
+   "Desk",
+   "Gift sets"
+  ],
+  "hero": {
+   "eyebrow": "Paper goods for slow writing",
+   "title": "Write it down. <em>Beautifully.</em>",
+   "sub": "Linen notebooks, fountain pens and inks for every desk.",
+   "cta": "Shop notebooks",
+   "img": "hero",
+   "pos": "50% 50%"
+  },
+  "section": "Desk essentials",
+  "products": [
+   {
+    "img": "p-1",
+    "name": "Linen Notebook A5 · Navy",
+    "price": "$26",
+    "badge": "Bestseller",
+    "rating": 4.9,
+    "reviews": 1490
+   },
+   {
+    "img": "pen-1",
+    "name": "Meridian Fountain Pen",
+    "price": "$78",
+    "rating": 4.8,
+    "reviews": 366
+   },
+   {
+    "img": "p-2",
+    "name": "Midnight Blue Ink 50 ml",
+    "price": "$18",
+    "rating": 4.9,
+    "reviews": 512
+   },
+   {
+    "img": "p-3",
+    "name": "Brush Pen Set ×8",
+    "price": "$24",
+    "badge": "New",
+    "rating": 4.7,
+    "reviews": 207
+   },
+   {
+    "img": "p-4",
+    "name": "Kraft Pocket Journal",
+    "price": "$12",
+    "rating": 4.8,
+    "reviews": 340
+   },
+   {
+    "img": "p-5",
+    "name": "Brass Desk Stapler",
+    "price": "$45",
+    "rating": 4.7,
+    "reviews": 88
+   }
+  ],
+  "pick": 1,
+  "question": "Which nib for left-handers?"
+ },
+ {
+  "slug": "atelier-noor",
+  "brand": "Atelier Noor",
+  "vertical": "Fragrance",
+  "sub": "Eau de parfum & candles",
+  "device": "desktop",
+  "layout": "editorial",
+  "avatar": "mia",
+  "colors": {
+   "primary": "#8A68A8",
+   "onPrimary": "#FFFFFF",
+   "accent": "#D8C3E6",
+   "bg": "#F7F3F9",
+   "surface": "#FFFFFF",
+   "tile": "#EFE7F4",
+   "ink": "#2A2230",
+   "muted": "#6E6475",
+   "bar": "#2A2230",
+   "barInk": "#E6D8F0"
+  },
+  "fonts": {
+   "display": "Italiana",
+   "displayWeight": 400,
+   "body": "Montserrat",
+   "q": "family=Italiana&family=Montserrat:wght@400;500;600;700"
+  },
+  "logo": {
+   "mark": "<path d='M19.5 3.5A12.6 12.6 0 1 0 28.4 25 10.4 10.4 0 1 1 19.5 3.5z'/><path d='M25 7.5l.9 2.3 2.3.9-2.3.9-.9 2.3-.9-2.3-2.3-.9 2.3-.9z'/>",
+   "word": "ATELIER NOOR",
+   "wordCss": "font-family:Italiana;font-size:27px;letter-spacing:.22em"
+  },
+  "announcement": "Free samples with every order",
+  "nav": [
+   "Eau de parfum",
+   "Discovery",
+   "Candles",
+   "Body",
+   "Gifts"
+  ],
+  "hero": {
+   "eyebrow": "Eau de parfum · made in Grasse",
+   "title": "Scents that linger <em>like a memory.</em>",
+   "sub": "Small-batch fragrances, bottled by hand.",
+   "cta": "Discover the collection",
+   "img": "hero",
+   "pos": "40% 50%"
+  },
+  "section": "The collection",
+  "products": [
+   {
+    "img": "p-1",
+    "name": "Lavande Nuit · 50 ml",
+    "price": "$135",
+    "badge": "Bestseller",
+    "rating": 4.9,
+    "reviews": 702
+   },
+   {
+    "img": "p-2",
+    "name": "Ambre Sec · 50 ml",
+    "price": "$145",
+    "rating": 4.8,
+    "reviews": 418
+   },
+   {
+    "img": "p-3",
+    "name": "Rose Poudrée · 50 ml",
+    "price": "$125",
+    "rating": 4.9,
+    "reviews": 530
+   },
+   {
+    "img": "p-4",
+    "name": "Figue Noire Candle",
+    "price": "$58",
+    "badge": "New",
+    "rating": 4.8,
+    "reviews": 166
+   },
+   {
+    "img": "p-5",
+    "name": "Travel Rollerball",
+    "price": "$38",
+    "rating": 4.7,
+    "reviews": 245
+   },
+   {
+    "img": "p-6",
+    "name": "Discovery Gift Box",
+    "price": "$65",
+    "rating": 4.9,
+    "reviews": 389
+   }
+  ],
+  "pick": 2,
+  "question": "A softer rose scent?"
+ },
+ {
+  "slug": "spokehaus",
+  "brand": "Spokehaus",
+  "vertical": "Cycling",
+  "sub": "Road & gravel ride gear",
+  "device": "phone",
+  "layout": "dark",
+  "avatar": "victor",
+  "colors": {
+   "primary": "#C6E03A",
+   "onPrimary": "#111214",
+   "accent": "#C6E03A",
+   "bg": "#F1F2EE",
+   "surface": "#FFFFFF",
+   "tile": "#E4E6E1",
+   "ink": "#111214",
+   "muted": "#5D6159",
+   "bar": "#C6E03A",
+   "barInk": "#111214",
+   "header": "#111214",
+   "headerInk": "#FFFFFF",
+   "stampDark": true,
+   "theme": "#111214",
+   "widgetMode": "dark"
+  },
+  "fonts": {
+   "display": "Unbounded",
+   "displayWeight": 700,
+   "body": "Inter",
+   "q": "family=Unbounded:wght@600;700;800&family=Inter:wght@400;500;600;700"
+  },
+  "logo": {
+   "mark": "<circle cx='16' cy='16' r='12.5' fill='none' stroke='currentColor' stroke-width='2.6'/><circle cx='16' cy='16' r='2.6'/><path d='M16 4v24M4 16h24M7.5 7.5l17 17M24.5 7.5l-17 17' stroke='currentColor' stroke-width='1.3'/>",
+   "word": "SPOKEHAUS",
+   "wordCss": "font-family:Unbounded;font-weight:800;font-size:19px;letter-spacing:.02em"
+  },
+  "announcement": "Free shipping · 2-day delivery",
+  "nav": [
+   "Helmets",
+   "Lights",
+   "Shoes",
+   "Saddles",
+   "Apparel"
+  ],
+  "hero": {
+   "eyebrow": "Road · gravel · commute",
+   "title": "Gear for the <em>fast lane.</em>",
+   "sub": "Helmets, lights and contact points tuned for road and gravel.",
+   "cta": "Shop ride gear",
+   "img": "hero",
+   "pos": "50% 60%"
+  },
+  "chips": [
+   "Helmets",
+   "Lights",
+   "Shoes",
+   "Saddles",
+   "Bottles"
+  ],
+  "section": "Rider favourites",
+  "products": [
+   {
+    "img": "p-1",
+    "name": "Aero Road Helmet",
+    "price": "$189",
+    "badge": "Bestseller",
+    "rating": 4.8,
+    "reviews": 644
+   },
+   {
+    "img": "p-3",
+    "name": "Beam 800 Front Light",
+    "price": "$59",
+    "rating": 4.7,
+    "reviews": 512
+   },
+   {
+    "img": "p-6",
+    "name": "Clip Road Shoes",
+    "price": "$219",
+    "badge": "New",
+    "rating": 4.8,
+    "reviews": 133
+   },
+   {
+    "img": "p-2",
+    "name": "Volt Summer Gloves",
+    "price": "$42",
+    "rating": 4.7,
+    "reviews": 288
+   },
+   {
+    "img": "p-5",
+    "name": "Carbon Rail Saddle",
+    "price": "$149",
+    "rating": 4.6,
+    "reviews": 174
+   },
+   {
+    "img": "p-4",
+    "name": "Cage + Bottle Kit",
+    "price": "$24",
+    "rating": 4.8,
+    "reviews": 409
+   }
+  ],
+  "pick": 1,
+  "question": "Will this light fit aero bars?"
+ },
+ {
+  "slug": "tonewood",
+  "brand": "Tonewood Music",
+  "vertical": "Musical Instruments",
+  "sub": "Guitars, amps, percussion",
+  "device": "tablet",
+  "layout": "fullbleed",
+  "avatar": "echo",
+  "colors": {
+   "primary": "#8E2A3A",
+   "onPrimary": "#FFFFFF",
+   "accent": "#D9A441",
+   "bg": "#F5EFE6",
+   "surface": "#FFFFFF",
+   "tile": "#EDE3D4",
+   "ink": "#1F1512",
+   "muted": "#6E6058",
+   "bar": "#1F1512",
+   "barInk": "#E8C27A",
+   "header": "#1F1512",
+   "headerInk": "#F5EFE6"
+  },
+  "fonts": {
+   "display": "Alfa Slab One",
+   "displayWeight": 400,
+   "body": "Source Sans 3",
+   "q": "family=Alfa+Slab+One&family=Source+Sans+3:wght@400;600;700"
+  },
+  "logo": {
+   "mark": "<path d='M16 29.5C10 22.6 3.8 15.4 3.8 9.7 3.8 5.4 9 2.5 16 2.5s12.2 2.9 12.2 7.2c0 5.7-6.2 12.9-12.2 19.8z'/><circle cx='16' cy='11.5' r='3.8' fill='none' stroke='var(--hbg)' stroke-width='1.8'/>",
+   "word": "Tonewood",
+   "wordCss": "font-family:'Alfa Slab One';font-size:25px;letter-spacing:.01em"
+  },
+  "announcement": "Free setup on every guitar · 0% financing",
+  "nav": [
+   "Acoustic",
+   "Electric",
+   "Amps",
+   "Ukuleles",
+   "Drums",
+   "Studio"
+  ],
+  "hero": {
+   "eyebrow": "Free setup on every guitar",
+   "title": "Find <em>your sound.</em>",
+   "sub": "Acoustics, electrics and amps, hand-checked by players.",
+   "cta": "Shop guitars",
+   "img": "hero",
+   "pos": "50% 45%"
+  },
+  "section": "Staff picks",
+  "products": [
+   {
+    "img": "p-1",
+    "name": "Dreadnought Acoustic",
+    "price": "$649",
+    "badge": "Staff pick",
+    "rating": 4.9,
+    "reviews": 312
+   },
+   {
+    "img": "p-2",
+    "name": "Sunburst S-Style Electric",
+    "price": "$799",
+    "rating": 4.8,
+    "reviews": 254
+   },
+   {
+    "img": "p-3",
+    "name": "Mahogany Concert Uke",
+    "price": "$149",
+    "rating": 4.9,
+    "reviews": 418
+   },
+   {
+    "img": "p-4",
+    "name": "Valve 20 Combo Amp",
+    "price": "$549",
+    "rating": 4.7,
+    "reviews": 97
+   },
+   {
+    "img": "p-5",
+    "name": "Studio Monitor Headphones",
+    "price": "$129",
+    "rating": 4.8,
+    "reviews": 633
+   },
+   {
+    "img": "p-6",
+    "name": "Birch Cajon",
+    "price": "$119",
+    "badge": "New",
+    "rating": 4.8,
+    "reviews": 75
+   }
+  ],
+  "pick": 0,
+  "question": "Good acoustic for beginners?"
+ },
+ {
+  "slug": "saltline",
+  "brand": "Saltline Surf Co.",
+  "vertical": "Surf",
+  "sub": "Boards, wetsuits, fins",
+  "device": "desktop",
+  "layout": "fullbleed",
+  "avatar": "kiran",
+  "colors": {
+   "primary": "#14A0B2",
+   "onPrimary": "#FFFFFF",
+   "accent": "#F2C57C",
+   "bg": "#FBF7EF",
+   "surface": "#FFFFFF",
+   "tile": "#F2E9D8",
+   "ink": "#123038",
+   "muted": "#5A6D70",
+   "bar": "#14A0B2",
+   "barInk": "#FFFFFF"
+  },
+  "fonts": {
+   "display": "Sora",
+   "displayWeight": 700,
+   "body": "Inter",
+   "q": "family=Sora:wght@600;700;800&family=Inter:wght@400;500;600;700"
+  },
+  "logo": {
+   "mark": "<circle cx='16' cy='16' r='13.5'/><circle cx='16' cy='12' r='3.6' fill='var(--hbg)'/><path d='M3.4 19.6c3.1-3 6.1-3 9.1 0s6 3 9.1 0 5.3-2.6 7.2-1.2A13.5 13.5 0 0 1 3.4 19.6z' fill='var(--hbg)'/>",
+   "word": "saltline",
+   "wordCss": "font-family:Sora;font-weight:800;font-size:26px;letter-spacing:-.03em"
+  },
+  "announcement": "Free board bag with every surfboard",
+  "nav": [
+   "Surfboards",
+   "Wetsuits",
+   "Fins",
+   "Accessories",
+   "Surf report"
+  ],
+  "hero": {
+   "eyebrow": "Summer swell edit",
+   "title": "Chase the <em>next set.</em>",
+   "sub": "Boards, wetsuits and fins shaped for real waves.",
+   "cta": "Shop surfboards",
+   "cta2": "Board finder",
+   "img": "hero",
+   "pos": "50% 45%"
+  },
+  "section": "Ready for the water",
+  "products": [
+   {
+    "img": "p-1",
+    "name": "Twin Fish 5'8\"",
+    "price": "$690",
+    "badge": "Bestseller",
+    "rating": 4.9,
+    "reviews": 211
+   },
+   {
+    "img": "p-2",
+    "name": "3/2 Chest-Zip Wetsuit",
+    "price": "$289",
+    "rating": 4.8,
+    "reviews": 486
+   },
+   {
+    "img": "p-5",
+    "name": "Twin Keel Fins",
+    "price": "$79",
+    "rating": 4.8,
+    "reviews": 142
+   },
+   {
+    "img": "p-4",
+    "name": "6' Comp Leash",
+    "price": "$36",
+    "rating": 4.7,
+    "reviews": 330
+   },
+   {
+    "img": "p-6",
+    "name": "Canvas Beach Tote",
+    "price": "$34",
+    "badge": "New",
+    "rating": 4.8,
+    "reviews": 97
+   },
+   {
+    "img": "p-3",
+    "name": "Wax + Comb Kit",
+    "price": "$9",
+    "rating": 4.9,
+    "reviews": 612
+   }
+  ],
+  "pick": 0,
+  "question": "Board for a heavier beginner?"
+ }
+]

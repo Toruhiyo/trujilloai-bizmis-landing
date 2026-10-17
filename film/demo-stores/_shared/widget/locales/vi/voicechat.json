@@ -1,0 +1,240 @@
+{
+  "VOICECHAT_CLAIM": "Cùng trò chuyện nhé. Mình sẽ giúp bạn.",
+  "VOICECHAT_BUTTON": "Trò chuyện thoại",
+  "VOICECHAT_INSTRUCTIONS": "Nói để ngắt lời",
+  "END_CALL": "Kết thúc",
+  "CONNECTING": "Đợi vài giây nhé...",
+  "CONNECTING_BUTTON": "Đang kết nối",
+  "CLICK_TO_SPEAK": "Nhấp để nói",
+  "CLICK_TO_END": "Nhấp để kết thúc",
+  "TALK_TO_INTERRUPT": "Nói để ngắt lời",
+  "CONNECTING_HINT": "Đợi một chút nhé",
+  "LISTENING_ACTIVE": "Đang nghe...",
+  "TRY_VOICE_EXPERIENCE": "Thử mình nhé, mình mới tới!",
+  "TERMS_ACCEPT": "Đồng ý",
+  "TERMS_DECLINE": "Quay lại",
+  "TERMS_ACCEPTANCE_WITH_LINK": "Đồng ý với [Điều khoản]({{termsUrl}}) để tiếp tục.",
+  "POC_DISCLAIMER": {
+    "TITLE": "Bản thử ý tưởng",
+    "MESSAGE": "Nguyên mẫu trò chuyện thoại này chỉ nhằm giới thiệu ý tưởng và không phản ánh chất lượng cuối cùng của giải pháp hay sản phẩm. Có thể xảy ra độ trễ, lỗi và các vấn đề khác.<br/>Tính năng chính: <strong>Tự động điều hướng web</strong>, <strong>Đánh dấu văn bản</strong> và <strong>Điền biểu mẫu</strong>."
+  },
+  "GREETING": {
+    "1": "Xin chào! Chào mừng bạn đến với trò chuyện thoại. Hôm nay mình giúp gì được cho bạn?",
+    "2": "Chào bạn! Mình ở đây để hỗ trợ bạn bất cứ điều gì bạn cần.",
+    "3": "Xin chào! Hôm nay bạn cần mình hỗ trợ gì ạ?",
+    "4": "Chào mừng bạn! Cứ nói bạn cần gì, mình sẽ cố hết sức giúp bạn.",
+    "5": "Trợ lý giọng nói xin phục vụ! Sẵn sàng giúp bạn đây!",
+    "DEFAULT": "Xin chào! Hôm nay bạn muốn tìm gì?"
+  },
+  "RESUME_GREETING": {
+    "1": "Mình quay lại rồi! Mình tiếp tục chỗ đang dở nhé.",
+    "2": "Được rồi, mình tiếp tục nhé!",
+    "3": "Mình vẫn ở đây! Nãy mình đang xem gì nhỉ?",
+    "DEFAULT": "Nào, mình đang nói tới đâu rồi nhỉ?"
+  },
+  "FEEDBACK_TITLE": "Trải nghiệm của bạn thế nào?",
+  "FEEDBACK_THUMBS_UP": "Tốt",
+  "FEEDBACK_THUMBS_DOWN": "Cần cải thiện",
+  "FEEDBACK_ERROR": "Không gửi được góp ý",
+  "FEEDBACK_SUCCESS": "Cảm ơn góp ý của bạn!",
+  "ERROR_GENERIC": "Không thể bắt đầu trò chuyện thoại",
+  "MOBILE_TAP_AVATAR_TO_START": "Chạm để nói",
+  "MOBILE_TAP_AVATAR_TO_CANCEL": "Đang kết nối...",
+  "MOBILE_TAP_AVATAR_TO_END_CALL": "Chạm để kết thúc",
+  "HINT_LABEL": "Thử nói",
+  "HINTS_DEFAULT": [
+    "Mình cần tìm quà cho người yêu, bạn giúp được không?",
+    "Hiện có gì đang giảm giá?",
+    "Loại nào hợp với da nhạy cảm nhất?",
+    "Nếu không vừa thì đổi trả được không?",
+    "So sánh giúp mình hai món này"
+  ],
+  "CHAT_INPUT_PLACEHOLDER": "Hỏi về sản phẩm, giao hàng hay đơn hàng của bạn.",
+  "CHAT_CONNECTING_PLACEHOLDER": "Đang kết nối… bạn có thể nhập trước.",
+  "CHAT_MESSAGE_SENDING": "Đang gửi…",
+  "CHAT_MESSAGE_FAILED_RETRY": "Chưa gửi được. Chạm để thử lại.",
+  "CHAT_EVENT_PRODUCTS_SHOWN": "Sản phẩm đã hiển thị cho bạn",
+  "CHAT_EVENT_SEARCH_RESULTS": "Kết quả cho “{{query}}”",
+  "CHAT_EVENT_PRODUCT_OPENED": "Đã mở sản phẩm",
+  "CHAT_EVENT_ADDED_TO_CART": "Đã thêm vào giỏ",
+  "CHAT_EVENT_CART_OPENED": "Đã mở giỏ hàng",
+  "CHAT_EVENT_CHECKOUT_OPENED": "Đã mở thanh toán",
+  "CHAT_EVENT_SEARCHED_FOR": "Đã tìm “{{query}}”",
+  "CHAT_EVENT_PAGE_OPENED": "Đã mở trang",
+  "CHAT_VOICE_TOGGLE_ON": "Bật giọng nói",
+  "CHAT_VOICE_TOGGLE_OFF": "Tắt giọng nói",
+  "CHAT_CALL_START": "Bắt đầu trò chuyện thoại",
+  "CHAT_CALL_END": "Kết thúc cuộc gọi",
+  "CHAT_LAUNCHER_TITLE": "Nhắn tin với trợ lý",
+  "CHAT_NEW_SESSION": "Phiên mới",
+  "CHAT_HIDE_PANEL": "Quay lại avatar",
+  "CHAT_SEND": "Gửi",
+  "CHAT_EMPTY_HINT": "Gửi một tin nhắn để bắt đầu trò chuyện.",
+  "CHAT_COLLAPSE": "Thu gọn",
+  "CHAT_EXPAND": "Mở rộng",
+  "MIC_RECOVERY_DISMISS": "Bỏ qua",
+  "NAVIGATION_TAKING_YOU_TO": "Đang đưa bạn đến",
+  "NAVIGATION_TARGET_SEARCH": "Kết quả tìm kiếm",
+  "NAVIGATION_TARGET_GENERIC": "Trang khác",
+  "TEXT_CHAT_INSTRUCTIONS": "Chuyển sang giọng nói",
+  "MOBILE_TYPE_INSTEAD": "...hoặc nhập chữ",
+  "CLOSE_WIDGET": "Đóng",
+  "REOPEN_WIDGET": "Mở lại trợ lý",
+  "CHAT_LITE_SHOW_HISTORY": "Lịch sử phiên",
+  "CHAT_LITE_HIDE_HISTORY": "Ẩn hội thoại",
+  "CHAT_LITE_BACK_TO_VOICE": "Quay lại chế độ thoại",
+  "CHAT_LITE_GO_TO_VOICE": "Chuyển sang chế độ thoại",
+  "CHAT_LITE_CONVERSATION": "Hội thoại",
+  "CHAT_LITE_PIN_TRANSCRIPT": "Ghim hội thoại",
+  "CHAT_LITE_UNPIN_TRANSCRIPT": "Bỏ ghim hội thoại",
+  "UNIFIED_PROMPTS": {
+    "DISCOVERY": "Giúp tôi tìm sản phẩm phù hợp.",
+    "COMPARISON": "So sánh những lựa chọn tốt nhất giúp tôi.",
+    "GUIDANCE": "Sản phẩm này có vừa hoặc phù hợp với nhu cầu của tôi không?",
+    "RETURNS": "Chính sách đổi trả như thế nào?",
+    "FAQ": "Bạn có thể trả lời câu hỏi về mua sắm không?"
+  },
+  "MIC_PRIMER": "Chọn \"Cho phép\" để mình nghe được bạn",
+  "MIC_NEEDED": "Cho phép micrô để trò chuyện bằng giọng nói",
+  "ENABLE_MIC_HINT_BROWSER": "Cho phép micrô trong quyền của trang",
+  "ENABLE_MIC_HINT_OS": "Cho phép micrô trong cài đặt thiết bị",
+  "DEGRADED_VOICE_SWITCHED_HINT_BROWSER": "Micrô đang bị chặn nên mình chuyển bạn sang chat. Mình vẫn sẽ trả lời bằng giọng nói. Để nói được, hãy cho phép micrô trong quyền của trang.",
+  "DEGRADED_VOICE_SWITCHED_HINT_OS": "Micrô đang bị chặn nên mình chuyển bạn sang chat. Mình vẫn sẽ trả lời bằng giọng nói. Để nói được, hãy cho phép micrô trong cài đặt thiết bị.",
+  "DEGRADED_VOICE_BLOCKED_HINT_BROWSER": "Micrô đang bị chặn. Mình vẫn sẽ trả lời bằng giọng nói. Để nói được, hãy cho phép micrô trong quyền của trang.",
+  "DEGRADED_VOICE_BLOCKED_HINT_OS": "Micrô đang bị chặn. Mình vẫn sẽ trả lời bằng giọng nói. Để nói được, hãy cho phép micrô trong cài đặt thiết bị.",
+  "USE_TEXT_CHAT": "Dùng chat văn bản",
+  "OR": "HOẶC",
+  "MIC_BLOCKED_HINT": "Cho phép micrô trong quyền của trang",
+  "MIC_OS_BLOCKED_HINT": "Cho phép micrô trong cài đặt thiết bị",
+  "CONTROLS": {
+    "MICROPHONE": {
+      "MUTE": "Tắt micrô",
+      "UNMUTE": "Bật micrô",
+      "MUTED": "Micrô đã tắt",
+      "UNMUTED": "Micrô đang bật"
+    },
+    "SUBTITLES": {
+      "ENABLE": "Bật phụ đề",
+      "DISABLE": "Tắt phụ đề",
+      "ENABLED": "Phụ đề đang bật",
+      "DISABLED": "Phụ đề đã tắt"
+    },
+    "MUTE_MICROPHONE": "Tắt micrô",
+    "UNMUTE_MICROPHONE": "Bật micrô",
+    "ENABLE_CAPTIONS": "Bật phụ đề",
+    "DISABLE_CAPTIONS": "Tắt phụ đề"
+  },
+  "ERRORS": {
+    "UNKNOWN_ERROR": {
+      "NAME": "Lỗi không mong muốn",
+      "INSTRUCTIONS": "Vui lòng thử lại hoặc liên hệ hỗ trợ nếu sự cố vẫn tiếp diễn."
+    },
+    "NETWORK_ERROR": {
+      "NAME": "Lỗi kết nối mạng",
+      "INSTRUCTIONS": "Vui lòng kiểm tra kết nối internet và thử lại."
+    },
+    "API_ERROR": {
+      "NAME": "Lỗi giao tiếp API",
+      "INSTRUCTIONS": "Có sự cố khi kết nối tới dịch vụ. Vui lòng thử lại sau."
+    },
+    "WEBSOCKET_ERROR": {
+      "NAME": "Lỗi kết nối WebSocket",
+      "INSTRUCTIONS": "Không thể kết nối tới dịch vụ thoại. Vui lòng kiểm tra kết nối của bạn."
+    },
+    "CONNECTION_TIMEOUT": {
+      "NAME": "Hết thời gian kết nối",
+      "INSTRUCTIONS": "Kết nối đã hết thời gian chờ. Vui lòng thử lại."
+    },
+    "AUTHENTICATION_ERROR": {
+      "NAME": "Lỗi xác thực",
+      "INSTRUCTIONS": "Vui lòng đăng nhập lại."
+    },
+    "MICROPHONE_ACCESS_DENIED": {
+      "NAME": "Cần micrô",
+      "INSTRUCTIONS": "Hãy cho phép trong quyền trình duyệt của trang này."
+    },
+    "MICROPHONE_BLOCKED": {
+      "NAME": "Micrô bị chặn",
+      "INSTRUCTIONS": "Hãy cho phép trong quyền trình duyệt của trang này."
+    },
+    "MICROPHONE_OS_BLOCKED": {
+      "NAME": "Micrô bị chặn",
+      "INSTRUCTIONS": "Hãy cho phép trong cài đặt thiết bị cho trình duyệt này."
+    },
+    "MICROPHONE_NOT_READABLE": {
+      "NAME": "Lỗi micrô",
+      "INSTRUCTIONS": "Không đọc được dữ liệu từ micrô. Vui lòng kiểm tra micrô hoặc thử micrô khác."
+    },
+    "AUDIO_RECORDING_ERROR": {
+      "NAME": "Lỗi ghi âm",
+      "INSTRUCTIONS": "Không ghi âm được. Vui lòng kiểm tra micrô hoặc thử micrô khác."
+    },
+    "SERVER_ERROR": {
+      "NAME": "Lỗi máy chủ",
+      "INSTRUCTIONS": "Đội ngũ của chúng tôi đã được thông báo."
+    },
+    "QUOTA_EXCEEDED": {
+      "NAME": "Đã đạt giới hạn sử dụng",
+      "INSTRUCTIONS": "Bạn đã dùng hết hạn mức. Vui lòng thử lại sau."
+    },
+    "HIGH_DEMAND": {
+      "NAME": "Lượng truy cập cao",
+      "INSTRUCTIONS": "Dịch vụ đang có rất nhiều người dùng. Vui lòng thử lại sau ít phút."
+    },
+    "HTTP": {
+      "400_BAD_REQUEST": {
+        "NAME": "Yêu cầu không hợp lệ",
+        "INSTRUCTIONS": "Vui lòng thử lại với thông tin hợp lệ."
+      },
+      "401_UNAUTHORIZED": {
+        "NAME": "Cần đăng nhập",
+        "INSTRUCTIONS": "Vui lòng đăng nhập để tiếp tục dùng tính năng này."
+      },
+      "403_FORBIDDEN": {
+        "NAME": "Từ chối truy cập",
+        "INSTRUCTIONS": "Bạn không có quyền dùng tính năng này."
+      },
+      "403_FORBIDDEN_GEO_LOCATION_BLOCKED": {
+        "NAME": "Bị chặn theo vị trí",
+        "INSTRUCTIONS": "Trò chuyện thoại không khả dụng từ vị trí này."
+      },
+      "404_NOT_FOUND": {
+        "NAME": "Không tìm thấy dịch vụ",
+        "INSTRUCTIONS": "Không tìm thấy dịch vụ bạn yêu cầu."
+      },
+      "408_TIMEOUT": {
+        "NAME": "Yêu cầu hết thời gian chờ",
+        "INSTRUCTIONS": "Máy chủ phản hồi quá lâu. Vui lòng thử lại sau."
+      },
+      "409_CONFLICT": {
+        "NAME": "Xung đột dịch vụ",
+        "INSTRUCTIONS": "Có xung đột với trạng thái hiện tại. Vui lòng thử lại."
+      },
+      "422_UNPROCESSABLE_ENTITY": {
+        "NAME": "Định dạng yêu cầu không hợp lệ",
+        "INSTRUCTIONS": "Không thể xử lý yêu cầu. Vui lòng thử lại."
+      },
+      "429_RATE_LIMIT": {
+        "NAME": "Quá nhiều yêu cầu",
+        "INSTRUCTIONS": "Vui lòng đợi một chút rồi thử lại."
+      },
+      "500_SERVER_ERROR": {
+        "NAME": "Lỗi máy chủ",
+        "INSTRUCTIONS": "Vui lòng thử lại sau."
+      },
+      "502_BAD_GATEWAY": {
+        "NAME": "Dịch vụ không khả dụng",
+        "INSTRUCTIONS": "Vui lòng thử lại sau."
+      },
+      "503_SERVICE_UNAVAILABLE": {
+        "NAME": "Dịch vụ tạm thời không khả dụng",
+        "INSTRUCTIONS": "Vui lòng thử lại sau."
+      },
+      "504_GATEWAY_TIMEOUT": {
+        "NAME": "Dịch vụ hết thời gian chờ",
+        "INSTRUCTIONS": "Dịch vụ phản hồi quá lâu. Vui lòng thử lại sau."
+      }
+    }
+  },
+  "LANGUAGE_NOT_SUPPORTED": "Ngôn ngữ này chưa hỗ trợ trò chuyện thoại."
+}

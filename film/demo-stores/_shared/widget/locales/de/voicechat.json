@@ -1,0 +1,240 @@
+{
+  "VOICECHAT_CLAIM": "Sprechen wir. Ich helfe Ihnen gern.",
+  "VOICECHAT_BUTTON": "Sprachchat",
+  "VOICECHAT_INSTRUCTIONS": "Sprechen zum Unterbrechen",
+  "END_CALL": "Beenden",
+  "CONNECTING": "Nur ein paar Sekunden ...",
+  "CONNECTING_BUTTON": "Verbinden",
+  "CLICK_TO_SPEAK": "Klicken und sprechen",
+  "CLICK_TO_END": "Klicken zum Beenden",
+  "TALK_TO_INTERRUPT": "Sprechen zum Unterbrechen",
+  "CONNECTING_HINT": "Einen Moment bitte",
+  "LISTENING_ACTIVE": "Ich höre zu ...",
+  "TRY_VOICE_EXPERIENCE": "Probieren Sie mich aus, ich bin neu!",
+  "TERMS_ACCEPT": "Akzeptieren",
+  "TERMS_DECLINE": "Zurück",
+  "TERMS_ACCEPTANCE_WITH_LINK": "Akzeptieren Sie die [AGB]({{termsUrl}}), um fortzufahren.",
+  "POC_DISCLAIMER": {
+    "TITLE": "Proof of Concept",
+    "MESSAGE": "Dieser Sprachchat-Prototyp soll nur das Konzept zeigen und entspricht nicht der finalen Qualität einer Lösung oder eines Produkts. Verzögerungen, Fehler und andere Probleme sind möglich.<br/>Kernfunktionen: <strong>Autonome Web-Navigation</strong>, <strong>Text hervorheben</strong> und <strong>Formulare ausfüllen</strong>."
+  },
+  "GREETING": {
+    "1": "Hallo! Willkommen im Sprachchat. Wie kann ich Ihnen heute helfen?",
+    "2": "Hallo! Ich bin für Sie da, bei allem, was Sie brauchen.",
+    "3": "Guten Tag! Womit kann ich Ihnen heute behilflich sein?",
+    "4": "Willkommen! Sagen Sie mir einfach, was Sie brauchen, ich helfe Ihnen gern.",
+    "5": "Ihr Sprachassistent ist da und hilft Ihnen gern!",
+    "DEFAULT": "Hallo! Was darf es heute sein?"
+  },
+  "RESUME_GREETING": {
+    "1": "Da bin ich wieder! Machen wir weiter, wo wir aufgehört haben.",
+    "2": "Gut, dann machen wir weiter!",
+    "3": "Ich bin noch da! Was hatten wir uns gerade angesehen?",
+    "DEFAULT": "Also, wo waren wir?"
+  },
+  "FEEDBACK_TITLE": "Wie war es für Sie?",
+  "FEEDBACK_THUMBS_UP": "Gut",
+  "FEEDBACK_THUMBS_DOWN": "Geht besser",
+  "FEEDBACK_ERROR": "Feedback konnte nicht gesendet werden",
+  "FEEDBACK_SUCCESS": "Danke für Ihr Feedback!",
+  "ERROR_GENERIC": "Sprachchat konnte nicht gestartet werden",
+  "MOBILE_TAP_AVATAR_TO_START": "Tippen und sprechen",
+  "MOBILE_TAP_AVATAR_TO_CANCEL": "Verbindung ...",
+  "MOBILE_TAP_AVATAR_TO_END_CALL": "Tippen zum Beenden",
+  "HINT_LABEL": "Sagen Sie zum Beispiel",
+  "HINTS_DEFAULT": [
+    "Ich suche ein Geschenk für meinen Partner, können Sie helfen?",
+    "Was ist gerade im Angebot?",
+    "Was passt am besten zu empfindlicher Haut?",
+    "Kann ich das zurückgeben, wenn es nicht passt?",
+    "Vergleichen Sie diese beiden für mich"
+  ],
+  "CHAT_INPUT_PLACEHOLDER": "Fragen Sie zu Produkten, Versand oder Ihrer Bestellung.",
+  "CHAT_CONNECTING_PLACEHOLDER": "Verbindung läuft … Sie können schon schreiben.",
+  "CHAT_MESSAGE_SENDING": "Wird gesendet …",
+  "CHAT_MESSAGE_FAILED_RETRY": "Nicht gesendet. Zum Wiederholen tippen.",
+  "CHAT_EVENT_PRODUCTS_SHOWN": "Dir gezeigte Produkte",
+  "CHAT_EVENT_SEARCH_RESULTS": "Ergebnisse für „{{query}}“",
+  "CHAT_EVENT_PRODUCT_OPENED": "Produkt geöffnet",
+  "CHAT_EVENT_ADDED_TO_CART": "In den Warenkorb gelegt",
+  "CHAT_EVENT_CART_OPENED": "Warenkorb geöffnet",
+  "CHAT_EVENT_CHECKOUT_OPENED": "Kasse geöffnet",
+  "CHAT_EVENT_SEARCHED_FOR": "Suche nach „{{query}}“",
+  "CHAT_EVENT_PAGE_OPENED": "Seite geöffnet",
+  "CHAT_VOICE_TOGGLE_ON": "Sprache starten",
+  "CHAT_VOICE_TOGGLE_OFF": "Sprache beenden",
+  "CHAT_CALL_START": "Sprachchat starten",
+  "CHAT_CALL_END": "Auflegen",
+  "CHAT_LAUNCHER_TITLE": "Textchat starten",
+  "CHAT_NEW_SESSION": "Neue Sitzung",
+  "CHAT_HIDE_PANEL": "Zurück zum Avatar",
+  "CHAT_SEND": "Senden",
+  "CHAT_EMPTY_HINT": "Schreiben Sie eine Nachricht, um das Gespräch zu starten.",
+  "CHAT_COLLAPSE": "Einklappen",
+  "CHAT_EXPAND": "Ausklappen",
+  "MIC_RECOVERY_DISMISS": "Schließen",
+  "NAVIGATION_TAKING_YOU_TO": "Ich bringe Sie zu",
+  "NAVIGATION_TARGET_SEARCH": "Suchergebnisse",
+  "NAVIGATION_TARGET_GENERIC": "Eine andere Seite",
+  "TEXT_CHAT_INSTRUCTIONS": "Zu Sprache wechseln",
+  "MOBILE_TYPE_INSTEAD": "... oder schreiben Sie",
+  "CLOSE_WIDGET": "Schließen",
+  "REOPEN_WIDGET": "Assistent öffnen",
+  "CHAT_LITE_SHOW_HISTORY": "Sitzungsverlauf",
+  "CHAT_LITE_HIDE_HISTORY": "Gespräch ausblenden",
+  "CHAT_LITE_BACK_TO_VOICE": "Zurück zum Sprachmodus",
+  "CHAT_LITE_GO_TO_VOICE": "Zum Sprachmodus",
+  "CHAT_LITE_CONVERSATION": "Gespräch",
+  "CHAT_LITE_PIN_TRANSCRIPT": "Gespräch anheften",
+  "CHAT_LITE_UNPIN_TRANSCRIPT": "Gespräch lösen",
+  "UNIFIED_PROMPTS": {
+    "DISCOVERY": "Hilf mir, das richtige Produkt zu finden.",
+    "COMPARISON": "Vergleiche die besten Optionen für mich.",
+    "GUIDANCE": "Passt das oder eignet es sich für meine Bedürfnisse?",
+    "RETURNS": "Wie lautet die Rückgaberichtlinie?",
+    "FAQ": "Kannst du mir eine Frage zum Einkaufen beantworten?"
+  },
+  "MIC_PRIMER": "Wählen Sie \"Zulassen\", damit ich Sie hören kann",
+  "MIC_NEEDED": "Mikrofon erlauben, um per Sprache zu chatten",
+  "ENABLE_MIC_HINT_BROWSER": "Mikrofon in den Seitenberechtigungen erlauben",
+  "ENABLE_MIC_HINT_OS": "Mikrofon in den Geräteeinstellungen erlauben",
+  "DEGRADED_VOICE_SWITCHED_HINT_BROWSER": "Der Zugriff auf das Mikrofon ist blockiert, deshalb habe ich zum Chat gewechselt. Ich spreche weiterhin mit Ihnen. Wenn Sie sprechen möchten, erlauben Sie das Mikrofon in den Seitenberechtigungen.",
+  "DEGRADED_VOICE_SWITCHED_HINT_OS": "Der Zugriff auf das Mikrofon ist blockiert, deshalb habe ich zum Chat gewechselt. Ich spreche weiterhin mit Ihnen. Wenn Sie sprechen möchten, erlauben Sie das Mikrofon in den Geräteeinstellungen.",
+  "DEGRADED_VOICE_BLOCKED_HINT_BROWSER": "Der Zugriff auf das Mikrofon ist blockiert. Ich spreche weiterhin mit Ihnen. Wenn Sie sprechen möchten, erlauben Sie das Mikrofon in den Seitenberechtigungen.",
+  "DEGRADED_VOICE_BLOCKED_HINT_OS": "Der Zugriff auf das Mikrofon ist blockiert. Ich spreche weiterhin mit Ihnen. Wenn Sie sprechen möchten, erlauben Sie das Mikrofon in den Geräteeinstellungen.",
+  "USE_TEXT_CHAT": "Textchat nutzen",
+  "OR": "ODER",
+  "MIC_BLOCKED_HINT": "Mikrofon in den Seitenberechtigungen erlauben",
+  "MIC_OS_BLOCKED_HINT": "Mikrofon in den Geräteeinstellungen erlauben",
+  "CONTROLS": {
+    "MICROPHONE": {
+      "MUTE": "Mikrofon stummschalten",
+      "UNMUTE": "Stummschaltung aufheben",
+      "MUTED": "Mikrofon stumm",
+      "UNMUTED": "Mikrofon aktiv"
+    },
+    "SUBTITLES": {
+      "ENABLE": "Untertitel einblenden",
+      "DISABLE": "Untertitel ausblenden",
+      "ENABLED": "Untertitel an",
+      "DISABLED": "Untertitel aus"
+    },
+    "MUTE_MICROPHONE": "Mikrofon stummschalten",
+    "UNMUTE_MICROPHONE": "Stummschaltung aufheben",
+    "ENABLE_CAPTIONS": "Untertitel einblenden",
+    "DISABLE_CAPTIONS": "Untertitel ausblenden"
+  },
+  "ERRORS": {
+    "UNKNOWN_ERROR": {
+      "NAME": "Unerwarteter Fehler",
+      "INSTRUCTIONS": "Bitte versuchen Sie es erneut oder wenden Sie sich an den Support, wenn das Problem bestehen bleibt."
+    },
+    "NETWORK_ERROR": {
+      "NAME": "Verbindungsproblem",
+      "INSTRUCTIONS": "Bitte prüfen Sie Ihre Internetverbindung und versuchen Sie es erneut."
+    },
+    "API_ERROR": {
+      "NAME": "Kommunikationsfehler",
+      "INSTRUCTIONS": "Beim Verbinden mit dem Dienst gab es ein Problem. Bitte versuchen Sie es später erneut."
+    },
+    "WEBSOCKET_ERROR": {
+      "NAME": "WebSocket-Verbindungsfehler",
+      "INSTRUCTIONS": "Der Sprachdienst ist nicht erreichbar. Bitte prüfen Sie Ihre Verbindung."
+    },
+    "CONNECTION_TIMEOUT": {
+      "NAME": "Zeitüberschreitung",
+      "INSTRUCTIONS": "Die Verbindung hat zu lange gedauert. Bitte versuchen Sie es erneut."
+    },
+    "AUTHENTICATION_ERROR": {
+      "NAME": "Anmeldefehler",
+      "INSTRUCTIONS": "Bitte melden Sie sich erneut an."
+    },
+    "MICROPHONE_ACCESS_DENIED": {
+      "NAME": "Mikrofon benötigt",
+      "INSTRUCTIONS": "Erlauben Sie es in den Browser-Berechtigungen dieser Seite."
+    },
+    "MICROPHONE_BLOCKED": {
+      "NAME": "Mikrofon blockiert",
+      "INSTRUCTIONS": "Erlauben Sie es in den Browser-Berechtigungen dieser Seite."
+    },
+    "MICROPHONE_OS_BLOCKED": {
+      "NAME": "Mikrofon blockiert",
+      "INSTRUCTIONS": "Erlauben Sie es in den Geräteeinstellungen für diesen Browser."
+    },
+    "MICROPHONE_NOT_READABLE": {
+      "NAME": "Mikrofonfehler",
+      "INSTRUCTIONS": "Das Mikrofon konnte nicht gelesen werden. Bitte prüfen Sie Ihr Mikrofon oder nutzen Sie ein anderes."
+    },
+    "AUDIO_RECORDING_ERROR": {
+      "NAME": "Aufnahmefehler",
+      "INSTRUCTIONS": "Die Aufnahme war nicht möglich. Bitte prüfen Sie Ihr Mikrofon oder nutzen Sie ein anderes."
+    },
+    "SERVER_ERROR": {
+      "NAME": "Serverfehler",
+      "INSTRUCTIONS": "Unser Team wurde benachrichtigt."
+    },
+    "QUOTA_EXCEEDED": {
+      "NAME": "Nutzungslimit erreicht",
+      "INSTRUCTIONS": "Sie haben Ihr Nutzungslimit erreicht. Bitte versuchen Sie es später erneut."
+    },
+    "HIGH_DEMAND": {
+      "NAME": "Hohe Auslastung",
+      "INSTRUCTIONS": "Unser Dienst ist gerade stark ausgelastet. Bitte versuchen Sie es in Kürze erneut."
+    },
+    "HTTP": {
+      "400_BAD_REQUEST": {
+        "NAME": "Ungültige Anfrage",
+        "INSTRUCTIONS": "Bitte versuchen Sie es erneut mit gültigen Angaben."
+      },
+      "401_UNAUTHORIZED": {
+        "NAME": "Anmeldung erforderlich",
+        "INSTRUCTIONS": "Bitte melden Sie sich an, um diese Funktion weiter zu nutzen."
+      },
+      "403_FORBIDDEN": {
+        "NAME": "Zugriff verweigert",
+        "INSTRUCTIONS": "Sie haben keine Berechtigung für diese Funktion."
+      },
+      "403_FORBIDDEN_GEO_LOCATION_BLOCKED": {
+        "NAME": "Standort nicht verfügbar",
+        "INSTRUCTIONS": "Der Sprachchat ist von diesem Standort aus nicht verfügbar."
+      },
+      "404_NOT_FOUND": {
+        "NAME": "Dienst nicht gefunden",
+        "INSTRUCTIONS": "Der angeforderte Dienst wurde nicht gefunden."
+      },
+      "408_TIMEOUT": {
+        "NAME": "Zeitüberschreitung der Anfrage",
+        "INSTRUCTIONS": "Der Server hat zu lange gebraucht. Bitte versuchen Sie es später erneut."
+      },
+      "409_CONFLICT": {
+        "NAME": "Konflikt im Dienst",
+        "INSTRUCTIONS": "Es gab einen Konflikt mit dem aktuellen Stand. Bitte versuchen Sie es erneut."
+      },
+      "422_UNPROCESSABLE_ENTITY": {
+        "NAME": "Ungültiges Anfrageformat",
+        "INSTRUCTIONS": "Die Anfrage konnte nicht verarbeitet werden. Bitte versuchen Sie es erneut."
+      },
+      "429_RATE_LIMIT": {
+        "NAME": "Zu viele Anfragen",
+        "INSTRUCTIONS": "Bitte warten Sie einen Moment, bevor Sie es erneut versuchen."
+      },
+      "500_SERVER_ERROR": {
+        "NAME": "Serverfehler",
+        "INSTRUCTIONS": "Bitte versuchen Sie es später erneut."
+      },
+      "502_BAD_GATEWAY": {
+        "NAME": "Dienst nicht verfügbar",
+        "INSTRUCTIONS": "Bitte versuchen Sie es später erneut."
+      },
+      "503_SERVICE_UNAVAILABLE": {
+        "NAME": "Dienst vorübergehend nicht verfügbar",
+        "INSTRUCTIONS": "Bitte versuchen Sie es später erneut."
+      },
+      "504_GATEWAY_TIMEOUT": {
+        "NAME": "Zeitüberschreitung des Dienstes",
+        "INSTRUCTIONS": "Der Dienst hat zu lange gebraucht. Bitte versuchen Sie es später erneut."
+      }
+    }
+  },
+  "LANGUAGE_NOT_SUPPORTED": "Diese Sprache wird im Sprachchat nicht unterstützt."
+}

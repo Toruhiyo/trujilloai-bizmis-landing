@@ -1,0 +1,240 @@
+{
+  "VOICECHAT_CLAIM": "Pasikalbėkim. Mielai padėsiu.",
+  "VOICECHAT_BUTTON": "Balso pokalbis",
+  "VOICECHAT_INSTRUCTIONS": "Kalbėkite, kad pertrauktumėte",
+  "END_CALL": "Baigti pokalbį",
+  "CONNECTING": "Palaukite kelias sekundes...",
+  "CONNECTING_BUTTON": "Jungiamasi",
+  "CLICK_TO_SPEAK": "Spustelėkite, kad kalbėtumėte",
+  "CLICK_TO_END": "Spustelėkite, kad baigtumėte",
+  "TALK_TO_INTERRUPT": "Kalbėkite, kad pertrauktumėte",
+  "CONNECTING_HINT": "Akimirką",
+  "LISTENING_ACTIVE": "Klausausi...",
+  "TRY_VOICE_EXPERIENCE": "Išbandykite mane, esu naujas!",
+  "TERMS_ACCEPT": "Sutinku",
+  "TERMS_DECLINE": "Atgal",
+  "TERMS_ACCEPTANCE_WITH_LINK": "Sutikite su [sąlygomis]({{termsUrl}}), kad tęstumėte.",
+  "POC_DISCLAIMER": {
+    "TITLE": "Proof-of-Concept",
+    "MESSAGE": "Šis balso pokalbio prototipas skirtas tik idėjai parodyti ir neatspindi galutinės sprendimo ar produkto kokybės. Gali pasitaikyti vėlavimų, klaidų ir kitų nesklandumų.<br/>Pagrindinės galimybės: <strong>Savarankiška naršymo navigacija</strong>, <strong>Teksto paryškinimas</strong> ir <strong>Formų pildymas</strong>."
+  },
+  "GREETING": {
+    "1": "Sveiki! Sveiki atvykę į balso pokalbį. Kuo galiu padėti šiandien?",
+    "2": "Labas! Esu čia ir padėsiu, ko tik prireiktų.",
+    "3": "Sveiki! Kuo galėčiau jums šiandien pasitarnauti?",
+    "4": "Sveiki atvykę! Pasakykite, ko ieškote, ir pasistengsiu padėti.",
+    "5": "Balso asistentas jūsų paslaugoms!",
+    "DEFAULT": "Sveiki! Ko norėtumėte šiandien?"
+  },
+  "RESUME_GREETING": {
+    "1": "Sveiki, aš grįžau! Tęskime nuo ten, kur baigėme.",
+    "2": "Gerai, tęsiame!",
+    "3": "Vis dar čia! Ką mes žiūrėjome?",
+    "DEFAULT": "Tai kur mes sustojome?"
+  },
+  "FEEDBACK_TITLE": "Kaip sekėsi?",
+  "FEEDBACK_THUMBS_UP": "Gerai",
+  "FEEDBACK_THUMBS_DOWN": "Galėtų būti geriau",
+  "FEEDBACK_ERROR": "Nepavyko išsiųsti atsiliepimo",
+  "FEEDBACK_SUCCESS": "Ačiū už atsiliepimą!",
+  "ERROR_GENERIC": "Nepavyko pradėti balso pokalbio",
+  "MOBILE_TAP_AVATAR_TO_START": "Palieskite ir kalbėkite",
+  "MOBILE_TAP_AVATAR_TO_CANCEL": "Jungiamasi...",
+  "MOBILE_TAP_AVATAR_TO_END_CALL": "Palieskite, kad baigtumėte",
+  "HINT_LABEL": "Pabandykite pasakyti",
+  "HINTS_DEFAULT": [
+    "Ieškau dovanos antrai pusei, gal padėsite?",
+    "Kas šiuo metu su nuolaida?",
+    "Kuris geriausiai tinka jautriai odai?",
+    "Ar galėsiu grąžinti, jei netiks dydis?",
+    "Palyginkite man šiuos du"
+  ],
+  "CHAT_INPUT_PLACEHOLDER": "Klauskite apie prekes, pristatymą ar užsakymą.",
+  "CHAT_CONNECTING_PLACEHOLDER": "Jungiamasi… jau galite rašyti.",
+  "CHAT_MESSAGE_SENDING": "Siunčiama…",
+  "CHAT_MESSAGE_FAILED_RETRY": "Neišsiųsta. Palieskite, kad bandytumėte dar kartą.",
+  "CHAT_EVENT_PRODUCTS_SHOWN": "Jums parodytos prekės",
+  "CHAT_EVENT_SEARCH_RESULTS": "Rezultatai pagal „{{query}}“",
+  "CHAT_EVENT_PRODUCT_OPENED": "Prekė atidaryta",
+  "CHAT_EVENT_ADDED_TO_CART": "Įtraukta į krepšelį",
+  "CHAT_EVENT_CART_OPENED": "Krepšelis atidarytas",
+  "CHAT_EVENT_CHECKOUT_OPENED": "Atsiskaitymas atidarytas",
+  "CHAT_EVENT_SEARCHED_FOR": "Paieška „{{query}}“",
+  "CHAT_EVENT_PAGE_OPENED": "Puslapis atidarytas",
+  "CHAT_VOICE_TOGGLE_ON": "Įjungti balsą",
+  "CHAT_VOICE_TOGGLE_OFF": "Išjungti balsą",
+  "CHAT_CALL_START": "Pradėti balso pokalbį",
+  "CHAT_CALL_END": "Baigti skambutį",
+  "CHAT_LAUNCHER_TITLE": "Pradėti rašytinį pokalbį",
+  "CHAT_NEW_SESSION": "Nauja sesija",
+  "CHAT_HIDE_PANEL": "Atgal į avatarą",
+  "CHAT_SEND": "Siųsti",
+  "CHAT_EMPTY_HINT": "Išsiųskite žinutę, kad pradėtume pokalbį.",
+  "CHAT_COLLAPSE": "Sutraukti",
+  "CHAT_EXPAND": "Išskleisti",
+  "MIC_RECOVERY_DISMISS": "Uždaryti",
+  "NAVIGATION_TAKING_YOU_TO": "Nukreipiu jus į",
+  "NAVIGATION_TARGET_SEARCH": "Paieškos rezultatus",
+  "NAVIGATION_TARGET_GENERIC": "Kitą puslapį",
+  "TEXT_CHAT_INSTRUCTIONS": "Perjungti į balsą",
+  "MOBILE_TYPE_INSTEAD": "...arba tiesiog rašykite",
+  "CLOSE_WIDGET": "Uždaryti",
+  "REOPEN_WIDGET": "Vėl atidaryti asistentą",
+  "CHAT_LITE_SHOW_HISTORY": "Sesijos istorija",
+  "CHAT_LITE_HIDE_HISTORY": "Slėpti pokalbį",
+  "CHAT_LITE_BACK_TO_VOICE": "Atgal į balso režimą",
+  "CHAT_LITE_GO_TO_VOICE": "Pereiti į balso režimą",
+  "CHAT_LITE_CONVERSATION": "Pokalbis",
+  "CHAT_LITE_PIN_TRANSCRIPT": "Prisegti pokalbį",
+  "CHAT_LITE_UNPIN_TRANSCRIPT": "Atsegti pokalbį",
+  "UNIFIED_PROMPTS": {
+    "DISCOVERY": "Padėkite man rasti tinkamą produktą.",
+    "COMPARISON": "Palyginkite man geriausius variantus.",
+    "GUIDANCE": "Ar tai tiks mano poreikiams?",
+    "RETURNS": "Kokia yra grąžinimo tvarka?",
+    "FAQ": "Ar galite atsakyti į klausimą apie apsipirkimą?"
+  },
+  "MIC_PRIMER": "Pasirinkite „Leisti“, kad jus girdėčiau",
+  "MIC_NEEDED": "Leiskite naudoti mikrofoną, kad kalbėtumėte",
+  "ENABLE_MIC_HINT_BROWSER": "Leiskite mikrofoną puslapio leidimuose",
+  "ENABLE_MIC_HINT_OS": "Leiskite mikrofoną įrenginio nustatymuose",
+  "DEGRADED_VOICE_SWITCHED_HINT_BROWSER": "Prieiga prie mikrofono užblokuota, todėl perjungiau jus į pokalbį raštu. Vis tiek kalbėsiu balsu. Kad galėtumėte kalbėti, leiskite mikrofoną puslapio leidimuose.",
+  "DEGRADED_VOICE_SWITCHED_HINT_OS": "Prieiga prie mikrofono užblokuota, todėl perjungiau jus į pokalbį raštu. Vis tiek kalbėsiu balsu. Kad galėtumėte kalbėti, leiskite mikrofoną įrenginio nustatymuose.",
+  "DEGRADED_VOICE_BLOCKED_HINT_BROWSER": "Prieiga prie mikrofono užblokuota. Vis tiek kalbėsiu balsu. Kad galėtumėte kalbėti, leiskite mikrofoną puslapio leidimuose.",
+  "DEGRADED_VOICE_BLOCKED_HINT_OS": "Prieiga prie mikrofono užblokuota. Vis tiek kalbėsiu balsu. Kad galėtumėte kalbėti, leiskite mikrofoną įrenginio nustatymuose.",
+  "USE_TEXT_CHAT": "Rašyti žinutėmis",
+  "OR": "ARBA",
+  "MIC_BLOCKED_HINT": "Leiskite mikrofoną puslapio leidimuose",
+  "MIC_OS_BLOCKED_HINT": "Leiskite mikrofoną įrenginio nustatymuose",
+  "CONTROLS": {
+    "MICROPHONE": {
+      "MUTE": "Išjungti mikrofoną",
+      "UNMUTE": "Įjungti mikrofoną",
+      "MUTED": "Mikrofonas išjungtas",
+      "UNMUTED": "Mikrofonas veikia"
+    },
+    "SUBTITLES": {
+      "ENABLE": "Įjungti subtitrus",
+      "DISABLE": "Išjungti subtitrus",
+      "ENABLED": "Subtitrai įjungti",
+      "DISABLED": "Subtitrai išjungti"
+    },
+    "MUTE_MICROPHONE": "Išjungti mikrofoną",
+    "UNMUTE_MICROPHONE": "Įjungti mikrofoną",
+    "ENABLE_CAPTIONS": "Įjungti subtitrus",
+    "DISABLE_CAPTIONS": "Išjungti subtitrus"
+  },
+  "ERRORS": {
+    "UNKNOWN_ERROR": {
+      "NAME": "Netikėta klaida",
+      "INSTRUCTIONS": "Bandykite dar kartą arba kreipkitės į pagalbą, jei problema kartojasi."
+    },
+    "NETWORK_ERROR": {
+      "NAME": "Tinklo ryšio klaida",
+      "INSTRUCTIONS": "Patikrinkite interneto ryšį ir bandykite dar kartą."
+    },
+    "API_ERROR": {
+      "NAME": "API ryšio klaida",
+      "INSTRUCTIONS": "Jungiantis prie paslaugos kilo problema. Bandykite vėliau."
+    },
+    "WEBSOCKET_ERROR": {
+      "NAME": "WebSocket ryšio klaida",
+      "INSTRUCTIONS": "Nepavyko prisijungti prie balso paslaugos. Patikrinkite ryšį."
+    },
+    "CONNECTION_TIMEOUT": {
+      "NAME": "Baigėsi ryšio laikas",
+      "INSTRUCTIONS": "Ryšio laikas baigėsi. Bandykite dar kartą."
+    },
+    "AUTHENTICATION_ERROR": {
+      "NAME": "Tapatybės nustatymo klaida",
+      "INSTRUCTIONS": "Prisijunkite iš naujo."
+    },
+    "MICROPHONE_ACCESS_DENIED": {
+      "NAME": "Reikia mikrofono",
+      "INSTRUCTIONS": "Leiskite jį šio puslapio naršyklės leidimuose."
+    },
+    "MICROPHONE_BLOCKED": {
+      "NAME": "Mikrofonas užblokuotas",
+      "INSTRUCTIONS": "Leiskite jį šio puslapio naršyklės leidimuose."
+    },
+    "MICROPHONE_OS_BLOCKED": {
+      "NAME": "Mikrofonas užblokuotas",
+      "INSTRUCTIONS": "Leiskite jį įrenginio nustatymuose šiai naršyklei."
+    },
+    "MICROPHONE_NOT_READABLE": {
+      "NAME": "Mikrofono klaida",
+      "INSTRUCTIONS": "Nepavyko nuskaityti mikrofono duomenų. Patikrinkite mikrofoną arba pabandykite kitą."
+    },
+    "AUDIO_RECORDING_ERROR": {
+      "NAME": "Garso įrašymo klaida",
+      "INSTRUCTIONS": "Nepavyko įrašyti garso. Patikrinkite mikrofoną arba pabandykite kitą."
+    },
+    "SERVER_ERROR": {
+      "NAME": "Serverio klaida",
+      "INSTRUCTIONS": "Mūsų komandai pranešta."
+    },
+    "QUOTA_EXCEEDED": {
+      "NAME": "Pasiektas naudojimo limitas",
+      "INSTRUCTIONS": "Pasiekėte naudojimo limitą. Bandykite vėliau."
+    },
+    "HIGH_DEMAND": {
+      "NAME": "Didelis apkrovimas",
+      "INSTRUCTIONS": "Paslauga šiuo metu labai apkrauta. Bandykite netrukus."
+    },
+    "HTTP": {
+      "400_BAD_REQUEST": {
+        "NAME": "Netinkama užklausa",
+        "INSTRUCTIONS": "Bandykite dar kartą su tinkamais duomenimis."
+      },
+      "401_UNAUTHORIZED": {
+        "NAME": "Reikia prisijungti",
+        "INSTRUCTIONS": "Prisijunkite, kad galėtumėte toliau naudotis šia funkcija."
+      },
+      "403_FORBIDDEN": {
+        "NAME": "Prieiga uždrausta",
+        "INSTRUCTIONS": "Neturite teisės naudotis šia funkcija."
+      },
+      "403_FORBIDDEN_GEO_LOCATION_BLOCKED": {
+        "NAME": "Vietovė užblokuota",
+        "INSTRUCTIONS": "Balso pokalbis iš šios vietos negalimas."
+      },
+      "404_NOT_FOUND": {
+        "NAME": "Paslauga nerasta",
+        "INSTRUCTIONS": "Prašomos paslaugos rasti nepavyko."
+      },
+      "408_TIMEOUT": {
+        "NAME": "Baigėsi užklausos laikas",
+        "INSTRUCTIONS": "Serveris atsakinėjo per ilgai. Bandykite vėliau."
+      },
+      "409_CONFLICT": {
+        "NAME": "Paslaugos konfliktas",
+        "INSTRUCTIONS": "Kilo konfliktas su dabartine būsena. Bandykite dar kartą."
+      },
+      "422_UNPROCESSABLE_ENTITY": {
+        "NAME": "Netinkamas užklausos formatas",
+        "INSTRUCTIONS": "Užklausos apdoroti nepavyko. Bandykite dar kartą."
+      },
+      "429_RATE_LIMIT": {
+        "NAME": "Per daug užklausų",
+        "INSTRUCTIONS": "Truputį palaukite ir bandykite dar kartą."
+      },
+      "500_SERVER_ERROR": {
+        "NAME": "Serverio klaida",
+        "INSTRUCTIONS": "Bandykite vėliau."
+      },
+      "502_BAD_GATEWAY": {
+        "NAME": "Paslauga nepasiekiama",
+        "INSTRUCTIONS": "Bandykite vėliau."
+      },
+      "503_SERVICE_UNAVAILABLE": {
+        "NAME": "Paslauga laikinai nepasiekiama",
+        "INSTRUCTIONS": "Bandykite vėliau."
+      },
+      "504_GATEWAY_TIMEOUT": {
+        "NAME": "Baigėsi paslaugos laikas",
+        "INSTRUCTIONS": "Paslauga atsakinėjo per ilgai. Bandykite vėliau."
+      }
+    }
+  },
+  "LANGUAGE_NOT_SUPPORTED": "Ši kalba balso pokalbyje nepalaikoma."
+}

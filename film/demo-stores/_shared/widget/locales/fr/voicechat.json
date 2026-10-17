@@ -1,0 +1,240 @@
+{
+  "VOICECHAT_CLAIM": "Parlons. Je vous aide.",
+  "VOICECHAT_BUTTON": "Chat vocal",
+  "VOICECHAT_INSTRUCTIONS": "Parlez pour m'interrompre",
+  "END_CALL": "Raccrocher",
+  "CONNECTING": "Patientez quelques secondes...",
+  "CONNECTING_BUTTON": "Connexion",
+  "CLICK_TO_SPEAK": "Cliquez pour parler",
+  "CLICK_TO_END": "Cliquez pour terminer",
+  "TALK_TO_INTERRUPT": "Parlez pour m'interrompre",
+  "CONNECTING_HINT": "Patientez un instant",
+  "LISTENING_ACTIVE": "J'écoute...",
+  "TRY_VOICE_EXPERIENCE": "Essayez-moi, je suis nouveau !",
+  "TERMS_ACCEPT": "Accepter",
+  "TERMS_DECLINE": "Retour",
+  "TERMS_ACCEPTANCE_WITH_LINK": "Acceptez les [CGU]({{termsUrl}}) pour continuer.",
+  "POC_DISCLAIMER": {
+    "TITLE": "Preuve de concept",
+    "MESSAGE": "Ce prototype de chat vocal sert uniquement à illustrer le concept et ne reflète pas la qualité finale d'une solution ou d'un produit. Des lenteurs, des bugs et d'autres problèmes peuvent survenir.<br/>Fonctionnalités clés : <strong>Navigation web autonome</strong>, <strong>Mise en évidence de texte</strong> et <strong>Remplissage de formulaires</strong>."
+  },
+  "GREETING": {
+    "1": "Bonjour ! Bienvenue sur le chat vocal. Comment puis-je vous aider aujourd'hui ?",
+    "2": "Bonjour ! Je suis là pour vous aider, quoi que vous cherchiez.",
+    "3": "Bonjour ! Que puis-je faire pour vous aujourd'hui ?",
+    "4": "Bienvenue ! Dites-moi ce qu'il vous faut et je ferai de mon mieux.",
+    "5": "Votre assistant vocal est là ! Prêt à vous aider !",
+    "DEFAULT": "Bonjour ! Qu'est-ce qui vous ferait plaisir aujourd'hui ?"
+  },
+  "RESUME_GREETING": {
+    "1": "Me revoilà ! Reprenons où nous en étions.",
+    "2": "Très bien, continuons !",
+    "3": "Toujours là ! Qu'est-ce qu'on regardait ?",
+    "DEFAULT": "Alors, où en étions-nous ?"
+  },
+  "FEEDBACK_TITLE": "Comment s'est passée votre expérience ?",
+  "FEEDBACK_THUMBS_UP": "Bien",
+  "FEEDBACK_THUMBS_DOWN": "Peut mieux faire",
+  "FEEDBACK_ERROR": "Envoi de l'avis impossible",
+  "FEEDBACK_SUCCESS": "Merci pour votre avis !",
+  "ERROR_GENERIC": "Impossible de démarrer le chat vocal",
+  "MOBILE_TAP_AVATAR_TO_START": "Touchez et parlez",
+  "MOBILE_TAP_AVATAR_TO_CANCEL": "Connexion...",
+  "MOBILE_TAP_AVATAR_TO_END_CALL": "Touchez pour terminer",
+  "HINT_LABEL": "Essayez de dire",
+  "HINTS_DEFAULT": [
+    "Il me faut un cadeau pour ma moitié, vous pouvez m'aider ?",
+    "Qu'est-ce qui est en promo en ce moment ?",
+    "Lequel convient le mieux aux peaux sensibles ?",
+    "Je peux le retourner si la taille ne va pas ?",
+    "Comparez-moi ces deux-là"
+  ],
+  "CHAT_INPUT_PLACEHOLDER": "Posez vos questions sur les produits, la livraison ou votre commande.",
+  "CHAT_CONNECTING_PLACEHOLDER": "Connexion… vous pouvez déjà écrire.",
+  "CHAT_MESSAGE_SENDING": "Envoi…",
+  "CHAT_MESSAGE_FAILED_RETRY": "Non envoyé. Touchez pour réessayer.",
+  "CHAT_EVENT_PRODUCTS_SHOWN": "Produits qui vous ont été montrés",
+  "CHAT_EVENT_SEARCH_RESULTS": "Résultats pour « {{query}} »",
+  "CHAT_EVENT_PRODUCT_OPENED": "Produit ouvert",
+  "CHAT_EVENT_ADDED_TO_CART": "Ajouté au panier",
+  "CHAT_EVENT_CART_OPENED": "Panier ouvert",
+  "CHAT_EVENT_CHECKOUT_OPENED": "Paiement ouvert",
+  "CHAT_EVENT_SEARCHED_FOR": "Recherche de « {{query}} »",
+  "CHAT_EVENT_PAGE_OPENED": "Page ouverte",
+  "CHAT_VOICE_TOGGLE_ON": "Activer la voix",
+  "CHAT_VOICE_TOGGLE_OFF": "Arrêter la voix",
+  "CHAT_CALL_START": "Démarrer le chat vocal",
+  "CHAT_CALL_END": "Raccrocher",
+  "CHAT_LAUNCHER_TITLE": "Démarrer un chat écrit",
+  "CHAT_NEW_SESSION": "Nouvelle session",
+  "CHAT_HIDE_PANEL": "Retour à l'avatar",
+  "CHAT_SEND": "Envoyer",
+  "CHAT_EMPTY_HINT": "Envoyez un message pour démarrer la conversation.",
+  "CHAT_COLLAPSE": "Réduire",
+  "CHAT_EXPAND": "Agrandir",
+  "MIC_RECOVERY_DISMISS": "Fermer",
+  "NAVIGATION_TAKING_YOU_TO": "Je vous emmène vers",
+  "NAVIGATION_TARGET_SEARCH": "Résultats de recherche",
+  "NAVIGATION_TARGET_GENERIC": "Une autre page",
+  "TEXT_CHAT_INSTRUCTIONS": "Passer au vocal",
+  "MOBILE_TYPE_INSTEAD": "...ou écrivez",
+  "CLOSE_WIDGET": "Fermer",
+  "REOPEN_WIDGET": "Rouvrir l'assistant",
+  "CHAT_LITE_SHOW_HISTORY": "Historique de la session",
+  "CHAT_LITE_HIDE_HISTORY": "Masquer la conversation",
+  "CHAT_LITE_BACK_TO_VOICE": "Retour au mode vocal",
+  "CHAT_LITE_GO_TO_VOICE": "Passer en mode vocal",
+  "CHAT_LITE_CONVERSATION": "Conversation",
+  "CHAT_LITE_PIN_TRANSCRIPT": "Épingler la conversation",
+  "CHAT_LITE_UNPIN_TRANSCRIPT": "Désépingler la conversation",
+  "UNIFIED_PROMPTS": {
+    "DISCOVERY": "Aidez-moi à trouver le produit qui me convient.",
+    "COMPARISON": "Comparez les meilleures options pour moi.",
+    "GUIDANCE": "Est-ce que cela m'ira ou répondra à mes besoins ?",
+    "RETURNS": "Quelle est la politique de retour ?",
+    "FAQ": "Pouvez-vous répondre à une question sur mes achats ?"
+  },
+  "MIC_PRIMER": "Choisissez \"Autoriser\" pour que je puisse vous entendre",
+  "MIC_NEEDED": "Autorisez le micro pour parler à voix haute",
+  "ENABLE_MIC_HINT_BROWSER": "Autorisez le micro dans les permissions de la page",
+  "ENABLE_MIC_HINT_OS": "Autorisez le micro dans les réglages de l'appareil",
+  "DEGRADED_VOICE_SWITCHED_HINT_BROWSER": "L'accès au micro est bloqué, je vous ai donc basculé sur le chat. Je continuerai à parler à voix haute ; pour me parler, autorisez le micro dans les permissions de la page.",
+  "DEGRADED_VOICE_SWITCHED_HINT_OS": "L'accès au micro est bloqué, je vous ai donc basculé sur le chat. Je continuerai à parler à voix haute ; pour me parler, autorisez le micro dans les réglages de votre appareil.",
+  "DEGRADED_VOICE_BLOCKED_HINT_BROWSER": "L'accès au micro est bloqué. Je continuerai à parler à voix haute ; pour me parler, autorisez le micro dans les permissions de la page.",
+  "DEGRADED_VOICE_BLOCKED_HINT_OS": "L'accès au micro est bloqué. Je continuerai à parler à voix haute ; pour me parler, autorisez le micro dans les réglages de votre appareil.",
+  "USE_TEXT_CHAT": "Utiliser le chat écrit",
+  "OR": "OU",
+  "MIC_BLOCKED_HINT": "Autorisez le micro dans les permissions de la page",
+  "MIC_OS_BLOCKED_HINT": "Autorisez le micro dans les réglages de l'appareil",
+  "CONTROLS": {
+    "MICROPHONE": {
+      "MUTE": "Couper le micro",
+      "UNMUTE": "Activer le micro",
+      "MUTED": "Micro coupé",
+      "UNMUTED": "Micro actif"
+    },
+    "SUBTITLES": {
+      "ENABLE": "Activer les sous-titres",
+      "DISABLE": "Désactiver les sous-titres",
+      "ENABLED": "Sous-titres activés",
+      "DISABLED": "Sous-titres désactivés"
+    },
+    "MUTE_MICROPHONE": "Couper le micro",
+    "UNMUTE_MICROPHONE": "Activer le micro",
+    "ENABLE_CAPTIONS": "Activer les sous-titres",
+    "DISABLE_CAPTIONS": "Désactiver les sous-titres"
+  },
+  "ERRORS": {
+    "UNKNOWN_ERROR": {
+      "NAME": "Erreur inattendue",
+      "INSTRUCTIONS": "Réessayez ou contactez le support si le problème persiste."
+    },
+    "NETWORK_ERROR": {
+      "NAME": "Erreur de connexion réseau",
+      "INSTRUCTIONS": "Vérifiez votre connexion internet et réessayez."
+    },
+    "API_ERROR": {
+      "NAME": "Erreur de communication avec l'API",
+      "INSTRUCTIONS": "Un problème est survenu lors de la connexion au service. Réessayez plus tard."
+    },
+    "WEBSOCKET_ERROR": {
+      "NAME": "Erreur de connexion WebSocket",
+      "INSTRUCTIONS": "Impossible de se connecter au service vocal. Vérifiez votre connexion."
+    },
+    "CONNECTION_TIMEOUT": {
+      "NAME": "Délai de connexion dépassé",
+      "INSTRUCTIONS": "La connexion a expiré. Réessayez."
+    },
+    "AUTHENTICATION_ERROR": {
+      "NAME": "Erreur d'authentification",
+      "INSTRUCTIONS": "Reconnectez-vous."
+    },
+    "MICROPHONE_ACCESS_DENIED": {
+      "NAME": "Micro nécessaire",
+      "INSTRUCTIONS": "Autorisez-le dans les permissions du navigateur pour cette page."
+    },
+    "MICROPHONE_BLOCKED": {
+      "NAME": "Micro bloqué",
+      "INSTRUCTIONS": "Autorisez-le dans les permissions du navigateur pour cette page."
+    },
+    "MICROPHONE_OS_BLOCKED": {
+      "NAME": "Micro bloqué",
+      "INSTRUCTIONS": "Autorisez-le dans les réglages de votre appareil pour ce navigateur."
+    },
+    "MICROPHONE_NOT_READABLE": {
+      "NAME": "Erreur de micro",
+      "INSTRUCTIONS": "Impossible de lire les données du micro. Vérifiez votre micro ou essayez-en un autre."
+    },
+    "AUDIO_RECORDING_ERROR": {
+      "NAME": "Erreur d'enregistrement audio",
+      "INSTRUCTIONS": "Impossible d'enregistrer l'audio. Vérifiez votre micro ou essayez-en un autre."
+    },
+    "SERVER_ERROR": {
+      "NAME": "Erreur du serveur",
+      "INSTRUCTIONS": "Notre équipe a été prévenue."
+    },
+    "QUOTA_EXCEEDED": {
+      "NAME": "Limite d'utilisation atteinte",
+      "INSTRUCTIONS": "Vous avez atteint votre limite d'utilisation. Réessayez plus tard."
+    },
+    "HIGH_DEMAND": {
+      "NAME": "Forte affluence",
+      "INSTRUCTIONS": "Notre service est très sollicité. Réessayez dans un instant."
+    },
+    "HTTP": {
+      "400_BAD_REQUEST": {
+        "NAME": "Requête invalide",
+        "INSTRUCTIONS": "Réessayez avec des paramètres valides."
+      },
+      "401_UNAUTHORIZED": {
+        "NAME": "Authentification requise",
+        "INSTRUCTIONS": "Connectez-vous pour continuer à utiliser cette fonctionnalité."
+      },
+      "403_FORBIDDEN": {
+        "NAME": "Accès refusé",
+        "INSTRUCTIONS": "Vous n'avez pas l'autorisation d'accéder à cette fonctionnalité."
+      },
+      "403_FORBIDDEN_GEO_LOCATION_BLOCKED": {
+        "NAME": "Géolocalisation bloquée",
+        "INSTRUCTIONS": "Le chat vocal n'est pas disponible depuis cet emplacement."
+      },
+      "404_NOT_FOUND": {
+        "NAME": "Service introuvable",
+        "INSTRUCTIONS": "Le service demandé est introuvable."
+      },
+      "408_TIMEOUT": {
+        "NAME": "Délai de requête dépassé",
+        "INSTRUCTIONS": "Le serveur a mis trop de temps à répondre. Réessayez plus tard."
+      },
+      "409_CONFLICT": {
+        "NAME": "Conflit de service",
+        "INSTRUCTIONS": "Un conflit est survenu avec l'état actuel. Réessayez."
+      },
+      "422_UNPROCESSABLE_ENTITY": {
+        "NAME": "Format de requête invalide",
+        "INSTRUCTIONS": "La requête n'a pas pu être traitée. Réessayez."
+      },
+      "429_RATE_LIMIT": {
+        "NAME": "Trop de requêtes",
+        "INSTRUCTIONS": "Patientez un instant avant de réessayer."
+      },
+      "500_SERVER_ERROR": {
+        "NAME": "Erreur du serveur",
+        "INSTRUCTIONS": "Réessayez plus tard."
+      },
+      "502_BAD_GATEWAY": {
+        "NAME": "Service indisponible",
+        "INSTRUCTIONS": "Réessayez plus tard."
+      },
+      "503_SERVICE_UNAVAILABLE": {
+        "NAME": "Service temporairement indisponible",
+        "INSTRUCTIONS": "Réessayez plus tard."
+      },
+      "504_GATEWAY_TIMEOUT": {
+        "NAME": "Délai du service dépassé",
+        "INSTRUCTIONS": "Le service a mis trop de temps à répondre. Réessayez plus tard."
+      }
+    }
+  },
+  "LANGUAGE_NOT_SUPPORTED": "Langue non prise en charge pour le chat vocal."
+}
