@@ -181,6 +181,72 @@ function installHiddenCursor(page) {
 // and the shopper types. Seeding a session here used to open the text chat
 // panel instead, so nothing is seeded. The caption bubble shows a history
 // button while the pointer is over it, so the pointer stays clear of it.
+// v36 (ad-1): the widget highlight drawn natively in the store page during a live take (the film used to fake it
+// on the video's pixels). beat.flair = { color, on: 'products' | 'ready', delayMs, ms, times }: the real widget lifts
+// from its docked corner, a ring and a glow in the store's widget colour breathe around it and a gloss sweeps it.
+// 'products' fires as the agent's product carousel lands; 'ready' as soon as the widget is on screen.
+function installFlair(cfg) {
+  const rgb = (() => { const n = parseInt(String(cfg.color || '#F9A353').slice(1), 16); return `${n >> 16},${(n >> 8) & 255},${n & 255}`; })();
+  const roots = '#bizmis-avatar-embed, .bizmis-viewport-portal-root';
+  const target = () => {
+    const card = document.querySelector(`${roots.split(', ').map((r) => `${r} [class*="group/card"]`).join(', ')}`);
+    if (card && card.getBoundingClientRect().width > 0) return { node: card, bar: false };
+    const glass = [...document.querySelectorAll(roots.split(', ').map((r) => `${r} .backdrop-blur-xl`).join(', '))]
+      .find((g) => g.classList.contains('absolute') && g.getBoundingClientRect().height > 30 && g.getBoundingClientRect().height < 220);
+    return glass ? { node: glass.parentElement, bar: true } : null;
+  };
+  let fired = 0;
+  const flair = (ms = cfg.ms || 900) => {
+    const tg = target();
+    if (!tg) return false;
+    fired += 1;
+    const node = tg.node;
+    const k = tg.bar ? Math.min(0.06, Math.max(0.02, (window.innerWidth - 4) / Math.max(1, node.offsetWidth) - 1)) : 0.1;
+    const ring = document.createElement('div'); const gloss = document.createElement('div'); const band = document.createElement('i');
+    [ring, gloss].forEach((el) => Object.assign(el.style, { position: 'fixed', pointerEvents: 'none', zIndex: '2147483000' }));
+    gloss.style.overflow = 'hidden'; gloss.style.zIndex = '2147483001';
+    Object.assign(band.style, { position: 'absolute', top: '-50%', bottom: '-50%', width: '45%',
+      background: 'linear-gradient(100deg, transparent 0%, rgba(255,255,255,0) 20%, rgba(255,255,255,.85) 50%, rgba(255,255,255,0) 80%, transparent 100%)' });
+    gloss.append(band); document.body.append(ring, gloss);
+    const origin = node.style.transformOrigin; const scale = node.style.scale;
+    node.style.transformOrigin = tg.bar ? '50% 100%' : '100% 100%';
+    const t0 = performance.now();
+    const step = (now) => {
+      const u = Math.min(1, (now - t0) / ms); const lift = Math.sin(Math.PI * u);
+      node.style.scale = String((1 + k * lift).toFixed(4));
+      const r = node.getBoundingClientRect();
+      const rad = `${(tg.bar ? r.height / 2 : 12 * (r.width / (node.offsetWidth || r.width))).toFixed(1)}px`;
+      [ring, gloss].forEach((el) => Object.assign(el.style, { left: `${r.left}px`, top: `${r.top}px`, width: `${r.width}px`, height: `${r.height}px`, borderRadius: rad }));
+      const z = Math.max(r.width, r.height) / 330;
+      ring.style.boxShadow = `0 ${10 * z * lift}px ${34 * z * lift}px rgba(${rgb},${0.5 * lift}), 0 0 0 ${4.5 * z * lift}px rgba(${rgb},${0.95 * lift}), 0 0 ${56 * z * lift}px rgba(${rgb},${0.55 * lift})`;
+      band.style.left = `${-50 + Math.min(1, u / 0.8) * 160}%`;
+      if (u < 1) requestAnimationFrame(step);
+      else { ring.remove(); gloss.remove(); node.style.scale = scale; node.style.transformOrigin = origin; }
+    };
+    requestAnimationFrame(step);
+    return true;
+  };
+  window.__promoFlair = flair;
+  window.__promoFlairArm = () => {
+    const times = cfg.times || 1;
+    const fire = () => setTimeout(() => flair(), cfg.delayMs || 0);
+    if (cfg.on === 'ready') { const wait = () => (target() ? fire() : setTimeout(wait, 100)); wait(); return; }
+    // 'text': fires as the agent's own words (cfg.text, any case) first show in the widget
+    if (cfg.on === 'text') {
+      const want = String(cfg.text || '').toLowerCase();
+      const watch = setInterval(() => {
+        const seen = [...document.querySelectorAll(roots)].map((n) => n.textContent || '').join(' ').toLowerCase();
+        if (seen.includes(want)) { clearInterval(watch); fire(); }
+      }, 40);
+      return;
+    }
+    const watch = setInterval(() => {
+      if (fired >= times) { clearInterval(watch); return; }
+      if (document.querySelector(roots.split(', ').map((r) => `${r} [class*="group/carousel"]`).join(', '))) { clearInterval(watch); fire(); }
+    }, 50);
+  };
+}
+
 function installPrefs() {
   localStorage.setItem('bizmis-subtitles', 'true');
   // Widget debug steering: lets a beat send hidden messages. See
@@ -1251,6 +1317,7 @@ async function recordTake(browser, job, dest) {
   });
   const page = await context.newPage();
   await page.addInitScript(installPrefs);
+  if (job.beat.flair) await page.addInitScript(installFlair, job.beat.flair);   // v36 (ad-1)
   await installHiddenCursor(page);
   const fixCss = [STORE_FIXES['*']?.css, STORE_FIXES[store.host]?.css].filter(Boolean).join('\n');
   if (fixCss) {
@@ -1362,6 +1429,7 @@ async function recordTake(browser, job, dest) {
     pace.hurry();
     await capture.fitScreen();
     await capture.start();
+    if (job.beat.flair) await page.evaluate(() => window.__promoFlairArm?.()).catch(() => {});   // v36 (ad-1)
     // an opener beat records the clerk's first words: don't wait them out here
     if (job.beat.kind !== 'opener') await waitForSpeechTail(speech, 0, pace, GREETING_WAIT_MS);
     SILENT_OK.value = job.beat.kind === 'ambient';

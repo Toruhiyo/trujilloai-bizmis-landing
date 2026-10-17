@@ -11326,7 +11326,8 @@ html.is-promo-final .promo-vo-debug {
 .promo-chapter.is-struck .promo-chapter__disc { transform: scale(1); }
 .promo-chapter.is-struck .promo-chapter__check { stroke-dashoffset: 0; }
 @keyframes promo-chapter-ring { to { transform: rotate(360deg); } }
-.promo-chapter__words { display: grid; overflow: hidden; }
+.promo-chapter__words { display: grid; overflow: hidden; padding-block: 0.32em; margin-block: -0.32em; }   /* v36b: room for descenders (g, y) inside the clip */
+.promo-glide__cell .promo-chapter { display: none; }   /* v36b: the chip rides the window, never its sea clone */
 .promo-chapter__words > span { grid-area: 1 / 1; justify-self: start; }
 .promo-chapter__from { color: var(--ad-ink-2); transition: opacity 260ms ease, transform 420ms cubic-bezier(0.22, 1, 0.36, 1); }
 .promo-chapter__from::after { display: none; }
@@ -13301,3 +13302,5 @@ html.is-promo-yours .promo-reel__yours-widget > [data-promo-widget] { opacity: 1
 .promo-rewind__track i { position: absolute; inset: 0; border-radius: inherit; background: rgba(43, 37, 32, 0.62); transform-origin: 0 50%; }
 .promo-rewind__track b { position: absolute; top: 50%; width: 1.7cqh; height: 1.7cqh; translate: -50% -50%; border-radius: 50%; background: #fff;
   box-shadow: 0 0.3cqh 0.9cqh rgba(28, 24, 20, 0.3), 0 0 0 1px rgba(28, 24, 20, 0.08); }
+/* v36e: the old chatbot's dust canvas is stepped per frame on the film clock: no CSS motion of their own */
+.promo-install__dust { transition: none !important; animation: none !important; }

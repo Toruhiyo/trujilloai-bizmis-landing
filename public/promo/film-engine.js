@@ -27,7 +27,7 @@
       termOffsets: [-80, -80, -80],
       handMark: ['Only fifty', 'start', -120],   // the pen starts 120 ms before "Only"
       heroMark: ['Secure yours', 'start', -260],   // 260 ms before "Secure"
-      closeMark: ['installing now', 'end', -40],   // the closing lockup starts after "...by installing now."
+      closeMark: ['Secure yours', 'end', 1000],   // the closing lockup starts after "...by installing now." (v35: anchored on "Secure yours", which stays at 8.92 s in every take, so the close keeps the v33/v34 moment the score's last hit is fitted to; the v35 read shouts "NOW!" in capitals, which the old anchor never found)
       find: 'Find Bizmis on the Shopify App Store',
       pills: true,   // v11: the three benefits as glass pills, then "Only 50 spots" (v24: the card is exactly what the VO says)
       shopify: true,
@@ -183,7 +183,7 @@
   // The narrator speaks in whole takes (Claudia, Eleven v4, audio tags in the
   // text); the picture syncs to phrases inside each take (speakTake().at()).
   const PROMO_VO = [
-    { scene: 'pain', id: 't-pain', line: "Every day, shoppers walk into your store ready to buy. Some get lost in the catalog, clicking, comparing, scrolling, with no one there to help them choose. Others get stuck on one last question and go looking for help. A chatbot? Here's a wall of text, go read it. A real person? The perfect answer, hours later, when the sale's already gone. Either way, they leave." },   // v25: the brisk take (eleven_v4, speed 1.12)
+    { scene: 'pain', id: 't-pain', line: "Every day, shoppers walk into your store ready to buy. Some get lost in the catalog, clicking, comparing, scrolling, with no one there to help them choose. Others get stuck on one last question and go looking for help. A chatbot? Here's a wall of text, go read it. A real person? A reply... hours later, when the sale's already gone. Either way, they leave." },   // v25: the brisk take (eleven_v4, speed 1.12); v34: a sarcastic chatbot + reply segment spliced in
     { scene: 'pain', id: 't-pain-end', line: 'Sale lost.' },   // v18: its own take, on the sea's first LOST stamps
     { scene: 'switch', id: 't-switch', line: 'In a physical store, the best salesperson turns these moments into sales. So we built one, for your online store!' },
     { scene: 'reveal', id: 't-reveal', line: "Meet Bizmis. Your store's new salesperson. Well... sales agent." },
@@ -195,7 +195,7 @@
     { scene: 'sync', id: 't-sync', line: "It all takes just one click. And your whole store stays in sync, automatically." },
     { scene: 'stores', id: 't-stores', line: 'Whatever your store sells, your Bizmis agent sells it.' },   // v18: to the merchant (the reel shows devices and languages)
     { scene: 'end', id: 'see-it', line: 'See it in action.', cta: 'demo' },
-    { scene: 'end', id: 't-ea', line: 'Install now to join Early Access! Generous free credits, fifty percent off upgrades, and you shape the roadmap. Only fifty spots. Secure yours by installing now.', cta: 'ea' },   // v24: the short take
+    { scene: 'end', id: 't-ea', line: 'Install now to join Early Access! Generous free credits, fifty percent off upgrades, and you shape the roadmap. Only fifty spots. Secure yours by installing now!', cta: 'ea' },   // v24: the short take (v35: a powerful close)
     { scene: 'end', id: 'install-shopify', line: 'Install it on Shopify.', cta: 'install' },
   ];
   function ensureInviteFont() {
@@ -412,6 +412,11 @@
   const PROMO_FLIP_SPARKS = 18;
   const PROMO_FLIP_POP_HOLD_MS = 450;   // v25: 650 -> 450 (the faster cut)
   const PROMO_TOGGLE_REST_MS = 650;
+  const LEAD_WRAP = '[data-promo-lead-wrap]';   // v34: the pitch's lead copy sits in a class-carrying, box-less wrapper
+  const PROMO_PAIN_CLOSE_LEAD_MS = 1040;
+  const PROMO_PAIN_CLOSE_TAP_MS = 560;   // v36: tapPhoneTarget's length (70 + 320 + 50 + 100 ms, frame-rounded): the ✕ tap ends on the close   // v34: the chat-close tap starts this long before "Either way" (as in v25-v33)
+  const PROMO_LIVE_CARD_OUT_MS = 420;
+  const PROMO_PITCH_HANDOFF_MS = 400;   // v34: the close-up's dissolve into the pitch sea's lead card   // the live widget card's fade out (html.is-promo-card-out)
   const PROMO_RECAP_BUBBLES = ['Can I help you find something?', "That one's perfect for them."];
   const PROMO_RECAP_STAGGER_MS = 380;
   const PROMO_OPENING_REVEAL_STORE = false;
@@ -2134,7 +2139,7 @@
     'moment-upsell-b': { action: 'thinking' },
   };
   const PROMO_MOMENT_TAKE_HEROES = {
-    b: { go: 'cone', pick: 'cylinder', other: 'dome', extra: 'slab' },
+    b: { go: 'cone', pick: 'cylinder', other: 'dome', extra: 'cradle' },
   };
   const PROMO_CURSOR_HOT_X = 33 * (5 / 24);
   const PROMO_CURSOR_HOT_Y = 33 * (3.2 / 24);
@@ -2643,6 +2648,306 @@
     return Math.max(0, o);
   }
 
+  // v35: a brief flair on each demo store's widget as its card lands: the widget's own pixels lift out (a copy of that
+  // region, scaled up, with a glow and a ring in the store's colour) while a gloss sweeps across it, then it settles back
+  // exactly where it was. Stepped on the film clock (export-safe); the overlay is removed when it ends.
+  const PROMO_REEL_WIDGET_THEME = {"halcyon-optics":"#5B45B8","kumo-tea":"#2E8A3E","sora-ceramics":"#8A4F72","powderline":"#1F7E9A","tidewater":"#E0553D","maison-cacao":"#3B2117","liora":"#B85A70","grindline":"#1A7FC4","kettle-and-crow":"#B8306A","northpeak":"#2A4FD6","saltline":"#0E8F9E","ridgeline-supply":"#0E6185","nest-and-nook":"#3F8E68","atelier-noor":"#A4408F","little-timber":"#2A86CC","inkwell":"#22407C","leaf-and-loam":"#139E6E","spokehaus":"#EE3F87","juniper-linen":"#4C5FC4","tonewood":"#7A3A80","fetch-and-fern":"#138A86","petal-and-post":"#C02FA8"};
+  // where each recording's widget sits, as fractions of the video frame (x0, y0, x1, y1)
+  const PROMO_REEL_WIDGET_BOX = {
+    'v24-desktop': [0.76, 0.597, 0.985, 0.963], 'v24-phone': [0.028, 0.91, 0.978, 0.983], 'v30-tablet': [0.025, 0.93, 0.975, 0.99],
+    'ambient-buildright-home': [0.03, 0.905, 0.97, 0.975], 'ambient-the-apricot-theory': [0.03, 0.905, 0.97, 0.972],
+    'ambient-viniteca-marti': [0.787, 0.632, 0.985, 0.966], 'copperleaf-desktop-home': [0.757, 0.593, 0.968, 0.96],
+    fashion: [0.03, 0.93, 0.97, 0.99], electronics: [0.785, 0.62, 1, 0.95], books: [0.03, 0.895, 0.86, 0.965], gaming: [0.04, 0.915, 0.96, 0.985],
+  };
+  const PROMO_FLAIR_LIFT = 0.1;
+  function promoWidgetBox(src) {
+    const name = String(src || '').split('/').pop().replace(/\.mp4$/, '');
+    if (PROMO_REEL_WIDGET_BOX[name]) return PROMO_REEL_WIDGET_BOX[name];
+    if (/\/v(24|35)\//.test(src) && /-(phone|desktop)-/.test(name)) return /-phone-/.test(name) ? PROMO_REEL_WIDGET_BOX['v24-phone'] : PROMO_REEL_WIDGET_BOX['v24-desktop'];   // v35: re-recorded, same layout
+    if (/\/v(30|35)\//.test(src) && /-tablet-/.test(name)) return PROMO_REEL_WIDGET_BOX['v30-tablet'];
+    return null;
+  }
+  function promoWidgetFlair(video, src, color, ms, host) {
+    const frac = promoWidgetBox(src);
+    if (!frac || !video || !host || !color || prefersReducedMotion() || ms < 160) return Promise.resolve();
+    const vw = video.videoWidth; const vh = video.videoHeight;
+    if (!vw || !vh) return Promise.resolve();
+    // the video's box in the host's (untransformed) coordinates
+    let x = 0; let y = 0; let node = video;
+    while (node && node !== host) { x += node.offsetLeft; y += node.offsetTop; node = node.offsetParent; }
+    if (node !== host) return Promise.resolve();
+    const [x0, y0, x1, y1] = frac;
+    const box = { x: x + x0 * video.offsetWidth, y: y + y0 * video.offsetHeight, w: (x1 - x0) * video.offsetWidth, h: (y1 - y0) * video.offsetHeight };
+    const bar = box.h < box.w * 0.3;
+    const z = Math.max(box.w, box.h) / 330;   // the glow's size follows the widget's
+    const wrap = document.createElement('div');
+    wrap.className = 'promo-flair';
+    Object.assign(wrap.style, { position: 'absolute', left: `${box.x.toFixed(1)}px`, top: `${box.y.toFixed(1)}px`, width: `${box.w.toFixed(1)}px`, height: `${box.h.toFixed(1)}px`,
+      borderRadius: `${(bar ? box.h / 2 : Math.min(box.w, box.h) * 0.07).toFixed(1)}px`, overflow: 'hidden', zIndex: '40', pointerEvents: 'none', transformOrigin: '50% 50%', opacity: '0' });
+    const canvas = document.createElement('canvas');
+    canvas.width = Math.max(2, Math.round((x1 - x0) * vw)); canvas.height = Math.max(2, Math.round((y1 - y0) * vh));
+    Object.assign(canvas.style, { position: 'absolute', left: '0', top: '0', width: '100%', height: '100%' });
+    const band = document.createElement('i');
+    Object.assign(band.style, { position: 'absolute', top: '-50%', bottom: '-50%', width: '45%',
+      background: 'linear-gradient(100deg, transparent 0%, rgba(255,255,255,0) 20%, rgba(255,255,255,.9) 50%, rgba(255,255,255,0) 80%, transparent 100%)' });
+    wrap.append(canvas, band);
+    host.appendChild(wrap);
+    const ctx = canvas.getContext('2d');
+    const n = parseInt(color.slice(1), 16); const rgb = `${n >> 16},${(n >> 8) & 255},${n & 255}`;
+    return tweenStep(ms, (_, u) => {
+      const lift = Math.sin(Math.PI * u);
+      try { ctx.drawImage(video, x0 * vw, y0 * vh, canvas.width, canvas.height, 0, 0, canvas.width, canvas.height); } catch { }
+      wrap.style.opacity = '1';
+      wrap.style.transform = `scale(${(1 + PROMO_FLAIR_LIFT * lift).toFixed(4)})`;
+      wrap.style.boxShadow = `0 ${(10 * z * lift).toFixed(1)}px ${(34 * z * lift).toFixed(1)}px rgba(${rgb},${(0.5 * lift).toFixed(3)}), 0 0 0 ${(4.5 * z * lift).toFixed(1)}px rgba(${rgb},${(0.95 * lift).toFixed(3)}), 0 0 ${(56 * z * lift).toFixed(1)}px rgba(${rgb},${(0.55 * lift).toFixed(3)})`;
+      band.style.left = `${(-50 + Math.min(1, u / 0.8) * 160).toFixed(1)}%`;
+    }, (u) => u).then(() => wrap.remove());
+  }
+
+
+  // v36e: the old chatbot disintegrates into fine dust and smoke (operator: "dusting-smoke, super premium"). Its own
+  // pixels (circle + mark, rasterized at device resolution) become a few thousand grains; a soft front sweeps through
+  // it releasing them; each grain flares warm-white for an instant, then cools to a warm grey dust that drifts on a
+  // gentle turbulence and fades, while soft smoke billows up under the grains. Stepped on the film clock (canvas,
+  // seeded: the export renders it identically every time); nothing waits on it.
+  //   style 1: disintegrate (sweep from the impact, wind up and to the left)
+  //   style 2: smoke (tiny grains, more billowing smoke rising)
+  //   style 3: implode (a brief inward pull and rim glow, then a burst of fine dust that slows and hangs as it fades)
+  const PROMO_VAPOR_STYLE = Number(promoSearchParams().get('vapor') || 4);   // v36g: smoke-first plume (4) is the film's
+  // v36f (operator: "more smoke and less dust, way smaller particles"): styles 4 and 5 are smoke-first: hair-fine
+  // grains that live only a moment, then a soft plume (many small puffs born along the dissolving front) that billows
+  // up and to the right, out past the window's edge and away from the clerk (4), or curls up and melts in place (5).
+  // The canvas sits beside the store window (in its parent), so the smoke can leave the window.
+  function promoSmokeVanish(store, bubble, style = 4) {
+    if (!store || !bubble || prefersReducedMotion()) { if (bubble) bubble.style.opacity = '0'; return Promise.resolve(); }
+    const host = store.parentElement || store;
+    const size = bubble.offsetWidth || 60;
+    const bx = (parseFloat(bubble.style.left) || 0) + store.offsetLeft; const by = (parseFloat(bubble.style.top) || 0) + store.offsetTop;
+    const dpr = Math.min(3, window.devicePixelRatio || 1);
+    const W = size * 7; const H = size * 7; const ox = bx + size / 2 - W * (style === 4 ? 0.36 : 0.5); const oy = by + size / 2 - H * 0.8;
+    const canvas = document.createElement('canvas');
+    canvas.className = 'promo-install__dust';
+    canvas.width = Math.round(W * dpr); canvas.height = Math.round(H * dpr);
+    Object.assign(canvas.style, { position: 'absolute', left: `${ox.toFixed(1)}px`, top: `${oy.toFixed(1)}px`, width: `${W.toFixed(1)}px`, height: `${H.toFixed(1)}px`, pointerEvents: 'none', zIndex: '6' });
+    const cs = getComputedStyle(bubble);
+    const fill = cs.backgroundColor; const ink = cs.color; const dot = cs.getPropertyValue('--bot-user').trim() || fill;
+    const S = Math.max(8, Math.round(size * dpr));
+    const src = document.createElement('canvas'); src.width = S; src.height = S;
+    const g = src.getContext('2d');
+    g.fillStyle = fill; g.beginPath(); g.arc(S / 2, S / 2, S / 2, 0, Math.PI * 2); g.fill();
+    const svg = bubble.querySelector('svg');
+    if (svg) {
+      const r = svg.getBoundingClientRect(); const rb = bubble.getBoundingClientRect(); const k = S / (rb.width || S);
+      g.save(); g.translate((r.left - rb.left) * k, (r.top - rb.top) * k); g.scale((r.width * k) / 24, (r.width * k) / 24); g.translate(0.9, -0.55);
+      g.fillStyle = ink; g.fill(new Path2D('M5.4 3.4h11.4a3.8 3.8 0 0 1 3.8 3.8v7.1a3.8 3.8 0 0 1-3.8 3.8h-4.7L8 21.7v-3.6H5.4a3.8 3.8 0 0 1-3.8-3.8V7.2a3.8 3.8 0 0 1 3.8-3.8z'));
+      g.fillStyle = dot; [[8.7, 10.8], [14.1, 10.8]].forEach(([x, y]) => { g.beginPath(); g.arc(x, y, 1.45, 0, Math.PI * 2); g.fill(); });
+      g.restore();
+    }
+    const img = g.getImageData(0, 0, S, S).data;
+    const base = (fill.match(/\d+(\.\d+)?/g) || [40, 40, 40]).slice(0, 3).map(Number);   // the launcher's fill, the smoke's first tone
+    const hash = (n) => { const x = Math.sin(n * 127.1 + 311.7) * 43758.5453; return x - Math.floor(x); };
+    const dirX = style === 4 ? 0.55 : 0.08;   // the plume's lean (to the right for 4, straight up for 5)
+    // hair-fine grains: the launcher's pixels at ~1.5 device px, gone within half a second
+    const step = Math.max(1, S / 280);   // v36g (operator: particles too big, too slow): a hair-fine sparkle, not crumbs
+    const grains = []; let n = 0;
+    for (let y = step / 2; y < S; y += step) for (let x = step / 2; x < S; x += step) {
+      const o = (Math.floor(y) * S + Math.floor(x)) * 4; if (img[o + 3] < 40) continue;
+      n += 1; const u = x / S; const v = y / S;
+      grains.push({ x0: bx - ox + u * size, y0: by - oy + v * size, r: img[o], g: img[o + 1], b: img[o + 2],
+        release: hash(n) * 50, life: 110 + hash(n + 3.1) * 110,
+        vx: (u - 0.5) * size * 1.4 + dirX * size * 0.6 * hash(n + 5.7), vy: -size * (0.6 + 1.0 * hash(n + 9.3)), ph: hash(n + 2.2) * 6.28, sz: (step * 0.9) / dpr });
+    }
+    // the smoke: puffs born along the dissolving front, small at first, swelling, rising, curling, thinning out
+    const puffs = Array.from({ length: style === 4 ? 46 : 40 }, (_, k) => {
+      const a = hash(k + 101) * Math.PI * 2; const rr = Math.sqrt(hash(k + 103)) * 0.42;
+      const u = 0.5 + Math.cos(a) * rr; const v = 0.5 + Math.sin(a) * rr;
+      return { x: bx - ox + u * size, y: by - oy + v * size, born: hash(k + 107) * (k < 18 ? 40 : 160),
+        life: (style === 4 ? 1300 : 1700) + hash(k + 109) * 700, r0: size * (0.1 + 0.08 * hash(k + 113)), grow: size * (style === 4 ? 0.75 : 0.6) * (0.6 + 0.8 * hash(k + 127)),
+        rise: size * (style === 4 ? 3.1 : 2.4) * (0.55 + 0.6 * hash(k + 131)), lean: size * dirX * 3.2 * (0.5 + hash(k + 137)),
+        curl: size * 0.22 * (hash(k + 139) - 0.5), ph: hash(k + 149) * 6.28, a: (k < 18 ? 0.34 : 0.16) + 0.12 * hash(k + 151), light: hash(k + 157) };
+    });
+    host.appendChild(canvas);
+    bubble.style.transition = 'none'; bubble.style.animation = 'none'; bubble.style.opacity = '0';
+    const ctx = canvas.getContext('2d');
+    const total = Math.max(...grains.map((q) => q.release + q.life), ...puffs.map((q) => q.born + q.life));
+    return tweenStep(total, (_, uu) => {
+      const t = uu * total;
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0); ctx.clearRect(0, 0, W, H);
+      const m = Math.min(1, t / 150);
+      if (m < 1) {
+        const e = 1 - (1 - m) ** 2; const k = size * (1 + 0.3 * e);
+        ctx.save(); ctx.globalAlpha = (1 - m) ** 1.5; ctx.filter = `blur(${(size * 0.12 * e).toFixed(1)}px)`;
+        ctx.drawImage(src, bx - ox + size / 2 - k / 2, by - oy + size / 2 - k / 2 - size * 0.1 * e, k, k);
+        ctx.restore();
+      }
+      grains.forEach((q) => {
+        const tau = (t - q.release) / 1000; let x = q.x0; let y = q.y0; let a = 1; let r = q.r; let gg = q.g; let b = q.b;
+        if (tau > 0) {
+          const v = (tau * 1000) / q.life; if (v >= 1) return;
+          x += q.vx * tau + Math.sin(tau * 9 + q.ph) * size * 0.04; y += q.vy * tau;
+          const flare = Math.max(0, 1 - tau / 0.07); const cool = Math.min(1, tau / 0.2);
+          r = r + (214 - r) * cool + (255 - r) * flare * 0.8; gg = gg + (208 - gg) * cool + (246 - gg) * flare * 0.8; b = b + (200 - b) * cool + (232 - b) * flare * 0.8;
+          a = (1 - v) ** 1.4;
+        }
+        ctx.fillStyle = `rgba(${Math.min(255, r) | 0},${Math.min(255, gg) | 0},${Math.min(255, b) | 0},${a.toFixed(3)})`;
+        ctx.fillRect(x - q.sz / 2, y - q.sz / 2, q.sz, q.sz);
+      });
+      ctx.save(); ctx.filter = `blur(${(size * 0.07).toFixed(1)}px)`;
+      puffs.forEach((q) => {
+        const v = (t - q.born) / q.life; if (v <= 0 || v >= 1) return;
+        const e = 1 - (1 - v) ** 2; const rise = q.rise * (v ** 0.85);
+        const cx = q.x + q.lean * v ** 1.2 + Math.sin(v * 4.2 + q.ph) * q.curl * (0.4 + v);
+        const cy = q.y - rise;
+        const rad = q.r0 + q.grow * e;
+        const a = q.a * Math.min(1, v / 0.04) * (1 - v) ** 1.6;
+        // born in the launcher's own dark tone, lightening to a warm grey smoke within ~0.3 s
+        const end = q.light > 0.6 ? [236, 232, 226] : [204, 197, 189];
+        const lt = Math.min(1, (t - q.born) / 300);
+        const c = end.map((e2, i) => base[i] + (e2 - base[i]) * lt);
+        const grd = ctx.createRadialGradient(cx, cy, 0, cx, cy, rad);
+        grd.addColorStop(0, `rgba(${c[0]},${c[1]},${c[2]},${a.toFixed(3)})`);
+        grd.addColorStop(0.55, `rgba(${c[0]},${c[1]},${c[2]},${(a * 0.45).toFixed(3)})`);
+        grd.addColorStop(1, `rgba(${c[0]},${c[1]},${c[2]},0)`);
+        ctx.fillStyle = grd; ctx.beginPath(); ctx.arc(cx, cy, rad, 0, Math.PI * 2); ctx.fill();
+      });
+      ctx.restore();
+    }, (x) => x).then(() => canvas.remove());
+  }
+
+  function promoDustVanish(store, bubble, style = 1) {
+    if (!store || !bubble || prefersReducedMotion()) { if (bubble) bubble.style.opacity = '0'; return Promise.resolve(); }
+    const size = bubble.offsetWidth || 60;
+    const bx = parseFloat(bubble.style.left) || 0; const by = parseFloat(bubble.style.top) || 0;
+    const dpr = Math.min(3, window.devicePixelRatio || 1);
+    // the canvas spans the room the dust needs (mostly up and to the left of the corner launcher)
+    const W = size * 8; const H = size * 6; const ox = bx + size - W + size * 1.2; const oy = by + size - H + size * 0.8;
+    const canvas = document.createElement('canvas');
+    canvas.className = 'promo-install__dust';
+    canvas.width = Math.round(W * dpr); canvas.height = Math.round(H * dpr);
+    Object.assign(canvas.style, { position: 'absolute', left: `${ox.toFixed(1)}px`, top: `${oy.toFixed(1)}px`, width: `${W.toFixed(1)}px`, height: `${H.toFixed(1)}px`, pointerEvents: 'none', zIndex: '9' });
+    // the launcher's pixels: its fill, its mark, its two dots
+    const cs = getComputedStyle(bubble);
+    const fill = cs.backgroundColor; const ink = cs.color; const dot = cs.getPropertyValue('--bot-user').trim() || fill;
+    const src = document.createElement('canvas'); const S = Math.max(8, Math.round(size * dpr));
+    src.width = S; src.height = S;
+    const g = src.getContext('2d');
+    g.fillStyle = fill; g.beginPath(); g.arc(S / 2, S / 2, S / 2, 0, Math.PI * 2); g.fill();
+    const svg = bubble.querySelector('svg');
+    if (svg) {
+      const r = svg.getBoundingClientRect(); const rb = bubble.getBoundingClientRect(); const k = S / (rb.width || S);
+      const sx = (r.left - rb.left) * k; const sy = (r.top - rb.top) * k; const sw = r.width * k;
+      g.save(); g.translate(sx, sy); g.scale(sw / 24, sw / 24); g.translate(0.9, -0.55);
+      g.fillStyle = ink; g.fill(new Path2D('M5.4 3.4h11.4a3.8 3.8 0 0 1 3.8 3.8v7.1a3.8 3.8 0 0 1-3.8 3.8h-4.7L8 21.7v-3.6H5.4a3.8 3.8 0 0 1-3.8-3.8V7.2a3.8 3.8 0 0 1 3.8-3.8z'));
+      g.fillStyle = dot; [[8.7, 10.8], [14.1, 10.8]].forEach(([x, y]) => { g.beginPath(); g.arc(x, y, 1.45, 0, Math.PI * 2); g.fill(); });
+      g.restore();
+    }
+    const img = g.getImageData(0, 0, S, S).data;
+    const hash = (n) => { const x = Math.sin(n * 127.1 + 311.7) * 43758.5453; return x - Math.floor(x); };
+    const step = Math.max(1, S / (style === 2 ? 70 : 62));
+    const grains = [];
+    let n = 0;
+    for (let y = step / 2; y < S; y += step) {
+      for (let x = step / 2; x < S; x += step) {
+        const o = (Math.floor(y) * S + Math.floor(x)) * 4;
+        if (img[o + 3] < 40) continue;
+        n += 1;
+        const u = x / S; const v = y / S;   // 0..1 inside the launcher
+        const h1 = hash(n); const h2 = hash(n + 7.3); const h3 = hash(n + 13.1); const h4 = hash(n + 21.7);
+        // release: a soft front from the impact (top centre) outward, with a ragged edge
+        const front = Math.hypot(u - 0.5, v - 0.05);
+        const release = style === 3 ? 90 + h1 * 60 : front * 300 + h1 * 110;
+        let vx; let vy; let burst;
+        if (style === 3) { const a = Math.atan2(v - 0.5, u - 0.5); burst = (0.8 + 1.6 * h2) * size; vx = Math.cos(a); vy = Math.sin(a); }
+        else { burst = (0.25 + 0.5 * h2) * size; const a = Math.atan2(v - 0.05, u - 0.5); vx = Math.cos(a); vy = Math.sin(a); }
+        grains.push({ x0: bx - ox + (x / S) * size, y0: by - oy + (y / S) * size, r: img[o], g: img[o + 1], b: img[o + 2],
+          release, life: (style === 2 ? 650 : 850) + h3 * 650, burst, vx, vy,
+          wind: (style === 2 ? 1.3 : 2.2 + 1.8 * h4) * size, lift: (style === 2 ? 2.6 : 1.4) * size * (0.6 + 0.8 * h2),
+          ph: h4 * Math.PI * 2, sz: step / dpr });
+      }
+    }
+    // smoke: soft puffs rising out of the launcher
+    const puffs = Array.from({ length: style === 2 ? 16 : 9 }, (_, k) => ({ x: bx - ox + size * (0.2 + 0.6 * hash(k + 40)), y: by - oy + size * (0.25 + 0.6 * hash(k + 50)),
+      delay: 40 + hash(k + 60) * 260, life: 1100 + hash(k + 70) * 700, rise: size * (style === 2 ? 2.4 : 1.5) * (0.6 + 0.6 * hash(k + 80)),
+      drift: -size * (style === 2 ? 0.8 : 1.6) * (0.4 + 0.8 * hash(k + 90)), grow: size * (style === 2 ? 1.5 : 1.1) * (0.7 + 0.6 * hash(k + 100)), a: style === 2 ? 0.2 : 0.12 }));
+    store.appendChild(canvas);
+    bubble.style.transition = 'none'; bubble.style.animation = 'none'; bubble.style.opacity = '0';
+    const ctx = canvas.getContext('2d');
+    const total = Math.max(...grains.map((q) => q.release + q.life), ...puffs.map((q) => q.delay + q.life));
+    const dust = [196, 188, 179];   // warm grey dust
+    return tweenStep(total, (_, uu) => {
+      const t = uu * total;
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      ctx.clearRect(0, 0, W, H);
+      // smoke under the grains
+      ctx.save(); ctx.filter = `blur(${(size * 0.12).toFixed(1)}px)`;
+      puffs.forEach((q) => {
+        const v = (t - q.delay) / q.life; if (v <= 0 || v >= 1) return;
+        const e = 1 - (1 - v) ** 2.2; const rad = size * 0.35 + q.grow * e;
+        const cx = q.x + q.drift * e + Math.sin(v * 5 + q.delay) * size * 0.08; const cy = q.y - q.rise * e;
+        const a = q.a * Math.sin(Math.PI * Math.min(1, v * 1.25)) * (1 - v);
+        const grd = ctx.createRadialGradient(cx, cy, 0, cx, cy, rad);
+        grd.addColorStop(0, `rgba(${dust[0]},${dust[1]},${dust[2]},${a.toFixed(3)})`); grd.addColorStop(1, `rgba(${dust[0]},${dust[1]},${dust[2]},0)`);
+        ctx.fillStyle = grd; ctx.beginPath(); ctx.arc(cx, cy, rad, 0, Math.PI * 2); ctx.fill();
+      });
+      ctx.restore();
+      // the grains
+      const pull = style === 3 ? Math.sin(Math.PI * Math.min(1, t / 140)) : 0;   // implode: a brief inward pull
+      grains.forEach((q) => {
+        const tau = (t - q.release) / 1000;
+        let x = q.x0; let y = q.y0; let r = q.r; let gg = q.g; let b = q.b; let a = 1; let sz = q.sz;
+        if (style === 3 && tau < 0) { const cx = bx - ox + size / 2; const cy = by - oy + size / 2; x += (cx - x) * 0.12 * pull; y += (cy - y) * 0.12 * pull; }
+        if (tau > 0) {
+          const v = Math.min(1, (tau * 1000) / q.life);
+          if (v >= 1) return;
+          const out = q.burst * (1 - Math.exp(-tau / (style === 3 ? 0.12 : 0.22)));
+          const windE = q.wind * tau ** 1.35; const liftE = q.lift * tau ** 1.25;
+          const turb = size * 0.18 * tau;
+          x += q.vx * out - windE * 0.62 + Math.sin(tau * 6.1 + q.ph + q.y0 * 0.05) * turb;
+          y += q.vy * out - liftE + Math.cos(tau * 5.3 + q.ph * 1.7 + q.x0 * 0.05) * turb;
+          // a warm-white flare at the edge as it lets go, cooling into dust
+          const flare = Math.max(0, 1 - tau / 0.09);
+          const cool = Math.min(1, tau / 0.35);
+          const mix = (c0, d) => c0 + (d - c0) * cool;
+          r = mix(q.r, dust[0]) + (255 - mix(q.r, dust[0])) * flare * 0.85;
+          gg = mix(q.g, dust[1]) + (244 - mix(q.g, dust[1])) * flare * 0.85;
+          b = mix(q.b, dust[2]) + (226 - mix(q.b, dust[2])) * flare * 0.85;
+          a = (1 - v) ** 1.6;
+          sz = q.sz * (1 - 0.55 * v);
+        }
+        ctx.fillStyle = `rgba(${r | 0},${gg | 0},${b | 0},${a.toFixed(3)})`;
+        ctx.fillRect(x - sz / 2, y - sz / 2, sz, sz);
+      });
+    }, (x) => x).then(() => canvas.remove());
+  }
+
+  // v35: a hero take whose widget transcript doesn't match its voice: the bubbles' area is covered in the page's own
+  // colour and one agent bubble shows the spoken line, word by word on the voice (item.bubble: words [[s, w]], cover
+  // [x0, y0, x1, y1] as fractions of the video, bg)
+  function promoHeroBubble(video, host, spec) {
+    if (!video || !host || !spec) return null;
+    let x = 0; let y = 0; let node = video;
+    while (node && node !== host) { x += node.offsetLeft; y += node.offsetTop; node = node.offsetParent; }
+    if (node !== host) return null;
+    const vw = video.offsetWidth; const vh = video.offsetHeight;
+    const [x0, y0, x1, y1] = spec.cover;
+    const cover = document.createElement('div');
+    cover.className = 'promo-hero-bubble';
+    Object.assign(cover.style, { position: 'absolute', left: `${(x + x0 * vw).toFixed(1)}px`, top: `${(y + y0 * vh).toFixed(1)}px`, width: `${((x1 - x0) * vw).toFixed(1)}px`,
+      height: `${((y1 - y0) * vh).toFixed(1)}px`, background: spec.bg, zIndex: '30', pointerEvents: 'none' });
+    const bubble = document.createElement('div');
+    const u = vw / 100;   // the widget's bubble, in the phone's own proportions
+    Object.assign(bubble.style, { position: 'absolute', left: `${(3 * u).toFixed(1)}px`, right: `${(3 * u).toFixed(1)}px`, bottom: `${(1.2 * u).toFixed(1)}px`,
+      padding: `${(3.2 * u).toFixed(1)}px ${(4.2 * u).toFixed(1)}px`, borderRadius: `${(3.4 * u).toFixed(1)}px`, background: '#121216', border: `${Math.max(1, 0.25 * u).toFixed(1)}px solid rgba(255,255,255,.16)`,
+      color: '#F4F4F6', font: `400 ${(4.3 * u).toFixed(1)}px/1.35 Inter, -apple-system, sans-serif`, opacity: '0' });
+    const spans = spec.words.map(([, w]) => { const sp = document.createElement('span'); sp.textContent = `${w} `; sp.style.opacity = '0'; return sp; });
+    bubble.append(...spans);
+    cover.append(bubble);
+    host.appendChild(cover);
+    const t0 = performance.now();
+    spec.words.forEach(([at], i) => window.setTimeout(() => { bubble.style.opacity = '1'; spans[i].style.opacity = '1'; }, Math.max(0, at * 1000 - (performance.now() - t0))));
+    return cover;
+  }
+
   // v25b: a weighted average of #rrggbb colours in OKLab (the light's colour-mix space), back to #rrggbb: the tunnel's
   // light is every flying store's colour weighted by how near (big, opaque) it is, so it follows the nearest one smoothly
   function promoOklabMix(colors, weights) {
@@ -2754,29 +3059,33 @@
   // (public/promo/stores/reel/v24/manifest.json): 3.2 s theme-style home-page loops (never the catalog), the jpg is each one's poster.
   // Colours follow a plan (tmp/demo-stores-v24/_plan/colour-plan.json): the tunnel in light, fresh tones; the run in saturated
   // jewel tones, pinks alternating with deep cools, landing on Your store orange (every neighbour >= 35 CIEDE2000 apart).
+  // v35: every store re-recorded with the agent visibly talking (stores/reel/v35, same 3.2 s loops)
+  // v36: re-recorded again with the widget highlight drawn natively in each page (stores/reel/v36): the tunnel
+  // clips run longer (up to 5.5 s, they never wrap on screen) with each one's highlight in its last second in view
+  // v35: run cards open 1.3 s into their loop, where the agent is already talking (they flash by in < 1 s)
   const PROMO_REEL_STORES_V24 = {
-    'halcyon-optics': { device: 'desktop', color: '#C8B6F0', video: '/promo/stores/reel/v24/halcyon-optics-desktop-home.mp4', img: '/promo/stores/reel/v24/halcyon-optics-desktop-home.jpg' },
-    'kumo-tea': { device: 'phone', color: '#5BC76B', video: '/promo/stores/reel/v24/kumo-tea-phone-home.mp4', img: '/promo/stores/reel/v24/kumo-tea-phone-home.jpg' },
-    'sora-ceramics': { device: 'tablet', color: '#B07A9A', video: '/promo/stores/reel/v30/sora-ceramics-tablet-home.mp4', img: '/promo/stores/reel/v30/sora-ceramics-tablet-home.jpg' },
-    'powderline': { device: 'desktop', color: '#9ED8E8', video: '/promo/stores/reel/v24/powderline-desktop-home.mp4', img: '/promo/stores/reel/v24/powderline-desktop-home.jpg' },
-    'tidewater': { device: 'phone', color: '#F2705A', video: '/promo/stores/reel/v24/tidewater-phone-home.mp4', img: '/promo/stores/reel/v24/tidewater-phone-home.jpg' },
-    'maison-cacao': { device: 'desktop', color: '#2BBFA4', video: '/promo/stores/reel/v24/maison-cacao-desktop-home.mp4', img: '/promo/stores/reel/v24/maison-cacao-desktop-home.jpg' },
-    'liora': { device: 'tablet', color: '#E597A8', video: '/promo/stores/reel/v30/liora-tablet-home.mp4', img: '/promo/stores/reel/v30/liora-tablet-home.jpg' },
-    'grindline': { device: 'phone', color: '#1A7FC4', video: '/promo/stores/reel/v24/grindline-phone-home.mp4', img: '/promo/stores/reel/v24/grindline-phone-home.jpg' },
-    'kettle-and-crow': { device: 'phone', color: '#B8306A', video: '/promo/stores/reel/v24/kettle-and-crow-phone-home.mp4', img: '/promo/stores/reel/v24/kettle-and-crow-phone-home.jpg' },
-    'northpeak': { device: 'phone', color: '#2A4FD6', video: '/promo/stores/reel/v24/northpeak-phone-home.mp4', img: '/promo/stores/reel/v24/northpeak-phone-home.jpg' },
-    'saltline': { device: 'desktop', color: '#10A7B8', video: '/promo/stores/reel/v24/saltline-desktop-home.mp4', img: '/promo/stores/reel/v24/saltline-desktop-home.jpg' },
-    'ridgeline-supply': { device: 'desktop', color: '#0E6185', video: '/promo/stores/reel/v24/ridgeline-supply-desktop-home.mp4', img: '/promo/stores/reel/v24/ridgeline-supply-desktop-home.jpg' },
-    'nest-and-nook': { device: 'tablet', color: '#86C2A2', video: '/promo/stores/reel/v30/nest-and-nook-tablet-home.mp4', img: '/promo/stores/reel/v30/nest-and-nook-tablet-home.jpg' },
-    'atelier-noor': { device: 'desktop', color: '#A4408F', video: '/promo/stores/reel/v24/atelier-noor-desktop-home.mp4', img: '/promo/stores/reel/v24/atelier-noor-desktop-home.jpg' },
-    'little-timber': { device: 'tablet', color: '#3A9FE6', video: '/promo/stores/reel/v30/little-timber-tablet-home.mp4', img: '/promo/stores/reel/v30/little-timber-tablet-home.jpg' },
-    'inkwell': { device: 'tablet', color: '#22407C', video: '/promo/stores/reel/v30/inkwell-tablet-home.mp4', img: '/promo/stores/reel/v30/inkwell-tablet-home.jpg' },
-    'leaf-and-loam': { device: 'tablet', color: '#139E6E', video: '/promo/stores/reel/v30/leaf-and-loam-tablet-home.mp4', img: '/promo/stores/reel/v30/leaf-and-loam-tablet-home.jpg' },
-    'spokehaus': { device: 'phone', color: '#EE3F87', video: '/promo/stores/reel/v24/spokehaus-phone-home.mp4', img: '/promo/stores/reel/v24/spokehaus-phone-home.jpg' },
-    'juniper-linen': { device: 'desktop', color: '#8E9FE8', video: '/promo/stores/reel/v24/juniper-linen-desktop-home.mp4', img: '/promo/stores/reel/v24/juniper-linen-desktop-home.jpg' },
-    'tonewood': { device: 'tablet', color: '#5E2A63', video: '/promo/stores/reel/v30/tonewood-tablet-home.mp4', img: '/promo/stores/reel/v30/tonewood-tablet-home.jpg' },
-    'fetch-and-fern': { device: 'desktop', color: '#138A86', video: '/promo/stores/reel/v24/fetch-and-fern-desktop-home.mp4', img: '/promo/stores/reel/v24/fetch-and-fern-desktop-home.jpg' },
-    'petal-and-post': { device: 'phone', color: '#D63BC0', video: '/promo/stores/reel/v24/petal-and-post-phone-home.mp4', img: '/promo/stores/reel/v24/petal-and-post-phone-home.jpg' },
+    'halcyon-optics': { device: 'desktop', color: '#C8B6F0', video: '/promo/stores/reel/v36/halcyon-optics-desktop-home.mp4', img: '/promo/stores/reel/v36/halcyon-optics-desktop-home.jpg' },
+    'kumo-tea': { device: 'phone', color: '#5BC76B', video: '/promo/stores/reel/v36/kumo-tea-phone-home.mp4', img: '/promo/stores/reel/v36/kumo-tea-phone-home.jpg' },
+    'sora-ceramics': { device: 'tablet', color: '#B07A9A', video: '/promo/stores/reel/v36/sora-ceramics-tablet-home.mp4', img: '/promo/stores/reel/v36/sora-ceramics-tablet-home.jpg' },
+    'powderline': { device: 'desktop', color: '#9ED8E8', video: '/promo/stores/reel/v36/powderline-desktop-home.mp4', img: '/promo/stores/reel/v36/powderline-desktop-home.jpg' },
+    'tidewater': { device: 'phone', color: '#F2705A', video: '/promo/stores/reel/v36/tidewater-phone-home.mp4', img: '/promo/stores/reel/v36/tidewater-phone-home.jpg' },
+    'maison-cacao': { device: 'desktop', color: '#2BBFA4', video: '/promo/stores/reel/v36/maison-cacao-desktop-home.mp4', img: '/promo/stores/reel/v36/maison-cacao-desktop-home.jpg' },
+    'liora': { device: 'tablet', color: '#E597A8', video: '/promo/stores/reel/v36/liora-tablet-home.mp4', img: '/promo/stores/reel/v36/liora-tablet-home.jpg' },
+    'grindline': { device: 'phone', color: '#1A7FC4', video: '/promo/stores/reel/v36/grindline-phone-home.mp4', img: '/promo/stores/reel/v36/grindline-phone-home.jpg' },
+    'kettle-and-crow': { start: 1.3, device: 'phone', color: '#B8306A', video: '/promo/stores/reel/v36/kettle-and-crow-phone-home.mp4', img: '/promo/stores/reel/v36/kettle-and-crow-phone-home.jpg', voice: 'quick-ko', category: 'Food & drink', feat: 'Matches it to their taste', ben: 'Repeat customers' },
+    'northpeak': { start: 1.3, device: 'phone', color: '#2A4FD6', video: '/promo/stores/reel/v36/northpeak-phone-home.mp4', img: '/promo/stores/reel/v36/northpeak-phone-home.jpg', voice: 'quick-zh', category: 'Health & wellness', feat: 'Explains every ingredient', ben: 'Trust that converts' },
+    'saltline': { start: 1.3, device: 'desktop', color: '#10A7B8', video: '/promo/stores/reel/v36/saltline-desktop-home.mp4', img: '/promo/stores/reel/v36/saltline-desktop-home.jpg', voice: 'quick-pt', category: 'Sports & outdoors', feat: 'Picks the right fit', ben: 'Fewer exchanges' },
+    'ridgeline-supply': { start: 1.3, device: 'desktop', color: '#0E6185', video: '/promo/stores/reel/v36/ridgeline-supply-desktop-home.mp4', img: '/promo/stores/reel/v36/ridgeline-supply-desktop-home.jpg' },
+    'nest-and-nook': { start: 1.3, device: 'tablet', color: '#86C2A2', video: '/promo/stores/reel/v36/nest-and-nook-tablet-home.mp4', img: '/promo/stores/reel/v36/nest-and-nook-tablet-home.jpg' },
+    'atelier-noor': { start: 1.3, device: 'desktop', color: '#A4408F', video: '/promo/stores/reel/v36/atelier-noor-desktop-home.mp4', img: '/promo/stores/reel/v36/atelier-noor-desktop-home.jpg' },
+    'little-timber': { start: 1.3, device: 'tablet', color: '#3A9FE6', video: '/promo/stores/reel/v36/little-timber-tablet-home.mp4', img: '/promo/stores/reel/v36/little-timber-tablet-home.jpg' },
+    'inkwell': { start: 1.3, device: 'tablet', color: '#22407C', video: '/promo/stores/reel/v36/inkwell-tablet-home.mp4', img: '/promo/stores/reel/v36/inkwell-tablet-home.jpg' },
+    'leaf-and-loam': { start: 1.3, device: 'tablet', color: '#139E6E', video: '/promo/stores/reel/v36/leaf-and-loam-tablet-home.mp4', img: '/promo/stores/reel/v36/leaf-and-loam-tablet-home.jpg' },
+    'spokehaus': { start: 1.3, device: 'phone', color: '#EE3F87', video: '/promo/stores/reel/v36/spokehaus-phone-home.mp4', img: '/promo/stores/reel/v36/spokehaus-phone-home.jpg' },
+    'juniper-linen': { start: 1.3, device: 'desktop', color: '#8E9FE8', video: '/promo/stores/reel/v36/juniper-linen-desktop-home.mp4', img: '/promo/stores/reel/v36/juniper-linen-desktop-home.jpg' },
+    'tonewood': { start: 1.3, device: 'tablet', color: '#5E2A63', video: '/promo/stores/reel/v36/tonewood-tablet-home.mp4', img: '/promo/stores/reel/v36/tonewood-tablet-home.jpg' },
+    'fetch-and-fern': { start: 1.3, device: 'desktop', color: '#138A86', video: '/promo/stores/reel/v36/fetch-and-fern-desktop-home.mp4', img: '/promo/stores/reel/v36/fetch-and-fern-desktop-home.jpg' },
+    'petal-and-post': { start: 1.3, device: 'phone', color: '#D63BC0', video: '/promo/stores/reel/v36/petal-and-post-phone-home.mp4', img: '/promo/stores/reel/v36/petal-and-post-phone-home.jpg' },
   };
   // the run's cards: 0..4 take the skeleton slots in order, 5..13 take all nine flash slots in order, so the run plays
   // (flash, skeleton): kettle-and-crow, northpeak, saltline, ridgeline-supply, nest-and-nook, atelier-noor, little-timber, inkwell,
@@ -2816,7 +3125,7 @@
   function promoReelCopy(item, box, W, H, S) {
     const copy = document.createElement('div');
     const desk = item.device === 'desktop';
-    copy.className = `promo-reel__copy is-${desk ? 'desk' : 'col'}${item.whip ? ' is-shown' : ''}`;
+    copy.className = `promo-reel__copy is-${desk ? 'desk' : 'col'}${item.whip || item.voice ? ' is-shown' : ''}`;
     copy.style.setProperty('--tint', item.color);
     copy.dataset.s = String(S);
     let k = 0;
@@ -3322,10 +3631,11 @@
     dodecahedron: { family: 'pointed', tint: 'blush' },
     'rounded-tetrahedron': { family: 'pointed', tint: 'warm-grey' },
     slab: { family: 'flat', tint: 'sand' },
+    cradle: { family: 'flat', tint: 'sand' },   // v34: the cross-sell match, a puck with a hollow the sphere fits
     lens: { family: 'flat', tint: 'sage' },
     'squircle-slab': { family: 'flat', tint: 'blush' },
   };
-  const PROMO_CLAY_KINDS = Object.keys(PROMO_CATALOG).filter((kind) => PROMO_CLAY_TINTS.includes(PROMO_CATALOG[kind].tint));
+  const PROMO_CLAY_KINDS = Object.keys(PROMO_CATALOG).filter((kind) => kind !== 'cradle' && PROMO_CLAY_TINTS.includes(PROMO_CATALOG[kind].tint));   // the cradle is only ever the match
   const PROMO_CLAY_TURNS = ['m20', '0', 'p20'];
   const PROMO_CLAY_FINISHES = ['matte', 'satin'];
   const PROMO_CLAY_SCALES = [0.8, 0.86, 0.92, 0.98, 1.04, 1.1];
@@ -3335,7 +3645,7 @@
   const PROMO_MOMENT_OTHER_INDEX = 3;
   const PROMO_COMPARE_SHAPES = { go: 'capsule', pick: 'sphere', other: 'rounded-cube' };
   const PROMO_COMPARE_TINTS = { go: 'sage', pick: 'apricot', other: 'stone' };
-  const PROMO_ACCESSORY_OBJECT_SCALE = 1.08;
+  const PROMO_ACCESSORY_OBJECT_SCALE = 1;   // v34: the match draws at the favourite's scale, so the sphere fits the cradle's hollow exactly (was 1.08 for the slab)
   const PROMO_TINT_FILE = {
     sphere: { stone: 'sphere-b' },
     capsule: { stone: 'capsule' },
@@ -3527,7 +3837,7 @@
 
   function accessoryLook() {
     return {
-      kind: 'slab',
+      kind: 'cradle',
       turn: '0',
       finish: 'matte',
       scale: 1,
@@ -5129,6 +5439,7 @@
     if (source instanceof HTMLCanvasElement) {
       const img = document.createElement('img');
       img.setAttribute('style', css);
+      img.dataset.promoCanvasStill = '1';   // v35: the pitch's lead copy swaps it back for a live mirror of the canvas
       try {
         img.src = source.toDataURL('image/png');
       } catch (error) {
@@ -6508,7 +6819,7 @@
       const clay = promoClayUrls();
       const product = (title, key) => ({ title, url: `https://bizmis.ai/demo/${key}`, imageUrl: clay[key] || '' });
       const pick = product('The favorite', 'sphere');
-      const match = product('The match', 'slab');
+      const match = product('The match', 'cradle');
 
       this.preloadVideos(loadStoreReel().flatMap((item) => [item.video, item.ambient]));   // decoded long before the reel
       // Moment 1. The narrator names it first; then the interaction runs with
@@ -6517,7 +6828,7 @@
       this.chapterMargin();   // measure now, before the camera moves
       const widget = this.root.querySelector('[data-promo-widget]');
       const lostTake = speakTake('t-lost');
-      lostTake.at('catalog', 'end').then(() => this.showChapter('Lost in the catalog', 'Found the right one'));
+      lostTake.at('catalog', 'end').then(() => this.showChapter('Gave up looking', 'Found it fast'));   // v36: merchant pains -> wins, the landing's funnel
       await lostTake.at('lost', 'start', reduced ? 0 : 120);   // the shopper is already typing as the line names them
       if (!reduced) {
         this.cameraTo(widget);
@@ -6536,20 +6847,23 @@
       promoWidgetDebug('setPlaceholder', 'Ask me to compare them');
       await lostTake.done;
       await this.speakClerk('clerk-results', reduced, {
+        three: () => this.resolveChapter(),   // v36: the picks are in: found it fast
         compare: () => {
-          applyMomentPose(stage, 'choice', { instant: reduced });   // v11: still "Lost in the catalog" until it's the one (v9 chips)
+          applyMomentPose(stage, 'choice', { instant: reduced });
+          this.nextChapter('Left to compare', 'Decided here', reduced);   // v36b (operator pick): the compare moment
         },
       });
       await this.speakClerk('clerk-compare', reduced, {
         "It's the one": () => {
           stage?.querySelector('.promo-moments__board')?.classList.add('is-decided');
-          this.resolveChapter();
+          this.resolveChapter();   // v36b: the compare moment is its own again
         },
       });
       promoWidgetDebug('setPlaceholder', 'Ask anything about it');
       await this.laserUntilNext('product', reduced, PROMO_DOUBT_LASER_MS);   // v25b: the doubt beat ~22% tighter (400 -> 320)
       const leavingBoard = stage?.querySelector('.promo-moments__board');
       leavingBoard?.classList.add('is-leaving-choice');
+      this.hideChapter();
       await waitMs(reduced ? 0 : 90);   // v25: 200 -> 120 (v25b: 90)
       // a page change: a quick dissolve into the product page (the layout morph
       // shrank the winner into a thumbnail for a frame)
@@ -6572,7 +6886,7 @@
       const doubtTake = speakTake('t-doubt');
       await doubtTake.at('a doubt');
       board?.classList.remove('is-doubts-hidden');
-      doubtTake.at('holds them back', 'end').then(() => this.showChapter('Stuck on a doubt', 'Doubt cleared'));
+      doubtTake.at('holds them back', 'end').then(() => this.showChapter('Kept wondering', 'Added to cart'));   // v36b
       await doubtTake.done;
       await this.speakShopperLine('shopper-doubt', reduced);
       setOpeningAvatarAction('thinking');
@@ -6582,8 +6896,7 @@
           // only the doubts go now; the cart waits for the clerk to finish
           promoSfx('doubt-poof');
           board?.classList.add('is-doubts-gone');
-          window.setTimeout(() => this.resolveChapter(), reduced ? 0 : PROMO_MOMENTS_VAPOR_MS * 0.45);   // v25b: "Doubt cleared" a touch sooner after the poof (0.6 -> 0.45)
-        },
+                  },
       });
       applyMomentPose(stage, 'close', { instant: reduced });
       promoWidgetDebug('setPlaceholder', 'Ask what goes with it');
@@ -6591,14 +6904,15 @@
       setOpeningAvatarAction('thumbsup');   // the doubt is gone: into the cart
       host?.classList.add('is-cart-one');
       emitShopper({ kind: 'cart', product: pick, quantity: 1 });
+      this.resolveChapter();   // v36b: added to cart
       await waitMs(reduced ? 40 : 300);   // v25: 950 -> 450 (v25b: 300; the Added -> cart pop -> badge celebration plays through, store-bar --promo-close-cart-at). "Added" and the cart badge land inside "Stuck on a doubt"
-      this.hideChapter();
       // Moment 3. Like a good salesperson, the clerk suggests (it doesn't
       // push) what goes with it: only the main product at first, then a
       // vertical carousel of the catalog spins and settles on the match,
       // which flies into place beside it. Added once the clerk is done.
       await this.laserUntilNext('products', reduced, PROMO_DOUBT_LASER_MS);   // v25b: 400 -> 320
-      const spin = reduced ? null : this.spinCrossSell('slab');
+      this.hideChapter();   // v36b: "Added to cart" reads through the beat, then makes way for the cross-sell
+      const spin = reduced ? null : this.spinCrossSell('cradle');
       let bundled = false;
       const bundle = () => {
         if (bundled) return; bundled = true;
@@ -6606,13 +6920,15 @@
         host?.classList.remove('is-cart-one');
         host?.classList.add('is-cart-two');
         emitShopper({ kind: 'cart', product: match, quantity: 1 });
+        this.resolveChapter();   // v36: added more
       };
       // the chapter is named when the clerk names the pairing, not before
       // v13: a live, back-and-forth voice exchange: the clerk suggests and asks,
       // the shopper says yes, the clerk confirms (the add-on lands on "add it")
-      const upsell = this.speakClerk('clerk-upsell', reduced, { pairs: () => this.showChapter('Missed add-on', 'Paired perfectly') })
+      const upsell = this.speakClerk('clerk-upsell', reduced, { 'made to go': () => this.showChapter('Small basket', 'Kept adding') })
         .then(() => this.speakShopperLine('shopper-upsell', reduced, { 'add it': bundle }))
-        .then(() => this.speakClerk('clerk-upsell-done', reduced));
+        // v36: the basket stays open ("Anything else before checkout?"): the sale lands on the SOLD stamp
+        .then(() => this.speakClerk('clerk-upsell-done', reduced, { Done: () => this.nextChapter('Abandoned the cart', 'Bought it', reduced) }));
       await spin?.landed;
       await spin?.fly(() => {
         applyMomentPose(stage, 'extra', { instant: true });   // the flight steps the morph itself
@@ -6625,20 +6941,23 @@
       await upsell;
       promoWidgetDebug('setPlaceholder', 'Ask about shipping or returns');
       bundle();
-      this.resolveChapter();
       window.setTimeout(() => setOpeningAvatarAction('bow'), 200);   // a small thank-you (v25: 350 -> 200)
       await waitMs(reduced ? 40 : 300);   // v25: 1100 -> 300
-      this.hideChapter();
       this.painStore()?.querySelectorAll('.promo-close__veil, .promo-close__mark, .promo-glide__lost-mark, .promo-glide__veil').forEach((node) => node.remove());
       this.painStore()?.querySelectorAll('[style*="grayscale"]').forEach((node) => { node.style.filter = ''; });
+      window.setTimeout(() => this.resolveChapter(), reduced ? 0 : 160);   // v36: paid, as the stamp lands
       await this.markCloseStoreSold();
+      // v34: the clerk stays live through the beat before the pull-back (it used to freeze on a still and fade
+      // onto it for 420 ms); the still is the last live frame, pinned as the camera starts, so nothing freezes
+      if (!reduced) await waitMs(PROMO_LIVE_CARD_OUT_MS);
+      this.hideChapter();   // v36: "Paid" goes as the camera pulls back
       await this.rememberPitchLead();
       this.muteWidgetActivity(false);
       promoWidgetDebug('debugVoiceMode', { on: false });
       this._voiceLive = false;
       promoWidgetDebug('setPlaceholder', null);
       endOpeningAgent();
-      await this.releaseLiveCard();
+      await this.releaseLiveCard({ instant: true });
       this.playPitchConveyor();
     }
 
@@ -6889,17 +7208,8 @@
       // impact: the old chatbot bursts, the clerk squashes and settles, its
       // card forms, and the store's colour ripples out from the corner
       const to = { x: seat.x + seat.w - size / 2, y: seat.y + seat.h - size / 2 };
-      {   // the old chatbot pops and vanishes (stepped: CSS keyframes were never sampled)
-        bubble.style.transition = 'none'; bubble.style.animation = 'none';
-        const t0 = performance.now();
-        const pop = (now) => {
-          const u = Math.min(1, (now - t0) / 300);
-          const k = u < 0.35 ? 1 - 0.25 * (u / 0.35) : 0.75 + 0.75 * ((u - 0.35) / 0.65);
-          bubble.style.transform = `scale(${k.toFixed(3)})`; bubble.style.opacity = (u < 0.35 ? 1 : 1 - (u - 0.35) / 0.65).toFixed(3);
-          if (u < 1) window.requestAnimationFrame(pop);
-        };
-        window.requestAnimationFrame(pop);
-      }
+      promoSfx('old-vapor');
+      (PROMO_VAPOR_STYLE >= 4 ? promoSmokeVanish : promoDustVanish)(store, bubble, PROMO_VAPOR_STYLE);   // v36e/f (operator: "dusting-smoke, super premium"; "more smoke and less dust")
       const wave = document.createElement('span');
       wave.className = 'promo-install__wave';
       wave.style.left = `${to.x.toFixed(1)}px`;
@@ -7093,14 +7403,18 @@
     }
 
     showChapter(from, to) {
+      // v36b: the chip belongs to the mockup (inside the camera): pinned to the store window's top centre, it zooms
+      // with the window instead of floating over the zoomed view
+      const store = this.painStore();
       const canvas = this.root.querySelector('[data-promo-canvas]') || this.root;
-      let line = canvas.querySelector('[data-promo-chapter]');
+      const host = store || canvas;
+      let line = this.root.querySelector('[data-promo-chapter]');
       if (!line) {
         line = document.createElement('p');
         line.className = 'promo-chapter';
         line.setAttribute('data-promo-chapter', '');
-        canvas.appendChild(line);
       }
+      if (line.parentElement !== host) host.appendChild(line);
       line.classList.remove('is-in', 'is-struck');
       line.replaceChildren();
       // a status chip: a grey ring that resolves into a ticked orange disc
@@ -7123,10 +7437,16 @@
       // v9: the margin above the window is too thin for a readable chip, so it
       // floats over the window's empty header band instead, centred, at a
       // size that reads on a phone (~2.7% of the frame).
-      const margin = this.chapterMargin();
-      const frameH = canvas.offsetHeight || 1080;
-      line.style.setProperty('--chapter-mid', `${((margin || 0) + frameH * 0.052).toFixed(1)}px`);
-      line.style.fontSize = `${(frameH * 0.027).toFixed(1)}px`;
+      if (store) {   // v36b: in the window's own units (v36: 55 px below its top, 29 px type, on a 929 px window)
+        const h = store.offsetHeight || 929;
+        line.style.setProperty('--chapter-mid', `${(h * 0.0592).toFixed(1)}px`);
+        line.style.fontSize = `${(h * 0.0314).toFixed(1)}px`;
+      } else {
+        const margin = this.chapterMargin();
+        const frameH = canvas.offsetHeight || 1080;
+        line.style.setProperty('--chapter-mid', `${((margin || 0) + frameH * 0.052).toFixed(1)}px`);
+        line.style.fontSize = `${(frameH * 0.027).toFixed(1)}px`;
+      }
       line.getBoundingClientRect();
       line.classList.add('is-in');
       promoSfx('chapter');
@@ -7343,11 +7663,13 @@
       }, 940);
     }
 
-    async releaseLiveCard() {
+    // instant: the card's still is already pinned in the store (the pitch's pull-back), so it goes at once
+    async releaseLiveCard({ instant = false } = {}) {
       const widget = this.root.querySelector('[data-promo-widget]');
       const stage = this.root.querySelector('.promo-opening__stage');
+      if (instant && widget) widget.style.transition = 'none';
       document.documentElement.classList.add('is-promo-card-out');
-      if (!prefersReducedMotion()) await waitMs(420);
+      if (!instant && !prefersReducedMotion()) await waitMs(PROMO_LIVE_CARD_OUT_MS);
       if (widget && stage && widget.parentElement !== stage) stage.appendChild(widget);
       if (widget) {
         widget.style.top = '';
@@ -9186,7 +9508,8 @@
         const spec = PROMO_DEVICE_SPEC[item.device] || PROMO_DEVICE_SPEC.desktop;
         const w = (item.skeleton ? SIZES[item.device] * 0.74 : SIZES[item.device]) * S;
         const h = w / spec.aspect + spec.bar * w;
-        if (item.strobe) { const ws = SIZES[item.device] * S * 0.92; const hs = ws / spec.aspect + spec.bar * ws; return { w: ws, h: hs, x: W / 2, y: (H - hs) / 2 }; }
+        if (item.strobe && !item.voice) { const ws = SIZES[item.device] * S * 0.92;   // v35: a voiced run card is laid out like a quick store
+           const hs = ws / spec.aspect + spec.bar * ws; return { w: ws, h: hs, x: W / 2, y: (H - hs) / 2 }; }
         if (item.skeleton) return { w, h, x: 0, y: (H - h) / 2 };
         if (item.yours) return { w, h, x: W / 2, y: (H - h) / 2 };
         if (item.device === 'desktop') return { w, h, x: W / 2, y: 205 * S };
@@ -9222,14 +9545,15 @@
         }
         // v25b: where a run / quick card's clip starts; its idle video waits there (pre-seeked), so a card's first frame is
         // never the recording's frame 0 (a cookie box, an empty widget) shown for a frame while the seek catches up
-        cell.rollAt = item.card ? (item.start || 0) : ((item.ambientStart || 0) + (n % 5) * 1.7) % 9;
+        // v36: item.rollAt pins a run card's in-point (its native widget highlight peaks just after its cut-in)
+        cell.rollAt = item.card ? (item.start || 0) : (item.rollAt != null ? item.rollAt : ((item.ambientStart || 0) + (n % 5) * 1.7) % 9);
         if (cell.ambientVideo) {
           const video = cell.ambientVideo;
           video.addEventListener('loadeddata', () => { try { video.currentTime = Number.isFinite(video.duration) && video.duration > 0 ? cell.rollAt % video.duration : cell.rollAt; } catch { } }, { once: true });
         }
         cell.t = { tx: 0, ty: 0, k: 1 };
         strip.appendChild(cell.dev);
-        if (cell.hero || cell.whip) {
+        if (cell.hero || cell.whip || item.voice) {   // v35: the voiced run cards carry their industry and line too
           cell.copy = promoReelCopy(item, box, W, H, S);
           Object.assign(cell.copy.style, { left: `${cell.x0}px`, width: `${W}px` });
           strip.appendChild(cell.copy);
@@ -9497,7 +9821,7 @@
       promoSfx('reel-in');
       speakTake('t-stores');   // v16: the narrator speaks over the tunnel only (never over a store's own voice)
       reel.insertBefore(tunnel, strip);
-      flyers.forEach((f, i) => roll(f.video, (i * 0.4) % 3.2));   // v23: the new stores play as they fly (deterministic: the export clock seeks them)
+      flyers.forEach((f, i) => roll(f.video, i * 0.2, true));   // v23: the new stores play as they fly (deterministic: the export clock seeks them); v36: staggered 0.2 s, never wrapping (the native highlight is timed to each card)
       const zEnd = -P * 0.9 - flyers.length * P * 0.55 - P * 0.6;   // (unchanged: the first store still lands on its clap)
       const tunnelMs = Math.max(400, cutAt(0) - performance.now());   // v21: the first store lands on its clap
       // v24 light law: the tunnel's light and its crossfade into the first hero are paint()'s (v25b: the nearest store's
@@ -9541,6 +9865,21 @@
         (window.__promoAudioCues = window.__promoAudioCues || []).push({ src: item.video, atMs: now, fromSec: item.start || 0, endMs: now + heroMs });
         window.__promoNarratorUntil = Math.max(window.__promoNarratorUntil || 0, now + heroMs);
         revealReelCopy(hero.copy, 'slam');
+        if (!/\/v36h\//.test(item.video)) promoWidgetFlair(hero.heroVideo, item.video, item.color, Math.min(1100, heroMs * 0.45), hero.dev);   // v35: the widget catches the eye (v36h takes have it recorded natively)
+        const heroBubble = item.bubble ? promoHeroBubble(hero.heroVideo, hero.dev, item.bubble) : null;   // v35: one bubble, the voice's words
+        if (item.agentSay) (async () => {   // v35: the store's agent speaks as its results land (inside the take's window)
+          const id = item.agentSay.id; const voice = await clerkVoice(id);
+          if (!voice) return;
+          const wait = item.agentSay.at * 1000 - (performance.now() - now);
+          if (wait > 0) await waitMs(wait);
+          const t0 = performance.now();
+          const clipMs = Math.min(voice.durationMs, heroMs - (t0 - now) - 40);
+          if (clipMs < 200) return;
+          (window.__promoAudioCues = window.__promoAudioCues || []).push({ src: `/promo/voice/${id}.wav`, atMs: t0, fromSec: 0, endMs: t0 + clipMs, fadeIn: 0.01, fadeOut: 0.03 });
+          if (!document.documentElement.classList.contains('is-promo-export')) { const a = new Audio(`/promo/voice/${id}.wav`); a.play().catch(() => { }); }
+          const words = voiceWords(voice).filter((w) => !/^\[[^\]]*\]$/.test(w.text)).map((w) => [0.04 + w.startMs / 1000, w.text]);
+          if (words.length) this.playSaidPill(reel, words, { color: item.color, kind: 'voice-agent', hold: 0.15, place: spot });
+        })();
         const saidLines = Array.isArray(item.said?.[0]?.[0]) ? item.said : (item.said?.length ? [item.said] : []);
         const spot = reelSaidSpot(hero, W, H, S);
         saidLines.forEach((line) => this.playSaidPill(reel, line, { color: item.color, kind: item.saidKind || 'shopper', hold: 0.6, place: spot }));
@@ -9549,6 +9888,7 @@
         // the take plays out, then the cut comes on the nearest beat (never a held frame of more than half a beat)
         await untilAt(hero, cutAt(index + 1));
         reel.querySelectorAll('.promo-reel__said:not(.is-out)').forEach((pill) => { pill.classList.add('is-out'); pill.style.opacity = '0'; });
+        heroBubble?.remove();
         park(hero.heroVideo);
         hero.dev.classList.remove('is-live');
       }
@@ -9563,7 +9903,8 @@
         if (!strobing && cell.win < PROMO_REEL_SOFT_S) { strobing = true; promoSfx('reel-strobe', { ms: Math.round((cutS(heroes.length + run.length) - cutS(heroes.length + index)) * 1000) }); }
         reel.querySelectorAll('.promo-reel__said:not(.is-out)').forEach((pill) => { pill.classList.add('is-out'); pill.style.opacity = '0'; });
         cutTo(cell, cell.whip ? heroes.length + cell.src.quick : 100 + index);
-        const id = cell.whip ? PROMO_REEL_QUICK_VOICES[cell.src.quick] : null;
+        // v36: the demo stores' highlight is in their own recordings now (no overlay)
+        const id = cell.whip ? PROMO_REEL_QUICK_VOICES[cell.src.quick] : (cell.src.voice || null);   // v35: the voiced run cards speak in their window
         const voice = id ? await clerkVoice(id) : null;
         if (voice) {
           const now = performance.now();
@@ -11293,6 +11634,27 @@
       clone.querySelectorAll('[id]').forEach((node) => node.removeAttribute('id'));
       clone.classList.remove('is-belt-stage');
       clone.removeAttribute('style');
+      // v34: keep the close-up's SOLD tint on the copy, or it pops off on frame one
+      if (mode === 'pitch') clone.style.filter = store.style.filter;   // the lift is matched by dissolveCloseStore
+      // v35: the clerk stays video through the pull-back: each canvas still in the copy's widget becomes a canvas the
+      // sea mirrors from the live clerk every frame until the card lands, so the image it ends on is its last frame
+      this.leadMirror = null;
+      if (mode === 'pitch') {
+        const live = document.querySelector('.bizmis-desktop-lite-chat canvas');
+        // the copy's stills, and the live store's own (it rides on top while it dissolves into the copy)
+        const stills = [...clone.querySelectorAll('[data-promo-widget-still] img[data-promo-canvas-still]'), ...store.querySelectorAll('[data-promo-widget-still] img[data-promo-canvas-still]')];
+        if (live && stills.length) {
+          this.leadMirror = stills.map((img) => {
+            const mirror = document.createElement('canvas');
+            mirror.width = live.width; mirror.height = live.height;
+            mirror.setAttribute('style', img.getAttribute('style') || '');
+            const ctx = mirror.getContext('2d');
+            try { ctx.drawImage(live, 0, 0); } catch { }
+            img.replaceWith(mirror);
+            return { ctx, live, w: mirror.width, h: mirror.height };
+          });
+        }
+      }
       const rect = store.getBoundingClientRect();
       clone.dataset.naturalW = String(rect.width || store.offsetWidth || 0);
       clone.dataset.naturalH = String(rect.height || store.offsetHeight || 0);
@@ -11434,8 +11796,9 @@
       field.setAttribute('data-promo-grid-field', '');
       const lead = document.createElement('div');
       lead.className = 'promo-glide__lead';
-      const pitchRaster = mode === 'pitch' && this.pitchLeadKey && this.cellRasters?.has(this.pitchLeadKey);
-      const clone = (mode === 'pain' && this.cellRasters?.size) || pitchRaster ? null : this.gridLeadNode(mode);
+      // v34: the pitch's pull-back starts on a DOM copy of the close-up too (its raster only takes over once the
+      // copy has faded), so the first frame of the sea is the close-up's last frame, not a re-drawing of it
+      const clone = mode === 'pain' && this.cellRasters?.size ? null : this.gridLeadNode(mode);
       if (clone) lead.append(clone);
       const viewWrap = document.createElement('div');
       viewWrap.className = 'promo-glide__view';
@@ -11471,7 +11834,7 @@
       root.append(viewWrap, light, dofMid, dofFar, horizon, caption, field, lead);
       root._glidePool = pool;
       wall.append(root);
-      if (store && !this.glideKeepStore) store.style.visibility = 'hidden';
+      if (store && !this.glideKeepStore && !this.pitchHandoff) store.style.visibility = 'hidden';   // v34: the pitch's live store dissolves into the sea instead
       const start = storeBox && storeBox.width > 40
         ? {
           x: storeBox.left - wallBox.left,
@@ -12191,7 +12554,8 @@
         if (!this.glideZoomFrom) {
           const closeW = this.glideCloseRect?.w || faceW;
           const closeH = this.glideCloseRect?.h || faceH;
-          const cover = Math.max(closeW / faceW, closeH / faceH);
+          // v34: the pitch's lead copy is width-fitted, so its zoom matches widths (frame one = the close-up)
+          const cover = mode === 'pitch' ? closeW / faceW : Math.max(closeW / faceW, closeH / faceH);
           this.glideZoomFrom = cover;
           this.glideZoomFromY = cover;
           this.glideAnchor = null;
@@ -12280,7 +12644,7 @@
             node.style.visibility = 'hidden';
           });
         } else if (item.cell.key === this.glideLeadKey) {
-          const covered = arrive < 0.98 && slot.cell.querySelector(':scope > .promo-opening__store');
+          const covered = arrive < 0.98 && slot.cell.querySelector(`:scope > .promo-opening__store, :scope > ${LEAD_WRAP} > .promo-opening__store`);
           if (covered) {
             delete slot.cell.dataset.leadOpen;
           } else if (slot.cell.dataset.leadOpen !== '1') {
@@ -12306,6 +12670,11 @@
       const leadNode = (root._glidePool || []).find((item) => item.cell.dataset.key === this.glideLeadKey)?.cell;
       this.measureGlideAnchor(root, leadNode);
       this.placeGlideLead(root, leadNode, arrive);
+      if (mode === 'pitch' && this.pitchHandoff) this.dissolveCloseStore(leadNode, time);   // v34: after the anchor is measured
+      if (mode === 'pitch' && this.leadMirror) {   // v35: the clerk is video until the card is in its place
+        if (arrive < 0.995) this.leadMirror.forEach((m) => { try { m.ctx.clearRect(0, 0, m.w, m.h); m.ctx.drawImage(m.live, 0, 0, m.w, m.h); } catch { } });
+        else this.leadMirror = null;   // landed: the last frame stays
+      }
       if (mode === 'pain') this.paintPainCaption(root, options.reduced ? marks.captionHoldEnd - 120 : time);
       this.paintSalesBar(root, time, mode, frame, options.reduced);   // v24: the claims' sales bar
       const horizon = root.querySelector('.promo-glide__horizon');
@@ -12333,7 +12702,9 @@
       if (box.width < 8 || box.height < 8) return;
       const originX = box.left - host.left + box.width / 2;
       const originY = box.top - host.top + box.height / 2;
-      const cover = Math.max(this.glideCloseRect.w / box.width, this.glideCloseRect.h / box.height);
+      const cover = root.classList.contains('is-pain')
+        ? Math.max(this.glideCloseRect.w / box.width, this.glideCloseRect.h / box.height)
+        : this.glideCloseRect.w / box.width;   // v34: see paintGlideAt (the pitch copy is width-fitted)
       this.glideZoomFrom = cover;
       this.glideZoomFromY = cover;
       this.glideAnchor = { x: originX, y: originY };
@@ -12347,11 +12718,15 @@
 
     placeGlideLead(root, cellNode, arrive) {
       const lead = root.querySelector('.promo-glide__lead');
-      const clone = root.querySelector('.promo-glide__cell > .promo-opening__store')
+      const clone = root.querySelector(`.promo-glide__cell > .promo-opening__store, .promo-glide__cell > ${LEAD_WRAP} > .promo-opening__store`)
         || lead?.querySelector('.promo-opening__store');
       if (!clone) return;
-      const fadeStart = 0.96;
-      const fadeEnd = 0.99;
+      const carrier = clone.parentElement?.matches(LEAD_WRAP) ? clone.parentElement : clone;   // v34: the pitch copy moves with its wrapper
+      // v35: the pitch keeps its copy (its clerk mirrored live until the card lands) as the card's final image, instead of
+      // fading to the raster taken before the pull-back
+      const keepCopy = !root.classList.contains('is-pain');
+      const fadeStart = keepCopy ? 2 : 0.96;
+      const fadeEnd = keepCopy ? 3 : 0.99;
       if (!cellNode || cellNode.hidden || arrive >= fadeEnd) {
         clone.style.visibility = 'hidden';
         clone.style.opacity = '0';
@@ -12366,7 +12741,7 @@
         this.placeLeadShade(null, 0);
         return;
       }
-      if (clone.parentElement !== cellNode) cellNode.appendChild(clone);
+      if (carrier.parentElement !== cellNode) cellNode.appendChild(carrier);
       const width = parseFloat(cellNode.style.width) || cellNode.offsetWidth;
       const height = parseFloat(cellNode.style.height) || cellNode.offsetHeight;
       const naturalW = Number(clone.dataset.naturalW) || width;
@@ -12377,7 +12752,14 @@
       clone.style.zIndex = '2';
       clone.style.width = `${naturalW.toFixed(1)}px`;
       clone.style.height = `${naturalH.toFixed(1)}px`;
-      clone.style.transform = `scale(${(width / naturalW).toFixed(4)}, ${(height / naturalH).toFixed(4)})`;
+      if (root.classList.contains('is-pain')) {
+        clone.style.transform = `scale(${(width / naturalW).toFixed(4)}, ${(height / naturalH).toFixed(4)})`;
+      } else {
+        // v34: the pitch copy keeps the close-up's proportions (uniform, width-fitted, centred in the card), so
+        // it registers with the live store dissolving over it instead of being squashed to the card's shape
+        const fit = width / naturalW;
+        clone.style.transform = `translate(0px, ${((height - naturalH * fit) / 2).toFixed(2)}px) scale(${fit.toFixed(4)})`;
+      }
       clone.style.boxShadow = 'none';
       {
         // v10: the close-up keeps its own device corners inside the sea cell
@@ -12461,6 +12843,49 @@
       shade.style.top = `${(box.top - hostBox.top).toFixed(2)}px`;
       shade.style.width = `${box.width.toFixed(2)}px`;
       shade.style.height = `${box.height.toFixed(2)}px`;
+    }
+
+    // v34: the pitch's pull-back starts on the live close-up itself: it rides the lead card for the first
+    // PROMO_PITCH_HANDOFF_MS of the camera move and dissolves into the card's copy, so the hand-off has no cut
+    dissolveCloseStore(leadNode, time) {
+      const store = this.painStore();
+      const u = Math.min(1, Math.max(0, time / PROMO_PITCH_HANDOFF_MS));
+      const copy = leadNode && !leadNode.hidden ? leadNode.querySelector(':scope > .promo-opening__store') : null;
+      const ready = copy && copy.style.visibility !== 'hidden';
+      if (!store || u >= 1 || !ready) {
+        if (store) {
+          store.style.visibility = 'hidden';
+          store.style.opacity = '';
+          store.style.transform = '';
+        }
+        if (copy) copy.style.translate = '';
+        this.root.classList.remove('is-close-seat');
+        this.closeStoreHome = null;
+        this.pitchHandoff = false;
+        return;
+      }
+      this.root.classList.add('is-close-seat');
+      // screen px per px inside the lead card (the sea is zoomed in at first)
+      const cardBox = leadNode.getBoundingClientRect();
+      const perPx = cardBox.width / (parseFloat(leadNode.style.width) || leadNode.offsetWidth || cardBox.width);
+      if (!this.closeStoreHome) {
+        // frame one: the live store untransformed, and how far its copy sits from it
+        store.style.transform = 'none';
+        copy.style.translate = '';
+        const home = store.getBoundingClientRect();
+        const first = copy.getBoundingClientRect();
+        this.closeStoreHome = { left: home.left, top: home.top, width: home.width, fixX: home.left - first.left, fixY: home.top - first.top };
+      }
+      const home = this.closeStoreHome;
+      const e = u * u * (3 - 2 * u);
+      // the copy starts exactly on the live store and eases into its own place in the card...
+      copy.style.translate = `${(home.fixX * (1 - e) / perPx).toFixed(2)}px ${(home.fixY * (1 - e) / perPx).toFixed(2)}px`;
+      // ...and the live store rides the copy's box while it dissolves into it
+      const box = copy.getBoundingClientRect();
+      store.style.transition = 'none';
+      store.style.transformOrigin = '0 0';
+      store.style.transform = `translate(${(box.left - home.left).toFixed(2)}px, ${(box.top - home.top).toFixed(2)}px) scale(${(box.width / home.width).toFixed(4)})`;
+      store.style.opacity = (1 - e).toFixed(3);
     }
 
     releaseCloseStore() {
@@ -12921,7 +13346,7 @@
     }
 
     visibleCloseStore() {
-      const seated = this.root.querySelector('.promo-glide__cell > .promo-opening__store');
+      const seated = this.root.querySelector(`.promo-glide__cell > .promo-opening__store, .promo-glide__cell > ${LEAD_WRAP} > .promo-opening__store`);
       if (seated && seated.style.visibility !== 'hidden') return seated;
       return this.root.querySelector('.promo-glide__lead .promo-opening__store') || this.painStore();
     }
@@ -12930,7 +13355,7 @@
       const root = this.root.querySelector('[data-promo-glide]');
       const pooled = (root?._glidePool || []).find((item) => item.cell.dataset.key === this.glideLeadKey)?.cell;
       if (pooled) return pooled;
-      return this.root.querySelector('.promo-glide__cell > .promo-opening__store')?.parentElement || null;
+      return this.root.querySelector(`.promo-glide__cell > .promo-opening__store, .promo-glide__cell > ${LEAD_WRAP} > .promo-opening__store`)?.closest('.promo-glide__cell') || null;
     }
 
     async poofCloseStore(voice) {
@@ -13614,10 +14039,18 @@
       await this.painTake?.at('hours later', 'end', -240);
       this.humanReplyArrives(clone);
       promoSfx('reply');
-      // "...already gone.": the shopper closes the chat, the thumb on the ✕ as "gone." ends (v25 STT 19.82 s; press ~390 ms in)
-      await this.painTake?.at('already gone.', 'end', -560);
+      // "...already gone.": the shopper closes the chat. v36 (operator: it froze between the tap and the close): the
+      // thumb taps the ✕ so the tap ENDS where the close starts (1040 ms before "Either way"), not on "gone." 1.1 s
+      // earlier; the close itself, and everything after it, keeps its moment
+      await this.painTake?.at('already gone.', 'end');
+      await this.painTake?.at('Either way', 'start', -PROMO_PAIN_CLOSE_LEAD_MS - PROMO_PAIN_CLOSE_TAP_MS);
+      const tapAt = performance.now();
       const close = clone.querySelector('.promo-pain__chat.is-open .promo-pain__close');
       if (close) await this.tapPhoneTarget(clone, close);
+      // v34: the sarcastic read says "gone." 0.84 s sooner, but everything after the pain (and the score fitted to
+      // it) is timed off this beat: hold until the moment the v25-v33 take reached it, 1040 ms before "Either way"
+      // (unchanged in both takes). A no-op for a take that ends "gone." where those did.
+      await this.painTake?.at('Either way', 'start', -PROMO_PAIN_CLOSE_LEAD_MS + (performance.now() - tapAt));
     }
 
     // v23: the phone pain's one zoom: the chat panel fills the frame (scale from the panel's box vs the
@@ -14204,6 +14637,8 @@
       this.painLostKeys = new Set();
       if (pitchRaster && this.pitchLeadKey) this.cellRasters.set(this.pitchLeadKey, pitchRaster);
       this.captureGlideClose('pitch');
+      this.closeStoreHome = null;
+      this.pitchHandoff = true;   // v34: see dissolveCloseStore
       if (!this.pitchCardsPlayed) await this.markCloseStoreSold();
       if (generation !== this.scaleGeneration) return;
       this.revealScaleLayer();
