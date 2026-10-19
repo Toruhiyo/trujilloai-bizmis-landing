@@ -640,7 +640,7 @@ function renderPlainText(lead: LeadEarlyAccessData, utmCampaign: string, unsubSi
   const salutation = contactFirst
     ? `${c.greetingDear} ${contactFirst},`
     : `${c.greetingDear} ${lead.storeName}${c.greetingStoreTeamSuffix}`;
-  const pitch = buildInviteLeadParagraphPlainText();
+  const pitch = buildInviteLeadParagraphPlainText(lead.storeName);
 
   const titleLine = `${lead.storeName} ${c.inviteTitleBrandLeadSeparator} ${c.inviteTitleBrandLead} ${c.inviteTitleEyebrowSeparator} ${c.inviteTitleEyebrow.toUpperCase()}`;
   return [
