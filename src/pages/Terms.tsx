@@ -2,7 +2,7 @@ import Footer from "@/components/Footer";
 import PublicPageLayout from "@/components/PublicPageLayout";
 import Seo from "@/components/Seo";
 
-const LAST_UPDATED = "October 22, 2026";
+const LAST_UPDATED = "October 23, 2026";
 const CONTACT_EMAIL = "hello@bizmis.ai";
 const COMPANY_LEGAL_NAME = "Bizmis";
 const COMPANY_JURISDICTION = "Spain";
@@ -235,7 +235,7 @@ const Terms = () => {
                   </li>
                   <li>
                     <strong>PostHog (EU Cloud)</strong>: product analytics and
-                    widget session replay.
+                    session replay for the widget and the merchant admin.
                   </li>
                 </ul>
                 A current list of sub-processors, the data they receive,
