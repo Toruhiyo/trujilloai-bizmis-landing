@@ -1,0 +1,312 @@
+[
+ {
+  "index": 0,
+  "slug": "fetch-and-fern",
+  "kind": "grid",
+  "params": {
+   "model": "z_image",
+   "aspect_ratio": "4:3",
+   "prompt": "Product catalog contact sheet: a precise grid of 3 columns and 2 rows, six separate e-commerce packshots, each product alone in its own equal cell, every cell the same seamless warm cream backdrop with soft diffused studio light and a gentle contact shadow, thin white gutters between cells. row 1: a round plush sage-green donut dog bed; a coiled braided rope dog leash in deep teal with brass clip; a speckled cream ceramic pet bowl. row 2: a plain kraft paper stand-up pouch of dog treats with a few salmon treats beside it, no writing on the pouch; a grey wool felt cat cave; a plush squeaky dog toy shaped like a carrot. Each product centered and fully visible, consistent scale, no text, no labels, no logos, no people"
+  }
+ },
+ {
+  "index": 1,
+  "slug": "fetch-and-fern",
+  "kind": "hero",
+  "params": {
+   "model": "z_image",
+   "aspect_ratio": "16:9",
+   "prompt": "Bright airy Scandinavian living room corner in soft morning light, a calm golden retriever resting on a round sage-green plush dog bed, a speckled ceramic water bowl beside it, a potted fern, warm oak floor, editorial lifestyle photography for a premium pet brand, shallow depth of field, no people, no text"
+  }
+ },
+ {
+  "index": 2,
+  "slug": "kettle-and-crow",
+  "kind": "grid",
+  "params": {
+   "model": "z_image",
+   "aspect_ratio": "4:3",
+   "prompt": "Product catalog contact sheet: a precise grid of 3 columns and 2 rows, six separate e-commerce packshots, each product alone in its own equal cell, every cell the same seamless warm sand-beige backdrop with soft diffused studio light and a gentle contact shadow, thin white gutters between cells. row 1: a matte black coffee bag with a blank honey-gold label, no writing; a kraft paper coffee bag with a blank label, no writing; a white ceramic pour-over dripper. row 2: a matte black gooseneck pour-over kettle; a glass coffee carafe; a handmade speckled stoneware coffee cup. Each product centered and fully visible, consistent scale, no text, no labels, no logos, no people"
+  }
+ },
+ {
+  "index": 3,
+  "slug": "kettle-and-crow",
+  "kind": "hero",
+  "params": {
+   "model": "z_image",
+   "aspect_ratio": "3:4",
+   "prompt": "Moody specialty coffee scene: a glass pour-over carafe with a ceramic dripper being filled from a black gooseneck kettle, thin steam rising, dark espresso-brown backdrop, warm side light, roasted coffee beans scattered on a walnut board, editorial product photography, no people, no hands, no text"
+  }
+ },
+ {
+  "index": 4,
+  "slug": "aurelle",
+  "kind": "grid",
+  "params": {
+   "model": "z_image",
+   "aspect_ratio": "4:3",
+   "prompt": "Product catalog contact sheet: a precise grid of 3 columns and 2 rows, six separate e-commerce packshots, each product alone in its own equal cell, every cell the same seamless pale blush backdrop with soft diffused studio light and a gentle contact shadow, thin white gutters between cells. row 1: a pair of chunky polished gold hoop earrings; a fine gold chain necklace with a single pearl drop pendant; a polished gold signet ring. row 2: a thin gold tennis bracelet with small diamonds; a solitaire diamond engagement ring in yellow gold; a stack of three thin gold stacking rings. Each product centered and fully visible, consistent scale, no text, no labels, no logos, no people"
+  }
+ },
+ {
+  "index": 5,
+  "slug": "aurelle",
+  "kind": "hero",
+  "params": {
+   "model": "z_image",
+   "aspect_ratio": "4:3",
+   "prompt": "Luxury fine jewelry still life: delicate 14k gold hoop earrings, a pearl pendant necklace and stacked gold rings arranged on a pale travertine stone block, soft warm sunlight with gentle shadows, blush pink backdrop, editorial jewelry photography, no people, no text"
+  }
+ },
+ {
+  "index": 6,
+  "slug": "little-timber",
+  "kind": "grid",
+  "params": {
+   "model": "z_image",
+   "aspect_ratio": "4:3",
+   "prompt": "Product catalog contact sheet: a precise grid of 3 columns and 2 rows, six separate e-commerce packshots, each product alone in its own equal cell, every cell the same seamless soft warm white backdrop with soft diffused studio light and a gentle contact shadow, thin white gutters between cells. row 1: a wooden rainbow stacking arch toy in soft pastel colors; a small natural wooden toy train with three carriages; a set of colorful painted wooden building blocks. row 2: a natural wooden rocking horse toy; a yellow wooden pull-along duck toy on a string; a wooden shape sorter box with colorful shapes. Each product centered and fully visible, consistent scale, no text, no labels, no logos, no people"
+  }
+ },
+ {
+  "index": 7,
+  "slug": "little-timber",
+  "kind": "hero",
+  "params": {
+   "model": "z_image",
+   "aspect_ratio": "4:3",
+   "prompt": "Sunlit minimalist playroom shelf with classic natural wooden toys: a pastel rainbow stacker, a wooden train, colorful wooden blocks and a pull-along wooden duck on light birch shelves, soft daylight, warm cream wall, product lifestyle photography, absolutely no people, no children, no text"
+  }
+ },
+ {
+  "index": 8,
+  "slug": "leaf-and-loam",
+  "kind": "grid",
+  "params": {
+   "model": "z_image",
+   "aspect_ratio": "4:3",
+   "prompt": "Product catalog contact sheet: a precise grid of 3 columns and 2 rows, six separate e-commerce packshots, each product alone in its own equal cell, every cell the same seamless pale sage-grey backdrop with soft diffused studio light and a gentle contact shadow, thin white gutters between cells. row 1: a monstera deliciosa plant in a terracotta pot; a snake plant in a matte white ceramic pot; a small fiddle leaf fig tree in a woven basket. row 2: a golden pothos in a hanging ceramic planter; a trio of small succulents in mini concrete pots; a brass plant mister spray bottle. Each product centered and fully visible, consistent scale, no text, no labels, no logos, no people"
+  }
+ },
+ {
+  "index": 9,
+  "slug": "leaf-and-loam",
+  "kind": "hero",
+  "params": {
+   "model": "z_image",
+   "aspect_ratio": "3:4",
+   "prompt": "Lush indoor plant shop corner: a large monstera in a terracotta pot, a fiddle leaf fig, trailing pothos on a wooden shelf, snake plants in white ceramic pots, bright soft daylight from a window, pale sage wall, editorial interior photography, no people, no text"
+  }
+ },
+ {
+  "index": 10,
+  "slug": "copperleaf",
+  "kind": "grid",
+  "params": {
+   "model": "z_image",
+   "aspect_ratio": "4:3",
+   "prompt": "Product catalog contact sheet: a precise grid of 3 columns and 2 rows, six separate e-commerce packshots, each product alone in its own equal cell, every cell the same seamless light warm grey backdrop with soft diffused studio light and a gentle contact shadow, thin white gutters between cells. row 1: a polished hammered copper saute pan with brass handle; an enameled cast iron dutch oven in deep rust red; a carbon steel chef knife with walnut handle. row 2: a set of three stainless steel mixing bowls nested; an olive wood cutting board; a copper tea kettle. Each product centered and fully visible, consistent scale, no text, no labels, no logos, no people"
+  }
+ },
+ {
+  "index": 11,
+  "slug": "copperleaf",
+  "kind": "hero",
+  "params": {
+   "model": "z_image",
+   "aspect_ratio": "16:9",
+   "prompt": "Warm editorial kitchen scene: a hammered copper saute pan and a cast iron dutch oven on a dark slate countertop, fresh herbs, wooden spoon, soft window light, steam rising, premium cookware photography, no people, no text"
+  }
+ },
+ {
+  "index": 12,
+  "slug": "northpeak",
+  "kind": "grid",
+  "params": {
+   "model": "z_image",
+   "aspect_ratio": "4:3",
+   "prompt": "Product catalog contact sheet: a precise grid of 3 columns and 2 rows, six separate e-commerce packshots, each product alone in its own equal cell, every cell the same seamless light cool grey backdrop with soft diffused studio light and a gentle contact shadow, thin white gutters between cells. row 1: a large matte cobalt blue protein powder tub with a blank white label, no writing; a clear shaker bottle with a cobalt lid; a small white supplement bottle with blank label, no writing. row 2: a matte black pre-workout tub with blank label, no writing; a box of protein bars, plain packaging, no writing; a stainless steel insulated water bottle. Each product centered and fully visible, consistent scale, no text, no labels, no logos, no people"
+  }
+ },
+ {
+  "index": 13,
+  "slug": "northpeak",
+  "kind": "hero",
+  "params": {
+   "model": "z_image",
+   "aspect_ratio": "3:4",
+   "prompt": "Dynamic sports nutrition product scene: a matte cobalt-blue protein tub and a shaker bottle on a concrete gym floor next to a kettlebell, dramatic studio rim light, cool tones, energetic commercial photography, no people, no text, no logos"
+  }
+ },
+ {
+  "index": 14,
+  "slug": "halcyon-optics",
+  "kind": "grid",
+  "params": {
+   "model": "z_image",
+   "aspect_ratio": "4:3",
+   "prompt": "Product catalog contact sheet: a precise grid of 3 columns and 2 rows, six separate e-commerce packshots, each product alone in its own equal cell, every cell the same seamless very light lilac-grey backdrop with soft diffused studio light and a gentle contact shadow, thin white gutters between cells. row 1: tortoiseshell acetate round sunglasses; thin gold metal aviator sunglasses with gradient lenses; black square optical eyeglasses frames. row 2: translucent lilac cat-eye sunglasses; clear crystal acetate optical frames; a slim folding leather glasses case. Each product centered and fully visible, consistent scale, no text, no labels, no logos, no people"
+  }
+ },
+ {
+  "index": 15,
+  "slug": "halcyon-optics",
+  "kind": "hero",
+  "params": {
+   "model": "z_image",
+   "aspect_ratio": "16:9",
+   "prompt": "Stylish eyewear still life: three pairs of designer sunglasses and optical frames arranged on stacked pastel lilac and white geometric plinths, crisp sunlight with long hard shadows, modern editorial product photography, no people, no text"
+  }
+ },
+ {
+  "index": 16,
+  "slug": "nest-and-nook",
+  "kind": "grid",
+  "params": {
+   "model": "z_image",
+   "aspect_ratio": "4:3",
+   "prompt": "Product catalog contact sheet: a precise grid of 3 columns and 2 rows, six separate e-commerce packshots, each product alone in its own equal cell, every cell the same seamless soft cream backdrop with soft diffused studio light and a gentle contact shadow, thin white gutters between cells. row 1: a folded stack of sage green and cream muslin swaddle blankets; a soft knitted bunny plush toy; a glass baby bottle with a silicone sleeve. row 2: a silicone baby feeding bowl and spoon in pastel sage; a natural wooden baby teether ring; a pair of tiny knitted baby booties. Each product centered and fully visible, consistent scale, no text, no labels, no logos, no people"
+  }
+ },
+ {
+  "index": 17,
+  "slug": "nest-and-nook",
+  "kind": "hero",
+  "params": {
+   "model": "z_image",
+   "aspect_ratio": "4:3",
+   "prompt": "Serene minimalist nursery interior: a natural wood crib with a sage muslin blanket, a soft knitted bunny plush, a woven basket, sheer linen curtains with soft daylight, calm sage and cream palette, interior lifestyle photography, absolutely no people, no babies, no text"
+  }
+ },
+ {
+  "index": 18,
+  "slug": "outsole",
+  "kind": "grid",
+  "params": {
+   "model": "z_image",
+   "aspect_ratio": "4:3",
+   "prompt": "Product catalog contact sheet: a precise grid of 3 columns and 2 rows, six separate e-commerce packshots, each product alone in its own equal cell, every cell the same seamless light warm grey backdrop with soft diffused studio light and a gentle contact shadow, thin white gutters between cells. row 1: a white leather low-top sneaker with red accents; a black and grey running shoe with chunky sole; a cream canvas high-top sneaker. row 2: a red suede retro trainer; a pastel green knit running sneaker; a brown suede chunky skate shoe. side profile views, no logos. Each product centered and fully visible, consistent scale, no text, no labels, no logos, no people"
+  }
+ },
+ {
+  "index": 19,
+  "slug": "outsole",
+  "kind": "hero",
+  "params": {
+   "model": "z_image",
+   "aspect_ratio": "3:4",
+   "prompt": "Dramatic sneaker product shot: a single bold red and white leather sneaker floating mid-air above a concrete plinth, hard studio light, crisp shadow, pale warm grey background, street-style commercial photography, no logos, no text, no people"
+  }
+ },
+ {
+  "index": 20,
+  "slug": "inkwell",
+  "kind": "grid",
+  "params": {
+   "model": "z_image",
+   "aspect_ratio": "4:3",
+   "prompt": "Product catalog contact sheet: a precise grid of 3 columns and 2 rows, six separate e-commerce packshots, each product alone in its own equal cell, every cell the same seamless warm off-white paper backdrop with soft diffused studio light and a gentle contact shadow, thin white gutters between cells. row 1: a navy blue linen hardcover notebook with an elastic band; a black and gold fountain pen; a glass bottle of deep blue ink. row 2: a set of colored brush pens fanned out; a small kraft paper pocket journal; a brass desk stapler. Each product centered and fully visible, consistent scale, no text, no labels, no logos, no people"
+  }
+ },
+ {
+  "index": 21,
+  "slug": "inkwell",
+  "kind": "hero",
+  "params": {
+   "model": "z_image",
+   "aspect_ratio": "4:3",
+   "prompt": "Elegant stationery flat lay: navy blue linen-bound notebooks, a fountain pen, an ink bottle, wax seal and envelopes on a warm off-white desk, soft daylight, editorial still life photography, no hands, no people, no readable text"
+  }
+ },
+ {
+  "index": 22,
+  "slug": "atelier-noor",
+  "kind": "grid",
+  "params": {
+   "model": "z_image",
+   "aspect_ratio": "4:3",
+   "prompt": "Product catalog contact sheet: a precise grid of 3 columns and 2 rows, six separate e-commerce packshots, each product alone in its own equal cell, every cell the same seamless very pale lilac backdrop with soft diffused studio light and a gentle contact shadow, thin white gutters between cells. row 1: a faceted crystal perfume bottle with gold cap and pale lilac liquid; a tall slim amber glass perfume bottle with black cap; a round frosted glass perfume bottle with pink liquid. row 2: a matte black candle in glass vessel; a small glass rollerball perfume vial; a lilac fragrance gift box with ribbon. no labels, no text. Each product centered and fully visible, consistent scale, no text, no labels, no logos, no people"
+  }
+ },
+ {
+  "index": 23,
+  "slug": "atelier-noor",
+  "kind": "hero",
+  "params": {
+   "model": "z_image",
+   "aspect_ratio": "16:9",
+   "prompt": "Luxury fragrance still life: an elegant faceted glass perfume bottle with a gold cap on a lilac silk drape, dried lavender and a single white orchid, soft dreamy light, refraction glow, editorial beauty photography, no people, no text, no labels"
+  }
+ },
+ {
+  "index": 24,
+  "slug": "spokehaus",
+  "kind": "grid",
+  "params": {
+   "model": "z_image",
+   "aspect_ratio": "4:3",
+   "prompt": "Product catalog contact sheet: a precise grid of 3 columns and 2 rows, six separate e-commerce packshots, each product alone in its own equal cell, every cell the same seamless light cool grey backdrop with soft diffused studio light and a gentle contact shadow, thin white gutters between cells. row 1: a matte black aero cycling helmet; a pair of black cycling gloves with volt yellow details; a compact bike headlight. row 2: a black water bottle cage with a volt yellow bottle; a black leather bike saddle; a pair of black cycling shoes with yellow soles. no logos. Each product centered and fully visible, consistent scale, no text, no labels, no logos, no people"
+  }
+ },
+ {
+  "index": 25,
+  "slug": "spokehaus",
+  "kind": "hero",
+  "params": {
+   "model": "z_image",
+   "aspect_ratio": "3:4",
+   "prompt": "Sleek modern road bike in matte black with neon volt-yellow accents leaning against a dark concrete wall, dramatic low-angle studio light, urban premium cycling photography, no people, no text, no logos"
+  }
+ },
+ {
+  "index": 26,
+  "slug": "tonewood",
+  "kind": "grid",
+  "params": {
+   "model": "z_image",
+   "aspect_ratio": "4:3",
+   "prompt": "Product catalog contact sheet: a precise grid of 3 columns and 2 rows, six separate e-commerce packshots, each product alone in its own equal cell, every cell the same seamless warm light beige backdrop with soft diffused studio light and a gentle contact shadow, thin white gutters between cells. row 1: an acoustic dreadnought guitar in natural spruce; a sunburst electric guitar; a small ukulele in mahogany. row 2: a vintage-style cream tube guitar amplifier; a pair of studio headphones; a wooden cajon drum box. no logos. Each product centered and fully visible, consistent scale, no text, no labels, no logos, no people"
+  }
+ },
+ {
+  "index": 27,
+  "slug": "tonewood",
+  "kind": "hero",
+  "params": {
+   "model": "z_image",
+   "aspect_ratio": "4:3",
+   "prompt": "Warm music shop wall: acoustic and electric guitars hanging on a dark wood slat wall, a vintage tube amplifier, warm amber spotlights, rich moody tones, editorial photography, no people, no text, no logos"
+  }
+ },
+ {
+  "index": 28,
+  "slug": "saltline",
+  "kind": "grid",
+  "params": {
+   "model": "z_image",
+   "aspect_ratio": "4:3",
+   "prompt": "Product catalog contact sheet: a precise grid of 3 columns and 2 rows, six separate e-commerce packshots, each product alone in its own equal cell, every cell the same seamless light sand backdrop with soft diffused studio light and a gentle contact shadow, thin white gutters between cells. row 1: a white and aqua shortboard surfboard standing upright; a black neoprene wetsuit; a bar of surf wax and wax comb. row 2: an aqua surf leash coiled; a pair of surf fins in translucent aqua; a sand-colored canvas beach tote bag. no logos. Each product centered and fully visible, consistent scale, no text, no labels, no logos, no people"
+  }
+ },
+ {
+  "index": 29,
+  "slug": "saltline",
+  "kind": "hero",
+  "params": {
+   "model": "z_image",
+   "aspect_ratio": "16:9",
+   "prompt": "Bright coastal surf shop scene: three colorful surfboards in aqua, white and sand tones leaning against a whitewashed wall, beach sunlight, palm leaf shadows, airy summer editorial photography, no people, no text, no logos"
+  }
+ },
+ {
+  "index": 40,
+  "slug": "ridgeline-supply",
+  "kind": "hero",
+  "params": {
+   "model": "z_image",
+   "aspect_ratio": "16:9",
+   "prompt": "Glowing orange dome tent pitched on a grassy alpine ridge at blue-hour dusk, dramatic mountain range behind, campfire lantern light, premium outdoor gear brand editorial landscape photography, no people, no text, no logos"
+  }
+ }
+]

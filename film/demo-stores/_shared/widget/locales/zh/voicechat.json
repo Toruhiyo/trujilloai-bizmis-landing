@@ -1,0 +1,240 @@
+{
+  "VOICECHAT_CLAIM": "来聊聊吧，我帮你。",
+  "VOICECHAT_BUTTON": "语音聊天",
+  "VOICECHAT_INSTRUCTIONS": "说话以中断",
+  "END_CALL": "结束通话",
+  "CONNECTING": "请稍等几秒...",
+  "CONNECTING_BUTTON": "连接中",
+  "CLICK_TO_SPEAK": "点击说话",
+  "CLICK_TO_END": "点击结束",
+  "TALK_TO_INTERRUPT": "说话以中断",
+  "CONNECTING_HINT": "请稍等片刻",
+  "LISTENING_ACTIVE": "正在聆听...",
+  "TRY_VOICE_EXPERIENCE": "试试我，我是新的！",
+  "TERMS_ACCEPT": "接受",
+  "TERMS_DECLINE": "返回",
+  "TERMS_ACCEPTANCE_WITH_LINK": "接受[条款与条件]({{termsUrl}})以继续。",
+  "POC_DISCLAIMER": {
+    "TITLE": "概念验证",
+    "MESSAGE": "此语音聊天原型的目的仅是展示概念，不代表解决方案或产品的最终质量。可能出现延迟、错误和其他问题。<br/>主要功能：<strong>自主网页导航</strong>、<strong>文本高亮</strong>和<strong>表单填写</strong>。"
+  },
+  "GREETING": {
+    "1": "你好！欢迎使用语音聊天。我今天能帮你什么？",
+    "2": "你好！我在这里协助你解决任何问题。",
+    "3": "问候！今天我能为你做些什么？",
+    "4": "欢迎！请告诉我你的需求，我会尽力帮助你。",
+    "5": "语音助手为您服务！随时准备帮助您！",
+    "DEFAULT": "你好！今天我能帮你什么？"
+  },
+  "RESUME_GREETING": {
+    "1": "我回来了！我们接着聊吧。",
+    "2": "好，我们继续！",
+    "3": "我还在呢！我们刚才在看什么来着？",
+    "DEFAULT": "那么，我们说到哪了？"
+  },
+  "FEEDBACK_TITLE": "您的体验如何？",
+  "FEEDBACK_THUMBS_UP": "好",
+  "FEEDBACK_THUMBS_DOWN": "有待改进",
+  "FEEDBACK_ERROR": "无法发送反馈",
+  "FEEDBACK_SUCCESS": "感谢您的反馈！",
+  "ERROR_GENERIC": "无法启动语音聊天",
+  "MOBILE_TAP_AVATAR_TO_START": "点击开聊",
+  "MOBILE_TAP_AVATAR_TO_CANCEL": "连接中...",
+  "MOBILE_TAP_AVATAR_TO_END_CALL": "点击结束",
+  "HINT_LABEL": "试着说",
+  "HINTS_DEFAULT": [
+    "我想给伴侣买个礼物，能帮我吗？",
+    "现在有什么在打折？",
+    "哪个更适合敏感肌肤？",
+    "不合适可以退吗？",
+    "帮我比较一下这两个"
+  ],
+  "CHAT_INPUT_PLACEHOLDER": "咨询商品、配送或您的订单。",
+  "CHAT_CONNECTING_PLACEHOLDER": "连接中… 您已经可以输入了。",
+  "CHAT_MESSAGE_SENDING": "发送中…",
+  "CHAT_MESSAGE_FAILED_RETRY": "未发送。点击重试。",
+  "CHAT_EVENT_PRODUCTS_SHOWN": "为你展示的商品",
+  "CHAT_EVENT_SEARCH_RESULTS": "“{{query}}”的搜索结果",
+  "CHAT_EVENT_PRODUCT_OPENED": "已打开商品页",
+  "CHAT_EVENT_ADDED_TO_CART": "已加入购物车",
+  "CHAT_EVENT_CART_OPENED": "已打开购物车",
+  "CHAT_EVENT_CHECKOUT_OPENED": "已打开结账页",
+  "CHAT_EVENT_SEARCHED_FOR": "已搜索“{{query}}”",
+  "CHAT_EVENT_PAGE_OPENED": "已打开页面",
+  "CHAT_VOICE_TOGGLE_ON": "开始语音",
+  "CHAT_VOICE_TOGGLE_OFF": "结束语音",
+  "CHAT_CALL_START": "开始语音聊天",
+  "CHAT_CALL_END": "结束通话",
+  "CHAT_LAUNCHER_TITLE": "开始文字聊天",
+  "CHAT_NEW_SESSION": "新对话",
+  "CHAT_HIDE_PANEL": "返回助手",
+  "CHAT_SEND": "发送",
+  "CHAT_EMPTY_HINT": "发送一条消息，开始对话。",
+  "CHAT_COLLAPSE": "收起",
+  "CHAT_EXPAND": "展开",
+  "MIC_RECOVERY_DISMISS": "关闭",
+  "NAVIGATION_TAKING_YOU_TO": "正在带您前往",
+  "NAVIGATION_TARGET_SEARCH": "搜索结果",
+  "NAVIGATION_TARGET_GENERIC": "其他页面",
+  "TEXT_CHAT_INSTRUCTIONS": "切换到语音",
+  "MOBILE_TYPE_INSTEAD": "...或输入",
+  "CLOSE_WIDGET": "关闭",
+  "REOPEN_WIDGET": "重新打开助手",
+  "CHAT_LITE_SHOW_HISTORY": "会话记录",
+  "CHAT_LITE_HIDE_HISTORY": "隐藏对话",
+  "CHAT_LITE_BACK_TO_VOICE": "返回语音模式",
+  "CHAT_LITE_GO_TO_VOICE": "前往语音模式",
+  "CHAT_LITE_CONVERSATION": "对话",
+  "CHAT_LITE_PIN_TRANSCRIPT": "固定对话",
+  "CHAT_LITE_UNPIN_TRANSCRIPT": "取消固定对话",
+  "UNIFIED_PROMPTS": {
+    "DISCOVERY": "帮我找到合适的商品。",
+    "COMPARISON": "帮我比较最好的选择。",
+    "GUIDANCE": "这款商品适合我或符合我的需求吗？",
+    "RETURNS": "退货政策是什么？",
+    "FAQ": "你能回答一个购物问题吗？"
+  },
+  "MIC_PRIMER": "选择\"允许\"，我才能听到你",
+  "MIC_NEEDED": "允许麦克风即可语音交流",
+  "ENABLE_MIC_HINT_BROWSER": "在页面权限中允许麦克风",
+  "ENABLE_MIC_HINT_OS": "在设备设置中允许麦克风",
+  "DEGRADED_VOICE_SWITCHED_HINT_BROWSER": "麦克风访问被阻止，已为你切换到聊天。我仍会语音回复。想要开口说话，请在页面权限中允许麦克风。",
+  "DEGRADED_VOICE_SWITCHED_HINT_OS": "麦克风访问被阻止，已为你切换到聊天。我仍会语音回复。想要开口说话，请在设备设置中允许麦克风。",
+  "DEGRADED_VOICE_BLOCKED_HINT_BROWSER": "麦克风访问被阻止。我仍会语音回复。想要开口说话，请在页面权限中允许麦克风。",
+  "DEGRADED_VOICE_BLOCKED_HINT_OS": "麦克风访问被阻止。我仍会语音回复。想要开口说话，请在设备设置中允许麦克风。",
+  "USE_TEXT_CHAT": "使用文字聊天",
+  "OR": "或",
+  "MIC_BLOCKED_HINT": "在页面权限中允许麦克风",
+  "MIC_OS_BLOCKED_HINT": "在设备设置中允许麦克风",
+  "CONTROLS": {
+    "MICROPHONE": {
+      "MUTE": "关闭麦克风",
+      "UNMUTE": "开启麦克风",
+      "MUTED": "麦克风已关",
+      "UNMUTED": "麦克风已开"
+    },
+    "SUBTITLES": {
+      "ENABLE": "开启字幕",
+      "DISABLE": "关闭字幕",
+      "ENABLED": "字幕已开",
+      "DISABLED": "字幕已关"
+    },
+    "MUTE_MICROPHONE": "关闭麦克风",
+    "UNMUTE_MICROPHONE": "开启麦克风",
+    "ENABLE_CAPTIONS": "开启字幕",
+    "DISABLE_CAPTIONS": "关闭字幕"
+  },
+  "ERRORS": {
+    "UNKNOWN_ERROR": {
+      "NAME": "意外错误",
+      "INSTRUCTIONS": "请重试，如果问题持续存在，请联系支持。"
+    },
+    "NETWORK_ERROR": {
+      "NAME": "网络连接错误",
+      "INSTRUCTIONS": "请检查您的网络连接并重试。"
+    },
+    "API_ERROR": {
+      "NAME": "API通信错误",
+      "INSTRUCTIONS": "连接服务时出现问题。请稍后重试。"
+    },
+    "WEBSOCKET_ERROR": {
+      "NAME": "WebSocket连接错误",
+      "INSTRUCTIONS": "无法连接到语音服务。请检查您的连接。"
+    },
+    "CONNECTION_TIMEOUT": {
+      "NAME": "连接超时",
+      "INSTRUCTIONS": "连接超时。请重试。"
+    },
+    "AUTHENTICATION_ERROR": {
+      "NAME": "认证错误",
+      "INSTRUCTIONS": "请重新登录。"
+    },
+    "MICROPHONE_ACCESS_DENIED": {
+      "NAME": "需要麦克风",
+      "INSTRUCTIONS": "请在此页面的浏览器权限中允许麦克风。"
+    },
+    "MICROPHONE_BLOCKED": {
+      "NAME": "麦克风已屏蔽",
+      "INSTRUCTIONS": "请在此页面的浏览器权限中允许麦克风。"
+    },
+    "MICROPHONE_OS_BLOCKED": {
+      "NAME": "麦克风已屏蔽",
+      "INSTRUCTIONS": "请在此浏览器的设备设置中允许麦克风。"
+    },
+    "MICROPHONE_NOT_READABLE": {
+      "NAME": "麦克风错误",
+      "INSTRUCTIONS": "无法读取麦克风数据。请检查您的麦克风或尝试使用不同的麦克风。"
+    },
+    "AUDIO_RECORDING_ERROR": {
+      "NAME": "音频录制错误",
+      "INSTRUCTIONS": "无法录制音频。请检查您的麦克风或尝试使用不同的麦克风。"
+    },
+    "SERVER_ERROR": {
+      "NAME": "服务器错误",
+      "INSTRUCTIONS": "我们的团队已收到通知。"
+    },
+    "QUOTA_EXCEEDED": {
+      "NAME": "使用限额已达",
+      "INSTRUCTIONS": "您已达到使用限制。请稍后再试。"
+    },
+    "HIGH_DEMAND": {
+      "NAME": "需求量大",
+      "INSTRUCTIONS": "我们的服务正在经历高需求。请稍后重试。"
+    },
+    "HTTP": {
+      "400_BAD_REQUEST": {
+        "NAME": "无效请求",
+        "INSTRUCTIONS": "请使用有效参数重试。"
+      },
+      "401_UNAUTHORIZED": {
+        "NAME": "需要认证",
+        "INSTRUCTIONS": "请登录以继续使用此功能。"
+      },
+      "403_FORBIDDEN": {
+        "NAME": "访问被拒绝",
+        "INSTRUCTIONS": "您没有访问此功能的权限。"
+      },
+      "403_FORBIDDEN_GEO_LOCATION_BLOCKED": {
+        "NAME": "地理位置被阻止",
+        "INSTRUCTIONS": "语音聊天在此位置不可用。"
+      },
+      "404_NOT_FOUND": {
+        "NAME": "服务未找到",
+        "INSTRUCTIONS": "找不到请求的服务。"
+      },
+      "408_TIMEOUT": {
+        "NAME": "请求超时",
+        "INSTRUCTIONS": "服务器响应时间过长。请稍后重试。"
+      },
+      "409_CONFLICT": {
+        "NAME": "服务冲突",
+        "INSTRUCTIONS": "与当前状态发生冲突。请重试。"
+      },
+      "422_UNPROCESSABLE_ENTITY": {
+        "NAME": "无效请求格式",
+        "INSTRUCTIONS": "无法处理请求。请重试。"
+      },
+      "429_RATE_LIMIT": {
+        "NAME": "请求过多",
+        "INSTRUCTIONS": "请稍等片刻再重试。"
+      },
+      "500_SERVER_ERROR": {
+        "NAME": "服务器错误",
+        "INSTRUCTIONS": "请稍后重试。"
+      },
+      "502_BAD_GATEWAY": {
+        "NAME": "服务不可用",
+        "INSTRUCTIONS": "请稍后重试。"
+      },
+      "503_SERVICE_UNAVAILABLE": {
+        "NAME": "服务暂时不可用",
+        "INSTRUCTIONS": "请稍后重试。"
+      },
+      "504_GATEWAY_TIMEOUT": {
+        "NAME": "服务超时",
+        "INSTRUCTIONS": "服务响应时间过长。请稍后重试。"
+      }
+    }
+  },
+  "LANGUAGE_NOT_SUPPORTED": "该语言不支持语音聊天。"
+}

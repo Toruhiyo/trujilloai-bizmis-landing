@@ -1,0 +1,240 @@
+{
+  "VOICECHAT_CLAIM": "Lad os snakke. Jeg hjælper dig.",
+  "VOICECHAT_BUTTON": "Stemmechat",
+  "VOICECHAT_INSTRUCTIONS": "Tal for at afbryde",
+  "END_CALL": "Afslut",
+  "CONNECTING": "Vent et par sekunder ...",
+  "CONNECTING_BUTTON": "Forbinder",
+  "CLICK_TO_SPEAK": "Klik for at tale",
+  "CLICK_TO_END": "Klik for at afslutte",
+  "TALK_TO_INTERRUPT": "Tal for at afbryde",
+  "CONNECTING_HINT": "Vent et øjeblik",
+  "LISTENING_ACTIVE": "Jeg lytter ...",
+  "TRY_VOICE_EXPERIENCE": "Prøv mig, jeg er ny!",
+  "TERMS_ACCEPT": "Accepter",
+  "TERMS_DECLINE": "Tilbage",
+  "TERMS_ACCEPTANCE_WITH_LINK": "Accepter [handelsbetingelserne]({{termsUrl}}) for at fortsætte.",
+  "POC_DISCLAIMER": {
+    "TITLE": "Proof of Concept",
+    "MESSAGE": "Denne stemmechat er en prototype, der kun skal vise konceptet, og den afspejler ikke den endelige kvalitet af en løsning eller et produkt. Der kan forekomme forsinkelser, fejl og andre problemer.<br/>Nøglefunktioner: <strong>Selvstændig navigation på nettet</strong>, <strong>Fremhævning af tekst</strong> og <strong>Udfyldning af formularer</strong>."
+  },
+  "GREETING": {
+    "1": "Hej! Velkommen til stemmechatten. Hvad kan jeg hjælpe dig med i dag?",
+    "2": "Hej med dig! Jeg er her og hjælper med det, du har brug for.",
+    "3": "Goddag! Hvad kan jeg hjælpe dig med i dag?",
+    "4": "Velkommen! Sig endelig, hvad du har brug for, så hjælper jeg dig.",
+    "5": "Din stemmeassistent er klar. Jeg hjælper gerne!",
+    "DEFAULT": "Hej! Hvad kan jeg hjælpe med i dag?"
+  },
+  "RESUME_GREETING": {
+    "1": "Hej, jeg er tilbage! Lad os fortsætte, hvor vi slap.",
+    "2": "Godt, lad os fortsætte!",
+    "3": "Jeg er her stadig! Hvad var det, vi kiggede på?",
+    "DEFAULT": "Nå, hvor kom vi til?"
+  },
+  "FEEDBACK_TITLE": "Hvordan var din oplevelse?",
+  "FEEDBACK_THUMBS_UP": "God",
+  "FEEDBACK_THUMBS_DOWN": "Kunne være bedre",
+  "FEEDBACK_ERROR": "Feedback blev ikke sendt",
+  "FEEDBACK_SUCCESS": "Tak for din feedback!",
+  "ERROR_GENERIC": "Stemmechatten kunne ikke starte",
+  "MOBILE_TAP_AVATAR_TO_START": "Tryk og tal",
+  "MOBILE_TAP_AVATAR_TO_CANCEL": "Forbinder ...",
+  "MOBILE_TAP_AVATAR_TO_END_CALL": "Tryk for at afslutte",
+  "HINT_LABEL": "Prøv at sige",
+  "HINTS_DEFAULT": [
+    "Jeg skal bruge en gave til min kæreste, kan du hjælpe?",
+    "Hvad er på tilbud lige nu?",
+    "Hvilken er bedst til sart hud?",
+    "Kan jeg returnere den, hvis den ikke passer?",
+    "Sammenlign de to for mig"
+  ],
+  "CHAT_INPUT_PLACEHOLDER": "Spørg om produkter, levering eller din ordre.",
+  "CHAT_CONNECTING_PLACEHOLDER": "Forbinder … du kan godt skrive allerede.",
+  "CHAT_MESSAGE_SENDING": "Sender …",
+  "CHAT_MESSAGE_FAILED_RETRY": "Ikke sendt. Tryk for at prøve igen.",
+  "CHAT_EVENT_PRODUCTS_SHOWN": "Produkter du blev vist",
+  "CHAT_EVENT_SEARCH_RESULTS": "Resultater for “{{query}}”",
+  "CHAT_EVENT_PRODUCT_OPENED": "Produkt åbnet",
+  "CHAT_EVENT_ADDED_TO_CART": "Lagt i kurven",
+  "CHAT_EVENT_CART_OPENED": "Kurv åbnet",
+  "CHAT_EVENT_CHECKOUT_OPENED": "Kassen åbnet",
+  "CHAT_EVENT_SEARCHED_FOR": "Søgte efter “{{query}}”",
+  "CHAT_EVENT_PAGE_OPENED": "Side åbnet",
+  "CHAT_VOICE_TOGGLE_ON": "Start stemme",
+  "CHAT_VOICE_TOGGLE_OFF": "Afslut stemme",
+  "CHAT_CALL_START": "Start stemmechat",
+  "CHAT_CALL_END": "Læg på",
+  "CHAT_LAUNCHER_TITLE": "Start en chat",
+  "CHAT_NEW_SESSION": "Ny session",
+  "CHAT_HIDE_PANEL": "Tilbage til avataren",
+  "CHAT_SEND": "Send",
+  "CHAT_EMPTY_HINT": "Send en besked for at starte samtalen.",
+  "CHAT_COLLAPSE": "Fold sammen",
+  "CHAT_EXPAND": "Fold ud",
+  "MIC_RECOVERY_DISMISS": "Luk",
+  "NAVIGATION_TAKING_YOU_TO": "Jeg tager dig til",
+  "NAVIGATION_TARGET_SEARCH": "Søgeresultater",
+  "NAVIGATION_TARGET_GENERIC": "En anden side",
+  "TEXT_CHAT_INSTRUCTIONS": "Skift til stemme",
+  "MOBILE_TYPE_INSTEAD": "... eller skriv i stedet",
+  "CLOSE_WIDGET": "Luk",
+  "REOPEN_WIDGET": "Åbn assistenten igen",
+  "CHAT_LITE_SHOW_HISTORY": "Sessionshistorik",
+  "CHAT_LITE_HIDE_HISTORY": "Skjul samtale",
+  "CHAT_LITE_BACK_TO_VOICE": "Tilbage til stemmetilstand",
+  "CHAT_LITE_GO_TO_VOICE": "Skift til stemmetilstand",
+  "CHAT_LITE_CONVERSATION": "Samtale",
+  "CHAT_LITE_PIN_TRANSCRIPT": "Fastgør samtalen",
+  "CHAT_LITE_UNPIN_TRANSCRIPT": "Frigør samtalen",
+  "UNIFIED_PROMPTS": {
+    "DISCOVERY": "Hjælp mig med at finde det rigtige produkt.",
+    "COMPARISON": "Sammenlign de bedste muligheder for mig.",
+    "GUIDANCE": "Passer det, eller opfylder det mine behov?",
+    "RETURNS": "Hvad er returpolitikken?",
+    "FAQ": "Kan du svare på et spørgsmål om shopping?"
+  },
+  "MIC_PRIMER": "Vælg \"Tillad\", så jeg kan høre dig",
+  "MIC_NEEDED": "Giv adgang til mikrofonen for at tale",
+  "ENABLE_MIC_HINT_BROWSER": "Tillad mikrofonen i sidens tilladelser",
+  "ENABLE_MIC_HINT_OS": "Tillad mikrofonen i enhedens indstillinger",
+  "DEGRADED_VOICE_SWITCHED_HINT_BROWSER": "Adgangen til mikrofonen er blokeret, så jeg har skiftet dig til chatten. Jeg taler stadig højt. Vil du tale selv, så tillad mikrofonen i sidens tilladelser.",
+  "DEGRADED_VOICE_SWITCHED_HINT_OS": "Adgangen til mikrofonen er blokeret, så jeg har skiftet dig til chatten. Jeg taler stadig højt. Vil du tale selv, så tillad mikrofonen i enhedens indstillinger.",
+  "DEGRADED_VOICE_BLOCKED_HINT_BROWSER": "Adgangen til mikrofonen er blokeret. Jeg taler stadig højt. Vil du tale selv, så tillad mikrofonen i sidens tilladelser.",
+  "DEGRADED_VOICE_BLOCKED_HINT_OS": "Adgangen til mikrofonen er blokeret. Jeg taler stadig højt. Vil du tale selv, så tillad mikrofonen i enhedens indstillinger.",
+  "USE_TEXT_CHAT": "Brug tekstchat",
+  "OR": "ELLER",
+  "MIC_BLOCKED_HINT": "Tillad mikrofonen i sidens tilladelser",
+  "MIC_OS_BLOCKED_HINT": "Tillad mikrofonen i enhedens indstillinger",
+  "CONTROLS": {
+    "MICROPHONE": {
+      "MUTE": "Slå mikrofonen fra",
+      "UNMUTE": "Slå mikrofonen til",
+      "MUTED": "Mikrofonen er slået fra",
+      "UNMUTED": "Mikrofonen er aktiv"
+    },
+    "SUBTITLES": {
+      "ENABLE": "Slå undertekster til",
+      "DISABLE": "Slå undertekster fra",
+      "ENABLED": "Undertekster til",
+      "DISABLED": "Undertekster fra"
+    },
+    "MUTE_MICROPHONE": "Slå mikrofonen fra",
+    "UNMUTE_MICROPHONE": "Slå mikrofonen til",
+    "ENABLE_CAPTIONS": "Slå undertekster til",
+    "DISABLE_CAPTIONS": "Slå undertekster fra"
+  },
+  "ERRORS": {
+    "UNKNOWN_ERROR": {
+      "NAME": "Uventet fejl",
+      "INSTRUCTIONS": "Prøv igen, eller kontakt support, hvis problemet fortsætter."
+    },
+    "NETWORK_ERROR": {
+      "NAME": "Forbindelsesfejl",
+      "INSTRUCTIONS": "Tjek din internetforbindelse, og prøv igen."
+    },
+    "API_ERROR": {
+      "NAME": "Kommunikationsfejl",
+      "INSTRUCTIONS": "Der opstod et problem med forbindelsen til tjenesten. Prøv igen senere."
+    },
+    "WEBSOCKET_ERROR": {
+      "NAME": "WebSocket-forbindelsesfejl",
+      "INSTRUCTIONS": "Der er ikke forbindelse til stemmetjenesten. Tjek din forbindelse."
+    },
+    "CONNECTION_TIMEOUT": {
+      "NAME": "Forbindelsen fik timeout",
+      "INSTRUCTIONS": "Forbindelsen tog for lang tid. Prøv igen."
+    },
+    "AUTHENTICATION_ERROR": {
+      "NAME": "Loginfejl",
+      "INSTRUCTIONS": "Log ind igen."
+    },
+    "MICROPHONE_ACCESS_DENIED": {
+      "NAME": "Mikrofon påkrævet",
+      "INSTRUCTIONS": "Tillad den i browserens tilladelser for denne side."
+    },
+    "MICROPHONE_BLOCKED": {
+      "NAME": "Mikrofonen er blokeret",
+      "INSTRUCTIONS": "Tillad den i browserens tilladelser for denne side."
+    },
+    "MICROPHONE_OS_BLOCKED": {
+      "NAME": "Mikrofonen er blokeret",
+      "INSTRUCTIONS": "Tillad den i enhedens indstillinger for denne browser."
+    },
+    "MICROPHONE_NOT_READABLE": {
+      "NAME": "Mikrofonfejl",
+      "INSTRUCTIONS": "Der kunne ikke læses data fra mikrofonen. Tjek din mikrofon, eller prøv en anden."
+    },
+    "AUDIO_RECORDING_ERROR": {
+      "NAME": "Optagelsesfejl",
+      "INSTRUCTIONS": "Lyden kunne ikke optages. Tjek din mikrofon, eller prøv en anden."
+    },
+    "SERVER_ERROR": {
+      "NAME": "Serverfejl",
+      "INSTRUCTIONS": "Vores team er blevet underrettet."
+    },
+    "QUOTA_EXCEEDED": {
+      "NAME": "Forbrugsgrænse nået",
+      "INSTRUCTIONS": "Du har nået din forbrugsgrænse. Prøv igen senere."
+    },
+    "HIGH_DEMAND": {
+      "NAME": "Stor efterspørgsel",
+      "INSTRUCTIONS": "Der er meget travlt i tjenesten lige nu. Prøv igen om lidt."
+    },
+    "HTTP": {
+      "400_BAD_REQUEST": {
+        "NAME": "Ugyldig anmodning",
+        "INSTRUCTIONS": "Prøv igen med gyldige oplysninger."
+      },
+      "401_UNAUTHORIZED": {
+        "NAME": "Login påkrævet",
+        "INSTRUCTIONS": "Log ind for at fortsætte med at bruge denne funktion."
+      },
+      "403_FORBIDDEN": {
+        "NAME": "Adgang nægtet",
+        "INSTRUCTIONS": "Du har ikke adgang til denne funktion."
+      },
+      "403_FORBIDDEN_GEO_LOCATION_BLOCKED": {
+        "NAME": "Placering blokeret",
+        "INSTRUCTIONS": "Stemmechatten er ikke tilgængelig fra denne placering."
+      },
+      "404_NOT_FOUND": {
+        "NAME": "Tjenesten blev ikke fundet",
+        "INSTRUCTIONS": "Den ønskede tjeneste kunne ikke findes."
+      },
+      "408_TIMEOUT": {
+        "NAME": "Anmodningen fik timeout",
+        "INSTRUCTIONS": "Serveren var for længe om at svare. Prøv igen senere."
+      },
+      "409_CONFLICT": {
+        "NAME": "Konflikt i tjenesten",
+        "INSTRUCTIONS": "Der opstod en konflikt med den aktuelle tilstand. Prøv igen."
+      },
+      "422_UNPROCESSABLE_ENTITY": {
+        "NAME": "Ugyldigt format",
+        "INSTRUCTIONS": "Anmodningen kunne ikke behandles. Prøv igen."
+      },
+      "429_RATE_LIMIT": {
+        "NAME": "For mange anmodninger",
+        "INSTRUCTIONS": "Vent et øjeblik, før du prøver igen."
+      },
+      "500_SERVER_ERROR": {
+        "NAME": "Serverfejl",
+        "INSTRUCTIONS": "Prøv igen senere."
+      },
+      "502_BAD_GATEWAY": {
+        "NAME": "Tjenesten er ikke tilgængelig",
+        "INSTRUCTIONS": "Prøv igen senere."
+      },
+      "503_SERVICE_UNAVAILABLE": {
+        "NAME": "Tjenesten er midlertidigt utilgængelig",
+        "INSTRUCTIONS": "Prøv igen senere."
+      },
+      "504_GATEWAY_TIMEOUT": {
+        "NAME": "Tjenesten fik timeout",
+        "INSTRUCTIONS": "Tjenesten var for længe om at svare. Prøv igen senere."
+      }
+    }
+  },
+  "LANGUAGE_NOT_SUPPORTED": "Sproget understøttes ikke i stemmechatten."
+}

@@ -1,0 +1,240 @@
+{
+  "VOICECHAT_CLAIM": "Să vorbim. Vă ajut eu.",
+  "VOICECHAT_BUTTON": "Chat vocal",
+  "VOICECHAT_INSTRUCTIONS": "Vorbiți ca să mă întrerupeți",
+  "END_CALL": "Încheiați apelul",
+  "CONNECTING": "Așteptați câteva secunde...",
+  "CONNECTING_BUTTON": "Se conectează",
+  "CLICK_TO_SPEAK": "Clic pentru a vorbi",
+  "CLICK_TO_END": "Clic pentru a încheia",
+  "TALK_TO_INTERRUPT": "Vorbiți ca să mă întrerupeți",
+  "CONNECTING_HINT": "Așteptați câteva momente",
+  "LISTENING_ACTIVE": "Ascult...",
+  "TRY_VOICE_EXPERIENCE": "Încercați-mă, sunt nou!",
+  "TERMS_ACCEPT": "Accept",
+  "TERMS_DECLINE": "Înapoi",
+  "TERMS_ACCEPTANCE_WITH_LINK": "Acceptați [Termenii]({{termsUrl}}) pentru a continua.",
+  "POC_DISCLAIMER": {
+    "TITLE": "Prototip demonstrativ",
+    "MESSAGE": "Acest prototip de chat vocal are doar rolul de a demonstra conceptul și nu reprezintă calitatea finală a unei soluții sau a unui produs. Pot apărea întârzieri, erori și alte probleme.<br/>Funcții principale: <strong>Navigare web autonomă</strong>, <strong>Evidențierea textului</strong> și <strong>Completarea formularelor</strong>."
+  },
+  "GREETING": {
+    "1": "Bună! Bine ați venit la chatul vocal. Cu ce vă pot ajuta astăzi?",
+    "2": "Bună! Sunt aici să vă ajut cu tot ce aveți nevoie.",
+    "3": "Bună ziua! Cu ce vă pot fi de folos astăzi?",
+    "4": "Bine ați venit! Spuneți-mi ce căutați și fac tot posibilul să vă ajut.",
+    "5": "Asistentul vocal, la dispoziția dumneavoastră! Gata să vă ajut!",
+    "DEFAULT": "Bună! Ce căutați astăzi?"
+  },
+  "RESUME_GREETING": {
+    "1": "Am revenit! Continuăm de unde am rămas.",
+    "2": "Bun, mergem mai departe!",
+    "3": "Sunt tot aici! La ce ne uitam?",
+    "DEFAULT": "Deci, unde rămăsesem?"
+  },
+  "FEEDBACK_TITLE": "Cum a fost experiența dumneavoastră?",
+  "FEEDBACK_THUMBS_UP": "Bună",
+  "FEEDBACK_THUMBS_DOWN": "Se poate mai bine",
+  "FEEDBACK_ERROR": "Nu am putut trimite părerea",
+  "FEEDBACK_SUCCESS": "Vă mulțumim pentru părere!",
+  "ERROR_GENERIC": "Nu am putut porni chatul vocal",
+  "MOBILE_TAP_AVATAR_TO_START": "Atingeți și vorbiți",
+  "MOBILE_TAP_AVATAR_TO_CANCEL": "Se conectează...",
+  "MOBILE_TAP_AVATAR_TO_END_CALL": "Atingeți ca să încheiați",
+  "HINT_LABEL": "Încercați să spuneți",
+  "HINTS_DEFAULT": [
+    "Am nevoie de un cadou pentru partenerul meu, mă ajutați?",
+    "Ce este la reducere acum?",
+    "Care e mai bun pentru pielea sensibilă?",
+    "Îl pot returna dacă nu îmi vine bine?",
+    "Comparați-mi aceste două produse"
+  ],
+  "CHAT_INPUT_PLACEHOLDER": "Întrebați-mă despre produse, livrare sau comanda dumneavoastră.",
+  "CHAT_CONNECTING_PLACEHOLDER": "Se conectează… puteți scrie deja.",
+  "CHAT_MESSAGE_SENDING": "Se trimite…",
+  "CHAT_MESSAGE_FAILED_RETRY": "Netrimis. Atingeți ca să reîncercați.",
+  "CHAT_EVENT_PRODUCTS_SHOWN": "Produse care ți-au fost arătate",
+  "CHAT_EVENT_SEARCH_RESULTS": "Rezultate pentru „{{query}}”",
+  "CHAT_EVENT_PRODUCT_OPENED": "Produs deschis",
+  "CHAT_EVENT_ADDED_TO_CART": "Adăugat în coș",
+  "CHAT_EVENT_CART_OPENED": "Coș deschis",
+  "CHAT_EVENT_CHECKOUT_OPENED": "Finalizare comandă deschisă",
+  "CHAT_EVENT_SEARCHED_FOR": "Căutare „{{query}}”",
+  "CHAT_EVENT_PAGE_OPENED": "Pagină deschisă",
+  "CHAT_VOICE_TOGGLE_ON": "Pornire voce",
+  "CHAT_VOICE_TOGGLE_OFF": "Oprire voce",
+  "CHAT_CALL_START": "Începe chatul vocal",
+  "CHAT_CALL_END": "Închide apelul",
+  "CHAT_LAUNCHER_TITLE": "Începeți un chat scris",
+  "CHAT_NEW_SESSION": "Sesiune nouă",
+  "CHAT_HIDE_PANEL": "Înapoi la avatar",
+  "CHAT_SEND": "Trimite",
+  "CHAT_EMPTY_HINT": "Trimiteți un mesaj ca să începeți conversația.",
+  "CHAT_COLLAPSE": "Restrânge",
+  "CHAT_EXPAND": "Extinde",
+  "MIC_RECOVERY_DISMISS": "Închide",
+  "NAVIGATION_TAKING_YOU_TO": "Vă duc la",
+  "NAVIGATION_TARGET_SEARCH": "Rezultatele căutării",
+  "NAVIGATION_TARGET_GENERIC": "Altă pagină",
+  "TEXT_CHAT_INSTRUCTIONS": "Treceți la voce",
+  "MOBILE_TYPE_INSTEAD": "...sau scrieți",
+  "CLOSE_WIDGET": "Închide",
+  "REOPEN_WIDGET": "Redeschide asistentul",
+  "CHAT_LITE_SHOW_HISTORY": "Istoricul sesiunii",
+  "CHAT_LITE_HIDE_HISTORY": "Ascunde conversația",
+  "CHAT_LITE_BACK_TO_VOICE": "Înapoi la modul vocal",
+  "CHAT_LITE_GO_TO_VOICE": "Treci la modul vocal",
+  "CHAT_LITE_CONVERSATION": "Conversație",
+  "CHAT_LITE_PIN_TRANSCRIPT": "Fixează conversația",
+  "CHAT_LITE_UNPIN_TRANSCRIPT": "Anulează fixarea conversației",
+  "UNIFIED_PROMPTS": {
+    "DISCOVERY": "Ajută-mă să găsesc produsul potrivit.",
+    "COMPARISON": "Compară cele mai bune opțiuni pentru mine.",
+    "GUIDANCE": "Mi se va potrivi sau va răspunde nevoilor mele?",
+    "RETURNS": "Care este politica de retur?",
+    "FAQ": "Poți răspunde la o întrebare despre cumpărături?"
+  },
+  "MIC_PRIMER": "Alegeți \"Permite\" ca să vă pot auzi",
+  "MIC_NEEDED": "Permiteți accesul la microfon ca să vorbiți",
+  "ENABLE_MIC_HINT_BROWSER": "Permiteți microfonul din permisiunile paginii",
+  "ENABLE_MIC_HINT_OS": "Permiteți microfonul din setările dispozitivului",
+  "DEGRADED_VOICE_SWITCHED_HINT_BROWSER": "Accesul la microfon este blocat, așa că v-am trecut pe chat. Voi continua să vorbesc cu voce tare; ca să vorbiți, permiteți microfonul din permisiunile paginii.",
+  "DEGRADED_VOICE_SWITCHED_HINT_OS": "Accesul la microfon este blocat, așa că v-am trecut pe chat. Voi continua să vorbesc cu voce tare; ca să vorbiți, permiteți microfonul din setările dispozitivului.",
+  "DEGRADED_VOICE_BLOCKED_HINT_BROWSER": "Accesul la microfon este blocat. Voi continua să vorbesc cu voce tare; ca să vorbiți, permiteți microfonul din permisiunile paginii.",
+  "DEGRADED_VOICE_BLOCKED_HINT_OS": "Accesul la microfon este blocat. Voi continua să vorbesc cu voce tare; ca să vorbiți, permiteți microfonul din setările dispozitivului.",
+  "USE_TEXT_CHAT": "Folosiți chatul scris",
+  "OR": "SAU",
+  "MIC_BLOCKED_HINT": "Permiteți microfonul din permisiunile paginii",
+  "MIC_OS_BLOCKED_HINT": "Permiteți microfonul din setările dispozitivului",
+  "CONTROLS": {
+    "MICROPHONE": {
+      "MUTE": "Oprește microfonul",
+      "UNMUTE": "Pornește microfonul",
+      "MUTED": "Microfon oprit",
+      "UNMUTED": "Microfon activ"
+    },
+    "SUBTITLES": {
+      "ENABLE": "Activează subtitrările",
+      "DISABLE": "Dezactivează subtitrările",
+      "ENABLED": "Subtitrări active",
+      "DISABLED": "Subtitrări dezactivate"
+    },
+    "MUTE_MICROPHONE": "Oprește microfonul",
+    "UNMUTE_MICROPHONE": "Pornește microfonul",
+    "ENABLE_CAPTIONS": "Activează subtitrările",
+    "DISABLE_CAPTIONS": "Dezactivează subtitrările"
+  },
+  "ERRORS": {
+    "UNKNOWN_ERROR": {
+      "NAME": "Eroare neașteptată",
+      "INSTRUCTIONS": "Încercați din nou sau contactați asistența dacă problema persistă."
+    },
+    "NETWORK_ERROR": {
+      "NAME": "Eroare de conexiune la rețea",
+      "INSTRUCTIONS": "Verificați conexiunea la internet și încercați din nou."
+    },
+    "API_ERROR": {
+      "NAME": "Eroare de comunicare cu API-ul",
+      "INSTRUCTIONS": "A apărut o problemă la conectarea cu serviciul. Încercați din nou mai târziu."
+    },
+    "WEBSOCKET_ERROR": {
+      "NAME": "Eroare de conexiune WebSocket",
+      "INSTRUCTIONS": "Nu ne putem conecta la serviciul vocal. Verificați conexiunea."
+    },
+    "CONNECTION_TIMEOUT": {
+      "NAME": "Timp de conectare depășit",
+      "INSTRUCTIONS": "Conexiunea a expirat. Încercați din nou."
+    },
+    "AUTHENTICATION_ERROR": {
+      "NAME": "Eroare de autentificare",
+      "INSTRUCTIONS": "Autentificați-vă din nou."
+    },
+    "MICROPHONE_ACCESS_DENIED": {
+      "NAME": "Este nevoie de microfon",
+      "INSTRUCTIONS": "Permiteți-l din permisiunile browserului pentru această pagină."
+    },
+    "MICROPHONE_BLOCKED": {
+      "NAME": "Microfon blocat",
+      "INSTRUCTIONS": "Permiteți-l din permisiunile browserului pentru această pagină."
+    },
+    "MICROPHONE_OS_BLOCKED": {
+      "NAME": "Microfon blocat",
+      "INSTRUCTIONS": "Permiteți-l din setările dispozitivului pentru acest browser."
+    },
+    "MICROPHONE_NOT_READABLE": {
+      "NAME": "Eroare de microfon",
+      "INSTRUCTIONS": "Nu am putut citi datele de la microfon. Verificați microfonul sau încercați altul."
+    },
+    "AUDIO_RECORDING_ERROR": {
+      "NAME": "Eroare la înregistrarea audio",
+      "INSTRUCTIONS": "Nu am putut înregistra audio. Verificați microfonul sau încercați altul."
+    },
+    "SERVER_ERROR": {
+      "NAME": "Eroare de server",
+      "INSTRUCTIONS": "Echipa noastră a fost anunțată."
+    },
+    "QUOTA_EXCEEDED": {
+      "NAME": "Limită de utilizare atinsă",
+      "INSTRUCTIONS": "Ați atins limita de utilizare. Încercați din nou mai târziu."
+    },
+    "HIGH_DEMAND": {
+      "NAME": "Cerere mare",
+      "INSTRUCTIONS": "Serviciul nostru are multe solicitări. Încercați din nou în scurt timp."
+    },
+    "HTTP": {
+      "400_BAD_REQUEST": {
+        "NAME": "Cerere invalidă",
+        "INSTRUCTIONS": "Încercați din nou cu parametri valizi."
+      },
+      "401_UNAUTHORIZED": {
+        "NAME": "Autentificare necesară",
+        "INSTRUCTIONS": "Autentificați-vă ca să continuați să folosiți această funcție."
+      },
+      "403_FORBIDDEN": {
+        "NAME": "Acces refuzat",
+        "INSTRUCTIONS": "Nu aveți permisiunea de a accesa această funcție."
+      },
+      "403_FORBIDDEN_GEO_LOCATION_BLOCKED": {
+        "NAME": "Geolocalizare blocată",
+        "INSTRUCTIONS": "Chatul vocal nu este disponibil din această locație."
+      },
+      "404_NOT_FOUND": {
+        "NAME": "Serviciu negăsit",
+        "INSTRUCTIONS": "Serviciul solicitat nu a putut fi găsit."
+      },
+      "408_TIMEOUT": {
+        "NAME": "Timp de așteptare depășit",
+        "INSTRUCTIONS": "Serverul a răspuns prea greu. Încercați din nou mai târziu."
+      },
+      "409_CONFLICT": {
+        "NAME": "Conflict de serviciu",
+        "INSTRUCTIONS": "A apărut un conflict cu starea actuală. Încercați din nou."
+      },
+      "422_UNPROCESSABLE_ENTITY": {
+        "NAME": "Format de cerere invalid",
+        "INSTRUCTIONS": "Cererea nu a putut fi procesată. Încercați din nou."
+      },
+      "429_RATE_LIMIT": {
+        "NAME": "Prea multe cereri",
+        "INSTRUCTIONS": "Așteptați un moment înainte de a încerca din nou."
+      },
+      "500_SERVER_ERROR": {
+        "NAME": "Eroare de server",
+        "INSTRUCTIONS": "Încercați din nou mai târziu."
+      },
+      "502_BAD_GATEWAY": {
+        "NAME": "Serviciu indisponibil",
+        "INSTRUCTIONS": "Încercați din nou mai târziu."
+      },
+      "503_SERVICE_UNAVAILABLE": {
+        "NAME": "Serviciu temporar indisponibil",
+        "INSTRUCTIONS": "Încercați din nou mai târziu."
+      },
+      "504_GATEWAY_TIMEOUT": {
+        "NAME": "Timp de răspuns depășit",
+        "INSTRUCTIONS": "Serviciul a răspuns prea greu. Încercați din nou mai târziu."
+      }
+    }
+  },
+  "LANGUAGE_NOT_SUPPORTED": "Limbă neacceptată pentru chatul vocal."
+}

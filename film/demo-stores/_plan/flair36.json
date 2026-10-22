@@ -1,0 +1,231 @@
+{
+ "_note": "v36 native widget highlight beats per demo store (clip seconds). Tunnel: the film rolls each clip from start (no loop on screen), the beat in its last second before it passes. Run: the beat straddles the card cut-in at 1.3 s. v36b (operator): each tunnel beat peaks at its own widget-exposure maximum (largest, unoccluded), nearer cards first, >= 0.2 s apart; 700 ms, strength 1.6.",
+ "halcyon-optics": {
+  "T": 3.2,
+  "start": 0.0,
+  "beats": [],
+  "_visible": [
+   0.0,
+   0.87
+  ]
+ },
+ "kumo-tea": {
+  "T": 3.2,
+  "start": 0.2,
+  "beats": [
+   {
+    "at": 1.25,
+    "ms": 700,
+    "strength": 1.6
+   }
+  ],
+  "_peak_in_tunnel": 1.4
+ },
+ "sora-ceramics": {
+  "T": 3.2,
+  "start": 0.4,
+  "beats": [
+   {
+    "at": 2.05,
+    "ms": 700,
+    "strength": 1.6
+   }
+  ],
+  "_peak_in_tunnel": 2.0
+ },
+ "powderline": {
+  "T": 3.6,
+  "start": 0.6,
+  "beats": [
+   {
+    "at": 2.58,
+    "ms": 700,
+    "strength": 1.6
+   }
+  ],
+  "_peak_in_tunnel": 2.33
+ },
+ "tidewater": {
+  "T": 4.2,
+  "start": 0.8,
+  "beats": [
+   {
+    "at": 3.31,
+    "ms": 700,
+    "strength": 1.6
+   }
+  ],
+  "_peak_in_tunnel": 2.86
+ },
+ "maison-cacao": {
+  "T": 4.7,
+  "start": 1.0,
+  "beats": [
+   {
+    "at": 3.73,
+    "ms": 700,
+    "strength": 1.6
+   }
+  ],
+  "_peak_in_tunnel": 3.08
+ },
+ "liora": {
+  "T": 5.1,
+  "start": 1.2,
+  "beats": [
+   {
+    "at": 4.21,
+    "ms": 700,
+    "strength": 1.6
+   }
+  ],
+  "_peak_in_tunnel": 3.36
+ },
+ "grindline": {
+  "T": 5.5,
+  "start": 1.4,
+  "beats": [
+   {
+    "at": 4.61,
+    "ms": 700,
+    "strength": 1.6
+   }
+  ],
+  "_peak_in_tunnel": 3.56
+ },
+ "kettle-and-crow": {
+  "T": 3.2,
+  "beats": [
+   {
+    "at": 1.1,
+    "ms": 900
+   }
+  ]
+ },
+ "northpeak": {
+  "T": 3.2,
+  "beats": [
+   {
+    "at": 1.05,
+    "ms": 800
+   }
+  ]
+ },
+ "saltline": {
+  "T": 3.2,
+  "beats": [
+   {
+    "at": 1.05,
+    "ms": 800
+   }
+  ]
+ },
+ "ridgeline-supply": {
+  "T": 3.2,
+  "beats": [
+   {
+    "at": 1.0,
+    "ms": 700
+   }
+  ]
+ },
+ "nest-and-nook": {
+  "T": 3.2,
+  "beats": [
+   {
+    "at": 1.0,
+    "ms": 700
+   }
+  ]
+ },
+ "atelier-noor": {
+  "T": 3.2,
+  "beats": [
+   {
+    "at": 1.0,
+    "ms": 700
+   }
+  ]
+ },
+ "little-timber": {
+  "T": 3.2,
+  "beats": [
+   {
+    "at": 1.0,
+    "ms": 700
+   }
+  ]
+ },
+ "inkwell": {
+  "T": 3.2,
+  "beats": [
+   {
+    "at": 1.0,
+    "ms": 700
+   }
+  ]
+ },
+ "leaf-and-loam": {
+  "T": 3.2,
+  "beats": [
+   {
+    "at": 1.0,
+    "ms": 700
+   }
+  ]
+ },
+ "spokehaus": {
+  "T": 3.2,
+  "beats": [
+   {
+    "at": 1.0,
+    "ms": 700
+   }
+  ]
+ },
+ "juniper-linen": {
+  "T": 3.2,
+  "beats": [
+   {
+    "at": 1.0,
+    "ms": 700
+   }
+  ]
+ },
+ "tonewood": {
+  "T": 3.2,
+  "beats": [
+   {
+    "at": 1.0,
+    "ms": 700
+   }
+  ]
+ },
+ "fetch-and-fern": {
+  "T": 3.2,
+  "beats": [
+   {
+    "at": 1.0,
+    "ms": 700
+   }
+  ]
+ },
+ "petal-and-post": {
+  "T": 3.2,
+  "beats": [
+   {
+    "at": 1.0,
+    "ms": 700
+   }
+  ]
+ },
+ "copperleaf": {
+  "T": 3.2,
+  "beats": [
+   {
+    "at": 1.0,
+    "ms": 700
+   }
+  ]
+ }
+}

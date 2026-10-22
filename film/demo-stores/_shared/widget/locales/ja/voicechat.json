@@ -1,0 +1,240 @@
+{
+  "VOICECHAT_CLAIM": "話しかけてね。お手伝いするよ。",
+  "VOICECHAT_BUTTON": "音声チャット",
+  "VOICECHAT_INSTRUCTIONS": "話して中断",
+  "END_CALL": "通話終了",
+  "CONNECTING": "少々お待ちください...",
+  "CONNECTING_BUTTON": "接続中",
+  "CLICK_TO_SPEAK": "クリックして話す",
+  "CLICK_TO_END": "クリックして終了",
+  "TALK_TO_INTERRUPT": "話して中断",
+  "CONNECTING_HINT": "少々お待ちください",
+  "LISTENING_ACTIVE": "聞いています...",
+  "TRY_VOICE_EXPERIENCE": "試してみて、新機能です！",
+  "TERMS_ACCEPT": "同意する",
+  "TERMS_DECLINE": "戻る",
+  "TERMS_ACCEPTANCE_WITH_LINK": "続行するには[利用規約]({{termsUrl}})に同意してください。",
+  "POC_DISCLAIMER": {
+    "TITLE": "概念実証",
+    "MESSAGE": "この音声チャットプロトタイプは概念を実証するためのものであり、ソリューションや製品の最終品質を表すものではありません。遅延、バグ、その他の問題が発生する可能性があります。<br/>主な機能：<strong>自動ウェブナビゲーション</strong>、<strong>テキストハイライト</strong>、<strong>フォーム記入</strong>。"
+  },
+  "GREETING": {
+    "1": "こんにちは！音声チャットへようこそ。本日はどのようにお手伝いできますか？",
+    "2": "こんにちは！ご用件があれば何でもお手伝いします。",
+    "3": "ご挨拶！本日どのようにお手伝いできますか？",
+    "4": "ようこそ！ご要望を教えてください。できる限りサポートします。",
+    "5": "音声アシスタントが対応します！いつでもお手伝いします！",
+    "DEFAULT": "こんにちは！今日は何かお手伝いできますか？"
+  },
+  "RESUME_GREETING": {
+    "1": "戻りました！続きからいきましょう。",
+    "2": "では、続けましょう！",
+    "3": "まだここにいますよ！何を見ていましたっけ？",
+    "DEFAULT": "さて、どこまで話しましたっけ？"
+  },
+  "FEEDBACK_TITLE": "体験はいかがでしたか？",
+  "FEEDBACK_THUMBS_UP": "良い",
+  "FEEDBACK_THUMBS_DOWN": "改善の余地あり",
+  "FEEDBACK_ERROR": "フィードバックを送信できませんでした",
+  "FEEDBACK_SUCCESS": "フィードバックありがとうございます！",
+  "ERROR_GENERIC": "音声チャットを開始できませんでした",
+  "MOBILE_TAP_AVATAR_TO_START": "タップで会話",
+  "MOBILE_TAP_AVATAR_TO_CANCEL": "接続中...",
+  "MOBILE_TAP_AVATAR_TO_END_CALL": "タップして終了",
+  "HINT_LABEL": "こんな風に話しかけてみて",
+  "HINTS_DEFAULT": [
+    "パートナーへのプレゼントを探しています",
+    "今セール中の商品はありますか？",
+    "敏感肌にはどれがいいですか？",
+    "サイズが合わなかったら返品できますか？",
+    "この二つを比較してください"
+  ],
+  "CHAT_INPUT_PLACEHOLDER": "商品、配送、ご注文についてお尋ねください。",
+  "CHAT_CONNECTING_PLACEHOLDER": "接続中… すでに入力できます。",
+  "CHAT_MESSAGE_SENDING": "送信中…",
+  "CHAT_MESSAGE_FAILED_RETRY": "未送信。タップして再試行。",
+  "CHAT_EVENT_PRODUCTS_SHOWN": "表示された商品",
+  "CHAT_EVENT_SEARCH_RESULTS": "「{{query}}」の検索結果",
+  "CHAT_EVENT_PRODUCT_OPENED": "商品ページを開きました",
+  "CHAT_EVENT_ADDED_TO_CART": "カートに追加しました",
+  "CHAT_EVENT_CART_OPENED": "カートを開きました",
+  "CHAT_EVENT_CHECKOUT_OPENED": "購入手続きを開きました",
+  "CHAT_EVENT_SEARCHED_FOR": "「{{query}}」を検索しました",
+  "CHAT_EVENT_PAGE_OPENED": "ページを開きました",
+  "CHAT_VOICE_TOGGLE_ON": "音声を開始",
+  "CHAT_VOICE_TOGGLE_OFF": "音声を終了",
+  "CHAT_CALL_START": "音声チャットを開始",
+  "CHAT_CALL_END": "通話を終了",
+  "CHAT_LAUNCHER_TITLE": "テキストでチャット",
+  "CHAT_NEW_SESSION": "新しい会話",
+  "CHAT_HIDE_PANEL": "アバターに戻る",
+  "CHAT_SEND": "送信",
+  "CHAT_EMPTY_HINT": "メッセージを送って会話を始めましょう。",
+  "CHAT_COLLAPSE": "折りたたむ",
+  "CHAT_EXPAND": "広げる",
+  "MIC_RECOVERY_DISMISS": "閉じる",
+  "NAVIGATION_TAKING_YOU_TO": "ご案内先",
+  "NAVIGATION_TARGET_SEARCH": "検索結果",
+  "NAVIGATION_TARGET_GENERIC": "別のページ",
+  "TEXT_CHAT_INSTRUCTIONS": "音声に切り替え",
+  "MOBILE_TYPE_INSTEAD": "...またはキーボードで入力",
+  "CLOSE_WIDGET": "閉じる",
+  "REOPEN_WIDGET": "アシスタントを再表示",
+  "CHAT_LITE_SHOW_HISTORY": "セッション履歴",
+  "CHAT_LITE_HIDE_HISTORY": "会話を非表示",
+  "CHAT_LITE_BACK_TO_VOICE": "音声モードに戻る",
+  "CHAT_LITE_GO_TO_VOICE": "音声モードへ",
+  "CHAT_LITE_CONVERSATION": "会話",
+  "CHAT_LITE_PIN_TRANSCRIPT": "会話を固定",
+  "CHAT_LITE_UNPIN_TRANSCRIPT": "会話の固定を解除",
+  "UNIFIED_PROMPTS": {
+    "DISCOVERY": "自分に合った商品を探すのを手伝ってください。",
+    "COMPARISON": "おすすめの商品を比較してください。",
+    "GUIDANCE": "これはサイズや用途が私に合いますか？",
+    "RETURNS": "返品ポリシーを教えてください。",
+    "FAQ": "買い物について質問してもいいですか？"
+  },
+  "MIC_PRIMER": "「許可」を選ぶと声が届きます",
+  "MIC_NEEDED": "音声で話すにはマイクを許可してください",
+  "ENABLE_MIC_HINT_BROWSER": "ページの権限でマイクを許可",
+  "ENABLE_MIC_HINT_OS": "端末設定でマイクを許可",
+  "DEGRADED_VOICE_SWITCHED_HINT_BROWSER": "マイクへのアクセスがブロックされているため、チャットに切り替えました。引き続き音声でお答えします。話すには、ページの権限でマイクを許可してください。",
+  "DEGRADED_VOICE_SWITCHED_HINT_OS": "マイクへのアクセスがブロックされているため、チャットに切り替えました。引き続き音声でお答えします。話すには、端末の設定でマイクを許可してください。",
+  "DEGRADED_VOICE_BLOCKED_HINT_BROWSER": "マイクへのアクセスがブロックされています。引き続き音声でお答えします。話すには、ページの権限でマイクを許可してください。",
+  "DEGRADED_VOICE_BLOCKED_HINT_OS": "マイクへのアクセスがブロックされています。引き続き音声でお答えします。話すには、端末の設定でマイクを許可してください。",
+  "USE_TEXT_CHAT": "テキストチャットを使う",
+  "OR": "または",
+  "MIC_BLOCKED_HINT": "ページの権限でマイクを許可",
+  "MIC_OS_BLOCKED_HINT": "端末設定でマイクを許可",
+  "CONTROLS": {
+    "MICROPHONE": {
+      "MUTE": "マイクをオフ",
+      "UNMUTE": "マイクをオン",
+      "MUTED": "マイクオフ",
+      "UNMUTED": "マイクオン"
+    },
+    "SUBTITLES": {
+      "ENABLE": "字幕をオン",
+      "DISABLE": "字幕をオフ",
+      "ENABLED": "字幕オン",
+      "DISABLED": "字幕オフ"
+    },
+    "MUTE_MICROPHONE": "マイクをオフ",
+    "UNMUTE_MICROPHONE": "マイクをオン",
+    "ENABLE_CAPTIONS": "字幕をオン",
+    "DISABLE_CAPTIONS": "字幕をオフ"
+  },
+  "ERRORS": {
+    "UNKNOWN_ERROR": {
+      "NAME": "予期しないエラー",
+      "INSTRUCTIONS": "もう一度お試しいただくか、問題が続く場合はサポートにお問い合わせください。"
+    },
+    "NETWORK_ERROR": {
+      "NAME": "ネットワーク接続エラー",
+      "INSTRUCTIONS": "インターネット接続を確認してもう一度お試しください。"
+    },
+    "API_ERROR": {
+      "NAME": "API通信エラー",
+      "INSTRUCTIONS": "サービスへの接続に問題がありました。後でもう一度お試しください。"
+    },
+    "WEBSOCKET_ERROR": {
+      "NAME": "WebSocket接続エラー",
+      "INSTRUCTIONS": "音声サービスに接続できません。接続を確認してください。"
+    },
+    "CONNECTION_TIMEOUT": {
+      "NAME": "接続タイムアウト",
+      "INSTRUCTIONS": "接続がタイムアウトしました。もう一度お試しください。"
+    },
+    "AUTHENTICATION_ERROR": {
+      "NAME": "認証エラー",
+      "INSTRUCTIONS": "再度サインインしてください。"
+    },
+    "MICROPHONE_ACCESS_DENIED": {
+      "NAME": "マイクが必要です",
+      "INSTRUCTIONS": "このページのブラウザ権限でマイクを許可してください。"
+    },
+    "MICROPHONE_BLOCKED": {
+      "NAME": "マイクがブロックされています",
+      "INSTRUCTIONS": "このページのブラウザ権限でマイクを許可してください。"
+    },
+    "MICROPHONE_OS_BLOCKED": {
+      "NAME": "マイクがブロックされています",
+      "INSTRUCTIONS": "このブラウザの端末設定でマイクを許可してください。"
+    },
+    "MICROPHONE_NOT_READABLE": {
+      "NAME": "マイクエラー",
+      "INSTRUCTIONS": "マイクデータを読み取れませんでした。マイクを確認するか、別のマイクをお試しください。"
+    },
+    "AUDIO_RECORDING_ERROR": {
+      "NAME": "音声録音エラー",
+      "INSTRUCTIONS": "音声を録音できませんでした。マイクを確認するか、別のマイクをお試しください。"
+    },
+    "SERVER_ERROR": {
+      "NAME": "サーバーエラー",
+      "INSTRUCTIONS": "チームに通知されました。"
+    },
+    "QUOTA_EXCEEDED": {
+      "NAME": "使用制限到達",
+      "INSTRUCTIONS": "使用制限に達しました。しばらくしてからもう一度お試しください。"
+    },
+    "HIGH_DEMAND": {
+      "NAME": "高需要",
+      "INSTRUCTIONS": "サービスが高需要を経験しています。しばらくしてからもう一度お試しください。"
+    },
+    "HTTP": {
+      "400_BAD_REQUEST": {
+        "NAME": "無効なリクエスト",
+        "INSTRUCTIONS": "有効なパラメータでもう一度お試しください。"
+      },
+      "401_UNAUTHORIZED": {
+        "NAME": "認証が必要",
+        "INSTRUCTIONS": "この機能を使用するにはサインインしてください。"
+      },
+      "403_FORBIDDEN": {
+        "NAME": "アクセス拒否",
+        "INSTRUCTIONS": "この機能にアクセスする権限がありません。"
+      },
+      "403_FORBIDDEN_GEO_LOCATION_BLOCKED": {
+        "NAME": "地理的位置ブロック",
+        "INSTRUCTIONS": "この場所からは音声チャットを利用できません。"
+      },
+      "404_NOT_FOUND": {
+        "NAME": "サービスが見つかりません",
+        "INSTRUCTIONS": "要求されたサービスが見つかりませんでした。"
+      },
+      "408_TIMEOUT": {
+        "NAME": "リクエストタイムアウト",
+        "INSTRUCTIONS": "サーバーの応答に時間がかかりすぎました。後でもう一度お試しください。"
+      },
+      "409_CONFLICT": {
+        "NAME": "サービス競合",
+        "INSTRUCTIONS": "現在の状態と競合がありました。もう一度お試しください。"
+      },
+      "422_UNPROCESSABLE_ENTITY": {
+        "NAME": "無効なリクエスト形式",
+        "INSTRUCTIONS": "リクエストを処理できませんでした。もう一度お試しください。"
+      },
+      "429_RATE_LIMIT": {
+        "NAME": "リクエスト過多",
+        "INSTRUCTIONS": "もう一度試す前に少々お待ちください。"
+      },
+      "500_SERVER_ERROR": {
+        "NAME": "サーバーエラー",
+        "INSTRUCTIONS": "後でもう一度お試しください。"
+      },
+      "502_BAD_GATEWAY": {
+        "NAME": "サービス利用不可",
+        "INSTRUCTIONS": "後でもう一度お試しください。"
+      },
+      "503_SERVICE_UNAVAILABLE": {
+        "NAME": "サービス一時的に利用不可",
+        "INSTRUCTIONS": "後でもう一度お試しください。"
+      },
+      "504_GATEWAY_TIMEOUT": {
+        "NAME": "サービスタイムアウト",
+        "INSTRUCTIONS": "サービスの応答に時間がかかりすぎました。後でもう一度お試しください。"
+      }
+    }
+  },
+  "LANGUAGE_NOT_SUPPORTED": "この言語は音声チャットに対応していません。"
+}

@@ -1,0 +1,240 @@
+{
+  "VOICECHAT_CLAIM": "Parlem. T'ajudo.",
+  "VOICECHAT_BUTTON": "Xat de veu",
+  "VOICECHAT_INSTRUCTIONS": "Parla per interrompre",
+  "END_CALL": "Finalitzar trucada",
+  "CONNECTING": "Espera uns segons...",
+  "CONNECTING_BUTTON": "Connectant",
+  "CLICK_TO_SPEAK": "Clica per parlar",
+  "CLICK_TO_END": "Clica per finalitzar",
+  "TALK_TO_INTERRUPT": "Parla per interrompre",
+  "CONNECTING_HINT": "Espera uns moments",
+  "LISTENING_ACTIVE": "Escoltant...",
+  "TRY_VOICE_EXPERIENCE": "Prova'm, sóc nou!",
+  "TERMS_ACCEPT": "Acceptar",
+  "TERMS_DECLINE": "Tornar",
+  "TERMS_ACCEPTANCE_WITH_LINK": "Accepta els [T&C]({{termsUrl}}) per continuar.",
+  "POC_DISCLAIMER": {
+    "TITLE": "Proof-of-Concept",
+    "MESSAGE": "Aquest prototip de xat de veu només té com a propòsit mostrar el concepte i no representa la qualitat final d'una solució o producte. Poden ocórrer retards, errors i altres problemes.<br/>Característiques clau: <strong>Navegació web autònoma</strong>, <strong>Ressaltat de text</strong> i <strong>Emplenament de formularis</strong>."
+  },
+  "GREETING": {
+    "1": "Hola! Benvingut al xat de veu. Com et puc ajudar avui?",
+    "2": "Hola! Sóc aquí per ajudar-te amb el que necessitis.",
+    "3": "Salutacions! Com et puc ajudar avui?",
+    "4": "Benvingut! Explica'm què necessites i faré el possible per ajudar-te.",
+    "5": "Assistent de veu al teu servei! Llest per ajudar!",
+    "DEFAULT": "Hola! Què voldries avui?"
+  },
+  "RESUME_GREETING": {
+    "1": "Ei, ja sóc aquí! Continuem on ho vam deixar.",
+    "2": "Va, continuem!",
+    "3": "Encara sóc aquí! Què estàvem mirant?",
+    "DEFAULT": "Bé, per on anàvem?"
+  },
+  "FEEDBACK_TITLE": "Com ha estat la teva experiència?",
+  "FEEDBACK_THUMBS_UP": "Bona",
+  "FEEDBACK_THUMBS_DOWN": "Podria millorar",
+  "FEEDBACK_ERROR": "No s'ha pogut enviar el comentari",
+  "FEEDBACK_SUCCESS": "Gràcies pel teu comentari!",
+  "ERROR_GENERIC": "No s'ha pogut iniciar el xat de veu",
+  "MOBILE_TAP_AVATAR_TO_START": "Toca i parla",
+  "MOBILE_TAP_AVATAR_TO_CANCEL": "Connectant...",
+  "MOBILE_TAP_AVATAR_TO_END_CALL": "Toca per acabar",
+  "HINT_LABEL": "Prova a dir",
+  "HINTS_DEFAULT": [
+    "Necessito un regal per a la meva parella, m'ajudes?",
+    "Què està en oferta ara?",
+    "Quin és millor per a pell sensible?",
+    "Puc tornar-ho si no em va bé?",
+    "Compara'm aquests dos"
+  ],
+  "CHAT_INPUT_PLACEHOLDER": "Pregunta sobre productes, enviaments o la teva comanda.",
+  "CHAT_CONNECTING_PLACEHOLDER": "Connectant… ja pots escriure.",
+  "CHAT_MESSAGE_SENDING": "Enviant…",
+  "CHAT_MESSAGE_FAILED_RETRY": "No s'ha enviat. Toca per reintentar.",
+  "CHAT_EVENT_PRODUCTS_SHOWN": "Productes que t'hem mostrat",
+  "CHAT_EVENT_SEARCH_RESULTS": "Resultats per a «{{query}}»",
+  "CHAT_EVENT_PRODUCT_OPENED": "Producte obert",
+  "CHAT_EVENT_ADDED_TO_CART": "Afegit al carretó",
+  "CHAT_EVENT_CART_OPENED": "Carretó obert",
+  "CHAT_EVENT_CHECKOUT_OPENED": "Pagament obert",
+  "CHAT_EVENT_SEARCHED_FOR": "Cerca de «{{query}}»",
+  "CHAT_EVENT_PAGE_OPENED": "Pàgina oberta",
+  "CHAT_VOICE_TOGGLE_ON": "Inicia la veu",
+  "CHAT_VOICE_TOGGLE_OFF": "Finalitza la veu",
+  "CHAT_CALL_START": "Inicia el xat de veu",
+  "CHAT_CALL_END": "Penja",
+  "CHAT_LAUNCHER_TITLE": "Inicia un xat escrit",
+  "CHAT_NEW_SESSION": "Nova sessió",
+  "CHAT_HIDE_PANEL": "Torna a l'avatar",
+  "CHAT_SEND": "Envia",
+  "CHAT_EMPTY_HINT": "Envia un missatge per començar la conversa.",
+  "CHAT_COLLAPSE": "Redueix",
+  "CHAT_EXPAND": "Amplia",
+  "MIC_RECOVERY_DISMISS": "Tanca",
+  "NAVIGATION_TAKING_YOU_TO": "Et porto a",
+  "NAVIGATION_TARGET_SEARCH": "Resultats de cerca",
+  "NAVIGATION_TARGET_GENERIC": "Una altra pàgina",
+  "TEXT_CHAT_INSTRUCTIONS": "Canvia a veu",
+  "MOBILE_TYPE_INSTEAD": "...o escriu",
+  "CLOSE_WIDGET": "Tanca",
+  "REOPEN_WIDGET": "Reobre l'assistent",
+  "CHAT_LITE_SHOW_HISTORY": "Historial de la sessió",
+  "CHAT_LITE_HIDE_HISTORY": "Amaga la conversa",
+  "CHAT_LITE_BACK_TO_VOICE": "Torna al mode veu",
+  "CHAT_LITE_GO_TO_VOICE": "Ves al mode veu",
+  "CHAT_LITE_CONVERSATION": "Conversa",
+  "CHAT_LITE_PIN_TRANSCRIPT": "Fixa la conversa",
+  "CHAT_LITE_UNPIN_TRANSCRIPT": "Desfixa la conversa",
+  "UNIFIED_PROMPTS": {
+    "DISCOVERY": "Ajuda'm a trobar el producte adequat.",
+    "COMPARISON": "Compara les millors opcions per a mi.",
+    "GUIDANCE": "M'anirà bé o servirà per al que necessito?",
+    "RETURNS": "Quina és la política de devolucions?",
+    "FAQ": "Em pots respondre una pregunta sobre compres?"
+  },
+  "MIC_PRIMER": "Tria \"Permet\" perquè pugui sentir-te",
+  "MIC_NEEDED": "Permet l'accés al micro per parlar per veu",
+  "ENABLE_MIC_HINT_BROWSER": "Permet el micro als permisos de la pàgina",
+  "ENABLE_MIC_HINT_OS": "Permet el micro a la configuració del dispositiu",
+  "DEGRADED_VOICE_SWITCHED_HINT_BROWSER": "L'accés al micro està bloquejat, així que t'he passat al xat. Seguiré parlant en veu alta; per parlar, permet el micro als permisos de la pàgina.",
+  "DEGRADED_VOICE_SWITCHED_HINT_OS": "L'accés al micro està bloquejat, així que t'he passat al xat. Seguiré parlant en veu alta; per parlar, permet el micro a la configuració del dispositiu.",
+  "DEGRADED_VOICE_BLOCKED_HINT_BROWSER": "L'accés al micro està bloquejat. Seguiré parlant en veu alta; per parlar, permet el micro als permisos de la pàgina.",
+  "DEGRADED_VOICE_BLOCKED_HINT_OS": "L'accés al micro està bloquejat. Seguiré parlant en veu alta; per parlar, permet el micro a la configuració del dispositiu.",
+  "USE_TEXT_CHAT": "Usar xat de text",
+  "OR": "O",
+  "MIC_BLOCKED_HINT": "Permet el micro als permisos de la pàgina",
+  "MIC_OS_BLOCKED_HINT": "Permet el micro a la configuració del dispositiu",
+  "CONTROLS": {
+    "MICROPHONE": {
+      "MUTE": "Silenciar micròfon",
+      "UNMUTE": "Activar micròfon",
+      "MUTED": "Micròfon silenciat",
+      "UNMUTED": "Micròfon actiu"
+    },
+    "SUBTITLES": {
+      "ENABLE": "Activar subtítols",
+      "DISABLE": "Desactivar subtítols",
+      "ENABLED": "Subtítols activats",
+      "DISABLED": "Subtítols desactivats"
+    },
+    "MUTE_MICROPHONE": "Silenciar micròfon",
+    "UNMUTE_MICROPHONE": "Activar micròfon",
+    "ENABLE_CAPTIONS": "Activar subtítols",
+    "DISABLE_CAPTIONS": "Desactivar subtítols"
+  },
+  "ERRORS": {
+    "UNKNOWN_ERROR": {
+      "NAME": "Error inesperat",
+      "INSTRUCTIONS": "Siusplau, torna-ho a provar o contacta el suport si el problema persisteix."
+    },
+    "NETWORK_ERROR": {
+      "NAME": "Error de connexió de xarxa",
+      "INSTRUCTIONS": "Siusplau, comprova la teva connexió a internet i torna-ho a provar."
+    },
+    "API_ERROR": {
+      "NAME": "Error de comunicació API",
+      "INSTRUCTIONS": "Hi ha hagut un problema connectant amb el servei. Siusplau, torna-ho a provar més tard."
+    },
+    "WEBSOCKET_ERROR": {
+      "NAME": "Error de connexió WebSocket",
+      "INSTRUCTIONS": "No es pot connectar al servei de veu. Siusplau, comprova la teva connexió."
+    },
+    "CONNECTION_TIMEOUT": {
+      "NAME": "Temps d'espera de connexió",
+      "INSTRUCTIONS": "La connexió ha excedit el temps d'espera. Siusplau, torna-ho a provar."
+    },
+    "AUTHENTICATION_ERROR": {
+      "NAME": "Error d'autenticació",
+      "INSTRUCTIONS": "Siusplau, inicia sessió de nou."
+    },
+    "MICROPHONE_ACCESS_DENIED": {
+      "NAME": "Cal el micro",
+      "INSTRUCTIONS": "Permet-lo als permisos del navegador d'aquesta pàgina."
+    },
+    "MICROPHONE_BLOCKED": {
+      "NAME": "Micro bloquejat",
+      "INSTRUCTIONS": "Permet-lo als permisos del navegador d'aquesta pàgina."
+    },
+    "MICROPHONE_OS_BLOCKED": {
+      "NAME": "Micro bloquejat",
+      "INSTRUCTIONS": "Permet-lo a la configuració del dispositiu per a aquest navegador."
+    },
+    "MICROPHONE_NOT_READABLE": {
+      "NAME": "Error del micròfon",
+      "INSTRUCTIONS": "No s'han pogut llegir les dades del micròfon. Siusplau, comprova el teu micròfon o prova'n un de diferent."
+    },
+    "AUDIO_RECORDING_ERROR": {
+      "NAME": "Error de gravació d'àudio",
+      "INSTRUCTIONS": "No s'ha pogut gravar àudio. Siusplau, comprova el teu micròfon o prova'n un de diferent."
+    },
+    "SERVER_ERROR": {
+      "NAME": "Error del servidor",
+      "INSTRUCTIONS": "El nostre equip ha estat notificat."
+    },
+    "QUOTA_EXCEEDED": {
+      "NAME": "Límit d'ús assolit",
+      "INSTRUCTIONS": "Has arribat al teu límit d'ús. Siusplau, torna-ho a provar més tard."
+    },
+    "HIGH_DEMAND": {
+      "NAME": "Alta demanda",
+      "INSTRUCTIONS": "El nostre servei està experimentant alta demanda. Siusplau, torna-ho a provar en breu."
+    },
+    "HTTP": {
+      "400_BAD_REQUEST": {
+        "NAME": "Sol·licitud invàlida",
+        "INSTRUCTIONS": "Siusplau, torna-ho a provar amb paràmetres vàlids."
+      },
+      "401_UNAUTHORIZED": {
+        "NAME": "Autenticació requerida",
+        "INSTRUCTIONS": "Siusplau, inicia sessió per continuar utilitzant aquesta funcionalitat."
+      },
+      "403_FORBIDDEN": {
+        "NAME": "Accés denegat",
+        "INSTRUCTIONS": "No tens permís per accedir a aquesta funcionalitat."
+      },
+      "403_FORBIDDEN_GEO_LOCATION_BLOCKED": {
+        "NAME": "Geolocalització bloquejada",
+        "INSTRUCTIONS": "El xat de veu no està disponible des d'aquesta ubicació."
+      },
+      "404_NOT_FOUND": {
+        "NAME": "Servei no trobat",
+        "INSTRUCTIONS": "El servei sol·licitat no s'ha pogut trobar."
+      },
+      "408_TIMEOUT": {
+        "NAME": "Temps d'espera de sol·licitud",
+        "INSTRUCTIONS": "El servidor ha trigat massa a respondre. Siusplau, torna-ho a provar més tard."
+      },
+      "409_CONFLICT": {
+        "NAME": "Conflicte de servei",
+        "INSTRUCTIONS": "Hi ha hagut un conflicte amb l'estat actual. Siusplau, torna-ho a provar."
+      },
+      "422_UNPROCESSABLE_ENTITY": {
+        "NAME": "Format de sol·licitud invàlid",
+        "INSTRUCTIONS": "La sol·licitud no s'ha pogut processar. Siusplau, torna-ho a provar."
+      },
+      "429_RATE_LIMIT": {
+        "NAME": "Massa sol·licituds",
+        "INSTRUCTIONS": "Siusplau, espera un moment abans de tornar-ho a provar."
+      },
+      "500_SERVER_ERROR": {
+        "NAME": "Error del servidor",
+        "INSTRUCTIONS": "Siusplau, torna-ho a provar més tard."
+      },
+      "502_BAD_GATEWAY": {
+        "NAME": "Servei no disponible",
+        "INSTRUCTIONS": "Siusplau, torna-ho a provar més tard."
+      },
+      "503_SERVICE_UNAVAILABLE": {
+        "NAME": "Servei temporalment no disponible",
+        "INSTRUCTIONS": "Siusplau, torna-ho a provar més tard."
+      },
+      "504_GATEWAY_TIMEOUT": {
+        "NAME": "Temps d'espera del servei",
+        "INSTRUCTIONS": "El servei ha trigat massa a respondre. Siusplau, torna-ho a provar més tard."
+      }
+    }
+  },
+  "LANGUAGE_NOT_SUPPORTED": "Idioma no suportat pel xat de veu."
+}

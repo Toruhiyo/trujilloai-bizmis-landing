@@ -1,0 +1,240 @@
+{
+  "VOICECHAT_CLAIM": "Pogovoriva se. Rad pomagam.",
+  "VOICECHAT_BUTTON": "Glasovni klepet",
+  "VOICECHAT_INSTRUCTIONS": "Govorite, da me prekinete",
+  "END_CALL": "Končaj klic",
+  "CONNECTING": "Počakajte nekaj sekund...",
+  "CONNECTING_BUTTON": "Povezovanje",
+  "CLICK_TO_SPEAK": "Kliknite za govor",
+  "CLICK_TO_END": "Kliknite za konec",
+  "TALK_TO_INTERRUPT": "Govorite, da me prekinete",
+  "CONNECTING_HINT": "Samo trenutek",
+  "LISTENING_ACTIVE": "Poslušam...",
+  "TRY_VOICE_EXPERIENCE": "Preizkusite me, nov sem!",
+  "TERMS_ACCEPT": "Sprejmi",
+  "TERMS_DECLINE": "Nazaj",
+  "TERMS_ACCEPTANCE_WITH_LINK": "Sprejmite [pogoje]({{termsUrl}}) za nadaljevanje.",
+  "POC_DISCLAIMER": {
+    "TITLE": "Proof-of-Concept",
+    "MESSAGE": "Ta prototip glasovnega klepeta je namenjen zgolj prikazu koncepta in ne predstavlja končne kakovosti rešitve ali izdelka. Pojavijo se lahko zakasnitve, napake in druge težave.<br/>Ključne zmožnosti: <strong>Samostojna navigacija po spletu</strong>, <strong>Označevanje besedila</strong> in <strong>Izpolnjevanje obrazcev</strong>."
+  },
+  "GREETING": {
+    "1": "Pozdravljeni! Dobrodošli v glasovnem klepetu. Kako vam lahko danes pomagam?",
+    "2": "Živjo! Tu sem, da vam pomagam pri čemer koli potrebujete.",
+    "3": "Pozdravljeni! S čim vam lahko danes postrežem?",
+    "4": "Dobrodošli! Povejte, kaj iščete, in potrudil se bom pomagati.",
+    "5": "Glasovni pomočnik vam je na voljo!",
+    "DEFAULT": "Pozdravljeni! Kaj vas zanima danes?"
+  },
+  "RESUME_GREETING": {
+    "1": "Hej, spet sem tu! Nadaljujva, kjer sva ostala.",
+    "2": "V redu, nadaljujva!",
+    "3": "Še vedno tu! Kaj sva si ogledovala?",
+    "DEFAULT": "Kje sva ostala?"
+  },
+  "FEEDBACK_TITLE": "Kakšna je bila vaša izkušnja?",
+  "FEEDBACK_THUMBS_UP": "Dobra",
+  "FEEDBACK_THUMBS_DOWN": "Lahko bi bilo bolje",
+  "FEEDBACK_ERROR": "Mnenja ni bilo mogoče poslati",
+  "FEEDBACK_SUCCESS": "Hvala za vaše mnenje!",
+  "ERROR_GENERIC": "Glasovnega klepeta ni bilo mogoče zagnati",
+  "MOBILE_TAP_AVATAR_TO_START": "Tapnite in govorite",
+  "MOBILE_TAP_AVATAR_TO_CANCEL": "Povezovanje...",
+  "MOBILE_TAP_AVATAR_TO_END_CALL": "Tapnite za konec",
+  "HINT_LABEL": "Poskusite reči",
+  "HINTS_DEFAULT": [
+    "Potrebujem darilo za partnerja, mi lahko pomagate?",
+    "Kaj je trenutno v akciji?",
+    "Kateri je najboljši za občutljivo kožo?",
+    "Ali lahko to vrnem, če mi ne ustreza?",
+    "Primerjajte mi ta dva"
+  ],
+  "CHAT_INPUT_PLACEHOLDER": "Vprašajte o izdelkih, dostavi ali naročilu.",
+  "CHAT_CONNECTING_PLACEHOLDER": "Povezovanje… lahko že tipkate.",
+  "CHAT_MESSAGE_SENDING": "Pošiljam…",
+  "CHAT_MESSAGE_FAILED_RETRY": "Ni poslano. Tapnite za ponovni poskus.",
+  "CHAT_EVENT_PRODUCTS_SHOWN": "Prikazani izdelki",
+  "CHAT_EVENT_SEARCH_RESULTS": "Rezultati za »{{query}}«",
+  "CHAT_EVENT_PRODUCT_OPENED": "Izdelek odprt",
+  "CHAT_EVENT_ADDED_TO_CART": "Dodano v košarico",
+  "CHAT_EVENT_CART_OPENED": "Košarica odprta",
+  "CHAT_EVENT_CHECKOUT_OPENED": "Plačilo odprto",
+  "CHAT_EVENT_SEARCHED_FOR": "Iskanje »{{query}}«",
+  "CHAT_EVENT_PAGE_OPENED": "Stran odprta",
+  "CHAT_VOICE_TOGGLE_ON": "Vklopi glas",
+  "CHAT_VOICE_TOGGLE_OFF": "Izklopi glas",
+  "CHAT_CALL_START": "Začni glasovni klepet",
+  "CHAT_CALL_END": "Prekini klic",
+  "CHAT_LAUNCHER_TITLE": "Začnite pisni klepet",
+  "CHAT_NEW_SESSION": "Nova seja",
+  "CHAT_HIDE_PANEL": "Nazaj na avatarja",
+  "CHAT_SEND": "Pošlji",
+  "CHAT_EMPTY_HINT": "Pošljite sporočilo za začetek pogovora.",
+  "CHAT_COLLAPSE": "Strni",
+  "CHAT_EXPAND": "Razširi",
+  "MIC_RECOVERY_DISMISS": "Zapri",
+  "NAVIGATION_TAKING_YOU_TO": "Peljem vas na",
+  "NAVIGATION_TARGET_SEARCH": "Rezultati iskanja",
+  "NAVIGATION_TARGET_GENERIC": "Drugo stran",
+  "TEXT_CHAT_INSTRUCTIONS": "Preklopi na glas",
+  "MOBILE_TYPE_INSTEAD": "...ali pa kar tipkajte",
+  "CLOSE_WIDGET": "Zapri",
+  "REOPEN_WIDGET": "Znova odpri pomočnika",
+  "CHAT_LITE_SHOW_HISTORY": "Zgodovina seje",
+  "CHAT_LITE_HIDE_HISTORY": "Skrij pogovor",
+  "CHAT_LITE_BACK_TO_VOICE": "Nazaj na glasovni način",
+  "CHAT_LITE_GO_TO_VOICE": "Preklopi na glasovni način",
+  "CHAT_LITE_CONVERSATION": "Pogovor",
+  "CHAT_LITE_PIN_TRANSCRIPT": "Pripni pogovor",
+  "CHAT_LITE_UNPIN_TRANSCRIPT": "Odpni pogovor",
+  "UNIFIED_PROMPTS": {
+    "DISCOVERY": "Pomagajte mi najti pravi izdelek.",
+    "COMPARISON": "Primerjajte najboljše možnosti zame.",
+    "GUIDANCE": "Ali bo to ustrezalo mojim potrebam?",
+    "RETURNS": "Kakšna je politika vračil?",
+    "FAQ": "Ali lahko odgovorite na vprašanje o nakupovanju?"
+  },
+  "MIC_PRIMER": "Izberite »Dovoli«, da vas lahko slišim",
+  "MIC_NEEDED": "Dovolite mikrofon za pogovor z glasom",
+  "ENABLE_MIC_HINT_BROWSER": "Dovolite mikrofon v dovoljenjih strani",
+  "ENABLE_MIC_HINT_OS": "Dovolite mikrofon v nastavitvah naprave",
+  "DEGRADED_VOICE_SWITCHED_HINT_BROWSER": "Dostop do mikrofona je blokiran, zato sem vas preklopil na klepet. Še vedno bom govoril na glas. Za govor dovolite mikrofon v dovoljenjih strani.",
+  "DEGRADED_VOICE_SWITCHED_HINT_OS": "Dostop do mikrofona je blokiran, zato sem vas preklopil na klepet. Še vedno bom govoril na glas. Za govor dovolite mikrofon v nastavitvah naprave.",
+  "DEGRADED_VOICE_BLOCKED_HINT_BROWSER": "Dostop do mikrofona je blokiran. Še vedno bom govoril na glas. Za govor dovolite mikrofon v dovoljenjih strani.",
+  "DEGRADED_VOICE_BLOCKED_HINT_OS": "Dostop do mikrofona je blokiran. Še vedno bom govoril na glas. Za govor dovolite mikrofon v nastavitvah naprave.",
+  "USE_TEXT_CHAT": "Uporabi pisni klepet",
+  "OR": "ALI",
+  "MIC_BLOCKED_HINT": "Dovolite mikrofon v dovoljenjih strani",
+  "MIC_OS_BLOCKED_HINT": "Dovolite mikrofon v nastavitvah naprave",
+  "CONTROLS": {
+    "MICROPHONE": {
+      "MUTE": "Izklopi mikrofon",
+      "UNMUTE": "Vklopi mikrofon",
+      "MUTED": "Mikrofon je izklopljen",
+      "UNMUTED": "Mikrofon je aktiven"
+    },
+    "SUBTITLES": {
+      "ENABLE": "Vklopi podnapise",
+      "DISABLE": "Izklopi podnapise",
+      "ENABLED": "Podnapisi vklopljeni",
+      "DISABLED": "Podnapisi izklopljeni"
+    },
+    "MUTE_MICROPHONE": "Izklopi mikrofon",
+    "UNMUTE_MICROPHONE": "Vklopi mikrofon",
+    "ENABLE_CAPTIONS": "Vklopi podnapise",
+    "DISABLE_CAPTIONS": "Izklopi podnapise"
+  },
+  "ERRORS": {
+    "UNKNOWN_ERROR": {
+      "NAME": "Nepričakovana napaka",
+      "INSTRUCTIONS": "Poskusite znova ali se obrnite na podporo, če težava ostaja."
+    },
+    "NETWORK_ERROR": {
+      "NAME": "Napaka omrežne povezave",
+      "INSTRUCTIONS": "Preverite internetno povezavo in poskusite znova."
+    },
+    "API_ERROR": {
+      "NAME": "Napaka pri komunikaciji z API",
+      "INSTRUCTIONS": "Pri povezovanju s storitvijo je prišlo do težave. Poskusite pozneje."
+    },
+    "WEBSOCKET_ERROR": {
+      "NAME": "Napaka povezave WebSocket",
+      "INSTRUCTIONS": "Povezava z glasovno storitvijo ni uspela. Preverite povezavo."
+    },
+    "CONNECTION_TIMEOUT": {
+      "NAME": "Časovna omejitev povezave",
+      "INSTRUCTIONS": "Povezava je potekla. Poskusite znova."
+    },
+    "AUTHENTICATION_ERROR": {
+      "NAME": "Napaka pri preverjanju",
+      "INSTRUCTIONS": "Znova se prijavite."
+    },
+    "MICROPHONE_ACCESS_DENIED": {
+      "NAME": "Potreben je mikrofon",
+      "INSTRUCTIONS": "Dovolite ga v dovoljenjih brskalnika za to stran."
+    },
+    "MICROPHONE_BLOCKED": {
+      "NAME": "Mikrofon je blokiran",
+      "INSTRUCTIONS": "Dovolite ga v dovoljenjih brskalnika za to stran."
+    },
+    "MICROPHONE_OS_BLOCKED": {
+      "NAME": "Mikrofon je blokiran",
+      "INSTRUCTIONS": "Dovolite ga v nastavitvah naprave za ta brskalnik."
+    },
+    "MICROPHONE_NOT_READABLE": {
+      "NAME": "Napaka mikrofona",
+      "INSTRUCTIONS": "Podatkov z mikrofona ni bilo mogoče prebrati. Preverite mikrofon ali poskusite drugega."
+    },
+    "AUDIO_RECORDING_ERROR": {
+      "NAME": "Napaka pri snemanju zvoka",
+      "INSTRUCTIONS": "Zvoka ni bilo mogoče posneti. Preverite mikrofon ali poskusite drugega."
+    },
+    "SERVER_ERROR": {
+      "NAME": "Napaka strežnika",
+      "INSTRUCTIONS": "Naša ekipa je bila obveščena."
+    },
+    "QUOTA_EXCEEDED": {
+      "NAME": "Dosežena omejitev uporabe",
+      "INSTRUCTIONS": "Dosegli ste omejitev uporabe. Poskusite pozneje."
+    },
+    "HIGH_DEMAND": {
+      "NAME": "Veliko povpraševanje",
+      "INSTRUCTIONS": "Storitev je trenutno zelo obremenjena. Poskusite kmalu znova."
+    },
+    "HTTP": {
+      "400_BAD_REQUEST": {
+        "NAME": "Neveljavna zahteva",
+        "INSTRUCTIONS": "Poskusite znova z veljavnimi podatki."
+      },
+      "401_UNAUTHORIZED": {
+        "NAME": "Potrebna je prijava",
+        "INSTRUCTIONS": "Prijavite se za nadaljnjo uporabo te funkcije."
+      },
+      "403_FORBIDDEN": {
+        "NAME": "Dostop zavrnjen",
+        "INSTRUCTIONS": "Za to funkcijo nimate dovoljenja."
+      },
+      "403_FORBIDDEN_GEO_LOCATION_BLOCKED": {
+        "NAME": "Lokacija blokirana",
+        "INSTRUCTIONS": "Glasovni klepet s te lokacije ni na voljo."
+      },
+      "404_NOT_FOUND": {
+        "NAME": "Storitve ni mogoče najti",
+        "INSTRUCTIONS": "Zahtevane storitve ni bilo mogoče najti."
+      },
+      "408_TIMEOUT": {
+        "NAME": "Zahteva je potekla",
+        "INSTRUCTIONS": "Strežnik je odgovarjal predolgo. Poskusite pozneje."
+      },
+      "409_CONFLICT": {
+        "NAME": "Spor v storitvi",
+        "INSTRUCTIONS": "Prišlo je do spora s trenutnim stanjem. Poskusite znova."
+      },
+      "422_UNPROCESSABLE_ENTITY": {
+        "NAME": "Neveljavna oblika zahteve",
+        "INSTRUCTIONS": "Zahteve ni bilo mogoče obdelati. Poskusite znova."
+      },
+      "429_RATE_LIMIT": {
+        "NAME": "Preveč zahtev",
+        "INSTRUCTIONS": "Počakajte trenutek, preden poskusite znova."
+      },
+      "500_SERVER_ERROR": {
+        "NAME": "Napaka strežnika",
+        "INSTRUCTIONS": "Poskusite pozneje."
+      },
+      "502_BAD_GATEWAY": {
+        "NAME": "Storitev ni na voljo",
+        "INSTRUCTIONS": "Poskusite pozneje."
+      },
+      "503_SERVICE_UNAVAILABLE": {
+        "NAME": "Storitev je začasno nedosegljiva",
+        "INSTRUCTIONS": "Poskusite pozneje."
+      },
+      "504_GATEWAY_TIMEOUT": {
+        "NAME": "Časovna omejitev storitve",
+        "INSTRUCTIONS": "Storitev je odgovarjala predolgo. Poskusite pozneje."
+      }
+    }
+  },
+  "LANGUAGE_NOT_SUPPORTED": "Ta jezik v glasovnem klepetu ni podprt."
+}

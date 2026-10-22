@@ -1,0 +1,240 @@
+{
+  "VOICECHAT_CLAIM": "Mag-usap tayo. Tutulungan kita.",
+  "VOICECHAT_BUTTON": "Voice chat",
+  "VOICECHAT_INSTRUCTIONS": "Magsalita para sumabat",
+  "END_CALL": "Tapusin",
+  "CONNECTING": "Sandali lang po...",
+  "CONNECTING_BUTTON": "Kumokonekta",
+  "CLICK_TO_SPEAK": "I-click para magsalita",
+  "CLICK_TO_END": "I-click para tapusin",
+  "TALK_TO_INTERRUPT": "Magsalita para sumabat",
+  "CONNECTING_HINT": "Sandali lang po",
+  "LISTENING_ACTIVE": "Nakikinig...",
+  "TRY_VOICE_EXPERIENCE": "Subukan mo ako, bago ako!",
+  "TERMS_ACCEPT": "Tanggapin",
+  "TERMS_DECLINE": "Bumalik",
+  "TERMS_ACCEPTANCE_WITH_LINK": "Tanggapin ang [Mga Tuntunin]({{termsUrl}}) para magpatuloy.",
+  "POC_DISCLAIMER": {
+    "TITLE": "Pagpapakita ng Konsepto",
+    "MESSAGE": "Layunin lang ng voice chat prototype na ito na ipakita ang konsepto, at hindi nito kinakatawan ang panghuling kalidad ng isang solusyon o produkto. Maaaring magkaroon ng pagkaantala, bug, at iba pang isyu.<br/>Mga pangunahing feature: <strong>Awtomatikong pag-navigate sa web</strong>, <strong>Pag-highlight ng teksto</strong>, at <strong>Pagsagot sa form</strong>."
+  },
+  "GREETING": {
+    "1": "Kumusta! Maligayang pagdating sa voice chat. Ano ang maitutulong ko ngayon?",
+    "2": "Hi! Nandito ako para tulungan ka sa kahit anong kailangan mo.",
+    "3": "Magandang araw! Paano kita matutulungan ngayon?",
+    "4": "Welcome! Sabihin mo lang kung ano ang kailangan mo, gagawin ko ang makakaya ko.",
+    "5": "Voice assistant mo ito! Handang tumulong!",
+    "DEFAULT": "Kumusta! Ano ang hinahanap mo ngayon?"
+  },
+  "RESUME_GREETING": {
+    "1": "Ayan, balik na ako! Ituloy natin ang pinag-uusapan.",
+    "2": "Sige, ituloy natin!",
+    "3": "Nandito pa rin ako! Ano nga ulit ang tinitingnan natin?",
+    "DEFAULT": "Saan na nga ba tayo?"
+  },
+  "FEEDBACK_TITLE": "Kumusta ang karanasan mo?",
+  "FEEDBACK_THUMBS_UP": "Maganda",
+  "FEEDBACK_THUMBS_DOWN": "Pwede pang bumuti",
+  "FEEDBACK_ERROR": "Hindi naipadala ang feedback",
+  "FEEDBACK_SUCCESS": "Salamat sa iyong feedback!",
+  "ERROR_GENERIC": "Hindi masimulan ang voice chat",
+  "MOBILE_TAP_AVATAR_TO_START": "I-tap at magsalita",
+  "MOBILE_TAP_AVATAR_TO_CANCEL": "Kumokonekta...",
+  "MOBILE_TAP_AVATAR_TO_END_CALL": "I-tap para tapusin",
+  "HINT_LABEL": "Subukang sabihin",
+  "HINTS_DEFAULT": [
+    "Naghahanap ako ng regalo para sa partner ko, matutulungan mo ba ako?",
+    "Ano ang naka-sale ngayon?",
+    "Alin ang pinakabagay sa sensitibong balat?",
+    "Pwede ko bang isauli ito kung hindi kasya?",
+    "Ikumpara mo nga itong dalawa"
+  ],
+  "CHAT_INPUT_PLACEHOLDER": "Magtanong tungkol sa produkto, delivery, o order mo.",
+  "CHAT_CONNECTING_PLACEHOLDER": "Kumokonekta… pwede ka nang mag-type.",
+  "CHAT_MESSAGE_SENDING": "Ipinapadala…",
+  "CHAT_MESSAGE_FAILED_RETRY": "Hindi naipadala. I-tap para ulitin.",
+  "CHAT_EVENT_PRODUCTS_SHOWN": "Mga produktong ipinakita sa iyo",
+  "CHAT_EVENT_SEARCH_RESULTS": "Mga resulta para sa “{{query}}”",
+  "CHAT_EVENT_PRODUCT_OPENED": "Binuksan ang produkto",
+  "CHAT_EVENT_ADDED_TO_CART": "Naidagdag sa cart",
+  "CHAT_EVENT_CART_OPENED": "Binuksan ang cart",
+  "CHAT_EVENT_CHECKOUT_OPENED": "Binuksan ang checkout",
+  "CHAT_EVENT_SEARCHED_FOR": "Naghanap ng “{{query}}”",
+  "CHAT_EVENT_PAGE_OPENED": "Binuksan ang pahina",
+  "CHAT_VOICE_TOGGLE_ON": "Simulan ang boses",
+  "CHAT_VOICE_TOGGLE_OFF": "Tapusin ang boses",
+  "CHAT_CALL_START": "Simulan ang voice chat",
+  "CHAT_CALL_END": "Tapusin ang tawag",
+  "CHAT_LAUNCHER_TITLE": "Mag-chat sa teksto",
+  "CHAT_NEW_SESSION": "Bagong session",
+  "CHAT_HIDE_PANEL": "Balik sa avatar",
+  "CHAT_SEND": "Ipadala",
+  "CHAT_EMPTY_HINT": "Magpadala ng mensahe para magsimula ang usapan.",
+  "CHAT_COLLAPSE": "Paliitin",
+  "CHAT_EXPAND": "Palakihin",
+  "MIC_RECOVERY_DISMISS": "Isara",
+  "NAVIGATION_TAKING_YOU_TO": "Dadalhin ka sa",
+  "NAVIGATION_TARGET_SEARCH": "Mga resulta ng paghahanap",
+  "NAVIGATION_TARGET_GENERIC": "Ibang pahina",
+  "TEXT_CHAT_INSTRUCTIONS": "Lumipat sa boses",
+  "MOBILE_TYPE_INSTEAD": "...o mag-type na lang",
+  "CLOSE_WIDGET": "Isara",
+  "REOPEN_WIDGET": "Buksang muli ang assistant",
+  "CHAT_LITE_SHOW_HISTORY": "Kasaysayan ng sesyon",
+  "CHAT_LITE_HIDE_HISTORY": "Itago ang usapan",
+  "CHAT_LITE_BACK_TO_VOICE": "Balik sa voice mode",
+  "CHAT_LITE_GO_TO_VOICE": "Pumunta sa voice mode",
+  "CHAT_LITE_CONVERSATION": "Usapan",
+  "CHAT_LITE_PIN_TRANSCRIPT": "I-pin ang usapan",
+  "CHAT_LITE_UNPIN_TRANSCRIPT": "Alisin sa pagkaka-pin ang usapan",
+  "UNIFIED_PROMPTS": {
+    "DISCOVERY": "Tulungan akong mahanap ang tamang produkto.",
+    "COMPARISON": "Ihambing ang pinakamagagandang opsyon para sa akin.",
+    "GUIDANCE": "Kasya o angkop ba ito sa mga pangangailangan ko?",
+    "RETURNS": "Ano ang patakaran sa pagbabalik?",
+    "FAQ": "Maaari mo bang sagutin ang tanong ko tungkol sa pamimili?"
+  },
+  "MIC_PRIMER": "Piliin ang \"Payagan\" para marinig kita",
+  "MIC_NEEDED": "Payagan ang mikropono para makapag-usap tayo",
+  "ENABLE_MIC_HINT_BROWSER": "Payagan ang mikropono sa page permissions",
+  "ENABLE_MIC_HINT_OS": "Payagan ang mikropono sa device settings",
+  "DEGRADED_VOICE_SWITCHED_HINT_BROWSER": "Naka-block ang mikropono, kaya inilipat kita sa chat. Sasagot pa rin ako nang malakas. Para makapagsalita ka, payagan ang mikropono sa page permissions.",
+  "DEGRADED_VOICE_SWITCHED_HINT_OS": "Naka-block ang mikropono, kaya inilipat kita sa chat. Sasagot pa rin ako nang malakas. Para makapagsalita ka, payagan ang mikropono sa settings ng device mo.",
+  "DEGRADED_VOICE_BLOCKED_HINT_BROWSER": "Naka-block ang mikropono. Sasagot pa rin ako nang malakas. Para makapagsalita ka, payagan ang mikropono sa page permissions.",
+  "DEGRADED_VOICE_BLOCKED_HINT_OS": "Naka-block ang mikropono. Sasagot pa rin ako nang malakas. Para makapagsalita ka, payagan ang mikropono sa settings ng device mo.",
+  "USE_TEXT_CHAT": "Gamitin ang text chat",
+  "OR": "O",
+  "MIC_BLOCKED_HINT": "Payagan ang mikropono sa page permissions",
+  "MIC_OS_BLOCKED_HINT": "Payagan ang mikropono sa device settings",
+  "CONTROLS": {
+    "MICROPHONE": {
+      "MUTE": "I-mute ang mikropono",
+      "UNMUTE": "I-unmute ang mikropono",
+      "MUTED": "Naka-mute ang mikropono",
+      "UNMUTED": "Aktibo ang mikropono"
+    },
+    "SUBTITLES": {
+      "ENABLE": "I-on ang subtitles",
+      "DISABLE": "I-off ang subtitles",
+      "ENABLED": "Naka-on ang subtitles",
+      "DISABLED": "Naka-off ang subtitles"
+    },
+    "MUTE_MICROPHONE": "I-mute ang mikropono",
+    "UNMUTE_MICROPHONE": "I-unmute ang mikropono",
+    "ENABLE_CAPTIONS": "I-on ang subtitles",
+    "DISABLE_CAPTIONS": "I-off ang subtitles"
+  },
+  "ERRORS": {
+    "UNKNOWN_ERROR": {
+      "NAME": "Hindi inaasahang error",
+      "INSTRUCTIONS": "Pakisubukan ulit o kontakin ang support kung magpapatuloy ang problema."
+    },
+    "NETWORK_ERROR": {
+      "NAME": "Error sa koneksyon ng network",
+      "INSTRUCTIONS": "Pakisuri ang iyong internet connection at subukan ulit."
+    },
+    "API_ERROR": {
+      "NAME": "Error sa komunikasyon ng API",
+      "INSTRUCTIONS": "May problema sa pagkonekta sa serbisyo. Pakisubukan ulit mamaya."
+    },
+    "WEBSOCKET_ERROR": {
+      "NAME": "Error sa koneksyon ng WebSocket",
+      "INSTRUCTIONS": "Hindi makakonekta sa voice service. Pakisuri ang iyong koneksyon."
+    },
+    "CONNECTION_TIMEOUT": {
+      "NAME": "Nag-timeout ang koneksyon",
+      "INSTRUCTIONS": "Nag-timeout ang koneksyon. Pakisubukan ulit."
+    },
+    "AUTHENTICATION_ERROR": {
+      "NAME": "Error sa pag-authenticate",
+      "INSTRUCTIONS": "Paki-sign in ulit."
+    },
+    "MICROPHONE_ACCESS_DENIED": {
+      "NAME": "Kailangan ng mikropono",
+      "INSTRUCTIONS": "Payagan ito sa browser permissions ng page na ito."
+    },
+    "MICROPHONE_BLOCKED": {
+      "NAME": "Naka-block ang mikropono",
+      "INSTRUCTIONS": "Payagan ito sa browser permissions ng page na ito."
+    },
+    "MICROPHONE_OS_BLOCKED": {
+      "NAME": "Naka-block ang mikropono",
+      "INSTRUCTIONS": "Payagan ito sa settings ng device mo para sa browser na ito."
+    },
+    "MICROPHONE_NOT_READABLE": {
+      "NAME": "Error sa mikropono",
+      "INSTRUCTIONS": "Hindi mabasa ang data mula sa mikropono. Pakisuri ang mikropono mo o sumubok ng iba."
+    },
+    "AUDIO_RECORDING_ERROR": {
+      "NAME": "Error sa pag-record ng audio",
+      "INSTRUCTIONS": "Hindi ma-record ang audio. Pakisuri ang mikropono mo o sumubok ng iba."
+    },
+    "SERVER_ERROR": {
+      "NAME": "Error sa server",
+      "INSTRUCTIONS": "Naabisuhan na ang aming team."
+    },
+    "QUOTA_EXCEEDED": {
+      "NAME": "Naabot na ang limitasyon",
+      "INSTRUCTIONS": "Naabot mo na ang limitasyon sa paggamit. Pakisubukan ulit mamaya."
+    },
+    "HIGH_DEMAND": {
+      "NAME": "Maraming gumagamit",
+      "INSTRUCTIONS": "Maraming gumagamit ng serbisyo ngayon. Pakisubukan ulit maya-maya."
+    },
+    "HTTP": {
+      "400_BAD_REQUEST": {
+        "NAME": "Hindi wastong request",
+        "INSTRUCTIONS": "Pakisubukan ulit gamit ang tamang impormasyon."
+      },
+      "401_UNAUTHORIZED": {
+        "NAME": "Kailangang mag-sign in",
+        "INSTRUCTIONS": "Paki-sign in para magpatuloy sa paggamit ng feature na ito."
+      },
+      "403_FORBIDDEN": {
+        "NAME": "Tinanggihan ang access",
+        "INSTRUCTIONS": "Wala kang pahintulot na gamitin ang feature na ito."
+      },
+      "403_FORBIDDEN_GEO_LOCATION_BLOCKED": {
+        "NAME": "Naka-block ang lokasyon",
+        "INSTRUCTIONS": "Hindi available ang voice chat mula sa lokasyong ito."
+      },
+      "404_NOT_FOUND": {
+        "NAME": "Hindi natagpuan ang serbisyo",
+        "INSTRUCTIONS": "Hindi matagpuan ang hinihinging serbisyo."
+      },
+      "408_TIMEOUT": {
+        "NAME": "Nag-timeout ang request",
+        "INSTRUCTIONS": "Masyadong matagal sumagot ang server. Pakisubukan ulit mamaya."
+      },
+      "409_CONFLICT": {
+        "NAME": "May conflict sa serbisyo",
+        "INSTRUCTIONS": "May conflict sa kasalukuyang estado. Pakisubukan ulit."
+      },
+      "422_UNPROCESSABLE_ENTITY": {
+        "NAME": "Hindi wastong format ng request",
+        "INSTRUCTIONS": "Hindi ma-proseso ang request. Pakisubukan ulit."
+      },
+      "429_RATE_LIMIT": {
+        "NAME": "Masyadong maraming request",
+        "INSTRUCTIONS": "Maghintay muna sandali bago subukan ulit."
+      },
+      "500_SERVER_ERROR": {
+        "NAME": "Error sa server",
+        "INSTRUCTIONS": "Pakisubukan ulit mamaya."
+      },
+      "502_BAD_GATEWAY": {
+        "NAME": "Hindi available ang serbisyo",
+        "INSTRUCTIONS": "Pakisubukan ulit mamaya."
+      },
+      "503_SERVICE_UNAVAILABLE": {
+        "NAME": "Pansamantalang hindi available ang serbisyo",
+        "INSTRUCTIONS": "Pakisubukan ulit mamaya."
+      },
+      "504_GATEWAY_TIMEOUT": {
+        "NAME": "Nag-timeout ang serbisyo",
+        "INSTRUCTIONS": "Masyadong matagal sumagot ang serbisyo. Pakisubukan ulit mamaya."
+      }
+    }
+  },
+  "LANGUAGE_NOT_SUPPORTED": "Hindi pa suportado ang wikang ito sa voice chat."
+}

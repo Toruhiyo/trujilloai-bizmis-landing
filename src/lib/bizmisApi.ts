@@ -12,14 +12,16 @@ export type CouponKind = "early_access" | "custom";
 export interface CouponSummary {
   label: string;
   monthly_discount_percent: number;
-  yearly_discount_percent: number;
+  /** @deprecated not displayed; plans are monthly only. */
+  yearly_discount_percent?: number | null;
   intro_months: number;
 }
 
 export interface CouponPlanPrice {
   plan_name: string;
   monthly: number;
-  yearly_monthly_equivalent: number;
+  /** @deprecated not displayed; plans are monthly only. */
+  yearly_monthly_equivalent?: number | null;
 }
 
 export interface CouponDTO {
@@ -43,20 +45,40 @@ export type CouponErrorCode =
 
 /**
  * Public plan catalog returned by `GET /bizmis/coupons/plans`. This is the
- * single source of truth for base prices and credits; the landing must not
- * hardcode them. Marketing-only fields (feature bullets, session estimates)
- * stay in the component.
+ * single source of truth for base prices and included conversations; the
+ * landing must not hardcode them. Marketing-only fields (feature bullets)
+ * stay in the locale dictionaries.
+ *
+ * Pricing v2 (2026-10-22) bills in conversations, monthly only. The new keys
+ * are optional so the landing keeps working against a backend that still
+ * serves only the legacy credit-named keys; during the transition the backend
+ * populates both with the same values. Legacy keys can go once every backend
+ * deploy serves the new ones.
  */
 export interface PublicPlanDTO {
   name: string;
   display_name: string;
   monthly_price: number;
-  included_credits: number;
-  overage_rate_per_credit: number;
-  max_concurrency: number;
+  included_conversations?: number;
+  overage_rate_per_conversation?: number;
+  max_overage_cap_usd?: number;
+  max_assistants?: number | null;
+  /** Not displayed: card copy comes from the locale dictionaries. */
+  entitlements?: Record<string, unknown>;
+  /** Not displayed: card copy comes from the locale dictionaries. */
+  features?: { label: string; is_soon: boolean }[];
   is_popular: boolean;
-  yearly_discount_percent: number | null;
-  yearly_price: number | null;
+  money_back_guarantee_days?: number | null;
+  /** @deprecated v1 alias of `included_conversations`. */
+  included_credits?: number;
+  /** @deprecated v1 alias of `overage_rate_per_conversation`. */
+  overage_rate_per_credit?: number;
+  /** @deprecated never displayed; concurrency is no longer a plan feature. */
+  max_concurrency?: number;
+  /** @deprecated always null in v2 (no yearly plans). */
+  yearly_discount_percent?: number | null;
+  /** @deprecated always null in v2 (no yearly plans). */
+  yearly_price?: number | null;
 }
 
 interface PlansResponseBody {

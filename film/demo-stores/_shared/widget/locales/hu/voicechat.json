@@ -1,0 +1,240 @@
+{
+  "VOICECHAT_CLAIM": "Beszélgessünk! Szívesen segítek.",
+  "VOICECHAT_BUTTON": "Hangbeszélgetés",
+  "VOICECHAT_INSTRUCTIONS": "Beszéljen, ha közbeszólna",
+  "END_CALL": "Hívás vége",
+  "CONNECTING": "Várjon néhány másodpercet...",
+  "CONNECTING_BUTTON": "Csatlakozás",
+  "CLICK_TO_SPEAK": "Kattintson a beszédhez",
+  "CLICK_TO_END": "Kattintson a befejezéshez",
+  "TALK_TO_INTERRUPT": "Beszéljen, ha közbeszólna",
+  "CONNECTING_HINT": "Várjon egy pillanatot",
+  "LISTENING_ACTIVE": "Hallgatom...",
+  "TRY_VOICE_EXPERIENCE": "Próbáljon ki, új vagyok!",
+  "TERMS_ACCEPT": "Elfogadom",
+  "TERMS_DECLINE": "Vissza",
+  "TERMS_ACCEPTANCE_WITH_LINK": "A folytatáshoz fogadja el az [ÁSZF-et]({{termsUrl}}).",
+  "POC_DISCLAIMER": {
+    "TITLE": "Prototípus",
+    "MESSAGE": "Ennek a hangbeszélgetés-prototípusnak az egyetlen célja a koncepció bemutatása, nem tükrözi a végleges megoldás vagy termék minőségét. Késések, hibák és egyéb problémák előfordulhatnak.<br/>Fő funkciók: <strong>Önálló webes navigáció</strong>, <strong>Szövegkiemelés</strong> és <strong>Űrlapkitöltés</strong>."
+  },
+  "GREETING": {
+    "1": "Üdvözlöm! Köszöntöm a hangbeszélgetésben. Miben segíthetek ma?",
+    "2": "Üdvözlöm! Itt vagyok, és bármiben szívesen segítek.",
+    "3": "Jó napot! Miben lehetek a segítségére?",
+    "4": "Üdvözlöm! Mondja el, mit keres, és mindent megteszek, hogy segítsek.",
+    "5": "A hangasszisztens a rendelkezésére áll! Segítek, amiben tudok!",
+    "DEFAULT": "Üdvözlöm! Mit keres ma?"
+  },
+  "RESUME_GREETING": {
+    "1": "Visszatértem! Folytassuk ott, ahol abbahagytuk.",
+    "2": "Rendben, folytassuk!",
+    "3": "Még itt vagyok! Mit nézegettünk?",
+    "DEFAULT": "Szóval, hol is tartottunk?"
+  },
+  "FEEDBACK_TITLE": "Milyen volt az élmény?",
+  "FEEDBACK_THUMBS_UP": "Jó volt",
+  "FEEDBACK_THUMBS_DOWN": "Lehetne jobb",
+  "FEEDBACK_ERROR": "A visszajelzést nem sikerült elküldeni",
+  "FEEDBACK_SUCCESS": "Köszönjük a visszajelzést!",
+  "ERROR_GENERIC": "A hangbeszélgetés nem indult el",
+  "MOBILE_TAP_AVATAR_TO_START": "Koppintson és beszéljen",
+  "MOBILE_TAP_AVATAR_TO_CANCEL": "Csatlakozás...",
+  "MOBILE_TAP_AVATAR_TO_END_CALL": "Koppintson a végéhez",
+  "HINT_LABEL": "Próbálja ezt mondani",
+  "HINTS_DEFAULT": [
+    "Ajándékot keresek a páromnak, tudsz segíteni?",
+    "Mi van most akcióban?",
+    "Melyik jobb érzékeny bőrre?",
+    "Vissza tudom küldeni, ha nem jó a méret?",
+    "Hasonlítsd össze nekem ezt a kettőt"
+  ],
+  "CHAT_INPUT_PLACEHOLDER": "Kérdezzen termékekről, szállításról vagy a rendeléséről.",
+  "CHAT_CONNECTING_PLACEHOLDER": "Csatlakozás… már gépelhet.",
+  "CHAT_MESSAGE_SENDING": "Küldés…",
+  "CHAT_MESSAGE_FAILED_RETRY": "Nem ment el. Koppintson az újraküldéshez.",
+  "CHAT_EVENT_PRODUCTS_SHOWN": "Neked megjelenített termékek",
+  "CHAT_EVENT_SEARCH_RESULTS": "Találatok erre: „{{query}}”",
+  "CHAT_EVENT_PRODUCT_OPENED": "Termék megnyitva",
+  "CHAT_EVENT_ADDED_TO_CART": "Kosárba helyezve",
+  "CHAT_EVENT_CART_OPENED": "Kosár megnyitva",
+  "CHAT_EVENT_CHECKOUT_OPENED": "Fizetés megnyitva",
+  "CHAT_EVENT_SEARCHED_FOR": "Keresés: „{{query}}”",
+  "CHAT_EVENT_PAGE_OPENED": "Oldal megnyitva",
+  "CHAT_VOICE_TOGGLE_ON": "Hang indítása",
+  "CHAT_VOICE_TOGGLE_OFF": "Hang befejezése",
+  "CHAT_CALL_START": "Hangcsevegés indítása",
+  "CHAT_CALL_END": "Hívás befejezése",
+  "CHAT_LAUNCHER_TITLE": "Írásos csevegés indítása",
+  "CHAT_NEW_SESSION": "Új beszélgetés",
+  "CHAT_HIDE_PANEL": "Vissza az avatarhoz",
+  "CHAT_SEND": "Küldés",
+  "CHAT_EMPTY_HINT": "Küldjön egy üzenetet a beszélgetés indításához.",
+  "CHAT_COLLAPSE": "Összecsukás",
+  "CHAT_EXPAND": "Kinyitás",
+  "MIC_RECOVERY_DISMISS": "Bezárás",
+  "NAVIGATION_TAKING_YOU_TO": "Átviszem ide",
+  "NAVIGATION_TARGET_SEARCH": "Találatok",
+  "NAVIGATION_TARGET_GENERIC": "Másik oldal",
+  "TEXT_CHAT_INSTRUCTIONS": "Váltás hangra",
+  "MOBILE_TYPE_INSTEAD": "...vagy írjon inkább",
+  "CLOSE_WIDGET": "Bezárás",
+  "REOPEN_WIDGET": "Asszisztens megnyitása",
+  "CHAT_LITE_SHOW_HISTORY": "Munkamenet előzményei",
+  "CHAT_LITE_HIDE_HISTORY": "Beszélgetés elrejtése",
+  "CHAT_LITE_BACK_TO_VOICE": "Vissza a hangmódba",
+  "CHAT_LITE_GO_TO_VOICE": "Váltás hangmódra",
+  "CHAT_LITE_CONVERSATION": "Beszélgetés",
+  "CHAT_LITE_PIN_TRANSCRIPT": "Beszélgetés kitűzése",
+  "CHAT_LITE_UNPIN_TRANSCRIPT": "Beszélgetés kitűzésének megszüntetése",
+  "UNIFIED_PROMPTS": {
+    "DISCOVERY": "Segíts megtalálni a megfelelő terméket.",
+    "COMPARISON": "Hasonlítsd össze nekem a legjobb lehetőségeket.",
+    "GUIDANCE": "Megfelel ez a méretemnek vagy az igényeimnek?",
+    "RETURNS": "Mi a visszaküldési szabályzat?",
+    "FAQ": "Megválaszolnál egy vásárlással kapcsolatos kérdést?"
+  },
+  "MIC_PRIMER": "Válassza az \"Engedélyezés\" lehetőséget, hogy halljam",
+  "MIC_NEEDED": "Engedélyezze a mikrofont a hangos csevegéshez",
+  "ENABLE_MIC_HINT_BROWSER": "Engedélyezze a mikrofont az oldal engedélyeinél",
+  "ENABLE_MIC_HINT_OS": "Engedélyezze a mikrofont az eszköz beállításaiban",
+  "DEGRADED_VOICE_SWITCHED_HINT_BROWSER": "A mikrofon le van tiltva, ezért átváltottam írásos csevegésre. Továbbra is hangosan válaszolok - ha beszélni szeretne, engedélyezze a mikrofont az oldal engedélyeinél.",
+  "DEGRADED_VOICE_SWITCHED_HINT_OS": "A mikrofon le van tiltva, ezért átváltottam írásos csevegésre. Továbbra is hangosan válaszolok - ha beszélni szeretne, engedélyezze a mikrofont az eszköz beállításaiban.",
+  "DEGRADED_VOICE_BLOCKED_HINT_BROWSER": "A mikrofon le van tiltva. Továbbra is hangosan válaszolok - ha beszélni szeretne, engedélyezze a mikrofont az oldal engedélyeinél.",
+  "DEGRADED_VOICE_BLOCKED_HINT_OS": "A mikrofon le van tiltva. Továbbra is hangosan válaszolok - ha beszélni szeretne, engedélyezze a mikrofont az eszköz beállításaiban.",
+  "USE_TEXT_CHAT": "Írásos csevegés",
+  "OR": "VAGY",
+  "MIC_BLOCKED_HINT": "Engedélyezze a mikrofont az oldal engedélyeinél",
+  "MIC_OS_BLOCKED_HINT": "Engedélyezze a mikrofont az eszköz beállításaiban",
+  "CONTROLS": {
+    "MICROPHONE": {
+      "MUTE": "Mikrofon némítása",
+      "UNMUTE": "Némítás feloldása",
+      "MUTED": "A mikrofon néma",
+      "UNMUTED": "A mikrofon aktív"
+    },
+    "SUBTITLES": {
+      "ENABLE": "Feliratok bekapcsolása",
+      "DISABLE": "Feliratok kikapcsolása",
+      "ENABLED": "Feliratok bekapcsolva",
+      "DISABLED": "Feliratok kikapcsolva"
+    },
+    "MUTE_MICROPHONE": "Mikrofon némítása",
+    "UNMUTE_MICROPHONE": "Némítás feloldása",
+    "ENABLE_CAPTIONS": "Feliratok bekapcsolása",
+    "DISABLE_CAPTIONS": "Feliratok kikapcsolása"
+  },
+  "ERRORS": {
+    "UNKNOWN_ERROR": {
+      "NAME": "Váratlan hiba",
+      "INSTRUCTIONS": "Próbálja újra, vagy forduljon az ügyfélszolgálathoz, ha a probléma továbbra is fennáll."
+    },
+    "NETWORK_ERROR": {
+      "NAME": "Hálózati kapcsolódási hiba",
+      "INSTRUCTIONS": "Ellenőrizze az internetkapcsolatát, és próbálja újra."
+    },
+    "API_ERROR": {
+      "NAME": "API kommunikációs hiba",
+      "INSTRUCTIONS": "Probléma adódott a szolgáltatáshoz való kapcsolódáskor. Próbálja újra később."
+    },
+    "WEBSOCKET_ERROR": {
+      "NAME": "WebSocket kapcsolódási hiba",
+      "INSTRUCTIONS": "Nem sikerült csatlakozni a hangszolgáltatáshoz. Ellenőrizze a kapcsolatát."
+    },
+    "CONNECTION_TIMEOUT": {
+      "NAME": "A kapcsolat időtúllépése",
+      "INSTRUCTIONS": "A kapcsolat túllépte az időkorlátot. Próbálja újra."
+    },
+    "AUTHENTICATION_ERROR": {
+      "NAME": "Hitelesítési hiba",
+      "INSTRUCTIONS": "Jelentkezzen be újra."
+    },
+    "MICROPHONE_ACCESS_DENIED": {
+      "NAME": "Mikrofon szükséges",
+      "INSTRUCTIONS": "Engedélyezze az oldal böngészőbeli engedélyeinél."
+    },
+    "MICROPHONE_BLOCKED": {
+      "NAME": "A mikrofon le van tiltva",
+      "INSTRUCTIONS": "Engedélyezze az oldal böngészőbeli engedélyeinél."
+    },
+    "MICROPHONE_OS_BLOCKED": {
+      "NAME": "A mikrofon le van tiltva",
+      "INSTRUCTIONS": "Engedélyezze ehhez a böngészőhöz az eszköz beállításaiban."
+    },
+    "MICROPHONE_NOT_READABLE": {
+      "NAME": "Mikrofonhiba",
+      "INSTRUCTIONS": "Nem sikerült beolvasni a mikrofon adatait. Ellenőrizze a mikrofont, vagy próbáljon ki egy másikat."
+    },
+    "AUDIO_RECORDING_ERROR": {
+      "NAME": "Hangrögzítési hiba",
+      "INSTRUCTIONS": "Nem sikerült hangot rögzíteni. Ellenőrizze a mikrofont, vagy próbáljon ki egy másikat."
+    },
+    "SERVER_ERROR": {
+      "NAME": "Szerverhiba",
+      "INSTRUCTIONS": "Csapatunk értesítést kapott róla."
+    },
+    "QUOTA_EXCEEDED": {
+      "NAME": "Elérte a használati korlátot",
+      "INSTRUCTIONS": "Elérte a használati korlátját. Próbálja újra később."
+    },
+    "HIGH_DEMAND": {
+      "NAME": "Nagy érdeklődés",
+      "INSTRUCTIONS": "Szolgáltatásunk iránt jelenleg nagy az érdeklődés. Próbálja újra hamarosan."
+    },
+    "HTTP": {
+      "400_BAD_REQUEST": {
+        "NAME": "Érvénytelen kérés",
+        "INSTRUCTIONS": "Próbálja újra érvényes adatokkal."
+      },
+      "401_UNAUTHORIZED": {
+        "NAME": "Bejelentkezés szükséges",
+        "INSTRUCTIONS": "Jelentkezzen be a funkció további használatához."
+      },
+      "403_FORBIDDEN": {
+        "NAME": "Hozzáférés megtagadva",
+        "INSTRUCTIONS": "Nincs jogosultsága a funkció eléréséhez."
+      },
+      "403_FORBIDDEN_GEO_LOCATION_BLOCKED": {
+        "NAME": "Földrajzilag korlátozott",
+        "INSTRUCTIONS": "A hangbeszélgetés erről a helyről nem érhető el."
+      },
+      "404_NOT_FOUND": {
+        "NAME": "A szolgáltatás nem található",
+        "INSTRUCTIONS": "A kért szolgáltatás nem található."
+      },
+      "408_TIMEOUT": {
+        "NAME": "A kérés időtúllépése",
+        "INSTRUCTIONS": "A szerver túl sokáig válaszolt. Próbálja újra később."
+      },
+      "409_CONFLICT": {
+        "NAME": "Szolgáltatásütközés",
+        "INSTRUCTIONS": "Ütközés történt a jelenlegi állapottal. Próbálja újra."
+      },
+      "422_UNPROCESSABLE_ENTITY": {
+        "NAME": "Érvénytelen kérésformátum",
+        "INSTRUCTIONS": "A kérést nem sikerült feldolgozni. Próbálja újra."
+      },
+      "429_RATE_LIMIT": {
+        "NAME": "Túl sok kérés",
+        "INSTRUCTIONS": "Várjon egy pillanatot, mielőtt újra próbálkozik."
+      },
+      "500_SERVER_ERROR": {
+        "NAME": "Szerverhiba",
+        "INSTRUCTIONS": "Próbálja újra később."
+      },
+      "502_BAD_GATEWAY": {
+        "NAME": "A szolgáltatás nem érhető el",
+        "INSTRUCTIONS": "Próbálja újra később."
+      },
+      "503_SERVICE_UNAVAILABLE": {
+        "NAME": "A szolgáltatás átmenetileg nem érhető el",
+        "INSTRUCTIONS": "Próbálja újra később."
+      },
+      "504_GATEWAY_TIMEOUT": {
+        "NAME": "A szolgáltatás időtúllépése",
+        "INSTRUCTIONS": "A szolgáltatás túl sokáig válaszolt. Próbálja újra később."
+      }
+    }
+  },
+  "LANGUAGE_NOT_SUPPORTED": "Ez a nyelv nem támogatott a hangbeszélgetéshez."
+}

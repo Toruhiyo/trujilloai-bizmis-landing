@@ -1,0 +1,240 @@
+{
+  "VOICECHAT_CLAIM": "Porozmawiajmy. Chętnie pomogę.",
+  "VOICECHAT_BUTTON": "Czat głosowy",
+  "VOICECHAT_INSTRUCTIONS": "Mów, aby przerwać",
+  "END_CALL": "Zakończ rozmowę",
+  "CONNECTING": "Poczekaj kilka sekund...",
+  "CONNECTING_BUTTON": "Łączenie",
+  "CLICK_TO_SPEAK": "Kliknij, aby mówić",
+  "CLICK_TO_END": "Kliknij, aby zakończyć",
+  "TALK_TO_INTERRUPT": "Mów, aby przerwać",
+  "CONNECTING_HINT": "Poczekaj chwilę",
+  "LISTENING_ACTIVE": "Słucham...",
+  "TRY_VOICE_EXPERIENCE": "Wypróbuj mnie, dopiero zaczynam!",
+  "TERMS_ACCEPT": "Akceptuję",
+  "TERMS_DECLINE": "Wróć",
+  "TERMS_ACCEPTANCE_WITH_LINK": "Zaakceptuj [Regulamin]({{termsUrl}}), aby kontynuować.",
+  "POC_DISCLAIMER": {
+    "TITLE": "Proof-of-Concept",
+    "MESSAGE": "Ten prototyp czatu głosowego ma jedynie pokazać samą koncepcję i nie odzwierciedla docelowej jakości rozwiązania ani produktu. Mogą wystąpić opóźnienia, błędy i inne problemy.<br/>Kluczowe funkcje: <strong>Samodzielna nawigacja po stronie</strong>, <strong>Podświetlanie tekstu</strong> oraz <strong>Wypełnianie formularzy</strong>."
+  },
+  "GREETING": {
+    "1": "Cześć! Witaj w czacie głosowym. W czym mogę dziś pomóc?",
+    "2": "Hej! Jestem tutaj i pomogę ci we wszystkim, czego potrzebujesz.",
+    "3": "Witaj! W czym mogę dziś służyć pomocą?",
+    "4": "Miło cię słyszeć! Powiedz, czego szukasz, a zrobię, co w mojej mocy.",
+    "5": "Asystent głosowy do usług! Chętnie pomogę!",
+    "DEFAULT": "Cześć! Czego dziś szukasz?"
+  },
+  "RESUME_GREETING": {
+    "1": "Hej, już jestem! Wracamy do tego, co przerwaliśmy.",
+    "2": "No dobrze, kontynuujmy!",
+    "3": "Wciąż tu jestem! Czemu się przyglądaliśmy?",
+    "DEFAULT": "To na czym skończyliśmy?"
+  },
+  "FEEDBACK_TITLE": "Jak ci się rozmawiało?",
+  "FEEDBACK_THUMBS_UP": "Dobrze",
+  "FEEDBACK_THUMBS_DOWN": "Mogło być lepiej",
+  "FEEDBACK_ERROR": "Nie udało się wysłać opinii",
+  "FEEDBACK_SUCCESS": "Dziękujemy za opinię!",
+  "ERROR_GENERIC": "Nie udało się uruchomić czatu głosowego",
+  "MOBILE_TAP_AVATAR_TO_START": "Dotknij i mów",
+  "MOBILE_TAP_AVATAR_TO_CANCEL": "Łączenie...",
+  "MOBILE_TAP_AVATAR_TO_END_CALL": "Dotknij, by zakończyć",
+  "HINT_LABEL": "Powiedz na przykład",
+  "HINTS_DEFAULT": [
+    "Szukam prezentu dla partnera, pomożesz mi?",
+    "Co jest teraz w promocji?",
+    "Który będzie najlepszy do skóry wrażliwej?",
+    "Czy mogę to zwrócić, jeśli nie będzie pasować?",
+    "Porównaj mi te dwa produkty"
+  ],
+  "CHAT_INPUT_PLACEHOLDER": "Zapytaj o produkty, dostawę lub swoje zamówienie.",
+  "CHAT_CONNECTING_PLACEHOLDER": "Łączę… możesz już pisać.",
+  "CHAT_MESSAGE_SENDING": "Wysyłanie…",
+  "CHAT_MESSAGE_FAILED_RETRY": "Nie wysłano. Dotknij, by ponowić.",
+  "CHAT_EVENT_PRODUCTS_SHOWN": "Pokazane Ci produkty",
+  "CHAT_EVENT_SEARCH_RESULTS": "Wyniki dla „{{query}}”",
+  "CHAT_EVENT_PRODUCT_OPENED": "Otwarto produkt",
+  "CHAT_EVENT_ADDED_TO_CART": "Dodano do koszyka",
+  "CHAT_EVENT_CART_OPENED": "Otwarto koszyk",
+  "CHAT_EVENT_CHECKOUT_OPENED": "Otwarto płatność",
+  "CHAT_EVENT_SEARCHED_FOR": "Szukano „{{query}}”",
+  "CHAT_EVENT_PAGE_OPENED": "Otwarto stronę",
+  "CHAT_VOICE_TOGGLE_ON": "Włącz głos",
+  "CHAT_VOICE_TOGGLE_OFF": "Wyłącz głos",
+  "CHAT_CALL_START": "Rozpocznij czat głosowy",
+  "CHAT_CALL_END": "Zakończ połączenie",
+  "CHAT_LAUNCHER_TITLE": "Rozpocznij czat tekstowy",
+  "CHAT_NEW_SESSION": "Nowa sesja",
+  "CHAT_HIDE_PANEL": "Wróć do awatara",
+  "CHAT_SEND": "Wyślij",
+  "CHAT_EMPTY_HINT": "Wyślij wiadomość, aby zacząć rozmowę.",
+  "CHAT_COLLAPSE": "Zwiń",
+  "CHAT_EXPAND": "Rozwiń",
+  "MIC_RECOVERY_DISMISS": "Zamknij",
+  "NAVIGATION_TAKING_YOU_TO": "Przenoszę cię do",
+  "NAVIGATION_TARGET_SEARCH": "Wyniki wyszukiwania",
+  "NAVIGATION_TARGET_GENERIC": "Inna strona",
+  "TEXT_CHAT_INSTRUCTIONS": "Przełącz na głos",
+  "MOBILE_TYPE_INSTEAD": "...albo napisz",
+  "CLOSE_WIDGET": "Zamknij",
+  "REOPEN_WIDGET": "Otwórz asystenta",
+  "CHAT_LITE_SHOW_HISTORY": "Historia sesji",
+  "CHAT_LITE_HIDE_HISTORY": "Ukryj rozmowę",
+  "CHAT_LITE_BACK_TO_VOICE": "Wróć do trybu głosowego",
+  "CHAT_LITE_GO_TO_VOICE": "Przejdź do trybu głosowego",
+  "CHAT_LITE_CONVERSATION": "Rozmowa",
+  "CHAT_LITE_PIN_TRANSCRIPT": "Przypnij rozmowę",
+  "CHAT_LITE_UNPIN_TRANSCRIPT": "Odepnij rozmowę",
+  "UNIFIED_PROMPTS": {
+    "DISCOVERY": "Pomóż mi znaleźć odpowiedni produkt.",
+    "COMPARISON": "Porównaj dla mnie najlepsze opcje.",
+    "GUIDANCE": "Czy to będzie pasować lub spełni moje potrzeby?",
+    "RETURNS": "Jakie są zasady zwrotów?",
+    "FAQ": "Czy możesz odpowiedzieć na pytanie dotyczące zakupów?"
+  },
+  "MIC_PRIMER": "Wybierz \"Zezwól\", a będę cię słyszeć",
+  "MIC_NEEDED": "Zezwól na mikrofon, aby rozmawiać głosowo",
+  "ENABLE_MIC_HINT_BROWSER": "Zezwól na mikrofon w uprawnieniach strony",
+  "ENABLE_MIC_HINT_OS": "Zezwól na mikrofon w ustawieniach urządzenia",
+  "DEGRADED_VOICE_SWITCHED_HINT_BROWSER": "Dostęp do mikrofonu jest zablokowany, więc przełączam cię na czat. Nadal będę mówić na głos; aby móc mówić, zezwól na mikrofon w uprawnieniach strony.",
+  "DEGRADED_VOICE_SWITCHED_HINT_OS": "Dostęp do mikrofonu jest zablokowany, więc przełączam cię na czat. Nadal będę mówić na głos; aby móc mówić, zezwól na mikrofon w ustawieniach urządzenia.",
+  "DEGRADED_VOICE_BLOCKED_HINT_BROWSER": "Dostęp do mikrofonu jest zablokowany. Nadal będę mówić na głos; aby móc mówić, zezwól na mikrofon w uprawnieniach strony.",
+  "DEGRADED_VOICE_BLOCKED_HINT_OS": "Dostęp do mikrofonu jest zablokowany. Nadal będę mówić na głos; aby móc mówić, zezwól na mikrofon w ustawieniach urządzenia.",
+  "USE_TEXT_CHAT": "Użyj czatu tekstowego",
+  "OR": "LUB",
+  "MIC_BLOCKED_HINT": "Zezwól na mikrofon w uprawnieniach strony",
+  "MIC_OS_BLOCKED_HINT": "Zezwól na mikrofon w ustawieniach urządzenia",
+  "CONTROLS": {
+    "MICROPHONE": {
+      "MUTE": "Wycisz mikrofon",
+      "UNMUTE": "Włącz mikrofon",
+      "MUTED": "Mikrofon wyciszony",
+      "UNMUTED": "Mikrofon aktywny"
+    },
+    "SUBTITLES": {
+      "ENABLE": "Włącz napisy",
+      "DISABLE": "Wyłącz napisy",
+      "ENABLED": "Napisy włączone",
+      "DISABLED": "Napisy wyłączone"
+    },
+    "MUTE_MICROPHONE": "Wycisz mikrofon",
+    "UNMUTE_MICROPHONE": "Włącz mikrofon",
+    "ENABLE_CAPTIONS": "Włącz napisy",
+    "DISABLE_CAPTIONS": "Wyłącz napisy"
+  },
+  "ERRORS": {
+    "UNKNOWN_ERROR": {
+      "NAME": "Nieoczekiwany błąd",
+      "INSTRUCTIONS": "Spróbuj ponownie lub skontaktuj się z pomocą, jeśli problem się powtarza."
+    },
+    "NETWORK_ERROR": {
+      "NAME": "Błąd połączenia sieciowego",
+      "INSTRUCTIONS": "Sprawdź połączenie z internetem i spróbuj ponownie."
+    },
+    "API_ERROR": {
+      "NAME": "Błąd komunikacji z API",
+      "INSTRUCTIONS": "Wystąpił problem z połączeniem z usługą. Spróbuj ponownie później."
+    },
+    "WEBSOCKET_ERROR": {
+      "NAME": "Błąd połączenia WebSocket",
+      "INSTRUCTIONS": "Nie można połączyć się z usługą głosową. Sprawdź swoje połączenie."
+    },
+    "CONNECTION_TIMEOUT": {
+      "NAME": "Przekroczono czas połączenia",
+      "INSTRUCTIONS": "Upłynął czas połączenia. Spróbuj ponownie."
+    },
+    "AUTHENTICATION_ERROR": {
+      "NAME": "Błąd uwierzytelniania",
+      "INSTRUCTIONS": "Zaloguj się ponownie."
+    },
+    "MICROPHONE_ACCESS_DENIED": {
+      "NAME": "Potrzebny mikrofon",
+      "INSTRUCTIONS": "Zezwól na niego w uprawnieniach przeglądarki dla tej strony."
+    },
+    "MICROPHONE_BLOCKED": {
+      "NAME": "Mikrofon zablokowany",
+      "INSTRUCTIONS": "Zezwól na niego w uprawnieniach przeglądarki dla tej strony."
+    },
+    "MICROPHONE_OS_BLOCKED": {
+      "NAME": "Mikrofon zablokowany",
+      "INSTRUCTIONS": "Zezwól na niego w ustawieniach urządzenia dla tej przeglądarki."
+    },
+    "MICROPHONE_NOT_READABLE": {
+      "NAME": "Błąd mikrofonu",
+      "INSTRUCTIONS": "Nie udało się odczytać danych z mikrofonu. Sprawdź mikrofon lub wybierz inny."
+    },
+    "AUDIO_RECORDING_ERROR": {
+      "NAME": "Błąd nagrywania dźwięku",
+      "INSTRUCTIONS": "Nie udało się nagrać dźwięku. Sprawdź mikrofon lub wybierz inny."
+    },
+    "SERVER_ERROR": {
+      "NAME": "Błąd serwera",
+      "INSTRUCTIONS": "Nasz zespół został już powiadomiony."
+    },
+    "QUOTA_EXCEEDED": {
+      "NAME": "Osiągnięto limit użycia",
+      "INSTRUCTIONS": "Osiągnięto limit użycia. Spróbuj ponownie później."
+    },
+    "HIGH_DEMAND": {
+      "NAME": "Duże obciążenie",
+      "INSTRUCTIONS": "Nasza usługa jest teraz mocno obciążona. Spróbuj ponownie za chwilę."
+    },
+    "HTTP": {
+      "400_BAD_REQUEST": {
+        "NAME": "Nieprawidłowe żądanie",
+        "INSTRUCTIONS": "Spróbuj ponownie z prawidłowymi parametrami."
+      },
+      "401_UNAUTHORIZED": {
+        "NAME": "Wymagane uwierzytelnienie",
+        "INSTRUCTIONS": "Zaloguj się, aby dalej korzystać z tej funkcji."
+      },
+      "403_FORBIDDEN": {
+        "NAME": "Brak dostępu",
+        "INSTRUCTIONS": "Nie masz uprawnień do tej funkcji."
+      },
+      "403_FORBIDDEN_GEO_LOCATION_BLOCKED": {
+        "NAME": "Lokalizacja zablokowana",
+        "INSTRUCTIONS": "Czat głosowy nie jest dostępny w tej lokalizacji."
+      },
+      "404_NOT_FOUND": {
+        "NAME": "Nie znaleziono usługi",
+        "INSTRUCTIONS": "Nie udało się znaleźć żądanej usługi."
+      },
+      "408_TIMEOUT": {
+        "NAME": "Przekroczono czas żądania",
+        "INSTRUCTIONS": "Serwer odpowiadał zbyt długo. Spróbuj ponownie później."
+      },
+      "409_CONFLICT": {
+        "NAME": "Konflikt usługi",
+        "INSTRUCTIONS": "Wystąpił konflikt z bieżącym stanem. Spróbuj ponownie."
+      },
+      "422_UNPROCESSABLE_ENTITY": {
+        "NAME": "Nieprawidłowy format żądania",
+        "INSTRUCTIONS": "Nie udało się przetworzyć żądania. Spróbuj ponownie."
+      },
+      "429_RATE_LIMIT": {
+        "NAME": "Zbyt wiele żądań",
+        "INSTRUCTIONS": "Odczekaj chwilę przed kolejną próbą."
+      },
+      "500_SERVER_ERROR": {
+        "NAME": "Błąd serwera",
+        "INSTRUCTIONS": "Spróbuj ponownie później."
+      },
+      "502_BAD_GATEWAY": {
+        "NAME": "Usługa niedostępna",
+        "INSTRUCTIONS": "Spróbuj ponownie później."
+      },
+      "503_SERVICE_UNAVAILABLE": {
+        "NAME": "Usługa chwilowo niedostępna",
+        "INSTRUCTIONS": "Spróbuj ponownie później."
+      },
+      "504_GATEWAY_TIMEOUT": {
+        "NAME": "Przekroczono czas odpowiedzi usługi",
+        "INSTRUCTIONS": "Usługa odpowiadała zbyt długo. Spróbuj ponownie później."
+      }
+    }
+  },
+  "LANGUAGE_NOT_SUPPORTED": "Ten język nie jest obsługiwany w czacie głosowym."
+}

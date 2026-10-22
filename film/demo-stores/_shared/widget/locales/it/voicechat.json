@@ -1,0 +1,240 @@
+{
+  "VOICECHAT_CLAIM": "Parliamone. Ti aiuto io.",
+  "VOICECHAT_BUTTON": "Chat vocale",
+  "VOICECHAT_INSTRUCTIONS": "Parla per interrompere",
+  "END_CALL": "Termina chiamata",
+  "CONNECTING": "Attendi qualche secondo...",
+  "CONNECTING_BUTTON": "Connessione",
+  "CLICK_TO_SPEAK": "Clicca per parlare",
+  "CLICK_TO_END": "Clicca per terminare",
+  "TALK_TO_INTERRUPT": "Parla per interrompere",
+  "CONNECTING_HINT": "Attendi un attimo",
+  "LISTENING_ACTIVE": "Ti ascolto...",
+  "TRY_VOICE_EXPERIENCE": "Provami, sono nuovo!",
+  "TERMS_ACCEPT": "Accetta",
+  "TERMS_DECLINE": "Indietro",
+  "TERMS_ACCEPTANCE_WITH_LINK": "Accetta i [T&C]({{termsUrl}}) per continuare.",
+  "POC_DISCLAIMER": {
+    "TITLE": "Prova di concetto",
+    "MESSAGE": "Questo prototipo di chat vocale serve solo a mostrare il concetto e non rappresenta la qualità finale di una soluzione o di un prodotto. Possono verificarsi ritardi, bug e altri problemi.<br/>Funzionalità principali: <strong>Navigazione web autonoma</strong>, <strong>Evidenziazione del testo</strong> e <strong>Compilazione dei moduli</strong>."
+  },
+  "GREETING": {
+    "1": "Ciao! Benvenuto nella chat vocale. Come posso aiutarti oggi?",
+    "2": "Ciao! Sono qui per aiutarti con quello che ti serve.",
+    "3": "Salve! Come posso esserti utile oggi?",
+    "4": "Benvenuto! Dimmi cosa ti serve e farò del mio meglio per aiutarti.",
+    "5": "Assistente vocale a tua disposizione! Pronto ad aiutarti!",
+    "DEFAULT": "Ciao! Cosa cerchi oggi?"
+  },
+  "RESUME_GREETING": {
+    "1": "Eccomi di nuovo! Riprendiamo da dove eravamo.",
+    "2": "Bene, andiamo avanti!",
+    "3": "Sono ancora qui! Cosa stavamo guardando?",
+    "DEFAULT": "Allora, dov'eravamo rimasti?"
+  },
+  "FEEDBACK_TITLE": "Com'è stata la tua esperienza?",
+  "FEEDBACK_THUMBS_UP": "Bene",
+  "FEEDBACK_THUMBS_DOWN": "Si può migliorare",
+  "FEEDBACK_ERROR": "Impossibile inviare il feedback",
+  "FEEDBACK_SUCCESS": "Grazie per il tuo feedback!",
+  "ERROR_GENERIC": "Impossibile avviare la chat vocale",
+  "MOBILE_TAP_AVATAR_TO_START": "Tocca e parla",
+  "MOBILE_TAP_AVATAR_TO_CANCEL": "Connessione...",
+  "MOBILE_TAP_AVATAR_TO_END_CALL": "Tocca per terminare",
+  "HINT_LABEL": "Prova a dire",
+  "HINTS_DEFAULT": [
+    "Cerco un regalo per il mio partner, mi aiuti?",
+    "Cosa c'è in offerta adesso?",
+    "Qual è il migliore per la pelle sensibile?",
+    "Posso restituirlo se non mi va bene?",
+    "Confrontami questi due"
+  ],
+  "CHAT_INPUT_PLACEHOLDER": "Chiedimi di prodotti, spedizioni o del tuo ordine.",
+  "CHAT_CONNECTING_PLACEHOLDER": "Connessione… puoi già scrivere.",
+  "CHAT_MESSAGE_SENDING": "Invio…",
+  "CHAT_MESSAGE_FAILED_RETRY": "Non inviato. Tocca per riprovare.",
+  "CHAT_EVENT_PRODUCTS_SHOWN": "Prodotti che ti sono stati mostrati",
+  "CHAT_EVENT_SEARCH_RESULTS": "Risultati per «{{query}}»",
+  "CHAT_EVENT_PRODUCT_OPENED": "Prodotto aperto",
+  "CHAT_EVENT_ADDED_TO_CART": "Aggiunto al carrello",
+  "CHAT_EVENT_CART_OPENED": "Carrello aperto",
+  "CHAT_EVENT_CHECKOUT_OPENED": "Pagamento aperto",
+  "CHAT_EVENT_SEARCHED_FOR": "Ricerca di «{{query}}»",
+  "CHAT_EVENT_PAGE_OPENED": "Pagina aperta",
+  "CHAT_VOICE_TOGGLE_ON": "Attiva la voce",
+  "CHAT_VOICE_TOGGLE_OFF": "Termina la voce",
+  "CHAT_CALL_START": "Avvia chat vocale",
+  "CHAT_CALL_END": "Chiudi",
+  "CHAT_LAUNCHER_TITLE": "Avvia una chat scritta",
+  "CHAT_NEW_SESSION": "Nuova sessione",
+  "CHAT_HIDE_PANEL": "Torna all'avatar",
+  "CHAT_SEND": "Invia",
+  "CHAT_EMPTY_HINT": "Invia un messaggio per iniziare la conversazione.",
+  "CHAT_COLLAPSE": "Riduci",
+  "CHAT_EXPAND": "Espandi",
+  "MIC_RECOVERY_DISMISS": "Chiudi",
+  "NAVIGATION_TAKING_YOU_TO": "Ti porto a",
+  "NAVIGATION_TARGET_SEARCH": "Risultati di ricerca",
+  "NAVIGATION_TARGET_GENERIC": "Un'altra pagina",
+  "TEXT_CHAT_INSTRUCTIONS": "Passa alla voce",
+  "MOBILE_TYPE_INSTEAD": "...oppure scrivi",
+  "CLOSE_WIDGET": "Chiudi",
+  "REOPEN_WIDGET": "Riapri l'assistente",
+  "CHAT_LITE_SHOW_HISTORY": "Cronologia della sessione",
+  "CHAT_LITE_HIDE_HISTORY": "Nascondi la conversazione",
+  "CHAT_LITE_BACK_TO_VOICE": "Torna alla modalità vocale",
+  "CHAT_LITE_GO_TO_VOICE": "Vai alla modalità vocale",
+  "CHAT_LITE_CONVERSATION": "Conversazione",
+  "CHAT_LITE_PIN_TRANSCRIPT": "Fissa la conversazione",
+  "CHAT_LITE_UNPIN_TRANSCRIPT": "Rimuovi conversazione fissata",
+  "UNIFIED_PROMPTS": {
+    "DISCOVERY": "Aiutami a trovare il prodotto giusto.",
+    "COMPARISON": "Confronta le opzioni migliori per me.",
+    "GUIDANCE": "Andrà bene o sarà adatto alle mie esigenze?",
+    "RETURNS": "Qual è la politica di reso?",
+    "FAQ": "Puoi rispondere a una domanda sugli acquisti?"
+  },
+  "MIC_PRIMER": "Scegli \"Consenti\" così posso sentirti",
+  "MIC_NEEDED": "Consenti l'accesso al microfono per parlare",
+  "ENABLE_MIC_HINT_BROWSER": "Consenti il microfono nei permessi della pagina",
+  "ENABLE_MIC_HINT_OS": "Consenti il microfono nelle impostazioni del dispositivo",
+  "DEGRADED_VOICE_SWITCHED_HINT_BROWSER": "L'accesso al microfono è bloccato, così ti ho spostato sulla chat. Continuerò a parlare ad alta voce; per parlare, consenti il microfono nei permessi della pagina.",
+  "DEGRADED_VOICE_SWITCHED_HINT_OS": "L'accesso al microfono è bloccato, così ti ho spostato sulla chat. Continuerò a parlare ad alta voce; per parlare, consenti il microfono nelle impostazioni del dispositivo.",
+  "DEGRADED_VOICE_BLOCKED_HINT_BROWSER": "L'accesso al microfono è bloccato. Continuerò a parlare ad alta voce; per parlare, consenti il microfono nei permessi della pagina.",
+  "DEGRADED_VOICE_BLOCKED_HINT_OS": "L'accesso al microfono è bloccato. Continuerò a parlare ad alta voce; per parlare, consenti il microfono nelle impostazioni del dispositivo.",
+  "USE_TEXT_CHAT": "Usa la chat scritta",
+  "OR": "O",
+  "MIC_BLOCKED_HINT": "Consenti il microfono nei permessi della pagina",
+  "MIC_OS_BLOCKED_HINT": "Consenti il microfono nelle impostazioni del dispositivo",
+  "CONTROLS": {
+    "MICROPHONE": {
+      "MUTE": "Disattiva microfono",
+      "UNMUTE": "Attiva microfono",
+      "MUTED": "Microfono disattivato",
+      "UNMUTED": "Microfono attivo"
+    },
+    "SUBTITLES": {
+      "ENABLE": "Attiva sottotitoli",
+      "DISABLE": "Disattiva sottotitoli",
+      "ENABLED": "Sottotitoli attivi",
+      "DISABLED": "Sottotitoli disattivati"
+    },
+    "MUTE_MICROPHONE": "Disattiva microfono",
+    "UNMUTE_MICROPHONE": "Attiva microfono",
+    "ENABLE_CAPTIONS": "Attiva sottotitoli",
+    "DISABLE_CAPTIONS": "Disattiva sottotitoli"
+  },
+  "ERRORS": {
+    "UNKNOWN_ERROR": {
+      "NAME": "Errore imprevisto",
+      "INSTRUCTIONS": "Riprova o contatta l'assistenza se il problema persiste."
+    },
+    "NETWORK_ERROR": {
+      "NAME": "Errore di connessione di rete",
+      "INSTRUCTIONS": "Controlla la connessione a internet e riprova."
+    },
+    "API_ERROR": {
+      "NAME": "Errore di comunicazione con l'API",
+      "INSTRUCTIONS": "Si è verificato un problema di connessione al servizio. Riprova più tardi."
+    },
+    "WEBSOCKET_ERROR": {
+      "NAME": "Errore di connessione WebSocket",
+      "INSTRUCTIONS": "Impossibile connettersi al servizio vocale. Controlla la connessione."
+    },
+    "CONNECTION_TIMEOUT": {
+      "NAME": "Connessione scaduta",
+      "INSTRUCTIONS": "La connessione è scaduta. Riprova."
+    },
+    "AUTHENTICATION_ERROR": {
+      "NAME": "Errore di autenticazione",
+      "INSTRUCTIONS": "Accedi di nuovo."
+    },
+    "MICROPHONE_ACCESS_DENIED": {
+      "NAME": "Serve il microfono",
+      "INSTRUCTIONS": "Consentilo nei permessi del browser per questa pagina."
+    },
+    "MICROPHONE_BLOCKED": {
+      "NAME": "Microfono bloccato",
+      "INSTRUCTIONS": "Consentilo nei permessi del browser per questa pagina."
+    },
+    "MICROPHONE_OS_BLOCKED": {
+      "NAME": "Microfono bloccato",
+      "INSTRUCTIONS": "Consentilo nelle impostazioni del dispositivo per questo browser."
+    },
+    "MICROPHONE_NOT_READABLE": {
+      "NAME": "Errore del microfono",
+      "INSTRUCTIONS": "Non è stato possibile leggere i dati del microfono. Controlla il microfono o provane un altro."
+    },
+    "AUDIO_RECORDING_ERROR": {
+      "NAME": "Errore di registrazione audio",
+      "INSTRUCTIONS": "Non è stato possibile registrare l'audio. Controlla il microfono o provane un altro."
+    },
+    "SERVER_ERROR": {
+      "NAME": "Errore del server",
+      "INSTRUCTIONS": "Il nostro team è stato avvisato."
+    },
+    "QUOTA_EXCEEDED": {
+      "NAME": "Limite di utilizzo raggiunto",
+      "INSTRUCTIONS": "Hai raggiunto il limite di utilizzo. Riprova più tardi."
+    },
+    "HIGH_DEMAND": {
+      "NAME": "Molte richieste",
+      "INSTRUCTIONS": "Il servizio è molto richiesto in questo momento. Riprova tra poco."
+    },
+    "HTTP": {
+      "400_BAD_REQUEST": {
+        "NAME": "Richiesta non valida",
+        "INSTRUCTIONS": "Riprova con parametri validi."
+      },
+      "401_UNAUTHORIZED": {
+        "NAME": "Autenticazione richiesta",
+        "INSTRUCTIONS": "Accedi per continuare a usare questa funzione."
+      },
+      "403_FORBIDDEN": {
+        "NAME": "Accesso negato",
+        "INSTRUCTIONS": "Non hai i permessi per accedere a questa funzione."
+      },
+      "403_FORBIDDEN_GEO_LOCATION_BLOCKED": {
+        "NAME": "Geolocalizzazione bloccata",
+        "INSTRUCTIONS": "La chat vocale non è disponibile da questa posizione."
+      },
+      "404_NOT_FOUND": {
+        "NAME": "Servizio non trovato",
+        "INSTRUCTIONS": "Il servizio richiesto non è stato trovato."
+      },
+      "408_TIMEOUT": {
+        "NAME": "Richiesta scaduta",
+        "INSTRUCTIONS": "Il server ha impiegato troppo tempo a rispondere. Riprova più tardi."
+      },
+      "409_CONFLICT": {
+        "NAME": "Conflitto del servizio",
+        "INSTRUCTIONS": "Si è verificato un conflitto con lo stato attuale. Riprova."
+      },
+      "422_UNPROCESSABLE_ENTITY": {
+        "NAME": "Formato della richiesta non valido",
+        "INSTRUCTIONS": "Non è stato possibile elaborare la richiesta. Riprova."
+      },
+      "429_RATE_LIMIT": {
+        "NAME": "Troppe richieste",
+        "INSTRUCTIONS": "Attendi un momento prima di riprovare."
+      },
+      "500_SERVER_ERROR": {
+        "NAME": "Errore del server",
+        "INSTRUCTIONS": "Riprova più tardi."
+      },
+      "502_BAD_GATEWAY": {
+        "NAME": "Servizio non disponibile",
+        "INSTRUCTIONS": "Riprova più tardi."
+      },
+      "503_SERVICE_UNAVAILABLE": {
+        "NAME": "Servizio temporaneamente non disponibile",
+        "INSTRUCTIONS": "Riprova più tardi."
+      },
+      "504_GATEWAY_TIMEOUT": {
+        "NAME": "Timeout del servizio",
+        "INSTRUCTIONS": "Il servizio ha impiegato troppo tempo a rispondere. Riprova più tardi."
+      }
+    }
+  },
+  "LANGUAGE_NOT_SUPPORTED": "Lingua non supportata per la chat vocale."
+}

@@ -1,0 +1,266 @@
+{
+  "VOICECHAT_CLAIM": "Let's talk. I'll help you.",
+  "VOICECHAT_BUTTON": "Voice chat",
+  "VOICECHAT_INSTRUCTIONS": "Talk to interrupt",
+  "END_CALL": "End call",
+  "CONNECTING": "Wait a few seconds...",
+  "CONNECTING_BUTTON": "Connecting",
+  "CLICK_TO_SPEAK": "Click to speak",
+  "CLICK_TO_END": "Click to end",
+  "TALK_TO_INTERRUPT": "Speak to interrupt",
+  "CONNECTING_HINT": "Wait a few moments",
+  "LISTENING_ACTIVE": "Listening...",
+  "TRY_VOICE_EXPERIENCE": "Try me, I'm new!",
+  "TERMS_ACCEPT": "Accept",
+  "TERMS_DECLINE": "Go back",
+  "TERMS_ACCEPTANCE_WITH_LINK": "Accept [T&C]({{termsUrl}}) to continue.",
+  "POC_DISCLAIMER": {
+    "TITLE": "Proof-of-Concept",
+    "MESSAGE": "This voice chat prototype purpose is just to showcase the concept and it does not represent the final quality of a solution or product. Delays, bugs and other issues may occur.<br/>Key features: <strong>Autonomous web navigation</strong>, <strong>Text highlighting</strong> and <strong>Form filling</strong>."
+  },
+  "GREETING": {
+    "1": "Hello! Welcome to the voice chat. How can I help you today?",
+    "2": "Hi there! I'm here to assist you with anything you need.",
+    "3": "Greetings! How may I assist you today?",
+    "4": "Welcome! Let me know what you need and I'll do my best to help.",
+    "5": "Voice assistant at your service! Ready to help!",
+    "DEFAULT": "Hello! What would you like today?"
+  },
+  "RESUME_GREETING": {
+    "1": "Hey, I'm back! Let's pick up where we left off.",
+    "2": "Alright, let's continue!",
+    "3": "Still here! What were we looking at?",
+    "DEFAULT": "So, where were we?"
+  },
+  "FEEDBACK_TITLE": "How was your experience?",
+  "FEEDBACK_THUMBS_UP": "Good",
+  "FEEDBACK_THUMBS_DOWN": "Could be better",
+  "FEEDBACK_ERROR": "Couldn't send feedback",
+  "FEEDBACK_SUCCESS": "Thank you for your feedback!",
+  "ERROR_GENERIC": "Couldn't start voice chat",
+  "MOBILE_TAP_AVATAR_TO_START": "Tap & talk",
+  "MOBILE_TAP_AVATAR_TO_CANCEL": "Connecting...",
+  "MOBILE_TAP_AVATAR_TO_END_CALL": "Tap to end",
+  "HINT_LABEL": "Try saying",
+  "HINTS_DEFAULT": [
+    "I need a gift for my partner, can you help?",
+    "What's on sale right now?",
+    "Which one is best for sensitive skin?",
+    "Can I return this if it doesn't fit?",
+    "Compare these two for me"
+  ],
+  "CHAT_INPUT_PLACEHOLDER": "Ask about products, shipping, or your order.",
+  "CHAT_CONNECTING_PLACEHOLDER": "Connecting… you can already type.",
+  "CHAT_MESSAGE_SENDING": "Sending…",
+  "CHAT_MESSAGE_FAILED_RETRY": "Not sent. Tap to retry.",
+  "CHAT_EVENT_PRODUCTS_SHOWN": "Products shown to you",
+  "CHAT_EVENT_SEARCH_RESULTS": "Results for “{{query}}”",
+  "CHAT_EVENT_PRODUCT_OPENED": "Product opened",
+  "CHAT_EVENT_ADDED_TO_CART": "Added to cart",
+  "CHAT_EVENT_YOU_ADDED_TO_CART": "You added to cart",
+  "CHAT_EVENT_YOU_REMOVED_FROM_CART": "You removed from cart",
+  "CHAT_EVENT_YOU_CHANGED_CART_QUANTITY": "You changed the quantity",
+  "CHAT_EVENT_YOU_CLEARED_CART": "You cleared the cart",
+  "CHAT_EVENT_YOU_UPDATED_CART": "You updated the cart",
+  "CHAT_EVENT_CART_NOW_EMPTY": "Your cart is empty",
+  "CHAT_EVENT_CART_ITEMS_UPDATED": "{{count}} cart items changed",
+  "CHAT_EVENT_CART_OPENED": "Cart opened",
+  "CHAT_EVENT_CHECKOUT_OPENED": "Checkout opened",
+  "CHAT_EVENT_SEARCHED_FOR": "Searched for “{{query}}”",
+  "CHAT_EVENT_PAGE_OPENED": "Page opened",
+  "AGENT_ACTIVITY": {
+    "THINKING": "Thinking…",
+    "SEARCHING_CATALOG": "Searching the catalog…",
+    "PREPARING_PRODUCTS": "Preparing product results…",
+    "CHECKING_PRODUCT_DETAILS": "Checking product details…",
+    "OPENING_PRODUCT": "Opening the product…",
+    "CHECKING_CART": "Checking your cart…",
+    "ADDING_TO_CART": "Adding to your cart…",
+    "UPDATING_CART": "Updating your cart…",
+    "CHECKING_STORE_INFORMATION": "Checking store policies…",
+    "CHECKING_ORDER": "Checking your order…",
+    "NAVIGATING": "Opening the right page…",
+    "FILLING_FORM": "Filling the form…",
+    "SUBMITTING_FORM": "Submitting the form…",
+    "ENDING_CALL": "Wrapping up the conversation…",
+    "RUNNING_TOOL": "Working on {{toolName}}…"
+  },
+  "CHAT_VOICE_TOGGLE_ON": "Start voice",
+  "CHAT_VOICE_TOGGLE_OFF": "End voice",
+  "CHAT_CALL_START": "Start voice chat",
+  "CHAT_CALL_END": "Hang up",
+  "CHAT_AVATAR_AUDIO_TOGGLE_ON": "Turn audio on",
+  "CHAT_AVATAR_AUDIO_TOGGLE_OFF": "Turn audio off",
+  "CHAT_LAUNCHER_TITLE": "Start a text chat",
+  "CHAT_NEW_SESSION": "New session",
+  "CHAT_HIDE_PANEL": "Back to avatar",
+  "CHAT_SEND": "Send",
+  "CHAT_EMPTY_HINT": "Send a message to start the conversation.",
+  "CHAT_COLLAPSE": "Collapse",
+  "CHAT_EXPAND": "Expand",
+  "MIC_RECOVERY_DISMISS": "Dismiss",
+  "NAVIGATION_TAKING_YOU_TO": "Taking you to",
+  "NAVIGATION_TARGET_SEARCH": "Search results",
+  "NAVIGATION_TARGET_GENERIC": "Another page",
+  "TEXT_CHAT_INSTRUCTIONS": "Switch to voice",
+  "MOBILE_TYPE_INSTEAD": "...or type instead",
+  "CLOSE_WIDGET": "Close",
+  "REOPEN_WIDGET": "Reopen assistant",
+  "CHAT_LITE_SHOW_HISTORY": "Session history",
+  "CHAT_LITE_HIDE_HISTORY": "Hide conversation",
+  "CHAT_LITE_BACK_TO_VOICE": "Back to voice mode",
+  "CHAT_LITE_GO_TO_VOICE": "Go to voice mode",
+  "CHAT_LITE_CONVERSATION": "Conversation",
+  "CHAT_LITE_PIN_TRANSCRIPT": "Pin conversation",
+  "CHAT_LITE_UNPIN_TRANSCRIPT": "Unpin conversation",
+  "UNIFIED_PROMPTS": {
+    "DISCOVERY": "Help me find the right product.",
+    "COMPARISON": "Compare the best options for me.",
+    "GUIDANCE": "Will this fit or work for my needs?",
+    "RETURNS": "What is the return policy?",
+    "FAQ": "Can you answer a shopping question?"
+  },
+  "MIC_PRIMER": "Choose \"Allow\" so I can hear you",
+  "MIC_NEEDED": "Allow mic access to chat by voice",
+  "ENABLE_MIC_HINT_BROWSER": "Allow mic in page permissions",
+  "ENABLE_MIC_HINT_OS": "Allow mic in device settings",
+  "DEGRADED_VOICE_SWITCHED_HINT_BROWSER": "Mic access is blocked, so I switched you to chat. I'll still talk out loud - to speak, allow the mic in page permissions.",
+  "DEGRADED_VOICE_SWITCHED_HINT_OS": "Mic access is blocked, so I switched you to chat. I'll still talk out loud - to speak, allow the mic in your device settings.",
+  "DEGRADED_VOICE_BLOCKED_HINT_BROWSER": "Mic access is blocked. I'll still talk out loud - to speak, allow the mic in page permissions.",
+  "DEGRADED_VOICE_BLOCKED_HINT_OS": "Mic access is blocked. I'll still talk out loud - to speak, allow the mic in your device settings.",
+  "USE_TEXT_CHAT": "Use text chat",
+  "OR": "OR",
+  "MIC_BLOCKED_HINT": "Allow mic in page permissions",
+  "MIC_OS_BLOCKED_HINT": "Allow mic in device settings",
+  "CONTROLS": {
+    "MICROPHONE": {
+      "MUTE": "Mute microphone",
+      "UNMUTE": "Unmute microphone",
+      "MUTED": "Microphone muted",
+      "UNMUTED": "Microphone active"
+    },
+    "SUBTITLES": {
+      "ENABLE": "Enable subtitles",
+      "DISABLE": "Disable subtitles",
+      "ENABLED": "Subtitles on",
+      "DISABLED": "Subtitles off"
+    },
+    "MUTE_MICROPHONE": "Mute microphone",
+    "UNMUTE_MICROPHONE": "Unmute microphone",
+    "ENABLE_CAPTIONS": "Enable subtitles",
+    "DISABLE_CAPTIONS": "Disable subtitles"
+  },
+  "ERRORS": {
+    "UNKNOWN_ERROR": {
+      "NAME": "Unexpected error",
+      "INSTRUCTIONS": "Please try again or contact support if the problem persists."
+    },
+    "NETWORK_ERROR": {
+      "NAME": "Network connection error",
+      "INSTRUCTIONS": "Please check your internet connection and try again."
+    },
+    "API_ERROR": {
+      "NAME": "API communication error",
+      "INSTRUCTIONS": "There was a problem connecting to the service. Please try again later."
+    },
+    "WEBSOCKET_ERROR": {
+      "NAME": "WebSocket connection error",
+      "INSTRUCTIONS": "Unable to connect to voice service. Please check your connection."
+    },
+    "CONNECTION_TIMEOUT": {
+      "NAME": "Connection timeout",
+      "INSTRUCTIONS": "Connection timed out. Please try again."
+    },
+    "AUTHENTICATION_ERROR": {
+      "NAME": "Authentication error",
+      "INSTRUCTIONS": "Please sign in again."
+    },
+    "MICROPHONE_ACCESS_DENIED": {
+      "NAME": "Microphone needed",
+      "INSTRUCTIONS": "Allow it in this page's browser permissions."
+    },
+    "MICROPHONE_BLOCKED": {
+      "NAME": "Microphone blocked",
+      "INSTRUCTIONS": "Allow it in this page's browser permissions."
+    },
+    "MICROPHONE_OS_BLOCKED": {
+      "NAME": "Microphone blocked",
+      "INSTRUCTIONS": "Allow it in your device settings for this browser."
+    },
+    "MICROPHONE_NOT_READABLE": {
+      "NAME": "Microphone error",
+      "INSTRUCTIONS": "Could not read microphone data. Please check your microphone or try a different one."
+    },
+    "AUDIO_RECORDING_ERROR": {
+      "NAME": "Audio recording error",
+      "INSTRUCTIONS": "Could not record audio. Please check your microphone or try a different one."
+    },
+    "SERVER_ERROR": {
+      "NAME": "Server error",
+      "INSTRUCTIONS": "Our team has been notified."
+    },
+    "QUOTA_EXCEEDED": {
+      "NAME": "Usage limit reached",
+      "INSTRUCTIONS": "You've reached your usage limit. Please try again later."
+    },
+    "HIGH_DEMAND": {
+      "NAME": "High demand",
+      "INSTRUCTIONS": "Our service is experiencing high demand. Please try again shortly."
+    },
+    "HTTP": {
+      "400_BAD_REQUEST": {
+        "NAME": "Invalid request",
+        "INSTRUCTIONS": "Please try again with valid parameters."
+      },
+      "401_UNAUTHORIZED": {
+        "NAME": "Authentication required",
+        "INSTRUCTIONS": "Please sign in to continue using this feature."
+      },
+      "403_FORBIDDEN": {
+        "NAME": "Access denied",
+        "INSTRUCTIONS": "You don't have permission to access this feature."
+      },
+      "403_FORBIDDEN_GEO_LOCATION_BLOCKED": {
+        "NAME": "Geolocation blocked",
+        "INSTRUCTIONS": "The voice chat is not available from this location."
+      },
+      "404_NOT_FOUND": {
+        "NAME": "Service not found",
+        "INSTRUCTIONS": "The requested service could not be found."
+      },
+      "408_TIMEOUT": {
+        "NAME": "Request timed out",
+        "INSTRUCTIONS": "The server took too long to respond. Please try again later."
+      },
+      "409_CONFLICT": {
+        "NAME": "Service conflict",
+        "INSTRUCTIONS": "There was a conflict with the current state. Please try again."
+      },
+      "422_UNPROCESSABLE_ENTITY": {
+        "NAME": "Invalid request format",
+        "INSTRUCTIONS": "The request could not be processed. Please try again."
+      },
+      "429_RATE_LIMIT": {
+        "NAME": "Too many requests",
+        "INSTRUCTIONS": "Please wait a moment before trying again."
+      },
+      "500_SERVER_ERROR": {
+        "NAME": "Server error",
+        "INSTRUCTIONS": "Please try again later."
+      },
+      "502_BAD_GATEWAY": {
+        "NAME": "Service unavailable",
+        "INSTRUCTIONS": "Please try again later."
+      },
+      "503_SERVICE_UNAVAILABLE": {
+        "NAME": "Service temporarily unavailable",
+        "INSTRUCTIONS": "Please try again later."
+      },
+      "504_GATEWAY_TIMEOUT": {
+        "NAME": "Service timeout",
+        "INSTRUCTIONS": "The service took too long to respond. Please try again later."
+      }
+    }
+  },
+  "LANGUAGE_NOT_SUPPORTED": "Language not supported for voice chat."
+}

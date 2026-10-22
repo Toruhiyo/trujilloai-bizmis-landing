@@ -1,0 +1,240 @@
+{
+  "VOICECHAT_CLAIM": "Laten we praten. Ik help je.",
+  "VOICECHAT_BUTTON": "Spraakchat",
+  "VOICECHAT_INSTRUCTIONS": "Praat om te onderbreken",
+  "END_CALL": "Beëindigen",
+  "CONNECTING": "Nog een paar seconden ...",
+  "CONNECTING_BUTTON": "Verbinden",
+  "CLICK_TO_SPEAK": "Klik om te praten",
+  "CLICK_TO_END": "Klik om te stoppen",
+  "TALK_TO_INTERRUPT": "Praat om te onderbreken",
+  "CONNECTING_HINT": "Even geduld",
+  "LISTENING_ACTIVE": "Ik luister ...",
+  "TRY_VOICE_EXPERIENCE": "Probeer me, ik ben nieuw!",
+  "TERMS_ACCEPT": "Accepteren",
+  "TERMS_DECLINE": "Terug",
+  "TERMS_ACCEPTANCE_WITH_LINK": "Accepteer de [voorwaarden]({{termsUrl}}) om verder te gaan.",
+  "POC_DISCLAIMER": {
+    "TITLE": "Proof of Concept",
+    "MESSAGE": "Deze spraakchat is een prototype dat alleen het concept laat zien en niet de uiteindelijke kwaliteit van een oplossing of product weergeeft. Vertraging, bugs en andere problemen kunnen voorkomen.<br/>Belangrijkste functies: <strong>Zelfstandig navigeren op de site</strong>, <strong>Tekst markeren</strong> en <strong>Formulieren invullen</strong>."
+  },
+  "GREETING": {
+    "1": "Hallo! Welkom bij de spraakchat. Waarmee kan ik je vandaag helpen?",
+    "2": "Hoi! Ik sta voor je klaar, waar je ook mee zit.",
+    "3": "Goedendag! Waarmee kan ik je van dienst zijn?",
+    "4": "Welkom! Zeg maar wat je nodig hebt, dan help ik je verder.",
+    "5": "Je spraakassistent staat klaar. Ik help je graag!",
+    "DEFAULT": "Hallo! Waar kan ik je mee helpen?"
+  },
+  "RESUME_GREETING": {
+    "1": "Hé, ik ben er weer! We gaan verder waar we gebleven waren.",
+    "2": "Oké, we gaan verder!",
+    "3": "Ik ben er nog! Waar waren we naar aan het kijken?",
+    "DEFAULT": "Zo, waar waren we?"
+  },
+  "FEEDBACK_TITLE": "Hoe was het?",
+  "FEEDBACK_THUMBS_UP": "Goed",
+  "FEEDBACK_THUMBS_DOWN": "Kan beter",
+  "FEEDBACK_ERROR": "Feedback niet verzonden",
+  "FEEDBACK_SUCCESS": "Bedankt voor je feedback!",
+  "ERROR_GENERIC": "Spraakchat kon niet starten",
+  "MOBILE_TAP_AVATAR_TO_START": "Tik en praat",
+  "MOBILE_TAP_AVATAR_TO_CANCEL": "Verbinden ...",
+  "MOBILE_TAP_AVATAR_TO_END_CALL": "Tik om te stoppen",
+  "HINT_LABEL": "Zeg bijvoorbeeld",
+  "HINTS_DEFAULT": [
+    "Ik zoek een cadeau voor mijn partner, kun je helpen?",
+    "Wat is er nu in de aanbieding?",
+    "Welke is het beste voor een gevoelige huid?",
+    "Kan ik dit retourneren als het niet past?",
+    "Vergelijk deze twee even voor me"
+  ],
+  "CHAT_INPUT_PLACEHOLDER": "Vraag over producten, bezorging of je bestelling.",
+  "CHAT_CONNECTING_PLACEHOLDER": "Verbinden … je kunt alvast typen.",
+  "CHAT_MESSAGE_SENDING": "Verzenden …",
+  "CHAT_MESSAGE_FAILED_RETRY": "Niet verzonden. Tik om opnieuw te proberen.",
+  "CHAT_EVENT_PRODUCTS_SHOWN": "Producten die je zag",
+  "CHAT_EVENT_SEARCH_RESULTS": "Resultaten voor “{{query}}”",
+  "CHAT_EVENT_PRODUCT_OPENED": "Product geopend",
+  "CHAT_EVENT_ADDED_TO_CART": "Toegevoegd aan winkelwagen",
+  "CHAT_EVENT_CART_OPENED": "Winkelwagen geopend",
+  "CHAT_EVENT_CHECKOUT_OPENED": "Afrekenen geopend",
+  "CHAT_EVENT_SEARCHED_FOR": "Gezocht op “{{query}}”",
+  "CHAT_EVENT_PAGE_OPENED": "Pagina geopend",
+  "CHAT_VOICE_TOGGLE_ON": "Spraak starten",
+  "CHAT_VOICE_TOGGLE_OFF": "Spraak stoppen",
+  "CHAT_CALL_START": "Spraakchat starten",
+  "CHAT_CALL_END": "Ophangen",
+  "CHAT_LAUNCHER_TITLE": "Chat starten",
+  "CHAT_NEW_SESSION": "Nieuwe sessie",
+  "CHAT_HIDE_PANEL": "Terug naar avatar",
+  "CHAT_SEND": "Verstuur",
+  "CHAT_EMPTY_HINT": "Stuur een bericht om het gesprek te starten.",
+  "CHAT_COLLAPSE": "Inklappen",
+  "CHAT_EXPAND": "Uitklappen",
+  "MIC_RECOVERY_DISMISS": "Sluiten",
+  "NAVIGATION_TAKING_YOU_TO": "Ik breng je naar",
+  "NAVIGATION_TARGET_SEARCH": "Zoekresultaten",
+  "NAVIGATION_TARGET_GENERIC": "Een andere pagina",
+  "TEXT_CHAT_INSTRUCTIONS": "Naar spraak",
+  "MOBILE_TYPE_INSTEAD": "... of typ je vraag",
+  "CLOSE_WIDGET": "Sluiten",
+  "REOPEN_WIDGET": "Assistent openen",
+  "CHAT_LITE_SHOW_HISTORY": "Sessiegeschiedenis",
+  "CHAT_LITE_HIDE_HISTORY": "Gesprek verbergen",
+  "CHAT_LITE_BACK_TO_VOICE": "Terug naar spraakmodus",
+  "CHAT_LITE_GO_TO_VOICE": "Naar spraakmodus",
+  "CHAT_LITE_CONVERSATION": "Gesprek",
+  "CHAT_LITE_PIN_TRANSCRIPT": "Gesprek vastzetten",
+  "CHAT_LITE_UNPIN_TRANSCRIPT": "Gesprek losmaken",
+  "UNIFIED_PROMPTS": {
+    "DISCOVERY": "Help me het juiste product te vinden.",
+    "COMPARISON": "Vergelijk de beste opties voor mij.",
+    "GUIDANCE": "Past dit of voldoet het aan mijn behoeften?",
+    "RETURNS": "Wat is het retourbeleid?",
+    "FAQ": "Kun je een vraag over winkelen beantwoorden?"
+  },
+  "MIC_PRIMER": "Kies \"Toestaan\" zodat ik je kan horen",
+  "MIC_NEEDED": "Geef toegang tot je microfoon om te praten",
+  "ENABLE_MIC_HINT_BROWSER": "Sta de microfoon toe in de paginarechten",
+  "ENABLE_MIC_HINT_OS": "Sta de microfoon toe in je apparaatinstellingen",
+  "DEGRADED_VOICE_SWITCHED_HINT_BROWSER": "De microfoon is geblokkeerd, dus ik heb je naar de chat overgezet. Ik blijf hardop praten. Wil je zelf praten? Sta de microfoon dan toe in de paginarechten.",
+  "DEGRADED_VOICE_SWITCHED_HINT_OS": "De microfoon is geblokkeerd, dus ik heb je naar de chat overgezet. Ik blijf hardop praten. Wil je zelf praten? Sta de microfoon dan toe in je apparaatinstellingen.",
+  "DEGRADED_VOICE_BLOCKED_HINT_BROWSER": "De microfoon is geblokkeerd. Ik blijf hardop praten. Wil je zelf praten? Sta de microfoon dan toe in de paginarechten.",
+  "DEGRADED_VOICE_BLOCKED_HINT_OS": "De microfoon is geblokkeerd. Ik blijf hardop praten. Wil je zelf praten? Sta de microfoon dan toe in je apparaatinstellingen.",
+  "USE_TEXT_CHAT": "Chat gebruiken",
+  "OR": "OF",
+  "MIC_BLOCKED_HINT": "Sta de microfoon toe in de paginarechten",
+  "MIC_OS_BLOCKED_HINT": "Sta de microfoon toe in je apparaatinstellingen",
+  "CONTROLS": {
+    "MICROPHONE": {
+      "MUTE": "Microfoon dempen",
+      "UNMUTE": "Dempen opheffen",
+      "MUTED": "Microfoon gedempt",
+      "UNMUTED": "Microfoon actief"
+    },
+    "SUBTITLES": {
+      "ENABLE": "Ondertiteling aanzetten",
+      "DISABLE": "Ondertiteling uitzetten",
+      "ENABLED": "Ondertiteling aan",
+      "DISABLED": "Ondertiteling uit"
+    },
+    "MUTE_MICROPHONE": "Microfoon dempen",
+    "UNMUTE_MICROPHONE": "Dempen opheffen",
+    "ENABLE_CAPTIONS": "Ondertiteling aanzetten",
+    "DISABLE_CAPTIONS": "Ondertiteling uitzetten"
+  },
+  "ERRORS": {
+    "UNKNOWN_ERROR": {
+      "NAME": "Onverwachte fout",
+      "INSTRUCTIONS": "Probeer het opnieuw of neem contact op met de klantenservice als het probleem blijft."
+    },
+    "NETWORK_ERROR": {
+      "NAME": "Verbindingsprobleem",
+      "INSTRUCTIONS": "Controleer je internetverbinding en probeer het opnieuw."
+    },
+    "API_ERROR": {
+      "NAME": "Communicatiefout",
+      "INSTRUCTIONS": "Er ging iets mis bij het verbinden met de dienst. Probeer het later opnieuw."
+    },
+    "WEBSOCKET_ERROR": {
+      "NAME": "WebSocket-verbindingsfout",
+      "INSTRUCTIONS": "De spraakdienst is niet bereikbaar. Controleer je verbinding."
+    },
+    "CONNECTION_TIMEOUT": {
+      "NAME": "Verbinding duurde te lang",
+      "INSTRUCTIONS": "De verbinding is verlopen. Probeer het opnieuw."
+    },
+    "AUTHENTICATION_ERROR": {
+      "NAME": "Inlogfout",
+      "INSTRUCTIONS": "Log opnieuw in."
+    },
+    "MICROPHONE_ACCESS_DENIED": {
+      "NAME": "Microfoon nodig",
+      "INSTRUCTIONS": "Sta de microfoon toe bij de browserrechten van deze pagina."
+    },
+    "MICROPHONE_BLOCKED": {
+      "NAME": "Microfoon geblokkeerd",
+      "INSTRUCTIONS": "Sta de microfoon toe bij de browserrechten van deze pagina."
+    },
+    "MICROPHONE_OS_BLOCKED": {
+      "NAME": "Microfoon geblokkeerd",
+      "INSTRUCTIONS": "Sta de microfoon toe in je apparaatinstellingen voor deze browser."
+    },
+    "MICROPHONE_NOT_READABLE": {
+      "NAME": "Microfoonfout",
+      "INSTRUCTIONS": "De microfoon kon niet worden uitgelezen. Controleer je microfoon of probeer een andere."
+    },
+    "AUDIO_RECORDING_ERROR": {
+      "NAME": "Opnamefout",
+      "INSTRUCTIONS": "Opnemen lukte niet. Controleer je microfoon of probeer een andere."
+    },
+    "SERVER_ERROR": {
+      "NAME": "Serverfout",
+      "INSTRUCTIONS": "Ons team is op de hoogte gebracht."
+    },
+    "QUOTA_EXCEEDED": {
+      "NAME": "Gebruikslimiet bereikt",
+      "INSTRUCTIONS": "Je hebt je gebruikslimiet bereikt. Probeer het later opnieuw."
+    },
+    "HIGH_DEMAND": {
+      "NAME": "Veel drukte",
+      "INSTRUCTIONS": "Het is nu erg druk bij onze dienst. Probeer het zo meteen opnieuw."
+    },
+    "HTTP": {
+      "400_BAD_REQUEST": {
+        "NAME": "Ongeldig verzoek",
+        "INSTRUCTIONS": "Probeer het opnieuw met geldige gegevens."
+      },
+      "401_UNAUTHORIZED": {
+        "NAME": "Inloggen vereist",
+        "INSTRUCTIONS": "Log in om deze functie te blijven gebruiken."
+      },
+      "403_FORBIDDEN": {
+        "NAME": "Geen toegang",
+        "INSTRUCTIONS": "Je hebt geen rechten voor deze functie."
+      },
+      "403_FORBIDDEN_GEO_LOCATION_BLOCKED": {
+        "NAME": "Locatie geblokkeerd",
+        "INSTRUCTIONS": "De spraakchat is niet beschikbaar vanaf deze locatie."
+      },
+      "404_NOT_FOUND": {
+        "NAME": "Dienst niet gevonden",
+        "INSTRUCTIONS": "De gevraagde dienst kon niet worden gevonden."
+      },
+      "408_TIMEOUT": {
+        "NAME": "Verzoek duurde te lang",
+        "INSTRUCTIONS": "De server deed er te lang over. Probeer het later opnieuw."
+      },
+      "409_CONFLICT": {
+        "NAME": "Conflict in de dienst",
+        "INSTRUCTIONS": "Er was een conflict met de huidige status. Probeer het opnieuw."
+      },
+      "422_UNPROCESSABLE_ENTITY": {
+        "NAME": "Ongeldige indeling",
+        "INSTRUCTIONS": "Het verzoek kon niet worden verwerkt. Probeer het opnieuw."
+      },
+      "429_RATE_LIMIT": {
+        "NAME": "Te veel verzoeken",
+        "INSTRUCTIONS": "Wacht even voordat je het opnieuw probeert."
+      },
+      "500_SERVER_ERROR": {
+        "NAME": "Serverfout",
+        "INSTRUCTIONS": "Probeer het later opnieuw."
+      },
+      "502_BAD_GATEWAY": {
+        "NAME": "Dienst niet beschikbaar",
+        "INSTRUCTIONS": "Probeer het later opnieuw."
+      },
+      "503_SERVICE_UNAVAILABLE": {
+        "NAME": "Dienst tijdelijk niet beschikbaar",
+        "INSTRUCTIONS": "Probeer het later opnieuw."
+      },
+      "504_GATEWAY_TIMEOUT": {
+        "NAME": "Dienst reageert niet op tijd",
+        "INSTRUCTIONS": "De dienst deed er te lang over. Probeer het later opnieuw."
+      }
+    }
+  },
+  "LANGUAGE_NOT_SUPPORTED": "Deze taal wordt niet ondersteund in de spraakchat."
+}

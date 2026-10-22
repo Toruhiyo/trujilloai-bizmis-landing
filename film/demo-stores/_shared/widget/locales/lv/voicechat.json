@@ -1,0 +1,240 @@
+{
+  "VOICECHAT_CLAIM": "Parunāsim. Labprāt palīdzēšu.",
+  "VOICECHAT_BUTTON": "Balss tērzēšana",
+  "VOICECHAT_INSTRUCTIONS": "Runājiet, lai mani pārtrauktu",
+  "END_CALL": "Beigt sarunu",
+  "CONNECTING": "Uzgaidiet dažas sekundes...",
+  "CONNECTING_BUTTON": "Savienojas",
+  "CLICK_TO_SPEAK": "Noklikšķiniet, lai runātu",
+  "CLICK_TO_END": "Noklikšķiniet, lai beigtu",
+  "TALK_TO_INTERRUPT": "Runājiet, lai mani pārtrauktu",
+  "CONNECTING_HINT": "Tikai mirkli",
+  "LISTENING_ACTIVE": "Klausos...",
+  "TRY_VOICE_EXPERIENCE": "Izmēģiniet mani, esmu jauns!",
+  "TERMS_ACCEPT": "Piekrītu",
+  "TERMS_DECLINE": "Atpakaļ",
+  "TERMS_ACCEPTANCE_WITH_LINK": "Piekrītiet [noteikumiem]({{termsUrl}}), lai turpinātu.",
+  "POC_DISCLAIMER": {
+    "TITLE": "Proof-of-Concept",
+    "MESSAGE": "Šis balss tērzēšanas prototips ir paredzēts tikai idejas demonstrēšanai un neatspoguļo risinājuma vai produkta galīgo kvalitāti. Iespējami kavējumi, kļūdas un citas problēmas.<br/>Galvenās iespējas: <strong>Patstāvīga navigācija vietnē</strong>, <strong>Teksta izcelšana</strong> un <strong>Veidlapu aizpildīšana</strong>."
+  },
+  "GREETING": {
+    "1": "Sveiki! Laipni lūdzam balss tērzēšanā. Kā varu šodien palīdzēt?",
+    "2": "Sveiki! Esmu šeit, lai palīdzētu ar visu, kas nepieciešams.",
+    "3": "Sveicināti! Kā varu jums šodien noderēt?",
+    "4": "Laipni lūdzam! Pastāstiet, ko meklējat, un darīšu visu iespējamo.",
+    "5": "Balss asistents jūsu rīcībā!",
+    "DEFAULT": "Sveiki! Ko vēlaties šodien?"
+  },
+  "RESUME_GREETING": {
+    "1": "Sveiki, esmu atpakaļ! Turpināsim, kur pārtraucām.",
+    "2": "Labi, turpinām!",
+    "3": "Vēl esmu šeit! Ko mēs skatījāmies?",
+    "DEFAULT": "Tātad, kur mēs palikām?"
+  },
+  "FEEDBACK_TITLE": "Kā jums patika?",
+  "FEEDBACK_THUMBS_UP": "Labi",
+  "FEEDBACK_THUMBS_DOWN": "Varētu būt labāk",
+  "FEEDBACK_ERROR": "Neizdevās nosūtīt atsauksmi",
+  "FEEDBACK_SUCCESS": "Paldies par atsauksmi!",
+  "ERROR_GENERIC": "Neizdevās sākt balss tērzēšanu",
+  "MOBILE_TAP_AVATAR_TO_START": "Pieskarieties un runājiet",
+  "MOBILE_TAP_AVATAR_TO_CANCEL": "Savienojas...",
+  "MOBILE_TAP_AVATAR_TO_END_CALL": "Pieskarieties, lai beigtu",
+  "HINT_LABEL": "Pamēģiniet pateikt",
+  "HINTS_DEFAULT": [
+    "Meklēju dāvanu partnerim, vai varat palīdzēt?",
+    "Kas pašlaik ir ar atlaidi?",
+    "Kurš ir vislabākais jutīgai ādai?",
+    "Vai varēšu to atgriezt, ja neder izmērs?",
+    "Salīdziniet man šos divus"
+  ],
+  "CHAT_INPUT_PLACEHOLDER": "Jautājiet par precēm, piegādi vai pasūtījumu.",
+  "CHAT_CONNECTING_PLACEHOLDER": "Savienojas… varat jau rakstīt.",
+  "CHAT_MESSAGE_SENDING": "Sūta…",
+  "CHAT_MESSAGE_FAILED_RETRY": "Nav nosūtīts. Pieskarieties, lai mēģinātu vēlreiz.",
+  "CHAT_EVENT_PRODUCTS_SHOWN": "Tev parādītie produkti",
+  "CHAT_EVENT_SEARCH_RESULTS": "Rezultāti “{{query}}”",
+  "CHAT_EVENT_PRODUCT_OPENED": "Produkts atvērts",
+  "CHAT_EVENT_ADDED_TO_CART": "Pievienots grozam",
+  "CHAT_EVENT_CART_OPENED": "Grozs atvērts",
+  "CHAT_EVENT_CHECKOUT_OPENED": "Norēķini atvērti",
+  "CHAT_EVENT_SEARCHED_FOR": "Meklēts “{{query}}”",
+  "CHAT_EVENT_PAGE_OPENED": "Lapa atvērta",
+  "CHAT_VOICE_TOGGLE_ON": "Ieslēgt balsi",
+  "CHAT_VOICE_TOGGLE_OFF": "Izslēgt balsi",
+  "CHAT_CALL_START": "Sākt balss tērzēšanu",
+  "CHAT_CALL_END": "Beigt zvanu",
+  "CHAT_LAUNCHER_TITLE": "Sākt rakstisku tērzēšanu",
+  "CHAT_NEW_SESSION": "Jauna sesija",
+  "CHAT_HIDE_PANEL": "Atpakaļ pie avatara",
+  "CHAT_SEND": "Sūtīt",
+  "CHAT_EMPTY_HINT": "Nosūtiet ziņu, lai sāktu sarunu.",
+  "CHAT_COLLAPSE": "Sakļaut",
+  "CHAT_EXPAND": "Izvērst",
+  "MIC_RECOVERY_DISMISS": "Aizvērt",
+  "NAVIGATION_TAKING_YOU_TO": "Vedu jūs uz",
+  "NAVIGATION_TARGET_SEARCH": "Meklēšanas rezultātiem",
+  "NAVIGATION_TARGET_GENERIC": "Citu lapu",
+  "TEXT_CHAT_INSTRUCTIONS": "Pārslēgties uz balsi",
+  "MOBILE_TYPE_INSTEAD": "...vai vienkārši rakstiet",
+  "CLOSE_WIDGET": "Aizvērt",
+  "REOPEN_WIDGET": "Atvērt asistentu no jauna",
+  "CHAT_LITE_SHOW_HISTORY": "Sesijas vēsture",
+  "CHAT_LITE_HIDE_HISTORY": "Slēpt sarunu",
+  "CHAT_LITE_BACK_TO_VOICE": "Atpakaļ uz balss režīmu",
+  "CHAT_LITE_GO_TO_VOICE": "Pāriet uz balss režīmu",
+  "CHAT_LITE_CONVERSATION": "Saruna",
+  "CHAT_LITE_PIN_TRANSCRIPT": "Piespraust sarunu",
+  "CHAT_LITE_UNPIN_TRANSCRIPT": "Atspraust sarunu",
+  "UNIFIED_PROMPTS": {
+    "DISCOVERY": "Palīdziet man atrast piemērotāko produktu.",
+    "COMPARISON": "Salīdziniet man labākās iespējas.",
+    "GUIDANCE": "Vai tas būs piemērots manām vajadzībām?",
+    "RETURNS": "Kāda ir preču atgriešanas kārtība?",
+    "FAQ": "Vai varat atbildēt uz jautājumu par iepirkšanos?"
+  },
+  "MIC_PRIMER": "Izvēlieties “Atļaut”, lai es jūs dzirdētu",
+  "MIC_NEEDED": "Atļaujiet mikrofonu, lai runātu",
+  "ENABLE_MIC_HINT_BROWSER": "Atļaujiet mikrofonu lapas atļaujās",
+  "ENABLE_MIC_HINT_OS": "Atļaujiet mikrofonu ierīces iestatījumos",
+  "DEGRADED_VOICE_SWITCHED_HINT_BROWSER": "Piekļuve mikrofonam ir bloķēta, tāpēc pārslēdzu jūs uz tērzēšanu. Es joprojām runāšu skaļi. Lai runātu, atļaujiet mikrofonu lapas atļaujās.",
+  "DEGRADED_VOICE_SWITCHED_HINT_OS": "Piekļuve mikrofonam ir bloķēta, tāpēc pārslēdzu jūs uz tērzēšanu. Es joprojām runāšu skaļi. Lai runātu, atļaujiet mikrofonu ierīces iestatījumos.",
+  "DEGRADED_VOICE_BLOCKED_HINT_BROWSER": "Piekļuve mikrofonam ir bloķēta. Es joprojām runāšu skaļi. Lai runātu, atļaujiet mikrofonu lapas atļaujās.",
+  "DEGRADED_VOICE_BLOCKED_HINT_OS": "Piekļuve mikrofonam ir bloķēta. Es joprojām runāšu skaļi. Lai runātu, atļaujiet mikrofonu ierīces iestatījumos.",
+  "USE_TEXT_CHAT": "Rakstīt ziņā",
+  "OR": "VAI",
+  "MIC_BLOCKED_HINT": "Atļaujiet mikrofonu lapas atļaujās",
+  "MIC_OS_BLOCKED_HINT": "Atļaujiet mikrofonu ierīces iestatījumos",
+  "CONTROLS": {
+    "MICROPHONE": {
+      "MUTE": "Izslēgt mikrofonu",
+      "UNMUTE": "Ieslēgt mikrofonu",
+      "MUTED": "Mikrofons izslēgts",
+      "UNMUTED": "Mikrofons aktīvs"
+    },
+    "SUBTITLES": {
+      "ENABLE": "Ieslēgt subtitrus",
+      "DISABLE": "Izslēgt subtitrus",
+      "ENABLED": "Subtitri ieslēgti",
+      "DISABLED": "Subtitri izslēgti"
+    },
+    "MUTE_MICROPHONE": "Izslēgt mikrofonu",
+    "UNMUTE_MICROPHONE": "Ieslēgt mikrofonu",
+    "ENABLE_CAPTIONS": "Ieslēgt subtitrus",
+    "DISABLE_CAPTIONS": "Izslēgt subtitrus"
+  },
+  "ERRORS": {
+    "UNKNOWN_ERROR": {
+      "NAME": "Negaidīta kļūda",
+      "INSTRUCTIONS": "Mēģiniet vēlreiz vai sazinieties ar atbalstu, ja problēma saglabājas."
+    },
+    "NETWORK_ERROR": {
+      "NAME": "Tīkla savienojuma kļūda",
+      "INSTRUCTIONS": "Pārbaudiet interneta savienojumu un mēģiniet vēlreiz."
+    },
+    "API_ERROR": {
+      "NAME": "API saziņas kļūda",
+      "INSTRUCTIONS": "Veidojot savienojumu ar pakalpojumu, radās problēma. Mēģiniet vēlāk."
+    },
+    "WEBSOCKET_ERROR": {
+      "NAME": "WebSocket savienojuma kļūda",
+      "INSTRUCTIONS": "Neizdevās izveidot savienojumu ar balss pakalpojumu. Pārbaudiet savienojumu."
+    },
+    "CONNECTION_TIMEOUT": {
+      "NAME": "Savienojuma noildze",
+      "INSTRUCTIONS": "Savienojumam iestājās noildze. Mēģiniet vēlreiz."
+    },
+    "AUTHENTICATION_ERROR": {
+      "NAME": "Autentifikācijas kļūda",
+      "INSTRUCTIONS": "Pierakstieties vēlreiz."
+    },
+    "MICROPHONE_ACCESS_DENIED": {
+      "NAME": "Nepieciešams mikrofons",
+      "INSTRUCTIONS": "Atļaujiet to šīs lapas pārlūka atļaujās."
+    },
+    "MICROPHONE_BLOCKED": {
+      "NAME": "Mikrofons bloķēts",
+      "INSTRUCTIONS": "Atļaujiet to šīs lapas pārlūka atļaujās."
+    },
+    "MICROPHONE_OS_BLOCKED": {
+      "NAME": "Mikrofons bloķēts",
+      "INSTRUCTIONS": "Atļaujiet to ierīces iestatījumos šim pārlūkam."
+    },
+    "MICROPHONE_NOT_READABLE": {
+      "NAME": "Mikrofona kļūda",
+      "INSTRUCTIONS": "Neizdevās nolasīt mikrofona datus. Pārbaudiet mikrofonu vai izmēģiniet citu."
+    },
+    "AUDIO_RECORDING_ERROR": {
+      "NAME": "Audio ierakstīšanas kļūda",
+      "INSTRUCTIONS": "Neizdevās ierakstīt audio. Pārbaudiet mikrofonu vai izmēģiniet citu."
+    },
+    "SERVER_ERROR": {
+      "NAME": "Servera kļūda",
+      "INSTRUCTIONS": "Mūsu komanda ir informēta."
+    },
+    "QUOTA_EXCEEDED": {
+      "NAME": "Sasniegts lietojuma ierobežojums",
+      "INSTRUCTIONS": "Esat sasniedzis lietojuma ierobežojumu. Mēģiniet vēlāk."
+    },
+    "HIGH_DEMAND": {
+      "NAME": "Liels pieprasījums",
+      "INSTRUCTIONS": "Pakalpojums pašlaik ir ļoti noslogots. Mēģiniet drīz vēlreiz."
+    },
+    "HTTP": {
+      "400_BAD_REQUEST": {
+        "NAME": "Nederīgs pieprasījums",
+        "INSTRUCTIONS": "Mēģiniet vēlreiz ar derīgiem datiem."
+      },
+      "401_UNAUTHORIZED": {
+        "NAME": "Nepieciešama pierakstīšanās",
+        "INSTRUCTIONS": "Pierakstieties, lai turpinātu izmantot šo funkciju."
+      },
+      "403_FORBIDDEN": {
+        "NAME": "Piekļuve liegta",
+        "INSTRUCTIONS": "Jums nav atļaujas izmantot šo funkciju."
+      },
+      "403_FORBIDDEN_GEO_LOCATION_BLOCKED": {
+        "NAME": "Atrašanās vieta bloķēta",
+        "INSTRUCTIONS": "Balss tērzēšana no šīs atrašanās vietas nav pieejama."
+      },
+      "404_NOT_FOUND": {
+        "NAME": "Pakalpojums nav atrasts",
+        "INSTRUCTIONS": "Pieprasīto pakalpojumu neizdevās atrast."
+      },
+      "408_TIMEOUT": {
+        "NAME": "Pieprasījuma noildze",
+        "INSTRUCTIONS": "Serveris atbildēja pārāk ilgi. Mēģiniet vēlāk."
+      },
+      "409_CONFLICT": {
+        "NAME": "Pakalpojuma konflikts",
+        "INSTRUCTIONS": "Radās konflikts ar pašreizējo stāvokli. Mēģiniet vēlreiz."
+      },
+      "422_UNPROCESSABLE_ENTITY": {
+        "NAME": "Nederīgs pieprasījuma formāts",
+        "INSTRUCTIONS": "Pieprasījumu neizdevās apstrādāt. Mēģiniet vēlreiz."
+      },
+      "429_RATE_LIMIT": {
+        "NAME": "Pārāk daudz pieprasījumu",
+        "INSTRUCTIONS": "Nedaudz uzgaidiet, pirms mēģināt vēlreiz."
+      },
+      "500_SERVER_ERROR": {
+        "NAME": "Servera kļūda",
+        "INSTRUCTIONS": "Mēģiniet vēlāk."
+      },
+      "502_BAD_GATEWAY": {
+        "NAME": "Pakalpojums nav pieejams",
+        "INSTRUCTIONS": "Mēģiniet vēlāk."
+      },
+      "503_SERVICE_UNAVAILABLE": {
+        "NAME": "Pakalpojums īslaicīgi nav pieejams",
+        "INSTRUCTIONS": "Mēģiniet vēlāk."
+      },
+      "504_GATEWAY_TIMEOUT": {
+        "NAME": "Pakalpojuma noildze",
+        "INSTRUCTIONS": "Pakalpojums atbildēja pārāk ilgi. Mēģiniet vēlāk."
+      }
+    }
+  },
+  "LANGUAGE_NOT_SUPPORTED": "Šī valoda balss tērzēšanā netiek atbalstīta."
+}

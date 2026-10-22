@@ -242,7 +242,7 @@ export const ca: Messages = {
       invite: "per als avantatges d'Early Access!",
       note: "Només 50 places!",
       /** The ad-1 film's Early Access perks, then the quieter extras under them. */
-      perks: ["Crèdits gratuïts generosos", "50% de descompte en millorar el pla", "Decideix el full de ruta amb nosaltres"],
+      perks: ["120 converses gratis", "50% de descompte en millorar el pla", "Decideix el full de ruta amb nosaltres"],
       extras: ["Sense targeta", "Sense compromís", "Línia directa amb el fundador"],
     },
     setup: {
@@ -549,20 +549,13 @@ export const ca: Messages = {
     badge: "Preus",
     title: "Preus simples i transparents",
     lead: "Tria el pla que encaixa amb el teu negoci. Tots inclouen la integració completa amb Shopify.",
-    monthly: "Mensual",
-    yearly: "Anual",
-    billedYearly: "facturat anualment",
     perMonth: "/mes",
     popular: "Popular",
-    creditsIncluded: "crèdits inclosos",
-    shopperSessionsPerMonth: "sessions de compra/mes",
-    sessionEstimatesAria: (plan: string) =>
-      `Sessions de compra estimades per a ${plan}`,
-    perCredit: "/crèdit",
-    beyondIncluded: "a partir dels inclosos",
-    concurrentConversations: "converses de veu simultànies",
-    concurrencyTooltip:
-      "Límit només per a veu. Les converses de text són pràcticament il·limitades.",
+    conversationsPerMonth: "converses / mes",
+    extraConversations: (price: string) =>
+      `Converses extra a ${price} cadascuna, fins al límit de despesa que fixis`,
+    conversationDefinition:
+      "Una conversa és el xat d'un client amb el teu dependent, per veu o per text. Inclou fins a 2 minuts de veu o 20 missatges; si s'allarga, compta com a dues. Si el client no diu res, és gratis.",
     off: "dte.",
     discountTitle: (percent: number) =>
       `${percent}% menys que el preu de tarifa`,
@@ -572,29 +565,31 @@ export const ca: Messages = {
     free: {
       name: "Gratuït",
       noCommitment: "Sense compromís",
-      description: (credits: string, voiceMinutes: string) =>
-        `Prova Bizmis a la teva botiga amb ${credits} crèdits d'ús únic (~${voiceMinutes} minuts de veu o ~${credits} missatges de text). No es renova res: canvia de pla quan necessitis capacitat mensual continuada.`,
-      creditsLabel: (credits: string) => `${credits} crèdits`,
+      description: (conversations: string) =>
+        `${conversations} converses gratis per provar Bizmis. Sense targeta.`,
       cta: "Comença gratis",
     },
     plans: {
       starter: {
         name: "Starter",
-        features: ["1 dependent Bizmis", "Suport: correu (48 h)"],
-      },
-      plus: {
-        name: "Plus",
         features: [
-          "Fins a 5 dependents Bizmis",
-          "Historial i repeticions de sessió",
-          "Personalització de l'avatar",
-          "Suport: correu (24 h) i trucades programades",
+          "1 dependent Bizmis",
+          "Veu i text",
+          "Suport: correu (48 h)",
         ],
       },
-      pro: {
-        name: "Pro",
+      growth: {
+        name: "Growth",
         features: [
-          "La tarifa d'excés més baixa",
+          "Fins a 5 dependents Bizmis",
+          "Historial, transcripcions i repeticions",
+          "Personalització de l'avatar",
+          "Suport: correu (24 h) i trucada programada",
+        ],
+      },
+      scale: {
+        name: "Scale",
+        features: [
           "Dependents Bizmis il·limitats",
           "Converses etiquetades automàticament",
           "Suport prioritari i onboarding en directe",
@@ -603,33 +598,24 @@ export const ca: Messages = {
     },
     enterprise: {
       name: "Enterprise",
-      price: "A mida",
+      priceFrom: "Des de",
       description:
         "Solucions a mida per a operacions a gran escala, amb volum i requisits personalitzats.",
-      everythingInPro: "Tot el de Pro i a més:",
+      everythingInScale: "Tot el de Scale i a més:",
       features: [
-        "Crèdits, concurrència i preu a mida",
-        "Suport: CSM dedicat, SLA del 99,9%+",
+        "Volum de converses a mida",
+        "Capacitat garantida per als pics de trànsit",
+        "SLA i veu personalitzada",
+        "Facturació fora de Shopify",
       ],
-    },
-    conversions: {
-      voice: "1 minut de veu = 10 crèdits",
-      text: "1 missatge de text = 1 crèdit",
-    },
-    sessionFootnote:
-      "Les estimacions de sessions varien segons la barreja de veu i text i la durada de cada sessió.",
-    upgradeNote: {
-      highlight: "Passa al pla anual dins dels primers 90 dies",
-      body: "i et descomptem el que ja has pagat del pla anual (només els càrrecs de compromís).",
-      learnMore: "Més informació",
-      hideDetails: "Amaga els detalls",
-      details:
-        "El descompte s'aplica només als càrrecs de compromís. L'ús sota demanda (crèdits d'excés) en queda exclòs.",
     },
     guarantees: {
       spendLimit: "Tu decideixes el teu límit de despesa",
       cancelAnytime: "Cancel·la quan vulguis",
-      moneyBack: "30 dies de garantia de devolució (plans anuals)",
+      moneyBack: "30 dies de garantia de devolució",
+      cardNote: "Garantia de devolució de 30 dies",
+      bannerTitle: "Prova-ho sense risc durant 30 dies",
+      bannerBody: "Si Bizmis no et compensa els primers 30 dies, cancel·la i et retornem el primer mes sencer. Sense preguntes.",
     },
     coupon: {
       prompt:
@@ -648,9 +634,7 @@ export const ca: Messages = {
         months > 0
           ? `${percent}% de descompte ${months === 1 ? "el primer mes" : `els primers ${months} mesos`}`
           : `${percent}% de descompte`,
-      onMonthlyBilling: "en facturació mensual, o",
-      yearlyDiscount: (percent: number) => `${percent}% de descompte anual`,
-      whenYearlySelected: "si tries facturació anual.",
+      discountEnd: ".",
       errors: {
         empty: "Introdueix primer un codi.",
         notFound: "Aquest codi no és vàlid.",
@@ -736,32 +720,32 @@ export const ca: Messages = {
       "review-conversations": {
         question: "Puc revisar converses anteriors?",
         answer:
-          "Sí. L'historial i les repeticions de sessió estan disponibles a partir del pla Plus. Pots recórrer qualsevol conversa, llegir-ne la transcripció i etiquetar patrons per afinar les teves regles de venda i suport.",
+          "Sí. L'historial, les transcripcions i les repeticions estan disponibles a partir del pla Growth. Pots recórrer qualsevol conversa, llegir-ne la transcripció i etiquetar patrons per afinar les teves regles de venda i suport.",
       },
       "how-much-cost": {
         question: "Quant costa Bizmis?",
         answer:
-          "Tres plans més Enterprise. **Starter** (149 $/mes, 2.500 crèdits) per a botigues petites o d'una persona. **Plus** (499 $/mes, 9.000 crèdits) per a botigues en creixement, el més popular. **Pro** (1.499 $/mes, 30.000 crèdits) per a botigues d'alt volum. **Enterprise** per a volum i SLA a mida. Els crèdits cobreixen veu i text (1 min de veu = 10 crèdits, 1 missatge = 1 crèdit). La facturació anual estalvia un ~20%.",
+          "Tres plans més Enterprise, tots amb facturació mensual. **Starter** (79 $/mes, 260 converses) per a botigues petites o d'una persona. **Growth** (199 $/mes, 660 converses) per a botigues en creixement, el més popular. **Scale** (499 $/mes, 1.650 converses) per a botigues d'alt volum. **Enterprise** des de 1.500 $/mes, amb volum a mida, capacitat garantida per als pics de trànsit i SLA. Cada conversa extra costa 0,30 $, fins al límit de despesa que fixis. Pots començar amb 120 converses gratis.",
       },
-      "credit-model": {
-        question: "Com funciona el model de crèdits?",
+      "what-counts-as-conversation": {
+        question: "Què compta com una conversa?",
         answer:
-          "Cada pla inclou una bossa de crèdits (Starter 2.500 / Plus 9.000 / Pro 30.000) que es reinicia cada període de facturació. Els crèdits cobreixen veu i text: 1 minut de veu = 10 crèdits, 1 missatge de text = 1 crèdit. L'ús per sobre de la bossa es factura a la tarifa d'excés del teu pla (0,06 $ / 0,055 $ / 0,05 $ per crèdit). Pots fixar un límit de despesa al tauler de Bizmis: en assolir-lo, l'ús es pausa fins al període següent o fins que el pugis. Els crèdits no utilitzats no s'acumulen.",
+          "Una conversa és el xat d'un client amb el teu dependent, per veu o per text. Inclou fins a 2 minuts de veu o 20 missatges; si s'allarga, compta com a dues. Si el client no diu res, és gratis, i les teves pròpies proves al tauler de Bizmis tampoc no compten. Cada pla inclou un nombre de converses (Starter 260 / Growth 660 / Scale 1.650) que es renova cada mes. A partir d'aquí, cada conversa extra costa 0,30 $, només fins al límit de despesa que fixis al tauler de Bizmis. El límit comença a 0 $, de manera que no es cobra res extra fins que l'apugis. Quan l'assoleixes, el dependent es posa en pausa fins al període següent o fins que apugis el límit. Les converses no utilitzades no s'acumulen.",
       },
-      "yearly-billing": {
-        question: "Com funciona la facturació anual?",
+      "monthly-billing": {
+        question: "Hi ha facturació anual?",
         answer:
-          "La facturació anual es paga per avançat i t'estalvia un ~20% sobre el preu mensual. Els crèdits inclosos continuen reiniciant-se cada mes. Els plans anuals no inclouen excés: quan esgotes la bossa mensual, l'ús es pausa fins al mes següent.",
+          "De moment, no. Tots els plans es facturen cada mes a través de Shopify i pots cancel·lar quan vulguis.",
       },
       "early-access-offer": {
-        question: "En què consisteix l'oferta d'accés anticipat?",
+        question: "Què és l'oferta d'accés anticipat?",
         answer:
-          "L'accés anticipat ofereix a les botigues Shopify convidades els **1.200 crèdits** d'un sol ús del pla gratuït (~120 minuts de veu o ~1.200 missatges de text). No hi ha subscripció, càrrecs per ús, actualització automàtica ni renovació. Quan s'esgoten els crèdits, Bizmis es posa en pausa, tret que triïs i aprovis un pla de pagament a Shopify. Els membres també reben onboarding 1 a 1, suport prioritari, prioritat per als seus comentaris sobre el producte i un descompte personal si més endavant decideixen millorar el pla.",
+          "L'accés anticipat ofereix a les botigues Shopify convidades les **120 converses gratis** del pla gratuït, una sola vegada per botiga. No hi ha subscripció, càrrecs per ús, actualització automàtica ni renovació. Quan s'esgoten les converses, Bizmis es posa en pausa, tret que triïs i aprovis un pla de pagament a Shopify. Els membres també reben onboarding 1 a 1, suport prioritari, prioritat per als seus comentaris sobre el producte i un descompte personal si més endavant decideixen millorar el pla.",
       },
       "free-plan": {
         question: "Hi ha un pla gratuït?",
         answer:
-          "Sí. El **pla gratuït** executa Bizmis a la teva botiga fins a un màxim únic de **1.200 crèdits** (~120 minuts de veu o ~1.200 missatges de text). Sense subscripció, sense compromís i sense renovacions. És una prova real amb compradors reals. Quan necessitis capacitat continuada, passa a un pla de pagament. Tots els càrrecs de Bizmis passen per Shopify amb el compte que ja fas servir, així que mai afegeixes una altra targeta, i el pla gratuït no té res a cobrar.",
+          "Sí. El **pla gratuït** posa Bizmis en marxa a la teva botiga durant **120 converses gratis**, una sola vegada per botiga. Sense subscripció, sense compromís, sense targeta i sense renovacions. És una prova real amb compradors reals. Quan necessitis capacitat continuada, passa a un pla de pagament. Tots els càrrecs de Bizmis passen per Shopify amb el compte que ja fas servir, així que mai afegeixes una altra targeta, i el pla gratuït no té res a cobrar.",
       },
       "billing-payment-method": {
         question: "Com funciona el pagament? He d'afegir una targeta?",
@@ -778,25 +762,20 @@ export const ca: Messages = {
         answer:
           "Les baixades de pla s'apliquen a la renovació següent: mantens el teu pla actual i les seves funcions fins llavors. No es reinicien els comptadors d'ús ni hi ha prorrateig.",
       },
-      "monthly-to-yearly": {
-        question: "Puc passar de mensual a anual?",
-        answer:
-          "Sí. Si canvies dins dels primers 90 dies, t'abonem les quotes de compromís mensuals que ja hagis pagat a compte del pla anual. L'abonament cobreix només les quotes de compromís, l'ús per excés no s'abona.",
-      },
       "cancel-anytime": {
         question: "Puc cancel·lar quan vulgui?",
         answer:
           "Sí, des del tauler de Bizmis o desinstal·lant l'app. La cancel·lació és immediata: el widget de veu deixa d'atendre els compradors tan bon punt es confirma.",
       },
       "refund-policy": {
-        question: "Quina és la vostra política de devolucions?",
+        question: "Quina és la vostra política de reemborsaments?",
         answer:
-          "**Plans anuals:** 30 dies de garantia de devolució sobre el primer càrrec anual. Cancel·la dins dels 30 dies posteriors al teu primer pagament anual i et retornem la quota de compromís, sense preguntes. La garantia no cobreix les renovacions ni l'ús per excés.\n**Plans mensuals:** els càrrecs ja facturats del període actual no són reemborsables, però no se't tornarà a cobrar. Els crèdits no utilitzats no s'acumulen.",
+          "**Garantia de devolució de 30 dies:** si cancel·les dins dels 30 dies posteriors al teu primer càrrec d'un pla de pagament, et retornem aquesta quota, sense preguntes. No cobreix els mesos següents ni les converses extra.\n**Després:** els càrrecs ja facturats del mes en curs no són reemborsables, però no se't tornarà a cobrar. Les converses no utilitzades no s'acumulen.",
       },
       "personalize-voice-avatar": {
         question: "Puc personalitzar la veu i l'avatar?",
         answer:
-          "Sí. Tria entre un conjunt de veus naturals en més de 25 idiomes o entre quatre personatges d'avatar (a partir de Plus). També pots configurar la salutació, el to i el comportament perquè encaixin amb la teva marca.",
+          "Sí. Tria entre un conjunt de veus naturals en més de 25 idiomes o entre quatre personatges d'avatar (a partir de Growth). També pots configurar la salutació, el to i el comportament perquè encaixin amb la teva marca.",
       },
       "multi-language": {
         question: "Bizmis parla diversos idiomes?",
@@ -811,7 +790,7 @@ export const ca: Messages = {
       "multiple-clerks": {
         question: "Quants dependents Bizmis puc tenir?",
         answer:
-          "Un a Starter, fins a cinc a Plus i il·limitats a Pro i Enterprise. Cada dependent pot tenir la seva pròpia veu, avatar i conjunt de regles, cosa útil si véns en col·leccions o mercats diferents.",
+          "Un a Starter, fins a cinc a Growth i il·limitats a Scale i Enterprise. Cada dependent pot tenir la seva pròpia veu, avatar i conjunt de regles, cosa útil si véns en col·leccions o mercats diferents.",
       },
       "data-collected": {
         question: "Quines dades recull Bizmis?",
@@ -904,7 +883,7 @@ export const ca: Messages = {
       {
         title: "Gratis com a membre*",
         detail:
-          "Activa l'accés anticipat a l'app i fes servir 1.200 crèdits en directe sense cost. Sense subscripció, sense compromís.",
+          "Activa l'accés anticipat a l'app i fes servir 120 converses en directe sense cost. Sense subscripció, sense compromís.",
       },
       {
         title: "Defineix el full de ruta",
@@ -919,7 +898,7 @@ export const ca: Messages = {
       {
         title: "Descomptes exclusius",
         detail:
-          "El teu codi d'accés anticipat desbloqueja preus mensuals d'inici amb descompte i preus anuals rebaixats quan canviïs de pla.",
+          "El teu codi d'accés anticipat desbloqueja preus mensuals d'inici amb descompte quan canviïs de pla.",
       },
     ],
     ctaTitle: "Tria per on començar",
@@ -931,7 +910,7 @@ export const ca: Messages = {
     seeDemoFirst: "Mira abans la demo en directe",
     founderLed: "Projecte liderat pel seu fundador. Dubtes?",
     footnote:
-      "*Gratis per a membres d'accés anticipat = 1.200 crèdits d'ús únic (~120 minuts de veu), sense renovació.",
+      "*Gratis per a membres d'accés anticipat = 120 converses en directe, una sola vegada per botiga, sense renovació.",
   },
 
   unsubscribe: {

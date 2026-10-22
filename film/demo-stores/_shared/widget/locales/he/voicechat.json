@@ -1,0 +1,240 @@
+{
+  "VOICECHAT_CLAIM": "בוא נדבר. אני כאן לעזור.",
+  "VOICECHAT_BUTTON": "צ'אט קולי",
+  "VOICECHAT_INSTRUCTIONS": "דבר כדי להפסיק אותי",
+  "END_CALL": "סיום שיחה",
+  "CONNECTING": "רק כמה שניות...",
+  "CONNECTING_BUTTON": "מתחבר",
+  "CLICK_TO_SPEAK": "לחץ כדי לדבר",
+  "CLICK_TO_END": "לחץ לסיום",
+  "TALK_TO_INTERRUPT": "דבר כדי להפסיק אותי",
+  "CONNECTING_HINT": "עוד רגע",
+  "LISTENING_ACTIVE": "מקשיב...",
+  "TRY_VOICE_EXPERIENCE": "נסה אותי, אני חדש!",
+  "TERMS_ACCEPT": "אישור",
+  "TERMS_DECLINE": "חזרה",
+  "TERMS_ACCEPTANCE_WITH_LINK": "אשר את [התנאים]({{termsUrl}}) כדי להמשיך.",
+  "POC_DISCLAIMER": {
+    "TITLE": "Proof-of-Concept",
+    "MESSAGE": "אב הטיפוס הזה של הצ'אט הקולי נועד רק להדגים את הרעיון ואינו מייצג את האיכות הסופית של הפתרון או המוצר. ייתכנו עיכובים, תקלות ובעיות נוספות.<br/>יכולות עיקריות: <strong>ניווט אוטונומי באתר</strong>, <strong>הדגשת טקסט</strong> ו<strong>מילוי טפסים</strong>."
+  },
+  "GREETING": {
+    "1": "שלום! ברוך הבא לצ'אט הקולי. איך אפשר לעזור היום?",
+    "2": "היי! אני כאן כדי לעזור בכל מה שתצטרך.",
+    "3": "שלום! במה אוכל לסייע היום?",
+    "4": "ברוך הבא! ספר לי מה אתה מחפש ואשמח לעזור.",
+    "5": "העוזר הקולי לשירותך! מוכן לעזור!",
+    "DEFAULT": "שלום! מה מחפשים היום?"
+  },
+  "RESUME_GREETING": {
+    "1": "היי, חזרתי! בוא נמשיך מאיפה שהפסקנו.",
+    "2": "יאללה, ממשיכים!",
+    "3": "עדיין כאן! על מה הסתכלנו?",
+    "DEFAULT": "אז איפה היינו?"
+  },
+  "FEEDBACK_TITLE": "איך הייתה החוויה?",
+  "FEEDBACK_THUMBS_UP": "טובה",
+  "FEEDBACK_THUMBS_DOWN": "אפשר להשתפר",
+  "FEEDBACK_ERROR": "לא הצלחנו לשלוח את המשוב",
+  "FEEDBACK_SUCCESS": "תודה על המשוב!",
+  "ERROR_GENERIC": "לא הצלחנו להתחיל את הצ'אט הקולי",
+  "MOBILE_TAP_AVATAR_TO_START": "הקש ודבר",
+  "MOBILE_TAP_AVATAR_TO_CANCEL": "מתחבר...",
+  "MOBILE_TAP_AVATAR_TO_END_CALL": "הקש לסיום",
+  "HINT_LABEL": "נסה לומר",
+  "HINTS_DEFAULT": [
+    "אני צריך מתנה לבן/בת הזוג, תוכל לעזור?",
+    "מה במבצע עכשיו?",
+    "מה הכי מתאים לעור רגיש?",
+    "אפשר להחזיר אם המידה לא מתאימה?",
+    "תשווה לי בין השניים האלה"
+  ],
+  "CHAT_INPUT_PLACEHOLDER": "שאל על מוצרים, משלוחים או ההזמנה שלך.",
+  "CHAT_CONNECTING_PLACEHOLDER": "מתחבר… אפשר כבר להקליד.",
+  "CHAT_MESSAGE_SENDING": "שולח…",
+  "CHAT_MESSAGE_FAILED_RETRY": "לא נשלח. הקש לניסיון נוסף.",
+  "CHAT_EVENT_PRODUCTS_SHOWN": "מוצרים שהוצגו לך",
+  "CHAT_EVENT_SEARCH_RESULTS": "תוצאות עבור „{{query}}”",
+  "CHAT_EVENT_PRODUCT_OPENED": "המוצר נפתח",
+  "CHAT_EVENT_ADDED_TO_CART": "נוסף לעגלה",
+  "CHAT_EVENT_CART_OPENED": "העגלה נפתחה",
+  "CHAT_EVENT_CHECKOUT_OPENED": "הקופה נפתחה",
+  "CHAT_EVENT_SEARCHED_FOR": "חיפוש „{{query}}”",
+  "CHAT_EVENT_PAGE_OPENED": "הדף נפתח",
+  "CHAT_VOICE_TOGGLE_ON": "הפעל קול",
+  "CHAT_VOICE_TOGGLE_OFF": "סיים קול",
+  "CHAT_CALL_START": "התחל צ'אט קולי",
+  "CHAT_CALL_END": "סיים שיחה",
+  "CHAT_LAUNCHER_TITLE": "התחל צ'אט בכתב",
+  "CHAT_NEW_SESSION": "שיחה חדשה",
+  "CHAT_HIDE_PANEL": "חזרה לדמות",
+  "CHAT_SEND": "שלח",
+  "CHAT_EMPTY_HINT": "שלח הודעה כדי להתחיל את השיחה.",
+  "CHAT_COLLAPSE": "כווץ",
+  "CHAT_EXPAND": "הרחב",
+  "MIC_RECOVERY_DISMISS": "סגור",
+  "NAVIGATION_TAKING_YOU_TO": "מעביר אותך אל",
+  "NAVIGATION_TARGET_SEARCH": "תוצאות החיפוש",
+  "NAVIGATION_TARGET_GENERIC": "עמוד אחר",
+  "TEXT_CHAT_INSTRUCTIONS": "מעבר לקול",
+  "MOBILE_TYPE_INSTEAD": "...או פשוט הקלד",
+  "CLOSE_WIDGET": "סגירה",
+  "REOPEN_WIDGET": "פתח שוב את העוזר",
+  "CHAT_LITE_SHOW_HISTORY": "היסטוריית ההפעלה",
+  "CHAT_LITE_HIDE_HISTORY": "הסתר שיחה",
+  "CHAT_LITE_BACK_TO_VOICE": "חזרה למצב קולי",
+  "CHAT_LITE_GO_TO_VOICE": "מעבר למצב קולי",
+  "CHAT_LITE_CONVERSATION": "שיחה",
+  "CHAT_LITE_PIN_TRANSCRIPT": "הצמד שיחה",
+  "CHAT_LITE_UNPIN_TRANSCRIPT": "בטל הצמדת שיחה",
+  "UNIFIED_PROMPTS": {
+    "DISCOVERY": "עזור לי למצוא את המוצר המתאים.",
+    "COMPARISON": "השווה עבורי את האפשרויות הטובות ביותר.",
+    "GUIDANCE": "האם זה יתאים או יענה על הצרכים שלי?",
+    "RETURNS": "מהי מדיניות ההחזרות?",
+    "FAQ": "אפשר לשאול שאלה על קניות?"
+  },
+  "MIC_PRIMER": "בחר \"אפשר\" כדי שאוכל לשמוע אותך",
+  "MIC_NEEDED": "אפשר גישה למיקרופון כדי לדבר",
+  "ENABLE_MIC_HINT_BROWSER": "אפשר מיקרופון בהרשאות העמוד",
+  "ENABLE_MIC_HINT_OS": "אפשר מיקרופון בהגדרות המכשיר",
+  "DEGRADED_VOICE_SWITCHED_HINT_BROWSER": "הגישה למיקרופון חסומה, אז העברתי אותך לצ'אט. אני עדיין אדבר בקול. כדי לדבר, אפשר את המיקרופון בהרשאות העמוד.",
+  "DEGRADED_VOICE_SWITCHED_HINT_OS": "הגישה למיקרופון חסומה, אז העברתי אותך לצ'אט. אני עדיין אדבר בקול. כדי לדבר, אפשר את המיקרופון בהגדרות המכשיר.",
+  "DEGRADED_VOICE_BLOCKED_HINT_BROWSER": "הגישה למיקרופון חסומה. אני עדיין אדבר בקול. כדי לדבר, אפשר את המיקרופון בהרשאות העמוד.",
+  "DEGRADED_VOICE_BLOCKED_HINT_OS": "הגישה למיקרופון חסומה. אני עדיין אדבר בקול. כדי לדבר, אפשר את המיקרופון בהגדרות המכשיר.",
+  "USE_TEXT_CHAT": "עבור לצ'אט בכתב",
+  "OR": "או",
+  "MIC_BLOCKED_HINT": "אפשר מיקרופון בהרשאות העמוד",
+  "MIC_OS_BLOCKED_HINT": "אפשר מיקרופון בהגדרות המכשיר",
+  "CONTROLS": {
+    "MICROPHONE": {
+      "MUTE": "השתק מיקרופון",
+      "UNMUTE": "בטל השתקת מיקרופון",
+      "MUTED": "המיקרופון מושתק",
+      "UNMUTED": "המיקרופון פעיל"
+    },
+    "SUBTITLES": {
+      "ENABLE": "הפעל כתוביות",
+      "DISABLE": "בטל כתוביות",
+      "ENABLED": "כתוביות פעילות",
+      "DISABLED": "כתוביות כבויות"
+    },
+    "MUTE_MICROPHONE": "השתק מיקרופון",
+    "UNMUTE_MICROPHONE": "בטל השתקת מיקרופון",
+    "ENABLE_CAPTIONS": "הפעל כתוביות",
+    "DISABLE_CAPTIONS": "בטל כתוביות"
+  },
+  "ERRORS": {
+    "UNKNOWN_ERROR": {
+      "NAME": "שגיאה בלתי צפויה",
+      "INSTRUCTIONS": "נסה שוב או פנה לתמיכה אם הבעיה נמשכת."
+    },
+    "NETWORK_ERROR": {
+      "NAME": "שגיאת חיבור לרשת",
+      "INSTRUCTIONS": "בדוק את חיבור האינטרנט ונסה שוב."
+    },
+    "API_ERROR": {
+      "NAME": "שגיאת תקשורת עם ה-API",
+      "INSTRUCTIONS": "אירעה בעיה בהתחברות לשירות. נסה שוב מאוחר יותר."
+    },
+    "WEBSOCKET_ERROR": {
+      "NAME": "שגיאת חיבור WebSocket",
+      "INSTRUCTIONS": "לא הצלחנו להתחבר לשירות הקולי. בדוק את החיבור שלך."
+    },
+    "CONNECTION_TIMEOUT": {
+      "NAME": "תם הזמן לחיבור",
+      "INSTRUCTIONS": "החיבור לא הושלם בזמן. נסה שוב."
+    },
+    "AUTHENTICATION_ERROR": {
+      "NAME": "שגיאת אימות",
+      "INSTRUCTIONS": "התחבר שוב."
+    },
+    "MICROPHONE_ACCESS_DENIED": {
+      "NAME": "נדרש מיקרופון",
+      "INSTRUCTIONS": "אפשר אותו בהרשאות הדפדפן של העמוד הזה."
+    },
+    "MICROPHONE_BLOCKED": {
+      "NAME": "המיקרופון חסום",
+      "INSTRUCTIONS": "אפשר אותו בהרשאות הדפדפן של העמוד הזה."
+    },
+    "MICROPHONE_OS_BLOCKED": {
+      "NAME": "המיקרופון חסום",
+      "INSTRUCTIONS": "אפשר אותו בהגדרות המכשיר עבור הדפדפן הזה."
+    },
+    "MICROPHONE_NOT_READABLE": {
+      "NAME": "שגיאת מיקרופון",
+      "INSTRUCTIONS": "לא הצלחנו לקרוא נתונים מהמיקרופון. בדוק אותו או נסה מיקרופון אחר."
+    },
+    "AUDIO_RECORDING_ERROR": {
+      "NAME": "שגיאת הקלטת אודיו",
+      "INSTRUCTIONS": "לא הצלחנו להקליט. בדוק את המיקרופון או נסה מיקרופון אחר."
+    },
+    "SERVER_ERROR": {
+      "NAME": "שגיאת שרת",
+      "INSTRUCTIONS": "הצוות שלנו קיבל התראה."
+    },
+    "QUOTA_EXCEEDED": {
+      "NAME": "הגעת למגבלת השימוש",
+      "INSTRUCTIONS": "הגעת למגבלת השימוש. נסה שוב מאוחר יותר."
+    },
+    "HIGH_DEMAND": {
+      "NAME": "עומס גבוה",
+      "INSTRUCTIONS": "יש עומס גבוה על השירות. נסה שוב בקרוב."
+    },
+    "HTTP": {
+      "400_BAD_REQUEST": {
+        "NAME": "בקשה שגויה",
+        "INSTRUCTIONS": "נסה שוב עם נתונים תקינים."
+      },
+      "401_UNAUTHORIZED": {
+        "NAME": "נדרש אימות",
+        "INSTRUCTIONS": "התחבר כדי להמשיך להשתמש בתכונה הזו."
+      },
+      "403_FORBIDDEN": {
+        "NAME": "הגישה נדחתה",
+        "INSTRUCTIONS": "אין לך הרשאה לגשת לתכונה הזו."
+      },
+      "403_FORBIDDEN_GEO_LOCATION_BLOCKED": {
+        "NAME": "חסום גיאוגרפית",
+        "INSTRUCTIONS": "הצ'אט הקולי אינו זמין מהמיקום הזה."
+      },
+      "404_NOT_FOUND": {
+        "NAME": "השירות לא נמצא",
+        "INSTRUCTIONS": "לא מצאנו את השירות המבוקש."
+      },
+      "408_TIMEOUT": {
+        "NAME": "תם הזמן לבקשה",
+        "INSTRUCTIONS": "השרת לקח יותר מדי זמן להגיב. נסה שוב מאוחר יותר."
+      },
+      "409_CONFLICT": {
+        "NAME": "התנגשות בשירות",
+        "INSTRUCTIONS": "אירעה התנגשות עם המצב הנוכחי. נסה שוב."
+      },
+      "422_UNPROCESSABLE_ENTITY": {
+        "NAME": "פורמט בקשה שגוי",
+        "INSTRUCTIONS": "לא הצלחנו לעבד את הבקשה. נסה שוב."
+      },
+      "429_RATE_LIMIT": {
+        "NAME": "יותר מדי בקשות",
+        "INSTRUCTIONS": "המתן רגע לפני ניסיון נוסף."
+      },
+      "500_SERVER_ERROR": {
+        "NAME": "שגיאת שרת",
+        "INSTRUCTIONS": "נסה שוב מאוחר יותר."
+      },
+      "502_BAD_GATEWAY": {
+        "NAME": "השירות אינו זמין",
+        "INSTRUCTIONS": "נסה שוב מאוחר יותר."
+      },
+      "503_SERVICE_UNAVAILABLE": {
+        "NAME": "השירות אינו זמין זמנית",
+        "INSTRUCTIONS": "נסה שוב מאוחר יותר."
+      },
+      "504_GATEWAY_TIMEOUT": {
+        "NAME": "תם הזמן לשירות",
+        "INSTRUCTIONS": "השירות לקח יותר מדי זמן להגיב. נסה שוב מאוחר יותר."
+      }
+    }
+  },
+  "LANGUAGE_NOT_SUPPORTED": "השפה הזו אינה נתמכת בצ'אט הקולי."
+}

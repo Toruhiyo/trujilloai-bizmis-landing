@@ -242,7 +242,7 @@ export const es: Messages = {
       invite: "¡con las ventajas de Early Access!",
       note: "¡Solo 50 plazas!",
       /** The ad-1 film's Early Access perks, then the quieter extras under them. */
-      perks: ["Créditos gratis de sobra", "50% de descuento al mejorar tu plan", "Decide el roadmap con nosotros"],
+      perks: ["120 conversaciones gratis", "50% de descuento al mejorar tu plan", "Decide el roadmap con nosotros"],
       extras: ["Sin tarjeta", "Sin compromiso", "Línea directa con el fundador"],
     },
     setup: {
@@ -549,20 +549,13 @@ export const es: Messages = {
     badge: "Precios",
     title: "Precios simples y transparentes",
     lead: "Elige el plan que encaja con tu negocio. Todos incluyen la integración completa con Shopify.",
-    monthly: "Mensual",
-    yearly: "Anual",
-    billedYearly: "facturado anualmente",
     perMonth: "/mes",
     popular: "Popular",
-    creditsIncluded: "créditos incluidos",
-    shopperSessionsPerMonth: "sesiones de compra/mes",
-    sessionEstimatesAria: (plan: string) =>
-      `Sesiones de compra estimadas para ${plan}`,
-    perCredit: "/crédito",
-    beyondIncluded: "a partir de los incluidos",
-    concurrentConversations: "conversaciones de voz simultáneas",
-    concurrencyTooltip:
-      "Límite solo para voz. Las conversaciones de texto son prácticamente ilimitadas.",
+    conversationsPerMonth: "conversaciones / mes",
+    extraConversations: (price: string) =>
+      `Conversaciones extra a ${price} cada una, hasta el límite de gasto que fijes`,
+    conversationDefinition:
+      "Una conversación es el chat de un cliente con tu dependiente, por voz o por texto. Cubre hasta 2 minutos de voz o 20 mensajes; si se alarga, cuenta como dos. Si el cliente no dice nada, es gratis.",
     off: "dto.",
     discountTitle: (percent: number) => `${percent}% menos que el precio de lista`,
     introPeriodTitle: "Periodo inicial con descuento",
@@ -571,29 +564,31 @@ export const es: Messages = {
     free: {
       name: "Gratis",
       noCommitment: "Sin compromiso",
-      description: (credits: string, voiceMinutes: string) =>
-        `Prueba Bizmis en tu tienda con ${credits} créditos de uso único (~${voiceMinutes} minutos de voz o ~${credits} mensajes de texto). No se renueva nada: mejora de plan cuando necesites capacidad mensual continua.`,
-      creditsLabel: (credits: string) => `${credits} créditos`,
+      description: (conversations: string) =>
+        `${conversations} conversaciones gratis para probar Bizmis. Sin tarjeta.`,
       cta: "Empezar gratis",
     },
     plans: {
       starter: {
         name: "Starter",
-        features: ["1 dependiente Bizmis", "Soporte: email (48 h)"],
-      },
-      plus: {
-        name: "Plus",
         features: [
-          "Hasta 5 dependientes Bizmis",
-          "Historial y repeticiones de sesión",
-          "Personalización del avatar",
-          "Soporte: email (24 h) y llamadas programadas",
+          "1 dependiente Bizmis",
+          "Voz y texto",
+          "Soporte: email (48 h)",
         ],
       },
-      pro: {
-        name: "Pro",
+      growth: {
+        name: "Growth",
         features: [
-          "La tarifa más baja por exceso",
+          "Hasta 5 dependientes Bizmis",
+          "Historial, transcripciones y repeticiones",
+          "Personalización del avatar",
+          "Soporte: email (24 h) y llamada programada",
+        ],
+      },
+      scale: {
+        name: "Scale",
+        features: [
           "Dependientes Bizmis ilimitados",
           "Conversaciones etiquetadas automáticamente",
           "Soporte prioritario y onboarding en directo",
@@ -602,33 +597,24 @@ export const es: Messages = {
     },
     enterprise: {
       name: "Enterprise",
-      price: "A medida",
+      priceFrom: "Desde",
       description:
         "Soluciones a medida para operaciones a gran escala, con volumen y requisitos personalizados.",
-      everythingInPro: "Todo lo de Pro y además:",
+      everythingInScale: "Todo lo de Scale y además:",
       features: [
-        "Créditos, concurrencia y precio a medida",
-        "Soporte: CSM dedicado, SLA del 99,9%+",
+        "Volumen de conversaciones a medida",
+        "Capacidad garantizada para picos de tráfico",
+        "SLA y voz personalizada",
+        "Facturación fuera de Shopify",
       ],
-    },
-    conversions: {
-      voice: "1 minuto de voz = 10 créditos",
-      text: "1 mensaje de texto = 1 crédito",
-    },
-    sessionFootnote:
-      "Las estimaciones de sesiones varían según la mezcla de voz y texto y la duración de cada sesión.",
-    upgradeNote: {
-      highlight: "Pasa al plan anual en los primeros 90 días",
-      body: "y te descontamos lo que ya has pagado del plan anual (solo los cargos de compromiso).",
-      learnMore: "Más información",
-      hideDetails: "Ocultar detalles",
-      details:
-        "El descuento se aplica solo a los cargos de compromiso. El uso bajo demanda (créditos de exceso) queda excluido.",
     },
     guarantees: {
       spendLimit: "Tú decides tu límite de gasto",
       cancelAnytime: "Cancela cuando quieras",
-      moneyBack: "30 días de garantía de devolución (planes anuales)",
+      moneyBack: "30 días de garantía de devolución",
+      cardNote: "Garantía de devolución de 30 días",
+      bannerTitle: "Pruébalo sin riesgo durante 30 días",
+      bannerBody: "Si Bizmis no te compensa en tus primeros 30 días, cancela y te devolvemos el primer mes entero. Sin preguntas.",
     },
     coupon: {
       prompt:
@@ -647,9 +633,7 @@ export const es: Messages = {
         months > 0
           ? `${percent}% de descuento ${months === 1 ? "el primer mes" : `los primeros ${months} meses`}`
           : `${percent}% de descuento`,
-      onMonthlyBilling: "en facturación mensual, o",
-      yearlyDiscount: (percent: number) => `${percent}% de descuento anual`,
-      whenYearlySelected: "si eliges facturación anual.",
+      discountEnd: ".",
       errors: {
         empty: "Introduce primero un código.",
         notFound: "Ese código no es válido.",
@@ -735,32 +719,32 @@ export const es: Messages = {
       "review-conversations": {
         question: "¿Puedo revisar conversaciones anteriores?",
         answer:
-          "Sí. El historial y las repeticiones de sesión están disponibles a partir del plan Plus. Puedes recorrer cualquier conversación, leer la transcripción y etiquetar patrones para afinar tus reglas de venta y soporte.",
+          "Sí. El historial, las transcripciones y las repeticiones están disponibles a partir del plan Growth. Puedes recorrer cualquier conversación, leer la transcripción y etiquetar patrones para afinar tus reglas de venta y soporte.",
       },
       "how-much-cost": {
         question: "¿Cuánto cuesta Bizmis?",
         answer:
-          "Tres planes más Enterprise. **Starter** (149 $/mes, 2.500 créditos) para tiendas pequeñas o de una persona. **Plus** (499 $/mes, 9.000 créditos) para tiendas en crecimiento, el más popular. **Pro** (1.499 $/mes, 30.000 créditos) para tiendas de alto volumen. **Enterprise** para volumen y SLA a medida. Los créditos cubren voz y texto (1 min de voz = 10 créditos, 1 mensaje = 1 crédito). La facturación anual ahorra un ~20%.",
+          "Tres planes más Enterprise, todos con facturación mensual. **Starter** (79 $/mes, 260 conversaciones) para tiendas pequeñas o de una persona. **Growth** (199 $/mes, 660 conversaciones) para tiendas en crecimiento, el más popular. **Scale** (499 $/mes, 1.650 conversaciones) para tiendas de alto volumen. **Enterprise** desde 1.500 $/mes, con volumen a medida, capacidad garantizada para picos de tráfico y SLA. Cada conversación extra cuesta 0,30 $, hasta el límite de gasto que fijes. Puedes empezar con 120 conversaciones gratis.",
       },
-      "credit-model": {
-        question: "¿Cómo funciona el modelo de créditos?",
+      "what-counts-as-conversation": {
+        question: "¿Qué cuenta como una conversación?",
         answer:
-          "Cada plan incluye una bolsa de créditos (Starter 2.500 / Plus 9.000 / Pro 30.000) que se reinicia cada periodo de facturación. Los créditos cubren voz y texto: 1 minuto de voz = 10 créditos, 1 mensaje de texto = 1 crédito. El uso por encima de la bolsa se factura a la tarifa de exceso de tu plan (0,06 $ / 0,055 $ / 0,05 $ por crédito). Puedes fijar un límite de gasto en el panel de Bizmis: al alcanzarlo, el uso se pausa hasta el siguiente periodo o hasta que lo subas. Los créditos no usados no se acumulan.",
+          "Una conversación es el chat de un cliente con tu dependiente, por voz o por texto. Cubre hasta 2 minutos de voz o 20 mensajes; si se alarga, cuenta como dos. Si el cliente no dice nada, es gratis, y tus propias pruebas en el panel de Bizmis tampoco cuentan. Cada plan incluye un número de conversaciones (Starter 260 / Growth 660 / Scale 1.650) que se renueva cada mes. A partir de ahí, cada conversación extra cuesta 0,30 $, solo hasta el límite de gasto que fijes en el panel de Bizmis. El límite empieza en 0 $, así que no se cobra nada extra hasta que lo subas. Al alcanzarlo, el dependiente se pausa hasta el siguiente periodo o hasta que subas el límite. Las conversaciones no usadas no se acumulan.",
       },
-      "yearly-billing": {
-        question: "¿Cómo funciona la facturación anual?",
+      "monthly-billing": {
+        question: "¿Hay facturación anual?",
         answer:
-          "La facturación anual se paga por adelantado y te ahorra un ~20% sobre el precio mensual. Los créditos incluidos se siguen reiniciando cada mes. Los planes anuales no incluyen exceso: cuando agotas la bolsa mensual, el uso se pausa hasta el mes siguiente.",
+          "De momento, no. Todos los planes se facturan cada mes a través de Shopify y puedes cancelar cuando quieras.",
       },
       "early-access-offer": {
-        question: "¿En qué consiste la oferta de acceso anticipado?",
+        question: "¿Qué es la oferta de acceso anticipado?",
         answer:
-          "El acceso anticipado ofrece a las tiendas Shopify invitadas los **1.200 créditos** de un solo uso del plan gratuito (~120 minutos de voz o ~1.200 mensajes de texto). No hay suscripción, cargos por uso, actualización automática ni renovación. Cuando se agotan los créditos, Bizmis se pausa, salvo que elijas y apruebes un plan de pago en Shopify. Los miembros también reciben onboarding 1 a 1, soporte prioritario, prioridad para sus comentarios sobre el producto y un descuento personal si más adelante deciden mejorar su plan.",
+          "El acceso anticipado ofrece a las tiendas Shopify invitadas las **120 conversaciones gratis** del plan gratuito, una sola vez por tienda. No hay suscripción, cargos por uso, actualización automática ni renovación. Cuando se agotan las conversaciones, Bizmis se pausa, salvo que elijas y apruebes un plan de pago en Shopify. Los miembros también reciben onboarding 1 a 1, soporte prioritario, prioridad para sus comentarios sobre el producto y un descuento personal si más adelante deciden mejorar su plan.",
       },
       "free-plan": {
         question: "¿Hay un plan gratuito?",
         answer:
-          "Sí. El **plan gratuito** ejecuta Bizmis en tu tienda hasta un máximo único de **1.200 créditos** (~120 minutos de voz o ~1.200 mensajes de texto). Sin suscripción, sin compromiso y sin renovaciones. Es una prueba real con compradores reales. Cuando necesites capacidad continua, pasa a un plan de pago. Todos los cargos de Bizmis pasan por Shopify con la cuenta que ya usas, así que nunca añades otra tarjeta, y el plan gratuito no tiene nada que cobrar.",
+          "Sí. El **plan gratuito** pone Bizmis en marcha en tu tienda durante **120 conversaciones gratis**, una sola vez por tienda. Sin suscripción, sin compromiso, sin tarjeta y sin renovaciones. Es una prueba real con compradores reales. Cuando necesites capacidad continua, pasa a un plan de pago. Todos los cargos de Bizmis pasan por Shopify con la cuenta que ya usas, así que nunca añades otra tarjeta, y el plan gratuito no tiene nada que cobrar.",
       },
       "billing-payment-method": {
         question: "¿Cómo funciona el pago? ¿Tengo que añadir una tarjeta?",
@@ -777,11 +761,6 @@ export const es: Messages = {
         answer:
           "Las bajadas de plan se aplican en la siguiente renovación: mantienes tu plan actual y sus funciones hasta entonces. No se reinician los contadores de uso ni hay prorrateo.",
       },
-      "monthly-to-yearly": {
-        question: "¿Puedo pasar de mensual a anual?",
-        answer:
-          "Sí. Si cambias dentro de los primeros 90 días, te abonamos las cuotas de compromiso mensuales que ya hayas pagado a cuenta del plan anual. El abono cubre solo las cuotas de compromiso, el uso por exceso no se abona.",
-      },
       "cancel-anytime": {
         question: "¿Puedo cancelar cuando quiera?",
         answer:
@@ -790,12 +769,12 @@ export const es: Messages = {
       "refund-policy": {
         question: "¿Cuál es vuestra política de reembolsos?",
         answer:
-          "**Planes anuales:** 30 días de garantía de devolución sobre el primer cargo anual. Cancela dentro de los 30 días siguientes a tu primer pago anual y te devolvemos la cuota de compromiso, sin preguntas. La garantía no cubre las renovaciones ni el uso por exceso.\n**Planes mensuales:** los cargos ya facturados del periodo actual no son reembolsables, pero no se te volverá a cobrar. Los créditos no usados no se acumulan.",
+          "**Garantía de devolución de 30 días:** si cancelas dentro de los 30 días siguientes a tu primer cargo de un plan de pago, te devolvemos esa cuota, sin preguntas. No cubre los meses siguientes ni las conversaciones extra.\n**Después:** los cargos ya facturados del mes en curso no son reembolsables, pero no se te volverá a cobrar. Las conversaciones no usadas no se acumulan.",
       },
       "personalize-voice-avatar": {
         question: "¿Puedo personalizar la voz y el avatar?",
         answer:
-          "Sí. Elige entre un conjunto de voces naturales en más de 25 idiomas o entre cuatro personajes de avatar (a partir de Plus). También puedes configurar el saludo, el tono y el comportamiento para que encajen con tu marca.",
+          "Sí. Elige entre un conjunto de voces naturales en más de 25 idiomas o entre cuatro personajes de avatar (a partir de Growth). También puedes configurar el saludo, el tono y el comportamiento para que encajen con tu marca.",
       },
       "multi-language": {
         question: "¿Bizmis habla varios idiomas?",
@@ -810,7 +789,7 @@ export const es: Messages = {
       "multiple-clerks": {
         question: "¿Cuántos dependientes Bizmis puedo tener?",
         answer:
-          "Uno en Starter, hasta cinco en Plus e ilimitados en Pro y Enterprise. Cada dependiente puede tener su propia voz, avatar y conjunto de reglas, algo útil si vendes en colecciones o mercados distintos.",
+          "Uno en Starter, hasta cinco en Growth e ilimitados en Scale y Enterprise. Cada dependiente puede tener su propia voz, avatar y conjunto de reglas, algo útil si vendes en colecciones o mercados distintos.",
       },
       "data-collected": {
         question: "¿Qué datos recoge Bizmis?",
@@ -904,7 +883,7 @@ export const es: Messages = {
       {
         title: "Gratis como miembro*",
         detail:
-          "Activa el acceso anticipado en la app y usa 1.200 créditos en directo sin coste. Sin suscripción, sin compromiso.",
+          "Activa el acceso anticipado en la app y usa 120 conversaciones en directo sin coste. Sin suscripción, sin compromiso.",
       },
       {
         title: "Define la hoja de ruta",
@@ -919,7 +898,7 @@ export const es: Messages = {
       {
         title: "Descuentos exclusivos",
         detail:
-          "Tu código de acceso anticipado desbloquea precios mensuales de inicio con descuento y precios anuales rebajados cuando mejores de plan.",
+          "Tu código de acceso anticipado desbloquea precios mensuales de inicio con descuento cuando mejores de plan.",
       },
     ],
     ctaTitle: "Elige por dónde empezar",
@@ -931,7 +910,7 @@ export const es: Messages = {
     seeDemoFirst: "Ver antes la demo en vivo",
     founderLed: "Proyecto liderado por su fundador. ¿Dudas?",
     footnote:
-      "*Gratis para miembros de acceso anticipado = 1.200 créditos de uso único (~120 minutos de voz), sin renovación.",
+      "*Gratis para miembros de acceso anticipado = 120 conversaciones en directo, una sola vez por tienda, sin renovación.",
   },
 
   unsubscribe: {
