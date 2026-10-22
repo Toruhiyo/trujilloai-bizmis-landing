@@ -612,6 +612,9 @@ export const it: Messages = {
       spendLimit: "Decidi tu il limite di spesa",
       cancelAnytime: "Disdici quando vuoi",
       moneyBack: "Garanzia di rimborso entro 30 giorni",
+      cardNote: "Soddisfatti o rimborsati per 30 giorni",
+      bannerTitle: "Provalo senza rischi per 30 giorni",
+      bannerBody: "Se Bizmis non ne vale la pena nei primi 30 giorni, annulla e ti rimborsiamo per intero il primo mese. Senza domande.",
     },
     coupon: {
       prompt:
