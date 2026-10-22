@@ -2,7 +2,7 @@ import Footer from "@/components/Footer";
 import PublicPageLayout from "@/components/PublicPageLayout";
 import Seo from "@/components/Seo";
 
-const LAST_UPDATED = "September 7, 2026";
+const LAST_UPDATED = "October 23, 2026";
 const CONTACT_EMAIL = "hello@bizmis.ai";
 
 const PrivacyPolicy = () => {
@@ -52,6 +52,17 @@ const PrivacyPolicy = () => {
                 Store policies and support pages (shipping, returns, privacy,
                 FAQ), read so the assistant can answer support questions from
                 the merchant's own content
+              </li>
+              <li>
+                <strong>Admin usage analytics</strong> -- how the merchant
+                uses the Bizmis app inside Shopify admin (pages visited,
+                settings saved, plan selection, errors) and a visual replay of
+                those admin sessions, recorded through PostHog so we can
+                improve onboarding and setup. Form fields, the store's own
+                content and shopper conversations are masked before
+                recording. These records are linked to the store's
+                myshopify.com domain and store ID, never to the merchant's
+                name or email.
               </li>
             </ul>
           </Section>
@@ -139,8 +150,9 @@ const PrivacyPolicy = () => {
               <li>Generate conversation transcripts for the merchant's analytics dashboard</li>
               <li>Provide session analytics and metrics to the merchant</li>
               <li>
-                Review widget session replays to debug failures and improve
-                the assistant's usability
+                Review widget and merchant admin session replays to debug
+                failures and improve the usability of the assistant and the
+                app
               </li>
               <li>
                 Investigate abuse, debug failures, and maintain the security
@@ -258,7 +270,8 @@ const PrivacyPolicy = () => {
               </li>
               <li>
                 <strong>PostHog (EU Cloud)</strong> -- product analytics and
-                widget session replay, as described in Section 3. Hosted in
+                session replay for the widget and the merchant admin, as
+                described in Sections 2 and 3. Hosted in
                 the European Union.
               </li>
               <li>
@@ -320,7 +333,7 @@ const PrivacyPolicy = () => {
                 receive the <code>shop/redact</code> webhook.
               </li>
               <li>
-                <strong>Widget session replays and analytics events</strong>{" "}
+                <strong>Widget and admin session replays and analytics events</strong>{" "}
                 (PostHog) -- retained according to PostHog's plan retention
                 for session replays, and deleted on request to the contact
                 email at the end of this policy.
@@ -363,6 +376,11 @@ const PrivacyPolicy = () => {
                 the session replay described in Section 3
               </li>
             </ul>
+            <p>
+              In the Bizmis app inside Shopify admin, PostHog keeps its
+              identifiers (<strong>ph_*</strong>) in local storage only, to
+              group the admin usage analytics described in Section 2.
+            </p>
             <p>
               We do not use cookies or local storage for advertising, and we
               do not track customers across other websites.
