@@ -45,7 +45,7 @@ One primary CTA. Benefit-led, on-brand, fast.
 8. **Secondary links (smaller):** "See the live demo" (`openBizmisDemoStore`) · "Or install on Shopify now"
    (`openBizmisShopifyAppListing`).
 9. **Trust line:** "Built by Oriol Trujillo, founder. Questions? hello@bizmis.ai"
-10. **Footnote (small):** "*Free plan = a one-time 1,200 credits of live usage (~120 voice minutes), no renewal."
+10. **Footnote (small):** "*Free plan = 120 free live conversations, once per store, no renewal."
 
 ## Behaviour / non-functional
 - **SEO:** use `<Seo title="Bizmis Early Access — free pilot for 50 Shopify stores" description="…" path="/early-access" />`.

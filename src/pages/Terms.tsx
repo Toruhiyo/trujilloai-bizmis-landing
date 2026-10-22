@@ -2,7 +2,7 @@ import Footer from "@/components/Footer";
 import PublicPageLayout from "@/components/PublicPageLayout";
 import Seo from "@/components/Seo";
 
-const LAST_UPDATED = "September 7, 2026";
+const LAST_UPDATED = "October 22, 2026";
 const CONTACT_EMAIL = "hello@bizmis.ai";
 const COMPANY_LEGAL_NAME = "Bizmis";
 const COMPANY_JURISDICTION = "Spain";
@@ -72,10 +72,17 @@ const Terms = () => {
                 Shopify's billing system.
               </li>
               <li>
-                <strong>"Credits"</strong> means the unit of usage consumed by
-                Store Customer interactions (voice or text), tracked per
-                billing period. One voice minute equals 10 credits; one text
-                message equals 1 credit.
+                <strong>"Conversation"</strong> means the unit of usage
+                consumed by Store Customer interactions, tracked per billing
+                period. One Conversation is one Store Customer's session with
+                the Bizmis assistant, by voice or text, covering up to 2
+                minutes of voice or 20 messages typed by the Store Customer.
+                Each session counts as its voice duration divided by 2 minutes
+                plus its Store Customer messages divided by 20, rounded up to
+                the next whole number, so longer sessions count as two or more
+                Conversations. Sessions in which the Store Customer provides no
+                input, and the Merchant's own previews in the Bizmis admin, are
+                not counted.
               </li>
             </ul>
           </Section>
@@ -416,8 +423,8 @@ const Terms = () => {
           <Section title="9. Subscription Plans, Billing & Free Preview (Merchants)">
             <p>
               The Service is offered to Merchants on tiered Subscription plans.
-              Current plan names, pricing, included Credits, and overage rates
-              are published on our{" "}
+              Current plan names, pricing, included Conversations, and overage
+              rates are published on our{" "}
               <a
                 href="/pricing"
                 className="text-primary hover:text-primary-dark hover:underline"
@@ -435,48 +442,49 @@ const Terms = () => {
                 payment-card details and does not invoice Merchants directly.
               </li>
               <li>
-                <strong>Billing periods.</strong> Monthly plans bill upfront
-                every 30 days. Yearly plans bill upfront for the full year.
+                <strong>Billing periods.</strong> All plans are billed monthly,
+                upfront, every 30 days. Yearly plans are not currently
+                offered.
               </li>
               <li>
-                <strong>Included Credits.</strong> Each plan includes a fixed
-                pool of Credits that resets at the start of every billing
-                period. Unused Credits do not roll over.
+                <strong>Included Conversations.</strong> Each plan includes a
+                fixed number of Conversations that resets at the start of
+                every billing period. Unused Conversations do not roll over.
               </li>
               <li>
-                <strong>Overage (monthly plans only).</strong> Usage beyond the
-                included pool is billed as overage at the per-credit rate
-                published for your plan, capped at the overage limit you set
-                inside the Bizmis admin (and at Shopify's per-app capped
-                amount). When the cap is reached, usage is paused until the
-                next billing period or until you raise the cap. Yearly plans
-                do not include overage; usage is paused once included Credits
-                are exhausted.
+                <strong>Overage.</strong> Conversations beyond the included
+                number are billed as overage at the per-Conversation rate
+                published for your plan (currently $0.30 per Conversation),
+                only up to the spend cap you set inside the Bizmis admin and
+                never above Shopify's per-app capped amount for your plan. The
+                spend cap starts at $0, so no overage is billed until you
+                raise it. When the cap is reached, usage is paused until the
+                next billing period or until you raise the cap.
               </li>
               <li>
-                <strong>Free preview.</strong> New stores receive a limited
-                pool of preview Credits so the Merchant can evaluate the
-                Service before subscribing. While preview Credits remain, the
-                widget is fully functional on the Merchant's storefront.
-                Once preview Credits are exhausted (or the trial window ends),
+                <strong>Free preview.</strong> Each store receives 120 free
+                preview Conversations, once, so the Merchant can evaluate the
+                Service before subscribing. While preview Conversations remain,
+                the widget is fully functional on the Merchant's storefront.
+                Once preview Conversations are used up (or the trial window
+                ends),
                 the widget is hidden from Store Customers and a paid
                 Subscription is required to make it visible again. The
                 embedded Bizmis admin remains accessible to the Merchant
                 throughout, so they can subscribe at any time.
               </li>
               <li>
-                <strong>Plan changes.</strong> Upgrades (higher tier or monthly
-                to yearly) take effect immediately and are charged a prorated
-                difference for the remaining billing period; usage counters
-                are not reset. Downgrades (lower tier or yearly to monthly)
-                take effect at the next renewal; you keep the higher
-                entitlements until then.
+                <strong>Plan changes.</strong> Upgrades to a higher tier take
+                effect immediately and are charged a prorated difference for
+                the remaining billing period; usage counters are not reset.
+                Downgrades to a lower tier take effect at the next renewal;
+                you keep the higher entitlements until then.
               </li>
               <li>
                 <strong>Discount codes.</strong> Promotional codes may be
                 offered from time to time and are applied through Shopify's
-                billing flow. Discounts apply to commitment fees only and not
-                to overage usage.
+                billing flow. Discounts apply to plan fees only and not to
+                overage usage.
               </li>
               <li>
                 <strong>Taxes.</strong> Prices are exclusive of any applicable
@@ -500,18 +508,17 @@ const Terms = () => {
                 interrupted.
               </li>
               <li>
-                <strong>Monthly plans — no refunds.</strong> Charges already
-                billed for the current monthly period are non-refundable, and
-                unused Credits in the current period are forfeited. You will
-                not be billed again going forward.
+                <strong>30-day money-back guarantee.</strong> If you cancel
+                within 30 days of your first paid plan charge, we will refund
+                that plan fee, no questions asked. The guarantee applies only
+                to the first plan charge; it does not cover later billing
+                periods or overage usage.
               </li>
               <li>
-                <strong>Yearly plans — 30-day money-back guarantee.</strong>{" "}
-                If you cancel a yearly plan within 30 days of the initial
-                yearly charge, we will refund the commitment fee for that
-                yearly period, no questions asked. The 30-day guarantee does
-                not apply to renewal years (only the first yearly charge) or
-                to overage usage.
+                <strong>No other refunds.</strong> Except as set out above,
+                charges already billed for the current monthly period are
+                non-refundable, and unused Conversations in the current period
+                are forfeited. You will not be billed again going forward.
               </li>
               <li>
                 <strong>Reactivation.</strong> You may resubscribe at any
@@ -522,7 +529,7 @@ const Terms = () => {
             </ul>
             <p>
               We may, in our sole discretion, grant additional refunds or
-              service credits beyond what is required by these Terms. Doing so
+              other concessions beyond what is required by these Terms. Doing so
               in one instance does not waive our right to enforce this policy
               in any other instance.
             </p>
@@ -563,8 +570,8 @@ const Terms = () => {
             <p>
               <strong>Service discontinuation.</strong> We may also discontinue
               the Service in its entirety on at least 30 days' notice; if we
-              do, we will offer a prorated refund of any unused prepaid
-              yearly fees.
+              do, we will offer a prorated refund of any prepaid fees for the
+              unused part of the current billing period.
             </p>
           </Section>
 
