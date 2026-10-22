@@ -613,6 +613,9 @@ export const ca: Messages = {
       spendLimit: "Tu decideixes el teu límit de despesa",
       cancelAnytime: "Cancel·la quan vulguis",
       moneyBack: "30 dies de garantia de devolució",
+      cardNote: "Garantia de devolució de 30 dies",
+      bannerTitle: "Prova-ho sense risc durant 30 dies",
+      bannerBody: "Si Bizmis no et compensa els primers 30 dies, cancel·la i et retornem el primer mes sencer. Sense preguntes.",
     },
     coupon: {
       prompt:

@@ -624,6 +624,9 @@ export const en = {
       spendLimit: "You choose your spend limit",
       cancelAnytime: "Cancel anytime",
       moneyBack: "30-day money-back guarantee",
+      cardNote: "30-day money-back guarantee",
+      bannerTitle: "Try it risk-free for 30 days",
+      bannerBody: "If Bizmis isn't worth it in your first 30 days, cancel and we refund your first month in full. No questions asked.",
     },
     coupon: {
       prompt:
