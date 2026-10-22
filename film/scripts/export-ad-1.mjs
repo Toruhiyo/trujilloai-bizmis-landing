@@ -256,6 +256,7 @@ let captureAttempts = CAPTURE_ATTEMPTS;
 // (e.g. the dull sea's near-white blurred cards meeting white gaps); the two-capture stability check still runs
 const HOLE_SKIP = (process.env.EXPORT_HOLE_SKIP || '').split(',').filter(Boolean).map((r) => r.split('-').map(Number));
 let currentFrame = -1;
+const SETTLE_SKIPPED = process.env.EXPORT_SETTLE_SKIPPED === '1';
 const holeCheck = (file) => !HOLE_SKIP.some(([a, b]) => currentFrame >= a && currentFrame <= b) && frameHasHole(file);
 const DIFF_CHANNEL = 18;
 const DIFF_FRACTION = 0.0025;
@@ -476,7 +477,12 @@ async function stepFrame(page, frame, framesDir, timeoutMs, write, quadrants) {
     window.__promoClock.seek(ms);
     return { ended: window.__promoExportEnded === true };
   }, frameMs(frame));
-  if (!write) return { ended: state.ended, timedOut: false };
+  if (!write) {
+    // EXPORT_SETTLE_SKIPPED=1: settle the frames before --frames too (not captured), so a range export keeps the
+    // full export's clock (seek-only skipping drifts it by seconds); this is what makes a partial re-render splice-able
+    if (SETTLE_SKIPPED) await page.evaluate((timeout) => window.__promoClock.settle(timeout), timeoutMs);
+    return { ended: state.ended, timedOut: false };
+  }
   const written = await writeFrame(page, frame, framesDir, timeoutMs, quadrants);
   return { ended: state.ended, timedOut: written.timedOut, file: written.file };
 }
