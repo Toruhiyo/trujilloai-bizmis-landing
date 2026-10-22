@@ -3,13 +3,12 @@ import { EARLY_ACCESS_STORE_CAP } from "@/data/leads/_schema";
 export const BIZMIS_PRODUCT_NAME = "Bizmis \u2014 Voice Store Clerk";
 
 /**
- * Free plan lifetime credit allowance. The Free plan runs live in the store
- * up to this one-time amount (no renewal, no commitment). Keep in sync with
- * the backend `PREVIEW_LIFETIME_CREDITS`.
+ * Free plan lifetime allowance, in conversations (pricing v2). The Free plan
+ * runs live in the store up to this one-time amount (no renewal, no
+ * commitment). Keep in sync with the backend preview allowance
+ * (`PREVIEW_LIFETIME_CREDITS`, whose unit is now conversations).
  */
-export const FREE_PLAN_CREDITS_ALLOWANCE = 1200;
-
-const FREE_PLAN_CREDITS_PER_VOICE_MINUTE = 10;
+export const FREE_PLAN_CONVERSATIONS_ALLOWANCE = 120;
 
 export const EARLY_ACCESS_EMAIL_COPY = {
   greetingDear: "Dear",
@@ -265,8 +264,7 @@ export function buildSoftCtaPlainText(shopifyAppUrl: string, storeCap: number): 
 }
 
 export function buildEarlyAccessTrialUsageFootnotePlainText(): string {
-  const voiceMinutes = FREE_PLAN_CREDITS_ALLOWANCE / FREE_PLAN_CREDITS_PER_VOICE_MINUTE;
-  return `* Free plan: a one-time ${FREE_PLAN_CREDITS_ALLOWANCE.toLocaleString()} credits of live usage (~${voiceMinutes.toLocaleString()} voice min or ~${FREE_PLAN_CREDITS_ALLOWANCE.toLocaleString()} text msgs), no renewal.`;
+  return `* Free plan: ${FREE_PLAN_CONVERSATIONS_ALLOWANCE.toLocaleString("en-US")} live conversations at no cost, one time, no renewal.`;
 }
 
 export function buildEarlyAccessFooterPlainText(): string {

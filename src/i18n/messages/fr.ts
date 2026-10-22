@@ -242,7 +242,7 @@ export const fr: Messages = {
       invite: "pour les avantages Early Access !",
       note: "Seulement 50 places !",
       /** The ad-1 film's Early Access perks, then the quieter extras under them. */
-      perks: ["Des crédits gratuits généreux", "-50 % sur les forfaits supérieurs", "Orientez la feuille de route"],
+      perks: ["120 conversations gratuites", "-50 % sur les forfaits supérieurs", "Orientez la feuille de route"],
       extras: ["Sans carte bancaire", "Sans engagement", "Une ligne directe avec le fondateur"],
     },
     setup: {
@@ -550,20 +550,13 @@ export const fr: Messages = {
     badge: "Tarifs",
     title: "Des tarifs simples et transparents",
     lead: "Choisissez le plan adapté à votre activité. Tous incluent l'intégration Shopify complète.",
-    monthly: "Mensuel",
-    yearly: "Annuel",
-    billedYearly: "facturé annuellement",
     perMonth: "/mois",
     popular: "Populaire",
-    creditsIncluded: "crédits inclus",
-    shopperSessionsPerMonth: "sessions clients/mois",
-    sessionEstimatesAria: (plan: string) =>
-      `Sessions clients estimées pour ${plan}`,
-    perCredit: "/crédit",
-    beyondIncluded: "au-delà des crédits inclus",
-    concurrentConversations: "conversations vocales simultanées",
-    concurrencyTooltip:
-      "Limite applicable à la voix uniquement. Les conversations texte sont pratiquement illimitées.",
+    conversationsPerMonth: "conversations / mois",
+    extraConversations: (price: string) =>
+      `Conversations supplémentaires à ${price} l'unité, dans la limite du plafond de dépenses que vous fixez`,
+    conversationDefinition:
+      "Une conversation, c'est l'échange d'un client avec votre vendeur, à la voix ou par écrit. Elle couvre jusqu'à 2 minutes de voix ou 20 messages ; au-delà, elle compte pour deux. Les échanges où le client ne dit rien sont gratuits.",
     off: "de remise",
     discountTitle: (percent: number) => `${percent} % de moins que le tarif public`,
     introPeriodTitle: "Période de lancement remisée",
@@ -572,29 +565,31 @@ export const fr: Messages = {
     free: {
       name: "Gratuit",
       noCommitment: "Sans engagement",
-      description: (credits: string, voiceMinutes: string) =>
-        `Testez Bizmis en conditions réelles avec ${credits} crédits utilisables une seule fois (~${voiceMinutes} minutes de voix ou ~${credits} messages texte). Rien ne se renouvelle : passez à un plan payant quand vous avez besoin de capacité mensuelle.`,
-      creditsLabel: (credits: string) => `${credits} crédits`,
+      description: (conversations: string) =>
+        `${conversations} conversations gratuites pour essayer Bizmis. Sans carte bancaire.`,
       cta: "Commencer gratuitement",
     },
     plans: {
       starter: {
         name: "Starter",
-        features: ["1 vendeur Bizmis", "Support : e-mail (48 h)"],
-      },
-      plus: {
-        name: "Plus",
         features: [
-          "Jusqu'à 5 vendeurs Bizmis",
-          "Historique et relectures de session",
-          "Personnalisation de l'avatar",
-          "Support : e-mail (24 h) et appels programmés",
+          "1 vendeur Bizmis",
+          "Voix et texte",
+          "Support : e-mail (48 h)",
         ],
       },
-      pro: {
-        name: "Pro",
+      growth: {
+        name: "Growth",
         features: [
-          "Tarif de dépassement le plus bas",
+          "Jusqu'à 5 vendeurs Bizmis",
+          "Historique, transcriptions et relectures",
+          "Personnalisation de l'avatar",
+          "Support : e-mail (24 h) et appel programmé",
+        ],
+      },
+      scale: {
+        name: "Scale",
+        features: [
           "Vendeurs Bizmis illimités",
           "Conversations étiquetées automatiquement",
           "Support prioritaire et onboarding en direct",
@@ -603,33 +598,21 @@ export const fr: Messages = {
     },
     enterprise: {
       name: "Enterprise",
-      price: "Sur mesure",
+      priceFrom: "À partir de",
       description:
         "Des solutions sur mesure pour les opérations à grande échelle, avec volume et exigences personnalisés.",
-      everythingInPro: "Tout le plan Pro, plus :",
+      everythingInScale: "Tout le plan Scale, plus :",
       features: [
-        "Crédits, simultanéité et tarifs sur mesure",
-        "Support : CSM dédié, SLA de 99,9 % et plus",
+        "Volume de conversations sur mesure",
+        "Capacité garantie pour les pics de trafic",
+        "SLA et voix personnalisée",
+        "Facturation en dehors de Shopify",
       ],
-    },
-    conversions: {
-      voice: "1 minute de voix = 10 crédits",
-      text: "1 message texte = 1 crédit",
-    },
-    sessionFootnote:
-      "Les estimations de sessions varient selon la répartition voix/texte et la durée des sessions.",
-    upgradeNote: {
-      highlight: "Passez à l'annuel dans les 90 jours",
-      body: "et nous déduisons ce que vous avez déjà payé de votre plan annuel (frais d'engagement uniquement).",
-      learnMore: "En savoir plus",
-      hideDetails: "Masquer les détails",
-      details:
-        "La déduction s'applique uniquement aux frais d'engagement. L'usage à la demande (crédits de dépassement) en est exclu.",
     },
     guarantees: {
       spendLimit: "Vous fixez votre plafond de dépenses",
       cancelAnytime: "Annulation à tout moment",
-      moneyBack: "Garantie satisfait ou remboursé 30 jours (plans annuels)",
+      moneyBack: "Garantie satisfait ou remboursé 30 jours",
     },
     coupon: {
       prompt:
@@ -648,9 +631,7 @@ export const fr: Messages = {
         months > 0
           ? `${percent} % de remise ${months === 1 ? "le 1er mois" : `les ${months} premiers mois`}`
           : `${percent} % de remise`,
-      onMonthlyBilling: "en facturation mensuelle, ou",
-      yearlyDiscount: (percent: number) => `${percent} % de remise en annuel`,
-      whenYearlySelected: "si vous choisissez la facturation annuelle.",
+      discountEnd: ".",
       errors: {
         empty: "Saisissez d'abord un code.",
         notFound: "Ce code n'est pas valide.",
@@ -736,32 +717,32 @@ export const fr: Messages = {
       "review-conversations": {
         question: "Puis-je revoir les conversations passées ?",
         answer:
-          "Oui. L'historique et les relectures de session sont disponibles à partir du plan Plus. Vous pouvez parcourir n'importe quelle conversation, lire la transcription et étiqueter des tendances pour affiner vos règles de vente et de support.",
+          "Oui. L'historique, les transcriptions et les relectures sont disponibles à partir du plan Growth. Vous pouvez parcourir n'importe quelle conversation, lire la transcription et étiqueter des tendances pour affiner vos règles de vente et de support.",
       },
       "how-much-cost": {
         question: "Combien coûte Bizmis ?",
         answer:
-          "Trois plans plus Enterprise. **Starter** (149 $/mois, 2 500 crédits) pour les boutiques individuelles ou de petite taille. **Plus** (499 $/mois, 9 000 crédits) pour les boutiques en croissance, le plus populaire. **Pro** (1 499 $/mois, 30 000 crédits) pour les boutiques à fort volume. **Enterprise** pour un volume et des SLA sur mesure. Les crédits couvrent la voix et le texte (1 min de voix = 10 crédits, 1 message = 1 crédit). La facturation annuelle fait économiser environ 20 %.",
+          "Trois plans plus Enterprise, tous facturés au mois. **Starter** (79 $/mois, 260 conversations) pour les boutiques individuelles ou de petite taille. **Growth** (199 $/mois, 660 conversations) pour les boutiques en croissance, le plus populaire. **Scale** (499 $/mois, 1 650 conversations) pour les boutiques à fort volume. **Enterprise** à partir de 1 500 $/mois, avec un volume sur mesure, une capacité garantie pour les pics de trafic et des SLA. Chaque conversation supplémentaire coûte 0,30 $, dans la limite du plafond de dépenses que vous fixez. Vous pouvez commencer avec 120 conversations gratuites.",
       },
-      "credit-model": {
-        question: "Comment fonctionne le modèle de crédits ?",
+      "what-counts-as-conversation": {
+        question: "Qu'est-ce qui compte comme une conversation ?",
         answer:
-          "Chaque plan inclut une réserve de crédits (Starter 2 500 / Plus 9 000 / Pro 30 000) réinitialisée à chaque période de facturation. Les crédits couvrent la voix et le texte : 1 minute de voix = 10 crédits, 1 message texte = 1 crédit. L'usage au-delà de la réserve est facturé au tarif de dépassement de votre plan (0,06 $ / 0,055 $ / 0,05 $ par crédit). Vous fixez un plafond de dépenses strict dans l'administration Bizmis : une fois atteint, l'usage se met en pause jusqu'à la période suivante ou jusqu'à ce que vous releviez le plafond. Les crédits non utilisés ne sont pas reportés.",
+          "Une conversation, c'est l'échange d'un client avec votre vendeur, à la voix ou par écrit. Elle couvre jusqu'à 2 minutes de voix ou 20 messages ; au-delà, elle compte pour deux. Les échanges où le client ne dit rien sont gratuits, tout comme vos propres aperçus dans l'administration Bizmis. Chaque plan inclut un nombre de conversations (Starter 260 / Growth 660 / Scale 1 650) renouvelé chaque mois. Au-delà, chaque conversation supplémentaire coûte 0,30 $, uniquement dans la limite du plafond de dépenses que vous fixez dans l'administration Bizmis. Le plafond démarre à 0 $ : rien de plus n'est facturé tant que vous ne le relevez pas. Une fois le plafond atteint, le vendeur se met en pause jusqu'à la période suivante ou jusqu'à ce que vous releviez le plafond. Les conversations non utilisées ne sont pas reportées.",
       },
-      "yearly-billing": {
-        question: "Comment fonctionne la facturation annuelle ?",
+      "monthly-billing": {
+        question: "Existe-t-il une facturation annuelle ?",
         answer:
-          "La facturation annuelle se règle d'avance et vous fait économiser environ 20 % par rapport au tarif mensuel. Les crédits inclus continuent de se réinitialiser chaque mois. Les plans annuels n'incluent pas de dépassement : une fois votre réserve mensuelle épuisée, l'usage se met en pause jusqu'au mois suivant.",
+          "Pas pour l'instant. Tous les plans sont facturés au mois via Shopify, et vous pouvez annuler à tout moment.",
       },
       "early-access-offer": {
-        question: "En quoi consiste l'offre d'accès anticipé ?",
+        question: "Qu'est-ce que l'offre d'accès anticipé ?",
         answer:
-          "L'accès anticipé offre aux boutiques Shopify invitées les **1 200 crédits** uniques du plan gratuit (~120 minutes de voix ou ~1 200 messages texte). Il n'y a aucun abonnement, frais d'utilisation, passage automatique à un plan supérieur ni renouvellement. Lorsque les crédits sont épuisés, Bizmis se met en pause, sauf si vous choisissez et approuvez un plan payant dans Shopify. Les membres bénéficient également d'un accompagnement individuel, d'une assistance prioritaire, d'une prise en compte prioritaire de leurs retours produit et d'une remise personnelle s'ils décident ensuite de passer à un plan supérieur.",
+          "L'accès anticipé offre aux boutiques Shopify invitées les **120 conversations gratuites** du plan gratuit, une seule fois par boutique. Il n'y a aucun abonnement, frais d'utilisation, passage automatique à un plan supérieur ni renouvellement. Lorsque les conversations sont épuisées, Bizmis se met en pause, sauf si vous choisissez et approuvez un plan payant dans Shopify. Les membres bénéficient également d'un accompagnement individuel, d'une assistance prioritaire, d'une prise en compte prioritaire de leurs retours produit et d'une remise personnelle s'ils passent ensuite à un plan payant.",
       },
       "free-plan": {
         question: "Existe-t-il un plan gratuit ?",
         answer:
-          "Oui. Le **plan gratuit** fait fonctionner Bizmis dans votre boutique jusqu'à **1 200 crédits** utilisables une seule fois (~120 minutes de voix ou ~1 200 messages texte). Sans abonnement, sans engagement et sans renouvellement. C'est un vrai test avec de vrais acheteurs. Quand vous voulez de la capacité continue, passez à un plan payant. Toute facturation Bizmis passe par Shopify sur le compte que vous utilisez déjà : vous n'ajoutez jamais de carte séparée, et le plan gratuit n'a rien à facturer.",
+          "Oui. Le **plan gratuit** fait fonctionner Bizmis dans votre boutique pendant **120 conversations gratuites**, une seule fois par boutique. Sans abonnement, sans engagement, sans carte bancaire et sans renouvellement. C'est un vrai test avec de vrais acheteurs. Quand vous voulez de la capacité continue, passez à un plan payant. Toute facturation Bizmis passe par Shopify sur le compte que vous utilisez déjà : vous n'ajoutez jamais de carte séparée, et le plan gratuit n'a rien à facturer.",
       },
       "billing-payment-method": {
         question: "Comment se passe le paiement ? Dois-je ajouter une carte ?",
@@ -778,11 +759,6 @@ export const fr: Messages = {
         answer:
           "Le changement prend effet au renouvellement suivant : vous conservez votre plan actuel et ses fonctionnalités jusque-là. Aucun compteur d'usage n'est réinitialisé et aucun prorata n'est appliqué.",
       },
-      "monthly-to-yearly": {
-        question: "Puis-je passer du mensuel à l'annuel ?",
-        answer:
-          "Oui. Si vous changez dans les 90 premiers jours, nous déduisons de votre plan annuel les frais d'engagement mensuels déjà réglés. La déduction porte uniquement sur les frais d'engagement, l'usage en dépassement n'est pas déduit.",
-      },
       "cancel-anytime": {
         question: "Puis-je annuler à tout moment ?",
         answer:
@@ -791,12 +767,12 @@ export const fr: Messages = {
       "refund-policy": {
         question: "Quelle est votre politique de remboursement ?",
         answer:
-          "**Plans annuels :** garantie satisfait ou remboursé de 30 jours sur le premier paiement annuel. Annulez dans les 30 jours suivant ce paiement et nous remboursons les frais d'engagement, sans justification. La garantie ne couvre ni les années de renouvellement ni l'usage en dépassement.\n**Plans mensuels :** les montants déjà facturés pour la période en cours ne sont pas remboursables, mais vous ne serez plus facturé. Les crédits non utilisés ne sont pas reportés.",
+          "**Garantie satisfait ou remboursé de 30 jours :** annulez dans les 30 jours suivant votre premier paiement d'un plan payant et nous remboursons ce montant, sans justification. La garantie ne couvre ni les mois suivants ni les conversations supplémentaires.\n**Ensuite :** les montants déjà facturés pour le mois en cours ne sont pas remboursables, mais vous ne serez plus facturé. Les conversations non utilisées ne sont pas reportées.",
       },
       "personalize-voice-avatar": {
         question: "Puis-je personnaliser la voix et l'avatar ?",
         answer:
-          "Oui. Choisissez parmi une sélection de voix naturelles dans plus de 25 langues, ou parmi quatre personnages d'avatar (à partir du plan Plus). Vous pouvez aussi configurer l'accueil, le ton et le comportement pour coller à votre marque.",
+          "Oui. Choisissez parmi une sélection de voix naturelles dans plus de 25 langues, ou parmi quatre personnages d'avatar (à partir du plan Growth). Vous pouvez aussi configurer l'accueil, le ton et le comportement pour coller à votre marque.",
       },
       "multi-language": {
         question: "Bizmis parle-t-il plusieurs langues ?",
@@ -811,7 +787,7 @@ export const fr: Messages = {
       "multiple-clerks": {
         question: "Combien de vendeurs Bizmis puis-je activer ?",
         answer:
-          "Un avec Starter, jusqu'à cinq avec Plus, en nombre illimité avec Pro et Enterprise. Chaque vendeur peut avoir sa propre voix, son avatar et ses règles, utile si vous vendez sur des collections ou des marchés distincts.",
+          "Un avec Starter, jusqu'à cinq avec Growth, en nombre illimité avec Scale et Enterprise. Chaque vendeur peut avoir sa propre voix, son avatar et ses règles, utile si vous vendez sur des collections ou des marchés distincts.",
       },
       "data-collected": {
         question: "Quelles données Bizmis collecte-t-il ?",
@@ -905,7 +881,7 @@ export const fr: Messages = {
       {
         title: "Gratuit en tant que membre*",
         detail:
-          "Activez l'accès anticipé dans l'application et utilisez 1 200 crédits en conditions réelles, sans frais. Sans abonnement, sans engagement.",
+          "Activez l'accès anticipé dans l'application et utilisez 120 conversations en conditions réelles, sans frais. Sans abonnement, sans engagement.",
       },
       {
         title: "Façonnez la feuille de route",
@@ -920,7 +896,7 @@ export const fr: Messages = {
       {
         title: "Remises exclusives",
         detail:
-          "Votre code d'accès anticipé débloque un tarif mensuel de lancement remisé et un tarif annuel réduit lors du passage à un plan payant.",
+          "Votre code d'accès anticipé débloque un tarif mensuel de lancement remisé lors du passage à un plan payant.",
       },
     ],
     ctaTitle: "Choisissez votre point d'entrée",
@@ -932,7 +908,7 @@ export const fr: Messages = {
     seeDemoFirst: "Voir d'abord la démo en direct",
     founderLed: "Projet mené par son fondateur. Des questions ?",
     footnote:
-      "*Gratuit pour les membres de l'accès anticipé = 1 200 crédits d'usage en une seule fois (~120 minutes de voix), sans renouvellement.",
+      "*Gratuit pour les membres de l'accès anticipé = 120 conversations en conditions réelles, une seule fois par boutique, sans renouvellement.",
   },
 
   unsubscribe: {

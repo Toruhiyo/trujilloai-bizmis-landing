@@ -259,7 +259,7 @@ export const en = {
       invite: "for Early Access benefits!",
       note: "Only 50 spots!",
       /** The ad-1 film's Early Access perks, then the quieter extras under them. */
-      perks: ["Generous free credits", "50% off upgrades", "Shape the roadmap"],
+      perks: ["120 free conversations", "50% off upgrades", "Shape the roadmap"],
       extras: ["No card needed", "No commitment", "A direct line to the founder"],
     },
     /** Setup on /v2: the title alone, a plain line under it, and the opening's install button states. */
@@ -561,20 +561,13 @@ export const en = {
     badge: "Pricing",
     title: "Simple, Transparent Pricing",
     lead: "Choose the plan that fits your business. All plans include full Shopify integration.",
-    monthly: "Monthly",
-    yearly: "Yearly",
-    billedYearly: "billed yearly",
     perMonth: "/mo",
     popular: "Popular",
-    creditsIncluded: "credits included",
-    shopperSessionsPerMonth: "shopper sessions/mo",
-    sessionEstimatesAria: (plan: string) =>
-      `Estimated shopper sessions for ${plan}`,
-    perCredit: "/credit",
-    beyondIncluded: "beyond included",
-    concurrentConversations: "concurrent voice conversations",
-    concurrencyTooltip:
-      "Voice-only limit. Text concurrency is effectively unlimited.",
+    conversationsPerMonth: "conversations / month",
+    extraConversations: (price: string) =>
+      `Extra conversations ${price} each, up to the spend cap you set`,
+    conversationDefinition:
+      "A conversation is one shopper's chat with your clerk, by voice or text. It covers up to 2 minutes of voice or 20 messages; longer chats count as two. Chats where the shopper says nothing are free.",
     off: "off",
     discountTitle: (percent: number) => `${percent}% off vs. list price`,
     introPeriodTitle: "Discounted intro period",
@@ -583,29 +576,31 @@ export const en = {
     free: {
       name: "Free",
       noCommitment: "No commitment",
-      description: (credits: string, voiceMinutes: string) =>
-        `Run Bizmis live in your store up to a one-time ${credits} credits (~${voiceMinutes} voice minutes or ~${credits} text messages). Nothing renews, upgrade for ongoing monthly capacity.`,
-      creditsLabel: (credits: string) => `${credits} credits`,
+      description: (conversations: string) =>
+        `${conversations} free conversations to try Bizmis. No card needed.`,
       cta: "Start free",
     },
     plans: {
       starter: {
         name: "Starter",
-        features: ["1 Bizmis Store Clerk", "Support: Email (48h)"],
-      },
-      plus: {
-        name: "Plus",
         features: [
-          "Up to 5 Bizmis Store Clerks",
-          "Session history and replays",
-          "Avatar customization",
-          "Support: Email (24h) and scheduled calls",
+          "1 Bizmis Store Clerk",
+          "Voice and text",
+          "Support: Email (48h)",
         ],
       },
-      pro: {
-        name: "Pro",
+      growth: {
+        name: "Growth",
         features: [
-          "Lowest overage rate",
+          "Up to 5 Bizmis Store Clerks",
+          "History, transcripts and replays",
+          "Avatar customization",
+          "Support: Email (24h) and scheduled call",
+        ],
+      },
+      scale: {
+        name: "Scale",
+        features: [
           "Unlimited Bizmis Store Clerks",
           "Auto-tagged conversations",
           "Priority support and live onboarding",
@@ -614,33 +609,21 @@ export const en = {
     },
     enterprise: {
       name: "Enterprise",
-      price: "Custom",
+      priceFrom: "From",
       description:
         "Tailored solutions for large-scale operations with custom volume and requirements.",
-      everythingInPro: "Everything in Pro plus:",
+      everythingInScale: "Everything in Scale, plus:",
       features: [
-        "Custom credits, concurrency & pricing",
-        "Support: Dedicated CSM, 99.9%+ SLA",
+        "Custom conversation volume",
+        "Guaranteed capacity for traffic peaks",
+        "SLA and custom voice",
+        "Invoicing outside Shopify",
       ],
-    },
-    conversions: {
-      voice: "1 voice minute = 10 credits",
-      text: "1 text message = 1 credit",
-    },
-    sessionFootnote:
-      "Session estimates vary by voice/text mix and session length.",
-    upgradeNote: {
-      highlight: "Upgrade to yearly within 90 days",
-      body: "and we'll credit what you already paid toward your yearly plan (commitment charges only).",
-      learnMore: "Learn more",
-      hideDetails: "Hide details",
-      details:
-        "Credit applies to commitment charges only. On-demand usage charges (overage credits) are excluded from the credit.",
     },
     guarantees: {
       spendLimit: "You choose your spend limit",
       cancelAnytime: "Cancel anytime",
-      moneyBack: "30-day money-back guarantee (yearly plans)",
+      moneyBack: "30-day money-back guarantee",
     },
     coupon: {
       prompt:
@@ -659,9 +642,7 @@ export const en = {
         months > 0
           ? `${percent}% off your first ${months} ${months === 1 ? "month" : "months"}`
           : `${percent}% off`,
-      onMonthlyBilling: "on monthly billing, or",
-      yearlyDiscount: (percent: number) => `${percent}% off yearly`,
-      whenYearlySelected: "when yearly is selected.",
+      discountEnd: ".",
       errors: {
         empty: "Enter a code first.",
         notFound: "That code isn't valid.",
@@ -746,37 +727,37 @@ export const en = {
       "review-conversations": {
         question: "Can I review past conversations?",
         answer:
-          "Yes. Session history and replays are available on Plus and above. You can scrub through any conversation, see the transcript, and tag patterns to refine your sales and support rules.",
+          "Yes. History, transcripts and replays are available on Growth and above. You can scrub through any conversation, see the transcript, and tag patterns to refine your sales and support rules.",
       },
       "how-much-cost": {
         question: "How much does Bizmis cost?",
         answer:
-          "Three plans plus Enterprise. **Starter** ($149/mo, 2,500 credits) for solo or small stores. **Plus** ($499/mo, 9,000 credits) for growing stores, most popular. **Pro** ($1,499/mo, 30,000 credits) for high-volume stores. **Enterprise** for custom volume and SLAs. Credits cover both voice and text interactions (1 voice min = 10 credits, 1 text msg = 1 credit). Yearly billing saves ~20%.",
+          "Three plans plus Enterprise, all billed monthly. **Starter** ($79/mo, 260 conversations) for solo or small stores. **Growth** ($199/mo, 660 conversations) for growing stores, most popular. **Scale** ($499/mo, 1,650 conversations) for high-volume stores. **Enterprise** from $1,500/mo for custom volume, guaranteed capacity for traffic peaks and SLAs. Extra conversations cost $0.30 each, up to the spend cap you set. You can start with 120 free conversations.",
       },
-      "credit-model": {
-        question: "How does the credit model work?",
+      "what-counts-as-conversation": {
+        question: "What counts as a conversation?",
         answer:
-          "Each plan includes a credit pool (Starter 2,500 / Plus 9,000 / Pro 30,000) that resets every billing period. Credits cover both voice and text: 1 voice minute = 10 credits, 1 text message = 1 credit. Usage beyond the pool is billed at your plan's overage rate ($0.06 / $0.055 / $0.05 per credit). You set a hard spend cap inside the Bizmis admin, once hit, usage pauses until the next period or until you raise the cap. Unused credits don't roll over.",
+          "A conversation is one shopper's chat with your clerk, by voice or text. It covers up to 2 minutes of voice or 20 messages; longer chats count as two. Chats where the shopper says nothing are free, and so are your own previews in the Bizmis admin. Each plan includes a number of conversations (Starter 260 / Growth 660 / Scale 1,650) that resets every month. Beyond that, extra conversations cost $0.30 each, only up to the spend cap you set in the Bizmis admin. The cap starts at $0, so nothing extra is billed until you raise it. Once the cap is reached, the clerk pauses until the next period or until you raise the cap. Unused conversations don't roll over.",
       },
-      "yearly-billing": {
-        question: "How does yearly billing work?",
+      "monthly-billing": {
+        question: "Is there yearly billing?",
         answer:
-          "Yearly billing is paid upfront and gives you ~20% off the monthly price. Included credits still reset every month. Yearly plans don't include overage, once your monthly credit pool is exhausted, usage pauses until next month.",
+          "Not for now. Every plan is billed monthly through Shopify, and you can cancel anytime.",
       },
       "early-access-offer": {
         question: "What is the Early Access offer?",
         answer:
-          "Early Access gives invited Shopify stores the Free plan's one-time **1,200 credits** (~120 voice minutes or ~1,200 text messages). There is no subscription, usage charge, automatic upgrade, or renewal. When the credits run out, Bizmis pauses unless you choose and approve a paid plan in Shopify. Members also get 1-to-1 onboarding, priority support, prioritized product feedback, and a personal discount if they later upgrade.",
+          "Early Access gives invited Shopify stores the Free plan's **120 free conversations**, once per store. There is no subscription, usage charge, automatic upgrade, or renewal. When the conversations run out, Bizmis pauses unless you choose and approve a paid plan in Shopify. Members also get 1-to-1 onboarding, priority support, prioritized product feedback, and a personal discount if they later upgrade.",
       },
       "free-plan": {
         question: "Is there a free plan?",
         answer:
-          "Yes. The **Free plan** runs Bizmis live in your store up to a one-time **1,200 credits** (~120 voice minutes or ~1,200 text messages). No subscription, no commitment, and nothing renews. It's a real test with real shoppers. When you're ready for ongoing capacity, upgrade to a paid plan. Every Bizmis charge runs through Shopify on the account you already use, so you never add a separate card for Bizmis, and the Free plan has nothing to charge.",
+          "Yes. The **Free plan** runs Bizmis live in your store for **120 free conversations**, once per store. No subscription, no commitment, no card needed, and nothing renews. It's a real test with real shoppers. When you're ready for ongoing capacity, upgrade to a paid plan. Every Bizmis charge runs through Shopify on the account you already use, so you never add a separate card for Bizmis, and the Free plan has nothing to charge.",
       },
       "billing-payment-method": {
         question: "How does payment work? Do I need to add a card?",
         answer:
-          "All Bizmis billing runs through Shopify's Billing API on the same account you already use to run your store. You approve Bizmis charges directly inside Shopify, and everything (your plan plus any overage) lands on your regular Shopify invoice alongside your other app charges. You never enter a separate credit card into Bizmis. Paid usage is still billed, it's just collected by Shopify rather than by us. The Free plan has nothing to charge, so there's nothing to approve until you decide to upgrade.",
+          "All Bizmis billing runs through Shopify's Billing API on the same account you already use to run your store. You approve Bizmis charges directly inside Shopify, and everything (your plan plus any overage) lands on your regular Shopify invoice alongside your other app charges. You never enter a separate payment card into Bizmis. Paid usage is still billed, it's just collected by Shopify rather than by us. The Free plan has nothing to charge, so there's nothing to approve until you decide to upgrade.",
       },
       "upgrade-plan": {
         question: "What happens when I upgrade my plan?",
@@ -788,11 +769,6 @@ export const en = {
         answer:
           "Downgrades take effect at the next renewal, you keep your current plan and entitlements until then. No usage counter resets, no proration.",
       },
-      "monthly-to-yearly": {
-        question: "Can I switch from monthly to yearly?",
-        answer:
-          "Yes. Switch within your first 90 days and we'll credit the monthly commitment fees you've already paid toward your yearly plan. Credit applies to commitment fees only, overage usage isn't credited.",
-      },
       "cancel-anytime": {
         question: "Can I cancel anytime?",
         answer:
@@ -801,12 +777,12 @@ export const en = {
       "refund-policy": {
         question: "What's your refund policy?",
         answer:
-          "**Yearly plans:** 30-day money-back guarantee on the initial yearly charge, cancel within 30 days of your first yearly payment and we'll refund the commitment fee, no questions asked. The guarantee doesn't cover renewal years or overage usage.\n**Monthly plans:** charges already billed for the current period are non-refundable, but you won't be billed again. Unused credits don't carry over.",
+          "**30-day money-back guarantee:** cancel within 30 days of your first paid plan charge and we'll refund that plan fee, no questions asked. It doesn't cover later months or extra conversations.\n**After that:** charges already billed for the current month are non-refundable, but you won't be billed again. Unused conversations don't carry over.",
       },
       "personalize-voice-avatar": {
         question: "Can I personalize the voice and the avatar?",
         answer:
-          "Yes. Choose from a curated set of natural-sounding voices across 25+ languages, or pick from four avatar characters (Plus and above). You can also configure greeting, tone, and behavior to match your brand.",
+          "Yes. Choose from a curated set of natural-sounding voices across 25+ languages, or pick from four avatar characters (Growth and above). You can also configure greeting, tone, and behavior to match your brand.",
       },
       "multi-language": {
         question: "Does Bizmis speak multiple languages?",
@@ -821,7 +797,7 @@ export const en = {
       "multiple-clerks": {
         question: "How many Bizmis Store Clerks can I run?",
         answer:
-          "One on Starter, up to five on Plus, unlimited on Pro and Enterprise. Each clerk can have its own voice, avatar, and rule set, useful if you sell across distinct collections or markets.",
+          "One on Starter, up to five on Growth, unlimited on Scale and Enterprise. Each clerk can have its own voice, avatar, and rule set, useful if you sell across distinct collections or markets.",
       },
       "data-collected": {
         question: "What data does Bizmis collect?",
@@ -914,7 +890,7 @@ export const en = {
       {
         title: "Free as a member*",
         detail:
-          "Claim Early Access in the app and use 1,200 live credits at no cost. No subscription, no commitment.",
+          "Claim Early Access in the app and use 120 live conversations at no cost. No subscription, no commitment.",
       },
       {
         title: "Shape the roadmap",
@@ -929,7 +905,7 @@ export const en = {
       {
         title: "Exclusive discounts",
         detail:
-          "Your Early Access code unlocks discounted monthly intro pricing and discounted yearly pricing when you upgrade.",
+          "Your Early Access code unlocks discounted monthly intro pricing when you upgrade.",
       },
     ],
     ctaTitle: "Choose your way in",
@@ -941,7 +917,7 @@ export const en = {
     seeDemoFirst: "See the live demo first",
     founderLed: "Built founder-led. Questions?",
     footnote:
-      "*Free for Early Access members = a one-time 1,200 credits of live usage (~120 voice minutes), no renewal.",
+      "*Free for Early Access members = 120 live conversations, once per store, no renewal.",
   },
 
   unsubscribe: {
