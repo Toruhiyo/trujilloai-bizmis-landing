@@ -1,7 +1,6 @@
 import { useMessages } from "@/i18n/LocaleProvider";
 import { cn } from "@/lib/utils";
 import FunnelFlow from "./FunnelFlow";
-import type { FunnelCopy } from "./FunnelFlow";
 
 /**
  * The at-scale view beside a beat's one conversation: the whole store's
@@ -17,7 +16,7 @@ const FunnelScale = ({
   duration,
   fixAt,
   rewind,
-  copy,
+  labels,
   className,
 }: {
   focus: number;
@@ -26,14 +25,14 @@ const FunnelScale = ({
   fixAt: number;
   /** Scrolled back: the marker ◀◀ over the funnel. */
   rewind?: boolean;
-  /** The labels, if not the stages' own (?beat=7: the endings). */
-  copy?: FunnelCopy;
+  /** Off where the words sit over the funnel as its labels (?beat=7). */
+  labels?: boolean;
   className?: string;
 }) => {
-  const f = copy ?? useMessages().landing.sales.funnel;
+  const f = useMessages().landing.sales.funnel;
   return (
     <div className={cn("sl-fn relative", className)} data-focus={focus}>
-      <FunnelFlow t={t} duration={duration} focus={focus} fixAt={fixAt} copy={f} rewind={rewind} />
+      <FunnelFlow t={t} duration={duration} focus={focus} fixAt={fixAt} copy={f} rewind={rewind} labels={labels} />
     </div>
   );
 };

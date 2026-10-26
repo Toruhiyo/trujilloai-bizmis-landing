@@ -11,10 +11,9 @@ import { createContext, useContext } from "react";
  * sentence's shared opening set once and never moved, only its core changed
  * in place. 6a retract & retype, 6b paint over, 6c marker correction,
  * 6d underline marker, 6e squeeze.
- * The endings in the funnel, ?beat=7 (17): the words keep only the shared
- * opening ("Buyers ready to buy…"); its ending IS the stage's funnel label,
- * struck and rewritten there ("…hesitate and hold off" → "…commit and
- * check out"), so the change happens in one place.
+ * The words on the funnel, ?beat=7 (17): the whole loss → win (6c's look)
+ * sits over its stage's chamber as that stage's label, the funnel drawing
+ * no labels of its own, so the change happens in one place.
  */
 export const BEAT_STYLES = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17] as const;
 
@@ -28,7 +27,7 @@ export const HLS = ["a", "b", "c", "d", "e"] as const;
 export type HLLook = (typeof HLS)[number];
 export const HL_FROM = 12;
 
-/** ?beat=7: the endings written in the funnel. */
+/** ?beat=7: the words over the funnel, as its stages' labels. */
 export const ENDS = 17;
 
 /** The look with no ?beat: 6c, the marker correction (chosen 2026-10-26); ?beat=0 shows the old struck headline. */

@@ -1023,6 +1023,17 @@
   transition-delay: 0.25s;
   pointer-events: auto;
 }
+/* ?beat=7: the words over their stage's chamber, standing on the funnel (anchored by their foot) */
+.sl-g2-copy.is-over,
+.sl-g2-copy.is-over.is-on {
+  transform: none;
+}
+.sl-g2-copy.is-over:not(.is-on) {
+  transform: translateY(14px);
+}
+.sl-g2-copy.is-over .bch-head {
+  font-size: clamp(1.5rem, min(2.2vw, 4svh), 2.25rem);
+}
 .sl-g2-copy.is-payoff {
   left: 0;
   right: 0;

@@ -2,7 +2,6 @@ import { useLayoutEffect, useRef, useState } from "react";
 import { useMessages } from "@/i18n/LocaleProvider";
 import { cn } from "@/lib/utils";
 import BeatCopy from "./BeatCopy";
-import { endingLabels } from "./beatcopy/BeatHL";
 import { ENDS, useBeatStyle } from "./beatcopy/style";
 import FunnelFlow, { funnelAnchors } from "./funnel/FunnelFlow";
 import FunnelScale from "./funnel/FunnelScale";
@@ -64,7 +63,7 @@ const beatFnH = (H: number) => clamp(H * 0.36, 180, 300);
 const CARD_ASPECT = 168 / 330;
 
 /** The pinned stage's layout (px) for a W x H stage: the funnel, each beat's callout, its words and its cone. */
-const layout = (W: number, H: number, payoff: boolean, visits?: string) => {
+const layout = (W: number, H: number, payoff: boolean, visits?: string, ends = false) => {
   const pad = 12;
   // the payoff's metric card, beside the funnel (right of it), the two centred together
   const cardW = clamp(W * 0.24, 230, 320);
@@ -81,7 +80,28 @@ const layout = (W: number, H: number, payoff: boolean, visits?: string) => {
   const card = { left: fnLeft + fnW + cardGap, top: fnTop + a.cy - (cardW * CARD_ASPECT) / 2, width: cardW };
   const gap = clamp(H * 0.075, 34, 64);
   const areaTop = pad + 4;
-  const areaBottom = H - beatFnH(H) - pad - gap;
+  // ?beat=7: the words sit on the beat's funnel, over its stage's chamber (their foot just above its wall),
+  // and the device over them, its cone ending on the words
+  const bW = Math.min(W, beatFnH(H) * FUNNEL_ASPECT);
+  const bH = bW / FUNNEL_ASPECT;
+  const bLeft = (W - bW) / 2;
+  const bTop = H - bH - pad;
+  const bA = funnelAnchors(bW, bH, [1, 1, 1], visits);
+  const wordsH = clamp(H * 0.2, 150, 200);
+  const wordsW = clamp(W * 0.4, 360, 540);
+  const wordsLeft = (i: number) => clamp(bLeft + bA.chambers[i].xc - wordsW / 2, 0, W - wordsW);
+  // their foot: just clear of the funnel's upper wall at its highest under them (a chamber's entry is
+  // as high as the one before it, the first's as the mouth)
+  const wordsFoot = (i: number) => {
+    const l = wordsLeft(i) - bLeft;
+    const r = l + wordsW;
+    const walls = bA.chambers
+      .map((c, j) => (r > c.xa && l < c.xb ? (j === 0 ? bA.mouth.top : bA.chambers[j - 1].top) : Infinity));
+    return bTop + Math.min(...walls) - clamp(H * 0.012, 6, 14);
+  };
+  const areaBottom = ends
+    ? Math.min(...[0, 1, 2].map(wordsFoot)) - wordsH - clamp(H * 0.03, 14, 28)
+    : H - beatFnH(H) - pad - gap;
   const cgap = clamp(W * 0.035, 28, 56);
   const beats = [0, 1, 2].map((i) => {
     const A = DEVICE_ASPECT[i];
@@ -105,18 +125,26 @@ const layout = (W: number, H: number, payoff: boolean, visits?: string) => {
       w,
       h,
       origin: `${xc - x}px ${h + gap}px`,
-      copy: {
-        left: right ? x + w + cgap : Math.max(0, x - cgap - cw),
-        width: cw,
-        top: y + h / 2,
-      },
+      copy: ends
+        ? {
+            left: wordsLeft(i),
+            width: wordsW,
+            bottom: H - wordsFoot(i),
+          }
+        : {
+            left: right ? x + w + cgap : Math.max(0, x - cgap - cw),
+            width: cw,
+            top: y + h / 2,
+          },
       cone: {
         top: [
           x + Math.min(18, w * 0.06),
           x + w - Math.min(18, w * 0.06),
           y + h - 6,
         ],
-        bottom: [fnLeft + ch.xa + 8, fnLeft + ch.xb - 8, fnTop + 2],
+        bottom: ends
+          ? [bLeft + bA.chambers[i].xa + 8, bLeft + bA.chambers[i].xb - 8, wordsFoot(i) - wordsH]
+          : [fnLeft + ch.xa + 8, fnLeft + ch.xb - 8, fnTop + 2],
       },
     };
   });
@@ -159,16 +187,10 @@ const Cone = ({
   );
 };
 
-/** The beats' funnel labels: the stages' own, or (?beat=7) the words' endings. */
-const useBeatLabels = () => {
-  const s = useMessages().landing.sales;
-  const look = useBeatStyle();
-  return look === ENDS ? { ...s.funnel, ...endingLabels(s.flip) } : s.funnel;
-};
-
 const Pinned = () => {
   const s = useMessages().landing.sales;
-  const labels = useBeatLabels();
+  // ?beat=7: the beat's words sit over its stage, as the funnel's label (the funnel draws none)
+  const ends = useBeatStyle() === ENDS;
   const { win } = useSalesProto();
   const tls = useBeatTimelines();
   const [track, progress] = usePinProgress<HTMLDivElement>();
@@ -189,7 +211,7 @@ const Pinned = () => {
   // one value that only falls when the scroll goes back (a step back, or back within a step)
   const rewinding = useRewinding(step * 1e5 + (payoff ? payT : beats[step].t));
   const [stage, { W, H }] = useSize<HTMLDivElement>();
-  const L = layout(W, H, payoff, s.funnel.visits);
+  const L = layout(W, H, payoff, s.funnel.visits, ends);
   const f = Math.min(step, 2);
   const clock = payoff
     ? { t: payT, duration: PAYOFF_DURATION, fixAt: undefined }
@@ -220,8 +242,8 @@ const Pinned = () => {
               {s.panels.map((p, i) => (
                 <div
                   key={p.title}
-                  className={cn("sl-g2-copy", step === i && "is-on")}
-                  style={{ left: L.beats[i].copy.left, width: L.beats[i].copy.width, top: L.beats[i].copy.top }}
+                  className={cn("sl-g2-copy", ends && "is-over", step === i && "is-on")}
+                  style={L.beats[i].copy}
                 >
                   <BeatCopy index={i} t={beats[i].t} fixAt={beats[i].fixAt} />
                   {win > 0 && <Metrics variant={win} k={step === i ? k : fixedAt(i, beats[i].t, beats[i].fixAt)} focus={i} className="sl-g2-met" />}
@@ -240,7 +262,8 @@ const Pinned = () => {
                   duration={clock.duration}
                   focus={step}
                   fixAt={clock.fixAt}
-                  copy={payoff ? s.funnel : labels}
+                  copy={s.funnel}
+                  labels={payoff || !ends}
                   rewind={rewinding}
                 />
               </div>
@@ -255,7 +278,8 @@ const Pinned = () => {
 /** A stacked beat: its words, its funnel, and its device hanging off its own stage by the cone; its timeline follows its own scroll through the screen. */
 const StackedBeat = ({ i, setRef }: { i: number; setRef: (el: HTMLElement | null) => void }) => {
   const s = useMessages().landing.sales;
-  const labels = useBeatLabels();
+  // ?beat=7: the beat's words sit over its stage, as the funnel's label (the funnel draws none)
+  const ends = useBeatStyle() === ENDS;
   const { win } = useSalesProto();
   const tl = useBeatTimelines()[i];
   const [item, p] = useScrollThrough<HTMLDivElement>(0.8, 0.75);
@@ -298,7 +322,7 @@ const StackedBeat = ({ i, setRef }: { i: number; setRef: (el: HTMLElement | null
       <BeatCopy index={i} t={beat.t} fixAt={beat.fixAt} className="sl-c-copy is-on" />
       {win > 0 && <Metrics variant={win} k={fixedAt(i, beat.t, beat.fixAt)} focus={i} className="sl-g2-met" />}
       <div ref={fn}>
-        <FunnelScale focus={i} t={beat.t} duration={beat.duration} fixAt={beat.fixAt} rewind={rewinding} copy={labels} className="sl-g2-s-fn" />
+        <FunnelScale focus={i} t={beat.t} duration={beat.duration} fixAt={beat.fixAt} rewind={rewinding} labels={!ends} className="sl-g2-s-fn" />
       </div>
       {cone && <Cone stage={cone.to} device={cone.from} on className="is-static" />}
       <div ref={dev} className="sl-g2-s-dev relative">

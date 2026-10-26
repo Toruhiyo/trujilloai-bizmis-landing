@@ -784,43 +784,28 @@ const LookE = ({ loss, win, since }: LookProps) => {
 const LOOKS: Record<HLLook, (p: LookProps) => JSX.Element> = { a: LookA, b: LookB, c: LookC, d: LookD, e: LookE };
 
 /**
- * ?beat=7: the words are the shared opening alone ("Buyers ready to buy…"),
- * set once; the ending is the stage's label in the funnel (useEndingLabels).
- */
-export const BeatOpening = ({ index, numbered }: { index: number; numbered: boolean }) => {
-  const s = useSalesCopy();
-  const fix = splitCore(s.flip[index].fix);
-  return (
-    <div className="sl-copy bc bch bch-ends">
-      <Kicker index={index} name={stageName(s.titleParts[index])} numbered={numbered} />
-      <h3 className="bch-head">
-        <span className="bch-pre">{opening(fix.pre)}</span>
-      </h3>
-    </div>
-  );
-};
-
-/** The endings as the funnel's labels: "…tire out and give up" → "…find products worth buying, fast". */
-export const endingLabels = (flip: { problem: string; fix: string }[]) => ({
-  problems: flip.map((f) => ELLIPSIS + splitCore(f.problem).core),
-  solutions: flip.map((f) => ELLIPSIS + splitCore(f.fix).core),
-});
-
-/**
  * How long after the fix the words start changing (ms): the funnel's label
  * changes first (struck, its solution written and ticked, ~1.4 s), so the
  * eye never has two things changing at once.
  */
 export const AFTER_LABEL = 1500;
 
-type Props = { look: HLLook; index: number; t: number; fixAt: number; numbered: boolean };
+type Props = {
+  look: HLLook;
+  index: number;
+  t: number;
+  fixAt: number;
+  numbered: boolean;
+  /** How long after the fix the words change (default AFTER_LABEL; 0 where the funnel has no label of its own). */
+  delay?: number;
+};
 
-const BeatHL = ({ look, index, t, fixAt, numbered }: Props) => {
+const BeatHL = ({ look, index, t, fixAt, numbered, delay = AFTER_LABEL }: Props) => {
   const s = useSalesCopy();
   const loss = splitCore(s.flip[index].problem);
   const win = splitCore(s.flip[index].fix);
   // one change at a time: the funnel's label first (struck, rewritten, ticked), then the words
-  const since = t - fixAt - AFTER_LABEL;
+  const since = t - fixAt - delay;
   const Look = LOOKS[look];
   return (
     <div className={cn("sl-copy bc bch", `bch-${look}`)} data-since={Math.round(since)}>
