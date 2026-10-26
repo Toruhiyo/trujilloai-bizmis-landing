@@ -5,7 +5,7 @@ import BeatSwap from "./beatcopy/BeatSwap";
 import BeatHL, { BeatOpening } from "./beatcopy/BeatHL";
 import { plain } from "./beatcopy/parts";
 import { HLS, HL_FROM, SWAPS, SWAP_FROM, useBeatStyle } from "./beatcopy/style";
-import { OPENER, arrLook, endsLook } from "./beatcopy/style";
+import { arrLook, endsLook, openerLook } from "./beatcopy/style";
 import { PanelCopy } from "./shared";
 
 const clamp = (v: number) => Math.min(1, Math.max(0, v));
@@ -59,8 +59,8 @@ const BeatWords = ({
       />
     );
   // ?beat=7: the words over the funnel, as its stage's label (6c's look; the funnel has no labels of its own)
-  // ?beat=9: the opener alone; the sentence ends in the funnel's label
-  if (look === OPENER) return <BeatOpening index={index} numbered={numbered} />;
+  // ?beat=9a..9c: the opener alone; the sentence ends in the funnel's label
+  if (openerLook(look)) return <BeatOpening index={index} numbered={numbered} />;
   if (endsLook(look) || arrLook(look)) return <BeatHL look="c" index={index} t={t} fixAt={fixAt} numbered={numbered} delay={0} />;
   // ?beat=6a..6e: the polished highlighters, the shared opening never moving (beatcopy/BeatHL)
   if (look >= HL_FROM)

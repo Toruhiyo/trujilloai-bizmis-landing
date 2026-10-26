@@ -129,3 +129,58 @@ export const arrange = (W: number, H: number, look: ArrLook, aspect: number, vis
   });
   return { fnW, fnH, fnLeft, fnTop, beats };
 };
+
+/**
+ * ?beat=9b: the opener over its stage's label, the funnel as wide as the
+ * room left of the device, the device in its own column on the right; a
+ * marker arrow arches from the device over onto the opener.
+ */
+export const arrangeOpener = (W: number, H: number, aspect: number, visits?: string): Arranged => {
+  const pad = 12;
+  const gy = clamp(H * 0.035, 16, 30);
+  const colGap = clamp(W * 0.04, 32, 72);
+  const devCol = clamp(W * 0.32, 300, 480);
+  const rest = W - devCol - colGap;
+  const ow = Math.min(rest, clamp(W * 0.4, 380, 620));
+  const fs = Math.min(clamp(Math.min(W * 0.026, H * 0.048), 26, 40), ow / 17);
+  // kicker and up to two lines
+  const openerH = 44 + fs * 2.3;
+  const fnW = Math.min(rest, (H - 2 * pad - openerH - gy) * aspect);
+  const fnH = fnW / aspect;
+  // the opener and the funnel as one block, centred in the stage's height
+  const top0 = Math.max(pad, (H - (openerH + gy * 0.3 + fnH)) / 2);
+  const fnTop = top0 + openerH + gy * 0.3;
+  const fnLeft = (rest - fnW) / 2;
+  const an = funnelAnchors(fnW, fnH, [1, 1, 1], visits);
+  const foot = fnTop - 4;
+  const beats = [0, 1, 2].map((i) => {
+    const A = DEVICE_ASPECT[i];
+    // as tall as leaves the arrow its room above
+    const room = clamp(H * 0.16, 80, 130);
+    const w = Math.min(devCol, (H - 2 * pad - room) * A, i === 1 ? 360 : Infinity);
+    const h = w / A;
+    const x = rest + colGap + (devCol - w) / 2;
+    const y = Math.max(pad + room, (H - h) / 2);
+    const ch = an.chambers[i];
+    const left = clamp(fnLeft + ch.xc - ow / 2, 0, rest - ow);
+    // the arrow: up out of the device's top, over, down onto the opener (its one line's top)
+    const s: Pt = [x + w * 0.3, y - 14];
+    const e: Pt = [fnLeft + ch.xc, foot - (44 + fs * 1.15) - 12];
+    const over = Math.max(pad, Math.min(s[1], e[1]) - clamp(H * 0.08, 44, 80));
+    const hw = clamp(W * 0.007, 7, 11);
+    return {
+      x,
+      y,
+      w,
+      h,
+      origin: `${e[0] - x}px ${e[1] - y}px`,
+      copy: { left, width: ow, bottom: H - foot, ["--bch-fs" as string]: `${fs}px` },
+      link: {
+        kind: "arrow" as const,
+        d: `M${s[0]} ${s[1]} C ${s[0]} ${over}, ${e[0]} ${over}, ${e[0]} ${e[1]}`,
+        head: `M${e[0] - hw} ${e[1] - hw * 1.3} L ${e[0]} ${e[1]} L ${e[0] + hw} ${e[1] - hw * 1.3}`,
+      },
+    };
+  });
+  return { fnW, fnH, fnLeft, fnTop, beats };
+};

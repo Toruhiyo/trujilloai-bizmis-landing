@@ -19,12 +19,15 @@ import { createContext, useContext } from "react";
  * the device (SalesSpine's layout). The same words arranged around the
  * funnel, ?beat=8a..8d (or 22..25; ?beat=8 is 8a): 8a device / funnel /
  * words stacked, 8b words / funnel / device stacked, 8c device | funnel
- * over words, 8d funnel over words | device (sales/arrange). ?beat=9
- * (26), the default: the words are the opener alone ("Buyers ready to
- * buy…") and the sentence ends in the funnel's own label, as it is
- * ("Abandon the cart" struck, then "Buy it ✓").
+ * over words, 8d funnel over words | device (sales/arrange). ?beat=9a..9c
+ * (26..28; ?beat=9 and the default are 9a): the words are the opener
+ * alone ("Buyers with a full cart…") and the sentence ends in the funnel's
+ * own label, as it is ("Abandon the cart" struck, then "Buy it ✓"). 9a
+ * the opener over its stage, the device above; 9b the same, the device in
+ * a column on the right (sales/arrange); 9c 6c's layout, the opener in a
+ * column on the left.
  */
-export const BEAT_STYLES = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26] as const;
+export const BEAT_STYLES = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28] as const;
 
 /** The headline swaps: ?beat=5a → 7 … ?beat=5e → 11. */
 export const SWAPS = ["a", "b", "c", "d", "e"] as const;
@@ -52,11 +55,16 @@ export const ARR_FROM = 22;
 export const arrLook = (look: number): ArrLook | null =>
   look >= ARR_FROM && look < ARR_FROM + ARR_LOOKS.length ? ARR_LOOKS[look - ARR_FROM] : null;
 
-/** ?beat=9: the opener alone, ending in the funnel's label. */
-export const OPENER = 26;
+/** The opener alone, ending in the funnel's label: ?beat=9a → 26 … ?beat=9c → 28. */
+export const OPENER_LOOKS = ["a", "b", "c"] as const;
+export type OpenerLook = (typeof OPENER_LOOKS)[number];
+export const OPENER_FROM = 26;
+/** Which opener layout `look` is, if it's one. */
+export const openerLook = (look: number): OpenerLook | null =>
+  look >= OPENER_FROM && look < OPENER_FROM + OPENER_LOOKS.length ? OPENER_LOOKS[look - OPENER_FROM] : null;
 
 /** The look with no ?beat: the opener ending in the funnel's label (chosen 2026-10-26); ?beat=0 shows the old struck headline. */
-export const DEFAULT_BEAT = OPENER;
+export const DEFAULT_BEAT = OPENER_FROM;
 
 const BeatStyleContext = createContext(DEFAULT_BEAT);
 
@@ -73,7 +81,9 @@ export const readBeatStyle = () => {
   if (swap) return SWAP_FROM + SWAPS.indexOf(swap[1] as SwapLook);
   if (raw === "7") return ENDS_FROM;
   if (raw === "8") return ARR_FROM;
-  if (raw === "9") return OPENER;
+  if (raw === "9") return OPENER_FROM;
+  const op = /^9([a-c])$/.exec(raw);
+  if (op) return OPENER_FROM + OPENER_LOOKS.indexOf(op[1] as OpenerLook);
   const arr = /^8([a-d])$/.exec(raw);
   if (arr) return ARR_FROM + ARR_LOOKS.indexOf(arr[1] as ArrLook);
   const ends = /^7([a-e])$/.exec(raw);
