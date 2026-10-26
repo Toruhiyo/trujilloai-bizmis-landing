@@ -55,7 +55,7 @@ const fixedAt = (focus: number, t: number, fixAt?: number) => ksAt(t, startsFor(
 const clamp = (v: number, a: number, b: number) => Math.min(b, Math.max(a, v));
 
 /** The funnel's box, width : height, the payoff's: the beats' funnels keep it too, scaled down to fit under the device. */
-const FUNNEL_ASPECT = 2.9;
+const FUNNEL_ASPECT = 2.6;
 /** A beat's funnel's height for an H px stage (a little more of it than a flat funnel took, so its narrower box still reads). */
 const beatFnH = (H: number) => clamp(H * 0.36, 180, 300);
 /** The metric card's height : width (Metrics' card, 168 / 330). */

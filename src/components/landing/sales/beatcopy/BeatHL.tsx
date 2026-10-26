@@ -1,6 +1,5 @@
 import { useLayoutEffect, useRef, useState } from "react";
 import type { CSSProperties, ReactNode, RefObject } from "react";
-import { Check } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useSalesCopy } from "../proto";
 import { Kicker, clamp, easeOut, pen, splitCore, stageName } from "./parts";
@@ -35,8 +34,8 @@ import "@/styles/beat-copy.css";
  *     sweep paints over it, the loss's words going under the paint and the
  *     win's coming up out of it, in ink; then the paint settles on the win.
  * c · marker correction: the loss's core is struck and left as a ghost;
- *     the win is handwritten on the line under it and highlighted (both
- *     lines kept from the start).
+ *     the win is handwritten on the line under it, in the same white, and
+ *     underlined by hand (both lines kept from the start).
  * d · underline marker: a low marker band under the core (muted for the
  *     loss, bright for the win), the cores crossfading in place.
  * e · squeeze: the muted highlighter squeezes into a strike through the
@@ -250,6 +249,27 @@ const Strikes = ({ segs, style }: { segs: Seg[]; style?: CSSProperties }) => (
           className="bch-strike"
           style={{ strokeWidth: s.fs * 0.085, ...style }}
           d={`M${l.toFixed(1)} ${(y + t(1)).toFixed(1)} Q${((l + r) / 2).toFixed(1)} ${(y + t(2) - s.fs * 0.02).toFixed(1)} ${r.toFixed(1)} ${(y + t(3)).toFixed(1)}`}
+        />
+      );
+    })}
+  </>
+);
+
+/** A hand-drawn underline under the words, line by line (the funnel's fixed labels' swoosh). */
+const Underlines = ({ segs }: { segs: Seg[] }) => (
+  <>
+    {segs.map((s) => {
+      if (s.r - s.l < 0.6) return null;
+      const y = s.base + s.fs * 0.14;
+      const t = (k: number) => Math.sin((s.row + 1) * 2.9 + k) * s.fs * 0.03;
+      const l = s.l - s.fs * 0.04;
+      const r = s.r + s.fs * 0.08;
+      return (
+        <path
+          key={s.row}
+          className="bch-strike"
+          style={{ strokeWidth: s.fs * 0.075 }}
+          d={`M${l.toFixed(1)} ${(y + t(1)).toFixed(1)} Q${((l + r) / 2).toFixed(1)} ${(y + t(2) + s.fs * 0.05).toFixed(1)} ${r.toFixed(1)} ${(y + t(3) - s.fs * 0.06).toFixed(1)}`}
         />
       );
     })}
@@ -586,9 +606,8 @@ const LookB = ({ loss, win, since }: LookProps) => {
 /* ── c · marker correction ── */
 const LookC = ({ loss, win, since }: LookProps) => {
   const { boxRef, geo, nL, nW, said, winPre } = useLook(loss, win, since, "c");
-  const words = win.core.split(" ");
   const tL = track(geo, ["L"], nL);
-  const tW = track(geo, ["W"], words.length);
+  const tW = track(geo, ["W"], win.core.split(" ").length);
   // the marker strikes the loss's core; it stays, a ghost of it
   const strike = pen((since - 100) / 400);
   const ghost = easeOut((since - 300) / 420);
@@ -597,25 +616,21 @@ const LookC = ({ loss, win, since }: LookProps) => {
   const per = Math.min(40, 900 / Math.max(1, nW));
   const written = (since - T0) / per;
   const writeEnd = T0 + nW * per;
-  // and highlighted, its words turning ink under the marker
-  const hl = pen((since - writeEnd - 60) / 520);
+  // and underlined by hand, in the same white (as the funnel's labels are once fixed)
+  const under = pen((since - writeEnd - 60) / 480);
   return (
     <Head
       boxRef={boxRef}
       pre={loss.pre}
       winPre={winPre}
       said={said}
-      marks={
+      marks={null}
+      over={
         <>
-          <Bands
-            segs={tW.upTo(hl)}
-            kind="full"
-            className="bch-band is-bright"
-            y={(s) => [s.base - s.fs * 0.62, s.base + s.fs * 0.1]}
-          />
+          <Strikes segs={tL.upTo(strike)} style={{ opacity: 1 - 0.25 * ghost }} />
+          <Underlines segs={tW.upTo(under)} />
         </>
       }
-      over={<Strikes segs={tL.upTo(strike)} style={{ opacity: 1 - 0.25 * ghost }} />}
       stacked={false}
       loss={
         <>
@@ -631,15 +646,12 @@ const LookC = ({ loss, win, since }: LookProps) => {
             text={win.core}
             side="W"
             leadStyle={{ opacity: clamp(written * 2) }}
-            look={(wi, from, n) => {
+            look={(_wi, from, n) => {
               const k = clamp((written - from) / Math.max(1, n));
-              return {
-                clipPath: k >= 1 ? undefined : `inset(-30% ${((1 - k) * 100).toFixed(1)}% -30% -8%)`,
-                color: inkMix(passed(hl, tW.frac("W", wi), tW.fe * 0.6)),
-              };
+              return { clipPath: k >= 1 ? undefined : `inset(-30% ${((1 - k) * 100).toFixed(1)}% -30% -8%)` };
             }}
           />
-          <span style={{ opacity: clamp(written - nW), color: inkMix(0) }}>{win.post}</span>
+          <span style={{ opacity: clamp(written - nW) }}>{win.post}</span>
         </span>
       }
     />
@@ -771,18 +783,12 @@ const LookE = ({ loss, win, since }: LookProps) => {
 
 const LOOKS: Record<HLLook, (p: LookProps) => JSX.Element> = { a: LookA, b: LookB, c: LookC, d: LookD, e: LookE };
 
-/** The funnel's status for this stage, its problem then its fix, in a box as wide as the wider of the two (the kicker never rewraps). */
-const Chip = ({ fixed, problem, solution }: { fixed: boolean; problem: string; solution: string }) => (
-  <span className="bch-chipbox">
-    <span className={cn("bc5-chip", fixed && "is-off")} aria-hidden={fixed || undefined}>
-      {problem}
-    </span>
-    <span className={cn("bc5-chip is-fixed", !fixed && "is-off")} aria-hidden={!fixed || undefined}>
-      <Check strokeWidth={3.2} aria-hidden="true" />
-      {solution}
-    </span>
-  </span>
-);
+/**
+ * How long after the fix the words start changing (ms): the funnel's label
+ * changes first (struck, its solution written and ticked, ~1.4 s), so the
+ * eye never has two things changing at once.
+ */
+export const AFTER_LABEL = 1500;
 
 type Props = { look: HLLook; index: number; t: number; fixAt: number; numbered: boolean };
 
@@ -790,13 +796,13 @@ const BeatHL = ({ look, index, t, fixAt, numbered }: Props) => {
   const s = useSalesCopy();
   const loss = splitCore(s.flip[index].problem);
   const win = splitCore(s.flip[index].fix);
-  const since = t - fixAt;
+  // one change at a time: the funnel's label first (struck, rewritten, ticked), then the words
+  const since = t - fixAt - AFTER_LABEL;
   const Look = LOOKS[look];
   return (
     <div className={cn("sl-copy bc bch", `bch-${look}`)} data-since={Math.round(since)}>
-      <Kicker index={index} name={stageName(s.titleParts[index])} numbered={numbered}>
-        <Chip fixed={since >= 440} problem={s.funnel.problems[index]} solution={s.funnel.solutions[index]} />
-      </Kicker>
+      {/* (no status chip: the funnel's label says it, one place) */}
+      <Kicker index={index} name={stageName(s.titleParts[index])} numbered={numbered} />
       <Look loss={loss} win={win} since={since} />
     </div>
   );

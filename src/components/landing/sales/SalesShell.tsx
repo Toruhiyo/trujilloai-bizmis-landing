@@ -18,8 +18,12 @@ const BAR = "color-mix(in oklab, #f0913e 95%, transparent)";
 
 const TIMELINES = [findTimeline, trustTimeline, buyTimeline];
 
-/** After a beat's fix lands: its solution written and ticked, and a beat of celebration (ms). */
-const FIXED = 2300;
+/**
+ * After a beat's fix lands: the funnel's solution written and ticked, then
+ * the words' loss → win (beatcopy/BeatHL's AFTER_LABEL), and a beat to read
+ * it (ms).
+ */
+const FIXED = 4400;
 
 /**
  * Each beat's timeline: how long it is (ms) and when its stage gets fixed.

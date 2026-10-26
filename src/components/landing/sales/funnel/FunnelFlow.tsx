@@ -85,7 +85,8 @@ const geometry = (W: number, H: number, lead = leadFor(W, H)): Geo => {
   const x0 = lead;
   const run = xEnd - x0;
   const avail = H - top;
-  const h0 = Math.min(avail * 0.29, run * 0.18);
+  // tall enough that a stage's exit widening at its fix reads at a glance
+  const h0 = Math.min(avail * 0.33, run * 0.2);
   const cy = top + 10 + h0;
   return {
     W,

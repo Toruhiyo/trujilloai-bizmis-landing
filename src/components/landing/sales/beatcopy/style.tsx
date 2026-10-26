@@ -2,7 +2,7 @@ import { createContext, useContext } from "react";
 
 /**
  * Which look the beats' loss → win words take (?beat=…, read by
- * SalesSection; 0: today's struck headline with the win handwritten under it).
+ * SalesSection; default 6c; 0: the old struck headline with the win handwritten under it).
  * 1 ledger, 2 before/after cards, 3 marker annotation, 4 speech bubble,
  * 5 headline swap, 6 stage card. The headline swaps with the core of each
  * loss and win highlighted (beatcopy/BeatSwap), ?beat=5a..5e (or 7..11):
@@ -24,16 +24,20 @@ export const HLS = ["a", "b", "c", "d", "e"] as const;
 export type HLLook = (typeof HLS)[number];
 export const HL_FROM = 12;
 
-const BeatStyleContext = createContext(0);
+/** The look with no ?beat: 6c, the marker correction (chosen 2026-10-26); ?beat=0 shows the old struck headline. */
+export const DEFAULT_BEAT = HL_FROM + HLS.indexOf("c");
+
+const BeatStyleContext = createContext(DEFAULT_BEAT);
 
 export const BeatStyleProvider = BeatStyleContext.Provider;
 
 export const useBeatStyle = () => useContext(BeatStyleContext);
 
-/** ?beat=N (or 5a..5e, 6a..6e) from the URL (0 when absent or unknown). */
+/** ?beat=N (or 5a..5e, 6a..6e) from the URL (DEFAULT_BEAT when absent, 0 when unknown). */
 export const readBeatStyle = () => {
-  if (typeof window === "undefined") return 0;
+  if (typeof window === "undefined") return DEFAULT_BEAT;
   const raw = (new URLSearchParams(window.location.search).get("beat") ?? "").trim().toLowerCase();
+  if (!raw) return DEFAULT_BEAT;
   const swap = /^5([a-e])$/.exec(raw);
   if (swap) return SWAP_FROM + SWAPS.indexOf(swap[1] as SwapLook);
   const hl = /^6([a-e])$/.exec(raw);

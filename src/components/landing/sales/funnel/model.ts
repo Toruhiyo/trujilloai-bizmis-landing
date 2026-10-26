@@ -17,8 +17,8 @@
 
 /** A stage's pass rate without Bizmis: a big leak. */
 export const BAD = [0.28, 0.28, 0.3];
-/** With Bizmis: the leak sealed, only a few still lost; never lossless. */
-export const GOOD = [0.94, 0.93, 0.94];
+/** With Bizmis: the leak sealed, barely a shopper lost from the moment it lands; never lossless. */
+export const GOOD = [0.985, 0.985, 0.985];
 
 /** The pass rate of stage `g`, `k` (0 → 1) of the way fixed. */
 export const rate = (g: number, k: number) => BAD[g] + (GOOD[g] - BAD[g]) * k;
