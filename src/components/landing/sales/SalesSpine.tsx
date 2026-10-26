@@ -3,7 +3,8 @@ import type { CSSProperties } from "react";
 import { useMessages } from "@/i18n/LocaleProvider";
 import { cn } from "@/lib/utils";
 import BeatCopy from "./BeatCopy";
-import { endsLook, useBeatStyle } from "./beatcopy/style";
+import { arrLook, endsLook, useBeatStyle } from "./beatcopy/style";
+import { arrange } from "./arrange";
 import type { EndsLook } from "./beatcopy/style";
 import FunnelFlow, { funnelAnchors } from "./funnel/FunnelFlow";
 import FunnelScale from "./funnel/FunnelScale";
@@ -214,10 +215,22 @@ const Cone = ({
   );
 };
 
+/** A marker arrow from a device to its chamber (?beat=8c/8d), drawn in like the cone's sides. */
+const Arrow = ({ d, head, on }: { d: string; head: string; on: boolean }) => (
+  <svg className={cn("sl-g2-cone sl-g2-arrow", on && "is-on")} aria-hidden="true">
+    <path className="sl-g2-cone-side" d={d} pathLength={1} />
+    <path className="sl-g2-cone-side sl-g2-arrow-head" d={head} pathLength={1} />
+  </svg>
+);
+
 const Pinned = () => {
   const s = useMessages().landing.sales;
   // ?beat=7: the beat's words sit over its stage, as the funnel's label (the funnel draws none)
-  const ends = endsLook(useBeatStyle());
+  const look = useBeatStyle();
+  const ends = endsLook(look);
+  // ?beat=8a..8d: the same words, the device, the funnel arranged around it (sales/arrange)
+  const arr = arrLook(look);
+  const onFunnel = !!(ends || arr);
   const { win } = useSalesProto();
   const tls = useBeatTimelines();
   const [track, progress] = usePinProgress<HTMLDivElement>();
@@ -238,7 +251,12 @@ const Pinned = () => {
   // one value that only falls when the scroll goes back (a step back, or back within a step)
   const rewinding = useRewinding(step * 1e5 + (payoff ? payT : beats[step].t));
   const [stage, { W, H }] = useSize<HTMLDivElement>();
-  const L = layout(W, H, payoff, s.funnel.visits, ends);
+  const L0 = layout(W, H, payoff, s.funnel.visits, ends);
+  const A = arr ? arrange(W, H, arr, FUNNEL_ASPECT, s.funnel.visits) : null;
+  // the arrangement's funnel in the beats; the payoff's own in the payoff
+  const L = A && !payoff ? { ...L0, fnW: A.fnW, fnH: A.fnH, fnLeft: A.fnLeft, fnTop: A.fnTop } : L0;
+  const links = L0.beats.map((b, i) => A?.beats[i].link ?? { kind: "cone" as const, stage: b.cone.bottom, device: b.cone.top });
+  const rects = L0.beats.map((b, i) => A?.beats[i] ?? b);
   const f = Math.min(step, 2);
   const clock = payoff
     ? { t: payT, duration: PAYOFF_DURATION, fixAt: undefined }
@@ -251,10 +269,14 @@ const Pinned = () => {
         <div className="sl-g2-pin">
           <div className="bzl-wrap sl-g2-frame">
             <div ref={stage} className={cn("sl-g2-stage", payoff && "is-payoff")}>
-              {L.beats.map((b, i) => (
-                <Cone key={i} stage={b.cone.bottom} device={b.cone.top} on={step === i} />
-              ))}
-              {L.beats.map((b, i) => (
+              {links.map((l, i) =>
+                l.kind === "arrow" ? (
+                  <Arrow key={i} d={l.d} head={l.head} on={step === i} />
+                ) : (
+                  <Cone key={i} stage={l.stage} device={l.device} on={step === i} />
+                ),
+              )}
+              {rects.map((b, i) => (
                 <div
                   key={i}
                   className={cn("sl-g2-callout", step === i && "is-on", step > i && "is-past")}
@@ -269,8 +291,14 @@ const Pinned = () => {
               {s.panels.map((p, i) => (
                 <div
                   key={p.title}
-                  className={cn("sl-g2-copy", ends && `is-over is-over-${ends}`, step === i && "is-on")}
-                  style={L.beats[i].copy}
+                  className={cn(
+                    "sl-g2-copy",
+                    ends && `is-over is-over-${ends}`,
+                    arr && `is-over is-arr-${arr}`,
+                    (ends === "d" || arr === "a" || arr === "b") && "is-center",
+                    step === i && "is-on",
+                  )}
+                  style={rects[i].copy}
                 >
                   <BeatCopy index={i} t={beats[i].t} fixAt={beats[i].fixAt} />
                   {win > 0 && <Metrics variant={win} k={step === i ? k : fixedAt(i, beats[i].t, beats[i].fixAt)} focus={i} className="sl-g2-met" />}
@@ -290,9 +318,9 @@ const Pinned = () => {
                   focus={step}
                   fixAt={clock.fixAt}
                   copy={s.funnel}
-                  labels={payoff || !ends}
+                  labels={payoff || !onFunnel}
                   // (the words stand where the funnel's ◀◀ goes: their device's tape look says it)
-                  rewind={rewinding && (payoff || !ends)}
+                  rewind={rewinding && (payoff || !onFunnel)}
                 />
               </div>
             </div>
@@ -307,7 +335,8 @@ const Pinned = () => {
 const StackedBeat = ({ i, setRef }: { i: number; setRef: (el: HTMLElement | null) => void }) => {
   const s = useMessages().landing.sales;
   // ?beat=7: the beat's words sit over its stage, as the funnel's label (the funnel draws none)
-  const ends = endsLook(useBeatStyle());
+  const look = useBeatStyle();
+  const ends = !!(endsLook(look) || arrLook(look));
   const { win } = useSalesProto();
   const tl = useBeatTimelines()[i];
   const [item, p] = useScrollThrough<HTMLDivElement>(0.8, 0.75);

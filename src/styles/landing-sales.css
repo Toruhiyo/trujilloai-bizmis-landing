@@ -1035,18 +1035,23 @@
 .sl-g2-copy.is-over .bch-head {
   font-size: var(--bch-fs, 2rem);
 }
-/* 7d: a banner centred over the whole funnel */
-.sl-g2-copy.is-over-d .bc-kicker,
-.sl-g2-copy.is-over-d .sl-copy-kicker {
+/* centred on the axis (7d's banner, 8a/8b's stacks) */
+.sl-g2-copy.is-center .bc-kicker,
+.sl-g2-copy.is-center .sl-copy-kicker {
   justify-content: center;
 }
-.sl-g2-copy.is-over-d {
+.sl-g2-copy.is-center {
   text-align: center;
 }
-.sl-g2-copy.is-over-d .bch-pre,
-.sl-g2-copy.is-over-d .bch-layer {
+.sl-g2-copy.is-center .bch-pre,
+.sl-g2-copy.is-center .bch-layer {
   justify-items: center;
   text-align: center;
+}
+/* 8c/8d: the marker arrow from the device to its chamber */
+.sl-g2-arrow .sl-g2-cone-side {
+  stroke-width: 3;
+  stroke-linejoin: round;
 }
 .sl-g2-copy.is-payoff {
   left: 0;
