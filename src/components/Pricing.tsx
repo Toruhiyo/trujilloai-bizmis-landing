@@ -881,10 +881,13 @@ const Pricing = () => {
                         <span className="relative z-10">{plan.buttonText}</span>
                         <ArrowRight className="relative z-10 ml-2 h-4 w-4 transition-transform group-hover/btn:translate-x-1" />
                       </Button>
-                      <p className="mt-2.5 flex items-center justify-center gap-1.5 text-xs font-medium text-foreground/70 transition-colors group-hover:text-primary-foreground/90">
-                        <ShieldCheck className="h-3.5 w-3.5 shrink-0" aria-hidden />
-                        <span>{messages.pricing.guarantees.cardNote}</span>
-                      </p>
+                      {/* The 30-day money-back guarantee covers yearly plans only. */}
+                      {isYearly && (
+                        <p className="mt-2.5 flex items-center justify-center gap-1.5 text-xs font-medium text-foreground/70 transition-colors group-hover:text-primary-foreground/90">
+                          <ShieldCheck className="h-3.5 w-3.5 shrink-0" aria-hidden />
+                          <span>{messages.pricing.guarantees.cardNote}</span>
+                        </p>
+                      )}
                     </div>
                   </div>
                 </div>

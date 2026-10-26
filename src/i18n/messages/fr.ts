@@ -616,10 +616,10 @@ export const fr: Messages = {
     guarantees: {
       spendLimit: "Vous fixez votre plafond de dépenses",
       cancelAnytime: "Annulation à tout moment",
-      moneyBack: "Garantie satisfait ou remboursé 30 jours",
-      cardNote: "Satisfait ou remboursé pendant 30 jours",
-      bannerTitle: "Essayez sans risque pendant 30 jours",
-      bannerBody: "Si Bizmis n'en vaut pas la peine pendant vos 30 premiers jours, annulez et nous vous remboursons intégralement votre premier mois. Sans poser de questions.",
+      moneyBack: "Garantie satisfait ou remboursé 30 jours sur les plans annuels",
+      cardNote: "Satisfait ou remboursé pendant 30 jours sur le plan annuel",
+      bannerTitle: "Essayez un plan annuel sans risque pendant 30 jours",
+      bannerBody: "Si Bizmis n'en vaut pas la peine pendant les 30 premiers jours de votre plan annuel, annulez et nous vous remboursons intégralement votre premier paiement annuel. Sans poser de questions.",
     },
     coupon: {
       prompt:
@@ -742,7 +742,7 @@ export const fr: Messages = {
       "monthly-billing": {
         question: "Existe-t-il une facturation annuelle ?",
         answer:
-          "Oui. Vous pouvez régler une année entière d'avance et économiser environ 20 % par rapport au tarif mensuel. Vos sessions incluses continuent de se réinitialiser chaque mois.",
+          "Oui. Vous pouvez régler une année entière d'avance et économiser environ 20 % par rapport au tarif mensuel. Vos sessions incluses continuent de se réinitialiser chaque mois. Les plans annuels bénéficient d'une garantie satisfait ou remboursé de 30 jours sur le premier paiement annuel.",
       },
       "early-access-offer": {
         question: "Qu'est-ce que l'offre d'accès anticipé ?",
@@ -777,7 +777,7 @@ export const fr: Messages = {
       "refund-policy": {
         question: "Quelle est votre politique de remboursement ?",
         answer:
-          "**Garantie satisfait ou remboursé de 30 jours :** annulez dans les 30 jours suivant votre premier paiement d'un plan payant et nous remboursons ce montant, sans justification. La garantie ne couvre ni les mois suivants ni les sessions supplémentaires.\n**Ensuite :** les montants déjà facturés pour le mois en cours ne sont pas remboursables, mais vous ne serez plus facturé. Les sessions non utilisées ne sont pas reportées.",
+          "**Plans annuels :** garantie satisfait ou remboursé de 30 jours. Annulez dans les 30 jours suivant votre premier paiement annuel et nous remboursons ce montant, sans justification. La garantie ne couvre ni les années de renouvellement ni les sessions supplémentaires.\n**Plans mensuels :** vous pouvez annuler à tout moment, mais les montants déjà facturés pour le mois en cours ne sont pas remboursables. Vous ne serez plus facturé. Les sessions non utilisées ne sont pas reportées.",
       },
       "personalize-voice-avatar": {
         question: "Puis-je personnaliser la voix et l'avatar ?",

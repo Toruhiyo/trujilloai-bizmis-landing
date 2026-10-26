@@ -629,10 +629,10 @@ export const en = {
     guarantees: {
       spendLimit: "You choose your spend limit",
       cancelAnytime: "Cancel anytime",
-      moneyBack: "30-day money-back guarantee",
-      cardNote: "30-day money-back guarantee",
-      bannerTitle: "Try it risk-free for 30 days",
-      bannerBody: "If Bizmis isn't worth it in your first 30 days, cancel and we refund your first month in full. No questions asked.",
+      moneyBack: "30-day money-back guarantee on yearly plans",
+      cardNote: "30-day money-back guarantee on the yearly plan",
+      bannerTitle: "Try a yearly plan risk-free for 30 days",
+      bannerBody: "If Bizmis isn't worth it in the first 30 days of your yearly plan, cancel and we refund your first yearly payment in full. No questions asked.",
     },
     coupon: {
       prompt:
@@ -754,7 +754,7 @@ export const en = {
       "monthly-billing": {
         question: "Is there yearly billing?",
         answer:
-          "Yes. You can pay for a full year upfront and get about 20% off the monthly price. Your included sessions still reset every month.",
+          "Yes. You can pay for a full year upfront and get about 20% off the monthly price. Your included sessions still reset every month. Yearly plans come with a 30-day money-back guarantee on the first yearly payment.",
       },
       "early-access-offer": {
         question: "What is the Early Access offer?",
@@ -789,7 +789,7 @@ export const en = {
       "refund-policy": {
         question: "What's your refund policy?",
         answer:
-          "**30-day money-back guarantee:** cancel within 30 days of your first paid plan charge and we'll refund that plan fee, no questions asked. It doesn't cover later months or extra sessions.\n**After that:** charges already billed for the current month are non-refundable, but you won't be billed again. Unused sessions don't carry over.",
+          "**Yearly plans:** 30-day money-back guarantee. Cancel within 30 days of your first yearly payment and we'll refund that charge, no questions asked. It doesn't cover renewal years or extra sessions.\n**Monthly plans:** you can cancel anytime, but charges already billed for the current month are non-refundable. You won't be billed again. Unused sessions don't carry over.",
       },
       "personalize-voice-avatar": {
         question: "Can I personalize the voice and the avatar?",

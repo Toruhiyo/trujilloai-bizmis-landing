@@ -615,10 +615,10 @@ export const es: Messages = {
     guarantees: {
       spendLimit: "Tú decides tu límite de gasto",
       cancelAnytime: "Cancela cuando quieras",
-      moneyBack: "30 días de garantía de devolución",
-      cardNote: "Garantía de devolución de 30 días",
-      bannerTitle: "Pruébalo sin riesgo durante 30 días",
-      bannerBody: "Si Bizmis no te compensa en tus primeros 30 días, cancela y te devolvemos el primer mes entero. Sin preguntas.",
+      moneyBack: "30 días de garantía de devolución en los planes anuales",
+      cardNote: "Garantía de devolución de 30 días en el plan anual",
+      bannerTitle: "Prueba un plan anual sin riesgo durante 30 días",
+      bannerBody: "Si Bizmis no te compensa en los primeros 30 días de tu plan anual, cancela y te devolvemos tu primer pago anual entero. Sin preguntas.",
     },
     coupon: {
       prompt:
@@ -741,7 +741,7 @@ export const es: Messages = {
       "monthly-billing": {
         question: "¿Hay facturación anual?",
         answer:
-          "Sí. Puedes pagar un año entero por adelantado y te ahorras alrededor de un 20% sobre el precio mensual. Tus sesiones incluidas se siguen reiniciando cada mes.",
+          "Sí. Puedes pagar un año entero por adelantado y te ahorras alrededor de un 20% sobre el precio mensual. Tus sesiones incluidas se siguen reiniciando cada mes. Los planes anuales tienen una garantía de devolución de 30 días sobre el primer pago anual.",
       },
       "early-access-offer": {
         question: "¿Qué es la oferta de acceso anticipado?",
@@ -776,7 +776,7 @@ export const es: Messages = {
       "refund-policy": {
         question: "¿Cuál es vuestra política de reembolsos?",
         answer:
-          "**Garantía de devolución de 30 días:** si cancelas dentro de los 30 días siguientes a tu primer cargo de un plan de pago, te devolvemos esa cuota, sin preguntas. No cubre los meses siguientes ni las sesiones extra.\n**Después:** los cargos ya facturados del mes en curso no son reembolsables, pero no se te volverá a cobrar. Las sesiones no usadas no se acumulan.",
+          "**Planes anuales:** garantía de devolución de 30 días. Si cancelas dentro de los 30 días siguientes a tu primer pago anual, te devolvemos ese cargo, sin preguntas. No cubre las renovaciones ni las sesiones extra.\n**Planes mensuales:** puedes cancelar cuando quieras, pero los cargos ya facturados del mes en curso no son reembolsables. No se te volverá a cobrar. Las sesiones no usadas no se acumulan.",
       },
       "personalize-voice-avatar": {
         question: "¿Puedo personalizar la voz y el avatar?",

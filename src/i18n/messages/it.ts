@@ -615,10 +615,10 @@ export const it: Messages = {
     guarantees: {
       spendLimit: "Decidi tu il limite di spesa",
       cancelAnytime: "Disdici quando vuoi",
-      moneyBack: "Garanzia di rimborso entro 30 giorni",
-      cardNote: "Soddisfatti o rimborsati per 30 giorni",
-      bannerTitle: "Provalo senza rischi per 30 giorni",
-      bannerBody: "Se Bizmis non ne vale la pena nei primi 30 giorni, annulla e ti rimborsiamo per intero il primo mese. Senza domande.",
+      moneyBack: "Garanzia di rimborso entro 30 giorni sui piani annuali",
+      cardNote: "Soddisfatti o rimborsati per 30 giorni sul piano annuale",
+      bannerTitle: "Prova un piano annuale senza rischi per 30 giorni",
+      bannerBody: "Se Bizmis non ne vale la pena nei primi 30 giorni del tuo piano annuale, annulla e ti rimborsiamo per intero il primo pagamento annuale. Senza domande.",
     },
     coupon: {
       prompt:
@@ -741,7 +741,7 @@ export const it: Messages = {
       "monthly-billing": {
         question: "C'è la fatturazione annuale?",
         answer:
-          "Sì. Puoi pagare un anno intero in anticipo e risparmiare circa il 20% rispetto al prezzo mensile. Le sessioni incluse continuano ad azzerarsi ogni mese.",
+          "Sì. Puoi pagare un anno intero in anticipo e risparmiare circa il 20% rispetto al prezzo mensile. Le sessioni incluse continuano ad azzerarsi ogni mese. I piani annuali hanno una garanzia di rimborso entro 30 giorni sul primo pagamento annuale.",
       },
       "early-access-offer": {
         question: "Cos'è l'offerta di accesso anticipato?",
@@ -776,7 +776,7 @@ export const it: Messages = {
       "refund-policy": {
         question: "Qual è la vostra politica di rimborso?",
         answer:
-          "**Garanzia di rimborso entro 30 giorni:** disdici entro 30 giorni dal primo addebito di un piano a pagamento e ti rimborsiamo quell'importo, senza domande. La garanzia non copre i mesi successivi né le sessioni extra.\n**Dopo:** gli importi già fatturati per il mese in corso non sono rimborsabili, ma non riceverai altri addebiti. Le sessioni non usate non si accumulano.",
+          "**Piani annuali:** garanzia di rimborso entro 30 giorni. Disdici entro 30 giorni dal primo pagamento annuale e ti rimborsiamo quell'importo, senza domande. La garanzia non copre gli anni di rinnovo né le sessioni extra.\n**Piani mensili:** puoi disdire quando vuoi, ma gli importi già fatturati per il mese in corso non sono rimborsabili. Non riceverai altri addebiti. Le sessioni non usate non si accumulano.",
       },
       "personalize-voice-avatar": {
         question: "Posso personalizzare la voce e l'avatar?",

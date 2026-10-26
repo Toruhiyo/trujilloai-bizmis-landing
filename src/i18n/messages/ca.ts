@@ -616,10 +616,10 @@ export const ca: Messages = {
     guarantees: {
       spendLimit: "Tu decideixes el teu límit de despesa",
       cancelAnytime: "Cancel·la quan vulguis",
-      moneyBack: "30 dies de garantia de devolució",
-      cardNote: "Garantia de devolució de 30 dies",
-      bannerTitle: "Prova-ho sense risc durant 30 dies",
-      bannerBody: "Si Bizmis no et compensa els primers 30 dies, cancel·la i et retornem el primer mes sencer. Sense preguntes.",
+      moneyBack: "30 dies de garantia de devolució als plans anuals",
+      cardNote: "Garantia de devolució de 30 dies al pla anual",
+      bannerTitle: "Prova un pla anual sense risc durant 30 dies",
+      bannerBody: "Si Bizmis no et compensa els primers 30 dies del teu pla anual, cancel·la i et retornem el teu primer pagament anual sencer. Sense preguntes.",
     },
     coupon: {
       prompt:
@@ -742,7 +742,7 @@ export const ca: Messages = {
       "monthly-billing": {
         question: "Hi ha facturació anual?",
         answer:
-          "Sí. Pots pagar un any sencer per avançat i estalviar-te al voltant d'un 20% sobre el preu mensual. Les sessions incloses continuen reiniciant-se cada mes.",
+          "Sí. Pots pagar un any sencer per avançat i estalviar-te al voltant d'un 20% sobre el preu mensual. Les sessions incloses continuen reiniciant-se cada mes. Els plans anuals tenen una garantia de devolució de 30 dies sobre el primer pagament anual.",
       },
       "early-access-offer": {
         question: "Què és l'oferta d'accés anticipat?",
@@ -777,7 +777,7 @@ export const ca: Messages = {
       "refund-policy": {
         question: "Quina és la vostra política de reemborsaments?",
         answer:
-          "**Garantia de devolució de 30 dies:** si cancel·les dins dels 30 dies posteriors al teu primer càrrec d'un pla de pagament, et retornem aquesta quota, sense preguntes. No cobreix els mesos següents ni les sessions extra.\n**Després:** els càrrecs ja facturats del mes en curs no són reemborsables, però no se't tornarà a cobrar. Les sessions no utilitzades no s'acumulen.",
+          "**Plans anuals:** garantia de devolució de 30 dies. Si cancel·les dins dels 30 dies posteriors al teu primer pagament anual, et retornem aquest càrrec, sense preguntes. No cobreix les renovacions ni les sessions extra.\n**Plans mensuals:** pots cancel·lar quan vulguis, però els càrrecs ja facturats del mes en curs no són reemborsables. No se't tornarà a cobrar. Les sessions no utilitzades no s'acumulen.",
       },
       "personalize-voice-avatar": {
         question: "Puc personalitzar la veu i l'avatar?",
