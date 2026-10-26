@@ -170,6 +170,9 @@ export const en = {
         { problem: "Shoppers comparing options [[freeze and walk away]].", fix: "Shoppers comparing options [[choose with confidence]]." },
         { problem: "Buyers ready to buy [[hesitate and hold off]].", fix: "Buyers ready to buy [[commit and check out]]." },
       ],
+      /** Each beat's words (the default, ?beat=9): the opener alone, its sentence ending in the funnel's label for the stage
+       * (funnel.problems, then funnel.solutions), so it must read straight into both ("Buyers with a full cart… Abandon the cart" / "… Buy it"). */
+      openers: ["Visitors who want the right product", "Shoppers weighing their options", "Buyers with a full cart"],
       /** ?beat=1..6: the small labels of the alternative loss → win looks. */
       flipLabels: { lose: "You lose", win: "You win", you: "You, today", withBizmis: "With Bizmis" },
       /** ?beat=4: each loss as the merchant says it (the speech bubble). */

@@ -162,6 +162,7 @@ export const ca: Messages = {
         { problem: "Els clients que comparen opcions [[es bloquegen i marxen]].", fix: "Els clients que comparen opcions [[trien amb seguretat]]." },
         { problem: "Els compradors a punt de comprar [[dubten i es frenen]].", fix: "Els compradors a punt de comprar [[es decideixen i passen al pagament]]." },
       ],
+      openers: ["Visitants que volen el producte adequat", "Compradors que dubten entre opcions", "Compradors amb el carretó ple"],
       /** ?beat=1..6: the small labels of the alternative loss → win looks. */
       flipLabels: { lose: "Perds", win: "Guanyes", you: "Tu, avui", withBizmis: "Amb Bizmis" },
       /** ?beat=4: each loss as the merchant says it (the speech bubble). */

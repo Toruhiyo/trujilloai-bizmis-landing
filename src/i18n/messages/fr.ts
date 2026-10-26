@@ -162,6 +162,7 @@ export const fr: Messages = {
         { problem: "Les acheteurs qui comparent leurs options [[se figent et repartent]].", fix: "Les acheteurs qui comparent leurs options [[choisissent en toute confiance]]." },
         { problem: "Les clients prêts à acheter [[hésitent et attendent]].", fix: "Les clients prêts à acheter [[se décident et passent au paiement]]." },
       ],
+      openers: ["Les visiteurs qui veulent le bon produit", "Les acheteurs qui hésitent entre les options", "Les acheteurs au panier plein"],
       /** ?beat=1..6: the small labels of the alternative loss → win looks. */
       flipLabels: { lose: "Vous perdez", win: "Vous gagnez", you: "Vous, aujourd'hui", withBizmis: "Avec Bizmis" },
       /** ?beat=4: each loss as the merchant says it (the speech bubble). */

@@ -784,6 +784,23 @@ const LookE = ({ loss, win, since }: LookProps) => {
 const LOOKS: Record<HLLook, (p: LookProps) => JSX.Element> = { a: LookA, b: LookB, c: LookC, d: LookD, e: LookE };
 
 /**
+ * ?beat=9: the words are the opener alone ("Buyers with a full cart…"), set
+ * once; the sentence ends in the funnel's own label for the stage ("Abandon
+ * the cart", struck, then "Buy it ✓"), where and as it already is.
+ */
+export const BeatOpening = ({ index, numbered }: { index: number; numbered: boolean }) => {
+  const s = useSalesCopy();
+  return (
+    <div className="sl-copy bc bch bch-opener">
+      <Kicker index={index} name={stageName(s.titleParts[index])} numbered={numbered} />
+      <h3 className="bch-head">
+        <span className="bch-pre">{opening(s.openers[index])}</span>
+      </h3>
+    </div>
+  );
+};
+
+/**
  * How long after the fix the words start changing (ms): the funnel's label
  * changes first (struck, its solution written and ticked, ~1.4 s), so the
  * eye never has two things changing at once.

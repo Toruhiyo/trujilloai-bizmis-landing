@@ -3,7 +3,7 @@ import type { CSSProperties } from "react";
 import { useMessages } from "@/i18n/LocaleProvider";
 import { cn } from "@/lib/utils";
 import BeatCopy from "./BeatCopy";
-import { arrLook, endsLook, useBeatStyle } from "./beatcopy/style";
+import { OPENER, arrLook, endsLook, useBeatStyle } from "./beatcopy/style";
 import { arrange } from "./arrange";
 import type { EndsLook } from "./beatcopy/style";
 import FunnelFlow, { funnelAnchors } from "./funnel/FunnelFlow";
@@ -71,16 +71,18 @@ const CARD_ASPECT = 168 / 330;
  * funnel, or beside the device. `w`: width [share of the stage, min, max];
  * `fs`: font size [share of the stage's width, of its height, min, max].
  */
-const ENDS_SPEC: Record<EndsLook, { at: "chamber" | "funnel" | "device"; w: [number, number, number]; fs: [number, number, number, number] }> = {
+const ENDS_SPEC: Record<EndsLook | "o", { at: "chamber" | "funnel" | "device"; w: [number, number, number]; fs: [number, number, number, number] }> = {
   a: { at: "chamber", w: [0.4, 360, 540], fs: [0.022, 0.04, 24, 36] },
   b: { at: "chamber", w: [0.52, 460, 740], fs: [0.03, 0.054, 28, 48] },
   c: { at: "chamber", w: [0.27, 280, 390], fs: [0.016, 0.03, 19, 26] },
   d: { at: "funnel", w: [0.66, 560, 900], fs: [0.03, 0.054, 28, 46] },
   e: { at: "device", w: [0.34, 300, 470], fs: [0.022, 0.04, 24, 34] },
+  // ?beat=9 (the default): the opener alone, over its stage's label, the label ending its sentence
+  o: { at: "chamber", w: [0.38, 360, 580], fs: [0.024, 0.044, 24, 36] },
 };
 
 /** The pinned stage's layout (px) for a W x H stage: the funnel, each beat's callout, its words and its cone. */
-const layout = (W: number, H: number, payoff: boolean, visits?: string, ends: EndsLook | null = null) => {
+const layout = (W: number, H: number, payoff: boolean, visits?: string, ends: EndsLook | "o" | null = null) => {
   const pad = 12;
   // the payoff's metric card, beside the funnel (right of it), the two centred together
   const cardW = clamp(W * 0.24, 230, 320);
@@ -110,9 +112,12 @@ const layout = (W: number, H: number, payoff: boolean, visits?: string, ends: En
   // the size: as the spec says, never so big that the opening wraps in the width it has
   const wordsFs = spec ? Math.min(clamp(Math.min(W * spec.fs[0], H * spec.fs[1]), spec.fs[2], spec.fs[3]), wordsW / 17) : 0;
   // kicker, opening, struck loss, handwritten win
-  const wordsH = 44 + wordsFs * 3.5;
+  // kicker, opening, struck loss, handwritten win (the opener: kicker and up to two lines)
+  const wordsH = 44 + wordsFs * (ends === "o" ? 2.3 : 3.5);
   /** Their foot over [l, r]: just clear of the funnel's upper wall at its highest there (a chamber's entry is as high as the one before it, the first's as the mouth). */
   const footOver = (l: number, r: number) => {
+    // the opener stands on its label (the funnel box's top row), not on the wall
+    if (ends === "o") return bTop - clamp(H * 0.008, 4, 10);
     const walls = bA.chambers.map((c, j) =>
       r - bLeft > c.xa && l - bLeft < c.xb ? (j === 0 ? bA.mouth.top : bA.chambers[j - 1].top) : Infinity,
     );
@@ -231,6 +236,8 @@ const Pinned = () => {
   // ?beat=8a..8d: the same words, the device, the funnel arranged around it (sales/arrange)
   const arr = arrLook(look);
   const onFunnel = !!(ends || arr);
+  // ?beat=9 (the default): the opener alone over its stage, the funnel's label ending its sentence
+  const opener = look === OPENER;
   const { win } = useSalesProto();
   const tls = useBeatTimelines();
   const [track, progress] = usePinProgress<HTMLDivElement>();
@@ -251,7 +258,7 @@ const Pinned = () => {
   // one value that only falls when the scroll goes back (a step back, or back within a step)
   const rewinding = useRewinding(step * 1e5 + (payoff ? payT : beats[step].t));
   const [stage, { W, H }] = useSize<HTMLDivElement>();
-  const L0 = layout(W, H, payoff, s.funnel.visits, ends);
+  const L0 = layout(W, H, payoff, s.funnel.visits, opener ? "o" : ends);
   const A = arr ? arrange(W, H, arr, FUNNEL_ASPECT, s.funnel.visits) : null;
   // the arrangement's funnel in the beats; the payoff's own in the payoff
   const L = A && !payoff ? { ...L0, fnW: A.fnW, fnH: A.fnH, fnLeft: A.fnLeft, fnTop: A.fnTop } : L0;
@@ -295,7 +302,8 @@ const Pinned = () => {
                     "sl-g2-copy",
                     ends && `is-over is-over-${ends}`,
                     arr && `is-over is-arr-${arr}`,
-                    (ends === "d" || arr === "a" || arr === "b") && "is-center",
+                    opener && "is-over is-opener",
+                    (ends === "d" || arr === "a" || arr === "b" || opener) && "is-center",
                     step === i && "is-on",
                   )}
                   style={rects[i].copy}

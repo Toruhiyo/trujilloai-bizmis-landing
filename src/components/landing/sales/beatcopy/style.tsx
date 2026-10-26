@@ -19,9 +19,12 @@ import { createContext, useContext } from "react";
  * the device (SalesSpine's layout). The same words arranged around the
  * funnel, ?beat=8a..8d (or 22..25; ?beat=8 is 8a): 8a device / funnel /
  * words stacked, 8b words / funnel / device stacked, 8c device | funnel
- * over words, 8d funnel over words | device (sales/arrange).
+ * over words, 8d funnel over words | device (sales/arrange). ?beat=9
+ * (26), the default: the words are the opener alone ("Buyers ready to
+ * buy…") and the sentence ends in the funnel's own label, as it is
+ * ("Abandon the cart" struck, then "Buy it ✓").
  */
-export const BEAT_STYLES = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25] as const;
+export const BEAT_STYLES = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26] as const;
 
 /** The headline swaps: ?beat=5a → 7 … ?beat=5e → 11. */
 export const SWAPS = ["a", "b", "c", "d", "e"] as const;
@@ -49,8 +52,11 @@ export const ARR_FROM = 22;
 export const arrLook = (look: number): ArrLook | null =>
   look >= ARR_FROM && look < ARR_FROM + ARR_LOOKS.length ? ARR_LOOKS[look - ARR_FROM] : null;
 
-/** The look with no ?beat: 6c, the marker correction (chosen 2026-10-26); ?beat=0 shows the old struck headline. */
-export const DEFAULT_BEAT = HL_FROM + HLS.indexOf("c");
+/** ?beat=9: the opener alone, ending in the funnel's label. */
+export const OPENER = 26;
+
+/** The look with no ?beat: the opener ending in the funnel's label (chosen 2026-10-26); ?beat=0 shows the old struck headline. */
+export const DEFAULT_BEAT = OPENER;
 
 const BeatStyleContext = createContext(DEFAULT_BEAT);
 
@@ -67,6 +73,7 @@ export const readBeatStyle = () => {
   if (swap) return SWAP_FROM + SWAPS.indexOf(swap[1] as SwapLook);
   if (raw === "7") return ENDS_FROM;
   if (raw === "8") return ARR_FROM;
+  if (raw === "9") return OPENER;
   const arr = /^8([a-d])$/.exec(raw);
   if (arr) return ARR_FROM + ARR_LOOKS.indexOf(arr[1] as ArrLook);
   const ends = /^7([a-e])$/.exec(raw);
