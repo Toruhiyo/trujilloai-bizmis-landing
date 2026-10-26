@@ -6,7 +6,7 @@ import Reveal from "./Reveal";
 import BenefitIntro, { useScenePlay } from "./pillar/BenefitIntro";
 import type { PinState } from "./pillar/BenefitIntro";
 import { SupportDay, supportDayTimes } from "./PillarMoments";
-import { useRewinding, useScrollPlay, useScrollThrough } from "./sales/hooks";
+import { useScrollPlay, useScrollThrough } from "./sales/hooks";
 import RewindScreen from "./sales/RewindScreen";
 import SupportStore, { supportCase } from "./support/SupportStore";
 import type { CaseKey } from "./support/SupportStore";
@@ -49,6 +49,30 @@ const useReplays = (t: number, duration: number) => {
   return n;
 };
 
+/**
+ * True for a moment whenever `t` goes backwards while `on` (as sales/hooks'
+ * useRewinding), but not on the frame the clock comes on: a clock picked up
+ * mid-scroll (a fast scroll into the section) starts where the scroll is,
+ * which is no rewind.
+ */
+const useRewindingOn = (t: number, on: boolean, linger = 420) => {
+  const last = useRef(t);
+  const was = useRef(on);
+  const timer = useRef(0);
+  const [back, setBack] = useState(false);
+  useEffect(() => {
+    if (on && was.current && t < last.current - 1) {
+      setBack(true);
+      window.clearTimeout(timer.current);
+      timer.current = window.setTimeout(() => setBack(false), linger);
+    }
+    last.current = t;
+    was.current = on;
+  }, [t, on, linger]);
+  useEffect(() => () => window.clearTimeout(timer.current), []);
+  return back;
+};
+
 const SupportBody = ({ pin }: { pin: PinState }) => {
   const m = useMessages();
   const s = m.landing.support;
@@ -64,11 +88,12 @@ const SupportBody = ({ pin }: { pin: PinState }) => {
   const [body, p] = useScrollThrough<HTMLDivElement>(0.6, 0.95);
   const through = !pin.pinned && p > 0 && p < 1;
   const own = useScrollPlay(Math.min(1, Math.max(0, (p - LEAD) / RUN)) * duration, duration, through);
-  const t = pin.pinned ? scene.t : own;
-  const rewinding = useRewinding(t);
+  // (kept on the timeline: a clock picked up mid-scroll can read a hair under its start for a frame)
+  const t = Math.min(duration, Math.max(0, pin.pinned ? scene.t : own));
+  const active = pin.pinned ? pin.active : through;
+  const rewinding = useRewindingOn(t, active);
   const c = cases[useReplays(t, duration) % cases.length];
   const day = supportDayTimes(c.speakAt, c.duration);
-  const active = pin.pinned ? pin.active : through;
   return (
     <div className="bzl-wrap">
       {/* ph-no-capture: the session recorder would log every animated frame of it */}
