@@ -58,11 +58,11 @@ const BILLING_PERIOD = "monthly";
 /** Enterprise starts here; the final price is custom (contact sales). */
 const ENTERPRISE_FROM_MONTHLY_PRICE = 1500;
 
-/** Fallback for the price per extra conversation (every plan, pricing v2). */
+/** Fallback for the price per extra session (every plan, pricing v2). */
 const FALLBACK_OVERAGE_RATE_PER_CONVERSATION = 0.3;
 
 /** Static v2 fallbacks. Copy (name/features/buttonText) comes from the locale
- *  dictionary; price, included conversations and overage rate are overlaid
+ *  dictionary; price, included sessions and overage rate are overlaid
  *  from the backend catalog in `mergePlansWithBackend`. */
 const buildPlans = (messages: Messages): Plan[] => [
   {
@@ -104,27 +104,31 @@ const buildPlans = (messages: Messages): Plan[] => [
 const V2_ONLY_PLAN_KEYS = new Set<string>(["growth", "scale"]);
 
 /**
- * True when the backend catalog already bills in conversations (pricing v2).
- * A v1 backend serves the old credit catalog (Starter/Plus/Pro at v1 prices
- * and credit allowances), which must not overwrite the v2 fallbacks.
+ * True when the backend catalog is already the v2 catalog (billed in
+ * sessions, formerly named conversations). A v1 backend serves the old credit
+ * catalog (Starter/Plus/Pro at v1 prices and credit allowances), which must
+ * not overwrite the v2 fallbacks.
  */
 const isConversationCatalog = (backendPlans: PublicPlanDTO[] | null): boolean =>
   backendPlans !== null &&
   backendPlans.some(
     (plan) =>
+      plan.included_sessions != null ||
+      plan.overage_rate_per_session != null ||
       plan.included_conversations != null ||
       plan.overage_rate_per_conversation != null ||
       V2_ONLY_PLAN_KEYS.has(plan.name.trim().toLowerCase()),
   );
 
 /**
- * Overlays backend prices and included conversations (single source of
- * truth) onto the static template, which keeps copy-only fields (feature
- * bullets, button text). Reads the v2 keys first and falls back to the legacy
- * credit-named keys, which the backend keeps populated with the same values
- * for one release. When the catalog hasn't loaded, is still v1, or a plan is
- * missing, the hardcoded v2 values act as a fallback so the page never
- * blanks or shows stale plans.
+ * Overlays backend prices and included sessions (single source of truth)
+ * onto the static template, which keeps copy-only fields (feature bullets,
+ * button text). Reads the session keys first and falls back to the older
+ * conversation- and credit-named keys, which the backend keeps populated with
+ * the same values (a backend from before the session rename only has those).
+ * When the catalog hasn't loaded, is still v1, or a plan is missing, the
+ * hardcoded v2 values act as a fallback so the page never blanks or shows
+ * stale plans.
  */
 const mergePlansWithBackend = (
   templates: Plan[],
@@ -140,10 +144,12 @@ const mergePlansWithBackend = (
       ...template,
       monthlyPrice: backendPlan.monthly_price ?? template.monthlyPrice,
       includedConversations:
+        backendPlan.included_sessions ??
         backendPlan.included_conversations ??
         backendPlan.included_credits ??
         template.includedConversations,
       overageRatePerConversation:
+        backendPlan.overage_rate_per_session ??
         backendPlan.overage_rate_per_conversation ??
         backendPlan.overage_rate_per_credit ??
         template.overageRatePerConversation,
@@ -829,7 +835,7 @@ const Pricing = () => {
           </div>
         </div>
 
-        {/* What one conversation is (pricing v2 unit) */}
+        {/* What one session is (the billing unit) */}
         <div className="mx-auto mt-6 flex max-w-3xl justify-center sm:mt-8">
           <p className="inline-flex items-start gap-2 rounded-2xl border border-primary/25 bg-primary/10 px-4 py-2.5 text-left text-xs font-medium leading-relaxed text-primary-dark backdrop-blur-md sm:text-sm">
             <MessageSquareText className="mt-0.5 h-3.5 w-3.5 shrink-0 sm:h-4 sm:w-4" aria-hidden />

@@ -2,7 +2,7 @@ import Footer from "@/components/Footer";
 import PublicPageLayout from "@/components/PublicPageLayout";
 import Seo from "@/components/Seo";
 
-const LAST_UPDATED = "October 23, 2026";
+const LAST_UPDATED = "October 26, 2026";
 const CONTACT_EMAIL = "hello@bizmis.ai";
 const COMPANY_LEGAL_NAME = "Bizmis";
 const COMPANY_JURISDICTION = "Spain";
@@ -72,17 +72,16 @@ const Terms = () => {
                 Shopify's billing system.
               </li>
               <li>
-                <strong>"Conversation"</strong> means the unit of usage
-                consumed by Store Customer interactions, tracked per billing
-                period. One Conversation is one Store Customer's session with
-                the Bizmis assistant, by voice or text, covering up to 2
-                minutes of voice or 20 messages typed by the Store Customer.
-                Each session counts as its voice duration divided by 2 minutes
-                plus its Store Customer messages divided by 20, rounded up to
-                the next whole number, so longer sessions count as two or more
-                Conversations. Sessions in which the Store Customer provides no
-                input, and the Merchant's own previews in the Bizmis admin, are
-                not counted.
+                <strong>"Session"</strong> means the unit of usage consumed
+                by Store Customer interactions, tracked per billing period. A
+                Session is one Store Customer's visit with the Bizmis
+                assistant, by voice or text. Sessions longer than 5 minutes of
+                voice or 40 messages typed by the Store Customer count as two
+                or more: each visit counts as its voice duration divided by 5
+                minutes plus its Store Customer messages divided by 40,
+                rounded up to the next whole number. Visits in which the Store
+                Customer provides no input, and the Merchant's own previews in
+                the Bizmis admin, are free and are not counted.
               </li>
             </ul>
           </Section>
@@ -423,7 +422,7 @@ const Terms = () => {
           <Section title="9. Subscription Plans, Billing & Free Preview (Merchants)">
             <p>
               The Service is offered to Merchants on tiered Subscription plans.
-              Current plan names, pricing, included Conversations, and overage
+              Current plan names, pricing, included Sessions, and overage
               rates are published on our{" "}
               <a
                 href="/pricing"
@@ -447,14 +446,14 @@ const Terms = () => {
                 offered.
               </li>
               <li>
-                <strong>Included Conversations.</strong> Each plan includes a
-                fixed number of Conversations that resets at the start of
-                every billing period. Unused Conversations do not roll over.
+                <strong>Included Sessions.</strong> Each plan includes a
+                fixed number of Sessions that resets at the start of every
+                billing period. Unused Sessions do not roll over.
               </li>
               <li>
-                <strong>Overage.</strong> Conversations beyond the included
-                number are billed as overage at the per-Conversation rate
-                published for your plan (currently $0.30 per Conversation),
+                <strong>Overage.</strong> Sessions beyond the included number
+                are billed as overage at the per-Session rate published for
+                your plan (currently $0.30 per Session),
                 only up to the spend cap you set inside the Bizmis admin and
                 never above Shopify's per-app capped amount for your plan. The
                 spend cap starts at $0, so no overage is billed until you
@@ -463,10 +462,10 @@ const Terms = () => {
               </li>
               <li>
                 <strong>Free preview.</strong> Each store receives 120 free
-                preview Conversations, once, so the Merchant can evaluate the
-                Service before subscribing. While preview Conversations remain,
+                preview Sessions, once, so the Merchant can evaluate the
+                Service before subscribing. While preview Sessions remain,
                 the widget is fully functional on the Merchant's storefront.
-                Once preview Conversations are used up (or the trial window
+                Once preview Sessions are used up (or the trial window
                 ends),
                 the widget is hidden from Store Customers and a paid
                 Subscription is required to make it visible again. The
@@ -517,7 +516,7 @@ const Terms = () => {
               <li>
                 <strong>No other refunds.</strong> Except as set out above,
                 charges already billed for the current monthly period are
-                non-refundable, and unused Conversations in the current period
+                non-refundable, and unused Sessions in the current period
                 are forfeited. You will not be billed again going forward.
               </li>
               <li>

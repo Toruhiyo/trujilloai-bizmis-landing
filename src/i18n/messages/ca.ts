@@ -242,7 +242,7 @@ export const ca: Messages = {
       invite: "per als avantatges d'Early Access!",
       note: "Només 50 places!",
       /** The ad-1 film's Early Access perks, then the quieter extras under them. */
-      perks: ["120 converses gratis", "50% de descompte en millorar el pla", "Decideix el full de ruta amb nosaltres"],
+      perks: ["120 sessions gratis", "50% de descompte en millorar el pla", "Decideix el full de ruta amb nosaltres"],
       extras: ["Sense targeta", "Sense compromís", "Línia directa amb el fundador"],
     },
     setup: {
@@ -551,11 +551,11 @@ export const ca: Messages = {
     lead: "Tria el pla que encaixa amb el teu negoci. Tots inclouen la integració completa amb Shopify.",
     perMonth: "/mes",
     popular: "Popular",
-    conversationsPerMonth: "converses / mes",
+    conversationsPerMonth: "sessions / mes",
     extraConversations: (price: string) =>
-      `Converses extra a ${price} cadascuna, fins al límit de despesa que fixis`,
+      `Sessions extra a ${price} cadascuna, fins al límit de despesa que fixis`,
     conversationDefinition:
-      "Una conversa és el xat d'un client amb el teu dependent, per veu o per text. Inclou fins a 2 minuts de veu o 20 missatges; si s'allarga, compta com a dues. Si el client no diu res, és gratis.",
+      "Una sessió és la visita d'un client al teu dependent, per veu o per text. Les sessions de més de 5 minuts de veu o 40 missatges compten com a dues. Les visites en què el client no diu res són gratis.",
     off: "dte.",
     discountTitle: (percent: number) =>
       `${percent}% menys que el preu de tarifa`,
@@ -566,7 +566,7 @@ export const ca: Messages = {
       name: "Gratuït",
       noCommitment: "Sense compromís",
       description: (conversations: string) =>
-        `${conversations} converses gratis per provar Bizmis. Sense targeta.`,
+        `${conversations} sessions gratis per provar Bizmis. Sense targeta.`,
       cta: "Comença gratis",
     },
     plans: {
@@ -591,7 +591,7 @@ export const ca: Messages = {
         name: "Scale",
         features: [
           "Dependents Bizmis il·limitats",
-          "Converses etiquetades automàticament",
+          "Sessions etiquetades automàticament",
           "Suport prioritari i onboarding en directe",
         ],
       },
@@ -603,7 +603,7 @@ export const ca: Messages = {
         "Solucions a mida per a operacions a gran escala, amb volum i requisits personalitzats.",
       everythingInScale: "Tot el de Scale i a més:",
       features: [
-        "Volum de converses a mida",
+        "Volum de sessions a mida",
         "Capacitat garantida per als pics de trànsit",
         "SLA i veu personalitzada",
         "Facturació fora de Shopify",
@@ -725,12 +725,12 @@ export const ca: Messages = {
       "how-much-cost": {
         question: "Quant costa Bizmis?",
         answer:
-          "Tres plans més Enterprise, tots amb facturació mensual. **Starter** (79 $/mes, 260 converses) per a botigues petites o d'una persona. **Growth** (199 $/mes, 660 converses) per a botigues en creixement, el més popular. **Scale** (499 $/mes, 1.650 converses) per a botigues d'alt volum. **Enterprise** des de 1.500 $/mes, amb volum a mida, capacitat garantida per als pics de trànsit i SLA. Cada conversa extra costa 0,30 $, fins al límit de despesa que fixis. Pots començar amb 120 converses gratis.",
+          "Tres plans més Enterprise, tots amb facturació mensual. **Starter** (79 $/mes, 260 sessions) per a botigues petites o d'una persona. **Growth** (199 $/mes, 660 sessions) per a botigues en creixement, el més popular. **Scale** (499 $/mes, 1.650 sessions) per a botigues d'alt volum. **Enterprise** des de 1.500 $/mes, amb volum a mida, capacitat garantida per als pics de trànsit i SLA. Cada sessió extra costa 0,30 $, fins al límit de despesa que fixis. Pots començar amb 120 sessions gratis.",
       },
-      "what-counts-as-conversation": {
-        question: "Què compta com una conversa?",
+      "what-counts-as-session": {
+        question: "Què compta com una sessió?",
         answer:
-          "Una conversa és el xat d'un client amb el teu dependent, per veu o per text. Inclou fins a 2 minuts de veu o 20 missatges; si s'allarga, compta com a dues. Si el client no diu res, és gratis, i les teves pròpies proves al tauler de Bizmis tampoc no compten. Cada pla inclou un nombre de converses (Starter 260 / Growth 660 / Scale 1.650) que es renova cada mes. A partir d'aquí, cada conversa extra costa 0,30 $, només fins al límit de despesa que fixis al tauler de Bizmis. El límit comença a 0 $, de manera que no es cobra res extra fins que l'apugis. Quan l'assoleixes, el dependent es posa en pausa fins al període següent o fins que apugis el límit. Les converses no utilitzades no s'acumulen.",
+          "Una sessió és la visita d'un client al teu dependent, per veu o per text. Les sessions de més de 5 minuts de veu o 40 missatges compten com a dues. Les visites en què el client no diu res són gratis. Les teves pròpies proves al tauler de Bizmis tampoc no compten. Cada pla inclou un nombre de sessions (Starter 260 / Growth 660 / Scale 1.650) que es renova cada mes. A partir d'aquí, cada sessió extra costa 0,30 $, només fins al límit de despesa que fixis al tauler de Bizmis. El límit comença a 0 $, de manera que no es cobra res extra fins que l'apugis. Quan l'assoleixes, el dependent es posa en pausa fins al període següent o fins que apugis el límit. Les sessions no utilitzades no s'acumulen.",
       },
       "monthly-billing": {
         question: "Hi ha facturació anual?",
@@ -740,12 +740,12 @@ export const ca: Messages = {
       "early-access-offer": {
         question: "Què és l'oferta d'accés anticipat?",
         answer:
-          "L'accés anticipat ofereix a les botigues Shopify convidades les **120 converses gratis** del pla gratuït, una sola vegada per botiga. No hi ha subscripció, càrrecs per ús, actualització automàtica ni renovació. Quan s'esgoten les converses, Bizmis es posa en pausa, tret que triïs i aprovis un pla de pagament a Shopify. Els membres també reben onboarding 1 a 1, suport prioritari, prioritat per als seus comentaris sobre el producte i un descompte personal si més endavant decideixen millorar el pla.",
+          "L'accés anticipat ofereix a les botigues Shopify convidades les **120 sessions gratis** del pla gratuït, una sola vegada per botiga. No hi ha subscripció, càrrecs per ús, actualització automàtica ni renovació. Quan s'esgoten les sessions, Bizmis es posa en pausa, tret que triïs i aprovis un pla de pagament a Shopify. Els membres també reben onboarding 1 a 1, suport prioritari, prioritat per als seus comentaris sobre el producte i un descompte personal si més endavant decideixen millorar el pla.",
       },
       "free-plan": {
         question: "Hi ha un pla gratuït?",
         answer:
-          "Sí. El **pla gratuït** posa Bizmis en marxa a la teva botiga durant **120 converses gratis**, una sola vegada per botiga. Sense subscripció, sense compromís, sense targeta i sense renovacions. És una prova real amb compradors reals. Quan necessitis capacitat continuada, passa a un pla de pagament. Tots els càrrecs de Bizmis passen per Shopify amb el compte que ja fas servir, així que mai afegeixes una altra targeta, i el pla gratuït no té res a cobrar.",
+          "Sí. El **pla gratuït** posa Bizmis en marxa a la teva botiga durant **120 sessions gratis**, una sola vegada per botiga. Sense subscripció, sense compromís, sense targeta i sense renovacions. És una prova real amb compradors reals. Quan necessitis capacitat continuada, passa a un pla de pagament. Tots els càrrecs de Bizmis passen per Shopify amb el compte que ja fas servir, així que mai afegeixes una altra targeta, i el pla gratuït no té res a cobrar.",
       },
       "billing-payment-method": {
         question: "Com funciona el pagament? He d'afegir una targeta?",
@@ -770,7 +770,7 @@ export const ca: Messages = {
       "refund-policy": {
         question: "Quina és la vostra política de reemborsaments?",
         answer:
-          "**Garantia de devolució de 30 dies:** si cancel·les dins dels 30 dies posteriors al teu primer càrrec d'un pla de pagament, et retornem aquesta quota, sense preguntes. No cobreix els mesos següents ni les converses extra.\n**Després:** els càrrecs ja facturats del mes en curs no són reemborsables, però no se't tornarà a cobrar. Les converses no utilitzades no s'acumulen.",
+          "**Garantia de devolució de 30 dies:** si cancel·les dins dels 30 dies posteriors al teu primer càrrec d'un pla de pagament, et retornem aquesta quota, sense preguntes. No cobreix els mesos següents ni les sessions extra.\n**Després:** els càrrecs ja facturats del mes en curs no són reemborsables, però no se't tornarà a cobrar. Les sessions no utilitzades no s'acumulen.",
       },
       "personalize-voice-avatar": {
         question: "Puc personalitzar la veu i l'avatar?",
@@ -883,7 +883,7 @@ export const ca: Messages = {
       {
         title: "Gratis com a membre*",
         detail:
-          "Activa l'accés anticipat a l'app i fes servir 120 converses en directe sense cost. Sense subscripció, sense compromís.",
+          "Activa l'accés anticipat a l'app i fes servir 120 sessions en directe sense cost. Sense subscripció, sense compromís.",
       },
       {
         title: "Defineix el full de ruta",
@@ -910,7 +910,7 @@ export const ca: Messages = {
     seeDemoFirst: "Mira abans la demo en directe",
     founderLed: "Projecte liderat pel seu fundador. Dubtes?",
     footnote:
-      "*Gratis per a membres d'accés anticipat = 120 converses en directe, una sola vegada per botiga, sense renovació.",
+      "*Gratis per a membres d'accés anticipat = 120 sessions en directe, una sola vegada per botiga, sense renovació.",
   },
 
   unsubscribe: {

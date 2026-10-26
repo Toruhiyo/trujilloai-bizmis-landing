@@ -3,10 +3,11 @@ import { EARLY_ACCESS_STORE_CAP } from "@/data/leads/_schema";
 export const BIZMIS_PRODUCT_NAME = "Bizmis \u2014 Voice Store Clerk";
 
 /**
- * Free plan lifetime allowance, in conversations (pricing v2). The Free plan
- * runs live in the store up to this one-time amount (no renewal, no
- * commitment). Keep in sync with the backend preview allowance
- * (`PREVIEW_LIFETIME_CREDITS`, whose unit is now conversations).
+ * Free plan lifetime allowance, in sessions (pricing v2; the unit was
+ * renamed from conversations, same number). The Free plan runs live in the
+ * store up to this one-time amount (no renewal, no commitment). Keep in sync
+ * with the backend preview allowance (`PREVIEW_LIFETIME_CREDITS`, whose unit
+ * is now sessions).
  */
 export const FREE_PLAN_CONVERSATIONS_ALLOWANCE = 120;
 
@@ -264,7 +265,7 @@ export function buildSoftCtaPlainText(shopifyAppUrl: string, storeCap: number): 
 }
 
 export function buildEarlyAccessTrialUsageFootnotePlainText(): string {
-  return `* Free plan: ${FREE_PLAN_CONVERSATIONS_ALLOWANCE.toLocaleString("en-US")} live conversations at no cost, one time, no renewal.`;
+  return `* Free plan: ${FREE_PLAN_CONVERSATIONS_ALLOWANCE.toLocaleString("en-US")} live sessions at no cost, one time, no renewal.`;
 }
 
 export function buildEarlyAccessFooterPlainText(): string {
