@@ -591,7 +591,7 @@ export const fr: Messages = {
         name: "Scale",
         features: [
           "Vendeurs Bizmis illimités",
-          "Conversations étiquetées automatiquement",
+          "Sessions étiquetées automatiquement",
           "Support prioritaire et onboarding en direct",
         ],
       },

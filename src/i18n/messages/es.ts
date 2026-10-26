@@ -590,7 +590,7 @@ export const es: Messages = {
         name: "Scale",
         features: [
           "Dependientes Bizmis ilimitados",
-          "Conversaciones etiquetadas automáticamente",
+          "Sesiones etiquetadas automáticamente",
           "Soporte prioritario y onboarding en directo",
         ],
       },

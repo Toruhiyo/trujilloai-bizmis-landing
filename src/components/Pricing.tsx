@@ -125,9 +125,10 @@ const isConversationCatalog = (backendPlans: PublicPlanDTO[] | null): boolean =>
  * onto the static template, which keeps copy-only fields (feature bullets,
  * button text). Reads the session keys first and falls back to the older
  * conversation- and credit-named keys, which the backend keeps populated with
- * the same values (a backend from before the session rename only has those). When the catalog hasn't loaded, is still v1, or a plan is
- * missing, the hardcoded v2 values act as a fallback so the page never
- * blanks or shows stale plans.
+ * the same values (a backend from before the session rename only has those).
+ * When the catalog hasn't loaded, is still v1, or a plan is missing, the
+ * hardcoded v2 values act as a fallback so the page never blanks or shows
+ * stale plans.
  */
 const mergePlansWithBackend = (
   templates: Plan[],

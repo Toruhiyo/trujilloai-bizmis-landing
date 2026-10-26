@@ -602,7 +602,7 @@ export const en = {
         name: "Scale",
         features: [
           "Unlimited Bizmis Store Clerks",
-          "Auto-tagged conversations",
+          "Auto-tagged sessions",
           "Priority support and live onboarding",
         ],
       },

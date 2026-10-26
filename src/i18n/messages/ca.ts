@@ -591,7 +591,7 @@ export const ca: Messages = {
         name: "Scale",
         features: [
           "Dependents Bizmis il·limitats",
-          "Converses etiquetades automàticament",
+          "Sessions etiquetades automàticament",
           "Suport prioritari i onboarding en directe",
         ],
       },
