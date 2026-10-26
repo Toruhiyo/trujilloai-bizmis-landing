@@ -242,7 +242,7 @@ export const fr: Messages = {
       invite: "pour les avantages Early Access !",
       note: "Seulement 50 places !",
       /** The ad-1 film's Early Access perks, then the quieter extras under them. */
-      perks: ["120 conversations gratuites", "-50 % sur les forfaits supérieurs", "Orientez la feuille de route"],
+      perks: ["120 sessions gratuites", "-50 % sur les forfaits supérieurs", "Orientez la feuille de route"],
       extras: ["Sans carte bancaire", "Sans engagement", "Une ligne directe avec le fondateur"],
     },
     setup: {
@@ -552,11 +552,11 @@ export const fr: Messages = {
     lead: "Choisissez le plan adapté à votre activité. Tous incluent l'intégration Shopify complète.",
     perMonth: "/mois",
     popular: "Populaire",
-    conversationsPerMonth: "conversations / mois",
+    conversationsPerMonth: "sessions / mois",
     extraConversations: (price: string) =>
-      `Conversations supplémentaires à ${price} l'unité, dans la limite du plafond de dépenses que vous fixez`,
+      `Sessions supplémentaires à ${price} l'unité, dans la limite du plafond de dépenses que vous fixez`,
     conversationDefinition:
-      "Une conversation, c'est l'échange d'un client avec votre vendeur, à la voix ou par écrit. Elle couvre jusqu'à 2 minutes de voix ou 20 messages ; au-delà, elle compte pour deux. Les échanges où le client ne dit rien sont gratuits.",
+      "Une session, c'est la visite d'un client auprès de votre vendeur, à la voix ou par écrit. Les sessions de plus de 5 minutes de voix ou 40 messages comptent pour deux. Les visites où le client ne dit rien sont gratuites.",
     off: "de remise",
     discountTitle: (percent: number) => `${percent} % de moins que le tarif public`,
     introPeriodTitle: "Période de lancement remisée",
@@ -566,7 +566,7 @@ export const fr: Messages = {
       name: "Gratuit",
       noCommitment: "Sans engagement",
       description: (conversations: string) =>
-        `${conversations} conversations gratuites pour essayer Bizmis. Sans carte bancaire.`,
+        `${conversations} sessions gratuites pour essayer Bizmis. Sans carte bancaire.`,
       cta: "Commencer gratuitement",
     },
     plans: {
@@ -603,7 +603,7 @@ export const fr: Messages = {
         "Des solutions sur mesure pour les opérations à grande échelle, avec volume et exigences personnalisés.",
       everythingInScale: "Tout le plan Scale, plus :",
       features: [
-        "Volume de conversations sur mesure",
+        "Volume de sessions sur mesure",
         "Capacité garantie pour les pics de trafic",
         "SLA et voix personnalisée",
         "Facturation en dehors de Shopify",
@@ -725,12 +725,12 @@ export const fr: Messages = {
       "how-much-cost": {
         question: "Combien coûte Bizmis ?",
         answer:
-          "Trois plans plus Enterprise, tous facturés au mois. **Starter** (79 $/mois, 260 conversations) pour les boutiques individuelles ou de petite taille. **Growth** (199 $/mois, 660 conversations) pour les boutiques en croissance, le plus populaire. **Scale** (499 $/mois, 1 650 conversations) pour les boutiques à fort volume. **Enterprise** à partir de 1 500 $/mois, avec un volume sur mesure, une capacité garantie pour les pics de trafic et des SLA. Chaque conversation supplémentaire coûte 0,30 $, dans la limite du plafond de dépenses que vous fixez. Vous pouvez commencer avec 120 conversations gratuites.",
+          "Trois plans plus Enterprise, tous facturés au mois. **Starter** (79 $/mois, 260 sessions) pour les boutiques individuelles ou de petite taille. **Growth** (199 $/mois, 660 sessions) pour les boutiques en croissance, le plus populaire. **Scale** (499 $/mois, 1 650 sessions) pour les boutiques à fort volume. **Enterprise** à partir de 1 500 $/mois, avec un volume sur mesure, une capacité garantie pour les pics de trafic et des SLA. Chaque session supplémentaire coûte 0,30 $, dans la limite du plafond de dépenses que vous fixez. Vous pouvez commencer avec 120 sessions gratuites.",
       },
-      "what-counts-as-conversation": {
-        question: "Qu'est-ce qui compte comme une conversation ?",
+      "what-counts-as-session": {
+        question: "Qu'est-ce qui compte comme une session ?",
         answer:
-          "Une conversation, c'est l'échange d'un client avec votre vendeur, à la voix ou par écrit. Elle couvre jusqu'à 2 minutes de voix ou 20 messages ; au-delà, elle compte pour deux. Les échanges où le client ne dit rien sont gratuits, tout comme vos propres aperçus dans l'administration Bizmis. Chaque plan inclut un nombre de conversations (Starter 260 / Growth 660 / Scale 1 650) renouvelé chaque mois. Au-delà, chaque conversation supplémentaire coûte 0,30 $, uniquement dans la limite du plafond de dépenses que vous fixez dans l'administration Bizmis. Le plafond démarre à 0 $ : rien de plus n'est facturé tant que vous ne le relevez pas. Une fois le plafond atteint, le vendeur se met en pause jusqu'à la période suivante ou jusqu'à ce que vous releviez le plafond. Les conversations non utilisées ne sont pas reportées.",
+          "Une session, c'est la visite d'un client auprès de votre vendeur, à la voix ou par écrit. Les sessions de plus de 5 minutes de voix ou 40 messages comptent pour deux. Les visites où le client ne dit rien sont gratuites. Vos propres aperçus dans l'administration Bizmis sont gratuits aussi. Chaque plan inclut un nombre de sessions (Starter 260 / Growth 660 / Scale 1 650) renouvelé chaque mois. Au-delà, chaque session supplémentaire coûte 0,30 $, uniquement dans la limite du plafond de dépenses que vous fixez dans l'administration Bizmis. Le plafond démarre à 0 $ : rien de plus n'est facturé tant que vous ne le relevez pas. Une fois le plafond atteint, le vendeur se met en pause jusqu'à la période suivante ou jusqu'à ce que vous releviez le plafond. Les sessions non utilisées ne sont pas reportées.",
       },
       "monthly-billing": {
         question: "Existe-t-il une facturation annuelle ?",
@@ -740,12 +740,12 @@ export const fr: Messages = {
       "early-access-offer": {
         question: "Qu'est-ce que l'offre d'accès anticipé ?",
         answer:
-          "L'accès anticipé offre aux boutiques Shopify invitées les **120 conversations gratuites** du plan gratuit, une seule fois par boutique. Il n'y a aucun abonnement, frais d'utilisation, passage automatique à un plan supérieur ni renouvellement. Lorsque les conversations sont épuisées, Bizmis se met en pause, sauf si vous choisissez et approuvez un plan payant dans Shopify. Les membres bénéficient également d'un accompagnement individuel, d'une assistance prioritaire, d'une prise en compte prioritaire de leurs retours produit et d'une remise personnelle s'ils passent ensuite à un plan payant.",
+          "L'accès anticipé offre aux boutiques Shopify invitées les **120 sessions gratuites** du plan gratuit, une seule fois par boutique. Il n'y a aucun abonnement, frais d'utilisation, passage automatique à un plan supérieur ni renouvellement. Lorsque les sessions sont épuisées, Bizmis se met en pause, sauf si vous choisissez et approuvez un plan payant dans Shopify. Les membres bénéficient également d'un accompagnement individuel, d'une assistance prioritaire, d'une prise en compte prioritaire de leurs retours produit et d'une remise personnelle s'ils passent ensuite à un plan payant.",
       },
       "free-plan": {
         question: "Existe-t-il un plan gratuit ?",
         answer:
-          "Oui. Le **plan gratuit** fait fonctionner Bizmis dans votre boutique pendant **120 conversations gratuites**, une seule fois par boutique. Sans abonnement, sans engagement, sans carte bancaire et sans renouvellement. C'est un vrai test avec de vrais acheteurs. Quand vous voulez de la capacité continue, passez à un plan payant. Toute facturation Bizmis passe par Shopify sur le compte que vous utilisez déjà : vous n'ajoutez jamais de carte séparée, et le plan gratuit n'a rien à facturer.",
+          "Oui. Le **plan gratuit** fait fonctionner Bizmis dans votre boutique pendant **120 sessions gratuites**, une seule fois par boutique. Sans abonnement, sans engagement, sans carte bancaire et sans renouvellement. C'est un vrai test avec de vrais acheteurs. Quand vous voulez de la capacité continue, passez à un plan payant. Toute facturation Bizmis passe par Shopify sur le compte que vous utilisez déjà : vous n'ajoutez jamais de carte séparée, et le plan gratuit n'a rien à facturer.",
       },
       "billing-payment-method": {
         question: "Comment se passe le paiement ? Dois-je ajouter une carte ?",
@@ -770,7 +770,7 @@ export const fr: Messages = {
       "refund-policy": {
         question: "Quelle est votre politique de remboursement ?",
         answer:
-          "**Garantie satisfait ou remboursé de 30 jours :** annulez dans les 30 jours suivant votre premier paiement d'un plan payant et nous remboursons ce montant, sans justification. La garantie ne couvre ni les mois suivants ni les conversations supplémentaires.\n**Ensuite :** les montants déjà facturés pour le mois en cours ne sont pas remboursables, mais vous ne serez plus facturé. Les conversations non utilisées ne sont pas reportées.",
+          "**Garantie satisfait ou remboursé de 30 jours :** annulez dans les 30 jours suivant votre premier paiement d'un plan payant et nous remboursons ce montant, sans justification. La garantie ne couvre ni les mois suivants ni les sessions supplémentaires.\n**Ensuite :** les montants déjà facturés pour le mois en cours ne sont pas remboursables, mais vous ne serez plus facturé. Les sessions non utilisées ne sont pas reportées.",
       },
       "personalize-voice-avatar": {
         question: "Puis-je personnaliser la voix et l'avatar ?",
@@ -884,7 +884,7 @@ export const fr: Messages = {
       {
         title: "Gratuit en tant que membre*",
         detail:
-          "Activez l'accès anticipé dans l'application et utilisez 120 conversations en conditions réelles, sans frais. Sans abonnement, sans engagement.",
+          "Activez l'accès anticipé dans l'application et utilisez 120 sessions en conditions réelles, sans frais. Sans abonnement, sans engagement.",
       },
       {
         title: "Façonnez la feuille de route",
@@ -911,7 +911,7 @@ export const fr: Messages = {
     seeDemoFirst: "Voir d'abord la démo en direct",
     founderLed: "Projet mené par son fondateur. Des questions ?",
     footnote:
-      "*Gratuit pour les membres de l'accès anticipé = 120 conversations en conditions réelles, une seule fois par boutique, sans renouvellement.",
+      "*Gratuit pour les membres de l'accès anticipé = 120 sessions en conditions réelles, une seule fois par boutique, sans renouvellement.",
   },
 
   unsubscribe: {

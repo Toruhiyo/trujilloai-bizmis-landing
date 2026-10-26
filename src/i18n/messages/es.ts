@@ -242,7 +242,7 @@ export const es: Messages = {
       invite: "¡con las ventajas de Early Access!",
       note: "¡Solo 50 plazas!",
       /** The ad-1 film's Early Access perks, then the quieter extras under them. */
-      perks: ["120 conversaciones gratis", "50% de descuento al mejorar tu plan", "Decide el roadmap con nosotros"],
+      perks: ["120 sesiones gratis", "50% de descuento al mejorar tu plan", "Decide el roadmap con nosotros"],
       extras: ["Sin tarjeta", "Sin compromiso", "Línea directa con el fundador"],
     },
     setup: {
@@ -551,11 +551,11 @@ export const es: Messages = {
     lead: "Elige el plan que encaja con tu negocio. Todos incluyen la integración completa con Shopify.",
     perMonth: "/mes",
     popular: "Popular",
-    conversationsPerMonth: "conversaciones / mes",
+    conversationsPerMonth: "sesiones / mes",
     extraConversations: (price: string) =>
-      `Conversaciones extra a ${price} cada una, hasta el límite de gasto que fijes`,
+      `Sesiones extra a ${price} cada una, hasta el límite de gasto que fijes`,
     conversationDefinition:
-      "Una conversación es el chat de un cliente con tu dependiente, por voz o por texto. Cubre hasta 2 minutos de voz o 20 mensajes; si se alarga, cuenta como dos. Si el cliente no dice nada, es gratis.",
+      "Una sesión es la visita de un cliente a tu dependiente, por voz o por texto. Las sesiones de más de 5 minutos de voz o 40 mensajes cuentan como dos. Las visitas en las que el cliente no dice nada son gratis.",
     off: "dto.",
     discountTitle: (percent: number) => `${percent}% menos que el precio de lista`,
     introPeriodTitle: "Periodo inicial con descuento",
@@ -565,7 +565,7 @@ export const es: Messages = {
       name: "Gratis",
       noCommitment: "Sin compromiso",
       description: (conversations: string) =>
-        `${conversations} conversaciones gratis para probar Bizmis. Sin tarjeta.`,
+        `${conversations} sesiones gratis para probar Bizmis. Sin tarjeta.`,
       cta: "Empezar gratis",
     },
     plans: {
@@ -602,7 +602,7 @@ export const es: Messages = {
         "Soluciones a medida para operaciones a gran escala, con volumen y requisitos personalizados.",
       everythingInScale: "Todo lo de Scale y además:",
       features: [
-        "Volumen de conversaciones a medida",
+        "Volumen de sesiones a medida",
         "Capacidad garantizada para picos de tráfico",
         "SLA y voz personalizada",
         "Facturación fuera de Shopify",
@@ -724,12 +724,12 @@ export const es: Messages = {
       "how-much-cost": {
         question: "¿Cuánto cuesta Bizmis?",
         answer:
-          "Tres planes más Enterprise, todos con facturación mensual. **Starter** (79 $/mes, 260 conversaciones) para tiendas pequeñas o de una persona. **Growth** (199 $/mes, 660 conversaciones) para tiendas en crecimiento, el más popular. **Scale** (499 $/mes, 1.650 conversaciones) para tiendas de alto volumen. **Enterprise** desde 1.500 $/mes, con volumen a medida, capacidad garantizada para picos de tráfico y SLA. Cada conversación extra cuesta 0,30 $, hasta el límite de gasto que fijes. Puedes empezar con 120 conversaciones gratis.",
+          "Tres planes más Enterprise, todos con facturación mensual. **Starter** (79 $/mes, 260 sesiones) para tiendas pequeñas o de una persona. **Growth** (199 $/mes, 660 sesiones) para tiendas en crecimiento, el más popular. **Scale** (499 $/mes, 1.650 sesiones) para tiendas de alto volumen. **Enterprise** desde 1.500 $/mes, con volumen a medida, capacidad garantizada para picos de tráfico y SLA. Cada sesión extra cuesta 0,30 $, hasta el límite de gasto que fijes. Puedes empezar con 120 sesiones gratis.",
       },
-      "what-counts-as-conversation": {
-        question: "¿Qué cuenta como una conversación?",
+      "what-counts-as-session": {
+        question: "¿Qué cuenta como una sesión?",
         answer:
-          "Una conversación es el chat de un cliente con tu dependiente, por voz o por texto. Cubre hasta 2 minutos de voz o 20 mensajes; si se alarga, cuenta como dos. Si el cliente no dice nada, es gratis, y tus propias pruebas en el panel de Bizmis tampoco cuentan. Cada plan incluye un número de conversaciones (Starter 260 / Growth 660 / Scale 1.650) que se renueva cada mes. A partir de ahí, cada conversación extra cuesta 0,30 $, solo hasta el límite de gasto que fijes en el panel de Bizmis. El límite empieza en 0 $, así que no se cobra nada extra hasta que lo subas. Al alcanzarlo, el dependiente se pausa hasta el siguiente periodo o hasta que subas el límite. Las conversaciones no usadas no se acumulan.",
+          "Una sesión es la visita de un cliente a tu dependiente, por voz o por texto. Las sesiones de más de 5 minutos de voz o 40 mensajes cuentan como dos. Las visitas en las que el cliente no dice nada son gratis. Tus propias pruebas en el panel de Bizmis tampoco cuentan. Cada plan incluye un número de sesiones (Starter 260 / Growth 660 / Scale 1.650) que se renueva cada mes. A partir de ahí, cada sesión extra cuesta 0,30 $, solo hasta el límite de gasto que fijes en el panel de Bizmis. El límite empieza en 0 $, así que no se cobra nada extra hasta que lo subas. Al alcanzarlo, el dependiente se pausa hasta el siguiente periodo o hasta que subas el límite. Las sesiones no usadas no se acumulan.",
       },
       "monthly-billing": {
         question: "¿Hay facturación anual?",
@@ -739,12 +739,12 @@ export const es: Messages = {
       "early-access-offer": {
         question: "¿Qué es la oferta de acceso anticipado?",
         answer:
-          "El acceso anticipado ofrece a las tiendas Shopify invitadas las **120 conversaciones gratis** del plan gratuito, una sola vez por tienda. No hay suscripción, cargos por uso, actualización automática ni renovación. Cuando se agotan las conversaciones, Bizmis se pausa, salvo que elijas y apruebes un plan de pago en Shopify. Los miembros también reciben onboarding 1 a 1, soporte prioritario, prioridad para sus comentarios sobre el producto y un descuento personal si más adelante deciden mejorar su plan.",
+          "El acceso anticipado ofrece a las tiendas Shopify invitadas las **120 sesiones gratis** del plan gratuito, una sola vez por tienda. No hay suscripción, cargos por uso, actualización automática ni renovación. Cuando se agotan las sesiones, Bizmis se pausa, salvo que elijas y apruebes un plan de pago en Shopify. Los miembros también reciben onboarding 1 a 1, soporte prioritario, prioridad para sus comentarios sobre el producto y un descuento personal si más adelante deciden mejorar su plan.",
       },
       "free-plan": {
         question: "¿Hay un plan gratuito?",
         answer:
-          "Sí. El **plan gratuito** pone Bizmis en marcha en tu tienda durante **120 conversaciones gratis**, una sola vez por tienda. Sin suscripción, sin compromiso, sin tarjeta y sin renovaciones. Es una prueba real con compradores reales. Cuando necesites capacidad continua, pasa a un plan de pago. Todos los cargos de Bizmis pasan por Shopify con la cuenta que ya usas, así que nunca añades otra tarjeta, y el plan gratuito no tiene nada que cobrar.",
+          "Sí. El **plan gratuito** pone Bizmis en marcha en tu tienda durante **120 sesiones gratis**, una sola vez por tienda. Sin suscripción, sin compromiso, sin tarjeta y sin renovaciones. Es una prueba real con compradores reales. Cuando necesites capacidad continua, pasa a un plan de pago. Todos los cargos de Bizmis pasan por Shopify con la cuenta que ya usas, así que nunca añades otra tarjeta, y el plan gratuito no tiene nada que cobrar.",
       },
       "billing-payment-method": {
         question: "¿Cómo funciona el pago? ¿Tengo que añadir una tarjeta?",
@@ -769,7 +769,7 @@ export const es: Messages = {
       "refund-policy": {
         question: "¿Cuál es vuestra política de reembolsos?",
         answer:
-          "**Garantía de devolución de 30 días:** si cancelas dentro de los 30 días siguientes a tu primer cargo de un plan de pago, te devolvemos esa cuota, sin preguntas. No cubre los meses siguientes ni las conversaciones extra.\n**Después:** los cargos ya facturados del mes en curso no son reembolsables, pero no se te volverá a cobrar. Las conversaciones no usadas no se acumulan.",
+          "**Garantía de devolución de 30 días:** si cancelas dentro de los 30 días siguientes a tu primer cargo de un plan de pago, te devolvemos esa cuota, sin preguntas. No cubre los meses siguientes ni las sesiones extra.\n**Después:** los cargos ya facturados del mes en curso no son reembolsables, pero no se te volverá a cobrar. Las sesiones no usadas no se acumulan.",
       },
       "personalize-voice-avatar": {
         question: "¿Puedo personalizar la voz y el avatar?",
@@ -883,7 +883,7 @@ export const es: Messages = {
       {
         title: "Gratis como miembro*",
         detail:
-          "Activa el acceso anticipado en la app y usa 120 conversaciones en directo sin coste. Sin suscripción, sin compromiso.",
+          "Activa el acceso anticipado en la app y usa 120 sesiones en directo sin coste. Sin suscripción, sin compromiso.",
       },
       {
         title: "Define la hoja de ruta",
@@ -910,7 +910,7 @@ export const es: Messages = {
     seeDemoFirst: "Ver antes la demo en vivo",
     founderLed: "Proyecto liderado por su fundador. ¿Dudas?",
     footnote:
-      "*Gratis para miembros de acceso anticipado = 120 conversaciones en directo, una sola vez por tienda, sin renovación.",
+      "*Gratis para miembros de acceso anticipado = 120 sesiones en directo, una sola vez por tienda, sin renovación.",
   },
 
   unsubscribe: {

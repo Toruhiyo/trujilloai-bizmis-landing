@@ -42,7 +42,7 @@ const CATEGORY_ITEM_IDS: Record<(typeof CATEGORY_IDS)[number], string[]> = {
   ],
   "pricing-billing": [
     "how-much-cost",
-    "what-counts-as-conversation",
+    "what-counts-as-session",
     "monthly-billing",
     "early-access-offer",
     "free-plan",

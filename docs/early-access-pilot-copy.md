@@ -46,7 +46,7 @@ real voice / confirm the canonical offer.** Brand voice: warm, human, in-store-a
 - **Primary CTA:** Book a 30-min call with me → `https://calendly.com/oriol-bizmis/bizmis-onboarding`
 - **Secondary:** See the live demo (`/demo`) · Or install it on Shopify now (`apps.shopify.com/bizmis`)
 - **Trust line:** Built by Oriol Trujillo, founder. Questions? hello@bizmis.ai
-- **Footnote:** \*Free plan = 120 free live conversations, once per store, no renewal.
+- **Footnote:** \*Free plan = 120 free live sessions, once per store, no renewal.
 
 ---
 

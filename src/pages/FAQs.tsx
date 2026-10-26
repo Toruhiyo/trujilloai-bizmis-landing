@@ -7,6 +7,11 @@ import Seo from "@/components/Seo";
 import { usePostHog } from "posthog-js/react";
 import { useLocaleHref, useMessages } from "@/i18n/LocaleProvider";
 
+/** Old FAQ deep-link ids that still resolve to their renamed FAQ. */
+const LEGACY_FAQ_HASHES: Record<string, string> = {
+  "what-counts-as-conversation": "what-counts-as-session",
+};
+
 const FAQsPage = () => {
   const posthog = usePostHog();
   const messages = useMessages();
@@ -20,8 +25,9 @@ const FAQsPage = () => {
 
   // Handle URL hash navigation to a specific FAQ or a whole category
   useEffect(() => {
-    const hash = window.location.hash.replace("#", "");
-    if (!hash) return;
+    const rawHash = window.location.hash.replace("#", "");
+    if (!rawHash) return;
+    const hash = LEGACY_FAQ_HASHES[rawHash] ?? rawHash;
 
     // Deep link to an individual FAQ (e.g. /faqs#refund-policy)
     const targetFaq = allFAQs.find((faq) => faq.id === hash);

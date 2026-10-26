@@ -259,7 +259,7 @@ export const en = {
       invite: "for Early Access benefits!",
       note: "Only 50 spots!",
       /** The ad-1 film's Early Access perks, then the quieter extras under them. */
-      perks: ["120 free conversations", "50% off upgrades", "Shape the roadmap"],
+      perks: ["120 free sessions", "50% off upgrades", "Shape the roadmap"],
       extras: ["No card needed", "No commitment", "A direct line to the founder"],
     },
     /** Setup on /v2: the title alone, a plain line under it, and the opening's install button states. */
@@ -563,11 +563,11 @@ export const en = {
     lead: "Choose the plan that fits your business. All plans include full Shopify integration.",
     perMonth: "/mo",
     popular: "Popular",
-    conversationsPerMonth: "conversations / month",
+    conversationsPerMonth: "sessions / month",
     extraConversations: (price: string) =>
-      `Extra conversations ${price} each, up to the spend cap you set`,
+      `Extra sessions ${price} each, up to the spend cap you set`,
     conversationDefinition:
-      "A conversation is one shopper's chat with your clerk, by voice or text. It covers up to 2 minutes of voice or 20 messages; longer chats count as two. Chats where the shopper says nothing are free.",
+      "A session is one shopper's visit with your clerk, by voice or text. Sessions longer than 5 minutes of voice or 40 messages count as two. Visits where the shopper says nothing are free.",
     off: "off",
     discountTitle: (percent: number) => `${percent}% off vs. list price`,
     introPeriodTitle: "Discounted intro period",
@@ -577,7 +577,7 @@ export const en = {
       name: "Free",
       noCommitment: "No commitment",
       description: (conversations: string) =>
-        `${conversations} free conversations to try Bizmis. No card needed.`,
+        `${conversations} free sessions to try Bizmis. No card needed.`,
       cta: "Start free",
     },
     plans: {
@@ -614,7 +614,7 @@ export const en = {
         "Tailored solutions for large-scale operations with custom volume and requirements.",
       everythingInScale: "Everything in Scale, plus:",
       features: [
-        "Custom conversation volume",
+        "Custom session volume",
         "Guaranteed capacity for traffic peaks",
         "SLA and custom voice",
         "Invoicing outside Shopify",
@@ -735,12 +735,12 @@ export const en = {
       "how-much-cost": {
         question: "How much does Bizmis cost?",
         answer:
-          "Three plans plus Enterprise, all billed monthly. **Starter** ($79/mo, 260 conversations) for solo or small stores. **Growth** ($199/mo, 660 conversations) for growing stores, most popular. **Scale** ($499/mo, 1,650 conversations) for high-volume stores. **Enterprise** from $1,500/mo for custom volume, guaranteed capacity for traffic peaks and SLAs. Extra conversations cost $0.30 each, up to the spend cap you set. You can start with 120 free conversations.",
+          "Three plans plus Enterprise, all billed monthly. **Starter** ($79/mo, 260 sessions) for solo or small stores. **Growth** ($199/mo, 660 sessions) for growing stores, most popular. **Scale** ($499/mo, 1,650 sessions) for high-volume stores. **Enterprise** from $1,500/mo for custom volume, guaranteed capacity for traffic peaks and SLAs. Extra sessions cost $0.30 each, up to the spend cap you set. You can start with 120 free sessions.",
       },
-      "what-counts-as-conversation": {
-        question: "What counts as a conversation?",
+      "what-counts-as-session": {
+        question: "What counts as a session?",
         answer:
-          "A conversation is one shopper's chat with your clerk, by voice or text. It covers up to 2 minutes of voice or 20 messages; longer chats count as two. Chats where the shopper says nothing are free, and so are your own previews in the Bizmis admin. Each plan includes a number of conversations (Starter 260 / Growth 660 / Scale 1,650) that resets every month. Beyond that, extra conversations cost $0.30 each, only up to the spend cap you set in the Bizmis admin. The cap starts at $0, so nothing extra is billed until you raise it. Once the cap is reached, the clerk pauses until the next period or until you raise the cap. Unused conversations don't roll over.",
+          "A session is one shopper's visit with your clerk, by voice or text. Sessions longer than 5 minutes of voice or 40 messages count as two. Visits where the shopper says nothing are free. Your own previews in the Bizmis admin are free too. Each plan includes a number of sessions (Starter 260 / Growth 660 / Scale 1,650) that resets every month. Beyond that, extra sessions cost $0.30 each, only up to the spend cap you set in the Bizmis admin. The cap starts at $0, so nothing extra is billed until you raise it. Once the cap is reached, the clerk pauses until the next period or until you raise the cap. Unused sessions don't roll over.",
       },
       "monthly-billing": {
         question: "Is there yearly billing?",
@@ -750,12 +750,12 @@ export const en = {
       "early-access-offer": {
         question: "What is the Early Access offer?",
         answer:
-          "Early Access gives invited Shopify stores the Free plan's **120 free conversations**, once per store. There is no subscription, usage charge, automatic upgrade, or renewal. When the conversations run out, Bizmis pauses unless you choose and approve a paid plan in Shopify. Members also get 1-to-1 onboarding, priority support, prioritized product feedback, and a personal discount if they later upgrade.",
+          "Early Access gives invited Shopify stores the Free plan's **120 free sessions**, once per store. There is no subscription, usage charge, automatic upgrade, or renewal. When the sessions run out, Bizmis pauses unless you choose and approve a paid plan in Shopify. Members also get 1-to-1 onboarding, priority support, prioritized product feedback, and a personal discount if they later upgrade.",
       },
       "free-plan": {
         question: "Is there a free plan?",
         answer:
-          "Yes. The **Free plan** runs Bizmis live in your store for **120 free conversations**, once per store. No subscription, no commitment, no card needed, and nothing renews. It's a real test with real shoppers. When you're ready for ongoing capacity, upgrade to a paid plan. Every Bizmis charge runs through Shopify on the account you already use, so you never add a separate card for Bizmis, and the Free plan has nothing to charge.",
+          "Yes. The **Free plan** runs Bizmis live in your store for **120 free sessions**, once per store. No subscription, no commitment, no card needed, and nothing renews. It's a real test with real shoppers. When you're ready for ongoing capacity, upgrade to a paid plan. Every Bizmis charge runs through Shopify on the account you already use, so you never add a separate card for Bizmis, and the Free plan has nothing to charge.",
       },
       "billing-payment-method": {
         question: "How does payment work? Do I need to add a card?",
@@ -780,7 +780,7 @@ export const en = {
       "refund-policy": {
         question: "What's your refund policy?",
         answer:
-          "**30-day money-back guarantee:** cancel within 30 days of your first paid plan charge and we'll refund that plan fee, no questions asked. It doesn't cover later months or extra conversations.\n**After that:** charges already billed for the current month are non-refundable, but you won't be billed again. Unused conversations don't carry over.",
+          "**30-day money-back guarantee:** cancel within 30 days of your first paid plan charge and we'll refund that plan fee, no questions asked. It doesn't cover later months or extra sessions.\n**After that:** charges already billed for the current month are non-refundable, but you won't be billed again. Unused sessions don't carry over.",
       },
       "personalize-voice-avatar": {
         question: "Can I personalize the voice and the avatar?",
@@ -893,7 +893,7 @@ export const en = {
       {
         title: "Free as a member*",
         detail:
-          "Claim Early Access in the app and use 120 live conversations at no cost. No subscription, no commitment.",
+          "Claim Early Access in the app and use 120 live sessions at no cost. No subscription, no commitment.",
       },
       {
         title: "Shape the roadmap",
@@ -920,7 +920,7 @@ export const en = {
     seeDemoFirst: "See the live demo first",
     founderLed: "Built founder-led. Questions?",
     footnote:
-      "*Free for Early Access members = 120 live conversations, once per store, no renewal.",
+      "*Free for Early Access members = 120 live sessions, once per store, no renewal.",
   },
 
   unsubscribe: {

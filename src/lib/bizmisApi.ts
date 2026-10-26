@@ -45,22 +45,24 @@ export type CouponErrorCode =
 
 /**
  * Public plan catalog returned by `GET /bizmis/coupons/plans`. This is the
- * single source of truth for base prices and included conversations; the
+ * single source of truth for base prices and included sessions; the
  * landing must not hardcode them. Marketing-only fields (feature bullets)
  * stay in the locale dictionaries.
  *
- * Pricing v2 (2026-10-22) bills in conversations, monthly only. The new keys
- * are optional so the landing keeps working against a backend that still
- * serves only the legacy credit-named keys; during the transition the backend
- * populates both with the same values. Legacy keys can go once every backend
- * deploy serves the new ones.
+ * Pricing v2 (2026-10-22) bills monthly only. The billing unit is the
+ * session (renamed from "conversation"; same numbers). The backend serves
+ * `included_sessions` / `overage_rate_per_session` and keeps the older
+ * conversation- and credit-named keys populated with the same values, so
+ * every key is optional and the landing reads sessions first, then falls
+ * back (a backend that predates the rename only serves the older keys).
+ * The older keys can go once every backend deploy serves the session ones.
  */
 export interface PublicPlanDTO {
   name: string;
   display_name: string;
   monthly_price: number;
-  included_conversations?: number;
-  overage_rate_per_conversation?: number;
+  included_sessions?: number;
+  overage_rate_per_session?: number;
   max_overage_cap_usd?: number;
   max_assistants?: number | null;
   /** Not displayed: card copy comes from the locale dictionaries. */
@@ -69,9 +71,13 @@ export interface PublicPlanDTO {
   features?: { label: string; is_soon: boolean }[];
   is_popular: boolean;
   money_back_guarantee_days?: number | null;
-  /** @deprecated v1 alias of `included_conversations`. */
+  /** @deprecated pre-rename alias of `included_sessions`. */
+  included_conversations?: number;
+  /** @deprecated pre-rename alias of `overage_rate_per_session`. */
+  overage_rate_per_conversation?: number;
+  /** @deprecated v1 alias of `included_sessions`. */
   included_credits?: number;
-  /** @deprecated v1 alias of `overage_rate_per_conversation`. */
+  /** @deprecated v1 alias of `overage_rate_per_session`. */
   overage_rate_per_credit?: number;
   /** @deprecated never displayed; concurrency is no longer a plan feature. */
   max_concurrency?: number;
