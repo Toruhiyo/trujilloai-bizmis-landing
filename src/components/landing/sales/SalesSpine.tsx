@@ -246,36 +246,30 @@ const Arrow = ({ d, head, on }: { d: string; head: string; on: boolean }) => (
 );
 
 /**
- * ?beat=9b's link: a marker frame round the stage's chamber, and an arrow
- * from its foot swooping under the funnel into the device; drawn in like
- * the cone's sides.
+ * ?beat=9b's link: a soft white wash over the stage's chamber, and an arrow
+ * from its foot swooping under the funnel into the device (drawn in like
+ * the cone's sides).
  */
 const Lens = ({ box, d, head, on }: { box: number[]; d: string; head: string; on: boolean }) => {
   const [x0, y0, x1, y1] = box;
   const r = Math.min(22, (x1 - x0) / 4, (y1 - y0) / 4);
-  // the frame in one marker stroke: soft corners, sides a touch bowed, and the pen running on past
-  // where it started (a hand closing a loop), with a fainter second pass for the marker's grain
-  const loop = (dx: number, dy: number, over: number) => {
-    const a = x0 + dx;
-    const b = x1 + dx;
-    const c = y0 + dy;
-    const e = y1 + dy;
-    return (
-      `M${a + r * 0.6} ${c + 1.5} Q${(a + b) / 2} ${c - 2.5} ${b - r} ${c} Q${b} ${c} ${b} ${c + r}` +
-      ` Q${b + 2.5} ${(c + e) / 2} ${b} ${e - r} Q${b} ${e} ${b - r} ${e}` +
-      ` Q${(a + b) / 2} ${e + 2.5} ${a + r} ${e} Q${a} ${e} ${a} ${e - r}` +
-      ` Q${a - 2.5} ${(c + e) / 2} ${a} ${c + r} Q${a} ${c} ${a + r} ${c - 0.5} L${a + r + over} ${c - 2}`
-    );
-  };
   return (
     <svg className={cn("sl-g2-cone sl-g2-lens", on && "is-on")} aria-hidden="true">
-      <path className="sl-g2-cone-side sl-g2-lens-frame is-grain" d={loop(1.5, -1.5, 10)} pathLength={1} />
-      <path className="sl-g2-cone-side sl-g2-lens-frame" d={loop(0, 0, 26)} pathLength={1} />
+      {/* the stage, lit: a soft white wash over its chamber (no outline) */}
+      <rect className="sl-g2-lens-wash" x={x0} y={y0} width={x1 - x0} height={y1 - y0} rx={r} />
       <path className="sl-g2-cone-side" d={d} pathLength={1} />
       <path className="sl-g2-cone-side" d={head} pathLength={1} />
     </svg>
   );
 };
+
+/** The marker ◀◀ (as the funnel's), over something being rewound. */
+const RewindMarks = ({ on, className }: { on: boolean; className?: string }) => (
+  <svg className={cn("sl-flow-rewind", on && "is-on", className)} viewBox="0 0 64 36" aria-hidden="true">
+    <path d="M30.5 5.5 C 24 10.5, 15.5 15, 6.5 18.2 C 15 21.5, 23.5 26, 30.2 30.8 C 29.6 22.5, 29.8 13.5, 30.5 5.5 Z" />
+    <path d="M57.5 5.2 C 51 10.2, 42.5 14.8, 33.5 18 C 42 21.4, 50.5 26.2, 57.3 30.6 C 56.7 22.3, 56.9 13.4, 57.5 5.2 Z" />
+  </svg>
+);
 
 /** A beat's device (memoised: only the playing beat's clock moves, so the others skip their re-render). */
 const Callout = memo(function Callout({
@@ -328,6 +322,8 @@ const Pinned = () => {
   // ?beat=9a..9c (9a the default): the opener alone, the funnel's label ending its sentence
   const opener = openerLook(look);
   const { win } = useSalesProto();
+  // ?pile=1..4: the payoff's sales piling up by the bag (looks to pick from; none by default)
+  const [pile] = useState(() => (typeof window === "undefined" ? 0 : Number(new URLSearchParams(window.location.search).get("pile")) || 0));
   const tls = useBeatTimelines();
   const [track, progress] = usePinProgress<HTMLDivElement>();
   // four stretches of the track: find, trust, buy, then the payoff (longer: three fixes, each given time)
@@ -447,7 +443,11 @@ const Pinned = () => {
               </div>
               {/* the payoff's win in the metrics a merchant watches, turning with each fix (direction only) */}
               <div className={cn("sl-g2-card", payoff && "is-on")} style={{ left: card.left, top: card.top, width: card.width }}>
-                <Metrics variant={4} k={payoff ? cardKsAt(payT, startsFor(3)) : [0, 0, 0]} focus={3} className="sl-g2-met is-card" />
+                {/* scrolled back: the card rewinds like the devices (the tape look, and the marker ◀◀ over it) */}
+                <RewindMarks on={rewinding && payoff} className="sl-g2-card-rw" />
+                <RewindScreen on={rewinding && payoff}>
+                  <Metrics variant={4} k={payoff ? cardKsAt(payT, startsFor(3)) : [0, 0, 0]} focus={3} className="sl-g2-met is-card" />
+                </RewindScreen>
               </div>
               <div className="sl-fn sl-g2-funnel" style={{ left: L.fnLeft, top: L.fnTop, width: L.fnW, height: L.fnH }}>
                 <FunnelFlow
@@ -458,6 +458,7 @@ const Pinned = () => {
                   copy={s.funnel}
                   labels={payoff || !onFunnel}
                   onLabels={payoff ? undefined : onLabels}
+                  pile={pile}
                   // (the words stand where the funnel's ◀◀ goes: their device's tape look says it)
                   rewind={rewinding && (payoff || !onFunnel)}
                 />

@@ -14,6 +14,7 @@ import {
   boundsFor,
   halfAtU,
   ksAt,
+  pileAt,
   leakU,
   shoppersBetween,
   sAt,
@@ -521,6 +522,122 @@ const labelRoom = (g: Geo, visits?: string) => {
  * fixed stage by stage in quick succession). All drawn from `t` (ms), so it
  * plays backwards as well as forwards.
  */
+/**
+ * The sales piled up by the bag (the payoff's ?pile looks), `k` (0 → 1) of
+ * the payoff's whole pile, in the buyers' warm white, by hand: each piece
+ * pops in as its share of the pile arrives.
+ */
+const drawPile = (
+  ctx: CanvasRenderingContext2D,
+  look: number,
+  k: number,
+  g: Geo,
+  c: Palette,
+  lw: number,
+  r: number,
+) => {
+  const { bx, by, R, H } = g;
+  const ink = (a: number) => rgba(c.buy, a);
+  const top = by + R + lw * 2 + 6;
+  const room = Math.max(20, H - top - 4);
+  ctx.save();
+  ctx.lineCap = "round";
+  ctx.lineJoin = "round";
+  if (look === 1) {
+    // a heap: orders (dots) settling into a mound under the bag, rows narrowing as it grows
+    const max = 36;
+    const n = k * max;
+    const d = r * 2.3;
+    const base = Math.min(top + room - r, top + d * 6);
+    let i = 0;
+    for (let row = 0, cap = 8; cap > 0 && i < max; row++, cap--) {
+      for (let j = 0; j < cap && i < max; j++, i++) {
+        const show = clamp(n - i);
+        if (show <= 0) continue;
+        const x = bx + (j - (cap - 1) / 2) * d + Math.sin(i * 2.1) * 1.2;
+        const y = base - row * d * 0.86 - (1 - show) * d * 1.5;
+        ctx.fillStyle = ink(show);
+        ctx.beginPath();
+        ctx.arc(x, y, r * (0.7 + 0.3 * show), 0, Math.PI * 2);
+        ctx.fill();
+      }
+    }
+  } else if (look === 2) {
+    // a tower of parcels: boxes stacking up beside the bag, a new column when one is full
+    const max = 15;
+    const n = k * max;
+    const s = Math.max(9, R * 0.62);
+    const perCol = Math.max(3, Math.min(5, Math.floor(room / (s * 1.15))));
+    ctx.lineWidth = Math.max(1.6, lw * 0.55);
+    for (let i = 0; i < Math.ceil(n); i++) {
+      const show = clamp(n - i);
+      const col = Math.floor(i / perCol);
+      const row = i % perCol;
+      const x = bx - s * 1.6 + col * s * 1.25 + Math.sin(i * 1.7) * 1.5;
+      const y = top + room - s - row * s * 1.08 - (1 - show) * s;
+      ctx.strokeStyle = ink(show);
+      ctx.beginPath();
+      ctx.rect(x, y, s, s * 0.92);
+      ctx.moveTo(x + s / 2, y);
+      ctx.lineTo(x + s / 2, y + s * 0.92);
+      ctx.stroke();
+    }
+  } else if (look === 3) {
+    // tally marks: groups of five, four strokes and one across, row after row under the bag
+    const max = 40;
+    const n = Math.floor(k * max + 1e-6);
+    const h = Math.max(12, R * 0.9);
+    const gap = h * 0.26;
+    const perRow = 15;
+    ctx.lineWidth = Math.max(2, lw * 0.6);
+    ctx.strokeStyle = ink(1);
+    for (let i = 0; i < n; i++) {
+      const row = Math.floor(i / perRow);
+      const inRow = i % perRow;
+      const grp = Math.floor(inRow / 5);
+      const m = inRow % 5;
+      const x0 = bx - (perRow / 5) * (4 * gap + h * 0.5) / 2 + grp * (4 * gap + h * 0.5);
+      const y0 = top + 4 + row * h * 1.35;
+      ctx.beginPath();
+      if (m < 4) {
+        const x = x0 + m * gap + Math.sin(i) * 0.6;
+        ctx.moveTo(x, y0);
+        ctx.lineTo(x + 0.8, y0 + h);
+      } else {
+        ctx.moveTo(x0 - gap * 0.4, y0 + h * 0.75);
+        ctx.lineTo(x0 + 3.4 * gap, y0 + h * 0.2);
+      }
+      ctx.stroke();
+    }
+  } else {
+    // a receipt unrolling from the bag: longer with every sale, a ticked line per order
+    const len = room * Math.min(1, k);
+    const w = R * 1.7;
+    const x0 = bx - w / 2;
+    ctx.lineWidth = Math.max(1.6, lw * 0.5);
+    ctx.strokeStyle = ink(0.95);
+    ctx.beginPath();
+    ctx.moveTo(x0, top - 4);
+    ctx.lineTo(x0, top + len);
+    // the torn edge
+    const teeth = 6;
+    for (let j = 1; j <= teeth; j++) ctx.lineTo(x0 + (w * j) / teeth, top + len + (j % 2 ? 4 : 0));
+    ctx.lineTo(x0 + w, top - 4);
+    ctx.stroke();
+    const step = Math.max(9, R * 0.5);
+    for (let y = top + step * 0.7, i = 0; y < top + len - 4; y += step, i++) {
+      ctx.beginPath();
+      ctx.moveTo(x0 + w * 0.16, y);
+      ctx.lineTo(x0 + w * (0.55 + 0.12 * Math.sin(i * 1.9)), y);
+      ctx.moveTo(x0 + w * 0.7, y - 1);
+      ctx.lineTo(x0 + w * 0.76, y + 2.5);
+      ctx.lineTo(x0 + w * 0.86, y - 3);
+      ctx.stroke();
+    }
+  }
+  ctx.restore();
+};
+
 const FunnelFlow = ({
   t,
   duration,
@@ -530,6 +647,7 @@ const FunnelFlow = ({
   rewind = false,
   labels: showLabels = true,
   onLabels,
+  pile = 0,
   className,
 }: {
   t: number;
@@ -543,6 +661,12 @@ const FunnelFlow = ({
   labels?: boolean;
   /** Told where the labels landed (each one's centre, px across the funnel's box), to line other words up on them. */
   onLabels?: (centres: number[]) => void;
+  /**
+   * The payoff's sales piling up by the bag (?pile=1..4; 0 none), on the
+   * scroll's clock so they rewind: 1 a heap of orders under the bag, 2 a
+   * tower of parcels, 3 tally marks, 4 a receipt unrolling from the bag.
+   */
+  pile?: number;
   className?: string;
 }) => {
   const wrap = useRef<HTMLDivElement>(null);
@@ -938,6 +1062,9 @@ const FunnelFlow = ({
         ctx.stroke();
       }
     }
+
+    // ── the payoff's sales, piling up by the bag (?pile=1..4) ──
+    if (payoff && pile > 0) drawPile(ctx, pile, pileAt(t, starts, duration), g, c, lw, r);
 
     // ── a beat: the other stages at ~40%; its own and the bag at full ink ──
     if (!payoff) {

@@ -1048,18 +1048,19 @@
   justify-items: center;
   text-align: center;
 }
-/* 9b: the frame round the chamber and the arrow from its foot to the device, in marker */
+/* 9b: the stage's wash (a filled, faint white light over its chamber) and the arrow from its foot to the device */
 .sl-g2-lens .sl-g2-cone-side {
   stroke-width: 3.2;
   stroke-linejoin: round;
 }
-.sl-g2-lens .sl-g2-cone-side.sl-g2-lens-frame {
-  stroke-width: 3;
+.sl-g2-lens-wash {
+  fill: rgb(255 255 255 / 0.16);
+  opacity: 0;
+  transition: opacity 0.3s ease;
 }
-/* the frame's fainter second pass: the marker's grain */
-.sl-g2-lens .sl-g2-cone-side.is-grain {
-  stroke-width: 1.6;
-  stroke: rgb(255 255 255 / 0.45);
+.sl-g2-lens.is-on .sl-g2-lens-wash {
+  opacity: 1;
+  transition: opacity 0.5s ease 0.15s;
 }
 /* 8c/8d: the marker arrow from the device to its chamber */
 .sl-g2-arrow .sl-g2-cone-side {
@@ -1098,6 +1099,12 @@
     left 0.8s var(--bzl-ease),
     top 0.8s var(--bzl-ease);
   pointer-events: none;
+}
+/* the card's ◀◀, over its top-left corner while it rewinds */
+.sl-g2-card .sl-g2-card-rw {
+  left: -10px;
+  top: -44px;
+  width: 46px;
 }
 .sl-g2-card.is-on {
   opacity: 1;

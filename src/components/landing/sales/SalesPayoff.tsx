@@ -5,7 +5,7 @@ import { cardKsAt, startsFor } from "./funnel/model";
 import Metrics from "./Metrics";
 
 /** The payoff's timeline: the bad funnel, the three stages fixed in turn, the sales piling up, the finale. */
-export const PAYOFF_DURATION = 11200;
+export const PAYOFF_DURATION = 12400;
 
 /**
  * The pillar's payoff, in the funnel's own language and without a single

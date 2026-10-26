@@ -99,11 +99,31 @@ const ease = (k: number) => (k <= 0 ? 0 : k >= 1 ? 1 : k < 0.5 ? 4 * k * k * k :
  */
 export const startsFor = (focus: number, fixAt = 1500) =>
   focus >= 3
-    ? [1600, 4800, 8000]
+    ? [2600, 5600, 8600]
     : [0, 1, 2].map((g) => (g < focus ? -Infinity : g === focus ? fixAt : Infinity));
 
 /** How far each stage's fix is at `t` (ms): 0 → 1, over RAMP from the landing. */
 export const ksAt = (t: number, starts: number[]) => starts.map((s) => ease((t - s) / RAMP));
+
+/**
+ * How far the payoff's sales have piled up at `t` (0 → 1 of what the whole
+ * payoff piles): the visits that buy, summed along the timeline, each stage
+ * passing what its fix lets through by then (a buyer reaches the bag a
+ * crossing after entering). Shapes only, never printed.
+ */
+export const pileAt = (t: number, starts: number[], duration: number) => {
+  const lag = CROSS * 1000;
+  const flow = (x: number) => {
+    const k = ksAt(x - lag, starts);
+    return rate(0, k[0]) * rate(1, k[1]) * rate(2, k[2]);
+  };
+  const sum = (to: number) => {
+    let acc = 0;
+    for (let x = 0; x < to; x += 50) acc += flow(x) * Math.min(50, to - x);
+    return acc;
+  };
+  return Math.min(1, Math.max(0, sum(Math.max(0, t)) / Math.max(1, sum(duration))));
+};
 
 /** How long the payoff's metric card takes to turn after each fix (ms): eased, so its lines bend smoothly. */
 export const CARD_TURN = 1100;
