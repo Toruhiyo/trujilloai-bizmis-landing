@@ -1031,8 +1031,22 @@
 .sl-g2-copy.is-over:not(.is-on) {
   transform: translateY(14px);
 }
+/* the size: SalesSpine's layout sets it per look (--bch-fs) */
 .sl-g2-copy.is-over .bch-head {
-  font-size: clamp(1.5rem, min(2.2vw, 4svh), 2.25rem);
+  font-size: var(--bch-fs, 2rem);
+}
+/* 7d: a banner centred over the whole funnel */
+.sl-g2-copy.is-over-d .bc-kicker,
+.sl-g2-copy.is-over-d .sl-copy-kicker {
+  justify-content: center;
+}
+.sl-g2-copy.is-over-d {
+  text-align: center;
+}
+.sl-g2-copy.is-over-d .bch-pre,
+.sl-g2-copy.is-over-d .bch-layer {
+  justify-items: center;
+  text-align: center;
 }
 .sl-g2-copy.is-payoff {
   left: 0;

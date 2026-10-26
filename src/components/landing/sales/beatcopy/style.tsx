@@ -11,11 +11,14 @@ import { createContext, useContext } from "react";
  * sentence's shared opening set once and never moved, only its core changed
  * in place. 6a retract & retype, 6b paint over, 6c marker correction,
  * 6d underline marker, 6e squeeze.
- * The words on the funnel, ?beat=7 (17): the whole loss → win (6c's look)
- * sits over its stage's chamber as that stage's label, the funnel drawing
- * no labels of its own, so the change happens in one place.
+ * The words on the funnel, ?beat=7a..7e (or 17..21; ?beat=7 is 7a): the
+ * whole loss → win (6c's look) stands on the funnel as its stage's label,
+ * the funnel drawing no labels of its own, so the change happens in one
+ * place. 7a medium over the chamber, 7b big over the chamber, 7c compact
+ * over the chamber, 7d a centred banner over the whole funnel, 7e beside
+ * the device (SalesSpine's layout).
  */
-export const BEAT_STYLES = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17] as const;
+export const BEAT_STYLES = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21] as const;
 
 /** The headline swaps: ?beat=5a → 7 … ?beat=5e → 11. */
 export const SWAPS = ["a", "b", "c", "d", "e"] as const;
@@ -27,8 +30,13 @@ export const HLS = ["a", "b", "c", "d", "e"] as const;
 export type HLLook = (typeof HLS)[number];
 export const HL_FROM = 12;
 
-/** ?beat=7: the words over the funnel, as its stages' labels. */
-export const ENDS = 17;
+/** The words on the funnel: ?beat=7a → 17 … ?beat=7e → 21. */
+export const ENDS_LOOKS = ["a", "b", "c", "d", "e"] as const;
+export type EndsLook = (typeof ENDS_LOOKS)[number];
+export const ENDS_FROM = 17;
+/** Which words-on-the-funnel look `look` is, if it's one. */
+export const endsLook = (look: number): EndsLook | null =>
+  look >= ENDS_FROM && look < ENDS_FROM + ENDS_LOOKS.length ? ENDS_LOOKS[look - ENDS_FROM] : null;
 
 /** The look with no ?beat: 6c, the marker correction (chosen 2026-10-26); ?beat=0 shows the old struck headline. */
 export const DEFAULT_BEAT = HL_FROM + HLS.indexOf("c");
@@ -46,7 +54,9 @@ export const readBeatStyle = () => {
   if (!raw) return DEFAULT_BEAT;
   const swap = /^5([a-e])$/.exec(raw);
   if (swap) return SWAP_FROM + SWAPS.indexOf(swap[1] as SwapLook);
-  if (raw === "7") return ENDS;
+  if (raw === "7") return ENDS_FROM;
+  const ends = /^7([a-e])$/.exec(raw);
+  if (ends) return ENDS_FROM + ENDS_LOOKS.indexOf(ends[1] as EndsLook);
   const hl = /^6([a-e])$/.exec(raw);
   if (hl) return HL_FROM + HLS.indexOf(hl[1] as HLLook);
   const n = Number(raw);
