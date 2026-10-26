@@ -69,7 +69,7 @@ export const halfAtU = (u: number, b: number[]) => {
 };
 
 /** Shoppers per second, seconds before 0 the stream starts (so it's full at 0). */
-const RATE = 26;
+export const RATE = 26;
 /** The lanes across the stream (top → floor), and the order shoppers take them in. */
 const LANES = [-0.84, -0.56, -0.28, 0, 0.28, 0.56, 0.84];
 const LANE_ORDER = [0, 4, 1, 5, 2, 6, 3];
@@ -104,6 +104,11 @@ export const startsFor = (focus: number, fixAt = 1500) =>
 
 /** How far each stage's fix is at `t` (ms): 0 → 1, over RAMP from the landing. */
 export const ksAt = (t: number, starts: number[]) => starts.map((s) => ease((t - s) / RAMP));
+
+/** How long the payoff's metric card takes to turn after each fix (ms): eased, so its lines bend smoothly. */
+export const CARD_TURN = 1100;
+/** How far each fix has turned the metric card at `t` (0 → 1, eased in and out over CARD_TURN). */
+export const cardKsAt = (t: number, starts: number[]) => starts.map((s) => ease((t - s) / CARD_TURN));
 
 /** A stable 0..1 random number for (i, j). */
 export const rand = (i: number, j: number) => {

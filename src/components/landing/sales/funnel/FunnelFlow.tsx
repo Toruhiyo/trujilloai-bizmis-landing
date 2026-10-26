@@ -7,6 +7,7 @@ import AgentPin from "./AgentPin";
 import {
   CHAMBERS,
   FALL,
+  RATE as VISITS_PER_S,
   HOP,
   PEEL,
   SPOUT,
@@ -567,7 +568,11 @@ const FunnelFlow = ({
   });
   const realStarts = real.current.at;
   const sec = now / 1000;
-  const shoppers = shoppersBetween(sec - 6.5, sec + 0.3, realStarts);
+  // a narrow funnel (phones) draws every other visit: the same flow, less crowded
+  const thin = size.W > 0 && size.W < 560 ? 2 : 1;
+  const shoppers = shoppersBetween(sec - 6.5, sec + 0.3, realStarts).filter(
+    (v) => thin === 1 || Math.round(v.at * VISITS_PER_S) % thin === 0,
+  );
   const arrivals = shoppers
     .filter((s) => s.out === 3)
     .map((s) => s.exit + HOP)
@@ -586,7 +591,8 @@ const FunnelFlow = ({
         CHAMBERS.map(([a, b]) => [geo.x0 + a * geo.run, geo.x0 + b * geo.run] as [number, number]),
         size.W,
         geo.top,
-        Math.round(clamp(geo.top * 0.9, 20, 36)),
+        // the payoff's three labels a size smaller than a beat's own, so they keep their air between them
+        Math.round(clamp(geo.top * (payoff ? 0.68 : 0.9), payoff ? 16 : 20, payoff ? 28 : 36)),
         focus,
         labelRoom(geo, copy.visits),
       ),

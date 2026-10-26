@@ -8,7 +8,7 @@ import { arrange, arrangeOpener } from "./arrange";
 import type { EndsLook } from "./beatcopy/style";
 import FunnelFlow, { funnelAnchors } from "./funnel/FunnelFlow";
 import FunnelScale from "./funnel/FunnelScale";
-import { ksAt, startsFor } from "./funnel/model";
+import { cardKsAt, ksAt, startsFor } from "./funnel/model";
 import { useActivePanel, useMedia, usePinProgress, useRewinding, useScrollPlay, useScrollThrough } from "./hooks";
 import Metrics from "./Metrics";
 import RewindScreen from "./RewindScreen";
@@ -442,11 +442,12 @@ const Pinned = () => {
                 </div>
               ))}
               <div className={cn("sl-g2-copy is-payoff", A?.payoff?.under && "is-under", payoff && "is-on")} style={A?.payoff?.copy}>
-                <PanelCopy kicker={s.payoff.kicker} title={s.payoff.title} body={s.payoff.body} />
+                {/* the title alone (no eyebrow, no line under it) */}
+                <PanelCopy title={s.payoff.title} />
               </div>
               {/* the payoff's win in the metrics a merchant watches, turning with each fix (direction only) */}
               <div className={cn("sl-g2-card", payoff && "is-on")} style={{ left: card.left, top: card.top, width: card.width }}>
-                <Metrics variant={4} k={payoff ? k : [0, 0, 0]} focus={3} className="sl-g2-met is-card" />
+                <Metrics variant={4} k={payoff ? cardKsAt(payT, startsFor(3)) : [0, 0, 0]} focus={3} className="sl-g2-met is-card" />
               </div>
               <div className="sl-fn sl-g2-funnel" style={{ left: L.fnLeft, top: L.fnTop, width: L.fnW, height: L.fnH }}>
                 <FunnelFlow
@@ -542,7 +543,7 @@ const StackedPayoff = ({ setRef }: { setRef: (el: HTMLElement | null) => void })
       }}
       className="sl-g2-item is-payoff"
     >
-      <PanelCopy kicker={s.payoff.kicker} title={s.payoff.title} body={s.payoff.body} className="sl-c-copy is-on" />
+      <PanelCopy title={s.payoff.title} className="sl-c-copy is-on" />
       <SalesPayoff t={t} rewind={rewinding} />
     </div>
   );

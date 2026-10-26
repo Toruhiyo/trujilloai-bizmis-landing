@@ -1,7 +1,7 @@
 import { useMessages } from "@/i18n/LocaleProvider";
 import { cn } from "@/lib/utils";
 import FunnelFlow from "./funnel/FunnelFlow";
-import { ksAt, startsFor } from "./funnel/model";
+import { cardKsAt, startsFor } from "./funnel/model";
 import Metrics from "./Metrics";
 
 /** The payoff's timeline: the bad funnel, the three stages fixed in turn, the sales piling up, the finale. */
@@ -26,7 +26,7 @@ const SalesPayoff = ({ t, rewind, className }: { t: number; rewind?: boolean; cl
     <div className={cn("sl-pay relative", className)}>
       <Metrics
         variant={4}
-        k={ksAt(t, startsFor(3)).map((v) => Math.min(1, v))}
+        k={cardKsAt(t, startsFor(3))}
         focus={3}
         className="sl-g2-met is-card sl-pay-card"
       />

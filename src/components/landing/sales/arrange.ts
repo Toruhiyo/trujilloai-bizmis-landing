@@ -287,7 +287,8 @@ const arrangeOpenerStacked = (W: number, H: number, aspect: number, visits?: str
     // the payoff's words don't fit over the funnel here: under it (smaller), the metric card under them
     payoff: {
       copy: { left: 0, right: "auto", width: W, top: fnTop + fnH + gap * 0.5, bottom: "auto" },
-      card: { left: (W - cardW) / 2, top: fnTop + fnH + gap * 0.5 + clamp(W * 0.36, 120, 150), width: cardW },
+      // (its words are the title alone: two lines)
+      card: { left: (W - cardW) / 2, top: fnTop + fnH + gap * 0.5 + clamp(W * 0.27, 90, 116), width: cardW },
       under: true,
     },
   };
