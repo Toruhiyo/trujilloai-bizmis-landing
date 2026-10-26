@@ -393,7 +393,8 @@ const Pricing = () => {
   const [couponValue, setCouponValue] = useState("");
   const [couponError, setCouponError] = useState<string | null>(null);
   const [isApplyingCoupon, setIsApplyingCoupon] = useState(false);
-  const [isYearly, setIsYearly] = useState(true);
+  // monthly first: the Shopify app bills monthly only for now (yearly is shown, not yet sold)
+  const [isYearly, setIsYearly] = useState(false);
   const billingPeriod: BillingPeriod = isYearly ? "yearly" : "monthly";
   const [backendPlans, setBackendPlans] = useState<PublicPlanDTO[] | null>(
     null,
