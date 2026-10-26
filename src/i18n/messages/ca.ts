@@ -201,13 +201,15 @@ export const ca: Messages = {
       titleTail: "Clients més feliços.",
       /** The area's full name, the chapter eyebrow over the outcome (the pillar openers, ?open=1..6). */
       area: "Atenció al client",
-      lead: "Respon en segons, de dia o de nit, amb la calidesa del teu millor dependent.",
-      /** The pillar's animation, the merchant's support at scale: a day and a night of questions, piling up as tickets, then answered
-       * right away by voice once the agent lands. Labels as the Sales funnel's: the loss, struck at the fix, then the win (short, present tense). */
+      lead: "Atén cada client, de dia o de nit, amb la calidesa del teu millor dependent.",
+      /** The support mockup's widget placeholder (the composer's prompt before the shopper types). */
+      placeholder: "Pregunta'm per la teva comanda.",
+      /** The pillar's animation, the merchant's support at scale: questions round the clock piling up as tickets, then answered
+       * right away by voice once the agent lands. One label, as the Sales funnel's: the loss, struck at the fix, then the win (short, present tense). */
       day: {
-        label: "Un dia i una nit de preguntes de clients: s'acumulen com a tiquets a la safata fins que arriba l'agent, i des de llavors cadascuna té resposta a l'instant, en veu alta",
-        wait: { problem: "Esperen al matí", solution: "Resposta a l'instant" },
-        tickets: { problem: "S'acumulen tiquets", solution: "Només el que et necessita" },
+        label: "Preguntes de clients a totes hores: s'acumulen com a tiquets a la safata de suport fins que arriba l'agent, i des de llavors cadascuna té resposta a l'instant, en veu alta",
+        problem: "S'acumulen tiquets",
+        solution: "Resposta a l'instant",
         inbox: "Safata de suport",
       },
     },

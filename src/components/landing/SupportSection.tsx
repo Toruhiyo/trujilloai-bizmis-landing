@@ -84,8 +84,8 @@ const SupportBody = ({ pin }: { pin: PinState }) => {
     [cases],
   );
   const scene = useScenePlay(pin, duration);
-  // stacked: the body's own way through the screen sets the clock
-  const [body, p] = useScrollThrough<HTMLDivElement>(0.6, 0.95);
+  // stacked: the body's own way through the screen sets the clock, from when it's clear of the docking opener
+  const [body, p] = useScrollThrough<HTMLDivElement>(0.33, 0.64);
   const through = !pin.pinned && p > 0 && p < 1;
   const own = useScrollPlay(Math.min(1, Math.max(0, (p - LEAD) / RUN)) * duration, duration, through);
   // (kept on the timeline: a clock picked up mid-scroll can read a hair under its start for a frame)

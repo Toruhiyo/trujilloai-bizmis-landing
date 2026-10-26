@@ -118,11 +118,11 @@ const Hand = ({
     </text>
   );
 
-/* ── Support: a day and a night of the whole store's questions ──────────── */
+/* ── Support: the whole store's questions, round the clock ────────────────── */
 
 /**
- * The handwriting's real widths (in the drawing's units), so labels fit
- * their room in whatever size the page's look sets: measured off hidden
+ * The handwriting's real widths (in the drawing's units), so a label fits
+ * its room in whatever size the page's look sets: measured off hidden
  * probes of the same texts (a <g> of <text>s in the SVG), again once the
  * marker font is in.
  */
@@ -146,30 +146,26 @@ const useProbeWidths = (key: string) => {
 };
 
 const DW = 560; // the drawing's box (viewBox units ≈ px at desktop)
-const DH = 300;
-const CLOCK = { x: 92, y: 184, r: 56 }; // the store's day, on a clock: questions come in at every hour
-const SKY = { x: 92, y: 92 }; // the sun or the moon over it
-const AG = { x: 280, y: 160 }; // where the agent lands: on the questions' way to the inbox
-const AG_R = 25;
-const TRAY = { x: 408, y: 214, w: 112, h: 42 }; // the support inbox, an open tray
+const DH = 280;
+const CLOCK = { x: 96, y: 168, r: 58 }; // round the clock: questions come in at every hour
+const AG = { x: 286, y: 150 }; // where the agent lands: on the questions' way to the inbox
+const AG_R = 24;
+const TRAY = { x: 414, y: 190, w: 112, h: 42 }; // the support inbox, an open tray
 const TK_W = 80; // a ticket
-const TK_H = 10;
-const TK_STEP = 12.5;
-const LANE = { x: 182, y: 238, step: 20, per: 8, row: 21 }; // the answered ones, ticked, in two rows
-const LOSS_N = 9; // questions before the agent lands: each one a ticket
-const WIN_N = 8; // after: answered on the way, all but the rare one
-const RARE = 4; // the one that truly needs the merchant: it still goes to the inbox
-const LEAVERS = [1, 3]; // tickets whose shoppers give up waiting
+const TK_H = 11;
+const TK_STEP = 13.5;
+const LOSS_N = 6; // questions before the agent lands: each one a ticket
+const WIN_N = 5; // after: answered on the way, all but the rare one
+const RARE = 3; // the one that truly needs the merchant: it still goes to the inbox
 const FLY = 900; // a question's way from the clock to the inbox
 const TO_AGENT = 560; // ... to the agent
-const DRAIN_STEP = 120; // the backlog, answered one ticket after another
+const DRAIN_STEP = 170; // the backlog, answered one ticket after another
 const DRAIN_FLY = 420;
-const HOP = 440; // an answered one hopping into its row
 const STAMP = 360; // the agent stamped on
 const STRIKE = 320;
 const TICK = 260;
 const REVEAL = 600;
-/** After the agent lands: the next day and night, all answered, then the labels' last word (ms). */
+/** After the agent lands: the questions answered, then the label's last word (ms). */
 const WIN_MIN = 3600;
 const WIN_MAX = 5600;
 const TAIL = 1300;
@@ -183,10 +179,6 @@ export const supportDayTimes = (fixAt: number, duration: number) => {
   return { fixAt, win, end: fixAt + win + TAIL };
 };
 
-const smooth01 = (x: number) => {
-  const k = clamp01(x);
-  return k * k * (3 - 2 * k);
-};
 const quad = (a: readonly number[], c: readonly number[], b: readonly number[], k: number) =>
   [mix(mix(a[0], c[0], k), mix(c[0], b[0], k), k), mix(mix(a[1], c[1], k), mix(c[1], b[1], k), k)] as const;
 
@@ -199,51 +191,49 @@ const route = (sx: number, sy: number, end: readonly number[], u: number) => {
   return quad([AG.x, AG.y], c2, end, (u - 0.5) * 2);
 };
 
-/** Night (0 → 1) at `h` o'clock (0..24): dusk from 18, dawn by 6. */
-const nightOf = (h: number) => (h >= 12 ? smooth01((h - 18) / 1.5) : smooth01((6 - h) / 1.5));
-
 /** Where ticket `k` sits on the pile, and its tilt (the pile leans more the higher it gets). */
 const slotOf = (k: number) => ({
   x: TRAY.x + TRAY.w / 2 + hand(k, 1) * 6,
-  y: TRAY.y + TRAY.h - 8 - k * TK_STEP,
-  tilt: hand(k, 2) * (3 + k * 0.7),
+  y: TRAY.y + TRAY.h - 9 - k * TK_STEP,
+  tilt: hand(k, 2) * (3 + k * 0.9),
 });
-const laneOf = (n: number) => {
-  const row = Math.floor(n / LANE.per);
-  return { x: LANE.x + (n % LANE.per) * LANE.step + (row % 2) * (LANE.step / 2), y: LANE.y + row * LANE.row };
-};
 
-/** A shopper's question: a little bubble with a "?" (k: its pop, 0 → 1). */
+/** A shopper's question: a little bubble with a "?" (s: its size, 0 → 1). */
 const Ask = ({ x, y, s }: { x: number; y: number; s: number }) =>
   s <= 0.01 ? null : (
     <g transform={`translate(${f(x)} ${f(y)}) scale(${f(s)})`}>
-      <path className="mk-mid" d={`${rrect(-13, -12, 26, 20, 8, 3)} M-6 8 L-9 15 L1 8`} />
+      <path className="mk-mid" d={`${rrect(-14, -13, 28, 22, 8, 3)} M-6 9 L-9 16 L1 9`} />
       <text className="mk-hand is-ask" x={0} y={5} textAnchor="middle">
         ?
       </text>
     </g>
   );
 
-/** A ticket waiting in the inbox: a slip with its shopper's dot (gone once they left). */
-const Ticket = ({ x, y, tilt, s = 1, dot = true }: { x: number; y: number; tilt: number; s?: number; dot?: boolean }) =>
+/** A ticket waiting in the inbox: a slip with a line on it. */
+const Ticket = ({ x, y, tilt, s = 1 }: { x: number; y: number; tilt: number; s?: number }) =>
   s <= 0.01 ? null : (
     <g transform={`translate(${f(x)} ${f(y)}) rotate(${f(tilt)}) scale(${f(s)})`}>
-      <path className="mk-thin mk-slip" d={rrect(-TK_W / 2, -TK_H / 2, TK_W, TK_H, 3.5, 11)} />
-      {dot && <circle className="mk-dot" cx={-TK_W / 2 + 9} cy={0} r={2.3} />}
-      <path className="mk-thin" d={`M${-TK_W / 2 + 18} 0 H${TK_W / 2 - 12}`} opacity={0.55} />
+      <path className="mk-thin mk-white" d={rrect(-TK_W / 2, -TK_H / 2, TK_W, TK_H, 3.5, 11)} />
+      <path className="mk-thin" d={`M${-TK_W / 2 + 12} 0 H${TK_W / 2 - 14}`} opacity={0.6} />
     </g>
   );
 
-/** A check, hopped into its row. */
-const Tick = ({ x, y, s, sq = 0 }: { x: number; y: number; s: number; sq?: number }) =>
-  s <= 0.01 ? null : (
-    <g transform={`translate(${f(x)} ${f(y)}) scale(${f(s * (1 + 0.16 * sq))} ${f(s * (1 - 0.22 * sq))})`}>
-      <path className="mk-mid" d="M-7 0 L-2 5 L8 -6" />
+/** An answered one: a check popping up off the agent and fading (k: 0 → 1). */
+const Answered = ({ k, side }: { k: number; side: number }) => {
+  if (k <= 0 || k >= 1) return null;
+  const s = spring(clamp01(k * 2.2));
+  return (
+    <g
+      transform={`translate(${f(AG.x + side * 30)} ${f(AG.y - AG_R - 14 - 30 * easeOut(k))}) scale(${f(s)})`}
+      opacity={f(1 - span(k, 0.55, 1))}
+    >
+      <path className="mk-main" d="M-9 0 L-3 6 L10 -8" />
     </g>
   );
+};
 
 /**
- * A label in marker, as the Sales funnel's: the loss written on, struck
+ * The label in marker, as the Sales funnel's: the loss written on, struck
  * through at the fix, then the win written in its place and ticked, with a
  * swoosh under it. Fitted to `room` (units) from its measured widths.
  */
@@ -303,123 +293,64 @@ const Flip = ({
   );
 };
 
-type DayCopy = {
-  label: string;
-  wait: { problem: string; solution: string };
-  tickets: { problem: string; solution: string };
-  inbox: string;
-};
+type DayCopy = { label: string; problem: string; solution: string; inbox: string };
 
 /**
- * The store's support at scale, over a day and a night (ms along the
- * scene, `t`). A clock turns through the day and the night, the sun giving
- * way to the moon; shoppers' questions pop up at every hour and fly to the
- * support inbox, where each one becomes a ticket: the pile grows, waits
- * overnight (nobody's there: zzz), a couple of shoppers give up and drop
- * away. Then the agent lands on the questions' way (at `fixAt`, as the
- * device starts answering), stamped on like a Sales seal: it answers the
- * backlog out loud, ticket after ticket, and from then on every question is
- * answered the moment it's asked, by voice (never a text reply), each one a
- * tick in the row; only the rare one that truly needs the merchant goes on
- * to the inbox. The labels flip as the Sales funnel's do: "Wait till
- * morning" → "Answered right away", "Tickets pile up" → "Only what needs
- * you". Every frame comes from `t`, so it rewinds as it played.
+ * The store's support at scale (ms along the scene, `t`), all in the
+ * marker's orange. A clock turns, time-lapse; shoppers' questions pop off it
+ * and fly to the support inbox, where each becomes a ticket: the pile grows
+ * ("Tickets pile up"). Then the agent (drawn in marker, a headset on) lands
+ * on the questions' way at `fixAt`, as the device starts answering, stamped
+ * on like a Sales seal: it answers the backlog out loud, ticket after ticket
+ * flying back to it, and every new question is answered as it reaches it, by
+ * voice (arcs, a check; never a text reply). Only the rare one that needs the
+ * merchant goes on to the inbox, left holding one ticket. The label flips:
+ * struck, then "Answered right away", ticked. Every frame comes from `t`, so
+ * it rewinds as it played.
  */
 const SupportDayDrawing = ({ t, fixAt: F, win: W, copy, kept }: { t: number; fixAt: number; win: number; copy: DayCopy; kept: boolean }) => {
-  const uid = useId().replace(/:/g, "");
-  const [widths, probes] = useProbeWidths(
-    [copy.wait.problem, copy.wait.solution, copy.tickets.problem, copy.tickets.solution].join("|"),
-  );
-  const wOf = (i: number, s: string) => widths[i] ?? s.length * 12;
-
-  // the clock: two turns (a day and a night) before the agent lands, two more after; from 8 in the morning
-  const turns = 2 * span(t, 300, F) + 2 * span(t, F, F + W);
-  const hour = (8 + 12 * turns) % 24;
-  const night = nightOf(hour);
-  const handAng = ((8 + 12 * turns) / 12) * Math.PI * 2 - Math.PI / 2;
+  const [widths, probes] = useProbeWidths([copy.problem, copy.solution].join("|"));
+  const wp = widths[0] ?? copy.problem.length * 12;
+  const ws = widths[1] ?? copy.solution.length * 12;
   const drawIn = kept ? 1 : easeOut(span(t, 0, REVEAL));
 
   // when things happen
-  const lossGap = Math.max(120, (F - 350 - FLY - 60) / (LOSS_N - 1));
+  const lossGap = Math.max(140, (F - 350 - FLY - 60) / (LOSS_N - 1));
   const lossAt = (i: number) => 350 + i * lossGap;
   const landAt = (i: number) => lossAt(i) + FLY;
-  const drainAt = (k: number) => F + 260 + (LOSS_N - 1 - k) * DRAIN_STEP;
-  const drainEnd = drainAt(0) + DRAIN_FLY;
-  const winGap = (W - 700 - FLY - 500) / (WIN_N - 1);
-  const winAt = (i: number) => F + 700 + i * winGap;
-  const angAt = (at: number) => {
-    const tr = 2 * span(at, 300, F) + 2 * span(at, F, F + W);
-    return ((8 + 12 * tr) / 12) * Math.PI * 2 - Math.PI / 2;
-  };
+  const drainAt = (k: number) => F + 300 + (LOSS_N - 1 - k) * DRAIN_STEP;
+  const winGap = (W - 1500 - FLY - 400) / (WIN_N - 1);
+  const winAt = (i: number) => F + 1500 + i * winGap;
+  // the clock, time-lapse: two turns before the agent lands, two after
+  const turnsAt = (at: number) => 2 * span(at, 300, F) + 2 * span(at, F, F + W);
+  const angAt = (at: number) => turnsAt(at) * Math.PI * 2 - Math.PI / 2 + Math.PI / 3;
   const rimAt = (at: number) => {
     const a = angAt(at);
     return [CLOCK.x + Math.cos(a) * (CLOCK.r + 6), CLOCK.y + Math.sin(a) * (CLOCK.r + 6)] as const;
   };
+  const handAt = angAt(t);
 
-  // the agent's voice: each time something reaches it, it talks, toward where it came from
-  const voices: { at: number; dir: number }[] = [];
-  for (let k = 0; k < LOSS_N; k++) voices.push({ at: drainAt(k) + DRAIN_FLY, dir: -0.35 });
-  for (let i = 0; i < WIN_N; i++) voices.push({ at: winAt(i) + (i === RARE ? FLY / 2 + 60 : TO_AGENT), dir: Math.PI + 0.5 });
-  const talk = voices.reduce((m, v) => Math.max(m, span(t, v.at - 160, v.at) * (1 - span(t, v.at + 260, v.at + 420))), 0);
-
-  // the answered ones: the backlog first (in the order it's answered), then the day's
-  const hops: number[] = [];
-  for (let k = LOSS_N - 1; k >= 0; k--) hops.push(drainAt(k) + DRAIN_FLY);
-  for (let i = 0; i < WIN_N; i++) if (i !== RARE) hops.push(winAt(i) + TO_AGENT);
+  // what reaches the agent: the backlog (from the inbox, on its right), then the new questions (from the clock, on its left)
+  const reach: { at: number; side: number }[] = [];
+  for (let k = 0; k < LOSS_N; k++) reach.push({ at: drainAt(k) + DRAIN_FLY, side: 1 });
+  for (let i = 0; i < WIN_N; i++) reach.push({ at: winAt(i) + (i === RARE ? FLY / 2 + 60 : TO_AGENT), side: -1 });
+  const talk = reach.reduce((m, v) => Math.max(m, span(t, v.at - 160, v.at) * (1 - span(t, v.at + 260, v.at + 420))), 0);
 
   // the agent, stamped on
   const q = (t - F) / STAMP;
   const stamp = q > 0 ? (q < 1 ? 1.6 - 0.6 * spring(q) : 1) : 0;
   const sq = q > 0.25 && q < 1.6 ? 0.2 * Math.exp(-3.5 * (q - 0.25)) * Math.cos(6 * (q - 0.25)) : 0;
-
-  const ex = TRAY.x;
-  const ey = TRAY.y;
-  // the inbox's label: over the tray, slid left (not shrunk) when it's too wide to fit beside the edge
-  const wB = Math.max(wOf(2, copy.tickets.problem) + 12, wOf(3, copy.tickets.solution) + 30);
-  const roomB = DW - 4 - (AG.x + AG_R + 10);
-  const labelB = { room: roomB, x: Math.max(AG.x + AG_R + 10 + Math.min(wB, roomB) / 2, Math.min(ex + TRAY.w / 2, DW - 4 - Math.min(wB, roomB) / 2)) };
-  const asleep = night * (1 - span(t, F - 260, F + 60));
+  const { x: ex, y: ey } = TRAY;
 
   return (
     <svg viewBox={`0 0 ${DW} ${DH}`} aria-hidden="true">
-      <defs>
-        <clipPath id={`${uid}-head`}>
-          <circle cx={0} cy={0} r={AG_R} />
-        </clipPath>
-      </defs>
-      {/* hidden probes: the labels' widths */}
+      {/* hidden probes: the label's widths */}
       <g ref={probes} visibility="hidden">
-        {[copy.wait.problem, copy.wait.solution, copy.tickets.problem, copy.tickets.solution].map((s, i) => (
-          <text key={i} className="mk-hand is-label">
-            {s}
-          </text>
-        ))}
+        <text className="mk-hand is-label">{copy.problem}</text>
+        <text className="mk-hand is-label">{copy.solution}</text>
       </g>
 
-      {/* the sky over the clock: the sun by day, the moon by night */}
-      <g opacity={f(drawIn * (1 - night))} transform={`translate(${SKY.x} ${SKY.y}) scale(${f(0.6 + 0.4 * (1 - night))})`}>
-        <circle className="mk-mid" r={9.5} />
-        <g transform={`rotate(${f(turns * 40)})`}>
-          {[0, 1, 2, 3, 4, 5, 6, 7].map((k) => {
-            const a = (k / 8) * Math.PI * 2;
-            return (
-              <path
-                key={k}
-                className="mk-thin"
-                d={`M${f(Math.cos(a) * 15.5)} ${f(Math.sin(a) * 15.5)} L${f(Math.cos(a) * 21)} ${f(Math.sin(a) * 21)}`}
-              />
-            );
-          })}
-        </g>
-      </g>
-      <g opacity={f(drawIn * night)} transform={`translate(${SKY.x} ${SKY.y}) scale(${f(0.6 + 0.4 * night)})`}>
-        <path className="mk-mid" d="M4 -13 A13 13 0 1 0 12 7 A10 10 0 1 1 4 -13 Z" />
-        <circle className="mk-dot" cx={20} cy={-12} r={1.8} />
-        <circle className="mk-dot" cx={-20} cy={-6} r={1.5} />
-      </g>
-
-      {/* the clock: its face shaded at night, the hand turning through the hours */}
-      <circle cx={CLOCK.x} cy={CLOCK.y} r={CLOCK.r - 3} className="mk-fill" opacity={f(0.13 * night * drawIn)} />
+      {/* the clock, its hand turning through the hours */}
       <path className="mk-main" d={loop(CLOCK.x, CLOCK.y, CLOCK.r, 4)} {...drawn(drawIn)} />
       {[0, 1, 2, 3].map((k) => {
         const a = (k / 4) * Math.PI * 2;
@@ -428,14 +359,14 @@ const SupportDayDrawing = ({ t, fixAt: F, win: W, copy, kept }: { t: number; fix
             key={k}
             className="mk-thin"
             opacity={f(drawIn)}
-            d={`M${f(CLOCK.x + Math.cos(a) * (CLOCK.r - 13))} ${f(CLOCK.y + Math.sin(a) * (CLOCK.r - 13))} L${f(CLOCK.x + Math.cos(a) * (CLOCK.r - 6))} ${f(CLOCK.y + Math.sin(a) * (CLOCK.r - 6))}`}
+            d={`M${f(CLOCK.x + Math.cos(a) * (CLOCK.r - 14))} ${f(CLOCK.y + Math.sin(a) * (CLOCK.r - 14))} L${f(CLOCK.x + Math.cos(a) * (CLOCK.r - 7))} ${f(CLOCK.y + Math.sin(a) * (CLOCK.r - 7))}`}
           />
         );
       })}
       <path
         className="mk-main"
         opacity={f(drawIn)}
-        d={`M${CLOCK.x} ${CLOCK.y} L${f(CLOCK.x + Math.cos(handAng) * (CLOCK.r - 20))} ${f(CLOCK.y + Math.sin(handAng) * (CLOCK.r - 20))}`}
+        d={`M${CLOCK.x} ${CLOCK.y} L${f(CLOCK.x + Math.cos(handAt) * (CLOCK.r - 20))} ${f(CLOCK.y + Math.sin(handAt) * (CLOCK.r - 20))}`}
       />
       <circle className="mk-dot" cx={CLOCK.x} cy={CLOCK.y} r={4.2} opacity={f(drawIn)} />
 
@@ -448,71 +379,34 @@ const SupportDayDrawing = ({ t, fixAt: F, win: W, copy, kept }: { t: number; fix
       <Hand k={kept ? 1 : writing(copy.inbox, t, 280)} x={ex + TRAY.w / 2} y={ey + TRAY.h + 30} textAnchor="middle" className="is-small">
         {copy.inbox}
       </Hand>
-      {/* nobody's there at night */}
-      {asleep > 0.02 &&
-        [0, 1].map((k) => {
-          const ph = (t / 1500 + k * 0.5) % 1;
-          return (
-            <text
-              key={k}
-              className="mk-hand is-z"
-              x={f(ex + TRAY.w + 6 + 8 * ph + k * 4)}
-              y={f(ey - 30 - 26 * ph)}
-              opacity={f(asleep * hump(ph))}
-            >
-              z
-            </text>
-          );
-        })}
 
-      {/* the pile: each question before the agent, a ticket; then the backlog answered, one after another */}
+      {/* the pile: each question before the agent, a ticket; then flying back to the agent, answered */}
       {Array.from({ length: LOSS_N }, (_, i) => {
         const land = span(t, landAt(i) - 120, landAt(i) + 220);
         if (land <= 0) return null;
         const s0 = slotOf(i);
-        const leaves = LEAVERS.includes(i) ? landAt(i) + 650 : Infinity;
         const d = easeInOut(span(t, drainAt(i), drainAt(i) + DRAIN_FLY));
         if (d >= 1) return null;
-        const x = mix(s0.x, AG.x + 18, d);
+        const x = mix(s0.x, AG.x + AG_R, d);
         const y = mix(s0.y - 14 * (1 - easeBack(land)), AG.y, d) - 30 * hump(d);
-        return (
-          <Ticket key={`k${i}`} x={x} y={y} tilt={s0.tilt * (1 - d)} s={Math.min(1, land * 2) * (1 - 0.6 * d)} dot={t < leaves} />
-        );
+        return <Ticket key={`k${i}`} x={x} y={y} tilt={s0.tilt * (1 - d)} s={Math.min(1, land * 2) * (1 - 0.7 * d)} />;
       })}
-      {/* shoppers giving up: a sad face drops out of the pile and away, a dashed trail behind it */}
-      {LEAVERS.map((i) => {
-        const e = span(t, landAt(i) + 650, landAt(i) + 1450);
-        if (e <= 0 || e >= 1) return null;
-        const s0 = slotOf(i);
-        const x0 = s0.x - TK_W / 2 + 9;
-        const x = x0 - 52 * easeOut(e);
-        const y = s0.y + 118 * e * e;
-        const pop = spring(clamp01(e * 3));
-        return (
-          <g key={`l${i}`} opacity={f(1 - span(e, 0.65, 1))}>
-            <path
-              className="mk-thin is-dash"
-              d={`M${f(x0)} ${f(s0.y)} Q${f(mix(x0, x, 0.7))} ${f(s0.y)} ${f(x)} ${f(y - 9)}`}
-              opacity={0.6}
-            />
-            <g transform={`translate(${f(x)} ${f(y)}) rotate(${f(-30 * e)}) scale(${f(pop)})`}>
-              <circle className="mk-thin mk-white" r={8.5} />
-              <circle className="mk-dot" cx={-3} cy={-1.5} r={1.1} />
-              <circle className="mk-dot" cx={3} cy={-1.5} r={1.1} />
-              <path className="mk-thin" d="M-3.5 4.6 Q0 1.8 3.5 4.6" />
-            </g>
-          </g>
-        );
-      })}
+      {/* the rare one: a ticket for the merchant, the only one left */}
+      {(() => {
+        const land = span(t, winAt(RARE) + FLY - 120, winAt(RARE) + FLY + 220);
+        if (land <= 0) return null;
+        const s0 = slotOf(0);
+        return <Ticket x={s0.x} y={s0.y - 14 * (1 - easeBack(land))} tilt={s0.tilt} s={Math.min(1, land * 2)} />;
+      })()}
 
-      {/* the questions: before the agent, each flies to the inbox; after, each is answered on its way */}
+      {/* the questions: before the agent, on to the inbox; after, answered as they reach it */}
       {Array.from({ length: LOSS_N }, (_, i) => {
         const at = lossAt(i);
         if (t < at || t > landAt(i) + 60) return null;
         const [sx, sy] = rimAt(at);
         const s0 = slotOf(i);
         const u = easeInOut(span(t, at + 140, landAt(i)));
-        const [x, y] = route(sx, sy, [s0.x, s0.y - 10], u);
+        const [x, y] = route(sx, sy, [s0.x, s0.y - 12], u);
         return <Ask key={`a${i}`} x={x} y={y} s={spring(span(t, at, at + 300)) * (1 - easeIn(span(u, 0.82, 1)))} />;
       })}
       {Array.from({ length: WIN_N }, (_, i) => {
@@ -522,97 +416,67 @@ const SupportDayDrawing = ({ t, fixAt: F, win: W, copy, kept }: { t: number; fix
         if (t < at || t > end + 60) return null;
         const [sx, sy] = rimAt(at);
         const u = (rare ? 1 : 0.5) * easeInOut(span(t, at + 140, end));
-        const [x, y] = route(sx, sy, [slotOf(0).x, slotOf(0).y - 10], u);
+        const [x, y] = route(sx, sy, [slotOf(0).x, slotOf(0).y - 12], u);
         const shrink = rare ? easeIn(span(u, 0.82, 1)) : easeIn(span(t, end - 140, end));
         return <Ask key={`w${i}`} x={x} y={y} s={spring(span(t, at, at + 300)) * (1 - shrink)} />;
       })}
-      {/* the rare one: a ticket for the merchant, the only one */}
-      {(() => {
-        const land = span(t, winAt(RARE) + FLY - 120, winAt(RARE) + FLY + 220);
-        if (land <= 0) return null;
-        const s0 = slotOf(0);
-        return <Ticket x={s0.x} y={s0.y - 14 * (1 - easeBack(land))} tilt={s0.tilt} s={Math.min(1, land * 2)} />;
-      })()}
 
-      {/* the answered ones: a check hopping from the agent into its row */}
-      {hops.map((h, n) => {
-        const k = span(t, h - 40, h + HOP);
-        if (k <= 0) return null;
-        const to = laneOf(n);
-        const m = easeInOut(k);
-        const land = hump(span(t, h + HOP * 0.85, h + HOP + 240));
-        return <Tick key={`h${n}`} x={mix(AG.x, to.x, m)} y={mix(AG.y, to.y, m) - 40 * hump(k)} s={spring(clamp01(k * 1.6))} sq={land} />;
-      })}
-
-      {/* the agent: its voice toward what reaches it, then itself, stamped on the way */}
-      {voices.map((v, n) => {
+      {/* the agent: its voice toward what reaches it, a check for each one answered */}
+      {reach.map((v, n) => {
         const on = span(t, v.at - 160, v.at) * (1 - span(t, v.at + 260, v.at + 420));
         if (on <= 0) return null;
+        const dir = v.side > 0 ? -0.35 : Math.PI + 0.45;
         return [0, 1, 2].map((j) => {
           const beat = 0.5 + 0.5 * Math.sin((t - v.at) / 70 - j * 1.2);
-          const r = AG_R + 9 + j * 8 + 2 * beat;
+          const r = AG_R + 10 + j * 8 + 2 * beat;
           const s = 0.42 - j * 0.06;
           const pt = (a: number) => `${f(AG.x + Math.cos(a) * r)} ${f(AG.y + Math.sin(a) * r)}`;
           return (
             <path
               key={`v${n}-${j}`}
               className={j === 1 ? "mk-mid" : "mk-thin"}
-              d={`M${pt(v.dir - s)} A${f(r)} ${f(r)} 0 0 1 ${pt(v.dir + s)}`}
+              d={`M${pt(dir - s)} A${f(r)} ${f(r)} 0 0 1 ${pt(dir + s)}`}
               opacity={f(on * (0.5 + 0.5 * beat))}
             />
           );
         });
       })}
+      {reach.map((v, n) =>
+        n === LOSS_N + RARE ? null : <Answered key={`c${n}`} k={span(t, v.at - 40, v.at + 760)} side={v.side * 0.6} />,
+      )}
       {stamp > 0 && (
         <g
           opacity={f(clamp01(q * 3))}
-          transform={`translate(${AG.x} ${AG.y}) rotate(${f(-6 + 4 * talk)}) scale(${f(stamp * (1 + sq))} ${f(stamp * (1 - sq))})`}
+          transform={`translate(${AG.x} ${AG.y}) rotate(${f(-5 + 4 * talk)}) scale(${f(stamp * (1 + sq))} ${f(stamp * (1 - sq))})`}
         >
-          <circle r={AG_R} className="mk-paper" />
-          <image
-            href="/landing/heads/yusuke.png"
-            x={-AG_R * 1.18}
-            y={-AG_R * 0.92}
-            width={AG_R * 2.36}
-            height={AG_R * 2.36}
-            clipPath={`url(#${uid}-head)`}
+          {/* a head with a headset on, in marker */}
+          <path className="mk-main mk-white" d={loop(0, 0, AG_R, 5)} />
+          <path className="mk-mid" d={`M${-AG_R - 5} 2 C${-AG_R - 7} ${-AG_R * 1.9} ${AG_R + 7} ${-AG_R * 1.9} ${AG_R + 5} 2`} />
+          <path className="mk-mid mk-white" d={rrect(-AG_R - 10, -8, 11, 20, 5, 4)} />
+          <path className="mk-mid mk-white" d={rrect(AG_R - 1, -8, 11, 20, 5, 6)} />
+          <path className="mk-thin" d={`M${AG_R + 5} 12 Q${AG_R + 5} ${AG_R + 3} 9 ${AG_R + 1}`} />
+          <circle className="mk-dot" cx={8} cy={AG_R + 1} r={3.2} />
+          <circle className="mk-dot" cx={-8} cy={-4} r={2.5} />
+          <circle className="mk-dot" cx={8} cy={-4} r={2.5} />
+          <path
+            className="mk-thin"
+            d={`M-8 7 Q0 ${f(14 + 6 * talk * Math.abs(Math.sin(t / 62)))} 8 7` + (talk > 0.08 ? ` Q0 ${f(9 - talk)} -8 7` : "")}
           />
-          <circle r={AG_R} className="mk-mid" />
-          {/* its badge: the voice */}
-          <g transform={`translate(${f(AG_R * 0.82)} ${f(AG_R * 0.78)})`}>
-            <circle r={10.5} className="mk-thin mk-white" />
-            {[-4.5, 0, 4.5].map((x, j) => {
-              const h = (j === 1 ? 5.5 : 3.2) * (1 + 0.5 * talk * Math.abs(Math.sin(t / 80 + j)));
-              return <path key={j} className="mk-thin" d={`M${x} ${f(-h)} V${f(h)}`} />;
-            })}
-          </g>
         </g>
       )}
 
-      {/* the labels, flipping at the fix */}
+      {/* the label: the loss, struck as the agent lands, then the win */}
       <Flip
-        x={AG.x}
-        y={62}
-        room={2 * Math.min(AG.x - 128, DW - AG.x) - 10}
-        problem={copy.wait.problem}
-        solution={copy.wait.solution}
-        wp={wOf(0, copy.wait.problem)}
-        ws={wOf(1, copy.wait.solution)}
+        x={DW / 2}
+        y={44}
+        room={DW - 24}
+        problem={copy.problem}
+        solution={copy.solution}
+        wp={wp}
+        ws={ws}
         t={t}
-        writeAt={280}
+        writeAt={300}
         strikeAt={F + 260}
-      />
-      <Flip
-        x={labelB.x}
-        y={118}
-        room={labelB.room}
-        problem={copy.tickets.problem}
-        solution={copy.tickets.solution}
-        wp={wOf(2, copy.tickets.problem)}
-        ws={wOf(3, copy.tickets.solution)}
-        t={t}
-        writeAt={1100}
-        strikeAt={drainEnd + 120}
       />
     </svg>
   );

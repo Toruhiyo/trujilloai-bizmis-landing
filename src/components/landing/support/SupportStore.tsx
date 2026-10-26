@@ -160,7 +160,7 @@ const SupportStore = ({
             paused={!active}
             speaking={voice}
             working={working}
-            placeholder={m.landing.widget.placeholder}
+            placeholder={m.landing.support.placeholder}
             draft={draft}
             press={press}
             above={caption ? <div className="flex justify-center">{caption}</div> : above}
@@ -183,7 +183,7 @@ const SupportStore = ({
             state={working ? "working" : speaking ? "speaking" : "idle"}
             talking={voice}
             tool={tool}
-            placeholder={m.landing.widget.placeholder}
+            placeholder={m.landing.support.placeholder}
             draft={draft}
             press={press}
             above={above}

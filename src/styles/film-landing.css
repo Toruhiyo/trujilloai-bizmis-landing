@@ -1345,19 +1345,13 @@
 .bzl[data-look="film"] .bzl-pillar .bzl-mk .mk-hand.is-q { font-size: 25px; }
 .bzl[data-look="film"] .bzl-pillar .bzl-mk .mk-hand.is-small { font-size: 23px; }
 
-/* Support's day (PillarMoments SupportDay): the labels written in the band's
-   ink over the marker's colour, the shading and the paper of its parts */
-.bzl-mk .mk-hand.is-label { font-size: 28px; fill: var(--acc-ink, var(--mk-ink)); }
-.bzl-mk .mk-hand.is-ask { font-size: 19px; }
-.bzl-mk .mk-hand.is-z { font-size: 20px; }
-.bzl-mk .mk-fill { fill: var(--mk-line); stroke: none; }
-.bzl-mk .mk-paper { fill: color-mix(in oklab, #f9a353 12%, #f4efe9); stroke: none; }
-.bzl-mk .mk-white,
-.bzl-mk .mk-slip { fill: #fff; }
-.bzl-mk .is-dash { stroke-dasharray: 2 7; }
-.bzl[data-look="film"] .bzl-pillar .bzl-mk .mk-hand.is-label { font-size: 30px; }
-.bzl[data-look="film"] .bzl-pillar .bzl-mk .mk-hand.is-ask { font-size: 21px; }
-.bzl[data-look="film"] .bzl-pillar .bzl-mk .mk-hand.is-z { font-size: 22px; }
+/* Support's day (PillarMoments SupportDay): all in the marker's ink (no darker one for its label),
+   the agent's head and the tickets on white paper */
+.bzl-mk .mk-hand.is-label { font-size: 30px; }
+.bzl-mk .mk-hand.is-ask { font-size: 20px; }
+.bzl-mk .mk-white { fill: #fff; }
+.bzl[data-look="film"] .bzl-pillar .bzl-mk .mk-hand.is-label { font-size: 32px; }
+.bzl[data-look="film"] .bzl-pillar .bzl-mk .mk-hand.is-ask { font-size: 22px; }
 
 /* ── Benefit pillar entrances (pillar/BenefitIntro.tsx on PillarIntro's named
    pattern): Support and Insights open on their NAME, huge, icon above and

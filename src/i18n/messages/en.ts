@@ -216,13 +216,15 @@ export const en = {
       titleTail: "Happier customers.",
       /** The area's full name, the chapter eyebrow over the outcome (the pillar openers, ?open=1..6). */
       area: "Customer Support",
-      lead: "Answers in seconds, day or night, as warmly as your best clerk.",
-      /** The pillar's animation, the merchant's support at scale: a day and a night of questions, piling up as tickets, then answered
-       * right away by voice once the agent lands. Labels as the Sales funnel's: the loss, struck at the fix, then the win (short, present tense). */
+      lead: "Answers every shopper, day or night, as warmly as your best clerk.",
+      /** The support mockup's widget placeholder (the composer's prompt before the shopper types). */
+      placeholder: "Ask me about your order.",
+      /** The pillar's animation, the merchant's support at scale: questions round the clock piling up as tickets, then answered
+       * right away by voice once the agent lands. One label, as the Sales funnel's: the loss, struck at the fix, then the win (short, present tense). */
       day: {
-        label: "A day and a night of shoppers' questions: they pile up as tickets in the inbox until the agent lands, then each one is answered right away, out loud",
-        wait: { problem: "Wait till morning", solution: "Answered right away" },
-        tickets: { problem: "Tickets pile up", solution: "Only what needs you" },
+        label: "Shoppers' questions round the clock: they pile up as tickets in the support inbox until the agent lands, then each one is answered right away, out loud",
+        problem: "Tickets pile up",
+        solution: "Answered right away",
         inbox: "Support inbox",
       },
     },

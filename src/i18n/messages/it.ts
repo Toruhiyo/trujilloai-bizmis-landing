@@ -201,13 +201,15 @@ export const it: Messages = {
       titleTail: "Clienti più felici.",
       /** The area's full name, the chapter eyebrow over the outcome (the pillar openers, ?open=1..6). */
       area: "Assistenza clienti",
-      lead: "Risponde in pochi secondi, giorno e notte, con il calore del tuo miglior commesso.",
-      /** The pillar's animation, the merchant's support at scale: a day and a night of questions, piling up as tickets, then answered
-       * right away by voice once the agent lands. Labels as the Sales funnel's: the loss, struck at the fix, then the win (short, present tense). */
+      lead: "Risponde a ogni cliente, giorno e notte, con il calore del tuo miglior commesso.",
+      /** The support mockup's widget placeholder (the composer's prompt before the shopper types). */
+      placeholder: "Chiedimi del tuo ordine.",
+      /** The pillar's animation, the merchant's support at scale: questions round the clock piling up as tickets, then answered
+       * right away by voice once the agent lands. One label, as the Sales funnel's: the loss, struck at the fix, then the win (short, present tense). */
       day: {
-        label: "Un giorno e una notte di domande dei clienti: si accumulano come ticket nella casella finché arriva l'agente, poi ognuna riceve risposta subito, a voce",
-        wait: { problem: "Aspettano il mattino", solution: "Risposta immediata" },
-        tickets: { problem: "I ticket si accumulano", solution: "Solo ciò che serve a te" },
+        label: "Domande dei clienti a ogni ora: si accumulano come ticket nella casella assistenza finché arriva l'agente, poi ognuna riceve risposta subito, a voce",
+        problem: "I ticket si accumulano",
+        solution: "Risposta immediata",
         inbox: "Casella assistenza",
       },
     },
