@@ -21,9 +21,12 @@ import { useDockMorph } from "./pillar/useDockMorph";
  * two-line line settling into the bar's one line, what has no place there
  * (the number, the rule) fading on the way, the bar's ground fading in.
  * Scrolling back reverses it; if the scroll rests partway it finishes by
- * itself in the direction it was going (pillar/useDockMorph). The content
- * follows the opener in the flow and arrives under the bar, which stays to
- * the end of the section. With prefers-reduced-motion: no flight, the bar
+ * itself in the direction it was going (pillar/useDockMorph). The opener
+ * stands over the section's top (one screen tall, so it's centred when the
+ * morph starts); in the flow there's only its runway (the morph's scroll
+ * plus the bar's height), so the content (a pinned stage included) is in
+ * place under the bar as the morph ends, fading in over its second half.
+ * The bar stays to the end of the section. With prefers-reduced-motion: no flight, the bar
  * simply switches.
  *
  *   <PillarIntro
@@ -122,6 +125,8 @@ const PillarIntro = ({
   const head = useRef<HTMLDivElement>(null);
   const big = useRef<HTMLDivElement>(null);
   const dock = useRef<HTMLDivElement>(null);
+  const runway = useRef<HTMLDivElement>(null);
+  const body = useRef<HTMLDivElement>(null);
   const [reduced] = useState(prefersReduced);
   const [isDocked, setDocked] = useState(false);
 
@@ -148,7 +153,7 @@ const PillarIntro = ({
   };
 
   // the morph, scrubbed by the scroll
-  useDockMorph({ root, head, big, dock, reduced, onDocked: setDocked, prepare: fit, deps: [v] });
+  useDockMorph({ root, head, big, dock, runway, body, reduced, onDocked: setDocked, prepare: fit, deps: [v] });
 
   const compact =
     typeof docked === "function" ? docked({ docked: isDocked }) : (docked ?? (named ? line : title));
@@ -235,7 +240,10 @@ const PillarIntro = ({
           </>
         )}
       </div>
-      <div className="pi-body">{children}</div>
+      <div ref={runway} className="pi-runway" aria-hidden="true" />
+      <div ref={body} className="pi-body">
+        {children}
+      </div>
     </div>
   );
 };

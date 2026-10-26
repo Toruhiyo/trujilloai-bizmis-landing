@@ -2,13 +2,19 @@
    opener and the section's sticky docked bar, the one morphing into the
    other as the page scrolls (pillar/useDockMorph sets the pieces'
    transforms and opacities from the scroll, and the bar's ground,
-   --pm-bar). The root's data-pm-state: "open" hides the bar's pieces,
-   "morph" layers the moving pieces for compositing, "docked" hides the big
+   --pm-bar). The big opener stands over the section's top, one screen
+   tall; in the flow there's only its runway (the morph's scroll, --pi-run,
+   plus the bar's height), so the content arrives under the bar as the
+   morph ends. The root's data-pm-state: "open" hides the bar's pieces and
+   the content (the opener stands over it), "morph" layers the moving
+   pieces for compositing (the content fading in), "docked" hides the big
    opener. */
 
 .pi {
   --pi-nav: var(--bzl-nav, 4rem);
   --pi-dock-h: 4rem;
+  /* the morph's scroll: from the section's top at the nav to the bar formed and the content under it */
+  --pi-run: max(6rem, 20svh);
   --pi-bar: color-mix(in oklab, var(--acc-soft, #fff3e7) 96%, transparent);
   --pi-ease: cubic-bezier(0.22, 1, 0.36, 1);
   position: relative;
@@ -22,7 +28,7 @@
 }
 
 /* ── The bar: sticky under the nav for the whole section. It takes no room
-   in the flow (the big title starts at the section's top, under it). ── */
+   in the flow (the opener starts at the section's top, under it). ── */
 .pi-head {
   position: sticky;
   top: var(--pi-nav);
@@ -52,9 +58,17 @@
 .pi[data-pm-state="docked"] .pi-big {
   visibility: hidden;
 }
+/* the content under the opener (opacity: some of it sets its own visibility) */
+.pi[data-pm-state="open"] > .pi-body {
+  opacity: 0;
+  pointer-events: none;
+}
 /* the moving pieces get their own layers while they move */
 .pi[data-pm-state="morph"] :is([data-pm], .sl-title-part, .sl-title-lead) {
   will-change: transform, opacity;
+}
+.pi[data-pm-state="morph"] > .pi-body {
+  will-change: opacity;
 }
 /* a line's parts morph one by one (transforms need boxes) */
 .pi :is(.pi-big, .pi-dock) :is(.sl-title-part, .sl-title-lead) {
@@ -132,20 +146,26 @@
   stroke-width: 2;
 }
 
-/* ── The big opener: in the flow, the section's opening; over the bar while
-   it morphs into it (nothing in it takes the pointer) ── */
+/* ── The big opener: over the section's top, one screen tall under the nav,
+   centred in it (so it stands in the middle of the screen when the morph
+   starts); over the bar while it morphs into it (nothing in it takes the
+   pointer). In the flow, only its runway. ── */
 .pi-big {
-  position: relative;
+  position: absolute;
+  inset: 0 0 auto;
   z-index: 21;
+  height: calc(100svh - var(--pi-nav));
   pointer-events: none;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   gap: clamp(0.7rem, 2.2svh, 1.4rem);
-  min-height: clamp(19rem, 56svh, 42rem);
-  padding: calc(var(--pi-dock-h) * 0.5) 1rem clamp(1rem, 3svh, 2.5rem);
+  padding: 0 1rem;
   text-align: center;
+}
+.pi-runway {
+  height: calc(var(--pi-run) + var(--pi-dock-h));
 }
 .pi-title {
   max-width: 14ch;
@@ -193,9 +213,6 @@
   }
   .pi-line {
     font-size: clamp(1.3rem, 6.4vw, 1.8rem);
-  }
-  .pi-big {
-    min-height: clamp(17rem, 52svh, 28rem);
   }
 }
 

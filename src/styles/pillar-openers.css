@@ -12,9 +12,6 @@
 .p-sales .pi-od {
   --od-accent: #fff;
 }
-.pi-od .pi-big {
-  min-height: clamp(26rem, 80svh, 54rem);
-}
 
 /* ── shared ── */
 .od {
@@ -313,7 +310,6 @@
 
 /* ── phones ── */
 @media (max-width: 639px) {
-  .pi-od .pi-big { min-height: clamp(22rem, 72svh, 34rem); }
   .od-outcome,
   .od1 .od-outcome,
   .od6 .od-outcome { font-size: min(10.5vw, 2.9rem); }

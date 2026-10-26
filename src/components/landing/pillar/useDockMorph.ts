@@ -7,19 +7,23 @@ import type { RefObject } from "react";
  *
  * The big opener and the bar mark their pieces with `data-pm` keys ("icon",
  * "area", "title", "sub", …). A key on both sides is a PAIR: the big piece
- * flies (translate + one scale, the size and the row settling ahead of the height) from
- * where it sits in the page to its place in the bar, while its bar twin flies the same path from the other
- * end, and they cross-fade on the way: late and short when it's the same
+ * flies (translate + one scale, the size and the row settling ahead of the
+ * height) from where it sits in the page to its place in the bar, while its
+ * bar twin flies the same path from the other end, and they cross-fade on
+ * the way: late and short when it's the same
  * text (it simply lands), earlier when it's not ("CUSTOMER SUPPORT" →
  * "Customer Support"). A sub line and the bar's line pair part by part when
  * both are split the same way (.sl-title-part: "Match needs." …), so a
  * two-line line settles into the bar's one line. A big piece with no twin
  * (the chapter number, the rule) rides glued to a pair (scaled with it) and
  * fades early; a bar piece with no twin fades in at its place. The bar's
- * ground (--pm-bar on the head) fades in along.
+ * ground (--pm-bar on the head) fades in along, and the content (hidden
+ * while the opener stands over it) over the second half.
  *
- * The scroll sets the morph's progress over a short run (RUN of a screen's
- * height, from when the section's top reaches the nav). When the scroll
+ * The scroll sets the morph's progress over a short run (the runway's
+ * height less the bar's: --pi-run in pillar-intro.css, a fifth of a
+ * screen), from when the section's top reaches the nav: as it ends, the
+ * content following the runway reaches the bar. When the scroll
  * rests partway, the morph finishes by itself in the direction it was going
  * (back to the opener only from its very start), so the title never stays
  * half-docked. Scrolling again carries on from where it stands, mapped onto
@@ -27,13 +31,12 @@ import type { RefObject } from "react";
  *
  * Geometry is measured on layout / resize / fonts (transforms cleared), the
  * frame only reads the root's top and writes transforms and opacities. The
- * root's `data-pm-state` is "open" (the bar hidden), "morph" (pieces
- * layered for compositing) or "docked" (the big part hidden). With
+ * root's `data-pm-state` is "open" (the bar and the content hidden),
+ * "morph" (pieces layered for compositing) or "docked" (the big part
+ * hidden). With
  * prefers-reduced-motion: no flight, the bar simply switches halfway.
  */
 
-/** The run, as a share of the screen's height. */
-const RUN = 0.18;
 /** The scroll counts as resting after this long without moving (ms). */
 const REST = 90;
 /** The settle's time constant (ms): ~95% there in 3× this. */
@@ -100,15 +103,11 @@ type Pair = {
 };
 type Solo = { el: HTMLElement; x: number; y: number; anchor: Pair | null };
 type Geometry = { pairs: Pair[]; solos: Solo[]; lone: HTMLElement[]; nav: number; run: number };
+type Els = { root: HTMLElement; head: HTMLElement; big: HTMLElement; dock: HTMLElement; runway: HTMLElement };
 
 const PARTS = ".sl-title-lead, .sl-title-part";
 
-const measureGeometry = (
-  root: HTMLElement,
-  head: HTMLElement,
-  big: HTMLElement,
-  dock: HTMLElement,
-): Geometry => {
+const measureGeometry = ({ root, head, big, dock, runway }: Els): Geometry => {
   const rootTop = root.getBoundingClientRect().top;
   const headTop = head.getBoundingClientRect().top;
   const nav = parseFloat(getComputedStyle(head).top) || 0;
@@ -177,7 +176,9 @@ const measureGeometry = (
     const anchor = key === "area" ? (find(bigs.get("icon")) ?? title) : title;
     return { el, x: r.left, y: r.top - rootTop, anchor };
   });
-  return { pairs, solos, lone: [...docks.values()], nav, run: Math.max(96, window.innerHeight * RUN) };
+  // the run: the runway less the bar (the content follows the runway)
+  const run = Math.max(48, runway.offsetHeight - dock.offsetHeight);
+  return { pairs, solos, lone: [...docks.values()], nav, run };
 };
 
 type State = "open" | "morph" | "docked";
@@ -187,6 +188,8 @@ export const useDockMorph = ({
   head,
   big,
   dock,
+  runway,
+  body,
   reduced,
   onDocked,
   prepare,
@@ -196,6 +199,10 @@ export const useDockMorph = ({
   head: RefObject<HTMLElement>;
   big: RefObject<HTMLElement>;
   dock: RefObject<HTMLElement>;
+  /** The opener's room in the flow: the run plus the bar's height. */
+  runway: RefObject<HTMLElement>;
+  /** The content after it, faded in over the morph's second half. */
+  body: RefObject<HTMLElement>;
   reduced: boolean;
   /** Called when the bar's docked state changes. */
   onDocked: (docked: boolean) => void;
@@ -214,7 +221,9 @@ export const useDockMorph = ({
     const h = head.current;
     const b = big.current;
     const d = dock.current;
-    if (!r || !h || !b || !d) return;
+    const w = runway.current;
+    const c = body.current;
+    if (!r || !h || !b || !d || !w || !c) return;
 
     let g: Geometry | null = null;
     let state: State | null = null;
@@ -227,6 +236,7 @@ export const useDockMorph = ({
 
     const all = () => (g ? [...g.pairs.flatMap((p) => [p.big, p.dock]), ...g.solos.map((s) => s.el), ...g.lone] : []);
     const clear = () => {
+      c.style.opacity = "";
       for (const el of all()) {
         el.style.transform = "";
         el.style.opacity = "";
@@ -244,6 +254,7 @@ export const useDockMorph = ({
       }
       h.style.setProperty("--pm-bar", smooth(0.15, 0.85, e).toFixed(3));
       if (next !== "morph" || !g) return;
+      c.style.opacity = smooth(0.45, 1, e).toFixed(3);
       // the size and the row settle ahead of the height, so pieces bound for one line don't run into each other
       const es = 1 - (1 - e) * (1 - e);
       const pos = (p: Pair) => {
@@ -314,7 +325,7 @@ export const useDockMorph = ({
     const measure = () => {
       clear();
       prep.current?.();
-      g = measureGeometry(r, h, b, d);
+      g = measureGeometry({ root: r, head: h, big: b, dock: d, runway: w });
       state = null;
       const top = r.getBoundingClientRect().top;
       const p = clamp01((g.nav - top) / g.run);
@@ -339,6 +350,7 @@ export const useDockMorph = ({
     const ro = new ResizeObserver(remeasure);
     ro.observe(d);
     ro.observe(b);
+    ro.observe(w);
     document.fonts?.ready.then(remeasure).catch(() => {});
     window.addEventListener("scroll", tick, { passive: true });
     window.addEventListener("resize", remeasure);
