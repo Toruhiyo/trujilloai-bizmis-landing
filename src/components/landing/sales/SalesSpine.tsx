@@ -249,14 +249,25 @@ const Arrow = ({ d, head, on }: { d: string; head: string; on: boolean }) => (
  */
 const Lens = ({ box, d, head, on }: { box: number[]; d: string; head: string; on: boolean }) => {
   const [x0, y0, x1, y1] = box;
-  const r = Math.min(16, (x1 - x0) / 4, (y1 - y0) / 4);
-  // the frame, a touch uneven, as if drawn with the marker
-  const frame =
-    `M${x0 + r} ${y0} L${x1 - r} ${y0 + 1.5} Q${x1} ${y0} ${x1} ${y0 + r} L${x1 + 1} ${y1 - r}` +
-    ` Q${x1} ${y1} ${x1 - r} ${y1} L${x0 + r} ${y1 - 1} Q${x0} ${y1} ${x0} ${y1 - r} L${x0 - 1} ${y0 + r} Q${x0} ${y0} ${x0 + r} ${y0}`;
+  const r = Math.min(22, (x1 - x0) / 4, (y1 - y0) / 4);
+  // the frame in one marker stroke: soft corners, sides a touch bowed, and the pen running on past
+  // where it started (a hand closing a loop), with a fainter second pass for the marker's grain
+  const loop = (dx: number, dy: number, over: number) => {
+    const a = x0 + dx;
+    const b = x1 + dx;
+    const c = y0 + dy;
+    const e = y1 + dy;
+    return (
+      `M${a + r * 0.6} ${c + 1.5} Q${(a + b) / 2} ${c - 2.5} ${b - r} ${c} Q${b} ${c} ${b} ${c + r}` +
+      ` Q${b + 2.5} ${(c + e) / 2} ${b} ${e - r} Q${b} ${e} ${b - r} ${e}` +
+      ` Q${(a + b) / 2} ${e + 2.5} ${a + r} ${e} Q${a} ${e} ${a} ${e - r}` +
+      ` Q${a - 2.5} ${(c + e) / 2} ${a} ${c + r} Q${a} ${c} ${a + r} ${c - 0.5} L${a + r + over} ${c - 2}`
+    );
+  };
   return (
     <svg className={cn("sl-g2-cone sl-g2-lens", on && "is-on")} aria-hidden="true">
-      <path className="sl-g2-cone-side sl-g2-lens-frame" d={frame} pathLength={1} />
+      <path className="sl-g2-cone-side sl-g2-lens-frame is-grain" d={loop(1.5, -1.5, 10)} pathLength={1} />
+      <path className="sl-g2-cone-side sl-g2-lens-frame" d={loop(0, 0, 26)} pathLength={1} />
       <path className="sl-g2-cone-side" d={d} pathLength={1} />
       <path className="sl-g2-cone-side" d={head} pathLength={1} />
     </svg>

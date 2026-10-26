@@ -173,15 +173,15 @@ export const arrangeOpener = (W: number, H: number, aspect: number, visits?: str
     const y = clamp(mid - h / 2, pad, H - pad - h);
     const ch = an.chambers[i];
     const left = clamp(fnLeft + ch.xc - ow / 2, 0, rest - ow);
-    // the frame: the chamber, from its wall's highest point to under its agent on the floor
-    const lt = fnTop + (i === 0 ? an.mouth.top : an.chambers[i - 1].top) - 10;
+    // the frame: the chamber, from just under its label (clear of the label's underline) to under its agent on the floor
+    const lt = fnTop + an.labels + clamp(fnH * 0.045, 12, 20);
     const lb = fnTop + ch.floor + clamp(fnH * 0.11, 22, 36);
     const box = [fnLeft + ch.xa + 2, lt, fnLeft + ch.xb - 2, lb];
     // the arrow: down out of the frame's foot, swooping under the funnel, into the device's near side
-    const s: Pt = [fnLeft + ch.xc, lb + 10];
-    const e: Pt = [x - 14, clamp(lb + clamp(H * 0.06, 30, 60), y + 30, y + h - 30)];
-    const dip = Math.max(s[1], e[1]) + clamp(H * 0.08, 40, 80);
-    const hw = clamp(W * 0.007, 7, 11);
+    const s: Pt = [fnLeft + ch.xc - (ch.xb - ch.xa) * 0.12, lb + 12];
+    const e: Pt = [x - 16, clamp(lb + clamp(H * 0.05, 26, 50), y + 34, y + h - 34)];
+    const dip = Math.max(s[1], e[1]) + clamp(H * 0.07, 36, 70);
+    const hw = clamp(W * 0.008, 9, 13);
     return {
       x,
       y,
@@ -192,8 +192,12 @@ export const arrangeOpener = (W: number, H: number, aspect: number, visits?: str
       link: {
         kind: "lens" as const,
         box,
-        d: `M${s[0]} ${s[1]} C ${s[0]} ${dip}, ${e[0] - Math.max(60, (e[0] - s[0]) * 0.35)} ${dip}, ${e[0]} ${e[1]}`,
-        head: `M${e[0] - hw * 1.3} ${e[1] - hw} L ${e[0]} ${e[1]} L ${e[0] - hw * 1.3} ${e[1] + hw}`,
+        // a hand's swoop: down out of the frame, a long easy curve, rising a touch into the device
+        d: `M${s[0]} ${s[1]} C ${s[0] - 6} ${dip}, ${e[0] - Math.max(80, (e[0] - s[0]) * 0.45)} ${dip + 6}, ${e[0]} ${e[1]}`,
+        // its head: two curved strokes, the way a marker draws one
+        head:
+          `M${e[0] - hw * 1.5} ${e[1] - hw * 1.05} Q ${e[0] - hw * 0.55} ${e[1] - hw * 0.25} ${e[0]} ${e[1]}` +
+          ` Q ${e[0] - hw * 0.6} ${e[1] + hw * 0.4} ${e[0] - hw * 1.35} ${e[1] + hw * 1.15}`,
       },
     };
   });

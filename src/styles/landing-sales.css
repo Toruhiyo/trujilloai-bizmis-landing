@@ -1050,12 +1050,16 @@
 }
 /* 9b: the frame round the chamber and the arrow from its foot to the device, in marker */
 .sl-g2-lens .sl-g2-cone-side {
-  stroke-width: 3;
+  stroke-width: 3.2;
   stroke-linejoin: round;
 }
 .sl-g2-lens .sl-g2-cone-side.sl-g2-lens-frame {
-  stroke-width: 2.6;
-  stroke: rgb(255 255 255 / 0.9);
+  stroke-width: 3;
+}
+/* the frame's fainter second pass: the marker's grain */
+.sl-g2-lens .sl-g2-cone-side.is-grain {
+  stroke-width: 1.6;
+  stroke: rgb(255 255 255 / 0.45);
 }
 /* 8c/8d: the marker arrow from the device to its chamber */
 .sl-g2-arrow .sl-g2-cone-side {
