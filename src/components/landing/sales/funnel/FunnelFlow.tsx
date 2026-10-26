@@ -1,4 +1,4 @@
-import { useLayoutEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import type { CSSProperties } from "react";
 import { ShoppingBag } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -254,24 +254,14 @@ const WRAP_GAIN = 1.15;
 const OVER = 0.35;
 
 /**
- * `text` on one line, or split in two at the word break that balances the
- * lines best (`tail` em more on the last line: the tick). Its lines and its
- * width (px) at `size`.
+ * `text` on one line, always: a label never breaks (it shrinks to fit
+ * instead). Its lines and its width (px) at `size` (`tail` em more: the
+ * tick). (`wrap` is kept for the fitting's signature; it no longer splits.)
  */
-const linesFor = (text: string, size: number, tail: number, wrap: boolean) => {
-  const one = { lines: [text], width: textWidth(text, size) + tail * size };
-  const words = text.split(" ");
-  // a two-word label never splits ("Buy / it" reads broken): it shrinks instead
-  if (!wrap || words.length < 3) return one;
-  let best = one;
-  for (let n = 1; n < words.length; n++) {
-    const a = words.slice(0, n).join(" ");
-    const b = words.slice(n).join(" ");
-    const width = Math.max(textWidth(a, size), textWidth(b, size) + tail * size);
-    if (best === one || width < best.width) best = { lines: [a, b], width };
-  }
-  return best;
-};
+const linesFor = (text: string, size: number, tail: number, _wrap: boolean) => ({
+  lines: [text],
+  width: textWidth(text, size) + tail * size,
+});
 
 export type LabelBox = {
   left: number;
@@ -538,6 +528,7 @@ const FunnelFlow = ({
   copy,
   rewind = false,
   labels: showLabels = true,
+  onLabels,
   className,
 }: {
   t: number;
@@ -549,6 +540,8 @@ const FunnelFlow = ({
   rewind?: boolean;
   /** The stages' labels (off where the beat's words sit over the funnel as its label, ?beat=7). */
   labels?: boolean;
+  /** Told where the labels landed (each one's centre, px across the funnel's box), to line other words up on them. */
+  onLabels?: (centres: number[]) => void;
   className?: string;
 }) => {
   const wrap = useRef<HTMLDivElement>(null);
@@ -600,6 +593,11 @@ const FunnelFlow = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [copy, size.W, size.H, focus, fonts],
   );
+  const onLabelsRef = useRef(onLabels);
+  onLabelsRef.current = onLabels;
+  useEffect(() => {
+    if (size.W > 0) onLabelsRef.current?.(labels.map((l) => l.left + l.width / 2));
+  }, [labels, size.W]);
 
   useLayoutEffect(() => {
     const el = wrap.current;

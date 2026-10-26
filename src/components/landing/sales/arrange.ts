@@ -24,14 +24,16 @@ export type Link =
   | { kind: "cone"; stage: number[]; device: number[] }
   /** A marker arrow from the device to its chamber: the stroke and its head. */
   | { kind: "arrow"; d: string; head: string }
-  /** A zoom lens: a marker frame round the chamber ([x0, y0, x1, y1]), widening out to the device's near edge ([x, y0, y1]). */
-  | { kind: "lens"; box: number[]; device: number[] };
+  /** A marker frame round the chamber ([x0, y0, x1, y1]) and an arrow from its foot, under the funnel, to the device. */
+  | { kind: "lens"; box: number[]; d: string; head: string };
 export type Arranged = {
   fnW: number;
   fnH: number;
   fnLeft: number;
   fnTop: number;
   beats: { x: number; y: number; w: number; h: number; origin: string; copy: CSSProperties; link: Link }[];
+  /** The span [left, right] the words may take (9b: the funnel's column). */
+  wordsRoom?: [number, number];
   /** The payoff in the same frame, if the arrangement keeps it there: its words and its metric card. */
   payoff?: { copy: CSSProperties; card: { left: number; top: number; width: number } };
 };
@@ -137,8 +139,8 @@ export const arrange = (W: number, H: number, look: ArrLook, aspect: number, vis
 /**
  * ?beat=9b: the opener over its stage's label and the funnel, as wide as
  * the room left of the device, as one block; the device in its own column
- * on the right, level with it; a zoom lens from the stage (a marker frame
- * round its chamber) widening out to the device. The payoff keeps the same
+ * on the right, level with it; a marker frame round the stage's chamber
+ * and an arrow from its foot, swooping under the funnel, into the device. The payoff keeps the same
  * funnel, in the same place: its words where the opener stood, its metric
  * card where the device stood.
  */
@@ -149,17 +151,18 @@ export const arrangeOpener = (W: number, H: number, aspect: number, visits?: str
   const rest = W - devCol - colGap;
   const ow = Math.min(rest, clamp(W * 0.42, 380, 640));
   const fs = Math.min(clamp(Math.min(W * 0.025, H * 0.046), 26, 40), ow / 17);
-  // kicker and up to two lines
+  // kicker and up to two lines, then air before the label it reads into
   const openerH = 44 + fs * 2.3;
-  const fnW = Math.min(rest, (H - 2 * pad - openerH) * aspect);
+  const air = clamp(H * 0.022, 12, 24);
+  const fnW = Math.min(rest, (H - 2 * pad - openerH - air) * aspect);
   const fnH = fnW / aspect;
   // the opener and the funnel as one block, centred in the stage's height
-  const block = openerH + fnH;
+  const block = openerH + air + fnH;
   const top0 = Math.max(pad, (H - block) / 2);
-  const fnTop = top0 + openerH;
+  const fnTop = top0 + openerH + air;
   const fnLeft = (rest - fnW) / 2;
   const an = funnelAnchors(fnW, fnH, [1, 1, 1], visits);
-  const foot = fnTop - 4;
+  const foot = fnTop - air;
   const mid = fnTop + an.cy;
   const beats = [0, 1, 2].map((i) => {
     const A = DEVICE_ASPECT[i];
@@ -170,10 +173,15 @@ export const arrangeOpener = (W: number, H: number, aspect: number, visits?: str
     const y = clamp(mid - h / 2, pad, H - pad - h);
     const ch = an.chambers[i];
     const left = clamp(fnLeft + ch.xc - ow / 2, 0, rest - ow);
-    // the lens: the chamber, from its wall's highest point to under its agent on the floor
+    // the frame: the chamber, from its wall's highest point to under its agent on the floor
     const lt = fnTop + (i === 0 ? an.mouth.top : an.chambers[i - 1].top) - 10;
     const lb = fnTop + ch.floor + clamp(fnH * 0.11, 22, 36);
     const box = [fnLeft + ch.xa + 2, lt, fnLeft + ch.xb - 2, lb];
+    // the arrow: down out of the frame's foot, swooping under the funnel, into the device's near side
+    const s: Pt = [fnLeft + ch.xc, lb + 10];
+    const e: Pt = [x - 14, clamp(lb + clamp(H * 0.06, 30, 60), y + 30, y + h - 30)];
+    const dip = Math.max(s[1], e[1]) + clamp(H * 0.08, 40, 80);
+    const hw = clamp(W * 0.007, 7, 11);
     return {
       x,
       y,
@@ -181,7 +189,12 @@ export const arrangeOpener = (W: number, H: number, aspect: number, visits?: str
       h,
       origin: `${fnLeft + ch.xc - x}px ${mid - y}px`,
       copy: { left, width: ow, bottom: H - foot, ["--bch-fs" as string]: `${fs}px` },
-      link: { kind: "lens" as const, box, device: [x - 6, y + Math.min(18, h * 0.06), y + h - Math.min(18, h * 0.06)] },
+      link: {
+        kind: "lens" as const,
+        box,
+        d: `M${s[0]} ${s[1]} C ${s[0]} ${dip}, ${e[0] - Math.max(60, (e[0] - s[0]) * 0.35)} ${dip}, ${e[0]} ${e[1]}`,
+        head: `M${e[0] - hw * 1.3} ${e[1] - hw} L ${e[0]} ${e[1]} L ${e[0] - hw * 1.3} ${e[1] + hw}`,
+      },
     };
   });
   const cardW = Math.min(devCol, 380);
@@ -191,6 +204,7 @@ export const arrangeOpener = (W: number, H: number, aspect: number, visits?: str
     fnLeft,
     fnTop,
     beats,
+    wordsRoom: [0, rest],
     payoff: {
       copy: { left: fnLeft, right: "auto", width: fnW, top: "auto", bottom: H - foot },
       card: { left: rest + colGap + (devCol - cardW) / 2, top: mid - (cardW * (168 / 330)) / 2, width: cardW },

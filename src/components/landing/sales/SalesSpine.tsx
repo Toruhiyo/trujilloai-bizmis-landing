@@ -127,7 +127,7 @@ const layout = (
   /** Their foot over [l, r]: just clear of the funnel's upper wall at its highest there (a chamber's entry is as high as the one before it, the first's as the mouth). */
   const footOver = (l: number, r: number) => {
     // the opener stands on its label (the funnel box's top row), not on the wall
-    if (ends === "o") return bTop - clamp(H * 0.008, 4, 10);
+    if (ends === "o") return bTop - clamp(H * 0.022, 12, 24);
     const walls = bA.chambers.map((c, j) =>
       r - bLeft > c.xa && l - bLeft < c.xb ? (j === 0 ? bA.mouth.top : bA.chambers[j - 1].top) : Infinity,
     );
@@ -243,30 +243,22 @@ const Arrow = ({ d, head, on }: { d: string; head: string; on: boolean }) => (
 );
 
 /**
- * A zoom lens (?beat=9b): a marker frame round the stage's chamber, and a
- * soft wedge widening from its far side out to the device's near edge,
- * under the funnel; drawn in like the cone's sides.
+ * ?beat=9b's link: a marker frame round the stage's chamber, and an arrow
+ * from its foot swooping under the funnel into the device; drawn in like
+ * the cone's sides.
  */
-const Lens = ({ box, device, on }: { box: number[]; device: number[]; on: boolean }) => {
+const Lens = ({ box, d, head, on }: { box: number[]; d: string; head: string; on: boolean }) => {
   const [x0, y0, x1, y1] = box;
-  const [dx, d0, d1] = device;
   const r = Math.min(16, (x1 - x0) / 4, (y1 - y0) / 4);
   // the frame, a touch uneven, as if drawn with the marker
   const frame =
     `M${x0 + r} ${y0} L${x1 - r} ${y0 + 1.5} Q${x1} ${y0} ${x1} ${y0 + r} L${x1 + 1} ${y1 - r}` +
     ` Q${x1} ${y1} ${x1 - r} ${y1} L${x0 + r} ${y1 - 1} Q${x0} ${y1} ${x0} ${y1 - r} L${x0 - 1} ${y0 + r} Q${x0} ${y0} ${x0 + r} ${y0}`;
-  // the wedge, from the frame's side facing the device (right or left)
-  const ex = dx > x1 ? x1 : x0;
-  const mx = (ex + dx) / 2;
-  const top = `M${ex} ${y0 + r} C ${mx} ${y0 + r}, ${mx} ${d0}, ${dx} ${d0}`;
-  const bottom = `M${ex} ${y1 - r} C ${mx} ${y1 - r}, ${mx} ${d1}, ${dx} ${d1}`;
-  const fill = `${top} L ${dx} ${d1} C ${mx} ${d1}, ${mx} ${y1 - r}, ${ex} ${y1 - r} Z`;
   return (
     <svg className={cn("sl-g2-cone sl-g2-lens", on && "is-on")} aria-hidden="true">
-      <path className="sl-g2-cone-fill" d={fill} />
-      <path className="sl-g2-cone-side" d={top} pathLength={1} />
-      <path className="sl-g2-cone-side" d={bottom} pathLength={1} />
       <path className="sl-g2-cone-side sl-g2-lens-frame" d={frame} pathLength={1} />
+      <path className="sl-g2-cone-side" d={d} pathLength={1} />
+      <path className="sl-g2-cone-side" d={head} pathLength={1} />
     </svg>
   );
 };
@@ -365,6 +357,22 @@ const Pinned = () => {
     [L0, A],
   );
   const rects = useMemo(() => L0.beats.map((b, i) => A?.beats[i] ?? b), [L0, A]);
+  // the openers (9a, 9b) stand centred on their label, where the funnel actually set it
+  const [labelAt, setLabelAt] = useState<number[] | null>(null);
+  const onLabels = useMemo(
+    () => (c: number[]) => setLabelAt((p) => (p && p.length === c.length && p.every((v, j) => Math.abs(v - c[j]) < 0.5) ? p : c)),
+    [],
+  );
+  const copyStyle = (i: number): CSSProperties => {
+    const c = rects[i].copy;
+    if (!(opener === "a" || opener === "b") || !labelAt || step !== i || typeof c.width !== "number") return c;
+    // centred on the label; near an edge, narrower (onto two lines) rather than off centre
+    const [lo, hi] = A?.wordsRoom ?? [0, W];
+    const centre = L.fnLeft + labelAt[i];
+    const half = Math.min(c.width / 2, centre - lo, hi - centre);
+    if (half < 150) return { ...c, left: clamp(centre - c.width / 2, lo, Math.max(lo, hi - c.width)) };
+    return { ...c, left: centre - half, width: 2 * half };
+  };
   const f = Math.min(step, 2);
   const clock = payoff
     ? { t: payT, duration: PAYOFF_DURATION, fixAt: undefined }
@@ -382,7 +390,7 @@ const Pinned = () => {
                 l.kind === "arrow" ? (
                   <Arrow key={i} d={l.d} head={l.head} on={step === i} />
                 ) : l.kind === "lens" ? (
-                  <Lens key={i} box={l.box} device={l.device} on={step === i} />
+                  <Lens key={i} box={l.box} d={l.d} head={l.head} on={step === i} />
                 ) : (
                   <Cone key={i} stage={l.stage} device={l.device} on={step === i} />
                 ),
@@ -413,7 +421,7 @@ const Pinned = () => {
                     (ends === "d" || arr === "a" || arr === "b" || opener === "a" || opener === "b") && "is-center",
                     step === i && "is-on",
                   )}
-                  style={rects[i].copy}
+                  style={copyStyle(i)}
                 >
                   <BeatCopyM index={i} t={beats[i].t} fixAt={beats[i].fixAt} />
                   {win > 0 && <Metrics variant={win} k={step === i ? k : fixedAt(i, beats[i].t, beats[i].fixAt)} focus={i} className="sl-g2-met" />}
@@ -434,6 +442,7 @@ const Pinned = () => {
                   fixAt={clock.fixAt}
                   copy={s.funnel}
                   labels={payoff || !onFunnel}
+                  onLabels={payoff ? undefined : onLabels}
                   // (the words stand where the funnel's ◀◀ goes: their device's tape look says it)
                   rewind={rewinding && (payoff || !onFunnel)}
                 />
