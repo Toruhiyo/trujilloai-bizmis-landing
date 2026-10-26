@@ -31,6 +31,14 @@ import type { RefObject } from "react";
  *
  * Geometry is measured on layout / resize / fonts (transforms cleared), the
  * frame only reads the root's top and writes transforms and opacities. The
+ * Styles (PillarIntro ?dock=): `mode: "block"` morphs the opener as ONE
+ * piece (`data-pm="block"`, scaled and slid into the bar's content box,
+ * cross-fading into the bar); `ground` is how the bar's ground arrives:
+ * "fade" (in place), "pill" (grown from a pill in the middle, --pm-g) or
+ * "curtain" (.pi-curtain in the head: a panel of the band's colour that
+ * wipes up from the screen's bottom behind the title, then lifts into the
+ * bar, uncovering the content).
+ *
  * As the section ends, the bar slides up under the nav and fades (EXIT). The
  * root's `data-pm-state` is "open" (the bar and the content hidden),
  * "morph" (pieces layered for compositing) or "docked" (the big part
@@ -46,11 +54,13 @@ const TAU = 55;
 const NUDGE = 0.06;
 /**
  * The bar's exit, as the section ends: it slides up under the nav and fades
- * while the section's bottom rises from the screen's bottom through this
- * share of the screen, so it's gone before the next section's opener shows
- * (a sticky bar would otherwise ride the section's edge out, clipped).
+ * over this share of the screen's height of scroll, finishing as what
+ * follows shows its first piece (`lead`: how far under the section's end
+ * the next section's opener, or its first line, stands), so it never
+ * stands over the next opener (a sticky bar would otherwise ride the
+ * section's edge out, clipped).
  */
-const EXIT = 0.28;
+const EXIT = 0.2;
 
 const clamp01 = (v: number) => Math.min(1, Math.max(0, v));
 const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
@@ -94,7 +104,8 @@ const textBox = (el: HTMLElement): Box & { lines: number; text: string } => {
 
 type Pair = {
   big: HTMLElement;
-  dock: HTMLElement;
+  /** Its twin in the bar (none for a block, which cross-fades into the whole bar). */
+  dock: HTMLElement | null;
   /** The big text box: left (screen), top from the root's top, size. */
   bx: number;
   by: number;
@@ -108,17 +119,105 @@ type Pair = {
   /** The big piece's scale in the bar. */
   k: number;
   same: boolean;
+  /** When the big piece fades out, and its twin fades in (morph progress). */
+  out: [number, number];
+  /** It reaches the bar's height as early as its size (a block lands, then cross-fades). */
+  early?: boolean;
+  in: [number, number];
 };
 type Solo = { el: HTMLElement; x: number; y: number; anchor: Pair | null };
-type Geometry = { pairs: Pair[]; solos: Solo[]; lone: HTMLElement[]; nav: number; run: number };
+type Geometry = {
+  pairs: Pair[];
+  solos: Solo[];
+  lone: HTMLElement[];
+  /** When the bar's pieces without a twin fade in. */
+  loneIn: [number, number];
+  nav: number;
+  run: number;
+  barH: number;
+  /** How far under the section's end the next section shows its first piece. */
+  lead: number;
+};
 type Els = { root: HTMLElement; head: HTMLElement; big: HTMLElement; dock: HTMLElement; runway: HTMLElement };
+export type MorphMode = "pieces" | "block";
+export type MorphGround = "fade" | "pill" | "curtain";
 
 const PARTS = ".sl-title-lead, .sl-title-part";
 
-const measureGeometry = ({ root, head, big, dock, runway }: Els): Geometry => {
+/** The top of the first line of text in `scope` that's on the page (its text nodes' boxes), or null. */
+const firstText = (scope: Element) => {
+  const walker = document.createTreeWalker(scope, NodeFilter.SHOW_TEXT);
+  const range = document.createRange();
+  for (let n = walker.nextNode(); n; n = walker.nextNode()) {
+    if (!n.textContent?.trim() || n.parentElement?.closest(".sr-only, [aria-hidden='true'] svg")) continue;
+    range.selectNodeContents(n);
+    const r = range.getBoundingClientRect();
+    if (r.width > 2 && r.height > 2) return r.top;
+  }
+  return null;
+};
+
+/**
+ * How far under this section's end the next section shows its first piece:
+ * its opener's (the pieces of its .pi-big), or else its first line of text.
+ * Without a next section: this opener's own lead (the openers share a design).
+ */
+const leadAfter = (root: HTMLElement, big: HTMLElement) => {
+  const bottom = root.getBoundingClientRect().bottom;
+  const tops = (scope: Element) => [...scope.querySelectorAll<HTMLElement>(".pi-big [data-pm]")].map((el) => el.getBoundingClientRect().top);
+  const next = root.closest("section")?.nextElementSibling;
+  if (next) {
+    const pieces = tops(next);
+    const top = pieces.length ? Math.min(...pieces) : firstText(next);
+    if (top !== null) return Math.max(0, top - bottom);
+  }
+  const own = [...big.querySelectorAll<HTMLElement>("[data-pm]")].map((el) => el.getBoundingClientRect().top);
+  return own.length ? Math.max(0, Math.min(...own) - root.getBoundingClientRect().top) : 0;
+};
+
+const measureGeometry = ({ root, head, big, dock, runway }: Els, mode: MorphMode): Geometry => {
   const rootTop = root.getBoundingClientRect().top;
   const headTop = head.getBoundingClientRect().top;
   const nav = parseFloat(getComputedStyle(head).top) || 0;
+  // the run: the runway less the bar (the content follows the runway)
+  const run = Math.max(48, runway.offsetHeight - dock.offsetHeight);
+  const barH = head.offsetHeight;
+  const lead = leadAfter(root, big);
+
+  // a block: the whole opener into the bar's content box, then the bar's pieces in its place
+  const block = mode === "block" ? big.querySelector<HTMLElement>('[data-pm="block"]') : null;
+  if (block) {
+    const lone = [...dock.querySelectorAll<HTMLElement>("[data-pm]")];
+    const boxes = lone.map(textBox);
+    const tx0 = Math.min(...boxes.map((b) => b.x));
+    const tx1 = Math.max(...boxes.map((b) => b.x + b.w));
+    const ty0 = Math.min(...boxes.map((b) => b.y));
+    const ty1 = Math.max(...boxes.map((b) => b.y + b.h));
+    const B = block.getBoundingClientRect();
+    const T = { x: tx0, y: ty0, w: tx1 - tx0, h: ty1 - ty0 };
+    const k = Math.min((T.h * 1.15) / B.height, T.w / B.width);
+    block.style.transformOrigin = "0 0";
+    const pair: Pair = {
+      big: block,
+      dock: null,
+      bx: B.left,
+      by: B.top - rootTop,
+      bw: B.width,
+      bh: B.height,
+      // centred on the bar's content
+      tx: T.x + T.w / 2 - (k * B.width) / 2,
+      ty: T.y - headTop + nav,
+      tw: T.w,
+      th: T.h,
+      k: Number.isFinite(k) && k > 0 ? k : 0.2,
+      same: false,
+      // a short dissolve, one after the other (the block's stack and the bar's row don't overlay)
+      out: [0.62, 0.84],
+      in: [0, 0],
+      early: true,
+    };
+    return { pairs: [pair], solos: [], lone, loneIn: [0.8, 1], nav, run, barH, lead };
+  }
   const keyed = (scope: HTMLElement) => {
     const map = new Map<string, HTMLElement>();
     for (const el of scope.querySelectorAll<HTMLElement>("[data-pm]")) map.set(el.dataset.pm!, el);
@@ -173,6 +272,8 @@ const measureGeometry = ({ root, head, big, dock, runway }: Els): Geometry => {
       th: T.h,
       k: Number.isFinite(k) && k > 0 ? k : 0.3,
       same,
+      out: same ? [0.86, 1] : [0.22, 0.66],
+      in: same ? [0.72, 0.9] : [0.32, 0.78],
     };
   });
   const find = (el?: HTMLElement) => pairs.find((p) => p.big === el || (el && el.contains(p.big))) ?? null;
@@ -180,13 +281,12 @@ const measureGeometry = ({ root, head, big, dock, runway }: Els): Geometry => {
   const solos: Solo[] = [...unpaired].map(([key, el]) => {
     const r = el.getBoundingClientRect();
     el.style.transformOrigin = "0 0";
-    // the eyebrow's words ride with its icon, the rest with the title
-    const anchor = key === "area" ? (find(bigs.get("icon")) ?? title) : title;
+    // each rides with the piece beside it: the eyebrow's words with its icon, the number with the area's name, the rest with the title
+    const near = key === "area" ? "icon" : key === "num" || key === "rule" ? "area" : "title";
+    const anchor = find(bigs.get(near)) ?? title;
     return { el, x: r.left, y: r.top - rootTop, anchor };
   });
-  // the run: the runway less the bar (the content follows the runway)
-  const run = Math.max(48, runway.offsetHeight - dock.offsetHeight);
-  return { pairs, solos, lone: [...docks.values()], nav, run };
+  return { pairs, solos, lone: [...docks.values()], loneIn: [0.55, 1], nav, run, barH, lead };
 };
 
 type State = "open" | "morph" | "docked";
@@ -199,6 +299,8 @@ export const useDockMorph = ({
   runway,
   body,
   reduced,
+  mode = "pieces",
+  ground = "fade",
   onDocked,
   prepare,
   deps,
@@ -212,6 +314,10 @@ export const useDockMorph = ({
   /** The content after it, faded in over the morph's second half. */
   body: RefObject<HTMLElement>;
   reduced: boolean;
+  /** "pieces" (default): each piece to its twin; "block": the opener as one. */
+  mode?: MorphMode;
+  /** How the bar's ground arrives: "fade" (default), "pill" or "curtain". */
+  ground?: MorphGround;
   /** Called when the bar's docked state changes. */
   onDocked: (docked: boolean) => void;
   /** Runs before the morph's geometry is measured (e.g. fitting the title to its line). */
@@ -232,6 +338,7 @@ export const useDockMorph = ({
     const w = runway.current;
     const c = body.current;
     if (!r || !h || !b || !d || !w || !c) return;
+    const curtain = ground === "curtain" ? h.querySelector<HTMLElement>(".pi-curtain") : null;
 
     let g: Geometry | null = null;
     let state: State | null = null;
@@ -244,18 +351,31 @@ export const useDockMorph = ({
     let gone = -1; // the bar's exit, as last painted
 
     // the bar leaves as the section's end comes up the screen (see EXIT)
-    const exit = (bottom: number) => {
+    const exit = (bottom: number, lead: number) => {
       const vh = window.innerHeight;
-      const q = reduced ? (bottom < vh * (1 - EXIT / 2) ? 1 : 0) : smooth(0, 1, (vh - bottom) / (vh * EXIT));
+      const done = vh - lead;
+      const span = vh * EXIT;
+      const q = reduced ? (bottom < done + span / 2 ? 1 : 0) : smooth(0, 1, (done + span - bottom) / span);
       if (Math.abs(q - gone) < 0.001) return;
       gone = q;
       h.style.transform = q > 0 ? `translate3d(0, ${(-q * (h.offsetHeight + 8)).toFixed(1)}px, 0)` : "";
       h.style.opacity = q > 0 ? (1 - q).toFixed(3) : "";
     };
 
-    const all = () => (g ? [...g.pairs.flatMap((p) => [p.big, p.dock]), ...g.solos.map((s) => s.el), ...g.lone] : []);
+    const all = () =>
+      g
+        ? [
+            ...g.pairs.flatMap((p) => (p.dock ? [p.big, p.dock] : [p.big])),
+            ...g.solos.map((s) => s.el),
+            ...g.lone,
+          ]
+        : [];
     const clear = () => {
       c.style.opacity = "";
+      if (curtain) {
+        curtain.style.transform = "";
+        curtain.style.opacity = "";
+      }
       for (const el of all()) {
         el.style.transform = "";
         el.style.opacity = "";
@@ -271,8 +391,19 @@ export const useDockMorph = ({
         if (next !== "morph") clear();
         if (wasDocked !== (next === "docked")) cb.current(next === "docked");
       }
-      h.style.setProperty("--pm-bar", smooth(0.15, 0.85, e).toFixed(3));
+      // the bar's ground: in place, from a pill, or after the curtain
+      const [b0, b1] = ground === "pill" ? [0.02, 0.4] : ground === "curtain" ? [0.8, 1] : [0.15, 0.85];
+      h.style.setProperty("--pm-bar", smooth(b0, b1, e).toFixed(3));
+      if (ground === "pill") h.style.setProperty("--pm-g", smooth(0.05, 0.85, e).toFixed(3));
       if (next !== "morph" || !g) return;
+      if (curtain) {
+        // the band's colour wipes up from the screen's bottom (its top edge quick), then lifts into the bar
+        const vh = window.innerHeight;
+        const top = lerp(vh, g.nav, 1 - (1 - e) * (1 - e));
+        const bottom = e < 0.45 ? vh : lerp(vh, g.nav + g.barH, (e - 0.45) / 0.55);
+        curtain.style.transform = `translate3d(0, ${(top - g.nav).toFixed(1)}px, 0) scaleY(${(Math.max(g.barH, bottom - top) / g.barH).toFixed(4)})`;
+        curtain.style.opacity = (smooth(0, 0.08, e) * (1 - smooth(0.9, 1, e))).toFixed(3);
+      }
       c.style.opacity = smooth(0.45, 1, e).toFixed(3);
       // the size and the row settle ahead of the height, so pieces bound for one line don't run into each other
       const es = 1 - (1 - e) * (1 - e);
@@ -280,17 +411,17 @@ export const useDockMorph = ({
         const top = rootTop + p.by;
         const kb = Math.pow(p.k, es);
         const left = lerp(p.bx, p.tx, es);
-        const cy = lerp(top + p.bh / 2, p.ty + p.th / 2, e);
+        const cy = lerp(top + p.bh / 2, p.ty + p.th / 2, p.early ? es : e);
         return { top, kb, left, cy };
       };
       for (const p of g.pairs) {
         const { top, kb, left, cy } = pos(p);
         const kt = kb / p.k;
         p.big.style.transform = `translate3d(${(left - p.bx).toFixed(2)}px, ${(cy - (kb * p.bh) / 2 - top).toFixed(2)}px, 0) scale(${kb.toFixed(4)})`;
+        p.big.style.opacity = (1 - smooth(p.out[0], p.out[1], e)).toFixed(3);
+        if (!p.dock) continue;
         p.dock.style.transform = `translate3d(${(left - p.tx).toFixed(2)}px, ${(cy - (kt * p.th) / 2 - p.ty).toFixed(2)}px, 0) scale(${kt.toFixed(4)})`;
-        const [a, z] = p.same ? [0.72, 0.9] : [0.32, 0.78];
-        p.dock.style.opacity = smooth(a, z, e).toFixed(3);
-        p.big.style.opacity = (1 - (p.same ? smooth(0.86, 1, e) : smooth(0.22, 0.66, e))).toFixed(3);
+        p.dock.style.opacity = smooth(p.in[0], p.in[1], e).toFixed(3);
       }
       for (const s of g.solos) {
         const o = (1 - smooth(0, 0.42, e)).toFixed(3);
@@ -305,7 +436,7 @@ export const useDockMorph = ({
         const sy = ay + kb * (rootTop + s.y - top);
         s.el.style.transform = `translate3d(${(sx - s.x).toFixed(2)}px, ${(sy - rootTop - s.y).toFixed(2)}px, 0) scale(${kb.toFixed(4)})`;
       }
-      const lo = smooth(0.55, 1, e).toFixed(3);
+      const lo = smooth(g.loneIn[0], g.loneIn[1], e).toFixed(3);
       for (const el of g.lone) el.style.opacity = lo;
     };
 
@@ -314,7 +445,7 @@ export const useDockMorph = ({
       if (!g) return;
       const box = r.getBoundingClientRect();
       const top = box.top;
-      exit(box.bottom);
+      exit(box.bottom, g.lead);
       const p = clamp01((g.nav - top) / g.run);
       if (p !== pPrev) {
         // carry on from where the morph stands, onto what's left of the run
@@ -346,7 +477,7 @@ export const useDockMorph = ({
     const measure = () => {
       clear();
       prep.current?.();
-      g = measureGeometry({ root: r, head: h, big: b, dock: d, runway: w });
+      g = measureGeometry({ root: r, head: h, big: b, dock: d, runway: w }, mode);
       state = null;
       const top = r.getBoundingClientRect().top;
       const p = clamp01((g.nav - top) / g.run);
@@ -387,5 +518,5 @@ export const useDockMorph = ({
       delete r.dataset.pmState;
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [reduced, ...deps]);
+  }, [reduced, mode, ground, ...deps]);
 };

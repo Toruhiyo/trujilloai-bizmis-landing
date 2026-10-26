@@ -3,8 +3,8 @@ import type { CSSProperties, ReactNode } from "react";
 import { cn } from "@/lib/utils";
 import "@/styles/pillar-intro.css";
 import "@/styles/pillar-openers.css";
-import { PillarAreaContext, useOpener } from "./pillar/OpenerContext";
-import OpenerDesign from "./pillar/OpenerDesign";
+import { PillarAreaContext, useDockStyle, useOpener } from "./pillar/OpenerContext";
+import OpenerDesign, { DockOpener } from "./pillar/OpenerDesign";
 import type { Motif } from "./pillar/OpenerDesign";
 import { useDockMorph } from "./pillar/useDockMorph";
 
@@ -52,6 +52,10 @@ import { useDockMorph } from "./pillar/useDockMorph";
  * - The root publishes `--pi-dock-h` (the bar's height) so pinned children
  *   can sit right under it (`top: calc(nav + var(--pi-dock-h))`), and
  *   `.is-docked` once the bar has fully formed.
+ * - ?dock=a|b|c (pillar/OpenerContext useDockStyle) swaps the opener and
+ *   its morph for a style under comparison: a calm block that scales into
+ *   the bar over a growing pill, an editorial number kept in the bar, a
+ *   curtain of the band's colour lifting the title into it.
  * - The opener designs (?open=1..6, pillar/OpenerContext; the page's default
  *   is 5) are pillar/OpenerDesign: the OUTCOME the hero (`outcome`; by
  *   default the `name`, with `line` under it), the AREA the eyebrow (`area`;
@@ -121,6 +125,9 @@ const PillarIntro = ({
   const lines = outcome ?? (typeof name === "string" ? [name] : undefined);
   // the opener design, if any
   const v = named && lines && opener !== "0" ? opener : null;
+  // a dock style under comparison (?dock=a|b|c), with an opener design
+  const dockStyle = useDockStyle();
+  const alt = v && dockStyle !== "0" ? dockStyle : null;
   const root = useRef<HTMLDivElement>(null);
   const head = useRef<HTMLDivElement>(null);
   const big = useRef<HTMLDivElement>(null);
@@ -153,7 +160,20 @@ const PillarIntro = ({
   };
 
   // the morph, scrubbed by the scroll
-  useDockMorph({ root, head, big, dock, runway, body, reduced, onDocked: setDocked, prepare: fit, deps: [v] });
+  useDockMorph({
+    root,
+    head,
+    big,
+    dock,
+    runway,
+    body,
+    reduced,
+    mode: alt === "a" ? "block" : "pieces",
+    ground: alt === "a" ? "pill" : alt === "c" ? "curtain" : "fade",
+    onDocked: setDocked,
+    prepare: fit,
+    deps: [v, alt],
+  });
 
   const compact =
     typeof docked === "function" ? docked({ docked: isDocked }) : (docked ?? (named ? line : title));
@@ -162,13 +182,25 @@ const PillarIntro = ({
   const byOutcome = Boolean(v && outcome);
   const bar = (
     <div ref={head} className="pi-head">
+      {alt === "c" && <span className="pi-curtain" aria-hidden="true" />}
       <div ref={dock} className={cn("pi-dock", named && "is-named", dockClassName)} aria-hidden="true">
         {named ? (
           <span className="pi-dock-name">
-            {icon && (
-              <span className="pi-dock-icon" data-pm="icon">
-                {icon}
-              </span>
+            {alt === "b" && index ? (
+              <>
+                <span className="pi-dock-num" data-pm="num">
+                  {index}
+                </span>
+                <span className="pi-dock-dot" data-pm="dot">
+                  ·
+                </span>
+              </>
+            ) : (
+              icon && (
+                <span className="pi-dock-icon" data-pm="icon">
+                  {icon}
+                </span>
+              )
             )}
             <span className="pi-dock-label" data-pm={byOutcome ? "area" : "title"}>
               {name}
@@ -193,12 +225,22 @@ const PillarIntro = ({
   return (
     <div
       ref={root}
-      className={cn("pi", v && `pi-od pi-od${v}`, isDocked && "is-docked", className)}
+      className={cn("pi", v && `pi-od pi-od${v}`, alt && `pi-odx pi-odx-${alt}`, isDocked && "is-docked", className)}
       style={accent ? ({ "--pi-bar": accent } as CSSProperties) : undefined}
     >
       {bar}
       <div ref={big} className={cn("pi-big", named && "is-named")}>
-        {v && lines ? (
+        {alt && lines ? (
+          <DockOpener
+            style={alt}
+            index={index}
+            area={area ?? areaCtx}
+            lines={lines}
+            sub={outcome ? undefined : line}
+            lineClassName={lineClassName}
+            as={Tag}
+          />
+        ) : v && lines ? (
           <OpenerDesign
             v={v}
             index={index}

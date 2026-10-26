@@ -276,3 +276,103 @@ const OpenerDesign = ({
 };
 
 export default OpenerDesign;
+
+/** One marker swoosh under a word (the curtain opener's area). */
+const Swoosh = () => (
+  <svg className="odx-swoosh" viewBox="0 0 300 14" preserveAspectRatio="none" aria-hidden="true">
+    <path d="M3 9.5 C 70 4.5, 170 3.2, 297 6.8" />
+  </svg>
+);
+
+/**
+ * The opener in the dock styles under comparison (?dock=a|b|c,
+ * OpenerContext): one type system with the page, the outcome an Inter
+ * headline on one line (fitted, --pi-fit), marker handwriting as the
+ * accent, no icon disc. a: a centred block (the marker kicker "02 ·
+ * Customer Support", the outcome) that morphs as one (`data-pm="block"`);
+ * b: left-aligned, the marker number, the area's name and a hairline over
+ * the outcome; c: centred, the number and the area's name underlined in
+ * marker over the outcome. pillar-openers.css (.odx).
+ */
+export const DockOpener = ({
+  style,
+  index,
+  area,
+  lines,
+  sub,
+  lineClassName,
+  as: Tag = "h2",
+}: {
+  style: "a" | "b" | "c";
+  index?: string;
+  area?: ReactNode;
+  lines: string[];
+  sub?: ReactNode;
+  lineClassName?: string;
+  as?: "h2" | "p" | "div";
+}) => {
+  const title = (
+    <Tag className="od-outcome is-one odx-title" data-pm="title">
+      <span className="od-l">{lines.join(" ")}</span>
+    </Tag>
+  );
+  const subEl = sub ? (
+    <span className={cn("pi-line od-sub odx-sub", lineClassName)} data-pm="sub">
+      {sub}
+    </span>
+  ) : null;
+
+  if (style === "a")
+    return (
+      <div className="odx odx-a" data-pm="block">
+        <span className="odx-kick">
+          {index && <span className="odx-num">{index}</span>}
+          {index && area && <span className="odx-dot"> · </span>}
+          {area && <span>{area}</span>}
+        </span>
+        {title}
+        {subEl}
+      </div>
+    );
+
+  if (style === "b")
+    return (
+      <div className="odx odx-b">
+        <div className="odx-head">
+          {index && (
+            <span className="odx-num" data-pm="num" aria-hidden="true">
+              {index}
+            </span>
+          )}
+          {area && (
+            <span className="odx-label" data-pm="area">
+              {area}
+            </span>
+          )}
+          <span className="odx-rule" data-pm="rule" aria-hidden="true" />
+        </div>
+        {title}
+        {subEl}
+      </div>
+    );
+
+  return (
+    <div className="odx odx-c">
+      <span className="odx-kick-c">
+        {index && (
+          <span className="odx-num" data-pm="num" aria-hidden="true">
+            {index}
+          </span>
+        )}
+        {area && (
+          <span className="odx-label" data-pm="area">
+            {area}
+            <Swoosh />
+          </span>
+        )}
+      </span>
+      {title}
+      {subEl}
+    </div>
+  );
+};

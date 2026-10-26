@@ -301,6 +301,118 @@
   font-size: clamp(3rem, min(7.5vw, 13svh), 8rem);
 }
 
+/* ═══════════ Dock styles a · b · c (?dock=, pillar/OpenerDesign DockOpener) ═══════════
+   One type system with the page: the outcome an Inter headline on one line
+   (fitted, --pi-fit), marker handwriting (Caveat) as the only accent, no
+   icon disc. a Calm: centred, a marker kicker over the outcome; b
+   Editorial: left-aligned, the marker number with the area's name and a
+   hairline; c Curtain: centred, the number and the area's name underlined
+   in marker. (Scoped under .pi-od: the page sets its font on every span.) */
+.pi-odx .pi-big {
+  align-items: stretch;
+}
+.odx {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: clamp(0.8rem, 2.4svh, 1.5rem);
+  width: 100%;
+  max-width: 1200px;
+  margin-inline: auto;
+  padding-inline: 1.5rem;
+}
+.odx-a,
+.odx-c {
+  align-items: center;
+  text-align: center;
+}
+.odx-b {
+  align-items: flex-start;
+  text-align: left;
+}
+.pi-od .odx .od-outcome.is-one {
+  --od-one: clamp(3rem, min(7.2vw, 13svh), 8rem);
+  max-width: 100%;
+  font-size: calc(var(--od-one) * var(--pi-fit, 1));
+  line-height: 1;
+  white-space: nowrap;
+}
+.odx .od-sub {
+  text-align: inherit;
+}
+.pi-od .odx-num {
+  font-family: var(--bzl-script, "Caveat", cursive);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 0.8;
+  color: var(--od-accent);
+}
+.odx-label {
+  position: relative;
+  font-size: clamp(1.3rem, min(2.1vw, 3.8svh), 2rem);
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  line-height: 1.1;
+  color: var(--od-ink);
+}
+/* a: the kicker written in marker, "02 · Customer Support" */
+.pi-od .odx-kick,
+.pi-od .odx-kick span {
+  font-family: var(--bzl-script, "Caveat", cursive);
+  font-size: clamp(1.9rem, min(3.2vw, 5.6svh), 3rem);
+  font-weight: 700;
+  line-height: 1;
+  color: var(--od-accent);
+}
+.pi-od .odx-kick .odx-num {
+  line-height: 1;
+}
+.odx-dot {
+  opacity: 0.6;
+}
+/* b: the number big in marker, the area's name, a hairline to the edge */
+.odx-head {
+  display: flex;
+  align-items: baseline;
+  gap: clamp(0.8rem, 1.6vw, 1.4rem);
+  width: 100%;
+}
+.pi-od .odx-b .odx-num {
+  font-size: clamp(3.6rem, min(7vw, 12svh), 7rem);
+}
+.odx-rule {
+  flex: 1;
+  align-self: center;
+  height: 2px;
+  border-radius: 2px;
+  background: color-mix(in oklab, var(--od-ink) 18%, transparent);
+}
+/* c: the number and the area's name, a marker swoosh under the name */
+.odx-kick-c {
+  display: inline-flex;
+  align-items: baseline;
+  gap: clamp(0.7rem, 1.2vw, 1.1rem);
+}
+.pi-od .odx-c .odx-num {
+  font-size: clamp(2.3rem, min(3.8vw, 6.6svh), 3.6rem);
+}
+.odx-swoosh {
+  position: absolute;
+  left: -3%;
+  bottom: -0.42em;
+  width: 106%;
+  height: 0.4em;
+  overflow: visible;
+  pointer-events: none;
+}
+.odx-swoosh path {
+  fill: none;
+  stroke: var(--od-accent);
+  stroke-width: 4px;
+  stroke-linecap: round;
+  vector-effect: non-scaling-stroke;
+}
+
 /* ── Pinned (BenefitIntro's one-screen sections, desktop): their screen
    sticks right under the docked bar, like Boost Sales' stage. ── */
 .bzp.is-pinned .bzp-pin {
@@ -317,6 +429,9 @@
   .od1 .od-outcome:has(> .od-l:only-child),
   .od6 .od-outcome:has(> .od-l:only-child) { font-size: clamp(2.6rem, 15vw, 4.4rem); }
   .pi-od .od5 .od-outcome.is-one { --od-one: clamp(2.6rem, 15vw, 4.4rem); }
+  .pi-od .odx .od-outcome.is-one { --od-one: clamp(2.4rem, 13vw, 4rem); }
+  .odx { padding-inline: 1rem; }
+  .pi-od .odx-b .odx-num { font-size: clamp(3rem, 16vw, 4.4rem); }
   .od5 {
     grid-template-columns: minmax(0, 1fr);
     row-gap: 0.75rem;
