@@ -441,9 +441,10 @@ const Terms = () => {
                 payment-card details and does not invoice Merchants directly.
               </li>
               <li>
-                <strong>Billing periods.</strong> All plans are billed monthly,
-                upfront, every 30 days. Yearly plans are not currently
-                offered.
+                <strong>Billing periods.</strong> Plans are billed monthly,
+                upfront, every 30 days, or, where a yearly plan is offered,
+                yearly, upfront, once a year. On a yearly plan the included
+                Sessions still reset every month.
               </li>
               <li>
                 <strong>Included Sessions.</strong> Each plan includes a
@@ -507,15 +508,16 @@ const Terms = () => {
                 interrupted.
               </li>
               <li>
-                <strong>30-day money-back guarantee.</strong> If you cancel
-                within 30 days of your first paid plan charge, we will refund
-                that plan fee, no questions asked. The guarantee applies only
-                to the first plan charge; it does not cover later billing
-                periods or overage usage.
+                <strong>30-day money-back guarantee (yearly plans).</strong> If
+                you cancel a yearly plan within 30 days of its first yearly
+                charge, we will refund that charge, no questions asked. The
+                guarantee applies only to the first yearly charge; it does not
+                cover renewal years or overage usage. Monthly plans are not
+                covered by this guarantee.
               </li>
               <li>
                 <strong>No other refunds.</strong> Except as set out above,
-                charges already billed for the current monthly period are
+                charges already billed for the current billing period are
                 non-refundable, and unused Sessions in the current period
                 are forfeited. You will not be billed again going forward.
               </li>
