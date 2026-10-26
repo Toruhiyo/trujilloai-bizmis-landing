@@ -202,16 +202,13 @@ export const it: Messages = {
       /** The area's full name, the chapter eyebrow over the outcome (the pillar openers, ?open=1..6). */
       area: "Assistenza clienti",
       lead: "Risponde in pochi secondi, giorno e notte, con il calore del tuo miglior commesso.",
-      capabilities: [
-        { title: "Sempre attivo", body: "Ogni domanda riceve risposta nel momento in cui arriva." },
-        { title: "Conosce il tuo negozio", body: "Risponde con le tue policy e il tuo catalogo." },
-        { title: "Legge l'umore", body: "Calma i clienti arrabbiati prima che lascino una recensione negativa." },
-      ],
-      live: {
-        label: "I clienti chiedono, Bizmis risponde a voce",
-        questions: ["Dov'è il mio ordine?", "Veste piccolo?", "Posso restituirlo?", "Spedite in Canada?"],
-        email: "Email assistenza",
-        done: "Risposto all'istante",
+      /** The pillar's animation, the merchant's support at scale: a day and a night of questions, piling up as tickets, then answered
+       * right away by voice once the agent lands. Labels as the Sales funnel's: the loss, struck at the fix, then the win (short, present tense). */
+      day: {
+        label: "Un giorno e una notte di domande dei clienti: si accumulano come ticket nella casella finché arriva l'agente, poi ognuna riceve risposta subito, a voce",
+        wait: { problem: "Aspettano il mattino", solution: "Risposta immediata" },
+        tickets: { problem: "I ticket si accumulano", solution: "Solo ciò che serve a te" },
+        inbox: "Casella assistenza",
       },
     },
     insights: {
@@ -220,11 +217,6 @@ export const it: Messages = {
       /** The area's full name, the chapter eyebrow over the outcome (the pillar openers, ?open=1..6). */
       area: "Dati del negozio",
       lead: "Ogni conversazione diventa un passo successivo chiaro.",
-      features: [
-        { title: "Replay delle sessioni", body: "Ascolta il momento esatto in cui un cliente ha esitato." },
-        { title: "Chat taggate da sole", body: "Le domande si raggruppano da sole, così una correzione evita tanti ticket." },
-        { title: "Insight sul funnel", body: "Vedi quali correzioni rendono per prime." },
-      ],
       clarity: {
         snippets: ["Spedite in Canada?", "Taglia M o L?", "Resi?", "Confezione regalo?"],
         topAsk: "Domanda n.1: spedizioni",

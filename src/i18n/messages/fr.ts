@@ -202,16 +202,13 @@ export const fr: Messages = {
       /** The area's full name, the chapter eyebrow over the outcome (the pillar openers, ?open=1..6). */
       area: "Service client",
       lead: "Il répond en quelques secondes, jour et nuit, avec la chaleur de votre meilleur vendeur.",
-      capabilities: [
-        { title: "Toujours là", body: "Chaque question reçoit une réponse dès qu'elle est posée." },
-        { title: "Connaît votre boutique", body: "Il répond à partir de vos propres politiques et de votre catalogue." },
-        { title: "Sent l'humeur", body: "Il apaise les clients mécontents avant qu'ils ne laissent un mauvais avis." },
-      ],
-      live: {
-        label: "Les clients demandent, Bizmis répond à voix haute",
-        questions: ["Où est ma commande ?", "Ça taille petit ?", "Je peux le retourner ?", "Livrez-vous au Canada ?"],
-        email: "E-mail support",
-        done: "Répondu sur le moment",
+      /** The pillar's animation, the merchant's support at scale: a day and a night of questions, piling up as tickets, then answered
+       * right away by voice once the agent lands. Labels as the Sales funnel's: the loss, struck at the fix, then the win (short, present tense). */
+      day: {
+        label: "Un jour et une nuit de questions de clients : elles s'empilent en tickets dans la boîte jusqu'à l'arrivée de l'agent, puis chacune reçoit une réponse immédiate, à voix haute",
+        wait: { problem: "Attendent le matin", solution: "Réponse immédiate" },
+        tickets: { problem: "Les tickets s'empilent", solution: "Juste l'essentiel" },
+        inbox: "Boîte du support",
       },
     },
     insights: {
@@ -220,11 +217,6 @@ export const fr: Messages = {
       /** The area's full name, the chapter eyebrow over the outcome (the pillar openers, ?open=1..6). */
       area: "Données de la boutique",
       lead: "Chaque conversation devient une prochaine étape claire.",
-      features: [
-        { title: "Replays de session", body: "Écoutez le moment exact où un client a hésité." },
-        { title: "Chats tagués tout seuls", body: "Les questions se regroupent seules, et une correction évite de nombreux tickets." },
-        { title: "Insights du tunnel", body: "Voyez quelles corrections rapportent en premier." },
-      ],
       clarity: {
         snippets: ["Livraison au Canada ?", "Taille M ou L ?", "Retours ?", "Emballage cadeau ?"],
         topAsk: "Question n°1 : la livraison",

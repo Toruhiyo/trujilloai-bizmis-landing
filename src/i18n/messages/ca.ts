@@ -202,16 +202,13 @@ export const ca: Messages = {
       /** The area's full name, the chapter eyebrow over the outcome (the pillar openers, ?open=1..6). */
       area: "Atenció al client",
       lead: "Respon en segons, de dia o de nit, amb la calidesa del teu millor dependent.",
-      capabilities: [
-        { title: "Sempre disponible", body: "Cada pregunta té resposta al moment." },
-        { title: "Coneix la teva botiga", body: "Respon amb les teves polítiques i el teu catàleg." },
-        { title: "Llegeix l'ànim", body: "Calma els clients molestos abans que deixin una mala ressenya." },
-      ],
-      live: {
-        label: "Els clients pregunten i Bizmis respon en veu alta",
-        questions: ["On és la meva comanda?", "Va petit de talla?", "Puc tornar-ho?", "Envieu al Canadà?"],
-        email: "Correu de suport",
-        done: "Resposta a l'instant",
+      /** The pillar's animation, the merchant's support at scale: a day and a night of questions, piling up as tickets, then answered
+       * right away by voice once the agent lands. Labels as the Sales funnel's: the loss, struck at the fix, then the win (short, present tense). */
+      day: {
+        label: "Un dia i una nit de preguntes de clients: s'acumulen com a tiquets a la safata fins que arriba l'agent, i des de llavors cadascuna té resposta a l'instant, en veu alta",
+        wait: { problem: "Esperen al matí", solution: "Resposta a l'instant" },
+        tickets: { problem: "S'acumulen tiquets", solution: "Només el que et necessita" },
+        inbox: "Safata de suport",
       },
     },
     insights: {
@@ -220,11 +217,6 @@ export const ca: Messages = {
       /** The area's full name, the chapter eyebrow over the outcome (the pillar openers, ?open=1..6). */
       area: "Dades de la botiga",
       lead: "Cada conversa es converteix en un pas següent clar.",
-      features: [
-        { title: "Repeticions de sessió", body: "Escolta el moment exacte en què un client va dubtar." },
-        { title: "Xats etiquetats sols", body: "Les preguntes s'agrupen soles, i un sol arranjament evita molts tiquets." },
-        { title: "Insights de l'embut", body: "Mira quins arranjaments rendeixen abans." },
-      ],
       clarity: {
         snippets: ["Envieu al Canadà?", "Talla M o L?", "Devolucions?", "Embolcall de regal?"],
         topAsk: "El més preguntat: enviaments",

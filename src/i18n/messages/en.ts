@@ -210,38 +210,29 @@ export const en = {
       /** The store's currency in the mockups' prices (an ISO code for Intl). */
       pulse: { currency: "USD" },
     },
-    /** Customer Support on /v2: a short promise, questions answered live by voice, and three capabilities. */
+    /** Customer Support on /v2: a short promise, the store's support at scale over a day and a night, beside one shopper's case. */
     support: {
       title: "Fewer tickets.",
       titleTail: "Happier customers.",
       /** The area's full name, the chapter eyebrow over the outcome (the pillar openers, ?open=1..6). */
       area: "Customer Support",
       lead: "Answers in seconds, day or night, as warmly as your best clerk.",
-      capabilities: [
-        { title: "Always on", body: "Every question gets answered the moment it's asked." },
-        { title: "Knows your store", body: "It answers from your own policies and catalog." },
-        { title: "Reads the mood", body: "It calms upset shoppers before they leave a bad review." },
-      ],
-      /** The pillar's animation: shoppers' questions answered live, by voice (one heads for the support email and never gets there). */
-      live: {
-        label: "Shoppers ask, Bizmis answers out loud",
-        questions: ["Where's my order?", "Does it run small?", "Can I return it?", "Ships to Canada?"],
-        email: "Support email",
-        done: "Answered on the spot",
+      /** The pillar's animation, the merchant's support at scale: a day and a night of questions, piling up as tickets, then answered
+       * right away by voice once the agent lands. Labels as the Sales funnel's: the loss, struck at the fix, then the win (short, present tense). */
+      day: {
+        label: "A day and a night of shoppers' questions: they pile up as tickets in the inbox until the agent lands, then each one is answered right away, out loud",
+        wait: { problem: "Wait till morning", solution: "Answered right away" },
+        tickets: { problem: "Tickets pile up", solution: "Only what needs you" },
+        inbox: "Support inbox",
       },
     },
-    /** Store Insights on /v2: a short promise, noise that turns into a chart, and three features. */
+    /** Store Insights on /v2: a short promise, noise that turns into a chart, beside the conversation replays. */
     insights: {
       title: "See what sells.",
       titleTail: "Fix what doesn't.",
       /** The area's full name, the chapter eyebrow over the outcome (the pillar openers, ?open=1..6). */
       area: "Store Insights",
       lead: "Every conversation becomes a clear next step.",
-      features: [
-        { title: "Session replays", body: "Hear the exact moment a shopper hesitated." },
-        { title: "Auto-tagged chats", body: "Questions group themselves, so one fix stops many tickets." },
-        { title: "Funnel insights", body: "See which fixes pay off first." },
-      ],
       /** The pillar's animation: scattered questions that sort into a rising chart. */
       clarity: {
         snippets: ["Ships to Canada?", "Size M or L?", "Returns?", "Gift wrap?"],

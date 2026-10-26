@@ -202,16 +202,13 @@ export const es: Messages = {
       /** The area's full name, the chapter eyebrow over the outcome (the pillar openers, ?open=1..6). */
       area: "Atención al cliente",
       lead: "Responde en segundos, de día o de noche, con la calidez de tu mejor dependiente.",
-      capabilities: [
-        { title: "Siempre disponible", body: "Cada pregunta tiene respuesta en el momento." },
-        { title: "Conoce tu tienda", body: "Responde con tus propias políticas y tu catálogo." },
-        { title: "Lee el ánimo", body: "Calma a los clientes molestos antes de que dejen una mala reseña." },
-      ],
-      live: {
-        label: "Los clientes preguntan y Bizmis responde en voz alta",
-        questions: ["¿Dónde está mi pedido?", "¿Viene pequeño?", "¿Puedo devolverlo?", "¿Enviáis a Canadá?"],
-        email: "Email de soporte",
-        done: "Respondido al momento",
+      /** The pillar's animation, the merchant's support at scale: a day and a night of questions, piling up as tickets, then answered
+       * right away by voice once the agent lands. Labels as the Sales funnel's: the loss, struck at the fix, then the win (short, present tense). */
+      day: {
+        label: "Un día y una noche de preguntas de clientes: se acumulan como tickets en la bandeja hasta que llega el agente, y desde entonces cada una se responde al momento, en voz alta",
+        wait: { problem: "Esperan a mañana", solution: "Respuesta al momento" },
+        tickets: { problem: "Se acumulan tickets", solution: "Solo lo que te necesita" },
+        inbox: "Bandeja de soporte",
       },
     },
     insights: {
@@ -220,11 +217,6 @@ export const es: Messages = {
       /** The area's full name, the chapter eyebrow over the outcome (the pillar openers, ?open=1..6). */
       area: "Datos de tu tienda",
       lead: "Cada conversación se convierte en un siguiente paso claro.",
-      features: [
-        { title: "Repeticiones de sesión", body: "Escucha el momento exacto en que un cliente dudó." },
-        { title: "Chats etiquetados solos", body: "Las preguntas se agrupan solas, así un solo arreglo evita muchos tickets." },
-        { title: "Insights del embudo", body: "Mira qué arreglos rinden antes." },
-      ],
       clarity: {
         snippets: ["¿Enviáis a Canadá?", "¿Talla M o L?", "¿Devoluciones?", "¿Envoltorio de regalo?"],
         topAsk: "Lo más preguntado: envíos",

@@ -1,20 +1,17 @@
 import { useMessages } from "@/i18n/LocaleProvider";
 import { cn } from "@/lib/utils";
-import FeatureCard from "./FeatureCard";
-import { ChartIcon, IdeaIcon, ReplayIcon, TagIcon } from "./AnimatedIcons";
+import { IdeaIcon } from "./AnimatedIcons";
 import BenefitIntro, { useScenePlay } from "./pillar/BenefitIntro";
 import type { PinState } from "./pillar/BenefitIntro";
 import { CLARITY_MS, InsightsClarity } from "./PillarMoments";
 import Reveal from "./Reveal";
 import SessionReplay from "./SessionReplay";
 
-const ICONS = [ReplayIcon, TagIcon, ChartIcon];
-
 /**
  * Store Insights: its chapter opener (index 03, the bulb, "Store Insights",
  * "See what sells. Fix what doesn't.", BenefitIntro), then one screen: the
- * lead, noise that sorts itself into a rising chart, the classic landing's
- * conversation replays, and the three features as cards.
+ * lead over noise that sorts itself into a rising chart, beside the classic
+ * landing's conversation replays, the replay's card as tall as the screen.
  *
  * On desktop the section is one pinned screen and the scroll drives the
  * chart moment (useScenePlay: forward plays, back rewinds, at rest it plays
@@ -38,15 +35,8 @@ const InsightsBody = ({ pin }: { pin: PinState }) => {
             rewinding={scene.rewinding}
           />
         </Reveal>
-        <ul className="bzi-feats">
-          {ins.features.map((f, i) => (
-            <Reveal as="li" key={f.title} delay={160 + i * 90}>
-              <FeatureCard icon={ICONS[i]} title={f.title} body={f.body} />
-            </Reveal>
-          ))}
-        </ul>
         <Reveal delay={120} className="bzi-replay">
-          <SessionReplay />
+          <SessionReplay fill={pin.pinned} />
         </Reveal>
       </div>
     </div>

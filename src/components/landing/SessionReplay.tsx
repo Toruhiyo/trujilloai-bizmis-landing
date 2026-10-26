@@ -187,7 +187,7 @@ const CallAudio = ({
   );
 };
 
-const ReplayCard = ({ session }: { session: ReplaySession }) => {
+const ReplayCard = ({ session, fill = false }: { session: ReplaySession; fill?: boolean }) => {
   const { data, agent } = session;
   const m = useMessages().sessionReplay;
   const [focused, setFocused] = useState<string | null>(null);
@@ -226,10 +226,10 @@ const ReplayCard = ({ session }: { session: ReplaySession }) => {
       : "";
 
   return (
-    <div className="bzl-window p-5 sm:p-7">
+    <div className={cn("bzl-window p-5 sm:p-7", fill && "flex min-h-0 flex-1 flex-col")}>
       <div
         className={cn(
-          "mb-5 h-1 rounded-full",
+          "mb-5 h-1 flex-shrink-0 rounded-full",
           data.success
             ? "bg-[linear-gradient(90deg,hsl(var(--primary)),transparent)]"
             : "bg-[linear-gradient(90deg,#c9c9ce,transparent)]",
@@ -289,12 +289,15 @@ const ReplayCard = ({ session }: { session: ReplaySession }) => {
         />
       </div>
 
-      <div className="relative mt-4">
+      <div className={cn("relative mt-4", fill && "min-h-0 flex-1")}>
         <div
           ref={listRef}
           // inner room on every side (cancelled by the negative margin) so a
           // highlighted card's ring and glow never get clipped by the scroll box
-          className="relative -mx-3 -mt-2 max-h-[min(22.5rem,max(9.5rem,calc(100svh-32.5rem)))] space-y-3 overflow-y-auto px-3 pb-10 pt-2"
+          className={cn(
+            "relative -mx-3 -mt-2 space-y-3 overflow-y-auto px-3 pb-10 pt-2",
+            fill ? "h-full" : "max-h-[min(22.5rem,max(9.5rem,calc(100svh-32.5rem)))]",
+          )}
         >
           {data.conversations.map((c) => (
             <div key={c.id} ref={(el) => (refs.current[c.id] = el)}>
@@ -438,7 +441,12 @@ const ReplayCard = ({ session }: { session: ReplaySession }) => {
   );
 };
 
-const SessionReplay = () => {
+/**
+ * The replays: a tab per session over its card. `fill`: the card takes the
+ * height its box gives it (its transcript scrolling in the rest), e.g. a
+ * pinned screen's whole height.
+ */
+const SessionReplay = ({ fill = false }: { fill?: boolean }) => {
   const m = useMessages().sessionReplay;
   const tips: Record<string, string> = {
     sale: m.tabTooltips.sale,
@@ -451,8 +459,8 @@ const SessionReplay = () => {
     REPLAY_SESSIONS.find((s) => s.id === active) ?? REPLAY_SESSIONS[0];
   return (
     // a touch narrower than its column, still flush with the page's right edge
-    <div className="w-full min-w-0 max-w-[41rem] lg:ml-auto">
-      <div className="mb-4 flex gap-1.5 overflow-x-auto pb-1" role="tablist">
+    <div className={cn("w-full min-w-0 max-w-[41rem] lg:ml-auto", fill && "flex h-full flex-col")}>
+      <div className="mb-4 flex flex-shrink-0 gap-1.5 overflow-x-auto pb-1" role="tablist">
         {REPLAY_SESSIONS.map((s) => {
           const on = s.id === active;
           return (
@@ -487,7 +495,7 @@ const SessionReplay = () => {
           );
         })}
       </div>
-      <ReplayCard key={active} session={session} />
+      <ReplayCard key={active} session={session} fill={fill} />
     </div>
   );
 };

@@ -1345,21 +1345,19 @@
 .bzl[data-look="film"] .bzl-pillar .bzl-mk .mk-hand.is-q { font-size: 25px; }
 .bzl[data-look="film"] .bzl-pillar .bzl-mk .mk-hand.is-small { font-size: 23px; }
 
-/* ── Support store demo (support/SupportStore.tsx): the shopper's question typed
-   in the widget's composer, a blinking caret while they type ── */
-.bzs-caret {
-  display: inline-block;
-  width: 1.5px;
-  height: 1.05em;
-  margin-left: 1px;
-  vertical-align: -0.15em;
-  background: hsl(var(--primary));
-  animation: bzs-caret 0.9s steps(1) infinite;
-}
-@keyframes bzs-caret { 50% { opacity: 0; } }
-@media (prefers-reduced-motion: reduce) {
-  .bzs-caret { animation: none; }
-}
+/* Support's day (PillarMoments SupportDay): the labels written in the band's
+   ink over the marker's colour, the shading and the paper of its parts */
+.bzl-mk .mk-hand.is-label { font-size: 28px; fill: var(--acc-ink, var(--mk-ink)); }
+.bzl-mk .mk-hand.is-ask { font-size: 19px; }
+.bzl-mk .mk-hand.is-z { font-size: 20px; }
+.bzl-mk .mk-fill { fill: var(--mk-line); stroke: none; }
+.bzl-mk .mk-paper { fill: color-mix(in oklab, #f9a353 12%, #f4efe9); stroke: none; }
+.bzl-mk .mk-white,
+.bzl-mk .mk-slip { fill: #fff; }
+.bzl-mk .is-dash { stroke-dasharray: 2 7; }
+.bzl[data-look="film"] .bzl-pillar .bzl-mk .mk-hand.is-label { font-size: 30px; }
+.bzl[data-look="film"] .bzl-pillar .bzl-mk .mk-hand.is-ask { font-size: 21px; }
+.bzl[data-look="film"] .bzl-pillar .bzl-mk .mk-hand.is-z { font-size: 22px; }
 
 /* ── Benefit pillar entrances (pillar/BenefitIntro.tsx on PillarIntro's named
    pattern): Support and Insights open on their NAME, huge, icon above and
@@ -1425,118 +1423,108 @@
   padding-block: clamp(1.25rem, 4svh, 3rem);
 }
 
-/* ── Customer Support's screen (SupportSection.tsx): on top, side by side,
-   the store with the widget answering (the mockup) and shoppers' questions
-   answered live by voice (its result, drawn in marker straight on the
-   screen, no card), the lead over the drawing; below them, the three capabilities in
-   one row. Phones: lead, mockup, drawing, capabilities stacked. Sized from
-   the screen's height, so the whole section fits one screen (openers.css). ── */
+/* ── Customer Support's screen (SupportSection.tsx), built like a Boost
+   Sales beat: on the left the lead over the at-scale drawing (marker
+   straight on the band, no card), on the right the device. Phones and
+   tablets: lead, drawing, device stacked. Pinned (desktop, one screen):
+   sized from the room under the opener (the stage, a size container). ── */
 .bzs-grid {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
-  grid-template-areas: "lead" "store" "live" "caps";
+  grid-template-areas: "lead" "day" "store";
   align-items: center;
-  gap: 1.5rem;
+  gap: 1rem;
 }
-.bzs-store { grid-area: store; position: relative; }
-.bzs-result { grid-area: live; position: relative; }
 .bzs-lead { grid-area: lead; }
-.bzs-lead .bzl-lead { max-width: 32rem; }
-.bzs-caps {
-  grid-area: caps;
-  display: grid;
-  grid-template-columns: minmax(0, 1fr);
-  align-items: start;
-  gap: 0.5rem;
-}
-.bzs-live {
-  width: 100%;
+/* the lead as the screen's opener line, over the drawing (as a Sales beat's) */
+.bzs-lead .bzl-lead {
   max-width: 30rem;
-  margin-inline: auto;
+  color: var(--bzl-fg);
+  font-size: clamp(1.15rem, 5vw, 1.45rem);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1.22;
+  text-wrap: balance;
 }
-@media (min-width: 768px) {
+.bzs-day { grid-area: day; position: relative; }
+.bzs-store { grid-area: store; position: relative; }
+.bzs-drawing { width: 100%; max-width: 34rem; }
+.bzs-device { width: 100%; margin-inline: auto; }
+/* (small enough that the drawing and the phone share the screen as the scroll plays them) */
+.bzs-device.is-phone { max-width: 10.5rem; }
+@media (min-width: 640px) {
+  .bzs-device { max-width: 40rem; }
+}
+/* the device's words, legible however small it's drawn (--vs: its screen's scale, devices.tsx) */
+.bzs-cap {
+  padding-inline: 0.9em;
+  line-height: 1.3;
+  font-size: max(24px, calc(14px / var(--vs, 1)));
+}
+.bzs-cap.is-phone { font-size: max(15px, calc(12px / var(--vs, 1))); }
+/* the desktop widget grows a little when the browser is drawn small */
+.bzs-widget {
+  transform-origin: right bottom;
+  scale: max(1, min(1.35, calc(0.8 / var(--vs, 1))));
+}
+@media (min-width: 1024px) {
   .bzs-grid {
-    grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
-    grid-template-rows: auto auto auto;
-    grid-template-areas: "store lead" "store live" "caps caps";
-    column-gap: clamp(1.75rem, 4vw, 4rem);
-    row-gap: clamp(0.75rem, 2.4svh, 1.75rem);
-  }
-  .bzs-store {
-    justify-self: end;
-    width: 100%;
-    /* the mockup takes the height the screen leaves it (title, the cards' row, the gaps) */
-    max-width: clamp(19rem, calc((100svh - 23rem) * 1.42), 40rem);
+    grid-template-columns: minmax(0, 0.84fr) minmax(0, 1.16fr);
+    grid-template-rows: auto auto;
+    grid-template-areas: "lead store" "day store";
+    column-gap: clamp(2rem, 4vw, 4.5rem);
+    row-gap: clamp(0.6rem, 2svh, 1.4rem);
   }
   .bzs-lead { align-self: end; }
-  .bzs-result { align-self: start; }
-  .bzs-live { margin-inline: 0; max-width: min(100%, clamp(16rem, calc((100svh - 26rem) * 1.9), 30rem)); }
-  .bzs-caps {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: clamp(0.5rem, 1.2vw, 1rem);
-  }
-  .bzs-lead .bzl-lead { font-size: clamp(1.05rem, min(1.4vw, 2.5svh), 1.3rem); }
-  /* pinned: the mockup takes the height left under the compact opener (about
-     a fifth of the screen with the nav) and the cards' row */
-  .bzs-grid.is-pinned { row-gap: clamp(0.6rem, 2svh, 1.4rem); }
-  .bzs-grid.is-pinned .bzs-store {
-    max-width: clamp(18rem, calc((100svh - 4rem - 24svh - 6rem) * 1.42), 46rem);
-  }
-  .bzs-grid.is-pinned .bzs-live {
-    max-width: min(100%, clamp(15rem, calc((100svh - 4rem - 24svh - 13rem) * 1.75), 30rem));
-  }
+  .bzs-day { align-self: start; }
+  .bzs-lead .bzl-lead { font-size: clamp(1.3rem, min(2vw, 3.6svh), 1.9rem); }
+  .bzs-device { max-width: none; }
 }
+/* pinned: the room under the opener is the stage's (a size container), so the device takes the
+   height it leaves (a 16:10 browser) and the drawing what's left beside it under the lead */
+.p-support .bzp-stage:has(.bzs-grid.is-pinned) { container-type: size; }
+.bzs-grid.is-pinned .bzs-device { max-width: min(100%, calc((100cqh - 1rem) * 1.6)); margin-inline: auto 0; }
+.bzs-grid.is-pinned .bzs-drawing { max-width: min(100%, calc((100cqh - 6.5rem) * 1.87)); }
 
-/* ── Store Insights' screen (InsightsSection.tsx): the lead, the chart moment
-   (noise sorting itself into a chart, in marker), the conversation replays,
-   the three features. Phones and tablets: stacked. Desktop: the lead and
-   the chart beside the replays; pinned (one screen), the features in a row
-   under them and the replay's transcript as tall as the screen allows. ── */
+/* ── Store Insights' screen (InsightsSection.tsx): the lead over the chart
+   moment (noise sorting itself into a chart, in marker), beside the
+   conversation replays. Phones and tablets: stacked. Desktop: the lead and
+   the chart beside the replays; pinned (one screen), the replay's card as
+   tall as the room under the opener (the stage, a size container), its
+   transcript scrolling in what the card leaves it, the lead and the chart
+   centred beside it. ── */
 .bzi-grid {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
-  grid-template-areas: "lead" "chart" "feats" "replay";
+  grid-template-areas: "lead" "chart" "replay";
   align-items: center;
   gap: 1.5rem;
 }
 .bzi-lead { grid-area: lead; }
 .bzi-chart { grid-area: chart; }
 .bzi-clarity { max-width: 32rem; }
-.bzi-feats {
-  grid-area: feats;
-  display: grid;
-  align-items: start;
-  gap: 0.5rem;
-  max-width: 32rem;
-}
 .bzi-replay { grid-area: replay; position: relative; }
 @media (min-width: 1024px) {
   .bzi-grid {
     grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
-    grid-template-areas: "lead replay" "chart replay" "feats replay";
+    grid-template-areas: "lead replay" "chart replay";
     column-gap: 5rem;
     row-gap: 2.2svh;
   }
   .bzi-grid.is-pinned {
-    grid-template-areas: "lead replay" "chart replay" "feats feats";
-    grid-template-rows: auto 1fr auto;
+    height: 100cqh;
+    grid-template-areas: ". replay" "lead replay" "chart replay" ". replay";
+    grid-template-rows: 1fr auto auto 1fr;
     column-gap: clamp(2rem, 5vw, 5rem);
-    row-gap: clamp(0.6rem, 2svh, 1.4rem);
+    row-gap: clamp(0.8rem, 3svh, 2rem);
   }
-  .bzi-grid.is-pinned .bzi-lead { align-self: end; }
-  .bzi-grid.is-pinned .bzi-chart { align-self: start; }
+  .bzi-grid.is-pinned .bzi-replay { align-self: stretch; height: 100cqh; }
+  .bzi-grid.is-pinned .bzi-replay > * { height: 100%; }
   .bzi-grid.is-pinned .bzi-clarity {
-    max-width: min(100%, clamp(15rem, calc((100svh - 4rem - 24svh - 12rem) * 2), 32rem));
+    max-width: min(100%, calc((100cqh - 8rem) * 2), 34rem);
   }
-  .bzi-grid.is-pinned .bzi-feats {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: clamp(0.5rem, 1.2vw, 1rem);
-    max-width: none;
-  }
-  .bzi-grid.is-pinned .bzi-lead .bzl-lead { font-size: clamp(1.05rem, min(1.4vw, 2.5svh), 1.3rem); }
-  /* the replay's transcript: the room the screen leaves it (the card's head and player take the rest) */
-  .bzi-grid.is-pinned .bzi-replay .overflow-y-auto {
-    max-height: max(6rem, calc(100svh - 4rem - 24svh - 27rem));
-  }
+  .bzi-grid.is-pinned .bzi-lead .bzl-lead { font-size: clamp(1.1rem, min(1.6vw, 2.8svh), 1.45rem); }
 }
+.p-insights .bzp-stage:has(.bzi-grid.is-pinned) { container-type: size; }
+
 
