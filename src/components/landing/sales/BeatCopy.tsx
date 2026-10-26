@@ -2,9 +2,9 @@ import type { CSSProperties } from "react";
 import { useSalesCopy, useSalesProto } from "./proto";
 import BeatAlt from "./beatcopy/BeatAlt";
 import BeatSwap from "./beatcopy/BeatSwap";
-import BeatHL from "./beatcopy/BeatHL";
+import BeatHL, { BeatOpening } from "./beatcopy/BeatHL";
 import { plain } from "./beatcopy/parts";
-import { HLS, HL_FROM, SWAPS, SWAP_FROM, useBeatStyle } from "./beatcopy/style";
+import { ENDS, HLS, HL_FROM, SWAPS, SWAP_FROM, useBeatStyle } from "./beatcopy/style";
 import { PanelCopy } from "./shared";
 
 const clamp = (v: number) => Math.min(1, Math.max(0, v));
@@ -57,6 +57,8 @@ const BeatWords = ({
         body={s.panels[index].body}
       />
     );
+  // ?beat=7: the opening alone, its ending written in the funnel
+  if (look === ENDS) return <BeatOpening index={index} numbered={numbered} />;
   // ?beat=6a..6e: the polished highlighters, the shared opening never moving (beatcopy/BeatHL)
   if (look >= HL_FROM)
     return <BeatHL look={HLS[look - HL_FROM]} index={index} t={t} fixAt={fixAt} numbered={numbered} />;

@@ -2,6 +2,8 @@ import { useLayoutEffect, useRef, useState } from "react";
 import { useMessages } from "@/i18n/LocaleProvider";
 import { cn } from "@/lib/utils";
 import BeatCopy from "./BeatCopy";
+import { endingLabels } from "./beatcopy/BeatHL";
+import { ENDS, useBeatStyle } from "./beatcopy/style";
 import FunnelFlow, { funnelAnchors } from "./funnel/FunnelFlow";
 import FunnelScale from "./funnel/FunnelScale";
 import { ksAt, startsFor } from "./funnel/model";
@@ -157,8 +159,16 @@ const Cone = ({
   );
 };
 
+/** The beats' funnel labels: the stages' own, or (?beat=7) the words' endings. */
+const useBeatLabels = () => {
+  const s = useMessages().landing.sales;
+  const look = useBeatStyle();
+  return look === ENDS ? { ...s.funnel, ...endingLabels(s.flip) } : s.funnel;
+};
+
 const Pinned = () => {
   const s = useMessages().landing.sales;
+  const labels = useBeatLabels();
   const { win } = useSalesProto();
   const tls = useBeatTimelines();
   const [track, progress] = usePinProgress<HTMLDivElement>();
@@ -230,7 +240,7 @@ const Pinned = () => {
                   duration={clock.duration}
                   focus={step}
                   fixAt={clock.fixAt}
-                  copy={s.funnel}
+                  copy={payoff ? s.funnel : labels}
                   rewind={rewinding}
                 />
               </div>
@@ -245,6 +255,7 @@ const Pinned = () => {
 /** A stacked beat: its words, its funnel, and its device hanging off its own stage by the cone; its timeline follows its own scroll through the screen. */
 const StackedBeat = ({ i, setRef }: { i: number; setRef: (el: HTMLElement | null) => void }) => {
   const s = useMessages().landing.sales;
+  const labels = useBeatLabels();
   const { win } = useSalesProto();
   const tl = useBeatTimelines()[i];
   const [item, p] = useScrollThrough<HTMLDivElement>(0.8, 0.75);
@@ -287,7 +298,7 @@ const StackedBeat = ({ i, setRef }: { i: number; setRef: (el: HTMLElement | null
       <BeatCopy index={i} t={beat.t} fixAt={beat.fixAt} className="sl-c-copy is-on" />
       {win > 0 && <Metrics variant={win} k={fixedAt(i, beat.t, beat.fixAt)} focus={i} className="sl-g2-met" />}
       <div ref={fn}>
-        <FunnelScale focus={i} t={beat.t} duration={beat.duration} fixAt={beat.fixAt} rewind={rewinding} className="sl-g2-s-fn" />
+        <FunnelScale focus={i} t={beat.t} duration={beat.duration} fixAt={beat.fixAt} rewind={rewinding} copy={labels} className="sl-g2-s-fn" />
       </div>
       {cone && <Cone stage={cone.to} device={cone.from} on className="is-static" />}
       <div ref={dev} className="sl-g2-s-dev relative">
