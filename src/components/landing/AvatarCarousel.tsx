@@ -8,7 +8,9 @@ import { useInView } from "./Reveal";
 export type CarouselAvatar = { name: AgentName; label: string; tint: string };
 
 /** One step every AUTOPLAY_MS while untouched and in view. */
-const AUTOPLAY_MS = 1900;
+const AUTOPLAY_MS = 1600;
+/** The first step comes almost at once on arrival, so a visitor scrolling past sees it's a carousel, not one still avatar. */
+const FIRST_STEP_MS = 280;
 /** After the visitor lets go, wait this long before the carousel moves on its own again. */
 const RESUME_AFTER_MS = 4000;
 /** Distance between neighbours, as a share of the stage width. */
@@ -148,17 +150,25 @@ const AvatarCarousel = ({
     const el = ref.current;
     if (!el) return;
     const io = new IntersectionObserver(([e]) => setActive(e.isIntersecting), {
-      threshold: 0.35,
+      threshold: 0.15,
     });
     io.observe(el);
     return () => io.disconnect();
   }, [ref]);
   useEffect(() => {
     if (!active || reduced || held) return;
-    const id = window.setInterval(() => {
+    const step = () => {
       if (!dragging.current) goTo(Math.round(target.current) + 1, false);
-    }, AUTOPLAY_MS);
-    return () => window.clearInterval(id);
+    };
+    let id = 0;
+    const first = window.setTimeout(() => {
+      step();
+      id = window.setInterval(step, AUTOPLAY_MS);
+    }, FIRST_STEP_MS);
+    return () => {
+      window.clearTimeout(first);
+      window.clearInterval(id);
+    };
   }, [active, reduced, held, goTo]);
   // out of view: back to the first avatar, ready for the next visit
   useEffect(() => {

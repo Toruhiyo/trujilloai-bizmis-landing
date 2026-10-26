@@ -9,11 +9,13 @@ import {
   openBizmisShopifyAppListing,
 } from "@/lib/bizmisUrls";
 import Reveal from "./Reveal";
+import "@/styles/end-cta.css";
 
 /**
  * The close, composed like the ad-1 film's end card: the title IS the call to
  * action ("Install now", in ink with a light sweeping across it, the Shopify
- * bag in the same ink), the handwritten "for Early Access benefits!" right
+ * bag in the same ink), drawn as a button like the film's end-frame one (an
+ * outlined pill with a light running round its border, end-cta.css), the handwritten "for Early Access benefits!" right
  * under it, the film's
  * perks in one row and the quieter extras under them, then by hand "Only 50
  * spots!", and a quiet way to talk to us.
@@ -40,7 +42,7 @@ const EndCard = () => {
         className="pointer-events-none absolute left-1/2 top-1/2 h-[680px] w-[980px] max-w-[150vw] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(closest-side,rgba(249,163,83,0.11),rgba(255,255,255,0))]"
       />
       <div className="bzl-wrap relative">
-        {/* the title is the button (its hand-drawn underline appears on hover) */}
+        {/* the title is the button */}
         <Reveal className="bzl-cta-wrap relative mx-auto w-fit">
           <h2 className="text-[clamp(3rem,min(8.4vw,12svh),6.75rem)] font-bold leading-[1.02] tracking-[-0.045em]">
             <a
@@ -49,29 +51,13 @@ const EndCard = () => {
               rel="noopener noreferrer"
               onClick={install}
               aria-label={cta.installAria}
-              className="bzl-cta-title group inline-flex items-center gap-[0.2em] rounded-[0.3em] px-[0.12em] text-[var(--bzl-fg)] transition-colors duration-300 hover:text-[var(--bzl-orange-dark)] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[var(--bzl-orange)]/40"
+              className="bzl-cta-title bzl-cta-btn group inline-flex items-center gap-[0.2em] text-[var(--bzl-fg)] transition-colors duration-300 hover:text-[var(--bzl-orange-dark)] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[var(--bzl-orange)]/40"
             >
               {/* the bag in the title's own ink (and its hover orange), as in the film */}
               <FaShopify aria-hidden="true" className="h-[0.74em] w-[0.74em] flex-shrink-0" />
               <span className="bzl-cta-title-text">{end.install}</span>
             </a>
           </h2>
-          {/* the hand-drawn underline under the button-title */}
-          <svg
-            viewBox="0 0 300 18"
-            preserveAspectRatio="none"
-            className="bzl-cta-underline pointer-events-none absolute -bottom-[0.35rem] left-[6%] h-3 w-[88%]"
-            fill="none"
-            aria-hidden="true"
-          >
-            <path
-              d="M4 12 C 70 4, 160 3, 296 9"
-              stroke="hsl(var(--primary))"
-              strokeWidth="3.2"
-              strokeLinecap="round"
-              pathLength={1}
-            />
-          </svg>
         </Reveal>
 
         {/* the Early Access invite, by hand, right under the title */}

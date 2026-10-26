@@ -1,0 +1,63 @@
+/* The close's "Install now" (EndCard), drawn as a button like the film's end-frame one (.bzf-end-cta):
+   an outlined pill whose border carries a running light, a stronger glow and lift on hover. */
+@property --bzl-cta-angle {
+  syntax: "<angle>";
+  initial-value: 0deg;
+  inherits: false;
+}
+.bzl .bzl-cta-btn {
+  position: relative;
+  isolation: isolate;
+  padding: 0.18em 0.5em 0.2em 0.42em;
+  border-radius: 0.42em;
+  background-color: rgb(255 255 255 / 0.55);
+  box-shadow:
+    inset 0 0 0 0.045em rgb(249 163 83 / 0.7),
+    0 0.32em 0.8em -0.32em rgb(249 163 83 / 0.65);
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    background-color 0.2s ease,
+    color 0.3s;
+}
+.bzl .bzl-cta-btn::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 0.06em;
+  background: conic-gradient(
+    from var(--bzl-cta-angle),
+    transparent 0deg 250deg,
+    hsl(var(--primary)) 300deg,
+    #ffd3a6 330deg,
+    hsl(var(--primary)) 345deg,
+    transparent 360deg
+  );
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0);
+  animation: bzl-cta-run 3.2s linear infinite;
+  pointer-events: none;
+}
+.bzl .bzl-cta-btn:hover {
+  transform: translateY(-0.04em) scale(1.015);
+  background-color: rgb(249 163 83 / 0.08);
+  box-shadow:
+    inset 0 0 0 0.06em hsl(var(--primary)),
+    0 0 0 0.14em rgb(249 163 83 / 0.14),
+    0 0.45em 0.95em -0.32em rgb(249 163 83 / 0.85);
+}
+.bzl .bzl-cta-btn:hover::before {
+  animation-duration: 1.4s;
+}
+@keyframes bzl-cta-run {
+  to {
+    --bzl-cta-angle: 360deg;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .bzl .bzl-cta-btn::before {
+    display: none;
+  }
+}
