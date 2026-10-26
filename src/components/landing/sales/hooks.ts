@@ -263,7 +263,9 @@ const REWIND = 1000;
  * looping while the scroll rests. Inactive (`active: false`), it simply sits
  * on `target`. Reduced motion: it sits on the end.
  */
-export const useScrollPlay = (target: number, duration: number, active: boolean) => {
+export const useScrollPlay = (rawTarget: number, duration: number, active: boolean) => {
+  // the scroll's place on the timeline, always on it (a fast entry can hand in a hair below 0, which read as a rewind)
+  const target = Math.min(duration, Math.max(0, rawTarget));
   const reduced = useReducedMotion();
   const [t, setT] = useState(target);
   const tgt = useRef(target);
