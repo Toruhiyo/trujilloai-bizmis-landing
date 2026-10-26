@@ -561,6 +561,9 @@ export const en = {
     badge: "Pricing",
     title: "Simple, Transparent Pricing",
     lead: "Choose the plan that fits your business. All plans include full Shopify integration.",
+    monthly: "Monthly",
+    yearly: "Yearly",
+    billedYearly: "billed yearly",
     perMonth: "/mo",
     popular: "Popular",
     conversationsPerMonth: "sessions / month",
@@ -646,6 +649,9 @@ export const en = {
           ? `${percent}% off your first ${months} ${months === 1 ? "month" : "months"}`
           : `${percent}% off`,
       discountEnd: ".",
+      onMonthlyBilling: "on monthly billing, or",
+      yearlyDiscount: (percent: number) => `${percent}% off yearly`,
+      whenYearlySelected: "when yearly is selected.",
       errors: {
         empty: "Enter a code first.",
         notFound: "That code isn't valid.",
@@ -735,7 +741,7 @@ export const en = {
       "how-much-cost": {
         question: "How much does Bizmis cost?",
         answer:
-          "Three plans plus Enterprise, all billed monthly. **Starter** ($79/mo, 260 sessions) for solo or small stores. **Growth** ($199/mo, 660 sessions) for growing stores, most popular. **Scale** ($499/mo, 1,650 sessions) for high-volume stores. **Enterprise** from $1,500/mo for custom volume, guaranteed capacity for traffic peaks and SLAs. Extra sessions cost $0.30 each, up to the spend cap you set. You can start with 120 free sessions.",
+          "Three plans plus Enterprise, billed monthly, or yearly for about 20% off. **Starter** ($79/mo, 260 sessions) for solo or small stores. **Growth** ($199/mo, 660 sessions) for growing stores, most popular. **Scale** ($499/mo, 1,650 sessions) for high-volume stores. **Enterprise** from $1,500/mo for custom volume, guaranteed capacity for traffic peaks and SLAs. Extra sessions cost $0.30 each, up to the spend cap you set. You can start with 120 free sessions.",
       },
       "what-counts-as-session": {
         question: "What counts as a session?",
@@ -745,7 +751,7 @@ export const en = {
       "monthly-billing": {
         question: "Is there yearly billing?",
         answer:
-          "Not for now. Every plan is billed monthly through Shopify, and you can cancel anytime.",
+          "Yes. You can pay for a full year upfront and get about 20% off the monthly price. Your included sessions still reset every month.",
       },
       "early-access-offer": {
         question: "What is the Early Access offer?",

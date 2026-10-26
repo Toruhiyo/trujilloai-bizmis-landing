@@ -549,6 +549,9 @@ export const es: Messages = {
     badge: "Precios",
     title: "Precios simples y transparentes",
     lead: "Elige el plan que encaja con tu negocio. Todos incluyen la integración completa con Shopify.",
+    monthly: "Mensual",
+    yearly: "Anual",
+    billedYearly: "facturado anualmente",
     perMonth: "/mes",
     popular: "Popular",
     conversationsPerMonth: "sesiones / mes",
@@ -634,6 +637,9 @@ export const es: Messages = {
           ? `${percent}% de descuento ${months === 1 ? "el primer mes" : `los primeros ${months} meses`}`
           : `${percent}% de descuento`,
       discountEnd: ".",
+      onMonthlyBilling: "en facturación mensual, o",
+      yearlyDiscount: (percent: number) => `${percent}% de descuento anual`,
+      whenYearlySelected: "si eliges facturación anual.",
       errors: {
         empty: "Introduce primero un código.",
         notFound: "Ese código no es válido.",
@@ -724,7 +730,7 @@ export const es: Messages = {
       "how-much-cost": {
         question: "¿Cuánto cuesta Bizmis?",
         answer:
-          "Tres planes más Enterprise, todos con facturación mensual. **Starter** (79 $/mes, 260 sesiones) para tiendas pequeñas o de una persona. **Growth** (199 $/mes, 660 sesiones) para tiendas en crecimiento, el más popular. **Scale** (499 $/mes, 1.650 sesiones) para tiendas de alto volumen. **Enterprise** desde 1.500 $/mes, con volumen a medida, capacidad garantizada para picos de tráfico y SLA. Cada sesión extra cuesta 0,30 $, hasta el límite de gasto que fijes. Puedes empezar con 120 sesiones gratis.",
+          "Tres planes más Enterprise, con facturación mensual, o anual con alrededor de un 20% de descuento. **Starter** (79 $/mes, 260 sesiones) para tiendas pequeñas o de una persona. **Growth** (199 $/mes, 660 sesiones) para tiendas en crecimiento, el más popular. **Scale** (499 $/mes, 1.650 sesiones) para tiendas de alto volumen. **Enterprise** desde 1.500 $/mes, con volumen a medida, capacidad garantizada para picos de tráfico y SLA. Cada sesión extra cuesta 0,30 $, hasta el límite de gasto que fijes. Puedes empezar con 120 sesiones gratis.",
       },
       "what-counts-as-session": {
         question: "¿Qué cuenta como una sesión?",
@@ -734,7 +740,7 @@ export const es: Messages = {
       "monthly-billing": {
         question: "¿Hay facturación anual?",
         answer:
-          "De momento, no. Todos los planes se facturan cada mes a través de Shopify y puedes cancelar cuando quieras.",
+          "Sí. Puedes pagar un año entero por adelantado y te ahorras alrededor de un 20% sobre el precio mensual. Tus sesiones incluidas se siguen reiniciando cada mes.",
       },
       "early-access-offer": {
         question: "¿Qué es la oferta de acceso anticipado?",

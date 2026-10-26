@@ -12,7 +12,8 @@ export type CouponKind = "early_access" | "custom";
 export interface CouponSummary {
   label: string;
   monthly_discount_percent: number;
-  /** @deprecated not displayed; plans are monthly only. */
+  /** Coupon discount on yearly billing, as a percent off the monthly list
+   *  price. Null or 0 when the coupon only discounts monthly billing. */
   yearly_discount_percent?: number | null;
   intro_months: number;
 }
@@ -20,7 +21,7 @@ export interface CouponSummary {
 export interface CouponPlanPrice {
   plan_name: string;
   monthly: number;
-  /** @deprecated not displayed; plans are monthly only. */
+  /** Coupon price on yearly billing, as a monthly equivalent. */
   yearly_monthly_equivalent?: number | null;
 }
 
@@ -49,7 +50,7 @@ export type CouponErrorCode =
  * landing must not hardcode them. Marketing-only fields (feature bullets)
  * stay in the locale dictionaries.
  *
- * Pricing v2 (2026-10-22) bills monthly only. The billing unit is the
+ * Pricing v2 (2026-10-22) bills monthly or yearly. The billing unit is the
  * session (renamed from "conversation"; same numbers). The backend serves
  * `included_sessions` / `overage_rate_per_session` and keeps the older
  * conversation- and credit-named keys populated with the same values, so
@@ -81,9 +82,11 @@ export interface PublicPlanDTO {
   overage_rate_per_credit?: number;
   /** @deprecated never displayed; concurrency is no longer a plan feature. */
   max_concurrency?: number;
-  /** @deprecated always null in v2 (no yearly plans). */
+  /** Not displayed: the yearly discount is derived from `yearly_price`. */
   yearly_discount_percent?: number | null;
-  /** @deprecated always null in v2 (no yearly plans). */
+  /** Full yearly price; the landing shows `yearly_price / 12` a month. When
+   *  null (the v2 catalog today), the landing falls back to 20% off the
+   *  monthly price, rounded down. */
   yearly_price?: number | null;
 }
 

@@ -549,6 +549,9 @@ export const ca: Messages = {
     badge: "Preus",
     title: "Preus simples i transparents",
     lead: "Tria el pla que encaixa amb el teu negoci. Tots inclouen la integració completa amb Shopify.",
+    monthly: "Mensual",
+    yearly: "Anual",
+    billedYearly: "facturat anualment",
     perMonth: "/mes",
     popular: "Popular",
     conversationsPerMonth: "sessions / mes",
@@ -635,6 +638,9 @@ export const ca: Messages = {
           ? `${percent}% de descompte ${months === 1 ? "el primer mes" : `els primers ${months} mesos`}`
           : `${percent}% de descompte`,
       discountEnd: ".",
+      onMonthlyBilling: "en facturació mensual, o",
+      yearlyDiscount: (percent: number) => `${percent}% de descompte anual`,
+      whenYearlySelected: "si tries facturació anual.",
       errors: {
         empty: "Introdueix primer un codi.",
         notFound: "Aquest codi no és vàlid.",
@@ -725,7 +731,7 @@ export const ca: Messages = {
       "how-much-cost": {
         question: "Quant costa Bizmis?",
         answer:
-          "Tres plans més Enterprise, tots amb facturació mensual. **Starter** (79 $/mes, 260 sessions) per a botigues petites o d'una persona. **Growth** (199 $/mes, 660 sessions) per a botigues en creixement, el més popular. **Scale** (499 $/mes, 1.650 sessions) per a botigues d'alt volum. **Enterprise** des de 1.500 $/mes, amb volum a mida, capacitat garantida per als pics de trànsit i SLA. Cada sessió extra costa 0,30 $, fins al límit de despesa que fixis. Pots començar amb 120 sessions gratis.",
+          "Tres plans més Enterprise, amb facturació mensual, o anual amb al voltant d'un 20% de descompte. **Starter** (79 $/mes, 260 sessions) per a botigues petites o d'una persona. **Growth** (199 $/mes, 660 sessions) per a botigues en creixement, el més popular. **Scale** (499 $/mes, 1.650 sessions) per a botigues d'alt volum. **Enterprise** des de 1.500 $/mes, amb volum a mida, capacitat garantida per als pics de trànsit i SLA. Cada sessió extra costa 0,30 $, fins al límit de despesa que fixis. Pots començar amb 120 sessions gratis.",
       },
       "what-counts-as-session": {
         question: "Què compta com una sessió?",
@@ -735,7 +741,7 @@ export const ca: Messages = {
       "monthly-billing": {
         question: "Hi ha facturació anual?",
         answer:
-          "De moment, no. Tots els plans es facturen cada mes a través de Shopify i pots cancel·lar quan vulguis.",
+          "Sí. Pots pagar un any sencer per avançat i estalviar-te al voltant d'un 20% sobre el preu mensual. Les sessions incloses continuen reiniciant-se cada mes.",
       },
       "early-access-offer": {
         question: "Què és l'oferta d'accés anticipat?",

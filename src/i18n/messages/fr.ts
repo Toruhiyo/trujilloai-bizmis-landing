@@ -550,6 +550,9 @@ export const fr: Messages = {
     badge: "Tarifs",
     title: "Des tarifs simples et transparents",
     lead: "Choisissez le plan adapté à votre activité. Tous incluent l'intégration Shopify complète.",
+    monthly: "Mensuel",
+    yearly: "Annuel",
+    billedYearly: "facturé annuellement",
     perMonth: "/mois",
     popular: "Populaire",
     conversationsPerMonth: "sessions / mois",
@@ -635,6 +638,9 @@ export const fr: Messages = {
           ? `${percent} % de remise ${months === 1 ? "le 1er mois" : `les ${months} premiers mois`}`
           : `${percent} % de remise`,
       discountEnd: ".",
+      onMonthlyBilling: "en facturation mensuelle, ou",
+      yearlyDiscount: (percent: number) => `${percent} % de remise en annuel`,
+      whenYearlySelected: "si vous choisissez la facturation annuelle.",
       errors: {
         empty: "Saisissez d'abord un code.",
         notFound: "Ce code n'est pas valide.",
@@ -725,7 +731,7 @@ export const fr: Messages = {
       "how-much-cost": {
         question: "Combien coûte Bizmis ?",
         answer:
-          "Trois plans plus Enterprise, tous facturés au mois. **Starter** (79 $/mois, 260 sessions) pour les boutiques individuelles ou de petite taille. **Growth** (199 $/mois, 660 sessions) pour les boutiques en croissance, le plus populaire. **Scale** (499 $/mois, 1 650 sessions) pour les boutiques à fort volume. **Enterprise** à partir de 1 500 $/mois, avec un volume sur mesure, une capacité garantie pour les pics de trafic et des SLA. Chaque session supplémentaire coûte 0,30 $, dans la limite du plafond de dépenses que vous fixez. Vous pouvez commencer avec 120 sessions gratuites.",
+          "Trois plans plus Enterprise, facturés au mois, ou à l'année avec environ 20 % de remise. **Starter** (79 $/mois, 260 sessions) pour les boutiques individuelles ou de petite taille. **Growth** (199 $/mois, 660 sessions) pour les boutiques en croissance, le plus populaire. **Scale** (499 $/mois, 1 650 sessions) pour les boutiques à fort volume. **Enterprise** à partir de 1 500 $/mois, avec un volume sur mesure, une capacité garantie pour les pics de trafic et des SLA. Chaque session supplémentaire coûte 0,30 $, dans la limite du plafond de dépenses que vous fixez. Vous pouvez commencer avec 120 sessions gratuites.",
       },
       "what-counts-as-session": {
         question: "Qu'est-ce qui compte comme une session ?",
@@ -735,7 +741,7 @@ export const fr: Messages = {
       "monthly-billing": {
         question: "Existe-t-il une facturation annuelle ?",
         answer:
-          "Pas pour l'instant. Tous les plans sont facturés au mois via Shopify, et vous pouvez annuler à tout moment.",
+          "Oui. Vous pouvez régler une année entière d'avance et économiser environ 20 % par rapport au tarif mensuel. Vos sessions incluses continuent de se réinitialiser chaque mois.",
       },
       "early-access-offer": {
         question: "Qu'est-ce que l'offre d'accès anticipé ?",

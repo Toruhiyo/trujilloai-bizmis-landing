@@ -42,6 +42,8 @@ interface Plan {
   key: PlanKey;
   name: string;
   monthlyPrice: number;
+  /** Monthly equivalent of the yearly price (billed yearly, upfront). */
+  yearlyMonthlyPrice: number;
   includedConversations: number;
   overageRatePerConversation: number;
   features: string[];
@@ -52,14 +54,23 @@ interface Plan {
 
 const COMING_SOON_FEATURES: string[] = [];
 
-/** Plans are billed monthly only (pricing v2); kept as an analytics property. */
-const BILLING_PERIOD = "monthly";
+type BillingPeriod = "monthly" | "yearly";
+
+const MONTHS_PER_YEAR = 12;
+
+/** Yearly billing is about 20% off the monthly price. Used when the backend
+ *  catalog has no yearly price for a plan (the v2 catalog returns null). */
+const YEARLY_FALLBACK_DISCOUNT_PERCENT = 20;
 
 /** Enterprise starts here; the final price is custom (contact sales). */
 const ENTERPRISE_FROM_MONTHLY_PRICE = 1500;
 
 /** Fallback for the price per extra session (every plan, pricing v2). */
 const FALLBACK_OVERAGE_RATE_PER_CONVERSATION = 0.3;
+
+/** 20% off the monthly price, rounded down to whole dollars ($79 -> $63). */
+const yearlyFallbackMonthlyPrice = (monthlyPrice: number): number =>
+  Math.floor(monthlyPrice * (1 - YEARLY_FALLBACK_DISCOUNT_PERCENT / 100));
 
 /** Static v2 fallbacks. Copy (name/features/buttonText) comes from the locale
  *  dictionary; price, included sessions and overage rate are overlaid
@@ -69,6 +80,7 @@ const buildPlans = (messages: Messages): Plan[] => [
     key: "starter",
     name: messages.pricing.plans.starter.name,
     monthlyPrice: 79,
+    yearlyMonthlyPrice: yearlyFallbackMonthlyPrice(79),
     includedConversations: 260,
     overageRatePerConversation: FALLBACK_OVERAGE_RATE_PER_CONVERSATION,
     features: messages.pricing.plans.starter.features,
@@ -80,6 +92,7 @@ const buildPlans = (messages: Messages): Plan[] => [
     key: "growth",
     name: messages.pricing.plans.growth.name,
     monthlyPrice: 199,
+    yearlyMonthlyPrice: yearlyFallbackMonthlyPrice(199),
     includedConversations: 660,
     overageRatePerConversation: FALLBACK_OVERAGE_RATE_PER_CONVERSATION,
     features: messages.pricing.plans.growth.features,
@@ -91,6 +104,7 @@ const buildPlans = (messages: Messages): Plan[] => [
     key: "scale",
     name: messages.pricing.plans.scale.name,
     monthlyPrice: 499,
+    yearlyMonthlyPrice: yearlyFallbackMonthlyPrice(499),
     includedConversations: 1650,
     overageRatePerConversation: FALLBACK_OVERAGE_RATE_PER_CONVERSATION,
     features: messages.pricing.plans.scale.features,
@@ -128,7 +142,8 @@ const isConversationCatalog = (backendPlans: PublicPlanDTO[] | null): boolean =>
  * the same values (a backend from before the session rename only has those).
  * When the catalog hasn't loaded, is still v1, or a plan is missing, the
  * hardcoded v2 values act as a fallback so the page never blanks or shows
- * stale plans.
+ * stale plans. The yearly price is `yearly_price / 12` when the catalog has
+ * one, else 20% off the monthly price rounded down.
  */
 const mergePlansWithBackend = (
   templates: Plan[],
@@ -140,9 +155,14 @@ const mergePlansWithBackend = (
       (plan) => resolvePlanKey(plan.name) === template.key,
     );
     if (!backendPlan) return template;
+    const monthlyPrice = backendPlan.monthly_price ?? template.monthlyPrice;
     return {
       ...template,
-      monthlyPrice: backendPlan.monthly_price ?? template.monthlyPrice,
+      monthlyPrice,
+      yearlyMonthlyPrice:
+        backendPlan.yearly_price != null
+          ? backendPlan.yearly_price / MONTHS_PER_YEAR
+          : yearlyFallbackMonthlyPrice(monthlyPrice),
       includedConversations:
         backendPlan.included_sessions ??
         backendPlan.included_conversations ??
@@ -373,6 +393,8 @@ const Pricing = () => {
   const [couponValue, setCouponValue] = useState("");
   const [couponError, setCouponError] = useState<string | null>(null);
   const [isApplyingCoupon, setIsApplyingCoupon] = useState(false);
+  const [isYearly, setIsYearly] = useState(true);
+  const billingPeriod: BillingPeriod = isYearly ? "yearly" : "monthly";
   const [backendPlans, setBackendPlans] = useState<PublicPlanDTO[] | null>(
     null,
   );
@@ -416,7 +438,7 @@ const Pricing = () => {
   const handlePlanClick = (planName: string) => {
     posthog.capture("pricing_plan_clicked", {
       plan: planName.toLowerCase(),
-      billing_period: BILLING_PERIOD,
+      billing_period: billingPeriod,
       early_access_enabled: showEarlyAccess,
       coupon_code: appliedCoupon?.code ?? null,
       destination: "shopify_app_listing",
@@ -427,7 +449,7 @@ const Pricing = () => {
   const handleContactSales = () => {
     posthog.capture("pricing_plan_clicked", {
       plan: "enterprise",
-      billing_period: BILLING_PERIOD,
+      billing_period: billingPeriod,
       early_access_enabled: showEarlyAccess,
       coupon_code: appliedCoupon?.code ?? null,
     });
@@ -436,6 +458,14 @@ const Pricing = () => {
         messages.pricing.enterpriseInquirySubject,
       )}`,
     );
+  };
+
+  const handleBillingToggle = (yearly: boolean) => {
+    posthog.capture("billing_period_toggled", {
+      billing_period: yearly ? "yearly" : "monthly",
+      early_access_enabled: showEarlyAccess,
+    });
+    setIsYearly(yearly);
   };
 
   /** Coupon prices are only trusted from a v2 backend; a v1 backend prices
@@ -477,7 +507,7 @@ const Pricing = () => {
       posthog.capture("pricing_coupon_applied", {
         coupon: coupon.code,
         coupon_kind: coupon.kind,
-        billing_period: BILLING_PERIOD,
+        billing_period: billingPeriod,
       });
       if (options?.celebrate !== false) {
         fireEarlyAccessConfetti(couponInputRef.current);
@@ -491,7 +521,7 @@ const Pricing = () => {
       posthog.capture("pricing_coupon_apply_failed", {
         coupon: entered,
         error_code: errorCode,
-        billing_period: BILLING_PERIOD,
+        billing_period: billingPeriod,
       });
     } finally {
       applyInFlightRef.current = false;
@@ -510,7 +540,7 @@ const Pricing = () => {
     persistCouponUrlParam(null);
     posthog.capture("pricing_coupon_removed", {
       coupon: previousCode,
-      billing_period: BILLING_PERIOD,
+      billing_period: billingPeriod,
     });
   };
 
@@ -528,7 +558,40 @@ const Pricing = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const couponYearlyDiscountPercent =
+    appliedCoupon?.summary.yearly_discount_percent ?? 0;
+
+  /** The coupon's yearly price (monthly equivalent), when the coupon has a
+   *  yearly discount: the backend's `yearly_monthly_equivalent`, else its
+   *  yearly percent off the monthly price. The coupon's monthly percent is an
+   *  intro discount on monthly billing, so it is not applied to yearly. */
+  const getCouponYearlyPrice = (plan: Plan): number | null => {
+    if (!appliedCoupon) return null;
+    const couponPrice = findCouponPriceFor(plan);
+    if (couponPrice?.yearly_monthly_equivalent != null) {
+      return couponPrice.yearly_monthly_equivalent;
+    }
+    if (couponYearlyDiscountPercent > 0) {
+      return applyDiscount(plan.monthlyPrice, couponYearlyDiscountPercent);
+    }
+    return null;
+  };
+
+  /** True when the yearly card shows the coupon's yearly price rather than
+   *  the standard yearly price (the coupon never makes yearly dearer). */
+  const isCouponYearlyPriceShown = (plan: Plan): boolean => {
+    const couponYearlyPrice = getCouponYearlyPrice(plan);
+    return (
+      couponYearlyPrice !== null && couponYearlyPrice < plan.yearlyMonthlyPrice
+    );
+  };
+
   const getDisplayPrice = (plan: Plan): number => {
+    if (isYearly) {
+      return isCouponYearlyPriceShown(plan)
+        ? (getCouponYearlyPrice(plan) as number)
+        : plan.yearlyMonthlyPrice;
+    }
     if (!appliedCoupon) return plan.monthlyPrice;
     const couponPrice = findCouponPriceFor(plan);
     if (couponPrice) return couponPrice.monthly;
@@ -542,7 +605,14 @@ const Pricing = () => {
     // With a coupon applied, use the campaign's single discount percent so
     // every card shows the same badge, avoiding per-plan rounding drift like
     // 34% vs 33%.
-    if (appliedCoupon && appliedCoupon.summary.monthly_discount_percent > 0) {
+    if (isYearly) {
+      if (isCouponYearlyPriceShown(plan) && couponYearlyDiscountPercent > 0) {
+        return couponYearlyDiscountPercent;
+      }
+    } else if (
+      appliedCoupon &&
+      appliedCoupon.summary.monthly_discount_percent > 0
+    ) {
       return appliedCoupon.summary.monthly_discount_percent;
     }
     const currentPrice = getDisplayPrice(plan);
@@ -571,9 +641,47 @@ const Pricing = () => {
           <h2 className="mb-4 font-heading text-3xl font-bold leading-tight text-foreground sm:mb-6 sm:text-4xl sm:leading-tight lg:text-5xl xl:text-6xl">
             {messages.pricing.title}
           </h2>
-          <p className="mx-auto max-w-3xl px-2 font-body text-base leading-relaxed text-muted-foreground sm:text-lg lg:text-xl">
+          <p className="mx-auto mb-6 max-w-3xl px-2 font-body text-base leading-relaxed text-muted-foreground sm:mb-8 sm:text-lg lg:text-xl">
             {messages.pricing.lead}
           </p>
+
+          {/* Billing period */}
+          <div className="inline-flex flex-wrap items-center justify-center gap-6 rounded-2xl border border-border/60 bg-background/75 px-6 py-4 shadow-soft backdrop-blur-md">
+            <div className="flex items-center gap-3">
+              <span
+                className={`text-sm font-medium transition-colors ${
+                  !isYearly ? "text-foreground" : "text-muted-foreground"
+                }`}
+              >
+                {messages.pricing.monthly}
+              </span>
+              <button
+                type="button"
+                role="switch"
+                aria-checked={isYearly}
+                aria-label={messages.pricing.yearly}
+                onClick={() => handleBillingToggle(!isYearly)}
+                className={`relative inline-flex h-7 w-12 items-center rounded-full transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 ${
+                  isYearly
+                    ? "bg-gradient-to-r from-primary to-primary-dark"
+                    : "bg-muted"
+                }`}
+              >
+                <span
+                  className={`inline-block h-5 w-5 transform rounded-full bg-primary-foreground transition-all duration-300 shadow-lg ${
+                    isYearly ? "translate-x-6" : "translate-x-1"
+                  }`}
+                />
+              </button>
+              <span
+                className={`text-sm font-medium transition-colors ${
+                  isYearly ? "text-foreground" : "text-muted-foreground"
+                }`}
+              >
+                {messages.pricing.yearly}
+              </span>
+            </div>
+          </div>
         </div>
 
         {/* Free plan — live-but-capped lead-in above the paid grid */}
@@ -658,7 +766,7 @@ const Pricing = () => {
                     <div
                       className="pointer-events-none absolute right-2 top-2 z-20 flex h-14 w-14 items-center justify-center text-center sm:right-3 sm:top-3 sm:h-16 sm:w-16"
                       title={
-                        showEarlyAccess
+                        !isYearly && showEarlyAccess
                           ? messages.pricing.introPeriodTitle
                           : messages.pricing.discountTitle(discountPercent)
                       }
@@ -703,15 +811,25 @@ const Pricing = () => {
                           </span>
                         </div>
 
-                        {showEarlyAccess && earlyAccessIntroMonths > 0 && (
-                          <p className="flex items-center justify-center gap-1 text-sm text-foreground/70 transition-colors group-hover:text-primary-foreground/85">
-                            <Clock className="h-3.5 w-3.5" />
-                            {messages.pricing.introMonths(
-                              earlyAccessIntroMonths,
-                              formatPrice(plan.monthlyPrice),
-                            )}
+                        {isYearly && (
+                          <p className="flex justify-center pt-0.5">
+                            <span className="font-heading text-[0.625rem] font-semibold uppercase leading-none tracking-widest text-muted-foreground/55 transition-colors group-hover:text-primary-foreground/75">
+                              {messages.pricing.billedYearly}
+                            </span>
                           </p>
                         )}
+
+                        {!isYearly &&
+                          showEarlyAccess &&
+                          earlyAccessIntroMonths > 0 && (
+                            <p className="flex items-center justify-center gap-1 text-sm text-foreground/70 transition-colors group-hover:text-primary-foreground/85">
+                              <Clock className="h-3.5 w-3.5" />
+                              {messages.pricing.introMonths(
+                                earlyAccessIntroMonths,
+                                formatPrice(plan.monthlyPrice),
+                              )}
+                            </p>
+                          )}
                       </div>
                     </div>
 
@@ -939,7 +1057,20 @@ const Pricing = () => {
                       earlyAccessIntroMonths,
                     )}
                   </span>
-                  {messages.pricing.coupon.discountEnd}
+                  {couponYearlyDiscountPercent > 0 ? (
+                    <>
+                      {" "}
+                      {messages.pricing.coupon.onMonthlyBilling}{" "}
+                      <span className="font-semibold text-foreground">
+                        {messages.pricing.coupon.yearlyDiscount(
+                          couponYearlyDiscountPercent,
+                        )}
+                      </span>{" "}
+                      {messages.pricing.coupon.whenYearlySelected}
+                    </>
+                  ) : (
+                    messages.pricing.coupon.discountEnd
+                  )}
                 </span>
               </p>
             </div>
