@@ -147,6 +147,12 @@ export type LiveAvatarProps = {
   expression?: "default" | "smile";
   /** The static render, shown until (and instead of) the live avatar. */
   fallback: ReactNode;
+  /**
+   * Stop drawing (keeping the canvas, its model and its compiled shaders), e.g.
+   * a mockup that isn't the one playing: so it can come back at once, with no
+   * new context, no model clone and no shader compile (a visible stall).
+   */
+  paused?: boolean;
   className?: string;
 };
 
@@ -162,6 +168,7 @@ const LiveAvatar = ({
   logo = true,
   expression = "smile",
   fallback,
+  paused = false,
   className,
 }: LiveAvatarProps) => {
   const boxRef = useRef<HTMLDivElement>(null);
@@ -232,9 +239,9 @@ const LiveAvatar = ({
   const live = wants3d && ready;
   const status = live ? "live" : reducedMotion || capable === false || failed ? "still" : "loading";
   useEffect(() => onStatus?.(status), [status, onStatus]);
-  // Keep drawing until the first frame lands (even just outside the viewport),
-  // then only while visible.
-  const active = pageVisible && (inView || !ready);
+  // Keep drawing until the first frame lands (even just outside the viewport,
+  // or paused: so its shaders compile ahead), then only while visible and not paused.
+  const active = pageVisible && (!ready || (inView && !paused));
 
   return (
     <div ref={boxRef} className={cn("relative h-full w-full", className)}>

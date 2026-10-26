@@ -86,7 +86,7 @@ const geometry = (W: number, H: number, lead = leadFor(W, H)): Geo => {
   const run = xEnd - x0;
   const avail = H - top;
   // tall enough that a stage's exit widening at its fix reads at a glance
-  const h0 = Math.min(avail * 0.33, run * 0.2);
+  const h0 = Math.min(avail * 0.33, run * 0.24);
   const cy = top + 10 + h0;
   return {
     W,
@@ -261,7 +261,8 @@ const OVER = 0.35;
 const linesFor = (text: string, size: number, tail: number, wrap: boolean) => {
   const one = { lines: [text], width: textWidth(text, size) + tail * size };
   const words = text.split(" ");
-  if (!wrap || words.length < 2) return one;
+  // a two-word label never splits ("Buy / it" reads broken): it shrinks instead
+  if (!wrap || words.length < 3) return one;
   let best = one;
   for (let n = 1; n < words.length; n++) {
     const a = words.slice(0, n).join(" ");

@@ -23,13 +23,17 @@ export type Link =
   /** The cone: the stage's edge and the device's edge, each [x0, x1, y]. */
   | { kind: "cone"; stage: number[]; device: number[] }
   /** A marker arrow from the device to its chamber: the stroke and its head. */
-  | { kind: "arrow"; d: string; head: string };
+  | { kind: "arrow"; d: string; head: string }
+  /** A zoom lens: a marker frame round the chamber ([x0, y0, x1, y1]), widening out to the device's near edge ([x, y0, y1]). */
+  | { kind: "lens"; box: number[]; device: number[] };
 export type Arranged = {
   fnW: number;
   fnH: number;
   fnLeft: number;
   fnTop: number;
   beats: { x: number; y: number; w: number; h: number; origin: string; copy: CSSProperties; link: Link }[];
+  /** The payoff in the same frame, if the arrangement keeps it there: its words and its metric card. */
+  payoff?: { copy: CSSProperties; card: { left: number; top: number; width: number } };
 };
 
 const clamp = (v: number, a: number, b: number) => Math.min(b, Math.max(a, v));
@@ -131,56 +135,65 @@ export const arrange = (W: number, H: number, look: ArrLook, aspect: number, vis
 };
 
 /**
- * ?beat=9b: the opener over its stage's label, the funnel as wide as the
- * room left of the device, the device in its own column on the right; a
- * marker arrow arches from the device over onto the opener.
+ * ?beat=9b: the opener over its stage's label and the funnel, as wide as
+ * the room left of the device, as one block; the device in its own column
+ * on the right, level with it; a zoom lens from the stage (a marker frame
+ * round its chamber) widening out to the device. The payoff keeps the same
+ * funnel, in the same place: its words where the opener stood, its metric
+ * card where the device stood.
  */
 export const arrangeOpener = (W: number, H: number, aspect: number, visits?: string): Arranged => {
   const pad = 12;
-  const gy = clamp(H * 0.035, 16, 30);
-  const colGap = clamp(W * 0.04, 32, 72);
-  const devCol = clamp(W * 0.32, 300, 480);
+  const colGap = clamp(W * 0.035, 28, 64);
+  const devCol = clamp(W * 0.36, 320, 560);
   const rest = W - devCol - colGap;
-  const ow = Math.min(rest, clamp(W * 0.4, 380, 620));
-  const fs = Math.min(clamp(Math.min(W * 0.026, H * 0.048), 26, 40), ow / 17);
+  const ow = Math.min(rest, clamp(W * 0.42, 380, 640));
+  const fs = Math.min(clamp(Math.min(W * 0.025, H * 0.046), 26, 40), ow / 17);
   // kicker and up to two lines
   const openerH = 44 + fs * 2.3;
-  const fnW = Math.min(rest, (H - 2 * pad - openerH - gy) * aspect);
+  const fnW = Math.min(rest, (H - 2 * pad - openerH) * aspect);
   const fnH = fnW / aspect;
   // the opener and the funnel as one block, centred in the stage's height
-  const top0 = Math.max(pad, (H - (openerH + gy * 0.3 + fnH)) / 2);
-  const fnTop = top0 + openerH + gy * 0.3;
+  const block = openerH + fnH;
+  const top0 = Math.max(pad, (H - block) / 2);
+  const fnTop = top0 + openerH;
   const fnLeft = (rest - fnW) / 2;
   const an = funnelAnchors(fnW, fnH, [1, 1, 1], visits);
   const foot = fnTop - 4;
+  const mid = fnTop + an.cy;
   const beats = [0, 1, 2].map((i) => {
     const A = DEVICE_ASPECT[i];
-    // as tall as leaves the arrow its room above
-    const room = clamp(H * 0.16, 80, 130);
-    const w = Math.min(devCol, (H - 2 * pad - room) * A, i === 1 ? 360 : Infinity);
+    const w = Math.min(devCol, (H - 2 * pad) * A, i === 1 ? 380 : Infinity);
     const h = w / A;
     const x = rest + colGap + (devCol - w) / 2;
-    const y = Math.max(pad + room, (H - h) / 2);
+    // level with the funnel's run, as far as the stage lets it
+    const y = clamp(mid - h / 2, pad, H - pad - h);
     const ch = an.chambers[i];
     const left = clamp(fnLeft + ch.xc - ow / 2, 0, rest - ow);
-    // the arrow: up out of the device's top, over, down onto the opener (its one line's top)
-    const s: Pt = [x + w * 0.3, y - 14];
-    const e: Pt = [fnLeft + ch.xc, foot - (44 + fs * 1.15) - 12];
-    const over = Math.max(pad, Math.min(s[1], e[1]) - clamp(H * 0.08, 44, 80));
-    const hw = clamp(W * 0.007, 7, 11);
+    // the lens: the chamber, from its wall's highest point to under its agent on the floor
+    const lt = fnTop + (i === 0 ? an.mouth.top : an.chambers[i - 1].top) - 10;
+    const lb = fnTop + ch.floor + clamp(fnH * 0.11, 22, 36);
+    const box = [fnLeft + ch.xa + 2, lt, fnLeft + ch.xb - 2, lb];
     return {
       x,
       y,
       w,
       h,
-      origin: `${e[0] - x}px ${e[1] - y}px`,
+      origin: `${fnLeft + ch.xc - x}px ${mid - y}px`,
       copy: { left, width: ow, bottom: H - foot, ["--bch-fs" as string]: `${fs}px` },
-      link: {
-        kind: "arrow" as const,
-        d: `M${s[0]} ${s[1]} C ${s[0]} ${over}, ${e[0]} ${over}, ${e[0]} ${e[1]}`,
-        head: `M${e[0] - hw} ${e[1] - hw * 1.3} L ${e[0]} ${e[1]} L ${e[0] + hw} ${e[1] - hw * 1.3}`,
-      },
+      link: { kind: "lens" as const, box, device: [x - 6, y + Math.min(18, h * 0.06), y + h - Math.min(18, h * 0.06)] },
     };
   });
-  return { fnW, fnH, fnLeft, fnTop, beats };
+  const cardW = Math.min(devCol, 380);
+  return {
+    fnW,
+    fnH,
+    fnLeft,
+    fnTop,
+    beats,
+    payoff: {
+      copy: { left: fnLeft, right: "auto", width: fnW, top: "auto", bottom: H - foot },
+      card: { left: rest + colGap + (devCol - cardW) / 2, top: mid - (cardW * (168 / 330)) / 2, width: cardW },
+    },
+  };
 };

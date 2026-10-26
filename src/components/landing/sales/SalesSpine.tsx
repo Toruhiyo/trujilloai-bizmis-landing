@@ -1,4 +1,4 @@
-import { useLayoutEffect, useRef, useState } from "react";
+import { memo, useLayoutEffect, useMemo, useRef, useState } from "react";
 import type { CSSProperties } from "react";
 import { useMessages } from "@/i18n/LocaleProvider";
 import { cn } from "@/lib/utils";
@@ -60,6 +60,8 @@ const clamp = (v: number, a: number, b: number) => Math.min(b, Math.max(a, v));
 
 /** The funnel's box, width : height, the payoff's: the beats' funnels keep it too, scaled down to fit under the device. */
 const FUNNEL_ASPECT = 2.6;
+/** ?beat=9b's funnel (the beats' and the payoff's alike): taller, as it has a column of its own to fill. */
+const OPENER_FUNNEL_ASPECT = 2.05;
 /** A beat's funnel's height for an H px stage (a little more of it than a flat funnel took, so its narrower box still reads). */
 const beatFnH = (H: number) => clamp(H * 0.36, 180, 300);
 /** The metric card's height : width (Metrics' card, 168 / 330). */
@@ -240,6 +242,75 @@ const Arrow = ({ d, head, on }: { d: string; head: string; on: boolean }) => (
   </svg>
 );
 
+/**
+ * A zoom lens (?beat=9b): a marker frame round the stage's chamber, and a
+ * soft wedge widening from its far side out to the device's near edge,
+ * under the funnel; drawn in like the cone's sides.
+ */
+const Lens = ({ box, device, on }: { box: number[]; device: number[]; on: boolean }) => {
+  const [x0, y0, x1, y1] = box;
+  const [dx, d0, d1] = device;
+  const r = Math.min(16, (x1 - x0) / 4, (y1 - y0) / 4);
+  // the frame, a touch uneven, as if drawn with the marker
+  const frame =
+    `M${x0 + r} ${y0} L${x1 - r} ${y0 + 1.5} Q${x1} ${y0} ${x1} ${y0 + r} L${x1 + 1} ${y1 - r}` +
+    ` Q${x1} ${y1} ${x1 - r} ${y1} L${x0 + r} ${y1 - 1} Q${x0} ${y1} ${x0} ${y1 - r} L${x0 - 1} ${y0 + r} Q${x0} ${y0} ${x0 + r} ${y0}`;
+  // the wedge, from the frame's side facing the device (right or left)
+  const ex = dx > x1 ? x1 : x0;
+  const mx = (ex + dx) / 2;
+  const top = `M${ex} ${y0 + r} C ${mx} ${y0 + r}, ${mx} ${d0}, ${dx} ${d0}`;
+  const bottom = `M${ex} ${y1 - r} C ${mx} ${y1 - r}, ${mx} ${d1}, ${dx} ${d1}`;
+  const fill = `${top} L ${dx} ${d1} C ${mx} ${d1}, ${mx} ${y1 - r}, ${ex} ${y1 - r} Z`;
+  return (
+    <svg className={cn("sl-g2-cone sl-g2-lens", on && "is-on")} aria-hidden="true">
+      <path className="sl-g2-cone-fill" d={fill} />
+      <path className="sl-g2-cone-side" d={top} pathLength={1} />
+      <path className="sl-g2-cone-side" d={bottom} pathLength={1} />
+      <path className="sl-g2-cone-side sl-g2-lens-frame" d={frame} pathLength={1} />
+    </svg>
+  );
+};
+
+/** A beat's device (memoised: only the playing beat's clock moves, so the others skip their re-render). */
+const Callout = memo(function Callout({
+  i,
+  t,
+  on,
+  past,
+  rewinding,
+  x,
+  y,
+  w,
+  h,
+  origin,
+}: {
+  i: number;
+  t: number;
+  on: boolean;
+  past: boolean;
+  rewinding: boolean;
+  x: number;
+  y: number;
+  w: number;
+  h: number;
+  origin: string;
+}) {
+  return (
+    <div
+      className={cn("sl-g2-callout", on && "is-on", past && "is-past")}
+      aria-hidden={!on}
+      style={{ left: x, top: y, width: w, height: h, transformOrigin: origin }}
+    >
+      <RewindScreen on={rewinding}>
+        <Device index={i} clock={{ t }} active={on} />
+      </RewindScreen>
+    </div>
+  );
+});
+
+/** A beat's words, memoised the same way. */
+const BeatCopyM = memo(BeatCopy);
+
 const Pinned = () => {
   const s = useMessages().landing.sales;
   // ?beat=7: the beat's words sit over its stage, as the funnel's label (the funnel draws none)
@@ -270,17 +341,30 @@ const Pinned = () => {
   // one value that only falls when the scroll goes back (a step back, or back within a step)
   const rewinding = useRewinding(step * 1e5 + (payoff ? payT : beats[step].t));
   const [stage, { W, H }] = useSize<HTMLDivElement>();
-  const L0 = layout(W, H, payoff, s.funnel.visits, opener === "a" ? "o" : ends, opener === "c");
-  const A =
-    opener === "b"
-      ? arrangeOpener(W, H, FUNNEL_ASPECT, s.funnel.visits)
-      : arr
-        ? arrange(W, H, arr, FUNNEL_ASPECT, s.funnel.visits)
-        : null;
-  // the arrangement's funnel in the beats; the payoff's own in the payoff
-  const L = A && !payoff ? { ...L0, fnW: A.fnW, fnH: A.fnH, fnLeft: A.fnLeft, fnTop: A.fnTop } : L0;
-  const links = L0.beats.map((b, i) => A?.beats[i].link ?? { kind: "cone" as const, stage: b.cone.bottom, device: b.cone.top });
-  const rects = L0.beats.map((b, i) => A?.beats[i] ?? b);
+  // (the layouts change only with the stage's size, the payoff and the look: worked out once each, so the
+  // beats that aren't playing keep the same props and skip their re-render)
+  const visits = s.funnel.visits;
+  const L0 = useMemo(
+    () => layout(W, H, payoff, visits, opener === "a" ? "o" : ends, opener === "c"),
+    [W, H, payoff, visits, opener, ends],
+  );
+  const A = useMemo(
+    () =>
+      opener === "b"
+        ? arrangeOpener(W, H, OPENER_FUNNEL_ASPECT, visits)
+        : arr
+          ? arrange(W, H, arr, FUNNEL_ASPECT, visits)
+          : null,
+    [W, H, opener, arr, visits],
+  );
+  // the arrangement's funnel in the beats; in the payoff too where it keeps it (9b), else the payoff's own
+  const L = A && (!payoff || A.payoff) ? { ...L0, fnW: A.fnW, fnH: A.fnH, fnLeft: A.fnLeft, fnTop: A.fnTop } : L0;
+  const card = A?.payoff?.card ?? L0.card;
+  const links = useMemo(
+    () => L0.beats.map((b, i) => A?.beats[i].link ?? { kind: "cone" as const, stage: b.cone.bottom, device: b.cone.top }),
+    [L0, A],
+  );
+  const rects = useMemo(() => L0.beats.map((b, i) => A?.beats[i] ?? b), [L0, A]);
   const f = Math.min(step, 2);
   const clock = payoff
     ? { t: payT, duration: PAYOFF_DURATION, fixAt: undefined }
@@ -292,25 +376,31 @@ const Pinned = () => {
       <div ref={track} className="sl-g2-track">
         <div className="sl-g2-pin">
           <div className="bzl-wrap sl-g2-frame">
-            <div ref={stage} className={cn("sl-g2-stage", payoff && "is-payoff")}>
+            {/* ph-no-capture: the session recorder would log every animated frame of it (replays show a placeholder) */}
+            <div ref={stage} className={cn("sl-g2-stage ph-no-capture", payoff && "is-payoff")}>
               {links.map((l, i) =>
                 l.kind === "arrow" ? (
                   <Arrow key={i} d={l.d} head={l.head} on={step === i} />
+                ) : l.kind === "lens" ? (
+                  <Lens key={i} box={l.box} device={l.device} on={step === i} />
                 ) : (
                   <Cone key={i} stage={l.stage} device={l.device} on={step === i} />
                 ),
               )}
               {rects.map((b, i) => (
-                <div
+                <Callout
                   key={i}
-                  className={cn("sl-g2-callout", step === i && "is-on", step > i && "is-past")}
-                  aria-hidden={step !== i}
-                  style={{ left: b.x, top: b.y, width: b.w, height: b.h, transformOrigin: b.origin }}
-                >
-                  <RewindScreen on={rewinding && step === i}>
-                    <Device index={i} clock={beats[i]} active={step === i} />
-                  </RewindScreen>
-                </div>
+                  i={i}
+                  t={beats[i].t}
+                  on={step === i}
+                  past={step > i}
+                  rewinding={rewinding && step === i}
+                  x={b.x}
+                  y={b.y}
+                  w={b.w}
+                  h={b.h}
+                  origin={b.origin}
+                />
               ))}
               {s.panels.map((p, i) => (
                 <div
@@ -325,15 +415,15 @@ const Pinned = () => {
                   )}
                   style={rects[i].copy}
                 >
-                  <BeatCopy index={i} t={beats[i].t} fixAt={beats[i].fixAt} />
+                  <BeatCopyM index={i} t={beats[i].t} fixAt={beats[i].fixAt} />
                   {win > 0 && <Metrics variant={win} k={step === i ? k : fixedAt(i, beats[i].t, beats[i].fixAt)} focus={i} className="sl-g2-met" />}
                 </div>
               ))}
-              <div className={cn("sl-g2-copy is-payoff", payoff && "is-on")}>
+              <div className={cn("sl-g2-copy is-payoff", payoff && "is-on")} style={A?.payoff?.copy}>
                 <PanelCopy kicker={s.payoff.kicker} title={s.payoff.title} body={s.payoff.body} />
               </div>
               {/* the payoff's win in the metrics a merchant watches, turning with each fix (direction only) */}
-              <div className={cn("sl-g2-card", payoff && "is-on")} style={{ left: L.card.left, top: L.card.top, width: L.card.width }}>
+              <div className={cn("sl-g2-card", payoff && "is-on")} style={{ left: card.left, top: card.top, width: card.width }}>
                 <Metrics variant={4} k={payoff ? k : [0, 0, 0]} focus={3} className="sl-g2-met is-card" />
               </div>
               <div className="sl-fn sl-g2-funnel" style={{ left: L.fnLeft, top: L.fnTop, width: L.fnW, height: L.fnH }}>

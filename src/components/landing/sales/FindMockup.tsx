@@ -211,7 +211,8 @@ const FindMockup = ({ play, clock, active = true }: MockupProps) => {
           {catalog}
           <MobileWidget
             head="amber"
-            live={active}
+            live
+            paused={!active}
             speaking={voice}
             working={working}
             placeholder={m.landing.widget.placeholder}
@@ -260,7 +261,8 @@ const FindMockup = ({ play, clock, active = true }: MockupProps) => {
         <div className="sl-find-widget absolute bottom-6 right-6 z-10">
           <BizmisWidget
             agent="greet-amber"
-            live={active ? "amber" : undefined}
+            live="amber"
+            paused={!active}
             state={working ? "working" : speaking ? "speaking" : "idle"}
             talking={voice}
             tool={Search}

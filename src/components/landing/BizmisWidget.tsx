@@ -206,7 +206,19 @@ export const SentMessage = ({ text, k, className }: { text: string; k?: number; 
 
 /** The avatar on its stage: memoised, so a timeline re-rendering the widget every frame leaves the 3D alone. */
 const AvatarStage = memo(
-  ({ agent, live, shirtColor, talking }: { agent: AgentName; live?: string; shirtColor: string; talking: boolean }) => {
+  ({
+    agent,
+    live,
+    shirtColor,
+    talking,
+    paused,
+  }: {
+    agent: AgentName;
+    live?: string;
+    shirtColor: string;
+    talking: boolean;
+    paused?: boolean;
+  }) => {
     const still = (
       <AgentImage
         name={agent}
@@ -217,7 +229,7 @@ const AvatarStage = memo(
     );
     return live ? (
       <div className="absolute inset-0">
-        <LiveAvatar model={live} shirtColor={shirtColor} speaking={talking} fallback={still} />
+        <LiveAvatar model={live} shirtColor={shirtColor} speaking={talking} fallback={still} paused={paused} />
       </div>
     ) : (
       still
@@ -235,6 +247,7 @@ const BizmisWidget = ({
   press,
   above,
   live,
+  paused,
   talking,
   shirtColor = "#F9A353",
   className,
@@ -247,6 +260,8 @@ const BizmisWidget = ({
    * place of the static render — which stays as the fallback and placeholder.
    */
   live?: string;
+  /** The live avatar kept but not drawing (a mockup that isn't the one playing). */
+  paused?: boolean;
   /**
    * The voice: lips moving (live avatar) and the speaking pulse (glow +
    * rings), e.g. from the captions' timing (captionVoice). Defaults to the
@@ -329,6 +344,7 @@ const BizmisWidget = ({
             live={live}
             shirtColor={shirtColor}
             talking={voice}
+            paused={paused}
           />
         </div>
 
@@ -548,6 +564,7 @@ export const HeadCircle = ({
   speaking = false,
   working = false,
   live = false,
+  paused = false,
   className,
 }: {
   /** The preset avatar id, e.g. "mia" (also its live model's name). */
@@ -557,6 +574,8 @@ export const HeadCircle = ({
   working?: boolean;
   /** The live 3D head instead of the still. */
   live?: boolean;
+  /** The live head kept but not drawing. */
+  paused?: boolean;
   className?: string;
 }) => {
   const [drawn, setDrawn] = useState(false);
@@ -625,6 +644,7 @@ export const HeadCircle = ({
               speaking={speaking}
               onStatus={(st) => setDrawn(st === "live")}
               fallback={null}
+              paused={paused}
             />
           </span>
         </span>
@@ -663,6 +683,7 @@ export const MobileWidget = ({
   draft,
   press,
   live = false,
+  paused = false,
   above,
 }: {
   /** The preset avatar id, e.g. "mia". */
@@ -672,6 +693,8 @@ export const MobileWidget = ({
   working?: boolean;
   /** The live 3D head in the circle (mount it only where it plays). */
   live?: boolean;
+  /** The live head kept but not drawing. */
+  paused?: boolean;
   placeholder?: string;
   /** What the shopper is typing (caret shown); undefined shows the placeholder. */
   draft?: string;
@@ -691,7 +714,7 @@ export const MobileWidget = ({
         className="absolute left-1/2 top-1.5 h-1 w-8 -translate-x-1/2 rounded-full bg-black/15"
       />
       <div className="flex items-center gap-1.5 px-2 pb-2">
-        <HeadCircle head={head} size={42} speaking={speaking} working={working} live={live} />
+        <HeadCircle head={head} size={42} speaking={speaking} working={working} live={live} paused={paused} />
         <AudioToggle />
         <span className="bzw-composer min-w-0 flex-1 truncate px-1 text-sm">
           <ComposerText placeholder={placeholder} draft={draft} />
@@ -719,6 +742,7 @@ export const BarWidget = ({
   draft,
   press,
   live = false,
+  paused = false,
   above,
   className,
 }: {
@@ -728,6 +752,8 @@ export const BarWidget = ({
   working?: boolean;
   /** The live 3D head capping the bar (mount it only where it plays). */
   live?: boolean;
+  /** The live head kept but not drawing. */
+  paused?: boolean;
   placeholder?: string;
   /** What the shopper is typing (caret shown); undefined shows the placeholder. */
   draft?: string;
@@ -754,6 +780,7 @@ export const BarWidget = ({
         speaking={speaking}
         working={working}
         live={live}
+        paused={paused}
         className="relative z-10 -my-[26px] -ml-[25px]"
       />
       <AudioToggle />

@@ -20,6 +20,6 @@ export type Clock = { t: number };
 export type MockupProps = {
   play?: boolean;
   clock?: Clock;
-  /** Its beat is the one showing: mount the live 3D heads (default true; a pinned stage passes false for the others). */
+  /** Its beat is the one showing: its live 3D heads draw (default true; a pinned stage passes false for the others, whose heads stay mounted but paused, so switching never stalls on a new canvas). */
   active?: boolean;
 };

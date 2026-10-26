@@ -181,7 +181,8 @@ const TrustMockup = ({ play, clock, active = true }: MockupProps) => {
         <MobileWidget
           head="amber"
           speaking={captionVoice(s.compareCaption, t - T.speak, MS_PER_WORD)}
-          live={active}
+          live
+          paused={!active}
           working={comparing}
           placeholder={m.landing.widget.placeholder}
           draft={draft}

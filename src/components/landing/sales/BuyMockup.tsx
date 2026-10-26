@@ -186,7 +186,8 @@ const BuyMockup = ({ play, clock, active = true }: MockupProps) => {
             )}
             <BarWidget
               head="amber"
-              live={active}
+              live
+              paused={!active}
               speaking={speaking && captionVoice(s.buyCaption, t - T.speak, MS_PER_WORD)}
               working={(t >= T.work && t < T.speak) || going}
               placeholder={m.landing.widget.placeholder}
