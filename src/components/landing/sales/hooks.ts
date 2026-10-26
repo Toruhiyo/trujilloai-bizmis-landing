@@ -284,6 +284,8 @@ export const useScrollPlay = (target: number, duration: number, active: boolean)
     let phase: "play" | "hold" | "rewind" = "play";
     let since = 0;
     let from = 0;
+    // after a scroll back, until the clock has caught up with the scroll (it keeps rewinding to it even once the scroll stops)
+    let back = false;
     const loop = (now: number) => {
       raf = requestAnimationFrame(loop);
       const dt = Math.min(100, now - last);
@@ -293,11 +295,17 @@ export const useScrollPlay = (target: number, duration: number, active: boolean)
       if (target > prev + 0.5) {
         // scrolling on: pulled up to the scroll (and playing on past it)
         phase = "play";
+        back = false;
         next = Math.min(duration, Math.max(target, next + dt));
-      } else if (target < prev - 0.5 && target < next) {
-        // scrolling back: rewound to where the scroll is, quickly
+      } else if ((target < prev - 0.5 || back) && target < next - 0.5) {
+        // scrolling back: rewound to where the scroll is, quickly, all the way there
         phase = "play";
-        next = Math.max(target, next + (target - next) * 0.28 - dt * 0.5);
+        back = true;
+        next = Math.max(target, next + (target - next) * 0.22 - dt * 0.6);
+      } else if (back) {
+        // caught up with the scroll: rest there a moment, then play on from it
+        back = false;
+        next = target;
       } else if (phase === "play") {
         // at rest: on at 1x to the fixed state
         next = Math.min(duration, next + dt);

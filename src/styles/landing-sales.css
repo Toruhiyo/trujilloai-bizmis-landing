@@ -1073,6 +1073,13 @@
   text-align: center;
   transform: translateY(14px);
 }
+/* 9b on phones: the payoff's words under the funnel, smaller */
+.sl-g2-copy.is-payoff.is-under .sl-copy-title {
+  font-size: clamp(1.45rem, 6.4vw, 1.9rem);
+}
+.sl-g2-copy.is-payoff.is-under .sl-copy-body {
+  font-size: 0.95rem;
+}
 .sl-g2-copy.is-payoff.is-on {
   transform: none;
 }

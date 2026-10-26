@@ -40,8 +40,11 @@ import { Device, PanelCopy } from "./shared";
  * scroll through the screen.
  */
 const SalesSpine = () => {
-  const pin = useMedia("(min-width: 1024px) and (min-height: 640px)");
-  return pin ? <Pinned /> : <Stacked />;
+  // 9b (the default) pins on phones too (its own stacked arrangement), so the scroll drives it there as well
+  const nine = openerLook(useBeatStyle()) === "b";
+  const desk = useMedia("(min-width: 1024px) and (min-height: 640px)");
+  const tall = useMedia("(min-height: 540px)");
+  return desk || (nine && tall) ? <Pinned /> : <Stacked />;
 };
 
 /** The payoff's stretch of scroll, in beats' stretches; the whole track's. */
@@ -438,7 +441,7 @@ const Pinned = () => {
                   {win > 0 && <Metrics variant={win} k={step === i ? k : fixedAt(i, beats[i].t, beats[i].fixAt)} focus={i} className="sl-g2-met" />}
                 </div>
               ))}
-              <div className={cn("sl-g2-copy is-payoff", payoff && "is-on")} style={A?.payoff?.copy}>
+              <div className={cn("sl-g2-copy is-payoff", A?.payoff?.under && "is-under", payoff && "is-on")} style={A?.payoff?.copy}>
                 <PanelCopy kicker={s.payoff.kicker} title={s.payoff.title} body={s.payoff.body} />
               </div>
               {/* the payoff's win in the metrics a merchant watches, turning with each fix (direction only) */}

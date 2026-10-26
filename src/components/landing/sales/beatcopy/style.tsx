@@ -20,7 +20,7 @@ import { createContext, useContext } from "react";
  * funnel, ?beat=8a..8d (or 22..25; ?beat=8 is 8a): 8a device / funnel /
  * words stacked, 8b words / funnel / device stacked, 8c device | funnel
  * over words, 8d funnel over words | device (sales/arrange). ?beat=9a..9c
- * (26..28; ?beat=9 and the default are 9a): the words are the opener
+ * (26..28; ?beat=9 is 9a, the default 9b): the words are the opener
  * alone ("Buyers with a full cart…") and the sentence ends in the funnel's
  * own label, as it is ("Abandon the cart" struck, then "Buy it ✓"). 9a
  * the opener over its stage, the device above; 9b the same, the device in
@@ -63,8 +63,8 @@ export const OPENER_FROM = 26;
 export const openerLook = (look: number): OpenerLook | null =>
   look >= OPENER_FROM && look < OPENER_FROM + OPENER_LOOKS.length ? OPENER_LOOKS[look - OPENER_FROM] : null;
 
-/** The look with no ?beat: the opener ending in the funnel's label (chosen 2026-10-26); ?beat=0 shows the old struck headline. */
-export const DEFAULT_BEAT = OPENER_FROM;
+/** The look with no ?beat: 9b, the opener ending in the funnel's label, the device in its own column (chosen 2026-10-26); ?beat=0 shows the old struck headline. */
+export const DEFAULT_BEAT = OPENER_FROM + OPENER_LOOKS.indexOf("b");
 
 const BeatStyleContext = createContext(DEFAULT_BEAT);
 

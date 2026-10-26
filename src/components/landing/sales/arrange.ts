@@ -35,7 +35,7 @@ export type Arranged = {
   /** The span [left, right] the words may take (9b: the funnel's column). */
   wordsRoom?: [number, number];
   /** The payoff in the same frame, if the arrangement keeps it there: its words and its metric card. */
-  payoff?: { copy: CSSProperties; card: { left: number; top: number; width: number } };
+  payoff?: { copy: CSSProperties; card: { left: number; top: number; width: number }; under?: boolean };
 };
 
 const clamp = (v: number, a: number, b: number) => Math.min(b, Math.max(a, v));
@@ -145,6 +145,8 @@ export const arrange = (W: number, H: number, look: ArrLook, aspect: number, vis
  * card where the device stood.
  */
 export const arrangeOpener = (W: number, H: number, aspect: number, visits?: string): Arranged => {
+  // no room for a device column (phones, small tablets): the same pieces stacked
+  if (W < 860) return arrangeOpenerStacked(W, H, aspect, visits);
   const pad = 12;
   const colGap = clamp(W * 0.035, 28, 64);
   const devCol = clamp(W * 0.36, 320, 560);
@@ -212,6 +214,81 @@ export const arrangeOpener = (W: number, H: number, aspect: number, visits?: str
     payoff: {
       copy: { left: fnLeft, right: "auto", width: fnW, top: "auto", bottom: H - foot },
       card: { left: rest + colGap + (devCol - cardW) / 2, top: mid - (cardW * (168 / 330)) / 2, width: cardW },
+    },
+  };
+};
+
+/** The devices' shapes as the mockups draw them on phones (they switch at 640 px: phone frames, the tablet stood up). */
+const PHONE_ASPECT = [390 / 844, 390 / 844, 768 / 1024];
+
+/**
+ * ?beat=9b on a narrow stage (phones, small tablets), pinned like the
+ * desktop and driven by the scroll the same way: the opener over its
+ * label, the funnel full width, the device under it, its frame's arrow
+ * pointing down into it. The payoff keeps the funnel; its metric card
+ * takes the device's place.
+ */
+const arrangeOpenerStacked = (W: number, H: number, aspect: number, visits?: string): Arranged => {
+  const pad = 10;
+  const phone = W < 640;
+  const fs = clamp(W * 0.06, 19, 28);
+  // kicker and up to two lines, then air before the label
+  const openerH = 40 + fs * 2.3;
+  const air = clamp(H * 0.016, 8, 16);
+  const fnW = W;
+  const fnH = fnW / Math.max(aspect, 2.3);
+  const fnTop = pad + openerH + air;
+  const an = funnelAnchors(fnW, fnH, [1, 1, 1], visits);
+  const foot = fnTop - air;
+  // the device: what's left under the funnel, less the arrow's room
+  const gap = clamp(H * 0.05, 26, 44);
+  const devTop = fnTop + fnH + gap;
+  const room = H - pad - devTop;
+  const beats = [0, 1, 2].map((i) => {
+    const A = (phone ? PHONE_ASPECT : DEVICE_ASPECT)[i];
+    const w = Math.min(W * (A > 1 ? 1 : 0.86), room * A);
+    const h = w / A;
+    const x = (W - w) / 2;
+    const y = devTop;
+    const ch = an.chambers[i];
+    const lt = fnTop + an.labels + clamp(fnH * 0.045, 8, 16);
+    const lb = fnTop + ch.floor + clamp(fnH * 0.11, 16, 26);
+    const box = [ch.xa + 2, lt, ch.xb - 2, lb];
+    // the arrow: down out of the frame's foot, curving over to the device's top, pointing down into it
+    const s: Pt = [ch.xc, lb + 8];
+    const e: Pt = [clamp(ch.xc, x + w * 0.25, x + w * 0.75), y - 8];
+    const mid = (s[1] + e[1]) / 2;
+    const hw = clamp(W * 0.02, 7, 10);
+    return {
+      x,
+      y,
+      w,
+      h,
+      origin: `${ch.xc - x}px ${lb - y}px`,
+      copy: { left: 0, width: W, bottom: H - foot, ["--bch-fs" as string]: `${fs}px` },
+      link: {
+        kind: "lens" as const,
+        box,
+        d: `M${s[0]} ${s[1]} C ${s[0]} ${mid}, ${e[0]} ${mid}, ${e[0]} ${e[1]}`,
+        head:
+          `M${e[0] - hw * 1.05} ${e[1] - hw * 1.5} Q ${e[0] - hw * 0.25} ${e[1] - hw * 0.55} ${e[0]} ${e[1]}` +
+          ` Q ${e[0] + hw * 0.4} ${e[1] - hw * 0.6} ${e[0] + hw * 1.15} ${e[1] - hw * 1.35}`,
+      },
+    };
+  });
+  const cardW = Math.min(W, 360);
+  return {
+    fnW,
+    fnH,
+    fnLeft: 0,
+    fnTop,
+    beats,
+    wordsRoom: [0, W],
+    // the payoff's words don't fit over the funnel here: under it (smaller), the metric card under them
+    payoff: {
+      copy: { left: 0, right: "auto", width: W, top: fnTop + fnH + gap * 0.5, bottom: "auto" },
+      card: { left: (W - cardW) / 2, top: fnTop + fnH + gap * 0.5 + clamp(W * 0.36, 120, 150), width: cardW },
+      under: true,
     },
   };
 };
