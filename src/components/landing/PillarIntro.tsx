@@ -1,4 +1,4 @@
-import { useContext, useLayoutEffect, useRef, useState } from "react";
+import { useContext, useRef, useState } from "react";
 import type { CSSProperties, ReactNode } from "react";
 import { cn } from "@/lib/utils";
 import "@/styles/pillar-intro.css";
@@ -6,24 +6,28 @@ import "@/styles/pillar-openers.css";
 import { PillarAreaContext, useOpener } from "./pillar/OpenerContext";
 import OpenerDesign from "./pillar/OpenerDesign";
 import type { Motif } from "./pillar/OpenerDesign";
+import { useDockMorph } from "./pillar/useDockMorph";
 
 /**
- * PillarIntro: a pillar's entrance and its sticky docked bar.
+ * PillarIntro: a pillar's entrance and its sticky docked bar, the one
+ * turning into the other as the page scrolls.
  *
- * On arrival the pillar's NAME (the benefit, e.g. "Boost Sales") stands huge
- * on one line, its icon in a disc above it and its supporting line under it.
- * Nothing morphs: the big title scrolls away with the page, each piece
- * fading (and settling a touch smaller) as it nears the nav. The moment the
- * big name passes into the bar's place the docked bar ([icon] Name | line)
- * slides in while what's left of the big title fades out: one short timed
- * crossfade, so no scroll position shows either half-drawn, and nothing is
- * ever read through the bar. There's no runway: the content follows the big
- * title in the flow and arrives under the bar, which stays to the end of
- * the section. With prefers-reduced-motion: the same, without the settle,
- * the slide or the fades (the bar simply switches).
+ * On arrival the opener stands big in the middle of the screen (the chapter
+ * design: the number in marker, the eyebrow with the area's icon and name,
+ * the outcome on one line, Sales' line under it). From when the section's
+ * top reaches the nav, the scroll MORPHS it into the docked bar ([icon]
+ * Name | line), over a short run (under a fifth of a screen): each piece
+ * flies to its place in the bar, shrinking into it, the parts of a
+ * two-line line settling into the bar's one line, what has no place there
+ * (the number, the rule) fading on the way, the bar's ground fading in.
+ * Scrolling back reverses it; if the scroll rests partway it finishes by
+ * itself in the direction it was going (pillar/useDockMorph). The content
+ * follows the opener in the flow and arrives under the bar, which stays to
+ * the end of the section. With prefers-reduced-motion: no flight, the bar
+ * simply switches.
  *
  *   <PillarIntro
- *     name="Boost Sales"                            // huge, then the docked label
+ *     name="Boost Sales"                            // the docked label (and the outcome by default)
  *     icon={<TrendIcon />}                          // optional, in a disc
  *     line={<SalesTitle … />}                       // optional supporting line
  *     docked={({ docked }) => <SalesTitle … />}     // optional: the line's docked form (defaults to `line`)
@@ -32,22 +36,24 @@ import type { Motif } from "./pillar/OpenerDesign";
  *     …the sub-benefits…
  *   </PillarIntro>
  *
- * - `name` / `icon` / `line` (+ `index`): the entrance: the icon in its
- *   disc, the name, the line under it. The name is the heading (an <h2>
- *   unless `as` says otherwise), always one line: its size (.pi-name) is
- *   capped to the width it has (--pi-fit). In the bar: .pi-dock-name (icon +
- *   name, a strong label) then the docked line; on phones they stack.
+ * - The pieces that morph carry `data-pm` keys on both sides: "icon",
+ *   "title", "sub", and with an `outcome`, "area" (the eyebrow's words →
+ *   the bar's label) while the outcome ("title") becomes the bar's line.
+ * - `name` / `icon` / `line` (+ `index`): with ?open=0 the old entrance:
+ *   the icon in its disc, the name huge on one line (capped to the width it
+ *   has, --pi-fit), the line under it. The name is the heading (an <h2>
+ *   unless `as` says otherwise). In the bar: .pi-dock-name (icon + name, a
+ *   strong label) then the docked line; on phones they stack.
  * - Legacy: `title` (big, `titleClassName`) with `chip` above it; the bar
  *   shows `docked` (default: `title`) with the chip on desktop.
  * - The root publishes `--pi-dock-h` (the bar's height) so pinned children
  *   can sit right under it (`top: calc(nav + var(--pi-dock-h))`), and
- *   `.is-docked` while the bar shows.
- * - With the opener designs under comparison (?open=1..6, pillar/
- *   OpenerContext) the big part is pillar/OpenerDesign: the OUTCOME the hero
- *   (`outcome`, a sentence a line; by default the `name`, with `line` under
- *   it), the AREA a small label (`area`; by default PillarAreaContext),
- *   `motif` the pillar's drawing (by default "sales"). It scrolls away and
- *   docks the bar like the default.
+ *   `.is-docked` once the bar has fully formed.
+ * - The opener designs (?open=1..6, pillar/OpenerContext; the page's default
+ *   is 5) are pillar/OpenerDesign: the OUTCOME the hero (`outcome`; by
+ *   default the `name`, with `line` under it), the AREA the eyebrow (`area`;
+ *   by default PillarAreaContext), `motif` the pillar's drawing (by default
+ *   "sales").
  */
 export type PillarIntroProps = {
   /** The pillar's name, the benefit ("Boost Sales"): huge on arrival, the docked bar's label. */
@@ -82,7 +88,6 @@ export type PillarIntroProps = {
   children?: ReactNode;
 };
 
-const clamp01 = (v: number) => Math.min(1, Math.max(0, v));
 const prefersReduced = () =>
   typeof window !== "undefined" && window.matchMedia?.("(prefers-reduced-motion: reduce)").matches === true;
 
@@ -120,92 +125,62 @@ const PillarIntro = ({
   const [reduced] = useState(prefersReduced);
   const [isDocked, setDocked] = useState(false);
 
-  // publish the bar's height, and keep the big name on one line (its size capped to the width it has)
-  useLayoutEffect(() => {
+  // publish the bar's height, and keep the big name (or the chapter's outcome) on one line, its size capped to the width it has
+  const fit = () => {
     const r = root.current;
     const d = dock.current;
     const b = big.current;
     if (!r || !d || !b) return;
-    const measure = () => {
-      r.style.setProperty("--pi-dock-h", `${d.offsetHeight}px`);
-      const n = b.querySelector<HTMLElement>(".pi-name");
-      const text = n?.firstElementChild as HTMLElement | null;
-      if (!n || !text) return;
+    r.style.setProperty("--pi-dock-h", `${d.offsetHeight}px`);
+    for (const n of b.querySelectorAll<HTMLElement>(".pi-name, .od-outcome.is-one")) {
+      const text = n.firstElementChild as HTMLElement | null;
+      if (!text) continue;
       n.style.setProperty("--pi-fit", "1");
-      const need = text.offsetWidth; // layout width (the fade's settle scale doesn't count)
-      const room = n.clientWidth;
+      const need = text.offsetWidth;
+      let room = n.clientWidth;
+      if (n.classList.contains("is-one") && n.parentElement) {
+        const box = n.parentElement;
+        const cs = getComputedStyle(box);
+        room = box.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight);
+      }
       if (need > room && need > 0) n.style.setProperty("--pi-fit", (room / need - 0.005).toFixed(4));
-    };
-    measure();
-    const ro = new ResizeObserver(measure);
-    ro.observe(d);
-    ro.observe(b);
-    document.fonts?.ready.then(measure).catch(() => {});
-    return () => ro.disconnect();
-  }, [v]);
+    }
+  };
 
-  // the scroll
-  useLayoutEffect(() => {
-    const r = root.current;
-    const h = head.current;
-    const d = dock.current;
-    const b = big.current;
-    if (!r || !h || !d || !b) return;
-    let frame = 0;
-
-    // default: fade each big piece as it nears the nav; dock once the name passes into the bar's place
-    const fadeAway = (nav: number, bar: number) => {
-      for (const el of b.querySelectorAll<HTMLElement>(".pi-fade")) {
-        const a = el.getBoundingClientRect();
-        // fully shown until it nears the bar; gone by the time its top reaches the nav
-        el.style.setProperty("--pi-o", clamp01((a.top - nav) / (bar + a.height * 0.45)).toFixed(3));
-      }
-      // the bar comes in as the name's top passes into it (the big pieces then crossfade out)
-      const key = b.querySelector<HTMLElement>(".pi-key");
-      return key ? key.getBoundingClientRect().top < nav + bar * 0.6 : false;
-    };
-
-    const update = () => {
-      frame = 0;
-      const vh = window.innerHeight;
-      const box = r.getBoundingClientRect();
-      if (box.top > vh || box.bottom < 0) {
-        if (box.top > vh) setDocked(false);
-        return;
-      }
-      const nav = parseFloat(getComputedStyle(h).top) || 0;
-      const bar = d.offsetHeight;
-      setDocked(fadeAway(nav, bar));
-    };
-    const onScroll = () => {
-      if (!frame) frame = requestAnimationFrame(update);
-    };
-    update();
-    document.fonts?.ready.then(onScroll).catch(() => {});
-    window.addEventListener("scroll", onScroll, { passive: true });
-    window.addEventListener("resize", onScroll);
-    return () => {
-      window.removeEventListener("scroll", onScroll);
-      window.removeEventListener("resize", onScroll);
-      if (frame) cancelAnimationFrame(frame);
-    };
-  }, [v]);
+  // the morph, scrubbed by the scroll
+  useDockMorph({ root, head, big, dock, reduced, onDocked: setDocked, prepare: fit, deps: [v] });
 
   const compact =
     typeof docked === "function" ? docked({ docked: isDocked }) : (docked ?? (named ? line : title));
 
+  // with an outcome, the eyebrow's words become the bar's label and the outcome its line
+  const byOutcome = Boolean(v && outcome);
   const bar = (
     <div ref={head} className="pi-head">
       <div ref={dock} className={cn("pi-dock", named && "is-named", dockClassName)} aria-hidden="true">
         {named ? (
           <span className="pi-dock-name">
-            {icon && <span className="pi-dock-icon">{icon}</span>}
-            <span className="pi-dock-label">{name}</span>
+            {icon && (
+              <span className="pi-dock-icon" data-pm="icon">
+                {icon}
+              </span>
+            )}
+            <span className="pi-dock-label" data-pm={byOutcome ? "area" : "title"}>
+              {name}
+            </span>
           </span>
         ) : (
-          chip && <span className="pi-dock-chip">{chip}</span>
+          chip && (
+            <span className="pi-dock-chip" data-pm="chip">
+              {chip}
+            </span>
+          )
         )}
-        {compact && <div className="pi-dock-main">{compact}</div>}
+        {compact && (
+          <div className="pi-dock-main" data-pm={byOutcome ? "title" : "sub"}>
+            {compact}
+          </div>
+        )}
       </div>
     </div>
   );
@@ -213,7 +188,7 @@ const PillarIntro = ({
   return (
     <div
       ref={root}
-      className={cn("pi", v && `pi-od pi-od${v}`, reduced && "is-still", isDocked && "is-docked", className)}
+      className={cn("pi", v && `pi-od pi-od${v}`, isDocked && "is-docked", className)}
       style={accent ? ({ "--pi-bar": accent } as CSSProperties) : undefined}
     >
       {bar}
@@ -234,19 +209,29 @@ const PillarIntro = ({
         ) : named ? (
           <>
             {icon && (
-              <span className="pi-icon pi-fade" aria-hidden="true">
+              <span className="pi-icon" data-pm="icon" aria-hidden="true">
                 {icon}
               </span>
             )}
-            <Tag className={cn("pi-name pi-fade pi-key", nameClassName)}>
+            <Tag className={cn("pi-name", nameClassName)} data-pm="title">
               <span className="pi-name-text">{name}</span>
             </Tag>
-            {line && <span className={cn("pi-line pi-fade", lineClassName)}>{line}</span>}
+            {line && (
+              <span className={cn("pi-line", lineClassName)} data-pm="sub">
+                {line}
+              </span>
+            )}
           </>
         ) : (
           <>
-            {chip && <span className="pi-chip pi-fade">{chip}</span>}
-            <Tag className={cn("pi-title pi-fade pi-key", titleClassName)}>{title}</Tag>
+            {chip && (
+              <span className="pi-chip" data-pm="chip-big">
+                {chip}
+              </span>
+            )}
+            <Tag className={cn("pi-title", titleClassName)} data-pm="sub">
+              {title}
+            </Tag>
           </>
         )}
       </div>

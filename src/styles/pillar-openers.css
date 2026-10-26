@@ -2,7 +2,7 @@
    .pi-od, pillar/OpenerDesign.tsx). The OUTCOME is the hero, the AREA a small
    label; the film look: ink (white on the Sales orange) and the primary as
    the accent (white on the orange), marker and handwriting as the accent.
-   Each scrolls away and docks the bar as the default does. */
+   The scroll morphs each into the docked bar (PillarIntro). */
 
 .pi-od {
   --od-ink: var(--pi-name-color, var(--film-ink, #3b2416));
@@ -166,6 +166,11 @@
 .od3 {
   isolation: isolate;
 }
+.od3-back {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+}
 .od-backdrop {
   position: absolute;
   top: 50%;
@@ -211,8 +216,9 @@
 }
 
 /* ═══════════ 5 · Chapter ═══════════
-   The chapter number huge in marker handwriting, the outcome beside it,
-   set off by a primary rule. */
+   The chapter number huge in marker handwriting, the outcome beside it on
+   one line (its size capped to the width it has, --pi-fit, set by
+   PillarIntro), set off by a primary rule. */
 .pi-od5 .pi-big {
   align-items: stretch;
   text-align: left;
@@ -235,18 +241,29 @@
   color: var(--od-accent);
 }
 .od5-copy {
+  position: relative;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   gap: clamp(0.8rem, 2.4svh, 1.5rem);
   padding-left: clamp(1.25rem, 3vw, 3rem);
-  border-left: 3px solid color-mix(in oklab, var(--od-accent) 50%, transparent);
 }
-.od5 .od-outcome {
-  font-size: clamp(2.6rem, min(5.8vw, 11svh), 6.5rem);
+.od5-rule {
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 3px;
+  background: color-mix(in oklab, var(--od-accent) 50%, transparent);
 }
-.od5 .od-outcome:has(> .od-l:only-child) {
-  font-size: clamp(3rem, min(8vw, 14svh), 8.5rem);
+.pi-od .od5 .od-outcome.is-one {
+  --od-one: clamp(3rem, min(8vw, 14svh), 8.5rem);
+  max-width: 100%;
+  font-size: calc(var(--od-one) * var(--pi-fit, 1));
+  white-space: nowrap;
+}
+.od-outcome.is-one .od-l {
+  display: inline-block;
+  /* the tight tracking's last letter, and descenders, inside the box */
+  padding: 0 0.04em 0.06em 0;
 }
 .od5 .od-sub {
   text-align: left;
@@ -287,33 +304,11 @@
   font-size: clamp(3rem, min(7.5vw, 13svh), 8rem);
 }
 
-/* ── Pinned (BenefitIntro's one-screen sections): the opener compact at the
-   top of the screen: the chapter number, the eyebrow and the outcome in one
-   band about a sixth of the screen tall, the content under it. ── */
-.bzp.is-pinned .od {
-  gap: clamp(0.4rem, 1.4svh, 0.9rem);
-}
-.bzp.is-pinned .od5 {
-  justify-content: start;
-  max-width: none;
-  margin-inline: 0;
-  padding-inline: 0;
-  column-gap: clamp(1rem, 2.2vw, 2.25rem);
-}
-.bzp.is-pinned .od5-num {
-  font-size: clamp(4.4rem, min(9vw, 16svh), 9rem);
-}
-.bzp.is-pinned .od5-copy {
-  gap: clamp(0.45rem, 1.4svh, 0.85rem);
-  padding-left: clamp(1rem, 2vw, 1.75rem);
-}
-.bzp.is-pinned .od-outcome,
-.bzp.is-pinned .od5 .od-outcome {
-  font-size: clamp(1.9rem, min(3.6vw, 6.2svh), 4rem);
-  line-height: 1;
-}
-.bzp.is-pinned .od1 .od-outcome::after {
-  display: none;
+/* ── Pinned (BenefitIntro's one-screen sections, desktop): their screen
+   sticks right under the docked bar, like Boost Sales' stage. ── */
+.bzp.is-pinned .bzp-pin {
+  top: calc(var(--pi-nav) + var(--pi-dock-h));
+  height: calc(100svh - var(--pi-nav) - var(--pi-dock-h));
 }
 
 /* ── phones ── */
@@ -321,12 +316,11 @@
   .pi-od .pi-big { min-height: clamp(22rem, 72svh, 34rem); }
   .od-outcome,
   .od1 .od-outcome,
-  .od5 .od-outcome,
   .od6 .od-outcome { font-size: min(10.5vw, 2.9rem); }
   .od-outcome:has(> .od-l:only-child),
   .od1 .od-outcome:has(> .od-l:only-child),
-  .od5 .od-outcome:has(> .od-l:only-child),
   .od6 .od-outcome:has(> .od-l:only-child) { font-size: clamp(2.6rem, 15vw, 4.4rem); }
+  .pi-od .od5 .od-outcome.is-one { --od-one: clamp(2.6rem, 15vw, 4.4rem); }
   .od5 {
     grid-template-columns: minmax(0, 1fr);
     row-gap: 0.75rem;

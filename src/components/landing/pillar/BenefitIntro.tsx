@@ -2,9 +2,8 @@ import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import type { ReactNode } from "react";
 import { cn } from "@/lib/utils";
 import PillarIntro from "../PillarIntro";
-import { useMedia, useOnScreen, usePinProgress, useReducedMotion, useRewinding, useScrollPlay } from "../sales/hooks";
+import { useMedia, useOnScreen, usePinProgress, useRewinding, useScrollPlay } from "../sales/hooks";
 import { useOpener } from "./OpenerContext";
-import OpenerDesign from "./OpenerDesign";
 import type { Motif } from "./OpenerDesign";
 import "@/styles/pillar-intro.css";
 import "@/styles/pillar-openers.css";
@@ -73,26 +72,25 @@ const render = (children: Props["children"], state: PinState) =>
   typeof children === "function" ? children(state) : children;
 
 /**
- * A benefit section's opening for Customer Support and Store Insights.
+ * A benefit section's opening for Customer Support and Store Insights, on
+ * PillarIntro like Boost Sales: the chapter opener big in the middle of the
+ * screen (the number, the eyebrow with the area's full name, the outcome on
+ * one line), which the scroll morphs into the section's sticky docked bar
+ * ([icon] area | outcome), the content following under it.
  *
  * With an opener design (?open=1..6; the page's default is 5, "Chapter") on
- * a desktop screen, the section is ONE pinned screen: the opener compact at
- * the top (the chapter number, the eyebrow with the area's full name, the
- * outcome) and the content under it, sticky under the nav while the page
- * scrolls through a track `run` screens long. The content gets the track's
- * progress (a render prop) to drive its animations by the scroll, like
- * Boost Sales (sales/hooks: usePinProgress, useScrollPlay).
- *
- * Otherwise (phones, short screens, ?open=0): PillarIntro, like Boost
- * Sales: the opener big, scrolling away and docking the section's sticky
- * bar (the name as a label, the promise beside it), the content following
- * under it in the flow.
+ * a desktop screen, the content is ONE pinned screen, sticky right under
+ * the bar while the page scrolls through a track `run` screens long. The
+ * content gets the track's progress (a render prop) to drive its animations
+ * by the scroll, like Boost Sales (sales/hooks: usePinProgress,
+ * useScrollPlay). Otherwise (phones, short screens, ?open=0) it simply
+ * follows in the flow.
  */
 const BenefitIntro = (props: Props) => {
   const opener = useOpener();
   const wide = useMedia(PIN_QUERY);
-  if (wide && opener !== "0" && props.outcome) return <Pinned {...props} />;
-  const { index, icon, name, promise, area, outcome, motif, className, children } = props;
+  const pinned = wide && opener !== "0" && Boolean(props.outcome);
+  const { index, icon, name, promise, area, outcome, motif, run = 1.6, className, children } = props;
   return (
     <PillarIntro
       index={index}
@@ -103,28 +101,29 @@ const BenefitIntro = (props: Props) => {
       outcome={outcome}
       motif={motif}
       docked={<span className="bzp-dock-line">{promise}</span>}
-      className={cn("bzp", className)}
+      className={cn("bzp", pinned && "is-pinned", className)}
     >
-      <div className="bzp-body">{render(children, { pinned: false, progress: 0, active: true })}</div>
+      {pinned ? (
+        <Track run={run}>{children}</Track>
+      ) : (
+        <div className="bzp-body">{render(children, { pinned: false, progress: 0, active: true })}</div>
+      )}
     </PillarIntro>
   );
 };
 
-const Pinned = ({ index, icon, area, outcome = [], motif = "sales", run = 1.6, className, children }: Props) => {
-  const opener = useOpener();
-  const reduced = useReducedMotion();
+/** The pinned track: one screen under the bar, sticky while the page scrolls `run` screens through it. */
+const Track = ({ run, children }: { run: number; children: Props["children"] }) => {
   const [track, progress] = usePinProgress<HTMLDivElement>();
   const [pin, onScreen] = useOnScreen<HTMLDivElement>(0.2);
-  const v = opener === "0" ? "5" : opener;
   return (
-    <div className={cn("pi pi-od", `pi-od${v}`, "bzp is-pinned", reduced && "is-still", className)}>
-      <div ref={track} className="bzp-track" style={{ height: `calc(100svh - var(--bzl-nav, 4rem) + ${run * 100}svh)` }}>
-        <div ref={pin} className="bzp-pin">
-          <div className="bzp-open bzl-wrap">
-            <OpenerDesign v={v} index={index} icon={icon} area={area} lines={outcome} motif={motif} />
-          </div>
-          <Fit>{render(children, { pinned: true, progress, active: onScreen })}</Fit>
-        </div>
+    <div
+      ref={track}
+      className="bzp-track"
+      style={{ height: `calc(100svh - var(--pi-nav) - var(--pi-dock-h) + ${run * 100}svh)` }}
+    >
+      <div ref={pin} className="bzp-pin">
+        <Fit>{render(children, { pinned: true, progress, active: onScreen })}</Fit>
       </div>
     </div>
   );

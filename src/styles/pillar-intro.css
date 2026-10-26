@@ -1,9 +1,10 @@
 /* PillarIntro (src/components/landing/PillarIntro.tsx): a pillar's big
-   title, scrolling away with the page, and the section's sticky docked bar,
-   which slides in as the big name passes under the nav. No morph, no runway:
-   each big piece fades (--pi-o, 1 → 0, set from the scroll) as it reaches
-   the bar's line; the bar is switched by .is-docked on a short timed
-   transition, so no scroll position ever shows it half-drawn. */
+   opener and the section's sticky docked bar, the one morphing into the
+   other as the page scrolls (pillar/useDockMorph sets the pieces'
+   transforms and opacities from the scroll, and the bar's ground,
+   --pm-bar). The root's data-pm-state: "open" hides the bar's pieces,
+   "morph" layers the moving pieces for compositing, "docked" hides the big
+   opener. */
 
 .pi {
   --pi-nav: var(--bzl-nav, 4rem);
@@ -30,6 +31,7 @@
   margin-bottom: calc(-1 * var(--pi-dock-h));
   pointer-events: none;
 }
+/* the bar's ground, faded in along the morph */
 .pi-head::before {
   content: "";
   position: absolute;
@@ -39,14 +41,24 @@
   -webkit-backdrop-filter: blur(16px) saturate(1.2);
   backdrop-filter: blur(16px) saturate(1.2);
   box-shadow: 0 1px 0 color-mix(in oklab, var(--acc, #f28c38) 22%, transparent);
-  opacity: 0;
-  transition: opacity 0.22s ease;
+  opacity: var(--pm-bar, 0);
 }
 .pi.is-docked .pi-head {
   pointer-events: auto;
 }
-.pi.is-docked .pi-head::before {
-  opacity: 1;
+.pi[data-pm-state="open"] .pi-dock {
+  visibility: hidden;
+}
+.pi[data-pm-state="docked"] .pi-big {
+  visibility: hidden;
+}
+/* the moving pieces get their own layers while they move */
+.pi[data-pm-state="morph"] :is([data-pm], .sl-title-part, .sl-title-lead) {
+  will-change: transform, opacity;
+}
+/* a line's parts morph one by one (transforms need boxes) */
+.pi :is(.pi-big, .pi-dock) :is(.sl-title-part, .sl-title-lead) {
+  display: inline-block;
 }
 
 .pi-dock {
@@ -56,24 +68,6 @@
   gap: 1rem;
   min-height: 3.5rem;
   padding: 0.6rem 1rem;
-}
-/* its contents slide in from just under the nav, the label first, the line a beat after */
-.pi-dock > * {
-  opacity: 0;
-  transform: translateY(-0.45rem);
-  transition:
-    opacity 0.2s ease,
-    transform 0.3s var(--pi-ease);
-}
-.pi.is-docked .pi-dock > * {
-  opacity: 1;
-  transform: none;
-  transition:
-    opacity 0.28s ease,
-    transform 0.42s var(--pi-ease);
-}
-.pi.is-docked .pi-dock > :nth-child(2) {
-  transition-delay: 0.05s;
 }
 .pi-dock-chip {
   flex-shrink: 0;
@@ -137,22 +131,13 @@
   height: 54%;
   stroke-width: 2;
 }
-/* docking, the icon lands with a small pop */
-.pi.is-docked .pi-dock-icon {
-  animation: pi-pop 0.5s var(--pi-ease) both;
-}
-@keyframes pi-pop {
-  0% {
-    transform: scale(0.6);
-  }
-  100% {
-    transform: none;
-  }
-}
 
-/* ── The big title: in the flow, the section's opening ── */
+/* ── The big opener: in the flow, the section's opening; over the bar while
+   it morphs into it (nothing in it takes the pointer) ── */
 .pi-big {
   position: relative;
+  z-index: 21;
+  pointer-events: none;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -161,21 +146,6 @@
   min-height: clamp(19rem, 56svh, 42rem);
   padding: calc(var(--pi-dock-h) * 0.5) 1rem clamp(1rem, 3svh, 2.5rem);
   text-align: center;
-}
-/* each piece fades as it nears the nav (settling a touch smaller); once the
-   bar is in, whatever is left of them fades out (the crossfade) */
-.pi-fade {
-  opacity: var(--pi-o, 1);
-  transform: scale(calc(0.95 + 0.05 * var(--pi-o, 1)));
-  transition: opacity 0.18s linear;
-}
-.pi.is-docked .pi-fade {
-  opacity: 0;
-  transition: opacity 0.24s ease;
-}
-.pi.is-still .pi-fade {
-  transform: none;
-  transition: none;
 }
 .pi-title {
   max-width: 14ch;
@@ -233,13 +203,7 @@
   position: relative;
 }
 
-/* reduced motion: no settle, no slide; the bar simply switches */
-.pi.is-still .pi-head::before,
-.pi.is-still .pi-dock > *,
-.pi.is-still.is-docked .pi-dock > * {
-  transition: none;
-  transform: none;
-}
-.pi.is-still.is-docked .pi-dock-icon {
-  animation: none;
+/* Sales' bar: the hairline after the label comes in with the bar's ground */
+.sl-c .pi-head .pi-dock-name {
+  border-right-color: rgb(255 255 255 / calc(0.35 * var(--pm-bar, 1)));
 }

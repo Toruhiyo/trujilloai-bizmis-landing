@@ -6,8 +6,10 @@ import type { Opener } from "./OpenerContext";
  * The pillar openers' static designs under comparison (?open=1..6), rendered
  * by PillarIntro inside its big part: the OUTCOME is the hero ("Boost
  * Sales", "Fewer tickets. Happier customers."), the AREA a small label
- * ("Support"). They scroll away and dock the bar as today (PillarIntro: each
- * .pi-fade piece fades near the nav, .pi-key docks the bar). Film look:
+ * ("Support"). The scroll morphs them into the docked bar (PillarIntro,
+ * pillar/useDockMorph): the pieces marked `data-pm` fly to their twins in
+ * the bar ("icon", "area", "title", "sub"); the others ("num", "rule", …)
+ * ride along and fade. Film look:
  * white / cream, ink and the primary (white on the Sales orange), marker
  * and handwriting as the accent. pillar-openers.css.
  *
@@ -17,21 +19,33 @@ import type { Opener } from "./OpenerContext";
  *   3  Backdrop     the outcome over a large faint marker drawing of the pillar
  *                   (the funnel, the inbox, the chart)
  *   4  Handwritten  a two-line statement, the second line in handwriting
- *   5  Chapter      the chapter number huge in marker handwriting, the outcome beside it
+ *   5  Chapter      the chapter number huge in marker handwriting, the outcome beside it,
+ *                   on one line (fitted to the width it has, --pi-fit)
  *   6  Glyph        minimal: the pillar's icon as a large marker drawing, the outcome
  *                   quiet under it
  */
 export type Motif = "sales" | "support" | "insights";
 
-const Area = ({ icon, area, className }: { icon?: ReactNode; area?: ReactNode; className?: string }) =>
+/** The eyebrow. `pm`: its icon and words morph on their own (else the eyebrow as one piece, or inside one). */
+const Area = ({
+  icon,
+  area,
+  className,
+  pm = "parts",
+}: {
+  icon?: ReactNode;
+  area?: ReactNode;
+  className?: string;
+  pm?: "parts" | "whole" | "none";
+}) =>
   area ? (
-    <span className={cn("od-area", className)}>
+    <span className={cn("od-area", className)} data-pm={pm === "whole" ? "eyebrow" : undefined}>
       {icon && (
-        <span className="od-area-icon" aria-hidden="true">
+        <span className="od-area-icon" data-pm={pm === "parts" ? "icon" : undefined} aria-hidden="true">
           {icon}
         </span>
       )}
-      <span>{area}</span>
+      <span data-pm={pm === "parts" ? "area" : undefined}>{area}</span>
     </span>
   ) : null;
 
@@ -146,9 +160,13 @@ const OpenerDesign = ({
   as?: "h2" | "p" | "div";
 }) => {
   const full = lines.join(" ");
-  const subEl = sub ? <span className={cn("pi-line od-sub pi-fade", lineClassName)}>{sub}</span> : null;
+  const subEl = sub ? (
+    <span className={cn("pi-line od-sub", lineClassName)} data-pm="sub">
+      {sub}
+    </span>
+  ) : null;
   const outcome = (cls?: string) => (
-    <Tag className={cn("od-outcome pi-fade pi-key", cls)}>
+    <Tag className={cn("od-outcome", cls)} data-pm="title">
       {lines.map((l, i) => (
         <span key={i} className="od-l">
           {l}
@@ -160,8 +178,8 @@ const OpenerDesign = ({
   if (v === "1")
     return (
       <div className="od od1">
-        <div className="od1-head pi-fade">
-          <Area icon={icon} area={area} />
+        <div className="od1-head" data-pm="head">
+          <Area icon={icon} area={area} pm="none" />
           <span className="od1-rule" aria-hidden="true" />
           {index && <span className="od1-num">{index}</span>}
         </div>
@@ -179,8 +197,8 @@ const OpenerDesign = ({
         : [l1.split(" ").slice(0, -1).join(" "), l1.split(" ").slice(-1)[0], ""];
     return (
       <div className="od od2">
-        <Area icon={icon} area={area} className="is-pill pi-fade" />
-        <Tag className="od-outcome pi-fade pi-key" aria-label={full}>
+        <Area icon={icon} area={area} className="is-pill" pm="whole" />
+        <Tag className="od-outcome" data-pm="title" aria-label={full}>
           {lines.length > 1 && <span className="od-l">{parts[0]}</span>}
           <span className="od-l" aria-hidden="true">
             {lines.length === 1 && `${parts[0]} `}
@@ -199,8 +217,10 @@ const OpenerDesign = ({
   if (v === "3")
     return (
       <div className="od od3">
-        <Backdrop motif={motif} />
-        <Area icon={icon} area={area} className="pi-fade" />
+        <span className="od3-back" data-pm="backdrop">
+          <Backdrop motif={motif} />
+        </span>
+        <Area icon={icon} area={area} />
         {outcome()}
         {subEl}
       </div>
@@ -211,8 +231,8 @@ const OpenerDesign = ({
       lines.length > 1 ? [lines[0], lines.slice(1).join(" ")] : [lines[0].split(" ")[0], lines[0].split(" ").slice(1).join(" ")];
     return (
       <div className="od od4">
-        <Area icon={icon} area={area} className="pi-fade" />
-        <Tag className="od-outcome pi-fade pi-key" aria-label={full}>
+        <Area icon={icon} area={area} />
+        <Tag className="od-outcome" data-pm="title" aria-label={full}>
           <span className="od-l" aria-hidden="true">
             {first}
           </span>
@@ -228,12 +248,16 @@ const OpenerDesign = ({
   if (v === "5")
     return (
       <div className="od od5">
-        <span className="od5-num pi-fade" aria-hidden="true">
+        <span className="od5-num" data-pm="num" aria-hidden="true">
           {index}
         </span>
         <div className="od5-copy">
-          <Area icon={icon} area={area} className="pi-fade" />
-          {outcome()}
+          <span className="od5-rule" data-pm="rule" aria-hidden="true" />
+          <Area icon={icon} area={area} />
+          {/* one line, fitted to the width it has */}
+          <Tag className="od-outcome is-one" data-pm="title">
+            <span className="od-l">{full}</span>
+          </Tag>
           {subEl}
         </div>
       </div>
@@ -241,10 +265,10 @@ const OpenerDesign = ({
 
   return (
     <div className="od od6">
-      <span className="od6-glyph pi-fade">
+      <span className="od6-glyph" data-pm="glyph">
         <Glyph motif={motif} />
       </span>
-      <Area area={area} className="pi-fade" />
+      <Area area={area} />
       {outcome()}
       {subEl}
     </div>

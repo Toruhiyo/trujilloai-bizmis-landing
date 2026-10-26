@@ -4,7 +4,7 @@ import { createContext, useContext } from "react";
  * The pillar openers' design (FilmLanding.tsx, ?open=1..6; "0" without it,
  * the page as it is: the NAME huge). The options are static designs where
  * the OUTCOME is the hero and the area a small label (pillar/OpenerDesign,
- * pillar-openers.css); each scrolls away and docks the bar as today.
+ * pillar-openers.css); the scroll morphs each into the docked bar (PillarIntro).
  */
 export type Opener = "0" | "1" | "2" | "3" | "4" | "5" | "6";
 
