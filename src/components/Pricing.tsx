@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Check, ArrowRight, Clock, Badge as BadgeIcon, MessageSquareText, ShieldCheck } from "lucide-react";
+import { Check, ArrowRight, Clock, Badge as BadgeIcon, ShieldCheck } from "lucide-react";
 import { FaTag } from "react-icons/fa";
 import { useState, useRef, useEffect, useMemo } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
@@ -831,25 +831,6 @@ const Pricing = () => {
                   <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover/ent:translate-x-1" />
                 </Button>
               </div>
-            </div>
-          </div>
-        </div>
-
-        {/* What one session is (the billing unit) */}
-        <div className="mx-auto mt-6 flex max-w-3xl justify-center sm:mt-8">
-          <p className="inline-flex items-start gap-2 rounded-2xl border border-primary/25 bg-primary/10 px-4 py-2.5 text-left text-xs font-medium leading-relaxed text-primary-dark backdrop-blur-md sm:text-sm">
-            <MessageSquareText className="mt-0.5 h-3.5 w-3.5 shrink-0 sm:h-4 sm:w-4" aria-hidden />
-            <span>{messages.pricing.conversationDefinition}</span>
-          </p>
-        </div>
-
-        {/* Money-back guarantee: first monthly charge, shown prominently for conversion */}
-        <div className="mx-auto mt-6 flex max-w-2xl justify-center sm:mt-8">
-          <div className="flex items-start gap-3 rounded-2xl border border-primary/40 bg-background/80 px-5 py-4 text-left shadow-sm backdrop-blur-md">
-            <ShieldCheck className="mt-0.5 h-6 w-6 shrink-0 text-primary" aria-hidden />
-            <div>
-              <p className="font-semibold text-foreground">{messages.pricing.guarantees.bannerTitle}</p>
-              <p className="mt-1 text-sm leading-relaxed text-foreground/75">{messages.pricing.guarantees.bannerBody}</p>
             </div>
           </div>
         </div>
