@@ -175,7 +175,7 @@ const Navbar = () => {
             </div>
 
             {/* Desktop Navigation — viewport-centered regardless of CTA width */}
-            <div className="pointer-events-none absolute inset-x-0 hidden md:flex items-center justify-center">
+            <div className="pointer-events-none absolute inset-x-0 hidden xl:flex items-center justify-center">
               <div className="pointer-events-auto flex items-center space-x-8">
                 {desktopNavItems.map((item) => (
                   <button
@@ -191,7 +191,7 @@ const Navbar = () => {
             </div>
 
             {/* Desktop CTA */}
-            <div className="relative z-10 ml-auto hidden md:flex items-center gap-6">
+            <div className="relative z-10 ml-auto hidden xl:flex items-center gap-6">
               {/* TODO: DO NOT REMOVE - Sign In button temporarily commented out
               <Button
                 variant="ghost"
@@ -241,7 +241,7 @@ const Navbar = () => {
             </div>
 
             {/* Mobile Menu Button */}
-            <div className="relative z-10 ml-auto flex items-center gap-2 md:hidden">
+            <div className="relative z-10 ml-auto flex items-center gap-2 xl:hidden">
               <LanguageSwitcher theme={useForegroundNavChrome ? "light" : "dark"} />
               <Button
                 variant="ghost"
@@ -270,7 +270,7 @@ const Navbar = () => {
           so it can apply its own backdrop-filter without being trapped inside
           the nav's filter context. */}
       {isMenuOpen && (
-        <div className="md:hidden fixed top-12 sm:top-16 left-0 right-0 z-50 px-3 pb-3">
+        <div className="xl:hidden fixed top-12 sm:top-16 left-0 right-0 z-50 px-3 pb-3">
           <div className="isolate rounded-b-2xl border border-primary/15 bg-gradient-to-b from-background/75 via-[#FDF7E2]/45 to-background/75 backdrop-blur-2xl backdrop-saturate-200 shadow-[0_18px_36px_-18px_rgba(0,0,0,0.22)] overflow-hidden">
             <div className="px-3 sm:px-4 py-3 space-y-1">
               {navItems.map((item) => (
