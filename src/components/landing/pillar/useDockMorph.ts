@@ -31,6 +31,7 @@ import type { RefObject } from "react";
  *
  * Geometry is measured on layout / resize / fonts (transforms cleared), the
  * frame only reads the root's top and writes transforms and opacities. The
+ * As the section ends, the bar slides up under the nav and fades (EXIT). The
  * root's `data-pm-state` is "open" (the bar and the content hidden),
  * "morph" (pieces layered for compositing) or "docked" (the big part
  * hidden). With
@@ -43,6 +44,13 @@ const REST = 90;
 const TAU = 55;
 /** Settling forward from the run's start needs at least this much progress (else it goes back). */
 const NUDGE = 0.06;
+/**
+ * The bar's exit, as the section ends: it slides up under the nav and fades
+ * while the section's bottom rises from the screen's bottom through this
+ * share of the screen, so it's gone before the next section's opener shows
+ * (a sticky bar would otherwise ride the section's edge out, clipped).
+ */
+const EXIT = 0.28;
 
 const clamp01 = (v: number) => Math.min(1, Math.max(0, v));
 const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
@@ -233,6 +241,17 @@ export const useDockMorph = ({
     let moved = 0;
     let last = 0;
     let raf = 0;
+    let gone = -1; // the bar's exit, as last painted
+
+    // the bar leaves as the section's end comes up the screen (see EXIT)
+    const exit = (bottom: number) => {
+      const vh = window.innerHeight;
+      const q = reduced ? (bottom < vh * (1 - EXIT / 2) ? 1 : 0) : smooth(0, 1, (vh - bottom) / (vh * EXIT));
+      if (Math.abs(q - gone) < 0.001) return;
+      gone = q;
+      h.style.transform = q > 0 ? `translate3d(0, ${(-q * (h.offsetHeight + 8)).toFixed(1)}px, 0)` : "";
+      h.style.opacity = q > 0 ? (1 - q).toFixed(3) : "";
+    };
 
     const all = () => (g ? [...g.pairs.flatMap((p) => [p.big, p.dock]), ...g.solos.map((s) => s.el), ...g.lone] : []);
     const clear = () => {
@@ -293,7 +312,9 @@ export const useDockMorph = ({
     const frame = (now: number) => {
       raf = 0;
       if (!g) return;
-      const top = r.getBoundingClientRect().top;
+      const box = r.getBoundingClientRect();
+      const top = box.top;
+      exit(box.bottom);
       const p = clamp01((g.nav - top) / g.run);
       if (p !== pPrev) {
         // carry on from where the morph stands, onto what's left of the run
@@ -361,6 +382,8 @@ export const useDockMorph = ({
       if (raf) cancelAnimationFrame(raf);
       if (pending) cancelAnimationFrame(pending);
       clear();
+      h.style.transform = "";
+      h.style.opacity = "";
       delete r.dataset.pmState;
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
