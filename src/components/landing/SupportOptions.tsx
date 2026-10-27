@@ -452,7 +452,7 @@ const ClockDrawing = ({ t, F, W, kept, inbox }: DrawProps) => {
 
 /* ── 3 Morning: a night of questions, the sun up on an empty inbox ─────────── */
 
-const MO_GROUND = 248;
+const MO_GROUND = 238;
 const MO_TRAY = { x: 196, y: 198, w: 168, h: 40 };
 const MO_MARK = { x: 280, y: 150 };
 const MO_WAVE = [150, 410]; // the voice's wave over the inbox, from x to x
@@ -514,7 +514,8 @@ const MorningDrawing = ({ t, F, W, kept, inbox }: DrawProps) => {
           </g>
         </g>
       )}
-      <path className="mk-mid" d={`M30 ${MO_GROUND} H530`} {...drawn(drawIn)} />
+      {/* the horizon, either side of the inbox (it stands in the gap, its name clear under it) */}
+      <path className="mk-mid" d={`M30 ${MO_GROUND} H${MO_TRAY.x - 22} M${MO_TRAY.x + MO_TRAY.w + 22} ${MO_GROUND} H530`} {...drawn(drawIn)} />
       <Inbox tray={MO_TRAY} t={t} kept={kept} inbox={inbox} n={MO_LOSS} landAt={landAt} drainAt={drainAt} drain={DRAIN} to={[MO_MARK.x, MO_MARK.y]} />
 
       {/* the night's questions: before, into the inbox; after, answered at the wave */}
