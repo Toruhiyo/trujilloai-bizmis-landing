@@ -10,7 +10,7 @@ import FunnelFlow, { funnelAnchors } from "./funnel/FunnelFlow";
 import FunnelScale from "./funnel/FunnelScale";
 import { cardKsAt, ksAt, startsFor } from "./funnel/model";
 import SalesJar from "./funnel/SalesJar";
-import { useActivePanel, useMedia, usePinProgress, useRewinding, useScrollPlay, useScrollThrough } from "./hooks";
+import { useActivePanel, useMedia, useNearScreen, usePinProgress, useRewinding, useScrollPlay, useScrollThrough } from "./hooks";
 import Metrics from "./Metrics";
 import RewindScreen, { ScreenTape } from "./RewindScreen";
 import { useSalesProto } from "./proto";
@@ -320,6 +320,9 @@ const Pinned = () => {
   });
   const tls = useBeatTimelines();
   const [track, progress] = usePinProgress<HTMLDivElement>();
+  // the beats' clocks run only while the track is on screen: above it (beat one) or past it (the payoff)
+  // they would otherwise play, hold and rewind unseen, re-rendering the whole stage every frame
+  const seen = useNearScreen(track, "0px");
   // four stretches of the track: find, trust, buy, then the payoff (longer: three fixes, each given time)
   const x = Math.min(SPAN - 0.0001, progress * SPAN);
   const step = Math.min(3, Math.floor(x));
@@ -328,12 +331,12 @@ const Pinned = () => {
   // where the scroll puts each beat; its clock is pulled there, rewound there, and plays on by itself at rest
   const at = (i: number) => (step > i ? tls[i].duration : step < i ? 0 : timeAt(local, tls[i].duration));
   const ts = [
-    useScrollPlay(at(0), tls[0].duration, step === 0),
-    useScrollPlay(at(1), tls[1].duration, step === 1),
-    useScrollPlay(at(2), tls[2].duration, step === 2),
+    useScrollPlay(at(0), tls[0].duration, seen && step === 0),
+    useScrollPlay(at(1), tls[1].duration, seen && step === 1),
+    useScrollPlay(at(2), tls[2].duration, seen && step === 2),
   ];
   const beats = tls.map((tl, i) => ({ ...tl, t: ts[i] }));
-  const payT = useScrollPlay(payoff ? timeAt(local, PAYOFF_DURATION) : 0, PAYOFF_DURATION, payoff);
+  const payT = useScrollPlay(payoff ? timeAt(local, PAYOFF_DURATION) : 0, PAYOFF_DURATION, seen && payoff);
   // one value that only falls when the scroll goes back (a step back, or back within a step)
   const rewinding = useRewinding(step * 1e5 + (payoff ? payT : beats[step].t));
   const [stage, { W, H }] = useSize<HTMLDivElement>();
@@ -462,7 +465,7 @@ const Pinned = () => {
                     <Metrics variant={cardLook} k={payoff ? cardKsAt(payT, startsFor(3)) : [0, 0, 0]} focus={3} className="sl-g2-met is-card" />
                   </div>
                 ) : (
-                  <SalesJar t={payoff ? payT : 0} starts={payStarts} duration={PAYOFF_DURATION} from={bag} box={jar} label={s.payoff.jar} on={payoff} />
+                  <SalesJar t={payoff ? payT : 0} starts={payStarts} duration={PAYOFF_DURATION} from={bag} box={jar} label={s.payoff.jar} on={seen && payoff} />
                 )}
                 <div className="sl-fn sl-g2-funnel" style={{ left: L.fnLeft, top: L.fnTop, width: L.fnW, height: L.fnH }}>
                   <FunnelFlow

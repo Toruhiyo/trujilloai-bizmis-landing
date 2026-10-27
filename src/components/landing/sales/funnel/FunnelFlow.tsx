@@ -3,7 +3,7 @@ import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import type { CSSProperties } from "react";
 import { ShoppingBag } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { useNow } from "../hooks";
+import { useNearScreen, useNow } from "../hooks";
 import AgentPin from "./AgentPin";
 import {
   CHAMBERS,
@@ -564,9 +564,12 @@ const FunnelFlow = ({
   const starts = useMemo(() => startsFor(focus, fixAt), [focus, fixAt]);
   // Two clocks. The fix (stamp, label, chamber, leak) follows `t`, the scroll; the stream of visits
   // flows on in real time (`now`), obeying each fix from the real moment the scroll lands it.
-  const now = useNow();
+  // (only while the funnel is on screen: off it, the stream would re-render and redraw it every frame unseen)
+  const seen = useNearScreen(wrap, "100px");
+  const now = useNow(seen);
+  // its outline draws itself in from when it was mounted, as when the clock always ran
   const born = useRef<number | null>(null);
-  if (born.current === null && now > 0) born.current = now;
+  if (born.current === null) born.current = typeof performance === "undefined" ? 0 : performance.now();
   const real = useRef({ key: "", at: [] as number[] });
   const key = `${focus}|${fixAt}`;
   if (real.current.key !== key) real.current = { key, at: starts.map((st) => (st === -Infinity ? -Infinity : Infinity)) };

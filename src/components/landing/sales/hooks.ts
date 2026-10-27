@@ -40,6 +40,28 @@ export const useOnScreen = <T extends Element>(threshold = 0.35) => {
 };
 
 /**
+ * Live "is it near the screen" for an element you already hold a ref to
+ * (e.g. a pinned track): on while any of it is within `margin` of the
+ * viewport. For the clocks and loops that only need to run while seen.
+ */
+export const useNearScreen = (ref: { readonly current: Element | null }, margin = "200px") => {
+  const [on, setOn] = useState(false);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el || typeof IntersectionObserver === "undefined") {
+      setOn(true);
+      return;
+    }
+    const io = new IntersectionObserver((entries) => setOn(entries[entries.length - 1].isIntersecting), {
+      rootMargin: margin,
+    });
+    io.observe(el);
+    return () => io.disconnect();
+  }, [ref, margin]);
+  return on;
+};
+
+/**
  * A scene's timeline (see useRewindLoop): it plays from its start when its
  * sentinel (a box over the scene, see <Sentinel>) comes into view, holds
  * its result (the hook's default hold), rewinds fast, and plays again;

@@ -4,6 +4,7 @@ import { cn } from "@/lib/utils";
 import { useMessages } from "@/i18n/LocaleProvider";
 import AgentImage from "./landing/AgentImage";
 import LiveAvatar from "./landing/LiveAvatar";
+import { useNearScreen } from "./landing/sales/hooks";
 import "@/styles/hero-agent.css";
 
 /**
@@ -47,17 +48,19 @@ const START_DELAY_MS = 500;
 /** A load slower than this and the agent starts over the still render anyway. */
 const LIVE_WAIT_MS = 15000;
 /** The real widget's rotating composer placeholders (landing.widget.placeholders, per locale), typed one character every 24 ms. */
-const Placeholder = () => {
+const Placeholder = ({ on = true }: { on?: boolean }) => {
   const placeholders = useMessages().landing.widget.placeholders;
   const [at, setAt] = useState({ i: 0, n: 0 });
   const text = placeholders[at.i % placeholders.length];
   useEffect(() => {
+    // (it waits where it is while the hero is scrolled away)
+    if (!on) return;
     const t = window.setTimeout(
       () => setAt(at.n < text.length ? { ...at, n: at.n + 1 } : { i: (at.i + 1) % placeholders.length, n: 0 }),
       at.n < text.length ? 24 : 3600,
     );
     return () => window.clearTimeout(t);
-  }, [at, text, placeholders.length]);
+  }, [at, text, placeholders.length, on]);
   return <>{text.slice(0, at.n)}</>;
 };
 
@@ -72,7 +75,7 @@ const POINT_WORD_MS = 420;
 type Step = { line: string[]; gesture?: string; invite?: boolean; msPerWord?: number; leadMs?: number };
 
 const HeroAgent = ({
-  paused = false,
+  paused: pausedProp = false,
   onInvite,
   cardClassName,
   captionClassName,
@@ -85,6 +88,10 @@ const HeroAgent = ({
   captionClassName?: string;
 }) => {
   const messages = useMessages();
+  // scrolled away, the agent holds still and quiet too (no talking, typing or re-rendering unseen)
+  const cardRef = useRef<HTMLDivElement>(null);
+  const seen = useNearScreen(cardRef, "0px");
+  const paused = pausedProp || !seen;
   const steps = useMemo<Step[]>(
     () => [
       { line: words(messages.hero.agentHello), gesture: "waving" },
@@ -168,7 +175,6 @@ const HeroAgent = ({
   // Its room is the page, or with the card beside play (desktop) the page left
   // of the card, less 1em each side, where the parent centres it.
   const captionRef = useRef<HTMLParagraphElement>(null);
-  const cardRef = useRef<HTMLDivElement>(null);
   const [fit, setFit] = useState(1);
   useLayoutEffect(() => {
     const el = captionRef.current;
@@ -234,7 +240,7 @@ const HeroAgent = ({
           <div aria-hidden="true" className="px-[0.75em] pb-[0.75em] pt-[0.25em]">
             <div className="flex h-[2.75em] items-center rounded-[1em] border border-black/10 bg-white/60 py-[0.375em] pl-[1em] pr-[0.375em]">
               <span className="min-w-0 flex-1 truncate text-[0.875em] text-neutral-400">
-                <Placeholder />
+                <Placeholder on={seen} />
               </span>
               <span className="grid h-[2em] w-[2em] place-items-center rounded-full bg-primary text-white shadow-sm">
                 <AudioLines className="h-[0.875em] w-[0.875em]" strokeWidth={2.5} />
