@@ -9,13 +9,14 @@ export const AGENT = "amber";
 /**
  * Its pose at each stage (the renders give one face; the pose carries the
  * mood): searching, the head cocked one way; comparing, mirrored, weighing
- * it up; the sale, the waving render, beaming. Image, crop (zoom, focus) and
- * a tilt.
+ * it up; the sale, upright and a touch bigger, beaming. All the same
+ * face-only head render (public/landing/heads). Image, crop (zoom, focus)
+ * and a tilt.
  */
 const POSES: { src: string; zoom: number; x: number; y: number; tilt: number; flip?: boolean }[] = [
   { src: `/landing/heads/${AGENT}.png`, zoom: 1, x: 50, y: 0, tilt: -9 },
   { src: `/landing/heads/${AGENT}.png`, zoom: 1, x: 50, y: 0, tilt: 7, flip: true },
-  { src: `/landing/agents/greet-${AGENT}-360.webp`, zoom: 2.05, x: 52, y: 2, tilt: 0 },
+  { src: `/landing/heads/${AGENT}.png`, zoom: 1.06, x: 50, y: 0, tilt: 0 },
 ];
 
 /** Each stage's action, worn as a badge on the agent's stamp: search, compare, cart. */

@@ -1,6 +1,7 @@
-import { useMemo } from "react";
+import { useMemo, useRef } from "react";
 import type { ReactNode } from "react";
 import { cn } from "@/lib/utils";
+import { useNow } from "../hooks";
 import { salesAt } from "./model";
 
 const clamp = (v: number, a = 0, b = 1) => Math.min(b, Math.max(a, v));
@@ -21,9 +22,11 @@ const STEP = 50;
  * Each sale leaves the order bag as a small check at one steady speed and
  * lands on the bar, which rises a notch per check: more checks leave the bag
  * after every fix (the sales the funnel lets through, salesAt), so the bar
- * climbs faster. It tops out exactly as the payoff ends. All a frame of the
- * scroll's clock `t`, so it rewinds. `from` the bag, `box` the bar's room
- * (stage px); wider than tall, it grows sideways (phones).
+ * climbs faster. It is three quarters up its room as the payoff ends, and
+ * never stops: past the end the checks keep coming at the last rate, in
+ * real time, and the bar grows on up, out of the picture. Up to the end it is
+ * a frame of the scroll's clock `t`, so it rewinds. `from` the bag, `box` the
+ * bar's room (stage px); wider than tall, it grows sideways (phones).
  */
 const SalesJar = ({
   t,
@@ -53,11 +56,23 @@ const SalesJar = ({
     while (i < SALES) at[i++] = duration;
     return at;
   }, [starts, duration]);
+  // past the payoff's end, real time runs on (the scroll's clock stops there): when it got there
+  const now = useNow(on);
+  const endAt = useRef<number | null>(null);
+  if (t >= duration - 1) endAt.current ??= now;
+  else endAt.current = null;
+  const T = t + (endAt.current === null ? 0 : now - endAt.current);
+  // the checks after the end, at the payoff's last rate
+  const gap = Math.max(16, (leave[SALES - 1] - leave[SALES - 21]) / 20);
+  const count = T > duration ? SALES + Math.ceil((T - duration) / gap) + 1 : SALES;
+  const leaveAt = (i: number) => (i < SALES ? leave[i] : leave[SALES - 1] + (i - SALES + 1) * gap);
   const side = box.w > box.h;
-  // the bar: one check's worth per landing, topping out as the payoff ends
-  const landed = leave.reduce((n, l) => n + (t >= l + FLIGHT ? 1 : 0), 0);
-  const last = leave.filter((l) => l + FLIGHT <= duration).length || 1;
-  const level = clamp(landed / last);
+  // the bar: one check's worth per landing; at its room's top as the payoff ends, then on up, no limit
+  let landed = 0;
+  for (let i = 0; i < count; i++) if (T >= leaveAt(i) + FLIGHT) landed++;
+  // (at the payoff's end three quarters of its room: still visibly climbing on, out of the picture)
+  const last = (leave.filter((l) => l + FLIGHT <= duration).length || 1) / 0.75;
+  const level = Math.max(0, landed / last);
   const labelRoom = side ? 64 : 30;
   const track = side
     ? { x: box.x, y: box.y, w: box.w - labelRoom, h: box.h }
@@ -75,11 +90,11 @@ const SalesJar = ({
       : [track.x + track.w * across, track.y + track.h * (1 - lv) - badge * 0.6];
   };
   const checks: ReactNode[] = [];
-  for (let i = 0; i < SALES; i++) {
-    const age = t - leave[i];
+  for (let i = 0; i < count; i++) {
+    const age = T - leaveAt(i);
     if (age <= 0 || age >= FLIGHT + MELT) continue;
     // the bar's top as it lands
-    const [lx, ly] = land(i, clamp((i + 1) / last));
+    const [lx, ly] = land(i, (i + 1) / last);
     let x = lx;
     let y = ly;
     let o = 1;
