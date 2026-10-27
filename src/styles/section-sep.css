@@ -1,0 +1,107 @@
+/* How One-Click Setup (.bzl-setup) and "Make It Truly Yours" (.bzl-customize)
+   are set apart from the rest of the page, each on its OWN surface, never the
+   two together (SectionSep.tsx, ?sep=, on the .bzl root's data-sep):
+
+   2 · sheet: each on a soft cream panel, inset from the page edges, rounded
+       top and bottom, air between the two; its top edge is the start, its
+       bottom edge the end. The glows stay inside it.
+   3 · band:  each on a very light orange wash, full bleed, entering and
+       leaving on a hand-drawn marker line in the primary (MarkerEdge), white
+       air between the two bands. The glows stay inside it.
+
+   Without ?sep the page is as before. Setup's track is pinned (sticky): no
+   overflow on it, ever, and nothing may come before its pin (usePinProgress
+   reads its first element), so its sheet is a ::before and its edges come
+   after the pin. Loaded after look-film.css, so equal specificity wins here. */
+
+/* ── 2 · sheet ── */
+.bzl[data-sep="2"] {
+  --sheet-bg: #fff5ea;
+  --sheet-line: rgb(249 163 83 / 0.14);
+  --sheet-inset: clamp(10px, 1.6vw, 28px);
+  --sheet-r: clamp(24px, 2.8vw, 44px);
+  --sheet-gap: clamp(28px, 5svh, 64px);
+  /* the page around the sheets stays white; the sheets carry the cream */
+  --pal-setup-bg: transparent;
+  --pal-custom-bg: var(--sheet-bg);
+}
+.bzl[data-sep="2"] .bzl-setup {
+  isolation: isolate; /* its sheet (z -1) under the pin, over the page */
+  margin-block: var(--sheet-gap);
+  --setup-surface: var(--sheet-bg);
+}
+.bzl[data-sep="2"] .bzl-setup::before {
+  content: "";
+  position: absolute;
+  inset: 0 var(--sheet-inset);
+  z-index: -1;
+  border-radius: var(--sheet-r);
+  background: var(--sheet-bg);
+  box-shadow: inset 0 0 0 1px var(--sheet-line);
+  pointer-events: none;
+}
+/* the content clear of the sheet's sides (Setup's wrap spans the page, Customize's sits in its sheet) */
+.bzl[data-sep="2"] .bzl-setup .bzl-wrap {
+  padding-inline: calc(var(--sheet-inset) + clamp(1rem, 2.4vw, 2.5rem));
+}
+.bzl[data-sep="2"] .bzl-customize > .bzl-wrap {
+  padding-inline: clamp(1rem, 2.4vw, 2.5rem);
+}
+.bzl[data-sep="2"] .bzl-customize {
+  isolation: isolate;
+  /* (Setup's bottom margin is the air above it) */
+  margin: 0 var(--sheet-inset) var(--sheet-gap);
+  border-radius: var(--sheet-r);
+  overflow: hidden; /* the ambient light stays on the sheet, its corners too */
+  box-shadow: inset 0 0 0 1px var(--sheet-line);
+}
+/* on the sheet the ambient light also fades before the sheet's sides */
+.bzl[data-sep="2"] .bzl-customize-glow {
+  -webkit-mask-image:
+    linear-gradient(180deg, transparent 0, #000 20%, #000 80%, transparent 100%),
+    linear-gradient(90deg, transparent 0, #000 12%, #000 88%, transparent 100%);
+  -webkit-mask-composite: source-in;
+  mask-image:
+    linear-gradient(180deg, transparent 0, #000 20%, #000 80%, transparent 100%),
+    linear-gradient(90deg, transparent 0, #000 12%, #000 88%, transparent 100%);
+  mask-composite: intersect;
+}
+
+/* ── 3 · band ── */
+.bzl[data-sep="3"] {
+  --band-wash: #fff3e6;
+  --sep-edge: clamp(26px, 3.2vw, 44px);
+  --pal-setup-bg: var(--band-wash);
+  --pal-custom-bg: var(--band-wash);
+}
+/* the edges sit in these margins (just outside each band), white air between the two bands */
+.bzl[data-sep="3"] .bzl-setup {
+  margin-block: var(--sep-edge) calc(var(--sep-edge) * 2.4);
+  --setup-surface: var(--band-wash);
+}
+.bzl[data-sep="3"] .bzl-customize {
+  margin-block: 0 var(--sep-edge);
+}
+.bzl-sep-edge {
+  position: absolute;
+  left: 0;
+  z-index: 1;
+  display: block;
+  width: 100%;
+  height: var(--sep-edge);
+  overflow: visible;
+  pointer-events: none;
+}
+.bzl-sep-edge.is-top { bottom: calc(100% - 1px); }
+.bzl-sep-edge.is-bottom { top: calc(100% - 1px); }
+.bzl-sep-edge-wash { fill: var(--band-wash); }
+.bzl-sep-edge-line {
+  fill: none;
+  stroke: #f9a353; /* the light brand orange, the primary */
+  stroke-width: 3.2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+@media (max-width: 639px) {
+  .bzl-sep-edge-line { stroke-width: 2.6; }
+}

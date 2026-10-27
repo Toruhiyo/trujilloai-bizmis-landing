@@ -36,10 +36,11 @@ const EndCard = () => {
   };
 
   return (
-    <section className="bzl-section bzl-screen relative overflow-hidden text-center">
+    // bzl-endcard: the section's own name (the styles key on it, never on its place in the page)
+    <section className="bzl-endcard bzl-section bzl-screen relative overflow-hidden text-center">
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute left-1/2 top-1/2 h-[680px] w-[980px] max-w-[150vw] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(closest-side,rgba(249,163,83,0.11),rgba(255,255,255,0))]"
+        className="bzl-endcard-glow pointer-events-none absolute left-1/2 top-1/2 h-[680px] max-h-full w-[980px] max-w-[150vw] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(closest-side,rgba(249,163,83,0.11),rgba(255,255,255,0))]"
       />
       <div className="bzl-wrap relative">
         {/* the title is the button */}

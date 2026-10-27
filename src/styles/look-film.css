@@ -219,7 +219,7 @@
 }
 /* the feature cards' icons: primary glyphs on cream discs (open: white on the primary, as before) */
 .bzl[data-look="film"] .bzl-pillar button[aria-expanded="false"] > span:first-child > span:first-child,
-.bzl[data-look="film"] #setup ~ section button[aria-expanded="false"] > span:first-child > span:first-child {
+.bzl[data-look="film"] .bzl-customize button[aria-expanded="false"] > span:first-child > span:first-child {
   background-color: #fff1e3;
   color: hsl(var(--primary));
 }
@@ -235,7 +235,7 @@
   box-shadow: 0 6px 14px -6px rgb(249 163 83 / 0.7);
 }
 /* the end card's "Install now" hovers to the primary (it's huge) */
-.bzl[data-look="film"] #setup + section + section {
+.bzl[data-look="film"] .bzl-endcard {
   --bzl-orange-dark: hsl(var(--primary));
   --bzl-fg: var(--film-ink);
   --bzl-muted: rgb(59 36 22 / 0.74);

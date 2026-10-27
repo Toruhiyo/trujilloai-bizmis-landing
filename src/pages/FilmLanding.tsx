@@ -19,6 +19,9 @@ import "@/styles/film-landing.css";
 import "@/styles/palette-options.css";
 // the film look, the page's only look (keyed on data-look="film")
 import "@/styles/look-film.css";
+// how Setup and Customize are set apart, ?sep=2 sheet / ?sep=3 band (SectionSep)
+import "@/styles/section-sep.css";
+import { useSep } from "@/components/landing/SectionSep";
 // the pillar openers' designs under comparison (?open=1..6, pillar/OpenerContext)
 import {
   OpenerContext,
@@ -51,6 +54,8 @@ const FilmLanding = ({ path = "/" }: FilmLandingProps) => {
   const openParam =
     new URLSearchParams(useLocation().search).get("open") ?? DEFAULT_OPEN;
   const open = /^[0-6]$/.test(openParam) ? (openParam as Opener) : DEFAULT_OPEN;
+  // Setup's and Customize's surfaces: ?sep=2 sheet, ?sep=3 band, none as before
+  const sep = useSep();
 
   // Lets the film landing's scoped CSS reach the shared navbar (outside .bzl),
   // e.g. the handwritten "Early Access" link, without touching other pages.
@@ -80,6 +85,7 @@ const FilmLanding = ({ path = "/" }: FilmLandingProps) => {
         data-palette="1"
         data-look="film"
         data-open={open}
+        data-sep={sep === "none" ? undefined : sep}
       >
         <Helmet>
           <link rel="preconnect" href="https://fonts.googleapis.com" />

@@ -85,10 +85,11 @@
 .bzl[data-palette] #setup li.opacity-60 {
   opacity: 0.8;
 }
-.bzl[data-palette] #setup + section {
+/* (by the sections' own class names, never by their place after #setup) */
+.bzl[data-palette] .bzl-customize {
   background: var(--pal-custom-bg, var(--bzl-bg));
 }
-.bzl[data-palette] #setup + section + section {
+.bzl[data-palette] .bzl-endcard {
   background: var(--pal-end-bg, var(--bzl-bg));
 }
 .bzl[data-palette] > footer {
@@ -173,7 +174,7 @@
    Early Access handwriting elsewhere (the nav link on the light bar) follows.
    The handwriting accepts the primary's lower contrast on white (2.0:1, large
    script): it is the film's look. */
-.bzl[data-palette="1"] #setup + section + section {
+.bzl[data-palette="1"] .bzl-endcard {
   --bzl-fg: #3b2416; /* the one dark ink (was #2b2520) */
   --bzl-muted: #75695e;
   --bzl-faint: #9b8d80;
@@ -181,7 +182,7 @@
   --bzl-orange-strong: hsl(var(--primary));
 }
 /* the film's glow: soft, warm, barely there */
-.bzl[data-palette="1"] #setup + section + section > [aria-hidden="true"]:first-child {
+.bzl[data-palette="1"] .bzl-endcard-glow {
   opacity: 0.55;
 }
 .bzl[data-palette="1"] #site-navbar.fixed [data-nav="/early-access"]:not(.text-white):not([class*="text-white/"]) {

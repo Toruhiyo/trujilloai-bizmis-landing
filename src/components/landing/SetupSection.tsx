@@ -32,6 +32,7 @@ import {
 } from "./sales/hooks";
 import RewindScreen from "./sales/RewindScreen";
 import { runFor } from "./pillar/BenefitIntro";
+import { MarkerEdge, useSep } from "./SectionSep";
 
 // Same order as messages.setup.dataCards (as on the classic landing).
 const ICONS = [FaGlobe, FaTag, FaPercent, FaShieldAlt, FaUsers, FaBox];
@@ -264,6 +265,7 @@ const SetupSection = () => {
   const setup = messages.setup;
   const copy = messages.landing.setup;
   const reduced = useReducedMotion();
+  const sep = useSep();
   const pinned = useMedia(PIN_QUERY) && !reduced;
   const [section, progress] = usePinProgress<HTMLElement>();
   const [pin, onScreen] = useOnScreen<HTMLDivElement>(0.2);
@@ -430,25 +432,24 @@ const SetupSection = () => {
     <section
       ref={section}
       id="setup"
-      className={cn("relative", pinned ? "bzl-setup-track" : "bzl-section bzl-screen overflow-hidden bzl-setup-ground")}
+      // bzl-setup: the section's own name (the styles key on it, never on its place in the page);
+      // no overflow: hidden here, it would break the pin (x clipped only when not pinned)
+      className={cn("bzl-setup relative", pinned ? "bzl-setup-track" : "bzl-section bzl-screen overflow-x-clip")}
       style={pinned ? { height: `${((1 + track.run) * 100).toFixed(2)}svh` } : undefined}
     >
-      {/* pinned: the one screen, sticky under the nav while the page scrolls the track */}
-      <div ref={pin} className={cn(pinned && "bzl-setup-pin bzl-setup-ground")}>
-        {/* the classic landing's warm glow around the section's edges */}
-        <div aria-hidden="true" className="pointer-events-none absolute inset-0">
-          <div className="absolute -left-48 top-[10%] h-[45%] w-96 rounded-[50%] bg-[rgba(249,163,83,0.28)] blur-[80px]" />
-          <div className="absolute -right-48 bottom-[8%] h-[45%] w-96 rounded-[50%] bg-[rgba(249,163,83,0.26)] blur-[80px]" />
-          <div className="absolute -top-40 left-[20%] h-56 w-[60%] rounded-[50%] bg-[rgba(249,163,83,0.18)] blur-[80px]" />
-        </div>
+      {/* pinned: the one screen, sticky under the nav while the page scrolls the track
+          (it must stay the section's FIRST element: usePinProgress reads it as the pin) */}
+      <div ref={pin} className={cn(pinned && "bzl-setup-pin")}>
+        {/* one soft warm glow, fading out well inside the screen (so no edge ever cuts it) */}
+        <div aria-hidden="true" className="bzl-setup-glow pointer-events-none absolute inset-0" />
 
         <div
           ref={fit}
           className="bzl-wrap relative w-full"
           style={scale < 1 ? { transform: `scale(${scale.toFixed(3)})` } : undefined}
         >
-          <div className="mx-auto max-w-3xl text-center">
-            {/* its own centred header, the kicker over the title */}
+          <div className="max-w-3xl">
+            {/* its own header, the kicker over the title, left-aligned as Customize's */}
             <Reveal>
               <p className="bzl-kicker">{setup.badge}</p>
             </Reveal>
@@ -456,12 +457,13 @@ const SetupSection = () => {
               <h2 className="bzl-statement-sm mt-3">{copy.title}</h2>
             </Reveal>
             <Reveal delay={160}>
-              <p className="bzl-lead mx-auto mt-[2svh] max-w-2xl">{copy.lead}</p>
+              <p className="bzl-lead mt-[2svh] max-w-2xl">{copy.lead}</p>
             </Reveal>
           </div>
 
           {/* ph-no-capture: the session recorder would log every animated frame of it */}
-          <div ref={ref} className="ph-no-capture relative mx-auto mt-[4svh] flow-root max-w-5xl">
+          {/* (lg: the whole width, so the store lines up under the left-aligned header) */}
+          <div ref={ref} className="ph-no-capture relative mx-auto mt-[4svh] flow-root max-w-5xl lg:max-w-none">
             {/* ◀◀ while the setup rewinds (the marker's, as the other sections') */}
             <RewindMark on={rewinding} className="is-setup" />
             <div className="bzl-setup-tape">
@@ -643,6 +645,13 @@ const SetupSection = () => {
           </Reveal>
         </div>
       </div>
+      {/* ?sep=3: the band's hand-drawn way in and out (after the pin, which must stay first) */}
+      {sep === "3" && (
+        <>
+          <MarkerEdge side="top" seed={1} />
+          <MarkerEdge side="bottom" seed={2} />
+        </>
+      )}
     </section>
   );
 };

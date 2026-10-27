@@ -864,9 +864,19 @@
 }
 
 
+/* Customize's ambient light (CustomizeSection): feathered out at the section's
+   top and bottom, so its moving blobs never meet a seam at full strength (the
+   mask also hides anything they push past the section) */
+.bzl-customize-glow {
+  -webkit-mask-image: linear-gradient(180deg, transparent 0, #000 20%, #000 80%, transparent 100%);
+  mask-image: linear-gradient(180deg, transparent 0, #000 20%, #000 80%, transparent 100%);
+}
+
 /* ── Setup: the classic diagram's wiring and charge, in the film's style ── */
-/* its ground: the classic's warm band */
-.bzl-setup-ground { background: linear-gradient(180deg, #fff, #fff8f0 45%, #fff); }
+/* its one soft glow, centred and fading out well inside the screen (an edge never cuts it) */
+.bzl-setup-glow {
+  background: radial-gradient(ellipse 40% 36% at 50% 56%, rgb(249 163 83 / 0.11) 0%, rgb(249 163 83 / 0.045) 55%, transparent 100%);
+}
 /* pinned (SetupSection, screens 540px tall and up): one screen, sticky at the
    top (under the nav) while the page scrolls its track; the scroll drives the setup meanwhile */
 .bzl-setup-track { position: relative; }
@@ -891,7 +901,7 @@
 .bzl-setup-tape { margin: -2rem; }
 .bzl-setup-tape .rws-in { background: transparent; padding: 2rem; }
 .bzl-setup-tape .rws-in.is-rw {
-  background: #fff;
+  background: var(--setup-surface, #fff); /* the ground it sits on (section-sep.css retunes it) */
   box-shadow: none;
   -webkit-mask-image: linear-gradient(90deg, transparent, #000 2rem, #000 calc(100% - 2rem), transparent), linear-gradient(transparent, #000 2rem, #000 calc(100% - 2rem), transparent);
   -webkit-mask-composite: source-in;

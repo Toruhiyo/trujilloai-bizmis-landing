@@ -6,6 +6,7 @@ import type { CarouselAvatar } from "./AvatarCarousel";
 import FeatureCard from "./FeatureCard";
 import { AvatarIcon, VoiceIcon } from "./AnimatedIcons";
 import Reveal from "./Reveal";
+import { MarkerEdge, useSep } from "./SectionSep";
 
 // Real Bizmis avatars, each wearing a (fictional, AI-generated) store's logo: either a vivid shirt
 // with a one-colour logo, or a neutral shirt (white, black, oat) with a multicolour one. The tint is
@@ -39,22 +40,26 @@ const CustomizeSection = () => {
   const m = messages.customization;
   const c = messages.landing.customize;
   const section = useRef<HTMLElement>(null);
+  const sep = useSep();
 
   return (
     <section
       ref={section}
-      className="bzl-section bzl-screen relative overflow-hidden"
+      // bzl-customize: the section's own name (the styles key on it, never on its place in the page);
+      // x clipped only, so ?sep=3's marker edges can sit just outside it (the glow is masked to it)
+      className="bzl-customize bzl-section bzl-screen relative overflow-x-clip"
     >
-      {/* the carousel's ambient light, in the current avatar's colour (driven by AvatarCarousel) */}
+      {/* the carousel's ambient light, in the current avatar's colour (driven by AvatarCarousel);
+          feathered out at the section's top and bottom (bzl-customize-glow), so no seam ever cuts it */}
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute inset-0"
+        className="bzl-customize-glow pointer-events-none absolute inset-0"
         style={{ opacity: "var(--amb-glow, 0.6)" }}
       >
         {[
-          "right-[-8%] top-[-12%] h-[85%] w-[52%]",
-          "right-[22%] bottom-[-18%] h-[72%] w-[42%]",
-          "right-[2%] bottom-[2%] h-[60%] w-[34%]",
+          "right-[-8%] top-[4%] h-[80%] w-[52%]",
+          "right-[22%] bottom-[0%] h-[66%] w-[42%]",
+          "right-[2%] bottom-[8%] h-[56%] w-[34%]",
         ].map((pos, k) => (
           <div
             key={pos}
@@ -112,6 +117,13 @@ const CustomizeSection = () => {
           <AvatarCarousel avatars={SHOWN} ambient={section} />
         </Reveal>
       </div>
+      {/* ?sep=3: the band's hand-drawn way in and out */}
+      {sep === "3" && (
+        <>
+          <MarkerEdge side="top" seed={3} />
+          <MarkerEdge side="bottom" seed={4} />
+        </>
+      )}
     </section>
   );
 };
