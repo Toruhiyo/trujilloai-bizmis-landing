@@ -60,9 +60,12 @@ import { useDockMorph } from "./pillar/useDockMorph";
  *   one (left-aligned, the marker number and a hairline), a curtain (the
  *   band's colour lifting the title into the bar). Before the morph they
  *   HOLD: the opener stays put in the middle of the screen over a further
- *   run (.pi-hold, --pi-hold) while the scroll plays a small scene on it
- *   (the outcome growing a few %, its words lighting up, a line drawing),
- *   then the morph runs as quick as ever.
+ *   run (.pi-hold, --pi-hold: most of a screen) while the scroll plays a
+ *   small scene on it (the outcome growing a few %, its words lighting up
+ *   one by one, a line drawing), its final state standing for the last
+ *   third, then the morph runs as quick as ever. The opener is sticky in
+ *   its wrap (.pi-bigwrap) through the hold and the run, so the compositor
+ *   keeps it still (no JS chasing the scroll).
  * - The opener designs (?open=1..6, pillar/OpenerContext; the page's default
  *   is 5) are pillar/OpenerDesign: the OUTCOME the hero (`outcome`; by
  *   default the `name`, with `line` under it), the AREA the eyebrow (`area`;
@@ -249,6 +252,8 @@ const PillarIntro = ({
       style={accent ? ({ "--pi-bar": accent } as CSSProperties) : undefined}
     >
       {bar}
+      {/* the opener's wrap: it spans the hold and the morph's run, the opener sticky in it (pillar/useDockMorph sizes it) */}
+      <div className="pi-bigwrap">
       <div ref={big} className={cn("pi-big", named && "is-named")}>
         {alt && lines ? (
           <DockOpener
@@ -303,6 +308,7 @@ const PillarIntro = ({
             </Tag>
           </>
         )}
+      </div>
       </div>
       {alt && <div ref={holdRef} className="pi-hold" aria-hidden="true" />}
       <div ref={runway} className="pi-runway" aria-hidden="true" />

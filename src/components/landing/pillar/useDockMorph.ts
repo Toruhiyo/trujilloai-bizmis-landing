@@ -39,12 +39,17 @@ import type { RefObject } from "react";
  *
  * The HOLD (`hold`: a spacer in the flow before the runway, .pi-hold): over
  * its height of scroll, before the morph, the opener stays put in the
- * middle of the screen (.pi-big translated along with the scroll) while the
+ * middle of the screen (.pi-big sticky in its wrap, .pi-bigwrap, which is
+ * sized here to span the hold and the run: the compositor holds it, so it
+ * never trails the scroll by a frame and snaps back) while the
  * scroll plays its small scene, forward and back (no timers): the pieces
  * marked `data-ph` in it: "grow" scales up a few % (and eases back as the
- * morph takes it), "word" lights up one after the other, "draw" draws in
- * (scaleX from its origin); with the curtain, the band's colour rises from
- * the screen's bottom. Then the morph runs over its own short run, as
+ * morph takes it), "word" lights up one after the other, each on its own
+ * beat (lifting in, swelling a little, settling; from its pale state
+ * straight to the bar's ink, no tint), "draw" draws in (scaleX from its origin); with the curtain, the
+ * band's colour rises from the screen's bottom. The scene plays over the
+ * hold's first ~2/3 (SCENE_FROM → SCENE_TO), then its final state stands
+ * still for the rest. Then the morph runs over its own short run, as
  * without a hold.
  *
  * As the section ends, the bar slides up under the nav and fades (EXIT). The
@@ -70,9 +75,22 @@ const NUDGE = 0.06;
  */
 const EXIT = 0.2;
 /** The hold's scene: how much the outcome grows (scale − 1), how dim a word stands before it lights, how far (share of the screen) the curtain rises. */
-const GROW = 0.045;
+const GROW = 0.05;
 const DIM = 0.22;
 const RISE = 0.2;
+/**
+ * The hold's timing (shares of it): the scene plays from SCENE_FROM to
+ * SCENE_TO, then its final state (all lit, drawn, risen) stands still for
+ * the rest, so a fast scroller still leaves with it. Each word takes its own
+ * beat in turn (a slot each, overlapping by BEAT_OVERLAP): it lifts in and
+ * swells a little (POP, scale − 1) as it lights, then settles as the next
+ * one takes over.
+ */
+const SCENE_FROM = 0.04;
+const SCENE_TO = 0.7;
+const BEAT_OVERLAP = 0.35;
+const POP = 0.05;
+const LIFT = 0.14;
 
 const clamp01 = (v: number) => Math.min(1, Math.max(0, v));
 const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
@@ -187,10 +205,11 @@ const firstText = (scope: Element) => {
  */
 const leadAfter = (root: HTMLElement, big: HTMLElement) => {
   const bottom = root.getBoundingClientRect().bottom;
-  // a next opener's pieces as they stand without its hold's shift
+  // a next opener's pieces as they stand before it sticks (its offset in its wrap)
   const shift = (el: HTMLElement) => {
-    const t = el.closest<HTMLElement>(".pi-big")?.style.transform;
-    return t ? new DOMMatrix(t).m42 : 0;
+    const big = el.closest<HTMLElement>(".pi-big");
+    const wrap = big?.parentElement;
+    return big && wrap ? big.getBoundingClientRect().top - wrap.getBoundingClientRect().top : 0;
   };
   const tops = (scope: Element) =>
     [...scope.querySelectorAll<HTMLElement>(".pi-big [data-pm]")].map((el) => el.getBoundingClientRect().top - shift(el));
@@ -205,7 +224,8 @@ const leadAfter = (root: HTMLElement, big: HTMLElement) => {
 };
 
 const measureGeometry = ({ root, head, big, dock, runway, hold: spacer }: Els): Geometry => {
-  const rootTop = root.getBoundingClientRect().top;
+  // the big pieces' places are taken from the opener's own top (it may be stuck partway down its wrap)
+  const rootTop = big.getBoundingClientRect().top;
   const headTop = head.getBoundingClientRect().top;
   const nav = parseFloat(getComputedStyle(head).top) || 0;
   // the run: the runway less the bar (the content follows the runway)
@@ -464,19 +484,29 @@ export const useDockMorph = ({
       const key = q + e * 2;
       if (Math.abs(key - held) < 0.0005) return;
       held = key;
-      const s = 1 + GROW * (1 - Math.pow(1 - q, 2)) * (1 - smooth(0, 0.6, e));
+      // the scene's own clock: it plays over the hold's first part, then stands
+      const k = clamp01((q - SCENE_FROM) / (SCENE_TO - SCENE_FROM));
+      const s = 1 + GROW * (1 - Math.pow(1 - k, 2)) * (1 - smooth(0, 0.6, e));
       for (const el of g.grow) el.style.transform = s > 1.0001 ? `scale(${s.toFixed(4)})` : "";
       const n = g.words.length;
+      // a slot each, one after the other (a little overlap so it reads as one phrase)
+      const slot = 1 / Math.max(1, n - BEAT_OVERLAP * (n - 1));
       g.words.forEach((el, i) => {
-        // each word lights over a third of the hold, one after the other, all lit by its 90%
-        const a = n > 1 ? (i / (n - 1)) * 0.6 : 0;
-        el.style.opacity = (DIM + (1 - DIM) * smooth(a, a + 0.3, q)).toFixed(3);
+        const a = i * slot * (1 - BEAT_OVERLAP);
+        const w = clamp01((k - a) / slot);
+        const lit = smooth(0, 0.45, w);
+        // the beat: up from a little below and a swell as it lights, settling as the slot ends
+        const beat = w <= 0 || w >= 1 ? 0 : Math.sin(Math.PI * Math.min(1, w / 0.8));
+        const lift = LIFT * (1 - lit);
+        const sc = 1 + POP * beat;
+        el.style.opacity = (DIM + (1 - DIM) * lit).toFixed(3);
+        el.style.transform = lift > 0.001 || sc > 1.0005 ? `translate3d(0, ${lift.toFixed(3)}em, 0) scale(${sc.toFixed(4)})` : "";
       });
-      for (const el of g.draw) el.style.transform = `scaleX(${smooth(0.05, 0.85, q).toFixed(4)})`;
+      for (const el of g.draw) el.style.transform = `scaleX(${smooth(0, 0.85, k).toFixed(4)})`;
       if (curtain && e <= 0) {
         // the band's colour rises from the screen's bottom, under the opener
         const vh = window.innerHeight;
-        const rise = RISE * vh * (1 - Math.pow(1 - q, 2));
+        const rise = RISE * vh * (1 - Math.pow(1 - k, 2));
         const top = vh - rise;
         curtain.style.transform = rise > 0.5 ? `translate3d(0, ${(top - g.nav).toFixed(1)}px, 0) scaleY(${(Math.max(1, rise) / g.barH).toFixed(4)})` : "";
         curtain.style.opacity = rise > 0.5 ? "1" : "";
@@ -488,10 +518,10 @@ export const useDockMorph = ({
       if (!g) return;
       const e = reduced ? prog : ease(prog);
       const past = g.nav - top;
-      const shift = Math.min(Math.max(past, 0), g.hold);
+      // where the opener stands: stuck under the nav (position: sticky, in its wrap) through the hold and the run
+      const shift = Math.min(Math.max(past, 0), g.hold + g.run);
       paint(e, top + shift);
       if (!g.hold) return;
-      b.style.transform = shift > 0 ? `translate3d(0, ${shift.toFixed(1)}px, 0)` : "";
       scene(reduced ? 1 : clamp01(past / g.hold), e);
     };
 
@@ -533,6 +563,9 @@ export const useDockMorph = ({
       clear();
       prep.current?.();
       g = measureGeometry({ root: r, head: h, big: b, dock: d, runway: w, hold: sp });
+      // the opener's wrap spans the hold and the run, so it stays stuck (on the compositor, no lag behind the scroll) until the bar has formed
+      const wrap = b.parentElement;
+      if (wrap?.classList.contains("pi-bigwrap")) wrap.style.height = `${b.offsetHeight + g.hold + g.run}px`;
       state = null;
       const top = r.getBoundingClientRect().top;
       const p = clamp01((g.nav - top - g.hold) / g.run);

@@ -16,10 +16,29 @@ export type PinState = {
   progress: number;
   /** The section is on screen (its scroll-played clocks run). */
   active: boolean;
+  /** Where on the track (progress) the scene starts and where it reaches its end; after it, the end held (see runFor). */
+  from?: number;
+  to?: number;
 };
 
-/** Pinned on screens that hold the one-screen layout; phones and short screens stack and scroll. */
+/** Pinned on screens that hold the one-screen layout; phones and short screens stack and scroll (a section may pin on more, `pinQuery`). */
 export const PIN_QUERY = "(min-width: 1024px) and (min-height: 600px)";
+
+/**
+ * A pinned scene's scroll, in screens' heights: a short lead-in, then its
+ * timeline at SCROLL_PER_S screens per second of animation (slow enough
+ * that a fast scroller still sees each step), then END_HOLD of its final
+ * state standing still before the section releases. Shared by Customer
+ * Support, Store Insights and Setup.
+ */
+export const SCROLL_PER_S = 0.2;
+export const END_HOLD = 0.6;
+export const LEAD_IN = 0.06;
+/** A pinned track's scroll (screens) for a scene of `duration` ms, and where on it (0 → 1) the scene starts and ends. */
+export const runFor = (duration: number) => {
+  const run = LEAD_IN + (duration / 1000) * SCROLL_PER_S + END_HOLD;
+  return { run, from: LEAD_IN / run, to: (run - END_HOLD) / run };
+};
 
 type Props = {
   /** The section's place in the page ("02"). */
@@ -33,27 +52,26 @@ type Props = {
   outcome?: string[];
   /** The pillar, for the designs' drawings. */
   motif?: Motif;
-  /** Scroll room while pinned, in screens' heights: the content's timeline maps onto it. */
-  run?: number;
+  /** The pinned scene's length (ms): the track's scroll follows from it (runFor). */
+  duration: number;
+  /** Where it pins (default PIN_QUERY, desktop). */
+  pinQuery?: string;
   className?: string;
   children: ReactNode | ((state: PinState) => ReactNode);
 };
 
-/** Of the pinned track: a short lead-in, then the scene's timeline, then a hold on its end state. */
-const LEAD = 0.04;
-const RUN = 0.8;
-
 /**
  * A pinned section's scene clock, like a Boost Sales beat's (useScrollPlay):
  * the scroll sets where it is along `duration` (forward advances it, back
- * rewinds it); when the scroll rests it plays on at 1x to its end state,
+ * rewinds it; from the track's `from` to its `to`, the end then held over
+ * the rest of the track); when the scroll rests it plays on at 1x to its end state,
  * holds it ~2.6 s, rewinds and replays. `rewinding` while it runs back (for
  * the ◀◀ signs); `replay` counts the times it came back to its start after
  * reaching its end (e.g. the store plays its next case). Not pinned, it
  * sits at 0: the content runs its own loops then.
  */
-export const useScenePlay = ({ pinned, progress, active }: PinState, duration: number) => {
-  const target = Math.min(1, Math.max(0, (progress - LEAD) / RUN)) * duration;
+export const useScenePlay = ({ pinned, progress, active, from = 0, to = 1 }: PinState, duration: number) => {
+  const target = Math.min(1, Math.max(0, (progress - from) / Math.max(0.01, to - from))) * duration;
   const t = useScrollPlay(pinned ? target : 0, duration, pinned && active);
   const rewinding = useRewinding(t);
   const [replay, setReplay] = useState(0);
@@ -79,8 +97,10 @@ const render = (children: Props["children"], state: PinState) =>
  * ([icon] area | outcome), the content following under it.
  *
  * With an opener design (?open=1..6; the page's default is 5, "Chapter") on
- * a desktop screen, the content is ONE pinned screen, sticky right under
- * the bar while the page scrolls through a track `run` screens long. The
+ * a desktop screen (or wherever `pinQuery` says), the content is ONE pinned
+ * screen, sticky right under the bar while the page scrolls through a track
+ * as long as its scene needs (runFor: the timeline at SCROLL_PER_S, then
+ * END_HOLD of its final state). The
  * content gets the track's progress (a render prop) to drive its animations
  * by the scroll, like Boost Sales (sales/hooks: usePinProgress,
  * useScrollPlay). Otherwise (phones, short screens, ?open=0) it simply
@@ -88,9 +108,9 @@ const render = (children: Props["children"], state: PinState) =>
  */
 const BenefitIntro = (props: Props) => {
   const opener = useOpener();
-  const wide = useMedia(PIN_QUERY);
+  const wide = useMedia(props.pinQuery ?? PIN_QUERY);
   const pinned = wide && opener !== "0" && Boolean(props.outcome);
-  const { index, icon, name, promise, area, outcome, motif, run = 1.6, className, children } = props;
+  const { index, icon, name, promise, area, outcome, motif, duration, className, children } = props;
   return (
     <PillarIntro
       index={index}
@@ -104,7 +124,7 @@ const BenefitIntro = (props: Props) => {
       className={cn("bzp", pinned && "is-pinned", className)}
     >
       {pinned ? (
-        <Track run={run}>{children}</Track>
+        <PinTrack duration={duration}>{children}</PinTrack>
       ) : (
         <div className="bzp-body">{render(children, { pinned: false, progress: 0, active: true })}</div>
       )}
@@ -112,18 +132,32 @@ const BenefitIntro = (props: Props) => {
   );
 };
 
-/** The pinned track: one screen under the bar, sticky while the page scrolls `run` screens through it. */
-const Track = ({ run, children }: { run: number; children: Props["children"] }) => {
+/**
+ * The pinned track: one screen under the bar, sticky while the page scrolls
+ * through it for a scene of `duration` ms (runFor). `sub`: a track inside a
+ * section that doesn't pin as a whole (part of its content pinned, e.g.
+ * Store Insights' chart on phones).
+ */
+export const PinTrack = ({
+  duration,
+  sub = false,
+  children,
+}: {
+  duration: number;
+  sub?: boolean;
+  children: Props["children"];
+}) => {
   const [track, progress] = usePinProgress<HTMLDivElement>();
   const [pin, onScreen] = useOnScreen<HTMLDivElement>(0.2);
+  const { run, from, to } = runFor(duration);
   return (
     <div
       ref={track}
       className="bzp-track"
-      style={{ height: `calc(100svh - var(--pi-nav) - var(--pi-dock-h) + ${run * 100}svh)` }}
+      style={{ height: `calc(100svh - var(--pi-nav) - var(--pi-dock-h) + ${(run * 100).toFixed(2)}svh)` }}
     >
-      <div ref={pin} className="bzp-pin">
-        <Fit>{render(children, { pinned: true, progress, active: onScreen })}</Fit>
+      <div ref={pin} className={cn("bzp-pin", sub && "is-sub")}>
+        <Fit>{render(children, { pinned: true, progress, active: onScreen, from, to })}</Fit>
       </div>
     </div>
   );

@@ -21,9 +21,9 @@ export const useOpener = () => useContext(OpenerContext);
 export const PillarAreaContext = createContext<string | undefined>(undefined);
 
 /**
- * The opener + morph style under comparison (?dock=a|b|c; "0" without it,
- * the chapter opener with its pieces flying into the bar). Applies to the
- * opener designs (?open=1..6, the page's default 5):
+ * The opener + morph style (?dock=a|b|c; the page's default is a, ?dock=0
+ * the older chapter opener with its pieces flying into the bar). Applies to
+ * the opener designs (?open=1..6, the page's default 5):
  *
  *   a  Calm       centred: the icon in its disc and the area's name in small
  *                 capitals over the outcome; the bar's ground grows from a pill
@@ -34,13 +34,15 @@ export const PillarAreaContext = createContext<string | undefined>(undefined);
  *                 the title and lifts into the bar with it
  *
  * In each the bar is the opener's lockup shrunk into place (the same mark,
- * name and outcome, set the same way), and the opener holds a moment first
- * (pillar/useDockMorph: the outcome grows a few %, a: its words light up,
- * b: the hairline draws, c: the swoosh draws and the colour rises).
+ * name and outcome, set the same way), and the opener holds first, most of
+ * a screen of scroll (pillar/useDockMorph: the outcome grows a few %, a: its
+ * words light up one by one, each on its own beat; b: the hairline draws,
+ * c: the swoosh draws and the colour rises), its final state held before
+ * the morph.
  */
 export type DockStyle = "0" | "a" | "b" | "c";
 
 export const useDockStyle = (): DockStyle => {
   const q = new URLSearchParams(useLocation().search).get("dock");
-  return q === "a" || q === "b" || q === "c" ? q : "0";
+  return q === "0" || q === "b" || q === "c" ? q : "a";
 };

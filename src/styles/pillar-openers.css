@@ -355,6 +355,11 @@
 .pi-odx[data-pm-state] [data-ph] {
   will-change: transform, opacity;
 }
+/* a: each word takes its beat (lifted in, a little swell about its foot), straight from its pale state to the bar's ink, no tint */
+.odx-w {
+  display: inline-block;
+  transform-origin: 50% 80%;
+}
 
 /* ── the pieces, the same on both sides ── */
 .odx-kick {
@@ -538,7 +543,9 @@
 
 /* ── Pinned (BenefitIntro's one-screen sections, desktop): their screen
    sticks right under the docked bar, like Boost Sales' stage. ── */
-.bzp.is-pinned .bzp-pin {
+/* (and a part of a stacked section pinned on its own: BenefitIntro PinTrack sub, Store Insights' chart on phones) */
+.bzp.is-pinned .bzp-pin,
+.bzp .bzp-pin.is-sub {
   top: calc(var(--pi-nav) + var(--pi-dock-h));
   height: calc(100svh - var(--pi-nav) - var(--pi-dock-h));
 }

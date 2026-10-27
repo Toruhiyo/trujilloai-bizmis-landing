@@ -31,6 +31,7 @@ import {
   useScrollThrough,
 } from "./sales/hooks";
 import RewindScreen from "./sales/RewindScreen";
+import { runFor } from "./pillar/BenefitIntro";
 
 // Same order as messages.setup.dataCards (as on the classic landing).
 const ICONS = [FaGlobe, FaTag, FaPercent, FaShieldAlt, FaUsers, FaBox];
@@ -66,18 +67,15 @@ const CHARGE = {
 /**
  * Pinned (screens tall enough, as Boost Sales: phones too): the section is one
  * screen, sticky at the top (its content under the nav) while the page scrolls
- * through a track TRACK screens longer than it; of that scroll, a short
- * lead-in, then the timeline, then a hold on its end before the page carries
- * on. TRACK sets the scroll per second of animation: about Customer Support's
- * (its 10.5 s scene over 0.8 of a 1.7-screen track, ~0.13 screens a second).
+ * through a track longer than it, as Customer Support's and Store Insights'
+ * (pillar/BenefitIntro runFor): a short lead-in, then the timeline at 0.2
+ * screens of scroll a second of it, then 0.6 of a screen holding its end (the
+ * agent charged, the sparks flowing) before the page carries on.
  */
 const PIN_QUERY = "(min-height: 540px)";
-const TRACK = 1.2;
-const PIN_LEAD = 0.04;
-const PIN_RUN = 0.8;
 /** Not pinned (short screens): of the visual's own scroll through the screen, a lead-in, the timeline, a hold. */
 const LEAD = 0.05;
-const RUN = 0.7;
+const RUN = 0.6;
 
 type Line = { d: string; pts: [number, number][]; dur: number; delay: number };
 
@@ -251,7 +249,7 @@ const ChargeClip = ({ frame, load, rim, label }: { frame: number; load: boolean;
  * positions of the cards and the agent, so they always land.
  *
  * One clock, the scroll's (as Customer Support and Boost Sales, useScrollPlay).
- * The section pins (see TRACK): while it plays the page holds and the scroll
+ * The section pins (see PIN_QUERY): while it plays the page holds and the scroll
  * drives it; scrolling on plays the timeline (as fast as the scroll), scrolling
  * back rewinds it to the scroll, at rest it plays on at 1x, holds the end,
  * rewinds and plays again; past its end the page carries on. Short screens
@@ -282,6 +280,8 @@ const SetupSection = () => {
   const n = setup.dataCards.length;
   const doneAt = cardAt(n - 1) + 150 + CARD_EVERY;
   const duration = doneAt + CHARGE_MS + FLOW_MS;
+  // the pinned track's scroll (screens) and where on it the timeline starts and ends
+  const track = runFor(duration);
 
   // the scroll clock: pinned, the track's progress (the page holds while it plays); else the visual's way through the screen
   const clamp01 = (v: number) => Math.min(1, Math.max(0, v));
@@ -289,7 +289,7 @@ const SetupSection = () => {
   const through = p > 0 && p < 1;
   const held = onScreen && progress > 0 && progress < 1;
   const active = !reduced && (pinned ? held : through);
-  const goal = pinned ? clamp01((progress - PIN_LEAD) / PIN_RUN) : clamp01((p - LEAD) / RUN);
+  const goal = pinned ? clamp01((progress - track.from) / (track.to - track.from)) : clamp01((p - LEAD) / RUN);
   const play = useScrollPlay(goal * duration, duration, active);
   const t = reduced ? duration : Math.min(duration, Math.max(0, play));
   const rewinding = useRewindingOn(t, active);
@@ -431,7 +431,7 @@ const SetupSection = () => {
       ref={section}
       id="setup"
       className={cn("relative", pinned ? "bzl-setup-track" : "bzl-section bzl-screen overflow-hidden bzl-setup-ground")}
-      style={pinned ? { height: `${(1 + TRACK) * 100}svh` } : undefined}
+      style={pinned ? { height: `${((1 + track.run) * 100).toFixed(2)}svh` } : undefined}
     >
       {/* pinned: the one screen, sticky under the nav while the page scrolls the track */}
       <div ref={pin} className={cn(pinned && "bzl-setup-pin bzl-setup-ground")}>
@@ -513,11 +513,11 @@ const SetupSection = () => {
                       </g>
                     </svg>
 
-                    {/* Your Shopify store data, syncing card by card */}
+                    {/* Your online store, syncing card by card */}
                     <Reveal className="relative z-10 w-full max-w-[min(20rem,52%)] rounded-[26px] border border-[color-mix(in_oklab,hsl(var(--primary))_22%,transparent)] bg-white/75 p-3 shadow-[0_30px_70px_-40px_rgba(249,163,83,0.45)] backdrop-blur-md sm:p-4">
                       <p className="flex items-center justify-center gap-2 pb-3 pt-1 text-center text-sm font-semibold leading-tight text-[hsl(var(--primary))] sm:text-base">
                         <FaShopify className="h-4 w-4 flex-shrink-0 sm:h-5 sm:w-5" />
-                        {setup.storeDataTitle}
+                        {copy.storeTitle}
                       </p>
                       <ul className="grid gap-[max(0.375rem,0.9svh)]">
                         {setup.dataCards.map((card, i) => {

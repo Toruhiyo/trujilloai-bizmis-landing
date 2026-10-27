@@ -1,11 +1,12 @@
 import { useMessages } from "@/i18n/LocaleProvider";
 import { cn } from "@/lib/utils";
 import { IdeaIcon } from "./AnimatedIcons";
-import BenefitIntro, { useScenePlay } from "./pillar/BenefitIntro";
+import BenefitIntro, { PinTrack, useScenePlay } from "./pillar/BenefitIntro";
 import type { PinState } from "./pillar/BenefitIntro";
 import { CLARITY_MS, InsightsClarity } from "./PillarMoments";
 import Reveal from "./Reveal";
 import SessionReplay from "./SessionReplay";
+import { useMedia } from "./sales/hooks";
 
 /**
  * Store Insights: its chapter opener (index 03, the bulb, "Store Insights",
@@ -15,13 +16,47 @@ import SessionReplay from "./SessionReplay";
  *
  * On desktop the section is one pinned screen and the scroll drives the
  * chart moment (useScenePlay: forward plays, back rewinds, at rest it plays
- * on, holds, rewinds and replays). The replays stay the visitor's to play
- * (real call audio). Phones stack it and the chart runs its own loop.
- * Layout: .bzi-* in film-landing.css.
+ * on, holds, rewinds and replays; the track 0.2 screens a second of it,
+ * then 0.6 of a screen holding the chart, BenefitIntro runFor). The replays
+ * stay the visitor's to play (real call audio). Phones and tablets stack
+ * it: the lead and the chart pin on their own (SUB_PIN, the same clock and
+ * hold), then the replays follow; on short screens the chart runs its own
+ * loop. Layout: .bzi-* in film-landing.css.
  */
+const SUB_PIN = "(min-height: 600px)";
+
+/** Stacked: the lead and the chart, pinned on their own track, the scroll driving the chart. */
+const StackedChart = ({ pin, lead }: { pin: PinState; lead: string }) => {
+  const scene = useScenePlay(pin, CLARITY_MS);
+  return (
+    <div className="bzi-grid">
+      <Reveal className="bzi-lead">
+        <p className="bzl-lead max-w-md">{lead}</p>
+      </Reveal>
+      <Reveal delay={80} className="bzi-chart">
+        <InsightsClarity className="bzi-clarity mx-auto" t={scene.t} rewinding={scene.rewinding} />
+      </Reveal>
+    </div>
+  );
+};
+
 const InsightsBody = ({ pin }: { pin: PinState }) => {
   const ins = useMessages().landing.insights;
   const scene = useScenePlay(pin, CLARITY_MS);
+  const tall = useMedia(SUB_PIN);
+  if (!pin.pinned && tall)
+    return (
+      <div className="bzl-wrap">
+        <PinTrack duration={CLARITY_MS} sub>
+          {(sub) => <StackedChart pin={sub} lead={ins.lead} />}
+        </PinTrack>
+        <div className="bzi-grid">
+          <Reveal className="bzi-replay">
+            <SessionReplay fill={false} />
+          </Reveal>
+        </div>
+      </div>
+    );
   return (
     <div className="bzl-wrap">
       <div className={cn("bzi-grid", pin.pinned && "is-pinned")}>
@@ -57,7 +92,7 @@ const InsightsSection = () => {
         area={ins.area}
         motif="insights"
         outcome={[ins.title, ins.titleTail]}
-        run={1.2}
+        duration={CLARITY_MS}
       >
         {(pin) => <InsightsBody pin={pin} />}
       </BenefitIntro>

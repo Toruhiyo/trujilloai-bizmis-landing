@@ -3,10 +3,10 @@ import { HeadsetIcon } from "./AnimatedIcons";
 import { useMessages } from "@/i18n/LocaleProvider";
 import { cn } from "@/lib/utils";
 import Reveal from "./Reveal";
-import BenefitIntro, { useScenePlay } from "./pillar/BenefitIntro";
+import BenefitIntro, { PIN_QUERY, useScenePlay } from "./pillar/BenefitIntro";
 import type { PinState } from "./pillar/BenefitIntro";
 import { SupportDay, supportDayTimes } from "./PillarMoments";
-import { useScrollPlay, useScrollThrough } from "./sales/hooks";
+import { useMedia, useScrollPlay, useScrollThrough } from "./sales/hooks";
 import RewindScreen from "./sales/RewindScreen";
 import SupportStore, { supportCase } from "./support/SupportStore";
 import type { CaseKey } from "./support/SupportStore";
@@ -26,14 +26,31 @@ import type { CaseKey } from "./support/SupportStore";
  * plays on at 1x, holds the end, rewinds and replays (the device's screen
  * going analog while it rewinds, RewindScreen; the drawing's marker ◀◀);
  * each replay plays the store's next case. The agent lands in the drawing
- * as it starts answering on the device. Desktop: the section's pinned track
- * (BenefitIntro's useScenePlay); phones and tablets, stacked: its own
- * scroll through the screen.
+ * as it starts answering on the device. Pinned on every screen tall enough
+ * (SUPPORT_PIN: desktops side by side; phones and tablets stacked, the
+ * stack fits one screen), the section's track (BenefitIntro's useScenePlay
+ * and runFor: 0.2 screens of scroll a second of the scene, then 0.6 of a
+ * screen holding its end); short screens (a phone on its side), stacked:
+ * its own scroll through the screen.
  */
 
-/** Of the stacked body's scroll through the screen: a short lead-in, then the timeline, then a hold on its end. */
+/** Where Customer Support pins: wherever the screen is tall enough for its stack (phones included). */
+const SUPPORT_PIN = "(min-height: 600px)";
+
+/** Short screens, not pinned: of the stacked body's scroll through the screen, a short lead-in, then the timeline, then a hold on its end. */
 const LEAD = 0.05;
-const RUN = 0.75;
+const RUN = 0.6;
+
+/** The store's cases, and the scene's length: as long as the longest case, or its drawing. */
+const useCases = () => {
+  const all = useMessages().supportDemo.cases;
+  const cases = useMemo(() => (Object.keys(all) as CaseKey[]).map((k) => supportCase(all, k)), [all]);
+  const duration = useMemo(
+    () => Math.max(...cases.map((c) => Math.max(c.duration, supportDayTimes(c.speakAt, c.duration).end))),
+    [cases],
+  );
+  return { cases, duration };
+};
 
 /** Counts the times `t` came back to its start after reaching its end (`duration`): the case to play. */
 const useReplays = (t: number, duration: number) => {
@@ -76,13 +93,9 @@ const useRewindingOn = (t: number, on: boolean, linger = 420) => {
 const SupportBody = ({ pin }: { pin: PinState }) => {
   const m = useMessages();
   const s = m.landing.support;
-  const all = m.supportDemo.cases;
-  const cases = useMemo(() => (Object.keys(all) as CaseKey[]).map((k) => supportCase(all, k)), [all]);
-  // the scene: as long as the longest case, or its drawing
-  const duration = useMemo(
-    () => Math.max(...cases.map((c) => Math.max(c.duration, supportDayTimes(c.speakAt, c.duration).end))),
-    [cases],
-  );
+  const { cases, duration } = useCases();
+  // side by side (desktop) or stacked (pinned on phones and tablets too)
+  const wide = useMedia(PIN_QUERY);
   const scene = useScenePlay(pin, duration);
   // stacked: the body's own way through the screen sets the clock, from when it's clear of the docking opener
   const [body, p] = useScrollThrough<HTMLDivElement>(0.33, 0.64);
@@ -97,7 +110,7 @@ const SupportBody = ({ pin }: { pin: PinState }) => {
   return (
     <div className="bzl-wrap">
       {/* ph-no-capture: the session recorder would log every animated frame of it */}
-      <div ref={body} className={cn("bzs-grid ph-no-capture", pin.pinned && "is-pinned")}>
+      <div ref={body} className={cn("bzs-grid ph-no-capture", pin.pinned && wide && "is-pinned")}>
         <Reveal className="bzs-lead">
           <p className="bzl-lead">{s.lead}</p>
         </Reveal>
@@ -120,6 +133,7 @@ const SupportSection = () => {
   const messages = useMessages();
   const s = messages.landing.support;
   const promise = `${s.title} ${s.titleTail}`;
+  const { duration } = useCases();
   return (
     <section className="bzl-band bzl-pillar p-support bzp-section">
       <BenefitIntro
@@ -130,7 +144,8 @@ const SupportSection = () => {
         area={s.area}
         motif="support"
         outcome={[s.title, s.titleTail]}
-        run={1.7}
+        duration={duration}
+        pinQuery={SUPPORT_PIN}
       >
         {(pin) => <SupportBody pin={pin} />}
       </BenefitIntro>

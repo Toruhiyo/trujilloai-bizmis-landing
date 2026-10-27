@@ -150,10 +150,19 @@
    centred in it (so it stands in the middle of the screen when the morph
    starts); over the bar while it morphs into it (nothing in it takes the
    pointer). In the flow, only its runway. ── */
-.pi-big {
+/* (the wrap: over the section's top, as long as the opener plus its hold and the morph's run, set by
+   pillar/useDockMorph; the opener sticky in it, so it stands still under the nav through them, held by
+   the compositor, never a frame behind the scroll) */
+.pi-bigwrap {
   position: absolute;
   inset: 0 0 auto;
   z-index: 21;
+  height: calc(100svh - var(--pi-nav));
+  pointer-events: none;
+}
+.pi-big {
+  position: sticky;
+  top: var(--pi-nav);
   height: calc(100svh - var(--pi-nav));
   pointer-events: none;
   display: flex;
@@ -226,13 +235,14 @@
 }
 
 /* ── Dock styles (?dock=, PillarIntro; the lockup in pillar-openers.css) ── */
-/* the hold: the opener stays put in the middle of the screen over this much scroll before the morph (pillar/useDockMorph) */
+/* the hold: the opener stays put in the middle of the screen over this much scroll before the morph (pillar/useDockMorph):
+   its scene plays over the first ~2/3, then its final state stands for the rest */
 .pi {
-  --pi-hold: max(9rem, 32svh);
+  --pi-hold: max(22rem, 85svh);
 }
 @media (max-width: 767px) {
   .pi {
-    --pi-hold: max(8rem, 28svh);
+    --pi-hold: max(20rem, 78svh);
   }
 }
 .pi-hold {
