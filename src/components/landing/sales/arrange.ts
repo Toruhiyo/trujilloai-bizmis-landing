@@ -233,10 +233,24 @@ export const arrangeOpener = (W: number, H: number, aspect: number, visits?: str
     const ch = an.chambers[i];
     const left = clamp(fnLeft + ch.xc - ow / 2, 0, rest - ow);
     // the arrow: out from under the chamber's floor, a long easy swoop under the funnel, curling up into the device's foot
-    // (clear of the agent's badge on the floor)
-    const lb = fnTop + ch.floor + clamp(fnH * 0.12, 26, 42);
-    const s: Pt = [fnLeft + ch.xc, lb];
+    // (short: it starts under the funnel no further back than a stretch before the device, clear of
+    // the agents' badges on the floor; the lit chamber already says which stage)
     const e: Pt = [x + w * 0.28, y + h + clamp(H * 0.022, 14, 22)];
+    const sx = Math.max(fnLeft + ch.xc, e[0] - clamp(W * 0.26, 260, 420));
+    // the floor's depth under that point: between the chambers' middles
+    const cs = an.chambers.map((c) => [fnLeft + c.xc, c.floor] as const);
+    const fl =
+      sx <= cs[0][0]
+        ? cs[0][1]
+        : sx >= cs[2][0]
+          ? cs[2][1]
+          : (() => {
+              const j = sx < cs[1][0] ? 0 : 1;
+              const u = (sx - cs[j][0]) / (cs[j + 1][0] - cs[j][0]);
+              return cs[j][1] + (cs[j + 1][1] - cs[j][1]) * u;
+            })();
+    const lb = fnTop + fl + clamp(fnH * 0.12, 26, 42);
+    const s: Pt = [sx, lb];
     const dip = Math.min(H - 6, Math.max(s[1], e[1]) + clamp(H * 0.06, 34, 56));
     const span = e[0] - s[0];
     // the last stretch comes in straight along the head's line (up and to the right), so the head sits

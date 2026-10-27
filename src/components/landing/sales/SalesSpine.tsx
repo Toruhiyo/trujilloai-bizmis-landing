@@ -8,7 +8,7 @@ import { arrange, arrangeOpener } from "./arrange";
 import type { EndsLook } from "./beatcopy/style";
 import FunnelFlow, { funnelAnchors } from "./funnel/FunnelFlow";
 import FunnelScale from "./funnel/FunnelScale";
-import { cardKsAt, ksAt, salesAt, startsFor } from "./funnel/model";
+import { cardKsAt, ksAt, startsFor } from "./funnel/model";
 import SalesJar from "./funnel/SalesJar";
 import { useActivePanel, useMedia, usePinProgress, useRewinding, useScrollPlay, useScrollThrough } from "./hooks";
 import Metrics from "./Metrics";
@@ -362,6 +362,7 @@ const Pinned = () => {
     const b = funnelAnchors(L.fnW, L.fnH, [1, 1, 1], visits).bag;
     return { x: L.fnLeft + b.x, y: L.fnTop + b.y };
   }, [L.fnW, L.fnH, L.fnLeft, L.fnTop, visits]);
+  const payStarts = useMemo(() => startsFor(3), []);
   const jar = useMemo(() => {
     const cl = typeof card.left === "number" ? card.left : 0;
     const ct = typeof card.top === "number" ? card.top : 0;
@@ -370,8 +371,8 @@ const Pinned = () => {
       const h = clamp(H * 0.09, 56, 76);
       return { x: cl, y: ct, w: cw, h };
     }
-    const h = clamp(H * 0.68, 260, 560);
-    const w = clamp(h * 0.42, 140, 220);
+    const h = clamp(H * 0.7, 260, 580);
+    const w = clamp(h * 0.3, 110, 170);
     return { x: cl + (cw - w) / 2, y: clamp(bag.y - h * 0.55, 12, H - 12 - h), w, h };
   }, [card.left, card.top, card.width, A, H, bag.y]);
   const links = useMemo(
@@ -461,7 +462,7 @@ const Pinned = () => {
                     <Metrics variant={cardLook} k={payoff ? cardKsAt(payT, startsFor(3)) : [0, 0, 0]} focus={3} className="sl-g2-met is-card" />
                   </div>
                 ) : (
-                  <SalesJar k={payoff ? salesAt(payT, startsFor(3), PAYOFF_DURATION) : 0} from={bag} box={jar} label={s.payoff.jar} on={payoff} />
+                  <SalesJar t={payoff ? payT : 0} starts={payStarts} duration={PAYOFF_DURATION} from={bag} box={jar} label={s.payoff.jar} on={payoff} />
                 )}
                 <div className="sl-fn sl-g2-funnel" style={{ left: L.fnLeft, top: L.fnTop, width: L.fnW, height: L.fnH }}>
                   <FunnelFlow

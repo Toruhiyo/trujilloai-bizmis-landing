@@ -1455,8 +1455,8 @@
   opacity: min(1, calc(var(--rw) * 1.2));
 }
 
-/* the payoff's Sales column (SalesJar): the film's, on the band: soft white glass, a white fill,
-   white checks with an orange tick dropping in */
+/* the payoff's Sales bar (SalesJar): the film's, on the band: a white bar rising from a marker ground
+   line, no frame round it, small white checks with an orange tick dropping onto it */
 .sl-g2-jar {
   position: absolute;
   inset: 0;
@@ -1476,15 +1476,10 @@
   transform: none;
   transition-delay: 0.3s;
 }
-.sl-jar-glass {
-  fill: rgb(255 255 255 / 0.16);
-  stroke: rgb(255 255 255 / 0.85);
-  stroke-width: 2.5;
-}
 .sl-jar-fill {
-  fill: rgb(255 255 255 / 0.92);
+  fill: rgb(255 255 255 / 0.95);
 }
-.sl-jar-surface {
+.sl-jar-ground {
   fill: none;
   stroke: #fff;
   stroke-width: 3;
