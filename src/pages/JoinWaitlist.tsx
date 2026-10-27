@@ -223,11 +223,8 @@ const JoinWaitlist = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#FDF7E2] via-white to-[#FDF7E2]/30">
-      <Seo
-        title="Join the Bizmis Early Access Waitlist"
-        description="Limited early-access spots for Bizmis — the voice-first store clerk for Shopify. Join the waitlist and be first to install at launch."
-        path="/join-waitlist"
-      />
+      {/* Unrouted (/join-waitlist redirects to /early-access); never indexed. */}
+      <Seo page="earlyAccess" path="/join-waitlist" noIndex />
       <div className="bg-white border-b border-border">
         <div className="container mx-auto px-6 py-4">
           <div className="flex items-center gap-4">

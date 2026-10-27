@@ -11,12 +11,9 @@ import {
   setupScrollToSectionOnLoad,
   setupScrollToUrlUpdater,
 } from "@/lib/utils/scroll";
-import { useMessages } from "@/i18n/LocaleProvider";
 
 /** The landing as it was before the film-led redesign (also served at /v1). */
 const ClassicIndex = () => {
-  const messages = useMessages();
-
   useEffect(() => {
     const sectionIds = [
       "hero",
@@ -39,28 +36,7 @@ const ClassicIndex = () => {
 
   return (
     <div className="min-h-screen">
-      <Seo
-        title={messages.seo.home.title}
-        description={messages.seo.home.description}
-        path="/"
-        jsonLd={{
-          "@context": "https://schema.org",
-          "@type": "SoftwareApplication",
-          name: "Bizmis",
-          description: messages.seo.home.jsonLdDescription,
-          url: "https://www.bizmis.ai",
-          applicationCategory: "BusinessApplication",
-          operatingSystem: "Web",
-          offers: { "@type": "Offer", availability: "https://schema.org/PreOrder" },
-          publisher: {
-            "@type": "Organization",
-            name: "Bizmis",
-            url: "https://www.bizmis.ai",
-            logo: "https://bizmis.ai/favicon.svg",
-            sameAs: ["https://twitter.com/bizmis_ai"],
-          },
-        }}
-      />
+      <Seo page="home" />
       <HeroV1 />
       <Benefits />
       <Setup />

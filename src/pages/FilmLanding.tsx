@@ -122,43 +122,25 @@ const FilmLanding = ({ path = "/" }: FilmLandingProps) => {
           />
         </Helmet>
         <Seo
-          title={messages.seo.home.title}
-          description={messages.seo.home.description}
+          page="home"
           path={path}
           // Kept out of search while it lives at /v2, so it never competes with /.
           noIndex={path !== "/"}
-          jsonLd={{
-            "@context": "https://schema.org",
-            "@type": "SoftwareApplication",
-            name: "Bizmis",
-            description: messages.seo.home.jsonLdDescription,
-            url: "https://www.bizmis.ai",
-            applicationCategory: "BusinessApplication",
-            operatingSystem: "Web",
-            offers: {
-              "@type": "Offer",
-              availability: "https://schema.org/PreOrder",
-            },
-            publisher: {
-              "@type": "Organization",
-              name: "Bizmis",
-              url: "https://www.bizmis.ai",
-              logo: "https://bizmis.ai/favicon.svg",
-              sameAs: ["https://twitter.com/bizmis_ai"],
-            },
-          }}
         />
-        <Hero />
-        {/* "This isn't a chatbot" (SwitchSection) is hidden: the hero covers it now */}
-        {/* Boost Sales' small area label, for the transitions (the Sales files stay as they are) */}
-        <PillarAreaContext.Provider value={messages.landing.salesArea}>
-          <SalesSection />
-        </PillarAreaContext.Provider>
-        <SupportSection />
-        <InsightsSection />
-        <SetupSection />
-        <CustomizeSection />
-        <EndCard />
+        {/* the page's main landmark; display: contents, so the layout doesn't see it */}
+        <main className="contents">
+          <Hero />
+          {/* "This isn't a chatbot" (SwitchSection) is hidden: the hero covers it now */}
+          {/* Boost Sales' small area label, for the transitions (the Sales files stay as they are) */}
+          <PillarAreaContext.Provider value={messages.landing.salesArea}>
+            <SalesSection />
+          </PillarAreaContext.Provider>
+          <SupportSection />
+          <InsightsSection />
+          <SetupSection />
+          <CustomizeSection />
+          <EndCard />
+        </main>
         <FilmFooter />
       </div>
     </OpenerContext.Provider>

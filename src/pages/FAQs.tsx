@@ -148,20 +148,7 @@ const FAQsPage = () => {
 
   return (
     <SitePage>
-      <Seo
-        title={messages.seo.faqs.title}
-        description={messages.seo.faqs.description}
-        path="/faqs"
-        jsonLd={{
-          "@context": "https://schema.org",
-          "@type": "FAQPage",
-          mainEntity: allFAQs.map((f) => ({
-            "@type": "Question",
-            name: f.question,
-            acceptedAnswer: { "@type": "Answer", text: f.answer },
-          })),
-        }}
-      />
+      <Seo page="faqs" />
 
       {/* The page's head, the search and the categories under it */}
       <div className="bzl-wrap bzl-site-hero">
@@ -230,7 +217,7 @@ const FAQsPage = () => {
                       className="bzl-faq-q"
                       aria-expanded={isOpen}
                     >
-                      <h3>{faq.question}</h3>
+                      <h2>{faq.question}</h2>
                       <span className="bzl-faq-chev" aria-hidden="true">
                         <ChevronDown />
                       </span>

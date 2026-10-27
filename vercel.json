@@ -1,4 +1,5 @@
 {
+  "trailingSlash": false,
   "headers": [
     {
       "source": "/(.*)",
@@ -8,6 +9,23 @@
           "value": "all"
         }
       ]
+    }
+  ],
+  "redirects": [
+    {
+      "source": "/:locale(es|fr|it|ca)/:page(privacy|terms)",
+      "destination": "/:page",
+      "permanent": true
+    },
+    {
+      "source": "/join-waitlist",
+      "destination": "/early-access",
+      "permanent": true
+    },
+    {
+      "source": "/:locale(es|fr|it|ca)/join-waitlist",
+      "destination": "/:locale/early-access",
+      "permanent": true
     }
   ],
   "rewrites": [
@@ -20,8 +38,24 @@
       "destination": "https://go.bizmis.ai/invite-cards/:path*"
     },
     {
-      "source": "/(.*)",
-      "destination": "/index.html"
+      "source": "/:locale(es|fr|it|ca)",
+      "destination": "/:locale/index.html"
+    },
+    {
+      "source": "/:page(pricing|faqs|contact|early-access|privacy|terms|v1)",
+      "destination": "/:page/index.html"
+    },
+    {
+      "source": "/:locale(es|fr|it|ca)/:page(pricing|faqs|contact|early-access|v1)",
+      "destination": "/:locale/:page/index.html"
+    },
+    {
+      "source": "/:locale(es|fr|it|ca)?/:page(v2|unsubscribe)",
+      "destination": "/app-shell.html"
+    },
+    {
+      "source": "/:area(admin|email-renders)/:path*",
+      "destination": "/app-shell.html"
     }
   ]
 }

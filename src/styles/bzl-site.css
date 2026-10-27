@@ -611,7 +611,7 @@
   .bzl-faq-q { padding: 1.25rem 1.6rem; }
 }
 .bzl-faq-q:focus-visible { box-shadow: inset 0 0 0 2px rgb(249 163 83 / 0.7); border-radius: 20px; }
-.bzl-faq-q h3 {
+.bzl-faq-q :is(h2, h3) {
   font-size: clamp(1rem, 1.3vw, 1.125rem);
   font-weight: 650;
   letter-spacing: -0.015em;
@@ -791,7 +791,7 @@
   border-top: 1px solid var(--site-line);
   font-size: 0.8125rem;
   line-height: 1.45;
-  color: var(--bzl-faint);
+  color: var(--bzl-muted);
 }
 .bzl-ea-way {
   display: flex;

@@ -975,31 +975,38 @@ export const ca: Messages = {
 
   seo: {
     home: {
-      title: "Bizmis — El dependent per veu per a la teva botiga Shopify",
+      title: "Bizmis | El dependent per veu per a la teva botiga Shopify",
       description:
-        "Bizmis saluda els compradors, respon les seves preguntes i els guia fins a la compra, com un bon dependent de botiga, 24/7 dins la teva botiga Shopify.",
+        "Bizmis saluda els compradors, respon les seves preguntes i els guia fins a la compra, com un bon dependent, 24/7 dins la teva botiga Shopify.",
       jsonLdDescription:
         "Dependent per veu per a Shopify que saluda els compradors, respon preguntes i els guia fins a la compra.",
     },
     pricing: {
-      title: "Preus de Bizmis — Plans per a botigues Shopify",
+      title: "Preus de Bizmis | Plans per a botigues Shopify",
       description:
         "Preus clars de Bizmis per a botigues Shopify de qualsevol mida. Tria un pla, instal·la'l en un clic i comença a vendre amb un dependent per veu.",
     },
     faqs: {
-      title: "Preguntes freqüents de Bizmis — Instal·lació, preus i dades",
+      title: "Preguntes freqüents de Bizmis | Instal·lació, preus i dades",
       description:
-        "Respostes als dubtes més habituals sobre Bizmis: com funciona a Shopify, temps d'instal·lació, tractament de dades, comportament de la veu, preus i més.",
+        "Respostes als dubtes habituals sobre Bizmis: com funciona a Shopify, instal·lació, dades, comportament de la veu, preus i més.",
     },
     contact: {
-      title: "Contacte Bizmis — Parlem-ne",
+      title: "Contacte Bizmis | Parlem-ne",
       description:
-        "Contacta amb l'equip de Bizmis sobre la instal·lació a Shopify, integracions en webs a mida, col·laboracions o el que necessitis. Responem ràpid.",
+        "Contacta amb l'equip de Bizmis sobre la instal·lació a Shopify, webs a mida, col·laboracions o el que necessitis. Responem ràpid.",
     },
     earlyAccess: {
-      title: "Accés anticipat a Bizmis — gratis per a les 50 primeres botigues",
+      title: "Accés anticipat a Bizmis | Gratis, 50 primeres botigues",
       description:
-        "Fes-te membre de l'accés anticipat de Bizmis: instal·la'l gratis, tingues línia directa amb el fundador, defineix el full de ruta i conserva els teus descomptes en canviar de pla. Només les 50 primeres botigues Shopify.",
+        "Uneix-te a l'accés anticipat de Bizmis: instal·la'l gratis, línia directa amb el fundador, defineix el full de ruta i conserva els descomptes.",
     },
+    notFound: {
+      title: "Pàgina no trobada | Bizmis",
+      description:
+        "Aquesta pàgina no existeix. Torna a Bizmis, el dependent per veu per a botigues Shopify.",
+    },
+    /** The social preview image's alt text (og:image:alt). */
+    ogImageAlt: "Bizmis, el dependent per veu per a botigues Shopify",
   },
 };

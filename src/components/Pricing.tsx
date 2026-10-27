@@ -20,6 +20,11 @@ import {
 } from "@/lib/bizmisApi";
 import { EARLY_ACCESS_STORE_CAP } from "@/data/leads/_schema";
 import { FREE_PLAN_CONVERSATIONS_ALLOWANCE } from "@/data/leadEarlyAccessCopy";
+import {
+  ENTERPRISE_FROM_MONTHLY_PRICE,
+  PLAN_INCLUDED_SESSIONS,
+  PLAN_MONTHLY_PRICES,
+} from "@/data/planPrices";
 import { localeTag, useLocale, useLocaleHref, useMessages } from "@/i18n/LocaleProvider";
 import type { Messages } from "@/i18n/messages/en";
 
@@ -65,9 +70,6 @@ const MONTHS_PER_YEAR = 12;
  *  catalog has no yearly price for a plan (the v2 catalog returns null). */
 const YEARLY_FALLBACK_DISCOUNT_PERCENT = 20;
 
-/** Enterprise starts here; the final price is custom (contact sales). */
-const ENTERPRISE_FROM_MONTHLY_PRICE = 1500;
-
 /** Fallback for the price per extra session (every plan, pricing v2). */
 const FALLBACK_OVERAGE_RATE_PER_CONVERSATION = 0.3;
 
@@ -82,9 +84,9 @@ const buildPlans = (messages: Messages): Plan[] => [
   {
     key: "starter",
     name: messages.pricing.plans.starter.name,
-    monthlyPrice: 79,
-    yearlyMonthlyPrice: yearlyFallbackMonthlyPrice(79),
-    includedConversations: 260,
+    monthlyPrice: PLAN_MONTHLY_PRICES.starter,
+    yearlyMonthlyPrice: yearlyFallbackMonthlyPrice(PLAN_MONTHLY_PRICES.starter),
+    includedConversations: PLAN_INCLUDED_SESSIONS.starter,
     overageRatePerConversation: FALLBACK_OVERAGE_RATE_PER_CONVERSATION,
     features: messages.pricing.plans.starter.features,
     popular: false,
@@ -94,9 +96,9 @@ const buildPlans = (messages: Messages): Plan[] => [
   {
     key: "growth",
     name: messages.pricing.plans.growth.name,
-    monthlyPrice: 199,
-    yearlyMonthlyPrice: yearlyFallbackMonthlyPrice(199),
-    includedConversations: 660,
+    monthlyPrice: PLAN_MONTHLY_PRICES.growth,
+    yearlyMonthlyPrice: yearlyFallbackMonthlyPrice(PLAN_MONTHLY_PRICES.growth),
+    includedConversations: PLAN_INCLUDED_SESSIONS.growth,
     overageRatePerConversation: FALLBACK_OVERAGE_RATE_PER_CONVERSATION,
     features: messages.pricing.plans.growth.features,
     popular: true,
@@ -106,9 +108,9 @@ const buildPlans = (messages: Messages): Plan[] => [
   {
     key: "scale",
     name: messages.pricing.plans.scale.name,
-    monthlyPrice: 499,
-    yearlyMonthlyPrice: yearlyFallbackMonthlyPrice(499),
-    includedConversations: 1650,
+    monthlyPrice: PLAN_MONTHLY_PRICES.scale,
+    yearlyMonthlyPrice: yearlyFallbackMonthlyPrice(PLAN_MONTHLY_PRICES.scale),
+    includedConversations: PLAN_INCLUDED_SESSIONS.scale,
     overageRatePerConversation: FALLBACK_OVERAGE_RATE_PER_CONVERSATION,
     features: messages.pricing.plans.scale.features,
     popular: false,
@@ -641,7 +643,7 @@ const Pricing = () => {
           <div className="bzl-site-card bzl-price-free">
             <div className="flex min-w-0 flex-col gap-x-5 gap-y-1 lg:flex-row lg:items-center">
               <div className="flex shrink-0 flex-wrap items-baseline gap-x-3 gap-y-1">
-                <h3 className="bzl-price-name">{messages.pricing.free.name}</h3>
+                <h2 className="bzl-price-name">{messages.pricing.free.name}</h2>
                 <span className="bzl-price-amount is-free">$0</span>
                 <span className="bzl-price-chip self-center">
                   {messages.pricing.free.noCommitment}
@@ -685,7 +687,7 @@ const Pricing = () => {
                   )}
 
                   <div className="flex items-start justify-between gap-3">
-                    <h3 className="bzl-price-name pt-1">{plan.name}</h3>
+                    <h2 className="bzl-price-name pt-1">{plan.name}</h2>
                     {hasDiscount && (
                       <span
                         className="bzl-price-off"
@@ -782,9 +784,9 @@ const Pricing = () => {
 
             {/* Enterprise */}
             <div className="bzl-site-card bzl-price-card is-ink">
-              <h3 className="bzl-price-name pt-1">
+              <h2 className="bzl-price-name pt-1">
                 {messages.pricing.enterprise.name}
-              </h3>
+              </h2>
               {/* "From" over /mo, beside the price (as "billed yearly" on the plans), so it never wraps */}
               <div className="bzl-price-block flex flex-wrap items-end gap-x-2 gap-y-1">
                 <span className="bzl-price-amount">

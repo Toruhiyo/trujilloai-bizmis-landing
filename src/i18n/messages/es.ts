@@ -975,31 +975,38 @@ export const es: Messages = {
 
   seo: {
     home: {
-      title: "Bizmis — El dependiente por voz para tu tienda Shopify",
+      title: "Bizmis | El dependiente por voz para tu tienda Shopify",
       description:
-        "Bizmis saluda a tus compradores, responde sus preguntas y los guía hasta la compra, como un gran dependiente de tienda, 24/7 dentro de tu tienda Shopify.",
+        "Bizmis saluda a tus compradores, responde sus preguntas y los guía hasta la compra, como un gran dependiente, 24/7 dentro de tu tienda Shopify.",
       jsonLdDescription:
         "Dependiente por voz para Shopify que saluda a los compradores, responde preguntas y los guía hasta la compra.",
     },
     pricing: {
-      title: "Precios de Bizmis — Planes para tiendas Shopify",
+      title: "Precios de Bizmis | Planes para tiendas Shopify",
       description:
         "Precios claros de Bizmis para tiendas Shopify de cualquier tamaño. Elige un plan, instala en un clic y empieza a vender con un dependiente por voz.",
     },
     faqs: {
-      title: "Preguntas frecuentes de Bizmis — Instalación, precios y datos",
+      title: "Preguntas frecuentes Bizmis | Instalación, precios y datos",
       description:
-        "Respuestas a las dudas más habituales sobre Bizmis: cómo funciona en Shopify, tiempo de instalación, tratamiento de datos, comportamiento de la voz, precios y más.",
+        "Respuestas a las dudas habituales sobre Bizmis: cómo funciona en Shopify, instalación, datos, comportamiento de la voz, precios y más.",
     },
     contact: {
-      title: "Contacto Bizmis — Hablemos",
+      title: "Contacto Bizmis | Hablemos",
       description:
-        "Contacta con el equipo de Bizmis sobre la instalación en Shopify, integraciones en webs a medida, colaboraciones o lo que necesites. Respondemos rápido.",
+        "Contacta con el equipo de Bizmis sobre la instalación en Shopify, webs a medida, colaboraciones o lo que necesites. Respondemos rápido.",
     },
     earlyAccess: {
-      title: "Acceso anticipado a Bizmis — gratis para las 50 primeras tiendas",
+      title: "Acceso anticipado a Bizmis | Gratis, 50 primeras tiendas",
       description:
-        "Hazte miembro del acceso anticipado de Bizmis: instala gratis, ten línea directa con el fundador, define la hoja de ruta y conserva tus descuentos al mejorar de plan. Solo las 50 primeras tiendas Shopify.",
+        "Únete al acceso anticipado de Bizmis: instala gratis, línea directa con el fundador, define la hoja de ruta y conserva tus descuentos de miembro.",
     },
+    notFound: {
+      title: "Página no encontrada | Bizmis",
+      description:
+        "Esta página no existe. Vuelve a Bizmis, el dependiente por voz para tiendas Shopify.",
+    },
+    /** The social preview image's alt text (og:image:alt). */
+    ogImageAlt: "Bizmis, el dependiente por voz para tiendas Shopify",
   },
 };

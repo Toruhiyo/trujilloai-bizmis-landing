@@ -15,11 +15,7 @@ const COMPANY_VENUE = "Barcelona, Spain";
 const Terms = () => {
   return (
     <PublicPageLayout className="bg-white">
-      <Seo
-        title="Terms of Service — Bizmis"
-        description="The terms governing your use of Bizmis, the voice-first store clerk for Shopify."
-        path="/terms"
-      />
+      <Seo page="terms" />
       <div className="container mx-auto px-6 py-16 max-w-3xl">
         <h1 className="text-4xl font-heading font-bold text-gray-900 mb-2">
           Terms of Service
@@ -152,7 +148,7 @@ const Terms = () => {
                 Comply with Shopify's{" "}
                 <a
                   href="https://www.shopify.com/legal/terms"
-                  className="text-primary hover:text-primary-dark hover:underline"
+                  className="text-gray-900 underline decoration-primary decoration-2 underline-offset-2 hover:decoration-gray-900"
                   target="_blank"
                   rel="noopener noreferrer"
                 >
@@ -161,7 +157,7 @@ const Terms = () => {
                 ,{" "}
                 <a
                   href="https://www.shopify.com/legal/aup"
-                  className="text-primary hover:text-primary-dark hover:underline"
+                  className="text-gray-900 underline decoration-primary decoration-2 underline-offset-2 hover:decoration-gray-900"
                   target="_blank"
                   rel="noopener noreferrer"
                 >
@@ -170,7 +166,7 @@ const Terms = () => {
                 , and{" "}
                 <a
                   href="https://www.shopify.com/legal/api-terms"
-                  className="text-primary hover:text-primary-dark hover:underline"
+                  className="text-gray-900 underline decoration-primary decoration-2 underline-offset-2 hover:decoration-gray-900"
                   target="_blank"
                   rel="noopener noreferrer"
                 >
@@ -242,7 +238,7 @@ const Terms = () => {
                 our{" "}
                 <a
                   href="/privacy"
-                  className="text-primary hover:text-primary-dark hover:underline"
+                  className="text-gray-900 underline decoration-primary decoration-2 underline-offset-2 hover:decoration-gray-900"
                 >
                   Privacy Policy
                 </a>
@@ -426,7 +422,7 @@ const Terms = () => {
               rates are published on our{" "}
               <a
                 href="/pricing"
-                className="text-primary hover:text-primary-dark hover:underline"
+                className="text-gray-900 underline decoration-primary decoration-2 underline-offset-2 hover:decoration-gray-900"
               >
                 Pricing page
               </a>{" "}
@@ -582,7 +578,7 @@ const Terms = () => {
               Store Customer data are described in our{" "}
               <a
                 href="/privacy"
-                className="text-primary hover:text-primary-dark hover:underline"
+                className="text-gray-900 underline decoration-primary decoration-2 underline-offset-2 hover:decoration-gray-900"
               >
                 Privacy Policy
               </a>
@@ -605,7 +601,7 @@ const Terms = () => {
                 <code>shop/redact</code>) and through direct contact at{" "}
                 <a
                   href={`mailto:${CONTACT_EMAIL}`}
-                  className="text-primary hover:text-primary-dark hover:underline"
+                  className="text-gray-900 underline decoration-primary decoration-2 underline-offset-2 hover:decoration-gray-900"
                 >
                   {CONTACT_EMAIL}
                 </a>
@@ -650,7 +646,7 @@ const Terms = () => {
               one at{" "}
               <a
                 href={`mailto:${CONTACT_EMAIL}`}
-                className="text-primary hover:text-primary-dark hover:underline"
+                className="text-gray-900 underline decoration-primary decoration-2 underline-offset-2 hover:decoration-gray-900"
               >
                 {CONTACT_EMAIL}
               </a>
@@ -892,7 +888,7 @@ const Terms = () => {
                 give notice to us at{" "}
                 <a
                   href={`mailto:${CONTACT_EMAIL}`}
-                  className="text-primary hover:text-primary-dark hover:underline"
+                  className="text-gray-900 underline decoration-primary decoration-2 underline-offset-2 hover:decoration-gray-900"
                 >
                   {CONTACT_EMAIL}
                 </a>
@@ -915,7 +911,7 @@ const Terms = () => {
               {COMPANY_LEGAL_NAME} at:{" "}
               <a
                 href={`mailto:${CONTACT_EMAIL}`}
-                className="text-primary hover:text-primary-dark hover:underline"
+                className="text-gray-900 underline decoration-primary decoration-2 underline-offset-2 hover:decoration-gray-900"
               >
                 {CONTACT_EMAIL}
               </a>

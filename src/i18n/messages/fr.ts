@@ -976,31 +976,38 @@ export const fr: Messages = {
 
   seo: {
     home: {
-      title: "Bizmis — Le vendeur vocal pour votre boutique Shopify",
+      title: "Bizmis | Le vendeur vocal pour votre boutique Shopify",
       description:
-        "Bizmis accueille vos acheteurs, répond à leurs questions et les accompagne jusqu'à l'achat, comme un excellent vendeur en boutique, 24/7 dans votre boutique Shopify.",
+        "Bizmis accueille vos acheteurs, répond à leurs questions et les guide jusqu'à l'achat, comme un excellent vendeur, 24/7 dans votre boutique Shopify.",
       jsonLdDescription:
         "Vendeur vocal pour Shopify qui accueille les acheteurs, répond à leurs questions et les accompagne jusqu'à l'achat.",
     },
     pricing: {
-      title: "Tarifs Bizmis — Des plans pour toutes les boutiques Shopify",
+      title: "Tarifs Bizmis | Des plans pour les boutiques Shopify",
       description:
         "Des tarifs Bizmis simples pour les boutiques Shopify de toute taille. Choisissez un plan, installez en un clic et vendez avec un vendeur vocal.",
     },
     faqs: {
-      title: "FAQ Bizmis — Installation, tarifs, données et comportement",
+      title: "FAQ Bizmis | Installation, tarifs, données et comportement",
       description:
-        "Réponses aux questions fréquentes sur Bizmis : fonctionnement sur Shopify, temps d'installation, traitement des données, comportement vocal, tarifs et plus encore.",
+        "Réponses aux questions fréquentes sur Bizmis : fonctionnement sur Shopify, installation, données, comportement vocal, tarifs et plus encore.",
     },
     contact: {
-      title: "Contact Bizmis — Parlons-en",
+      title: "Contact Bizmis | Parlons-en",
       description:
-        "Contactez l'équipe Bizmis pour l'installation Shopify, les intégrations sur sites sur mesure, les partenariats ou toute autre question. Nous répondons vite.",
+        "Contactez l'équipe Bizmis pour l'installation Shopify, les sites sur mesure, les partenariats ou toute autre question. Nous répondons vite.",
     },
     earlyAccess: {
-      title: "Accès anticipé Bizmis — gratuit pour les 50 premières boutiques Shopify",
+      title: "Accès anticipé Bizmis | Gratuit, 50 premières boutiques",
       description:
-        "Devenez membre de l'accès anticipé Bizmis : installation gratuite, ligne directe avec le fondateur, influence sur la feuille de route et remises conservées lors du passage à un plan payant. Réservé aux 50 premières boutiques Shopify.",
+        "Rejoignez l'accès anticipé Bizmis : installation gratuite, ligne directe avec le fondateur, votre avis sur la feuille de route et vos remises.",
     },
+    notFound: {
+      title: "Page introuvable | Bizmis",
+      description:
+        "Cette page n'existe pas. Revenez à Bizmis, le vendeur vocal pour les boutiques Shopify.",
+    },
+    /** The social preview image's alt text (og:image:alt). */
+    ogImageAlt: "Bizmis, le vendeur vocal pour les boutiques Shopify",
   },
 };

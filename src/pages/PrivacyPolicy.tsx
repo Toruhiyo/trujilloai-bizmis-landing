@@ -8,11 +8,7 @@ const CONTACT_EMAIL = "hello@bizmis.ai";
 const PrivacyPolicy = () => {
   return (
     <PublicPageLayout className="bg-white">
-      <Seo
-        title="Privacy Policy — Bizmis"
-        description="How Bizmis collects, uses, and protects shopper and merchant data inside Shopify storefronts."
-        path="/privacy"
-      />
+      <Seo page="privacy" />
       <div className="container mx-auto px-6 py-16 max-w-3xl">
         <h1 className="text-4xl font-heading font-bold text-gray-900 mb-2">
           Privacy Policy
@@ -411,7 +407,7 @@ const PrivacyPolicy = () => {
             </p>
             <p>
               <strong>Merchants:</strong> you can contact us directly at{" "}
-              <a href={`mailto:${CONTACT_EMAIL}`} className="text-primary hover:text-primary-dark hover:underline">
+              <a href={`mailto:${CONTACT_EMAIL}`} className="text-gray-900 underline decoration-primary decoration-2 underline-offset-2 hover:decoration-gray-900">
                 {CONTACT_EMAIL}
               </a>{" "}
               to exercise your data rights.
@@ -490,7 +486,7 @@ const PrivacyPolicy = () => {
             <p>
               For questions about this Privacy Policy or our data practices,
               contact us at:{" "}
-              <a href={`mailto:${CONTACT_EMAIL}`} className="text-primary hover:text-primary-dark hover:underline">
+              <a href={`mailto:${CONTACT_EMAIL}`} className="text-gray-900 underline decoration-primary decoration-2 underline-offset-2 hover:decoration-gray-900">
                 {CONTACT_EMAIL}
               </a>
             </p>

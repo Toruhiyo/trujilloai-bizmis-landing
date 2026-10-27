@@ -3,6 +3,7 @@ import react from "@vitejs/plugin-react-swc";
 import path from "path";
 import { spawn } from "node:child_process";
 import { componentTagger } from "lovable-tagger";
+import { seoPrerender } from "./scripts/seo/prerender-plugin";
 
 /**
  * Dev-only HTTP endpoints that shell out to the Instantly generator
@@ -72,6 +73,8 @@ export default defineConfig(({ mode }) => ({
   plugins: [
     prerenderYearPlaceholder(),
     react(),
+    // every public route x locale gets its own static HTML, plus sitemap.xml and robots.txt
+    seoPrerender(),
     mode === 'development' && devGeneratorEndpoints(),
     mode === 'development' &&
     componentTagger(),

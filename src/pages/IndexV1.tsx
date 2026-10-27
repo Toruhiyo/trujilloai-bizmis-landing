@@ -10,7 +10,6 @@ import {
   setupScrollToSectionOnLoad,
   setupScrollToUrlUpdater,
 } from "@/lib/utils/scroll";
-import { useMessages } from "@/i18n/LocaleProvider";
 
 /**
  * The landing as it was before the film-led hero (archived at /v1).
@@ -20,8 +19,6 @@ import { useMessages } from "@/i18n/LocaleProvider";
  * the live landing nothing and never competes with it in search.
  */
 const IndexV1 = () => {
-  const messages = useMessages();
-
   useEffect(() => {
     const sectionIds = [
       "hero",
@@ -44,12 +41,7 @@ const IndexV1 = () => {
 
   return (
     <div className="min-h-screen">
-      <Seo
-        title={messages.seo.home.title}
-        description={messages.seo.home.description}
-        path="/v1"
-        noIndex
-      />
+      <Seo page="v1" />
       <HeroV1 />
       <Benefits />
       <Setup />

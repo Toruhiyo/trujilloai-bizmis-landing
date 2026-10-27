@@ -113,11 +113,7 @@ const EarlyAccess = () => {
 
   return (
     <SitePage>
-      <Seo
-        title={messages.seo.earlyAccess.title}
-        description={messages.seo.earlyAccess.description}
-        path="/early-access"
-      />
+      <Seo page="earlyAccess" />
 
       {/* The invitation: the head on the left, the avatar waving on the right */}
       <div className="bzl-wrap bzl-site-hero bzl-ea-top">

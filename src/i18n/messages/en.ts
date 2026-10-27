@@ -991,32 +991,39 @@ export const en = {
 
   seo: {
     home: {
-      title: "Bizmis — Voice-First Sales Clerk for Shopify",
+      title: "Bizmis | Voice-first sales agent for Shopify stores",
       description:
         "Bizmis welcomes shoppers, answers questions, and guides them to buy, like a great in-store associate, 24/7 inside your Shopify store.",
       jsonLdDescription:
-        "Voice-first store clerk for Shopify that welcomes shoppers, answers questions, and guides them to buy.",
+        "Voice-first sales agent for Shopify that welcomes shoppers, answers questions, and guides them to buy.",
     },
     pricing: {
-      title: "Bizmis Pricing — Plans for Shopify Stores",
+      title: "Bizmis pricing | Plans for Shopify stores",
       description:
-        "Simple Bizmis pricing for Shopify stores of any size. Pick a plan, install in one click, and start selling with a voice-first store clerk.",
+        "Simple Bizmis pricing for Shopify stores of any size. Pick a plan, install in one click, and start selling with a voice-first sales agent.",
     },
     faqs: {
-      title: "Bizmis FAQs — Setup, Pricing, Data, and Behavior",
+      title: "Bizmis FAQs | Setup, pricing, data and behavior",
       description:
         "Answers to common questions about Bizmis: how it works on Shopify, setup time, data handling, voice behavior, pricing, and more.",
     },
     contact: {
-      title: "Contact Bizmis — Get in Touch",
+      title: "Contact Bizmis | Get in touch",
       description:
         "Reach the Bizmis team about Shopify install, custom website integrations, partnerships, or anything else. We reply fast.",
     },
     earlyAccess: {
-      title: "Bizmis Early Access — free for the first 50 Shopify stores",
+      title: "Bizmis Early Access | Free for the first 50 Shopify stores",
       description:
-        "Become a Bizmis Early Access member: install free, get a direct line to the founder, shape the roadmap, and keep member discounts when you upgrade. First 50 Shopify stores only.",
+        "Join Bizmis Early Access: install free, get a direct line to the founder, shape the roadmap, and keep member discounts when you upgrade.",
     },
+    notFound: {
+      title: "Page not found | Bizmis",
+      description:
+        "This page doesn't exist. Head back to Bizmis, the voice-first sales agent for Shopify stores.",
+    },
+    /** The social preview image's alt text (og:image:alt). */
+    ogImageAlt: "Bizmis, the voice-first sales agent for Shopify stores",
   },
 };
 

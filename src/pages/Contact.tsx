@@ -112,20 +112,16 @@ const Contact = () => {
       className="bg-gradient-to-br from-[#FDF7E2] via-white to-[#FDF7E2]/30"
       mainClassName="py-20"
     >
-      <Seo
-        title={messages.seo.contact.title}
-        description={messages.seo.contact.description}
-        path="/contact"
-      />
+      <Seo page="contact" />
       <div className="container mx-auto px-6">
         <div className="max-w-2xl mx-auto">
           <div className="text-center mb-12">
             <div className="inline-flex items-center justify-center w-16 h-16 bg-[#FDF7E2] rounded-full mb-6">
-              <Mail className="w-8 h-8 text-primary" />
+              <Mail className="w-8 h-8 text-primary" aria-hidden="true" />
             </div>
-            <h2 className="text-4xl lg:text-5xl font-heading font-bold text-foreground mb-6">
+            <h1 className="text-4xl lg:text-5xl font-heading font-bold text-foreground mb-6">
               {messages.contact.title}
-            </h2>
+            </h1>
             <p className="text-xl text-muted-foreground">
               {messages.contact.lead}
             </p>
