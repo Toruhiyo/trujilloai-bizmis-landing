@@ -865,12 +865,21 @@
 
 
 /* ── Setup: the classic diagram's wiring and charge, in the film's style ── */
-.bzl-wire {
-  stroke-dasharray: 1000;
-  stroke-dashoffset: 1000;
-  animation: bzl-wire 1.1s var(--bzl-ease) var(--bzl-delay, 0ms) forwards;
+/* Everything in it moves from the section's scroll clock (SetupSection): the
+   wires draw, the sparks ride them, the aura breathes, all set inline from `t`.
+   While it rewinds, the visual goes analog (RewindScreen's tape): a white
+   ground behind it then (the tape's channel split needs an opaque picture),
+   running a little past the visual and feathered into the band. */
+.bzl-setup-tape { margin: -2rem; }
+.bzl-setup-tape .rws-in { background: transparent; padding: 2rem; }
+.bzl-setup-tape .rws-in.is-rw {
+  background: #fff;
+  box-shadow: none;
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 2rem, #000 calc(100% - 2rem), transparent), linear-gradient(transparent, #000 2rem, #000 calc(100% - 2rem), transparent);
+  -webkit-mask-composite: source-in;
+  mask-image: linear-gradient(90deg, transparent, #000 2rem, #000 calc(100% - 2rem), transparent), linear-gradient(transparent, #000 2rem, #000 calc(100% - 2rem), transparent);
+  mask-composite: intersect;
 }
-@keyframes bzl-wire { to { stroke-dashoffset: 0; } }
 /* the wires as marker line art (the Sales funnel's style): flat, round-capped
    strokes in a light primary, the energy as solid primary dots riding them.
    --setup-wire / --setup-spark let a palette retune them. */
@@ -910,21 +919,14 @@
   from { stroke-dashoffset: 980; }
   to { stroke-dashoffset: -20; }
 }
-/* the agent charging up: an aura and an orange glow over the render, breathing every 2 s */
+/* the agent charging up: an aura round the render, breathing every 2 s (its opacity and scale from the clock) */
 .bzl-charge-aura {
   translate: -50% -50%;
   background: radial-gradient(circle, rgba(249, 163, 83, 0.32) 0%, rgba(249, 163, 83, 0.12) 42%, transparent 70%);
-  animation: bzl-aura 2s ease-in-out infinite;
   pointer-events: none;
 }
 .bzl-charge-aura.is-wide {
   background: radial-gradient(circle, rgba(249, 163, 83, 0.16) 0%, rgba(249, 163, 83, 0.06) 50%, transparent 74%);
-  animation-delay: 0.12s;
-}
-@keyframes bzl-aura {
-  0%, 100% { opacity: 0; scale: 0.5; }
-  35% { opacity: 1; scale: 1; }
-  70% { opacity: 0; scale: 1.08; }
 }
 /* the charge lands on the agent: warm light on the silhouette (soft-light, so
    skin, shirt and trousers keep their own colours) and a rim of light, both
@@ -940,17 +942,9 @@
   35% { opacity: 0.95; }
   70% { opacity: 0.12; }
 }
-.bzl-charge-rim { animation: bzl-charge-rim 2s ease-in-out infinite; }
-@keyframes bzl-charge-rim {
-  0%, 100% { filter: drop-shadow(0 0 0 rgb(249 163 83 / 0)); }
-  35% { filter: drop-shadow(0 0 10px rgb(249 163 83 / 0.55)) drop-shadow(0 0 2px rgb(255 214 160 / 0.7)); }
-  70% { filter: drop-shadow(0 0 0 rgb(249 163 83 / 0)); }
-}
 @media (prefers-reduced-motion: reduce) {
-  .bzl-wire { animation: none; stroke-dashoffset: 0; }
-  .bzl-flow, .bzl-charge-aura { animation: none; opacity: 0; }
+  .bzl-flow { animation: none; opacity: 0; }
   .bzl-charge-light { animation: none; opacity: 0.4; }
-  .bzl-charge-rim { animation: none; }
 }
 
 /* the mobile widget's speaking ring: breathes around the avatar's head */

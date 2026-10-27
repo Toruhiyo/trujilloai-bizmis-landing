@@ -66,10 +66,11 @@
   top: 3.6rem;
   left: 1rem;
 }
-/* Setup's sync: just above the store data's card, at its left */
-.bzl-rw-icon.is-setup {
-  top: -2.9rem;
-  left: 0;
+/* Setup's: just above its visual, at its left */
+.bzl .bzl-rw-mark.is-setup {
+  top: auto;
+  bottom: calc(100% + 0.2rem);
+  transform-origin: 0 100%;
 }
 
 @media (prefers-reduced-motion: reduce) {
