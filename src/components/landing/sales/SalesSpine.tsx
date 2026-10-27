@@ -8,7 +8,8 @@ import { arrange, arrangeOpener } from "./arrange";
 import type { EndsLook } from "./beatcopy/style";
 import FunnelFlow, { funnelAnchors } from "./funnel/FunnelFlow";
 import FunnelScale from "./funnel/FunnelScale";
-import { cardKsAt, ksAt, startsFor } from "./funnel/model";
+import { cardKsAt, ksAt, pileAt, startsFor } from "./funnel/model";
+import SalesPile, { pileLook } from "./funnel/SalesPile";
 import { useActivePanel, useMedia, usePinProgress, useRewinding, useScrollPlay, useScrollThrough } from "./hooks";
 import Metrics from "./Metrics";
 import RewindScreen, { ScreenTape } from "./RewindScreen";
@@ -260,14 +261,6 @@ const Lens = ({ d, head, on }: { d: string; head: string; on: boolean }) => (
   </svg>
 );
 
-/** The marker ◀◀ (as the funnel's), over something being rewound. */
-const RewindMarks = ({ on, className }: { on: boolean; className?: string }) => (
-  <svg className={cn("sl-flow-rewind", on && "is-on", className)} viewBox="0 0 64 36" aria-hidden="true">
-    <path d="M30.5 5.5 C 24 10.5, 15.5 15, 6.5 18.2 C 15 21.5, 23.5 26, 30.2 30.8 C 29.6 22.5, 29.8 13.5, 30.5 5.5 Z" />
-    <path d="M57.5 5.2 C 51 10.2, 42.5 14.8, 33.5 18 C 42 21.4, 50.5 26.2, 57.3 30.6 C 56.7 22.3, 56.9 13.4, 57.5 5.2 Z" />
-  </svg>
-);
-
 /** A beat's device (memoised: only the playing beat's clock moves, so the others skip their re-render). */
 const Callout = memo(function Callout({
   i,
@@ -319,8 +312,8 @@ const Pinned = () => {
   // ?beat=9a..9c (9a the default): the opener alone, the funnel's label ending its sentence
   const opener = openerLook(look);
   const { win } = useSalesProto();
-  // ?pile=1..4: the payoff's sales piling up by the bag (looks to pick from; none by default)
-  const [pile] = useState(() => (typeof window === "undefined" ? 0 : Number(new URLSearchParams(window.location.search).get("pile")) || 0));
+  // ?pile=1a/1b/4a/4b: the payoff's sales piling up by the bag (looks to pick from; none by default)
+  const [pile] = useState(() => (typeof window === "undefined" ? null : pileLook(new URLSearchParams(window.location.search).get("pile"))));
   const tls = useBeatTimelines();
   const [track, progress] = usePinProgress<HTMLDivElement>();
   // four stretches of the track: find, trust, buy, then the payoff (longer: three fixes, each given time)
@@ -359,6 +352,14 @@ const Pinned = () => {
   // the arrangement's funnel in the beats; in the payoff too where it keeps it (9b), else the payoff's own
   const L = A && (!payoff || A.payoff) ? { ...L0, fnW: A.fnW, fnH: A.fnH, fnLeft: A.fnLeft, fnTop: A.fnTop } : L0;
   const card = A?.payoff?.card ?? L0.card;
+  // ?pile: the payoff's order bag, in the stage's px, and the room on the pile's side (above where the
+  // payoff's words sit under the funnel, phones)
+  const pileSide = pile && (A?.payoff?.under ? "above" : pile.side);
+  const bag = useMemo(() => {
+    const b = funnelAnchors(L.fnW, L.fnH, [1, 1, 1], visits).bag;
+    return { x: L.fnLeft + b.x, y: L.fnTop + b.y, r: b.r };
+  }, [L.fnW, L.fnH, L.fnLeft, L.fnTop, visits]);
+  const pileRoom = Math.min(H * 0.32, pileSide === "above" ? bag.y - bag.r - 12 : H - 12 - bag.y - bag.r);
   const links = useMemo(
     () => L0.beats.map((b, i) => A?.beats[i].link ?? { kind: "cone" as const, stage: b.cone.bottom, device: b.cone.top }),
     [L0, A],
@@ -393,62 +394,58 @@ const Pinned = () => {
           <div className="bzl-wrap sl-g2-frame">
             {/* ph-no-capture: the session recorder would log every animated frame of it (replays show a placeholder) */}
             <div ref={stage} className={cn("sl-g2-stage ph-no-capture", payoff && "is-payoff")}>
-              {links.map((l, i) =>
-                l.kind === "arrow" ? (
-                  <Arrow key={i} d={l.d} head={l.head} on={step === i} />
-                ) : l.kind === "lens" ? (
-                  <Lens key={i} d={l.d} head={l.head} on={step === i} />
-                ) : (
-                  <Cone key={i} stage={l.stage} device={l.device} on={step === i} />
-                ),
-              )}
-              {rects.map((b, i) => (
-                <Callout
-                  key={i}
-                  i={i}
-                  t={beats[i].t}
-                  on={step === i}
-                  past={step > i}
-                  rewinding={rewinding && step === i}
-                  x={b.x}
-                  y={b.y}
-                  w={b.w}
-                  h={b.h}
-                  origin={b.origin}
-                />
-              ))}
-              {s.panels.map((p, i) => (
-                <div
-                  key={p.title}
-                  className={cn(
-                    "sl-g2-copy",
-                    ends && `is-over is-over-${ends}`,
-                    arr && `is-over is-arr-${arr}`,
-                    (opener === "a" || opener === "b") && "is-over is-opener",
-                    (ends === "d" || arr === "a" || arr === "b" || opener === "a" || opener === "b") && "is-center",
-                    step === i && "is-on",
-                  )}
-                  style={copyStyle(i)}
-                >
-                  <BeatCopyM index={i} t={beats[i].t} fixAt={beats[i].fixAt} />
-                  {win > 0 && <Metrics variant={win} k={step === i ? k : fixedAt(i, beats[i].t, beats[i].fixAt)} focus={i} className="sl-g2-met" />}
+              {/* the payoff scrolled back: the whole of it (funnel, words, card) rewinds as one tape, like a device's screen */}
+              <ScreenTape band on={rewinding && payoff}>
+                {links.map((l, i) =>
+                  l.kind === "arrow" ? (
+                    <Arrow key={i} d={l.d} head={l.head} on={step === i} />
+                  ) : l.kind === "lens" ? (
+                    <Lens key={i} d={l.d} head={l.head} on={step === i} />
+                  ) : (
+                    <Cone key={i} stage={l.stage} device={l.device} on={step === i} />
+                  ),
+                )}
+                {rects.map((b, i) => (
+                  <Callout
+                    key={i}
+                    i={i}
+                    t={beats[i].t}
+                    on={step === i}
+                    past={step > i}
+                    rewinding={rewinding && step === i}
+                    x={b.x}
+                    y={b.y}
+                    w={b.w}
+                    h={b.h}
+                    origin={b.origin}
+                  />
+                ))}
+                {s.panels.map((p, i) => (
+                  <div
+                    key={p.title}
+                    className={cn(
+                      "sl-g2-copy",
+                      ends && `is-over is-over-${ends}`,
+                      arr && `is-over is-arr-${arr}`,
+                      (opener === "a" || opener === "b") && "is-over is-opener",
+                      (ends === "d" || arr === "a" || arr === "b" || opener === "a" || opener === "b") && "is-center",
+                      step === i && "is-on",
+                    )}
+                    style={copyStyle(i)}
+                  >
+                    <BeatCopyM index={i} t={beats[i].t} fixAt={beats[i].fixAt} />
+                    {win > 0 && <Metrics variant={win} k={step === i ? k : fixedAt(i, beats[i].t, beats[i].fixAt)} focus={i} className="sl-g2-met" />}
+                  </div>
+                ))}
+                <div className={cn("sl-g2-copy is-payoff", A?.payoff?.under && "is-under", payoff && "is-on")} style={A?.payoff?.copy}>
+                  {/* the title alone (no eyebrow, no line under it) */}
+                  <PanelCopy title={s.payoff.title} />
                 </div>
-              ))}
-              <div className={cn("sl-g2-copy is-payoff", A?.payoff?.under && "is-under", payoff && "is-on")} style={A?.payoff?.copy}>
-                {/* the title alone (no eyebrow, no line under it) */}
-                <PanelCopy title={s.payoff.title} />
-              </div>
-              {/* the payoff's win in the metrics a merchant watches, turning with each fix (direction only) */}
-              <div className={cn("sl-g2-card", payoff && "is-on")} style={{ left: card.left, top: card.top, width: card.width }}>
-                {/* scrolled back: the card rewinds like the devices (the tape look, and the marker ◀◀ over it) */}
-                <RewindMarks on={rewinding && payoff} className="sl-g2-card-rw" />
-                <ScreenTape band on={rewinding && payoff}>
+                {/* the payoff's win in the metrics a merchant watches, turning with each fix (direction only) */}
+                <div className={cn("sl-g2-card", payoff && "is-on")} style={{ left: card.left, top: card.top, width: card.width }}>
                   <Metrics variant={4} k={payoff ? cardKsAt(payT, startsFor(3)) : [0, 0, 0]} focus={3} className="sl-g2-met is-card" />
-                </ScreenTape>
-              </div>
-              <div className="sl-fn sl-g2-funnel" style={{ left: L.fnLeft, top: L.fnTop, width: L.fnW, height: L.fnH }}>
-                {/* the payoff scrolled back: the whole drawing rewinds like a device's screen (the tape look) */}
-                <ScreenTape band on={rewinding && payoff}>
+                </div>
+                <div className="sl-fn sl-g2-funnel" style={{ left: L.fnLeft, top: L.fnTop, width: L.fnW, height: L.fnH }}>
                   <FunnelFlow
                     t={clock.t}
                     duration={clock.duration}
@@ -457,13 +454,21 @@ const Pinned = () => {
                     copy={s.funnel}
                     labels={payoff || !onFunnel}
                     onLabels={payoff ? undefined : onLabels}
-                    pile={pile}
                     lit={!payoff && links[step]?.kind === "lens" ? step : -1}
                     // (the words stand where the funnel's ◀◀ goes: their device's tape look says it)
                     rewind={rewinding && (payoff || !onFunnel)}
                   />
-                </ScreenTape>
-              </div>
+                </div>
+                {pile && pileSide && (
+                  <SalesPile
+                    look={{ kind: pile.kind, side: pileSide }}
+                    k={payoff ? pileAt(payT, startsFor(3), PAYOFF_DURATION) : 0}
+                    bag={bag}
+                    room={pileRoom}
+                    on={payoff}
+                  />
+                )}
+              </ScreenTape>
             </div>
           </div>
         </div>

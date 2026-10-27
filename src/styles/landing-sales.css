@@ -1112,12 +1112,6 @@
     top 0.8s var(--bzl-ease);
   pointer-events: none;
 }
-/* the card's ◀◀, over its top-left corner while it rewinds */
-.sl-g2-card .sl-g2-card-rw {
-  left: -10px;
-  top: -44px;
-  width: 46px;
-}
 .sl-g2-card.is-on {
   opacity: 1;
   transform: none;
@@ -1418,8 +1412,9 @@
   max-width: 620px;
 }
 
-/* the tape over something drawn on the band (the payoff's funnel and metric card, ScreenTape band):
-   no white ground, the drawing keeps its own; scanlines and tracking bands tuned for the orange */
+/* the tape over the whole payoff, drawn on the band (ScreenTape band): no white ground, the drawing
+   keeps its own; nothing that darkens: light scanlines and a bright tracking band, the drawing's own
+   tear and colour split carry the rest */
 .rws.is-band .rws-in {
   background: transparent;
 }
@@ -1427,29 +1422,54 @@
   box-shadow: none;
 }
 .rws.is-band .rwa-fx {
-  /* feathered: no box edge on the band */
-  -webkit-mask-image: radial-gradient(ellipse 60% 62% at 50% 50%, #000 55%, transparent 100%);
-  mask-image: radial-gradient(ellipse 60% 62% at 50% 50%, #000 55%, transparent 100%);
+  -webkit-mask-image: radial-gradient(ellipse 62% 60% at 50% 50%, #000 60%, transparent 100%);
+  mask-image: radial-gradient(ellipse 62% 60% at 50% 50%, #000 60%, transparent 100%);
 }
 .rws.is-band .rwa-fx::before {
-  /* scanlines only (a grain would grey the orange): the drawing's own tear and colour split carry it */
-  background: repeating-linear-gradient(180deg, rgb(150 60 10 / 0.12) 0 1px, transparent 1px 3px);
+  background: repeating-linear-gradient(180deg, rgb(255 255 255 / 0.07) 0 1px, transparent 1px 3px);
   background-size: 100% 3px;
   /* (no blend: the tape's filter isolates the box, so a blend would have no band under it to mix with) */
   mix-blend-mode: normal;
-  opacity: 0.7;
+  opacity: 1;
 }
 .rws.is-band .rwa-fx::after {
   background:
     linear-gradient(
       180deg,
       transparent 0%,
-      rgb(150 60 10 / 0.05) 25%,
-      rgb(150 60 10 / 0.1) 42%,
-      rgb(255 255 255 / 0.35) 47%,
-      rgb(255 225 200 / 0.22) 51%,
-      rgb(150 60 10 / 0.08) 58%,
-      transparent 100%
+      rgb(255 255 255 / 0.05) 30%,
+      rgb(255 255 255 / 0.3) 47%,
+      rgb(255 240 225 / 0.18) 52%,
+      transparent 70%
     ),
-    linear-gradient(180deg, transparent 80%, rgb(150 60 10 / 0.16) 80% 82%, transparent 82%) 0 0 / 100% 100% no-repeat;
+    linear-gradient(180deg, transparent 80%, rgb(255 255 255 / 0.22) 80% 81.5%, transparent 81.5%) 0 0 / 100% 100% no-repeat;
+}
+
+/* ?pile: the payoff's sales piling up by the order bag, right of the funnel (SalesPile) */
+.sl-g2-pile {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+.sl-g2-pile.is-on {
+  opacity: 1;
+}
+.sl-pile-dots {
+  fill: rgb(255 244 205);
+}
+.sl-pile-receipt {
+  fill: none;
+  stroke: rgb(255 244 205);
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.sl-pile-strip {
+  fill: rgb(255 255 255 / 0.12);
 }
