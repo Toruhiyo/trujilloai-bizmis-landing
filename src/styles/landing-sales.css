@@ -1049,18 +1049,25 @@
   text-align: center;
 }
 /* 9b: the stage's wash (a filled, faint white light over its chamber) and the arrow from its foot to the device */
+/* 9b: the hand-drawn arrow, in the funnel's fine marker; its head drawn in after the line */
 .sl-g2-lens .sl-g2-cone-side {
-  stroke-width: 3.2;
+  stroke-width: 4;
   stroke-linejoin: round;
 }
-.sl-g2-lens-wash {
-  fill: rgb(255 255 255 / 0.16);
-  opacity: 0;
-  transition: opacity 0.3s ease;
+.sl-g2-lens.is-on .sl-g2-cone-side {
+  transition:
+    stroke-dashoffset 0.6s cubic-bezier(0.55, 0, 0.35, 1) 0.15s,
+    opacity 0s linear 0.15s;
 }
-.sl-g2-lens.is-on .sl-g2-lens-wash {
-  opacity: 1;
-  transition: opacity 0.5s ease 0.15s;
+.sl-g2-lens.is-on .sl-g2-lens-head {
+  transition:
+    stroke-dashoffset 0.22s cubic-bezier(0.4, 0, 0.3, 1) 0.74s,
+    opacity 0s linear 0.74s;
+}
+@media (max-width: 639px) {
+  .sl-g2-lens .sl-g2-cone-side {
+    stroke-width: 3.2;
+  }
 }
 /* 8c/8d: the marker arrow from the device to its chamber */
 .sl-g2-arrow .sl-g2-cone-side {

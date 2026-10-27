@@ -24,8 +24,11 @@ export type Link =
   | { kind: "cone"; stage: number[]; device: number[] }
   /** A marker arrow from the device to its chamber: the stroke and its head. */
   | { kind: "arrow"; d: string; head: string }
-  /** A marker frame round the chamber ([x0, y0, x1, y1]) and an arrow from its foot, under the funnel, to the device. */
-  | { kind: "lens"; box: number[]; d: string; head: string };
+  /**
+   * ?beat=9b: the chamber lit from inside (the funnel draws that) and a hand-drawn marker arrow
+   * from under its floor to the device: `d` its line, `head` its two strokes.
+   */
+  | { kind: "lens"; d: string; head: string };
 export type Arranged = {
   fnW: number;
   fnH: number;
@@ -39,6 +42,58 @@ export type Arranged = {
 };
 
 const clamp = (v: number, a: number, b: number) => Math.min(b, Math.max(a, v));
+
+const f1 = (v: number) => v.toFixed(1);
+
+/**
+ * A hand-drawn marker arrow along the cubic s → e (controls c1, c2): the
+ * line with the hand's small, fixed wobble (it never boils as it draws in),
+ * and an open head of two curved strokes, one a touch longer, in one go.
+ * `size` is the head's length (px).
+ */
+const markerArrow = (s: Pt, c1: Pt, c2: Pt, e: Pt, size: number) => {
+  const at = (t: number): Pt => {
+    const u = 1 - t;
+    return [0, 1].map(
+      (k) => u * u * u * s[k] + 3 * u * u * t * c1[k] + 3 * u * t * t * c2[k] + t * t * t * e[k],
+    ) as Pt;
+  };
+  const tan = (t: number): Pt => {
+    const u = 1 - t;
+    const v = [0, 1].map(
+      (k) => 3 * u * u * (c1[k] - s[k]) + 6 * u * t * (c2[k] - c1[k]) + 3 * t * t * (e[k] - c2[k]),
+    );
+    const n = Math.hypot(v[0], v[1]) || 1;
+    return [v[0] / n, v[1] / n];
+  };
+  const N = 28;
+  const pts: string[] = [];
+  for (let n = 0; n <= N; n++) {
+    const t = n / N;
+    const p = at(t);
+    const d = tan(t);
+    // the wobble: none at the ends (they land where they're meant to), a little in the middle
+    const w = Math.sin(t * Math.PI) * (Math.sin(t * 9.1 + 0.7) * 1.1 + Math.sin(t * 23.3) * 0.45);
+    pts.push(`${f1(p[0] - d[1] * w)} ${f1(p[1] + d[0] * w)}`);
+  }
+  const d = tan(1);
+  const nr: Pt = [-d[1], d[0]];
+  // the head: back from the tip along the line, swept out; the upper wing longer, both bowing in a little
+  const wing = (side: number, len: number, spread: number): [Pt, Pt] => {
+    const end: Pt = [e[0] - d[0] * len + nr[0] * spread * side, e[1] - d[1] * len + nr[1] * spread * side];
+    const bow: Pt = [
+      e[0] - d[0] * len * 0.45 + nr[0] * spread * side * 0.32,
+      e[1] - d[1] * len * 0.45 + nr[1] * spread * side * 0.32,
+    ];
+    return [end, bow];
+  };
+  const [a, ab] = wing(-1, size, size * 0.62);
+  const [b, bb] = wing(1, size * 0.86, size * 0.55);
+  const head =
+    `M${f1(a[0])} ${f1(a[1])} Q ${f1(ab[0])} ${f1(ab[1])} ${f1(e[0])} ${f1(e[1])}` +
+    ` Q ${f1(bb[0])} ${f1(bb[1])} ${f1(b[0])} ${f1(b[1])}`;
+  return { d: `M${pts.join(" L ")}`, head };
+};
 
 export const arrange = (W: number, H: number, look: ArrLook, aspect: number, visits?: string): Arranged => {
   const pad = 12;
@@ -139,7 +194,7 @@ export const arrange = (W: number, H: number, look: ArrLook, aspect: number, vis
 /**
  * ?beat=9b: the opener over its stage's label and the funnel, as wide as
  * the room left of the device, as one block; the device in its own column
- * on the right, level with it; a marker frame round the stage's chamber
+ * on the right, level with it; the stage's chamber lit from inside
  * and an arrow from its foot, swooping under the funnel, into the device. The payoff keeps the same
  * funnel, in the same place: its words where the opener stood, its metric
  * card where the device stood.
@@ -175,15 +230,14 @@ export const arrangeOpener = (W: number, H: number, aspect: number, visits?: str
     const y = clamp(mid - h / 2, pad, H - pad - h);
     const ch = an.chambers[i];
     const left = clamp(fnLeft + ch.xc - ow / 2, 0, rest - ow);
-    // the frame: the chamber, from just under its label (clear of the label's underline) to under its agent on the floor
-    const lt = fnTop + an.labels + clamp(fnH * 0.045, 12, 20);
-    const lb = fnTop + ch.floor + clamp(fnH * 0.11, 22, 36);
-    const box = [fnLeft + ch.xa + 2, lt, fnLeft + ch.xb - 2, lb];
-    // the arrow: down out of the frame's foot, swooping under the funnel, into the device's near side
-    const s: Pt = [fnLeft + ch.xc - (ch.xb - ch.xa) * 0.12, lb + 12];
-    const e: Pt = [x - 16, clamp(lb + clamp(H * 0.05, 26, 50), y + 34, y + h - 34)];
-    const dip = Math.max(s[1], e[1]) + clamp(H * 0.07, 36, 70);
-    const hw = clamp(W * 0.008, 9, 13);
+    // the arrow: out from under the chamber's floor, a long easy swoop under the funnel, rising into the device's near side
+    // (clear of the agent's badge on the floor)
+    const lb = fnTop + ch.floor + clamp(fnH * 0.12, 26, 42);
+    const s: Pt = [fnLeft + ch.xc, lb];
+    const e: Pt = [x - clamp(W * 0.012, 12, 20), clamp(y + h * 0.62, y + 40, y + h - 40)];
+    const dip = Math.max(s[1], e[1]) + clamp(H * 0.06, 30, 60);
+    const span = e[0] - s[0];
+    const arrow = markerArrow(s, [s[0] + span * 0.06, dip], [e[0] - span * 0.4, dip + 4], e, clamp(W * 0.013, 15, 22));
     return {
       x,
       y,
@@ -191,16 +245,7 @@ export const arrangeOpener = (W: number, H: number, aspect: number, visits?: str
       h,
       origin: `${fnLeft + ch.xc - x}px ${mid - y}px`,
       copy: { left, width: ow, bottom: H - foot, ["--bch-fs" as string]: `${fs}px` },
-      link: {
-        kind: "lens" as const,
-        box,
-        // a hand's swoop: down out of the frame, a long easy curve, rising a touch into the device
-        d: `M${s[0]} ${s[1]} C ${s[0] - 6} ${dip}, ${e[0] - Math.max(80, (e[0] - s[0]) * 0.45)} ${dip + 6}, ${e[0]} ${e[1]}`,
-        // its head: two curved strokes, the way a marker draws one
-        head:
-          `M${e[0] - hw * 1.5} ${e[1] - hw * 1.05} Q ${e[0] - hw * 0.55} ${e[1] - hw * 0.25} ${e[0]} ${e[1]}` +
-          ` Q ${e[0] - hw * 0.6} ${e[1] + hw * 0.4} ${e[0] - hw * 1.35} ${e[1] + hw * 1.15}`,
-      },
+      link: { kind: "lens" as const, ...arrow },
     };
   });
   const cardW = Math.min(devCol, 380);
@@ -224,7 +269,7 @@ const PHONE_ASPECT = [390 / 844, 390 / 844, 768 / 1024];
 /**
  * ?beat=9b on a narrow stage (phones, small tablets), pinned like the
  * desktop and driven by the scroll the same way: the opener over its
- * label, the funnel full width, the device under it, its frame's arrow
+ * label, the funnel full width, the device under it, the chamber's arrow
  * pointing down into it. The payoff keeps the funnel; its metric card
  * takes the device's place.
  */
@@ -251,14 +296,12 @@ const arrangeOpenerStacked = (W: number, H: number, aspect: number, visits?: str
     const x = (W - w) / 2;
     const y = devTop;
     const ch = an.chambers[i];
-    const lt = fnTop + an.labels + clamp(fnH * 0.045, 8, 16);
-    const lb = fnTop + ch.floor + clamp(fnH * 0.11, 16, 26);
-    const box = [ch.xa + 2, lt, ch.xb - 2, lb];
-    // the arrow: down out of the frame's foot, curving over to the device's top, pointing down into it
-    const s: Pt = [ch.xc, lb + 8];
-    const e: Pt = [clamp(ch.xc, x + w * 0.25, x + w * 0.75), y - 8];
+    // the arrow: out from under the chamber's floor, curving over to the device's top, pointing down into it
+    const lb = fnTop + ch.floor + clamp(fnH * 0.16, 20, 30);
+    const s: Pt = [ch.xc, lb];
+    const e: Pt = [clamp(ch.xc, x + w * 0.3, x + w * 0.7), y - 14];
     const mid = (s[1] + e[1]) / 2;
-    const hw = clamp(W * 0.02, 7, 10);
+    const arrow = markerArrow(s, [s[0], mid], [e[0], mid - 4], e, clamp(W * 0.035, 11, 15));
     return {
       x,
       y,
@@ -266,14 +309,7 @@ const arrangeOpenerStacked = (W: number, H: number, aspect: number, visits?: str
       h,
       origin: `${ch.xc - x}px ${lb - y}px`,
       copy: { left: 0, width: W, bottom: H - foot, ["--bch-fs" as string]: `${fs}px` },
-      link: {
-        kind: "lens" as const,
-        box,
-        d: `M${s[0]} ${s[1]} C ${s[0]} ${mid}, ${e[0]} ${mid}, ${e[0]} ${e[1]}`,
-        head:
-          `M${e[0] - hw * 1.05} ${e[1] - hw * 1.5} Q ${e[0] - hw * 0.25} ${e[1] - hw * 0.55} ${e[0]} ${e[1]}` +
-          ` Q ${e[0] + hw * 0.4} ${e[1] - hw * 0.6} ${e[0] + hw * 1.15} ${e[1] - hw * 1.35}`,
-      },
+      link: { kind: "lens" as const, ...arrow },
     };
   });
   const cardW = Math.min(W, 360);

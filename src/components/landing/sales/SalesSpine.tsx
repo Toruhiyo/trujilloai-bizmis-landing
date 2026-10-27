@@ -246,22 +246,16 @@ const Arrow = ({ d, head, on }: { d: string; head: string; on: boolean }) => (
 );
 
 /**
- * ?beat=9b's link: a soft white wash over the stage's chamber, and an arrow
- * from its foot swooping under the funnel into the device (drawn in like
- * the cone's sides).
+ * ?beat=9b's link: a hand-drawn marker arrow from under the lit chamber
+ * (the funnel fills it) into the device. The line draws itself in, then the
+ * head, in two quick strokes.
  */
-const Lens = ({ box, d, head, on }: { box: number[]; d: string; head: string; on: boolean }) => {
-  const [x0, y0, x1, y1] = box;
-  const r = Math.min(22, (x1 - x0) / 4, (y1 - y0) / 4);
-  return (
-    <svg className={cn("sl-g2-cone sl-g2-lens", on && "is-on")} aria-hidden="true">
-      {/* the stage, lit: a soft white wash over its chamber (no outline) */}
-      <rect className="sl-g2-lens-wash" x={x0} y={y0} width={x1 - x0} height={y1 - y0} rx={r} />
-      <path className="sl-g2-cone-side" d={d} pathLength={1} />
-      <path className="sl-g2-cone-side" d={head} pathLength={1} />
-    </svg>
-  );
-};
+const Lens = ({ d, head, on }: { d: string; head: string; on: boolean }) => (
+  <svg className={cn("sl-g2-cone sl-g2-lens", on && "is-on")} aria-hidden="true">
+    <path className="sl-g2-cone-side" d={d} pathLength={1} />
+    <path className="sl-g2-cone-side sl-g2-lens-head" d={head} pathLength={1} />
+  </svg>
+);
 
 /** The marker ◀◀ (as the funnel's), over something being rewound. */
 const RewindMarks = ({ on, className }: { on: boolean; className?: string }) => (
@@ -400,7 +394,7 @@ const Pinned = () => {
                 l.kind === "arrow" ? (
                   <Arrow key={i} d={l.d} head={l.head} on={step === i} />
                 ) : l.kind === "lens" ? (
-                  <Lens key={i} box={l.box} d={l.d} head={l.head} on={step === i} />
+                  <Lens key={i} d={l.d} head={l.head} on={step === i} />
                 ) : (
                   <Cone key={i} stage={l.stage} device={l.device} on={step === i} />
                 ),
@@ -459,6 +453,7 @@ const Pinned = () => {
                   labels={payoff || !onFunnel}
                   onLabels={payoff ? undefined : onLabels}
                   pile={pile}
+                  lit={!payoff && links[step]?.kind === "lens" ? step : -1}
                   // (the words stand where the funnel's ◀◀ goes: their device's tape look says it)
                   rewind={rewinding && (payoff || !onFunnel)}
                 />

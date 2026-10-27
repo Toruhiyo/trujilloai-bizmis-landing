@@ -648,6 +648,7 @@ const FunnelFlow = ({
   labels: showLabels = true,
   onLabels,
   pile = 0,
+  lit = -1,
   className,
 }: {
   t: number;
@@ -667,12 +668,16 @@ const FunnelFlow = ({
    * tower of parcels, 3 tally marks, 4 a receipt unrolling from the bag.
    */
   pile?: number;
+  /** A stage lit from inside (?beat=9b): a soft white wash filling its chamber, between its walls; -1 none. */
+  lit?: number;
   className?: string;
 }) => {
   const wrap = useRef<HTMLDivElement>(null);
   const canvas = useRef<HTMLCanvasElement>(null);
   const pal = useRef<{ key: string; c: Palette } | null>(null);
   const drawn = useRef(false);
+  // the lit chamber's wash fades in as it changes (and the one before fades out)
+  const litFade = useRef({ i: -1, at: 0, prev: -1 });
   const [size, setSize] = useState({ W: 0, H: 0 });
   const payoff = focus >= 3;
   const starts = useMemo(() => startsFor(focus, fixAt), [focus, fixAt]);
@@ -691,6 +696,7 @@ const FunnelFlow = ({
     else if (t < st) at[i] = Infinity;
   });
   const realStarts = real.current.at;
+  if (litFade.current.i !== lit) litFade.current = { i: lit, at: now, prev: litFade.current.i };
   const sec = now / 1000;
   // a narrow funnel (phones) draws every other visit: the same flow, less crowded
   const thin = size.W > 0 && size.W < 560 ? 2 : 1;
@@ -800,6 +806,31 @@ const FunnelFlow = ({
       const slit = L.x + g.head * 0.5 + lw + 2 + spread * 1.2;
       return wide + (slit - wide) * kk;
     };
+
+    // ── the lit stage: its chamber filled with a soft white wash, wall to wall, seam to seam ──
+    const wash = (i: number, a: number) => {
+      if (i < 0 || i > 2 || a <= 0.01) return;
+      const [ua, ub] = CHAMBERS[i];
+      const inset = ow * 0.5;
+      const steps = Math.max(2, Math.ceil(((ub - ua) * g.run) / 6));
+      ctx.beginPath();
+      for (let n = 0; n <= steps; n++) {
+        const u = ua + ((ub - ua) * n) / steps;
+        ctx.lineTo(X(u), cy - half(u) + inset);
+      }
+      for (let n = steps; n >= 0; n--) {
+        const u = ua + ((ub - ua) * n) / steps;
+        ctx.lineTo(X(u), cy + half(u) - inset);
+      }
+      ctx.closePath();
+      ctx.fillStyle = ink(0.17 * a);
+      ctx.fill();
+    };
+    {
+      const f = smooth(clamp((now - litFade.current.at) / 450));
+      wash(litFade.current.i, f);
+      wash(litFade.current.prev, 1 - f);
+    }
 
     // ── the outline, in marker: per chamber, the top and the floor (broken at the leak) ──
     const stroke = (side: 1 | -1, u0: number, u1: number) => {
