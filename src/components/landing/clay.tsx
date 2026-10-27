@@ -22,6 +22,21 @@ export const CLAY = {
 
 export type ClayShape = keyof typeof CLAY;
 
+/**
+ * Sharper sources for the shapes drawn big (the egg is Customer Support's
+ * product, shown large on landscape phones and retina screens): 2x of the
+ * 480 px base, picked by the screen's pixel ratio.
+ */
+const CLAY_2X: Partial<Record<ClayShape, string>> = {
+  egg: "/landing/clay/egg@2x.jpg",
+};
+
+/** The srcSet for a shape's image, if it has a 2x source. */
+export const claySrcSet = (shape: ClayShape) => {
+  const hi = CLAY_2X[shape];
+  return hi ? `${CLAY[shape]} 1x, ${hi} 2x` : undefined;
+};
+
 /** Tile tints sampled from the film's catalog. */
 export const TINT = {
   stone: "#e8e0d4",
@@ -47,7 +62,7 @@ export const ClayTile = ({
     className={cn("bzl-tile", picked && "is-picked", className)}
     style={{ background: TINT[picked ? "orange" : tint] }}
   >
-    <img src={CLAY[shape]} alt="" loading="lazy" draggable={false} />
+    <img src={CLAY[shape]} srcSet={claySrcSet(shape)} alt="" loading="lazy" draggable={false} />
   </div>
 );
 

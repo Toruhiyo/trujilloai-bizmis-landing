@@ -194,6 +194,8 @@ const ReplayCard = ({ session, fill = false }: { session: ReplaySession; fill?: 
   const focusedRef = useRef<string | null>(null);
   const refs = useRef<Record<string, HTMLDivElement | null>>({});
   const listRef = useRef<HTMLDivElement>(null);
+  // a mouse over the transcript: it's being read (or scrolled), so playback doesn't pull it away
+  const reading = useRef(false);
 
   // the bubble the call has reached: its cue (the first word heard, or the
   // moment the agent's tool fires) is the last one at or before `t`
@@ -211,7 +213,7 @@ const ReplayCard = ({ session, fill = false }: { session: ReplaySession; fill?: 
       setFocused(id);
       const el = id ? refs.current[id] : null;
       const list = listRef.current;
-      if (el && list)
+      if (el && list && !reading.current)
         list.scrollTo({
           top: el.offsetTop - list.clientHeight / 2 + el.clientHeight / 2,
           behavior: "smooth",
@@ -226,7 +228,8 @@ const ReplayCard = ({ session, fill = false }: { session: ReplaySession; fill?: 
       : "";
 
   return (
-    <div className={cn("bzl-window p-4 sm:px-5 sm:py-4", fill && "flex min-h-0 flex-1 flex-col")}>
+    // fill: as tall as its content, up to the room it's given (the transcript scrolling in what's left)
+    <div className={cn("bzl-window p-4 sm:px-5 sm:py-4", fill && "flex min-h-0 flex-initial flex-col")}>
       <div
         className={cn(
           "mb-3 h-[3px] flex-shrink-0 rounded-full",
@@ -289,14 +292,19 @@ const ReplayCard = ({ session, fill = false }: { session: ReplaySession; fill?: 
         />
       </div>
 
-      <div className={cn("relative mt-2.5", fill && "min-h-0 flex-1")}>
+      <div className={cn("relative mt-2.5", fill && "flex min-h-0 flex-col")}>
         <div
           ref={listRef}
+          onPointerEnter={(e) => e.pointerType === "mouse" && (reading.current = true)}
+          onPointerLeave={() => (reading.current = false)}
           // inner room on every side (cancelled by the negative margin) so a
-          // highlighted card's ring and glow never get clipped by the scroll box
+          // highlighted card's ring and glow never get clipped by the scroll box.
+          // Not filling a pinned screen, on a short screen (a phone on its side) it doesn't
+          // scroll at all (bzi-list.is-capped, landing-responsive.css): capped and faded, the
+          // call's playback still moving it, so the page's wheel never gets stuck in it
           className={cn(
-            "relative -mx-3 -mt-2 space-y-2 overflow-y-auto px-3 pb-8 pt-2",
-            fill ? "h-full" : "max-h-[min(22.5rem,max(9.5rem,calc(100svh-32.5rem)))]",
+            "bzi-list relative -mx-3 -mt-2 space-y-2 overflow-y-auto px-3 pb-8 pt-2",
+            fill ? "min-h-0" : "is-capped max-h-[min(22.5rem,max(9.5rem,calc(100svh-32.5rem)))]",
           )}
         >
           {data.conversations.map((c) => (
@@ -455,12 +463,42 @@ const SessionReplay = ({ fill = false }: { fill?: boolean }) => {
     "support-failed": m.tabTooltips.supportFailed,
   };
   const [active, setActive] = useState(REPLAY_SESSIONS[0].id);
+  const tabs = useRef<HTMLDivElement>(null);
+  const [edges, setEdges] = useState({ l: false, r: false });
+  // the tab row scrolls sideways on phones: fade the edge(s) it continues past
+  useEffect(() => {
+    const el = tabs.current;
+    if (!el || typeof ResizeObserver === "undefined") return;
+    const check = () => {
+      const max = el.scrollWidth - el.clientWidth;
+      const l = max > 1 && el.scrollLeft > 1;
+      const r = max > 1 && el.scrollLeft < max - 1;
+      setEdges((e) => (e.l === l && e.r === r ? e : { l, r }));
+    };
+    check();
+    const ro = new ResizeObserver(check);
+    ro.observe(el);
+    el.addEventListener("scroll", check, { passive: true });
+    return () => {
+      ro.disconnect();
+      el.removeEventListener("scroll", check);
+    };
+  }, []);
+  const fade =
+    edges.l || edges.r
+      ? `linear-gradient(90deg, ${edges.l ? "transparent, #000 2rem" : "#000"}, ${edges.r ? "#000 calc(100% - 2.5rem), transparent" : "#000"})`
+      : undefined;
   const session =
     REPLAY_SESSIONS.find((s) => s.id === active) ?? REPLAY_SESSIONS[0];
   return (
     // a touch narrower than its column, still flush with the page's right edge
-    <div className={cn("w-full min-w-0 max-w-[41rem] lg:ml-auto", fill && "flex h-full flex-col")}>
-      <div className="mb-3 flex flex-shrink-0 gap-1 overflow-x-auto pb-1" role="tablist">
+    <div className={cn("w-full min-w-0 max-w-[41rem] lg:ml-auto", fill && "flex min-h-0 flex-col")}>
+      <div
+        ref={tabs}
+        className="mb-3 flex flex-shrink-0 gap-1 overflow-x-auto pb-1"
+        style={fade ? { WebkitMaskImage: fade, maskImage: fade } : undefined}
+        role="tablist"
+      >
         {REPLAY_SESSIONS.map((s) => {
           const on = s.id === active;
           return (

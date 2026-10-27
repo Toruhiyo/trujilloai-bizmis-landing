@@ -1,0 +1,195 @@
+/* The v2 landing on screens its sections weren't laid out for: phones on
+   their side (short screens, max-height 500px), tall portrait tablets, and
+   what sticks under the navbar. Loaded last (FilmLanding), so it overrides
+   the sections' own files; scoped under .bzl like them. */
+
+/* ── Under the navbar: its real height (FilmLanding measures it, --bzl-nav-real),
+   not one assumed by breakpoint (the docked bars assumed 49px up to 767px wide,
+   where the bar is 64px from 640px, so they slid under it on a phone on its side) ── */
+.bzl.bzl .pi {
+  --pi-nav: var(--bzl-nav-real, var(--bzl-nav, 4rem));
+}
+.bzl.bzl .sl {
+  --sl-nav: var(--bzl-nav-real, var(--bzl-nav, 4rem));
+}
+
+/* ═════════ Short screens (a phone on its side): the screen is ~375–430px tall ═════════ */
+@media (max-height: 500px) {
+  /* The docked pill: slim, on one row, over a solid strip the width of the page (the content
+     scrolls under the strip instead of showing beside the pill or through it) */
+  .bzl .pi-od .pi-dock.odz-bar {
+    padding-block: 0.28rem;
+  }
+  .bzl .pi-od .pi-dock.odz-bar-d {
+    --odz: 0.78rem;
+  }
+  .bzl .pi-od .odz-pill .odz-icon {
+    width: 1.65em;
+  }
+  .bzl .odz-pill.is-outcome {
+    display: inline-flex;
+    padding: 0.32em 1.05em 0.32em 0.32em;
+  }
+  .bzl .odz-pill.is-outcome::before {
+    border-radius: 999px;
+    clip-path: inset(-24px calc((1 - var(--odz-g, 1)) * 50% - var(--odz-g, 1) * 24px) -36px round 999px);
+  }
+  .bzl .odz-pill.is-outcome .odz-sep {
+    display: block;
+  }
+  .bzl .pi-odx-d .pi-head::before {
+    display: block;
+    background: rgb(255 255 255 / 0.96);
+    box-shadow: 0 1px 0 rgb(59 36 22 / 0.07);
+  }
+  /* on Sales' band: the band's own orange, the pill on it a solid white-rimmed orange */
+  .bzl .sl-c .pi-odx-d .pi-head::before {
+    background: #f9a353;
+    box-shadow: 0 1px 0 rgb(255 255 255 / 0.35);
+  }
+  .bzl .sl-c .odz-pill::before {
+    background: #f9a353;
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+
+  /* Devices never taller than about 70% of the screen (aspect: browser 16:10, phone 390:844, tablet 4:3) */
+  .bzl .sl .sl-dev-find {
+    max-width: min(100%, calc(70svh * 1.6));
+  }
+  .bzl .sl .sl-dev-trust {
+    max-width: calc(70svh * 0.462);
+  }
+  .bzl .sl .sl-dev-buy {
+    max-width: min(100%, calc(70svh * 1.333));
+  }
+  .bzl .bzs-device:not(.is-phone) {
+    max-width: min(100%, calc(70svh * 1.6));
+  }
+  .bzl .bzs-drawing {
+    max-width: min(34rem, 100%, calc(62svh * 1.87));
+  }
+}
+
+/* Store Insights' replay, not filling a pinned screen, on a short screen: its transcript doesn't
+   scroll (the page's wheel never gets stuck in it), capped and faded at its foot; the call's
+   playback still moves it to the line being said (SessionReplay) */
+@media (max-height: 700px) {
+  .bzl .bzi-list.is-capped {
+    overflow-y: hidden;
+  }
+}
+
+/* ═════════ Make it truly yours on a phone on its side: the head beside the carousel ═════════
+   (stacked, the carousel had no height left under the head: it shrank to a dot) */
+@media (max-height: 500px) and (orientation: landscape) and (min-width: 560px) {
+  .bzl .bzl-customize {
+    padding-block: 1.25rem;
+  }
+  .bzl .bzl-customize > .bzl-wrap {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+    column-gap: clamp(1.25rem, 4vw, 3rem);
+  }
+  .bzl .bzl-customize .bzl-cz-grid {
+    display: block;
+    margin: 0;
+  }
+  /* (the cards would push the carousel off the screen, as on portrait phones) */
+  .bzl .bzl-customize .bzl-cz-cards {
+    display: none;
+  }
+  .bzl .bzl-customize .bzl-cz-stage {
+    width: min(calc(100svh - var(--bzl-nav-real, 4rem) - 2.5rem), 46vw);
+    max-width: none;
+  }
+}
+
+/* ═════════ Tall portrait tablets (768×1024, 820×1180, 1024×1366): stacked inside the pin ═════════
+   Customer Support and Store Insights pin one screen here too; side by side (1024 wide) their two
+   columns filled about a quarter of it, and Insights pinned its drawing alone over an empty screen.
+   Now the lead, the drawing and the device (or the replay's card) stack in the pin, sized from its
+   height (the stage is a size container). The pill sits centred under the nav, the pin under it. */
+@media (min-width: 700px) and (min-height: 900px) and (max-aspect-ratio: 4/5) {
+  .bzl .bzp.is-pinned.pi-pill-col {
+    --pi-pin-dock: initial;
+  }
+  .bzl .p-support .bzp.is-pinned .bzp-stage {
+    container-type: size;
+  }
+  .bzl .p-support .bzp.is-pinned .bzs-grid {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto auto auto;
+    grid-template-areas: "lead" "day" "store";
+    column-gap: 0;
+    row-gap: clamp(1rem, 2.6svh, 2rem);
+  }
+  .bzl .p-support .bzp.is-pinned .bzs-lead,
+  .bzl .p-support .bzp.is-pinned .bzs-day {
+    align-self: center;
+  }
+  .bzl .p-support .bzp.is-pinned .bzs-drawing {
+    max-width: min(100%, 38rem, calc(30cqh * 1.87));
+  }
+  .bzl .p-support .bzp.is-pinned .bzs-device {
+    max-width: min(100%, calc((66cqh - 7rem) * 1.6));
+    margin-inline: auto;
+  }
+
+  .bzl .bzi-grid.is-pinned {
+    height: 100cqh;
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto auto minmax(0, 1fr);
+    grid-template-areas: "lead" "chart" "replay";
+    column-gap: 0;
+    row-gap: clamp(1rem, 2.6svh, 2rem);
+  }
+  .bzl .bzi-grid.is-pinned .bzi-clarity {
+    max-width: min(100%, 34rem, calc(26cqh * 2));
+    margin-inline: auto;
+  }
+  /* (.bzl.bzl: over the desktop rule below) */
+  .bzl.bzl .bzi-grid.is-pinned .bzi-replay {
+    align-self: start;
+    justify-self: center;
+    width: 100%;
+    max-width: 41rem;
+    max-height: 100%;
+  }
+  .bzl .bzi-grid.is-pinned .bzi-replay > * {
+    margin-inline: auto;
+  }
+}
+
+/* Store Insights pinned (desktop, and the tablets above): the replay's card as tall as its call,
+   up to the room it has (it used to fill the room, a blank half under a short call on big screens);
+   the transcript scrolls in what the card leaves it. (Its flex chain: SessionReplay's fill.) */
+.bzl .bzi-grid.is-pinned .bzi-replay {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+.bzl .bzi-grid.is-pinned .bzi-replay > * {
+  height: auto;
+  min-height: 0;
+}
+@media (min-width: 1024px) {
+  .bzl .bzi-grid.is-pinned .bzi-replay {
+    align-self: center;
+    height: auto;
+    max-height: calc(100cqh - clamp(1.25rem, 4.5svh, 2.75rem));
+  }
+}
+
+/* ── Words inside the mockups (item: legible on phones). The tablet's captions rode a fixed
+   15px of its screen, ~6–10px on a phone; now never under ~12px on screen, wrapping in the bar
+   (--vs: the screen's scale, devices.tsx; --ui: the bar's own growth, landing-sales.css) ── */
+.bzl .sl-cap-buy {
+  font-size: max(15px, calc(12px / var(--vs, 1) / var(--ui, 1)));
+}
+.bzl .sl-cap,
+.bzl .bzs-cap {
+  max-width: 100%;
+  overflow-wrap: break-word;
+}

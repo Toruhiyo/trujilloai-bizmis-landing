@@ -5,7 +5,7 @@ import { useMessages } from "@/i18n/LocaleProvider";
 import { cn } from "@/lib/utils";
 import { span, typed } from "../useRewindLoop";
 import BizmisWidget, { Captions, NavBanner, SentMessage, captionLength, captionVoice } from "../BizmisWidget";
-import { CLAY, TINT } from "../clay";
+import { CLAY, TINT, claySrcSet } from "../clay";
 import type { ClayShape } from "../clay";
 import { BrowserFrame } from "../devices";
 import { STORE_URL } from "../visuals";
@@ -171,7 +171,7 @@ const FindMockup = ({ play, clock, active = true }: MockupProps) => {
                       : undefined,
               }}
             >
-              <img src={CLAY[shape]} alt="" loading="lazy" draggable={false} />
+              <img src={CLAY[shape]} srcSet={claySrcSet(shape)} alt="" loading="lazy" draggable={false} />
             </div>
             <div className="mt-2.5 space-y-1.5">
               <div className="bzl-tile-line w-3/4" />

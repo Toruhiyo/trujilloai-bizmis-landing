@@ -1,7 +1,7 @@
 import { useMessages } from "@/i18n/LocaleProvider";
 import { cn } from "@/lib/utils";
 import { IdeaIcon } from "./AnimatedIcons";
-import BenefitIntro, { PinTrack } from "./pillar/BenefitIntro";
+import BenefitIntro, { PIN_QUERY, PinTrack } from "./pillar/BenefitIntro";
 import type { PinState } from "./pillar/BenefitIntro";
 import { CLARITY_MS } from "./PillarMoments";
 import { useDrawOption } from "./drawOptions";
@@ -28,6 +28,15 @@ import { useScenePlayHold } from "./sceneClock";
  * loop. Layout: .bzi-* in film-landing.css.
  */
 const SUB_PIN = "(min-height: 600px)";
+
+/**
+ * Where the whole screen pins: desktops (PIN_QUERY, side by side), and tall
+ * portrait tablets (TABLET_TALL), where the lead, the chart and the replay's
+ * card stack in the one pinned screen (landing-responsive.css), instead of the
+ * chart pinning on its own over a mostly empty screen and the card after it.
+ */
+const TABLET_TALL = "(min-width: 700px) and (min-height: 900px) and (max-aspect-ratio: 4/5)";
+const INSIGHTS_PIN = `${PIN_QUERY}, ${TABLET_TALL}`;
 
 /**
  * At rest on the drawing's end (the reason found), how long it holds before
@@ -109,6 +118,7 @@ const InsightsSection = () => {
         motif="insights"
         outcome={[ins.title, ins.titleTail]}
         duration={CLARITY_MS}
+        pinQuery={INSIGHTS_PIN}
       >
         {(pin) => <InsightsBody pin={pin} />}
       </BenefitIntro>

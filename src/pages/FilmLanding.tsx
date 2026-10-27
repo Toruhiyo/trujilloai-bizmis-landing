@@ -21,6 +21,8 @@ import "@/styles/palette-options.css";
 import "@/styles/look-film.css";
 // how Setup and Customize are set apart: the sheet; ?sep=3 band, ?sep=0 neither (SectionSep)
 import "@/styles/section-sep.css";
+// fixes for phones on their side, tall portrait tablets and the like (loaded last: it overrides the sections' own files)
+import "@/styles/landing-responsive.css";
 // big screens (wider than 1440): the whole page grows with the screen (rem-based)
 import "@/styles/big-screen.css";
 import { useSep } from "@/components/landing/SectionSep";
@@ -64,6 +66,24 @@ const FilmLanding = ({ path = "/" }: FilmLandingProps) => {
   useEffect(() => {
     document.documentElement.classList.add("bzl-page");
     return () => document.documentElement.classList.remove("bzl-page");
+  }, []);
+
+  // The navbar's real height (48px on phones, 64px from 640px, whatever it's scaled to on big
+  // screens), published as --bzl-nav-real for what sticks right under it: the pillars' docked bars
+  // and pinned screens (landing-responsive.css), which otherwise assume a height by breakpoint.
+  useEffect(() => {
+    const nav = document.querySelector<HTMLElement>("nav");
+    const root = document.documentElement;
+    if (!nav || typeof ResizeObserver === "undefined") return;
+    // (clientHeight: the bar, not the hairline it gains once the page scrolls)
+    const set = () => nav.clientHeight > 0 && root.style.setProperty("--bzl-nav-real", `${nav.clientHeight}px`);
+    set();
+    const ro = new ResizeObserver(set);
+    ro.observe(nav);
+    return () => {
+      ro.disconnect();
+      root.style.removeProperty("--bzl-nav-real");
+    };
   }, []);
 
   useEffect(() => {

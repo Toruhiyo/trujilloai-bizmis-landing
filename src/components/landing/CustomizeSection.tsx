@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useLayoutEffect, useRef } from "react";
 import { useMessages } from "@/i18n/LocaleProvider";
 import AvatarCarousel from "./AvatarCarousel";
 import manifest from "./agents-manifest.json";
@@ -35,6 +35,17 @@ const LINEUP: readonly CarouselAvatar[] = (
   ] as const
 ).map((a) => ({ ...a, color: brandColor(a.name) }));
 
+/**
+ * The ambient light's three blobs, around the carousel's stage: their centres offset from the
+ * stage's centre (dx, dy) and their sizes (w, h), all in stage widths. The big one behind the
+ * avatars, a smaller one low on each side (where the right-anchored places had them at 1440).
+ */
+const GLOW = [
+  { dx: 0.05, dy: -0.12, w: 1.25, h: 1.2 },
+  { dx: -0.45, dy: 0.42, w: 1, h: 0.95 },
+  { dx: 0.5, dy: 0.3, w: 0.9, h: 0.9 },
+] as const;
+
 // only avatars that have been rendered (an avatar added here before its render lands is skipped)
 const SHOWN = LINEUP.filter((a) => a.name in manifest);
 
@@ -54,6 +65,26 @@ const CustomizeSection = () => {
   const section = useRef<HTMLElement>(null);
   const sep = useSep();
 
+  // where the carousel's stage sits in the section (its centre and width, px), for the ambient light
+  useLayoutEffect(() => {
+    const s = section.current;
+    const stage = s?.querySelector<HTMLElement>(".bzl-cz-stage");
+    if (!s || !stage || typeof ResizeObserver === "undefined") return;
+    const place = () => {
+      const a = s.getBoundingClientRect();
+      const b = stage.getBoundingClientRect();
+      if (!b.width) return;
+      s.style.setProperty("--cz-x", `${(b.left + b.width / 2 - a.left).toFixed(1)}px`);
+      s.style.setProperty("--cz-y", `${(b.top + b.height / 2 - a.top).toFixed(1)}px`);
+      s.style.setProperty("--cz-r", `${b.width.toFixed(1)}px`);
+    };
+    place();
+    const ro = new ResizeObserver(place);
+    ro.observe(s);
+    ro.observe(stage);
+    return () => ro.disconnect();
+  }, []);
+
   return (
     <section
       ref={section}
@@ -68,15 +99,17 @@ const CustomizeSection = () => {
         className="bzl-customize-glow pointer-events-none absolute inset-0"
         style={{ opacity: "var(--amb-glow, 0.6)" }}
       >
-        {[
-          "right-[8%] top-[24%] h-[62%] w-[40%]",
-          "right-[24%] bottom-[4%] h-[50%] w-[32%]",
-          "right-[4%] bottom-[10%] h-[46%] w-[28%]",
-        ].map((pos, k) => (
+        {GLOW.map((b, k) => (
           <div
-            key={pos}
-            className={`absolute rounded-full blur-3xl ${pos}`}
+            key={k}
+            className="absolute rounded-full blur-3xl"
             style={{
+              // centred on the carousel's stage (--cz-x/-y, its size --cz-r, measured below), so the light stays
+              // with the avatars however the section is laid out; the old right-anchored places as the fallback
+              left: `calc(var(--cz-x, 70%) + ${b.dx} * var(--cz-r, 30%) - ${b.w / 2} * var(--cz-r, 30%))`,
+              top: `calc(var(--cz-y, 55%) + ${b.dy} * var(--cz-r, 30%) - ${b.h / 2} * var(--cz-r, 30%))`,
+              width: `calc(${b.w} * var(--cz-r, 30%))`,
+              height: `calc(${b.h} * var(--cz-r, 30%))`,
               background:
                 "radial-gradient(closest-side, color-mix(in oklab, hsl(var(--primary)) 30%, transparent), color-mix(in oklab, hsl(var(--primary)) 9%, transparent) 55%, transparent 75%)",
               transform: `translate(var(--amb-x${k + 1}, 0), var(--amb-y${k + 1}, 0)) scale(var(--amb-s${k + 1}, 1))`,
@@ -87,9 +120,9 @@ const CustomizeSection = () => {
       <div className="bzl-wrap relative">
         <SectionHead icon={Palette} eyebrow={c.eyebrow} title={c.title} lead={c.lead} />
 
-        <div className="mx-auto mt-[clamp(1rem,3svh,2rem)] grid max-w-5xl items-center gap-6 lg:grid-cols-2 lg:gap-12">
+        <div className="bzl-cz-grid mx-auto mt-[clamp(1rem,3svh,2rem)] grid max-w-5xl items-center gap-6 lg:grid-cols-2 lg:gap-12">
           {/* (phones: the carousel says it on its own; the cards would push it off the first screen) */}
-          <div className="order-2 mx-auto hidden w-full max-w-md items-start gap-2.5 sm:grid lg:order-1 lg:mr-0">
+          <div className="bzl-cz-cards order-2 mx-auto hidden w-full max-w-md items-start gap-2.5 sm:grid lg:order-1 lg:mr-0">
             <Reveal delay={220}>
               <FeatureCard icon={AvatarIcon} title={c.avatar.title} body={c.avatar.body} />
             </Reveal>
@@ -107,8 +140,13 @@ const CustomizeSection = () => {
             </Reveal>
           </div>
 
-          <Reveal delay={120} className="order-1 lg:order-2">
-            <AvatarCarousel avatars={SHOWN} ambient={section} stageClassName="max-w-[min(30rem,calc(100svh-23rem))]" />
+          <Reveal delay={120} className="bzl-cz-carousel order-1 lg:order-2">
+            {/* never under 14rem (a phone on its side has no 23rem to spare: it sets the stage beside the head instead, landing-responsive.css) */}
+            <AvatarCarousel
+              avatars={SHOWN}
+              ambient={section}
+              stageClassName="bzl-cz-stage max-w-[min(30rem,max(14rem,calc(100svh-23rem)))]"
+            />
           </Reveal>
         </div>
       </div>
