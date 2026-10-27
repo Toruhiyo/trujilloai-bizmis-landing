@@ -907,10 +907,11 @@
 .sl-c.sl-g2.is-pinned {
   padding: 0;
 }
-/* four stretches of scroll: find, trust, buy, then the payoff (1.8 of a beat's; each timeline maps onto its own) */
+/* four stretches of scroll: find, trust, buy, then the payoff (1.5 of a beat's; each timeline maps onto its
+   own, then holds its end): about two screens a beat, slow enough to follow, a long hold on each win */
 .sl-g2-track {
   position: relative;
-  height: 720svh;
+  height: 1000svh;
 }
 .sl-g2-pin {
   position: sticky;
@@ -1049,7 +1050,11 @@
   text-align: center;
 }
 /* 9b: the stage's wash (a filled, faint white light over its chamber) and the arrow from its foot to the device */
-/* 9b: the hand-drawn arrow, in the funnel's fine marker; its head drawn in after the line */
+/* 9b: the hand-drawn arrow, in the funnel's fine marker; its head drawn in after the line (over the
+   device's shadow, which would grey its end: it stops short of the device itself) */
+.sl-g2-lens {
+  z-index: 4;
+}
 .sl-g2-lens .sl-g2-cone-side {
   stroke-width: 4;
   stroke-linejoin: round;
@@ -1411,4 +1416,40 @@
 }
 .sl-g2-met.is-payoff[viewBox="0 0 640 96"] {
   max-width: 620px;
+}
+
+/* the tape over something drawn on the band (the payoff's funnel and metric card, ScreenTape band):
+   no white ground, the drawing keeps its own; scanlines and tracking bands tuned for the orange */
+.rws.is-band .rws-in {
+  background: transparent;
+}
+.rws.is-band .rws-in.is-rw {
+  box-shadow: none;
+}
+.rws.is-band .rwa-fx {
+  /* feathered: no box edge on the band */
+  -webkit-mask-image: radial-gradient(ellipse 60% 62% at 50% 50%, #000 55%, transparent 100%);
+  mask-image: radial-gradient(ellipse 60% 62% at 50% 50%, #000 55%, transparent 100%);
+}
+.rws.is-band .rwa-fx::before {
+  /* scanlines only (a grain would grey the orange): the drawing's own tear and colour split carry it */
+  background: repeating-linear-gradient(180deg, rgb(150 60 10 / 0.12) 0 1px, transparent 1px 3px);
+  background-size: 100% 3px;
+  /* (no blend: the tape's filter isolates the box, so a blend would have no band under it to mix with) */
+  mix-blend-mode: normal;
+  opacity: 0.7;
+}
+.rws.is-band .rwa-fx::after {
+  background:
+    linear-gradient(
+      180deg,
+      transparent 0%,
+      rgb(150 60 10 / 0.05) 25%,
+      rgb(150 60 10 / 0.1) 42%,
+      rgb(255 255 255 / 0.35) 47%,
+      rgb(255 225 200 / 0.22) 51%,
+      rgb(150 60 10 / 0.08) 58%,
+      transparent 100%
+    ),
+    linear-gradient(180deg, transparent 80%, rgb(150 60 10 / 0.16) 80% 82%, transparent 82%) 0 0 / 100% 100% no-repeat;
 }

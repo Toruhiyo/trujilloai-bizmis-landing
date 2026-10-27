@@ -11,7 +11,7 @@ import FunnelScale from "./funnel/FunnelScale";
 import { cardKsAt, ksAt, startsFor } from "./funnel/model";
 import { useActivePanel, useMedia, usePinProgress, useRewinding, useScrollPlay, useScrollThrough } from "./hooks";
 import Metrics from "./Metrics";
-import RewindScreen from "./RewindScreen";
+import RewindScreen, { ScreenTape } from "./RewindScreen";
 import { useSalesProto } from "./proto";
 import SalesPayoff, { PAYOFF_DURATION } from "./SalesPayoff";
 import { DEVICE_ASPECT, SalesShell, useBeatTimelines, useSize } from "./SalesShell";
@@ -48,11 +48,14 @@ const SalesSpine = () => {
 };
 
 /** The payoff's stretch of scroll, in beats' stretches; the whole track's. */
-const PAYOFF_SPAN = 1.8;
+const PAYOFF_SPAN = 1.5;
 const SPAN = 3 + PAYOFF_SPAN;
-/** Of a beat's stretch of scroll: a short lead-in, then its timeline, then a hold on its fixed state. */
-const LEAD = 0.05;
-const RUN = 0.75;
+/**
+ * Of a beat's stretch of scroll (about two screens): a short lead-in, then its timeline, then a long
+ * hold on its fixed state (about a third: two thirds of a screen), so a fast scroller still lands on the win.
+ */
+const LEAD = 0.035;
+const RUN = 0.64;
 /** Where a beat is on its timeline (ms), `p` (0 → 1) through its stretch of scroll. */
 const timeAt = (p: number, duration: number) => Math.min(1, Math.max(0, (p - LEAD) / RUN)) * duration;
 
@@ -439,24 +442,27 @@ const Pinned = () => {
               <div className={cn("sl-g2-card", payoff && "is-on")} style={{ left: card.left, top: card.top, width: card.width }}>
                 {/* scrolled back: the card rewinds like the devices (the tape look, and the marker ◀◀ over it) */}
                 <RewindMarks on={rewinding && payoff} className="sl-g2-card-rw" />
-                <RewindScreen on={rewinding && payoff}>
+                <ScreenTape band on={rewinding && payoff}>
                   <Metrics variant={4} k={payoff ? cardKsAt(payT, startsFor(3)) : [0, 0, 0]} focus={3} className="sl-g2-met is-card" />
-                </RewindScreen>
+                </ScreenTape>
               </div>
               <div className="sl-fn sl-g2-funnel" style={{ left: L.fnLeft, top: L.fnTop, width: L.fnW, height: L.fnH }}>
-                <FunnelFlow
-                  t={clock.t}
-                  duration={clock.duration}
-                  focus={step}
-                  fixAt={clock.fixAt}
-                  copy={s.funnel}
-                  labels={payoff || !onFunnel}
-                  onLabels={payoff ? undefined : onLabels}
-                  pile={pile}
-                  lit={!payoff && links[step]?.kind === "lens" ? step : -1}
-                  // (the words stand where the funnel's ◀◀ goes: their device's tape look says it)
-                  rewind={rewinding && (payoff || !onFunnel)}
-                />
+                {/* the payoff scrolled back: the whole drawing rewinds like a device's screen (the tape look) */}
+                <ScreenTape band on={rewinding && payoff}>
+                  <FunnelFlow
+                    t={clock.t}
+                    duration={clock.duration}
+                    focus={step}
+                    fixAt={clock.fixAt}
+                    copy={s.funnel}
+                    labels={payoff || !onFunnel}
+                    onLabels={payoff ? undefined : onLabels}
+                    pile={pile}
+                    lit={!payoff && links[step]?.kind === "lens" ? step : -1}
+                    // (the words stand where the funnel's ◀◀ goes: their device's tape look says it)
+                    rewind={rewinding && (payoff || !onFunnel)}
+                  />
+                </ScreenTape>
               </div>
             </div>
           </div>
@@ -540,7 +546,9 @@ const StackedPayoff = ({ setRef }: { setRef: (el: HTMLElement | null) => void })
       className="sl-g2-item is-payoff"
     >
       <PanelCopy title={s.payoff.title} className="sl-c-copy is-on" />
-      <SalesPayoff t={t} rewind={rewinding} />
+      <ScreenTape band on={rewinding}>
+        <SalesPayoff t={t} rewind={rewinding} />
+      </ScreenTape>
     </div>
   );
 };

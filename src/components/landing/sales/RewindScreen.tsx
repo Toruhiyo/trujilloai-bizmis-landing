@@ -16,9 +16,11 @@ const rand = (a: number, b: number) => a + Math.random() * (b - a);
  * for a lit screen rather than words, reusing its `.rwa-fx` overlay). Gathers
  * quickly as the rewind starts, fades as it stops; nothing while the beat
  * plays or holds. Driven straight on the DOM, never through React state.
- * Reduced motion: off.
+ * Reduced motion: off. `band`: over something drawn on the band itself (the
+ * payoff's funnel, its metric card), not a lit screen: no white ground, the
+ * scanlines tuned for the orange.
  */
-const ScreenTape = ({ on, children }: { on: boolean; children: ReactNode }) => {
+export const ScreenTape = ({ on, band = false, children }: { on: boolean; band?: boolean; children: ReactNode }) => {
   const reduced = useReducedMotion();
   const id = `rws-${useId().replace(/[^a-zA-Z0-9_-]/g, "")}`;
   const box = useRef<HTMLDivElement>(null);
@@ -89,7 +91,7 @@ const ScreenTape = ({ on, children }: { on: boolean; children: ReactNode }) => {
   useEffect(() => () => cancelAnimationFrame(st.current.raf), []);
 
   return (
-    <div className="rws">
+    <div className={band ? "rws is-band" : "rws"}>
       <div ref={box} className="rws-in">
         {/* a screen nested inside this one keeps its own, plain */}
         <ScreenFx.Provider value={null}>{children}</ScreenFx.Provider>

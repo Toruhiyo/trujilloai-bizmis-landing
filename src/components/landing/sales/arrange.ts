@@ -87,8 +87,8 @@ const markerArrow = (s: Pt, c1: Pt, c2: Pt, e: Pt, size: number) => {
     ];
     return [end, bow];
   };
-  const [a, ab] = wing(-1, size, size * 0.62);
-  const [b, bb] = wing(1, size * 0.86, size * 0.55);
+  const [a, ab] = wing(-1, size, size * 0.58);
+  const [b, bb] = wing(1, size * 0.92, size * 0.56);
   const head =
     `M${f1(a[0])} ${f1(a[1])} Q ${f1(ab[0])} ${f1(ab[1])} ${f1(e[0])} ${f1(e[1])}` +
     ` Q ${f1(bb[0])} ${f1(bb[1])} ${f1(b[0])} ${f1(b[1])}`;
@@ -236,11 +236,13 @@ export const arrangeOpener = (W: number, H: number, aspect: number, visits?: str
     // (clear of the agent's badge on the floor)
     const lb = fnTop + ch.floor + clamp(fnH * 0.12, 26, 42);
     const s: Pt = [fnLeft + ch.xc, lb];
-    const e: Pt = [x + w * 0.28, y + h + clamp(H * 0.016, 10, 16)];
-    const dip = Math.min(H - 6, Math.max(s[1], e[1]) + clamp(H * 0.07, 40, 64));
+    const e: Pt = [x + w * 0.28, y + h + clamp(H * 0.022, 14, 22)];
+    const dip = Math.min(H - 6, Math.max(s[1], e[1]) + clamp(H * 0.06, 34, 56));
     const span = e[0] - s[0];
-    // (the last control right under the head: the stroke turns up into the device's foot)
-    const arrow = markerArrow(s, [s[0] + span * 0.15, dip + 6], [e[0] - span * 0.04, dip + 14], e, clamp(W * 0.013, 15, 22));
+    // the last stretch comes in straight along the head's line (up and to the right), so the head sits
+    // square on the stroke, its two strokes even on either side
+    const k = clamp(Math.hypot(span, dip - e[1]) * 0.28, 60, 220);
+    const arrow = markerArrow(s, [s[0] + span * 0.22, dip + 10], [e[0] - 0.5 * k, e[1] + 0.87 * k], e, clamp(W * 0.013, 16, 22));
     return {
       x,
       y,
