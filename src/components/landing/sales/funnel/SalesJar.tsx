@@ -1,4 +1,4 @@
-import { useMemo, useRef } from "react";
+import { useId, useMemo, useRef } from "react";
 import type { ReactNode } from "react";
 import { cn } from "@/lib/utils";
 import { useNow } from "../hooks";
@@ -64,8 +64,10 @@ const SalesJar = ({
   const T = t + (endAt.current === null ? 0 : now - endAt.current);
   // the checks after the end, at the payoff's last rate
   const gap = Math.max(16, (leave[SALES - 1] - leave[SALES - 21]) / 20);
-  const count = T > duration ? SALES + Math.ceil((T - duration) / gap) + 1 : SALES;
-  const leaveAt = (i: number) => (i < SALES ? leave[i] : leave[SALES - 1] + (i - SALES + 1) * gap);
+  const count =
+    T > duration ? SALES + Math.ceil((T - duration) / gap) + 1 : SALES;
+  const leaveAt = (i: number) =>
+    i < SALES ? leave[i] : leave[SALES - 1] + (i - SALES + 1) * gap;
   const side = box.w > box.h;
   // the bar: one check's worth per landing; at its room's top as the payoff ends, then on up, no limit
   let landed = 0;
@@ -79,7 +81,12 @@ const SalesJar = ({
     : { x: box.x, y: box.y, w: box.w, h: box.h - labelRoom };
   const bar = side
     ? { x: track.x, y: track.y, w: track.w * level, h: track.h }
-    : { x: track.x, y: track.y + track.h * (1 - level), w: track.w, h: track.h * level };
+    : {
+        x: track.x,
+        y: track.y + track.h * (1 - level),
+        w: track.w,
+        h: track.h * level,
+      };
   const r = Math.min(14, (side ? track.h : track.w) * 0.2);
   const badge = clamp(Math.min(box.w, box.h) * 0.045, 5, 8);
   // where a check lands: on the bar's top, spread across it
@@ -87,7 +94,10 @@ const SalesJar = ({
     const across = ((i * 0.618) % 1) * 0.76 + 0.12;
     return side
       ? [track.x + track.w * lv, track.y + track.h * across]
-      : [track.x + track.w * across, track.y + track.h * (1 - lv) - badge * 0.6];
+      : [
+          track.x + track.w * across,
+          track.y + track.h * (1 - lv) - badge * 0.6,
+        ];
   };
   const checks: ReactNode[] = [];
   for (let i = 0; i < count; i++) {
@@ -107,7 +117,11 @@ const SalesJar = ({
       o = Math.min(1, p * 5);
     } else o = 1 - (age - FLIGHT) / MELT;
     checks.push(
-      <g key={i} transform={`translate(${f1(x)} ${f1(y)})`} opacity={o.toFixed(2)}>
+      <g
+        key={i}
+        transform={`translate(${f1(x)} ${f1(y)})`}
+        opacity={o.toFixed(2)}
+      >
         <circle r={badge} className="sl-jar-badge" />
         <path
           className="sl-jar-tick"
@@ -120,27 +134,64 @@ const SalesJar = ({
   const d = side
     ? `M${f1(bar.x)} ${f1(bar.y)} H${f1(Math.max(bar.x, bar.x + bar.w - r))} Q${f1(bar.x + bar.w)} ${f1(bar.y)} ${f1(bar.x + bar.w)} ${f1(bar.y + r)} V${f1(bar.y + bar.h - r)} Q${f1(bar.x + bar.w)} ${f1(bar.y + bar.h)} ${f1(Math.max(bar.x, bar.x + bar.w - r))} ${f1(bar.y + bar.h)} H${f1(bar.x)} Z`
     : `M${f1(bar.x)} ${f1(bar.y + bar.h)} V${f1(bar.y + r)} Q${f1(bar.x)} ${f1(bar.y)} ${f1(bar.x + r)} ${f1(bar.y)} H${f1(bar.x + bar.w - r)} Q${f1(bar.x + bar.w)} ${f1(bar.y)} ${f1(bar.x + bar.w)} ${f1(bar.y + r)} V${f1(bar.y + bar.h)} Z`;
+  // past its room the bar (and the checks flying up to it) melts into the band towards the stage's top,
+  // never cut flat under the section's header
+  const id = `sl-jar${useId().replace(/:/g, "")}`;
+  const fade = Math.max(40, box.y * 0.9);
   return (
     <svg className={cn("sl-g2-jar", on && "is-on")} aria-hidden="true">
-      {level > 0.002 && <path className="sl-jar-fill" d={d} />}
-      {/* the ground it rises from */}
-      <path
-        className="sl-jar-ground"
-        d={
-          side
-            ? `M${f1(track.x)} ${f1(track.y - 6)} L${f1(track.x + 0.5)} ${f1(track.y + track.h + 6)}`
-            : `M${f1(track.x - 10)} ${f1(track.y + track.h)} C ${f1(track.x + track.w * 0.3)} ${f1(track.y + track.h + 1.5)}, ${f1(track.x + track.w * 0.7)} ${f1(track.y + track.h - 1)}, ${f1(track.x + track.w + 10)} ${f1(track.y + track.h + 0.5)}`
-        }
-      />
-      <text
-        className="sl-jar-label"
-        x={side ? box.x + box.w - labelRoom / 2 : box.x + box.w / 2}
-        y={side ? box.y + box.h / 2 + 6 : box.y + box.h - 6}
-        textAnchor="middle"
-      >
-        {label}
-      </text>
-      {checks}
+      {!side && (
+        <defs>
+          <linearGradient
+            id={`${id}-g`}
+            gradientUnits="userSpaceOnUse"
+            x1="0"
+            y1="0"
+            x2="0"
+            y2={f1(fade)}
+          >
+            <stop offset="0" stopColor="#fff" stopOpacity="0" />
+            <stop offset="1" stopColor="#fff" stopOpacity="1" />
+          </linearGradient>
+          <mask
+            id={`${id}-m`}
+            maskUnits="userSpaceOnUse"
+            x="-10000"
+            y="-10000"
+            width="20000"
+            height="20000"
+          >
+            <rect
+              x="-10000"
+              y="-10000"
+              width="20000"
+              height="20000"
+              fill={`url(#${id}-g)`}
+            />
+          </mask>
+        </defs>
+      )}
+      <g mask={side ? undefined : `url(#${id}-m)`}>
+        {level > 0.002 && <path className="sl-jar-fill" d={d} />}
+        {/* the ground it rises from */}
+        <path
+          className="sl-jar-ground"
+          d={
+            side
+              ? `M${f1(track.x)} ${f1(track.y - 6)} L${f1(track.x + 0.5)} ${f1(track.y + track.h + 6)}`
+              : `M${f1(track.x - 10)} ${f1(track.y + track.h)} C ${f1(track.x + track.w * 0.3)} ${f1(track.y + track.h + 1.5)}, ${f1(track.x + track.w * 0.7)} ${f1(track.y + track.h - 1)}, ${f1(track.x + track.w + 10)} ${f1(track.y + track.h + 0.5)}`
+          }
+        />
+        <text
+          className="sl-jar-label"
+          x={side ? box.x + box.w - labelRoom / 2 : box.x + box.w / 2}
+          y={side ? box.y + box.h / 2 + 6 : box.y + box.h - 6}
+          textAnchor="middle"
+        >
+          {label}
+        </text>
+        {checks}
+      </g>
     </svg>
   );
 };
