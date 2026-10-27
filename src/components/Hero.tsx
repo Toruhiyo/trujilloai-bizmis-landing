@@ -348,6 +348,7 @@ const Hero = () => {
             loop={HERO_FILM.loop}
             durationSeconds={HERO_FILM.durationSeconds}
             endFrameCta={HERO_FILM.endFrameCta}
+            captions={HERO_FILM.captions}
             labels={messages.film}
             cta={{
               label: messages.common.installNow,

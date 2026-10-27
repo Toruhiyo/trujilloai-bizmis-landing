@@ -22,6 +22,16 @@ export const HERO_FILM = {
   src:
     import.meta.env.VITE_FILM_SRC ??
     "https://cdn.bizmis.ai/media/film/ad-1/v38/master.m3u8",
+  /**
+   * Closed captions: the NARRATOR's voice-over only (the shopper and the agent are captioned in
+   * the picture). Built from the cut's markers.json by film/scripts/narrator-captions.py and
+   * published next to the ladder by film/scripts/publish-film-captions.sh. English only: the
+   * film has no other voice-over.
+   */
+  captions: {
+    src: "https://cdn.bizmis.ai/media/film/ad-1/v38/en.vtt",
+    lang: "en",
+  },
   /** Fallback until the film's metadata loads (seconds). */
   durationSeconds: 127,
   loop: {

@@ -85,7 +85,7 @@
   color: hsl(var(--primary));
 }
 /* the glass browser window on white: a frosted pane with ink hairlines */
-.bzl[data-look="film"] #hero [class*="border-white/"]:not(.bzw *):not(#site-navbar, #site-navbar *) {
+.bzl[data-look="film"] #hero [class*="border-white/"]:not(.bzw *):not(#site-navbar, #site-navbar *):not([data-film-layer] *) {
   border-color: rgb(59 36 22 / 0.1);
 }
 .bzl[data-look="film"] #hero [class*="bg-white/[0.07]"] {
@@ -99,7 +99,8 @@
 .bzl[data-look="film"] #hero [class*="bg-white/[0.14]"] {
   background-color: rgb(255 255 255 / 0.6);
 }
-.bzl[data-look="film"] #hero [class*="bg-white/"]:not(.bzw *):not([class*="bg-white/[0.07]"]):not([class*="bg-white/[0.14]"]):not(a):not(a *):not(#site-navbar, #site-navbar *) {
+/* (not the film player: its glass controls sit on the film, not on the white page) */
+.bzl[data-look="film"] #hero [class*="bg-white/"]:not(.bzw *):not([class*="bg-white/[0.07]"]):not([class*="bg-white/[0.14]"]):not(a):not(a *):not(#site-navbar, #site-navbar *):not([data-film-layer] *) {
   background-color: rgb(59 36 22 / 0.08);
 }
 /* the Install button: the hero's one loud thing. White, ink label, the bag in primary, as on the

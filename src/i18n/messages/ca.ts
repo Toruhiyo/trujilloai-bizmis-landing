@@ -70,6 +70,10 @@ export const ca: Messages = {
     region: "Vídeo de Bizmis",
     quality: "Qualitat",
     auto: "Auto",
+    /** The film player's CC button (closed captions of the voice-over). */
+    captions: "Subtítols",
+    /** The tag on a voice-over caption (the film's narrator is a woman's voice). */
+    narrator: "Narradora",
     close: "Tanca el vídeo",
   },
 

@@ -72,6 +72,10 @@ export const en = {
     region: "Bizmis film",
     quality: "Quality",
     auto: "Auto",
+    /** The film player's CC button (closed captions of the voice-over). */
+    captions: "Captions",
+    /** The tag on a voice-over caption (the film's narrator is a woman's voice). */
+    narrator: "Narrator",
     close: "Close the film",
   },
 

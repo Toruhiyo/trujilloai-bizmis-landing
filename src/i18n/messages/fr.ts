@@ -70,6 +70,10 @@ export const fr: Messages = {
     region: "Film Bizmis",
     quality: "Qualité",
     auto: "Auto",
+    /** The film player's CC button (closed captions of the voice-over). */
+    captions: "Sous-titres",
+    /** The tag on a voice-over caption (the film's narrator is a woman's voice). */
+    narrator: "Narratrice",
     close: "Fermer la vidéo",
   },
 

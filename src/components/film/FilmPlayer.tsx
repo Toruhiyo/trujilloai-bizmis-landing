@@ -9,13 +9,17 @@ import {
 import type Hls from "hls.js";
 
 import type {
+  CSSProperties,
   KeyboardEvent,
   MouseEvent,
   PointerEvent as ReactPointerEvent,
 } from "react";
 import {
+  Captions,
+  Check,
   Loader2,
   Maximize2,
+  Mic,
   Minimize2,
   Pause,
   Play,
@@ -25,6 +29,7 @@ import {
   VolumeX,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import "@/styles/film-player.css";
 
 /** The bitrate auto quality assumes for a rendition, at most this many times its average. */
 const PEAK_OVER_AVERAGE = 2.5;
@@ -74,7 +79,55 @@ export interface FilmPlayerLabels {
   exitFullscreen: string;
   seek: string;
   region: string;
+  /** The CC button. */
+  captions: string;
+  /** The tag on a narrator caption. */
+  narrator: string;
 }
+
+/** A WebVTT caption track for the film (the narrator's voice-over: the other voices are captioned in the picture). */
+export interface FilmCaptions {
+  src: string;
+  lang: string;
+}
+
+interface Cue {
+  start: number;
+  end: number;
+  text: string;
+  /** The <v> voice of the cue, if any (e.g. "Narrator"). */
+  voice?: string;
+}
+
+const vttTime = (t: string) => {
+  const parts = t.trim().split(":").map(Number);
+  return parts.reduce((acc, n) => acc * 60 + n, 0);
+};
+
+/** A small WebVTT reader: timings, the <v> voice, text without tags (the player lays out its own lines). */
+const parseVtt = (vtt: string): Cue[] =>
+  vtt
+    .replace(/\r/g, "")
+    .split(/\n\n+/)
+    .flatMap((block) => {
+      const lines = block.split("\n");
+      const at = lines.findIndex((l) => l.includes("-->"));
+      if (at === -1) return [];
+      const [from, to] = lines[at].split("-->");
+      const raw = lines.slice(at + 1).join(" ");
+      const voice = raw.match(/<v(?:\.[^\s>]+)*\s+([^>]+)>/)?.[1]?.trim();
+      const text = raw.replace(/<[^>]+>/g, "").replace(/\s+/g, " ").trim();
+      return text ? [{ start: vttTime(from), end: vttTime(to.trim().split(/\s/)[0]), text, voice }] : [];
+    });
+
+const CAPTIONS_KEY = "bizmis.film.captions";
+const readCaptionsPref = () => {
+  try {
+    return window.localStorage.getItem(CAPTIONS_KEY) === "on";
+  } catch {
+    return false;
+  }
+};
 
 export interface FilmPlayerProps {
   /** An MP4, or an HLS master playlist (.m3u8) for adaptive quality. */
@@ -100,6 +153,8 @@ export interface FilmPlayerProps {
   onClose?: () => void;
   /** Fill the parent edge to edge (no bezel, the film letterboxed on black): the hero becomes the player. */
   fill?: boolean;
+  /** Closed captions (the CC button shows only with a track). */
+  captions?: FilmCaptions;
 }
 
 export interface FilmPlayerHandle {
@@ -146,6 +201,7 @@ const FilmPlayer = forwardRef<FilmPlayerHandle, FilmPlayerProps>(({
   bare = false,
   onClose,
   fill = false,
+  captions,
 }, ref) => {
   const rootRef = useRef<HTMLDivElement>(null);
   const filmRef = useRef<HTMLVideoElement>(null);
@@ -197,6 +253,34 @@ const FilmPlayer = forwardRef<FilmPlayerHandle, FilmPlayerProps>(({
   const [fullscreen, setFullscreen] = useState(false);
   const [controlsAwake, setControlsAwake] = useState(true);
   const [hover, setHover] = useState<{ x: number; t: number } | null>(null);
+
+  // Closed captions: off by default, the viewer's choice remembered. The track is
+  // fetched on the first use and drawn by the player (not the browser's ::cue), in
+  // the film's own caption pill.
+  const [ccOn, setCcOn] = useState(false);
+  useEffect(() => setCcOn(readCaptionsPref()), []);
+  const [cues, setCues] = useState<Cue[] | null>(null);
+  const [cueIndex, setCueIndex] = useState(-1);
+  const cuesFetch = useRef<Promise<void> | null>(null);
+  useEffect(() => {
+    if (!ccOn || !captions || cuesFetch.current) return;
+    cuesFetch.current = fetch(captions.src)
+      .then((r) => (r.ok ? r.text() : Promise.reject(new Error(`captions ${r.status}`))))
+      .then((vtt) => setCues(parseVtt(vtt)))
+      .catch(() => {
+        cuesFetch.current = null; // try again on the next toggle
+      });
+  }, [ccOn, captions]);
+  const toggleCaptions = useCallback(() => {
+    setCcOn((on) => {
+      try {
+        window.localStorage.setItem(CAPTIONS_KEY, on ? "off" : "on");
+      } catch {
+        // private mode: the choice lasts for this visit
+      }
+      return !on;
+    });
+  }, []);
 
   const emit = useCallback(
     (event: FilmEvent, props?: Record<string, unknown>) => onEvent?.(event, props),
@@ -293,10 +377,61 @@ const FilmPlayer = forwardRef<FilmPlayerHandle, FilmPlayerProps>(({
   // nextLevel, not currentLevel: playback carries on through what's already
   // buffered and the next chunks arrive in the new quality — no stall, no
   // lost position.
+  const qualityButtonRef = useRef<HTMLButtonElement>(null);
+  const qualityMenuRef = useRef<HTMLUListElement>(null);
+  const closeQuality = useCallback((refocus: boolean) => {
+    setQualityOpen(false);
+    if (refocus) qualityButtonRef.current?.focus({ preventScroll: true });
+  }, []);
   const chooseLevel = (index: number) => {
     if (hlsRef.current) hlsRef.current.nextLevel = index;
     setLevel(index);
-    setQualityOpen(false);
+    closeQuality(true);
+  };
+  // The open menu: focus on the chosen quality; arrows, Home/End move, Escape and Tab
+  // close it; a press anywhere else closes it too.
+  useEffect(() => {
+    if (!qualityOpen) return;
+    qualityMenuRef.current?.querySelector<HTMLButtonElement>('[aria-checked="true"]')?.focus({ preventScroll: true });
+    const onDown = (e: PointerEvent) => {
+      const t = e.target as Node;
+      if (!qualityMenuRef.current?.contains(t) && !qualityButtonRef.current?.contains(t)) closeQuality(false);
+    };
+    document.addEventListener("pointerdown", onDown, true);
+    return () => document.removeEventListener("pointerdown", onDown, true);
+  }, [qualityOpen, closeQuality]);
+  const onQualityMenuKey = (e: KeyboardEvent<HTMLUListElement>) => {
+    const items = [...(qualityMenuRef.current?.querySelectorAll<HTMLButtonElement>('[role="menuitemradio"]') ?? [])];
+    const at = items.indexOf(document.activeElement as HTMLButtonElement);
+    const go = (i: number) => items[(i + items.length) % items.length]?.focus({ preventScroll: true });
+    switch (e.key) {
+      case "ArrowDown":
+        go(at + 1);
+        break;
+      case "ArrowUp":
+        go(at - 1);
+        break;
+      case "Home":
+        go(0);
+        break;
+      case "End":
+        go(items.length - 1);
+        break;
+      case "Escape":
+        closeQuality(true);
+        break;
+      case "Tab":
+        closeQuality(false);
+        return;
+      case " ":
+      case "Enter":
+        e.stopPropagation(); // the button's own click picks it, not the player's play/pause key
+        return;
+      default:
+        return;
+    }
+    e.preventDefault();
+    e.stopPropagation();
   };
 
   const play = useCallback(() => {
@@ -444,6 +579,46 @@ const FilmPlayer = forwardRef<FilmPlayerHandle, FilmPlayerProps>(({
     };
   }, [durationSeconds, emit]);
 
+  // The cue on screen, read every frame (timeupdate only fires ~4 times a second).
+  useEffect(() => {
+    const film = filmRef.current;
+    if (!film || !ccOn || !cues || phase === "idle") return setCueIndex(-1);
+    let raf = 0;
+    const tick = () => {
+      const t = film.currentTime;
+      setCueIndex(cues.findIndex((c) => t >= c.start && t < c.end));
+      raf = requestAnimationFrame(tick);
+    };
+    tick();
+    return () => cancelAnimationFrame(raf);
+  }, [ccOn, cues, phase]);
+
+  // iPhone fullscreen is the system player, where our captions can't be drawn:
+  // hand it the same cues as a native track while it lasts.
+  useEffect(() => {
+    const film = filmRef.current;
+    if (!film || !captions) return;
+    let track: TextTrack | null = null;
+    const onBegin = () => {
+      if (!ccOn || !cues?.length) return;
+      if (!track) {
+        track = film.addTextTrack("captions", labels.narrator, captions.lang);
+        for (const c of cues) track.addCue(new VTTCue(c.start, c.end, c.text));
+      }
+      track.mode = "showing";
+    };
+    const onEnd = () => {
+      if (track) track.mode = "disabled";
+    };
+    film.addEventListener("webkitbeginfullscreen", onBegin);
+    film.addEventListener("webkitendfullscreen", onEnd);
+    return () => {
+      film.removeEventListener("webkitbeginfullscreen", onBegin);
+      film.removeEventListener("webkitendfullscreen", onEnd);
+      onEnd();
+    };
+  }, [captions, ccOn, cues, labels.narrator]);
+
   // Click-off: anywhere outside the player sends an open film back to the loop.
   useEffect(() => {
     if (phase === "idle") return;
@@ -535,6 +710,9 @@ const FilmPlayer = forwardRef<FilmPlayerHandle, FilmPlayerProps>(({
         break;
       case "f":
         toggleFullscreen();
+        break;
+      case "c":
+        if (captions) toggleCaptions();
         break;
       case "ArrowLeft":
         e.preventDefault();
@@ -682,6 +860,46 @@ const FilmPlayer = forwardRef<FilmPlayerHandle, FilmPlayerProps>(({
           />
         )}
 
+        {/* Closed captions: the narrator only (the shopper and the agent are captioned in the
+            picture, and never speak over the narrator). The film's own caption pill, tagged
+            "Narrator". Under the picture when the letterbox has room (portrait phones), else
+            low in the frame, lifted over the control bar while it shows. */}
+        {captions && ccOn && open && picture.width > 0 && (() => {
+          const cue = cueIndex >= 0 ? cues?.[cueIndex] : undefined;
+          const fontSize = Math.min(34, Math.max(12.5, picture.width * 0.0142));
+          const pillHeight = fontSize * 2;
+          const below = picture.top; // the letterbox under the picture (it's centred)
+          const controlsTop = picture.width < 640 ? 62 : 88; // the control bar's top, plus a gap
+          const inLetterbox = below >= pillHeight * 2.6 + 12;
+          const style: CSSProperties = inLetterbox
+            ? { top: picture.top + picture.height + 12 }
+            : { bottom: Math.max(below + picture.height * 0.03, showControls ? controlsTop : 0) };
+          return (
+            <div
+              aria-hidden={!cue}
+              className="pointer-events-none absolute z-[5] flex justify-center transition-[bottom] duration-300 ease-out"
+              style={{ left: picture.left + picture.width * 0.05, width: picture.width * 0.9, ...style }}
+            >
+              {cue && (
+                <p
+                  key={cueIndex}
+                  lang={captions.lang}
+                  className="bzf-cc"
+                  style={{ fontSize }}
+                >
+                  {cue.voice && (
+                    <span className="bzf-cc__tag">
+                      <Mic aria-hidden="true" className="bzf-cc__mic" strokeWidth={2.5} />
+                      {/^narrator$/i.test(cue.voice) ? labels.narrator : cue.voice}
+                    </span>
+                  )}
+                  <span className="bzf-cc__text">{cue.text}</span>
+                </p>
+              )}
+            </div>
+          );
+        })()}
+
         {/* Controls, inside the frame; they hide while the pointer rests. The install comes
             at the end, on the film's own closing title. */}
         {open && (
@@ -777,14 +995,37 @@ const FilmPlayer = forwardRef<FilmPlayerHandle, FilmPlayerProps>(({
                 </span>
               </div>
 
+              {captions && (
+                <button
+                  type="button"
+                  onClick={toggleCaptions}
+                  aria-label={labels.captions}
+                  aria-pressed={ccOn}
+                  title={labels.captions}
+                  className={cn(dockButton, "relative")}
+                >
+                  <Captions className="h-5 w-5" aria-hidden="true" />
+                  {/* on: a primary bar under the icon */}
+                  <span
+                    aria-hidden="true"
+                    className={cn(
+                      "absolute bottom-1 left-1/2 h-[3px] w-5 -translate-x-1/2 rounded-full bg-primary transition-opacity duration-200 sm:bottom-1.5",
+                      ccOn ? "opacity-100" : "opacity-0"
+                    )}
+                  />
+                </button>
+              )}
+
               {levels.length > 1 && (
                 <div className="relative">
                   <button
+                    ref={qualityButtonRef}
                     type="button"
                     onClick={() => setQualityOpen((o) => !o)}
                     aria-label={labels.quality}
+                    aria-haspopup="menu"
                     aria-expanded={qualityOpen}
-                    className={cn(dockButton, "w-auto gap-1.5 px-2 sm:w-auto sm:px-3")}
+                    className={cn(dockButton, "w-auto gap-1.5 px-2 sm:w-auto sm:px-3", qualityOpen && "bg-white/15")}
                   >
                     <Settings2 className="h-5 w-5" aria-hidden="true" />
                     <span className="hidden text-xs font-semibold tabular-nums sm:inline">
@@ -793,26 +1034,39 @@ const FilmPlayer = forwardRef<FilmPlayerHandle, FilmPlayerProps>(({
                   </button>
                   {qualityOpen && (
                     <ul
+                      ref={qualityMenuRef}
                       role="menu"
-                      className={cn(GLASS, "absolute bottom-full right-0 mb-2 min-w-[9rem] overflow-hidden rounded-xl p-1 text-sm text-white")}
+                      aria-label={labels.quality}
+                      onKeyDown={onQualityMenuKey}
+                      className={cn(GLASS, "bzf-quality absolute bottom-full right-0 mb-2 min-w-[11rem] overflow-hidden rounded-xl p-1 text-sm text-white")}
                     >
-                      {[-1, ...levels.map((_, i) => i).sort((a, b) => levels[b] - levels[a])].map((i) => (
-                        <li key={i}>
-                          <button
-                            type="button"
-                            role="menuitemradio"
-                            aria-checked={level === i}
-                            onClick={() => chooseLevel(i)}
-                            className={cn(
-                              "flex w-full items-center justify-between gap-4 rounded-lg px-3 py-1.5 text-left font-medium hover:bg-white/15",
-                              level === i && "bg-white/20"
-                            )}
-                          >
-                            {i === -1 ? labels.auto : qualityLabel(levels[i])}
-                            {i !== -1 && levels[i] >= 2160 && <span className="text-[10px] font-bold opacity-80">UHD</span>}
-                          </button>
-                        </li>
-                      ))}
+                      {[-1, ...levels.map((_, i) => i).sort((a, b) => levels[b] - levels[a])].map((i) => {
+                        const chosen = level === i;
+                        return (
+                          <li key={i} role="none">
+                            <button
+                              type="button"
+                              role="menuitemradio"
+                              aria-checked={chosen}
+                              onClick={() => chooseLevel(i)}
+                              className="bzf-quality__item flex w-full items-center gap-2 rounded-lg py-1.5 pl-2 pr-3 text-left outline-none"
+                            >
+                              <Check
+                                aria-hidden="true"
+                                strokeWidth={3}
+                                className={cn("h-4 w-4 flex-shrink-0", chosen ? "opacity-100" : "opacity-0")}
+                              />
+                              <span className="flex-1">
+                                {i === -1 ? labels.auto : qualityLabel(levels[i])}
+                                {i === -1 && chosen && playingHeight && (
+                                  <span className="ml-1.5 font-normal tabular-nums text-white/75">{qualityLabel(playingHeight)}</span>
+                                )}
+                              </span>
+                              {i !== -1 && levels[i] >= 2160 && <span className="text-[10px] font-bold opacity-80">UHD</span>}
+                            </button>
+                          </li>
+                        );
+                      })}
                     </ul>
                   )}
                 </div>
