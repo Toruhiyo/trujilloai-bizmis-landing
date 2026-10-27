@@ -1,21 +1,25 @@
 import { useCallback, useContext, useEffect, useRef, useState } from "react";
 import type { ReactNode } from "react";
 import {
-  FaBolt,
-  FaBox,
-  FaCheck,
-  FaGlobe,
-  FaPercent,
-  FaShieldAlt,
-  FaShopify,
-  FaShoppingCart,
-  FaSync,
-  FaTag,
-  FaUsers,
-} from "react-icons/fa";
+  Check,
+  Globe,
+  Package,
+  Percent,
+  Plug,
+  RefreshCw,
+  ShieldCheck,
+  ShoppingCart,
+  Store,
+  Tag,
+  Users,
+  Zap,
+} from "lucide-react";
+// the Shopify bag only on the Install button, as the nav's and the end card's Install
+import { FaShopify } from "react-icons/fa";
 import { cn } from "@/lib/utils";
 import { useMessages } from "@/i18n/LocaleProvider";
 import Reveal from "./Reveal";
+import SectionHead from "./SectionHead";
 import { ScreenFx } from "./devices";
 import { RewindMark } from "./RewindSign";
 import { span } from "./useRewindLoop";
@@ -34,8 +38,8 @@ import RewindScreen from "./sales/RewindScreen";
 import { runFor } from "./pillar/BenefitIntro";
 import { MarkerEdge, useSep } from "./SectionSep";
 
-// Same order as messages.setup.dataCards (as on the classic landing).
-const ICONS = [FaGlobe, FaTag, FaPercent, FaShieldAlt, FaUsers, FaBox];
+// Same order as messages.landing.setup.cards (and the classic landing's setup.dataCards). Line icons, as the page's.
+const ICONS = [Globe, Tag, Percent, ShieldCheck, Users, Package];
 
 /** The timeline, in ms along the section's scroll clock. */
 const CURSOR_AT = 400;
@@ -279,7 +283,7 @@ const SetupSection = () => {
   const [size, setSize] = useState({ w: 0, h: 0 });
   const [button, setButton] = useState({ x: 0, y: 0 });
 
-  const n = setup.dataCards.length;
+  const n = copy.cards.length;
   const doneAt = cardAt(n - 1) + 150 + CARD_EVERY;
   const duration = doneAt + CHARGE_MS + FLOW_MS;
   // the pinned track's scroll (screens) and where on it the timeline starts and ends
@@ -448,22 +452,12 @@ const SetupSection = () => {
           className="bzl-wrap relative w-full"
           style={scale < 1 ? { transform: `scale(${scale.toFixed(3)})` } : undefined}
         >
-          <div className="max-w-3xl">
-            {/* its own header, the kicker over the title, left-aligned as Customize's */}
-            <Reveal>
-              <p className="bzl-kicker">{setup.badge}</p>
-            </Reveal>
-            <Reveal delay={80}>
-              <h2 className="bzl-statement-sm mt-3">{copy.title}</h2>
-            </Reveal>
-            <Reveal delay={160}>
-              <p className="bzl-lead mt-[2svh] max-w-2xl">{copy.lead}</p>
-            </Reveal>
-          </div>
+          {/* One composition on one centre line: the header (as the pillars' openers, SectionHead),
+              the stage (the store and the agent in two equal columns, the wires between), the badges */}
+          <SectionHead icon={Plug} eyebrow={copy.eyebrow} title={copy.title} lead={copy.lead} />
 
           {/* ph-no-capture: the session recorder would log every animated frame of it */}
-          {/* (lg: the whole width, so the store lines up under the left-aligned header) */}
-          <div ref={ref} className="ph-no-capture relative mx-auto mt-[4svh] flow-root max-w-5xl lg:max-w-none">
+          <div ref={ref} className="ph-no-capture relative mx-auto mt-[clamp(1.25rem,4.5svh,3rem)] flow-root max-w-5xl">
             {/* ◀◀ while the setup rewinds (the marker's, as the other sections') */}
             <RewindMark on={rewinding} className="is-setup" />
             <div className="bzl-setup-tape">
@@ -516,43 +510,39 @@ const SetupSection = () => {
                     </svg>
 
                     {/* Your online store, syncing card by card */}
-                    <Reveal className="relative z-10 w-full max-w-[min(20rem,52%)] rounded-[26px] border border-[color-mix(in_oklab,hsl(var(--primary))_22%,transparent)] bg-white/75 p-3 shadow-[0_30px_70px_-40px_rgba(249,163,83,0.45)] backdrop-blur-md sm:p-4">
-                      <p className="flex items-center justify-center gap-2 pb-3 pt-1 text-center text-sm font-semibold leading-tight text-[hsl(var(--primary))] sm:text-base">
-                        <FaShopify className="h-4 w-4 flex-shrink-0 sm:h-5 sm:w-5" />
+                    {/* (the card on the page's tokens: --bzl-radius-card / -item, --bzl-shadow-card) */}
+                    <Reveal className="relative z-10 w-full max-w-[min(20rem,52%)] rounded-[var(--bzl-radius-card)] bg-white p-3 shadow-[var(--bzl-shadow-card)]">
+                      <p className="flex items-center justify-center gap-2 pb-3 pt-1 text-center text-sm font-semibold leading-tight tracking-[-0.01em] text-[var(--bzl-fg)] sm:text-base">
+                        <Store className="h-4 w-4 flex-shrink-0 text-[hsl(var(--primary))] sm:h-[1.15rem] sm:w-[1.15rem]" strokeWidth={2} />
                         {copy.storeTitle}
                       </p>
                       <ul className="grid gap-[max(0.375rem,0.9svh)]">
-                        {setup.dataCards.map((card, i) => {
+                        {copy.cards.map((title, i) => {
                           const Icon = ICONS[i];
                           const k = span(t, cardAt(i), cardAt(i) + 300);
                           return (
                             <li
-                              key={card.title}
+                              key={i}
                               ref={(el) => (cards.current[i] = el)}
-                              className="group relative flex h-[clamp(2.4rem,5.4svh,3.5rem)] items-center gap-2 overflow-hidden rounded-2xl bg-white/70 px-2.5 shadow-[0_4px_20px_-4px_rgba(28,24,20,0.06),0_2px_8px_-2px_rgba(249,163,83,0.1)] sm:gap-3 sm:px-3.5"
+                              className="relative flex h-[clamp(2.4rem,5.4svh,3.5rem)] items-center gap-2 overflow-hidden rounded-[var(--bzl-radius-item)] bg-[#fdf6ef] px-2.5 sm:gap-3 sm:px-3.5"
                               style={{ opacity: 0.6 + 0.4 * k }}
                             >
-                              {/* synced: the card takes the primary's tint */}
+                              {/* synced: the row takes the primary's tint */}
                               <span
                                 aria-hidden="true"
-                                className="absolute inset-0 bg-[color-mix(in_oklab,hsl(var(--primary))_11%,#fff)]"
+                                className="absolute inset-0 bg-[color-mix(in_oklab,hsl(var(--primary))_14%,#fff)]"
                                 style={{ opacity: k }}
                               />
-                              {/* the classic cards' Shopify watermark */}
-                              <FaShopify
-                                aria-hidden="true"
-                                className="absolute -right-1 top-1/2 h-10 w-10 -translate-y-1/2 text-[hsl(var(--primary))] opacity-[0.12]"
-                              />
-                              <Icon className="relative h-[1.05rem] w-[1.05rem] flex-shrink-0 text-[color-mix(in_oklab,hsl(var(--primary))_75%,transparent)]" />
+                              <Icon className="relative h-[1.05rem] w-[1.05rem] flex-shrink-0 text-[hsl(var(--primary))]" strokeWidth={2} />
                               <span className="relative min-w-0 flex-1 text-[13px] font-semibold leading-tight tracking-[-0.01em] text-[var(--bzl-fg)] sm:truncate sm:text-base">
-                                {card.title}
+                                {title}
                               </span>
                               <span
                                 aria-hidden="true"
                                 className="relative grid h-5 w-5 flex-shrink-0 place-items-center rounded-full bg-[hsl(var(--primary))] text-white"
                                 style={{ opacity: k, transform: `scale(${0.5 + 0.5 * easeOutBack(k)})` }}
                               >
-                                <FaCheck className="h-2.5 w-2.5" />
+                                <Check className="h-3 w-3" strokeWidth={3} />
                               </span>
                             </li>
                           );
@@ -571,21 +561,23 @@ const SetupSection = () => {
                         transform: `translate(-50%, ${-50 - 30 * buttonOut}%)`,
                       }}
                     >
+                      {/* the nav's Install Now, as drawn here: the primary, white type, the button radius; once
+                          clicked, white with ink type (small accent text is ink, never the primary on white) */}
                       <span
                         className={cn(
-                          "flex items-center gap-2 whitespace-nowrap rounded-full px-4 py-2.5 text-sm font-semibold shadow-[0_14px_30px_-12px_rgba(249,163,83,0.6)] transition-[background-color,color] duration-200 sm:text-base",
+                          "flex h-10 items-center gap-2 whitespace-nowrap rounded-[var(--bzl-radius-btn)] px-4 text-sm font-medium shadow-[0_6px_25px_-6px_rgba(249,163,83,0.45)] transition-[background-color,color] duration-200 sm:h-12 sm:px-6 sm:text-base",
                           t >= SYNC_AT
-                            ? "bg-white text-[hsl(var(--primary))] ring-1 ring-[color-mix(in_oklab,hsl(var(--primary))_35%,transparent)]"
+                            ? "bg-white text-[var(--bzl-fg)] ring-1 ring-[color-mix(in_oklab,hsl(var(--primary))_35%,transparent)]"
                             : "bg-[hsl(var(--primary))] text-white",
                         )}
                         style={{ transform: `scale(${1 - 0.1 * press})` }}
                       >
                         {syncing ? (
-                          <FaSync className="h-3.5 w-3.5" style={{ transform: `rotate(${((t - SYNC_AT) * 0.36).toFixed(1)}deg)` }} />
+                          <RefreshCw className="h-4 w-4 text-[hsl(var(--primary))]" strokeWidth={2.25} style={{ transform: `rotate(${((t - SYNC_AT) * 0.36).toFixed(1)}deg)` }} />
                         ) : done ? (
-                          <FaCheck className="h-3.5 w-3.5" />
+                          <Check className="h-4 w-4 text-[hsl(var(--primary))]" strokeWidth={2.5} />
                         ) : (
-                          <FaShopify className="h-4 w-4" />
+                          <FaShopify className="h-5 w-5" />
                         )}
                         {label}
                       </span>
@@ -603,7 +595,8 @@ const SetupSection = () => {
                     </div>
 
                     {/* the agent, charging up as the energy lands */}
-                    <Reveal delay={150} className="relative z-10 flex flex-shrink-0 justify-center sm:mr-[4%]">
+                    {/* (sm up: a column as wide as the store's, so the two sit symmetric about the centre) */}
+                    <Reveal delay={150} className="relative z-10 flex flex-shrink-0 justify-center sm:w-[min(20rem,40%)]">
                       <div ref={target} className="relative aspect-[720/1199] h-[clamp(12rem,32svh,26rem)] sm:h-[clamp(14rem,40svh,26rem)]">
                         <span
                           aria-hidden="true"
@@ -629,19 +622,23 @@ const SetupSection = () => {
             </div>
           </div>
 
-          <Reveal className="mt-[3.5svh] text-center">
-            <div className="flex flex-wrap justify-center gap-x-8 gap-y-2 text-sm font-semibold text-[var(--bzl-ink-2)]">
+          {/* the three benefits, small pills on the stage's centre line (the eyebrow's pill, smaller) */}
+          <Reveal className="mt-[clamp(1rem,3.5svh,2.25rem)]">
+            <ul className="flex flex-wrap justify-center gap-2 sm:gap-3">
               {[
-                { Icon: FaBolt, label: setup.badges.oneClick },
-                { Icon: FaSync, label: setup.badges.alwaysSynced },
-                { Icon: FaShoppingCart, label: copy.readyNow },
+                { Icon: Zap, label: setup.badges.oneClick },
+                { Icon: RefreshCw, label: setup.badges.alwaysSynced },
+                { Icon: ShoppingCart, label: copy.readyNow },
               ].map(({ Icon, label }) => (
-                <span key={label} className="flex items-center gap-2">
-                  <Icon className="h-3.5 w-3.5 text-[var(--bzl-orange-strong)]" />
+                <li
+                  key={label}
+                  className="flex items-center gap-2 rounded-full bg-white px-3.5 py-1.5 text-sm font-semibold tracking-[-0.01em] text-[var(--bzl-fg)] shadow-[inset_0_0_0_1px_rgb(59_36_22/0.09)]"
+                >
+                  <Icon className="h-3.5 w-3.5 text-[hsl(var(--primary))]" strokeWidth={2.25} />
                   {label}
-                </span>
+                </li>
               ))}
-            </div>
+            </ul>
           </Reveal>
         </div>
       </div>

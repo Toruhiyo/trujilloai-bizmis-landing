@@ -1,22 +1,23 @@
 import { useEffect, useRef, useState } from "react";
 
 /**
- * How One-Click Setup and "Make It Truly Yours" are set apart from the rest of
- * the page, each on its own (never the two in one surface): `?sep=2` "sheet",
+ * How One-Click Setup and "Make it truly yours" are set apart from the rest of
+ * the page, each on its own (never the two in one surface). "2", the sheet,
+ * is the page's (Oriol's pick, 2026-10-27; no parameter, or anything unknown):
  * each on its own soft cream panel inset from the page edges, rounded top and
- * bottom, with air between the two; `?sep=3` "band", each on its own very
- * light orange wash, full bleed, entering and leaving on a hand-drawn marker
- * edge in the primary. "none" (no parameter, or anything unknown) is the page
- * as it was. Read once, on mount. The look lives in section-sep.css, keyed on
- * the .bzl root's data-sep.
+ * bottom, with air between the two. To compare: `?sep=3` "band", each on its
+ * own very light orange wash, full bleed, entering and leaving on a
+ * hand-drawn marker edge in the primary; `?sep=0` ("none") the page before
+ * either, white and cream feathered. Read once, on mount. The look lives in
+ * section-sep.css, keyed on the .bzl root's data-sep.
  */
 export type Sep = "none" | "2" | "3";
 
 export const useSep = (): Sep => {
   const [v] = useState<Sep>(() => {
-    if (typeof window === "undefined") return "none";
+    if (typeof window === "undefined") return "2";
     const q = new URLSearchParams(window.location.search).get("sep");
-    return q === "2" || q === "3" ? q : "none";
+    return q === "0" ? "none" : q === "3" ? "3" : "2";
   });
   return v;
 };

@@ -44,11 +44,11 @@ const FeatureCard = ({
       onBlur={() => setHover(false)}
       onClick={() => setPinned((p) => !p)}
       className={cn(
-        "group relative flex w-full flex-col rounded-[20px] px-4 py-3 text-left ring-1 transition-[background-color,box-shadow,transform] duration-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--acc,var(--bzl-orange))] sm:px-5 sm:py-3.5",
+        "group relative flex w-full flex-col rounded-[var(--bzl-radius-card)] px-4 py-3 text-left ring-1 transition-[background-color,box-shadow,transform] duration-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--acc,var(--bzl-orange))] sm:px-5 sm:py-3.5",
         "bg-white",
         open
           ? "-translate-y-0.5 ring-[color:color-mix(in_oklab,var(--acc,var(--bzl-orange))_30%,transparent)] shadow-[0_22px_44px_-28px_color-mix(in_oklab,var(--acc-ink,var(--bzl-orange-dark))_60%,transparent)]"
-          : "ring-[color:color-mix(in_oklab,var(--acc,#e3d3c2)_16%,var(--bzl-border))] shadow-[0_16px_38px_-30px_rgba(28,24,20,0.35)] hover:-translate-y-0.5",
+          : "ring-transparent shadow-[var(--bzl-shadow-card)] hover:-translate-y-0.5",
         className,
       )}
       style={{ transitionTimingFunction: "var(--bzl-ease)" }}

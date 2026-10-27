@@ -241,6 +241,9 @@ export const ca: Messages = {
     /** Boost Sales's area, the chapter eyebrow over its outcome (its outcome is already "Boost Sales"). */
     salesArea: "Vendes",
     customize: {
+      /** The section's own eyebrow (a pill, as the pillars' openers) and title, in sentence case. */
+      eyebrow: "Personalització",
+      title: "Fes-lo totalment teu",
       lead: "Tria el seu aspecte i posa el teu logo a la seva samarreta.",
       avatar: { title: "El teu avatar", body: "Tria una cara que encaixi amb la teva marca." },
       voice: { title: "La teva veu", body: "Clona-la perquè soni com tu." },
@@ -255,6 +258,9 @@ export const ca: Messages = {
       extras: ["Sense targeta", "Sense compromís", "Línia directa amb el fundador"],
     },
     setup: {
+      /** The eyebrow (a pill, as the pillars' openers) and the store card's rows (same order as setup.dataCards), in sentence case; the classic landing keeps setup.badge and setup.dataCards. */
+      eyebrow: "Llest per fer servir",
+      cards: ["Web de la botiga", "Catàleg de productes", "Descomptes", "Polítiques", "Clients", "Comandes"],
       title: "Instal·lació amb un clic",
       lead: "Un clic i el teu agent ja ven. Canvia qualsevol cosa a la botiga i ja ho sap.",
       install: "Instal·lar",

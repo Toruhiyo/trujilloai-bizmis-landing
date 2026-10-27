@@ -262,6 +262,9 @@ export const en = {
     salesArea: "Sales",
     /** Personalization on /v2. */
     customize: {
+      /** The section's own eyebrow (a pill, as the pillars' openers) and title, in sentence case. */
+      eyebrow: "Personalization",
+      title: "Make it truly yours",
       lead: "Pick its look and put your logo on its shirt.",
       avatar: { title: "Your avatar", body: "Choose a face that fits your brand." },
       voice: { title: "Your voice", body: "Clone yours so it sounds like you." },
@@ -277,11 +280,14 @@ export const en = {
     },
     /** Setup on /v2: the title alone, a plain line under it, and the opening's install button states. */
     setup: {
-      title: "One-Click Setup",
+      /** The eyebrow (a pill, as the pillars' openers) and the store card's rows (same order as setup.dataCards), in sentence case; the classic landing keeps setup.badge and setup.dataCards. */
+      eyebrow: "Plug and play",
+      cards: ["Store website", "Products catalog", "Discounts", "Policies", "Customers", "Orders"],
+      title: "One-click setup",
       lead: "One click and your agent's selling right away. Change anything in your store and it already knows.",
       install: "Install",
       /** The store-data card's heading (any store, not only Shopify's; the classic landing keeps setup.storeDataTitle). */
-      storeTitle: "Your Online Store",
+      storeTitle: "Your online store",
       syncing: "Syncing your store",
       synced: "Synced",
       readyNow: "Ready right away",

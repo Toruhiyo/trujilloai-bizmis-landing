@@ -241,6 +241,9 @@ export const fr: Messages = {
     /** Boost Sales's area, the chapter eyebrow over its outcome (its outcome is already "Boost Sales"). */
     salesArea: "Ventes",
     customize: {
+      /** The section's own eyebrow (a pill, as the pillars' openers) and title, in sentence case. */
+      eyebrow: "Personnalisation",
+      title: "Faites-en votre vendeur",
       lead: "Choisissez son look et mettez votre logo sur son t-shirt.",
       avatar: { title: "Votre avatar", body: "Choisissez un visage qui colle à votre marque." },
       voice: { title: "Votre voix", body: "Clonez-la pour qu'il parle comme vous." },
@@ -255,6 +258,9 @@ export const fr: Messages = {
       extras: ["Sans carte bancaire", "Sans engagement", "Une ligne directe avec le fondateur"],
     },
     setup: {
+      /** The eyebrow (a pill, as the pillars' openers) and the store card's rows (same order as setup.dataCards), in sentence case; the classic landing keeps setup.badge and setup.dataCards. */
+      eyebrow: "Prêt à l'emploi",
+      cards: ["Site de la boutique", "Catalogue produits", "Remises", "Politiques", "Clients", "Commandes"],
       title: "Installation en un clic",
       lead: "Un clic et votre agent vend déjà. Modifiez quoi que ce soit dans votre boutique, il le sait aussitôt.",
       install: "Installer",

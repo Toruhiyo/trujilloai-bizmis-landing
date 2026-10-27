@@ -77,14 +77,6 @@
 .bzl[data-palette] #setup {
   background: var(--pal-setup-bg);
 }
-/* the primary as small type on white (2.0:1) → burnt; rows waiting to sync less faded */
-.bzl[data-palette] #setup p[class*="text-[hsl(var(--primary))]"],
-.bzl[data-palette] #setup [class*="bg-white text-[hsl(var(--primary))]"] {
-  color: var(--bzl-orange-dark);
-}
-.bzl[data-palette] #setup li.opacity-60 {
-  opacity: 0.8;
-}
 /* (by the sections' own class names, never by their place after #setup) */
 .bzl[data-palette] .bzl-customize {
   background: var(--pal-custom-bg, var(--bzl-bg));

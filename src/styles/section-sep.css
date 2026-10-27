@@ -2,14 +2,14 @@
    are set apart from the rest of the page, each on its OWN surface, never the
    two together (SectionSep.tsx, ?sep=, on the .bzl root's data-sep):
 
-   2 · sheet: each on a soft cream panel, inset from the page edges, rounded
+   2 · sheet (the page's, no parameter): each on a soft cream panel, inset from the page edges, rounded
        top and bottom, air between the two; its top edge is the start, its
        bottom edge the end. The glows stay inside it.
    3 · band:  each on a very light orange wash, full bleed, entering and
        leaving on a hand-drawn marker line in the primary (MarkerEdge), white
        air between the two bands. The glows stay inside it.
 
-   Without ?sep the page is as before. Setup's track is pinned (sticky): no
+   ?sep=0 keeps the page before either (white and cream feathered). Setup's track is pinned (sticky): no
    overflow on it, ever, and nothing may come before its pin (usePinProgress
    reads its first element), so its sheet is a ::before and its edges come
    after the pin. Loaded after look-film.css, so equal specificity wins here. */
