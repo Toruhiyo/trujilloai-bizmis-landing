@@ -19,11 +19,11 @@
       label: 'Install now',
       invite: 'for Early Access benefits!',
       aside: 'Only 50 spots',
-      terms: ['Generous free preview', '50% off upgrades', 'Shape the roadmap'],
+      terms: ['120 free sessions', '50% off upgrades', 'Shape the roadmap'],
       // v25: the brisk take (same words, [quickly], 9.94 s, was 11.38). Its chars are re-anchored onto the STT words
       // (scribe_v1: Generous 2.28, fifty percent 3.62, shape 5.44, Only 6.64, Secure 7.96, now ends 9.50), so each
       // offset is the beat's own lead on its word: each pill rising 80 ms ahead
-      termMarks: ['Generous', 'fifty percent', 'shape'],
+      termMarks: ['A hundred', 'fifty percent', 'shape'],
       termOffsets: [-80, -80, -80],
       handMark: ['Only fifty', 'start', -120],   // the pen starts 120 ms before "Only"
       heroMark: ['Secure yours', 'start', -260],   // 260 ms before "Secure"
@@ -195,7 +195,7 @@
     { scene: 'sync', id: 't-sync', line: "It all takes just one click. And your whole store stays in sync, automatically." },
     { scene: 'stores', id: 't-stores', line: 'Whatever your store sells, your Bizmis agent sells it.' },   // v18: to the merchant (the reel shows devices and languages)
     { scene: 'end', id: 'see-it', line: 'See it in action.', cta: 'demo' },
-    { scene: 'end', id: 't-ea', line: 'Install now to join Early Access! Generous free preview, fifty percent off upgrades, and you shape the roadmap. Only fifty spots. Secure yours by installing now!', cta: 'ea' },   // v24: the short take (v35: a powerful close)
+    { scene: 'end', id: 't-ea', line: 'Install now to join Early Access! A hundred and twenty free sessions, fifty percent off upgrades, and you shape the roadmap. Only fifty spots. Secure yours by installing now!', cta: 'ea' },   // v24: the short take (v35: a powerful close)
     { scene: 'end', id: 'install-shopify', line: 'Install it on Shopify.', cta: 'install' },
   ];
   function ensureInviteFont() {
