@@ -248,8 +248,11 @@ export const useRewinding = (t: number, linger = 420) => {
   return on;
 };
 
-/** At rest on a beat's fixed state: how long it's shown before the beat rewinds and replays (ms). */
-export const FIXED_HOLD = 2600;
+/**
+ * At rest on a beat's fixed state: how long it's shown before the beat rewinds and replays (ms). Long:
+ * the win is what a reader should be left with, the replay is only for whoever lingers.
+ */
+export const FIXED_HOLD = 6000;
 /** The rewind back to a beat's start, at rest (ms). */
 const REWIND = 1000;
 
