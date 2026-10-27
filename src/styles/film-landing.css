@@ -865,6 +865,24 @@
 
 
 /* ── Setup: the classic diagram's wiring and charge, in the film's style ── */
+/* its ground: the classic's warm band */
+.bzl-setup-ground { background: linear-gradient(180deg, #fff, #fff8f0 45%, #fff); }
+/* pinned (SetupSection, screens 540px tall and up): one screen, sticky at the
+   top (under the nav) while the page scrolls its track; the scroll drives the setup meanwhile */
+.bzl-setup-track { position: relative; }
+.bzl-setup-pin {
+  position: sticky;
+  top: 0;
+  height: 100svh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  /* its ground runs under the fixed nav, the content clears it */
+  padding-top: calc(var(--bzl-nav) + clamp(0.75rem, 3svh, 2.5rem));
+  padding-bottom: clamp(0.75rem, 3svh, 2.5rem);
+  overflow: hidden;
+}
+.bzl-setup-pin > .bzl-wrap { flex-shrink: 0; transform-origin: 50% 50%; }
 /* Everything in it moves from the section's scroll clock (SetupSection): the
    wires draw, the sparks ride them, the aura breathes, all set inline from `t`.
    While it rewinds, the visual goes analog (RewindScreen's tape): a white

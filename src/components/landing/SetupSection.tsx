@@ -19,7 +19,17 @@ import Reveal from "./Reveal";
 import { ScreenFx } from "./devices";
 import { RewindMark } from "./RewindSign";
 import { span } from "./useRewindLoop";
-import { easeInOut, easeOutBack, bump, useOnScreen, useReducedMotion, useScrollPlay, useScrollThrough } from "./sales/hooks";
+import {
+  bump,
+  easeInOut,
+  easeOutBack,
+  useMedia,
+  useOnScreen,
+  usePinProgress,
+  useReducedMotion,
+  useScrollPlay,
+  useScrollThrough,
+} from "./sales/hooks";
 import RewindScreen from "./sales/RewindScreen";
 
 // Same order as messages.setup.dataCards (as on the classic landing).
@@ -53,7 +63,19 @@ const CHARGE = {
   w: 720,
   h: 1200,
 };
-/** Of the visual's scroll through the screen: a short lead-in, then the timeline, then a hold on its end. */
+/**
+ * Pinned (screens tall enough, as Boost Sales: phones too): the section is one
+ * screen, sticky at the top (its content under the nav) while the page scrolls
+ * through a track TRACK screens longer than it; of that scroll, a short
+ * lead-in, then the timeline, then a hold on its end before the page carries
+ * on. TRACK sets the scroll per second of animation: about Customer Support's
+ * (its 10.5 s scene over 0.8 of a 1.7-screen track, ~0.13 screens a second).
+ */
+const PIN_QUERY = "(min-height: 540px)";
+const TRACK = 1.2;
+const PIN_LEAD = 0.04;
+const PIN_RUN = 0.8;
+/** Not pinned (short screens): of the visual's own scroll through the screen, a lead-in, the timeline, a hold. */
 const LEAD = 0.05;
 const RUN = 0.7;
 
@@ -228,10 +250,12 @@ const ChargeClip = ({ frame, load, rim, label }: { frame: number; load: boolean;
  * of energy travel every wire, card → agent. The wires are drawn from the real
  * positions of the cards and the agent, so they always land.
  *
- * One clock, the scroll's (as Customer Support and Boost Sales, useScrollPlay):
- * scrolling on plays the timeline (as fast as the scroll), scrolling back
- * rewinds it to the scroll, at rest it plays on at 1x, holds the end, rewinds
- * and plays again. Everything is drawn from `t`, the clip too (an image
+ * One clock, the scroll's (as Customer Support and Boost Sales, useScrollPlay).
+ * The section pins (see TRACK): while it plays the page holds and the scroll
+ * drives it; scrolling on plays the timeline (as fast as the scroll), scrolling
+ * back rewinds it to the scroll, at rest it plays on at 1x, holds the end,
+ * rewinds and plays again; past its end the page carries on. Short screens
+ * don't pin: the visual's own way through the screen drives it. Everything is drawn from `t`, the clip too (an image
  * sequence on a canvas, so it scrubs both ways at once); while it rewinds the
  * visual goes analog (RewindScreen's tape) and the marker ◀◀ shows. At the end
  * the sparks and the aura keep flowing by themselves. Reduced motion shows the
@@ -242,8 +266,12 @@ const SetupSection = () => {
   const setup = messages.setup;
   const copy = messages.landing.setup;
   const reduced = useReducedMotion();
-  const [section, onScreen] = useOnScreen<HTMLElement>(0);
+  const pinned = useMedia(PIN_QUERY) && !reduced;
+  const [section, progress] = usePinProgress<HTMLElement>();
+  const [pin, onScreen] = useOnScreen<HTMLDivElement>(0.2);
   const [ref, p] = useScrollThrough<HTMLDivElement>(0.7, 0.45);
+  const fit = useRef<HTMLDivElement>(null);
+  const [scale, setScale] = useState(1);
   const box = useRef<HTMLDivElement>(null);
   const cards = useRef<(HTMLLIElement | null)[]>([]);
   const target = useRef<HTMLDivElement>(null);
@@ -255,11 +283,36 @@ const SetupSection = () => {
   const doneAt = cardAt(n - 1) + 150 + CARD_EVERY;
   const duration = doneAt + CHARGE_MS + FLOW_MS;
 
-  // the scroll clock
+  // the scroll clock: pinned, the track's progress (the page holds while it plays); else the visual's way through the screen
+  const clamp01 = (v: number) => Math.min(1, Math.max(0, v));
+  // (only while it's held: before the pin the page brings it in at its start, after it the end stays)
   const through = p > 0 && p < 1;
-  const play = useScrollPlay(Math.min(1, Math.max(0, (p - LEAD) / RUN)) * duration, duration, through && !reduced);
+  const held = onScreen && progress > 0 && progress < 1;
+  const active = !reduced && (pinned ? held : through);
+  const goal = pinned ? clamp01((progress - PIN_LEAD) / PIN_RUN) : clamp01((p - LEAD) / RUN);
+  const play = useScrollPlay(goal * duration, duration, active);
   const t = reduced ? duration : Math.min(duration, Math.max(0, play));
-  const rewinding = useRewindingOn(t, through && !reduced);
+  const rewinding = useRewindingOn(t, active);
+
+  // pinned, the screen's content kept whole: scaled down if it comes out taller than the screen
+  useEffect(() => {
+    const el = fit.current;
+    const room = pin.current;
+    if (!pinned || !el || !room || typeof ResizeObserver === "undefined") {
+      setScale(1);
+      return;
+    }
+    const check = () => {
+      const cs = getComputedStyle(room);
+      const avail = room.clientHeight - parseFloat(cs.paddingTop) - parseFloat(cs.paddingBottom);
+      setScale(Math.min(1, avail / Math.max(1, el.offsetHeight)));
+    };
+    const ro = new ResizeObserver(check);
+    ro.observe(el);
+    ro.observe(room);
+    check();
+    return () => ro.disconnect();
+  }, [pinned, pin]);
 
   // at the end (held, or scrolled past while still on screen) the sparks and the aura flow on by themselves
   const flowing = !reduced && onScreen && t >= duration;
@@ -296,17 +349,20 @@ const SetupSection = () => {
 
   // wire each card to the agent's chest, from the real layout
   const measure = useCallback(() => {
-    const b = box.current?.getBoundingClientRect();
+    const el = box.current;
+    const b = el?.getBoundingClientRect();
     const tg = target.current?.getBoundingClientRect();
-    if (!b || !tg) return;
-    const x2 = tg.left + tg.width * 0.5 - b.left;
-    const y2 = tg.top + tg.height * 0.6 - b.top; // the chest, under the shirt logo
-    setSize({ w: b.width, h: b.height });
+    if (!el || !b || !tg || !el.offsetWidth) return;
+    // in the box's own (unscaled) pixels: the pinned screen may be scaled down to fit
+    const k = b.width / el.offsetWidth;
+    const x2 = (tg.left + tg.width * 0.5 - b.left) / k;
+    const y2 = (tg.top + tg.height * 0.6 - b.top) / k; // the chest, under the shirt logo
+    setSize({ w: el.offsetWidth, h: el.offsetHeight });
     const first = cards.current[0]?.getBoundingClientRect();
     const last = cards.current[cards.current.length - 1]?.getBoundingClientRect();
     if (first && last) {
       // the Install button sits in the gap between the cards and the agent
-      setButton({ x: (first.right + tg.left) / 2 - b.left, y: (first.top + last.bottom) / 2 - b.top });
+      setButton({ x: ((first.right + tg.left) / 2 - b.left) / k, y: ((first.top + last.bottom) / 2 - b.top) / k });
     }
     setLines(
       cards.current.map((el, i) => {
@@ -315,8 +371,8 @@ const SetupSection = () => {
         const dur = 2.4 + ((i * 0.618) % 1) * 1.4;
         const delay = ((i * 0.382 + 0.17) % 1) * 2;
         if (!r) return { d: "", pts: [], dur, delay };
-        const x1 = r.right - b.left;
-        const y1 = r.top + r.height / 2 - b.top;
+        const x1 = (r.right - b.left) / k;
+        const y1 = (r.top + r.height / 2 - b.top) / k;
         const dx = x2 - x1;
         const ctl: [number, number][] = [
           [x1, y1],
@@ -351,7 +407,7 @@ const SetupSection = () => {
     if (!onScreen) return;
     const id = window.setTimeout(measure, 1000);
     return () => window.clearTimeout(id);
-  }, [onScreen, measure]);
+  }, [onScreen, measure, scale, pinned]);
 
   // the timeline, all from t
   const syncing = t >= SYNC_AT && t < doneAt;
@@ -374,210 +430,218 @@ const SetupSection = () => {
     <section
       ref={section}
       id="setup"
-      className="bzl-section bzl-screen relative overflow-hidden bg-[linear-gradient(180deg,#fff,#fff8f0_45%,#fff)]"
+      className={cn("relative", pinned ? "bzl-setup-track" : "bzl-section bzl-screen overflow-hidden bzl-setup-ground")}
+      style={pinned ? { height: `${(1 + TRACK) * 100}svh` } : undefined}
     >
-      {/* the classic landing's warm glow around the section's edges */}
-      <div aria-hidden="true" className="pointer-events-none absolute inset-0">
-        <div className="absolute -left-48 top-[10%] h-[45%] w-96 rounded-[50%] bg-[rgba(249,163,83,0.28)] blur-[80px]" />
-        <div className="absolute -right-48 bottom-[8%] h-[45%] w-96 rounded-[50%] bg-[rgba(249,163,83,0.26)] blur-[80px]" />
-        <div className="absolute -top-40 left-[20%] h-56 w-[60%] rounded-[50%] bg-[rgba(249,163,83,0.18)] blur-[80px]" />
-      </div>
-
-      <div className="bzl-wrap relative">
-        <div className="mx-auto max-w-3xl text-center">
-          {/* its own centred header, the kicker over the title */}
-          <Reveal>
-            <p className="bzl-kicker">{setup.badge}</p>
-          </Reveal>
-          <Reveal delay={80}>
-            <h2 className="bzl-statement-sm mt-3">{copy.title}</h2>
-          </Reveal>
-          <Reveal delay={160}>
-            <p className="bzl-lead mx-auto mt-[2svh] max-w-2xl">{copy.lead}</p>
-          </Reveal>
+      {/* pinned: the one screen, sticky under the nav while the page scrolls the track */}
+      <div ref={pin} className={cn(pinned && "bzl-setup-pin bzl-setup-ground")}>
+        {/* the classic landing's warm glow around the section's edges */}
+        <div aria-hidden="true" className="pointer-events-none absolute inset-0">
+          <div className="absolute -left-48 top-[10%] h-[45%] w-96 rounded-[50%] bg-[rgba(249,163,83,0.28)] blur-[80px]" />
+          <div className="absolute -right-48 bottom-[8%] h-[45%] w-96 rounded-[50%] bg-[rgba(249,163,83,0.26)] blur-[80px]" />
+          <div className="absolute -top-40 left-[20%] h-56 w-[60%] rounded-[50%] bg-[rgba(249,163,83,0.18)] blur-[80px]" />
         </div>
 
-        {/* ph-no-capture: the session recorder would log every animated frame of it */}
-        <div ref={ref} className="ph-no-capture relative mx-auto mt-[4svh] flow-root max-w-5xl">
-          {/* ◀◀ while the setup rewinds (the marker's, as the other sections') */}
-          <RewindMark on={rewinding} className="is-setup" />
-          <div className="bzl-setup-tape">
-            <RewindScreen on={rewinding}>
-              <Tape>
-                <div ref={box} className="relative flex items-center justify-between gap-3 sm:gap-12">
-                  {/* the wiring, behind the cards and the agent */}
-                  <svg
-                    aria-hidden="true"
-                    className="pointer-events-none absolute inset-0 overflow-visible"
-                    width={size.w}
-                    height={size.h}
-                    viewBox={`0 0 ${size.w || 1} ${size.h || 1}`}
-                  >
-                    {/* marker line art (as the Sales funnel): flat primary strokes, solid dots for the energy */}
-                    <g className="bzl-setup-wires">
-                      {lines.map((l, i) => {
-                        if (!l.d) return null;
-                        const draw = easeInOut(span(t, cardAt(i), cardAt(i) + 1100));
-                        const sparks = span(t, doneAt, doneAt + 250);
-                        return (
-                          <g key={i}>
-                            <path
-                              d={l.d}
-                              pathLength={1000}
-                              fill="none"
-                              className="bzl-setup-wire"
-                              style={{ strokeDasharray: 1000, strokeDashoffset: 1000 * (1 - draw), opacity: draw > 0 ? 1 : 0 }}
-                            />
-                            {/* the energy: solid marker dots travelling card → agent, two per wire */}
-                            {sparks > 0 &&
-                              [0, 0.5].map((offset) => {
-                                const u = (((ft - doneAt) / 1000 + l.delay) / l.dur + offset) % 1;
-                                const [x, y] = pointAt(l.pts, u);
-                                return (
-                                  <circle
-                                    key={offset}
-                                    className="bzl-setup-spark"
-                                    r={6}
-                                    cx={x}
-                                    cy={y}
-                                    style={{ opacity: sparks }}
-                                  />
-                                );
-                              })}
-                          </g>
-                        );
-                      })}
-                    </g>
-                  </svg>
+        <div
+          ref={fit}
+          className="bzl-wrap relative w-full"
+          style={scale < 1 ? { transform: `scale(${scale.toFixed(3)})` } : undefined}
+        >
+          <div className="mx-auto max-w-3xl text-center">
+            {/* its own centred header, the kicker over the title */}
+            <Reveal>
+              <p className="bzl-kicker">{setup.badge}</p>
+            </Reveal>
+            <Reveal delay={80}>
+              <h2 className="bzl-statement-sm mt-3">{copy.title}</h2>
+            </Reveal>
+            <Reveal delay={160}>
+              <p className="bzl-lead mx-auto mt-[2svh] max-w-2xl">{copy.lead}</p>
+            </Reveal>
+          </div>
 
-                  {/* Your Shopify store data, syncing card by card */}
-                  <Reveal className="relative z-10 w-full max-w-[min(20rem,52%)] rounded-[26px] border border-[color-mix(in_oklab,hsl(var(--primary))_22%,transparent)] bg-white/75 p-3 shadow-[0_30px_70px_-40px_rgba(249,163,83,0.45)] backdrop-blur-md sm:p-4">
-                    <p className="flex items-center justify-center gap-2 pb-3 pt-1 text-center text-sm font-semibold leading-tight text-[hsl(var(--primary))] sm:text-base">
-                      <FaShopify className="h-4 w-4 flex-shrink-0 sm:h-5 sm:w-5" />
-                      {setup.storeDataTitle}
-                    </p>
-                    <ul className="grid gap-[max(0.375rem,0.9svh)]">
-                      {setup.dataCards.map((card, i) => {
-                        const Icon = ICONS[i];
-                        const k = span(t, cardAt(i), cardAt(i) + 300);
-                        return (
-                          <li
-                            key={card.title}
-                            ref={(el) => (cards.current[i] = el)}
-                            className="group relative flex h-[clamp(2.4rem,5.4svh,3.5rem)] items-center gap-2 overflow-hidden rounded-2xl bg-white/70 px-2.5 shadow-[0_4px_20px_-4px_rgba(28,24,20,0.06),0_2px_8px_-2px_rgba(249,163,83,0.1)] sm:gap-3 sm:px-3.5"
-                            style={{ opacity: 0.6 + 0.4 * k }}
-                          >
-                            {/* synced: the card takes the primary's tint */}
-                            <span
-                              aria-hidden="true"
-                              className="absolute inset-0 bg-[color-mix(in_oklab,hsl(var(--primary))_11%,#fff)]"
-                              style={{ opacity: k }}
-                            />
-                            {/* the classic cards' Shopify watermark */}
-                            <FaShopify
-                              aria-hidden="true"
-                              className="absolute -right-1 top-1/2 h-10 w-10 -translate-y-1/2 text-[hsl(var(--primary))] opacity-[0.12]"
-                            />
-                            <Icon className="relative h-[1.05rem] w-[1.05rem] flex-shrink-0 text-[color-mix(in_oklab,hsl(var(--primary))_75%,transparent)]" />
-                            <span className="relative min-w-0 flex-1 text-[13px] font-semibold leading-tight tracking-[-0.01em] text-[var(--bzl-fg)] sm:truncate sm:text-base">
-                              {card.title}
-                            </span>
-                            <span
-                              aria-hidden="true"
-                              className="relative grid h-5 w-5 flex-shrink-0 place-items-center rounded-full bg-[hsl(var(--primary))] text-white"
-                              style={{ opacity: k, transform: `scale(${0.5 + 0.5 * easeOutBack(k)})` }}
-                            >
-                              <FaCheck className="h-2.5 w-2.5" />
-                            </span>
-                          </li>
-                        );
-                      })}
-                    </ul>
-                  </Reveal>
-
-                  {/* one click: the Install button between the store and the agent, clicked by the cursor */}
-                  <div
-                    aria-hidden="true"
-                    className="pointer-events-none absolute z-20"
-                    style={{
-                      left: button.x,
-                      top: button.y,
-                      opacity: buttonIn * (1 - buttonOut),
-                      transform: `translate(-50%, ${-50 - 30 * buttonOut}%)`,
-                    }}
-                  >
-                    <span
-                      className={cn(
-                        "flex items-center gap-2 whitespace-nowrap rounded-full px-4 py-2.5 text-sm font-semibold shadow-[0_14px_30px_-12px_rgba(249,163,83,0.6)] transition-[background-color,color] duration-200 sm:text-base",
-                        t >= SYNC_AT
-                          ? "bg-white text-[hsl(var(--primary))] ring-1 ring-[color-mix(in_oklab,hsl(var(--primary))_35%,transparent)]"
-                          : "bg-[hsl(var(--primary))] text-white",
-                      )}
-                      style={{ transform: `scale(${1 - 0.1 * press})` }}
-                    >
-                      {syncing ? (
-                        <FaSync className="h-3.5 w-3.5" style={{ transform: `rotate(${((t - SYNC_AT) * 0.36).toFixed(1)}deg)` }} />
-                      ) : done ? (
-                        <FaCheck className="h-3.5 w-3.5" />
-                      ) : (
-                        <FaShopify className="h-4 w-4" />
-                      )}
-                      {label}
-                    </span>
-                    {/* the cursor glides in and clicks */}
+          {/* ph-no-capture: the session recorder would log every animated frame of it */}
+          <div ref={ref} className="ph-no-capture relative mx-auto mt-[4svh] flow-root max-w-5xl">
+            {/* ◀◀ while the setup rewinds (the marker's, as the other sections') */}
+            <RewindMark on={rewinding} className="is-setup" />
+            <div className="bzl-setup-tape">
+              <RewindScreen on={rewinding}>
+                <Tape>
+                  <div ref={box} className="relative flex items-center justify-between gap-3 sm:gap-12">
+                    {/* the wiring, behind the cards and the agent */}
                     <svg
-                      viewBox="0 0 24 24"
-                      className="absolute left-1/2 top-1/2 h-6 w-6 drop-shadow-[0_2px_3px_rgba(0,0,0,0.25)]"
+                      aria-hidden="true"
+                      className="pointer-events-none absolute inset-0 overflow-visible"
+                      width={size.w}
+                      height={size.h}
+                      viewBox={`0 0 ${size.w || 1} ${size.h || 1}`}
+                    >
+                      {/* marker line art (as the Sales funnel): flat primary strokes, solid dots for the energy */}
+                      <g className="bzl-setup-wires">
+                        {lines.map((l, i) => {
+                          if (!l.d) return null;
+                          const draw = easeInOut(span(t, cardAt(i), cardAt(i) + 1100));
+                          const sparks = span(t, doneAt, doneAt + 250);
+                          return (
+                            <g key={i}>
+                              <path
+                                d={l.d}
+                                pathLength={1000}
+                                fill="none"
+                                className="bzl-setup-wire"
+                                style={{ strokeDasharray: 1000, strokeDashoffset: 1000 * (1 - draw), opacity: draw > 0 ? 1 : 0 }}
+                              />
+                              {/* the energy: solid marker dots travelling card → agent, two per wire */}
+                              {sparks > 0 &&
+                                [0, 0.5].map((offset) => {
+                                  const u = (((ft - doneAt) / 1000 + l.delay) / l.dur + offset) % 1;
+                                  const [x, y] = pointAt(l.pts, u);
+                                  return (
+                                    <circle
+                                      key={offset}
+                                      className="bzl-setup-spark"
+                                      r={6}
+                                      cx={x}
+                                      cy={y}
+                                      style={{ opacity: sparks }}
+                                    />
+                                  );
+                                })}
+                            </g>
+                          );
+                        })}
+                      </g>
+                    </svg>
+
+                    {/* Your Shopify store data, syncing card by card */}
+                    <Reveal className="relative z-10 w-full max-w-[min(20rem,52%)] rounded-[26px] border border-[color-mix(in_oklab,hsl(var(--primary))_22%,transparent)] bg-white/75 p-3 shadow-[0_30px_70px_-40px_rgba(249,163,83,0.45)] backdrop-blur-md sm:p-4">
+                      <p className="flex items-center justify-center gap-2 pb-3 pt-1 text-center text-sm font-semibold leading-tight text-[hsl(var(--primary))] sm:text-base">
+                        <FaShopify className="h-4 w-4 flex-shrink-0 sm:h-5 sm:w-5" />
+                        {setup.storeDataTitle}
+                      </p>
+                      <ul className="grid gap-[max(0.375rem,0.9svh)]">
+                        {setup.dataCards.map((card, i) => {
+                          const Icon = ICONS[i];
+                          const k = span(t, cardAt(i), cardAt(i) + 300);
+                          return (
+                            <li
+                              key={card.title}
+                              ref={(el) => (cards.current[i] = el)}
+                              className="group relative flex h-[clamp(2.4rem,5.4svh,3.5rem)] items-center gap-2 overflow-hidden rounded-2xl bg-white/70 px-2.5 shadow-[0_4px_20px_-4px_rgba(28,24,20,0.06),0_2px_8px_-2px_rgba(249,163,83,0.1)] sm:gap-3 sm:px-3.5"
+                              style={{ opacity: 0.6 + 0.4 * k }}
+                            >
+                              {/* synced: the card takes the primary's tint */}
+                              <span
+                                aria-hidden="true"
+                                className="absolute inset-0 bg-[color-mix(in_oklab,hsl(var(--primary))_11%,#fff)]"
+                                style={{ opacity: k }}
+                              />
+                              {/* the classic cards' Shopify watermark */}
+                              <FaShopify
+                                aria-hidden="true"
+                                className="absolute -right-1 top-1/2 h-10 w-10 -translate-y-1/2 text-[hsl(var(--primary))] opacity-[0.12]"
+                              />
+                              <Icon className="relative h-[1.05rem] w-[1.05rem] flex-shrink-0 text-[color-mix(in_oklab,hsl(var(--primary))_75%,transparent)]" />
+                              <span className="relative min-w-0 flex-1 text-[13px] font-semibold leading-tight tracking-[-0.01em] text-[var(--bzl-fg)] sm:truncate sm:text-base">
+                                {card.title}
+                              </span>
+                              <span
+                                aria-hidden="true"
+                                className="relative grid h-5 w-5 flex-shrink-0 place-items-center rounded-full bg-[hsl(var(--primary))] text-white"
+                                style={{ opacity: k, transform: `scale(${0.5 + 0.5 * easeOutBack(k)})` }}
+                              >
+                                <FaCheck className="h-2.5 w-2.5" />
+                              </span>
+                            </li>
+                          );
+                        })}
+                      </ul>
+                    </Reveal>
+
+                    {/* one click: the Install button between the store and the agent, clicked by the cursor */}
+                    <div
+                      aria-hidden="true"
+                      className="pointer-events-none absolute z-20"
                       style={{
-                        opacity: cursorIn * (1 - cursorOut),
-                        transform: `translate(${cx.toFixed(1)}px, ${cy.toFixed(1)}px) scale(${1 - 0.1 * press})`,
+                        left: button.x,
+                        top: button.y,
+                        opacity: buttonIn * (1 - buttonOut),
+                        transform: `translate(-50%, ${-50 - 30 * buttonOut}%)`,
                       }}
                     >
-                      <path d="M4 2l15 9-6.5 1.6L16 20l-3 1.4-3.5-7.4L4 18z" fill="#1c1814" stroke="#fff" strokeWidth="1.4" strokeLinejoin="round" />
-                    </svg>
-                  </div>
-
-                  {/* the agent, charging up as the energy lands */}
-                  <Reveal delay={150} className="relative z-10 flex flex-shrink-0 justify-center sm:mr-[4%]">
-                    <div ref={target} className="relative aspect-[720/1199] h-[clamp(12rem,32svh,26rem)] sm:h-[clamp(14rem,40svh,26rem)]">
                       <span
-                        aria-hidden="true"
-                        className="bzl-charge-aura absolute left-1/2 top-1/2 aspect-square w-[150%] rounded-full"
-                        style={{ opacity: auraOn * aura.o, scale: String(aura.s) }}
-                      />
-                      <span
-                        aria-hidden="true"
-                        className="bzl-charge-aura is-wide absolute left-1/2 top-1/2 aspect-square w-[200%] rounded-full"
-                        style={{ opacity: auraOn * auraWide.o, scale: String(auraWide.s) }}
-                      />
-                      <div
-                        aria-hidden="true"
-                        className="absolute inset-x-[-25%] bottom-[-3%] h-[10%] rounded-[50%] bg-[radial-gradient(closest-side,rgba(249,163,83,0.3),transparent)]"
-                      />
-                      {/* the charge-up, anime style (a rendered clip: squeezed eyes, gritted teeth, a shout on the burst), scrubbed from t */}
-                      <ChargeClip frame={frame} load={near && !reduced} rim={rim} label={messages.landing.agentAlt} />
+                        className={cn(
+                          "flex items-center gap-2 whitespace-nowrap rounded-full px-4 py-2.5 text-sm font-semibold shadow-[0_14px_30px_-12px_rgba(249,163,83,0.6)] transition-[background-color,color] duration-200 sm:text-base",
+                          t >= SYNC_AT
+                            ? "bg-white text-[hsl(var(--primary))] ring-1 ring-[color-mix(in_oklab,hsl(var(--primary))_35%,transparent)]"
+                            : "bg-[hsl(var(--primary))] text-white",
+                        )}
+                        style={{ transform: `scale(${1 - 0.1 * press})` }}
+                      >
+                        {syncing ? (
+                          <FaSync className="h-3.5 w-3.5" style={{ transform: `rotate(${((t - SYNC_AT) * 0.36).toFixed(1)}deg)` }} />
+                        ) : done ? (
+                          <FaCheck className="h-3.5 w-3.5" />
+                        ) : (
+                          <FaShopify className="h-4 w-4" />
+                        )}
+                        {label}
+                      </span>
+                      {/* the cursor glides in and clicks */}
+                      <svg
+                        viewBox="0 0 24 24"
+                        className="absolute left-1/2 top-1/2 h-6 w-6 drop-shadow-[0_2px_3px_rgba(0,0,0,0.25)]"
+                        style={{
+                          opacity: cursorIn * (1 - cursorOut),
+                          transform: `translate(${cx.toFixed(1)}px, ${cy.toFixed(1)}px) scale(${1 - 0.1 * press})`,
+                        }}
+                      >
+                        <path d="M4 2l15 9-6.5 1.6L16 20l-3 1.4-3.5-7.4L4 18z" fill="#1c1814" stroke="#fff" strokeWidth="1.4" strokeLinejoin="round" />
+                      </svg>
                     </div>
-                  </Reveal>
-                </div>
-              </Tape>
-            </RewindScreen>
-          </div>
-        </div>
 
-        <Reveal className="mt-[3.5svh] text-center">
-          <div className="flex flex-wrap justify-center gap-x-8 gap-y-2 text-sm font-semibold text-[var(--bzl-ink-2)]">
-            {[
-              { Icon: FaBolt, label: setup.badges.oneClick },
-              { Icon: FaSync, label: setup.badges.alwaysSynced },
-              { Icon: FaShoppingCart, label: copy.readyNow },
-            ].map(({ Icon, label }) => (
-              <span key={label} className="flex items-center gap-2">
-                <Icon className="h-3.5 w-3.5 text-[var(--bzl-orange-strong)]" />
-                {label}
-              </span>
-            ))}
+                    {/* the agent, charging up as the energy lands */}
+                    <Reveal delay={150} className="relative z-10 flex flex-shrink-0 justify-center sm:mr-[4%]">
+                      <div ref={target} className="relative aspect-[720/1199] h-[clamp(12rem,32svh,26rem)] sm:h-[clamp(14rem,40svh,26rem)]">
+                        <span
+                          aria-hidden="true"
+                          className="bzl-charge-aura absolute left-1/2 top-1/2 aspect-square w-[150%] rounded-full"
+                          style={{ opacity: auraOn * aura.o, scale: String(aura.s) }}
+                        />
+                        <span
+                          aria-hidden="true"
+                          className="bzl-charge-aura is-wide absolute left-1/2 top-1/2 aspect-square w-[200%] rounded-full"
+                          style={{ opacity: auraOn * auraWide.o, scale: String(auraWide.s) }}
+                        />
+                        <div
+                          aria-hidden="true"
+                          className="absolute inset-x-[-25%] bottom-[-3%] h-[10%] rounded-[50%] bg-[radial-gradient(closest-side,rgba(249,163,83,0.3),transparent)]"
+                        />
+                        {/* the charge-up, anime style (a rendered clip: squeezed eyes, gritted teeth, a shout on the burst), scrubbed from t */}
+                        <ChargeClip frame={frame} load={near && !reduced} rim={rim} label={messages.landing.agentAlt} />
+                      </div>
+                    </Reveal>
+                  </div>
+                </Tape>
+              </RewindScreen>
+            </div>
           </div>
-        </Reveal>
+
+          <Reveal className="mt-[3.5svh] text-center">
+            <div className="flex flex-wrap justify-center gap-x-8 gap-y-2 text-sm font-semibold text-[var(--bzl-ink-2)]">
+              {[
+                { Icon: FaBolt, label: setup.badges.oneClick },
+                { Icon: FaSync, label: setup.badges.alwaysSynced },
+                { Icon: FaShoppingCart, label: copy.readyNow },
+              ].map(({ Icon, label }) => (
+                <span key={label} className="flex items-center gap-2">
+                  <Icon className="h-3.5 w-3.5 text-[var(--bzl-orange-strong)]" />
+                  {label}
+                </span>
+              ))}
+            </div>
+          </Reveal>
+        </div>
       </div>
     </section>
   );
