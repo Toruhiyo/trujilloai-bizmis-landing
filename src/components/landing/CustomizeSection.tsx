@@ -84,7 +84,8 @@ const CustomizeSection = () => {
           <Reveal delay={150}>
             <p className="bzl-lead mt-4 max-w-md">{c.lead}</p>
           </Reveal>
-          <div className="mt-8 grid max-w-md items-start gap-2.5">
+          {/* (phones: the carousel says it on its own; the cards would push it off the first screen) */}
+          <div className="mt-8 hidden max-w-md items-start gap-2.5 sm:grid">
             <Reveal delay={220}>
               <FeatureCard
                 icon={AvatarIcon}

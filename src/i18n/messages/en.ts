@@ -152,7 +152,7 @@ export const en = {
         { title: "Carts turn into orders", body: "It clears last-minute questions and walks them to checkout." },
       ],
       /** The words over the payoff, every part lit. */
-      payoff: { kicker: "All together", title: "More sales from the same visits.", body: "No fatigue. No paralysis. No hesitation." },
+      payoff: { kicker: "All together", title: "Visitors in. Buyers out.", body: "No fatigue. No paralysis. No hesitation." },
       /** The mockups: what the shopper says, then what the agent says (captions). */
       findQuery: "A gift for my sister, under $50",
       findCaption: "Here are three she will love.",
@@ -263,6 +263,8 @@ export const en = {
       title: "One-Click Setup",
       lead: "One click and your agent's selling right away. Change anything in your store and it already knows.",
       install: "Install",
+      /** The store-data card's heading (any store, not only Shopify's; the classic landing keeps setup.storeDataTitle). */
+      storeTitle: "Your Online Store",
       syncing: "Syncing your store",
       synced: "Synced",
       readyNow: "Ready right away",
