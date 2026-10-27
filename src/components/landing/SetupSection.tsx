@@ -46,24 +46,35 @@ const SYNC_AT = 1500;
 const CARD_EVERY = 160;
 /** When card `i` ticks (and its wire starts drawing to the agent). */
 const cardAt = (i: number) => SYNC_AT + 200 + i * CARD_EVERY;
-/** The charge-up clip (scripts/setup-charge-anim.py): 92 frames at 24 fps. */
+/**
+ * The agent's frames (scripts/setup-charge-anim.py), 24 fps: his power-up stance
+ * as a seamless 2 s loop, played in real time whenever the charge isn't, and the
+ * 4 s charge-up burst, scrubbed from the scroll clock; the burst leaves the loop
+ * on its first frame and lands back on it.
+ */
 const FPS = 24;
-const FRAMES = 92;
-const CHARGE_MS = (FRAMES / FPS) * 1000;
+const LOOP_FRAMES = 48;
+const BURST_FRAMES = 96;
+const FRAMES = LOOP_FRAMES + BURST_FRAMES;
+const CHARGE_MS = (BURST_FRAMES / FPS) * 1000;
 /** After the charge, the sparks keep flowing a while: the end of the timeline. */
 const FLOW_MS = 600;
 /** One breath of the charge's aura and rim (ms). */
 const BREATH = 2000;
 /**
- * The clip as an image sequence (scripts/encode-setup-charge.sh): each frame
- * cropped to the box the figure moves in (in the 720x1200 render) and drawn on
- * a canvas there; the poster (the full first frame, the idle pose the clip
- * starts and ends on) shows until the frames are in.
+ * The frames as image sequences (scripts/encode-setup-charge.sh): each cropped
+ * to the box the figure moves in (in the 720x1200 render) and drawn on a canvas
+ * there; the poster (the full first frame, the stance the loop and the burst
+ * start on) shows until the frames are in. Frame `i` of the whole: the loop's
+ * 0..LOOP_FRAMES-1, then the burst's.
  */
 const CHARGE = {
-  poster: "/landing/setup/charge-poster.webp",
-  frame: (i: number) => `/landing/setup/charge/${String(i).padStart(2, "0")}.webp`,
-  crop: { left: 104, top: 126, width: 504, height: 984 },
+  poster: "/landing/setup/charge-stance.webp",
+  frame: (i: number) =>
+    i < LOOP_FRAMES
+      ? `/landing/setup/charge-idle/${String(i).padStart(2, "0")}.webp`
+      : `/landing/setup/charge-burst/${String(i - LOOP_FRAMES).padStart(2, "0")}.webp`,
+  crop: { left: 58, top: 104, width: 600, height: 996 },
   w: 720,
   h: 1200,
 };
@@ -153,18 +164,34 @@ const Tape = ({ children }: { children: ReactNode }) => {
 };
 
 /**
- * The charge clip, scrubbed: draws frame `frame` of the image sequence on a
- * canvas whenever it changes (or comes in), the nearest earlier frame that is
- * in while it loads, the poster before any. Starts loading when the section
- * is near; never with reduced motion (the clip ends on the poster's pose).
+ * The agent: draws a frame of the image sequences on a canvas whenever it
+ * changes (or comes in), the nearest earlier frame that is in while they load,
+ * the poster before any. `burst` is the burst's frame while it plays (scrubbed
+ * from the scroll clock); null, he stands charging: the stance loop plays in
+ * real time (while `live`), from its first frame each time it takes over, which
+ * is where the burst starts and ends. It draws on its own clock, so the section
+ * never re-renders for it. Starts loading when the section is near (the loop
+ * first); never with reduced motion (the poster is the stance).
  */
-const ChargeClip = ({ frame, load, rim, label }: { frame: number; load: boolean; rim: number; label: string }) => {
+const ChargeClip = ({
+  burst,
+  live,
+  load,
+  rim,
+  label,
+}: {
+  burst: number | null;
+  live: boolean;
+  load: boolean;
+  rim: number;
+  label: string;
+}) => {
   const canvas = useRef<HTMLCanvasElement>(null);
   const imgs = useRef<(HTMLImageElement | null)[]>([]);
-  const want = useRef(frame);
+  const want = useRef(0);
   const drawn = useRef(-1);
   const [ready, setReady] = useState(false);
-  want.current = frame;
+  if (burst !== null) want.current = LOOP_FRAMES + burst;
 
   const draw = useCallback(() => {
     const c = canvas.current;
@@ -210,8 +237,24 @@ const ChargeClip = ({ frame, load, rim, label }: { frame: number; load: boolean;
   }, [load, draw]);
 
   useEffect(() => {
-    if (frame !== drawn.current) draw();
-  }, [frame, draw]);
+    if (burst !== null) {
+      if (want.current !== drawn.current) draw();
+      return;
+    }
+    // standing: the loop in real time, from its first frame
+    want.current = 0;
+    draw();
+    if (!live) return;
+    let raf = 0;
+    const start = performance.now();
+    const loop = (now: number) => {
+      want.current = Math.floor(((now - start) * FPS) / 1000) % LOOP_FRAMES;
+      if (want.current !== drawn.current) draw();
+      raf = requestAnimationFrame(loop);
+    };
+    raf = requestAnimationFrame(loop);
+    return () => cancelAnimationFrame(raf);
+  }, [burst, live, draw]);
 
   const { crop } = CHARGE;
   return (
@@ -246,8 +289,8 @@ const ChargeClip = ({ frame, load, rim, label }: { frame: number; load: boolean;
  * Setup on /v2: one click and the store is wired to the agent, right away. A
  * cursor clicks the Install button, the store's data cards sync in a quick
  * ripple (each one's wire draws to the agent as it ticks), and the agent
- * (Will, full figure, in a rendered anime-style charge-up: squeezed eyes,
- * gritted teeth, a shout on the burst) charges up with it while round sparks
+ * (Will, full figure, rendered: a power-up stance that never stops charging,
+ * then the anime-style burst, squeezed eyes, gritted teeth, a shout) charges up with it while round sparks
  * of energy travel every wire, card → agent. The wires are drawn from the real
  * positions of the cards and the agent, so they always land.
  *
@@ -259,8 +302,9 @@ const ChargeClip = ({ frame, load, rim, label }: { frame: number; load: boolean;
  * don't pin: the visual's own way through the screen drives it. Everything is drawn from `t`, the clip too (an image
  * sequence on a canvas, so it scrubs both ways at once); while it rewinds the
  * visual goes analog (RewindScreen's tape) and the marker ◀◀ shows. At the end
- * the sparks and the aura keep flowing by themselves. Reduced motion shows the
- * end state.
+ * the sparks and the aura keep flowing by themselves, and whenever the burst
+ * isn't playing the agent stands in his power-up stance, always charging (a
+ * real-time loop). Reduced motion shows the end state.
  */
 const SetupSection = () => {
   const messages = useMessages();
@@ -423,7 +467,9 @@ const SetupSection = () => {
   const cursorOut = 1 - (1 - span(t, SYNC_AT, SYNC_AT + 700)) ** 3;
   const cx = 64 + (4 - 64) * cursorIn + (32 - 4) * cursorOut;
   const cy = 56 + (4 - 56) * cursorIn + (40 - 4) * cursorOut;
-  const frame = Math.min(FRAMES - 1, Math.max(0, Math.floor(((t - doneAt) * FPS) / 1000)));
+  // the burst's frame while it plays; else (null) he stands charging, the loop in real time
+  const burstAt = Math.floor(((t - doneAt) * FPS) / 1000);
+  const burst = !reduced && burstAt >= 0 && burstAt < BURST_FRAMES ? burstAt : null;
   const auraOn = reduced ? 0 : span(t, doneAt, doneAt + 700);
   const aura = breath(ft - doneAt);
   const auraWide = breath(ft - doneAt - 120);
@@ -616,8 +662,14 @@ const SetupSection = () => {
                           aria-hidden="true"
                           className="absolute inset-x-[-25%] bottom-[-3%] h-[10%] rounded-[50%] bg-[radial-gradient(closest-side,rgba(249,163,83,0.3),transparent)]"
                         />
-                        {/* the charge-up, anime style (a rendered clip: squeezed eyes, gritted teeth, a shout on the burst), scrubbed from t */}
-                        <ChargeClip frame={frame} load={near && !reduced} rim={rim} label={messages.landing.agentAlt} />
+                        {/* the agent, anime style (rendered frames): his stance always charging, the burst (squeezed eyes, gritted teeth, a shout) scrubbed from t */}
+                        <ChargeClip
+                          burst={burst}
+                          live={onScreen && !reduced}
+                          load={near && !reduced}
+                          rim={rim}
+                          label={messages.landing.agentAlt}
+                        />
                       </div>
                     </Reveal>
                   </div>
