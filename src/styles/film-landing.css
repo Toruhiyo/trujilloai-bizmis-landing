@@ -1609,7 +1609,8 @@
     column-gap: clamp(2rem, 5vw, 5rem);
     row-gap: clamp(0.75rem, 2.4svh, 1.6rem);
   }
-  .bzi-grid.is-pinned .bzi-replay { align-self: stretch; height: 100cqh; }
+  /* the replay's card as tall as the room, less a comfortable margin at the window's foot (nothing of it cut) */
+  .bzi-grid.is-pinned .bzi-replay { align-self: start; height: calc(100cqh - clamp(1.25rem, 4.5svh, 2.75rem)); }
   .bzi-grid.is-pinned .bzi-replay > * { height: 100%; }
   .bzi-grid.is-pinned .bzi-clarity {
     max-width: min(100%, calc((100cqh - 8rem) * 2), 34rem);

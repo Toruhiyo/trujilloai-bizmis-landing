@@ -46,11 +46,12 @@ import type { DrawOption } from "./drawOptions";
  *   voice a dome over the inbox that catches the questions as they come.
  * 2 Clock (the default, also with no parameter): a clock in the corner, its
  *   hands racing round the hours; the shoppers' questions drift in from the
- *   edges and pile up in the inbox, well over its rim; the agent (its head
- *   render on its own) lands on their way, answers the backlog in a few big
- *   gestures and catches the new ones, all but the rare one that needs the
- *   merchant, so the inbox stays low with those few. Once it's done it goes
- *   on in real time: the hands drifting round, a question now and then,
+ *   edges and pile up in the inbox, well over its rim. Then a new day: the
+ *   clock whirls on and the old pile goes by itself (it sinks and fades;
+ *   nobody answers it), and the agent (its head render on its own) lands on
+ *   the questions' way and catches the new ones, all but the rare one that
+ *   needs the merchant, so the inbox stays nearly empty. Once it's done it
+ *   goes on in real time: the hands drifting round, a question now and then,
  *   caught. "Questions pile up" struck, "Only the few that need you".
  * 3 Morning: one night of questions under the moon; the voice a wave over the
  *   inbox; the sun comes up on it empty.
@@ -72,7 +73,7 @@ type DrawProps = { t: number; F: number; W: number; kept: boolean; inbox: string
  */
 export const supportClockTimes = (fixAt: number, duration: number) => {
   const win = Math.min(3800, Math.max(2600, duration - fixAt - 400));
-  return { fixAt, win, end: fixAt + win + 500 };
+  return { fixAt, win, end: fixAt + win + 1200 };
 };
 
 /** Stamped on at `at`, as a Sales seal: big, then springing to size, squashing a little as it lands. */
@@ -224,6 +225,7 @@ const Inbox = ({
   keep = 0,
   slot = (k: number) => slotOf(tray, k),
   pops = true,
+  gone = 0,
 }: {
   tray: Tray;
   t: number;
@@ -239,10 +241,12 @@ const Inbox = ({
   slot?: (k: number) => { x: number; y: number; tilt: number };
   /** A check for each ticket answered (else the caller draws its own). */
   pops?: boolean;
+  /** The pile going away on its own (0 → 1): its tickets sink into the tray and fade, no one answering them. */
+  gone?: number;
 }) => {
   const drawIn = kept ? 1 : easeOut(span(t, 0, REVEAL));
   const full = Math.min(Math.max(4, keep + 3), n - 1);
-  const strain = span(t, landAt(full), landAt(full) + 200) * (1 - span(t, drainAt(full), drainAt(full) + drain));
+  const strain = span(t, landAt(full), landAt(full) + 200) * (1 - span(t, drainAt(full), drainAt(full) + drain)) * (1 - gone);
   const shake = strain * Math.sin(t / 45) * 1.6;
   const { x: ex, y: ey, w: tw, h: th } = tray;
   return (
@@ -270,7 +274,14 @@ const Inbox = ({
         if (d >= 1) return null;
         const x = mix(s0.x + shake, to[0], d);
         const y = mix(s0.y - 14 * (1 - easeBack(land)), to[1], d) - 24 * hump(d);
-        return <Ticket key={i} x={x} y={y} tilt={s0.tilt * (1 - d)} s={Math.min(1, land * 2) * (1 - 0.75 * d)} />;
+        // going away on its own: the higher ones first, each sinking into the tray as it fades
+        const g = easeIn(clamp01(gone * 1.6 - (i / Math.max(1, n - 1)) * 0.6));
+        if (g >= 1) return null;
+        return (
+          <g key={i} opacity={f(1 - g)}>
+            <Ticket x={x} y={y + 34 * g} tilt={s0.tilt * (1 - d) * (1 - g)} s={Math.min(1, land * 2) * (1 - 0.75 * d)} />
+          </g>
+        );
       })}
       {Array.from({ length: n }, (_, k) => !pops || k < keep ? null : (
         <Pop key={`d${k}`} x={to[0] + (k % 2 ? 30 : -30)} y={to[1] - 22} k={span(t, drainAt(k) + drain - 40, drainAt(k) + drain + 720)} />
@@ -380,19 +391,16 @@ const SkyDrawing = ({ t, F, W, kept, inbox }: DrawProps) => {
   );
 };
 
-/* ── 2 Clock (the default): questions from everywhere; the agent clears the pile and keeps it low ── */
+/* ── 2 Clock (the default): questions from everywhere; a new day; the agent keeps the inbox nearly empty ── */
 
 const CL = { x: 74, y: 120, r: 44 }; // time passing, on its own in the corner
 const CL_TRAY = { x: 404, y: 206, w: 124, h: 38 };
 const CL_HEAD = { x: 282, y: 150 };
 const CL_R = 30;
 const CL_LOSS = 8; // before the agent: every question a ticket, the pile well over the tray's rim
-const CL_KEEP = 1; // the one at the bottom that needs the merchant: it stays
-/** The backlog, answered in a few big gestures, top down: the tickets of each one. */
-const CL_BATCHES = [[7, 6, 5], [4, 3, 2], [1]];
-const CL_BATCH_GAP = 420;
-const CL_WIN = 3; // after: the new ones, caught on their way...
-const CL_RARE = 1; // ...but the rare one that needs the merchant, which goes on to the inbox
+const CL_RESET = 700; // the scene change, ending as the agent lands: the clock whirls into a new day, the old pile goes by itself
+const CL_WIN = 4; // after: the new ones, caught on their way...
+const CL_RARE = 2; // ...but the rare one that needs the merchant, which goes on to the inbox
 const CL_AMBIENT = 1900; // once it's done: a question every so often, caught (real time, so it never stops)
 /** Where the shoppers' questions drift in from: off the left and bottom edges (never out of the clock). */
 const CL_FROM = [[-16, 214], [150, 300], [-16, 258], [236, 300], [-16, 176], [90, 300], [-16, 236], [196, 300]] as const;
@@ -412,21 +420,17 @@ const ClockDrawing = ({ t, F, W, kept, inbox, now }: DrawProps) => {
   const drawIn = kept ? 1 : easeOut(span(t, 0, REVEAL));
   const FLY = 950;
   const TO = 600;
-  const lossAt = spread(CL_LOSS, 280, Math.max(380, F - FLY - 60));
+  const resetAt = F - CL_RESET;
+  const lossAt = spread(CL_LOSS, 280, Math.max(380, resetAt - FLY - 60));
   const landAt = (i: number) => lossAt(i) + FLY;
-  const DRAIN = 380;
-  const batchAt = (b: number) => F + 300 + b * CL_BATCH_GAP;
-  const drainAt = (k: number) => {
-    const b = CL_BATCHES.findIndex((ks) => ks.includes(k));
-    return b < 0 ? Infinity : batchAt(b) + CL_BATCHES[b].indexOf(k) * 50;
-  };
-  const winAt = spread(CL_WIN, F + 300 + CL_BATCHES.length * CL_BATCH_GAP + 200, F + W - 700);
-  const rare = clSlot(CL_KEEP);
+  const gone = easeInOut(span(t, resetAt + 100, F));
+  const winAt = spread(CL_WIN, F + 400, F + W - 800);
+  const rare = clSlot(0);
   const rareLand = winAt(CL_RARE) + FLY;
   const rareIn = span(t, rareLand - 120, rareLand + 220);
   const done = t >= F + W;
-  // the clock, time-lapse (the hour hand round once before the agent and once after, the minute hand racing), and always drifting on in real time
-  const hours = span(t, 300, F) + span(t, F, F + W) + now / 24000;
+  // the clock, time-lapse: the hour hand round once, a whirl into the new day as the agent lands, round once more; always drifting on in real time
+  const hours = span(t, 300, resetAt) + easeInOut(span(t, resetAt, F)) * 1.5 + span(t, F, F + W) + now / 24000;
   const hourA = hours * Math.PI * 2 - Math.PI / 2;
   const minA = hours * 8 * Math.PI * 2 - Math.PI / 2;
   // once it's done: a question now and then, from an edge, caught
@@ -434,10 +438,7 @@ const ClockDrawing = ({ t, F, W, kept, inbox, now }: DrawProps) => {
   const ambK = (now % CL_AMBIENT) / CL_AMBIENT;
   const ambFrom = CL_FROM[(amb * 3) % CL_FROM.length];
   const ambHit = clHit(ambFrom[0], ambFrom[1]);
-  const answers = [
-    ...CL_BATCHES.map((_, b) => batchAt(b) + DRAIN),
-    ...Array.from({ length: CL_WIN }, (_, i) => i).filter((i) => i !== CL_RARE).map((i) => winAt(i) + TO),
-  ];
+  const answers = Array.from({ length: CL_WIN }, (_, i) => i).filter((i) => i !== CL_RARE).map((i) => winAt(i) + TO);
   const ambTalk = done ? span(ambK, 0.4, 0.48) * (1 - span(ambK, 0.62, 0.72)) : 0;
   const talk = Math.max(talking(t, answers), ambTalk);
   // a question's way: past the agent's spot, on to `end` (u: 0 → 1, 0.5 at the agent)
@@ -447,6 +448,7 @@ const ClockDrawing = ({ t, F, W, kept, inbox, now }: DrawProps) => {
     const c2 = [CL_HEAD.x + (CL_HEAD.x - c1[0]) * 0.55, CL_HEAD.y + (CL_HEAD.y - c1[1]) * 0.55];
     return quad([CL_HEAD.x, CL_HEAD.y], c2, end, (u - 0.5) * 2);
   };
+  const ambPos = arc(ambFrom[0], ambFrom[1], [ambHit[0], ambHit[1]], easeInOut(clamp01(ambK / 0.46)), 30);
   return (
     <>
       {/* the clock, its hands racing round the hours */}
@@ -466,7 +468,7 @@ const ClockDrawing = ({ t, F, W, kept, inbox, now }: DrawProps) => {
       <path className="mk-mid" opacity={f(drawIn)} d={`M${CL.x} ${CL.y} L${f(CL.x + Math.cos(minA) * (CL.r - 14))} ${f(CL.y + Math.sin(minA) * (CL.r - 14))}`} />
       <circle className="mk-dot" cx={CL.x} cy={CL.y} r={3.8} opacity={f(drawIn)} />
 
-      {/* the inbox: piling up until the agent lands, then answered down to the few that need the merchant */}
+      {/* the inbox: piling up; at the new day the old pile goes by itself (nobody answers it); after, only the rare one lands */}
       <Inbox
         tray={CL_TRAY}
         t={t}
@@ -474,19 +476,15 @@ const ClockDrawing = ({ t, F, W, kept, inbox, now }: DrawProps) => {
         inbox={inbox}
         n={CL_LOSS}
         landAt={landAt}
-        drainAt={drainAt}
-        drain={DRAIN}
-        to={[CL_HEAD.x + CL_R, CL_HEAD.y]}
-        keep={CL_KEEP}
+        drainAt={() => 1e9}
+        drain={400}
+        to={[CL_HEAD.x, CL_HEAD.y]}
+        keep={CL_LOSS}
         slot={clSlot}
         pops={false}
+        gone={gone}
       />
       {rareIn > 0 && <Ticket x={rare.x} y={rare.y - 14 * (1 - easeBack(rareIn))} tilt={rare.tilt} s={Math.min(1, rareIn * 2)} />}
-      {/* a big check for each gesture that answers a batch of the backlog */}
-      {CL_BATCHES.map((_, b) => (
-        <Pop key={`b${b}`} x={CL_HEAD.x + 8 + (b % 2 ? -26 : 26)} y={CL_HEAD.y - CL_R - 16} k={span(t, batchAt(b) + DRAIN - 40, batchAt(b) + DRAIN + 760)} size={1.5} />
-      ))}
-      <Voice x={CL_HEAD.x} y={CL_HEAD.y} r0={CL_R + 8} dir={0.15} on={voicing(t, CL_BATCHES.map((_, b) => batchAt(b) + DRAIN))} t={t} />
 
       {/* the shoppers' questions, drifting in from the edges: before, on to the inbox; after, caught by the agent (all but the rare one) */}
       {Array.from({ length: CL_LOSS }, (_, i) => {
@@ -523,13 +521,7 @@ const ClockDrawing = ({ t, F, W, kept, inbox, now }: DrawProps) => {
       {/* once it's done, it goes on: now and then a question drifts in and is caught */}
       {done && (
         <g>
-          {ambK < 0.46 && (
-            <Ask
-              x={arc(ambFrom[0], ambFrom[1], [ambHit[0], ambHit[1]], easeInOut(ambK / 0.46), 30)[0]}
-              y={arc(ambFrom[0], ambFrom[1], [ambHit[0], ambHit[1]], easeInOut(ambK / 0.46), 30)[1]}
-              s={spring(span(ambK, 0.02, 0.18)) * (1 - easeIn(span(ambK, 0.38, 0.46)))}
-            />
-          )}
+          {ambK < 0.46 && <Ask x={ambPos[0]} y={ambPos[1]} s={spring(span(ambK, 0.02, 0.18)) * (1 - easeIn(span(ambK, 0.38, 0.46)))} />}
           <Voice x={CL_HEAD.x} y={CL_HEAD.y} r0={CL_R + 8} dir={ambHit[2]} on={span(ambK, 0.36, 0.44) * (1 - span(ambK, 0.56, 0.66))} t={now} spread={0.36} />
           <Pop x={ambHit[0]} y={ambHit[1] - 12} k={span(ambK, 0.45, 0.85)} />
         </g>
