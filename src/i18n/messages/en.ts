@@ -296,9 +296,7 @@ export const en = {
       install: "Install",
       /** The store-data card's heading (any store, not only Shopify's; the classic landing keeps setup.storeDataTitle). */
       storeTitle: "Your online store",
-      syncing: "Syncing your store",
-      synced: "Synced",
-      /** The badge under the agent once the store has synced (it stays): the store and the agent kept in sync from then on. */
+      /** The chip on the wires once Install is clicked (it stays, its icon turning): the store and the agent kept in sync from then on. */
       alwaysInSync: "Always in sync",
     },
   },

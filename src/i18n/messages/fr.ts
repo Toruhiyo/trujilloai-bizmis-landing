@@ -273,8 +273,6 @@ export const fr: Messages = {
       leadSync: "Chaque changement se synchronise seul.",
       install: "Installer",
       storeTitle: "Votre boutique en ligne",
-      syncing: "Synchronisation de votre boutique",
-      synced: "Synchronisée",
       alwaysInSync: "Toujours synchronisé",
     },
   },

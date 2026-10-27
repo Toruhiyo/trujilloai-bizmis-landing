@@ -1,32 +1,31 @@
-"""The /v2 Setup agent's motion, authored on the studio's shared rig: Will stands easy,
-holding a small ball of energy in front of his chest, then the happy burst out of it
-and back.
+"""The /v2 Setup agent's motion, authored on the studio's shared rig: Will stands easy and
+open, taking in the store's data as it flows down the wires into him, then the happy
+burst once it's all in, and back.
 
 One clip, `setup_charge`, keyed at 24 fps (one key per rendered frame), 6 s:
 
 - 0-2 s, the stance loop (LOOP): feet under the hips, toes turned out a touch, knees
-  soft, upright and easy, shoulders down and relaxed. His hands are open and loosely
-  cupped in front of his chest, palms facing, around the ball. Over it, always: a slow
-  breath, a gentle sway, and the ball's pulse in his hands (they ease apart and back
-  as it swells). Everything that moves is periodic over the 2 s, so the loop is
-  seamless, and the burst is laid over the same periodic motion, so it leaves the loop
-  and comes back to it on the beat.
-- 2-6 s, the burst (BURST, two loops long): he gathers the energy (the ball swells in
-  his hands, two gulps of it, he dips a little and looks down at it, smiling), then a
-  happy burst: the ball pops, he springs up tall with his arms opening up and out,
-  palms open, head up, a cheer; a little bounce; then his hands come back in, the ball
-  forms again between them, and he is back in the stance by 5.5 s.
+  soft, upright and easy, shoulders down and relaxed. His arms hang loose a little out
+  from his sides, his hands open with the palms turned forward: welcoming what comes
+  in. Over it, always, he fills up: a slow breath that lifts his chest and him a touch,
+  his arms opening a little with it, and a gentle sway. Everything that moves is
+  periodic over the 2 s, so the loop is seamless, and the burst is laid over the same
+  periodic motion, so it leaves the loop and comes back to it on the beat.
+- 2-6 s, the burst (BURST, two loops long): he takes the last of it in (a deeper
+  breath, two gulps of it, he dips a little, his arms open wider, palms forward, his
+  eyes half close, smiling), then a happy burst: he springs up tall with his arms up and
+  out, palms open, head up, a cheer; a little bounce; then his arms come back down and
+  he is back in the stance by 5.5 s.
 
 The feet never slide (two-bone IK to fixed targets every frame). Will is a chibi: a
-deep, round torso and short arms, so the hands hold the ball high (under the chin,
-over the round of the belly) with the elbows by his sides, and the wrists and forearms
-stay clear of the shirt in every frame (checked on the skinned meshes:
-setup-charge-anim.py --check). Authored in glTF node-local TRS with the studio's
-helpers (avatar-pipeline/glb_animation_authoring and the charge_up script's), from
-the rig's rest pose, as the shared clips are. Writes a GLB with the rig and this one
-clip, which scripts/setup-charge-anim.py puts on the model, and a JSON beside it with
-the per-frame weights the render keys the face and the ball on (one timeline). The
-shared avatar-animations.glb is not touched.
+deep, round torso and short arms, so his arms hang out from his sides far enough that
+the wrists and forearms clear the round of the shirt and the hips in every frame
+(checked on the skinned meshes: setup-charge-anim.py --check). Authored in glTF
+node-local TRS with the studio's helpers (avatar-pipeline/glb_animation_authoring and
+the charge_up script's), from the rig's rest pose, as the shared clips are. Writes a
+GLB with the rig and this one clip, which scripts/setup-charge-anim.py puts on the
+model, and a JSON beside it with the per-frame weights the render keys the face on
+(one timeline). The shared avatar-animations.glb is not touched.
 
     python3 scripts/setup-charge-clip.py --out <dir>/setup-charge.glb
 """
@@ -42,11 +41,11 @@ STUDIO = ROOT.parent / "trujilloai-bizmis-studio" / "avatar-pipeline"
 sys.path.insert(0, str(STUDIO))
 
 from glb_animation_authoring import (  # noqa: E402
-    Rig, build_animation, bump, q_align_frames, q_axis_angle, q_mul, q_norm, q_rot,
-    q_slerp, read_glb, v_add, v_dot, v_len, v_norm, v_scale, v_sub, write_glb,
+    Rig, build_animation, bump, q_align_frames, q_axis_angle, q_mul, q_norm,
+    q_slerp, read_glb, v_add, v_dot, v_norm, v_scale, v_sub, write_glb,
 )
 from create_charge_up_and_thinking_loop import (  # noqa: E402
-    _torso_point, copy_pose, curl_fingers, hand_frame, set_world_rot, spline, translate_world,
+    copy_pose, curl_fingers, hand_frame, set_world_rot, spline, translate_world,
 )
 
 ANIMATIONS = STUDIO / "models/input/avatar-animations.glb"
@@ -63,26 +62,26 @@ Z = (0.0, 0.0, 1.0)
 HIP_SOFT = 0.022                          # hips lowered a touch: soft, easy knees
 FOOT = (0.175, 0.085, 0.0)                # ankle target (x mirrored): under the hip joints
 TOE_OUT = 6.0                             # degrees
-# the wrists (x mirrored), from the chest (Spine2) in rest axes: in front of the shoulders, out
-# over the round of the belly; the hands reach in from there and hold the ball between them
-WRIST_AT = (0.305, 0.045, 0.335)
-CLAVICLE_FWD = 22.0                       # the shoulders come forward to reach (hidden in the round shirt)
+# the wrists (x mirrored), from the shoulder joints in rest axes: hanging loose, out from his
+# sides (clear of the round of the shirt and the hips) and a touch forward, the elbows soft
+OPEN_AT = (0.272, -0.2, 0.11)
+OPEN_WIDE = (0.035, 0.035, 0.06)           # the gather: the arms open wider, a little up and forward
 CHEER_AT = (0.085, 0.25, 0.2)             # the cheer's wrists (x mirrored), from the shoulder joints
+# on the way up to the cheer (and back), the elbows bend and the hands pass in front, out by the
+# shoulders: a straight arm swinging out sideways would leave the frame
+SWING_AT = (0.16, 0.0, 0.18)
 
 # ─── the burst's weights (s from the burst's start) ────────────────────────
-# gather: the ball swells in his hands, he dips and looks down at it
+# gather: he takes the last of it in, arms opening wider, a deep breath
 K_GATHER = [(0.0, 0.0), (0.2, 0.1), (0.85, 0.85), (1.25, 1.0), (1.36, 0.95), (1.5, 0.0), (BURST, 0.0)]
 K_DIP = [(0.0, 0.0), (0.3, 0.25), (1.05, 0.9), (1.3, 1.0), (1.44, 0.2), (1.56, -1.0), (1.85, -0.7),
          (2.05, -0.15), (2.25, -0.7), (2.5, -0.5), (3.0, -0.1), (3.5, 0.0), (BURST, 0.0)]
 # cheer: arms up and out, palms open, chest up
 K_CHEER = [(0.0, 0.0), (1.36, 0.0), (1.6, 1.0), (2.55, 0.97), (3.25, 0.06), (3.5, 0.0), (BURST, 0.0)]
-# head: positive looks down (at the ball while gathering), negative up (the cheer)
-K_HEAD = [(0.0, 0.0), (0.45, 0.55), (1.3, 0.75), (1.45, 0.4), (1.66, -1.0), (2.5, -0.85),
+# head: positive looks down (eyes half closed, taking it in), negative up (the cheer)
+K_HEAD = [(0.0, 0.0), (0.45, 0.3), (1.3, 0.4), (1.45, 0.2), (1.66, -1.0), (2.5, -0.85),
           (3.2, -0.1), (3.55, 0.0), (BURST, 0.0)]
-# the ball's size: swells while gathering, flashes and pops, forms again as the hands come home
-K_BALL = [(0.0, 1.0), (0.3, 1.04), (1.2, 1.32), (1.36, 1.42), (1.46, 1.75), (1.54, 0.0),
-          (2.95, 0.0), (3.35, 0.85), (3.6, 1.0), (BURST, 1.0)]
-PULSES = ((0.62, 0.9), (0.95, 1.25))       # two gulps of incoming energy while gathering
+PULSES = ((0.62, 0.9), (0.95, 1.25))       # two gulps of incoming data while he takes it in
 
 
 def loop_wave(t, cycles, phase=0.0):
@@ -91,18 +90,14 @@ def loop_wave(t, cycles, phase=0.0):
 
 
 def weights(t):
-    """Every weight of the timeline at clip time t (the render keys the face and the ball on them)."""
+    """Every weight of the timeline at clip time t (the render keys the face on them)."""
     u = t - B0
     on = u >= 0
     w = (lambda keys: spline(keys, u)) if on else (lambda keys: keys[0][1])
     gulp = sum(bump(u, a, b) for a, b in PULSES) if on else 0.0
-    breath = loop_wave(t, 1)
-    pulse = 0.5 - 0.5 * math.cos(2 * math.pi * t / LOOP)   # the ball's pulse, once a loop (0..1)
-    ball = w(K_BALL)
     return {
         "gather": max(0.0, w(K_GATHER)), "dip": w(K_DIP), "cheer": max(0.0, w(K_CHEER)),
-        "head": w(K_HEAD), "gulp": gulp, "breath": breath, "pulse": pulse,
-        "ball": max(0.0, ball) * (1.0 + 0.1 * pulse + 0.08 * gulp),
+        "head": w(K_HEAD), "gulp": gulp, "breath": loop_wave(t, 1),
     }
 
 
@@ -129,63 +124,66 @@ def leg(rig, pose, side, sx):
     rig.two_bone_ik(pose, side + "UpLeg", side + "Leg", side + "Foot", target, pole)
 
 
-REACH = {"miss": 0.0}
-
-
 def pose_at(rig, rest, foot_rot, t):
     k = weights(t)
     gather, dip, cheer, head = k["gather"], k["dip"], k["cheer"], k["head"]
-    gulp, breath, pulse = k["gulp"], k["breath"], k["pulse"]
+    gulp, breath = k["gulp"], k["breath"]
+    fill = 0.5 + 0.5 * breath              # 0..1: filling up with each breath
     sway = loop_wave(t, 1, 0.9)
 
     pose = copy_pose(rest)
-    # hips: soft knees; the gather dips him, the cheer springs him up (a bounce in it); a gentle sway
+    # hips: soft knees, a small rise with each breath; the gather dips him, the cheer springs him up
+    # (a bounce in it); a gentle sway
     translate_world(rig, pose, "Hips", (
         0.004 * sway,
-        -HIP_SOFT - 0.03 * max(dip, 0.0) + 0.019 * max(-dip, 0.0) + 0.002 * breath,
-        0.004 * gather,
+        -HIP_SOFT - 0.03 * max(dip, 0.0) + 0.019 * max(-dip, 0.0) + 0.005 * fill + 0.003 * gulp,
+        0.0,
     ))
     rig.rotate_world(pose, "Hips", Z, 0.8 * sway)
-    # spine: upright and easy; the breath lifts the chest; leans in over the ball while gathering, opens on the cheer
-    for bone, base, g, c, b in (("Spine", 0.5, 2.0, -1.5, 0.0), ("Spine1", 0.0, 2.0, -3.0, -0.6),
-                                ("Spine2", -1.0, 1.5, -4.0, -0.8)):
-        rig.rotate_world(pose, bone, X, base + g * gather + c * cheer + b * breath + 0.8 * gulp)
+    # spine: upright and easy; the breath lifts and opens the chest (more as he takes it in), more on the cheer
+    for bone, base, g, c, b in (("Spine", 0.5, 0.0, -1.5, -0.4), ("Spine1", 0.0, -1.5, -3.0, -1.0),
+                                ("Spine2", -1.0, -2.0, -4.0, -1.2)):
+        rig.rotate_world(pose, bone, X, base + g * gather + c * cheer + b * breath - 1.0 * gulp)
     rig.rotate_world(pose, "Spine1", Z, -0.6 * sway)
-    # shoulders: down and relaxed, rounded forward a touch for the ball; up and open on the cheer
+    # shoulders: down and relaxed, rising a touch with each breath; up and open on the cheer
     for side, s in (("Left", 1.0), ("Right", -1.0)):
-        rig.rotate_world(pose, side + "Shoulder", Y, -s * CLAVICLE_FWD * (1 - cheer))
-        rig.rotate_world(pose, side + "Shoulder", Z, s * (-2.5 + 7.0 * cheer + 0.6 * breath + 1.0 * gather))
-    # head: a friendly tilt, looking at us; down at the ball while gathering, up on the cheer
+        rig.rotate_world(pose, side + "Shoulder", Z, s * (-2.5 + 7.0 * cheer + 1.2 * fill + 1.0 * gulp))
+    # head: a friendly tilt, looking at us; down a touch as he takes it in, up on the cheer
     rig.rotate_world(pose, "Neck", X, 0.35 * 9.0 * head)
-    rig.rotate_world(pose, "Head", X, -1.0 + 0.65 * 9.0 * head + 1.2 * gulp + 0.6 * breath)
+    rig.rotate_world(pose, "Head", X, -1.0 + 0.65 * 9.0 * head - 0.8 * breath)
     rig.rotate_world(pose, "Head", Z, 2.5 * (1 - cheer) + 1.0 * sway)
 
     for side, sx in (("Left", 1.0), ("Right", -1.0)):
-        # stance: the hands loosely cupped around the ball, palms facing it, fingers forward and in.
-        # The wrists sit out in front of the shoulders and the elbows out by his sides: his arms are
-        # short and his torso deep and round, so this is how far in they reach and still stay clear of it.
-        spread = 0.014 * pulse + 0.03 * gather + 0.01 * gulp
-        wrist, cd = _torso_point(rig, pose, rest, (sx * (WRIST_AT[0] + spread), WRIST_AT[1] - 0.01 * gather, WRIST_AT[2]))
-        n_w = v_norm(q_rot(cd, (-sx * 0.86, 0.3, -0.25)))
-        f_w = ortho(q_rot(cd, (-sx * 0.5, 0.3, 0.81)), n_w)
         sh = rig.world_pos(pose, rig.idx(side + "Arm"))
-        REACH["miss"] = max(REACH["miss"], v_len(v_sub(wrist, sh)) - 0.362)
-        c_pole = v_add(wrist, (sx * 0.8, -0.35, 0.0))
-        cup = solve_arm(rig, pose, side, wrist, c_pole, f_w, n_w)
+        # stance: arms loose and out from his sides, hands open, palms turned forward to what comes in;
+        # each breath opens them a little more, the gather wider still
+        o = tuple(OPEN_AT[i] + OPEN_WIDE[i] * gather + (0.012, 0.012, 0.004)[i] * fill + (0.006, 0.004, 0.0)[i] * gulp
+                  for i in range(3))
+        wrist = v_add(sh, (sx * o[0], o[1], o[2]))
+        n_w = v_norm((-sx * (0.45 - 0.35 * gather), 0.2 + 0.15 * gather, 0.87))
+        f_w = ortho((sx * (0.38 + 0.1 * gather), -1.0, 0.12), n_w)
+        o_pole = v_add(wrist, (sx * 0.7, 0.15, -0.2))  # the elbows soft, out and behind
+        down = solve_arm(rig, pose, side, wrist, o_pole, f_w, n_w)
         # cheer: arms up and out in a V, hands open and up, palms to us (in the frame, clear of his head)
         ch_target = v_add(sh, CHEER_AT if sx > 0 else (-CHEER_AT[0], CHEER_AT[1], CHEER_AT[2]))
         ch_pole = v_add(ch_target, (sx * 0.35, -0.5, -0.3))
         ch_n = v_norm((sx * 0.12, -0.12, 1.0))
         chr_ = solve_arm(rig, pose, side, ch_target, ch_pole, ortho((sx * 0.15, 1.0, 0.0), ch_n), ch_n)
-        # blend in rotation space (a blended IK target would swing the elbow through)
-        for bone in ("Arm", "ForeArm", "Hand"):
+        sw_target = v_add(sh, (sx * SWING_AT[0], SWING_AT[1], SWING_AT[2]))
+        sw_n = v_norm((-sx * 0.1, 0.2, 1.0))
+        swing = solve_arm(rig, pose, side, sw_target, v_add(sw_target, (sx * 0.4, -0.4, -0.3)),
+                          ortho((sx * 0.3, 1.0, 0.0), sw_n), sw_n)
+        # blend in rotation space (a blended IK target would swing the elbow through), by way of the swing
+        # (the elbow and the wrist lead the shoulder, so the arm never swings out straight)
+        for bone, lead in (("Arm", 1.0), ("ForeArm", 2.0), ("Hand", 2.0)):
             i = rig.idx(side + bone)
-            q = q_slerp(cup[i][1], chr_[i][1], cheer)
+            c2 = min(1.0, 2.0 * lead * cheer)
+            q = q_slerp(down[i][1], swing[i][1], c2) if cheer < 0.5 else q_slerp(swing[i][1], chr_[i][1], 2.0 * cheer - 1.0)
             t_, _, s_ = pose[i]
             pose[i] = (t_, q_norm(q), s_)
-        # the fingers: loosely cupped (breathing with the ball), open and spread on the cheer
-        curl_fingers(rig, pose, side, (22.0 + 4.0 * pulse + 6.0 * gather) * (1 - cheer) + 4.0 * cheer,
-                     thumb=12.0 * (1 - cheer))
+        # the fingers: relaxed and open, opening a little more with each breath; spread on the cheer
+        curl_fingers(rig, pose, side, (9.0 - 4.0 * fill - 4.0 * gather) * (1 - cheer) + 4.0 * cheer,
+                     thumb=6.0 * (1 - cheer))
 
     # feet planted (they never slide), toes turned out a touch
     for side, sx in (("Left", 1.0), ("Right", -1.0)):
@@ -210,8 +208,6 @@ def main():
     n = round(LENGTH * FPS)
     times = [k / FPS for k in range(n)]
     poses = [pose_at(rig, rest, foot_rot, t) for t in times]
-    if REACH["miss"] > 0.005:
-        print(f"warning: the cupped wrists are {REACH['miss'] * 100:.1f} cm out of reach")
 
     out = copy.deepcopy(gltf)
     out["accessors"], out["bufferViews"], out["animations"] = [], [], []
@@ -240,7 +236,7 @@ def main():
     out["buffers"] = [{"byteLength": len(blob) + (-len(blob) % 4)}]
     Path(a.out).parent.mkdir(parents=True, exist_ok=True)
     write_glb(a.out, out, blob)
-    # the timeline's weights, per frame, for the render's face and ball
+    # the timeline's weights, per frame, for the render's face
     side = Path(a.out).with_suffix(".json")
     side.write_text(json.dumps({"fps": FPS, "frames": [
         {k: round(v, 4) for k, v in weights(t).items()} for t in times]}))

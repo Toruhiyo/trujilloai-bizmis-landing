@@ -273,8 +273,6 @@ export const ca: Messages = {
       leadSync: "Cada canvi se sincronitza sol.",
       install: "Instal·lar",
       storeTitle: "La teva botiga online",
-      syncing: "Sincronitzant la botiga",
-      synced: "Sincronitzada",
       alwaysInSync: "Sempre sincronitzat",
     },
   },

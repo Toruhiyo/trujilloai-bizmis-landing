@@ -1,12 +1,12 @@
 """The /v2 Setup agent, Will (the studio's 3D model, in the Bizmis shirt), standing easy
-with a small ball of energy glowing between his hands, then a happy burst out of it and
-back (the motion: scripts/setup-charge-clip.py), and his face goes with it: a warm
-smile with his brows up while he stands; a softer smile looking down at the ball,
-eyes half closed, while he gathers it; a big open smile, brows high, on the cheer;
-then the stance's face again. The ball is lit (an emissive core, a soft halo and a
-warm light on his hands and face), sits between his palms, pulses with the loop,
-swells as he gathers, pops on the burst and forms again as his hands come home.
-Transparent frames, full figure, 144 at 24 fps:
+and open, filling up with the store's data as it flows down the wires into him, then a
+happy burst once it's all in, and back (the motion: scripts/setup-charge-clip.py). The
+energy is the flow from the store (the page draws it, along the wires); nothing glows in
+the render. His face goes with it: a warm smile with his brows up while he stands; a
+softer smile, eyes half closed, while he takes the last of it in; a big open smile,
+brows high, on the cheer; then the stance's face again. Transparent frames, full
+figure, 800x1200 (the page's 720x1200 grid, centred, with room for the cheer's
+hands), 144 at 24 fps:
 
 - f_0000..f_0047: the stance loop (2 s, seamless: frame 48 would be frame 0 again),
   played in real time whenever the scroll rests, and scrubbed before the burst;
@@ -15,16 +15,15 @@ Transparent frames, full figure, 144 at 24 fps:
 
   python3 scripts/setup-charge-clip.py --out <dir>/setup-charge.glb
   /Applications/Blender.app/Contents/MacOS/Blender --background --python scripts/setup-charge-anim.py -- \\
-      --clip <dir>/setup-charge.glb --out <frames dir> [--start 0 --end 143 --frames 0,60 --w 720 --h 1200 --samples 32]
+      --clip <dir>/setup-charge.glb --out <frames dir> [--start 0 --end 143 --frames 0,60 --w 800 --h 1200 --samples 32]
   ... --check   (no render: every frame, are his hands or forearms inside his torso or legs?)
 
 Encode with scripts/encode-setup-charge.sh. The clip goes on the model with the
 pipeline's own importer (transform_avatar.import_animations), as the shared clips
-do; the face and the ball are keyed from the weights the clip script writes beside
-the GLB (setup-charge.json), so they share its timeline. Will has no brow shape key:
-one is authored here on the eyebrow mesh (inner ends up and the brows raised, a
-happy, open look). Renders one frame at a time and skips frames already on disk, so
-a Metal crash only costs a re-run.
+do; the face is keyed from the weights the clip script writes beside the GLB
+(setup-charge.json), so it shares its timeline. Will has no brow shape key: one is
+authored here on the eyebrow mesh (the brows raised, a happy, open look). Renders one
+frame at a time and skips frames already on disk, so a Metal crash only costs a re-run.
 """
 import argparse
 import importlib.util
@@ -95,7 +94,7 @@ def smooth(x):
 def face_at(fr, w):
     """The face's shape-key values on frame `fr`, from the clip's weights `w` (keyed on every frame)."""
     stance = {"smile": 0.75, "F": 0.0, "blink": 0.0, "happy": 0.35}
-    gather = {"smile": 0.55, "F": 0.0, "blink": 0.5, "happy": 0.55}   # looking down at the ball
+    gather = {"smile": 0.85, "F": 0.0, "blink": 0.5, "happy": 0.55}   # eyes half closed, taking it in
     cheer = {"smile": 1.0, "F": 0.55, "blink": 0.0, "happy": 0.8}     # a big open smile
     g = smooth(w["gather"] / 0.8)
     c = smooth(w["cheer"] / 0.85)
@@ -129,73 +128,6 @@ def key_face(weights):
         setk(eyes, "eyeBlinkLeft", fr, v["blink"])
         setk(eyes, "eyeBlinkRight", fr, v["blink"])
         setk(brows, "happy", fr, v["happy"])
-
-
-def emission(name, hex_color, strength, soft=False):
-    """An emissive material; soft: a halo that fades out toward its rim (and lets the page through)."""
-    m = bpy.data.materials.new(name)
-    m.use_nodes = True
-    nt = m.node_tree
-    nt.nodes.clear()
-    out = nt.nodes.new("ShaderNodeOutputMaterial")
-    em = nt.nodes.new("ShaderNodeEmission")
-    em.inputs["Color"].default_value = (*cs.hex_lin(hex_color), 1)
-    em.inputs["Strength"].default_value = strength
-    if not soft:
-        nt.links.new(em.outputs[0], out.inputs[0])
-        return m
-    lw = nt.nodes.new("ShaderNodeLayerWeight")
-    lw.inputs["Blend"].default_value = 0.5
-    ramp = nt.nodes.new("ShaderNodeMath")
-    ramp.operation = "POWER"
-    nt.links.new(lw.outputs["Facing"], ramp.inputs[0])
-    ramp.inputs[1].default_value = 0.6
-    tr = nt.nodes.new("ShaderNodeBsdfTransparent")
-    mix = nt.nodes.new("ShaderNodeMixShader")
-    nt.links.new(ramp.outputs[0], mix.inputs[0])  # facing 0 (the middle) shows the glow, the rim fades out
-    nt.links.new(em.outputs[0], mix.inputs[1])
-    nt.links.new(tr.outputs[0], mix.inputs[2])
-    nt.links.new(mix.outputs[0], out.inputs[0])
-    return m
-
-
-def energy_ball(arm, weights):
-    """The ball between his palms: an emissive core, a soft halo and a warm light, keyed on
-    every frame at the middle of his two palms, sized by the clip's 'ball' weight (0: gone)."""
-    sc = bpy.context.scene
-    core = cs.ball("energy_core", 1.0, (0, 0, 0), emission("energy_core", "#FFE7C9", 4.5, soft=True))
-    halo = cs.ball("energy_halo", 1.0, (0, 0, 0), emission("energy_halo", "#F9A353", 2.2, soft=True))
-    for o in (core, halo):
-        o.visible_shadow = False
-    halo.visible_diffuse = False
-    light = bpy.data.lights.new("energy_light", "POINT")
-    light.color = (1.0, 0.72, 0.42)
-    light.shadow_soft_size = 0.05
-    lamp = bpy.data.objects.new("energy_light", light)
-    sc.collection.objects.link(lamp)
-
-    def palm(side):
-        bones = arm.pose.bones
-        pb = lambda n: arm.matrix_world @ next(bones[k] for k in ("mixamorig:" + n, "mixamorig" + n, n) if k in bones).head
-        return pb(side + "Hand").lerp(pb(side + "HandMiddle1"), 0.6)
-
-    sc.frame_set(0)
-    bpy.context.view_layer.update()
-    # its size at rest: the room between the palms (less the hands' own thickness and a gap)
-    r0 = (palm("Left") - palm("Right")).length / 2 - 0.085
-    for fr, w in enumerate(weights):
-        sc.frame_set(fr)
-        at = (palm("Left") + palm("Right")) / 2
-        r = max(0.0, r0 * w["ball"])
-        for o, k in ((core, 0.72), (halo, 1.0)):
-            o.location = at
-            o.scale = (r * k + 1e-4,) * 3
-            o.keyframe_insert("location", frame=fr)
-            o.keyframe_insert("scale", frame=fr)
-        lamp.location = at
-        lamp.keyframe_insert("location", frame=fr)
-        light.energy = 6.0 * min(1.6, w["ball"])
-        light.keyframe_insert("energy", frame=fr)
 
 
 def recentre(holder):
@@ -279,7 +211,7 @@ def main():
     ap.add_argument("--model", default="will")
     ap.add_argument("--start", type=int, default=0)
     ap.add_argument("--end", type=int, default=LENGTH - 1)
-    ap.add_argument("--w", type=int, default=720)
+    ap.add_argument("--w", type=int, default=800)
     ap.add_argument("--h", type=int, default=1200)
     ap.add_argument("--samples", type=int, default=32)
     ap.add_argument("--yaw", type=float, default=0.0, help="turn him (degrees), to look at a pose from the side")
@@ -304,7 +236,6 @@ def main():
         frames = [int(x) for x in a.frames.split(",") if x] or range(a.start, a.end + 1)
         check_clipping(frames)
         return
-    energy_ball(arm, weights)
 
     focus = cs.focus_at((0, 0, H * 0.55))
     cs.area("key", 260, 4.0, (1.0, 0.96, 0.9), (-1.6, -2.6, 4.6), focus)
@@ -314,7 +245,7 @@ def main():
         o = bpy.data.objects.get(name)
         if o is not None:
             o.data.use_shadow = False
-    # the whole figure, framed like the static setup render (720 x 1199)
+    # the whole figure, framed like the static setup render (720 x 1199; wider frames see more at the sides)
     cs.camera((0, -3.6, H * 0.52), (0, 0, H * 0.5), lens=50)
 
     sc.render.engine = "CYCLES"
