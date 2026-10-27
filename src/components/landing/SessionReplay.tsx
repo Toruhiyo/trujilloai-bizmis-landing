@@ -126,23 +126,23 @@ const CallAudio = ({
 
   const progress = duration ? time / duration : 0;
   return (
-    <div className="flex items-center gap-3 rounded-2xl bg-[var(--bzl-card)] p-3 sm:p-4">
+    <div className="flex items-center gap-2.5 rounded-xl bg-[var(--bzl-card)] p-2.5 sm:px-3 sm:py-2.5">
       {/* nothing loads until play: the call's length is known up front */}
       <audio ref={audioRef} src={data.audioUrl} preload="none" />
       <button
         type="button"
         onClick={toggle}
         aria-label={playing ? "Pause" : "Play"}
-        className="grid h-10 w-10 flex-shrink-0 place-items-center rounded-full bg-[linear-gradient(180deg,hsl(var(--primary)),hsl(var(--primary)))] text-white shadow-[0_8px_18px_-8px_rgba(249,163,83,0.7)]"
+        className="grid h-8 w-8 flex-shrink-0 place-items-center rounded-full bg-[linear-gradient(180deg,hsl(var(--primary)),hsl(var(--primary)))] text-white shadow-[0_8px_18px_-8px_rgba(249,163,83,0.7)]"
       >
         {playing ? (
-          <Pause className="h-4 w-4 fill-current" />
+          <Pause className="h-3.5 w-3.5 fill-current" />
         ) : (
-          <Play className="ml-0.5 h-4 w-4 fill-current" />
+          <Play className="ml-0.5 h-3.5 w-3.5 fill-current" />
         )}
       </button>
-      <div className="relative h-12 flex-1 cursor-pointer" onClick={seek}>
-        <div className="pointer-events-none absolute inset-0 flex items-center gap-[3px] px-1">
+      <div className="relative h-9 flex-1 cursor-pointer" onClick={seek}>
+        <div className="pointer-events-none absolute inset-0 flex items-center gap-[2.5px] px-1">
           {wave.map((h, i) => (
             <i
               key={i}
@@ -169,8 +169,8 @@ const CallAudio = ({
                 className="pointer-events-none absolute top-0 h-full w-px bg-[hsl(var(--primary))]"
                 style={{ left: `${(m.time / duration) * 100}%` }}
               >
-                <span className="absolute -left-2.5 -top-2 grid h-5 w-5 place-items-center rounded-full border-2 border-white bg-[hsl(var(--primary))] text-white">
-                  <Icon className="h-2.5 w-2.5" />
+                <span className="absolute -left-2 -top-1.5 grid h-4 w-4 place-items-center rounded-full border-[1.5px] border-white bg-[hsl(var(--primary))] text-white">
+                  <Icon className="h-2 w-2" />
                 </span>
               </span>
             );
@@ -180,7 +180,7 @@ const CallAudio = ({
           style={{ left: `${progress * 100}%` }}
         />
       </div>
-      <span className="hidden text-xs font-medium tabular-nums text-[var(--bzl-muted)] sm:block">
+      <span className="hidden text-[11px] font-medium tabular-nums text-[var(--bzl-muted)] sm:block">
         {fmt(time)} / {fmt(duration)}
       </span>
     </div>
@@ -226,10 +226,10 @@ const ReplayCard = ({ session, fill = false }: { session: ReplaySession; fill?: 
       : "";
 
   return (
-    <div className={cn("bzl-window p-5 sm:p-7", fill && "flex min-h-0 flex-1 flex-col")}>
+    <div className={cn("bzl-window p-4 sm:px-5 sm:py-4", fill && "flex min-h-0 flex-1 flex-col")}>
       <div
         className={cn(
-          "mb-5 h-1 flex-shrink-0 rounded-full",
+          "mb-3 h-[3px] flex-shrink-0 rounded-full",
           data.success
             ? "bg-[linear-gradient(90deg,hsl(var(--primary)),transparent)]"
             : "bg-[linear-gradient(90deg,#c9c9ce,transparent)]",
@@ -237,12 +237,12 @@ const ReplayCard = ({ session, fill = false }: { session: ReplaySession; fill?: 
       />
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0">
-          <h3 className="text-lg font-bold leading-tight tracking-[-0.02em] text-[var(--bzl-fg)]">
+          <h3 className="text-[15px] font-bold leading-tight tracking-[-0.015em] text-[var(--bzl-fg)]">
             {data.title}
           </h3>
           <p
             className={cn(
-              "mt-1 text-xs font-bold uppercase tracking-wider",
+              "mt-0.5 text-[10px] font-bold uppercase tracking-wider",
               data.success
                 ? "text-[var(--bzl-orange-dark)]"
                 : "text-[var(--bzl-faint)]",
@@ -251,12 +251,12 @@ const ReplayCard = ({ session, fill = false }: { session: ReplaySession; fill?: 
             {data.success ? `✓ ${m.successful}` : `⚠ ${m.unresolved}`}
           </p>
         </div>
-        <span className="rounded-full border border-[var(--bzl-border)] px-3 py-1 text-xs font-semibold text-[var(--bzl-ink-2)]">
+        <span className="rounded-full border border-[var(--bzl-border)] px-2.5 py-0.5 text-[11px] font-semibold text-[var(--bzl-ink-2)]">
           {data.category}
         </span>
       </div>
 
-      <div className="mt-4 flex flex-wrap items-center gap-x-4 gap-y-1.5 border-b border-[var(--bzl-border)] pb-4 text-xs text-[var(--bzl-muted)]">
+      <div className="mt-2.5 flex flex-wrap items-center gap-x-3.5 gap-y-1 border-b border-[var(--bzl-border)] pb-2.5 text-[11px] text-[var(--bzl-muted)]">
         <span className="flex items-center gap-1.5 font-medium">
           <User className="h-3 w-3" />
           {data.customer.name || m.anonymousCustomer}
@@ -280,7 +280,7 @@ const ReplayCard = ({ session, fill = false }: { session: ReplaySession; fill?: 
         </span>
       </div>
 
-      <div className="mt-4">
+      <div className="mt-2.5">
         <CallAudio
           key={data.audioUrl}
           data={data}
@@ -289,13 +289,13 @@ const ReplayCard = ({ session, fill = false }: { session: ReplaySession; fill?: 
         />
       </div>
 
-      <div className={cn("relative mt-4", fill && "min-h-0 flex-1")}>
+      <div className={cn("relative mt-2.5", fill && "min-h-0 flex-1")}>
         <div
           ref={listRef}
           // inner room on every side (cancelled by the negative margin) so a
           // highlighted card's ring and glow never get clipped by the scroll box
           className={cn(
-            "relative -mx-3 -mt-2 space-y-3 overflow-y-auto px-3 pb-10 pt-2",
+            "relative -mx-3 -mt-2 space-y-2 overflow-y-auto px-3 pb-8 pt-2",
             fill ? "h-full" : "max-h-[min(22.5rem,max(9.5rem,calc(100svh-32.5rem)))]",
           )}
         >
@@ -306,12 +306,12 @@ const ReplayCard = ({ session, fill = false }: { session: ReplaySession; fill?: 
                 <div className="flex justify-center">
                   <div
                     className={cn(
-                      "inline-flex max-w-full flex-col gap-2 rounded-2xl border border-[var(--bzl-border)] bg-[#fffaf4] p-2 pr-2.5 transition-all duration-500",
+                      "inline-flex max-w-full flex-col gap-1.5 rounded-xl border border-[var(--bzl-border)] bg-[#fffaf4] p-1.5 pr-2 transition-all duration-500",
                       ring(c.id),
                     )}
                   >
-                    <p className="flex items-center gap-1.5 px-1 pt-0.5 text-xs font-semibold text-[var(--bzl-fg)]">
-                      <ShoppingCart className="h-3.5 w-3.5 text-[hsl(var(--primary))]" />
+                    <p className="flex items-center gap-1.5 px-1 pt-0.5 text-[11px] font-semibold text-[var(--bzl-fg)]">
+                      <ShoppingCart className="h-3 w-3 text-[hsl(var(--primary))]" />
                       {c.content}
                       <span className="ml-3 font-normal text-[var(--bzl-faint)]">
                         {c.time}
@@ -320,24 +320,24 @@ const ReplayCard = ({ session, fill = false }: { session: ReplaySession; fill?: 
                     {(session.cartItems ?? []).map((p) => (
                       <div
                         key={p.name}
-                        className="flex min-w-0 items-center gap-2.5 rounded-xl bg-white p-1.5 pr-2 ring-1 ring-[var(--bzl-border)]"
+                        className="flex min-w-0 items-center gap-2 rounded-lg bg-white p-1 pr-1.5 ring-1 ring-[var(--bzl-border)]"
                       >
                         <img
                           src={p.image}
                           alt={p.name}
                           loading="lazy"
-                          className="h-9 w-9 flex-shrink-0 rounded-lg object-cover"
+                          className="h-7 w-7 flex-shrink-0 rounded-md object-cover"
                         />
                         <div className="min-w-0">
-                          <p className="truncate text-[13px] font-semibold leading-tight text-[var(--bzl-fg)]">
+                          <p className="truncate text-[12px] font-semibold leading-tight text-[var(--bzl-fg)]">
                             {p.name}
                           </p>
-                          <p className="truncate text-[11px] text-[var(--bzl-muted)]">
+                          <p className="truncate text-[10px] text-[var(--bzl-muted)]">
                             {p.description}
                           </p>
                         </div>
-                        <span className="ml-1 grid h-5 w-5 flex-shrink-0 place-items-center rounded-full bg-[var(--bzl-orange-wash)] text-[hsl(var(--primary))]">
-                          <Check className="h-3 w-3" strokeWidth={3} />
+                        <span className="ml-1 grid h-4 w-4 flex-shrink-0 place-items-center rounded-full bg-[var(--bzl-orange-wash)] text-[hsl(var(--primary))]">
+                          <Check className="h-2.5 w-2.5" strokeWidth={3} />
                         </span>
                       </div>
                     ))}
@@ -346,38 +346,38 @@ const ReplayCard = ({ session, fill = false }: { session: ReplaySession; fill?: 
               ) : c.type === "event" ? (
                 <div
                   className={cn(
-                    "rounded-2xl border border-[var(--bzl-border)] bg-[#fffaf4] p-3.5 transition-all duration-500",
+                    "rounded-xl border border-[var(--bzl-border)] bg-[#fffaf4] p-2.5 transition-all duration-500",
                     ring(c.id),
                   )}
                 >
-                  <p className="flex items-center gap-2 text-sm font-semibold text-[var(--bzl-fg)]">
+                  <p className="flex items-center gap-1.5 text-[12.5px] font-semibold text-[var(--bzl-fg)]">
                     {c.content === "Policy Lookup" ? (
-                      <FileSearch className="h-4 w-4 text-[hsl(var(--primary))]" />
+                      <FileSearch className="h-3.5 w-3.5 text-[hsl(var(--primary))]" />
                     ) : (
-                      <Search className="h-4 w-4 text-[hsl(var(--primary))]" />
+                      <Search className="h-3.5 w-3.5 text-[hsl(var(--primary))]" />
                     )}
                     {c.content}
-                    <span className="ml-auto text-xs font-normal text-[var(--bzl-faint)]">
+                    <span className="ml-auto text-[11px] font-normal text-[var(--bzl-faint)]">
                       {c.time}
                     </span>
                   </p>
                   {c.content === "Product Search" && session.searchResults && (
-                    <div className="mt-3 grid grid-cols-3 gap-2">
+                    <div className="mt-2 grid grid-cols-3 gap-1.5">
                       {session.searchResults.map((p) => (
                         <div
                           key={p.name}
-                          className="rounded-xl bg-white p-2 ring-1 ring-[var(--bzl-border)]"
+                          className="rounded-lg bg-white p-1.5 ring-1 ring-[var(--bzl-border)]"
                         >
                           <img
                             src={p.image}
                             alt={p.name}
                             loading="lazy"
-                            className="aspect-[4/3] w-full rounded-lg object-cover"
+                            className="h-16 w-full rounded-md object-cover"
                           />
-                          <p className="mt-1.5 truncate text-[11px] font-semibold text-[var(--bzl-fg)]">
+                          <p className="mt-1 truncate text-[10.5px] font-semibold leading-tight text-[var(--bzl-fg)]">
                             {p.name}
                           </p>
-                          <p className="truncate text-[10px] text-[var(--bzl-muted)]">
+                          <p className="truncate text-[9.5px] text-[var(--bzl-muted)]">
                             {p.description}
                           </p>
                         </div>
@@ -385,7 +385,7 @@ const ReplayCard = ({ session, fill = false }: { session: ReplaySession; fill?: 
                     </div>
                   )}
                   {c.content === "Policy Lookup" && session.policyNote && (
-                    <p className="mt-2 text-xs text-[var(--bzl-muted)]">
+                    <p className="mt-1.5 text-[11px] leading-snug text-[var(--bzl-muted)]">
                       {session.policyNote}
                     </p>
                   )}
@@ -393,7 +393,7 @@ const ReplayCard = ({ session, fill = false }: { session: ReplaySession; fill?: 
               ) : (
                 <div
                   className={cn(
-                    "flex items-end gap-2",
+                    "flex items-end gap-1.5",
                     c.type === "customer" ? "justify-end" : "justify-start",
                   )}
                 >
@@ -402,12 +402,12 @@ const ReplayCard = ({ session, fill = false }: { session: ReplaySession; fill?: 
                       src={agent.image}
                       alt={agent.name}
                       loading="lazy"
-                      className="h-7 w-7 flex-shrink-0 rounded-full bg-[var(--bzl-orange-wash)] object-cover"
+                      className="h-6 w-6 flex-shrink-0 rounded-full bg-[var(--bzl-orange-wash)] object-cover"
                     />
                   )}
                   <div
                     className={cn(
-                      "max-w-[78%] rounded-2xl px-3.5 py-2 text-sm transition-all duration-500",
+                      "max-w-[80%] rounded-2xl px-3 py-1.5 text-[13px] leading-snug transition-all duration-500",
                       c.type === "agent"
                         ? "rounded-bl-md bg-[var(--bzl-orange-wash)] text-[var(--bzl-fg)]"
                         : "rounded-br-md bg-[var(--bzl-card)] text-[var(--bzl-fg)]",
@@ -415,7 +415,7 @@ const ReplayCard = ({ session, fill = false }: { session: ReplaySession; fill?: 
                     )}
                   >
                     {c.content}
-                    <span className="mt-0.5 block text-[10px] text-[var(--bzl-faint)]">
+                    <span className="mt-0.5 block text-[9.5px] text-[var(--bzl-faint)]">
                       {c.time}
                     </span>
                   </div>
@@ -423,18 +423,18 @@ const ReplayCard = ({ session, fill = false }: { session: ReplaySession; fill?: 
               )}
             </div>
           ))}
-          <div className="flex flex-col items-center pt-4 text-center">
-            <span className="grid h-10 w-10 place-items-center rounded-full bg-[var(--bzl-orange-wash)] text-[hsl(var(--primary))]">
-              <Phone className="h-4 w-4" />
+          <div className="flex flex-col items-center pt-3 text-center">
+            <span className="grid h-8 w-8 place-items-center rounded-full bg-[var(--bzl-orange-wash)] text-[hsl(var(--primary))]">
+              <Phone className="h-3.5 w-3.5" />
             </span>
-            <p className="mt-2 text-xs text-[var(--bzl-muted)]">
+            <p className="mt-1.5 text-[11px] text-[var(--bzl-muted)]">
               {formatDuration(data.durationSeconds)}
             </p>
           </div>
         </div>
         <div
           aria-hidden="true"
-          className="pointer-events-none absolute inset-x-0 bottom-0 h-14 bg-gradient-to-t from-white to-transparent"
+          className="pointer-events-none absolute inset-x-0 bottom-0 h-10 bg-gradient-to-t from-white to-transparent"
         />
       </div>
     </div>
@@ -460,7 +460,7 @@ const SessionReplay = ({ fill = false }: { fill?: boolean }) => {
   return (
     // a touch narrower than its column, still flush with the page's right edge
     <div className={cn("w-full min-w-0 max-w-[41rem] lg:ml-auto", fill && "flex h-full flex-col")}>
-      <div className="mb-4 flex flex-shrink-0 gap-1.5 overflow-x-auto pb-1" role="tablist">
+      <div className="mb-3 flex flex-shrink-0 gap-1 overflow-x-auto pb-1" role="tablist">
         {REPLAY_SESSIONS.map((s) => {
           const on = s.id === active;
           return (
@@ -472,7 +472,7 @@ const SessionReplay = ({ fill = false }: { fill?: boolean }) => {
               title={tips[s.id]}
               onClick={() => setActive(s.id)}
               className={cn(
-                "relative flex flex-shrink-0 items-center gap-1.5 rounded-full px-3.5 py-2 text-sm font-semibold transition-all duration-300",
+                "relative flex flex-shrink-0 items-center gap-1.5 rounded-full px-3 py-1.5 text-[13px] font-semibold transition-all duration-300",
                 on
                   ? "bg-white text-[var(--bzl-orange-dark)] shadow-[0_8px_22px_-10px_rgba(249,163,83,0.55)] ring-1 ring-[color-mix(in_oklab,hsl(var(--primary))_40%,transparent)]"
                   : "text-[var(--bzl-muted)] hover:text-[var(--bzl-fg)]",
@@ -482,9 +482,9 @@ const SessionReplay = ({ fill = false }: { fill?: boolean }) => {
                 ? m.categories.sale
                 : m.categories.support}
               {s.data.success ? (
-                <Check className="h-3.5 w-3.5" strokeWidth={3} />
+                <Check className="h-3 w-3" strokeWidth={3} />
               ) : (
-                <X className="h-3.5 w-3.5" strokeWidth={3} />
+                <X className="h-3 w-3" strokeWidth={3} />
               )}
               {s.data.customer.name && (
                 <span className="rounded-full bg-[var(--bzl-orange-wash)] px-1.5 text-[10px] text-[var(--bzl-orange-dark)]">

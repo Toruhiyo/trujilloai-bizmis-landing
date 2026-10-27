@@ -1,7 +1,7 @@
 import { useMessages } from "@/i18n/LocaleProvider";
 import { cn } from "@/lib/utils";
 import { IdeaIcon } from "./AnimatedIcons";
-import BenefitIntro, { PinTrack, useScenePlay } from "./pillar/BenefitIntro";
+import BenefitIntro, { PinTrack } from "./pillar/BenefitIntro";
 import type { PinState } from "./pillar/BenefitIntro";
 import { CLARITY_MS } from "./PillarMoments";
 import { useDrawOption } from "./drawOptions";
@@ -10,6 +10,7 @@ import { InsightsDrawing } from "./InsightsOptions";
 import Reveal from "./Reveal";
 import SessionReplay from "./SessionReplay";
 import { useMedia } from "./sales/hooks";
+import { useScenePlayHold } from "./sceneClock";
 
 /**
  * Store Insights: its chapter opener (index 03, the bulb, "Store Insights",
@@ -18,8 +19,8 @@ import { useMedia } from "./sales/hooks";
  * landing's conversation replays, the replay's card as tall as the screen.
  *
  * On desktop the section is one pinned screen and the scroll drives the
- * chart moment (useScenePlay: forward plays, back rewinds, at rest it plays
- * on, holds, rewinds and replays; the track 0.2 screens a second of it,
+ * chart moment (useScenePlayHold: forward plays, back rewinds, at rest it plays
+ * on, holds 1.5 s (HOLD), rewinds and replays; the track 0.2 screens a second of it,
  * then 0.6 of a screen holding the chart, BenefitIntro runFor). The replays
  * stay the visitor's to play (real call audio). Phones and tablets stack
  * it: the lead and the chart pin on their own (SUB_PIN, the same clock and
@@ -28,16 +29,23 @@ import { useMedia } from "./sales/hooks";
  */
 const SUB_PIN = "(min-height: 600px)";
 
+/**
+ * At rest on the drawing's end (the reason found), how long it holds before
+ * it rewinds and finds the next one (ms): as short as Customer Support's, the
+ * lens' rays pulsing meanwhile so it never sits frozen.
+ */
+const HOLD = 1500;
+
 /** Stacked: the lead and the chart, pinned on their own track, the scroll driving the chart. */
 const StackedChart = ({ pin, lead, option }: { pin: PinState; lead: string; option: DrawOption }) => {
-  const scene = useScenePlay(pin, CLARITY_MS);
+  const scene = useScenePlayHold(pin, CLARITY_MS, HOLD);
   return (
     <div className="bzi-grid">
       <Reveal className="bzi-lead">
         <p className="bzl-lead bzl-pillar-lead">{lead}</p>
       </Reveal>
       <Reveal delay={80} className="bzi-chart">
-        <InsightsDrawing option={option} className="bzi-clarity mx-auto" t={scene.t} replay={scene.replay} rewinding={scene.rewinding} />
+        <InsightsDrawing option={option} className="bzi-clarity mx-auto" t={scene.t} replay={scene.replay} rewinding={scene.rewinding} active={pin.pinned && pin.active} />
       </Reveal>
     </div>
   );
@@ -45,7 +53,7 @@ const StackedChart = ({ pin, lead, option }: { pin: PinState; lead: string; opti
 
 const InsightsBody = ({ pin }: { pin: PinState }) => {
   const ins = useMessages().landing.insights;
-  const scene = useScenePlay(pin, CLARITY_MS);
+  const scene = useScenePlayHold(pin, CLARITY_MS, HOLD);
   const tall = useMedia(SUB_PIN);
   // the drawing: none, the one Oriol picked (Why, a new reason each replay); ?insights=1|2|3 the options, "old" the one before
   const option = useDrawOption("insights");
@@ -75,6 +83,7 @@ const InsightsBody = ({ pin }: { pin: PinState }) => {
             t={pin.pinned ? scene.t : undefined}
             replay={pin.pinned ? scene.replay : undefined}
             rewinding={scene.rewinding}
+            active={pin.pinned && pin.active}
           />
         </Reveal>
         <Reveal delay={120} className="bzi-replay">

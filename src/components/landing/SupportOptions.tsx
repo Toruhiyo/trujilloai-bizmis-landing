@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useId, useRef } from "react";
 import type { ReactNode } from "react";
 import { useMessages } from "@/i18n/LocaleProvider";
 import { cn } from "@/lib/utils";
@@ -36,7 +36,7 @@ import type { DrawOption } from "./drawOptions";
  * three tell ONE benefit to the merchant at scale: the support inbox kept
  * light round the clock. Questions keep coming round the clock; until the fix
  * (`fixAt`, as the device starts answering) they pile up in the inbox as
- * tickets; then the agent (the Support mockup's, its head in a marker ring)
+ * tickets; then the agent (the Support mockup's, in the widget's head circle)
  * answers the backlog and every new question before it gets there, out loud. In the Sales funnel's marker, all in the band's
  * marker ink (the Bizmis primary). The label: the loss written, struck at
  * the fix, then the win written and ticked. Every frame comes from `t`, so
@@ -48,7 +48,7 @@ import type { DrawOption } from "./drawOptions";
  *   hands racing round the hours; the shoppers' questions drift in from the
  *   edges and pile up in the inbox, well over its rim. Then a new day: the
  *   clock whirls on and the old pile goes by itself (it sinks and fades;
- *   nobody answers it), and the agent (its head render on its own) lands on
+ *   nobody answers it), and the agent (in the widget's head circle) lands on
  *   the questions' way and catches the new ones, all but the rare one that
  *   needs the merchant, so the inbox stays nearly empty. Once it's done it
  *   goes on in real time: the hands drifting round, a question now and then,
@@ -84,17 +84,62 @@ const stampAt = (t: number, at: number) => {
   return { q, s, sq };
 };
 
-/** The agent: the Support mockup's own (yusuke), its head render on its own (no ring, no disc). */
+/** The agent: the Support mockup's own (yusuke), in the widget's head circle. */
 const AGENT_HEAD = "/landing/heads/yusuke.png";
 
-/** The agent's head, stamped on at `at`; it nods along while it talks (0 → 1). */
-const AgentHead = ({ x, y, r = 24, t, at, talk = 0 }: { x: number; y: number; r?: number; t: number; at: number; talk?: number }) => {
-  const { q, s, sq } = stampAt(t, at);
+/**
+ * The agent's head as the Bizmis widget shows it (BizmisWidget's HeadCircle):
+ * crisp UI, not marker. A white disc with a soft shadow, the head render
+ * filling it, the brand's thin ring on its rim; while it talks (0 → 1) the
+ * widget's speaking pulse, a breathing glow and rings going out of the
+ * circle, on `clock` (real time where there is one, so it never stutters).
+ * Stamped on at `at` (popping to size); the head nods along inside it.
+ */
+const AgentHead = ({ x, y, r = 24, t, at, talk = 0, clock }: { x: number; y: number; r?: number; t: number; at: number; talk?: number; clock?: number }) => {
+  const id = useId().replace(/:/g, "");
+  const { q, s } = stampAt(t, at);
   if (s <= 0) return null;
+  const c = clock || t;
   const nod = talk * Math.sin(t / 110) * 4;
+  const ring = "hsl(var(--primary))";
   return (
-    <g opacity={f(clamp01(q * 3))} transform={`translate(${f(x)} ${f(y)}) rotate(${f(-4 + nod)}) scale(${f(s * (1 + sq))} ${f(s * (1 - sq))})`}>
-      <image href={AGENT_HEAD} x={-r * 1.15} y={-r * 1.15} width={r * 2.3} height={r * 2.3} preserveAspectRatio="xMidYMid meet" />
+    <g className="bzs-head" opacity={f(clamp01(q * 3))} transform={`translate(${f(x)} ${f(y)}) scale(${f(s)})`}>
+      <defs>
+        <filter id={`${id}s`} x="-60%" y="-60%" width="220%" height="220%">
+          <feDropShadow dx="0" dy={f(r * 0.2)} stdDeviation={f(r * 0.24)} floodColor="#3b2416" floodOpacity="0.16" />
+        </filter>
+        <clipPath id={`${id}c`}>
+          <circle cx={0} cy={0} r={r} />
+        </clipPath>
+        <radialGradient id={`${id}g`}>
+          <stop offset="0%" stopColor={ring} stopOpacity="0.3" />
+          <stop offset="60%" stopColor={ring} stopOpacity="0.14" />
+          <stop offset="100%" stopColor={ring} stopOpacity="0" />
+        </radialGradient>
+      </defs>
+      {/* the speaking pulse: the glow breathing, three rings going out of the circle */}
+      {talk > 0 && (
+        <g opacity={f(talk)}>
+          <circle cx={0} cy={0} r={f(r * (1.4 + 0.08 * Math.sin(c / 175)))} fill={`url(#${id}g)`} style={{ stroke: "none" }} />
+          {[0, 1, 2].map((j) => {
+            const k = (c / 1500 + j / 3) % 1;
+            const e = 1 - (1 - k) ** 2.4;
+            return <circle key={j} cx={0} cy={0} r={f(r * (1 + 0.32 * e))} style={{ fill: "none", stroke: ring, strokeWidth: 1.4 }} opacity={f(0.8 * (1 - k))} />;
+          })}
+        </g>
+      )}
+      <circle cx={0} cy={0} r={r} filter={`url(#${id}s)`} style={{ fill: "#fff", stroke: "none" }} />
+      <g clipPath={`url(#${id}c)`}>
+        <image href={AGENT_HEAD} x={-r} y={-r} width={r * 2} height={r * 2} transform={`rotate(${f(nod)} 0 ${f(r * 0.6)})`} preserveAspectRatio="xMidYMid slice" />
+      </g>
+      {/* the brand's thin ring on the rim, breathing a little while it talks */}
+      <circle
+        cx={0}
+        cy={0}
+        r={f(r + 0.75 + talk * 0.6 * (0.5 + 0.5 * Math.sin(c / 110)))}
+        style={{ fill: "none", stroke: ring, strokeWidth: 1.5 }}
+        opacity={f(0.55 + 0.4 * talk)}
+      />
     </g>
   );
 };
@@ -513,7 +558,7 @@ const ClockDrawing = ({ t, F, W, kept, inbox, now }: DrawProps) => {
         const at = winAt(i) + TO;
         return (
           <g key={`p${i}`}>
-            <Voice x={CL_HEAD.x} y={CL_HEAD.y} r0={CL_R + 8} dir={a} on={voicing(t, [at])} t={t} spread={0.36} />
+            <Voice x={CL_HEAD.x} y={CL_HEAD.y} r0={CL_R + 10} dir={a} on={voicing(t, [at])} t={t} spread={0.36} />
             <Pop x={hx} y={hy - 12} k={span(t, at - 40, at + 720)} />
           </g>
         );
@@ -522,11 +567,11 @@ const ClockDrawing = ({ t, F, W, kept, inbox, now }: DrawProps) => {
       {done && (
         <g>
           {ambK < 0.46 && <Ask x={ambPos[0]} y={ambPos[1]} s={spring(span(ambK, 0.02, 0.18)) * (1 - easeIn(span(ambK, 0.38, 0.46)))} />}
-          <Voice x={CL_HEAD.x} y={CL_HEAD.y} r0={CL_R + 8} dir={ambHit[2]} on={span(ambK, 0.36, 0.44) * (1 - span(ambK, 0.56, 0.66))} t={now} spread={0.36} />
+          <Voice x={CL_HEAD.x} y={CL_HEAD.y} r0={CL_R + 10} dir={ambHit[2]} on={span(ambK, 0.36, 0.44) * (1 - span(ambK, 0.56, 0.66))} t={now} spread={0.36} />
           <Pop x={ambHit[0]} y={ambHit[1] - 12} k={span(ambK, 0.45, 0.85)} />
         </g>
       )}
-      <AgentHead x={CL_HEAD.x} y={CL_HEAD.y} r={CL_R} t={t} at={F} talk={talk} />
+      <AgentHead x={CL_HEAD.x} y={CL_HEAD.y} r={CL_R} t={t} at={F} talk={talk} clock={now} />
     </>
   );
 };

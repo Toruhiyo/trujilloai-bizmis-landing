@@ -4,6 +4,7 @@ import { useMessages } from "@/i18n/LocaleProvider";
 import { cn } from "@/lib/utils";
 import { RewindMark } from "./RewindSign";
 import { span, useRewindLoop } from "./useRewindLoop";
+import { useNow } from "./sales/hooks";
 import {
   Ask,
   CLARITY_MS,
@@ -52,8 +53,8 @@ const CH = 240;
 const FIX_AT = 2300; // the turn: the loss struck, the insight coming in
 
 type Copy = { label: string; problem: string; solution: string };
-/** A drawing's frame: `t` along CLARITY_MS, whether it has drawn in once, and how many times it has replayed. */
-type Props = { t: number; kept: boolean; replay: number };
+/** A drawing's frame: `t` along CLARITY_MS, whether it has drawn in once, how many times it has replayed, and `now`, real time (ms) for what stays alive at rest. */
+type Props = { t: number; kept: boolean; replay: number; now: number };
 
 /** The label: the loss, struck at the turn, then the win, fitted to the drawing's width. */
 const Label = ({ t, copy }: { t: number; copy: Copy }) => {
@@ -118,17 +119,27 @@ const Ruler = ({ k, w = 64 }: { k: number; w?: number }) => {
   );
 };
 
-/** The lens' "aha": short rays out of its rim, drawn in as `k` goes 0 → 1. */
-const LensRays = ({ x, y, r, k }: { x: number; y: number; r: number; k: number }) => (
+/**
+ * The lens' "aha": short rays out of its rim, drawn in as `k` goes 0 → 1.
+ * Once drawn they pulse on `now` (real time; `pulse` 0 → 1 easing it in),
+ * each in turn, reaching out and back, so the found reason never sits frozen while it holds.
+ */
+const LensRays = ({ x, y, r, k, now = 0, pulse = 0 }: { x: number; y: number; r: number; k: number; now?: number; pulse?: number }) => (
   <>
-    {[-2.5, -2.05, -1.57, -1.09, -0.64].map((a, j) => (
-      <path
-        key={j}
-        className="mk-thin"
-        d={`M${f(x + Math.cos(a) * (r + 9))} ${f(y + Math.sin(a) * (r + 9))} L${f(x + Math.cos(a) * (r + 19))} ${f(y + Math.sin(a) * (r + 19))}`}
-        {...drawn(clamp01(k * 2 - j * 0.2))}
-      />
-    ))}
+    {[-2.5, -2.05, -1.57, -1.09, -0.64].map((a, j) => {
+      const beat = now ? pulse * (0.5 + 0.5 * Math.sin(now / 240 - j * 0.9)) : 0;
+      const r0 = r + 9 + 2 * beat;
+      const r1 = r + 19 + 7 * beat;
+      return (
+        <path
+          key={j}
+          className="mk-thin"
+          d={`M${f(x + Math.cos(a) * r0)} ${f(y + Math.sin(a) * r0)} L${f(x + Math.cos(a) * r1)} ${f(y + Math.sin(a) * r1)}`}
+          {...drawn(clamp01(k * 2 - j * 0.2))}
+          opacity={k > 0 ? f(1 - 0.35 * beat) : 0}
+        />
+      );
+    })}
   </>
 );
 
@@ -205,7 +216,7 @@ const Reason = ({ c, k }: { c: number; k: number }) => {
   );
 };
 
-const WhyDrawing = ({ t, replay }: Props) => {
+const WhyDrawing = ({ t, replay, now }: Props) => {
   const lens = easeOut(span(t, 1250, 1650));
   const handle = easeOut(span(t, 1550, 1750));
   const found = span(t, FIX_AT + 120, FIX_AT + 620);
@@ -234,7 +245,7 @@ const WhyDrawing = ({ t, replay }: Props) => {
       <g transform={`translate(${lx} ${ly})`}>
         <Reason c={replay % REASONS} k={found} />
       </g>
-      <LensRays x={lx} y={ly} r={lr} k={rays} />
+      <LensRays x={lx} y={ly} r={lr} k={rays} now={now} pulse={span(t, FIX_AT + 950, FIX_AT + 1500)} />
       <Sparkle x={lx + lr + 30} y={ly - lr + 6} k={span(t, FIX_AT + 1500, FIX_AT + 1850)} size={8} />
       <Sparkle x={lx - lr - 28} y={ly - lr + 18} k={span(t, FIX_AT + 1650, FIX_AT + 2000)} size={6} spin={20} />
     </>
@@ -251,7 +262,7 @@ const CA_SWEEP = [1450, FIX_AT - 120]; // the magnifier running along the week
 const CA_LENS = { y: 146, r: 34 };
 const CA_END = { x: 240, y: 136, r: 50 };
 
-const CartsDrawing = ({ t, kept }: Props) => {
+const CartsDrawing = ({ t, kept, now }: Props) => {
   const base = kept ? 1 : easeOut(span(t, 0, 500));
   const lens = easeOut(span(t, 1150, 1500));
   const handle = easeOut(span(t, 1400, 1600));
@@ -299,7 +310,7 @@ const CartsDrawing = ({ t, kept }: Props) => {
       <g transform={`translate(${f(lx)} ${f(ly)})`}>
         <Ruler k={found} />
       </g>
-      <LensRays x={lx} y={ly} r={lr} k={rays} />
+      <LensRays x={lx} y={ly} r={lr} k={rays} now={now} pulse={span(t, FIX_AT + 950, FIX_AT + 1500)} />
       <Sparkle x={CA_END.x + CA_END.r + 30} y={CA_END.y - CA_END.r + 6} k={span(t, FIX_AT + 1550, FIX_AT + 1900)} size={8} />
       <Sparkle x={CA_END.x - CA_END.r - 28} y={CA_END.y - CA_END.r + 18} k={span(t, FIX_AT + 1700, FIX_AT + 2050)} size={6} spin={20} />
     </>
@@ -416,15 +427,18 @@ export const InsightsDrawing = ({
   t: at,
   replay,
   rewinding: rewindingAt = false,
+  active = false,
 }: {
   option: DrawOption;
   className?: string;
   t?: number;
   replay?: number;
   rewinding?: boolean;
+  /** On screen on the section's clock: what stays alive at rest (the lens' rays pulsing) runs. */
+  active?: boolean;
 }) => {
   if (option === "old") return <InsightsClarity className={className} t={at} rewinding={rewindingAt} />;
-  return <InsightsOption option={option} className={className} t={at} replay={replay} rewinding={rewindingAt} />;
+  return <InsightsOption option={option} className={className} t={at} replay={replay} rewinding={rewindingAt} active={active} />;
 };
 
 const InsightsOption = ({
@@ -433,12 +447,14 @@ const InsightsOption = ({
   t: at,
   replay: replayAt,
   rewinding: rewindingAt,
+  active,
 }: {
   option: Exclude<DrawOption, "old">;
   className?: string;
   t?: number;
   replay?: number;
   rewinding: boolean;
+  active: boolean;
 }) => {
   const options = useMessages().landing.insights.options;
   const ref = useRef<HTMLDivElement>(null);
@@ -454,6 +470,8 @@ const InsightsOption = ({
   const t = at ?? own.t;
   const rewinding = at !== undefined ? rewindingAt : own.rewinding;
   const replay = Math.max(0, at !== undefined ? (replayAt ?? 0) : own.cycle - 1);
+  // real time, only once the reason is found (the rays pulsing through the hold)
+  const now = useNow(active && t >= FIX_AT + 950);
   // drawn in once; from then on the scenery stays, so a replay never starts blank
   const played = useRef(false);
   if (t >= 600) played.current = true;
@@ -465,7 +483,7 @@ const InsightsOption = ({
   return (
     <div ref={ref} role="img" aria-label={copy.label} className={cn("bzl-clarity bzl-mk", className)}>
       <svg viewBox={`0 0 ${CW} ${CH}`} aria-hidden="true">
-        <Drawing t={t} kept={played.current} replay={replay} />
+        <Drawing t={t} kept={played.current} replay={replay} now={now} />
         <Label t={t} copy={copy} />
       </svg>
       <RewindMark on={rewinding} />
