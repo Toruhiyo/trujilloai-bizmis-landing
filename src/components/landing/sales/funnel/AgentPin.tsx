@@ -13,8 +13,8 @@ export const AGENT = "amber";
  * a tilt.
  */
 const POSES: { src: string; zoom: number; x: number; y: number; tilt: number; flip?: boolean }[] = [
-  { src: `/landing/heads/${AGENT}.png`, zoom: 1.18, x: 50, y: 4, tilt: -9 },
-  { src: `/landing/heads/${AGENT}.png`, zoom: 1.18, x: 50, y: 4, tilt: 7, flip: true },
+  { src: `/landing/heads/${AGENT}.png`, zoom: 1, x: 50, y: 0, tilt: -9 },
+  { src: `/landing/heads/${AGENT}.png`, zoom: 1, x: 50, y: 0, tilt: 7, flip: true },
   { src: `/landing/agents/greet-${AGENT}-360.webp`, zoom: 2.05, x: 52, y: 2, tilt: 0 },
 ];
 

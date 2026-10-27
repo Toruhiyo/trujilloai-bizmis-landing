@@ -42,9 +42,9 @@ export interface ReplaySession {
   wave: number[];
 }
 
-// The preset's head in the TRUE Bizmis primary shirt (#F9A353), rendered for the
-// landing by scripts/render-landing-heads.py: the app's CDN heads
-// (cdn.bizmis.ai/common/avatars/images/<id>.png) wear a deeper orange.
+// The preset's head (only the face with the hair, framed for a round crop),
+// rendered by scripts/render-landing-heads.py: the same images as the app's
+// CDN heads (cdn.bizmis.ai/common/avatars/images/<id>.png).
 const presetAvatar = (id: string, name: string) => ({
   name,
   image: `/landing/heads/${id}.png`,

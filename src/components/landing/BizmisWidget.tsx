@@ -516,8 +516,8 @@ export const Captions = ({
 
 /**
  * The preset avatars' head renders, as the widget's head circle shows them:
- * the landing's own copies in the true Bizmis shirt (#F9A353) with its logo
- * (the app CDN's heads wear an older, redder orange).
+ * only the face with the hair, framed to fill the circle
+ * (scripts/render-landing-heads.py; the same images as the app's CDN heads).
  */
 const HEAD_CDN = "/landing/heads";
 
@@ -611,7 +611,7 @@ export const HeadCircle = ({
           loading="lazy"
           decoding="async"
           draggable={false}
-          className="absolute left-1/2 top-[4%] w-[118%] max-w-none -translate-x-1/2"
+          className="absolute inset-0 h-full w-full"
           style={{ opacity: showLive ? 0 : 1, transition: "opacity 0.4s ease" }}
         />
       </span>
