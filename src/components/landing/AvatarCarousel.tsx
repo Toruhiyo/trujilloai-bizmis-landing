@@ -5,7 +5,15 @@ import AgentImage from "./AgentImage";
 import type { AgentName } from "./AgentImage";
 import { useInView } from "./Reveal";
 
-export type CarouselAvatar = { name: AgentName; label: string };
+export type CarouselAvatar = {
+  name: AgentName;
+  label: string;
+  /** The avatar's brand colour (its shirt's, or its logo's on a neutral shirt): the spotlight under it and the name's tint. */
+  color?: string;
+};
+
+/** The spotlight's colour when an avatar has none: the primary. */
+const PRIMARY = "hsl(var(--primary))";
 
 /** One step every AUTOPLAY_MS while untouched and in view. */
 const AUTOPLAY_MS = 1600;
@@ -25,8 +33,10 @@ const mod = (a: number, n: number) => ((a % n) + n) % n;
 
 /**
  * One avatar at a time, its neighbours peeking in smaller on either side, in
- * a soft spotlight of the primary (the page's two colours: only the avatars'
- * own shirts and logos bring others). The ring is the control:
+ * a soft spotlight of the centre avatar's brand colour (the one colour the
+ * carousel brings besides the avatars' own shirts and logos; it crossfades
+ * from brand to brand as the ring turns, and the big name above the heads
+ * takes a muted tint of it). The ring is the control:
  * drag it (it follows the finger 1:1), flick it (it carries on with inertia and
  * springs onto the nearest avatar), tap a neighbour, or use the arrow keys.
  * Left alone in view, it steps on with a brisk rhythm, from the first avatar
@@ -36,7 +46,8 @@ const mod = (a: number, n: number) => ((a % n) + n) % n;
  * lineup). Leaving the view resets it to the first. If the visitor moves the
  * ring, it carries on from there once they let it be.
  *
- * The ambient light is the film's demo-store light, in the primary: blobs
+ * The ambient light is the film's demo-store light, in the primary (orange
+ * only, whatever the brand): blobs
  * that drift and breathe; dim and fast while the ring is moving, bright and
  * slow at rest, swelling on every new avatar. It's written as CSS variables
  * (--amb-glow, --amb-x/y/s 1–3) on `ambient`, the section, so the light can
@@ -308,22 +319,44 @@ const AvatarCarousel = ({
         onPointerUp={onPointerUp}
         onPointerCancel={onPointerUp}
       >
-        {/* the spotlight, in the primary */}
-        <div
-          aria-hidden="true"
-          className="absolute left-1/2 top-[8%] aspect-square w-[74%] -translate-x-1/2 rounded-full"
-          style={{
-            background:
-              "radial-gradient(closest-side, color-mix(in oklab, hsl(var(--primary)) 26%, #fff8f0) 0%, color-mix(in oklab, hsl(var(--primary)) 9%, #fffaf4) 62%, transparent 100%)",
-            opacity: "calc(0.55 + 0.45 * var(--amb-glow, 0.6))",
-          }}
-        />
+        {/* the spotlight and its floor glow, in the centre avatar's brand colour: one layer per brand,
+            each as strong as its avatar is close to the centre, so the colour crossfades as the ring turns */}
+        {avatars.map((a, i) => {
+          let off = mod(i - pos, n);
+          if (off > n / 2) off -= n;
+          const o = Math.max(0, 1 - Math.abs(off));
+          if (o === 0) return null;
+          const c = a.color ?? PRIMARY;
+          return (
+            <div
+              key={a.name}
+              aria-hidden="true"
+              className="absolute inset-0"
+              style={{ opacity: o }}
+            >
+              <div
+                className="absolute left-1/2 top-[8%] aspect-square w-[74%] -translate-x-1/2 rounded-full"
+                style={{
+                  background: `radial-gradient(closest-side, color-mix(in oklab, ${c} 26%, #fffaf4) 0%, color-mix(in oklab, ${c} 9%, #fffcf8) 62%, transparent 100%)`,
+                  opacity: "calc(0.55 + 0.45 * var(--amb-glow, 0.6))",
+                }}
+              />
+              <div
+                className="absolute bottom-[1%] left-1/2 h-[14%] w-[62%] -translate-x-1/2 rounded-[50%]"
+                style={{
+                  background: `radial-gradient(closest-side, color-mix(in oklab, ${c} 34%, transparent), color-mix(in oklab, ${c} 10%, transparent) 60%, transparent)`,
+                  opacity: "calc(0.6 + 0.4 * var(--amb-glow, 0.6))",
+                }}
+              />
+            </div>
+          );
+        })}
         <div
           aria-hidden="true"
           className="absolute bottom-[3%] left-1/2 h-[7%] w-[44%] -translate-x-1/2 rounded-[50%] bg-[radial-gradient(closest-side,rgba(28,24,20,0.22),transparent)]"
         />
 
-        {/* the name, huge and soft in the primary, above the heads: it slides and fades with its avatar */}
+        {/* the name, huge and soft, above the heads, in a muted tint of its brand colour: it slides and fades with its avatar */}
         <div
           aria-hidden="true"
           className="pointer-events-none absolute inset-x-0 top-0 h-[25%] overflow-hidden"
@@ -340,7 +373,7 @@ const AvatarCarousel = ({
                 style={{
                   transform: `translateX(calc(-50% + ${off * -18}%))`,
                   opacity: o,
-                  color: "color-mix(in oklab, hsl(var(--primary)) 26%, transparent)",
+                  color: `color-mix(in oklab, color-mix(in oklab, ${a.color ?? PRIMARY} 62%, #9c8a7c) 32%, transparent)`,
                 }}
               >
                 {a.label}

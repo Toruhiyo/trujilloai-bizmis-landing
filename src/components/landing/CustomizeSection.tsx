@@ -2,6 +2,7 @@ import { useRef } from "react";
 import { useMessages } from "@/i18n/LocaleProvider";
 import AvatarCarousel from "./AvatarCarousel";
 import manifest from "./agents-manifest.json";
+import palette from "./brand-palette.json";
 import type { CarouselAvatar } from "./AvatarCarousel";
 import FeatureCard from "./FeatureCard";
 import { AvatarIcon, VoiceIcon } from "./AnimatedIcons";
@@ -11,22 +12,28 @@ import SectionHead from "./SectionHead";
 import { MarkerEdge, useSep } from "./SectionSep";
 
 // Real Bizmis avatars, each wearing a (fictional, AI-generated) store's logo: either a vivid shirt
-// with a one-colour logo, or a neutral shirt (white, black, oat) with a multicolour one. Ordered so
-// neighbours never share a shirt colour; it opens on Luca.
-const LINEUP: readonly CarouselAvatar[] = [
-  { name: "style-luca", label: "Luca" },
-  { name: "style-mia", label: "Mia" },
-  { name: "style-kiran", label: "Kiran" },
-  { name: "style-yue", label: "Yue" },
-  { name: "style-echo", label: "Echo" },
-  { name: "style-amber", label: "Amber" },
-  { name: "style-will", label: "Will" },
-  { name: "style-adrian", label: "Adrian" },
-  { name: "style-victor", label: "Victor" },
-  { name: "style-teo", label: "Teo" },
-  { name: "style-yusuke", label: "Yusuke" },
-  { name: "style-marc", label: "Marc" },
-];
+// with a one-colour logo, or a neutral or pale shirt with a multicolour one. Every shirt follows its
+// brand's name (sky-blue KUMO, "cloud"; coral papaya; sun-yellow SOLARO…); the palette lives in
+// scripts/render-landing-avatars.py, which writes brand-palette.json, so the spotlight's colour always
+// matches the shirt. Ordered so neighbours never share a hue or a warmth; it opens on Luca.
+const brandColor = (name: string) =>
+  (palette as Record<string, { glow: string }>)[name]?.glow;
+const LINEUP: readonly CarouselAvatar[] = (
+  [
+    { name: "style-luca", label: "Luca" }, // KUMO, sky blue
+    { name: "style-mia", label: "Mia" }, // papaya, coral
+    { name: "style-will", label: "Will" }, // TIDEWELL, ocean teal
+    { name: "style-yue", label: "Yue" }, // AURELITH, wine and gold
+    { name: "style-amber", label: "Amber" }, // SOLARO, sun yellow
+    { name: "style-victor", label: "Victor" }, // NUBO, royal blue
+    { name: "style-kiran", label: "Kiran" }, // bloom, blossom pink
+    { name: "style-yusuke", label: "Yusuke" }, // VERDA, leaf lime
+    { name: "style-echo", label: "Echo" }, // FERRO & CO., gunmetal
+    { name: "style-marc", label: "Marc" }, // PIXORA, electric violet
+    { name: "style-teo", label: "Teo" }, // fizzwick, white (soda-blue glow)
+    { name: "style-adrian", label: "Adrian" }, // ZORA, black (magenta glow)
+  ] as const
+).map((a) => ({ ...a, color: brandColor(a.name) }));
 
 // only avatars that have been rendered (an avatar added here before its render lands is skipped)
 const SHOWN = LINEUP.filter((a) => a.name in manifest);
@@ -36,8 +43,10 @@ const SHOWN = LINEUP.filter((a) => a.name in manifest);
  * avatars shown one at a time in a carousel. Composed as One-Click Setup:
  * the centred header (as the pillars' openers, SectionHead), then on one
  * centre line the two feature cards and the carousel, each half the stage.
- * Orange only (the page's two colours): the ambient light and the spotlight
- * are the primary; only the avatars' own shirts bring other colours.
+ * The page's two colours, but for one: the ambient light stays the primary,
+ * while the spotlight under the centre avatar (and a muted tint of the big
+ * name above it) takes that avatar's brand colour, crossfading as the ring
+ * turns. Besides that only the avatars' own shirts bring other colours.
  */
 const CustomizeSection = () => {
   const messages = useMessages();

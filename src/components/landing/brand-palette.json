@@ -1,0 +1,62 @@
+{
+  "style-luca": {
+    "brand": "KUMO",
+    "shirt": "#6EC8F5",
+    "glow": "#4DB8F0"
+  },
+  "style-mia": {
+    "brand": "papaya",
+    "shirt": "#FF6F61",
+    "glow": "#FF6F61"
+  },
+  "style-kiran": {
+    "brand": "bloom",
+    "shirt": "#F7CFD8",
+    "glow": "#EC6F96"
+  },
+  "style-yue": {
+    "brand": "AURELITH",
+    "shirt": "#6B1F3E",
+    "glow": "#A33A66"
+  },
+  "style-echo": {
+    "brand": "FERRO & CO.",
+    "shirt": "#4A5462",
+    "glow": "#6E7C92"
+  },
+  "style-amber": {
+    "brand": "SOLARO",
+    "shirt": "#FFD23F",
+    "glow": "#FFCC2E"
+  },
+  "style-will": {
+    "brand": "TIDEWELL",
+    "shirt": "#2EC4B6",
+    "glow": "#22B8AA"
+  },
+  "style-adrian": {
+    "brand": "ZORA",
+    "shirt": "#1C1C1E",
+    "glow": "#D42BB0"
+  },
+  "style-victor": {
+    "brand": "NUBO",
+    "shirt": "#2563EB",
+    "glow": "#2563EB"
+  },
+  "style-teo": {
+    "brand": "fizzwick",
+    "shirt": "#F7F5F2",
+    "glow": "#1FAFC4"
+  },
+  "style-yusuke": {
+    "brand": "VERDA",
+    "shirt": "#A3E635",
+    "glow": "#7CCF1F"
+  },
+  "style-marc": {
+    "brand": "PIXORA",
+    "shirt": "#7C3AED",
+    "glow": "#7C3AED"
+  }
+}
