@@ -269,6 +269,7 @@ export const fr: Messages = {
       storeTitle: "Votre boutique en ligne",
       syncing: "Synchronisation de votre boutique",
       synced: "Synchronisée",
+      alwaysInSync: "Toujours synchronisé",
     },
   },
 

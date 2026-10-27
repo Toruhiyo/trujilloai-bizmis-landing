@@ -269,6 +269,7 @@ export const it: Messages = {
       storeTitle: "Il tuo negozio online",
       syncing: "Sincronizzazione del negozio",
       synced: "Sincronizzato",
+      alwaysInSync: "Sempre sincronizzato",
     },
   },
 

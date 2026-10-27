@@ -269,6 +269,7 @@ export const ca: Messages = {
       storeTitle: "La teva botiga online",
       syncing: "Sincronitzant la botiga",
       synced: "Sincronitzada",
+      alwaysInSync: "Sempre sincronitzat",
     },
   },
 

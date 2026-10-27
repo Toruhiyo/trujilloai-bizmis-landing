@@ -292,6 +292,8 @@ export const en = {
       storeTitle: "Your online store",
       syncing: "Syncing your store",
       synced: "Synced",
+      /** The badge under the agent once the store has synced (it stays): the store and the agent kept in sync from then on. */
+      alwaysInSync: "Always in sync",
     },
   },
 

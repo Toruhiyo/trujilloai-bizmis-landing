@@ -47,16 +47,20 @@ const CARD_EVERY = 160;
 /** When card `i` ticks (and its wire starts drawing to the agent). */
 const cardAt = (i: number) => SYNC_AT + 200 + i * CARD_EVERY;
 /**
- * The agent's frames (scripts/setup-charge-anim.py), 24 fps: his power-up stance
- * as a seamless 2 s loop, played in real time whenever the charge isn't, and the
- * 4 s charge-up burst, scrubbed from the scroll clock; the burst leaves the loop
- * on its first frame and lands back on it.
+ * The agent's frames (scripts/setup-charge-anim.py), 24 fps: he stands easy with a
+ * small ball of energy glowing between his hands, a seamless 2 s loop (it breathes
+ * and pulses), played in real time whenever the burst isn't, and the 4 s happy
+ * burst (he gathers the energy, it pops, he cheers, it forms again in his hands),
+ * scrubbed from the scroll clock; the burst leaves the loop on its first frame and
+ * lands back on it.
  */
 const FPS = 24;
 const LOOP_FRAMES = 48;
 const BURST_FRAMES = 96;
 const FRAMES = LOOP_FRAMES + BURST_FRAMES;
 const CHARGE_MS = (BURST_FRAMES / FPS) * 1000;
+/** "Always in sync" comes in this long before the burst ends (as the ball forms again in his hands) and stays. */
+const BADGE_EARLY = 1200;
 /** After the charge, the sparks keep flowing a while: the end of the timeline. */
 const FLOW_MS = 600;
 /** One breath of the charge's aura and rim (ms). */
@@ -74,7 +78,7 @@ const CHARGE = {
     i < LOOP_FRAMES
       ? `/landing/setup/charge-idle/${String(i).padStart(2, "0")}.webp`
       : `/landing/setup/charge-burst/${String(i - LOOP_FRAMES).padStart(2, "0")}.webp`,
-  crop: { left: 58, top: 104, width: 600, height: 996 },
+  crop: { left: 20, top: 100, width: 680, height: 1002 },
   w: 720,
   h: 1200,
 };
@@ -289,8 +293,8 @@ const ChargeClip = ({
  * Setup on /v2: one click and the store is wired to the agent, right away. A
  * cursor clicks the Install button, the store's data cards sync in a quick
  * ripple (each one's wire draws to the agent as it ticks), and the agent
- * (Will, full figure, rendered: a power-up stance that never stops charging,
- * then the anime-style burst, squeezed eyes, gritted teeth, a shout) charges up with it while round sparks
+ * (Will, full figure, rendered: standing easy with a small ball of energy between
+ * his hands, then a happy burst, the ball pops and he cheers, arms up) charges up with it while round sparks
  * of energy travel every wire, card → agent. The wires are drawn from the real
  * positions of the cards and the agent, so they always land.
  *
@@ -303,8 +307,9 @@ const ChargeClip = ({
  * sequence on a canvas, so it scrubs both ways at once); while it rewinds the
  * visual goes analog (RewindScreen's tape) and the marker ◀◀ shows. At the end
  * the sparks and the aura keep flowing by themselves, and whenever the burst
- * isn't playing the agent stands in his power-up stance, always charging (a
- * real-time loop). Reduced motion shows the end state.
+ * isn't playing the agent stands holding his ball of energy, breathing (a
+ * real-time loop). Once he has it, "Always in sync" shows under him and stays.
+ * Reduced motion shows the end state.
  */
 const SetupSection = () => {
   const messages = useMessages();
@@ -394,7 +399,7 @@ const SetupSection = () => {
     return () => io.disconnect();
   }, [section, near, reduced]);
 
-  // wire each card to the agent's chest, from the real layout
+  // wire each card to the ball of energy in the agent's hands, from the real layout
   const measure = useCallback(() => {
     const el = box.current;
     const b = el?.getBoundingClientRect();
@@ -403,7 +408,7 @@ const SetupSection = () => {
     // in the box's own (unscaled) pixels: the pinned screen may be scaled down to fit
     const k = b.width / el.offsetWidth;
     const x2 = (tg.left + tg.width * 0.5 - b.left) / k;
-    const y2 = (tg.top + tg.height * 0.6 - b.top) / k; // the chest, under the shirt logo
+    const y2 = (tg.top + tg.height * 0.53 - b.top) / k; // the ball of energy in his hands
     setSize({ w: el.offsetWidth, h: el.offsetHeight });
     const first = cards.current[0]?.getBoundingClientRect();
     const last = cards.current[cards.current.length - 1]?.getBoundingClientRect();
@@ -459,7 +464,8 @@ const SetupSection = () => {
   // the timeline, all from t
   const syncing = t >= SYNC_AT && t < doneAt;
   const done = t >= doneAt;
-  const label = done ? copy.synced : syncing ? copy.syncing : copy.install;
+  // once synced the button only ticks (a round check) and goes: the badge under the agent says it, once
+  const label = done ? null : syncing ? copy.syncing : copy.install;
   const buttonIn = easeInOut(span(t, CURSOR_AT, CURSOR_AT + 500));
   const buttonOut = easeInOut(span(t, doneAt + 700, doneAt + 1200));
   const press = bump(t, PRESS_AT - 50, 300);
@@ -473,6 +479,7 @@ const SetupSection = () => {
   const auraOn = reduced ? 0 : span(t, doneAt, doneAt + 700);
   const aura = breath(ft - doneAt);
   const auraWide = breath(ft - doneAt - 120);
+  const badge = span(t, doneAt + CHARGE_MS - BADGE_EARLY, doneAt + CHARGE_MS - BADGE_EARLY + 450);
   const rim = t >= doneAt && t < doneAt + CHARGE_MS ? breath(t - doneAt).o * Math.min(1, span(t, doneAt, doneAt + 300), 1 - span(t, doneAt + CHARGE_MS - 300, doneAt + CHARGE_MS)) : 0;
 
   return (
@@ -615,7 +622,8 @@ const SetupSection = () => {
                           clicked, white with ink type (small accent text is ink, never the primary on white) */}
                       <span
                         className={cn(
-                          "flex h-10 items-center gap-2 whitespace-nowrap rounded-[var(--bzl-radius-btn)] px-4 text-sm font-medium shadow-[0_6px_25px_-6px_rgba(249,163,83,0.45)] transition-[background-color,color] duration-200 sm:h-12 sm:px-6 sm:text-base",
+                          "flex h-10 items-center gap-2 whitespace-nowrap rounded-[var(--bzl-radius-btn)] text-sm font-medium shadow-[0_6px_25px_-6px_rgba(249,163,83,0.45)] transition-[background-color,color] duration-200 sm:h-12 sm:text-base",
+                          done ? "w-10 justify-center sm:w-12" : "px-4 sm:px-6",
                           t >= SYNC_AT
                             ? "bg-white text-[var(--bzl-fg)] ring-1 ring-[color-mix(in_oklab,hsl(var(--primary))_35%,transparent)]"
                             : "bg-[hsl(var(--primary))] text-white",
@@ -662,7 +670,7 @@ const SetupSection = () => {
                           aria-hidden="true"
                           className="absolute inset-x-[-25%] bottom-[-3%] h-[10%] rounded-[50%] bg-[radial-gradient(closest-side,rgba(249,163,83,0.3),transparent)]"
                         />
-                        {/* the agent, anime style (rendered frames): his stance always charging, the burst (squeezed eyes, gritted teeth, a shout) scrubbed from t */}
+                        {/* the agent (rendered frames): his easy stance with the ball of energy, the happy burst scrubbed from t */}
                         <ChargeClip
                           burst={burst}
                           live={onScreen && !reduced}
@@ -670,6 +678,22 @@ const SetupSection = () => {
                           rim={rim}
                           label={messages.landing.agentAlt}
                         />
+                        {/* Always in sync: in as the ball forms again in his hands, then it stays (the icon turning slowly) */}
+                        <div
+                          className="absolute left-1/2 top-[97%] z-10 flex items-center gap-1.5 whitespace-nowrap rounded-full bg-white px-3 py-1.5 text-xs font-semibold leading-none tracking-[-0.01em] text-[var(--bzl-fg)] shadow-[0_6px_20px_-8px_rgba(249,163,83,0.55)] ring-1 ring-[color-mix(in_oklab,hsl(var(--primary))_35%,transparent)] sm:px-3.5 sm:py-2 sm:text-sm"
+                          style={{
+                            opacity: badge,
+                            transform: `translate(-50%, ${(8 * (1 - badge)).toFixed(1)}px) scale(${(0.7 + 0.3 * easeOutBack(badge)).toFixed(3)})`,
+                            visibility: badge > 0 ? undefined : "hidden",
+                          }}
+                        >
+                          <RefreshCw
+                            aria-hidden="true"
+                            className="h-3.5 w-3.5 flex-shrink-0 text-[hsl(var(--primary))] motion-safe:animate-[spin_6s_linear_infinite] sm:h-4 sm:w-4"
+                            strokeWidth={2.4}
+                          />
+                          {copy.alwaysInSync}
+                        </div>
                       </div>
                     </Reveal>
                   </div>

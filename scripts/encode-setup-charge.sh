@@ -2,9 +2,10 @@
 # Encodes the /v2 Setup agent (scripts/setup-charge-anim.py frames, f_0000.png ..
 # f_0143.png, 720x1200, transparent) into public/landing/setup/:
 #
-# - charge-idle/00.webp .. 47.webp: the power-up stance, a seamless 2 s loop that
-#   SetupSection plays in real time whenever the burst isn't playing;
-# - charge-burst/00.webp .. 95.webp: the charge-up burst (4 s), which it scrubs
+# - charge-idle/00.webp .. 47.webp: the stance, the ball of energy pulsing in his
+#   hands, a seamless 2 s loop that SetupSection plays in real time whenever the
+#   burst isn't playing;
+# - charge-burst/00.webp .. 95.webp: the happy burst (4 s), which it scrubs
 #   from the section's scroll clock, forwards and backwards. Seeking a video per
 #   frame stalls (one keyframe: every seek decodes from the start, 40 to 100 ms in
 #   Chrome, and Safari's HEVC with alpha is worse), while a decoded image draws on
@@ -61,7 +62,7 @@ const PAD = 6;
     const buf = await sharp(`${frames}/${f}`)
       .extract(crop)
       .resize(Math.round(crop.width * SCALE), Math.round(crop.height * SCALE))
-      .webp({ quality: 68, alphaQuality: 60, effort: 6 })
+      .webp({ quality: 62, alphaQuality: 60, effort: 6 })
       .toBuffer();
     const dest = i < LOOP ? `charge-idle/${String(i).padStart(2, "0")}` : `charge-burst/${String(i - LOOP).padStart(2, "0")}`;
     fs.writeFileSync(`${out}/${dest}.webp`, buf);
