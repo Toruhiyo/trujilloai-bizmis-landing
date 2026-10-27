@@ -922,7 +922,7 @@
   text-wrap: balance;
 }
 .bzl-shead-title { padding: 0 0.04em 0.06em; } /* the tight tracking's last letter, and descenders, inside the box */
-/* the sub-lead IS the pillars' lead (.bzl-pillar-lead: ink, 500, balanced), only its box here */
+/* the sub-lead IS the pillars' lead (.bzl-pillar-lead), only its box here */
 .bzl-shead-lead {
   margin: 0;
 }
@@ -1521,22 +1521,24 @@
   gap: 1rem;
 }
 .bzs-lead { grid-area: lead; }
-/* Customer Support's and Store Insights' leads: one style and one place, the
-   screen's line in ink (medium, a step under the bar's outcome), centred over
-   its drawing, whose handwritten label is centred too */
+/* The sections' leads (Customer Support, Store Insights, One-click setup, Make it
+   truly yours): one style and one place, the landing's body lead (.bzl-lead's warm
+   muted ink, regular weight, open leading), a size up; centred over its drawing,
+   whose handwritten label is centred too. Never full ink or heavy: that reads as a
+   second headline competing with the title or the docked pill */
 .bzl-pillar-lead {
-  max-width: 24em;
+  max-width: 26em;
   margin-inline: auto;
   text-align: center;
-  color: var(--bzl-fg);
-  font-size: clamp(1.12rem, 4.6vw, 1.35rem);
-  font-weight: 500;
-  letter-spacing: -0.015em;
-  line-height: 1.3;
+  color: var(--bzl-muted);
+  font-size: clamp(1.08rem, 4.4vw, 1.25rem);
+  font-weight: 400;
+  letter-spacing: -0.005em;
+  line-height: 1.45;
   text-wrap: balance;
 }
 @media (min-width: 1024px) {
-  .bzl-pillar-lead { font-size: clamp(1.2rem, min(1.7vw, 3svh), 1.6rem); }
+  .bzl-pillar-lead { font-size: clamp(1.15rem, min(1.45vw, 2.7svh), 1.4rem); }
 }
 .bzs-day { grid-area: day; position: relative; }
 .bzs-store { grid-area: store; position: relative; }
