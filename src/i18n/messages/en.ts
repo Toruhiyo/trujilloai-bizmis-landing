@@ -134,6 +134,8 @@ export const en = {
     /** UI text of the real widget, as it appears in the mockups. */
     widget: {
       placeholder: "Help me find the right product.",
+      /** The hero widget's rotating composer placeholders (the first is placeholder). */
+      placeholders: ["Help me find the right product.", "Compare the best options for me.", "Will this fit or work for my needs?", "Can you answer a shopping question?"],
       takingYouTo: "Taking you to",
       addingToCart: "Adding to cart",
       searchResults: "Search results",

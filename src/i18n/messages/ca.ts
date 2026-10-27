@@ -132,6 +132,8 @@ export const ca: Messages = {
     /** UI text of the real widget, as it appears in the mockups. */
     widget: {
       placeholder: "Ajuda'm a trobar el producte ideal.",
+      /** The hero widget's rotating composer placeholders (the first is placeholder). */
+      placeholders: ["Ajuda'm a trobar el producte ideal.", "Compara'm les millors opcions.", "Això em serveix pel que necessito?", "Em resols un dubte de compra?"],
       takingYouTo: "Et porto a",
       addingToCart: "Afegint al carretó",
       searchResults: "Resultats de la cerca",

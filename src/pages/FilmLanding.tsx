@@ -21,6 +21,8 @@ import "@/styles/palette-options.css";
 import "@/styles/look-film.css";
 // how Setup and Customize are set apart: the sheet; ?sep=3 band, ?sep=0 neither (SectionSep)
 import "@/styles/section-sep.css";
+// big screens (wider than 1440): the whole page grows with the screen (rem-based)
+import "@/styles/big-screen.css";
 import { useSep } from "@/components/landing/SectionSep";
 // the pillar openers' designs under comparison (?open=1..6, pillar/OpenerContext)
 import {

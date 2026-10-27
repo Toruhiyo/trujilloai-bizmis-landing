@@ -1,0 +1,63 @@
+/* Big screens (wider than 1440px): the v2 landing ("/") and its pages
+   (Pricing, FAQs, Early Access) grow with the screen, so a 2560 or 3840 wide
+   window shows the 1440x900 layout made bigger instead of a small island.
+
+   How: the root font size scales with the viewport, from 16px at 1440x900 up
+   (the smaller of width/1440 and height/900, so the pinned, height-bound
+   stages keep fitting the screen), and the few layout caps that were in px
+   are restated here in rem, which is the same at 16px. Everything sized in
+   rem (Tailwind's spacing and type, the clamp() caps) follows. At 1440 wide
+   and below nothing changes: the root stays 16px.
+
+   Ultra-wide (3440, 5120 x 1440) scales by its height, so the content sits
+   centred at the size it has on a 2560x1440 screen, its line lengths capped
+   in rem as everywhere else. */
+
+@media (min-width: 1441px) {
+  html:has(.bzl),
+  html:has(.bzl-site) {
+    font-size: max(100%, min(100vw / 90, 100svh / 56.25));
+  }
+
+  /* the content column and the navbar's container (both 1400px) */
+  .bzl .bzl-wrap,
+  .bzl-site .bzl-wrap,
+  html:has(.bzl) #site-navbar .container,
+  html:has(.bzl-site) #site-navbar .container {
+    max-width: 87.5rem;
+  }
+
+  /* the pillars' openers and their docked bars (pillar-openers.css, pillar-docks.css) */
+  .bzl .odz,
+  .bzl .odx,
+  .bzl .pi-od .pi-dock.odx-bar-b {
+    max-width: 75rem;
+  }
+  .bzl .od1,
+  .bzl .pi-od .pi-dock.odz-bar-f {
+    max-width: 87.5rem;
+  }
+  .bzl .od5 {
+    max-width: 80rem;
+  }
+  .bzl .od-backdrop {
+    width: min(77.5rem, 98vw);
+  }
+
+  /* the words inside the devices' screens (landing-sales.css, film-landing.css,
+     landing-responsive.css): their px floors in rem, since the screens are
+     drawn u times bigger here (devices.tsx VirtualScreen) */
+  .bzl .sl-cap-find {
+    font-size: max(1.625rem, calc(0.875rem / var(--vs, 1)));
+  }
+  .bzl .sl-cap-phone,
+  .bzl .bzs-cap.is-phone {
+    font-size: max(0.9375rem, calc(0.75rem / var(--vs, 1)));
+  }
+  .bzl .sl-cap-buy {
+    font-size: max(0.9375rem, calc(0.75rem / var(--vs, 1) / var(--ui, 1)));
+  }
+  .bzl .bzs-cap:not(.is-phone) {
+    font-size: max(1.5rem, calc(0.875rem / var(--vs, 1)));
+  }
+}

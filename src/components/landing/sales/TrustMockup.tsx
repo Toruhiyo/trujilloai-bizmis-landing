@@ -119,7 +119,7 @@ const TrustMockup = ({ play, clock, active = true }: MockupProps) => {
                 />
                 <div className="mt-2 flex items-center gap-2" aria-hidden="true">
                   <span className="bzl-tile-line h-2.5 flex-1" />
-                  <span className="text-[13px] font-semibold tabular-nums text-[var(--bzl-fg)]">
+                  <span className="text-[0.8125rem] font-semibold tabular-nums text-[var(--bzl-fg)]">
                     {money.format(p.price)}
                   </span>
                 </div>
@@ -130,7 +130,7 @@ const TrustMockup = ({ play, clock, active = true }: MockupProps) => {
                     return (
                       <li key={k} className="flex items-center gap-1.5">
                         <Icon className="h-3.5 w-3.5 flex-shrink-0 text-[#b3a497]" strokeWidth={2} />
-                        <span className="bzl-tile-line h-[6px] flex-1" />
+                        <span className="bzl-tile-line h-[0.375rem] flex-1" />
                         <span
                           className={cn(
                             "sl-trust-mark grid h-4 w-4 flex-shrink-0 place-items-center rounded-full",

@@ -135,7 +135,7 @@ export const NavBanner = ({
       </span>
       <span className="min-w-0 flex-1">
         <span
-          className="block text-[9px] font-semibold uppercase tracking-wider opacity-90"
+          className="block text-[0.5625rem] font-semibold uppercase tracking-wider opacity-90"
           style={{ color: ORANGE }}
         >
           {heading}
@@ -144,7 +144,7 @@ export const NavBanner = ({
           {target}
         </span>
       </span>
-      <span className="relative grid h-[26px] w-[26px] flex-shrink-0 place-items-center">
+      <span className="relative grid h-[1.625rem] w-[1.625rem] flex-shrink-0 place-items-center">
         <svg viewBox="0 0 26 26" className="absolute inset-0 -rotate-90">
           <circle
             cx="13"
@@ -168,7 +168,7 @@ export const NavBanner = ({
             style={progress === undefined ? { transition: "stroke-dashoffset 1s linear" } : undefined}
           />
         </svg>
-        <span className="text-[10px] font-semibold" style={{ color: ORANGE }}>
+        <span className="text-[0.625rem] font-semibold" style={{ color: ORANGE }}>
           {left}
         </span>
       </span>
@@ -224,7 +224,7 @@ const AvatarStage = memo(
         name={agent}
         alt=""
         sizes="160px"
-        className="absolute bottom-0 left-1/2 h-[224px] w-auto -translate-x-1/2"
+        className="absolute bottom-0 left-1/2 h-[14rem] w-auto -translate-x-1/2"
       />
     );
     return live ? (
@@ -285,14 +285,14 @@ const BizmisWidget = ({
   const Tool = tool;
   const voice = talking ?? state === "speaking";
   return (
-    <div className={cn("bzw relative w-[288px]", className)} style={style}>
+    <div className={cn("bzw relative w-[18rem]", className)} style={style}>
       {above && (
         <div className="absolute bottom-full left-0 right-0 z-20 mb-2.5 flex flex-col gap-2.5">
           {above}
         </div>
       )}
 
-      <div className="bzw-card relative h-[296px] rounded-xl border">
+      <div className="bzw-card relative h-[18.5rem] rounded-xl border">
         {/* Volume toggle, top-right (always visible on the real card) */}
         <span
           className="absolute right-2 top-2 z-10 grid h-8 w-8 place-items-center rounded-full border"
@@ -307,22 +307,22 @@ const BizmisWidget = ({
         </span>
 
         {/* Avatar stage */}
-        <div className="relative h-[230px] overflow-visible">
+        <div className="relative h-[14.375rem] overflow-visible">
           {(state === "speaking" || talking !== undefined) && state !== "working" && (
             <span
               aria-hidden="true"
               className="pointer-events-none absolute left-1/2 top-[44%] -translate-x-1/2 -translate-y-1/2 transition-opacity duration-300"
               style={{ opacity: voice ? 1 : 0 }}
             >
-              <span className="bzw-glow absolute left-1/2 top-1/2 h-[198px] w-[198px] -translate-x-1/2 -translate-y-1/2 rounded-full" />
-              <span className="bzw-ring absolute left-1/2 top-1/2 h-[144px] w-[144px] -translate-x-1/2 -translate-y-1/2 rounded-full border-2" />
-              <span className="bzw-ring absolute left-1/2 top-1/2 h-[144px] w-[144px] -translate-x-1/2 -translate-y-1/2 rounded-full border-2 [animation-delay:1.1s]" />
+              <span className="bzw-glow absolute left-1/2 top-1/2 h-[12.375rem] w-[12.375rem] -translate-x-1/2 -translate-y-1/2 rounded-full" />
+              <span className="bzw-ring absolute left-1/2 top-1/2 h-[9rem] w-[9rem] -translate-x-1/2 -translate-y-1/2 rounded-full border-2" />
+              <span className="bzw-ring absolute left-1/2 top-1/2 h-[9rem] w-[9rem] -translate-x-1/2 -translate-y-1/2 rounded-full border-2 [animation-delay:1.1s]" />
             </span>
           )}
           {state === "working" && (
             <span
               aria-hidden="true"
-              className="pointer-events-none absolute left-1/2 top-[44%] h-[200px] w-[200px] -translate-x-1/2 -translate-y-1/2"
+              className="pointer-events-none absolute left-1/2 top-[44%] h-[12.5rem] w-[12.5rem] -translate-x-1/2 -translate-y-1/2"
             >
               <span className="bzw-spinner absolute inset-0">
                 <span className="bzw-laser absolute inset-0 rounded-full" />
@@ -352,7 +352,7 @@ const BizmisWidget = ({
         <div className="px-3 pb-3 pt-1">
           <div
             className={cn(
-              "flex h-[44px] items-center rounded-2xl border bg-white/60 py-1.5 pl-4 pr-1.5 transition-colors duration-200",
+              "flex h-[2.75rem] items-center rounded-2xl border bg-white/60 py-1.5 pl-4 pr-1.5 transition-colors duration-200",
               composerBorder(draft),
             )}
           >
@@ -594,7 +594,7 @@ export const HeadCircle = ({
       {working && (
         <span
           aria-hidden="true"
-          className="pointer-events-none absolute -inset-[5px]"
+          className="pointer-events-none absolute -inset-[0.3125rem]"
         >
           <span className="bzw-spinner absolute inset-0">
             <span className="bzw-laser absolute inset-0 rounded-full" />
@@ -781,7 +781,7 @@ export const BarWidget = ({
         working={working}
         live={live}
         paused={paused}
-        className="relative z-10 -my-[26px] -ml-[25px]"
+        className="relative z-10 -my-[1.625rem] -ml-[1.5625rem]"
       />
       <AudioToggle />
       <span className="bzw-composer min-w-0 flex-1 truncate px-2 py-2 text-sm leading-5">

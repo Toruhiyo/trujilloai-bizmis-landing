@@ -1,10 +1,11 @@
+import { remScale } from "@/lib/remScale";
 import type { CSSProperties } from "react";
 import { Search } from "lucide-react";
 import { useMessages } from "@/i18n/LocaleProvider";
 import { cn } from "@/lib/utils";
 import { span, typed } from "../useRewindLoop";
 import BizmisWidget, { Captions, NavBanner, SentMessage, captionLength, captionVoice } from "../BizmisWidget";
-import { CLAY, TINT } from "../clay";
+import { CLAY, TINT, claySrcSet } from "../clay";
 import type { ClayShape } from "../clay";
 import { BrowserFrame } from "../devices";
 import { STORE_URL } from "../visuals";
@@ -89,6 +90,9 @@ const FindMockup = ({ play, clock, active = true }: MockupProps) => {
   const t = clock ? clock.t : own.t;
   const sentinel = clock ? undefined : <Sentinel ref={own.sentinel} off={own.off} />;
   const L = DESKTOP;
+  // the page's pt are the 1440 layout's px: times u on big screens, where the page (and the screen) grows
+  const u = remScale();
+  const at = (b: Box): Box => ({ left: b.left * u, top: b.top * u, width: b.width * u });
 
   const typing = t >= T.type - 200 && t < T.send;
   const draft = typing ? typed(s.findQuery, t, T.type, 30) : undefined;
@@ -127,7 +131,7 @@ const FindMockup = ({ play, clock, active = true }: MockupProps) => {
     <div aria-hidden="true" className="absolute inset-0">
       <div
         className="absolute flex items-center gap-3"
-        style={{ ...L.heading, opacity: heading }}
+        style={{ left: L.heading.left * u, top: L.heading.top * u, opacity: heading }}
       >
         <span className="bzl-tile-line h-3.5 w-40" />
         <span className="rounded-full bg-[hsl(var(--primary))] px-2.5 py-0.5 text-xs font-semibold text-white">
@@ -137,11 +141,11 @@ const FindMockup = ({ play, clock, active = true }: MockupProps) => {
       {L.items.map((i, n) => {
         const [shape, tint] = CATALOG[i];
         const slot = L.picks.indexOf(i);
-        const from = L.grid(n);
+        const from = at(L.grid(n));
         let style: CSSProperties = from;
         if (slot >= 0) {
           const k = easeInOut(span(t, T.narrow + slot * 80, T.narrow + 900 + slot * 80));
-          const to = L.pick(slot);
+          const to = at(L.pick(slot));
           style = {
             left: from.left + (to.left - from.left) * k,
             top: from.top + (to.top - from.top) * k,
@@ -167,7 +171,7 @@ const FindMockup = ({ play, clock, active = true }: MockupProps) => {
                       : undefined,
               }}
             >
-              <img src={CLAY[shape]} alt="" loading="lazy" draggable={false} />
+              <img src={CLAY[shape]} srcSet={claySrcSet(shape)} alt="" loading="lazy" draggable={false} />
             </div>
             <div className="mt-2.5 space-y-1.5">
               <div className="bzl-tile-line w-3/4" />
@@ -186,7 +190,7 @@ const FindMockup = ({ play, clock, active = true }: MockupProps) => {
         {/* the store's own header */}
         <div
           aria-hidden="true"
-          className="flex h-[64px] items-center gap-4 border-b border-[#f3ece4] px-10"
+          className="flex h-[4rem] items-center gap-4 border-b border-[#f3ece4] px-10"
         >
           <span className="h-7 w-7 rounded-lg bg-[#e6dccf]" />
           <span className="bzl-tile-line h-3 w-24" />
@@ -201,11 +205,11 @@ const FindMockup = ({ play, clock, active = true }: MockupProps) => {
           </span>
         </div>
 
-        <div className="absolute inset-0 top-[64px]">{catalog}</div>
+        <div className="absolute inset-0 top-[4rem]">{catalog}</div>
 
         {/* the agent's words, as the widget's captions at the page's foot */}
         {caption && (
-          <div className="absolute bottom-6 left-0 flex w-[800px] justify-center px-6">{caption}</div>
+          <div className="absolute bottom-6 left-0 flex w-[50rem] justify-center px-6">{caption}</div>
         )}
 
         <div className="sl-find-widget absolute bottom-6 right-6 z-10">

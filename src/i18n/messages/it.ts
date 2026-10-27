@@ -132,6 +132,8 @@ export const it: Messages = {
     /** UI text of the real widget, as it appears in the mockups. */
     widget: {
       placeholder: "Aiutami a trovare il prodotto giusto.",
+      /** The hero widget's rotating composer placeholders (the first is placeholder). */
+      placeholders: ["Aiutami a trovare il prodotto giusto.", "Confronta per me le opzioni migliori.", "Va bene per le mie esigenze?", "Puoi rispondere a una domanda sull'acquisto?"],
       takingYouTo: "Ti porto a",
       addingToCart: "Aggiunta al carrello",
       searchResults: "Risultati della ricerca",

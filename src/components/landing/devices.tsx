@@ -1,6 +1,7 @@
 import { createContext, useContext, useEffect, useRef, useState } from "react";
 import type { CSSProperties, ReactNode } from "react";
 import { cn } from "@/lib/utils";
+import { remScale } from "@/lib/remScale";
 
 /**
  * Devices as the ad-1 film draws them: a thin shell of frosted white glass
@@ -33,13 +34,17 @@ export const VirtualScreen = ({
   className?: string;
 }) => {
   const box = useRef<HTMLDivElement>(null);
-  const [scale, setScale] = useState(0);
+  // u: the page's rem over 16px (1 up to 1440 wide). On big screens the
+  // screen's content (sized in rem) is u times bigger, so the screen is too:
+  // it keeps the proportions it has at 1440 instead of its UI looking zoomed in.
+  const [{ scale, u }, setFit] = useState({ scale: 0, u: 1 });
   useEffect(() => {
     const el = box.current;
     if (!el || typeof ResizeObserver === "undefined") return;
-    const ro = new ResizeObserver(([e]) =>
-      setScale(e.contentRect.width / width),
-    );
+    const ro = new ResizeObserver(([e]) => {
+      const k = remScale();
+      setFit({ scale: e.contentRect.width / (width * k), u: k });
+    });
     ro.observe(el);
     return () => ro.disconnect();
   }, [width]);
@@ -52,7 +57,7 @@ export const VirtualScreen = ({
       <div
         className="absolute left-0 top-0 origin-top-left"
         style={{
-          width,
+          width: width * u,
           height: scale ? `${100 / scale}%` : "100%",
           transform: `scale(${scale || 1})`,
           visibility: scale ? "visible" : "hidden",
@@ -70,13 +75,13 @@ const StatusBar = ({ className }: { className?: string }) => (
   <div
     aria-hidden="true"
     className={cn(
-      "flex items-center justify-between px-8 text-[15px] font-semibold text-[#1d1b1a]",
+      "flex items-center justify-between px-8 text-[0.9375rem] font-semibold text-[#1d1b1a]",
       className,
     )}
   >
     <span>9:41</span>
     <span className="flex items-center gap-1.5">
-      <svg viewBox="0 0 18 12" className="h-3 w-[18px]" fill="currentColor">
+      <svg viewBox="0 0 18 12" className="h-3 w-[1.125rem]" fill="currentColor">
         <rect x="0" y="8" width="3" height="4" rx="1" />
         <rect x="5" y="5" width="3" height="7" rx="1" />
         <rect x="10" y="2.5" width="3" height="9.5" rx="1" />
@@ -84,7 +89,7 @@ const StatusBar = ({ className }: { className?: string }) => (
       </svg>
       <svg
         viewBox="0 0 25 12"
-        className="h-3 w-[26px]"
+        className="h-3 w-[1.625rem]"
         fill="none"
         stroke="currentColor"
       >
@@ -115,7 +120,7 @@ const AddressPill = ({
   <div
     aria-hidden="true"
     className={cn(
-      "mx-auto flex h-9 items-center justify-center gap-2 rounded-full bg-[#f2ede7] text-[13px] font-medium text-[#75695e]",
+      "mx-auto flex h-9 items-center justify-center gap-2 rounded-full bg-[#f2ede7] text-[0.8125rem] font-medium text-[#75695e]",
       className,
     )}
   >
@@ -150,10 +155,10 @@ export const PhoneFrame = ({
         <div className="relative flex h-full flex-col">
           <span
             aria-hidden="true"
-            className="absolute left-1/2 top-[11px] z-30 h-[34px] w-[122px] -translate-x-1/2 rounded-full bg-[#111]"
+            className="absolute left-1/2 top-[0.6875rem] z-30 h-[2.125rem] w-[7.625rem] -translate-x-1/2 rounded-full bg-[#111]"
           />
-          <StatusBar className="h-[54px] pt-[2px]" />
-          <AddressPill label={url} className="w-[240px]" />
+          <StatusBar className="h-[3.375rem] pt-[0.125rem]" />
+          <AddressPill label={url} className="w-[15rem]" />
           <div className="relative min-h-0 flex-1">{children}</div>
         </div>
       </VirtualScreen>
@@ -187,8 +192,8 @@ export const TabletFrame = ({
     <div className="relative h-full overflow-hidden rounded-[1.25rem] bg-white">
       <VirtualScreen width={portrait ? 600 : 760}>
         <div className="relative flex h-full flex-col">
-          <StatusBar className="h-[30px] pt-1 text-[13px]" />
-          <AddressPill label={url} className="w-[340px]" />
+          <StatusBar className="h-[1.875rem] pt-1 text-[0.8125rem]" />
+          <AddressPill label={url} className="w-[21.25rem]" />
           <div className="relative min-h-0 flex-1">{children}</div>
         </div>
       </VirtualScreen>
@@ -224,14 +229,14 @@ export const BrowserFrame = ({
         <div className="relative flex h-full flex-col">
           <div
             aria-hidden="true"
-            className="flex h-[52px] flex-shrink-0 items-center gap-2 border-b border-[#f1e9df] px-5"
+            className="flex h-[3.25rem] flex-shrink-0 items-center gap-2 border-b border-[#f1e9df] px-5"
           >
-            <span className="flex gap-[7px]">
+            <span className="flex gap-[0.4375rem]">
               <i className="h-3 w-3 rounded-full bg-[#ecdccb]" />
               <i className="h-3 w-3 rounded-full bg-[#ecdccb]" />
               <i className="h-3 w-3 rounded-full bg-[#ecdccb]" />
             </span>
-            <AddressPill label={url} className="h-8 w-[360px]" />
+            <AddressPill label={url} className="h-8 w-[22.5rem]" />
           </div>
           <div className="relative min-h-0 flex-1">{children}</div>
         </div>

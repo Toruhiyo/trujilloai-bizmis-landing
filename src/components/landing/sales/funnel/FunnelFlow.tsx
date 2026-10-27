@@ -1,3 +1,4 @@
+import { remScale } from "@/lib/remScale";
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import type { CSSProperties } from "react";
 import { ShoppingBag } from "lucide-react";
@@ -73,14 +74,18 @@ type Geo = {
 
 /** Room left of the open mouth, where the visits stream in from outside (px). */
 /** The "visits" word's size, from the stage box's height (as its labels'). */
-const visitsSize = (H: number) => Math.round(clamp(Math.round(clamp(H * 0.18, 30, 48)) * 0.62, 15, 26));
+const visitsSize = (H: number, u = remScale()) =>
+  Math.round(clamp(Math.round(clamp(H * 0.18, 30 * u, 48 * u)) * 0.62, 15 * u, 26 * u));
 /** Room before the open mouth: the word "visits", then its arrow into the mouth (or a little, without it). */
-const leadFor = (W: number, H: number, word?: string) =>
-  word ? Math.min(W * 0.3, textWidth(word, visitsSize(H)) + visitsSize(H) * 2 + 8) : clamp(W * 0.05, 16, 56);
+const leadFor = (W: number, H: number, word?: string, u = remScale()) =>
+  word
+    ? Math.min(W * 0.3, textWidth(word, visitsSize(H, u)) + visitsSize(H, u) * 2 + 8 * u)
+    : clamp(W * 0.05, 16 * u, 56 * u);
 
-const geometry = (W: number, H: number, lead = leadFor(W, H)): Geo => {
-  const top = Math.round(clamp(H * 0.18, 30, 48));
-  const R = clamp(H * 0.09, 15, 25);
+// the px sizes are the 1440 layout's, times u (remScale): the funnel grows with the page on big screens
+const geometry = (W: number, H: number, lead = leadFor(W, H), u = remScale()): Geo => {
+  const top = Math.round(clamp(H * 0.18, 30 * u, 48 * u));
+  const R = clamp(H * 0.09, 15 * u, 25 * u);
   const bx = W - R * 1.75 - 2;
   const xEnd = bx - R * 2.2;
   const x0 = lead;
@@ -88,7 +93,7 @@ const geometry = (W: number, H: number, lead = leadFor(W, H)): Geo => {
   const avail = H - top;
   // tall enough that a stage's exit widening at its fix reads at a glance
   const h0 = Math.min(avail * 0.33, run * 0.24);
-  const cy = top + 10 + h0;
+  const cy = top + 10 * u + h0;
   return {
     W,
     H,
@@ -97,13 +102,13 @@ const geometry = (W: number, H: number, lead = leadFor(W, H)): Geo => {
     h0,
     x0,
     run,
-    r: clamp(h0 * 0.072, 2.8, 4.4),
-    lw: clamp(h0 * 0.072, 2.6, 5),
-    ow: clamp(h0 * 0.115, 4, 7.5) * (W < 480 ? 0.85 : 1),
+    r: clamp(h0 * 0.072, 2.8 * u, 4.4 * u),
+    lw: clamp(h0 * 0.072, 2.6 * u, 5 * u),
+    ow: clamp(h0 * 0.115, 4 * u, 7.5 * u) * (W < 480 ? 0.85 : 1),
     bx,
     by: cy,
     R,
-    head: Math.round(clamp(h0 * 0.44, 22, 32)),
+    head: Math.round(clamp(h0 * 0.44, 22 * u, 32 * u)),
   };
 };
 
@@ -598,7 +603,7 @@ const FunnelFlow = ({
         size.W,
         geo.top,
         // the payoff's three labels a size smaller than a beat's own, so they keep their air between them
-        Math.round(clamp(geo.top * (payoff ? 0.68 : 0.9), payoff ? 16 : 20, payoff ? 28 : 36)),
+        Math.round(clamp(geo.top * (payoff ? 0.68 : 0.9), (payoff ? 16 : 20) * remScale(), (payoff ? 28 : 36) * remScale())),
         focus,
         labelRoom(geo, copy.visits),
       ),

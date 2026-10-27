@@ -14,8 +14,7 @@ import {
 } from "@/lib/bizmisUrls";
 import Logo from "./Logo";
 import LanguageSwitcher from "./LanguageSwitcher";
-import { useLocale, useLocaleHref, useMessages } from "@/i18n/LocaleProvider";
-import { COMPACT_DESKTOP_NAV_LOCALES } from "@/i18n/locales";
+import { useLocaleHref, useMessages } from "@/i18n/LocaleProvider";
 
 const HERO_SCROLL_OFFSET_PX = 100;
 
@@ -26,7 +25,6 @@ const Navbar = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const posthog = usePostHog();
-  const locale = useLocale();
   const localeHref = useLocaleHref();
   const messages = useMessages();
 
@@ -79,16 +77,11 @@ const Navbar = () => {
     { label: messages.nav.faqs, href: "/faqs" },
   ] as const;
 
-  // Translated labels run longer than English and overflow the centered
-  // desktop nav into the language switcher / CTA cluster, so those locales
-  // drop the two jump links here. The mobile drawer keeps every item —
-  // it's a vertical list, so there's no overlap to avoid.
-  const isCompactDesktopNav = COMPACT_DESKTOP_NAV_LOCALES.includes(locale);
-  const desktopNavItems = isCompactDesktopNav
-    ? navItems.filter(
-        (item) => item.href !== "#benefits" && item.href !== "#setup"
-      )
-    : navItems;
+  // Every locale shows every item. The bar is three columns: the logo and
+  // the CTA cluster share the free space equally, so the links sit at the
+  // viewport's centre while they fit, and slide toward the logo (never under
+  // the CTAs) when a long locale needs the room.
+  const desktopNavItems = navItems;
 
   const isActiveRoute = (href: string) =>
     !href.startsWith("#") && location.pathname === localeHref(href);
@@ -158,7 +151,7 @@ const Navbar = () => {
         <div className="container mx-auto px-4 sm:px-6">
           <div className="relative flex items-center h-12 sm:h-16">
             {/* Logo */}
-            <div className="relative z-10 flex items-center">
+            <div className="relative z-10 flex items-center xl:flex-[1_1_0%]">
               <Logo
                 variant={useForegroundNavChrome ? "default" : "white"}
                 showText={true}
@@ -174,9 +167,9 @@ const Navbar = () => {
               />
             </div>
 
-            {/* Desktop Navigation — viewport-centered regardless of CTA width */}
-            <div className="pointer-events-none absolute inset-x-0 hidden xl:flex items-center justify-center">
-              <div className="pointer-events-auto flex items-center space-x-8">
+            {/* Desktop Navigation: centered while it fits (see desktopNavItems) */}
+            <div className="hidden xl:flex flex-none items-center justify-center px-5 2xl:px-8">
+              <div className="flex items-center gap-x-6 whitespace-nowrap 2xl:gap-x-8">
                 {desktopNavItems.map((item) => (
                   <button
                     key={item.label}
@@ -191,7 +184,7 @@ const Navbar = () => {
             </div>
 
             {/* Desktop CTA */}
-            <div className="relative z-10 ml-auto hidden xl:flex items-center gap-6">
+            <div className="relative z-10 ml-auto hidden xl:flex xl:flex-[1_1_0%] items-center justify-end gap-5 whitespace-nowrap 2xl:gap-6">
               {/* TODO: DO NOT REMOVE - Sign In button temporarily commented out
               <Button
                 variant="ghost"
@@ -246,7 +239,8 @@ const Navbar = () => {
               <Button
                 variant="ghost"
                 size="icon"
-                className={`transition-colors duration-300 h-8 w-8 sm:h-10 sm:w-10 ${
+                // 32px to look at, 44px to tap (the ::after)
+                className={`relative transition-colors duration-300 h-8 w-8 sm:h-10 sm:w-10 after:absolute after:-inset-1.5 after:content-[''] sm:after:-inset-0.5 ${
                   useForegroundNavChrome
                     ? "text-foreground hover:bg-accent"
                     : "text-white hover:bg-white/10"
@@ -270,7 +264,7 @@ const Navbar = () => {
           so it can apply its own backdrop-filter without being trapped inside
           the nav's filter context. */}
       {isMenuOpen && (
-        <div className="xl:hidden fixed top-12 sm:top-16 left-0 right-0 z-50 px-3 pb-3">
+        <div className="xl:hidden fixed top-12 sm:top-16 left-0 right-0 z-50 px-3 pb-3 sm:left-auto sm:w-full sm:max-w-[26.25rem]">
           <div className="isolate rounded-b-2xl border border-primary/15 bg-gradient-to-b from-background/75 via-[#FDF7E2]/45 to-background/75 backdrop-blur-2xl backdrop-saturate-200 shadow-[0_18px_36px_-18px_rgba(0,0,0,0.22)] overflow-hidden">
             <div className="px-3 sm:px-4 py-3 space-y-1">
               {navItems.map((item) => (

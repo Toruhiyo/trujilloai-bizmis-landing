@@ -59,7 +59,8 @@ const LanguageSwitcher = ({ theme = "light", className = "" }: LanguageSwitcherP
         aria-haspopup="listbox"
         aria-expanded={isOpen}
         aria-label={messages.languageSwitcher.ariaLabel}
-        className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1.5 text-sm font-medium transition-colors duration-300 ${triggerToneClass}`}
+        // 32px to look at, 44px to tap (the ::after)
+        className={`relative inline-flex items-center gap-1.5 rounded-full px-2.5 py-1.5 text-sm font-medium transition-colors duration-300 after:absolute after:-inset-y-1.5 after:inset-x-0 after:content-[''] ${triggerToneClass}`}
       >
         <Globe className="h-4 w-4" aria-hidden="true" />
         <span>{LOCALE_SHORT_NAMES[locale]}</span>

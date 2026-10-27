@@ -4,6 +4,8 @@ import Navbar from "@/components/Navbar";
 import FilmFooter from "@/components/landing/FilmFooter";
 import { cn } from "@/lib/utils";
 import "@/styles/bzl-site.css";
+// big screens (wider than 1440): the page grows with the screen, as "/" does
+import "@/styles/big-screen.css";
 
 /**
  * The site's own pages (Pricing, FAQs, Early Access) in the v2 landing's look:

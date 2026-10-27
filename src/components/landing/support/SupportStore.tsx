@@ -62,7 +62,7 @@ export type SupportCase = ReturnType<typeof supportCase>;
 /** The product page behind the widget: a big product tile, its lines, the add-to-cart. */
 const Page = ({ addToCart }: { addToCart: string }) => (
     <div aria-hidden="true" className="absolute inset-0">
-      <div className="flex h-[64px] items-center gap-4 border-b border-[#f3ece4] px-10">
+      <div className="flex h-[4rem] items-center gap-4 border-b border-[#f3ece4] px-10">
         <span className="h-7 w-7 rounded-lg bg-[#e6dccf]" />
         <span className="bzl-tile-line h-3 w-24" />
         <span className="ml-10 flex gap-6">
@@ -75,10 +75,10 @@ const Page = ({ addToCart }: { addToCart: string }) => (
           <span className="bzl-tile-line w-24" />
         </span>
       </div>
-      <div className="absolute left-10 top-[104px] w-[380px]">
+      <div className="absolute left-10 top-[6.5rem] w-[23.75rem]">
         <ClayTile shape="egg" tint="blush" />
       </div>
-      <div className="absolute left-[460px] top-[118px] w-[330px] space-y-3.5">
+      <div className="absolute left-[28.75rem] top-[7.375rem] w-[20.625rem] space-y-3.5">
         <div className="bzl-tile-line h-4 w-4/5" />
         <div className="bzl-tile-line w-2/5" />
         <div className="h-5 w-20 rounded-md bg-[#d9d4cc]" />
@@ -87,7 +87,7 @@ const Page = ({ addToCart }: { addToCart: string }) => (
           <div className="bzl-tile-line w-11/12" />
           <div className="bzl-tile-line w-3/4" />
         </div>
-        <div className="!mt-7 grid h-11 place-items-center rounded-xl bg-[hsl(var(--primary))] text-[15px] font-semibold text-white">
+        <div className="!mt-7 grid h-11 place-items-center rounded-xl bg-[hsl(var(--primary))] text-[0.9375rem] font-semibold text-white">
           {addToCart}
         </div>
       </div>
@@ -134,7 +134,7 @@ const SupportStore = ({
       <BrowserFrame url={STORE_URL}>
         <Page addToCart={m.landing.sales.cart.add} />
         {/* the agent's words, as the widget's captions at the page's foot */}
-        {caption && <div className="absolute bottom-6 left-0 flex w-[820px] justify-center px-6">{caption}</div>}
+        {caption && <div className="absolute bottom-6 left-0 flex w-[51.25rem] justify-center px-6">{caption}</div>}
         <div className="bzs-widget absolute bottom-6 right-6 z-10">
           <BizmisWidget
             agent="support-yusuke"

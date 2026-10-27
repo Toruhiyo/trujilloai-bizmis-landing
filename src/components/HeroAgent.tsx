@@ -46,25 +46,19 @@ const isStacked = () => typeof window !== "undefined" && !window.matchMedia?.(SI
 const START_DELAY_MS = 500;
 /** A load slower than this and the agent starts over the still render anyway. */
 const LIVE_WAIT_MS = 15000;
-/** The real widget's rotating composer placeholders, typed one character every 24 ms. */
-const PLACEHOLDERS = [
-  "Help me find the right product.",
-  "Compare the best options for me.",
-  "Will this fit or work for my needs?",
-  "Can you answer a shopping question?",
-];
-
+/** The real widget's rotating composer placeholders (landing.widget.placeholders, per locale), typed one character every 24 ms. */
 const Placeholder = () => {
+  const placeholders = useMessages().landing.widget.placeholders;
   const [at, setAt] = useState({ i: 0, n: 0 });
+  const text = placeholders[at.i % placeholders.length];
   useEffect(() => {
-    const text = PLACEHOLDERS[at.i];
     const t = window.setTimeout(
-      () => setAt(at.n < text.length ? { ...at, n: at.n + 1 } : { i: (at.i + 1) % PLACEHOLDERS.length, n: 0 }),
+      () => setAt(at.n < text.length ? { ...at, n: at.n + 1 } : { i: (at.i + 1) % placeholders.length, n: 0 }),
       at.n < text.length ? 24 : 3600,
     );
     return () => window.clearTimeout(t);
-  }, [at]);
-  return <>{PLACEHOLDERS[at.i].slice(0, at.n)}</>;
+  }, [at, text, placeholders.length]);
+  return <>{text.slice(0, at.n)}</>;
 };
 
 /**
@@ -169,16 +163,23 @@ const HeroAgent = ({
   const inviting = Boolean(invite) && started && !paused;
   useEffect(() => onInvite?.(inviting), [inviting, onInvite]);
 
-  // The captions never wrap: a line wider than the page shrinks to fit instead
-  // (a transform, so the pill keeps its place; Tailwind's translate composes it)
+  // The captions never wrap: a line wider than its room shrinks to fit instead
+  // (a transform, so the pill keeps its place; Tailwind's translate composes it).
+  // Its room is the page, or with the card beside play (desktop) the page left
+  // of the card, less 1em each side, where the parent centres it.
   const captionRef = useRef<HTMLParagraphElement>(null);
+  const cardRef = useRef<HTMLDivElement>(null);
   const [fit, setFit] = useState(1);
   useLayoutEffect(() => {
     const el = captionRef.current;
     if (!el) return;
     const measure = () => {
-      const box = (el.offsetParent as HTMLElement | null)?.clientWidth ?? window.innerWidth;
-      setFit(Math.min(1, ((box - 32) / el.offsetWidth) * 0.97));
+      const page = el.offsetParent as HTMLElement | null;
+      const box = page?.clientWidth ?? window.innerWidth;
+      const card = cardRef.current;
+      const em = page ? parseFloat(getComputedStyle(page).fontSize) : 16;
+      const room = !isStacked() && card ? card.offsetLeft - 2 * em : box - 32;
+      setFit(Math.min(1, (room / el.offsetWidth) * 0.97));
     };
     measure();
     window.addEventListener("resize", measure);
@@ -187,7 +188,7 @@ const HeroAgent = ({
 
   return (
     <>
-      <div className={cn("bzw bza w-[18em]", cardClassName)}>
+      <div ref={cardRef} className={cn("bzw bza w-[18em]", cardClassName)}>
         <div className="bzw-card relative h-[18.5em] rounded-[0.75em] border">
           {/* Volume toggle, top-right */}
           <span

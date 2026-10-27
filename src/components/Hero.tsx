@@ -158,6 +158,9 @@ const Hero = () => {
     </Button>
   );
 
+  // a title longer than English's two short lines (es, fr, it, ca) sets as one balanced sentence
+  const longTitle = messages.hero.titleLine1.length + messages.hero.titleLine2.length > 34;
+
   // the play button calls out while the agent points at it
   const [inviting, setInviting] = useState(false);
 
@@ -196,7 +199,7 @@ const Hero = () => {
         <div
           className={cn(
             "absolute inset-x-2 bottom-2 top-[4.25rem] rounded-[1em] border border-white/45 bg-white/[0.07] text-[min(3.2vw,1.7svh)] shadow-[inset_0_1px_0_rgba(255,255,255,0.5),0_40px_100px_-50px_hsl(24_90%_25%/0.55)]",
-            "lg:inset-x-auto lg:bottom-[2.5svh] lg:left-1/2 lg:top-[4.75rem] lg:w-[min(96vw,1560px)] lg:-translate-x-1/2 lg:text-[clamp(14px,min(1.2vw,2.2svh),22px)]",
+            "lg:inset-x-auto lg:bottom-[2.5svh] lg:left-1/2 lg:top-[4.75rem] lg:w-[min(96vw,97.5rem)] lg:-translate-x-1/2 lg:text-[clamp(0.875rem,min(1.2vw,2.2svh),1.375rem)]",
           )}
         >
           {/* the browser's bar and the store's header, only sketched */}
@@ -223,12 +226,19 @@ const Hero = () => {
           </div>
           {/* the store's landing: its hero section is the copy and the CTAs, with play at its centre */}
           <div className="absolute inset-x-0 bottom-[20em] top-[5.6em] flex flex-col px-[1.4em] pt-[1.4em] lg:bottom-[2em] lg:justify-center lg:px-[3.6em] lg:pt-0">
-            <div className="flex w-full flex-col items-center gap-3 text-center text-white [text-shadow:0_1px_16px_hsl(24_90%_35%/0.35)] lg:w-[min(40rem,40vw)] lg:items-start lg:gap-5 lg:text-left">
+            {/* the column stops short of play (centred, 7rem wide); the longer locales' lines run to its edge */}
+            <div
+              className={cn(
+                "flex w-full flex-col items-center gap-3 text-center text-white [text-shadow:0_1px_16px_hsl(24_90%_35%/0.35)] lg:items-start lg:gap-5 lg:text-left",
+                longTitle ? "lg:w-[min(40rem,40vw,calc(50%-5rem))]" : "lg:w-[min(40rem,40vw)]",
+              )}
+            >
               <div>
                   <a
                     href={href("/early-access")}
                     onClick={handleEarlyAccessClick}
-                    className="group inline-flex items-center gap-2 rounded-full border border-white/25 bg-white/[0.12] px-3 py-1 text-xs text-white/90 transition-colors hover:bg-white/[0.2] hover:text-white sm:text-sm"
+                    // the ::after makes the pill a 44px tap target without growing it
+                    className="group relative inline-flex items-center gap-2 rounded-full border border-white/25 bg-white/[0.12] px-3 py-1 text-xs after:absolute after:inset-x-0 after:-inset-y-[0.5625rem] after:content-[''] text-white/90 transition-colors hover:bg-white/[0.2] hover:text-white sm:text-sm"
                   >
                     <span className="relative flex h-1.5 w-1.5 flex-shrink-0" aria-hidden="true">
                       <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-white/70 opacity-50" />
@@ -244,8 +254,17 @@ const Hero = () => {
                     </span>
                     <ArrowRight className="h-3 w-3 text-white/60 transition-transform group-hover:translate-x-0.5" aria-hidden="true" />
                   </a>
-                  <h1 className="mt-2.5 text-balance font-heading text-[clamp(1.75rem,7.6vw,2.4rem)] font-bold leading-[1.04] tracking-[-0.025em] lg:mt-3.5 lg:text-[clamp(2.6rem,min(4.3vw,7.6svh),4.75rem)]">
-                    {messages.hero.titleLine1} <span className="lg:block">{messages.hero.titleLine2}</span>
+                  {/* English's two short lines break where written; the longer locales' title runs as one
+                      balanced sentence a size down, so it sets in three even lines instead of five ragged ones */}
+                  <h1
+                    className={cn(
+                      "mt-2.5 text-balance font-heading text-[clamp(1.75rem,7.6vw,2.4rem)] font-bold leading-[1.04] tracking-[-0.025em] lg:mt-3.5",
+                      longTitle
+                        ? "lg:text-[clamp(2.2rem,min(3.3vw,5.9svh),3.65rem)]"
+                        : "lg:text-[clamp(2.6rem,min(4.3vw,7.6svh),4.75rem)]",
+                    )}
+                  >
+                    {messages.hero.titleLine1} <span className={cn(!longTitle && "lg:block")}>{messages.hero.titleLine2}</span>
                   </h1>
                   <p className="mt-1.5 text-balance font-heading text-[0.95rem] font-medium text-white/85 lg:mt-2.5 lg:text-[clamp(1.1rem,1.55vw,1.5rem)]">
                     {messages.landing.heroLine.map((part, k, all) =>
@@ -300,13 +319,13 @@ const Hero = () => {
             </button>
           </div>
 
-          {/* the Bizmis widget, embedded bottom-right, and its captions (bottom centre of the page; on
-              phones the real widget shows none) */}
+          {/* the Bizmis widget, embedded bottom-right, and its captions (on desktop centred in the room
+              left of the widget, so they never run under it; on phones the real widget shows none) */}
           <HeroAgent
             paused={irisOpen}
             onInvite={setInviting}
             cardClassName="absolute bottom-[1.2em] left-1/2 -translate-x-1/2 lg:bottom-[2em] lg:left-auto lg:right-[2.4em] lg:translate-x-0"
-            captionClassName="absolute bottom-[2.2em] left-1/2 hidden -translate-x-1/2 text-[1.15em] lg:block"
+            captionClassName="absolute bottom-[2.2em] left-[calc((100%-20.4em)/2)] hidden -translate-x-1/2 text-[1.15em] lg:block"
           />
         </div>
       </div>

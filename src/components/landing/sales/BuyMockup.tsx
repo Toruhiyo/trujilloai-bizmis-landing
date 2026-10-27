@@ -82,7 +82,7 @@ const BuyMockup = ({ play, clock, active = true }: MockupProps) => {
               <span className="bzl-tile-line w-12" />
               <span className="relative grid h-9 w-9 place-items-center rounded-full bg-[var(--bzl-primary-soft,#ffe7d0)] text-[var(--bzl-fg)]">
                 <ShoppingCart className="h-4 w-4" strokeWidth={2} />
-                <span className="absolute -right-1.5 -top-1.5 grid h-[18px] min-w-[18px] place-items-center rounded-full bg-[hsl(var(--primary))] px-1 text-[10px] font-bold tabular-nums text-white">
+                <span className="absolute -right-1.5 -top-1.5 grid h-[1.125rem] min-w-[1.125rem] place-items-center rounded-full bg-[hsl(var(--primary))] px-1 text-[0.625rem] font-bold tabular-nums text-white">
                   1
                 </span>
               </span>
@@ -95,18 +95,18 @@ const BuyMockup = ({ play, clock, active = true }: MockupProps) => {
             aria-hidden="true"
           >
             <div>
-              <div className="text-[17px] font-bold tracking-tight text-[var(--bzl-fg)]">
+              <div className="text-[1.0625rem] font-bold tracking-tight text-[var(--bzl-fg)]">
                 {s.cart.title}
               </div>
               <div className="mt-3 flex items-center gap-4 rounded-2xl border border-[var(--bzl-border)] p-3">
-                <ClayTile shape="sphere" tint="sand" className="w-[92px] flex-shrink-0" />
+                <ClayTile shape="sphere" tint="sand" className="w-[5.75rem] flex-shrink-0" />
                 <div className="min-w-0 flex-1 space-y-2.5">
                   <div className="bzl-tile-line h-3 w-3/5" />
-                  <span className="inline-grid h-6 w-7 place-items-center rounded-md border border-[var(--bzl-fg)] text-[11px] font-semibold text-[var(--bzl-fg)]">
+                  <span className="inline-grid h-6 w-7 place-items-center rounded-md border border-[var(--bzl-fg)] text-[0.6875rem] font-semibold text-[var(--bzl-fg)]">
                     M
                   </span>
                 </div>
-                <div className="pr-1 text-[15px] font-bold tabular-nums text-[var(--bzl-fg)]">
+                <div className="pr-1 text-[0.9375rem] font-bold tabular-nums text-[var(--bzl-fg)]">
                   {money.format(PRICE)}
                 </div>
               </div>
@@ -132,7 +132,7 @@ const BuyMockup = ({ play, clock, active = true }: MockupProps) => {
             {/* the order summary, then the placed order */}
             <div className="sl-buy-summary">
               <div className="sl-buy-summary-body" style={{ opacity: 1 - done }}>
-                <div className="flex items-center justify-between text-[13px] text-[var(--bzl-muted)]">
+                <div className="flex items-center justify-between text-[0.8125rem] text-[var(--bzl-muted)]">
                   <span>{s.cart.subtotal}</span>
                   <span className="font-semibold tabular-nums text-[var(--bzl-fg)]">
                     {money.format(PRICE)}
@@ -144,7 +144,7 @@ const BuyMockup = ({ play, clock, active = true }: MockupProps) => {
                 </div>
                 <div
                   className={cn(
-                    "sl-buy-button mt-4 flex h-10 items-center justify-center gap-2 rounded-xl text-[13px] font-semibold text-white",
+                    "sl-buy-button mt-4 flex h-10 items-center justify-center gap-2 rounded-xl text-[0.8125rem] font-semibold text-white",
                     t >= go && "is-go",
                   )}
                   style={{ boxShadow: `0 0 0 ${6 * bump(t, placed - 600, 600)}px hsl(var(--primary) / 0.4)` }}
@@ -163,8 +163,8 @@ const BuyMockup = ({ play, clock, active = true }: MockupProps) => {
                 >
                   <Check className="h-6 w-6" strokeWidth={3} />
                 </span>
-                <span className="text-[15px] font-bold text-[var(--bzl-fg)]">{s.cart.placed}</span>
-                <span className="text-[13px] font-semibold tabular-nums text-[var(--bzl-fg)]">
+                <span className="text-[0.9375rem] font-bold text-[var(--bzl-fg)]">{s.cart.placed}</span>
+                <span className="text-[0.8125rem] font-semibold tabular-nums text-[var(--bzl-fg)]">
                   {money.format(PRICE)}
                 </span>
               </div>

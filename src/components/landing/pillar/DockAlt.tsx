@@ -1,4 +1,3 @@
-import { Fragment } from "react";
 import type { ReactNode } from "react";
 import { useMessages } from "@/i18n/LocaleProvider";
 import { cn } from "@/lib/utils";
@@ -55,12 +54,13 @@ const Outcome = ({
 }) => (
   <Tag className="od-outcome is-one odz-title" data-pm="title" data-pm-ride={ride}>
     <span className="od-l" data-ph="grow">
-      {lines.map((line, i) => (
-        <Fragment key={i}>
-          <span className={cn("odx-ln pm-part", style === "f" && i > 0 && "is-hand")}>{line}</span>
-          {i < lines.length - 1 ? " " : null}
-        </Fragment>
-      ))}
+      {/* a flat list, no keyed fragment: the dev tagger's data-lov-id on one floods the console */}
+      {lines.flatMap((line, i) => [
+        <span key={i} className={cn("odx-ln pm-part", style === "f" && i > 0 && "is-hand")}>
+          {line}
+        </span>,
+        i < lines.length - 1 ? " " : null,
+      ])}
     </span>
   </Tag>
 );
@@ -68,12 +68,12 @@ const Outcome = ({
 /** The outcome in the docked form, a sentence a part (the twins of the opener's). */
 const DockLine = ({ lines }: { lines: string[] }) => (
   <span className="bzp-dock-line">
-    {lines.map((line, i) => (
-      <Fragment key={i}>
-        <span className="odx-ln pm-part">{line}</span>
-        {i < lines.length - 1 ? " " : null}
-      </Fragment>
-    ))}
+    {lines.flatMap((line, i) => [
+      <span key={i} className="odx-ln pm-part">
+        {line}
+      </span>,
+      i < lines.length - 1 ? " " : null,
+    ])}
   </span>
 );
 

@@ -60,7 +60,8 @@ const FilmFooter = () => {
                 <h4 className="text-sm font-semibold text-[var(--bzl-fg)]">
                   {col.heading}
                 </h4>
-                <ul className="mt-4 space-y-2.5 text-[0.9375rem] text-[var(--bzl-muted)]">
+                {/* each link's tap area (an ::after) fills its row; on touch screens the rows open up so it is 44px */}
+                <ul className="mt-4 space-y-2.5 text-[0.9375rem] text-[var(--bzl-muted)] [@media(pointer:coarse)]:space-y-5">
                   {col.links.map((l) => (
                     <li key={l.label}>
                       <a
@@ -68,7 +69,7 @@ const FilmFooter = () => {
                         {...(l.href.startsWith("http") || l.newTab
                           ? { target: "_blank", rel: "noopener noreferrer" }
                           : {})}
-                        className="transition-colors hover:text-[var(--bzl-orange-dark)]"
+                        className="relative transition-colors after:absolute after:-inset-x-2 after:-inset-y-[0.4rem] after:content-[''] hover:text-[var(--bzl-orange-dark)] [@media(pointer:coarse)]:after:-inset-y-[0.78rem]"
                       >
                         {l.label}
                       </a>

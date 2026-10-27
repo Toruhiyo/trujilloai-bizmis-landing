@@ -1,4 +1,5 @@
 import type { CSSProperties } from "react";
+import { remScale } from "@/lib/remScale";
 import { funnelAnchors } from "./funnel/FunnelFlow";
 import { DEVICE_ASPECT } from "./SalesShell";
 import type { ArrLook } from "./beatcopy/style";
@@ -202,15 +203,17 @@ export const arrange = (W: number, H: number, look: ArrLook, aspect: number, vis
 export const arrangeOpener = (W: number, H: number, aspect: number, visits?: string): Arranged => {
   // no room for a device column (phones, small tablets): the same pieces stacked
   if (W < 860) return arrangeOpenerStacked(W, H, aspect, visits);
-  const pad = 12;
-  const colGap = clamp(W * 0.035, 28, 64);
-  const devCol = clamp(W * 0.36, 320, 560);
+  // the sizes below are the 1440 layout's px, times u: it grows with the page on big screens
+  const u = remScale();
+  const pad = 12 * u;
+  const colGap = clamp(W * 0.035, 28 * u, 64 * u);
+  const devCol = clamp(W * 0.36, 320 * u, 560 * u);
   const rest = W - devCol - colGap;
-  const ow = Math.min(rest, clamp(W * 0.42, 380, 640));
-  const fs = Math.min(clamp(Math.min(W * 0.025, H * 0.046), 26, 40), ow / 17);
+  const ow = Math.min(rest, clamp(W * 0.42, 380 * u, 640 * u));
+  const fs = Math.min(clamp(Math.min(W * 0.025, H * 0.046), 26 * u, 40 * u), ow / 17);
   // kicker and up to two lines, then air before the label it reads into
-  const openerH = 44 + fs * 2.3;
-  const air = clamp(H * 0.022, 12, 24);
+  const openerH = 44 * u + fs * 2.3;
+  const air = clamp(H * 0.022, 12 * u, 24 * u);
   const fnW = Math.min(rest, (H - 2 * pad - openerH - air) * aspect);
   const fnH = fnW / aspect;
   // the opener and the funnel as one block, centred in the stage's height
@@ -224,8 +227,8 @@ export const arrangeOpener = (W: number, H: number, aspect: number, visits?: str
   const beats = [0, 1, 2].map((i) => {
     const A = DEVICE_ASPECT[i];
     // (room under the device for the arrow coming up into it)
-    const under = clamp(H * 0.1, 56, 90);
-    const w = Math.min(devCol, (H - 2 * pad - under) * A, i === 1 ? 380 : Infinity);
+    const under = clamp(H * 0.1, 56 * u, 90 * u);
+    const w = Math.min(devCol, (H - 2 * pad - under) * A, i === 1 ? 380 * u : Infinity);
     const h = w / A;
     const x = rest + colGap + (devCol - w) / 2;
     // level with the funnel's run, as far as the stage lets it
@@ -235,8 +238,8 @@ export const arrangeOpener = (W: number, H: number, aspect: number, visits?: str
     // the arrow: out from under the chamber's floor, a long easy swoop under the funnel, curling up into the device's foot
     // (short: it starts under the funnel no further back than a stretch before the device, clear of
     // the agents' badges on the floor; the lit chamber already says which stage)
-    const e: Pt = [x + w * 0.28, y + h + clamp(H * 0.022, 14, 22)];
-    const sx = Math.max(fnLeft + ch.xc, e[0] - clamp(W * 0.26, 260, 420));
+    const e: Pt = [x + w * 0.28, y + h + clamp(H * 0.022, 14 * u, 22 * u)];
+    const sx = Math.max(fnLeft + ch.xc, e[0] - clamp(W * 0.26, 260 * u, 420 * u));
     // the floor's depth under that point: between the chambers' middles
     const cs = an.chambers.map((c) => [fnLeft + c.xc, c.floor] as const);
     const fl =
@@ -249,14 +252,14 @@ export const arrangeOpener = (W: number, H: number, aspect: number, visits?: str
               const u = (sx - cs[j][0]) / (cs[j + 1][0] - cs[j][0]);
               return cs[j][1] + (cs[j + 1][1] - cs[j][1]) * u;
             })();
-    const lb = fnTop + fl + clamp(fnH * 0.12, 26, 42);
+    const lb = fnTop + fl + clamp(fnH * 0.12, 26 * u, 42 * u);
     const s: Pt = [sx, lb];
-    const dip = Math.min(H - 6, Math.max(s[1], e[1]) + clamp(H * 0.06, 34, 56));
+    const dip = Math.min(H - 6, Math.max(s[1], e[1]) + clamp(H * 0.06, 34 * u, 56 * u));
     const span = e[0] - s[0];
     // the last stretch comes in straight along the head's line (up and to the right), so the head sits
     // square on the stroke, its two strokes even on either side
-    const k = clamp(Math.hypot(span, dip - e[1]) * 0.28, 60, 220);
-    const arrow = markerArrow(s, [s[0] + span * 0.22, dip + 10], [e[0] - 0.5 * k, e[1] + 0.87 * k], e, clamp(W * 0.013, 16, 22));
+    const k = clamp(Math.hypot(span, dip - e[1]) * 0.28, 60 * u, 220 * u);
+    const arrow = markerArrow(s, [s[0] + span * 0.22, dip + 10 * u], [e[0] - 0.5 * k, e[1] + 0.87 * k], e, clamp(W * 0.013, 16 * u, 22 * u));
     return {
       x,
       y,
@@ -267,7 +270,7 @@ export const arrangeOpener = (W: number, H: number, aspect: number, visits?: str
       link: { kind: "lens" as const, ...arrow },
     };
   });
-  const cardW = Math.min(devCol, 380);
+  const cardW = Math.min(devCol, 380 * u);
   return {
     fnW,
     fnH,
