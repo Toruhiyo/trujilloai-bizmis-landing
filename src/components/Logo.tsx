@@ -18,8 +18,9 @@ const HEIGHT_CLASSES: Record<LogoSize, string> = {
   lg: "h-10 sm:h-12",
 };
 
-const FULL_LOGO_MASK_URL = "/images/bizmis-logo-full-white-transparent.svg";
-const ILLUSTRATION_MASK_URL = "/images/bizmis-logo-white-transparent.svg";
+// (web copies: the same marks with their raster as a lighter WebP, public/images/*-web.svg)
+const FULL_LOGO_MASK_URL = "/images/bizmis-logo-full-white-web.svg";
+const ILLUSTRATION_MASK_URL = "/images/bizmis-logo-white-web.svg";
 
 const FULL_LOGO_ASPECT = "1948 / 640";
 const ILLUSTRATION_ASPECT = "1 / 1";

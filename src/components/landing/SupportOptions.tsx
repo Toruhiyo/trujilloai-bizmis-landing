@@ -85,7 +85,7 @@ const stampAt = (t: number, at: number) => {
 };
 
 /** The agent: the Support mockup's own (yusuke), in the widget's head circle. */
-const AGENT_HEAD = "/landing/heads/yusuke.png";
+const AGENT_HEAD = "/landing/heads/yusuke.webp";
 
 /**
  * The agent's head as the Bizmis widget shows it (BizmisWidget's HeadCircle):

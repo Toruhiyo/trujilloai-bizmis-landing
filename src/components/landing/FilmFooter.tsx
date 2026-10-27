@@ -46,8 +46,12 @@ const FilmFooter = () => {
         <div className="grid gap-10 md:grid-cols-5">
           <div className="md:col-span-2">
             <img
-              src="/images/bizmis-logo-full-orange-transparent.svg"
+              src="/images/bizmis-logo-full-orange-web.svg"
               alt="Bizmis"
+              width={1948}
+              height={640}
+              loading="lazy"
+              decoding="async"
               className="h-7 w-auto"
             />
             <p className="mt-4 max-w-sm text-[0.9375rem] leading-relaxed text-[var(--bzl-muted)]">

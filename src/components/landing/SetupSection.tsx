@@ -270,6 +270,8 @@ const ChargeClip = ({
         src={CHARGE.poster}
         alt=""
         aria-hidden="true"
+        loading="lazy"
+        decoding="async"
         className={cn("absolute inset-0 h-full w-full object-contain", ready && "opacity-0")}
       />
       <canvas

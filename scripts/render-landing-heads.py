@@ -108,7 +108,10 @@ def square(src: Path, dst: Path) -> None:
     left, top = round(cx - side / 2), round(cy - side / 2)
     out = Image.new("RGBA", (side, side), (0, 0, 0, 0))
     out.paste(img.crop((left, top, left + side, top + side)), (0, 0))
-    out.resize((SIZE, SIZE), Image.LANCZOS).save(dst, optimize=True)
+    head = out.resize((SIZE, SIZE), Image.LANCZOS)
+    head.save(dst, optimize=True)
+    # the landing shows the WebP (a seventh of the PNG's weight); the PNG stays for the CDN and the widget
+    head.save(dst.with_suffix(".webp"), quality=90, method=6)
     print(f"{dst.name}: head {w}x{h}px, square {side} "
           f"(width {w / side:.0%}, height {h / side:.0%}, pinholes {holes}px)")
 

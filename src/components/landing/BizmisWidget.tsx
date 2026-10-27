@@ -606,7 +606,7 @@ export const HeadCircle = ({
         style={{ background: `color-mix(in oklab, ${ORANGE} 12%, #f4efe9)` }}
       >
         <img
-          src={`${HEAD_CDN}/${head}.png`}
+          src={`${HEAD_CDN}/${head}.webp`}
           alt=""
           loading="lazy"
           decoding="async"

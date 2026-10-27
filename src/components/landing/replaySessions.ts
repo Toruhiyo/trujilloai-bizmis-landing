@@ -47,7 +47,7 @@ export interface ReplaySession {
 // CDN heads (cdn.bizmis.ai/common/avatars/images/<id>.png).
 const presetAvatar = (id: string, name: string) => ({
   name,
-  image: `/landing/heads/${id}.png`,
+  image: `/landing/heads/${id}.webp`,
 });
 
 const CANDLE_SET: ReplayProduct = {

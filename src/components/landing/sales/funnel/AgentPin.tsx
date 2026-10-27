@@ -14,9 +14,9 @@ export const AGENT = "amber";
  * and a tilt.
  */
 const POSES: { src: string; zoom: number; x: number; y: number; tilt: number; flip?: boolean }[] = [
-  { src: `/landing/heads/${AGENT}.png`, zoom: 1, x: 50, y: 0, tilt: -9 },
-  { src: `/landing/heads/${AGENT}.png`, zoom: 1, x: 50, y: 0, tilt: 7, flip: true },
-  { src: `/landing/heads/${AGENT}.png`, zoom: 1.06, x: 50, y: 0, tilt: 0 },
+  { src: `/landing/heads/${AGENT}.webp`, zoom: 1, x: 50, y: 0, tilt: -9 },
+  { src: `/landing/heads/${AGENT}.webp`, zoom: 1, x: 50, y: 0, tilt: 7, flip: true },
+  { src: `/landing/heads/${AGENT}.webp`, zoom: 1.06, x: 50, y: 0, tilt: 0 },
 ];
 
 /** Each stage's action, worn as a badge on the agent's stamp: search, compare, cart. */
