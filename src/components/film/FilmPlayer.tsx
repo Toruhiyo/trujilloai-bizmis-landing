@@ -310,18 +310,24 @@ const FilmPlayer = forwardRef<FilmPlayerHandle, FilmPlayerProps>(({
   const [playingHeight, setPlayingHeight] = useState<number | null>(null);
   const [qualityOpen, setQualityOpen] = useState(false);
 
-  // Auto quality never streams more pixels than the player shows: the cap is
-  // the smallest rendition covering the player at the screen's pixel density
-  // plus headroom (so 4K only on big, sharp screens or in fullscreen). Recomputed on resize;
-  // a quality picked by hand from the menu is never capped.
+  // Auto quality never streams more pixels than the picture shows: the cap is
+  // the smallest rendition covering the picture at the screen's pixel density
+  // plus headroom (so 4K only on big, sharp screens or in fullscreen). The
+  // picture, not the <video> box: a phone held upright in fullscreen is a tall
+  // box, but the 16:9 film in it is a strip as wide as the screen (it asked
+  // for 4K there). Recomputed on resize; a quality picked by hand from the menu
+  // is never capped. It caps the first chunks too (hls.js starts under the cap).
   const capToPlayer = useCallback(() => {
     const hls = hlsRef.current;
     const film = filmRef.current;
     if (!hls || !film || !hls.levels.length) return;
     // 25% headroom keeps the film's small UI text crisp.
     const scale = Math.min(window.devicePixelRatio || 1, 2) * 1.25;
-    const needW = film.clientWidth * scale;
-    const needH = film.clientHeight * scale;
+    const top = hls.levels[hls.levels.length - 1];
+    const aspect = top.width && top.height ? top.width / top.height : 16 / 9;
+    const pictureW = Math.min(film.clientWidth, film.clientHeight * aspect);
+    const needW = pictureW * scale;
+    const needH = (pictureW / aspect) * scale;
     const fit = hls.levels.findIndex((l) => l.width >= needW && l.height >= needH);
     hls.autoLevelCapping = fit === -1 ? hls.levels.length - 1 : fit;
   }, []);
