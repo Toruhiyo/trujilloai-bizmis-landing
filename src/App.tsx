@@ -4,33 +4,51 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate, Outlet } from "react-router-dom";
-import Index from "./pages/Index";
-import FAQs from "./pages/FAQs";
-import Contact from "./pages/Contact";
-import EarlyAccess from "./pages/EarlyAccess";
-import Pricing from "./pages/Pricing";
-import PrivacyPolicy from "./pages/PrivacyPolicy";
-import Terms from "./pages/Terms";
-import Slides from "./pages/Slides";
-import ShopifyDeck from "./pages/slides/ShopifyDeck";
-import AdminProtectedRoute from "./components/admin/AdminProtectedRoute";
-import InviteCardsIndex from "./pages/admin/InviteCardsIndex";
-import EarlyAccessCardPage from "./pages/admin/EarlyAccessCardPage";
-import MockupRenderPage from "./pages/email-renders/MockupRenderPage";
-import InstantlyExportPage from "./pages/email-renders/InstantlyExportPage";
-import InstantlyLeadFieldsPage from "./pages/email-renders/InstantlyLeadFieldsPage";
-import NotFound from "./pages/NotFound";
-import Unsubscribe from "./pages/Unsubscribe";
+import { HERO_FILM_ENABLED } from "./lib/film";
 import AttributionTracker from "./components/AttributionTracker";
 import { LocaleRoute, LocalizedRedirect } from "./i18n/LocaleRoute";
 import { LocaleProvider } from "./i18n/LocaleProvider";
 import { DEFAULT_LOCALE } from "./i18n/locales";
 import AdFilm, { isAdFilmRequest } from "./promo/AdFilm";
 
-// Archived landing: its own chunk, so the live landing never downloads it.
+// Every page is its own chunk, so "/" downloads only the film landing's code
+// (and Pricing, FAQs, the admin and the email renders only theirs).
+// Archived landing: the live landing never downloads it.
 const IndexV1 = lazy(() => import("./pages/IndexV1"));
-// The film-led landing: "/" renders it too; /v2 keeps it at a stable URL.
-const FilmLanding = lazy(() => import("./pages/FilmLanding"));
+// The film-led landing: "/" renders it (unless VITE_HERO_FILM=0); /v2 keeps it at a stable URL.
+const loadFilmLanding = () => import("./pages/FilmLanding");
+const FilmLanding = lazy(loadFilmLanding);
+// With VITE_HERO_FILM=0, "/" is the classic landing (pages/Index), untouched.
+const ClassicIndex = lazy(() => import("./pages/Index"));
+const FAQs = lazy(() => import("./pages/FAQs"));
+const Contact = lazy(() => import("./pages/Contact"));
+const EarlyAccess = lazy(() => import("./pages/EarlyAccess"));
+const Pricing = lazy(() => import("./pages/Pricing"));
+const PrivacyPolicy = lazy(() => import("./pages/PrivacyPolicy"));
+const Terms = lazy(() => import("./pages/Terms"));
+const Unsubscribe = lazy(() => import("./pages/Unsubscribe"));
+const NotFound = lazy(() => import("./pages/NotFound"));
+const Slides = lazy(() => import("./pages/Slides"));
+const ShopifyDeck = lazy(() => import("./pages/slides/ShopifyDeck"));
+const AdminProtectedRoute = lazy(() => import("./components/admin/AdminProtectedRoute"));
+const InviteCardsIndex = lazy(() => import("./pages/admin/InviteCardsIndex"));
+const EarlyAccessCardPage = lazy(() => import("./pages/admin/EarlyAccessCardPage"));
+const MockupRenderPage = lazy(() => import("./pages/email-renders/MockupRenderPage"));
+const InstantlyExportPage = lazy(() => import("./pages/email-renders/InstantlyExportPage"));
+const InstantlyLeadFieldsPage = lazy(() => import("./pages/email-renders/InstantlyLeadFieldsPage"));
+
+// On a landing URL ("/", "/es", ...), fetch the film landing's chunk now, in
+// parallel with React's first render, instead of after it.
+if (
+  HERO_FILM_ENABLED &&
+  typeof window !== "undefined" &&
+  /^\/(?:(?:es|fr|it|ca)\/?)?$/.test(window.location.pathname)
+) {
+  loadFilmLanding();
+}
+
+/** What shows while a page's chunk loads: the landing's own blank canvas. */
+const pageFallback = <div className="min-h-screen studio-lighting-base" />;
 
 const queryClient = new QueryClient();
 
@@ -42,25 +60,9 @@ const queryClient = new QueryClient();
  * would be invisible to its route matching.
  */
 const publicLocalizedRoutes = () => [
-  <Route key="index" index element={<Index />} />,
-  <Route
-    key="v1"
-    path="v1"
-    element={
-      <Suspense fallback={<div className="min-h-screen studio-lighting-base" />}>
-        <IndexV1 />
-      </Suspense>
-    }
-  />,
-  <Route
-    key="v2"
-    path="v2"
-    element={
-      <Suspense fallback={<div className="min-h-screen studio-lighting-base" />}>
-        <FilmLanding path="/v2" />
-      </Suspense>
-    }
-  />,
+  <Route key="index" index element={HERO_FILM_ENABLED ? <FilmLanding /> : <ClassicIndex />} />,
+  <Route key="v1" path="v1" element={<IndexV1 />} />,
+  <Route key="v2" path="v2" element={<FilmLanding path="/v2" />} />,
   <Route key="faqs" path="faqs" element={<FAQs />} />,
   <Route key="contact" path="contact" element={<Contact />} />,
   <Route key="early-access" path="early-access" element={<EarlyAccess />} />,
@@ -81,8 +83,10 @@ const App = () => {
     <TooltipProvider>
       <Toaster />
       <Sonner />
-      <BrowserRouter>
+      {/* (transitions keep the current page on screen while the next page's chunk loads) */}
+      <BrowserRouter future={{ v7_startTransition: true }}>
         <AttributionTracker />
+        <Suspense fallback={pageFallback}>
         <Routes>
           {/* English — default, unprefixed. */}
           <Route element={<LocaleRoute />}>
@@ -125,6 +129,7 @@ const App = () => {
             }
           />
         </Routes>
+        </Suspense>
       </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>

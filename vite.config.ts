@@ -77,8 +77,11 @@ export default defineConfig(({ mode }) => ({
     componentTagger(),
   ].filter(Boolean),
   resolve: {
-    alias: {
-      "@": path.resolve(__dirname, "./src"),
-    },
+    alias: [
+      { find: "@", replacement: path.resolve(__dirname, "./src") },
+      // PostHog loads after the page is up (src/lib/posthogLazy.tsx): the app's
+      // PostHogProvider / usePostHog imports get the lazy stand-in, unchanged.
+      { find: /^posthog-js\/react$/, replacement: path.resolve(__dirname, "./src/lib/posthogLazy.tsx") },
+    ],
   },
 }));
