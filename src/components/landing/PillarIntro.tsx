@@ -3,9 +3,11 @@ import type { CSSProperties, ReactNode } from "react";
 import { cn } from "@/lib/utils";
 import "@/styles/pillar-intro.css";
 import "@/styles/pillar-openers.css";
-import { PillarAreaContext, useDockStyle, useOpener } from "./pillar/OpenerContext";
+import "@/styles/pillar-docks.css";
+import { PillarAreaContext, isAlt, useDockStyle, useOpener } from "./pillar/OpenerContext";
 import OpenerDesign, { DockBar, DockOpener } from "./pillar/OpenerDesign";
-import type { Motif } from "./pillar/OpenerDesign";
+import { AltBar, AltOpener } from "./pillar/DockAlt";
+import type { DockStyleKey, Motif } from "./pillar/OpenerDesign";
 import { useDockMorph } from "./pillar/useDockMorph";
 
 /**
@@ -66,6 +68,10 @@ import { useDockMorph } from "./pillar/useDockMorph";
  *   third, then the morph runs as quick as ever. The opener is sticky in
  *   its wrap (.pi-bigwrap) through the hold and the run, so the compositor
  *   keeps it still (no JS chasing the scroll).
+ * - ?dock=d|e|f (pillar/DockAlt, pillar-docks.css): other ideas of the docked
+ *   thing on the same morph and hold: d a floating pill on the content's
+ *   left edge, e a segmented control of the page's three pillars (the one
+ *   you're in filled), f a running head in the marker hand with no bar.
  * - The opener designs (?open=1..6, pillar/OpenerContext; the page's default
  *   is 5) are pillar/OpenerDesign: the OUTCOME the hero (`outcome`; by
  *   default the `name`, with `line` under it), the AREA the eyebrow (`area`;
@@ -154,7 +160,7 @@ const PillarIntro = ({
     const d = dock.current;
     const b = big.current;
     if (!r || !d || !b) return;
-    const row = d.querySelector<HTMLElement>(".odx-bar-in");
+    const row = d.querySelector<HTMLElement>(".odx-bar-in, .odz-in");
     if (row) {
       d.style.setProperty("--pi-dfit", "1");
       const cs = getComputedStyle(d);
@@ -188,6 +194,7 @@ const PillarIntro = ({
     body,
     reduced,
     hold: alt ? holdRef : undefined,
+    // (d, e, f draw their own grounds from the bar's --pm-bar, pillar-docks.css)
     ground: alt === "a" ? "pill" : alt === "c" ? "curtain" : "fade",
     onDocked: setDocked,
     prepare: fit,
@@ -199,17 +206,30 @@ const PillarIntro = ({
 
   // with an outcome, the eyebrow's words become the bar's label and the outcome its line
   const byOutcome = Boolean(v && outcome);
+  const z = isAlt(alt) ? alt : null;
+  const abc = alt && !z ? (alt as DockStyleKey) : null;
   const bar = (
     <div ref={head} className="pi-head">
       {alt === "c" && <span className="pi-curtain" aria-hidden="true" />}
       <div
         ref={dock}
-        className={cn("pi-dock", named && "is-named", alt && `odx-bar odx-bar-${alt}`, dockClassName)}
+        className={cn("pi-dock", named && "is-named", alt && (z ? `odz-bar odz-bar-${z}` : `odx-bar odx-bar-${alt}`), dockClassName)}
         aria-hidden="true"
       >
-        {alt ? (
+        {z ? (
+          <AltBar
+            style={z}
+            index={index}
+            icon={icon}
+            label={byOutcome ? (area ?? areaCtx ?? name) : name}
+            byOutcome={byOutcome}
+            lines={byOutcome ? lines : undefined}
+          >
+            {compact}
+          </AltBar>
+        ) : abc ? (
           <DockBar
-            style={alt}
+            style={abc}
             index={index}
             icon={icon}
             label={byOutcome ? (area ?? areaCtx ?? name) : name}
@@ -255,9 +275,20 @@ const PillarIntro = ({
       {/* the opener's wrap: it spans the hold and the morph's run, the opener sticky in it (pillar/useDockMorph sizes it) */}
       <div className="pi-bigwrap">
       <div ref={big} className={cn("pi-big", named && "is-named")}>
-        {alt && lines ? (
+        {z && lines ? (
+          <AltOpener
+            style={z}
+            index={index}
+            icon={icon}
+            area={outcome ? (area ?? areaCtx) : undefined}
+            lines={lines}
+            sub={outcome ? undefined : line}
+            lineClassName={lineClassName}
+            as={Tag}
+          />
+        ) : abc && lines ? (
           <DockOpener
-            style={alt}
+            style={abc}
             index={index}
             icon={icon}
             // the area's name over the outcome; over the pillar's own name (Sales) it would only repeat it: the mark alone

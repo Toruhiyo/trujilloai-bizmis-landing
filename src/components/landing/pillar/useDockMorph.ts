@@ -185,6 +185,9 @@ export type MorphGround = "fade" | "pill" | "curtain";
 
 const PARTS = ".sl-title-lead, .sl-title-part, .pm-part";
 
+/** A bar part that isn't shown right now (its CSS sets --pm-absent: 1): it gets no twin. */
+const absent = (el: HTMLElement) => getComputedStyle(el).getPropertyValue("--pm-absent").trim() === "1";
+
 /** The top of the first line of text in `scope` that's on the page (its text nodes' boxes), or null. */
 const firstText = (scope: Element) => {
   const walker = document.createTreeWalker(scope, NodeFilter.SHOW_TEXT);
@@ -245,6 +248,7 @@ const measureGeometry = ({ root, head, big, dock, runway, hold: spacer }: Els): 
 
   // the sub line and the bar's line, part by part when both are split alike
   const pairsOf: [HTMLElement, HTMLElement][] = [];
+  const ghosts: [string, HTMLElement][] = [];
   const unpaired = new Map(bigs);
   for (const [key, b] of bigs) {
     const d = docks.get(key);
@@ -253,7 +257,12 @@ const measureGeometry = ({ root, head, big, dock, runway, hold: spacer }: Els): 
     docks.delete(key);
     const bp = [...b.querySelectorAll<HTMLElement>(PARTS)];
     const dp = [...d.querySelectorAll<HTMLElement>(PARTS)];
-    if (bp.length && bp.length === dp.length) bp.forEach((el, i) => pairsOf.push([el, dp[i]]));
+    if (bp.length && bp.length === dp.length)
+      bp.forEach((el, i) => {
+        // a part the bar doesn't show right now (--pm-absent: 1, e.g. a pill showing only the current part): it rides along and fades
+        if (absent(dp[i])) ghosts.push([`@${key}`, el]);
+        else pairsOf.push([el, dp[i]]);
+      });
     else pairsOf.push([b, d]);
   }
 
@@ -268,6 +277,7 @@ const measureGeometry = ({ root, head, big, dock, runway, hold: spacer }: Els): 
       T.lines <= 1 &&
       B.text === T.text &&
       bs.textTransform === ds.textTransform &&
+      bs.fontFamily === ds.fontFamily &&
       Math.abs(parseFloat(bs.fontWeight) - parseFloat(ds.fontWeight)) < 150;
     // the same text (or an icon) lands on its twin's width; other text on its font size
     const k = same || !B.text ? T.w / B.w : parseFloat(ds.fontSize) / parseFloat(bs.fontSize);
@@ -295,12 +305,17 @@ const measureGeometry = ({ root, head, big, dock, runway, hold: spacer }: Els): 
   });
   const find = (el?: HTMLElement) => pairs.find((p) => p.big === el || (el && el.contains(p.big))) ?? null;
   const title = find(bigs.get("title")) ?? pairs[0] ?? null;
-  const solos: Solo[] = [...unpaired].map(([key, el]) => {
+  const solos: Solo[] = [...unpaired, ...ghosts].map(([key, el]) => {
     const r = el.getBoundingClientRect();
     el.style.transformOrigin = "0 0";
     // each rides with the piece beside it: the eyebrow's words with its icon, the number with the area's name, the rest with the title
-    const near = key === "area" ? "icon" : key === "num" || key === "rule" ? "area" : "title";
-    const anchor = find(bigs.get(near)) ?? title;
+    // (`data-pm-ride` names another piece, or "none": it fades where it stands)
+    const ride = el.dataset.pmRide;
+    // (a part the bar doesn't show rides with its line's shown part)
+    const near =
+      ride ??
+      (key.startsWith("@") ? key.slice(1) : key === "area" ? "icon" : key === "num" || key === "rule" ? "area" : "title");
+    const anchor = ride === "none" ? null : (find(bigs.get(near)) ?? title);
     return { el, x: r.left, y: r.top - rootTop, anchor };
   });
   return {

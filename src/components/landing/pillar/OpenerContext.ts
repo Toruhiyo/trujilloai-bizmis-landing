@@ -39,10 +39,29 @@ export const PillarAreaContext = createContext<string | undefined>(undefined);
  * words light up one by one, each on its own beat; b: the hairline draws,
  * c: the swoosh draws and the colour rises), its final state held before
  * the morph.
+ *
+ * Three more, other ideas of what the docked thing is (pillar/DockAlt):
+ *
+ *   d  Pill       no bar: the opener's eyebrow is a pill, and the opener
+ *                 shrinks into it, floating on the content's left edge under
+ *                 the nav: [icon] name | the current part (Sales) or the outcome
+ *   e  Tabs       a segmented control of the page's three pillars, the one
+ *                 you're in filled (Sales' tab carrying its current part in
+ *                 marker); the opener's eyebrow is the same control, numbers only
+ *   f  Running    editorial, no bar: the chapter number in marker, the name in
+ *                 spaced capitals, a hairline, then the outcome as a running
+ *                 head in a light weight (Sales' current part in marker); the
+ *                 opener sets its outcome lighter, its second sentence in marker
  */
-export type DockStyle = "0" | "a" | "b" | "c";
+export type DockStyle = "0" | "a" | "b" | "c" | "d" | "e" | "f";
+
+/** The styles of pillar/DockAlt. */
+export type AltStyle = "d" | "e" | "f";
+export const isAlt = (s: string | null): s is AltStyle => s === "d" || s === "e" || s === "f";
+
+const STYLES: readonly string[] = ["0", "b", "c", "d", "e", "f"];
 
 export const useDockStyle = (): DockStyle => {
   const q = new URLSearchParams(useLocation().search).get("dock");
-  return q === "0" || q === "b" || q === "c" ? q : "a";
+  return q && STYLES.includes(q) ? (q as DockStyle) : "a";
 };
