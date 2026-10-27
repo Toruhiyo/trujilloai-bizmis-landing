@@ -221,6 +221,7 @@ const HeroAgent = ({
                   <AgentImage
                     name="support-yusuke"
                     alt=""
+                    priority
                     sizes="(min-width: 1024px) 20vw, 50vw"
                     className="absolute bottom-0 left-1/2 h-[97%] w-auto -translate-x-1/2"
                   />

@@ -19,6 +19,7 @@ const AgentImage = ({
   alt,
   sizes,
   eager = false,
+  priority = false,
   className,
   imgClassName,
 }: {
@@ -27,6 +28,8 @@ const AgentImage = ({
   /** CSS width the image is shown at, e.g. "(min-width: 1024px) 420px, 60vw". */
   sizes: string;
   eager?: boolean;
+  /** The page's largest first paint (the hero's): loaded eagerly, at high fetch priority. */
+  priority?: boolean;
   className?: string;
   imgClassName?: string;
 }) => {
@@ -59,8 +62,10 @@ const AgentImage = ({
           alt={alt}
           width={w}
           height={h}
-          loading={eager ? "eager" : "lazy"}
+          loading={eager || priority ? "eager" : "lazy"}
           decoding="async"
+          // (React 18 passes the lowercase attribute through as is)
+          {...(priority ? { fetchpriority: "high" } : {})}
           onLoad={() => setLoaded(true)}
           className={cn(
             "relative h-full w-full object-contain transition-opacity duration-700",

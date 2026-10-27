@@ -7,7 +7,12 @@ import { cn } from "@/lib/utils";
  * it (see LiveAvatarCanvas), at zero cost until it's needed:
  *
  * - three / fiber / drei sit in a lazy chunk, fetched only once the box is
- *   within ~200px of the viewport (the GLBs are warmed in parallel).
+ *   within ~200px of the viewport (the GLBs are warmed in parallel), and
+ *   never before the page has loaded and the main thread is idle: the hero's
+ *   avatar starts as its still render, so the 3D never delays the first paint.
+ * - Waist-up and head-only avatars load the CDN's "high" LOD variant (the
+ *   same mesh without the legs or the embedded clips: about a third of the
+ *   full file); the full model is the fallback, and full-body avatars use it.
  * - `fallback` (the static render) shows in the same box until the canvas has
  *   drawn its first real frame, then the two crossfade.
  * - No 3D at all (fallback stays) for prefers-reduced-motion, Save-Data or
@@ -20,6 +25,13 @@ import { cn } from "@/lib/utils";
  */
 
 const CDN = "https://cdn.bizmis.ai/common/avatars/models";
+/**
+ * The widget's LOD variants (studio export_avatar_lods.py): "high" keeps the
+ * full mesh (no simplification), so the shirt's logo stamp and the framing are
+ * unchanged, but drops LOWERBODY_* and the embedded clips (the shared
+ * animations file brings the clips).
+ */
+const LOD_TIER = "high";
 /** Same file and version as the widget (trujilloai-bizmis-widget avatar-ui-utils.ts). */
 const ANIMATIONS_URL = `${CDN}/avatar-animations.glb?v=563`;
 /** Original illustration with the selected S2-C wordmark, shared with the static shirt renders. */
@@ -74,6 +86,29 @@ function hasWebGL(): boolean {
     return false;
   }
 }
+
+/**
+ * Resolves once the page has loaded and the main thread has an idle moment
+ * (or after a short wait when the browser has no idle callback), so no avatar
+ * competes with the first paint for the network or the main thread.
+ */
+let calm: Promise<void> | null = null;
+function pageCalm(): Promise<void> {
+  calm ??= new Promise<void>((resolve) => {
+    const idle = () => {
+      const ric = (window as Window & { requestIdleCallback?: (cb: () => void, o?: { timeout: number }) => number })
+        .requestIdleCallback;
+      if (ric) ric(() => resolve(), { timeout: 2000 });
+      else window.setTimeout(resolve, 300);
+    };
+    if (document.readyState === "complete") idle();
+    else window.addEventListener("load", idle, { once: true });
+  });
+  return calm;
+}
+
+/** Models whose LOD variant failed to load: they use the full model from then on. */
+const lodMissing = new Set<string>();
 
 const warmed = new Set<string>();
 /** Start the GLB downloads while the 3D chunk is still loading (CDN files are immutable, so the loader hits the HTTP cache). */
@@ -178,13 +213,16 @@ const LiveAvatar = ({
   const reducedMotion = useReducedMotion();
   const pageVisible = usePageVisible();
   const [near, setNear] = useState(false);
+  const [calmed, setCalmed] = useState(false);
   const [inView, setInView] = useState(false);
   /** null until decided (when first near the viewport). */
   const [capable, setCapable] = useState<boolean | null>(null);
   const [failedFor, setFailedFor] = useState<string | null>(null);
   const [readyFor, setReadyFor] = useState<string | null>(null);
 
-  const modelUrl = `${CDN}/${model}.glb`;
+  const [, setLodFailures] = useState(0);
+  const useLod = !fullBody && !lodMissing.has(model);
+  const modelUrl = useLod ? `${CDN}/lod/${LOD_TIER}/${model}.glb` : `${CDN}/${model}.glb`;
   const failed = failedFor === modelUrl;
   const ready = readyFor === modelUrl;
 
@@ -214,13 +252,22 @@ const LiveAvatar = ({
     };
   }, []);
 
+  useEffect(() => {
+    if (!near || calmed) return;
+    let live = true;
+    pageCalm().then(() => live && setCalmed(true));
+    return () => {
+      live = false;
+    };
+  }, [near, calmed]);
+
   // Decide once, when it first matters (the WebGL probe isn't free).
   useEffect(() => {
-    if (!near || capable !== null || reducedMotion) return;
+    if (!near || !calmed || capable !== null || reducedMotion) return;
     setCapable(!isSlowConnection() && hasWebGL());
-  }, [near, capable, reducedMotion]);
+  }, [near, calmed, capable, reducedMotion]);
 
-  const wants3d = near && capable === true && !reducedMotion && !failed;
+  const wants3d = near && calmed && capable === true && !reducedMotion && !failed;
 
   useEffect(() => {
     if (!wants3d) return;
@@ -233,11 +280,18 @@ const LiveAvatar = ({
   const onReady = useCallback(() => setReadyFor(modelUrl), [modelUrl]);
   const onError = useCallback(
     (error: Error) => {
+      // a missing LOD variant: try the full model before giving up on 3D
+      if (useLod && !/context lost/i.test(error.message)) {
+        lodMissing.add(model);
+        setReadyFor(null);
+        setLodFailures((n) => n + 1);
+        return;
+      }
       if (import.meta.env.DEV) console.warn("[LiveAvatar] falling back to the static render:", error);
       setFailedFor(modelUrl);
       setReadyFor(null);
     },
-    [modelUrl]
+    [modelUrl, useLod, model]
   );
 
   const live = wants3d && ready;
