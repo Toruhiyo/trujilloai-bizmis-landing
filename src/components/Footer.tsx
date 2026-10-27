@@ -70,9 +70,9 @@ const Footer = () => {
           <div className="grid grid-cols-3 gap-4 sm:gap-8 md:col-span-3">
             {linkColumns.map(({ heading, links }) => (
               <div key={heading} className="min-w-0">
-                <h4 className="font-semibold text-sm sm:text-base mb-3 sm:mb-4">
+                <h2 className="font-semibold text-sm sm:text-base mb-3 sm:mb-4">
                   {heading}
-                </h4>
+                </h2>
                 <ul className="space-y-1.5 sm:space-y-2 text-sm sm:text-base text-gray-400">
                   {links.map(({ label, href: linkHref, newTab }) => (
                     <li key={label}>
@@ -102,7 +102,7 @@ const Footer = () => {
           </p>
           <LanguageSwitcher theme="dark" />
         </div>
-        <p className="mt-3 text-center text-[11px] text-gray-500 sm:text-xs">
+        <p className="mt-3 text-center text-[11px] text-gray-400 sm:text-xs">
           {messages.footer.legalNotice}
         </p>
       </div>

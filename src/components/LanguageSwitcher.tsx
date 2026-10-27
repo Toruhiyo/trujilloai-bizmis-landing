@@ -58,11 +58,12 @@ const LanguageSwitcher = ({ theme = "light", className = "" }: LanguageSwitcherP
         onClick={() => setIsOpen((prev) => !prev)}
         aria-haspopup="listbox"
         aria-expanded={isOpen}
-        aria-label={messages.languageSwitcher.ariaLabel}
         // 32px to look at, 44px to tap (the ::after)
         className={`relative inline-flex items-center gap-1.5 rounded-full px-2.5 py-1.5 text-sm font-medium transition-colors duration-300 after:absolute after:-inset-y-1.5 after:inset-x-0 after:content-[''] ${triggerToneClass}`}
       >
         <Globe className="h-4 w-4" aria-hidden="true" />
+        {/* named by its content, so the visible code is part of the name (WCAG 2.5.3) */}
+        <span className="sr-only">{messages.languageSwitcher.ariaLabel}: </span>
         <span>{LOCALE_SHORT_NAMES[locale]}</span>
       </button>
 

@@ -51,12 +51,12 @@ const EndCard = () => {
               target="_blank"
               rel="noopener noreferrer"
               onClick={install}
-              aria-label={cta.installAria}
               className="bzl-cta-title bzl-cta-btn group inline-flex items-center gap-[0.2em] text-[var(--bzl-fg)] transition-colors duration-300 hover:text-[var(--bzl-orange-dark)] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[var(--bzl-orange)]/40"
             >
               {/* the bag in the title's own ink (and its hover orange), as in the film */}
               <FaShopify aria-hidden="true" className="h-[0.74em] w-[0.74em] flex-shrink-0" />
               <span className="bzl-cta-title-text">{end.install}</span>
+              <span className="sr-only"> ({cta.installAria})</span>
             </a>
           </h2>
         </Reveal>

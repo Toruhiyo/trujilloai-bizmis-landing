@@ -57,9 +57,9 @@ const FilmFooter = () => {
           <div className="grid grid-cols-3 gap-6 md:col-span-3">
             {columns.map((col) => (
               <div key={col.heading}>
-                <h4 className="text-sm font-semibold text-[var(--bzl-fg)]">
+                <h2 className="text-sm font-semibold text-[var(--bzl-fg)]">
                   {col.heading}
-                </h4>
+                </h2>
                 {/* each link's tap area (an ::after) fills its row; on touch screens the rows open up so it is 44px */}
                 <ul className="mt-4 space-y-2.5 text-[0.9375rem] text-[var(--bzl-muted)] [@media(pointer:coarse)]:space-y-5">
                   {col.links.map((l) => (
@@ -80,7 +80,7 @@ const FilmFooter = () => {
             ))}
           </div>
         </div>
-        <div className="mt-12 flex flex-col items-center gap-4 border-t border-[var(--bzl-border)] pt-8 text-sm text-[var(--bzl-faint)] sm:flex-row sm:justify-between">
+        <div className="mt-12 flex flex-col items-center gap-4 border-t border-[var(--bzl-border)] pt-8 text-sm text-[var(--bzl-muted)] sm:flex-row sm:justify-between">
           <p>{f.copyright(getCurrentYear())}</p>
         </div>
       </div>

@@ -297,13 +297,15 @@ const ReplayCard = ({ session, fill = false }: { session: ReplaySession; fill?: 
           ref={listRef}
           onPointerEnter={(e) => e.pointerType === "mouse" && (reading.current = true)}
           onPointerLeave={() => (reading.current = false)}
+          // keyboard users can scroll the transcript too (WCAG 2.1.1)
+          tabIndex={0}
           // inner room on every side (cancelled by the negative margin) so a
           // highlighted card's ring and glow never get clipped by the scroll box.
           // Not filling a pinned screen, on a short screen (a phone on its side) it doesn't
           // scroll at all (bzi-list.is-capped, landing-responsive.css): capped and faded, the
           // call's playback still moving it, so the page's wheel never gets stuck in it
           className={cn(
-            "bzi-list relative -mx-3 -mt-2 space-y-2 overflow-y-auto px-3 pb-8 pt-2",
+            "bzi-list relative -mx-3 -mt-2 space-y-2 overflow-y-auto px-3 pb-8 pt-2 outline-none focus-visible:ring-2 focus-visible:ring-[var(--bzl-orange)]/60",
             fill ? "min-h-0" : "is-capped max-h-[min(22.5rem,max(9.5rem,calc(100svh-32.5rem)))]",
           )}
         >

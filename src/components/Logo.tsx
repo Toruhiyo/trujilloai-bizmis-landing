@@ -46,6 +46,7 @@ const Logo = ({
     <Component
       onClick={onClick}
       aria-label="Bizmis"
+      role={onClick ? undefined : "img"}
       className={cn(
         "inline-flex items-center transition-all duration-300",
         onClick && "hover:opacity-80 cursor-pointer",
