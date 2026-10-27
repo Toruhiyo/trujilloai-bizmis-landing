@@ -1312,30 +1312,26 @@
   /* (gentle on a device: the mockup stays readable through it) */
   opacity: min(0.55, calc(var(--rw) * 0.7));
 }
-/* scanlines that read on white, the grain over them */
+/* scanlines that read on white, faint: nothing that darkens the screen */
 .rws .rwa-fx::before {
-  background:
-    repeating-linear-gradient(180deg, rgb(40 22 10 / 0.1) 0 1px, transparent 1px 3px),
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.3 0 0 0 0 0.22 0 0 0 0 0.16 0 0 0 0.7 -0.32'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E");
-  background-size: 100% 3px, 160px 160px;
-  mix-blend-mode: multiply;
-  opacity: 0.85;
+  background: repeating-linear-gradient(180deg, rgb(40 22 10 / 0.05) 0 1px, transparent 1px 3px);
+  background-size: 100% 3px;
+  mix-blend-mode: normal;
+  opacity: 1;
 }
-/* the tracking bands: a soft smeared one (a shade, a bright line through it) and a thin hard one, rolling up */
+/* the tracking bands: bright, never a shade (a bright smear and a thin bright line, rolling up) */
 .rws .rwa-fx::after {
   height: 16%;
   background:
     linear-gradient(
       180deg,
       transparent 0%,
-      rgb(60 36 20 / 0.08) 25%,
-      rgb(60 36 20 / 0.2) 42%,
-      rgb(255 255 255 / 0.85) 47%,
-      rgb(255 214 190 / 0.6) 51%,
-      rgb(60 36 20 / 0.16) 58%,
-      transparent 100%
+      rgb(255 255 255 / 0.25) 35%,
+      rgb(255 255 255 / 0.7) 47%,
+      rgb(255 236 222 / 0.4) 52%,
+      transparent 70%
     ),
-    linear-gradient(180deg, transparent 80%, rgb(40 22 10 / 0.35) 80% 82%, transparent 82%) 0 0 / 100% 100% no-repeat;
+    linear-gradient(180deg, transparent 80%, rgb(255 255 255 / 0.6) 80% 82%, transparent 82%) 0 0 / 100% 100% no-repeat;
   animation-name: rws-track;
   animation-duration: 0.7s;
 }
@@ -1404,6 +1400,15 @@
   font-size: 17px;
   opacity: 0.85;
 }
+.sl-met-label.is-tiny {
+  font-size: 15px;
+}
+/* the payoff card's bars (?card=2, 3): outlined in marker, a soft white inside */
+.sl-met .sl-met-bar {
+  fill: rgb(255 255 255 / 0.32);
+  stroke-width: 2.6;
+  transition: none;
+}
 .sl-g2-met.is-payoff {
   margin-inline: auto;
   margin-top: 0.6rem;
@@ -1444,35 +1449,6 @@
       transparent 70%
     ),
     linear-gradient(180deg, transparent 80%, rgb(255 255 255 / 0.22) 80% 81.5%, transparent 81.5%) 0 0 / 100% 100% no-repeat;
-}
-
-/* ?pile: the payoff's sales piling up by the order bag, right of the funnel (SalesPile) */
-.sl-g2-pile {
-  position: absolute;
-  inset: 0;
-  z-index: 2;
-  width: 100%;
-  height: 100%;
-  overflow: visible;
-  pointer-events: none;
-  opacity: 0;
-  transition: opacity 0.3s ease;
-}
-.sl-g2-pile.is-on {
-  opacity: 1;
-}
-.sl-pile-dots {
-  fill: rgb(255 244 205);
-}
-.sl-pile-receipt {
-  fill: none;
-  stroke: rgb(255 244 205);
-  stroke-width: 2;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-}
-.sl-pile-strip {
-  fill: rgb(255 255 255 / 0.12);
 }
 /* (the band's tape keeps its full overlay: it is only light scanlines and a bright band there) */
 .rws.is-band .rws-in.is-rw .rwa-fx {

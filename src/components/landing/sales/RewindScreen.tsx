@@ -109,28 +109,18 @@ export const ScreenTape = ({ on, band = false, children }: { on: boolean; band?:
               <feFuncG type="discrete" tableValues="0.5" />
             </feComponentTransfer>
             <feDisplacementMap ref={disp} in="SourceGraphic" in2="bands" scale={0} xChannelSelector="R" yChannelSelector="G" result="torn" />
-            {/* the channel split: the red channel shifted one way, green + blue the other, added back together */}
+            {/* the channel split: the picture shifted one way and the other */}
             <feOffset ref={offR} in="torn" dx={0} result="tornR" />
             <feOffset ref={offB} in="torn" dx={0} result="tornB" />
-            {band ? (
-              <>
-                {/* on the band, red and cyan fringes behind the drawing instead: an added split turns
-                    anything see-through (a line's soft edge, the tracking band) grey */}
-                <feColorMatrix in="tornR" type="matrix" values="0 0 0 0 1  0 0 0 0 0.2  0 0 0 0 0.25  0 0 0 0.8 0" result="r" />
-                <feColorMatrix in="tornB" type="matrix" values="0 0 0 0 0.15  0 0 0 0 0.95  0 0 0 0 1  0 0 0 0.8 0" result="gb" />
-                <feMerge>
-                  <feMergeNode in="r" />
-                  <feMergeNode in="gb" />
-                  <feMergeNode in="torn" />
-                </feMerge>
-              </>
-            ) : (
-              <>
-                <feColorMatrix in="tornR" type="matrix" values="1 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 1 0" result="r" />
-                <feColorMatrix in="tornB" type="matrix" values="0 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 1 0" result="gb" />
-                <feComposite in="r" in2="gb" operator="arithmetic" k1={0} k2={1} k3={1} k4={0} />
-              </>
-            )}
+            {/* red and cyan fringes behind the picture, the picture itself on top: an added split
+                (red + green-blue summed) turns anything see-through grey and darkens the screen */}
+            <feColorMatrix in="tornR" type="matrix" values="0 0 0 0 1  0 0 0 0 0.2  0 0 0 0 0.25  0 0 0 0.8 0" result="r" />
+            <feColorMatrix in="tornB" type="matrix" values="0 0 0 0 0.15  0 0 0 0 0.95  0 0 0 0 1  0 0 0 0.8 0" result="gb" />
+            <feMerge>
+              <feMergeNode in="r" />
+              <feMergeNode in="gb" />
+              <feMergeNode in="torn" />
+            </feMerge>
           </filter>
         </svg>
       )}

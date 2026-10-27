@@ -14,6 +14,11 @@ import { cn } from "@/lib/utils";
  *     old reading left as a dashed ghost;
  *  6: an "orders today" sparkline that steepens with every fix; at the
  *     payoff, a before/after strip (flat dash → arrow) for the three.
+ * The payoff's card alternatives (?card=2..4; 1 is the card, 4 above):
+ *  7: bars, one per metric: the old length a dashed ghost, the bar itself
+ *     growing (shrinking for abandoned carts) a third at every fix;
+ *  8: orders week by week, as bars: the weeks after each fix stand taller;
+ *  9: three small dials, each needle swinging the right way a notch per fix.
  */
 const Metrics = ({
   variant,
@@ -28,6 +33,9 @@ const Metrics = ({
 }) => {
   const m = useMessages().landing.sales.metrics;
   if (variant === 4) return <Card k={k} focus={focus} labels={[m.conversion, m.orders, m.abandoned]} className={className} />;
+  if (variant === 7) return <Bars k={k} labels={[m.conversion, m.orders, m.abandoned]} className={className} />;
+  if (variant === 8) return <Weeks k={k} label={m.orders} className={className} />;
+  if (variant === 9) return <Dials k={k} labels={[m.conversion, m.orders, m.abandoned]} className={className} />;
   if (variant === 5) return <Gauge k={k} label={m.conversion} className={className} />;
   if (variant === 6)
     return focus >= 3 ? (
@@ -216,5 +224,100 @@ const Strip = ({
     })}
   </svg>
 );
+
+/** The card's hand-drawn frame (330 x 168), shared by the payoff's card alternatives. */
+const FRAME =
+  "M14 4 C 120 2.5, 220 5, 316 3.5 Q 326 4, 326 14 C 327.5 60, 325 110, 326.5 154 Q 326 164, 316 164 C 210 165.5, 110 163, 14 164.5 Q 4 164, 4 154 C 2.5 110, 5 60, 3.5 14 Q 4 4, 14 4 Z";
+/** A box by hand, (x, y) w x h: its sides a hair off straight. */
+const box = (x: number, y: number, w: number, h: number, seed: number) => {
+  const j = (i: number) => wob(i, seed) * 0.5;
+  return `M${(x + j(1)).toFixed(1)} ${(y + h).toFixed(1)} L${(x + j(2)).toFixed(1)} ${(y + j(3)).toFixed(1)} L${(x + w + j(4)).toFixed(1)} ${(y + j(5)).toFixed(1)} L${(x + w + j(6)).toFixed(1)} ${(y + h).toFixed(1)}`;
+};
+
+const Bars = ({ k, labels, className }: { k: number[]; labels: string[]; className?: string }) => {
+  // a third of the way per fix
+  const kk = (k[0] + k[1] + k[2]) / 3;
+  return (
+    <svg className={cn("sl-met", className)} viewBox="0 0 330 168" aria-hidden="true">
+      <path className="sl-met-soft" d={FRAME} />
+      {labels.map((l, r) => {
+        const y = 22 + r * 48;
+        const up = r < 2;
+        const x0 = 16;
+        const was = up ? 120 : 250;
+        const now = up ? was + 160 * kk : was - 150 * kk;
+        return (
+          <g key={r}>
+            <text className="sl-met-label is-small" x={x0} y={y + 4}>
+              {l}
+            </text>
+            {/* before: a dashed ghost of the old length */}
+            <path className="sl-met-ghost" d={`M${x0} ${y + 18} L${x0 + was} ${y + 18.5}`} />
+            {/* now: the bar, filled */}
+            <path className="sl-met-bar" d={`${box(x0, y + 12, now, 13, r)} Z`} />
+          </g>
+        );
+      })}
+    </svg>
+  );
+};
+
+const Weeks = ({ k, label, className }: { k: number[]; label: string; className?: string }) => {
+  const n = 10;
+  const base = 146;
+  const knees = [3, 5, 7];
+  return (
+    <svg className={cn("sl-met", className)} viewBox="0 0 330 168" aria-hidden="true">
+      <path className="sl-met-soft" d={FRAME} />
+      <text className="sl-met-label" x={16} y={30}>
+        {label}
+      </text>
+      <path className="sl-met-thin" d={`M16 ${base} C 110 ${base + 1.5}, 220 ${base - 1}, 312 ${base + 0.5}`} />
+      {Array.from({ length: n }, (_, j) => {
+        const lift = knees.reduce((a, kn, i) => a + (j >= kn ? k[i] * 26 : 0), 0);
+        const h = 22 + wob(j, 2) * 3 + lift;
+        const x = 24 + j * 29;
+        return <path key={j} className="sl-met-bar" d={`${box(x, base - h, 17, h, j)} Z`} />;
+      })}
+      {/* where each fix landed: a tick under the timeline */}
+      {knees.map((kn, i) => (
+        <path key={i} className="sl-met-thin" d={`M${24 + kn * 29 - 6} ${base + 6} l0 9`} style={{ opacity: k[i] }} />
+      ))}
+    </svg>
+  );
+};
+
+const Dials = ({ k, labels, className }: { k: number[]; labels: string[]; className?: string }) => {
+  const kk = (k[0] + k[1] + k[2]) / 3;
+  return (
+    <svg className={cn("sl-met", className)} viewBox="0 0 330 168" aria-hidden="true">
+      <path className="sl-met-soft" d={FRAME} />
+      {labels.map((l, r) => {
+        const cx = 56 + r * 109;
+        const cy = 92;
+        const R = 38;
+        const up = r < 2;
+        const v0 = up ? 0.25 : 0.75;
+        const v = up ? v0 + 0.5 * kk : v0 - 0.5 * kk;
+        const at = (val: number, rr: number): [number, number] => [cx - Math.cos(Math.PI * val) * rr, cy - Math.sin(Math.PI * val) * rr];
+        const arc: [number, number][] = [];
+        for (let j = 0; j <= 24; j++) arc.push(at(j / 24, R + wob(j, r + 3) * 0.6));
+        const [gx, gy] = at(v0, R - 10);
+        const [nx, ny] = at(v, R - 8);
+        return (
+          <g key={r}>
+            <path className="sl-met-ink" d={line(arc)} />
+            <path className="sl-met-ghost" d={`M${cx} ${cy} L${gx.toFixed(1)} ${gy.toFixed(1)}`} />
+            <path className="sl-met-ink is-bold" d={`M${cx} ${cy} L${nx.toFixed(1)} ${ny.toFixed(1)}`} />
+            <circle className="sl-met-dot" cx={cx} cy={cy} r={4.5} />
+            <text className="sl-met-label is-tiny" x={cx} y={cy + 32} textAnchor="middle">
+              {l}
+            </text>
+          </g>
+        );
+      })}
+    </svg>
+  );
+};
 
 export default Metrics;
