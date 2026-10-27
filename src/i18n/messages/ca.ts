@@ -178,7 +178,7 @@ export const ca: Messages = {
         buyQuery: "Arriba abans del seu aniversari, divendres?",
         buyCaption: "Sí, surt avui i la devolució és gratuïta. Anem a pagar?",
       },
-      cart: { title: "El teu carretó", subtotal: "Subtotal", checkout: "Pagar", perks: ["Surt avui", "Devolució gratuïta"], placed: "Comanda feta" },
+      cart: { title: "El teu carretó", add: "Afegeix a la cistella", subtotal: "Subtotal", checkout: "Pagar", perks: ["Surt avui", "Devolució gratuïta"], placed: "Comanda feta" },
       funnel: {
         problems: ["Es cansen de buscar", "Marxen a comparar", "Abandonen el carretó"],
         solutions: ["Ho troben de seguida", "Decideixen aquí", "Compren"],

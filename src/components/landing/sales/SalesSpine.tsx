@@ -352,14 +352,21 @@ const Pinned = () => {
   // the arrangement's funnel in the beats; in the payoff too where it keeps it (9b), else the payoff's own
   const L = A && (!payoff || A.payoff) ? { ...L0, fnW: A.fnW, fnH: A.fnH, fnLeft: A.fnLeft, fnTop: A.fnTop } : L0;
   const card = A?.payoff?.card ?? L0.card;
-  // ?pile: the payoff's order bag, in the stage's px, and the room on the pile's side (above where the
-  // payoff's words sit under the funnel, phones)
-  const pileSide = pile && (A?.payoff?.under ? "above" : pile.side);
+  // ?pile: by the metric card (above or below it, whichever has the room where the picked side has none),
+  // each sale flying in from the order bag (both in the stage's px)
   const bag = useMemo(() => {
     const b = funnelAnchors(L.fnW, L.fnH, [1, 1, 1], visits).bag;
-    return { x: L.fnLeft + b.x, y: L.fnTop + b.y, r: b.r };
+    return { x: L.fnLeft + b.x, y: L.fnTop + b.y };
   }, [L.fnW, L.fnH, L.fnLeft, L.fnTop, visits]);
-  const pileRoom = Math.min(H * 0.32, pileSide === "above" ? bag.y - bag.r - 12 : H - 12 - bag.y - bag.r);
+  const cardTop = typeof card.top === "number" ? card.top : 0;
+  const cardW = typeof card.width === "number" ? card.width : 330;
+  const cardBottom = cardTop + cardW * CARD_ASPECT;
+  const roomAbove = cardTop - 16;
+  const roomBelow = H - 16 - cardBottom;
+  const pileSide = pile && (pile.side === "above" ? (roomAbove > 90 || roomAbove > roomBelow ? "above" : "below") : roomBelow > 90 || roomBelow > roomAbove ? "below" : "above");
+  const pileRoom = Math.min(H * 0.3, pileSide === "above" ? roomAbove : roomBelow);
+  const cardLeft = typeof card.left === "number" ? card.left : 0;
+  const pileAt_ = { x: cardLeft + cardW / 2, y: pileSide === "above" ? cardTop : cardBottom, w: cardW };
   const links = useMemo(
     () => L0.beats.map((b, i) => A?.beats[i].link ?? { kind: "cone" as const, stage: b.cone.bottom, device: b.cone.top }),
     [L0, A],
@@ -463,7 +470,8 @@ const Pinned = () => {
                   <SalesPile
                     look={{ kind: pile.kind, side: pileSide }}
                     k={payoff ? pileAt(payT, startsFor(3), PAYOFF_DURATION) : 0}
-                    bag={bag}
+                    from={bag}
+                    at={pileAt_}
                     room={pileRoom}
                     on={payoff}
                   />

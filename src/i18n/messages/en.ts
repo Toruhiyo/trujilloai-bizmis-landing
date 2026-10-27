@@ -189,7 +189,7 @@ export const en = {
         buyCaption: "Yes, it ships today and returns are free. Ready to check out?",
       },
       /** The store's cart in the Buy it mockup. */
-      cart: { title: "Your cart", subtotal: "Subtotal", checkout: "Checkout", perks: ["Ships today", "Free returns"], placed: "Order placed" },
+      cart: { title: "Your cart", add: "Add to cart", subtotal: "Subtotal", checkout: "Checkout", perks: ["Ships today", "Free returns"], placed: "Order placed" },
       /** The at-scale funnel beside each moment: the whole store's shoppers, one funnel fixed stage by stage (illustrative, no figures). */
       funnel: {
         /** Each stage's status, as the film's pills: the problem (grey), then fixed by Bizmis (orange check). */

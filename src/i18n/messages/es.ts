@@ -178,7 +178,7 @@ export const es: Messages = {
         buyQuery: "¿Llega antes de su cumpleaños, el viernes?",
         buyCaption: "Sí, sale hoy y la devolución es gratis. ¿Vamos a pagar?",
       },
-      cart: { title: "Tu carrito", subtotal: "Subtotal", checkout: "Pagar", perks: ["Sale hoy", "Devolución gratis"], placed: "Pedido realizado" },
+      cart: { title: "Tu carrito", add: "Añadir al carrito", subtotal: "Subtotal", checkout: "Pagar", perks: ["Sale hoy", "Devolución gratis"], placed: "Pedido realizado" },
       funnel: {
         problems: ["Se cansan de buscar", "Se van a comparar", "Abandonan el carrito"],
         solutions: ["Lo encuentran rápido", "Deciden aquí", "Compran"],

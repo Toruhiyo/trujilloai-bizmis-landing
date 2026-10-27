@@ -63,16 +63,17 @@ export const ScreenTape = ({ on, band = false, children }: { on: boolean; band?:
         // re-roll the tear bands (where they fall, how tall, how far they slip)
         turb.current?.setAttribute("seed", String(Math.floor(rand(1, 999))));
         turb.current?.setAttribute("baseFrequency", `0 ${rand(0.02, 0.06).toFixed(3)}`);
-        disp.current?.setAttribute("scale", (k * rand(8, 22)).toFixed(1));
+        // a device's screen gets a gentler tape than the band's drawing: the mockup must stay readable
+        const g = band ? k : k * 0.5;
+        disp.current?.setAttribute("scale", (g * rand(8, 22)).toFixed(1));
         // the channel split: red one way, cyan the other
-        offR.current?.setAttribute("dx", (-k * rand(1.5, 3.5)).toFixed(2));
-        offB.current?.setAttribute("dx", (k * rand(1.5, 3.5)).toFixed(2));
-        el.style.setProperty("--rw-x", `${(rand(-1, 1) * 2.2 * k).toFixed(2)}px`);
-        el.style.setProperty("--rw-y", `${(rand(-1, 1) * 2.6 * k).toFixed(2)}px`);
-        // a flicker: mostly a touch brighter and washed out, now and then a dip
-        // (on the band, never a dip: it would read as the drawing going dark)
-        const b = !band && Math.random() < 0.18 ? 1 - 0.1 * k : 1 + rand(0, 0.08) * k;
-        el.style.filter = `url(#${id}) brightness(${b.toFixed(3)}) contrast(${(1 + 0.1 * k).toFixed(3)}) saturate(${(1 - 0.15 * k).toFixed(3)})`;
+        offR.current?.setAttribute("dx", (-g * rand(1.5, 3.5)).toFixed(2));
+        offB.current?.setAttribute("dx", (g * rand(1.5, 3.5)).toFixed(2));
+        el.style.setProperty("--rw-x", `${(rand(-1, 1) * 2.2 * g).toFixed(2)}px`);
+        el.style.setProperty("--rw-y", `${(rand(-1, 1) * 2.6 * g).toFixed(2)}px`);
+        // a flicker: a touch brighter and washed out, never a dip (it reads as the picture going dark)
+        const b = 1 + rand(0, 0.06) * g;
+        el.style.filter = `url(#${id}) brightness(${b.toFixed(3)}) contrast(${(1 + 0.06 * g).toFixed(3)}) saturate(${(1 - 0.1 * g).toFixed(3)})`;
       }
       s.raf = requestAnimationFrame(frame);
     };

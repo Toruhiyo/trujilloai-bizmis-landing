@@ -1309,7 +1309,8 @@
 }
 .rws-in.is-rw .rwa-fx {
   visibility: visible;
-  opacity: min(1, calc(var(--rw) * 1.2));
+  /* (gentle on a device: the mockup stays readable through it) */
+  opacity: min(0.55, calc(var(--rw) * 0.7));
 }
 /* scanlines that read on white, the grain over them */
 .rws .rwa-fx::before {
@@ -1472,4 +1473,8 @@
 }
 .sl-pile-strip {
   fill: rgb(255 255 255 / 0.12);
+}
+/* (the band's tape keeps its full overlay: it is only light scanlines and a bright band there) */
+.rws.is-band .rws-in.is-rw .rwa-fx {
+  opacity: min(1, calc(var(--rw) * 1.2));
 }

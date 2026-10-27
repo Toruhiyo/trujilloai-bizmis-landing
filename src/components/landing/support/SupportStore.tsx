@@ -60,7 +60,7 @@ export const supportCase = (cases: Cases, key: CaseKey) => {
 export type SupportCase = ReturnType<typeof supportCase>;
 
 /** The product page behind the widget: a big product tile, its lines, the add-to-cart. */
-const Page = () => (
+const Page = ({ addToCart }: { addToCart: string }) => (
     <div aria-hidden="true" className="absolute inset-0">
       <div className="flex h-[64px] items-center gap-4 border-b border-[#f3ece4] px-10">
         <span className="h-7 w-7 rounded-lg bg-[#e6dccf]" />
@@ -87,7 +87,9 @@ const Page = () => (
           <div className="bzl-tile-line w-11/12" />
           <div className="bzl-tile-line w-3/4" />
         </div>
-        <div className="!mt-7 h-11 rounded-xl bg-[color-mix(in_oklab,var(--bzl-fg)_85%,transparent)]" />
+        <div className="!mt-7 grid h-11 place-items-center rounded-xl bg-[hsl(var(--primary))] text-[15px] font-semibold text-white">
+          {addToCart}
+        </div>
       </div>
     </div>
   );
@@ -130,7 +132,7 @@ const SupportStore = ({
   return (
     <div className={cn("bzs-device", className)}>
       <BrowserFrame url={STORE_URL}>
-        <Page />
+        <Page addToCart={m.landing.sales.cart.add} />
         {/* the agent's words, as the widget's captions at the page's foot */}
         {caption && <div className="absolute bottom-6 left-0 flex w-[820px] justify-center px-6">{caption}</div>}
         <div className="bzs-widget absolute bottom-6 right-6 z-10">
