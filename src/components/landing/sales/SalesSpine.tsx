@@ -8,7 +8,8 @@ import { arrange, arrangeOpener } from "./arrange";
 import type { EndsLook } from "./beatcopy/style";
 import FunnelFlow, { funnelAnchors } from "./funnel/FunnelFlow";
 import FunnelScale from "./funnel/FunnelScale";
-import { cardKsAt, ksAt, startsFor } from "./funnel/model";
+import { cardKsAt, ksAt, salesAt, startsFor } from "./funnel/model";
+import SalesJar from "./funnel/SalesJar";
 import { useActivePanel, useMedia, usePinProgress, useRewinding, useScrollPlay, useScrollThrough } from "./hooks";
 import Metrics from "./Metrics";
 import RewindScreen, { ScreenTape } from "./RewindScreen";
@@ -311,10 +312,11 @@ const Pinned = () => {
   // ?beat=9a..9c (9a the default): the opener alone, the funnel's label ending its sentence
   const opener = openerLook(look);
   const { win } = useSalesProto();
-  // ?card=1..4: the payoff's metric card, or an alternative to it (Metrics 7..9: bars, weeks, dials) to pick from
+  // the payoff's win: the film's Sales column filling up (default); ?card=1..4 the metric card or an
+  // alternative to it (Metrics 4, 7..9: card, bars, weeks, dials) to compare
   const [cardLook] = useState(() => {
     const q = typeof window === "undefined" ? null : new URLSearchParams(window.location.search).get("card");
-    return ({ "2": 7, "3": 8, "4": 9 } as Record<string, number>)[q ?? ""] ?? 4;
+    return ({ "1": 4, "2": 7, "3": 8, "4": 9 } as Record<string, number>)[q ?? ""] ?? 0;
   });
   const tls = useBeatTimelines();
   const [track, progress] = usePinProgress<HTMLDivElement>();
@@ -354,6 +356,24 @@ const Pinned = () => {
   // the arrangement's funnel in the beats; in the payoff too where it keeps it (9b), else the payoff's own
   const L = A && (!payoff || A.payoff) ? { ...L0, fnW: A.fnW, fnH: A.fnH, fnLeft: A.fnLeft, fnTop: A.fnTop } : L0;
   const card = A?.payoff?.card ?? L0.card;
+  // the Sales column: in the card's column, tall (most of the stage, never all of it), level with the
+  // funnel's bag; where the card sits under the funnel (phones), a wide bar filling sideways
+  const bag = useMemo(() => {
+    const b = funnelAnchors(L.fnW, L.fnH, [1, 1, 1], visits).bag;
+    return { x: L.fnLeft + b.x, y: L.fnTop + b.y };
+  }, [L.fnW, L.fnH, L.fnLeft, L.fnTop, visits]);
+  const jar = useMemo(() => {
+    const cl = typeof card.left === "number" ? card.left : 0;
+    const ct = typeof card.top === "number" ? card.top : 0;
+    const cw = typeof card.width === "number" ? card.width : 330;
+    if (A?.payoff?.under) {
+      const h = clamp(H * 0.09, 56, 76);
+      return { x: cl, y: ct, w: cw, h };
+    }
+    const h = clamp(H * 0.68, 260, 560);
+    const w = clamp(h * 0.42, 140, 220);
+    return { x: cl + (cw - w) / 2, y: clamp(bag.y - h * 0.55, 12, H - 12 - h), w, h };
+  }, [card.left, card.top, card.width, A, H, bag.y]);
   const links = useMemo(
     () => L0.beats.map((b, i) => A?.beats[i].link ?? { kind: "cone" as const, stage: b.cone.bottom, device: b.cone.top }),
     [L0, A],
@@ -435,10 +455,14 @@ const Pinned = () => {
                   {/* the title alone (no eyebrow, no line under it) */}
                   <PanelCopy title={s.payoff.title} />
                 </div>
-                {/* the payoff's win in the metrics a merchant watches, turning with each fix (direction only) */}
-                <div className={cn("sl-g2-card", payoff && "is-on")} style={{ left: card.left, top: card.top, width: card.width }}>
-                  <Metrics variant={cardLook} k={payoff ? cardKsAt(payT, startsFor(3)) : [0, 0, 0]} focus={3} className="sl-g2-met is-card" />
-                </div>
+                {/* the payoff's win: the Sales column filling up (the film's), or a metric card to compare (?card) */}
+                {cardLook ? (
+                  <div className={cn("sl-g2-card", payoff && "is-on")} style={{ left: card.left, top: card.top, width: card.width }}>
+                    <Metrics variant={cardLook} k={payoff ? cardKsAt(payT, startsFor(3)) : [0, 0, 0]} focus={3} className="sl-g2-met is-card" />
+                  </div>
+                ) : (
+                  <SalesJar k={payoff ? salesAt(payT, startsFor(3), PAYOFF_DURATION) : 0} from={bag} box={jar} label={s.payoff.jar} on={payoff} />
+                )}
                 <div className="sl-fn sl-g2-funnel" style={{ left: L.fnLeft, top: L.fnTop, width: L.fnW, height: L.fnH }}>
                   <FunnelFlow
                     t={clock.t}
