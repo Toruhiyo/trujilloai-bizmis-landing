@@ -35,13 +35,9 @@
     <meta name="apple-mobile-web-app-title" content="Bizmis" />
     <link rel="manifest" href="/site.webmanifest" />
 
-    <!-- Google Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=DM+Sans:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@200;300;400;500;600;700;800&display=swap"
-      rel="stylesheet"
-    />
+    <!-- Fonts: self-hosted (src/styles/fonts.css, public/fonts). Inter's latin
+         file, the text of the landing and the site pages, is fetched at once. -->
+    <link rel="preload" href="/fonts/inter-latin.woff2" as="font" type="font/woff2" crossorigin />
 
     <!-- Google Analytics -->
     <script

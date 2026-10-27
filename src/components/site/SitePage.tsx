@@ -1,5 +1,4 @@
 import type { ReactNode } from "react";
-import { Helmet } from "react-helmet-async";
 import Navbar from "@/components/Navbar";
 import FilmFooter from "@/components/landing/FilmFooter";
 import { cn } from "@/lib/utils";
@@ -21,14 +20,6 @@ const SitePage = ({
   className?: string;
 }) => (
   <div className={cn("bzl-site flex min-h-screen flex-col", className)}>
-    <Helmet>
-      <link rel="preconnect" href="https://fonts.googleapis.com" />
-      <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
-      <link
-        rel="stylesheet"
-        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Caveat:wght@600;700&family=VT323&display=swap"
-      />
-    </Helmet>
     <Navbar />
     <main className="bzl-site-main relative flex-1">
       <div aria-hidden="true" className="bzl-site-glow" />
