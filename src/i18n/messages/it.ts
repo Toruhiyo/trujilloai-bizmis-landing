@@ -147,7 +147,7 @@ export const it: Messages = {
         { title: "I dubbi diventano decisioni", body: "Confronta, consiglia e risponde a ogni dubbio." },
         { title: "I carrelli diventano ordini", body: "Chiarisce gli ultimi dubbi e li accompagna al pagamento." },
       ],
-      payoff: { kicker: "Tutto insieme", title: "Entrano visitatori. Escono acquirenti.", body: "Niente stanchezza. Niente blocchi. Niente esitazioni." },
+      payoff: { kicker: "Tutto insieme", title: "Entrano visitatori. Escono acquirenti.", body: "Niente stanchezza. Niente blocchi. Niente esitazioni.", jar: "Vendite" },
       findQuery: "Un regalo per mia sorella, sotto i 50 €",
       findCaption: "Eccone tre che adorerà.",
       compareQuery: "Quale prendo?",
@@ -214,7 +214,7 @@ export const it: Messages = {
       },
       options: {
         sky: { label: "Le domande dei clienti arrivano giorno e notte; ricevono risposta a voce prima della casella assistenza, che resta libera", problem: "La casella trabocca", solution: "Casella libera, giorno e notte" },
-        clock: { label: "Le domande a ogni ora si accumulano di notte come ticket; con una risposta a voce lungo la strada, la casella resta libera giorno e notte", problem: "I ticket si accumulano di notte", solution: "Niente in coda, né di giorno né di notte" },
+        clock: { label: "Le domande a ogni ora si accumulano come ticket; quando l'agente risponde a voce lungo la strada, nella casella arrivano solo le poche che servono al commerciante", problem: "Le domande si accumulano", solution: "Solo quelle che hanno bisogno di te" },
         morning: { label: "Domande tutta la notte, con risposta a voce appena arrivano: il commerciante si sveglia con la casella vuota", problem: "Domande tutta la notte", solution: "Ti svegli con la casella vuota" },
       },
     },
@@ -229,7 +229,11 @@ export const it: Messages = {
         topAsk: "Domanda n.1: spedizioni",
       },
       options: {
-        why: { label: "Tante sessioni finite senza acquisto, esaminate in un colpo: emerge cosa mancava", problem: "Perché non comprano?", solution: "Manca: guida alle taglie" },
+        why: {
+          label: "Tante sessioni finite senza acquisto, esaminate in un colpo: emerge cosa mancava",
+          problem: "Perché non comprano?",
+          reasons: ["Manca: guida alle taglie", "Mancano: costi di spedizione", "Mancano: tempi di consegna", "Manca: politica di reso"],
+        },
         carts: { label: "Una settimana di carrelli abbandonati, esaminata giorno per giorno, si riduce a un motivo", problem: "Carrelli abbandonati tutta la settimana", solution: "Il motivo: le taglie" },
         week: { label: "Una settimana di conversazioni, ordinata in un'unica immagine di cosa vogliono i clienti", problem: "Troppe da leggere", solution: "Cosa vogliono i clienti" },
       },

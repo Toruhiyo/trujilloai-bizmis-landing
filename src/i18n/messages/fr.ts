@@ -147,7 +147,7 @@ export const fr: Messages = {
         { title: "Les doutes deviennent des décisions", body: "Il compare, conseille et répond à chaque doute." },
         { title: "Les paniers deviennent des commandes", body: "Il lève les dernières questions et les guide jusqu'au paiement." },
       ],
-      payoff: { kicker: "Au total", title: "Des visiteurs entrent. Des acheteurs sortent.", body: "Sans lassitude. Sans blocage. Sans hésitation." },
+      payoff: { kicker: "Au total", title: "Des visiteurs entrent. Des acheteurs sortent.", body: "Sans lassitude. Sans blocage. Sans hésitation.", jar: "Ventes" },
       findQuery: "Un cadeau pour ma sœur, moins de 50 €",
       findCaption: "En voici trois qu'elle va adorer.",
       compareQuery: "Lequel je prends ?",
@@ -214,7 +214,7 @@ export const fr: Messages = {
       },
       options: {
         sky: { label: "Les questions des clients arrivent jour et nuit ; elles reçoivent une réponse à voix haute avant la boîte du support, qui reste dégagée", problem: "La boîte déborde", solution: "Boîte dégagée, jour et nuit" },
-        clock: { label: "Les questions à toute heure s'empilent la nuit en tickets ; avec une réponse à voix haute en chemin, la boîte reste dégagée jour et nuit", problem: "Les tickets s'empilent la nuit", solution: "Rien ne s'empile, ni jour ni nuit" },
+        clock: { label: "Les questions à toute heure s'empilent en tickets ; quand l'agent y répond à voix haute en chemin, seules celles qui ont besoin du marchand arrivent dans la boîte", problem: "Les questions s'empilent", solution: "Juste celles qui ont besoin de vous" },
         morning: { label: "Des questions toute la nuit, avec une réponse à voix haute dès qu'elles arrivent : le marchand se réveille avec une boîte vide", problem: "Des questions toute la nuit", solution: "Réveil avec une boîte vide" },
       },
     },
@@ -229,7 +229,11 @@ export const fr: Messages = {
         topAsk: "Question n°1 : la livraison",
       },
       options: {
-        why: { label: "Beaucoup de sessions terminées sans achat, examinées d'un coup : ce qui manquait apparaît", problem: "Pourquoi pas d'achat ?", solution: "Manque : guide des tailles" },
+        why: {
+          label: "Beaucoup de sessions terminées sans achat, examinées d'un coup : ce qui manquait apparaît",
+          problem: "Pourquoi pas d'achat ?",
+          reasons: ["Manque : guide des tailles", "Manque : frais de livraison", "Manque : délai de livraison", "Manque : politique de retour"],
+        },
         carts: { label: "Une semaine de paniers abandonnés, examinée jour après jour, se résume à une raison", problem: "Paniers abandonnés toute la semaine", solution: "La raison : les tailles" },
         week: { label: "Une semaine de conversations, triée en une seule image de ce que veulent les clients", problem: "Trop pour tout lire", solution: "Ce que veulent vos clients" },
       },

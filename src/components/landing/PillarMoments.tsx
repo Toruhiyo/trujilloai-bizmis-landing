@@ -137,9 +137,13 @@ export const useProbeWidths = (key: string) => {
       setW(Array.from(g.querySelectorAll("text"), (el) => el.getComputedTextLength()));
     };
     measure();
+    // again once the marker font is in (whichever face the page's look writes in)
     document.fonts?.load("700 24px Caveat").then(measure).catch(() => undefined);
+    document.fonts?.ready.then(measure).catch(() => undefined);
+    document.fonts?.addEventListener?.("loadingdone", measure);
     return () => {
       live = false;
+      document.fonts?.removeEventListener?.("loadingdone", measure);
     };
   }, [key]);
   return [w, probes] as const;

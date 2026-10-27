@@ -37,7 +37,7 @@ const StackedChart = ({ pin, lead, option }: { pin: PinState; lead: string; opti
         <p className="bzl-lead max-w-md">{lead}</p>
       </Reveal>
       <Reveal delay={80} className="bzi-chart">
-        <InsightsDrawing option={option} className="bzi-clarity mx-auto" t={scene.t} rewinding={scene.rewinding} />
+        <InsightsDrawing option={option} className="bzi-clarity mx-auto" t={scene.t} replay={scene.replay} rewinding={scene.rewinding} />
       </Reveal>
     </div>
   );
@@ -47,7 +47,7 @@ const InsightsBody = ({ pin }: { pin: PinState }) => {
   const ins = useMessages().landing.insights;
   const scene = useScenePlay(pin, CLARITY_MS);
   const tall = useMedia(SUB_PIN);
-  // the drawing Oriol is picking (?insights=1|2|3; none: today's)
+  // the drawing: none, the one Oriol picked (Why, a new reason each replay); ?insights=1|2|3 the options, "old" the one before
   const option = useDrawOption("insights");
   if (!pin.pinned && tall)
     return (
@@ -73,6 +73,7 @@ const InsightsBody = ({ pin }: { pin: PinState }) => {
             option={option}
             className="bzi-clarity"
             t={pin.pinned ? scene.t : undefined}
+            replay={pin.pinned ? scene.replay : undefined}
             rewinding={scene.rewinding}
           />
         </Reveal>

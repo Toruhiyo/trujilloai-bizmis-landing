@@ -109,7 +109,7 @@ const SupportBody = ({ pin }: { pin: PinState }) => {
   const rewinding = useRewindingOn(t, active);
   const c = cases[useReplays(t, duration) % cases.length];
   const day = supportDayTimes(c.speakAt, c.duration);
-  // the drawing Oriol is picking (?support=1|2|3; none: today's)
+  // the drawing: none, the one Oriol picked (the clock); ?support=1|2|3 the options, "old" the one before
   const option = useDrawOption("support");
   return (
     <div className="bzl-wrap">

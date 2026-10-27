@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useId, useRef } from "react";
 import type { ReactNode } from "react";
 import { useMessages } from "@/i18n/LocaleProvider";
 import { cn } from "@/lib/utils";
@@ -29,23 +29,25 @@ import {
 import type { DrawOption } from "./drawOptions";
 
 /**
- * Customer Support's drawing options (?support=1|2|3), for Oriol to pick
- * from; 0 is the drawing the page ships (PillarMoments' SupportDay). All
- * three tell ONE benefit to the merchant at scale: the support inbox stays
- * clear, day and night. Questions keep coming round the clock; until the fix
+ * Customer Support's drawings: the clock (2) by default, the other options
+ * by ?support=1|3, the one shipped before them (PillarMoments' SupportDay)
+ * by ?support=old. All
+ * three tell ONE benefit to the merchant at scale: the support inbox kept
+ * light round the clock. Questions keep coming round the clock; until the fix
  * (`fixAt`, as the device starts answering) they pile up in the inbox as
- * tickets; then Bizmis' voice (a round voice button with a waveform, as on
- * the widget; no figure drawn) answers the backlog and every new question
- * before it gets there. In the Sales funnel's marker, all in the band's
+ * tickets; then the agent (the Support mockup's, its head in a marker ring)
+ * answers the backlog and every new question before it gets there, out loud. In the Sales funnel's marker, all in the band's
  * marker ink (the Bizmis primary). The label: the loss written, struck at
  * the fix, then the win written and ticked. Every frame comes from `t`, so
  * the scroll's rewind runs it backwards.
  *
  * 1 Sky: a sun and a moon going over the inbox, day, night, day, night; the
  *   voice a dome over the inbox that catches the questions as they come.
- * 2 Clock: a day-and-night clock (a sun and a moon on its dial, the one it's
- *   in showing over it) sending questions to the inbox; the voice on their
- *   way answers them.
+ * 2 Clock (the default, also with no parameter): a clock, its hands racing
+ *   round the hours, sending questions to the inbox, piling far over it; the
+ *   agent lands on their way and answers them, the pile answered down to the
+ *   few that need the merchant (they stay: the claim is honest). "Questions
+ *   pile up" struck, "Only the few that need you".
  * 3 Morning: one night of questions under the moon; the voice a wave over the
  *   inbox; the sun comes up on it empty.
  */
@@ -66,19 +68,25 @@ const stampAt = (t: number, at: number) => {
   return { q, s, sq };
 };
 
-/** Bizmis' voice: a round button with a waveform in it, stamped on at `at`; its bars dance while it talks (0 → 1). */
-const VoiceMark = ({ x, y, r = 22, t, at, talk = 0 }: { x: number; y: number; r?: number; t: number; at: number; talk?: number }) => {
+/** The agent: the Support mockup's own (yusuke), its head render in a round crop ringed in marker, as the funnel's agent badges. */
+const AGENT_HEAD = "/landing/heads/yusuke.png";
+
+/** The agent's head, stamped on at `at`; it nods along while it talks (0 → 1). */
+const AgentHead = ({ x, y, r = 24, t, at, talk = 0 }: { x: number; y: number; r?: number; t: number; at: number; talk?: number }) => {
+  const clip = `${useId().replace(/:/g, "")}-head`;
   const { q, s, sq } = stampAt(t, at);
   if (s <= 0) return null;
+  const nod = talk * Math.sin(t / 110) * 4;
   return (
-    <g opacity={f(clamp01(q * 3))} transform={`translate(${f(x)} ${f(y)}) scale(${f(s * (1 + sq))} ${f(s * (1 - sq))})`}>
-      <path className="mk-main mk-white" d={loop(0, 0, r, 5)} />
-      {[-2, -1, 0, 1, 2].map((j) => {
-        const rest = [0.35, 0.6, 0.85, 0.6, 0.35][j + 2];
-        const h = r * (0.28 + 0.34 * rest + 0.3 * talk * Math.abs(Math.sin(t / 85 + j * 1.3)));
-        const bx = j * r * 0.3;
-        return <path key={j} className="mk-thin" d={`M${f(bx)} ${f(-h / 2)} V${f(h / 2)}`} />;
-      })}
+    <g opacity={f(clamp01(q * 3))} transform={`translate(${f(x)} ${f(y)}) rotate(${f(-4 + nod)}) scale(${f(s * (1 + sq))} ${f(s * (1 - sq))})`}>
+      <defs>
+        <clipPath id={clip}>
+          <circle cx={0} cy={0} r={r - 1} />
+        </clipPath>
+      </defs>
+      <circle cx={0} cy={0} r={r} style={{ fill: "#fbefe3", stroke: "none" }} />
+      <image href={AGENT_HEAD} x={-r} y={-r} width={r * 2} height={r * 2} clipPath={`url(#${clip})`} preserveAspectRatio="xMidYMid slice" />
+      <path className="mk-main" d={loop(0, 0, r + 2, 5)} />
     </g>
   );
 };
@@ -206,6 +214,8 @@ const Inbox = ({
   drainAt,
   drain,
   to,
+  keep = 0,
+  slot = (k: number) => slotOf(tray, k),
 }: {
   tray: Tray;
   t: number;
@@ -216,9 +226,12 @@ const Inbox = ({
   drainAt: (i: number) => number;
   drain: number;
   to: readonly number[];
+  /** The bottom tickets that stay: the few that need the merchant. */
+  keep?: number;
+  slot?: (k: number) => { x: number; y: number; tilt: number };
 }) => {
   const drawIn = kept ? 1 : easeOut(span(t, 0, REVEAL));
-  const full = Math.min(4, n - 1);
+  const full = Math.min(Math.max(4, keep + 3), n - 1);
   const strain = span(t, landAt(full), landAt(full) + 200) * (1 - span(t, drainAt(full), drainAt(full) + drain));
   const shake = strain * Math.sin(t / 45) * 1.6;
   const { x: ex, y: ey, w: tw, h: th } = tray;
@@ -242,14 +255,14 @@ const Inbox = ({
       {Array.from({ length: n }, (_, i) => {
         const land = span(t, landAt(i) - 120, landAt(i) + 220);
         if (land <= 0) return null;
-        const s0 = slotOf(tray, i);
-        const d = easeInOut(span(t, drainAt(i), drainAt(i) + drain));
+        const s0 = slot(i);
+        const d = i < keep ? 0 : easeInOut(span(t, drainAt(i), drainAt(i) + drain));
         if (d >= 1) return null;
         const x = mix(s0.x + shake, to[0], d);
         const y = mix(s0.y - 14 * (1 - easeBack(land)), to[1], d) - 24 * hump(d);
         return <Ticket key={i} x={x} y={y} tilt={s0.tilt * (1 - d)} s={Math.min(1, land * 2) * (1 - 0.75 * d)} />;
       })}
-      {Array.from({ length: n }, (_, k) => (
+      {Array.from({ length: n }, (_, k) => k < keep ? null : (
         <Pop key={`d${k}`} x={to[0] + (k % 2 ? 30 : -30)} y={to[1] - 22} k={span(t, drainAt(k) + drain - 40, drainAt(k) + drain + 720)} />
       ))}
     </>
@@ -350,102 +363,124 @@ const SkyDrawing = ({ t, F, W, kept, inbox }: DrawProps) => {
         const pt = (a: number) => `${f(SK_MARK.x + Math.cos(a) * r)} ${f(SK_MARK.y + Math.sin(a) * r)}`;
         return <path key={`o${j}`} className={j === 1 ? "mk-mid" : "mk-thin"} d={`M${pt(Math.PI + 0.12)} A${f(r)} ${f(r)} 0 0 1 ${pt(Math.PI * 2 - 0.12)}`} {...drawn(k)} />;
       })}
-      <VoiceMark x={SK_MARK.x} y={SK_MARK.y} t={t} at={F} talk={talk} />
+      <AgentHead x={SK_MARK.x} y={SK_MARK.y} t={t} at={F} talk={talk} />
       <Sparkle x={SK_TRAY.x - 14} y={SK_TRAY.y - 14} k={span(t, F + W - 300, F + W + 200)} size={8} />
       <Sparkle x={SK_TRAY.x + SK_TRAY.w + 16} y={SK_TRAY.y - 4} k={span(t, F + W - 150, F + W + 350)} size={6} spin={20} />
     </>
   );
 };
 
-/* ── 2 Clock: questions round the clock, day and night; the voice on their way ── */
+/* ── 2 Clock (the default): questions round the clock; the agent on their way ── */
 
-const CL = { x: 98, y: 180, r: 56 };
-const CL_TRAY = { x: 404, y: 200, w: 120, h: 40 };
-const CL_MARK = { x: 290, y: 160 };
-const CL_LOSS = 7;
+const CL = { x: 98, y: 172, r: 58 };
+const CL_TRAY = { x: 404, y: 206, w: 124, h: 38 };
+const CL_HEAD = { x: 282, y: 150 };
+const CL_R = 30;
+const CL_LOSS = 11; // before the agent: every question a ticket, a pile far over the tray
+const CL_KEEP = 2; // the bottom of the pile: the ones that need the merchant, kept
 const CL_WIN = 5;
+const CL_RARE = 2; // after: the one that truly needs the merchant still goes on to the inbox
+/** Ticket `k` on the clock's pile: tall, swaying from side to side the higher it gets. */
+const clSlot = (k: number) => ({
+  x: CL_TRAY.x + CL_TRAY.w / 2 + hand(k, 1) * 6 + Math.sin(k * 1.9) * Math.min(k, 6) * 2.4,
+  y: CL_TRAY.y + CL_TRAY.h - 8 - k * 12,
+  tilt: hand(k, 2) * 3 + Math.sin(k * 2.3) * Math.min(k, 8) * 1.3,
+});
 
 const ClockDrawing = ({ t, F, W, kept, inbox }: DrawProps) => {
   const drawIn = kept ? 1 : easeOut(span(t, 0, REVEAL));
   const FLY = 900;
   const TO = 560;
-  const lossAt = spread(CL_LOSS, 350, Math.max(450, F - FLY - 60));
+  const lossAt = spread(CL_LOSS, 300, Math.max(400, F - FLY - 60));
   const landAt = (i: number) => lossAt(i) + FLY;
-  const DRAIN = 420;
-  const drainAt = (k: number) => F + 360 + (CL_LOSS - 1 - k) * 160;
-  const winAt = spread(CL_WIN, F + 1500, F + W - 600);
-  // the clock, time-lapse: two days before the fix, two and a half after (it ends on a midnight); the top half the day, the bottom half the night
-  const turnsAt = (at: number) => 2 * span(at, 300, F) + 2.5 * span(at, F, F + W);
-  const angAt = (at: number) => turnsAt(at) * Math.PI * 2 - Math.PI / 2;
+  const DRAIN = 400;
+  const drainAt = (k: number) => F + 360 + (CL_LOSS - 1 - k) * 130;
+  const winAt = spread(CL_WIN, F + 1600, F + W - 800);
+  const rareLand = winAt(CL_RARE) + FLY;
+  // the clock, time-lapse: the hour hand round once before the agent and once after, the minute hand racing
+  const hours = span(t, 300, F) + span(t, F, F + W);
+  const hourA = hours * Math.PI * 2 - Math.PI / 2;
+  const minA = hours * 8 * Math.PI * 2 - Math.PI / 2;
   const rimAt = (at: number) => {
-    const a = angAt(at);
+    const a = (span(at, 300, F) + span(at, F, F + W)) * Math.PI * 2 - Math.PI / 2;
     return [CL.x + Math.cos(a) * (CL.r + 6), CL.y + Math.sin(a) * (CL.r + 6)] as const;
   };
-  const ha = angAt(t);
-  // over the clock, the one it's in now (the hand in the bottom half: the night), popping in at each change
-  const halves = turnsAt(t) * 2 + 0.5; // half-turns since the hand last crossed into the day (at nine o'clock)
-  const isNight = Math.floor(halves) % 2 === 1;
-  const swap = Math.min(1, (halves - Math.floor(halves)) * 8);
-  const drains = Array.from({ length: CL_LOSS }, (_, k) => drainAt(k) + DRAIN);
-  const answers = Array.from({ length: CL_WIN }, (_, i) => winAt(i) + TO);
+  const drains = Array.from({ length: CL_LOSS - CL_KEEP }, (_, j) => drainAt(CL_KEEP + j) + DRAIN);
+  const answers = Array.from({ length: CL_WIN }, (_, i) => i).filter((i) => i !== CL_RARE).map((i) => winAt(i) + TO);
   const talk = talking(t, [...drains, ...answers]);
+  // a question's way: past the agent's spot, on to `end` (u: 0 → 1, 0.5 at the agent)
   const route = (sx: number, sy: number, end: readonly number[], u: number) => {
-    const c1 = [(sx + CL_MARK.x) / 2, Math.min(sy, CL_MARK.y) - 52];
-    if (u <= 0.5) return quad([sx, sy], c1, [CL_MARK.x, CL_MARK.y], u * 2);
-    const c2 = [CL_MARK.x + (CL_MARK.x - c1[0]) * 0.55, CL_MARK.y + (CL_MARK.y - c1[1]) * 0.55];
-    return quad([CL_MARK.x, CL_MARK.y], c2, end, (u - 0.5) * 2);
+    const c1 = [(sx + CL_HEAD.x) / 2, Math.min(sy, CL_HEAD.y) - 52];
+    if (u <= 0.5) return quad([sx, sy], c1, [CL_HEAD.x, CL_HEAD.y], u * 2);
+    const c2 = [CL_HEAD.x + (CL_HEAD.x - c1[0]) * 0.55, CL_HEAD.y + (CL_HEAD.y - c1[1]) * 0.55];
+    return quad([CL_HEAD.x, CL_HEAD.y], c2, end, (u - 0.5) * 2);
   };
-  const hit = [CL_MARK.x - 36, CL_MARK.y - 8] as const;
+  const hit = [CL_HEAD.x - CL_R - 16, CL_HEAD.y - 10] as const;
+  const rare = clSlot(CL_KEEP);
+  const rareIn = span(t, rareLand - 120, rareLand + 220);
   return (
     <>
-      {/* the clock: a sun on its top half, a moon on its bottom, the hand turning through both */}
+      {/* the clock, its hands racing round the hours */}
       <path className="mk-main" d={loop(CL.x, CL.y, CL.r, 4)} {...drawn(drawIn)} />
-      <path
-        className="mk-thin"
-        d={`M${CL.x - CL.r + 10} ${CL.y} H${CL.x - 12} M${CL.x + 12} ${CL.y} H${CL.x + CL.r - 10}`}
-        opacity={f(drawIn * 0.7)}
-        style={{ strokeDasharray: "4 7" }}
-      />
-      <g opacity={f(drawIn)} transform={`translate(${CL.x} ${CL.y - 30}) scale(0.5)`}>
-        <Sun t={t} />
-      </g>
-      <g opacity={f(drawIn)} transform={`translate(${CL.x} ${CL.y + 30})`}>
-        <Moon s={0.58} />
-      </g>
-      <path className="mk-main" opacity={f(drawIn)} d={`M${CL.x} ${CL.y} L${f(CL.x + Math.cos(ha) * (CL.r - 16))} ${f(CL.y + Math.sin(ha) * (CL.r - 16))}`} />
+      {[0, 1, 2, 3].map((k) => {
+        const a = (k / 4) * Math.PI * 2;
+        return (
+          <path
+            key={k}
+            className="mk-thin"
+            opacity={f(drawIn)}
+            d={`M${f(CL.x + Math.cos(a) * (CL.r - 15))} ${f(CL.y + Math.sin(a) * (CL.r - 15))} L${f(CL.x + Math.cos(a) * (CL.r - 8))} ${f(CL.y + Math.sin(a) * (CL.r - 8))}`}
+          />
+        );
+      })}
+      <path className="mk-main" opacity={f(drawIn)} d={`M${CL.x} ${CL.y} L${f(CL.x + Math.cos(hourA) * (CL.r - 30))} ${f(CL.y + Math.sin(hourA) * (CL.r - 30))}`} />
+      <path className="mk-mid" opacity={f(drawIn)} d={`M${CL.x} ${CL.y} L${f(CL.x + Math.cos(minA) * (CL.r - 18))} ${f(CL.y + Math.sin(minA) * (CL.r - 18))}`} />
       <circle className="mk-dot" cx={CL.x} cy={CL.y} r={4.2} opacity={f(drawIn)} />
-      <g opacity={f(drawIn)} transform={`translate(${CL.x} ${CL.y - CL.r - 34}) scale(${f(spring(swap))})`}>
-        {isNight ? <Moon s={0.9} /> : <Sun t={t} />}
-      </g>
 
-      <Inbox tray={CL_TRAY} t={t} kept={kept} inbox={inbox} n={CL_LOSS} landAt={landAt} drainAt={drainAt} drain={DRAIN} to={[CL_MARK.x + 24, CL_MARK.y]} />
+      {/* the inbox: the pile, answered down to the few that need the merchant */}
+      <Inbox
+        tray={CL_TRAY}
+        t={t}
+        kept={kept}
+        inbox={inbox}
+        n={CL_LOSS}
+        landAt={landAt}
+        drainAt={drainAt}
+        drain={DRAIN}
+        to={[CL_HEAD.x + CL_R, CL_HEAD.y]}
+        keep={CL_KEEP}
+        slot={clSlot}
+      />
+      {rareIn > 0 && <Ticket x={rare.x} y={rare.y - 14 * (1 - easeBack(rareIn))} tilt={rare.tilt} s={Math.min(1, rareIn * 2)} />}
 
-      {/* the questions, off the clock at every hour: before, on to the inbox; after, answered at the voice */}
+      {/* the questions, off the clock at every hour: before, on to the inbox; after, answered at the agent (all but the rare one) */}
       {Array.from({ length: CL_LOSS }, (_, i) => {
         const at = lossAt(i);
         if (t < at || t > landAt(i) + 60) return null;
         const [sx, sy] = rimAt(at);
-        const s0 = slotOf(CL_TRAY, i);
+        const s0 = clSlot(i);
         const u = easeInOut(span(t, at + 140, landAt(i)));
         const [x, y] = route(sx, sy, [s0.x, s0.y - 12], u);
         return <Ask key={`a${i}`} x={x} y={y} s={spring(span(t, at, at + 300)) * (1 - easeIn(span(u, 0.82, 1)))} />;
       })}
       {Array.from({ length: CL_WIN }, (_, i) => {
         const at = winAt(i);
-        const end = at + TO;
+        const isRare = i === CL_RARE;
+        const end = at + (isRare ? FLY : TO);
         if (t < at || t > end + 60) return null;
         const [sx, sy] = rimAt(at);
-        const [x, y] = arc(sx, sy, hit, easeInOut(span(t, at + 140, end)), 44);
-        return <Ask key={`w${i}`} x={x} y={y} s={spring(span(t, at, at + 300)) * (1 - easeIn(span(t, end - 140, end)))} />;
+        const [x, y] = isRare
+          ? route(sx, sy, [rare.x, rare.y - 12], easeInOut(span(t, at + 140, end)))
+          : arc(sx, sy, hit, easeInOut(span(t, at + 140, end)), 44);
+        const shrink = isRare ? easeIn(span(t, end - 160, end)) : easeIn(span(t, end - 140, end));
+        return <Ask key={`w${i}`} x={x} y={y} s={spring(span(t, at, at + 300)) * (1 - shrink)} />;
       })}
-      {Array.from({ length: CL_WIN }, (_, i) => (
-        <Pop key={`p${i}`} x={hit[0]} y={hit[1] - 12} k={span(t, winAt(i) + TO - 40, winAt(i) + TO + 720)} />
-      ))}
-      <Voice x={CL_MARK.x} y={CL_MARK.y} r0={30} dir={Math.PI + 0.25} on={voicing(t, answers)} t={t} />
-      <Voice x={CL_MARK.x} y={CL_MARK.y} r0={30} dir={0.35} on={voicing(t, drains)} t={t} />
-      <VoiceMark x={CL_MARK.x} y={CL_MARK.y} t={t} at={F} talk={talk} />
-      <Sparkle x={CL_TRAY.x - 12} y={CL_TRAY.y - 14} k={span(t, F + W - 300, F + W + 200)} size={8} />
-      <Sparkle x={CL_TRAY.x + CL_TRAY.w + 14} y={CL_TRAY.y - 4} k={span(t, F + W - 150, F + W + 350)} size={6} spin={20} />
+      {Array.from({ length: CL_WIN }, (_, i) =>
+        i === CL_RARE ? null : <Pop key={`p${i}`} x={hit[0]} y={hit[1] - 14} k={span(t, winAt(i) + TO - 40, winAt(i) + TO + 720)} />,
+      )}
+      <Voice x={CL_HEAD.x} y={CL_HEAD.y} r0={CL_R + 10} dir={Math.PI + 0.2} on={voicing(t, answers)} t={t} />
+      <Voice x={CL_HEAD.x} y={CL_HEAD.y} r0={CL_R + 10} dir={0.3} on={voicing(t, drains)} t={t} />
+      <AgentHead x={CL_HEAD.x} y={CL_HEAD.y} r={CL_R} t={t} at={F} talk={talk} />
     </>
   );
 };
@@ -542,14 +577,15 @@ const MorningDrawing = ({ t, F, W, kept, inbox }: DrawProps) => {
 
       {/* the voice: a wave over the inbox, from its button */}
       {wave > 0 && <path className="mk-mid" d={wavePath()} {...drawn(wave)} />}
-      <VoiceMark x={MO_MARK.x} y={MO_MARK.y} t={t} at={F} talk={talk} />
+      <AgentHead x={MO_MARK.x} y={MO_MARK.y} t={t} at={F} talk={talk} />
       <Sparkle x={MO_TRAY.x - 14} y={MO_TRAY.y - 12} k={span(t, F + W - 250, F + W + 250)} size={8} />
       <Sparkle x={MO_TRAY.x + MO_TRAY.w + 16} y={MO_TRAY.y - 2} k={span(t, F + W - 100, F + W + 400)} size={6} spin={20} />
     </>
   );
 };
 
-const DRAWINGS: Record<Exclude<DrawOption, 0>, { key: "sky" | "clock" | "morning"; Drawing: (p: DrawProps) => ReactNode }> = {
+const DRAWINGS: Record<Exclude<DrawOption, "old">, { key: "sky" | "clock" | "morning"; Drawing: (p: DrawProps) => ReactNode }> = {
+  default: { key: "clock", Drawing: ClockDrawing },
   1: { key: "sky", Drawing: SkyDrawing },
   2: { key: "clock", Drawing: ClockDrawing },
   3: { key: "morning", Drawing: MorningDrawing },
@@ -558,7 +594,8 @@ const DRAWINGS: Record<Exclude<DrawOption, 0>, { key: "sky" | "clock" | "morning
 /**
  * Customer Support's drawing on its section's clock (`t` ms along the
  * scene, the fix at `fixAt`, its "after" `win` long, as SupportDay's), the
- * option picked by ?support= (0: SupportDay). ◀◀ while it rewinds.
+ * option picked by ?support= (none: the clock; "old": SupportDay). ◀◀ while
+ * it rewinds.
  */
 export const SupportDrawing = ({
   option,
@@ -579,8 +616,9 @@ export const SupportDrawing = ({
   // drawn in once; from then on the scenery stays, so a replay never starts blank
   const played = useRef(false);
   if (t >= REVEAL) played.current = true;
-  if (option === 0) return <SupportDay className={className} t={t} fixAt={fixAt} win={win} rewinding={rewinding} />;
-  const { key, Drawing } = DRAWINGS[option];
+  if (option === "old") return <SupportDay className={className} t={t} fixAt={fixAt} win={win} rewinding={rewinding} />;
+  // (guarded: an unknown option falls back to the default drawing)
+  const { key, Drawing } = DRAWINGS[option] ?? DRAWINGS.default;
   const copy = support.options[key];
   return (
     <div role="img" aria-label={copy.label} className={cn("bzl-day bzl-mk", className)}>

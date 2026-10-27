@@ -27,8 +27,9 @@ import {
 import type { DrawOption } from "./drawOptions";
 
 /**
- * Store Insights' drawing options (?insights=1|2|3), for Oriol to pick
- * from; 0 is the drawing the page ships (PillarMoments' InsightsClarity).
+ * Store Insights' drawings: Why (1) by default, a different reason found
+ * each replay; the other options by ?insights=2|3, the one shipped before
+ * them (PillarMoments' InsightsClarity) by ?insights=old.
  * Each one is ONE insight for the merchant, in the Sales funnel's marker
  * (the band's marker ink, the Bizmis primary), no boxed tags: a loss
  * written, struck at the turn (FIX_AT), then the win written and ticked. As
@@ -51,6 +52,8 @@ const CH = 240;
 const FIX_AT = 2300; // the turn: the loss struck, the insight coming in
 
 type Copy = { label: string; problem: string; solution: string };
+/** A drawing's frame: `t` along CLARITY_MS, whether it has drawn in once, and how many times it has replayed. */
+type Props = { t: number; kept: boolean; replay: number };
 
 /** The label: the loss, struck at the turn, then the win, fitted to the drawing's width. */
 const Label = ({ t, copy }: { t: number; copy: Copy }) => {
@@ -138,7 +141,51 @@ const Magnifier = ({ x, y, r, k, handle }: { x: number; y: number; r: number; k:
   </>
 );
 
-const WhyDrawing = ({ t }: { t: number }) => {
+/**
+ * The reasons the lens finds, one a replay, in the order of
+ * landing.insights.options.why.reasons: the size guide (a ruler), the
+ * shipping cost (a truck), the delivery time (a calendar), the returns
+ * policy (a return arrow). Each pops in as `k` goes 0 → 1.
+ */
+export const REASONS = 4;
+const Reason = ({ c, k }: { c: number; k: number }) => {
+  if (k <= 0) return null;
+  if (c === 0) return <Ruler k={k} />;
+  const s = spring(k);
+  const d = (j: number) => drawn(clamp01(k * 2.2 - j * 0.25));
+  return (
+    <g transform={`rotate(${f(-8 * (1 - s))}) scale(${f(s)})`}>
+      {c === 1 && (
+        <g transform="translate(1 -3)">
+          <path className="mk-mid mk-white" d={rrect(-30, -16, 34, 26, 4, 2)} />
+          <path className="mk-mid mk-white" d="M4 -6 H17 L28 5 V10 H4 Z" />
+          <path className="mk-thin" d="M10 -1 H16 L21 4" {...d(1)} />
+          <circle className="mk-mid mk-white" cx={-18} cy={14} r={5.5} />
+          <circle className="mk-mid mk-white" cx={16} cy={14} r={5.5} />
+        </g>
+      )}
+      {c === 2 && (
+        <g transform="translate(0 1)">
+          <path className="mk-mid mk-white" d={rrect(-24, -20, 48, 42, 6, 4)} />
+          <path className="mk-thin" d="M-24 -8 H24" {...d(1)} />
+          <path className="mk-mid" d="M-12 -26 V-14 M12 -26 V-14" />
+          {[-12, 0, 12].flatMap((x, i) =>
+            [2, 13].map((y, j) => <circle key={`${i}${j}`} className="mk-dot" cx={x} cy={y} r={2.3} opacity={f(clamp01(k * 3 - i * 0.3 - j * 0.2))} />),
+          )}
+          <path className="mk-thin" d={loop(12, 13, 7, 2)} {...d(3)} />
+        </g>
+      )}
+      {c === 3 && (
+        <g transform="translate(2 -8)">
+          <path className="mk-main" d="M-20 -8 H6 A15 15 0 0 1 6 22 H-10" {...d(0)} />
+          <path className="mk-main" d="M-2 14 L-10 22 L-2 30" {...d(2)} />
+        </g>
+      )}
+    </g>
+  );
+};
+
+const WhyDrawing = ({ t, replay }: Props) => {
   const lens = easeOut(span(t, 1250, 1650));
   const handle = easeOut(span(t, 1550, 1750));
   const found = span(t, FIX_AT + 120, FIX_AT + 620);
@@ -162,10 +209,10 @@ const WhyDrawing = ({ t }: { t: number }) => {
           </g>
         );
       })}
-      {/* looked into at once: a magnifier; what was missing, lit up in its lens */}
+      {/* looked into at once: a magnifier; what was missing (this replay's reason), lit up in its lens */}
       <Magnifier x={lx} y={ly} r={lr} k={lens} handle={handle} />
       <g transform={`translate(${lx} ${ly})`}>
-        <Ruler k={found} />
+        <Reason c={replay % REASONS} k={found} />
       </g>
       <LensRays x={lx} y={ly} r={lr} k={rays} />
       <Sparkle x={lx + lr + 30} y={ly - lr + 6} k={span(t, FIX_AT + 1500, FIX_AT + 1850)} size={8} />
@@ -184,7 +231,7 @@ const CA_SWEEP = [1450, FIX_AT - 120]; // the magnifier running along the week
 const CA_LENS = { y: 146, r: 34 };
 const CA_END = { x: 240, y: 136, r: 50 };
 
-const CartsDrawing = ({ t, kept }: { t: number; kept: boolean }) => {
+const CartsDrawing = ({ t, kept }: Props) => {
   const base = kept ? 1 : easeOut(span(t, 0, 500));
   const lens = easeOut(span(t, 1150, 1500));
   const handle = easeOut(span(t, 1400, 1600));
@@ -272,7 +319,7 @@ const Want = ({ c }: { c: number }) =>
     </g>
   );
 
-const WeekDrawing = ({ t, kept }: { t: number; kept: boolean }) => {
+const WeekDrawing = ({ t, kept }: Props) => {
   const base = kept ? 1 : easeOut(span(t, 0, 500));
   const circle = easeOut(span(t, FIX_AT + 1000, FIX_AT + 1450));
   const flyOf = (n: number) => easeInOut(span(t, FIX_AT - 80 + n * 15, FIX_AT + 420 + n * 15));
@@ -330,42 +377,47 @@ const WeekDrawing = ({ t, kept }: { t: number; kept: boolean }) => {
   );
 };
 
-type Props = { t: number; kept: boolean };
-const DRAWINGS: Record<Exclude<DrawOption, 0>, { key: "why" | "carts" | "week"; Drawing: (p: Props) => ReactNode }> = {
+const DRAWINGS: Record<Exclude<DrawOption, "old">, { key: "why" | "carts" | "week"; Drawing: (p: Props) => ReactNode }> = {
+  default: { key: "why", Drawing: WhyDrawing },
   1: { key: "why", Drawing: WhyDrawing },
   2: { key: "carts", Drawing: CartsDrawing },
   3: { key: "week", Drawing: WeekDrawing },
 };
 
 /**
- * Store Insights' drawing, the option picked by ?insights= (0:
- * InsightsClarity). Given `t` (ms along CLARITY_MS, the pinned section's
- * scroll) it shows that frame; else it runs its own rewind loop.
+ * Store Insights' drawing, the option picked by ?insights= (none: Why, a new
+ * reason each replay; "old": InsightsClarity). Given `t` (ms along
+ * CLARITY_MS, the pinned section's scroll) it shows that frame, `replay` the
+ * times that clock came back round; else it runs its own rewind loop.
  */
 export const InsightsDrawing = ({
   option,
   className,
   t: at,
+  replay,
   rewinding: rewindingAt = false,
 }: {
   option: DrawOption;
   className?: string;
   t?: number;
+  replay?: number;
   rewinding?: boolean;
 }) => {
-  if (option === 0) return <InsightsClarity className={className} t={at} rewinding={rewindingAt} />;
-  return <InsightsOption option={option} className={className} t={at} rewinding={rewindingAt} />;
+  if (option === "old") return <InsightsClarity className={className} t={at} rewinding={rewindingAt} />;
+  return <InsightsOption option={option} className={className} t={at} replay={replay} rewinding={rewindingAt} />;
 };
 
 const InsightsOption = ({
   option,
   className,
   t: at,
+  replay: replayAt,
   rewinding: rewindingAt,
 }: {
-  option: Exclude<DrawOption, 0>;
+  option: Exclude<DrawOption, "old">;
   className?: string;
   t?: number;
+  replay?: number;
   rewinding: boolean;
 }) => {
   const options = useMessages().landing.insights.options;
@@ -381,15 +433,19 @@ const InsightsOption = ({
   });
   const t = at ?? own.t;
   const rewinding = at !== undefined ? rewindingAt : own.rewinding;
+  const replay = Math.max(0, at !== undefined ? (replayAt ?? 0) : own.cycle - 1);
   // drawn in once; from then on the scenery stays, so a replay never starts blank
   const played = useRef(false);
   if (t >= 600) played.current = true;
-  const { key, Drawing } = DRAWINGS[option];
-  const copy = options[key];
+  // (guarded: an unknown option falls back to the default drawing)
+  const { key, Drawing } = DRAWINGS[option] ?? DRAWINGS[1];
+  const why = options.why;
+  const copy: Copy =
+    key === "why" ? { label: why.label, problem: why.problem, solution: why.reasons[replay % why.reasons.length] } : options[key];
   return (
     <div ref={ref} role="img" aria-label={copy.label} className={cn("bzl-clarity bzl-mk", className)}>
       <svg viewBox={`0 0 ${CW} ${CH}`} aria-hidden="true">
-        <Drawing t={t} kept={played.current} />
+        <Drawing t={t} kept={played.current} replay={replay} />
         <Label t={t} copy={copy} />
       </svg>
       <RewindMark on={rewinding} />
