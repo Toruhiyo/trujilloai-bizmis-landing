@@ -586,3 +586,13 @@
   .pi-od .odx-bar-in .odx-num { font-size: 1.15em; }
   .pi-od .odx-bar-in .odx-icon { width: 1.3em; }
 }
+
+/* Store Insights' pinned screen clips only sideways: the device's soft shadow runs on past the
+   screen's bottom, over the seam into Setup, instead of being cut flat there (the section stands
+   over Setup's ground for it; nothing of Setup reaches up into it) */
+.p-insights .bzp.is-pinned .bzp-pin {
+  overflow: clip visible;
+}
+.bzp-section.p-insights:has(> .bzp.is-pinned) {
+  z-index: 2;
+}

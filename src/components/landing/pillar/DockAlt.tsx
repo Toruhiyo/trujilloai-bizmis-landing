@@ -10,10 +10,10 @@ import type { AltStyle } from "./OpenerContext";
  * form (the same pieces, `data-pm` twins, set the same way), morphed by
  * pillar/useDockMorph like a, b and c. pillar-docks.css.
  *
- *   d  Pill     no bar. The opener's eyebrow is a pill ([icon] area); docked,
- *               the opener has shrunk into a floating pill on the content's
- *               left edge: [icon] name | the current part (Sales) or the
- *               outcome. Its ground draws open from the icon as it docks.
+ *   d  Pill     (the default) no bar. The opener's eyebrow is a pill ([icon] area); docked,
+ *               the opener has shrunk into a floating pill centred under the
+ *               nav: [icon] name | the current part (Sales) or the
+ *               outcome. Its ground draws open from its middle as it docks.
  *   e  Tabs     a segmented control of the page's three pillars, the one
  *               you're in filled. Over the opener it's the eyebrow (numbers,
  *               the area in the filled one, its fill drawing in as the opener

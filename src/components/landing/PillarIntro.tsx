@@ -69,8 +69,8 @@ import { useDockMorph } from "./pillar/useDockMorph";
  *   its wrap (.pi-bigwrap) through the hold and the run, so the compositor
  *   keeps it still (no JS chasing the scroll).
  * - ?dock=d|e|f (pillar/DockAlt, pillar-docks.css): other ideas of the docked
- *   thing on the same morph and hold: d a floating pill on the content's
- *   left edge, e a segmented control of the page's three pillars (the one
+ *   thing on the same morph and hold: d (the page's default) a floating pill
+ *   centred under the nav, e a segmented control of the page's three pillars (the one
  *   you're in filled), f a running head in the marker hand with no bar.
  * - The opener designs (?open=1..6, pillar/OpenerContext; the page's default
  *   is 5) are pillar/OpenerDesign: the OUTCOME the hero (`outcome`; by

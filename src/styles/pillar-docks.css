@@ -1,7 +1,7 @@
 /* ═══════════ Dock styles d · e · f (?dock=, pillar/DockAlt.tsx) ═══════════
    Other ideas of what the docked thing is, each one lockup in the opener and
    docked (PillarIntro, pillar/useDockMorph):
-     d  Pill     no bar: a floating pill on the content's left edge
+     d  Pill     no bar: a floating pill centred under the nav (the page's default)
      e  Tabs     a segmented control of the page's three pillars, the one you're in filled
      f  Marker   no bar: a running head written in the marker hand, over a soft fade
    Their grounds come in with the bar's --pm-bar (0 → 1 over the morph), set
@@ -187,12 +187,10 @@
   background: #fff3e7;
 }
 
-/* docked: the pill on the content's left edge (the page's wrap) */
+/* docked: the pill centred under the nav */
 .pi-od .pi-dock.odz-bar-d {
   --odz: clamp(0.95rem, min(1.2vw, 2.3svh), 1.15rem);
-  justify-content: flex-start;
-  max-width: 1400px;
-  margin-inline: auto;
+  justify-content: center;
 }
 .odz-pill {
   position: relative;
@@ -202,7 +200,7 @@
   gap: 0.7em;
   padding: 0.38em 1.15em 0.38em 0.38em;
 }
-/* its ground draws open from the icon as the pieces land */
+/* its ground draws open from its middle as the pieces land */
 .odz-pill::before {
   content: "";
   position: absolute;
@@ -214,7 +212,7 @@
     0 0 0 1px rgb(59 36 22 / 0.07),
     0 12px 30px -18px rgb(59 36 22 / 0.45);
   opacity: var(--odz-g, 1);
-  clip-path: inset(-24px calc((1 - var(--odz-g, 1)) * 100% - var(--odz-g, 1) * 24px) -36px -24px round 999px);
+  clip-path: inset(-24px calc((1 - var(--odz-g, 1)) * 50% - var(--odz-g, 1) * 24px) -36px round 999px);
 }
 .odz-pill-head {
   display: inline-flex;
@@ -504,21 +502,22 @@
   .pi-od .pi-dock.odz-bar-d {
     --odz: 0.95rem;
   }
+  /* (a grid, so the card is as wide as its longer row, not the screen) */
   .odz-pill.is-outcome {
-    flex-wrap: wrap;
+    display: inline-grid;
+    justify-items: center;
     row-gap: 0.3em;
-    padding: 0.4em 1em 0.55em 0.4em;
+    padding: 0.4em 1.1em 0.6em;
   }
   .odz-pill.is-outcome::before {
     border-radius: 1.15em;
-    clip-path: inset(-24px calc((1 - var(--odz-g, 1)) * 100% - var(--odz-g, 1) * 24px) -36px -24px round 1.6em);
+    clip-path: inset(-24px calc((1 - var(--odz-g, 1)) * 50% - var(--odz-g, 1) * 24px) -36px round 1.6em);
   }
   .odz-pill.is-outcome .odz-sep {
     display: none;
   }
   .odz-pill.is-outcome .odz-main {
-    flex-basis: 100%;
-    padding-left: 0.5em;
+    text-align: center;
   }
   /* e: the other tabs by their number only */
   .pi-od .pi-dock.odz-bar-e {
@@ -550,11 +549,14 @@
   font-size: 1.22em;
   letter-spacing: -0.005em;
 }
-/* the docked forms keep their row on phones (the base bar stacks and centres its pieces) */
+/* the docked forms keep their row on phones (the base bar stacks its pieces) */
 @media (max-width: 767px) {
   .pi-od .pi-dock.odz-bar {
     flex-direction: row;
     align-items: center;
+  }
+  .pi-od .pi-dock.odz-bar-d {
+    justify-content: center;
   }
   .pi-od .pi-dock.odz-bar-d {
     --odz: 0.9rem;

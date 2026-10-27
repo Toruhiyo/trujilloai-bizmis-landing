@@ -21,7 +21,7 @@ export const useOpener = () => useContext(OpenerContext);
 export const PillarAreaContext = createContext<string | undefined>(undefined);
 
 /**
- * The opener + morph style (?dock=a|b|c; the page's default is a, ?dock=0
+ * The opener + morph style (?dock=a..f; the page's default is d, ?dock=0
  * the older chapter opener with its pieces flying into the bar). Applies to
  * the opener designs (?open=1..6, the page's default 5):
  *
@@ -42,9 +42,9 @@ export const PillarAreaContext = createContext<string | undefined>(undefined);
  *
  * Three more, other ideas of what the docked thing is (pillar/DockAlt):
  *
- *   d  Pill       no bar: the opener's eyebrow is a pill, and the opener
- *                 shrinks into it, floating on the content's left edge under
- *                 the nav: [icon] name | the current part (Sales) or the outcome
+ *   d  Pill       (the default) no bar: the opener's eyebrow is a pill, and the
+ *                 opener shrinks into it, floating centred under the nav:
+ *                 [icon] name | the current part (Sales) or the outcome
  *   e  Tabs       a segmented control of the page's three pillars, the one
  *                 you're in filled (Sales' tab carrying its current part in
  *                 marker); the opener's eyebrow is the same control, numbers only
@@ -59,9 +59,10 @@ export type DockStyle = "0" | "a" | "b" | "c" | "d" | "e" | "f";
 export type AltStyle = "d" | "e" | "f";
 export const isAlt = (s: string | null): s is AltStyle => s === "d" || s === "e" || s === "f";
 
-const STYLES: readonly string[] = ["0", "b", "c", "d", "e", "f"];
+const STYLES: readonly string[] = ["0", "a", "b", "c", "d", "e", "f"];
 
+/** The page's default is d, the pill (centred under the nav). */
 export const useDockStyle = (): DockStyle => {
   const q = new URLSearchParams(useLocation().search).get("dock");
-  return q && STYLES.includes(q) ? (q as DockStyle) : "a";
+  return q && STYLES.includes(q) ? (q as DockStyle) : "d";
 };
