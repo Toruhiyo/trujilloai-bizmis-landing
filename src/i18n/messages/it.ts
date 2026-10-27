@@ -147,7 +147,7 @@ export const it: Messages = {
         { title: "I dubbi diventano decisioni", body: "Confronta, consiglia e risponde a ogni dubbio." },
         { title: "I carrelli diventano ordini", body: "Chiarisce gli ultimi dubbi e li accompagna al pagamento." },
       ],
-      payoff: { kicker: "Tutto insieme", title: "Entrano visitatori. Escono acquirenti.", body: "Niente stanchezza. Niente blocchi. Niente esitazioni.", jar: "Vendite" },
+      payoff: { kicker: "Tutto insieme", title: "Visite che diventano vendite.", body: "Niente stanchezza. Niente blocchi. Niente esitazioni.", jar: "Vendite" },
       findQuery: "Un regalo per mia sorella, sotto i 50 €",
       findCaption: "Eccone tre che adorerà.",
       compareQuery: "Quale prendo?",
@@ -197,8 +197,8 @@ export const it: Messages = {
       pulse: { currency: "EUR" },
     },
     support: {
-      title: "Meno ticket.",
-      titleTail: "Clienti più felici.",
+      title: "Taglia il carico di supporto.",
+      titleTail: "Giorno e notte.",
       /** The area's full name, the chapter eyebrow over the outcome (the pillar openers, ?open=1..6). */
       area: "Assistenza clienti",
       lead: "Risponde a ogni cliente, giorno e notte, con il calore del tuo miglior commesso.",
@@ -214,7 +214,7 @@ export const it: Messages = {
       },
       options: {
         sky: { label: "Le domande dei clienti arrivano giorno e notte; ricevono risposta a voce prima della casella assistenza, che resta libera", problem: "La casella trabocca", solution: "Casella libera, giorno e notte" },
-        clock: { label: "Le domande a ogni ora si accumulano come ticket; quando l'agente risponde a voce lungo la strada, nella casella arrivano solo le poche che servono al commerciante", problem: "Le domande si accumulano", solution: "Solo quelle che hanno bisogno di te" },
+        clock: { label: "Le domande dei clienti arrivano da ogni parte e si accumulano nella casella assistenza; quando l'agente le prende al volo, la pila smette di crescere", problem: "Le domande si accumulano", solution: "La pila smette di crescere" },
         morning: { label: "Domande tutta la notte, con risposta a voce appena arrivano: il commerciante si sveglia con la casella vuota", problem: "Domande tutta la notte", solution: "Ti svegli con la casella vuota" },
       },
     },
@@ -230,9 +230,9 @@ export const it: Messages = {
       },
       options: {
         why: {
-          label: "Tante sessioni finite senza acquisto, esaminate in un colpo: emerge cosa mancava",
+          label: "Tante sessioni finite senza acquisto, riviste in un colpo: emerge cosa le bloccava",
           problem: "Perché non comprano?",
-          reasons: ["Manca: guida alle taglie", "Mancano: costi di spedizione", "Mancano: tempi di consegna", "Manca: politica di reso"],
+          reasons: ["Un pop-up copre il carrello", "La ricerca non trova nulla", "La spedizione appare troppo tardi", "La pagina è troppo lenta", "Vanno a caccia di coupon"],
         },
         carts: { label: "Una settimana di carrelli abbandonati, esaminata giorno per giorno, si riduce a un motivo", problem: "Carrelli abbandonati tutta la settimana", solution: "Il motivo: le taglie" },
         week: { label: "Una settimana di conversazioni, ordinata in un'unica immagine di cosa vogliono i clienti", problem: "Troppe da leggere", solution: "Cosa vogliono i clienti" },

@@ -147,7 +147,7 @@ export const ca: Messages = {
         { title: "Els dubtes es tornen decisions", body: "Compara, aconsella i respon cada dubte." },
         { title: "Els carretons es tornen comandes", body: "Resol els dubtes d'última hora i els porta a pagar." },
       ],
-      payoff: { kicker: "Tot plegat", title: "Entren visites. Surten compradors.", body: "Sense cansament. Sense bloquejos. Sense dubtes.", jar: "Vendes" },
+      payoff: { kicker: "Tot plegat", title: "Visites convertides en vendes.", body: "Sense cansament. Sense bloquejos. Sense dubtes.", jar: "Vendes" },
       findQuery: "Un regal per a la meva germana, menys de 50 €",
       findCaption: "Aquí en tens tres que li encantaran.",
       compareQuery: "Quin m'emporto?",
@@ -197,8 +197,8 @@ export const ca: Messages = {
       pulse: { currency: "EUR" },
     },
     support: {
-      title: "Menys tiquets.",
-      titleTail: "Clients més feliços.",
+      title: "Retalla la càrrega de suport.",
+      titleTail: "Dia i nit.",
       /** The area's full name, the chapter eyebrow over the outcome (the pillar openers, ?open=1..6). */
       area: "Atenció al client",
       lead: "Atén cada client, de dia o de nit, amb la calidesa del teu millor dependent.",
@@ -214,7 +214,7 @@ export const ca: Messages = {
       },
       options: {
         sky: { label: "Les preguntes dels clients arriben de dia i de nit; es responen en veu alta abans d'arribar a la safata de suport, que queda neta", problem: "La safata es desborda", solution: "Safata neta, de dia i de nit" },
-        clock: { label: "Les preguntes a totes hores s'acumulen com a tiquets; quan l'agent les respon en veu alta pel camí, a la safata només hi arriben les poques que necessiten el botiguer", problem: "Les preguntes s'acumulen", solution: "Només les poques que et necessiten" },
+        clock: { label: "Les preguntes dels clients arriben de tot arreu i s'acumulen a la safata de suport; quan l'agent les atrapa pel camí, la pila deixa de créixer", problem: "Les preguntes s'acumulen", solution: "La pila deixa de créixer" },
         morning: { label: "Preguntes tota la nit, respostes en veu alta quan arriben: el botiguer es desperta amb la safata buida", problem: "Preguntes tota la nit", solution: "Et despertes amb la safata buida" },
       },
     },
@@ -230,9 +230,9 @@ export const ca: Messages = {
       },
       options: {
         why: {
-          label: "Moltes sessions acabades sense compra, revisades de cop: apareix el que faltava",
+          label: "Moltes sessions acabades sense compra, repassades de cop: apareix el que feia nosa",
           problem: "Per què no compren?",
-          reasons: ["Falta: guia de talles", "Falta: cost d'enviament", "Falta: termini de lliurament", "Falta: política de devolucions"],
+          reasons: ["Un pop-up tapa la cistella", "La cerca no troba res", "L'enviament surt massa tard", "La pàgina triga a carregar", "Se'n van a buscar cupons"],
         },
         carts: { label: "Una setmana de cistelles abandonades, revisada dia a dia, es redueix a un motiu", problem: "Cistelles abandonades tota la setmana", solution: "El motiu: les talles" },
         week: { label: "Una setmana de converses ordenada en una imatge del que volen els clients", problem: "Massa per llegir-les", solution: "El que volen els clients" },

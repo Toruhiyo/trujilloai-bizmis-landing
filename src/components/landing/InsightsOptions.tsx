@@ -142,21 +142,40 @@ const Magnifier = ({ x, y, r, k, handle }: { x: number; y: number; r: number; k:
 );
 
 /**
- * The reasons the lens finds, one a replay, in the order of
- * landing.insights.options.why.reasons: the size guide (a ruler), the
- * shipping cost (a truck), the delivery time (a calendar), the returns
- * policy (a return arrow). Each pops in as `k` goes 0 → 1.
+ * What the lens finds got in the way of the sale, as a session replay shows
+ * it: one a replay, in the order of landing.insights.options.why.reasons. A
+ * pop-up over the Add to cart button; a search bar with nothing under it;
+ * the shipping (a truck) showing up too late; a slow page (an hourglass); a
+ * coupon sending them off to hunt for codes. Each pops in as `k` goes 0 → 1.
  */
-export const REASONS = 4;
+export const REASONS = 5;
 const Reason = ({ c, k }: { c: number; k: number }) => {
   if (k <= 0) return null;
-  if (c === 0) return <Ruler k={k} />;
   const s = spring(k);
   const d = (j: number) => drawn(clamp01(k * 2.2 - j * 0.25));
   return (
     <g transform={`rotate(${f(-8 * (1 - s))}) scale(${f(s)})`}>
+      {c === 0 && (
+        <g>
+          {/* the Add to cart button, peeking out from under the pop-up */}
+          <path className="mk-mid mk-white" d={rrect(-20, 12, 40, 14, 7, 3)} />
+          <path className="mk-main mk-white" d={rrect(-28, -26, 50, 40, 5, 6)} />
+          <path className="mk-mid" d="M10 -18 L17 -11 M17 -18 L10 -11" {...d(1)} />
+          <path className="mk-thin" d="M-20 -10 H2 M-20 0 H-4" {...d(2)} />
+        </g>
+      )}
       {c === 1 && (
+        <g>
+          {/* a search bar, and nothing found under it */}
+          <path className="mk-mid mk-white" d={rrect(-32, -22, 64, 20, 10, 2)} />
+          <path className="mk-thin" d={`${loop(-19, -12, 5, 1)} M-15 -8 L-11 -4`} />
+          <path className="mk-thin" d="M-4 -12 H20" {...d(1)} />
+          <path className="mk-thin" d={rrect(-26, 6, 52, 22, 5, 4)} style={{ strokeDasharray: "5 6" }} opacity={f(clamp01(k * 2 - 0.6))} />
+        </g>
+      )}
+      {c === 2 && (
         <g transform="translate(1 -3)">
+          {/* the shipping, a truck, only at the end */}
           <path className="mk-mid mk-white" d={rrect(-30, -16, 34, 26, 4, 2)} />
           <path className="mk-mid mk-white" d="M4 -6 H17 L28 5 V10 H4 Z" />
           <path className="mk-thin" d="M10 -1 H16 L21 4" {...d(1)} />
@@ -164,21 +183,22 @@ const Reason = ({ c, k }: { c: number; k: number }) => {
           <circle className="mk-mid mk-white" cx={16} cy={14} r={5.5} />
         </g>
       )}
-      {c === 2 && (
-        <g transform="translate(0 1)">
-          <path className="mk-mid mk-white" d={rrect(-24, -20, 48, 42, 6, 4)} />
-          <path className="mk-thin" d="M-24 -8 H24" {...d(1)} />
-          <path className="mk-mid" d="M-12 -26 V-14 M12 -26 V-14" />
-          {[-12, 0, 12].flatMap((x, i) =>
-            [2, 13].map((y, j) => <circle key={`${i}${j}`} className="mk-dot" cx={x} cy={y} r={2.3} opacity={f(clamp01(k * 3 - i * 0.3 - j * 0.2))} />),
-          )}
-          <path className="mk-thin" d={loop(12, 13, 7, 2)} {...d(3)} />
+      {c === 3 && (
+        <g>
+          {/* a slow page: an hourglass */}
+          <path className="mk-main" d="M-16 -26 H16 M-16 26 H16" />
+          <path className="mk-mid" d="M-12 -26 C-12 -8 -3 -6 -3 0 C-3 6 -12 8 -12 26 M12 -26 C12 -8 3 -6 3 0 C3 6 12 8 12 26" {...d(0)} />
+          <path className="mk-thin" d="M-7 21 Q0 12 7 21 M0 2 V12" {...d(2)} />
         </g>
       )}
-      {c === 3 && (
-        <g transform="translate(2 -8)">
-          <path className="mk-main" d="M-20 -8 H6 A15 15 0 0 1 6 22 H-10" {...d(0)} />
-          <path className="mk-main" d="M-2 14 L-10 22 L-2 30" {...d(2)} />
+      {c === 4 && (
+        <g>
+          {/* a coupon to hunt for */}
+          <path className="mk-mid mk-white" d="M-30 -16 H30 V-6 A6 6 0 0 0 30 6 V16 H-30 V6 A6 6 0 0 0 -30 -6 Z" />
+          <path className="mk-thin" d="M-12 -12 V12" style={{ strokeDasharray: "4 5" }} />
+          <text className="mk-hand" x={9} y={9} textAnchor="middle" style={{ clipPath: k >= 1 ? undefined : `inset(0 ${f((1 - clamp01(k * 1.5)) * 100)}% 0 0)` }}>
+            %
+          </text>
         </g>
       )}
     </g>

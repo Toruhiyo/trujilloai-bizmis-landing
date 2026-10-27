@@ -147,7 +147,7 @@ export const fr: Messages = {
         { title: "Les doutes deviennent des décisions", body: "Il compare, conseille et répond à chaque doute." },
         { title: "Les paniers deviennent des commandes", body: "Il lève les dernières questions et les guide jusqu'au paiement." },
       ],
-      payoff: { kicker: "Au total", title: "Des visiteurs entrent. Des acheteurs sortent.", body: "Sans lassitude. Sans blocage. Sans hésitation.", jar: "Ventes" },
+      payoff: { kicker: "Au total", title: "Des visites qui deviennent des ventes.", body: "Sans lassitude. Sans blocage. Sans hésitation.", jar: "Ventes" },
       findQuery: "Un cadeau pour ma sœur, moins de 50 €",
       findCaption: "En voici trois qu'elle va adorer.",
       compareQuery: "Lequel je prends ?",
@@ -197,8 +197,8 @@ export const fr: Messages = {
       pulse: { currency: "EUR" },
     },
     support: {
-      title: "Moins de tickets.",
-      titleTail: "Des clients plus heureux.",
+      title: "Allégez votre support.",
+      titleTail: "Jour et nuit.",
       /** The area's full name, the chapter eyebrow over the outcome (the pillar openers, ?open=1..6). */
       area: "Service client",
       lead: "Il répond à chaque client, jour et nuit, avec la chaleur de votre meilleur vendeur.",
@@ -214,7 +214,7 @@ export const fr: Messages = {
       },
       options: {
         sky: { label: "Les questions des clients arrivent jour et nuit ; elles reçoivent une réponse à voix haute avant la boîte du support, qui reste dégagée", problem: "La boîte déborde", solution: "Boîte dégagée, jour et nuit" },
-        clock: { label: "Les questions à toute heure s'empilent en tickets ; quand l'agent y répond à voix haute en chemin, seules celles qui ont besoin du marchand arrivent dans la boîte", problem: "Les questions s'empilent", solution: "Juste celles qui ont besoin de vous" },
+        clock: { label: "Les questions des clients arrivent de partout et s'empilent dans la boîte du support ; quand l'agent les attrape en chemin, la pile ne grossit plus", problem: "Les questions s'empilent", solution: "La pile ne grossit plus" },
         morning: { label: "Des questions toute la nuit, avec une réponse à voix haute dès qu'elles arrivent : le marchand se réveille avec une boîte vide", problem: "Des questions toute la nuit", solution: "Réveil avec une boîte vide" },
       },
     },
@@ -230,9 +230,9 @@ export const fr: Messages = {
       },
       options: {
         why: {
-          label: "Beaucoup de sessions terminées sans achat, examinées d'un coup : ce qui manquait apparaît",
+          label: "Beaucoup de sessions terminées sans achat, revues d'un coup : ce qui bloquait apparaît",
           problem: "Pourquoi pas d'achat ?",
-          reasons: ["Manque : guide des tailles", "Manque : frais de livraison", "Manque : délai de livraison", "Manque : politique de retour"],
+          reasons: ["Un pop-up cache le panier", "La recherche ne trouve rien", "La livraison s'affiche trop tard", "La page charge trop lentement", "Partis chercher un code promo"],
         },
         carts: { label: "Une semaine de paniers abandonnés, examinée jour après jour, se résume à une raison", problem: "Paniers abandonnés toute la semaine", solution: "La raison : les tailles" },
         week: { label: "Une semaine de conversations, triée en une seule image de ce que veulent les clients", problem: "Trop pour tout lire", solution: "Ce que veulent vos clients" },

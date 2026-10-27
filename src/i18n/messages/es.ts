@@ -147,7 +147,7 @@ export const es: Messages = {
         { title: "Las dudas se vuelven decisiones", body: "Compara, aconseja y responde cada duda." },
         { title: "Los carritos se vuelven pedidos", body: "Resuelve las dudas de última hora y los lleva al pago." },
       ],
-      payoff: { kicker: "Todo junto", title: "Entran visitas. Salen compradores.", body: "Sin cansancio. Sin bloqueos. Sin dudas.", jar: "Ventas" },
+      payoff: { kicker: "Todo junto", title: "Visitas convertidas en ventas.", body: "Sin cansancio. Sin bloqueos. Sin dudas.", jar: "Ventas" },
       findQuery: "Un regalo para mi hermana, menos de 50 €",
       findCaption: "Aquí tienes tres que le van a encantar.",
       compareQuery: "¿Cuál me llevo?",
@@ -197,8 +197,8 @@ export const es: Messages = {
       pulse: { currency: "EUR" },
     },
     support: {
-      title: "Menos tickets.",
-      titleTail: "Clientes más felices.",
+      title: "Recorta la carga de soporte.",
+      titleTail: "Día y noche.",
       /** The area's full name, the chapter eyebrow over the outcome (the pillar openers, ?open=1..6). */
       area: "Atención al cliente",
       lead: "Atiende a cada cliente, de día o de noche, con la calidez de tu mejor dependiente.",
@@ -214,7 +214,7 @@ export const es: Messages = {
       },
       options: {
         sky: { label: "Las preguntas de los clientes llegan de día y de noche; se responden en voz alta antes de llegar a la bandeja de soporte, que queda despejada", problem: "La bandeja se desborda", solution: "Bandeja despejada, de día y de noche" },
-        clock: { label: "Las preguntas a todas horas se acumulan como tickets; cuando el agente las responde en voz alta por el camino, a la bandeja solo llegan las pocas que necesitan al comerciante", problem: "Las preguntas se acumulan", solution: "Solo las pocas que te necesitan" },
+        clock: { label: "Las preguntas de los clientes llegan de todas partes y se acumulan en la bandeja de soporte; cuando el agente las atrapa por el camino, la pila deja de crecer", problem: "Las preguntas se acumulan", solution: "La pila deja de crecer" },
         morning: { label: "Preguntas toda la noche, respondidas en voz alta al llegar: el comerciante se despierta con la bandeja vacía", problem: "Preguntas toda la noche", solution: "Despiertas con la bandeja vacía" },
       },
     },
@@ -230,9 +230,9 @@ export const es: Messages = {
       },
       options: {
         why: {
-          label: "Muchas sesiones que acabaron sin venta, revisadas de una vez: aparece lo que faltaba",
+          label: "Muchas sesiones que acabaron sin venta, repasadas de una vez: aparece lo que estorbaba",
           problem: "¿Por qué no compran?",
-          reasons: ["Falta: guía de tallas", "Falta: coste de envío", "Falta: plazo de entrega", "Falta: política de devoluciones"],
+          reasons: ["Un pop-up tapa el carrito", "La búsqueda no encuentra nada", "El envío aparece demasiado tarde", "La página tarda en cargar", "Se van a buscar cupones"],
         },
         carts: { label: "Una semana de carritos abandonados, revisada día a día, se reduce a un motivo", problem: "Carritos abandonados toda la semana", solution: "El motivo: las tallas" },
         week: { label: "Una semana de conversaciones ordenada en una imagen de lo que quieren los clientes", problem: "Demasiadas para leer", solution: "Lo que quieren tus clientes" },

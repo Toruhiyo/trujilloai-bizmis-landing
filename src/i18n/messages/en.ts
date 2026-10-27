@@ -152,7 +152,7 @@ export const en = {
         { title: "Carts turn into orders", body: "It clears last-minute questions and walks them to checkout." },
       ],
       /** The words over the payoff, every part lit. */
-      payoff: { kicker: "All together", title: "Visitors in. Buyers out.", body: "No fatigue. No paralysis. No hesitation.", jar: "Sales" },
+      payoff: { kicker: "All together", title: "Visits turn into sales.", body: "No fatigue. No paralysis. No hesitation.", jar: "Sales" },
       /** The mockups: what the shopper says, then what the agent says (captions). */
       findQuery: "A gift for my sister, under $50",
       findCaption: "Here are three she will love.",
@@ -212,8 +212,8 @@ export const en = {
     },
     /** Customer Support on /v2: a short promise, the store's support at scale over a day and a night, beside one shopper's case. */
     support: {
-      title: "Fewer tickets.",
-      titleTail: "Happier customers.",
+      title: "Cut support workload.",
+      titleTail: "Day and night.",
       /** The area's full name, the chapter eyebrow over the outcome (the pillar openers, ?open=1..6). */
       area: "Customer Support",
       lead: "Answers every shopper, day or night, as warmly as your best clerk.",
@@ -230,7 +230,7 @@ export const en = {
       /** Option drawings for Oriol to pick from (?support=1|2|3): each a loss struck then a win, in marker. */
       options: {
         sky: { label: "Shoppers' questions keep coming, day and night; answered out loud before they reach the support inbox, it stays clear", problem: "Inbox overflows", solution: "Inbox clear, day and night" },
-        clock: { label: "Questions round the clock pile up as tickets; once the agent answers them out loud on their way, only the few that need the merchant reach the inbox", problem: "Questions pile up", solution: "Only the few that need you" },
+        clock: { label: "Shoppers' questions drift in from everywhere and pile up in the support inbox; once the agent catches them on their way, the pile stops growing", problem: "Questions pile up", solution: "The pile stops growing" },
         morning: { label: "Questions all night long, answered out loud as they come: the merchant wakes up to an empty inbox", problem: "Questions all night", solution: "Wake up to an empty inbox" },
       },
     },
@@ -248,11 +248,11 @@ export const en = {
       },
       /** Option drawings for Oriol to pick from (?insights=1|2|3): each a loss struck then a win, in marker. */
       options: {
-        /** The default: each replay finds a different reason in the lens (its icon in InsightsOptions, REASONS, in this order). */
+        /** The default: each replay finds a different reason in the lens (what a replay shows got in the way; its icon in InsightsOptions, REASONS, in this order). */
         why: {
-          label: "Many sessions that ended without a sale, looked into at once: what was missing shows up",
+          label: "Many sessions that ended without a sale, replayed at once: what got in the way shows up",
           problem: "Why no sale?",
-          reasons: ["Missing: size guide", "Missing: shipping cost", "Missing: delivery time", "Missing: returns policy"],
+          reasons: ["Pop-up hides the cart", "Search finds nothing", "Shipping shows too late", "Page loads too slowly", "Off hunting for a coupon"],
         },
         carts: { label: "A week of abandoned carts, looked into day by day, comes down to one reason", problem: "Carts left all week", solution: "The reason: sizes" },
         week: { label: "A week of conversations, sorted into one picture of what shoppers want", problem: "Too many to read", solution: "What shoppers want" },
