@@ -690,6 +690,9 @@ export const en = {
       },
     },
     viewAllFaqs: "View all frequently asked questions",
+    /** The plan cards show their top features; the rest open on demand. */
+    seeAllFeatures: "See all features",
+    fewerFeatures: "Show fewer features",
     enterpriseInquirySubject: "Enterprise Plan Inquiry",
   },
 
@@ -912,15 +915,19 @@ export const en = {
     badge: (cap: number) => `First ${cap} stores only`,
     titleLine1: "Join the Early Access",
     titleLine2: "program",
-    lead: (cap: number) =>
-      `Only ${cap} Shopify stores can join. Install Bizmis free while Early Access is open, and keep your member benefits when you upgrade.`,
+    /** The hero's lead as three scannable facts: the key part (bold) and the rest. */
+    leadPoints: (cap: number) => [
+      { strong: `Only ${cap} Shopify stores`, rest: "can join" },
+      { strong: `Install Bizmis free`, rest: "while Early Access is open" },
+      { strong: `Keep your member benefits`, rest: "when you upgrade" },
+    ],
     seeLiveDemo: "See the live demo",
     bookFounderCall: "Book a 30-min call with the founder",
     avatarAlt: "Bizmis Early Access invitation",
     benefitsBadge: "Early Access benefits",
     benefitsTitle: "You'll get",
     benefitsLead:
-      "Hover each card to see what's included with your Early Access benefits.",
+      "What every Early Access member gets.",
     benefits: [
       {
         title: "Free as a member*",

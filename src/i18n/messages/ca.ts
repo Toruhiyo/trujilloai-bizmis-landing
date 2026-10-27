@@ -673,6 +673,9 @@ export const ca: Messages = {
       },
     },
     viewAllFaqs: "Consulta totes les preguntes freqüents",
+    /** The plan cards show their top features; the rest open on demand. */
+    seeAllFeatures: "Mostra totes les funcions",
+    fewerFeatures: "Mostra menys funcions",
     enterpriseInquirySubject: "Consulta sobre el pla Enterprise",
   },
 
@@ -896,15 +899,19 @@ export const ca: Messages = {
     badge: (cap: number) => `Només les primeres ${cap} botigues`,
     titleLine1: "Uneix-te al programa",
     titleLine2: "d'accés anticipat",
-    lead: (cap: number) =>
-      `Només hi poden entrar ${cap} botigues Shopify. Instal·la Bizmis gratis mentre l'accés anticipat estigui obert i conserva els teus avantatges de membre quan canviïs de pla.`,
+    /** The hero's lead as three scannable facts: the key part (bold) and the rest. */
+    leadPoints: (cap: number) => [
+      { strong: `Només ${cap} botigues Shopify`, rest: "hi poden entrar" },
+      { strong: `Instal·la Bizmis gratis`, rest: "mentre l'accés anticipat estigui obert" },
+      { strong: `Conserva els teus avantatges de membre`, rest: "quan canviïs de pla" },
+    ],
     seeLiveDemo: "Mira la demo en directe",
     bookFounderCall: "Reserva 30 min amb el fundador",
     avatarAlt: "Invitació a l'accés anticipat de Bizmis",
     benefitsBadge: "Avantatges de l'accés anticipat",
     benefitsTitle: "Això és el que t'emportes",
     benefitsLead:
-      "Passa el cursor per cada targeta per veure què inclou el teu accés anticipat.",
+      "El que rep cada membre de l'accés anticipat.",
     benefits: [
       {
         title: "Gratis com a membre*",

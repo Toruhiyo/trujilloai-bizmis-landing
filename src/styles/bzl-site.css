@@ -668,28 +668,130 @@
 @media (max-width: 639px) {
   .bzl-ea-hero .bzl-site-title { font-size: clamp(2.3rem, 10.5vw, 3rem); }
 }
+/* the lead as three facts: an icon in its cream disc, the key words in ink */
+.bzl-ea-points {
+  display: grid;
+  gap: 0.7rem;
+  margin: 0.15rem 0 0.35rem;
+  text-align: left;
+  font-size: clamp(1.02rem, min(1.3vw, 2.5svh), 1.2rem);
+  letter-spacing: -0.01em;
+  line-height: 1.35;
+  color: var(--bzl-muted);
+}
+.bzl-ea-points li {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+.bzl-ea-points strong {
+  font-weight: 700;
+  color: var(--site-ink);
+}
+.bzl-ea-point-icon {
+  display: grid;
+  flex-shrink: 0;
+  place-items: center;
+  width: 2.1em;
+  height: 2.1em;
+  border-radius: 999px;
+  background: var(--site-soft);
+  color: var(--site-primary);
+}
+.bzl-ea-point-icon svg { width: 52%; height: 52%; }
+
+/* Will, live, on a soft primary pool with a floor shadow under his feet */
 .bzl-ea-avatar {
   position: relative;
-  width: min(100%, 22rem);
+  display: grid;
+  place-items: end center;
   margin-inline: auto;
-}
-@media (max-width: 1023px) {
-  .bzl-ea-avatar { width: min(62vw, 16rem); }
 }
 .bzl-ea-avatar::before {
   content: "";
   position: absolute;
-  inset: 12% -10% 0;
+  left: 50%;
+  top: 8%;
+  width: 118%;
+  aspect-ratio: 1;
+  translate: -50% 0;
   z-index: -1;
   border-radius: 50%;
-  background: radial-gradient(closest-side, rgb(249 163 83 / 0.28), rgb(249 163 83 / 0.08) 60%, transparent);
+  background: radial-gradient(closest-side, rgb(249 163 83 / 0.26), rgb(249 163 83 / 0.08) 62%, transparent);
 }
-/* one column, as Customize's cards: a card opening below its title never leaves a hole beside it */
+.bzl-ea-avatar::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: -0.5rem;
+  width: 62%;
+  height: 1.1rem;
+  translate: -50% 0;
+  z-index: -1;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, rgb(59 36 22 / 0.16), transparent);
+}
+.bzl-ea-avatar-box {
+  position: relative;
+  height: clamp(10.5rem, 24svh, 15rem);
+  aspect-ratio: 720 / 1199;
+}
+@media (min-width: 1024px) {
+  .bzl-ea-avatar-box { height: clamp(22rem, 58svh, 32rem); }
+}
+/* phones and tablets: Will greets first, above the title, and the call to install stays in the first screen */
+@media (max-width: 1023px) {
+  .bzl-ea-avatar { order: -1; }
+  .bzl-ea-top { padding-top: clamp(1rem, 3svh, 2rem); }
+  .bzl-ea-hero { gap: 0.75rem; }
+}
+
+/* the benefits: a 2x2 grid of cards, everything on show (no hover needed) */
 .bzl-ea-benefits {
   display: grid;
-  gap: 0.75rem;
-  max-width: 36rem;
+  gap: clamp(0.85rem, 1.4vw, 1.25rem);
+  max-width: 64rem;
   margin-inline: auto;
+}
+@media (min-width: 768px) {
+  .bzl-ea-benefits { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+.bzl-ea-benefit {
+  display: flex;
+  align-items: flex-start;
+  gap: 1.1rem;
+  padding: clamp(1.25rem, 2vw, 1.75rem);
+  transition: transform 0.5s var(--bzl-spring), box-shadow 0.4s var(--bzl-ease);
+}
+.bzl-ea-benefit:hover { transform: translateY(-3px); }
+.bzl-ea-benefit .bzl-site-disc { width: 3rem; height: 3rem; }
+.bzl-ea-benefit .bzl-site-disc svg { width: 1.4rem; height: 1.4rem; }
+.bzl-ea-benefit-title {
+  padding-top: 0.15rem;
+  font-size: clamp(1.15rem, 1.5vw, 1.35rem);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1.15;
+  color: var(--site-ink);
+}
+.bzl-ea-benefit-mark {
+  top: -0.35em;
+  margin-left: 0.1em;
+  font-size: 0.8em;
+  color: var(--site-primary);
+}
+.bzl-ea-benefit-body {
+  font-size: 0.975rem;
+  line-height: 1.5;
+  color: var(--bzl-muted);
+}
+.bzl-ea-benefit-note {
+  margin-top: 0.35rem;
+  padding-top: 0.6rem;
+  border-top: 1px solid var(--site-line);
+  font-size: 0.8125rem;
+  line-height: 1.45;
+  color: var(--bzl-faint);
 }
 .bzl-ea-way {
   display: flex;
@@ -726,8 +828,118 @@
 .bzl-ea-way.is-primary .bzl-ea-way-arrow { background: rgb(255 255 255 / 0.22); color: #fff; }
 .bzl-ea-way:hover .bzl-ea-way-arrow { transform: translate(2px, -2px); }
 
-/* the benefit cards' icons, closed: primary glyphs on cream discs (as the landing's FeatureCards, look-film.css) */
-.bzl-ea-benefits button[aria-expanded="false"] > span:first-child > span:first-child {
-  background-color: #fff1e3;
-  color: hsl(var(--primary));
+/* ── Pricing, one screen: the head, the switch, Free and the four cards fit
+   under the nav on a desktop (1440x900 down to 1366x768); the spacing
+   breathes with the screen's height (svh), the rest comes after the fold ── */
+.bzl-price-page {
+  --price-li-gap: clamp(0.25rem, 0.7svh, 0.55rem);
+}
+.bzl-price-hero {
+  padding-top: clamp(1rem, 3svh, 2.5rem);
+  padding-bottom: clamp(0.9rem, 2.2svh, 1.75rem);
+}
+.bzl-price-hero .bzl-site-head { gap: clamp(0.5rem, 1.4svh, 0.85rem); }
+.bzl-price-hero .bzl-site-pill { font-size: clamp(0.9rem, min(1.05vw, 2svh), 1.02rem); }
+.bzl-price-hero .bzl-site-title { font-size: clamp(2.2rem, min(4vw, 6.1svh), 3.5rem); }
+.bzl-price-hero .bzl-site-lead {
+  max-width: 44em;
+  font-size: clamp(1rem, min(1.25vw, 2.2svh), 1.15rem);
+}
+/* the lead, then the switch: one row on desktop */
+.bzl-price-sub {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.85rem;
+}
+@media (min-width: 1024px) {
+  .bzl-price-sub { flex-direction: row; gap: 1.5rem; }
+  .bzl-price-sub .bzl-site-lead { max-width: 46em; margin: 0; text-align: left; }
+}
+.bzl-price-sub .bzl-site-seg { flex-shrink: 0; }
+.bzl-price-hero .bzl-site-seg button { min-height: 2.35rem; padding-block: 0.3rem; }
+@media (max-width: 639px) {
+  .bzl-price-hero { padding-top: 2rem; }
+  .bzl-price-hero .bzl-site-title { font-size: clamp(2.1rem, 10vw, 2.6rem); }
+}
+.bzl-price-sheet {
+  padding-top: clamp(0.85rem, 1.9svh, 1.75rem);
+  padding-bottom: clamp(2rem, 6svh, 4rem);
+}
+.bzl-price-page .bzl-price-free {
+  margin-bottom: clamp(1.35rem, 2.9svh, 2rem); /* room for "Popular" above its card */
+  padding-block: clamp(0.65rem, 1.4svh, 1rem);
+}
+.bzl-price-page .bzl-price-free .bzl-site-btn { min-height: 2.6rem; padding-block: 0.4rem; }
+.bzl-price-amount.is-free { font-size: 1.75rem; }
+.bzl-price-page .bzl-price-card {
+  padding: clamp(1rem, 2.3svh, 1.6rem) clamp(1.1rem, 1.6vw, 1.5rem);
+}
+.bzl-price-page .bzl-price-amount { font-size: clamp(2.1rem, min(3vw, 5.4svh), 2.75rem); }
+.bzl-price-block { margin-top: clamp(0.45rem, 1.2svh, 0.9rem); }
+.bzl-price-sessions {
+  margin-top: clamp(0.5rem, 1.3svh, 0.9rem);
+  padding: clamp(0.45rem, 1svh, 0.7rem) 0.85rem;
+  border-radius: var(--bzl-radius-item);
+  background: #fff8f0;
+}
+.bzl-price-sessions.is-ink {
+  background: rgb(255 248 240 / 0.08);
+  color: rgb(255 248 240 / 0.82);
+}
+.bzl-price-plus {
+  margin-top: clamp(0.6rem, 1.6svh, 0.9rem);
+  margin-bottom: -0.2rem;
+  font-size: 0.875rem;
+  font-weight: 700;
+}
+.bzl-price-features {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  flex-grow: 1;
+  gap: 0.4rem;
+  margin: clamp(0.65rem, 1.5svh, 1.1rem) 0 clamp(0.75rem, 1.8svh, 1.35rem);
+  font-size: 0.9rem;
+  line-height: 1.35;
+}
+.bzl-price-features .bzl-price-tick { margin-top: 0; }
+.bzl-price-more {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  margin-left: calc(1.3rem + 0.625rem);
+  border-radius: 6px;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--site-ink);
+  text-decoration: underline;
+  text-decoration-color: rgb(249 163 83 / 0.6);
+  text-decoration-thickness: 1.5px;
+  text-underline-offset: 3px;
+}
+.bzl-price-more:hover { text-decoration-color: var(--site-primary); }
+.bzl-price-more:focus-visible { outline: 2px solid rgb(249 163 83 / 0.6); outline-offset: 2px; }
+.bzl-price-card.is-ink .bzl-price-more { color: #fff8f0; }
+.bzl-price-page .bzl-price-card .bzl-site-btn { min-height: 2.75rem; }
+.bzl-price-note {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.35rem;
+  margin: calc(var(--price-li-gap) * -1) 0 0.55rem;
+  font-size: 0.71rem;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  line-height: 1.3;
+  color: var(--bzl-muted);
+}
+.bzl-price-note svg {
+  width: 0.9rem;
+  height: 0.9rem;
+  flex-shrink: 0;
+  color: var(--site-primary);
+}
+/* stacked or in two rows: room for "Popular" above its card */
+@media (max-width: 1279px) {
+  .bzl-price-page .bzl-price-grid { row-gap: 1.75rem; }
 }

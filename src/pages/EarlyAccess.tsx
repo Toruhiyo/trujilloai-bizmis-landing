@@ -1,21 +1,24 @@
+import { useEffect, useState } from "react";
 import type { MouseEvent } from "react";
 import {
   ArrowUpRight,
+  BadgeCheck,
   BadgePercent,
   CalendarDays,
   Compass,
   Gift,
   Headphones,
   PlayCircle,
-  Sparkles,
+  Store,
+  Ticket,
 } from "lucide-react";
 import { FaShopify } from "react-icons/fa";
 import { usePostHog } from "posthog-js/react";
 import SitePage from "@/components/site/SitePage";
 import PageHead from "@/components/site/PageHead";
 import Reveal from "@/components/landing/Reveal";
-import FeatureCard from "@/components/landing/FeatureCard";
 import AgentImage from "@/components/landing/AgentImage";
+import LiveAvatar from "@/components/landing/LiveAvatar";
 import Seo from "@/components/Seo";
 import { EARLY_ACCESS_STORE_CAP } from "@/data/leads/_schema";
 import {
@@ -27,7 +30,53 @@ import {
 } from "@/lib/bizmisUrls";
 import { useMessages } from "@/i18n/LocaleProvider";
 
-const BENEFIT_ICONS = [Sparkles, Compass, Headphones, BadgePercent];
+const BENEFIT_ICONS = [Gift, Compass, Headphones, BadgePercent];
+/** The hero's three facts: the cap, free while open, the benefits kept. */
+const LEAD_ICONS = [Store, Gift, BadgeCheck];
+
+/** The live avatar waves hello on arrival, idles, and waves again every so often. */
+const WAVE_EVERY_MS = 9000;
+
+/**
+ * The invitation's host: Will, live in 3D (the same LiveAvatar as the hero
+ * and the widgets), full figure in the Bizmis shirt with the logo stamp. The
+ * 3D chunk and the model only load once the box is near the viewport; the
+ * still render of him waving (setup-will) shows first and stays for reduced
+ * motion, Save-Data, no WebGL or a failed load.
+ */
+const EaAvatar = ({ alt }: { alt: string }) => {
+  const [wave, setWave] = useState<{ name: string; key: number } | null>(null);
+  const [live, setLive] = useState(false);
+  useEffect(() => {
+    if (!live) return;
+    const t = window.setInterval(
+      () => setWave((w) => ({ name: "waving", key: (w?.key ?? 0) + 1 })),
+      WAVE_EVERY_MS,
+    );
+    return () => window.clearInterval(t);
+  }, [live]);
+  return (
+    <div className="bzl-ea-avatar-box" role="img" aria-label={alt}>
+      <LiveAvatar
+        model="will"
+        shirtColor="#F9A353"
+        fullBody
+        gesture={wave}
+        onStatus={(status) => setLive(status === "live")}
+        fallback={
+          <AgentImage
+            name="setup-will"
+            alt=""
+            sizes="(min-width: 1024px) 340px, 40vw"
+            eager
+            className="h-full"
+            imgClassName="h-full w-full object-contain object-bottom"
+          />
+        }
+      />
+    </div>
+  );
+};
 
 const EarlyAccess = () => {
   const messages = useMessages();
@@ -71,13 +120,13 @@ const EarlyAccess = () => {
       />
 
       {/* The invitation: the head on the left, the avatar waving on the right */}
-      <div className="bzl-wrap bzl-site-hero">
+      <div className="bzl-wrap bzl-site-hero bzl-ea-top">
         <div className="bzl-ea-hero">
           <div className="bzl-site-head">
             <Reveal>
               <p className="bzl-site-pill">
                 <span className="bzl-site-pill-icon" aria-hidden="true">
-                  <Sparkles strokeWidth={2} />
+                  <Ticket strokeWidth={2} />
                 </span>
                 <span>{messages.nav.earlyAccess}</span>
               </p>
@@ -98,10 +147,25 @@ const EarlyAccess = () => {
                 </svg>
               </p>
             </Reveal>
+            {/* the lead as three facts, the key words in ink */}
             <Reveal delay={200}>
-              <p className="bzl-site-lead">
-                {messages.earlyAccessPage.lead(EARLY_ACCESS_STORE_CAP)}
-              </p>
+              <ul className="bzl-ea-points">
+                {messages.earlyAccessPage
+                  .leadPoints(EARLY_ACCESS_STORE_CAP)
+                  .map(({ strong, rest }, index) => {
+                    const Icon = LEAD_ICONS[index] ?? BadgeCheck;
+                    return (
+                      <li key={strong}>
+                        <span className="bzl-ea-point-icon" aria-hidden="true">
+                          <Icon strokeWidth={2.2} />
+                        </span>
+                        <span>
+                          <strong>{strong}</strong> {rest}
+                        </span>
+                      </li>
+                    );
+                  })}
+              </ul>
             </Reveal>
             <Reveal delay={260}>
               <div className="mt-2 flex flex-col items-center gap-4 lg:items-start">
@@ -144,13 +208,8 @@ const EarlyAccess = () => {
             </Reveal>
           </div>
 
-          <Reveal delay={200} className="bzl-ea-avatar">
-            <AgentImage
-              name="greet-amber"
-              alt={messages.earlyAccessPage.avatarAlt}
-              sizes="(min-width: 1024px) 352px, 62vw"
-              eager
-            />
+          <Reveal delay={120} className="bzl-ea-avatar">
+            <EaAvatar alt={messages.earlyAccessPage.avatarAlt} />
           </Reveal>
         </div>
       </div>
@@ -161,17 +220,41 @@ const EarlyAccess = () => {
           <PageHead
             as="h2"
             id="benefits-heading"
-            icon={Gift}
+            icon={BadgeCheck}
             eyebrow={messages.earlyAccessPage.benefitsBadge}
             title={messages.earlyAccessPage.benefitsTitle}
             lead={messages.earlyAccessPage.benefitsLead}
           />
           <Reveal delay={240} className="mt-[clamp(1.75rem,5svh,3rem)]">
-            <div className="bzl-ea-benefits">
-              {benefits.map(({ icon, title, detail }) => (
-                <FeatureCard key={title} icon={icon} title={title} body={detail} />
-              ))}
-            </div>
+            <ul className="bzl-ea-benefits">
+              {benefits.map(({ icon: Icon, title, detail }) => {
+                // "Free as a member*": the asterisk points at the footnote, set in the same card
+                const noted = title.trim().endsWith("*");
+                return (
+                  <li key={title} className="bzl-site-card bzl-ea-benefit">
+                    <span className="bzl-site-disc" aria-hidden="true">
+                      <Icon strokeWidth={2} />
+                    </span>
+                    <div className="flex min-w-0 flex-col gap-1.5">
+                      <h3 className="bzl-ea-benefit-title">
+                        {noted ? title.trim().slice(0, -1) : title}
+                        {noted && (
+                          <sup className="bzl-ea-benefit-mark" aria-hidden="true">
+                            *
+                          </sup>
+                        )}
+                      </h3>
+                      <p className="bzl-ea-benefit-body">{detail}</p>
+                      {noted && (
+                        <p className="bzl-ea-benefit-note">
+                          {messages.earlyAccessPage.footnote}
+                        </p>
+                      )}
+                    </div>
+                  </li>
+                );
+              })}
+            </ul>
           </Reveal>
         </div>
       </section>
@@ -254,9 +337,6 @@ const EarlyAccess = () => {
           >
             hello@bizmis.ai
           </a>
-        </p>
-        <p className="mt-3 text-center text-[0.8125rem] text-[var(--bzl-faint)]">
-          {messages.earlyAccessPage.footnote}
         </p>
       </section>
     </SitePage>

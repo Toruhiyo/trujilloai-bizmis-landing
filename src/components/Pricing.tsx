@@ -1,4 +1,4 @@
-import { Check, ArrowRight, Clock, ShieldCheck, Tag } from "lucide-react";
+import { Check, ArrowRight, ChevronDown, Clock, ShieldCheck, Tag } from "lucide-react";
 import { useState, useRef, useEffect, useMemo } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import PageHead from "@/components/site/PageHead";
@@ -51,6 +51,11 @@ interface Plan {
 }
 
 const COMING_SOON_FEATURES: string[] = [];
+
+/** Each card shows its top features; longer lists open on "See all features". */
+const FEATURES_SHOWN = 3;
+/** Enterprise already leads with "Everything in Scale, plus:", so one fewer. */
+const ENTERPRISE_FEATURES_SHOWN = 2;
 
 type BillingPeriod = "monthly" | "yearly";
 
@@ -322,6 +327,8 @@ const Pricing = () => {
   const [isApplyingCoupon, setIsApplyingCoupon] = useState(false);
   // monthly first: the Shopify app bills monthly only for now (yearly is shown, not yet sold)
   const [isYearly, setIsYearly] = useState(false);
+  /** One switch for every card, so the row of cards stays even. */
+  const [showAllFeatures, setShowAllFeatures] = useState(false);
   const billingPeriod: BillingPeriod = isYearly ? "yearly" : "monthly";
   const [backendPlans, setBackendPlans] = useState<PublicPlanDTO[] | null>(
     null,
@@ -556,18 +563,57 @@ const Pricing = () => {
     </span>
   );
 
+  /** A card's feature list: the top few, the rest behind "See all features". */
+  const featureList = (features: string[], count = FEATURES_SHOWN) => {
+    const hasMore = features.length > count;
+    const shown = showAllFeatures || !hasMore ? features : features.slice(0, count);
+    return (
+      <div className="bzl-price-features">
+        <ul className="space-y-[var(--price-li-gap)]">
+          {shown.map((feature, idx) => (
+            <li key={idx} className="flex items-start gap-2.5">
+              {tick}
+              <span className="flex items-center">
+                {feature}
+                {COMING_SOON_FEATURES.includes(feature) && (
+                  <PricingPlanFeatureSoon />
+                )}
+              </span>
+            </li>
+          ))}
+        </ul>
+        {hasMore && (
+          <button
+            type="button"
+            className="bzl-price-more"
+            aria-expanded={showAllFeatures}
+            aria-controls="pricing-cards"
+            onClick={() => setShowAllFeatures((open) => !open)}
+          >
+            {showAllFeatures
+              ? messages.pricing.fewerFeatures
+              : messages.pricing.seeAllFeatures}
+            <ChevronDown className={cn("h-4 w-4 transition-transform", showAllFeatures && "rotate-180")} aria-hidden="true" />
+          </button>
+        )}
+      </div>
+    );
+  };
+
   return (
-    <section id="pricing" className="relative pb-[clamp(3rem,8svh,6rem)]">
-      {/* The page's head, the billing switch under it */}
-      <div className="bzl-wrap bzl-site-hero">
+    <section id="pricing" className="bzl-price-page relative pb-[clamp(3rem,8svh,6rem)]">
+      {/* The page's head, compact, the billing switch right under it: the
+          whole offer (head, switch, Free, the four cards) fits one desktop screen */}
+      <div className="bzl-wrap bzl-price-hero">
         <PageHead
           icon={Tag}
           eyebrow={messages.pricing.badge}
           title={messages.pricing.title}
-          lead={messages.pricing.lead}
         >
-          {/* Billing period (Monthly is the default; the guarantee is yearly only) */}
-          <Reveal delay={240} className="mt-[clamp(0.5rem,2svh,1.25rem)]">
+          {/* The lead and the billing period side by side on desktop, stacked on phones
+              (Monthly is the default; the guarantee is yearly only) */}
+          <Reveal delay={160} className="bzl-price-sub">
+            <p className="bzl-site-lead">{messages.pricing.lead}</p>
             <div className="bzl-site-seg" role="group">
               <button
                 type="button"
@@ -589,19 +635,19 @@ const Pricing = () => {
       </div>
 
       {/* The plans, on the landing's cream sheet */}
-      <div className="bzl-site-sheet">
+      <div className="bzl-site-sheet bzl-price-sheet">
         <div className="bzl-wrap">
           {/* Free plan: the live-but-capped lead-in above the paid grid */}
           <div className="bzl-site-card bzl-price-free">
-            <div className="flex min-w-0 flex-col gap-1.5">
-              <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
+            <div className="flex min-w-0 flex-col gap-x-5 gap-y-1 lg:flex-row lg:items-center">
+              <div className="flex shrink-0 flex-wrap items-baseline gap-x-3 gap-y-1">
                 <h3 className="bzl-price-name">{messages.pricing.free.name}</h3>
-                <span className="bzl-price-amount !text-[2rem]">$0</span>
-                <span className="bzl-price-chip">
+                <span className="bzl-price-amount is-free">$0</span>
+                <span className="bzl-price-chip self-center">
                   {messages.pricing.free.noCommitment}
                 </span>
               </div>
-              <p className="bzl-price-muted text-[0.9375rem] leading-relaxed">
+              <p className="bzl-price-muted text-[0.9375rem] leading-snug">
                 {messages.pricing.free.description(
                   FREE_PLAN_CONVERSATIONS_ALLOWANCE.toLocaleString(numberLocale),
                 )}
@@ -618,7 +664,7 @@ const Pricing = () => {
           </div>
 
           {/* Paid plans and Enterprise */}
-          <div id="pricing-cards" className="bzl-price-grid pt-3">
+          <div id="pricing-cards" className="bzl-price-grid">
             {plans.map((plan) => {
               const displayPrice = getDisplayPrice(plan);
               const discountPercent = getDiscountPercent(plan);
@@ -654,30 +700,32 @@ const Pricing = () => {
                     )}
                   </div>
 
-                  {/* Price block */}
-                  <div className="mt-5">
-                    <div className="flex flex-wrap items-baseline gap-x-2 gap-y-1">
+                  {/* Price block ("billed yearly" sits under /mo, beside the price, so yearly adds no height) */}
+                  <div className="bzl-price-block">
+                    <div className="flex flex-wrap items-end gap-x-2 gap-y-1">
                       {hasDiscount && (
-                        <span className="bzl-price-was">
+                        <span className="bzl-price-was self-baseline">
                           ${formatPrice(plan.monthlyPrice)}
                         </span>
                       )}
                       <span className="bzl-price-amount">
                         ${formatExactPrice(displayPrice)}
                       </span>
-                      <span className="bzl-price-per">
-                        {messages.pricing.perMonth}
+                      <span className="flex flex-col pb-[0.2em] leading-tight">
+                        <span className="bzl-price-per">
+                          {messages.pricing.perMonth}
+                        </span>
+                        {isYearly && (
+                          <span className="bzl-price-muted whitespace-nowrap text-[0.75rem] font-medium">
+                            {messages.pricing.billedYearly}
+                          </span>
+                        )}
                       </span>
                     </div>
-                    {isYearly && (
-                      <p className="bzl-price-muted mt-2 text-[0.8125rem] font-medium">
-                        {messages.pricing.billedYearly}
-                      </p>
-                    )}
                     {!isYearly &&
                       showEarlyAccess &&
                       earlyAccessIntroMonths > 0 && (
-                        <p className="bzl-price-muted mt-2 flex items-center gap-1.5 text-sm">
+                        <p className="bzl-price-muted mt-1.5 flex items-center gap-1.5 text-[0.8125rem]">
                           <Clock className="h-3.5 w-3.5" aria-hidden="true" />
                           {messages.pricing.introMonths(
                             earlyAccessIntroMonths,
@@ -688,7 +736,7 @@ const Pricing = () => {
                   </div>
 
                   {/* Sessions */}
-                  <div className="mt-5 rounded-[var(--bzl-radius-item)] bg-[#fff8f0] px-4 py-3">
+                  <div className="bzl-price-sessions">
                     <p className="flex flex-wrap items-baseline gap-x-1.5">
                       <span className="text-lg font-extrabold tabular-nums tracking-[-0.02em]">
                         {plan.includedConversations.toLocaleString(numberLocale)}
@@ -697,29 +745,25 @@ const Pricing = () => {
                         {messages.pricing.conversationsPerMonth}
                       </span>
                     </p>
-                    <p className="bzl-price-muted mt-1 text-[0.8125rem] leading-snug">
+                    <p className="bzl-price-muted mt-0.5 text-[0.75rem] leading-snug">
                       {messages.pricing.extraConversations(
                         `$${formatOverageRate(plan.overageRatePerConversation)}`,
                       )}
                     </p>
                   </div>
 
-                  {/* Features */}
-                  <ul className="mb-6 mt-5 flex-grow space-y-2.5">
-                    {plan.features.map((feature, idx) => (
-                      <li key={idx} className="flex items-start gap-2.5">
-                        {tick}
-                        <span className="flex items-center text-[0.9375rem] leading-snug">
-                          {feature}
-                          {COMING_SOON_FEATURES.includes(feature) && (
-                            <PricingPlanFeatureSoon />
-                          )}
-                        </span>
-                      </li>
-                    ))}
-                  </ul>
+                  {/* Features: the top few, the rest on demand */}
+                  {featureList(plan.features)}
 
                   <div className="mt-auto">
+                    {/* The 30-day money-back guarantee covers yearly plans only
+                        (above the button, so every card's button lines up). */}
+                    {isYearly && (
+                      <p className="bzl-price-note">
+                        <ShieldCheck aria-hidden="true" />
+                        <span>{messages.pricing.guarantees.cardNote}</span>
+                      </p>
+                    )}
                     <button
                       type="button"
                       onClick={() => handlePlanClick(plan.name)}
@@ -731,16 +775,6 @@ const Pricing = () => {
                       {plan.buttonText}
                       <ArrowRight className="is-arrow" aria-hidden="true" />
                     </button>
-                    {/* The 30-day money-back guarantee covers yearly plans only. */}
-                    {isYearly && (
-                      <p className="bzl-price-muted mt-3 flex items-center justify-center gap-1.5 text-center text-xs font-medium">
-                        <ShieldCheck
-                          className="h-3.5 w-3.5 shrink-0 text-[hsl(var(--primary))]"
-                          aria-hidden="true"
-                        />
-                        <span>{messages.pricing.guarantees.cardNote}</span>
-                      </p>
-                    )}
                   </div>
                 </div>
               );
@@ -751,35 +785,28 @@ const Pricing = () => {
               <h3 className="bzl-price-name pt-1">
                 {messages.pricing.enterprise.name}
               </h3>
-              <div className="mt-5 flex flex-wrap items-baseline gap-x-2 gap-y-1">
-                <span className="bzl-price-per">
-                  {messages.pricing.enterprise.priceFrom}
-                </span>
+              {/* "From" over /mo, beside the price (as "billed yearly" on the plans), so it never wraps */}
+              <div className="bzl-price-block flex flex-wrap items-end gap-x-2 gap-y-1">
                 <span className="bzl-price-amount">
                   ${formatPrice(ENTERPRISE_FROM_MONTHLY_PRICE)}
                 </span>
-                <span className="bzl-price-per">{messages.pricing.perMonth}</span>
+                <span className="flex flex-col pb-[0.2em] leading-tight">
+                  <span className="bzl-price-muted whitespace-nowrap text-[0.75rem] font-medium">
+                    {messages.pricing.enterprise.priceFrom}
+                  </span>
+                  <span className="bzl-price-per">{messages.pricing.perMonth}</span>
+                </span>
               </div>
-              <p className="bzl-price-muted mt-4 text-[0.9375rem] leading-relaxed">
-                {messages.pricing.enterprise.description}
-              </p>
-              <div className="bzl-price-rule mt-5" />
-              <p className="mt-5 text-[0.9375rem] font-semibold">
+              {/* in the sessions box's place: what it is, then "Everything in Scale, plus:" */}
+              <div className="bzl-price-sessions is-ink">
+                <p className="text-[0.8125rem] leading-snug">
+                  {messages.pricing.enterprise.description}
+                </p>
+              </div>
+              <p className="bzl-price-plus">
                 {messages.pricing.enterprise.everythingInScale}
               </p>
-              <ul className="mb-6 mt-3 flex-grow space-y-2.5">
-                {messages.pricing.enterprise.features.map((feature, idx) => (
-                  <li key={idx} className="flex items-start gap-2.5">
-                    {tick}
-                    <span className="flex items-center text-[0.9375rem] leading-snug">
-                      {feature}
-                      {COMING_SOON_FEATURES.includes(feature) && (
-                        <PricingPlanFeatureSoon />
-                      )}
-                    </span>
-                  </li>
-                ))}
-              </ul>
+              {featureList(messages.pricing.enterprise.features, ENTERPRISE_FEATURES_SHOWN)}
               <div className="mt-auto">
                 <button
                   type="button"
@@ -794,7 +821,7 @@ const Pricing = () => {
           </div>
 
           {/* Reassurances */}
-          <ul className="mx-auto mt-10 flex w-fit max-w-full flex-col items-start gap-x-8 gap-y-3 text-[0.9375rem] font-medium sm:w-auto sm:max-w-5xl sm:flex-row sm:flex-wrap sm:items-center sm:justify-center">
+          <ul className="mx-auto mt-[clamp(1.75rem,4svh,2.5rem)] flex w-fit max-w-full flex-col items-start gap-x-8 gap-y-3 text-[0.9375rem] font-medium sm:w-auto sm:max-w-5xl sm:flex-row sm:flex-wrap sm:items-center sm:justify-center">
             {[
               messages.pricing.guarantees.spendLimit,
               messages.pricing.guarantees.cancelAnytime,

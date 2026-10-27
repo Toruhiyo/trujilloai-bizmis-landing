@@ -672,6 +672,9 @@ export const it: Messages = {
       },
     },
     viewAllFaqs: "Vedi tutte le domande frequenti",
+    /** The plan cards show their top features; the rest open on demand. */
+    seeAllFeatures: "Vedi tutte le funzioni",
+    fewerFeatures: "Mostra meno funzioni",
     enterpriseInquirySubject: "Richiesta piano Enterprise",
   },
 
@@ -895,15 +898,19 @@ export const it: Messages = {
     badge: (cap: number) => `Solo i primi ${cap} negozi`,
     titleLine1: "Entra nel programma",
     titleLine2: "di accesso anticipato",
-    lead: (cap: number) =>
-      `Possono partecipare solo ${cap} negozi Shopify. Installa Bizmis gratis mentre l'accesso anticipato è aperto e mantieni i vantaggi da membro quando passi a un piano a pagamento.`,
+    /** The hero's lead as three scannable facts: the key part (bold) and the rest. */
+    leadPoints: (cap: number) => [
+      { strong: `Solo ${cap} negozi Shopify`, rest: "possono partecipare" },
+      { strong: `Installa Bizmis gratis`, rest: "mentre l'accesso anticipato è aperto" },
+      { strong: `Mantieni i vantaggi da membro`, rest: "quando passi a un piano a pagamento" },
+    ],
     seeLiveDemo: "Guarda la demo dal vivo",
     bookFounderCall: "Prenota 30 min con il fondatore",
     avatarAlt: "Invito all'accesso anticipato Bizmis",
     benefitsBadge: "Vantaggi dell'accesso anticipato",
     benefitsTitle: "Cosa ottieni",
     benefitsLead:
-      "Passa il mouse su ogni scheda per vedere cosa comprendono i tuoi vantaggi.",
+      "Cosa ricevono tutti i membri dell'accesso anticipato.",
     benefits: [
       {
         title: "Gratis come membro*",
