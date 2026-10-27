@@ -128,11 +128,11 @@
   --pal-nav-bg: rgb(255 248 240 / 0.9);
   --pal-nav-line: #f6dfc8;
 
-  /* the deepest pillar: the primary itself, deepening to its burnt shade */
+  /* the deepest pillar: the primary itself, the same all the way down (the band spans the whole pinned
+     section, ten screens: any gradient to a deeper shade turns it burnt by the end, so none; only light) */
   --pal-sales-bg:
-    radial-gradient(ellipse 60% 55% at 72% 40%, rgb(255 210 160 / 0.5), transparent 70%),
-    radial-gradient(ellipse 50% 60% at 10% 100%, rgb(200 98 15 / 0.45), transparent 70%),
-    linear-gradient(165deg, #f9a353 0%, #f0913e 45%, #e27a24 100%);
+    radial-gradient(ellipse 70% 20% at 72% 8%, rgb(255 214 170 / 0.35), transparent 70%),
+    linear-gradient(180deg, #f9a353 0%, #f7a050 100%);
 
   /* one step lighter: peach */
   --pal-support-bg:

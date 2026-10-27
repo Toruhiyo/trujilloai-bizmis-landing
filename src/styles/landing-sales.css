@@ -130,13 +130,13 @@
 /* ═════════ Variant C: the stage (bold orange) ═════════ */
 .bzl-pillar.p-sales.sl-c {
   --band-bg:
-    radial-gradient(ellipse 60% 55% at 72% 40%, rgb(255 205 150 / 0.55), transparent 70%),
-    radial-gradient(ellipse 50% 60% at 10% 100%, rgb(214 92 10 / 0.45), transparent 70%),
-    linear-gradient(165deg, #f7a457 0%, #f28c38 45%, #e6761f 100%);
+    radial-gradient(ellipse 70% 20% at 72% 8%, rgb(255 214 170 / 0.35), transparent 70%),
+    linear-gradient(180deg, #f9a353 0%, #f7a050 100%);
   --acc: #ffffff;
   --acc-ink: #ffffff;
   --acc-soft: rgb(255 255 255 / 0.28);
-  --grain-strength: 0.2;
+  /* (light: a heavier grain reads as the orange going muddy) */
+  --grain-strength: 0.1;
   color: #fff;
 }
 .sl-c .bzl-pillar-chip {
