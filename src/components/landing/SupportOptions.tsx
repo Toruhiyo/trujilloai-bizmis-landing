@@ -1,9 +1,10 @@
-import { useId, useRef } from "react";
+import { useRef } from "react";
 import type { ReactNode } from "react";
 import { useMessages } from "@/i18n/LocaleProvider";
 import { cn } from "@/lib/utils";
 import { RewindMark } from "./RewindSign";
 import { span } from "./useRewindLoop";
+import { useNow } from "./sales/hooks";
 import {
   Ask,
   Flip,
@@ -45,10 +46,12 @@ import type { DrawOption } from "./drawOptions";
  *   voice a dome over the inbox that catches the questions as they come.
  * 2 Clock (the default, also with no parameter): a clock in the corner, its
  *   hands racing round the hours; the shoppers' questions drift in from the
- *   edges and pile up in the inbox, over its rim; the agent lands on their
- *   way and catches every new one, so the pile stops growing (nothing is
- *   taken out of it: the claim is honest). "Questions pile up" struck, "The
- *   pile stops growing".
+ *   edges and pile up in the inbox, well over its rim; the agent (its head
+ *   render on its own) lands on their way, answers the backlog in a few big
+ *   gestures and catches the new ones, all but the rare one that needs the
+ *   merchant, so the inbox stays low with those few. Once it's done it goes
+ *   on in real time: the hands drifting round, a question now and then,
+ *   caught. "Questions pile up" struck, "Only the few that need you".
  * 3 Morning: one night of questions under the moon; the voice a wave over the
  *   inbox; the sun comes up on it empty.
  */
@@ -59,7 +62,18 @@ const STAMP = 360;
 const REVEAL = 600;
 
 type Copy = { label: string; problem: string; solution: string };
-type DrawProps = { t: number; F: number; W: number; kept: boolean; inbox: string };
+/** A drawing's frame: `t` along the scene, the fix at `F`, its "after" `W` long, and `now`, real time (ms) for what keeps going once it's done. */
+type DrawProps = { t: number; F: number; W: number; kept: boolean; inbox: string; now: number };
+
+/**
+ * The scene's timeline for a case whose agent answers at `fixAt` and that
+ * lasts `duration` (ms): a short "after" (the backlog answered, a few more
+ * caught), then a beat to read the win; the drawing never makes a case wait.
+ */
+export const supportClockTimes = (fixAt: number, duration: number) => {
+  const win = Math.min(3800, Math.max(2600, duration - fixAt - 400));
+  return { fixAt, win, end: fixAt + win + 500 };
+};
 
 /** Stamped on at `at`, as a Sales seal: big, then springing to size, squashing a little as it lands. */
 const stampAt = (t: number, at: number) => {
@@ -69,25 +83,17 @@ const stampAt = (t: number, at: number) => {
   return { q, s, sq };
 };
 
-/** The agent: the Support mockup's own (yusuke), its head render in a round crop ringed in marker, as the funnel's agent badges. */
+/** The agent: the Support mockup's own (yusuke), its head render on its own (no ring, no disc). */
 const AGENT_HEAD = "/landing/heads/yusuke.png";
 
 /** The agent's head, stamped on at `at`; it nods along while it talks (0 → 1). */
 const AgentHead = ({ x, y, r = 24, t, at, talk = 0 }: { x: number; y: number; r?: number; t: number; at: number; talk?: number }) => {
-  const clip = `${useId().replace(/:/g, "")}-head`;
   const { q, s, sq } = stampAt(t, at);
   if (s <= 0) return null;
   const nod = talk * Math.sin(t / 110) * 4;
   return (
     <g opacity={f(clamp01(q * 3))} transform={`translate(${f(x)} ${f(y)}) rotate(${f(-4 + nod)}) scale(${f(s * (1 + sq))} ${f(s * (1 - sq))})`}>
-      <defs>
-        <clipPath id={clip}>
-          <circle cx={0} cy={0} r={r - 1} />
-        </clipPath>
-      </defs>
-      <circle cx={0} cy={0} r={r} style={{ fill: "#fbefe3", stroke: "none" }} />
-      <image href={AGENT_HEAD} x={-r} y={-r} width={r * 2} height={r * 2} clipPath={`url(#${clip})`} preserveAspectRatio="xMidYMid slice" />
-      <path className="mk-main" d={loop(0, 0, r + 2, 5)} />
+      <image href={AGENT_HEAD} x={-r * 1.15} y={-r * 1.15} width={r * 2.3} height={r * 2.3} preserveAspectRatio="xMidYMid meet" />
     </g>
   );
 };
@@ -116,10 +122,10 @@ const Voice = ({ x, y, r0, dir, on, t, spread = 0.42 }: { x: number; y: number; 
 };
 
 /** Answered: a check popping up off (x, y) and fading (k: 0 → 1). */
-const Pop = ({ x, y, k }: { x: number; y: number; k: number }) => {
+const Pop = ({ x, y, k, size = 1 }: { x: number; y: number; k: number; size?: number }) => {
   if (k <= 0 || k >= 1) return null;
   return (
-    <g transform={`translate(${f(x)} ${f(y - 26 * easeOut(k))}) scale(${f(spring(clamp01(k * 2.2)))})`} opacity={f(1 - span(k, 0.55, 1))}>
+    <g transform={`translate(${f(x)} ${f(y - 26 * easeOut(k))}) scale(${f(size * spring(clamp01(k * 2.2)))})`} opacity={f(1 - span(k, 0.55, 1))}>
       <path className="mk-main" d="M-9 0 L-3 6 L10 -8" />
     </g>
   );
@@ -217,6 +223,7 @@ const Inbox = ({
   to,
   keep = 0,
   slot = (k: number) => slotOf(tray, k),
+  pops = true,
 }: {
   tray: Tray;
   t: number;
@@ -230,6 +237,8 @@ const Inbox = ({
   /** The bottom tickets that stay: the few that need the merchant. */
   keep?: number;
   slot?: (k: number) => { x: number; y: number; tilt: number };
+  /** A check for each ticket answered (else the caller draws its own). */
+  pops?: boolean;
 }) => {
   const drawIn = kept ? 1 : easeOut(span(t, 0, REVEAL));
   const full = Math.min(Math.max(4, keep + 3), n - 1);
@@ -263,7 +272,7 @@ const Inbox = ({
         const y = mix(s0.y - 14 * (1 - easeBack(land)), to[1], d) - 24 * hump(d);
         return <Ticket key={i} x={x} y={y} tilt={s0.tilt * (1 - d)} s={Math.min(1, land * 2) * (1 - 0.75 * d)} />;
       })}
-      {Array.from({ length: n }, (_, k) => k < keep ? null : (
+      {Array.from({ length: n }, (_, k) => !pops || k < keep ? null : (
         <Pop key={`d${k}`} x={to[0] + (k % 2 ? 30 : -30)} y={to[1] - 22} k={span(t, drainAt(k) + drain - 40, drainAt(k) + drain + 720)} />
       ))}
     </>
@@ -371,14 +380,20 @@ const SkyDrawing = ({ t, F, W, kept, inbox }: DrawProps) => {
   );
 };
 
-/* ── 2 Clock (the default): questions from everywhere; the agent stops the pile ── */
+/* ── 2 Clock (the default): questions from everywhere; the agent clears the pile and keeps it low ── */
 
 const CL = { x: 74, y: 120, r: 44 }; // time passing, on its own in the corner
 const CL_TRAY = { x: 404, y: 206, w: 124, h: 38 };
 const CL_HEAD = { x: 282, y: 150 };
 const CL_R = 30;
-const CL_LOSS = 7; // before the agent: every question a ticket, the pile over the tray's rim
-const CL_WIN = 6; // after: each one caught on its way; the pile stays as it is
+const CL_LOSS = 8; // before the agent: every question a ticket, the pile well over the tray's rim
+const CL_KEEP = 1; // the one at the bottom that needs the merchant: it stays
+/** The backlog, answered in a few big gestures, top down: the tickets of each one. */
+const CL_BATCHES = [[7, 6, 5], [4, 3, 2], [1]];
+const CL_BATCH_GAP = 420;
+const CL_WIN = 3; // after: the new ones, caught on their way...
+const CL_RARE = 1; // ...but the rare one that needs the merchant, which goes on to the inbox
+const CL_AMBIENT = 1900; // once it's done: a question every so often, caught (real time, so it never stops)
 /** Where the shoppers' questions drift in from: off the left and bottom edges (never out of the clock). */
 const CL_FROM = [[-16, 214], [150, 300], [-16, 258], [236, 300], [-16, 176], [90, 300], [-16, 236], [196, 300]] as const;
 /** Ticket `k` on the pile, swaying from side to side the higher it gets. */
@@ -387,32 +402,50 @@ const clSlot = (k: number) => ({
   y: CL_TRAY.y + CL_TRAY.h - 8 - k * 12,
   tilt: hand(k, 2) * 3 + Math.sin(k * 2.3) * Math.min(k, 8) * 1.3,
 });
+/** Where the agent catches a question from (sx, sy): on its side, toward where it came from. */
+const clHit = (sx: number, sy: number) => {
+  const a = Math.atan2(sy - CL_HEAD.y, sx - CL_HEAD.x);
+  return [CL_HEAD.x + Math.cos(a) * (CL_R + 22), CL_HEAD.y + Math.sin(a) * (CL_R + 22), a] as const;
+};
 
-const ClockDrawing = ({ t, F, W, kept, inbox }: DrawProps) => {
+const ClockDrawing = ({ t, F, W, kept, inbox, now }: DrawProps) => {
   const drawIn = kept ? 1 : easeOut(span(t, 0, REVEAL));
-  const FLY = 1000;
-  const TO = 640;
-  const lossAt = spread(CL_LOSS, 300, Math.max(400, F - FLY - 60));
+  const FLY = 950;
+  const TO = 600;
+  const lossAt = spread(CL_LOSS, 280, Math.max(380, F - FLY - 60));
   const landAt = (i: number) => lossAt(i) + FLY;
-  const winAt = spread(CL_WIN, F + 500, F + W - 600);
-  // the clock, time-lapse: the hour hand round once before the agent and once after, the minute hand racing
-  const hours = span(t, 300, F) + span(t, F, F + W);
+  const DRAIN = 380;
+  const batchAt = (b: number) => F + 300 + b * CL_BATCH_GAP;
+  const drainAt = (k: number) => {
+    const b = CL_BATCHES.findIndex((ks) => ks.includes(k));
+    return b < 0 ? Infinity : batchAt(b) + CL_BATCHES[b].indexOf(k) * 50;
+  };
+  const winAt = spread(CL_WIN, F + 300 + CL_BATCHES.length * CL_BATCH_GAP + 200, F + W - 700);
+  const rare = clSlot(CL_KEEP);
+  const rareLand = winAt(CL_RARE) + FLY;
+  const rareIn = span(t, rareLand - 120, rareLand + 220);
+  const done = t >= F + W;
+  // the clock, time-lapse (the hour hand round once before the agent and once after, the minute hand racing), and always drifting on in real time
+  const hours = span(t, 300, F) + span(t, F, F + W) + now / 24000;
   const hourA = hours * Math.PI * 2 - Math.PI / 2;
   const minA = hours * 8 * Math.PI * 2 - Math.PI / 2;
-  const answers = Array.from({ length: CL_WIN }, (_, i) => winAt(i) + TO);
-  const talk = talking(t, answers);
+  // once it's done: a question now and then, from an edge, caught
+  const amb = Math.floor(now / CL_AMBIENT);
+  const ambK = (now % CL_AMBIENT) / CL_AMBIENT;
+  const ambFrom = CL_FROM[(amb * 3) % CL_FROM.length];
+  const ambHit = clHit(ambFrom[0], ambFrom[1]);
+  const answers = [
+    ...CL_BATCHES.map((_, b) => batchAt(b) + DRAIN),
+    ...Array.from({ length: CL_WIN }, (_, i) => i).filter((i) => i !== CL_RARE).map((i) => winAt(i) + TO),
+  ];
+  const ambTalk = done ? span(ambK, 0.4, 0.48) * (1 - span(ambK, 0.62, 0.72)) : 0;
+  const talk = Math.max(talking(t, answers), ambTalk);
   // a question's way: past the agent's spot, on to `end` (u: 0 → 1, 0.5 at the agent)
   const route = (sx: number, sy: number, end: readonly number[], u: number) => {
     const c1 = [(sx + CL_HEAD.x) / 2, Math.min(sy, CL_HEAD.y) - 40];
     if (u <= 0.5) return quad([sx, sy], c1, [CL_HEAD.x, CL_HEAD.y], u * 2);
     const c2 = [CL_HEAD.x + (CL_HEAD.x - c1[0]) * 0.55, CL_HEAD.y + (CL_HEAD.y - c1[1]) * 0.55];
     return quad([CL_HEAD.x, CL_HEAD.y], c2, end, (u - 0.5) * 2);
-  };
-  // where the agent catches each one: on its side of the agent, toward where it came from
-  const hitOf = (i: number) => {
-    const [sx, sy] = CL_FROM[(CL_LOSS + i) % CL_FROM.length];
-    const a = Math.atan2(sy - CL_HEAD.y, sx - CL_HEAD.x);
-    return [CL_HEAD.x + Math.cos(a) * (CL_R + 22), CL_HEAD.y + Math.sin(a) * (CL_R + 22), a] as const;
   };
   return (
     <>
@@ -433,7 +466,7 @@ const ClockDrawing = ({ t, F, W, kept, inbox }: DrawProps) => {
       <path className="mk-mid" opacity={f(drawIn)} d={`M${CL.x} ${CL.y} L${f(CL.x + Math.cos(minA) * (CL.r - 14))} ${f(CL.y + Math.sin(minA) * (CL.r - 14))}`} />
       <circle className="mk-dot" cx={CL.x} cy={CL.y} r={3.8} opacity={f(drawIn)} />
 
-      {/* the inbox: it piles up until the agent lands, then it stops growing (nothing taken out of it) */}
+      {/* the inbox: piling up until the agent lands, then answered down to the few that need the merchant */}
       <Inbox
         tray={CL_TRAY}
         t={t}
@@ -441,14 +474,21 @@ const ClockDrawing = ({ t, F, W, kept, inbox }: DrawProps) => {
         inbox={inbox}
         n={CL_LOSS}
         landAt={landAt}
-        drainAt={() => F + 200}
-        drain={400}
-        to={[CL_HEAD.x, CL_HEAD.y]}
-        keep={CL_LOSS}
+        drainAt={drainAt}
+        drain={DRAIN}
+        to={[CL_HEAD.x + CL_R, CL_HEAD.y]}
+        keep={CL_KEEP}
         slot={clSlot}
+        pops={false}
       />
+      {rareIn > 0 && <Ticket x={rare.x} y={rare.y - 14 * (1 - easeBack(rareIn))} tilt={rare.tilt} s={Math.min(1, rareIn * 2)} />}
+      {/* a big check for each gesture that answers a batch of the backlog */}
+      {CL_BATCHES.map((_, b) => (
+        <Pop key={`b${b}`} x={CL_HEAD.x + 8 + (b % 2 ? -26 : 26)} y={CL_HEAD.y - CL_R - 16} k={span(t, batchAt(b) + DRAIN - 40, batchAt(b) + DRAIN + 760)} size={1.5} />
+      ))}
+      <Voice x={CL_HEAD.x} y={CL_HEAD.y} r0={CL_R + 8} dir={0.15} on={voicing(t, CL_BATCHES.map((_, b) => batchAt(b) + DRAIN))} t={t} />
 
-      {/* the shoppers' questions, drifting in from the edges: before, on to the inbox; after, caught by the agent */}
+      {/* the shoppers' questions, drifting in from the edges: before, on to the inbox; after, caught by the agent (all but the rare one) */}
       {Array.from({ length: CL_LOSS }, (_, i) => {
         const at = lossAt(i);
         if (t < at || t > landAt(i) + 60) return null;
@@ -460,23 +500,40 @@ const ClockDrawing = ({ t, F, W, kept, inbox }: DrawProps) => {
       })}
       {Array.from({ length: CL_WIN }, (_, i) => {
         const at = winAt(i);
-        const end = at + TO;
+        const isRare = i === CL_RARE;
+        const end = at + (isRare ? FLY : TO);
         if (t < at || t > end + 60) return null;
         const [sx, sy] = CL_FROM[(CL_LOSS + i) % CL_FROM.length];
-        const [hx, hy] = hitOf(i);
-        const [x, y] = arc(sx, sy, [hx, hy], easeInOut(span(t, at, end)), 30);
+        const [hx, hy] = clHit(sx, sy);
+        const [x, y] = isRare ? route(sx, sy, [rare.x, rare.y - 12], easeInOut(span(t, at, end))) : arc(sx, sy, [hx, hy], easeInOut(span(t, at, end)), 30);
         return <Ask key={`w${i}`} x={x} y={y} s={spring(span(t, at + 80, at + 380)) * (1 - easeIn(span(t, end - 140, end)))} />;
       })}
       {Array.from({ length: CL_WIN }, (_, i) => {
-        const [hx, hy, a] = hitOf(i);
-        const on = span(t, winAt(i) + TO - 220, winAt(i) + TO - 60) * (1 - span(t, winAt(i) + TO + 200, winAt(i) + TO + 380));
+        if (i === CL_RARE) return null;
+        const [sx, sy] = CL_FROM[(CL_LOSS + i) % CL_FROM.length];
+        const [hx, hy, a] = clHit(sx, sy);
+        const at = winAt(i) + TO;
         return (
           <g key={`p${i}`}>
-            <Voice x={CL_HEAD.x} y={CL_HEAD.y} r0={CL_R + 8} dir={a} on={on} t={t} spread={0.36} />
-            <Pop x={hx} y={hy - 12} k={span(t, winAt(i) + TO - 40, winAt(i) + TO + 720)} />
+            <Voice x={CL_HEAD.x} y={CL_HEAD.y} r0={CL_R + 8} dir={a} on={voicing(t, [at])} t={t} spread={0.36} />
+            <Pop x={hx} y={hy - 12} k={span(t, at - 40, at + 720)} />
           </g>
         );
       })}
+      {/* once it's done, it goes on: now and then a question drifts in and is caught */}
+      {done && (
+        <g>
+          {ambK < 0.46 && (
+            <Ask
+              x={arc(ambFrom[0], ambFrom[1], [ambHit[0], ambHit[1]], easeInOut(ambK / 0.46), 30)[0]}
+              y={arc(ambFrom[0], ambFrom[1], [ambHit[0], ambHit[1]], easeInOut(ambK / 0.46), 30)[1]}
+              s={spring(span(ambK, 0.02, 0.18)) * (1 - easeIn(span(ambK, 0.38, 0.46)))}
+            />
+          )}
+          <Voice x={CL_HEAD.x} y={CL_HEAD.y} r0={CL_R + 8} dir={ambHit[2]} on={span(ambK, 0.36, 0.44) * (1 - span(ambK, 0.56, 0.66))} t={now} spread={0.36} />
+          <Pop x={ambHit[0]} y={ambHit[1] - 12} k={span(ambK, 0.45, 0.85)} />
+        </g>
+      )}
       <AgentHead x={CL_HEAD.x} y={CL_HEAD.y} r={CL_R} t={t} at={F} talk={talk} />
     </>
   );
@@ -601,6 +658,7 @@ export const SupportDrawing = ({
   fixAt,
   win,
   rewinding = false,
+  active = true,
 }: {
   option: DrawOption;
   className?: string;
@@ -608,8 +666,11 @@ export const SupportDrawing = ({
   fixAt: number;
   win: number;
   rewinding?: boolean;
+  /** On screen: what keeps going in real time once it's done runs. */
+  active?: boolean;
 }) => {
   const support = useMessages().landing.support;
+  const now = useNow(active && option !== "old");
   // drawn in once; from then on the scenery stays, so a replay never starts blank
   const played = useRef(false);
   if (t >= REVEAL) played.current = true;
@@ -620,7 +681,7 @@ export const SupportDrawing = ({
   return (
     <div role="img" aria-label={copy.label} className={cn("bzl-day bzl-mk", className)}>
       <svg viewBox={`0 0 ${DW} ${DH}`} aria-hidden="true">
-        <Drawing t={t} F={fixAt} W={win} kept={played.current} inbox={support.day.inbox} />
+        <Drawing t={t} F={fixAt} W={win} kept={played.current} inbox={support.day.inbox} now={now} />
         <Label t={t} F={fixAt} copy={copy} />
       </svg>
       <RewindMark on={rewinding} />

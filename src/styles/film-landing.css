@@ -1452,19 +1452,26 @@
   gap: 1rem;
 }
 .bzs-lead { grid-area: lead; }
-/* the lead as the screen's opener line, over the drawing (as a Sales beat's) */
-.bzs-lead .bzl-lead {
-  max-width: 30rem;
+/* Customer Support's and Store Insights' leads: one style and one place, the
+   screen's line in ink (medium, a step under the bar's outcome), centred over
+   its drawing, whose handwritten label is centred too */
+.bzl-pillar-lead {
+  max-width: 24em;
+  margin-inline: auto;
+  text-align: center;
   color: var(--bzl-fg);
-  font-size: clamp(1.15rem, 5vw, 1.45rem);
-  font-weight: 600;
-  letter-spacing: -0.02em;
-  line-height: 1.22;
+  font-size: clamp(1.12rem, 4.6vw, 1.35rem);
+  font-weight: 500;
+  letter-spacing: -0.015em;
+  line-height: 1.3;
   text-wrap: balance;
+}
+@media (min-width: 1024px) {
+  .bzl-pillar-lead { font-size: clamp(1.2rem, min(1.7vw, 3svh), 1.6rem); }
 }
 .bzs-day { grid-area: day; position: relative; }
 .bzs-store { grid-area: store; position: relative; }
-.bzs-drawing { width: 100%; max-width: 34rem; }
+.bzs-drawing { width: 100%; max-width: 34rem; margin-inline: auto; }
 .bzs-device { width: 100%; margin-inline: auto; }
 /* (small enough that the drawing and the phone share the screen as the scroll plays them) */
 .bzs-device.is-phone { max-width: 10.5rem; }
@@ -1489,11 +1496,10 @@
     grid-template-rows: auto auto;
     grid-template-areas: "lead store" "day store";
     column-gap: clamp(2rem, 4vw, 4.5rem);
-    row-gap: clamp(0.6rem, 2svh, 1.4rem);
+    row-gap: clamp(0.75rem, 2.4svh, 1.6rem);
   }
   .bzs-lead { align-self: end; }
   .bzs-day { align-self: start; }
-  .bzs-lead .bzl-lead { font-size: clamp(1.3rem, min(2vw, 3.6svh), 1.9rem); }
   .bzs-device { max-width: none; }
 }
 /* pinned: the room under the opener is the stage's (a size container), so the device takes the
@@ -1518,7 +1524,7 @@
 }
 .bzi-lead { grid-area: lead; }
 .bzi-chart { grid-area: chart; }
-.bzi-clarity { max-width: 32rem; }
+.bzi-clarity { max-width: 32rem; margin-inline: auto; }
 .bzi-replay { grid-area: replay; position: relative; }
 @media (min-width: 1024px) {
   .bzi-grid {
@@ -1532,14 +1538,13 @@
     grid-template-areas: ". replay" "lead replay" "chart replay" ". replay";
     grid-template-rows: 1fr auto auto 1fr;
     column-gap: clamp(2rem, 5vw, 5rem);
-    row-gap: clamp(0.8rem, 3svh, 2rem);
+    row-gap: clamp(0.75rem, 2.4svh, 1.6rem);
   }
   .bzi-grid.is-pinned .bzi-replay { align-self: stretch; height: 100cqh; }
   .bzi-grid.is-pinned .bzi-replay > * { height: 100%; }
   .bzi-grid.is-pinned .bzi-clarity {
     max-width: min(100%, calc((100cqh - 8rem) * 2), 34rem);
   }
-  .bzi-grid.is-pinned .bzi-lead .bzl-lead { font-size: clamp(1.1rem, min(1.6vw, 2.8svh), 1.45rem); }
 }
 .p-insights .bzp-stage:has(.bzi-grid.is-pinned) { container-type: size; }
 

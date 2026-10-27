@@ -230,7 +230,7 @@ export const en = {
       /** Option drawings for Oriol to pick from (?support=1|2|3): each a loss struck then a win, in marker. */
       options: {
         sky: { label: "Shoppers' questions keep coming, day and night; answered out loud before they reach the support inbox, it stays clear", problem: "Inbox overflows", solution: "Inbox clear, day and night" },
-        clock: { label: "Shoppers' questions drift in from everywhere and pile up in the support inbox; once the agent catches them on their way, the pile stops growing", problem: "Questions pile up", solution: "The pile stops growing" },
+        clock: { label: "Shoppers' questions drift in from everywhere and pile up in the support inbox; once the agent lands it answers the backlog and catches the new ones, so only the few that need the merchant stay", problem: "Questions pile up", solution: "Only the few that need you" },
         morning: { label: "Questions all night long, answered out loud as they come: the merchant wakes up to an empty inbox", problem: "Questions all night", solution: "Wake up to an empty inbox" },
       },
     },

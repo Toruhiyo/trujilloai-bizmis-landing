@@ -214,7 +214,7 @@ export const es: Messages = {
       },
       options: {
         sky: { label: "Las preguntas de los clientes llegan de día y de noche; se responden en voz alta antes de llegar a la bandeja de soporte, que queda despejada", problem: "La bandeja se desborda", solution: "Bandeja despejada, de día y de noche" },
-        clock: { label: "Las preguntas de los clientes llegan de todas partes y se acumulan en la bandeja de soporte; cuando el agente las atrapa por el camino, la pila deja de crecer", problem: "Las preguntas se acumulan", solution: "La pila deja de crecer" },
+        clock: { label: "Las preguntas de los clientes llegan de todas partes y se acumulan en la bandeja de soporte; cuando llega el agente responde las pendientes y atrapa las nuevas, y solo quedan las pocas que necesitan al comerciante", problem: "Las preguntas se acumulan", solution: "Solo las pocas que te necesitan" },
         morning: { label: "Preguntas toda la noche, respondidas en voz alta al llegar: el comerciante se despierta con la bandeja vacía", problem: "Preguntas toda la noche", solution: "Despiertas con la bandeja vacía" },
       },
     },

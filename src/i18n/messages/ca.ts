@@ -214,7 +214,7 @@ export const ca: Messages = {
       },
       options: {
         sky: { label: "Les preguntes dels clients arriben de dia i de nit; es responen en veu alta abans d'arribar a la safata de suport, que queda neta", problem: "La safata es desborda", solution: "Safata neta, de dia i de nit" },
-        clock: { label: "Les preguntes dels clients arriben de tot arreu i s'acumulen a la safata de suport; quan l'agent les atrapa pel camí, la pila deixa de créixer", problem: "Les preguntes s'acumulen", solution: "La pila deixa de créixer" },
+        clock: { label: "Les preguntes dels clients arriben de tot arreu i s'acumulen a la safata de suport; quan arriba l'agent respon les pendents i atrapa les noves, i només queden les poques que necessiten el botiguer", problem: "Les preguntes s'acumulen", solution: "Només les poques que et necessiten" },
         morning: { label: "Preguntes tota la nit, respostes en veu alta quan arriben: el botiguer es desperta amb la safata buida", problem: "Preguntes tota la nit", solution: "Et despertes amb la safata buida" },
       },
     },

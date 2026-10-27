@@ -214,7 +214,7 @@ export const fr: Messages = {
       },
       options: {
         sky: { label: "Les questions des clients arrivent jour et nuit ; elles reçoivent une réponse à voix haute avant la boîte du support, qui reste dégagée", problem: "La boîte déborde", solution: "Boîte dégagée, jour et nuit" },
-        clock: { label: "Les questions des clients arrivent de partout et s'empilent dans la boîte du support ; quand l'agent les attrape en chemin, la pile ne grossit plus", problem: "Les questions s'empilent", solution: "La pile ne grossit plus" },
+        clock: { label: "Les questions des clients arrivent de partout et s'empilent dans la boîte du support ; à son arrivée, l'agent répond au retard et attrape les nouvelles, il ne reste que celles qui ont besoin du marchand", problem: "Les questions s'empilent", solution: "Juste celles qui ont besoin de vous" },
         morning: { label: "Des questions toute la nuit, avec une réponse à voix haute dès qu'elles arrivent : le marchand se réveille avec une boîte vide", problem: "Des questions toute la nuit", solution: "Réveil avec une boîte vide" },
       },
     },

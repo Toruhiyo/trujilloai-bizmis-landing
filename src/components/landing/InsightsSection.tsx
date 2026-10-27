@@ -34,7 +34,7 @@ const StackedChart = ({ pin, lead, option }: { pin: PinState; lead: string; opti
   return (
     <div className="bzi-grid">
       <Reveal className="bzi-lead">
-        <p className="bzl-lead max-w-md">{lead}</p>
+        <p className="bzl-lead bzl-pillar-lead">{lead}</p>
       </Reveal>
       <Reveal delay={80} className="bzi-chart">
         <InsightsDrawing option={option} className="bzi-clarity mx-auto" t={scene.t} replay={scene.replay} rewinding={scene.rewinding} />
@@ -66,7 +66,7 @@ const InsightsBody = ({ pin }: { pin: PinState }) => {
     <div className="bzl-wrap">
       <div className={cn("bzi-grid", pin.pinned && "is-pinned")}>
         <Reveal className="bzi-lead">
-          <p className="bzl-lead max-w-md">{ins.lead}</p>
+          <p className="bzl-lead bzl-pillar-lead">{ins.lead}</p>
         </Reveal>
         <Reveal delay={80} className="bzi-chart">
           <InsightsDrawing

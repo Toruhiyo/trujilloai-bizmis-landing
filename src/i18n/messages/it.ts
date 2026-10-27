@@ -214,7 +214,7 @@ export const it: Messages = {
       },
       options: {
         sky: { label: "Le domande dei clienti arrivano giorno e notte; ricevono risposta a voce prima della casella assistenza, che resta libera", problem: "La casella trabocca", solution: "Casella libera, giorno e notte" },
-        clock: { label: "Le domande dei clienti arrivano da ogni parte e si accumulano nella casella assistenza; quando l'agente le prende al volo, la pila smette di crescere", problem: "Le domande si accumulano", solution: "La pila smette di crescere" },
+        clock: { label: "Le domande dei clienti arrivano da ogni parte e si accumulano nella casella assistenza; quando arriva l'agente risponde all'arretrato e prende al volo le nuove, e restano solo quelle che servono al commerciante", problem: "Le domande si accumulano", solution: "Solo quelle che hanno bisogno di te" },
         morning: { label: "Domande tutta la notte, con risposta a voce appena arrivano: il commerciante si sveglia con la casella vuota", problem: "Domande tutta la notte", solution: "Ti svegli con la casella vuota" },
       },
     },
