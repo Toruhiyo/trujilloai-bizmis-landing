@@ -7,7 +7,7 @@ import { ClayTile } from "../clay";
 import { TabletFrame } from "../devices";
 import { STORE_URL } from "../visuals";
 import type { Messages } from "@/i18n/messages/en";
-import { bump, easeOutBack, useMedia, useScene } from "./hooks";
+import { bump, easeOutBack, useScene } from "./hooks";
 import { Sentinel } from "./scene";
 import type { MockupProps } from "./scene";
 import { useSalesCopy } from "./proto";
@@ -32,8 +32,8 @@ export const buyTimeline = (s: Messages["landing"]["sales"]) => {
 
 /**
  * "They buy it" (checkout), on a tablet with the widget in its BAR layout (a
- * glass pill centred on the page's foot, the head capping its left end; the
- * tablet stands up on phones): the shopper has it in the cart but stalls on
+ * glass pill centred on the page's foot, the head capping its left end; on
+ * phones the same tablet, scaled down): the shopper has it in the cart but stalls on
  * a last-minute question, typed into the bar (will it arrive in time?). The
  * agent answers out loud, every word of it (ships today, free returns, each
  * lighting up on the page as it's said), takes them to checkout, and the
@@ -45,7 +45,6 @@ const BuyMockup = ({ play, clock, active = true }: MockupProps) => {
   const m = useMessages();
   const s = useSalesCopy();
   const locale = useLocale();
-  const portrait = useMedia("(max-width: 639px)");
   const { go, placed, first, duration } = buyTimeline(s);
   // its own loop, unless its beat's clock drives it (with the funnel beside it)
   const own = useScene(duration, clock ? false : play);
@@ -69,7 +68,7 @@ const BuyMockup = ({ play, clock, active = true }: MockupProps) => {
   return (
     <div className="sl-buy relative">
       {!clock && <Sentinel ref={own.sentinel} off={own.off} />}
-      <TabletFrame url={STORE_URL} portrait={portrait}>
+      <TabletFrame url={STORE_URL}>
         <div className="relative h-full px-7 pt-3">
           {/* the store's own header, with its cart */}
           <div
@@ -92,7 +91,7 @@ const BuyMockup = ({ play, clock, active = true }: MockupProps) => {
 
           {/* the cart page */}
           <div
-            className={cn("mt-5 grid gap-7", portrait ? "grid-cols-1 gap-5" : "grid-cols-[1fr_250px]")}
+            className="mt-5 grid grid-cols-[1fr_250px] gap-7"
             aria-hidden="true"
           >
             <div>
@@ -131,7 +130,7 @@ const BuyMockup = ({ play, clock, active = true }: MockupProps) => {
             </div>
 
             {/* the order summary, then the placed order */}
-            <div className={cn("sl-buy-summary", portrait && "mt-0")}>
+            <div className="sl-buy-summary">
               <div className="sl-buy-summary-body" style={{ opacity: 1 - done }}>
                 <div className="flex items-center justify-between text-[13px] text-[var(--bzl-muted)]">
                   <span>{s.cart.subtotal}</span>

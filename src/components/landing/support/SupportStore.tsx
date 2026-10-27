@@ -1,12 +1,11 @@
-import { FileSearch, PackageSearch, Search, ShoppingBag, Truck } from "lucide-react";
+import { FileSearch, PackageSearch, Search, Truck } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import { useMessages } from "@/i18n/LocaleProvider";
 import type { Messages } from "@/i18n/messages/en";
 import { cn } from "@/lib/utils";
-import BizmisWidget, { Captions, MobileWidget, SentMessage, captionLength, captionVoice } from "../BizmisWidget";
+import BizmisWidget, { Captions, SentMessage, captionLength, captionVoice } from "../BizmisWidget";
 import { ClayTile } from "../clay";
-import { BrowserFrame, PhoneFrame } from "../devices";
-import { useMedia } from "../sales/hooks";
+import { BrowserFrame } from "../devices";
 import { span, typed } from "../useRewindLoop";
 import { STORE_URL } from "../visuals";
 
@@ -17,8 +16,7 @@ import { STORE_URL } from "../visuals";
  * the composer and sends it (it floats above the card), the agent works the
  * store (the tool on its laser), then answers out loud: the speaking pulse,
  * the lips, and the words as captions at the page's foot. Never a text reply
- * from the agent. A desktop browser; a phone on small screens (the widget's
- * bar at its foot).
+ * from the agent. A desktop browser (on phones too, scaled down).
  *
  * Purely a frame of its clock (`t`, ms along the case's timeline,
  * supportCase): the section drives it by the scroll, with the at-scale
@@ -62,26 +60,7 @@ export const supportCase = (cases: Cases, key: CaseKey) => {
 export type SupportCase = ReturnType<typeof supportCase>;
 
 /** The product page behind the widget: a big product tile, its lines, the add-to-cart. */
-const Page = ({ phone }: { phone: boolean }) =>
-  phone ? (
-    <div aria-hidden="true" className="absolute inset-0">
-      <div className="flex h-[48px] items-center gap-3 border-b border-[#f3ece4] px-4">
-        <span className="h-6 w-6 rounded-lg bg-[#e6dccf]" />
-        <span className="bzl-tile-line h-3 w-20" />
-        <span className="ml-auto grid h-8 w-8 place-items-center rounded-full bg-[#f6f0e9] text-[#b5a797]">
-          <ShoppingBag className="h-4 w-4" />
-        </span>
-      </div>
-      <div className="px-4 pt-4">
-        <ClayTile shape="egg" tint="blush" />
-        <div className="mt-4 space-y-2.5">
-          <div className="bzl-tile-line h-3.5 w-4/5" />
-          <div className="bzl-tile-line w-2/5" />
-          <div className="h-4 w-14 rounded-md bg-[#d9d4cc]" />
-        </div>
-      </div>
-    </div>
-  ) : (
+const Page = () => (
     <div aria-hidden="true" className="absolute inset-0">
       <div className="flex h-[64px] items-center gap-4 border-b border-[#f3ece4] px-10">
         <span className="h-7 w-7 rounded-lg bg-[#e6dccf]" />
@@ -128,7 +107,6 @@ const SupportStore = ({
   className?: string;
 }) => {
   const m = useMessages();
-  const phone = useMedia("(max-width: 639px)");
 
   const typing = t >= TYPE_AT - 200 && t < c.sendAt;
   const draft = typing ? typed(c.quote, t, TYPE_AT, c.msPerChar) : undefined;
@@ -145,34 +123,14 @@ const SupportStore = ({
       text={c.response}
       at={t - c.speakAt}
       msPerWord={MS_PER_WORD}
-      className={cn("bzs-cap", phone && "is-phone")}
+      className="bzs-cap"
     />
   );
-
-  if (phone)
-    return (
-      <div className={cn("bzs-device is-phone", className)}>
-        <PhoneFrame url={STORE_URL} className="w-full">
-          <Page phone />
-          <MobileWidget
-            head="yusuke"
-            live
-            paused={!active}
-            speaking={voice}
-            working={working}
-            placeholder={m.landing.support.placeholder}
-            draft={draft}
-            press={press}
-            above={caption ? <div className="flex justify-center">{caption}</div> : above}
-          />
-        </PhoneFrame>
-      </div>
-    );
 
   return (
     <div className={cn("bzs-device", className)}>
       <BrowserFrame url={STORE_URL}>
-        <Page phone={false} />
+        <Page />
         {/* the agent's words, as the widget's captions at the page's foot */}
         {caption && <div className="absolute bottom-6 left-0 flex w-[820px] justify-center px-6">{caption}</div>}
         <div className="bzs-widget absolute bottom-6 right-6 z-10">

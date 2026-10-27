@@ -223,21 +223,24 @@ export const arrangeOpener = (W: number, H: number, aspect: number, visits?: str
   const mid = fnTop + an.cy;
   const beats = [0, 1, 2].map((i) => {
     const A = DEVICE_ASPECT[i];
-    const w = Math.min(devCol, (H - 2 * pad) * A, i === 1 ? 380 : Infinity);
+    // (room under the device for the arrow coming up into it)
+    const under = clamp(H * 0.1, 56, 90);
+    const w = Math.min(devCol, (H - 2 * pad - under) * A, i === 1 ? 380 : Infinity);
     const h = w / A;
     const x = rest + colGap + (devCol - w) / 2;
     // level with the funnel's run, as far as the stage lets it
-    const y = clamp(mid - h / 2, pad, H - pad - h);
+    const y = clamp(mid - h / 2, pad, H - pad - under - h);
     const ch = an.chambers[i];
     const left = clamp(fnLeft + ch.xc - ow / 2, 0, rest - ow);
-    // the arrow: out from under the chamber's floor, a long easy swoop under the funnel, rising into the device's near side
+    // the arrow: out from under the chamber's floor, a long easy swoop under the funnel, curling up into the device's foot
     // (clear of the agent's badge on the floor)
     const lb = fnTop + ch.floor + clamp(fnH * 0.12, 26, 42);
     const s: Pt = [fnLeft + ch.xc, lb];
-    const e: Pt = [x - clamp(W * 0.012, 12, 20), clamp(y + h * 0.62, y + 40, y + h - 40)];
-    const dip = Math.max(s[1], e[1]) + clamp(H * 0.06, 30, 60);
+    const e: Pt = [x + w * 0.28, y + h + clamp(H * 0.016, 10, 16)];
+    const dip = Math.min(H - 6, Math.max(s[1], e[1]) + clamp(H * 0.07, 40, 64));
     const span = e[0] - s[0];
-    const arrow = markerArrow(s, [s[0] + span * 0.06, dip], [e[0] - span * 0.4, dip + 4], e, clamp(W * 0.013, 15, 22));
+    // (the last control right under the head: the stroke turns up into the device's foot)
+    const arrow = markerArrow(s, [s[0] + span * 0.15, dip + 6], [e[0] - span * 0.04, dip + 14], e, clamp(W * 0.013, 15, 22));
     return {
       x,
       y,
@@ -263,9 +266,6 @@ export const arrangeOpener = (W: number, H: number, aspect: number, visits?: str
   };
 };
 
-/** The devices' shapes as the mockups draw them on phones (they switch at 640 px: phone frames, the tablet stood up). */
-const PHONE_ASPECT = [390 / 844, 390 / 844, 768 / 1024];
-
 /**
  * ?beat=9b on a narrow stage (phones, small tablets), pinned like the
  * desktop and driven by the scroll the same way: the opener over its
@@ -275,7 +275,6 @@ const PHONE_ASPECT = [390 / 844, 390 / 844, 768 / 1024];
  */
 const arrangeOpenerStacked = (W: number, H: number, aspect: number, visits?: string): Arranged => {
   const pad = 10;
-  const phone = W < 640;
   const fs = clamp(W * 0.06, 19, 28);
   // kicker and up to two lines, then air before the label
   const openerH = 40 + fs * 2.3;
@@ -290,11 +289,12 @@ const arrangeOpenerStacked = (W: number, H: number, aspect: number, visits?: str
   const devTop = fnTop + fnH + gap;
   const room = H - pad - devTop;
   const beats = [0, 1, 2].map((i) => {
-    const A = (phone ? PHONE_ASPECT : DEVICE_ASPECT)[i];
+    const A = DEVICE_ASPECT[i];
     const w = Math.min(W * (A > 1 ? 1 : 0.86), room * A);
     const h = w / A;
     const x = (W - w) / 2;
-    const y = devTop;
+    // a short device (the browser, the tablet) a little lower in the room left, the arrow longer
+    const y = devTop + Math.max(0, room - h) * 0.3;
     const ch = an.chambers[i];
     // the arrow: out from under the chamber's floor, curving over to the device's top, pointing down into it
     const lb = fnTop + ch.floor + clamp(fnH * 0.16, 20, 30);

@@ -3,13 +3,13 @@ import { Search } from "lucide-react";
 import { useMessages } from "@/i18n/LocaleProvider";
 import { cn } from "@/lib/utils";
 import { span, typed } from "../useRewindLoop";
-import BizmisWidget, { Captions, MobileWidget, NavBanner, SentMessage, captionLength, captionVoice } from "../BizmisWidget";
+import BizmisWidget, { Captions, NavBanner, SentMessage, captionLength, captionVoice } from "../BizmisWidget";
 import { CLAY, TINT } from "../clay";
 import type { ClayShape } from "../clay";
-import { BrowserFrame, PhoneFrame } from "../devices";
+import { BrowserFrame } from "../devices";
 import { STORE_URL } from "../visuals";
 import type { Messages } from "@/i18n/messages/en";
-import { bump, easeInOut, useMedia, useScene } from "./hooks";
+import { bump, easeInOut, useScene } from "./hooks";
 import { Sentinel } from "./scene";
 import type { MockupProps } from "./scene";
 import { useSalesCopy } from "./proto";
@@ -57,19 +57,6 @@ const DESKTOP: Layout = (() => {
   };
 })();
 
-/** The 390 pt phone page: two columns, the picks in a row on top. */
-const PHONE: Layout = (() => {
-  const TILE = 171;
-  const PICK = 112;
-  return {
-    items: [6, 0, 2, 4, 13, 9],
-    picks: [6, 2, 13],
-    grid: (n) => ({ left: 16 + (n % 2) * (TILE + 16), top: 64 + Math.floor(n / 2) * (TILE + 40), width: TILE }),
-    pick: (k) => ({ left: 16 + k * (PICK + 11), top: 102, width: PICK }),
-    heading: { left: 16, top: 64 },
-  };
-})();
-
 /** The scene's timeline (ms): typing, send, the search, the catalog narrowing, the answer. */
 const T = { type: 450, send: 1650, work: 1950, narrow: 3700, speak: 4650 };
 const MS_PER_WORD = 300;
@@ -84,7 +71,7 @@ export const findTimeline = (s: Messages["landing"]["sales"]) => ({
 });
 
 /**
- * "They find it", on a desktop store (a phone on small screens): the shopper
+ * "They find it", on a desktop store (scaled down as is on phones): the shopper
  * types their ask in the Bizmis widget's bar and sends it, the agent searches
  * the catalog (its search tool on the laser, the "Taking you to" banner),
  * fifteen products narrow down to three candidates with the best one picked,
@@ -96,13 +83,12 @@ export const findTimeline = (s: Messages["landing"]["sales"]) => ({
 const FindMockup = ({ play, clock, active = true }: MockupProps) => {
   const m = useMessages();
   const s = useSalesCopy();
-  const phone = useMedia("(max-width: 639px)");
   const speakLen = captionLength(s.findCaption, MS_PER_WORD);
   // its own loop, unless its beat's clock drives it (with the funnel beside it)
   const own = useScene(findTimeline(s).duration, clock ? false : play);
   const t = clock ? clock.t : own.t;
   const sentinel = clock ? undefined : <Sentinel ref={own.sentinel} off={own.off} />;
-  const L = phone ? PHONE : DESKTOP;
+  const L = DESKTOP;
 
   const typing = t >= T.type - 200 && t < T.send;
   const draft = typing ? typed(s.findQuery, t, T.type, 30) : undefined;
@@ -133,7 +119,7 @@ const FindMockup = ({ play, clock, active = true }: MockupProps) => {
       text={s.findCaption}
       at={t - T.speak}
       msPerWord={MS_PER_WORD}
-      className={cn("sl-cap", phone ? "sl-cap-phone" : "sl-cap-find")}
+      className="sl-cap sl-cap-find"
     />
   );
 
@@ -165,7 +151,7 @@ const FindMockup = ({ play, clock, active = true }: MockupProps) => {
           const o = span(t, T.narrow + n * 14, T.narrow + 320 + n * 14);
           style = { ...from, opacity: 1 - o, transform: `scale(${1 - 0.14 * o})` };
         }
-        const scan = bump(t, T.work + 250 + n * (phone ? 160 : 75), 700);
+        const scan = bump(t, T.work + 250 + n * 75, 700);
         const ring = slot === 0 ? best : 0;
         return (
           <div key={i} className="absolute" style={style}>
@@ -192,42 +178,6 @@ const FindMockup = ({ play, clock, active = true }: MockupProps) => {
       })}
     </div>
   );
-
-  if (phone)
-    return (
-      <div className="sl-find relative">
-        {sentinel}
-        <PhoneFrame url={STORE_URL} className="w-full">
-          <div
-            aria-hidden="true"
-            className="flex h-[48px] items-center gap-3 border-b border-[#f3ece4] px-4"
-          >
-            <span className="h-6 w-6 rounded-lg bg-[#e6dccf]" />
-            <span className="bzl-tile-line h-3 w-20" />
-            <span className="ml-auto grid h-8 w-8 place-items-center rounded-full bg-[#f6f0e9] text-[#b5a797]">
-              <Search className="h-4 w-4" />
-            </span>
-          </div>
-          {catalog}
-          <MobileWidget
-            head="amber"
-            live
-            paused={!active}
-            speaking={voice}
-            working={working}
-            placeholder={m.landing.widget.placeholder}
-            draft={draft}
-            press={press}
-            above={
-              <>
-                {above}
-                {caption && <div className="flex justify-center">{caption}</div>}
-              </>
-            }
-          />
-        </PhoneFrame>
-      </div>
-    );
 
   return (
     <div className="sl-find relative">
