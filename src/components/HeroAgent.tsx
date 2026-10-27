@@ -13,8 +13,8 @@ import "@/styles/hero-agent.css";
  * typed placeholder and call button), with the live 3D avatar in the Bizmis
  * shirt. It says hello once, then takes turns: one line on what it does, and
  * the invite, spoken while it points at the play button (the pointing clip's
- * jabs land on "Press play"). It talks in the widget's captions, never in
- * chat bubbles.
+ * jabs land on "Press play"): to its right on desktop, up on phones. It talks
+ * in the widget's captions, never in chat bubbles.
  *
  * Renders the card and the captions as siblings, each placed by its className
  * in the parent (the store page): on the real widget the captions are a pill
@@ -32,6 +32,17 @@ const HOLD_MS = 1300;
 const INVITE_REST_MS = 5000;
 /** The gesture toward play: the shared clip pointing to the avatar's right, the visitor's left, where play is. */
 const POINT_AT_PLAY = "pointing_right";
+/**
+ * On phones (below lg) the card sits under play, so the agent points up at it:
+ * a landing-only clip (studio create_pointing_up_animation.py, same rig, same
+ * jabs as pointing_right), loaded on top of the shared clips. Until it's there
+ * (a page opened wide, then narrowed) the agent points to its right as on desktop.
+ */
+const POINT_UP_AT_PLAY = `pointing_up|${POINT_AT_PLAY}`;
+const POINT_UP_CLIP_URL = "/landing/animations/pointing-up.glb?v=1";
+/** Tailwind's lg: from here the card sits beside play (to its right), below it underneath. */
+const SIDE_BY_SIDE_QUERY = "(min-width: 1024px)";
+const isStacked = () => typeof window !== "undefined" && !window.matchMedia?.(SIDE_BY_SIDE_QUERY).matches;
 const START_DELAY_MS = 500;
 /** A load slower than this and the agent starts over the still render anyway. */
 const LIVE_WAIT_MS = 15000;
@@ -99,6 +110,19 @@ const HeroAgent = ({
   const [at, setAt] = useState({ step: still ? 2 : 0, word: still ? Infinity : 0 });
   const [gesture, setGesture] = useState<{ name: string; key: number } | null>(null);
   const cycle = useRef(0);
+  // where play is: above the card (phones) or to its left; the clip loads only if needed at first
+  const [loadPointUp] = useState(isStacked);
+  const stacked = useRef(loadPointUp);
+  useEffect(() => {
+    const mq = window.matchMedia?.(SIDE_BY_SIDE_QUERY);
+    if (!mq) return;
+    const update = () => {
+      stacked.current = !mq.matches;
+    };
+    update();
+    mq.addEventListener?.("change", update);
+    return () => mq.removeEventListener?.("change", update);
+  }, []);
   // start talking once the live avatar is up (its greeting wave is the first
   // hello), or at once when only the still render will show
   const [avatar, setAvatar] = useState<"loading" | "live" | "still">("loading");
@@ -119,7 +143,8 @@ const HeroAgent = ({
         if (word < s.line.length) {
           // the first hello rides the avatar's own greeting wave
           if (word === 0 && !led && s.gesture && cycle.current > 0) {
-            setGesture({ name: s.gesture, key: Date.now() });
+            const name = s.gesture === POINT_AT_PLAY && stacked.current ? POINT_UP_AT_PLAY : s.gesture;
+            setGesture({ name, key: Date.now() });
             // the gesture leads, so its beats land on the first words
             if (s.leadMs) return run(step, 0, s.leadMs, true);
           }
@@ -189,6 +214,7 @@ const HeroAgent = ({
                 expression="default"
                 speaking={speaking}
                 gesture={paused ? null : gesture}
+                extraAnimationsUrl={loadPointUp ? POINT_UP_CLIP_URL : null}
                 onStatus={setAvatar}
                 fallback={
                   <AgentImage

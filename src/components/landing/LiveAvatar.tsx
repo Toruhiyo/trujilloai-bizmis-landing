@@ -129,6 +129,8 @@ export type LiveAvatarProps = {
   speaking?: boolean;
   /** A one-shot body gesture (clip name, e.g. "beckon"); a new `key` plays it again. */
   gesture?: { name: string; key: number } | null;
+  /** Extra clips on the shared rig (a GLB), on top of the shared avatar-animations.glb. */
+  extraAnimationsUrl?: string | null;
   /** "live" once the 3D avatar is drawn, "still" when only the static render will show, "loading" before either. */
   onStatus?: (status: "loading" | "live" | "still") => void;
   /** The whole figure, legs included (default: waist-up, like the widget card). */
@@ -161,6 +163,7 @@ const LiveAvatar = ({
   shirtColor = "#F9A353",
   speaking = false,
   gesture = null,
+  extraAnimationsUrl = null,
   onStatus,
   fullBody = false,
   headOnly = false,
@@ -223,8 +226,9 @@ const LiveAvatar = ({
     if (!wants3d) return;
     warm(modelUrl);
     warm(ANIMATIONS_URL);
+    if (extraAnimationsUrl) warm(extraAnimationsUrl);
     loadCanvas().catch(() => setFailedFor(modelUrl));
-  }, [wants3d, modelUrl]);
+  }, [wants3d, modelUrl, extraAnimationsUrl]);
 
   const onReady = useCallback(() => setReadyFor(modelUrl), [modelUrl]);
   const onError = useCallback(
@@ -275,6 +279,7 @@ const LiveAvatar = ({
                 key={modelUrl}
                 modelUrl={modelUrl}
                 animationsUrl={ANIMATIONS_URL}
+                extraAnimationsUrl={extraAnimationsUrl}
                 shirtColor={shirtColor}
                 stampUrl={logo ? LOGO_STAMP_URL : null}
                 stampScale={LOGO_STAMP_SCALE}

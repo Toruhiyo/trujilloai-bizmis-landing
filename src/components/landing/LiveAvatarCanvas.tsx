@@ -67,6 +67,8 @@ export type AvatarExpression = "default" | "smile";
 export type LiveAvatarCanvasProps = {
   modelUrl: string;
   animationsUrl: string;
+  /** A second clips file on the same rig (e.g. a landing-only gesture), merged with the shared one. */
+  extraAnimationsUrl?: string | null;
   shirtColor: string;
   /** Logo painted on the chest (white wordmark PNG); null for a plain shirt. */
   stampUrl: string | null;
@@ -168,6 +170,7 @@ type AvatarProps = Omit<LiveAvatarCanvasProps, "active" | "onError">;
 const Avatar = ({
   modelUrl,
   animationsUrl,
+  extraAnimationsUrl = null,
   shirtColor,
   stampUrl,
   stampScale,
@@ -200,7 +203,12 @@ const Avatar = ({
     return copy;
   }, [cached]);
   const { animations } = useGLTF(animationsUrl, false, true);
-  const clips = useMemo(() => animations.filter((clip) => clip && clip.tracks.length > 0), [animations]);
+  // (no extra file: the shared one again, from the cache, so the hook count never changes)
+  const { animations: extra } = useGLTF(extraAnimationsUrl ?? animationsUrl, false, true);
+  const clips = useMemo(() => {
+    const all = extra === animations ? animations : [...animations, ...extra.filter((clip) => !animations.some((a) => a.name === clip.name))];
+    return all.filter((clip) => clip && clip.tracks.length > 0);
+  }, [animations, extra]);
   const { actions, mixer, names } = useAnimations(clips, group);
   const camera = useThree((s) => s.camera) as THREE.PerspectiveCamera;
   const size = useThree((s) => s.size);
@@ -485,6 +493,7 @@ const LiveAvatarCanvas = ({ active, onError, ...avatar }: LiveAvatarCanvasProps)
   // animations only start after the model has finished.
   useGLTF.preload(avatar.modelUrl, false, true);
   useGLTF.preload(avatar.animationsUrl, false, true);
+  if (avatar.extraAnimationsUrl) useGLTF.preload(avatar.extraAnimationsUrl, false, true);
 
   useEffect(() => {
     disposed.current = false;
