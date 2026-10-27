@@ -8,11 +8,9 @@ import {
   Plug,
   RefreshCw,
   ShieldCheck,
-  ShoppingCart,
   Store,
   Tag,
   Users,
-  Zap,
 } from "lucide-react";
 // the Shopify bag only on the Install button, as the nav's and the end card's Install
 import { FaShopify } from "react-icons/fa";
@@ -266,7 +264,6 @@ const ChargeClip = ({ frame, load, rim, label }: { frame: number; load: boolean;
  */
 const SetupSection = () => {
   const messages = useMessages();
-  const setup = messages.setup;
   const copy = messages.landing.setup;
   const reduced = useReducedMotion();
   const sep = useSep();
@@ -453,8 +450,15 @@ const SetupSection = () => {
           style={scale < 1 ? { transform: `scale(${scale.toFixed(3)})` } : undefined}
         >
           {/* One composition on one centre line: the header (as the pillars' openers, SectionHead),
-              the stage (the store and the agent in two equal columns, the wires between), the badges */}
-          <SectionHead icon={Plug} eyebrow={copy.eyebrow} title={copy.title} lead={copy.lead} />
+              the stage (the store and the agent in two equal columns, the wires between) */}
+          <SectionHead icon={Plug} eyebrow={copy.eyebrow} title={copy.title} lead={
+              // reading on from the title, then the short line under it (each its own line)
+              <>
+                <span className="block">{copy.leadOn}</span>
+                <span className="block">{copy.leadSync}</span>
+              </>
+            }
+          />
 
           {/* ph-no-capture: the session recorder would log every animated frame of it */}
           <div ref={ref} className="ph-no-capture relative mx-auto mt-[clamp(1.25rem,4.5svh,3rem)] flow-root max-w-5xl">
@@ -622,24 +626,6 @@ const SetupSection = () => {
             </div>
           </div>
 
-          {/* the three benefits, small pills on the stage's centre line (the eyebrow's pill, smaller) */}
-          <Reveal className="mt-[clamp(1rem,3.5svh,2.25rem)]">
-            <ul className="flex flex-wrap justify-center gap-2 sm:gap-3">
-              {[
-                { Icon: Zap, label: setup.badges.oneClick },
-                { Icon: RefreshCw, label: setup.badges.alwaysSynced },
-                { Icon: ShoppingCart, label: copy.readyNow },
-              ].map(({ Icon, label }) => (
-                <li
-                  key={label}
-                  className="flex items-center gap-2 rounded-full bg-white px-3.5 py-1.5 text-sm font-semibold tracking-[-0.01em] text-[var(--bzl-fg)] shadow-[inset_0_0_0_1px_rgb(59_36_22/0.09)]"
-                >
-                  <Icon className="h-3.5 w-3.5 text-[hsl(var(--primary))]" strokeWidth={2.25} />
-                  {label}
-                </li>
-              ))}
-            </ul>
-          </Reveal>
         </div>
       </div>
       {/* ?sep=3: the band's hand-drawn way in and out (after the pin, which must stay first) */}

@@ -262,12 +262,13 @@ export const it: Messages = {
       eyebrow: "Pronto all'uso",
       cards: ["Sito del negozio", "Catalogo prodotti", "Sconti", "Politiche", "Clienti", "Ordini"],
       title: "Installazione con un clic",
-      lead: "Un clic e il tuo agente vende già. Cambia qualsiasi cosa nel negozio e lo sa subito.",
+      /** The lead reads on from the title ("One-click setup" …and your agent's selling right away.), then one short line. */
+      leadOn: "…e il tuo agente vende già.",
+      leadSync: "Ogni modifica si sincronizza da sola.",
       install: "Installa",
       storeTitle: "Il tuo negozio online",
       syncing: "Sincronizzazione del negozio",
       synced: "Sincronizzato",
-      readyNow: "Pronto subito",
     },
   },
 

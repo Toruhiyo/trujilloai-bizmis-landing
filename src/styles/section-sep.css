@@ -21,6 +21,10 @@
   --sheet-inset: clamp(10px, 1.6vw, 28px);
   --sheet-r: clamp(24px, 2.8vw, 44px);
   --sheet-gap: clamp(28px, 5svh, 64px);
+  /* a sheet that fills the screen keeps this much air under the nav and above the screen's bottom */
+  --sheet-air: clamp(10px, 1.6svh, 16px);
+  /* inside a sheet: the content's margin from its top and bottom edges */
+  --sheet-pad: clamp(1rem, 4svh, 2.5rem);
   /* the page around the sheets stays white; the sheets carry the cream */
   --pal-setup-bg: transparent;
   --pal-custom-bg: var(--sheet-bg);
@@ -30,7 +34,29 @@
   margin-block: var(--sheet-gap);
   --setup-surface: var(--sheet-bg);
 }
-.bzl[data-sep="2"] .bzl-setup::before {
+/* pinned, the sheet is the pinned SCREEN's: one whole sheet in the window (under the nav, its
+   corners all in view) holding while the scroll plays it, as Customize's sheet fits the window;
+   the content kept inside it with margins (SetupSection scales it down if it would not fit) */
+.bzl[data-sep="2"] .bzl-setup-track {
+  margin-top: 0; /* (the pin's own air under the nav is the gap above it) */
+}
+.bzl[data-sep="2"] .bzl-setup-pin {
+  isolation: isolate;
+  padding-top: calc(var(--bzl-nav) + var(--sheet-air) + var(--sheet-pad));
+  padding-bottom: calc(var(--sheet-air) + var(--sheet-pad));
+}
+.bzl[data-sep="2"] .bzl-setup-pin::before {
+  content: "";
+  position: absolute;
+  inset: calc(var(--bzl-nav) + var(--sheet-air)) var(--sheet-inset) var(--sheet-air);
+  z-index: -1;
+  border-radius: var(--sheet-r);
+  background: var(--sheet-bg);
+  box-shadow: inset 0 0 0 1px var(--sheet-line);
+  pointer-events: none;
+}
+/* not pinned (short screens, reduced motion): the sheet is the section's */
+.bzl[data-sep="2"] .bzl-setup:not(.bzl-setup-track)::before {
   content: "";
   position: absolute;
   inset: 0 var(--sheet-inset);
@@ -54,6 +80,14 @@
   border-radius: var(--sheet-r);
   overflow: hidden; /* the ambient light stays on the sheet, its corners too */
   box-shadow: inset 0 0 0 1px var(--sheet-line);
+}
+/* a screen's worth (tablet and up, tall enough): the whole sheet fits the window under the nav */
+@media (min-width: 768px) and (min-height: 560px) {
+  .bzl[data-sep="2"] .bzl-customize.bzl-screen {
+    min-height: calc(100svh - var(--bzl-nav) - 2 * var(--sheet-air));
+    padding-top: var(--sheet-pad);
+    padding-bottom: var(--sheet-pad);
+  }
 }
 /* on the sheet the ambient light also fades before the sheet's sides */
 .bzl[data-sep="2"] .bzl-customize-glow {

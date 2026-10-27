@@ -1,3 +1,4 @@
+import type { ReactNode } from "react";
 import type { LucideIcon } from "lucide-react";
 import Reveal from "./Reveal";
 
@@ -20,7 +21,7 @@ const SectionHead = ({
   icon: LucideIcon;
   eyebrow: string;
   title: string;
-  lead?: string;
+  lead?: ReactNode;
   className?: string;
 }) => (
   <div className={className ? `bzl-shead ${className}` : "bzl-shead"}>

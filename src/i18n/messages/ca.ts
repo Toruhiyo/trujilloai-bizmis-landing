@@ -262,12 +262,13 @@ export const ca: Messages = {
       eyebrow: "Llest per fer servir",
       cards: ["Web de la botiga", "Catàleg de productes", "Descomptes", "Polítiques", "Clients", "Comandes"],
       title: "Instal·lació amb un clic",
-      lead: "Un clic i el teu agent ja ven. Canvia qualsevol cosa a la botiga i ja ho sap.",
+      /** The lead reads on from the title ("One-click setup" …and your agent's selling right away.), then one short line. */
+      leadOn: "…i el teu agent ja ven.",
+      leadSync: "Cada canvi se sincronitza sol.",
       install: "Instal·lar",
       storeTitle: "La teva botiga online",
       syncing: "Sincronitzant la botiga",
       synced: "Sincronitzada",
-      readyNow: "A punt a l'instant",
     },
   },
 

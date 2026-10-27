@@ -99,7 +99,7 @@ const CustomizeSection = () => {
           </div>
 
           <Reveal delay={120} className="order-1 lg:order-2">
-            <AvatarCarousel avatars={SHOWN} ambient={section} stageClassName="max-w-[min(30rem,52svh)]" />
+            <AvatarCarousel avatars={SHOWN} ambient={section} stageClassName="max-w-[min(30rem,calc(100svh-23rem))]" />
           </Reveal>
         </div>
       </div>

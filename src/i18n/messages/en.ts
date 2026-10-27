@@ -284,13 +284,14 @@ export const en = {
       eyebrow: "Plug and play",
       cards: ["Store website", "Products catalog", "Discounts", "Policies", "Customers", "Orders"],
       title: "One-click setup",
-      lead: "One click and your agent's selling right away. Change anything in your store and it already knows.",
+      /** The lead reads on from the title ("One-click setup" …and your agent's selling right away.), then one short line. */
+      leadOn: "…and your agent's selling right away.",
+      leadSync: "Every change syncs by itself.",
       install: "Install",
       /** The store-data card's heading (any store, not only Shopify's; the classic landing keeps setup.storeDataTitle). */
       storeTitle: "Your online store",
       syncing: "Syncing your store",
       synced: "Synced",
-      readyNow: "Ready right away",
     },
   },
 
