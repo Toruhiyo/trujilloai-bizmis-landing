@@ -10,9 +10,9 @@ export const en = {
     installBizmisOnShopify: "Install Bizmis on Shopify",
     liveDemo: "Live Demo",
     bookACall: "Book a call",
-    getStarted: "Get Started",
-    contactSupport: "Contact Support",
-    contactSales: "Contact Sales",
+    getStarted: "Get started",
+    contactSupport: "Contact support",
+    contactSales: "Contact sales",
     soon: "Soon",
     email: "hello@bizmis.ai",
   },
@@ -581,7 +581,7 @@ export const en = {
 
   pricing: {
     badge: "Pricing",
-    title: "Simple, Transparent Pricing",
+    title: "Simple, transparent pricing",
     lead: "Choose the plan that fits your business. All plans include full Shopify integration.",
     monthly: "Monthly",
     yearly: "Yearly",
@@ -694,7 +694,7 @@ export const en = {
     lead: "Find answers to the most common questions about our Shopify sales assistant",
     searchPlaceholder: "Search FAQs...",
     searchAria: "Search FAQs",
-    allQuestions: "All Questions",
+    allQuestions: "All questions",
     noResults: "No FAQs found matching your search.",
     stillHaveQuestions: "Still have questions?",
     teamIsHere: "Our team is here to help you get the most out of Bizmis.",
@@ -702,12 +702,12 @@ export const en = {
 
   faqs: {
     categories: {
-      "getting-started": "Getting Started",
-      "what-bizmis-does": "What Bizmis Does",
-      "pricing-billing": "Pricing & Billing",
+      "getting-started": "Getting started",
+      "what-bizmis-does": "What Bizmis does",
+      "pricing-billing": "Pricing & billing",
       customization: "Customization",
-      "privacy-data": "Privacy & Data",
-      "shopify-integration": "Shopify Integration",
+      "privacy-data": "Privacy & data",
+      "shopify-integration": "Shopify integration",
     },
     items: {
       "what-is-bizmis": {

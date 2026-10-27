@@ -1,0 +1,733 @@
+/* The site's own pages (Pricing, FAQs, Early Access) in the v2 landing's look
+   (SitePage.tsx). Self-contained on purpose: the root is .bzl-site, not the
+   landing's .bzl, and this file mirrors (not imports) what the pages need
+   from film-landing.css, palette-options.css and look-film.css (the tokens as
+   the landing resolves them under data-palette="1" data-look="film", the
+   section head, the lead, the wrap, the reveal, the nav and the footer).
+   Importing those files here would load them in the main bundle, ahead of the
+   landing's section styles, and change which equal-specificity rule wins on
+   "/". The landing's files stay untouched. Mirrors: SectionHead (.bzl-shead),
+   the cream sheet of Setup and Customize (section-sep.css), FeatureCard's
+   card, the nav's solid Install Now. */
+
+.bzl-site {
+  /* the landing's tokens, as resolved on "/" (film-landing.css, palette 1, the film look) */
+  --film-ink: #3b2416;
+  --bzl-bg: #ffffff;
+  --bzl-fg: #3b2416;
+  --bzl-ink-2: rgb(59 36 22 / 0.84);
+  --bzl-muted: rgb(59 36 22 / 0.74);
+  --bzl-faint: rgb(59 36 22 / 0.62);
+  --bzl-card: #fff1e3;
+  --bzl-tile: #fde9d5;
+  --bzl-border: #f3e6d8;
+  --bzl-border-strong: #edcba9;
+  --bzl-orange: #f9a353;
+  --bzl-orange-strong: hsl(var(--primary));
+  --bzl-orange-dark: var(--film-ink);
+  --bzl-orange-wash: #fff1e3;
+  --bzl-primary-soft: #ffe7d0;
+  --bzl-radius-card: 24px;
+  --bzl-radius-window: 22px;
+  --bzl-radius-item: 14px;
+  --bzl-radius-btn: 14px;
+  --bzl-shadow-card: 0 0 0 1px rgb(59 36 22 / 0.07), 0 16px 38px -30px rgb(28 24 20 / 0.35);
+  --bzl-spring: cubic-bezier(0.22, 1.35, 0.36, 1);
+  --bzl-ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --bzl-font: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --bzl-script: "Caveat", cursive;
+  /* the app's shadcn ink (the nav links) → the landing's ink */
+  --foreground: 22.7 45.7% 15.9%;
+  --card-foreground: 22.7 45.7% 15.9%;
+  --popover-foreground: 22.7 45.7% 15.9%;
+
+  /* the pages' own */
+  --site-ink: var(--film-ink);
+  --site-primary: hsl(var(--primary));
+  --site-soft: #fff1e3; /* the icon discs' and ghost buttons' cream */
+  --site-soft-2: #ffe7d0;
+  --site-sheet: #fff5ea; /* Setup's and Customize's sheet (section-sep.css) */
+  --site-sheet-line: rgb(249 163 83 / 0.14);
+  --site-sheet-inset: clamp(10px, 1.6vw, 28px);
+  --site-sheet-r: clamp(24px, 2.8vw, 44px);
+  --site-line: rgb(59 36 22 / 0.09);
+
+  background: var(--bzl-bg);
+  color: var(--bzl-fg);
+  font-family: var(--bzl-font);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Inter everywhere, nav included, over the app's base heading/body fonts (as
+   film-landing.css does for .bzl); :where keeps it at one class, so the
+   handwriting and the coupon's mono still win */
+.bzl-site :where(h1, h2, h3, h4, h5, h6, p, li, a, button, span, div, label, figcaption, .font-heading, .font-body) {
+  font-family: var(--bzl-font);
+}
+.bzl-faq-search input {
+  font-family: var(--bzl-font);
+}
+
+/* ── The landing's wrap (the nav's container) and reveal (film-landing.css) ── */
+.bzl-site .bzl-wrap {
+  width: 100%;
+  margin-inline: auto;
+  padding-inline: 1rem;
+}
+@media (min-width: 640px) {
+  .bzl-site .bzl-wrap { padding-inline: 1.5rem; }
+}
+@media (min-width: 1400px) {
+  .bzl-site .bzl-wrap { max-width: 1400px; }
+}
+.bzl-site .bzl-reveal {
+  opacity: 0;
+  transform: translateY(28px);
+  transition:
+    opacity 0.9s var(--bzl-ease),
+    transform 0.9s var(--bzl-ease);
+  transition-delay: var(--bzl-delay, 0ms);
+}
+.bzl-site .bzl-reveal.is-in {
+  opacity: 1;
+  transform: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  .bzl-site .bzl-reveal { opacity: 1; transform: none; transition: none; }
+}
+
+/* ── The nav, as on "/" once scrolled: the white frosted bar, ink links, the
+   handwritten "Early Access", the solid primary Install Now (untouched) ── */
+.bzl-site #site-navbar.fixed {
+  background-color: rgb(255 255 255 / 0.9);
+  border-color: #f3e6d8;
+}
+.bzl-site [data-nav="/early-access"] {
+  font-family: var(--bzl-script);
+  font-weight: 700;
+  font-size: 1.32em;
+  line-height: 1;
+  letter-spacing: 0.005em;
+  rotate: -2deg;
+}
+.bzl-site #site-navbar [data-nav="/early-access"],
+.bzl-site [data-nav="/early-access"]:not(.text-white) {
+  color: hsl(var(--primary));
+}
+
+/* ── The film footer, as on "/": cream, ink type ── */
+.bzl-site > footer {
+  --bzl-fg: var(--film-ink);
+  --bzl-muted: rgb(59 36 22 / 0.74);
+  --bzl-faint: rgb(59 36 22 / 0.62);
+  --bzl-border: #f3e6d8;
+  --bzl-orange-dark: var(--film-ink);
+  background: #fff8f0;
+  border-top: 1px solid #f3e6d8;
+}
+
+/* ── The section head (landing/SectionHead, film-landing.css .bzl-shead):
+   a centred pill eyebrow, the title in Inter 800 tight, the pillars' lead ── */
+.bzl-site-head {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: clamp(0.7rem, 2svh, 1.25rem);
+  margin-inline: auto;
+  text-align: center;
+}
+.bzl-site-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6em;
+  padding: 0.38em 1.15em 0.38em 0.38em;
+  border-radius: 999px;
+  background: #fff;
+  box-shadow: inset 0 0 0 1px rgb(59 36 22 / 0.09);
+  font-size: clamp(0.95rem, min(1.2vw, 2.3svh), 1.15rem);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+  white-space: nowrap;
+  color: var(--film-ink);
+}
+.bzl-site-pill-icon {
+  display: grid;
+  flex-shrink: 0;
+  place-items: center;
+  width: 2.3em;
+  aspect-ratio: 1;
+  border-radius: 999px;
+  background: #fff3e7;
+  color: hsl(var(--primary));
+}
+.bzl-site-pill-icon svg {
+  display: block;
+  width: 56%;
+  height: 56%;
+}
+.bzl-site-title {
+  margin: 0;
+  padding: 0 0.04em 0.06em;
+  font-size: clamp(2.4rem, min(5vw, 8.5svh), 4.75rem);
+  font-weight: 800;
+  letter-spacing: -0.05em;
+  line-height: 1;
+  color: var(--film-ink);
+  text-wrap: balance;
+}
+@media (max-width: 639px) {
+  .bzl-site-title { font-size: clamp(2.3rem, 11vw, 3rem); }
+}
+/* the lead: the landing's .bzl-pillar-lead */
+.bzl-site-lead {
+  max-width: 26em;
+  margin: 0 auto;
+  text-align: center;
+  color: var(--bzl-muted);
+  font-size: clamp(1.08rem, 4.4vw, 1.25rem);
+  font-weight: 400;
+  letter-spacing: -0.005em;
+  line-height: 1.45;
+  text-wrap: balance;
+}
+@media (min-width: 1024px) {
+  .bzl-site-lead { font-size: clamp(1.15rem, min(1.45vw, 2.7svh), 1.4rem); max-width: 30em; }
+}
+
+/* under the fixed nav (h-12, sm:h-16) */
+.bzl-site-main {
+  padding-top: 3rem;
+  isolation: isolate;
+  overflow-x: clip; /* the glow is wider than a phone */
+}
+@media (min-width: 640px) {
+  .bzl-site-main { padding-top: 4rem; }
+}
+
+/* the one soft pool of primary light behind the page's head (the hero's / end card's glow) */
+.bzl-site-glow {
+  position: absolute;
+  z-index: -1;
+  left: 50%;
+  top: 0;
+  width: min(1180px, 170vw);
+  height: 760px;
+  translate: -50% -28%;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, rgb(249 163 83 / 0.16), rgb(249 163 83 / 0.05) 55%, transparent);
+  pointer-events: none;
+}
+
+/* ── Rhythm ── */
+.bzl-site-hero {
+  padding-top: clamp(3rem, 9svh, 6.5rem);
+  padding-bottom: clamp(2rem, 5svh, 3.5rem);
+}
+.bzl-site-section {
+  padding-block: clamp(2.5rem, 7svh, 5rem);
+}
+.bzl-site-head.is-sub .bzl-site-title {
+  font-size: clamp(2.1rem, min(4.2vw, 7.5svh), 3.75rem);
+}
+@media (max-width: 639px) {
+  .bzl-site-head.is-sub .bzl-site-title { font-size: clamp(2rem, 9.5vw, 2.6rem); }
+}
+/* the pill wraps rather than overflow when a translated label runs long on a phone */
+@media (max-width: 479px) {
+  .bzl-site-pill { white-space: normal; max-width: 100%; text-align: left; }
+}
+
+/* ── The cream sheet (Setup's and Customize's surface): inset, rounded, a hairline ── */
+.bzl-site-sheet {
+  position: relative;
+  margin-inline: var(--site-sheet-inset);
+  border-radius: var(--site-sheet-r);
+  background: var(--site-sheet);
+  box-shadow: inset 0 0 0 1px var(--site-sheet-line);
+  padding-block: clamp(2rem, 6svh, 4.5rem);
+}
+.bzl-site-sheet > .bzl-wrap {
+  padding-inline: clamp(1rem, 2.4vw, 2.5rem);
+}
+
+/* ── A card resting on the page (FeatureCard's) ── */
+.bzl-site-card {
+  position: relative;
+  background: #fff;
+  border-radius: var(--bzl-radius-card);
+  box-shadow: var(--bzl-shadow-card);
+  color: var(--site-ink);
+}
+
+/* an icon in its cream disc (the feature cards', the section pills') */
+.bzl-site-disc {
+  display: grid;
+  flex-shrink: 0;
+  place-items: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  border-radius: var(--bzl-radius-item);
+  background: var(--site-soft);
+  color: var(--site-primary);
+}
+.bzl-site-disc svg { width: 1.3rem; height: 1.3rem; }
+
+/* ── Buttons: the nav's solid Install Now, a cream ghost, the ink ── */
+.bzl-site-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.55rem;
+  min-height: 3rem;
+  padding: 0.6rem 1.35rem;
+  border-radius: var(--bzl-radius-btn);
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  line-height: 1.2;
+  text-align: center;
+  background: var(--site-primary);
+  color: #fff;
+  box-shadow: 0 14px 30px -16px rgb(249 163 83 / 0.95);
+  transition:
+    transform 0.4s var(--bzl-spring),
+    background-color 0.25s var(--bzl-ease),
+    box-shadow 0.3s var(--bzl-ease),
+    color 0.25s;
+}
+.bzl-site-btn:hover {
+  transform: translateY(-1px);
+  background: #f7983f;
+  box-shadow: 0 18px 34px -16px rgb(249 163 83 / 1);
+}
+.bzl-site-btn:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px #fff, 0 0 0 5px rgb(249 163 83 / 0.6);
+}
+.bzl-site-btn:disabled {
+  opacity: 0.6;
+  transform: none;
+  cursor: default;
+}
+.bzl-site-btn svg { width: 1.05em; height: 1.05em; flex-shrink: 0; }
+.bzl-site-btn .is-arrow { transition: transform 0.3s var(--bzl-ease); }
+.bzl-site-btn:hover .is-arrow { transform: translateX(3px); }
+.bzl-site-btn.is-ghost {
+  background: var(--site-soft);
+  color: var(--site-ink);
+  box-shadow: none;
+}
+.bzl-site-btn.is-ghost:hover { background: var(--site-soft-2); }
+.bzl-site-btn.is-ink {
+  background: #fff;
+  color: var(--site-ink);
+  box-shadow: none;
+}
+.bzl-site-btn.is-ink:hover { background: var(--site-soft); }
+.bzl-site-btn.is-lg {
+  min-height: 3.5rem;
+  padding-inline: 1.75rem;
+  font-size: 1.0625rem;
+}
+
+/* a quiet text link (the hero's secondary ways in) */
+.bzl-site-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: var(--bzl-muted);
+  transition: color 0.2s;
+}
+.bzl-site-link:hover { color: var(--site-ink); }
+.bzl-site-link.is-strong {
+  font-weight: 600;
+  color: var(--site-ink);
+  text-decoration: underline;
+  text-decoration-color: rgb(249 163 83 / 0.6);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 4px;
+}
+.bzl-site-link.is-strong:hover { text-decoration-color: var(--site-primary); }
+
+/* ── Chips (FAQ categories) and the segmented switch (Pricing's billing) ── */
+.bzl-site-chip {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.4rem;
+  padding: 0.45rem 1rem;
+  border-radius: 999px;
+  background: #fff;
+  box-shadow: inset 0 0 0 1px var(--site-line);
+  color: var(--site-ink);
+  font-size: 0.9375rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  transition: background-color 0.25s, box-shadow 0.25s, color 0.25s;
+}
+.bzl-site-chip:hover { background: var(--site-soft); }
+.bzl-site-chip[aria-pressed="true"] {
+  background: var(--site-primary);
+  color: #fff;
+  box-shadow: 0 10px 22px -14px rgb(249 163 83 / 0.95);
+}
+.bzl-site-chip:focus-visible,
+.bzl-site-seg button:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px #fff, 0 0 0 4px rgb(249 163 83 / 0.6);
+}
+
+.bzl-site-seg {
+  display: inline-flex;
+  gap: 0.25rem;
+  padding: 0.3rem;
+  border-radius: 999px;
+  background: #fff;
+  box-shadow: inset 0 0 0 1px var(--site-line), 0 16px 34px -28px rgb(28 24 20 / 0.45);
+}
+.bzl-site-seg button {
+  min-width: 7rem;
+  min-height: 2.6rem;
+  padding: 0.4rem 1.25rem;
+  border-radius: 999px;
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--bzl-muted);
+  transition: background-color 0.3s var(--bzl-ease), color 0.3s;
+}
+.bzl-site-seg button:hover { color: var(--site-ink); }
+.bzl-site-seg button[aria-pressed="true"] {
+  background: var(--site-primary);
+  color: #fff;
+}
+
+/* ── Inputs (FAQ search, the discount code) ── */
+.bzl-site-input {
+  width: 100%;
+  min-height: 3.25rem;
+  padding: 0.75rem 1.1rem;
+  border-radius: var(--bzl-radius-btn);
+  background: #fff;
+  box-shadow: inset 0 0 0 1px rgb(59 36 22 / 0.14);
+  color: var(--site-ink);
+  font-size: 1rem;
+  outline: none;
+  transition: box-shadow 0.2s;
+}
+.bzl-site-input::placeholder { color: rgb(59 36 22 / 0.5); }
+.bzl-site-input:focus { box-shadow: inset 0 0 0 2px var(--site-primary), 0 0 0 4px rgb(249 163 83 / 0.16); }
+.bzl-site-input:disabled { background: #fffaf4; color: rgb(59 36 22 / 0.6); }
+
+/* ── Handwriting (the Caveat marker accents), as the landing's .bzl-hand ── */
+.bzl-site-hand {
+  font-family: var(--bzl-script, "Caveat", cursive);
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: 0.005em;
+  color: var(--site-primary);
+}
+.bzl-site-underline {
+  position: relative;
+  display: inline-block;
+}
+.bzl-site-underline > svg {
+  position: absolute;
+  left: -4%;
+  bottom: -0.32em;
+  width: 108%;
+  height: 0.42em;
+  pointer-events: none;
+}
+
+/* ════════════════════════ Pricing ════════════════════════ */
+.bzl-price-grid {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: 1fr;
+  max-width: 80rem;
+  margin-inline: auto;
+}
+@media (min-width: 640px) {
+  .bzl-price-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.25rem; }
+}
+@media (min-width: 1280px) {
+  .bzl-price-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+}
+.bzl-price-card {
+  display: flex;
+  flex-direction: column;
+  padding: clamp(1.4rem, 2vw, 1.85rem);
+  transition: transform 0.5s var(--bzl-spring), box-shadow 0.4s var(--bzl-ease);
+}
+.bzl-price-card:hover { transform: translateY(-3px); }
+.bzl-price-card.is-popular {
+  box-shadow:
+    inset 0 0 0 2px var(--site-primary),
+    0 26px 50px -30px rgb(249 163 83 / 0.95);
+}
+/* the enterprise card: the ink, cream type, primary ticks (the page's one dark surface) */
+.bzl-price-card.is-ink {
+  background: var(--site-ink);
+  color: #fff8f0;
+  box-shadow: 0 26px 50px -30px rgb(28 24 20 / 0.7);
+}
+.bzl-price-name {
+  font-size: 1.25rem;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+}
+.bzl-price-amount {
+  font-size: clamp(2.4rem, 3.4vw, 3rem);
+  font-weight: 800;
+  letter-spacing: -0.05em;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+.bzl-price-was {
+  font-size: 1.15rem;
+  font-weight: 500;
+  color: rgb(59 36 22 / 0.45);
+  text-decoration: line-through;
+  text-decoration-thickness: 2px;
+  font-variant-numeric: tabular-nums;
+}
+.bzl-price-per {
+  font-size: 0.9375rem;
+  font-weight: 500;
+  color: var(--bzl-muted);
+}
+.bzl-price-card.is-ink .bzl-price-per,
+.bzl-price-card.is-ink .bzl-price-muted { color: rgb(255 248 240 / 0.74); }
+.bzl-price-muted { color: var(--bzl-muted); }
+.bzl-price-rule {
+  height: 1px;
+  background: rgb(59 36 22 / 0.09);
+}
+.bzl-price-card.is-ink .bzl-price-rule { background: rgb(255 248 240 / 0.14); }
+.bzl-price-tick {
+  display: grid;
+  flex-shrink: 0;
+  place-items: center;
+  width: 1.3rem;
+  height: 1.3rem;
+  margin-top: 0.1rem;
+  border-radius: 999px;
+  background: var(--site-soft);
+  color: var(--site-primary);
+}
+.bzl-price-card.is-ink .bzl-price-tick { background: rgb(249 163 83 / 0.18); }
+.bzl-price-tick svg { width: 0.8rem; height: 0.8rem; stroke-width: 3; }
+/* "20% off": a small primary tag (was a seal) */
+.bzl-price-off {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.25rem 0.6rem;
+  border-radius: 999px;
+  background: var(--site-primary);
+  color: #fff;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  letter-spacing: -0.005em;
+  white-space: nowrap;
+}
+/* "Popular", by hand, over the card */
+.bzl-price-popular {
+  position: absolute;
+  top: -1.05rem;
+  left: 50%;
+  translate: -50% 0;
+  rotate: -3deg;
+  padding: 0.05em 0.55em 0.12em;
+  border-radius: 999px;
+  background: #fff;
+  box-shadow: inset 0 0 0 1.5px var(--site-primary);
+  font-size: 1.6rem;
+  white-space: nowrap;
+}
+.bzl-price-free {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  max-width: 80rem;
+  margin: 0 auto 1.25rem;
+  padding: 1.35rem clamp(1.35rem, 2vw, 1.85rem);
+}
+@media (min-width: 640px) {
+  .bzl-price-free { flex-direction: row; align-items: center; justify-content: space-between; }
+}
+.bzl-price-chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.2rem 0.65rem;
+  border-radius: 999px;
+  background: var(--site-soft);
+  color: var(--site-ink);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+/* ════════════════════════ FAQs ════════════════════════ */
+.bzl-faq-search {
+  position: relative;
+}
+.bzl-faq-search > svg {
+  position: absolute;
+  left: 1.05rem;
+  top: 50%;
+  translate: 0 -50%;
+  width: 1.2rem;
+  height: 1.2rem;
+  color: rgb(59 36 22 / 0.55);
+  pointer-events: none;
+}
+.bzl-faq-search .bzl-site-input {
+  padding-left: 2.9rem;
+  border-radius: 999px;
+}
+.bzl-faq-item {
+  overflow: hidden;
+  border-radius: 20px;
+  transition: box-shadow 0.4s var(--bzl-ease);
+}
+.bzl-faq-item.is-open {
+  box-shadow:
+    inset 0 0 0 1px rgb(249 163 83 / 0.38),
+    0 22px 44px -30px rgb(168 79 12 / 0.45);
+}
+.bzl-faq-q {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1.1rem 1.25rem;
+  text-align: left;
+  outline: none;
+}
+@media (min-width: 640px) {
+  .bzl-faq-q { padding: 1.25rem 1.6rem; }
+}
+.bzl-faq-q:focus-visible { box-shadow: inset 0 0 0 2px rgb(249 163 83 / 0.7); border-radius: 20px; }
+.bzl-faq-q h3 {
+  font-size: clamp(1rem, 1.3vw, 1.125rem);
+  font-weight: 650;
+  letter-spacing: -0.015em;
+  line-height: 1.35;
+  color: var(--site-ink);
+}
+.bzl-faq-chev {
+  display: grid;
+  flex-shrink: 0;
+  place-items: center;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 999px;
+  background: var(--site-soft);
+  color: var(--site-primary);
+  transition: transform 0.35s var(--bzl-ease), background-color 0.3s, color 0.3s;
+}
+.bzl-faq-item.is-open .bzl-faq-chev {
+  transform: rotate(180deg);
+  background: var(--site-primary);
+  color: #fff;
+}
+.bzl-faq-chev svg { width: 1.1rem; height: 1.1rem; }
+.bzl-faq-a {
+  padding: 0 1.25rem 1.25rem;
+  font-size: 1rem;
+  line-height: 1.6;
+  color: var(--bzl-muted);
+}
+@media (min-width: 640px) {
+  .bzl-faq-a { padding: 0 1.6rem 1.5rem; }
+}
+.bzl-faq-a strong { color: var(--site-ink); font-weight: 600; }
+
+/* ════════════════════════ Early Access ════════════════════════ */
+.bzl-ea-hero {
+  display: grid;
+  align-items: center;
+  gap: clamp(1.5rem, 4vw, 3.5rem);
+  max-width: 72rem;
+  margin-inline: auto;
+}
+@media (min-width: 1024px) {
+  .bzl-ea-hero { grid-template-columns: minmax(0, 1fr) minmax(0, 0.72fr); }
+}
+.bzl-ea-hero .bzl-site-head { align-items: center; text-align: center; }
+@media (min-width: 1024px) {
+  .bzl-ea-hero .bzl-site-head { align-items: flex-start; text-align: left; margin-inline: 0; }
+  .bzl-ea-hero .bzl-site-lead { margin-inline: 0; text-align: left; }
+}
+.bzl-ea-hero .bzl-site-title {
+  font-size: clamp(2.5rem, min(5.2vw, 9svh), 4.75rem);
+}
+@media (max-width: 639px) {
+  .bzl-ea-hero .bzl-site-title { font-size: clamp(2.3rem, 10.5vw, 3rem); }
+}
+.bzl-ea-avatar {
+  position: relative;
+  width: min(100%, 22rem);
+  margin-inline: auto;
+}
+@media (max-width: 1023px) {
+  .bzl-ea-avatar { width: min(62vw, 16rem); }
+}
+.bzl-ea-avatar::before {
+  content: "";
+  position: absolute;
+  inset: 12% -10% 0;
+  z-index: -1;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, rgb(249 163 83 / 0.28), rgb(249 163 83 / 0.08) 60%, transparent);
+}
+/* one column, as Customize's cards: a card opening below its title never leaves a hole beside it */
+.bzl-ea-benefits {
+  display: grid;
+  gap: 0.75rem;
+  max-width: 36rem;
+  margin-inline: auto;
+}
+.bzl-ea-way {
+  display: flex;
+  flex-direction: column;
+  gap: 1.1rem;
+  min-height: 15rem;
+  padding: clamp(1.5rem, 2.4vw, 2rem);
+  transition: transform 0.5s var(--bzl-spring), box-shadow 0.4s var(--bzl-ease);
+}
+.bzl-ea-way:hover { transform: translateY(-4px); }
+.bzl-ea-way.is-primary {
+  background: var(--site-primary);
+  color: #fff;
+  box-shadow: 0 30px 56px -30px rgb(249 163 83 / 1);
+}
+.bzl-ea-way.is-primary .bzl-site-disc { background: rgb(255 255 255 / 0.22); color: #fff; }
+.bzl-ea-way.is-primary .bzl-site-hand { color: #fff; }
+.bzl-ea-way-title {
+  font-size: clamp(1.75rem, 2.6vw, 2.25rem);
+  font-weight: 800;
+  letter-spacing: -0.045em;
+  line-height: 1.02;
+}
+.bzl-ea-way-arrow {
+  display: grid;
+  place-items: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 999px;
+  background: var(--site-soft);
+  color: var(--site-primary);
+  transition: transform 0.35s var(--bzl-ease);
+}
+.bzl-ea-way.is-primary .bzl-ea-way-arrow { background: rgb(255 255 255 / 0.22); color: #fff; }
+.bzl-ea-way:hover .bzl-ea-way-arrow { transform: translate(2px, -2px); }
+
+/* the benefit cards' icons, closed: primary glyphs on cream discs (as the landing's FeatureCards, look-film.css) */
+.bzl-ea-benefits button[aria-expanded="false"] > span:first-child > span:first-child {
+  background-color: #fff1e3;
+  color: hsl(var(--primary));
+}
