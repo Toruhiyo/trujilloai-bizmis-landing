@@ -22,26 +22,26 @@ import { RewindMark } from "./RewindSign";
  * motion shows the final frame.
  */
 
-const clamp01 = (x: number) => Math.min(1, Math.max(0, x));
-const easeOut = (x: number) => 1 - Math.pow(1 - clamp01(x), 3);
-const easeIn = (x: number) => Math.pow(clamp01(x), 2);
-const easeInOut = (x: number) =>
+export const clamp01 = (x: number) => Math.min(1, Math.max(0, x));
+export const easeOut = (x: number) => 1 - Math.pow(1 - clamp01(x), 3);
+export const easeIn = (x: number) => Math.pow(clamp01(x), 2);
+export const easeInOut = (x: number) =>
   x <= 0 ? 0 : x >= 1 ? 1 : x < 0.5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2;
 /** A spring-like settle: overshoots a little, then lands. */
-const easeBack = (x: number, s = 1.7) =>
+export const easeBack = (x: number, s = 1.7) =>
   x <= 0 ? 0 : x >= 1 ? 1 : 1 + (s + 1) * Math.pow(x - 1, 3) + s * Math.pow(x - 1, 2);
 /** A springy 0 → 1 with a wobble, for things that pop. */
-const spring = (k: number) => (k <= 0 ? 0 : k >= 1 ? 1 : 1 - Math.exp(-6 * k) * Math.cos(9 * k));
+export const spring = (k: number) => (k <= 0 ? 0 : k >= 1 ? 1 : 1 - Math.exp(-6 * k) * Math.cos(9 * k));
 /** 0 → 1 → 0 over [0, 1]: a squash's bump. */
-const hump = (k: number) => (k <= 0 || k >= 1 ? 0 : Math.sin(Math.PI * k));
-const mix = (a: number, b: number, k: number) => a + (b - a) * k;
-const f = (n: number) => n.toFixed(2);
+export const hump = (k: number) => (k <= 0 || k >= 1 ? 0 : Math.sin(Math.PI * k));
+export const mix = (a: number, b: number, k: number) => a + (b - a) * k;
+export const f = (n: number) => n.toFixed(2);
 
 /** The hand: a FIXED tiny offset per point (never per frame, so nothing boils). */
-const hand = (seed: number, k: number) => Math.sin(seed * 12.9898 + k * 78.233) * 0.6;
+export const hand = (seed: number, k: number) => Math.sin(seed * 12.9898 + k * 78.233) * 0.6;
 
 /** A rounded rectangle as one marker stroke, a hair off true. */
-const rrect = (x: number, y: number, w: number, h: number, r: number, seed = 0) => {
+export const rrect = (x: number, y: number, w: number, h: number, r: number, seed = 0) => {
   const j = (k: number) => hand(seed, k);
   return (
     `M${f(x + r + j(1))} ${f(y + j(2))} H${f(x + w - r + j(3))} Q${f(x + w)} ${f(y)} ${f(x + w + j(4))} ${f(y + r)} ` +
@@ -52,7 +52,7 @@ const rrect = (x: number, y: number, w: number, h: number, r: number, seed = 0) 
 };
 
 /** A hand-drawn circle: one loop that runs a little past its start. */
-const loop = (cx: number, cy: number, r: number, seed = 0) => {
+export const loop = (cx: number, cy: number, r: number, seed = 0) => {
   const pts: string[] = [];
   const n = 56;
   for (let i = 0; i <= n; i++) {
@@ -64,7 +64,7 @@ const loop = (cx: number, cy: number, r: number, seed = 0) => {
 };
 
 /** A stroke drawing itself in (k: 0 → 1), via a unit dash. */
-const drawn = (k: number) => ({
+export const drawn = (k: number) => ({
   pathLength: 1,
   strokeDasharray: "1 1",
   strokeDashoffset: f(1 - clamp01(k)),
@@ -72,7 +72,7 @@ const drawn = (k: number) => ({
 });
 
 /** A little sparkle scribble that pops in with a spring (k: 0 → 1). */
-const Sparkle = ({ x, y, k, size = 10, spin = 0 }: { x: number; y: number; k: number; size?: number; spin?: number }) => {
+export const Sparkle = ({ x, y, k, size = 10, spin = 0 }: { x: number; y: number; k: number; size?: number; spin?: number }) => {
   if (k <= 0) return null;
   const s = spring(k);
   return (
@@ -87,19 +87,19 @@ const Sparkle = ({ x, y, k, size = 10, spin = 0 }: { x: number; y: number; k: nu
    un-write on the rewind. ── */
 
 /** How long writing `text` takes: a steady pen, a little quicker for short words. */
-const writeMs = (text: string) => 160 + text.length * 30;
+export const writeMs = (text: string) => 160 + text.length * 30;
 /** The pen's pace: off the mark gently, steady, easing at the end. */
-const pen = (k: number) => {
+export const pen = (k: number) => {
   const x = clamp01(k);
   return x < 0.15 ? (x / 0.15) ** 2 * 0.1 : 0.1 + 0.9 * (1 - (1 - (x - 0.15) / 0.85) ** 1.6);
 };
 /** How much of `text` is written at `t` when the pen starts at `from` (0 → 1). */
-const writing = (text: string, t: number, from: number) => pen((t - from) / writeMs(text));
+export const writing = (text: string, t: number, from: number) => pen((t - from) / writeMs(text));
 /** The written-so-far part: a left-to-right reveal of the text's own box. */
-const reveal = (k: number) => (k >= 1 ? undefined : `inset(-30% ${((1 - k) * 100).toFixed(2)}% -30% -8%)`);
+export const reveal = (k: number) => (k >= 1 ? undefined : `inset(-30% ${((1 - k) * 100).toFixed(2)}% -30% -8%)`);
 
 /** A handwritten label, written on as `k` goes 0 → 1. */
-const Hand = ({
+export const Hand = ({
   k,
   className,
   children,
@@ -126,7 +126,7 @@ const Hand = ({
  * probes of the same texts (a <g> of <text>s in the SVG), again once the
  * marker font is in.
  */
-const useProbeWidths = (key: string) => {
+export const useProbeWidths = (key: string) => {
   const probes = useRef<SVGGElement>(null);
   const [w, setW] = useState<number[]>([]);
   useLayoutEffect(() => {
@@ -199,7 +199,7 @@ const slotOf = (k: number) => ({
 });
 
 /** A shopper's question: a little bubble with a "?" (s: its size, 0 → 1). */
-const Ask = ({ x, y, s }: { x: number; y: number; s: number }) =>
+export const Ask = ({ x, y, s }: { x: number; y: number; s: number }) =>
   s <= 0.01 ? null : (
     <g transform={`translate(${f(x)} ${f(y)}) scale(${f(s)})`}>
       <path className="mk-mid" d={`${rrect(-14, -13, 28, 22, 8, 3)} M-6 9 L-9 16 L1 9`} />
@@ -210,7 +210,7 @@ const Ask = ({ x, y, s }: { x: number; y: number; s: number }) =>
   );
 
 /** A ticket waiting in the inbox: a slip with a line on it. */
-const Ticket = ({ x, y, tilt, s = 1 }: { x: number; y: number; tilt: number; s?: number }) =>
+export const Ticket = ({ x, y, tilt, s = 1 }: { x: number; y: number; tilt: number; s?: number }) =>
   s <= 0.01 ? null : (
     <g transform={`translate(${f(x)} ${f(y)}) rotate(${f(tilt)}) scale(${f(s)})`}>
       <path className="mk-thin mk-white" d={rrect(-TK_W / 2, -TK_H / 2, TK_W, TK_H, 3.5, 11)} />
@@ -237,7 +237,7 @@ const Answered = ({ k, side }: { k: number; side: number }) => {
  * through at the fix, then the win written in its place and ticked, with a
  * swoosh under it. Fitted to `room` (units) from its measured widths.
  */
-const Flip = ({
+export const Flip = ({
   x,
   y,
   room,
@@ -565,7 +565,7 @@ const bar = (cx: number, h: number) => {
 };
 
 /** A five-point star, outlined. */
-const star = (r: number) => {
+export const star = (r: number) => {
   const pts: string[] = [];
   for (let i = 0; i < 10; i++) {
     const a = -Math.PI / 2 + (i * Math.PI) / 5;

@@ -227,6 +227,12 @@ export const en = {
         solution: "Answered right away",
         inbox: "Support inbox",
       },
+      /** Option drawings for Oriol to pick from (?support=1|2|3): each a loss struck then a win, in marker. */
+      options: {
+        sky: { label: "Shoppers' questions keep coming, day and night; answered out loud before they reach the support inbox, it stays clear", problem: "Inbox overflows", solution: "Inbox clear, day and night" },
+        clock: { label: "Questions round the clock pile up as tickets overnight; once answered out loud on their way, the inbox stays clear day and night", problem: "Tickets pile up overnight", solution: "Nothing piles up, day or night" },
+        morning: { label: "Questions all night long, answered out loud as they come: the merchant wakes up to an empty inbox", problem: "Questions all night", solution: "Wake up to an empty inbox" },
+      },
     },
     /** Store Insights on /v2: a short promise, noise that turns into a chart, beside the conversation replays. */
     insights: {
@@ -239,6 +245,12 @@ export const en = {
       clarity: {
         snippets: ["Ships to Canada?", "Size M or L?", "Returns?", "Gift wrap?"],
         topAsk: "Top ask: shipping",
+      },
+      /** Option drawings for Oriol to pick from (?insights=1|2|3): each a loss struck then a win, in marker. */
+      options: {
+        why: { label: "Many sessions that ended without a sale, looked into at once: what was missing shows up", problem: "Why no sale?", solution: "Missing: size guide" },
+        carts: { label: "A week of abandoned carts, looked into day by day, comes down to one reason", problem: "Carts left all week", solution: "The reason: sizes" },
+        week: { label: "A week of conversations, sorted into one picture of what shoppers want", problem: "Too many to read", solution: "What shoppers want" },
       },
     },
     /** Boost Sales's area, the chapter eyebrow over its outcome (its outcome is already "Boost Sales"). */

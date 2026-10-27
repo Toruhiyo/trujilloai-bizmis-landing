@@ -5,7 +5,9 @@ import { cn } from "@/lib/utils";
 import Reveal from "./Reveal";
 import BenefitIntro, { PIN_QUERY, useScenePlay } from "./pillar/BenefitIntro";
 import type { PinState } from "./pillar/BenefitIntro";
-import { SupportDay, supportDayTimes } from "./PillarMoments";
+import { supportDayTimes } from "./PillarMoments";
+import { useDrawOption } from "./drawOptions";
+import { SupportDrawing } from "./SupportOptions";
 import { useMedia, useScrollPlay, useScrollThrough } from "./sales/hooks";
 import RewindScreen from "./sales/RewindScreen";
 import SupportStore, { supportCase } from "./support/SupportStore";
@@ -107,6 +109,8 @@ const SupportBody = ({ pin }: { pin: PinState }) => {
   const rewinding = useRewindingOn(t, active);
   const c = cases[useReplays(t, duration) % cases.length];
   const day = supportDayTimes(c.speakAt, c.duration);
+  // the drawing Oriol is picking (?support=1|2|3; none: today's)
+  const option = useDrawOption("support");
   return (
     <div className="bzl-wrap">
       {/* ph-no-capture: the session recorder would log every animated frame of it */}
@@ -116,7 +120,7 @@ const SupportBody = ({ pin }: { pin: PinState }) => {
         </Reveal>
         {/* the merchant's side, at scale: the store's day and night of questions */}
         <Reveal delay={80} className="bzs-day">
-          <SupportDay className="bzs-drawing" t={t} fixAt={day.fixAt} win={day.win} rewinding={rewinding} />
+          <SupportDrawing option={option} className="bzs-drawing" t={t} fixAt={day.fixAt} win={day.win} rewinding={rewinding} />
         </Reveal>
         {/* one shopper's case, on the same clock */}
         <Reveal delay={160} className="bzs-store">

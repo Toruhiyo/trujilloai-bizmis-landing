@@ -212,6 +212,11 @@ export const ca: Messages = {
         solution: "Resposta a l'instant",
         inbox: "Safata de suport",
       },
+      options: {
+        sky: { label: "Les preguntes dels clients arriben de dia i de nit; es responen en veu alta abans d'arribar a la safata de suport, que queda neta", problem: "La safata es desborda", solution: "Safata neta, de dia i de nit" },
+        clock: { label: "Les preguntes a totes hores s'acumulen de nit com a tiquets; responent-les en veu alta pel camí, la safata queda neta de dia i de nit", problem: "Els tiquets s'acumulen de nit", solution: "Res s'acumula, ni de dia ni de nit" },
+        morning: { label: "Preguntes tota la nit, respostes en veu alta quan arriben: el botiguer es desperta amb la safata buida", problem: "Preguntes tota la nit", solution: "Et despertes amb la safata buida" },
+      },
     },
     insights: {
       title: "Mira què ven.",
@@ -222,6 +227,11 @@ export const ca: Messages = {
       clarity: {
         snippets: ["Envieu al Canadà?", "Talla M o L?", "Devolucions?", "Embolcall de regal?"],
         topAsk: "El més preguntat: enviaments",
+      },
+      options: {
+        why: { label: "Moltes sessions acabades sense compra, revisades de cop: apareix el que faltava", problem: "Per què no compren?", solution: "Falta: guia de talles" },
+        carts: { label: "Una setmana de cistelles abandonades, revisada dia a dia, es redueix a un motiu", problem: "Cistelles abandonades tota la setmana", solution: "El motiu: les talles" },
+        week: { label: "Una setmana de converses ordenada en una imatge del que volen els clients", problem: "Massa per llegir-les", solution: "El que volen els clients" },
       },
     },
     /** Boost Sales's area, the chapter eyebrow over its outcome (its outcome is already "Boost Sales"). */

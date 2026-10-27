@@ -212,6 +212,11 @@ export const fr: Messages = {
         solution: "Réponse immédiate",
         inbox: "Boîte du support",
       },
+      options: {
+        sky: { label: "Les questions des clients arrivent jour et nuit ; elles reçoivent une réponse à voix haute avant la boîte du support, qui reste dégagée", problem: "La boîte déborde", solution: "Boîte dégagée, jour et nuit" },
+        clock: { label: "Les questions à toute heure s'empilent la nuit en tickets ; avec une réponse à voix haute en chemin, la boîte reste dégagée jour et nuit", problem: "Les tickets s'empilent la nuit", solution: "Rien ne s'empile, ni jour ni nuit" },
+        morning: { label: "Des questions toute la nuit, avec une réponse à voix haute dès qu'elles arrivent : le marchand se réveille avec une boîte vide", problem: "Des questions toute la nuit", solution: "Réveil avec une boîte vide" },
+      },
     },
     insights: {
       title: "Voyez ce qui vend.",
@@ -222,6 +227,11 @@ export const fr: Messages = {
       clarity: {
         snippets: ["Livraison au Canada ?", "Taille M ou L ?", "Retours ?", "Emballage cadeau ?"],
         topAsk: "Question n°1 : la livraison",
+      },
+      options: {
+        why: { label: "Beaucoup de sessions terminées sans achat, examinées d'un coup : ce qui manquait apparaît", problem: "Pourquoi pas d'achat ?", solution: "Manque : guide des tailles" },
+        carts: { label: "Une semaine de paniers abandonnés, examinée jour après jour, se résume à une raison", problem: "Paniers abandonnés toute la semaine", solution: "La raison : les tailles" },
+        week: { label: "Une semaine de conversations, triée en une seule image de ce que veulent les clients", problem: "Trop pour tout lire", solution: "Ce que veulent vos clients" },
       },
     },
     /** Boost Sales's area, the chapter eyebrow over its outcome (its outcome is already "Boost Sales"). */

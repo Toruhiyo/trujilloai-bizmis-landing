@@ -3,7 +3,10 @@ import { cn } from "@/lib/utils";
 import { IdeaIcon } from "./AnimatedIcons";
 import BenefitIntro, { PinTrack, useScenePlay } from "./pillar/BenefitIntro";
 import type { PinState } from "./pillar/BenefitIntro";
-import { CLARITY_MS, InsightsClarity } from "./PillarMoments";
+import { CLARITY_MS } from "./PillarMoments";
+import { useDrawOption } from "./drawOptions";
+import type { DrawOption } from "./drawOptions";
+import { InsightsDrawing } from "./InsightsOptions";
 import Reveal from "./Reveal";
 import SessionReplay from "./SessionReplay";
 import { useMedia } from "./sales/hooks";
@@ -26,7 +29,7 @@ import { useMedia } from "./sales/hooks";
 const SUB_PIN = "(min-height: 600px)";
 
 /** Stacked: the lead and the chart, pinned on their own track, the scroll driving the chart. */
-const StackedChart = ({ pin, lead }: { pin: PinState; lead: string }) => {
+const StackedChart = ({ pin, lead, option }: { pin: PinState; lead: string; option: DrawOption }) => {
   const scene = useScenePlay(pin, CLARITY_MS);
   return (
     <div className="bzi-grid">
@@ -34,7 +37,7 @@ const StackedChart = ({ pin, lead }: { pin: PinState; lead: string }) => {
         <p className="bzl-lead max-w-md">{lead}</p>
       </Reveal>
       <Reveal delay={80} className="bzi-chart">
-        <InsightsClarity className="bzi-clarity mx-auto" t={scene.t} rewinding={scene.rewinding} />
+        <InsightsDrawing option={option} className="bzi-clarity mx-auto" t={scene.t} rewinding={scene.rewinding} />
       </Reveal>
     </div>
   );
@@ -44,11 +47,13 @@ const InsightsBody = ({ pin }: { pin: PinState }) => {
   const ins = useMessages().landing.insights;
   const scene = useScenePlay(pin, CLARITY_MS);
   const tall = useMedia(SUB_PIN);
+  // the drawing Oriol is picking (?insights=1|2|3; none: today's)
+  const option = useDrawOption("insights");
   if (!pin.pinned && tall)
     return (
       <div className="bzl-wrap">
         <PinTrack duration={CLARITY_MS} sub>
-          {(sub) => <StackedChart pin={sub} lead={ins.lead} />}
+          {(sub) => <StackedChart pin={sub} lead={ins.lead} option={option} />}
         </PinTrack>
         <div className="bzi-grid">
           <Reveal className="bzi-replay">
@@ -64,7 +69,8 @@ const InsightsBody = ({ pin }: { pin: PinState }) => {
           <p className="bzl-lead max-w-md">{ins.lead}</p>
         </Reveal>
         <Reveal delay={80} className="bzi-chart">
-          <InsightsClarity
+          <InsightsDrawing
+            option={option}
             className="bzi-clarity"
             t={pin.pinned ? scene.t : undefined}
             rewinding={scene.rewinding}

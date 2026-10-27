@@ -212,6 +212,11 @@ export const es: Messages = {
         solution: "Respuesta al momento",
         inbox: "Bandeja de soporte",
       },
+      options: {
+        sky: { label: "Las preguntas de los clientes llegan de día y de noche; se responden en voz alta antes de llegar a la bandeja de soporte, que queda despejada", problem: "La bandeja se desborda", solution: "Bandeja despejada, de día y de noche" },
+        clock: { label: "Las preguntas a todas horas se acumulan de noche como tickets; respondidas en voz alta por el camino, la bandeja queda despejada de día y de noche", problem: "Los tickets se acumulan de noche", solution: "Nada se acumula, ni de día ni de noche" },
+        morning: { label: "Preguntas toda la noche, respondidas en voz alta al llegar: el comerciante se despierta con la bandeja vacía", problem: "Preguntas toda la noche", solution: "Despiertas con la bandeja vacía" },
+      },
     },
     insights: {
       title: "Mira qué vende.",
@@ -222,6 +227,11 @@ export const es: Messages = {
       clarity: {
         snippets: ["¿Enviáis a Canadá?", "¿Talla M o L?", "¿Devoluciones?", "¿Envoltorio de regalo?"],
         topAsk: "Lo más preguntado: envíos",
+      },
+      options: {
+        why: { label: "Muchas sesiones que acabaron sin venta, revisadas de una vez: aparece lo que faltaba", problem: "¿Por qué no compran?", solution: "Falta: guía de tallas" },
+        carts: { label: "Una semana de carritos abandonados, revisada día a día, se reduce a un motivo", problem: "Carritos abandonados toda la semana", solution: "El motivo: las tallas" },
+        week: { label: "Una semana de conversaciones ordenada en una imagen de lo que quieren los clientes", problem: "Demasiadas para leer", solution: "Lo que quieren tus clientes" },
       },
     },
     /** Boost Sales's area, the chapter eyebrow over its outcome (its outcome is already "Boost Sales"). */

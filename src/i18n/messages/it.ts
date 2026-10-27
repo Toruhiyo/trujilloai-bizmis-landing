@@ -212,6 +212,11 @@ export const it: Messages = {
         solution: "Risposta immediata",
         inbox: "Casella assistenza",
       },
+      options: {
+        sky: { label: "Le domande dei clienti arrivano giorno e notte; ricevono risposta a voce prima della casella assistenza, che resta libera", problem: "La casella trabocca", solution: "Casella libera, giorno e notte" },
+        clock: { label: "Le domande a ogni ora si accumulano di notte come ticket; con una risposta a voce lungo la strada, la casella resta libera giorno e notte", problem: "I ticket si accumulano di notte", solution: "Niente in coda, né di giorno né di notte" },
+        morning: { label: "Domande tutta la notte, con risposta a voce appena arrivano: il commerciante si sveglia con la casella vuota", problem: "Domande tutta la notte", solution: "Ti svegli con la casella vuota" },
+      },
     },
     insights: {
       title: "Scopri cosa vende.",
@@ -222,6 +227,11 @@ export const it: Messages = {
       clarity: {
         snippets: ["Spedite in Canada?", "Taglia M o L?", "Resi?", "Confezione regalo?"],
         topAsk: "Domanda n.1: spedizioni",
+      },
+      options: {
+        why: { label: "Tante sessioni finite senza acquisto, esaminate in un colpo: emerge cosa mancava", problem: "Perché non comprano?", solution: "Manca: guida alle taglie" },
+        carts: { label: "Una settimana di carrelli abbandonati, esaminata giorno per giorno, si riduce a un motivo", problem: "Carrelli abbandonati tutta la settimana", solution: "Il motivo: le taglie" },
+        week: { label: "Una settimana di conversazioni, ordinata in un'unica immagine di cosa vogliono i clienti", problem: "Troppe da leggere", solution: "Cosa vogliono i clienti" },
       },
     },
     /** Boost Sales's area, the chapter eyebrow over its outcome (its outcome is already "Boost Sales"). */
