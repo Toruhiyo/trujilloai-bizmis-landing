@@ -71,7 +71,7 @@
   will-change: opacity;
 }
 /* a line's parts morph one by one (transforms need boxes) */
-.pi :is(.pi-big, .pi-dock) :is(.sl-title-part, .sl-title-lead) {
+.pi :is(.pi-big, .pi-dock) :is(.sl-title-part, .sl-title-lead, .pm-part) {
   display: inline-block;
 }
 
@@ -225,19 +225,18 @@
   border-right-color: rgb(255 255 255 / calc(0.35 * var(--pm-bar, 1)));
 }
 
-/* ── Dock styles (?dock=, PillarIntro) ── */
-/* b: the chapter number kept in the bar, in marker, before the name */
-.pi .pi-dock-num {
-  font-family: var(--bzl-script, "Caveat", cursive);
-  font-size: 1.45em;
-  font-weight: 700;
-  letter-spacing: -0.02em;
-  line-height: 0.7;
-  color: var(--od-accent, hsl(var(--primary)));
+/* ── Dock styles (?dock=, PillarIntro; the lockup in pillar-openers.css) ── */
+/* the hold: the opener stays put in the middle of the screen over this much scroll before the morph (pillar/useDockMorph) */
+.pi {
+  --pi-hold: max(9rem, 32svh);
 }
-.pi-dock-dot {
-  font-weight: 600;
-  opacity: 0.45;
+@media (max-width: 767px) {
+  .pi {
+    --pi-hold: max(8rem, 28svh);
+  }
+}
+.pi-hold {
+  height: var(--pi-hold);
 }
 /* a: the bar's ground grows from a pill in the middle (--pm-g, 0 → 1) */
 .pi-odx-a .pi-head::before {

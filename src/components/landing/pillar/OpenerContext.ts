@@ -25,16 +25,18 @@ export const PillarAreaContext = createContext<string | undefined>(undefined);
  * the chapter opener with its pieces flying into the bar). Applies to the
  * opener designs (?open=1..6, the page's default 5):
  *
- *   a  Calm       the opener a centred block (a marker kicker, the outcome),
- *                 scaling and sliding up as one into the bar's place; the
- *                 bar's ground grows from a pill behind it
- *   b  Editorial  left-aligned: the chapter number in marker with the area's
- *                 name and a hairline, the outcome under them; the number
- *                 stays in the bar ("02 · Customer Support | …")
+ *   a  Calm       centred: the icon in its disc and the area's name in small
+ *                 capitals over the outcome; the bar's ground grows from a pill
+ *   b  Editorial  left-aligned: the chapter number in marker, the area's name
+ *                 and a hairline over the outcome; the bar on the same left edge
  *   c  Curtain    centred: the number and the area's name (a marker swoosh
- *                 under it), the outcome; the band's colour (a soft tint on
- *                 white) wipes up behind the title and lifts into the bar
- *                 with it, uncovering the content
+ *                 under it) over the outcome; the band's colour rises behind
+ *                 the title and lifts into the bar with it
+ *
+ * In each the bar is the opener's lockup shrunk into place (the same mark,
+ * name and outcome, set the same way), and the opener holds a moment first
+ * (pillar/useDockMorph: the outcome grows a few %, a: its words light up,
+ * b: the hairline draws, c: the swoosh draws and the colour rises).
  */
 export type DockStyle = "0" | "a" | "b" | "c";
 

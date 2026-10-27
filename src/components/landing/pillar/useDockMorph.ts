@@ -30,14 +30,22 @@ import type { RefObject } from "react";
  * what's left of the run, so it meets the scroll's ends without a jump.
  *
  * Geometry is measured on layout / resize / fonts (transforms cleared), the
- * frame only reads the root's top and writes transforms and opacities. The
- * Styles (PillarIntro ?dock=): `mode: "block"` morphs the opener as ONE
- * piece (`data-pm="block"`, scaled and slid into the bar's content box,
- * cross-fading into the bar); `ground` is how the bar's ground arrives:
- * "fade" (in place), "pill" (grown from a pill in the middle, --pm-g) or
- * "curtain" (.pi-curtain in the head: a panel of the band's colour that
- * wipes up from the screen's bottom behind the title, then lifts into the
- * bar, uncovering the content).
+ * frame only reads the root's top and writes transforms and opacities.
+ * `ground` (PillarIntro ?dock=) is how the bar's ground arrives: "fade" (in
+ * place), "pill" (grown from a pill in the middle, --pm-g) or "curtain"
+ * (.pi-curtain in the head: a panel of the band's colour that wipes up from
+ * the screen's bottom behind the title, then lifts into the bar, uncovering
+ * the content).
+ *
+ * The HOLD (`hold`: a spacer in the flow before the runway, .pi-hold): over
+ * its height of scroll, before the morph, the opener stays put in the
+ * middle of the screen (.pi-big translated along with the scroll) while the
+ * scroll plays its small scene, forward and back (no timers): the pieces
+ * marked `data-ph` in it: "grow" scales up a few % (and eases back as the
+ * morph takes it), "word" lights up one after the other, "draw" draws in
+ * (scaleX from its origin); with the curtain, the band's colour rises from
+ * the screen's bottom. Then the morph runs over its own short run, as
+ * without a hold.
  *
  * As the section ends, the bar slides up under the nav and fades (EXIT). The
  * root's `data-pm-state` is "open" (the bar and the content hidden),
@@ -61,6 +69,10 @@ const NUDGE = 0.06;
  * section's edge out, clipped).
  */
 const EXIT = 0.2;
+/** The hold's scene: how much the outcome grows (scale − 1), how dim a word stands before it lights, how far (share of the screen) the curtain rises. */
+const GROW = 0.045;
+const DIM = 0.22;
+const RISE = 0.2;
 
 const clamp01 = (v: number) => Math.min(1, Math.max(0, v));
 const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
@@ -83,8 +95,9 @@ const textBox = (el: HTMLElement): Box & { lines: number; text: string } => {
   const tops: number[] = [];
   let text = "";
   for (let n = walker.nextNode(); n; n = walker.nextNode()) {
+    // the words' spaces count (a line split into words still reads as its twin), their boxes don't
+    text += n.textContent ?? "";
     if (!n.textContent?.trim()) continue;
-    text += n.textContent;
     range.selectNodeContents(n);
     for (const r of range.getClientRects()) {
       if (!r.width) continue;
@@ -104,7 +117,7 @@ const textBox = (el: HTMLElement): Box & { lines: number; text: string } => {
 
 type Pair = {
   big: HTMLElement;
-  /** Its twin in the bar (none for a block, which cross-fades into the whole bar). */
+  /** Its twin in the bar. */
   dock: HTMLElement | null;
   /** The big text box: left (screen), top from the root's top, size. */
   bx: number;
@@ -121,8 +134,6 @@ type Pair = {
   same: boolean;
   /** When the big piece fades out, and its twin fades in (morph progress). */
   out: [number, number];
-  /** It reaches the bar's height as early as its size (a block lands, then cross-fades). */
-  early?: boolean;
   in: [number, number];
 };
 type Solo = { el: HTMLElement; x: number; y: number; anchor: Pair | null };
@@ -137,12 +148,24 @@ type Geometry = {
   barH: number;
   /** How far under the section's end the next section shows its first piece. */
   lead: number;
+  /** The hold's scroll (px; 0 without one). */
+  hold: number;
+  /** The hold's scene: what grows, the words lit in turn, what draws in. */
+  grow: HTMLElement[];
+  words: HTMLElement[];
+  draw: HTMLElement[];
 };
-type Els = { root: HTMLElement; head: HTMLElement; big: HTMLElement; dock: HTMLElement; runway: HTMLElement };
-export type MorphMode = "pieces" | "block";
+type Els = {
+  root: HTMLElement;
+  head: HTMLElement;
+  big: HTMLElement;
+  dock: HTMLElement;
+  runway: HTMLElement;
+  hold: HTMLElement | null;
+};
 export type MorphGround = "fade" | "pill" | "curtain";
 
-const PARTS = ".sl-title-lead, .sl-title-part";
+const PARTS = ".sl-title-lead, .sl-title-part, .pm-part";
 
 /** The top of the first line of text in `scope` that's on the page (its text nodes' boxes), or null. */
 const firstText = (scope: Element) => {
@@ -164,7 +187,13 @@ const firstText = (scope: Element) => {
  */
 const leadAfter = (root: HTMLElement, big: HTMLElement) => {
   const bottom = root.getBoundingClientRect().bottom;
-  const tops = (scope: Element) => [...scope.querySelectorAll<HTMLElement>(".pi-big [data-pm]")].map((el) => el.getBoundingClientRect().top);
+  // a next opener's pieces as they stand without its hold's shift
+  const shift = (el: HTMLElement) => {
+    const t = el.closest<HTMLElement>(".pi-big")?.style.transform;
+    return t ? new DOMMatrix(t).m42 : 0;
+  };
+  const tops = (scope: Element) =>
+    [...scope.querySelectorAll<HTMLElement>(".pi-big [data-pm]")].map((el) => el.getBoundingClientRect().top - shift(el));
   const next = root.closest("section")?.nextElementSibling;
   if (next) {
     const pieces = tops(next);
@@ -175,7 +204,7 @@ const leadAfter = (root: HTMLElement, big: HTMLElement) => {
   return own.length ? Math.max(0, Math.min(...own) - root.getBoundingClientRect().top) : 0;
 };
 
-const measureGeometry = ({ root, head, big, dock, runway }: Els, mode: MorphMode): Geometry => {
+const measureGeometry = ({ root, head, big, dock, runway, hold: spacer }: Els): Geometry => {
   const rootTop = root.getBoundingClientRect().top;
   const headTop = head.getBoundingClientRect().top;
   const nav = parseFloat(getComputedStyle(head).top) || 0;
@@ -183,41 +212,9 @@ const measureGeometry = ({ root, head, big, dock, runway }: Els, mode: MorphMode
   const run = Math.max(48, runway.offsetHeight - dock.offsetHeight);
   const barH = head.offsetHeight;
   const lead = leadAfter(root, big);
+  const hold = spacer ? spacer.offsetHeight : 0;
+  const scene = (key: string) => (hold ? [...big.querySelectorAll<HTMLElement>(`[data-ph="${key}"]`)] : []);
 
-  // a block: the whole opener into the bar's content box, then the bar's pieces in its place
-  const block = mode === "block" ? big.querySelector<HTMLElement>('[data-pm="block"]') : null;
-  if (block) {
-    const lone = [...dock.querySelectorAll<HTMLElement>("[data-pm]")];
-    const boxes = lone.map(textBox);
-    const tx0 = Math.min(...boxes.map((b) => b.x));
-    const tx1 = Math.max(...boxes.map((b) => b.x + b.w));
-    const ty0 = Math.min(...boxes.map((b) => b.y));
-    const ty1 = Math.max(...boxes.map((b) => b.y + b.h));
-    const B = block.getBoundingClientRect();
-    const T = { x: tx0, y: ty0, w: tx1 - tx0, h: ty1 - ty0 };
-    const k = Math.min((T.h * 1.15) / B.height, T.w / B.width);
-    block.style.transformOrigin = "0 0";
-    const pair: Pair = {
-      big: block,
-      dock: null,
-      bx: B.left,
-      by: B.top - rootTop,
-      bw: B.width,
-      bh: B.height,
-      // centred on the bar's content
-      tx: T.x + T.w / 2 - (k * B.width) / 2,
-      ty: T.y - headTop + nav,
-      tw: T.w,
-      th: T.h,
-      k: Number.isFinite(k) && k > 0 ? k : 0.2,
-      same: false,
-      // a short dissolve, one after the other (the block's stack and the bar's row don't overlay)
-      out: [0.62, 0.84],
-      in: [0, 0],
-      early: true,
-    };
-    return { pairs: [pair], solos: [], lone, loneIn: [0.8, 1], nav, run, barH, lead };
-  }
   const keyed = (scope: HTMLElement) => {
     const map = new Map<string, HTMLElement>();
     for (const el of scope.querySelectorAll<HTMLElement>("[data-pm]")) map.set(el.dataset.pm!, el);
@@ -286,7 +283,20 @@ const measureGeometry = ({ root, head, big, dock, runway }: Els, mode: MorphMode
     const anchor = find(bigs.get(near)) ?? title;
     return { el, x: r.left, y: r.top - rootTop, anchor };
   });
-  return { pairs, solos, lone: [...docks.values()], loneIn: [0.55, 1], nav, run, barH, lead };
+  return {
+    pairs,
+    solos,
+    lone: [...docks.values()],
+    loneIn: [0.55, 1],
+    nav,
+    run,
+    barH,
+    lead,
+    hold,
+    grow: scene("grow"),
+    words: scene("word"),
+    draw: scene("draw"),
+  };
 };
 
 type State = "open" | "morph" | "docked";
@@ -297,9 +307,9 @@ export const useDockMorph = ({
   big,
   dock,
   runway,
+  hold,
   body,
   reduced,
-  mode = "pieces",
   ground = "fade",
   onDocked,
   prepare,
@@ -311,11 +321,11 @@ export const useDockMorph = ({
   dock: RefObject<HTMLElement>;
   /** The opener's room in the flow: the run plus the bar's height. */
   runway: RefObject<HTMLElement>;
+  /** The hold's spacer, before the runway (none: no hold). */
+  hold?: RefObject<HTMLElement>;
   /** The content after it, faded in over the morph's second half. */
   body: RefObject<HTMLElement>;
   reduced: boolean;
-  /** "pieces" (default): each piece to its twin; "block": the opener as one. */
-  mode?: MorphMode;
   /** How the bar's ground arrives: "fade" (default), "pill" or "curtain". */
   ground?: MorphGround;
   /** Called when the bar's docked state changes. */
@@ -337,6 +347,7 @@ export const useDockMorph = ({
     const d = dock.current;
     const w = runway.current;
     const c = body.current;
+    const sp = hold?.current ?? null;
     if (!r || !h || !b || !d || !w || !c) return;
     const curtain = ground === "curtain" ? h.querySelector<HTMLElement>(".pi-curtain") : null;
 
@@ -349,6 +360,7 @@ export const useDockMorph = ({
     let last = 0;
     let raf = 0;
     let gone = -1; // the bar's exit, as last painted
+    let held = -1; // the hold's scene, as last painted
 
     // the bar leaves as the section's end comes up the screen (see EXIT)
     const exit = (bottom: number, lead: number) => {
@@ -372,6 +384,12 @@ export const useDockMorph = ({
         : [];
     const clear = () => {
       c.style.opacity = "";
+      b.style.transform = "";
+      held = -1;
+      if (g) for (const el of [...g.grow, ...g.words, ...g.draw]) {
+        el.style.transform = "";
+        el.style.opacity = "";
+      }
       if (curtain) {
         curtain.style.transform = "";
         curtain.style.opacity = "";
@@ -397,12 +415,12 @@ export const useDockMorph = ({
       if (ground === "pill") h.style.setProperty("--pm-g", smooth(0.05, 0.85, e).toFixed(3));
       if (next !== "morph" || !g) return;
       if (curtain) {
-        // the band's colour wipes up from the screen's bottom (its top edge quick), then lifts into the bar
+        // the band's colour wipes up from the screen's bottom (its top edge quick; from where the hold left it), then lifts into the bar
         const vh = window.innerHeight;
-        const top = lerp(vh, g.nav, 1 - (1 - e) * (1 - e));
+        const top = lerp(vh - (g.hold ? vh * RISE : 0), g.nav, 1 - (1 - e) * (1 - e));
         const bottom = e < 0.45 ? vh : lerp(vh, g.nav + g.barH, (e - 0.45) / 0.55);
         curtain.style.transform = `translate3d(0, ${(top - g.nav).toFixed(1)}px, 0) scaleY(${(Math.max(g.barH, bottom - top) / g.barH).toFixed(4)})`;
-        curtain.style.opacity = (smooth(0, 0.08, e) * (1 - smooth(0.9, 1, e))).toFixed(3);
+        curtain.style.opacity = ((g.hold ? 1 : smooth(0, 0.08, e)) * (1 - smooth(0.9, 1, e))).toFixed(3);
       }
       c.style.opacity = smooth(0.45, 1, e).toFixed(3);
       // the size and the row settle ahead of the height, so pieces bound for one line don't run into each other
@@ -411,7 +429,7 @@ export const useDockMorph = ({
         const top = rootTop + p.by;
         const kb = Math.pow(p.k, es);
         const left = lerp(p.bx, p.tx, es);
-        const cy = lerp(top + p.bh / 2, p.ty + p.th / 2, p.early ? es : e);
+        const cy = lerp(top + p.bh / 2, p.ty + p.th / 2, e);
         return { top, kb, left, cy };
       };
       for (const p of g.pairs) {
@@ -440,13 +458,50 @@ export const useDockMorph = ({
       for (const el of g.lone) el.style.opacity = lo;
     };
 
+    // the hold's scene (q: 0 → 1 over the hold), easing back as the morph (e) takes the opener
+    const scene = (q: number, e: number) => {
+      if (!g || !g.hold) return;
+      const key = q + e * 2;
+      if (Math.abs(key - held) < 0.0005) return;
+      held = key;
+      const s = 1 + GROW * (1 - Math.pow(1 - q, 2)) * (1 - smooth(0, 0.6, e));
+      for (const el of g.grow) el.style.transform = s > 1.0001 ? `scale(${s.toFixed(4)})` : "";
+      const n = g.words.length;
+      g.words.forEach((el, i) => {
+        // each word lights over a third of the hold, one after the other, all lit by its 90%
+        const a = n > 1 ? (i / (n - 1)) * 0.6 : 0;
+        el.style.opacity = (DIM + (1 - DIM) * smooth(a, a + 0.3, q)).toFixed(3);
+      });
+      for (const el of g.draw) el.style.transform = `scaleX(${smooth(0.05, 0.85, q).toFixed(4)})`;
+      if (curtain && e <= 0) {
+        // the band's colour rises from the screen's bottom, under the opener
+        const vh = window.innerHeight;
+        const rise = RISE * vh * (1 - Math.pow(1 - q, 2));
+        const top = vh - rise;
+        curtain.style.transform = rise > 0.5 ? `translate3d(0, ${(top - g.nav).toFixed(1)}px, 0) scaleY(${(Math.max(1, rise) / g.barH).toFixed(4)})` : "";
+        curtain.style.opacity = rise > 0.5 ? "1" : "";
+      }
+    };
+
+    // paint the morph where it stands, the opener held in place (carried down along the scroll) and its scene
+    const place = (top: number) => {
+      if (!g) return;
+      const e = reduced ? prog : ease(prog);
+      const past = g.nav - top;
+      const shift = Math.min(Math.max(past, 0), g.hold);
+      paint(e, top + shift);
+      if (!g.hold) return;
+      b.style.transform = shift > 0 ? `translate3d(0, ${shift.toFixed(1)}px, 0)` : "";
+      scene(reduced ? 1 : clamp01(past / g.hold), e);
+    };
+
     const frame = (now: number) => {
       raf = 0;
       if (!g) return;
       const box = r.getBoundingClientRect();
       const top = box.top;
       exit(box.bottom, g.lead);
-      const p = clamp01((g.nav - top) / g.run);
+      const p = clamp01((g.nav - top - g.hold) / g.run);
       if (p !== pPrev) {
         // carry on from where the morph stands, onto what's left of the run
         prog = p > pPrev ? 1 - ((1 - prog) * (1 - p)) / (1 - pPrev) : (prog * p) / pPrev;
@@ -465,7 +520,7 @@ export const useDockMorph = ({
         if (Math.abs(to - prog) < 0.004) prog = to;
       }
       last = now;
-      paint(reduced ? prog : ease(prog), top);
+      place(top);
       // keep ticking while it's partway (to notice the rest and settle)
       if (prog > 0 && prog < 1) raf = requestAnimationFrame(frame);
       else last = 0;
@@ -477,16 +532,16 @@ export const useDockMorph = ({
     const measure = () => {
       clear();
       prep.current?.();
-      g = measureGeometry({ root: r, head: h, big: b, dock: d, runway: w }, mode);
+      g = measureGeometry({ root: r, head: h, big: b, dock: d, runway: w, hold: sp });
       state = null;
       const top = r.getBoundingClientRect().top;
-      const p = clamp01((g.nav - top) / g.run);
+      const p = clamp01((g.nav - top - g.hold) / g.run);
       if (pPrev === 0 && prog === 0) {
         // first measure: start where the scroll is (finishing if partway)
         prog = reduced ? (p >= 0.5 ? 1 : 0) : p;
       }
       pPrev = p;
-      paint(reduced ? prog : ease(prog), top);
+      place(top);
       tick();
     };
 
@@ -503,6 +558,7 @@ export const useDockMorph = ({
     ro.observe(d);
     ro.observe(b);
     ro.observe(w);
+    if (sp) ro.observe(sp);
     document.fonts?.ready.then(remeasure).catch(() => {});
     window.addEventListener("scroll", tick, { passive: true });
     window.addEventListener("resize", remeasure);
@@ -518,5 +574,5 @@ export const useDockMorph = ({
       delete r.dataset.pmState;
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [reduced, mode, ground, ...deps]);
+  }, [reduced, ground, ...deps]);
 };

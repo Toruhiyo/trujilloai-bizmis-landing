@@ -301,13 +301,15 @@
   font-size: clamp(3rem, min(7.5vw, 13svh), 8rem);
 }
 
-/* ═══════════ Dock styles a · b · c (?dock=, pillar/OpenerDesign DockOpener) ═══════════
-   One type system with the page: the outcome an Inter headline on one line
-   (fitted, --pi-fit), marker handwriting (Caveat) as the only accent, no
-   icon disc. a Calm: centred, a marker kicker over the outcome; b
-   Editorial: left-aligned, the marker number with the area's name and a
-   hairline; c Curtain: centred, the number and the area's name underlined
-   in marker. (Scoped under .pi-od: the page sets its font on every span.) */
+/* ═══════════ Dock styles a · b · c (?dock=, pillar/OpenerDesign DockOpener + DockBar) ═══════════
+   ONE lockup in the opener and in the bar (the bar the opener shrunk into
+   place): the same pieces, set the same way, only their size and
+   arrangement differ (stacked big; one row docked, two on phones).
+     the mark     a: the icon in its disc; b, c: the chapter number in marker
+     the label    a: small capitals; b, c: Inter 700 (c underlined in marker)
+     the outcome  Inter 800, tight, one line (fitted: --pi-fit big, --pi-dfit docked)
+     the line     Sales' line, Inter 700
+   (Scoped under .pi-od: the page sets its font on every span.) */
 .pi-odx .pi-big {
   align-items: stretch;
 }
@@ -340,6 +342,27 @@
 .odx .od-sub {
   text-align: inherit;
 }
+/* the hold's scene (pillar/useDockMorph): the outcome grows about its middle (b: its left edge), lines draw from their start */
+.odx [data-ph="grow"] {
+  transform-origin: 50% 55%;
+}
+.odx-b [data-ph="grow"] {
+  transform-origin: 0 55%;
+}
+.odx [data-ph="draw"] {
+  transform-origin: 0 50%;
+}
+.pi-odx[data-pm-state] [data-ph] {
+  will-change: transform, opacity;
+}
+
+/* ── the pieces, the same on both sides ── */
+.odx-kick {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6em;
+  white-space: nowrap;
+}
 .pi-od .odx-num {
   font-family: var(--bzl-script, "Caveat", cursive);
   font-weight: 700;
@@ -347,54 +370,53 @@
   line-height: 0.8;
   color: var(--od-accent);
 }
-.odx-label {
+.pi-od .odx-label {
   position: relative;
-  font-size: clamp(1.3rem, min(2.1vw, 3.8svh), 2rem);
   font-weight: 700;
   letter-spacing: -0.025em;
   line-height: 1.1;
+  white-space: nowrap;
   color: var(--od-ink);
 }
-/* a: the kicker written in marker, "02 · Customer Support" */
-.pi-od .odx-kick,
-.pi-od .odx-kick span {
-  font-family: var(--bzl-script, "Caveat", cursive);
-  font-size: clamp(1.9rem, min(3.2vw, 5.6svh), 3rem);
-  font-weight: 700;
-  line-height: 1;
-  color: var(--od-accent);
+/* a: the label in small capitals */
+.pi-od :is(.odx-a, .odx-bar-a) .odx-label:not(.is-hero) {
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: color-mix(in oklab, var(--od-ink) 82%, transparent);
 }
-.pi-od .odx-kick .odx-num {
-  line-height: 1;
+.pi-od .odx-icon {
+  display: grid;
+  flex-shrink: 0;
+  place-items: center;
+  aspect-ratio: 1;
+  border-radius: 999px;
+  background: var(--pi-icon-bg, #fff);
+  color: var(--pi-icon-fg, hsl(var(--primary)));
+  box-shadow: 0 0 0 1px rgb(59 36 22 / 0.06), 0 8px 20px -14px rgb(59 36 22 / 0.5);
 }
-.odx-dot {
-  opacity: 0.6;
+.pi-od .odx-icon svg {
+  display: block;
+  width: 56%;
+  height: 56%;
 }
-/* b: the number big in marker, the area's name, a hairline to the edge */
-.odx-head {
-  display: flex;
-  align-items: baseline;
-  gap: clamp(0.8rem, 1.6vw, 1.4rem);
-  width: 100%;
-}
-.pi-od .odx-b .odx-num {
-  font-size: clamp(3.6rem, min(7vw, 12svh), 7rem);
+/* the outcome (and Sales' name in the bar): the Inter 800 headline */
+.pi-od :is(.odx-title, .odx-label.is-hero, .odx-main.is-hero) {
+  font-weight: 800;
+  letter-spacing: -0.05em;
+  color: var(--od-ink);
 }
 .odx-rule {
   flex: 1;
   align-self: center;
   height: 2px;
+}
+.odx-rule i,
+.odx-bar-b .odx-sep {
+  display: block;
+  height: 100%;
   border-radius: 2px;
   background: color-mix(in oklab, var(--od-ink) 18%, transparent);
-}
-/* c: the number and the area's name, a marker swoosh under the name */
-.odx-kick-c {
-  display: inline-flex;
-  align-items: baseline;
-  gap: clamp(0.7rem, 1.2vw, 1.1rem);
-}
-.pi-od .odx-c .odx-num {
-  font-size: clamp(2.3rem, min(3.8vw, 6.6svh), 3.6rem);
 }
 .odx-swoosh {
   position: absolute;
@@ -413,6 +435,107 @@
   vector-effect: non-scaling-stroke;
 }
 
+/* ── big: the opener ── */
+.odx-a .odx-kick {
+  gap: 0.75em;
+  font-size: clamp(0.95rem, min(1.25vw, 2.3svh), 1.25rem);
+}
+.odx-a .odx-icon {
+  width: 2.5em;
+}
+.odx-b .odx-kick {
+  align-items: baseline;
+  gap: clamp(0.8rem, 1.6vw, 1.4rem);
+  width: 100%;
+}
+.odx-c .odx-kick {
+  align-items: baseline;
+  gap: clamp(0.7rem, 1.2vw, 1.1rem);
+}
+.pi-od .odx-b .odx-num {
+  font-size: clamp(3.6rem, min(7vw, 12svh), 7rem);
+}
+.pi-od .odx-c .odx-num {
+  font-size: clamp(2.3rem, min(3.8vw, 6.6svh), 3.6rem);
+}
+/* c: the number alone (over Sales' own name) stands a size up */
+.pi-od .odx-c .odx-kick:not(:has(.odx-label)) .odx-num {
+  font-size: clamp(3rem, min(5vw, 9svh), 4.8rem);
+}
+.pi-od :is(.odx-b, .odx-c) .odx-label {
+  font-size: clamp(1.3rem, min(2.1vw, 3.8svh), 2rem);
+}
+
+/* ── docked: the bar (.pi-dock.odx-bar), one row ── */
+.pi-od .pi-dock.odx-bar {
+  --odx-bar: clamp(1.1rem, min(1.8vw, 3.4svh), 1.6rem);
+}
+.odx-bar-in {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.7em;
+  font-size: calc(var(--odx-bar, 1.3rem) * var(--pi-dfit, 1));
+  line-height: 1;
+  white-space: nowrap;
+}
+.odx-bar-in .odx-kick {
+  gap: 0.45em;
+}
+.pi-od .odx-bar-in .odx-icon {
+  width: 1.45em;
+}
+.pi-od .odx-bar-in .odx-num {
+  font-size: 1.3em;
+}
+.pi-od .odx-bar-in .odx-label {
+  font-size: 0.66em;
+  line-height: 1.1;
+}
+.pi-od .odx-bar-a .odx-bar-in .odx-label:not(.is-hero) {
+  font-size: 0.56em;
+}
+.pi-od .odx-bar-in .odx-label.is-hero,
+.pi-od .odx-bar-in .odx-main.is-hero {
+  font-size: 1em;
+  line-height: 1.1;
+}
+.pi-od .odx-bar-in .odx-swoosh path {
+  stroke-width: 2.5px;
+}
+.odx-sep {
+  flex-shrink: 0;
+  width: 2px;
+  height: 1.1em;
+  border-radius: 2px;
+  background: color-mix(in oklab, var(--od-accent) 55%, transparent);
+}
+.odx-bar-b .odx-sep {
+  width: 1.4em;
+  height: 2px;
+}
+/* the outcome / line inside it: the bar's own type, one line */
+.pi-od .odx-bar .odx-main .bzp-dock-line {
+  padding: 0;
+  border: 0;
+  font: inherit;
+  letter-spacing: inherit;
+  color: inherit;
+  text-align: inherit;
+  white-space: nowrap;
+}
+.pi-od .odx-bar .odx-main .sl-title.is-line {
+  font-size: 0.86em;
+  line-height: 1.1;
+  white-space: nowrap;
+}
+/* b: left-aligned on the opener's edge */
+.pi-od .pi-dock.odx-bar-b {
+  justify-content: flex-start;
+  max-width: 1200px;
+  margin-inline: auto;
+  padding-inline: 1.5rem;
+}
+
 /* ── Pinned (BenefitIntro's one-screen sections, desktop): their screen
    sticks right under the docked bar, like Boost Sales' stage. ── */
 .bzp.is-pinned .bzp-pin {
@@ -429,9 +552,12 @@
   .od1 .od-outcome:has(> .od-l:only-child),
   .od6 .od-outcome:has(> .od-l:only-child) { font-size: clamp(2.6rem, 15vw, 4.4rem); }
   .pi-od .od5 .od-outcome.is-one { --od-one: clamp(2.6rem, 15vw, 4.4rem); }
-  .pi-od .odx .od-outcome.is-one { --od-one: clamp(2.4rem, 13vw, 4rem); }
+  .pi-od .odx .od-outcome.is-one { --od-one: clamp(2.4rem, 13vw, 4rem); line-height: 1.02; }
+  /* a sentence a line, so the outcome stays big */
+  .pi .pi-big .odx-ln { display: block; }
   .odx { padding-inline: 1rem; }
   .pi-od .odx-b .odx-num { font-size: clamp(3rem, 16vw, 4.4rem); }
+  .pi-od .pi-dock.odx-bar-b { padding-inline: 1rem; }
   .od5 {
     grid-template-columns: minmax(0, 1fr);
     row-gap: 0.75rem;
@@ -439,4 +565,17 @@
   }
   .pi-od .od5-num { font-size: clamp(5rem, 30vw, 7.5rem); }
   .od5-copy { padding-left: 1rem; }
+}
+
+/* ── docked on phones and tablets in portrait: the lockup's two rows, like the opener ── */
+@media (max-width: 767px) {
+  .pi-od .pi-dock.odx-bar { --odx-bar: 1.06rem; }
+  .odx-bar-in { flex-direction: column; gap: 0.32em; }
+  .odx-bar-b .odx-bar-in { align-items: flex-start; }
+  .pi-od .pi-dock.odx-bar-b { align-items: flex-start; }
+  .odx-bar .odx-sep { display: none; }
+  .pi-od .odx-bar-in .odx-label:not(.is-hero) { font-size: 0.74em; }
+  .pi-od .odx-bar-a .odx-bar-in .odx-label:not(.is-hero) { font-size: 0.66em; }
+  .pi-od .odx-bar-in .odx-num { font-size: 1.15em; }
+  .pi-od .odx-bar-in .odx-icon { width: 1.3em; }
 }

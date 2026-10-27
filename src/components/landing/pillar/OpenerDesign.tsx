@@ -1,3 +1,4 @@
+import { Fragment } from "react";
 import type { ReactNode } from "react";
 import { cn } from "@/lib/utils";
 import type { Opener } from "./OpenerContext";
@@ -277,43 +278,102 @@ const OpenerDesign = ({
 
 export default OpenerDesign;
 
-/** One marker swoosh under a word (the curtain opener's area). */
-const Swoosh = () => (
-  <svg className="odx-swoosh" viewBox="0 0 300 14" preserveAspectRatio="none" aria-hidden="true">
+/** One marker swoosh under a word (the curtain style's area, in the opener and in the bar). */
+const Swoosh = ({ hold }: { hold?: boolean }) => (
+  <svg
+    className="odx-swoosh"
+    viewBox="0 0 300 14"
+    preserveAspectRatio="none"
+    aria-hidden="true"
+    data-ph={hold ? "draw" : undefined}
+  >
     <path d="M3 9.5 C 70 4.5, 170 3.2, 297 6.8" />
   </svg>
 );
 
+export type DockStyleKey = "a" | "b" | "c";
+
+/**
+ * The lockup's mark: the pillar's icon in its disc (a), or the chapter
+ * number in marker (b, c). The same element, the same look, in the opener
+ * and in the bar (only its size differs).
+ */
+const Mark = ({ style, index, icon }: { style: DockStyleKey; index?: string; icon?: ReactNode }) =>
+  style === "a" ? (
+    icon ? (
+      <span className="odx-icon" data-pm="icon" aria-hidden="true">
+        {icon}
+      </span>
+    ) : null
+  ) : index ? (
+    <span className="odx-num" data-pm="num" aria-hidden="true">
+      {index}
+    </span>
+  ) : null;
+
 /**
  * The opener in the dock styles under comparison (?dock=a|b|c,
- * OpenerContext): one type system with the page, the outcome an Inter
- * headline on one line (fitted, --pi-fit), marker handwriting as the
- * accent, no icon disc. a: a centred block (the marker kicker "02 ·
- * Customer Support", the outcome) that morphs as one (`data-pm="block"`);
- * b: left-aligned, the marker number, the area's name and a hairline over
- * the outcome; c: centred, the number and the area's name underlined in
- * marker over the outcome. pillar-openers.css (.odx).
+ * OpenerContext), and its docked bar (DockBar): ONE lockup, the bar being
+ * the opener shrunk into place. Its pieces, each set the same way on both
+ * sides (pillar-openers.css .odx-*), only their size and arrangement
+ * differ (stacked big, one row docked; stacked again on phones):
+ *
+ *   the mark     a: the icon in its disc; b, c: the chapter number in marker
+ *   the label    the area's name (Support, Insights; none over Sales' own name, the mark alone)
+ *                a: small capitals; b, c: an Inter 700 label (c underlined in marker)
+ *   the outcome  the Inter 800 headline on one line (fitted, --pi-fit)
+ *   the line     Sales' "Match needs. Clear doubts. Win sales."
+ *
+ * The hold (pillar/useDockMorph, scrubbed by the scroll while the opener
+ * stays put): the outcome grows a few % (`data-ph="grow"`), and a: its
+ * words light up one by one (`data-ph="word"`); b: the hairline draws
+ * across; c: the swoosh draws under the name, the band's colour rising
+ * from the screen's bottom (`data-ph="draw"`).
  */
 export const DockOpener = ({
   style,
   index,
+  icon,
   area,
   lines,
   sub,
   lineClassName,
   as: Tag = "h2",
 }: {
-  style: "a" | "b" | "c";
+  style: DockStyleKey;
   index?: string;
+  icon?: ReactNode;
   area?: ReactNode;
   lines: string[];
   sub?: ReactNode;
   lineClassName?: string;
   as?: "h2" | "p" | "div";
 }) => {
+  // a sentence a part: one line on wide screens, a line each on phones; each part lands on its twin in the bar
   const title = (
     <Tag className="od-outcome is-one odx-title" data-pm="title">
-      <span className="od-l">{lines.join(" ")}</span>
+      <span className="od-l" data-ph="grow">
+        {lines.map((line, li) => {
+          const words = line.split(/\s+/).filter(Boolean);
+          return (
+            <Fragment key={li}>
+              <span className="odx-ln pm-part">
+                {style === "a"
+                  ? words.map((w, i) => (
+                      <Fragment key={i}>
+                        <span className="odx-w" data-ph="word">
+                          {w}
+                        </span>
+                        {i < words.length - 1 ? " " : null}
+                      </Fragment>
+                    ))
+                  : line}
+              </span>
+              {li < lines.length - 1 ? " " : null}
+            </Fragment>
+          );
+        })}
+      </span>
     </Tag>
   );
   const subEl = sub ? (
@@ -322,57 +382,85 @@ export const DockOpener = ({
     </span>
   ) : null;
 
-  if (style === "a")
-    return (
-      <div className="odx odx-a" data-pm="block">
-        <span className="odx-kick">
-          {index && <span className="odx-num">{index}</span>}
-          {index && area && <span className="odx-dot"> · </span>}
-          {area && <span>{area}</span>}
-        </span>
-        {title}
-        {subEl}
-      </div>
-    );
-
-  if (style === "b")
-    return (
-      <div className="odx odx-b">
-        <div className="odx-head">
-          {index && (
-            <span className="odx-num" data-pm="num" aria-hidden="true">
-              {index}
-            </span>
-          )}
-          {area && (
-            <span className="odx-label" data-pm="area">
-              {area}
-            </span>
-          )}
-          <span className="odx-rule" data-pm="rule" aria-hidden="true" />
-        </div>
-        {title}
-        {subEl}
-      </div>
-    );
-
   return (
-    <div className="odx odx-c">
-      <span className="odx-kick-c">
-        {index && (
-          <span className="odx-num" data-pm="num" aria-hidden="true">
-            {index}
-          </span>
-        )}
+    <div className={cn("odx", `odx-${style}`)}>
+      <span className="odx-kick">
+        <Mark style={style} index={index} icon={icon} />
         {area && (
           <span className="odx-label" data-pm="area">
             {area}
-            <Swoosh />
+            {style === "c" && <Swoosh hold />}
+          </span>
+        )}
+        {style === "b" && (
+          <span className="odx-rule" data-pm="rule" aria-hidden="true">
+            <i data-ph="draw" />
           </span>
         )}
       </span>
       {title}
       {subEl}
     </div>
+  );
+};
+
+/**
+ * The docked bar of a dock style: the opener's lockup in one row (two on
+ * phones), each piece the twin of the opener's (`data-pm`), set the same
+ * way. With an outcome (Support, Insights): [mark] area | outcome; without
+ * (Sales): [mark] name | line. The separator matches the opener's accent
+ * (b: a short hairline, like the opener's; a, c: a short upright rule).
+ */
+export const DockBar = ({
+  style,
+  index,
+  icon,
+  label,
+  byOutcome,
+  lines,
+  children,
+}: {
+  style: DockStyleKey;
+  index?: string;
+  icon?: ReactNode;
+  /** The area's name (with an outcome) or the pillar's name (Sales). */
+  label: ReactNode;
+  byOutcome: boolean;
+  /** The outcome, a sentence a part (as the opener sets it), in place of `children`. */
+  lines?: string[];
+  /** The outcome, or Sales' line. */
+  children?: ReactNode;
+}) => {
+  const main =
+    byOutcome && lines?.length ? (
+      <span className="bzp-dock-line">
+        {lines.map((line, i) => (
+          <Fragment key={i}>
+            <span className="odx-ln pm-part">{line}</span>
+            {i < lines.length - 1 ? " " : null}
+          </Fragment>
+        ))}
+      </span>
+    ) : (
+      children
+    );
+  return (
+  <span className="odx-bar-in">
+    <span className="odx-kick">
+      <Mark style={style} index={index} icon={icon} />
+      <span className={cn("odx-label", !byOutcome && "is-hero")} data-pm={byOutcome ? "area" : "title"}>
+        {label}
+        {style === "c" && byOutcome && <Swoosh />}
+      </span>
+    </span>
+    {main && (
+      <>
+        <span className="odx-sep" data-pm="sep" aria-hidden="true" />
+        <span className={cn("odx-main", byOutcome ? "is-hero" : "is-line")} data-pm={byOutcome ? "title" : "sub"}>
+          {main}
+        </span>
+      </>
+    )}
+  </span>
   );
 };

@@ -4,7 +4,7 @@ import { cn } from "@/lib/utils";
 import "@/styles/pillar-intro.css";
 import "@/styles/pillar-openers.css";
 import { PillarAreaContext, useDockStyle, useOpener } from "./pillar/OpenerContext";
-import OpenerDesign, { DockOpener } from "./pillar/OpenerDesign";
+import OpenerDesign, { DockBar, DockOpener } from "./pillar/OpenerDesign";
 import type { Motif } from "./pillar/OpenerDesign";
 import { useDockMorph } from "./pillar/useDockMorph";
 
@@ -53,9 +53,16 @@ import { useDockMorph } from "./pillar/useDockMorph";
  *   can sit right under it (`top: calc(nav + var(--pi-dock-h))`), and
  *   `.is-docked` once the bar has fully formed.
  * - ?dock=a|b|c (pillar/OpenerContext useDockStyle) swaps the opener and
- *   its morph for a style under comparison: a calm block that scales into
- *   the bar over a growing pill, an editorial number kept in the bar, a
- *   curtain of the band's colour lifting the title into it.
+ *   its bar for a style under comparison, each ONE lockup (pillar/OpenerDesign
+ *   DockOpener + DockBar: the same mark, label and outcome, set the same
+ *   way, the bar the opener shrunk into place): a calm one (the icon in its
+ *   disc, small capitals; the bar's ground grows from a pill), an editorial
+ *   one (left-aligned, the marker number and a hairline), a curtain (the
+ *   band's colour lifting the title into the bar). Before the morph they
+ *   HOLD: the opener stays put in the middle of the screen over a further
+ *   run (.pi-hold, --pi-hold) while the scroll plays a small scene on it
+ *   (the outcome growing a few %, its words lighting up, a line drawing),
+ *   then the morph runs as quick as ever.
  * - The opener designs (?open=1..6, pillar/OpenerContext; the page's default
  *   is 5) are pillar/OpenerDesign: the OUTCOME the hero (`outcome`; by
  *   default the `name`, with `line` under it), the AREA the eyebrow (`area`;
@@ -133,16 +140,25 @@ const PillarIntro = ({
   const big = useRef<HTMLDivElement>(null);
   const dock = useRef<HTMLDivElement>(null);
   const runway = useRef<HTMLDivElement>(null);
+  const holdRef = useRef<HTMLDivElement>(null);
   const body = useRef<HTMLDivElement>(null);
   const [reduced] = useState(prefersReduced);
   const [isDocked, setDocked] = useState(false);
 
-  // publish the bar's height, and keep the big name (or the chapter's outcome) on one line, its size capped to the width it has
+  // keep the bar on its line(s), and the big name (or the chapter's outcome) on one line, their sizes capped to the width they have; publish the bar's height
   const fit = () => {
     const r = root.current;
     const d = dock.current;
     const b = big.current;
     if (!r || !d || !b) return;
+    const row = d.querySelector<HTMLElement>(".odx-bar-in");
+    if (row) {
+      d.style.setProperty("--pi-dfit", "1");
+      const cs = getComputedStyle(d);
+      const room = d.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight);
+      const need = row.scrollWidth;
+      if (need > room && need > 0) d.style.setProperty("--pi-dfit", (room / need - 0.005).toFixed(4));
+    }
     r.style.setProperty("--pi-dock-h", `${d.offsetHeight}px`);
     for (const n of b.querySelectorAll<HTMLElement>(".pi-name, .od-outcome.is-one")) {
       const text = n.firstElementChild as HTMLElement | null;
@@ -168,7 +184,7 @@ const PillarIntro = ({
     runway,
     body,
     reduced,
-    mode: alt === "a" ? "block" : "pieces",
+    hold: alt ? holdRef : undefined,
     ground: alt === "a" ? "pill" : alt === "c" ? "curtain" : "fade",
     onDocked: setDocked,
     prepare: fit,
@@ -183,24 +199,28 @@ const PillarIntro = ({
   const bar = (
     <div ref={head} className="pi-head">
       {alt === "c" && <span className="pi-curtain" aria-hidden="true" />}
-      <div ref={dock} className={cn("pi-dock", named && "is-named", dockClassName)} aria-hidden="true">
-        {named ? (
+      <div
+        ref={dock}
+        className={cn("pi-dock", named && "is-named", alt && `odx-bar odx-bar-${alt}`, dockClassName)}
+        aria-hidden="true"
+      >
+        {alt ? (
+          <DockBar
+            style={alt}
+            index={index}
+            icon={icon}
+            label={byOutcome ? (area ?? areaCtx ?? name) : name}
+            byOutcome={byOutcome}
+            lines={byOutcome ? lines : undefined}
+          >
+            {compact}
+          </DockBar>
+        ) : named ? (
           <span className="pi-dock-name">
-            {alt === "b" && index ? (
-              <>
-                <span className="pi-dock-num" data-pm="num">
-                  {index}
-                </span>
-                <span className="pi-dock-dot" data-pm="dot">
-                  ·
-                </span>
-              </>
-            ) : (
-              icon && (
-                <span className="pi-dock-icon" data-pm="icon">
-                  {icon}
-                </span>
-              )
+            {icon && (
+              <span className="pi-dock-icon" data-pm="icon">
+                {icon}
+              </span>
             )}
             <span className="pi-dock-label" data-pm={byOutcome ? "area" : "title"}>
               {name}
@@ -213,7 +233,7 @@ const PillarIntro = ({
             </span>
           )
         )}
-        {compact && (
+        {!alt && compact && (
           <div className="pi-dock-main" data-pm={byOutcome ? "title" : "sub"}>
             {compact}
           </div>
@@ -234,7 +254,9 @@ const PillarIntro = ({
           <DockOpener
             style={alt}
             index={index}
-            area={area ?? areaCtx}
+            icon={icon}
+            // the area's name over the outcome; over the pillar's own name (Sales) it would only repeat it: the mark alone
+            area={outcome ? (area ?? areaCtx) : undefined}
             lines={lines}
             sub={outcome ? undefined : line}
             lineClassName={lineClassName}
@@ -282,6 +304,7 @@ const PillarIntro = ({
           </>
         )}
       </div>
+      {alt && <div ref={holdRef} className="pi-hold" aria-hidden="true" />}
       <div ref={runway} className="pi-runway" aria-hidden="true" />
       <div ref={body} className="pi-body">
         {children}
