@@ -75,9 +75,10 @@ const SalesJar = ({
   // (at the payoff's end three quarters of its room: still visibly climbing on, out of the picture)
   const last = (leave.filter((l) => l + FLIGHT <= duration).length || 1) / 0.75;
   const level = Math.max(0, landed / last);
-  const labelRoom = side ? 64 : 30;
+  // the label: under the bar; sideways (phones) before its ground line, on the band, never on the white bar
+  const labelRoom = side ? 72 : 30;
   const track = side
-    ? { x: box.x, y: box.y, w: box.w - labelRoom, h: box.h }
+    ? { x: box.x + labelRoom, y: box.y, w: box.w - labelRoom - 8, h: box.h }
     : { x: box.x, y: box.y, w: box.w, h: box.h - labelRoom };
   const bar = side
     ? { x: track.x, y: track.y, w: track.w * level, h: track.h }
@@ -137,18 +138,20 @@ const SalesJar = ({
   // past its room the bar (and the checks flying up to it) melts into the band towards the stage's top,
   // never cut flat under the section's header
   const id = `sl-jar${useId().replace(/:/g, "")}`;
+  // (sideways: the same melt towards the stage's right edge, inside its gutter)
   const fade = Math.max(40, box.y * 0.9);
+  const edge = box.x + box.w;
   return (
     <svg className={cn("sl-g2-jar", on && "is-on")} aria-hidden="true">
-      {!side && (
+      {
         <defs>
           <linearGradient
             id={`${id}-g`}
             gradientUnits="userSpaceOnUse"
-            x1="0"
+            x1={side ? f1(edge) : "0"}
             y1="0"
-            x2="0"
-            y2={f1(fade)}
+            x2={side ? f1(edge - Math.min(64, box.w * 0.18)) : "0"}
+            y2={side ? "0" : f1(fade)}
           >
             <stop offset="0" stopColor="#fff" stopOpacity="0" />
             <stop offset="1" stopColor="#fff" stopOpacity="1" />
@@ -170,8 +173,8 @@ const SalesJar = ({
             />
           </mask>
         </defs>
-      )}
-      <g mask={side ? undefined : `url(#${id}-m)`}>
+      }
+      <g mask={`url(#${id}-m)`}>
         {level > 0.002 && <path className="sl-jar-fill" d={d} />}
         {/* the ground it rises from */}
         <path
@@ -184,9 +187,9 @@ const SalesJar = ({
         />
         <text
           className="sl-jar-label"
-          x={side ? box.x + box.w - labelRoom / 2 : box.x + box.w / 2}
+          x={side ? track.x - 12 : box.x + box.w / 2}
           y={side ? box.y + box.h / 2 + 6 : box.y + box.h - 6}
-          textAnchor="middle"
+          textAnchor={side ? "end" : "middle"}
         >
           {label}
         </text>
