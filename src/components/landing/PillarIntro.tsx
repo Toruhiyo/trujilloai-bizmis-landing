@@ -111,6 +111,25 @@ export type PillarIntroProps = {
   children?: ReactNode;
 };
 
+/** Desktop: where the pinned screen's left column stands (the children of its grid left of its middle), as drawn. */
+const DESKTOP = "(min-width: 1024px)";
+const leftColumn = (body: HTMLElement | null) => {
+  if (!body || typeof window === "undefined" || !window.matchMedia(DESKTOP).matches) return null;
+  const grid = body.querySelector<HTMLElement>(".bzp-fit [class*='-grid'].is-pinned");
+  if (!grid) return null;
+  const g = grid.getBoundingClientRect();
+  const mid = g.left + g.width / 2;
+  let left = Infinity;
+  let right = -Infinity;
+  for (const kid of grid.children) {
+    const k = kid.getBoundingClientRect();
+    if (!k.width || k.right > mid + 1) continue;
+    left = Math.min(left, k.left);
+    right = Math.max(right, k.right);
+  }
+  return right > left ? { left, right } : null;
+};
+
 const prefersReduced = () =>
   typeof window !== "undefined" && window.matchMedia?.("(prefers-reduced-motion: reduce)").matches === true;
 
@@ -154,12 +173,22 @@ const PillarIntro = ({
   const [reduced] = useState(prefersReduced);
   const [isDocked, setDocked] = useState(false);
 
+  // the pill (?dock=d) of Support / Insights docks over their pinned screen's left column on desktop (the right one is the mockup's)
+  const pillOverColumn = alt === "d" && Boolean(v && outcome);
+
   // keep the bar on its line(s), and the big name (or the chapter's outcome) on one line, their sizes capped to the width they have; publish the bar's height
   const fit = () => {
     const r = root.current;
     const d = dock.current;
     const b = big.current;
     if (!r || !d || !b) return;
+    const col = pillOverColumn ? leftColumn(body.current) : null;
+    if (col) {
+      const box = d.getBoundingClientRect();
+      d.style.setProperty("--odz-col-l", `${Math.max(0, col.left - box.left).toFixed(1)}px`);
+      d.style.setProperty("--odz-col-r", `${Math.max(0, box.right - col.right).toFixed(1)}px`);
+      d.dataset.col = "";
+    } else delete d.dataset.col;
     const row = d.querySelector<HTMLElement>(".odx-bar-in, .odz-in");
     if (row) {
       d.style.setProperty("--pi-dfit", "1");
@@ -268,7 +297,14 @@ const PillarIntro = ({
   return (
     <div
       ref={root}
-      className={cn("pi", v && `pi-od pi-od${v}`, alt && `pi-odx pi-odx-${alt}`, isDocked && "is-docked", className)}
+      className={cn(
+        "pi",
+        v && `pi-od pi-od${v}`,
+        alt && `pi-odx pi-odx-${alt}`,
+        pillOverColumn && "pi-pill-col",
+        isDocked && "is-docked",
+        className,
+      )}
       style={accent ? ({ "--pi-bar": accent } as CSSProperties) : undefined}
     >
       {bar}

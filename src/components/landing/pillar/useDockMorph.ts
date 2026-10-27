@@ -610,10 +610,13 @@ export const useDockMorph = ({
     document.fonts?.ready.then(remeasure).catch(() => {});
     window.addEventListener("scroll", tick, { passive: true });
     window.addEventListener("resize", remeasure);
+    // (the content asks for it when it changes what the bar is placed by, e.g. BenefitIntro's Fit scaling its screen)
+    r.addEventListener("pi-remeasure", remeasure);
     return () => {
       ro.disconnect();
       window.removeEventListener("scroll", tick);
       window.removeEventListener("resize", remeasure);
+      r.removeEventListener("pi-remeasure", remeasure);
       if (raf) cancelAnimationFrame(raf);
       if (pending) cancelAnimationFrame(pending);
       clear();

@@ -154,7 +154,7 @@ export const PinTrack = ({
     <div
       ref={track}
       className="bzp-track"
-      style={{ height: `calc(100svh - var(--pi-nav) - var(--pi-dock-h) + ${(run * 100).toFixed(2)}svh)` }}
+      style={{ height: `calc(100svh - var(--pi-nav) - var(--pi-pin-dock, var(--pi-dock-h)) + ${(run * 100).toFixed(2)}svh)` }}
     >
       <div ref={pin} className={cn("bzp-pin", sub && "is-sub")}>
         <Fit>{render(children, { pinned: true, progress, active: onScreen, from, to })}</Fit>
@@ -187,6 +187,10 @@ const Fit = ({ children }: { children: ReactNode }) => {
     ro.observe(c);
     return () => ro.disconnect();
   }, []);
+  // the docked pill may be placed by this screen's columns (PillarIntro): it measures again once the scale is in
+  useLayoutEffect(() => {
+    stage.current?.closest(".pi")?.dispatchEvent(new Event("pi-remeasure"));
+  }, [scale]);
   return (
     <div ref={stage} className="bzp-stage">
       <div ref={inner} className="bzp-fit" style={scale < 1 ? { transform: `scale(${scale.toFixed(4)})` } : undefined}>

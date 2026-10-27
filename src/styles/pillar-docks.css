@@ -549,6 +549,14 @@
   font-size: 1.22em;
   letter-spacing: -0.005em;
 }
+/* Support / Insights on desktop: the pill centred over the pinned screen's left column (PillarIntro measures it: --odz-col-l / -r) */
+@media (min-width: 1024px) {
+  .pi-od .pi-dock.odz-bar-d[data-col] {
+    padding-left: var(--odz-col-l, 1.5rem);
+    padding-right: var(--odz-col-r, 1.5rem);
+  }
+}
+
 /* the docked forms keep their row on phones (the base bar stacks its pieces) */
 @media (max-width: 767px) {
   .pi-od .pi-dock.odz-bar {
