@@ -895,6 +895,14 @@ export const ca: Messages = {
     sending: "Enviant...",
     send: "Envia el missatge",
     orEmailUs: "O escriu-nos directament a",
+    /** The v2 contact page's other ways in, beside the form. */
+    options: {
+      heading: "Altres maneres de contactar-nos",
+      emailTitle: "Envia'ns un correu",
+      callBody: "Tria l'hora que et vagi millor",
+      faqsTitle: "Llegeix les preguntes freqüents",
+      faqsBody: "Respostes ràpides a les preguntes més habituals",
+    },
   },
 
   earlyAccessPage: {
@@ -971,6 +979,10 @@ export const ca: Messages = {
     title: "404",
     message: "Vaja, no hem trobat aquesta pàgina",
     backHome: "Torna a l'inici",
+    /** The v2 404 page. */
+    headline: "Aquesta pàgina s'ha perdut",
+    lead: "Potser l'enllaç és antic o té un error. Aquí tens alguns llocs per continuar.",
+    homeCta: "Torna a l'inici",
   },
 
   seo: {

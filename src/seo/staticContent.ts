@@ -212,8 +212,9 @@ const contact = (m: Messages) =>
           <p>${esc(m.contact.orEmailUs)} ${link(`mailto:${m.common.email}`, m.common.email)}</p>`;
 
 const notFound = (m: Messages, locale: Locale) =>
-  `<h1>${esc(m.notFound.message)}</h1>
-          <p>${link(localizePath("/", locale), m.notFound.backHome)}</p>`;
+  `<h1>${esc(m.notFound.headline)}</h1>
+          <p>${esc(m.notFound.lead)}</p>
+          <p>${link(localizePath("/", locale), m.notFound.homeCta)}</p>`;
 
 /**
  * The page's main text. `legalHtml` is the legal page's own body, rendered

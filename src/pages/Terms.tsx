@@ -1,5 +1,5 @@
-import Footer from "@/components/Footer";
-import PublicPageLayout from "@/components/PublicPageLayout";
+import { FileText } from "lucide-react";
+import LegalPage, { LegalSection as Section } from "@/components/site/LegalPage";
 import Seo from "@/components/Seo";
 
 const LAST_UPDATED = "October 28, 2026";
@@ -14,15 +14,8 @@ const COMPANY_VENUE = "Barcelona, Spain";
 
 const Terms = () => {
   return (
-    <PublicPageLayout className="bg-white">
+    <LegalPage icon={FileText} title="Terms of Service" lastUpdated={LAST_UPDATED}>
       <Seo page="terms" />
-      <div className="container mx-auto px-6 py-16 max-w-3xl">
-        <h1 className="text-4xl font-heading font-bold text-gray-900 mb-2">
-          Terms of Service
-        </h1>
-        <p className="text-gray-500 mb-12">Last updated: {LAST_UPDATED}</p>
-
-        <div className="prose prose-gray max-w-none space-y-8">
           <Section title="1. Introduction & Acceptance">
             <p>
               These Terms of Service ("Terms") govern your access to and use of
@@ -921,25 +914,8 @@ const Terms = () => {
               above and we will provide it on request.
             </p>
           </Section>
-        </div>
-      </div>
-
-      <Footer />
-    </PublicPageLayout>
+    </LegalPage>
   );
 };
-
-const Section = ({
-  title,
-  children,
-}: {
-  title: string;
-  children: React.ReactNode;
-}) => (
-  <section>
-    <h2 className="text-xl font-semibold text-gray-900 mb-3">{title}</h2>
-    <div className="text-gray-600 space-y-3">{children}</div>
-  </section>
-);
 
 export default Terms;

@@ -1,5 +1,5 @@
-import Footer from "@/components/Footer";
-import PublicPageLayout from "@/components/PublicPageLayout";
+import { ShieldCheck } from "lucide-react";
+import LegalPage, { LegalSection as Section } from "@/components/site/LegalPage";
 import Seo from "@/components/Seo";
 
 const LAST_UPDATED = "October 23, 2026";
@@ -7,15 +7,8 @@ const CONTACT_EMAIL = "hello@bizmis.ai";
 
 const PrivacyPolicy = () => {
   return (
-    <PublicPageLayout className="bg-white">
+    <LegalPage icon={ShieldCheck} title="Privacy Policy" lastUpdated={LAST_UPDATED}>
       <Seo page="privacy" />
-      <div className="container mx-auto px-6 py-16 max-w-3xl">
-        <h1 className="text-4xl font-heading font-bold text-gray-900 mb-2">
-          Privacy Policy
-        </h1>
-        <p className="text-gray-500 mb-12">Last updated: {LAST_UPDATED}</p>
-
-        <div className="prose prose-gray max-w-none space-y-8">
           <Section title="1. Introduction">
             <p>
               Bizmis ("we", "our", "us") provides an AI-powered voice shopping
@@ -491,25 +484,8 @@ const PrivacyPolicy = () => {
               </a>
             </p>
           </Section>
-        </div>
-      </div>
-
-      <Footer />
-    </PublicPageLayout>
+    </LegalPage>
   );
 };
-
-const Section = ({
-  title,
-  children,
-}: {
-  title: string;
-  children: React.ReactNode;
-}) => (
-  <section>
-    <h2 className="text-xl font-semibold text-gray-900 mb-3">{title}</h2>
-    <div className="text-gray-600 space-y-3">{children}</div>
-  </section>
-);
 
 export default PrivacyPolicy;

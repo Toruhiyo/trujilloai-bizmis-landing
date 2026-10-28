@@ -894,24 +894,32 @@ export const en = {
   },
 
   contact: {
-    title: "Get in Touch",
+    title: "Get in touch",
     lead: "Have questions about Bizmis? We'd love to hear from you. Send us a message and we'll respond as soon as possible.",
-    successTitle: "Message Sent!",
+    successTitle: "Message sent!",
     successBody:
       "Thank you for reaching out. We'll get back to you as soon as possible.",
-    sendAnother: "Send Another Message",
+    sendAnother: "Send another message",
     errorBody: "Failed to send message. Please try again or email us directly at",
-    nameLabel: "Your Name",
+    nameLabel: "Your name",
     namePlaceholder: "John Doe",
-    emailLabel: "Email Address",
+    emailLabel: "Email address",
     emailPlaceholder: "john@example.com",
     subjectLabel: "Subject",
     subjectPlaceholder: "How can we help you?",
     messageLabel: "Message",
     messagePlaceholder: "Tell us more about your question or feedback...",
     sending: "Sending...",
-    send: "Send Message",
+    send: "Send message",
     orEmailUs: "Or email us directly at",
+    /** The v2 contact page's other ways in, beside the form. */
+    options: {
+      heading: "Other ways to reach us",
+      emailTitle: "Email us",
+      callBody: "Pick a time that suits you",
+      faqsTitle: "Read the FAQs",
+      faqsBody: "Quick answers to common questions",
+    },
   },
 
   earlyAccessPage: {
@@ -988,6 +996,10 @@ export const en = {
     title: "404",
     message: "Oops! Page not found",
     backHome: "Return to Home",
+    /** The v2 404 page. */
+    headline: "This page got lost",
+    lead: "The link may be old or mistyped. Here are a few places to pick up from.",
+    homeCta: "Back to home",
   },
 
   seo: {

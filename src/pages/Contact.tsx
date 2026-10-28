@@ -1,15 +1,24 @@
 import { useState, useRef, FormEvent, useEffect } from "react";
-import { Send, Mail, CheckCircle, AlertCircle } from "lucide-react";
+import {
+  AlertCircle,
+  ArrowRight,
+  ArrowUpRight,
+  CalendarDays,
+  CheckCircle,
+  Mail,
+  MessageCircleQuestion,
+  Send,
+} from "lucide-react";
 import { useSearchParams } from "react-router-dom";
 import { usePostHog } from "posthog-js/react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 import emailjs from "@emailjs/browser";
-import Footer from "@/components/Footer";
-import PublicPageLayout from "@/components/PublicPageLayout";
+import SitePage from "@/components/site/SitePage";
+import PageHead from "@/components/site/PageHead";
+import Reveal from "@/components/landing/Reveal";
 import Seo from "@/components/Seo";
-import { useMessages } from "@/i18n/LocaleProvider";
+import { BIZMIS_BOOK_A_CALL_GENERAL_URL } from "@/lib/bizmisUrls";
+import { useLocaleHref, useMessages } from "@/i18n/LocaleProvider";
+import "@/styles/bzl-site-pages.css";
 
 const EMAILJS_SERVICE_ID = import.meta.env.VITE_EMAILJS_SERVICE_ID;
 const EMAILJS_CONTACT_TEMPLATE_ID = import.meta.env
@@ -27,6 +36,7 @@ interface FormData {
 
 const Contact = () => {
   const messages = useMessages();
+  const href = useLocaleHref();
   const [searchParams] = useSearchParams();
   const posthog = usePostHog();
   const formRef = useRef<HTMLFormElement>(null);
@@ -107,192 +117,216 @@ const Contact = () => {
     formData.subject.trim() &&
     formData.message.trim();
 
+  const c = messages.contact;
+  const options = [
+    {
+      icon: Mail,
+      title: c.options.emailTitle,
+      body: messages.common.email,
+      href: `mailto:${messages.common.email}`,
+    },
+    {
+      icon: CalendarDays,
+      title: messages.footer.links.bookACall,
+      body: c.options.callBody,
+      href: BIZMIS_BOOK_A_CALL_GENERAL_URL,
+      newTab: true,
+    },
+    {
+      icon: MessageCircleQuestion,
+      title: c.options.faqsTitle,
+      body: c.options.faqsBody,
+      href: href("/faqs"),
+    },
+  ];
+
   return (
-    <PublicPageLayout
-      className="bg-gradient-to-br from-[#FDF7E2] via-white to-[#FDF7E2]/30"
-      mainClassName="py-20"
-    >
+    <SitePage className="bzl-contact-page">
       <Seo page="contact" />
-      <div className="container mx-auto px-6">
-        <div className="max-w-2xl mx-auto">
-          <div className="text-center mb-12">
-            <div className="inline-flex items-center justify-center w-16 h-16 bg-[#FDF7E2] rounded-full mb-6">
-              <Mail className="w-8 h-8 text-primary" aria-hidden="true" />
-            </div>
-            <h1 className="text-4xl lg:text-5xl font-heading font-bold text-foreground mb-6">
-              {messages.contact.title}
-            </h1>
-            <p className="text-xl text-muted-foreground">
-              {messages.contact.lead}
-            </p>
-          </div>
 
-          {formStatus === "success" ? (
-            <div className="bg-white rounded-2xl border border-border shadow-soft p-8 text-center">
-              <div className="inline-flex items-center justify-center w-16 h-16 bg-[#FDF7E2] rounded-full mb-6">
-                <CheckCircle className="w-8 h-8 text-primary" />
-              </div>
-              <h3 className="text-2xl font-heading font-semibold text-foreground mb-3">
-                {messages.contact.successTitle}
-              </h3>
-              <p className="text-muted-foreground mb-6">
-                {messages.contact.successBody}
-              </p>
-              <Button onClick={resetForm} variant="outline">
-                {messages.contact.sendAnother}
-              </Button>
-            </div>
-          ) : (
-            <form
-              ref={formRef}
-              onSubmit={handleSubmit}
-              className="bg-white rounded-2xl border border-border shadow-soft p-8 space-y-6"
-            >
-              {formStatus === "error" && (
-                <div className="flex items-center gap-3 p-4 bg-red-50 border border-red-200 rounded-lg text-red-700">
-                  <AlertCircle className="w-5 h-5 flex-shrink-0" />
-                  <p>
-                    {messages.contact.errorBody}{" "}
-                    <a
-                      href="mailto:hello@bizmis.ai"
-                      className="font-medium underline"
-                    >
-                      hello@bizmis.ai
-                    </a>
-                  </p>
+      <div className="bzl-wrap bzl-contact-hero">
+        <PageHead
+          icon={Mail}
+          eyebrow={messages.footer.links.contact}
+          title={c.title}
+          lead={c.lead}
+        />
+      </div>
+
+      {/* The form and the other ways in, on the landing's cream sheet */}
+      <div className="bzl-site-sheet bzl-contact-sheet">
+        <div className="bzl-wrap">
+          <div className="bzl-contact-grid">
+            <Reveal className="min-w-0">
+              {formStatus === "success" ? (
+                <div className="bzl-site-card bzl-contact-card bzl-contact-done" role="status">
+                  <span className="bzl-site-disc" aria-hidden="true">
+                    <CheckCircle />
+                  </span>
+                  <h2 className="bzl-contact-done-title">{c.successTitle}</h2>
+                  <p className="bzl-contact-done-body">{c.successBody}</p>
+                  <button
+                    type="button"
+                    onClick={resetForm}
+                    className="bzl-site-btn is-ghost"
+                  >
+                    {c.sendAnother}
+                  </button>
                 </div>
+              ) : (
+                <form
+                  ref={formRef}
+                  onSubmit={handleSubmit}
+                  className="bzl-site-card bzl-contact-card bzl-contact-form"
+                >
+                  {formStatus === "error" && (
+                    <div className="bzl-contact-error" role="alert">
+                      <AlertCircle aria-hidden="true" />
+                      <p>
+                        {c.errorBody}{" "}
+                        <a href={`mailto:${messages.common.email}`}>
+                          {messages.common.email}
+                        </a>
+                      </p>
+                    </div>
+                  )}
+
+                  <div className="bzl-contact-row">
+                    <div className="bzl-contact-field">
+                      <label htmlFor="name">{c.nameLabel}</label>
+                      <input
+                        id="name"
+                        name="name"
+                        type="text"
+                        autoComplete="name"
+                        placeholder={c.namePlaceholder}
+                        value={formData.name}
+                        onChange={handleInputChange}
+                        required
+                        className="bzl-site-input bzl-contact-input"
+                      />
+                    </div>
+
+                    <div className="bzl-contact-field">
+                      <label htmlFor="email">{c.emailLabel}</label>
+                      <input
+                        id="email"
+                        name="email"
+                        type="email"
+                        autoComplete="email"
+                        placeholder={c.emailPlaceholder}
+                        value={formData.email}
+                        onChange={handleInputChange}
+                        required
+                        className="bzl-site-input bzl-contact-input"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="bzl-contact-field">
+                    <label htmlFor="subject">{c.subjectLabel}</label>
+                    <input
+                      id="subject"
+                      name="subject"
+                      type="text"
+                      placeholder={c.subjectPlaceholder}
+                      value={formData.subject}
+                      onChange={handleInputChange}
+                      required
+                      className="bzl-site-input bzl-contact-input"
+                    />
+                  </div>
+
+                  <div className="bzl-contact-field">
+                    <label htmlFor="message">{c.messageLabel}</label>
+                    <textarea
+                      id="message"
+                      name="message"
+                      placeholder={c.messagePlaceholder}
+                      value={formData.message}
+                      onChange={handleInputChange}
+                      required
+                      rows={6}
+                      className="bzl-site-input bzl-contact-input bzl-contact-textarea"
+                    />
+                  </div>
+
+                  <button
+                    type="submit"
+                    className="bzl-site-btn is-lg bzl-contact-submit"
+                    disabled={formStatus === "sending" || !isFormValid}
+                  >
+                    {formStatus === "sending" ? (
+                      <>
+                        <svg
+                          className="animate-spin"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          aria-hidden="true"
+                        >
+                          <circle
+                            className="opacity-25"
+                            cx="12"
+                            cy="12"
+                            r="10"
+                            stroke="currentColor"
+                            strokeWidth="4"
+                          />
+                          <path
+                            className="opacity-75"
+                            fill="currentColor"
+                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                          />
+                        </svg>
+                        {c.sending}
+                      </>
+                    ) : (
+                      <>
+                        <Send aria-hidden="true" />
+                        {c.send}
+                      </>
+                    )}
+                  </button>
+                </form>
               )}
+            </Reveal>
 
-              <div className="grid md:grid-cols-2 gap-6">
-                <div className="space-y-2">
-                  <label
-                    htmlFor="name"
-                    className="block text-sm font-medium text-foreground"
-                  >
-                    {messages.contact.nameLabel}
-                  </label>
-                  <Input
-                    id="name"
-                    name="name"
-                    type="text"
-                    placeholder={messages.contact.namePlaceholder}
-                    value={formData.name}
-                    onChange={handleInputChange}
-                    required
-                    className="h-12"
-                  />
-                </div>
-
-                <div className="space-y-2">
-                  <label
-                    htmlFor="email"
-                    className="block text-sm font-medium text-foreground"
-                  >
-                    {messages.contact.emailLabel}
-                  </label>
-                  <Input
-                    id="email"
-                    name="email"
-                    type="email"
-                    placeholder={messages.contact.emailPlaceholder}
-                    value={formData.email}
-                    onChange={handleInputChange}
-                    required
-                    className="h-12"
-                  />
-                </div>
-              </div>
-
-              <div className="space-y-2">
-                <label
-                  htmlFor="subject"
-                  className="block text-sm font-medium text-foreground"
-                >
-                  {messages.contact.subjectLabel}
-                </label>
-                <Input
-                  id="subject"
-                  name="subject"
-                  type="text"
-                  placeholder={messages.contact.subjectPlaceholder}
-                  value={formData.subject}
-                  onChange={handleInputChange}
-                  required
-                  className="h-12"
-                />
-              </div>
-
-              <div className="space-y-2">
-                <label
-                  htmlFor="message"
-                  className="block text-sm font-medium text-foreground"
-                >
-                  {messages.contact.messageLabel}
-                </label>
-                <Textarea
-                  id="message"
-                  name="message"
-                  placeholder={messages.contact.messagePlaceholder}
-                  value={formData.message}
-                  onChange={handleInputChange}
-                  required
-                  rows={6}
-                  className="resize-none"
-                />
-              </div>
-
-              <Button
-                type="submit"
-                className="w-full h-12 text-base"
-                disabled={formStatus === "sending" || !isFormValid}
-              >
-                {formStatus === "sending" ? (
-                  <>
-                    <span className="animate-spin mr-2">
-                      <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24">
-                        <circle
-                          className="opacity-25"
-                          cx="12"
-                          cy="12"
-                          r="10"
-                          stroke="currentColor"
-                          strokeWidth="4"
-                        />
-                        <path
-                          className="opacity-75"
-                          fill="currentColor"
-                          d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                        />
-                      </svg>
-                    </span>
-                    {messages.contact.sending}
-                  </>
-                ) : (
-                  <>
-                    <Send className="w-5 h-5 mr-2" />
-                    {messages.contact.send}
-                  </>
-                )}
-              </Button>
-            </form>
-          )}
-
-          <div className="text-center mt-8 text-muted-foreground">
-            <p>
-              {messages.contact.orEmailUs}{" "}
-              <a
-                href="mailto:hello@bizmis.ai"
-                className="font-medium text-primary hover:underline"
-              >
-                hello@bizmis.ai
-              </a>
-            </p>
+            {/* Other ways in: email, a call, the FAQs */}
+            <Reveal delay={120} className="min-w-0">
+              <aside className="bzl-contact-aside" aria-labelledby="contact-options">
+              <h2 id="contact-options" className="bzl-contact-aside-title">
+                {c.options.heading}
+              </h2>
+              <ul className="bzl-contact-options">
+                {options.map(({ icon: Icon, title, body, href: to, newTab }) => (
+                  <li key={title}>
+                    <a
+                      href={to}
+                      className="bzl-site-card bzl-contact-option"
+                      {...(newTab ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+                    >
+                      <span className="bzl-site-disc" aria-hidden="true">
+                        <Icon />
+                      </span>
+                      <span className="min-w-0 flex-1">
+                        <span className="bzl-contact-option-title">{title}</span>
+                        <span className="bzl-contact-option-body">{body}</span>
+                      </span>
+                      {newTab ? (
+                        <ArrowUpRight className="bzl-contact-option-arrow" aria-hidden="true" />
+                      ) : (
+                        <ArrowRight className="bzl-contact-option-arrow is-flat" aria-hidden="true" />
+                      )}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+              </aside>
+            </Reveal>
           </div>
         </div>
       </div>
-
-      <Footer />
-    </PublicPageLayout>
+    </SitePage>
   );
 };
 

@@ -47,6 +47,34 @@ const PRERENDERED_PAGES: PageKey[] = [
 const fileFor = (url: string) =>
   url === "/" ? "index.html" : `${url.replace(/^\//, "")}/index.html`;
 
+const VOID_TAGS = new Set(["area", "br", "col", "embed", "hr", "img", "input", "link", "meta", "source", "track", "wbr"]);
+
+/**
+ * A slice of rendered markup, made whole: closing tags of wrappers that opened
+ * before the slice are dropped, and anything still open at its end is closed.
+ */
+const balanceTags = (html: string): string => {
+  const stack: string[] = [];
+  const out = html.replace(/<(\/?)([a-zA-Z][\w-]*)([^>]*?)(\/?)>/g, (tag, close, rawName, _attrs, selfClose) => {
+    const name = rawName.toLowerCase();
+    if (selfClose || VOID_TAGS.has(name)) return tag;
+    if (!close) {
+      stack.push(name);
+      return tag;
+    }
+    const at = stack.lastIndexOf(name);
+    if (at < 0) return ""; // closes something opened before the slice
+    const closing = stack
+      .splice(at)
+      .slice(1)
+      .reverse()
+      .map((n) => `</${n}>`)
+      .join("");
+    return closing + tag;
+  });
+  return out + stack.reverse().map((n) => `</${n}>`).join("");
+};
+
 /**
  * The legal pages' own text, rendered from their components (English only),
  * from the h1 to the end of the article: crawlers get the full policy.
@@ -70,17 +98,12 @@ const renderLegal = async (page: "privacy" | "terms"): Promise<string | undefine
     const start = html.indexOf("<h1");
     const end = html.indexOf("<footer");
     if (start < 0 || end < start) return undefined;
-    let body = html
+    const body = html
       .slice(start, end)
-      .replace(/\s(class|style|data-[\w-]+)="[^"]*"/g, "");
-    // Drop the closing tags of the wrappers that opened before the h1.
-    const opens = (body.match(/<div[\s>]/g) ?? []).length;
-    let extra = (body.match(/<\/div>/g) ?? []).length - opens;
-    while (extra > 0 && body.trimEnd().endsWith("</div>")) {
-      body = body.trimEnd().slice(0, -"</div>".length);
-      extra -= 1;
-    }
-    return body;
+      .replace(/\s(class|style|data-[\w-]+)="[^"]*"/g, "")
+      // the page's own furniture (the contents' fold-out button), not its text
+      .replace(/<button[\s\S]*?<\/button>/g, "");
+    return balanceTags(body);
   } catch (error) {
     console.warn(`[seo] couldn't render ${page} for the static HTML:`, error);
     return undefined;

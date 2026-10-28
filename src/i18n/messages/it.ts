@@ -894,6 +894,14 @@ export const it: Messages = {
     sending: "Invio...",
     send: "Invia il messaggio",
     orEmailUs: "Oppure scrivici direttamente a",
+    /** The v2 contact page's other ways in, beside the form. */
+    options: {
+      heading: "Altri modi per contattarci",
+      emailTitle: "Scrivici un'e-mail",
+      callBody: "Scegli l'orario che preferisci",
+      faqsTitle: "Leggi le FAQ",
+      faqsBody: "Risposte rapide alle domande più comuni",
+    },
   },
 
   earlyAccessPage: {
@@ -970,6 +978,10 @@ export const it: Messages = {
     title: "404",
     message: "Ops! Pagina non trovata",
     backHome: "Torna alla home",
+    /** The v2 404 page. */
+    headline: "Questa pagina si è persa",
+    lead: "Forse il link è vecchio o contiene un errore. Ecco qualche pagina da cui ripartire.",
+    homeCta: "Torna alla home",
   },
 
   seo: {
