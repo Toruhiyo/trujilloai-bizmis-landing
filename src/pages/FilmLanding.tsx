@@ -9,6 +9,7 @@ import SetupSection from "@/components/landing/SetupSection";
 import CustomizeSection from "@/components/landing/CustomizeSection";
 import EndCard from "@/components/landing/EndCard";
 import FilmFooter from "@/components/landing/FilmFooter";
+import LandingSummary from "@/components/landing/LandingSummary";
 import {
   setupScrollToSectionOnLoad,
   setupScrollToUrlUpdater,
@@ -117,11 +118,15 @@ const FilmLanding = ({ path = "/" }: FilmLandingProps) => {
         {/* the page's main landmark; display: contents, so the layout doesn't see it */}
         <main className="contents">
           <Hero />
+          {/* what Bizmis is, in a sentence (visually hidden: the hero shows it in pictures) */}
+          <LandingSummary part="definition" />
           {/* "This isn't a chatbot" (SwitchSection) is hidden: the hero covers it now */}
           {/* Boost Sales' small area label, for the transitions (the Sales files stay as they are) */}
           <PillarAreaContext.Provider value={messages.landing.salesArea}>
             <SalesSection />
           </PillarAreaContext.Provider>
+          {/* the funnel's stages in words (visually hidden: the page draws their endings) */}
+          <LandingSummary part="funnel" />
           <SupportSection />
           <InsightsSection />
           <SetupSection />

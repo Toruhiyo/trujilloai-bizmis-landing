@@ -168,11 +168,37 @@ ${urls.join("\n")}
 `;
 };
 
+/**
+ * AI crawlers named on purpose: the training and the search/answer bots of
+ * OpenAI, Anthropic, Perplexity, Google (Gemini), Apple and Common Crawl are
+ * all welcome, with the same rules as everyone else. (A named group replaces
+ * the * group for that bot, so it repeats the rules.)
+ */
+const AI_CRAWLERS = [
+  "GPTBot",
+  "OAI-SearchBot",
+  "ChatGPT-User",
+  "ClaudeBot",
+  "Claude-SearchBot",
+  "Claude-User",
+  "PerplexityBot",
+  "Perplexity-User",
+  "Google-Extended",
+  "Applebot-Extended",
+  "CCBot",
+];
+
+const ROBOTS_RULES = `Allow: /
+Disallow: /admin/
+Disallow: /email-renders/`;
+
 export const renderRobots = (): string => `# https://www.bizmis.ai
 User-agent: *
-Allow: /
-Disallow: /admin/
-Disallow: /email-renders/
+${ROBOTS_RULES}
+
+# AI crawlers and answer engines: welcome. Start at /llms.txt
+${AI_CRAWLERS.map((bot) => `User-agent: ${bot}`).join("\n")}
+${ROBOTS_RULES}
 
 Sitemap: ${SITE_URL}/sitemap.xml
 `;
@@ -189,3 +215,4 @@ export const PAGE_SOURCES: Partial<Record<PageKey, string[]>> = {
 };
 
 export { LOCALES };
+export { findDashes, renderLlmsFullTxt, renderLlmsTxt } from "./llms";

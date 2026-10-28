@@ -6,8 +6,9 @@
  * a copy of the shell with the route's <html lang>, head tags (title,
  * description, canonical, hreflang, Open Graph, Twitter, JSON-LD) and static
  * text in place of the <!-- seo:head --> and <!-- seo:body --> blocks. Also
- * writes 404.html, app-shell.html (JS-only routes), sitemap.xml and
- * robots.txt. vercel.json routes each URL to its file.
+ * writes 404.html, app-shell.html (JS-only routes), sitemap.xml, robots.txt,
+ * llms.txt and llms-full.txt (src/seo/llms.ts). vercel.json routes each URL
+ * to its file. In dev, /llms.txt and /llms-full.txt are rendered on request.
  *
  * The app itself is unchanged: it still mounts with createRoot (no
  * hydration), replacing the static text, and react-helmet-async adopts the
@@ -44,7 +45,38 @@ const lastCommitDate = (root: string, paths: string[]): string | undefined => {
   }
 };
 
-export function seoPrerender(): Plugin {
+const LLMS_FILES: Record<string, "renderLlmsTxt" | "renderLlmsFullTxt"> = {
+  "/llms.txt": "renderLlmsTxt",
+  "/llms-full.txt": "renderLlmsFullTxt",
+};
+
+/** Dev server: /llms.txt and /llms-full.txt, rendered fresh from the sources. */
+function llmsDev(): Plugin {
+  return {
+    name: "bizmis-seo-llms-dev",
+    apply: "serve",
+    configureServer(server) {
+      server.middlewares.use(async (req, res, next) => {
+        const fn = req.url ? LLMS_FILES[req.url.split("?")[0]] : undefined;
+        if (!fn) return next();
+        try {
+          // (loosely typed: the node tsconfig has no "@/" alias for src/seo/llms.ts)
+          const mod = (await server.ssrLoadModule("/src/seo/llms.ts")) as Record<string, () => string>;
+          res.setHeader("Content-Type", "text/plain; charset=utf-8");
+          res.end(mod[fn]());
+        } catch (error) {
+          next(error);
+        }
+      });
+    },
+  };
+}
+
+export function seoPrerender(): Plugin[] {
+  return [seoBuild(), llmsDev()];
+}
+
+function seoBuild(): Plugin {
   let config: ResolvedConfig;
   return {
     name: "bizmis-seo-prerender",
@@ -101,8 +133,20 @@ export function seoPrerender(): Plugin {
         await write("sitemap.xml", mod.renderSitemap(lastmod));
         await write("robots.txt", mod.renderRobots());
 
+        // GEO: llms.txt and llms-full.txt, from the same copy and data as the pages
+        for (const [url, fn] of Object.entries(LLMS_FILES)) {
+          const text = mod[fn]();
+          const dashes = mod.findDashes(text);
+          if (dashes.length > 0) {
+            config.logger.warn(
+              `[seo] ${url} has em/en dashes (copy rule: none). Fix the source copy:\n  ${dashes.join("\n  ")}`,
+            );
+          }
+          await write(url.slice(1), text);
+        }
+
         config.logger.info(
-          `[seo] prerendered ${routes.length} routes + 404.html, app-shell.html, sitemap.xml, robots.txt`,
+          `[seo] prerendered ${routes.length} routes + 404.html, app-shell.html, sitemap.xml, robots.txt, llms.txt, llms-full.txt`,
         );
       } finally {
         await server.close();

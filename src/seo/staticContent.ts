@@ -15,6 +15,7 @@ import {
   PLAN_EXTRA_SESSION_RATES,
   PLAN_INCLUDED_SESSIONS,
   PLAN_MONTHLY_PRICES,
+  YEARLY_DISCOUNT_PERCENT,
   extraSessionSavingPercent,
 } from "@/data/planPrices";
 import {
@@ -24,7 +25,7 @@ import {
 import { LOCALES, LOCALE_NAMES, LOCALE_TAGS, type Locale } from "@/i18n/locales";
 import { getMessages, type Messages } from "@/i18n/messages";
 import { localizePath } from "@/i18n/paths";
-import { escapeHtml as esc, HREFLANG, PAGES, pageName, type PageKey } from "./site";
+import { escapeHtml as esc, HREFLANG, PAGES, pageName, plainText, type PageKey } from "./site";
 
 /** **bold** and line breaks, as the FAQ page renders them. */
 const richText = (text: string) =>
@@ -85,35 +86,43 @@ const footer = (m: Messages, locale: Locale) => {
 
 const home = (m: Messages) => {
   const l = m.landing;
+  // Each stage of the sales funnel: its opener reads straight into the win
+  // label, as the page draws it ("Visitors who want the right product… Find it fast").
+  const stages = (l.sales.openers ?? [])
+    .map((opener, i) => (l.sales.funnel?.solutions?.[i] ? `${opener}… ${l.sales.funnel.solutions[i]}` : ""))
+    .filter(Boolean);
   return `<section>
             <h1>${esc(`${m.hero.titleLine1} ${m.hero.titleLine2}`)}</h1>
             <p>${esc(l.heroLine.join(" "))}</p>
+            <p>${esc(plainText(m.faqs.items["what-is-bizmis"].answer))}</p>
             <p><strong>${esc(m.hero.pitchLead)}</strong> ${esc(m.hero.pitchShort)}</p>
             <p>${link(BIZMIS_SHOPIFY_APP_LISTING_URL, m.common.installOnShopify, true)}. ${esc(l.installSubline)}.</p>
           </section>
           <section>
-            <h2>${esc(l.sales.titleParts.join(" "))}</h2>
+            <h2>${esc(`${m.benefits.sales.badge}: ${l.sales.titleParts.join(" ")}`)}</h2>
             ${l.sales.panels.map((p) => `<h3>${esc(p.title)}</h3><p>${esc(p.body)}</p>`).join("\n            ")}
+            ${stages.length > 0 ? list(stages) : ""}
             <p><strong>${esc(l.sales.payoff.title)}</strong> ${esc(l.sales.payoff.body)}</p>
           </section>
           <section>
-            <h2>${esc(`${l.support.title} ${l.support.titleTail}`)}</h2>
+            <h2>${esc(`${l.support.area}: ${l.support.title} ${l.support.titleTail}`)}</h2>
             <p>${esc(l.support.lead)}</p>
           </section>
           <section>
-            <h2>${esc(`${l.insights.title} ${l.insights.titleTail}`)}</h2>
+            <h2>${esc(`${l.insights.area}: ${l.insights.title} ${l.insights.titleTail}`)}</h2>
             <p>${esc(l.insights.lead)}</p>
           </section>
           <section>
             <h2>${esc(l.setup.title)}</h2>
             <p>${esc(l.setup.leadOn.replace(/^…/, ""))} ${esc(l.setup.leadSync)}</p>
+            <p><strong>${esc(l.setup.alwaysInSync)}</strong></p>
             ${list(l.setup.cards)}
           </section>
           <section>
             <h2>${esc(l.customize.title)}</h2>
             <p>${esc(l.customize.lead)}</p>
             <h3>${esc(l.customize.avatar.title)}</h3><p>${esc(l.customize.avatar.body)}</p>
-            <h3>${esc(l.customize.voice.title)}</h3><p>${esc(l.customize.voice.body)}</p>
+            <h3>${esc(`${l.customize.voice.title} (${m.common.soon})`)}</h3><p>${esc(l.customize.voice.body)}</p>
           </section>
           <section>
             <h2>${esc(`${l.endCard.install} ${l.endCard.invite}`)}</h2>
@@ -154,6 +163,7 @@ const pricing = (m: Messages, locale: Locale) => {
             <p>${esc(p.enterprise.everythingInScale)}</p>
             ${list(p.enterprise.features)}
           </section>
+          <p>${esc(p.yearly)}: ${esc(p.discountTitle(YEARLY_DISCOUNT_PERCENT))}</p>
           <p>${esc(p.conversationDefinition)}</p>
           ${list([p.guarantees.spendLimit, p.guarantees.cancelAnytime, p.guarantees.moneyBack])}
           <p>${link(localizePath("/faqs", locale), p.viewAllFaqs)}</p>`;

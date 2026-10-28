@@ -24,6 +24,7 @@ import {
   PLAN_EXTRA_SESSION_RATES,
   PLAN_INCLUDED_SESSIONS,
   PLAN_MONTHLY_PRICES,
+  YEARLY_DISCOUNT_PERCENT,
   extraSessionSavingPercent,
 } from "@/data/planPrices";
 import { localeTag, useLocale, useLocaleHref, useMessages } from "@/i18n/LocaleProvider";
@@ -69,7 +70,7 @@ const MONTHS_PER_YEAR = 12;
 
 /** Yearly billing is about 20% off the monthly price. Used when the backend
  *  catalog has no yearly price for a plan (the v2 catalog returns null). */
-const YEARLY_FALLBACK_DISCOUNT_PERCENT = 20;
+const YEARLY_FALLBACK_DISCOUNT_PERCENT = YEARLY_DISCOUNT_PERCENT;
 
 /** 20% off the monthly price, rounded down to whole dollars ($79 -> $63). */
 const yearlyFallbackMonthlyPrice = (monthlyPrice: number): number =>

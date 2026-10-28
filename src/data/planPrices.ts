@@ -37,3 +37,8 @@ export const PLAN_EXTRA_SESSION_RATES = {
  */
 export const extraSessionSavingPercent = (rate: number, baseRate: number): number =>
   baseRate > 0 && rate < baseRate ? Math.round((1 - rate / baseRate) * 100) : 0;
+
+/** Yearly billing is about this much off the monthly price (the pricing page's
+ *  fallback when the backend catalog has no yearly price; the FAQs say "about
+ *  20% off"). */
+export const YEARLY_DISCOUNT_PERCENT = 20;
