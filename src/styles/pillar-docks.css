@@ -1,12 +1,9 @@
-/* ═══════════ Dock styles d · e · f (?dock=, pillar/DockAlt.tsx) ═══════════
-   Other ideas of what the docked thing is, each one lockup in the opener and
-   docked (PillarIntro, pillar/useDockMorph):
-     d  Pill     no bar: a floating pill centred under the nav (the page's default)
-     e  Tabs     a segmented control of the page's three pillars, the one you're in filled
-     f  Marker   no bar: a running head written in the marker hand, over a soft fade
-   Their grounds come in with the bar's --pm-bar (0 → 1 over the morph), set
-   on .pi-head by the morph; the shared full-width ground is off (d, e) or a
-   fade with no edge (f). Colours: the ink (white on the Sales band), the
+/* The pillars' lockup (pillar/PillDock.tsx): one lockup in the opener and
+   docked (PillarIntro, pillar/useDockMorph). No bar: the opener's eyebrow is
+   a pill ([icon] area), and docked, the opener has shrunk into a floating
+   pill centred under the nav. Its ground comes in with the bar's --pm-bar
+   (0 → 1 over the morph), set on .pi-head by the morph; the shared
+   full-width ground is off. Colours: the ink (white on the Sales band), the
    primary #F9A353, white; never a dark orange.
    (Scoped under .pi-od: the page sets its font on every span.) */
 
@@ -85,17 +82,9 @@
   font-weight: 800;
   letter-spacing: -0.035em;
 }
-.pi-od .odz-num {
-  font-family: var(--bzl-script, "Caveat", cursive);
-  font-weight: 700;
-  letter-spacing: -0.02em;
-  line-height: 0.8;
-  color: var(--od-accent);
-}
 
-/* ── docked: shared ── */
-.pi-odx-d .pi-head::before,
-.pi-odx-e .pi-head::before {
+/* ── docked ── */
+.pi-odx-d .pi-head::before {
   display: none;
 }
 .pi-od .pi-dock.odz-bar {
@@ -123,37 +112,37 @@
   white-space: nowrap;
 }
 
-/* d, e: Sales' line shows its current part only (on the payoff, the last), the
+/* Sales' line shows its current part only (on the payoff, the last), the
    others stacked in the same cell, out of sight (--pm-absent: no twin in the
    morph); the next one rolls up into place */
-.pi-od .odz-bar:is(.odz-bar-d, .odz-bar-e) .sl-title.is-line {
+.pi-od .odz-bar.odz-bar-d .sl-title.is-line {
   display: inline-grid;
   justify-items: start;
 }
-.pi-od .odz-bar:is(.odz-bar-d, .odz-bar-e) .sl-title.is-line > span {
+.pi-od .odz-bar.odz-bar-d .sl-title.is-line > span {
   grid-area: 1 / 1;
 }
-.pi-od .odz-bar:is(.odz-bar-d, .odz-bar-e) .sl-title-part.is-off,
-.pi-od .odz-bar:is(.odz-bar-d, .odz-bar-e) .sl-title:not(:has(.is-off)) > span:not(:last-child) .sl-title-part {
+.pi-od .odz-bar.odz-bar-d .sl-title-part.is-off,
+.pi-od .odz-bar.odz-bar-d .sl-title:not(:has(.is-off)) > span:not(:last-child) .sl-title-part {
   --pm-absent: 1;
 }
-.pi-od .odz-bar:is(.odz-bar-d, .odz-bar-e) .sl-title-text {
+.pi-od .odz-bar.odz-bar-d .sl-title-text {
   display: inline-block;
   transition:
     opacity 0.35s var(--bzl-ease, ease),
     transform 0.5s var(--bzl-ease, ease);
 }
-.pi-od .odz-bar:is(.odz-bar-d, .odz-bar-e) .sl-title-part.is-off .sl-title-text,
-.pi-od .odz-bar:is(.odz-bar-d, .odz-bar-e) .sl-title:not(:has(.is-off)) > span:not(:last-child) .sl-title-text {
+.pi-od .odz-bar.odz-bar-d .sl-title-part.is-off .sl-title-text,
+.pi-od .odz-bar.odz-bar-d .sl-title:not(:has(.is-off)) > span:not(:last-child) .sl-title-text {
   opacity: 0;
   transform: translate3d(0, 0.55em, 0);
 }
-.pi-od .odz-bar:is(.odz-bar-d, .odz-bar-e) .sl-title-part.is-done .sl-title-text,
-.pi-od .odz-bar:is(.odz-bar-d, .odz-bar-e) .sl-title:not(:has(.is-off)) > span:not(:last-child) .sl-title-text {
+.pi-od .odz-bar.odz-bar-d .sl-title-part.is-done .sl-title-text,
+.pi-od .odz-bar.odz-bar-d .sl-title:not(:has(.is-off)) > span:not(:last-child) .sl-title-text {
   transform: translate3d(0, -0.55em, 0);
 }
 
-/* ═══════════ d · Pill ═══════════ */
+/* ── the pill ── */
 /* opener: the eyebrow in a pill ([icon] area), its ground drawing open from the icon as the opener holds */
 .odz-d .odz-kick {
   font-size: clamp(1rem, min(1.35vw, 2.5svh), 1.3rem);
@@ -263,229 +252,6 @@
   color: #fff;
 }
 
-/* ═══════════ e · Tabs ═══════════ */
-/* opener: the control as the eyebrow (numbers; the area in the filled one, its fill drawing in as the opener holds) */
-.odz-tabs {
-  position: relative;
-  isolation: isolate;
-  display: inline-flex;
-  align-items: center;
-  gap: 0.2em;
-  padding: 0.28em;
-  white-space: nowrap;
-}
-.odz-e .odz-tabs {
-  font-size: clamp(1rem, min(1.35vw, 2.5svh), 1.3rem);
-}
-.odz-tabs-ground,
-.odz-in.odz-tabs::before {
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-  border-radius: 999px;
-  background: #fff;
-  box-shadow:
-    0 0 0 1px rgb(59 36 22 / 0.08),
-    0 12px 30px -20px rgb(59 36 22 / 0.45);
-}
-.odz-in.odz-tabs::before {
-  content: "";
-  opacity: var(--odz-g, 1);
-}
-.odz-tab {
-  position: relative;
-  isolation: isolate;
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5em;
-  padding: 0.5em 0.95em;
-  border-radius: 999px;
-}
-.pi-od .odz-tab,
-.pi-od .odz-tab .odz-label {
-  color: color-mix(in oklab, var(--odz-ink) 50%, transparent);
-}
-.pi-od .odz-tab.is-on,
-.pi-od .odz-tab.is-on .odz-label {
-  color: var(--odz-ink);
-}
-.pi-od .odz-n {
-  font-weight: 800;
-  letter-spacing: 0.02em;
-  font-variant-numeric: tabular-nums;
-}
-.pi-od .odz-tab .odz-label {
-  font-weight: 700;
-  letter-spacing: -0.015em;
-}
-/* the filled tab: the primary, ink on it */
-.odz-fill {
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-  overflow: hidden;
-  border-radius: 999px;
-}
-.odz-fill i {
-  display: block;
-  height: 100%;
-  border-radius: 999px;
-  background: var(--odz-primary);
-}
-.odz-bar-e .odz-tab.is-on::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-  border-radius: 999px;
-  background: var(--odz-primary);
-  opacity: var(--odz-g, 1);
-}
-/* docked: centred under the nav */
-.pi-od .pi-dock.odz-bar-e {
-  --odz: clamp(0.9rem, min(1.08vw, 2.1svh), 1.05rem);
-  justify-content: center;
-}
-/* Sales' tab carries its current part in the marker hand */
-.pi-od .odz-tab .odz-main.is-line {
-  margin-left: 0.15em;
-}
-.pi-od .odz-tab .odz-main .sl-title-part,
-.pi-od .odz-tab .odz-main .sl-title-part span {
-  font-family: var(--bzl-script, "Caveat", cursive);
-}
-.pi-od .odz-tab .odz-main .sl-title.is-line {
-  font-size: 1.32em;
-  font-weight: 700;
-  letter-spacing: 0;
-  line-height: 0.9;
-}
-/* Sales on its band: the control a glass of white, the filled tab white */
-.sl-c .odz-tabs-ground,
-.sl-c .odz-in.odz-tabs::before {
-  background: rgb(255 255 255 / 0.18);
-  box-shadow: inset 0 0 0 1.5px rgb(255 255 255 / 0.5);
-}
-.sl-c .odz-in.odz-tabs::before {
-  -webkit-backdrop-filter: blur(14px) saturate(1.15);
-  backdrop-filter: blur(14px) saturate(1.15);
-}
-.sl-c .pi-od .odz-tab,
-.sl-c .pi-od .odz-tab .odz-label {
-  color: rgb(255 255 255 / 0.85);
-}
-.sl-c .pi-od .odz-tab.is-on,
-.sl-c .pi-od .odz-tab.is-on .odz-label,
-.sl-c .pi-od .odz-tab.is-on .sl-title-part {
-  color: var(--odz-ink);
-}
-.sl-c .odz-fill i,
-.sl-c .odz-bar-e .odz-tab.is-on::before {
-  background: #fff;
-}
-.sl-c .pi-od .odz-tab .sl-title-mark {
-  stroke: var(--odz-primary);
-}
-
-/* ═══════════ f · Marker ═══════════ */
-/* opener: the number in marker, the area in spaced capitals; the outcome lighter (Inter 700), its second sentence in the marker hand, underlined as the opener holds */
-.odz-f .odz-kick {
-  align-items: baseline;
-  gap: clamp(0.7rem, 1.2vw, 1.1rem);
-}
-.pi-od .odz-f .odz-num {
-  font-size: clamp(2.6rem, min(4.4vw, 7.8svh), 4.4rem);
-}
-.pi-od .odz-f .odz-label,
-.pi-od .odz-run .odz-label:not(.is-hero) {
-  font-size: clamp(0.95rem, min(1.2vw, 2.2svh), 1.2rem);
-  font-weight: 700;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  color: color-mix(in oklab, var(--od-ink) 80%, transparent);
-}
-.odz-f .odz-rule {
-  display: none;
-}
-.pi-od .odz-f .od-outcome {
-  font-weight: 700;
-  letter-spacing: -0.04em;
-}
-.pi-od .odz-f .od-outcome .is-hand {
-  position: relative;
-  font-family: var(--bzl-script, "Caveat", cursive);
-  font-size: 1.14em;
-  font-weight: 700;
-  letter-spacing: -0.01em;
-  color: var(--od-accent);
-}
-
-/* docked: a running head on the content's left edge, no bar: the number in marker, the name in spaced capitals, a short marker dash, the outcome in the hand */
-.pi-odx-f .pi-head::before {
-  inset: 0 0 -1.4rem;
-  background: rgb(255 255 255 / 0.74);
-  box-shadow: none;
-  -webkit-mask-image: linear-gradient(#000 62%, transparent);
-  mask-image: linear-gradient(#000 62%, transparent);
-}
-.sl-c .pi-odx-f .pi-head::before {
-  background: rgb(249 163 83 / 0.62);
-}
-.pi-od .pi-dock.odz-bar-f {
-  --odz: clamp(1rem, min(1.25vw, 2.4svh), 1.2rem);
-  justify-content: flex-start;
-  max-width: 1400px;
-  margin-inline: auto;
-  padding-block: 0.6rem 0.5rem;
-}
-.odz-run {
-  display: inline-flex;
-  align-items: baseline;
-  gap: 0.8em;
-}
-.odz-run-head {
-  display: inline-flex;
-  align-items: baseline;
-  gap: 0.6em;
-}
-.pi-od .odz-run .odz-num {
-  font-size: 1.7em;
-}
-.pi-od .odz-run .odz-label:not(.is-hero) {
-  font-size: 0.8em;
-}
-.pi-od .odz-run .odz-label.is-hero {
-  font-size: 0.8em;
-  font-weight: 700;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-}
-.odz-run .odz-rule {
-  align-self: center;
-  width: 1.6em;
-  height: 2px;
-  border-radius: 2px;
-  background: var(--od-accent);
-}
-.pi-od .odz-run .odz-main,
-.pi-od .odz-run .odz-main span {
-  font-family: var(--bzl-script, "Caveat", cursive);
-}
-.pi-od .odz-run .odz-main {
-  font-size: 1.55em;
-  font-weight: 700;
-  letter-spacing: 0;
-  line-height: 0.95;
-  color: var(--od-ink);
-}
-.pi-od .odz-run .odz-main .sl-title.is-line {
-  font-weight: 700;
-  letter-spacing: 0;
-}
-.pi-od .odz-run .sl-title-mark {
-  stroke: var(--od-accent);
-}
-
 /* ── phones and tablets in portrait ── */
 @media (max-width: 767px) {
   .odz {
@@ -498,7 +264,7 @@
   .pi-od .pi-dock.odz-bar {
     padding: 0.45rem 1rem;
   }
-  /* d: Support's and Insights' pill on two rows (the area, then the outcome) */
+  /* Support's and Insights' pill on two rows (the area, then the outcome) */
   .pi-od .pi-dock.odz-bar-d {
     --odz: 0.95rem;
   }
@@ -519,36 +285,8 @@
   .odz-pill.is-outcome .odz-main {
     text-align: center;
   }
-  /* e: the other tabs by their number only */
-  .pi-od .pi-dock.odz-bar-e {
-    --odz: 0.92rem;
-  }
-  .odz-bar-e .odz-tab:not(.is-on) .odz-label {
-    display: none;
-  }
-  .odz-tab {
-    padding: 0.5em 0.8em;
-  }
-  /* f: the head, then the outcome under it */
-  .pi-od .pi-dock.odz-bar-f {
-    --odz: 0.95rem;
-  }
-  .odz-run {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 0.25em;
-  }
 }
 
-/* f: Sales' line in the hand in the opener too (the bar's twin) */
-.pi-od .odz-f .odz-sub .sl-title-part,
-.pi-od .odz-f .odz-sub .sl-title-part span {
-  font-family: var(--bzl-script, "Caveat", cursive);
-}
-.pi-od .odz-f .odz-sub .sl-title {
-  font-size: 1.22em;
-  letter-spacing: -0.005em;
-}
 /* Support / Insights on desktop: the pill centred over the pinned screen's left column (PillarIntro measures it: --odz-col-l / -r) */
 @media (min-width: 1024px) {
   .pi-od .pi-dock.odz-bar-d[data-col] {
@@ -568,10 +306,5 @@
   }
   .pi-od .pi-dock.odz-bar-d {
     --odz: 0.9rem;
-  }
-}
-@media (max-width: 767px) {
-  .odz-run .odz-rule {
-    display: none;
   }
 }

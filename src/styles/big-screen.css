@@ -28,20 +28,8 @@
   }
 
   /* the pillars' openers and their docked bars (pillar-openers.css, pillar-docks.css) */
-  .bzl .odz,
-  .bzl .odx,
-  .bzl .pi-od .pi-dock.odx-bar-b {
+  .bzl .odz {
     max-width: 75rem;
-  }
-  .bzl .od1,
-  .bzl .pi-od .pi-dock.odz-bar-f {
-    max-width: 87.5rem;
-  }
-  .bzl .od5 {
-    max-width: 80rem;
-  }
-  .bzl .od-backdrop {
-    width: min(77.5rem, 98vw);
   }
 
   /* the words inside the devices' screens (landing-sales.css, film-landing.css,

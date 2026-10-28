@@ -3,14 +3,12 @@ import type { ReactNode } from "react";
 import { cn } from "@/lib/utils";
 import PillarIntro from "../PillarIntro";
 import { useMedia, useOnScreen, usePinProgress, useRewinding, useScrollPlay } from "../sales/hooks";
-import { useOpener } from "./OpenerContext";
-import type { Motif } from "./OpenerDesign";
 import "@/styles/pillar-intro.css";
 import "@/styles/pillar-openers.css";
 
 /** Where a pinned section is, for its content: how far its track has been scrolled (0 → 1), and whether it's on screen. */
 export type PinState = {
-  /** True when the section is the pinned one-screen layout (desktop, an opener design). */
+  /** True when the section is the pinned one-screen layout (desktop). */
   pinned: boolean;
   /** 0 → 1 through the pinned track (0 when not pinned). */
   progress: number;
@@ -41,17 +39,13 @@ export const runFor = (duration: number) => {
 };
 
 type Props = {
-  /** The section's place in the page ("02"). */
-  index: string;
   icon: ReactNode;
   name: string;
   promise: string;
   /** The area's full name, the chapter's eyebrow ("Customer Support"). */
   area?: string;
-  /** The promise, a sentence a line, for the opener designs. */
+  /** The promise, a sentence a part: the opener's outcome. */
   outcome?: string[];
-  /** The pillar, for the designs' drawings. */
-  motif?: Motif;
   /** The pinned scene's length (ms): the track's scroll follows from it (runFor). */
   duration: number;
   /** Where it pins (default PIN_QUERY, desktop). */
@@ -96,30 +90,26 @@ const render = (children: Props["children"], state: PinState) =>
  * one line), which the scroll morphs into the section's sticky docked bar
  * ([icon] area | outcome), the content following under it.
  *
- * With an opener design (?open=1..6; the page's default is 5, "Chapter") on
- * a desktop screen (or wherever `pinQuery` says), the content is ONE pinned
+ * On a desktop screen (or wherever `pinQuery` says), the content is ONE pinned
  * screen, sticky right under the bar while the page scrolls through a track
  * as long as its scene needs (runFor: the timeline at SCROLL_PER_S, then
  * END_HOLD of its final state). The
  * content gets the track's progress (a render prop) to drive its animations
  * by the scroll, like Boost Sales (sales/hooks: usePinProgress,
- * useScrollPlay). Otherwise (phones, short screens, ?open=0) it simply
- * follows in the flow.
+ * useScrollPlay). Otherwise (phones, short screens) it simply follows in
+ * the flow.
  */
 const BenefitIntro = (props: Props) => {
-  const opener = useOpener();
   const wide = useMedia(props.pinQuery ?? PIN_QUERY);
-  const pinned = wide && opener !== "0" && Boolean(props.outcome);
-  const { index, icon, name, promise, area, outcome, motif, duration, className, children } = props;
+  const pinned = wide && Boolean(props.outcome);
+  const { icon, name, promise, area, outcome, duration, className, children } = props;
   return (
     <PillarIntro
-      index={index}
       name={name}
       icon={icon}
       line={promise}
       area={area}
       outcome={outcome}
-      motif={motif}
       docked={<span className="bzp-dock-line">{promise}</span>}
       className={cn("bzp", pinned && "is-pinned", className)}
     >

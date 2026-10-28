@@ -61,7 +61,6 @@ export const SalesShell = ({
     <section id="benefits" className={cn("sl sl-c bzl-band bzl-pillar p-sales", className)}>
       <SalesHeading as="p" />
       <PillarIntro
-        index="01"
         name={m.benefits.sales.badge}
         icon={<TrendIcon />}
         line={<SalesTitle active="all" layout="big" as="span" />}

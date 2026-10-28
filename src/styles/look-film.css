@@ -224,13 +224,6 @@
   background-color: #fff1e3;
   color: hsl(var(--primary));
 }
-/* Sales: its icon disc keeps white, the glyph in the primary (no burnt) */
-.bzl[data-look="film"] .sl-c .pi {
-  --pi-icon-fg: hsl(var(--primary));
-}
-.bzl[data-look="film"] .sl-c .pi-icon {
-  box-shadow: 0 14px 34px -18px rgb(59 36 22 / 0.4);
-}
 /* the Trust mockup's "Best match" pill: a primary shadow, not a burnt one */
 .bzl[data-look="film"] .sl-trust-badge {
   box-shadow: 0 6px 14px -6px rgb(249 163 83 / 0.7);
@@ -246,8 +239,6 @@
 .bzl[data-look="film"] .bzl-pillar.p-insights .pi {
   --pi-name-color: var(--film-ink);
   --pi-line-color: var(--film-ink);
-  --pi-icon-bg: #ffffff; /* white disc, primary glyph */
-  --pi-icon-fg: hsl(var(--primary));
   --pi-bar: rgb(255 255 255 / 0.88);
 }
 .bzl[data-look="film"] .bzl-pillar.p-support .pi-head::before,

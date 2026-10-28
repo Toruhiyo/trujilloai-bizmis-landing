@@ -150,12 +150,10 @@ const SupportSection = () => {
   return (
     <section className="bzl-band bzl-pillar p-support bzp-section">
       <BenefitIntro
-        index="02"
         icon={<HeadsetIcon />}
         name={messages.benefits.support.badge}
         promise={promise}
         area={s.area}
-        motif="support"
         outcome={[s.title, s.titleTail]}
         duration={duration}
         pinQuery={SUPPORT_PIN}

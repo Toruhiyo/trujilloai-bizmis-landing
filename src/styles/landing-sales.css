@@ -205,15 +205,6 @@
 .sl-c .pi {
   --pi-name-color: #fff;
   --pi-line-color: #fff;
-  --pi-icon-bg: #fff;
-  /* the burnt primary on the white disc: the glyph crisp at any size */
-  --pi-icon-fg: #a84f0c;
-}
-.sl-c .pi-icon {
-  box-shadow: 0 14px 34px -18px rgb(150 58 0 / 0.55);
-}
-.sl-c .pi-name {
-  text-shadow: 0 18px 50px rgb(150 58 0 / 0.25);
 }
 .sl-c .pi-line.sl-big .sl-title-part,
 .sl-c .pi-line.sl-big .sl-title-lead {
@@ -228,18 +219,7 @@
   letter-spacing: inherit;
   line-height: inherit;
 }
-/* docked: the name, a clear label, a hairline, then the parts and their fills */
-.sl-c .pi-dock-name {
-  padding-right: clamp(0.8rem, 1.6vw, 1.5rem);
-  border-right: 2px solid rgb(255 255 255 / 0.35);
-}
-@media (max-width: 767px) {
-  .sl-c .pi-dock-name {
-    padding-right: 0;
-    border-right: 0;
-  }
-}
-/* the docked bar: the title on one line, the chip beside it on desktop */
+/* the docked bar: the title on one line */
 .sl-c .pi-head::before {
   box-shadow: 0 1px 0 rgb(255 255 255 / 0.28);
 }

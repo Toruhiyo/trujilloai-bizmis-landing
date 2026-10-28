@@ -1173,7 +1173,7 @@
 @keyframes ai-voice { 0%, 100% { scale: 1 0.55; opacity: 0.55; } 50% { scale: 1 1; opacity: 1; } }
 /* ── The benefit icons (AnimatedIcons: TrendIcon, HeadsetIcon, IdeaIcon) ──
    One set in the marker's hand, wherever they sit (the pillar openers and
-   their docked bars): a thick round stroke (beats .pi-icon svg's weight), a
+   their docked pills): a thick round stroke, a
    4.4s loop whose motion lives in its last third; the rest of the cycle, and
    reduced motion, show the complete drawing. */
 .bzl .bzl-bi { --cycle: 4.4s; stroke-width: 2.3; }
@@ -1444,19 +1444,14 @@
 .bzl[data-look="film"] .bzl-pillar .bzl-mk .mk-hand.is-label { font-size: 32px; }
 .bzl[data-look="film"] .bzl-pillar .bzl-mk .mk-hand.is-ask { font-size: 22px; }
 
-/* ── Benefit pillar entrances (pillar/BenefitIntro.tsx on PillarIntro's named
-   pattern): Support and Insights open on their NAME, huge, icon above and
-   promise under it, docking as the section's sticky bar (name as a strong
-   label, the promise beside it), in the pillar's own colours. ── */
+/* ── Benefit pillar entrances (pillar/BenefitIntro.tsx on PillarIntro):
+   Support and Insights open on their promise under the area's pill, docking
+   as the section's floating pill (the area, then the promise), in the
+   pillar's own colours. ── */
 .bzp-section { padding-bottom: clamp(1.5rem, 5svh, 4rem); }
 .bzp {
   --pi-name-color: var(--acc-ink, #a84f0c); /* the burnt primary */
   --pi-line-color: var(--bzl-ink-2);
-}
-.bzp .pi-icon {
-  box-shadow:
-    inset 0 0 0 1px color-mix(in oklab, var(--acc) 22%, transparent),
-    0 10px 26px -16px color-mix(in oklab, var(--acc-ink) 70%, transparent);
 }
 .bzp .pi-line { font-weight: 600; }
 /* docked: the promise beside the name, set off by a rule in the pillar's colour */

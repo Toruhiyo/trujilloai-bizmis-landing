@@ -110,12 +110,10 @@ const InsightsSection = () => {
   return (
     <section className="bzl-band bzl-pillar p-insights bzp-section">
       <BenefitIntro
-        index="03"
         icon={<IdeaIcon />}
         name={messages.benefits.insights.badge}
         promise={promise}
         area={ins.area}
-        motif="insights"
         outcome={[ins.title, ins.titleTail]}
         duration={CLARITY_MS}
         pinQuery={INSIGHTS_PIN}

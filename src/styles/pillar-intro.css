@@ -83,67 +83,16 @@
   min-height: 3.5rem;
   padding: 0.6rem 1rem;
 }
-.pi-dock-chip {
-  flex-shrink: 0;
-}
-.pi-dock-main {
-  min-width: 0;
-}
-@media (max-width: 1023px) {
-  .pi-dock-chip {
-    display: none;
-  }
-}
 
 /* docked: the name as a strong label, then the line's compact form */
 .pi-dock.is-named {
   gap: clamp(0.8rem, 2vw, 1.6rem);
-}
-.pi-dock-name {
-  display: inline-flex;
-  flex-shrink: 0;
-  align-items: center;
-  gap: 0.5em;
-  font-size: clamp(1.15rem, min(2vw, 4svh), 1.85rem);
-  font-weight: 800;
-  letter-spacing: -0.035em;
-  line-height: 1;
-  white-space: nowrap;
-  color: var(--pi-name-color, var(--bzl-fg));
 }
 @media (max-width: 767px) {
   .pi-dock.is-named {
     flex-direction: column;
     gap: 0.4rem;
   }
-}
-
-/* ── The pillar's icon, in its disc: one glyph, the same in both states ──
-   The disc and the glyph scale together (the glyph is 54% of the disc) and
-   the stroke is one weight in the 24 grid, so big and docked read as the
-   same mark. */
-.pi-icon,
-.pi-dock-icon {
-  display: grid;
-  flex-shrink: 0;
-  place-items: center;
-  aspect-ratio: 1;
-  border-radius: 999px;
-  background: var(--pi-icon-bg, #fff);
-  color: var(--pi-icon-fg, #a84f0c);
-}
-.pi-icon {
-  width: clamp(3.6rem, 9svh, 5.25rem);
-}
-.pi-dock-icon {
-  width: 1.6em;
-}
-.pi-icon svg,
-.pi-dock-icon svg {
-  display: block;
-  width: 54%;
-  height: 54%;
-  stroke-width: 2;
 }
 
 /* ── The big opener: over the section's top, one screen tall under the nav,
@@ -176,37 +125,8 @@
 .pi-runway {
   height: calc(var(--pi-run) + var(--pi-dock-h));
 }
-.pi-title {
-  max-width: 14ch;
-  font-size: clamp(2.9rem, min(9vw, 14svh), 9rem);
-  font-weight: 700;
-  letter-spacing: -0.045em;
-  line-height: 0.98;
-  color: var(--bzl-fg);
-  text-wrap: balance;
-}
-@media (max-width: 639px) {
-  .pi-title {
-    font-size: clamp(2.6rem, 13.5vw, 4rem);
-  }
-}
 
-/* the name: huge, always one line (PillarIntro caps it to the width it has, --pi-fit) */
-.pi-name {
-  --pi-name-size: clamp(3.4rem, min(9vw, 15.5svh), 9.5rem);
-  align-self: stretch;
-  font-size: calc(var(--pi-name-size) * var(--pi-fit, 1));
-  font-weight: 800;
-  letter-spacing: -0.05em;
-  line-height: 1;
-  white-space: nowrap;
-  color: var(--pi-name-color, var(--bzl-fg));
-}
-.pi-name-text {
-  display: inline-block;
-  /* the tight tracking's last letter, and descenders, inside the box */
-  padding: 0 0.04em 0.06em;
-}
+/* Sales' line under its name */
 .pi-line {
   max-width: 22ch;
   font-size: clamp(1.4rem, min(3.6vw, 6svh), 3.3rem);
@@ -217,9 +137,6 @@
   text-wrap: balance;
 }
 @media (max-width: 639px) {
-  .pi-name {
-    --pi-name-size: clamp(2.6rem, 15vw, 4.4rem);
-  }
   .pi-line {
     font-size: clamp(1.3rem, 6.4vw, 1.8rem);
   }
@@ -229,12 +146,6 @@
   position: relative;
 }
 
-/* Sales' bar: the hairline after the label comes in with the bar's ground */
-.sl-c .pi-head .pi-dock-name {
-  border-right-color: rgb(255 255 255 / calc(0.35 * var(--pm-bar, 1)));
-}
-
-/* ── Dock styles (?dock=, PillarIntro; the lockup in pillar-openers.css) ── */
 /* the hold: the opener stays put in the middle of the screen over this much scroll before the morph (pillar/useDockMorph):
    its scene plays over the first ~2/3, then its final state stands for the rest */
 .pi {
@@ -247,27 +158,4 @@
 }
 .pi-hold {
   height: var(--pi-hold);
-}
-/* a: the bar's ground grows from a pill in the middle (--pm-g, 0 → 1) */
-.pi-odx-a .pi-head::before {
-  clip-path: inset(0 calc((1 - var(--pm-g, 1)) * 50%) round calc((1 - var(--pm-g, 1)) * 2.5rem));
-}
-/* c: the curtain, the band's colour (a soft tint on white), scaled from the bar's box */
-.pi {
-  --pi-curtain: color-mix(in oklab, var(--acc-soft, #fff3e7) 80%, #ffffff);
-}
-.sl-c .pi {
-  --pi-curtain: #ef8c38;
-}
-.pi-curtain {
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-  background: var(--pi-curtain);
-  opacity: 0;
-  transform-origin: 50% 0;
-  pointer-events: none;
-}
-.pi[data-pm-state="morph"] .pi-curtain {
-  will-change: transform, opacity;
 }
