@@ -227,6 +227,23 @@ const FilmPlayer = forwardRef<FilmPlayerHandle, FilmPlayerProps>(({
       film.removeEventListener("loadedmetadata", measure);
     };
   }, []);
+  // how far the control bar reaches up from the bottom of the frame, plus a gap: captions sit above it
+  const [dockClear, setDockClear] = useState(0);
+  const dockObserver = useRef<ResizeObserver | null>(null);
+  const dockRef = useCallback((dock: HTMLDivElement | null) => {
+    dockObserver.current?.disconnect();
+    dockObserver.current = null;
+    const film = filmRef.current;
+    if (!dock || !film) return;
+    const measure = () => {
+      const rem = parseFloat(getComputedStyle(document.documentElement).fontSize) || 16;
+      setDockClear(film.clientHeight - dock.offsetTop + 0.75 * rem);
+    };
+    measure();
+    dockObserver.current = new ResizeObserver(measure);
+    dockObserver.current.observe(dock);
+    dockObserver.current.observe(film);
+  }, []);
   const loopRef = useRef<HTMLVideoElement>(null);
   const timelineRef = useRef<HTMLDivElement>(null);
   const hideTimer = useRef<number>();
@@ -261,16 +278,27 @@ const FilmPlayer = forwardRef<FilmPlayerHandle, FilmPlayerProps>(({
   useEffect(() => setCcOn(readCaptionsPref()), []);
   const [cues, setCues] = useState<Cue[] | null>(null);
   const [cueIndex, setCueIndex] = useState(-1);
-  const cuesFetch = useRef<Promise<void> | null>(null);
-  useEffect(() => {
-    if (!ccOn || !captions || cuesFetch.current) return;
-    cuesFetch.current = fetch(captions.src)
+  const cuesFetch = useRef<Promise<Cue[]> | null>(null);
+  const loadCues = useCallback(() => {
+    if (!captions) return Promise.resolve<Cue[]>([]);
+    cuesFetch.current ??= fetch(captions.src)
       .then((r) => (r.ok ? r.text() : Promise.reject(new Error(`captions ${r.status}`))))
-      .then((vtt) => setCues(parseVtt(vtt)))
+      .then((vtt) => {
+        const parsed = parseVtt(vtt);
+        setCues(parsed);
+        return parsed;
+      })
       .catch(() => {
         cuesFetch.current = null; // try again on the next toggle
+        return [];
       });
-  }, [ccOn, captions]);
+    return cuesFetch.current;
+  }, [captions]);
+  useEffect(() => {
+    if (ccOn) loadCues();
+  }, [ccOn, loadCues]);
+  const ccOnRef = useRef(ccOn);
+  ccOnRef.current = ccOn;
   const toggleCaptions = useCallback(() => {
     setCcOn((on) => {
       try {
@@ -484,6 +512,30 @@ const FilmPlayer = forwardRef<FilmPlayerHandle, FilmPlayerProps>(({
     wakeControls();
   }, [emit, wakeControls]);
 
+  // Fullscreen: the whole player (controls and captions stay ours), or on iPhone, where only a
+  // <video> can go fullscreen, the system player. iPhone throws if the film has no metadata yet
+  // (the stream attaches on the first play), so it then waits for it; if Safari refuses outside
+  // the tap, the film simply plays in place, fitted to the screen.
+  const enterFullscreen = useCallback(() => {
+    const root = rootRef.current;
+    const video = filmRef.current as WebkitVideo | null;
+    if (document.fullscreenElement) return;
+    if (root?.requestFullscreen) {
+      root.requestFullscreen().catch(() => undefined);
+      return;
+    }
+    if (!video?.webkitEnterFullscreen) return;
+    const go = () => {
+      try {
+        video.webkitEnterFullscreen?.();
+      } catch {
+        // not allowed now: it plays in place
+      }
+    };
+    if (video.readyState >= 1) go();
+    else video.addEventListener("loadedmetadata", go, { once: true });
+  }, []);
+
   useImperativeHandle(
     ref,
     () => ({
@@ -495,15 +547,9 @@ const FilmPlayer = forwardRef<FilmPlayerHandle, FilmPlayerProps>(({
       close: () => {
         if (phaseRef.current !== "idle") backToLoop("escape");
       },
-      fullscreen: () => {
-        const root = rootRef.current;
-        const video = filmRef.current as WebkitVideo | null;
-        if (document.fullscreenElement) return;
-        if (root?.requestFullscreen) root.requestFullscreen().catch(() => undefined);
-        else video?.webkitEnterFullscreen?.(); // iOS Safari: only the <video> can go fullscreen
-      },
+      fullscreen: enterFullscreen,
     }),
-    [play, replay, backToLoop],
+    [play, replay, backToLoop, enterFullscreen],
   );
 
   const togglePlay = useCallback(() => {
@@ -600,30 +646,77 @@ const FilmPlayer = forwardRef<FilmPlayerHandle, FilmPlayerProps>(({
   }, [ccOn, cues, phase]);
 
   // iPhone fullscreen is the system player, where our captions can't be drawn:
-  // hand it the same cues as a native track while it lasts.
+  // hand it the same cues as a native track while it lasts. The track is there
+  // even with CC off (hidden), so the system player's own captions menu offers
+  // it; what the viewer picks there carries back to our CC button.
+  const nativeTrack = useRef<TextTrack | null>(null);
   useEffect(() => {
     const film = filmRef.current;
     if (!film || !captions) return;
-    let track: TextTrack | null = null;
+    let inFullscreen = false;
     const onBegin = () => {
-      if (!ccOn || !cues?.length) return;
-      if (!track) {
-        track = film.addTextTrack("captions", labels.narrator, captions.lang);
-        for (const c of cues) track.addCue(new VTTCue(c.start, c.end, c.text));
-      }
-      track.mode = "showing";
+      inFullscreen = true;
+      loadCues().then((list) => {
+        if (!inFullscreen || !list.length) return;
+        if (!nativeTrack.current) {
+          const track = film.addTextTrack("captions", labels.narrator, captions.lang);
+          for (const c of list) track.addCue(new VTTCue(c.start, c.end, c.text));
+          nativeTrack.current = track;
+        }
+        nativeTrack.current.mode = ccOnRef.current ? "showing" : "hidden";
+      });
     };
     const onEnd = () => {
-      if (track) track.mode = "disabled";
+      inFullscreen = false;
+      const track = nativeTrack.current;
+      if (!track) return;
+      const on = track.mode === "showing";
+      if (on !== ccOnRef.current) {
+        setCcOn(on);
+        try {
+          window.localStorage.setItem(CAPTIONS_KEY, on ? "on" : "off");
+        } catch {
+          // private mode
+        }
+      }
+      track.mode = "disabled"; // inline, the player draws its own captions
     };
     film.addEventListener("webkitbeginfullscreen", onBegin);
     film.addEventListener("webkitendfullscreen", onEnd);
     return () => {
       film.removeEventListener("webkitbeginfullscreen", onBegin);
       film.removeEventListener("webkitendfullscreen", onEnd);
-      onEnd();
     };
-  }, [captions, ccOn, cues, labels.narrator]);
+  }, [captions, loadCues, labels.narrator]);
+
+  // A filled player is never taller than the screen (film-player.css: .bzf-fill), but on a short
+  // screen (a phone on its side) the hero it fills is: when the film opens, scroll the player's
+  // top to the top of the screen so the picture, its controls and its captions are all in view.
+  // Again when fullscreen ends (the page may have scrolled under it).
+  const open = phase !== "idle";
+  useEffect(() => {
+    const film = filmRef.current;
+    if (!fill || !open || fullscreen || !film) return;
+    let frame = 0;
+    const bringIntoView = () => {
+      cancelAnimationFrame(frame);
+      frame = requestAnimationFrame(() => {
+        const root = rootRef.current;
+        if (!root || document.fullscreenElement) return;
+        const box = root.getBoundingClientRect();
+        if (box.top < -1 || box.bottom > window.innerHeight + 1) {
+          const still = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+          window.scrollBy({ top: box.top, behavior: still ? "auto" : "smooth" });
+        }
+      });
+    };
+    bringIntoView();
+    film.addEventListener("webkitendfullscreen", bringIntoView);
+    return () => {
+      cancelAnimationFrame(frame);
+      film.removeEventListener("webkitendfullscreen", bringIntoView);
+    };
+  }, [fill, open, fullscreen]);
 
   // Click-off: anywhere outside the player sends an open film back to the loop.
   useEffect(() => {
@@ -650,15 +743,8 @@ const FilmPlayer = forwardRef<FilmPlayerHandle, FilmPlayerProps>(({
   }, []);
 
   const toggleFullscreen = () => {
-    const root = rootRef.current;
-    const film = filmRef.current as WebkitVideo | null;
-    if (document.fullscreenElement) {
-      document.exitFullscreen().catch(() => undefined);
-    } else if (root?.requestFullscreen) {
-      root.requestFullscreen().catch(() => undefined);
-    } else {
-      film?.webkitEnterFullscreen?.(); // iOS Safari: only the <video> can go fullscreen
-    }
+    if (document.fullscreenElement) document.exitFullscreen().catch(() => undefined);
+    else enterFullscreen();
   };
 
   const toggleMute = () => {
@@ -732,12 +818,11 @@ const FilmPlayer = forwardRef<FilmPlayerHandle, FilmPlayerProps>(({
     wakeControls();
   };
 
-  const open = phase !== "idle";
   const showControls = open && (phase !== "playing" || controlsAwake || qualityOpen);
   const progress = duration ? (time / duration) * 100 : 0;
   const bufferedPct = duration ? (buffered / duration) * 100 : 0;
   const dockButton =
-    "flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-xl text-white drop-shadow-[0_1px_3px_rgba(0,0,0,0.25)] transition-colors hover:bg-white/15 sm:h-11 sm:w-11";
+    "flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-xl text-white drop-shadow-[0_1px_3px_rgba(0,0,0,0.25)] transition-colors hover:bg-white/15";
 
   return (
     <div
@@ -751,6 +836,7 @@ const FilmPlayer = forwardRef<FilmPlayerHandle, FilmPlayerProps>(({
       className={cn(
         "group/film relative w-full outline-none select-none",
         (fullscreen || fill) && "h-full bg-black",
+        fill && "bzf-fill",
         phase === "playing" && !showControls && "cursor-none",
         className
       )}
@@ -875,7 +961,8 @@ const FilmPlayer = forwardRef<FilmPlayerHandle, FilmPlayerProps>(({
           const fontSize = Math.min(34, Math.max(12.5, picture.width * 0.0142));
           const pillHeight = fontSize * 2;
           const below = picture.top; // the letterbox under the picture (it's centred)
-          const controlsTop = picture.width < 640 ? 62 : 88; // the control bar's top, plus a gap
+          // the control bar's top, measured (its size follows the rem, which grows on big screens), plus a gap
+          const controlsTop = dockClear || (window.innerWidth >= 640 ? 88 : 70);
           const inLetterbox = below >= pillHeight * 2.6 + 12;
           const style: CSSProperties = inLetterbox
             ? { top: picture.top + picture.height + 12 }
@@ -909,7 +996,7 @@ const FilmPlayer = forwardRef<FilmPlayerHandle, FilmPlayerProps>(({
         {/* Controls, inside the frame; they hide while the pointer rests. The install comes
             at the end, on the film's own closing title. */}
         {open && (
-          <div className="absolute inset-x-2 bottom-2 z-10 flex items-center gap-2 sm:inset-x-4 sm:bottom-4 sm:gap-3">
+          <div ref={dockRef} className="bzf-dock absolute z-10 flex items-center gap-2 sm:gap-3">
             <div
               className={cn(
                 GLASS,
@@ -1031,7 +1118,7 @@ const FilmPlayer = forwardRef<FilmPlayerHandle, FilmPlayerProps>(({
                     aria-label={labels.quality}
                     aria-haspopup="menu"
                     aria-expanded={qualityOpen}
-                    className={cn(dockButton, "w-auto gap-1.5 px-2 sm:w-auto sm:px-3", qualityOpen && "bg-white/15")}
+                    className={cn(dockButton, "w-auto min-w-11 gap-1.5 px-2.5 sm:px-3", qualityOpen && "bg-white/15")}
                   >
                     <Settings2 className="h-5 w-5" aria-hidden="true" />
                     <span className="hidden text-xs font-semibold tabular-nums sm:inline">

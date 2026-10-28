@@ -85,3 +85,34 @@
 @media (prefers-reduced-motion: reduce) {
   .bzf-cc { animation: none; }
 }
+
+/* Filling the hero, the player is never taller than the screen: the hero has a 600px floor, so on
+   a short screen (a phone on its side, 844x390) the film, its control bar and its captions ran
+   below the bottom edge. The visible height (dvh; svh, then vh, where dvh is missing) caps it; the
+   film letterboxes inside (object-contain). In fullscreen the box is the screen anyway. */
+.bzf-fill {
+  max-height: 100vh;
+  max-height: 100svh;
+  max-height: 100dvh;
+}
+
+/* The control bar, inside the frame, clear of the notch and the home indicator (on its side the
+   notch is on the left or the right). */
+.bzf-dock {
+  left: max(0.5rem, env(safe-area-inset-left));
+  right: max(0.5rem, env(safe-area-inset-right));
+  bottom: max(0.5rem, env(safe-area-inset-bottom));
+}
+@media (min-width: 640px) {
+  .bzf-dock {
+    left: max(1rem, env(safe-area-inset-left));
+    right: max(1rem, env(safe-area-inset-right));
+    bottom: max(1rem, env(safe-area-inset-bottom));
+  }
+}
+
+/* The quality menu opens upwards from the bar: on a short screen it scrolls rather than run off the top. */
+.bzf-quality {
+  max-height: calc(100dvh - 6.5rem);
+  overflow-y: auto;
+}
