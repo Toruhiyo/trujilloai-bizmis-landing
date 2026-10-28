@@ -68,3 +68,5 @@ public/film/hls
 tmp/avatar-renders/
 film/scripts/store-reel-voice/
 film/demo-stores/_frames/
+.vercel
+.env*
