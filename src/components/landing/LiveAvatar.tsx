@@ -93,6 +93,9 @@ function hasWebGL(): boolean {
  * competes with the first paint for the network or the main thread.
  */
 let calm: Promise<void> | null = null;
+/** After a largest-paint entry, a moment for a later, larger one (the still fading in), then idle. */
+const LCP_SETTLE_MS = 800;
+const LCP_WAIT_MS = 3000;
 function pageCalm(): Promise<void> {
   calm ??= new Promise<void>((resolve) => {
     const idle = () => {
@@ -101,8 +104,30 @@ function pageCalm(): Promise<void> {
       if (ric) ric(() => resolve(), { timeout: 2000 });
       else window.setTimeout(resolve, 300);
     };
-    if (document.readyState === "complete") idle();
-    else window.addEventListener("load", idle, { once: true });
+    // and after the page's largest paint (the hero's still avatar): the load event can come before it, the
+    // app being a module script and the images lazy (at most LCP_WAIT_MS after load)
+    const painted = () => {
+      let done = false;
+      let po: PerformanceObserver | null = null;
+      const go = () => {
+        if (done) return;
+        done = true;
+        po?.disconnect();
+        idle();
+      };
+      try {
+        po = new PerformanceObserver((list) => {
+          if (list.getEntries().length) window.setTimeout(go, LCP_SETTLE_MS);
+        });
+        po.observe({ type: "largest-contentful-paint", buffered: true });
+      } catch {
+        go();
+        return;
+      }
+      window.setTimeout(go, LCP_WAIT_MS);
+    };
+    if (document.readyState === "complete") painted();
+    else window.addEventListener("load", painted, { once: true });
   });
   return calm;
 }

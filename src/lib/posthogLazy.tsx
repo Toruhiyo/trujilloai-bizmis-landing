@@ -4,9 +4,9 @@
  * path. vite.config.ts aliases "posthog-js/react" to this file, so the app's
  * `PostHogProvider` and `usePostHog()` calls stay exactly as written.
  *
- * - The real posthog-js is imported and initialised once the page has loaded
- *   and the main thread is idle, or at the visitor's first interaction,
- *   whichever comes first.
+ * - The real posthog-js is imported and initialised once the page has loaded,
+ *   painted its largest element and the main thread is idle, or at the
+ *   visitor's first interaction, whichever comes first.
  * - Until then `usePostHog()` returns a stable proxy that queues every call
  *   (capture, register, identify, ...) and replays it, in order, on the real
  *   client once it's up. After that the proxy forwards calls directly.
@@ -70,8 +70,30 @@ function whenCalm(run: () => void) {
     if (ric) ric(go, { timeout: 4000 });
     else window.setTimeout(go, 1500);
   };
-  if (document.readyState === "complete") idle();
-  else window.addEventListener("load", idle, { once: true });
+  // the load event can come before the page's largest paint (the app is a module script, its images lazy):
+  // wait for that paint too, at most 3 s, so the analytics never land in front of it
+  const painted = () => {
+    let fired = false;
+    let po: PerformanceObserver | null = null;
+    const next = () => {
+      if (fired) return;
+      fired = true;
+      po?.disconnect();
+      idle();
+    };
+    try {
+      po = new PerformanceObserver((list) => {
+        if (list.getEntries().length) window.setTimeout(next, 800);
+      });
+      po.observe({ type: "largest-contentful-paint", buffered: true });
+    } catch {
+      next();
+      return;
+    }
+    window.setTimeout(next, 3000);
+  };
+  if (document.readyState === "complete") painted();
+  else window.addEventListener("load", painted, { once: true });
 }
 
 const PostHogContext = createContext<{ client: PostHog }>({ client });

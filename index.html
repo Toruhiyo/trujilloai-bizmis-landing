@@ -41,8 +41,8 @@
 
     <!-- Google Analytics: the queue is set up at once (gtag() calls wait in
          dataLayer); gtag.js itself (about 180 KB) is fetched once the page has
-         loaded and the main thread is idle, or at the first interaction, so it
-         never competes with the first paint. -->
+         loaded, painted its largest element and the main thread is idle, or at
+         the first interaction, so it never competes with the first paint. -->
     <script>
       window.dataLayer = window.dataLayer || [];
       function gtag() {
@@ -67,8 +67,29 @@
           if (window.requestIdleCallback) requestIdleCallback(load, { timeout: 3000 });
           else setTimeout(load, 1500);
         }
-        if (document.readyState === "complete") idle();
-        else addEventListener("load", idle, { once: true });
+        // after the page's largest paint too (the load event can come first), 3 s at most
+        function painted() {
+          var fired = false;
+          var po = null;
+          function next() {
+            if (fired) return;
+            fired = true;
+            if (po) po.disconnect();
+            idle();
+          }
+          try {
+            po = new PerformanceObserver(function (list) {
+              if (list.getEntries().length) setTimeout(next, 800);
+            });
+            po.observe({ type: "largest-contentful-paint", buffered: true });
+          } catch (e) {
+            next();
+            return;
+          }
+          setTimeout(next, 3000);
+        }
+        if (document.readyState === "complete") painted();
+        else addEventListener("load", painted, { once: true });
       })();
     </script>
 
