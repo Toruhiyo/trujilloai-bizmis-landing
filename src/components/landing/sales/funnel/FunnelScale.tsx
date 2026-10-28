@@ -16,7 +16,6 @@ const FunnelScale = ({
   duration,
   fixAt,
   rewind,
-  labels,
   className,
 }: {
   focus: number;
@@ -25,14 +24,12 @@ const FunnelScale = ({
   fixAt: number;
   /** Scrolled back: the marker ◀◀ over the funnel. */
   rewind?: boolean;
-  /** Off where the words sit over the funnel as its labels (?beat=7). */
-  labels?: boolean;
   className?: string;
 }) => {
   const f = useMessages().landing.sales.funnel;
   return (
     <div className={cn("sl-fn relative", className)} data-focus={focus}>
-      <FunnelFlow t={t} duration={duration} focus={focus} fixAt={fixAt} copy={f} rewind={rewind} labels={labels} />
+      <FunnelFlow t={t} duration={duration} focus={focus} fixAt={fixAt} copy={f} rewind={rewind} />
     </div>
   );
 };

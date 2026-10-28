@@ -1,4 +1,4 @@
-import type { ComponentType, CSSProperties } from "react";
+import type { ComponentType } from "react";
 import { cn } from "@/lib/utils";
 import BuyMockup from "./BuyMockup";
 import type { Clock, MockupProps } from "./scene";
@@ -40,44 +40,9 @@ export const Device = ({
   );
 };
 
-/** A sub-benefit's words: its short merchant-side title and one line. */
-export const PanelCopy = ({
-  title,
-  body,
-  index,
-  kicker,
-  className,
-  style,
-  as: Tag = "h3",
-}: {
-  title: string;
-  /** Its one line (none: the title alone). */
-  body?: string;
-  index?: number;
-  /** A word over the title (its funnel stage), after the number if there is one. */
-  kicker?: string;
-  className?: string;
-  style?: CSSProperties;
-  as?: "h3" | "p";
-}) => (
-  <div className={cn("sl-copy", className)} style={style}>
-    {kicker !== undefined ? (
-      <span className="sl-copy-kicker">
-        {index !== undefined && (
-          <span className="sl-copy-kicker-num" aria-hidden="true">
-            {String(index + 1).padStart(2, "0")}
-          </span>
-        )}
-        {kicker}
-      </span>
-    ) : (
-      index !== undefined && (
-        <span className="sl-copy-num" aria-hidden="true">
-          {String(index + 1).padStart(2, "0")}
-        </span>
-      )
-    )}
-    <Tag className="sl-copy-title">{title}</Tag>
-    {body && <p className="sl-copy-body">{body}</p>}
+/** The payoff's words: its title alone. */
+export const PanelCopy = ({ title, className }: { title: string; className?: string }) => (
+  <div className={cn("sl-copy", className)}>
+    <h3 className="sl-copy-title">{title}</h3>
   </div>
 );

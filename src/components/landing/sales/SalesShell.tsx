@@ -8,7 +8,7 @@ import { buyTimeline } from "./BuyMockup";
 import { findTimeline } from "./FindMockup";
 import SalesTitle, { SalesHeading } from "./SalesTitle";
 import { trustTimeline } from "./TrustMockup";
-import { useSalesCopy } from "./proto";
+import { useSalesCopy } from "./salesCopy";
 
 /* What the section (SalesSpine) builds on: the pillar's opener and docked
    bar, the beats' timelines, a live size. */
@@ -19,9 +19,8 @@ const BAR = "color-mix(in oklab, #f0913e 95%, transparent)";
 const TIMELINES = [findTimeline, trustTimeline, buyTimeline];
 
 /**
- * After a beat's fix lands: the funnel's solution written and ticked, then
- * the words' loss → win (beatcopy/BeatHL's AFTER_LABEL), and a beat to read
- * it (ms).
+ * After a beat's fix lands: the funnel's label struck, its solution written
+ * and ticked, then a beat to read it (ms).
  */
 const FIXED = 4400;
 

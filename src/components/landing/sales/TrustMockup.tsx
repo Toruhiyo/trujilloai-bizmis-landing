@@ -12,7 +12,7 @@ import type { Messages } from "@/i18n/messages/en";
 import { bump, easeOutBack, useScene } from "./hooks";
 import { Sentinel } from "./scene";
 import type { MockupProps } from "./scene";
-import { useSalesCopy } from "./proto";
+import { useSalesCopy } from "./salesCopy";
 
 /** The scene's timeline (ms): typing, send, weighing the three (one card every `card`), the pick, the answer. */
 const T = { type: 350, send: 1300, compare: 1650, card: 560, pick: 4050, speak: 4150 };

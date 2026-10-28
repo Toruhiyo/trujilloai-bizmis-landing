@@ -12,12 +12,12 @@ const rand = (a: number, b: number) => a + Math.random() * (b - a);
 /**
  * A device's screen as a tape being rewound, while `on`: tracking bands
  * rolling up, horizontal tear slices, a red / cyan channel split, scanlines,
- * a little jitter and flicker (the analog look of beatcopy/RewindTape, made
- * for a lit screen rather than words, reusing its `.rwa-fx` overlay). Gathers
+ * a little jitter and flicker (the `.rwa-fx` overlay of rewind-analog.css,
+ * tuned for a lit screen). Gathers
  * quickly as the rewind starts, fades as it stops; nothing while the beat
  * plays or holds. Driven straight on the DOM, never through React state.
  * Reduced motion: off. `band`: over something drawn on the band itself (the
- * payoff's funnel, its metric card), not a lit screen: no white ground, the
+ * payoff's funnel, its Sales column), not a lit screen: no white ground, the
  * scanlines tuned for the orange.
  */
 export const ScreenTape = ({ on, band = false, children }: { on: boolean; band?: boolean; children: ReactNode }) => {

@@ -10,7 +10,7 @@ import type { Messages } from "@/i18n/messages/en";
 import { bump, easeOutBack, useScene } from "./hooks";
 import { Sentinel } from "./scene";
 import type { MockupProps } from "./scene";
-import { useSalesCopy } from "./proto";
+import { useSalesCopy } from "./salesCopy";
 
 const PERKS = [Truck, RotateCcw];
 const PRICE = 48;

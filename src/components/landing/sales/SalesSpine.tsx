@@ -3,32 +3,30 @@ import type { CSSProperties } from "react";
 import { useMessages } from "@/i18n/LocaleProvider";
 import { cn } from "@/lib/utils";
 import BeatCopy from "./BeatCopy";
-import { arrLook, endsLook, openerLook, useBeatStyle } from "./beatcopy/style";
-import { arrange, arrangeOpener } from "./arrange";
-import type { EndsLook } from "./beatcopy/style";
+import { arrangeOpener } from "./arrange";
 import FunnelFlow, { funnelAnchors } from "./funnel/FunnelFlow";
 import FunnelScale from "./funnel/FunnelScale";
-import { cardKsAt, ksAt, startsFor } from "./funnel/model";
+import { startsFor } from "./funnel/model";
 import SalesJar from "./funnel/SalesJar";
 import { useActivePanel, useMedia, useNearScreen, usePinProgress, useRewinding, useScrollPlay, useScrollThrough } from "./hooks";
-import Metrics from "./Metrics";
 import RewindScreen, { ScreenTape } from "./RewindScreen";
-import { useSalesProto } from "./proto";
 import SalesPayoff, { PAYOFF_DURATION } from "./SalesPayoff";
-import { DEVICE_ASPECT, SalesShell, useBeatTimelines, useSize } from "./SalesShell";
+import { SalesShell, useBeatTimelines, useSize } from "./SalesShell";
 import { Device, PanelCopy } from "./shared";
 
 /**
  * Boost Sales, "the funnel as the spine": the marker funnel of the whole
  * store's visits is the section's big central picture, and each part's one
- * conversation pops out of its own stage like a callout (Find's desktop out
- * of Discovery, Trust's phone out of Decision, Buy's tablet out of
- * Checkout), joined to its chamber by a zoom cone, so the one shopper and
- * the whole store are one drawing. It's one shopper's journey with the
- * store's one agent, who seals each stage's leak as it solves it in the
- * device; the fixes add up (one funnel, never lossless); then the devices
- * fold back into the funnel and it grows for the payoff, its bag filling,
- * with the merchant's metric card beside it turning the right way at each fix.
+ * conversation plays on its own device in a column beside it (Find's
+ * desktop for Discovery, Trust's phone for Decision, Buy's tablet for
+ * Checkout), its chamber lit from inside and a marker arrow from under it
+ * into the device, so the one shopper and the whole store are one drawing
+ * (sales/arrange). Each beat's words are its opener alone, the sentence
+ * ending in the stage's own label in the funnel. It's one shopper's journey
+ * with the store's one agent, who seals each stage's leak as it solves it
+ * in the device; the fixes add up (one funnel, never lossless); then the
+ * payoff keeps the funnel, its bag filling, the Sales column beside it
+ * filling up.
  *
  * Driven by the scroll's position, not by time: each beat (and the payoff)
  * has its own stretch of the pinned track, and its timeline (typing, the
@@ -36,16 +34,16 @@ import { Device, PanelCopy } from "./shared";
  * onto that stretch, ending on a hold on the fixed state, so it's always
  * reached; scrolling back rewinds it (the device's screen goes analog, a
  * tape rewinding, and the funnel shows its marker ◀◀ while it does). The visits
- * keep flowing in real time. Phones (and short screens): the beats stack,
- * each funnel with its device hanging off its stage, each mapped to its own
- * scroll through the screen.
+ * keep flowing in real time. Phones and tablets pin too (the same pieces
+ * stacked); short screens (a phone on its side): the beats stack, each
+ * funnel with its device hanging off its stage by a zoom cone, each mapped
+ * to its own scroll through the screen.
  */
 const SalesSpine = () => {
-  // 9b (the default) pins on phones too (its own stacked arrangement), so the scroll drives it there as well
-  const nine = openerLook(useBeatStyle()) === "b";
+  // pinned on desktops, and on phones and tablets too (the stage's stacked arrangement), so the scroll drives it there as well
   const desk = useMedia("(min-width: 1024px) and (min-height: 640px)");
   const tall = useMedia("(min-height: 540px)");
-  return desk || (nine && tall) ? <Pinned /> : <Stacked />;
+  return desk || tall ? <Pinned /> : <Stacked />;
 };
 
 /** The payoff's stretch of scroll, in beats' stretches; the whole track's. */
@@ -60,153 +58,13 @@ const RUN = 0.64;
 /** Where a beat is on its timeline (ms), `p` (0 → 1) through its stretch of scroll. */
 const timeAt = (p: number, duration: number) => Math.min(1, Math.max(0, (p - LEAD) / RUN)) * duration;
 
-/** How far each stage is fixed (0 → 1) in beat `focus` (3: the payoff) at `t`: for the metrics. */
-const fixedAt = (focus: number, t: number, fixAt?: number) => ksAt(t, startsFor(focus, fixAt)).map((v) => Math.min(1, v));
-
 const clamp = (v: number, a: number, b: number) => Math.min(b, Math.max(a, v));
 
-/** The funnel's box, width : height, the payoff's: the beats' funnels keep it too, scaled down to fit under the device. */
-const FUNNEL_ASPECT = 2.6;
-/** ?beat=9b's funnel (the beats' and the payoff's alike): taller, as it has a column of its own to fill. */
+/** The stage's funnel (the beats' and the payoff's alike): taller than a flat one, as it has a column of its own to fill. */
 const OPENER_FUNNEL_ASPECT = 2.05;
-/** A beat's funnel's height for an H px stage (a little more of it than a flat funnel took, so its narrower box still reads). */
-const beatFnH = (H: number) => clamp(H * 0.36, 180, 300);
-/** The metric card's height : width (Metrics' card, 168 / 330). */
-const CARD_ASPECT = 168 / 330;
 
 /**
- * ?beat=7a..7e: where the words stand on the funnel and how big: over the
- * stage's chamber (medium, big, compact), a banner centred over the whole
- * funnel, or beside the device. `w`: width [share of the stage, min, max];
- * `fs`: font size [share of the stage's width, of its height, min, max].
- */
-const ENDS_SPEC: Record<EndsLook | "o", { at: "chamber" | "funnel" | "device"; w: [number, number, number]; fs: [number, number, number, number] }> = {
-  a: { at: "chamber", w: [0.4, 360, 540], fs: [0.022, 0.04, 24, 36] },
-  b: { at: "chamber", w: [0.52, 460, 740], fs: [0.03, 0.054, 28, 48] },
-  c: { at: "chamber", w: [0.27, 280, 390], fs: [0.016, 0.03, 19, 26] },
-  d: { at: "funnel", w: [0.66, 560, 900], fs: [0.03, 0.054, 28, 46] },
-  e: { at: "device", w: [0.34, 300, 470], fs: [0.022, 0.04, 24, 34] },
-  // ?beat=9 (the default): the opener alone, over its stage's label, the label ending its sentence
-  o: { at: "chamber", w: [0.38, 360, 580], fs: [0.024, 0.044, 24, 36] },
-};
-
-/** The pinned stage's layout (px) for a W x H stage: the funnel, each beat's callout, its words and its cone. */
-const layout = (
-  W: number,
-  H: number,
-  payoff: boolean,
-  visits?: string,
-  ends: EndsLook | "o" | null = null,
-  /** ?beat=9c: the words in a column on the left, every beat (the device as near its chamber as that leaves room for). */
-  textLeft = false,
-) => {
-  const pad = 12;
-  // the payoff's metric card, beside the funnel (right of it), the two centred together
-  const cardW = clamp(W * 0.24, 230, 320);
-  const cardGap = clamp(W * 0.03, 24, 48);
-  // one shape for the funnel in every beat and the payoff (FUNNEL_ASPECT): a beat's is only smaller, never flatter
-  const fnH0 = payoff ? Math.min(clamp(H * 0.56, 240, 420), H - 170 - pad) : beatFnH(H);
-  const fnW = Math.min(payoff ? W - cardW - cardGap : W, fnH0 * FUNNEL_ASPECT);
-  const fnH = fnW / FUNNEL_ASPECT;
-  const fnLeft = payoff ? (W - fnW - cardGap - cardW) / 2 : (W - fnW) / 2;
-  const top = payoff ? 170 : 0;
-  const fnTop = payoff ? top + Math.max(0, (H - top - fnH) / 2) : H - fnH - pad;
-  const a = funnelAnchors(fnW, fnH, undefined, visits);
-  // level with the funnel's run (its centre line), wherever the funnel is
-  const card = { left: fnLeft + fnW + cardGap, top: fnTop + a.cy - (cardW * CARD_ASPECT) / 2, width: cardW };
-  const gap = clamp(H * 0.075, 34, 64);
-  const areaTop = pad + 4;
-  const cgap = clamp(W * 0.035, 28, 56);
-
-  // ?beat=7a..7e: the words stand on the beat's funnel (their foot just above its wall), as its stage's label
-  const spec = ends ? ENDS_SPEC[ends] : null;
-  const bW = Math.min(W, beatFnH(H) * FUNNEL_ASPECT);
-  const bH = bW / FUNNEL_ASPECT;
-  const bLeft = (W - bW) / 2;
-  const bTop = H - bH - pad;
-  const bA = funnelAnchors(bW, bH, [1, 1, 1], visits);
-  const wordsW = spec ? clamp(W * spec.w[0], spec.w[1], Math.min(spec.w[2], W)) : 0;
-  // the size: as the spec says, never so big that the opening wraps in the width it has
-  const wordsFs = spec ? Math.min(clamp(Math.min(W * spec.fs[0], H * spec.fs[1]), spec.fs[2], spec.fs[3]), wordsW / 17) : 0;
-  // kicker, opening, struck loss, handwritten win
-  // kicker, opening, struck loss, handwritten win (the opener: kicker and up to two lines)
-  const wordsH = 44 + wordsFs * (ends === "o" ? 2.3 : 3.5);
-  /** Their foot over [l, r]: just clear of the funnel's upper wall at its highest there (a chamber's entry is as high as the one before it, the first's as the mouth). */
-  const footOver = (l: number, r: number) => {
-    // the opener stands on its label (the funnel box's top row), not on the wall
-    if (ends === "o") return bTop - clamp(H * 0.022, 12, 24);
-    const walls = bA.chambers.map((c, j) =>
-      r - bLeft > c.xa && l - bLeft < c.xb ? (j === 0 ? bA.mouth.top : bA.chambers[j - 1].top) : Infinity,
-    );
-    const top = Math.min(...walls);
-    // (beside the funnel, or before the stage is measured: the mouth's height)
-    return bTop + (Number.isFinite(top) ? top : bA.mouth.top) - clamp(H * 0.012, 6, 14);
-  };
-  const overLeft = (i: number) =>
-    clamp(spec?.at === "funnel" ? bLeft + bW / 2 - wordsW / 2 : bLeft + bA.chambers[i].xc - wordsW / 2, 0, W - wordsW);
-  const over = spec && spec.at !== "device";
-  const areaBottom = over
-    ? Math.min(...[0, 1, 2].map((i) => footOver(overLeft(i), overLeft(i) + wordsW))) - wordsH - clamp(H * 0.03, 14, 28)
-    : H - beatFnH(H) - pad - gap;
-
-  const textW = textLeft ? clamp(W * 0.3, 320, 460) : 0;
-  const beats = [0, 1, 2].map((i) => {
-    const A = DEVICE_ASPECT[i];
-    const w = Math.min(
-      (areaBottom - areaTop) * A,
-      W * 0.56,
-      textLeft ? W - textW - cgap : Infinity,
-      i === 1 ? 320 : Infinity,
-    );
-    const h = w / A;
-    const y = areaBottom - h;
-    const ch = a.chambers[i];
-    const xc = fnLeft + ch.xc;
-    const x = clamp(xc - w / 2, textLeft ? textW + cgap : 0, W - w);
-    const roomL = x;
-    const roomR = W - x - w;
-    const right = roomR >= roomL;
-    const cw = Math.min((right ? roomR : roomL) - cgap, 460);
-    // the words: over the funnel, or (7e) beside the device, standing on the funnel either way
-    let copy: CSSProperties;
-    if (over) {
-      const l = overLeft(i);
-      copy = { left: l, width: wordsW, bottom: H - footOver(l, l + wordsW), ["--bch-fs" as string]: `${wordsFs}px` };
-    } else if (spec) {
-      const ww = Math.min(wordsW, (right ? roomR : roomL) - cgap);
-      const fs = Math.min(wordsFs, ww / 17);
-      const l = right ? x + w + cgap : Math.max(0, x - cgap - ww);
-      copy = { left: l, width: ww, bottom: H - footOver(l, l + ww), ["--bch-fs" as string]: `${fs}px` };
-    } else if (textLeft) {
-      copy = { left: 0, width: textW, top: y + h / 2 };
-    } else {
-      copy = { left: right ? x + w + cgap : Math.max(0, x - cgap - cw), width: cw, top: y + h / 2 };
-    }
-    return {
-      x,
-      y,
-      w,
-      h,
-      origin: `${xc - x}px ${h + gap}px`,
-      copy,
-      cone: {
-        top: [
-          x + Math.min(18, w * 0.06),
-          x + w - Math.min(18, w * 0.06),
-          y + h - 6,
-        ],
-        // over the funnel: the cone ends on the words, over the chamber
-        bottom: over
-          ? [bLeft + bA.chambers[i].xa + 8, bLeft + bA.chambers[i].xb - 8, footOver(overLeft(i), overLeft(i) + wordsW) - wordsH]
-          : [fnLeft + ch.xa + 8, fnLeft + ch.xb - 8, fnTop + 2],
-      },
-    };
-  });
-  return { fnH, fnW, fnLeft, fnTop, beats, card };
-};
-
-/**
- * The zoom cone from a stage to its device: a soft wedge with two marker
+ * A stacked beat's zoom cone from its stage to its device: a soft wedge with two marker
  * sides, drawn out of the stage towards the device (pathLength 1, so the
  * CSS draws it with a dash offset).
  */
@@ -241,16 +99,8 @@ const Cone = ({
   );
 };
 
-/** A marker arrow from a device to its chamber (?beat=8c/8d), drawn in like the cone's sides. */
-const Arrow = ({ d, head, on }: { d: string; head: string; on: boolean }) => (
-  <svg className={cn("sl-g2-cone sl-g2-arrow", on && "is-on")} aria-hidden="true">
-    <path className="sl-g2-cone-side" d={d} pathLength={1} />
-    <path className="sl-g2-cone-side sl-g2-arrow-head" d={head} pathLength={1} />
-  </svg>
-);
-
 /**
- * ?beat=9b's link: a hand-drawn marker arrow from under the lit chamber
+ * A beat's link: a hand-drawn marker arrow from under the lit chamber
  * (the funnel fills it) into the device. The line draws itself in, then the
  * head, in two quick strokes.
  */
@@ -303,21 +153,6 @@ const BeatCopyM = memo(BeatCopy);
 
 const Pinned = () => {
   const s = useMessages().landing.sales;
-  // ?beat=7: the beat's words sit over its stage, as the funnel's label (the funnel draws none)
-  const look = useBeatStyle();
-  const ends = endsLook(look);
-  // ?beat=8a..8d: the same words, the device, the funnel arranged around it (sales/arrange)
-  const arr = arrLook(look);
-  const onFunnel = !!(ends || arr);
-  // ?beat=9a..9c (9a the default): the opener alone, the funnel's label ending its sentence
-  const opener = openerLook(look);
-  const { win } = useSalesProto();
-  // the payoff's win: the film's Sales column filling up (default); ?card=1..4 the metric card or an
-  // alternative to it (Metrics 4, 7..9: card, bars, weeks, dials) to compare
-  const [cardLook] = useState(() => {
-    const q = typeof window === "undefined" ? null : new URLSearchParams(window.location.search).get("card");
-    return ({ "1": 4, "2": 7, "3": 8, "4": 9 } as Record<string, number>)[q ?? ""] ?? 0;
-  });
   const tls = useBeatTimelines();
   const [track, progress] = usePinProgress<HTMLDivElement>();
   // the beats' clocks run only while the track is on screen: above it (beat one) or past it (the payoff)
@@ -340,61 +175,39 @@ const Pinned = () => {
   // one value that only falls when the scroll goes back (a step back, or back within a step)
   const rewinding = useRewinding(step * 1e5 + (payoff ? payT : beats[step].t));
   const [stage, { W, H }] = useSize<HTMLDivElement>();
-  // (the layouts change only with the stage's size, the payoff and the look: worked out once each, so the
+  // (the layout changes only with the stage's size: worked out once each, so the
   // beats that aren't playing keep the same props and skip their re-render)
   const visits = s.funnel.visits;
-  const L0 = useMemo(
-    () => layout(W, H, payoff, visits, opener === "a" ? "o" : ends, opener === "c"),
-    [W, H, payoff, visits, opener, ends],
-  );
-  const A = useMemo(
-    () =>
-      opener === "b"
-        ? arrangeOpener(W, H, OPENER_FUNNEL_ASPECT, visits)
-        : arr
-          ? arrange(W, H, arr, FUNNEL_ASPECT, visits)
-          : null,
-    [W, H, opener, arr, visits],
-  );
-  // the arrangement's funnel in the beats; in the payoff too where it keeps it (9b), else the payoff's own
-  const L = A && (!payoff || A.payoff) ? { ...L0, fnW: A.fnW, fnH: A.fnH, fnLeft: A.fnLeft, fnTop: A.fnTop } : L0;
-  const card = A?.payoff?.card ?? L0.card;
+  const A = useMemo(() => arrangeOpener(W, H, OPENER_FUNNEL_ASPECT, visits), [W, H, visits]);
+  const card = A.payoff.card;
   // the Sales column: in the card's column, tall (most of the stage, never all of it), level with the
   // funnel's bag; where the card sits under the funnel (phones), a wide bar filling sideways
   const bag = useMemo(() => {
-    const b = funnelAnchors(L.fnW, L.fnH, [1, 1, 1], visits).bag;
-    return { x: L.fnLeft + b.x, y: L.fnTop + b.y };
-  }, [L.fnW, L.fnH, L.fnLeft, L.fnTop, visits]);
+    const b = funnelAnchors(A.fnW, A.fnH, [1, 1, 1], visits).bag;
+    return { x: A.fnLeft + b.x, y: A.fnTop + b.y };
+  }, [A, visits]);
   const payStarts = useMemo(() => startsFor(3), []);
   const jar = useMemo(() => {
-    const cl = typeof card.left === "number" ? card.left : 0;
-    const ct = typeof card.top === "number" ? card.top : 0;
-    const cw = typeof card.width === "number" ? card.width : 330;
-    if (A?.payoff?.under) {
+    if (A.payoff.under) {
       const h = clamp(H * 0.09, 56, 76);
-      return { x: cl, y: ct, w: cw, h };
+      return { x: card.left, y: card.top, w: card.width, h };
     }
     const h = clamp(H * 0.7, 260, 580);
     const w = clamp(h * 0.3, 110, 170);
-    return { x: cl + (cw - w) / 2, y: clamp(bag.y - h * 0.55, 12, H - 12 - h), w, h };
-  }, [card.left, card.top, card.width, A, H, bag.y]);
-  const links = useMemo(
-    () => L0.beats.map((b, i) => A?.beats[i].link ?? { kind: "cone" as const, stage: b.cone.bottom, device: b.cone.top }),
-    [L0, A],
-  );
-  const rects = useMemo(() => L0.beats.map((b, i) => A?.beats[i] ?? b), [L0, A]);
-  // the openers (9a, 9b) stand centred on their label, where the funnel actually set it
+    return { x: card.left + (card.width - w) / 2, y: clamp(bag.y - h * 0.55, 12, H - 12 - h), w, h };
+  }, [card, A, H, bag.y]);
+  // the openers stand centred on their label, where the funnel actually set it
   const [labelAt, setLabelAt] = useState<number[] | null>(null);
   const onLabels = useMemo(
     () => (c: number[]) => setLabelAt((p) => (p && p.length === c.length && p.every((v, j) => Math.abs(v - c[j]) < 0.5) ? p : c)),
     [],
   );
   const copyStyle = (i: number): CSSProperties => {
-    const c = rects[i].copy;
-    if (!(opener === "a" || opener === "b") || !labelAt || step !== i || typeof c.width !== "number") return c;
+    const c = A.beats[i].copy;
+    if (!labelAt || step !== i || typeof c.width !== "number") return c;
     // centred on the label; near an edge, narrower (onto two lines) rather than off centre
-    const [lo, hi] = A?.wordsRoom ?? [0, W];
-    const centre = L.fnLeft + labelAt[i];
+    const [lo, hi] = A.wordsRoom;
+    const centre = A.fnLeft + labelAt[i];
     const half = Math.min(c.width / 2, centre - lo, hi - centre);
     if (half < 150) return { ...c, left: clamp(centre - c.width / 2, lo, Math.max(lo, hi - c.width)) };
     return { ...c, left: centre - half, width: 2 * half };
@@ -403,7 +216,6 @@ const Pinned = () => {
   const clock = payoff
     ? { t: payT, duration: PAYOFF_DURATION, fixAt: undefined }
     : { t: beats[f].t, duration: beats[f].duration, fixAt: beats[f].fixAt };
-  const k = fixedAt(step, clock.t, clock.fixAt);
 
   return (
     <SalesShell lit={payoff ? "all" : step} className="sl-g2 is-pinned">
@@ -412,18 +224,12 @@ const Pinned = () => {
           <div className="bzl-wrap sl-g2-frame">
             {/* ph-no-capture: the session recorder would log every animated frame of it (replays show a placeholder) */}
             <div ref={stage} className={cn("sl-g2-stage ph-no-capture", payoff && "is-payoff")}>
-              {/* the payoff scrolled back: the whole of it (funnel, words, card) rewinds as one tape, like a device's screen */}
+              {/* the payoff scrolled back: the whole of it (funnel, words, column) rewinds as one tape, like a device's screen */}
               <ScreenTape band on={rewinding && payoff}>
-                {links.map((l, i) =>
-                  l.kind === "arrow" ? (
-                    <Arrow key={i} d={l.d} head={l.head} on={step === i} />
-                  ) : l.kind === "lens" ? (
-                    <Lens key={i} d={l.d} head={l.head} on={step === i} />
-                  ) : (
-                    <Cone key={i} stage={l.stage} device={l.device} on={step === i} />
-                  ),
-                )}
-                {rects.map((b, i) => (
+                {A.beats.map((b, i) => (
+                  <Lens key={i} d={b.link.d} head={b.link.head} on={step === i} />
+                ))}
+                {A.beats.map((b, i) => (
                   <Callout
                     key={i}
                     i={i}
@@ -441,44 +247,28 @@ const Pinned = () => {
                 {s.panels.map((p, i) => (
                   <div
                     key={p.title}
-                    className={cn(
-                      "sl-g2-copy",
-                      ends && `is-over is-over-${ends}`,
-                      arr && `is-over is-arr-${arr}`,
-                      (opener === "a" || opener === "b") && "is-over is-opener",
-                      (ends === "d" || arr === "a" || arr === "b" || opener === "a" || opener === "b") && "is-center",
-                      step === i && "is-on",
-                    )}
+                    className={cn("sl-g2-copy", "is-over is-opener", "is-center", step === i && "is-on")}
                     style={copyStyle(i)}
                   >
-                    <BeatCopyM index={i} t={beats[i].t} fixAt={beats[i].fixAt} />
-                    {win > 0 && <Metrics variant={win} k={step === i ? k : fixedAt(i, beats[i].t, beats[i].fixAt)} focus={i} className="sl-g2-met" />}
+                    <BeatCopyM index={i} />
                   </div>
                 ))}
-                <div className={cn("sl-g2-copy is-payoff", A?.payoff?.under && "is-under", payoff && "is-on")} style={A?.payoff?.copy}>
+                <div className={cn("sl-g2-copy is-payoff", A.payoff.under && "is-under", payoff && "is-on")} style={A.payoff.copy}>
                   {/* the title alone (no eyebrow, no line under it) */}
                   <PanelCopy title={s.payoff.title} />
                 </div>
-                {/* the payoff's win: the Sales column filling up (the film's), or a metric card to compare (?card) */}
-                {cardLook ? (
-                  <div className={cn("sl-g2-card", payoff && "is-on")} style={{ left: card.left, top: card.top, width: card.width }}>
-                    <Metrics variant={cardLook} k={payoff ? cardKsAt(payT, startsFor(3)) : [0, 0, 0]} focus={3} className="sl-g2-met is-card" />
-                  </div>
-                ) : (
-                  <SalesJar t={payoff ? payT : 0} starts={payStarts} duration={PAYOFF_DURATION} from={bag} box={jar} label={s.payoff.jar} on={seen && payoff} />
-                )}
-                <div className="sl-fn sl-g2-funnel" style={{ left: L.fnLeft, top: L.fnTop, width: L.fnW, height: L.fnH }}>
+                {/* the payoff's win: the Sales column filling up (the film's) */}
+                <SalesJar t={payoff ? payT : 0} starts={payStarts} duration={PAYOFF_DURATION} from={bag} box={jar} label={s.payoff.jar} on={seen && payoff} />
+                <div className="sl-fn sl-g2-funnel" style={{ left: A.fnLeft, top: A.fnTop, width: A.fnW, height: A.fnH }}>
                   <FunnelFlow
                     t={clock.t}
                     duration={clock.duration}
                     focus={step}
                     fixAt={clock.fixAt}
                     copy={s.funnel}
-                    labels={payoff || !onFunnel}
                     onLabels={payoff ? undefined : onLabels}
-                    lit={!payoff && links[step]?.kind === "lens" ? step : -1}
-                    // (the words stand where the funnel's ◀◀ goes: their device's tape look says it)
-                    rewind={rewinding && (payoff || !onFunnel)}
+                    lit={payoff ? -1 : step}
+                    rewind={rewinding}
                   />
                 </div>
               </ScreenTape>
@@ -493,10 +283,6 @@ const Pinned = () => {
 /** A stacked beat: its words, its funnel, and its device hanging off its own stage by the cone; its timeline follows its own scroll through the screen. */
 const StackedBeat = ({ i, setRef }: { i: number; setRef: (el: HTMLElement | null) => void }) => {
   const s = useMessages().landing.sales;
-  // ?beat=7: the beat's words sit over its stage, as the funnel's label (the funnel draws none)
-  const look = useBeatStyle();
-  const ends = !!(endsLook(look) || arrLook(look));
-  const { win } = useSalesProto();
   const tl = useBeatTimelines()[i];
   const [item, p] = useScrollThrough<HTMLDivElement>(0.8, 0.75);
   const beat = { ...tl, t: useScrollPlay(timeAt(p, tl.duration), tl.duration, p > 0 && p < 1) };
@@ -535,10 +321,9 @@ const StackedBeat = ({ i, setRef }: { i: number; setRef: (el: HTMLElement | null
       }}
       className="sl-g2-item relative"
     >
-      <BeatCopy index={i} t={beat.t} fixAt={beat.fixAt} className="sl-c-copy is-on" />
-      {win > 0 && <Metrics variant={win} k={fixedAt(i, beat.t, beat.fixAt)} focus={i} className="sl-g2-met" />}
+      <BeatCopy index={i} className="sl-c-copy is-on" />
       <div ref={fn}>
-        <FunnelScale focus={i} t={beat.t} duration={beat.duration} fixAt={beat.fixAt} rewind={rewinding && !ends} labels={!ends} className="sl-g2-s-fn" />
+        <FunnelScale focus={i} t={beat.t} duration={beat.duration} fixAt={beat.fixAt} rewind={rewinding} className="sl-g2-s-fn" />
       </div>
       {cone && <Cone stage={cone.to} device={cone.from} on className="is-static" />}
       <div ref={dev} className="sl-g2-s-dev relative">

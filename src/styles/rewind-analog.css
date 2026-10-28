@@ -1,33 +1,13 @@
-/* A beat's words as a tape being rewound (sales/beatcopy/RewindTape.tsx).
-   `.is-rw` is on only while the beat's clock runs backwards; --rw (0 → 1)
-   is the rewind's strength, --rw-x / --rw-k the jitter, all set from JS.
-   The look's tear slices are an SVG displacement filter set inline. */
-
-.rwa {
-  position: relative;
-}
-.rwa-in {
-  position: relative;
-  --rw: 0;
-}
+/* The analog rewind look's pieces, shared by a device's screen rewinding
+   (sales/RewindScreen.tsx, .rws in landing-sales.css): the screen over it
+   (.rwa-fx: scanlines, grain, tracking bands rolling up) and the hidden
+   holder of the tear slices' SVG displacement filter (.rwa-svg). */
 .rwa-svg {
   position: absolute;
   width: 0;
   height: 0;
   overflow: hidden;
   pointer-events: none;
-}
-
-/* the jitter: the whole block shivers sideways, a hair of skew */
-.rwa-in.is-rw {
-  transform: translateX(var(--rw-x, 0)) skewX(var(--rw-k, 0));
-}
-/* the warm RGB split: a deep orange channel to the left, a faint pink one to the right (the white stays on top) */
-.rwa-in.is-rw,
-.rwa-in.is-rw * {
-  text-shadow:
-    calc(var(--rw) * -2.6px) 0 0 rgb(226 78 12 / calc(0.72 * var(--rw))),
-    calc(var(--rw) * 2.8px) 0 0 rgb(255 138 204 / calc(0.7 * var(--rw)));
 }
 
 /* the screen over it: scanlines, grain, and tracking bands rolling up, feathered at the edges */
@@ -47,10 +27,6 @@
     linear-gradient(90deg, transparent, #000 7%, #000 93%, transparent),
     linear-gradient(transparent, #000 9%, #000 91%, transparent);
   mask-composite: intersect;
-}
-.rwa-in.is-rw .rwa-fx {
-  visibility: visible;
-  opacity: calc(var(--rw) * 1.15);
 }
 /* scanlines + a grain that steps (a static noise tile, its offset jumping) */
 .rwa-fx::before {
@@ -114,14 +90,6 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .rwa-in,
-  .rwa-in * {
-    text-shadow: none !important;
-  }
-  .rwa-in {
-    transform: none !important;
-    filter: none !important;
-  }
   .rwa-fx {
     display: none;
   }

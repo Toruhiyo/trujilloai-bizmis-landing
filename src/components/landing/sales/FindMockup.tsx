@@ -13,7 +13,7 @@ import type { Messages } from "@/i18n/messages/en";
 import { bump, easeInOut, useScene } from "./hooks";
 import { Sentinel } from "./scene";
 import type { MockupProps } from "./scene";
-import { useSalesCopy } from "./proto";
+import { useSalesCopy } from "./salesCopy";
 
 /** The store's catalog: fifteen clay products (shape, tile tint). */
 const CATALOG: [ClayShape, keyof typeof TINT][] = [

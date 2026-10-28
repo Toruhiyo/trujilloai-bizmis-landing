@@ -25,7 +25,6 @@ const SalesPayoff = ({ t, rewind, className }: { t: number; rewind?: boolean; cl
   return (
     <div className={cn("sl-pay relative", className)}>
       <Metrics
-        variant={4}
         k={cardKsAt(t, startsFor(3))}
         focus={3}
         className="sl-g2-met is-card sl-pay-card"

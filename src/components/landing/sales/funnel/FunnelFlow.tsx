@@ -533,7 +533,6 @@ const FunnelFlow = ({
   fixAt,
   copy,
   rewind = false,
-  labels: showLabels = true,
   onLabels,
   lit = -1,
   className,
@@ -545,11 +544,9 @@ const FunnelFlow = ({
   copy: FunnelCopy;
   /** Scrolled back: the marker ◀◀ over the funnel. */
   rewind?: boolean;
-  /** The stages' labels (off where the beat's words sit over the funnel as its label, ?beat=7). */
-  labels?: boolean;
   /** Told where the labels landed (each one's centre, px across the funnel's box), to line other words up on them. */
   onLabels?: (centres: number[]) => void;
-  /** A stage lit from inside (?beat=9b): a soft white wash filling its chamber, between its walls; -1 none. */
+  /** A stage lit from inside (the beat's own, under the arrow to its device): a soft white wash filling its chamber, between its walls; -1 none. */
   lit?: number;
   className?: string;
 }) => {
@@ -1039,7 +1036,6 @@ const FunnelFlow = ({
       <div ref={wrap} className="sl-flow-stage">
         <canvas ref={canvas} className="sl-flow-canvas" />
         {W > 0 &&
-          showLabels &&
           CHAMBERS.map((_, i) => {
             // the label, written in marker: the problem written on as the beat starts; at the fix, struck
             // through, then the solution written in its place and ticked. Earlier fixes: done already.

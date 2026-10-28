@@ -83,14 +83,6 @@
 }
 
 /* ── A sub-benefit's words ── */
-.sl-copy-num {
-  display: block;
-  margin-bottom: 0.7rem;
-  font-size: 0.8rem;
-  font-weight: 700;
-  letter-spacing: 0.16em;
-  color: var(--acc-ink);
-}
 .sl-copy-title {
   font-size: clamp(1.45rem, 2.3vw, 2.1rem);
   font-weight: 700;
@@ -98,13 +90,6 @@
   line-height: 1.1;
   color: var(--bzl-fg);
   text-wrap: balance;
-}
-.sl-copy-body {
-  margin-top: 0.5rem;
-  font-size: clamp(1rem, 1.3vw, 1.15rem);
-  line-height: 1.45;
-  color: var(--bzl-muted);
-  text-wrap: pretty;
 }
 
 /* ── Device boxes: never taller than the screen under the nav ── */
@@ -165,10 +150,6 @@
 .sl-c .sl-copy-title {
   color: #fff;
   font-size: clamp(1.7rem, min(2.7vw, 5svh), 2.75rem);
-}
-.sl-c .sl-copy-body {
-  max-width: 30rem;
-  color: rgb(255 255 255 / 0.9);
 }
 /* the kicker: the number in a white pill, then the funnel stage */
 .sl-copy-kicker {
@@ -1004,7 +985,7 @@
   transition-delay: 0.25s;
   pointer-events: auto;
 }
-/* ?beat=7: the words over their stage's chamber, standing on the funnel (anchored by their foot) */
+/* a beat's words: its opener over its stage's label, standing on the funnel (anchored by their foot) */
 .sl-g2-copy.is-over,
 .sl-g2-copy.is-over.is-on {
   transform: none;
@@ -1012,11 +993,11 @@
 .sl-g2-copy.is-over:not(.is-on) {
   transform: translateY(14px);
 }
-/* the size: SalesSpine's layout sets it per look (--bch-fs) */
+/* the size: the stage's layout sets it (--bch-fs, sales/arrange) */
 .sl-g2-copy.is-over .bch-head {
   font-size: var(--bch-fs, 2rem);
 }
-/* centred on the axis (7d's banner, 8a/8b's stacks) */
+/* centred on the label */
 .sl-g2-copy.is-center .bc-kicker,
 .sl-g2-copy.is-center .sl-copy-kicker {
   justify-content: center;
@@ -1024,13 +1005,11 @@
 .sl-g2-copy.is-center {
   text-align: center;
 }
-.sl-g2-copy.is-center .bch-pre,
-.sl-g2-copy.is-center .bch-layer {
+.sl-g2-copy.is-center .bch-pre {
   justify-items: center;
   text-align: center;
 }
-/* 9b: the stage's wash (a filled, faint white light over its chamber) and the arrow from its foot to the device */
-/* 9b: the hand-drawn arrow, in the funnel's fine marker; its head drawn in after the line (over the
+/* the hand-drawn arrow from under the lit chamber to the device, in the funnel's fine marker; its head drawn in after the line (over the
    device's shadow, which would grey its end: it stops short of the device itself) */
 .sl-g2-lens {
   z-index: 4;
@@ -1054,11 +1033,6 @@
     stroke-width: 3.2;
   }
 }
-/* 8c/8d: the marker arrow from the device to its chamber */
-.sl-g2-arrow .sl-g2-cone-side {
-  stroke-width: 3;
-  stroke-linejoin: round;
-}
 .sl-g2-copy.is-payoff {
   left: 0;
   right: 0;
@@ -1066,42 +1040,18 @@
   text-align: center;
   transform: translateY(14px);
 }
-/* 9b on phones: the payoff's words under the funnel, smaller */
+/* phones: the payoff's words under the funnel, smaller */
 .sl-g2-copy.is-payoff.is-under .sl-copy-title {
   font-size: clamp(1.45rem, 6.4vw, 1.9rem);
-}
-.sl-g2-copy.is-payoff.is-under .sl-copy-body {
-  font-size: 0.95rem;
 }
 .sl-g2-copy.is-payoff.is-on {
   transform: none;
 }
-.sl-g2-copy.is-payoff .sl-copy-body {
-  margin-inline: auto;
-}
-/* the payoff's metric card, beside the funnel (SalesSpine's layout), in with the payoff */
-.sl-g2-card {
-  position: absolute;
-  z-index: 4;
-  opacity: 0;
-  transform: translateY(14px);
-  transition:
-    opacity 0.3s var(--bzl-ease),
-    transform 0.6s var(--bzl-ease),
-    left 0.8s var(--bzl-ease),
-    top 0.8s var(--bzl-ease);
-  pointer-events: none;
-}
-.sl-g2-card.is-on {
-  opacity: 1;
-  transform: none;
-  transition-delay: 0.35s;
-}
+/* stacked: the payoff's metric card (Metrics), over the funnel, centred */
 .sl-g2-met.is-card {
   max-width: none;
   margin: 0;
 }
-/* stacked: over the funnel, centred */
 .sl-pay-card.is-card {
   width: min(100%, 300px);
   margin: 0.25rem auto 1.25rem;
@@ -1153,35 +1103,12 @@
 @media (prefers-reduced-motion: reduce) {
   .sl-g2-callout,
   .sl-g2-copy,
-  .sl-g2-card,
   .sl-g2-funnel,
   .sl-g2-cone-fill,
   .sl-g2-cone-side,
   .sl-flow-rewind {
     transition: none !important;
   }
-}
-
-/* ── ?copy=flip: the problem struck through in marker, then the fix written in (BeatCopy) ── */
-.sl-flip-problem {
-  transition: opacity 0.3s ease;
-}
-.sl-flip-text {
-  background-image: linear-gradient(#fff, #fff);
-  background-repeat: no-repeat;
-  background-position: 0 58%;
-  -webkit-box-decoration-break: clone;
-  box-decoration-break: clone;
-}
-.sl-c .sl-flip-fix {
-  margin-top: 0.55rem;
-  max-width: 30rem;
-  font-family: var(--bzl-script, "Caveat", cursive);
-  font-size: clamp(1.45rem, min(2.2vw, 4svh), 2.2rem);
-  font-weight: 700;
-  line-height: 1.12;
-  color: #fff;
-  text-wrap: balance;
 }
 
 /* the fixed moment: the solution underlined with a marker swoosh (FunnelFlow) */
@@ -1333,7 +1260,7 @@
   }
 }
 
-/* ?win=4..6: the metrics, in the funnel's marker (Metrics) */
+/* the stacked payoff's metric card, in the funnel's marker (Metrics) */
 .sl-met {
   display: block;
   width: 100%;
@@ -1351,51 +1278,15 @@
 .sl-met .sl-met-ink {
   stroke-width: 3.6;
 }
-.sl-met .sl-met-ink.is-bold {
-  stroke-width: 5;
-}
-.sl-met .sl-met-thin {
-  stroke-width: 2;
-  opacity: 0.8;
-}
 .sl-met .sl-met-soft {
   stroke-width: 2.5;
   opacity: 0.6;
-}
-.sl-met .sl-met-ghost {
-  stroke-width: 3;
-  stroke-dasharray: 4 7;
-  opacity: 0.55;
-}
-.sl-met-dot {
-  fill: #fff;
 }
 .sl-met-label {
   fill: #fff;
   font-family: var(--bzl-script, "Caveat", cursive);
   font-size: 21px;
   font-weight: 700;
-}
-.sl-met-label.is-small {
-  font-size: 17px;
-  opacity: 0.85;
-}
-.sl-met-label.is-tiny {
-  font-size: 15px;
-}
-/* the payoff card's bars (?card=2, 3): outlined in marker, a soft white inside */
-.sl-met .sl-met-bar {
-  fill: rgb(255 255 255 / 0.32);
-  stroke-width: 2.6;
-  transition: none;
-}
-.sl-g2-met.is-payoff {
-  margin-inline: auto;
-  margin-top: 0.6rem;
-  max-width: 250px;
-}
-.sl-g2-met.is-payoff[viewBox="0 0 640 96"] {
-  max-width: 620px;
 }
 
 /* the tape over the whole payoff, drawn on the band (ScreenTape band): no white ground, the drawing
