@@ -28,3 +28,19 @@ No AI-sounding prose, no em dashes, no wrap-up sentences. Never write secrets,
 tokens, EA codes, or third-party personal data.
 
 <!-- bizmis-journal:end -->
+
+# Copy changes keep SEO and GEO in sync (rule)
+
+Any change to what the site says, including landing copy (`src/i18n/messages/*`
+`landing.*`), FAQs (`src/data/faqs.ts`), prices (`src/data/planPrices.ts`),
+Early Access terms, product claims or a new public page, must leave these current
+in the same commit:
+- `public/llms.txt` and `public/llms-full.txt` (GEO; generated at build from the
+  same sources, so check the hand-written intro template when positioning changes)
+- `src/seo/site.ts` titles and descriptions for every page in all 5 locales, and the
+  JSON-LD (prices and FAQPage come from the data files)
+- a new public page also needs its `src/seo` entry and a `vercel.json` route, or it
+  returns 404
+
+After editing, run `npm run build` and diff `dist/llms*.txt` and the affected
+prerendered heads. Copy rules: no em dashes, no unsourced claims or numbers.
