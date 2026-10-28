@@ -6,11 +6,10 @@
 
 When a journal-worthy Bizmis moment happens (decision or reversal with its
 rationale, struggle or dead end, ship event, real numbers or external event, idea
-or doubt), SUGGEST journaling it in one line ("Worth journaling? — <moment>").
-Only after Oriol approves, read the canonical spec and follow it exactly:
+or doubt), journal it directly, without asking first (standing permission from
+Oriol), and tell him in one line that the entry was written. Read the canonical
+spec and follow it exactly:
 `~/Projects/Bizmis/bizmis-operations/.claude/skills/bizmis-journal/SKILL.md`
-Explicit invocation ("journal this" / the /journal command) skips the suggestion
-step: go straight to hole-filling questions (if needed) and the write.
 
 Fallback micro-contract, only if that file is unreachable (e.g. cloud session of
 another repo):
