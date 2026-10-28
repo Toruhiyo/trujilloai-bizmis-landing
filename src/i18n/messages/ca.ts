@@ -577,8 +577,8 @@ export const ca: Messages = {
     perMonth: "/mes",
     popular: "Popular",
     conversationsPerMonth: "sessions / mes",
-    extraConversations: (price: string) =>
-      `Sessions extra a ${price} cadascuna, fins al límit de despesa que fixis`,
+    extraConversations: (price: string, saving?: { percent: number; plan: string }) =>
+      `Sessions extra a ${price} cadascuna${saving ? ` (un ${saving.percent}% menys que a ${saving.plan})` : ""}, fins al límit de despesa que fixis`,
     conversationDefinition:
       "Una sessió és la visita d'un client al teu dependent, per veu o per text. Les sessions de més de 5 minuts de veu o 40 missatges compten com a dues. Les visites en què el client no diu res són gratis.",
     off: "dte.",
@@ -623,7 +623,7 @@ export const ca: Messages = {
     },
     enterprise: {
       name: "Enterprise",
-      priceFrom: "Des de",
+      customPrice: "Preu personalitzat",
       description:
         "Solucions a mida per a operacions a gran escala, amb volum i requisits personalitzats.",
       everythingInScale: "Tot el de Scale i a més:",
@@ -756,12 +756,12 @@ export const ca: Messages = {
       "how-much-cost": {
         question: "Quant costa Bizmis?",
         answer:
-          "Tres plans més Enterprise, amb facturació mensual, o anual amb al voltant d'un 20% de descompte. **Starter** (79 $/mes, 260 sessions) per a botigues petites o d'una persona. **Growth** (199 $/mes, 660 sessions) per a botigues en creixement, el més popular. **Scale** (499 $/mes, 1.650 sessions) per a botigues d'alt volum. **Enterprise** des de 1.500 $/mes, amb volum a mida, capacitat garantida per als pics de trànsit i SLA. Cada sessió extra costa 0,30 $, fins al límit de despesa que fixis. Pots començar amb 120 sessions gratis.",
+          "Tres plans més Enterprise, amb facturació mensual, o anual amb al voltant d'un 20% de descompte. **Starter** (79 $/mes, 260 sessions) per a botigues petites o d'una persona. **Growth** (199 $/mes, 660 sessions) per a botigues en creixement, el més popular. **Scale** (499 $/mes, 1.650 sessions) per a botigues d'alt volum. **Enterprise** té preu personalitzat per a botigues que necessiten més volum, capacitat garantida per als pics de trànsit i SLA. Les sessions extra surten més barates als plans grans: 0,45 $ cadascuna a Starter, 0,40 $ a Growth i 0,35 $ a Scale, fins al límit de despesa que fixis. Pots començar amb 120 sessions gratis.",
       },
       "what-counts-as-session": {
         question: "Què compta com una sessió?",
         answer:
-          "Una sessió és la visita d'un client al teu dependent, per veu o per text. Les sessions de més de 5 minuts de veu o 40 missatges compten com a dues. Les visites en què el client no diu res són gratis. Les teves pròpies proves al tauler de Bizmis tampoc no compten. Cada pla inclou un nombre de sessions (Starter 260 / Growth 660 / Scale 1.650) que es renova cada mes. A partir d'aquí, cada sessió extra costa 0,30 $, només fins al límit de despesa que fixis al tauler de Bizmis. El límit comença a 0 $, de manera que no es cobra res extra fins que l'apugis. Quan l'assoleixes, el dependent es posa en pausa fins al període següent o fins que apugis el límit. Les sessions no utilitzades no s'acumulen.",
+          "Una sessió és la visita d'un client al teu dependent, per veu o per text. Les sessions de més de 5 minuts de veu o 40 missatges compten com a dues. Les visites en què el client no diu res són gratis. Les teves pròpies proves al tauler de Bizmis tampoc no compten. Cada pla inclou un nombre de sessions (Starter 260 / Growth 660 / Scale 1.650) que es renova cada mes. A partir d'aquí, cada sessió extra costa 0,45 $ a Starter, 0,40 $ a Growth i 0,35 $ a Scale, només fins al límit de despesa que fixis al tauler de Bizmis. El límit comença a 0 $, de manera que no es cobra res extra fins que l'apugis. Quan l'assoleixes, el dependent es posa en pausa fins al període següent o fins que apugis el límit. Les sessions no utilitzades no s'acumulen.",
       },
       "monthly-billing": {
         question: "Hi ha facturació anual?",

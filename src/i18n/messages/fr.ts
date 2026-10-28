@@ -578,8 +578,8 @@ export const fr: Messages = {
     perMonth: "/mois",
     popular: "Populaire",
     conversationsPerMonth: "sessions / mois",
-    extraConversations: (price: string) =>
-      `Sessions supplémentaires à ${price} l'unité, dans la limite du plafond de dépenses que vous fixez`,
+    extraConversations: (price: string, saving?: { percent: number; plan: string }) =>
+      `Sessions supplémentaires à ${price} l'unité${saving ? ` (${saving.percent}\u00a0% de moins qu'avec ${saving.plan})` : ""}, dans la limite du plafond de dépenses que vous fixez`,
     conversationDefinition:
       "Une session, c'est la visite d'un client auprès de votre vendeur, à la voix ou par écrit. Les sessions de plus de 5 minutes de voix ou 40 messages comptent pour deux. Les visites où le client ne dit rien sont gratuites.",
     off: "de remise",
@@ -623,7 +623,7 @@ export const fr: Messages = {
     },
     enterprise: {
       name: "Enterprise",
-      priceFrom: "À partir de",
+      customPrice: "Sur devis",
       description:
         "Des solutions sur mesure pour les opérations à grande échelle, avec volume et exigences personnalisés.",
       everythingInScale: "Tout le plan Scale, plus :",
@@ -756,12 +756,12 @@ export const fr: Messages = {
       "how-much-cost": {
         question: "Combien coûte Bizmis ?",
         answer:
-          "Trois plans plus Enterprise, facturés au mois, ou à l'année avec environ 20 % de remise. **Starter** (79 $/mois, 260 sessions) pour les boutiques individuelles ou de petite taille. **Growth** (199 $/mois, 660 sessions) pour les boutiques en croissance, le plus populaire. **Scale** (499 $/mois, 1 650 sessions) pour les boutiques à fort volume. **Enterprise** à partir de 1 500 $/mois, avec un volume sur mesure, une capacité garantie pour les pics de trafic et des SLA. Chaque session supplémentaire coûte 0,30 $, dans la limite du plafond de dépenses que vous fixez. Vous pouvez commencer avec 120 sessions gratuites.",
+          "Trois plans plus Enterprise, facturés au mois, ou à l'année avec environ 20 % de remise. **Starter** (79 $/mois, 260 sessions) pour les boutiques individuelles ou de petite taille. **Growth** (199 $/mois, 660 sessions) pour les boutiques en croissance, le plus populaire. **Scale** (499 $/mois, 1 650 sessions) pour les boutiques à fort volume. **Enterprise** est sur devis, pour les boutiques qui ont besoin de plus de volume, d'une capacité garantie pour les pics de trafic et de SLA. Les sessions supplémentaires coûtent moins cher sur les gros plans : 0,45 $ l'unité sur Starter, 0,40 $ sur Growth et 0,35 $ sur Scale, dans la limite du plafond de dépenses que vous fixez. Vous pouvez commencer avec 120 sessions gratuites.",
       },
       "what-counts-as-session": {
         question: "Qu'est-ce qui compte comme une session ?",
         answer:
-          "Une session, c'est la visite d'un client auprès de votre vendeur, à la voix ou par écrit. Les sessions de plus de 5 minutes de voix ou 40 messages comptent pour deux. Les visites où le client ne dit rien sont gratuites. Vos propres aperçus dans l'administration Bizmis sont gratuits aussi. Chaque plan inclut un nombre de sessions (Starter 260 / Growth 660 / Scale 1 650) renouvelé chaque mois. Au-delà, chaque session supplémentaire coûte 0,30 $, uniquement dans la limite du plafond de dépenses que vous fixez dans l'administration Bizmis. Le plafond démarre à 0 $ : rien de plus n'est facturé tant que vous ne le relevez pas. Une fois le plafond atteint, le vendeur se met en pause jusqu'à la période suivante ou jusqu'à ce que vous releviez le plafond. Les sessions non utilisées ne sont pas reportées.",
+          "Une session, c'est la visite d'un client auprès de votre vendeur, à la voix ou par écrit. Les sessions de plus de 5 minutes de voix ou 40 messages comptent pour deux. Les visites où le client ne dit rien sont gratuites. Vos propres aperçus dans l'administration Bizmis sont gratuits aussi. Chaque plan inclut un nombre de sessions (Starter 260 / Growth 660 / Scale 1 650) renouvelé chaque mois. Au-delà, chaque session supplémentaire coûte 0,45 $ sur Starter, 0,40 $ sur Growth et 0,35 $ sur Scale, uniquement dans la limite du plafond de dépenses que vous fixez dans l'administration Bizmis. Le plafond démarre à 0 $ : rien de plus n'est facturé tant que vous ne le relevez pas. Une fois le plafond atteint, le vendeur se met en pause jusqu'à la période suivante ou jusqu'à ce que vous releviez le plafond. Les sessions non utilisées ne sont pas reportées.",
       },
       "monthly-billing": {
         question: "Existe-t-il une facturation annuelle ?",

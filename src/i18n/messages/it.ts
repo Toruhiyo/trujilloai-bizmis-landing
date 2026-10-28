@@ -577,8 +577,8 @@ export const it: Messages = {
     perMonth: "/mese",
     popular: "Popolare",
     conversationsPerMonth: "sessioni / mese",
-    extraConversations: (price: string) =>
-      `Sessioni extra a ${price} l'una, fino al limite di spesa che imposti`,
+    extraConversations: (price: string, saving?: { percent: number; plan: string }) =>
+      `Sessioni extra a ${price} l'una${saving ? ` (${saving.percent}% in meno rispetto a ${saving.plan})` : ""}, fino al limite di spesa che imposti`,
     conversationDefinition:
       "Una sessione è la visita di un cliente al tuo venditore, a voce o per iscritto. Le sessioni oltre i 5 minuti di voce o i 40 messaggi contano come due. Le visite in cui il cliente non dice nulla sono gratuite.",
     off: "di sconto",
@@ -622,7 +622,7 @@ export const it: Messages = {
     },
     enterprise: {
       name: "Enterprise",
-      priceFrom: "Da",
+      customPrice: "Prezzo personalizzato",
       description:
         "Soluzioni su misura per operazioni su larga scala, con volumi e requisiti personalizzati.",
       everythingInScale: "Tutto il piano Scale, più:",
@@ -755,12 +755,12 @@ export const it: Messages = {
       "how-much-cost": {
         question: "Quanto costa Bizmis?",
         answer:
-          "Tre piani più Enterprise, con fatturazione mensile, oppure annuale con circa il 20% di sconto. **Starter** ($79/mese, 260 sessioni) per negozi individuali o piccoli. **Growth** ($199/mese, 660 sessioni) per negozi in crescita, il più scelto. **Scale** ($499/mese, 1.650 sessioni) per negozi ad alto volume. **Enterprise** da $1.500/mese, con volumi su misura, capacità garantita per i picchi di traffico e SLA. Ogni sessione extra costa $0,30, fino al limite di spesa che imposti. Puoi iniziare con 120 sessioni gratuite.",
+          "Tre piani più Enterprise, con fatturazione mensile, oppure annuale con circa il 20% di sconto. **Starter** ($79/mese, 260 sessioni) per negozi individuali o piccoli. **Growth** ($199/mese, 660 sessioni) per negozi in crescita, il più scelto. **Scale** ($499/mese, 1.650 sessioni) per negozi ad alto volume. **Enterprise** ha un prezzo personalizzato per i negozi che hanno bisogno di più volume, capacità garantita per i picchi di traffico e SLA. Le sessioni extra costano meno sui piani più grandi: $0,45 l'una su Starter, $0,40 su Growth e $0,35 su Scale, fino al limite di spesa che imposti. Puoi iniziare con 120 sessioni gratuite.",
       },
       "what-counts-as-session": {
         question: "Cosa conta come una sessione?",
         answer:
-          "Una sessione è la visita di un cliente al tuo venditore, a voce o per iscritto. Le sessioni oltre i 5 minuti di voce o i 40 messaggi contano come due. Le visite in cui il cliente non dice nulla sono gratuite. Anche le tue anteprime nell'admin di Bizmis sono gratuite. Ogni piano include un numero di sessioni (Starter 260 / Growth 660 / Scale 1.650) che si rinnova ogni mese. Oltre quella soglia, ogni sessione extra costa $0,30, solo fino al limite di spesa che imposti nell'admin di Bizmis. Il limite parte da $0, quindi non paghi nulla in più finché non lo alzi. Una volta raggiunto, il venditore si mette in pausa fino al periodo successivo o finché non alzi il limite. Le sessioni non usate non si accumulano.",
+          "Una sessione è la visita di un cliente al tuo venditore, a voce o per iscritto. Le sessioni oltre i 5 minuti di voce o i 40 messaggi contano come due. Le visite in cui il cliente non dice nulla sono gratuite. Anche le tue anteprime nell'admin di Bizmis sono gratuite. Ogni piano include un numero di sessioni (Starter 260 / Growth 660 / Scale 1.650) che si rinnova ogni mese. Oltre quella soglia, ogni sessione extra costa $0,45 su Starter, $0,40 su Growth e $0,35 su Scale, solo fino al limite di spesa che imposti nell'admin di Bizmis. Il limite parte da $0, quindi non paghi nulla in più finché non lo alzi. Una volta raggiunto, il venditore si mette in pausa fino al periodo successivo o finché non alzi il limite. Le sessioni non usate non si accumulano.",
       },
       "monthly-billing": {
         question: "C'è la fatturazione annuale?",

@@ -2,7 +2,7 @@ import Footer from "@/components/Footer";
 import PublicPageLayout from "@/components/PublicPageLayout";
 import Seo from "@/components/Seo";
 
-const LAST_UPDATED = "October 26, 2026";
+const LAST_UPDATED = "October 28, 2026";
 const CONTACT_EMAIL = "hello@bizmis.ai";
 const COMPANY_LEGAL_NAME = "Bizmis";
 const COMPANY_JURISDICTION = "Spain";
@@ -450,7 +450,8 @@ const Terms = () => {
               <li>
                 <strong>Overage.</strong> Sessions beyond the included number
                 are billed as overage at the per-Session rate published for
-                your plan (currently $0.30 per Session),
+                your plan (currently $0.45 per Session on Starter, $0.40 on
+                Growth and $0.35 on Scale),
                 only up to the spend cap you set inside the Bizmis admin and
                 never above Shopify's per-app capped amount for your plan. The
                 spend cap starts at $0, so no overage is billed until you

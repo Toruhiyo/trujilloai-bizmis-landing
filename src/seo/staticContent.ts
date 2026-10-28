@@ -12,9 +12,10 @@ import { buildFaqCategories } from "@/data/faqs";
 import { FREE_PLAN_CONVERSATIONS_ALLOWANCE } from "@/data/leadEarlyAccessCopy";
 import { EARLY_ACCESS_STORE_CAP } from "@/data/leads/_schema";
 import {
-  ENTERPRISE_FROM_MONTHLY_PRICE,
+  PLAN_EXTRA_SESSION_RATES,
   PLAN_INCLUDED_SESSIONS,
   PLAN_MONTHLY_PRICES,
+  extraSessionSavingPercent,
 } from "@/data/planPrices";
 import {
   BIZMIS_BOOK_A_CALL_URL,
@@ -123,9 +124,19 @@ const home = (m: Messages) => {
 
 const pricing = (m: Messages, locale: Locale) => {
   const p = m.pricing;
+  const extraSessions = (key: keyof typeof PLAN_MONTHLY_PRICES) => {
+    const percent = extraSessionSavingPercent(
+      PLAN_EXTRA_SESSION_RATES[key],
+      PLAN_EXTRA_SESSION_RATES.starter,
+    );
+    return p.extraConversations(
+      `$${PLAN_EXTRA_SESSION_RATES[key].toFixed(2)}`,
+      percent > 0 ? { percent, plan: p.plans.starter.name } : undefined,
+    );
+  };
   const plan = (key: keyof typeof PLAN_MONTHLY_PRICES) => `<section>
             <h2>${esc(p.plans[key].name)}</h2>
-            <p>${usd(PLAN_MONTHLY_PRICES[key], locale)}${esc(p.perMonth)}. ${PLAN_INCLUDED_SESSIONS[key].toLocaleString(LOCALE_TAGS[locale])} ${esc(p.conversationsPerMonth)}.</p>
+            <p>${usd(PLAN_MONTHLY_PRICES[key], locale)}${esc(p.perMonth)}. ${PLAN_INCLUDED_SESSIONS[key].toLocaleString(LOCALE_TAGS[locale])} ${esc(p.conversationsPerMonth)}. ${esc(extraSessions(key))}.</p>
             ${list(p.plans[key].features)}
           </section>`;
   return `<h1>${esc(p.title)}</h1>
@@ -139,7 +150,7 @@ const pricing = (m: Messages, locale: Locale) => {
           ${plan("scale")}
           <section>
             <h2>${esc(p.enterprise.name)}</h2>
-            <p>${esc(p.enterprise.priceFrom)} ${usd(ENTERPRISE_FROM_MONTHLY_PRICE, locale)}${esc(p.perMonth)}. ${esc(p.enterprise.description)}</p>
+            <p>${esc(p.enterprise.customPrice)}. ${esc(p.enterprise.description)}</p>
             <p>${esc(p.enterprise.everythingInScale)}</p>
             ${list(p.enterprise.features)}
           </section>

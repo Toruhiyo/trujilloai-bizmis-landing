@@ -876,6 +876,15 @@
   padding: clamp(1rem, 2.3svh, 1.6rem) clamp(1.1rem, 1.6vw, 1.5rem);
 }
 .bzl-price-page .bzl-price-amount { font-size: clamp(2.1rem, min(3vw, 5.4svh), 2.75rem); }
+/* Enterprise has no list price: "Custom pricing" in words, smaller than a
+   price, in a block as tall as the plans' price so the cards stay level */
+.bzl-price-block.is-custom { min-height: clamp(2.4rem, 3.4vw, 3rem); }
+.bzl-price-page .bzl-price-block.is-custom { min-height: clamp(2.1rem, min(3vw, 5.4svh), 2.75rem); }
+.bzl-price-amount.is-custom {
+  font-size: clamp(1.45rem, 2vw, 1.75rem);
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+}
 .bzl-price-block { margin-top: clamp(0.45rem, 1.2svh, 0.9rem); }
 .bzl-price-sessions {
   margin-top: clamp(0.5rem, 1.3svh, 0.9rem);
