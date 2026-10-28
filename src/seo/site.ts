@@ -10,7 +10,6 @@
  */
 import { buildAllFaqs } from "@/data/faqs";
 import {
-  ENTERPRISE_FROM_MONTHLY_PRICE,
   PLAN_CURRENCY,
   PLAN_MONTHLY_PRICES,
 } from "@/data/planPrices";
@@ -178,7 +177,7 @@ const softwareApplication = (messages: Messages, locale: Locale): JsonLd => {
       "@type": "AggregateOffer",
       priceCurrency: PLAN_CURRENCY,
       lowPrice: 0,
-      // Free, Starter, Growth, Scale and Enterprise (from a price, so no highPrice)
+      // Free, Starter, Growth, Scale and Enterprise (custom pricing, so no price and no highPrice)
       offerCount: 5,
       offers: [
         monthlyOffer(messages.pricing.free.name, 0, pricingUrl),
@@ -189,13 +188,6 @@ const softwareApplication = (messages: Messages, locale: Locale): JsonLd => {
           "@type": "Offer",
           name: messages.pricing.enterprise.name,
           url: absoluteUrl("/contact", locale),
-          priceSpecification: {
-            "@type": "UnitPriceSpecification",
-            minPrice: ENTERPRISE_FROM_MONTHLY_PRICE,
-            priceCurrency: PLAN_CURRENCY,
-            unitText: "MONTH",
-            billingDuration: "P1M",
-          },
         },
       ],
     },

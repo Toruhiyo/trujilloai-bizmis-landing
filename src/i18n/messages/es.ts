@@ -577,8 +577,8 @@ export const es: Messages = {
     perMonth: "/mes",
     popular: "Popular",
     conversationsPerMonth: "sesiones / mes",
-    extraConversations: (price: string) =>
-      `Sesiones extra a ${price} cada una, hasta el límite de gasto que fijes`,
+    extraConversations: (price: string, saving?: { percent: number; plan: string }) =>
+      `Sesiones extra a ${price} cada una${saving ? ` (un ${saving.percent}% menos que en ${saving.plan})` : ""}, hasta el límite de gasto que fijes`,
     conversationDefinition:
       "Una sesión es la visita de un cliente a tu dependiente, por voz o por texto. Las sesiones de más de 5 minutos de voz o 40 mensajes cuentan como dos. Las visitas en las que el cliente no dice nada son gratis.",
     off: "dto.",
@@ -622,7 +622,7 @@ export const es: Messages = {
     },
     enterprise: {
       name: "Enterprise",
-      priceFrom: "Desde",
+      customPrice: "Precio personalizado",
       description:
         "Soluciones a medida para operaciones a gran escala, con volumen y requisitos personalizados.",
       everythingInScale: "Todo lo de Scale y además:",
@@ -755,12 +755,12 @@ export const es: Messages = {
       "how-much-cost": {
         question: "¿Cuánto cuesta Bizmis?",
         answer:
-          "Tres planes más Enterprise, con facturación mensual, o anual con alrededor de un 20% de descuento. **Starter** (79 $/mes, 260 sesiones) para tiendas pequeñas o de una persona. **Growth** (199 $/mes, 660 sesiones) para tiendas en crecimiento, el más popular. **Scale** (499 $/mes, 1.650 sesiones) para tiendas de alto volumen. **Enterprise** desde 1.500 $/mes, con volumen a medida, capacidad garantizada para picos de tráfico y SLA. Cada sesión extra cuesta 0,30 $, hasta el límite de gasto que fijes. Puedes empezar con 120 sesiones gratis.",
+          "Tres planes más Enterprise, con facturación mensual, o anual con alrededor de un 20% de descuento. **Starter** (79 $/mes, 260 sesiones) para tiendas pequeñas o de una persona. **Growth** (199 $/mes, 660 sesiones) para tiendas en crecimiento, el más popular. **Scale** (499 $/mes, 1.650 sesiones) para tiendas de alto volumen. **Enterprise** tiene precio personalizado para tiendas que necesitan más volumen, capacidad garantizada para picos de tráfico y SLA. Las sesiones extra salen más baratas en los planes grandes: 0,45 $ cada una en Starter, 0,40 $ en Growth y 0,35 $ en Scale, hasta el límite de gasto que fijes. Puedes empezar con 120 sesiones gratis.",
       },
       "what-counts-as-session": {
         question: "¿Qué cuenta como una sesión?",
         answer:
-          "Una sesión es la visita de un cliente a tu dependiente, por voz o por texto. Las sesiones de más de 5 minutos de voz o 40 mensajes cuentan como dos. Las visitas en las que el cliente no dice nada son gratis. Tus propias pruebas en el panel de Bizmis tampoco cuentan. Cada plan incluye un número de sesiones (Starter 260 / Growth 660 / Scale 1.650) que se renueva cada mes. A partir de ahí, cada sesión extra cuesta 0,30 $, solo hasta el límite de gasto que fijes en el panel de Bizmis. El límite empieza en 0 $, así que no se cobra nada extra hasta que lo subas. Al alcanzarlo, el dependiente se pausa hasta el siguiente periodo o hasta que subas el límite. Las sesiones no usadas no se acumulan.",
+          "Una sesión es la visita de un cliente a tu dependiente, por voz o por texto. Las sesiones de más de 5 minutos de voz o 40 mensajes cuentan como dos. Las visitas en las que el cliente no dice nada son gratis. Tus propias pruebas en el panel de Bizmis tampoco cuentan. Cada plan incluye un número de sesiones (Starter 260 / Growth 660 / Scale 1.650) que se renueva cada mes. A partir de ahí, cada sesión extra cuesta 0,45 $ en Starter, 0,40 $ en Growth y 0,35 $ en Scale, solo hasta el límite de gasto que fijes en el panel de Bizmis. El límite empieza en 0 $, así que no se cobra nada extra hasta que lo subas. Al alcanzarlo, el dependiente se pausa hasta el siguiente periodo o hasta que subas el límite. Las sesiones no usadas no se acumulan.",
       },
       "monthly-billing": {
         question: "¿Hay facturación anual?",

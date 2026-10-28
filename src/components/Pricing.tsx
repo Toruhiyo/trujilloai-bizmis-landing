@@ -21,9 +21,10 @@ import {
 import { EARLY_ACCESS_STORE_CAP } from "@/data/leads/_schema";
 import { FREE_PLAN_CONVERSATIONS_ALLOWANCE } from "@/data/leadEarlyAccessCopy";
 import {
-  ENTERPRISE_FROM_MONTHLY_PRICE,
+  PLAN_EXTRA_SESSION_RATES,
   PLAN_INCLUDED_SESSIONS,
   PLAN_MONTHLY_PRICES,
+  extraSessionSavingPercent,
 } from "@/data/planPrices";
 import { localeTag, useLocale, useLocaleHref, useMessages } from "@/i18n/LocaleProvider";
 import type { Messages } from "@/i18n/messages/en";
@@ -70,9 +71,6 @@ const MONTHS_PER_YEAR = 12;
  *  catalog has no yearly price for a plan (the v2 catalog returns null). */
 const YEARLY_FALLBACK_DISCOUNT_PERCENT = 20;
 
-/** Fallback for the price per extra session (every plan, pricing v2). */
-const FALLBACK_OVERAGE_RATE_PER_CONVERSATION = 0.3;
-
 /** 20% off the monthly price, rounded down to whole dollars ($79 -> $63). */
 const yearlyFallbackMonthlyPrice = (monthlyPrice: number): number =>
   Math.floor(monthlyPrice * (1 - YEARLY_FALLBACK_DISCOUNT_PERCENT / 100));
@@ -87,7 +85,7 @@ const buildPlans = (messages: Messages): Plan[] => [
     monthlyPrice: PLAN_MONTHLY_PRICES.starter,
     yearlyMonthlyPrice: yearlyFallbackMonthlyPrice(PLAN_MONTHLY_PRICES.starter),
     includedConversations: PLAN_INCLUDED_SESSIONS.starter,
-    overageRatePerConversation: FALLBACK_OVERAGE_RATE_PER_CONVERSATION,
+    overageRatePerConversation: PLAN_EXTRA_SESSION_RATES.starter,
     features: messages.pricing.plans.starter.features,
     popular: false,
     buttonText: messages.common.getStarted,
@@ -99,7 +97,7 @@ const buildPlans = (messages: Messages): Plan[] => [
     monthlyPrice: PLAN_MONTHLY_PRICES.growth,
     yearlyMonthlyPrice: yearlyFallbackMonthlyPrice(PLAN_MONTHLY_PRICES.growth),
     includedConversations: PLAN_INCLUDED_SESSIONS.growth,
-    overageRatePerConversation: FALLBACK_OVERAGE_RATE_PER_CONVERSATION,
+    overageRatePerConversation: PLAN_EXTRA_SESSION_RATES.growth,
     features: messages.pricing.plans.growth.features,
     popular: true,
     buttonText: messages.common.getStarted,
@@ -111,7 +109,7 @@ const buildPlans = (messages: Messages): Plan[] => [
     monthlyPrice: PLAN_MONTHLY_PRICES.scale,
     yearlyMonthlyPrice: yearlyFallbackMonthlyPrice(PLAN_MONTHLY_PRICES.scale),
     includedConversations: PLAN_INCLUDED_SESSIONS.scale,
-    overageRatePerConversation: FALLBACK_OVERAGE_RATE_PER_CONVERSATION,
+    overageRatePerConversation: PLAN_EXTRA_SESSION_RATES.scale,
     features: messages.pricing.plans.scale.features,
     popular: false,
     buttonText: messages.common.getStarted,
@@ -671,6 +669,12 @@ const Pricing = () => {
               const displayPrice = getDisplayPrice(plan);
               const discountPercent = getDiscountPercent(plan);
               const hasDiscount = discountPercent > 0;
+              // Bigger plans pay less per extra session: say how much less than the first plan.
+              const basePlan = plans[0];
+              const extraSessionSaving = extraSessionSavingPercent(
+                plan.overageRatePerConversation,
+                basePlan.overageRatePerConversation,
+              );
 
               return (
                 <div
@@ -750,6 +754,9 @@ const Pricing = () => {
                     <p className="bzl-price-muted mt-0.5 text-[0.75rem] leading-snug">
                       {messages.pricing.extraConversations(
                         `$${formatOverageRate(plan.overageRatePerConversation)}`,
+                        extraSessionSaving > 0
+                          ? { percent: extraSessionSaving, plan: basePlan.name }
+                          : undefined,
                       )}
                     </p>
                   </div>
@@ -787,16 +794,10 @@ const Pricing = () => {
               <h2 className="bzl-price-name pt-1">
                 {messages.pricing.enterprise.name}
               </h2>
-              {/* "From" over /mo, beside the price (as "billed yearly" on the plans), so it never wraps */}
-              <div className="bzl-price-block flex flex-wrap items-end gap-x-2 gap-y-1">
-                <span className="bzl-price-amount">
-                  ${formatPrice(ENTERPRISE_FROM_MONTHLY_PRICE)}
-                </span>
-                <span className="flex flex-col pb-[0.2em] leading-tight">
-                  <span className="bzl-price-muted whitespace-nowrap text-[0.75rem] font-medium">
-                    {messages.pricing.enterprise.priceFrom}
-                  </span>
-                  <span className="bzl-price-per">{messages.pricing.perMonth}</span>
+              {/* No list price: custom pricing, in the price's place and height */}
+              <div className="bzl-price-block is-custom flex items-end">
+                <span className="bzl-price-amount is-custom">
+                  {messages.pricing.enterprise.customPrice}
                 </span>
               </div>
               {/* in the sessions box's place: what it is, then "Everything in Scale, plus:" */}

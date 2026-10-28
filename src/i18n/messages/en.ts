@@ -595,8 +595,9 @@ export const en = {
     perMonth: "/mo",
     popular: "Popular",
     conversationsPerMonth: "sessions / month",
-    extraConversations: (price: string) =>
-      `Extra sessions ${price} each, up to the spend cap you set`,
+    /** `saving`: how much less an extra session costs than on the first plan. */
+    extraConversations: (price: string, saving?: { percent: number; plan: string }) =>
+      `Extra sessions ${price} each${saving ? ` (${saving.percent}% less than ${saving.plan})` : ""}, up to the spend cap you set`,
     conversationDefinition:
       "A session is one shopper's visit with your clerk, by voice or text. Sessions longer than 5 minutes of voice or 40 messages count as two. Visits where the shopper says nothing are free.",
     off: "off",
@@ -640,7 +641,7 @@ export const en = {
     },
     enterprise: {
       name: "Enterprise",
-      priceFrom: "From",
+      customPrice: "Custom pricing",
       description:
         "Tailored solutions for large-scale operations with custom volume and requirements.",
       everythingInScale: "Everything in Scale, plus:",
@@ -772,12 +773,12 @@ export const en = {
       "how-much-cost": {
         question: "How much does Bizmis cost?",
         answer:
-          "Three plans plus Enterprise, billed monthly, or yearly for about 20% off. **Starter** ($79/mo, 260 sessions) for solo or small stores. **Growth** ($199/mo, 660 sessions) for growing stores, most popular. **Scale** ($499/mo, 1,650 sessions) for high-volume stores. **Enterprise** from $1,500/mo for custom volume, guaranteed capacity for traffic peaks and SLAs. Extra sessions cost $0.30 each, up to the spend cap you set. You can start with 120 free sessions.",
+          "Three plans plus Enterprise, billed monthly, or yearly for about 20% off. **Starter** ($79/mo, 260 sessions) for solo or small stores. **Growth** ($199/mo, 660 sessions) for growing stores, most popular. **Scale** ($499/mo, 1,650 sessions) for high-volume stores. **Enterprise** has custom pricing for stores that need more volume, guaranteed capacity for traffic peaks and SLAs. Extra sessions get cheaper on bigger plans: $0.45 each on Starter, $0.40 on Growth and $0.35 on Scale, up to the spend cap you set. You can start with 120 free sessions.",
       },
       "what-counts-as-session": {
         question: "What counts as a session?",
         answer:
-          "A session is one shopper's visit with your clerk, by voice or text. Sessions longer than 5 minutes of voice or 40 messages count as two. Visits where the shopper says nothing are free. Your own previews in the Bizmis admin are free too. Each plan includes a number of sessions (Starter 260 / Growth 660 / Scale 1,650) that resets every month. Beyond that, extra sessions cost $0.30 each, only up to the spend cap you set in the Bizmis admin. The cap starts at $0, so nothing extra is billed until you raise it. Once the cap is reached, the clerk pauses until the next period or until you raise the cap. Unused sessions don't roll over.",
+          "A session is one shopper's visit with your clerk, by voice or text. Sessions longer than 5 minutes of voice or 40 messages count as two. Visits where the shopper says nothing are free. Your own previews in the Bizmis admin are free too. Each plan includes a number of sessions (Starter 260 / Growth 660 / Scale 1,650) that resets every month. Beyond that, extra sessions cost $0.45 each on Starter, $0.40 on Growth and $0.35 on Scale, only up to the spend cap you set in the Bizmis admin. The cap starts at $0, so nothing extra is billed until you raise it. Once the cap is reached, the clerk pauses until the next period or until you raise the cap. Unused sessions don't roll over.",
       },
       "monthly-billing": {
         question: "Is there yearly billing?",
