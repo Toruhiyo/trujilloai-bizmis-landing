@@ -16,6 +16,9 @@ shopper = sys.argv[sys.argv.index('--shopper') + 1] if '--shopper' in sys.argv e
 SR = 48000
 ENV = os.path.join(os.path.dirname(__file__), '..', '..', '..', 'trujilloai-bizmis-project', '.env')
 KEY = os.environ.get('ELEVENLABS_API_KEY') or next(l.split('=', 1)[1].strip().strip('"\'') for l in open(ENV) if l.startswith('ELEVENLABS_API_KEY='))
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import el_guard
+el_guard.preflight(KEY)
 def pcm(path):
     return np.frombuffer(subprocess.run(['ffmpeg', '-loglevel', 'error', '-i', path, '-vn', '-ac', '1', '-ar', str(SR), '-f', 'f32le', '-'], capture_output=True).stdout, np.float32).copy()
 def stt(path):
@@ -52,6 +55,7 @@ utts = []
 for w in agent:
     if utts and w['start'] - utts[-1]['end'] < 0.7: utts[-1]['end'] = w['end']; utts[-1]['text'] += ' ' + w['text']
     else: utts.append({'start': w['start'], 'end': w['end'], 'text': w['text']})
+el_guard.assert_estimate(sum(len(u['text']) for u in utts), f'{len(utts)} agent utterances')
 y = x.copy(); f = int(0.03 * SR)
 for u in utts:
     a, b = int((u['start'] - 0.06) * SR), int((u['end'] + 0.12) * SR)

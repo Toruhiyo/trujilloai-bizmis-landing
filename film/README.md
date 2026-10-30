@@ -30,6 +30,15 @@ streams the result (HLS on the product CDN, `src/lib/film.ts`).
 - `take.at(phrase)` is case-sensitive and resolves at once when the phrase is missing (a re-voice that changes
   case moves its beat).
 
+## ElevenLabs credits
+
+Every script here that calls ElevenLabs (`record-store-usecases`, `generate-film-voice`, `revoice-agent`,
+`audio/el_sfx.py`, `scripts/generate-replay-audio`) goes through `film/scripts/el-guard.mjs` / `el_guard.py`: nothing
+paid starts when the billing period's usage is above 400,000 credits, and a run stops at 5,000 credits. Overrides on
+purpose only: `EL_CREDIT_CAP` / `EL_PERIOD_CEILING` with `EL_I_KNOW=1`. Live recordings refuse to start without the
+film tester token, so the backend marks their sessions `is_test`, `test_by=film`. Mint it once (90 days, never print
+it): `cd ~/Projects/TrujilloAI/trujilloai-landing-backend && ./.venv/bin/python3.13 -m scripts.bizmis.mint_test_session_token --who film --days 90 --out ~/Projects/Bizmis/film-production/.test-token`.
+
 ## Iterating
 
 Work in a short-lived worktree off `origin/main` (the main checkout is shared):

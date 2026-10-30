@@ -5,6 +5,7 @@
 // are off. Waiting stretches (loading, thinking) ease up to 2x and back.
 // The widget's sound is tapped in the page and paced with the picture.
 
+import { RUN_CAP, assertEstimate, filmTesterToken, installTesterToken, limit, preflight, readUsed, runSpent } from './el-guard.mjs';
 import crypto from 'node:crypto';
 import { spawn } from 'node:child_process';
 import fs from 'node:fs';
@@ -15,6 +16,7 @@ import { fileURLToPath } from 'node:url';
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..', '..');   // film/scripts -> the repo root
 // PROMO_USECASES / PROMO_OUT_DIR / PROMO_RESULTS pick another beat sheet and
 // output (e.g. the ad-1 store reel: film/scripts/store-reel.json).
+let TESTER_TOKEN = null;   // set in main(), see the credit guard there
 const SHOTS = JSON.parse(fs.readFileSync(path.resolve(ROOT, process.env.PROMO_USECASES || 'film/scripts/store-usecases.json'), 'utf8'));
 const OUT_DIR = path.resolve(ROOT, process.env.PROMO_OUT_DIR || 'public/promo/stores/videos');
 const RESULTS_PATH = path.resolve(ROOT, process.env.PROMO_RESULTS || 'film/scripts/store-usecase-results.json');
@@ -294,6 +296,7 @@ async function shopperVoice(job, index, line) {
   const file = path.join(VOICE_CACHE, `${job.beat.slug}-${job.beat.beat}-${job.beat.shopperVoice || 'jessica'}-${index}-${tag}.mp3`);
   if (fs.existsSync(file)) return file;
   const env = path.join(ROOT, '..', 'trujilloai-bizmis-project', '.env');
+  assertEstimate(line.length, 'shopper line');
   const key = process.env.ELEVENLABS_API_KEY || fs.readFileSync(env, 'utf8').split('\n')
     .find((l) => l.startsWith('ELEVENLABS_API_KEY='))?.split('=').slice(1).join('=').trim().replace(/^['"]|['"]$/g, '');
   const voice = SHOPPER_VOICES[job.beat.shopperVoice || 'jessica'];
@@ -1315,6 +1318,7 @@ async function recordTake(browser, job, dest) {
     hasTouch: job.device !== 'desktop',
     isMobile: job.device === 'phone',
   });
+  await context.addInitScript(installTesterToken, TESTER_TOKEN);
   const page = await context.newPage();
   await page.addInitScript(installPrefs);
   if (job.beat.flair) await page.addInitScript(installFlair, job.beat.flair);   // v36 (ad-1)
@@ -1639,6 +1643,12 @@ async function recordJob(chromium, job) {
 async function main() {
   const jobs = selectedJobs();
   if (!jobs.length) throw new Error('no jobs selected');
+  // credit guard (el-guard.mjs): a take is a real agent conversation. No run above the period ceiling, none
+  // unflagged (the tester token makes the backend mark the session is_test, test_by=film), a cap per run.
+  TESTER_TOKEN = filmTesterToken();
+  const startUsed = await preflight();
+  const startedAt = Date.now();
+  const cap = limit('EL_CREDIT_CAP', RUN_CAP);
   fs.mkdirSync(OUT_DIR, { recursive: true });
   const { chromium } = await import('playwright');
   const concurrency = Math.max(1, Number(process.env.PROMO_CONCURRENCY || 1));
@@ -1646,6 +1656,11 @@ async function main() {
   let cursor = 0;
   async function worker() {
     while (cursor < jobs.length) {
+      const spent = runSpent(await readUsed().then((used) => used - startUsed).catch(() => 0), Date.now() - startedAt);
+      if (spent > cap) {
+        process.stdout.write(`STOPPED: run credit cap ${cap} reached (~${Math.round(spent)} credits), ${jobs.length - cursor} take(s) left\n`);
+        process.exit(4);
+      }
       const index = cursor;
       cursor += 1;
       outcomes[index] = await recordJob(chromium, jobs[index]);

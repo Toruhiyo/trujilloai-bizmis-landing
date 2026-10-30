@@ -13,6 +13,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { execFileSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
+import { assertEstimate, preflight } from './el-guard.mjs';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..', '..');   // film/scripts -> the repo root
 const VOICE_DIR = path.join(ROOT, 'public', 'promo', 'voice');
@@ -42,6 +43,10 @@ function apiKey() {
 
 const lines = JSON.parse(fs.readFileSync(path.join(VOICE_DIR, 'film-lines.json'), 'utf8'));
 const key = apiKey();
+// credit guard: the period ceiling, and this run's characters (about one credit each) against the run cap
+const todo = lines.filter((line) => (!only.length || only.includes(line.id)) && (force || !fs.existsSync(path.join(VOICE_DIR, `${line.id}.wav`))));
+await preflight();
+assertEstimate(todo.reduce((sum, line) => sum + line.text.length, 0), `${todo.length} film lines`);
 for (const [index, line] of lines.entries()) {
   if (only.length && !only.includes(line.id)) continue;
   const wavPath = path.join(VOICE_DIR, `${line.id}.wav`);
