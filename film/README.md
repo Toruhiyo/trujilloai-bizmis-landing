@@ -32,7 +32,7 @@ streams the result (HLS on the product CDN, `src/lib/film.ts`).
 
 ## ElevenLabs credits
 
-Every script here that calls ElevenLabs (`record-store-usecases`, `generate-film-voice`, `revoice-agent`,
+Every script here that calls ElevenLabs (`record-store-usecases`, `capture-clerk-voice`, `generate-film-voice`, `revoice-agent`,
 `audio/el_sfx.py`, `scripts/generate-replay-audio`) goes through `film/scripts/el-guard.mjs` / `el_guard.py`: nothing
 paid starts when the billing period's usage is above 400,000 credits, and a run stops at 5,000 credits. Overrides on
 purpose only: `EL_CREDIT_CAP` / `EL_PERIOD_CEILING` with `EL_I_KNOW=1`. Live recordings refuse to start without the
