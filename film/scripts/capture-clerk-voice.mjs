@@ -10,6 +10,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { RUN_CAP, filmTesterToken, installTesterToken, limit, preflight, readUsed, runSpent } from './el-guard.mjs';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..', '..');   // film/scripts -> the repo root
 const VOICE_DIR = path.join(ROOT, 'public', 'promo', 'voice');
@@ -88,6 +89,13 @@ function trim(clip, rate) {
   };
 }
 
+// credit guard (el-guard.mjs): each line is a live agent turn. No run above the period ceiling, none unflagged (the
+// tester token makes the backend mark the session is_test, test_by=film), and a cap per run.
+const testerToken = filmTesterToken();
+const startUsed = await preflight();
+const startedAt = Date.now();
+const creditCap = limit('EL_CREDIT_CAP', RUN_CAP);
+
 const { chromium } = await import('/Users/toruhiyo/.npm/_npx/e41f203b7505f1fb/node_modules/playwright/index.mjs');
 const browser = await chromium.launch({
   headless: true,
@@ -95,6 +103,7 @@ const browser = await chromium.launch({
   args: ['--autoplay-policy=no-user-gesture-required'],
 });
 const page = await browser.newPage({ viewport: { width: 1280, height: 900 } });
+await page.addInitScript(installTesterToken, testerToken);
 await page.goto(new URL('/promo/voice-capture.html', base).toString(), { waitUntil: 'domcontentloaded' });
 const composer = page.locator('#bizmis-avatar-embed textarea, #bizmis-avatar-embed input[type="text"], .bizmis-viewport-portal-root textarea').first();
 await composer.waitFor({ state: 'visible', timeout: 60000 });
@@ -127,6 +136,8 @@ process.stdout.write(`agent audio ${format}\n`);
 
 fs.mkdirSync(VOICE_DIR, { recursive: true });
 for (const line of lines) {
+  const spent = runSpent(await readUsed().then((used) => used - startUsed).catch(() => 0), Date.now() - startedAt);
+  if (spent > creditCap) { console.log(`STOPPED: run credit cap ${creditCap} reached (~${Math.round(spent)} credits)`); break; }
   const from = await page.evaluate(() => window.__voice.chunks.length);
   const sent = await page.evaluate((text) => window.AvatarVoicechat.sendHiddenMessage(`Say this exactly, nothing else: "${text}"`), line.text);
   if (!sent) throw new Error('sendHiddenMessage refused: is debug mode on?');
