@@ -13,6 +13,7 @@
 //                                          [--work <dir>] [--verify-only]
 // Needs ELEVENLABS_API_KEY (env, or ../trujilloai-bizmis-project/.env) and ffmpeg.
 
+import { assertEstimate, preflight } from '../film/scripts/el-guard.mjs';
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
@@ -53,6 +54,7 @@ function apiKey() {
   return line.split('=').slice(1).join('=').trim().replace(/^['"]|['"]$/g, '');
 }
 const KEY = apiKey();
+if (!verifyOnly) await preflight();   // credit guard (film/scripts/el-guard.mjs): no paid call above the period ceiling
 
 const spoken = (text) => text.replace(/\[[^\]]*\]\s*/g, '').trim();
 const NUM = { two: '2', five: '5', seven: '7', twelve: '12', fifty: '50', 'seventy-five': '75', seventyfive: '75' };
@@ -208,6 +210,10 @@ async function verify(session, timing) {
 
 const timings = fs.existsSync(TIMINGS) ? JSON.parse(fs.readFileSync(TIMINGS, 'utf8')) : {};
 fs.mkdirSync(OUT_DIR, { recursive: true });
+if (!verifyOnly) {
+  const said = LINES.sessions.filter((s) => !only.length || only.includes(s.id)).flatMap((s) => s.lines).filter((l) => l.role !== 'event');
+  assertEstimate(said.reduce((sum, l) => sum + l.text.length, 0), `${said.length} replay lines`);
+}
 for (const session of LINES.sessions) {
   if (only.length && !only.includes(session.id)) continue;
   console.log(session.id);

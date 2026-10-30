@@ -7,8 +7,13 @@ web app's Sound Effects history.
 import json, os, sys, time, urllib.request, concurrent.futures as cf
 OUT, TABLE = sys.argv[1], json.load(open(sys.argv[2]))
 KEY = next(l.split('=', 1)[1].strip().strip('"\'') for l in open('/Users/toruhiyo/Projects/Bizmis/trujilloai-bizmis-project/.env') if l.startswith('ELEVENLABS_API_KEY='))
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'scripts'))
+import el_guard
+el_guard.preflight(KEY)
 log_path = os.path.join(OUT, 'prompts.json'); log = json.load(open(log_path)) if os.path.exists(log_path) else {}
 jobs = [(f'{k}{i or ""}', p, d) for k, (p, d, n) in TABLE.items() for i in range(n)]
+# credit guard: sound generation costs ~40 credits per second
+el_guard.assert_estimate(sum(d * 40 for _, _, d in jobs), f'{len(jobs)} sound effects')
 def gen(job):
     name, prompt, secs = job; body = {'text': prompt, 'duration_seconds': secs, 'prompt_influence': 0.65}; err = None
     for a in range(4):
