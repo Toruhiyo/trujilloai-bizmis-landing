@@ -6,13 +6,24 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
 const SESSION_KEY = "bizmis_admin_authenticated";
+const ADMIN_SESSION_ENDPOINT = "/api/admin-session";
 
-function readConfiguredPassword(): string | undefined {
-  const raw = import.meta.env.VITE_ADMIN_PASSWORD;
-  if (typeof raw !== "string" || raw.length === 0) {
-    return undefined;
+type CheckResult = "ok" | "wrong-password" | "unavailable";
+
+// The password is checked by the server function; the browser never sees it.
+async function checkPassword(password: string): Promise<CheckResult> {
+  try {
+    const response = await fetch(ADMIN_SESSION_ENDPOINT, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ password }),
+    });
+    if (response.ok) return "ok";
+    if (response.status === 401) return "wrong-password";
+    return "unavailable";
+  } catch {
+    return "unavailable";
   }
-  return raw;
 }
 
 function isSessionAuthenticated(): boolean {
@@ -20,12 +31,13 @@ function isSessionAuthenticated(): boolean {
 }
 
 const AdminProtectedRoute = () => {
-  const configuredPassword = readConfiguredPassword();
   const [authed, setAuthed] = useState(isSessionAuthenticated);
   const [password, setPassword] = useState("");
   const [showError, setShowError] = useState(false);
+  const [unavailable, setUnavailable] = useState(false);
+  const [checking, setChecking] = useState(false);
 
-  if (!configuredPassword) {
+  if (unavailable) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-background p-8">
         <p className="max-w-md text-center text-sm text-muted-foreground">
@@ -36,15 +48,20 @@ const AdminProtectedRoute = () => {
   }
 
   if (!authed) {
-    const submit = (e: FormEvent<HTMLFormElement>) => {
+    const submit = async (e: FormEvent<HTMLFormElement>) => {
       e.preventDefault();
       setShowError(false);
-      if (password === configuredPassword) {
+      setChecking(true);
+      const result = await checkPassword(password);
+      setChecking(false);
+      if (result === "ok") {
         sessionStorage.setItem(SESSION_KEY, "true");
         setAuthed(true);
         setPassword("");
-      } else {
+      } else if (result === "wrong-password") {
         setShowError(true);
+      } else {
+        setUnavailable(true);
       }
     };
 
@@ -73,7 +90,7 @@ const AdminProtectedRoute = () => {
               autoFocus
             />
           </div>
-          <Button type="submit" className="w-full">
+          <Button type="submit" className="w-full" disabled={checking}>
             Continue
           </Button>
         </form>
