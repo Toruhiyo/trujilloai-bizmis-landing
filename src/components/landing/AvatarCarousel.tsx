@@ -50,8 +50,8 @@ const mod = (a: number, n: number) => ((a % n) + n) % n;
  * only, whatever the brand): blobs
  * that drift and breathe; dim and fast while the ring is moving, bright and
  * slow at rest, swelling on every new avatar. It's written as CSS variables
- * (--amb-glow, --amb-x/y/s 1–3) on `ambient`, the section, so the light can
- * fill it.
+ * (--amb-glow, --amb-x/y/s 1–3) on `ambient`, the light's own layer (set on
+ * the section they would restyle all of it every frame).
  */
 const AvatarCarousel = ({
   avatars,
@@ -183,11 +183,25 @@ const AvatarCarousel = ({
     setPos(0);
   }, [active]);
 
-  // The ambient light, running while the carousel is in view, on the same
-  // rhythm as the names (both follow the ring itself), in the primary only.
+  // the ambient light's layer on screen right now (any of it): its loop runs only then. (useInView latches,
+  // so on its own the loop ran on for the rest of the visit, restyling the layer every frame off screen)
+  const [lit, setLit] = useState(false);
   useEffect(() => {
     const el = ambient?.current;
-    if (!el || !inView) return;
+    if (!el || typeof IntersectionObserver === "undefined") {
+      setLit(true);
+      return;
+    }
+    const io = new IntersectionObserver((entries) => setLit(entries[entries.length - 1].isIntersecting));
+    io.observe(el);
+    return () => io.disconnect();
+  }, [ambient]);
+
+  // The ambient light, running while the carousel has come into view and its light is on screen, on the
+  // same rhythm as the names (both follow the ring itself), in the primary only.
+  useEffect(() => {
+    const el = ambient?.current;
+    if (!el || !inView || !lit) return;
     const still = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     let phase = 0;
     let last = performance.now();
@@ -240,7 +254,7 @@ const AvatarCarousel = ({
     };
     frame = requestAnimationFrame(loop);
     return () => cancelAnimationFrame(frame);
-  }, [ambient, inView, avatars, n]);
+  }, [ambient, inView, lit, avatars, n]);
 
   const unit = () => (stage.current?.clientWidth ?? 500) * SPACING;
 

@@ -62,6 +62,8 @@ const CustomizeSection = () => {
   const messages = useMessages();
   const c = messages.landing.customize;
   const section = useRef<HTMLElement>(null);
+  // the ambient light's layer: the carousel writes its drift on it (--amb-*), every frame while it shows
+  const glow = useRef<HTMLDivElement>(null);
 
   // where the carousel's stage sits in the section (its centre and width, px), for the ambient light
   useLayoutEffect(() => {
@@ -93,6 +95,7 @@ const CustomizeSection = () => {
       {/* the carousel's ambient light, in the primary (drifting and breathing with the ring, AvatarCarousel);
           feathered out at the section's edges (bzl-customize-glow), so no seam ever cuts it */}
       <div
+        ref={glow}
         aria-hidden="true"
         className="bzl-customize-glow pointer-events-none absolute inset-0"
         style={{ opacity: "var(--amb-glow, 0.6)" }}
@@ -111,6 +114,8 @@ const CustomizeSection = () => {
               background:
                 "radial-gradient(closest-side, color-mix(in oklab, hsl(var(--primary)) 30%, transparent), color-mix(in oklab, hsl(var(--primary)) 9%, transparent) 55%, transparent 75%)",
               transform: `translate(var(--amb-x${k + 1}, 0), var(--amb-y${k + 1}, 0)) scale(var(--amb-s${k + 1}, 1))`,
+              // its own layer: the blur is drawn once and the drift moves it, never redrawn every frame
+              willChange: "transform",
             }}
           />
         ))}
@@ -142,7 +147,7 @@ const CustomizeSection = () => {
             {/* never under 14rem (a phone on its side has no 23rem to spare: it sets the stage beside the head instead, landing-responsive.css) */}
             <AvatarCarousel
               avatars={SHOWN}
-              ambient={section}
+              ambient={glow}
               stageClassName="bzl-cz-stage max-w-[min(30rem,max(14rem,calc(100svh-23rem)))]"
             />
           </Reveal>
