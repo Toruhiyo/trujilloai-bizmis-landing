@@ -153,3 +153,192 @@ export const setupScrollToUrlUpdater = (sectionIds: string[]): (() => void) => {
     // No cleanup needed since we're not setting up any observers
   };
 };
+
+/** A jump with no smooth scroll, whatever the page's CSS says. */
+const jumpTo = (top: number): void => {
+  window.scrollTo({ top: Math.max(0, Math.round(top)), left: 0, behavior: "instant" as ScrollBehavior });
+};
+
+/** Calls `stop` the first time the visitor scrolls the page themselves (a touch, the wheel, a key). */
+const onVisitorScroll = (stop: () => void): (() => void) => {
+  const events = ["touchstart", "wheel", "keydown", "pointerdown"] as const;
+  const handler = () => stop();
+  events.forEach((e) => window.addEventListener(e, handler, { passive: true, capture: true }));
+  return () => events.forEach((e) => window.removeEventListener(e, handler, { capture: true }));
+};
+
+const RESTORE_PREFIX = "bzl-scroll:";
+/** This history entry's name (React Router's key for it; it survives a reload). */
+const entryKey = (): string =>
+  `${RESTORE_PREFIX}${window.location.pathname}|${(window.history.state as { key?: string } | null)?.key ?? "-"}`;
+let landedBefore = false;
+
+/**
+ * The landing keeps its place in its history entry: back from another page
+ * (Pricing, FAQs) or on a reload it comes back where it was, not at the top.
+ * The browser can't do it there: the sections mount after the hero's first
+ * paint (FilmLanding), so when it tries the page is one screen tall and it
+ * lands on the top. Here the scroll is noted per entry (sessionStorage) and,
+ * on a way back (`pop`: React Router's POP; the first mount in a document:
+ * a reload or a back/forward load), put back once the page is tall enough,
+ * unless the visitor scrolls first. A link to a section (#setup) wins.
+ */
+export const setupLandingScrollRestore = (pop: boolean): (() => void) => {
+  const first = !landedBefore;
+  landedBefore = true;
+  const history = window.history;
+  // this entry's scroll is ours: the browser's attempt (too early) would only fight it
+  history.scrollRestoration = "manual";
+
+  const store = (key: string, y: number) => {
+    try {
+      window.sessionStorage.setItem(key, String(Math.round(y)));
+    } catch {
+      // (storage blocked: the page simply starts at the top)
+    }
+  };
+  let noted: [string, number] | null = null;
+  let timer = 0;
+  const flush = () => {
+    window.clearTimeout(timer);
+    timer = 0;
+    if (noted) store(...noted);
+    noted = null;
+  };
+  const note = () => {
+    const key = entryKey();
+    // (the entry changed under it, e.g. a link pushed the next page: the last place goes to its own entry first)
+    if (noted && noted[0] !== key) flush();
+    noted = [key, window.scrollY];
+    if (!timer) timer = window.setTimeout(flush, 200);
+  };
+  window.addEventListener("scroll", note, { passive: true });
+  window.addEventListener("pagehide", flush);
+
+  // the way back: put the noted place back as soon as the page reaches it
+  let raf = 0;
+  let stopWatching = () => {};
+  const navType = (performance.getEntriesByType?.("navigation")[0] as PerformanceNavigationTiming | undefined)?.type;
+  const back = first ? navType === "reload" || navType === "back_forward" : pop;
+  let saved = 0;
+  try {
+    saved = Number(window.sessionStorage.getItem(entryKey())) || 0;
+  } catch {
+    saved = 0;
+  }
+  if (back && saved > 0 && !window.location.hash) {
+    let tries = 0;
+    let held = 0;
+    const stop = () => {
+      cancelAnimationFrame(raf);
+      raf = 0;
+      stopWatching();
+    };
+    stopWatching = onVisitorScroll(stop);
+    const attempt = () => {
+      raf = 0;
+      const room = document.documentElement.scrollHeight - viewportHeight();
+      jumpTo(Math.min(saved, room));
+      // (until it's tall enough, then held a few frames while the sections settle their sizes)
+      tries += 1;
+      if (room >= saved - 1) held += 1;
+      if (held ? held < 4 : tries < 120) raf = requestAnimationFrame(attempt);
+      else stop();
+    };
+    raf = requestAnimationFrame(attempt);
+  }
+
+  return () => {
+    window.removeEventListener("scroll", note);
+    window.removeEventListener("pagehide", flush);
+    flush();
+    cancelAnimationFrame(raf);
+    stopWatching();
+    // (the next page's entry, by now the current one, scrolls the browser's way)
+    history.scrollRestoration = "auto";
+  };
+};
+
+/**
+ * The landing keeps its place when the screen changes width: a phone turned
+ * on its side (or back), a tablet's split view, a resized window. The
+ * sections re-lay out for the new screen (Boost Sales pins or stacks, the
+ * pinned tracks are as long as the screen is tall), so the same scroll
+ * position would land in another section. The section at the screen's
+ * middle and how far through it is are noted on every scroll; after a
+ * change of width the page is put back there (a few times, while the
+ * sections settle into their new layout), unless the visitor scrolls first.
+ * A change of height alone (a phone's browser bar) changes nothing.
+ */
+export const setupKeepPlaceOnResize = (): (() => void) => {
+  const root = document.documentElement;
+  // (the section by its place in the page: a section can swap its element for the new layout, as Boost Sales does)
+  let anchor: { i: number; f: number; w: number } | null = null;
+  let frame = 0;
+  let timers: number[] = [];
+  let busy = false;
+  let stopWatching = () => {};
+
+  const blocks = () =>
+    Array.from(document.querySelectorAll(".bzl section, .bzl footer")).filter(
+      (el) => !el.parentElement?.closest(".bzl section, .bzl footer"),
+    );
+  const take = () => {
+    const mid = viewportHeight() / 2;
+    const all = blocks();
+    for (let i = 0; i < all.length; i++) {
+      const r = all[i].getBoundingClientRect();
+      if (r.height > 0 && r.top <= mid && r.bottom > mid) {
+        anchor = { i, f: (mid - r.top) / r.height, w: root.clientWidth };
+        return;
+      }
+    }
+  };
+  const put = () => {
+    const el = anchor && blocks()[anchor.i];
+    if (!anchor || !el) return;
+    const r = el.getBoundingClientRect();
+    jumpTo(window.scrollY + r.top + anchor.f * r.height - viewportHeight() / 2);
+  };
+  const settle = () => {
+    timers.forEach((t) => window.clearTimeout(t));
+    timers = [];
+    busy = false;
+    stopWatching();
+    if (anchor) anchor.w = root.clientWidth;
+    take();
+  };
+  const onScroll = () => {
+    if (busy || frame) return;
+    frame = requestAnimationFrame(() => {
+      frame = 0;
+      // (a scroll the new width caused, before the resize was seen: the place before it stands)
+      if (!busy && (!anchor || anchor.w === root.clientWidth)) take();
+    });
+  };
+  const onResize = () => {
+    if (!anchor || anchor.w === root.clientWidth) return;
+    timers.forEach((t) => window.clearTimeout(t));
+    if (!busy) stopWatching = onVisitorScroll(settle);
+    busy = true;
+    // now, then as the sections re-render for the new screen and settle their sizes
+    put();
+    timers = [16, 120, 300, 600].map((ms, i, all) =>
+      window.setTimeout(() => {
+        put();
+        if (i === all.length - 1) settle();
+      }, ms),
+    );
+  };
+
+  take();
+  window.addEventListener("scroll", onScroll, { passive: true });
+  window.addEventListener("resize", onResize);
+  return () => {
+    window.removeEventListener("scroll", onScroll);
+    window.removeEventListener("resize", onResize);
+    if (frame) cancelAnimationFrame(frame);
+    timers.forEach((t) => window.clearTimeout(t));
+    stopWatching();
+  };
+};

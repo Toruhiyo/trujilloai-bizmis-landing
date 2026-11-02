@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import { useNavigationType } from "react-router-dom";
 import SalesSection from "@/components/landing/SalesSection";
 import SupportSection from "@/components/landing/SupportSection";
 import InsightsSection from "@/components/landing/InsightsSection";
@@ -8,6 +9,8 @@ import EndCard from "@/components/landing/EndCard";
 import FilmFooter from "@/components/landing/FilmFooter";
 import LandingSummary from "@/components/landing/LandingSummary";
 import {
+  setupKeepPlaceOnResize,
+  setupLandingScrollRestore,
   setupScrollToSectionOnLoad,
   setupScrollToUrlUpdater,
 } from "@/lib/utils/scroll";
@@ -23,6 +26,7 @@ import { PillarAreaContext } from "@/components/landing/pillar/PillarArea";
  */
 const FilmLandingSections = () => {
   const messages = useMessages();
+  const navigation = useNavigationType();
 
   // (here, not in FilmLanding: a link to #setup needs the sections on the page to scroll to)
   useEffect(() => {
@@ -36,6 +40,19 @@ const FilmLandingSections = () => {
       cleanupScrollToSection();
       cleanupUrlUpdater();
     };
+  }, []);
+
+  // its place: back where it was on a way back (another page's back button, a reload), and kept
+  // through a change of the screen's width (a phone turned on its side), as the sections re-lay out
+  useEffect(() => {
+    const cleanupRestore = setupLandingScrollRestore(navigation === "POP");
+    const cleanupKeepPlace = setupKeepPlaceOnResize();
+    return () => {
+      cleanupRestore();
+      cleanupKeepPlace();
+    };
+    // (once, as the sections mount: the way they were reached)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
