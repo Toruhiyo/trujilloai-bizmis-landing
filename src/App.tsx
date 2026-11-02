@@ -1,4 +1,4 @@
-import { lazy, Suspense, useEffect, useState } from "react";
+import { lazy, Suspense } from "react";
 import { BrowserRouter, Routes, Route, Navigate, Outlet } from "react-router-dom";
 import { HERO_FILM_ENABLED } from "./lib/film";
 import AttributionTracker from "./components/AttributionTracker";
@@ -53,36 +53,17 @@ if (typeof window !== "undefined") {
 /** What shows while a page's chunk loads: the landing's own blank canvas. */
 const pageFallback = <div className="min-h-screen studio-lighting-base" />;
 
-// The two toast hosts (only the admin pages raise toasts) mount once the page is up, so
-// their code (Radix toast, sonner) stays out of the main bundle and the first paint.
+// The two toast hosts: only the admin pages raise toasts, so only they mount them (their code,
+// Radix toast and sonner, is its own chunk that the public pages never download).
 const Toaster = lazy(() => import("@/components/ui/toaster").then((m) => ({ default: m.Toaster })));
 const Sonner = lazy(() => import("@/components/ui/sonner").then((m) => ({ default: m.Toaster })));
 
-const DeferredToasters = () => {
-  const [ready, setReady] = useState(false);
-  useEffect(() => {
-    let idle = 0;
-    const go = () => {
-      idle = window.requestIdleCallback
-        ? window.requestIdleCallback(() => setReady(true), { timeout: 3000 })
-        : window.setTimeout(() => setReady(true), 1500);
-    };
-    if (document.readyState === "complete") go();
-    else window.addEventListener("load", go, { once: true });
-    return () => {
-      window.removeEventListener("load", go);
-      if (window.cancelIdleCallback) window.cancelIdleCallback(idle);
-      else window.clearTimeout(idle);
-    };
-  }, []);
-  if (!ready) return null;
-  return (
-    <Suspense fallback={null}>
-      <Toaster />
-      <Sonner />
-    </Suspense>
-  );
-};
+const AdminToasters = () => (
+  <Suspense fallback={null}>
+    <Toaster />
+    <Sonner />
+  </Suspense>
+);
 
 /**
  * Public, localizable routes. Rendered twice: unprefixed (English, the
@@ -112,7 +93,6 @@ const App = () => {
   if (isAdFilmRequest()) return <AdFilm />;
   return (
   <>
-      <DeferredToasters />
       {/* (transitions keep the current page on screen while the next page's chunk loads) */}
       <BrowserRouter future={{ v7_startTransition: true }}>
         <AttributionTracker />
@@ -134,7 +114,15 @@ const App = () => {
             <Route path="terms" element={<Navigate to="/terms" replace />} />
           </Route>
 
-          <Route path="admin" element={<AdminProtectedRoute />}>
+          <Route
+            path="admin"
+            element={
+              <>
+                <AdminToasters />
+                <AdminProtectedRoute />
+              </>
+            }
+          >
             <Route index element={<Navigate to="slides" replace />} />
             <Route path="slides" element={<Slides />} />
             <Route path="slides/shopify" element={<ShopifyDeck />} />
