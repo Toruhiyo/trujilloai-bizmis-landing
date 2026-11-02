@@ -42,27 +42,47 @@
     <!-- Google Analytics: the queue is set up at once (gtag() calls wait in
          dataLayer); gtag.js itself (about 180 KB) is fetched once the page has
          loaded, painted its largest element and the main thread is idle, or at
-         the first interaction, so it never competes with the first paint. -->
+         the first interaction (or once the tab is hidden), so it never competes
+         with the first paint. gtag.js reads the URL only when it runs, so the
+         page view is queued with the landing URL itself, and a route the
+         visitor reached before gtag.js ran gets its own page view. -->
     <script>
       window.dataLayer = window.dataLayer || [];
       function gtag() {
         dataLayer.push(arguments);
       }
       gtag("js", new Date());
-      gtag("config", "%VITE_GA_MEASUREMENT_ID%");
       (function () {
+        var id = "%VITE_GA_MEASUREMENT_ID%";
+        var landed = location.pathname + location.search;
+        // the landing page's view, with its own URL and title (not the URL when gtag.js runs)
+        gtag("config", id, { send_page_view: false });
+        var view = { page_location: location.href, page_title: document.title };
+        gtag("event", "page_view", view);
         var done = false;
         var events = ["pointerdown", "keydown", "touchstart", "scroll"];
         function load() {
           if (done) return;
           done = true;
           events.forEach(function (e) { removeEventListener(e, load, true); });
+          document.removeEventListener("visibilitychange", hidden);
+          // still on the landing route: its title as the app has set it by now
+          if (location.pathname + location.search === landed) view.page_title = document.title;
           var s = document.createElement("script");
           s.async = true;
+          // a route change before gtag.js ran went unseen (it watches the history from now on)
+          s.onload = function () {
+            if (location.pathname + location.search !== landed)
+              gtag("event", "page_view", { page_location: location.href, page_title: document.title });
+          };
           s.src = "https://www.googletagmanager.com/gtag/js?id=%VITE_GA_MEASUREMENT_ID%";
           document.head.appendChild(s);
         }
+        function hidden() {
+          if (document.visibilityState === "hidden") load();
+        }
         events.forEach(function (e) { addEventListener(e, load, { capture: true, passive: true, once: true }); });
+        document.addEventListener("visibilitychange", hidden);
         function idle() {
           if (window.requestIdleCallback) requestIdleCallback(load, { timeout: 3000 });
           else setTimeout(load, 1500);
