@@ -70,3 +70,8 @@ film/scripts/store-reel-voice/
 film/demo-stores/_frames/
 .vercel
 .env*
+
+# Visual regression suite (tests/visual): its build, results, diffs and report (the baselines are committed)
+tests/visual/.build/
+tests/visual/.results/
+tests/visual/.report/

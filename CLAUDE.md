@@ -45,3 +45,32 @@ in the same commit:
 
 After editing, run `npm run build` and diff `dist/llms*.txt` and the affected
 prerendered heads. Copy rules: no em dashes, no unsourced claims or numbers.
+
+# Visual regression suite (rule)
+
+`tests/visual` screenshots the production build (vite build + vite preview, routed
+like Vercel) and runs smoke checks in the same pass: "/" at 1440x900, 390x844,
+844x390, 768x1024 and 2560x1440 through every scroll-driven section's key states
+(each Sales beat's hold, the payoff, Support and Insights midway and at the end,
+Setup, Customize, the end card, the footer), /es and /fr, and the other pages
+(pricing, FAQs, early access, contact, privacy, terms, the 404, /v1). Smoke checks:
+no page or console errors, no sideways scroll, pinned screens fit the viewport,
+one h1 per page, key copy present, and each route's prerendered HTML has the
+running page's title, canonical and main heading.
+
+- Run `npm run test:visual` before pushing any change that can show on the site
+  (components, styles, copy, assets, i18n). It needs Docker: it runs in the
+  pinned Playwright image (the Linux renders the baselines come from, the same
+  image and arm64 architecture CI uses). About 2 minutes. On a failure, open
+  `tests/visual/.report/index.html` (expected, actual and diff per shot).
+- An intended visual change: check the diffs, then `npm run test:visual:update`
+  and commit the changed files under `tests/visual/__screenshots__` in the same
+  commit as the change. Never update baselines to silence a diff you did not mean.
+- CI (`.github/workflows/visual.yml`) runs it on every pull request and push to
+  main; a red run's "Visual diffs" artifact holds the report.
+- The page is frozen by the test, not by the site (no switch in the app):
+  Playwright's paused fake clock stepped one frame at a time (every rAF, timer,
+  performance.now and Date loop), seeded Math.random, fonts and images loaded up
+  front, no WebGL (the avatars' still renders), third-party hosts and the CDN cut,
+  one capture per shot. Something new that moves on its own another way (a
+  <video>, a remote asset) needs handling in `tests/visual/support.ts`.

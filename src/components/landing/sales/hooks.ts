@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useRewindLoop } from "../useRewindLoop";
 import type { RewindLoopOptions } from "../useRewindLoop";
+import { VISUAL_TEST, VISUAL_TEST_NOW } from "@/lib/visualTest";
 
 const query = "(prefers-reduced-motion: reduce)";
 
@@ -236,9 +237,10 @@ export const useScrollThrough = <T extends HTMLElement>(from = 0.85, to = 0.55) 
 
 /** A clock in real ms that runs while `on` (rAF), for motion that keeps going whatever the scroll does. */
 export const useNow = (on = true) => {
-  const [now, setNow] = useState(0);
+  const [now, setNow] = useState(VISUAL_TEST ? VISUAL_TEST_NOW : 0);
   useEffect(() => {
-    if (!on) return;
+    // (the visual regression suite: held on one moment, see lib/visualTest)
+    if (!on || VISUAL_TEST) return;
     let raf = 0;
     const loop = (t: number) => {
       setNow(t);

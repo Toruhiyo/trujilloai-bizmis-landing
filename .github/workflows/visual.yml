@@ -1,0 +1,77 @@
+# The landing's visual regression suite (tests/visual) on every pull request and every push to main.
+# It runs in the same Playwright image, on the same CPU architecture (arm64), as `npm run test:visual`
+# on a Mac, so the committed baselines compare the same here and there.
+# On a failure: the job's "Visual diffs" artifact holds the HTML report (expected / actual / diff for
+# each shot); download it and open index.html, or `npx playwright show-report <folder>`.
+# Run it by hand with "update baselines" ticked to get CI-made baselines back as an artifact.
+name: Visual regression
+
+on:
+  pull_request:
+    paths-ignore: ["**/*.md", "docs/**"]
+  push:
+    branches: [main]
+    paths-ignore: ["**/*.md", "docs/**"]
+  workflow_dispatch:
+    inputs:
+      update:
+        description: "Write new baselines (returned as the 'Visual baselines' artifact)"
+        type: boolean
+        default: false
+
+concurrency:
+  group: visual-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  visual:
+    runs-on: ubuntu-24.04-arm
+    timeout-minutes: 20
+    container:
+      image: mcr.microsoft.com/playwright:v1.60.0-noble
+      options: --ipc=host
+    env:
+      HOME: /root
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/cache@v4
+        with:
+          path: /root/.npm
+          key: npm-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('package-lock.json') }}
+
+      - name: Install
+        run: npm ci --no-audit --no-fund --loglevel=error
+
+      - name: Visual regression suite
+        run: npx playwright test -c tests/visual ${{ inputs.update && '--update-snapshots' || '' }}
+
+      - name: Visual diffs
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: Visual diffs
+          path: |
+            tests/visual/.report
+            tests/visual/.results
+          retention-days: 14
+
+      - name: Visual baselines
+        if: inputs.update
+        uses: actions/upload-artifact@v4
+        with:
+          name: Visual baselines
+          path: tests/visual/__screenshots__
+          retention-days: 14
+
+      - name: Summary
+        if: failure()
+        run: |
+          {
+            echo "### Visual regression failed"
+            echo "Download the **Visual diffs** artifact of this run and open \`.report/index.html\` (expected, actual and diff for every shot that changed)."
+            echo "An intended change: run \`npm run test:visual:update\` and commit the new baselines (tests/visual/__screenshots__)."
+          } >> "$GITHUB_STEP_SUMMARY"

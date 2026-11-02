@@ -17,7 +17,9 @@
     "generate:instantly-lead-fields": "node ../bizmis-operations/scripts/invite-cards/generate-instantly-lead-fields.mjs",
     "upload:mockup": "/Users/oriol/Projects/Bizmis/trujilloai-bizmis-studio/.venv/bin/python ../bizmis-operations/scripts/invite-cards/upload-mockup.py",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "test:visual": "bash tests/visual/run.sh",
+    "test:visual:update": "bash tests/visual/run.sh --update-snapshots"
   },
   "dependencies": {
     "@emailjs/browser": "^4.4.1",

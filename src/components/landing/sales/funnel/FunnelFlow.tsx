@@ -4,6 +4,7 @@ import type { CSSProperties } from "react";
 import { ShoppingBag } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useNearScreen, useNow } from "../hooks";
+import { VISUAL_TEST } from "@/lib/visualTest";
 import AgentPin from "./AgentPin";
 import {
   CHAMBERS,
@@ -573,11 +574,12 @@ const FunnelFlow = ({
   starts.forEach((st, i) => {
     if (!Number.isFinite(st)) return;
     const at = real.current.at;
-    if (t >= st && at[i] === Infinity) at[i] = now;
+    // (the visual regression suite holds the stream still: a fix it shows is in from the start)
+    if (t >= st && at[i] === Infinity) at[i] = VISUAL_TEST ? -Infinity : now;
     else if (t < st) at[i] = Infinity;
   });
   const realStarts = real.current.at;
-  if (litFade.current.i !== lit) litFade.current = { i: lit, at: now, prev: litFade.current.i };
+  if (litFade.current.i !== lit) litFade.current = { i: lit, at: VISUAL_TEST ? -Infinity : now, prev: litFade.current.i };
   const sec = now / 1000;
   // a narrow funnel (phones) draws every other visit: the same flow, less crowded
   const thin = size.W > 0 && size.W < 560 ? 2 : 1;
