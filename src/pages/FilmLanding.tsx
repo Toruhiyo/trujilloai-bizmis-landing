@@ -1,19 +1,17 @@
-import { useEffect } from "react";
+import { lazy, Suspense, useEffect } from "react";
 import Hero from "@/components/Hero";
 import Seo from "@/components/Seo";
-import SalesSection from "@/components/landing/SalesSection";
-import SupportSection from "@/components/landing/SupportSection";
-import InsightsSection from "@/components/landing/InsightsSection";
-import SetupSection from "@/components/landing/SetupSection";
-import CustomizeSection from "@/components/landing/CustomizeSection";
-import EndCard from "@/components/landing/EndCard";
-import FilmFooter from "@/components/landing/FilmFooter";
-import LandingSummary from "@/components/landing/LandingSummary";
-import {
-  setupScrollToSectionOnLoad,
-  setupScrollToUrlUpdater,
-} from "@/lib/utils/scroll";
-import { useMessages } from "@/i18n/LocaleProvider";
+// The sections' own styles (their components import them too), in the order the page always had
+// them, ahead of the page's own files below, which override them: the sections' code is its own
+// chunk (FilmLandingSections) and comes after the hero's first paint, their styles stay here.
+import "@/styles/beat-copy.css";
+import "@/styles/pillar-intro.css";
+import "@/styles/pillar-openers.css";
+import "@/styles/pillar-docks.css";
+import "@/styles/rewind-analog.css";
+import "@/styles/landing-sales.css";
+import "@/styles/rewind-sign.css";
+import "@/styles/end-cta.css";
 import "@/styles/film-landing.css";
 import "@/styles/palette-options.css";
 // the film look, the page's only look (keyed on data-look="film")
@@ -24,8 +22,12 @@ import "@/styles/section-sep.css";
 import "@/styles/landing-responsive.css";
 // big screens (wider than 1440): the whole page grows with the screen (rem-based)
 import "@/styles/big-screen.css";
-// Boost Sales' small area label in its opener and docked pill (PillarIntro)
-import { PillarAreaContext } from "@/components/landing/pillar/PillarArea";
+
+// Below the hero: Boost Sales, Support, Insights, Setup, Customize, the end card and the footer.
+// Its chunk is fetched as the hero renders, so the hero's first paint waits only for its own code.
+const loadSections = () => import("./FilmLandingSections");
+const Sections = lazy(loadSections);
+const Footer = lazy(() => loadSections().then((m) => ({ default: m.FilmFooter })));
 
 interface FilmLandingProps {
   /** The route it's served on: "/" once it's the default, "/v2" until then. */
@@ -40,8 +42,6 @@ interface FilmLandingProps {
  * classic landing at /v1 stays exactly as it was.
  */
 const FilmLanding = ({ path = "/" }: FilmLandingProps) => {
-  const messages = useMessages();
-
   // Lets the film landing's scoped CSS reach the shared navbar (outside .bzl),
   // e.g. the handwritten "Early Access" link, without touching other pages.
   useEffect(() => {
@@ -67,19 +67,6 @@ const FilmLanding = ({ path = "/" }: FilmLandingProps) => {
     };
   }, []);
 
-  useEffect(() => {
-    const cleanupScrollToSection = setupScrollToSectionOnLoad();
-    const cleanupUrlUpdater = setupScrollToUrlUpdater([
-      "hero",
-      "benefits",
-      "setup",
-    ]);
-    return () => {
-      cleanupScrollToSection();
-      cleanupUrlUpdater();
-    };
-  }, []);
-
   // the page's palette, "Bizmis Mono" (palette-options.css); Setup's and Customize's sheets (section-sep.css)
   return (
     <div
@@ -97,22 +84,13 @@ const FilmLanding = ({ path = "/" }: FilmLandingProps) => {
       {/* the page's main landmark; display: contents, so the layout doesn't see it */}
       <main className="contents">
         <Hero />
-        {/* what Bizmis is, in a sentence (visually hidden: the hero shows it in pictures) */}
-        <LandingSummary part="definition" />
-        {/* "This isn't a chatbot" (SwitchSection) is hidden: the hero covers it now */}
-        {/* Boost Sales' small area label, for the transitions (the Sales files stay as they are) */}
-        <PillarAreaContext.Provider value={messages.landing.salesArea}>
-          <SalesSection />
-        </PillarAreaContext.Provider>
-        {/* the funnel's stages in words (visually hidden: the page draws their endings) */}
-        <LandingSummary part="funnel" />
-        <SupportSection />
-        <InsightsSection />
-        <SetupSection />
-        <CustomizeSection />
-        <EndCard />
+        <Suspense fallback={null}>
+          <Sections />
+        </Suspense>
       </main>
-      <FilmFooter />
+      <Suspense fallback={null}>
+        <Footer />
+      </Suspense>
     </div>
   );
 };
