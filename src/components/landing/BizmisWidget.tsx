@@ -31,10 +31,13 @@ const Typewriter = ({ text }: { text: string }) => {
   const [n, setN] = useState(0);
   useEffect(() => {
     setN(0);
-    const t = window.setInterval(
-      () => setN((v) => (v >= text.length ? v : v + 1)),
-      24,
-    );
+    // a letter every 24 ms, and the timer stops once it's all typed (it ticked on, 40 times a second, for good)
+    let typed = 0;
+    const t = window.setInterval(() => {
+      typed = Math.min(text.length, typed + 1);
+      setN(typed);
+      if (typed >= text.length) window.clearInterval(t);
+    }, 24);
     return () => window.clearInterval(t);
   }, [text]);
   return <>{text.slice(0, n)}</>;
