@@ -24,6 +24,8 @@ import {
   BIZMIS_SHOPIFY_APP_LISTING_URL,
 } from "@/lib/bizmisUrls";
 import { DEFAULT_LOCALE, LOCALES, LOCALE_NAMES } from "@/i18n/locales";
+// (build-time: all five dictionaries registered; the app loads one at a time)
+import "@/i18n/messages/all";
 import { getMessages, type Messages } from "@/i18n/messages";
 import intro from "./llms-intro.md?raw";
 import { absoluteUrl, getPageSeo, plainText, SITE_URL } from "./site";

@@ -2,7 +2,7 @@ import { createContext, useContext, useEffect, useMemo } from "react";
 import type { ReactNode } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { DEFAULT_LOCALE, LOCALE_TAGS, type Locale } from "./locales";
-import { getMessages, type Messages } from "./messages";
+import { getMessages, hasMessages, loadMessages, type Messages } from "./messages";
 import { localizePath, splitLocaleFromPath, translateHref } from "./paths";
 
 interface LocaleContextValue {
@@ -22,6 +22,11 @@ interface LocaleProviderProps {
 }
 
 export const LocaleProvider = ({ locale, children }: LocaleProviderProps) => {
+  // Only English ships with the app: another language's dictionary is fetched
+  // first, and the page suspends meanwhile (on a switch, the router's
+  // transition keeps the current page on screen until it is here).
+  if (!hasMessages(locale)) throw loadMessages(locale);
+
   const navigate = useNavigate();
   const location = useLocation();
 

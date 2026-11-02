@@ -3,6 +3,8 @@
  * SSR loader, never bundled into the app): every public route in every
  * locale, its head tags and static text, plus sitemap.xml and robots.txt.
  */
+// all five dictionaries, registered before anything reads them (the app loads one at a time)
+import "@/i18n/messages/all";
 import { renderToStaticMarkup } from "react-dom/server";
 import { HelmetProvider } from "react-helmet-async";
 import { MemoryRouter } from "react-router-dom";

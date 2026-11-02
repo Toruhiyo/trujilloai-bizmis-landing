@@ -23,6 +23,8 @@ import {
   BIZMIS_SHOPIFY_APP_LISTING_URL,
 } from "@/lib/bizmisUrls";
 import { LOCALES, LOCALE_NAMES, LOCALE_TAGS, type Locale } from "@/i18n/locales";
+// (build-time: all five dictionaries registered; the app loads one at a time)
+import "@/i18n/messages/all";
 import { getMessages, type Messages } from "@/i18n/messages";
 import { localizePath } from "@/i18n/paths";
 import { escapeHtml as esc, HREFLANG, PAGES, pageName, plainText, type PageKey } from "./site";

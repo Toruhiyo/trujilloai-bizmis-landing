@@ -4,7 +4,8 @@ import { HERO_FILM_ENABLED } from "./lib/film";
 import AttributionTracker from "./components/AttributionTracker";
 import { LocaleRoute, LocalizedRedirect } from "./i18n/LocaleRoute";
 import { LocaleProvider } from "./i18n/LocaleProvider";
-import { DEFAULT_LOCALE } from "./i18n/locales";
+import { DEFAULT_LOCALE, isLocale } from "./i18n/locales";
+import { loadMessages } from "./i18n/messages";
 import AdFilm, { isAdFilmRequest } from "./promo/AdFilm";
 
 // Every page is its own chunk, so "/" downloads only the film landing's code
@@ -41,6 +42,12 @@ if (
   /^\/(?:(?:es|fr|it|ca)\/?)?$/.test(window.location.pathname)
 ) {
   loadFilmLanding();
+}
+
+// The URL's language (es, fr, it, ca), whose dictionary is its own chunk: fetch it now too.
+if (typeof window !== "undefined") {
+  const prefix = window.location.pathname.split("/")[1];
+  if (isLocale(prefix)) loadMessages(prefix);
 }
 
 /** What shows while a page's chunk loads: the landing's own blank canvas. */
