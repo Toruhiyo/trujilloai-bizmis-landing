@@ -57,6 +57,8 @@ jobs:
           path: |
             tests/visual/.report
             tests/visual/.results
+          # (both are dot-folders, which upload-artifact v4 leaves out unless told)
+          include-hidden-files: true
           retention-days: 14
 
       - name: Visual baselines
