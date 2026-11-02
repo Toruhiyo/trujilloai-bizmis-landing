@@ -25,11 +25,64 @@ const HTML_LANG = /<html lang="[^"]*">/;
 
 type PrerenderModule = typeof import("../../src/seo/prerender");
 
-const fill = (shell: string, lang: string, head: string, body: string) =>
+const fill = (shell: string, lang: string, head: string, body: string, preloads = "") =>
   shell
     .replace(HTML_LANG, `<html lang="${lang}">`)
     .replace(HEAD_BLOCK, () => head)
-    .replace(BODY_BLOCK, () => body);
+    .replace(BODY_BLOCK, () => body)
+    // (outside the seo:head block: fetch hints, not metadata)
+    .replace("</head>", () => (preloads ? `  ${preloads}\n  </head>` : "</head>"));
+
+/**
+ * Each prerendered page's own code, by page key (App.tsx's lazy routes). Its
+ * static HTML preloads that chunk (and the chunks and CSS it pulls in), plus a
+ * non-English route's dictionary, so they download alongside the main bundle
+ * instead of after it has run and asked for them.
+ */
+const PAGE_MODULES: Record<string, string> = {
+  pricing: "src/pages/Pricing.tsx",
+  faqs: "src/pages/FAQs.tsx",
+  earlyAccess: "src/pages/EarlyAccess.tsx",
+  contact: "src/pages/Contact.tsx",
+  privacy: "src/pages/PrivacyPolicy.tsx",
+  terms: "src/pages/Terms.tsx",
+  v1: "src/pages/IndexV1.tsx",
+};
+const homeModule = (heroFilm: boolean) => (heroFilm ? "src/pages/FilmLanding.tsx" : "src/pages/Index.tsx");
+const localeModule = (locale: string) => `src/i18n/messages/${locale}.ts`;
+
+interface ChunkInfo {
+  file: string;
+  imports: string[];
+  css: string[];
+  isEntry: boolean;
+}
+
+/** The modulepreload / style preload tags for some source modules' chunks (the entry excluded: index.html loads it). */
+const chunkPreloads = (
+  modules: string[],
+  byModule: Map<string, ChunkInfo>,
+  byFile: Map<string, ChunkInfo>,
+  base: string,
+): string => {
+  const js: string[] = [];
+  const css: string[] = [];
+  const seen = new Set<string>();
+  const visit = (chunk: ChunkInfo | undefined) => {
+    if (!chunk || chunk.isEntry || seen.has(chunk.file)) return;
+    seen.add(chunk.file);
+    js.push(chunk.file);
+    for (const c of chunk.css) if (!css.includes(c)) css.push(c);
+    for (const dep of chunk.imports) visit(byFile.get(dep));
+  };
+  for (const id of modules) visit(byModule.get(id));
+  return [
+    ...js.map((f) => `<link rel="modulepreload" crossorigin href="${base}${f}">`),
+    // (a preload, not a stylesheet: Vite adds the stylesheet itself when the chunk runs, from the
+    // cache; crossorigin, as Vite's own link is, or the preload goes unused)
+    ...css.map((f) => `<link rel="preload" as="style" crossorigin href="${base}${f}">`),
+  ].join("\n    ");
+};
 
 /** Last commit date (YYYY-MM-DD) touching any of the paths, if git can tell. */
 const lastCommitDate = (root: string, paths: string[]): string | undefined => {
@@ -78,11 +131,31 @@ export function seoPrerender(): Plugin[] {
 
 function seoBuild(): Plugin {
   let config: ResolvedConfig;
+  // the app's chunks, by each source module they hold and by file name
+  const byModule = new Map<string, ChunkInfo>();
+  const byFile = new Map<string, ChunkInfo>();
   return {
     name: "bizmis-seo-prerender",
     apply: "build",
     configResolved(resolved) {
       config = resolved;
+    },
+    generateBundle(_options, bundle) {
+      for (const chunk of Object.values(bundle)) {
+        if (chunk.type !== "chunk") continue;
+        const info: ChunkInfo = {
+          file: chunk.fileName,
+          imports: chunk.imports,
+          css: [...(chunk.viteMetadata?.importedCss ?? [])],
+          isEntry: chunk.isEntry,
+        };
+        byFile.set(chunk.fileName, info);
+        // (every module the chunk holds, not only its facade: a page's chunk may have none)
+        for (const id of chunk.moduleIds) {
+          if (id.startsWith("\0")) continue;
+          byModule.set(path.relative(config.root, id.split("?")[0]).split(path.sep).join("/"), info);
+        }
+      }
     },
     async closeBundle() {
       if (config.build.ssr) return;
@@ -114,8 +187,17 @@ function seoBuild(): Plugin {
         };
 
         const routes = await mod.renderRoutes();
+        const heroFilm = config.env.VITE_HERO_FILM !== "0";
         for (const route of routes) {
-          await write(route.file, fill(shell, route.lang, route.head, route.body));
+          const pageModule = route.page === "home" ? homeModule(heroFilm) : PAGE_MODULES[route.page];
+          const modules = [pageModule, route.locale === "en" ? "" : localeModule(route.locale)].filter(Boolean);
+          for (const id of modules) {
+            if (!byModule.has(id)) config.logger.warn(`[seo] no chunk for ${id}: ${route.url} won't preload it`);
+          }
+          const preloads = [route.preloads, chunkPreloads(modules, byModule, byFile, config.base)]
+            .filter(Boolean)
+            .join("\n    ");
+          await write(route.file, fill(shell, route.lang, route.head, route.body, preloads));
         }
 
         const notFound = mod.renderNotFound();

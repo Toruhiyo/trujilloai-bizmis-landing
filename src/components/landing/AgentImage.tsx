@@ -1,9 +1,7 @@
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 import manifest from "./agents-manifest.json";
-
-const BASE = "/landing/agents";
-const WIDTHS = [360, 720, 1080];
+import { AGENT_IMAGE_BASE as BASE, agentSrcSet } from "./agentImages";
 
 export type AgentName = keyof typeof manifest;
 
@@ -36,10 +34,7 @@ const AgentImage = ({
   const [loaded, setLoaded] = useState(false);
   // an avatar not rendered yet (missing from the manifest) gets a square placeholder instead of crashing the page
   const [w, h] = manifest[name] ?? [1, 1];
-  const set = (ext: string) =>
-    WIDTHS.map((width) => `${BASE}/${name}-${width}.${ext} ${width}w`).join(
-      ", ",
-    );
+  const set = (ext: string) => agentSrcSet(name, ext);
   return (
     <div
       className={cn("relative", className)}

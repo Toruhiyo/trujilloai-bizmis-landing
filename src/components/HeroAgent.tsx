@@ -3,6 +3,7 @@ import { AudioLines, Volume2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useMessages } from "@/i18n/LocaleProvider";
 import AgentImage from "./landing/AgentImage";
+import { HERO_AGENT_IMAGE } from "./landing/agentImages";
 import LiveAvatar from "./landing/LiveAvatar";
 import { useNearScreen } from "./landing/sales/hooks";
 import "@/styles/hero-agent.css";
@@ -225,10 +226,11 @@ const HeroAgent = ({
                 onStatus={setAvatar}
                 fallback={
                   <AgentImage
-                    name="support-yusuke"
+                    // (the build preloads this very render in the landing's static HTML)
+                    name={HERO_AGENT_IMAGE.name}
                     alt=""
                     priority
-                    sizes="(min-width: 1024px) 20vw, 50vw"
+                    sizes={HERO_AGENT_IMAGE.sizes}
                     className="absolute bottom-0 left-1/2 h-[97%] w-auto -translate-x-1/2"
                   />
                 }

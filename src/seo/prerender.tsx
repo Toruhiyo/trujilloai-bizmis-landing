@@ -23,8 +23,15 @@ import {
   type PageKey,
 } from "./site";
 import { buildStaticBody } from "./staticContent";
+import { agentSrcSet, HERO_AGENT_IMAGE } from "@/components/landing/agentImages";
 
 export interface PrerenderedRoute {
+  /** Which page it is (the build preloads that page's code, scripts/seo/prerender-plugin.ts). */
+  page: PageKey;
+  /** The route's language, whose dictionary the build preloads (not "en": it ships with the app). */
+  locale: Locale;
+  /** Head tags fetching what the page's first paint shows, ahead of the app (e.g. the hero's render). */
+  preloads: string;
   /** URL path, e.g. "/es/pricing". */
   url: string;
   /** Output file relative to the build's outDir. */
@@ -112,6 +119,18 @@ const renderLegal = async (page: "privacy" | "terms"): Promise<string | undefine
   }
 };
 
+/**
+ * What a page's first paint shows that the browser would otherwise find only
+ * once the app has rendered: on the landing, the hero agent's render (its
+ * largest paint on phones), in the same format, widths and sizes it asks for.
+ */
+const firstPaintPreloads = (page: PageKey): string => {
+  // (with VITE_HERO_FILM=0, "/" is the classic landing, which has no such hero)
+  if (page !== "home" || import.meta.env.VITE_HERO_FILM === "0") return "";
+  const { name, sizes } = HERO_AGENT_IMAGE;
+  return `<link rel="preload" as="image" type="image/avif" imagesrcset="${agentSrcSet(name, "avif")}" imagesizes="${sizes}" fetchpriority="high" />`;
+};
+
 export const renderRoutes = async (): Promise<PrerenderedRoute[]> => {
   const legal = {
     privacy: await renderLegal("privacy"),
@@ -122,6 +141,9 @@ export const renderRoutes = async (): Promise<PrerenderedRoute[]> => {
     for (const locale of pageLocales(page)) {
       const url = localizePath(PAGES[page].path, locale);
       routes.push({
+        page,
+        locale,
+        preloads: firstPaintPreloads(page),
         url,
         file: fileFor(url),
         lang: LOCALE_TAGS[locale],
@@ -138,7 +160,7 @@ export const renderRoutes = async (): Promise<PrerenderedRoute[]> => {
 };
 
 /** The 404 page (Vercel serves 404.html, with a 404 status, for unknown paths). */
-export const renderNotFound = (): Omit<PrerenderedRoute, "url"> => ({
+export const renderNotFound = (): Pick<PrerenderedRoute, "file" | "lang" | "head" | "body"> => ({
   file: "404.html",
   lang: LOCALE_TAGS[DEFAULT_LOCALE],
   head: headTagsToHtml(buildHeadTags(getPageSeo("notFound", DEFAULT_LOCALE))),
