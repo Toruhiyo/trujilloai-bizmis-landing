@@ -476,8 +476,11 @@ const Avatar = ({
     if (!compiling.current && band && stampDone.current) {
       compiling.current = true;
       const done = () => setCompiled(true);
-      if (typeof gl.compileAsync === "function") gl.compileAsync(scene, camera, root).then(done, done);
-      else done();
+      if (typeof gl.compileAsync === "function") {
+        gl.compileAsync(scene, camera, root).then(done, done);
+        // (never stuck on the still render: drawn anyway if the compile hasn't reported in 3 s)
+        window.setTimeout(done, 3000);
+      } else done();
     }
     if (!readySent.current && compiled && band && stampDone.current) {
       frames.current += 1;
