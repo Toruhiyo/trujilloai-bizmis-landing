@@ -55,6 +55,28 @@ const FilmLandingSections = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  // The page's CSS loops (the hero's play ring and spinner, the pillars' icons, the widget's pulses, the
+  // end card's running light...) hold still while their section is well off screen (bzl-off, film-landing.css):
+  // a running animation costs a style pass every frame wherever it is, and a dozen of them kept the page
+  // restyling at 60 fps even at rest. Half a screen of margin, so one is always running before it shows.
+  useEffect(() => {
+    if (typeof IntersectionObserver === "undefined") return;
+    const sections = [...document.querySelectorAll<HTMLElement>(".bzl section")].filter(
+      (el) => !el.parentElement?.closest("section"),
+    );
+    const io = new IntersectionObserver(
+      (entries) => {
+        for (const e of entries) e.target.classList.toggle("bzl-off", !e.isIntersecting);
+      },
+      { rootMargin: "50% 0px" },
+    );
+    sections.forEach((el) => io.observe(el));
+    return () => {
+      io.disconnect();
+      sections.forEach((el) => el.classList.remove("bzl-off"));
+    };
+  }, []);
+
   return (
     <>
       {/* what Bizmis is, in a sentence (visually hidden: the hero shows it in pictures) */}

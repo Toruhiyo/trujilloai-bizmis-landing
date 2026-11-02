@@ -1124,6 +1124,16 @@
   -webkit-mask-image: none;
   mask-image: none;
 }
+/* its loops (the grain's steps, the tracking bands) run only while it shows: hidden, they would still cost
+   every screen on the page a style pass each frame */
+.rws .rwa-fx::before,
+.rws .rwa-fx::after {
+  animation-play-state: paused;
+}
+.rws-in.is-rw .rwa-fx::before,
+.rws-in.is-rw .rwa-fx::after {
+  animation-play-state: running;
+}
 .rws-in.is-rw .rwa-fx {
   visibility: visible;
   /* (gentle on a device: the mockup stays readable through it) */

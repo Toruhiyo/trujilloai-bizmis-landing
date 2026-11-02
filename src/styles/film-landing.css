@@ -1523,3 +1523,12 @@
 }
 .p-insights .bzp-stage:has(.bzi-grid.is-pinned) { container-type: size; }
 
+
+/* A section well off screen (FilmLandingSections toggles bzl-off): its CSS loops hold still, so they cost
+   no style pass every frame while nobody can see them; they carry on as it comes back near the screen */
+.bzl-off,
+.bzl-off *,
+.bzl-off *::before,
+.bzl-off *::after {
+  animation-play-state: paused !important;
+}
