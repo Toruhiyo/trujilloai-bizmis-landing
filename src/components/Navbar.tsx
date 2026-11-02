@@ -30,43 +30,28 @@ const Navbar = () => {
 
   useEffect(() => {
     setIsMenuOpen(false);
-    setIsInHero(Boolean(document.getElementById("hero")));
-
-    let rafId = 0;
-
-    const updateHeroNav = () => {
-      cancelAnimationFrame(rafId);
-      rafId = requestAnimationFrame(() => {
-        const hero = document.getElementById("hero");
-        if (!hero) {
-          setIsInHero(false);
-          return;
-        }
-
-        setHeroNavTheme(hero.dataset.navTheme === "light" ? "light" : "dark");
-        setIsInHero(
-          hero.getBoundingClientRect().bottom > HERO_SCROLL_OFFSET_PX
-        );
-      });
-    };
-
-    updateHeroNav();
-
     const hero = document.getElementById("hero");
-    const resizeObserver =
-      hero && typeof ResizeObserver !== "undefined"
-        ? new ResizeObserver(updateHeroNav)
-        : null;
-    resizeObserver?.observe(hero as Element);
+    setIsInHero(Boolean(hero));
+    if (!hero) return;
 
-    window.addEventListener("scroll", updateHeroNav, { passive: true });
-    window.addEventListener("resize", updateHeroNav);
-    return () => {
-      cancelAnimationFrame(rafId);
-      resizeObserver?.disconnect();
-      window.removeEventListener("scroll", updateHeroNav);
-      window.removeEventListener("resize", updateHeroNav);
+    // In the hero while its bottom is more than HERO_SCROLL_OFFSET_PX below
+    // the viewport's top: an IntersectionObserver with that much cut off the
+    // top says so off the main thread (measuring the hero on every scroll
+    // made the browser bring the page's layout up to date mid-frame).
+    const update = (inHero: boolean) => {
+      setHeroNavTheme(hero.dataset.navTheme === "light" ? "light" : "dark");
+      setIsInHero(inHero);
     };
+    if (typeof IntersectionObserver === "undefined") {
+      update(hero.getBoundingClientRect().bottom > HERO_SCROLL_OFFSET_PX);
+      return;
+    }
+    const io = new IntersectionObserver(
+      (entries) => update(entries[entries.length - 1].isIntersecting),
+      { rootMargin: `-${HERO_SCROLL_OFFSET_PX}px 0px 0px 0px` }
+    );
+    io.observe(hero);
+    return () => io.disconnect();
   }, [location.pathname]);
 
   const navItems = [

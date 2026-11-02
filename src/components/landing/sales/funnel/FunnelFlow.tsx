@@ -555,6 +555,8 @@ const FunnelFlow = ({
   const canvas = useRef<HTMLCanvasElement>(null);
   const pal = useRef<{ key: string; c: Palette } | null>(null);
   const drawn = useRef(false);
+  // the "visits" word's width on the canvas, for the font and size it was measured in
+  const visitsW = useRef({ key: "", w: 0 });
   // the lit chamber's wash fades in as it changes (and the one before fades out)
   const litFade = useRef({ i: -1, at: 0, prev: -1 });
   const [size, setSize] = useState({ W: 0, H: 0 });
@@ -1010,7 +1012,11 @@ const FunnelFlow = ({
       ctx.fillStyle = ink(1);
       // Caveat sits a touch high on its middle line
       ctx.fillText(copy.visits, 2, cy + fs * 0.06);
-      const tw = ctx.measureText(copy.visits).width;
+      // (measured once per size and font: measureText on the page's canvas makes the browser bring the
+      // whole page's style up to date first, mid-frame, every frame)
+      const mk = `${fs}|${copy.visits}|${fonts}`;
+      if (visitsW.current.key !== mk) visitsW.current = { key: mk, w: ctx.measureText(copy.visits).width };
+      const tw = visitsW.current.w;
       ctx.strokeStyle = ink(0.95);
       ctx.lineWidth = Math.max(2.2, lw * 0.62);
       const sx = 2 + tw + fs * 0.35;
