@@ -13,7 +13,7 @@ import {
   Users,
 } from "lucide-react";
 // the Shopify bag only on the Install button, as the nav's and the end card's Install
-import { FaShopify } from "react-icons/fa";
+import { FaShopify } from "@/components/icons/ShopifyIcon";
 import { cn } from "@/lib/utils";
 import { useMessages } from "@/i18n/LocaleProvider";
 import Reveal from "./Reveal";

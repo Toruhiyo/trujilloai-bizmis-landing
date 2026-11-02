@@ -1,7 +1,7 @@
 import type { MouseEvent } from "react";
 import { usePostHog } from "posthog-js/react";
 import { CalendarDays } from "lucide-react";
-import { FaShopify } from "react-icons/fa";
+import { FaShopify } from "@/components/icons/ShopifyIcon";
 import { useMessages } from "@/i18n/LocaleProvider";
 import {
   BIZMIS_BOOK_A_CALL_GENERAL_URL,

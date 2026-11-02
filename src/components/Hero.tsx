@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import type { MouseEvent } from "react";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Play, PlayCircle, X } from "lucide-react";
-import { FaShopify } from "react-icons/fa";
+import { FaShopify } from "@/components/icons/ShopifyIcon";
 import { usePostHog } from "posthog-js/react";
 import {
   BIZMIS_BOOK_A_CALL_GENERAL_URL,

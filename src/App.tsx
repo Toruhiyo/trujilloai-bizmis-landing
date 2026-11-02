@@ -1,8 +1,4 @@
-import { lazy, Suspense } from "react";
-import { Toaster } from "@/components/ui/toaster";
-import { Toaster as Sonner } from "@/components/ui/sonner";
-import { TooltipProvider } from "@/components/ui/tooltip";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { lazy, Suspense, useEffect, useState } from "react";
 import { BrowserRouter, Routes, Route, Navigate, Outlet } from "react-router-dom";
 import { HERO_FILM_ENABLED } from "./lib/film";
 import AttributionTracker from "./components/AttributionTracker";
@@ -50,7 +46,36 @@ if (
 /** What shows while a page's chunk loads: the landing's own blank canvas. */
 const pageFallback = <div className="min-h-screen studio-lighting-base" />;
 
-const queryClient = new QueryClient();
+// The two toast hosts (only the admin pages raise toasts) mount once the page is up, so
+// their code (Radix toast, sonner) stays out of the main bundle and the first paint.
+const Toaster = lazy(() => import("@/components/ui/toaster").then((m) => ({ default: m.Toaster })));
+const Sonner = lazy(() => import("@/components/ui/sonner").then((m) => ({ default: m.Toaster })));
+
+const DeferredToasters = () => {
+  const [ready, setReady] = useState(false);
+  useEffect(() => {
+    let idle = 0;
+    const go = () => {
+      idle = window.requestIdleCallback
+        ? window.requestIdleCallback(() => setReady(true), { timeout: 3000 })
+        : window.setTimeout(() => setReady(true), 1500);
+    };
+    if (document.readyState === "complete") go();
+    else window.addEventListener("load", go, { once: true });
+    return () => {
+      window.removeEventListener("load", go);
+      if (window.cancelIdleCallback) window.cancelIdleCallback(idle);
+      else window.clearTimeout(idle);
+    };
+  }, []);
+  if (!ready) return null;
+  return (
+    <Suspense fallback={null}>
+      <Toaster />
+      <Sonner />
+    </Suspense>
+  );
+};
 
 /**
  * Public, localizable routes. Rendered twice: unprefixed (English, the
@@ -79,10 +104,8 @@ const publicLocalizedRoutes = () => [
 const App = () => {
   if (isAdFilmRequest()) return <AdFilm />;
   return (
-  <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <Toaster />
-      <Sonner />
+  <>
+      <DeferredToasters />
       {/* (transitions keep the current page on screen while the next page's chunk loads) */}
       <BrowserRouter future={{ v7_startTransition: true }}>
         <AttributionTracker />
@@ -131,8 +154,7 @@ const App = () => {
         </Routes>
         </Suspense>
       </BrowserRouter>
-    </TooltipProvider>
-  </QueryClientProvider>
+  </>
   );
 };
 

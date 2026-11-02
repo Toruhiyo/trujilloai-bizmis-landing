@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Menu, PlayCircle, X } from "lucide-react";
-import { FaShopify } from "react-icons/fa";
+import { FaShopify } from "@/components/icons/ShopifyIcon";
 import type { MouseEvent } from "react";
 import { useState, useEffect } from "react";
 import { usePostHog } from "posthog-js/react";
