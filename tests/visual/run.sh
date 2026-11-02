@@ -29,7 +29,7 @@ exec docker run --rm --init --ipc=host \
   -v "$ROOT":/src:ro \
   -v "$ROOT/tests/visual":/src-visual \
   -v "$VOLUME":/work/node_modules \
-  -e VR_IN_DOCKER=1 -e VR_STRICT \
+  -e VR_IN_DOCKER=1 -e VR_STRICT -e VR_THRESHOLD \
   -w /work \
   "$IMAGE" \
   bash -c '

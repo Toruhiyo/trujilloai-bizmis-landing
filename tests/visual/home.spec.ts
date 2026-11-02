@@ -113,13 +113,14 @@ const STATES: State[] = [
 ];
 
 /**
- * The scroll-driven scenes' shots: under heavy load a scene's clock can land a frame apart from the
- * baseline's (Setup measures its wires after a CSS transition, which runs in real time), which moves
- * up to ~400 pixels of a drawing. 1000 visibly changed pixels (a 32x32 patch) still fail them: a cut
- * glow, a mockup spilling out or a missing piece is far more. Everything else allows 250.
+ * The scroll-driven scenes' shots, compared more coarsely than the rest: under load a scene's clock
+ * can land a frame apart from the baseline's (Setup measures its wires after a CSS transition, which
+ * runs in real time), which moves up to ~400 clearly changed pixels of a drawing and thousands of
+ * faintly changed ones. So a pixel counts from a plain colour step (threshold 0.2) and 1000 of them
+ * (a 32x32 patch) fail the shot: a mockup spilling out, a cut-off piece or a missing one is far more.
  */
 const ANIMATED = /sales-(match|clear|win|payoff)|support-(mid|end)|insights-(mid|end)|setup-(mid|end)/;
-const ANIMATED_MAX_DIFF = 1000;
+const ANIMATED_COMPARE = { maxDiffPixels: 1000, threshold: 0.2 };
 
 /** The other languages' home pages: the states whose copy differs most, on a desktop and a phone. */
 const LOCALE_STATES = new Set(["01-hero", "03-sales-match-needs", "06-sales-payoff", "09-support-end", "12-insights-end", "14-setup-end", "15-customize", "16-end-card"]);
@@ -172,7 +173,7 @@ for (const [prefix, label] of [["", "en"], ["/es", "es"], ["/fr", "fr"]] as cons
       await scrollToY(page, place.y);
       await expectNoHorizontalOverflow(page, state.name);
       if (place.pin) await expectPinFits(page, place.pin, state.name);
-      await shot(page, `${label}-${state.name}.png`, ANIMATED.test(state.name) ? { maxDiffPixels: ANIMATED_MAX_DIFF } : {});
+      await shot(page, `${label}-${state.name}.png`, ANIMATED.test(state.name) ? { compare: ANIMATED_COMPARE } : {});
     }
   });
 }

@@ -303,9 +303,14 @@ export const expectPrerenderMatches = async (page: Page, path: string) => {
  * a capture with animations disabled finishes the page's CSS transitions, which the page reacts to,
  * so the number of captures has to be the same in every run for the next state to be the same.
  */
-export const shot = async (page: Page, name: string, options: { fullPage?: boolean; maxDiffPixels?: number } = {}) => {
+export const shot = async (
+  page: Page,
+  name: string,
+  options: { fullPage?: boolean; compare?: { maxDiffPixels: number; threshold: number } } = {},
+) => {
   const image = await page.screenshot({ animations: "disabled", caret: "hide", scale: "css", fullPage: options.fullPage });
-  const strict = Boolean(process.env.VR_STRICT);
-  expect.soft(image).toMatchSnapshot(name, options.maxDiffPixels && !strict ? { maxDiffPixels: options.maxDiffPixels } : {});
+  // (VR_STRICT / VR_THRESHOLD, measuring the noise, apply to every shot alike)
+  const measuring = Boolean(process.env.VR_STRICT || process.env.VR_THRESHOLD);
+  expect.soft(image).toMatchSnapshot(name, options.compare && !measuring ? options.compare : {});
   await settle(page, 1);
 };

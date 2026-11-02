@@ -52,11 +52,13 @@ export default defineConfig({
     timeout: 15_000,
     // the screenshots (support.ts `shot`: one capture each, compared as an image snapshot)
     toMatchSnapshot: {
-      // The pages are frozen (support.ts): a run reproduces a static page's baseline to the pixel,
-      // so 250 visibly changed pixels (a 16x16 patch) fail a shot. The landing's scroll-driven
-      // scenes allow more (home.spec.ts `ANIMATED`). VR_STRICT=1 allows none (to measure the noise).
+      // The pages are frozen (support.ts): a run reproduces a static shot to the pixel, so it is
+      // compared finely: a pixel counts as changed from a small colour step (threshold 0.02, enough
+      // to see a faint glow cut off), and 250 changed pixels (a 16x16 patch) fail it. The landing's
+      // scroll-driven scenes are compared more coarsely (home.spec.ts `ANIMATED`). VR_STRICT=1
+      // allows no changed pixel, VR_THRESHOLD sets the colour step (both to measure the noise).
       maxDiffPixels: process.env.VR_STRICT ? 0 : 250,
-      threshold: 0.2,
+      threshold: Number(process.env.VR_THRESHOLD ?? 0.02),
     },
   },
   use: {
