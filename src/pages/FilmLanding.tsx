@@ -1,4 +1,4 @@
-import { lazy, Suspense, useEffect } from "react";
+import { lazy, Suspense, useEffect, useState } from "react";
 import Hero from "@/components/Hero";
 import Seo from "@/components/Seo";
 // The sections' own styles (their components import them too), in the order the page always had
@@ -24,7 +24,8 @@ import "@/styles/landing-responsive.css";
 import "@/styles/big-screen.css";
 
 // Below the hero: Boost Sales, Support, Insights, Setup, Customize, the end card and the footer.
-// Its chunk is fetched as the hero renders, so the hero's first paint waits only for its own code.
+// They mount once the hero has painted (their chunk, then their images, come after it), so the
+// hero's first paint waits only for its own code and has the connection to itself.
 const loadSections = () => import("./FilmLandingSections");
 const Sections = lazy(loadSections);
 const Footer = lazy(() => loadSections().then((m) => ({ default: m.FilmFooter })));
@@ -42,6 +43,19 @@ interface FilmLandingProps {
  * classic landing at /v1 stays exactly as it was.
  */
 const FilmLanding = ({ path = "/" }: FilmLandingProps) => {
+  // the sections, from the frame after the hero's first paint (a timer too: no frames in a background tab)
+  const [below, setBelow] = useState(false);
+  useEffect(() => {
+    let frame = requestAnimationFrame(() => {
+      frame = requestAnimationFrame(() => setBelow(true));
+    });
+    const timer = window.setTimeout(() => setBelow(true), 1000);
+    return () => {
+      cancelAnimationFrame(frame);
+      window.clearTimeout(timer);
+    };
+  }, []);
+
   // Lets the film landing's scoped CSS reach the shared navbar (outside .bzl),
   // e.g. the handwritten "Early Access" link, without touching other pages.
   useEffect(() => {
@@ -84,13 +98,17 @@ const FilmLanding = ({ path = "/" }: FilmLandingProps) => {
       {/* the page's main landmark; display: contents, so the layout doesn't see it */}
       <main className="contents">
         <Hero />
-        <Suspense fallback={null}>
-          <Sections />
-        </Suspense>
+        {below && (
+          <Suspense fallback={null}>
+            <Sections />
+          </Suspense>
+        )}
       </main>
-      <Suspense fallback={null}>
-        <Footer />
-      </Suspense>
+      {below && (
+        <Suspense fallback={null}>
+          <Footer />
+        </Suspense>
+      )}
     </div>
   );
 };
