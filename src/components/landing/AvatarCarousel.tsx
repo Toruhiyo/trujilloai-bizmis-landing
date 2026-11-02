@@ -279,6 +279,12 @@ const AvatarCarousel = ({
     const span = (last.t - first.t) / 1000;
     const vel = span > 0.008 ? (last.x - first.x) / span : 0;
     v.current = vel;
+    // the browser took the touch for a scroll of the page (touch-pan-y): no tap, no throw, the ring
+    // goes on where it was going (the cancel's point can sit on whichever avatar the page carried there)
+    if (e.type === "pointercancel") {
+      goTo(Math.round(drag.current.moved < 6 ? target.current : x.current), true);
+      return;
+    }
     // a tap (no real drag) on a neighbour brings it to the centre
     if (drag.current.moved < 6) {
       const el = document.elementFromPoint(e.clientX, e.clientY);
