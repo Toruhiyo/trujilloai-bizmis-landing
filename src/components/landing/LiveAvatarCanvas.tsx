@@ -212,6 +212,13 @@ const Avatar = ({
   const { actions, mixer, names } = useAnimations(clips, group);
   const camera = useThree((s) => s.camera) as THREE.PerspectiveCamera;
   const size = useThree((s) => s.size);
+  const gl = useThree((s) => s.gl);
+  const root = useThree((s) => s.scene);
+  // Its shaders, compiled before it's first drawn (compileAsync: off the page's thread where the browser
+  // can). Drawn straight away, the first frame waited on the compile, a 100+ ms stall mid-scroll each
+  // time an avatar came on; it stays hidden (the still render shows) until they're in.
+  const [compiled, setCompiled] = useState(false);
+  const compiling = useRef(false);
 
   const idleName = findClip(names, "idle_neutral", /idle/i);
   const talkName = findClip(names, "exaggerated_talking", /talk/i);
@@ -465,7 +472,14 @@ const Avatar = ({
       }
     }
 
-    if (!readySent.current && band && stampDone.current) {
+    // (once framed and stamped: the stamp's map changes the shirt's shader)
+    if (!compiling.current && band && stampDone.current) {
+      compiling.current = true;
+      const done = () => setCompiled(true);
+      if (typeof gl.compileAsync === "function") gl.compileAsync(scene, camera, root).then(done, done);
+      else done();
+    }
+    if (!readySent.current && compiled && band && stampDone.current) {
       frames.current += 1;
       // useFrame runs before the render: on the 2nd tick one framed, posed,
       // stamped frame is already on screen.
@@ -477,7 +491,7 @@ const Avatar = ({
   });
 
   return (
-    <group ref={group}>
+    <group ref={group} visible={compiled}>
       <primitive object={scene} position={[0, AVATAR_Y_POSITION, 0]} scale={AVATAR_SCALE} dispose={null} />
     </group>
   );
