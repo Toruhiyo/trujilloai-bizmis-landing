@@ -1,0 +1,7 @@
+# gitleaks config: default rules plus the false positives this repo is known to have.
+[extend]
+useDefault = true
+
+[[allowlists]]
+description = "Test fixtures: fake keys built for the tests"
+paths = ['''^tests/''']
