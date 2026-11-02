@@ -290,46 +290,6 @@
 
 /* ---------- Pain: the tilted sea of lost store cards ---------- */
 
-.bzl-sea {
-  position: relative;
-  height: clamp(320px, 46vw, 560px);
-  perspective: 1400px;
-  overflow: hidden;
-  -webkit-mask-image: radial-gradient(ellipse 70% 75% at 50% 45%, #000 45%, transparent 100%);
-  mask-image: radial-gradient(ellipse 70% 75% at 50% 45%, #000 45%, transparent 100%);
-}
-
-.bzl-sea-plane {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  width: 1500px;
-  display: grid;
-  grid-template-columns: repeat(6, 1fr);
-  gap: 22px;
-  transform: translate(-50%, -50%) rotateX(52deg) rotateZ(-24deg);
-  transform-style: preserve-3d;
-  animation: bzl-sea-drift 40s linear infinite alternate;
-}
-
-@keyframes bzl-sea-drift {
-  from {
-    transform: translate(-50%, -50%) rotateX(52deg) rotateZ(-24deg) translateY(-30px);
-  }
-  to {
-    transform: translate(-50%, -50%) rotateX(52deg) rotateZ(-24deg) translateY(30px);
-  }
-}
-
-.bzl-sea-card {
-  position: relative;
-  border-radius: 12px;
-  background: #fff;
-  border: 1px solid var(--bzl-border);
-  padding: 10px;
-  filter: grayscale(1);
-}
-
 .bzl-lost {
   position: absolute;
   inset: 0;
@@ -506,8 +466,7 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .bzl-marquee,
-  .bzl-sea-plane {
+  .bzl-marquee {
     animation: none;
   }
 }
@@ -583,7 +542,6 @@
     transform: none;
   }
 }
-
 
 /* ---------- The real Bizmis widget (mockups) ----------
    Values from trujilloai-bizmis-widget: DesktopLiteChat card, glass tokens,
@@ -820,7 +778,6 @@
   .bzl-read-chip { animation-duration: 0.01ms; opacity: 0; }
 }
 
-
 /* ── One screen per section (tablet and up, and tall enough to make sense) ──
    .bzl-screen: the section fills the viewport under the fixed nav and centres
    its content. .bzl-stack: a section of sub-benefits — its head (.bzl-head)
@@ -869,7 +826,6 @@
     padding-block: clamp(0.75rem, 2.5svh, 2rem);
   }
 }
-
 
 /* ── Setup's and Customize's own headers (SectionHead), set as the pillars'
    openers: the docked header's pill eyebrow (pillar-docks.css .odz-d, mirrored
@@ -1104,7 +1060,6 @@
   60% { translate: -2% -1%; } 80% { translate: 3% 2%; } 100% { translate: 0 0; }
 }
 
-
 /* ── The icon tile: soft white glass with a warm inner glow ── */
 .bzl-icon-tile {
   background: linear-gradient(160deg, rgb(255 255 255 / 0.95), rgb(255 255 255 / 0.7));
@@ -1117,54 +1072,6 @@
 /* ── Animated icons (SF-Symbols-like: draw, bounce, pulse, wiggle, variable colour) ── */
 .bzl-ai * { transform-box: fill-box; }
 .bzl-ai { --cycle: 4.2s; }
-/* find */
-.bzl-ai-find .lens { transform-origin: 40% 40%; animation: ai-search var(--cycle) ease-in-out infinite; }
-.bzl-ai-find .tick { stroke-dasharray: 1; stroke-dashoffset: 1; animation: ai-draw var(--cycle) ease-out infinite; }
-@keyframes ai-search { 0%, 40%, 100% { translate: 0 0; } 10% { translate: -1.5px -1px; } 20% { translate: 1.5px 0.5px; } 30% { translate: -0.5px 1px; } }
-@keyframes ai-draw { 0%, 36% { stroke-dashoffset: 1; } 52%, 92% { stroke-dashoffset: 0; } 100% { stroke-dashoffset: 1; } }
-/* cart */
-.bzl-ai-cart .item { animation: ai-drop var(--cycle) cubic-bezier(.5, 0, .9, .5) infinite; }
-.bzl-ai-cart .cart { transform-origin: 50% 100%; animation: ai-squash var(--cycle) ease-out infinite; }
-.bzl-ai-cart .badge { transform-origin: center; animation: ai-pop var(--cycle) cubic-bezier(.3, 1.6, .5, 1) infinite; }
-@keyframes ai-drop { 0% { translate: 0 -6px; opacity: 0; } 8% { opacity: 1; } 22% { translate: 0 5px; opacity: 1; } 26%, 100% { translate: 0 5px; opacity: 0; } }
-@keyframes ai-squash { 0%, 21%, 40%, 100% { scale: 1 1; } 26% { scale: 1.06 0.9; } 32% { scale: 0.98 1.04; } }
-@keyframes ai-pop { 0%, 28% { scale: 0; } 36% { scale: 1.2; } 42%, 90% { scale: 1; } 100% { scale: 0; } }
-/* loyalty */
-.bzl-ai-loyalty .heart { transform-origin: center; animation: ai-beat var(--cycle) ease-in-out infinite; }
-.bzl-ai-loyalty .ring { stroke-dasharray: 1; animation: ai-ring var(--cycle) ease-in-out infinite; }
-.bzl-ai-loyalty .ring-head { animation: ai-fade-in var(--cycle) ease-in-out infinite; }
-@keyframes ai-beat { 0%, 30%, 100% { scale: 1; } 8% { scale: 1.22; } 15% { scale: 1; } 22% { scale: 1.14; } }
-@keyframes ai-ring { 0%, 30% { stroke-dashoffset: 1; } 55%, 92% { stroke-dashoffset: 0; } 100% { stroke-dashoffset: 1; } }
-@keyframes ai-fade-in { 0%, 50% { opacity: 0; } 56%, 92% { opacity: 1; } 100% { opacity: 0; } }
-/* clock */
-.bzl-ai-clock .minute { transform-origin: 0% 50%; animation: ai-spin-min var(--cycle) cubic-bezier(.6, 0, .2, 1) infinite; }
-.bzl-ai-clock .hour { transform-origin: 50% 100%; animation: ai-spin-hour var(--cycle) cubic-bezier(.6, 0, .2, 1) infinite; }
-@keyframes ai-spin-min { 0% { rotate: 0deg; } 40%, 100% { rotate: 720deg; } }
-@keyframes ai-spin-hour { 0% { rotate: 0deg; } 40%, 100% { rotate: 60deg; } }
-/* book */
-.bzl-ai-book .page { transform-origin: 0% 50%; animation: ai-page var(--cycle) ease-in-out infinite; }
-@keyframes ai-page { 0%, 6% { scale: 1 1; } 22% { scale: -1 1; } 26%, 100% { scale: -1 1; opacity: 0; } }
-/* care */
-.bzl-ai-care .heart { transform-origin: center; animation: ai-pop-beat var(--cycle) ease-out infinite; }
-@keyframes ai-pop-beat { 0%, 6% { scale: 0; } 16% { scale: 1.25; } 22% { scale: 1; } 30% { scale: 1.15; } 36%, 92% { scale: 1; } 100% { scale: 0; } }
-/* replay */
-.bzl-ai-replay .play { transform-origin: center; animation: ai-play var(--cycle) ease-in-out infinite; }
-.bzl-ai-replay .wave path { transform-origin: 50% 50%; animation: ai-bars var(--cycle) ease-in-out infinite; }
-.bzl-ai-replay .wave path:nth-child(2) { animation-delay: .08s; } .bzl-ai-replay .wave path:nth-child(3) { animation-delay: .16s; }
-.bzl-ai-replay .wave path:nth-child(4) { animation-delay: .24s; } .bzl-ai-replay .wave path:nth-child(5) { animation-delay: .32s; }
-@keyframes ai-play { 0%, 12% { scale: 1; opacity: 1; } 20%, 88% { scale: 0.4; opacity: 0; } 100% { scale: 1; opacity: 1; } }
-@keyframes ai-bars { 0%, 14% { opacity: 0; scale: 1 0.2; } 22% { opacity: 1; scale: 1 1; } 32% { scale: 1 0.45; } 42% { scale: 1 1.1; } 52% { scale: 1 0.6; } 62%, 84% { opacity: 1; scale: 1 1; } 92%, 100% { opacity: 0; scale: 1 0.2; } }
-/* tag */
-.bzl-ai-tag .tag { transform-origin: 25% 25%; animation: ai-swing var(--cycle) ease-in-out infinite; }
-.bzl-ai-tag .label { stroke-dasharray: 5; stroke-dashoffset: 5; animation: ai-label var(--cycle) ease-out infinite; }
-.bzl-ai-tag .l2 { animation-delay: .15s; }
-@keyframes ai-swing { 0%, 34%, 100% { rotate: 0deg; } 8% { rotate: -14deg; } 16% { rotate: 9deg; } 24% { rotate: -4deg; } }
-@keyframes ai-label { 0%, 30% { stroke-dashoffset: 5; } 44%, 90% { stroke-dashoffset: 0; } 100% { stroke-dashoffset: 5; } }
-/* chart */
-.bzl-ai-chart .bar { transform-origin: 50% 100%; animation: ai-grow var(--cycle) cubic-bezier(.3, 1.4, .5, 1) infinite; }
-.bzl-ai-chart .b2 { animation-delay: .12s; } .bzl-ai-chart .b3 { animation-delay: .24s; }
-.bzl-ai-chart .trend { stroke-dasharray: 1; stroke-dashoffset: 1; animation: ai-draw var(--cycle) ease-out infinite; }
-@keyframes ai-grow { 0%, 4% { scale: 1 0.1; } 22%, 92% { scale: 1 1; } 100% { scale: 1 0.1; } }
 /* avatar */
 .bzl-ai-avatar .spark { transform-origin: center; animation: ai-sparkle var(--cycle) ease-out infinite; }
 @keyframes ai-sparkle { 0%, 10% { scale: 0; rotate: -45deg; } 22% { scale: 1.3; rotate: 0deg; } 30%, 88% { scale: 1; } 100% { scale: 0; } }
@@ -1615,5 +1522,4 @@
   }
 }
 .p-insights .bzp-stage:has(.bzi-grid.is-pinned) { container-type: size; }
-
 

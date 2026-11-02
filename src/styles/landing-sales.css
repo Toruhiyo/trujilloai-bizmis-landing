@@ -261,36 +261,6 @@
 .sl-c.is-pinned {
   padding: 0;
 }
-.sl-c-track {
-  position: relative;
-  height: 460svh;
-}
-.sl-c-pin {
-  position: sticky;
-  top: calc(var(--sl-nav) + var(--pi-dock-h, 4rem));
-  height: calc(100svh - var(--sl-nav) - var(--pi-dock-h, 4rem));
-  overflow: hidden;
-}
-.sl-c-frame {
-  height: 100%;
-  padding-block: clamp(0.75rem, 3svh, 2rem);
-}
-.sl-c-body {
-  display: grid;
-  grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
-  align-items: center;
-  gap: clamp(2rem, 4vw, 4.5rem);
-}
-.sl-c-side {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  gap: clamp(1rem, 3svh, 1.75rem);
-  min-height: 0;
-}
-.sl-c-words {
-  display: grid;
-}
 .sl-c-copy {
   grid-area: 1 / 1;
   opacity: 0;
@@ -304,53 +274,7 @@
   transform: none;
   transition-delay: 0.15s;
 }
-/* the side funnel steps aside for the payoff, whose funnel is the big one */
-.sl-c-funnel-slot {
-  transition:
-    opacity 0.35s var(--bzl-ease),
-    transform 0.6s var(--bzl-ease);
-}
-.sl-c-body.is-payoff .sl-c-funnel-slot {
-  opacity: 0;
-  transform: translateY(16px);
-  pointer-events: none;
-}
-.sl-c-shows {
-  position: relative;
-  display: grid;
-  height: 100%;
-  min-height: 0;
-}
-/* the device swap: the old one lifts away fast, the new one rises in after it */
-.sl-c-show {
-  position: relative;
-  grid-area: 1 / 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 0;
-  opacity: 0;
-  transform: translateY(56px) scale(0.95);
-  transition:
-    opacity 0.3s var(--bzl-ease),
-    transform 0.6s var(--bzl-ease);
-  pointer-events: none;
-}
-.sl-c-show.is-past {
-  transform: translateY(-40px) scale(0.97);
-}
-.sl-c-show.is-on {
-  opacity: 1;
-  transform: none;
-  pointer-events: auto;
-  transition:
-    opacity 0.5s var(--bzl-ease) 0.18s,
-    transform 0.85s var(--bzl-ease) 0.12s;
-}
-.sl-c-show.is-payoff .sl-pay {
-  width: 100%;
-  max-width: 46rem;
-}
+
 .sl-c .sl-dev-find {
   max-width: min(900px, calc((100svh - 13rem) * 1.6));
 }
@@ -371,17 +295,7 @@
 .sl-c.is-stacked {
   padding-bottom: clamp(3rem, 8vw, 5rem);
 }
-.sl-c-list {
-  display: flex;
-  flex-direction: column;
-  gap: 4.5rem;
-  padding-top: 1rem;
-}
-.sl-c-item {
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-}
+
 .sl-c.is-stacked .sl-fn {
   --fn-h: 200px;
   width: 100%;
@@ -735,8 +649,6 @@
   .sl-title-mark,
   .sl-a-sub,
   .sl-c-copy,
-  .sl-c-show,
-  .sl-c-funnel-slot,
   .sl-buy-perk,
   .sl-flow-label {
     transition: none !important;
@@ -859,8 +771,6 @@
 .sl .bzw-card .bzw-glow {
   background: radial-gradient(circle, hsl(var(--primary) / 0.36) 0%, transparent 70%);
 }
-
-
 
 /* ═════════ The funnel as the spine (SalesSpine) ═════════
    The stage's band, opener and docked bar (.sl-c via SalesShell); the
