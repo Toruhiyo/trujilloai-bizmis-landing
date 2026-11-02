@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { memo, useCallback, useEffect, useRef, useState } from "react";
 import type { MouseEvent as ReactMouseEvent } from "react";
 import {
   Clock,
@@ -540,4 +540,5 @@ const SessionReplay = ({ fill = false }: { fill?: boolean }) => {
   );
 };
 
-export default SessionReplay;
+// (memoised: it sits beside Store Insights' drawing, whose clock re-renders the section every frame it plays)
+export default memo(SessionReplay);
