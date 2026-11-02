@@ -153,11 +153,14 @@ export const useActivePanel = (line = 0.45) => {
 /**
  * For a pinned section (a tall track with a sticky stage as its first
  * child): how far the stage has been scrolled through, 0 → 1. Honours the
- * stage's own sticky `top` (e.g. under a docked header).
+ * stage's own sticky `top` (e.g. under a docked header). Also whether the
+ * stage is stuck right now (`stuck`): from the moment it sticks (progress
+ * still 0, as a nav link lands it) to the track's end.
  */
 export const usePinProgress = <T extends HTMLElement>() => {
   const ref = useRef<T>(null);
   const [progress, setProgress] = useState(0);
+  const [stuck, setStuck] = useState(false);
   useEffect(() => {
     let frame = 0;
     const check = () => {
@@ -167,8 +170,11 @@ export const usePinProgress = <T extends HTMLElement>() => {
       const r = el.getBoundingClientRect();
       const pin = el.firstElementChild as HTMLElement | null;
       const top = pin ? parseFloat(getComputedStyle(pin).top) || 0 : 0;
-      const travel = r.height - (pin ? pin.offsetHeight : window.innerHeight);
-      setProgress(travel > 0 ? Math.min(1, Math.max(0, (top - r.top) / travel)) : 0);
+      const travel = r.height - (pin ? pin.offsetHeight : viewportHeight());
+      const past = top - r.top;
+      setProgress(travel > 0 ? Math.min(1, Math.max(0, past / travel)) : 0);
+      // (a pixel of slack: a landing measured in fractions of a pixel, rounded by the scroll)
+      setStuck(travel > 0 && past > -1 && past < travel);
     };
     const onScroll = () => {
       if (!frame) frame = requestAnimationFrame(check);
@@ -182,7 +188,7 @@ export const usePinProgress = <T extends HTMLElement>() => {
       if (frame) cancelAnimationFrame(frame);
     };
   }, []);
-  return [ref, progress] as const;
+  return [ref, progress, stuck] as const;
 };
 
 /** True while the media query matches. */

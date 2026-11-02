@@ -321,7 +321,7 @@ const SetupSection = () => {
   const copy = messages.landing.setup;
   const reduced = useReducedMotion();
   const pinned = useMedia(PIN_QUERY) && !reduced;
-  const [section, progress] = usePinProgress<HTMLElement>();
+  const [section, progress, stuck] = usePinProgress<HTMLElement>();
   const [pin, onScreen] = useOnScreen<HTMLDivElement>(0.2);
   const [ref, p] = useScrollThrough<HTMLDivElement>(0.7, 0.45);
   const fit = useRef<HTMLDivElement>(null);
@@ -341,9 +341,10 @@ const SetupSection = () => {
 
   // the scroll clock: pinned, the track's progress (the page holds while it plays); else the visual's way through the screen
   const clamp01 = (v: number) => Math.min(1, Math.max(0, v));
-  // (only while it's held: before the pin the page brings it in at its start, after it the end stays)
+  // (only while it's held: before the pin the page brings it in at its start, after it the end stays;
+  // held from the moment it sticks, so a nav link landing it right there plays it too)
   const through = p > 0 && p < 1;
-  const held = onScreen && progress > 0 && progress < 1;
+  const held = onScreen && stuck && progress < 1;
   const active = !reduced && (pinned ? held : through);
   const goal = pinned ? clamp01((progress - track.from) / (track.to - track.from)) : clamp01((p - LEAD) / RUN);
   const play = useScrollPlay(goal * duration, duration, active);

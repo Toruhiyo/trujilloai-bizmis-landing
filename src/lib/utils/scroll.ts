@@ -68,8 +68,11 @@ export const scrollToElement = (
   const offset = getSectionScrollOffset();
   // a pinned section lands as it looks pinned; anything else just under the nav
   const pinned = pinnedLanding(element);
+  // (a pinned landing rounded up: Safari drops a scroll's fraction of a pixel, which left it short of the pin)
   const top =
-    pinned ?? element.getBoundingClientRect().top + window.scrollY - offset;
+    pinned !== null
+      ? Math.ceil(pinned)
+      : element.getBoundingClientRect().top + window.scrollY - offset;
 
   window.scrollTo({ top: Math.max(0, top), behavior });
 };
