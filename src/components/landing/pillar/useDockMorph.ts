@@ -1,5 +1,6 @@
 import { useLayoutEffect, useRef } from "react";
 import type { RefObject } from "react";
+import { viewportHeight } from "@/lib/utils/scroll";
 
 /**
  * The opener's morph into the docked bar (PillarIntro), scrubbed by the
@@ -369,7 +370,8 @@ export const useDockMorph = ({
 
     // the bar leaves as the section's end comes up the screen (see EXIT)
     const exit = (bottom: number, lead: number) => {
-      const vh = window.innerHeight;
+      // (the steady height, not innerHeight: a phone's browser bar sliding away mid-exit jumped the bar)
+      const vh = viewportHeight();
       const done = vh - lead;
       const span = vh * EXIT;
       const q = reduced ? (bottom < done + span / 2 ? 1 : 0) : smooth(0, 1, (done + span - bottom) / span);
@@ -536,6 +538,16 @@ export const useDockMorph = ({
         measure();
       });
     };
+    // a window resize measures again only when the layout's viewport changed: a phone's browser bar
+    // sliding in or out on a scroll resizes the window, not the layout (svh), and measuring every time
+    // cost a full layout pass in the middle of a fling (the elements' own resizes: the observer)
+    let view = `${document.documentElement.clientWidth}x${viewportHeight()}`;
+    const onResize = () => {
+      const now = `${document.documentElement.clientWidth}x${viewportHeight()}`;
+      if (now === view) return tick();
+      view = now;
+      remeasure();
+    };
     const ro = new ResizeObserver(remeasure);
     ro.observe(d);
     ro.observe(b);
@@ -543,13 +555,13 @@ export const useDockMorph = ({
     if (sp) ro.observe(sp);
     document.fonts?.ready.then(remeasure).catch(() => {});
     window.addEventListener("scroll", tick, { passive: true });
-    window.addEventListener("resize", remeasure);
+    window.addEventListener("resize", onResize);
     // (the content asks for it when it changes what the bar is placed by, e.g. BenefitIntro's Fit scaling its screen)
     r.addEventListener("pi-remeasure", remeasure);
     return () => {
       ro.disconnect();
       window.removeEventListener("scroll", tick);
-      window.removeEventListener("resize", remeasure);
+      window.removeEventListener("resize", onResize);
       r.removeEventListener("pi-remeasure", remeasure);
       if (raf) cancelAnimationFrame(raf);
       if (pending) cancelAnimationFrame(pending);

@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { useRewindLoop } from "../useRewindLoop";
 import type { RewindLoopOptions } from "../useRewindLoop";
 import { VISUAL_TEST, VISUAL_TEST_NOW } from "@/lib/visualTest";
+import { viewportHeight } from "@/lib/utils/scroll";
 
 const query = "(prefers-reduced-motion: reduce)";
 
@@ -114,7 +115,7 @@ export const useActivePanel = (line = 0.45) => {
     let frame = 0;
     const check = () => {
       frame = 0;
-      const y = window.innerHeight * line;
+      const y = viewportHeight() * line;
       let best = 0;
       let bestD = Infinity;
       refs.current.forEach((el, i) => {
@@ -215,7 +216,7 @@ export const useScrollThrough = <T extends HTMLElement>(from = 0.85, to = 0.55) 
       const el = ref.current;
       if (!el) return;
       const r = el.getBoundingClientRect();
-      const vh = window.innerHeight;
+      const vh = viewportHeight();
       const a = r.top - vh * from;
       const b = r.bottom - vh * to;
       setP(Math.min(1, Math.max(0, -a / Math.max(1, b - a))));

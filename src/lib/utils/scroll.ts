@@ -9,6 +9,17 @@ declare global {
 const SECTION_SCROLL_GAP_PX = 8;
 const FALLBACK_NAVBAR_HEIGHT_PX = 64;
 
+/**
+ * The screen's height for scroll maths: the small viewport, the height `svh`
+ * is (documentElement.clientHeight). It holds still while a phone's browser
+ * bar slides in and out on a scroll (iOS Safari, Android Chrome), where
+ * innerHeight follows the bar and fires a resize: a clock or a docked bar
+ * placed by innerHeight jumped when the bar moved, while the pinned screens
+ * (sized in svh) stayed put. Elsewhere it is innerHeight.
+ */
+export const viewportHeight = (): number =>
+  document.documentElement.clientHeight || window.innerHeight;
+
 export const getSectionScrollOffset = (): number => {
   const nav = document.getElementById("site-navbar");
   const navHeight =
