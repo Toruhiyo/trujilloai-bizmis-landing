@@ -306,9 +306,20 @@ export const expectPrerenderMatches = async (page: Page, path: string) => {
 export const shot = async (
   page: Page,
   name: string,
-  options: { fullPage?: boolean; compare?: { maxDiffPixels: number; threshold: number } } = {},
+  options: {
+    fullPage?: boolean;
+    compare?: { maxDiffPixels: number; threshold: number };
+    /** Elements left out of the capture (CSS selector): parts that move in real time, out of the fake clock's reach. */
+    hide?: string;
+  } = {},
 ) => {
-  const image = await page.screenshot({ animations: "disabled", caret: "hide", scale: "css", fullPage: options.fullPage });
+  const image = await page.screenshot({
+    animations: "disabled",
+    caret: "hide",
+    scale: "css",
+    fullPage: options.fullPage,
+    style: options.hide ? `${options.hide} { visibility: hidden !important; }` : undefined,
+  });
   // (VR_STRICT / VR_THRESHOLD, measuring the noise, apply to every shot alike)
   const measuring = Boolean(process.env.VR_STRICT || process.env.VR_THRESHOLD);
   expect.soft(image).toMatchSnapshot(name, options.compare && !measuring ? options.compare : {});

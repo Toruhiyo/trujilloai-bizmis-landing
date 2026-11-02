@@ -33,6 +33,8 @@ type PageCase = {
   knownErrors?: RegExp[];
   /** The number of h1 if it isn't one (only a frozen page that can't change). */
   h1?: number;
+  /** Parts left out of the shots (CSS selector, see shot). */
+  hide?: string;
 };
 
 const PAGES: PageCase[] = [
@@ -63,6 +65,11 @@ const PAGES: PageCase[] = [
     // on their SVG animations' endEvent (live on www.bizmis.ai/v1 too), and it has three h1.
     knownErrors: [/page error: Cannot read properties of null \(reading 'style'\)/],
     h1: 3,
+    // its One-Click Setup wires and their sparks (react-xarrows' SVGs, matched by the attributes it gives
+    // them) draw with SVG animations on their own real-time timelines, which no fake clock reaches: they
+    // came out drawn to a different point under load (CI: 2247 pixels on the desktop shot), so the shots
+    // leave them out; the cards, the avatar and the rest of the page are compared as everywhere
+    hide: 'svg[overflow="auto"][style*="pointer-events: none"]',
   },
 ];
 
@@ -93,14 +100,14 @@ for (const c of PAGES) {
 
     await walk(page);
     await expectNoHorizontalOverflow(page, "top");
-    await shot(page, `${c.name}-top.png`);
+    await shot(page, `${c.name}-top.png`, { hide: c.hide });
     if (c.long) {
       await scrollToY(page, await page.evaluate(() => document.scrollingElement!.scrollHeight));
       await expectNoHorizontalOverflow(page, "bottom");
-      await shot(page, `${c.name}-bottom.png`);
+      await shot(page, `${c.name}-bottom.png`, { hide: c.hide });
     } else {
       await settle(page);
-      await shot(page, `${c.name}-full.png`, { fullPage: true });
+      await shot(page, `${c.name}-full.png`, { fullPage: true, hide: c.hide });
     }
   });
 }
