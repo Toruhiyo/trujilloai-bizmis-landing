@@ -280,31 +280,65 @@ export const useRewinding = (t: number, linger = 420) => {
 export const FIXED_HOLD = 6000;
 /** The rewind back to a beat's start, at rest (ms). */
 const REWIND = 1000;
+/** The page's scroll counts as resting after this long without moving (ms): a finger's pauses between swipes are shorter. */
+const SCROLL_REST = 180;
+
+/**
+ * The page's own scroll, watched once for every clock: when it last moved and
+ * which way (1 down the page, -1 up). A clock's "at rest" is the page at rest:
+ * past a scene's end its target stands still while the page still scrolls
+ * (the track's held end), which used to count as rest, so the replay's rewind
+ * could start under a moving finger.
+ */
+const pageScroll = { at: -Infinity, dir: 0, y: 0, watching: false };
+const watchPageScroll = () => {
+  if (pageScroll.watching || typeof window === "undefined") return;
+  pageScroll.watching = true;
+  pageScroll.y = window.scrollY;
+  window.addEventListener(
+    "scroll",
+    () => {
+      const y = window.scrollY;
+      if (y === pageScroll.y) return;
+      pageScroll.dir = y > pageScroll.y ? 1 : -1;
+      pageScroll.y = y;
+      pageScroll.at = performance.now();
+    },
+    { passive: true },
+  );
+};
+const pageScrolling = (now: number) => now - pageScroll.at < SCROLL_REST;
 
 /**
  * A beat's clock, half scroll, half time (ms along a timeline of `duration`):
  * the scroll sets `target` (where the scroll position maps on the timeline).
  * Scrolling on pulls the clock up to it at once; scrolling back rewinds it to
- * it (a quick ease, never a jump). Whenever the scroll rests, the beat plays
- * on by itself at 1×: to the end of its timeline (the fixed state), holds it
- * FIXED_HOLD so it can be read, rewinds to the beat's start, and plays again,
- * looping while the scroll rests. Inactive (`active: false`), it simply sits
- * on `target`. Reduced motion: it sits on the end.
+ * it (a quick ease, never a jump). Whenever the page's scroll rests, the beat
+ * plays on by itself at 1×: to the end of its timeline (the fixed state),
+ * holds it `hold` ms (FIXED_HOLD unless given) so it can be read, rewinds to
+ * the beat's start, and plays again, looping while the scroll rests. The hold
+ * counts from when the page stops moving, and scrolling on during that rewind
+ * plays the beat forward again instead. Inactive (`active: false`), it simply
+ * sits on `target`. Reduced motion: it sits on the end.
  */
-export const useScrollPlay = (rawTarget: number, duration: number, active: boolean) => {
+export const useScrollPlay = (rawTarget: number, duration: number, active: boolean, hold: number = FIXED_HOLD) => {
   // the scroll's place on the timeline, always on it (a fast entry can hand in a hair below 0, which read as a rewind)
   const target = Math.min(duration, Math.max(0, rawTarget));
   const reduced = useReducedMotion();
   const [t, setT] = useState(target);
   const tgt = useRef(target);
   const cur = useRef(target);
+  // (a ref: a scene whose length changes, e.g. Support's next case, carries on rather than starting over)
+  const dur = useRef(duration);
   tgt.current = target;
+  dur.current = duration;
   useEffect(() => {
     if (!active || reduced) {
       cur.current = tgt.current;
       setT(tgt.current);
       return;
     }
+    watchPageScroll();
     // becoming the active beat: start where the scroll puts it
     cur.current = tgt.current;
     setT(tgt.current);
@@ -320,13 +354,14 @@ export const useScrollPlay = (rawTarget: number, duration: number, active: boole
       raf = requestAnimationFrame(loop);
       const dt = Math.min(100, now - last);
       last = now;
+      const d = dur.current;
       const target = tgt.current;
       let next = cur.current;
       if (target > prev + 0.5) {
         // scrolling on: pulled up to the scroll (and playing on past it)
         phase = "play";
         back = false;
-        next = Math.min(duration, Math.max(target, next + dt));
+        next = Math.min(d, Math.max(target, next + dt));
       } else if ((target < prev - 0.5 || back) && target < next - 0.5) {
         // scrolling back: rewound to where the scroll is, quickly, all the way there
         phase = "play";
@@ -338,18 +373,23 @@ export const useScrollPlay = (rawTarget: number, duration: number, active: boole
         next = target;
       } else if (phase === "play") {
         // at rest: on at 1x to the fixed state
-        next = Math.min(duration, next + dt);
-        if (next >= duration) {
+        next = Math.min(d, next + dt);
+        if (next >= d) {
           phase = "hold";
           since = now;
         }
       } else if (phase === "hold") {
-        // the fixed state, held so it can be read
-        if (now - since >= FIXED_HOLD) {
+        // the fixed state, held so it can be read (from when the page stops moving)
+        if (pageScrolling(now)) since = now;
+        else if (now - since >= hold) {
           phase = "rewind";
           since = now;
           from = next;
         }
+      } else if (pageScrolling(now) && pageScroll.dir > 0) {
+        // the replay's rewind, interrupted by a scroll on: forward again from where it is
+        phase = "play";
+        next = Math.min(d, next + dt);
       } else {
         // back to the beat's start (eased, like a tape), then it plays again
         const k = Math.min(1, (now - since) / REWIND);
@@ -367,6 +407,6 @@ export const useScrollPlay = (rawTarget: number, duration: number, active: boole
     };
     raf = requestAnimationFrame(loop);
     return () => cancelAnimationFrame(raf);
-  }, [active, reduced, duration]);
-  return reduced ? (active ? duration : target) : active ? t : target;
+  }, [active, reduced, hold]);
+  return reduced ? (active ? duration : target) : active ? Math.min(t, duration) : target;
 };
