@@ -69,7 +69,9 @@ const AgentImage = ({
           onLoad={() => setLoaded(true)}
           className={cn(
             "relative h-full w-full object-contain transition-opacity duration-700",
-            loaded ? "opacity-100" : "opacity-0",
+            // (1%, not 0, before it loads: invisible over the silhouette all the same, but the browser
+            // counts the render as painted when it arrives and starts fading in, not 0.7 s later)
+            loaded ? "opacity-100" : "opacity-[0.01]",
             imgClassName,
           )}
         />

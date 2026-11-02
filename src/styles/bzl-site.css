@@ -80,8 +80,10 @@
 @media (min-width: 1400px) {
   .bzl-site .bzl-wrap { max-width: 1400px; }
 }
+/* (from 1%, not 0: invisible all the same, but the browser counts the text as painted when the fade
+   starts, not 0.9 s later when it ends; from 0 the page's largest paint waited for the fade) */
 .bzl-site .bzl-reveal {
-  opacity: 0;
+  opacity: 0.01;
   transform: translateY(28px);
   transition:
     opacity 0.9s var(--bzl-ease),

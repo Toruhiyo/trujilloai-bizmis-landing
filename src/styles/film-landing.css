@@ -109,8 +109,10 @@
 
 /* ---------- Reveal on scroll ---------- */
 
+/* (from 1%, not 0: invisible all the same, but the browser counts the content as painted when the
+   fade starts, not when it ends) */
 .bzl-reveal {
-  opacity: 0;
+  opacity: 0.01;
   transform: translateY(28px);
   transition:
     opacity 0.9s var(--bzl-ease),
