@@ -197,23 +197,28 @@ export const setupLandingScrollRestore = (pop: boolean): (() => void) => {
       // (storage blocked: the page simply starts at the top)
     }
   };
-  let noted: [string, number] | null = null;
+  // Noting it costs nothing per scroll: a scroll only arms a timer, and the place is read and written
+  // once the scroll has paused (at most every 250 ms), before a click can take the page elsewhere (its
+  // capture), and when the page is hidden or left. (Read on every scroll event, the entry's key alone,
+  // history.state, deserialized each time, cost about 1.7 ms a frame on a mid-range phone.)
+  const landing = window.location.pathname;
   let timer = 0;
   const flush = () => {
     window.clearTimeout(timer);
     timer = 0;
-    if (noted) store(...noted);
-    noted = null;
+    // (only while the landing is the page: after a link, the scroll is the next page's)
+    if (window.location.pathname === landing) store(entryKey(), window.scrollY);
   };
   const note = () => {
-    const key = entryKey();
-    // (the entry changed under it, e.g. a link pushed the next page: the last place goes to its own entry first)
-    if (noted && noted[0] !== key) flush();
-    noted = [key, window.scrollY];
-    if (!timer) timer = window.setTimeout(flush, 200);
+    if (!timer) timer = window.setTimeout(flush, 250);
+  };
+  const onHidden = () => {
+    if (document.visibilityState === "hidden") flush();
   };
   window.addEventListener("scroll", note, { passive: true });
+  window.addEventListener("click", flush, { capture: true });
   window.addEventListener("pagehide", flush);
+  document.addEventListener("visibilitychange", onHidden);
 
   // the way back: put the noted place back as soon as the page reaches it
   let raf = 0;
@@ -250,7 +255,9 @@ export const setupLandingScrollRestore = (pop: boolean): (() => void) => {
 
   return () => {
     window.removeEventListener("scroll", note);
+    window.removeEventListener("click", flush, { capture: true });
     window.removeEventListener("pagehide", flush);
+    document.removeEventListener("visibilitychange", onHidden);
     flush();
     cancelAnimationFrame(raf);
     stopWatching();
@@ -264,36 +271,53 @@ export const setupLandingScrollRestore = (pop: boolean): (() => void) => {
  * on its side (or back), a tablet's split view, a resized window. The
  * sections re-lay out for the new screen (Boost Sales pins or stacks, the
  * pinned tracks are as long as the screen is tall), so the same scroll
- * position would land in another section. The section at the screen's
- * middle and how far through it is are noted on every scroll; after a
- * change of width the page is put back there (a few times, while the
- * sections settle into their new layout), unless the visitor scrolls first.
- * A change of height alone (a phone's browser bar) changes nothing.
+ * position would land in another section. When the width changes, the
+ * section that was at the screen's middle and how far through it are taken
+ * from the page as it stood before, and the page is put back there (a few
+ * times, while the sections settle into their new layout), unless the
+ * visitor scrolls first. A change of height alone (a phone's browser bar)
+ * changes nothing.
+ *
+ * Nothing is measured while the page scrolls: the sections' places are
+ * measured when their sizes change (a ResizeObserver), and the scroll is read
+ * once it pauses; a scroll only arms a timer.
  */
 export const setupKeepPlaceOnResize = (): (() => void) => {
   const root = document.documentElement;
-  // (the section by its place in the page: a section can swap its element for the new layout, as Boost Sales does)
-  let anchor: { i: number; f: number; w: number } | null = null;
-  let frame = 0;
-  let timers: number[] = [];
-  let busy = false;
-  let stopWatching = () => {};
-
+  const page = document.querySelector(".bzl");
   const blocks = () =>
     Array.from(document.querySelectorAll(".bzl section, .bzl footer")).filter(
       (el) => !el.parentElement?.closest(".bzl section, .bzl footer"),
     );
-  const take = () => {
-    const mid = viewportHeight() / 2;
+  // the page as it stood: the sections' places in it (page px), the screen, the scroll
+  let geo: { tops: number[]; heights: number[]; w: number; vh: number } | null = null;
+  let y = window.scrollY;
+  // (the section by its place in the page: a section can swap its element for the new layout, as Boost Sales does)
+  let anchor: { i: number; f: number } | null = null;
+  let timer = 0;
+  let timers: number[] = [];
+  let busy = false;
+  let stopWatching = () => {};
+
+  const observer = typeof ResizeObserver === "undefined" ? null : new ResizeObserver(() => measure());
+  let watched: Element[] = [];
+  function measure() {
+    if (busy) return;
     const all = blocks();
-    for (let i = 0; i < all.length; i++) {
-      const r = all[i].getBoundingClientRect();
-      if (r.height > 0 && r.top <= mid && r.bottom > mid) {
-        anchor = { i, f: (mid - r.top) / r.height, w: root.clientWidth };
-        return;
-      }
+    if (observer && (all.length !== watched.length || all.some((el, i) => el !== watched[i]))) {
+      watched.forEach((el) => observer.unobserve(el));
+      all.forEach((el) => observer.observe(el));
+      watched = all;
     }
-  };
+    y = window.scrollY;
+    const boxes = all.map((el) => el.getBoundingClientRect());
+    geo = {
+      tops: boxes.map((r) => r.top + y),
+      heights: boxes.map((r) => r.height),
+      w: root.clientWidth,
+      vh: viewportHeight(),
+    };
+  }
   const put = () => {
     const el = anchor && blocks()[anchor.i];
     if (!anchor || !el) return;
@@ -305,39 +329,49 @@ export const setupKeepPlaceOnResize = (): (() => void) => {
     timers = [];
     busy = false;
     stopWatching();
-    if (anchor) anchor.w = root.clientWidth;
-    take();
+    measure();
   };
   const onScroll = () => {
-    if (busy || frame) return;
-    frame = requestAnimationFrame(() => {
-      frame = 0;
-      // (a scroll the new width caused, before the resize was seen: the place before it stands)
-      if (!busy && (!anchor || anchor.w === root.clientWidth)) take();
-    });
+    if (!timer)
+      timer = window.setTimeout(() => {
+        timer = 0;
+        if (!busy) y = window.scrollY;
+      }, 150);
   };
   const onResize = () => {
-    if (!anchor || anchor.w === root.clientWidth) return;
-    timers.forEach((t) => window.clearTimeout(t));
-    if (!busy) stopWatching = onVisitorScroll(settle);
-    busy = true;
+    if (busy) {
+      // turning on: the place taken when it started stands
+      timers.forEach((t) => window.clearTimeout(t));
+    } else {
+      if (!geo || geo.w === root.clientWidth) return;
+      // the section at the middle of the screen as it was, and how far through it
+      const mid = y + geo.vh / 2;
+      const i = geo.tops.findIndex((top, k) => geo!.heights[k] > 0 && top <= mid && top + geo!.heights[k] > mid);
+      if (i < 0) return;
+      anchor = { i, f: (mid - geo.tops[i]) / geo.heights[i] };
+      busy = true;
+      stopWatching = onVisitorScroll(settle);
+    }
     // now, then as the sections re-render for the new screen and settle their sizes
     put();
-    timers = [16, 120, 300, 600].map((ms, i, all) =>
+    timers = [16, 120, 300, 600].map((ms, k, all) =>
       window.setTimeout(() => {
         put();
-        if (i === all.length - 1) settle();
+        if (k === all.length - 1) settle();
       }, ms),
     );
   };
 
-  take();
+  measure();
+  // (the page itself too: the footer mounts a moment after the sections)
+  if (page) observer?.observe(page);
   window.addEventListener("scroll", onScroll, { passive: true });
   window.addEventListener("resize", onResize);
   return () => {
     window.removeEventListener("scroll", onScroll);
     window.removeEventListener("resize", onResize);
-    if (frame) cancelAnimationFrame(frame);
+    observer?.disconnect();
+    window.clearTimeout(timer);
     timers.forEach((t) => window.clearTimeout(t));
     stopWatching();
   };
