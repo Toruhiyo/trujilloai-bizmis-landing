@@ -9,7 +9,6 @@ import { AvatarIcon, VoiceIcon } from "./AnimatedIcons";
 import { Palette } from "lucide-react";
 import Reveal from "./Reveal";
 import SectionHead from "./SectionHead";
-import { MarkerEdge, useSep } from "./SectionSep";
 
 // Real Bizmis avatars, each wearing a (fictional, AI-generated) store's logo: either a vivid shirt
 // with a one-colour logo, or a neutral or pale shirt with a multicolour one. Every shirt follows its
@@ -63,7 +62,6 @@ const CustomizeSection = () => {
   const messages = useMessages();
   const c = messages.landing.customize;
   const section = useRef<HTMLElement>(null);
-  const sep = useSep();
 
   // where the carousel's stage sits in the section (its centre and width, px), for the ambient light
   useLayoutEffect(() => {
@@ -89,7 +87,7 @@ const CustomizeSection = () => {
     <section
       ref={section}
       // bzl-customize: the section's own name (the styles key on it, never on its place in the page);
-      // x clipped only, so ?sep=3's marker edges can sit just outside it (the glow is masked to it)
+      // x clipped only (the glow is masked to it)
       className="bzl-customize bzl-section bzl-screen relative overflow-x-clip"
     >
       {/* the carousel's ambient light, in the primary (drifting and breathing with the ring, AvatarCarousel);
@@ -150,13 +148,6 @@ const CustomizeSection = () => {
           </Reveal>
         </div>
       </div>
-      {/* ?sep=3: the band's hand-drawn way in and out */}
-      {sep === "3" && (
-        <>
-          <MarkerEdge side="top" seed={3} />
-          <MarkerEdge side="bottom" seed={4} />
-        </>
-      )}
     </section>
   );
 };

@@ -34,7 +34,6 @@ import {
 } from "./sales/hooks";
 import RewindScreen from "./sales/RewindScreen";
 import { runFor } from "./pillar/BenefitIntro";
-import { MarkerEdge, useSep } from "./SectionSep";
 
 // Same order as messages.landing.setup.cards (and the classic landing's setup.dataCards). Line icons, as the page's.
 const ICONS = [Globe, Tag, Percent, ShieldCheck, Users, Package];
@@ -321,7 +320,6 @@ const SetupSection = () => {
   const messages = useMessages();
   const copy = messages.landing.setup;
   const reduced = useReducedMotion();
-  const sep = useSep();
   const pinned = useMedia(PIN_QUERY) && !reduced;
   const [section, progress] = usePinProgress<HTMLElement>();
   const [pin, onScreen] = useOnScreen<HTMLDivElement>(0.2);
@@ -695,13 +693,6 @@ const SetupSection = () => {
 
         </div>
       </div>
-      {/* ?sep=3: the band's hand-drawn way in and out (after the pin, which must stay first) */}
-      {sep === "3" && (
-        <>
-          <MarkerEdge side="top" seed={1} />
-          <MarkerEdge side="bottom" seed={2} />
-        </>
-      )}
     </section>
   );
 };
