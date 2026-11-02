@@ -147,13 +147,12 @@ export const fr: Messages = {
     sales: {
       titleLead: "",
       titleParts: ["Cerner les besoins.", "Lever les doutes.", "Gagner des ventes."],
-      stages: ["Découverte", "Décision", "Paiement"],
       panels: [
         { title: "Plus de clients trouvent leur bonheur", body: "Il réduit votre catalogue aux quelques produits qui conviennent." },
         { title: "Les doutes deviennent des décisions", body: "Il compare, conseille et répond à chaque doute." },
         { title: "Les paniers deviennent des commandes", body: "Il lève les dernières questions et les guide jusqu'au paiement." },
       ],
-      payoff: { kicker: "Au total", title: "Des visites qui deviennent des ventes.", body: "Sans lassitude. Sans blocage. Sans hésitation.", jar: "Ventes" },
+      payoff: { title: "Des visites qui deviennent des ventes.", body: "Sans lassitude. Sans blocage. Sans hésitation.", jar: "Ventes" },
       findQuery: "Un cadeau pour ma sœur, moins de 50 €",
       findCaption: "En voici trois qu'elle va adorer.",
       compareQuery: "Lequel je prends ?",
@@ -162,22 +161,8 @@ export const fr: Messages = {
       decided: "Dans le panier",
       buyQuery: "Il arrive avant vendredi ?",
       buyCaption: "Oui, il part aujourd'hui et le retour est gratuit. On passe au paiement ?",
-      /** Each beat's words: the merchant's loss, struck through at the fix, then the win written in. No figures. */
-      flip: [
-        { problem: "Les visiteurs qui parcourent votre catalogue [[se lassent et abandonnent]].", fix: "Les visiteurs qui parcourent votre catalogue [[trouvent vite des produits qui valent le coup]]." },
-        { problem: "Les acheteurs qui comparent leurs options [[se figent et repartent]].", fix: "Les acheteurs qui comparent leurs options [[choisissent en toute confiance]]." },
-        { problem: "Les clients prêts à acheter [[hésitent et attendent]].", fix: "Les clients prêts à acheter [[se décident et passent au paiement]]." },
-      ],
       openers: ["Les visiteurs qui veulent le bon produit", "Les acheteurs qui hésitent entre les options", "Les acheteurs au panier plein"],
-      /** ?beat=1..6: the small labels of the alternative loss → win looks. */
-      flipLabels: { lose: "Vous perdez", win: "Vous gagnez", you: "Vous, aujourd'hui", withBizmis: "Avec Bizmis" },
-      /** ?beat=4: each loss as the merchant says it (the speech bubble). */
-      flipQuote: [
-        "Les acheteurs se lassent de chercher dans mon catalogue, puis achètent les mêmes produits chez un concurrent.",
-        "Mes acheteurs hésitants partent comparer et deviennent les clients d'un autre.",
-        "Les acheteurs arrivent au paiement, un dernier doute surgit, et ils s'en vont.",
-      ],
-      /** The one-shopper variant (?case=one): the same shopper and gift from Find through Trust to Buy. */
+      /** The one shopper's lines (they override the beats'): the same shopper and gift from Find through Trust to Buy. */
       caseOne: {
         compareQuery: "Lequel des trois lui plaira le plus ?",
         compareCaption: "Celui-ci. Le mieux noté des trois.",
@@ -191,57 +176,42 @@ export const fr: Messages = {
         /** The word at the open mouth, with its arrow: the dots are store visits. */
         visits: "visites",
       },
-      /** ?win=4..6: the metrics merchants know, drawn moving the right way as stages get fixed (no figures). */
+      /** The stacked payoff's metric card: the metrics merchants know, drawn moving the right way as stages get fixed (no figures). */
       metrics: {
         conversion: "Taux de conversion",
         orders: "Commandes",
         abandoned: "Paniers abandonnés",
-        ordersToday: "Commandes du jour",
-        before: "avant",
-        after: "après",
       },
       pulse: { currency: "EUR" },
     },
     support: {
       title: "Allégez votre support.",
       titleTail: "Jour et nuit.",
-      /** The area's full name, the chapter eyebrow over the outcome (the pillar openers, ?open=1..6). */
+      /** The area's full name, the chapter eyebrow over the outcome (the pillar openers). */
       area: "Service client",
       lead: "Il répond à chaque client, jour et nuit, avec la chaleur de votre meilleur vendeur.",
       /** The support mockup's widget placeholder (the composer's prompt before the shopper types). */
       placeholder: "Une question sur votre commande ?",
-      /** The pillar's animation, the merchant's support at scale: questions round the clock piling up as tickets, then answered
-       * right away by voice once the agent lands. One label, as the Sales funnel's: the loss, struck at the fix, then the win (short, present tense). */
+      /** The support inbox's name in the pillar's drawing (SupportDrawing). */
       day: {
-        label: "Des questions de clients à toute heure : elles s'empilent en tickets dans la boîte du support jusqu'à l'arrivée de l'agent, puis chacune reçoit une réponse immédiate, à voix haute",
-        problem: "Les tickets s'empilent",
-        solution: "Réponse immédiate",
         inbox: "Boîte du support",
       },
       options: {
-        sky: { label: "Les questions des clients arrivent jour et nuit ; elles reçoivent une réponse à voix haute avant la boîte du support, qui reste dégagée", problem: "La boîte déborde", solution: "Boîte dégagée, jour et nuit" },
         clock: { label: "Les questions des clients arrivent de partout et s'empilent dans la boîte du support ; à son arrivée, l'agent répond au retard et attrape les nouvelles, il ne reste que celles qui ont besoin du marchand", problem: "Les questions s'empilent", solution: "Juste celles qui ont besoin de vous" },
-        morning: { label: "Des questions toute la nuit, avec une réponse à voix haute dès qu'elles arrivent : le marchand se réveille avec une boîte vide", problem: "Des questions toute la nuit", solution: "Réveil avec une boîte vide" },
       },
     },
     insights: {
       title: "Voyez ce qui vend.",
       titleTail: "Corrigez le reste.",
-      /** The area's full name, the chapter eyebrow over the outcome (the pillar openers, ?open=1..6). */
+      /** The area's full name, the chapter eyebrow over the outcome (the pillar openers). */
       area: "Données de la boutique",
       lead: "Chaque conversation devient une prochaine étape claire.",
-      clarity: {
-        snippets: ["Livraison au Canada ?", "Taille M ou L ?", "Retours ?", "Emballage cadeau ?"],
-        topAsk: "Question n°1 : la livraison",
-      },
       options: {
         why: {
           label: "Beaucoup de sessions terminées sans achat, revues d'un coup : ce qui bloquait apparaît",
           problem: "Pourquoi pas d'achat ?",
           reasons: ["Un pop-up cache le panier", "La recherche ne trouve rien", "La livraison s'affiche trop tard", "La page charge trop lentement", "Partis chercher un code promo"],
         },
-        carts: { label: "Une semaine de paniers abandonnés, examinée jour après jour, se résume à une raison", problem: "Paniers abandonnés toute la semaine", solution: "La raison : les tailles" },
-        week: { label: "Une semaine de conversations, triée en une seule image de ce que veulent les clients", problem: "Trop pour tout lire", solution: "Ce que veulent vos clients" },
       },
     },
     /** Boost Sales's area, the chapter eyebrow over its outcome (its outcome is already "Boost Sales"). */

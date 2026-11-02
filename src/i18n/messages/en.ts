@@ -149,8 +149,6 @@ export const en = {
     sales: {
       titleLead: "",
       titleParts: ["Match needs.", "Clear doubts.", "Win sales."],
-      /** Each part's stage of the sales funnel (the kicker over its words). */
-      stages: ["Discovery", "Decision", "Checkout"],
       /** One per title part: a short merchant-side benefit and one line. */
       panels: [
         { title: "More shoppers find a fit", body: "It narrows your whole catalog to the few that fit." },
@@ -158,7 +156,7 @@ export const en = {
         { title: "Carts turn into orders", body: "It clears last-minute questions and walks them to checkout." },
       ],
       /** The words over the payoff, every part lit. */
-      payoff: { kicker: "All together", title: "Visits turn into sales.", body: "No fatigue. No paralysis. No hesitation.", jar: "Sales" },
+      payoff: { title: "Visits turn into sales.", body: "No fatigue. No paralysis. No hesitation.", jar: "Sales" },
       /** The mockups: what the shopper says, then what the agent says (captions). */
       findQuery: "A gift for my sister, under $50",
       findCaption: "Here are three she will love.",
@@ -168,26 +166,10 @@ export const en = {
       decided: "Added to cart",
       buyQuery: "Will it arrive by Friday?",
       buyCaption: "Yes, it ships today and returns are free. Ready to check out?",
-      /** Each beat's words: the merchant's loss, struck through at the fix, then the win written in. No figures.
-       * [[…]] marks each sentence's core (what hurts in the loss, what pays in the win): one per sentence,
-       * highlighted by the headline swaps (?beat=5a..5e); keep the marks around the equivalent words when translating. */
-      flip: [
-        { problem: "Visitors browsing your catalog [[tire out and give up]].", fix: "Visitors browsing your catalog [[find products worth buying, fast]]." },
-        { problem: "Shoppers comparing options [[freeze and walk away]].", fix: "Shoppers comparing options [[choose with confidence]]." },
-        { problem: "Buyers ready to buy [[hesitate and hold off]].", fix: "Buyers ready to buy [[commit and check out]]." },
-      ],
-      /** Each beat's words (the default, ?beat=9): the opener alone, its sentence ending in the funnel's label for the stage
+      /** Each beat's words: the opener alone, its sentence ending in the funnel's label for the stage
        * (funnel.problems, then funnel.solutions), so it must read straight into both ("Buyers with a full cart… Abandon the cart" / "… Buy it"). */
       openers: ["Visitors who want the right product", "Shoppers weighing their options", "Buyers with a full cart"],
-      /** ?beat=1..6: the small labels of the alternative loss → win looks. */
-      flipLabels: { lose: "You lose", win: "You win", you: "You, today", withBizmis: "With Bizmis" },
-      /** ?beat=4: each loss as the merchant says it (the speech bubble). */
-      flipQuote: [
-        "Shoppers give up searching my catalog, then buy the same products from a competitor.",
-        "My hesitant shoppers leave to compare, and become someone else's customers.",
-        "Shoppers get to checkout, hit one last doubt, and walk away.",
-      ],
-      /** The one-shopper variant (?case=one): the same shopper and gift from Find through Trust to Buy. */
+      /** The one shopper's lines (they override the beats'): the same shopper and gift from Find through Trust to Buy. */
       caseOne: {
         compareQuery: "Which of the three would she like best?",
         compareCaption: "This one. It is the best reviewed of the three.",
@@ -204,14 +186,11 @@ export const en = {
         /** The word at the open mouth, with its arrow: the dots are store visits. */
         visits: "visits",
       },
-      /** ?win=4..6: the metrics merchants know, drawn moving the right way as stages get fixed (no figures). */
+      /** The stacked payoff's metric card: the metrics merchants know, drawn moving the right way as stages get fixed (no figures). */
       metrics: {
         conversion: "Conversion rate",
         orders: "Orders",
         abandoned: "Abandoned carts",
-        ordersToday: "Orders today",
-        before: "before",
-        after: "after",
       },
       /** The store's currency in the mockups' prices (an ISO code for Intl). */
       pulse: { currency: "USD" },
@@ -220,48 +199,35 @@ export const en = {
     support: {
       title: "Cut support workload.",
       titleTail: "Day and night.",
-      /** The area's full name, the chapter eyebrow over the outcome (the pillar openers, ?open=1..6). */
+      /** The area's full name, the chapter eyebrow over the outcome (the pillar openers). */
       area: "Customer Support",
       lead: "Answers every shopper, day or night, as warmly as your best clerk.",
       /** The support mockup's widget placeholder (the composer's prompt before the shopper types). */
       placeholder: "Ask me about your order.",
-      /** The pillar's animation, the merchant's support at scale: questions round the clock piling up as tickets, then answered
-       * right away by voice once the agent lands. One label, as the Sales funnel's: the loss, struck at the fix, then the win (short, present tense). */
+      /** The support inbox's name in the pillar's drawing (SupportDrawing). */
       day: {
-        label: "Shoppers' questions round the clock: they pile up as tickets in the support inbox until the agent lands, then each one is answered right away, out loud",
-        problem: "Tickets pile up",
-        solution: "Answered right away",
         inbox: "Support inbox",
       },
-      /** Option drawings for Oriol to pick from (?support=1|2|3): each a loss struck then a win, in marker. */
+      /** The pillar's drawing (SupportDrawing), the merchant's support at scale: its label, the loss struck at the fix, then the win (short, present tense). */
       options: {
-        sky: { label: "Shoppers' questions keep coming, day and night; answered out loud before they reach the support inbox, it stays clear", problem: "Inbox overflows", solution: "Inbox clear, day and night" },
         clock: { label: "Shoppers' questions drift in from everywhere and pile up in the support inbox; once the agent lands it answers the backlog and catches the new ones, so only the few that need the merchant stay", problem: "Questions pile up", solution: "Only the few that need you" },
-        morning: { label: "Questions all night long, answered out loud as they come: the merchant wakes up to an empty inbox", problem: "Questions all night", solution: "Wake up to an empty inbox" },
       },
     },
-    /** Store Insights on /v2: a short promise, noise that turns into a chart, beside the conversation replays. */
+    /** Store Insights on /v2: a short promise, a magnifier finding why carts were left, beside the conversation replays. */
     insights: {
       title: "See what sells.",
       titleTail: "Fix what doesn't.",
-      /** The area's full name, the chapter eyebrow over the outcome (the pillar openers, ?open=1..6). */
+      /** The area's full name, the chapter eyebrow over the outcome (the pillar openers). */
       area: "Store Insights",
       lead: "Every conversation becomes a clear next step.",
-      /** The pillar's animation: scattered questions that sort into a rising chart. */
-      clarity: {
-        snippets: ["Ships to Canada?", "Size M or L?", "Returns?", "Gift wrap?"],
-        topAsk: "Top ask: shipping",
-      },
-      /** Option drawings for Oriol to pick from (?insights=1|2|3): each a loss struck then a win, in marker. */
+      /** The pillar's drawing (InsightsDrawing): a loss struck, then the win, in marker. */
       options: {
-        /** The default: each replay finds a different reason in the lens (what a replay shows got in the way; its icon in InsightsOptions, REASONS, in this order). */
+        /** Each replay finds a different reason in the lens (what a replay shows got in the way; its icon in InsightsDrawing, REASONS, in this order). */
         why: {
           label: "Many sessions that ended without a sale, replayed at once: what got in the way shows up",
           problem: "Why no sale?",
           reasons: ["Pop-up hides the cart", "Search finds nothing", "Shipping shows too late", "Page loads too slowly", "Off hunting for a coupon"],
         },
-        carts: { label: "A week of abandoned carts, looked into day by day, comes down to one reason", problem: "Carts left all week", solution: "The reason: sizes" },
-        week: { label: "A week of conversations, sorted into one picture of what shoppers want", problem: "Too many to read", solution: "What shoppers want" },
       },
     },
     /** Boost Sales's area, the chapter eyebrow over its outcome (its outcome is already "Boost Sales"). */

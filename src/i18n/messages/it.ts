@@ -147,13 +147,12 @@ export const it: Messages = {
     sales: {
       titleLead: "",
       titleParts: ["Capisci i bisogni.", "Sciogli i dubbi.", "Conquista vendite."],
-      stages: ["Scoperta", "Decisione", "Pagamento"],
       panels: [
         { title: "Più clienti trovano quello giusto", body: "Riduce il catalogo ai pochi prodotti giusti." },
         { title: "I dubbi diventano decisioni", body: "Confronta, consiglia e risponde a ogni dubbio." },
         { title: "I carrelli diventano ordini", body: "Chiarisce gli ultimi dubbi e li accompagna al pagamento." },
       ],
-      payoff: { kicker: "Tutto insieme", title: "Visite che diventano vendite.", body: "Niente stanchezza. Niente blocchi. Niente esitazioni.", jar: "Vendite" },
+      payoff: { title: "Visite che diventano vendite.", body: "Niente stanchezza. Niente blocchi. Niente esitazioni.", jar: "Vendite" },
       findQuery: "Un regalo per mia sorella, sotto i 50 €",
       findCaption: "Eccone tre che adorerà.",
       compareQuery: "Quale prendo?",
@@ -162,22 +161,8 @@ export const it: Messages = {
       decided: "Nel carrello",
       buyQuery: "Arriva entro venerdì?",
       buyCaption: "Sì, parte oggi e il reso è gratuito. Andiamo al pagamento?",
-      /** Each beat's words: the merchant's loss, struck through at the fix, then the win written in. No figures. */
-      flip: [
-        { problem: "I visitatori che sfogliano il tuo catalogo [[si stancano e mollano]].", fix: "I visitatori che sfogliano il tuo catalogo [[trovano subito prodotti che valgono l'acquisto]]." },
-        { problem: "I clienti che confrontano le opzioni [[si bloccano e se ne vanno]].", fix: "I clienti che confrontano le opzioni [[scelgono con sicurezza]]." },
-        { problem: "I clienti pronti a comprare [[esitano e rimandano]].", fix: "I clienti pronti a comprare [[si decidono e vanno al pagamento]]." },
-      ],
       openers: ["I visitatori che vogliono il prodotto giusto", "Gli acquirenti indecisi tra le opzioni", "Gli acquirenti con il carrello pieno"],
-      /** ?beat=1..6: the small labels of the alternative loss → win looks. */
-      flipLabels: { lose: "Perdi", win: "Vinci", you: "Tu, oggi", withBizmis: "Con Bizmis" },
-      /** ?beat=4: each loss as the merchant says it (the speech bubble). */
-      flipQuote: [
-        "I clienti si stancano di cercare nel mio catalogo e comprano gli stessi prodotti da un concorrente.",
-        "I miei clienti indecisi vanno a confrontare e diventano clienti di un altro.",
-        "I clienti arrivano al pagamento, hanno un ultimo dubbio e se ne vanno.",
-      ],
-      /** The one-shopper variant (?case=one): the same shopper and gift from Find through Trust to Buy. */
+      /** The one shopper's lines (they override the beats'): the same shopper and gift from Find through Trust to Buy. */
       caseOne: {
         compareQuery: "Quale dei tre le piacerà di più?",
         compareCaption: "Questo. È il più apprezzato dei tre.",
@@ -191,57 +176,42 @@ export const it: Messages = {
         /** The word at the open mouth, with its arrow: the dots are store visits. */
         visits: "visite",
       },
-      /** ?win=4..6: the metrics merchants know, drawn moving the right way as stages get fixed (no figures). */
+      /** The stacked payoff's metric card: the metrics merchants know, drawn moving the right way as stages get fixed (no figures). */
       metrics: {
         conversion: "Tasso di conversione",
         orders: "Ordini",
         abandoned: "Carrelli abbandonati",
-        ordersToday: "Ordini di oggi",
-        before: "prima",
-        after: "dopo",
       },
       pulse: { currency: "EUR" },
     },
     support: {
       title: "Taglia il carico di supporto.",
       titleTail: "Giorno e notte.",
-      /** The area's full name, the chapter eyebrow over the outcome (the pillar openers, ?open=1..6). */
+      /** The area's full name, the chapter eyebrow over the outcome (the pillar openers). */
       area: "Assistenza clienti",
       lead: "Risponde a ogni cliente, giorno e notte, con il calore del tuo miglior commesso.",
       /** The support mockup's widget placeholder (the composer's prompt before the shopper types). */
       placeholder: "Chiedimi del tuo ordine.",
-      /** The pillar's animation, the merchant's support at scale: questions round the clock piling up as tickets, then answered
-       * right away by voice once the agent lands. One label, as the Sales funnel's: the loss, struck at the fix, then the win (short, present tense). */
+      /** The support inbox's name in the pillar's drawing (SupportDrawing). */
       day: {
-        label: "Domande dei clienti a ogni ora: si accumulano come ticket nella casella assistenza finché arriva l'agente, poi ognuna riceve risposta subito, a voce",
-        problem: "I ticket si accumulano",
-        solution: "Risposta immediata",
         inbox: "Casella assistenza",
       },
       options: {
-        sky: { label: "Le domande dei clienti arrivano giorno e notte; ricevono risposta a voce prima della casella assistenza, che resta libera", problem: "La casella trabocca", solution: "Casella libera, giorno e notte" },
         clock: { label: "Le domande dei clienti arrivano da ogni parte e si accumulano nella casella assistenza; quando arriva l'agente risponde all'arretrato e prende al volo le nuove, e restano solo quelle che servono al commerciante", problem: "Le domande si accumulano", solution: "Solo quelle che hanno bisogno di te" },
-        morning: { label: "Domande tutta la notte, con risposta a voce appena arrivano: il commerciante si sveglia con la casella vuota", problem: "Domande tutta la notte", solution: "Ti svegli con la casella vuota" },
       },
     },
     insights: {
       title: "Scopri cosa vende.",
       titleTail: "Sistema il resto.",
-      /** The area's full name, the chapter eyebrow over the outcome (the pillar openers, ?open=1..6). */
+      /** The area's full name, the chapter eyebrow over the outcome (the pillar openers). */
       area: "Dati del negozio",
       lead: "Ogni conversazione diventa un passo successivo chiaro.",
-      clarity: {
-        snippets: ["Spedite in Canada?", "Taglia M o L?", "Resi?", "Confezione regalo?"],
-        topAsk: "Domanda n.1: spedizioni",
-      },
       options: {
         why: {
           label: "Tante sessioni finite senza acquisto, riviste in un colpo: emerge cosa le bloccava",
           problem: "Perché non comprano?",
           reasons: ["Un pop-up copre il carrello", "La ricerca non trova nulla", "La spedizione appare troppo tardi", "La pagina è troppo lenta", "Vanno a caccia di coupon"],
         },
-        carts: { label: "Una settimana di carrelli abbandonati, esaminata giorno per giorno, si riduce a un motivo", problem: "Carrelli abbandonati tutta la settimana", solution: "Il motivo: le taglie" },
-        week: { label: "Una settimana di conversazioni, ordinata in un'unica immagine di cosa vogliono i clienti", problem: "Troppe da leggere", solution: "Cosa vogliono i clienti" },
       },
     },
     /** Boost Sales's area, the chapter eyebrow over its outcome (its outcome is already "Boost Sales"). */

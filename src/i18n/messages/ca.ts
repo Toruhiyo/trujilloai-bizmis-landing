@@ -147,13 +147,12 @@ export const ca: Messages = {
     sales: {
       titleLead: "",
       titleParts: ["Entén necessitats.", "Resol dubtes.", "Guanya vendes."],
-      stages: ["Descoberta", "Decisió", "Pagament"],
       panels: [
         { title: "Més clients troben el que busquen", body: "Redueix el catàleg als pocs productes que encaixen." },
         { title: "Els dubtes es tornen decisions", body: "Compara, aconsella i respon cada dubte." },
         { title: "Els carretons es tornen comandes", body: "Resol els dubtes d'última hora i els porta a pagar." },
       ],
-      payoff: { kicker: "Tot plegat", title: "Visites convertides en vendes.", body: "Sense cansament. Sense bloquejos. Sense dubtes.", jar: "Vendes" },
+      payoff: { title: "Visites convertides en vendes.", body: "Sense cansament. Sense bloquejos. Sense dubtes.", jar: "Vendes" },
       findQuery: "Un regal per a la meva germana, menys de 50 €",
       findCaption: "Aquí en tens tres que li encantaran.",
       compareQuery: "Quin m'emporto?",
@@ -162,22 +161,8 @@ export const ca: Messages = {
       decided: "Al carretó",
       buyQuery: "Arriba abans de divendres?",
       buyCaption: "Sí, surt avui i la devolució és gratuïta. Anem a pagar?",
-      /** Each beat's words: the merchant's loss, struck through at the fix, then the win written in. No figures. */
-      flip: [
-        { problem: "Els visitants que recorren el teu catàleg [[es cansen i abandonen]].", fix: "Els visitants que recorren el teu catàleg [[troben ràpid productes que valen la pena]]." },
-        { problem: "Els clients que comparen opcions [[es bloquegen i marxen]].", fix: "Els clients que comparen opcions [[trien amb seguretat]]." },
-        { problem: "Els compradors a punt de comprar [[dubten i es frenen]].", fix: "Els compradors a punt de comprar [[es decideixen i passen al pagament]]." },
-      ],
       openers: ["Visitants que volen el producte adequat", "Compradors que dubten entre opcions", "Compradors amb el carretó ple"],
-      /** ?beat=1..6: the small labels of the alternative loss → win looks. */
-      flipLabels: { lose: "Perds", win: "Guanyes", you: "Tu, avui", withBizmis: "Amb Bizmis" },
-      /** ?beat=4: each loss as the merchant says it (the speech bubble). */
-      flipQuote: [
-        "Els clients es cansen de buscar al meu catàleg i compren el mateix a la competència.",
-        "Els meus clients indecisos marxen a comparar i acaben comprant a un altre.",
-        "Els clients arriben al pagament, els sorgeix un últim dubte i marxen.",
-      ],
-      /** The one-shopper variant (?case=one): the same shopper and gift from Find through Trust to Buy. */
+      /** The one shopper's lines (they override the beats'): the same shopper and gift from Find through Trust to Buy. */
       caseOne: {
         compareQuery: "Quin dels tres li agradarà més?",
         compareCaption: "Aquest. És el més ben valorat dels tres.",
@@ -191,57 +176,42 @@ export const ca: Messages = {
         /** The word at the open mouth, with its arrow: the dots are store visits. */
         visits: "visites",
       },
-      /** ?win=4..6: the metrics merchants know, drawn moving the right way as stages get fixed (no figures). */
+      /** The stacked payoff's metric card: the metrics merchants know, drawn moving the right way as stages get fixed (no figures). */
       metrics: {
         conversion: "Taxa de conversió",
         orders: "Comandes",
         abandoned: "Cistelles abandonades",
-        ordersToday: "Comandes d'avui",
-        before: "abans",
-        after: "després",
       },
       pulse: { currency: "EUR" },
     },
     support: {
       title: "Retalla la càrrega de suport.",
       titleTail: "Dia i nit.",
-      /** The area's full name, the chapter eyebrow over the outcome (the pillar openers, ?open=1..6). */
+      /** The area's full name, the chapter eyebrow over the outcome (the pillar openers). */
       area: "Atenció al client",
       lead: "Atén cada client, de dia o de nit, amb la calidesa del teu millor dependent.",
       /** The support mockup's widget placeholder (the composer's prompt before the shopper types). */
       placeholder: "Pregunta'm per la teva comanda.",
-      /** The pillar's animation, the merchant's support at scale: questions round the clock piling up as tickets, then answered
-       * right away by voice once the agent lands. One label, as the Sales funnel's: the loss, struck at the fix, then the win (short, present tense). */
+      /** The support inbox's name in the pillar's drawing (SupportDrawing). */
       day: {
-        label: "Preguntes de clients a totes hores: s'acumulen com a tiquets a la safata de suport fins que arriba l'agent, i des de llavors cadascuna té resposta a l'instant, en veu alta",
-        problem: "S'acumulen tiquets",
-        solution: "Resposta a l'instant",
         inbox: "Safata de suport",
       },
       options: {
-        sky: { label: "Les preguntes dels clients arriben de dia i de nit; es responen en veu alta abans d'arribar a la safata de suport, que queda neta", problem: "La safata es desborda", solution: "Safata neta, de dia i de nit" },
         clock: { label: "Les preguntes dels clients arriben de tot arreu i s'acumulen a la safata de suport; quan arriba l'agent respon les pendents i atrapa les noves, i només queden les poques que necessiten el botiguer", problem: "Les preguntes s'acumulen", solution: "Només les poques que et necessiten" },
-        morning: { label: "Preguntes tota la nit, respostes en veu alta quan arriben: el botiguer es desperta amb la safata buida", problem: "Preguntes tota la nit", solution: "Et despertes amb la safata buida" },
       },
     },
     insights: {
       title: "Mira què ven.",
       titleTail: "Arregla la resta.",
-      /** The area's full name, the chapter eyebrow over the outcome (the pillar openers, ?open=1..6). */
+      /** The area's full name, the chapter eyebrow over the outcome (the pillar openers). */
       area: "Dades de la botiga",
       lead: "Cada conversa es converteix en un pas següent clar.",
-      clarity: {
-        snippets: ["Envieu al Canadà?", "Talla M o L?", "Devolucions?", "Embolcall de regal?"],
-        topAsk: "El més preguntat: enviaments",
-      },
       options: {
         why: {
           label: "Moltes sessions acabades sense compra, repassades de cop: apareix el que feia nosa",
           problem: "Per què no compren?",
           reasons: ["Un pop-up tapa la cistella", "La cerca no troba res", "L'enviament surt massa tard", "La pàgina triga a carregar", "Se'n van a buscar cupons"],
         },
-        carts: { label: "Una setmana de cistelles abandonades, revisada dia a dia, es redueix a un motiu", problem: "Cistelles abandonades tota la setmana", solution: "El motiu: les talles" },
-        week: { label: "Una setmana de converses ordenada en una imatge del que volen els clients", problem: "Massa per llegir-les", solution: "El que volen els clients" },
       },
     },
     /** Boost Sales's area, the chapter eyebrow over its outcome (its outcome is already "Boost Sales"). */
