@@ -1,5 +1,4 @@
 import { useId, useRef } from "react";
-import type { ReactNode } from "react";
 import { useMessages } from "@/i18n/LocaleProvider";
 import { cn } from "@/lib/utils";
 import { RewindMark } from "./RewindSign";
@@ -9,8 +8,6 @@ import {
   Ask,
   Flip,
   Hand,
-  Sparkle,
-  SupportDay,
   Ticket,
   clamp01,
   drawn,
@@ -27,34 +24,22 @@ import {
   useProbeWidths,
   writing,
 } from "./PillarMoments";
-import type { DrawOption } from "./drawOptions";
 
 /**
- * Customer Support's drawings: the clock (2) by default, the other options
- * by ?support=1|3, the one shipped before them (PillarMoments' SupportDay)
- * by ?support=old. All
- * three tell ONE benefit to the merchant at scale: the support inbox kept
- * light round the clock. Questions keep coming round the clock; until the fix
- * (`fixAt`, as the device starts answering) they pile up in the inbox as
- * tickets; then the agent (the Support mockup's, in the widget's head circle)
- * answers the backlog and every new question before it gets there, out loud. In the Sales funnel's marker, all in the band's
- * marker ink (the Bizmis primary). The label: the loss written, struck at
- * the fix, then the win written and ticked. Every frame comes from `t`, so
- * the scroll's rewind runs it backwards.
- *
- * 1 Sky: a sun and a moon going over the inbox, day, night, day, night; the
- *   voice a dome over the inbox that catches the questions as they come.
- * 2 Clock (the default, also with no parameter): a clock in the corner, its
- *   hands racing round the hours; the shoppers' questions drift in from the
- *   edges and pile up in the inbox, well over its rim. Then a new day: the
- *   clock whirls on and the old pile goes by itself (it sinks and fades;
- *   nobody answers it), and the agent (in the widget's head circle) lands on
- *   the questions' way and catches the new ones, all but the rare one that
- *   needs the merchant, so the inbox stays nearly empty. Once it's done it
- *   goes on in real time: the hands drifting round, a question now and then,
- *   caught. "Questions pile up" struck, "Only the few that need you".
- * 3 Morning: one night of questions under the moon; the voice a wave over the
- *   inbox; the sun comes up on it empty.
+ * Customer Support's drawing: ONE benefit to the merchant at scale, the
+ * support inbox kept light round the clock. A clock in the corner, its
+ * hands racing round the hours; the shoppers' questions drift in from the
+ * edges and pile up in the inbox as tickets, well over its rim. Then a new
+ * day (`fixAt`, as the device starts answering): the clock whirls on and the
+ * old pile goes by itself (it sinks and fades; nobody answers it), and the
+ * agent (the Support mockup's, in the widget's head circle) lands on the
+ * questions' way and catches the new ones out loud, all but the rare one
+ * that needs the merchant, so the inbox stays nearly empty. Once it's done
+ * it goes on in real time: the hands drifting round, a question now and
+ * then, caught. In the Sales funnel's marker, all in the band's marker ink
+ * (the Bizmis primary). The label: "Questions pile up" written, struck at
+ * the fix, then "Only the few that need you" written and ticked. Every frame
+ * comes from `t`, so the scroll's rewind runs it backwards.
  */
 
 const DW = 560;
@@ -193,30 +178,6 @@ const arc = (sx: number, sy: number, end: readonly number[], u: number, lift = 5
 /** Evenly spread `n` moments over [a, b]. */
 const spread = (n: number, a: number, b: number) => (i: number) => a + (n > 1 ? (i * (b - a)) / (n - 1) : 0);
 
-/** The sun, its rays turning slowly; `rise` (0 → 1) draws its rays out. */
-const Sun = ({ t, rise = 1 }: { t: number; rise?: number }) => (
-  <g>
-    <path className="mk-mid" d={loop(0, 0, 15, 2)} />
-    {rise > 0 &&
-      Array.from({ length: 8 }, (_, k) => {
-        const a = (k / 8) * Math.PI * 2 + t / 2400;
-        const r1 = 22 + 7 * rise;
-        return <path key={k} className="mk-thin" d={`M${f(Math.cos(a) * 22)} ${f(Math.sin(a) * 22)} L${f(Math.cos(a) * r1)} ${f(Math.sin(a) * r1)}`} />;
-      })}
-  </g>
-);
-/** The moon, a crescent. */
-const Moon = ({ s = 1 }: { s?: number }) => <path className="mk-mid" transform={`scale(${s})`} d="M6 -17 A18 18 0 1 0 14 12 A14 14 0 1 1 6 -17 Z" />;
-
-/** The night's stars, `k` (0 → 1) how dark it is. */
-const Stars = ({ k, at }: { k: number; at: readonly (readonly number[])[] }) => (
-  <>
-    {at.map(([x, y], i) => (
-      <Sparkle key={i} x={x} y={y} k={k > 0 ? clamp01(k * 1.4 - i * 0.12) : 0} size={i % 2 ? 5 : 7} spin={i * 30} />
-    ))}
-  </>
-);
-
 /** The label: the loss, struck at the fix, then the win (the Sales funnel's), fitted to the drawing's width. */
 const Label = ({ t, F, copy }: { t: number; F: number; copy: Copy }) => {
   const [widths, probes] = useProbeWidths([copy.problem, copy.solution].join("|"));
@@ -335,108 +296,7 @@ const Inbox = ({
   );
 };
 
-/** A sky body's place along an arc (k: 0 → 1, rising on the left, setting on the right). */
-const skyAt = (cx: number, cy: number, rx: number, ry: number, k: number) => {
-  const a = Math.PI + k * Math.PI;
-  return { x: cx + Math.cos(a) * rx, y: cy + Math.sin(a) * ry };
-};
-
-/* ── 1 Sky: day, night, day, night over the inbox; the voice a dome over it ── */
-
-const SK_TRAY = { x: 190, y: 212, w: 180, h: 36 };
-const SK_MARK = { x: 280, y: 180 };
-const SK_DOME = 64;
-const SK_LOSS = 8;
-const SK_WIN = 6;
-const SK_FROM_LOSS = [[30, 110], [530, 120], [60, 196], [506, 200], [20, 150], [540, 160], [40, 236], [524, 240]] as const;
-const SK_FROM_WIN = [[36, 118], [528, 112], [24, 170], [536, 176], [60, 96], [500, 100]] as const;
-const SK_STARS = [[96, 120], [470, 128], [512, 196], [58, 176], [372, 100], [190, 104]] as const;
-const SK_SKY = { x: 280, y: 330, rx: 236, ry: 244 };
-
-const SkyDrawing = ({ t, F, W, kept, inbox }: DrawProps) => {
-  const FLY = 800;
-  const lossAt = spread(SK_LOSS, 300, Math.max(400, F - FLY - 80));
-  const landAt = (i: number) => lossAt(i) + FLY;
-  const DRAIN = 380;
-  const drainAt = (k: number) => F + 420 + (SK_LOSS - 1 - k) * 140;
-  const winAt = spread(SK_WIN, F + 1500, F + W - 700);
-  const TO = 600;
-  const hitOf = (i: number) => {
-    const [sx, sy] = SK_FROM_WIN[i];
-    const a = Math.atan2(sy - SK_MARK.y, sx - SK_MARK.x);
-    return [SK_MARK.x + Math.cos(a) * SK_DOME, SK_MARK.y + Math.sin(a) * SK_DOME] as const;
-  };
-  const reach = [...Array.from({ length: SK_LOSS }, (_, k) => drainAt(k) + DRAIN), ...Array.from({ length: SK_WIN }, (_, i) => winAt(i) + TO)];
-  const talk = talking(t, reach);
-  // the sky: a day, a night (the fix lands in it), a day, and the night it ends on (the moon held high)
-  const segs = [
-    [0, F * 0.45, "sun"],
-    [F * 0.45, F + W * 0.35, "moon"],
-    [F + W * 0.35, F + W * 0.7, "sun"],
-    [F + W * 0.7, F + W, "moon"],
-  ] as const;
-  const night = Math.max(
-    span(t, segs[1][0] - 150, segs[1][0] + 250) * (1 - span(t, segs[1][1] - 250, segs[1][1] + 150)),
-    span(t, segs[3][0] - 150, segs[3][0] + 250),
-  );
-  const dome = (j: number) => easeOut(span(t, F + 120 + j * 110, F + 560 + j * 110));
-  return (
-    <>
-      {/* the sky going round */}
-      {segs.map(([a, b, kind], n) => {
-        const last = n === segs.length - 1;
-        if (t < a || (!last && t > b)) return null;
-        const k = span(t, a, b) * (last ? 0.5 : 1);
-        const on = Math.min(1, k * 12, last ? 1 : (1 - k) * 12);
-        const p = skyAt(SK_SKY.x, SK_SKY.y, SK_SKY.rx, SK_SKY.ry, k);
-        return (
-          <g key={n} opacity={f(on)} transform={`translate(${f(p.x)} ${f(p.y)})`}>
-            {kind === "sun" ? <Sun t={t} /> : <Moon />}
-          </g>
-        );
-      })}
-      <Stars k={night} at={SK_STARS} />
-      <Inbox tray={SK_TRAY} t={t} kept={kept} inbox={inbox} n={SK_LOSS} landAt={landAt} drainAt={drainAt} drain={DRAIN} to={[SK_MARK.x, SK_MARK.y]} />
-
-      {/* the questions: before, into the inbox; after, caught by the voice's dome */}
-      {Array.from({ length: SK_LOSS }, (_, i) => {
-        const at = lossAt(i);
-        if (t < at || t > landAt(i) + 60) return null;
-        const [sx, sy] = SK_FROM_LOSS[i];
-        const s0 = slotOf(SK_TRAY, i);
-        const u = easeInOut(span(t, at + 120, landAt(i)));
-        const [x, y] = arc(sx, sy, [s0.x, s0.y - 12], u);
-        return <Ask key={`a${i}`} x={x} y={y} s={spring(span(t, at, at + 300)) * (1 - easeIn(span(u, 0.82, 1)))} />;
-      })}
-      {Array.from({ length: SK_WIN }, (_, i) => {
-        const at = winAt(i);
-        const end = at + TO;
-        if (t < at || t > end + 60) return null;
-        const [sx, sy] = SK_FROM_WIN[i];
-        const [x, y] = arc(sx, sy, hitOf(i), easeInOut(span(t, at + 120, end)), 30);
-        return <Ask key={`w${i}`} x={x} y={y} s={spring(span(t, at, at + 300)) * (1 - easeIn(span(t, end - 140, end)))} />;
-      })}
-      {Array.from({ length: SK_WIN }, (_, i) => {
-        const [hx, hy] = hitOf(i);
-        return <Pop key={`p${i}`} x={hx} y={hy} k={span(t, winAt(i) + TO - 40, winAt(i) + TO + 720)} />;
-      })}
-
-      {/* the voice over the inbox: a dome of sound */}
-      {[0, 1, 2].map((j) => {
-        const k = dome(j);
-        if (k <= 0) return null;
-        const r = 34 + j * 15 + 1.6 * Math.sin(t / 90 - j) * talk;
-        const pt = (a: number) => `${f(SK_MARK.x + Math.cos(a) * r)} ${f(SK_MARK.y + Math.sin(a) * r)}`;
-        return <path key={`o${j}`} className={j === 1 ? "mk-mid" : "mk-thin"} d={`M${pt(Math.PI + 0.12)} A${f(r)} ${f(r)} 0 0 1 ${pt(Math.PI * 2 - 0.12)}`} {...drawn(k)} />;
-      })}
-      <AgentHead x={SK_MARK.x} y={SK_MARK.y} t={t} at={F} talk={talk} />
-      <Sparkle x={SK_TRAY.x - 14} y={SK_TRAY.y - 14} k={span(t, F + W - 300, F + W + 200)} size={8} />
-      <Sparkle x={SK_TRAY.x + SK_TRAY.w + 16} y={SK_TRAY.y - 4} k={span(t, F + W - 150, F + W + 350)} size={6} spin={20} />
-    </>
-  );
-};
-
-/* ── 2 Clock (the default): questions from everywhere; a new day; the agent keeps the inbox nearly empty ── */
+/* ── The clock: questions from everywhere; a new day; the agent keeps the inbox nearly empty ── */
 
 const CL = { x: 74, y: 120, r: 44 }; // time passing, on its own in the corner
 const CL_TRAY = { x: 404, y: 206, w: 124, h: 38 };
@@ -576,120 +436,12 @@ const ClockDrawing = ({ t, F, W, kept, inbox, now }: DrawProps) => {
   );
 };
 
-/* ── 3 Morning: a night of questions, the sun up on an empty inbox ─────────── */
-
-const MO_GROUND = 238;
-const MO_TRAY = { x: 196, y: 198, w: 168, h: 40 };
-const MO_MARK = { x: 280, y: 150 };
-const MO_WAVE = [150, 410]; // the voice's wave over the inbox, from x to x
-const MO_LOSS = 7;
-const MO_WIN = 6;
-const MO_FROM = [[40, 92], [520, 100], [120, 76], [440, 78], [24, 140], [540, 150], [200, 70], [360, 72]] as const;
-const MO_STARS = [[80, 96], [480, 92], [520, 170], [40, 180], [160, 120], [410, 120]] as const;
-
-const MorningDrawing = ({ t, F, W, kept, inbox }: DrawProps) => {
-  const drawIn = kept ? 1 : easeOut(span(t, 0, REVEAL));
-  const FLY = 820;
-  const lossAt = spread(MO_LOSS, 300, Math.max(400, F - FLY - 80));
-  const landAt = (i: number) => lossAt(i) + FLY;
-  const DRAIN = 380;
-  const drainAt = (k: number) => F + 420 + (MO_LOSS - 1 - k) * 140;
-  const winAt = spread(MO_WIN, F + 1400, F + W * 0.78);
-  const TO = 560;
-  const waveY = MO_MARK.y + 2;
-  const hitX = (i: number) => mix(MO_WAVE[0] + 16, MO_WAVE[1] - 16, ((i * 3) % MO_WIN) / (MO_WIN - 1));
-  const reach = [...Array.from({ length: MO_LOSS }, (_, k) => drainAt(k) + DRAIN), ...Array.from({ length: MO_WIN }, (_, i) => winAt(i) + TO)];
-  const talk = talking(t, reach);
-  // the night: the moon across the sky; then the morning: the sun up on the right, the stars out
-  const moonK = span(t, 0, F + W * 0.8);
-  const moon = skyAt(280, 300, 230, 220, mix(0.08, 0.92, moonK));
-  const dawn = span(t, F + W * 0.78, F + W);
-  const sunY = mix(MO_GROUND + 18, 112, easeOut(dawn));
-  const night = 1 - dawn;
-  const wave = easeOut(span(t, F + 150, F + 650));
-  // the wave: calm, a ripple running along it while it talks
-  const wavePath = () => {
-    const [x0, x1] = MO_WAVE;
-    const n = 26;
-    let d = "";
-    for (let k = 0; k <= n; k++) {
-      const x = mix(x0, x1, k / n);
-      const fade = Math.sin((Math.PI * k) / n);
-      const y = waveY + fade * (2.5 + 9 * talk) * Math.sin(k * 1.25 - t / 70);
-      d += `${k ? " L" : "M"}${f(x)} ${f(y)}`;
-    }
-    return d;
-  };
-  return (
-    <>
-      <defs>
-        <clipPath id="mo-sky">
-          <rect x={0} y={0} width={DW} height={MO_GROUND - 3} />
-        </clipPath>
-      </defs>
-      {night > 0 && (
-        <g opacity={f(night * Math.min(1, moonK * 12))} transform={`translate(${f(moon.x)} ${f(moon.y)})`}>
-          <Moon />
-        </g>
-      )}
-      <Stars k={night * (kept ? 1 : span(t, 200, 700))} at={MO_STARS} />
-      {dawn > 0 && (
-        <g clipPath="url(#mo-sky)">
-          <g transform={`translate(468 ${f(sunY)})`}>
-            <Sun t={t} rise={span(dawn, 0.45, 1)} />
-          </g>
-        </g>
-      )}
-      {/* the horizon, either side of the inbox (it stands in the gap, its name clear under it) */}
-      <path className="mk-mid" d={`M30 ${MO_GROUND} H${MO_TRAY.x - 22} M${MO_TRAY.x + MO_TRAY.w + 22} ${MO_GROUND} H530`} {...drawn(drawIn)} />
-      <Inbox tray={MO_TRAY} t={t} kept={kept} inbox={inbox} n={MO_LOSS} landAt={landAt} drainAt={drainAt} drain={DRAIN} to={[MO_MARK.x, MO_MARK.y]} />
-
-      {/* the night's questions: before, into the inbox; after, answered at the wave */}
-      {Array.from({ length: MO_LOSS }, (_, i) => {
-        const at = lossAt(i);
-        if (t < at || t > landAt(i) + 60) return null;
-        const [sx, sy] = MO_FROM[i];
-        const s0 = slotOf(MO_TRAY, i);
-        const u = easeInOut(span(t, at + 120, landAt(i)));
-        const [x, y] = arc(sx, sy, [s0.x, s0.y - 12], u, 30);
-        return <Ask key={`a${i}`} x={x} y={y} s={spring(span(t, at, at + 300)) * (1 - easeIn(span(u, 0.82, 1)))} />;
-      })}
-      {Array.from({ length: MO_WIN }, (_, i) => {
-        const at = winAt(i);
-        const end = at + TO;
-        if (t < at || t > end + 60) return null;
-        const [sx, sy] = MO_FROM[(i + 2) % MO_FROM.length];
-        const [x, y] = arc(sx, sy, [hitX(i), waveY - 14], easeInOut(span(t, at + 120, end)), 20);
-        return <Ask key={`w${i}`} x={x} y={y} s={spring(span(t, at, at + 300)) * (1 - easeIn(span(t, end - 140, end)))} />;
-      })}
-      {Array.from({ length: MO_WIN }, (_, i) => (
-        <Pop key={`p${i}`} x={hitX(i)} y={waveY - 18} k={span(t, winAt(i) + TO - 40, winAt(i) + TO + 720)} />
-      ))}
-
-      {/* the voice: a wave over the inbox, from its button */}
-      {wave > 0 && <path className="mk-mid" d={wavePath()} {...drawn(wave)} />}
-      <AgentHead x={MO_MARK.x} y={MO_MARK.y} t={t} at={F} talk={talk} />
-      <Sparkle x={MO_TRAY.x - 14} y={MO_TRAY.y - 12} k={span(t, F + W - 250, F + W + 250)} size={8} />
-      <Sparkle x={MO_TRAY.x + MO_TRAY.w + 16} y={MO_TRAY.y - 2} k={span(t, F + W - 100, F + W + 400)} size={6} spin={20} />
-    </>
-  );
-};
-
-const DRAWINGS: Record<Exclude<DrawOption, "old">, { key: "sky" | "clock" | "morning"; Drawing: (p: DrawProps) => ReactNode }> = {
-  default: { key: "clock", Drawing: ClockDrawing },
-  1: { key: "sky", Drawing: SkyDrawing },
-  2: { key: "clock", Drawing: ClockDrawing },
-  3: { key: "morning", Drawing: MorningDrawing },
-};
-
 /**
  * Customer Support's drawing on its section's clock (`t` ms along the
- * scene, the fix at `fixAt`, its "after" `win` long, as SupportDay's), the
- * option picked by ?support= (none: the clock; "old": SupportDay). ◀◀ while
- * it rewinds.
+ * scene, the fix at `fixAt`, its "after" `win` long, supportClockTimes).
+ * ◀◀ while it rewinds.
  */
 export const SupportDrawing = ({
-  option,
   className,
   t,
   fixAt,
@@ -697,7 +449,6 @@ export const SupportDrawing = ({
   rewinding = false,
   active = true,
 }: {
-  option: DrawOption;
   className?: string;
   t: number;
   fixAt: number;
@@ -707,18 +458,15 @@ export const SupportDrawing = ({
   active?: boolean;
 }) => {
   const support = useMessages().landing.support;
-  const now = useNow(active && option !== "old");
+  const now = useNow(active);
   // drawn in once; from then on the scenery stays, so a replay never starts blank
   const played = useRef(false);
   if (t >= REVEAL) played.current = true;
-  if (option === "old") return <SupportDay className={className} t={t} fixAt={fixAt} win={win} rewinding={rewinding} />;
-  // (guarded: an unknown option falls back to the default drawing)
-  const { key, Drawing } = DRAWINGS[option] ?? DRAWINGS.default;
-  const copy = support.options[key];
+  const copy = support.options.clock;
   return (
     <div role="img" aria-label={copy.label} className={cn("bzl-day bzl-mk", className)}>
       <svg viewBox={`0 0 ${DW} ${DH}`} aria-hidden="true">
-        <Drawing t={t} F={fixAt} W={win} kept={played.current} inbox={support.day.inbox} now={now} />
+        <ClockDrawing t={t} F={fixAt} W={win} kept={played.current} inbox={support.day.inbox} now={now} />
         <Label t={t} F={fixAt} copy={copy} />
       </svg>
       <RewindMark on={rewinding} />

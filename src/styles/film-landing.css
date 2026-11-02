@@ -1387,7 +1387,8 @@
   .bzl-cta-underline path { transition: none; }
 }
 
-/* ── Pillar moments (PillarMoments.tsx): flat marker line art on the band,
+/* ── Pillar drawings (SupportDrawing, InsightsDrawing, on PillarMoments.tsx's
+   pieces): flat marker line art on the band,
    in the Sales funnel's style. The motion is computed from the loop's time
    in the component; these rules are the ink and the stroke weights.
    The ink: white reads only on the saturated Sales band, so on the light
@@ -1396,7 +1397,6 @@
 .bzl-mk {
   --mk-line: var(--acc-ink, #a84f0c);
   --mk-ink: var(--acc-ink, #a84f0c);
-  --mk-tint: rgb(255 255 255 / 0.5);
   --mk-main: 6.5px;
   --mk-mid: 4.5px;
   --mk-thin: 3.5px;
@@ -1420,7 +1420,6 @@
 .bzl-mk .mk-mid { stroke-width: var(--mk-mid); }
 .bzl-mk .mk-thin { stroke-width: var(--mk-thin); }
 .bzl-mk .mk-dot { fill: var(--mk-line); stroke-width: var(--mk-thin); }
-.bzl-mk .mk-tint { fill: var(--mk-tint); stroke: none; }
 /* labels: handwritten in marker, like the Sales funnel's (Caveat, bold) */
 .bzl-mk .mk-hand {
   fill: var(--mk-ink);
@@ -1436,8 +1435,8 @@
 .bzl[data-look="film"] .bzl-pillar .bzl-mk .mk-hand.is-q { font-size: 25px; }
 .bzl[data-look="film"] .bzl-pillar .bzl-mk .mk-hand.is-small { font-size: 23px; }
 
-/* Support's day (PillarMoments SupportDay): all in the marker's ink (no darker one for its label),
-   the agent's head and the tickets on white paper */
+/* the labels and the questions all in the marker's ink (no darker one for the label),
+   the tickets on white paper */
 .bzl-mk .mk-hand.is-label { font-size: 30px; }
 .bzl-mk .mk-hand.is-ask { font-size: 20px; }
 .bzl-mk .mk-white { fill: #fff; }

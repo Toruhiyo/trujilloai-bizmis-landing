@@ -254,7 +254,6 @@
 .bzl[data-look="film"] .bzl-pillar .bzl-mk {
   --mk-line: hsl(var(--primary));
   --mk-ink: hsl(var(--primary));
-  --mk-tint: rgb(249 163 83 / 0.12);
 }
 .bzl[data-look="film"] .bzl-pillar .bzl-mk .mk-hand { font-size: 29px; }
 .bzl[data-look="film"] .bzl-pillar .bzl-mk .mk-hand.is-big { font-size: 35px; }

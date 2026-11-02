@@ -5,10 +5,7 @@ import { cn } from "@/lib/utils";
 import Reveal from "./Reveal";
 import BenefitIntro, { PIN_QUERY } from "./pillar/BenefitIntro";
 import type { PinState } from "./pillar/BenefitIntro";
-import { supportDayTimes } from "./PillarMoments";
-import { useDrawOption } from "./drawOptions";
-import type { DrawOption } from "./drawOptions";
-import { SupportDrawing, supportClockTimes } from "./SupportOptions";
+import { SupportDrawing, supportClockTimes } from "./SupportDrawing";
 import { useMedia, useScrollThrough } from "./sales/hooks";
 import { usePinScene, useScrollPlayHold } from "./sceneClock";
 import RewindScreen from "./sales/RewindScreen";
@@ -19,9 +16,9 @@ import type { CaseKey } from "./support/SupportStore";
  * Customer Support: its chapter opener (index 02, the headset, "Customer
  * Support", "Fewer tickets. Happier customers.", BenefitIntro), then one
  * screen built like a Boost Sales beat: on the left the lead over the
- * merchant's benefit at scale, drawn in marker straight on the band (a day
- * and a night of the whole store's questions, piling up as tickets until
- * the agent lands, then each one answered right away by voice, SupportDay),
+ * merchant's benefit at scale, drawn in marker straight on the band (round
+ * the clock, the whole store's questions piling up as tickets until the
+ * agent lands, then caught on their way by voice, SupportDrawing),
  * on the right one shopper's case on a device (SupportStore). Layout: .bzs-*
  * in film-landing.css.
  *
@@ -57,10 +54,10 @@ const HOLD = 1500;
  * case itself or its drawing, whichever ends later (`sceneOf`), and the
  * track's length, the longest of them (`duration`, BenefitIntro's track).
  */
-const useCases = (option: DrawOption) => {
+const useCases = () => {
   const all = useMessages().supportDemo.cases;
   const cases = useMemo(() => (Object.keys(all) as CaseKey[]).map((k) => supportCase(all, k)), [all]);
-  const timesOf = option === "old" ? supportDayTimes : supportClockTimes;
+  const timesOf = supportClockTimes;
   const sceneOf = (c: (typeof cases)[number]) => Math.max(c.duration, timesOf(c.speakAt, c.duration).end);
   const duration = Math.max(...cases.map(sceneOf));
   return { cases, duration, timesOf, sceneOf };
@@ -93,9 +90,7 @@ const useRewindingOn = (t: number, on: boolean, linger = 420) => {
 const SupportBody = ({ pin }: { pin: PinState }) => {
   const m = useMessages();
   const s = m.landing.support;
-  // the drawing: none, the one Oriol picked (the clock); ?support=1|2|3 the options, "old" the one before
-  const option = useDrawOption("support");
-  const { cases, timesOf, sceneOf } = useCases(option);
+  const { cases, timesOf, sceneOf } = useCases();
   // the case playing: the next one each time the clock comes back to its start after reaching its end
   const [n, setN] = useState(0);
   const c = cases[n % cases.length];
@@ -129,7 +124,7 @@ const SupportBody = ({ pin }: { pin: PinState }) => {
         </Reveal>
         {/* the merchant's side, at scale: the store's day and night of questions */}
         <Reveal delay={80} className="bzs-day">
-          <SupportDrawing option={option} className="bzs-drawing" t={t} fixAt={day.fixAt} win={day.win} rewinding={rewinding} active={active} />
+          <SupportDrawing className="bzs-drawing" t={t} fixAt={day.fixAt} win={day.win} rewinding={rewinding} active={active} />
         </Reveal>
         {/* one shopper's case, on the same clock */}
         <Reveal delay={160} className="bzs-store">
@@ -146,7 +141,7 @@ const SupportSection = () => {
   const messages = useMessages();
   const s = messages.landing.support;
   const promise = `${s.title} ${s.titleTail}`;
-  const { duration } = useCases(useDrawOption("support"));
+  const { duration } = useCases();
   return (
     <section className="bzl-band bzl-pillar p-support bzp-section">
       <BenefitIntro
