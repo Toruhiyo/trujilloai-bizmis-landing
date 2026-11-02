@@ -118,9 +118,16 @@ const STATES: State[] = [
  * runs in real time), which moves up to ~400 clearly changed pixels of a drawing and thousands of
  * faintly changed ones. So a pixel counts from a plain colour step (threshold 0.2) and 1000 of them
  * (a 32x32 patch) fail the shot: a mockup spilling out, a cut-off piece or a missing one is far more.
+ * Counted at the 1440x900 layout's size: on a bigger screen the page is drawn bigger (big-screen.css,
+ * rem times min(width / 1440, height / 900)), so the same frame apart covers that scale squared in
+ * pixels (at 2560x1440, 1.6x: Customer Support's clock hand and bubble a frame apart are 1771
+ * pixels, about 690 at 1440x900), and the limit grows with it.
  */
 const ANIMATED = /sales-(match|clear|win|payoff)|support-(mid|end)|insights-(mid|end)|setup-(mid|end)/;
-const ANIMATED_COMPARE = { maxDiffPixels: 1000, threshold: 0.2 };
+const animatedCompare = (viewport: { width: number; height: number } | null | undefined) => {
+  const k = viewport ? Math.max(1, Math.min(viewport.width / 1440, viewport.height / 900)) : 1;
+  return { maxDiffPixels: Math.round(1000 * k * k), threshold: 0.2 };
+};
 
 /** The other languages' home pages: the states whose copy differs most, on a desktop and a phone. */
 const LOCALE_STATES = new Set(["01-hero", "03-sales-match-needs", "06-sales-payoff", "09-support-end", "12-insights-end", "14-setup-end", "15-customize", "16-end-card"]);
@@ -173,7 +180,11 @@ for (const [prefix, label] of [["", "en"], ["/es", "es"], ["/fr", "fr"]] as cons
       await scrollToY(page, place.y);
       await expectNoHorizontalOverflow(page, state.name);
       if (place.pin) await expectPinFits(page, place.pin, state.name);
-      await shot(page, `${label}-${state.name}.png`, ANIMATED.test(state.name) ? { compare: ANIMATED_COMPARE } : {});
+      await shot(
+        page,
+        `${label}-${state.name}.png`,
+        ANIMATED.test(state.name) ? { compare: animatedCompare(info.project.use.viewport) } : {},
+      );
     }
   });
 }
