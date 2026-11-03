@@ -1,4 +1,4 @@
-import { Check, ArrowRight, ChevronDown, Clock, ShieldCheck, Tag } from "lucide-react";
+import { Check, ArrowRight, ChevronDown, Clock, Info, ShieldCheck, Tag } from "lucide-react";
 import { useState, useRef, useEffect, useMemo } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import PageHead from "@/components/site/PageHead";
@@ -752,14 +752,25 @@ const Pricing = () => {
                         {messages.pricing.conversationsPerMonth}
                       </span>
                     </p>
-                    <p className="bzl-price-muted mt-0.5 text-[0.75rem] leading-snug">
-                      {messages.pricing.extraConversations(
-                        `$${formatOverageRate(plan.overageRatePerConversation)}`,
-                        extraSessionSaving > 0
-                          ? { percent: extraSessionSaving, plan: basePlan.name }
-                          : undefined,
-                      )}
+                    {/* the extra session's price, light: the spend cap on demand, the saving as a small badge */}
+                    <p className="bzl-price-muted mt-1 flex items-center gap-1 text-[0.75rem] leading-snug">
+                      <span className="tabular-nums">
+                        {messages.pricing.extraSessionRate(`$${formatOverageRate(plan.overageRatePerConversation)}`)}
+                      </span>
+                      <span className="bzl-price-tip">
+                        <button type="button" aria-label={messages.pricing.extraSessionCapLabel} className="bzl-price-tip-btn">
+                          <Info className="h-3.5 w-3.5" aria-hidden="true" />
+                        </button>
+                        <span role="tooltip" className="bzl-price-tip-body">
+                          {messages.pricing.extraSessionCap}
+                        </span>
+                      </span>
                     </p>
+                    {extraSessionSaving > 0 && (
+                      <span className="bzl-price-save mt-1 inline-block">
+                        {messages.pricing.extraSessionSaving(extraSessionSaving)}
+                      </span>
+                    )}
                   </div>
 
                   {/* Features: the top few, the rest on demand */}

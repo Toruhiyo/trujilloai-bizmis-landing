@@ -958,3 +958,42 @@
 @media (max-width: 1279px) {
   .bzl-price-page .bzl-price-grid { row-gap: 1.75rem; }
 }
+
+/* Pricing: an extra session's saving, a small badge; the spend cap in a tooltip (hover, focus or tap) */
+.bzl-price-save {
+  border-radius: 999px;
+  background: rgb(249 163 83 / 0.16);
+  color: #b45f12;
+  padding: 0.05rem 0.4rem;
+  font-size: 0.65rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+.bzl-price-tip { position: relative; display: inline-flex; }
+.bzl-price-tip-btn {
+  display: inline-flex;
+  border-radius: 999px;
+  color: inherit;
+  opacity: 0.7;
+}
+.bzl-price-tip-btn:hover, .bzl-price-tip-btn:focus-visible { opacity: 1; }
+.bzl-price-tip-body {
+  position: absolute;
+  bottom: calc(100% + 0.45rem);
+  right: -0.5rem;
+  z-index: 20;
+  width: max-content;
+  max-width: min(14rem, 80vw);
+  border-radius: 0.6rem;
+  background: #3b2416;
+  color: #fff;
+  padding: 0.45rem 0.65rem;
+  font-size: 0.75rem;
+  line-height: 1.35;
+  font-weight: 500;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.15s;
+}
+.bzl-price-tip:hover .bzl-price-tip-body,
+.bzl-price-tip:focus-within .bzl-price-tip-body { opacity: 1; }

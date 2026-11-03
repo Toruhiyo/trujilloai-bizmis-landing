@@ -562,6 +562,12 @@ export const en = {
     popular: "Popular",
     conversationsPerMonth: "sessions / month",
     /** `saving`: how much less an extra session costs than on the first plan. */
+    /** The card's short line: the extra session's price. */
+    extraSessionRate: (price: string) => `${price} / extra session`,
+    /** The badge: how much less an extra session costs than on the first plan. */
+    extraSessionSaving: (percent: number) => `${percent}% cheaper`,
+    extraSessionCap: "Extra sessions are only billed up to the spend cap you set. It starts at $0.",
+    extraSessionCapLabel: "About extra sessions",
     extraConversations: (price: string, saving?: { percent: number; plan: string }) =>
       `Extra sessions ${price} each${saving ? ` (${saving.percent}% less than ${saving.plan})` : ""}, up to the spend cap you set`,
     conversationDefinition:

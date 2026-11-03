@@ -548,6 +548,12 @@ export const fr: Messages = {
     perMonth: "/mois",
     popular: "Populaire",
     conversationsPerMonth: "sessions / mois",
+    /** The card's short line: the extra session's price. */
+    extraSessionRate: (price: string) => `${price} / session supplémentaire`,
+    /** The badge: how much less an extra session costs than on the first plan. */
+    extraSessionSaving: (percent: number) => `${percent}\u00a0% moins cher`,
+    extraSessionCap: "Les sessions supplémentaires ne sont facturées que dans la limite du plafond de dépenses que vous fixez. Il démarre à 0\u00a0$.",
+    extraSessionCapLabel: "À propos des sessions supplémentaires",
     extraConversations: (price: string, saving?: { percent: number; plan: string }) =>
       `Sessions supplémentaires à ${price} l'unité${saving ? ` (${saving.percent}\u00a0% de moins qu'avec ${saving.plan})` : ""}, dans la limite du plafond de dépenses que vous fixez`,
     conversationDefinition:
