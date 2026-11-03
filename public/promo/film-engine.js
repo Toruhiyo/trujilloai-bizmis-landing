@@ -34,6 +34,20 @@
       url: '',
       vo: 't-ea',
     },
+    // The Shopify App Store listing cut (feature media: no Shopify logos, no numbers, no Early Access, no urgency).
+    // The card's beats sit on v38's frames (film time, s), so v38's score fits it as it is.
+    listing: {
+      scarcity: '',
+      label: 'Add Bizmis to your store',
+      invite: 'your sales agent, in every language',
+      terms: ['Sells by voice and text', 'Knows your whole catalog', 'Speaks your shoppers’ language'],
+      beats: { vo: 114.833, write: 115.033, ticks: [117.033, 118.867, 120.433], final: 125.333 },   // vo: where the take starts in v38
+      pills: true,
+      shopify: true,   // the EA card's layout and motion
+      bag: false,
+      url: '',
+      vo: 't-listing',
+    },
     none: null,
   };
   // Skincare first: The Apricot Theory's color is the nearest to Bizmis
@@ -171,6 +185,7 @@
   // windows from here (PROMO_REEL_RUN only names the cards).
   const PROMO_REEL_CUTS_S = [3.849, 7.079, 10.17, 13.378, 15.328, 16.21, 16.98, 17.656, 18.196, 18.736, 19.267, 19.667, 20.055, 20.322, 20.458, 20.589, 20.72, 20.859, 20.985, 21.129, 21.274, 21.404, 21.819];   // v27: the approved ladder on the v27 score's claps, "Your store" on its loudest hit (tmp/ad-1-audio/cuts_v25.py); v28b: the last 10 quick stores on the score's own 16th-note fill (110.30-111.65 s film), then its 0.4 s breath into the hit
   const PROMO_SHOPIFY_BAG = 'M15.337 23.979l7.216-1.561s-2.604-17.613-2.625-17.73c-.018-.116-.114-.192-.211-.192s-1.929-.136-1.929-.136-1.275-1.274-1.439-1.411c-.045-.037-.075-.057-.121-.074l-.914 21.104h.023zM11.71 11.305s-.81-.424-1.774-.424c-1.447 0-1.504.906-1.504 1.141 0 1.232 3.24 1.715 3.24 4.629 0 2.295-1.44 3.76-3.406 3.76-2.354 0-3.54-1.465-3.54-1.465l.646-2.086s1.245 1.066 2.28 1.066c.675 0 .975-.545.975-.932 0-1.619-2.654-1.694-2.654-4.359-.034-2.237 1.571-4.416 4.827-4.416 1.257 0 1.875.361 1.875.361l-.945 2.715-.02.01zM11.17.83c.136 0 .271.038.405.135-.984.465-2.064 1.639-2.508 3.992-.656.213-1.293.405-1.889.578C7.697 3.75 8.951.84 11.17.84V.83zm1.235 2.949v.135c-.754.232-1.583.484-2.394.736.466-1.777 1.333-2.645 2.085-2.971.193.501.309 1.176.309 2.1zm.539-2.234c.694.074 1.141.867 1.429 1.755-.349.114-.735.231-1.158.366v-.252c0-.752-.096-1.371-.271-1.871v.002zm2.992 1.289c-.02 0-.06.021-.078.021s-.289.075-.714.21c-.423-1.233-1.176-2.37-2.508-2.37h-.115C12.135.209 11.669 0 11.265 0 8.159 0 6.675 3.877 6.21 5.846c-1.194.365-2.063.636-2.16.674-.675.213-.694.232-.772.87-.075.462-1.83 14.063-1.83 14.063L15.009 24l.927-21.166z';
+  const PROMO_INSTALL_GLYPH = 'M5 20h14v-2H5v2zM19 9h-4V3H9v6H5l7 7 7-7z';   // a plain download arrow: the listing cut's Install pill (no Shopify logo in App Store feature media)
   const PROMO_VO_ON = promoBootParams.get('vo') === '1';
   const PROMO_VO_BUDGET_S = [
     { scene: 'pain', seconds: 13 },
@@ -197,6 +212,7 @@
     { scene: 'end', id: 'see-it', line: 'See it in action.', cta: 'demo' },
     { scene: 'end', id: 't-ea', line: 'Install now to join Early Access! A hundred and twenty free sessions, fifty percent off upgrades, and you shape the roadmap. Only fifty spots. Secure yours by installing now!', cta: 'ea' },   // v24: the short take (v35: a powerful close)
     { scene: 'end', id: 'install-shopify', line: 'Install it on Shopify.', cta: 'install' },
+    { scene: 'end', id: 't-listing', line: 'Add Bizmis to your store, and give every shopper a sales agent to talk to.', cta: 'listing' },
   ];
   function ensureInviteFont() {
     if (document.getElementById('promo-invite-font')) return;
@@ -8652,6 +8668,7 @@
       slot.className = 'promo-pass-slot';
       slot.setAttribute('data-promo-pass-slot', '');
       slot.dataset.cta = key;
+      slot.classList.toggle('is-listing', Boolean(copy?.beats));
       if (copy.scarcity) {
         const line = document.createElement('p');
         line.className = 'promo-pass-slot__line';
@@ -8666,7 +8683,8 @@
         const label = document.createElement('span');
         label.className = 'promo-pass-slot__shopify-label';
         label.textContent = copy.label;
-        action.append(shopifyBag(), label);
+        if (copy.bag === false) action.append(label);
+        else action.append(shopifyBag(), label);
       } else {
         action.textContent = copy.label;
       }
@@ -8700,7 +8718,7 @@
         row.innerHTML = `<div class="promo-ea-pills__row">${(copy.terms || []).map((t) => `<p class="promo-ea-pill is-benefit"><svg class="promo-ea-pill__check" viewBox="0 0 24 24" aria-hidden="true"><path pathLength="1" d="M5 12.5l4.4 4.4L19 7.4"/></svg><span>${t}</span></p>`).join('')}</div>`
           // v14: no extras row: the three benefits and the scarcity are the whole card (the VO says the rest)
           // v13 (S1): the scarcity handwritten in Bizmis orange, a hand-drawn underline under it
-          + `<div class="promo-ea-pills__row is-hand"><p class="promo-ea-hand"><span class="promo-ea-hand__text">${copy.aside || 'Only 50 spots'}!</span><svg class="promo-ea-hand__line" viewBox="0 0 240 24" preserveAspectRatio="none" aria-hidden="true"><path pathLength="1" d="M6 15.5c38-5.2 92-7.6 150-6.4 26 .6 52 2.2 78 4.8"/><path pathLength="1" d="M28 20.2c44-3.4 104-4.2 168-1.6"/></svg></p></div>`;
+          + (copy.aside === undefined ? '' : `<div class="promo-ea-pills__row is-hand"><p class="promo-ea-hand"><span class="promo-ea-hand__text">${copy.aside || 'Only 50 spots'}!</span><svg class="promo-ea-hand__line" viewBox="0 0 240 24" preserveAspectRatio="none" aria-hidden="true"><path pathLength="1" d="M6 15.5c38-5.2 92-7.6 150-6.4 26 .6 52 2.2 78 4.8"/><path pathLength="1" d="M28 20.2c44-3.4 104-4.2 168-1.6"/></svg></p></div>`);
         slot.append(row);
       }
       if (copy.shopify && copy.morph) {
@@ -8835,6 +8853,12 @@
         // benefit pills rise in as they're said, "Only 50 spots" lands on
         // "only fifty spots", and "Install now to secure your spot" clears to the hero.
         const take = speakTake(copy.vo);
+        if (copy.beats) {
+          await this.playListingBeats(slot, copy);
+          await waitMs(PROMO_EA_FINAL_HOLD_MS + promoHoldMs());
+          this.depart();
+          return;
+        }
         await waitMs(200);
         slot.classList.add('is-writing');
         shown.add('invite'); recenter(700);
@@ -8936,6 +8960,51 @@
         await waitMs(PROMO_END_CARD_HOLD_MS + promoHoldMs());
       }
       this.depart();
+    }
+
+    // The listing card (cta=listing): the handwritten line, then each tick, on v38's beats (film time); on the
+    // score's final chord a shine runs across the headline and a warm light blooms behind it. Nothing bows out:
+    // the whole card is the last frame. Stepped (export-safe).
+    async playListingBeats(slot, copy) {
+      const { beats } = copy;
+      // in the full film the beats wait on film time; alone (part=cta) they keep their distance from the take's start
+      const start = performance.now();
+      const until = (sec) => (marketingPart() === 'full' && window.__promoFilmT0 != null
+        ? untilFilm(sec) : waitMs(Math.max(0, start + (sec - beats.vo) * 1000 - performance.now())));
+      await until(beats.write);
+      slot.classList.add('is-writing');
+      promoSfx('ea-write', { ms: PROMO_EA_WRITE_MS });
+      await waitMs(PROMO_EA_WRITE_MS * 0.6);
+      slot.classList.add('is-written');
+      const pills = [...slot.querySelectorAll('.promo-ea-pill.is-benefit')];
+      for (const [k, at] of beats.ticks.entries()) {
+        await until(at);
+        const pill = pills[k];
+        if (pill) {
+          const check = pill.querySelector('.promo-ea-pill__check path');
+          if (check) { check.style.strokeDasharray = '1'; check.style.strokeDashoffset = '1'; }
+          tweenStep(520, (e) => { pill.style.opacity = Math.min(1, e * 1.6).toFixed(3); pill.style.translate = `0 ${((1 - e) * 0.4).toFixed(3)}em`; }, promoEaseOut);
+          if (check) window.setTimeout(() => tweenStep(380, (e) => { check.style.strokeDashoffset = (1 - e).toFixed(3); }, promoEaseOut), 120);
+        }
+        promoSfx('ea-tick', { index: k });
+      }
+      const action = slot.querySelector('.promo-pass-slot__action');
+      const bloom = document.createElement('span');
+      bloom.className = 'promo-ea-bloom';
+      bloom.setAttribute('aria-hidden', 'true');
+      bloom.style.opacity = '0';
+      action?.prepend(bloom);
+      await until(beats.final - 0.8);
+      tweenStep(800, (e) => { bloom.style.opacity = (0.4 * e * e).toFixed(3); }, (u) => u);
+      await until(beats.final);
+      promoSfx('ea-final');
+      const label = action?.querySelector('.promo-pass-slot__shopify-label');
+      if (label) {
+        label.classList.add('is-shine');
+        tweenStep(760, (e) => { label.style.backgroundPosition = `${(100 - e * 100).toFixed(2)}% 0`; }, promoEaseInOut)
+          .then(() => { label.classList.remove('is-shine'); label.style.backgroundPosition = ''; });
+      }
+      tweenStep(1100, (e) => { bloom.style.opacity = (0.4 + 0.3 * Math.sin(e * Math.PI) - 0.08 * e).toFixed(3); bloom.style.scale = (1 + 0.1 * e).toFixed(3); }, promoEaseOut);
     }
 
     // The end card closes: the benefits (already read) bow out, the card
@@ -9088,7 +9157,7 @@
           <span class="promo-sync__focus"></span>
           <span class="promo-sync__pill">
             <span class="promo-sync__fill"></span>
-            <span class="promo-sync__face is-install"><svg class="promo-sync__bag" viewBox="0 0 24 24" aria-hidden="true"><path d="${PROMO_SHOPIFY_BAG}"/></svg><span>Install</span></span>
+            <span class="promo-sync__face is-install"><svg class="promo-sync__bag" viewBox="0 0 24 24" aria-hidden="true"><path d="${PROMO_END_CTA[promoVideoConfig.cta]?.bag === false ? PROMO_INSTALL_GLYPH : PROMO_SHOPIFY_BAG}"/></svg><span>Install</span></span>
             <svg class="promo-sync__progress" viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="13.5"/><circle pathLength="1" cx="20" cy="20" r="13.5"/></svg>
             <span class="promo-sync__check">${tick}</span>
             <span class="promo-sync__face is-done"><span class="promo-sync__disc">${tick}</span><span>Installed</span></span>

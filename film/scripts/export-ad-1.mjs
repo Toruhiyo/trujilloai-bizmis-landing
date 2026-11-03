@@ -30,7 +30,7 @@ function hasFlag(name) {
 function usage() {
   return [
     'Usage: node film/scripts/export-ad-1.mjs [options]',
-    '  --cta demo|ea|install|none     default install',
+    '  --cta demo|ea|install|listing|none  default install (listing: the App Store feature cut)',
     '  --part full|pain|pitch|sync|reel|cta  default full (sync: the scene + its hand-off into the reel; reel: sync + the whole reel)',
     '  --resolution 1920x1080         or 3840x2160',
     '  --preview                      layout at 1920x1080, file is 960x540, 6fps',
@@ -872,7 +872,7 @@ async function main() {
     timeoutMs: 4000,
     preview,
   };
-  if (!['demo', 'ea', 'install', 'none'].includes(cta)) throw new Error(`Unknown cta "${cta}".`);
+  if (!['demo', 'ea', 'install', 'listing', 'none'].includes(cta)) throw new Error(`Unknown cta "${cta}".`);
   if (!['full', 'pain', 'pitch', 'sync', 'reel', 'cta', 'climax-pain', 'climax-pitch'].includes(part)) throw new Error(`Unknown part "${part}".`);
   if (!['ffv1', 'prores', 'h264'].includes(codec)) throw new Error(`Unknown codec "${codec}".`);
   if (options.beginFrame) {
