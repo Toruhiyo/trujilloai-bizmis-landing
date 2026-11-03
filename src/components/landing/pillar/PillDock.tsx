@@ -107,7 +107,7 @@ export const PillBar = ({
   lines?: string[];
   /** Sales' line (SalesTitle, its current part lit). */
   children?: ReactNode;
-  /** ?scroll=steps: a progress bar under the pill, a segment a beat (steps/StepBar). */
+  /** touch screens (lib/scrollSteps): a progress bar under the pill, a segment a beat (steps/StepBar). */
   steps?: number;
 }) => {
   const main = byOutcome && lines?.length ? <DockLine lines={lines} /> : children;

@@ -94,7 +94,7 @@ const FilmLandingSections = () => {
       <SetupSection />
       <CustomizeSection />
       <EndCard />
-      {/* ?scroll=steps: the idle "scroll on" chevron (nothing without the flag) */}
+      {/* touch screens (lib/scrollSteps): the idle "scroll on" chevron (nothing with a mouse) */}
       <IdleCue />
     </>
   );

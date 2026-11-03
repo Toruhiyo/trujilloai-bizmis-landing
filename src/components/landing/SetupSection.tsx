@@ -34,7 +34,8 @@ import {
 } from "./sales/hooks";
 import RewindScreen from "./sales/RewindScreen";
 import { runFor } from "./pillar/BenefitIntro";
-import { SnapMarks, useStepsReport } from "./steps/steps";
+import { SnapStops, useStepsReport } from "./steps/steps";
+import { useScrollSteps } from "@/lib/scrollSteps";
 
 // Same order as messages.landing.setup.cards (and the classic landing's setup.dataCards). Line icons, as the page's.
 const ICONS = [Globe, Tag, Percent, ShieldCheck, Users, Package];
@@ -338,7 +339,7 @@ const SetupSection = () => {
   const doneAt = cardAt(n - 1) + 150 + CARD_EVERY;
   const duration = doneAt + CHARGE_MS + FLOW_MS;
   // the pinned track's scroll (screens) and where on it the timeline starts and ends
-  const track = runFor(duration);
+  const track = runFor(duration, useScrollSteps());
 
   // the scroll clock: pinned, the track's progress (the page holds while it plays); else the visual's way through the screen
   const clamp01 = (v: number) => Math.min(1, Math.max(0, v));
@@ -351,7 +352,7 @@ const SetupSection = () => {
   const play = useScrollPlay(goal * duration, duration, active);
   const t = reduced ? duration : Math.min(duration, Math.max(0, play));
   const rewinding = useRewindingOn(t, active);
-  // ?scroll=steps: no pill here, so no progress bar; it tells the idle cue when the scene has played out
+  // touch screens (lib/scrollSteps): no pill here, so no progress bar; it tells the idle cue when the scene has played out
   useStepsReport(section, { count: 1, index: 0, fill: t / duration, active: pinned && active });
 
   // pinned, the screen's content kept whole: scaled down if it comes out taller than the screen
@@ -697,8 +698,8 @@ const SetupSection = () => {
 
         </div>
       </div>
-      {/* ?scroll=steps: the soft snap's point where the scene rests (after the pin, the section's first child) */}
-      {pinned && <SnapMarks rests={[track.rest]} />}
+      {/* touch screens (lib/scrollSteps): the stop a swipe settles on (after the pin, the section's first child) */}
+      {pinned && <SnapStops rests={[track.rest]} />}
     </section>
   );
 };

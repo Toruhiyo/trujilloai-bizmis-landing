@@ -70,7 +70,7 @@ export type PillarIntroProps = {
   outcome?: string[];
   /** The small area label (default: PillarAreaContext). */
   area?: ReactNode;
-  /** ?scroll=steps: how many beats the pinned content has (a progress bar under the docked pill). */
+  /** touch screens (lib/scrollSteps): how many beats the pinned content has (a progress bar under the docked pill). */
   steps?: number;
   children?: ReactNode;
 };

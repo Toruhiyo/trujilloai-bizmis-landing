@@ -9,6 +9,7 @@ import { AvatarIcon, VoiceIcon } from "./AnimatedIcons";
 import { Palette } from "lucide-react";
 import Reveal from "./Reveal";
 import SectionHead from "./SectionHead";
+import { SectionStop } from "./steps/steps";
 
 // Real Bizmis avatars, each wearing a (fictional, AI-generated) store's logo: either a vivid shirt
 // with a one-colour logo, or a neutral or pale shirt with a multicolour one. Every shirt follows its
@@ -153,6 +154,8 @@ const CustomizeSection = () => {
           </Reveal>
         </div>
       </div>
+      {/* touch screens (lib/scrollSteps): the stop a swipe settles on, the section under the nav */}
+      <SectionStop />
     </section>
   );
 };

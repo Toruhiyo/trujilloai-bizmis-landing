@@ -3,7 +3,7 @@ import { useRewindLoop } from "../useRewindLoop";
 import type { RewindLoopOptions } from "../useRewindLoop";
 import { VISUAL_TEST, VISUAL_TEST_NOW } from "@/lib/visualTest";
 import { viewportHeight } from "@/lib/utils/scroll";
-import { scrollSteps } from "@/lib/scrollSteps";
+import { useScrollSteps } from "@/lib/scrollSteps";
 
 const query = "(prefers-reduced-motion: reduce)";
 
@@ -328,7 +328,7 @@ const pageScrolling = (now: number) => now - pageScroll.at < SCROLL_REST;
  * plays the beat forward again instead. Inactive (`active: false`), it simply
  * sits on `target`. Reduced motion: it sits on the end.
  *
- * Timed (?scroll=steps, lib/scrollSteps): scrolling on never pulls it; it
+ * Timed (touch screens, lib/scrollSteps): scrolling on never pulls it; it
  * starts from the beat's start as the beat comes on and plays by time (at
  * `rate`), the scroll only choosing which beat is on. Scrolling back still
  * rewinds it to the scroll, and the rest loop is the same.
@@ -338,14 +338,14 @@ export const useScrollPlay = (
   duration: number,
   active: boolean,
   hold: number = FIXED_HOLD,
-  /** How fast it plays on (?scroll=steps: a beat flown past finishes at up to 2x). */
+  /** How fast it plays on (touch screens: a beat flown past finishes at up to 2x). */
   rate = 1,
 ) => {
   // the scroll's place on the timeline, always on it (a fast entry can hand in a hair below 0, which read as a rewind)
   const target = Math.min(duration, Math.max(0, rawTarget));
   const reduced = useReducedMotion();
-  // ?scroll=steps (lib/scrollSteps): the scroll only picks the beat, which then plays by time
-  const [timed] = useState(() => scrollSteps().time);
+  // Touch screens (lib/scrollSteps): the scroll only picks the beat, which then plays by time
+  const timed = useScrollSteps().time;
   const [t, setT] = useState(target);
   const tgt = useRef(target);
   const cur = useRef(target);

@@ -1,26 +1,5 @@
-/* The ?scroll=steps trial (lib/scrollSteps, components/landing/steps). Nothing
-   here applies without the flag: the classes are only ever set by it. */
-
-/* the soft snap: proximity only (never mandatory), onto the points in the pinned tracks (steps/SnapMarks) */
-html.bzl-snap {
-  scroll-snap-type: y proximity;
-}
-.bzl-snaps {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 1px;
-  height: 0;
-  pointer-events: none;
-  visibility: hidden;
-}
-.bzl-snap-mark {
-  position: absolute;
-  left: 0;
-  width: 1px;
-  height: 1px;
-  scroll-snap-align: start;
-}
+/* The stepped mode on touch screens (lib/scrollSteps, components/landing/steps):
+   its progress bar and idle cue. Nothing here applies with a mouse or trackpad. */
 
 /* the progress bar under the docked pill: a segment a beat, the one playing filling as it plays */
 .bzl-steps {

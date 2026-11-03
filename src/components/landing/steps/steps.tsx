@@ -1,96 +1,80 @@
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import type { RefObject } from "react";
-import { scrollSteps } from "@/lib/scrollSteps";
+import { useScrollSteps } from "@/lib/scrollSteps";
+import type { ScrollSteps } from "@/lib/scrollSteps";
 import { useReducedMotion } from "../sales/hooks";
+import { addSnapSource } from "./settleSnap";
+import type { SnapZone } from "./settleSnap";
 
 /*
- * The ?scroll=steps trial's pieces (lib/scrollSteps), each on its own switch:
- * the soft snap in a pinned track (SnapMarks), the progress bar under a
+ * The stepped mode's pieces on touch screens (lib/scrollSteps): the stops a
+ * swipe settles on (SnapStops, steps/settleSnap), the progress bar under a
  * docked pill (StepBar, fed by useStepsReport) and the idle "scroll on" cue
- * at its end (IdleCue). None of them renders anything without the flag.
+ * at its end (IdleCue). None of them does anything with a mouse or trackpad.
  */
 
-/** Where a beat rests, in beat lengths from its start (the snap's point): the middle of its stretch. */
+/** Where a beat rests, in beat lengths from its start (its stop): the middle of its stretch. */
 export const STEP_REST = 0.5;
 /** Timed beats: the share of a beat's stretch over which scrolling back rewinds it (the rest holds its end). */
 export const STEP_RUN = 0.4;
 
-const COARSE = "(hover: none) and (pointer: coarse)";
+/** How far before a pinned track the page still counts as in it, for the settle (share of the screen's height). */
+const LEAD_IN = 0.35;
 
-/** How many SnapMarks are on the page: the snap is on while there are any. */
-let marks = 0;
-const setSnap = (on: boolean) => {
-  const root = document.documentElement;
-  if (on) {
-    root.dataset.bzlSnap = "on";
-    root.classList.add("bzl-snap");
-  } else {
-    delete root.dataset.bzlSnap;
-    root.classList.remove("bzl-snap");
-  }
-};
+const viewH = () => document.documentElement.clientHeight || window.innerHeight;
 
 /**
- * The soft snap in a pinned track (put inside the track, after its pin: the
- * pin stays the track's first child): a point at each of `rests` (the track's
- * progress, 0 → 1, where a beat rests), placed from the track's travel and the
- * pin's sticky top (measured), aligned to the screen's top. The page's root
- * snaps to them by proximity only (html.bzl-snap, scroll-steps.css), never
- * mandatory, and no event is touched.
- *
- * Only when asked for (snap=touch: touch screens, snap=all: everywhere; never
- * with reduced motion). Both Chrome and Safari snap to a point within a third
- * of a screen of where a scroll stops, whichever way it went: a fling lands on
- * a beat, but a slow drag on a phone, a wheel notch or a small trackpad move
- * is pulled back where it started. (Tried and dropped: "covering" areas, free
- * inside a beat and snapping only near the seam between two; Chrome cuts an
- * area's free stretch short a screen before the next, and Safari had no way
- * back across a seam for a short scroll up.)
+ * A pinned track's stops (put inside the track, after its pin: the pin stays
+ * the track's first child): one at each of `rests` (the track's progress,
+ * 0 → 1, where a beat rests), measured when a swipe settles (the track's
+ * travel and the pin's sticky top). Its zone, where a settling scroll is
+ * eased onto one of them, is the track's own stretch of scroll, from a third
+ * of a screen before the pin sticks to where it lets go: past it the page is
+ * free. Renders nothing.
  */
-export const SnapMarks = ({ rests }: { rests: number[] }) => {
-  const [flags] = useState(scrollSteps);
+export const SnapStops = ({ rests }: { rests: number[] }) => {
+  const flags = useScrollSteps();
   const reduced = useReducedMotion();
-  const [touch] = useState(() => typeof window !== "undefined" && window.matchMedia?.(COARSE).matches === true);
-  const on = !reduced && (flags.snap === "all" || (flags.snap === "touch" && touch));
+  const on = flags.snap && !reduced;
   const box = useRef<HTMLSpanElement>(null);
-  const [tops, setTops] = useState<number[]>([]);
   const key = rests.map((v) => v.toFixed(4)).join(",");
-
   useEffect(() => {
-    if (!on) return;
-    marks += 1;
-    setSnap(true);
-    return () => {
-      marks -= 1;
-      if (!marks) setSnap(false);
-    };
-  }, [on]);
-
-  useLayoutEffect(() => {
     const track = box.current?.parentElement;
     const pin = track?.firstElementChild as HTMLElement | null;
     if (!on || !track || !pin) return;
-    const measure = () => {
+    const list = key.split(",").map(Number);
+    return addSnapSource((): SnapZone | null => {
       const travel = track.offsetHeight - pin.offsetHeight;
+      if (travel <= 0 || getComputedStyle(pin).position !== "sticky") return null;
       const stick = parseFloat(getComputedStyle(pin).top) || 0;
-      setTops(key.split(",").map((p) => Math.round(Number(p) * travel - stick)));
-    };
-    measure();
-    if (typeof ResizeObserver === "undefined") return;
-    const ro = new ResizeObserver(measure);
-    ro.observe(track);
-    ro.observe(pin);
-    return () => ro.disconnect();
+      const start = track.getBoundingClientRect().top + window.scrollY - stick;
+      return { from: start - viewH() * LEAD_IN, to: start + travel, stops: list.map((p) => start + p * travel) };
+    });
   }, [on, key]);
+  return on ? <span ref={box} hidden /> : null;
+};
 
-  if (!on) return null;
-  return (
-    <span ref={box} className="bzl-snaps" aria-hidden="true">
-      {tops.map((top, i) => (
-        <i key={i} className="bzl-snap-mark" style={{ top }} />
-      ))}
-    </span>
-  );
+/**
+ * A section's stop that isn't pinned (Customize): its top just under the nav.
+ * Its zone runs from a third of a screen above that to where its bottom
+ * reaches the screen's. Put inside the section.
+ */
+export const SectionStop = () => {
+  const flags = useScrollSteps();
+  const reduced = useReducedMotion();
+  const on = flags.snap && !reduced;
+  const box = useRef<HTMLSpanElement>(null);
+  useEffect(() => {
+    const section = box.current?.parentElement;
+    if (!on || !section) return;
+    return addSnapSource((): SnapZone => {
+      const nav = document.getElementById("site-navbar")?.getBoundingClientRect().height ?? 0;
+      const vh = viewH();
+      const stop = section.getBoundingClientRect().top + window.scrollY - nav;
+      return { from: stop - vh * LEAD_IN, to: stop + Math.max(0, section.offsetHeight + nav - vh), stops: [stop] };
+    });
+  }, [on]);
+  return on ? <span ref={box} hidden /> : null;
 };
 
 /**
@@ -98,19 +82,22 @@ export const SnapMarks = ({ rests }: { rests: number[] }) => {
  * filled by useStepsReport, and the idle cue's chevron at its end (IdleCue).
  * With `dots=0` only the chevron's room is there.
  */
-export const StepBar = ({ count }: { count: number }) => (
-  <span className="bzl-steps" aria-hidden="true" data-count={count} data-dots={scrollSteps().dots ? undefined : "0"}>
-    {Array.from({ length: count }, (_, i) => (
-      <i key={i} />
-    ))}
-    <svg className="bzl-cue" viewBox="0 0 12 8">
-      <path d="M1.5 1.75l4.5 4.5 4.5-4.5" />
-    </svg>
-  </span>
-);
+export const StepBar = ({ count }: { count: number }) => {
+  const flags = useScrollSteps();
+  return (
+    <span className="bzl-steps" aria-hidden="true" data-count={count} data-dots={flags.dots ? undefined : "0"}>
+      {Array.from({ length: count }, (_, i) => (
+        <i key={i} />
+      ))}
+      <svg className="bzl-cue" viewBox="0 0 12 8">
+        <path d="M1.5 1.75l4.5 4.5 4.5-4.5" />
+      </svg>
+    </span>
+  );
+};
 
-/** Whether the pills carry the bar on this page (the progress, or the idle cue at its end). */
-export const stepBarOn = () => scrollSteps().dots || scrollSteps().cue;
+/** Whether the pills carry the bar (the progress, or the idle cue at its end). */
+export const stepBarOn = (flags: ScrollSteps) => flags.dots || flags.cue;
 
 /* ── the idle cue's state: the sections whose beat has played to its end (when, and their bar) ── */
 const ready = new Map<string, { at: number; bar: HTMLElement | null }>();
@@ -125,7 +112,7 @@ const setReady = (id: string, on: boolean, bar: HTMLElement | null) => {
 let ids = 0;
 
 /**
- * A pinned section tells the trial's pieces where it is: `count` beats, the
+ * A pinned section tells the stepped mode's pieces where it is: `count` beats, the
  * one on (`index`) and how far it has played (`fill`, 0 → 1), while `active`.
  * It fills the segments of the StepBar in the docked pill over `anchor` (the
  * pill of the PillarIntro it sits in), written straight on them (no
@@ -136,7 +123,7 @@ export const useStepsReport = (
   anchor: RefObject<Element | null>,
   { count, index, fill, active }: { count: number; index: number; fill: number; active: boolean },
 ) => {
-  const [flags] = useState(scrollSteps);
+  const flags = useScrollSteps();
   const [id] = useState(() => `s${(ids += 1)}`);
   const bar = useRef<HTMLElement | null>(null);
   const last = useRef<string[]>([]);
@@ -153,8 +140,17 @@ export const useStepsReport = (
       bar.current = anchor.current?.closest(".pi")?.querySelector<HTMLElement>(".pi-dock .bzl-steps") ?? null;
     return bar.current;
   };
+  const lastFill = useRef("");
   useLayoutEffect(() => {
-    if (!flags.dots || !active) return;
+    if (!flags.on || !active) return;
+    // (the section's place in its scene, for whoever needs it: the visual suite waits on it)
+    const fillText = `${index}:${(Math.floor(f * 100) / 100).toFixed(2)}`;
+    if (lastFill.current !== fillText) {
+      lastFill.current = fillText;
+      const section = anchor.current?.closest("section");
+      if (section) section.dataset.stepFill = fillText;
+    }
+    if (!flags.dots) return;
     const el = find();
     if (!el) return;
     const kids = el.children;
@@ -196,7 +192,7 @@ let shows = 0;
  * Setup, has no cue). Mounted once for the page.
  */
 export const IdleCue = () => {
-  const [flags] = useState(scrollSteps);
+  const flags = useScrollSteps();
   useEffect(() => {
     if (!flags.cue) return;
     let lastScroll = performance.now();

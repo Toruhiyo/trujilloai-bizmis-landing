@@ -108,7 +108,7 @@ const SupportBody = ({ pin }: { pin: PinState }) => {
   const t = Math.min(duration, Math.max(0, pin.pinned ? scene : own));
   const active = pin.pinned ? pin.active : through;
   const rewinding = useRewindingOn(t, active);
-  // ?scroll=steps: the scene's progress under the docked pill (the case playing, one segment)
+  // touch screens (lib/scrollSteps): the scene's progress under the docked pill (the case playing, one segment)
   useStepsReport(body, { count: 1, index: 0, fill: t / duration, active });
   const reached = useRef(false);
   useEffect(() => {

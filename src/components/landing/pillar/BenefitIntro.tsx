@@ -1,10 +1,11 @@
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import type { ReactNode } from "react";
-import { scrollSteps } from "@/lib/scrollSteps";
+import { useScrollSteps } from "@/lib/scrollSteps";
+import type { ScrollSteps } from "@/lib/scrollSteps";
 import { cn } from "@/lib/utils";
 import PillarIntro from "../PillarIntro";
 import { useMedia, useOnScreen, usePinProgress, useRewinding, useScrollPlay } from "../sales/hooks";
-import { SnapMarks, STEP_REST, STEP_RUN, stepBarOn } from "../steps/steps";
+import { SnapStops, STEP_REST, STEP_RUN, stepBarOn } from "../steps/steps";
 import "@/styles/pillar-intro.css";
 import "@/styles/pillar-openers.css";
 
@@ -34,15 +35,15 @@ export const PIN_QUERY = "(min-width: 1024px) and (min-height: 600px)";
 export const SCROLL_PER_S = 0.2;
 export const END_HOLD = 0.6;
 export const LEAD_IN = 0.06;
-/** ?scroll=steps with `short` (lib/scrollSteps): a scene's track is a screen of scroll, whatever its length. */
+/** Touch screens, with `short` (lib/scrollSteps): a scene's track is a screen of scroll, whatever its length. */
 const STEPS_RUN = 1;
 
 /**
  * A pinned track's scroll (screens) for a scene of `duration` ms, where on it (0 → 1) the scene
- * starts and ends, and where it rests (`rest`: the ?scroll=steps snap's mark, in its held end).
+ * starts and ends, and where it rests (`rest`: the touch screens' stop, in its held end).
  */
-export const runFor = (duration: number) => {
-  if (scrollSteps().short) return { run: STEPS_RUN, from: 0, to: STEP_RUN / STEPS_RUN, rest: STEP_REST / STEPS_RUN };
+export const runFor = (duration: number, steps?: ScrollSteps) => {
+  if (steps?.short) return { run: STEPS_RUN, from: 0, to: STEP_RUN / STEPS_RUN, rest: STEP_REST / STEPS_RUN };
   const run = LEAD_IN + (duration / 1000) * SCROLL_PER_S + END_HOLD;
   const to = (run - END_HOLD) / run;
   return { run, from: LEAD_IN / run, to, rest: (to + 1) / 2 };
@@ -110,6 +111,7 @@ const render = (children: Props["children"], state: PinState) =>
  * the flow.
  */
 const BenefitIntro = (props: Props) => {
+  const steps = useScrollSteps();
   const wide = useMedia(props.pinQuery ?? PIN_QUERY);
   const pinned = wide && Boolean(props.outcome);
   const { icon, name, promise, area, outcome, duration, className, children } = props;
@@ -122,8 +124,8 @@ const BenefitIntro = (props: Props) => {
       outcome={outcome}
       docked={<span className="bzp-dock-line">{promise}</span>}
       className={cn("bzp", pinned && "is-pinned", className)}
-      // ?scroll=steps: the scene's progress under the docked pill (one scene, one segment)
-      steps={stepBarOn() ? 1 : undefined}
+      // touch screens (lib/scrollSteps): the scene's progress under the docked pill (one scene, one segment)
+      steps={stepBarOn(steps) ? 1 : undefined}
     >
       {pinned ? (
         <PinTrack duration={duration}>{children}</PinTrack>
@@ -151,7 +153,8 @@ export const PinTrack = ({
 }) => {
   const [track, progress] = usePinProgress<HTMLDivElement>();
   const [pin, onScreen] = useOnScreen<HTMLDivElement>(0.2);
-  const { run, from, to, rest } = runFor(duration);
+  const steps = useScrollSteps();
+  const { run, from, to, rest } = runFor(duration, steps);
   return (
     <div
       ref={track}
@@ -161,8 +164,8 @@ export const PinTrack = ({
       <div ref={pin} className={cn("bzp-pin", sub && "is-sub")}>
         <Fit>{render(children, { pinned: true, progress, active: onScreen, from, to })}</Fit>
       </div>
-      {/* ?scroll=steps: the soft snap's point where the scene rests (after the pin: it stays the first child) */}
-      <SnapMarks rests={[rest]} />
+      {/* touch screens (lib/scrollSteps): the stop a swipe settles on (after the pin: it stays the first child) */}
+      <SnapStops rests={[rest]} />
     </div>
   );
 };

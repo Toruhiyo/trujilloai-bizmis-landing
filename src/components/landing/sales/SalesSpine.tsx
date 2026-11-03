@@ -1,7 +1,7 @@
 import { memo, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import type { CSSProperties } from "react";
 import { useMessages } from "@/i18n/LocaleProvider";
-import { scrollSteps } from "@/lib/scrollSteps";
+import { useScrollSteps } from "@/lib/scrollSteps";
 import { cn } from "@/lib/utils";
 import BeatCopy from "./BeatCopy";
 import { arrangeOpener } from "./arrange";
@@ -22,7 +22,7 @@ import RewindScreen, { ScreenTape } from "./RewindScreen";
 import SalesPayoff, { PAYOFF_DURATION } from "./SalesPayoff";
 import { SalesShell, useBeatTimelines, useSize } from "./SalesShell";
 import { Device, PanelCopy } from "./shared";
-import { SnapMarks, STEP_REST, STEP_RUN, stepBarOn, useStepsReport } from "../steps/steps";
+import { SnapStops, STEP_REST, STEP_RUN, stepBarOn, useStepsReport } from "../steps/steps";
 
 /**
  * Boost Sales, "the funnel as the spine": the marker funnel of the whole
@@ -162,7 +162,7 @@ const Callout = memo(function Callout({
 const BeatCopyM = memo(BeatCopy);
 
 /**
- * ?scroll=steps (lib/scrollSteps) with `short`: the payoff's stretch is a beat's, and the track about
+ * Touch screens (lib/scrollSteps) with `short`: the payoff's stretch is a beat's, and the track about
  * a screen a beat (STEPS_TRACK: the whole track's height, its travel four screens).
  */
 const STEPS_PAYOFF_SPAN = 1;
@@ -173,12 +173,12 @@ const STEPS_TRACK = "calc(500svh - var(--sl-nav) - var(--pi-dock-h, 4rem))";
 const Pinned = () => {
   const s = useMessages().landing.sales;
   const tls = useBeatTimelines();
-  const [steps] = useState(scrollSteps);
+  const steps = useScrollSteps();
   const [track, progress, stuck] = usePinProgress<HTMLDivElement>();
   // the beats' clocks run only while the track is on screen: above it (beat one) or past it (the payoff)
   // they would otherwise play, hold and rewind unseen, re-rendering the whole stage every frame
   const near = useNearScreen(track, "0px");
-  // (timed beats, ?scroll=steps: the first starts once the stage has stuck, not while the opener still stands over it)
+  // (timed beats, touch screens: the first starts once the stage has stuck, not while the opener still stands over it)
   const seen = near && (!steps.time || stuck || progress > 0);
   // four stretches of the track: find, trust, buy, then the payoff (longer: three fixes, each given time)
   const paySpan = steps.short ? STEPS_PAYOFF_SPAN : PAYOFF_SPAN;
@@ -186,7 +186,7 @@ const Pinned = () => {
   const x = Math.min(span - 0.0001, progress * span);
   // the beat the scroll is on
   const scrolled = Math.min(3, Math.floor(x));
-  // ?scroll=steps (timed beats): when the scroll runs ahead, the beat on screen (`held`) may finish first, at 2x
+  // Touch screens (timed beats): when the scroll runs ahead, the beat on screen (`held`) may finish first, at 2x
   // (fling=finish, the default: if the page stopped on it; fling=queue: every beat in turn); back, it follows at once
   const queue = steps.time && steps.fling !== "skip";
   const [held, setHeld] = useState(scrolled);
@@ -220,7 +220,7 @@ const Pinned = () => {
       else if (onT >= onDuration - 1) setHeld(steps.fling === "queue" ? held + 1 : scrolled);
     }
   }, [queue, seen, scrolled, held, onT, onDuration, steps.fling]);
-  // ?scroll=steps: the beats' progress under the docked pill, and the snap's marks at each beat's rest
+  // touch screens (lib/scrollSteps): the beats' progress under the docked pill, and the stops a swipe settles on, each beat's rest
   useStepsReport(track, { count: 4, index: step, fill: onT / onDuration, active: seen });
   const rests = useMemo(
     () => [0, 1, 2, 3].map((i) => (i < 3 ? i + STEP_REST : 3 + paySpan * STEP_REST) / span),
@@ -272,7 +272,7 @@ const Pinned = () => {
     : { t: beats[f].t, duration: beats[f].duration, fixAt: beats[f].fixAt };
 
   return (
-    <SalesShell lit={payoff ? "all" : step} className="sl-g2 is-pinned" steps={stepBarOn() ? 4 : undefined}>
+    <SalesShell lit={payoff ? "all" : step} className="sl-g2 is-pinned" steps={stepBarOn(steps) ? 4 : undefined}>
       <div ref={track} className="sl-g2-track" style={steps.short ? { height: STEPS_TRACK } : undefined}>
         <div className="sl-g2-pin">
           <div className="bzl-wrap sl-g2-frame">
@@ -330,7 +330,7 @@ const Pinned = () => {
           </div>
         </div>
         {/* (after the pin: it stays the track's first child) */}
-        <SnapMarks rests={rests} />
+        <SnapStops rests={rests} />
       </div>
     </SalesShell>
   );

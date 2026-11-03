@@ -54,7 +54,7 @@ export const SalesShell = ({
 }: {
   lit: number | "all" | null;
   className?: string;
-  /** ?scroll=steps: the beats' progress bar under the docked pill (their count). */
+  /** touch screens (lib/scrollSteps): the beats' progress bar under the docked pill (their count). */
   steps?: number;
   children: ReactNode;
 }) => {

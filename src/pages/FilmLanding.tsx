@@ -22,7 +22,7 @@ import "@/styles/section-sep.css";
 import "@/styles/landing-responsive.css";
 // big screens (wider than 1440): the whole page grows with the screen (rem-based)
 import "@/styles/big-screen.css";
-// the ?scroll=steps trial's pieces (nothing in it applies without the flag)
+// touch screens: the stepped mode's bar and idle cue (lib/scrollSteps; nothing with a mouse)
 import "@/styles/scroll-steps.css";
 
 // Below the hero: Boost Sales, Support, Insights, Setup, Customize, the end card and the footer.

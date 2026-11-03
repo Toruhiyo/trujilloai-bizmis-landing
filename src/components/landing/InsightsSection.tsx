@@ -49,7 +49,7 @@ const HOLD = 1500;
 const StackedChart = ({ pin, lead }: { pin: PinState; lead: string }) => {
   const scene = useScenePlayHold(pin, CLARITY_MS, HOLD);
   const box = useRef<HTMLDivElement>(null);
-  // ?scroll=steps: the drawing's progress under the docked pill
+  // touch screens (lib/scrollSteps): the drawing's progress under the docked pill
   useStepsReport(box, { count: 1, index: 0, fill: scene.t / CLARITY_MS, active: pin.pinned && pin.active });
   return (
     <div ref={box} className="bzi-grid">

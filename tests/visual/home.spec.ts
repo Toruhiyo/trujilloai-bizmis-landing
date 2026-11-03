@@ -6,6 +6,7 @@ import {
   expectOneH1,
   expectPrerenderMatches,
   open,
+  domQuiet,
   pageText,
   scrollToY,
   shot,
@@ -21,10 +22,21 @@ import {
  * track with a sticky screen) the scroll goes to a place on its track, the
  * way the section itself measures it (sales/hooks usePinProgress); where it
  * stacks (phones on their side), to a place in its own way through the screen.
+ * On touch screens the scenes play by time once picked (lib/scrollSteps), so
+ * there a shot waits for its scene to play to the state it's after (playTo).
  */
 
 type Place = { y: number; pin?: string } | null;
-type State = { name: string; at: (page: Page) => Promise<Place> };
+/**
+ * Touch screens play the pinned scenes by time once the scroll has picked them (lib/scrollSteps):
+ * the shot then waits, on the fake clock, until the section's scene (its beat `index`) has played
+ * this far (`fill`, 0 → 1, as the section reports it: data-step-fill). With a mouse, or where the
+ * section doesn't report (a layout that doesn't pin), it's taken as it is.
+ */
+type Fill = { section: string; index: number; fill: number };
+// (Setup's midway is taken while its cards sync, before the agent's burst: the burst's frames are
+// images drawn as they arrive, which a shot can't hold to one frame)
+type State = { name: string; at: (page: Page) => Promise<Place>; fill?: Fill };
 
 /** The scroll that puts a pinned track at `progress` (0 → 1), as usePinProgress reads it; null if it doesn't pin here. */
 const onTrack = (selector: string, progress: number) => (page: Page) =>
@@ -87,7 +99,8 @@ const first = (...ways: ((page: Page) => Promise<Place>)[]) => async (page: Page
 };
 
 // Boost Sales (sales/SalesSpine): three beats of one stretch each, then the payoff's 1.5; a beat's
-// timeline runs from 3.5% to 67.5% of its stretch and then holds its fixed state.
+// timeline runs from 3.5% to 67.5% of its stretch and then holds its fixed state. (On touch screens
+// the payoff's stretch is a beat's, four in all: these places still fall in the same beats.)
 const SALES_SPAN = 4.5;
 const beat = (i: number) =>
   first(onTrack(".sl-g2-track", (i + 0.85) / SALES_SPAN), through(".sl-g2-item", i, 0.8, 0.75, 0.85));
@@ -95,18 +108,38 @@ const beat = (i: number) =>
 const STATES: State[] = [
   { name: "01-hero", at: async () => ({ y: 0 }) },
   { name: "02-sales-opener", at: topOf("#benefits") },
-  { name: "03-sales-match-needs", at: beat(0) },
-  { name: "04-sales-clear-doubts", at: beat(1) },
-  { name: "05-sales-win-sales", at: beat(2) },
-  { name: "06-sales-payoff", at: first(onTrack(".sl-g2-track", 0.995), through(".sl-g2-item", 3, 0.8, 0.85, 0.9)) },
+  { name: "03-sales-match-needs", at: beat(0), fill: { section: "#benefits", index: 0, fill: 1 } },
+  { name: "04-sales-clear-doubts", at: beat(1), fill: { section: "#benefits", index: 1, fill: 1 } },
+  { name: "05-sales-win-sales", at: beat(2), fill: { section: "#benefits", index: 2, fill: 1 } },
+  {
+    name: "06-sales-payoff",
+    at: first(onTrack(".sl-g2-track", 0.995), through(".sl-g2-item", 3, 0.8, 0.85, 0.9)),
+    fill: { section: "#benefits", index: 3, fill: 1 },
+  },
   { name: "07-support-opener", at: topOf(".p-support") },
-  { name: "08-support-mid", at: first(onTrack(".p-support .bzp-track", 0.45), along(".p-support", 0.5)) },
-  { name: "09-support-end", at: first(onTrack(".p-support .bzp-track", 0.97), along(".p-support", 1)) },
+  {
+    name: "08-support-mid",
+    at: first(onTrack(".p-support .bzp-track", 0.45), along(".p-support", 0.5)),
+    fill: { section: ".p-support", index: 0, fill: 0.5 },
+  },
+  {
+    name: "09-support-end",
+    at: first(onTrack(".p-support .bzp-track", 0.97), along(".p-support", 1)),
+    fill: { section: ".p-support", index: 0, fill: 1 },
+  },
   { name: "10-insights-opener", at: topOf(".p-insights") },
-  { name: "11-insights-mid", at: first(onTrack(".p-insights .bzp-track", 0.45), along(".p-insights", 0.5)) },
-  { name: "12-insights-end", at: first(onTrack(".p-insights .bzp-track", 0.97), along(".p-insights", 1)) },
-  { name: "13-setup-mid", at: first(onTrack("#setup", 0.45), along("#setup", 0.5)) },
-  { name: "14-setup-end", at: first(onTrack("#setup", 0.97), along("#setup", 1)) },
+  {
+    name: "11-insights-mid",
+    at: first(onTrack(".p-insights .bzp-track", 0.45), along(".p-insights", 0.5)),
+    fill: { section: ".p-insights", index: 0, fill: 0.5 },
+  },
+  {
+    name: "12-insights-end",
+    at: first(onTrack(".p-insights .bzp-track", 0.97), along(".p-insights", 1)),
+    fill: { section: ".p-insights", index: 0, fill: 1 },
+  },
+  { name: "13-setup-mid", at: first(onTrack("#setup", 0.45), along("#setup", 0.5)), fill: { section: "#setup", index: 0, fill: 0.3 } },
+  { name: "14-setup-end", at: first(onTrack("#setup", 0.97), along("#setup", 1)), fill: { section: "#setup", index: 0, fill: 1 } },
   { name: "15-customize", at: topOf(".bzl-customize") },
   { name: "16-end-card", at: topOf(".bzl-endcard") },
   { name: "17-footer", at: async (page) => ({ y: await page.evaluate(() => document.scrollingElement!.scrollHeight) }) },
@@ -133,6 +166,19 @@ const animatedCompare = (viewport: { width: number; height: number } | null | un
 const LOCALE_STATES = new Set(["01-hero", "03-sales-match-needs", "06-sales-payoff", "09-support-end", "12-insights-end", "14-setup-end", "15-customize", "16-end-card"]);
 const LOCALE_PROJECTS = new Set(["desktop-1440x900", "phone-390x844"]);
 
+/** On a touch screen, the fake clock moved on (half a second at a time) until the section's scene has played to `fill`. */
+const playTo = async (page: Page, { section, index, fill }: Fill) => {
+  for (let i = 0; i < 80; i++) {
+    const at = await page.evaluate((s) => document.querySelector<HTMLElement>(s)?.dataset.stepFill ?? null, section);
+    if (at === null) return;
+    const [beat, part] = at.split(":").map(Number);
+    if (beat === index && part >= fill - 0.001) return;
+    await page.clock.runFor(500);
+    // (until the page has caught up with that half second: the scene's report is a render behind its clock)
+    await domQuiet(page, 120);
+  }
+};
+
 /** A pinned screen fits the viewport: on screen whole, and its content not running past it. */
 const expectPinFits = async (page: Page, selector: string, where: string) => {
   const fit = await page.evaluate((selector) => {
@@ -152,6 +198,8 @@ const expectPinFits = async (page: Page, selector: string, where: string) => {
 
 for (const [prefix, label] of [["", "en"], ["/es", "es"], ["/fr", "fr"]] as const) {
   test(`home ${label}`, async ({ frozen: page }, info) => {
+    // (touch screens wait for each scene to play: longer)
+    test.setTimeout(480_000);
     const path = prefix || "/";
     if (prefix) test.skip(!LOCALE_PROJECTS.has(info.project.name), "other languages: desktop and phone only");
 
@@ -178,6 +226,7 @@ for (const [prefix, label] of [["", "en"], ["/es", "es"], ["/fr", "fr"]] as cons
       expect.soft(place, `${state.name}: the section is on the page`).not.toBeNull();
       if (!place) continue;
       await scrollToY(page, place.y);
+      if (state.fill) await playTo(page, state.fill);
       await expectNoHorizontalOverflow(page, state.name);
       if (place.pin) await expectPinFits(page, place.pin, state.name);
       await shot(
