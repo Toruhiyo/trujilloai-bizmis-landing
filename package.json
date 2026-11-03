@@ -78,14 +78,13 @@
     "react-router-dom": "^6.26.2",
     "react-xarrows": "^2.0.2",
     "recharts": "^2.12.7",
-    "sharp": "^0.34.5",
+    "sharp": "^0.35.5",
     "sonner": "^1.5.0",
     "tailwind-merge": "^2.5.2",
     "tailwindcss-animate": "^1.0.7",
     "three": "^0.162.0",
     "vaul": "^0.9.3",
-    "wavesurfer.js": "^7.10.1",
-    "zod": "^3.23.8"
+    "wavesurfer.js": "^7.10.1"
   },
   "devDependencies": {
     "@eslint/js": "^9.9.0",
@@ -106,6 +105,13 @@
     "tailwindcss": "^3.4.11",
     "typescript": "^5.5.3",
     "typescript-eslint": "^8.0.1",
-    "vite": "^5.4.1"
+    "vite": "^6.4.5"
+  },
+  "overrides": {
+    "undici": "^6.29.1",
+    "postcss-selector-parser": "^6.1.5",
+    "tsx": {
+      "esbuild": "^0.28.1"
+    }
   }
 }
