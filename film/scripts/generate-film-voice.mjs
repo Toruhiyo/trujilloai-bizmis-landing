@@ -55,7 +55,7 @@ for (const [index, line] of lines.entries()) {
   const sameRole = (i) => lines[i] && lines[i].role === line.role ? lines[i].text : undefined;
   // eleven_v3_conversational rejects previous_text / next_text.
   const context = role.model === 'eleven_v3_conversational' ? {} : { previous_text: sameRole(index - 1), next_text: sameRole(index + 1) };
-  const body = { text: line.text, model_id: role.model, voice_settings: role.settings, ...context };
+  const body = { text: line.text, model_id: role.model, voice_settings: line.settings ? { ...role.settings, ...line.settings } : role.settings, ...context };   // line.settings: a read with its own energy (the listing close)
   const res = await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${role.voice}/with-timestamps?output_format=mp3_44100_192`, {
     method: 'POST', headers: { 'xi-api-key': key, 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
   if (!res.ok) { console.log(line.id, 'HTTP', res.status, (await res.text()).slice(0, 300)); continue; }

@@ -36,12 +36,15 @@
     },
     // The Shopify App Store listing cut (feature media: no Shopify logos, no numbers, no Early Access, no urgency).
     // The card's beats sit on v38's frames (film time, s), so v38's score fits it as it is.
+    // The Shopify App Store listing cut (feature media: no Shopify logos, no pricing, no urgency). Oriol 2026-11-03: a
+    // close with punch: "Install Bizmis", the brand claim "Your store sales agent" (as on the channel thumbnail), the
+    // clerk popping in beside it and waving, and every move on v38's score hits (film time, s), so its score fits as is.
     listing: {
       scarcity: '',
       label: 'Install Bizmis',
-      invite: 'your sales agent, in every language',
-      terms: [],   // Oriol 2026-11-03: no ticks, the card is the logo, the headline and the handwritten line
-      beats: { vo: 114.833, write: 115.033, ticks: [], final: 125.333 },   // vo: where the take starts in v38
+      invite: 'Your store sales agent',   // the brand claim, handwritten as the EA card's "for Early Access benefits!" (Oriol)
+      terms: [],
+      beats: { vo: 114.833, voAt: 115.987, avatar: 117.033, shine1: 117.033, write: 117.507, claim: 118.867, button: 119.4, shine: 122.667, push: 124.767, final: 125.333 },
       pills: true,
       shopify: true,   // the EA card's layout and motion
       bag: false,
@@ -212,7 +215,7 @@
     { scene: 'end', id: 'see-it', line: 'See it in action.', cta: 'demo' },
     { scene: 'end', id: 't-ea', line: 'Install now to join Early Access! A hundred and twenty free sessions, fifty percent off upgrades, and you shape the roadmap. Only fifty spots. Secure yours by installing now!', cta: 'ea' },   // v24: the short take (v35: a powerful close)
     { scene: 'end', id: 'install-shopify', line: 'Install it on Shopify.', cta: 'install' },
-    { scene: 'end', id: 't-listing', line: 'Install Bizmis. Give your online store the salesperson it was missing.', cta: 'listing' },
+    { scene: 'end', id: 't-listing', line: 'Install Bizmis. Your store sales agent.', cta: 'listing' },
   ];
   function ensureInviteFont() {
     if (document.getElementById('promo-invite-font')) return;
@@ -8852,13 +8855,13 @@
         // "Install now to join Early Access!" over the handwriting, the
         // benefit pills rise in as they're said, "Only 50 spots" lands on
         // "only fifty spots", and "Install now to secure your spot" clears to the hero.
-        const take = speakTake(copy.vo);
         if (copy.beats) {
           await this.playListingBeats(slot, copy);
           await waitMs(PROMO_EA_FINAL_HOLD_MS + promoHoldMs());
           this.depart();
           return;
         }
+        const take = speakTake(copy.vo);
         await waitMs(200);
         slot.classList.add('is-writing');
         shown.add('invite'); recenter(700);
@@ -8962,48 +8965,82 @@
       this.depart();
     }
 
-    // The listing card (cta=listing): the handwritten line, then each tick, on v38's beats (film time); on the
-    // score's final chord a shine runs across the headline and a warm light blooms behind it. Nothing bows out:
-    // the whole card is the last frame. Stepped (export-safe).
+    // The listing card (cta=listing): ad-1's own end card (v38's look: the logo, the title, the handwritten line), its
+    // seconds that used to carry the Early Access benefits kept alive with the film's own moves, one per score hit
+    // (Oriol 2026-11-03): the orange shine running through "Install Bizmis" (the landing CTA's title sweep, in the
+    // film's orange) on the first hit, a slight swell on "agent", "Your store sales agent" drawing itself by hand on
+    // the next hit, the shine again, the push-in, and on the final chord the shine and ad-1's warm bloom. The lockup
+    // eases in by scale over the whole card. Film time in the full film; alone (part=cta), the same distances from
+    // the card's start. Stepped (export-safe).
     async playListingBeats(slot, copy) {
       const { beats } = copy;
-      // in the full film the beats wait on film time; alone (part=cta) they keep their distance from the take's start
       const start = performance.now();
       const until = (sec) => (marketingPart() === 'full' && window.__promoFilmT0 != null
         ? untilFilm(sec) : waitMs(Math.max(0, start + (sec - beats.vo) * 1000 - performance.now())));
+      const action = slot.querySelector('.promo-pass-slot__action');
+      const label = action?.querySelector('.promo-pass-slot__shopify-label');
+      if (action && !action.querySelector('.promo-listing__outline')) {
+        const r = action.getBoundingClientRect(); const k = action.offsetWidth / Math.max(1, r.width);   // layout px
+        const w = action.offsetWidth; const h = action.offsetHeight; const rad = h * 0.42 * 0.6;
+        action.insertAdjacentHTML('beforeend', `<svg class="promo-listing__outline" viewBox="0 0 ${w} ${h}" aria-hidden="true"><rect x="1.5" y="1.5" width="${w - 3}" height="${h - 3}" rx="${rad.toFixed(1)}" ry="${rad.toFixed(1)}" style="stroke-dasharray: 0 100000"/></svg>`);
+        void k;
+      }
+      const shine = (ms) => {
+        if (!label) return;
+        label.classList.add('is-shine');
+        tweenStep(ms, (e) => { label.style.backgroundPosition = `${(100 - e * 100).toFixed(2)}% 0`; }, promoEaseInOut)
+          .then(() => { label.classList.remove('is-shine'); label.style.backgroundPosition = ''; });
+      };
+      let swellAt = -1e9; let swellK = 0; let pushK = 0;
+      const swell = (k) => { swellAt = performance.now(); swellK = k; };
+      const live = (now) => {
+        const t = (now - start) / 1000;
+        const h = (now - swellAt) / 1000;
+        const sw = h >= 0 && h < 0.9 ? swellK * Math.sin((h / 0.9) * Math.PI) : 0;
+        const ease = 0.97 + 0.03 * (1 - (1 - Math.min(1, t / 6)) ** 3);
+        slot.style.scale = (ease * (1 + sw) * (1 + pushK)).toFixed(4);
+        window.requestAnimationFrame(live);
+      };
+      window.requestAnimationFrame(live);
+      await until(beats.voAt);
+      speakTake(copy.vo);
+      await until(beats.shine1);
+      promoSfx('ea-tick', { index: 0 });
+      shine(1000);
+      // "Your store sales agent" is written by hand as the VO says it (Oriol: "justo cuando la VO lo dice")
       await until(beats.write);
       slot.classList.add('is-writing');
       promoSfx('ea-write', { ms: PROMO_EA_WRITE_MS });
-      await waitMs(PROMO_EA_WRITE_MS * 0.6);
+      await until(beats.claim);
       slot.classList.add('is-written');
-      const pills = [...slot.querySelectorAll('.promo-ea-pill.is-benefit')];
-      for (const [k, at] of beats.ticks.entries()) {
-        await until(at);
-        const pill = pills[k];
-        if (pill) {
-          const check = pill.querySelector('.promo-ea-pill__check path');
-          if (check) { check.style.strokeDasharray = '1'; check.style.strokeDashoffset = '1'; }
-          tweenStep(520, (e) => { pill.style.opacity = Math.min(1, e * 1.6).toFixed(3); pill.style.translate = `0 ${((1 - e) * 0.4).toFixed(3)}em`; }, promoEaseOut);
-          if (check) window.setTimeout(() => tweenStep(380, (e) => { check.style.strokeDashoffset = (1 - e).toFixed(3); }, promoEaseOut), 120);
-        }
-        promoSfx('ea-tick', { index: k });
+      promoSfx('ea-stamp');
+      swell(0.014);
+      // then the outline draws itself around "Install Bizmis" and the title becomes the landing's CTA button
+      await until(beats.button);
+      promoSfx('ea-tick', { index: 1 });
+      action?.classList.add('is-listing-button');
+      const outline = action?.querySelector('.promo-listing__outline rect');
+      if (outline) {
+        const len = outline.getTotalLength?.() || 1;
+        outline.style.strokeDasharray = `${len.toFixed(1)} ${(len + 20).toFixed(1)}`;
+        tweenStep(900, (e) => { outline.style.strokeDashoffset = ((1 - e) * len).toFixed(1); }, promoEaseInOut);
       }
-      const action = slot.querySelector('.promo-pass-slot__action');
+      window.setTimeout(() => tweenStep(600, (e) => { action?.style.setProperty('--listing-fill', e.toFixed(3)); }, promoEaseOut), 820);   // the fill and the shadow once the stroke is round
+      await until(beats.shine);
+      promoSfx('ea-hero');
+      shine(1000);
+      await until(beats.push);
+      promoSfx('ea-close', { ms: 560 });
+      tweenStep(900, (e) => { pushK = 0.035 * e; }, promoEaseInOut);
       const bloom = document.createElement('span');
       bloom.className = 'promo-ea-bloom';
       bloom.setAttribute('aria-hidden', 'true');
       bloom.style.opacity = '0';
       action?.prepend(bloom);
-      await until(beats.final - 0.8);
-      tweenStep(800, (e) => { bloom.style.opacity = (0.4 * e * e).toFixed(3); }, (u) => u);
+      tweenStep(560, (e) => { bloom.style.opacity = (0.4 * e * e).toFixed(3); }, (u) => u);
       await until(beats.final);
       promoSfx('ea-final');
-      const label = action?.querySelector('.promo-pass-slot__shopify-label');
-      if (label) {
-        label.classList.add('is-shine');
-        tweenStep(760, (e) => { label.style.backgroundPosition = `${(100 - e * 100).toFixed(2)}% 0`; }, promoEaseInOut)
-          .then(() => { label.classList.remove('is-shine'); label.style.backgroundPosition = ''; });
-      }
+      shine(760);
       tweenStep(1100, (e) => { bloom.style.opacity = (0.4 + 0.3 * Math.sin(e * Math.PI) - 0.08 * e).toFixed(3); bloom.style.scale = (1 + 0.1 * e).toFixed(3); }, promoEaseOut);
     }
 

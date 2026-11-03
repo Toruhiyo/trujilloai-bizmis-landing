@@ -13309,3 +13309,11 @@ html.is-promo-yours .promo-reel__yours-widget > [data-promo-widget] { opacity: 1
 .promo-pass-slot.is-listing .promo-ea-pills__row { flex-direction: column; align-items: flex-start; gap: 0.95vw; }
 .promo-pass-slot.is-listing .promo-ea-pills { margin-top: 2.4vw; }
 .promo-pass-slot.is-listing .promo-ea-pills .promo-ea-pill { font-size: 1.5vw; padding: 0; }
+.promo-pass-slot.is-listing .promo-pass-slot__invite { margin-top: 0.15em; }
+/* the listing close's button: the outline draws itself around "Install Bizmis" (stroke dash, stepped), then the title
+   holds as the landing's end-card CTA (end-cta.css .bzl-cta-btn: a light fill, a soft Bizmis-orange shadow) */
+.promo-pass-slot.is-listing .promo-pass-slot__action { position: relative; padding: 0.12em 0.48em 0.16em; border-radius: 0.42em; }
+.promo-listing__outline { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; pointer-events: none; }
+.promo-listing__outline rect { fill: none; stroke: var(--promo-orange); stroke-width: 3; opacity: 0.85; }
+.promo-pass-slot__action.is-listing-button { background-color: rgb(255 255 255 / calc(0.55 * var(--listing-fill, 0)));
+  box-shadow: 0 0.32em 0.8em -0.32em rgb(249 163 83 / calc(0.65 * var(--listing-fill, 0))); }

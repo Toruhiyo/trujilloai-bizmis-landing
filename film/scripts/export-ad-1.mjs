@@ -213,7 +213,8 @@ async function bootPage(browser, options) {
     reducedMotion: 'no-preference',
   });
   const page = await context.newPage();
-  page.setDefaultTimeout(Number(process.env.EXPORT_TIMEOUT_MS) || 90000);   // a busy machine needs longer
+  page.setDefaultTimeout(Number(process.env.EXPORT_TIMEOUT_MS) || 90000);
+  if (process.env.EXPORT_CONSOLE) { page.on('console', (m) => console.log('[page]', m.text())); page.on('pageerror', (e) => console.log('[page error]', e.message)); }   // debugging a scene   // a busy machine needs longer
   await page.goto(filmUrl(options.url, options.cta, options.part), { waitUntil: 'domcontentloaded' });
   if (options.beginFrame) {
     const client = await context.newCDPSession(page);
