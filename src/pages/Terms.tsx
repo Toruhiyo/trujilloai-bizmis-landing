@@ -16,7 +16,7 @@ const Terms = () => {
   return (
     <LegalPage icon={FileText} title="Terms of Service" lastUpdated={LAST_UPDATED}>
       <Seo page="terms" />
-          <Section title="1. Introduction & Acceptance">
+          <Section title="1. Introduction & acceptance">
             <p>
               These Terms of Service ("Terms") govern your access to and use of
               the Bizmis service ("Service"), an AI-powered voice shopping
@@ -75,7 +75,7 @@ const Terms = () => {
             </ul>
           </Section>
 
-          <Section title="3. Service Description">
+          <Section title="3. Service description">
             <p>
               Bizmis provides an AI-powered voice shopping assistant embedded
               in Shopify storefronts. The Service includes:
@@ -125,7 +125,7 @@ const Terms = () => {
             </p>
           </Section>
 
-          <Section title="4. Eligibility & Account (Merchants)">
+          <Section title="4. Eligibility & account (Merchants)">
             <p>To install and use the Service as a Merchant, you must:</p>
             <ul className="list-disc pl-6 space-y-1">
               <li>
@@ -178,7 +178,7 @@ const Terms = () => {
             </p>
           </Section>
 
-          <Section title="5. Voice Recording & Data Processing Consent (Store Customers)">
+          <Section title="5. Voice recording & data processing consent (Store Customers)">
             <p>
               By interacting with the Bizmis voice assistant on a Merchant's
               storefront, you acknowledge and agree that:
@@ -336,7 +336,7 @@ const Terms = () => {
             </ul>
           </Section>
 
-          <Section title="7. Merchant Responsibilities">
+          <Section title="7. Merchant responsibilities">
             <p>As a Merchant, you are solely responsible for:</p>
             <ul className="list-disc pl-6 space-y-1">
               <li>
@@ -371,7 +371,7 @@ const Terms = () => {
             </ul>
           </Section>
 
-          <Section title="8. AI-Generated Content">
+          <Section title="8. AI-generated content">
             <p>
               The Service uses artificial intelligence (large language models
               and speech models) to generate responses in real time. AI output
@@ -408,7 +408,7 @@ const Terms = () => {
             </p>
           </Section>
 
-          <Section title="9. Subscription Plans, Billing & Free Preview (Merchants)">
+          <Section title="9. Subscription plans, billing & free preview (Merchants)">
             <p>
               The Service is offered to Merchants on tiered Subscription plans.
               Current plan names, pricing, included Sessions, and overage
@@ -483,7 +483,7 @@ const Terms = () => {
             </ul>
           </Section>
 
-          <Section title="10. Cancellation & Refunds (Merchants)">
+          <Section title="10. Cancellation & refunds (Merchants)">
             <p>
               You may cancel your Subscription at any time from the embedded
               Subscription page in the Bizmis admin (or by uninstalling the
@@ -526,7 +526,7 @@ const Terms = () => {
             </p>
           </Section>
 
-          <Section title="11. Suspension & Termination by Bizmis">
+          <Section title="11. Suspension & termination by Bizmis">
             <p>
               We may suspend or terminate your access to the Service, in whole
               or in part, on the following grounds:
@@ -566,7 +566,7 @@ const Terms = () => {
             </p>
           </Section>
 
-          <Section title="12. Data, Privacy, Sub-Processors & Security">
+          <Section title="12. Data, privacy, sub-processors & security">
             <p>
               Our collection, use, retention, and deletion of Merchant and
               Store Customer data are described in our{" "}
@@ -666,7 +666,7 @@ const Terms = () => {
             </p>
           </Section>
 
-          <Section title="13. Service Availability & Changes">
+          <Section title="13. Service availability & changes">
             <p>
               We aim to make the Service continuously available but do not
               guarantee uninterrupted operation. The Service may be
@@ -682,7 +682,7 @@ const Terms = () => {
             </p>
           </Section>
 
-          <Section title="14. Intellectual Property">
+          <Section title="14. Intellectual property">
             <p>
               All intellectual-property rights in the Service, including
               software, trained models, design, audio assets, and Bizmis
@@ -716,7 +716,7 @@ const Terms = () => {
             </p>
           </Section>
 
-          <Section title="16. Limitation of Liability">
+          <Section title="16. Limitation of liability">
             <p>
               To the maximum extent permitted by applicable law,
               {" "}{COMPANY_LEGAL_NAME} shall not be liable for any indirect,
@@ -806,7 +806,7 @@ const Terms = () => {
             </p>
           </Section>
 
-          <Section title="18. Force Majeure">
+          <Section title="18. Force majeure">
             <p>
               Neither party will be liable for any delay or failure to perform
               its obligations under these Terms (other than a payment
@@ -832,7 +832,7 @@ const Terms = () => {
             </p>
           </Section>
 
-          <Section title="20. Governing Law & Dispute Resolution">
+          <Section title="20. Governing law & dispute resolution">
             <p>
               These Terms are governed by and construed in accordance with the
               laws of {COMPANY_JURISDICTION}, without regard to its conflict
@@ -889,11 +889,11 @@ const Terms = () => {
                 .
               </li>
               <li>
-                <strong>Survival.</strong> Sections 8 (AI-Generated Content),
-                10 (Cancellation & Refunds), 12 (Data, Privacy &
-                Sub-Processors), 14 (Intellectual Property), 15 (Disclaimers),
-                16 (Limitation of Liability), 17 (Indemnification), 20
-                (Governing Law), and 21 (General) survive termination of
+                <strong>Survival.</strong> Sections 8 (AI-generated content),
+                10 (Cancellation & refunds), 12 (Data, privacy &
+                sub-processors), 14 (Intellectual property), 15 (Disclaimers),
+                16 (Limitation of liability), 17 (Indemnification), 20
+                (Governing law), and 21 (General) survive termination of
                 these Terms.
               </li>
             </ul>

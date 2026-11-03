@@ -23,7 +23,7 @@ const PrivacyPolicy = () => {
             </p>
           </Section>
 
-          <Section title="2. Data We Collect from Merchants">
+          <Section title="2. Data we collect from Merchants">
             <p>
               When a merchant installs and configures the Bizmis app, we collect
               and store:
@@ -56,7 +56,7 @@ const PrivacyPolicy = () => {
             </ul>
           </Section>
 
-          <Section title="3. Data We Collect from Store Customers">
+          <Section title="3. Data we collect from Store Customers">
             <p>
               When a customer interacts with the Bizmis voice assistant on a
               merchant's store, we collect:
@@ -131,7 +131,7 @@ const PrivacyPolicy = () => {
             </p>
           </Section>
 
-          <Section title="4. How We Use the Data">
+          <Section title="4. How we use the data">
             <p>We use the collected data to:</p>
             <ul className="list-disc pl-6 space-y-1">
               <li>Provide and operate the AI voice shopping assistant</li>
@@ -214,7 +214,7 @@ const PrivacyPolicy = () => {
             </p>
           </Section>
 
-          <Section title="5. Sub-Processors and Third-Party Services">
+          <Section title="5. Sub-processors and third-party services">
             <p>
               We rely on the following sub-processors and third-party services
               to operate Bizmis:
@@ -277,7 +277,7 @@ const PrivacyPolicy = () => {
             </p>
           </Section>
 
-          <Section title="6. Data Retention">
+          <Section title="6. Data retention">
             <ul className="list-disc pl-6 space-y-2">
               <li>
                 <strong>Session data</strong> (Amazon DynamoDB) -- retained
@@ -339,7 +339,7 @@ const PrivacyPolicy = () => {
             </p>
           </Section>
 
-          <Section title="7. Cookies and Local Storage">
+          <Section title="7. Cookies and local storage">
             <p>
               The Bizmis widget stores the following in the customer's
               browser:
@@ -376,7 +376,7 @@ const PrivacyPolicy = () => {
             </p>
           </Section>
 
-          <Section title="8. Data Rights">
+          <Section title="8. Data rights">
             <p>
               Under applicable privacy laws (including GDPR and CPRA), you have
               the right to:
@@ -407,7 +407,7 @@ const PrivacyPolicy = () => {
             </p>
           </Section>
 
-          <Section title="9. Data Security">
+          <Section title="9. Data security">
             <p>
               We implement appropriate technical and organizational measures to
               protect personal data, including encryption in transit (TLS) and
@@ -427,7 +427,7 @@ const PrivacyPolicy = () => {
             </p>
           </Section>
 
-          <Section title="10. Sensitive Data Safeguards">
+          <Section title="10. Sensitive data safeguards">
             <p>
               <strong>No voice biometrics.</strong> Bizmis does not perform
               voice biometric identification and does not use voice recordings
@@ -452,7 +452,7 @@ const PrivacyPolicy = () => {
             </p>
           </Section>
 
-          <Section title="11. International Data Transfers">
+          <Section title="11. International data transfers">
             <p>
               Data is processed and stored primarily in the United States
               through our infrastructure providers (AWS, Render, Typesense
@@ -466,7 +466,7 @@ const PrivacyPolicy = () => {
             </p>
           </Section>
 
-          <Section title="12. Changes to This Policy">
+          <Section title="12. Changes to this policy">
             <p>
               We may update this Privacy Policy from time to time. We will
               notify merchants of material changes through the Bizmis app
