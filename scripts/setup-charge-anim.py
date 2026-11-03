@@ -1,12 +1,13 @@
 """The /v2 Setup agent, Will (the studio's 3D model, in the Bizmis shirt), standing easy
-and open, filling up with the store's data as it flows down the wires into him, then a
-happy burst once it's all in, and back (the motion: scripts/setup-charge-clip.py). The
+with his hands on his hips, filling up with the store's data as it flows down the wires
+into him, then a happy burst once it's all in (both fists up), and back (the motion:
+scripts/setup-charge-clip.py). The
 energy is the flow from the store (the page draws it, along the wires); nothing glows in
 the render. His face goes with it: a warm smile with his brows up while he stands; a
 softer smile, eyes half closed, while he takes the last of it in; a big open smile,
 brows high, on the cheer; then the stance's face again. Transparent frames, full
-figure, 800x1200 (the page's 720x1200 grid, centred, with room for the cheer's
-hands), 144 at 24 fps:
+figure, 800x1200 (the page's 720x1200 grid, centred, with room for the raised
+fists), 144 at 24 fps:
 
 - f_0000..f_0047: the stance loop (2 s, seamless: frame 48 would be frame 0 again),
   played in real time whenever the scroll rests, and scrubbed before the burst;

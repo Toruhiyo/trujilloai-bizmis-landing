@@ -48,12 +48,12 @@ const CARD_EVERY = 160;
 /** When card `i` ticks (and its wire starts drawing to the agent). */
 const cardAt = (i: number) => SYNC_AT + 200 + i * CARD_EVERY;
 /**
- * The agent's frames (scripts/setup-charge-anim.py), 24 fps: he stands easy and open,
- * hands open, palms forward, filling up with what flows in along the wires (he
- * breathes and rises a touch), a seamless 2 s loop played in real time whenever the
- * burst isn't, and the 4 s happy burst (he takes the last of it in, then cheers, arms
- * up and out, a little bounce), scrubbed from the scroll clock; the burst leaves the
- * loop on its first frame and lands back on it.
+ * The agent's frames (scripts/setup-charge-anim.py), 24 fps: he stands easy, hands
+ * on his hips, filling up with what flows in along the wires (he breathes and rises
+ * a touch), a seamless 2 s loop played in real time whenever the burst isn't, and
+ * the 4 s happy burst (he takes the last of it in, then throws both fists up, a
+ * little bounce, and puts them back on his hips), scrubbed from the scroll clock;
+ * the burst leaves the loop on its first frame and lands back on it.
  */
 const FPS = 24;
 const LOOP_FRAMES = 48;
@@ -71,7 +71,7 @@ const BREATH = 2000;
 /**
  * The frames as image sequences (scripts/encode-setup-charge.sh): each cropped
  * to the box the figure moves in, given on the agent box's 720x1200 grid (it may
- * overhang the box a little at the sides: the cheer's hands), and drawn on a
+ * overhang the box a little at the sides), and drawn on a
  * canvas there; the poster (the grid's first frame, the stance the loop and the
  * burst start on) shows until the frames are in. Frame `i` of the whole: the
  * loop's 0..LOOP_FRAMES-1, then the burst's.
@@ -82,7 +82,7 @@ const CHARGE = {
     i < LOOP_FRAMES
       ? `/landing/setup/charge-idle/${String(i).padStart(2, "0")}.webp`
       : `/landing/setup/charge-burst/${String(i - LOOP_FRAMES).padStart(2, "0")}.webp`,
-  crop: { left: -20, top: 98, width: 774, height: 1004 },
+  crop: { left: 4, top: 98, width: 714, height: 1004 },
   w: 720,
   h: 1200,
 };
