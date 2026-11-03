@@ -6,7 +6,7 @@
 // src/data/earlyAccessPerksVoice.ts. The audio is never stretched or edited beyond trimming its silences.
 //
 //   node scripts/generate-ea-perks-audio.mjs [--only en,es] [--dry-run]
-// Needs ELEVENLABS_API_KEY (env, or ../trujilloai-bizmis-project/.env) and ffmpeg. Goes through the CFO credit
+// Needs ELEVENLABS_API_KEY (env, or trujilloai-bizmis-project/.env) and ffmpeg. Goes through the CFO credit
 // guard (film/scripts/el-guard.mjs): nothing paid starts above the period ceiling, and a run over its cap stops.
 
 import { assertEstimate, preflight, readUsed } from '../film/scripts/el-guard.mjs';
@@ -41,7 +41,10 @@ const locales = only.length ? only : LOCALES;
 
 function apiKey() {
   if (process.env.ELEVENLABS_API_KEY) return process.env.ELEVENLABS_API_KEY;
-  const env = path.join(ROOT, '..', 'trujilloai-bizmis-project', '.env');
+  // the sibling repo's .env (a worktree outside ~/Projects/Bizmis reads the one at its usual place)
+  const env = [path.join(ROOT, '..', 'trujilloai-bizmis-project', '.env'), path.join(os.homedir(), 'Projects/Bizmis/trujilloai-bizmis-project/.env')]
+    .find((f) => fs.existsSync(f));
+  if (!env) throw new Error('ELEVENLABS_API_KEY not found');
   const line = fs.readFileSync(env, 'utf8').split('\n').find((l) => l.startsWith('ELEVENLABS_API_KEY='));
   if (!line) throw new Error('ELEVENLABS_API_KEY not found');
   return line.split('=').slice(1).join('=').trim().replace(/^['"]|['"]$/g, '');
@@ -120,7 +123,8 @@ function check(times, duration) {
   const problems = [];
   if (pace < PACE[0] || pace > PACE[1]) problems.push(`pace ${pace.toFixed(2)} words/s`);
   if (pause > MAX_PAUSE) problems.push(`a ${pause.toFixed(2)} s pause`);
-  if (times.some(([s, e]) => !(e >= s) || e > duration + 0.05)) problems.push('word times out of order');
+  // (the alignment's last mark can end a little past the encoded audio: up to 0.25 s is not a problem)
+  if (times.some(([s, e], i) => !(e >= s) || (i > 0 && s < times[i - 1][0]) || e > duration + 0.25)) problems.push('word times out of order');
   return { pace, pause, problems };
 }
 
