@@ -38,10 +38,10 @@
     // The card's beats sit on v38's frames (film time, s), so v38's score fits it as it is.
     listing: {
       scarcity: '',
-      label: 'Install Bizmis on your store',
+      label: 'Install Bizmis',
       invite: 'your sales agent, in every language',
-      terms: ['Sells by voice and text', 'Knows your whole catalog', 'Speaks your shoppers’ language'],
-      beats: { vo: 114.833, write: 115.033, ticks: [117.033, 118.867, 120.433], final: 125.333 },   // vo: where the take starts in v38
+      terms: [],   // Oriol 2026-11-03: no ticks, the card is the logo, the headline and the handwritten line
+      beats: { vo: 114.833, write: 115.033, ticks: [], final: 125.333 },   // vo: where the take starts in v38
       pills: true,
       shopify: true,   // the EA card's layout and motion
       bag: false,
@@ -212,7 +212,7 @@
     { scene: 'end', id: 'see-it', line: 'See it in action.', cta: 'demo' },
     { scene: 'end', id: 't-ea', line: 'Install now to join Early Access! A hundred and twenty free sessions, fifty percent off upgrades, and you shape the roadmap. Only fifty spots. Secure yours by installing now!', cta: 'ea' },   // v24: the short take (v35: a powerful close)
     { scene: 'end', id: 'install-shopify', line: 'Install it on Shopify.', cta: 'install' },
-    { scene: 'end', id: 't-listing', line: 'Install Bizmis on your store, and give every shopper a sales agent to talk to.', cta: 'listing' },
+    { scene: 'end', id: 't-listing', line: 'Install Bizmis. Give your online store the salesperson it was missing.', cta: 'listing' },
   ];
   function ensureInviteFont() {
     if (document.getElementById('promo-invite-font')) return;
@@ -8712,7 +8712,7 @@
           slot.append(aside);
         }
       }
-      if (copy.shopify && copy.pills) {
+      if (copy.shopify && copy.pills && (copy.terms?.length || copy.aside !== undefined)) {
         const row = document.createElement('div');
         row.className = 'promo-ea-pills';
         row.innerHTML = `<div class="promo-ea-pills__row">${(copy.terms || []).map((t) => `<p class="promo-ea-pill is-benefit"><svg class="promo-ea-pill__check" viewBox="0 0 24 24" aria-hidden="true"><path pathLength="1" d="M5 12.5l4.4 4.4L19 7.4"/></svg><span>${t}</span></p>`).join('')}</div>`
