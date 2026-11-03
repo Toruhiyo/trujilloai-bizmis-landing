@@ -180,6 +180,7 @@ function load(apiKey: string, options?: Partial<PostHogConfig>) {
         before_send: [fixPageviews, ...(before ? (Array.isArray(before) ? before : [before]) : [])],
       });
       real = posthog;
+      if (!options?.disable_session_recording) shipRecordingEarly(posthog);
       try {
         localStorage.removeItem(IDS_KEY);
       } catch {
@@ -205,6 +206,31 @@ function load(apiKey: string, options?: Partial<PostHogConfig>) {
     .catch(() => {
       started = false;
     });
+}
+
+/**
+ * posthog-js holds a new recording in memory until the visitor first interacts, and a
+ * visitor who only reads or watches has it all sent as they leave: the page's whole first
+ * snapshot (60 to 200 KB here) in one unload beacon. Over the browser's ~64 KB budget for
+ * those it is refused (the recording is lost); under it, it can use the budget up so the
+ * beacons after it are refused. Once the page is on screen and recording, this lets the
+ * recording upload as it goes (posthog-js's public override), so the snapshot leaves
+ * within seconds as an ordinary request and the leave carries only the last moments.
+ * Nothing else changes: it records what it did before, and a tab that is never shown
+ * stays held, as before.
+ */
+function shipRecordingEarly(posthog: PostHog) {
+  let tries = 0;
+  const release = () => {
+    if (document.visibilityState !== "visible") {
+      document.addEventListener("visibilitychange", release, { once: true });
+      return;
+    }
+    // the recorder script loads after init; until it has started there is nothing to release
+    if (posthog.sessionRecordingStarted()) posthog.startSessionRecording({ url_trigger: true });
+    else if (++tries < 30) window.setTimeout(release, 1000);
+  };
+  release();
 }
 
 function replay(posthog: PostHog, { name, args, t }: Call) {

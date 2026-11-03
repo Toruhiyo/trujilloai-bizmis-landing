@@ -18,6 +18,12 @@ root.render(
           defaults: '2025-05-24',
           capture_exceptions: true,
           debug: import.meta.env.MODE === 'development',
+          // Each capture goes out on its own instead of in a shared 3 s batch. On leaving,
+          // posthog-js then beacons $pageleave first, ahead of the recording's last upload
+          // (which also keeps within posthog-js's own share of the budget). Batched, the
+          // recording could go first (whichever was queued first leads) and use up the
+          // browser's ~64 KB unload budget, so the $pageleave beacon after it was refused.
+          request_batching: false,
           disable_session_recording: false,
           session_recording: {
             maskAllInputs: false,
