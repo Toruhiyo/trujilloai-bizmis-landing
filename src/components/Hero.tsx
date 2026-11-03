@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import type { MouseEvent } from "react";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Play, PlayCircle, X } from "lucide-react";
@@ -164,6 +164,38 @@ const Hero = () => {
   // the play button calls out while the agent points at it
   const [inviting, setInviting] = useState(false);
 
+  // Stacked (phones, tablets), the widget's card sits under play and its captions under it: the
+  // card is drawn at its real size where the screen has the room, and smaller where the copy above
+  // leaves less (a short screen, a longer locale), so it never covers play. Set on the stage as two
+  // variables: the card's size, and the room the copy's column leaves it.
+  const stage = useRef<HTMLDivElement>(null);
+  const copy = useRef<HTMLDivElement>(null);
+  useLayoutEffect(() => {
+    const el = stage.current;
+    if (!el) return;
+    const wide = window.matchMedia("(min-width: 1024px)");
+    const fit = () => {
+      el.style.removeProperty("--hero-card");
+      el.style.removeProperty("--hero-card-room");
+      const play = el.querySelector<HTMLElement>("[data-play]");
+      if (wide.matches || !copy.current || !play) return;
+      // in the stage's own pixels (it scales up as the film opens)
+      const box = el.getBoundingClientRect();
+      const copyEnd = (copy.current.getBoundingClientRect().bottom - box.top) * (el.offsetHeight / box.height);
+      const em = parseFloat(getComputedStyle(el).fontSize);
+      const rem = parseFloat(getComputedStyle(document.documentElement).fontSize);
+      // (play keeps 1em clear above and below it)
+      const room = el.offsetHeight - 4.1 * rem - copyEnd - play.offsetHeight - 2 * em;
+      const size = Math.max(0.6, Math.min(1, room / (18.5 * em)));
+      el.style.setProperty("--hero-card", `${size}em`);
+      el.style.setProperty("--hero-card-room", `${18.5 * size + 0.3}em`);
+    };
+    fit();
+    document.fonts?.ready.then(fit);
+    window.addEventListener("resize", fit);
+    return () => window.removeEventListener("resize", fit);
+  }, [messages]);
+
   return (
     <section
       id="hero"
@@ -197,6 +229,7 @@ const Hero = () => {
         )}
       >
         <div
+          ref={stage}
           className={cn(
             "absolute inset-x-2 bottom-2 top-[4.25rem] rounded-[1em] border border-white/45 bg-white/[0.07] text-[min(3.2vw,1.7svh)] shadow-[inset_0_1px_0_rgba(255,255,255,0.5),0_40px_100px_-50px_hsl(24_90%_25%/0.55)]",
             "lg:inset-x-auto lg:bottom-[2.5svh] lg:left-1/2 lg:top-[4.75rem] lg:w-[min(96vw,97.5rem)] lg:-translate-x-1/2 lg:text-[clamp(0.875rem,min(1.2vw,2.2svh),1.375rem)]",
@@ -225,9 +258,10 @@ const Hero = () => {
             </span>
           </div>
           {/* the store's landing: its hero section is the copy and the CTAs, with play at its centre */}
-          <div className="absolute inset-x-0 bottom-[20em] top-[5.6em] flex flex-col px-[1.4em] pt-[1.4em] lg:bottom-[2em] lg:justify-center lg:px-[3.6em] lg:pt-0">
+          <div className="absolute inset-x-0 bottom-[calc(var(--hero-card-room,15.5em)+4.1rem)] top-[5.6em] flex flex-col px-[1.4em] pt-[1.4em] md:bottom-[calc(var(--hero-card-room,18.8em)+4.1rem)] lg:bottom-[2em] lg:justify-center lg:px-[3.6em] lg:pt-0">
             {/* the column stops short of play (centred, 7rem wide); the longer locales' lines run to its edge */}
             <div
+              ref={copy}
               className={cn(
                 "flex w-full flex-col items-center gap-3 text-center text-white [text-shadow:0_1px_16px_hsl(24_90%_35%/0.35)] lg:items-start lg:gap-5 lg:text-left",
                 longTitle ? "lg:w-[min(40rem,40vw,calc(50%-5rem))]" : "lg:w-[min(40rem,40vw)]",
@@ -320,13 +354,13 @@ const Hero = () => {
           </div>
 
           {/* the Bizmis widget, embedded bottom-right, and its captions (on desktop centred in the room
-              left of the widget, so they never run under it; stacked, over the card's foot, just above
-              its message bar, like a film's subtitles) */}
+              left of the widget, so they never run under it; stacked, under the card, like a film's
+              subtitles, in two lines at most) */}
           <HeroAgent
             paused={irisOpen}
             onInvite={setInviting}
-            cardClassName="absolute bottom-[1.2em] left-1/2 -translate-x-1/2 lg:bottom-[2em] lg:left-auto lg:right-[2.4em] lg:translate-x-0"
-            captionClassName="absolute bottom-[5.4em] left-1/2 z-10 -translate-x-1/2 text-[0.95em] lg:bottom-[2.2em] lg:left-[calc((100%-20.4em)/2)] lg:z-auto lg:text-[1.15em]"
+            cardClassName="absolute bottom-[4.1rem] left-1/2 -translate-x-1/2 text-[length:var(--hero-card,0.82em)] md:text-[length:var(--hero-card,1em)] lg:bottom-[2em] lg:left-auto lg:right-[2.4em] lg:translate-x-0"
+            captionClassName="absolute left-1/2 top-[calc(100%-3.65rem)] z-10 max-w-[min(26rem,calc(100%-2rem))] -translate-x-1/2 text-[clamp(0.8125rem,3.7vw,1rem)] lg:bottom-[2.2em] lg:left-[calc((100%-20.4em)/2)] lg:top-auto lg:z-auto lg:max-w-none lg:text-[1.15em]"
           />
         </div>
       </div>

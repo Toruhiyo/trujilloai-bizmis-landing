@@ -171,21 +171,32 @@ const HeroAgent = ({
   const inviting = Boolean(invite) && started && !paused;
   useEffect(() => onInvite?.(inviting), [inviting, onInvite]);
 
-  // The captions never wrap: a line wider than its room shrinks to fit instead
-  // (a transform, so the pill keeps its place; Tailwind's translate composes it).
-  // Its room is the page, or with the card beside play (desktop) the page left
-  // of the card, less 1em each side, where the parent centres it.
+  // Beside the card (desktop) the captions never wrap: a line wider than its room
+  // shrinks to fit instead (a transform, so the pill keeps its place; Tailwind's
+  // translate composes it). Its room is the page left of the card, less 1em each
+  // side, where the parent centres it. Stacked (phones, tablets) they wrap to two
+  // lines at most at their own size; a longer line steps its type down until it fits.
   const captionRef = useRef<HTMLParagraphElement>(null);
   const [fit, setFit] = useState(1);
   useLayoutEffect(() => {
     const el = captionRef.current;
     if (!el) return;
     const measure = () => {
+      el.style.fontSize = "";
+      if (isStacked()) {
+        const css = getComputedStyle(el);
+        const base = parseFloat(css.fontSize);
+        const lines = () => (el.clientHeight - parseFloat(css.paddingTop) - parseFloat(css.paddingBottom)) / parseFloat(css.lineHeight);
+        let size = base;
+        while (lines() > 2.5 && size > base * 0.75) el.style.fontSize = `${(size -= 0.5)}px`;
+        setFit(1);
+        return;
+      }
       const page = el.offsetParent as HTMLElement | null;
       const box = page?.clientWidth ?? window.innerWidth;
       const card = cardRef.current;
       const em = page ? parseFloat(getComputedStyle(page).fontSize) : 16;
-      const room = !isStacked() && card ? card.offsetLeft - 2 * em : box - 32;
+      const room = card ? card.offsetLeft - 2 * em : box - 32;
       setFit(Math.min(1, (room / el.offsetWidth) * 0.97));
     };
     measure();
@@ -252,12 +263,14 @@ const HeroAgent = ({
         </div>
       </div>
 
-      {/* The widget's captions: spoken words solid, the current one bold and glowing */}
+      {/* The widget's captions: spoken words solid, the current one bold and glowing.
+          Stacked, where they wrap, its bold is drawn with a stroke instead of the bold
+          weight, so it keeps its width and the bold moving along never reflows the lines. */}
       <p
         ref={captionRef}
         style={{ "--tw-scale-x": fit, "--tw-scale-y": fit } as CSSProperties}
         className={cn(
-          "bzw bza bzw-caption w-max origin-bottom whitespace-nowrap rounded-[1.5em] px-[1em] py-[0.25em] text-center font-medium leading-snug text-[#171717] transition-opacity duration-300",
+          "bzw bza bzw-caption w-max origin-bottom text-balance rounded-[1.5em] px-[1em] py-[0.25em] text-center font-medium leading-snug text-[#171717] transition-opacity duration-300 lg:whitespace-nowrap",
           !started && "opacity-0",
           captionClassName,
         )}
@@ -267,7 +280,14 @@ const HeroAgent = ({
           {line.map((w, k) => (
             <span
               key={`${at.step}-${k}`}
-              className={cn("relative", k < at.word - 1 ? "opacity-100" : k === at.word - 1 ? "font-bold" : "opacity-50")}
+              className={cn(
+                "relative",
+                k < at.word - 1
+                  ? "opacity-100"
+                  : k === at.word - 1
+                    ? "[-webkit-text-stroke:0.045em_currentColor] lg:font-bold lg:[-webkit-text-stroke:0]"
+                    : "opacity-50",
+              )}
             >
               {k === at.word - 1 && <span className="bzw-word-glow absolute inset-x-[-0.3em] inset-y-[-0.2em] -z-10 rounded-full" />}
               {w}
