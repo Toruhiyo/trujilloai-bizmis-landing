@@ -5,10 +5,16 @@ import ProductDiscoverySlide from "@/components/slides/ProductDiscoverySlide";
 import ProductComparisonSlide from "@/components/slides/ProductComparisonSlide";
 import CustomerSupportSlide from "@/components/slides/CustomerSupportSlide";
 import MerchantInsightsSlide from "@/components/slides/MerchantInsightsSlide";
-import GreetingOverviewSlide from "@/components/slides/GreetingOverviewSlide";
+import MerchantHomeSlide from "@/components/slides/MerchantHomeSlide";
+import SmartphoneFrame from "@/components/slides/SmartphoneFrame";
+import { listingAsset } from "@/components/slides/listingAssets";
 import BrandPersonalizationSlide from "@/components/slides/BrandPersonalizationSlide";
 
 const COVER_SIDE_MARGIN_PX = 80;
+/** Landing v2 render of Will in the Bizmis shirt, waving. */
+const COVER_AVATAR_SRC = "/landing/agents/setup-will-1080.webp";
+/** Meridian product page on mobile with the Bizmis dock, captured 2026-11-03. */
+const COVER_MOBILE_SRC = listingAsset("store-mobile-product.png");
 const WAVEFORM_BAR_COUNT = 60;
 const WAVEFORM_HEIGHTS = [
   65, 55, 45, 52, 38, 62, 78, 88, 68, 55, 72, 90, 75, 48, 58, 82, 65, 42, 55, 70,
@@ -62,33 +68,43 @@ const ShopifyHeroContent = () => (
       ))}
     </div>
     <div className="relative flex flex-1 items-center z-10">
-      <div className="flex-[1.6] flex flex-col h-full pt-2">
+      <div className="flex-[1.5] flex flex-col h-full pt-2">
         <Logo variant="white" size="lg" showText className="shrink-0 scale-125 origin-left mt-1" />
         <div className="flex flex-1 flex-col justify-center gap-6 pr-10">
           <span className="text-white text-2xl font-body tracking-wide uppercase font-medium">
-            Voice-first store clerk for sales & support
+            AI sales agent, by voice and text
           </span>
-        <h1 className="text-[5.2rem] font-heading font-bold text-white leading-[1.05]">
-          Drive sales.
+        <h1 className="text-[4.9rem] font-heading font-bold text-white leading-[1.05]">
+          Your store's
           <br />
-          Cut support load.
+          new sales agent.
         </h1>
         <p className="text-3xl text-white/80 font-body">
-          The warmth of an in-person style clerk,<br /> available 24/7.
+          Shoppers talk to it out loud. It answers
+          <br /> from what's really in your store.
         </p>
         </div>
       </div>
       <div className="flex-1 relative flex items-end justify-center h-full overflow-visible">
         <div className="relative">
           <img
-            src="/images/hero-avatar-1.png"
-            alt="Bizmis AI sales assistant"
-            className="max-h-[720px] w-auto object-contain relative z-10"
+            src={COVER_AVATAR_SRC}
+            alt="Bizmis sales agent avatar waving"
+            className="max-h-[700px] w-auto object-contain relative z-10 translate-x-28"
           />
           <div
-            className="absolute left-1/2 -translate-x-[45%] w-[800px] max-w-[150%] h-[80px] avatar-floor-shadow z-0 bottom-4"
+            className="absolute left-1/2 -translate-x-[35%] w-[700px] max-w-[150%] h-[80px] avatar-floor-shadow z-0 bottom-4"
             aria-hidden
           />
+          <div className="absolute -left-20 bottom-12 z-20 -rotate-3">
+            <SmartphoneFrame className="shadow-[0_18px_60px_-10px_rgba(0,0,0,0.35)]">
+              <img
+                src={COVER_MOBILE_SRC}
+                alt="Bizmis sales agent on a store's product page on mobile"
+                className="absolute bottom-0 left-0 block h-auto w-full"
+              />
+            </SmartphoneFrame>
+          </div>
         </div>
       </div>
     </div>
@@ -103,32 +119,32 @@ const SHOPIFY_SLIDES = [
   },
   {
     ...SLIDES.benefit1,
-    label: "1️⃣ Greeting & General Overview",
-    content: <GreetingOverviewSlide />,
-  },
-  {
-    ...SLIDES.benefit1,
-    label: "2️⃣ Sales assistance > Product discovery",
+    label: "Sales > Product discovery",
     content: <ProductDiscoverySlide />,
   },
   {
     ...SLIDES.benefit1,
-    label: "3️⃣ Sales assistance > Comparison → checkout",
+    label: "Sales > Comparison and add-ons",
     content: <ProductComparisonSlide />,
   },
   {
     ...SLIDES.benefit1,
-    label: "4️⃣ Customer Support > Post-purchase support",
+    label: "Support > Answers on the spot",
     content: <CustomerSupportSlide />,
   },
   {
     ...SLIDES.benefit3,
-    label: "5️⃣ Analytics > Conversation Analytics",
+    label: "Admin > Home",
+    content: <MerchantHomeSlide />,
+  },
+  {
+    ...SLIDES.benefit3,
+    label: "Admin > Insights and replays",
     content: <MerchantInsightsSlide />,
   },
   {
     ...SLIDES.benefit1,
-    label: "6️⃣ Brand Personalization > Avatar, Voice & Tone",
+    label: "Admin > Customize",
     content: <BrandPersonalizationSlide />,
   },
 ];

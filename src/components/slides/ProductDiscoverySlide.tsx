@@ -1,218 +1,80 @@
-import { useState, useCallback } from "react";
-import { FaShoppingCart, FaSearch, FaSync, FaBrain, FaComments } from "react-icons/fa";
+import { FaBrain, FaComments, FaSearch, FaShoppingCart, FaSync } from "react-icons/fa";
 import {
-  HALF_WAVE_BAR_COUNT,
-  halfWaveBarHeightPercent,
-  halfWaveBarOpacity,
-} from "./slideWaveformHeights";
+  AgentLine,
+  Accent,
+  Exchange,
+  ShopperLine,
+  ShotCard,
+  Strong,
+  TitleBlock,
+  ToolChip,
+} from "./listingParts";
+import { listingAsset } from "./listingAssets";
 
-const SCREENSHOT_SRC = "/images/slides/shopify-listing/shopify-product-discovery-screenshot.png";
+/** Frame from the Meridian demo take v19-179 (live widget, 3 laptops on screen). */
+const SCREENSHOT_SRC = listingAsset("store-discovery.jpg");
 
-const BROWSER_CHROME_HEIGHT = 28;
+const REMEMBERED = ["Windows", "~$1,200", "Portable"] as const;
 
-const TOOL_CHIP_FIRST = "Shown products";
-const TOOL_CHIP_SECOND = "Update shown products";
-
-const MEMORY_AFTER_FIRST_RESPONSE = ["~$1,500", "Light", "Everyday work"];
-const MEMORY_AFTER_SECOND_RESPONSE = ["Long battery"];
-
-const ProductDiscoverySlide = () => {
-  const [aspectRatio, setAspectRatio] = useState<number | null>(null);
-
-  const onImageLoad = useCallback((e: React.SyntheticEvent<HTMLImageElement>) => {
-    const img = e.currentTarget;
-    if (img.naturalWidth && img.naturalHeight) {
-      setAspectRatio(img.naturalWidth / img.naturalHeight);
-    }
-  }, []);
-
-  return (
-  <div className="relative flex flex-col h-full w-full overflow-visible">
-    <div className="relative z-10 flex flex-col flex-1 min-h-0 overflow-visible">
-      {/* Grid: row 1 = title (col 1) + spacer (col 2); row 2 = image (col 1) + conversation (col 2) */}
-      <div className="flex-1 grid grid-cols-[1.35fr_1fr] grid-rows-[auto_1fr] gap-x-10 gap-y-0 min-h-0 relative overflow-visible">
-      {/* Flow diagram — loop icon in badge at top-right */}
-      <div className="absolute top-8 left-0 right-0 z-20 flex items-center justify-end">
-        <div className="relative">
-          <div className="flex items-center gap-0 text-lg font-semibold text-primary border-2 border-primary/50 rounded-xl px-7 py-3.5 w-fit">
-            <span className="inline-flex items-center gap-2">
-              <FaBrain className="w-6 h-6 text-primary/80" />
-              Understand intent
-            </span>
-            <span className="text-primary/40 mx-2.5 text-xl">→</span>
-            <span className="inline-flex items-center gap-2">
-              <FaSearch className="w-6 h-6 text-primary/80" />
-              Search catalog
-            </span>
-            <span className="text-primary/40 mx-2.5 text-xl">→</span>
-            <span className="inline-flex items-center gap-2">
-              <FaComments className="w-6 h-6 text-primary/80" />
-              Refine with follow-up
-            </span>
-          </div>
-          <div
-            className="absolute -top-3 -right-3 w-9 h-9 rounded-full bg-primary flex items-center justify-center text-primary-foreground shadow-md"
-            aria-hidden
-          >
-            <FaSync className="w-4 h-4" />
-          </div>
-        </div>
-      </div>
-
-      {/* Row 1 col 1: Title block */}
-      <div className="flex flex-col gap-1.5 mb-4 min-w-0">
-        <div className="inline-flex items-center gap-2">
-          <FaShoppingCart className="w-4 h-4 text-primary" />
-          <span className="text-sm font-body font-semibold text-primary uppercase tracking-widest">
-            Assisted Sales
-          </span>
-        </div>
-        <h2 className="text-5xl font-heading font-bold text-foreground leading-tight">
-          Guided Product Discovery
-        </h2>
-        <p className="text-lg text-muted-foreground font-body leading-relaxed">
-          Customers speak naturally, and Bizmis guides them to the best-fit products.<br />
-          Just like a real store clerk would.
-        </p>
-      </div>
-      {/* Row 1 col 2: Spacer so row 1 height matches title */}
-      <div className="min-w-0" aria-hidden />
-
-      {/* Row 2 col 1: Screenshot */}
-      <div className="flex flex-col flex-1 min-h-0 items-center pt-2 min-w-0">
-        <div className="relative flex flex-col flex-1 min-h-0 w-full max-w-full rounded-xl overflow-hidden shadow-[0_8px_40px_-8px_rgba(0,0,0,0.15)] border border-black/[0.06]">
-          <div
-            className="bg-[#f1f1f1] flex items-center px-3 gap-1.5 border-b border-black/5 shrink-0"
-            style={{ height: BROWSER_CHROME_HEIGHT }}
-          >
-            <div className="w-2.5 h-2.5 rounded-full bg-primary-dark" />
-            <div className="w-2.5 h-2.5 rounded-full bg-primary" />
-            <div className="w-2.5 h-2.5 rounded-full bg-primary-light" />
-            <div className="flex-1 mx-8 min-w-0">
-              <div className="bg-white rounded-md h-4 flex items-center px-2">
-                <span className="text-[8px] text-gray-400 truncate">
-                  your-shopify-store.com
-                </span>
-              </div>
-            </div>
-          </div>
-          <div
-            className="relative flex-1 min-h-0 w-full bg-white overflow-hidden"
-            style={
-              aspectRatio != null
-                ? {
-                    aspectRatio: aspectRatio,
-                    maxWidth: "100%",
-                  }
-                : undefined
-            }
-          >
-            <img
-              src={SCREENSHOT_SRC}
-              alt="Bizmis voice assistant helping a customer discover products in an online store."
-              onLoad={onImageLoad}
-              className="block w-full h-full object-contain object-center"
-            />
-          </div>
-        </div>
-      </div>
-
-      {/* Row 2 col 2: Conversation — two half waves in flow (top + bottom) */}
-      <div className="relative flex flex-col flex-1 min-h-0 min-w-0 overflow-visible pt-2">
-        <div
-          className="flex w-full gap-[2px] h-14 items-end pointer-events-none shrink-0 bg-transparent"
-          aria-hidden
-        >
-          {Array.from({ length: HALF_WAVE_BAR_COUNT }).map((_, i) => (
-            <div
-              key={`top-${i}`}
-              className="flex-1 min-w-[2px] max-w-[6px] rounded-full bg-primary/10"
-              style={{
-                height: `${halfWaveBarHeightPercent(i, "top")}%`,
-                opacity: halfWaveBarOpacity(i),
-              }}
-            />
-          ))}
-        </div>
-        <div className="relative flex flex-1 flex-col justify-evenly min-h-0">
-          <div
-            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-[95%] min-w-[280px] min-h-[260px] rounded-full bg-primary/[0.16] blur-[60px] pointer-events-none z-0"
-            aria-hidden
-          />
-          <div className="relative z-10 flex flex-1 flex-col justify-evenly min-h-0">
-          <p className="max-w-[82%] self-end text-right font-body text-xl leading-snug text-foreground/55">
-            I'd love a light laptop, ideally around $1,500.
-          </p>
-          <p className="max-w-[82%] self-start font-heading text-[1.35rem] font-bold leading-relaxed text-foreground/80">
-            What kind of <strong className="font-extrabold text-primary-dark/85">day-to-day use</strong> do you have in mind?
-          </p>
-          <p className="max-w-[82%] self-end text-right font-body text-xl leading-snug text-foreground/55">
-            Mostly <strong className="font-semibold text-foreground">work, travel, and browsing</strong>.
-          </p>
-          <div className="self-start flex flex-wrap items-center gap-2">
-            <span className="inline-flex items-center gap-1.5 rounded-full bg-primary/15 backdrop-blur-md border border-primary/25 px-4 py-2 text-sm font-heading font-semibold text-primary-dark">
-              <FaSearch className="w-3.5 h-3.5 text-primary/80" />
-              {TOOL_CHIP_FIRST}
-            </span>
-            <span className="inline-flex flex-wrap items-center gap-1.5 text-xs font-body text-muted-foreground">
-              <FaBrain className="w-3 h-3 text-primary/50 shrink-0" />
-              {MEMORY_AFTER_FIRST_RESPONSE.map((concept, i) => (
-                <span key={concept} className="inline-flex items-center gap-1.5">
-                  {i > 0 && (
-                    <span className="w-1.5 h-1.5 rounded-full bg-primary/60 shrink-0" aria-hidden />
-                  )}
-                  {concept}
-                </span>
-              ))}
-            </span>
-          </div>
-          <div className="flex flex-col gap-5 max-w-[82%] w-full">
-            <p className="max-w-[82%] self-start font-heading text-[1.35rem] font-bold leading-relaxed text-foreground/80">
-              Would longer <strong className="font-extrabold text-primary-dark/85">battery life</strong> be more important than extra screen space?
-            </p>
-            <p className="max-w-[82%] self-end text-right font-body text-xl leading-snug text-foreground/55">
-              Yeah, <strong className="font-semibold text-foreground">battery life</strong> for sure.
-            </p>
-            <div className="self-start flex flex-wrap items-center gap-2">
-              <span className="inline-flex items-center gap-1.5 rounded-full bg-primary/15 backdrop-blur-md border border-primary/25 px-4 py-2 text-sm font-heading font-semibold text-primary-dark">
-                <FaSearch className="w-3.5 h-3.5 text-primary/80" />
-                {TOOL_CHIP_SECOND}
-              </span>
-              <span className="inline-flex flex-wrap items-center gap-1.5 text-xs font-body text-muted-foreground">
-                <FaBrain className="w-3 h-3 text-primary/50 shrink-0" />
-                {MEMORY_AFTER_SECOND_RESPONSE.map((concept, i) => (
-                  <span key={concept} className="inline-flex items-center gap-1.5">
-                    {i > 0 && (
-                      <span className="w-1.5 h-1.5 rounded-full bg-primary/60 shrink-0" aria-hidden />
-                    )}
-                    {concept}
-                  </span>
-                ))}
-              </span>
-            </div>
-          </div>
-        </div>
-        </div>
-        <div
-          className="flex w-full gap-[2px] h-14 items-end pointer-events-none shrink-0 scale-y-[-1] bg-transparent"
-          aria-hidden
-        >
-          {Array.from({ length: HALF_WAVE_BAR_COUNT }).map((_, i) => (
-            <div
-              key={`bottom-${i}`}
-              className="flex-1 min-w-[2px] max-w-[6px] rounded-full bg-primary/10"
-              style={{
-                height: `${halfWaveBarHeightPercent(i, "bottom")}%`,
-                opacity: halfWaveBarOpacity(i),
-              }}
-            />
-          ))}
-        </div>
-      </div>
+const FlowBadge = () => (
+  <div className="relative w-fit">
+    <div className="flex w-fit items-center rounded-xl border-2 border-primary/50 whitespace-nowrap px-5 py-3 text-sm font-semibold text-primary">
+      <span className="inline-flex items-center gap-2">
+        <FaBrain className="h-5 w-5 text-primary/80" />
+        Understand the need
+      </span>
+      <span className="mx-2.5 text-xl text-primary/40">→</span>
+      <span className="inline-flex items-center gap-2">
+        <FaSearch className="h-5 w-5 text-primary/80" />
+        Search the catalog
+      </span>
+      <span className="mx-2.5 text-xl text-primary/40">→</span>
+      <span className="inline-flex items-center gap-2">
+        <FaComments className="h-5 w-5 text-primary/80" />
+        Ask what matters
+      </span>
     </div>
+    <div
+      className="absolute -right-3 -top-3 flex h-9 w-9 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-md"
+      aria-hidden
+    >
+      <FaSync className="h-4 w-4" />
     </div>
   </div>
-  );
-};
+);
+
+const ProductDiscoverySlide = () => (
+  <div className="relative grid h-full w-full grid-cols-[1.5fr_1fr] gap-x-12 overflow-visible">
+    <div className="flex min-w-0 flex-col justify-center gap-10">
+      <TitleBlock
+        Icon={FaShoppingCart}
+        eyebrow="Product discovery"
+        title="A Shortlist That Fits"
+        lead="Shoppers say what they need. Your Bizmis sales agent searches your whole catalog and puts the products that fit on screen."
+      />
+      <ShotCard
+        src={SCREENSHOT_SRC}
+        alt="Bizmis sales agent showing three matching laptops on a store's search page"
+        className="relative aspect-[16/9] w-full"
+      />
+    </div>
+    <div className="flex min-w-0 flex-col justify-center gap-10">
+      <div className="flex justify-end">
+        <FlowBadge />
+      </div>
+      <Exchange>
+        <ShopperLine>
+          I'm looking for a <Strong>Windows laptop</Strong> for work, around <Strong>$1,200</Strong>. I fly a
+          lot, so it has to be <Strong>portable</Strong>.
+        </ShopperLine>
+        <ToolChip Icon={FaSearch} label="Shown products" NoteIcon={FaBrain} notes={REMEMBERED} />
+        <AgentLine>
+          Which matters more on all those flights: keeping the <Accent>weight</Accent> down, or stretching
+          the <Accent>battery life</Accent>?
+        </AgentLine>
+      </Exchange>
+    </div>
+  </div>
+);
 
 export default ProductDiscoverySlide;
