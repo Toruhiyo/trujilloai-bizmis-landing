@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useMemo, useRef, useState, type CSSProperties } from "react";
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { AudioLines, Volume2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useMessages } from "@/i18n/LocaleProvider";
@@ -26,6 +26,43 @@ import "@/styles/hero-agent.css";
  */
 
 const words = (line: string) => line.split(/\s+/);
+
+/**
+ * Splits a line into the fewest parts that each fit `room` (a part's width is
+ * width(i, j), words i to j - 1), as even as they can be, and breaking after a
+ * comma or a full stop where it can. Returns the word each part starts at.
+ */
+const splitLine = (line: string[], width: (i: number, j: number) => number, room: number) => {
+  const n = line.length;
+  let parts = 0;
+  for (let i = 0; i < n; parts++) {
+    let j = i + 1;
+    while (j < n && width(i, j + 1) <= room) j++;
+    i = j;
+  }
+  // a part's cost: how full it is, squared (so the parts come out even), and more
+  // when it breaks a phrase; one too wide never wins (a lone word too wide still can)
+  const cost = (i: number, j: number) => {
+    const w = width(i, j);
+    if (w > room && j - i > 1) return Infinity;
+    return (w / room) ** 2 + (j < n && !/[,.;:!?]$/.test(line[j - 1]) ? 0.5 : 0);
+  };
+  // best[p][j]: the cheapest split of the first j words into p parts
+  const best = [[0, ...Array<number>(n).fill(Infinity)]];
+  const cut: number[][] = [[]];
+  for (let p = 1; p <= parts; p++) {
+    best[p] = Array<number>(n + 1).fill(Infinity);
+    cut[p] = [];
+    for (let j = p; j <= n; j++)
+      for (let i = p - 1; i < j; i++) {
+        const c = best[p - 1][i] + cost(i, j);
+        if (c < best[p][j]) [best[p][j], cut[p][j]] = [c, i];
+      }
+  }
+  const starts: number[] = [];
+  for (let p = parts, j = n; p > 0; j = cut[p][j], p--) starts.unshift(cut[p][j]);
+  return starts.length ? starts : [0];
+};
 
 /** Speech pace, and how long each line stays up after its last word. */
 const MS_PER_WORD = 300;
@@ -171,38 +208,44 @@ const HeroAgent = ({
   const inviting = Boolean(invite) && started && !paused;
   useEffect(() => onInvite?.(inviting), [inviting, onInvite]);
 
-  // Beside the card (desktop) the captions never wrap: a line wider than its room
-  // shrinks to fit instead (a transform, so the pill keeps its place; Tailwind's
-  // translate composes it). Its room is the page left of the card, less 1em each
-  // side, where the parent centres it. Stacked (phones, tablets) they wrap to two
-  // lines at most at their own size; a longer line steps its type down until it fits.
+  // The captions never wrap: a line too long for its room is shown in parts,
+  // one after the other as they're said, like a film's subtitles. Its room is
+  // the page left of the card, less 1em each side (desktop), or the page less
+  // 1rem each side (stacked); each part is measured with its widest word bold.
   const captionRef = useRef<HTMLParagraphElement>(null);
-  const [fit, setFit] = useState(1);
+  const [starts, setStarts] = useState([0]);
   useLayoutEffect(() => {
     const el = captionRef.current;
-    if (!el) return;
+    const ctx = document.createElement("canvas").getContext("2d");
+    if (!el || !ctx) return;
     const measure = () => {
-      el.style.fontSize = "";
-      if (isStacked()) {
-        const css = getComputedStyle(el);
-        const base = parseFloat(css.fontSize);
-        const lines = () => (el.clientHeight - parseFloat(css.paddingTop) - parseFloat(css.paddingBottom)) / parseFloat(css.lineHeight);
-        let size = base;
-        while (lines() > 2.5 && size > base * 0.75) el.style.fontSize = `${(size -= 0.5)}px`;
-        setFit(1);
-        return;
-      }
+      const css = getComputedStyle(el);
+      const font = (weight: number) => `${weight} ${css.fontSize} ${css.fontFamily}`;
+      const width = (text: string, weight: number) => {
+        ctx.font = font(weight);
+        return ctx.measureText(text).width + text.length * (parseFloat(css.letterSpacing) || 0);
+      };
       const page = el.offsetParent as HTMLElement | null;
       const box = page?.clientWidth ?? window.innerWidth;
       const card = cardRef.current;
       const em = page ? parseFloat(getComputedStyle(page).fontSize) : 16;
-      const room = card ? card.offsetLeft - 2 * em : box - 32;
-      setFit(Math.min(1, (room / el.offsetWidth) * 0.97));
+      const rem = parseFloat(getComputedStyle(document.documentElement).fontSize);
+      const pill = !isStacked() && card ? card.offsetLeft - 2 * em : Math.min(26 * rem, box - 2 * rem);
+      const room = pill - parseFloat(css.paddingLeft) - parseFloat(css.paddingRight) - 2;
+      const part = (i: number, j: number) =>
+        width(line.slice(i, j).join(" "), 500) + Math.max(...line.slice(i, j).map((w) => width(w, 700) - width(w, 500)));
+      setStarts(splitLine(line, part, room));
     };
     measure();
+    document.fonts?.ready.then(measure);
     window.addEventListener("resize", measure);
     return () => window.removeEventListener("resize", measure);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [at.step, messages]);
+  // the part with the word being said (the first before it starts, the last once it's said)
+  const current = Number.isFinite(at.word) ? Math.max(0, at.word - 1) : line.length - 1;
+  const from = starts.filter((i) => i <= current).pop() ?? 0;
+  const to = starts.find((i) => i > from) ?? line.length;
 
   return (
     <>
@@ -264,20 +307,21 @@ const HeroAgent = ({
       </div>
 
       {/* The widget's captions: spoken words solid, the current one bold and glowing.
-          Stacked, where they wrap, its bold is drawn with a stroke instead of the bold
-          weight, so it keeps its width and the bold moving along never reflows the lines. */}
+          Stacked, its bold is drawn with a stroke instead of the bold weight, so the
+          pill keeps its width as the bold moves along. */}
       <p
         ref={captionRef}
-        style={{ "--tw-scale-x": fit, "--tw-scale-y": fit } as CSSProperties}
         className={cn(
-          "bzw bza bzw-caption w-max origin-bottom text-balance rounded-[1.5em] px-[1em] py-[0.25em] text-center font-medium leading-snug text-[#171717] transition-opacity duration-300 lg:whitespace-nowrap",
+          "bzw bza bzw-caption w-max whitespace-nowrap rounded-[1.5em] px-[1em] py-[0.25em] text-center font-medium leading-snug text-[#171717] transition-opacity duration-300",
           !started && "opacity-0",
           captionClassName,
         )}
       >
         <span className="sr-only">{line.join(" ")}</span>
         <span aria-hidden="true">
-          {line.map((w, k) => (
+          {line.slice(from, to).map((w, i, part) => {
+            const k = from + i;
+            return (
             <span
               key={`${at.step}-${k}`}
               className={cn(
@@ -291,9 +335,10 @@ const HeroAgent = ({
             >
               {k === at.word - 1 && <span className="bzw-word-glow absolute inset-x-[-0.3em] inset-y-[-0.2em] -z-10 rounded-full" />}
               {w}
-              {k < line.length - 1 ? " " : ""}
+              {i < part.length - 1 ? " " : ""}
             </span>
-          ))}
+            );
+          })}
         </span>
       </p>
     </>

@@ -185,7 +185,7 @@ const Hero = () => {
       const em = parseFloat(getComputedStyle(el).fontSize);
       const rem = parseFloat(getComputedStyle(document.documentElement).fontSize);
       // (play keeps 1em clear above and below it)
-      const room = el.offsetHeight - 4.1 * rem - copyEnd - play.offsetHeight - 2 * em;
+      const room = el.offsetHeight - 2.85 * rem - copyEnd - play.offsetHeight - 2 * em;
       const size = Math.max(0.6, Math.min(1, room / (18.5 * em)));
       el.style.setProperty("--hero-card", `${size}em`);
       el.style.setProperty("--hero-card-room", `${18.5 * size + 0.3}em`);
@@ -258,7 +258,7 @@ const Hero = () => {
             </span>
           </div>
           {/* the store's landing: its hero section is the copy and the CTAs, with play at its centre */}
-          <div className="absolute inset-x-0 bottom-[calc(var(--hero-card-room,15.5em)+4.1rem)] top-[5.6em] flex flex-col px-[1.4em] pt-[1.4em] md:bottom-[calc(var(--hero-card-room,18.8em)+4.1rem)] lg:bottom-[2em] lg:justify-center lg:px-[3.6em] lg:pt-0">
+          <div className="absolute inset-x-0 bottom-[calc(var(--hero-card-room,15.5em)+2.85rem)] top-[5.6em] flex flex-col px-[1.4em] pt-[1.4em] md:bottom-[calc(var(--hero-card-room,18.8em)+2.85rem)] lg:bottom-[2em] lg:justify-center lg:px-[3.6em] lg:pt-0">
             {/* the column stops short of play (centred, 7rem wide); the longer locales' lines run to its edge */}
             <div
               ref={copy}
@@ -355,12 +355,12 @@ const Hero = () => {
 
           {/* the Bizmis widget, embedded bottom-right, and its captions (on desktop centred in the room
               left of the widget, so they never run under it; stacked, under the card, like a film's
-              subtitles, in two lines at most) */}
+              subtitles; in one line, a long one shown in parts) */}
           <HeroAgent
             paused={irisOpen}
             onInvite={setInviting}
-            cardClassName="absolute bottom-[4.1rem] left-1/2 -translate-x-1/2 text-[length:var(--hero-card,0.82em)] md:text-[length:var(--hero-card,1em)] lg:bottom-[2em] lg:left-auto lg:right-[2.4em] lg:translate-x-0"
-            captionClassName="absolute left-1/2 top-[calc(100%-3.65rem)] z-10 max-w-[min(26rem,calc(100%-2rem))] -translate-x-1/2 text-[clamp(0.8125rem,3.7vw,1rem)] lg:bottom-[2.2em] lg:left-[calc((100%-20.4em)/2)] lg:top-auto lg:z-auto lg:max-w-none lg:text-[1.15em]"
+            cardClassName="absolute bottom-[2.85rem] left-1/2 -translate-x-1/2 text-[length:var(--hero-card,0.82em)] md:text-[length:var(--hero-card,1em)] lg:bottom-[2em] lg:left-auto lg:right-[2.4em] lg:translate-x-0"
+            captionClassName="absolute left-1/2 top-[calc(100%-2.45rem)] z-10 max-w-[min(26rem,calc(100%-2rem))] -translate-x-1/2 text-[clamp(0.8125rem,3.7vw,1rem)] lg:bottom-[2.2em] lg:left-[calc((100%-20.4em)/2)] lg:top-auto lg:z-auto lg:max-w-none lg:text-[1.15em]"
           />
         </div>
       </div>
