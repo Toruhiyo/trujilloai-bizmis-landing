@@ -20,6 +20,7 @@ import { formatDuration, timeStringToSeconds } from "@/lib/utils/time";
 import type { SessionReplayData } from "@/data/session-replays";
 import { REPLAY_SESSIONS } from "./replaySessions";
 import type { ReplaySession } from "./replaySessions";
+import { useInnerSnap } from "./steps/innerSnap";
 
 /**
  * The classic landing's conversation replays (TabbedSessionReplay +
@@ -194,6 +195,8 @@ const ReplayCard = ({ session, fill = false }: { session: ReplaySession; fill?: 
   const focusedRef = useRef<string | null>(null);
   const refs = useRef<Record<string, HTMLDivElement | null>>({});
   const listRef = useRef<HTMLDivElement>(null);
+  // touch screens: a swipe in the transcript settles on a line (and one it can't take moves the page)
+  useInnerSnap(listRef);
   // a mouse over the transcript: it's being read (or scrolled), so playback doesn't pull it away
   const reading = useRef(false);
 
