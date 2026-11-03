@@ -272,6 +272,8 @@ const EarlyAccessHost = ({ onInvite }: { onInvite?: (inviting: boolean) => void 
           model="will"
           shirtColor="#F9A353"
           fullBody
+          // his arms reach well past the narrow box when he presents, shrugs or points
+          overscanX={0.7}
           speaking={speaking}
           gesture={seen ? gesture : null}
           onStatus={setAvatar}

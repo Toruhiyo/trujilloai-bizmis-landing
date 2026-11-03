@@ -201,6 +201,11 @@ export type LiveAvatarProps = {
    * and centred in the box, like the widget's bar / head circle. Opt-in.
    */
   headOnly?: boolean;
+  /**
+   * How far the canvas bleeds past each side of the box, as a fraction of its
+   * width (default 0.15): more for a full figure whose gestures reach wide.
+   */
+  overscanX?: number;
   /** Greet with a wave when it appears (default true). */
   greet?: boolean;
   /** Bizmis logo on the shirt, like the static renders (default true). */
@@ -227,6 +232,7 @@ const LiveAvatar = ({
   onStatus,
   fullBody = false,
   headOnly = false,
+  overscanX = OVERSCAN_X,
   greet = true,
   logo = true,
   expression = "smile",
@@ -345,8 +351,8 @@ const LiveAvatar = ({
               : {
                   top: `${-OVERSCAN_TOP * 100}%`,
                   bottom: 0,
-                  left: `${-OVERSCAN_X * 100}%`,
-                  right: `${-OVERSCAN_X * 100}%`,
+                  left: `${-overscanX * 100}%`,
+                  right: `${-overscanX * 100}%`,
                 }),
             opacity: live ? 1 : 0,
             transition: `opacity ${CROSSFADE_MS}ms ease`,
