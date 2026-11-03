@@ -320,12 +320,13 @@ const Hero = () => {
           </div>
 
           {/* the Bizmis widget, embedded bottom-right, and its captions (on desktop centred in the room
-              left of the widget, so they never run under it; on phones the real widget shows none) */}
+              left of the widget, so they never run under it; stacked, over the card's foot, just above
+              its message bar, like a film's subtitles) */}
           <HeroAgent
             paused={irisOpen}
             onInvite={setInviting}
             cardClassName="absolute bottom-[1.2em] left-1/2 -translate-x-1/2 lg:bottom-[2em] lg:left-auto lg:right-[2.4em] lg:translate-x-0"
-            captionClassName="absolute bottom-[2.2em] left-[calc((100%-20.4em)/2)] hidden -translate-x-1/2 text-[1.15em] lg:block"
+            captionClassName="absolute bottom-[5.4em] left-1/2 z-10 -translate-x-1/2 text-[0.95em] lg:bottom-[2.2em] lg:left-[calc((100%-20.4em)/2)] lg:z-auto lg:text-[1.15em]"
           />
         </div>
       </div>
