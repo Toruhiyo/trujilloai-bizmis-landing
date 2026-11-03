@@ -1,0 +1,124 @@
+/* The ?scroll=steps trial (lib/scrollSteps, components/landing/steps). Nothing
+   here applies without the flag: the classes are only ever set by it. */
+
+/* the soft snap: proximity only (never mandatory), onto the points in the pinned tracks (steps/SnapMarks) */
+html.bzl-snap {
+  scroll-snap-type: y proximity;
+}
+.bzl-snaps {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 1px;
+  height: 0;
+  pointer-events: none;
+  visibility: hidden;
+}
+.bzl-snap-mark {
+  position: absolute;
+  left: 0;
+  width: 1px;
+  height: 1px;
+  scroll-snap-align: start;
+}
+
+/* the progress bar under the docked pill: a segment a beat, the one playing filling as it plays */
+.bzl-steps {
+  position: absolute;
+  top: calc(100% + 0.32em);
+  left: 50%;
+  display: flex;
+  gap: 0.25em;
+  transform: translateX(-50%);
+  opacity: var(--odz-g, 1);
+  pointer-events: none;
+}
+.bzl-steps i {
+  position: relative;
+  display: block;
+  width: 1.55em;
+  height: 0.2em;
+  min-height: 3px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: rgb(59 36 22 / 0.13);
+}
+.bzl-steps[data-count="1"] i {
+  width: 3.4em;
+}
+.bzl-steps i::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: #f9a353;
+  transform: scaleX(var(--f, 0));
+  transform-origin: 0 50%;
+  /* (its own layer: a fill's step repaints nothing else, the Sales pill's frosted glass least of all) */
+  will-change: transform;
+}
+/* Sales' pill is a glass on its orange band: the bar in white, as its type */
+.sl-c .bzl-steps i {
+  background: rgb(255 255 255 / 0.36);
+}
+.sl-c .bzl-steps i::after {
+  background: #fff;
+}
+
+.bzl-steps[data-dots="0"] i {
+  visibility: hidden;
+}
+
+/* the idle cue: a small chevron nodding at the bar's end, "scroll on", the next segment glowing (IdleCue) */
+.bzl-cue {
+  position: absolute;
+  top: 50%;
+  left: calc(100% + 0.4em);
+  width: 0.62em;
+  height: 0.42em;
+  min-width: 9px;
+  min-height: 6px;
+  overflow: visible;
+  fill: none;
+  stroke: #f9a353;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  opacity: 0;
+  transform: translateY(-50%);
+  transition: opacity 0.18s ease;
+}
+.sl-c .bzl-cue {
+  stroke: #fff;
+}
+.bzl-steps.is-cue .bzl-cue {
+  opacity: 1;
+  transition: opacity 0.6s ease;
+  animation: bzl-cue-nod 1.6s ease-in-out infinite;
+}
+.bzl-steps.is-cue i.is-next {
+  animation: bzl-cue-glow 1.6s ease-in-out infinite;
+}
+.sl-c .bzl-steps {
+  --bzl-glow: rgb(255 255 255 / 0.5);
+}
+@keyframes bzl-cue-nod {
+  0%,
+  100% {
+    transform: translateY(-65%);
+  }
+  50% {
+    transform: translateY(-15%);
+  }
+}
+@keyframes bzl-cue-glow {
+  50% {
+    box-shadow: 0 0 0 2px var(--bzl-glow, rgb(249 163 83 / 0.3));
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .bzl-steps.is-cue .bzl-cue,
+  .bzl-steps.is-cue i {
+    animation: none;
+  }
+}

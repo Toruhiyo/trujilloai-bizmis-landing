@@ -9,6 +9,7 @@ import { SupportDrawing, supportClockTimes } from "./SupportDrawing";
 import { useMedia, useScrollThrough } from "./sales/hooks";
 import { usePinScene, useScrollPlayHold } from "./sceneClock";
 import RewindScreen from "./sales/RewindScreen";
+import { useStepsReport } from "./steps/steps";
 import SupportStore, { supportCase } from "./support/SupportStore";
 import type { CaseKey } from "./support/SupportStore";
 
@@ -107,6 +108,8 @@ const SupportBody = ({ pin }: { pin: PinState }) => {
   const t = Math.min(duration, Math.max(0, pin.pinned ? scene : own));
   const active = pin.pinned ? pin.active : through;
   const rewinding = useRewindingOn(t, active);
+  // ?scroll=steps: the scene's progress under the docked pill (the case playing, one segment)
+  useStepsReport(body, { count: 1, index: 0, fill: t / duration, active });
   const reached = useRef(false);
   useEffect(() => {
     if (t >= duration - 1) reached.current = true;

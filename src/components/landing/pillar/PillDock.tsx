@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import { cn } from "@/lib/utils";
+import { StepBar } from "../steps/steps";
 
 /**
  * The pillar's opener and its docked pill, ONE lockup in both forms (the
@@ -96,6 +97,7 @@ export const PillBar = ({
   byOutcome,
   lines,
   children,
+  steps,
 }: {
   icon?: ReactNode;
   /** The area's name (with an outcome) or the pillar's name (Sales). */
@@ -105,6 +107,8 @@ export const PillBar = ({
   lines?: string[];
   /** Sales' line (SalesTitle, its current part lit). */
   children?: ReactNode;
+  /** ?scroll=steps: a progress bar under the pill, a segment a beat (steps/StepBar). */
+  steps?: number;
 }) => {
   const main = byOutcome && lines?.length ? <DockLine lines={lines} /> : children;
   return (
@@ -123,6 +127,7 @@ export const PillBar = ({
           </span>
         </>
       )}
+      {steps ? <StepBar count={steps} /> : null}
     </span>
   );
 };

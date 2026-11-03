@@ -8,6 +8,7 @@ import CustomizeSection from "@/components/landing/CustomizeSection";
 import EndCard from "@/components/landing/EndCard";
 import FilmFooter from "@/components/landing/FilmFooter";
 import LandingSummary from "@/components/landing/LandingSummary";
+import { IdleCue } from "@/components/landing/steps/steps";
 import {
   setupKeepPlaceOnResize,
   setupLandingScrollRestore,
@@ -93,6 +94,8 @@ const FilmLandingSections = () => {
       <SetupSection />
       <CustomizeSection />
       <EndCard />
+      {/* ?scroll=steps: the idle "scroll on" chevron (nothing without the flag) */}
+      <IdleCue />
     </>
   );
 };

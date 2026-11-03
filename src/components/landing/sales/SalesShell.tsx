@@ -49,10 +49,13 @@ export type Beat = { t: number; duration: number; fixAt: number };
 export const SalesShell = ({
   lit,
   className,
+  steps,
   children,
 }: {
   lit: number | "all" | null;
   className?: string;
+  /** ?scroll=steps: the beats' progress bar under the docked pill (their count). */
+  steps?: number;
   children: ReactNode;
 }) => {
   const m = useMessages();
@@ -67,6 +70,7 @@ export const SalesShell = ({
         accent={BAR}
         // the payoff lights every part, with no underline (a mark only ever points at one part)
         docked={<SalesTitle active={lit} layout="line" as="p" marks className="sl-c-title" />}
+        steps={steps}
       >
         {children}
       </PillarIntro>

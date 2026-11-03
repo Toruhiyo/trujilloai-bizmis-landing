@@ -34,6 +34,7 @@ import {
 } from "./sales/hooks";
 import RewindScreen from "./sales/RewindScreen";
 import { runFor } from "./pillar/BenefitIntro";
+import { SnapMarks, useStepsReport } from "./steps/steps";
 
 // Same order as messages.landing.setup.cards (and the classic landing's setup.dataCards). Line icons, as the page's.
 const ICONS = [Globe, Tag, Percent, ShieldCheck, Users, Package];
@@ -350,6 +351,8 @@ const SetupSection = () => {
   const play = useScrollPlay(goal * duration, duration, active);
   const t = reduced ? duration : Math.min(duration, Math.max(0, play));
   const rewinding = useRewindingOn(t, active);
+  // ?scroll=steps: no pill here, so no progress bar; it tells the idle cue when the scene has played out
+  useStepsReport(section, { count: 1, index: 0, fill: t / duration, active: pinned && active });
 
   // pinned, the screen's content kept whole: scaled down if it comes out taller than the screen
   useEffect(() => {
@@ -694,6 +697,8 @@ const SetupSection = () => {
 
         </div>
       </div>
+      {/* ?scroll=steps: the soft snap's point where the scene rests (after the pin, the section's first child) */}
+      {pinned && <SnapMarks rests={[track.rest]} />}
     </section>
   );
 };

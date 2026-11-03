@@ -1,3 +1,5 @@
+import { holdSnap } from "@/lib/scrollSteps";
+
 // Extend Window interface to include our custom property
 declare global {
   interface Window {
@@ -74,6 +76,8 @@ export const scrollToElement = (
       ? Math.ceil(pinned)
       : element.getBoundingClientRect().top + window.scrollY - offset;
 
+  // (?scroll=steps: the soft snap set aside while it travels, so it lands where it's sent)
+  holdSnap();
   window.scrollTo({ top: Math.max(0, top), behavior });
 };
 
@@ -156,6 +160,7 @@ export const setupScrollToUrlUpdater = (sectionIds: string[]): (() => void) => {
 
 /** A jump with no smooth scroll, whatever the page's CSS says. */
 const jumpTo = (top: number): void => {
+  holdSnap();
   window.scrollTo({ top: Math.max(0, Math.round(top)), left: 0, behavior: "instant" as ScrollBehavior });
 };
 

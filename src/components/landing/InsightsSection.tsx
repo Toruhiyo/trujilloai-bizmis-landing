@@ -1,3 +1,4 @@
+import { useRef } from "react";
 import { useMessages } from "@/i18n/LocaleProvider";
 import { cn } from "@/lib/utils";
 import { IdeaIcon } from "./AnimatedIcons";
@@ -8,6 +9,7 @@ import Reveal from "./Reveal";
 import SessionReplay from "./SessionReplay";
 import { useMedia } from "./sales/hooks";
 import { useScenePlayHold } from "./sceneClock";
+import { useStepsReport } from "./steps/steps";
 
 /**
  * Store Insights: its chapter opener (index 03, the bulb, "Store Insights",
@@ -46,8 +48,11 @@ const HOLD = 1500;
 /** Stacked: the lead and the chart, pinned on their own track, the scroll driving the chart. */
 const StackedChart = ({ pin, lead }: { pin: PinState; lead: string }) => {
   const scene = useScenePlayHold(pin, CLARITY_MS, HOLD);
+  const box = useRef<HTMLDivElement>(null);
+  // ?scroll=steps: the drawing's progress under the docked pill
+  useStepsReport(box, { count: 1, index: 0, fill: scene.t / CLARITY_MS, active: pin.pinned && pin.active });
   return (
-    <div className="bzi-grid">
+    <div ref={box} className="bzi-grid">
       <Reveal className="bzi-lead">
         <p className="bzl-lead bzl-pillar-lead">{lead}</p>
       </Reveal>
@@ -62,6 +67,8 @@ const InsightsBody = ({ pin }: { pin: PinState }) => {
   const ins = useMessages().landing.insights;
   const scene = useScenePlayHold(pin, CLARITY_MS, HOLD);
   const tall = useMedia(SUB_PIN);
+  const box = useRef<HTMLDivElement>(null);
+  useStepsReport(box, { count: 1, index: 0, fill: scene.t / CLARITY_MS, active: pin.pinned && pin.active });
   if (!pin.pinned && tall)
     return (
       <div className="bzl-wrap">
@@ -76,7 +83,7 @@ const InsightsBody = ({ pin }: { pin: PinState }) => {
       </div>
     );
   return (
-    <div className="bzl-wrap">
+    <div ref={box} className="bzl-wrap">
       <div className={cn("bzi-grid", pin.pinned && "is-pinned")}>
         <Reveal className="bzi-lead">
           <p className="bzl-lead bzl-pillar-lead">{ins.lead}</p>

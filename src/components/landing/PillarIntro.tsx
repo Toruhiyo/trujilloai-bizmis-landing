@@ -70,6 +70,8 @@ export type PillarIntroProps = {
   outcome?: string[];
   /** The small area label (default: PillarAreaContext). */
   area?: ReactNode;
+  /** ?scroll=steps: how many beats the pinned content has (a progress bar under the docked pill). */
+  steps?: number;
   children?: ReactNode;
 };
 
@@ -106,6 +108,7 @@ const PillarIntro = ({
   lineClassName,
   outcome,
   area,
+  steps,
   children,
 }: PillarIntroProps) => {
   const areaCtx = useContext(PillarAreaContext);
@@ -183,7 +186,7 @@ const PillarIntro = ({
     >
       <div ref={head} className="pi-head">
         <div ref={dock} className="pi-dock is-named odz-bar odz-bar-d" aria-hidden="true">
-          <PillBar icon={icon} label={byOutcome ? (area ?? areaCtx ?? name) : name} byOutcome={byOutcome} lines={byOutcome ? lines : undefined}>
+          <PillBar icon={icon} label={byOutcome ? (area ?? areaCtx ?? name) : name} byOutcome={byOutcome} lines={byOutcome ? lines : undefined} steps={steps}>
             {compact}
           </PillBar>
         </div>

@@ -3,6 +3,7 @@ import { useRewindLoop } from "../useRewindLoop";
 import type { RewindLoopOptions } from "../useRewindLoop";
 import { VISUAL_TEST, VISUAL_TEST_NOW } from "@/lib/visualTest";
 import { viewportHeight } from "@/lib/utils/scroll";
+import { scrollSteps } from "@/lib/scrollSteps";
 
 const query = "(prefers-reduced-motion: reduce)";
 
@@ -326,18 +327,34 @@ const pageScrolling = (now: number) => now - pageScroll.at < SCROLL_REST;
  * counts from when the page stops moving, and scrolling on during that rewind
  * plays the beat forward again instead. Inactive (`active: false`), it simply
  * sits on `target`. Reduced motion: it sits on the end.
+ *
+ * Timed (?scroll=steps, lib/scrollSteps): scrolling on never pulls it; it
+ * starts from the beat's start as the beat comes on and plays by time (at
+ * `rate`), the scroll only choosing which beat is on. Scrolling back still
+ * rewinds it to the scroll, and the rest loop is the same.
  */
-export const useScrollPlay = (rawTarget: number, duration: number, active: boolean, hold: number = FIXED_HOLD) => {
+export const useScrollPlay = (
+  rawTarget: number,
+  duration: number,
+  active: boolean,
+  hold: number = FIXED_HOLD,
+  /** How fast it plays on (?scroll=steps: a beat flown past finishes at up to 2x). */
+  rate = 1,
+) => {
   // the scroll's place on the timeline, always on it (a fast entry can hand in a hair below 0, which read as a rewind)
   const target = Math.min(duration, Math.max(0, rawTarget));
   const reduced = useReducedMotion();
+  // ?scroll=steps (lib/scrollSteps): the scroll only picks the beat, which then plays by time
+  const [timed] = useState(() => scrollSteps().time);
   const [t, setT] = useState(target);
   const tgt = useRef(target);
   const cur = useRef(target);
   // (a ref: a scene whose length changes, e.g. Support's next case, carries on rather than starting over)
   const dur = useRef(duration);
+  const speed = useRef(rate);
   tgt.current = target;
   dur.current = duration;
+  speed.current = rate;
   useEffect(() => {
     if (!active || reduced) {
       cur.current = tgt.current;
@@ -345,9 +362,11 @@ export const useScrollPlay = (rawTarget: number, duration: number, active: boole
       return;
     }
     watchPageScroll();
-    // becoming the active beat: start where the scroll puts it
-    cur.current = tgt.current;
-    setT(tgt.current);
+    // becoming the active beat: start where the scroll puts it (timed: from its start, unless
+    // it's being scrolled back into, which shows its end and rewinds from there)
+    const into = timed && !(pageScrolling(performance.now()) && pageScroll.dir < 0) ? 0 : tgt.current;
+    cur.current = into;
+    setT(into);
     let raf = 0;
     let last = performance.now();
     let prev = tgt.current;
@@ -363,7 +382,7 @@ export const useScrollPlay = (rawTarget: number, duration: number, active: boole
       const d = dur.current;
       const target = tgt.current;
       let next = cur.current;
-      if (target > prev + 0.5) {
+      if (target > prev + 0.5 && !timed) {
         // scrolling on: pulled up to the scroll (and playing on past it)
         phase = "play";
         back = false;
@@ -378,8 +397,8 @@ export const useScrollPlay = (rawTarget: number, duration: number, active: boole
         back = false;
         next = target;
       } else if (phase === "play") {
-        // at rest: on at 1x to the fixed state
-        next = Math.min(d, next + dt);
+        // at rest (timed: always): on at 1x to the fixed state
+        next = Math.min(d, next + dt * (timed ? speed.current : 1));
         if (next >= d) {
           phase = "hold";
           since = now;
@@ -413,6 +432,6 @@ export const useScrollPlay = (rawTarget: number, duration: number, active: boole
     };
     raf = requestAnimationFrame(loop);
     return () => cancelAnimationFrame(raf);
-  }, [active, reduced, hold]);
+  }, [active, reduced, hold, timed]);
   return reduced ? (active ? duration : target) : active ? Math.min(t, duration) : target;
 };
