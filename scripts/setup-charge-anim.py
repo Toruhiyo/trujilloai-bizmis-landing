@@ -1,5 +1,5 @@
 """The /v2 Setup agent, Will (the studio's 3D model, in the Bizmis shirt), standing easy
-with his hands on his hips, filling up with the store's data as it flows down the wires
+with his hands low and open, palms up, filling up with the store's data as it flows down the wires
 into him, then a happy burst once it's all in (both fists up), and back (the motion:
 scripts/setup-charge-clip.py). The
 energy is the flow from the store (the page draws it, along the wires); nothing glows in

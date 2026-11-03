@@ -48,12 +48,13 @@ const CARD_EVERY = 160;
 /** When card `i` ticks (and its wire starts drawing to the agent). */
 const cardAt = (i: number) => SYNC_AT + 200 + i * CARD_EVERY;
 /**
- * The agent's frames (scripts/setup-charge-anim.py), 24 fps: he stands easy, hands
- * on his hips, filling up with what flows in along the wires (he breathes and rises
- * a touch), a seamless 2 s loop played in real time whenever the burst isn't, and
- * the 4 s happy burst (he takes the last of it in, then throws both fists up, a
- * little bounce, and puts them back on his hips), scrubbed from the scroll clock;
- * the burst leaves the loop on its first frame and lands back on it.
+ * The agent's frames (scripts/setup-charge-anim.py), 24 fps: he stands easy, his
+ * hands low and open, palms up, filling up with what flows in along the wires (he
+ * breathes and rises a touch, his hands with him), a seamless 2 s loop played in
+ * real time whenever the burst isn't, and the 4 s happy burst (he takes the last of
+ * it in, then throws both fists up, a little bounce, and brings them back down),
+ * scrubbed from the scroll clock; the burst leaves the loop on its first frame and
+ * lands back on it.
  */
 const FPS = 24;
 const LOOP_FRAMES = 48;
@@ -82,7 +83,7 @@ const CHARGE = {
     i < LOOP_FRAMES
       ? `/landing/setup/charge-idle/${String(i).padStart(2, "0")}.webp`
       : `/landing/setup/charge-burst/${String(i - LOOP_FRAMES).padStart(2, "0")}.webp`,
-  crop: { left: 4, top: 98, width: 714, height: 1004 },
+  crop: { left: 12, top: 98, width: 704, height: 1004 },
   w: 720,
   h: 1200,
 };
