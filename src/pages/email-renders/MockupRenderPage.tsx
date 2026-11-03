@@ -1,5 +1,5 @@
 import { useEffect, useMemo } from "react";
-import { useParams } from "react-router-dom";
+import { useParams } from "react-router";
 import NotFound from "@/pages/NotFound";
 import { getLeadById } from "@/data/leads";
 import {

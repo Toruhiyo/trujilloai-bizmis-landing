@@ -1,6 +1,6 @@
 import { createContext, useContext, useEffect, useMemo } from "react";
 import type { ReactNode } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router";
 import { DEFAULT_LOCALE, LOCALE_TAGS, type Locale } from "./locales";
 import { getMessages, hasMessages, loadMessages, type Messages } from "./messages";
 import { localizePath, splitLocaleFromPath, translateHref } from "./paths";

@@ -1,5 +1,5 @@
 import { useState, useCallback } from "react";
-import { useSearchParams } from "react-router-dom";
+import { useSearchParams } from "react-router";
 import Logo from "@/components/Logo";
 import { useMessages } from "@/i18n/LocaleProvider";
 

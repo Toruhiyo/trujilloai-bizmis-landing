@@ -1,4 +1,4 @@
-import { Navigate, Outlet, useParams } from "react-router-dom";
+import { Navigate, Outlet, useParams } from "react-router";
 import NotFound from "@/pages/NotFound";
 import { LocaleProvider, useLocaleHref } from "./LocaleProvider";
 import { DEFAULT_LOCALE, isLocale } from "./locales";

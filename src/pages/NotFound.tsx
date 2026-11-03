@@ -1,4 +1,4 @@
-import { useLocation } from "react-router-dom";
+import { useLocation } from "react-router";
 import { useEffect } from "react";
 import { ArrowRight, Compass } from "lucide-react";
 import SitePage from "@/components/site/SitePage";

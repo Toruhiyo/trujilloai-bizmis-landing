@@ -1,5 +1,5 @@
 import { lazy, Suspense } from "react";
-import { BrowserRouter, Routes, Route, Navigate, Outlet } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate, Outlet } from "react-router";
 import { HERO_FILM_ENABLED } from "./lib/film";
 import AttributionTracker from "./components/AttributionTracker";
 import { LocaleRoute, LocalizedRedirect } from "./i18n/LocaleRoute";
@@ -94,7 +94,7 @@ const App = () => {
   return (
   <>
       {/* (transitions keep the current page on screen while the next page's chunk loads) */}
-      <BrowserRouter future={{ v7_startTransition: true }}>
+      <BrowserRouter>
         <AttributionTracker />
         <Suspense fallback={pageFallback}>
         <Routes>

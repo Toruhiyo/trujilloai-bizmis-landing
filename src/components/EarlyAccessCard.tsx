@@ -1,6 +1,6 @@
 import { ArrowRight, Crown } from "lucide-react";
 import { FaGift, FaMapMarkedAlt, FaStar } from "react-icons/fa";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 import { usePostHog } from "posthog-js/react";
 import { Button } from "@/components/ui/button";
 import { useLocaleHref, useMessages } from "@/i18n/LocaleProvider";

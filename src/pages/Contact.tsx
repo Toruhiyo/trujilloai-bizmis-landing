@@ -9,7 +9,7 @@ import {
   MessageCircleQuestion,
   Send,
 } from "lucide-react";
-import { useSearchParams } from "react-router-dom";
+import { useSearchParams } from "react-router";
 import { usePostHog } from "posthog-js/react";
 import emailjs from "@emailjs/browser";
 import SitePage from "@/components/site/SitePage";

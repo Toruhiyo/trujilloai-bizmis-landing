@@ -5,7 +5,7 @@ import type { MouseEvent } from "react";
 import { useState, useEffect } from "react";
 import { usePostHog } from "posthog-js/react";
 import { scrollToTop, scrollToSection } from "@/lib/utils/scroll";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router";
 import {
   BIZMIS_DEMO_STORE_URL,
   BIZMIS_SHOPIFY_APP_LISTING_URL,

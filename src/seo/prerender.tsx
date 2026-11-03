@@ -7,7 +7,7 @@
 import "@/i18n/messages/all";
 import { renderToStaticMarkup } from "react-dom/server";
 import { HelmetProvider } from "react-helmet-async";
-import { MemoryRouter } from "react-router-dom";
+import { MemoryRouter } from "react-router";
 import { LocaleProvider } from "@/i18n/LocaleProvider";
 import { DEFAULT_LOCALE, LOCALES, LOCALE_TAGS, type Locale } from "@/i18n/locales";
 import { localizePath } from "@/i18n/paths";

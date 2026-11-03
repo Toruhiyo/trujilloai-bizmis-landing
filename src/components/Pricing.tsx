@@ -1,6 +1,6 @@
 import { Check, ArrowRight, ChevronDown, Clock, Info, ShieldCheck, Tag } from "lucide-react";
 import { useState, useRef, useEffect, useMemo } from "react";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router";
 import PageHead from "@/components/site/PageHead";
 import Reveal from "@/components/landing/Reveal";
 import { usePostHog } from "posthog-js/react";

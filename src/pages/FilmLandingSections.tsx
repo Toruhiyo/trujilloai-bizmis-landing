@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { useNavigationType } from "react-router-dom";
+import { useNavigationType } from "react-router";
 import SalesSection from "@/components/landing/SalesSection";
 import SupportSection from "@/components/landing/SupportSection";
 import InsightsSection from "@/components/landing/InsightsSection";
