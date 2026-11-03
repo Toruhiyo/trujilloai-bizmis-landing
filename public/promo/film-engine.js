@@ -38,7 +38,7 @@
     // The card's beats sit on v38's frames (film time, s), so v38's score fits it as it is.
     listing: {
       scarcity: '',
-      label: 'Add Bizmis to your store',
+      label: 'Install Bizmis on your store',
       invite: 'your sales agent, in every language',
       terms: ['Sells by voice and text', 'Knows your whole catalog', 'Speaks your shoppers’ language'],
       beats: { vo: 114.833, write: 115.033, ticks: [117.033, 118.867, 120.433], final: 125.333 },   // vo: where the take starts in v38
@@ -212,7 +212,7 @@
     { scene: 'end', id: 'see-it', line: 'See it in action.', cta: 'demo' },
     { scene: 'end', id: 't-ea', line: 'Install now to join Early Access! A hundred and twenty free sessions, fifty percent off upgrades, and you shape the roadmap. Only fifty spots. Secure yours by installing now!', cta: 'ea' },   // v24: the short take (v35: a powerful close)
     { scene: 'end', id: 'install-shopify', line: 'Install it on Shopify.', cta: 'install' },
-    { scene: 'end', id: 't-listing', line: 'Add Bizmis to your store, and give every shopper a sales agent to talk to.', cta: 'listing' },
+    { scene: 'end', id: 't-listing', line: 'Install Bizmis on your store, and give every shopper a sales agent to talk to.', cta: 'listing' },
   ];
   function ensureInviteFont() {
     if (document.getElementById('promo-invite-font')) return;
