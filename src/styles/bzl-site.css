@@ -864,7 +864,11 @@
   .bzl-price-hero { padding-top: 2rem; }
   .bzl-price-hero .bzl-site-title { font-size: clamp(2.1rem, 10vw, 2.6rem); }
 }
+/* the plans sit straight on the page, no sheet around them */
 .bzl-price-sheet {
+  margin-inline: 0;
+  background: none;
+  box-shadow: none;
   padding-top: clamp(0.85rem, 1.9svh, 1.75rem);
   padding-bottom: clamp(2rem, 6svh, 4rem);
 }
