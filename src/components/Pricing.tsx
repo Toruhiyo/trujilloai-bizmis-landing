@@ -743,7 +743,7 @@ const Pricing = () => {
                   </div>
 
                   {/* Sessions */}
-                  <div className="bzl-price-sessions">
+                  <div className="bzl-price-sessions relative">
                     <p className="flex flex-wrap items-baseline gap-x-1.5">
                       <span className="text-lg font-extrabold tabular-nums tracking-[-0.02em]">
                         {plan.includedConversations.toLocaleString(numberLocale)}
@@ -767,7 +767,7 @@ const Pricing = () => {
                       </span>
                     </p>
                     {extraSessionSaving > 0 && (
-                      <span className="bzl-price-save mt-1 inline-block">
+                      <span className="bzl-price-save is-float">
                         {messages.pricing.extraSessionSaving(extraSessionSaving)}
                       </span>
                     )}

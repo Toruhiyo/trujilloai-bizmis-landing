@@ -997,3 +997,12 @@
 }
 .bzl-price-tip:hover .bzl-price-tip-body,
 .bzl-price-tip:focus-within .bzl-price-tip-body { opacity: 1; }
+/* the saving floats on the sessions box's top-right corner, never a line of its own */
+.bzl-price-save.is-float {
+  position: absolute;
+  top: 0;
+  right: 0.75rem;
+  translate: 0 -50%;
+  background: #fde7d1;
+  box-shadow: 0 0 0 2px #fff;
+}
