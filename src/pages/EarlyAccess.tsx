@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import type { MouseEvent } from "react";
 import {
   ArrowUpRight,
@@ -17,8 +17,7 @@ import { usePostHog } from "posthog-js/react";
 import SitePage from "@/components/site/SitePage";
 import PageHead from "@/components/site/PageHead";
 import Reveal from "@/components/landing/Reveal";
-import AgentImage from "@/components/landing/AgentImage";
-import LiveAvatar from "@/components/landing/LiveAvatar";
+import EarlyAccessHost from "@/components/site/EarlyAccessHost";
 import Seo from "@/components/Seo";
 import { EARLY_ACCESS_STORE_CAP } from "@/data/leads/_schema";
 import {
@@ -29,58 +28,17 @@ import {
   openBizmisShopifyAppListing,
 } from "@/lib/bizmisUrls";
 import { useMessages } from "@/i18n/LocaleProvider";
+import { cn } from "@/lib/utils";
 
 const BENEFIT_ICONS = [Gift, Compass, Headphones, BadgePercent];
 /** The hero's three facts: the cap, free while open, the benefits kept. */
 const LEAD_ICONS = [Store, Gift, BadgeCheck];
 
-/** The live avatar waves hello on arrival, idles, and waves again every so often. */
-const WAVE_EVERY_MS = 9000;
-
-/**
- * The invitation's host: Will, live in 3D (the same LiveAvatar as the hero
- * and the widgets), full figure in the Bizmis shirt with the logo stamp. The
- * 3D chunk and the model only load once the box is near the viewport; the
- * still render of him waving (setup-will) shows first and stays for reduced
- * motion, Save-Data, no WebGL or a failed load.
- */
-const EaAvatar = ({ alt }: { alt: string }) => {
-  const [wave, setWave] = useState<{ name: string; key: number } | null>(null);
-  const [live, setLive] = useState(false);
-  useEffect(() => {
-    if (!live) return;
-    const t = window.setInterval(
-      () => setWave((w) => ({ name: "waving", key: (w?.key ?? 0) + 1 })),
-      WAVE_EVERY_MS,
-    );
-    return () => window.clearInterval(t);
-  }, [live]);
-  return (
-    <div className="bzl-ea-avatar-box" role="img" aria-label={alt}>
-      <LiveAvatar
-        model="will"
-        shirtColor="#F9A353"
-        fullBody
-        gesture={wave}
-        onStatus={(status) => setLive(status === "live")}
-        fallback={
-          <AgentImage
-            name="setup-will"
-            alt=""
-            sizes="(min-width: 1024px) 340px, 40vw"
-            eager
-            className="h-full"
-            imgClassName="h-full w-full object-contain object-bottom"
-          />
-        }
-      />
-    </div>
-  );
-};
-
 const EarlyAccess = () => {
   const messages = useMessages();
   const posthog = usePostHog();
+  // Install calls out while Will points at it
+  const [inviting, setInviting] = useState(false);
   const benefits = messages.earlyAccessPage.benefits.map((benefit, index) => ({
     ...benefit,
     icon: BENEFIT_ICONS[index],
@@ -115,7 +73,7 @@ const EarlyAccess = () => {
     <SitePage>
       <Seo page="earlyAccess" />
 
-      {/* The invitation: the head on the left, the avatar waving on the right */}
+      {/* The invitation: the head on the left, Will on the right (above it on phones); on desktop it fills the screen */}
       <div className="bzl-wrap bzl-site-hero bzl-ea-top">
         <div className="bzl-ea-hero">
           <div className="bzl-site-head">
@@ -170,7 +128,7 @@ const EarlyAccess = () => {
                   target="_blank"
                   rel="noopener noreferrer"
                   onClick={handleInstallClick}
-                  className="bzl-site-btn is-lg"
+                  className={cn("bzl-site-btn is-lg bzl-ea-install", inviting && "is-called")}
                 >
                   <FaShopify aria-hidden="true" className="!h-5 !w-5" />
                   {messages.common.installOnYourStore}
@@ -205,7 +163,7 @@ const EarlyAccess = () => {
           </div>
 
           <Reveal delay={120} className="bzl-ea-avatar">
-            <EaAvatar alt={messages.earlyAccessPage.avatarAlt} />
+            <EarlyAccessHost onInvite={setInviting} />
           </Reveal>
         </div>
       </div>

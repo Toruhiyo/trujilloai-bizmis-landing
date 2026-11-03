@@ -894,6 +894,23 @@ export const es: Messages = {
     seeLiveDemo: "Ver la demo en vivo",
     bookFounderCall: "Reservar 30 min con el fundador",
     avatarAlt: "Invitación al acceso anticipado de Bizmis",
+    host: {
+      hello: "¡Hola! Te doy la bienvenida al acceso anticipado.",
+      line: (cap: number) => `Solo entran ${cap} tiendas, y empiezas con 120 sesiones gratis.`,
+      invite: "¡Instálame en tu tienda!",
+      hearPerks: "Escucha las ventajas",
+      stopPerks: "Parar",
+      replayPerks: "Escuchar otra vez",
+      perks: (cap: number) => [
+        "Hola, soy Will. Esto es lo que te da el acceso anticipado.",
+        `Solo ${cap} tiendas Shopify pueden entrar.`,
+        "Tienes las 120 sesiones gratis del plan gratuito, una sola vez por tienda.",
+        "Sin tarjeta, sin suscripción, sin compromiso.",
+        "Los miembros tienen línea directa con el fundador, y tus comentarios ayudan a decidir el roadmap.",
+        "Y cuando mejoras de plan, conservas tus ventajas de miembro.",
+        "Instala Bizmis en tu tienda para conseguir tu plaza.",
+      ],
+    },
     benefitsBadge: "Ventajas del acceso anticipado",
     benefitsTitle: "Esto es lo que te llevas",
     benefitsLead:

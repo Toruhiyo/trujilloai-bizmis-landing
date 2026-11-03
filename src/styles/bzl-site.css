@@ -748,6 +748,169 @@
   .bzl-ea-hero { gap: 0.75rem; }
 }
 
+/* desktop: the invitation fills the screen under the nav (h-16), its content centred */
+@media (min-width: 1024px) {
+  .bzl-ea-top {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-height: calc(100svh - 4rem);
+    padding-block: clamp(1.5rem, 4svh, 3rem) clamp(2.25rem, 6svh, 4rem);
+  }
+  .bzl-ea-hero { width: 100%; }
+}
+
+/* Will's captions: the home hero's (the real widget's glass pill, HeroAgent), centred over his legs,
+   one line always (EarlyAccessHost splits a long line into parts) */
+.bzl-ea-caption {
+  position: absolute;
+  z-index: 2;
+  left: 50%;
+  bottom: clamp(0.9rem, 3svh, 1.6rem);
+  translate: -50% 0;
+  width: max-content;
+  white-space: nowrap;
+  border-radius: 1.5em;
+  padding: 0.25em 1em;
+  font-family: "Plus Jakarta Sans", var(--bzl-font);
+  font-size: clamp(0.8125rem, 3.7vw, 1rem);
+  font-weight: 500;
+  line-height: 1.375;
+  text-align: center;
+  color: #171717;
+  background-color: rgba(255, 255, 255, 0.55);
+  background-image: linear-gradient(150deg, rgba(255, 255, 255, 0.51) 0%, rgba(255, 255, 255, 0) 100%);
+  -webkit-backdrop-filter: blur(24px) saturate(1.25);
+  backdrop-filter: blur(24px) saturate(1.25);
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  box-shadow: 0 12px 28px -16px rgba(28, 24, 20, 0.3);
+  pointer-events: none;
+  transition: opacity 0.3s;
+}
+.bzl-site .bzl-ea-caption span { font-family: inherit; }
+@media (min-width: 1024px) {
+  .bzl-ea-caption { font-size: 1.1rem; bottom: clamp(2.6rem, 9svh, 4.6rem); }
+}
+/* the word being said: bold (a stroke when stacked, so the pill keeps its width), with a soft glow */
+.bzl-ea-caption-now { -webkit-text-stroke: 0.045em currentColor; }
+@media (min-width: 1024px) {
+  .bzl-ea-caption-now { font-weight: 700; -webkit-text-stroke: 0; }
+}
+.bzl-ea-caption-glow {
+  position: absolute;
+  inset: -0.2em -0.3em;
+  z-index: -1;
+  border-radius: 999px;
+  background: radial-gradient(closest-side, hsl(var(--primary) / 0.4), transparent);
+  filter: blur(4px);
+}
+
+/* the perks, out loud: a small pill under his feet, a waveform in a primary disc (stop and hear again while
+   and after he speaks); the bars dance while he talks */
+.bzl-ea-avatar:has(.bzl-ea-perks) { margin-bottom: 3.1rem; }
+.bzl-ea-perks {
+  position: absolute;
+  z-index: 3;
+  left: 50%;
+  bottom: 0;
+  translate: -50% calc(100% + 0.6rem);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-height: 2.5rem;
+  padding: 0.3rem 0.95rem 0.3rem 0.3rem;
+  border-radius: 999px;
+  white-space: nowrap;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--site-ink);
+  background: rgb(255 255 255 / 0.9);
+  -webkit-backdrop-filter: blur(16px) saturate(1.2);
+  backdrop-filter: blur(16px) saturate(1.2);
+  box-shadow:
+    inset 0 0 0 1px rgb(249 163 83 / 0.45),
+    0 12px 26px -14px rgb(249 163 83 / 0.9);
+  transition:
+    transform 0.35s var(--bzl-spring),
+    box-shadow 0.25s var(--bzl-ease),
+    background-color 0.25s;
+}
+.bzl-ea-perks:hover {
+  transform: translateY(-2px);
+  background: #fff;
+  box-shadow:
+    inset 0 0 0 1.5px hsl(var(--primary)),
+    0 16px 30px -14px rgb(249 163 83 / 1);
+}
+.bzl-ea-perks:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px #fff, 0 0 0 5px rgb(249 163 83 / 0.7);
+}
+.bzl-ea-perks-icon {
+  display: grid;
+  place-items: center;
+  width: 1.9rem;
+  height: 1.9rem;
+  border-radius: 999px;
+  background: var(--site-primary);
+  color: #fff;
+}
+.bzl-ea-perks-icon svg { width: 1rem; height: 1rem; }
+.bzl-ea-perks[data-state="playing"] .bzl-ea-perks-icon svg,
+.bzl-ea-perks[data-state="loading"] .bzl-ea-perks-icon svg { width: 0.7rem; height: 0.7rem; fill: currentColor; }
+.bzl-ea-perks-bars {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  height: 0.9rem;
+}
+.bzl-ea-perks-bars i {
+  width: 3px;
+  height: 100%;
+  border-radius: 2px;
+  background: var(--site-primary);
+  transform-origin: center;
+  animation: bzl-ea-bars 0.9s ease-in-out infinite alternate;
+}
+.bzl-ea-perks-bars i:nth-child(2) { animation-delay: -0.3s; }
+.bzl-ea-perks-bars i:nth-child(3) { animation-delay: -0.6s; }
+.bzl-ea-perks-bars i:nth-child(4) { animation-delay: -0.15s; }
+.bzl-ea-perks[data-state="loading"] .bzl-ea-perks-bars i { animation-play-state: paused; }
+@keyframes bzl-ea-bars {
+  from { transform: scaleY(0.3); }
+  to { transform: scaleY(1); }
+}
+
+/* Install calls out while Will points at it: it lifts a touch and a ring breathes out of it (as the
+   home hero's play does) */
+.bzl-ea-install { position: relative; }
+.bzl-ea-install::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  opacity: 0;
+}
+.bzl-ea-install.is-called {
+  transform: translateY(-1px) scale(1.04);
+  box-shadow: 0 18px 34px -16px rgb(249 163 83 / 1);
+}
+.bzl-ea-install.is-called::after {
+  opacity: 1;
+  animation: bzl-ea-call 1.1s ease-out infinite;
+}
+@keyframes bzl-ea-call {
+  from { box-shadow: 0 0 0 0 rgb(249 163 83 / 0.55); }
+  to { box-shadow: 0 0 0 0.9rem rgb(249 163 83 / 0); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .bzl-ea-perks-bars i,
+  .bzl-ea-install.is-called::after { animation: none; }
+  .bzl-ea-install.is-called { transform: none; }
+}
+
 /* the benefits: a 2x2 grid of cards, everything on show (no hover needed) */
 .bzl-ea-benefits {
   display: grid;

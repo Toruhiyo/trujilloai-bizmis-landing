@@ -907,6 +907,29 @@ export const en = {
     seeLiveDemo: "See the live demo",
     bookFounderCall: "Book a 30-min call with the founder",
     avatarAlt: "Bizmis Early Access invitation",
+    /** Will, the page's host (EarlyAccessHost): what he says unvoiced, in his captions (hello once, then the line and the invite, said pointing at Install), and the perks control. */
+    host: {
+      hello: "Hi! Welcome to Early Access.",
+      line: (cap: number) => `Only ${cap} stores get in, and you start with 120 free sessions.`,
+      invite: "Install me on your store!",
+      hearPerks: "Hear the perks",
+      stopPerks: "Stop",
+      replayPerks: "Hear again",
+      /**
+       * The perks he speaks on request, a caption line each (in this order: the host's gestures follow it).
+       * Voiced into public/landing/early-access/ by scripts/generate-ea-perks-audio.mjs: a changed line
+       * hides the control in that locale until it's voiced again (src/data/earlyAccessPerksVoice.ts).
+       */
+      perks: (cap: number) => [
+        "Hi, I'm Will. Here's what Early Access gets you.",
+        `Only ${cap} Shopify stores can join.`,
+        "You get the Free plan's 120 free sessions, once per store.",
+        "No card, no subscription, no commitment.",
+        "Members get a direct line to the founder, and your feedback helps shape the roadmap.",
+        "And when you upgrade, you keep your member benefits.",
+        "Install Bizmis on your store to claim your spot.",
+      ],
+    },
     benefitsBadge: "Early Access benefits",
     benefitsTitle: "You'll get",
     benefitsLead:

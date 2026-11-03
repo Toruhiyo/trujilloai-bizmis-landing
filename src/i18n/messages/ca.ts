@@ -894,6 +894,23 @@ export const ca: Messages = {
     seeLiveDemo: "Mira la demo en directe",
     bookFounderCall: "Reserva 30 min amb el fundador",
     avatarAlt: "Invitació a l'accés anticipat de Bizmis",
+    host: {
+      hello: "Hola! Et dono la benvinguda a l'accés anticipat.",
+      line: (cap: number) => `Només hi entren ${cap} botigues, i comences amb 120 sessions gratis.`,
+      invite: "Instal·la'm a la teva botiga!",
+      hearPerks: "Escolta els avantatges",
+      stopPerks: "Atura",
+      replayPerks: "Torna-ho a escoltar",
+      perks: (cap: number) => [
+        "Hola, sóc en Will. Això és el que t'ofereix l'accés anticipat.",
+        `Només ${cap} botigues Shopify hi poden entrar.`,
+        "Tens les 120 sessions gratis del pla gratuït, una sola vegada per botiga.",
+        "Sense targeta, sense subscripció, sense compromís.",
+        "Els membres tenen línia directa amb el fundador, i els teus comentaris ajuden a decidir el full de ruta.",
+        "I quan canvies de pla, conserves els teus avantatges de membre.",
+        "Instal·la Bizmis a la teva botiga per aconseguir la teva plaça.",
+      ],
+    },
     benefitsBadge: "Avantatges de l'accés anticipat",
     benefitsTitle: "Això és el que t'emportes",
     benefitsLead:
