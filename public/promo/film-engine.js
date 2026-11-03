@@ -44,7 +44,10 @@
       label: 'Install Bizmis',
       invite: 'Your store sales agent',   // the brand claim, handwritten as the EA card's "for Early Access benefits!" (Oriol)
       terms: [],
-      beats: { vo: 114.833, voAt: 115.987, avatar: 117.033, shine1: 117.033, write: 117.507, claim: 118.867, button: 119.4, shine: 122.667, push: 124.767, final: 125.333 },
+      beats: {   // film time; the VO (take listing-vo6/t-4) from voAt, each beat on its words
+        vo: 114.833, voAt: 115.6,
+        pops: [[116.02, 'action', 0.07], [118.3, 'action', 0.07], [119.54, 'brand', 0.12]],   // on "sales", "orders", "setup"
+        shine1: 117.033, write: 121.15, claim: 122.46, shine: 122.667, button: 122.88, push: 124.767, final: 125.333 },   // write on "your", claim after "agent", button on "Install"
       pills: true,
       shopify: true,   // the EA card's layout and motion
       bag: false,
@@ -215,7 +218,7 @@
     { scene: 'end', id: 'see-it', line: 'See it in action.', cta: 'demo' },
     { scene: 'end', id: 't-ea', line: 'Install now to join Early Access! A hundred and twenty free sessions, fifty percent off upgrades, and you shape the roadmap. Only fifty spots. Secure yours by installing now!', cta: 'ea' },   // v24: the short take (v35: a powerful close)
     { scene: 'end', id: 'install-shopify', line: 'Install it on Shopify.', cta: 'install' },
-    { scene: 'end', id: 't-listing', line: 'Install Bizmis. Your store sales agent.', cta: 'listing' },
+    { scene: 'end', id: 't-listing', line: 'More sales from the same visits. Bigger orders. Zero setup. Bizmis, your store sales agent. Install Bizmis.', cta: 'listing' },
   ];
   function ensureInviteFont() {
     if (document.getElementById('promo-invite-font')) return;
@@ -8969,8 +8972,8 @@
     // seconds that used to carry the Early Access benefits kept alive with the film's own moves, one per score hit
     // (Oriol 2026-11-03): the orange shine running through "Install Bizmis" (the landing CTA's title sweep, in the
     // film's orange) on the first hit, a slight swell on "agent", "Your store sales agent" drawing itself by hand on
-    // the next hit, the shine again, the push-in, and on the final chord the shine and ad-1's warm bloom. The lockup
-    // eases in by scale over the whole card. Film time in the full film; alone (part=cta), the same distances from
+    // the next hit, the shine again, the bloom, and on the final chord the shine and the button growing a touch. Single elements pop by scale on their own centres (the card itself never scales:
+    // it pushed the lockup off centre). Film time in the full film; alone (part=cta), the same distances from
     // the card's start. Stepped (export-safe).
     async playListingBeats(slot, copy) {
       const { beats } = copy;
@@ -8991,22 +8994,20 @@
         tweenStep(ms, (e) => { label.style.backgroundPosition = `${(100 - e * 100).toFixed(2)}% 0`; }, promoEaseInOut)
           .then(() => { label.classList.remove('is-shine'); label.style.backgroundPosition = ''; });
       };
-      let swellAt = -1e9; let swellK = 0; let pushK = 0;
-      const swell = (k) => { swellAt = performance.now(); swellK = k; };
-      const live = (now) => {
-        const t = (now - start) / 1000;
-        const h = (now - swellAt) / 1000;
-        const sw = h >= 0 && h < 0.9 ? swellK * Math.sin((h / 0.9) * Math.PI) : 0;
-        const ease = 0.97 + 0.03 * (1 - (1 - Math.min(1, t / 6)) ** 3);
-        slot.style.scale = (ease * (1 + sw) * (1 + pushK)).toFixed(4);
-        window.requestAnimationFrame(live);
-      };
-      window.requestAnimationFrame(live);
+      // Oriol 2026-11-04: nothing moves off centre, so the card itself never scales; single elements pop on the
+      // hits, each around its own centre (a damped bounce that settles at `rest`)
+      const brand = slot.querySelector('.promo-pass-slot__brand');
+      const invite = slot.querySelector('.promo-pass-slot__invite');
+      const pop = (el, peak, ms, rest = 1) => el && tweenStep(ms, (e) => {
+        el.style.scale = (1 + (rest - 1) * Math.min(1, e * 2.5) + peak * Math.sin(e * 2.5 * Math.PI) * (1 - e) ** 1.5).toFixed(4);
+      }, (u) => u);
       await until(beats.voAt);
       speakTake(copy.vo);
-      await until(beats.shine1);
-      promoSfx('ea-tick', { index: 0 });
-      shine(1000);
+      // "More sales from the same visits. Bigger orders. Zero setup.": a pop on each, the shine on the score's first hit
+      const els = { action, brand };
+      const hits = [...beats.pops.map(([t, el, k]) => ({ t, run: () => pop(els[el], k, 760) })),
+        { t: beats.shine1, run: () => { promoSfx('ea-tick', { index: 0 }); shine(1000); } }].sort((p, q) => p.t - q.t);
+      for (const hit of hits) { await until(hit.t); hit.run(); }
       // "Your store sales agent" is written by hand as the VO says it (Oriol: "justo cuando la VO lo dice")
       await until(beats.write);
       slot.classList.add('is-writing');
@@ -9014,8 +9015,11 @@
       await until(beats.claim);
       slot.classList.add('is-written');
       promoSfx('ea-stamp');
-      swell(0.014);
-      // then the outline draws itself around "Install Bizmis" and the title becomes the landing's CTA button
+      pop(invite, 0.08, 700);
+      await until(beats.shine);
+      promoSfx('ea-hero');
+      shine(1000);
+      // on "Install Bizmis" the outline draws itself around the title and it becomes the landing's CTA button
       await until(beats.button);
       promoSfx('ea-tick', { index: 1 });
       action?.classList.add('is-listing-button');
@@ -9025,13 +9029,12 @@
         outline.style.strokeDasharray = `${len.toFixed(1)} ${(len + 20).toFixed(1)}`;
         tweenStep(900, (e) => { outline.style.strokeDashoffset = ((1 - e) * len).toFixed(1); }, promoEaseInOut);
       }
-      window.setTimeout(() => tweenStep(600, (e) => { action?.style.setProperty('--listing-fill', e.toFixed(3)); }, promoEaseOut), 820);   // the fill and the shadow once the stroke is round
-      await until(beats.shine);
-      promoSfx('ea-hero');
-      shine(1000);
+      window.setTimeout(() => {   // the fill and the shadow once the stroke is round, and the button pops as it forms
+        tweenStep(600, (e) => { action?.style.setProperty('--listing-fill', e.toFixed(3)); }, promoEaseOut);
+        pop(action, 0.06, 800);
+      }, 820);
       await until(beats.push);
       promoSfx('ea-close', { ms: 560 });
-      tweenStep(900, (e) => { pushK = 0.035 * e; }, promoEaseInOut);
       const bloom = document.createElement('span');
       bloom.className = 'promo-ea-bloom';
       bloom.setAttribute('aria-hidden', 'true');
@@ -9041,6 +9044,7 @@
       await until(beats.final);
       promoSfx('ea-final');
       shine(760);
+      pop(action, 0.07, 1000, 1.06);   // the exit move on the final chord: the button grows and settles a touch bigger
       tweenStep(1100, (e) => { bloom.style.opacity = (0.4 + 0.3 * Math.sin(e * Math.PI) - 0.08 * e).toFixed(3); bloom.style.scale = (1 + 0.1 * e).toFixed(3); }, promoEaseOut);
     }
 
