@@ -210,6 +210,8 @@ export type LiveAvatarProps = {
   greet?: boolean;
   /** Bizmis logo on the shirt, like the static renders (default true). */
   logo?: boolean;
+  /** Another logo to stamp in its place (a store's own, e.g. the listing slides' fictional brands). */
+  logoUrl?: string;
   /** "smile" matches the static renders; "default" is the widget's neutral face. */
   expression?: "default" | "smile";
   /** The static render, shown until (and instead of) the live avatar. */
@@ -235,6 +237,7 @@ const LiveAvatar = ({
   overscanX = OVERSCAN_X,
   greet = true,
   logo = true,
+  logoUrl,
   expression = "smile",
   fallback,
   paused = false,
@@ -366,7 +369,7 @@ const LiveAvatar = ({
                 animationsUrl={ANIMATIONS_URL}
                 extraAnimationsUrl={extraAnimationsUrl}
                 shirtColor={shirtColor}
-                stampUrl={logo ? LOGO_STAMP_URL : null}
+                stampUrl={logo ? (logoUrl ?? LOGO_STAMP_URL) : null}
                 stampScale={LOGO_STAMP_SCALE}
                 stampOffsetY={LOGO_STAMP_OFFSET_Y}
                 speaking={speaking}
