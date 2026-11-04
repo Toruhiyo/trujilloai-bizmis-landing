@@ -38,12 +38,12 @@ const BrandPersonalizationSlide = () => (
         eyebrow="Customize"
         title={
           <>
-            Bizmis Feels
+            Make It
             <br />
-            Like Your Store
+            Truly Yours
           </>
         }
-        lead="Pick the avatar, dress it in your colors and logo, and set what it knows and how it sells."
+        lead="Pick its avatar, put your logo on its shirt, and set what it knows and how it sells."
       />
       <div className="flex flex-col gap-3">
         <FeatureCard Icon={FaUserAlt} title="Avatar and welcome intro">

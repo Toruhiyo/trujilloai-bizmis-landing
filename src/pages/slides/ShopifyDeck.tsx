@@ -72,16 +72,18 @@ const ShopifyHeroContent = () => (
         <Logo variant="white" size="lg" showText className="shrink-0 scale-125 origin-left mt-1" />
         <div className="flex flex-1 flex-col justify-center gap-6 pr-10">
           <span className="text-white text-2xl font-body tracking-wide uppercase font-medium">
-            AI sales agent, by voice and text
+            Your AI sales agent
           </span>
         <h1 className="text-[4.9rem] font-heading font-bold text-white leading-[1.05]">
-          Your store's
+          Match needs.
           <br />
-          new sales agent.
+          Clear doubts.
+          <br />
+          Win sales.
         </h1>
         <p className="text-3xl text-white/80 font-body">
-          Shoppers talk to it out loud. It answers
-          <br /> from what's really in your store.
+          Turn store visits into sales,
+          <br /> by voice and text, day and night.
         </p>
         </div>
       </div>
