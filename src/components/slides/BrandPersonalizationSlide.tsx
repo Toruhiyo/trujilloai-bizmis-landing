@@ -35,10 +35,10 @@ const POSED_WIDGETS: {
 }[] = [
   // KUMO ("cloud"): sky blue, its navy wordmark
   { model: "luca", still: "style-luca", shirt: "#6EC8F5", logo: "kumo", gesture: "waving", holdMs: 1700, dark: false, placeholder: "A tea for slow mornings?" },
-  // ZORA (a lightning bolt): black, the neon lime and magenta logo
-  { model: "adrian", still: "style-adrian", shirt: "#1C1C1E", logo: "zora", gesture: "presenting_left", holdMs: 1300, dark: false, placeholder: "Which size fits me?" },
-  // SOLARO (the sun): sun yellow, the navy sun mark, on the widget's dark theme
-  { model: "amber", still: "style-amber", shirt: "#FFD23F", logo: "solaro-navy", gesture: "thumbsup", holdMs: 1100, dark: true, placeholder: "Will it arrive by Friday?" },
+  // SOLARO (the sun): sun yellow, the navy sun mark
+  { model: "amber", still: "style-amber", shirt: "#FFD23F", logo: "solaro-navy", gesture: "presenting_left", holdMs: 1300, dark: false, placeholder: "Which size fits me?" },
+  // ZORA (a lightning bolt): black, the neon lime and magenta logo, on the widget's dark theme
+  { model: "adrian", still: "style-adrian", shirt: "#1C1C1E", logo: "zora", gesture: "thumbsup", holdMs: 1100, dark: true, placeholder: "Will it arrive by Friday?" },
 ];
 
 /** The real widget's glass card, light or dark (widget.css theme-bg-glassy and theme-border-glassy). */
