@@ -44,10 +44,11 @@
       label: 'Install Bizmis',
       invite: 'Your store sales agent',   // the brand claim, handwritten as the EA card's "for Early Access benefits!" (Oriol)
       terms: [],
-      beats: {   // film time; the VO (take listing-vo6/t-4) from voAt, each beat on its words
-        vo: 114.833, voAt: 115.6,
-        pops: [[116.02, 'action', 0.07], [118.3, 'action', 0.07], [119.54, 'brand', 0.12]],   // on "sales", "orders", "setup"
-        shine1: 117.033, write: 121.15, claim: 122.46, shine: 122.667, button: 122.88, push: 124.767, final: 125.333 },   // write on "your", claim after "agent", button on "Install"
+      beats: {   // film time; the VO (take listing-vo8/t-1) from voAt, each beat on its words
+        vo: 114.833, voAt: 115.95,
+        pops: [[116.41, 'action', 0.07], [118.73, 'action', 0.07], [120.19, 'brand', 0.12]],   // on "sales", "orders", "setup"
+        shine1: 117.033, write: 121.0, claim: 122.29, button: 122.63, shine: 123.55, push: 124.767, final: 125.333,   // write on "your", claim after "agent", button on "Install", the shine once it is a button
+        exitMs: 1000, exitScale: 60 },   // the exit: the button flies at the viewer on the final chord
       pills: true,
       shopify: true,   // the EA card's layout and motion
       bag: false,
@@ -218,7 +219,7 @@
     { scene: 'end', id: 'see-it', line: 'See it in action.', cta: 'demo' },
     { scene: 'end', id: 't-ea', line: 'Install now to join Early Access! A hundred and twenty free sessions, fifty percent off upgrades, and you shape the roadmap. Only fifty spots. Secure yours by installing now!', cta: 'ea' },   // v24: the short take (v35: a powerful close)
     { scene: 'end', id: 'install-shopify', line: 'Install it on Shopify.', cta: 'install' },
-    { scene: 'end', id: 't-listing', line: 'More sales from the same visits. Bigger orders. Zero setup. Bizmis, your store sales agent. Install Bizmis.', cta: 'listing' },
+    { scene: 'end', id: 't-listing', line: 'More sales from the same visits. Bigger orders. One-click setup. Your store sales agent. Install Bizmis.', cta: 'listing' },
   ];
   function ensureInviteFont() {
     if (document.getElementById('promo-invite-font')) return;
@@ -8820,6 +8821,7 @@
       // final place (the old re-centring glided the card down, then up, then up again)
       const shown = new Set(['brand', 'action']);
       const recenter = (ms = 650) => {
+        if (slot && copy.beats) return this.listingRecenter(slot, shown, ms);   // the listing card: centred, then rises as its claim is written
         if (slot && copy.pills) { slot.style.translate = ''; return; }
         if (!slot || !copy.pills) return;
         const parts = [['brand', '.promo-pass-slot__brand'], ['action', '.promo-pass-slot__action'], ['invite', '.promo-pass-slot__invite'],
@@ -8859,7 +8861,7 @@
         // benefit pills rise in as they're said, "Only 50 spots" lands on
         // "only fifty spots", and "Install now to secure your spot" clears to the hero.
         if (copy.beats) {
-          await this.playListingBeats(slot, copy);
+          await this.playListingBeats(slot, copy, () => { shown.add('invite'); recenter(900); });
           await waitMs(PROMO_EA_FINAL_HOLD_MS + promoHoldMs());
           this.depart();
           return;
@@ -8975,7 +8977,26 @@
     // the next hit, the shine again, the bloom, and on the final chord the shine and the button growing a touch. Single elements pop by scale on their own centres (the card itself never scales:
     // it pushed the lockup off centre). Film time in the full film; alone (part=cta), the same distances from
     // the card's start. Stepped (export-safe).
-    async playListingBeats(slot, copy) {
+    // The listing card keeps what is on screen centred (Oriol 2026-11-04): until its claim is written the reserved line
+    // under "Install Bizmis" is left out, so the block sits half that line lower and rises into place as the claim is
+    // written. Measured on the layout (offsets, no transforms: the rows are still mid-entrance when it first runs),
+    // turned into the canvas's px through the slot's own scale.
+    listingRecenter(slot, shown, ms) {
+      const bottom = (el) => { let y = el.offsetHeight; for (let n = el; n && n !== slot; n = n.offsetParent) y += n.offsetTop; return y; };
+      const action = slot.querySelector('.promo-pass-slot__action');
+      const invite = slot.querySelector('.promo-pass-slot__invite');
+      if (!action || !invite) return;
+      const canvasEl = this.root.querySelector('[data-promo-canvas]') || this.root;
+      const fit = canvasEl.clientWidth / Math.max(1, canvasEl.getBoundingClientRect().width);
+      const k = (slot.getBoundingClientRect().height / Math.max(1, slot.offsetHeight)) * fit;   // canvas px per slot px
+      const line = invite.querySelector('.promo-pass-slot__invite-line') || invite;   // its box ends at the claim's ink (the invite's own box ends higher)
+      const to = shown.has('invite') ? 0 : ((bottom(line) - bottom(action)) * k) / 2;
+      const from = parseFloat((slot.style.translate || '0 0').split(' ')[1]) || 0;
+      if (!ms) { slot.style.translate = `0 ${to.toFixed(1)}px`; return; }
+      tweenStep(ms, (e) => { slot.style.translate = `0 ${(from + (to - from) * e).toFixed(1)}px`; }, promoEaseInOut);
+    }
+
+    async playListingBeats(slot, copy, riseForClaim = () => { }) {
       const { beats } = copy;
       const start = performance.now();
       const until = (sec) => (marketingPart() === 'full' && window.__promoFilmT0 != null
@@ -9003,22 +9024,20 @@
       }, (u) => u);
       await until(beats.voAt);
       speakTake(copy.vo);
-      // "More sales from the same visits. Bigger orders. Zero setup.": a pop on each, the shine on the score's first hit
+      // "More sales from the same visits. Bigger orders. One-click setup.": a pop on each, the shine on the score's first hit
       const els = { action, brand };
       const hits = [...beats.pops.map(([t, el, k]) => ({ t, run: () => pop(els[el], k, 760) })),
         { t: beats.shine1, run: () => { promoSfx('ea-tick', { index: 0 }); shine(1000); } }].sort((p, q) => p.t - q.t);
       for (const hit of hits) { await until(hit.t); hit.run(); }
       // "Your store sales agent" is written by hand as the VO says it (Oriol: "justo cuando la VO lo dice")
       await until(beats.write);
+      riseForClaim();
       slot.classList.add('is-writing');
       promoSfx('ea-write', { ms: PROMO_EA_WRITE_MS });
       await until(beats.claim);
       slot.classList.add('is-written');
       promoSfx('ea-stamp');
       pop(invite, 0.08, 700);
-      await until(beats.shine);
-      promoSfx('ea-hero');
-      shine(1000);
       // on "Install Bizmis" the outline draws itself around the title and it becomes the landing's CTA button
       await until(beats.button);
       promoSfx('ea-tick', { index: 1 });
@@ -9033,6 +9052,9 @@
         tweenStep(600, (e) => { action?.style.setProperty('--listing-fill', e.toFixed(3)); }, promoEaseOut);
         pop(action, 0.06, 800);
       }, 820);
+      await until(beats.shine);
+      promoSfx('ea-hero');
+      shine(1000);
       await until(beats.push);
       promoSfx('ea-close', { ms: 560 });
       const bloom = document.createElement('span');
@@ -9044,8 +9066,20 @@
       await until(beats.final);
       promoSfx('ea-final');
       shine(760);
-      pop(action, 0.07, 1000, 1.06);   // the exit move on the final chord: the button grows and settles a touch bigger
-      tweenStep(1100, (e) => { bloom.style.opacity = (0.4 + 0.3 * Math.sin(e * Math.PI) - 0.08 * e).toFixed(3); bloom.style.scale = (1 + 0.1 * e).toFixed(3); }, promoEaseOut);
+      // the exit on the final chord (Oriol 2026-11-04: "install se come la pantalla"): the button flies out at the viewer
+      // around its own centre, accelerating, its fill turning the film's orange until it is the whole frame; the rest of
+      // the card fades as it passes
+      if (action) {
+        action.style.zIndex = '10';
+        [brand, invite].forEach((el) => el && tweenStep(320, (e) => { el.style.opacity = (1 - e).toFixed(3); }, promoEaseOut));
+        tweenStep(260, (e) => { bloom.style.opacity = (0.4 * (1 - e)).toFixed(3); }, promoEaseOut);
+        await tweenStep(beats.exitMs, (e) => {
+          action.style.scale = (1 + (beats.exitScale - 1) * e ** 3).toFixed(3);
+          const f = Math.min(1, e * 1.6);
+          action.style.backgroundColor = `rgb(${Math.round(255 + (249 - 255) * f)} ${Math.round(255 + (163 - 255) * f)} ${Math.round(255 + (83 - 255) * f)} / ${(0.55 + 0.45 * f).toFixed(3)})`;
+          if (label) label.style.opacity = (1 - Math.min(1, Math.max(0, (e - 0.55) / 0.3))).toFixed(3);   // the letters pass the camera, the frame ends on the orange
+        }, (u) => u);
+      }
     }
 
     // The end card closes: the benefits (already read) bow out, the card
