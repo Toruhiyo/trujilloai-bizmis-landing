@@ -1,4 +1,5 @@
-import { FaBrain, FaComments, FaSearch, FaShoppingCart, FaSync } from "react-icons/fa";
+import { FaBrain, FaComments, FaSearch, FaSync } from "react-icons/fa";
+import { ShoppingBag } from "lucide-react";
 import {
   AgentLine,
   Accent,
@@ -6,7 +7,7 @@ import {
   ShopperLine,
   ShotCard,
   Strong,
-  TitleBlock,
+  LandingHead,
   ToolChip,
 } from "./listingParts";
 import { listingAsset } from "./listingAssets";
@@ -44,35 +45,35 @@ const FlowBadge = () => (
 );
 
 const ProductDiscoverySlide = () => (
-  <div className="relative grid h-full w-full grid-cols-[1.5fr_1fr] gap-x-12 overflow-visible">
-    <div className="flex min-w-0 flex-col justify-center gap-10">
-      <TitleBlock
-        Icon={FaShoppingCart}
-        eyebrow="Sales: match needs"
-        title="More Shoppers Find a Fit"
-        lead="Your sales agent narrows your whole catalog to the few products that fit what each shopper asks for."
-      />
+  <div className="relative flex h-full w-full flex-col overflow-visible">
+    <LandingHead
+      Icon={ShoppingBag}
+      eyebrow="Sales"
+      title="More shoppers find a fit"
+      lead="Your sales agent narrows your whole catalog to the few products that fit each shopper."
+    />
+    <div className="mt-9 grid min-h-0 flex-1 grid-cols-[1.45fr_1fr] items-center gap-x-12">
       <ShotCard
         src={SCREENSHOT_SRC}
         alt="Bizmis sales agent showing three matching laptops on a store's search page"
         className="relative aspect-[16/9] w-full"
       />
-    </div>
-    <div className="flex min-w-0 flex-col justify-center gap-10">
-      <div className="flex justify-end">
-        <FlowBadge />
+      <div className="flex min-w-0 flex-col gap-6">
+        <div className="flex justify-end">
+          <FlowBadge />
+        </div>
+        <Exchange>
+          <ShopperLine>
+            I'm looking for a <Strong>Windows laptop</Strong> for work, around <Strong>$1,200</Strong>. I fly a
+            lot, so it has to be <Strong>portable</Strong>.
+          </ShopperLine>
+          <ToolChip Icon={FaSearch} label="Shown products" NoteIcon={FaBrain} notes={REMEMBERED} />
+          <AgentLine>
+            Which matters more on all those flights: keeping the <Accent>weight</Accent> down, or stretching
+            the <Accent>battery life</Accent>?
+          </AgentLine>
+        </Exchange>
       </div>
-      <Exchange>
-        <ShopperLine>
-          I'm looking for a <Strong>Windows laptop</Strong> for work, around <Strong>$1,200</Strong>. I fly a
-          lot, so it has to be <Strong>portable</Strong>.
-        </ShopperLine>
-        <ToolChip Icon={FaSearch} label="Shown products" NoteIcon={FaBrain} notes={REMEMBERED} />
-        <AgentLine>
-          Which matters more on all those flights: keeping the <Accent>weight</Accent> down, or stretching
-          the <Accent>battery life</Accent>?
-        </AgentLine>
-      </Exchange>
     </div>
   </div>
 );

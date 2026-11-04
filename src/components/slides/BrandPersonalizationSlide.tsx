@@ -1,10 +1,9 @@
 import { useEffect, useState } from "react";
-import { FaBook, FaPalette, FaUserAlt, FaWindowMaximize } from "react-icons/fa";
-import { AudioLines, Volume2 } from "lucide-react";
+import { AudioLines, Palette, Volume2 } from "lucide-react";
 import AgentImage from "@/components/landing/AgentImage";
 import LiveAvatar from "@/components/landing/LiveAvatar";
 import type { AgentName } from "@/components/landing/AgentImage";
-import { FeatureCard, ShotCard, Stains, TitleBlock } from "./listingParts";
+import { LandingHead, ShotCard } from "./listingParts";
 import { listingAsset } from "./listingAssets";
 
 /** Meridian's Customize > Avatar (Welcome intro on), captured 2026-11-03. */
@@ -14,22 +13,29 @@ const SCREENSHOT_SRC = listingAsset("admin-customize-avatar.png");
 const ORANGE = "#F9A353";
 
 /**
- * Three stores' widgets (shirt colours from the landing's brand palette), each
- * avatar frozen partway through a different gesture of the shared clips.
- * `holdMs` is how long after the model is drawn the pose is held.
+ * Three fictional stores' widgets, as on the landing's Make it truly yours
+ * (scripts/render-landing-avatars.py PALETTE): each shirt follows its brand, a
+ * vivid shirt with a one-colour logo or a black one with a multicolour logo,
+ * no two hues alike and none near the Bizmis orange. Each avatar is frozen
+ * partway through a different gesture; `holdMs` is how long after the model is
+ * drawn the pose is held.
  */
 const POSED_WIDGETS: {
   model: string;
   still: AgentName;
   shirt: string;
+  logo: string;
   gesture: string;
   holdMs: number;
   dark: boolean;
   placeholder: string;
 }[] = [
-  { model: "mia", still: "style-mia", shirt: "#FF6F61", gesture: "waving", holdMs: 1700, dark: false, placeholder: "Help me find a gift." },
-  { model: "will", still: "style-will", shirt: "#2EC4B6", gesture: "presenting_left", holdMs: 1300, dark: true, placeholder: "Which size fits me?" },
-  { model: "kiran", still: "style-kiran", shirt: "#F7CFD8", gesture: "thumbsup", holdMs: 1100, dark: false, placeholder: "Will it arrive by Friday?" },
+  // KUMO ("cloud"): sky blue, its navy wordmark
+  { model: "luca", still: "style-luca", shirt: "#6EC8F5", logo: "kumo", gesture: "waving", holdMs: 1700, dark: false, placeholder: "A tea for slow mornings?" },
+  // SOLARO (the sun): sun yellow, the navy sun mark
+  { model: "amber", still: "style-amber", shirt: "#FFD23F", logo: "solaro-navy", gesture: "presenting_left", holdMs: 1300, dark: false, placeholder: "Which size fits me?" },
+  // ZORA (a lightning bolt): black, the neon lime and magenta logo, on the widget's dark theme
+  { model: "adrian", still: "style-adrian", shirt: "#1C1C1E", logo: "zora", gesture: "thumbsup", holdMs: 1100, dark: true, placeholder: "Will it arrive by Friday?" },
 ];
 
 /** The real widget's glass card, light or dark (widget.css theme-bg-glassy and theme-border-glassy). */
@@ -38,16 +44,16 @@ const cardStyle = (dark: boolean) =>
     ? {
         borderColor: "rgba(255, 255, 255, 0.12)",
         backgroundColor: "rgba(14, 14, 17, 0.92)",
-        boxShadow: "0 1px 0 rgba(255, 255, 255, 0.08) inset, 0 20px 48px -24px rgba(0, 0, 0, 0.6)",
+        boxShadow: "0 1px 0 rgba(255, 255, 255, 0.08) inset, 0 28px 60px -24px rgba(0, 0, 0, 0.55)",
       }
     : {
-        borderColor: "rgba(255, 255, 255, 0.8)",
-        backgroundColor: "rgba(255, 255, 255, 0.78)",
-        boxShadow: "0 1px 0 rgba(255, 255, 255, 0.9) inset, 0 20px 48px -24px rgba(28, 24, 20, 0.28)",
+        borderColor: "rgba(255, 255, 255, 0.9)",
+        backgroundColor: "rgba(255, 255, 255, 0.8)",
+        boxShadow: "0 1px 0 rgba(255, 255, 255, 0.9) inset, 0 28px 60px -24px rgba(59, 36, 22, 0.3)",
       };
 
 /** A storefront widget card whose live avatar plays one gesture, then holds that frame for the export. */
-const PosedWidget = ({ model, still, shirt, gesture, holdMs, dark, placeholder }: (typeof POSED_WIDGETS)[number]) => {
+const PosedWidget = ({ model, still, shirt, logo, gesture, holdMs, dark, placeholder }: (typeof POSED_WIDGETS)[number]) => {
   const [live, setLive] = useState(false);
   const [held, setHeld] = useState(false);
   useEffect(() => {
@@ -58,21 +64,21 @@ const PosedWidget = ({ model, still, shirt, gesture, holdMs, dark, placeholder }
   return (
     <div
       data-pose-pending={held ? undefined : ""}
-      className="relative h-[18.5rem] w-[16rem] rounded-xl border backdrop-blur-xl"
+      className="relative h-[19rem] w-[16.5rem] rounded-2xl border backdrop-blur-xl"
       style={cardStyle(dark)}
     >
       <span
-        className="absolute right-2 top-2 z-10 grid h-8 w-8 place-items-center rounded-full border"
+        className="absolute right-2.5 top-2.5 z-10 grid h-8 w-8 place-items-center rounded-full border"
         style={{ borderColor: `${ORANGE}4d`, background: `${ORANGE}24`, color: ORANGE }}
         aria-hidden
       >
         <Volume2 className="h-4 w-4" />
       </span>
-      <div className="relative h-[14.375rem] overflow-hidden rounded-t-xl">
+      <div className="relative h-[14.75rem] overflow-hidden rounded-t-2xl">
         <LiveAvatar
           model={model}
           shirtColor={shirt}
-          logo={false}
+          logoUrl={listingAsset(`logos/${logo}.png`)}
           greet={false}
           gesture={live ? { name: gesture, key: 1 } : null}
           paused={held}
@@ -115,45 +121,31 @@ const PosedWidget = ({ model, still, shirt, gesture, holdMs, dark, placeholder }
 };
 
 const BrandPersonalizationSlide = () => (
-  <div className="relative grid h-full w-full grid-cols-[1.35fr_0.85fr] gap-x-12 overflow-visible">
-    <div className="relative h-full min-h-0 min-w-0 overflow-visible">
-      <Stains />
+  <div className="relative flex h-full w-full flex-col overflow-visible">
+    <LandingHead
+      Icon={Palette}
+      eyebrow="Personalization"
+      title="Make it truly yours"
+      lead="Pick its look, put your logo on its shirt, and choose a light or dark widget."
+    />
+    <div className="relative mt-10 flex-1">
+      {/* the orange ambient light behind the widgets, as on the landing's Customize */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute right-[8%] top-[-10%] h-[120%] w-[60%] rounded-full blur-3xl"
+        style={{ background: "radial-gradient(closest-side, rgb(249 163 83 / 0.28), rgb(249 163 83 / 0.08) 55%, transparent 75%)" }}
+      />
       <ShotCard
         src={SCREENSHOT_SRC}
         alt="Customize in the Bizmis admin: avatar, outfit color, logo and welcome intro"
-        className="absolute left-0 top-6 z-10 aspect-[1506/778] w-[86%]"
+        className="absolute left-[2%] top-2 z-10 aspect-[1506/778] w-[47%]"
       />
-      <div className="absolute bottom-4 right-[-28px] z-20 flex items-end gap-4">
+      <div className="absolute bottom-0 right-[1%] z-20 flex items-end gap-5">
         {POSED_WIDGETS.map((w, i) => (
           <div key={w.model} className={i === 1 ? "mb-10" : undefined}>
             <PosedWidget {...w} />
           </div>
         ))}
-      </div>
-    </div>
-    <div className="flex min-w-0 flex-col justify-center gap-8">
-      <TitleBlock
-        Icon={FaPalette}
-        eyebrow="Customize"
-        title={
-          <>
-            Make It
-            <br />
-            Truly Yours
-          </>
-        }
-        lead="Pick its avatar, put your logo on its shirt, and set what it knows and how it sells."
-      />
-      <div className="flex flex-col gap-3">
-        <FeatureCard Icon={FaUserAlt} title="Avatar and welcome intro">
-          Your outfit color and logo, and a greeting when shoppers arrive.
-        </FeatureCard>
-        <FeatureCard Icon={FaWindowMaximize} title="Widget and chat">
-          Light or dark, where it sits on the page and how it starts the chat.
-        </FeatureCard>
-        <FeatureCard Icon={FaBook} title="Knowledge and guidelines">
-          Your store's words, and the way you want it to sell.
-        </FeatureCard>
       </div>
     </div>
   </div>

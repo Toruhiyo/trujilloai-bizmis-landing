@@ -1,4 +1,5 @@
-import { FaBalanceScale, FaCartPlus } from "react-icons/fa";
+import { FaCartPlus } from "react-icons/fa";
+import { Scale } from "lucide-react";
 import {
   AgentLine,
   Accent,
@@ -6,7 +7,7 @@ import {
   ShopperLine,
   ShotCard,
   Strong,
-  TitleBlock,
+  LandingHead,
   ToolChip,
 } from "./listingParts";
 import { listingAsset } from "./listingAssets";
@@ -15,39 +16,30 @@ import { listingAsset } from "./listingAssets";
 const SCREENSHOT_SRC = listingAsset("store-addon-pick.jpg");
 
 const ProductComparisonSlide = () => (
-  <div className="relative grid h-full w-full grid-cols-[1fr_1.5fr] gap-x-12 overflow-visible">
-    <div className="flex min-w-0 flex-col justify-center">
+  <div className="relative flex h-full w-full flex-col overflow-visible">
+    <LandingHead
+      Icon={Scale}
+      eyebrow="Sales"
+      title="Doubts turn into decisions"
+      lead="It compares options on what the shopper cares about, then suggests what goes with the cart."
+    />
+    <div className="mt-9 grid min-h-0 flex-1 grid-cols-[1fr_1.45fr] items-center gap-x-12">
       <Exchange>
         <ShopperLine>
           <Strong>Weight</Strong> matters most. Is the Surface lighter?
         </ShopperLine>
         <AgentLine>
-          Yeah, the Surface Laptop 7 is even lighter, <Accent>just under three pounds</Accent>.
+          Yeah, it's even lighter, <Accent>just under three pounds</Accent>.
         </AgentLine>
         <ToolChip Icon={FaCartPlus} label="Added to cart" notes={["Surface Laptop 7"]} />
         <AgentLine>
-          It's in the cart, and since you fly a lot, want me to show you a few <Accent>travel adapters</Accent>{" "}
-          for it?
+          Since you fly a lot, want to see a few <Accent>travel adapters</Accent> for it?
         </AgentLine>
-        <ShopperLine>Sure, show me. Which one would you pick?</ShopperLine>
+        <ShopperLine>Sure. Which one would you pick?</ShopperLine>
         <AgentLine>
-          My pick for you is the <Accent>Zendure</Accent>. It can charge that Surface anywhere in the world.
+          The <Accent>Zendure</Accent>. It charges that Surface anywhere in the world.
         </AgentLine>
       </Exchange>
-    </div>
-    <div className="flex min-w-0 flex-col justify-center gap-10">
-      <TitleBlock
-        Icon={FaBalanceScale}
-        eyebrow="Sales: clear doubts"
-        title={
-          <>
-            Doubts Turn
-            <br />
-            Into Decisions
-          </>
-        }
-        lead="It compares options on what the shopper cares about, then suggests what goes with the cart."
-      />
       <ShotCard
         src={SCREENSHOT_SRC}
         alt="Bizmis sales agent suggesting a travel adapter that goes with the laptop in the cart"
