@@ -1,5 +1,6 @@
 import SlideDeck from "@/components/slides/SlideDeck";
 import { SLIDES } from "@/components/slides/registry";
+import { AudioLines } from "lucide-react";
 import Logo from "@/components/Logo";
 import ProductDiscoverySlide from "@/components/slides/ProductDiscoverySlide";
 import ProductComparisonSlide from "@/components/slides/ProductComparisonSlide";
@@ -71,17 +72,26 @@ const ShopifyHeroContent = () => (
       <div className="flex-[1.5] flex flex-col h-full pt-2">
         <Logo variant="white" size="lg" showText className="shrink-0 scale-125 origin-left mt-1" />
         <div className="flex flex-1 flex-col justify-center gap-6 pr-10">
-          <span className="text-white text-2xl font-body tracking-wide uppercase font-medium">
+          <span
+            className="inline-flex w-fit items-center gap-[0.6em] whitespace-nowrap rounded-full bg-white py-[0.38em] pl-[0.38em] pr-[1.15em] text-[1.3rem] font-bold leading-[1.1] tracking-[-0.02em]"
+            style={{ fontFamily: "Inter, sans-serif", color: "#3b2416" }}
+          >
+            <span className="grid aspect-square w-[2.3em] place-items-center rounded-full bg-[#fff3e7] text-primary">
+              <AudioLines className="h-[56%] w-[56%]" strokeWidth={2} />
+            </span>
             Your AI sales agent
           </span>
-        <h1 className="text-[4.9rem] font-heading font-bold text-white leading-[1.05]">
+        <h1
+          className="text-[5.6rem] font-extrabold leading-[0.98] tracking-[-0.05em] text-white"
+          style={{ fontFamily: "Inter, sans-serif" }}
+        >
           Match needs.
           <br />
           Clear doubts.
           <br />
           Win sales.
         </h1>
-        <p className="text-3xl text-white/80 font-body">
+        <p className="text-[1.85rem] leading-[1.35] tracking-[-0.01em] text-white/85" style={{ fontFamily: "Inter, sans-serif" }}>
           Turn store visits into sales,
           <br /> by voice and text, day and night.
         </p>
