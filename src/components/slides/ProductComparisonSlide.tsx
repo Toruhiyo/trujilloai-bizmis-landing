@@ -38,15 +38,15 @@ const ProductComparisonSlide = () => (
     <div className="flex min-w-0 flex-col justify-center gap-10">
       <TitleBlock
         Icon={FaBalanceScale}
-        eyebrow="Comparison and add-ons"
+        eyebrow="Sales: clear doubts"
         title={
           <>
-            Compares on the Spot,
+            Doubts Turn
             <br />
-            Then Suggests What Fits
+            Into Decisions
           </>
         }
-        lead="It weighs the options on what the shopper cares about, then offers what goes with the product in the cart."
+        lead="It compares options on what the shopper cares about, then suggests what goes with the cart."
       />
       <ShotCard
         src={SCREENSHOT_SRC}

@@ -48,9 +48,9 @@ const ProductDiscoverySlide = () => (
     <div className="flex min-w-0 flex-col justify-center gap-10">
       <TitleBlock
         Icon={FaShoppingCart}
-        eyebrow="Product discovery"
-        title="A Shortlist That Fits"
-        lead="Shoppers say what they need. Your Bizmis sales agent searches your whole catalog and puts the products that fit on screen."
+        eyebrow="Sales: match needs"
+        title="More Shoppers Find a Fit"
+        lead="Your sales agent narrows your whole catalog to the few products that fit what each shopper asks for."
       />
       <ShotCard
         src={SCREENSHOT_SRC}

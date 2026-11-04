@@ -11,15 +11,15 @@ const MerchantInsightsSlide = () => (
     <div className="flex min-w-0 flex-col justify-center gap-8">
       <TitleBlock
         Icon={FaChartLine}
-        eyebrow="Insights"
+        eyebrow="Store insights"
         title={
           <>
-            Every Session,
+            See What Sells.
             <br />
-            Replayed
+            Fix What Doesn't.
           </>
         }
-        lead="Listen back to any session, read what was said and see which products were shown and added to cart."
+        lead="Replay any session to see why a cart was left, what was said and which products were shown."
       />
       <div className="flex flex-col gap-3">
         <FeatureCard Icon={FaPlay} title="Session replays">

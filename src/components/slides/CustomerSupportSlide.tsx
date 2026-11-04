@@ -28,8 +28,8 @@ const CustomerSupportSlide = () => (
       <TitleBlock
         Icon={FaHeadset}
         eyebrow="Customer support"
-        title="Help That Feels In Person"
-        lead="Bizmis answers from your policies, pages and orders, by voice or text, right on the page the shopper is on."
+        title={<>Cut Support Workload,<br />Day and Night</>}
+        lead="It answers warranty, shipping and returns questions from your own policies, so only the few that need you reach your inbox."
       />
       <ShotCard
         src={SCREENSHOT_SRC}
