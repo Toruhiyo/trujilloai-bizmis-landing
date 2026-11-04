@@ -56,6 +56,19 @@ for (let i = 0; i < count; i++) {
   await slide.evaluate((el) =>
     Promise.all([...el.querySelectorAll("img")].map((img) => img.decode().catch(() => {}))),
   );
+  // Live 3D avatars hold a gesture's frame, then drop data-pose-pending (BrandPersonalizationSlide).
+  await slide.evaluate(
+    (el) =>
+      new Promise((resolve, reject) => {
+        const deadline = Date.now() + 60_000;
+        const check = () => {
+          if (!el.querySelector("[data-pose-pending]")) return resolve();
+          if (Date.now() > deadline) return reject(new Error("avatar poses never settled"));
+          setTimeout(check, 200);
+        };
+        check();
+      }),
+  );
   const raw = (await labels.nth(i).textContent()) ?? `slide-${i + 1}`;
   const label = raw.split("—").slice(1).join("—").trim() || raw;
   const file = join(outDir, `${FILENAME_PREFIX}-${i + 1}-${slugify(label)}-${SLIDE_WIDTH}w.png`);
