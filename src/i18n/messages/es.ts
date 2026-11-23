@@ -746,12 +746,12 @@ export const es: Messages = {
       "early-access-offer": {
         question: "¿Qué es la oferta de acceso anticipado?",
         answer:
-          "El acceso anticipado ofrece a las tiendas Shopify invitadas las **120 sesiones gratis** del plan gratuito, una sola vez por tienda. No hay suscripción, cargos por uso, actualización automática ni renovación. Cuando se agotan las sesiones, Bizmis se pausa, salvo que elijas y apruebes un plan de pago en Shopify. Los miembros también reciben onboarding 1 a 1, soporte prioritario, prioridad para sus comentarios sobre el producto y un descuento personal si más adelante deciden mejorar su plan.",
+          "El acceso anticipado ofrece a las tiendas Shopify invitadas las **120 sesiones gratis** del plan gratuito, una sola vez por tienda y sin fecha de caducidad. No hay suscripción, cargos por uso, actualización automática ni renovación. Cuando se agotan las sesiones, Bizmis se pausa, salvo que elijas y apruebes un plan de pago en Shopify. Los miembros también reciben onboarding 1 a 1, soporte prioritario, prioridad para sus comentarios sobre el producto y un descuento personal si más adelante deciden mejorar su plan.",
       },
       "free-plan": {
         question: "¿Hay un plan gratuito?",
         answer:
-          "Sí. El **plan gratuito** pone Bizmis en marcha en tu tienda durante **120 sesiones gratis**, una sola vez por tienda. Sin suscripción, sin compromiso, sin tarjeta y sin renovaciones. Es una prueba real con compradores reales. Cuando necesites capacidad continua, pasa a un plan de pago. Todos los cargos de Bizmis pasan por Shopify con la cuenta que ya usas, así que nunca añades otra tarjeta, y el plan gratuito no tiene nada que cobrar.",
+          "Sí. El **plan gratuito** pone Bizmis en marcha en tu tienda durante **120 sesiones gratis**, una sola vez por tienda y sin fecha de caducidad. Sin suscripción, sin compromiso, sin tarjeta y sin renovaciones. Es una prueba real con compradores reales. Cuando necesites capacidad continua, pasa a un plan de pago. Todos los cargos de Bizmis pasan por Shopify con la cuenta que ya usas, así que nunca añades otra tarjeta, y el plan gratuito no tiene nada que cobrar.",
       },
       "billing-payment-method": {
         question: "¿Cómo funciona el pago? ¿Tengo que añadir una tarjeta?",
