@@ -746,12 +746,12 @@ export const it: Messages = {
       "early-access-offer": {
         question: "Cos'è l'offerta di accesso anticipato?",
         answer:
-          "L'accesso anticipato offre ai negozi Shopify invitati le **120 sessioni gratuite** del piano gratuito, una sola volta per negozio. Non ci sono abbonamenti, costi di utilizzo, passaggi automatici a un piano superiore o rinnovi. Quando le sessioni terminano, Bizmis si mette in pausa, a meno che tu non scelga e approvi un piano a pagamento su Shopify. I membri ricevono anche onboarding individuale, assistenza prioritaria, priorità per il feedback sul prodotto e uno sconto personale se in seguito decidono di passare a un piano superiore.",
+          "L'accesso anticipato offre ai negozi Shopify invitati le **120 sessioni gratuite** del piano gratuito, una sola volta per negozio e senza scadenza. Non ci sono abbonamenti, costi di utilizzo, passaggi automatici a un piano superiore o rinnovi. Quando le sessioni terminano, Bizmis si mette in pausa, a meno che tu non scelga e approvi un piano a pagamento su Shopify. I membri ricevono anche onboarding individuale, assistenza prioritaria, priorità per il feedback sul prodotto e uno sconto personale se in seguito decidono di passare a un piano superiore.",
       },
       "free-plan": {
         question: "C'è un piano gratuito?",
         answer:
-          "Sì. Il **piano gratuito** tiene Bizmis attivo nel tuo negozio per **120 sessioni gratuite**, una sola volta per negozio. Nessun abbonamento, nessun vincolo, nessuna carta e nessun rinnovo. È un test vero con clienti veri. Quando ti serve capacità continuativa, passi a un piano a pagamento. Tutti gli addebiti di Bizmis passano da Shopify sull'account che già usi: non aggiungi mai una carta separata, e il piano gratuito non ha nulla da addebitare.",
+          "Sì. Il **piano gratuito** tiene Bizmis attivo nel tuo negozio per **120 sessioni gratuite**, una sola volta per negozio e senza scadenza. Nessun abbonamento, nessun vincolo, nessuna carta e nessun rinnovo. È un test vero con clienti veri. Quando ti serve capacità continuativa, passi a un piano a pagamento. Tutti gli addebiti di Bizmis passano da Shopify sull'account che già usi: non aggiungi mai una carta separata, e il piano gratuito non ha nulla da addebitare.",
       },
       "billing-payment-method": {
         question: "Come funziona il pagamento? Devo aggiungere una carta?",

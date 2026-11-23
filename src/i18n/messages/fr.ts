@@ -747,12 +747,12 @@ export const fr: Messages = {
       "early-access-offer": {
         question: "Qu'est-ce que l'offre d'accès anticipé ?",
         answer:
-          "L'accès anticipé offre aux boutiques Shopify invitées les **120 sessions gratuites** du plan gratuit, une seule fois par boutique. Il n'y a aucun abonnement, frais d'utilisation, passage automatique à un plan supérieur ni renouvellement. Lorsque les sessions sont épuisées, Bizmis se met en pause, sauf si vous choisissez et approuvez un plan payant dans Shopify. Les membres bénéficient également d'un accompagnement individuel, d'une assistance prioritaire, d'une prise en compte prioritaire de leurs retours produit et d'une remise personnelle s'ils passent ensuite à un plan payant.",
+          "L'accès anticipé offre aux boutiques Shopify invitées les **120 sessions gratuites** du plan gratuit, une seule fois par boutique et sans date d'expiration. Il n'y a aucun abonnement, frais d'utilisation, passage automatique à un plan supérieur ni renouvellement. Lorsque les sessions sont épuisées, Bizmis se met en pause, sauf si vous choisissez et approuvez un plan payant dans Shopify. Les membres bénéficient également d'un accompagnement individuel, d'une assistance prioritaire, d'une prise en compte prioritaire de leurs retours produit et d'une remise personnelle s'ils passent ensuite à un plan payant.",
       },
       "free-plan": {
         question: "Existe-t-il un plan gratuit ?",
         answer:
-          "Oui. Le **plan gratuit** fait fonctionner Bizmis dans votre boutique pendant **120 sessions gratuites**, une seule fois par boutique. Sans abonnement, sans engagement, sans carte bancaire et sans renouvellement. C'est un vrai test avec de vrais acheteurs. Quand vous voulez de la capacité continue, passez à un plan payant. Toute facturation Bizmis passe par Shopify sur le compte que vous utilisez déjà : vous n'ajoutez jamais de carte séparée, et le plan gratuit n'a rien à facturer.",
+          "Oui. Le **plan gratuit** fait fonctionner Bizmis dans votre boutique pendant **120 sessions gratuites**, une seule fois par boutique et sans date d'expiration. Sans abonnement, sans engagement, sans carte bancaire et sans renouvellement. C'est un vrai test avec de vrais acheteurs. Quand vous voulez de la capacité continue, passez à un plan payant. Toute facturation Bizmis passe par Shopify sur le compte que vous utilisez déjà : vous n'ajoutez jamais de carte séparée, et le plan gratuit n'a rien à facturer.",
       },
       "billing-payment-method": {
         question: "Comment se passe le paiement ? Dois-je ajouter une carte ?",

@@ -760,12 +760,12 @@ export const en = {
       "early-access-offer": {
         question: "What is the Early Access offer?",
         answer:
-          "Early Access gives invited Shopify stores the Free plan's **120 free sessions**, once per store. There is no subscription, usage charge, automatic upgrade, or renewal. When the sessions run out, Bizmis pauses unless you choose and approve a paid plan in Shopify. Members also get 1-to-1 onboarding, priority support, prioritized product feedback, and a personal discount if they later upgrade.",
+          "Early Access gives invited Shopify stores the Free plan's **120 free sessions**, once per store, with no time limit. There is no subscription, usage charge, automatic upgrade, or renewal. When the sessions run out, Bizmis pauses unless you choose and approve a paid plan in Shopify. Members also get 1-to-1 onboarding, priority support, prioritized product feedback, and a personal discount if they later upgrade.",
       },
       "free-plan": {
         question: "Is there a free plan?",
         answer:
-          "Yes. The **Free plan** runs Bizmis live in your store for **120 free sessions**, once per store. No subscription, no commitment, no card needed, and nothing renews. It's a real test with real shoppers. When you're ready for ongoing capacity, upgrade to a paid plan. Every Bizmis charge runs through Shopify on the account you already use, so you never add a separate card for Bizmis, and the Free plan has nothing to charge.",
+          "Yes. The **Free plan** runs Bizmis live in your store for **120 free sessions**, once per store, with no time limit. No subscription, no commitment, no card needed, and nothing renews. It's a real test with real shoppers. When you're ready for ongoing capacity, upgrade to a paid plan. Every Bizmis charge runs through Shopify on the account you already use, so you never add a separate card for Bizmis, and the Free plan has nothing to charge.",
       },
       "billing-payment-method": {
         question: "How does payment work? Do I need to add a card?",

@@ -747,12 +747,12 @@ export const ca: Messages = {
       "early-access-offer": {
         question: "Què és l'oferta d'accés anticipat?",
         answer:
-          "L'accés anticipat ofereix a les botigues Shopify convidades les **120 sessions gratis** del pla gratuït, una sola vegada per botiga. No hi ha subscripció, càrrecs per ús, actualització automàtica ni renovació. Quan s'esgoten les sessions, Bizmis es posa en pausa, tret que triïs i aprovis un pla de pagament a Shopify. Els membres també reben onboarding 1 a 1, suport prioritari, prioritat per als seus comentaris sobre el producte i un descompte personal si més endavant decideixen millorar el pla.",
+          "L'accés anticipat ofereix a les botigues Shopify convidades les **120 sessions gratis** del pla gratuït, una sola vegada per botiga i sense data de caducitat. No hi ha subscripció, càrrecs per ús, actualització automàtica ni renovació. Quan s'esgoten les sessions, Bizmis es posa en pausa, tret que triïs i aprovis un pla de pagament a Shopify. Els membres també reben onboarding 1 a 1, suport prioritari, prioritat per als seus comentaris sobre el producte i un descompte personal si més endavant decideixen millorar el pla.",
       },
       "free-plan": {
         question: "Hi ha un pla gratuït?",
         answer:
-          "Sí. El **pla gratuït** posa Bizmis en marxa a la teva botiga durant **120 sessions gratis**, una sola vegada per botiga. Sense subscripció, sense compromís, sense targeta i sense renovacions. És una prova real amb compradors reals. Quan necessitis capacitat continuada, passa a un pla de pagament. Tots els càrrecs de Bizmis passen per Shopify amb el compte que ja fas servir, així que mai afegeixes una altra targeta, i el pla gratuït no té res a cobrar.",
+          "Sí. El **pla gratuït** posa Bizmis en marxa a la teva botiga durant **120 sessions gratis**, una sola vegada per botiga i sense data de caducitat. Sense subscripció, sense compromís, sense targeta i sense renovacions. És una prova real amb compradors reals. Quan necessitis capacitat continuada, passa a un pla de pagament. Tots els càrrecs de Bizmis passen per Shopify amb el compte que ja fas servir, així que mai afegeixes una altra targeta, i el pla gratuït no té res a cobrar.",
       },
       "billing-payment-method": {
         question: "Com funciona el pagament? He d'afegir una targeta?",
